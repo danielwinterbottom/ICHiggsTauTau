@@ -88,6 +88,7 @@ namespace ic {
         }
 
         file_ptr = new TFile(input_file_paths_[file].c_str());
+        //file_ptr = TFile::Open(input_file_paths_[file].c_str());
         if (!file_ptr) {
           std::cerr << "Warning: Unable to open file \"" << input_file_paths_[file] <<
           "\"" << std::endl;

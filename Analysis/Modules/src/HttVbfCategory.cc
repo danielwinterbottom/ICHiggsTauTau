@@ -88,15 +88,15 @@ namespace ic {
         reader->AddVariable("dPhi_hj", &vbfvars[5]);
         reader->AddVariable("C1", &vbfvars[6]);
         reader->AddVariable("C2", &vbfvars[7]);
-        file = "VBFMVA_BDTG.weights.xml";
-        if (mode_ == 2) file = "VBFMVA_EMu_BDTG.weights.xml";
+        file = "data/vbf_mva/VBFMVA_BDTG.weights.xml";
+        if (mode_ == 2) file = "data/vbf_mva/VBFMVA_EMu_BDTG.weights.xml";
       } else {
         reader->AddVariable("mjj",  &vbfvars[0]);
         reader->AddVariable("dEta", &vbfvars[1]);
         reader->AddVariable("C1",   &vbfvars[6]);
         reader->AddVariable("C2",   &vbfvars[7]);
-        file = is_2012_ ? "VBFMVA_BDTG_HCP_52X.weights.xml" : "VBFMVA_BDTG_HCP_42X.weights.xml";
-        if (mode_ == 2) file = is_2012_ ? "VBFMVA_EMu_BDTG_HCP_53X.weights.xml" : "VBFMVA_EMu_BDTG_HCP_53X.weights.xml";
+        file = is_2012_ ? "data/vbf_mva/VBFMVA_BDTG_HCP_52X.weights.xml" : "data/vbf_mva/VBFMVA_BDTG_HCP_42X.weights.xml";
+        if (mode_ == 2) file = is_2012_ ? "data/vbf_mva/VBFMVA_EMu_BDTG_HCP_53X.weights.xml" : "data/vbf_mva/VBFMVA_EMu_BDTG_HCP_53X.weights.xml";
       }
       reader->BookMVA("BDTG", file);
     }

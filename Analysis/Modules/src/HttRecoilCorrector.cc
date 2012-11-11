@@ -34,14 +34,14 @@ namespace ic {
     std::string data_file;
     std::string mc_file;
     if (is_2012_) {
-      data_file = "recoilfits/recoilfit_datamm53X_20pv_njet.root";
-      mc_file = "recoilfits/recoilfit_zmm53X_20pv_njet.root";
+      data_file = "data/recoilfits/recoilfit_datamm53X_20pv_njet.root";
+      mc_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
     } else {
-      data_file = "recoilfits/recoilfit_datamm42X_20pv_njet.root";
-      mc_file = "recoilfits/recoilfit_zmm42X_20pv_njet.root";
+      data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
+      mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
       if (era_ == 1) {
-        data_file = "recoilfits/recoilfit_datamm_njet.root";
-        mc_file = "recoilfits/recoilfit_zmm42X_njet.root";
+        data_file = "data/recoilfits/recoilfit_datamm_njet.root";
+        mc_file = "data/recoilfits/recoilfit_zmm42X_njet.root";
       }
     }
 
@@ -50,11 +50,11 @@ namespace ic {
       disable = false;
       is_wjets_ = true;
       if (is_2012_) {
-        process_file = "recoilfits/recoilfit_wjets53X_20pv_njet.root";
+        process_file = "data/recoilfits/recoilfit_wjets53X_20pv_njet.root";
       } else {
-        process_file = "recoilfits/recoilfit_wjets42X_20pv_njet.root";
+        process_file = "data/recoilfits/recoilfit_wjets42X_20pv_njet.root";
         if (era_ == 1) {
-          process_file = "recoilfits/recoilfit_wjets_njet.root";
+          process_file = "data/recoilfits/recoilfit_wjets_njet.root";
         }
       }
       std::cout << "W+Jets sample detected, using process file: " << process_file << std::endl;
@@ -68,12 +68,12 @@ namespace ic {
       || (sample_.find("WH_ZH_TTH_HToTauTau") != sample_.npos) ) {
       disable = false;
       if (is_2012_) {
-        process_file = "recoilfits/recoilfit_higgs53X_20pv_njet.root";
+        process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
       } else {
-        process_file = "recoilfits/recoilfit_higgs42X_20pv_njet.root";
-        if (mode_ == 2) process_file = "recoilfits/recoilfit_higgsem42X_20pv_njet.root";
+        process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
+        if (mode_ == 2) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
         if (era_ == 1) {
-          process_file = "recoilfits/recoilfit_higgs_njet.root";
+          process_file = "data/recoilfits/recoilfit_higgs_njet.root";
         }
       }
       std::cout << "Signal sample detected, using process file: " << process_file << std::endl;
@@ -84,11 +84,11 @@ namespace ic {
     if ( sample_.find("DYJetsToLL") != sample_.npos ) {
       disable = false;
       if (is_2012_) {
-        process_file = "recoilfits/recoilfit_zmm53X_20pv_njet.root";
+        process_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
       } else {
-        process_file = "recoilfits/recoilfit_zmm42X_20pv_njet.root";
+        process_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
         if (era_ == 1) {
-          process_file = "recoilfits/recoilfit_zmm42X_njet.root";
+          process_file = "data/recoilfits/recoilfit_zmm42X_njet.root";
         }
       }
       std::cout << "DYJetsToLL sample detected, using process file: " << process_file << std::endl;

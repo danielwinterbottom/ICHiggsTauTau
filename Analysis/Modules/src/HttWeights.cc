@@ -52,14 +52,14 @@ namespace ic {
     std::cout << "Generate b-tag weight?: \t" << do_btag_weight_ << std::endl;
 
     if (ggh_mass_ != "") {
-      std::string file = "resources/weight_ptH_"+ggh_mass_+".root";
+      std::string file = "data/ggh_weights/weight_ptH_"+ggh_mass_+".root";
       std::cout << "Applying Higgs pT reweighting with: " << file << std::endl;
       ggh_weights_ = new TFile(file.c_str());
       gDirectory->cd("powheg_weight");
       ggh_hist_ = (TH1F*)gDirectory->Get(("weight_hqt_fehipro_fit_"+ggh_mass_).c_str());
     }
 
-    muTauSF2011 = new TFile("hltScaleFactors_2011.root");
+    muTauSF2011 = new TFile("data/scale_factors/hltScaleFactors_2011.root");
     hist_muTauSF2011 = (TH2D*)gDirectory->Get("LooseIsoPFTauRatio");
     hist_muTauSF2011PFTau10 = (TH2D*)gDirectory->Get("LooseIsoPFTau10PtEta");
     hist_muTauSF2011PFTau15 = (TH2D*)gDirectory->Get("LooseIsoPFTau15PtEta");
@@ -68,11 +68,11 @@ namespace ic {
 
     if (do_emu_e_fakerates_ || do_emu_m_fakerates_) {
       if (is_2012_) {
-        ElectronFRFile = new TFile("ElectronFakeRate_2012_12ifb.root");
-        MuonFRFile = new TFile("MuonFakeRate_2012_12ifb.root");
+        ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_12ifb.root");
+        MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_12ifb.root");
       } else {
-        ElectronFRFile = new TFile("ElectronFakeRate_2011.root");
-        MuonFRFile = new TFile("MuonFakeRate_2011.root");
+        ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2011.root");
+        MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2011.root");
       }
       ElectronFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(ElectronFRFile->Get("ElectronFakeRateDenominatorV4_Ele8CaloIdLCaloIsoVLCombinedSample_ptThreshold35_PtEta"));
       MuonFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(MuonFRFile->Get("MuonFakeRateDenominatorV4_Mu8PtCombinedSample_ptThreshold15_PtEta"));

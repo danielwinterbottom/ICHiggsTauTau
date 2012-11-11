@@ -27,8 +27,8 @@ namespace ic {
     reader->AddVariable("dPhi_hj", &vbfvars[5]);
     reader->AddVariable("C1", &vbfvars[6]);
     reader->AddVariable("C2", &vbfvars[7]);
-    std::string file = "VBFMVA_BDTG.weights.xml";
-    if (mode_ == 2) file = "VBFMVA_EMu_BDTG.weights.xml";
+    std::string file = "data/vbf_mva/VBFMVA_BDTG.weights.xml";
+    if (mode_ == 2) file = "data/vbf_mva/VBFMVA_EMu_BDTG.weights.xml";
     reader->BookMVA("BDTG", file);
 
     select_sel_mode_ = -1;
