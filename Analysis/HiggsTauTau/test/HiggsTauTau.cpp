@@ -49,12 +49,21 @@ int main(int argc, char* argv[]){
   int max_events;
   unsigned mode, mssm_mode, tau_scale_mode;
   unsigned is_data, era;
+
+  // NEW PARAETERS
+  /*
+  unsigned strategy;  // Could replace with enum
+  unsigned data_era;  // Could replace with enum
+
+  // FINE GRAINED CONFIG
+  bool enable_recoil_corrections; // true = follow data_era settings, false = disabled
+  */
   // Era 0: 2012 52X ICHEP
   // Era 1: 2012 53X ICHEP
   // Era 2: 2012 53X HCP
   bool is_2012;
   bool scan_trigger;
-  std::string outname, filelist, configfile, svfit_override, outfolder, svfit_folder;
+  std::string outname, filelist, configfile, svfit_override, outfolder, svfit_folder, input_path;
   bool do_svfit = false;
   int svfit_op;
   bool do_skim;
@@ -63,6 +72,7 @@ int main(int argc, char* argv[]){
   bool do_vbf_mva = true;
   unsigned special_mode = 0; // No special mode
   bool disable_mc_trigger = false;
+
   // Special Mode 2  Relaxed Selection Trigger   Weights 
   // Special Mode 3  QCD Selection Trigger Weights 
   // Special Mode 6  QCD Selection Trigger Weights Lower vbf pt to 20 GeV, lower vbf mva to 0.0
@@ -100,6 +110,7 @@ int main(int argc, char* argv[]){
       ("era", po::value<unsigned>(&era)->required(), "era")
       ("is_data", po::value<unsigned>(&is_data)->required(), "0=mc, 1=data")
       ("output", po::value<std::string>(&outname)->required(), "ROOT file output name")
+      ("input_path", po::value<std::string>(&input_path)->required(), "input_path")
       ("filelist", po::value<std::string>(&filelist)->required(), "input filelist")
       ("skim", po::value<bool>(&do_skim)->default_value(false), "run in skimming mode")
       ("do_sync", po::value<bool>(&do_sync)->default_value(false), "make sync ntuple")
@@ -167,7 +178,10 @@ int main(int argc, char* argv[]){
   gSystem->Load("libUserCodeICHiggsTauTau.dylib");
   AutoLibraryLoader::enable();
   // Build a vector of input files
-  std::vector<std::string> files = ParseFileLines(filelist);
+  std::vector<std::string> files = ParseFileLines(input_path+filelist);
+  for (unsigned i = 0; i < files.size(); ++i) {
+    files[i] = input_path + files[i];
+  }
   // Create ROOT output fileservice
   fwlite::TFileService *fs;
   if (outfolder == "") {
@@ -200,7 +214,7 @@ int main(int argc, char* argv[]){
   double elec_pt, elec_eta, muon_pt, muon_eta, tau_pt, tau_eta;
   met_label = "pfMVAMet";
   if (era == 0 || era == 1) met_label = "pfMet";
-  mt_max_selection = 40.0;
+  mt_max_selection = 20.0;
   if (mode == 0) {
     lep1_label = "electrons";
     lep1sel_label = "selElectrons";
@@ -298,7 +312,7 @@ int main(int argc, char* argv[]){
   ic::AnalysisBase analysis(
     "HiggsTauTau",        // Analysis name
     files,                // Input files
-    "agEventProducer",    // TTree path
+    "icEventProducer",    // TTree path
     "EventTree",          // TTree name
     max_events);          // Max. events to process (-1 = all)
   if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);

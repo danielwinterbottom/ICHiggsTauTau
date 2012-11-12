@@ -1,5 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/AnalysisBase.h"
-//#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
+#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include <boost/algorithm/string.hpp>
 
 #include <algorithm>
@@ -87,8 +87,8 @@ namespace ic {
           }
         }
 
-        file_ptr = new TFile(input_file_paths_[file].c_str());
-        //file_ptr = TFile::Open(input_file_paths_[file].c_str());
+        //file_ptr = new TFile(input_file_paths_[file].c_str());
+        file_ptr = TFile::Open(input_file_paths_[file].c_str());
         if (!file_ptr) {
           std::cerr << "Warning: Unable to open file \"" << input_file_paths_[file] <<
           "\"" << std::endl;
@@ -119,22 +119,22 @@ namespace ic {
         for (unsigned evt = 0; evt < tree_events; ++evt) {
           //tree_ptr->LoadTree(evt);
           event_.SetEvent(evt);
-          //EventInfo const* eventInfo = event_.GetPtr<EventInfo>("eventInfo");
+          EventInfo const* eventInfo = event_.GetPtr<EventInfo>("eventInfo");
 
           for (unsigned module = 0; module < modules_.size(); ++module) {
             int status = modules_[module]->Execute(&event_);
             if (!PostModule(status)) {
               if (notify_on_fail_) {
-                //unsigned evt = eventInfo->event();
-                //unsigned run = eventInfo->run();
-                //if (notify_run_event_.find(std::make_pair(run,evt)) != notify_run_event_.end()) {
-                //  std::cout << "Run " << run << ", event " << evt << " rejected by module: " << modules_[module]->ModuleName() << std::endl;
-                //}
+                unsigned evt = eventInfo->event();
+                unsigned run = eventInfo->run();
+                if (notify_run_event_.find(std::make_pair(run,evt)) != notify_run_event_.end()) {
+                std::cout << "Run " << run << ", event " << evt << " rejected by module: " << modules_[module]->ModuleName() << std::endl;
+                }
               }
               if (status == 1) break;
             }
             if (status == 0) modules_[module]->IncreaseProcessedCount();
-            //if (status == 0) weighted_yields_[module] += eventInfo->total_weight();
+            if (status == 0) weighted_yields_[module] += eventInfo->total_weight();
 
             if (do_skim && module == (modules_.size() - 1)) {
               tree_ptr->GetEntry(evt);

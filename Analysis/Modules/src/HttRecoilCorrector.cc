@@ -33,7 +33,7 @@ namespace ic {
     std::string process_file;
     std::string data_file;
     std::string mc_file;
-    if (is_2012_) {
+    if (is_2012_) { // (strategy == "HCP_2012" || strategy == "MORIOND_2013") && (data_era == "ICHEP_2012_53X || HCP_2012_53X "
       data_file = "data/recoilfits/recoilfit_datamm53X_20pv_njet.root";
       mc_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
     } else {
