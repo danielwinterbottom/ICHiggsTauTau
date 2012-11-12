@@ -30,13 +30,18 @@ PATHS=( 'TauPlusX-2011A-May10ReReco-v1'
         'Embedded-EM-2011A-03Oct2011-v1'
         'Embedded-EM-2011B-PromptReco-v1'
      )
-cd $SOURCE_PATH
 
 for i in "${PATHS[@]}"
 do
-    find "$i"/electauSkim/IC* &> "$i"/electauSkim/IC_filelist.dat
-    find "$i"/mutauSkim/IC* &> "$i"/mutauSkim/IC_filelist.dat
-    find "$i"/elecmuSkim/IC* &> "$i"/elecmuSkim/IC_filelist.dat
+    cd $SOURCE_PATH
+    find $i/electauSkim/IC*.root &> "$i"/electauSkim/IC_filelist.dat
+    find $i/mutauSkim/IC*.root &> "$i"/mutauSkim/IC_filelist.dat
+    find $i/elecmuSkim/IC*.root &> "$i"/elecmuSkim/IC_filelist.dat
+    cd -
+    cp $SOURCE_PATH/"$i"/electauSkim/IC_filelist.dat filelists/Sept11/Data_42X/"$i"_electauSkim_IC_filelist.dat
+    cp $SOURCE_PATH/"$i"/mutauSkim/IC_filelist.dat filelists/Sept11/Data_42X/"$i"_mutauSkim_IC_filelist.dat
+    cp $SOURCE_PATH/"$i"/elecmuSkim/IC_filelist.dat filelists/Sept11/Data_42X/"$i"_elecmuSkim_IC_filelist.dat
+
 #  ./bin/Conversion $SOURCE_PATH/$i/electauSkim/filelist.dat
 #  ./bin/Conversion $SOURCE_PATH/$i/mutauSkim/filelist.dat
 #  ./bin/Conversion $SOURCE_PATH/$i/elecmuSkim/filelist.dat

@@ -28,8 +28,8 @@ TSCALE=(
 
 # Do Data
  echo "Data"
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=Data/electauSkim/IC_filelist.dat      --mode=0  --output=Data_ElecTau_2011.root
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=Data/mutauSkim/IC_filelist.dat        --mode=1  --output=Data_MuTau_2011.root
+ ./bin/HiggsTauTau --cfg=$CONFIG --filelist=filelists/Sept11/Data_42X/Data_electauSkim_IC_filelist.dat  --mode=0  --output=Data_ElecTau_2011.root
+ ./bin/HiggsTauTau --cfg=$CONFIG --filelist=filelists/Sept11/Data_42X/Data_mutauSkim_IC_filelist.dat    --mode=1  --output=Data_MuTau_2011.root
  wait
 
 # Do Embedded

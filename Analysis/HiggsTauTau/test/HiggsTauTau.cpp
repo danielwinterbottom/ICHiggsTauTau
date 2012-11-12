@@ -178,7 +178,7 @@ int main(int argc, char* argv[]){
   gSystem->Load("libUserCodeICHiggsTauTau.dylib");
   AutoLibraryLoader::enable();
   // Build a vector of input files
-  std::vector<std::string> files = ParseFileLines(input_path+filelist);
+  std::vector<std::string> files = ParseFileLines(filelist);
   for (unsigned i = 0; i < files.size(); ++i) {
     files[i] = input_path + files[i];
   }
