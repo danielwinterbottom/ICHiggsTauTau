@@ -124,7 +124,7 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
 int main(int argc, char* argv[]){
 
   std::string configfile, paramfile, selection, plot_name;
-  paramfile = "default_params_2011.dat";
+  paramfile = "scripts/default_params_2011.dat";
   unsigned mode = 0;
   unsigned mssm_mode = 0;
   unsigned category = 0;
@@ -235,7 +235,7 @@ int main(int argc, char* argv[]){
   po::store(po::parse_config_file<char>(configfile.c_str(), config), vm);
   po::notify(vm);
 
-  if (is_2012) paramfile = "default_params_2012.dat";
+  if (is_2012) paramfile = "scripts/default_params_2012.dat";
 
   // Parse the parameter file
   SimpleParamParser parser;

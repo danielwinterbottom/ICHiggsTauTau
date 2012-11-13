@@ -14,6 +14,7 @@ namespace ic {
   HttDataTriggerFilter::HttDataTriggerFilter(std::string const& name) : ModuleBase(name) {
     mode_ = 0;
     do_obj_match_ = false;
+    dump_run_yield_ = false;
   }
 
   HttDataTriggerFilter::~HttDataTriggerFilter() {
