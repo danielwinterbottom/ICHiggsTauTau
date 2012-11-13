@@ -34,6 +34,7 @@ int main(int argc, char* argv[]){
   gSystem->Load("libUserCodeICHiggsTauTau.dylib");
   AutoLibraryLoader::enable();
 
+  for (unsigned i = 0; i < files.size(); ++i){
   std::vector<agilbert::Electron> *ag_electrons = NULL;
   std::vector<ic::Electron> *ic_electrons = NULL;
 
@@ -79,7 +80,6 @@ int main(int argc, char* argv[]){
   std::map<std::string, std::vector<agilbert::TriggerObject> * > ag_trig_obj;
   std::map<std::string, std::vector<ic::TriggerObject> * > ic_trig_obj;
 
-  for (unsigned i = 0; i < files.size(); ++i){
     std::cout << i+1 <<  "/" << files.size() << "\t" << files[i] << std::endl;
     std::vector<std::string> in_name;
     std::string out_name;
@@ -209,10 +209,14 @@ int main(int argc, char* argv[]){
       ic_muonsPFlow = reinterpret_cast<std::vector<ic::Muon>*>(ag_muonsPFlow);
       ic_pfJetsPFlow = reinterpret_cast<std::vector<ic::PFJet>*>(ag_pfJetsPFlow);
       ic_pfMVAMetVector = reinterpret_cast<std::vector<ic::Met>*>(ag_pfMVAMetVector);
-      ic_pfMet = reinterpret_cast<ic::Met *>(ag_pfMet);
-      ic_pfMetGen = reinterpret_cast<ic::Met *>(ag_pfMetGen);
-      ic_pfMVAMet = reinterpret_cast<ic::Met *>(ag_pfMVAMet);
-      ic_eventInfo = reinterpret_cast<ic::EventInfo *>(ag_eventInfo);
+      //ic_pfMet = reinterpret_cast<ic::Met *>(ag_pfMet);
+      //ic_pfMetGen = reinterpret_cast<ic::Met *>(ag_pfMetGen);
+      ic_pfMet = (ic::Met *)(ag_pfMet);
+      ic_pfMetGen = (ic::Met *)(ag_pfMetGen);
+      //ic_pfMVAMet = reinterpret_cast<ic::Met *>(ag_pfMVAMet);
+      ic_pfMVAMet = (ic::Met *)(ag_pfMVAMet);
+      //ic_eventInfo = reinterpret_cast<ic::EventInfo *>(ag_eventInfo);
+      ic_eventInfo = (ic::EventInfo *)(ag_eventInfo);
       ic_taus = reinterpret_cast<std::vector<ic::Tau>*>(ag_taus);
       ic_pileupInfo = reinterpret_cast<std::vector<ic::PileupInfo>*>(ag_pileupInfo);
       ic_genJets = reinterpret_cast<std::vector<ic::GenJet>*>(ag_genJets);

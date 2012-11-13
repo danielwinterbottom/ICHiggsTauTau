@@ -44,7 +44,7 @@ make -j4
 #  ./bin/Conversion $SOURCE_PATH/$i/electauSkim/filelist.dat
 #  ./bin/Conversion $SOURCE_PATH/$i/mutauSkim/filelist.dat
 #  ./bin/Conversion $SOURCE_PATH/$i/elecmuSkim/filelist.dat
-done
+# done
 
 # SOURCE_PATH=/Volumes/Storage/Sept11/MC_42X
 
@@ -144,30 +144,30 @@ done
 SOURCE_PATH=/internal/Sept11/Data_42X
 
 PATHS=( 'TauPlusX-2011A-May10ReReco-v1'
-        # 'TauPlusX-2011A-PromptReco-v4'
-        # 'TauPlusX-2011A-05Aug2011-v1'
-        # 'TauPlusX-2011A-03Oct2011-v1'
-        # 'TauPlusX-2011B-PromptReco-v1'
-        # 'MuEG-2011A-May10ReReco-v1'
-        # 'MuEG-2011A-PromptReco-v4'
-        # 'MuEG-2011A-05Aug2011-v1'
-        # 'MuEG-2011A-03Oct2011-v1'
-        # 'MuEG-2011B-PromptReco-v1'
-        # 'Embedded-ETau-2011A-May10ReReco-v1'
-        # 'Embedded-ETau-2011A-PromptReco-v4'
-        # 'Embedded-ETau-2011A-05Aug2011-v1'
-        # 'Embedded-ETau-2011A-03Oct2011-v1'
-        # 'Embedded-ETau-2011B-PromptReco-v1'
-        # 'Embedded-MTau-2011A-May10ReReco-v1'
-        # 'Embedded-MTau-2011A-PromptReco-v4'
-        # 'Embedded-MTau-2011A-05Aug2011-v1'
-        # 'Embedded-MTau-2011A-03Oct2011-v1'
-        # 'Embedded-MTau-2011B-PromptReco-v1'
-        # 'Embedded-EM-2011A-May10ReReco-v1'
-        # 'Embedded-EM-2011A-PromptReco-v4'
-        # 'Embedded-EM-2011A-05Aug2011-v1'
-        # 'Embedded-EM-2011A-03Oct2011-v1'
-        # 'Embedded-EM-2011B-PromptReco-v1'
+         'TauPlusX-2011A-PromptReco-v4'
+         'TauPlusX-2011A-05Aug2011-v1'
+         'TauPlusX-2011A-03Oct2011-v1'
+         'TauPlusX-2011B-PromptReco-v1'
+         'MuEG-2011A-May10ReReco-v1'
+         'MuEG-2011A-PromptReco-v4'
+         'MuEG-2011A-05Aug2011-v1'
+         'MuEG-2011A-03Oct2011-v1'
+         'MuEG-2011B-PromptReco-v1'
+         'Embedded-ETau-2011A-May10ReReco-v1'
+         'Embedded-ETau-2011A-PromptReco-v4'
+         'Embedded-ETau-2011A-05Aug2011-v1'
+         'Embedded-ETau-2011A-03Oct2011-v1'
+         'Embedded-ETau-2011B-PromptReco-v1'
+         'Embedded-MTau-2011A-May10ReReco-v1'
+         'Embedded-MTau-2011A-PromptReco-v4'
+         'Embedded-MTau-2011A-05Aug2011-v1'
+         'Embedded-MTau-2011A-03Oct2011-v1'
+         'Embedded-MTau-2011B-PromptReco-v1'
+         'Embedded-EM-2011A-May10ReReco-v1'
+         'Embedded-EM-2011A-PromptReco-v4'
+         'Embedded-EM-2011A-05Aug2011-v1'
+         'Embedded-EM-2011A-03Oct2011-v1'
+         'Embedded-EM-2011B-PromptReco-v1'
      )
 
 for i in "${PATHS[@]}"
@@ -181,7 +181,19 @@ do
 # cp $SOURCE_PATH/"$i"/mutauSkim/IC_filelist.dat filelists/Sept11/Data_42X/"$i"_mutauSkim_IC_filelist.dat
 # cp $SOURCE_PATH/"$i"/elecmuSkim/IC_filelist.dat filelists/Sept11/Data_42X/"$i"_elecmuSkim_IC_filelist.dat
 
-./bin/Conversion $SOURCE_PATH/$i/filelist.dat
+#cd $SOURCE_PATH/$i/
+#find `pwd`/EventTree*.root &> filelist.dat
+#cd -
+#./bin/Conversion $SOURCE_PATH/$i/filelist.dat
+
+#cd $SOURCE_PATH
+#find $i/IC_EventTree*.root &> $i/filelist.dat
+#cd -
+
+cd $SOURCE_PATH/$i/
+rm EventTree*.root
+cd -
+
 done
 
 
