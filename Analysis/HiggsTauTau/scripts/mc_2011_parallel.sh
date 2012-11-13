@@ -133,9 +133,9 @@ TSCALE=(
  echo "DYJetsToLL-L"
  for j in "${TSCALE[@]}"
  do
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToLL/electauSkim_IC_filelist.dat --mode=0 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToLL_electauSkim_IC_filelist.dat --mode=0 \
    --svfit_override=DYJetsToLL_ElecTau_2011.root --faked_tau_selector=1 --output=DYJetsToLL-L_ElecTau_2011.root >> mc_2011_ElecTau_"$j".log &
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToLL/mutauSkim_IC_filelist.dat --mode=1 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToLL_mutauSkim_IC_filelist.dat --mode=1 \
    --svfit_override=DYJetsToLL_MuTau_2011.root --faked_tau_selector=1 --output=DYJetsToLL-L_MuTau_2011.root >> mc_2011_MuTau_"$j".log &
  done
  wait
@@ -145,9 +145,9 @@ TSCALE=(
  echo "DYJetsToLL-J"
  for j in "${TSCALE[@]}"
  do
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToLL/electauSkim_IC_filelist.dat --mode=0 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToLL_electauSkim_IC_filelist.dat --mode=0 \
    --svfit_override=DYJetsToLL_ElecTau_2011.root --faked_tau_selector=2 --output=DYJetsToLL-J_ElecTau_2011.root >> mc_2011_ElecTau_"$j".log &
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToLL/mutauSkim_IC_filelist.dat --mode=1 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToLL_mutauSkim_IC_filelist.dat --mode=1 \
    --svfit_override=DYJetsToLL_MuTau_2011.root --faked_tau_selector=2 --output=DYJetsToLL-J_MuTau_2011.root >> mc_2011_MuTau_"$j".log &
  done
  wait
@@ -157,9 +157,9 @@ TSCALE=(
  echo "DYJetsToTauTau"
  for j in "${TSCALE[@]}"
  do
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToTauTau/electauSkim_IC_filelist.dat --mode=0 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToTauTau_electauSkim_IC_filelist.dat --mode=0 \
    --special_mode=7 --svfit_override=DYJetsToTauTau_ElecTau_2011.root --output=DYJetsToTauTau_ElecTau_2011.root >> mc_2011_ElecTau_"$j".log &
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToTauTau/mutauSkim_IC_filelist.dat --mode=1 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/DYJetsToTauTau_mutauSkim_IC_filelist.dat --mode=1 \
    --special_mode=7 --svfit_override=DYJetsToTauTau_MuTau_2011.root --output=DYJetsToTauTau_MuTau_2011.root >> mc_2011_MuTau_"$j".log &
  done
  wait
@@ -169,9 +169,9 @@ TSCALE=(
  echo "Special_7_WJetsToLNuSoup"
  for j in "${TSCALE[@]}"
  do
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/WJetsToLNuSoup/electauSkim_IC_filelist.dat --mode=0 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/WJetsToLNuSoup_electauSkim_IC_filelist.dat --mode=0 \
    --special_mode=7 --svfit_override=WJetsToLNuSoup_ElecTau_2011.root --output=WJetsToLNuSoup_ElecTau_2011.root >> mc_2011_ElecTau_"$j".log &
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/WJetsToLNuSoup/mutauSkim_IC_filelist.dat --mode=1 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/WJetsToLNuSoup_mutauSkim_IC_filelist.dat --mode=1 \
    --special_mode=7 --svfit_override=WJetsToLNuSoup_MuTau_2011.root --output=WJetsToLNuSoup_MuTau_2011.root >> mc_2011_MuTau_"$j".log &
  done
  wait
@@ -181,9 +181,9 @@ TSCALE=(
  echo "Special_7_TTJets"
  for j in "${TSCALE[@]}"
  do
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/TTJets/electauSkim_IC_filelist.dat --mode=0 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/TTJets_electauSkim_IC_filelist.dat --mode=0 \
    --special_mode=7 --svfit_override=TTJets_ElecTau_2011.root --output=TTJets_ElecTau_2011.root >> mc_2011_ElecTau_"$j".log &
-   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/TTJets/mutauSkim_IC_filelist.dat --mode=1 \
+   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/TTJets_mutauSkim_IC_filelist.dat --mode=1 \
    --special_mode=7 --svfit_override=TTJets_MuTau_2011.root --output=TTJets_MuTau_2011.root >> mc_2011_MuTau_"$j".log &
  done
  wait

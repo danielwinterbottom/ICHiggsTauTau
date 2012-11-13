@@ -1,4 +1,4 @@
-make -j4
+#make -j4
 
 MSSM_MODE=$1
 
