@@ -239,9 +239,9 @@ TSCALE=(
      wait
      #### NEW STUFF ####
      ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_electauSkim_IC_filelist.dat --mode=0 \
-     --special_mode=18  --faked_tau_selector=1 --output="$i"-L_ElecTau_2011.root >> mc_2011_ElecTau.log &
+     --special_mode=18  --faked_tau_selector=1 --output="$i"-L_ElecTau_2011.root >> mc_2011_ElecTau_"$j".log &
      ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_mutauSkim_IC_filelist.dat --mode=1 \
-     --special_mode=18  --faked_tau_selector=1 --output="$i"-L_MuTau_2011.root >> mc_2011_MuTau.log &
+     --special_mode=18  --faked_tau_selector=1 --output="$i"-L_MuTau_2011.root >> mc_2011_MuTau_"$j".log &
      wait
      # Do Special Mode 9 DYJetsToLL, can use standard SVFit
      ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_electauSkim_IC_filelist.dat --mode=0 \

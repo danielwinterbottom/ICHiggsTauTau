@@ -24,7 +24,7 @@ do
       --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false
     ./bin/HiggsTauTauPlot2 --cfg=scripts/plot_sm_2011.cfg  --tau_scale_mode=$j --mode=1 --rebin=1 \
       --category="$i" --plot_name="svfit_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
-      --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=true
+      --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=false
   done
 
   CATS=(
@@ -37,7 +37,7 @@ do
       --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false
     ./bin/HiggsTauTauPlot2 --cfg=scripts/plot_sm_2011.cfg  --tau_scale_mode=$j --mode=1 --rebin=1 \
       --category="$i" --plot_name="svfit_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
-      --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=true
+      --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=false
   done
 done
 hadd -f htt_et.inputs-sm-7TeV.root datacard_eleTau_*.root
