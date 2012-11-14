@@ -196,6 +196,14 @@ class DynamicHistoSet : public HistoSet{
       if (!hmap_.count(name)) return;
       hmap_[name]->Fill(value,weight);
     }
+    
+    TH1F* Get_Histo(std::string name) {
+      if(!hmap_.count(name)) { 
+        throw;
+        std::cerr << "Histogram does not exist" << std::endl;
+      }
+      else return hmap_[name];
+    }
  };
 
 
@@ -216,6 +224,13 @@ class DynamicHistoSet : public HistoSet{
      void Fill(std::string name, double valuex, double valuey, double weight = 1.0) {
        if (!hmap_.count(name)) return;
        hmap_[name]->Fill(valuex, valuey, weight);
+     }
+     TH2F* Get_Histo(std::string name) {
+       if(!hmap_.count(name)) { 
+         throw;
+         std::cerr << "Histogram does not exist" << std::endl;
+       }
+       else return hmap_[name];
      }
   };
 
