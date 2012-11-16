@@ -146,12 +146,12 @@ namespace ic {
         mutau_obj_label = "triggerObjectsIsoMu12LooseTau10";
         mutau_filter = "hltSingleMuIsoL3IsoFiltered12";
     }
-    if ( (data_ && run >= 165088 && run <= 173198) /*|| (!data_ && era_=="2011APrompt4")*/)
+    if ( (data_ && run >= 165088 && run <= 173198)|| (!data_ && (era_=="2011APrompt6" || era_=="2011BPrompt1")) ) 
     {
         mutau_obj_label = "triggerObjectsIsoMu15LooseTau15";
         mutau_filter = "hltSingleMuIsoL3IsoFiltered15";
     }
-    if ( (data_ && run >= 173236 && run <= 180252) || (!data_ && (era_=="2011APrompt6" || era_=="2011BPrompt1") ))
+    if ( (data_ && run >= 173236 && run <= 180252)) 
     {
         mutau_obj_label = "triggerObjectsIsoMu15LooseTau20";
         mutau_filter = "hltSingleMuIsoL1s14L3IsoFiltered15eta2p1";
