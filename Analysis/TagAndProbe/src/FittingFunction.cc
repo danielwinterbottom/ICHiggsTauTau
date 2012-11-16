@@ -392,7 +392,7 @@ using namespace RooFit ;
         {
             f=new TFile("mumuTandPIdIsodata.root","r");
         }
-        if(!elec && (type=="id" || type=="iso" || type=="idiso")|| type=="idbinned" || type=="isobinned" || type=="idisobinned" && !isdata)
+        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbinned" || type=="isobinned" || type=="idisobinned") && !isdata)
         {
             f=new TFile("mumuTandPIdIsoMC.root","r");
         }
