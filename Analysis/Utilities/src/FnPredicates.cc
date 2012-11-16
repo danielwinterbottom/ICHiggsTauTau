@@ -144,7 +144,7 @@ namespace ic {
   }
 
 
-  bool ElectronZbbID(Electron const * elec, bool is_data) {
+  bool ElectronZbbID(Electron const * elec) {
     if (InEcalGap(elec)) return false;
     if (elec->has_matched_conversion()) return false;
     if (elec->gsf_tk_nhits() > 1) return false;

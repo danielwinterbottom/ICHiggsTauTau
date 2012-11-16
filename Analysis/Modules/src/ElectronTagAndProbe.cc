@@ -251,8 +251,9 @@ namespace ic {
             w = weights->GetBinContent(found_bin);
         }
     }
-    bool trigger=false, etau_trigger=false;
-    int prescalenum;
+    bool trigger=false;
+    // bool etau_trigger=false;
+    // int prescalenum;
     
     //See if trigger has fired (if data).
 

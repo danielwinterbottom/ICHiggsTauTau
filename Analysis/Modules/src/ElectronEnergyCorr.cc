@@ -24,7 +24,7 @@ namespace ic {
     unsigned run = eventInfo->run();
     std::vector<Electron *> & vec = event->GetPtrVec<Electron>(input_name_);
     for (unsigned i = 0; i < vec.size(); ++i) {
-      double corrected_energy = corrVgamma(vec[i]->energy(), fabs(vec[i]->sc_eta()), vec[i]->r9(), rand_, run, 0, true);
+      double corrected_energy = corrVgamma(vec[i]->energy(), fabs(vec[i]->sc_eta()), vec[i]->r9(), rand_, run, true);
       vec[i]->set_pt(corrected_energy / std::cosh(vec[i]->eta()));
       vec[i]->set_energy(corrected_energy);
     }
@@ -40,7 +40,7 @@ namespace ic {
   }
 
   double ElectronEnergyCorr::corrVgamma(double en, double absEta, double r9, 
-        TRandom3* rr, int run, float par, 
+        TRandom3* rr, int run,
         bool data) {
     double eta = absEta;
     static double mz = 91.19;

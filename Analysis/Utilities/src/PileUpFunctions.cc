@@ -12,10 +12,10 @@
         TH1* weights_;
         unsigned nbins_data = data_->GetNbinsX();
         unsigned nbins_mc = mc_->GetNbinsX();
-        double min_data = data_->GetBinLowEdge(1);
-        double min_mc = mc_->GetBinLowEdge(1);
-        double max_data = data_->GetBinLowEdge(nbins_data) + data_->GetBinWidth(nbins_data);
-        double max_mc = mc_->GetBinLowEdge(nbins_mc) + mc_->GetBinWidth(nbins_mc);
+        // double min_data = data_->GetBinLowEdge(1);
+        // double min_mc = mc_->GetBinLowEdge(1);
+        // double max_data = data_->GetBinLowEdge(nbins_data) + data_->GetBinWidth(nbins_data);
+        // double max_mc = mc_->GetBinLowEdge(nbins_mc) + mc_->GetBinWidth(nbins_mc);
         unsigned nbins = nbins_data > nbins_mc ? nbins_data : nbins_mc;
         //std::cout << "----------------------------------------" << std::endl;
         //std::cout << "PreAnalysis Info for PileupReweight" << std::endl;

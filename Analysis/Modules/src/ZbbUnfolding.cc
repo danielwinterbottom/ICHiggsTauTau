@@ -220,7 +220,7 @@ namespace ic {
     //---------------------------------------------------------------------------
     bool lep_id_iso_yes = false;
     if (mode_ == 0) {//Electrons
-      erase_if(reco_elecs, !bind(ElectronZbbID, _1, false));
+      erase_if(reco_elecs, !bind(ElectronZbbID, _1));
       if (reco_elecs.size() > 1) counters_["rec_lep_id"] += weight;
       erase_if(reco_elecs, !bind(ElectronZbbIso, _1, false, 0.15));
       if (reco_elecs.size() > 1) counters_["rec_lep_iso"] += weight;

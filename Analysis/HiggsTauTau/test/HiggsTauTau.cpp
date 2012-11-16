@@ -353,7 +353,7 @@ int main(int argc, char* argv[]){
 
   MakeRunStats runStats = MakeRunStats("RunStats").set_output_name(outname+".runstats");
 
-  HttPrint httPrint("HttPrint", mode);
+  HttPrint httPrint("HttPrint");
 
   PileupWeight pileupWeight = PileupWeight
     ("PileupWeight").set_data(&data_pu).set_mc(&mc_pu).set_print_weights(false);

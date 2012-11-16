@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------------------
-// $Id: TH2DAsymErr.h,v 1.2 2012/09/18 21:08:42 ic Exp $
+// $Id: TH2DAsymErr.h,v 1.1 2012/11/11 11:41:18 agilbert Exp $
 //
 // TH2DAsymErr
 //
@@ -36,6 +36,7 @@ namespace mithep
       using TH2D::GetBinContent;
       Double_t  GetError(Double_t x, Double_t y, EErrType t);
       virtual Double_t  GetBinError(Int_t b, Int_t c, EErrType t);
+      using TH1::GetBinError;
       Double_t  GetStatErrorLow(Double_t x, Double_t y)  { return GetError(x,y,kStatErrLow);     }
       Double_t  GetBinStatErrorLow(Int_t b, Int_t c)     { return GetBinError(b,c,kStatErrLow);  }
       Double_t  GetStatErrorHigh(Double_t x, Double_t y) { return GetError(x,y,kStatErrHigh);    }

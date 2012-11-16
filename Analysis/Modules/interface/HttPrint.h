@@ -17,7 +17,7 @@ class HttPrint : public ModuleBase {
   std::set<unsigned> events_;
 
  public:
-  HttPrint(std::string const& name, int mode);
+  HttPrint(std::string const& name);
   virtual ~HttPrint();
 
   virtual int PreAnalysis();

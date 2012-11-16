@@ -9,7 +9,7 @@
 
 namespace ic {
 
-  HttPrint::HttPrint(std::string const& name, int mode) : ModuleBase(name) {
+  HttPrint::HttPrint(std::string const& name) : ModuleBase(name) {
 
   }
 

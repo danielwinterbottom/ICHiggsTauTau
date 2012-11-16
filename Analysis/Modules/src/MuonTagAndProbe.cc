@@ -245,7 +245,7 @@ namespace ic {
         }
     }
     bool trigger=false;
-    int prescalenum;
+    // int prescalenum;
     
     //See if trigger has fired (if data).
 
