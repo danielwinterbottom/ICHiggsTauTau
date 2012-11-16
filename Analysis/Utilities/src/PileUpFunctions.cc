@@ -2,7 +2,7 @@
 #include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
-#include "UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface/PileUpFunctions.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/PileUpFunctions.h"
 #include <string>
 #include "TH1F.h"
 #include "TFile.h"
