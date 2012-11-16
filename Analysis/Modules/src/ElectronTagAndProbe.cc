@@ -1,5 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ElectronTagAndProbe.h"
-#include "UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface/PileUpFunctions.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/PileUpFunctions.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/bind.hpp"
