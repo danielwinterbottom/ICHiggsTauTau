@@ -35,6 +35,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/WJetsWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/FSRStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/RunFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
 
@@ -350,6 +351,7 @@ int main(int argc, char* argv[]){
   runFilter2011.FilterRun(160874); runFilter2011.FilterRun(160939); runFilter2011.FilterRun(160940);
   runFilter2011.FilterRun(160942); runFilter2011.FilterRun(160943); runFilter2011.FilterRun(160955);
 
+  MakeRunStats runStats = MakeRunStats("RunStats").set_output_name(outname+".runstats");
 
   HttPrint httPrint("HttPrint", mode);
 
@@ -902,7 +904,10 @@ int main(int argc, char* argv[]){
 
   if (mode == 0) {
     analysis.AddModule(&selElectronCopyCollection);
-    if (is_data  && !do_skim && !is_embedded) analysis.AddModule(&dataTriggerPathFilter);
+    if (is_data  && !do_skim && !is_embedded) {
+      analysis.AddModule(&dataTriggerPathFilter);
+      //analysis.AddModule(&runStats);
+    }
     if (!is_data  && !do_skim && !disable_mc_trigger) analysis.AddModule(&mcTriggerPathFilter);
     analysis.AddModule(&selElectronPtEtaFilter);
     analysis.AddModule(&selElectronDxyFilter);
@@ -932,7 +937,10 @@ int main(int argc, char* argv[]){
 
   if (mode == 1) {
     analysis.AddModule(&selMuonCopyCollection);
-    if (is_data && !do_skim && !is_embedded) analysis.AddModule(&dataTriggerPathFilter);
+    if (is_data && !do_skim && !is_embedded) {
+      analysis.AddModule(&dataTriggerPathFilter);
+      //analysis.AddModule(&runStats);
+    }
     if (!is_data  && !do_skim && !disable_mc_trigger) analysis.AddModule(&mcTriggerPathFilter);
     analysis.AddModule(&selMuonPtEtaFilter);
     analysis.AddModule(&selMuonDxyFilter);

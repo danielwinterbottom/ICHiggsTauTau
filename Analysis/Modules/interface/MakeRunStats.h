@@ -7,30 +7,18 @@
 
 namespace ic {
 
-  struct RunStats{
-    unsigned nEvents;
-    unsigned nVertices;
-    RunStats(){
-      nEvents = 0;
-      nVertices = 0;
-    }
-    void IncEvents(){
-      ++nEvents;
-    }
-    void IncVertices(unsigned v){
-      nVertices += v;
-    }
-  };
 
 class MakeRunStats : public ModuleBase {
 
+
  private:
-  std::map<unsigned,RunStats> run_yield_map_;
-  std::string output_name_;
+  std::map<unsigned, unsigned> yield_map_;
+  std::map<unsigned, unsigned> vtx_map_;
+  CLASS_MEMBER(MakeRunStats, std::string, output_name)
 
 
  public:
-  MakeRunStats(std::string const& name, std::string const& output_name);
+  MakeRunStats(std::string const& name);
   virtual ~MakeRunStats();
 
   virtual int PreAnalysis();

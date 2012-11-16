@@ -1,0 +1,17 @@
+<library file="*.cc" name="UserCodeICHiggsTauTauplugins">
+  <use name="UserCode/ICHiggsTauTau"/>
+  <use name="FWCore/ServiceRegistry"/>
+  <use name="MagneticField/Records"/>
+  <use name="MagneticField/Engine"/>
+  <use name="RecoEgamma/EgammaTools"/>
+  <use name="PhysicsTools/UtilAlgos"/>
+  <use name="PhysicsTools/PatAlgos"/>
+  <use name="PhysicsTools/PatUtils"/>
+  <use name="PhysicsTools/CandUtils"/>
+  <use name="EGamma/EGammaAnalysisTools"/>
+  <use name="RecoMET/METAlgorithms"/>
+  <use name="DataFormats/METReco"/>
+  <use name="JetMETCorrections/METPUSubtraction"/>
+  <use name="clhep"/>
+  <flags EDM_PLUGIN="1"/>
+</library>

@@ -18,6 +18,7 @@ namespace ic {
     while(std::getline(file, line)) {//while loop through lines
       files.push_back(line);
     }
+    file.close();
     return files;
   }
 
