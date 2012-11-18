@@ -30,11 +30,11 @@ namespace ic {
       inline int const& decay_mode() const { return decay_mode_; }
       inline void set_decay_mode(int const& decay_mode) { decay_mode_ = decay_mode; }
 
-      inline float const& elec_preid_output() const { return elec_preid_output_; }
-      inline void set_elec_preid_output(float const& elec_preid_output) { elec_preid_output_ = elec_preid_output; }
+      // inline float const& elec_preid_output() const { return elec_preid_output_; }
+      // inline void set_elec_preid_output(float const& elec_preid_output) { elec_preid_output_ = elec_preid_output; }
 
-      inline bool const& elec_preid_decision() const { return elec_preid_decision_; }
-      inline void set_elec_preid_decision(bool const& elec_preid_decision) { elec_preid_decision_ = elec_preid_decision; }
+      // inline bool const& elec_preid_decision() const { return elec_preid_decision_; }
+      // inline void set_elec_preid_decision(bool const& elec_preid_decision) { elec_preid_decision_ = elec_preid_decision; }
  
       inline float const& lead_ecal_energy() const { return lead_ecal_energy_; }
       inline void set_lead_ecal_energy(float const& lead_ecal_energy) { lead_ecal_energy_ = lead_ecal_energy; }
@@ -63,11 +63,11 @@ namespace ic {
       inline std::vector<std::size_t> const& constituent_tracks() const { return constituent_tracks_; }
       inline void set_constituent_tracks(std::vector<std::size_t> const& constituent_tracks) { constituent_tracks_ = constituent_tracks; }
 
-      inline std::vector<std::size_t>  const& hlt_match_paths() const { return hlt_match_paths_; }
-      inline void set_hlt_match_paths(std::vector<std::size_t>  const& hlt_match_paths) { hlt_match_paths_ = hlt_match_paths; }
+      // inline std::vector<std::size_t>  const& hlt_match_paths() const { return hlt_match_paths_; }
+      // inline void set_hlt_match_paths(std::vector<std::size_t>  const& hlt_match_paths) { hlt_match_paths_ = hlt_match_paths; }
 
-      inline std::vector<std::size_t>  const& hlt_match_filters() const { return hlt_match_filters_; }
-      inline void set_hlt_match_filters(std::vector<std::size_t>  const& hlt_match_filters) { hlt_match_filters_ = hlt_match_filters; }
+      // inline std::vector<std::size_t>  const& hlt_match_filters() const { return hlt_match_filters_; }
+      // inline void set_hlt_match_filters(std::vector<std::size_t>  const& hlt_match_filters) { hlt_match_filters_ = hlt_match_filters; }
 
       virtual void Print() const;
 
@@ -80,8 +80,8 @@ namespace ic {
 
       int decay_mode_;
 
-      float elec_preid_output_;
-      bool elec_preid_decision_;
+      // float elec_preid_output_;
+      // bool elec_preid_decision_;
 
       float lead_ecal_energy_;
       float lead_hcal_energy_;
@@ -97,8 +97,8 @@ namespace ic {
 
       std::vector<std::size_t> constituent_tracks_;
 
-      std::vector<std::size_t> hlt_match_paths_;
-      std::vector<std::size_t> hlt_match_filters_;
+      // std::vector<std::size_t> hlt_match_paths_;
+      // std::vector<std::size_t> hlt_match_filters_;
 
 
   };

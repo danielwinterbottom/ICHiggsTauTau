@@ -38,6 +38,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -351,6 +353,8 @@ int main(int argc, char* argv[]){
   runFilter2011.FilterRun(160874); runFilter2011.FilterRun(160939); runFilter2011.FilterRun(160940);
   runFilter2011.FilterRun(160942); runFilter2011.FilterRun(160943); runFilter2011.FilterRun(160955);
 
+  LumiMask lumiMask = LumiMask("LumiMask").set_produce_output_jsons("test").set_input_file("json_data_2011.txt");
+
   MakeRunStats runStats = MakeRunStats("RunStats").set_output_name(outname+".runstats");
 
   HttPrint httPrint("HttPrint");
@@ -404,6 +408,14 @@ int main(int argc, char* argv[]){
 
   WJetsWeights wjetsWeights("WJetsWeights");
   wjetsWeights.set_fs(fs);
+
+  JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
+  ("JetEnergyCorrections")
+  .set_input_label("pfJetsPFlow")
+  .set_is_data(is_data)
+  .set_l1_file("data/jec/START53_V10_L1FastJet_AK5PF.txt")
+  .set_l2_file("data/jec/START53_V10_L2Relative_AK5PF.txt")
+  .set_l3_file("data/jec/START53_V10_L3Absolute_AK5PF.txt");
   
   // ------------------------------------------------------------------------------------
   // Electron Modules
@@ -895,6 +907,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------  
   //analysis.AddModule(&httPrint);
   //analysis.AddModule(&wjetsWeights);
+  //analysis.AddModule(&lumiMask);
   if (is_data && !is_2012 && (mode == 0 || mode == 1)) analysis.AddModule(&runFilter2011);
   if (!is_data && !disable_reweighting) analysis.AddModule(&pileupWeight);
   if (ztatau_mode > 0) analysis.AddModule(&zTauTauFilter);
@@ -989,6 +1002,7 @@ int main(int argc, char* argv[]){
 
   if (!do_skim && !scan_trigger) {
     analysis.AddModule(&httPairSelector);
+    // analysis.AddModule(&jetEnergyCorrections);
     analysis.AddModule(&jetIDFilter);
     analysis.AddModule(&jetLeptonOverlapFilter);
     if (era > 0) analysis.AddModule(&httRecoilCorrector);

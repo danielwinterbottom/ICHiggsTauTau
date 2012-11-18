@@ -164,7 +164,7 @@ namespace ic {
               && OneOverEOneOverP                 < 0.05) );
   }
 
-  bool ElectronZbbIso(Electron const* elec, bool is_data, double const& cut) {
+  bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut) {
     double eta = fabs(elec->sc_eta());
     double photon_area, neutral_area;
     if (!is_data) {
@@ -186,8 +186,8 @@ namespace ic {
     }
 
     double iso = elec->dr03_pfiso_charged()
-      + std::max(elec->dr03_pfiso_gamma() - elec->rho() * photon_area, 0.)
-      + std::max(elec->dr03_pfiso_neutral() - elec->rho() * neutral_area, 0.);
+      + std::max(elec->dr03_pfiso_gamma() - rho * photon_area, 0.)
+      + std::max(elec->dr03_pfiso_neutral() - rho * neutral_area, 0.);
       iso = iso / elec->pt();
 
     return (iso < cut);
@@ -195,7 +195,7 @@ namespace ic {
 
 
 
-  bool Electron2011WP85Iso(Electron const* elec) {
+  bool Electron2011WP85Iso(Electron const* elec, double const& rho) {
     bool in_barrel = true;
     if (fabs(elec->sc_eta()) > 1.4442) in_barrel = false;
     // Lazy way
@@ -207,12 +207,12 @@ namespace ic {
       iso = elec->dr03_tk_sum_pt() 
             + std::max(0., elec->dr03_ecal_rechit_sum_et() - 1.)
             + hcal_sum
-            - elec->rho() * TMath::Pi() * 0.3 * 0.3;
+            - rho * TMath::Pi() * 0.3 * 0.3;
     } else {
       iso = elec->dr03_tk_sum_pt()
             + elec->dr03_ecal_rechit_sum_et()
             + hcal_sum
-            - elec->rho() * TMath::Pi() * 0.3 * 0.3;
+            - rho * TMath::Pi() * 0.3 * 0.3;
     }
 
     iso = iso / elec->pt();

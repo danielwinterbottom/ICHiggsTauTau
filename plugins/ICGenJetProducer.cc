@@ -31,6 +31,7 @@ ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& iConfig) {
   input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
   add_all_ = iConfig.getUntrackedParameter<bool>("addAll");
+  store_gen_particles_ = iConfig.getUntrackedParameter<bool>("storeGenParticles");
   add_all_pt_cut_ = iConfig.getUntrackedParameter<double>("addAllPtCut");
   add_all_eta_cut_ = iConfig.getUntrackedParameter<double>("addAllEtaCut");
   cand_vec = new std::vector<ic::GenJet>();
@@ -107,15 +108,15 @@ void ICGenJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
     cand.set_charge((*iter)->charge());
     cand.set_flavour(0);
     cand.set_n_constituents((*iter)->getGenConstituents().size());
-
+    
+    std::vector<std::size_t> constituents;
     for (unsigned i = 0; i < (*iter)->getGenConstituents().size(); ++i) {
       reco::GenParticle const *part = (*iter)->getGenConstituent(i);
       unsigned idx = unsigned(part - &(partCollection->at(0)));
       jet_particles->push_back(idx);
-      std::vector<std::size_t> constituents;
-      constituents.push_back(part_hasher(part));
-      cand.set_constituents(constituents); 
+      if (store_gen_particles_) constituents.push_back(part_hasher(part));
     }
+    cand.set_constituents(constituents); 
 
   }
   iEvent.put(jet_particles, "selectGenParticles");

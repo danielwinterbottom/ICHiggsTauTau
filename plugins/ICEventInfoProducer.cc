@@ -26,8 +26,8 @@
 
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& iConfig) {
-  rho_jets_name_ = iConfig.getParameter<std::string>("RhoJetsName");
-  pfnopu_rho_jets_name_ = iConfig.getParameter<std::string>("PFNoPURhoJetsName");
+  jets_rho_name_ = iConfig.getParameter<std::string>("jetsRhoLabel");
+  lepton_rho_name_ = iConfig.getParameter<std::string>("leptonRhoLabel");
 
   vertex_name_ = iConfig.getParameter<std::string>("vertexLabel");
 
@@ -54,10 +54,10 @@ void ICEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   info_->set_lumi_block(iEvent.luminosityBlock());
   info_->set_bunch_crossing(iEvent.bunchCrossing());
 
-  edm::Handle<double> rho_handle;
-  iEvent.getByLabel(edm::InputTag(rho_jets_name_,"rho"),rho_handle);
-  edm::Handle<double> pfnopu_rho_handle;
-  iEvent.getByLabel(edm::InputTag(pfnopu_rho_jets_name_,"rho"),pfnopu_rho_handle);
+  edm::Handle<double> jets_rho_handle;
+  iEvent.getByLabel(edm::InputTag(jets_rho_name_,"rho"),jets_rho_handle);
+  edm::Handle<double> lepton_rho_handle;
+  iEvent.getByLabel(edm::InputTag(lepton_rho_name_,"rho"),lepton_rho_handle);
 
   edm::Handle<double> basic_weight_handle;
   edm::Handle<GenFilterInfo> info_weight_handle;
@@ -73,8 +73,8 @@ void ICEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   info_->set_good_vertices(vertexCollection->size());
 
-  info_->set_rho(*rho_handle);
-  info_->set_pfnopu_rho(*pfnopu_rho_handle);
+  info_->set_jet_rho(*jets_rho_handle);
+  info_->set_lepton_rho(*lepton_rho_handle);
 }
 
 // ------------ method called once each job just before starting event loop  ------------

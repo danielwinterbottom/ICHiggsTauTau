@@ -12,9 +12,8 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-#include "DataFormats/PatCandidates/interface/MET.h"
-#include "AnalysisDataFormats/TauAnalysis/interface/PFMEtSignCovMatrix.h"
-
+#include "DataFormats/METReco/interface/PFMET.h"
+#include "DataFormats/METReco/interface/PFMETCollection.h"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 
@@ -26,7 +25,7 @@
 
 
 ICMetVectorProducer::ICMetVectorProducer(const edm::ParameterSet& iConfig) {
-  input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
+  merge_labels_ = iConfig.getUntrackedParameter<std::vector<std::string> >("mergeLabels");
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
   met_ = new std::vector<ic::Met>();
 }
@@ -43,35 +42,34 @@ ICMetVectorProducer::~ICMetVectorProducer() {
 // ------------ method called to produce the data  ------------
 void ICMetVectorProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
-
-  edm::Handle<std::vector<pat::MET> > met_handle;
-  edm::Handle<std::vector<std::size_t> > id_handle; 
-  iEvent.getByLabel("pfMEtAllPairsMVA", "MVAMetId", id_handle);
-  iEvent.getByLabel(input_label_,met_handle);
-
-
-  std::vector<pat::MET>::const_iterator iter;
   met_->resize(0);
-  met_->reserve(met_handle->size());
-  for (iter = met_handle->begin(); iter != met_handle->end(); ++iter) {
-    met_->push_back(ic::Met());
-    ic::Met & met = met_->back();
-    met.set_pt(iter->pt());
-    met.set_eta(iter->eta());
-    met.set_phi(iter->phi());
-    met.set_energy(iter->energy());
-    met.set_sum_et(iter->sumEt());
-    met.set_et_sig(iter->mEtSig());
-    if (id_handle->size() == met_handle->size()) {
-      met.set_id(id_handle->at(unsigned(iter - met_handle->begin())));
-    } else {
-      met.set_id(0);      
+  for (unsigned i = 0; i < merge_labels_.size(); ++i) {
+    edm::Handle<reco::PFMETCollection> met_handle;
+    edm::Handle<std::vector<std::size_t> > id_handle; 
+    iEvent.getByLabel(merge_labels_[i], "MVAMetId", id_handle);
+    iEvent.getByLabel(merge_labels_[i],met_handle);
+    std::vector<reco::PFMET>::const_iterator iter;
+
+    for (iter = met_handle->begin(); iter != met_handle->end(); ++iter) {
+      met_->push_back(ic::Met());
+      ic::Met & met = met_->back();
+      met.set_pt(iter->pt());
+      met.set_eta(iter->eta());
+      met.set_phi(iter->phi());
+      met.set_energy(iter->energy());
+      met.set_sum_et(iter->sumEt());
+      met.set_et_sig(iter->mEtSig());
+      if (id_handle->size() == met_handle->size()) {
+        met.set_id(id_handle->at(unsigned(iter - met_handle->begin())));
+      } else {
+        met.set_id(0);      
+      }
+      TMatrixD sig_matrix = iter->getSignificanceMatrix();
+      met.set_xx_sig(sig_matrix(0,0));
+      met.set_xy_sig(sig_matrix(0,1));
+      met.set_yx_sig(sig_matrix(1,0));
+      met.set_yy_sig(sig_matrix(1,1));
     }
-    TMatrixD sig_matrix = iter->getSignificanceMatrix();
-    met.set_xx_sig(sig_matrix(0,0));
-    met.set_xy_sig(sig_matrix(0,1));
-    met.set_yx_sig(sig_matrix(1,0));
-    met.set_yy_sig(sig_matrix(1,1));
   }
 }
 

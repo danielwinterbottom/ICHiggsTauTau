@@ -32,6 +32,9 @@ namespace ic {
       inline double const& uncorrected_energy() const { return uncorrected_energy_; }
       inline void set_uncorrected_energy(double const& uncorrected_energy) { uncorrected_energy_ = uncorrected_energy; }
 
+      inline float const& jet_area() const { return jet_area_; }
+      inline void set_jet_area(float const& jet_area) { jet_area_ = jet_area; }
+
       inline int const& parton_flavour() const { return parton_flavour_; }
       inline void set_parton_flavour(int const& parton_flavour) { parton_flavour_ = parton_flavour; }
 
@@ -47,6 +50,7 @@ namespace ic {
       UFmap b_discriminators_;
       std::vector<std::size_t> gen_particles_;
       double uncorrected_energy_;
+      float jet_area_;
 
       std::string UnHashJecFactor(std::size_t jec) const;
       std::string UnHashDiscr(std::size_t dis) const;

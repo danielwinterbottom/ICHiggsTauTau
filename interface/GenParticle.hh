@@ -18,8 +18,8 @@ namespace ic {
       GenParticle();
       virtual ~GenParticle();
 
-      inline Point const& vertex() const { return vertex_; }
-      inline void set_vertex(Point const& vertex) { vertex_ = vertex; }
+      // inline Point const& vertex() const { return vertex_; }
+      // inline void set_vertex(Point const& vertex) { vertex_ = vertex; }
             
       inline int index() const { return index_; }
       inline void set_index(int const& index) { index_ = index; }
@@ -45,7 +45,6 @@ namespace ic {
       int index_;
       int pdgid_;
       int status_;
-      Point vertex_;
       std::vector<int> mothers_;
       std::vector<int> daughters_;
 

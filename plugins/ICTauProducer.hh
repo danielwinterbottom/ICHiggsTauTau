@@ -32,6 +32,7 @@ class ICTauProducer : public edm::EDProducer {
       std::vector<ic::Tau> *taus_;
       edm::InputTag input_label_;
       std::string branch_name_;
+      bool store_ids_;
       std::map<std::string, std::size_t> observed_id_;
       std::map<std::string, std::size_t> observed_paths_;
       std::map<std::string, std::size_t> observed_filters_;

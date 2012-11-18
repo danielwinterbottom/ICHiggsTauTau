@@ -77,6 +77,25 @@ namespace ic {
           if (run >= 190456/* && run <= xxxxx*/ && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
         }
       }
+      /*
+      In preparation for Z->ee, Z->mm:
+      if (channel == EE) {
+        //2011 Triggers
+        if (run >= 160404 && run <= 167913 && name.find("HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL_v") != name.npos) path_found = true;
+        if (run >= 170249 && run <= 180252 && name.find("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true;
+        //2012 Triggers
+        if (run >= 190456 && run <= ??? && name.find("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true;
+        
+      }
+      if (channel == MM) {
+        //2011 Triggers
+        if (run >= 160404 && run <= 163869 && name.find("HLT_DoubleMu7_v") != name.npos) path_found = true;
+        if (run >= 165088 && run <= 178380 && name.find("HLT_Mu13_Mu8_v") != name.npos) path_found = true;
+        if (run >= 178420 && run <= 180252 && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
+        //2012 Triggers
+        if (run >= 190456 && run <= ??? && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
+      }
+      */
     }
 
     if (path_found && dump_run_yield_) {

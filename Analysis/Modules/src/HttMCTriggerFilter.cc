@@ -22,7 +22,6 @@ namespace ic {
   HttMCTriggerFilter::~HttMCTriggerFilter() {
     ;
   }
-
   int HttMCTriggerFilter::PreAnalysis() {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for HttMCTriggerFilter" << std::endl;
@@ -33,6 +32,12 @@ namespace ic {
     std::cout << "Require match to HLT object: " << do_obj_match_ << std::endl;
     std::cout << "1st Lepton Collection: " << lep1label_ << std::endl;
     std::cout << "2nd Lepton Collection: " << lep2label_ << std::endl;
+
+    /*
+53X MC:    
+HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v17
+HLT_Mu17_Mu8_v17
+    */
 
 
     if (mode_ == 0) {

@@ -33,6 +33,7 @@ ICTauProducer::ICTauProducer(const edm::ParameterSet& iConfig) {
   produces<std::vector<unsigned> >("selectTracks");
   input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
+  store_ids_ = iConfig.getParameter<bool>("StoreTrackIds");
   taus_ = new std::vector<ic::Tau>();
 }
 
@@ -85,8 +86,8 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     tau.set_decay_mode(iter->decayMode());
 
-    tau.set_elec_preid_output(iter->electronPreIDOutput());
-    tau.set_elec_preid_decision(iter->electronPreIDDecision());
+    // tau.set_elec_preid_output(iter->electronPreIDOutput());
+    // tau.set_elec_preid_decision(iter->electronPreIDDecision());
 
     tau.set_lead_ecal_energy(iter->leadPFChargedHadrCand()->ecalEnergy());
     tau.set_lead_hcal_energy(iter->leadPFChargedHadrCand()->hcalEnergy());
@@ -116,27 +117,27 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
           trk_ids.push_back(track_hasher(&(*(charged_pf[i]->trackRef()))));
         }
       }
-      tau.set_constituent_tracks(trk_ids);
+      if (store_ids_) tau.set_constituent_tracks(trk_ids);
     }
 
-    if (iter->triggerObjectMatches().size() > 0) {
-      std::vector<std::size_t> hlt_paths;
-      std::vector<std::size_t> hlt_filters;
-      std::vector<std::string> const& hlt_path_strings = iter->triggerObjectMatches().at(0).pathNames(0,0);
-      std::vector<std::string> const& hlt_filter_strings = iter->triggerObjectMatches().at(0).filterLabels();     
-      hlt_paths.resize(hlt_path_strings.size());
-      hlt_filters.resize(hlt_filter_strings.size());
-      for (unsigned i = 0; i < hlt_paths.size(); ++i) {
-        hlt_paths[i] = CityHash64(hlt_path_strings[i]);
-        observed_paths_[hlt_path_strings[i]] = CityHash64(hlt_path_strings[i]);
-      }
-      for (unsigned i = 0; i < hlt_filters.size(); ++i) {
-       hlt_filters[i] = CityHash64(hlt_filter_strings[i]);
-       observed_filters_[hlt_filter_strings[i]] = CityHash64(hlt_filter_strings[i]);
-      }
-     tau.set_hlt_match_paths(hlt_paths);
-     tau.set_hlt_match_filters(hlt_filters);
-    }
+    // if (iter->triggerObjectMatches().size() > 0) {
+    //   std::vector<std::size_t> hlt_paths;
+    //   std::vector<std::size_t> hlt_filters;
+    //   std::vector<std::string> const& hlt_path_strings = iter->triggerObjectMatches().at(0).pathNames(0,0);
+    //   std::vector<std::string> const& hlt_filter_strings = iter->triggerObjectMatches().at(0).filterLabels();     
+    //   hlt_paths.resize(hlt_path_strings.size());
+    //   hlt_filters.resize(hlt_filter_strings.size());
+    //   for (unsigned i = 0; i < hlt_paths.size(); ++i) {
+    //     hlt_paths[i] = CityHash64(hlt_path_strings[i]);
+    //     observed_paths_[hlt_path_strings[i]] = CityHash64(hlt_path_strings[i]);
+    //   }
+    //   for (unsigned i = 0; i < hlt_filters.size(); ++i) {
+    //    hlt_filters[i] = CityHash64(hlt_filter_strings[i]);
+    //    observed_filters_[hlt_filter_strings[i]] = CityHash64(hlt_filter_strings[i]);
+    //   }
+    //  tau.set_hlt_match_paths(hlt_paths);
+    //  tau.set_hlt_match_filters(hlt_filters);
+    // }
 
   }
   iEvent.put(jet_tracks, "selectTracks");

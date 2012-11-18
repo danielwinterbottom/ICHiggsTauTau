@@ -198,8 +198,8 @@ void ICMuonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
         muo.set_it_tracker_hits(iter->innerTrack()->hitPattern().numberOfValidTrackerHits());
         muo.set_it_layers_with_measurement(iter->innerTrack()->hitPattern().trackerLayersWithMeasurement());
     }
-    muo.set_rho(*rho_handle);
-    muo.set_pfnopu_rho(*pfnopu_rho_handle);
+    // muo.set_rho(*rho_handle);
+    // muo.set_pfnopu_rho(*pfnopu_rho_handle);
 
     muo.set_vx(iter->vx());
     muo.set_vy(iter->vy());
@@ -214,24 +214,24 @@ void ICMuonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
       muo.set_dxy_vertex(9999.);
     }
 
-    if (iter->triggerObjectMatches().size() > 0) {
-      std::vector<std::size_t> hlt_paths;
-      std::vector<std::size_t> hlt_filters;
-      std::vector<std::string> const& hlt_path_strings = iter->triggerObjectMatches().at(0).pathNames(0,0);
-      std::vector<std::string> const& hlt_filter_strings = iter->triggerObjectMatches().at(0).filterLabels();     
-      hlt_paths.resize(hlt_path_strings.size());
-      hlt_filters.resize(hlt_filter_strings.size());
-      for (unsigned i = 0; i < hlt_paths.size(); ++i) {
-        hlt_paths[i] = CityHash64(hlt_path_strings[i]);
-        observed_paths_[hlt_path_strings[i]] = CityHash64(hlt_path_strings[i]);
-      }
-      for (unsigned i = 0; i < hlt_filters.size(); ++i) {
-        hlt_filters[i] = CityHash64(hlt_filter_strings[i]);
-        observed_filters_[hlt_filter_strings[i]] = CityHash64(hlt_filter_strings[i]);
-      }
-     muo.set_hlt_match_paths(hlt_paths);
-     muo.set_hlt_match_filters(hlt_filters);
-    }
+    // if (iter->triggerObjectMatches().size() > 0) {
+    //   std::vector<std::size_t> hlt_paths;
+    //   std::vector<std::size_t> hlt_filters;
+    //   std::vector<std::string> const& hlt_path_strings = iter->triggerObjectMatches().at(0).pathNames(0,0);
+    //   std::vector<std::string> const& hlt_filter_strings = iter->triggerObjectMatches().at(0).filterLabels();     
+    //   hlt_paths.resize(hlt_path_strings.size());
+    //   hlt_filters.resize(hlt_filter_strings.size());
+    //   for (unsigned i = 0; i < hlt_paths.size(); ++i) {
+    //     hlt_paths[i] = CityHash64(hlt_path_strings[i]);
+    //     observed_paths_[hlt_path_strings[i]] = CityHash64(hlt_path_strings[i]);
+    //   }
+    //   for (unsigned i = 0; i < hlt_filters.size(); ++i) {
+    //     hlt_filters[i] = CityHash64(hlt_filter_strings[i]);
+    //     observed_filters_[hlt_filter_strings[i]] = CityHash64(hlt_filter_strings[i]);
+    //   }
+    //  muo.set_hlt_match_paths(hlt_paths);
+    //  muo.set_hlt_match_filters(hlt_filters);
+    // }
     
     if (iter->genLepton()) {
       unsigned idx = unsigned((reco::GenParticle*)iter->genLepton() - &(partCollection->at(0)));

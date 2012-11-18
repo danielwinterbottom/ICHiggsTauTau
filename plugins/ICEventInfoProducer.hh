@@ -31,8 +31,8 @@ class ICEventInfoProducer : public edm::EDProducer {
       // ----------member data ---------------------------
       //edm::InputTag input_label_;
       ic::EventInfo *info_;      
-      std::string rho_jets_name_;
-      std::string pfnopu_rho_jets_name_;
+      std::string jets_rho_name_;
+      std::string lepton_rho_name_;
       std::string vertex_name_;
 
       //std::string embed_weight_;

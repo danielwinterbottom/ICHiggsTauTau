@@ -29,6 +29,7 @@ namespace ic {
     }
 
     jet->set_parton_flavour(pat_jet->partonFlavour());
+    jet->set_jet_area(pat_jet->jetArea());
   }
 
   void ConstructCaloJet(ic::CaloJet * jet, pat::Jet const* pat_jet) {

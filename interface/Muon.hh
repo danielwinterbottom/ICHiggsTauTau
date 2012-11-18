@@ -23,12 +23,6 @@ namespace ic {
       Muon();
       virtual ~Muon();
 
-      //inline UFmap const& jec_factors() const { return jec_factors_; }
-      //inline void set_jec_factors(UFmap const& jec_factors) { jec_factors_ = jec_factors; }
-
-      //inline UFmap const& b_discriminators() const { return b_discriminators_; }
-      //inline void set_b_discriminators(UFmap const& b_discriminators) { b_discriminators_ = b_discriminators; }
-
       inline std::vector<std::size_t> const& gen_particles() const { return gen_particles_; }
       inline void set_gen_particles(std::vector<std::size_t> const& gen_particles) { gen_particles_ = gen_particles; }
       
@@ -104,11 +98,11 @@ namespace ic {
       inline float dr04_pfiso_pu() const { return dr04_pfiso_pu_; }
       inline void set_dr04_pfiso_pu(float const& dr04_pfiso_pu) { dr04_pfiso_pu_ = dr04_pfiso_pu; }
 
-      inline double rho() const { return rho_; }
-      inline void set_rho(double const& rho) { rho_ = rho; }
+      // inline double rho() const { return rho_; }
+      // inline void set_rho(double const& rho) { rho_ = rho; }
 
-      inline double pfnopu_rho() const { return pfnopu_rho_; }
-      inline void set_pfnopu_rho(double const& pfnopu_rho) { pfnopu_rho_ = pfnopu_rho; }
+      // inline double pfnopu_rho() const { return pfnopu_rho_; }
+      // inline void set_pfnopu_rho(double const& pfnopu_rho) { pfnopu_rho_ = pfnopu_rho; }
 
       inline double vx() const { return ref_point_.x(); }
       inline void set_vx(double const& x) { ref_point_.SetX(x); }
@@ -128,11 +122,11 @@ namespace ic {
       inline double dxy_beamspot() const { return dxy_beamspot_; }
       inline void set_dxy_beamspot(double const& dxy_beamspot) { dxy_beamspot_ = dxy_beamspot; }
       
-      inline std::vector<std::size_t>  const& hlt_match_paths() const { return hlt_match_paths_; }
-      inline void set_hlt_match_paths(std::vector<std::size_t>  const& hlt_match_paths) { hlt_match_paths_ = hlt_match_paths; }
+      // inline std::vector<std::size_t>  const& hlt_match_paths() const { return hlt_match_paths_; }
+      // inline void set_hlt_match_paths(std::vector<std::size_t>  const& hlt_match_paths) { hlt_match_paths_ = hlt_match_paths; }
 
-      inline std::vector<std::size_t>  const& hlt_match_filters() const { return hlt_match_filters_; }
-      inline void set_hlt_match_filters(std::vector<std::size_t>  const& hlt_match_filters) { hlt_match_filters_ = hlt_match_filters; }
+      // inline std::vector<std::size_t>  const& hlt_match_filters() const { return hlt_match_filters_; }
+      // inline void set_hlt_match_filters(std::vector<std::size_t>  const& hlt_match_filters) { hlt_match_filters_ = hlt_match_filters; }
 
       void SetIdIso(std::string const& name, float const& value);
       float GetIdIso(std::string const& name) const;
@@ -168,8 +162,8 @@ namespace ic {
       int it_pixel_hits_;
       int it_tracker_hits_;
       int it_layers_with_measurement_;
-      double rho_;
-      double pfnopu_rho_;
+      // double rho_;
+      // double pfnopu_rho_;
 
 
       Point ref_point_;
@@ -178,8 +172,8 @@ namespace ic {
       double dz_vertex_;
       double dxy_beamspot_;
 
-      std::vector<std::size_t> hlt_match_paths_;
-      std::vector<std::size_t> hlt_match_filters_;
+      // std::vector<std::size_t> hlt_match_paths_;
+      // std::vector<std::size_t> hlt_match_filters_;
 
       std::vector<std::size_t> gen_particles_;
 

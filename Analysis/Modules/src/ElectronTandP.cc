@@ -98,7 +98,7 @@ namespace ic {
     ic::erase_if(tag_cands,!boost::bind(MaxEtaSC, _1, 2.1));
     ic::erase_if(tag_cands,boost::bind(InEcalGap, _1));
     ic::erase_if(tag_cands,!boost::bind(Electron2011WP85ID, _1));
-    ic::erase_if(tag_cands,!boost::bind(Electron2011WP85Iso, _1));
+    ic::erase_if(tag_cands,!boost::bind(Electron2011WP85Iso, _1, eventInfo->lepton_rho()));
     ic::erase_if(tag_cands,boost::bind(&Electron::charge, _1) != -1);
     std::vector<Electron *> probe_cands = elecs;
     ic::erase_if(probe_cands,!boost::bind(MinPtMaxEta, _1, 25.0, 9999.0));
@@ -192,7 +192,7 @@ namespace ic {
         for (unsigned i = 0; i < pairs.size(); ++i) {
           double mass = (pairs[i].first->vector() + pairs[i].second->vector()).M();
           if (mass < 66.0 && mass > 116.0) continue;
-          bool pass_probe = Electron2011WP85ID(pairs[i].second) && Electron2011WP85Iso(pairs[i].second);
+          bool pass_probe = Electron2011WP85ID(pairs[i].second) && Electron2011WP85Iso(pairs[i].second, eventInfo->lepton_rho());
           if (pass_probe) {
             hists_->Fill("tt_wp85_SC8", mass);
           }
@@ -215,7 +215,7 @@ namespace ic {
         for (unsigned i = 0; i < pairs.size(); ++i) {
           double mass = (pairs[i].first->vector() + pairs[i].second->vector()).M();
           if (mass < 66.0 && mass > 116.0) continue;
-          bool pass_probe = Electron2011WP85ID(pairs[i].second) && Electron2011WP85Iso(pairs[i].second);
+          bool pass_probe = Electron2011WP85ID(pairs[i].second) && Electron2011WP85Iso(pairs[i].second, eventInfo->lepton_rho());
           if (pass_probe) {
             hists_->Fill("tt_wp85_Ele8", mass);
           }
@@ -238,7 +238,7 @@ namespace ic {
       std::vector<Electron *> probes = probe_cands;
       ic::erase_if(probes,!boost::bind(IsFilterMatched, _1, objs_Ele17SC8, lower_filter_Ele17SC8, 0.3));
       ic::erase_if(probes,!boost::bind(Electron2011WP85ID, _1));
-      ic::erase_if(probes,!boost::bind(Electron2011WP85Iso, _1));
+      ic::erase_if(probes,!boost::bind(Electron2011WP85Iso, _1, eventInfo->lepton_rho()));
 
       if (tags.size() > 0 && probes.size() > 0) {
         std::vector< std::pair<Electron*, Electron*> > pairs = MakePairs(tags,probes);
@@ -272,7 +272,7 @@ namespace ic {
       std::vector<Electron *> probes = probe_cands;
       ic::erase_if(probes,!boost::bind(IsFilterMatched, _1, objs_Ele32SC17, lower_filter_Ele32SC17, 0.3));
       ic::erase_if(probes,!boost::bind(Electron2011WP85ID, _1));
-      ic::erase_if(probes,!boost::bind(Electron2011WP85Iso, _1));
+      ic::erase_if(probes,!boost::bind(Electron2011WP85Iso, _1, eventInfo->lepton_rho()));
 
       if (tags.size() > 0 && probes.size() > 0) {
         std::vector< std::pair<Electron*, Electron*> > pairs = MakePairs(tags,probes);

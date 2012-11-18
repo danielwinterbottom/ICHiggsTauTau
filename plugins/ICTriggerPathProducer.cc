@@ -45,6 +45,7 @@ void ICTriggerPathProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
   std::vector<pat::TriggerPath> const* paths = triggerEvent->paths();
   paths_->reserve(paths->size());
   for (unsigned i = 0; i < paths->size(); ++i) {
+    // std::cout << paths->at(i).name() << std::endl;
     if (paths->at(i).wasAccept()) {
       paths_->push_back(ic::TriggerPath());
       ic::TriggerPath & path = paths_->back();
@@ -54,14 +55,6 @@ void ICTriggerPathProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
       path.set_id(CityHash64(paths->at(i).name()));
     }
   }
-  // pat::TriggerObjectRefVector pathObjects = triggerEvent->pathObjects("HLT_Ele32_CaloIdT_CaloIsoT_TrkIdT_TrkIsoT_SC17_Mass50_v3",false);
-  // for (unsigned j = 0; j < pathObjects.size(); ++j) {
-  //   std::cout << j << "\t" << (pathObjects)[j]->collection() << "\tpt: " << (pathObjects)[j]->pt() << "\teta: " << (pathObjects)[j]->eta() << std::endl;
-  //   pat::TriggerFilterRefVector filters = triggerEvent->objectFilters((pathObjects)[j], false);
-  //   for (unsigned k = 0; k < filters.size(); ++k) {
-  //     std::cout << "--" << filters[k]->label() << "\t" << filters[k]->type() << std::endl;
-  //   }
-  // }
 
 }
 

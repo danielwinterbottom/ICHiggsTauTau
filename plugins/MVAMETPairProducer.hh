@@ -1,16 +1,16 @@
-#ifndef RecoMET_METProducers_PFMETAllPairsProducerMVA_h
-#define RecoMET_METProducers_PFMETAllPairsProducerMVA_h
+#ifndef RecoMET_METProducers_MVAMETPairProducer_h
+#define RecoMET_METProducers_MVAMETPairProducer_h
 
-/** \class PFMETAllPairsProducerMVA
+/** \class MVAMETPairProducer
  *
  * Produce PFMET objects computed by MVA 
  *
  * \authors Phil Harris, CERN
  *          Christian Veelken, LLR
  *
- * \version $Revision: 1.2.2.1 $
+ * \version $Revision: 1.1 $
  *
- * $Id: PFMETAllPairsProducerMVA.h,v 1.2.2.1 2012/09/27 09:46:09 agilbert Exp $
+ * $Id: MVAMETPairProducer.h,v 1.1 2012/11/16 14:58:54 agilbert Exp $
  *
  */
 
@@ -40,12 +40,12 @@
 
 namespace reco
 {
-  class PFMETAllPairsProducerMVA : public edm::EDProducer
+  class MVAMETPairProducer : public edm::EDProducer
   {
    public:
 
-    PFMETAllPairsProducerMVA(const edm::ParameterSet&); 
-    ~PFMETAllPairsProducerMVA();
+    MVAMETPairProducer(const edm::ParameterSet&); 
+    ~MVAMETPairProducer();
 
    private:
   
@@ -72,7 +72,14 @@ namespace reco
     edm::InputTag srcPFCandidates_;
     edm::InputTag srcVertices_;
     typedef std::vector<edm::InputTag> vInputTag;
-    vInputTag srcLeptons_;
+
+    // ICHiggsTauTau
+    // vInputTag srcLeptons_;
+    edm::InputTag srcLeg1_;
+    edm::InputTag srcLeg2_;
+    double leg1Pt_, leg2Pt_, leg1Eta_, leg2Eta_, minDeltaR_;
+    // ICHiggsTauTau
+
     edm::InputTag srcRho_;
 
     double globalThreshold_;

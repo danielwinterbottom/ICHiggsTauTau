@@ -266,7 +266,7 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     bool has_match = ConversionTools::hasMatchedConversion(dynamic_cast<reco::GsfElectron const&>(*(iter->originalObjectRef())), hConversions, beamspot->position(), true, 2.0, 1e-6, 0);
     ele.set_has_matched_conversion(has_match);
  
-    ele.set_mva(iter->mva());
+    // ele.set_mva(iter->mva());
 
     ele.set_f_brem(iter->fbrem());
     ele.set_sc_eta(iter->superCluster()->eta());
@@ -284,8 +284,8 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     ele.set_ecal_energy(iter->ecalEnergy());
 
 
-    ele.set_rho(*rho_handle);
-    ele.set_pfnopu_rho(*pfnopu_rho_handle);
+    // ele.set_rho(*rho_handle);
+    // ele.set_pfnopu_rho(*pfnopu_rho_handle);
     ele.set_vx(iter->vx());
     ele.set_vy(iter->vy());
     ele.set_vz(iter->vz());
@@ -301,24 +301,24 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     }
     ele.set_dxy_beamspot(iter->gsfTrack()->dxy(*beamspot));
 
-    if (iter->triggerObjectMatches().size() > 0) {
-      std::vector<std::size_t> hlt_paths;
-      std::vector<std::size_t> hlt_filters;
-      std::vector<std::string> const& hlt_path_strings = iter->triggerObjectMatches().at(0).pathNames(0,0);
-      std::vector<std::string> const& hlt_filter_strings = iter->triggerObjectMatches().at(0).filterLabels();     
-      hlt_paths.resize(hlt_path_strings.size());
-      hlt_filters.resize(hlt_filter_strings.size());
-      for (unsigned i = 0; i < hlt_paths.size(); ++i) {
-        hlt_paths[i] = CityHash64(hlt_path_strings[i]);
-        observed_paths_[hlt_path_strings[i]] = CityHash64(hlt_path_strings[i]);
-      }
-      for (unsigned i = 0; i < hlt_filters.size(); ++i) {
-       hlt_filters[i] = CityHash64(hlt_filter_strings[i]);
-       observed_filters_[hlt_filter_strings[i]] = CityHash64(hlt_filter_strings[i]);
-      }
-     ele.set_hlt_match_paths(hlt_paths);
-     ele.set_hlt_match_filters(hlt_filters);
-    }
+    // if (iter->triggerObjectMatches().size() > 0) {
+    //   std::vector<std::size_t> hlt_paths;
+    //   std::vector<std::size_t> hlt_filters;
+    //   std::vector<std::string> const& hlt_path_strings = iter->triggerObjectMatches().at(0).pathNames(0,0);
+    //   std::vector<std::string> const& hlt_filter_strings = iter->triggerObjectMatches().at(0).filterLabels();     
+    //   hlt_paths.resize(hlt_path_strings.size());
+    //   hlt_filters.resize(hlt_filter_strings.size());
+    //   for (unsigned i = 0; i < hlt_paths.size(); ++i) {
+    //     hlt_paths[i] = CityHash64(hlt_path_strings[i]);
+    //     observed_paths_[hlt_path_strings[i]] = CityHash64(hlt_path_strings[i]);
+    //   }
+    //   for (unsigned i = 0; i < hlt_filters.size(); ++i) {
+    //    hlt_filters[i] = CityHash64(hlt_filter_strings[i]);
+    //    observed_filters_[hlt_filter_strings[i]] = CityHash64(hlt_filter_strings[i]);
+    //   }
+    //  ele.set_hlt_match_paths(hlt_paths);
+    //  ele.set_hlt_match_filters(hlt_filters);
+    // }
 
     if (iter->genLepton()) {
       unsigned idx = unsigned((reco::GenParticle*)iter->genLepton() - &(partCollection->at(0)));

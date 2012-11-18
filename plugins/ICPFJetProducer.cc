@@ -106,6 +106,8 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       jet.set_gen_particles(gen_index); 
     } 
 
+    //iter->jetArea();
+
     double beta = -1.0;
     double beta_max = -1.0;
     double trk_pt_total = 0.0;
@@ -153,11 +155,11 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     jet.set_beta(beta);
     jet.set_beta_max(beta_max);
-    int idflag = (*puJetIdFlag)[jetCollectionView->refAt(iJ)->originalObjectRef()];
+    //int idflag = (*puJetIdFlag)[jetCollectionView->refAt(iJ)->originalObjectRef()];
     jet.set_pu_id_mva_value((*puJetIdMVA)[jetCollectionView->refAt(iJ)->originalObjectRef()]);
-    jet.set_pu_id_mva_loose(PileupJetIdentifier::passJetId(idflag, PileupJetIdentifier::kLoose));
-    jet.set_pu_id_mva_medium(PileupJetIdentifier::passJetId(idflag, PileupJetIdentifier::kMedium));
-    jet.set_pu_id_mva_tight(PileupJetIdentifier::passJetId(idflag, PileupJetIdentifier::kTight));
+    // jet.set_pu_id_mva_loose(PileupJetIdentifier::passJetId(idflag, PileupJetIdentifier::kLoose));
+    // jet.set_pu_id_mva_medium(PileupJetIdentifier::passJetId(idflag, PileupJetIdentifier::kMedium));
+    // jet.set_pu_id_mva_tight(PileupJetIdentifier::passJetId(idflag, PileupJetIdentifier::kTight));
 
 
     //Set observed jet energy correction factors

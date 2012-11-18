@@ -30,7 +30,9 @@ class ICMetVectorProducer : public edm::EDProducer {
 
       // ----------member data ---------------------------
       //edm::InputTag input_label_;
-      edm::InputTag input_label_;
+      //edm::InputTag input_label_;
       std::string branch_name_;
       std::vector<ic::Met> *met_;
+      std::vector<std::string> merge_labels_;
+
 };

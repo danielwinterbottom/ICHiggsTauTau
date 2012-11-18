@@ -30,11 +30,11 @@ namespace ic {
     inline int bunch_crossing() const { return bunch_crossing_; }
     inline void set_bunch_crossing(int const& bunch_crossing) { bunch_crossing_ = bunch_crossing; }
 
-    inline double rho() const { return rho_; }
-    inline void set_rho(double const& rho) { rho_ = rho; }
+    inline double jet_rho() const { return jet_rho_; }
+    inline void set_jet_rho(double const& jet_rho) { jet_rho_ = jet_rho; }
 
-    inline double pfnopu_rho() const { return pfnopu_rho_; }
-    inline void set_pfnopu_rho(double const& pfnopu_rho) { pfnopu_rho_ = pfnopu_rho; }
+    inline double lepton_rho() const { return lepton_rho_; }
+    inline void set_lepton_rho(double const& lepton_rho) { lepton_rho_ = lepton_rho; }
 
     inline unsigned good_vertices() const { return good_vertices_; }
     inline void set_good_vertices(unsigned const& good_vertices) { good_vertices_ = good_vertices; }
@@ -73,8 +73,8 @@ private:
       int run_;
       int lumi_block_;
       int bunch_crossing_;
-      double rho_;
-      double pfnopu_rho_;
+      double jet_rho_;
+      double lepton_rho_;
       SDMap weights_;
       unsigned good_vertices_;
 

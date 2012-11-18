@@ -36,5 +36,6 @@ class ICGenJetProducer : public edm::EDProducer {
       double add_all_eta_cut_;
       std::vector<ic::GenJet> *cand_vec;
       std::vector<std::string> merge_labels_;
+      bool store_gen_particles_;
       
 };

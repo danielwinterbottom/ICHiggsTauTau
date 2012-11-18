@@ -222,7 +222,7 @@ namespace ic {
     if (mode_ == 0) {//Electrons
       erase_if(reco_elecs, !bind(ElectronZbbID, _1));
       if (reco_elecs.size() > 1) counters_["rec_lep_id"] += weight;
-      erase_if(reco_elecs, !bind(ElectronZbbIso, _1, false, 0.15));
+      erase_if(reco_elecs, !bind(ElectronZbbIso, _1, false, eventInfo->lepton_rho(), 0.15));
       if (reco_elecs.size() > 1) counters_["rec_lep_iso"] += weight;
       erase_if(reco_elecs, !(bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.02));
       if (reco_elecs.size() > 1) counters_["rec_lep_db"] += weight;

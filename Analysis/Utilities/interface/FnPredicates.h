@@ -35,7 +35,7 @@ namespace ic {
   //----------------------------------------------------------
   bool InEcalGap(Electron const* electron);
   bool MaxEtaSC(Electron const* electron, double const& maxEta);
-  bool Electron2011WP85Iso(Electron const* elec);
+  bool Electron2011WP85Iso(Electron const* elec, double const& rho);
   bool Electron2011WP85IsoNoRhoSub(Electron const* elec);
   bool Electron2011WP85ID(Electron const* elec);
   bool Electron2011WP95ID(Electron const* elec);
@@ -105,7 +105,7 @@ namespace ic {
     return (iso < cut);
   }
 
-  bool ElectronZbbIso(Electron const* elec, bool is_data, double const& cut);
+  bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut);
 
   template <class T>
   bool DBeamspotLessThan(T const* cand, double const& cut){

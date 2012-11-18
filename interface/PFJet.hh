@@ -129,7 +129,7 @@ namespace ic {
                         return (pu_id_mva_value_ > -0.84);
                   } else if (abs_eta < 5.0) {
                         return (pu_id_mva_value_ > -0.85);
-                  } else return pu_id_mva_loose_;
+                  } else return true;
             } else if (pt > 30.) {
                   if (abs_eta < 2.5) {
                         return (pu_id_mva_value_ > -0.80);
@@ -139,17 +139,17 @@ namespace ic {
                         return (pu_id_mva_value_ > -0.68);
                   } else if (abs_eta < 5.0) {
                         return (pu_id_mva_value_ > -0.77);
-                  } else return pu_id_mva_loose_;
-            } else return pu_id_mva_loose_;
+                  } else return true;
+            } else return true;
       }
 
-      inline void set_pu_id_mva_loose(bool const& pu_id_mva_loose) { pu_id_mva_loose_ = pu_id_mva_loose; }
+      // inline void set_pu_id_mva_loose(bool const& pu_id_mva_loose) { pu_id_mva_loose_ = pu_id_mva_loose; }
 
-      inline bool const& pu_id_mva_medium() const { return pu_id_mva_medium_; }
-      inline void set_pu_id_mva_medium(bool const& pu_id_mva_medium) { pu_id_mva_medium_ = pu_id_mva_medium; }
+      inline bool pu_id_mva_medium() const { return true; }
+      // inline void set_pu_id_mva_medium(bool const& pu_id_mva_medium) { pu_id_mva_medium_ = pu_id_mva_medium; }
 
-      inline bool const& pu_id_mva_tight() const { return pu_id_mva_tight_; }
-      inline void set_pu_id_mva_tight(bool const& pu_id_mva_tight) { pu_id_mva_tight_ = pu_id_mva_tight; }
+      inline bool pu_id_mva_tight() const { return true; }
+      // inline void set_pu_id_mva_tight(bool const& pu_id_mva_tight) { pu_id_mva_tight_ = pu_id_mva_tight; }
 
       inline std::vector<std::size_t> const& constituent_tracks() const { return constituent_tracks_; }
       inline void set_constituent_tracks(std::vector<std::size_t> const& constituent_tracks) { constituent_tracks_ = constituent_tracks; }
@@ -182,9 +182,9 @@ namespace ic {
       float beta_max_;
 
       float pu_id_mva_value_;
-      bool pu_id_mva_loose_;
-      bool pu_id_mva_medium_;
-      bool pu_id_mva_tight_;
+      // bool pu_id_mva_loose_;
+      // bool pu_id_mva_medium_;
+      // bool pu_id_mva_tight_;
 
       std::vector<std::size_t> constituent_tracks_;
 

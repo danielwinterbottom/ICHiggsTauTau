@@ -25,7 +25,7 @@ USERINCLUDES += -I$(CMSSW_RELEASE_BASE)/src/
 USERLIBS += $(shell root-config --glibs) -lGenVector -lTreePlayer -lTMVA
 USERLIBS += -L$(ROOFITSYS)/lib/ -lRooFit -lRooFitCore
 USERLIBS += -L$(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0/lib/ -lboost_regex -lboost_program_options -lboost_filesystem
-USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau -lTauAnalysisCandidateTools -lUserCodeAGilbert
+USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau -lTauAnalysisCandidateTools -lUserCodeAGilbert -lCondFormatsJetMETObjects
 USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lFWCoreFWLite -lPhysicsToolsFWLite -lCommonToolsUtils
 
 #CXXFLAGS = -Wall -W -Wno-unused-function -Wno-parentheses -Wno-char-subscripts -Wno-unused-parameter -O2 
