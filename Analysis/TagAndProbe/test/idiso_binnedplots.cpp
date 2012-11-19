@@ -62,9 +62,9 @@ int main(int argc, char* argv[]){
 
     if(elec)
     {
-        ptbins.open("electron_idisoptbins.txt");
-        etabins.open("electron_idisoetabins.txt");
-        vtxbins.open("electron_vtxbins.txt");
+        ptbins.open("electron_ptbinsfine.txt");
+        etabins.open("electron_etabinsfine.txt");
+        vtxbins.open("electron_vtxbinsfine.txt");
         if(isdata)
         {
             efficiencies.open("electron_eff_data.txt");
@@ -77,9 +77,9 @@ int main(int argc, char* argv[]){
     }
     else
     { 
-        ptbins.open("muon_idisoptbins.txt");
-        etabins.open("muon_idisoetabins.txt");
-        vtxbins.open("muon_vtxbins.txt");
+        ptbins.open("muon_ptbinsfine.txt");
+        etabins.open("muon_etabinsfine.txt");
+        vtxbins.open("muon_vtxbinsfine.txt");
         if(isdata)
         {
             efficiencies.open("muon_eff_data.txt");
@@ -102,7 +102,7 @@ int main(int argc, char* argv[]){
     }
     ptbins.close();
     
-    for(int i=0;i<(ptbinning.size()-1);i++)
+    for(unsigned i=0;i<(ptbinning.size()-1);i++)
     {
         ptbinbounds.push_back(boost::lexical_cast<int>(ptbinning[i]));
     }

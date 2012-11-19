@@ -1,3 +1,5 @@
+//code to plot data and MC efficiency plots in pt, eta and nvtx
+
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLatex.h"
@@ -140,7 +142,8 @@ int main(int argc, char* argv[]){
   
 
     double x1, y1, x2, y2, err_x1, err_y1, err_x2, err_y2;
-  
+ 
+  //Code to plot scale factor as function of Nvtx
     double sf[10];
     double err_sf[10];
     double x[10];
