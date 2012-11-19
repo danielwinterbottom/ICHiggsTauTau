@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
     }
     bins.close();
     
-    for(int i=0;i<(binning.size())-1;i++)
+    for(unsigned i=0;i<(binning.size())-1;i++)
     {
         binbounds.push_back(boost::lexical_cast<int>(binning[i]));
     }
@@ -95,7 +95,7 @@ int main(int argc, char* argv[]){
     //set bins with 'error bars' for width of bin
     Double_t x1[binbounds.size()];
     Double_t err_x1[binbounds.size()];
-    for(int i=0; i<(binbounds.size())-1; i++)
+    for(unsigned i=0; i<(binbounds.size())-1; i++)
     {
         x1[i]=binbounds[i]+((binbounds[i+1]-binbounds[i])/2.0);
         err_x1[i]=(binbounds[i+1]-binbounds[i])/2.0;
@@ -115,7 +115,7 @@ int main(int argc, char* argv[]){
     }
     vtxbins.close();
     
-    for(int i=0;i<(vtxbinning.size()-1);i++)
+    for(unsigned i=0;i<(vtxbinning.size()-1);i++)
     {
         vtxbinbounds.push_back(boost::lexical_cast<int>(vtxbinning[i]));
         
@@ -183,7 +183,7 @@ int main(int argc, char* argv[]){
     }
 
 
-    for(int i=0; i<effsB.size(); i++)
+    for(unsigned i=0; i<effsB.size(); i++)
     {    
         stringstream strings(effsB[i]); 
         std::string part;
@@ -276,7 +276,7 @@ int main(int argc, char* argv[]){
         }
     }
     
-    for(int i=0; i<effsvtx.size(); i++)
+    for(unsigned i=0; i<effsvtx.size(); i++)
     { 
         stringstream strings(effsvtx[i]); 
         std::string part;

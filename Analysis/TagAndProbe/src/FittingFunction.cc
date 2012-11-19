@@ -135,8 +135,8 @@ using namespace RooFit ;
 
 
         //Set up the fit parameters for background and signal
-        RooRealVar* MeanFail_= new RooRealVar("MeanFail","MeanFail",
-        91.1, 88.8, 93.2);
+        //RooRealVar* MeanFail_= new RooRealVar("MeanFail","MeanFail",
+        //91.1, 88.8, 93.2);
         //90.0, 86.2, 95.2);
 
         RooRealVar* WidthFail_= new RooRealVar("WidthFail","WidthFail", 2, 1, 10);
@@ -152,10 +152,10 @@ using namespace RooFit ;
         "ResolutionPass", 1.5, 0.1, 5.);
 
 
-        RooRealVar* WidthLPass_  = new RooRealVar("WidthLPass","WidthLPass",
-        3., 1., 10.);
-        RooRealVar* WidthRPass_  = new RooRealVar("WidthRPass","WidthRPass",
-        3., 1., 10.);
+        //RooRealVar* WidthLPass_  = new RooRealVar("WidthLPass","WidthLPass",
+       // 3., 1., 10.);
+       // RooRealVar* WidthRPass_  = new RooRealVar("WidthRPass","WidthRPass",
+       // 3., 1., 10.);
 //        RooRealVar* BifurGaussFracPass_ = new RooRealVar("BifurGaussFracPass",
 //        "",0.2, 0.0, 1.0);
 

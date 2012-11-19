@@ -127,7 +127,7 @@ int main(int argc, char* argv[]){
     }
     etabins.close();
     
-    for(int i=0;i<(etabinning.size())-1;i++)
+    for(unsigned i=0;i<(etabinning.size())-1;i++)
     { 
         etabinbounds.push_back(boost::lexical_cast<double>(etabinning[i]));   
     }
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]){
    
     Double_t x2[etabinbounds.size()];
     Double_t err_x2[etabinbounds.size()];
-    for(int i=0; i<(etabinbounds.size())-1; i++)
+    for(unsigned i=0; i<(etabinbounds.size())-1; i++)
     {
         x2[i]=etabinbounds[i]+(fabs((etabinbounds[i+1]-etabinbounds[i])/2.0));   
         err_x2[i]=fabs((etabinbounds[i+1]-etabinbounds[i]))/2.0;
@@ -155,7 +155,7 @@ int main(int argc, char* argv[]){
     }
     vtxbins.close();
     
-    for(int i=0;i<(vtxbinning.size()-1);i++)
+    for(unsigned i=0;i<(vtxbinning.size()-1);i++)
     {
         vtxbinbounds.push_back(boost::lexical_cast<int>(vtxbinning[i]));
         
@@ -164,7 +164,7 @@ int main(int argc, char* argv[]){
     const Int_t n3=vtxbinbounds.size()-1;
     Double_t x3[vtxbinbounds.size()];
     Double_t err_x3[vtxbinbounds.size()];
-    for(int i=0; i<(vtxbinbounds.size()-1); i++)
+    for(unsigned i=0; i<(vtxbinbounds.size()-1); i++)
     {
         x3[i]=vtxbinbounds[i]+((vtxbinbounds[i+1]-vtxbinbounds[i])/2.0);   
         err_x3[i]=(vtxbinbounds[i+1]-vtxbinbounds[i])/2.0;
@@ -198,7 +198,7 @@ int main(int argc, char* argv[]){
     Double_t y3[vtxbinbounds.size()];
     Double_t err_y3[vtxbinbounds.size()];
    
-    for(int i=0; i<idisoeffs.size(); i++)
+    for(unsigned i=0; i<idisoeffs.size(); i++)
     {    
         stringstream strings(idisoeffs[i]); 
         std::string part;

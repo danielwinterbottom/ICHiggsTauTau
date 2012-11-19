@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
     double y3iso_mc[mcisoeffs.size()];
     double err_y3iso_mc[mcisoeffs.size()];
 
-    for(int i=0; i<dataideffs.size(); i++)
+    for(unsigned i=0; i<dataideffs.size(); i++)
     {    
         stringstream strings(dataideffs[i]); 
         std::string part;
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
             }
         }
     }
-    for(int i=0; i<mcideffs.size(); i++)
+    for(unsigned i=0; i<mcideffs.size(); i++)
     {    
         stringstream strings(mcideffs[i]); 
         std::string part;
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
             }
         }
     }
-    for(int i=0; i<dataisoeffs.size(); i++)
+    for(unsigned i=0; i<dataisoeffs.size(); i++)
     {    
         stringstream strings(dataisoeffs[i]); 
         std::string part;
@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
             }
         }
     }
-    for(int i=0; i<mcisoeffs.size(); i++)
+    for(unsigned i=0; i<mcisoeffs.size(); i++)
     {    
         stringstream strings(mcisoeffs[i]); 
         std::string part;
