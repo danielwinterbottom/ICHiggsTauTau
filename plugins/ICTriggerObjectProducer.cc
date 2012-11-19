@@ -29,6 +29,7 @@ ICTriggerObjectProducer::ICTriggerObjectProducer(const edm::ParameterSet& iConfi
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
   store_only_if_fired_ = iConfig.getUntrackedParameter<bool>("StoreOnlyIfFired");
   objects_ = new std::vector<ic::TriggerObject>();
+  std::cout << "Info in <ICTriggerObjectProducer>: Path=\"" << hlt_path_ << "\", storeOnlyIfFired=" << store_only_if_fired_ << std::endl;
 }
 
 

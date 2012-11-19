@@ -28,6 +28,10 @@ ICMetVectorProducer::ICMetVectorProducer(const edm::ParameterSet& iConfig) {
   merge_labels_ = iConfig.getUntrackedParameter<std::vector<std::string> >("mergeLabels");
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
   met_ = new std::vector<ic::Met>();
+  std::cout << "Info in <ICMetVectorProducer>: Picking up Met requests from the following modules:" << std::endl;
+  for (unsigned i = 0; i < merge_labels_.size(); ++i) {
+    std::cout << "-- " << merge_labels_[i] << std::endl;
+  }
 }
 
 

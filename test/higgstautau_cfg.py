@@ -29,12 +29,19 @@ options.register ('isTandP',
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Tag and probe ntuples?")
 
+options.register ('isZStudy',
+                  0, # default value
+                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.VarParsing.varType.int,          # string, int, or float
+                  "Process for Z->ee or Z->mumu?")
+
 options.parseArguments()
 
 isData = options.isData
 release = options.release
 isEmbedded = options.isEmbedded
 isTandP = options.isTandP
+isZStudy = options.isZStudy
 
 if isData:
   print 'Setting up for data processing...'
@@ -44,7 +51,7 @@ else :
 if isEmbedded:
   print 'Setting up for embedded processing...'
 
-if not(release == '42X' or release == '52X' or release == '53X'):
+if not(release == '42X' or release == '53X'):
   print 'Release not recognised, exiting!'
   sys.exit(1)
 else:
@@ -53,6 +60,8 @@ else:
 if isTandP:
   print 'Setting up for tag and probe ntuples...' 
 
+if isZStudy:
+  print 'Setting up for Z->ee or Z->mumu processing...' 
 
 ## Configure TFileService
 process.TFileService = cms.Service("TFileService", 
@@ -325,8 +334,10 @@ process.mvaMetPairsEE = mvaMetPairs.clone(
 process.pfMEtMVAsequence += process.mvaMetPairsMT
 process.pfMEtMVAsequence += process.mvaMetPairsET
 process.pfMEtMVAsequence += process.mvaMetPairsEM
-process.pfMEtMVAsequence += process.mvaMetPairsMM
-process.pfMEtMVAsequence += process.mvaMetPairsEE
+
+if isZStudy:
+  process.pfMEtMVAsequence += process.mvaMetPairsMM
+  process.pfMEtMVAsequence += process.mvaMetPairsEE
 
 #process.pfMEtAllPairsMVA.srcLeptons =  cms.VInputTag( 'selectedPatElectrons', 'selectedPatMuons', 'selectedPatTaus' )
 if isData:
@@ -411,6 +422,10 @@ else:
 ### General Config
 ################################################################
 process.MessageLogger.cerr.FwkReport.reportEvery = 50000
+process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger',
+      'HLTConfigData')
+process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger',
+      'HLTConfigData')
 ## Input source
 if (release == '42X'):
   if isData:
@@ -429,29 +444,13 @@ if (release == '42X'):
       )
     )
     process.GlobalTag.globaltag = cms.string('START42_V17::All')
-if (release == '52X'):
-  if isData:
-    process.source = cms.Source(
-      "PoolSource",
-      fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/TauPlusX-2012A-Sample.root'
-      )
-    )
-    process.GlobalTag.globaltag = cms.string('GR_R_52_V8::All')
-  else:
-    process.source = cms.Source(
-      "PoolSource",
-      fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/NEW_SYNC_2012.root'
-      )
-    )
-    process.GlobalTag.globaltag = cms.string('START52_V10::All')
 if (release == '53X'):
   if isData:
     process.source = cms.Source(
       "PoolSource",
       fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/TauPlusX-2012C-PromptReco-v1-Sample.root'
+        #'file:/Volumes/Storage/samples/TauPlusX-2012C-PromptReco-v1-Sample.root'
+        'file:/Volumes/Storage/samples/DoubleMu-2012C-24Aug2012-v1-Sample.root'
       )
     )
     process.GlobalTag.globaltag = cms.string('GR_P_V41_AN1::All')
@@ -459,7 +458,8 @@ if (release == '53X'):
     process.source = cms.Source(
       "PoolSource",
       fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+        #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+        'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
       )
     )
     process.GlobalTag.globaltag = cms.string('START53_V10::All')
@@ -544,7 +544,7 @@ process.icElectronProducer = cms.EDProducer('ICElectronProducer',
     IsPF = cms.bool(False)
 )
 if isData:
-  if (release == '52X' or release == '53X'):
+  if (release == '53X'):
     process.icElectronProducer.EffAreas = cms.string("kEleEAData2012")
   if (release == '42X'):
     process.icElectronProducer.EffAreas = cms.string("kEleEAData2011")
@@ -600,11 +600,16 @@ process.icPfMVAMetProducer = cms.EDProducer('ICMetProducer',
 
 process.icPfAllPairsMVAMetProducer = cms.EDProducer('ICMetVectorProducer',
     mergeLabels = cms.untracked.vstring(
-        'mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM',
-        'mvaMetPairsMM','mvaMetPairsEE'
+        'mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM'
         ),
     branchName = cms.untracked.string("pfMVAMetVector")
     )
+
+if isZStudy:
+  process.icPfAllPairsMVAMetProducer.mergeLabels = cms.untracked.vstring(
+        'mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM',
+        'mvaMetPairsMM','mvaMetPairsEE'
+        )
 
 process.icTauProducer = cms.EDProducer('ICTauProducer',
     inputLabel = cms.InputTag("selectedPatTaus"),
@@ -632,38 +637,38 @@ process.icSuperClusterProducer = cms.EDProducer('ICSuperClusterProducer',
     minEnergy = cms.untracked.double(15.0)
     )
 
-if not isData:
-  process.icGenJetProducer = cms.EDProducer('ICGenJetProducer',
-      inputLabel = cms.InputTag("ak5GenJetsNoNuBSM"),
-      branchName = cms.untracked.string("genJets"),
-      mergeLabels = cms.untracked.vstring(
-          ),
-      addAll = cms.untracked.bool(True),
-      addAllPtCut = cms.untracked.double(15.0),
-      addAllEtaCut = cms.untracked.double(100.0),
-      storeGenParticles = cms.untracked.bool(False)
-  )
-  process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
-      mergeLabels = cms.untracked.vstring(
-          'icPFJetProducer',
-          #'icJPTJetProducer',
-          #'icGenJetProducer',
-          'icElectronProducer',
-          'icMuonProducer'
-          ),
-      storeMothers = cms.untracked.bool(False),
-      storeDaughters = cms.untracked.bool(False),
-      addAllStatus1 = cms.untracked.bool(False),
-      addAllStatus1Regex = cms.untracked.vstring('.*'),
-      addAllStatus1PtThreshold = cms.untracked.double(10.0),
-      addAllStatus2 = cms.untracked.bool(False),
-      addAllStatus2Regex = cms.untracked.vstring('5.*','-5.*','4.*','-4.*'),
-      addAllStatus2PtThreshold = cms.untracked.double(0.0),
-      addAllStatus3 = cms.untracked.bool(True),
-      addAllStatus3Regex = cms.untracked.vstring('.*'),
-      addAllStatus3PtThreshold = cms.untracked.double(0.0)
-  )
-  process.icPileupInfoProducer = cms.EDProducer('ICPileupInfoProducer')
+process.icGenJetProducer = cms.EDProducer('ICGenJetProducer',
+    inputLabel = cms.InputTag("ak5GenJetsNoNuBSM"),
+    branchName = cms.untracked.string("genJets"),
+    mergeLabels = cms.untracked.vstring(
+        ),
+    addAll = cms.untracked.bool(True),
+    addAllPtCut = cms.untracked.double(15.0),
+    addAllEtaCut = cms.untracked.double(100.0),
+    storeGenParticles = cms.untracked.bool(False)
+)
+process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
+    mergeLabels = cms.untracked.vstring(
+        'icPFJetProducer',
+        #'icJPTJetProducer',
+        #'icGenJetProducer',
+        'icElectronProducer',
+        'icMuonProducer'
+        ),
+    storeMothers = cms.untracked.bool(False),
+    storeDaughters = cms.untracked.bool(False),
+    addAllStatus1 = cms.untracked.bool(False),
+    addAllStatus1Regex = cms.untracked.vstring('.*'),
+    addAllStatus1PtThreshold = cms.untracked.double(10.0),
+    addAllStatus2 = cms.untracked.bool(False),
+    addAllStatus2Regex = cms.untracked.vstring('5.*','-5.*','4.*','-4.*'),
+    addAllStatus2PtThreshold = cms.untracked.double(0.0),
+    addAllStatus3 = cms.untracked.bool(True),
+    addAllStatus3Regex = cms.untracked.vstring('.*'),
+    addAllStatus3PtThreshold = cms.untracked.double(0.0)
+)
+
+process.icPileupInfoProducer = cms.EDProducer('ICPileupInfoProducer')
 
 process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
     jetsRhoLabel = cms.string("kt6PFJets"),
@@ -827,32 +832,32 @@ if (release == '53X' and isData):
   process.icEle20RhoLooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsEle20RhoLooseTau20"),
       hltPath = cms.untracked.string("HLT_Ele20_CaloIdVT_CaloIsoRhoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icEle22WP90RhoLooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsEle22WP90RhoLooseTau20"),
       hltPath = cms.untracked.string("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icIsoMu18LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsIsoMu18LooseTau20"),
       hltPath = cms.untracked.string("HLT_IsoMu18_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icIsoMu17LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsIsoMu17LooseTau20"),
       hltPath = cms.untracked.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
       hltPath = cms.untracked.string("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icMu17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsMu17Ele8"),
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icTriggerSequence += (
     process.icEle20RhoLooseTau20ObjectProducer
@@ -870,22 +875,22 @@ if ((release == '53X') and (not isData)):
   process.icEle22WP90RhoLooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsEle22WP90RhoLooseTau20"),
       hltPath = cms.untracked.string("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icIsoMu17LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsIsoMu17LooseTau20"),
       hltPath = cms.untracked.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )    
   process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
       hltPath = cms.untracked.string("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icMu17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsMu17Ele8"),
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icTriggerSequence += (
     process.icEle22WP90RhoLooseTau20ObjectProducer
@@ -923,7 +928,7 @@ if (release == '42X' and isData and isTandP):
 ################################################################
 ## Define 2012 t+p triggers for data
 ################################################################
-if (isTandP):
+if (release == '53X' and isData and isTandP):
   process.icIsoMu24ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsIsoMu24"),
       hltPath = cms.untracked.string("HLT_IsoMu24_eta2p1_v"),
@@ -944,8 +949,46 @@ if (isTandP):
 ################################################################
 
 ################################################################
+## Define 2011 mm,ee physics triggers for mc
+################################################################
+
+################################################################
+## Define 2012 mm,ee physics triggers for data
+################################################################
+if (release == '53X' and isData and isZStudy):
+  process.icEle17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle17Ele8"),
+      hltPath = cms.untracked.string("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icMu17Mu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsMu17Mu8"),
+      hltPath = cms.untracked.string("HLT_Mu17_Mu8_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icTriggerSequence += (
+    process.icEle17Ele8ObjectProducer
+    +process.icMu17Mu8ObjectProducer
+    )
+
+################################################################
 ## Define 2012 mm,ee physics triggers for mc
 ################################################################
+if (release == '53X' and (not isData) and isZStudy):
+  process.icEle17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle17Ele8"),
+      hltPath = cms.untracked.string("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icMu17Mu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsMu17Mu8"),
+      hltPath = cms.untracked.string("HLT_Mu17_Mu8_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icTriggerSequence += (
+    process.icEle17Ele8ObjectProducer
+    +process.icMu17Mu8ObjectProducer
+    )
 
 
 process.icSequence += process.icTriggerSequence
@@ -983,87 +1026,3 @@ process.p = cms.Path(
   +process.patPFMetByMVA
   +process.icSequence
   )
-
-# if (release == '42X' and isData):
-#   process.p = cms.Path(
-#       #process.genParticlesForJets
-#       #+process.ak5GenJetsNoNuBSM
-#       process.goodOfflinePrimaryVertices
-#       +process.pfAllMuons
-#       +process.PFTau
-#       +process.ak5PFJets
-#       +process.kt6PFJets
-#       +process.kt6PFJetsForLeptons
-#       +process.pfParticleSelectionSequence
-#       +process.eleIsoSequence
-#       +process.muIsoSequence
-#       +process.mvaElectronIDSequence
-#       +process.patDefaultSequence
-#       +process.puJetIdSqeuence
-#       +process.pfMEtMVAsequence
-#       +process.prePatProductionSequence
-#       +process.patPFMetByMVA
-#       +process.icSequence
-#       )
-
-# if (release == '42X' and (not isData)):
-#   process.p = cms.Path(
-#       process.genParticlesForJets
-#       +process.ak5GenJetsNoNuBSM
-#       +process.goodOfflinePrimaryVertices
-#       +process.pfAllMuons
-#       +process.PFTau
-#       +process.ak5PFJets
-#       +process.kt6PFJets
-#       +process.kt6PFJetsForLeptons
-#       +process.pfParticleSelectionSequence
-#       +process.eleIsoSequence
-#       +process.muIsoSequence
-#       +process.mvaElectronIDSequence
-#       +process.patDefaultSequence
-#       +process.puJetIdSqeuence
-#       +process.pfMEtMVAsequence
-#       +process.prePatProductionSequence
-#       +process.patPFMetByMVA
-#       +process.icSequence
-#       )
-
-# if (release == '53X' and isData):
-#   process.p = cms.Path(
-#       #process.genParticlesForJets
-#       #+process.ak5GenJetsNoNuBSM
-#       process.goodOfflinePrimaryVertices
-#       +process.pfAllMuons
-#       +process.softElectronCands
-#       +process.kt6PFJetsForLeptons
-#       +process.pfParticleSelectionSequence
-#       +process.eleIsoSequence
-#       +process.muIsoSequence
-#       +process.mvaElectronIDSequence
-#       +process.patDefaultSequence
-#       +process.puJetIdSqeuence
-#       +process.pfMEtMVAsequence
-#       +process.prePatProductionSequence
-#       +process.patPFMetByMVA
-#       +process.icSequence
-#       )
-
-# if (release == '53X' and (not isData)): 
-#   process.p = cms.Path(
-#       process.genParticlesForJets
-#       +process.ak5GenJetsNoNuBSM
-#       +process.goodOfflinePrimaryVertices # Needed only for JEC in PFNoPU
-#       +process.pfAllMuons
-#       +process.softElectronCands
-#       +process.kt6PFJetsForLeptons
-#       +process.pfParticleSelectionSequence
-#       +process.eleIsoSequence
-#       +process.muIsoSequence
-#       +process.mvaElectronIDSequence
-#       +process.patDefaultSequence
-#       +process.puJetIdSqeuence
-#       +process.pfMEtMVAsequence
-#       +process.prePatProductionSequence
-#       +process.patPFMetByMVA
-#       +process.icSequence
-#   )
