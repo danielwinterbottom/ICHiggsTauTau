@@ -306,7 +306,6 @@ make -j4
 
 SOURCE_PATH=/internal/Sept11/MC_42X
 PATHS=( 
-        'DYJetsToTauTau'
         'DYJetsToLL'
         'WJetsToLNu'
         'W1JetsToLNu'
@@ -398,18 +397,18 @@ do
 # cp $SOURCE_PATH/"$i"/mutauSkim/IC_filelist.dat filelists/Sept11/Data_42X/"$i"_mutauSkim_IC_filelist.dat
 # cp $SOURCE_PATH/"$i"/elecmuSkim/IC_filelist.dat filelists/Sept11/Data_42X/"$i"_elecmuSkim_IC_filelist.dat
 
-cd $SOURCE_PATH/$i/
-find `pwd`/EventTree*.root &> filelist.dat
-cd -
-./bin/Conversion $SOURCE_PATH/$i/filelist.dat
+#cd $SOURCE_PATH/$i/
+#find `pwd`/EventTree*.root &> filelist.dat
+#cd -
+#./bin/Conversion $SOURCE_PATH/$i/filelist.dat
 
 #cd $SOURCE_PATH
 #find $i/IC_EventTree*.root &> $i/filelist.dat
 #cd -
 
-# cd $SOURCE_PATH/$i/
-# rm EventTree*.root
-# cd -
+cd $SOURCE_PATH/$i/
+rm EventTree*.root
+cd -
 
 done
 

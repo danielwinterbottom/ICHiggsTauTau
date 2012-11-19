@@ -14,7 +14,7 @@ process.source = cms.Source(
   "PoolSource",
   fileNames = cms.untracked.vstring(
     #'file:/Volumes/Storage/samples/TauPlusX-2012C-PromptReco-v1-Sample.root'
-    'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+    'root://eoscms//eos/cms/store/user/agilbert/samples/VBF_HToTauTau_M-125-53X.root'
   )
 )
 
