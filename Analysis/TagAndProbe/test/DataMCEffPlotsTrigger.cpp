@@ -1,3 +1,4 @@
+//this code is a hack to plot the scale factor for the trigger as a function of Nvtx
 #include "TFile.h"
 #include "TCanvas.h"
 #include "TLatex.h"
