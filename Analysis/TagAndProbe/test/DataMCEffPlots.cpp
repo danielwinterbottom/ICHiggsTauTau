@@ -66,12 +66,15 @@ int main(int argc, char* argv[]){
     TLegend * legend1 = new TLegend(0.6, 0.45, 0.75, 0.60);
     legend1->AddEntry(grptMC, "2012 MC", "p");
     legend1->AddEntry(grptdata, "2012 Data", "p");
+    legend1->SetFillColor(0);
+    legend1->SetTextSize(0.04);
+    legend1->SetBorderSize(0);
     legend1->Draw();
     canvas1->Update();
 
     TLatex *title_latex = new TLatex();
     title_latex->SetNDC();
-    title_latex->SetTextSize(0.03);
+    title_latex->SetTextSize(0.04);
     title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
     canvas1->Update();
 
@@ -97,6 +100,9 @@ int main(int argc, char* argv[]){
     TLegend * legend2 = new TLegend(0.6, 0.35, 0.75, 0.50);
     legend2->AddEntry(gretaMC, "2012 MC", "p");
     legend2->AddEntry(gretadata, "2012 Data", "p");
+    legend2->SetFillColor(0);
+    legend2->SetTextSize(0.04);
+    legend2->SetBorderSize(0);
     legend2->Draw();
     canvas2->Update();
     title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
@@ -125,6 +131,9 @@ int main(int argc, char* argv[]){
     TLegend * legend3 = new TLegend(0.6, 0.35, 0.75, 0.50);
     legend3->AddEntry(grvtxMC, "2012 MC", "p");
     legend3->AddEntry(grvtxdata, "2012 Data", "p");
+    legend3->SetFillColor(0);
+    legend3->SetTextSize(0.04);
+    legend3->SetBorderSize(0);
     legend3->Draw();
     canvas3->Update();
     title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 3012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
