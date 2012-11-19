@@ -450,10 +450,11 @@ if (release == '53X'):
       "PoolSource",
       fileNames = cms.untracked.vstring(
         #'file:/Volumes/Storage/samples/TauPlusX-2012C-PromptReco-v1-Sample.root'
-        'file:/Volumes/Storage/samples/DoubleMu-2012C-24Aug2012-v1-Sample.root'
+        #'file:/Volumes/Storage/samples/DoubleMu-2012C-24Aug2012-v1-Sample.root'
+        'file:/Volumes/Storage/samples/DoubleElectron-2012C-24Aug2012-v1-Sample.root'
       )
     )
-    process.GlobalTag.globaltag = cms.string('GR_P_V41_AN1::All')
+    process.GlobalTag.globaltag = cms.string('GR_P_V42_AN2::All')
   else:
     process.source = cms.Source(
       "PoolSource",
@@ -464,7 +465,7 @@ if (release == '53X'):
     )
     process.GlobalTag.globaltag = cms.string('START53_V10::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 if (release == '42X'):
@@ -933,15 +934,35 @@ if (release == '53X' and isData and isTandP):
       branchName = cms.untracked.string("triggerObjectsIsoMu24"),
       hltPath = cms.untracked.string("HLT_IsoMu24_eta2p1_v"),
       StoreOnlyIfFired = cms.untracked.bool(True)
-      )    
+      )  
+  process.icMu17TkMu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsMu17TkMu8"),
+      hltPath = cms.untracked.string("HLT_Mu17_TkMu8_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )  
   process.icEle27ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsEle27"),
       hltPath = cms.untracked.string("HLT_Ele27_WP80_v"),
       StoreOnlyIfFired = cms.untracked.bool(True)
       )
+  process.icEle17Ele8Mass50ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle17Ele8Mass50"),
+      hltPath = cms.untracked.string("HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_Ele8_Mass50_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )
+  process.icEle20SC4Mass50ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle20SC4Mass50"),
+      hltPath = cms.untracked.string("HLT_Ele20_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_SC4_Mass50_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )
+
+
   process.icTriggerSequence += (
     process.icIsoMu24ObjectProducer
+    +process.icMu17TkMu8ObjectProducer
     +process.icEle27ObjectProducer
+    +process.icEle17Ele8Mass50ObjectProducer
+    +process.icEle20SC4Mass50ObjectProducer
     )
 
 ################################################################
