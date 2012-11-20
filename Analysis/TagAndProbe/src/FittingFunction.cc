@@ -63,11 +63,11 @@ using namespace RooFit ;
 
         TFile* f;
 
-        if(elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbinned" || type=="isobinned" || type=="idisobinned") && isdata)
+        if(elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbins" || type=="isobins" || type=="idisobins") && isdata)
         {
             f=new TFile("eeTandPIdIsodata.root","r");
         }
-        if(elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbinned" || type=="isobinned" || type=="idisobinned") && !isdata)
+        if(elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbins" || type=="isobins" || type=="idisobins") && !isdata)
         {
             f=new TFile("eeTandPIdIsoMC.root","r");
         }
@@ -79,11 +79,11 @@ using namespace RooFit ;
         {
             f=new TFile("eeTandPtrgMC.root","r");
         }
-        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbinned" || type=="isobinned" || type=="idisobinned") && isdata)
+        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbins" || type=="isobins" || type=="idisobins") && isdata)
         {
             f=new TFile("mumuTandPIdIsodata.root","r");
         }
-        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbinned" || type=="isobinned" || type=="idisobinned") && !isdata)
+        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbins" || type=="isobins" || type=="idisobins") && !isdata)
         {
             f=new TFile("mumuTandPIdIsoMC.root","r");
         }
@@ -372,11 +372,11 @@ using namespace RooFit ;
 
         TFile* f;
 
-        if(elec && (type=="id" || type=="iso" || type=="idiso" || type=="idbinned" || type=="isobinned" || type=="idisobinned") && isdata)
+        if(elec && (type=="id" || type=="iso" || type=="idiso" || type=="idbins" || type=="isobins" || type=="idisobins") && isdata)
         {
             f=new TFile("eeTandPIdIsodata.root","r");
         }
-        if(elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbinned" || type=="isobinned" || type=="idisobinned") && !isdata)
+        if(elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbins" || type=="isobins" || type=="idisobins") && !isdata)
         {
             f=new TFile("eeTandPIdIsoMC.root","r");
         }
@@ -388,11 +388,11 @@ using namespace RooFit ;
         {
             f=new TFile("eeTandPtrgMC.root","r");
         }
-        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbinned" || type=="isobinned" || type=="idisobinned") && isdata)
+        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbins" || type=="isobins" || type=="idisobins") && isdata)
         {
             f=new TFile("mumuTandPIdIsodata.root","r");
         }
-        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbinned" || type=="isobinned" || type=="idisobinned") && !isdata)
+        if(!elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbins" || type=="isobins" || type=="idisobins") && !isdata)
         {
             f=new TFile("mumuTandPIdIsoMC.root","r");
         }
