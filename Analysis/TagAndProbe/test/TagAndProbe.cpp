@@ -213,7 +213,7 @@ int main(int argc, char* argv[]){
     ElectronTagAndProbe electronIDTagAndProbe("electronIDTagAndProbe");
     electronIDTagAndProbe
     .set_fs(fsid)
-    .set_output_name("electron_id_count")
+    .set_output_name((outfolder+"/electron_id_count").c_str())
     .set_data(isdata)
     .set_tag_predicate(boost::bind(ElectronHTTIdIso, _1, 1)
                         && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
@@ -232,7 +232,7 @@ int main(int argc, char* argv[]){
     ElectronTagAndProbe electronIsoTagAndProbe("electronIsoTagAndProbe");
     electronIsoTagAndProbe
     .set_fs(fsid)
-    .set_output_name("electron_iso_count")
+    .set_output_name((outfolder+"/electron_iso_count").c_str())
     .set_data(isdata)
     .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
                         && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1) 
@@ -253,7 +253,7 @@ int main(int argc, char* argv[]){
     ElectronTagAndProbe electronIDIsoTagAndProbe("electronIDIsoTagAndProbe");
     electronIDIsoTagAndProbe
     .set_fs(fsid)
-    .set_output_name("electron_idiso_count")
+    .set_output_name((outfolder+"/electron_idiso_count").c_str())
     .set_data(isdata)
     .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
                         && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
@@ -274,7 +274,7 @@ int main(int argc, char* argv[]){
     ElectronTagAndProbe electronIDFineTagAndProbe("electronIDFineTagAndProbe");
     electronIDFineTagAndProbe
     .set_fs(fsid)
-    .set_output_name("electron_idbinned_count")
+    .set_output_name((outfolder+"/electron_idbinned_count").c_str())
     .set_data(isdata)
     .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
                         && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
@@ -294,7 +294,7 @@ int main(int argc, char* argv[]){
     ElectronTagAndProbe electronIsoFineTagAndProbe("electronIsoFineTagAndProbe");
     electronIsoFineTagAndProbe
     .set_fs(fsid)
-    .set_output_name("electron_isobinned_count")
+    .set_output_name((outfolder+"/electron_isobinned_count").c_str())
     .set_data(isdata)
     .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
                         && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
@@ -318,7 +318,7 @@ int main(int argc, char* argv[]){
     ElectronTagAndProbe electronIDIsoFineTagAndProbe("electronIDIsoFineTagAndProbe");
     electronIDIsoFineTagAndProbe
     .set_fs(fsid)
-    .set_output_name("electron_idisobinned_count")
+    .set_output_name((outfolder+"/electron_idisobinned_count").c_str())
     .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
                         && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
@@ -339,7 +339,7 @@ int main(int argc, char* argv[]){
     ElectronTagAndProbe electronTrgATagAndProbe("electronTrgATagAndProbe");
     electronTrgATagAndProbe
     .set_fs(fstrg)
-    .set_output_name("electron_trg_count")
+    .set_output_name((outfolder+"/electron_trg_count").c_str())
     .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
                         && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
@@ -361,7 +361,7 @@ int main(int argc, char* argv[]){
     ElectronTagAndProbe electronTrgBTagAndProbe("electronTrgBTagAndProbe");
     electronTrgBTagAndProbe
     .set_fs(fstrg2)
-    .set_output_name("electron_trgB_count")
+    .set_output_name((outfolder+"/electron_trgB_count").c_str())
     .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
                         && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
@@ -383,7 +383,7 @@ int main(int argc, char* argv[]){
     MuonTagAndProbe muonIDTagAndProbe("muonIDTagAndProbe");
     muonIDTagAndProbe
     .set_fs(fsid)
-    .set_output_name("muon_id_count")
+    .set_output_name((outfolder+"/muon_id_count").c_str())
     .set_data(isdata)
     .set_tag_predicate(boost::bind(MuonTight, _1)
                         && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
@@ -402,7 +402,7 @@ int main(int argc, char* argv[]){
     MuonTagAndProbe muonIsoTagAndProbe("muonIsoTagAndProbe");
     muonIsoTagAndProbe
     .set_fs(fsid)
-    .set_output_name("muon_iso_count")
+    .set_output_name((outfolder+"/muon_iso_count").c_str())
     .set_data(isdata)
     .set_tag_predicate( boost::bind(MuonTight, _1)
                         && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1) 
@@ -423,7 +423,7 @@ int main(int argc, char* argv[]){
     MuonTagAndProbe muonIDIsoTagAndProbe("muonIDIsoTagAndProbe");
     muonIDIsoTagAndProbe
     .set_fs(fsid)
-    .set_output_name("muon_idiso_count")
+    .set_output_name((outfolder+"/muon_idiso_count").c_str())
     .set_data(isdata)
     .set_tag_predicate( boost::bind(MuonTight, _1)
                         && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
@@ -444,7 +444,7 @@ int main(int argc, char* argv[]){
     MuonTagAndProbe muonIDFineTagAndProbe("muonIDFineTagAndProbe");
     muonIDFineTagAndProbe
     .set_fs(fsid)
-    .set_output_name("muon_idbinned_count")
+    .set_output_name((outfolder+"/muon_idbinned_count").c_str())
     .set_data(isdata)
     .set_tag_predicate( boost::bind(MuonTight, _1)
                         && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
@@ -464,7 +464,7 @@ int main(int argc, char* argv[]){
     MuonTagAndProbe muonIsoFineTagAndProbe("muonIsoFineTagAndProbe");
     muonIsoFineTagAndProbe
     .set_fs(fsid)
-    .set_output_name("muon_isobinned_count")
+    .set_output_name((outfolder+"/muon_isobinned_count").c_str())
     .set_data(isdata)
     .set_tag_predicate( boost::bind(MuonTight, _1)
                         && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
@@ -488,7 +488,7 @@ int main(int argc, char* argv[]){
     MuonTagAndProbe muonIDIsoFineTagAndProbe("muonIDIsoFineTagAndProbe");
     muonIDIsoFineTagAndProbe
     .set_fs(fsid)
-    .set_output_name("muon_idisobinned_count")
+    .set_output_name((outfolder+"/muon_idisobinned_count").c_str())
     .set_tag_predicate( boost::bind(MuonTight, _1)
                         && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
@@ -509,7 +509,7 @@ int main(int argc, char* argv[]){
     MuonTagAndProbe muonTrgATagAndProbe("muonTrgATagAndProbe");
     muonTrgATagAndProbe
     .set_fs(fstrg)
-    .set_output_name("muon_trg_count")
+    .set_output_name((outfolder+"/muon_trg_count").c_str())
     .set_tag_predicate( boost::bind(MuonTight, _1)
                         && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
@@ -532,7 +532,7 @@ int main(int argc, char* argv[]){
     MuonTagAndProbe muonTrgBTagAndProbe("muonTrgBTagAndProbe");
     muonTrgBTagAndProbe
     .set_fs(fstrg2)
-    .set_output_name("muon_trg_count")
+    .set_output_name((outfolder+"/muon_trgB_count").c_str())
     .set_tag_predicate( boost::bind(MuonTight, _1)
                         && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))

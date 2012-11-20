@@ -77,7 +77,7 @@ namespace ic {
     }
     if(mode_==0) hists_->Create("h_PUWeights", 200, 0, 10);
     
-    outFile.open((era_+"/"+output_name_+".txt").c_str());
+    outFile.open((output_name_+".txt").c_str());
 
     //Generate pile up weights histogram.
     TFile* fmc;
