@@ -48,7 +48,7 @@ int main(int argc, char* argv[]){
     if(elec)
     {
         bins.open("electron_triggerptbins.txt");
-        vtxbins.open("electron_vtxbins.txt");
+        vtxbins.open("electron_vtxbinsfine.txt");
         if(isdata)
         {
             efficiencies.open("electron_eff_data.txt");
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]){
     else
     {
         bins.open("muon_triggerptbins.txt");
-        vtxbins.open("muon_vtxbins.txt");
+        vtxbins.open("muon_vtxbinsfine.txt");
         if(isdata)
         {
             efficiencies.open("muon_eff_data.txt");
