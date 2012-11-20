@@ -53,7 +53,13 @@ int main(int argc, char* argv[]){
         base1->GetXaxis()->SetTitle("Electron p_{T} (GeV)");
     }
     else base1->GetXaxis()->SetTitle("Muon p_{T} (GeV)");
+    base1->GetXaxis()->SetLabelSize(0.042);
+    base1->GetXaxis()->SetTitleSize(0.042);
+    base1->GetXaxis()->SetTitleOffset(1.1);
     base1->GetYaxis()->SetTitle("Efficiency");
+    base1->GetYaxis()->SetLabelSize(0.042);
+    base1->GetYaxis()->SetTitleSize(0.045);
+    base1->GetYaxis()->SetTitleOffset(1.0);
     base1->SetTitle(0);
     base1->SetStats(0);
     base1->Draw();
