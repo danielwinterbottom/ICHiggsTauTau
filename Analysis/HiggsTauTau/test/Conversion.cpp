@@ -105,9 +105,13 @@ int main(int argc, char* argv[]){
     gDirectory->cd("icEventProducer");
     TTree *tout = new TTree("EventTree","EventTree");
     TObjArray *arr = tin->GetListOfBranches();
-    for (unsigned j = 0; j < unsigned(arr->GetSize()); ++j) {
+    //warning:: we thought arr->GetLast() gave correctly the number of branches but the produced
+    //ntuples were missing the final branch when we ran. Probably needs to be changed to arr->GetLast() + 1.
+    //Investigate if using the script again.
+    std::cout << unsigned(arr->GetLast())<< std::endl;
+    for (unsigned j = 0; j < unsigned(arr->GetLast()); ++j) {
       std::string name = arr->At(j)->GetName();
-      //std::cout << "-- " << name << std::endl;
+      std::cout << "-- " << name << "\t" << j << std::endl;
       if (name == "electrons") {
         tin->SetBranchAddress("electrons", &ag_electrons);
         tout->Branch("electrons", &ic_electrons);
@@ -196,13 +200,13 @@ int main(int argc, char* argv[]){
       if (name.find("triggerObjects") != name.npos) {
         tin->SetBranchAddress(name.c_str(), &(ag_trig_obj[name]));
         tout->Branch(name.c_str(), &(ic_trig_obj[name]));
+
         continue;
       }
 
       std::cout << "Error, don't know what to do with branch " << name << ", quitting!" << std::endl;
       exit(1);
     }
-
     for (unsigned j = 0; j < tin->GetEntries(); ++j) {
       tin->GetEntry(j);
       ic_electrons = reinterpret_cast<std::vector<ic::Electron>*>(ag_electrons);
