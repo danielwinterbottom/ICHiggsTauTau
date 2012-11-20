@@ -172,7 +172,7 @@ int main(int argc, char* argv[]){
     
     // Load necessary libraries for ROOT I/O of custom classes
     gSystem->Load("libFWCoreFWLite.dylib");
-    gSystem->Load("libUserCodeAGilbert.dylib");
+    gSystem->Load("libUserCodeICHiggsTauTau.dylib");
     AutoLibraryLoader::enable();
     // Build a vector of input files
     std::vector<std::string> files = ParseFileLines(filelist);
@@ -205,7 +205,7 @@ int main(int argc, char* argv[]){
     ic::AnalysisBase analysis(
         "TagAndProbe",        // Analysis name
         files,                // Input files
-        "agEventProducer",    // TTree path
+        "icEventProducer",    // TTree path
         "EventTree",          // TTree name
         max_events);          // Max. events to process (-1 = all)
 
