@@ -650,6 +650,8 @@ process.icGenJetProducer = cms.EDProducer('ICGenJetProducer',
     storeGenParticles = cms.untracked.bool(False)
 )
 process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
+    branchName = cms.untracked.string("genParticles"),
+    overrideCollection = cms.untracked.string(""),
     mergeLabels = cms.untracked.vstring(
         'icPFJetProducer',
         #'icJPTJetProducer',
@@ -669,6 +671,25 @@ process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     addAllStatus3Regex = cms.untracked.vstring('.*'),
     addAllStatus3PtThreshold = cms.untracked.double(0.0)
 )
+
+process.icEmbeddedGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
+    branchName = cms.untracked.string("genParticlesEmbedded"),
+    overrideCollection = cms.untracked.string("EmbeddedRECO"),
+    mergeLabels = cms.untracked.vstring(
+        ),
+    storeMothers = cms.untracked.bool(False),
+    storeDaughters = cms.untracked.bool(False),
+    addAllStatus1 = cms.untracked.bool(True),
+    addAllStatus1Regex = cms.untracked.vstring('.*'),
+    addAllStatus1PtThreshold = cms.untracked.double(0.0),
+    addAllStatus2 = cms.untracked.bool(True),
+    addAllStatus2Regex = cms.untracked.vstring('.*'),
+    addAllStatus2PtThreshold = cms.untracked.double(0.0),
+    addAllStatus3 = cms.untracked.bool(True),
+    addAllStatus3Regex = cms.untracked.vstring('.*'),
+    addAllStatus3PtThreshold = cms.untracked.double(0.0)
+)
+
 
 process.icPileupInfoProducer = cms.EDProducer('ICPileupInfoProducer')
 
@@ -703,7 +724,7 @@ process.icMCSequence = cms.Sequence(
   )
 
 process.icEmbeddedSequence = cms.Sequence(
-  process.icGenParticleProducer
+  process.icEmbeddedGenParticleProducer
   )
 
 if isData:

@@ -45,4 +45,7 @@ class ICGenParticleProducer : public edm::EDProducer {
       double status_1_pt_;
       double status_2_pt_;
       double status_3_pt_;
+      std::string override_collection_;
+      std::string branch_name_;
+
 };
