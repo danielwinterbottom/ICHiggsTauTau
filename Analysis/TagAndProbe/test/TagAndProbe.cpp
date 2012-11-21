@@ -11,6 +11,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ElectronTagAndProbe.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MuonTagAndProbe.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 
 namespace po = boost::program_options;
@@ -20,12 +21,14 @@ int main(int argc, char* argv[]){
 
     bool isdata;
     bool iselec;
+    bool do_skim;
     bool split_pm_eta;
     bool second_trigger;
     bool idiso_only;
     bool trg_only;
     std::string era, eraB;
     std::string configfile, outname,outnametrg,outnametrgB, filelist, outfolder;
+    std::string skim_path="";
     int max_events;
     int run_low, run_low_B;
     int run_high, run_high_B;
@@ -63,6 +66,8 @@ int main(int argc, char* argv[]){
       ("eraB", po::value<std::string>(&eraB)->default_value(era), "era for second trigger")
       ("is_data", po::value<bool>(&isdata)->required(), "0=mc, 1=data")
       ("split_pm_eta", po::value<bool>(&split_pm_eta)->default_value(false), "true separates positive and negative eta in the trigger")
+      ("do_skim", po::value<bool>(&do_skim)->default_value(false), "true runs in skim mode")
+      ("skim_path", po::value<std::string>(&skim_path), "output folder for skims")
       ("idiso_only", po::value<bool>(&idiso_only)->default_value(false), "to rerun just id and iso")
       ("trg_only", po::value<bool>(&trg_only)->default_value(false), "to rerun just trigger")
       ("second_trigger", po::value<bool>(&second_trigger)->default_value(false), "allows a measurement of a second trigger if there are two in era")
@@ -179,7 +184,7 @@ int main(int argc, char* argv[]){
     std::vector<std::string> files = ParseFileLines(filelist);
     // Create ROOT output fileservice
     fwlite::TFileService *fsid, *fstrg, *fstrg2;
-    if(!trg_only)
+    if(!trg_only && !do_skim)
     {
         if (outfolder == "") {
         fsid = new fwlite::TFileService(outname.c_str());
@@ -187,7 +192,7 @@ int main(int argc, char* argv[]){
         fsid = new fwlite::TFileService((outfolder+"/"+outname).c_str());
         }
     }
-    if(!idiso_only)
+    if(!idiso_only && !do_skim)
     {
         if (outfolder == "") {
         fstrg = new fwlite::TFileService(outname.c_str());
@@ -220,9 +225,24 @@ int main(int argc, char* argv[]){
         "icEventProducer",    // TTree path
         "EventTree",          // TTree name
         max_events);          // Max. events to process (-1 = all)
+  if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);
 
     PileupWeight pileupWeight = PileupWeight
       ("PileupWeight").set_data(&data_pu).set_mc(&mc_pu).set_print_weights(false);
+
+    SimpleFilter<Electron> electronTagFilter = SimpleFilter<Electron>
+    ("electronTagFilter")
+    .set_input_label("electrons")
+    .set_predicate(boost::bind(ElectronHTTIdIso, _1, 1)
+                   && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+                   && (boost::bind(MinPtMaxEta, _1, 20, 2.1)))
+    .set_min(1);
+    
+    SimpleFilter<Electron> electronProbeFilter = SimpleFilter<Electron>
+    ("electronProbeFilter")
+    .set_input_label("electrons")
+    .set_predicate( boost::bind(MinPtMaxEta, _1, 10, 2.1) )
+    .set_min(2);
 
     ElectronTagAndProbe electronIDTagAndProbe("electronIDTagAndProbe");
     electronIDTagAndProbe
@@ -394,6 +414,20 @@ int main(int argc, char* argv[]){
     .set_mode(3)
     .set_era(eraB);
    
+    SimpleFilter<Muon> muonTagFilter = SimpleFilter<Muon>
+    ("muonTagFilter")
+    .set_input_label("muonsPFlow")
+    .set_min(1);
+    
+    SimpleFilter<Muon> muonProbeFilter = SimpleFilter<Muon>
+    ("muonProbeFilter")
+    .set_predicate(boost::bind(MuonTight, _1)
+                   && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                   && (boost::bind(MinPtMaxEta, _1, 20, 2.1)) )
+    .set_input_label("muonsPFlow")
+    .set_predicate( boost::bind(MinPtMaxEta, _1, 10, 2.1) )
+    .set_min(2);
+     
     MuonTagAndProbe muonIDTagAndProbe("muonIDTagAndProbe");
     muonIDTagAndProbe
     .set_fs(fsid)
@@ -567,50 +601,70 @@ int main(int argc, char* argv[]){
     .set_era(eraB);
 
 
+    if(!do_skim)
+    {
+        if(iselec)
+        {
+            if(!isdata) analysis.AddModule(&pileupWeight);
+            if(!trg_only)
+            {
+                analysis.AddModule(&electronIDTagAndProbe);
+                analysis.AddModule(&electronIsoTagAndProbe);
+                analysis.AddModule(&electronIDIsoTagAndProbe);
+                analysis.AddModule(&electronIDFineTagAndProbe);
+                analysis.AddModule(&electronIsoFineTagAndProbe);
+                analysis.AddModule(&electronIDIsoFineTagAndProbe);
+            }
+            if(!idiso_only)
+            {
+                analysis.AddModule(&electronTrgATagAndProbe);
+                    if(second_trigger) analysis.AddModule(&electronTrgBTagAndProbe);
+            }
+        }
+        if(!iselec)
+        {
+            if(!isdata) analysis.AddModule(&pileupWeight);
+            if(!trg_only)
+            {
+                analysis.AddModule(&muonIDTagAndProbe);
+                analysis.AddModule(&muonIsoTagAndProbe);
+                analysis.AddModule(&muonIDIsoTagAndProbe);
+                analysis.AddModule(&muonIDFineTagAndProbe);
+                analysis.AddModule(&muonIsoFineTagAndProbe);
+                analysis.AddModule(&muonIDIsoFineTagAndProbe);
+            }
+            if(!idiso_only)
+            {
+                analysis.AddModule(&muonTrgATagAndProbe); 
+                    if(second_trigger) analysis.AddModule(&muonTrgBTagAndProbe);
+            }
+        }
+    }
+    if(do_skim)
+    {
+        if(iselec)
+        {
+            analysis.AddModule(&electronTagFilter);
+            analysis.AddModule(&electronProbeFilter);
+        }
+        else
+        {
+            analysis.AddModule(&muonTagFilter);
+            analysis.AddModule(&muonProbeFilter);
+        }
+    }
 
-    if(iselec)
-    {
-        if(!isdata) analysis.AddModule(&pileupWeight);
-        if(!trg_only)
-        {
-            analysis.AddModule(&electronIDTagAndProbe);
-            analysis.AddModule(&electronIsoTagAndProbe);
-            analysis.AddModule(&electronIDIsoTagAndProbe);
-            analysis.AddModule(&electronIDFineTagAndProbe);
-            analysis.AddModule(&electronIsoFineTagAndProbe);
-            analysis.AddModule(&electronIDIsoFineTagAndProbe);
-        }
-        if(!idiso_only)
-        {
-            analysis.AddModule(&electronTrgATagAndProbe);
-                if(second_trigger) analysis.AddModule(&electronTrgBTagAndProbe);
-        }
-    }
-    if(!iselec)
-    {
-        if(!isdata) analysis.AddModule(&pileupWeight);
-        if(!trg_only)
-        {
-            analysis.AddModule(&muonIDTagAndProbe);
-            analysis.AddModule(&muonIsoTagAndProbe);
-            analysis.AddModule(&muonIDIsoTagAndProbe);
-            analysis.AddModule(&muonIDFineTagAndProbe);
-            analysis.AddModule(&muonIsoFineTagAndProbe);
-            analysis.AddModule(&muonIDIsoFineTagAndProbe);
-        }
-        if(!idiso_only)
-        {
-            analysis.AddModule(&muonTrgATagAndProbe); 
-                if(second_trigger) analysis.AddModule(&muonTrgBTagAndProbe);
-        }
-    }
 
     analysis.RunAnalysis();
-    if(!trg_only) delete fsid;
-    if(!idiso_only)
+   
+    if(!do_skim)
     {
-        delete fstrg;
-        delete fstrg2;
+        if(!trg_only) delete fsid;
+        if(!idiso_only)
+        {
+            delete fstrg;
+            delete fstrg2;
+        }
     }
 
     return 0;
