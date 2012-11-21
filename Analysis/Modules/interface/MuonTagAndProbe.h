@@ -34,7 +34,6 @@ class MuonTagAndProbe : public ModuleBase {
   std::vector<double> eta_bins_;
   std::vector<int> vtx_bins_;
   std::string era_;
-  TH1* weights;
   std::map<int, int> prescales; 
   std::map<int, int> nrun; 
   std::ofstream outFile;

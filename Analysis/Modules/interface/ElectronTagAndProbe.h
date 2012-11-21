@@ -18,7 +18,6 @@ class ElectronTagAndProbe : public ModuleBase {
   
   CLASS_MEMBER(ElectronTagAndProbe, fwlite::TFileService*, fs);
   DynamicHistoSet *hists_;
-  TH1* weights;
 
   std::string output_name_;
   int object_count, passing_count, failing_count;  

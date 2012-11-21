@@ -96,25 +96,6 @@ namespace ic {
    
     outFile.open((output_name_+".txt").c_str());
 
-    //Generate pile up weights histogram.
-    TFile* fmc;
-    TFile* fdata;
-    
-    if(era_=="2012A" || era_=="2012B" || era_=="2012C")
-    {
-      //  fdata = new TFile("/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012_ICHEP-600bins.root", "r");
-        fdata = new TFile("/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012_HCP-600bins.root", "r");
-//        fmc = new TFile("/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S7.root", "r");
-        fmc = new TFile("/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S10-600bins.root", "r");
-    } 
-    else
-    {
-        fdata = new TFile("/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2011_HCP-500bins.root", "r");
-        fmc = new TFile("/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Fall11_PU_S6-500bins.root", "r");
-    } 
-    TH1 *data_hist = (TH1*)fdata->Get("pileup");
-    TH1 *mc_hist = (TH1*)fmc->Get("pileup");    
-    weights=WeightCalculation(data_hist,mc_hist,0);
 
     return 0;
   }
@@ -225,24 +206,8 @@ namespace ic {
 
     double w=1.0;
     if(!data_)
-    { 
-        float true_int = -1;
-        for (unsigned i = 0; i < puInfo.size(); ++i)
-        { 
-            if(puInfo[i]->bunch_crossing() == 0)
-            {
-                true_int =puInfo[i]->true_num_interactions();
-            }
-        }
-        if (true_int < 0) 
-        {
-            std::cout << "Warning: In-time true_num_interactions not found!" << std::endl;
-        } 
-        int found_bin = weights->FindBin(true_int);
-        if (found_bin >= 1 && found_bin <= weights->GetNbinsX())
-        {
-            w = weights->GetBinContent(found_bin);
-        }
+    {
+        w = eventInfo->weight("pileup");
     }
     bool trigger=false;
     // int prescalenum;
