@@ -459,8 +459,9 @@ if (release == '53X'):
     process.source = cms.Source(
       "PoolSource",
       fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+        #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
+        'file:/afs/cern.ch/work/a/agilbert/CMSSW_TEST/Embedding/CMSSW_5_3_4/src/test/mc_embedded.root'
       )
     )
     process.GlobalTag.globaltag = cms.string('START53_V10::All')

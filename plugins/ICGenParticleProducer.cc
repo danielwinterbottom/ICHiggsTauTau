@@ -92,7 +92,7 @@ void ICGenParticleProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
   boost::hash<reco::GenParticle const*> hasher;
 
   edm::Handle<reco::GenParticleCollection> partCollection;
-  iEvent.getByLabel("genParticles",partCollection);
+  iEvent.getByLabel(edm::InputTag("genParticles","","SIM"),partCollection);
   if (partCollection->size() == 0) return;
   const reco::GenParticle *ptr_to_first  = &((partCollection->at(0)));
   
