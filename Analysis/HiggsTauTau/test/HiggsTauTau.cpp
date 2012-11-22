@@ -4,6 +4,7 @@
 #include "boost/lexical_cast.hpp"
 #include "boost/program_options.hpp"
 #include "boost/bind.hpp"
+#include "boost/function.hpp"
 #include "TSystem.h"
 #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
@@ -41,6 +42,42 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 
+namespace Dataset{
+  enum Enum {
+    k2012A,
+    k53X_2012B_ReReco,
+    k53X_2012C_Prompt,
+    k53X_2012D_Prompt
+  };
+}
+
+namespace Strategy{
+  enum Enum {
+    kICHEP_2012,
+    kHCP_2012,
+    kMORIOND_2013
+  };
+}
+
+namespace MC{
+  enum Enum {
+    k42X_Fall11,
+    k53X_Summer12
+  };
+}
+
+namespace Channel{
+  enum Enum {
+    kET,
+    kMT,
+    kEM,
+    kEE,
+    kMM
+  };
+}
+
+
+
 using boost::lexical_cast;
 using boost::bind;
 namespace po = boost::program_options;
@@ -55,8 +92,8 @@ int main(int argc, char* argv[]){
 
   // NEW PARAETERS
   /*
-  unsigned strategy;  // Could replace with enum
-  unsigned data_era;  // Could replace with enum
+  unsigned strategy;  // Could replace with enum   ICHEP_2012, HCP_2012, MORIOND_2013
+  unsigned dataset;  // Could replace with enum   DATA_53X_AB DATA_53X_ABC DATA_53XABCD
 
   // FINE GRAINED CONFIG
   bool enable_recoil_corrections; // true = follow data_era settings, false = disabled
@@ -429,7 +466,6 @@ int main(int argc, char* argv[]){
     .set_shift(1.03);
 
 
-
   SimpleFilter<Electron> selElectronPtEtaFilter = SimpleFilter<Electron>
     ("SelElectronPtEtaFilter")
     .set_input_label("selElectrons")
@@ -440,7 +476,6 @@ int main(int argc, char* argv[]){
     ("SelElectronDxyFilter")
     .set_input_label("selElectrons")
     .set_predicate(bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy)
-    // .set_predicate([&](Electron const* elec) { return true; })
     .set_min(1);
 
   SimpleFilter<Electron> selElectronDzFilter = SimpleFilter<Electron>
