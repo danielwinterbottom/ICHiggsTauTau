@@ -48,10 +48,10 @@ bool isdata;
         std::string s9="3Eb";
         if(elec)
         {
+            fit(s1,"id", elec, isdata);
+            fit(s2,"id", elec, isdata);
             fit(s4,"id", elec, isdata);
             fit(s5,"id", elec, isdata);
-            fit(s7,"id", elec, isdata);
-            fit(s8,"id", elec, isdata);
         }
         else
         {
@@ -79,10 +79,10 @@ bool isdata;
         std::string s9="3Eb";
         if(elec)
         {
+            fit(s1,"iso", elec, isdata);
+            fit(s2,"iso", elec, isdata);
             fit(s4,"iso", elec, isdata);
             fit(s5,"iso", elec, isdata);
-            fit(s7,"iso", elec, isdata);
-            fit(s8,"iso", elec, isdata);
         }
         else
         {
@@ -110,10 +110,10 @@ bool isdata;
         std::string s9="3Eb";
         if(elec)
         {
+            fit(s1,"idiso", elec, isdata);
+            fit(s2,"idiso", elec, isdata);
             fit(s4,"idiso", elec, isdata);
             fit(s5,"idiso", elec, isdata);
-            fit(s7,"idiso", elec, isdata);
-            fit(s8,"idiso", elec, isdata);
         }
         else
         {
