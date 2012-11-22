@@ -416,16 +416,16 @@ int main(int argc, char* argv[]){
    
     SimpleFilter<Muon> muonTagFilter = SimpleFilter<Muon>
     ("muonTagFilter")
+    .set_predicate(boost::bind(MuonTight, _1)
+                   && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                   && (boost::bind(MinPtMaxEta, _1, 20, 2.1)) )
     .set_input_label("muonsPFlow")
     .set_min(1);
     
     SimpleFilter<Muon> muonProbeFilter = SimpleFilter<Muon>
     ("muonProbeFilter")
-    .set_predicate(boost::bind(MuonTight, _1)
-                   && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
-                   && (boost::bind(MinPtMaxEta, _1, 20, 2.1)) )
+    .set_predicate( (boost::bind(MinPtMaxEta, _1, 10, 2.1)) )
     .set_input_label("muonsPFlow")
-    .set_predicate( boost::bind(MinPtMaxEta, _1, 10, 2.1) )
     .set_min(2);
      
     MuonTagAndProbe muonIDTagAndProbe("muonIDTagAndProbe");
@@ -645,12 +645,12 @@ int main(int argc, char* argv[]){
         if(iselec)
         {
             analysis.AddModule(&electronTagFilter);
-            analysis.AddModule(&electronProbeFilter);
+   //         analysis.AddModule(&electronProbeFilter);
         }
         else
         {
             analysis.AddModule(&muonTagFilter);
-            analysis.AddModule(&muonProbeFilter);
+     //       analysis.AddModule(&muonProbeFilter);
         }
     }
 
