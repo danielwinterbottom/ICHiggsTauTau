@@ -29,42 +29,56 @@ namespace ic {
       inline Point const& ref_point() const { return ref_point_; }
       inline void set_ref_point(Point const& ref_point) { ref_point_ = ref_point; }
       
+
+      //! Tracker isolation, equivalent to dr03TkSumPt()
       inline float dr03_tk_sum_pt() const { return dr03_tk_sum_pt_; }
       inline void set_dr03_tk_sum_pt(float const& dr03_tk_sum_pt) { dr03_tk_sum_pt_ = dr03_tk_sum_pt; }
 
+      //! ECAL isolation, equivalent to dr03EcalRecHitSumEt()
       inline float dr03_ecal_rechit_sum_et() const { return dr03_ecal_rechit_sum_et_; }
       inline void set_dr03_ecal_rechit_sum_et(float const& dr03_ecal_rechit_sum_et) { dr03_ecal_rechit_sum_et_ = dr03_ecal_rechit_sum_et; }
 
+      //! ECAL isolation, equivalent to dr03HcalTowerSumEt()
       inline float dr03_hcal_tower_sum_et() const { return dr03_hcal_tower_sum_et_; }
       inline void set_dr03_hcal_tower_sum_et(float const& dr03_hcal_tower_sum_et) { dr03_hcal_tower_sum_et_ = dr03_hcal_tower_sum_et; }
 
+      //! PF isolation, using all charged particles in a cone with \f$ \Delta R = 0.3 \f$
       inline float dr03_pfiso_charged_all() const { return dr03_pfiso_charged_all_; }
       inline void set_dr03_pfiso_charged_all(float const& dr03_pfiso_charged_all) { dr03_pfiso_charged_all_ = dr03_pfiso_charged_all; }
 
+      //! PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.3 \f$
       inline float dr03_pfiso_charged() const { return dr03_pfiso_charged_; }
       inline void set_dr03_pfiso_charged(float const& dr03_pfiso_charged) { dr03_pfiso_charged_ = dr03_pfiso_charged; }
 
+      //! PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.3 \f$
       inline float dr03_pfiso_neutral() const { return dr03_pfiso_neutral_; }
       inline void set_dr03_pfiso_neutral(float const& dr03_pfiso_neutral) { dr03_pfiso_neutral_ = dr03_pfiso_neutral; }
 
+      //! PF isolation, using photons in a cone with \f$ \Delta R = 0.3 \f$
       inline float dr03_pfiso_gamma() const { return dr03_pfiso_gamma_; }
       inline void set_dr03_pfiso_gamma(float const& dr03_pfiso_gamma) { dr03_pfiso_gamma_ = dr03_pfiso_gamma; }
 
+      //! PF isolation, using charged pileup in a cone with \f$ \Delta R = 0.3 \f$
       inline float dr03_pfiso_pu() const { return dr03_pfiso_pu_; }
       inline void set_dr03_pfiso_pu(float const& dr03_pfiso_pu) { dr03_pfiso_pu_ = dr03_pfiso_pu; }
 
+      //! PF isolation, using all charged particles in a cone with \f$ \Delta R = 0.4 \f$
       inline float dr04_pfiso_charged_all() const { return dr04_pfiso_charged_all_; }
       inline void set_dr04_pfiso_charged_all(float const& dr04_pfiso_charged_all) { dr04_pfiso_charged_all_ = dr04_pfiso_charged_all; }
 
+      //! PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.4 \f$
       inline float dr04_pfiso_charged() const { return dr04_pfiso_charged_; }
       inline void set_dr04_pfiso_charged(float const& dr04_pfiso_charged) { dr04_pfiso_charged_ = dr04_pfiso_charged; }
 
+      //! PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.4 \f$
       inline float dr04_pfiso_neutral() const { return dr04_pfiso_neutral_; }
       inline void set_dr04_pfiso_neutral(float const& dr04_pfiso_neutral) { dr04_pfiso_neutral_ = dr04_pfiso_neutral; }
 
+      //! PF isolation, using photons in a cone with \f$ \Delta R = 0.4 \f$
       inline float dr04_pfiso_gamma() const { return dr04_pfiso_gamma_; }
       inline void set_dr04_pfiso_gamma(float const& dr04_pfiso_gamma) { dr04_pfiso_gamma_ = dr04_pfiso_gamma; }
 
+      //! PF isolation, using charged pileup in a cone with \f$ \Delta R = 0.4 \f$
       inline float dr04_pfiso_pu() const { return dr04_pfiso_pu_; }
       inline void set_dr04_pfiso_pu(float const& dr04_pfiso_pu) { dr04_pfiso_pu_ = dr04_pfiso_pu; }
 

@@ -41,40 +41,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 
-namespace Dataset{
-  enum Enum {
-    k2012A,
-    k53X_2012B_ReReco,
-    k53X_2012C_Prompt,
-    k53X_2012D_Prompt
-  };
-}
-
-namespace Strategy{
-  enum Enum {
-    kICHEP_2012,
-    kHCP_2012,
-    kMORIOND_2013
-  };
-}
-
-namespace MC{
-  enum Enum {
-    k42X_Fall11,
-    k53X_Summer12
-  };
-}
-
-namespace Channel{
-  enum Enum {
-    kET,
-    kMT,
-    kEM,
-    kEE,
-    kMM
-  };
-}
 
 
 
@@ -84,23 +52,14 @@ namespace po = boost::program_options;
 
 int main(int argc, char* argv[]){
   using namespace ic;
+
+
   
   // Configurable parameters
   int max_events;
   unsigned mode, mssm_mode, tau_scale_mode;
   unsigned is_data, era;
 
-  // NEW PARAETERS
-  /*
-  unsigned strategy;  // Could replace with enum   ICHEP_2012, HCP_2012, MORIOND_2013
-  unsigned dataset;  // Could replace with enum   DATA_53X_AB DATA_53X_ABC DATA_53XABCD
-
-  // FINE GRAINED CONFIG
-  bool enable_recoil_corrections; // true = follow data_era settings, false = disabled
-  */
-  // Era 0: 2012 52X ICHEP
-  // Era 1: 2012 53X ICHEP
-  // Era 2: 2012 53X HCP
   bool is_2012;
   bool scan_trigger;
   std::string outname, filelist, configfile, svfit_override, outfolder, svfit_folder, input_path;
@@ -542,14 +501,6 @@ int main(int argc, char* argv[]){
                 && (bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy)
                 && (bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz)
                 )
-      // .set_predicate([&](Electron const* elec) { return
-      //   elec->pt() > 10 
-      //   && fabs(elec->eta()) < 2.5
-      //   && ElectronHTTIdIso(elec, 2)
-      //   && PF04Isolation(elec, 0.5, 0.3)
-      //   && fabs(elec->dxy_vertex()) < elec_dxy
-      //   && fabs(elec->dz_vertex() < elec_dz);
-      // })
     .set_min(0).set_max(mode == 0 ? 1 : 0);
                 
 
