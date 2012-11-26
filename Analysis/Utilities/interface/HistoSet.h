@@ -199,8 +199,8 @@ class DynamicHistoSet : public HistoSet{
     
     TH1F* Get_Histo(std::string name) {
       if(!hmap_.count(name)) { 
-        throw;
         std::cerr << "Histogram does not exist" << std::endl;
+        throw;
       }
       else return hmap_[name];
     }

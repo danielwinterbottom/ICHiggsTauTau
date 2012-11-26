@@ -661,9 +661,9 @@ process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
         ),
     storeMothers = cms.untracked.bool(False),
     storeDaughters = cms.untracked.bool(False),
-    addAllStatus1 = cms.untracked.bool(False),
-    addAllStatus1Regex = cms.untracked.vstring('.*'),
-    addAllStatus1PtThreshold = cms.untracked.double(10.0),
+    addAllStatus1 = cms.untracked.bool(True),
+    addAllStatus1Regex = cms.untracked.vstring('11','-11','13','-13'),
+    addAllStatus1PtThreshold = cms.untracked.double(8.0),
     addAllStatus2 = cms.untracked.bool(False),
     addAllStatus2Regex = cms.untracked.vstring('5.*','-5.*','4.*','-4.*'),
     addAllStatus2PtThreshold = cms.untracked.double(0.0),
@@ -671,6 +671,7 @@ process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     addAllStatus3Regex = cms.untracked.vstring('.*'),
     addAllStatus3PtThreshold = cms.untracked.double(0.0)
 )
+
 
 process.icEmbeddedGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     branchName = cms.untracked.string("genParticlesEmbedded"),
