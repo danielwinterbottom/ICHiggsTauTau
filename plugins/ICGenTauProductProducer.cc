@@ -26,7 +26,7 @@
 
 
 ICGenTauProductProducer::ICGenTauProductProducer(const edm::ParameterSet& iConfig) {
-  //produces<std::vector<unsigned> >("selectGenParticles");
+  produces<std::vector<unsigned> >("selectGenParticles");
   merge_labels_ = iConfig.getUntrackedParameter<std::vector<std::string> >("mergeLabels");
   std::cout << "Info in <ICGenTauProductProducer>: Picking up GenTau requests from the following modules:" << std::endl;
   for (unsigned i = 0; i < merge_labels_.size(); ++i) {
@@ -69,8 +69,6 @@ void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* thePart
 // ------------ method called to produce the data  ------------
 void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
-  std::cout << "===================================" << std::endl;  
-  //boost::hash<reco::GenParticle const*> hasher;
 
   edm::Handle<reco::GenParticleCollection> partCollection;
   iEvent.getByLabel(edm::InputTag("genParticles", "", "SIM"), partCollection); 
@@ -85,31 +83,20 @@ void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup&
      if(p.pdgId()==15 || p.pdgId()==-15)
      {
         daughters.clear();
-        std::cout << "tau with status: " << p.status()<< std::endl;
         FindDecayProducts(&p, daughters);
-        std::cout << "direct daughters of tau" << std::endl;
-        for(unsigned j=0; j<p.numberOfDaughters(); j++)
-        {
-            std::cout << "pdgId for daughter " << j+1 << ": "<< (p.daughter(j))->pdgId() << std::endl;
-        }
-        std::cout << "daughter indices from function" << std::endl;
-        std::cout << "number of daughters found by function: " <<daughters.size() << std::endl;
         for(unsigned j=0; j<daughters.size(); j++)
         {
           unsigned idx = unsigned(daughters[j] - &(partCollection->at(0)));
-          std::cout << "index for daughter " << j+1<<": " <<idx << std::endl;
           daughter_index->push_back(idx);
-
         } 
      }
   }
-  //iEvent.put(daughter_index, "selectGenTauParticles");
+  iEvent.put(daughter_index, "selectGenParticles");
 
 }
 
 // ------------ method called once each job just before starting event loop  ------------
 void ICGenTauProductProducer::beginJob() {
- //ic::StaticTree::tree_->Branch(branch_name_.c_str(),&cand_vec);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
