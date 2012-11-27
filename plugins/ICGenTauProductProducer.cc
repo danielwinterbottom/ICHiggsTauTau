@@ -54,7 +54,7 @@ void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* thePart
       unsigned int nDaughters=theParticle->numberOfDaughters();
       for(unsigned j=0; j<nDaughters; j++)
       {
-         const reco::Candidate * d=theParticle->daughter(0);
+         const reco::Candidate * d=theParticle->daughter(j);
          if((static_cast<const reco::GenParticle*>(d))->numberOfDaughters() > 0)
          {
            container.push_back(static_cast<const reco::GenParticle*>(d));
