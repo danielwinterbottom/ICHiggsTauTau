@@ -278,8 +278,23 @@ if (release == '53X'):
     #process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X")
     from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X import mvaMetPairs
 else:
-    process.load("RecoMET.METProducers.mvaPFMET_cff_leptons")
-    process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons")
+    process.load("JetMETCorrections.METPUSubtraction.mvaPFMET_leptons_42X_cff")
+#    process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons")
+    from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X import mvaMetPairs
+
+if (release == '42X'):
+  process.pfMEtMVA.inputFileNames = cms.PSet(
+      DPhi = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetphi_42.root'),
+      CovU2 = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetu2cov_42.root'),
+      U = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmet_42.root'),
+      CovU1 = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetu1cov_42.root')
+      )
+  mvaMetPairs.inputFileNames = cms.PSet(
+      DPhi = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetphi_42.root'),
+      CovU2 = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetu2cov_42.root'),
+      U = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmet_42.root'),
+      CovU1 = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetu1cov_42.root')
+      )
 
 process.mvaMetPairsMT = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('selectedPatMuons'),
@@ -345,20 +360,6 @@ if isData:
 else:
   process.calibratedAK5PFJetsForPFMEtMVA.correctors = cms.vstring("ak5PFL1FastL2L3")
 
-if (release == '42X'):
-  process.pfMEtMVA.inputFileNames = cms.PSet(
-      DPhi = cms.FileInPath('pharris/MVAMet/data/gbrmetphi_42.root'),
-      CovU2 = cms.FileInPath('pharris/MVAMet/data/gbrmetu2cov_42.root'),
-      U = cms.FileInPath('pharris/MVAMet/data/gbrmet_42.root'),
-      CovU1 = cms.FileInPath('pharris/MVAMet/data/gbrmetu1cov_42.root')
-      )
-  process.pfMEtAllPairsMVA.inputFileNames = cms.PSet(
-      DPhi = cms.FileInPath('pharris/MVAMet/data/gbrmetphi_42.root'),
-      CovU2 = cms.FileInPath('pharris/MVAMet/data/gbrmetu2cov_42.root'),
-      U = cms.FileInPath('pharris/MVAMet/data/gbrmet_42.root'),
-      CovU1 = cms.FileInPath('pharris/MVAMet/data/gbrmetu1cov_42.root')
-      )
-
 process.patPFMetByMVA = process.patMETs.clone(
     metSource = cms.InputTag('pfMEtMVA'),
     addMuonCorrections = cms.bool(False),
@@ -407,14 +408,14 @@ process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingW
 ################################################################
 ### Configuration of MVA PU Jet ID
 ################################################################
-if (release == '53X'):
+if (release == '53X' or release == '42X'):
     process.load("RecoJets.JetProducers.pujetidsequence_cff")
     process.puJetId.jets = cms.InputTag("ak5PFJets")
     process.puJetMva.jets = cms.InputTag("ak5PFJets")
-else:
-    process.load("CMGTools.External.pujetidsequence_cff")
-    process.puJetId.jets = cms.InputTag("selectedPatJetsAK5PF")
-    process.puJetMva.jets = cms.InputTag("selectedPatJetsAK5PF")
+# else:
+#    process.load("CMGTools.External.pujetidsequence_cff")
+#    process.puJetId.jets = cms.InputTag("selectedPatJetsAK5PF")
+#    process.puJetMva.jets = cms.InputTag("selectedPatJetsAK5PF")
 
 
 
