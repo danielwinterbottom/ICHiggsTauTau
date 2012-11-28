@@ -27,11 +27,8 @@
 
 ICGenTauProductProducer::ICGenTauProductProducer(const edm::ParameterSet& iConfig) {
   produces<std::vector<unsigned> >("selectGenParticles");
-  merge_labels_ = iConfig.getUntrackedParameter<std::vector<std::string> >("mergeLabels");
-  std::cout << "Info in <ICGenTauProductProducer>: Picking up GenTau requests from the following modules:" << std::endl;
-  for (unsigned i = 0; i < merge_labels_.size(); ++i) {
-    std::cout << "-- " << merge_labels_[i] << std::endl;
-  }
+  input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
+
 }
 
 
@@ -71,7 +68,7 @@ void ICGenTauProductProducer::produce(edm::Event& iEvent, const edm::EventSetup&
 
 
   edm::Handle<reco::GenParticleCollection> partCollection;
-  iEvent.getByLabel(edm::InputTag("genParticles", "", "SIM"), partCollection); 
+  iEvent.getByLabel(input_label_, partCollection); 
   if(partCollection->size()==0) return;
   std::vector<const reco::GenParticle *> daughters ; 
 

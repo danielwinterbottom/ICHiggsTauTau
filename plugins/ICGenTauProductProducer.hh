@@ -31,6 +31,6 @@ class ICGenTauProductProducer : public edm::EDProducer {
       virtual void FindDecayProducts(const reco::GenParticle* theParticle, std::vector<const reco::GenParticle *> &container);
 
       // ----------member data ---------------------------
-      std::vector<std::string> merge_labels_;
+      edm::InputTag input_label_;
       
 };

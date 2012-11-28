@@ -42,7 +42,7 @@ ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& iConfig) {
   status_2_pt_ = iConfig.getUntrackedParameter<double>("addAllStatus2PtThreshold");
   status_3_pt_ = iConfig.getUntrackedParameter<double>("addAllStatus3PtThreshold");
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
-  override_collection_ = iConfig.getUntrackedParameter<std::string>("overrideCollection");
+  input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
 
   for (unsigned i = 0; i < status_1_str_.size(); ++i){
     status_1_regex_.push_back(boost::regex(status_1_str_[i]));
@@ -80,7 +80,7 @@ ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& iConfig) {
     std::cout << "-- Addition of other status 3 GenParticles is switched off" << std::endl;
   }
 
-  if (override_collection_ != "") std::cout << "Override label is " << override_collection_ << std::endl;
+  //if (override_collection_ != "") std::cout << "Override label is " << override_collection_ << std::endl;
 }
 
 
@@ -97,9 +97,9 @@ void ICGenParticleProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
   boost::hash<reco::GenParticle const*> hasher;
 
   edm::Handle<reco::GenParticleCollection> partCollection;
-  std::string collection = "SIM";
-  if (override_collection_ != "") collection = override_collection_;
-  iEvent.getByLabel(edm::InputTag("genParticles","",collection),partCollection);
+  //std::string collection = "SIM";
+  //if (override_collection_ != "") collection = override_collection_;
+  iEvent.getByLabel(input_label_,partCollection);
   if (partCollection->size() == 0) return;
   const reco::GenParticle *ptr_to_first  = &((partCollection->at(0)));
   

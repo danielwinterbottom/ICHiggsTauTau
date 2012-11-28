@@ -278,23 +278,8 @@ if (release == '53X'):
     #process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X")
     from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X import mvaMetPairs
 else:
-    process.load("JetMETCorrections.METPUSubtraction.mvaPFMET_leptons_42X_cff")
-#    process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons")
-    from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X import mvaMetPairs
-
-if (release == '42X'):
-  process.pfMEtMVA.inputFileNames = cms.PSet(
-      DPhi = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetphi_42.root'),
-      CovU2 = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetu2cov_42.root'),
-      U = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmet_42.root'),
-      CovU1 = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetu1cov_42.root')
-      )
-  mvaMetPairs.inputFileNames = cms.PSet(
-      DPhi = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetphi_42.root'),
-      CovU2 = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetu2cov_42.root'),
-      U = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmet_42.root'),
-      CovU1 = cms.FileInPath('JetMETCorrections/METPUSubtraction/data/gbrmetu1cov_42.root')
-      )
+    process.load("RecoMET.METProducers.mvaPFMET_cff_leptons")
+    process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons")
 
 process.mvaMetPairsMT = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('selectedPatMuons'),
@@ -360,6 +345,20 @@ if isData:
 else:
   process.calibratedAK5PFJetsForPFMEtMVA.correctors = cms.vstring("ak5PFL1FastL2L3")
 
+if (release == '42X'):
+  process.pfMEtMVA.inputFileNames = cms.PSet(
+      DPhi = cms.FileInPath('pharris/MVAMet/data/gbrmetphi_42.root'),
+      CovU2 = cms.FileInPath('pharris/MVAMet/data/gbrmetu2cov_42.root'),
+      U = cms.FileInPath('pharris/MVAMet/data/gbrmet_42.root'),
+      CovU1 = cms.FileInPath('pharris/MVAMet/data/gbrmetu1cov_42.root')
+      )
+  process.pfMEtAllPairsMVA.inputFileNames = cms.PSet(
+      DPhi = cms.FileInPath('pharris/MVAMet/data/gbrmetphi_42.root'),
+      CovU2 = cms.FileInPath('pharris/MVAMet/data/gbrmetu2cov_42.root'),
+      U = cms.FileInPath('pharris/MVAMet/data/gbrmet_42.root'),
+      CovU1 = cms.FileInPath('pharris/MVAMet/data/gbrmetu1cov_42.root')
+      )
+
 process.patPFMetByMVA = process.patMETs.clone(
     metSource = cms.InputTag('pfMEtMVA'),
     addMuonCorrections = cms.bool(False),
@@ -408,14 +407,14 @@ process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingW
 ################################################################
 ### Configuration of MVA PU Jet ID
 ################################################################
-if (release == '53X' or release == '42X'):
+if (release == '53X'):
     process.load("RecoJets.JetProducers.pujetidsequence_cff")
     process.puJetId.jets = cms.InputTag("ak5PFJets")
     process.puJetMva.jets = cms.InputTag("ak5PFJets")
-# else:
-#    process.load("CMGTools.External.pujetidsequence_cff")
-#    process.puJetId.jets = cms.InputTag("selectedPatJetsAK5PF")
-#    process.puJetMva.jets = cms.InputTag("selectedPatJetsAK5PF")
+else:
+    process.load("CMGTools.External.pujetidsequence_cff")
+    process.puJetId.jets = cms.InputTag("selectedPatJetsAK5PF")
+    process.puJetMva.jets = cms.InputTag("selectedPatJetsAK5PF")
 
 
 
@@ -461,13 +460,13 @@ if (release == '53X'):
       "PoolSource",
       fileNames = cms.untracked.vstring(
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
-        #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
-        'file:/afs/cern.ch/work/a/agilbert/CMSSW_TEST/Embedding/CMSSW_5_3_4/src/test/mc_embedded.root'
+        'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
+        #'file:/afs/cern.ch/work/a/agilbert/CMSSW_TEST/Embedding/CMSSW_5_3_4/src/test/mc_embedded.root'
       )
     )
     process.GlobalTag.globaltag = cms.string('START53_V10::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 if (release == '42X'):
@@ -652,7 +651,7 @@ process.icGenJetProducer = cms.EDProducer('ICGenJetProducer',
 )
 process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     branchName = cms.untracked.string("genParticles"),
-    overrideCollection = cms.untracked.string(""),
+    inputLabel = cms.InputTag("genParticles","","SIM"),
     mergeLabels = cms.untracked.vstring(
         'icPFJetProducer',
         #'icJPTJetProducer',
@@ -672,15 +671,17 @@ process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     addAllStatus3Regex = cms.untracked.vstring('.*'),
     addAllStatus3PtThreshold = cms.untracked.double(0.0)
 )
+if release == '42X':
+  process.icGenParticleProducer.inputLabel = cms.InputTag("genParticles","","HLT")
 
 
 process.icEmbeddedGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     branchName = cms.untracked.string("genParticlesEmbedded"),
-    overrideCollection = cms.untracked.string("EmbeddedRECO"),
+    inputLabel = cms.InputTag("genParticles","","EmbeddedRECO"),
     mergeLabels = cms.untracked.vstring(
         ),
-    storeMothers = cms.untracked.bool(False),
-    storeDaughters = cms.untracked.bool(False),
+    storeMothers = cms.untracked.bool(True),
+    storeDaughters = cms.untracked.bool(True),
     addAllStatus1 = cms.untracked.bool(True),
     addAllStatus1Regex = cms.untracked.vstring('.*'),
     addAllStatus1PtThreshold = cms.untracked.double(0.0),
@@ -692,6 +693,28 @@ process.icEmbeddedGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     addAllStatus3PtThreshold = cms.untracked.double(0.0)
 )
 
+process.icGenTauProductProducer = cms.EDProducer('ICGenTauProductProducer',
+  inputLabel = cms.InputTag("genParticles","","SIM"),
+  )
+
+process.icTauGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
+    branchName = cms.untracked.string("genParticlesTaus"),
+    inputLabel = cms.InputTag("genParticles","","SIM"),
+    mergeLabels = cms.untracked.vstring('icGenTauProductProducer'),
+    storeMothers = cms.untracked.bool(True),
+    storeDaughters = cms.untracked.bool(True),
+    addAllStatus1 = cms.untracked.bool(False),
+    addAllStatus1Regex = cms.untracked.vstring('.*'),
+    addAllStatus1PtThreshold = cms.untracked.double(0.0),
+    addAllStatus2 = cms.untracked.bool(False),
+    addAllStatus2Regex = cms.untracked.vstring('.*'),
+    addAllStatus2PtThreshold = cms.untracked.double(0.0),
+    addAllStatus3 = cms.untracked.bool(False),
+    addAllStatus3Regex = cms.untracked.vstring('.*'),
+    addAllStatus3PtThreshold = cms.untracked.double(0.0)
+)
+if release == '42X':
+  process.icTauGenParticleProducer.inputLabel = cms.InputTag("genParticles","","HLT")
 
 process.icPileupInfoProducer = cms.EDProducer('ICPileupInfoProducer')
 
@@ -723,6 +746,8 @@ process.icMCSequence = cms.Sequence(
   process.icPileupInfoProducer
   +process.icGenJetProducer
   +process.icGenParticleProducer
+  +process.icGenTauProductProducer
+  +process.icTauGenParticleProducer
   )
 
 process.icEmbeddedSequence = cms.Sequence(
