@@ -1073,6 +1073,15 @@ if release == '42X':
 process.extra53XSequence = cms.Sequence()
 if release == '53X':
   process.extra53XSequence += (process.softElectronCands)
+  process.updateHPSPFTaus += process.hpsPFTauDiscriminationByCombinedIsolationSeqDBSumPtCorr3Hits
+  process.updateHPSPFTaus += (
+      process.hpsPFTauDiscriminationByMVA3rawElectronRejection
+      +process.hpsPFTauDiscriminationByMVA3LooseElectronRejection
+      +process.hpsPFTauDiscriminationByMVA3MediumElectronRejection
+      +process.hpsPFTauDiscriminationByMVA3TightElectronRejection
+      +process.hpsPFTauDiscriminationByMVA3VTightElectronRejection
+      +process.hpsPFTauDiscriminationByDeadECALElectronRejection
+      )
 
 process.mcSequence = cms.Sequence()
 if not isData:
@@ -1096,3 +1105,5 @@ process.p = cms.Path(
   +process.patPFMetByMVA
   +process.icSequence
   )
+
+#print process.dumpPython()

@@ -41,23 +41,17 @@ void ICGenTauProductProducer::FindDecayProducts(const reco::GenParticle* thePart
 {
   if(theParticle)
   {  
-    if(theParticle->status()==1)
-    { 
-      container.push_back(theParticle);
-      return;
-    }
-    else
-    { 
-      unsigned int nDaughters=theParticle->numberOfDaughters();
-      for(unsigned j=0; j<nDaughters; j++)
-      {
-         const reco::Candidate * d=theParticle->daughter(j);
-         if((static_cast<const reco::GenParticle*>(d))->numberOfDaughters() > 0)
-         {
-           container.push_back(static_cast<const reco::GenParticle*>(d));
-         }
-         FindDecayProducts( static_cast<const reco::GenParticle*>(d) , container);
-      }
+    container.push_back(theParticle);
+
+    unsigned int nDaughters=theParticle->numberOfDaughters();
+    for(unsigned j=0; j<nDaughters; j++)
+    {
+       const reco::Candidate * d=theParticle->daughter(j);
+       // if((static_cast<const reco::GenParticle*>(d))->numberOfDaughters() > 0)
+       // {
+       //   container.push_back(static_cast<const reco::GenParticle*>(d));
+       // }
+       FindDecayProducts( static_cast<const reco::GenParticle*>(d) , container);
     }
   }
 }
