@@ -77,6 +77,9 @@ class HttVbfCategory : public ModuleBase {
   TMVA::Reader *reader;
   std::vector<float> vbfvars;
 
+  Dynamic2DHistoSet * hset2d_;
+
+
 
  public:
   HttVbfCategory(std::string const& name, std::string const& jets_label);

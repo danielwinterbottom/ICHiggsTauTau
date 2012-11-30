@@ -111,6 +111,11 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     double beta = -1.0;
     double beta_max = -1.0;
     double trk_pt_total = 0.0;
+
+    int charged_multiplicity = 0;
+    int charged_multiplicity_nopu = 0;
+    float linear_radial_moment_nopu = 0.0;
+
     std::vector<double> pt_at_vtx_vec(vertexCollection->size(), 0.0);
 
     if (trackCollection->size() > 0) {
@@ -120,10 +125,16 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::vector<reco::PFCandidatePtr> const & pfcands = iter->getPFConstituents();
       for (unsigned i = 0; i < pfcands.size(); ++i) {
         if (pfcands[i]->trackRef().isNonnull()) {
+          ++charged_multiplicity;
           unsigned idx = unsigned(&(*(pfcands[i]->trackRef())) - ptr_first);
           trk_pt_total += pfcands[i]->trackRef()->pt();
           // Is track associated to a vertex?
           if (trk_vtx_map.count(idx) > 0) {
+            // If this track is mapped to the first PV, increase number of nopu charged multiplicity
+            if (trk_vtx_map.find(idx)->second == 0) {
+              ++charged_multiplicity_nopu;
+              linear_radial_moment_nopu += pfcands[i]->pt() * deltaR(iter->rapidity(), iter->phi(), pfcands[i]->rapidity(), pfcands[i]->phi());
+            }
             pt_at_vtx_vec[trk_vtx_map.find(idx)->second] += pfcands[i]->trackRef()->pt();
           } else { // No, so is it within 0.2 cm wrt the closest vertex in z
             std::vector<double> dz_with_vtx(vertexCollection->size(), 0.0);
@@ -133,6 +144,12 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
             std::vector<double>::const_iterator min = std::min_element(dz_with_vtx.begin(),dz_with_vtx.end());
             if (min != dz_with_vtx.end()) {
               if (*min < 0.2) {
+                // As above, if this track is not associated to any vertex, but is within 0.2 cm of first
+                // PV, then increase multiplicity count
+                if (unsigned(min-dz_with_vtx.begin()) == 0) {
+                  ++charged_multiplicity_nopu;
+                  linear_radial_moment_nopu += pfcands[i]->pt() * deltaR(iter->rapidity(), iter->phi(), pfcands[i]->rapidity(), pfcands[i]->phi());
+                }
                 pt_at_vtx_vec[unsigned(min-dz_with_vtx.begin())] += pfcands[i]->trackRef()->pt();
               }
             } 
@@ -141,6 +158,8 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
             jet_tracks->push_back(idx);
             trks.push_back(track_hasher(&(*(pfcands[i]->trackRef()))));
           }
+        } else { // No track found, assume PF candidate is not PU;
+          linear_radial_moment_nopu += pfcands[i]->pt() * deltaR(iter->rapidity(), iter->phi(), pfcands[i]->rapidity(), pfcands[i]->phi());
         }
       }
       jet.set_constituent_tracks(trks);
@@ -174,7 +193,9 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       observed_btag_[b_discr.at(i).first] = CityHash64(b_discr.at(i).first);
     }
 
-
+    linear_radial_moment_nopu = linear_radial_moment_nopu / iter->pt();
+    jet.set_linear_radial_moment(linear_radial_moment_nopu);
+    jet.set_charged_multiplicity_nopu(charged_multiplicity_nopu);
   }
   iEvent.put(jet_particles, "selectGenParticles");
   iEvent.put(jet_tracks, "selectTracks");

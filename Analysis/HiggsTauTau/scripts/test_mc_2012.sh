@@ -18,10 +18,13 @@ else
 fi
 echo $CONFIG
 
-FILELIST=filelists/Oct2/Data_53X
+FILELIST=filelists/Oct2/MC_53X
+PATHS=(
+'VBF_HToTauTau_M-125'
+)
+ for i in "${PATHS[@]}"
+ do
 
-# Data
- echo "Data"
- #./bin/HiggsTauTau --cfg=$CONFIG --filelist=filelist.dat --input_path="$PWD" --mode=0 --outfolder=./ --do_svfit=false --output=Data_ElecTau_2012.root
- ./bin/HiggsTauTau --cfg=$CONFIG --max_events=200 --filelist=filelist.dat --input_path="$PWD/"  --mode=1 --outfolder=./ --do_svfit=false --output=MC_TEST_2012.root
- wait 
+ ./bin/HiggsTauTau --cfg=$CONFIG --max_events=-1 --filelist=$FILELIST/"$i"_mutauSkim_IC_filelist.dat --mode=1 --outfolder=./ --do_svfit=false --output=MC_TEST_2012.root
+
+ done

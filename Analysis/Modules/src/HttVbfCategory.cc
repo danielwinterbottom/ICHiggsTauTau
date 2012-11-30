@@ -114,6 +114,10 @@ namespace ic {
     vbf_loose_plots_[2] = new HttPlots(fs_->mkdir("vbfloose_os_con"));
     vbf_loose_plots_[3] = new HttPlots(fs_->mkdir("vbfloose_ss_con"));
 
+    hset2d_ = new Dynamic2DHistoSet(fs_->mkdir("vbf_extra"));
+    hset2d_->Create("twojet__jeta1_vs_jeta2", 40, -5, 5, 40, -5, 5);
+    hset2d_->Create("vbf__jeta1_vs_jeta2", 40, -5, 5, 40, -5, 5);
+
     if (make_mva_tree_) {
       lOFile = new TFile(mva_name_.c_str(),"RECREATE");
       lOFile->cd();
@@ -230,12 +234,17 @@ namespace ic {
           nonvbf_jets[i]->eta() < eta_high) cjv_jets.push_back(nonvbf_jets[i]);
      }
 
+
+
+
     // Apply CJV if requested
     if (cjv_jets.size() > 0 && do_cjv_) {
       //std::cout << "Event " << eventInfo->event() << " fails CJV!" << std::endl;
       event->ForceAdd("cat_status", cat_status);
       return 2; // Event fails, but don't stop processing
     }
+
+    hset2d_->Fill("twojet__jeta1_vs_jeta2", vbf_jets[0]->eta(), vbf_jets[1]->eta(), wt);
 
     // Calculate the mva variables
     float mvaValue = 0.0;
@@ -420,6 +429,9 @@ namespace ic {
 
     //Do Plotting for passing
     vbf_yields_[sel_mode] += wt;
+
+    hset2d_->Fill("vbf__jeta1_vs_jeta2", vbf_jets[0]->eta(), vbf_jets[1]->eta(), wt);
+
 
     if (fs_ && sel_mode < 4) {
       vbf_plots_[sel_mode]->FillVbfMvaPlots(mjj, dEta, dPhi, vDiTau.Pt(), vDiJet.Pt(), dPhi_hj, C1, C2, mvaValue, wt);

@@ -154,7 +154,11 @@ namespace ic {
       inline std::vector<std::size_t> const& constituent_tracks() const { return constituent_tracks_; }
       inline void set_constituent_tracks(std::vector<std::size_t> const& constituent_tracks) { constituent_tracks_ = constituent_tracks; }
 
+      inline int const& charged_multiplicity_nopu() const { return charged_multiplicity_nopu_; }
+      inline void set_charged_multiplicity_nopu(int const& charged_multiplicity_nopu) { charged_multiplicity_nopu_ = charged_multiplicity_nopu; }
 
+      inline float const& linear_radial_moment() const { return linear_radial_moment_; }
+      inline void set_linear_radial_moment(float const& linear_radial_moment) { linear_radial_moment_ = linear_radial_moment; }
 
     private:
       int muon_multiplicity_;
@@ -187,6 +191,9 @@ namespace ic {
       // bool pu_id_mva_tight_;
 
       std::vector<std::size_t> constituent_tracks_;
+
+      float linear_radial_moment_;
+      int charged_multiplicity_nopu_;
 
 
   };

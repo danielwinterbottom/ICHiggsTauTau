@@ -215,10 +215,6 @@ else:
       jetIdLabel = "ak5"
       )
 
-# if not (release == '42X'):
-#   process.inclusiveSecondaryVertexFinderTagInfos.useExternalSV = cms.bool(False)
-#   process.inclusiveSecondaryVertexFinderTagInfosAK5PF.useExternalSV = cms.bool(False)
-#   process.inclusiveSecondaryVertexFinderTagInfosAOD.useExternalSV = cms.bool(False)
 process.patJets.embedGenPartonMatch = cms.bool(False)
 #process.patJetsAK5JPT.embedGenPartonMatch = cms.bool(False)
 process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
@@ -236,8 +232,6 @@ if isData:
 else:
   process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3")
   process.patMETsPF.addGenMET = cms.bool(True)
-### If PFMET uses type-1 corrected by default, switch back to ordinary
-### PFMET, as type-1 corrected appears not to fill the covariance matrix
 
 
 ################################################################
@@ -284,13 +278,12 @@ else:
 process.mvaMetPairsMT = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('selectedPatMuons'),
   srcLeg2 = cms.InputTag('selectedPatTaus'),
-  leg1Pt = cms.double(15.0),
+  leg1Pt = cms.double(7.0),  ## Need to drop this lower now to accommodate mu+tau+MET trigger
   leg1Eta = cms.double(2.6),
   leg2Pt = cms.double(18.0),
   leg2Eta = cms.double(2.6),
-  minDeltaR = cms.double(0.5)
+  minDeltaR = cms.double(0.49)
   )
-
 process.mvaMetPairsET = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('selectedPatElectrons'),
   srcLeg2 = cms.InputTag('selectedPatTaus'),
@@ -298,9 +291,8 @@ process.mvaMetPairsET = mvaMetPairs.clone(
   leg1Eta = cms.double(2.6),
   leg2Pt = cms.double(18.0),
   leg2Eta = cms.double(2.6),
-  minDeltaR = cms.double(0.5)
+  minDeltaR = cms.double(0.49)
   )
-
 process.mvaMetPairsEM = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('selectedPatElectrons'),
   srcLeg2 = cms.InputTag('selectedPatMuons'),
@@ -308,9 +300,8 @@ process.mvaMetPairsEM = mvaMetPairs.clone(
   leg1Eta = cms.double(2.6),
   leg2Pt = cms.double(9.5),
   leg2Eta = cms.double(2.6),
-  minDeltaR = cms.double(0.3)
+  minDeltaR = cms.double(0.29)
   )
-
 process.mvaMetPairsMM = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('selectedPatMuons'),
   srcLeg2 = cms.InputTag('selectedPatMuons'),
@@ -320,7 +311,6 @@ process.mvaMetPairsMM = mvaMetPairs.clone(
   leg2Eta = cms.double(2.6),
   minDeltaR = cms.double(0.0)
   )
-
 process.mvaMetPairsEE = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('selectedPatElectrons'),
   srcLeg2 = cms.InputTag('selectedPatElectrons'),
@@ -334,12 +324,10 @@ process.mvaMetPairsEE = mvaMetPairs.clone(
 process.pfMEtMVAsequence += process.mvaMetPairsMT
 process.pfMEtMVAsequence += process.mvaMetPairsET
 process.pfMEtMVAsequence += process.mvaMetPairsEM
-
 if isZStudy:
   process.pfMEtMVAsequence += process.mvaMetPairsMM
   process.pfMEtMVAsequence += process.mvaMetPairsEE
 
-#process.pfMEtAllPairsMVA.srcLeptons =  cms.VInputTag( 'selectedPatElectrons', 'selectedPatMuons', 'selectedPatTaus' )
 if isData:
   process.calibratedAK5PFJetsForPFMEtMVA.correctors = cms.vstring("ak5PFL1FastL2L3Residual")
 else:
@@ -365,12 +353,14 @@ process.patPFMetByMVA = process.patMETs.clone(
     genMETSource = cms.InputTag('genMetTrue'),
     addGenMET = cms.bool(False)
 )
-# process.patPFMetAllPairsByMVA = process.patMETs.clone(
-#     metSource = cms.InputTag('mvaMetPairsMT'),
-#     addMuonCorrections = cms.bool(False),
-#     genMETSource = cms.InputTag('genMetTrue'),
-#     addGenMET = cms.bool(False)
-# )
+
+process.patmetNoHF = process.patMETs.clone(
+    metSource = cms.InputTag('metNoHF'),
+    addMuonCorrections = cms.bool(False),
+    genMETSource = cms.InputTag('genMetTrue'),
+    addGenMET = cms.bool(False)
+)
+
 
 #--------------------------------------------------------------------------------
 # produce PFMET significance cov. matrix
@@ -401,7 +391,6 @@ process.pfMEtSignCovMatrix = cms.EDProducer("PFMEtSignCovMatrixProducer",
   )
 )
 process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingWithLeptons + process.pfCandsNotInJetForPFMEtSignCovMatrix + process.pfMEtSignCovMatrix)
-
 
 
 ################################################################
@@ -451,7 +440,7 @@ if (release == '53X'):
       fileNames = cms.untracked.vstring(
         #'file:/Volumes/Storage/samples/TauPlusX-2012C-PromptReco-v1-Sample.root'
         #'file:/Volumes/Storage/samples/DoubleMu-2012C-24Aug2012-v1-Sample.root'
-        'file:/Volumes/Storage/samples/DoubleElectron-2012C-24Aug2012-v1-Sample.root'
+        'file:/Volumes/Storage/samples/TauPlusX-2012D.root'
       )
     )
     process.GlobalTag.globaltag = cms.string('GR_P_V42_AN2::All')
@@ -460,13 +449,13 @@ if (release == '53X'):
       "PoolSource",
       fileNames = cms.untracked.vstring(
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
-        'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
-        #'file:/afs/cern.ch/work/a/agilbert/CMSSW_TEST/Embedding/CMSSW_5_3_4/src/test/mc_embedded.root'
+        #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
+        'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
       )
     )
     process.GlobalTag.globaltag = cms.string('START53_V10::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 if (release == '42X'):
@@ -600,6 +589,13 @@ process.icPfMVAMetProducer = cms.EDProducer('ICMetProducer',
     InputSig = cms.untracked.string("")
     )
 
+process.icMetNoHFProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patmetNoHF"),
+    branchName = cms.untracked.string("metNoHF"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
 process.icPfAllPairsMVAMetProducer = cms.EDProducer('ICMetVectorProducer',
     mergeLabels = cms.untracked.vstring(
         'mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM'
@@ -726,6 +722,16 @@ process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
 
 process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer')
 
+process.icL1ExtraMETProducer = cms.EDProducer('ICL1ExtraEtMissProducer',
+  branchName = cms.untracked.string("l1extraMET"),
+  inputLabel = cms.InputTag("l1extraParticles","MET","RECO")
+  )
+
+process.icL1ExtraMuonsProducer = cms.EDProducer('ICL1ExtraMuonProducer',
+  branchName = cms.untracked.string("l1extraMuons"),
+  inputLabel = cms.InputTag("l1extraParticles","","RECO")
+  )
+
 process.icSequence = cms.Sequence(
   process.icElectronProducer
   +process.icMuonProducer
@@ -736,6 +742,16 @@ process.icSequence = cms.Sequence(
   +process.icTauProducer
   +process.icVertexProducer
   +process.icEventInfoProducer
+  )
+
+### Add an extra sequence for Mu+Tau+MET trigger in 2012D data
+if release == '53X':
+  process.icSequence += (
+    process.icL1ExtraMETProducer
+    +process.icL1ExtraMuonsProducer
+    +process.patmetNoHF
+    +process.icMetNoHFProducer
+
   )
 
 process.icDataSequence = cms.Sequence(
@@ -876,7 +892,7 @@ if (release == '42X' and not isData):
     )
 
 ################################################################
-## Define 2012 et,mt,em physics triggers for data
+## Define 2012 et,mt,em,mtmet physics triggers for data
 ################################################################
 if (release == '53X' and isData):
   process.icEle20RhoLooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
@@ -909,6 +925,11 @@ if (release == '53X' and isData):
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
       StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
+  process.icMu8LooseTau20L1ETM26ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsMu8LooseTau20L1ETM26"),
+      hltPath = cms.untracked.string("HLT_Mu8_eta2p1_LooseIsoPFTau20_L1ETM26_v"),
+      StoreOnlyIfFired = cms.untracked.bool(False)
+      )
   process.icTriggerSequence += (
     process.icEle20RhoLooseTau20ObjectProducer
     +process.icEle22WP90RhoLooseTau20ObjectProducer
@@ -916,10 +937,11 @@ if (release == '53X' and isData):
     +process.icIsoMu17LooseTau20ObjectProducer
     +process.icMu8Ele17ObjectProducer
     +process.icMu17Ele8ObjectProducer
+    +process.icMu8LooseTau20L1ETM26ObjectProducer
     )
 
 ################################################################
-## Define 2012 et,mt,em physics triggers for mc
+## Define 2012 et,mt,em,mtmet physics triggers for mc
 ################################################################
 if ((release == '53X') and (not isData)):
   process.icEle22WP90RhoLooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
@@ -942,11 +964,17 @@ if ((release == '53X') and (not isData)):
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
       StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
+  process.icMu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsMu8"),
+      hltPath = cms.untracked.string("HLT_Mu8_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )
   process.icTriggerSequence += (
     process.icEle22WP90RhoLooseTau20ObjectProducer
     +process.icIsoMu17LooseTau20ObjectProducer
     +process.icMu8Ele17ObjectProducer
     +process.icMu17Ele8ObjectProducer
+    +process.icMu8ObjectProducer
     )
 
 

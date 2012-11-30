@@ -204,8 +204,8 @@ int main(int argc, char* argv[]){
         yield_plots[j]->SetBinContent(b, yield);
         yield_plots[j]->SetBinError(b, yield_err);
       }
-      //yield_plots[j]->GetXaxis()->SetBinLabel(b, boost::lexical_cast<std::string>(run).c_str());
-      yield_plots[j]->GetXaxis()->SetBinLabel(b, (boost::lexical_cast<std::string>(int(lumi_map[run])) + " pb^{-1}").c_str());
+      yield_plots[j]->GetXaxis()->SetBinLabel(b, boost::lexical_cast<std::string>(run).c_str());
+      //yield_plots[j]->GetXaxis()->SetBinLabel(b, (boost::lexical_cast<std::string>(int(lumi_map[run])) + " pb^{-1}").c_str());
     }
   }
 
