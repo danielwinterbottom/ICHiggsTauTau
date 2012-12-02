@@ -101,7 +101,7 @@ if (release == '42X'):
   process.patDefaultSequence.remove(process.patShrinkingConePFTauDiscrimination)
   process.patDefaultSequence.remove(process.patCaloTauDiscrimination)
 
-switchToPFTauHPS(process)
+#switchToPFTauHPS(process)
 
 from PhysicsTools.SelectorUtils.pvSelector_cfi import pvSelector
 process.goodOfflinePrimaryVertices = cms.EDFilter(
@@ -1101,15 +1101,6 @@ if release == '42X':
 process.extra53XSequence = cms.Sequence()
 if release == '53X':
   process.extra53XSequence += (process.softElectronCands)
-  process.updateHPSPFTaus += process.hpsPFTauDiscriminationByCombinedIsolationSeqDBSumPtCorr3Hits
-  process.updateHPSPFTaus += (
-      process.hpsPFTauDiscriminationByMVA3rawElectronRejection
-      +process.hpsPFTauDiscriminationByMVA3LooseElectronRejection
-      +process.hpsPFTauDiscriminationByMVA3MediumElectronRejection
-      +process.hpsPFTauDiscriminationByMVA3TightElectronRejection
-      +process.hpsPFTauDiscriminationByMVA3VTightElectronRejection
-      +process.hpsPFTauDiscriminationByDeadECALElectronRejection
-      )
 
 process.mcSequence = cms.Sequence()
 if not isData:
