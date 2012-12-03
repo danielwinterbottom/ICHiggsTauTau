@@ -221,17 +221,29 @@ process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
 process.patElectrons.embedGenMatch = cms.bool(False)
 process.patMuons.embedGenMatch = cms.bool(False)
 
+################################################################
+### Set up METs
+################################################################
 if (release == '42X'):
   process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
   process.metAnalysisSequence=cms.Sequence(process.producePFMETCorrections)
 addPfMET(process, 'PF')
+
+# PAT will try and use type-1 corrected MET by default in 53X, here
+# we force it to use the uncorrected pfMet
 process.patMETsPF.metSource  = cms.InputTag("pfMet")
+
 if isData:
   process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual")
   process.patMETsPF.addGenMET = cms.bool(False)
 else:
   process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3")
   process.patMETsPF.addGenMET = cms.bool(True)
+
+process.patMETsPFType1 = process.patMETsPF.clone(
+  metSource  = cms.InputTag("pfType1CorrectedMet"),
+  addGenMET = cms.bool(False)
+  )
 
 
 ################################################################
@@ -448,9 +460,9 @@ if (release == '53X'):
     process.source = cms.Source(
       "PoolSource",
       fileNames = cms.untracked.vstring(
-        #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+        'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
-        'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
+        #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
       )
     )
     process.GlobalTag.globaltag = cms.string('START53_V10::All')
@@ -581,6 +593,13 @@ process.icPfMetProducer = cms.EDProducer('ICMetProducer',
     )
 if isData:
   process.icPfMetProducer.addGen = cms.untracked.bool(False)
+
+process.icPfMetType1Producer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patMETsPFType1"),
+    branchName = cms.untracked.string("pfMetType1"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
 
 process.icPfMVAMetProducer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patPFMetByMVA"),
@@ -751,7 +770,8 @@ if release == '53X':
     +process.icL1ExtraMuonsProducer
     +process.patmetNoHF
     +process.icMetNoHFProducer
-
+    +process.patMETsPFType1
+    +process.icPfMetType1Producer
   )
 
 process.icDataSequence = cms.Sequence(
@@ -952,7 +972,7 @@ if ((release == '53X') and (not isData)):
   process.icIsoMu17LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsIsoMu17LooseTau20"),
       hltPath = cms.untracked.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      StoreOnlyIfFired = cms.untracked.bool(False) # Always need this trigger information for tau part of mtmet
       )    
   process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
@@ -1089,6 +1109,48 @@ if (release == '53X' and (not isData) and isZStudy):
     )
 
 
+################################################################
+## Define 2012 Hinv physics triggers for mc
+################################################################
+if (release == '53X' and (not isData)):
+  process.icDiPFJet40PFMETnoMu65MJJ600VBFLeadingJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiPFJet40PFMETnoMu65MJJ600VBFLeadingJets"), 
+      hltPath = cms.untracked.string("HLT_DiPFJet40_PFMETnoMu65_MJJ600VBF_LeadingJets_v"), 
+      StoreOnlyIfFired = cms.untracked.bool(True) 
+      ) 
+
+  process.icDiPFJet40PFMETnoMu65MJJ800VBFAllJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets"), 
+      hltPath = cms.untracked.string("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"), 
+      StoreOnlyIfFired = cms.untracked.bool(True) 
+      ) 
+
+  process.icDiPFJetAve80ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiPFJetAve80"), 
+      hltPath = cms.untracked.string("HLT_DiPFJetAve80_v"), 
+      StoreOnlyIfFired = cms.untracked.bool(True) 
+      ) 
+
+  process.icDiPFJetAve40ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiPFJetAve40"), 
+      hltPath = cms.untracked.string("HLT_DiPFJetAve40_v"), 
+      StoreOnlyIfFired = cms.untracked.bool(True) 
+      ) 
+
+  process.icL1ETM40ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsL1ETM40"), 
+      hltPath = cms.untracked.string("HLT_L1ETM40"), 
+      StoreOnlyIfFired = cms.untracked.bool(True) 
+      ) 
+  process.icTriggerSequence += ( 
+    process.icDiPFJet40PFMETnoMu65MJJ600VBFLeadingJetsObjectProducer 
+    +process.icDiPFJet40PFMETnoMu65MJJ800VBFAllJetsObjectProducer 
+    +process.icDiPFJetAve80ObjectProducer 
+    +process.icDiPFJetAve40ObjectProducer 
+    +process.icL1ETM40ObjectProducer 
+    )
+
+
 process.icSequence += process.icTriggerSequence
  
 process.icEventProducer = cms.EDProducer('ICEventProducer')
@@ -1125,4 +1187,4 @@ process.p = cms.Path(
   +process.icSequence
   )
 
-#print process.dumpPython()
+# print process.dumpPython()
