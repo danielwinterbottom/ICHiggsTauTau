@@ -3,19 +3,18 @@
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include <string>
 
 namespace ic {
 
 class HttMCTriggerFilter : public ModuleBase {
  private:
-  CLASS_MEMBER(HttMCTriggerFilter, unsigned, mode)
-  CLASS_MEMBER(HttMCTriggerFilter, bool, is_2012)
-  CLASS_MEMBER(HttMCTriggerFilter, unsigned, era)
+  CLASS_MEMBER(HttMCTriggerFilter, ic::channel, channel)
+  CLASS_MEMBER(HttMCTriggerFilter, ic::mc, mc)
   CLASS_MEMBER(HttMCTriggerFilter, bool, do_obj_match)
   CLASS_MEMBER(HttMCTriggerFilter, std::string, lep1label)
   CLASS_MEMBER(HttMCTriggerFilter, std::string, lep2label)
-
 
   std::string trig_obj_label_;
   std::string elmu_filter_;

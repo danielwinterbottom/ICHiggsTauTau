@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 
 #include <string>
 #include "TMVA/Reader.h"
@@ -34,7 +35,7 @@ class HttVbfCategory : public ModuleBase {
   double btag_jet_eta_;
 
 
-  CLASS_MEMBER(HttVbfCategory, unsigned, mode)
+  CLASS_MEMBER(HttVbfCategory, ic::channel, channel)
   CLASS_MEMBER(HttVbfCategory, fwlite::TFileService *, fs)
 
   CLASS_MEMBER(HttVbfCategory, double, jet_pt)
@@ -62,7 +63,7 @@ class HttVbfCategory : public ModuleBase {
   CLASS_MEMBER(HttVbfCategory, std::string, met_label)
 
   CLASS_MEMBER(HttVbfCategory, bool, use_hcp_mva)
-  CLASS_MEMBER(HttVbfCategory, bool, is_2012)
+  CLASS_MEMBER(HttVbfCategory, ic::era, era)
 
 
   std::vector<HttPlots *> twojet_plots_;

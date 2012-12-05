@@ -7,7 +7,7 @@
 #include "TFile.h"
 #include "TMVA/Reader.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SVFitService.h"
-
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 
 #include <string>
 
@@ -145,13 +145,13 @@ class HttSync : public ModuleBase {
   int   lNJets;
   int   lNJetsPt20;
 
-  unsigned mode_;
+  ic::channel channel_;
   TMVA::Reader *reader;
   std::vector<float> vbfvars;
 
 
  public:
-  HttSync(std::string const& name, std::string const& output_name, int mode);
+  HttSync(std::string const& name, std::string const& output_name, ic::channel channel);
   virtual ~HttSync();
 
   virtual int PreAnalysis();

@@ -5,11 +5,10 @@
 
 namespace ic {
 
-  HttNoBTagCategory::HttNoBTagCategory(std::string const& name, std::string const& jets_label) : ModuleBase(name) {
+  HttNoBTagCategory::HttNoBTagCategory(std::string const& name, std::string const& jets_label) : ModuleBase(name) , channel_(channel::et) {
 
     btag_jet_pt_ = 20.0;
     btag_jet_eta_ = 2.4;
-    mode_ = 0;
     do_met_cut_ = true;
     met_cut_ = 15.0;
     jets_label_ = jets_label;
@@ -30,7 +29,7 @@ namespace ic {
     std::cout << "PreAnalysis Info for HTT nobtag Category" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "b-Jet Veto: [Pt > " << btag_jet_pt_ << "] [|Eta| < " << btag_jet_eta_ << "]" << std::endl;
-    if (do_met_cut_ && mode_ == 0) std::cout << "Applying [MET > " << met_cut_ << "]" << std::endl;
+    if (do_met_cut_ && channel_ == channel::et) std::cout << "Applying [MET > " << met_cut_ << "]" << std::endl;
     nobtag_plots_[0] = new HttPlots(fs_->mkdir("nobtag_os_sel"));
     nobtag_plots_[1] = new HttPlots(fs_->mkdir("nobtag_ss_sel"));
     nobtag_plots_[2] = new HttPlots(fs_->mkdir("nobtag_os_con"));
@@ -61,7 +60,7 @@ namespace ic {
      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
      double wt = eventInfo->total_weight();
      Met const* pfMVAMet = event->GetPtr<Met>(met_label_);
-     if (mode_ == 0 && do_met_cut_ && pfMVAMet->pt() < met_cut_) {
+     if (channel_ == channel::et && do_met_cut_ && pfMVAMet->pt() < met_cut_) {
       event->ForceAdd("cat_status", cat_status);
       return 2;
      }

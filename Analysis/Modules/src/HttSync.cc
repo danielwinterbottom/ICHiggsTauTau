@@ -9,9 +9,8 @@
 
 namespace ic {
 
-  HttSync::HttSync(std::string const& name, std::string const& output_name, int mode) : ModuleBase(name) {
+  HttSync::HttSync(std::string const& name, std::string const& output_name, ic::channel channel) : ModuleBase(name), channel_(channel) {
     output_name_ = output_name;
-    mode_ = mode;
     jet_eta_ = 4.7;
     is_embedded_ = false;
     reader = new TMVA::Reader( "!Color:!Silent" );
@@ -28,7 +27,7 @@ namespace ic {
     reader->AddVariable("C1", &vbfvars[6]);
     reader->AddVariable("C2", &vbfvars[7]);
     std::string file = "data/vbf_mva/VBFMVA_BDTG.weights.xml";
-    if (mode_ == 2) file = "data/vbf_mva/VBFMVA_EMu_BDTG.weights.xml";
+    if (channel_ == channel::em) file = "data/vbf_mva/VBFMVA_EMu_BDTG.weights.xml";
     reader->BookMVA("BDTG", file);
 
     select_sel_mode_ = -1;
@@ -251,7 +250,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
 
     lMVis = dilepton.at(0)->M();
 
-    if (mode_ == 0) {
+    if (channel_ == channel::et) {
       if (event->Exists("svfitMass")) {
         lMSV = event->Get<double>("svfitMass");
       } else {
@@ -277,7 +276,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lPassIso2 = true;
       lMt2 = MT(htau, selectedMet);
 
-    } else if (mode_ == 1) {
+    } else if (channel_ == channel::mt) {
       if (event->Exists("svfitMass")) {
         lMSV = event->Get<double>("svfitMass");
       } else {
@@ -302,7 +301,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lPassId2 = true;
       lPassIso2 = true;
       lMt2 = MT(htau, selectedMet);
-    } else if (mode_ == 2) {
+    } else if (channel_ == channel::em) {
       if (event->Exists("svfitMass")) {
         lMSV = event->Get<double>("svfitMass");
       } else {

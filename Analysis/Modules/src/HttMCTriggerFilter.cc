@@ -12,11 +12,9 @@
 
 namespace ic {
 
-  HttMCTriggerFilter::HttMCTriggerFilter(std::string const& name) : ModuleBase(name) {
-    mode_ = 0; 
-    is_2012_ = true;
-    do_obj_match_ = false;
-    era_ = 0;
+  HttMCTriggerFilter::HttMCTriggerFilter(std::string const& name) : ModuleBase(name),
+    channel_(channel::et), mc_(mc::fall11_42X) {
+    do_obj_match_ = true;
   }
 
   HttMCTriggerFilter::~HttMCTriggerFilter() {
@@ -26,80 +24,47 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for HttMCTriggerFilter" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Mode: " << mode_ << std::endl;
-    std::cout << "Is 2012?: " << is_2012_ << std::endl;
-    std::cout << "Era: " << era_ << std::endl;
+    std::cout << "Channel: " << Channel2String(channel_) << std::endl;
+    std::cout << "MC: " << MC2String(mc_) << std::endl;
     std::cout << "Require match to HLT object: " << do_obj_match_ << std::endl;
     std::cout << "1st Lepton Collection: " << lep1label_ << std::endl;
     std::cout << "2nd Lepton Collection: " << lep2label_ << std::endl;
 
-    /*
-53X MC:    
-HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v17
-HLT_Mu17_Mu8_v17
-    */
-
-
-    if (mode_ == 0) {
-      //2011
-      trig_obj_label_ = "triggerObjectsEle18MediumTau20";
-      elmu_filter_ = "hltEle18CaloIdVTCaloIsoTTrkIdTTrkIsoTTrackIsoFilter";
-      tau_filter_ = "hltPFTauMediumIso20TrackMediumIso";
-      if (is_2012_) {
-        // 52X ICHEP
-        if (era_ == 0) {
-          trig_obj_label_ = "triggerObjectsEle20RhoLooseTau20";
-          elmu_filter_ = "hltEle20CaloIdVTCaloIsoTTrkIdTTrkIsoTTrackIsoFilterL1IsoEG18OrEG20";
-          tau_filter_ = "hltPFTauIsoEleVertex20";
-        // 53X ICHEP or 53X HCP
-        } else if (era_ == 1 || era_ == 2) {
-          trig_obj_label_ = "triggerObjectsEle22WP90RhoLooseTau20";
-          elmu_filter_ = "hltEle22WP90RhoTrackIsoFilter";
-          tau_filter_ = "hltIsoElePFTau20TrackLooseIso";
-        }
+    if (channel_ == channel::et) {
+      if (mc_ == mc::fall11_42X) {
+        trig_obj_label_   = "triggerObjectsEle18MediumTau20";
+        elmu_filter_      = "hltEle18CaloIdVTCaloIsoTTrkIdTTrkIsoTTrackIsoFilter";
+        tau_filter_       = "hltPFTauMediumIso20TrackMediumIso";
+      } else if (mc_ == mc::summer12_53X) {
+        trig_obj_label_   = "triggerObjectsEle22WP90RhoLooseTau20";
+        elmu_filter_      = "hltEle22WP90RhoTrackIsoFilter";
+        tau_filter_       = "hltIsoElePFTau20TrackLooseIso";
       }
-    } else if (mode_ == 1) {
-      //2011
-      trig_obj_label_ = "triggerObjectsIsoMu15LooseTau15";
-      elmu_filter_ = "hltSingleMuIsoL3IsoFiltered15";
-      tau_filter_ = "hltPFTau15TrackLooseIso";
-      if (is_2012_) {
-        // 52X ICHEP
-        if (era_ == 0) {
-          trig_obj_label_ = "triggerObjectsIsoMu18LooseTau20";
-          elmu_filter_ = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f18QL3crIsoFiltered10";
-          tau_filter_ = "hltPFTau20IsoMuVertex";
-        // 53X ICHEP OR 53X HCP
-        } else if (era_ == 1 || era_ == 2) {
-         trig_obj_label_ = "triggerObjectsIsoMu17LooseTau20";
-         elmu_filter_ = "hltL3crIsoL1sMu14erORMu16erL1f0L2f14QL3f17QL3crIsoRhoFiltered0p15";
-         tau_filter_ = "hltIsoMuPFTau20TrackLooseIso";
-        }
+    } else if (channel_ == channel::mt) {
+      if (mc_ == mc::fall11_42X) {
+        trig_obj_label_   = "triggerObjectsIsoMu15LooseTau15";
+        elmu_filter_      = "hltSingleMuIsoL3IsoFiltered15";
+        tau_filter_       = "hltPFTau15TrackLooseIso";
+      } else if (mc_ == mc::summer12_53X) {
+        trig_obj_label_   = "triggerObjectsIsoMu17LooseTau20";
+        elmu_filter_      = "hltL3crIsoL1sMu14erORMu16erL1f0L2f14QL3f17QL3crIsoRhoFiltered0p15";
+        tau_filter_       = "hltIsoMuPFTau20TrackLooseIso";
       }
-    } else if (mode_ == 2) {
-      // 2011
-      mulow_label_ = "triggerObjectsMu8Ele17";
-      muhigh_label_ = "triggerObjectsMu17Ele8";
-      mulow_mu_ = "hltL1MuOpenEG12L3Filtered8";
-      mulow_el_ = "hltMu8Ele17CaloIdTCaloIsoVLPixelMatchFilter";
-      muhigh_mu_ = "hltL1Mu12EG5L3MuFiltered17";
-      muhigh_el_ = "hltMu17Ele8CaloIdTPixelMatchFilter";
-      if (is_2012_) {
-        if (era_ == 0) {
-          mulow_label_ = "triggerObjectsMu8Ele17";
-          muhigh_label_ = "triggerObjectsMu17Ele8";
-          mulow_mu_ = "hltL1MuOpenEG12L3Filtered8";
-          mulow_el_ = "hltMu8Ele17CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
-          muhigh_mu_ = "hltL1Mu12EG7L3MuFiltered17";
-          muhigh_el_ = "hltMu17Ele8CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
-        } else if (era_ == 1 || era_ == 2) {
-          mulow_label_ = "triggerObjectsMu8Ele17";
-          muhigh_label_ = "triggerObjectsMu17Ele8";
-          mulow_mu_ = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8";
-          mulow_el_ = "hltMu8Ele17CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
-          muhigh_mu_ = "hltL1Mu12EG7L3MuFiltered17";
-          muhigh_el_ = "hltMu17Ele8CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
-        }
+    } else if (channel_ == channel::em) {
+      if (mc_ == mc::fall11_42X) {
+        mulow_label_      = "triggerObjectsMu8Ele17";
+        muhigh_label_     = "triggerObjectsMu17Ele8";
+        mulow_mu_         = "hltL1MuOpenEG12L3Filtered8";
+        mulow_el_         = "hltMu8Ele17CaloIdTCaloIsoVLPixelMatchFilter";
+        muhigh_mu_        = "hltL1Mu12EG5L3MuFiltered17";
+        muhigh_el_        = "hltMu17Ele8CaloIdTPixelMatchFilter";
+      } else if (mc_ == mc::summer12_53X) {
+        mulow_label_      = "triggerObjectsMu8Ele17";
+        muhigh_label_     = "triggerObjectsMu17Ele8";
+        mulow_mu_         = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8";
+        mulow_el_         = "hltMu8Ele17CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
+        muhigh_mu_        = "hltL1Mu12EG7L3MuFiltered17";
+        muhigh_el_        = "hltMu17Ele8CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
       }
     }
     return 0;
@@ -108,21 +73,19 @@ HLT_Mu17_Mu8_v17
   int HttMCTriggerFilter::Execute(TreeEvent *event) {
 
     if (do_obj_match_) {
-      if (mode_ == 0) {
+      if (channel_ == channel::et) {
         std::vector<Electron *> & elmus = event->GetPtrVec<Electron>(lep1label_);
         std::vector<Tau *> & taus = event->GetPtrVec<Tau>(lep2label_);
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
         ic::erase_if(elmus, !boost::bind(IsFilterMatched, _1, objs, elmu_filter_, 0.5));
         ic::erase_if(taus, !boost::bind(IsFilterMatched, _1, objs, tau_filter_, 0.5));
-      } else if (mode_ == 1) {
-    
+      } else if (channel_ == channel::mt) {
         std::vector<Muon *> & elmus = event->GetPtrVec<Muon>(lep1label_);
         std::vector<Tau *> & taus = event->GetPtrVec<Tau>(lep2label_);
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
         ic::erase_if(elmus, !boost::bind(IsFilterMatched, _1, objs, elmu_filter_, 0.5));
         ic::erase_if(taus, !boost::bind(IsFilterMatched, _1, objs, tau_filter_, 0.5));
-      } else if (mode_ == 2) {
-
+      } else if (channel_ == channel::em) {
         std::vector<Electron *> & elecs = event->GetPtrVec<Electron>(lep1label_);
         std::vector<Muon *> & muons = event->GetPtrVec<Muon>(lep2label_);
         std::vector<TriggerObject *> const& mulow_objs = event->GetPtrVec<TriggerObject>(mulow_label_);

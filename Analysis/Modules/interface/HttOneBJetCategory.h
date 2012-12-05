@@ -5,6 +5,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+
 #include <string>
 #include "TEfficiency.h"
 
@@ -25,7 +27,7 @@ class HttOneBJetCategory : public ModuleBase {
 
   CLASS_MEMBER(HttOneBJetCategory, bool, high_pt)
   CLASS_MEMBER(HttOneBJetCategory, fwlite::TFileService*, fs)
-  CLASS_MEMBER(HttOneBJetCategory, unsigned, mode)
+  CLASS_MEMBER(HttOneBJetCategory, ic::channel, channel)
   CLASS_MEMBER(HttOneBJetCategory, bool, apply_special_mode)
   CLASS_MEMBER(HttOneBJetCategory, unsigned, special_min)
   CLASS_MEMBER(HttOneBJetCategory, unsigned, special_max)

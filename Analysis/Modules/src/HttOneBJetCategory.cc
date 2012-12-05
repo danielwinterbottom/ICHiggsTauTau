@@ -5,12 +5,11 @@
 
 namespace ic {
 
-  HttOneBJetCategory::HttOneBJetCategory(std::string const& name, std::string const& jets_label) : ModuleBase(name) {
+  HttOneBJetCategory::HttOneBJetCategory(std::string const& name, std::string const& jets_label) : ModuleBase(name), channel_(channel::et) {
     jet_pt_ = 30.0;
     jet_eta_ = 4.7;
     btag_jet_pt_ = 20.0;
     btag_jet_eta_ = 2.4;
-    mode_ = 0;
     apply_special_mode_ = false;
     special_min_ = 1;
     special_max_ = 1;
@@ -79,7 +78,7 @@ namespace ic {
     std::vector<CompositeCandidate*> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
     double lep2_pt = dilepton.at(0)->GetCandidate("lepton2")->pt();
     double lep2_pt_cut = 40.0;
-    if (mode_ == 2) lep2_pt_cut = 35.0;
+    if (channel_ == channel::em) lep2_pt_cut = 35.0;
     if ( (high_pt_ && lep2_pt < lep2_pt_cut) || (!high_pt_ && lep2_pt >= lep2_pt_cut) ) {
       event->ForceAdd("cat_status", cat_status);
       return 2;
@@ -157,7 +156,7 @@ namespace ic {
     //   std::vector<GenJet *> & genjets = event->GetPtrVec<GenJet>("genJets");
     //   ic::erase_if(genjets,!boost::bind(MinPtMaxEta, _1, 10.0, 5.0));
     //   std::vector<std::pair<PFJet*, GenJet*> > matches = MatchByDR(btag_jets, genjets, 0.5, true, true);
-    //   if (matches.size() > 0) total_btagged_real_ += (double(btag_jets.size()) * wt);
+    //   if (matches.size() > 0) total_btagged_real_ += (doubl e(btag_jets.size()) * wt);
     //   ic::erase_if(btag_jets, !boost::bind(&PFJet::pu_id_mva_loose, _1));
     //   pu_id_btagged_ += (double(btag_jets.size()) * wt);
     //   if (matches.size() > 0) pu_id_btagged_real_ += (double(btag_jets.size()) * wt);

@@ -5,31 +5,27 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagWeight.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include <string>
 
-#define MEMBER_NP(type,name)                                                \
-    private:                                                                \
-      type name##_;                                                         \
-    public:                                                                 \
-      virtual HttWeights & set_##name(type const& name) {name##_ = name; return *this; }
 
 namespace ic {
 
 class HttWeights : public ModuleBase {
  private:
-  MEMBER_NP(unsigned, mode)
-  MEMBER_NP(bool, is_2012)
-  MEMBER_NP(bool, do_trg_weights)
-  MEMBER_NP(bool, trg_applied_in_mc)
-  MEMBER_NP(bool, do_etau_fakerate)
-  MEMBER_NP(bool, do_idiso_weights)
-  MEMBER_NP(bool, do_emu_e_fakerates)
-  MEMBER_NP(bool, do_emu_m_fakerates)
-  MEMBER_NP(bool, do_top_factors)
-  MEMBER_NP(bool, do_btag_weight)
-  MEMBER_NP(std::string, ggh_mass)
-  MEMBER_NP(bool, do_w_soup)
-  MEMBER_NP(unsigned, era)
+  CLASS_MEMBER(HttWeights, ic::channel, channel)
+  CLASS_MEMBER(HttWeights, ic::mc, mc)
+  CLASS_MEMBER(HttWeights, ic::era, era)
+  CLASS_MEMBER(HttWeights, bool, do_trg_weights)
+  CLASS_MEMBER(HttWeights, bool, trg_applied_in_mc)
+  CLASS_MEMBER(HttWeights, bool, do_etau_fakerate)
+  CLASS_MEMBER(HttWeights, bool, do_idiso_weights)
+  CLASS_MEMBER(HttWeights, bool, do_emu_e_fakerates)
+  CLASS_MEMBER(HttWeights, bool, do_emu_m_fakerates)
+  CLASS_MEMBER(HttWeights, bool, do_top_factors)
+  CLASS_MEMBER(HttWeights, bool, do_btag_weight)
+  CLASS_MEMBER(HttWeights, std::string, ggh_mass)
+  CLASS_MEMBER(HttWeights, bool, do_w_soup)
 
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;

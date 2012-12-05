@@ -15,9 +15,10 @@
 
 namespace ic {
 
-  HttWeights::HttWeights(std::string const& name) : ModuleBase(name) {
-    mode_               = 0;
-    is_2012_            = true;
+  HttWeights::HttWeights(std::string const& name) : ModuleBase(name),
+    channel_(channel::et),
+    mc_(mc::summer12_53X),
+    era_(era::data_2012_moriond) {
     do_trg_weights_     = false;
     trg_applied_in_mc_  = false;
     do_etau_fakerate_   = false;
@@ -28,7 +29,6 @@ namespace ic {
     do_btag_weight_     = false;
     do_w_soup_          = false;
     ggh_mass_           = "";
-    era_                = 2; // HCP
   }
 
   HttWeights::~HttWeights() {
@@ -39,9 +39,9 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for HttWeights" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Mode: " << mode_ << std::endl;
-    std::cout << "Era: " << era_ << std::endl;
-    std::cout << "Is 2012?: " << is_2012_ << std::endl;
+    std::cout << "Channel: " << Channel2String(channel_) << std::endl;
+    std::cout << "Era: " << Era2String(era_) << std::endl;
+    std::cout << "MC: " << MC2String(mc_) << std::endl;
     std::cout << "Do Trg Weights?: \t\t" << do_trg_weights_ << std::endl;
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
     std::cout << "Do ID/iso weights?: \t\t" << do_idiso_weights_ << std::endl;
@@ -67,7 +67,7 @@ namespace ic {
     hist_muTauSF2011PFTau15MC = (TH2D*)gDirectory->Get("LooseIsoPFTau15PtEtaMC");
 
     if (do_emu_e_fakerates_ || do_emu_m_fakerates_) {
-      if (is_2012_) {
+      if (era_ >= era::data_2012_ichep) {
         ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_12ifb.root");
         MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_12ifb.root");
       } else {
@@ -137,7 +137,7 @@ namespace ic {
     if (do_top_factors_) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-      if (is_2012_) {
+      if (era_ >= era::data_2012_ichep) {
         double top_factor = 1.0; // For 0-jet we'll scale by 0.97 in the datacard creation
         if (jets.size() == 1) top_factor = 0.97938; // 0.097938 * 0.97 = 0.95
         if (jets.size() > 1) top_factor = 0.90721; // 0.90721 * 0.97 = 0.88
@@ -152,13 +152,13 @@ namespace ic {
       //double inclusive_btag_weight = btag_weight.GetWeight(jets, "CSVM", 1, 99, is_2012_);
       double no_btag_weight = 1.0;
       double inclusive_btag_weight = 1.0;
-      btag_weight.ReTag(jets, is_2012_);
+      btag_weight.ReTag(jets, mc_ == mc::summer12_53X);
       event->Add("no_btag_weight", no_btag_weight);
       event->Add("inclusive_btag_weight", inclusive_btag_weight);
     }
 
     if (do_trg_weights_) {
-      if (mode_ == 0) {
+      if (channel_ == channel::et) {
         // 2011 Triggers
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
@@ -170,47 +170,24 @@ namespace ic {
         double tau_trg = 1.0;
         double ele_trg_mc = 1.0;
         double tau_trg_mc = 1.0;
-        if (is_2012_) {
-          if (era_ == 0) {
-            if (fabs(sc_eta) < 1.479) {
-              double ele20_eb = Efficiency(pt, 20.97643939, 1.15196354, 2.27544602, 1.01743868, 2.04391816);
-              double ele22_eb = Efficiency(pt, 22.90752344, 1.32376429, 2.17813319, 1.03674051, 2.15454768);
-              ele_trg = (0.14 * ele20_eb) + (0.86 * ele22_eb);
-              ele_trg_mc = Efficiency(pt, 20.58604584, -1.89456806, 3.69311772, 1.05480046, 1.28655181);
-            } else {
-              double ele20_ee = Efficiency(pt, 20.59874300, 1.25425435, 1.61098921, 1.00146962, 60.35067579);
-              double ele22_ee = Efficiency(pt, 22.14553261, 1.19913124, 1.75642067, 1.00826962, 9.04331617);
-              ele_trg = (0.14 * ele20_ee) + (0.86 * ele22_ee);
-              ele_trg_mc = Efficiency(pt, 20.15425918, 0.75449122, 1.06027513, 1.01106686, 7.01956561);
-            }
-            if (fabs(eta) < 1.5) {
-              double tau20l1_eb = Efficiency(tpt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
-              double tau20l2_eb = Efficiency(tpt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
-              tau_trg = (0.14 * tau20l1_eb) + (0.86 * tau20l2_eb);
-              tau_trg_mc = Efficiency(tpt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
-            } else { // These are the sample as barrel values!
-              double tau20l1_eb = Efficiency(tpt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
-              double tau20l2_eb = Efficiency(tpt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
-              tau_trg = (0.14 * tau20l1_eb) + (0.86 * tau20l2_eb);
-              tau_trg_mc = Efficiency(tpt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
-            }
-          } else if (era_ == 1 || era_ == 2) {
+        if (mc_ == mc::summer12_53X) {
+          if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
             if (fabs(sc_eta) < 1.479) {
               double ele20A_eb = Efficiency(pt, 20.4669, 1.20429, 1.84954, 1.38645, 0.891122);
               double ele22B_eb = Efficiency(pt, 22.8618, 0.844755, 1.07941, 1.27956, 1.07722);
               double ele22C_eb = Efficiency(pt, 22.8598, 0.855666, 1.02951, 1.32713, 1.05486);
               ele_trg_mc = Efficiency(pt, 21.4136, 0.000422, 0.000002473, 1.42487, 1.00104);
-              if (era_ == 1) ele_trg = (0.14 * ele20A_eb) + (0.86 * ele22B_eb);
-              if (era_ == 2) ele_trg = (0.061 * ele20A_eb) + (0.373 * ele22B_eb) + (0.566 * ele22C_eb);
+              if (era_ == era::data_2012_ichep) ele_trg = (0.14 * ele20A_eb) + (0.86 * ele22B_eb);
+              if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) ele_trg = (0.061 * ele20A_eb) + (0.373 * ele22B_eb) + (0.566 * ele22C_eb);
             } else {
               double ele20A_ee = Efficiency(pt, 21.4136, 1.93922, 2.43562, 1.00186, 51.947);
               double ele22B_ee = Efficiency(pt, 22.1045, 1.08481, 0.780119, 1.91846, 0.962174);
               double ele22C_ee = Efficiency(pt, 21.7643, 1.45024, 0.785753, 3.14722, 0.926788);
               ele_trg_mc = Efficiency(pt, 20.9985, 0.002918, 0.000034313, 1.41479, 1.06506);
-              ele_trg = (0.14 * ele20A_ee) + (0.86 * ele22B_ee);
-              if (era_ == 2) ele_trg = (0.061 * ele20A_ee) + (0.373 * ele22B_ee) + (0.566 * ele22C_ee);
+              if (era_ == era::data_2012_ichep) ele_trg = (0.14 * ele20A_ee) + (0.86 * ele22B_ee);
+              if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) ele_trg = (0.061 * ele20A_ee) + (0.373 * ele22B_ee) + (0.566 * ele22C_ee);
             }
-            if (era_ == 1) {
+            if (era_ == era::data_2012_ichep) {
               if (fabs(eta) < 1.5) {
                 double tau20l1_eb = Efficiency(tpt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
                 double tau20l2_eb = Efficiency(tpt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
@@ -223,7 +200,7 @@ namespace ic {
                 tau_trg_mc = Efficiency(tpt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
               }
             }
-            if (era_ == 2) {
+            if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
               if (fabs(eta) < 1.5) {
                 tau_trg = Efficiency(tpt, 18.43442868, 2.08967536, 3.27357845, 6.96327309, 0.85564484);
                 tau_trg_mc = Efficiency(tpt, 18.40815138, 1.53235636, 3.55989632, 1.74542709, 0.90118450);
@@ -268,7 +245,7 @@ namespace ic {
         weight *= (ele_trg * tau_trg);
         event->Add("trigweight_1", ele_trg);
         event->Add("trigweight_2", tau_trg);
-      } else if (mode_ == 1) {
+      } else if (channel_ == channel::mt) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
         double m_eta = fabs(muon->eta());
@@ -280,31 +257,8 @@ namespace ic {
         double tau_trg = 1.0;
         double mu_trg_mc = 1.0;
         double tau_trg_mc = 1.0;
-        if (is_2012_) {
-          if (era_ == 0) {
-            if (fabs(m_eta) < 1.2) {
-              double mu18_eb = Efficiency(pt, 15.99983195,-0.39072829,0.28256338, 1.72861719, 0.95769408);
-              double mu17_eb = Efficiency(pt, 17.21270264,0.54997112, 1.02874912, 1.29646487, 0.96724273);
-              mu_trg = (0.14 * mu18_eb) + (0.86 * mu17_eb);
-              mu_trg_mc = Efficiency(pt, 16.99389526, -0.04080190, 0.00794730, 1.60377906, 0.99626161);
-            } else {
-              double mu18_ee = Efficiency(pt, 18.49754887, -0.16941614, 0.26076717, 1.05494469, 1.53819978);
-              double mu17_ee = Efficiency(pt, 15.98037640, 0.12062946, 0.02183977, 2.84751010, 0.83985656);
-              mu_trg = (0.14 * mu18_ee) + (0.86 * mu17_ee);  
-              mu_trg_mc = Efficiency(pt, 16.99065795, -0.11993730, 0.01384991, 2.38867304, 0.86552275);      
-            }
-            if (fabs(eta) < 1.5) {
-              double tau20l1_eb = Efficiency(tpt, 18.52262128, 1.85879597, 3.48843815, 1.15491294, 1.02489024);
-              double tau20l2_eb = Efficiency(tpt, 17.92648563, 1.96846742, 4.46406075, 1.02023992, 1.52260575);
-              tau_trg = (0.14 * tau20l1_eb) + (0.86 * tau20l2_eb);
-              tau_trg_mc = Efficiency(tpt, 18.86257072, 0.25680380, 0.16916101, 2.42931257, 0.89590264);
-            } else {
-              double tau20l1_ee = Efficiency(tpt, 18.90119559, 0.14025596, 0.14482632, 1.56126508, 0.81188198);
-              double tau20l2_ee = Efficiency(tpt, 18.59856420, 2.49132550, 10.99643595, 1.50651123, 0.87952970);
-              tau_trg = (0.14 * tau20l1_ee) + (0.86 * tau20l2_ee);
-              tau_trg_mc = Efficiency(tpt, 18.74764561, 1.82036845, 701.46994969, 101.57913480, 0.82547043);
-            }
-          } else if (era_ == 1 || era_ == 2) {
+        if (mc_ == mc::summer12_53X) {
+          if (era_ >= era::data_2012_ichep) {
             double mu18A = 1.0;
             double mu17B = 1.0;
             double mu17C = 1.0;
@@ -339,9 +293,9 @@ namespace ic {
               mu17C = Efficiency(pt, 15.9974, 0.000072034, 0.000000077, 1.5461, 0.87064);
               mu_trg_mc = Efficiency(pt, 15.997, 0.000087304, 0.000000054, 1.67934, 0.871415);
             }
-            if (era_ == 1) mu_trg = (0.14 * mu18A) + (0.86 * mu17B);
-            if (era_ == 2) mu_trg = (0.061 * mu18A) + (0.373 * mu17B) + (0.566 * mu17C);
-            if (era_ == 1) {
+            if (era_ == era::data_2012_ichep) mu_trg = (0.14 * mu18A) + (0.86 * mu17B);
+            if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) mu_trg = (0.061 * mu18A) + (0.373 * mu17B) + (0.566 * mu17C);
+            if (era_ == era::data_2012_ichep) {
               if (fabs(eta) < 1.5) {
                 double tau20l1_eb = Efficiency(tpt, 18.52262128, 1.85879597, 3.48843815, 1.15491294, 1.02489024);
                 double tau20l2_eb = Efficiency(tpt, 17.92648563, 1.96846742, 4.46406075, 1.02023992, 1.52260575);
@@ -354,7 +308,7 @@ namespace ic {
                 tau_trg_mc = Efficiency(tpt, 18.74764561, 1.82036845, 701.46994969, 101.57913480, 0.82547043);
               }
             }
-            if (era_ == 2) {
+            if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
               if (fabs(eta) < 1.5) {
                 tau_trg = Efficiency(tpt, 18.50940288, 1.62285299, 2.73232995, 1.79135412, 0.91481432);
                 tau_trg_mc = Efficiency(tpt, 18.80484409, 0.19082817, 0.19983010, 1.81979820, 0.93270649);
@@ -404,7 +358,7 @@ namespace ic {
         weight *= (mu_trg * tau_trg);
         event->Add("trigweight_1", mu_trg);
         event->Add("trigweight_2", tau_trg);
-      } else if (mode_ == 2) {
+      } else if (channel_ == channel::em) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
@@ -415,48 +369,8 @@ namespace ic {
         double m_trg_mc = 1.0;
         double e_trg = 1.0;
         double e_trg_mc = 1.0;
-        if (is_2012_) {
-          if (era_ == 0) {
-            if (m_eta < 0.8) {
-              if (m_pt <= 15.0)                { m_trg_mc = 0.9787; m_trg = 0.9716; }
-              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9808; m_trg = 0.9777; }
-              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9771; m_trg = 0.9784; }
-              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9686; m_trg = 0.9621; }
-              if (m_pt > 30.0)                 { m_trg_mc = 0.9115; m_trg = 0.9726; }
-            } else if (m_eta >= 0.8 && m_eta < 1.2) {
-              if (m_pt <= 15.0)                { m_trg_mc = 0.9375; m_trg = 0.9458; }
-              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9026; m_trg = 0.9319; }
-              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9555; m_trg = 0.9161; }
-              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9281; m_trg = 0.9489; }
-              if (m_pt > 30.0)                 { m_trg_mc = 0.8339; m_trg = 0.9111; }
-            } else {
-              if (m_pt <= 15.0)                { m_trg_mc = 0.9340; m_trg = 0.9100; }
-              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9400; m_trg = 0.9459; }
-              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9401; m_trg = 0.9291; }
-              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9262; m_trg = 0.9035; }
-              if (m_pt > 30.0)                 { m_trg_mc = 0.8117; m_trg = 0.9075; }
-            }
-            if (e_eta < 0.8) {
-              if (e_pt <= 15.0)                { e_trg_mc = 0.8067; e_trg = 0.7925;}
-              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.8919; e_trg = 0.9023;}
-              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9424; e_trg = 0.9213;}
-              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9459; e_trg = 0.9468;}
-              if (e_pt > 30.0)                 { e_trg_mc = 0.9616; e_trg = 0.9661;}
-            } else if (e_eta >= 0.8 && e_eta < 1.479) {
-              if (e_pt <= 15.0)                { e_trg_mc = 0.8496; e_trg = 0.7472;}
-              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9426; e_trg = 0.9299;}
-              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9845; e_trg = 0.9496;}
-              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9602; e_trg = 0.9796;}
-              if (e_pt > 30.0)                 { e_trg_mc = 0.9813; e_trg = 0.9795;}
-            } else {
-              if (e_pt <= 15.0)                { e_trg_mc = 0.8541; e_trg = 0.7378;} 
-              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9103; e_trg = 0.8869;}
-              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9550; e_trg = 0.9228;}
-              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9627; e_trg = 0.9550;}
-              if (e_pt > 30.0)                 { e_trg_mc = 0.9921; e_trg = 0.9751;}
-            }
-          }
-          if (era_ == 1) {
+        if (mc_ == mc::summer12_53X) {
+          if (era_ == era::data_2012_ichep) {
             if (m_eta < 0.8) {
               if (m_pt <= 15.0)                { m_trg_mc = 0.9873; m_trg = 0.9716; }
               if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9876; m_trg = 0.9777; }
@@ -496,7 +410,7 @@ namespace ic {
               if (e_pt > 30.0)                 { e_trg_mc = 0.9850; e_trg = 0.9751;}
             }
           }
-          if (era_ == 2) {
+          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
             if (m_eta < 0.8) {
               if (m_pt <= 15.0)                { m_trg_mc = 0.9873; m_trg = 0.9693; }
               if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9876; m_trg = 0.9659; }
@@ -571,26 +485,20 @@ namespace ic {
     }
 
     if (do_idiso_weights_) {
-      if (mode_ == 0) {
+      if (channel_ == channel::et) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = elec->pt();
         double sc_eta = fabs(elec->sc_eta());
         double ele_id = 1.0;
         double ele_iso = 1.0;
-        if (is_2012_) {
-          if (era_ == 0) {
-            if (pt > 20.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_id = 0.922; ele_iso = 0.974; }
-            if (pt > 20.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.898; ele_iso = 1.008; }
-            if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.964; ele_iso = 0.997; }
-            if (pt > 30.0 && sc_eta >= 1.479)               { ele_id = 0.958; ele_iso = 0.983; }
-          }
-          if (era_ == 1) {
+        if (mc_ == mc::summer12_53X) {
+          if (era_ == era::data_2012_ichep) {
             if (pt > 24.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_id = 0.9189; ele_iso = 0.9643; }
             if (pt > 24.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.8689; ele_iso = 0.9747; }
             if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9593; ele_iso = 0.9877; }
             if (pt > 30.0 && sc_eta >= 1.479)               { ele_id = 0.9223; ele_iso = 0.9938; }  
           }
-          if (era_ == 2) {
+          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
             if (pt > 24.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_id = 0.9130; ele_iso = 0.9602; }
             if (pt > 24.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.8509; ele_iso = 0.9661; }
             if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9567; ele_iso = 0.9858; }
@@ -607,22 +515,14 @@ namespace ic {
         event->Add("idweight_2", double(1.0));
         event->Add("isoweight_1", ele_iso);
         event->Add("isoweight_2", double(1.0));
-      } else if (mode_ == 1) {
+      } else if (channel_ == channel::mt) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double mu_id = 1.0;
         double mu_iso = 1.0;
-        if (is_2012_) {
-          if (era_ == 0) {
-            if (pt > 15.0 && pt <= 20.0 && m_eta < 1.6)   { mu_id = 0.989; mu_iso = 0.945; }
-            if (pt > 15.0 && pt <= 20.0 && m_eta >= 1.6)  { mu_id = 0.977; mu_iso = 1.047; }
-            if (pt > 20.0 && pt <= 30.0 && m_eta < 1.6)   { mu_id = 0.991; mu_iso = 1.005; }
-            if (pt > 20.0 && pt <= 30.0 && m_eta >= 1.6)  { mu_id = 0.974; mu_iso = 0.992; }
-            if (pt > 30.0 && m_eta < 1.6)                 { mu_id = 0.989; mu_iso = 0.993; }
-            if (pt > 30.0 && m_eta >= 1.6)                { mu_id = 0.989; mu_iso = 1.005; }
-          }
-          if (era_ == 1) {
+        if (mc_ == mc::summer12_53X) {
+          if (era_ == era::data_2012_ichep) {
             if (pt > 20.0 && pt <= 30.0 && m_eta < 0.8)                   { mu_id = 0.9884; mu_iso = 0.9753; }
             if (pt > 20.0 && pt <= 30.0 && m_eta >= 0.8 && m_eta < 1.2)   { mu_id = 0.9860; mu_iso = 0.9851; }
             if (pt > 20.0 && pt <= 30.0 && m_eta >= 1.2)                  { mu_id = 0.9920; mu_iso = 0.9964; }
@@ -630,7 +530,7 @@ namespace ic {
             if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9827; mu_iso = 0.9880; }
             if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9919; mu_iso = 1.0005; }
           }
-          if (era_ == 2) {
+          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
             if (pt > 20.0 && pt <= 30.0 && m_eta < 0.8)                   { mu_id = 0.9870; mu_iso = 0.9715; }
             if (pt > 20.0 && pt <= 30.0 && m_eta >= 0.8 && m_eta < 1.2)   { mu_id = 0.9837; mu_iso = 0.9826; }
             if (pt > 20.0 && pt <= 30.0 && m_eta >= 1.2)                  { mu_id = 0.9914; mu_iso = 0.9960; }
@@ -654,7 +554,7 @@ namespace ic {
         event->Add("idweight_2", double(1.0));
         event->Add("isoweight_1", mu_iso);
         event->Add("isoweight_2", double(1.0));
-      } else if (mode_ == 2) {
+      } else if (channel_ == channel::em) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
         double e_pt = elec->pt();
@@ -663,36 +563,8 @@ namespace ic {
         double m_eta = fabs(muon->eta());
         double m_idiso = 1.0;
         double e_idiso = 1.0;
-        if (is_2012_) {
-          if (era_ == 0) {
-            if (m_eta < 0.8) {
-              if (m_pt <= 15.0)                 m_idiso = 0.9675;
-              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9841;
-              if (m_pt > 20.0)                  m_idiso = 0.9890;
-            } else if (m_eta >= 0.8 && m_eta < 1.5) {
-              if (m_pt <= 15.0)                 m_idiso = 0.9902;
-              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9897;
-              if (m_pt > 20.0)                  m_idiso = 0.9910;
-            } else {
-              if (m_pt <= 15.0)                 m_idiso = 0.9956;
-              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9891;
-              if (m_pt > 20.0)                  m_idiso = 0.9924; 
-            }
-            if (e_eta < 0.8) {
-              if (e_pt <= 15.0)                 e_idiso = 0.8500;
-              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.9030;
-              if (e_pt > 20.0)                  e_idiso = 0.9562;
-            } else if (e_eta >= 0.8 && e_eta < 1.479) {
-              if (e_pt <= 15.0)                 e_idiso = 0.8995;
-              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.8623;
-              if (e_pt > 20.0)                  e_idiso = 0.9507;
-            } else {
-              if (e_pt <= 15.0)                 e_idiso = 0.6683;
-              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.7935;
-              if (e_pt > 20.0)                  e_idiso = 0.9584;
-            }
-          }
-          if (era_ == 1 || era_ == 2) {
+        if (mc_ == mc::summer12_53X) {
+          if (era_ >= era::data_2012_ichep) {
             if (m_eta < 0.8) {
               if (m_pt <= 15.0)                 m_idiso = 0.9845;
               if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9644;

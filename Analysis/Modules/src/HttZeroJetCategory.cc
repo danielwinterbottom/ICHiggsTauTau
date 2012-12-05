@@ -4,10 +4,9 @@
 
 namespace ic {
 
-  HttZeroJetCategory::HttZeroJetCategory(std::string const& name) : ModuleBase(name) {
+  HttZeroJetCategory::HttZeroJetCategory(std::string const& name) : ModuleBase(name), channel_(channel::et) {
     high_pt_ = false;
     fs_ = NULL;
-    mode_ = 0;
     do_met_cut_ = true;
     met_cut_ = 15.0;
     zerojet_plots_.resize(4);
@@ -29,7 +28,7 @@ namespace ic {
     std::cout << "PreAnalysis Info for HTT Zero Jet Category" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "HighPt Mode: [" << high_pt_ << "] Jet Veto: [Pt > " << veto_jet_pt_ << "] [|Eta| < " << veto_jet_eta_ << "]" << std::endl;
-   if (do_met_cut_ && mode_ == 0) std::cout << "Applying [MET > " << met_cut_ << "]" << std::endl;
+   if (do_met_cut_ && channel_ == channel::et) std::cout << "Applying [MET > " << met_cut_ << "]" << std::endl;
     std::string pt_cat_string = high_pt_ ? "zerojet_highpt" : "zerojet_lowpt";
     if (no_pt_split_) std::cout << "WARNING: NOT SPLITTING BY pT!" << std::endl;
     zerojet_plots_[0] = new HttPlots(fs_->mkdir(pt_cat_string+"_os_sel"));
@@ -50,7 +49,7 @@ namespace ic {
     std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
     double lep2_pt = dilepton.at(0)->GetCandidate("lepton2")->pt();
     double lep2_pt_cut = 40.0;
-    if (mode_ == 2) lep2_pt_cut = 35.0;
+    if (channel_ == channel::em) lep2_pt_cut = 35.0;
     if (!no_pt_split_) {
       if ( (high_pt_ && lep2_pt < lep2_pt_cut) || (!high_pt_ && lep2_pt >= lep2_pt_cut) ) {
         event->ForceAdd("cat_status", cat_status);
@@ -62,7 +61,7 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     double wt = eventInfo->total_weight();
     Met const* pfMVAMet = event->GetPtr<Met>(met_label_);
-    if (mode_ == 0 && do_met_cut_ && pfMVAMet->pt() < met_cut_) {
+    if (channel_ == channel::et && do_met_cut_ && pfMVAMet->pt() < met_cut_) {
      event->ForceAdd("cat_status", cat_status);
      return 2;
     }

@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "boost/filesystem.hpp"
 
 #include <string>
@@ -14,10 +15,11 @@ namespace ic {
 
 class SVFit : public ModuleBase {
  private:
+  unsigned mode_;
   boost::filesystem::path total_path_;
   std::map<std::string, double> mass_map;
  
-  CLASS_MEMBER(SVFit, unsigned, mode)
+  CLASS_MEMBER(SVFit, ic::channel, channel)
   CLASS_MEMBER(SVFit, int, op)
   CLASS_MEMBER(SVFit, std::string, outname)
   CLASS_MEMBER(SVFit, unsigned, split)

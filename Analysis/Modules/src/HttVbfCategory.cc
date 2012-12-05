@@ -7,8 +7,9 @@
 
 namespace ic {
 
-  HttVbfCategory::HttVbfCategory(std::string const& name, std::string const& jets_label) : ModuleBase(name) {
-    mode_ = 0;
+  HttVbfCategory::HttVbfCategory(std::string const& name, std::string const& jets_label) : ModuleBase(name),
+    channel_(channel::et),
+    era_(era::data_2012_moriond) {
     fs_ = NULL;
 
     jet_pt_ = 30.0;
@@ -26,7 +27,6 @@ namespace ic {
     do_cjv_ = true;
     make_plots_ = false;
     use_hcp_mva_ = true;
-    is_2012_ = true;
 
     do_btag_weight_ = false;
     
@@ -64,8 +64,8 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for HTT VBF Category" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Mode: [" << mode_ << "]" << std::endl;
-    std::cout << "is_2012?: [" << is_2012_ << "]" << std::endl;
+    std::cout << "Channel: " << Channel2String(channel_) << std::endl;
+    std::cout << "Era: " << Era2String(era_) << std::endl;
     if (do_vbf_mva_) std::cout << "Use HCP MVA?: [" << use_hcp_mva_ << "]" << std::endl;
     std::cout << "Jets: [" << jets_label_ << "] [Pt > " << jet_pt_ << "] [|eta| < " << jet_eta_ << "]" << std::endl;
     if (!do_vbf_mva_) std::cout << "VBF: [DeltaEta > " << vbf_delta_eta_ << "] [Mass > " << vbf_mass_ << "]" << std::endl;
@@ -89,14 +89,14 @@ namespace ic {
         reader->AddVariable("C1", &vbfvars[6]);
         reader->AddVariable("C2", &vbfvars[7]);
         file = "data/vbf_mva/VBFMVA_BDTG.weights.xml";
-        if (mode_ == 2) file = "data/vbf_mva/VBFMVA_EMu_BDTG.weights.xml";
+        if (channel_ == channel::em) file = "data/vbf_mva/VBFMVA_EMu_BDTG.weights.xml";
       } else {
         reader->AddVariable("mjj",  &vbfvars[0]);
         reader->AddVariable("dEta", &vbfvars[1]);
         reader->AddVariable("C1",   &vbfvars[6]);
         reader->AddVariable("C2",   &vbfvars[7]);
-        file = is_2012_ ? "data/vbf_mva/VBFMVA_BDTG_HCP_52X.weights.xml" : "data/vbf_mva/VBFMVA_BDTG_HCP_42X.weights.xml";
-        if (mode_ == 2) file = is_2012_ ? "data/vbf_mva/VBFMVA_EMu_BDTG_HCP_53X.weights.xml" : "data/vbf_mva/VBFMVA_EMu_BDTG_HCP_53X.weights.xml";
+        file = (era_ >= era::data_2012_ichep) ? "data/vbf_mva/VBFMVA_BDTG_HCP_52X.weights.xml" : "data/vbf_mva/VBFMVA_BDTG_HCP_42X.weights.xml";
+        if (channel_ == channel::em) file = (era_ >= era::data_2012_ichep) ? "data/vbf_mva/VBFMVA_EMu_BDTG_HCP_53X.weights.xml" : "data/vbf_mva/VBFMVA_EMu_BDTG_HCP_53X.weights.xml";
       }
       reader->BookMVA("BDTG", file);
     }
@@ -194,7 +194,7 @@ namespace ic {
       return 2; // Event fails, but don't stop processing
     }
 
-    if (mode_ == 2) {
+    if (channel_ == channel::em) {
       ic::erase_if(btag_jets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
       if (btag_jets.size() > 0) {
         event->ForceAdd("cat_status", cat_status);

@@ -12,10 +12,10 @@
 
 namespace ic {
 
-  SVFit::SVFit(std::string const& name) : ModuleBase(name) {
+  SVFit::SVFit(std::string const& name) : ModuleBase(name), channel_(channel::et) {
     //Add option to specify full path
     mode_ = 0;
-    op_ = 2;
+    op_ = 0;
     // 1: Produce scripts
     // 2: Read mass from .out files
     file_counter = 0;
@@ -33,6 +33,10 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for SVFit" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
+    if (channel_ == channel::et) mode_ = 0;
+    if (channel_ == channel::mt) mode_ = 1;
+    if (channel_ == channel::mtmet) mode_ = 1;
+    if (channel_ == channel::em) mode_ = 2;
     std::cout << "Mode: " << op_ << std::endl;
     std::cout << "Dilepton Label: " << dilepton_label_ << std::endl;
     std::cout << "MET Label: " << met_label_ << std::endl;

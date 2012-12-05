@@ -11,10 +11,8 @@
 
 namespace ic {
 
-  HttDataTriggerFilter::HttDataTriggerFilter(std::string const& name) : ModuleBase(name) {
-    mode_ = 0;
+  HttDataTriggerFilter::HttDataTriggerFilter(std::string const& name) : ModuleBase(name), channel_(channel::et) {
     do_obj_match_ = false;
-    dump_run_yield_ = false;
   }
 
   HttDataTriggerFilter::~HttDataTriggerFilter() {
@@ -25,13 +23,10 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for HttDataTriggerFilter" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Mode: " << mode_ << std::endl;
+    std::cout << "Channel: " << Channel2String(channel_) << std::endl;
     std::cout << "Require match to HLT object: " << do_obj_match_ << std::endl;
     std::cout << "1st Lepton Collection: " << lep1label_ << std::endl;
     std::cout << "2nd Lepton Collection: " << lep2label_ << std::endl;
-    if (dump_run_yield_) {
-      outFile.open("yield_per_run.txt");
-    }
     return 0;
   }
 
@@ -46,7 +41,7 @@ namespace ic {
     for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
       std::string name = triggerPathPtrVec[i]->name();
       triggerPathPtrVec[i]->prescale();
-      if (mode_ == 0) {
+      if (channel_ == channel::et) {
         // 2011 Triggers
         if (run >= 160404 && run <= 163869 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau15_v") != name.npos) path_found = true;
         if (run >= 165088 && run <= 167913 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v") != name.npos) path_found = true;
@@ -56,7 +51,7 @@ namespace ic {
         // 2012 Triggers
         if (run >= 190456 && run <= 193751 && name.find("HLT_Ele20_CaloIdVT_CaloIsoRhoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v") != name.npos) path_found = true; 
         if (run >= 193752/* && run <= xxxxx*/ && name.find("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v") != name.npos) path_found = true;          
-      } else if (mode_ == 1) {
+      } else if (channel_ == channel::mt) {
         //2011 Triggers
         if (run >= 160404 && run <= 163869 && name.find("HLT_IsoMu12_LooseIsoPFTau10_v") != name.npos) path_found = true;//215.634 pb
         if (run >= 165088 && run <= 173198 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) path_found = true; // 1787 pb
@@ -64,7 +59,7 @@ namespace ic {
         //2012 Triggers
         if (run >= 190456 && run <= 193751 && name.find("HLT_IsoMu18_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true;          
         if (run >= 193752/* && run <= xxxxx*/ && name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true;          
-      } else if (mode_ == 2) {
+      } else if (channel_ == channel::em) {
         // Look for Mu Low trigger first
         if (run >= 160404 && run <= 167913 && name.find("HLT_Mu8_Ele17_CaloIdL_v") != name.npos) path_found = true;
         if (run >= 170249 && run <= 180252 && name.find("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_v") != name.npos) path_found = true;
@@ -98,16 +93,12 @@ namespace ic {
       */
     }
 
-    if (path_found && dump_run_yield_) {
-      ++yields_[run];
-    }
-
     if (do_obj_match_ && path_found) {
       std::string trig_obj_label;
       std::string elmu_filter;
       std::string tau_filter;
 
-      if (mode_ == 0) {
+      if (channel_ == channel::et) {
         // 2011 Triggers
         if (run >= 160404 && run <= 163869) {
           trig_obj_label = "triggerObjectsEle15LooseTau15";
@@ -150,7 +141,7 @@ namespace ic {
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
         ic::erase_if(elmus, !boost::bind(IsFilterMatched, _1, objs, elmu_filter, 0.5));
         ic::erase_if(taus, !boost::bind(IsFilterMatched, _1, objs, tau_filter, 0.5));
-      } else if (mode_ == 1) {
+      } else if (channel_ == channel::mt) {
         // 2011 Triggers
         if (run >= 160404 && run <= 163869) {
           trig_obj_label = "triggerObjectsIsoMu12LooseTau10";
@@ -183,7 +174,7 @@ namespace ic {
         std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
         ic::erase_if(elmus, !boost::bind(IsFilterMatched, _1, objs, elmu_filter, 0.5));
         ic::erase_if(taus, !boost::bind(IsFilterMatched, _1, objs, tau_filter, 0.5));
-      } else if (mode_ == 2) {
+      } else if (channel_ == channel::em) {
         std::vector<Electron *> & elecs = event->GetPtrVec<Electron>(lep1label_);
         std::vector<Muon *> & muons = event->GetPtrVec<Muon>(lep2label_);
 
@@ -330,13 +321,6 @@ namespace ic {
   }
 
   int HttDataTriggerFilter::PostAnalysis() {
-    if (dump_run_yield_) {
-      std::map<unsigned,unsigned>::const_iterator it;
-      for (it = yields_.begin(); it != yields_.end(); ++it) {
-        outFile << it->first << ":" << it->second << std::endl;
-      }
-      outFile.close();
-    }
     return 0;
   }
 

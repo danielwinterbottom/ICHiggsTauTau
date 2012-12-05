@@ -42,6 +42,8 @@ namespace ic {
   bool ElectronSimpleWP85Iso(Electron const* elec);
   bool ElectronSimpleWP85ID(Electron const* elec);
   bool ElectronHTTIdIso(Electron const* elec, unsigned const& mode);
+  bool ElectronHTTId(Electron const* elec, bool loose_wp);
+
   bool HttEMuFakeElectron(Electron const* elec);
   bool HttEMuFakeMuon(Muon const* muon);
 

@@ -5,6 +5,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+
 
 #include <string>
 
@@ -12,7 +14,7 @@ namespace ic {
 
 class HttPairSelector : public ModuleBase {
  private:
-  CLASS_MEMBER(HttPairSelector, int, mode)
+  CLASS_MEMBER(HttPairSelector, ic::channel, channel)
   CLASS_MEMBER(HttPairSelector, std::string, pair_label)
   CLASS_MEMBER(HttPairSelector, std::string, met_label)
   CLASS_MEMBER(HttPairSelector, bool, mva_met_from_vector)

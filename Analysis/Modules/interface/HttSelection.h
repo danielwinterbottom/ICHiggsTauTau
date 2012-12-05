@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 
 #include <string>
 
@@ -21,8 +22,7 @@ class HttSelection : public ModuleBase {
   CLASS_MEMBER(HttSelection, double, pzeta_min_selection)
   CLASS_MEMBER(HttSelection, double, pzeta_max_control)
   CLASS_MEMBER(HttSelection, double, pzeta_alpha)
-  CLASS_MEMBER(HttSelection, int, mode)
-  CLASS_MEMBER(HttSelection, int, mssm_mode)
+  CLASS_MEMBER(HttSelection, ic::channel, channel)
   CLASS_MEMBER(HttSelection, bool, distinguish_os)
   CLASS_MEMBER(HttSelection, fwlite::TFileService*, fs)
 

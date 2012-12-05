@@ -10,8 +10,7 @@
 
 namespace ic {
 
-  HttPairSelector::HttPairSelector(std::string const& name) : ModuleBase(name) {
-    mode_ = 0;
+  HttPairSelector::HttPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et) {
     pair_label_ = "emtauCandidates";
     mva_met_from_vector_ = true;
     faked_tau_selector_ = 0;
@@ -37,10 +36,10 @@ namespace ic {
     std::cout << "Scale MET for Tau: " << scale_met_for_tau_ << std::endl;
     std::cout << "Tau Scale is: " << tau_scale_ << std::endl;
 
-    if (faked_tau_selector_ == 1 && mode_ != 2) {
+    if (faked_tau_selector_ == 1 && channel_ != channel::em) {
       std::cout << "Requring tau candidate matched to lepton!" << std::endl;
     }
-    if (faked_tau_selector_ == 2 && mode_ != 2) {
+    if (faked_tau_selector_ == 2 && channel_ != channel::em) {
       std::cout << "Requring tau candidate not matched to lepton!" << std::endl;
     }
     if (fs_) {
@@ -96,7 +95,7 @@ namespace ic {
     
     double max_tau_iso_os = -10.0;
     double max_tau_iso_ss = -10.0;
-    if (use_most_isolated_ && mode_ != 2) {
+    if (use_most_isolated_ && channel_ != channel::em) {
       for (unsigned i = 0; i < os_dilepton.size(); ++i) {
         Tau const* temp  = dynamic_cast<Tau const*>(os_dilepton[i]->GetCandidate("lepton2"));
         if (temp->GetTauID("byIsolationMVAraw") > max_tau_iso_os) {
@@ -165,15 +164,15 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if (faked_tau_selector_ > 0 && mode_ != 2) {
+    if (faked_tau_selector_ > 0 && channel_ != channel::em) {
       std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
       std::vector<GenParticle *> sel_particles;
-      if (mode_ == 0) {
+      if (channel_ == channel::et) {
         // Add all status 3 electrons with pT > 8 to sel_particles
         for (unsigned i = 0; i < particles.size(); ++i) {
           if (particles[i]->status() == 3 && abs(particles[i]->pdgid()) == 11 && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
         }
-      } else if (mode_ == 1) {
+      } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
         // Add all status 3 muons with pT > 8 to sel_particles
        for (unsigned i = 0; i < particles.size(); ++i) {
          if (particles[i]->status() == 3 && abs(particles[i]->pdgid()) == 13 && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);

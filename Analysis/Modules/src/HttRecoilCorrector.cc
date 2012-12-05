@@ -8,16 +8,16 @@
 
 namespace ic {
 
-  HttRecoilCorrector::HttRecoilCorrector(std::string const& name) : ModuleBase(name) {
+  HttRecoilCorrector::HttRecoilCorrector(std::string const& name) : ModuleBase(name), 
+    channel_(channel::et),
+    strategy_(strategy::moriond2013),
+    mc_(mc::summer12_53X) {
     dilepton_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
     jets_label_ = "pfJetsPFlow";
     sample_ = "";
-    mode_ = 0;
     disable = true;
-    is_2012_ = true;
     is_wjets_ = false;
-    era_ = 2;
   }
 
   HttRecoilCorrector::~HttRecoilCorrector() {
@@ -29,34 +29,55 @@ namespace ic {
     std::cout << "PreAnalysis Info for HTT Recoil Corrector" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "Using MET: " << met_label_ << std::endl;
-    std::cout << "Era: " << era_ << std::endl;
+    std::cout << "Channel: " << Channel2String(channel_) << std::endl;
+    std::cout << "Strategy: " << Strategy2String(strategy_) << std::endl;
+    std::cout << "MC: " << MC2String(mc_) << std::endl;
     std::string process_file;
     std::string data_file;
     std::string mc_file;
-    if (is_2012_) { // (strategy == "HCP_2012" || strategy == "MORIOND_2013") && (data_era == "ICHEP_2012_53X || HCP_2012_53X "
-      data_file = "data/recoilfits/recoilfit_datamm53X_20pv_njet.root";
-      mc_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
+    if (strategy_ == strategy::ichep2012) {
+      std::cout << "Recoil corrections not used for this strategy, module disabled." << std::endl;
+      return 0;
+    } else if (strategy_ == strategy::hcp2012) {
+      if (mc_ == mc::summer12_53X) { 
+        data_file = "data/recoilfits/recoilfit_datamm53X_20pv_njet.root";
+        mc_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
+      } else if (mc_ == mc::fall11_42X) {
+        data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
+        mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
+      } else {
+        std::cout << "MC not recognised, module disabled." << std::endl;
+        return 0;
+      }
+    } else if (strategy_ == strategy::moriond2013) {
+      if (mc_ == mc::summer12_53X) { 
+        data_file = "data/recoilfits/recoilfit_datamm53X_20pv_njet.root";
+        mc_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
+      } else if (mc_ == mc::fall11_42X) {
+        data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
+        mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
+      } else {
+        std::cout << "MC not recognised, module disabled." << std::endl;
+        return 0;
+      }
     } else {
-      data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
-      mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
-      if (era_ == 1) {
-        data_file = "data/recoilfits/recoilfit_datamm_njet.root";
-        mc_file = "data/recoilfits/recoilfit_zmm42X_njet.root";
+      if (mc_ == mc::summer12_53X) { 
+        data_file = "data/recoilfits/recoilfit_datamm53X_20pv_njet.root";
+        mc_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
+      } else if (mc_ == mc::fall11_42X) {
+        data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
+        mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
+      } else {
+        std::cout << "MC not recognised, module disabled." << std::endl;
+        return 0;
       }
     }
-
-
+   
     if ( (sample_.find("WJetsToLNu") != sample_.npos) ) {
       disable = false;
       is_wjets_ = true;
-      if (is_2012_) {
-        process_file = "data/recoilfits/recoilfit_wjets53X_20pv_njet.root";
-      } else {
-        process_file = "data/recoilfits/recoilfit_wjets42X_20pv_njet.root";
-        if (era_ == 1) {
-          process_file = "data/recoilfits/recoilfit_wjets_njet.root";
-        }
-      }
+      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_wjets53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_wjets42X_20pv_njet.root";
       std::cout << "W+Jets sample detected, using process file: " << process_file << std::endl;
       boson_id_.push_back(24);
     }
@@ -67,30 +88,19 @@ namespace ic {
       || (sample_.find("VBF_HToTauTau") != sample_.npos)  
       || (sample_.find("WH_ZH_TTH_HToTauTau") != sample_.npos) ) {
       disable = false;
-      if (is_2012_) {
-        process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
-      } else {
-        process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
-        if (mode_ == 2) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
-        if (era_ == 1) {
-          process_file = "data/recoilfits/recoilfit_higgs_njet.root";
-        }
-      }
+      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
+      if (channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
       std::cout << "Signal sample detected, using process file: " << process_file << std::endl;
       boson_id_.push_back(25);
       boson_id_.push_back(35);
       boson_id_.push_back(36);
     }
+
     if ( sample_.find("DYJetsToLL") != sample_.npos ) {
       disable = false;
-      if (is_2012_) {
-        process_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
-      } else {
-        process_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
-        if (era_ == 1) {
-          process_file = "data/recoilfits/recoilfit_zmm42X_njet.root";
-        }
-      }
+      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
       std::cout << "DYJetsToLL sample detected, using process file: " << process_file << std::endl;
       boson_id_.push_back(23);
     }
@@ -144,10 +154,10 @@ namespace ic {
     double genphi = boson->phi();
     double lep_pt = dilepton.at(0)->pt();
     double lep_phi = dilepton.at(0)->phi();
-    if (is_wjets_ && (mode_ == 0 || mode_ == 1)) { // Use e or mu for e-tau and mu-tau
+    if (is_wjets_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet)) { // Use e or mu for et, mt and mtmet
       lep_pt = dilepton.at(0)->GetCandidate("lepton1")->pt();
       lep_phi = dilepton.at(0)->GetCandidate("lepton1")->phi();
-    } else if (is_wjets_ && (mode_ == 2) ) { // Use mu for e-mu
+    } else if (is_wjets_ && (channel_ == channel::em) ) { // Use mu for em
       lep_pt = dilepton.at(0)->GetCandidate("lepton2")->pt();
       lep_phi = dilepton.at(0)->GetCandidate("lepton2")->phi();
     }
@@ -157,16 +167,11 @@ namespace ic {
     double iScale = 0;
     //iFluc 1, iScale 1
     //iFluc -1, iScale -1
-    if (is_2012_) {
+    if (mc_ == mc::summer12_53X) {
       corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
-    } else {
-      if (era_ != 1) {
-        corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);            
-      } else {
-        corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
-      }
+    } else if (mc_ == mc::fall11_42X) {
+      corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
     }
-
     pfMet->set_pt(pfmet);
     pfMet->set_energy(pfmet);
     pfMet->set_phi(pfmetphi);

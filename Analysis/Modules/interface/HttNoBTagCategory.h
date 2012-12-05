@@ -6,6 +6,8 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include <string>
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+
 
 
 namespace ic {
@@ -20,7 +22,7 @@ class HttNoBTagCategory : public ModuleBase {
   CLASS_MEMBER(HttNoBTagCategory, bool, do_met_cut)
   CLASS_MEMBER(HttNoBTagCategory, double, met_cut)
   CLASS_MEMBER(HttNoBTagCategory, fwlite::TFileService*, fs)
-  CLASS_MEMBER(HttNoBTagCategory, unsigned, mode)
+  CLASS_MEMBER(HttNoBTagCategory, ic::channel, channel)
   CLASS_MEMBER(HttNoBTagCategory, std::string, met_label)
   CLASS_MEMBER(HttNoBTagCategory, bool, do_btag_weight)
 

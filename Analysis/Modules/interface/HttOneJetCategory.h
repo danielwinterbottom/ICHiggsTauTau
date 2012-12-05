@@ -5,6 +5,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+
 #include <string>
 
 
@@ -22,7 +24,7 @@ class HttOneJetCategory : public ModuleBase {
   CLASS_MEMBER(HttOneJetCategory, double, met_cut)
   CLASS_MEMBER(HttOneJetCategory, bool, high_pt)
   CLASS_MEMBER(HttOneJetCategory, fwlite::TFileService*, fs)
-  CLASS_MEMBER(HttOneJetCategory, unsigned, mode)
+  CLASS_MEMBER(HttOneJetCategory, ic::channel, channel)
   CLASS_MEMBER(HttOneJetCategory, std::string, met_label)
 
   CLASS_MEMBER(HttOneJetCategory, bool, do_btag_weight)

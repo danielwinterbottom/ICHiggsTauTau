@@ -8,7 +8,7 @@
 
 namespace ic {
 
-  HttSelection::HttSelection(std::string const& name) : ModuleBase(name) {
+  HttSelection::HttSelection(std::string const& name) : ModuleBase(name), channel_(channel::et) {
     dilepton_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
     mt_max_selection_ = 20.0;
@@ -17,10 +17,8 @@ namespace ic {
     pzeta_min_selection_ = -20.0;
     pzeta_max_control_ = -40.0;
     pzeta_alpha_ = 0.85;
-    mode_ = 0;
     distinguish_os_ = true;
     fs_ = NULL;
-    mssm_mode_ = 0;
 
     dilepton_plots_.resize(4);
     dilepton_yields_.resize(6);
@@ -38,27 +36,18 @@ namespace ic {
     std::cout << "PreAnalysis Info for HTT Selection" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     if (fs_) {
-      std::cout << "Mode: " << mode_ << std::endl;
+      std::cout << "Channel: " << Channel2String(channel_) << std::endl;
       std::cout << "Dilepton Label: " << dilepton_label_ << std::endl;
       std::cout << "MET Label: " << met_label_ << std::endl;
-      if (mssm_mode_ == 0) {
-        if (mode_ == 0 || mode_ == 1) {
-          std::cout << "- Selection region requires mT < " << mt_max_selection_ << std::endl;
-          std::cout << "- Control region requires " << mt_min_control_ << " < mT < " << mt_max_control_ << std::endl;
-        } else if (mode_ == 2) {
-          std::cout << "- Selection region requires PZeta > " << pzeta_min_selection_ << std::endl;
-          std::cout << "- Using alpha = " << pzeta_alpha_ << std::endl;
-        }
-      } else {
-        if (mode_ == 0 || mode_ == 1) {
-          std::cout << "- Selection region requires PZeta > " << pzeta_min_selection_ << std::endl;
-          std::cout << "- Control region requires PZeta < " << pzeta_max_control_ << std::endl;
-          std::cout << "- Using alpha = " << pzeta_alpha_ << std::endl;
-        } else if (mode_ == 2) {
-          std::cout << "- Selection region requires PZeta > " << pzeta_min_selection_ << std::endl;
-          std::cout << "- Using alpha = " << pzeta_alpha_ << std::endl;
-        }
+
+      if (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet) {
+        std::cout << "- Selection region requires mT < " << mt_max_selection_ << std::endl;
+        std::cout << "- Control region requires " << mt_min_control_ << " < mT < " << mt_max_control_ << std::endl;
+      } else if (channel_ == channel::em) {
+        std::cout << "- Selection region requires PZeta > " << pzeta_min_selection_ << std::endl;
+        std::cout << "- Using alpha = " << pzeta_alpha_ << std::endl;
       }
+
       if (!distinguish_os_) {
         std::cout << "- WARNING, Not distinguishing OS/SS" << std::endl;
       }
@@ -93,21 +82,12 @@ namespace ic {
     double mt = MT(dilepton[0]->GetCandidate("lepton1"),pfMetMVA);
     double pzeta = PZeta(dilepton.at(0), pfMetMVA, pzeta_alpha_);
     bool in_control = false;
-    if (mssm_mode_ == 0) {
-      if (mode_ == 0 || mode_ == 1) {
-        if (mt > mt_min_control_ && mt < mt_max_control_) in_control = true;
-      } else if (mode_ == 2) {
-        in_control = false;
-      }
-    } else if (mssm_mode_ > 0) {
-      // if (mode_ == 0 || mode_ == 1) {
-      //   if (pzeta < pzeta_max_control_) in_control = true;
-      if (mode_ == 0 || mode_ == 1) {
-        if (mt > mt_min_control_ && mt < mt_max_control_) in_control = true;
-      } else if (mode_ == 2) {
-        in_control = false;
-      }
+    if (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet) {
+      if (mt > mt_min_control_ && mt < mt_max_control_) in_control = true;
+    } else if (channel_ == channel::em) {
+      in_control = false;
     }
+
 
       std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     // Special case, for the dilepton selection the selection region is inclusive 
@@ -162,13 +142,9 @@ namespace ic {
     //   if (  mode_ == 2 && pzeta <= pzeta_min_selection_ ) return 1;
     // }
     bool in_signal = false;
-    if (mssm_mode_ == 0) {
-      if ( (mode_ == 0 || mode_ == 1) && mt < mt_max_selection_) in_signal = true;
-      if (  mode_ == 2 && pzeta > pzeta_min_selection_ ) in_signal = true;
-    } else {
-      if ( (mode_ == 0 || mode_ == 1) && mt < mt_max_selection_) in_signal = true;;
-      if (  mode_ == 2 && pzeta > pzeta_min_selection_ ) in_signal = true;
-    }
+    if ( (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet) && mt < mt_max_selection_) in_signal = true;
+    if (  channel_ == channel::em && pzeta > pzeta_min_selection_ ) in_signal = true;
+
 
     if (in_control) sel_mode = sel_mode + 2;
     if (!in_control && !in_signal) sel_mode = sel_mode + 4;

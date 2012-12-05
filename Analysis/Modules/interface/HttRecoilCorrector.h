@@ -4,7 +4,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/RecoilCorrector.h"
-
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include <string>
 
 namespace ic {
@@ -19,9 +19,9 @@ class HttRecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HttRecoilCorrector, std::string, dilepton_label)
   CLASS_MEMBER(HttRecoilCorrector, std::string, met_label)
   CLASS_MEMBER(HttRecoilCorrector, std::string, sample)
-  CLASS_MEMBER(HttRecoilCorrector, int, mode)
-  CLASS_MEMBER(HttRecoilCorrector, int, era)
-  CLASS_MEMBER(HttRecoilCorrector, bool, is_2012)
+  CLASS_MEMBER(HttRecoilCorrector, ic::channel, channel)
+  CLASS_MEMBER(HttRecoilCorrector, ic::strategy, strategy)
+  CLASS_MEMBER(HttRecoilCorrector, ic::mc, mc)
 
 
 

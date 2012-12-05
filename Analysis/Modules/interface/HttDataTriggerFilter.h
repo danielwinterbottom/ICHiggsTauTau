@@ -3,6 +3,8 @@
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+
 #include <string>
 #include <fstream>
 
@@ -16,13 +18,11 @@ namespace ic {
 
 class HttDataTriggerFilter : public ModuleBase {
  private:
-  MEMBER_NP(unsigned, mode)
+  CLASS_MEMBER(HttDataTriggerFilter, ic::channel, channel)
   MEMBER_NP(bool, do_obj_match)
   MEMBER_NP(std::string, lep1label)
   MEMBER_NP(std::string, lep2label)
-  CLASS_MEMBER(HttDataTriggerFilter, bool, dump_run_yield)
 
-  std::ofstream outFile;
   std::map<unsigned, unsigned> yields_;
 
 

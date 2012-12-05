@@ -5,12 +5,11 @@
 
 namespace ic {
 
-  HttBTagCategory::HttBTagCategory(std::string const& name, std::string const& jets_label) : ModuleBase(name) {
+  HttBTagCategory::HttBTagCategory(std::string const& name, std::string const& jets_label) : ModuleBase(name), channel_(channel::et) {
     jet_pt_ = 30.0;
     jet_eta_ = 4.7;
     btag_jet_pt_ = 20.0;
     btag_jet_eta_ = 2.4;
-    mode_ = 0;
     apply_special_mode_ = false;
     special_min_ = 1;
     special_max_ = 1;

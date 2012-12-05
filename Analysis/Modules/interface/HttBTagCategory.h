@@ -7,6 +7,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include <string>
 #include "TEfficiency.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+
 
 namespace ic {
 
@@ -24,7 +26,7 @@ class HttBTagCategory : public ModuleBase {
   std::string jets_label_;
 
   CLASS_MEMBER(HttBTagCategory, fwlite::TFileService*, fs)
-  CLASS_MEMBER(HttBTagCategory, unsigned, mode)
+  CLASS_MEMBER(HttBTagCategory, ic::channel, channel)
   CLASS_MEMBER(HttBTagCategory, bool, apply_special_mode)
   CLASS_MEMBER(HttBTagCategory, unsigned, special_min)
   CLASS_MEMBER(HttBTagCategory, unsigned, special_max)
