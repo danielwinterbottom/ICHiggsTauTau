@@ -29,6 +29,9 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
+
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ZJetsControlPlots.h"
+
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
@@ -349,6 +352,10 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------  
+ ZJetsControlPlots zjetsControlPlots = ZJetsControlPlots("ZJetsControlPlots")
+  .set_fs(fs)
+  .set_channel(channel);
+
   // HttPairSelector httPairSelector = HttPairSelector("HttPairSelector")
   //   .set_channel(channel)
   //   .set_fs(fs)
@@ -455,6 +462,7 @@ int main(int argc, char* argv[]){
     analysis.AddModule(&pairFilter);
     analysis.AddModule(&jetIDFilter);
     analysis.AddModule(&jetLeptonOverlapFilter);
+    analysis.AddModule(&zjetsControlPlots);
   }
 
   // Run analysis
