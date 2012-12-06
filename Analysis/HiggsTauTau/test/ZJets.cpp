@@ -280,7 +280,7 @@ int main(int argc, char* argv[]){
   elec_idiso_func = bind(ElectronHTTId, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
   
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>("SelElectronFilter")
-    .set_input_label("selElectrons")
+    .set_input_label(elec_label)
     .set_predicate(
       bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
       bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
@@ -301,7 +301,7 @@ int main(int argc, char* argv[]){
       bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy &&
       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(muon_idiso_func, _1))
-    .set_min(1);
+    .set_min(2);
 
 
   // ------------------------------------------------------------------------------------
@@ -327,6 +327,11 @@ int main(int argc, char* argv[]){
   // if (channel == channel::em) pairFilter
   //   .set_predicate( (bind(PairOneWithPt, _1, 20.0)) && (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.3));
 
+  SimpleFilter<CompositeCandidate> pairFilter = SimpleFilter<CompositeCandidate>("PairFilter")
+    .set_predicate( (bind(&CompositeCandidate::charge, _1) == 0) )
+    .set_input_label("dileptons")
+    .set_min(1)
+    .set_max(1);       
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
@@ -447,6 +452,7 @@ int main(int argc, char* argv[]){
 
   if (!do_skim) {
     // analysis.AddModule(&jetEnergyCorrections);
+    analysis.AddModule(&pairFilter);
     analysis.AddModule(&jetIDFilter);
     analysis.AddModule(&jetLeptonOverlapFilter);
   }
