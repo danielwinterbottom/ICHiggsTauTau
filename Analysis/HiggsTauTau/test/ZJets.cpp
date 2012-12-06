@@ -328,7 +328,7 @@ int main(int argc, char* argv[]){
   //   .set_predicate( (bind(PairOneWithPt, _1, 20.0)) && (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.3));
 
   SimpleFilter<CompositeCandidate> pairFilter = SimpleFilter<CompositeCandidate>("PairFilter")
-    .set_predicate( (bind(&CompositeCandidate::charge, _1) == 0) )
+    .set_predicate( bind(PairMassInRange, _1, 60.0, 120.0) && (bind(&CompositeCandidate::charge, _1) == 0) )
     .set_input_label("dileptons")
     .set_min(1)
     .set_max(1);       
