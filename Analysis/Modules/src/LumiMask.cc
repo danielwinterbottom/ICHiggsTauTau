@@ -17,9 +17,7 @@ namespace ic {
   }
 
   int LumiMask::PreAnalysis() {
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "PreAnalysis Info for LumiMask" << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
+    std::cout << "** PreAnalysis Info for LumiMask **" << std::endl;
     if (input_file_ != "") {
       std::cout << "Parsing json file: " << input_file_ << std::endl;
       using boost::property_tree::ptree;

@@ -431,7 +431,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------  
   //analysis.AddModule(&httPrint);
   //analysis.AddModule(&wjetsWeights);
-  //analysis.AddModule(&lumiMask);
+  if (is_data) analysis.AddModule(&lumiMask);
   //if (is_data && !is_2012 && (mode == 0 || mode == 1)) analysis.AddModule(&runFilter2011);
   if (!is_data) analysis.AddModule(&pileupWeight);
   // if (ztatau_mode > 0) analysis.AddModule(&zTauTauFilter);
