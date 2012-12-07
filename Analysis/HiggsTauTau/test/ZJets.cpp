@@ -136,7 +136,7 @@ int main(int argc, char* argv[]){
   ic::mc mc             = String2MC(mc_str);
   ic::channel channel   = String2Channel(channel_str);
 
-  std::cout << "**** Z+Jets Analysis *****" << std::endl;
+  std::cout << "**** Z+Jets Analysis ****" << std::endl;
   string param_fmt = "%-25s %-40s\n";
   std::cout << boost::format(param_fmt) % "max_events" % max_events;
   std::cout << boost::format(param_fmt) % "output" % (output_folder+output_name);
