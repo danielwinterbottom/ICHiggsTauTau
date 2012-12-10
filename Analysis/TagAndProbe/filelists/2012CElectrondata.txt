@@ -1,4 +1,0 @@
-/data/rlane/ntuples/AndrewNtuples/Sept11/Data/IC_SingleElectron-2012C-PromptReco-v2-P_1.root 
-/data/rlane/ntuples/AndrewNtuples/Sept11/Data/IC_SingleElectron-2012C-PromptReco-v2-P_2.root 
-/data/rlane/ntuples/AndrewNtuples/Sept11/Data/IC_SingleElectron_2012C-24Aug2012_ntuple.root
-
