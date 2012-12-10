@@ -18,19 +18,12 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttDataTriggerFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPairSelector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttWeights.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSelection.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMetStudy.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMCTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSync.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ZJetsControlPlots.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ZJetsTriggerFilter.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
@@ -246,18 +239,10 @@ int main(int argc, char* argv[]){
     .set_mc(&mc_pu)
     .set_print_weights(false);
 
-  // HttDataTriggerFilter dataTriggerPathFilter = HttDataTriggerFilter("TriggerPathFilter")
-  //   .set_channel(channel)
-  //   .set_do_obj_match(true)
-  //   .set_lep1label(lep1sel_label)
-  //   .set_lep2label(lep2sel_label);
-
-  // HttMCTriggerFilter mcTriggerPathFilter = HttMCTriggerFilter("TriggerPathMCFilter")
-  //   .set_channel(channel)   
-  //   .set_mc(mc)
-  //   .set_do_obj_match(true)
-  //   .set_lep1label(lep1sel_label)
-  //   .set_lep2label(lep2sel_label);
+  ZJetsTriggerFilter zjetsTriggerFilter = ZJetsTriggerFilter("ZJetsTriggerFilter")
+    .set_channel(channel)
+    .set_is_data(is_data)
+    .set_pair_label("dileptons");
 
   // SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
   //   .set_input_label("genParticles")
@@ -460,6 +445,7 @@ int main(int argc, char* argv[]){
   if (!do_skim) {
     // analysis.AddModule(&jetEnergyCorrections);
     analysis.AddModule(&pairFilter);
+    analysis.AddModule(&zjetsTriggerFilter);
     analysis.AddModule(&jetIDFilter);
     analysis.AddModule(&jetLeptonOverlapFilter);
     analysis.AddModule(&zjetsControlPlots);

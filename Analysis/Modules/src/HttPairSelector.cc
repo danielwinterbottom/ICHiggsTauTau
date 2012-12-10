@@ -125,14 +125,6 @@ namespace ic {
       std::size_t id = 0;
       boost::hash_combine(id, result[0]->GetCandidate("lepton1")->id());
       boost::hash_combine(id, result[0]->GetCandidate("lepton2")->id());
-      // EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-      // if (eventInfo->event() == 256823) {
-      //   std::map<std::size_t, Met *>::const_iterator it2 = met_map.begin();
-      //   for (; it2 != met_map.end(); ++it2) {
-      //     std::cout << (it2->second)->pt() << std::endl;
-      //   }        
-      // }
-
       std::map<std::size_t, Met *>::const_iterator it = met_map.find(id);
       if (it != met_map.end()) {
         Met * mva_met = it->second;
@@ -151,8 +143,8 @@ namespace ic {
       double metx = met->vector().px();
       double mety = met->vector().py();
       double metet = met->vector().energy();
-      double dx = tau->vector().px() * (( 1. / tau_scale_) - 1);
-      double dy = tau->vector().py() * (( 1. / tau_scale_) - 1);
+      double dx = tau->vector().px() * (( 1. / tau_scale_) - 1.);
+      double dy = tau->vector().py() * (( 1. / tau_scale_) - 1.);
       metx = metx + dx;
       mety = mety + dy;
       metet = sqrt(metx*metx + mety*mety);

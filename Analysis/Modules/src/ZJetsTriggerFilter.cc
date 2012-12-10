@@ -42,19 +42,19 @@ namespace ic {
         std::string name = triggerPathPtrVec[i]->name();
 
         if (channel_ == channel::zee) {
-        //2011 Triggers
+          //2011 Triggers
           if (run >= 160404 && run <= 167913 && name.find("HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL_v") != name.npos) path_found = true;
           if (run >= 170249 && run <= 180252 && name.find("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true;
-        //2012 Triggers
-        if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true;
+          //2012 Triggers
+          if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true;
         }
         if (channel_ == channel::zmm) {
-        //2011 Triggers
+          //2011 Triggers
           if (run >= 160404 && run <= 163869 && name.find("HLT_DoubleMu7_v") != name.npos) path_found = true;
           if (run >= 165088 && run <= 178380 && name.find("HLT_Mu13_Mu8_v") != name.npos) path_found = true;
           if (run >= 178420 && run <= 180252 && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
-        //2012 Triggers
-        if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
+          //2012 Triggers
+          if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
         }
       }
       if (!path_found) return 1;
@@ -81,8 +81,16 @@ namespace ic {
         }
       }
     } else {
-
-      // Define MC triggers here
+      if (channel_ == channel::zee) {
+        trig_obj_label = "triggerObjectsEle17Ele8";
+        low_leg_filter = "hltEle17TightIdLooseIsoEle8TightIdLooseIsoTrackIsoDoubleFilter";
+        high_leg_filter = "hltEle17TightIdLooseIsoEle8TightIdLooseIsoTrackIsoFilter";
+      }
+      if (channel_ == channel::zmm) {
+        trig_obj_label = "triggerObjectsMu17Mu8";
+        low_leg_filter = "hltL3pfL1DoubleMu10MuOpenL1f0L2pf0L3PreFiltered8";
+        high_leg_filter = "hltL3fL1DoubleMu10MuOpenL1f0L2f10L3Filtered17";
+      }
     }
 
 
