@@ -13,6 +13,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 
 namespace po = boost::program_options;
 
@@ -214,9 +215,17 @@ int main(int argc, char* argv[]){
       data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012_HCP-600bins.root";
       mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S10-600bins.root";
   }
+  if (era=="2012D")
+  {
+      data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012D.root";
+      mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S10-600bins.root";
+  }
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_path, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_path, "/", "pileup");
  
+  std::string data_json;
+  if (era == "2012A" || era == "2012B" || era == "2012C" || era == "2012D") data_json = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/data/json/data_2012_moriond.txt" ;
+  else data_json           =  "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/data/json/data_2011.txt";
 
   // Create analysis object
     ic::AnalysisBase analysis(
@@ -226,6 +235,11 @@ int main(int argc, char* argv[]){
         "EventTree",          // TTree name
         max_events);          // Max. events to process (-1 = all)
   if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);
+
+    
+    LumiMask lumiMask = LumiMask("LumiMask")
+      .set_produce_output_jsons("")
+      .set_input_file(data_json);
 
     PileupWeight pileupWeight = PileupWeight
       ("PileupWeight").set_data(&data_pu).set_mc(&mc_pu).set_print_weights(false);
@@ -606,6 +620,7 @@ int main(int argc, char* argv[]){
         if(iselec)
         {
             if(!isdata) analysis.AddModule(&pileupWeight);
+            if (isdata) analysis.AddModule(&lumiMask);
             if(!trg_only)
             {
                 analysis.AddModule(&electronIDTagAndProbe);
@@ -624,6 +639,7 @@ int main(int argc, char* argv[]){
         if(!iselec)
         {
             if(!isdata) analysis.AddModule(&pileupWeight);
+            if (isdata) analysis.AddModule(&lumiMask);
             if(!trg_only)
             {
                 analysis.AddModule(&muonIDTagAndProbe);
