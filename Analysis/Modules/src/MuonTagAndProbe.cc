@@ -94,7 +94,7 @@ namespace ic {
     }
     if(mode_==0) hists_->Create("h_PUWeights", 200, 0, 10);
    
-    outFile.open((output_name_+".txt").c_str());
+    outFile.open((output_name_+"_"+dataormc+".txt").c_str());
 
 
     return 0;
