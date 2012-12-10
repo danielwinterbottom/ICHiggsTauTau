@@ -70,17 +70,7 @@ int main(int argc, char* argv[]){
   // bool disable_reweighting = false;
   // bool do_btag_weight = false;
 
-  // Special Mode 2  Relaxed Selection Trigger   Weights 
-  // Special Mode 3  QCD Selection Trigger Weights 
-  // Special Mode 6  QCD Selection Trigger Weights Lower vbf pt to 20 GeV, lower vbf mva to 0.0
-  // Special Mode 7  Full Selection  Trigger Weights mT sideband: 60-120 GeV
-  // Special Mode 8  Full Selection  Trigger Weights twojet requires pt 20 GeV jets, eta < 4.7
-  // Special Mode 9  Full Selection  Trigger Weights npt20jets >= 1, npt30jets <= 1
-  // Speical Mode 10 Relaxed Selection Trigger Weights npt20jets >= 1, npt30jets <= 1
-  // Speical Mode 14 Fake Electron Trigger Weights 
-  // Speical Mode 15 Fake Muon Trigger Weights 
-  // Speical Mode 17 Fake Muon Trigger Weights 
-  // Special Mode 18 - relax tau e rejection for ZL shape
+
 
   // Load the config
   po::options_description preconfig("Pre-Configuration");
