@@ -22,6 +22,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSelection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMetStudy.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
 // #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVbfCategory.h"
 // #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVHCategory.h"
 // #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttOneJetCategory.h"
@@ -76,6 +77,7 @@ int main(int argc, char* argv[]){
   unsigned faked_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
+  bool quark_gluon_study;         // Run study on quark-gluon jet discriminators
 
   bool do_vbf_mva = true;
   // bool disable_mc_trigger = false;
@@ -134,6 +136,7 @@ int main(int argc, char* argv[]){
       ("ztautau_mode",        po::value<unsigned>(&ztatau_mode)->default_value(0))
       ("faked_tau_selector",  po::value<unsigned>(&faked_tau_selector)->default_value(0))
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
+      ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false));
       // ("do_vbf_mva", po::value<bool>(&do_vbf_mva)->default_value(true), "0=disabled, 1 = enabled")
       // ("scan_trigger", po::value<bool>(&scan_trigger)->default_value(false), "true/false")
@@ -645,6 +648,8 @@ int main(int argc, char* argv[]){
     .set_input_label("pfJetsPFlow")
     .set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
 
+   
+
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------  
@@ -718,6 +723,10 @@ int main(int argc, char* argv[]){
   if (special_mode == 5 || special_mode == 12) httSelection.set_distinguish_os(false);
   if (special_mode == 7) httSelection.set_mt_min_control(60.0).set_mt_max_control(120.0);
 
+  QuarkGluonDiscriminatorStudy quarkGluonDiscriminatorStudy = QuarkGluonDiscriminatorStudy
+    ("QuarkGluonDiscriminatorStudy")
+  .set_fs(fs);  
+  
   // HttMetStudy httMetStudy = HttMetStudy
   //   ("HttMetStudy")
   //   .set_fs(fs)
@@ -917,11 +926,12 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&svfit);
 
                                   analysis.AddModule(&httWeights);
+    if(quark_gluon_study)         analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&httSync);
     //                            analysis.AddModule(&httSelection);
     //                            analysis.AddModule(&httMetStudy);
     //                            analysis.AddModule(&jetVtxStudy);
-                                  analysis.AddModule(&httCategories);
+    if(!quark_gluon_study)        analysis.AddModule(&httCategories);
 
     // if (special_mode == 9 || special_mode == 10) {
     //                            analysis.AddModule(&httOneBJetHighPtCategory);
