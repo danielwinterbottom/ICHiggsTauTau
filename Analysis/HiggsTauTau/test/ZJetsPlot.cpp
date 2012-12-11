@@ -65,22 +65,27 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
   ele.set_draw_stat_error_y(true);
   ele.set_draw_line(false);
   ele.set_draw_marker(true);
+  ele.set_marker_style(20);
+
   return;
 }
 
 
 int main(int argc, char* argv[]){
 
-  ic::channel channel = channel::zee;
-  // ic::channel channel = channel::zmm;
+  // ic::channel channel = channel::zee;
+  ic::channel channel = channel::zmm;
 
   std::string channel_str = Channel2String(channel);
+  channel_str += "_NewJEC";
 
-  double data_lumi = 17000;
-  std::string lumi_str = "17 fb^{-1}";
-  std::string plotname = "m_z";
+  double data_lumi = 18048;
+  std::string lumi_str = "18 fb^{-1}";
+  std::string plotname = "jpt_1";
   std::string plotfolder = "inclusive";
-  std::string x_axis_label = "M_{ll} [GeV]";
+  // std::string x_axis_label = "M_{ll} [GeV]";
+  // std::string x_axis_label = "Leading Jet #eta";
+  std::string x_axis_label = "Leading Jet p_{T} [GeV]";
 
   double dy_evt   = 30459503;
   double dy_xs    = 3503.7;
@@ -99,6 +104,22 @@ int main(int argc, char* argv[]){
 
   dy.hist_ptr()->Scale( data_lumi * dy_xs / dy_evt );
   tt.hist_ptr()->Scale( data_lumi * tt_xs / tt_evt );
+
+  double data_norm = Integral(data.hist_ptr());
+  double dy_norm = Integral(dy.hist_ptr());
+  double tt_norm = Integral(tt.hist_ptr());
+
+  // double data_norm = data.hist_ptr()->Integral(data.hist_ptr()->FindBin(-2.0), data.hist_ptr()->FindBin(2.0));
+  // double dy_norm = dy.hist_ptr()->Integral(dy.hist_ptr()->FindBin(-2.0), dy.hist_ptr()->FindBin(2.0));
+  // double tt_norm = tt.hist_ptr()->Integral(tt.hist_ptr()->FindBin(-2.0), tt.hist_ptr()->FindBin(2.0));
+
+
+  double sf = data_norm / (dy_norm + tt_norm);
+  std::cout << "Data Yield: " << data_norm << std::endl;
+  std::cout << "MC SF: " << sf << std::endl;
+
+  dy.hist_ptr()->Scale( sf );
+  tt.hist_ptr()->Scale( sf );
 
   ic::Plot plot;
 
@@ -124,7 +145,7 @@ int main(int argc, char* argv[]){
   plot.title_left = "CMS Preliminary 2012, #sqrt{s} = 8 TeV, "+ lumi_str;
   plot.title_right = channel_str+", "+plotfolder;
 
-  // if (mssm_mode == 1) plot.legend_left = 0.45;
+  plot.legend_left = 0.72;
 
   plot.draw_ratio_hist = true;
   ic::RatioPlotElement ratio("Ratio","data","dy+tt");

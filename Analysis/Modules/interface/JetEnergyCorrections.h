@@ -54,8 +54,8 @@ int JetEnergyCorrections<T>::PreAnalysis() {
   std::cout << "----------------------------------------" << std::endl;
   std::cout << "Re-applying corrections to collection: " << input_label_ << std::endl;
   std::cout << "L1 Source: " << l1_file_ << std::endl;
-  std::cout << "L2 Source: " << l1_file_ << std::endl;
-  std::cout << "L3 Source: " << l1_file_ << std::endl;
+  std::cout << "L2 Source: " << l2_file_ << std::endl;
+  std::cout << "L3 Source: " << l3_file_ << std::endl;
   if (is_data_) std::cout << "Residual Source: " << res_file_ << std::endl;
   if (is_data_) ResJetPar = new JetCorrectorParameters(res_file_); 
   L3JetPar  = new JetCorrectorParameters(l3_file_);
