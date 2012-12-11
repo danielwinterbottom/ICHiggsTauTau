@@ -331,108 +331,30 @@ int main(int argc, char* argv[]){
   .set_fs(fs)
   .set_channel(channel);
 
-  // HttPairSelector httPairSelector = HttPairSelector("HttPairSelector")
-  //   .set_channel(channel)
-  //   .set_fs(fs)
-  //   .set_met_label(met_label)
-  //   .set_mva_met_from_vector(mva_met_mode == 1)
-  //   .set_faked_tau_selector(faked_tau_selector)
-  //   .set_scale_met_for_tau(tau_scale_mode > 0)
-  //   .set_tau_scale(tau_shift);
-
-  // HttWeights httWeights = HttWeights("HttWeights")
-  //   .set_channel(channel)
-  //   .set_era(era)
-  //   .set_mc(mc)
-  //   .set_trg_applied_in_mc(true)
-  //   .set_do_trg_weights(false)
-  //   .set_do_etau_fakerate(false)
-  //   .set_do_idiso_weights(false)
-  //   .set_do_emu_e_fakerates(false)
-  //   .set_do_emu_m_fakerates(false)
-  //   .set_do_top_factors(false)
-  //   .set_do_btag_weight(false);
-  // if (!is_data) {
-  //   httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
-  //   httWeights.set_do_btag_weight(true);
-  // }
-  // if (output_name.find("DYJetsToLL") != output_name.npos && channel == channel::et) httWeights.set_do_etau_fakerate(true);
-  // if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false);
-  // if (special_mode == 14 || special_mode == 17) httWeights.set_do_emu_e_fakerates(true);
-  // if (special_mode == 15 || special_mode == 17) httWeights.set_do_emu_m_fakerates(true);
-  // //if (outname.find("TTJets") != outname.npos && mode == 2 && era == 0) httWeights.set_do_top_factors(true);
-  // if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
-  //   httWeights.set_do_w_soup(true);
-  //   if (mc == mc::fall11_42X) {
-  //     httWeights.SetWTargetFractions(0.752332, 0.171539, 0.0538005, 0.0159036, 0.00642444);
-  //     httWeights.SetWInputYields(81295381.0, 70712575.0, 25320546.0, 7541595.0, 12973738.0);
-  //   }
-  //   if (mc == mc::summer12_53X) {
-  //     httWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
-  //     httWeights.SetWInputYields(76102995.0, 23101598.0, 33884921.0, 15539503.0, 13382803.0);
-  //   }
-  // }
-  // if (mc == mc::fall11_42X && output_name.find("GluGluToHToTauTau_M-") != output_name.npos && output_name.find("SUSYGluGluToHToTauTau_M-") == output_name.npos) {
-  //   std::size_t pos = output_name.find("_M-");
-  //   if (pos != output_name.npos) {
-  //     std::string mass_string;
-  //     for (unsigned i = (pos+3); i < output_name.size(); ++i) {
-  //       if (output_name.at(i) != '_') mass_string += output_name.at(i);
-  //       if (output_name.at(i) == '_') break;
-  //     }
-  //     std::cout << "SM ggH Signal sample detected with mass: " << mass_string << std::endl;
-  //     httWeights.set_ggh_mass(mass_string);
-  //   }
-  // }
-
-
-  // HttSelection httSelection = HttSelection("HttSelection")
-  //   .set_fs(fs)
-  //   .set_channel(channel)
-  //   .set_met_label(met_label);
-  // httSelection.set_mt_max_selection(mt_max_selection);
-  // if (special_mode == 5 || special_mode == 12) httSelection.set_distinguish_os(false);
-  // if (special_mode == 7) httSelection.set_mt_min_control(60.0).set_mt_max_control(120.0);
-
-  // HttMetStudy httMetStudy = HttMetStudy
-  //   ("HttMetStudy")
-  //   .set_fs(fs)
-  //   .set_mode(mode)
-  //   .set_met_label(met_label);
-
-  
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
   //analysis.AddModule(&httPrint);
-  if (is_data) analysis.AddModule(&lumiMask);
-  if (!is_data) analysis.AddModule(&pileupWeight);
-
+  if (is_data)                    analysis.AddModule(&lumiMask);
+  if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (channel == channel::zee) {
-    analysis.AddModule(&selElectronFilter);
-    // if (is_data  && !do_skim && !is_embedded) {
-    //analysis.AddModule(&runStats);
-    // }
-    analysis.AddModule(&electronPairProducer);
+                                  analysis.AddModule(&selElectronFilter);
+  // if (is_data  && !do_skim)    analysis.AddModule(&runStats);
+                                  analysis.AddModule(&electronPairProducer);
   }
-
-
   if (channel == channel::zmm) {
-    analysis.AddModule(&selMuonFilter);
-    // if (is_data && !do_skim && !is_embedded) {
-    //   analysis.AddModule(&dataTriggerPathFilter);
-    //   //analysis.AddModule(&runStats);
-    // }
-    analysis.AddModule(&muonPairProducer);
+                                  analysis.AddModule(&selMuonFilter);
+  // if (is_data && !do_skim)     analysis.AddModule(&runStats);
+                                  analysis.AddModule(&muonPairProducer);
   }
 
   if (!do_skim) {
-    // analysis.AddModule(&jetEnergyCorrections);
-    analysis.AddModule(&pairFilter);
-    analysis.AddModule(&zjetsTriggerFilter);
-    analysis.AddModule(&jetIDFilter);
-    analysis.AddModule(&jetLeptonOverlapFilter);
-    analysis.AddModule(&zjetsControlPlots);
+    //                            analysis.AddModule(&jetEnergyCorrections);
+                                  analysis.AddModule(&pairFilter);
+                                  analysis.AddModule(&zjetsTriggerFilter);
+                                  analysis.AddModule(&jetIDFilter);
+                                  analysis.AddModule(&jetLeptonOverlapFilter);
+                                  analysis.AddModule(&zjetsControlPlots);
   }
 
   // Run analysis

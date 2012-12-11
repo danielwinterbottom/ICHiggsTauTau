@@ -1,5 +1,8 @@
+# PREPATH=Nov26/Data_53X
+# SOURCE_PATH=/internal/$PREPATH
+
 PREPATH=Nov26/Data_53X
-SOURCE_PATH=/internal/$PREPATH
+SOURCE_PATH=/Volumes/Storage/$PREPATH
 
 PATHS=( 
     'DoubleElectron-2012A-13Jul2012-v1'
@@ -21,7 +24,9 @@ cd $SOURCE_PATH
 for i in "${PATHS[@]}"
 do
 # # # # Then generate new filelists
-find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
+#find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
+find $i/zee_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_zee_skim_filelist.dat
+find $i/zmm_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_zmm_skim_filelist.dat
 done
 
 cd -
