@@ -18,12 +18,12 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttDataTriggerFilter.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttDataTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPairSelector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSelection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMetStudy.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMCTriggerFilter.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMCTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVbfCategory.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVHCategory.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttOneJetCategory.h"
@@ -40,6 +40,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTTCategories.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTTTriggerFilter.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -89,10 +91,18 @@ int main(int argc, char* argv[]){
   // Special Mode 8  Full Selection  Trigger Weights twojet requires pt 20 GeV jets, eta < 4.7
   // Special Mode 9  Full Selection  Trigger Weights npt20jets >= 1, npt30jets <= 1
   // Speical Mode 10 Relaxed Selection Trigger Weights npt20jets >= 1, npt30jets <= 1
-  // Speical Mode 14 Fake Electron Trigger Weights 
-  // Speical Mode 15 Fake Muon Trigger Weights 
-  // Speical Mode 17 Fake Muon Trigger Weights 
   // Special Mode 18 - relax tau e rejection for ZL shape
+
+  /* Skims/notes needed for em channel
+  // Speical Mode 20 Fake Electron for emu
+  // Speical Mode 21 Fake Muon for emu 
+  // Speical Mode 22 Fake Electron & Muon for emu
+    - Need to be able to shift the mass (m_sv and m_vis) in the embedded samples up by
+      1% - this could be done easily in HTTCategories
+    - Need a category without central jet veto for diboson/single top/ttbar shapes
+    - For the fake rate method: one skim with just electron fakes, one with just muon fakes, and one with both
+    - Need a skim with full relaxed electron isolation for SS shape for 0jet low, 1jet low and 0jet high
+  */
 
   // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -257,7 +267,7 @@ int main(int argc, char* argv[]){
     }
     tau_pt = 20.0;
     tau_eta = 2.3;
-    if (channel == channel::mtmet) muon_pt = 8.0;
+    if (channel == channel::mtmet) muon_pt = 9.0;
   }
 
   if (channel == channel::em) {
@@ -276,10 +286,10 @@ int main(int argc, char* argv[]){
     muon_eta = 2.1;
     tau_pt = 20.0;
     tau_eta = 2.3;
+    if (special_mode == 20 || special_mode == 22) elec_dxy = 0.2;     
+    if (special_mode == 21 || special_mode == 22) muon_dxy = 0.2;   
   }
 
-  // if (special_mode == 14 || special_mode == 17) elec_dxy = 0.02;     
-  // if (special_mode == 15 || special_mode == 17) muon_dxy = 0.2;   
 
   // Lower pt thresholds on electrons and taus when skimming, 
   // to allow for energy scale shifts later
@@ -349,18 +359,25 @@ int main(int argc, char* argv[]){
     .set_mc(&mc_pu)
     .set_print_weights(false);
 
-  HttDataTriggerFilter dataTriggerPathFilter = HttDataTriggerFilter("TriggerPathFilter")
-    .set_channel(channel)
-    .set_do_obj_match(true)
-    .set_lep1label(lep1sel_label)
-    .set_lep2label(lep2sel_label);
+  // HttDataTriggerFilter dataTriggerPathFilter = HttDataTriggerFilter("TriggerPathFilter")
+  //   .set_channel(channel)
+  //   .set_do_obj_match(true)
+  //   .set_lep1label(lep1sel_label)
+  //   .set_lep2label(lep2sel_label);
 
-  HttMCTriggerFilter mcTriggerPathFilter = HttMCTriggerFilter("TriggerPathMCFilter")
-    .set_channel(channel)   
+  // HttMCTriggerFilter mcTriggerPathFilter = HttMCTriggerFilter("TriggerPathMCFilter")
+  //   .set_channel(channel)   
+  //   .set_mc(mc)
+  //   .set_do_obj_match(true)
+  //   .set_lep1label(lep1sel_label)
+  //   .set_lep2label(lep2sel_label);
+
+  HTTTriggerFilter httTriggerFilter = HTTTriggerFilter("HTTTriggerFilter")
+    .set_channel(channel)
     .set_mc(mc)
-    .set_do_obj_match(true)
-    .set_lep1label(lep1sel_label)
-    .set_lep2label(lep2sel_label);
+    .set_is_data(is_data)
+    .set_pair_label("emtauCandidates");
+
 
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
     .set_input_label("genParticles")
@@ -411,7 +428,7 @@ int main(int argc, char* argv[]){
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
 
   boost::function<bool (Electron const*)> elec_idiso_func;
-  if (special_mode == 17) {
+  if (special_mode == 20 || special_mode == 22) {
     elec_idiso_func = bind(HttEMuFakeElectron, _1);
   } else if (special_mode == 2 || special_mode == 5 || special_mode == 12) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
@@ -473,7 +490,7 @@ int main(int argc, char* argv[]){
   CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");
 
   boost::function<bool (Muon const*)> muon_idiso_func;
-  if (special_mode == 15) {
+  if (special_mode == 21 || special_mode == 22) {
     muon_idiso_func = bind(HttEMuFakeMuon, _1);
   } else if (special_mode == 2 || special_mode == 5 || special_mode == 12) {
     muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
@@ -615,6 +632,9 @@ int main(int argc, char* argv[]){
   if (channel == channel::em) pairFilter
     .set_predicate( (bind(PairOneWithPt, _1, 20.0)) && (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.3));
 
+  if (channel == channel::mtmet) pairFilter
+    .set_predicate( (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.5) && (bind(&CompositeCandidate::PtOf, _1, "lepton1") <= 20.0));
+
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
@@ -666,8 +686,8 @@ int main(int argc, char* argv[]){
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && channel == channel::et) httWeights.set_do_etau_fakerate(true);
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false);
-  if (special_mode == 14 || special_mode == 17) httWeights.set_do_emu_e_fakerates(true);
-  if (special_mode == 15 || special_mode == 17) httWeights.set_do_emu_m_fakerates(true);
+  if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
+  if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
   //if (outname.find("TTJets") != outname.npos && mode == 2 && era == 0) httWeights.set_do_top_factors(true);
   if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
     httWeights.set_do_w_soup(true);
@@ -711,6 +731,12 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Category Modules
   // ------------------------------------------------------------------------------------  
+  HTTCategories httCategories = HTTCategories("HTTCategories")
+    .set_fs(fs)
+    .set_channel(channel)
+    .set_ditau_label("emtauCandidates")
+    .set_met_label(met_label);
+
   HttVbfCategory httVbfCategory = HttVbfCategory
     ("HttVbfCategory","pfJetsPFlow")
     .set_fs(fs)
@@ -819,118 +845,110 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
-  //analysis.AddModule(&httPrint);
-  //analysis.AddModule(&wjetsWeights);
-  //analysis.AddModule(&lumiMask);
-  //if (is_data && !is_2012 && (mode == 0 || mode == 1)) analysis.AddModule(&runFilter2011);
-  if (!is_data) analysis.AddModule(&pileupWeight);
-  if (ztatau_mode > 0) analysis.AddModule(&zTauTauFilter);
+  //                              analysis.AddModule(&httPrint);
+  // if (is_data && !do_skim)     analysis.AddModule(&lumiMask);
+  if (!is_data)                   analysis.AddModule(&pileupWeight);
+  if (ztatau_mode > 0)            analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
-  if (tau_scale_mode > 0) analysis.AddModule(&tauEnergyShifter);
-  if (is_embedded) analysis.AddModule(&embeddedMassFilter);
+  if (tau_scale_mode > 0)         analysis.AddModule(&tauEnergyShifter);
+  if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
 
   if (channel == channel::et) {
-    analysis.AddModule(&selElectronCopyCollection);
-    if (is_data  && !do_skim && !is_embedded) {
-      analysis.AddModule(&dataTriggerPathFilter);
-      //analysis.AddModule(&runStats);
+                                  analysis.AddModule(&selElectronCopyCollection);
+                                  analysis.AddModule(&selElectronFilter);
+    if (!do_skim) {                              
+                                  analysis.AddModule(&vetoElectronCopyCollection);
+                                  analysis.AddModule(&vetoElectronFilter);
+                                  analysis.AddModule(&vetoElectronPairProducer);
+      if (special_mode != 18)     analysis.AddModule(&vetoElectronPairFilter);
+      if (special_mode != 18)     analysis.AddModule(&extraElectronVeto);
+      if (special_mode != 18)     analysis.AddModule(&extraMuonVeto);
     }
-    if (!is_data  && !do_skim) analysis.AddModule(&mcTriggerPathFilter);
+                                  analysis.AddModule(&tauPtEtaFilter);
+                                  analysis.AddModule(&tauDzFilter);
+                                  analysis.AddModule(&tauIsoFilter);
+                                  analysis.AddModule(&tauElRejectFilter);
+                                  analysis.AddModule(&tauMuRejectFilter);
 
-    analysis.AddModule(&selElectronFilter);
-
-    analysis.AddModule(&vetoElectronCopyCollection);
-    analysis.AddModule(&vetoElectronFilter);
-    analysis.AddModule(&vetoElectronPairProducer);
-    if (special_mode != 18) analysis.AddModule(&vetoElectronPairFilter);
-
-
-    analysis.AddModule(&tauPtEtaFilter);
-    analysis.AddModule(&tauDzFilter);
-    analysis.AddModule(&tauIsoFilter);
-    analysis.AddModule(&tauElRejectFilter);
-    analysis.AddModule(&tauMuRejectFilter);
-    analysis.AddModule(&tauElPairProducer);
-    analysis.AddModule(&pairFilter);
-    if (svfit_mode != 1 && special_mode != 18 && strategy >= strategy::hcp2012) {
-      analysis.AddModule(&extraElectronVeto);
-      analysis.AddModule(&extraMuonVeto);
-    }
+                                  analysis.AddModule(&tauElPairProducer);
+                                  analysis.AddModule(&pairFilter);
   }
 
-  if (channel == channel::mt) {
-    analysis.AddModule(&selMuonCopyCollection);
-    if (is_data && !do_skim && !is_embedded) {
-      analysis.AddModule(&dataTriggerPathFilter);
-      //analysis.AddModule(&runStats);
+  if (channel == channel::mt || channel == channel::mtmet) {
+                                  analysis.AddModule(&selMuonCopyCollection);
+                                  analysis.AddModule(&selMuonFilter);
+    if (!do_skim) {                              
+                                  analysis.AddModule(&vetoMuonCopyCollection);
+                                  analysis.AddModule(&vetoMuonFilter);
+                                  analysis.AddModule(&vetoMuonPairProducer);
+                                  analysis.AddModule(&vetoMuonPairFilter);
+                                  analysis.AddModule(&extraElectronVeto);
+                                  analysis.AddModule(&extraMuonVeto);
     }
-    if (!is_data  && !do_skim) analysis.AddModule(&mcTriggerPathFilter);
-    analysis.AddModule(&selMuonFilter);
-
-    analysis.AddModule(&vetoMuonCopyCollection);
-    analysis.AddModule(&vetoMuonFilter);
-    analysis.AddModule(&vetoMuonPairProducer);
-    analysis.AddModule(&vetoMuonPairFilter);
-
-
-    analysis.AddModule(&tauPtEtaFilter);
-    analysis.AddModule(&tauDzFilter);
-    analysis.AddModule(&tauIsoFilter);
-    analysis.AddModule(&tauElRejectFilter);
-    analysis.AddModule(&tauMuRejectFilter);
-    analysis.AddModule(&tauMuPairProducer);
-    analysis.AddModule(&pairFilter);  
-    if (svfit_mode != 1 && strategy >= strategy::hcp2012) {
-      analysis.AddModule(&extraElectronVeto);
-      analysis.AddModule(&extraMuonVeto);
-    }
+                                  analysis.AddModule(&tauPtEtaFilter);
+                                  analysis.AddModule(&tauDzFilter);
+                                  analysis.AddModule(&tauIsoFilter);
+                                  analysis.AddModule(&tauElRejectFilter);
+                                  analysis.AddModule(&tauMuRejectFilter);
+    
+                                  analysis.AddModule(&tauMuPairProducer);
+                                  analysis.AddModule(&pairFilter);
   }
 
   if (channel == channel::em) {
-    analysis.AddModule(&selElectronCopyCollection);
-    analysis.AddModule(&selElectronFilter);
-    analysis.AddModule(&elecMuonOverlapFilter);
-    analysis.AddModule(&selMuonCopyCollection);
-    analysis.AddModule(&selMuonFilter);
-    if (is_data && !do_skim && !is_embedded) analysis.AddModule(&dataTriggerPathFilter);
-    if (!is_data && !do_skim) analysis.AddModule(&mcTriggerPathFilter);
-    analysis.AddModule(&elMuPairProducer);
-    analysis.AddModule(&pairFilter);
-  }
-
-  if (!do_skim) {
-    analysis.AddModule(&httPairSelector);
-    // analysis.AddModule(&jetEnergyCorrections);
-    analysis.AddModule(&jetIDFilter);
-    analysis.AddModule(&jetLeptonOverlapFilter);
-    analysis.AddModule(&httRecoilCorrector);
-    if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) analysis.AddModule(&svfit);
-    analysis.AddModule(&httWeights);
-    if (make_sync_ntuple) analysis.AddModule(&httSync);
-    analysis.AddModule(&httSelection);
-    //analysis.AddModule(&httMetStudy);
-    // analysis.AddModule(&jetVtxStudy);
-    if (special_mode == 9 || special_mode == 10) {
-      analysis.AddModule(&httOneBJetHighPtCategory);
-      analysis.AddModule(&httOneBJetLowPtCategory);
-    } else {
-      analysis.AddModule(&httVbfCategory);
-      analysis.AddModule(&httOneJetHighPtCategory);
-      analysis.AddModule(&httOneJetLowPtCategory);
-      analysis.AddModule(&httOneBJetHighPtCategory);
-      analysis.AddModule(&httOneBJetLowPtCategory);
-      analysis.AddModule(&httZeroJetHighPtCategory);
-      analysis.AddModule(&httZeroJetLowPtCategory);
-
-      analysis.AddModule(&httNoBTagCategory);
-      analysis.AddModule(&httBTagCategory);
+                                  analysis.AddModule(&selElectronCopyCollection);
+                                  analysis.AddModule(&selElectronFilter);
+                                  analysis.AddModule(&elecMuonOverlapFilter);
+                                  analysis.AddModule(&selMuonCopyCollection);
+                                  analysis.AddModule(&selMuonFilter);
+  
+                                  analysis.AddModule(&elMuPairProducer);
+                                  analysis.AddModule(&pairFilter);
+    if (!do_skim) {                              
+                                  analysis.AddModule(&extraElectronVeto);
+                                  analysis.AddModule(&extraMuonVeto);
     }
   }
 
-  if (do_skim && faked_tau_selector > 0) analysis.AddModule(&httPairSelector);
+  if (!do_skim) {
+    if (!is_embedded)             analysis.AddModule(&httTriggerFilter);
+                                  analysis.AddModule(&httPairSelector);
+    //                            analysis.AddModule(&jetEnergyCorrections);
+                                  analysis.AddModule(&jetIDFilter);
+                                  analysis.AddModule(&jetLeptonOverlapFilter);
+                                  analysis.AddModule(&httRecoilCorrector);
+
+    if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) 
+                                  analysis.AddModule(&svfit);
+
+                                  analysis.AddModule(&httWeights);
+    if (make_sync_ntuple)         analysis.AddModule(&httSync);
+    //                            analysis.AddModule(&httSelection);
+    //                            analysis.AddModule(&httMetStudy);
+    //                            analysis.AddModule(&jetVtxStudy);
+                                  analysis.AddModule(&httCategories);
+
+    // if (special_mode == 9 || special_mode == 10) {
+    //                            analysis.AddModule(&httOneBJetHighPtCategory);
+    //                            analysis.AddModule(&httOneBJetLowPtCategory);
+    // } else {
+    //                            analysis.AddModule(&httVbfCategory);
+    //                            analysis.AddModule(&httOneJetHighPtCategory);
+    //                            analysis.AddModule(&httOneJetLowPtCategory);
+    //                            analysis.AddModule(&httOneBJetHighPtCategory);
+    //                            analysis.AddModule(&httOneBJetLowPtCategory);
+    //                            analysis.AddModule(&httZeroJetHighPtCategory);
+    //                            analysis.AddModule(&httZeroJetLowPtCategory);
+    //                            analysis.AddModule(&httNoBTagCategory);
+    //                            analysis.AddModule(&httBTagCategory);
+    // }
+  }
+
+  if (do_skim) {
+    if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
+  }
 
   // Run analysis
-
   analysis.RunAnalysis();
   delete fs;
   return 0;

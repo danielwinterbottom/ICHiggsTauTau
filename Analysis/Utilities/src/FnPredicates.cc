@@ -388,7 +388,7 @@ namespace ic {
              && fabs(elec->dphi_sc_tk_at_vtx())  < 0.1
              && fabs(elec->deta_sc_tk_at_vtx())  < 0.009
              && elec->hadronic_over_em()         < 0.10));
-   return pass_id && !(ElectronHTTIdIso(elec, 2) && PF04IsolationEB(elec, 0.5, 0.15, 0.1)); // !(usual MVA ID && pf isolation < 0.15(0.1) barrel(endcap))
+   return pass_id && !(ElectronHTTId(elec, true) && PF04IsolationEB(elec, 0.5, 0.15, 0.1)); // !(usual MVA ID && pf isolation < 0.15(0.1) barrel(endcap))
   }
 
 
@@ -484,14 +484,21 @@ namespace ic {
   }
 
   bool HttEMuFakeMuon(Muon const* muon) {
+    bool pass_iso = false;
+    if ( muon->pt() > 20. &&
+         (muon->dr03_tk_sum_pt()/muon->pt())          < 0.2 &&
+         (muon->dr03_ecal_rechit_sum_et()/muon->pt()) < 0.2 &&
+         (muon->dr03_hcal_tower_sum_et()/muon->pt())  < 0.2 ) pass_iso = true;
+    if (  muon->pt() <= 20. &&
+          muon->dr03_tk_sum_pt()          < 8. &&
+          muon->dr03_ecal_rechit_sum_et() < 8. &&
+          muon->dr03_hcal_tower_sum_et()  < 8.) pass_iso = true;
     bool pass = ( 
         muon->is_global() &&  // isGlobalMuon()
         muon->gt_valid_muon_hits() > 0 &&  // globalTrack()->hitPattern().numberOfValidMuonHits()
         muon->gt_normalized_chi2() < 10 && // globalTrack()->normalizedChi2()
         muon->matched_stations() > 1 && // numberOfMatchedStations()
-        (muon->dr03_tk_sum_pt()/muon->pt()) < 0.2 &&  // isolationR03().sumPt
-        (muon->dr03_ecal_rechit_sum_et()/muon->pt()) < 0.2 && // isolationR03().emEt
-        (muon->dr03_hcal_tower_sum_et()/muon->pt()) < 0.2 // isolationR03().hadEt
+        pass_iso
         );
     return (pass && !(MuonTight(muon) && PF04IsolationEB(muon, 0.5, 0.15, 0.1))); // !(usual tight muon && pf iso < 0.15(0.1) barrel(endcap))
   }

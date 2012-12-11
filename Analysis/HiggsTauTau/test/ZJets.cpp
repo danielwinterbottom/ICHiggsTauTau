@@ -405,19 +405,14 @@ int main(int argc, char* argv[]){
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
   //analysis.AddModule(&httPrint);
-  //analysis.AddModule(&wjetsWeights);
   if (is_data) analysis.AddModule(&lumiMask);
-  //if (is_data && !is_2012 && (mode == 0 || mode == 1)) analysis.AddModule(&runFilter2011);
   if (!is_data) analysis.AddModule(&pileupWeight);
-  // if (ztatau_mode > 0) analysis.AddModule(&zTauTauFilter);
 
   if (channel == channel::zee) {
     analysis.AddModule(&selElectronFilter);
     // if (is_data  && !do_skim && !is_embedded) {
-    //   analysis.AddModule(&dataTriggerPathFilter);
-    //   //analysis.AddModule(&runStats);
+    //analysis.AddModule(&runStats);
     // }
-    // if (!is_data  && !do_skim) analysis.AddModule(&mcTriggerPathFilter);
     analysis.AddModule(&electronPairProducer);
   }
 
@@ -428,7 +423,6 @@ int main(int argc, char* argv[]){
     //   analysis.AddModule(&dataTriggerPathFilter);
     //   //analysis.AddModule(&runStats);
     // }
-    // if (!is_data  && !do_skim) analysis.AddModule(&mcTriggerPathFilter);
     analysis.AddModule(&muonPairProducer);
   }
 
