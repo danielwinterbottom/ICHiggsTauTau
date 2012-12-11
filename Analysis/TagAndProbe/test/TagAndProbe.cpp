@@ -12,6 +12,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MuonTagAndProbe.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleCounter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 
@@ -244,6 +245,13 @@ int main(int argc, char* argv[]){
     PileupWeight pileupWeight = PileupWeight
       ("PileupWeight").set_data(&data_pu).set_mc(&mc_pu).set_print_weights(false);
 
+   SimpleCounter<GenParticle> zEEFilter = SimpleCounter<GenParticle>("ZToEESelector")
+     .set_input_label("genParticles")
+     .set_predicate(
+       (bind(&GenParticle::status, _1) == 3) && 
+       (bind(abs,(bind(&GenParticle::pdgid, _1))) == 11))
+     .set_min(2);
+
     SimpleFilter<Electron> electronTagFilter = SimpleFilter<Electron>
     ("electronTagFilter")
     .set_input_label("electrons")
@@ -268,7 +276,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
-    .set_probe_predicate( (boost::bind(MinPtMaxEta, _1, 15, 2.1)))
+    .set_probe_predicate( (boost::bind(MinPtMaxEta, _1, 10, 2.1)))
     .set_passprobe_predicate((boost::bind(ElectronHTTIdIso, _1, 1))
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045))
@@ -288,8 +296,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
     .set_probe_predicate(  boost::bind(ElectronHTTIdIso, _1, 1) 
-                        && (boost::bind(&Electron::pt, _1) > 15)
-                        && (boost::bind(fabs, (boost::bind(&Electron::eta, _1))) < 2.1)
+                        && (boost::bind(MinPtMaxEta, _1, 10, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) )
     .set_passprobe_predicate(boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
@@ -308,7 +315,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
-    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 15, 2.1)) 
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1)) 
     .set_passprobe_predicate((boost::bind(ElectronHTTIdIso, _1, 1)) 
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) 
@@ -329,7 +336,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045))
-    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 15, 2.1))
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1))
     .set_passprobe_predicate( (boost::bind(ElectronHTTIdIso, _1, 1))
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045))
@@ -350,7 +357,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
     .set_probe_predicate(  boost::bind(ElectronHTTIdIso, _1, 1) 
-                        && boost::bind(MinPtMaxEta, _1, 15, 2.1)
+                        && boost::bind(MinPtMaxEta, _1, 10, 2.1)
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) )
     .set_passprobe_predicate((boost::bind(ElectronHTTIdIso, _1, 1)) 
@@ -372,7 +379,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045))
-    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 15, 2.1))
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1))
     .set_passprobe_predicate((boost::bind(ElectronHTTIdIso, _1, 1)) 
                         && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
                         && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) 
@@ -428,6 +435,13 @@ int main(int argc, char* argv[]){
     .set_mode(3)
     .set_era(eraB);
    
+   SimpleCounter<GenParticle> zMuMuFilter = SimpleCounter<GenParticle>("ZToMuMuSelector")
+     .set_input_label("genParticles")
+     .set_predicate(
+       (bind(&GenParticle::status, _1) == 3) && 
+       (bind(abs,(bind(&GenParticle::pdgid, _1))) == 13))
+     .set_min(2);
+
     SimpleFilter<Muon> muonTagFilter = SimpleFilter<Muon>
     ("muonTagFilter")
     .set_predicate(boost::bind(MuonTight, _1)
@@ -452,7 +466,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
-    .set_probe_predicate( (boost::bind(MinPtMaxEta, _1, 15, 2.1)))
+    .set_probe_predicate( (boost::bind(MinPtMaxEta, _1, 10, 2.1)))
     .set_passprobe_predicate((boost::bind(MuonTight, _1))
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045))
@@ -472,8 +486,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
     .set_probe_predicate(  boost::bind(MuonTight, _1) 
-                        && (boost::bind(&Muon::pt, _1) > 15)
-                        && (boost::bind(fabs, (boost::bind(&Muon::eta, _1))) < 2.1)
+                        && (boost::bind(MinPtMaxEta, _1, 10, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) )
     .set_passprobe_predicate(boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
@@ -492,7 +505,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
-    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 15, 2.1)) 
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1)) 
     .set_passprobe_predicate((boost::bind(MuonTight, _1)) 
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) 
@@ -513,7 +526,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045))
-    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 15, 2.1))
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1))
     .set_passprobe_predicate( (boost::bind(MuonTight, _1))
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045))
@@ -534,7 +547,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
     .set_probe_predicate(  boost::bind(MuonTight, _1) 
-                        && boost::bind(MinPtMaxEta, _1, 15, 2.1)
+                        && boost::bind(MinPtMaxEta, _1, 10, 2.1)
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) )
     .set_passprobe_predicate((boost::bind(MuonTight, _1)) 
@@ -556,7 +569,7 @@ int main(int argc, char* argv[]){
                         && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045))
-    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 15, 2.1))
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1))
     .set_passprobe_predicate((boost::bind(MuonTight, _1)) 
                         && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
                         && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) 
@@ -660,11 +673,13 @@ int main(int argc, char* argv[]){
     {
         if(iselec)
         {
+            if(!isdata) analysis.AddModule(&zEEFilter);
             analysis.AddModule(&electronTagFilter);
    //         analysis.AddModule(&electronProbeFilter);
         }
         else
         {
+            if(!isdata) analysis.AddModule(&zMuMuFilter);
             analysis.AddModule(&muonTagFilter);
      //       analysis.AddModule(&muonProbeFilter);
         }
