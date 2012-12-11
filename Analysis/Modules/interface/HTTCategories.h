@@ -30,6 +30,7 @@ class HTTCategories : public ModuleBase {
   std::map<std::string, bool> categories_;
   std::map<std::string, bool> selections_;
   std::map<std::string, MassPlots*> massplots_;
+  std::map<std::string, double> yields_;
   std::map<std::string, CoreControlPlots*> controlplots_;
 
 
@@ -83,6 +84,7 @@ class HTTCategories : public ModuleBase {
   void InitCategory(std::string const& category);
   void InitMassPlots(std::string const& category);
   void FillMassPlots(std::string const& category);
+  void FillYields(std::string const& category);
   void InitCoreControlPlots(std::string const& category);
   void FillCoreControlPlots(std::string const& category);
 

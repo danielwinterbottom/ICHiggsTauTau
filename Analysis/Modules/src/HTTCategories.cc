@@ -145,7 +145,7 @@ namespace ic {
       beta_1_ = -9999;
     }
 
-    if (channel_ == channel::et || channel_ == channel::mtmet || channel_ == channel::mtmet) {
+    if (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet) {
       if (os_ && mt_1_ < 20.0) SetPassSelection("os_sel");
       if (os_) SetPassSelection("os");
       if (os_ && mt_1_ > 70.0) SetPassSelection("os_con");
@@ -155,7 +155,7 @@ namespace ic {
       if (!os_ && mt_1_ > 60.0 && mt_1_ < 120.) SetPassSelection("ss_con_mt_60-120");
     }
 
-    if (channel_ == channel::mt) {
+    if (channel_ == channel::em) {
       if (os_ && pzeta_ > -20) SetPassSelection("os_sel");
       if (os_) SetPassSelection("os");
       if (!os_ && pzeta_ > -20) SetPassSelection("ss_sel");
@@ -174,7 +174,7 @@ namespace ic {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose");
     }
     if (n_lowpt_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose");
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose_jets20");
     }
 
     if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ > pt2_split && n_bjets_ == 0) {
@@ -237,6 +237,7 @@ namespace ic {
     if (it != categories_.end()) {
       it->second = true;
       FillMassPlots(category);
+      FillYields(category);
     } else {
       std::cerr << "Error in HTTCategories::SetPassCategory: No category registered with label " << category << std::endl;
       throw;
@@ -263,6 +264,16 @@ namespace ic {
       } 
     }
   }
+
+  void HTTCategories::FillYields(std::string const& category) {
+    for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
+      if (it->second) {
+        yields_[category+"_"+it->first] = yields_[category+"_"+it->first] + wt_;
+      } 
+    }
+  }
+
+
   void HTTCategories::FillCoreControlPlots(std::string const& category) {
     for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
       if (it->second) {
@@ -296,16 +307,32 @@ namespace ic {
 
 
   int HTTCategories::PostAnalysis() {
-        // std::cout << "----------------------------------------" << std::endl;
-        // std::cout << "Post-Analysis Info for HTT Selection" << std::endl;
-        // std::cout << "----------------------------------------" << std::endl;
-        // std::cout << boost::format("%-15s %-10s %-10s %-10s %-10s %-10s %-10s\n") 
-        //   % "Sel Mode:" % "OS-Sel" % "SS-Sel" % "OS-Con" % "SS-Con" % "OS-Out" % "SS-Out";
-        // std::cout << boost::format("%-15s %-10s %-10s %-10s %-10s %-10s %-10s\n") 
-        //   % "Dilepton:" % dilepton_yields_[0] % dilepton_yields_[1] % dilepton_yields_[2] % dilepton_yields_[3] % dilepton_yields_[4] % dilepton_yields_[5];
-        // std::cout << boost::format("%-15s %-10s %-10s %-10s %-10s %-10s %-10s\n") 
-        //   % "Inclusive:" % inclusive_yields_[0] % inclusive_yields_[1] % inclusive_yields_[2] % inclusive_yields_[3] % inclusive_yields_[4] % inclusive_yields_[5];
-
+    std::cout << "** Post-Analysis Info for HTT Selection **" << std::endl;
+    std::vector<std::string> print_selections;
+    print_selections.push_back("os_sel");
+    print_selections.push_back("os_con");
+    print_selections.push_back("ss_sel");
+    print_selections.push_back("ss_con");
+    std::vector<std::string> print_cats;
+    print_cats.push_back("inclusive");
+    print_cats.push_back("vbf_loose");
+    print_cats.push_back("vbf");
+    print_cats.push_back("1jet_high");
+    print_cats.push_back("1jet_low");
+    print_cats.push_back("0jet_high");
+    print_cats.push_back("0jet_low");
+    std::cout << boost::format("%-20s") % "Selections:";
+    for (unsigned i = 0; i < print_selections.size(); ++i) {
+      std::cout << boost::format("%-12s") % print_selections[i];
+    }
+    std::cout << std::endl;
+    for (unsigned i = 0; i < print_cats.size(); ++i) {
+      std::cout << boost::format("%-20s") % print_cats[i];
+      for (unsigned j = 0; j < print_selections.size(); ++j) {
+        std::cout << boost::format("%-12s") % (yields_[print_cats[i]+"_"+print_selections[j]]);
+      }
+      std::cout << std::endl;
+    }
     return 0;
   }
 
