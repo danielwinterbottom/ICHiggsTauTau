@@ -18,19 +18,17 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttDataTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPairSelector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSelection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMetStudy.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMCTriggerFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVbfCategory.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVHCategory.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttOneJetCategory.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttOneBJetCategory.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttBTagCategory.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttNoBTagCategory.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttZeroJetCategory.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVbfCategory.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVHCategory.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttOneJetCategory.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttOneBJetCategory.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttBTagCategory.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttNoBTagCategory.h"
+// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttZeroJetCategory.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttRecoilCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSync.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPrint.h"
@@ -99,6 +97,7 @@ int main(int argc, char* argv[]){
   // Speical Mode 22 Fake Electron & Muon for emu
   // Special Mode 23 No isolation on the electron leg
   // Special Mode 24 Inverted isolation of the electron leg
+  // Special Mode 25 No ID or Iso or muon or electron leg (for skimming only)
     - Need to be able to shift the mass (m_sv and m_vis) in the embedded samples up by
       1% - this could be done easily in HTTCategories
     - Need a category without central jet veto for diboson/single top/ttbar shapes
@@ -362,25 +361,11 @@ int main(int argc, char* argv[]){
     .set_mc(&mc_pu)
     .set_print_weights(false);
 
-  // HttDataTriggerFilter dataTriggerPathFilter = HttDataTriggerFilter("TriggerPathFilter")
-  //   .set_channel(channel)
-  //   .set_do_obj_match(true)
-  //   .set_lep1label(lep1sel_label)
-  //   .set_lep2label(lep2sel_label);
-
-  // HttMCTriggerFilter mcTriggerPathFilter = HttMCTriggerFilter("TriggerPathMCFilter")
-  //   .set_channel(channel)   
-  //   .set_mc(mc)
-  //   .set_do_obj_match(true)
-  //   .set_lep1label(lep1sel_label)
-  //   .set_lep2label(lep2sel_label);
-
   HTTTriggerFilter httTriggerFilter = HTTTriggerFilter("HTTTriggerFilter")
     .set_channel(channel)
     .set_mc(mc)
     .set_is_data(is_data)
     .set_pair_label("emtauCandidates");
-
 
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
     .set_input_label("genParticles")
@@ -441,6 +426,8 @@ int main(int argc, char* argv[]){
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
   } else if (special_mode == 24) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && !bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+  } else if (special_mode == 25) {
+    elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
   } else {
     if (channel == channel::em) {
       elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
@@ -503,6 +490,8 @@ int main(int argc, char* argv[]){
     muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
   } else if (special_mode == 3 || special_mode == 6 || special_mode == 10) {
     muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+  } else if (special_mode == 25) {
+    muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
   } else {
     if (channel == channel::em) {
       muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
@@ -744,99 +733,98 @@ int main(int argc, char* argv[]){
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label);
 
-  HttVbfCategory httVbfCategory = HttVbfCategory
-    ("HttVbfCategory","pfJetsPFlow")
-    .set_fs(fs)
-    .set_channel(channel)
-    .set_met_label(met_label)
-    .set_do_jetvtx_assoc(false)
-    .set_do_mc_eff(false)
-    .set_do_vbf_mva(do_vbf_mva)
-    .set_do_mva_pu_id(true)
-    .set_make_plots(false)
-    .set_mva_cut(0.5)
-    .set_make_mva_tree(false)
-    .set_do_cjv(true)
-    .set_vbf_cjv_pt(30.0)
-    .set_mva_name("MVA_"+output_name);
-  if (special_mode == 6 || special_mode == 8) httVbfCategory.set_jet_pt(20.0);
-  if (special_mode == 6) httVbfCategory.set_mva_cut(0.0);
-  httVbfCategory.set_era(era).set_use_hcp_mva(true);
-  if (era == era::data_2011) {
-    httVbfCategory.set_mva_cut(0.676);
-    if (channel == channel::em) httVbfCategory.set_mva_cut(0.9);
-  } else {
-    httVbfCategory.set_mva_cut(0.978);
-    if (channel == channel::em) httVbfCategory.set_mva_cut(0.9);
-  }
-  if (strategy == strategy::ichep2012) {
-    httVbfCategory.set_use_hcp_mva(false).set_mva_cut(0.5);
-    httVbfCategory.set_jet_eta(5.0);
-  }
+  // HttVbfCategory httVbfCategory = HttVbfCategory
+  //   ("HttVbfCategory","pfJetsPFlow")
+  //   .set_fs(fs)
+  //   .set_channel(channel)
+  //   .set_met_label(met_label)
+  //   .set_do_jetvtx_assoc(false)
+  //   .set_do_mc_eff(false)
+  //   .set_do_vbf_mva(do_vbf_mva)
+  //   .set_do_mva_pu_id(true)
+  //   .set_make_plots(false)
+  //   .set_mva_cut(0.5)
+  //   .set_make_mva_tree(false)
+  //   .set_do_cjv(true)
+  //   .set_vbf_cjv_pt(30.0)
+  //   .set_mva_name("MVA_"+output_name);
+  // if (special_mode == 6 || special_mode == 8) httVbfCategory.set_jet_pt(20.0);
+  // if (special_mode == 6) httVbfCategory.set_mva_cut(0.0);
+  // httVbfCategory.set_era(era).set_use_hcp_mva(true);
+  // if (era == era::data_2011) {
+  //   httVbfCategory.set_mva_cut(0.676);
+  //   if (channel == channel::em) httVbfCategory.set_mva_cut(0.9);
+  // } else {
+  //   httVbfCategory.set_mva_cut(0.978);
+  //   if (channel == channel::em) httVbfCategory.set_mva_cut(0.9);
+  // }
+  // if (strategy == strategy::ichep2012) {
+  //   httVbfCategory.set_use_hcp_mva(false).set_mva_cut(0.5);
+  //   httVbfCategory.set_jet_eta(5.0);
+  // }
 
-  HttVHCategory httVHCategory = HttVHCategory
-    ("HttVHCategory","pfJetsPFlow");
+  // HttVHCategory httVHCategory = HttVHCategory
+  //   ("HttVHCategory","pfJetsPFlow");
 
-  HttOneJetCategory httOneJetHighPtCategory = HttOneJetCategory
-    ("HttOneJetHighPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(true).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
-  httOneJetHighPtCategory.set_met_cut(30.0);
-  if (strategy == strategy::ichep2012) httOneJetHighPtCategory.set_jet_eta(5.0);
+  // HttOneJetCategory httOneJetHighPtCategory = HttOneJetCategory
+  //   ("HttOneJetHighPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(true).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
+  // httOneJetHighPtCategory.set_met_cut(30.0);
+  // if (strategy == strategy::ichep2012) httOneJetHighPtCategory.set_jet_eta(5.0);
   
 
-  HttOneJetCategory httOneJetLowPtCategory = HttOneJetCategory
-    ("HttOneJetLowPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(false).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
-  httOneJetLowPtCategory.set_met_cut(30.0);
-  if (strategy == strategy::ichep2012) httOneJetLowPtCategory.set_jet_eta(5.0);
+  // HttOneJetCategory httOneJetLowPtCategory = HttOneJetCategory
+  //   ("HttOneJetLowPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(false).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
+  // httOneJetLowPtCategory.set_met_cut(30.0);
+  // if (strategy == strategy::ichep2012) httOneJetLowPtCategory.set_jet_eta(5.0);
 
 
-  HttOneBJetCategory httOneBJetHighPtCategory = HttOneBJetCategory
-    ("HttBOneJetHighPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(true).set_channel(channel).set_met_label(met_label);;
-  if (special_mode == 9 || special_mode == 10) httOneBJetHighPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-  if (special_mode == 13) httOneBJetHighPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
+  // HttOneBJetCategory httOneBJetHighPtCategory = HttOneBJetCategory
+  //   ("HttBOneJetHighPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(true).set_channel(channel).set_met_label(met_label);;
+  // if (special_mode == 9 || special_mode == 10) httOneBJetHighPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
+  // if (special_mode == 13) httOneBJetHighPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
 
-  HttOneBJetCategory httOneBJetLowPtCategory = HttOneBJetCategory
-    ("HttBOneJetLowPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(false).set_channel(channel).set_met_label(met_label);;
-  if (special_mode == 9 || special_mode == 10) httOneBJetLowPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-  if (special_mode == 13) httOneBJetLowPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
+  // HttOneBJetCategory httOneBJetLowPtCategory = HttOneBJetCategory
+  //   ("HttBOneJetLowPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(false).set_channel(channel).set_met_label(met_label);;
+  // if (special_mode == 9 || special_mode == 10) httOneBJetLowPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
+  // if (special_mode == 13) httOneBJetLowPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
 
-  HttBTagCategory httBTagCategory = HttBTagCategory
-    ("HttBTagCategory","pfJetsPFlow").set_fs(fs).set_channel(channel).set_met_label(met_label);
-  if (special_mode == 9 || special_mode == 10) httBTagCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-  if (special_mode == 13) httBTagCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
+  // HttBTagCategory httBTagCategory = HttBTagCategory
+  //   ("HttBTagCategory","pfJetsPFlow").set_fs(fs).set_channel(channel).set_met_label(met_label);
+  // if (special_mode == 9 || special_mode == 10) httBTagCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
+  // if (special_mode == 13) httBTagCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
 
-  HttNoBTagCategory httNoBTagCategory = HttNoBTagCategory
-    ("HttNoBTagCategory","pfJetsPFlow").set_fs(fs).set_do_met_cut(false).set_channel(channel).set_met_label(met_label);
+  // HttNoBTagCategory httNoBTagCategory = HttNoBTagCategory
+  //   ("HttNoBTagCategory","pfJetsPFlow").set_fs(fs).set_do_met_cut(false).set_channel(channel).set_met_label(met_label);
 
-  HttZeroJetCategory httZeroJetHighPtCategory = HttZeroJetCategory
-    ("HttZeroJetHighPtCategory").set_fs(fs).set_high_pt(true).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
-  httZeroJetHighPtCategory.set_met_cut(0.0);
-  if (strategy == strategy::ichep2012) {
-    httZeroJetHighPtCategory.set_met_cut(30.0);
-    httZeroJetHighPtCategory.set_veto_jet_eta(5.0);
-  }
+  // HttZeroJetCategory httZeroJetHighPtCategory = HttZeroJetCategory
+  //   ("HttZeroJetHighPtCategory").set_fs(fs).set_high_pt(true).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
+  // httZeroJetHighPtCategory.set_met_cut(0.0);
+  // if (strategy == strategy::ichep2012) {
+  //   httZeroJetHighPtCategory.set_met_cut(30.0);
+  //   httZeroJetHighPtCategory.set_veto_jet_eta(5.0);
+  // }
 
-  HttZeroJetCategory httZeroJetLowPtCategory = HttZeroJetCategory
-    ("HttZeroJetLowPtCategory").set_fs(fs).set_high_pt(false).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
-  httZeroJetLowPtCategory.set_met_cut(0.0);
-  if (strategy == strategy::ichep2012) {
-    httZeroJetLowPtCategory.set_met_cut(30.0);
-    httZeroJetLowPtCategory.set_veto_jet_eta(5.0);
-  }
+  // HttZeroJetCategory httZeroJetLowPtCategory = HttZeroJetCategory
+  //   ("HttZeroJetLowPtCategory").set_fs(fs).set_high_pt(false).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
+  // httZeroJetLowPtCategory.set_met_cut(0.0);
+  // if (strategy == strategy::ichep2012) {
+  //   httZeroJetLowPtCategory.set_met_cut(30.0);
+  //   httZeroJetLowPtCategory.set_veto_jet_eta(5.0);
+  // }
 
-
-  if (!is_data) {
-    httVbfCategory.set_do_btag_weight(true);
-    httOneJetHighPtCategory.set_do_btag_weight(true);
-    httOneJetLowPtCategory.set_do_btag_weight(true);
-    httOneBJetHighPtCategory.set_do_btag_weight(true);
-    httOneBJetLowPtCategory.set_do_btag_weight(true);
-    httZeroJetHighPtCategory.set_do_btag_weight(true);
-    httZeroJetLowPtCategory.set_do_btag_weight(true);
-    if (special_mode == 9 || special_mode == 10 || special_mode == 13) {
-      httOneBJetHighPtCategory.set_do_btag_weight(false);
-      httOneBJetLowPtCategory.set_do_btag_weight(false);
-    }
-  }
+  // if (!is_data) {
+  //   httVbfCategory.set_do_btag_weight(true);
+  //   httOneJetHighPtCategory.set_do_btag_weight(true);
+  //   httOneJetLowPtCategory.set_do_btag_weight(true);
+  //   httOneBJetHighPtCategory.set_do_btag_weight(true);
+  //   httOneBJetLowPtCategory.set_do_btag_weight(true);
+  //   httZeroJetHighPtCategory.set_do_btag_weight(true);
+  //   httZeroJetLowPtCategory.set_do_btag_weight(true);
+  //   if (special_mode == 9 || special_mode == 10 || special_mode == 13) {
+  //     httOneBJetHighPtCategory.set_do_btag_weight(false);
+  //     httOneBJetLowPtCategory.set_do_btag_weight(false);
+  //   }
+  // }
 
   HttSync httSync("HttSync","SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
