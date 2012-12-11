@@ -1,0 +1,315 @@
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTTCategories.h"
+#include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
+
+#include "TMVA/Reader.h"
+#include "TVector3.h"
+
+namespace ic {
+
+  HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), channel_(channel::et) {
+    ditau_label_ = "emtauCandidates";
+    met_label_ = "pfMVAMet";
+    fs_ = NULL;
+  }
+
+  HTTCategories::~HTTCategories() {
+    ;
+  }
+
+  void HTTCategories::InitSelection(std::string const& selection) {
+    selections_[selection] = false;
+
+  }
+  void HTTCategories::InitCategory(std::string const& category) {
+    categories_[category] = false;
+    InitMassPlots(category);
+  }
+
+  int HTTCategories::PreAnalysis() {
+    std::cout << "** PreAnalysis Info for HTT Categories **" << std::endl;
+    if (fs_) {
+      std::cout << "Channel: " << Channel2String(channel_) << std::endl;
+      std::cout << "Ditau Label: " << ditau_label_ << std::endl;
+      std::cout << "MET Label: " << met_label_ << std::endl;
+    }
+
+    InitSelection("os");
+    InitSelection("os_sel");
+    InitSelection("os_con");
+    InitSelection("os_con_mt_60-120");
+    InitSelection("ss_sel");
+    InitSelection("ss_con");
+    InitSelection("ss_con_mt_60-120");
+
+    InitCategory("inclusive");
+    InitCategory("vbf");
+    InitCategory("vbf_loose");
+    InitCategory("vbf_loose_jets20");
+    InitCategory("1jet_high");
+    InitCategory("1jet_low");
+    InitCategory("0jet_high");
+    InitCategory("0jet_low");
+    InitCategory("btag");
+    InitCategory("nobtag");
+
+    return 0;
+  }
+
+  int HTTCategories::Execute(TreeEvent *event) {
+
+    Reset();
+
+    // Get the stuff we need from the event
+    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    wt_ = eventInfo->total_weight();
+    std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
+    CompositeCandidate const* ditau = ditau_vec.at(0);
+    Candidate const* lep1 = ditau->GetCandidate("lepton1");
+    Candidate const* lep2 = ditau->GetCandidate("lepton2");
+    Met const* met = event->GetPtr<Met>(met_label_);
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+    std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::vector<PFJet*> lowpt_jets = jets;
+    ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+    ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
+    std::vector<PFJet*> bjets = lowpt_jets;
+    ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
+
+    if (PairOppSign(ditau)) {
+      os_ = true;
+    } else {
+      os_ = false;
+    }
+
+    n_vtx_ = eventInfo->good_vertices();
+
+    if (event->Exists("svfitMass")) {
+      m_sv_ = event->Get<double>("svfitMass");
+    } else {
+      m_sv_ = -9999;
+    }
+
+    m_vis_ = ditau->M();
+
+    mt_1_ = MT(lep1, met);
+    pzeta_ = PZeta(ditau, met, 0.85);
+
+    pt_1_ = lep1->pt();
+    pt_2_ = lep2->pt();
+    eta_1_ = lep1->eta();
+    eta_2_ = lep2->eta();
+    met_ = met->pt();
+    met_phi_ = met->phi();
+
+    n_jets_ = jets.size();
+    n_lowpt_jets_ = lowpt_jets.size();
+    n_bjets_ = bjets.size();
+
+    if (n_jets_ >= 1) {
+      jpt_1_ = jets[0]->pt();
+      jeta_1_ = jets[0]->eta();
+    } else {
+      jpt_1_ = -9999;
+      jeta_1_ = -9999;
+    }
+
+    if (n_jets_ >= 2) {
+      jpt_2_ = jets[1]->pt();
+      jeta_2_ = jets[1]->eta();
+      mjj_ = (jets[0]->vector() + jets[1]->vector()).M();
+      jdeta_ = fabs(jets[0]->eta() - jets[1]->eta());
+      double eta_high = (jets[0]->eta() > jets[1]->eta()) ? jets[0]->eta() : jets[1]->eta();
+      double eta_low = (jets[0]->eta() > jets[1]->eta()) ? jets[1]->eta() : jets[0]->eta();
+      n_jetsingap_ = 0;
+      if (n_jets_ > 2) {
+        for (unsigned i = 2; i < jets.size(); ++i) {
+         if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
+        }
+      }
+    } else {
+      jpt_2_ = -9999;
+      jeta_2_ = -9999;
+      mjj_ = -9999;
+      jdeta_ = -9999;
+      n_jetsingap_ = -9999;
+    }
+
+    if (n_bjets_ >= 1) {
+      bpt_1_ = bjets[0]->pt();
+      beta_1_ = bjets[0]->eta();
+    } else {
+      bpt_1_ = -9999;
+      beta_1_ = -9999;
+    }
+
+    if (channel_ == channel::et || channel_ == channel::mtmet || channel_ == channel::mtmet) {
+      if (os_ && mt_1_ < 20.0) SetPassSelection("os_sel");
+      if (os_) SetPassSelection("os");
+      if (os_ && mt_1_ > 70.0) SetPassSelection("os_con");
+      if (os_ && mt_1_ > 60.0 && mt_1_ < 120.) SetPassSelection("os_con_mt_60-120");
+      if (!os_ && mt_1_ < 20.0) SetPassSelection("ss_sel");
+      if (!os_ && mt_1_ > 70.0) SetPassSelection("ss_con");
+      if (!os_ && mt_1_ > 60.0 && mt_1_ < 120.) SetPassSelection("ss_con_mt_60-120");
+    }
+
+    if (channel_ == channel::mt) {
+      if (os_ && pzeta_ > -20) SetPassSelection("os_sel");
+      if (os_) SetPassSelection("os");
+      if (!os_ && pzeta_ > -20) SetPassSelection("ss_sel");
+
+    }
+
+    double pt2_split = 40.0; // Tau pT for et,mt and mtmet
+    if (channel_ == channel::em) pt2_split = 35.0;  // Mu pT for em
+
+    SetPassCategory("inclusive");
+    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 500. && jdeta_ > 3.5) {
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf");
+
+    }
+    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose");
+    }
+    if (n_lowpt_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose");
+    }
+
+    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ > pt2_split && n_bjets_ == 0) {
+      if ( (channel_ == channel::et) ? (met_ > 30.) : true) SetPassCategory("1jet_high");
+    }
+    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
+      if ( (channel_ == channel::et) ? (met_ > 30.) : true) SetPassCategory("1jet_low");
+    }
+    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) SetPassCategory("0jet_high");
+    if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) SetPassCategory("0jet_low");
+   
+    return 0;
+  }
+
+  bool HTTCategories::PassesCategory(std::string const& category) const {
+    std::map<std::string, bool>::const_iterator it = categories_.find(category);
+    if (it != categories_.end()) {
+      return it->second;
+    } else {
+      std::cerr << "Error in HTTCategories::PassesCategory: No category registered with label " << category << std::endl;
+      throw;
+      return false;
+    }
+  }
+
+
+  void HTTCategories::InitMassPlots(std::string const& category) {
+    for (std::map<std::string, bool>::const_iterator it = selections_.begin(); it != selections_.end(); ++it) {
+      massplots_[category+"_"+it->first] = new MassPlots(fs_->mkdir(category+"_"+it->first));
+    }
+
+  }
+  void HTTCategories::InitCoreControlPlots(std::string const& category) {
+    for (std::map<std::string, bool>::const_iterator it = selections_.begin(); it != selections_.end(); ++it) {
+      controlplots_[category+"_"+it->first] = new CoreControlPlots(fs_->mkdir(category+"_"+it->first));
+    }
+  }
+
+  void HTTCategories::Reset() {
+    for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
+      it->second = false;
+    }
+    for (std::map<std::string, bool>::iterator it = categories_.begin(); it != categories_.end(); ++it) {
+      it->second = false;
+    }
+  }
+
+  void HTTCategories::SetPassSelection(std::string const& selection) {
+    std::map<std::string, bool>::iterator it = selections_.find(selection);
+    if (it != selections_.end()) {
+      it->second = true;
+    } else {
+      std::cerr << "Error in HTTCategories::SetPassSelection: No selection registered with label " << selection << std::endl;
+      throw;
+    }
+  }
+
+  void HTTCategories::SetPassCategory(std::string const& category) {
+    std::map<std::string, bool>::iterator it = categories_.find(category);
+    if (it != categories_.end()) {
+      it->second = true;
+      FillMassPlots(category);
+    } else {
+      std::cerr << "Error in HTTCategories::SetPassCategory: No category registered with label " << category << std::endl;
+      throw;
+    }
+  }
+
+  void HTTCategories::FillMassPlots(std::string const& category) {
+    for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
+      if (it->second) {
+        std::map<std::string, MassPlots*>::iterator p_it = massplots_.find(category+"_"+it->first);
+        if (p_it != massplots_.end()) {
+          MassPlots *plots = p_it->second;
+          plots->m_sv->Fill(m_sv_, wt_);
+          plots->m_sv_sm->Fill(m_sv_, wt_);
+          plots->m_sv_sm_fine->Fill(m_sv_, wt_);
+          plots->m_sv_mssm->Fill(m_sv_, wt_);
+          plots->m_sv_mssm_fine->Fill(m_sv_, wt_);
+          plots->m_vis->Fill(m_vis_, wt_);
+          plots->m_vis_sm->Fill(m_vis_, wt_);
+          plots->m_vis_sm_fine->Fill(m_vis_, wt_);
+          plots->m_vis_mssm->Fill(m_vis_, wt_);
+          plots->m_vis_mssm_fine->Fill(m_vis_, wt_);
+        }
+      } 
+    }
+  }
+  void HTTCategories::FillCoreControlPlots(std::string const& category) {
+    for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
+      if (it->second) {
+        std::map<std::string, CoreControlPlots*>::iterator p_it = controlplots_.find(category+"_"+it->first);
+        if (p_it != controlplots_.end()) {
+          CoreControlPlots *plots = p_it->second;
+          plots->n_vtx->Fill(n_vtx_, wt_);
+          plots->mt_1->Fill(mt_1_, wt_);
+          plots->pt_1->Fill(pt_1_, wt_);
+          plots->pt_2->Fill(pt_2_, wt_);
+          plots->eta_1->Fill(eta_1_, wt_);
+          plots->eta_2->Fill(eta_2_, wt_);
+          plots->met->Fill(met_, wt_);
+          plots->met_phi->Fill(met_phi_, wt_);
+          plots->n_jets->Fill(n_jets_, wt_);
+          plots->n_bjets->Fill(n_bjets_, wt_);
+          plots->n_jetsingap->Fill(n_jetsingap_, wt_);
+          plots->jpt_1->Fill(jpt_1_, wt_);
+          plots->jpt_2->Fill(jpt_2_, wt_);
+          plots->jeta_1->Fill(jeta_1_, wt_);
+          plots->jeta_2->Fill(jeta_2_, wt_);
+          plots->bpt_1->Fill(bpt_1_, wt_);
+          plots->beta_1->Fill(beta_1_, wt_);
+          plots->mjj->Fill(mjj_, wt_);
+          plots->jdeta->Fill(jdeta_, wt_);
+        }
+      } 
+    }
+  }
+
+
+
+  int HTTCategories::PostAnalysis() {
+        // std::cout << "----------------------------------------" << std::endl;
+        // std::cout << "Post-Analysis Info for HTT Selection" << std::endl;
+        // std::cout << "----------------------------------------" << std::endl;
+        // std::cout << boost::format("%-15s %-10s %-10s %-10s %-10s %-10s %-10s\n") 
+        //   % "Sel Mode:" % "OS-Sel" % "SS-Sel" % "OS-Con" % "SS-Con" % "OS-Out" % "SS-Out";
+        // std::cout << boost::format("%-15s %-10s %-10s %-10s %-10s %-10s %-10s\n") 
+        //   % "Dilepton:" % dilepton_yields_[0] % dilepton_yields_[1] % dilepton_yields_[2] % dilepton_yields_[3] % dilepton_yields_[4] % dilepton_yields_[5];
+        // std::cout << boost::format("%-15s %-10s %-10s %-10s %-10s %-10s %-10s\n") 
+        //   % "Inclusive:" % inclusive_yields_[0] % inclusive_yields_[1] % inclusive_yields_[2] % inclusive_yields_[3] % inclusive_yields_[4] % inclusive_yields_[5];
+
+    return 0;
+  }
+
+  void HTTCategories::PrintInfo() {
+    ;
+  }
+}
