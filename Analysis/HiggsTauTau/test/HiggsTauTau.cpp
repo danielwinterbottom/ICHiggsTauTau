@@ -97,6 +97,8 @@ int main(int argc, char* argv[]){
   // Speical Mode 20 Fake Electron for emu
   // Speical Mode 21 Fake Muon for emu 
   // Speical Mode 22 Fake Electron & Muon for emu
+  // Special Mode 23 No isolation on the electron leg
+  // Special Mode 24 Inverted isolation of the electron leg
     - Need to be able to shift the mass (m_sv and m_vis) in the embedded samples up by
       1% - this could be done easily in HTTCategories
     - Need a category without central jet veto for diboson/single top/ttbar shapes
@@ -435,6 +437,10 @@ int main(int argc, char* argv[]){
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
   } else if (special_mode == 3 || special_mode == 6 || special_mode == 10) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+  } else if (special_mode == 23) {
+    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
+  } else if (special_mode == 24) {
+    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && !bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
   } else {
     if (channel == channel::em) {
       elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
@@ -847,8 +853,8 @@ int main(int argc, char* argv[]){
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
   //                              analysis.AddModule(&httPrint);
-   if (is_data && !do_skim)       analysis.AddModule(&lumiMask);
-  if (!is_data)                   analysis.AddModule(&pileupWeight);
+  if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
+  if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (ztatau_mode > 0)            analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
   if (tau_scale_mode > 0)         analysis.AddModule(&tauEnergyShifter);
