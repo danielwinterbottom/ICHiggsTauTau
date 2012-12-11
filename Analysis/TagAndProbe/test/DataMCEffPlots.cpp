@@ -21,8 +21,8 @@ int main(int argc, char* argv[]){
   for (int i = 0; i < argc; ++i){
     std::cout << i << "\t" << argv[i] << std::endl;
   }
-  if (argc != 4){
-    std::cerr << "Need 2 args:<iselec> <filepathdata> <filepathMC>" << std::endl;
+  if (argc != 6){
+    std::cerr << "Need 5 args:<iselec> <filepathdata> <filepathMC> <legend1> <legend2>" << std::endl;
     exit(1);
   }
 
@@ -30,6 +30,8 @@ int main(int argc, char* argv[]){
     elec = boost::lexical_cast<bool>(argv[1]);
     TFile* fileData=new TFile(argv[2]);
     TFile* fileMC=new TFile(argv[3]);
+    std::string label1 = boost::lexical_cast<std::string>(argv[4]);
+    std::string label2 = boost::lexical_cast<std::string>(argv[5]);
 
     TFile* output;
     if(elec)
@@ -70,8 +72,8 @@ int main(int argc, char* argv[]){
     grptdata->Draw("Psame");
     
     TLegend * legend1 = new TLegend(0.6, 0.45, 0.75, 0.60);
-    legend1->AddEntry(grptMC, "2012 MC", "p");
-    legend1->AddEntry(grptdata, "2012 Data", "p");
+    legend1->AddEntry(grptMC, label2.c_str(), "p");
+    legend1->AddEntry(grptdata, label1.c_str(), "p");
     legend1->SetFillColor(0);
     legend1->SetTextSize(0.04);
     legend1->SetBorderSize(0);
@@ -93,7 +95,13 @@ int main(int argc, char* argv[]){
         base2->GetXaxis()->SetTitle("Electron Eta");
     }
     else base2->GetXaxis()->SetTitle("Muon Eta");
+    base2->GetXaxis()->SetLabelSize(0.042);
+    base2->GetXaxis()->SetTitleSize(0.042);
+    base2->GetXaxis()->SetTitleOffset(1.1);
     base2->GetYaxis()->SetTitle("Efficiency");
+    base2->GetYaxis()->SetLabelSize(0.042);
+    base2->GetYaxis()->SetTitleSize(0.045);
+    base2->GetYaxis()->SetTitleOffset(1.0);
     base2->SetTitle(0);
     base2->SetStats(0);
     base2->Draw();
@@ -104,8 +112,8 @@ int main(int argc, char* argv[]){
     gretadata->Draw("Psame");
 
     TLegend * legend2 = new TLegend(0.6, 0.35, 0.75, 0.50);
-    legend2->AddEntry(gretaMC, "2012 MC", "p");
-    legend2->AddEntry(gretadata, "2012 Data", "p");
+    legend2->AddEntry(gretaMC, label2.c_str(), "p");
+    legend2->AddEntry(gretadata, label1.c_str(), "p");
     legend2->SetFillColor(0);
     legend2->SetTextSize(0.04);
     legend2->SetBorderSize(0);
@@ -125,6 +133,12 @@ int main(int argc, char* argv[]){
     }
     else base3->GetXaxis()->SetTitle("Nvtx");
     base3->GetYaxis()->SetTitle("Efficiency");
+    base3->GetXaxis()->SetLabelSize(0.042);
+    base3->GetXaxis()->SetTitleSize(0.042);
+    base3->GetXaxis()->SetTitleOffset(1.1);
+    base3->GetYaxis()->SetLabelSize(0.042);
+    base3->GetYaxis()->SetTitleSize(0.045);
+    base3->GetYaxis()->SetTitleOffset(1.0);
     base3->SetTitle(0);
     base3->SetStats(0);
     base3->Draw();
@@ -135,14 +149,14 @@ int main(int argc, char* argv[]){
     grvtxdata->Draw("Psame");
 
     TLegend * legend3 = new TLegend(0.6, 0.35, 0.75, 0.50);
-    legend3->AddEntry(grvtxMC, "2012 MC", "p");
-    legend3->AddEntry(grvtxdata, "2012 Data", "p");
+    legend3->AddEntry(grvtxMC, label2.c_str(), "p");
+    legend3->AddEntry(grvtxdata, label1.c_str(), "p");
     legend3->SetFillColor(0);
     legend3->SetTextSize(0.04);
     legend3->SetBorderSize(0);
     legend3->Draw();
     canvas3->Update();
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 3012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
     canvas3->Update();
      
    
@@ -150,6 +164,12 @@ int main(int argc, char* argv[]){
     
     TCanvas* canvas4 = new TCanvas("canvas4", "canvas4", 200,10, 700, 500);
     TH1F* base4 = new TH1F("base4", "base4" , 100,  0 ,30);
+    base4->GetXaxis()->SetLabelSize(0.042);
+    base4->GetXaxis()->SetTitleSize(0.042);
+    base4->GetXaxis()->SetTitleOffset(1.1);
+    base4->GetYaxis()->SetLabelSize(0.042);
+    base4->GetYaxis()->SetTitleSize(0.045);
+    base4->GetYaxis()->SetTitleOffset(1.0);
     base4->GetXaxis()->SetTitle("Nvtx");
     base4->GetYaxis()->SetTitle("Data/MC Scale Factor");
     base4->SetTitle(0);
