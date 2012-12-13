@@ -20,7 +20,7 @@ namespace ic {
     // 2: Read mass from .out files
     file_counter = 0;
     event_counter = 0;
-    split_ = 6000;
+    split_ = 5000;
     outname_ = "svfit_test";
     fullpath_ = "SVFIT_2012/";
   }
@@ -37,7 +37,7 @@ namespace ic {
     if (channel_ == channel::mt) mode_ = 1;
     if (channel_ == channel::mtmet) mode_ = 1;
     if (channel_ == channel::em) mode_ = 2;
-    std::cout << "Mode: " << op_ << std::endl;
+    std::cout << "SVFit Mode: " << op_ << std::endl;
     std::cout << "Dilepton Label: " << dilepton_label_ << std::endl;
     std::cout << "MET Label: " << met_label_ << std::endl;
 

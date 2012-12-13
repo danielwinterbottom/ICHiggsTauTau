@@ -7,7 +7,7 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-
+#include "boost/bind.hpp"
 
 namespace ic {
 
@@ -75,7 +75,7 @@ namespace ic {
         }
         if (channel_ == channel::mtmet) {
           //2012 Triggers
-          if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_Mu8_eta2p1_LooseIsoPFTau20_L1ETM26_v") != name.npos) path_found = true;
+          if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_L1ETM26_v") != name.npos) path_found = true;
         }
         if (path_found) break;
       }
@@ -282,8 +282,10 @@ namespace ic {
 
     if (channel_ == channel::mtmet && is_data_) {
       for (unsigned i = 0; i < dileptons.size(); ++i) {
-        bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
-        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
+        // bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
+        // bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
+        bool leg1_match = true;
+        bool leg2_match = true;
         if (leg1_match && leg2_match) dileptons_pass.push_back(dileptons[i]);
       }
     }
@@ -291,11 +293,14 @@ namespace ic {
     if (channel_ == channel::mtmet && !is_data_) {
       std::vector<TriggerObject *> const& mu8_obj = event->GetPtrVec<TriggerObject>("triggerObjectsMu8");
       std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+      std::vector<Candidate *> l1muon = event->GetPtrVec<Candidate>("l1extraMuons");
+      ic::erase_if(l1muon, !boost::bind(MinPtMaxEta, _1, 7.0, 2.5));
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), mu8_obj, "hltL3fL1sMu3L3Filtered8", 0.5);
-        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
-        bool l1_met = l1met.at(0)->pt() > 26.;
-        if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
+        // bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
+        bool leg2_match = true;
+        bool l1_met = l1met.at(0)->pt() > 29.;
+        if (leg1_match && leg2_match && l1_met && l1muon.size() > 0) dileptons_pass.push_back(dileptons[i]);
       }
     }
 

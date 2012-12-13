@@ -75,7 +75,7 @@ namespace ic {
         MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2011.root");
       }
       ElectronFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(ElectronFRFile->Get("ElectronFakeRateDenominatorV4_Ele8CaloIdLCaloIsoVLCombinedSample_ptThreshold35_PtEta"));
-      MuonFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(MuonFRFile->Get("MuonFakeRateDenominatorV4_Mu8PtCombinedSample_ptThreshold15_PtEta"));
+      MuonFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(MuonFRFile->Get("MuonFakeRateDenominatorV6_Mu8PtCombinedSample_ptThreshold25_PtEta"));
       ElectronFakeRateHist_PtEta->SetDirectory(0);
       MuonFakeRateHist_PtEta->SetDirectory(0);
       std::cout << "Muon: " << MuonFakeRateHist_PtEta->GetXaxis()->GetXmin() << "\t"
@@ -245,7 +245,7 @@ namespace ic {
         weight *= (ele_trg * tau_trg);
         event->Add("trigweight_1", ele_trg);
         event->Add("trigweight_2", tau_trg);
-      } else if (channel_ == channel::mt) {
+      } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
         double m_eta = fabs(muon->eta());
@@ -351,10 +351,12 @@ namespace ic {
           // tau_trg_mc = hist_muTauSF2011PFTau15MC->GetBinContent(hist_muTauSF2011PFTau15MC->FindBin(tpt, eta));
           // tau_trg = (0.043 * tau10l_eb) + (0.359 * tau15l_eb) + (0.598 * tau20l_eb);
         }
+        if (channel_ == channel::mtmet) tau_trg_mc = 1.0;
         if (trg_applied_in_mc_) {
           mu_trg = mu_trg / mu_trg_mc;
           tau_trg = tau_trg / tau_trg_mc;
         }
+        if (channel_ == channel::mtmet) mu_trg = 1.0;
         weight *= (mu_trg * tau_trg);
         event->Add("trigweight_1", mu_trg);
         event->Add("trigweight_2", tau_trg);
@@ -515,7 +517,7 @@ namespace ic {
         event->Add("idweight_2", double(1.0));
         event->Add("isoweight_1", ele_iso);
         event->Add("isoweight_2", double(1.0));
-      } else if (channel_ == channel::mt) {
+      } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
         double m_eta = fabs(muon->eta());
@@ -549,6 +551,8 @@ namespace ic {
           if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9893; mu_iso = 0.9936; }
           if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9829; mu_iso = 0.9960; }
         }
+        if (channel_ == channel::mtmet) mu_id = 1.0;
+        if (channel_ == channel::mtmet) mu_iso = 1.0;
         weight *= (mu_id * mu_iso);
         event->Add("idweight_1", mu_id);
         event->Add("idweight_2", double(1.0));
@@ -660,13 +664,24 @@ namespace ic {
       // Mode 1 Barrel: 1.19 +/- 0.06
       // Mode 1 Endcap: 0.72 +/ 0.17
       if (matches.size() > 0) {
-        if (fabs(tau_cand[0]->eta()) < 1.5) {
-          if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.87);
-          if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.19);
+        if (mc_ == mc::fall11_42X) {
+          if (fabs(tau_cand[0]->eta()) < 1.5) {
+            if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.87);
+            if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.19);
+          } else {
+            if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.40);
+            if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.72);
+          }
         } else {
-          if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.40);
-          if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.72);
+         if (fabs(tau_cand[0]->eta()) < 1.5) {
+           if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.82);
+           if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.65);
+         } else {
+           if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.76);
+           if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.24);
+         } 
         }
+
       }
     }
 

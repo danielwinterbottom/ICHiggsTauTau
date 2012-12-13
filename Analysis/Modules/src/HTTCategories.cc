@@ -11,6 +11,7 @@ namespace ic {
   HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), channel_(channel::et) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
+    is_embedded_ = false;
     fs_ = NULL;
   }
 
@@ -44,6 +45,8 @@ namespace ic {
     InitSelection("ss_con_mt_60-120");
 
     InitCategory("inclusive");
+    InitCoreControlPlots("inclusive");
+
     InitCategory("vbf");
     InitCategory("vbf_loose");
     InitCategory("vbf_loose_jets20");
@@ -93,6 +96,11 @@ namespace ic {
     }
 
     m_vis_ = ditau->M();
+
+    if (channel_ == channel::em && is_embedded_) {
+      m_sv_ = m_sv_ * 1.01;
+      m_vis_ = m_vis_ * 1.01;
+    }
 
     mt_1_ = MT(lep1, met);
     pzeta_ = PZeta(ditau, met, 0.85);
@@ -166,6 +174,7 @@ namespace ic {
     if (channel_ == channel::em) pt2_split = 35.0;  // Mu pT for em
 
     SetPassCategory("inclusive");
+    FillCoreControlPlots("inclusive");
     if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 500. && jdeta_ > 3.5) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf");
 

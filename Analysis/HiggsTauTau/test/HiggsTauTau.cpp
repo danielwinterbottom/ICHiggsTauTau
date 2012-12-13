@@ -23,13 +23,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSelection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMetStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVbfCategory.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttVHCategory.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttOneJetCategory.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttOneBJetCategory.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttBTagCategory.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttNoBTagCategory.h"
-// #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttZeroJetCategory.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttRecoilCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSync.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPrint.h"
@@ -73,7 +66,7 @@ int main(int argc, char* argv[]){
   unsigned svfit_mode;            // 0 = not run, 1 = generate jobs, 2 = read-in job output
   string svfit_folder;            // Folder containing svfit jobs & output
   string svfit_override;          // Override the svfit results to use
-  unsigned ztatau_mode;           // 0 = not run, 1 = select Z->tautau, 2 = select Z->ee and Z->mumu
+  unsigned ztautau_mode;          // 0 = not run, 1 = select Z->tautau, 2 = select Z->ee and Z->mumu
   unsigned faked_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
@@ -133,7 +126,7 @@ int main(int argc, char* argv[]){
       ("svfit_mode",          po::value<unsigned>(&svfit_mode)->default_value(0))
       ("svfit_folder",        po::value<string>(&svfit_folder)->default_value(""))
       ("svfit_override",      po::value<string>(&svfit_override)->default_value(""))
-      ("ztautau_mode",        po::value<unsigned>(&ztatau_mode)->default_value(0))
+      ("ztautau_mode",        po::value<unsigned>(&ztautau_mode)->default_value(0))
       ("faked_tau_selector",  po::value<unsigned>(&faked_tau_selector)->default_value(0))
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
       ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
@@ -183,7 +176,7 @@ int main(int argc, char* argv[]){
     std::cout << boost::format(param_fmt) % "svfit_folder" % svfit_folder;
     std::cout << boost::format(param_fmt) % "svfit_override" % svfit_override;
   }
-  std::cout << boost::format(param_fmt) % "ztatau_mode" % ztatau_mode;
+  std::cout << boost::format(param_fmt) % "ztautau_mode" % ztautau_mode;
   std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
@@ -376,7 +369,7 @@ int main(int argc, char* argv[]){
       (bind(&GenParticle::status, _1) == 3) && 
       (bind(abs,(bind(&GenParticle::pdgid, _1))) == 15))
     .set_min(2);
-  if (ztatau_mode == 2) zTauTauFilter.set_min(0).set_max(0);
+  if (ztautau_mode == 2) zTauTauFilter.set_min(0).set_max(0);
 
   double mssm_mass = 0.0;
   bool do_mass_filter = false;
@@ -400,7 +393,7 @@ int main(int argc, char* argv[]){
     .set_min(1);
 
   SimpleCounter<GenParticle> embeddedMassFilter = SimpleCounter<GenParticle>("EmbeddedMassFilter")
-    .set_input_label("genParticles")
+    .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
     .set_min(1);
 
@@ -478,8 +471,7 @@ int main(int argc, char* argv[]){
                 && bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3
                 && bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy
                 && bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz)
-    .set_min(0).set_max(channel == channel::et ? 1 : 0);
-                
+    .set_min(0).set_max((channel == channel::et || channel == channel::em) ? 1 : 0);
 
   // ------------------------------------------------------------------------------------
   // Muon Modules
@@ -547,7 +539,7 @@ int main(int argc, char* argv[]){
               && bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
               && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy)
               && (bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz))
-  .set_min(0).set_max((channel == channel::mt || channel == channel::mtmet) ? 1 : 0);                   
+  .set_min(0).set_max((channel == channel::mt || channel == channel::mtmet || channel == channel::em) ? 1 : 0);                   
 
   // ------------------------------------------------------------------------------------
   // Tau Modules
@@ -739,6 +731,7 @@ int main(int argc, char* argv[]){
   HTTCategories httCategories = HTTCategories("HTTCategories")
     .set_fs(fs)
     .set_channel(channel)
+    .set_is_embedded(is_embedded)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label);
 
@@ -852,7 +845,7 @@ int main(int argc, char* argv[]){
   //                              analysis.AddModule(&httPrint);
   if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
-  if (ztatau_mode > 0)            analysis.AddModule(&zTauTauFilter);
+  if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
   if (tau_scale_mode > 0)         analysis.AddModule(&tauEnergyShifter);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);

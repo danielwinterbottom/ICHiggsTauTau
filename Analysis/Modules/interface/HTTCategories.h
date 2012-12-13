@@ -17,12 +17,7 @@ class HTTCategories : public ModuleBase {
   std::string jets_label_;
   CLASS_MEMBER(HTTCategories, std::string, ditau_label)
   CLASS_MEMBER(HTTCategories, std::string, met_label)
-  // CLASS_MEMBER(HTTCategories, double, mt_max_selection)
-  // CLASS_MEMBER(HTTCategories, double, mt_min_control)
-  // CLASS_MEMBER(HTTCategories, double, mt_max_control)
-  // CLASS_MEMBER(HTTCategories, double, pzeta_min_selection)
-  // CLASS_MEMBER(HTTCategories, double, pzeta_max_control)
-  // CLASS_MEMBER(HTTCategories, double, pzeta_alpha)
+  CLASS_MEMBER(HTTCategories, bool, is_embedded)
   CLASS_MEMBER(HTTCategories, ic::channel, channel)
   // CLASS_MEMBER(HTTCategories, bool, distinguish_os)
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)

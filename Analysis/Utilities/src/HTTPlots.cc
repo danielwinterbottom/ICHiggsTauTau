@@ -6,6 +6,7 @@
 namespace ic {
 
   MassPlots::MassPlots(TFileDirectory const& dir) {
+    TH1F::SetDefaultSumw2();
     m_sv = dir.make<TH1F>("m_sv","m_sv", 70, 0, 350); 
     m_vis = dir.make<TH1F>("m_vis","m_vis",  70, 0, 350); 
     double bins_sm[14] =        { 0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350. };
@@ -23,6 +24,7 @@ namespace ic {
   };
 
   CoreControlPlots::CoreControlPlots(TFileDirectory const& dir) {
+    TH1F::SetDefaultSumw2();
     n_vtx = dir.make<TH1F>("n_vtx","n_vtx", 50, -0.5, 49.5); 
     mt_1 = dir.make<TH1F>("mt_1","mt_1", 80, 0, 160); 
     pt_1 = dir.make<TH1F>("pt_1","pt_1", 100, 0, 100); 
