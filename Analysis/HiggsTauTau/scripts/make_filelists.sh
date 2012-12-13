@@ -30,54 +30,73 @@
 # done
 # cd -
 
-PREPATH=Dec2/MC_53X
-SOURCE_PATH=/Volumes/Storage/$PREPATH
-PATHS=( 
-    'DYJetsToLL'
-    'TTJets'
-      )
-RETDIR=$PWD
-cd $SOURCE_PATH
-for i in "${PATHS[@]}"
-do
-# # # # Then generate new filelists
-#find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
-find $i/zee_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_zee_skim_filelist.dat
-find $i/zmm_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_zmm_skim_filelist.dat
-done
-cd -
-
-
-# PREPATH=Dec2/Data_53X
-# SOURCE_PATH=/internal/$PREPATH
-# #SOURCE_PATH=/Volumes/Storage/$PREPATH
+# PREPATH=Dec2/MC_53X
+# SOURCE_PATH=/Volumes/Storage/$PREPATH
 # PATHS=( 
-#     'MuEG-2012A-13Jul2012-v1'
-#     'MuEG-2012A-recover-06Aug2012-v1'
-#     'MuEG-2012B-13Jul2012-v1'
-#     'MuEG-2012C-24Aug2012-v1'
-#     'MuEG-2012C-PromptReco-v2'
-#     'MuEG-2012D-PromptReco-v1'
-#     'TauPlusX-2012A-13Jul2012-v1'
-#     'TauPlusX-2012A-recover-06Aug2012-v1'
-#     'TauPlusX-2012B-13Jul2012-v1'
-#     'TauPlusX-2012C-24Aug2012-v1'
-#     'TauPlusX-2012C-PromptReco-v2'
-#     'TauPlusX-2012D-PromptReco-v1'
-# )
+#     'DYJetsToLL'
+#     'TTJets'
+#       )
 # RETDIR=$PWD
 # cd $SOURCE_PATH
 # for i in "${PATHS[@]}"
 # do
-# find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
-# # find $i/em_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_em_skim_filelist.dat
+# # # # # Then generate new filelists
+# #find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
+# find $i/zee_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_zee_skim_filelist.dat
+# find $i/zmm_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_zmm_skim_filelist.dat
 # done
 # cd -
 
 
+PREPATH=Dec2/Data_53X
+#SOURCE_PATH=/internal/$PREPATH
+SOURCE_PATH=/Volumes/Storage/$PREPATH
+PATHS=( 
+    # 'MuEG-2012A-13Jul2012-v1'
+    # 'MuEG-2012A-recover-06Aug2012-v1'
+    # 'MuEG-2012B-13Jul2012-v1'
+    # 'MuEG-2012C-24Aug2012-v1'
+    # 'MuEG-2012C-PromptReco-v2'
+    # 'MuEG-2012D-PromptReco-v1'
+    'Special_2_TauPlusX-2012A-13Jul2012-v1'
+    'Special_2_TauPlusX-2012A-recover-06Aug2012-v1'
+    'Special_2_TauPlusX-2012B-13Jul2012-v1'
+    'Special_2_TauPlusX-2012C-24Aug2012-v1'
+    'Special_2_TauPlusX-2012C-PromptReco-v2'
+    'Special_2_TauPlusX-2012D-PromptReco-v1'
+)
+RETDIR=$PWD
+cd $SOURCE_PATH
+for i in "${PATHS[@]}"
+do
+# find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
+find $i/et_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_et_skim_filelist.dat
+find $i/mt_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_mt_skim_filelist.dat
+find $i/mtmet_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_mtmet_skim_filelist.dat
+done
+cd -
+PATHS=( 
+    'Special_25_MuEG-2012A-13Jul2012-v1'
+    'Special_25_MuEG-2012A-recover-06Aug2012-v1'
+    'Special_25_MuEG-2012B-13Jul2012-v1'
+    'Special_25_MuEG-2012C-24Aug2012-v1'
+    'Special_25_MuEG-2012C-PromptReco-v2'
+    'Special_25_MuEG-2012D-PromptReco-v1'
+)
+RETDIR=$PWD
+cd $SOURCE_PATH
+for i in "${PATHS[@]}"
+do
+# find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
+find $i/em_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_em_skim_filelist.dat
+done
+cd -
+
+
+
 # PREPATH=Dec2/MC_53X
-# SOURCE_PATH=/internal/$PREPATH
-# #SOURCE_PATH=/Volumes/Storage/$PREPATH
+# #SOURCE_PATH=/internal/$PREPATH
+# SOURCE_PATH=/Volumes/Storage/$PREPATH
 # PATHS=( 
 #     'DYJetsToLL'
 #     'WJetsToLNu-v1'
@@ -106,15 +125,18 @@ cd -
 # cd $SOURCE_PATH
 # for i in "${PATHS[@]}"
 # do
-# find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
-# # find $i/em_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_em_skim_filelist.dat
+# # find $i/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_filelist.dat
+# find $i/et_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_et_skim_filelist.dat
+# find $i/mt_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_mt_skim_filelist.dat
+# find $i/mtmet_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_mtmet_skim_filelist.dat
+# find $i/em_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_em_skim_filelist.dat
 # done
 # cd -
 
 
-# PREPATH=Dec3/Embedded_53X
-# SOURCE_PATH=/internal/$PREPATH
-# #SOURCE_PATH=/Volumes/Storage/Dec2/Embedded_53X
+# PREPATH=Dec2/Embedded_53X
+# #SOURCE_PATH=/internal/$PREPATH
+# SOURCE_PATH=/Volumes/Storage/Dec2/Embedded_53X
 # PATHS=( 
 #     'Embedded-EM-2012A-13Jul2012-v1'
 #     'Embedded-EM-2012A-recover-06Aug2012-v1'
@@ -136,8 +158,10 @@ cd -
 # cd $SOURCE_PATH
 # for i in "${PATHS[@]}"
 # do
-# find $i/EventTree*.root &> $RETDIR/filelists/Dec2/Embedded_53X/"$i"_filelist.dat
-# # find $i/em_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_em_skim_filelist.dat
+# #find $i/EventTree*.root &> $RETDIR/filelists/Dec2/Embedded_53X/"$i"_filelist.dat
+# find $i/em_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_em_skim_filelist.dat
+# find $i/et_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_et_skim_filelist.dat
+# find $i/mt_skim/EventTree*.root &> $RETDIR/filelists/$PREPATH/"$i"_mt_skim_filelist.dat
 # done
 # cd -
 

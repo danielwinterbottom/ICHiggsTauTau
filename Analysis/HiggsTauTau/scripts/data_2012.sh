@@ -1,68 +1,116 @@
 #make -j4
 
-MSSM_MODE=$1
 
-if [ -z $1 ]
+if (( "$#" != "2" ))
 then
-    echo "No mode specified!"
+    echo "<0=et,mt 1=mtmet, 2=em> <0=no tscale, 1=do tscale shifts>"
     exit
 fi
 
-if [ $MSSM_MODE == 0 ]
+OPTION=$1
+DOTSCALE=$2
+
+DATASET=Moriond
+#DATASET=HCP
+
+CONFIG=scripts/data_"$DATASET"_2012.cfg
+echo "Using config: $CONFIG"
+
+FILELIST=filelists/Dec2/Data_53X
+
+
+if [ $DOTSCALE == 1 ]
 then
-    echo "Process as SM..."
-    CONFIG=scripts/data_2012.cfg
+  TSCALE=(
+  '0'
+  '1'
+  '2'
+  )
 else
-    echo "Process as MSSM..."
-    CONFIG=scripts/data_mssm_2012.cfg
+  TSCALE=(
+  '0'
+  )
 fi
-echo $CONFIG
 
-SOURCE=/Volumes/Storage/Oct2/Data_53X
-FILELIST=filelists/Oct2/Data_53X
+echo "Using data filelists: $DATASET"
 
-TSCALE=(
-'0'
-'1'
-'2'
-)
+if [ $OPTION == 0 ]
+then
 
 # Data
  echo "Data"
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_electauSkim_IC_filelist.dat  --mode=0  --output=Data_ElecTau_2012.root  >> data_2012_ElecTau.log &
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_mutauSkim_IC_filelist.dat    --mode=1  --output=Data_MuTau_2012.root >> data_2012_MuTau.log &
+ ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_et_skim_filelist.dat  --channel=et  --output_name=Data_et_2012.root  >> data_2012_et.log &
+ ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_mt_skim_filelist.dat  --channel=mt  --output_name=Data_mt_2012.root >> data_2012_mt.log &
  wait
 
 # Embedded
 for j in "${TSCALE[@]}"
 do
   echo "Embedded"
-  ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/Embedded_electauSkim_IC_filelist.dat  --mode=0 --is_embedded=true --output=Embedded_ElecTau_2012.root >> data_2012_ElecTau.log &
-  ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/Embedded_mutauSkim_IC_filelist.dat    --mode=1 --is_embedded=true --output=Embedded_MuTau_2012.root >> data_2012_MuTau.log &
+  ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/Embedded_et_skim_filelist.dat  --channel=et --is_embedded=true --output_name=Embedded_et_2012.root >> data_2012_et.log &
+  ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/Embedded_mt_skim_filelist.dat  --channel=mt --is_embedded=true --output_name=Embedded_mt_2012.root >> data_2012_mt.log &
   wait
 done
 
 # Special Mode 3 Data
 echo "Special_3_Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_electauSkim_IC_filelist.dat --special_mode=3 --mode=0  --output=Data_ElecTau_2012.root >> data_2012_ElecTau.log &
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_mutauSkim_IC_filelist.dat --special_mode=3 --mode=1  --output=Data_MuTau_2012.root >> data_2012_MuTau.log &
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_"$DATASET"_et_skim_filelist.dat --special_mode=3 --channel=et  --output_name=Data_et_2012.root >> data_2012_et.log &
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_"$DATASET"_mt_skim_filelist.dat --special_mode=3 --channel=mt  --output_name=Data_mt_2012.root >> data_2012_mt.log &
 wait
 
+fi
 
-#Do Special Mode 6 Data
-echo "Special_6_Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_electauSkim_IC_filelist.dat --special_mode=6 --mode=0  \
---svfit_override=Special_3_Data_ElecTau_2012.root --output=Data_ElecTau_2012.root >> data_2012_ElecTau.log &
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_mutauSkim_IC_filelist.dat --special_mode=6 --mode=1  \
---svfit_override=Special_3_Data_MuTau_2012.root --output=Data_MuTau_2012.root >> data_2012_MuTau.log &
+
+
+if [ $OPTION == 1 ]
+then
+
+# Data
+echo "Data"
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_mtmet_skim_filelist.dat  --channel=mtmet  --output_name=Data_mtmet_2012.root >> data_2012_mtmet.log &
 wait
 
-# Special Mode 7 Data, can use standard SVFit
-echo "Special_7_Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_electauSkim_IC_filelist.dat --special_mode=7 --mode=0  \
---svfit_override=Data_ElecTau_2012.root --output=Data_ElecTau_2012.root >> data_2012_ElecTau.log &
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_mutauSkim_IC_filelist.dat --special_mode=7 --mode=1  \
---svfit_override=Data_MuTau_2012.root --output=Data_MuTau_2012.root >> data_2012_MuTau.log &
+# Special Mode 3 Data
+echo "Special_3_Data"
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_"$DATASET"_mtmet_skim_filelist.dat --special_mode=3 --channel=mtmet --output_name=Data_mtmet_2012.root >> data_2012_mtmet.log &
 wait
+
+fi
+
+
+
+
+if [ $OPTION == 2 ]
+then
+
+# Data
+echo "Data"
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_em_skim_filelist.dat  --channel=em  --output_name=Data_em_2012.root  >> data_2012_em.log &
+wait
+
+# Special Mode 20 Data
+echo "Special_20_Data"
+echo "Special_21_Data"
+echo "Special_22_Data"
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=20 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_0.log &
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=21 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_1.log &
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=22 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_2.log &
+wait
+
+# Special Mode 23 Data
+echo "Special_23_Data"
+echo "Special_24_Data"
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=23 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_0.log &
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=24 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_1.log &
+wait
+
+echo "Embedded"
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Embedded_em_skim_filelist.dat  --channel=em --is_embedded=true --output_name=Embedded_em_2012.root >> data_2012_em.log &
+wait
+
+fi
+
+
+
 
 
