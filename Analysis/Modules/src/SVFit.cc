@@ -189,8 +189,8 @@ int SVFit::Execute(TreeEvent *event) {
     runscript << "export SCRAM_ARCH=slc5_amd64_gcc462" << std::endl;
     runscript << "eval `scramv1 runtime -sh`" << std::endl;
     std::string cmssw_base = getenv("CMSSW_BASE");
-    runscript << "source "+cmssw_base+"/src/UserCode/ICHiggsTauTau/Analysis/scripts/set_ld_library_path.sh" << std::endl;
-    runscript << cmssw_base+"/src/UserCode/ICHiggsTauTau/Analysis/bin/SVFit " << ("svfit_"+boost::lexical_cast<std::string>(file_counter-1)) << " &> " << ("svfit_"+boost::lexical_cast<std::string>(file_counter-1)) << ".out" << std::endl;
+    runscript << "source "+cmssw_base+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/scripts/setup_libs.sh" << std::endl;
+    runscript << cmssw_base+"/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/SVFit " << ("svfit_"+boost::lexical_cast<std::string>(file_counter-1)) << " &> " << ("svfit_"+boost::lexical_cast<std::string>(file_counter-1)) << ".out" << std::endl;
     runscript.close();
     system(("chmod +x "+name+".sh").c_str());
 

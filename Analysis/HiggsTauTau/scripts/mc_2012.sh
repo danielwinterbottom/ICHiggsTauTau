@@ -206,28 +206,28 @@ then
 fi
 
 
-# for i in "${PATHS[@]}"
-# do
-#   echo "$i"
-#   for j in "${TSCALE[@]}"
-#   do
+ for i in "${PATHS[@]}"
+ do
+   echo "$i"
+   for j in "${TSCALE[@]}"
+   do
 
-#     if [ $OPTION == 0 ]
-#       then
-#       ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_et_skim_filelist.dat --channel=et --output_name="$i"_et_2012.root >> mc_2012_et.log &
-#       ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_mt_skim_filelist.dat --channel=mt --output_name="$i"_mt_2012.root >> mc_2012_mt.log &
-#     fi
-#     if [ $OPTION == 1 ]
-#       then
-#       ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_mtmet_skim_filelist.dat --channel=mtmet --output_name="$i"_mtmet_2012.root >> mc_2012_mtmet.log &
-#     fi
-#     if [ $OPTION == 2 ]
-#       then
-#       ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_em_skim_filelist.dat --channel=em --output_name="$i"_em_2012.root >> mc_2012_em.log &
-#     fi
-#     wait
-#   done
-# done
+     if [ $OPTION == 0 ]
+       then
+       ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_et_skim_filelist.dat --channel=et --output_name="$i"_et_2012.root >> mc_2012_et.log &
+       ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_mt_skim_filelist.dat --channel=mt --output_name="$i"_mt_2012.root >> mc_2012_mt.log &
+     fi
+     if [ $OPTION == 1 ]
+       then
+       ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_mtmet_skim_filelist.dat --channel=mtmet --output_name="$i"_mtmet_2012.root >> mc_2012_mtmet.log &
+     fi
+     if [ $OPTION == 2 ]
+       then
+       ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/"$i"_em_skim_filelist.dat --channel=em --output_name="$i"_em_2012.root >> mc_2012_em.log &
+     fi
+     wait
+   done
+ done
 
 
 
