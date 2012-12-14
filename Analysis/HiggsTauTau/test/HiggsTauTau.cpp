@@ -344,7 +344,9 @@ int main(int argc, char* argv[]){
   if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
   if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
   if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
-  if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
+  if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
+  if (era == era::data_2012_moriond && channel == channel::mtmet) data_pu_file   =  "data/pileup/Data_Pileup_2012D-600bins.root";
+
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
   if (!is_data) {
@@ -909,6 +911,7 @@ int main(int argc, char* argv[]){
 
   if (!do_skim) {
     if (!is_embedded)             analysis.AddModule(&httTriggerFilter);
+                                  analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);

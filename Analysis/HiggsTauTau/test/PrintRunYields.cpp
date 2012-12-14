@@ -189,24 +189,34 @@ int main(int argc, char* argv[]){
   }
 
   //TH1F yield_plot("yield_plot","yield_plot", good_runs, 0, good_runs);
-
+  std::vector<unsigned> yield_by_era(yield_plots.size(), 0);
+  std::vector<double> lumi_by_era(yield_plots.size(), 0);
 
   std::map<unsigned, unsigned>::const_iterator it;
   int b = 1;
   for (it = yield_map.begin(); it != yield_map.end(); ++it, ++b) {
     unsigned run = it->first;
     double yield = it->second;
+    double yield_n = it->second;
     double yield_err = sqrt(it->second);
     yield = yield / lumi_map[run];
+    double lumi_n = lumi_map[run];
+
     yield_err = yield_err / lumi_map[run];
     for (unsigned j = 0; j < yield_plots.size(); ++j) {
       if (run >= filter_ranges[j].first && run <= filter_ranges[j].second) {
+        yield_by_era[j] += yield_n;
+        lumi_by_era[j] += lumi_n;
         yield_plots[j]->SetBinContent(b, yield);
         yield_plots[j]->SetBinError(b, yield_err);
       }
       yield_plots[j]->GetXaxis()->SetBinLabel(b, boost::lexical_cast<std::string>(run).c_str());
       //yield_plots[j]->GetXaxis()->SetBinLabel(b, (boost::lexical_cast<std::string>(int(lumi_map[run])) + " pb^{-1}").c_str());
     }
+  }
+
+  for (unsigned i = 0; i < yield_by_era.size(); ++i) {
+    std::cout << i << "\t" << double(yield_by_era[i])/lumi_by_era[i] << std::endl;
   }
 
   TCanvas canv("canvas", "canvas", 1200,500);
@@ -237,7 +247,7 @@ int main(int argc, char* argv[]){
     legend->AddEntry(yield_plots[i], yield_plots[i]->GetTitle());
   }
 
-  yield_plots[0]->SetMaximum(max_bin * 1.3);
+  yield_plots[0]->SetMaximum(max_bin * 1.65);
   canv.Update();
   legend->SetBorderSize(1);
   legend->SetTextFont(42);

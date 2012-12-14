@@ -13,7 +13,7 @@ DOTSCALE=$2
 DATASET=Moriond
 #DATASET=HCP
 
-CONFIG=scripts/data_"$DATASET"_2012.cfg
+CONFIG=scripts/data_Moriond_2012.cfg
 echo "Using config: $CONFIG"
 
 FILELIST=filelists/Dec2/Data_53X
@@ -40,7 +40,7 @@ then
 # Data
  echo "Data"
  ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_et_skim_filelist.dat  --channel=et  --output_name=Data_et_2012.root  >> data_2012_et.log &
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_mt_skim_filelist.dat  --channel=mt  --output_name=Data_mt_2012.root >> data_2012_mt.log &
+ ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_mt_skim_filelist.dat  --channel=mt  --output_name=Data_mt_2012.root  >> data_2012_mt.log &
  wait
 
 # Embedded
@@ -85,7 +85,7 @@ then
 
 # Data
 echo "Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_em_skim_filelist.dat  --channel=em  --output_name=Data_em_2012.root  >> data_2012_em.log &
+./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_em_skim_filelist.dat  --channel=em  --output_name=Data_em_2012.root >> data_2012_em.log &
 wait
 
 # Special Mode 20 Data
