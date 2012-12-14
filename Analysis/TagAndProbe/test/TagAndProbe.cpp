@@ -211,9 +211,14 @@ int main(int argc, char* argv[]){
   
   std::string data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2011_HCP-500bins.root";
   std::string mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Fall11_PU_S6-500bins.root";
-  if (era == "2012A" || era=="2012B" || era=="2012C")
+  if (era == "2012A" || era=="2012B" || era=="2012")
   {
       data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012_HCP-600bins.root";
+      mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S10-600bins.root";
+  }
+  if (era=="2012C")
+  {
+      data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012C.root";
       mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S10-600bins.root";
   }
   if (era=="2012D")
