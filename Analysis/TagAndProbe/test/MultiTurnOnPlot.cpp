@@ -22,8 +22,8 @@ int main(int argc, char* argv[]){
   for (int i = 0; i < argc; ++i){
     std::cout << i << "\t" << argv[i] << std::endl;
   }
-  if (argc != 6){
-    std::cerr << "Need 5 args:<iselec> <B/E/Eb> <2012A> <2012B+C> <MC>" << std::endl;
+  if (argc != 10){
+    std::cerr << "Need 8 args:<iselec> <B/E/Eb> <File1><label1> <File2><labelData2> <File3><label3> <Plot2or3>" << std::endl;
     exit(1);
   }
 
@@ -55,8 +55,12 @@ int main(int argc, char* argv[]){
     elec = boost::lexical_cast<bool>(argv[1]);
     barrel = argv[2];
     TFile* file2012A=new TFile(argv[3]);
-    TFile* file2012B=new TFile(argv[4]);
-    TFile* fileMC=new TFile(argv[5]);
+    const char* labeldata1=argv[4];
+    TFile* file2012B=new TFile(argv[5]);
+    const char* labeldata2=argv[6];
+    TFile* fileMC=new TFile(argv[7]);
+    const char* labelMC=argv[8];
+    int Plot2or3 = boost::lexical_cast<int>(argv[9]);
 
     TFile* output;
     if(elec && barrel=="B")
@@ -140,17 +144,20 @@ int main(int argc, char* argv[]){
     //fit2012B->SetLineWidth(1);
     gr2012B->Draw("Psame");
     fit2012B->Draw("same");
-    grMC->SetMarkerColor(kRed);
-    grMC->SetMarkerStyle(21);
-    fitMC->SetLineColor(kRed);
-    //fitMC->SetLineWidth(1);
-    grMC->Draw("Psame");
-    fitMC->Draw("same");
+   if(Plot2or3==3)
+   {
+        grMC->SetMarkerColor(kRed);
+        grMC->SetMarkerStyle(21);
+        fitMC->SetLineColor(kRed);
+        //fitMC->SetLineWidth(1);
+        grMC->Draw("Psame");
+        fitMC->Draw("same");
+   }
     
     TLegend * legend1 = new TLegend(0.50, 0.35, 0.75, 0.60);
-    legend1->AddEntry(gr2012A, "IsoMu18 data", "p");
-    legend1->AddEntry(gr2012B, "IsoMu17 data", "p");
-    legend1->AddEntry(grMC, "IsoMu17 MC", "p");
+    legend1->AddEntry(gr2012A, labeldata1, "p");
+    legend1->AddEntry(gr2012B, labeldata2, "p");
+ if(Plot2or3==3)  legend1->AddEntry(grMC, labelMC, "p");
 //    legend1->AddEntry(grptdata, "2012 Data", "p");
     legend1->SetFillColor(0);
     legend1->SetTextSize(0.04);
@@ -161,17 +168,25 @@ int main(int argc, char* argv[]){
     TLatex *title_latex = new TLatex();
     title_latex->SetNDC();
     title_latex->SetTextSize(0.04);
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV");        
     TLatex *label_latex = new TLatex();
     label_latex->SetNDC();
     label_latex->SetTextSize(0.04);
-    if(barrel=="B")
+    if(barrel=="B" && !elec)
     {
         label_latex->DrawLatex(0.14, 0.8, "|#eta|<0.8");
     }
-    if(barrel=="E")
+    if(barrel=="B" && elec)
+    {
+        label_latex->DrawLatex(0.14, 0.8, "Barrel");
+    }
+    if(barrel=="E" && !elec)
     {
         label_latex->DrawLatex(0.14, 0.8, "0.8<|#eta|<1.2");
+    }
+    if(barrel=="E" && elec)
+    {
+        label_latex->DrawLatex(0.14, 0.8, "Endcap");
     }
     if(barrel=="Eb")
     {
