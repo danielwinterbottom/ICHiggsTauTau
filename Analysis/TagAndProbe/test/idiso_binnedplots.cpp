@@ -17,31 +17,76 @@ int main(int argc, char* argv[]){
     for (int i = 0; i < argc; ++i){
         std::cout << i << "\t" << argv[i] << std::endl;
     }
-    if (argc != 3){
-        std::cerr << "Need <iselec> <isdata>" << std::endl;
+    if (argc != 4){
+        std::cerr << "Need <iselec> <isdata> <id/iso/idiso>" << std::endl;
         exit(1);
     }
 
     bool elec, isdata;
     elec=boost::lexical_cast<bool>(argv[1]);
     isdata=boost::lexical_cast<bool>(argv[2]);
+    std::string type=boost::lexical_cast<std::string>(argv[3]);
     
     TFile *f1;
     if(elec && isdata)
     {
-        f1= new TFile("ElectronIdIsoBinnedHistosData.root", "RECREATE");
+        if(type=="idiso")
+        {
+            f1= new TFile("ElectronIdIsoBinnedHistosData.root", "RECREATE");
+        }
+        if(type=="id")
+        {
+            f1= new TFile("ElectronIdBinnedHistosData.root", "RECREATE");
+        }
+        if(type=="iso")
+        {
+            f1= new TFile("ElectronIsoBinnedHistosData.root", "RECREATE");
+        }
     }
     if(elec && !isdata)
     {
-        f1= new TFile("ElectronIdIsoBinnedHistosMC.root", "RECREATE");
+        if(type=="idiso")
+        {
+            f1= new TFile("ElectronIdIsoBinnedHistosMC.root", "RECREATE");
+        }
+        if(type=="id")
+        {
+            f1= new TFile("ElectronIdBinnedHistosMC.root", "RECREATE");
+        }
+        if(type=="iso")
+        {
+            f1= new TFile("ElectronIsoBinnedHistosMC.root", "RECREATE");
+        }
     }
     if(!elec && isdata)
     {
-        f1= new TFile("MuonIdIsoBinnedHistosData.root", "RECREATE");
+        if(type=="idiso")
+        {
+            f1= new TFile("MuonIdIsoBinnedHistosData.root", "RECREATE");
+        }
+        if(type=="id")
+        {
+            f1= new TFile("MuonIdBinnedHistosData.root", "RECREATE");
+        }
+        if(type=="iso")
+        {
+            f1= new TFile("MuonIsoBinnedHistosData.root", "RECREATE");
+        }
     }
     if(!elec && !isdata)
     {
-        f1= new TFile("MuonIdIsoBinnedHistosMC.root", "RECREATE");
+        if(type=="idiso")
+        {
+            f1= new TFile("MuonIdIsoBinnedHistosMC.root", "RECREATE");
+        }
+        if(type=="id")
+        {
+            f1= new TFile("MuonIdBinnedHistosMC.root", "RECREATE");
+        }
+        if(type=="iso")
+        {
+            f1= new TFile("MuonIsoBinnedHistosMC.root", "RECREATE");
+        }
     }
     f1->cd();
     TCanvas *c1 = new TCanvas("c1", "error plot", 200, 10, 700, 500);
@@ -197,95 +242,277 @@ int main(int argc, char* argv[]){
     Double_t err_y2[etabinbounds.size()];
     Double_t y3[vtxbinbounds.size()];
     Double_t err_y3[vtxbinbounds.size()];
-   
-    for(unsigned i=0; i<idisoeffs.size(); i++)
-    {    
-        stringstream strings(idisoeffs[i]); 
-        std::string part;
-        std::vector<std::string> parts;
-        while(getline(strings, part, ' '))
-        {
-            parts.push_back(part);
-        }
-        if(parts[1].find("pt")!=std::string::npos)
-        {
-            for(int j=2; j<6; j++)
+  
+    if(type=="idiso")
+    {
+        for(unsigned i=0; i<idisoeffs.size(); i++)
+        {    
+            stringstream strings(idisoeffs[i]); 
+            std::string part;
+            std::vector<std::string> parts;
+            while(getline(strings, part, ' '))
             {
-                if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                parts.push_back(part);
+            }
+            if(parts[1].find("pt")!=std::string::npos)
+            {
+                for(int j=2; j<6; j++)
                 {
-                    y1[j]=boost::lexical_cast<double>(parts[2]);
-                    err_y1[j]=boost::lexical_cast<double>(parts[3]);
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y1[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y1[j]=boost::lexical_cast<double>(parts[3]);
+                    }
                 }
-            }
-            if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
-                && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
-                && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
-                && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
-            {
-                y1[0]=boost::lexical_cast<double>(parts[2]);
-                err_y1[0]=boost::lexical_cast<double>(parts[3]);
-            }
-            if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
-                && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
-            {
-                y1[1]=boost::lexical_cast<double>(parts[2]);
-                err_y1[1]=boost::lexical_cast<double>(parts[3]);
-            }
-        } 
-        if(parts[1].find("eta")!=std::string::npos)
-        {
-            for(int j=2; j<10; j++)
-            { 
-                if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
                 {
-                    y2[j]=boost::lexical_cast<double>(parts[2]);
-                    err_y2[j]=boost::lexical_cast<double>(parts[3]);
+                    y1[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y1[0]=boost::lexical_cast<double>(parts[3]);
                 }
-            }
-            if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
-                && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
-                && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
-                && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
-            {
-                y2[0]=boost::lexical_cast<double>(parts[2]);
-                err_y2[0]=boost::lexical_cast<double>(parts[3]); 
-            }
-            if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
-                && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
-            {
-                y2[1]=boost::lexical_cast<double>(parts[2]);
-                err_y2[1]=boost::lexical_cast<double>(parts[3]);
-            }
-            
-        }
-        if(parts[1].find("vtx")!=std::string::npos)
-        {
-            for(int j=2; j<10; j++)
-            { 
-                if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
                 {
-                    y3[j]=boost::lexical_cast<double>(parts[2]);
-                    err_y3[j]=boost::lexical_cast<double>(parts[3]);
+                    y1[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y1[1]=boost::lexical_cast<double>(parts[3]);
                 }
-            }
-            if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
-                && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
-                && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
-                && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+            } 
+            if(parts[1].find("eta")!=std::string::npos)
             {
-                y3[0]=boost::lexical_cast<double>(parts[2]);
-                err_y3[0]=boost::lexical_cast<double>(parts[3]); 
+                for(int j=2; j<10; j++)
+                { 
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y2[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y2[j]=boost::lexical_cast<double>(parts[3]);
+                    }
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y2[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y2[0]=boost::lexical_cast<double>(parts[3]); 
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y2[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y2[1]=boost::lexical_cast<double>(parts[3]);
+                }
+                
             }
-            if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
-                && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+            if(parts[1].find("vtx")!=std::string::npos)
             {
-                y3[1]=boost::lexical_cast<double>(parts[2]);
-                err_y3[1]=boost::lexical_cast<double>(parts[3]);
+                for(int j=2; j<10; j++)
+                { 
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y3[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y3[j]=boost::lexical_cast<double>(parts[3]);
+                    }
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y3[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y3[0]=boost::lexical_cast<double>(parts[3]); 
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y3[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y3[1]=boost::lexical_cast<double>(parts[3]);
+                }
+                
             }
-            
         }
     }
-   
+    if(type=="id")
+    {
+        for(unsigned i=0; i<ideffs.size(); i++)
+        {    
+            stringstream strings(ideffs[i]); 
+            std::string part;
+            std::vector<std::string> parts;
+            while(getline(strings, part, ' '))
+            {
+                parts.push_back(part);
+            }
+            if(parts[1].find("pt")!=std::string::npos)
+            {
+                for(int j=2; j<6; j++)
+                {
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y1[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y1[j]=boost::lexical_cast<double>(parts[3]);
+                    }
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y1[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y1[0]=boost::lexical_cast<double>(parts[3]);
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y1[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y1[1]=boost::lexical_cast<double>(parts[3]);
+                }
+            } 
+            if(parts[1].find("eta")!=std::string::npos)
+            {
+                for(int j=2; j<10; j++)
+                { 
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y2[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y2[j]=boost::lexical_cast<double>(parts[3]);
+                    }
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y2[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y2[0]=boost::lexical_cast<double>(parts[3]); 
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y2[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y2[1]=boost::lexical_cast<double>(parts[3]);
+                }
+                
+            }
+            if(parts[1].find("vtx")!=std::string::npos)
+            {
+                for(int j=2; j<10; j++)
+                { 
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y3[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y3[j]=boost::lexical_cast<double>(parts[3]);
+                    }
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y3[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y3[0]=boost::lexical_cast<double>(parts[3]); 
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y3[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y3[1]=boost::lexical_cast<double>(parts[3]);
+                }
+                
+            }
+        }
+    }
+    if(type=="iso")
+    {
+        for(unsigned i=0; i<isoeffs.size(); i++)
+        {    
+            stringstream strings(isoeffs[i]); 
+            std::string part;
+            std::vector<std::string> parts;
+            while(getline(strings, part, ' '))
+            {
+                parts.push_back(part);
+            }
+            if(parts[1].find("pt")!=std::string::npos)
+            {
+                for(int j=2; j<6; j++)
+                {
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y1[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y1[j]=boost::lexical_cast<double>(parts[3]);
+                    }
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y1[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y1[0]=boost::lexical_cast<double>(parts[3]);
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y1[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y1[1]=boost::lexical_cast<double>(parts[3]);
+                }
+            } 
+            if(parts[1].find("eta")!=std::string::npos)
+            {
+                for(int j=2; j<10; j++)
+                { 
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y2[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y2[j]=boost::lexical_cast<double>(parts[3]);
+                    }
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y2[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y2[0]=boost::lexical_cast<double>(parts[3]); 
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y2[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y2[1]=boost::lexical_cast<double>(parts[3]);
+                }
+                
+            }
+            if(parts[1].find("vtx")!=std::string::npos)
+            {
+                for(int j=2; j<10; j++)
+                { 
+                    if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
+                    {
+                        y3[j]=boost::lexical_cast<double>(parts[2]);
+                        err_y3[j]=boost::lexical_cast<double>(parts[3]);
+                    }
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(1))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(10))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(11))!=std::string::npos)
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y3[0]=boost::lexical_cast<double>(parts[2]);
+                    err_y3[0]=boost::lexical_cast<double>(parts[3]); 
+                }
+                if(parts[1].find(boost::lexical_cast<std::string>(2))!=std::string::npos
+                    && !(parts[1].find(boost::lexical_cast<std::string>(12))!=std::string::npos))
+                {
+                    y3[1]=boost::lexical_cast<double>(parts[2]);
+                    err_y3[1]=boost::lexical_cast<double>(parts[3]);
+                }
+                
+            }
+        }
+    }  
 
 
     TGraphErrors *gr1 = new TGraphErrors(n1,x1,y1,err_x1,err_y1);
