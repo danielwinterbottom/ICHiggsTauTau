@@ -27,6 +27,7 @@ namespace ic {
     TH1F::SetDefaultSumw2();
     n_vtx = dir.make<TH1F>("n_vtx","n_vtx", 50, -0.5, 49.5); 
     mt_1 = dir.make<TH1F>("mt_1","mt_1", 80, 0, 160); 
+    pzeta = dir.make<TH1F>("pzeta","pzeta", 100, -100, 100); 
     pt_1 = dir.make<TH1F>("pt_1","pt_1", 100, 0, 100); 
     pt_2 = dir.make<TH1F>("pt_2","pt_2", 100, 0, 100); 
     eta_1 = dir.make<TH1F>("eta_1","eta_1", 60, -3, 3); 

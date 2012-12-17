@@ -40,6 +40,7 @@ namespace ic {
     InitSelection("os_sel");
     InitSelection("os_con");
     InitSelection("os_con_mt_60-120");
+    InitSelection("ss");
     InitSelection("ss_sel");
     InitSelection("ss_con");
     InitSelection("ss_con_mt_60-120");
@@ -156,6 +157,7 @@ namespace ic {
     if (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet) {
       if (os_ && mt_1_ < 20.0) SetPassSelection("os_sel");
       if (os_) SetPassSelection("os");
+      if (!os_) SetPassSelection("ss");
       if (os_ && mt_1_ > 70.0) SetPassSelection("os_con");
       if (os_ && mt_1_ > 60.0 && mt_1_ < 120.) SetPassSelection("os_con_mt_60-120");
       if (!os_ && mt_1_ < 20.0) SetPassSelection("ss_sel");
@@ -166,6 +168,7 @@ namespace ic {
     if (channel_ == channel::em) {
       if (os_ && pzeta_ > -20) SetPassSelection("os_sel");
       if (os_) SetPassSelection("os");
+      if (!os_) SetPassSelection("ss");
       if (!os_ && pzeta_ > -20) SetPassSelection("ss_sel");
 
     }
@@ -291,6 +294,7 @@ namespace ic {
           CoreControlPlots *plots = p_it->second;
           plots->n_vtx->Fill(n_vtx_, wt_);
           plots->mt_1->Fill(mt_1_, wt_);
+          plots->pzeta->Fill(pzeta_, wt_);
           plots->pt_1->Fill(pt_1_, wt_);
           plots->pt_2->Fill(pt_2_, wt_);
           plots->eta_1->Fill(eta_1_, wt_);

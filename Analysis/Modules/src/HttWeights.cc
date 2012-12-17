@@ -352,11 +352,19 @@ namespace ic {
           // tau_trg = (0.043 * tau10l_eb) + (0.359 * tau15l_eb) + (0.598 * tau20l_eb);
         }
         if (channel_ == channel::mtmet) tau_trg_mc = 1.0;
+        if (channel_ == channel::mtmet) {
+          if (m_eta < 0.8) {
+            mu_trg_mc = 0.9873; mu_trg = 0.9693;
+          } else if (m_eta >= 0.8 && m_eta < 1.2) {
+            mu_trg_mc = 0.9688; mu_trg = 0.9411;
+          } else {
+            mu_trg_mc = 0.9374; mu_trg = 0.9069; 
+          }
+        }
         if (trg_applied_in_mc_) {
           mu_trg = mu_trg / mu_trg_mc;
           tau_trg = tau_trg / tau_trg_mc;
         }
-        if (channel_ == channel::mtmet) mu_trg = 1.0;
         weight *= (mu_trg * tau_trg);
         event->Add("trigweight_1", mu_trg);
         event->Add("trigweight_2", tau_trg);
