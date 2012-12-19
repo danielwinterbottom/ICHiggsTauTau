@@ -34,26 +34,18 @@ class ICElectronProducer : public edm::EDProducer {
       virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
-      virtual bool electronIDForMVA(reco::GsfElectron const& elec, reco::Vertex const& vtx);
-      virtual bool muonIDForMVA(reco::Muon const& muon);
+      // virtual bool electronIDForMVA(reco::GsfElectron const& elec, reco::Vertex const& vtx);
+      // virtual bool muonIDForMVA(reco::Muon const& muon);
 
       // ----------member data ---------------------------
       std::vector<ic::Electron> *electrons_;
-      edm::InputTag input_label_;
+      edm::InputTag input_;
       std::string branch_name_;
-      std::string add_pfiso_postfix_;
-      std::string rho_jets_name_;
-      std::string eff_areas_;
-      std::string pfnopu_rho_jets_name_;
+      std::string pfiso_postfix_;
+      edm::InputTag vertex_input_;
       bool is_pf_;
-      std::map<std::string, std::size_t> observed_paths_;
-      std::map<std::string, std::size_t> observed_filters_;
       std::map<std::string, std::size_t> observed_idiso_;
-
-      // ElectronIDMVA *f2011MVA;
-
-      // ElectronEffectiveArea::ElectronEffectiveAreaTarget eff_area_enum;
-
-      // EGammaMvaEleEstimator *fElectronIsoMVA;
+      double min_pt_;
+      double max_eta_;
 
 };
