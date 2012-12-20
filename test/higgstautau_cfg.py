@@ -567,29 +567,24 @@ if not isData:
 ## Configure private modules
 ################################################################
 process.icElectronProducer = cms.EDProducer('ICElectronProducer',
-    inputLabel = cms.InputTag("selectedPatElectrons"),
-    branchName = cms.untracked.string("electrons"),
-    AddPFIsoPostfix = cms.string("03PFIdPFIso"),
-    RhoJetsName = cms.string("kt6PFJetsForLeptons"),
-    PFNoPURhoJetsName = cms.string("kt6PFJetsForLeptons"),
-    EffAreas = cms.string("kEleEAFall11MC"),
-    IsPF = cms.bool(False)
+    input = cms.InputTag("gsfElectrons"),
+    branchName = cms.string("electrons"),
+    minPt = cms.double(9.5),
+    maxEta = cms.double(2.6),
+    vertexCollection = cms.InputTag("goodOfflinePrimaryVertices"),
+    pfIsoPostfix = cms.string("PFIso"),
+    isPF = cms.bool(False)
 )
-if isData:
-  if (release == '53X'):
-    process.icElectronProducer.EffAreas = cms.string("kEleEAData2012")
-  if (release == '42X'):
-    process.icElectronProducer.EffAreas = cms.string("kEleEAData2011")
 
 process.icMuonProducer = cms.EDProducer('ICMuonProducer',
-    inputLabel = cms.InputTag("selectedPatMuons"),
-    branchName = cms.untracked.string("muonsPFlow"),
-    AddPFIsoPostfix = cms.string("03PFIso"),
-    RhoJetsName = cms.string("kt6PFJetsForLeptons"),
-    PFNoPURhoJetsName = cms.string("kt6PFJetsForLeptons"),
-    EffAreas = cms.string(""),
-    IsPF = cms.bool(True)
-    )
+    input = cms.InputTag("pfAllMuons"),
+    branchName = cms.string("muonsPFlow"),
+    minPt = cms.double(3.0),
+    maxEta = cms.double(2.6),
+    vertexCollection = cms.InputTag("goodOfflinePrimaryVertices"),
+    pfIsoPostfix = cms.string("PFIso"),
+    isPF = cms.bool(True)
+)
 
 process.icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
     inputLabel = cms.InputTag("selectedPatJets"),
@@ -1209,7 +1204,7 @@ process.p = cms.Path(
   +process.muIsoSequence
   +process.mvaElectronIDSequence
   +process.patDefaultSequence
-  +process.puJetIdSqeuence
+  +process.puJetMva
   +process.pfMEtMVAsequence
   +process.prePatProductionSequence
   +process.patPFMetByMVA
