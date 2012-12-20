@@ -101,7 +101,7 @@ if (release == '42X'):
   process.patDefaultSequence.remove(process.patShrinkingConePFTauDiscrimination)
   process.patDefaultSequence.remove(process.patCaloTauDiscrimination)
 
-#switchToPFTauHPS(process)
+switchToPFTauHPS(process)
 
 from PhysicsTools.SelectorUtils.pvSelector_cfi import pvSelector
 process.goodOfflinePrimaryVertices = cms.EDFilter(
@@ -460,8 +460,8 @@ if (release == '53X'):
     process.source = cms.Source(
       "PoolSource",
       fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
-        #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
+        #'file:pickevents.root'
+        'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
       )
     )
@@ -1187,4 +1187,4 @@ process.p = cms.Path(
   +process.icSequence
   )
 
-print process.dumpPython()
+# print process.dumpPython()

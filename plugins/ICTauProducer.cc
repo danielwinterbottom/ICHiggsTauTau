@@ -78,9 +78,11 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     tau.set_phi(iter->phi());
     tau.set_energy(iter->energy());
     tau.set_charge(iter->charge());
+    // std::cout << tau.vector() << std::endl;
 
     std::vector<std::pair<std::string, float> > tau_ids = iter->tauIDs();
     for (unsigned i = 0; i < tau_ids.size(); ++i) {
+      // std::cout << i << " " << tau_ids[i].first << "\t" << tau_ids[i].second << std::endl;
       tau.SetTauID(tau_ids[i].first, tau_ids[i].second);
       observed_id_[tau_ids[i].first] = CityHash64(tau_ids[i].first);
     }
