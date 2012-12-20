@@ -218,8 +218,6 @@ else:
 process.patJets.embedGenPartonMatch = cms.bool(False)
 #process.patJetsAK5JPT.embedGenPartonMatch = cms.bool(False)
 process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
-process.patElectrons.embedGenMatch = cms.bool(False)
-process.patMuons.embedGenMatch = cms.bool(False)
 
 ################################################################
 ### Set up METs
@@ -257,8 +255,6 @@ process.kt6PFJetsForLeptons.Rho_EtaMax = cms.double(2.5)
 ################################################################
 ### PAT Selections
 ################################################################
-process.selectedPatElectrons.cut = 'pt > 9.5 & abs(eta) < 2.6'
-process.selectedPatMuons.cut = 'pt > 3. & abs(eta) < 2.6'  
 process.selectedPatJets.cut = 'pt > 15. & abs(eta) < 100.'
 process.selectedPatTaus.cut = 'pt > 18. & abs(eta) < 2.6 & tauID("decayModeFinding") > 0.5'
 process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
@@ -270,10 +266,10 @@ process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
 ################################################################
 process.load("EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi")
 process.mvaElectronIDSequence = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
-process.patElectrons.electronIDSources = cms.PSet(
-    mvaTrigV0 = cms.InputTag("mvaTrigV0"),
-    mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
-)
+# process.patElectrons.electronIDSources = cms.PSet(
+#     mvaTrigV0 = cms.InputTag("mvaTrigV0"),
+#     mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
+# )
 
 
 ################################################################
@@ -288,7 +284,7 @@ else:
     process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons")
 
 process.mvaMetPairsMT = mvaMetPairs.clone(
-  srcLeg1 = cms.InputTag('selectedPatMuons'),
+  srcLeg1 = cms.InputTag('pfAllMuons'),
   srcLeg2 = cms.InputTag('selectedPatTaus'),
   leg1Pt = cms.double(7.0),  ## Need to drop this lower now to accommodate mu+tau+MET trigger
   leg1Eta = cms.double(2.6),
@@ -297,7 +293,7 @@ process.mvaMetPairsMT = mvaMetPairs.clone(
   minDeltaR = cms.double(0.49)
   )
 process.mvaMetPairsET = mvaMetPairs.clone(
-  srcLeg1 = cms.InputTag('selectedPatElectrons'),
+  srcLeg1 = cms.InputTag('gsfElectrons'),
   srcLeg2 = cms.InputTag('selectedPatTaus'),
   leg1Pt = cms.double(18.0),
   leg1Eta = cms.double(2.6),
@@ -306,8 +302,8 @@ process.mvaMetPairsET = mvaMetPairs.clone(
   minDeltaR = cms.double(0.49)
   )
 process.mvaMetPairsEM = mvaMetPairs.clone(
-  srcLeg1 = cms.InputTag('selectedPatElectrons'),
-  srcLeg2 = cms.InputTag('selectedPatMuons'),
+  srcLeg1 = cms.InputTag('gsfElectrons'),
+  srcLeg2 = cms.InputTag('pfAllMuons'),
   leg1Pt = cms.double(9.5),
   leg1Eta = cms.double(2.6),
   leg2Pt = cms.double(9.5),
@@ -315,8 +311,8 @@ process.mvaMetPairsEM = mvaMetPairs.clone(
   minDeltaR = cms.double(0.29)
   )
 process.mvaMetPairsMM = mvaMetPairs.clone(
-  srcLeg1 = cms.InputTag('selectedPatMuons'),
-  srcLeg2 = cms.InputTag('selectedPatMuons'),
+  srcLeg1 = cms.InputTag('pfAllMuons'),
+  srcLeg2 = cms.InputTag('pfAllMuons'),
   leg1Pt = cms.double(18.0),
   leg1Eta = cms.double(2.6),
   leg2Pt = cms.double(9.5),
@@ -324,8 +320,8 @@ process.mvaMetPairsMM = mvaMetPairs.clone(
   minDeltaR = cms.double(0.0)
   )
 process.mvaMetPairsEE = mvaMetPairs.clone(
-  srcLeg1 = cms.InputTag('selectedPatElectrons'),
-  srcLeg2 = cms.InputTag('selectedPatElectrons'),
+  srcLeg1 = cms.InputTag('gsfElectrons'),
+  srcLeg2 = cms.InputTag('gsfElectrons'),
   leg1Pt = cms.double(18.0),
   leg1Eta = cms.double(2.6),
   leg2Pt = cms.double(9.5),
@@ -409,9 +405,23 @@ process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingW
 ### Configuration of MVA PU Jet ID
 ################################################################
 if (release == '53X'):
-    process.load("RecoJets.JetProducers.pujetidsequence_cff")
-    process.puJetId.jets = cms.InputTag("ak5PFJets")
-    process.puJetMva.jets = cms.InputTag("ak5PFJets")
+  from RecoJets.JetProducers.PileupJetID_cfi import *
+  # process.load("RecoJets.JetProducers.PileupJetID_cfi")
+
+  process.puJetMva = cms.EDProducer('PileupJetIdProducer',
+                           produceJetIds = cms.bool(True),
+                           jetids = cms.InputTag(""),
+                           runMvas = cms.bool(True),
+                           jets = cms.InputTag("ak5PFJets"),
+                           vertexes = cms.InputTag("offlinePrimaryVertices"),
+                           algos = cms.VPSet(stdalgos),
+                           rho     = cms.InputTag("kt6PFJets","rho"),
+                           jec     = cms.string("AK5PF"),
+                           applyJec = cms.bool(True),
+                           inputIsCorrected = cms.bool(False),                                     
+                           residualsFromTxt = cms.bool(False),
+                           residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
+  )
 else:
     process.load("CMGTools.External.pujetidsequence_cff")
     process.puJetId.jets = cms.InputTag("selectedPatJetsAK5PF")
@@ -476,25 +486,44 @@ if (release == '42X'):
 ################################################################
 ### Final PAT config
 ################################################################
-adaptPFMuons(process,process.patMuons)
+from CommonTools.ParticleFlow.Tools.pfIsolation import setupPFElectronIso, setupPFMuonIso
+
 process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons')
 process.muIsoSequence = setupPFMuonIso(process, 'pfAllMuons')
-adaptPFIsoMuons( process, applyPostfix(process,"patMuons",""))
-process.muonMatch.src = cms.InputTag("pfAllMuons")
-adaptPFIsoElectrons( process, applyPostfix(process,"patElectrons",""))
+
+process.eleIsoSequence.remove(process.elPFIsoValueCharged03NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValueChargedAll03NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValueGamma03NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValueNeutral03NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValuePU03NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValueCharged04NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValueChargedAll04NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValueGamma04NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValueNeutral04NoPFIdPFIso)
+process.eleIsoSequence.remove(process.elPFIsoValuePU04NoPFIdPFIso)
+process.elPFIsoValueGamma04PFIdPFIso.deposits[0].vetos      = cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)')
+process.elPFIsoValueNeutral04PFIdPFIso.deposits[0].vetos    = cms.vstring()
+process.elPFIsoValuePU04PFIdPFIso.deposits[0].vetos         = cms.vstring()
+process.elPFIsoValueCharged04PFIdPFIso.deposits[0].vetos    = cms.vstring('EcalEndcaps:ConeVeto(0.015)')
+process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)')
+# adaptPFMuons(process,process.patMuons)
+# process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons')
+# process.muIsoSequence = setupPFMuonIso(process, 'pfAllMuons')
+# adaptPFIsoMuons( process, applyPostfix(process,"patMuons",""))
+# process.muonMatch.src = cms.InputTag("pfAllMuons")
+# adaptPFIsoElectrons( process, applyPostfix(process,"patElectrons",""))
+
 
 if isData:
   runOnData(process)
 
+removeSpecificPATObjects(process, ['Electrons', 'Muons'])
+
+
 removeCleaning(process)
 process.pfAllMuons.src = cms.InputTag("particleFlow")
-process.patMuons.pfMuonSource = cms.InputTag("pfAllMuons")
-process.patMuons.embedPFCandidate = cms.bool(False)
-process.elPFIsoValueGamma04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)')
-process.elPFIsoValueNeutral04PFIdPFIso.deposits[0].vetos = cms.vstring()
-process.elPFIsoValuePU04PFIdPFIso.deposits[0].vetos = cms.vstring()
-process.elPFIsoValueCharged04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)')
-process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)')
+#process.patMuons.pfMuonSource = cms.InputTag("pfAllMuons")
+p#rocess.patMuons.embedPFCandidate = cms.bool(False)
 process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
         cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"), 
         cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"), 

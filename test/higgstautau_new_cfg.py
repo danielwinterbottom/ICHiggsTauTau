@@ -423,7 +423,6 @@ if (release == '53X'):
                            residualsFromTxt = cms.bool(False),
                            residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
   )
-
 else:
     process.load("CMGTools.External.pujetidsequence_cff")
     process.puJetId.jets = cms.InputTag("selectedPatJetsAK5PF")
@@ -522,13 +521,8 @@ removeSpecificPATObjects(process, ['Electrons', 'Muons'])
 
 removeCleaning(process)
 process.pfAllMuons.src = cms.InputTag("particleFlow")
-process.patMuons.pfMuonSource = cms.InputTag("pfAllMuons")
-process.patMuons.embedPFCandidate = cms.bool(False)
-process.elPFIsoValueGamma04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)')
-process.elPFIsoValueNeutral04PFIdPFIso.deposits[0].vetos = cms.vstring()
-process.elPFIsoValuePU04PFIdPFIso.deposits[0].vetos = cms.vstring()
-process.elPFIsoValueCharged04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)')
-process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)')
+#process.patMuons.pfMuonSource = cms.InputTag("pfAllMuons")
+#process.patMuons.embedPFCandidate = cms.bool(False)
 process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
         cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"), 
         cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"), 
@@ -1215,4 +1209,4 @@ process.p = cms.Path(
   +process.icSequence
   )
 
-print process.dumpPython()
+# print process.dumpPython()
