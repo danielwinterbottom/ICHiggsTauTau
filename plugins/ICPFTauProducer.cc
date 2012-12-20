@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/plugins/ICTauProducer.hh"
+#include "UserCode/ICHiggsTauTau/plugins/ICPFTauProducer.hh"
 #include <boost/functional/hash.hpp>
 #include <memory>
 
@@ -27,7 +27,7 @@
 #include "boost/format.hpp"
 
 
-ICTauProducer::ICTauProducer(const edm::ParameterSet& iConfig) {
+ICPFTauProducer::ICPFTauProducer(const edm::ParameterSet& iConfig) {
   //produces<std::vector<unsigned> >("selectGenParticles");
   produces<std::vector<unsigned> >("selectTracks");
   input_ = iConfig.getParameter<edm::InputTag>("input");
@@ -46,12 +46,12 @@ ICTauProducer::ICTauProducer(const edm::ParameterSet& iConfig) {
 }
 
 
-ICTauProducer::~ICTauProducer() {
+ICPFTauProducer::~ICPFTauProducer() {
  //delete calojets_;
 }
 
 // ------------ method called to produce the data  ------------
-void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void ICPFTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   boost::hash<reco::PFTau const*> tau_hasher;
 
   // Get input PAT collection
@@ -132,14 +132,14 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 }
 
 // ------------ method called once each job just before starting event loop  ------------
-void ICTauProducer::beginJob() {
+void ICPFTauProducer::beginJob() {
   ic::StaticTree::tree_->Branch(branch_name_.c_str(), &taus_);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void ICTauProducer::endJob() {
+void ICPFTauProducer::endJob() {
   std::cout << "-----------------------------------------------------------------" << std::endl;
-  std::cout << "Info in <ICTauProducer>: EndJob Summary" << std::endl;
+  std::cout << "Info in <ICPFTauProducer>: EndJob Summary" << std::endl;
   std::cout << "-----------------------------------------------------------------" << std::endl;
   std::map<std::string, std::size_t>::const_iterator iter;
   std::cout << "Tau ID Hash Summary:" << std::endl;
@@ -149,26 +149,26 @@ void ICTauProducer::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
-void ICTauProducer::beginRun(edm::Run&, edm::EventSetup const&) {
+void ICPFTauProducer::beginRun(edm::Run&, edm::EventSetup const&) {
 }
 
 // ------------ method called when ending the processing of a run  ------------
-void ICTauProducer::endRun(edm::Run&, edm::EventSetup const&) {
+void ICPFTauProducer::endRun(edm::Run&, edm::EventSetup const&) {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
-void ICTauProducer::beginLuminosityBlock(edm::LuminosityBlock&, 
+void ICPFTauProducer::beginLuminosityBlock(edm::LuminosityBlock&, 
                                              edm::EventSetup const&) {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
-void ICTauProducer::endLuminosityBlock(edm::LuminosityBlock&, 
+void ICPFTauProducer::endLuminosityBlock(edm::LuminosityBlock&, 
                                            edm::EventSetup const&) {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-ICTauProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+ICPFTauProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -177,4 +177,4 @@ ICTauProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(ICTauProducer);
+DEFINE_FWK_MODULE(ICPFTauProducer);

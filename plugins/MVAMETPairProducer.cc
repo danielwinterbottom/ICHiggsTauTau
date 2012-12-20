@@ -373,6 +373,11 @@ double MVAMETPairProducer::chargedFrac(const reco::Candidate *iCand) {
     //std::cout << " ---> Iso  : " << lElectron->pfIsolationVariables().neutralHadronIso << " -- " << lElectron->pfIsolationVariables().neutralHadronIso  << " -- " << lElectron->pfIsolationVariables().chargedHadronIso  << " -- " << lElectron->isolationVariables04().tkSumPt << " -- " << lElectron->pt() << " -- " << lElectron->eta() << std::endl;
     return 1.;
   }
+  reco::PFCandidate const* pfTest = 0;
+  pfTest = dynamic_cast<reco::PFCandidate const*>(iCand);
+  if (pfTest != 0) {
+    if (pfTest->muonRef().isNonnull()) return 1;
+  }
   if(iCand->isPhoton()  )   return 0.;
   double lPtTot = 0; double lPtCharged = 0;
   const reco::PFTau *lPFTau = 0; 
@@ -387,7 +392,7 @@ double MVAMETPairProducer::chargedFrac(const reco::Candidate *iCand) {
   else { 
     const pat::Tau *lPatPFTau = 0; 
     lPatPFTau = dynamic_cast<const pat::Tau*>(iCand);//} 
-    for (UInt_t i0 = 0; i0 < lPatPFTau->signalPFCands().size(); i0++) { 
+    for (UInt_t i0 = 0; i0 < lPatPFTau->signalPFCands().size(); i0++) {
       lPtTot += (lPatPFTau->signalPFCands())[i0]->pt(); 
       if((lPatPFTau->signalPFCands())[i0]->charge() == 0) continue;
       lPtCharged += (lPatPFTau->signalPFCands())[i0]->pt(); 

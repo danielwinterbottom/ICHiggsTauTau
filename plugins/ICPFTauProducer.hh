@@ -11,10 +11,10 @@
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 
 
-class ICTauProducer : public edm::EDProducer {
+class ICPFTauProducer : public edm::EDProducer {
    public:
-      explicit ICTauProducer(const edm::ParameterSet&);
-      ~ICTauProducer();
+      explicit ICPFTauProducer(const edm::ParameterSet&);
+      ~ICPFTauProducer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
