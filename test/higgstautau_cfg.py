@@ -477,8 +477,8 @@ if (release == '53X'):
     )
     process.GlobalTag.globaltag = cms.string('START53_V10::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 if (release == '42X'):
   process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
@@ -523,7 +523,7 @@ removeSpecificPATObjects(process, ['Electrons', 'Muons'])
 removeCleaning(process)
 process.pfAllMuons.src = cms.InputTag("particleFlow")
 #process.patMuons.pfMuonSource = cms.InputTag("pfAllMuons")
-p#rocess.patMuons.embedPFCandidate = cms.bool(False)
+#process.patMuons.embedPFCandidate = cms.bool(False)
 process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
         cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"), 
         cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"), 

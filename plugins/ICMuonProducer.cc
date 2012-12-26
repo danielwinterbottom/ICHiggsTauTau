@@ -202,17 +202,18 @@ void ICMuonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
         muo.set_it_pixel_hits(reco_muon->innerTrack()->hitPattern().numberOfValidPixelHits());
         muo.set_it_tracker_hits(reco_muon->innerTrack()->hitPattern().numberOfValidTrackerHits());
         muo.set_it_layers_with_measurement(reco_muon->innerTrack()->hitPattern().trackerLayersWithMeasurement());
+        muo.set_dxy_beamspot(reco_muon->innerTrack()->dxy(*beamspot));
     } else {
       muo.set_it_pixel_hits(0);
       muo.set_it_tracker_hits(0);
       muo.set_it_layers_with_measurement(0);
+        muo.set_dxy_beamspot(9999.);
     }
 
     muo.set_vx(reco_muon->vx());
     muo.set_vy(reco_muon->vy());
     muo.set_vz(reco_muon->vz());
 
-    muo.set_dxy_beamspot(reco_muon->innerTrack()->dxy(*beamspot));
     if (vertexCollection->size() > 0 && reco_muon->isGlobalMuon()) {
       muo.set_dz_vertex(reco_muon->innerTrack()->dz(vertexCollection->at(0).position()));
       muo.set_dxy_vertex(reco_muon->innerTrack()->dxy(vertexCollection->at(0).position()));

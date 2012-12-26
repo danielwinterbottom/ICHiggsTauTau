@@ -87,17 +87,17 @@ PATHS=(
 
 
 
-for i in "${PATHS[@]}"
-do
- cd svfit/moriond_svfit_2013/"$i"_et_2012_SVFIT
- echo `pwd`
- ./submit.sh
- cd -
- cd svfit/moriond_svfit_2013/"$i"_mt_2012_SVFIT
- echo `pwd`
- ./submit.sh
- cd -
-done
+#for i in "${PATHS[@]}"
+#do
+# cd svfit/moriond_svfit_2013/"$i"_et_2012_SVFIT
+# echo `pwd`
+# ./submit.sh
+# cd -
+# cd svfit/moriond_svfit_2013/"$i"_mt_2012_SVFIT
+# echo `pwd`
+# ./submit.sh
+# cd -
+#done
 
 PATHS=(
 'Data'
@@ -187,10 +187,11 @@ PATHS=(
 
 
 
-#for i in "${PATHS[@]}"
-#do
-#cd SVFIT_2012/"$i"_ElecMu_2012_SVFIT
-#./submit.sh
-#cd -
-#
-#done 
+for i in "${PATHS[@]}"
+do
+cd svfit/moriond_svfit_2013/"$i"_em_2012_SVFIT
+echo `pwd`
+./submit.sh
+cd -
+
+done 
