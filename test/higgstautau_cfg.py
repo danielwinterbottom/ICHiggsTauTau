@@ -544,7 +544,16 @@ if (release == '42X'):
 
 if isEmbedded:
   process.jetTracksAssociatorAtVertexAK5PF.tracks = cms.InputTag("tmfTracks")
-  
+
+
+process.btaggingAK5PF = cms.Sequence(
+  process.impactParameterTagInfosAK5PF
+  +process.secondaryVertexTagInfosAK5PF
+  +process.simpleSecondaryVertexHighEffBJetTagsAK5PF
+  +process.simpleSecondaryVertexHighPurBJetTagsAK5PF
+  +process.combinedSecondaryVertexBJetTagsAK5PF
+  )
+
 ################################################################
 ### MC specific config
 ################################################################
@@ -788,15 +797,15 @@ process.icSequence = cms.Sequence(
   )
 
 ### Add an extra sequence for Mu+Tau+MET trigger in 2012D data
-if release == '53X':
-  process.icSequence += (
-    process.icL1ExtraMETProducer
-    +process.icL1ExtraMuonsProducer
-    +process.patmetNoHF
-    +process.icMetNoHFProducer
-    +process.patMETsPFType1
-    +process.icPfMetType1Producer
-  )
+# if release == '53X':
+#   process.icSequence += (
+#     process.icL1ExtraMETProducer
+#     +process.icL1ExtraMuonsProducer
+#     +process.patmetNoHF
+#     +process.icMetNoHFProducer
+#     +process.patMETsPFType1
+#     +process.icPfMetType1Producer
+#   )
 
 process.icDataSequence = cms.Sequence(
   process.icTriggerPathProducer
@@ -969,11 +978,7 @@ if (release == '53X' and isData):
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
       StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
-  process.icMu8LooseTau20L1ETM26ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8LooseTau20L1ETM26"),
-      hltPath = cms.untracked.string("HLT_Mu8_eta2p1_LooseIsoPFTau20_L1ETM26_v"),
-      StoreOnlyIfFired = cms.untracked.bool(False)
-      )
+
   process.icTriggerSequence += (
     process.icEle20RhoLooseTau20ObjectProducer
     +process.icEle22WP90RhoLooseTau20ObjectProducer
@@ -981,7 +986,6 @@ if (release == '53X' and isData):
     +process.icIsoMu17LooseTau20ObjectProducer
     +process.icMu8Ele17ObjectProducer
     +process.icMu17Ele8ObjectProducer
-    +process.icMu8LooseTau20L1ETM26ObjectProducer
     )
 
 ################################################################
@@ -1008,17 +1012,12 @@ if ((release == '53X') and (not isData)):
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
       StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
-  process.icMu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8"),
-      hltPath = cms.untracked.string("HLT_Mu8_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )
+
   process.icTriggerSequence += (
     process.icEle22WP90RhoLooseTau20ObjectProducer
     +process.icIsoMu17LooseTau20ObjectProducer
     +process.icMu8Ele17ObjectProducer
     +process.icMu17Ele8ObjectProducer
-    +process.icMu8ObjectProducer
     )
 
 
@@ -1130,48 +1129,6 @@ if (release == '53X' and (not isData) and isZStudy):
   process.icTriggerSequence += (
     process.icEle17Ele8ObjectProducer
     +process.icMu17Mu8ObjectProducer
-    )
-
-
-################################################################
-## Define 2012 Hinv physics triggers for mc
-################################################################
-if (release == '53X' and (not isData)):
-  process.icDiPFJet40PFMETnoMu65MJJ600VBFLeadingJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsDiPFJet40PFMETnoMu65MJJ600VBFLeadingJets"), 
-      hltPath = cms.untracked.string("HLT_DiPFJet40_PFMETnoMu65_MJJ600VBF_LeadingJets_v"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-
-  process.icDiPFJet40PFMETnoMu65MJJ800VBFAllJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets"), 
-      hltPath = cms.untracked.string("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-
-  process.icDiPFJetAve80ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsDiPFJetAve80"), 
-      hltPath = cms.untracked.string("HLT_DiPFJetAve80_v"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-
-  process.icDiPFJetAve40ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsDiPFJetAve40"), 
-      hltPath = cms.untracked.string("HLT_DiPFJetAve40_v"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-
-  process.icL1ETM40ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsL1ETM40"), 
-      hltPath = cms.untracked.string("HLT_L1ETM40"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-  process.icTriggerSequence += ( 
-    process.icDiPFJet40PFMETnoMu65MJJ600VBFLeadingJetsObjectProducer 
-    +process.icDiPFJet40PFMETnoMu65MJJ800VBFAllJetsObjectProducer 
-    +process.icDiPFJetAve80ObjectProducer 
-    +process.icDiPFJetAve40ObjectProducer 
-    +process.icL1ETM40ObjectProducer 
     )
 
 
