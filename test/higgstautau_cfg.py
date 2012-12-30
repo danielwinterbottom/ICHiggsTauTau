@@ -1000,7 +1000,7 @@ if ((release == '53X') and (not isData)):
   process.icIsoMu17LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsIsoMu17LooseTau20"),
       hltPath = cms.untracked.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(False) # Always need this trigger information for tau part of mtmet
+      StoreOnlyIfFired = cms.untracked.bool(notTp) 
       )    
   process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
