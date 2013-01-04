@@ -1,5 +1,12 @@
-#make -j4
+JOBWRAPPER=./scripts/generate_job.sh
+#JOBSUBMIT=true
+JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
 
+CONFIG=scripts/Moriond_data_2012.cfg
+echo $CONFIG
+FILELIST=filelists/Dec30_Data_53X
+PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec30/Data_53X/
+DATA_FILELIST=Moriond # Or HCP, DOnly for example
 
 if (( "$#" != "2" ))
 then
@@ -9,14 +16,6 @@ fi
 
 OPTION=$1
 DOTSCALE=$2
-
-DATASET=Moriond
-#DATASET=HCP
-
-CONFIG=scripts/data_Moriond_2012.cfg
-echo "Using config: $CONFIG"
-
-FILELIST=filelists/Dec2/Data_53X
 
 
 if [ $DOTSCALE == 1 ]
@@ -32,82 +31,100 @@ else
   )
 fi
 
-echo "Using data filelists: $DATASET"
 
 if [ $OPTION == 0 ]
 then
 
-# Data
- echo "Data"
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_et_skim_filelist.dat  --channel=et  --output_name=Data_et_2012.root  >> data_2012_et.log &
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_mt_skim_filelist.dat  --channel=mt  --output_name=Data_mt_2012.root  >> data_2012_mt.log &
- wait
+  # Data
+  JOB=Data_et_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Data_"$DATA_FILELIST"_et_skim.dat  --channel=et --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
 
-# Embedded
-for j in "${TSCALE[@]}"
-do
-  echo "Embedded"
-  ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/Embedded_et_skim_filelist.dat  --channel=et --is_embedded=true --output_name=Embedded_et_2012.root >> data_2012_et.log &
-  ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/Embedded_mt_skim_filelist.dat  --channel=mt --is_embedded=true --output_name=Embedded_mt_2012.root >> data_2012_mt.log &
-  wait
-done
+  JOB=Data_mt_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Data_"$DATA_FILELIST"_mt_skim.dat  --channel=mt --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
 
-# Special Mode 3 Data
-echo "Special_3_Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_"$DATASET"_et_skim_filelist.dat --special_mode=3 --channel=et  --output_name=Data_et_2012.root >> data_2012_et.log &
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_"$DATASET"_mt_skim_filelist.dat --special_mode=3 --channel=mt  --output_name=Data_mt_2012.root >> data_2012_mt.log &
-wait
+  # Embedded
+  for j in "${TSCALE[@]}"
+  do
+    JOB=Embedded_et_2012
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_et_skim.dat --channel=et \
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-$TSCALE.log" jobs/$JOB-$TSCALE.sh
+    $JOBSUBMIT jobs/$JOB-$TSCALE.sh
 
+    JOB=Embedded_mt_2012
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_mt_skim.dat --channel=mt \
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-$TSCALE.log" jobs/$JOB-$TSCALE.sh
+    $JOBSUBMIT jobs/$JOB-$TSCALE.sh
+  done
+
+  # Special Mode 3 Data
+  JOB=Data_et_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_2_Data_"$DATA_FILELIST"_et_skim.dat  --channel=et \
+  --special_mode=3 --output_name=$JOB.root &> jobs/Special_3_$JOB.log" jobs/Special_3_$JOB.sh
+  $JOBSUBMIT jobs/Special_3_$JOB.sh
+
+  JOB=Data_mt_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_2_Data_"$DATA_FILELIST"_mt_skim.dat  --channel=mt \
+  --special_mode=3 --output_name=$JOB.root &> jobs/Special_3_$JOB.log" jobs/Special_3_$JOB.sh
+  $JOBSUBMIT jobs/Special_3_$JOB.sh
 fi
-
 
 
 if [ $OPTION == 1 ]
 then
-
-# Data
-echo "Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_mtmet_skim_filelist.dat  --channel=mtmet  --output_name=Data_mtmet_2012.root >> data_2012_mtmet.log &
-wait
-
-# Special Mode 3 Data
-echo "Special_3_Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_"$DATASET"_mtmet_skim_filelist.dat --special_mode=3 --channel=mtmet --output_name=Data_mtmet_2012.root >> data_2012_mtmet.log &
-wait
-
+  # Data
+  JOB=Data_mtmet_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Data_"$DATA_FILELIST"_mtmet_skim.dat  --channel=mtmet \
+  --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
+  
+  # Special Mode 3 Data
+  JOB=Data_mtmet_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_2_Data_"$DATA_FILELIST"_mtmet_skim.dat  --channel=mtmet \
+  --special_mode=3 --output_name=$JOB.root &> jobs/Special_3_$JOB.log" jobs/Special_3_$JOB.sh
+  $JOBSUBMIT jobs/Special_3_$JOB.sh
 fi
-
-
 
 
 if [ $OPTION == 2 ]
 then
+  # Data
+  JOB=Data_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
 
-# Data
-echo "Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_"$DATASET"_em_skim_filelist.dat  --channel=em  --output_name=Data_em_2012.root >> data_2012_em.log &
-wait
+  # Special Mode Data
+  JOB=Data_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_20_$JOB.log" jobs/Special_20_$JOB.sh
+  $JOBSUBMIT jobs/Special_20_$JOB.sh
 
-# Special Mode 20 Data
-echo "Special_20_Data"
-echo "Special_21_Data"
-echo "Special_22_Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=20 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_0.log &
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=21 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_1.log &
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=22 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_2.log &
-wait
+  JOB=Data_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_21_$JOB.log" jobs/Special_21_$JOB.sh
+  $JOBSUBMIT jobs/Special_21_$JOB.sh
 
-# Special Mode 23 Data
-echo "Special_23_Data"
-echo "Special_24_Data"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=23 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_0.log &
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_25_Data_"$DATASET"_em_skim_filelist.dat --special_mode=24 --channel=em  --output_name=Data_em_2012.root >> data_2012_em_1.log &
-wait
+  JOB=Data_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_22_$JOB.log" jobs/Special_22_$JOB.sh
+  $JOBSUBMIT jobs/Special_22_$JOB.sh
 
-echo "Embedded"
-./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Embedded_em_skim_filelist.dat  --channel=em --is_embedded=true --output_name=Embedded_em_2012.root >> data_2012_em.log &
-wait
+  JOB=Data_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_23_$JOB.log" jobs/Special_23_$JOB.sh
+  $JOBSUBMIT jobs/Special_23_$JOB.sh
 
+  JOB=Data_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_24_$JOB.log" jobs/Special_24_$JOB.sh
+  $JOBSUBMIT jobs/Special_24_$JOB.sh
+
+  # Embedded
+  JOB=Embedded_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
+  --is_embedded=true --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
 fi
 
 
