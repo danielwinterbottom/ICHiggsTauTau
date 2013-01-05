@@ -1,8 +1,7 @@
-#make -j4
 
 if (( "$#" != "3" ))
 then
-    echo "<0=et,mt 1=mtmet, 2=em> <0=no tscale, 1=do tscale shifts> <0=short signal, 1 = all signal>"
+    echo "<0=et,mt, 1=em, 2=mtmet> <0=normal, 1=shift down, 2=shift up> <0=short signal, 1 = all signal>"
     exit
 fi
 

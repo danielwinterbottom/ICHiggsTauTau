@@ -1,3 +1,9 @@
+if (( "$#" != "2" ))
+then
+    echo "<INPUT TASK> <OUTPUT SCRIPT>"
+    exit
+fi
+
 INPUT=$1
 OUTPUT=$2
 
