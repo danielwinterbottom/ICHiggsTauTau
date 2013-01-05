@@ -1,22 +1,23 @@
-JOBWRAPPER=./scripts/generate_job.sh
-#JOBSUBMIT=true
-JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
+: ${JOBWRAPPER:="./scripts/generate_job.sh"}
+: ${JOBSUBMIT:="eval"}
+echo "Using job-wrapper: " $JOBWRAPPER
+echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/Moriond_data_2012.cfg
-echo $CONFIG
+echo "Config file: $CONFIG"
 FILELIST=filelists/Dec30_Data_53X
-PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec30/Data_53X/
+echo "Filelist prefix: $FILELIST"
 DATA_FILELIST=Moriond # Or HCP, DOnly for example
+echo "Data filelists with label: $DATA_FILELIST"
 
 if (( "$#" != "2" ))
 then
-    echo "<0=et,mt 1=mtmet, 2=em> <0=no tscale, 1=do tscale shifts>"
+echo "<CHANNELS: 0=et,mt 1=em 2=mtmet> <TAU ENERGY SCALE SHIFT: 0=none 1=none,up,down>"
     exit
 fi
 
 OPTION=$1
 DOTSCALE=$2
-
 
 if [ $DOTSCALE == 1 ]
 then
@@ -102,22 +103,22 @@ then
 
   JOB=Data_em_2012
   $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
-  --special_mode=20 --output_name=$JOB.root &> jobs/Special_21_$JOB.log" jobs/Special_21_$JOB.sh
+  --special_mode=21 --output_name=$JOB.root &> jobs/Special_21_$JOB.log" jobs/Special_21_$JOB.sh
   $JOBSUBMIT jobs/Special_21_$JOB.sh
 
   JOB=Data_em_2012
   $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
-  --special_mode=20 --output_name=$JOB.root &> jobs/Special_22_$JOB.log" jobs/Special_22_$JOB.sh
+  --special_mode=22 --output_name=$JOB.root &> jobs/Special_22_$JOB.log" jobs/Special_22_$JOB.sh
   $JOBSUBMIT jobs/Special_22_$JOB.sh
 
   JOB=Data_em_2012
   $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
-  --special_mode=20 --output_name=$JOB.root &> jobs/Special_23_$JOB.log" jobs/Special_23_$JOB.sh
+  --special_mode=23 --output_name=$JOB.root &> jobs/Special_23_$JOB.log" jobs/Special_23_$JOB.sh
   $JOBSUBMIT jobs/Special_23_$JOB.sh
 
   JOB=Data_em_2012
   $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
-  --special_mode=20 --output_name=$JOB.root &> jobs/Special_24_$JOB.log" jobs/Special_24_$JOB.sh
+  --special_mode=24 --output_name=$JOB.root &> jobs/Special_24_$JOB.log" jobs/Special_24_$JOB.sh
   $JOBSUBMIT jobs/Special_24_$JOB.sh
 
   # Embedded
@@ -126,8 +127,3 @@ then
   --is_embedded=true --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
   $JOBSUBMIT jobs/$JOB.sh
 fi
-
-
-
-
-

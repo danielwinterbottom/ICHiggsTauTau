@@ -1,17 +1,18 @@
-# JOBWRAPPER=./scripts/generate_job.sh
-JOBWRAPPER=./scripts/generate_mac_job.sh
-#JOBSUBMIT=true
-JOBSUBMIT="./scripts/submit_ts_job.sh"
-# JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
+: ${JOBWRAPPER:="./scripts/generate_job.sh"}
+: ${JOBSUBMIT:="eval"}
+echo "Using job-wrapper: " $JOBWRAPPER
+echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/data_2011.cfg
-echo $CONFIG
+echo "Config file: $CONFIG"
 FILELIST=filelists/Sept11_Data_42X
-DATA_FILELIST=Total # Or HCP, DOnly for example
+echo "Filelist prefix: $FILELIST"
+DATA_FILELIST=Total
+echo "Data filelists with label: $DATA_FILELIST"
 
 if (( "$#" != "2" ))
 then
-    echo "<0=et,mt 1=em> <0=no tscale, 1=do tscale shifts>"
+    echo "<CHANNELS: 0=et,mt 1=em> <TAU ENERGY SCALE SHIFT: 0=none, 1=none,up,down>"
     exit
 fi
 
@@ -110,4 +111,3 @@ then
   --is_embedded=true --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
   $JOBSUBMIT jobs/$JOB.sh
 fi
-

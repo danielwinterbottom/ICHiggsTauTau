@@ -1,21 +1,16 @@
-# JOBWRAPPER=./scripts/generate_job.sh
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
-# JOBWRAPPER=./scripts/generate_mac_job.sh
-#JOBSUBMIT=true
-#JOBSUBMIT=eval
-: ${JOBSUBMIT:="./scripts/submit_ts_job.sh"}
-# JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
-
-echo "Using Job Wrapper: " $JOBWRAPPER
-echo "Using Job Submission: " $JOBSUBMIT
+: ${JOBSUBMIT:="eval"}
+echo "Using job-wrapper: " $JOBWRAPPER
+echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/mc_2011.cfg
-echo $CONFIG
+echo "Config file: $CONFIG"
 FILELIST=filelists/Sept11_MC_42X
+echo "Filelist prefix: $FILELIST"
 
 if (( "$#" != "3" ))
 then
-    echo "<0=et,mt 1=em> <0=normal, 1=shift down, 2=shift up> <0=short signal, 1 = all signal>"
+    echo "<CHANNELS: 0=et,mt 1=em> <TAU ENERGY SCALE SHIFT: 0=none 1=down 2=up> <SIGNAL SAMPLES 0=subset, 1=all>"
     exit
 fi
 
@@ -202,9 +197,3 @@ do
     fi
   done
 done
-
-
-
-
-
-
