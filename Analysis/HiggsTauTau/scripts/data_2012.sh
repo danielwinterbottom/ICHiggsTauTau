@@ -49,13 +49,13 @@ then
   do
     JOB=Embedded_et_2012
     $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_et_skim.dat --channel=et \
-    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-$TSCALE.log" jobs/$JOB-$TSCALE.sh
-    $JOBSUBMIT jobs/$JOB-$TSCALE.sh
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    $JOBSUBMIT jobs/$JOB-$j.sh
 
     JOB=Embedded_mt_2012
     $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_mt_skim.dat --channel=mt \
-    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-$TSCALE.log" jobs/$JOB-$TSCALE.sh
-    $JOBSUBMIT jobs/$JOB-$TSCALE.sh
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    $JOBSUBMIT jobs/$JOB-$j.sh
   done
 
   # Special Mode 3 Data

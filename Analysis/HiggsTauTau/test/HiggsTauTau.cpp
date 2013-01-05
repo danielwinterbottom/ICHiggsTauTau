@@ -398,6 +398,7 @@ int main(int argc, char* argv[]){
     .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
     .set_min(1);
+  if (era == era::data_2011) embeddedMassFilter.set_input_label("genParticles");
 
   // JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
   // ("JetEnergyCorrections")

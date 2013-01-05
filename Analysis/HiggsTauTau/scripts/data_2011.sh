@@ -1,70 +1,113 @@
-#make -j4
+# JOBWRAPPER=./scripts/generate_job.sh
+JOBWRAPPER=./scripts/generate_mac_job.sh
+#JOBSUBMIT=true
+JOBSUBMIT="./scripts/submit_ts_job.sh"
+# JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
 
-MSSM_MODE=$1
+CONFIG=scripts/data_2011.cfg
+echo $CONFIG
+FILELIST=filelists/Sept11_Data_42X
+DATA_FILELIST=Total # Or HCP, DOnly for example
 
-if [ -z $1 ]
+if (( "$#" != "2" ))
 then
-    echo "No mode specified!"
+    echo "<0=et,mt 1=em> <0=no tscale, 1=do tscale shifts>"
     exit
 fi
 
-if [ $MSSM_MODE == 0 ]
+OPTION=$1
+DOTSCALE=$2
+
+if [ $DOTSCALE == 1 ]
 then
-    echo "Process as SM..."
-    CONFIG=scripts/data_2011.cfg
+  TSCALE=(
+  '0'
+  '1'
+  '2'
+  )
 else
-    echo "Process as MSSM..."
-    CONFIG=scripts/data_mssm_2011.cfg
+  TSCALE=(
+  '0'
+  )
 fi
-echo $CONFIG
-
-FILELIST=filelists/Sept11/Data_42X
-
-TSCALE=(
-'0'
-# '1'
-# '2'
-)
-
-# Data
- echo "Data"
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_electauSkim_IC_filelist.dat  --channel=et  --output_name=Data_ElecTau_2011.root
- ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_mutauSkim_IC_filelist.dat    --channel=mt  --output_name=Data_MuTau_2011.root
- # ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_electauSkim_IC_filelist.dat  --channel=et  --output_name=Data_ElecTau_2011.root  >> data_2011_ElecTau.log &
- # ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_mutauSkim_IC_filelist.dat    --channel=mt  --output_name=Data_MuTau_2011.root >> data_2011_MuTau.log &
-
- wait
-
-# # Embedded
-# for j in "${TSCALE[@]}"
-# do
-#   echo "Embedded"
-#   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/Embedded_electauSkim_IC_filelist.dat  --mode=0 --is_embedded=true --output=Embedded_ElecTau_2011.root >> data_2011_ElecTau.log &
-#   ./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist=$FILELIST/Embedded_mutauSkim_IC_filelist.dat    --mode=1 --is_embedded=true --output=Embedded_MuTau_2011.root >> data_2011_MuTau.log &
-#   wait
-# done
-
-# # Special Mode 3 Data
-# echo "Special_3_Data"
-# ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_electauSkim_IC_filelist.dat --special_mode=3 --mode=0  --output=Data_ElecTau_2011.root >> data_2011_ElecTau.log &
-# ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_mutauSkim_IC_filelist.dat --special_mode=3 --mode=1  --output=Data_MuTau_2011.root >> data_2011_MuTau.log &
-# wait
 
 
-# #Do Special Mode 6 Data
-# echo "Special_6_Data"
-# ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_electauSkim_IC_filelist.dat --special_mode=6 --mode=0  \
-# --svfit_override=Special_3_Data_ElecTau_2011.root --output=Data_ElecTau_2011.root >> data_2011_ElecTau.log &
-# ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Special_2_Data_mutauSkim_IC_filelist.dat --special_mode=6 --mode=1  \
-# --svfit_override=Special_3_Data_MuTau_2011.root --output=Data_MuTau_2011.root >> data_2011_MuTau.log &
-# wait
+if [ $OPTION == 0 ]
+then
 
-# # Special Mode 7 Data, can use standard SVFit
-# echo "Special_7_Data"
-# ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_electauSkim_IC_filelist.dat --special_mode=7 --mode=0  \
-# --svfit_override=Data_ElecTau_2011.root --output=Data_ElecTau_2011.root >> data_2011_ElecTau.log &
-# ./bin/HiggsTauTau --cfg=$CONFIG --filelist=$FILELIST/Data_mutauSkim_IC_filelist.dat --special_mode=7 --mode=1  \
-# --svfit_override=Data_MuTau_2011.root --output=Data_MuTau_2011.root >> data_2011_MuTau.log &
-# wait
+  # Data
+  JOB=Data_et_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Data_"$DATA_FILELIST"_et_skim.dat  --channel=et --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
 
+  JOB=Data_mt_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Data_"$DATA_FILELIST"_mt_skim.dat  --channel=mt --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
+
+  # Embedded
+  for j in "${TSCALE[@]}"
+  do
+    JOB=Embedded_et_2011
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_et_skim.dat --channel=et \
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    $JOBSUBMIT jobs/$JOB-$j.sh
+
+    JOB=Embedded_mt_2011
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_mt_skim.dat --channel=mt \
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    $JOBSUBMIT jobs/$JOB-$j.sh
+  done
+
+  # Special Mode 3 Data
+  JOB=Data_et_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_2_Data_"$DATA_FILELIST"_et_skim.dat  --channel=et \
+  --special_mode=3 --output_name=$JOB.root &> jobs/Special_3_$JOB.log" jobs/Special_3_$JOB.sh
+  $JOBSUBMIT jobs/Special_3_$JOB.sh
+
+  JOB=Data_mt_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_2_Data_"$DATA_FILELIST"_mt_skim.dat  --channel=mt \
+  --special_mode=3 --output_name=$JOB.root &> jobs/Special_3_$JOB.log" jobs/Special_3_$JOB.sh
+  $JOBSUBMIT jobs/Special_3_$JOB.sh
+fi
+
+
+if [ $OPTION == 1 ]
+then
+  # Data
+  JOB=Data_em_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
+
+  # Special Mode Data
+  JOB=Data_em_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_20_$JOB.log" jobs/Special_20_$JOB.sh
+  $JOBSUBMIT jobs/Special_20_$JOB.sh
+
+  JOB=Data_em_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_21_$JOB.log" jobs/Special_21_$JOB.sh
+  $JOBSUBMIT jobs/Special_21_$JOB.sh
+
+  JOB=Data_em_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_22_$JOB.log" jobs/Special_22_$JOB.sh
+  $JOBSUBMIT jobs/Special_22_$JOB.sh
+
+  JOB=Data_em_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_23_$JOB.log" jobs/Special_23_$JOB.sh
+  $JOBSUBMIT jobs/Special_23_$JOB.sh
+
+  JOB=Data_em_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  --special_mode=20 --output_name=$JOB.root &> jobs/Special_24_$JOB.log" jobs/Special_24_$JOB.sh
+  $JOBSUBMIT jobs/Special_24_$JOB.sh
+
+  # Embedded
+  JOB=Embedded_em_2011
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
+  --is_embedded=true --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
+fi
 
