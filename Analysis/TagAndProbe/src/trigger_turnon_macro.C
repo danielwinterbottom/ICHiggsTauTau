@@ -101,16 +101,19 @@ void fit(TString file1 /*,TString file2*/, TString data ,/*TString mc,*/bool fla
   //fit1->SetParameters(15.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
   //fit1->SetParameters(17.07,0.000100,0.00060,1.56,0.965);
   //good for muon middle eta region:
-  //fit1->SetParameters(17.4203,0.6201,1.13239,1.22927,0.93235);
+  fit1->SetParameters(17.4203,0.6201,1.13239,1.22927,0.93235);
+  //fit1->SetParameters(16.7859,0.443337,0.571078,1.62214,0.919211);
   //fit1->SetParameters(16.5,0.004877,0.000561,1.5,0.861);
   //fit1->SetParameters(20.5,0.2,0.04,1.001,54);
   //good for muon low eta region:
   //fit1->SetParameters(15.9694,0.070174,0.0302466,1.8763,0.96322);
   //fit1->SetParameters(15.93,0.026,0.00487,1.9138,0.9777);
   //fit1->SetParameters(17.46,0.0494554,0.0628053,1.32332,0.90886);
-  fit1->SetParameters(15.03,0.55278,1.34236,1.003,3.36767); 
+  //fit1->SetParameters(15.03,0.55278,1.34236,1.003,3.36767); 
   //Ele15 barrel
   //fit1->SetParameters(14.8772,0.311255,0.221021,1.87734,0.986665);
+  //Ele15 endcap
+ // fit1->SetParameters(19.6586,0.682633,0.279486,2.66423,0.973455);
  //Ele20 Endcap
  //fit1->SetParameters(23.63,1.6077,1.72093,1.4131,1.1396);
   //fit2->SetParameters(19.1,1.2,1.7,1.4,0.8);

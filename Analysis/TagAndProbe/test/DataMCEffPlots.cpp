@@ -83,7 +83,7 @@ int main(int argc, char* argv[]){
     TLatex *title_latex = new TLatex();
     title_latex->SetNDC();
     title_latex->SetTextSize(0.04);
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV");        
     canvas1->Update();
 
     canvas1->Write();    
@@ -119,7 +119,7 @@ int main(int argc, char* argv[]){
     legend2->SetBorderSize(0);
     legend2->Draw();
     canvas2->Update();
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV");        
     canvas2->Update();
      
    
@@ -156,7 +156,7 @@ int main(int argc, char* argv[]){
     legend3->SetBorderSize(0);
     legend3->Draw();
     canvas3->Update();
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 12 fb^{-1}");        
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV");        
     canvas3->Update();
      
    

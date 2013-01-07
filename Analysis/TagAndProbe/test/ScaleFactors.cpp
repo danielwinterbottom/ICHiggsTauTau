@@ -280,7 +280,7 @@ int main(int argc, char* argv[])
     int i_final, i_initial;
     if(elec) i_final=2;
     else i_final=2;
-    if(elec) i_initial=1;
+    if(elec) i_initial=0;
     else i_initial=0;
 
     std::cout << "======================================================================" << std::endl;
