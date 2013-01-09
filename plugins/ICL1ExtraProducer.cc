@@ -19,6 +19,7 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
 #include "DataFormats/L1Trigger/interface/L1EtMissParticle.h"
+#include "DataFormats/L1Trigger/interface/L1EmParticle.h"
 
 template<class T>
 class ICL1ExtraProducer : public edm::EDProducer {
@@ -42,6 +43,9 @@ class ICL1ExtraProducer : public edm::EDProducer {
       std::vector<ic::Candidate> *cand_vec;
       std::string branch_name_;
       edm::InputTag input_label_;
+      double min_pt_;
+      double max_eta_;
+
 
 };
 
@@ -52,6 +56,8 @@ template<class T>
 ICL1ExtraProducer<T>::ICL1ExtraProducer(const edm::ParameterSet& iConfig) {
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
   input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
+  min_pt_ = iConfig.getParameter<double>("minPt");
+  max_eta_ = iConfig.getParameter<double>("maxEta");
   cand_vec = new std::vector<ic::Candidate>();
 
 }
@@ -79,6 +85,7 @@ void ICL1ExtraProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iS
   cand_vec->reserve(candCollection->size());
 
   for (typename std::vector<T>::const_iterator iter = candCollection->begin(); iter != candCollection->end(); ++iter) {
+    if (! (iter->pt() > min_pt_ && fabs(iter->eta()) < max_eta_) ) continue;
     cand_vec->push_back(ic::Candidate());
     ic::Candidate & cand = cand_vec->back();
     //Set candidate data
@@ -137,5 +144,7 @@ void ICL1ExtraProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& desc
 //define this as a plug-in
 typedef ICL1ExtraProducer<l1extra::L1MuonParticle> ICL1ExtraMuonProducer;
 typedef ICL1ExtraProducer<l1extra::L1EtMissParticle> ICL1ExtraEtMissProducer;
+typedef ICL1ExtraProducer<l1extra::L1EmParticle> ICL1ExtraEmParticleProducer;
 DEFINE_FWK_MODULE(ICL1ExtraMuonProducer);
 DEFINE_FWK_MODULE(ICL1ExtraEtMissProducer);
+DEFINE_FWK_MODULE(ICL1ExtraEmParticleProducer);
