@@ -65,7 +65,7 @@ namespace ic {
 
     Reset();
 
-    // Get the stuff we need from the event
+    // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     wt_ = eventInfo->total_weight();
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
@@ -82,6 +82,10 @@ namespace ic {
     ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
 
+
+    // Define event properties
+    // IMPORTANT: Make sure each property is re-set
+    // for each new event
     if (PairOppSign(ditau)) {
       os_ = true;
     } else {
@@ -98,6 +102,9 @@ namespace ic {
 
     m_vis_ = ditau->M();
 
+    // This is the HCP hack for the em channel
+    // to better align the data with the embedded
+    // mass.  
     if (channel_ == channel::em && is_embedded_) {
       m_sv_ = m_sv_ * 1.01;
       m_vis_ = m_vis_ * 1.01;
@@ -154,6 +161,7 @@ namespace ic {
       beta_1_ = -9999;
     }
 
+    // Define which selections this event passes
     if (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet) {
       if (os_ && mt_1_ < 20.0) SetPassSelection("os_sel");
       if (os_) SetPassSelection("os");
@@ -173,29 +181,49 @@ namespace ic {
 
     }
 
+    // Define the 1- and 0-jet split based on pt_2
     double pt2_split = 40.0; // Tau pT for et,mt and mtmet
     if (channel_ == channel::em) pt2_split = 35.0;  // Mu pT for em
 
+    // Inclusive Category
     SetPassCategory("inclusive");
     FillCoreControlPlots("inclusive");
+
+    // VBF Selection
+    // In the em channel, additionally apply b-jet veto
     if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 500. && jdeta_ > 3.5) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf");
 
     }
+
+    // Loose VBF Selection
+    // Used for background shape estimation in VBF category
     if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose");
     }
+
+    // Loose VBF Selection with low pT Jet Requirement
+    // Used for background shape of QCD in VBF Category
     if (n_lowpt_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose_jets20");
     }
 
+    // 1-jet High Category
+    // In the et channel, apply a MET > 30 cut
     if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ > pt2_split && n_bjets_ == 0) {
       if ( (channel_ == channel::et) ? (met_ > 30.) : true) SetPassCategory("1jet_high");
     }
+
+    // 1-jet Low Category
+    // In the et channel, apply a MET > 30 cut
     if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
       if ( (channel_ == channel::et) ? (met_ > 30.) : true) SetPassCategory("1jet_low");
     }
+
+
+    // 0-jet High Category
     if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) SetPassCategory("0jet_high");
+    // 0-jet Low Category
     if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) SetPassCategory("0jet_low");
    
     return 0;

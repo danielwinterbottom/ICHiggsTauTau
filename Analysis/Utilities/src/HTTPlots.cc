@@ -25,26 +25,26 @@ namespace ic {
 
   CoreControlPlots::CoreControlPlots(TFileDirectory const& dir) {
     TH1F::SetDefaultSumw2();
-    n_vtx = dir.make<TH1F>("n_vtx","n_vtx", 50, -0.5, 49.5); 
-    mt_1 = dir.make<TH1F>("mt_1","mt_1", 80, 0, 160); 
-    pzeta = dir.make<TH1F>("pzeta","pzeta", 100, -100, 100); 
-    pt_1 = dir.make<TH1F>("pt_1","pt_1", 100, 0, 100); 
-    pt_2 = dir.make<TH1F>("pt_2","pt_2", 100, 0, 100); 
+    n_vtx = dir.make<TH1F>("n_vtx","n_vtx", 40, -0.5, 39.5); 
+    mt_1 = dir.make<TH1F>("mt_1","mt_1", 40, 0, 160); 
+    pzeta = dir.make<TH1F>("pzeta","pzeta", 50, -100, 100); 
+    pt_1 = dir.make<TH1F>("pt_1","pt_1", 50, 0, 100); 
+    pt_2 = dir.make<TH1F>("pt_2","pt_2", 50, 0, 100); 
     eta_1 = dir.make<TH1F>("eta_1","eta_1", 60, -3, 3); 
     eta_2 = dir.make<TH1F>("eta_2","eta_2", 60, -3, 3); 
-    met = dir.make<TH1F>("met","met", 100, 0, 200); 
+    met = dir.make<TH1F>("met","met", 50, 0, 200); 
     met_phi = dir.make<TH1F>("met_phi","met_phi", 63, -3.15, 3.15); 
     n_jets = dir.make<TH1F>("n_jets","n_jets", 10, -0.5, 9.5); 
     n_bjets = dir.make<TH1F>("n_bjets","n_bjets", 5, -0.5, 4.5); 
     n_jetsingap = dir.make<TH1F>("n_jetsingap","n_jetsingap", 5, -0.5, 4.5); 
-    jpt_1 = dir.make<TH1F>("jpt_1","jpt_1", 100, 0, 200); 
-    jpt_2 = dir.make<TH1F>("jpt_2","jpt_2", 100, 0, 200); 
-    jeta_1 = dir.make<TH1F>("jeta_1","jeta_1", 50, -5, 5); 
-    jeta_2 = dir.make<TH1F>("jeta_2","jeta_2", 50, -5, 5); 
+    jpt_1 = dir.make<TH1F>("jpt_1","jpt_1", 50, 0, 200); 
+    jpt_2 = dir.make<TH1F>("jpt_2","jpt_2", 50, 0, 200); 
+    jeta_1 = dir.make<TH1F>("jeta_1","jeta_1", 25, -5, 5); 
+    jeta_2 = dir.make<TH1F>("jeta_2","jeta_2", 25, -5, 5); 
     bpt_1 = dir.make<TH1F>("bpt_1","bpt_1", 50, 0, 200); 
     beta_1 = dir.make<TH1F>("beta_1","beta_1", 60, -3, 3); 
     mjj = dir.make<TH1F>("mjj","mjj", 40, 0, 1000); 
-    jdeta = dir.make<TH1F>("jdeta","jdeta", 80, 0, 8); 
+    jdeta = dir.make<TH1F>("jdeta","jdeta", 40, 0, 8); 
   };
 
 } //namespace

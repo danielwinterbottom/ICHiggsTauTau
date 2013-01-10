@@ -1,3 +1,5 @@
+## Try and take the JOBWRAPPER and JOBSUBMIT commands
+## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
 echo "Using job-wrapper: " $JOBWRAPPER
