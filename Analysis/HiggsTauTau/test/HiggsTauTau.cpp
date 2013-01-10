@@ -328,6 +328,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
   if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
   if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
+  if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
   LumiMask lumiMask = LumiMask("LumiMask")
     .set_produce_output_jsons("")
     .set_input_file(data_json);
@@ -345,7 +346,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
   if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
   if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
-  if (era == era::data_2012_moriond && channel == channel::mtmet) data_pu_file   =  "data/pileup/Data_Pileup_2012D-600bins.root";
+  if (era == era::data_2012_donly) data_pu_file     =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
