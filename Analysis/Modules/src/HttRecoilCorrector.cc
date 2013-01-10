@@ -170,7 +170,7 @@ namespace ic {
     if (mc_ == mc::summer12_53X) {
       corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
     } else if (mc_ == mc::fall11_42X) {
-      corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
+      corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
     }
     pfMet->set_pt(pfmet);
     pfMet->set_energy(pfmet);
