@@ -43,7 +43,7 @@ PATHS=(
 'T-tW'
 'Tbar-tW'
 )
-if [ $OPTION == 2 ]
+if [ $OPTION == 1 ]
 then
   PATHS=(
   'TTJets'

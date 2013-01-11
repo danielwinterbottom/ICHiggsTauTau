@@ -49,6 +49,7 @@ namespace ic {
     InitCoreControlPlots("inclusive");
 
     InitCategory("vbf");
+    InitCategory("vbf_no_cjv");
     InitCategory("vbf_loose");
     InitCategory("vbf_loose_jets20");
     InitCategory("1jet_high");
@@ -56,6 +57,7 @@ namespace ic {
     InitCategory("0jet_high");
     InitCategory("0jet_low");
     InitCategory("btag");
+    InitCategory("btag_loose");
     InitCategory("nobtag");
 
     return 0;
@@ -80,6 +82,8 @@ namespace ic {
     ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
     std::vector<PFJet*> bjets = lowpt_jets;
     ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    std::vector<PFJet*> loose_bjets = bjets;
+    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
     ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
 
 
@@ -123,6 +127,7 @@ namespace ic {
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();
     n_bjets_ = bjets.size();
+    n_loose_bjets_ = loose_bjets.size();
 
     if (n_jets_ >= 1) {
       jpt_1_ = jets[0]->pt();
@@ -193,7 +198,11 @@ namespace ic {
     // In the em channel, additionally apply b-jet veto
     if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 500. && jdeta_ > 3.5) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf");
+    }
 
+    // VBF Selection with no CJV, used for VBF category Fakes estimate in em
+    if (n_jets_ >= 2 && mjj_ > 500. && jdeta_ > 3.5) {
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_no_cjv");
     }
 
     // Loose VBF Selection
@@ -225,7 +234,12 @@ namespace ic {
     if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) SetPassCategory("0jet_high");
     // 0-jet Low Category
     if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) SetPassCategory("0jet_low");
-   
+
+
+    if (n_jets_ <= 1 && n_bjets_ > 0) SetPassCategory("btag");
+    if (n_jets_ <= 1 && n_loose_bjets_ > 0) SetPassCategory("btag_loose");
+    if (!PassesCategory("vbf") && n_bjets_ == 0) SetPassCategory("nobtag");
+
     return 0;
   }
 

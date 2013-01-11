@@ -49,6 +49,7 @@ class HTTCategories : public ModuleBase {
     unsigned n_jets_;
     unsigned n_lowpt_jets_;
     unsigned n_bjets_;
+    unsigned n_loose_bjets_;
     unsigned n_jetsingap_; // Defined if n_jets >= 2
     double jpt_1_;     // Defined if n_jets >= 1
     double jpt_2_;     // Defined if n_jets >= 2

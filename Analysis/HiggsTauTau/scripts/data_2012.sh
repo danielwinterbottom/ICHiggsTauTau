@@ -74,7 +74,7 @@ then
 fi
 
 
-if [ $OPTION == 1 ]
+if [ $OPTION == 2 ]
 then
   # Data
   JOB=Data_mtmet_2012
@@ -90,7 +90,7 @@ then
 fi
 
 
-if [ $OPTION == 2 ]
+if [ $OPTION == 1 ]
 then
   # Data
   JOB=Data_em_2012

@@ -38,6 +38,7 @@ void Smooth(TH1F* h) {
 }
 
 void FixEmptyBins(TH1F *hist, bool is_qcd, bool verbose) {
+  if (verbose) cout << "Running FixEmptyBins with QCD Mode: " << is_qcd << endl;
   unsigned bins = hist->GetNbinsX();
   unsigned first_populated = 0;
   unsigned last_populated = 0;
@@ -46,7 +47,7 @@ void FixEmptyBins(TH1F *hist, bool is_qcd, bool verbose) {
     if (hist->GetBinContent(bins-(i-1)) > 0. && last_populated == 0) last_populated = bins-(i-1);
   }
   if (last_populated <= first_populated) {
-    if (verbose) std::cout << "Cannot correct this distribution!" << std::endl;
+    if (verbose) std::cout << "Error: Cannot correct this distribution!" << std::endl;
     return;
   }
   if (verbose) std::cout << "First populated bin: " << first_populated << std::endl;
@@ -114,7 +115,6 @@ void SetStyle(ic::TH1PlotElement & ele, unsigned color) {
   return;
 }
 
-
 void SetDataStyle(ic::TH1PlotElement & ele, unsigned color) {
   ele.set_marker_color(1);
   ele.set_line_color(1);
@@ -127,10 +127,6 @@ void SetDataStyle(ic::TH1PlotElement & ele, unsigned color) {
   ele.set_marker_style(20);
   ele.set_draw_stat_error_y(true);
   ele.set_marker_size(1.3);
-
-  //ele.set_draw_normalised(true);
-
-  //ele.set_in_stack(true);
   return;
 }
 
@@ -219,7 +215,7 @@ int main(int argc, char* argv[]){
     ("replace_os_sel",      po::value<string>(&replace_os_sel)->default_value(""))
     ("replace_ss_sel",      po::value<string>(&replace_ss_sel)->default_value(""))
     ("method",           		po::value<unsigned>(&method)->required())
-    ("category",            po::value<string>(&category)->required())
+    ("category",            po::value<string>(&category)->default_value(""))
     ("is_2012",             po::value<bool>(&is_2012)->required())
     ("mssm_mode",           po::value<unsigned>(&mssm_mode)->required())
     ("no_plot",             po::value<bool>(&no_plot)->default_value(false))
@@ -282,6 +278,21 @@ int main(int argc, char* argv[]){
   if (method == 10) dc_cat_label = "twojet";
   if (method == 11) dc_cat_label = "nobtag";
   if (method == 12) dc_cat_label = "btag";
+  if (category == "") {
+    if (method == 0) category = "0jet_low";
+    if (method == 1) category = "0jet_high";
+    if (method == 2) category = "1jet_low";
+    if (method == 3) category = "1jet_high";
+    if (method == 4) category = "vh";
+    if (method == 5) category = "vbf";
+    if (method == 6) category = "btag_low";
+    if (method == 7) category = "btag_high";
+    if (method == 8) category = "inclusive";
+    if (method == 9) category = "dilepton";
+    if (method == 10) category = "twojet";
+    if (method == 11) category = "nobtag";
+    if (method == 12) category = "btag";
+  }
 
 
   std::cout << "**** HiggsTauTauPlot3 *****" << std::endl;
@@ -330,7 +341,7 @@ int main(int argc, char* argv[]){
     files.push_back("DYJetsToLL");
     files.push_back("DYJetsToLL-L");
     files.push_back("DYJetsToLL-J");
-    // files.push_back("Special_18_DYJetsToLL-L");
+    files.push_back("Special_18_DYJetsToLL-L");
     files.push_back("WJetsToLNuSoup");
     files.push_back("WWJetsTo2L2Nu");
     files.push_back("WZJetsTo2L2Q");
@@ -341,7 +352,7 @@ int main(int argc, char* argv[]){
     files.push_back("T-tW");
     files.push_back("Tbar-tW");
     files.push_back("TTJets");
-    // if (is_2012) files.push_back("TT");
+    if (is_2012) files.push_back("TT");
   } else if (channel == channel::em) {
     files.push_back("Data");
     files.push_back("Special_20_Data"); 
@@ -360,7 +371,7 @@ int main(int argc, char* argv[]){
     files.push_back("T-tW");
     files.push_back("Tbar-tW");
     files.push_back("TTJets");
-    //if (is_2012) files.push_back("TT");
+    if (is_2012) files.push_back("TT");
   }
   if (mssm_mode == 0) {
     for (unsigned i = 0; i < signal_masses.size(); ++i) {
@@ -380,19 +391,31 @@ int main(int argc, char* argv[]){
   categories.push_back(category);
   categories.push_back("inclusive");
   if (method == 5) {
+    // *** We should be able to override this
   	categories.push_back("vbf_loose");
+    categories.push_back("vbf_loose_jets20");
+    if (channel == channel::em) categories.push_back("vbf_no_cjv");
   }
 
+
   // Now build a list of selections
+ string os_sel = "os_sel";
+ if (replace_os_sel != "") os_sel = replace_os_sel;
+ string ss_sel = "ss_sel";
+ if (replace_ss_sel != "") ss_sel = replace_ss_sel;
+ string os_con = "os_con";
+ string ss_con = "ss_con";
+
   vector<string> selections;
   selections.push_back("os");
   selections.push_back("ss");
-  selections.push_back("os_sel");
-  selections.push_back("ss_sel");
+  selections.push_back(os_sel);
+  selections.push_back(ss_sel);
   if (channel != channel::em) {
-  	selections.push_back("os_con");
-  	selections.push_back("ss_con");
+  	selections.push_back(os_con);
+  	selections.push_back(ss_con);
   }
+  if (method == 5) selections.push_back("os_con_mt_60-120");
 
   std::map<std::string, TFile *> tfiles;
   for (unsigned i = 0; i < files.size(); ++i) {
@@ -421,7 +444,10 @@ int main(int argc, char* argv[]){
 
   			if (tfiles[f]->GetDirectory(("/"+c+"_"+s).c_str())) {
   				plots[nm] = ic::TH1PlotElement(nm, tfiles[f], "/"+c+"_"+s, plot_name);
-  				if (plots[nm].hist_ptr()->GetSumw2N() == 0) plots[nm].hist_ptr()->Sumw2();
+  				if (plots[nm].hist_ptr()->GetSumw2N() == 0) {
+            cout << "Warning: Plot " << nm << " does not have a weights structure" << endl;
+            plots[nm].hist_ptr()->Sumw2();
+          }
   				string lookup;
   				if (f.find("Special") != f.npos) {
   					size_t found = f.find('_');
@@ -440,14 +466,6 @@ int main(int argc, char* argv[]){
   	}
   }
   string cat  	= category;
-  string os_sel = "os_sel";
-  if (replace_os_sel != "") os_sel = replace_os_sel;
-  string ss_sel = "ss_sel";
-  if (replace_ss_sel != "") ss_sel = replace_ss_sel;
-  string os_con = "os_con";
-  string ss_con = "ss_con";
-
-  Token("Data",cat,os_sel);
 
   // ---------------------------------------------------
   // DO DATA
@@ -479,7 +497,7 @@ int main(int argc, char* argv[]){
   // Norm is the same for all methods
   double top_norm = Integral(plots[Token("TTJets",cat,os_sel)].hist_ptr());
   TH1F *top_hist;
-  string top_shape_str = is_2012 ? "TTJets" : "TTJets";
+  string top_shape_str = is_2012 ? "TT" : "TTJets";
   double top_norm_ss = Integral(plots[Token("TTJets",cat,ss_sel)].hist_ptr());
   TH1F *top_hist_ss = (TH1F*)(plots[Token(top_shape_str,cat,ss_sel)].hist_ptr()->Clone());
 
@@ -523,7 +541,8 @@ int main(int argc, char* argv[]){
   double vv_norm = 0.0;
   for (unsigned i = 0; i < vv_samples.size(); ++i) vv_norm += Integral(plots[Token(vv_samples[i],cat,os_sel)].hist_ptr());
   TH1F *vv_hist;
-
+  
+  // Do SS
   double vv_norm_ss = 0.0;
   for (unsigned i = 0; i < vv_samples.size(); ++i) vv_norm_ss += Integral(plots[Token(vv_samples[i],cat,ss_sel)].hist_ptr());
   TH1F *vv_hist_ss =(TH1F*)(plots[Token(vv_samples[0],cat,ss_sel)].hist_ptr()->Clone());
@@ -541,7 +560,10 @@ int main(int argc, char* argv[]){
     }
   }
   if (channel == channel::em) {
-    if (method == 0 || method == 1) vv_norm *= 1.23;
+    if (method == 0 || method == 1) {
+      cout << "VV Norm is scaled up by 1.23" << endl;
+      vv_norm *= 1.23;
+    }
     vv_hist = (TH1F*)(plots[Token(vv_samples[0],cat,os_sel)].hist_ptr()->Clone());
     for (unsigned i = 1; i < vv_samples.size(); ++i) vv_hist->Add(plots[Token(vv_samples[i],cat,os_sel)].hist_ptr());
   }
@@ -568,12 +590,14 @@ int main(int argc, char* argv[]){
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
 		zll_hist_ss = (TH1F*)(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr()->Clone());
 		zll_norm_ss = Integral(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr());
+
 	  double zll_inclusive = Integral(plots[Token("DYJetsToLL","inclusive",os_sel)].hist_ptr());
+
 	  double zll_embed_eff = (Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","inclusive",os_sel)].hist_ptr()));
     if (verbose) {
       std::cout << "ZLL Inclusive: " << zll_inclusive << std::endl;
       std::cout << "Embedded Inclusive->Category Eff: " << zll_embed_eff << std::endl;
-      std::cout << "ZLL Extrap. Category: " << (zll_inclusive * zll_embed_eff) << std::endl;
+      std::cout << "ZLL Extrap. into Category: " << (zll_inclusive * zll_embed_eff) << std::endl;
       std::cout << "[MC Norm in Category]: " << Integral(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()) << std::endl;
     }
   
@@ -584,12 +608,17 @@ int main(int argc, char* argv[]){
       if (zll_norm > 0) {
         double zl_norm_new = zll_norm * (zl_norm/(zl_norm+zj_norm));
         double zj_norm_new = zll_norm * (zj_norm/(zl_norm+zj_norm));
+        if (verbose) {
+          cout << "** Renormalising ZL and ZJ" << endl;
+          cout << "ZL old: " << zl_norm << ", ZL new: " << zl_norm_new << endl;
+          cout << "ZJ old: " << zj_norm << ", ZJ new: " << zj_norm_new << endl;
+        }
         zl_norm = zl_norm_new;
         zj_norm = zj_norm_new;
       }
       zll_hist = (TH1F*)(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()->Clone());
       zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
-      // if (method == 3 && channel == channel::et) zl_hist = (TH1F*)(plots[Token("Special_18_DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
+      if (method == 3 && channel == channel::et) zl_hist = (TH1F*)(plots[Token("Special_18_DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()->Clone());
     }
   
@@ -623,11 +652,11 @@ int main(int argc, char* argv[]){
   zll_hist_ss->Scale( zll_norm_ss / Integral(zll_hist_ss) );
   zl_hist->Scale( zl_norm / Integral(zl_hist) );
   zj_hist->Scale( zj_norm / Integral(zj_hist) );
-  // if (method == 3 && channel == channel::et) {
-  //   std::cout << "Relaxed shape taken for ZL, merging into ZLL!" << std::endl;
-  //   zll_hist = (TH1F*)zl_hist->Clone();
-  //   zll_hist->Add(zj_hist);
-  // }
+  if (method == 3 && channel == channel::et) {
+    std::cout << "Relaxed shape taken for ZL, merging into ZLL..." << std::endl;
+    zll_hist = (TH1F*)zl_hist->Clone();
+    zll_hist->Add(zj_hist);
+  }
 
   ic::TH1PlotElement zll_shape("zll_shape", zll_hist);
   ic::TH1PlotElement zll_shape_ss("zll_shape_ss", zll_hist_ss);
@@ -643,14 +672,14 @@ int main(int argc, char* argv[]){
   // ---------------------------------------------------
   if (verbose) cout << "**** ZTT: " << endl;
 
-  double ztt_norm;
+  double ztt_norm = 0;
   TH1F *ztt_hist;
   double ztt_mc_inc_yield = Integral(plots[Token("DYJetsToTauTau","inclusive","os")].hist_ptr());
-  if (verbose) cout << "- DYJetsToTauTau dilepton OS yield (no mT cut): " << ztt_mc_inc_yield << std::endl;
+  if (verbose) cout << "- DYJetsToTauTau dilepton OS yield (no mT/pzeta cut): " << ztt_mc_inc_yield << std::endl;
   double embedded_eff = Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","inclusive","os")].hist_ptr());
   double embedded_eff_err = (Error(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr())) * embedded_eff;
-  std::cout << "Eff: " << embedded_eff << std::endl;
-  std::cout << "Error: " << embedded_eff_err << std::endl;
+  if (verbose) cout << "Eff: " << embedded_eff << std::endl;
+  if (verbose) cout << "Error: " << embedded_eff_err << std::endl;
   ztt_norm = ztt_mc_inc_yield * embedded_eff;
   //if (use_ztt_mc) ztt_norm = Integral(os_sel["DYJetsToTauTau"+sel].hist_ptr());
   if (verbose) cout << "- [DYJetsToTauTau MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << endl;
@@ -666,12 +695,14 @@ int main(int argc, char* argv[]){
     }
     // VBF
     if (method == 5) ztt_hist = (TH1F*)(plots[Token("Embedded","vbf_loose",os_sel)].hist_ptr()->Clone());
-    //if (method == 5) ztt_hist = (TH1F*)(os_sel["Embeddedtwojet"].hist_ptr()->Clone());
   }
 
   if (channel == channel::em) {
-    ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());
-    if (use_ztt_mc) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
+    if (use_ztt_mc) {
+      ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
+    } else {
+      ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());
+    }
   }
 
   double embed_norm = Integral(plots["DYJetsToTauTau_inclusive_os"].hist_ptr()) / Integral(plots["Embedded_inclusive_os"].hist_ptr());
@@ -681,7 +712,7 @@ int main(int argc, char* argv[]){
 
   std::cout << "ZTT Norm: " << ztt_norm << std::endl;
   // 5.3% (high), 1.5% (low)
-  double ztt_norm_ss = Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr())*embed_norm;
+  double ztt_norm_ss = Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr()) * embed_norm;
   TH1F *ztt_hist_ss = (TH1F*)(plots[Token("Embedded",cat,ss_sel)].hist_ptr()->Clone());;
   ztt_hist_ss->Scale( ztt_norm_ss / Integral(ztt_hist_ss) );
   ic::TH1PlotElement ztt_shape_ss("ztt_shape_ss", ztt_hist_ss);
@@ -713,7 +744,6 @@ int main(int argc, char* argv[]){
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
     // 0/1 Jet, B Jet, dilepton, inclusive, twojet
     if (method <= 4 || method >= 6) {
-
     	w_os_con = WSideband(plots, vv_samples, embed_norm, cat, os_con, verbose);
       if (verbose) std::cout << "=> OS Control W: " << w_os_con << std::endl;
       
@@ -781,9 +811,9 @@ int main(int argc, char* argv[]){
       if (verbose) std::cout << "=> OS Control W: " << w_os_con << std::endl;
       // double w_factor = Integral(os_sel["Special_7_WJetsToLNuSouptwojet"].hist_ptr()) / Integral(os_con["Special_7_WJetsToLNuSouptwojet"].hist_ptr());
       double w_factor = Integral(plots[Token("WJetsToLNuSoup","vbf_loose",os_sel)].hist_ptr()) / Integral(plots[Token("WJetsToLNuSoup","vbf_loose","os_con_mt_60-120")].hist_ptr());
-      std::cout << "W MC OS Signal/Control factor (vbf_oose): " << w_factor << std::endl;
+      std::cout << "W MC OS Signal/Control factor (vbf_loose): " << w_factor << std::endl;
       w_os_sel = w_os_con * w_factor;
-      if (verbose) std::cout << "W MC OS Signal/Control factor (two jets - soup): " << w_factor << endl;
+      if (verbose) std::cout << "W MC OS Signal/Control factor (vbf_loose): " << w_factor << endl;
       // std::cout << "OS Signal: " << Integral(os_sel["Special_7_WJetsToLNuSouptwojet"].hist_ptr()) << "\t" << Error(os_sel["Special_7_WJetsToLNuSouptwojet"].hist_ptr()) << std::endl;
       double w_ss_os = Integral(plots[Token("WJetsToLNuSoup","inclusive",ss_sel)].hist_ptr()) / Integral(plots[Token("WJetsToLNuSoup","inclusive",os_sel)].hist_ptr());
       //if (verbose) std::cout << "W MC In SS/OS Factor: " << w_ss_os << endl;
@@ -874,7 +904,6 @@ int main(int argc, char* argv[]){
       }
     }
 
-
     //-----------------------
     //Inclusive will be needed for QCD - first do inclusive W
     //-----------------------
@@ -952,49 +981,61 @@ int main(int argc, char* argv[]){
     if (verbose) std::cout << "Double Fakes: " <<  Integral(plots["Special_22_Data_inclusive_os"].hist_ptr()) << std::endl;
     double qcd_dilepton = Integral(plots["Special_20_Data_inclusive_os"].hist_ptr()) + Integral(plots["Special_21_Data_inclusive_os"].hist_ptr()) - Integral(plots["Special_22_Data_inclusive_os"].hist_ptr()) ;
     std::cout << "Inclusive fakes (no pzeta cut): " << qcd_dilepton << std::endl;
-    if (method != 5) {
-      qcd_norm = qcd_dilepton * ( Integral(plots[Token("Data",cat,ss_sel)].hist_ptr()) / Integral(plots[Token("Data","inclusive","ss")].hist_ptr()) );
-      qcd_hist = (TH1F*)(plots[Token("Data",cat,ss_sel)].hist_ptr()->Clone());
-      // qcd_hist = (TH1F*)(os_sel["Special_14_Data"+sel].hist_ptr()->Clone());
-      // qcd_hist->Add(os_sel["Special_15_Data"+sel].hist_ptr());
-      // qcd_hist->Add(os_sel["Special_17_Data"+sel].hist_ptr(), -1);
+    double qcd_category = qcd_dilepton * ( Integral(plots[Token("Data",cat,ss_sel)].hist_ptr()) / Integral(plots[Token("Data","inclusive","ss")].hist_ptr()) );
+    std::cout << "Extrap. into category: " << qcd_category << std::endl;
 
-    }
-    if (method == 5) {
-      // qcd_norm = Integral(os_sel["Special_14_Data"+sel].hist_ptr()) + Integral(os_sel["Special_15_Data"+sel].hist_ptr()) - Integral(os_sel["Special_17_Data"+sel].hist_ptr());
-      // qcd_hist = (TH1F*)(os_sel["Special_14_Data"+sel].hist_ptr()->Clone());
-      //1qcd_hist->Add(os_sel["Special_15_Data"+sel].hist_ptr());
+    if (method == 0 || method == 2) {
+      qcd_norm = qcd_category;
+      // Fully relaxed electron isolation
+      qcd_hist = (TH1F*)(plots[Token("Special_23_Data",cat,ss_sel)].hist_ptr()->Clone());
+    } else if (method == 1) {
+      qcd_norm = qcd_category;
+      // Inverted electron isolation
+      qcd_hist = (TH1F*)(plots[Token("Special_24_Data",cat,ss_sel)].hist_ptr()->Clone());
+    } else if (method == 3) {
+      qcd_norm = Integral(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()) + Integral(plots[Token("Special_21_Data",cat,os_sel)].hist_ptr()) - Integral(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()) ;
+      qcd_hist = (TH1F*)(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()->Clone());
+      qcd_hist->Add((TH1F*)(plots[Token("Special_21_Data",cat,os_sel)].hist_ptr()->Clone()) ,1.0);
+      qcd_hist->Add((TH1F*)(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()->Clone()) ,-1.0);
+    } else if (method == 5) {
+      qcd_norm = Integral(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()) + Integral(plots[Token("Special_21_Data",cat,os_sel)].hist_ptr()) - Integral(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()) ;
+      qcd_hist = (TH1F*)(plots[Token("Special_20_Data","vbf_no_cjv",os_sel)].hist_ptr()->Clone());
+      qcd_hist->Add((TH1F*)(plots[Token("Special_21_Data","vbf_no_cjv",os_sel)].hist_ptr()->Clone()) ,1.0);
+      qcd_hist->Add((TH1F*)(plots[Token("Special_22_Data","vbf_no_cjv",os_sel)].hist_ptr()->Clone()) ,-1.0);
+    } else {
+      qcd_norm = qcd_category;
+      qcd_hist = (TH1F*)(plots[Token("Data",cat,ss_sel)].hist_ptr()->Clone());
     }
   }
 
   FixEmptyBins(qcd_hist, true, false);
   qcd_hist->Scale( qcd_norm / Integral(qcd_hist) );
 
-  // if (channel == channel::mt && category == 2) {
-  //   h1 = (TH1F*)(qcd_hist->Clone());
-  //   h2 = (TH1F*)h1->Clone(TString("QCD_CMS_htt_QCDShape_mutau_boost_low_")+(is_2012 ? "8":"7")+"TeVUp");
-  //   h3 = (TH1F*)h1->Clone(TString("QCD_CMS_htt_QCDShape_mutau_boost_low_")+(is_2012 ? "8":"7")+"TeVDown");
-  //   float x;
-  //   float y;
-  //   float c;
-  //   float cUp;
-  //   float cDown;
-  //   for(int i=1;i<h1->GetNbinsX();++i){
-  //     x = h1->GetXaxis()->GetBinCenter(i);
-  //     if(x<50){
-  //       y = h1->GetBinContent(i);
-  //       c = 1.15;  // or whatever other correction we want to apply
-  //       cUp = 1.3;
-  //       cDown = 1.0;
-  //       h1->SetBinContent(i,y*c);
-  //       h2->SetBinContent(i,y*cUp);
-  //       h3->SetBinContent(i,y*cDown);
-  //     }  
-  //   }
-  //   qcd_hist = h1;
-  //   h2->Scale( qcd_norm / Integral(h2) );
-  //   h3->Scale( qcd_norm / Integral(h3) );
-  // }
+  if (channel == channel::mt && method == 2) {
+    h1 = (TH1F*)(qcd_hist->Clone());
+    h2 = (TH1F*)h1->Clone(TString("QCD_CMS_htt_QCDShape_mutau_boost_low_")+(is_2012 ? "8":"7")+"TeVUp");
+    h3 = (TH1F*)h1->Clone(TString("QCD_CMS_htt_QCDShape_mutau_boost_low_")+(is_2012 ? "8":"7")+"TeVDown");
+    float x;
+    float y;
+    float c;
+    float cUp;
+    float cDown;
+    for(int i=1;i<h1->GetNbinsX();++i){
+      x = h1->GetXaxis()->GetBinCenter(i);
+      if(x<50){
+        y = h1->GetBinContent(i);
+        c = 1.15;  // or whatever other correction we want to apply
+        cUp = 1.3;
+        cDown = 1.0;
+        h1->SetBinContent(i,y*c);
+        h2->SetBinContent(i,y*cUp);
+        h3->SetBinContent(i,y*cDown);
+      }  
+    }
+    qcd_hist = h1;
+    h2->Scale( qcd_norm / Integral(h2) );
+    h3->Scale( qcd_norm / Integral(h3) );
+  }
 
   qcd_hist->Scale( qcd_norm / Integral(qcd_hist) );
 
@@ -1016,183 +1057,182 @@ int main(int argc, char* argv[]){
 
   // }
 
-  // if (make_datacard) {
+  if (make_datacard) {
 
-  //   std::string append = "";
-  //   if (tau_scale_mode == 1) append = "_CMS_scale_t_"+dc_mode_label_alt+(is_2012 ? "_8":"_7")+"TeVDown";
-  //   if (tau_scale_mode == 2) append = "_CMS_scale_t_"+dc_mode_label_alt+(is_2012 ? "_8":"_7")+"TeVUp";
+    std::string append = "";
+    if (tau_scale_mode == 1) append = "_CMS_scale_t_"+dc_mode_label_alt+(is_2012 ? "_8":"_7")+"TeVDown";
+    if (tau_scale_mode == 2) append = "_CMS_scale_t_"+dc_mode_label_alt+(is_2012 ? "_8":"_7")+"TeVUp";
 
-  //   TFile datacard(("datacard_"+dc_mode_label+"_"+dc_cat_label+"_"+year_label+append+".root").c_str(),"RECREATE");
-  //   datacard.cd();
-  //   gDirectory->mkdir((dc_mode_label+"_"+dc_cat_label).c_str());
-  //   gDirectory->cd((dc_mode_label+"_"+dc_cat_label).c_str());
+    TFile datacard(("datacard_"+dc_mode_label+"_"+dc_cat_label+"_"+year_label+append+".root").c_str(),"RECREATE");
+    datacard.cd();
+    gDirectory->mkdir((dc_mode_label+"_"+dc_cat_label).c_str());
+    gDirectory->cd((dc_mode_label+"_"+dc_cat_label).c_str());
 
-  //   double boost_high_clean = 40.0;
-  //   if (plot_name.find("vis_") != plot_name.npos) {
-  //     boost_high_clean = 20.0;
-  //     std::cout << "Vis sample detected: cleaning up to " << boost_high_clean << std::endl;
-  //   }
-  //   if (category == 3 && channel == channel::et && !is_2012) {
-  //     std::cout << "Cleaning bins!" << std::endl;
-  //   }
+    double boost_high_clean = 40.0;
+    if (plot_name.find("vis_") != plot_name.npos) {
+      boost_high_clean = 20.0;
+    }
+    if (method == 3 && channel == channel::et && !is_2012) {
+      std::cout << "Vis sample detected: cleaning up to " << boost_high_clean << std::endl;
+    }
     
-  //   if (mssm_mode == 0) {
-  //     for (unsigned i = 0; i < signal_masses.size(); ++i) {
-  //       TH1F *VH = (TH1F*)(os_sel["WH_ZH_TTH_HToTauTau_M-"+signal_masses[i]+sel].hist_ptr()->Clone());
-  //       VH->Scale(1./ (parser.GetParam<double>("XS_WH_ZH_TTH_HToTauTau_M-"+signal_masses[i])));
-  //       VH->SetName(("VH"+signal_masses[i]+append).c_str());
-  //       VH->SetTitle(("VH"+signal_masses[i]+append).c_str());
-  //       if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(VH, boost_high_clean);
-  //       VH->Write();
+    if (mssm_mode == 0) {
+      for (unsigned i = 0; i < signal_masses.size(); ++i) {
+        TH1F *VH = (TH1F*)(plots[Token("WH_ZH_TTH_HToTauTau_M-"+signal_masses[i],cat,os_sel)].hist_ptr()->Clone());
+        VH->Scale(1./ (parser.GetParam<double>("XS_WH_ZH_TTH_HToTauTau_M-"+signal_masses[i])));
+        VH->SetName(("VH"+signal_masses[i]+append).c_str());
+        VH->SetTitle(("VH"+signal_masses[i]+append).c_str());
+        if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(VH, boost_high_clean);
+        VH->Write();
 
 
-  //       TH1F *ggH = (TH1F*)(os_sel["GluGluToHToTauTau_M-"+signal_masses[i]+sel].hist_ptr()->Clone());
-  //       ggH->Scale(1./ (parser.GetParam<double>("XS_GluGluToHToTauTau_M-"+signal_masses[i])));
-  //       ggH->SetName(("ggH"+signal_masses[i]+append).c_str());
-  //       ggH->SetTitle(("ggH"+signal_masses[i]+append).c_str());
-  //       if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(ggH, boost_high_clean);
-  //       ggH->Write();
+        TH1F *ggH = (TH1F*)(plots[Token("GluGluToHToTauTau_M-"+signal_masses[i],cat,os_sel)].hist_ptr()->Clone());
+        ggH->Scale(1./ (parser.GetParam<double>("XS_GluGluToHToTauTau_M-"+signal_masses[i])));
+        ggH->SetName(("ggH"+signal_masses[i]+append).c_str());
+        ggH->SetTitle(("ggH"+signal_masses[i]+append).c_str());
+        if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(ggH, boost_high_clean);
+        ggH->Write();
 
-  //       TH1F *qqH = (TH1F*)(os_sel["VBF_HToTauTau_M-"+signal_masses[i]+sel].hist_ptr()->Clone());
-  //       qqH->Scale(1./ (parser.GetParam<double>("XS_VBF_HToTauTau_M-"+signal_masses[i])));
-  //       qqH->SetName(("qqH"+signal_masses[i]+append).c_str());
-  //       qqH->SetTitle(("qqH"+signal_masses[i]+append).c_str());
-  //       if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(qqH, boost_high_clean);
-  //       qqH->Write();
-  //     }
-  //   } else {
-  //     for (unsigned i = 0; i < mssm_signal_masses.size(); ++i) {
-  //       TH1F *ggH = (TH1F*)(os_sel["SUSYGluGluToHToTauTau_M-"+mssm_signal_masses[i]+sel].hist_ptr()->Clone());
-  //       ggH->Scale(1./ (parser.GetParam<double>("XS_SUSYGluGluToHToTauTau_M-"+mssm_signal_masses[i])));
-  //       if (Integral(ggH) < 0.0000001) {
-  //         std::cout << "Histogram " << "SUSYGluGluToHToTauTau_M-"+mssm_signal_masses[i] << ":" << sel << " appears to be empty, adding small value in first bin!" << std::endl;
-  //         ggH->SetBinContent(1, 0.0000001);
-  //       }
-  //       ggH->SetName(("ggH"+mssm_signal_masses[i]+append).c_str());
-  //       ggH->SetTitle(("ggH"+mssm_signal_masses[i]+append).c_str());
-  //       if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(ggH, boost_high_clean);
-  //       ggH->Write();
+        TH1F *qqH = (TH1F*)(plots[Token("VBF_HToTauTau_M-"+signal_masses[i],cat,os_sel)].hist_ptr()->Clone());
+        qqH->Scale(1./ (parser.GetParam<double>("XS_VBF_HToTauTau_M-"+signal_masses[i])));
+        qqH->SetName(("qqH"+signal_masses[i]+append).c_str());
+        qqH->SetTitle(("qqH"+signal_masses[i]+append).c_str());
+        if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(qqH, boost_high_clean);
+        qqH->Write();
+      }
+    } else {
+      for (unsigned i = 0; i < mssm_signal_masses.size(); ++i) {
+        TH1F *ggH = (TH1F*)(plots[Token("SUSYGluGluToHToTauTau_M-"+mssm_signal_masses[i],cat,os_sel)].hist_ptr()->Clone());
+        ggH->Scale(1./ (parser.GetParam<double>("XS_SUSYGluGluToHToTauTau_M-"+mssm_signal_masses[i])));
+        if (Integral(ggH) < 0.0000001) {
+          std::cout << "Histogram " << "SUSYGluGluToHToTauTau_M-"+mssm_signal_masses[i] << ":" << os_sel << " appears to be empty, adding small value in first bin!" << std::endl;
+          ggH->SetBinContent(1, 0.0000001);
+        }
+        ggH->SetName(("ggH"+mssm_signal_masses[i]+append).c_str());
+        ggH->SetTitle(("ggH"+mssm_signal_masses[i]+append).c_str());
+        if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(ggH, boost_high_clean);
+        ggH->Write();
 
-  //       TH1F *bbH = (TH1F*)(os_sel["SUSYBBHToTauTau_M-"+mssm_signal_masses[i]+sel].hist_ptr()->Clone());
-  //       bbH->Scale(1./ (parser.GetParam<double>("XS_SUSYBBHToTauTau_M-"+mssm_signal_masses[i])));
-  //       if (Integral(bbH) < 0.0000001) {
-  //         std::cout << "Histogram " << "SUSYBBHToTauTau_M-"+mssm_signal_masses[i]+sel << " appears to be empty, adding small value in first bin!" << std::endl;
-  //         bbH->SetBinContent(1, 0.0000001);
-  //       }
-  //       bbH->SetName(("bbH"+mssm_signal_masses[i]+append).c_str());
-  //       bbH->SetTitle(("bbH"+mssm_signal_masses[i]+append).c_str());
-  //       if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(bbH, boost_high_clean);
+        TH1F *bbH = (TH1F*)(plots[Token("SUSYBBHToTauTau_M-"+mssm_signal_masses[i],cat,os_sel)].hist_ptr()->Clone());
+        bbH->Scale(1./ (parser.GetParam<double>("XS_SUSYBBHToTauTau_M-"+mssm_signal_masses[i])));
+        if (Integral(bbH) < 0.0000001) {
+          std::cout << "Histogram " << "SUSYBBHToTauTau_M-"+mssm_signal_masses[i] << ":" << os_sel << " appears to be empty, adding small value in first bin!" << std::endl;
+          bbH->SetBinContent(1, 0.0000001);
+        }
+        bbH->SetName(("bbH"+mssm_signal_masses[i]+append).c_str());
+        bbH->SetTitle(("bbH"+mssm_signal_masses[i]+append).c_str());
+        if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(bbH, boost_high_clean);
+        bbH->Write();
+      }
+    }
 
-  //       bbH->Write();
-  //     }
-  //   }
+    cout << "here1" << endl;
+    TH1F *dc_ztt = (TH1F*)ztt_hist->Clone();
+    dc_ztt->SetName(("ZTT"+append).c_str());
+    dc_ztt->SetTitle(("ZTT"+append).c_str());
+    if (channel == channel::em) {
+      dc_ztt->SetName("Ztt");
+      dc_ztt->SetTitle("Ztt");
+    }
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_ztt, boost_high_clean);
+    dc_ztt->Write();
+
+    TH1F *dc_zll = (TH1F*)zll_hist->Clone();
+    FixEmptyBins(dc_zll, false, false);
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_zll, boost_high_clean);
+    dc_zll->SetName(("ZLL"+append).c_str());
+    dc_zll->SetTitle(("ZLL"+append).c_str());
+    if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) dc_zll->Write();
+
+    TH1F *dc_zl = (TH1F*)zl_hist->Clone();
+    FixEmptyBins(dc_zl, false, false);
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_zl, boost_high_clean);
+    dc_zl->SetName(("ZL"+append).c_str());
+    dc_zl->SetTitle(("ZL"+append).c_str());
+    if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) dc_zl->Write();
+
+    TH1F *dc_zj = (TH1F*)zj_hist->Clone();
+    FixEmptyBins(dc_zj, false, false);
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_zj, boost_high_clean);
+    dc_zj->SetName(("ZJ"+append).c_str());
+    dc_zj->SetTitle(("ZJ"+append).c_str());
+    if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) dc_zj->Write();
+    cout << "here2" << endl;
+
+    // std::string zee_append = std::string("_CMS_htt_ZEEShape_etau_")+(is_2012 ? "8":"7")+"TeV";
+    // if (tau_scale_mode == 1) zee_append += "Down";
+    // if (tau_scale_mode == 2) zee_append += "Up";
+    // TH1F *dc_zl_zee, *dc_zll_zee;
+    // if (channel == channel::et && tau_scale_mode > 0) {
+    //   dc_zl_zee = (TH1F*)dc_zl->Clone();
+    //   dc_zl_zee->SetName(("ZL"+zee_append).c_str());
+    //   dc_zl_zee->SetTitle(("ZL"+zee_append).c_str());
+    //   dc_zll_zee = (TH1F*)dc_zll->Clone();
+    //   dc_zll_zee->SetName(("ZLL"+zee_append).c_str());
+    //   dc_zll_zee->SetTitle(("ZLL"+zee_append).c_str());
+    //   dc_zl_zee->Write();
+    //   dc_zll_zee->Write();
+    // }
+
+    TH1F *dc_top = (TH1F*)top_hist->Clone();
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_top, boost_high_clean);
+    dc_top->SetName(("TT"+append).c_str());
+    dc_top->SetTitle(("TT"+append).c_str());
+    if (channel == channel::em) {
+      dc_top->SetName("ttbar");
+      dc_top->SetTitle("ttbar");
+    }
+    dc_top->Write();
+
+    TH1F *dc_vv = (TH1F*)vv_hist->Clone();
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_vv, boost_high_clean);
+    dc_vv->SetName(("VV"+append).c_str());
+    dc_vv->SetTitle(("VV"+append).c_str());
+    if (channel == channel::em) {
+      dc_vv->SetName("EWK");
+      dc_vv->SetTitle("EWK");
+    }
+    dc_vv->Write();
+
+    TH1F *dc_w = (TH1F*)w_hist->Clone();
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_w, boost_high_clean);
+    FixEmptyBins(dc_w, false, false);
+    dc_w->SetName(("W"+append).c_str());
+    dc_w->SetTitle(("W"+append).c_str());
+    if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) dc_w->Write();
+
+    TH1F *dc_qcd = (TH1F*)qcd_hist->Clone();
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_qcd, boost_high_clean);
+    dc_qcd->SetName(("QCD"+append).c_str());
+    dc_qcd->SetTitle(("QCD"+append).c_str());
+    if (channel == channel::em) {
+      dc_qcd->SetName("Fakes");
+      dc_qcd->SetTitle("Fakes");
+    }
+   if (channel == channel::mt && method == 2 && tau_scale_mode == 0) {
+        h2->Write();
+        h3->Write();
+    }
+    dc_qcd->Write();
+
+    cout << "here3" << endl;
 
 
-  //   TH1F *dc_ztt = (TH1F*)ztt_hist->Clone();
-  //   dc_ztt->SetName(("ZTT"+append).c_str());
-  //   dc_ztt->SetTitle(("ZTT"+append).c_str());
-  //   if (channel == channel::em) {
-  //     dc_ztt->SetName("Ztt");
-  //     dc_ztt->SetTitle("Ztt");
-  //   }
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_ztt, boost_high_clean);
-  //   dc_ztt->Write();
 
-  //   TH1F *dc_zll = (TH1F*)zll_hist->Clone();
-  //   FixEmptyBins(dc_zll, false, false);
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_zll, boost_high_clean);
-
-  //   dc_zll->SetName(("ZLL"+append).c_str());
-  //   dc_zll->SetTitle(("ZLL"+append).c_str());
-  //   if (channel == channel::et || channel == channel::mt) dc_zll->Write();
-
-  //   TH1F *dc_zl = (TH1F*)zl_hist->Clone();
-  //   FixEmptyBins(dc_zl, false, false);
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_zl, boost_high_clean);
-
-  //   dc_zl->SetName(("ZL"+append).c_str());
-  //   dc_zl->SetTitle(("ZL"+append).c_str());
-  //   if (channel == channel::et || channel == channel::mt) dc_zl->Write();
-
-  //   TH1F *dc_zj = (TH1F*)zj_hist->Clone();
-  //   FixEmptyBins(dc_zj, false, false);
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_zj, boost_high_clean);
-
-  //   dc_zj->SetName(("ZJ"+append).c_str());
-  //   dc_zj->SetTitle(("ZJ"+append).c_str());
-  //   if (channel == channel::et || channel == channel::mt) dc_zj->Write();
-
-  //   std::string zee_append = std::string("_CMS_htt_ZEEShape_etau_")+(is_2012 ? "8":"7")+"TeV";
-  //   if (tau_scale_mode == 1) zee_append += "Down";
-  //   if (tau_scale_mode == 2) zee_append += "Up";
-  //   TH1F *dc_zl_zee, *dc_zll_zee;
-  //   if (channel == channel::et && tau_scale_mode > 0) {
-  //     dc_zl_zee = (TH1F*)dc_zl->Clone();
-  //     dc_zl_zee->SetName(("ZL"+zee_append).c_str());
-  //     dc_zl_zee->SetTitle(("ZL"+zee_append).c_str());
-  //     dc_zll_zee = (TH1F*)dc_zll->Clone();
-  //     dc_zll_zee->SetName(("ZLL"+zee_append).c_str());
-  //     dc_zll_zee->SetTitle(("ZLL"+zee_append).c_str());
-  //     dc_zl_zee->Write();
-  //     dc_zll_zee->Write();
-  //   }
-
-  //   TH1F *dc_top = (TH1F*)top_hist->Clone();
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_top, boost_high_clean);
-  //   dc_top->SetName(("TT"+append).c_str());
-  //   dc_top->SetTitle(("TT"+append).c_str());
-  //   if (channel == channel::em) {
-  //     dc_top->SetName("ttbar");
-  //     dc_top->SetTitle("ttbar");
-  //   }
-  //   dc_top->Write();
-
-  //   TH1F *dc_vv = (TH1F*)vv_hist->Clone();
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_vv, boost_high_clean);
-  //   dc_vv->SetName(("VV"+append).c_str());
-  //   dc_vv->SetTitle(("VV"+append).c_str());
-  //   if (channel == channel::em) {
-  //     dc_vv->SetName("EWK");
-  //     dc_vv->SetTitle("EWK");
-  //   }
-  //   dc_vv->Write();
-
-  //   TH1F *dc_w = (TH1F*)w_hist->Clone();
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_w, boost_high_clean);
-  //   FixEmptyBins(dc_w, false, false);
-  //   dc_w->SetName(("W"+append).c_str());
-  //   dc_w->SetTitle(("W"+append).c_str());
-  //   if (channel == channel::et || channel == channel::mt) dc_w->Write();
-
-  //   TH1F *dc_qcd = (TH1F*)qcd_hist->Clone();
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_qcd, boost_high_clean);
-  //   dc_qcd->SetName(("QCD"+append).c_str());
-  //   dc_qcd->SetTitle(("QCD"+append).c_str());
-  //   if (channel == channel::em) {
-  //     dc_qcd->SetName("Fakes");
-  //     dc_qcd->SetTitle("Fakes");
-  //   }
-  //  if (channel == channel::mt && category == 2 && tau_scale_mode == 0) {
-  //       h2->Write();
-  //       h3->Write();
-  //   }
-  //   dc_qcd->Write();
-
-
-  //   TH1F *data_obs = (TH1F*)data_hist_clean->Clone();
-  //   if (category == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(data_obs, boost_high_clean);
-  //   // if (blind) {
-  //   //   double data_err = 0.0;
-  //   //   double data_tot = data_obs->IntegralAndError(0, data_obs->GetNbinsX() + 1, data_err);
-  //   //   data_obs->Reset();
-  //   //   data_obs->SetBinContent(1, data_tot);
-  //   //   data_obs->SetBinError(1, data_err);
-  //   // }
-  //   data_obs->SetName("data_obs");
-  //   data_obs->SetTitle("data_obs");
-  //   if (tau_scale_mode == 0) data_obs->Write();
-  //   datacard.Close();
-  // }
+    TH1F *data_obs = (TH1F*)data_hist_clean->Clone();
+    if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(data_obs, boost_high_clean);
+    // if (blind) {
+    //   double data_err = 0.0;
+    //   double data_tot = data_obs->IntegralAndError(0, data_obs->GetNbinsX() + 1, data_err);
+    //   data_obs->Reset();
+    //   data_obs->SetBinContent(1, data_tot);
+    //   data_obs->SetBinError(1, data_err);
+    // }
+    data_obs->SetName("data_obs");
+    data_obs->SetTitle("data_obs");
+    if (tau_scale_mode == 0) data_obs->Write();
+    datacard.Close();
+  }
 
   if (draw_ss) {
     data_shape = data_shape_ss;
