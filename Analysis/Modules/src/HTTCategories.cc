@@ -155,7 +155,24 @@ namespace ic {
       jeta_2_ = -9999;
       mjj_ = -9999;
       jdeta_ = -9999;
-      n_jetsingap_ = -9999;
+      n_jetsingap_ = 9999;
+    }
+
+    if (n_lowpt_jets_ >= 2) {
+      mjj_lowpt_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
+      jdeta_lowpt_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
+      double eta_high = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[0]->eta() : lowpt_jets[1]->eta();
+      double eta_low = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[1]->eta() : lowpt_jets[0]->eta();
+      n_jetsingap_lowpt_ = 0;
+      if (n_lowpt_jets_ > 2) {
+        for (unsigned i = 2; i < lowpt_jets.size(); ++i) {
+         if (lowpt_jets[i]->pt() > 30.0 &&  lowpt_jets[i]->eta() > eta_low && lowpt_jets[i]->eta() < eta_high) ++n_jetsingap_;
+        }
+      }
+    } else {
+      mjj_lowpt_ = -9999;
+      jdeta_lowpt_ = -9999;
+      n_jetsingap_lowpt_ = 9999;
     }
 
     if (n_bjets_ >= 1) {
@@ -213,7 +230,7 @@ namespace ic {
 
     // Loose VBF Selection with low pT Jet Requirement
     // Used for background shape of QCD in VBF Category
-    if (n_lowpt_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
+    if (n_lowpt_jets_ >= 2 && n_jetsingap_lowpt_ == 0 && mjj_lowpt_ > 200. && jdeta_lowpt_ > 2.0) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose_jets20");
     }
 

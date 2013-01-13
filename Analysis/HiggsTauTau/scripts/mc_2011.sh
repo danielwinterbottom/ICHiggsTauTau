@@ -88,52 +88,52 @@ then
       'WH_ZH_TTH_HToTauTau_M-135' 
       'WH_ZH_TTH_HToTauTau_M-140' 
       'WH_ZH_TTH_HToTauTau_M-145'
-      'SUSYGluGluToHToTauTau_M-90'
-      'SUSYGluGluToHToTauTau_M-100'
-      'SUSYGluGluToHToTauTau_M-120'
-      'SUSYGluGluToHToTauTau_M-130'
-      'SUSYGluGluToHToTauTau_M-140'
-      'SUSYGluGluToHToTauTau_M-160'
-      'SUSYGluGluToHToTauTau_M-180'
-      'SUSYGluGluToHToTauTau_M-200'
-      'SUSYGluGluToHToTauTau_M-250'
-      'SUSYGluGluToHToTauTau_M-300'
-      'SUSYGluGluToHToTauTau_M-350'
-      'SUSYGluGluToHToTauTau_M-400'
-      'SUSYGluGluToHToTauTau_M-450'
-      'SUSYGluGluToHToTauTau_M-500'
-      'SUSYGluGluToHToTauTau_M-600'
-      'SUSYGluGluToHToTauTau_M-700'
-      'SUSYGluGluToHToTauTau_M-800'
-      'SUSYGluGluToHToTauTau_M-900'
-      'SUSYGluGluToHToTauTau_M-1000'
-      'SUSYBBHToTauTau_M-90'
-      'SUSYBBHToTauTau_M-100'
-      'SUSYBBHToTauTau_M-120'
-      'SUSYBBHToTauTau_M-130'
-      'SUSYBBHToTauTau_M-140'
-      'SUSYBBHToTauTau_M-160'
-      'SUSYBBHToTauTau_M-180'
-      'SUSYBBHToTauTau_M-200'
-      'SUSYBBHToTauTau_M-250'
-      'SUSYBBHToTauTau_M-300'
-      'SUSYBBHToTauTau_M-350'
-      'SUSYBBHToTauTau_M-400'
-      'SUSYBBHToTauTau_M-450'
-      'SUSYBBHToTauTau_M-500'
-      'SUSYBBHToTauTau_M-600'
-      'SUSYBBHToTauTau_M-700'
-      'SUSYBBHToTauTau_M-800'
-      'SUSYBBHToTauTau_M-900'
-      'SUSYBBHToTauTau_M-1000'
+      # 'SUSYGluGluToHToTauTau_M-90'
+      # 'SUSYGluGluToHToTauTau_M-100'
+      # 'SUSYGluGluToHToTauTau_M-120'
+      # 'SUSYGluGluToHToTauTau_M-130'
+      # 'SUSYGluGluToHToTauTau_M-140'
+      # 'SUSYGluGluToHToTauTau_M-160'
+      # 'SUSYGluGluToHToTauTau_M-180'
+      # 'SUSYGluGluToHToTauTau_M-200'
+      # 'SUSYGluGluToHToTauTau_M-250'
+      # 'SUSYGluGluToHToTauTau_M-300'
+      # 'SUSYGluGluToHToTauTau_M-350'
+      # 'SUSYGluGluToHToTauTau_M-400'
+      # 'SUSYGluGluToHToTauTau_M-450'
+      # 'SUSYGluGluToHToTauTau_M-500'
+      # 'SUSYGluGluToHToTauTau_M-600'
+      # 'SUSYGluGluToHToTauTau_M-700'
+      # 'SUSYGluGluToHToTauTau_M-800'
+      # 'SUSYGluGluToHToTauTau_M-900'
+      # 'SUSYGluGluToHToTauTau_M-1000'
+      # 'SUSYBBHToTauTau_M-90'
+      # 'SUSYBBHToTauTau_M-100'
+      # 'SUSYBBHToTauTau_M-120'
+      # 'SUSYBBHToTauTau_M-130'
+      # 'SUSYBBHToTauTau_M-140'
+      # 'SUSYBBHToTauTau_M-160'
+      # 'SUSYBBHToTauTau_M-180'
+      # 'SUSYBBHToTauTau_M-200'
+      # 'SUSYBBHToTauTau_M-250'
+      # 'SUSYBBHToTauTau_M-300'
+      # 'SUSYBBHToTauTau_M-350'
+      # 'SUSYBBHToTauTau_M-400'
+      # 'SUSYBBHToTauTau_M-450'
+      # 'SUSYBBHToTauTau_M-500'
+      # 'SUSYBBHToTauTau_M-600'
+      # 'SUSYBBHToTauTau_M-700'
+      # 'SUSYBBHToTauTau_M-800'
+      # 'SUSYBBHToTauTau_M-900'
+      # 'SUSYBBHToTauTau_M-1000'
     )
 else
     PATHS+=(
       'GluGluToHToTauTau_M-125' 
       'VBF_HToTauTau_M-125' 
       'WH_ZH_TTH_HToTauTau_M-125' 
-      'SUSYGluGluToHToTauTau_M-160'
-      'SUSYBBHToTauTau_M-160'
+      # 'SUSYGluGluToHToTauTau_M-160'
+      # 'SUSYBBHToTauTau_M-160'
     )
 fi
 
@@ -166,12 +166,12 @@ then
     # DYJetsToLL-J
     JOB=DYJetsToLL-J_et_2011
     $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --ztautau_mode=2 --filelist="$FILELIST"_DYJetsToLL_et_skim.dat --channel=et \
-    --svfit_override=DYJetsToLL_et_2011.root --faked_tau_selector=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    --svfit_override=DYJetsToLL_et_2011.root --faked_tau_selector=2 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
     $JOBSUBMIT jobs/$JOB-$j.sh
 
     JOB=DYJetsToLL-J_mt_2011
     $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --ztautau_mode=2 --filelist="$FILELIST"_DYJetsToLL_mt_skim.dat --channel=mt \
-    --svfit_override=DYJetsToLL_mt_2011.root --faked_tau_selector=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    --svfit_override=DYJetsToLL_mt_2011.root --faked_tau_selector=2 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
     $JOBSUBMIT jobs/$JOB-$j.sh
   done
 fi

@@ -697,6 +697,13 @@ int main(int argc, char* argv[]){
       httWeights.SetWInputYields(76102995.0, 23101598.0, 33884921.0, 15539503.0, 13382803.0);
     }
   }
+  if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {
+    if (mc == mc::summer12_53X) {
+      httWeights.set_do_dy_soup(true);
+      httWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
+      httWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
+    }
+  }
   if (mc == mc::fall11_42X && output_name.find("GluGluToHToTauTau_M-") != output_name.npos && output_name.find("SUSYGluGluToHToTauTau_M-") == output_name.npos) {
     std::size_t pos = output_name.find("_M-");
     if (pos != output_name.npos) {

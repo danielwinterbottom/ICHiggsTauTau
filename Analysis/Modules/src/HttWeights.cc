@@ -28,6 +28,7 @@ namespace ic {
     do_top_factors_     = false;
     do_btag_weight_     = false;
     do_w_soup_          = false;
+    do_dy_soup_          = false;
     ggh_mass_           = "";
   }
 
@@ -97,9 +98,21 @@ namespace ic {
       w3_ = (n_inc_*f3_) / ( (n_inc_*f3_) + n3_ );
       w4_ = (n_inc_*f4_) / ( (n_inc_*f4_) + n4_ );
       std::cout << "f1 = " << f1_ << "\t" << "n1 = " << n1_ << "\t" << "w1 = " << w1_ << std::endl;
-      std::cout << "f2 = " << f2_ << "\t" << "n1 = " << n2_ << "\t" << "w2 = " << w2_ << std::endl;
-      std::cout << "f3 = " << f3_ << "\t" << "n1 = " << n3_ << "\t" << "w3 = " << w3_ << std::endl;
-      std::cout << "f4 = " << f4_ << "\t" << "n1 = " << n4_ << "\t" << "w4 = " << w4_ << std::endl;
+      std::cout << "f2 = " << f2_ << "\t" << "n2 = " << n2_ << "\t" << "w2 = " << w2_ << std::endl;
+      std::cout << "f3 = " << f3_ << "\t" << "n3 = " << n3_ << "\t" << "w3 = " << w3_ << std::endl;
+      std::cout << "f4 = " << f4_ << "\t" << "n4 = " << n4_ << "\t" << "w4 = " << w4_ << std::endl;
+    }
+    if (do_dy_soup_) {
+      std::cout << "Making DY Soup:" << std::endl;
+      std::cout << "nInc = " << zn_inc_ << std::endl;
+      zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
+      zw2_ = (zn_inc_*zf2_) / ( (zn_inc_*zf2_) + zn2_ );
+      zw3_ = (zn_inc_*zf3_) / ( (zn_inc_*zf3_) + zn3_ );
+      zw4_ = (zn_inc_*zf4_) / ( (zn_inc_*zf4_) + zn4_ );
+      std::cout << "f1 = " << zf1_ << "\t" << "n1 = " << zn1_ << "\t" << "w1 = " << zw1_ << std::endl;
+      std::cout << "f2 = " << zf2_ << "\t" << "n2 = " << zn2_ << "\t" << "w2 = " << zw2_ << std::endl;
+      std::cout << "f3 = " << zf3_ << "\t" << "n3 = " << zn3_ << "\t" << "w3 = " << zw3_ << std::endl;
+      std::cout << "f4 = " << zf4_ << "\t" << "n4 = " << zn4_ << "\t" << "w4 = " << zw4_ << std::endl;
     }
     return 0;
   }
@@ -986,6 +999,28 @@ namespace ic {
       if (partons == 4) eventInfo->set_weight("wsoup", w4_);
     }
 
+    if (do_dy_soup_) {
+      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      bool count_jets = false;
+      unsigned partons = 0;
+      for (unsigned i = 0; i < parts.size(); ++i) {
+        if (parts[i]->status() != 3) continue;
+        unsigned id = abs(parts[i]->pdgid());
+        if (count_jets) { 
+          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+        }
+        if (id == 23) count_jets = true; 
+      }
+      if (partons > 4) {
+        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+        throw;
+      }
+      if (partons == 1) eventInfo->set_weight("dysoup", zw1_);
+      if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
+      if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
+      if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
+    }
+
     return 0;
   }
 
@@ -1011,6 +1046,22 @@ namespace ic {
     n2_ = n2;
     n3_ = n3;
     n4_ = n4;
+  }
+
+  void HttWeights::SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4) {
+    zf0_ = zf0;
+    zf1_ = zf1;
+    zf2_ = zf2;
+    zf3_ = zf3;
+    zf4_ = zf4;
+
+  }
+  void HttWeights::SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4) {
+    zn_inc_ = zn_inc;
+    zn1_ = zn1;
+    zn2_ = zn2;
+    zn3_ = zn3;
+    zn4_ = zn4;
   }
 
   double HttWeights::Efficiency(double m, double m0, double sigma, double alpha,

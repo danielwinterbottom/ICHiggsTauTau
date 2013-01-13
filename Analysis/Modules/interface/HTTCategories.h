@@ -61,6 +61,10 @@ class HTTCategories : public ModuleBase {
     double mjj_;       // Defined if n_jets >= 2
     double jdeta_;     // Defined if n_jets >= 2
 
+    double mjj_lowpt_;       // Defined if n_lowpt_jets >= 2
+    double jdeta_lowpt_;     // Defined if n_lowpt_jets >= 2
+    unsigned n_jetsingap_lowpt_; // Defined if n_lowpt_jets >= 2
+
     // Other VBF MVA variables?
   
 
