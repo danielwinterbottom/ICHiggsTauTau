@@ -5,7 +5,7 @@
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/Moriond_mc_2012.cfg
+CONFIG=scripts/HCP_mc_2012.cfg
 echo "Config file: $CONFIG"
 FILELIST=filelists/Dec30_MC_53X
 echo "Filelist prefix: $FILELIST"
@@ -135,8 +135,8 @@ else
       'GluGluToHToTauTau_M-125' 
       'VBF_HToTauTau_M-125' 
       'WH_ZH_TTH_HToTauTau_M-125' 
-      'SUSYGluGluToHToTauTau_M-160'
-      'SUSYBBHToTauTau_M-160'
+      # 'SUSYGluGluToHToTauTau_M-160'
+      # 'SUSYBBHToTauTau_M-160'
     )
 fi
 

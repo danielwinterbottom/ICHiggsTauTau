@@ -135,10 +135,9 @@ namespace ic {
   }
 
 
-  double BTagWeight::SF(int flavor, std::string const& algo_label, double pt, double eta) const {
+  double BTagWeight::SF(int flavor, std::string const& algo_label, double pt, double eta, bool is_2012) const {
     int algo = 1;
     double x = pt;
-    if (pt < 30.0) x = 30.0;
     if (fabs(eta) > 2.4) {
       std::cerr << "Jet eta is too large: " << eta << std::endl;
       throw;
@@ -155,14 +154,33 @@ namespace ic {
     }
     double sf = 1.0;
     flavor = std::abs(flavor);
-    if (flavor == 5 || flavor == 4) {
-      if (algo == 1) sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x)));
-      if (algo == 2) sf = 0.422556*((1.+(0.437396*x))/(1.+(0.193806*x)));
-      if (algo == 3) sf = 0.6981*((1.+(0.414063*x))/(1.+(0.300155*x)));
+    if (!is_2012) {
+      if (pt < 30.0) x = 30.0;
+      if (flavor == 5 || flavor == 4) {
+        if (algo == 1) sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x)));
+        if (algo == 2) sf = 0.422556*((1.+(0.437396*x))/(1.+(0.193806*x)));
+        if (algo == 3) sf = 0.6981*((1.+(0.414063*x))/(1.+(0.300155*x)));
+      } else {
+        if (algo == 1) sf = ((0.890254+(0.000553319*x))+(-1.29993e-06*(x*x)))+(4.19294e-10*(x*(x*x)));
+        if (algo == 2) sf = ((0.97409+(0.000646241*x))+(-2.86294e-06*(x*x)))+(2.79484e-09*(x*(x*x)));
+        if (algo == 3) sf = ((1.04318+(0.000848162*x))+(-2.5795e-06*(x*x)))+(1.64156e-09*(x*(x*x)));
+      }
     } else {
-      if (algo == 1) sf = ((0.890254+(0.000553319*x))+(-1.29993e-06*(x*x)))+(4.19294e-10*(x*(x*x)));
-      if (algo == 2) sf = ((0.97409+(0.000646241*x))+(-2.86294e-06*(x*x)))+(2.79484e-09*(x*(x*x)));
-      if (algo == 3) sf = ((1.04318+(0.000848162*x))+(-2.5795e-06*(x*x)))+(1.64156e-09*(x*(x*x)));
+      if (pt < 20.0) x = 20.0;
+      if (flavor == 5 || flavor == 4) {
+        if (algo == 1) sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x))); // This is just the same as 2011
+        if (algo == 2) sf = 0.422556*((1.+(0.437396*x))/(1.+(0.193806*x))); // This is just the same as 2011
+        if (algo == 3) sf = 0.726981*((1.+(0.253238*x))/(1.+(0.188389*x)));
+      } else {
+        if (algo == 1) sf = ((0.890254+(0.000553319*x))+(-1.29993e-06*(x*x)))+(4.19294e-10*(x*(x*x))); // This is just the same as 2011
+        if (algo == 2) sf = ((0.97409+(0.000646241*x))+(-2.86294e-06*(x*x)))+(2.79484e-09*(x*(x*x))); // This is just the same as 2011
+        if (algo == 3) {
+          if (fabs(eta) < 0.8)                      sf = ((1.06238+(0.00198635*x))+(-4.89082e-06*(x*x)))+(3.29312e-09*(x*(x*x)));
+          if (fabs(eta) >= 0.8 && fabs(eta) < 1.6)  sf = ((1.08048+(0.00110831*x))+(-2.96189e-06*(x*x)))+(2.16266e-09*(x*(x*x)));
+          if (fabs(eta) >= 0.8)                     sf = ((1.09145+(0.000687171*x))+(-2.45054e-06*(x*x)))+(1.7844e-09*(x*(x*x)));
+        }
+      }
+
     }
 
     return sf;
@@ -202,7 +220,7 @@ namespace ic {
     std::vector<BTagWeight::JetInfo> infos;
     for (unsigned i = 0; i < jets.size(); ++i) {
       double eff = BEff(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta());
-      double sf = SF(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta());
+      double sf = SF(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta(), is_2012);
       double x = jets[i]->pt();
       unsigned flav = std::abs(jets[i]->parton_flavour());
       if (tagger == "CSVM" && is_2012 && flav !=5 && flav != 4) sf *= 1.10422 + -0.000523856*x + 1.14251e-06*x*x;
@@ -215,10 +233,10 @@ namespace ic {
   void BTagWeight::ReTag(std::vector<PFJet *> & jets, bool is_2012) const {
     for (unsigned i = 0; i < jets.size(); ++i) {
       double eff = BEff(jets[i]->parton_flavour(), "CSVM", jets[i]->pt(), jets[i]->eta());
-      double sf = SF(jets[i]->parton_flavour(), "CSVM", jets[i]->pt(), jets[i]->eta());
-      double x = jets[i]->pt();
-      unsigned flav = std::abs(jets[i]->parton_flavour());
-      if (is_2012 && flav !=5 && flav != 4) sf *= 1.10422 + -0.000523856*x + 1.14251e-06*x*x;
+      double sf = SF(jets[i]->parton_flavour(), "CSVM", jets[i]->pt(), jets[i]->eta(), is_2012);
+      // double x = jets[i]->pt();
+      // unsigned flav = std::abs(jets[i]->parton_flavour());
+      // if (is_2012 && flav !=5 && flav != 4) sf *= 1.10422 + -0.000523856*x + 1.14251e-06*x*x;
       double demoteProb_btag, promoteProb_btag;
       if(sf < 1) {
         demoteProb_btag = fabs(1.0 - sf);
@@ -247,7 +265,7 @@ namespace ic {
     std::vector<BTagWeight::JetInfo> infos;
     for (unsigned i = 0; i < jets.size(); ++i) {
       double eff = LouvainBEff(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta());
-      double sf = SF(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta());
+      double sf = SF(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta(), false);
       infos.push_back(BTagWeight::JetInfo(eff, sf));
     }
     std::pair<float, float> result = weight(infos, min, max);

@@ -159,83 +159,111 @@ namespace ic {
 
     if (do_trg_weights_) {
       if (channel_ == channel::et) {
-        // 2011 Triggers
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
-        double pt = elec->pt();
-        double sc_eta = fabs(elec->sc_eta());
-        double tpt = tau->pt();
-        double eta = fabs(tau->eta());
+        double e_pt = elec->pt();
+        double e_eta = fabs(elec->sc_eta());
+        double t_pt = tau->pt();
+        double t_eta = fabs(tau->eta());
         double ele_trg = 1.0;
         double tau_trg = 1.0;
         double ele_trg_mc = 1.0;
         double tau_trg_mc = 1.0;
         if (mc_ == mc::summer12_53X) {
-          if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
-            if (fabs(sc_eta) < 1.479) {
-              double ele20A_eb = Efficiency(pt, 20.4669, 1.20429, 1.84954, 1.38645, 0.891122);
-              double ele22B_eb = Efficiency(pt, 22.8618, 0.844755, 1.07941, 1.27956, 1.07722);
-              double ele22C_eb = Efficiency(pt, 22.8598, 0.855666, 1.02951, 1.32713, 1.05486);
-              ele_trg_mc = Efficiency(pt, 21.4136, 0.000422, 0.000002473, 1.42487, 1.00104);
-              if (era_ == era::data_2012_ichep) ele_trg = (0.14 * ele20A_eb) + (0.86 * ele22B_eb);
-              if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) ele_trg = (0.061 * ele20A_eb) + (0.373 * ele22B_eb) + (0.566 * ele22C_eb);
-            } else {
-              double ele20A_ee = Efficiency(pt, 21.4136, 1.93922, 2.43562, 1.00186, 51.947);
-              double ele22B_ee = Efficiency(pt, 22.1045, 1.08481, 0.780119, 1.91846, 0.962174);
-              double ele22C_ee = Efficiency(pt, 21.7643, 1.45024, 0.785753, 3.14722, 0.926788);
-              ele_trg_mc = Efficiency(pt, 20.9985, 0.002918, 0.000034313, 1.41479, 1.06506);
-              if (era_ == era::data_2012_ichep) ele_trg = (0.14 * ele20A_ee) + (0.86 * ele22B_ee);
-              if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) ele_trg = (0.061 * ele20A_ee) + (0.373 * ele22B_ee) + (0.566 * ele22C_ee);
-            }
-            if (era_ == era::data_2012_ichep) {
-              if (fabs(eta) < 1.5) {
-                double tau20l1_eb = Efficiency(tpt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
-                double tau20l2_eb = Efficiency(tpt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
-                tau_trg = (0.14 * tau20l1_eb) + (0.86 * tau20l2_eb);
-                tau_trg_mc = Efficiency(tpt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
-              } else { // These are the sample as barrel values!
-                double tau20l1_eb = Efficiency(tpt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
-                double tau20l2_eb = Efficiency(tpt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
-                tau_trg = (0.14 * tau20l1_eb) + (0.86 * tau20l2_eb);
-                tau_trg_mc = Efficiency(tpt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
-              }
-            }
-            if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
-              if (fabs(eta) < 1.5) {
-                tau_trg = Efficiency(tpt, 18.43442868, 2.08967536, 3.27357845, 6.96327309, 0.85564484);
-                tau_trg_mc = Efficiency(tpt, 18.40815138, 1.53235636, 3.55989632, 1.74542709, 0.90118450);
-              } else { 
-                tau_trg = Efficiency(tpt, 18.16839440, 1.86184564, 4.39116712, 1.01410741, 1.39240481);
-                tau_trg_mc = Efficiency(tpt, 18.29028052, 1.56239255, 11.03605631, 155.89290151, 0.85683995);
-              }
-            }
+          double edata20A  = 1.0;
+          double edata22B  = 1.0;
+          double edata22C  = 1.0;
+          double edata22D  = 1.0;
+          double edataABCD = 1.0;
+          double emc22ABC  = 1.0;
+          double emc22ABCD = 1.0;
+          if (e_eta < 1.479) {
+            edata20A   = Efficiency(e_pt, 20.4669, 1.20429, 1.84954, 1.38645, 0.891122);
+            edata22B   = Efficiency(e_pt, 22.8618, 0.844755, 1.07941, 1.27956, 1.07722);
+            edata22C   = Efficiency(e_pt, 22.8598, 0.855666, 1.02951, 1.32713, 1.05486);
+            edata22D   = Efficiency(e_pt, 23.0825, 0.930633, 1.17931, 1.19807, 1.19376);
+            edataABCD  = Efficiency(e_pt, 22.9041, 1.04728, 1.38544, 1.22576, 1.13019);
+            emc22ABC   = Efficiency(e_pt, 21.4136, 0.000422, 0.000002473, 1.42487, 1.00104); // MC Reweighted to ABC
+            emc22ABCD  = Efficiency(e_pt, 21.7243, 0.619015, 0.739301, 1.34903, 1.02594); // MC Reweighted to ABCD
+          } else {
+            edata20A   = Efficiency(e_pt, 21.4136, 1.93922, 2.43562, 1.00186, 51.947);
+            edata22B   = Efficiency(e_pt, 22.1045, 1.08481, 0.780119, 1.91846, 0.962174);
+            edata22C   = Efficiency(e_pt, 21.7643, 1.45024, 0.785753, 3.14722, 0.926788);
+            edata22D   = Efficiency(e_pt, 21.8373, 1.26926, 0.801134, 2.27808, 0.938937);
+            edataABCD  = Efficiency(e_pt, 21.9941, 1.43419, 1.01152, 2.28622, 0.939872);
+            emc22ABC   = Efficiency(e_pt, 20.9985, 0.002918, 0.000034313, 1.41479, 1.06506); // MC Reweighted to ABC
+            emc22ABCD  = Efficiency(e_pt, 22.1217, 1.34054, 1.8885, 1.01855, 4.7241); // MC Reweighted to ABCD
           }
-        } else {
-          if (fabs(sc_eta) < 1.479) {
-            double ele15_eb = Efficiency(pt, 14.8772, 0.311255, 0.221021, 1.87734, 0.986665);
-            double ele18_eb = Efficiency(pt, 18.3193, 0.443703, 0.385554, 1.86523, 0.986514);
-            double ele20_eb = Efficiency(pt, 20.554, 0.683776, 0.855573, 1.45917, 1.03957);
+          if (era_ == era::data_2012_ichep) {
+            ele_trg = (0.14 * edata20A) + (0.86 * edata22B);
+            ele_trg_mc = emc22ABC;
+          }
+          if (era_ == era::data_2012_hcp) {
+            ele_trg = (0.061 * edata20A) + (0.373 * edata22B) + (0.566 * edata22C);
+            ele_trg_mc = emc22ABC;
+          }
+          if (era_ == era::data_2012_moriond) {
+            ele_trg = edataABCD;
+            ele_trg_mc = emc22ABCD;
+          }
+          if (era_ == era::data_2012_donly) {
+            ele_trg = edata22D;
+            ele_trg_mc = emc22ABCD;
+          }
+
+          double tdata20A   = 1.0;
+          double tdata20B   = 1.0;
+          double tdata20ABC = 1.0;
+          double tmc20AB    = 1.0;
+          double tmc20ABC   = 1.0;
+          if (t_eta < 1.5) {
+            tdata20A    = Efficiency(t_pt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
+            tdata20B    = Efficiency(t_pt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
+            tdata20ABC  = Efficiency(t_pt, 18.43442868, 2.08967536, 3.27357845, 6.96327309, 0.85564484);
+            tmc20AB     = Efficiency(t_pt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
+            tmc20ABC    = Efficiency(t_pt, 18.40815138, 1.53235636, 3.55989632, 1.74542709, 0.90118450);
+
+          } else {
+            tdata20A    = Efficiency(t_pt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
+            tdata20B    = Efficiency(t_pt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
+            tdata20ABC  = Efficiency(t_pt, 18.16839440, 1.86184564, 4.39116712, 1.01410741, 1.39240481);
+            tmc20AB     = Efficiency(t_pt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
+            tmc20ABC    = Efficiency(t_pt, 18.29028052, 1.56239255, 11.03605631, 155.89290151, 0.85683995);
+          }
+          if (era_ == era::data_2012_ichep) {
+            tau_trg = (0.14 * tdata20A) + (0.86 * tdata20B);
+            tau_trg_mc = tmc20AB;
+          }
+          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+            tau_trg = tdata20ABC;
+            tau_trg_mc = tmc20ABC;
+          }
+        } else if (mc_ == mc::fall11_42X) {
+          if (fabs(e_eta) < 1.479) {
+            double ele15_eb = Efficiency(e_pt, 14.8772, 0.311255, 0.221021, 1.87734, 0.986665);
+            double ele18_eb = Efficiency(e_pt, 18.3193, 0.443703, 0.385554, 1.86523, 0.986514);
+            double ele20_eb = Efficiency(e_pt, 20.554, 0.683776, 0.855573, 1.45917, 1.03957);
             ele_trg = (0.41 * ele15_eb) + (0.39 * ele18_eb) + (0.2 * ele20_eb);
-            ele_trg_mc = Efficiency(pt, 15.1804, 2.43126, 3.85048, 1.72284, 0.998507);
+            ele_trg_mc = Efficiency(e_pt, 15.1804, 2.43126, 3.85048, 1.72284, 0.998507);
           } else {
-            double ele15_ee = Efficiency(pt, 15.6629, 0.759192, 0.47756, 2.02154, 0.998816);
-            double ele18_ee = Efficiency(pt, 19.6586, 0.682633, 0.279486, 2.66423, 0.973455);
-            double ele20_ee = Efficiency(pt, 23.6386, 1.60775, 1.72093, 1.4131, 1.13962);
+            double ele15_ee = Efficiency(e_pt, 15.6629, 0.759192, 0.47756, 2.02154, 0.998816);
+            double ele18_ee = Efficiency(e_pt, 19.6586, 0.682633, 0.279486, 2.66423, 0.973455);
+            double ele20_ee = Efficiency(e_pt, 23.6386, 1.60775, 1.72093, 1.4131, 1.13962);
             ele_trg = (0.41 * ele15_ee) + (0.39 * ele18_ee) + (0.2 * ele20_ee);
-            ele_trg_mc = Efficiency(pt, 16.993, 0.0693958, 0.00695096, 1.9566, 1.00632);
+            ele_trg_mc = Efficiency(e_pt, 16.993, 0.0693958, 0.00695096, 1.9566, 1.00632);
           }
-          if (fabs(eta) < 1.5) {
-            double tau20l_eb = Efficiency(tpt, 19.3916,  0.996964,  1.70131,   1.38002,   0.903245);
-            double tau20m_eb = Efficiency(tpt, 19.5667,  1.15203 ,  1.68126,   1.40025,   0.848033);
-            double tau20t_eb = Efficiency(tpt, 19.6013,  0.987317,  1.08015,   1.88592,   0.776894);
+          if (fabs(t_eta) < 1.5) {
+            double tau20l_eb = Efficiency(t_pt, 19.3916,  0.996964,  1.70131,   1.38002,   0.903245);
+            double tau20m_eb = Efficiency(t_pt, 19.5667,  1.15203 ,  1.68126,   1.40025,   0.848033);
+            double tau20t_eb = Efficiency(t_pt, 19.6013,  0.987317,  1.08015,   1.88592,   0.776894);
             tau_trg = (0.25 * tau20l_eb) + (0.59 * tau20m_eb) + (0.16 * tau20t_eb);
-            tau_trg_mc = Efficiency(tpt, 19.468, 0.0615381, 0.0349325, 1.59349, 0.860096);
+            tau_trg_mc = Efficiency(t_pt, 19.468, 0.0615381, 0.0349325, 1.59349, 0.860096);
           } else {
-            double tau20l_ee = Efficiency(tpt, 18.8166,  0.526632,  0.20666,   6.80392,   0.903245);
-            double tau20m_ee = Efficiency(tpt, 18.8476,  0.528963,  0.16717,   3.65814,   0.749759);
-            double tau20t_ee = Efficiency(tpt, 18.8859,  0.271301,  0.128008,  1.50993,   0.825122);
+            double tau20l_ee = Efficiency(t_pt, 18.8166,  0.526632,  0.20666,   6.80392,   0.903245);
+            double tau20m_ee = Efficiency(t_pt, 18.8476,  0.528963,  0.16717,   3.65814,   0.749759);
+            double tau20t_ee = Efficiency(t_pt, 18.8859,  0.271301,  0.128008,  1.50993,   0.825122);
             tau_trg = (0.25 * tau20l_ee) + (0.59 * tau20m_ee) + (0.16 * tau20t_ee);
-            tau_trg_mc = Efficiency(tpt, 19.3862, 0.247148, 0.123187, 2.87108, 0.790894);
+            tau_trg_mc = Efficiency(t_pt, 19.3862, 0.247148, 0.123187, 2.87108, 0.790894);
           }
         }
         if (trg_applied_in_mc_) {
@@ -245,80 +273,119 @@ namespace ic {
         weight *= (ele_trg * tau_trg);
         event->Add("trigweight_1", ele_trg);
         event->Add("trigweight_2", tau_trg);
-      } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
+      } else if (channel_ == channel::mt) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
         double m_eta = fabs(muon->eta());
         double m_a_eta = muon->eta();
         Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
-        double tpt = tau->pt();
-        double eta = fabs(tau->eta());
+        double t_pt = tau->pt();
+        double t_eta = fabs(tau->eta());
         double mu_trg = 1.0;
         double tau_trg = 1.0;
         double mu_trg_mc = 1.0;
         double tau_trg_mc = 1.0;
         if (mc_ == mc::summer12_53X) {
-          if (era_ >= era::data_2012_ichep) {
-            double mu18A = 1.0;
-            double mu17B = 1.0;
-            double mu17C = 1.0;
-            if (m_a_eta >= 0 && m_a_eta < 0.8) {
-              mu18A = Efficiency(pt, 17.9605, 0.500059, 0.865294, 1.04633, 1.69027);
-              mu17B = Efficiency(pt, 15.9829, 0.0435624, 0.0196399, 1.71605, 0.967839);
-              mu17C = Efficiency(pt, 15.9762, 0.0552286, 0.0231409, 1.78576, 0.96848);
-              mu_trg_mc = Efficiency(pt, 15.9618, 0.0587497, 0.0189749, 1.94016, 0.978294);
-            } else if (m_a_eta >= 0.8 && m_a_eta < 1.2) {
-              mu18A = Efficiency(pt, 18.094, 0.607997, 0.89385, 1.36337, 0.92399);
-              mu17B = Efficiency(pt, 17.4688, 0.0494554, 0.0628053, 1.34067, 0.904989);
-              mu17C = Efficiency(pt, 17.462, 0.804351, 1.62323, 1.22776, 0.900085);
-              mu_trg_mc = Efficiency(pt, 16.7859, 0.443337, 0.571078, 1.62214, 0.919211);
-            } else if (m_a_eta >= 1.2) {
-              mu18A = Efficiency(pt, 16.9805, 0.00009184, 0.000000028, 1.83783, 0.858988);
-              mu17B = Efficiency(pt, 16.0029, 0.000040186, 0.000000066, 1.42189, 0.880251);
-              mu17C = Efficiency(pt, 16.0051, -0.000041024, 0.000000012, 1.82463, 0.865417);
-              mu_trg_mc = Efficiency(pt, 15.9974, 0.000085057, 0.000000055, 1.64714, 0.888026);
-            } else if (m_a_eta >= -0.8 && m_a_eta < 0) {
-              mu18A = Efficiency(pt, 17.2736, 0.13896, 0.198452, 1.13119, 1.21897);
-              mu17B = Efficiency(pt, 16.4569, 0.214484, 0.302707, 1.42363, 0.982643);
-              mu17C = Efficiency(pt, 15.9788, 0.044455, 0.0215911, 1.71024, 0.965673);
-              mu_trg_mc = Efficiency(pt, 15.959, 0.0229759, 0.00597735, 1.76124, 0.980734);
-            } else if (m_a_eta >= -1.2 && m_a_eta < -0.8) {
-              mu18A = Efficiency(pt, 16.9824, 0.0694986, 0.0186614, 1.66577, 0.908218);
-              mu17B = Efficiency(pt, 18.015, 0.0512973, 0.0603545, 1.36001, 0.907481);
-              mu17C = Efficiency(pt, 17.446, 0.760355, 1.58032, 1.0623, 1.10472);
-              mu_trg_mc = Efficiency(pt, 17.3339, 0.768105, 1.31172, 1.35161, 0.942887);
-            } else if (m_a_eta < -1.2) {
-              mu18A = Efficiency(pt, 16.9993, 0.00008822, 0.000000079, 1.40792, 0.928102);
-              mu17B = Efficiency(pt, 16.0015, 0.00000056, 0.000000134, 1.37357, 0.891284);
-              mu17C = Efficiency(pt, 15.9974, 0.000072034, 0.000000077, 1.5461, 0.87064);
-              mu_trg_mc = Efficiency(pt, 15.997, 0.000087304, 0.000000054, 1.67934, 0.871415);
-            }
-            if (era_ == era::data_2012_ichep) mu_trg = (0.14 * mu18A) + (0.86 * mu17B);
-            if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) mu_trg = (0.061 * mu18A) + (0.373 * mu17B) + (0.566 * mu17C);
-            if (era_ == era::data_2012_ichep) {
-              if (fabs(eta) < 1.5) {
-                double tau20l1_eb = Efficiency(tpt, 18.52262128, 1.85879597, 3.48843815, 1.15491294, 1.02489024);
-                double tau20l2_eb = Efficiency(tpt, 17.92648563, 1.96846742, 4.46406075, 1.02023992, 1.52260575);
-                tau_trg = (0.14 * tau20l1_eb) + (0.86 * tau20l2_eb);
-                tau_trg_mc = Efficiency(tpt, 18.86257072, 0.25680380, 0.16916101, 2.42931257, 0.89590264);
-              } else {
-                double tau20l1_ee = Efficiency(tpt, 18.90119559, 0.14025596, 0.14482632, 1.56126508, 0.81188198);
-                double tau20l2_ee = Efficiency(tpt, 18.59856420, 2.49132550, 10.99643595, 1.50651123, 0.87952970);
-                tau_trg = (0.14 * tau20l1_ee) + (0.86 * tau20l2_ee);
-                tau_trg_mc = Efficiency(tpt, 18.74764561, 1.82036845, 701.46994969, 101.57913480, 0.82547043);
-              }
-            }
-            if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
-              if (fabs(eta) < 1.5) {
-                tau_trg = Efficiency(tpt, 18.50940288, 1.62285299, 2.73232995, 1.79135412, 0.91481432);
-                tau_trg_mc = Efficiency(tpt, 18.80484409, 0.19082817, 0.19983010, 1.81979820, 0.93270649);
-              } else {
-                tau_trg = Efficiency(tpt, 18.45678784, 0.68697618, 0.57008697, 3.73470825, 0.84747211);
-                tau_trg_mc = Efficiency(tpt, 18.25975478, 1.32745225, 1.70380810, 149.18410074, 0.87377770);
-              }
-            }
+          double mu18A = 1.0;
+          double mu17B = 1.0;
+          double mu17C = 1.0;
+          double mu17D = 1.0;
+          double muABCD = 1.0;
+          double mcABC = 1.0;
+          double mcABCD = 1.0;
+          if (m_a_eta >= 0 && m_a_eta < 0.8) {
+            mu18A   = Efficiency(pt, 17.9605, 0.500059, 0.865294, 1.04633, 1.69027);
+            mu17B   = Efficiency(pt, 15.9829, 0.0435624, 0.0196399, 1.71605, 0.967839);
+            mu17C   = Efficiency(pt, 15.9762, 0.0552286, 0.0231409, 1.78576, 0.96848);
+            mu17D   = Efficiency(pt, 15.9894, 0.0362229, 0.0132101, 1.65758, 0.975996);
+            muABCD  = Efficiency(pt, 15.9802, 0.0548775, 0.020313, 1.79791, 0.968398);
+            mcABC   = Efficiency(pt, 15.9618, 0.0587497, 0.0189749, 1.94016, 0.978294);
+            mcABCD  = Efficiency(pt, 15.9289, 0.0271317, 0.00448573, 1.92101, 0.978625);
+          } else if (m_a_eta >= 0.8 && m_a_eta < 1.2) {
+            mu18A   = Efficiency(pt, 18.094, 0.607997, 0.89385, 1.36337, 0.92399);
+            mu17B   = Efficiency(pt, 17.4688, 0.0494554, 0.0628053, 1.34067, 0.904989);
+            mu17C   = Efficiency(pt, 17.462, 0.804351, 1.62323, 1.22776, 0.900085);
+            mu17D   = Efficiency(pt, 16.5276, 0.28491, 0.342352, 1.49551, 20.894305);
+            muABCD  = Efficiency(pt, 16.8396, 0.458636, 0.633185, 1.5706, 0.8848);
+            mcABC   = Efficiency(pt, 16.7859, 0.443337, 0.571078, 1.62214, 0.919211);
+            mcABCD  = Efficiency(pt, 16.5678, 0.328333, 0.354533, 1.67085, 0.916992);
+          } else if (m_a_eta >= 1.2) {
+            mu18A   = Efficiency(pt, 16.9805, 0.00009184, 0.000000028, 1.83783, 0.858988);
+            mu17B   = Efficiency(pt, 16.0029, 0.000040186, 0.000000066, 1.42189, 0.880251);
+            mu17C   = Efficiency(pt, 16.0051, -0.000041024, 0.000000012, 1.82463, 0.865417);
+            mu17D   = Efficiency(pt, 17.184, -1.44981, 3.08139, 1.01062, 2.25017);
+            muABCD  = Efficiency(pt, 15.9987, 8.94398e-05, 5.18549e-08, 1.8342, 0.854625);
+            mcABC   = Efficiency(pt, 15.9974, 0.000085057, 0.000000055, 1.64714, 0.888026);
+            mcABCD  = Efficiency(pt, 15.997, 7.90069e-05, 4.40036e-08, 1.66272, 0.884502);
+          } else if (m_a_eta >= -0.8 && m_a_eta < 0) {
+            mu18A   = Efficiency(pt, 17.2736, 0.13896, 0.198452, 1.13119, 1.21897);
+            mu17B   = Efficiency(pt, 16.4569, 0.214484, 0.302707, 1.42363, 0.982643);
+            mu17C   = Efficiency(pt, 15.9788, 0.044455, 0.0215911, 1.71024, 0.965673);
+            mu17D   = Efficiency(pt, 15.9819, 0.0376022, 0.0180587, 1.58457, 0.97677);
+            muABCD  = Efficiency(pt, 15.9828, 0.0412999, 0.0177441, 1.66934, 0.970097);
+            mcABC   = Efficiency(pt, 15.959, 0.0229759, 0.00597735, 1.76124, 0.980734);
+            mcABCD  = Efficiency(pt, 15.9556, 0.0236127, 0.00589832, 1.75409, 0.981338);
+          } else if (m_a_eta >= -1.2 && m_a_eta < -0.8) {
+            mu18A   = Efficiency(pt, 16.9824, 0.0694986, 0.0186614, 1.66577, 0.908218);
+            mu17B   = Efficiency(pt, 18.015, 0.0512973, 0.0603545, 1.36001, 0.907481);
+            mu17C   = Efficiency(pt, 17.446, 0.760355, 1.58032, 1.0623, 1.10472);
+            mu17D   = Efficiency(pt, 17.1986, 0.649411, 1.0234, 1.45531, 0.888363);
+            muABCD  = Efficiency(pt, 17.3283, 0.707103, 1.2047, 1.3732, 0.900519);
+            mcABC   = Efficiency(pt, 17.3339, 0.768105, 1.31172, 1.35161, 0.942887);
+            mcABCD  = Efficiency(pt, 17.3135, 0.747636, 1.21803, 1.40611, 0.934983);
+          } else if (m_a_eta < -1.2) {
+            mu18A   = Efficiency(pt, 16.9993, 0.00008822, 0.000000079, 1.40792, 0.928102);
+            mu17B   = Efficiency(pt, 16.0015, 0.00000056, 0.000000134, 1.37357, 0.891284);
+            mu17C   = Efficiency(pt, 15.9974, 0.000072034, 0.000000077, 1.5461, 0.87064);
+            mu17D   = Efficiency(pt, 16.6377, -1.23117, 2.14735, 1.17365, 0.957028);
+            muABCD  = Efficiency(pt, 15.9825, 7.90724e-05, 5.49275e-08, 1.6403, 0.858285);
+            mcABC   = Efficiency(pt, 15.997, 0.000087304, 0.000000054, 1.67934, 0.871415);
+            mcABCD  = Efficiency(pt, 16.0051, 2.45144e-05, 4.3335e-09, 1.66134, 0.87045);
           }
-        } else { // OK
+          if (era_ == era::data_2012_ichep) {
+            mu_trg = (0.14 * mu18A) + (0.86 * mu17B);
+            mu_trg_mc = mcABC;
+          }
+          if (era_ == era::data_2012_hcp) {
+            mu_trg = (0.061 * mu18A) + (0.373 * mu17B) + (0.566 * mu17C);
+            mu_trg_mc = mcABC;
+          }
+          if (era_ == era::data_2012_moriond) {
+            mu_trg = muABCD;
+            mu_trg_mc = mcABCD;
+          }
+          if (era_ == era::data_2012_donly) {
+            mu_trg = mu17D;
+            mu_trg_mc = mcABCD;
+          }
+
+          double data20A    = 1.0;
+          double data20B    = 1.0;
+          double data20ABC  = 1.0;
+          double mc20AB     = 1.0;
+          double mc20ABC    = 1.0;
+          if (fabs(t_eta) < 1.5) {
+            data20A   = Efficiency(t_pt, 18.52262128, 1.85879597, 3.48843815, 1.15491294, 1.02489024);
+            data20B   = Efficiency(t_pt, 17.92648563, 1.96846742, 4.46406075, 1.02023992, 1.52260575);
+            mc20AB    = Efficiency(t_pt, 18.86257072, 0.25680380, 0.16916101, 2.42931257, 0.89590264);
+            data20ABC = Efficiency(t_pt, 18.50940288, 1.62285299, 2.73232995, 1.79135412, 0.91481432);
+            mc20ABC   = Efficiency(t_pt, 18.80484409, 0.19082817, 0.19983010, 1.81979820, 0.93270649);
+          } else {
+            data20A   = Efficiency(t_pt, 18.90119559, 0.14025596, 0.14482632, 1.56126508, 0.81188198);
+            data20B   = Efficiency(t_pt, 18.59856420, 2.49132550, 10.99643595, 1.50651123, 0.87952970);
+            mc20AB    = Efficiency(t_pt, 18.74764561, 1.82036845, 701.46994969, 101.57913480, 0.82547043);
+            data20ABC = Efficiency(t_pt, 18.45678784, 0.68697618, 0.57008697, 3.73470825, 0.84747211);
+            mc20ABC   = Efficiency(t_pt, 18.25975478, 1.32745225, 1.70380810, 149.18410074, 0.87377770);
+          }
+          if (era_ == era::data_2012_ichep) {
+              tau_trg = (0.14 * data20A) + (0.86 * data20B);
+              tau_trg_mc = mc20AB;
+          }
+          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+            tau_trg = data20ABC;
+            tau_trg_mc = mc20ABC;
+          }
+        } else if (mc_ == mc::fall11_42X) {
           if (fabs(m_eta) < 1.4) {
             double mu1215_eb = 0.901;
             double mu15_2p1_eb = Efficiency(pt, 15.06,  0.55278,   1.34236,   1.003,   3.36767);
@@ -330,35 +397,18 @@ namespace ic {
             mu_trg = (0.402 * mu1215_ee) + (0.598 * mu15_2p1_ee);  
             mu_trg_mc = 0.836;      
           }
-          if (fabs(eta) < 1.5) {
-            double tau10l_eb = Efficiency(tpt, 13.6046,   1.66291,   1.71551,   141.929,   0.910686);
-            double tau15l_eb = Efficiency(tpt, 13.9694,   0.084835,  0.057743,  1.50674,   0.984976);
-            double tau20l_eb = Efficiency(tpt, 19.2102,   1.26519,   2.48994,   1.04699,  1.3492);
+          if (fabs(t_eta) < 1.5) {
+            double tau10l_eb = Efficiency(t_pt, 13.6046,   1.66291,   1.71551,   141.929,   0.910686);
+            double tau15l_eb = Efficiency(t_pt, 13.9694,   0.084835,  0.057743,  1.50674,   0.984976);
+            double tau20l_eb = Efficiency(t_pt, 19.2102,   1.26519,   2.48994,   1.04699,  1.3492);
             tau_trg = (0.043 * tau10l_eb) + (0.359 * tau15l_eb) + (0.598 * tau20l_eb);
-            tau_trg_mc = Efficiency(tpt, 14.4601, 0.0485272, 0.03849, 1.48324, 0.965257);
+            tau_trg_mc = Efficiency(t_pt, 14.4601, 0.0485272, 0.03849, 1.48324, 0.965257);
           } else {
-            double tau10l_ee = Efficiency(tpt, -0.392211,   7.90467,   5.48228,   134.599,   0.925858);
-            double tau15l_ee = Efficiency(tpt, 14.435,  1.34952,   2.43996,   1.03631,   1.79081);
-            double tau20l_ee = Efficiency(tpt, 19.2438,   1.37298,   1.76448,   1.73935,   0.901291);
+            double tau10l_ee = Efficiency(t_pt, -0.392211,   7.90467,   5.48228,   134.599,   0.925858);
+            double tau15l_ee = Efficiency(t_pt, 14.435,  1.34952,   2.43996,   1.03631,   1.79081);
+            double tau20l_ee = Efficiency(t_pt, 19.2438,   1.37298,   1.76448,   1.73935,   0.901291);
             tau_trg = (0.043 * tau10l_ee) + (0.359 * tau15l_ee) + (0.598 * tau20l_ee);
-            tau_trg_mc = Efficiency(tpt, 14.4451, 0.0790573, 0.0732472, 1.47046, 0.942028);
-          }
-          // if (tpt >= 200) tpt = 199.;
-          // double tau10l_eb = hist_muTauSF2011PFTau10->GetBinContent(hist_muTauSF2011PFTau10->FindBin(tpt, eta));
-          // double tau15l_eb = hist_muTauSF2011PFTau15->GetBinContent(hist_muTauSF2011PFTau15->FindBin(tpt, eta));
-          // double tau20l_eb = hist_muTauSF2011PFTau20->GetBinContent(hist_muTauSF2011PFTau20->FindBin(tpt, eta));
-          
-          // tau_trg_mc = hist_muTauSF2011PFTau15MC->GetBinContent(hist_muTauSF2011PFTau15MC->FindBin(tpt, eta));
-          // tau_trg = (0.043 * tau10l_eb) + (0.359 * tau15l_eb) + (0.598 * tau20l_eb);
-        }
-        if (channel_ == channel::mtmet) tau_trg_mc = 1.0;
-        if (channel_ == channel::mtmet) {
-          if (m_eta < 0.8) {
-            mu_trg_mc = 0.9873; mu_trg = 0.9693;
-          } else if (m_eta >= 0.8 && m_eta < 1.2) {
-            mu_trg_mc = 0.9688; mu_trg = 0.9411;
-          } else {
-            mu_trg_mc = 0.9374; mu_trg = 0.9069; 
+            tau_trg_mc = Efficiency(t_pt, 14.4451, 0.0790573, 0.0732472, 1.47046, 0.942028);
           }
         }
         if (trg_applied_in_mc_) {
@@ -420,7 +470,7 @@ namespace ic {
               if (e_pt > 30.0)                 { e_trg_mc = 0.9850; e_trg = 0.9751;}
             }
           }
-          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
+          if (era_ == era::data_2012_hcp) {
             if (m_eta < 0.8) {
               if (m_pt <= 15.0)                { m_trg_mc = 0.9873; m_trg = 0.9693; }
               if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9876; m_trg = 0.9659; }
@@ -460,7 +510,113 @@ namespace ic {
               if (e_pt > 30.0)                 { e_trg_mc = 0.9850; e_trg = 0.9737;}
             }
           }
-        } else {
+          if (era_ == era::data_2012_moriond) {
+            if (m_eta < 0.8) {
+              if (m_pt <= 15.0)                { m_trg_mc = 0.9870; m_trg = 0.9713; }
+              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9858; m_trg = 0.9706; }
+              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9812; m_trg = 0.9749; }
+              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9852; m_trg = 0.9711; }
+              if (m_pt > 30.0 && m_pt <= 35.0) { m_trg_mc = 0.9826; m_trg = 0.9758; }
+              if (m_pt > 35.0)                 { m_trg_mc = 0.9692; m_trg = 0.9683; }
+            } else if (m_eta >= 0.8 && m_eta < 1.2) {
+              if (m_pt <= 15.0)                { m_trg_mc = 0.9648; m_trg = 0.9399; }
+              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9441; m_trg = 0.9284; }
+              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9821; m_trg = 0.9423; }
+              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9614; m_trg = 0.9439; }
+              if (m_pt > 30.0 && m_pt <= 35.0) { m_trg_mc = 0.9504; m_trg = 0.9314; }
+              if (m_pt > 35.0)                 { m_trg_mc = 0.9707; m_trg = 0.9345; }
+            } else if (m_eta >= 1.2 && m_eta < 1.6) {
+              if (m_pt <= 15.0)                { m_trg_mc = 0.9342; m_trg = 0.9299; }
+              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9503; m_trg = 0.9306; }
+              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9672; m_trg = 0.9375; }
+              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9523; m_trg = 0.9222; }
+              if (m_pt > 30.0 && m_pt <= 35.0) { m_trg_mc = 0.9191; m_trg = 0.9152; }
+              if (m_pt > 35.0)                 { m_trg_mc = 0.9467; m_trg = 0.9098; }
+            } else {
+              if (m_pt <= 15.0)                { m_trg_mc = 0.9413; m_trg = 0.8614; }
+              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9637; m_trg = 0.8921; }
+              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9657; m_trg = 0.9114; }
+              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9240; m_trg = 0.8909; }
+              if (m_pt > 30.0 && m_pt <= 35.0) { m_trg_mc = 0.9566; m_trg = 0.9019; }
+              if (m_pt > 35.0)                 { m_trg_mc = 0.9665; m_trg = 0.9003; }
+            }
+            if (e_eta < 0.8) {
+              if (e_pt <= 15.0)                { e_trg_mc = 0.7574; e_trg = 0.7217; }
+              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.8899; e_trg = 0.8758; }
+              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9412; e_trg = 0.9145; }
+              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9601; e_trg = 0.9383; }
+              if (e_pt > 30.0 && e_pt <= 35.0) { e_trg_mc = 0.9448; e_trg = 0.9528; }
+              if (e_pt > 35.0)                 { e_trg_mc = 0.9624; e_trg = 0.9690; }
+            } else if (e_eta >= 0.8 && e_eta < 1.479) {
+              if (e_pt <= 15.0)                { e_trg_mc = 0.8198; e_trg = 0.7262; }
+              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9343; e_trg = 0.9061; }
+              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9745; e_trg = 0.9455; }
+              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9762; e_trg = 0.9681; }
+              if (e_pt > 30.0 && e_pt <= 35.0) { e_trg_mc = 0.9749; e_trg = 0.9652; }
+              if (e_pt > 35.0)                 { e_trg_mc = 0.9763; e_trg = 0.9811; }
+            } else {
+              if (e_pt <= 15.0)                { e_trg_mc = 0.7660; e_trg = 0.7093; }
+              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9126; e_trg = 0.8475; }
+              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9617; e_trg = 0.9354; }
+              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9765; e_trg = 0.9383; }
+              if (e_pt > 30.0 && e_pt <= 35.0) { e_trg_mc = 0.9873; e_trg = 0.9693; }
+              if (e_pt > 35.0)                 { e_trg_mc = 0.9787; e_trg = 0.9777; }
+            }
+          }
+          if (era_ == era::data_2012_donly) {
+            if (m_eta < 0.8) {
+              if (m_pt <= 15.0)                { m_trg_mc = 0.9856; m_trg = 0.9778; }
+              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9851; m_trg = 0.9768; }
+              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9797; m_trg = 0.9756; }
+              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9830; m_trg = 0.9770; }
+              if (m_pt > 30.0 && m_pt <= 35.0) { m_trg_mc = 0.9827; m_trg = 0.9681; }
+              if (m_pt > 35.0)                 { m_trg_mc = 0.9690; m_trg = 0.9676; }
+            } else if (m_eta >= 0.8 && m_eta < 1.2) {
+              if (m_pt <= 15.0)                { m_trg_mc = 0.9630; m_trg = 0.9386; }
+              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9405; m_trg = 0.9325; }
+              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9758; m_trg = 0.9359; }
+              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9583; m_trg = 0.9400; }
+              if (m_pt > 30.0 && m_pt <= 35.0) { m_trg_mc = 0.9501; m_trg = 0.9234; }
+              if (m_pt > 35.0)                 { m_trg_mc = 0.9706; m_trg = 0.9399; }
+            } else if (m_eta >= 1.2 && m_eta < 1.6) {
+              if (m_pt <= 15.0)                { m_trg_mc = 0.9320; m_trg = 0.9337; }
+              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9515; m_trg = 0.9396; }
+              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9658; m_trg = 0.9458; }
+              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9443; m_trg = 0.9348; }
+              if (m_pt > 30.0 && m_pt <= 35.0) { m_trg_mc = 0.9269; m_trg = 0.9151; }
+              if (m_pt > 35.0)                 { m_trg_mc = 0.9396; m_trg = 0.9123; }
+            } else {
+              if (m_pt <= 15.0)                { m_trg_mc = 0.9398; m_trg = 0.8320; }
+              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9611; m_trg = 0.8911; }
+              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9633; m_trg = 0.8998; }
+              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9195; m_trg = 0.8917; }
+              if (m_pt > 30.0 && m_pt <= 35.0) { m_trg_mc = 0.9512; m_trg = 0.9156; }
+              if (m_pt > 35.0)                 { m_trg_mc = 0.9540; m_trg = 0.8890; }
+            }
+            if (e_eta < 0.8) {
+              if (e_pt <= 15.0)                { e_trg_mc = 0.7338; e_trg = 0.6700; }
+              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.8780; e_trg = 0.8661; }
+              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9347; e_trg = 0.9107; }
+              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9583; e_trg = 0.9373; }
+              if (e_pt > 30.0 && e_pt <= 35.0) { e_trg_mc = 0.9413; e_trg = 0.9610; }
+              if (e_pt > 35.0)                 { e_trg_mc = 0.9613; e_trg = 0.9723; }
+            } else if (e_eta >= 0.8 && e_eta < 1.479) {
+              if (e_pt <= 15.0)                { e_trg_mc = 0.8111; e_trg = 0.7176; }
+              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9256; e_trg = 0.8927; }
+              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9695; e_trg = 0.9370; }
+              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9754; e_trg = 0.9724; }
+              if (e_pt > 30.0 && e_pt <= 35.0) { e_trg_mc = 0.9752; e_trg = 0.9751; }
+              if (e_pt > 35.0)                 { e_trg_mc = 0.9750; e_trg = 0.9792; }
+            } else {
+              if (e_pt <= 15.0)                { e_trg_mc = 0.7702; e_trg = 0.7167; }
+              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9057; e_trg = 0.8516; }
+              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9569; e_trg = 0.9368; }
+              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9790; e_trg = 0.9595; }
+              if (e_pt > 30.0 && e_pt <= 35.0) { e_trg_mc = 0.9865; e_trg = 0.9792; }
+              if (e_pt > 35.0)                 { e_trg_mc = 0.9777; e_trg = 0.9813; }
+            }
+          }
+        } else if (mc_ == mc::fall11_42X) {
           if (m_eta < 1.5) {
             if (m_pt <= 15.0) m_trg = 1.01;
             if (m_pt > 15.0 && m_pt <= 20.0) m_trg = 0.99;
@@ -508,13 +664,19 @@ namespace ic {
             if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9593; ele_iso = 0.9877; }
             if (pt > 30.0 && sc_eta >= 1.479)               { ele_id = 0.9223; ele_iso = 0.9938; }  
           }
-          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
+          if (era_ == era::data_2012_hcp) {
             if (pt > 24.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_id = 0.9130; ele_iso = 0.9602; }
             if (pt > 24.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.8509; ele_iso = 0.9661; }
             if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9567; ele_iso = 0.9858; }
             if (pt > 30.0 && sc_eta >= 1.479)               { ele_id = 0.9239; ele_iso = 0.9942; }  
           }
-        } else {    
+          if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+            if (pt > 24.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_id = 0.9100; ele_iso = 0.9468; }
+            if (pt > 24.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.8244; ele_iso = 0.9586; }
+            if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9493; ele_iso = 0.9820; }
+            if (pt > 30.0 && sc_eta >= 1.479)               { ele_id = 0.9260; ele_iso = 0.9948; }  
+          }
+        } else if (mc_ == mc::fall11_42X) {    
           if (pt > 20.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_id = 0.9590; ele_iso = 0.9907; }
           if (pt > 20.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.9462; ele_iso = 0.9875; }
           if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9826; ele_iso = 0.9845; }
@@ -525,7 +687,7 @@ namespace ic {
         event->Add("idweight_2", double(1.0));
         event->Add("isoweight_1", ele_iso);
         event->Add("isoweight_2", double(1.0));
-      } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
+      } else if (channel_ == channel::mt) {
         Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = muon->pt();
         double m_eta = fabs(muon->eta());
@@ -540,7 +702,7 @@ namespace ic {
             if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9827; mu_iso = 0.9880; }
             if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9919; mu_iso = 1.0005; }
           }
-          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond) {
+          if (era_ == era::data_2012_hcp) {
             if (pt > 20.0 && pt <= 30.0 && m_eta < 0.8)                   { mu_id = 0.9870; mu_iso = 0.9715; }
             if (pt > 20.0 && pt <= 30.0 && m_eta >= 0.8 && m_eta < 1.2)   { mu_id = 0.9837; mu_iso = 0.9826; }
             if (pt > 20.0 && pt <= 30.0 && m_eta >= 1.2)                  { mu_id = 0.9914; mu_iso = 0.9960; }
@@ -548,7 +710,15 @@ namespace ic {
             if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9817; mu_iso = 0.9870; }
             if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 1.0018; mu_iso = 1.0008; }
           }
-        } else {
+          if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+            if (pt > 20.0 && pt <= 30.0 && m_eta < 0.8)                   { mu_id = 0.9853; mu_iso = 0.9685; }
+            if (pt > 20.0 && pt <= 30.0 && m_eta >= 0.8 && m_eta < 1.2)   { mu_id = 0.9818; mu_iso = 0.9808; }
+            if (pt > 20.0 && pt <= 30.0 && m_eta >= 1.2)                  { mu_id = 0.9899; mu_iso = 0.9972; }
+            if (pt > 30.0 && m_eta < 0.8)                                 { mu_id = 0.9857; mu_iso = 0.9872; }
+            if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9805; mu_iso = 0.9924; }
+            if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9900; mu_iso = 1.0012; }
+          }
+        } else if (mc_ == mc::fall11_42X) {
           if (pt > 17.0 && pt <= 20.0 && m_eta < 0.8)                   { mu_id = 0.9963; mu_iso = 0.9910; }
           if (pt > 17.0 && pt <= 20.0 && m_eta >= 0.8 && m_eta < 1.2)   { mu_id = 0.9846; mu_iso = 0.9643; }
           if (pt > 17.0 && pt <= 20.0 && m_eta >= 1.2)                  { mu_id = 0.9830; mu_iso = 0.9504; }
@@ -559,8 +729,6 @@ namespace ic {
           if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9893; mu_iso = 0.9936; }
           if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9829; mu_iso = 0.9960; }
         }
-        if (channel_ == channel::mtmet) mu_id = 1.0;
-        if (channel_ == channel::mtmet) mu_iso = 1.0;
         weight *= (mu_id * mu_iso);
         event->Add("idweight_1", mu_id);
         event->Add("idweight_2", double(1.0));
@@ -576,7 +744,7 @@ namespace ic {
         double m_idiso = 1.0;
         double e_idiso = 1.0;
         if (mc_ == mc::summer12_53X) {
-          if (era_ >= era::data_2012_ichep) {
+          if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
             if (m_eta < 0.8) {
               if (m_pt <= 15.0)                 m_idiso = 0.9845;
               if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9644;
@@ -602,6 +770,110 @@ namespace ic {
               if (e_pt <= 15.0)                 e_idiso = 0.6519;
               if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.7816;
               if (e_pt > 20.0)                  e_idiso = 0.9378;
+            }
+          } else if (era_ == era::data_2012_moriond) {
+            if (m_eta < 0.8) {
+              if (m_pt <= 15.0)                 m_idiso = 0.9811;
+              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9556;
+              if (m_pt > 20.0 && m_pt <= 25.0)  m_idiso = 0.9676;
+              if (m_pt > 25.0 && m_pt <= 30.0)  m_idiso = 0.9691;
+              if (m_pt > 30.0 && m_pt <= 35.0)  m_idiso = 0.9746;
+              if (m_pt > 35.0)                  m_idiso = 0.9987;
+            } else if (m_eta >= 0.8 && m_eta < 1.2) {
+              if (m_pt <= 15.0)                 m_idiso = 0.9689;
+              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9635;
+              if (m_pt > 20.0 && m_pt <= 25.0)  m_idiso = 0.9785;
+              if (m_pt > 25.0 && m_pt <= 30.0)  m_idiso = 0.9785;
+              if (m_pt > 30.0 && m_pt <= 35.0)  m_idiso = 0.9797;
+              if (m_pt > 35.0)                  m_idiso = 0.9841;
+            } else if (m_eta >= 1.2 && m_eta < 1.6) {
+              if (m_pt <= 15.0)                 m_idiso = 0.9757;
+              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9806;
+              if (m_pt > 20.0 && m_pt <= 25.0)  m_idiso = 0.9883;
+              if (m_pt > 25.0 && m_pt <= 30.0)  m_idiso = 0.9909;
+              if (m_pt > 30.0 && m_pt <= 35.0)  m_idiso = 0.9813;
+              if (m_pt > 35.0)                  m_idiso = 0.9919;
+            } else {
+              if (m_pt <= 15.0)                 m_idiso = 1.0069;
+              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 1.0078;
+              if (m_pt > 20.0 && m_pt <= 25.0)  m_idiso = 1.0031;
+              if (m_pt > 25.0 && m_pt <= 30.0)  m_idiso = 0.9991;
+              if (m_pt > 30.0 && m_pt <= 35.0)  m_idiso = 0.9935;
+              if (m_pt > 35.0)                  m_idiso = 0.9939;
+            }
+            if (e_eta < 0.8) {
+              if (e_pt <= 15.0)                 e_idiso = 0.7570;
+              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.8437;
+              if (e_pt > 20.0 && e_pt <= 25.0)  e_idiso = 0.8817;
+              if (e_pt > 25.0 && e_pt <= 30.0)  e_idiso = 0.9069;
+              if (e_pt > 30.0 && e_pt <= 35.0)  e_idiso = 0.9301;
+              if (e_pt > 35.0)                  e_idiso = 0.9533;
+            } else if (e_eta >= 0.8 && e_eta < 1.479) {
+              if (e_pt <= 15.0)                 e_idiso = 0.7807;
+              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.8447;
+              if (e_pt > 20.0 && e_pt <= 25.0)  e_idiso = 0.8492;
+              if (e_pt > 25.0 && e_pt <= 30.0)  e_idiso = 0.8896;
+              if (e_pt > 30.0 && e_pt <= 35.0)  e_idiso = 0.9230;
+              if (e_pt > 35.0)                  e_idiso = 0.9496;
+            } else {
+              if (e_pt <= 15.0)                 e_idiso = 0.6276;
+              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.7812;
+              if (e_pt > 20.0 && e_pt <= 25.0)  e_idiso = 0.8057;
+              if (e_pt > 25.0 && e_pt <= 30.0)  e_idiso = 1.0225;
+              if (e_pt > 30.0 && e_pt <= 35.0)  e_idiso = 0.8887;
+              if (e_pt > 35.0)                  e_idiso = 0.9389;
+            }
+          } else if (era_ == era::data_2012_donly) {
+            if (m_eta < 0.8) {
+              if (m_pt <= 15.0)                 m_idiso = 0.9775;
+              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9436;
+              if (m_pt > 20.0 && m_pt <= 25.0)  m_idiso = 0.9592;
+              if (m_pt > 25.0 && m_pt <= 30.0)  m_idiso = 0.9631;
+              if (m_pt > 30.0 && m_pt <= 35.0)  m_idiso = 0.9703;
+              if (m_pt > 35.0)                  m_idiso = 0.9810;
+            } else if (m_eta >= 0.8 && m_eta < 1.2) {
+              if (m_pt <= 15.0)                 m_idiso = 0.9611;
+              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9485;
+              if (m_pt > 20.0 && m_pt <= 25.0)  m_idiso = 0.9733;
+              if (m_pt > 25.0 && m_pt <= 30.0)  m_idiso = 0.9752;
+              if (m_pt > 30.0 && m_pt <= 35.0)  m_idiso = 0.9710;
+              if (m_pt > 35.0)                  m_idiso = 0.9794;
+            } else if (m_eta >= 1.2 && m_eta < 1.6) {
+              if (m_pt <= 15.0)                 m_idiso = 0.9770;
+              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9787;
+              if (m_pt > 20.0 && m_pt <= 25.0)  m_idiso = 0.9865;
+              if (m_pt > 25.0 && m_pt <= 30.0)  m_idiso = 0.9880;
+              if (m_pt > 30.0 && m_pt <= 35.0)  m_idiso = 0.9914;
+              if (m_pt > 35.0)                  m_idiso = 0.9912;
+            } else {
+              if (m_pt <= 15.0)                 m_idiso = 1.0095;
+              if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 1.0103;
+              if (m_pt > 20.0 && m_pt <= 25.0)  m_idiso = 1.0100;
+              if (m_pt > 25.0 && m_pt <= 30.0)  m_idiso = 1.0018;
+              if (m_pt > 30.0 && m_pt <= 35.0)  m_idiso = 1.0033;
+              if (m_pt > 35.0)                  m_idiso = 0.9939;
+            }
+            if (e_eta < 0.8) {
+              if (e_pt <= 15.0)                 e_idiso = 0.6794;
+              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.8141;
+              if (e_pt > 20.0 && e_pt <= 25.0)  e_idiso = 0.8633;
+              if (e_pt > 25.0 && e_pt <= 30.0)  e_idiso = 0.8950;
+              if (e_pt > 30.0 && e_pt <= 35.0)  e_idiso = 0.9209;
+              if (e_pt > 35.0)                  e_idiso = 0.9473;
+            } else if (e_eta >= 0.8 && e_eta < 1.479) {
+              if (e_pt <= 15.0)                 e_idiso = 0.7353;
+              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.8093;
+              if (e_pt > 20.0 && e_pt <= 25.0)  e_idiso = 0.8239;
+              if (e_pt > 25.0 && e_pt <= 30.0)  e_idiso = 0.8775;
+              if (e_pt > 30.0 && e_pt <= 35.0)  e_idiso = 0.9129;
+              if (e_pt > 35.0)                  e_idiso = 0.9417;
+            } else {
+              if (e_pt <= 15.0)                 e_idiso = 0.5834;
+              if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.7499;
+              if (e_pt > 20.0 && e_pt <= 25.0)  e_idiso = 0.7744;
+              if (e_pt > 25.0 && e_pt <= 30.0)  e_idiso = 0.8368;
+              if (e_pt > 30.0 && e_pt <= 35.0)  e_idiso = 0.8704;
+              if (e_pt > 35.0)                  e_idiso = 0.9308;
             }
           }
         } else {
@@ -689,7 +961,6 @@ namespace ic {
            if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.24);
          } 
         }
-
       }
     }
 

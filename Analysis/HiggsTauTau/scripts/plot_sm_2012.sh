@@ -1,4 +1,4 @@
-PARAMS=./scripts/Moriond_params_2012.dat
+PARAMS=./scripts/HCP_params_2012.dat
 TSCALE=(
   # '1' 
   # '2' 
