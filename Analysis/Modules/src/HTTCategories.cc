@@ -166,7 +166,7 @@ namespace ic {
       n_jetsingap_lowpt_ = 0;
       if (n_lowpt_jets_ > 2) {
         for (unsigned i = 2; i < lowpt_jets.size(); ++i) {
-         if (lowpt_jets[i]->pt() > 30.0 &&  lowpt_jets[i]->eta() > eta_low && lowpt_jets[i]->eta() < eta_high) ++n_jetsingap_;
+         if (lowpt_jets[i]->pt() > 30.0 &&  lowpt_jets[i]->eta() > eta_low && lowpt_jets[i]->eta() < eta_high) ++n_jetsingap_lowpt_;
         }
       }
     } else {
