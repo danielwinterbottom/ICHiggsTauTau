@@ -1004,6 +1004,7 @@ namespace ic {
       bool count_jets = false;
       unsigned partons = 0;
       for (unsigned i = 0; i < parts.size(); ++i) {
+        // std::cout << i << "\t" << parts[i]->status() << "\t" << parts[i]->pdgid() << "\t" << parts[i]->vector() << std::endl;
         if (parts[i]->status() != 3) continue;
         unsigned id = abs(parts[i]->pdgid());
         if (count_jets) { 

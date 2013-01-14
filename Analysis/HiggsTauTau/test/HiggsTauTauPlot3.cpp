@@ -296,6 +296,10 @@ int main(int argc, char* argv[]){
 
 
   std::cout << "**** HiggsTauTauPlot3 *****" << std::endl;
+  if (tau_scale_mode != 0 && channel == channel::em) {
+    std::cout << "No tau scale variation for em channel!" << std::endl;
+    return 0;
+  }
   string param_fmt = "%-25s %-40s\n";
   std::cout << boost::format(param_fmt) % "paramfile" 	% paramfile;
   std::cout << boost::format(param_fmt) % "plot_name" 	% plot_name;
@@ -1126,7 +1130,6 @@ int main(int argc, char* argv[]){
       }
     }
 
-    cout << "here1" << endl;
     TH1F *dc_ztt = (TH1F*)ztt_hist->Clone();
     dc_ztt->SetName(("ZTT"+append).c_str());
     dc_ztt->SetTitle(("ZTT"+append).c_str());
@@ -1157,7 +1160,6 @@ int main(int argc, char* argv[]){
     dc_zj->SetName(("ZJ"+append).c_str());
     dc_zj->SetTitle(("ZJ"+append).c_str());
     if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) dc_zj->Write();
-    cout << "here2" << endl;
 
     // std::string zee_append = std::string("_CMS_htt_ZEEShape_etau_")+(is_2012 ? "8":"7")+"TeV";
     // if (tau_scale_mode == 1) zee_append += "Down";
@@ -1214,9 +1216,6 @@ int main(int argc, char* argv[]){
         h3->Write();
     }
     dc_qcd->Write();
-
-    cout << "here3" << endl;
-
 
 
     TH1F *data_obs = (TH1F*)data_hist_clean->Clone();

@@ -1,7 +1,7 @@
-PARAMS=./scripts/HCP_params_2012.dat
+PARAMS=./scripts/Moriond_params_2012.dat
 TSCALE=(
-  # '1' 
-  # '2' 
+  '1' 
+  '2' 
   '0'
   )
 
@@ -11,26 +11,36 @@ do
   for i in "${CATS[@]}"
   do
     ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=$j --channel=et --rebin=1  \
-      --method="$i" --plot_name="svfit_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+      --method="$i" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
       --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false \
       --paramfile=$PARAMS
 
     ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=$j --channel=mt --rebin=1 \
-      --method="$i" --plot_name="svfit_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+      --method="$i" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
       --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=false \
       --paramfile=$PARAMS
+
+    ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=$j --channel=em --rebin=1 \
+      --method="$i" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+    --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=false \
+    --paramfile=$PARAMS
   done
 
   CATS=('5')
   for i in "${CATS[@]}"
   do
     ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=$j --channel=et --rebin=1  \
-      --method="$i" --plot_name="svfit_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
+      --method="$i" --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
       --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false \
       --paramfile=$PARAMS
 
     ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=$j --channel=mt --rebin=1 \
-      --method="$i" --plot_name="svfit_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
+      --method="$i" --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
+      --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=false \
+      --paramfile=$PARAMS
+
+    ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=$j --channel=em --rebin=1 \
+      --method="$i" --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
       --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=false \
       --paramfile=$PARAMS
   done
@@ -40,6 +50,8 @@ hadd -f htt_et.inputs-sm-8TeV.root datacard_eleTau_*.root
 rm datacard_eleTau_*.root
 hadd -f htt_mt.inputs-sm-8TeV.root datacard_muTau_*.root
 rm datacard_muTau_*.root
+hadd -f htt_em.inputs-sm-8TeV.root datacard_emu_*.root
+rm datacard_emu_*.root
 
 ###### DO SM VISIBLE MASS DATACARDS ########
 for j in "${TSCALE[@]}"
