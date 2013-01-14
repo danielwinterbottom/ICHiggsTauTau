@@ -5,7 +5,7 @@
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/HCP_mc_2012.cfg
+CONFIG=scripts/Moriond_mc_2012.cfg
 echo "Config file: $CONFIG"
 FILELIST=filelists/Dec30_MC_53X
 echo "Filelist prefix: $FILELIST"

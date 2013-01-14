@@ -36,6 +36,9 @@ namespace ic {
       std::cout << "MET Label: " << met_label_ << std::endl;
     }
 
+    misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
+    misc_2dplots_ = new Dynamic2DHistoSet(fs_->mkdir("misc_2dplots"));
+
     InitSelection("os");
     InitSelection("os_sel");
     InitSelection("os_con");
@@ -112,6 +115,10 @@ namespace ic {
     if (channel_ == channel::em && is_embedded_) {
       m_sv_ = m_sv_ * 1.01;
       m_vis_ = m_vis_ * 1.01;
+    }
+    if (event->Exists("mass_scale")) {
+      m_sv_ = m_sv_ * event->Get<double>("mass_scale");
+      m_vis_ = m_vis_ * event->Get<double>("mass_scale");
     }
 
     mt_1_ = MT(lep1, met);
@@ -389,6 +396,7 @@ namespace ic {
     print_cats.push_back("inclusive");
     print_cats.push_back("vbf_loose");
     print_cats.push_back("vbf");
+    print_cats.push_back("vbf_test");
     print_cats.push_back("1jet_high");
     print_cats.push_back("1jet_low");
     print_cats.push_back("0jet_high");

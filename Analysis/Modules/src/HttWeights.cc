@@ -227,30 +227,41 @@ namespace ic {
           double tdata20A   = 1.0;
           double tdata20B   = 1.0;
           double tdata20ABC = 1.0;
+          double tdataABCD  = 1.0;
           double tmc20AB    = 1.0;
           double tmc20ABC   = 1.0;
+          double tmcABCD    = 1.0;
+
           if (t_eta < 1.5) {
             tdata20A    = Efficiency(t_pt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
             tdata20B    = Efficiency(t_pt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
             tdata20ABC  = Efficiency(t_pt, 18.43442868, 2.08967536, 3.27357845, 6.96327309, 0.85564484);
+            tdataABCD   = Efficiency(t_pt, 18.686211,   1.993524,  3.202713,  3.612693,  0.871640);
             tmc20AB     = Efficiency(t_pt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
             tmc20ABC    = Efficiency(t_pt, 18.40815138, 1.53235636, 3.55989632, 1.74542709, 0.90118450);
-
+            tmcABCD     = Efficiency(t_pt, 18.431118,   1.572877,  3.301699,  4.760769,  0.899620);
           } else {
             tdata20A    = Efficiency(t_pt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
             tdata20B    = Efficiency(t_pt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
             tdata20ABC  = Efficiency(t_pt, 18.16839440, 1.86184564, 4.39116712, 1.01410741, 1.39240481);
+            tdataABCD   = Efficiency(t_pt, 18.472954,   1.606388,  3.468975,  55.629620,   0.828977);
             tmc20AB     = Efficiency(t_pt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
             tmc20ABC    = Efficiency(t_pt, 18.29028052, 1.56239255, 11.03605631, 155.89290151, 0.85683995);
+            tmcABCD     = Efficiency(t_pt, 18.257217,   1.632443,  9.283116,  40.219585,  0.858643);
           }
           if (era_ == era::data_2012_ichep) {
             tau_trg = (0.14 * tdata20A) + (0.86 * tdata20B);
             tau_trg_mc = tmc20AB;
           }
-          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+          if (era_ == era::data_2012_hcp) {
             tau_trg = tdata20ABC;
             tau_trg_mc = tmc20ABC;
           }
+          if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+            tau_trg = tdataABCD;
+            tau_trg_mc = tmcABCD;
+          }
+
         } else if (mc_ == mc::fall11_42X) {
           if (fabs(e_eta) < 1.479) {
             double ele15_eb = Efficiency(e_pt, 14.8772, 0.311255, 0.221021, 1.87734, 0.986665);
@@ -372,31 +383,42 @@ namespace ic {
             mu_trg_mc = mcABCD;
           }
 
-          double data20A    = 1.0;
-          double data20B    = 1.0;
-          double data20ABC  = 1.0;
-          double mc20AB     = 1.0;
-          double mc20ABC    = 1.0;
+          double tdata20A    = 1.0;
+          double tdata20B    = 1.0;
+          double tdata20ABC  = 1.0;
+          double tdataABCD   = 1.0;
+          double tmc20AB     = 1.0;
+          double tmc20ABC    = 1.0;
+          double tmcABCD    = 1.0;
           if (fabs(t_eta) < 1.5) {
-            data20A   = Efficiency(t_pt, 18.52262128, 1.85879597, 3.48843815, 1.15491294, 1.02489024);
-            data20B   = Efficiency(t_pt, 17.92648563, 1.96846742, 4.46406075, 1.02023992, 1.52260575);
-            mc20AB    = Efficiency(t_pt, 18.86257072, 0.25680380, 0.16916101, 2.42931257, 0.89590264);
-            data20ABC = Efficiency(t_pt, 18.50940288, 1.62285299, 2.73232995, 1.79135412, 0.91481432);
-            mc20ABC   = Efficiency(t_pt, 18.80484409, 0.19082817, 0.19983010, 1.81979820, 0.93270649);
+            tdata20A   = Efficiency(t_pt, 18.52262128, 1.85879597, 3.48843815, 1.15491294, 1.02489024);
+            tdata20B   = Efficiency(t_pt, 17.92648563, 1.96846742, 4.46406075, 1.02023992, 1.52260575);
+            tmc20AB    = Efficiency(t_pt, 18.86257072, 0.25680380, 0.16916101, 2.42931257, 0.89590264);
+            tdata20ABC = Efficiency(t_pt, 18.50940288, 1.62285299, 2.73232995, 1.79135412, 0.91481432);
+            tmc20ABC   = Efficiency(t_pt, 18.80484409, 0.19082817, 0.19983010, 1.81979820, 0.93270649);
+            tdataABCD  = Efficiency(t_pt, 18.52036251,  1.47760312,  2.53574445,  1.71202550,  0.93019930);
+            tmcABCD    = Efficiency(t_pt, 18.88740627,  0.10718873,  0.12277723,  1.60581265,  0.95041892);
+
           } else {
-            data20A   = Efficiency(t_pt, 18.90119559, 0.14025596, 0.14482632, 1.56126508, 0.81188198);
-            data20B   = Efficiency(t_pt, 18.59856420, 2.49132550, 10.99643595, 1.50651123, 0.87952970);
-            mc20AB    = Efficiency(t_pt, 18.74764561, 1.82036845, 701.46994969, 101.57913480, 0.82547043);
-            data20ABC = Efficiency(t_pt, 18.45678784, 0.68697618, 0.57008697, 3.73470825, 0.84747211);
-            mc20ABC   = Efficiency(t_pt, 18.25975478, 1.32745225, 1.70380810, 149.18410074, 0.87377770);
+            tdata20A   = Efficiency(t_pt, 18.90119559, 0.14025596, 0.14482632, 1.56126508, 0.81188198);
+            tdata20B   = Efficiency(t_pt, 18.59856420, 2.49132550, 10.99643595, 1.50651123, 0.87952970);
+            tmc20AB    = Efficiency(t_pt, 18.74764561, 1.82036845, 701.46994969, 101.57913480, 0.82547043);
+            tdata20ABC = Efficiency(t_pt, 18.45678784, 0.68697618, 0.57008697, 3.73470825, 0.84747211);
+            tmc20ABC   = Efficiency(t_pt, 18.25975478, 1.32745225, 1.70380810, 149.18410074, 0.87377770);
+            tdataABCD  = Efficiency(t_pt, 18.41225333,  0.76598912,  0.60544260,  5.38350881,  0.85870108);
+            tmcABCD    = Efficiency(t_pt, 18.30439676,  1.44360240,  3.79358997,  1.07560564,  0.93103925);
           }
           if (era_ == era::data_2012_ichep) {
-              tau_trg = (0.14 * data20A) + (0.86 * data20B);
-              tau_trg_mc = mc20AB;
+              tau_trg = (0.14 * tdata20A) + (0.86 * tdata20B);
+              tau_trg_mc = tmc20AB;
           }
-          if (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
-            tau_trg = data20ABC;
-            tau_trg_mc = mc20ABC;
+          if (era_ == era::data_2012_hcp) {
+            tau_trg = tdata20ABC;
+            tau_trg_mc = tmc20ABC;
+          }
+          if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+            tau_trg = tdataABCD;
+            tau_trg_mc = tmcABCD;
           }
         } else if (mc_ == mc::fall11_42X) {
           if (fabs(m_eta) < 1.4) {
@@ -966,13 +988,26 @@ namespace ic {
             if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.72);
           }
         } else {
-         if (fabs(tau_cand[0]->eta()) < 1.5) {
-           if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.82);
-           if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.65);
-         } else {
-           if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.76);
-           if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.24);
-         } 
+          if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
+            if (fabs(tau_cand[0]->eta()) < 1.5) {
+              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.82);
+              if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.65);
+            } else {
+              event->Add("mass_scale", double(1.015));
+              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.76);
+              if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.24);
+            } 
+          }
+          if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+            if (fabs(tau_cand[0]->eta()) < 1.5) {
+              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.85);
+              if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.52);
+            } else {
+              event->Add("mass_scale", double(1.015));
+              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.94);
+              if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.32);
+            } 
+          }
         }
       }
     }

@@ -1,4 +1,12 @@
-PARAMS=./scripts/Moriond_params_2012.dat
+PROD=Moriond
+
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=em --rebin=1 \
+  --method=8 --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false  --norm_bins=true --verbose=false \
+  --paramfile=./scripts/Moriond_params_2012.dat --use_ztt_mc=true
+
+PARAMS=./scripts/"$PROD"_params_2012.dat
 TSCALE=(
   '1' 
   '2' 
@@ -42,15 +50,15 @@ do
     ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=$j --channel=em --rebin=1 \
       --method="$i" --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
       --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=false \
-      --paramfile=$PARAMS
+      --paramfile=$PARAMS --extra_pad=1.4
   done
 done
 
-hadd -f htt_et.inputs-sm-8TeV.root datacard_eleTau_*.root
+hadd -f $PROD-htt_et.inputs-sm-8TeV.root datacard_eleTau_*.root
 rm datacard_eleTau_*.root
-hadd -f htt_mt.inputs-sm-8TeV.root datacard_muTau_*.root
+hadd -f $PROD-htt_mt.inputs-sm-8TeV.root datacard_muTau_*.root
 rm datacard_muTau_*.root
-hadd -f htt_em.inputs-sm-8TeV.root datacard_emu_*.root
+hadd -f $PROD-htt_em.inputs-sm-8TeV.root datacard_emu_*.root
 rm datacard_emu_*.root
 
 ###### DO SM VISIBLE MASS DATACARDS ########
@@ -98,11 +106,11 @@ do
   done
 done
 
-hadd -f htt_et.inputs-sm-8TeV-mvis.root datacard_eleTau_*.root
+hadd -f $PROD-htt_et.inputs-sm-8TeV-mvis.root datacard_eleTau_*.root
 rm datacard_eleTau_*.root
-hadd -f htt_mt.inputs-sm-8TeV-mvis.root datacard_muTau_*.root
+hadd -f $PROD-htt_mt.inputs-sm-8TeV-mvis.root datacard_muTau_*.root
 rm datacard_muTau_*.root
-hadd -f htt_em.inputs-sm-8TeV-mvis.root datacard_emu_*.root
+hadd -f $PROD-htt_em.inputs-sm-8TeV-mvis.root datacard_emu_*.root
 rm datacard_emu_*.root
 
 # # ##### MSSM #######

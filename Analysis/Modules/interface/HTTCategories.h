@@ -6,6 +6,7 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 
 #include <string>
 
@@ -27,6 +28,9 @@ class HTTCategories : public ModuleBase {
   std::map<std::string, MassPlots*> massplots_;
   std::map<std::string, double> yields_;
   std::map<std::string, CoreControlPlots*> controlplots_;
+  DynamicHistoSet * misc_plots_;
+  Dynamic2DHistoSet * misc_2dplots_;
+
 
 
   // Event Properties

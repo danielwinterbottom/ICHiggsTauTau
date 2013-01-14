@@ -131,9 +131,9 @@ int main(int argc, char* argv[]){
          % (category)  % ("data_obs") % ("ZTT") % ("W") % ("QCD")
                 % ("TT") % ("VV") % ("ZLL") % ("ZJ") % ("ZL") % ("TOT") % ("DATA/MC") % ("VH") % ("ggH") % ("qqH");
     } else {
-     std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
+     std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
           % (category)  % ("data_obs") % ("Ztt") % ("Fakes") % ("ttbar")
-                 % ("EWK") % ("TOT") % ("VH") % ("ggH") % ("qqH"); 
+                 % ("EWK") % ("TOT") % ("DATA/MC")  % ("VH") % ("ggH") % ("qqH"); 
     }
   } else {
     if (mode != 2) {
@@ -141,9 +141,9 @@ int main(int argc, char* argv[]){
          % (category)  % ("data_obs") % ("ZTT") % ("W") % ("QCD")
                 % ("TT") % ("VV") % ("ZLL") % ("ZJ") % ("ZL") % ("TOT") % ("DATA/MC") % ("ggH") % ("bbH");
     } else {
-     std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
+     std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
           % (category)  % ("data_obs") % ("Ztt") % ("Fakes") % ("ttbar")
-                 % ("EWK") % ("TOT") % ("ggH") % ("bbH"); 
+                 % ("EWK") % ("TOT") % ("DATA/MC")  % ("ggH") % ("bbH"); 
     }
   }
   for (unsigned i = 0; i < inputs.size(); ++i) {
@@ -211,9 +211,9 @@ int main(int argc, char* argv[]){
                           % top_yield[i] % vv_yield[i] % zll_yield[i] % zj_yield[i] % zl_yield[i] % tot_yield[i] % (data_obs_yield[i]/tot_yield[i])
                           % vh_yield[i] % ggh_yield[i] % qqh_yield[i];
       } else {
-        std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f  %-9.2f %-9.2f %-9.2f\n") 
+        std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
              % (labels[i])  % data_obs_yield[i] % ztt_yield[i] % qcd_yield[i] 
-                            % top_yield[i] % vv_yield[i] % tot_yield[i]
+                            % top_yield[i] % vv_yield[i] % tot_yield[i] % (data_obs_yield[i]/tot_yield[i])
                             % vh_yield[i] % ggh_yield[i] % qqh_yield[i];
       }
     } else {
@@ -223,9 +223,9 @@ int main(int argc, char* argv[]){
                           % top_yield[i] % vv_yield[i] % zll_yield[i] % zj_yield[i] % zl_yield[i] % tot_yield[i] % (data_obs_yield[i]/tot_yield[i])
                           % ggh_yield[i] % qqh_yield[i];
       } else {
-        std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f  %-9.2f %-9.2f\n") 
+        std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f  %-9.2f %-9.2f\n") 
              % (labels[i])  % data_obs_yield[i] % ztt_yield[i] % qcd_yield[i] 
-                            % top_yield[i] % vv_yield[i] % tot_yield[i]
+                            % top_yield[i] % vv_yield[i] % tot_yield[i] % (data_obs_yield[i]/tot_yield[i])
                             % ggh_yield[i] % qqh_yield[i];
       }
     }
@@ -258,12 +258,15 @@ int main(int argc, char* argv[]){
           boost::replace_first(replacement, "eleTau", "eTau");
         }
       }
+      std::cout << "Looking for plot: " << comp_plots[j] << std::endl;
       ele.push_back(ic::TH1PlotElement(labels[k],tfiles[k],replacement,comp_plots[j]));
+      if (ele.back().hist_ptr()) {
       SetStyle(ele.back(), k);
       //drawn_ele[i]->hist_ptr()->Scale(1.0, "width");
       ele.back().hist_ptr()->Scale(1.0, "width");
       ele.back().set_legend_text(labels[k]);
       test_plot.AddTH1PlotElement(ele.back());
+      }
     }
 
     test_plot.GeneratePlot();
