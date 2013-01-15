@@ -370,14 +370,20 @@ namespace ic {
           plots->n_jets->Fill(n_jets_, wt_);
           plots->n_bjets->Fill(n_bjets_, wt_);
           plots->n_jetsingap->Fill(n_jetsingap_, wt_);
-          plots->jpt_1->Fill(jpt_1_, wt_);
-          plots->jpt_2->Fill(jpt_2_, wt_);
-          plots->jeta_1->Fill(jeta_1_, wt_);
-          plots->jeta_2->Fill(jeta_2_, wt_);
-          plots->bpt_1->Fill(bpt_1_, wt_);
-          plots->beta_1->Fill(beta_1_, wt_);
-          plots->mjj->Fill(mjj_, wt_);
-          plots->jdeta->Fill(jdeta_, wt_);
+          if (n_jets_ >= 1) {
+            plots->jpt_1->Fill(jpt_1_, wt_);
+            plots->jeta_1->Fill(jeta_1_, wt_);
+          }
+          if (n_jets_ >= 2) {
+            plots->jpt_2->Fill(jpt_2_, wt_);
+            plots->jeta_2->Fill(jeta_2_, wt_);            
+            plots->mjj->Fill(mjj_, wt_);
+            plots->jdeta->Fill(jdeta_, wt_);
+          }
+          if (n_bjets_ >= 1) {
+            plots->bpt_1->Fill(bpt_1_, wt_);
+            plots->beta_1->Fill(beta_1_, wt_);
+          }
         }
       } 
     }

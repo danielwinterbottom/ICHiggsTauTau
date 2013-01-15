@@ -1,11 +1,6 @@
 PROD=Moriond
 
 
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=em --rebin=1 \
-  --method=8 --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
-  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false  --norm_bins=true --verbose=false \
-  --paramfile=./scripts/Moriond_params_2012.dat --use_ztt_mc=true
-
 PARAMS=./scripts/"$PROD"_params_2012.dat
 TSCALE=(
   '1' 

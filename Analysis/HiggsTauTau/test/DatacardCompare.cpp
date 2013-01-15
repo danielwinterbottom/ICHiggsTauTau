@@ -63,7 +63,7 @@ int main(int argc, char* argv[]){
   std::string output_file;
   unsigned mode = 0;
   unsigned mssm_mode = 0;
-  bool plot = true;
+  bool plot = false;
 
   po::options_description preconfig("Pre-Configuration");
   po::options_description config("Configuration");
