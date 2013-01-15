@@ -49,6 +49,11 @@ namespace ic {
       }
     }
 
+    inline bool weight_defined(std::string label) const {
+      SDMap::const_iterator it = weights_.find(label);
+      return it != weights_.end();
+    }
+
     inline void set_weight(std::string const& label, double const& weight) {
       weights_[label] = weight;
     }

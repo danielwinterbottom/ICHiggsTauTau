@@ -287,7 +287,7 @@ process.icHLTTauProducer = cms.EDProducer('ICPFTauProducer',
         decayModeFinding = cms.InputTag("hltPFTauTrackFindingDiscriminator"),
         byIsolation = cms.InputTag("hltPFTauLooseIsolationDiscriminator")
         ),
-    minPt = cms.double(16.5),
+    minPt = cms.double(18),
     maxEta = cms.double(2.6)
     )
 process.hltPFTauSequence = cms.Sequence(
@@ -321,9 +321,7 @@ process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICL1ExtraEmParticleProduce
 ## Only add HLT tau simulation in MC
 if not isData:
   process.icSoftLeptonSequence += cms.Sequence(
-      process.icL1ExtraMuonsProducer
-      +process.icL1ExtraEmIsolatedProducer
-      +process.hltPFTauSequence
+      process.hltPFTauSequence
       +process.icHLTTauProducer
       )
 
@@ -343,6 +341,8 @@ process.icMetNoHFProducer = cms.EDProducer('ICMetProducer',
 
 process.icSoftLeptonSequence += cms.Sequence(
     process.icL1ExtraMETProducer
+    +process.icL1ExtraMuonsProducer
+    +process.icL1ExtraEmIsolatedProducer
     +process.patmetNoHF
     +process.icMetNoHFProducer
     )
@@ -1033,6 +1033,26 @@ if (release == '53X' and isData):
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
       StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
+  process.icIsoMu8LooseTau20L1ETM26ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsIsoMu8LooseTau20L1ETM26"),
+      hltPath = cms.untracked.string("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_L1ETM26_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icIsoMu8LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsIsoMu8LooseTau20"),
+      hltPath = cms.untracked.string("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icEle13LooseTau20L1ETM36ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle13LooseTau20L1ETM36"),
+      hltPath = cms.untracked.string("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icEle13LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle13LooseTau20"),
+      hltPath = cms.untracked.string("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
 
   process.icTriggerSequence += (
     process.icEle20RhoLooseTau20ObjectProducer
@@ -1041,6 +1061,10 @@ if (release == '53X' and isData):
     +process.icIsoMu17LooseTau20ObjectProducer
     +process.icMu8Ele17ObjectProducer
     +process.icMu17Ele8ObjectProducer
+    +process.icIsoMu8LooseTau20L1ETM26ObjectProducer
+    +process.icIsoMu8LooseTau20ObjectProducer
+    +process.icEle13LooseTau20L1ETM36ObjectProducer
+    +process.icEle13LooseTau20ObjectProducer
     )
 
 ################################################################
@@ -1067,12 +1091,24 @@ if ((release == '53X') and (not isData)):
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
       StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
+  process.icMu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsMu8"),
+      hltPath = cms.untracked.string("HLT_Mu8_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icEle8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle8"),
+      hltPath = cms.untracked.string("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
 
   process.icTriggerSequence += (
     process.icEle22WP90RhoLooseTau20ObjectProducer
     +process.icIsoMu17LooseTau20ObjectProducer
     +process.icMu8Ele17ObjectProducer
     +process.icMu17Ele8ObjectProducer
+    +process.icMu8ObjectProducer
+    +process.icEle8ObjectProducer
     )
 
 
