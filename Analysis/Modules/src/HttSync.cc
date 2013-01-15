@@ -218,7 +218,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
     //lNPV = std::count_if(vertices.begin(), vertices.end(), GoodVertex);
     lNPV = eventInfo->good_vertices();
     lNPU = true_int;
-    lRho = 0.0;
+    lRho = eventInfo->jet_rho();
     
     //Event Weights
     lMCWeight = 0.0;
@@ -229,7 +229,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
     if (event->Exists("idweight_2")) lIdweight_2 = event->Get<double>("idweight_2");
     if (event->Exists("isoweight_1")) lIsoweight_1 = event->Get<double>("isoweight_1");
     if (event->Exists("isoweight_2")) lIsoweight_2 = event->Get<double>("isoweight_2");
-    lEffWeight = eventInfo->weight("lepton");
+    if (eventInfo->weight_defined("lepton")) lEffWeight = eventInfo->weight("lepton"); 
     lWeight = eventInfo->total_weight();
     
 

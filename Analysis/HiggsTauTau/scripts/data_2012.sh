@@ -5,10 +5,10 @@
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/DOnly_data_2012.cfg
+CONFIG=scripts/Moriond_data_2012.cfg
 echo "Config file: $CONFIG"
 FILELIST=filelists/Dec30_Data_53X
-DATA_FILELIST=DOnly # Or HCP, DOnly for example
+DATA_FILELIST=Moriond # Or HCP, DOnly for example
 echo "Data filelists with label: $DATA_FILELIST"
 
 if (( "$#" != "2" ))
