@@ -131,6 +131,13 @@ namespace ic {
     met_ = met->pt();
     met_phi_ = met->phi();
 
+    Tau const* tau = dynamic_cast<Tau const*>(lep2);
+    if (tau) {
+      tau_decay_mode_ = tau->decay_mode();
+    } else {
+      tau_decay_mode_ = 0;
+    }
+
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();
     n_bjets_ = bjets.size();
@@ -370,6 +377,9 @@ namespace ic {
           plots->n_jets->Fill(n_jets_, wt_);
           plots->n_bjets->Fill(n_bjets_, wt_);
           plots->n_jetsingap->Fill(n_jetsingap_, wt_);
+          if (tau_decay_mode_ == 0) plots->tau_decay_mode->Fill(0. , wt_);
+          if (tau_decay_mode_ == 1 || tau_decay_mode_ == 2) plots->tau_decay_mode->Fill(1., wt_);
+          if (tau_decay_mode_ == 10) plots->tau_decay_mode->Fill(2., wt_);
           if (n_jets_ >= 1) {
             plots->jpt_1->Fill(jpt_1_, wt_);
             plots->jeta_1->Fill(jeta_1_, wt_);

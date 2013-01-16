@@ -282,18 +282,21 @@ void RecoilCorrector::metDistribution(double &iMet,double &iMPhi,double iGenPt,d
   pFrac2 = (pFrac2-pSigma2_2)/(pSigma2_1-pSigma2_2);
 
   //Now sample for the MET distribution
-  double pVal0 = iRand->Uniform(0,1);
-  double pVal1 = iRand->Uniform(0,1);
-  double pCorr1     = iRand->Gaus(0,1);     double pCorr2     = iRand->Gaus(0,1);  
+  double pVal0  = iRand->Uniform(0,1);
+  double pVal1  = iRand->Uniform(0,1);
+  double pCorr1 = iRand->Gaus(0,1);     
+  double pCorr2 = iRand->Gaus(0,1);  
   //double pCorrT1    = iRand->Gaus(0,1);     double pCorrT2    = iRand->Gaus(0,1);  
   pSigma1_1 = ((pVal0 < pFrac1)*(pSigma1_1)+(pVal0 > pFrac1)*(pSigma1_2)); 
   pSigma2_1 = ((pVal1 < pFrac2)*(pSigma2_1)+(pVal1 > pFrac2)*(pSigma2_2)); 
-
-  double lU1U2   = iU1U2Corr->Eval(iGenPt);
+  
+  double lU1U2   = iU1U2Corr->Eval(iGenPt)*0.5;
+  //cout << "===> " << lU1U2 << " -- " << iGenPt << endl;
   double pVal1_1 = correlatedSeed(pSigma1_1,lU1U2,0.,0.,pCorr1,pCorr2,0.,0.);
   double pVal2_1 = correlatedSeed(pSigma2_1,lU1U2,0.,0.,pCorr2,pCorr1,0.,0.);
   //double pVal2_1 = correlatedSeed(pSigma2_1,lU1U2,0.,0.,pCorr2,pCorr1,0.,0.);
   //double pVal2_2 = correlatedSeed(pSigma2_2,lU1U2,0.,0.,pCorrT2,pCorrT1,0.,0.);
+
 
   pU1   = (pVal1_1+pU1);//(pVal0 < pFrac1)*(pVal1_1+pU1)+(pVal0 > pFrac1)*(pVal1_2+pU1);
   pU2   = (pVal2_1+pU2);//(pVal1 < pFrac2)*(pVal2_1+pU2)+(pVal1 > pFrac2)*(pVal2_2+pU2);
@@ -302,7 +305,6 @@ void RecoilCorrector::metDistribution(double &iMet,double &iMPhi,double iGenPt,d
   //pU2   = (lVal1 < pFrac2)*iRand->Gaus(pU2,pSigma2_1)+(lVal1 > pFrac2)*iRand->Gaus(pU2,pSigma2_2);
   iMet  = calculate(0,iLepPt,iLepPhi,iGenPhi,pU1,pU2);
   iMPhi = calculate(1,iLepPt,iLepPhi,iGenPhi,pU1,pU2);
-  
   iU1   = pU1; 
   iU2   = pU2;
   return;
@@ -314,7 +316,7 @@ void RecoilCorrector::metDistributionType1(double &iMet,double &iMPhi,double iGe
 					   TF1 *iU2MSZDatFit, TF1 *iU2MSZMCFit, 		   		   
 					   //TF1 *iU1U2ZDatCorr,TF1 *iU1U2ZMCCorr,
 					   double &iU1,double &iU2,double iFluc,double iScale) {
-  if (iLepPt < 5.) return;
+  if(iLepPt < 4) return;
   double lRescale  = sqrt((TMath::Pi())/2.);		     
   double pU1       = iU1RZDatFit->Eval(iGenPt)/iU1RZMCFit->Eval(iGenPt);
   double pU2       = 0; //Right guys are for cumulants => code deleted
@@ -325,6 +327,8 @@ void RecoilCorrector::metDistributionType1(double &iMet,double &iMPhi,double iGe
   pFrac1 = sqrt(pFrac1)*lRescale;
   pFrac2 = sqrt(pFrac2)*lRescale;
   
+  //cout << "===> " << pU1 << " -- " << pFrac1 << " -- " << pFrac2 << " -- "  << iU1MSZDatFit->Eval(iGenPt) << " - " << iU1MSZMCFit->Eval(iGenPt) << endl;
+
   //Uncertainty propagation
   if(iFluc != 0 || iScale != 0) { 
     double lEUR1    = getError(iGenPt,iU1RZDatFit ,PFU1);
@@ -405,11 +409,9 @@ void RecoilCorrector::metDistributionType2(double &iMet,double &iMPhi,double iGe
   double pDSigma2_2 = iU2S2ZDatFit->Eval(iGenPt)*pDFrac2;
   //double pDMean1    = pDFrac1;
   //double pDMean2    = pDFrac2;
-  pDFrac1           = (pDFrac1-pDSigma1_2)/(pDSigma1_1-pDSigma1_2);
-  pDFrac2           = (pDFrac2-pDSigma2_2)/(pDSigma2_1-pDSigma2_2);
-
+  
   double pMU1       = iU1RZMCFit  ->Eval(iGenPt);
-  // double pMU2       = 0; 
+  double pMU2       = 0; 
   double pMFrac1    = iU1MSZMCFit ->Eval(iGenPt)*lRescale;
   double pMSigma1_1 = iU1S1ZMCFit ->Eval(iGenPt)*pMFrac1;
   double pMSigma1_2 = iU1S2ZMCFit ->Eval(iGenPt)*pMFrac1;
@@ -418,8 +420,6 @@ void RecoilCorrector::metDistributionType2(double &iMet,double &iMPhi,double iGe
   double pMSigma2_2 = iU2S2ZMCFit ->Eval(iGenPt)*pMFrac2;
   //double pMMean1    = pMFrac1;
   //double pMMean2    = pMFrac2;
-  pMFrac1           = (pMFrac1-pMSigma1_2)/(pMSigma1_1-pMSigma1_2);
-  pMFrac2           = (pMFrac2-pMSigma2_2)/(pMSigma2_1-pMSigma2_2);
   //Uncertainty propagation
   if(iFluc != 0 || iScale != 0) { 
     double lEUR1    = getError(iGenPt,iU1Default  ,PFU1);
@@ -430,15 +430,26 @@ void RecoilCorrector::metDistributionType2(double &iMet,double &iMPhi,double iGe
     double lEUS2_2  = getError(iGenPt,iU2S2ZDatFit,PFS2U2);
     double lEU2Frac = getError(iGenPt,iU2MSZDatFit,PFMSU2);
   
+    //cout << "Err u1    : " << lEU1Frac << " -- " << iFluc << " -- " << pDFrac1 << " -- " << iU1MSZDatFit->GetParError(0) << endl;
+    //cout << "Err u2    : " << lEU2Frac << " -- " << iFluc << " -- " << pDFrac2 << endl;
+    //cout << "Err u1 s1 : " << lEUS1_1 << endl;
+    //cout << "Err u1 s2 : " << lEUS1_2 << endl;
+    //cout << "Err u2 s1 : " << lEUS2_1 << endl;
+    //cout << "Err u2 s2 : " << lEUS2_2 << endl;
+
     //Modify all the different parameters the choice of signs makes it maximal
     pDU1       = pDU1       + iScale*lEUR1;             //Recoil
     pDFrac1    = pDFrac1    + iFluc*(lEU1Frac);        //Mean RMS 
-    pDSigma1_1 = pDSigma1_1 - iFluc*lEUS1_1*pDFrac1;    //Sigma 1 smalles sigma
-    pDSigma1_2 = pDSigma1_2 + iFluc*lEUS1_2*pDFrac1;    //Sigma 2 (Maximal when oppsite sigma 1)
+    pDSigma1_1 = pDSigma1_1 + iFluc*lEU1Frac;//lEUS1_1*pDFrac1;    //Sigma 1 smalles sigma
+    pDSigma1_2 = pDSigma1_2 + iFluc*lEU1Frac;//lEUS1_2*pDFrac1;    //Sigma 2 (Maximal when oppsite sigma 1)
     pDFrac2    = pDFrac2    + iFluc*(lEU2Frac);        //Mean RMS for U2
-    pDSigma2_1 = pDSigma2_1 - iFluc*lEUS2_1*pDFrac2;    //Sigma 1 U2
-    pDSigma2_2 = pDSigma2_2 + iFluc*(lEUS2_2)*pDFrac2;
+    pDSigma2_1 = pDSigma2_1 + iFluc*lEU2Frac;//lEUS2_1*pDFrac2;    //Sigma 1 U2
+    pDSigma2_2 = pDSigma2_2 + iFluc*lEU2Frac;//(lEUS2_2)*pDFrac2;
   }
+  pDFrac1           = (pDFrac1-pDSigma1_2)/(pDSigma1_1-pDSigma1_2);
+  pDFrac2           = (pDFrac2-pDSigma2_2)/(pDSigma2_1-pDSigma2_2);
+  pMFrac1           = (pMFrac1-pMSigma1_2)/(pMSigma1_1-pMSigma1_2);
+  pMFrac2           = (pMFrac2-pMSigma2_2)/(pMSigma2_1-pMSigma2_2);
 
   double pUX  = iMet*cos(iMPhi) + iLepPt*cos(iLepPhi);
   double pUY  = iMet*sin(iMPhi) + iLepPt*sin(iLepPhi);
@@ -452,7 +463,7 @@ void RecoilCorrector::metDistributionType2(double &iMet,double &iMPhi,double iGe
 
   double p1Charge        = pU1Diff/fabs(pU1Diff);
   double p2Charge        = pU2Diff/fabs(pU2Diff);
-  //double pTU1Diff        = pU1Diff;
+  double pTU1Diff        = pU1Diff;
   // double lMU1U2  = iU1U2ZMCCorr->Eval(iGenPt);
   // pU1Diff                = deCorrelate(pMMean1,lMU1U2,0.,0.,pU1Diff/pMMean1,pU2Diff/pMMean1 ,0.,0.);
   //pU2Diff                = deCorrelate(pMMean2,lMU1U2,0.,0.,pU2Diff/pMMean2,pTU1Diff/pMMean2,0.,0.);
@@ -648,6 +659,7 @@ double RecoilCorrector::getCorError2(double iVal,TF1 *iFit) {
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 double RecoilCorrector::getError2(double iVal,TF1 *iFit) { 
+  return iFit->GetParError(0);
   double lE2 = iFit->GetParError(0) + iVal*iFit->GetParError(1) + iVal*iVal*iFit->GetParError(2);
   if(fabs(iFit->GetParError(3)) > 0) lE2 += iVal*iVal*iVal*     iFit->GetParError(3);
   if(fabs(iFit->GetParError(4)) > 0) lE2 += iVal*iVal*iVal*iVal*iFit->GetParError(4);
@@ -670,7 +682,9 @@ double RecoilCorrector::getError(double iVal,TF1 *iFit,Recoil iType) {
   double lR    = lZDat/lZMC;
   double lER   = lR*lR/lZDat/lZDat*lEZD2 + lR*lR/lZMC/lZMC*lEZM2;
   double lVal  = lR*lR*lEW2 + lWMC*lWMC*lER;
-  return lVal;
+
+  //cout << "====> Error Data : "<<  lEZD2 << " MC : " << lEZM2 << " -- Rat " << lR << " -- DatV " << lZDat << " -- MCV " << lZMC << " -- " << lWMC << " -- Total " << lER << " -- W : " << lEW2 << " -- All : " << lVal << endl;
+  return sqrt(lVal);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -695,5 +709,3 @@ double RecoilCorrector::deCorrelate(double iVal, double iCorr1,double iCorr2,dou
 
 //a = 1/m + 1/m b' 
 //b = 1/m + 1/m a'
-
-

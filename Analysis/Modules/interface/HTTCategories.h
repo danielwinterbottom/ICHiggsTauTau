@@ -50,6 +50,8 @@ class HTTCategories : public ModuleBase {
     double met_;
     double met_phi_;
 
+    int    tau_decay_mode_;
+
     unsigned n_jets_;
     unsigned n_lowpt_jets_;
     unsigned n_bjets_;

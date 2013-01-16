@@ -45,6 +45,7 @@ namespace ic {
     beta_1 = dir.make<TH1F>("beta_1","beta_1", 60, -3, 3); 
     mjj = dir.make<TH1F>("mjj","mjj", 40, 0, 1000); 
     jdeta = dir.make<TH1F>("jdeta","jdeta", 40, 0, 8); 
+    tau_decay_mode = dir.make<TH1F>("tau_decay_mode","tau_decay_mode", 3, -0.5, 2.5); 
   };
 
 } //namespace

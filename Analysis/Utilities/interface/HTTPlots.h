@@ -52,6 +52,7 @@ struct CoreControlPlots {
 	TH1F *beta_1;
 	TH1F *mjj;
 	TH1F *jdeta;
+	TH1F *tau_decay_mode;
 	CoreControlPlots(TFileDirectory const& dir);
 
 };

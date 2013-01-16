@@ -3,7 +3,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include <boost/functional/hash.hpp>
-
+#include "boost/algorithm/string.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "TMVA/Reader.h"
 #include "TVector3.h"
@@ -20,6 +21,7 @@ namespace ic {
     use_most_isolated_ = false;
     scale_met_for_tau_ = 0;
     tau_scale_ = 1.0;
+    allowed_tau_modes_ = "";
   }
 
   HttPairSelector::~HttPairSelector() {
@@ -35,6 +37,19 @@ namespace ic {
     std::cout << "Use most isolated tau?: " << use_most_isolated_ << std::endl;
     std::cout << "Scale MET for Tau: " << scale_met_for_tau_ << std::endl;
     std::cout << "Tau Scale is: " << tau_scale_ << std::endl;
+    std::cout << "Allowed tau decay modes: ";
+    if (allowed_tau_modes_ == "") {
+      std::cout << "all modes" << std::endl;
+    } else {
+      std::vector<std::string> tau_mode_vec;
+      boost::split(tau_mode_vec, allowed_tau_modes_, boost::is_any_of(","));
+      for (unsigned i = 0; i < tau_mode_vec.size(); ++i) {
+        int tau_mode = boost::lexical_cast<int>(tau_mode_vec[i]);
+        tau_mode_set_.insert(tau_mode);
+        std::cout << tau_mode << " ";
+      } 
+      std::cout << std::endl;
+    }
 
     if (faked_tau_selector_ == 1 && channel_ != channel::em) {
       std::cout << "Requring tau candidate matched to lepton!" << std::endl;
@@ -42,6 +57,7 @@ namespace ic {
     if (faked_tau_selector_ == 2 && channel_ != channel::em) {
       std::cout << "Requring tau candidate not matched to lepton!" << std::endl;
     }
+
     if (fs_) {
       hists_[0] = new Dynamic2DHistoSet(fs_->mkdir("httpairselector"));
       for (unsigned i = 0; i < hists_.size(); ++i) {
@@ -179,6 +195,11 @@ namespace ic {
       if (faked_tau_selector_ == 1 && matches.size() == 0) return 1;
       // If we want ZJ and there is a match, fail the event
       if (faked_tau_selector_ == 2 && matches.size() > 0) return 1; 
+    }
+
+    Tau const* tau_ptr = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
+    if (tau_ptr && allowed_tau_modes_ != "") {
+      if (tau_mode_set_.find(tau_ptr->decay_mode()) == tau_mode_set_.end()) return 1;
     }
 
 

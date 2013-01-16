@@ -22,8 +22,10 @@ class HttPairSelector : public ModuleBase {
   CLASS_MEMBER(HttPairSelector, unsigned, faked_tau_selector)
   CLASS_MEMBER(HttPairSelector, bool, scale_met_for_tau)
   CLASS_MEMBER(HttPairSelector, double, tau_scale)
+  CLASS_MEMBER(HttPairSelector, std::string, allowed_tau_modes)
   CLASS_MEMBER(HttPairSelector, fwlite::TFileService*, fs)
   std::vector<Dynamic2DHistoSet *> hists_;
+  std::set<int> tau_mode_set_;
 
  public:
   HttPairSelector(std::string const& name);

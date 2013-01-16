@@ -236,7 +236,8 @@ int main(int argc, char* argv[]){
   yield_plots[0]->GetYaxis()->SetTitle("Events / pb^{-1}");
   yield_plots[0]->GetYaxis()->SetTitleOffset(0.65);
   yield_plots[0]->GetXaxis()->SetTitle("Run (time-ordered)");
-  yield_plots[0]->GetXaxis()->SetTitleOffset(2.00);
+  yield_plots[0]->GetXaxis()->SetTitleOffset(1.50);
+  yield_plots[0]->GetXaxis()->SetLabelSize(0.03);
   yield_plots[0]->GetXaxis()->LabelsOption("v");
 
   for (unsigned i = 0; i < yield_plots.size(); ++i) {

@@ -22,6 +22,7 @@ class HttRecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HttRecoilCorrector, ic::channel, channel)
   CLASS_MEMBER(HttRecoilCorrector, ic::strategy, strategy)
   CLASS_MEMBER(HttRecoilCorrector, ic::mc, mc)
+  CLASS_MEMBER(HttRecoilCorrector, ic::era, era)
 
 
 

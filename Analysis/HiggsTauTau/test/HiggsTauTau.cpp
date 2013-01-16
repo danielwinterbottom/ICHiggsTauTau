@@ -71,6 +71,7 @@ int main(int argc, char* argv[]){
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool quark_gluon_study;         // Run study on quark-gluon jet discriminators
+  string allowed_tau_modes;       // "" means all, otherwise "1,10"=allow 1prong1pizero,3prong
 
   bool do_vbf_mva = true;
   // bool disable_mc_trigger = false;
@@ -130,7 +131,8 @@ int main(int argc, char* argv[]){
       ("faked_tau_selector",  po::value<unsigned>(&faked_tau_selector)->default_value(0))
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
       ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
-      ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false));
+      ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
+      ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""));
       // ("do_vbf_mva", po::value<bool>(&do_vbf_mva)->default_value(true), "0=disabled, 1 = enabled")
       // ("scan_trigger", po::value<bool>(&scan_trigger)->default_value(false), "true/false")
       // ("disable_mc_trigger", po::value<bool>(&disable_mc_trigger)->default_value(false), "true/false")
@@ -180,6 +182,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
+  std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -656,14 +659,15 @@ int main(int argc, char* argv[]){
     .set_mva_met_from_vector(mva_met_mode == 1)
     .set_faked_tau_selector(faked_tau_selector)
     .set_scale_met_for_tau(tau_scale_mode > 0)
-    .set_tau_scale(tau_shift);
+    .set_tau_scale(tau_shift)
+    .set_allowed_tau_modes(allowed_tau_modes);
 
   HttRecoilCorrector httRecoilCorrector = HttRecoilCorrector("HttRecoilCorrector")
     .set_sample(output_name)
     .set_channel(channel)
     .set_mc(mc)
     .set_met_label(met_label)
-    .set_strategy(strategy);
+    .set_strategy(strategy::moriond2013);
 
   HttWeights httWeights = HttWeights("HttWeights")
     .set_channel(channel)
@@ -920,7 +924,7 @@ int main(int argc, char* argv[]){
 
   if (!do_skim) {
     if (!is_embedded)             analysis.AddModule(&httTriggerFilter);
-                                  // analysis.AddModule(&runStats);
+    //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
