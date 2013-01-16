@@ -18,7 +18,7 @@ class HTTCategories : public ModuleBase {
   std::string jets_label_;
   CLASS_MEMBER(HTTCategories, std::string, ditau_label)
   CLASS_MEMBER(HTTCategories, std::string, met_label)
-  CLASS_MEMBER(HTTCategories, bool, is_embedded)
+  CLASS_MEMBER(HTTCategories, double, mass_shift)
   CLASS_MEMBER(HTTCategories, ic::channel, channel)
   // CLASS_MEMBER(HTTCategories, bool, distinguish_os)
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)

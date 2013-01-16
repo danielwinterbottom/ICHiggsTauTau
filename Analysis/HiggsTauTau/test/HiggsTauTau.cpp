@@ -63,6 +63,7 @@ int main(int argc, char* argv[]){
   bool is_embedded;               // true = embedded, false = not an embedded sample
   unsigned special_mode;          // 0 = normal processing, > 0 (see below)
   unsigned tau_scale_mode;        // 0 = no shift, 1 = shift down, 2 = shift up
+  unsigned mass_scale_mode;        // 0 = no shift, 1 = nominal, but in TSCALE_DOWN, 2 = shift up, 3 = shift up again, in TSCALE_UP
   unsigned svfit_mode;            // 0 = not run, 1 = generate jobs, 2 = read-in job output
   string svfit_folder;            // Folder containing svfit jobs & output
   string svfit_override;          // Override the svfit results to use
@@ -124,6 +125,7 @@ int main(int argc, char* argv[]){
       ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
       ("special_mode",        po::value<unsigned>(&special_mode)->default_value(0))
       ("tau_scale_mode",      po::value<unsigned>(&tau_scale_mode)->default_value(0))
+      ("mass_scale_mode",     po::value<unsigned>(&mass_scale_mode)->default_value(0))
       ("svfit_mode",          po::value<unsigned>(&svfit_mode)->default_value(0))
       ("svfit_folder",        po::value<string>(&svfit_folder)->default_value(""))
       ("svfit_override",      po::value<string>(&svfit_override)->default_value(""))
@@ -158,6 +160,12 @@ int main(int argc, char* argv[]){
     output_folder += "TSCALE_UP/";
     svfit_folder += "TSCALE_UP/";
   }
+  if (mass_scale_mode == 1) {
+    output_folder += "TSCALE_DOWN/";
+  }
+  if (mass_scale_mode == 3) {
+    output_folder += "TSCALE_UP/";
+  }
 
   std::cout << "**** HiggsTauTau Analysis *****" << std::endl;
   string param_fmt = "%-25s %-40s\n";
@@ -173,6 +181,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
   std::cout << boost::format(param_fmt) % "special_mode" % special_mode;
   std::cout << boost::format(param_fmt) % "tau_scale_mode" % tau_scale_mode;
+  std::cout << boost::format(param_fmt) % "mass_scale_mode" % mass_scale_mode;
   std::cout << boost::format(param_fmt) % "svfit_mode" % svfit_mode;
   if (svfit_mode > 0) {
     std::cout << boost::format(param_fmt) % "svfit_folder" % svfit_folder;
@@ -415,6 +424,14 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Electron Modules
   // ------------------------------------------------------------------------------------
+  double elec_shift = 1.0;
+  if (tau_scale_mode == 1) elec_shift = 0.99;
+  if (tau_scale_mode == 2) elec_shift = 1.01;
+  EnergyShifter<Electron> electronEnergyShifter = EnergyShifter<Electron>
+  ("ElectronEnergyShifter")
+    .set_input_label("electrons")
+    .set_shift(elec_shift);
+
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
 
@@ -661,6 +678,7 @@ int main(int argc, char* argv[]){
     .set_scale_met_for_tau(tau_scale_mode > 0)
     .set_tau_scale(tau_shift)
     .set_allowed_tau_modes(allowed_tau_modes);
+  if (channel == channel::em) httPairSelector.set_tau_scale(elec_shift);
 
   HttRecoilCorrector httRecoilCorrector = HttRecoilCorrector("HttRecoilCorrector")
     .set_sample(output_name)
@@ -746,9 +764,11 @@ int main(int argc, char* argv[]){
   HTTCategories httCategories = HTTCategories("HTTCategories")
     .set_fs(fs)
     .set_channel(channel)
-    .set_is_embedded(is_embedded)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label);
+  if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
+  if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
+  if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
 
   // HttVbfCategory httVbfCategory = HttVbfCategory
   //   ("HttVbfCategory","pfJetsPFlow")
@@ -862,7 +882,10 @@ int main(int argc, char* argv[]){
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
-  if (tau_scale_mode > 0)         analysis.AddModule(&tauEnergyShifter);
+  if (tau_scale_mode > 0 && channel != channel::em)
+                                  analysis.AddModule(&tauEnergyShifter);
+  if (tau_scale_mode > 0 && channel == channel::em)         
+                                  analysis.AddModule(&electronEnergyShifter);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
 
   if (channel == channel::et) {

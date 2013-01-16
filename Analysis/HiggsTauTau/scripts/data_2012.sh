@@ -124,7 +124,24 @@ then
 
   # Embedded
   JOB=Embedded_em_2012
-  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
-  --is_embedded=true --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --mass_scale_mode=2 --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
+  --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-2.log" jobs/$JOB-2.sh
+  $JOBSUBMIT jobs/$JOB-2.sh
+
+  if [ $DOTSCALE == 1 ]
+  then
+    JOB=Embedded_em_2012
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --mass_scale_mode=1 --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-1.log" jobs/$JOB-1.sh
+    $JOBSUBMIT jobs/$JOB-1.sh
+
+    JOB=Embedded_em_2012
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --mass_scale_mode=3 --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-3.log" jobs/$JOB-3.sh
+    $JOBSUBMIT jobs/$JOB-3.sh
+  fi  
+
+
+
+
 fi

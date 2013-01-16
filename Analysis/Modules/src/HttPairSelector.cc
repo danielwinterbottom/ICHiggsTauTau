@@ -151,7 +151,7 @@ namespace ic {
       }
     }
 
-    if (scale_met_for_tau_) {
+    if (scale_met_for_tau_ && channel_ != channel::em) {
       Met * met = event->GetPtr<Met>(met_label_);
       //std::cout << "Old: " << ROOT::Math::PxPyPzEVector(met->vector()) << std::endl;
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
@@ -161,6 +161,23 @@ namespace ic {
       double metet = met->vector().energy();
       double dx = tau->vector().px() * (( 1. / tau_scale_) - 1.);
       double dy = tau->vector().py() * (( 1. / tau_scale_) - 1.);
+      metx = metx + dx;
+      mety = mety + dy;
+      metet = sqrt(metx*metx + mety*mety);
+      ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
+      met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
+      //std::cout << "New: " << ROOT::Math::PxPyPzEVector(met->vector()) << std::endl;
+    }
+    if (scale_met_for_tau_ && channel_ == channel::em) {
+      Met * met = event->GetPtr<Met>(met_label_);
+      //std::cout << "Old: " << ROOT::Math::PxPyPzEVector(met->vector()) << std::endl;
+      Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
+      //std::cout << "Tau: " << ROOT::Math::PxPyPzEVector(tau->vector()) << std::endl;
+      double metx = met->vector().px();
+      double mety = met->vector().py();
+      double metet = met->vector().energy();
+      double dx = elec->vector().px() * (( 1. / tau_scale_) - 1.);
+      double dy = elec->vector().py() * (( 1. / tau_scale_) - 1.);
       metx = metx + dx;
       mety = mety + dy;
       metet = sqrt(metx*metx + mety*mety);

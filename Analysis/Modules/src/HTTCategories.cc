@@ -11,7 +11,7 @@ namespace ic {
   HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), channel_(channel::et) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    is_embedded_ = false;
+    mass_shift_ = 1.0;
     fs_ = NULL;
   }
 
@@ -34,6 +34,8 @@ namespace ic {
       std::cout << "Channel: " << Channel2String(channel_) << std::endl;
       std::cout << "Ditau Label: " << ditau_label_ << std::endl;
       std::cout << "MET Label: " << met_label_ << std::endl;
+      std::cout << "Mass Shift: " << mass_shift_ << std::endl;
+
     }
 
     misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
@@ -112,9 +114,9 @@ namespace ic {
     // This is the HCP hack for the em channel
     // to better align the data with the embedded
     // mass.  
-    if (channel_ == channel::em && is_embedded_) {
-      m_sv_ = m_sv_ * 1.01;
-      m_vis_ = m_vis_ * 1.01;
+    if (channel_ == channel::em) {
+      m_sv_ = m_sv_ * mass_shift_;
+      m_vis_ = m_vis_ * mass_shift_;
     }
     if (event->Exists("mass_scale")) {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");

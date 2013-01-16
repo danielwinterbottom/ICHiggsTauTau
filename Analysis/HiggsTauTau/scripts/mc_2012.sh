@@ -32,31 +32,36 @@ fi
 
 PATHS=(
 'WJetsToLNuSoup'
-# 'TTJets'
-# 'TT'
-# 'WWJetsTo2L2Nu'
-# 'WZJetsTo2L2Q'
-# 'WZJetsTo3LNu'
-# 'ZZJetsTo2L2Nu'
-# 'ZZJetsTo2L2Q'
-# 'ZZJetsTo4L'
-# 'T-tW'
-# 'Tbar-tW'
+'TTJets'
+'TT'
+'WWJetsTo2L2Nu'
+'WZJetsTo2L2Q'
+'WZJetsTo3LNu'
+'ZZJetsTo2L2Nu'
+'ZZJetsTo2L2Q'
+'ZZJetsTo4L'
+'T-tW'
+'Tbar-tW'
 )
 if [ $OPTION == 1 ]
 then
-  PATHS=(
-  # 'TTJets'
-  # 'TT'
-  # 'WWJetsTo2L2Nu'
-  # 'WZJetsTo2L2Q'
-  # 'WZJetsTo3LNu'
-  # 'ZZJetsTo2L2Nu'
-  # 'ZZJetsTo2L2Q'
-  # 'ZZJetsTo4L'
-  # 'T-tW'
-  # 'Tbar-tW'
-  )
+  if [ $TSCALE == 0 ]
+  then
+    PATHS=(
+    'TTJets'
+    'TT'
+    'WWJetsTo2L2Nu'
+    'WZJetsTo2L2Q'
+    'WZJetsTo3LNu'
+    'ZZJetsTo2L2Nu'
+    'ZZJetsTo2L2Q'
+    'ZZJetsTo4L'
+    'T-tW'
+    'Tbar-tW'
+    )
+  else
+    PATHS=( )
+  fi
 fi
 
 
@@ -144,16 +149,16 @@ if [ $OPTION == 0 ]
 then
   for j in "${TSCALE[@]}"
   do
-    # # DYJetsToTauTau
-    # JOB=DYJetsToTauTau_et_2012
-    # $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_DYJetsToLL_et_skim.dat --channel=et \
-    #  --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
-    # $JOBSUBMIT jobs/$JOB-$j.sh
+    # DYJetsToTauTau
+    JOB=DYJetsToTauTau_et_2012
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_DYJetsToLL_et_skim.dat --channel=et \
+     --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    $JOBSUBMIT jobs/$JOB-$j.sh
 
-    # JOB=DYJetsToTauTau_mt_2012
-    # $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_DYJetsToLL_mt_skim.dat --channel=mt \
-    #  --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
-    # $JOBSUBMIT jobs/$JOB-$j.sh
+    JOB=DYJetsToTauTau_mt_2012
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_DYJetsToLL_mt_skim.dat --channel=mt \
+     --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    $JOBSUBMIT jobs/$JOB-$j.sh
 
     # DYJetsToLL
     JOB=DYJetsToLL_et_2012
@@ -199,17 +204,17 @@ then
     --svfit_override=DYJetsToLL_mt_2012.root --faked_tau_selector=2 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
     $JOBSUBMIT jobs/$JOB-$j.sh
     
-    # ## And now the same for the soup
-    # # DYJetsToTauTauSoup
-    # JOB=DYJetsToTauTauSoup_et_2012
-    # $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_DYJetsToLLSoup_et_skim.dat --channel=et \
-    #  --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
-    # $JOBSUBMIT jobs/$JOB-$j.sh
+    ## And now the same for the soup
+    # DYJetsToTauTauSoup
+    JOB=DYJetsToTauTauSoup_et_2012
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_DYJetsToLLSoup_et_skim.dat --channel=et \
+     --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    $JOBSUBMIT jobs/$JOB-$j.sh
 
-    # JOB=DYJetsToTauTauSoup_mt_2012
-    # $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_DYJetsToLLSoup_mt_skim.dat --channel=mt \
-    #  --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
-    # $JOBSUBMIT jobs/$JOB-$j.sh
+    JOB=DYJetsToTauTauSoup_mt_2012
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --tau_scale_mode=$j --filelist="$FILELIST"_DYJetsToLLSoup_mt_skim.dat --channel=mt \
+     --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB-$j.log" jobs/$JOB-$j.sh
+    $JOBSUBMIT jobs/$JOB-$j.sh
 
     # DYJetsToLLSoup
     JOB=DYJetsToLLSoup_et_2012
@@ -259,17 +264,17 @@ fi
 
 if [ $OPTION == 1 ]
 then
-  # # DYJetsToTauTau
-  # JOB=DYJetsToTauTau_em_2012
-  # $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_DYJetsToLL_em_skim.dat --channel=em \
-  #  --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  # $JOBSUBMIT jobs/$JOB.sh
+  # DYJetsToTauTau
+  JOB=DYJetsToTauTau_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_DYJetsToLL_em_skim.dat --channel=em \
+   --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
   
-  # # DYJetsToTauTauSoup
-  # JOB=DYJetsToTauTauSoup_em_2012
-  # $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_DYJetsToLLSoup_em_skim.dat --channel=em \
-  #  --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  # $JOBSUBMIT jobs/$JOB.sh
+  # DYJetsToTauTauSoup
+  JOB=DYJetsToTauTauSoup_em_2012
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_DYJetsToLLSoup_em_skim.dat --channel=em \
+   --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
 fi
 
 if [ $OPTION == 2 ]
