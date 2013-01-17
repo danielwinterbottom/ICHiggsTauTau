@@ -4,6 +4,7 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TLatex.h"
+#include "TF1.h"
 
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
@@ -224,6 +225,7 @@ int main(int argc, char* argv[]){
   canv.SetLeftMargin(0.07);
   canv.SetRightMargin(0.02);
   canv.SetTopMargin(0.08);
+  canv.SetGrid(0,1);
 
   canv.cd();
   TLegend *legend = 0;
@@ -240,11 +242,28 @@ int main(int argc, char* argv[]){
   yield_plots[0]->GetXaxis()->SetLabelSize(0.03);
   yield_plots[0]->GetXaxis()->LabelsOption("v");
 
+  std::vector<TF1 *> fits;
+  fits.resize(yield_plots.size());
+
   for (unsigned i = 0; i < yield_plots.size(); ++i) {
     if (yield_plots[i]->GetMaximum() > max_bin) max_bin = yield_plots[i]->GetMaximum();
     yield_plots[i]->SetMarkerColor(colors[i]);
     yield_plots[i]->SetLineColor(colors[i]);
+    unsigned bins = yield_plots[i]->GetNbinsX();
+    unsigned first_populated = 0;
+    unsigned last_populated = 0;
+    for (unsigned k = 1; k <= bins; ++k) {
+      if (yield_plots[i]->GetBinContent(k) > 0. && first_populated == 0) first_populated = k;
+      if (yield_plots[i]->GetBinContent(bins-(k-1)) > 0. && last_populated == 0) last_populated = bins-(k-1);
+    }
+    double min_fit = yield_plots[i]->GetBinLowEdge(first_populated);
+    double max_fit = yield_plots[i]->GetBinLowEdge(last_populated);
+    std::cout << min_fit << "\t" << max_fit << std::endl;
+    string fit_name = ("f"+boost::lexical_cast<std::string>(i));
+    fits[i] = new TF1((fit_name).c_str(), "pol0", min_fit, max_fit);
+    fits[i]->SetLineColor(1);
     yield_plots[i]->Draw(i == 0 ? "" : "SAME");
+    yield_plots[i]->Fit(fit_name.c_str(), "R", "SAME");
     legend->AddEntry(yield_plots[i], yield_plots[i]->GetTitle());
   }
 

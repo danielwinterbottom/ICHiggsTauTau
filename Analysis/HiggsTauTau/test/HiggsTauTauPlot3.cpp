@@ -1223,7 +1223,7 @@ int main(int argc, char* argv[]){
       dc_qcd->SetTitle(("Fakes"+append).c_str());
       if (method == 1 && tau_scale_mode == 0) {
         em_0jet_high_Up->Write();
-        em_0jet_high_Down->Write();s
+        em_0jet_high_Down->Write();
       }
     }
    if (channel == channel::mt && method == 2 && tau_scale_mode == 0) {
