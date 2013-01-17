@@ -976,6 +976,9 @@ int main(int argc, char* argv[]){
        qcd_hist = (TH1F*)(plots[Token("Special_3_Data","btag_loose", ss_sel)].hist_ptr()->Clone());
     }
   }
+
+  TH1F *em_0jet_high_Up = NULL;
+  TH1F *em_0jet_high_Down = NULL;
   if (channel == channel::em) {
     if (verbose) std::cout << "Electron Fakes: " <<  Integral(plots["Special_20_Data_inclusive_os"].hist_ptr()) << std::endl;
     if (verbose) std::cout << "Muon Fakes: " <<  Integral(plots["Special_21_Data_inclusive_os"].hist_ptr()) << std::endl;
@@ -993,6 +996,15 @@ int main(int argc, char* argv[]){
       qcd_norm = qcd_category;
       // Inverted electron isolation
       qcd_hist = (TH1F*)(plots[Token("Special_24_Data",cat,ss_sel)].hist_ptr()->Clone());
+      TH1F *fr_hist = (TH1F*)(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()->Clone());
+      fr_hist->Add((TH1F*)(plots[Token("Special_21_Data",cat,os_sel)].hist_ptr()->Clone()) ,1.0);
+      fr_hist->Add((TH1F*)(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()->Clone()) ,-1.0);
+      qcd_hist->Scale(qcd_norm / Integral (qcd_hist));
+      fr_hist->Scale(qcd_norm / Integral (fr_hist));
+      em_0jet_high_Up = (TH1F*)qcd_hist->Clone(TString("CMS_htt_FakeShape_em_0jet_high_")+(is_2012 ? "8":"7")+"TeVUp");
+      em_0jet_high_Down = (TH1F*)fr_hist->Clone(TString("CMS_htt_FakeShape_em_0jet_high_")+(is_2012 ? "8":"7")+"TeVDown");
+      qcd_hist->Add(fr_hist);
+      qcd_hist->Scale(0.5);
     } else if (method == 3) {
       qcd_norm = Integral(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()) + Integral(plots[Token("Special_21_Data",cat,os_sel)].hist_ptr()) - Integral(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()) ;
       qcd_hist = (TH1F*)(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()->Clone());
@@ -1023,7 +1035,7 @@ int main(int argc, char* argv[]){
     float cDown;
     for(int i=1;i<h1->GetNbinsX();++i){
       x = h1->GetXaxis()->GetBinCenter(i);
-      if(x<50){
+      if(x < (is_2012 ? 70 : 50) ){
         y = h1->GetBinContent(i);
         c = 1.15;  // or whatever other correction we want to apply
         cUp = 1.3;
@@ -1133,8 +1145,8 @@ int main(int argc, char* argv[]){
     dc_ztt->SetName(("ZTT"+append).c_str());
     dc_ztt->SetTitle(("ZTT"+append).c_str());
     if (channel == channel::em) {
-      dc_ztt->SetName("Ztt");
-      dc_ztt->SetTitle("Ztt");
+      dc_ztt->SetName(("Ztt"+append).c_str());
+      dc_ztt->SetTitle(("Ztt"+append).c_str());
     }
     if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(dc_ztt, boost_high_clean);
     dc_ztt->Write();
@@ -1180,8 +1192,8 @@ int main(int argc, char* argv[]){
     dc_top->SetName(("TT"+append).c_str());
     dc_top->SetTitle(("TT"+append).c_str());
     if (channel == channel::em) {
-      dc_top->SetName("ttbar");
-      dc_top->SetTitle("ttbar");
+      dc_top->SetName(("ttbar"+append).c_str());
+      dc_top->SetTitle(("ttbar"+append).c_str());
     }
     dc_top->Write();
 
@@ -1190,8 +1202,8 @@ int main(int argc, char* argv[]){
     dc_vv->SetName(("VV"+append).c_str());
     dc_vv->SetTitle(("VV"+append).c_str());
     if (channel == channel::em) {
-      dc_vv->SetName("EWK");
-      dc_vv->SetTitle("EWK");
+      dc_vv->SetName(("EWK"+append).c_str());
+      dc_vv->SetTitle(("EWK"+append).c_str());
     }
     dc_vv->Write();
 
@@ -1207,13 +1219,18 @@ int main(int argc, char* argv[]){
     dc_qcd->SetName(("QCD"+append).c_str());
     dc_qcd->SetTitle(("QCD"+append).c_str());
     if (channel == channel::em) {
-      dc_qcd->SetName("Fakes");
-      dc_qcd->SetTitle("Fakes");
+      dc_qcd->SetName(("Fakes"+append).c_str());
+      dc_qcd->SetTitle(("Fakes"+append).c_str());
+      if (method == 1 && tau_scale_mode == 0) {
+        em_0jet_high_Up->Write();
+        em_0jet_high_Down->Write();s
+      }
     }
    if (channel == channel::mt && method == 2 && tau_scale_mode == 0) {
         h2->Write();
         h3->Write();
     }
+
     dc_qcd->Write();
 
 
