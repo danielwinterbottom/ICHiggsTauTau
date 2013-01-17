@@ -947,7 +947,7 @@ int main(int argc, char* argv[]){
 
   if (!do_skim) {
     if (!is_embedded)             analysis.AddModule(&httTriggerFilter);
-                                  analysis.AddModule(&runStats);
+    //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
