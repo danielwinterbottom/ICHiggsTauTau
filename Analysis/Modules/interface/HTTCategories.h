@@ -20,6 +20,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, std::string, met_label)
   CLASS_MEMBER(HTTCategories, double, mass_shift)
   CLASS_MEMBER(HTTCategories, ic::channel, channel)
+  CLASS_MEMBER(HTTCategories, ic::era, era)
   // CLASS_MEMBER(HTTCategories, bool, distinguish_os)
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
 
