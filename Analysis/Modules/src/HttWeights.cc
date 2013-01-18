@@ -22,6 +22,7 @@ namespace ic {
     do_trg_weights_     = false;
     trg_applied_in_mc_  = false;
     do_etau_fakerate_   = false;
+    do_mtau_fakerate_   = false;
     do_idiso_weights_   = false;
     do_emu_e_fakerates_   = false;
     do_emu_m_fakerates_   = false;
@@ -47,6 +48,7 @@ namespace ic {
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
     std::cout << "Do ID/iso weights?: \t\t" << do_idiso_weights_ << std::endl;
     std::cout << "e->tau fake rate?: \t\t" << do_etau_fakerate_ << std::endl;
+    std::cout << "m->tau fake rate?: \t\t" << do_mtau_fakerate_ << std::endl;
     std::cout << "e-mu elec fake rates?: \t\t" << do_emu_e_fakerates_ << std::endl;
     std::cout << "e-mu muon fake rates?: \t\t" << do_emu_m_fakerates_ << std::endl;
     std::cout << "e-mu TTBar scaling?: \t\t" << do_top_factors_ << std::endl;
@@ -1007,6 +1009,29 @@ namespace ic {
               if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.94);
               if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.32);
             } 
+          }
+        }
+      }
+    }
+
+    if (do_mtau_fakerate_) {
+      std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
+      ic::erase_if(parts, !(boost::bind(&GenParticle::status, _1) == 3));
+      ic::erase_if(parts, ! ((boost::bind(&GenParticle::pdgid, _1) == 13)||(boost::bind(&GenParticle::pdgid, _1) == -13)) );
+      ic::erase_if(parts, ! (boost::bind(MinPtMaxEta, _1, 8.0, 2.6)));
+      std::vector<Candidate *> tau_cand;
+      tau_cand.push_back(dilepton[0]->GetCandidate("lepton2"));
+      std::vector<std::pair<Candidate*, GenParticle*> > matches = MatchByDR(tau_cand, parts, 0.5, true, true);
+      // Constant scaling of 1.25 in 2012, nothing in 2011
+      if (matches.size() > 0) {
+        if (mc_ == mc::fall11_42X) {
+
+        } else {
+          if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
+            eventInfo->set_weight("mtau_fakerate", 1.25);
+          }
+          if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
+            eventInfo->set_weight("mtau_fakerate", 1.25);
           }
         }
       }

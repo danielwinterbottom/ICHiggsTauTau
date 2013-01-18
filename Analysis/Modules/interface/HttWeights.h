@@ -19,6 +19,7 @@ class HttWeights : public ModuleBase {
   CLASS_MEMBER(HttWeights, bool, do_trg_weights)
   CLASS_MEMBER(HttWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HttWeights, bool, do_etau_fakerate)
+  CLASS_MEMBER(HttWeights, bool, do_mtau_fakerate)
   CLASS_MEMBER(HttWeights, bool, do_idiso_weights)
   CLASS_MEMBER(HttWeights, bool, do_emu_e_fakerates)
   CLASS_MEMBER(HttWeights, bool, do_emu_m_fakerates)

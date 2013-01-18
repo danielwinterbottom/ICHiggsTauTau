@@ -694,6 +694,7 @@ int main(int argc, char* argv[]){
     .set_trg_applied_in_mc(true)
     .set_do_trg_weights(false)
     .set_do_etau_fakerate(false)
+    .set_do_mtau_fakerate(false)
     .set_do_idiso_weights(false)
     .set_do_emu_e_fakerates(false)
     .set_do_emu_m_fakerates(false)
@@ -704,6 +705,7 @@ int main(int argc, char* argv[]){
     httWeights.set_do_btag_weight(true);
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && channel == channel::et) httWeights.set_do_etau_fakerate(true);
+  if (output_name.find("DYJetsToLL") != output_name.npos && channel == channel::mt) httWeights.set_do_mtau_fakerate(true);
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
