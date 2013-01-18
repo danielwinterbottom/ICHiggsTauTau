@@ -592,7 +592,7 @@ int main(int argc, char* argv[]){
     .set_min(1);
     if (special_mode == 1) {
       tauIsoFilter.set_predicate( (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5));
-    } else if (special_mode == 2 || special_mode == 3 || special_mode == 5 || special_mode == 6 || special_mode == 10 || special_mode == 12 || special_mode == 16) {
+    } else if (special_mode == 2 || special_mode == 5 || special_mode == 6 || special_mode == 10 || special_mode == 12 || special_mode == 16) {
       tauIsoFilter.set_predicate( (bind(&Tau::GetTauID, _1, "byIsolationMVAraw") > 0.7) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5));
     } else if (special_mode == 4) {
       tauIsoFilter.set_predicate( (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5));
@@ -952,7 +952,7 @@ int main(int argc, char* argv[]){
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
-                                  //analysis.AddModule(&httRecoilCorrector);
+                                  analysis.AddModule(&httRecoilCorrector);
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) 
                                   analysis.AddModule(&svfit);

@@ -143,7 +143,7 @@ int main(int argc, char* argv[]){
   unsigned color = 46;
   if (channel == "et") color = 2;
   if (channel == "mt") color = 4;
-  if (channel == "em") color = 8;
+  if (channel == "em") color = 1;
   if (channel == "et") channel = "#tau_{e}#tau_{h}";
   if (channel == "mt") channel = "#tau_{#mu}#tau_{h}";
   if (channel == "em") channel = "#tau_{e}#tau_{#mu}";
