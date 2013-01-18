@@ -1,5 +1,5 @@
 
-PROD=HCP
+PROD=Moriond
 PARAMS=./scripts/"$PROD"_params_2012.dat
 
 

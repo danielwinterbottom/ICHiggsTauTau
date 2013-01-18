@@ -1,40 +1,40 @@
 #### First just print our yields:
 
 ### Moriond
-./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
---labels MoriondYields  --category muTau_inclusive --output_file=output/dc_sync/yields_moriond_inclusive_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
---labels MoriondYields  --category muTau_vbf --output_file=output/dc_sync/yields_moriond_vbf_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
---labels MoriondYields  --category muTau_boost_high --output_file=output/dc_sync/yields_moriond_boost_high_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
---labels MoriondYields  --category muTau_boost_low --output_file=output/dc_sync/yields_moriond_boost_low_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
---labels MoriondYields  --category muTau_0jet_high --output_file=output/dc_sync/yields_moriond_0jet_high_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
---labels MoriondYields  --category muTau_0jet_low --output_file=output/dc_sync/yields_moriond_0jet_low_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
---labels MoriondYields --category eleTau_inclusive --output_file=output/dc_sync/yields_moriond_inclusive_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
---labels MoriondYields --category eleTau_vbf --output_file=output/dc_sync/yields_moriond_vbf_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
---labels MoriondYields --category eleTau_boost_high --output_file=output/dc_sync/yields_moriond_boost_high_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
---labels MoriondYields --category eleTau_boost_low --output_file=output/dc_sync/yields_moriond_boost_low_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
---labels MoriondYields --category eleTau_0jet_high --output_file=output/dc_sync/yields_moriond_0jet_high_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
---labels MoriondYields --category eleTau_0jet_low --output_file=output/dc_sync/yields_moriond_0jet_low_et-sm-8TeV.pdf 
-./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
---labels MoriondYields   --category emu_vbf --output_file=output/dc_sync/yields_moriond_vbf_em-sm-8TeV.pdf
-./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
---labels MoriondYields  --category emu_boost_high --output_file=output/dc_sync/yields_moriond_boost_high_em-sm-8TeV.pdf
-./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
---labels MoriondYields  --category emu_boost_low --output_file=output/dc_sync/yields_moriond_boost_low_em-sm-8TeV.pdf      
-./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
---labels MoriondYields  --category emu_0jet_high --output_file=output/dc_sync/yields_moriond_0jet_high_em-sm-8TeV.pdf
-./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
---labels MoriondYields  --category emu_0jet_low --output_file=output/dc_sync/yields_moriond_0jet_low_em-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
+# --labels MoriondYields  --category muTau_inclusive --output_file=output/dc_sync/yields_moriond_inclusive_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
+# --labels MoriondYields  --category muTau_vbf --output_file=output/dc_sync/yields_moriond_vbf_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
+# --labels MoriondYields  --category muTau_boost_high --output_file=output/dc_sync/yields_moriond_boost_high_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
+# --labels MoriondYields  --category muTau_boost_low --output_file=output/dc_sync/yields_moriond_boost_low_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
+# --labels MoriondYields  --category muTau_0jet_high --output_file=output/dc_sync/yields_moriond_0jet_high_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_mt.inputs-sm-8TeV.root \
+# --labels MoriondYields  --category muTau_0jet_low --output_file=output/dc_sync/yields_moriond_0jet_low_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
+# --labels MoriondYields --category eleTau_inclusive --output_file=output/dc_sync/yields_moriond_inclusive_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
+# --labels MoriondYields --category eleTau_vbf --output_file=output/dc_sync/yields_moriond_vbf_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
+# --labels MoriondYields --category eleTau_boost_high --output_file=output/dc_sync/yields_moriond_boost_high_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
+# --labels MoriondYields --category eleTau_boost_low --output_file=output/dc_sync/yields_moriond_boost_low_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
+# --labels MoriondYields --category eleTau_0jet_high --output_file=output/dc_sync/yields_moriond_0jet_high_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs Moriond-htt_et.inputs-sm-8TeV.root \
+# --labels MoriondYields --category eleTau_0jet_low --output_file=output/dc_sync/yields_moriond_0jet_low_et-sm-8TeV.pdf 
+# ./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
+# --labels MoriondYields   --category emu_vbf --output_file=output/dc_sync/yields_moriond_vbf_em-sm-8TeV.pdf
+# ./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
+# --labels MoriondYields  --category emu_boost_high --output_file=output/dc_sync/yields_moriond_boost_high_em-sm-8TeV.pdf
+# ./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
+# --labels MoriondYields  --category emu_boost_low --output_file=output/dc_sync/yields_moriond_boost_low_em-sm-8TeV.pdf      
+# ./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
+# --labels MoriondYields  --category emu_0jet_high --output_file=output/dc_sync/yields_moriond_0jet_high_em-sm-8TeV.pdf
+# ./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
+# --labels MoriondYields  --category emu_0jet_low --output_file=output/dc_sync/yields_moriond_0jet_low_em-sm-8TeV.pdf
 
 # ### HCP
 # ./bin/DatacardCompare --inputs HCP-htt_mt.inputs-sm-8TeV.root \
