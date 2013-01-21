@@ -1064,11 +1064,10 @@ int main(int argc, char* argv[]){
   std::cout << "Background Norm: " << top_norm + vv_norm + zll_norm + ztt_norm + w_norm + qcd_norm << std::endl;
 
 
-  // if (swap_inclusive) {
-  //   if (category == 8) dc_cat_label = "0jet_low";
-  //   if (category == 0) dc_cat_label = "inclusive";
-
-  // }
+  if (swap_inclusive) {
+    if (method == 8) dc_cat_label = "0jet_low";
+    if (method == 0) dc_cat_label = "inclusive";
+  }
 
   if (make_datacard) {
 

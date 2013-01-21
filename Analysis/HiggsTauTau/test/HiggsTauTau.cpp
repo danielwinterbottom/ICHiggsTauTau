@@ -413,13 +413,17 @@ int main(int argc, char* argv[]){
     .set_min(1);
   if (era == era::data_2011) embeddedMassFilter.set_input_label("genParticles");
 
-  // JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
-  // ("JetEnergyCorrections")
-  // .set_input_label("pfJetsPFlow")
-  // .set_is_data(is_data)
-  // .set_l1_file("data/jec/START53_V10_L1FastJet_AK5PF.txt")
-  // .set_l2_file("data/jec/START53_V10_L2Relative_AK5PF.txt")
-  // .set_l3_file("data/jec/START53_V10_L3Absolute_AK5PF.txt");
+
+  string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";
+
+  JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
+  ("JetEnergyCorrections")
+  .set_input_label("pfJetsPFlow")
+  .set_is_data(is_data)
+  .set_l1_file("data/jec/"+jec_payload+"_L1FastJet_AK5PF.txt")
+  .set_l2_file("data/jec/"+jec_payload+"_L2Relative_AK5PF.txt")
+  .set_l3_file("data/jec/"+jec_payload+"_L3Absolute_AK5PF.txt")
+  .set_res_file("data/jec/"+jec_payload+"_L2L3Residual_AK5PF.txt");
   
   // ------------------------------------------------------------------------------------
   // Electron Modules
@@ -861,7 +865,7 @@ int main(int argc, char* argv[]){
     if (!is_embedded)             analysis.AddModule(&httTriggerFilter);
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
-    //                            analysis.AddModule(&jetEnergyCorrections);
+                                  analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
                                   analysis.AddModule(&httRecoilCorrector);
