@@ -59,7 +59,10 @@ namespace ic {
     InitCategory("vbf_loose_jets20");
     InitCategory("1jet_high");
     InitCategory("1jet_low");
+    
     InitCategory("0jet_high");
+    InitCoreControlPlots("0jet_high");
+
     InitCategory("0jet_low");
     InitCategory("btag");
     InitCategory("btag_loose");
@@ -269,6 +272,8 @@ namespace ic {
     }
     // 0-jet High Category
     if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0 && em_0jet_high_muon_eta) SetPassCategory("0jet_high");
+    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) FillCoreControlPlots("0jet_high");
+
     // 0-jet Low Category
     if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) SetPassCategory("0jet_low");
 

@@ -696,6 +696,7 @@ int main(int argc, char* argv[]){
     .set_do_etau_fakerate(false)
     .set_do_mtau_fakerate(false)
     .set_do_idiso_weights(false)
+    .set_do_id_weights(false) // This will override do_idiso_weights, applying only ID weights in embedded
     .set_do_emu_e_fakerates(false)
     .set_do_emu_m_fakerates(false)
     .set_do_top_factors(false)
@@ -706,7 +707,7 @@ int main(int argc, char* argv[]){
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && channel == channel::et) httWeights.set_do_etau_fakerate(true);
   if (output_name.find("DYJetsToLL") != output_name.npos && channel == channel::mt) httWeights.set_do_mtau_fakerate(true);
-  if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false);
+  if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
   //if (outname.find("TTJets") != outname.npos && mode == 2 && era == 0) httWeights.set_do_top_factors(true);
@@ -773,98 +774,6 @@ int main(int argc, char* argv[]){
   if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
   if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
 
-  // HttVbfCategory httVbfCategory = HttVbfCategory
-  //   ("HttVbfCategory","pfJetsPFlow")
-  //   .set_fs(fs)
-  //   .set_channel(channel)
-  //   .set_met_label(met_label)
-  //   .set_do_jetvtx_assoc(false)
-  //   .set_do_mc_eff(false)
-  //   .set_do_vbf_mva(do_vbf_mva)
-  //   .set_do_mva_pu_id(true)
-  //   .set_make_plots(false)
-  //   .set_mva_cut(0.5)
-  //   .set_make_mva_tree(false)
-  //   .set_do_cjv(true)
-  //   .set_vbf_cjv_pt(30.0)
-  //   .set_mva_name("MVA_"+output_name);
-  // if (special_mode == 6 || special_mode == 8) httVbfCategory.set_jet_pt(20.0);
-  // if (special_mode == 6) httVbfCategory.set_mva_cut(0.0);
-  // httVbfCategory.set_era(era).set_use_hcp_mva(true);
-  // if (era == era::data_2011) {
-  //   httVbfCategory.set_mva_cut(0.676);
-  //   if (channel == channel::em) httVbfCategory.set_mva_cut(0.9);
-  // } else {
-  //   httVbfCategory.set_mva_cut(0.978);
-  //   if (channel == channel::em) httVbfCategory.set_mva_cut(0.9);
-  // }
-  // if (strategy == strategy::ichep2012) {
-  //   httVbfCategory.set_use_hcp_mva(false).set_mva_cut(0.5);
-  //   httVbfCategory.set_jet_eta(5.0);
-  // }
-
-  // HttVHCategory httVHCategory = HttVHCategory
-  //   ("HttVHCategory","pfJetsPFlow");
-
-  // HttOneJetCategory httOneJetHighPtCategory = HttOneJetCategory
-  //   ("HttOneJetHighPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(true).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
-  // httOneJetHighPtCategory.set_met_cut(30.0);
-  // if (strategy == strategy::ichep2012) httOneJetHighPtCategory.set_jet_eta(5.0);
-  
-
-  // HttOneJetCategory httOneJetLowPtCategory = HttOneJetCategory
-  //   ("HttOneJetLowPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(false).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
-  // httOneJetLowPtCategory.set_met_cut(30.0);
-  // if (strategy == strategy::ichep2012) httOneJetLowPtCategory.set_jet_eta(5.0);
-
-
-  // HttOneBJetCategory httOneBJetHighPtCategory = HttOneBJetCategory
-  //   ("HttBOneJetHighPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(true).set_channel(channel).set_met_label(met_label);;
-  // if (special_mode == 9 || special_mode == 10) httOneBJetHighPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-  // if (special_mode == 13) httOneBJetHighPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-
-  // HttOneBJetCategory httOneBJetLowPtCategory = HttOneBJetCategory
-  //   ("HttBOneJetLowPtCategory","pfJetsPFlow").set_fs(fs).set_high_pt(false).set_channel(channel).set_met_label(met_label);;
-  // if (special_mode == 9 || special_mode == 10) httOneBJetLowPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-  // if (special_mode == 13) httOneBJetLowPtCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-
-  // HttBTagCategory httBTagCategory = HttBTagCategory
-  //   ("HttBTagCategory","pfJetsPFlow").set_fs(fs).set_channel(channel).set_met_label(met_label);
-  // if (special_mode == 9 || special_mode == 10) httBTagCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-  // if (special_mode == 13) httBTagCategory.set_apply_special_mode(true).set_special_min(1).set_special_max(99).set_special_pt(20.0).set_special_eta(2.4).set_met_label(met_label);
-
-  // HttNoBTagCategory httNoBTagCategory = HttNoBTagCategory
-  //   ("HttNoBTagCategory","pfJetsPFlow").set_fs(fs).set_do_met_cut(false).set_channel(channel).set_met_label(met_label);
-
-  // HttZeroJetCategory httZeroJetHighPtCategory = HttZeroJetCategory
-  //   ("HttZeroJetHighPtCategory").set_fs(fs).set_high_pt(true).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
-  // httZeroJetHighPtCategory.set_met_cut(0.0);
-  // if (strategy == strategy::ichep2012) {
-  //   httZeroJetHighPtCategory.set_met_cut(30.0);
-  //   httZeroJetHighPtCategory.set_veto_jet_eta(5.0);
-  // }
-
-  // HttZeroJetCategory httZeroJetLowPtCategory = HttZeroJetCategory
-  //   ("HttZeroJetLowPtCategory").set_fs(fs).set_high_pt(false).set_do_met_cut(true).set_channel(channel).set_met_label(met_label);
-  // httZeroJetLowPtCategory.set_met_cut(0.0);
-  // if (strategy == strategy::ichep2012) {
-  //   httZeroJetLowPtCategory.set_met_cut(30.0);
-  //   httZeroJetLowPtCategory.set_veto_jet_eta(5.0);
-  // }
-
-  // if (!is_data) {
-  //   httVbfCategory.set_do_btag_weight(true);
-  //   httOneJetHighPtCategory.set_do_btag_weight(true);
-  //   httOneJetLowPtCategory.set_do_btag_weight(true);
-  //   httOneBJetHighPtCategory.set_do_btag_weight(true);
-  //   httOneBJetLowPtCategory.set_do_btag_weight(true);
-  //   httZeroJetHighPtCategory.set_do_btag_weight(true);
-  //   httZeroJetLowPtCategory.set_do_btag_weight(true);
-  //   if (special_mode == 9 || special_mode == 10 || special_mode == 13) {
-  //     httOneBJetHighPtCategory.set_do_btag_weight(false);
-  //     httOneBJetLowPtCategory.set_do_btag_weight(false);
-  //   }
-  // }
 
   HttSync httSync("HttSync","SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
@@ -968,20 +877,6 @@ int main(int argc, char* argv[]){
     //                            analysis.AddModule(&jetVtxStudy);
     if(!quark_gluon_study)        analysis.AddModule(&httCategories);
 
-    // if (special_mode == 9 || special_mode == 10) {
-    //                            analysis.AddModule(&httOneBJetHighPtCategory);
-    //                            analysis.AddModule(&httOneBJetLowPtCategory);
-    // } else {
-    //                            analysis.AddModule(&httVbfCategory);
-    //                            analysis.AddModule(&httOneJetHighPtCategory);
-    //                            analysis.AddModule(&httOneJetLowPtCategory);
-    //                            analysis.AddModule(&httOneBJetHighPtCategory);
-    //                            analysis.AddModule(&httOneBJetLowPtCategory);
-    //                            analysis.AddModule(&httZeroJetHighPtCategory);
-    //                            analysis.AddModule(&httZeroJetLowPtCategory);
-    //                            analysis.AddModule(&httNoBTagCategory);
-    //                            analysis.AddModule(&httBTagCategory);
-    // }
   }
 
   if (do_skim) {

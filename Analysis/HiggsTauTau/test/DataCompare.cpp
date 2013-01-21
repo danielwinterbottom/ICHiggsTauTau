@@ -36,7 +36,7 @@ void SetStyle(ic::TH1PlotElement & ele, unsigned color) {
   return;
 }
 
-void SetStyleBlock(ic::TH1PlotElement & ele, unsigned color) {
+void SetStyleBlock(ic::TH1PlotElement & ele) {
   //ele.set_marker_color(color);
   ele.set_line_color(14);
   ele.set_fill_color(18);
@@ -50,7 +50,7 @@ void SetStyleBlock(ic::TH1PlotElement & ele, unsigned color) {
 }
 
 
-void SetDataStyle(ic::TH1PlotElement & ele, unsigned color) {
+void SetDataStyle(ic::TH1PlotElement & ele) {
   ele.set_marker_color(1);
   ele.set_line_color(1);
   ele.set_fill_color(1);
@@ -176,7 +176,7 @@ int main(int argc, char* argv[]){
   }
   ic::RatioPlotElement ratio("Ratio",label2,label1);
 
-  SetStyleBlock(p1, 1);
+  SetStyleBlock(p1);
   SetStyle(p2, color);
   SetStyle(ratio, color);
 

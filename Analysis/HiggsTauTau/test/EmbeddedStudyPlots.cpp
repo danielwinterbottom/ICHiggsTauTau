@@ -35,7 +35,7 @@ void SetStyle(ic::TH1PlotElement & ele, unsigned color) {
 }
 
 
-void SetDataStyle(ic::TH1PlotElement & ele, unsigned color) {
+void SetDataStyle(ic::TH1PlotElement & ele) {
   ele.set_marker_color(1);
   ele.set_line_color(1);
   ele.set_fill_color(1);
@@ -65,6 +65,11 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
 
 
 int main(int argc, char* argv[]){
+
+  std::cout << argc << " arguments passed to program: " << std::endl;
+  for (int i = 0; i < argc; ++i) {
+    std::cout << "-- " << argv[i] << std::endl;
+  }
 
   TFile f("embedded_study.root");
 

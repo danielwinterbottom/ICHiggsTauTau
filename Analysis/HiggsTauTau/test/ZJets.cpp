@@ -114,7 +114,7 @@ int main(int argc, char* argv[]){
   // if (do_skim) disable_reweighting = true;
 
   // Some options must now be re-configured based on other options
-  ic::strategy strategy = String2Strategy(strategy_str);
+  // ic::strategy strategy = String2Strategy(strategy_str);
   ic::era era           = String2Era(era_str);
   ic::mc mc             = String2MC(mc_str);
   ic::channel channel   = String2Channel(channel_str);
@@ -167,9 +167,9 @@ int main(int argc, char* argv[]){
   elec_dxy = 0.045;
   muon_dz = 0.2;
   muon_dxy = 0.045;
-  elec_pt = 20.0;
+  elec_pt = 10.0;
   elec_eta = 2.1;
-  muon_pt = 20.0;
+  muon_pt = 10.0;
   muon_eta = 2.1;
 
   std::cout << "** Kinematics **" << std::endl;

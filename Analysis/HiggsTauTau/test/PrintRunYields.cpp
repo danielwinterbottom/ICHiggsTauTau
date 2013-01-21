@@ -44,7 +44,7 @@ void SetStyle(ic::TH1PlotElement & ele, unsigned color) {
   return;
 }
 
-void SetDataStyle(ic::TH1PlotElement & ele, unsigned color) {
+void SetDataStyle(ic::TH1PlotElement & ele) {
   ele.set_marker_color(1);
   ele.set_line_color(1);
   ele.set_fill_color(1);

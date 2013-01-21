@@ -115,7 +115,7 @@ void SetStyle(ic::TH1PlotElement & ele, unsigned color) {
   return;
 }
 
-void SetDataStyle(ic::TH1PlotElement & ele, unsigned color) {
+void SetDataStyle(ic::TH1PlotElement & ele) {
   ele.set_marker_color(1);
   ele.set_line_color(1);
   ele.set_fill_color(1);
@@ -1325,7 +1325,7 @@ int main(int argc, char* argv[]){
   SetStyle(w_shape, kRed    + 2);
   SetStyle(ztt_shape, kOrange - 4);
   SetStyle(top_shape, kBlue   - 8);
-  SetDataStyle(data_shape,1);
+  SetDataStyle(data_shape);
   if (signal_no_stack) {
     signal_shape.set_in_stack(false);
     signalvbf_shape.set_in_stack(false);

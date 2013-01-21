@@ -24,6 +24,7 @@ namespace ic {
     do_etau_fakerate_   = false;
     do_mtau_fakerate_   = false;
     do_idiso_weights_   = false;
+    do_id_weights_      = false;
     do_emu_e_fakerates_   = false;
     do_emu_m_fakerates_   = false;
     do_top_factors_     = false;
@@ -46,7 +47,8 @@ namespace ic {
     std::cout << "MC: " << MC2String(mc_) << std::endl;
     std::cout << "Do Trg Weights?: \t\t" << do_trg_weights_ << std::endl;
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
-    std::cout << "Do ID/iso weights?: \t\t" << do_idiso_weights_ << std::endl;
+    std::cout << "Do ID & iso weights?: \t\t" << do_idiso_weights_ << std::endl;
+    std::cout << "Do ID weights?: \t\t" << do_id_weights_ << std::endl;
     std::cout << "e->tau fake rate?: \t\t" << do_etau_fakerate_ << std::endl;
     std::cout << "m->tau fake rate?: \t\t" << do_mtau_fakerate_ << std::endl;
     std::cout << "e-mu elec fake rates?: \t\t" << do_emu_e_fakerates_ << std::endl;
@@ -687,7 +689,7 @@ namespace ic {
       }
     }
 
-    if (do_idiso_weights_) {
+    if (do_idiso_weights_ || do_id_weights_) {
       if (channel_ == channel::et) {
         Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
         double pt = elec->pt();
@@ -719,6 +721,7 @@ namespace ic {
           if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9826; ele_iso = 0.9845; }
           if (pt > 30.0 && sc_eta >= 1.479)               { ele_id = 0.9689; ele_iso = 0.9971; }
         }
+        if (do_id_weights_) ele_iso = 1.0;
         weight *= (ele_id * ele_iso);
         event->Add("idweight_1", ele_id);
         event->Add("idweight_2", double(1.0));
@@ -766,6 +769,7 @@ namespace ic {
           if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9893; mu_iso = 0.9936; }
           if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9829; mu_iso = 0.9960; }
         }
+        if (do_id_weights_) mu_iso = 1.0;
         weight *= (mu_id * mu_iso);
         event->Add("idweight_1", mu_id);
         event->Add("idweight_2", double(1.0));
@@ -933,6 +937,7 @@ namespace ic {
             if (e_pt > 20.0)                  e_idiso = 1.0117;
           }
         }
+        // if (do_id_weights_) mu_iso = 1.0;
         weight *= (e_idiso * m_idiso);
         event->Add("idweight_1", e_idiso);
         event->Add("idweight_2", m_idiso);
