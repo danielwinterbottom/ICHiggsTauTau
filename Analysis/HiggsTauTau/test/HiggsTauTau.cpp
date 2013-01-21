@@ -865,7 +865,7 @@ int main(int argc, char* argv[]){
     if (!is_embedded)             analysis.AddModule(&httTriggerFilter);
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
-                                  analysis.AddModule(&jetEnergyCorrections);
+    //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
                                   analysis.AddModule(&httRecoilCorrector);
