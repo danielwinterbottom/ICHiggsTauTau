@@ -1,5 +1,19 @@
 PROD=Moriond
 
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=em --rebin=1 \
+  --method=5 --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false  --norm_bins=true --verbose=true \
+  --paramfile=./scripts/Moriond_params_2012.dat --extra_pad=1.4
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=et --rebin=1 \
+  --method=5 --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false  --norm_bins=true --verbose=true \
+  --paramfile=./scripts/Moriond_params_2012.dat --extra_pad=1.4
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=mt --rebin=1 \
+  --method=5 --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false  --norm_bins=true --verbose=true \
+  --paramfile=./scripts/Moriond_params_2012.dat --extra_pad=1.4
 
 PARAMS=./scripts/"$PROD"_params_2012.dat
 TSCALE=(

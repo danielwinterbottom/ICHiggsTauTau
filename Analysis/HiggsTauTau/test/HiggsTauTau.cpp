@@ -497,8 +497,8 @@ int main(int argc, char* argv[]){
     .set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.5) 
                 && bind(ElectronHTTId, _1, true)
                 && bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3
-                && bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy
-                && bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz)
+                && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
+                && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2)
     .set_min(0).set_max((channel == channel::et || channel == channel::em) ? 1 : 0);
 
   // ------------------------------------------------------------------------------------
@@ -565,8 +565,8 @@ int main(int argc, char* argv[]){
   .set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.4) 
               && bind(MuonTight, _1) 
               && bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
-              && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy)
-              && (bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz))
+              && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
+              && (bind(fabs, bind(&Muon::dz_vertex, _1)) < 0.2))
   .set_min(0).set_max((channel == channel::mt || channel == channel::mtmet || channel == channel::em) ? 1 : 0);                   
 
   // ------------------------------------------------------------------------------------
@@ -886,7 +886,6 @@ int main(int argc, char* argv[]){
   if (do_skim) {
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
-
   // Run analysis
   analysis.RunAnalysis();
   delete fs;

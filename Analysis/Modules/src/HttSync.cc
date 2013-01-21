@@ -302,6 +302,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lPassIso2 = true;
       lMt2 = MT(htau, selectedMet);
     } else if (channel_ == channel::em) {
+      if (lepton->charge() == tau->charge()) return 0;
       if (event->Exists("svfitMass")) {
         lMSV = event->Get<double>("svfitMass");
       } else {

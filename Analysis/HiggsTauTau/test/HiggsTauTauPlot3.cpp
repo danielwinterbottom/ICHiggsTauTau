@@ -338,6 +338,7 @@ int main(int argc, char* argv[]){
     files.push_back("Data");
     files.push_back("Special_3_Data"); 
     files.push_back("DYJetsToTauTau"); 
+    files.push_back("DYJetsToTauTauSoup"); 
     files.push_back("Embedded");
     files.push_back("DYJetsToLL");
     files.push_back("DYJetsToLL-L");
@@ -362,6 +363,7 @@ int main(int argc, char* argv[]){
     files.push_back("Special_23_Data"); 
     files.push_back("Special_24_Data"); 
     files.push_back("DYJetsToTauTau"); 
+    files.push_back("DYJetsToTauTauSoup"); 
     files.push_back("Embedded");
     files.push_back("WWJetsTo2L2Nu");
     files.push_back("WZJetsTo2L2Q");
@@ -684,6 +686,7 @@ int main(int argc, char* argv[]){
   ztt_norm = ztt_mc_inc_yield * embedded_eff;
   //if (use_ztt_mc) ztt_norm = Integral(os_sel["DYJetsToTauTau"+sel].hist_ptr());
   if (verbose) cout << "- [DYJetsToTauTau MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << endl;
+  if (verbose) cout << "- [DYJetsToTauTauSoup MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << endl;
   
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
     //0/1 Jet, Inclusive
@@ -708,6 +711,7 @@ int main(int argc, char* argv[]){
 
   double embed_norm = Integral(plots["DYJetsToTauTau_inclusive_os"].hist_ptr()) / Integral(plots["Embedded_inclusive_os"].hist_ptr());
   if (verbose) std::cout << "Embedded->Norm Scaling: " << embed_norm << std::endl; 
+  if (verbose) cout << "- [Embedded Category Yield]: " << Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr())*embed_norm << " +/- " << Error(plots[Token("Embedded",cat,os_sel)].hist_ptr())*embed_norm << endl;
   ztt_hist->Scale( ztt_norm / Integral(ztt_hist) );
   ic::TH1PlotElement ztt_shape("ztt_shape", ztt_hist);
 
