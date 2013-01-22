@@ -340,6 +340,20 @@ namespace ic {
     return pass_mva;
   }
 
+  bool ElectronHTTVHID(Electron const* elec) {
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;
+    if (elec->gsf_tk_nhits() > 0) return false;
+    bool pass_mva = false;
+    double pt = elec->pt();
+    double eta = fabs(elec->sc_eta());
+    double idmva = elec->GetIdIso("mvaNonTrigV0");
+    if (pt <= 10.0 && eta <= 0.8                  && idmva > 0.5) pass_mva = true;
+    if (pt <= 10.0 && eta >  0.8 && eta <= 1.479  && idmva > 0.12) pass_mva = true;
+    if (pt <= 10.0 && eta >  1.479                && idmva > 0.6) pass_mva = true;
+    return pass_mva;
+  }
+
   bool ElectronHTTId(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
     if (elec->has_matched_conversion()) return false;
