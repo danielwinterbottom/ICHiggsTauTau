@@ -348,9 +348,9 @@ namespace ic {
     double pt = elec->pt();
     double eta = fabs(elec->sc_eta());
     double idmva = elec->GetIdIso("mvaNonTrigV0");
-    if (pt <= 10.0 && eta <= 0.8                  && idmva > 0.5) pass_mva = true;
-    if (pt <= 10.0 && eta >  0.8 && eta <= 1.479  && idmva > 0.12) pass_mva = true;
-    if (pt <= 10.0 && eta >  1.479                && idmva > 0.6) pass_mva = true;
+    if (pt >= 10.0 && eta <= 0.8                  && idmva > 0.5) pass_mva = true;
+    if (pt >= 10.0 && eta >  0.8 && eta <= 1.479  && idmva > 0.12) pass_mva = true;
+    if (pt >= 10.0 && eta >  1.479                && idmva > 0.6) pass_mva = true;
     return pass_mva;
   }
 
