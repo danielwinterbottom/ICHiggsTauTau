@@ -28,6 +28,7 @@ int main(int argc, char* argv[]){
     bool second_trigger;
     bool idiso_only;
     bool trg_only;
+    bool VH;
     std::string era, eraB;
     std::string configfile, outname,outnametrg,outnametrgB, filelist, outfolder;
     std::string skim_path="";
@@ -71,6 +72,7 @@ int main(int argc, char* argv[]){
       ("do_skim", po::value<bool>(&do_skim)->default_value(false), "true runs in skim mode")
       ("skim_path", po::value<std::string>(&skim_path), "output folder for skims")
       ("idiso_only", po::value<bool>(&idiso_only)->default_value(false), "to rerun just id and iso")
+      ("VH", po::value<bool>(&VH)->default_value(false), "to just run the numbers for VH")
       ("trg_only", po::value<bool>(&trg_only)->default_value(false), "to rerun just trigger")
       ("second_trigger", po::value<bool>(&second_trigger)->default_value(false), "allows a measurement of a second trigger if there are two in era")
       ("is_elec", po::value<bool>(&iselec)->required(), "0=muons, 1=electrons")
@@ -331,7 +333,65 @@ int main(int argc, char* argv[]){
     .set_mode(2)
     .set_era(era);
     
+    ElectronTagAndProbe electronVHIDTagAndProbe("electronVHIDTagAndProbe");
+    electronVHIDTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_id_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate(boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate( (boost::bind(MinPtMaxEta, _1, 10, 2.1)))
+    .set_passprobe_predicate((boost::bind(ElectronHTTVHID, _1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045))
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(0)
+    .set_era(era);
+
+    ElectronTagAndProbe electronVHIsoTagAndProbe("electronVHIsoTagAndProbe");
+    electronVHIsoTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_iso_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1) 
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(  boost::bind(ElectronHTTVHID, _1) 
+                        && (boost::bind(MinPtMaxEta, _1, 10, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) )
+    .set_passprobe_predicate(boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3)
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(1)
+    .set_era(era);
     
+    ElectronTagAndProbe electronVHIDIsoTagAndProbe("electronVHIDIsoTagAndProbe");
+    electronVHIDIsoTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_idiso_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1)) 
+    .set_passprobe_predicate((boost::bind(ElectronHTTVHID, _1)) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) 
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3) )
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(2)
+    .set_era(era);
+     
     ElectronTagAndProbe electronIDFineTagAndProbe("electronIDFineTagAndProbe");
     electronIDFineTagAndProbe
     .set_fs(fsid)
@@ -521,6 +581,65 @@ int main(int argc, char* argv[]){
     .set_mode(2)
     .set_era(era);
     
+    MuonTagAndProbe muonVHIDTagAndProbe("muonVHIDTagAndProbe");
+    muonVHIDTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_id_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate(boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate( (boost::bind(MinPtMaxEta, _1, 10, 2.1)))
+    .set_passprobe_predicate((boost::bind(MuonTight, _1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045))
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(0)
+    .set_era(era);
+
+    MuonTagAndProbe muonVHIsoTagAndProbe("muonVHIsoTagAndProbe");
+    muonVHIsoTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_iso_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1) 
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(  boost::bind(MuonTight, _1) 
+                        && (boost::bind(MinPtMaxEta, _1, 10, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) )
+    .set_passprobe_predicate(boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.3)
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(1)
+    .set_era(era);
+    
+    MuonTagAndProbe muonVHIDIsoTagAndProbe("muonVHIDIsoTagAndProbe");
+    muonVHIDIsoTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_idiso_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1)) 
+    .set_passprobe_predicate((boost::bind(MuonTight, _1)) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) 
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.3) )
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(2)
+    .set_era(era);
+    
     
     MuonTagAndProbe muonIDFineTagAndProbe("muonIDFineTagAndProbe");
     muonIDFineTagAndProbe
@@ -640,7 +759,13 @@ int main(int argc, char* argv[]){
         {
             if(!isdata) analysis.AddModule(&pileupWeight);
             if (isdata) analysis.AddModule(&lumiMask);
-            if(!trg_only)
+            if(VH)
+            {
+                analysis.AddModule(&electronVHIDTagAndProbe);
+                analysis.AddModule(&electronVHIsoTagAndProbe);
+                analysis.AddModule(&electronVHIDIsoTagAndProbe);
+            }
+            if(!trg_only && !VH)
             {
                 analysis.AddModule(&electronIDTagAndProbe);
                 analysis.AddModule(&electronIsoTagAndProbe);
@@ -649,7 +774,7 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&electronIsoFineTagAndProbe);
                 analysis.AddModule(&electronIDIsoFineTagAndProbe);
             }
-            if(!idiso_only)
+            if(!idiso_only && !VH)
             {
                 analysis.AddModule(&electronTrgATagAndProbe);
                     if(second_trigger) analysis.AddModule(&electronTrgBTagAndProbe);
@@ -659,7 +784,13 @@ int main(int argc, char* argv[]){
         {
             if(!isdata) analysis.AddModule(&pileupWeight);
             if (isdata) analysis.AddModule(&lumiMask);
-            if(!trg_only)
+            if(VH)
+            {
+                analysis.AddModule(&muonVHIDTagAndProbe);
+                analysis.AddModule(&muonVHIsoTagAndProbe);
+                analysis.AddModule(&muonVHIDIsoTagAndProbe);
+            }
+            if(!trg_only && !VH)
             {
                 analysis.AddModule(&muonIDTagAndProbe);
                 analysis.AddModule(&muonIsoTagAndProbe);
@@ -668,7 +799,7 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&muonIsoFineTagAndProbe);
                 analysis.AddModule(&muonIDIsoFineTagAndProbe);
             }
-            if(!idiso_only)
+            if(!idiso_only && !VH)
             {
                 analysis.AddModule(&muonTrgATagAndProbe); 
                     if(second_trigger) analysis.AddModule(&muonTrgBTagAndProbe);
