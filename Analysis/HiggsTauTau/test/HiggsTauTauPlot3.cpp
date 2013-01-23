@@ -136,6 +136,8 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
   ele.set_draw_stat_error_y(true);
   ele.set_draw_line(false);
   ele.set_draw_marker(true);
+  ele.set_marker_size(1.3);
+  ele.set_marker_style(20);
   return;
 }
 
@@ -168,6 +170,7 @@ int main(int argc, char* argv[]){
 
   // Plotting options
   string x_axis_label;													// Label for the X-axis
+  string x_axis_bin_labels;                     // of the form "a:b:c"
   unsigned rebin;																// Rebin factor
   bool custom_x_axis_range;											// Can optionally specify an x-axis range
   double x_axis_min;														// If custom_x_axis_range is true, use this as min
@@ -181,7 +184,7 @@ int main(int argc, char* argv[]){
   bool norm_bins;																// Normalise using bin width
   bool signal_no_stack;													// Don't stack the signal contributions on the backgrounds
   bool signal_split_vbf;												// Split the signal vbf into a separate entry
- 
+  bool draw_ratio;                               // Draw a ratio box
  	// Datacard options
   bool make_datacard;														// Generate a datacard from this plot
   bool swap_inclusive;													// For datacard creation: swap labels of inclusive with 0jet_low
@@ -217,6 +220,7 @@ int main(int argc, char* argv[]){
     ("method",           		po::value<unsigned>(&method)->required())
     ("category",            po::value<string>(&category)->default_value(""))
     ("is_2012",             po::value<bool>(&is_2012)->required())
+    ("draw_ratio",          po::value<bool>(&draw_ratio)->default_value(false))
     ("mssm_mode",           po::value<unsigned>(&mssm_mode)->required())
     ("no_plot",             po::value<bool>(&no_plot)->default_value(false))
     ("verbose",             po::value<bool>(&verbose)->default_value(false))
@@ -224,6 +228,7 @@ int main(int argc, char* argv[]){
     ("draw_ss",             po::value<bool>(&draw_ss)->default_value(false))
     ("use_ztt_mc",          po::value<bool>(&use_ztt_mc)->default_value(false))
     ("x_axis_label",        po::value<string>(&x_axis_label)->required())
+    ("x_axis_bin_labels",   po::value<string>(&x_axis_bin_labels)->default_value(""))
     ("rebin",               po::value<unsigned>(&rebin)->default_value(1))
     ("custom_x_axis_range", po::value<bool>(&custom_x_axis_range)->default_value(false))
     ("x_axis_min",          po::value<double>(&x_axis_min)->default_value(0))
@@ -516,6 +521,8 @@ int main(int argc, char* argv[]){
   top_hist_ss->Scale(top_norm_ss / Integral(top_hist_ss));
   ic::TH1PlotElement top_shape_ss("top_shape_ss", top_hist_ss);
   std::cout << "** Top Norm: " << top_norm << std::endl;
+  std::cout << "** Top Err: " << Error(plots[Token("TTJets",cat,os_sel)].hist_ptr()) << std::endl;
+  std::cout << "** Top Events: " << plots[Token("TTJets",cat,os_sel)].hist_ptr()->GetEntries() << std::endl;
 
   // ---------------------------------------------------
   // Generate VV Norm and VV Shape
@@ -576,7 +583,8 @@ int main(int argc, char* argv[]){
   vv_hist_ss->Scale( vv_norm_ss / Integral(vv_hist_ss) );
   ic::TH1PlotElement vv_shape_ss("vv_shape_ss", vv_hist_ss);
 
-  std::cout << "Diboson Norm: " << vv_norm << std::endl;
+  std::cout << "**Diboson Norm: " << vv_norm << std::endl;
+  std::cout << "**Diboson Err: " << Error(vv_hist) << std::endl;
 
   // // ---------------------------------------------------
   // // Generate ZLL, ZL and ZJ Norm and Shapes
@@ -1269,12 +1277,16 @@ int main(int argc, char* argv[]){
   plot.output_filename = plot_name + "_" + dc_cat_label + "_" + channel_str  + "_" + kind_label + "_" + year_label + (draw_ss ? "_ss" : "") + ".pdf";
   if (log_y) plot.output_filename = plot_name + "_" + dc_cat_label + "_" +channel_str + "_" + kind_label + "_" + year_label + (draw_ss ? "_ss" : "")  + "_log.pdf";
   
-
+  plot.x_bin_labels_ = x_axis_bin_labels;
 
   TH1F* signal_hist;
   if (mssm_mode == 0) {
     signal_hist = (TH1F*)(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()->Clone());
+    std::cout << "ggH Norm: " << Integral(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
+    std::cout << "ggH Err: " << Error(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
     if (!signal_split_vbf) signal_hist->Add(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr());
+    std::cout << "qqH Norm: " << Integral(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
+    std::cout << "qqH Err: " << Error(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
     signal_hist->Add(plots[Token("WH_ZH_TTH_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr());
     signal_hist->Scale(draw_signal_factor);
   } else {
@@ -1406,9 +1418,12 @@ int main(int argc, char* argv[]){
   if (channel == channel::em) plot.title_right = "#tau_{e}#tau_{#mu}, "+category;
   if (mssm_mode == 1) plot.legend_left = 0.45;
 
-  plot.draw_ratio_hist = false;
+  plot.draw_ratio_hist = draw_ratio;
   plot.draw_signif = false;
-  ic::RatioPlotElement ratio("Mug","data_shape","top_shape+vv_shape+zll_shape+ztt_shape+w_shape+qcd_shape");
+
+  string background_list = "top_shape+ztt_shape+w_shape+qcd_shape";
+  if (channel == channel::et) background_list += "+zll_shape";
+  ic::RatioPlotElement ratio("Mug","data_shape",background_list);
   
   plot.band_size_fractional_ = band_size_fractional;
   plot.draw_band_on_stack_ = draw_band_on_stack;

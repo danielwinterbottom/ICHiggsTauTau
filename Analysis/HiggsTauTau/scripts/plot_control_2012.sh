@@ -177,38 +177,38 @@ PARAMS=./scripts/"$PROD"_params_2012.dat
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=et  \
   --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
-  --make_datacard=false --norm_bins=false --verbose=false \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
   --paramfile=$PARAMS --log_y=true
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=mt \
   --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
-  --make_datacard=false --norm_bins=false --verbose=false \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
   --paramfile=$PARAMS --log_y=true
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=em \
   --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
-  --make_datacard=false --norm_bins=false --verbose=false \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
   --paramfile=$PARAMS --log_y=true
 
 ###### n_bjets
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=et  \
   --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
-  --make_datacard=false --norm_bins=false --verbose=false \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
   --paramfile=$PARAMS --log_y=true
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=mt \
   --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
-  --make_datacard=false --norm_bins=false --verbose=false \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
   --paramfile=$PARAMS --log_y=true
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=em \
   --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
-  --make_datacard=false --norm_bins=false --verbose=false \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
   --paramfile=$PARAMS --log_y=true
 
 
@@ -265,6 +265,65 @@ PARAMS=./scripts/"$PROD"_params_2012.dat
   --method=8 --category="inclusive" --plot_name="pzeta"  --x_axis_label="#slash{P}_{#zeta} - 0.85 #times P_{#zeta}^{vis}" \
   --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=false --verbose=false \
   --paramfile=$PARAMS --replace_os_sel="os"  --replace_ss_sel="ss"
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="tau_decay_mode"  --x_axis_label="Tau Decay Mode" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.4 --draw_ratio=true \
+  --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong"
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="tau_decay_mode"  --x_axis_label="Tau Decay Mode" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.4 --draw_ratio=true \
+  --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong"
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=em \
+  --method=8 --category="inclusive" --plot_name="tau_decay_mode"  --x_axis_label="Tau Decay Mode" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.4 --draw_ratio=true \
+  --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong"
+
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=em \
+  --method=8 --category="inclusive" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --tau_scale_mode=0 --channel=em \
+  --method=8 --category="inclusive" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0
+
 
 
 ### Some extra checks

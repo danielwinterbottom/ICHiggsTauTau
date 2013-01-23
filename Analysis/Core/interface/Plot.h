@@ -39,6 +39,7 @@ namespace ic {
         samples_for_band_ = "";
         draw_band_on_stack_ = false;
         band_size_fractional_ = 0.0;
+        x_bin_labels_ = "";
       }
       ~Plot();
       int GeneratePlot();
@@ -85,6 +86,8 @@ namespace ic {
       std::string samples_for_band_;
       bool draw_band_on_stack_;
       double band_size_fractional_;
+
+      std::string x_bin_labels_;
 
       std::string output_filename;
       static void SetTdrStyle();

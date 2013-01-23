@@ -194,6 +194,18 @@ namespace ic {
         if (y_axis_min > 0 && y_axis_max > 0){
           ele.hist_ptr()->GetYaxis()->SetRangeUser(y_axis_min,y_axis_max);
         }
+
+        if (x_bin_labels_ != "") {
+          std::vector<std::string> bin_labels;
+          boost::split(bin_labels, x_bin_labels_, boost::is_any_of(":"));
+
+          if (bin_labels.size() <= ele.hist_ptr()->GetNbinsX()) {
+            for (unsigned binl = 0; binl < bin_labels.size(); ++binl) {
+              ele.hist_ptr()->GetXaxis()->SetBinLabel(binl+1, bin_labels[binl].c_str());
+            }
+          }
+
+        }
   
         if (draw_ratio_hist) {
           ele.hist_ptr()->GetXaxis()->SetLabelSize(0.0);
@@ -445,7 +457,16 @@ namespace ic {
             ratio_ele[k]->GetYaxis()->SetTitleSize(0.12);
             ratio_ele[k]->GetYaxis()->SetTitleOffset(0.55);
             if (draw_signif) ratio_ele[k]->GetYaxis()->SetTitleOffset(0.45);
+            if (x_bin_labels_ != "") {
+              std::vector<std::string> bin_labels;
+              boost::split(bin_labels, x_bin_labels_, boost::is_any_of(":"));
+              if (bin_labels.size() <= ratio_ele[k]->GetNbinsX()) {
+                for (unsigned binl = 0; binl < bin_labels.size(); ++binl) {
+                  ratio_ele[k]->GetXaxis()->SetBinLabel(binl+1, bin_labels[binl].c_str());
+                }
+              }
 
+            }
             ratio_ele[k]->GetYaxis()->SetLabelSize(0.10);
             ratio_ele[k]->GetXaxis()->SetTitle(x_axis_title.c_str());
             ratio_ele[k]->GetYaxis()->SetNdivisions(505);

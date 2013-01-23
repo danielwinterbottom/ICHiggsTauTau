@@ -20,6 +20,12 @@ double Integral(TH1F const* hist) {
   return hist->Integral(0, hist->GetNbinsX() + 1);
 }
 
+double Error(TH1F const* hist) {
+  double err = 0.0;
+  hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
+  return err;
+}
+
 void SetStyle(ic::TH1PlotElement & ele, unsigned color) {
   static bool first_time = true;
   static vector<int> colors;
@@ -64,6 +70,7 @@ int main(int argc, char* argv[]){
   unsigned mode = 0;
   unsigned mssm_mode = 0;
   bool plot = false;
+  bool print_err = true;
 
   po::options_description preconfig("Pre-Configuration");
   po::options_description config("Configuration");
@@ -96,6 +103,20 @@ int main(int argc, char* argv[]){
   vector<double> vh_yield(n, 0.0);
   vector<double> ggh_yield(n, 0.0);
   vector<double> qqh_yield(n, 0.0);
+
+  vector<double> data_obs_yield_err(n, 0.0);
+  vector<double> ztt_yield_err(n, 0.0);
+  vector<double> w_yield_err(n, 0.0);
+  vector<double> qcd_yield_err(n, 0.0);
+  vector<double> top_yield_err(n, 0.0);
+  vector<double> vv_yield_err(n, 0.0);
+  vector<double> zll_yield_err(n, 0.0);
+  vector<double> zj_yield_err(n, 0.0);
+  vector<double> zl_yield_err(n, 0.0);
+  vector<double> tot_yield_err(n, 0.0);
+  vector<double> vh_yield_err(n, 0.0);
+  vector<double> ggh_yield_err(n, 0.0);
+  vector<double> qqh_yield_err(n, 0.0);
 
   vector<string> comp_plots;
   if (mode != 2) {
@@ -175,6 +196,18 @@ int main(int argc, char* argv[]){
       vh_yield[i] =       (TH1F*)gDirectory->Get("VH125") ? Integral((TH1F*)gDirectory->Get("VH125")) : 0;
       ggh_yield[i] =       (TH1F*)gDirectory->Get("ggH125") ? Integral((TH1F*)gDirectory->Get("ggH125")) : 0;
       qqh_yield[i] =       (TH1F*)gDirectory->Get("qqH125") ? Integral((TH1F*)gDirectory->Get("qqH125")) : 0;
+      data_obs_yield_err[i] = (TH1F*)gDirectory->Get("data_obs") ? Error((TH1F*)gDirectory->Get("data_obs")) : 0;
+      ztt_yield_err[i] =      (TH1F*)gDirectory->Get("ZTT") ? Error((TH1F*)gDirectory->Get("ZTT")) : 0;
+      w_yield_err[i] =        (TH1F*)gDirectory->Get("W") ? Error((TH1F*)gDirectory->Get("W")) : 0;
+      qcd_yield_err[i] =      (TH1F*)gDirectory->Get("QCD") ? Error((TH1F*)gDirectory->Get("QCD")) : 0;
+      top_yield_err[i] =      (TH1F*)gDirectory->Get("TT") ? Error((TH1F*)gDirectory->Get("TT")) : 0;
+      vv_yield_err[i] =       (TH1F*)gDirectory->Get("VV") ? Error((TH1F*)gDirectory->Get("VV")) : 0;
+      zll_yield_err[i] =      (TH1F*)gDirectory->Get("ZLL") ? Error((TH1F*)gDirectory->Get("ZLL")) : 0;
+      zj_yield_err[i] =       (TH1F*)gDirectory->Get("ZJ") ? Error((TH1F*)gDirectory->Get("ZJ")) : 0;
+      zl_yield_err[i] =       (TH1F*)gDirectory->Get("ZL") ? Error((TH1F*)gDirectory->Get("ZL")) : 0;
+      vh_yield_err[i] =       (TH1F*)gDirectory->Get("VH125") ? Error((TH1F*)gDirectory->Get("VH125")) : 0;
+      ggh_yield_err[i] =       (TH1F*)gDirectory->Get("ggH125") ? Error((TH1F*)gDirectory->Get("ggH125")) : 0;
+      qqh_yield_err[i] =       (TH1F*)gDirectory->Get("qqH125") ? Error((TH1F*)gDirectory->Get("qqH125")) : 0;
     } else {
       data_obs_yield[i] = (TH1F*)gDirectory->Get("data_obs") ? Integral((TH1F*)gDirectory->Get("data_obs")) : 0;
       ztt_yield[i] =      (TH1F*)gDirectory->Get("Ztt") ? Integral((TH1F*)gDirectory->Get("Ztt")) : 0;
@@ -184,14 +217,29 @@ int main(int argc, char* argv[]){
       vh_yield[i] =       (TH1F*)gDirectory->Get("VH125") ? Integral((TH1F*)gDirectory->Get("VH125")) : 0;
       ggh_yield[i] =       (TH1F*)gDirectory->Get("ggH125") ? Integral((TH1F*)gDirectory->Get("ggH125")) : 0;
       qqh_yield[i] =       (TH1F*)gDirectory->Get("qqH125") ? Integral((TH1F*)gDirectory->Get("qqH125")) : 0;
+      data_obs_yield_err[i] = (TH1F*)gDirectory->Get("data_obs") ? Error((TH1F*)gDirectory->Get("data_obs")) : 0;
+      ztt_yield_err[i] =      (TH1F*)gDirectory->Get("Ztt") ? Error((TH1F*)gDirectory->Get("Ztt")) : 0;
+      qcd_yield_err[i] =      (TH1F*)gDirectory->Get("Fakes") ? Error((TH1F*)gDirectory->Get("Fakes")) : 0;
+      top_yield_err[i] =      (TH1F*)gDirectory->Get("ttbar") ? Error((TH1F*)gDirectory->Get("ttbar")) : 0;
+      vv_yield_err[i] =       (TH1F*)gDirectory->Get("EWK") ? Error((TH1F*)gDirectory->Get("EWK")) : 0;
+      vh_yield_err[i] =       (TH1F*)gDirectory->Get("VH125") ? Error((TH1F*)gDirectory->Get("VH125")) : 0;
+      ggh_yield_err[i] =       (TH1F*)gDirectory->Get("ggH125") ? Error((TH1F*)gDirectory->Get("ggH125")) : 0;
+      qqh_yield_err[i] =       (TH1F*)gDirectory->Get("qqH125") ? Error((TH1F*)gDirectory->Get("qqH125")) : 0;
     }
     if (mssm_mode == 0) {
       vh_yield[i] =       (TH1F*)gDirectory->Get("VH125") ? Integral((TH1F*)gDirectory->Get("VH125")) : 0;
       ggh_yield[i] =       (TH1F*)gDirectory->Get("ggH125") ? Integral((TH1F*)gDirectory->Get("ggH125")) : 0;
       qqh_yield[i] =       (TH1F*)gDirectory->Get("qqH125") ? Integral((TH1F*)gDirectory->Get("qqH125")) : 0;
+      vh_yield_err[i] =       (TH1F*)gDirectory->Get("VH125") ? Error((TH1F*)gDirectory->Get("VH125")) : 0;
+      ggh_yield_err[i] =       (TH1F*)gDirectory->Get("ggH125") ? Error((TH1F*)gDirectory->Get("ggH125")) : 0;
+      qqh_yield_err[i] =       (TH1F*)gDirectory->Get("qqH125") ? Error((TH1F*)gDirectory->Get("qqH125")) : 0;
+
     } else {
       ggh_yield[i] =       (TH1F*)gDirectory->Get("ggH120") ? Integral((TH1F*)gDirectory->Get("ggH120")) : 0;
       qqh_yield[i] =       (TH1F*)gDirectory->Get("bbH120") ? Integral((TH1F*)gDirectory->Get("bbH120")) : 0;
+      ggh_yield_err[i] =       (TH1F*)gDirectory->Get("ggH120") ? Error((TH1F*)gDirectory->Get("ggH120")) : 0;
+      qqh_yield_err[i] =       (TH1F*)gDirectory->Get("bbH120") ? Error((TH1F*)gDirectory->Get("bbH120")) : 0;
+
     }
 
 
@@ -210,11 +258,27 @@ int main(int argc, char* argv[]){
            % (labels[i])  % data_obs_yield[i] % ztt_yield[i] % w_yield[i] % qcd_yield[i] 
                           % top_yield[i] % vv_yield[i] % zll_yield[i] % zj_yield[i] % zl_yield[i] % tot_yield[i] % (data_obs_yield[i]/tot_yield[i])
                           % vh_yield[i] % ggh_yield[i] % qqh_yield[i];
+      if (print_err) {
+        std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
+             % (labels[i])  % data_obs_yield_err[i] % ztt_yield_err[i] % w_yield_err[i] % qcd_yield_err[i] 
+                            % top_yield_err[i] % vv_yield_err[i] % zll_yield_err[i] % zj_yield_err[i] % zl_yield_err[i] % tot_yield_err[i] % (data_obs_yield_err[i]/tot_yield_err[i])
+                            % vh_yield_err[i] % ggh_yield_err[i] % qqh_yield_err[i];
+
+
+
+      }
       } else {
         std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
              % (labels[i])  % data_obs_yield[i] % ztt_yield[i] % qcd_yield[i] 
                             % top_yield[i] % vv_yield[i] % tot_yield[i] % (data_obs_yield[i]/tot_yield[i])
                             % vh_yield[i] % ggh_yield[i] % qqh_yield[i];
+        if (print_err) {
+          std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
+               % (labels[i])  % data_obs_yield_err[i] % ztt_yield_err[i] % qcd_yield_err[i] 
+                              % top_yield_err[i] % vv_yield_err[i] % tot_yield_err[i] % (data_obs_yield_err[i]/tot_yield_err[i])
+                              % vh_yield_err[i] % ggh_yield_err[i] % qqh_yield_err[i];
+
+        }
       }
     } else {
       if (mode != 2) {
