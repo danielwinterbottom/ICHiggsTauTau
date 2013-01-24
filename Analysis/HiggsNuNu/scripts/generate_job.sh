@@ -10,6 +10,7 @@ INPUT=$1
 OUTPUT=$2
 
 echo "cd $PWD" &> $OUTPUT
+echo "source /vols/cms/grid/setup.sh" >> $OUTPUT
 echo "export SCRAM_ARCH=slc5_amd64_gcc462" >> $OUTPUT
 echo "eval \`scramv1 runtime -sh\`" >> $OUTPUT
 echo "source $PWD/scripts/setup_libs.sh" >> $OUTPUT
