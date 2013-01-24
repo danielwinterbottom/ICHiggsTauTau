@@ -18,6 +18,12 @@ namespace ic {
     t.erase(std::remove_if(t.begin(), t.end(), pred), t.end());
   }
 
+  //Dummy
+  template <class T> bool DummyFunction(T const* cand ){
+    return true;
+  }
+
+
   //----------------------------------------------------------
   // Candidate
   //----------------------------------------------------------
@@ -121,6 +127,8 @@ namespace ic {
   }
 
   bool PairMassInRange(CompositeCandidate const* cand, double const& mLow, double const& mHigh);
+  bool PairEtaProdLessThan(CompositeCandidate const* cand, double const& max);
+  bool PairDEtaLessThan(CompositeCandidate const* cand, double const& max);
 
   bool PairOneWithPt(CompositeCandidate const* cand, double const& ptMin);
 

@@ -468,6 +468,16 @@ namespace ic {
     return (mass > mLow && mass < mHigh);
   }
 
+  bool PairEtaProdLessThan(CompositeCandidate const* cand, double const& max){
+    if ((cand->At(0)->eta() * cand->At(1)->eta()) < max) return true;
+    return false;
+  }
+
+  bool PairDEtaLessThan(CompositeCandidate const* cand, double const& max){
+    if (fabs(cand->At(0)->eta() - cand->At(1)->eta()) < max) return true;
+    return false;
+  }
+
   bool PairOppCharge(CompositeCandidate const& cand) {
     int charge = (cand.At(0)->charge() * cand.At(1)->charge());
     return (charge == -1);
