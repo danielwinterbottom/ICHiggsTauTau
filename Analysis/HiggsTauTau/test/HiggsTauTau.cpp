@@ -888,12 +888,6 @@ int main(int argc, char* argv[]){
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
   // Run analysis
-  analysis.NotifyRunEvent(206246, 753334277);
-  analysis.NotifyRunEvent(208357, 463216901);
-  analysis.NotifyRunEvent(207231, 111420638);
-  httPrint.PrintEvent(111420638);
-  httPrint.PrintEvent(463216901);
-  httPrint.PrintEvent(753334277);
   analysis.RunAnalysis();
   delete fs;
   return 0;
