@@ -339,7 +339,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
   if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
   if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
-  if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
+  if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond_no_recovery.txt";
   if (era == era::data_2012_moriond && channel == channel::em) data_json   =  "data/json/data_2012_moriond_valentina.txt";
   if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
   LumiMask lumiMask = LumiMask("LumiMask")
