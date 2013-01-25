@@ -39,6 +39,14 @@ namespace ic {
     }
   }
 
+  double CompositeCandidate::ScalarPtSum() const {
+    double pt_sum = 0.0;
+    for (unsigned i = 0; i < cand_vec_.size(); ++i) {
+      pt_sum += cand_vec_[i]->pt();
+    }
+    return pt_sum;
+  }
+
 
   double CompositeCandidate::DeltaR(std::string name1,
                                     std::string name2) const {

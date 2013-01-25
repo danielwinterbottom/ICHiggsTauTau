@@ -19,6 +19,7 @@ namespace ic {
       Candidate* GetCandidate(std::string name) const;
       Candidate* At(unsigned index) const;
       double PtOf(std::string name) const;
+      double ScalarPtSum() const;
       double DeltaR(std::string name1, std::string name2) const;
       double DeltaPhi(std::string name1, std::string name2) const;
       virtual void Print() const;
