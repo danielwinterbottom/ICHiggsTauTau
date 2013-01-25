@@ -150,27 +150,27 @@
 
 
 ## et with Wisconsin (Moriond)
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC  --category muTau_vbf --output_file=output/dc_sync/compare_moriond_vbf_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC  --category muTau_boost_high --output_file=output/dc_sync/compare_moriond_boost_high_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC  --category muTau_boost_low --output_file=output/dc_sync/compare_moriond_boost_low_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC  --category muTau_0jet_high --output_file=output/dc_sync/compare_moriond_0jet_high_mt-sm-8TeV.pdf
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC  --category muTau_0jet_low --output_file=output/dc_sync/compare_moriond_0jet_low_mt-sm-8TeV.pdf
-## mt with Wisconsin (Moriond)
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC --category eleTau_vbf --output_file=output/dc_sync/compare_moriond_vbf_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC --category eleTau_boost_high --output_file=output/dc_sync/compare_moriond_boost_high_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC --category eleTau_boost_low --output_file=output/dc_sync/compare_moriond_boost_low_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC --category eleTau_0jet_high --output_file=output/dc_sync/compare_moriond_0jet_high_et-sm-8TeV.pdf
-./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
---labels Wisconsin Imperial NewJEC --category eleTau_0jet_low --output_file=output/dc_sync/compare_moriond_0jet_low_et-sm-8TeV.pdf  
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC  --category muTau_vbf --output_file=output/dc_sync/compare_moriond_vbf_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC  --category muTau_boost_high --output_file=output/dc_sync/compare_moriond_boost_high_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC  --category muTau_boost_low --output_file=output/dc_sync/compare_moriond_boost_low_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC  --category muTau_0jet_high --output_file=output/dc_sync/compare_moriond_0jet_high_mt-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC  --category muTau_0jet_low --output_file=output/dc_sync/compare_moriond_0jet_low_mt-sm-8TeV.pdf
+# ## mt with Wisconsin (Moriond)
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC --category eleTau_vbf --output_file=output/dc_sync/compare_moriond_vbf_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC --category eleTau_boost_high --output_file=output/dc_sync/compare_moriond_boost_high_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC --category eleTau_boost_low --output_file=output/dc_sync/compare_moriond_boost_low_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC --category eleTau_0jet_high --output_file=output/dc_sync/compare_moriond_0jet_high_et-sm-8TeV.pdf
+# ./bin/DatacardCompare --inputs output/JoshuaMoriond-htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-newjec-moriond-andrew.root \
+# --labels Wisconsin Imperial NewJEC --category eleTau_0jet_low --output_file=output/dc_sync/compare_moriond_0jet_low_et-sm-8TeV.pdf  
 ## em with MIT (Moriond) 
 ./bin/DatacardCompare --mode=2 --inputs output/ValentinaMoriond-htt_em.inputs-sm-8TeV.root htt_em.inputs-sm-8TeV-moriond-andrew.root htt_em.inputs-sm-8TeV-newjec-moriond-andrew.root  \
 --labels MIT Imperial NewJEC   --category emu_vbf --output_file=output/dc_sync/compare_moriond_vbf_em-sm-8TeV.pdf

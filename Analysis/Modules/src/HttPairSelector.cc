@@ -105,9 +105,9 @@ namespace ic {
 
     }
 
-    // The first pair should have the highest "lepton 2" (0,1 = tau_h, 2 = muon) pT
-    std::sort(os_dilepton.begin(),os_dilepton.end(), boost::bind(&CompositeCandidate::PtOf, _1, "lepton2") > boost::bind(&CompositeCandidate::PtOf, _2, "lepton2"));
-    std::sort(ss_dilepton.begin(),ss_dilepton.end(), boost::bind(&CompositeCandidate::PtOf, _1, "lepton2") > boost::bind(&CompositeCandidate::PtOf, _2, "lepton2"));
+    // The first pair should have the highest "scalar sum pt" (0,1 = tau_h, 2 = muon) pT
+    std::sort(os_dilepton.begin(),os_dilepton.end(), boost::bind(&CompositeCandidate::ScalarPtSum, _1) > boost::bind(&CompositeCandidate::ScalarPtSum, _2));
+    std::sort(ss_dilepton.begin(),ss_dilepton.end(), boost::bind(&CompositeCandidate::ScalarPtSum, _1) > boost::bind(&CompositeCandidate::ScalarPtSum, _2));
     
     double max_tau_iso_os = -10.0;
     double max_tau_iso_ss = -10.0;

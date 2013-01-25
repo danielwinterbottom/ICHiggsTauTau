@@ -1013,9 +1013,9 @@ int main(int argc, char* argv[]){
       fr_hist->Add((TH1F*)(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()->Clone()) ,-1.0);
       qcd_hist->Scale(qcd_norm / Integral (qcd_hist));
       fr_hist->Scale(qcd_norm / Integral (fr_hist));
-      em_0jet_high_Up = (TH1F*)qcd_hist->Clone(TString("CMS_htt_FakeShape_em_0jet_high_")+(is_2012 ? "8":"7")+"TeVUp");
-      em_0jet_high_Down = (TH1F*)fr_hist->Clone(TString("CMS_htt_FakeShape_em_0jet_high_")+(is_2012 ? "8":"7")+"TeVDown");
-      qcd_hist->Add(fr_hist);
+      em_0jet_high_Up = (TH1F*)qcd_hist->Clone(TString("Fakes_CMS_htt_FakeShape_em_0jet_high_")+(is_2012 ? "8":"7")+"TeVUp");
+      em_0jet_high_Down = (TH1F*)fr_hist->Clone(TString("Fakes_CMS_htt_FakeShape_em_0jet_high_")+(is_2012 ? "8":"7")+"TeVDown");
+      qcd_hist->Add(fr_hist);//Fakes_CMS_htt_FakeShape_em_0jet_high_8TeVUp
       qcd_hist->Scale(0.5);
     } else if (method == 3) {
       qcd_norm = Integral(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()) + Integral(plots[Token("Special_21_Data",cat,os_sel)].hist_ptr()) - Integral(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()) ;

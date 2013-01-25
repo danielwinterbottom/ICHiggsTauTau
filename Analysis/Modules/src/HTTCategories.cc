@@ -266,12 +266,13 @@ namespace ic {
       if ( (channel_ == channel::et) ? (met_ > 30.) : true) SetPassCategory("1jet_low");
     }
 
-    bool em_0jet_high_muon_eta = true;
-    if (channel_ == channel::em && (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond || era_ == era::data_2012_donly) ) {
-      if (eta_2_ > -0.2 && eta_2_ < 1.0) em_0jet_high_muon_eta = false;
-    }
+    // Eta veto no longer needed
+    // bool em_0jet_high_muon_eta = true;
+    // if (channel_ == channel::em && (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond || era_ == era::data_2012_donly) ) {
+    //   if (eta_2_ > -0.2 && eta_2_ < 1.0) em_0jet_high_muon_eta = false;
+    // }
     // 0-jet High Category
-    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0 && em_0jet_high_muon_eta) SetPassCategory("0jet_high");
+    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) SetPassCategory("0jet_high");
     if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) FillCoreControlPlots("0jet_high");
 
     // 0-jet Low Category

@@ -340,6 +340,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
   if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
   if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
+  if (era == era::data_2012_moriond && channel == channel::em) data_json   =  "data/json/data_2012_moriond_valentina.txt";
   if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
   LumiMask lumiMask = LumiMask("LumiMask")
     .set_produce_output_jsons("")
@@ -887,6 +888,12 @@ int main(int argc, char* argv[]){
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
   // Run analysis
+  analysis.NotifyRunEvent(206246, 753334277);
+  analysis.NotifyRunEvent(208357, 463216901);
+  analysis.NotifyRunEvent(207231, 111420638);
+  httPrint.PrintEvent(111420638);
+  httPrint.PrintEvent(463216901);
+  httPrint.PrintEvent(753334277);
   analysis.RunAnalysis();
   delete fs;
   return 0;
