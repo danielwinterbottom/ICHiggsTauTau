@@ -97,7 +97,7 @@ MVAMETPairProducer::MVAMETPairProducer(const edm::ParameterSet& cfg)
 
   globalThreshold_ = cfg.getParameter<double>("globalThreshold");
 
-  minCorrJetPt_    = cfg.getParameter<double>("minCorrJetPt");
+  minCorrJetPt_    = cfg.getParameter<double>     ("minCorrJetPt");
   useType1_        = cfg.getParameter<bool>       ("useType1");
   correctorLabel_  = cfg.getParameter<std::string>("corrector");
   isOld42_         = cfg.getParameter<bool>       ("useOld42");
@@ -126,7 +126,7 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
   // get jets (corrected and uncorrected)
   edm::Handle<reco::PFJetCollection> corrJets;
   evt.getByLabel(srcCorrJets_, corrJets);
-  
+
   edm::Handle<reco::PFJetCollection> uncorrJets;
   evt.getByLabel(srcUncorrJets_, uncorrJets);
 
@@ -137,7 +137,6 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
   edm::Handle<reco::PFCandidateCollection> pfCandidates;
   evt.getByLabel(srcPFCandidates_, pfCandidates);
 
-    
   typedef edm::View<reco::Candidate> CandidateView;
   edm::Handle<CandidateView> pfCandidates_view;
   evt.getByLabel(srcPFCandidates_, pfCandidates_view);
@@ -216,12 +215,13 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
   mvaMEtAlgo_.setInput(leptonInfo[i], jetInfo, pfCandidateInfo, vertexInfo);
   mvaMEtAlgo_.evaluateMVA();
 
-  //std::cout << "MVA MET: " << i << std::endl;
-  //for (unsigned j = 0; j < leptonInfo[i].size(); ++j) {
-  //  std::cout << leptonInfo[i][j].p4_.pt() << "  ";
-  //}
-  //std::cout << std::endl;
-  //std::cout << "--: " << mvaMEtAlgo_.getMEt().pt() << std::endl;
+  if (verbosity_) {
+    std::cout << "MVA MET: " << i << std::endl;
+    for (unsigned j = 0; j < leptonInfo[i].size(); ++j) {
+     std::cout << leptonInfo[i][j].p4_.pt() << "  ";
+    }
+    std::cout << std::endl;
+  }
 
   pfMEt.setP4(mvaMEtAlgo_.getMEt());
   pfMEt.setSignificanceMatrix(mvaMEtAlgo_.getMEtCov());
