@@ -3,32 +3,30 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 process = cms.Process("MAIN")
 import sys
 
+################################################################
+### Read Options
+################################################################
 options = VarParsing.VarParsing ('analysis')
-
 options.register ('isData',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Process as data?")
-
 options.register ('isEmbedded',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Process as embedded?")
-
 options.register ('release',
                   '', # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.string,          # string, int, or float
                   "Release label")
-
 options.register ('isTandP',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Tag and probe ntuples?")
-
 options.register ('isZStudy',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
@@ -36,12 +34,11 @@ options.register ('isZStudy',
                   "Process for Z->ee or Z->mumu?")
 
 options.parseArguments()
-
-isData = options.isData
-release = options.release
-isEmbedded = options.isEmbedded
-isTandP = options.isTandP
-isZStudy = options.isZStudy
+isData      = options.isData
+release     = options.release
+isEmbedded  = options.isEmbedded
+isTandP     = options.isTandP
+isZStudy    = options.isZStudy
 
 if isData:
   print 'Setting up for data processing...'
@@ -63,7 +60,10 @@ if isTandP:
 if isZStudy:
   print 'Setting up for Z->ee or Z->mumu processing...' 
 
-## Configure TFileService
+
+################################################################
+### Load some standard sequences and services
+################################################################
 process.TFileService = cms.Service("TFileService", 
   fileName = cms.string("EventTree.root"),
   closeFileFast = cms.untracked.bool(True)
@@ -111,7 +111,6 @@ process.goodOfflinePrimaryVertices = cms.EDFilter(
     )
 
 switchOnTrigger(process, outputModule="")
-
 
 # PAT Jet configuration
 if isData:
@@ -219,7 +218,6 @@ process.patJets.embedGenPartonMatch = cms.bool(False)
 #process.patJetsAK5JPT.embedGenPartonMatch = cms.bool(False)
 process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
 
-
 ################################################################
 ### Set up METs
 ################################################################
@@ -267,10 +265,83 @@ process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
 ################################################################
 process.load("EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi")
 process.mvaElectronIDSequence = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
-# process.patElectrons.electronIDSources = cms.PSet(
-#     mvaTrigV0 = cms.InputTag("mvaTrigV0"),
-#     mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
-# )
+
+
+################################################################
+### Additional collections for soft lepton + MET
+################################################################
+process.icSoftLeptonSequence = cms.Sequence( )
+process.load("UserCode.ICHiggsTauTau.emulateHLTPFTau_cff")
+
+process.icHLTTauProducer = cms.EDProducer('ICPFTauProducer',
+    input = cms.InputTag("hltPFTaus"),
+    branchName = cms.string("hltTaus"),
+    vertexCollection = cms.InputTag("goodOfflinePrimaryVertices"),
+    trackCollection = cms.InputTag("generalTracks"),
+    storeAndRequestTrackIds = cms.bool(False),
+    tauIDs = cms.PSet(
+        decayModeFinding = cms.InputTag("hltPFTauTrackFindingDiscriminator"),
+        byIsolation = cms.InputTag("hltPFTauLooseIsolationDiscriminator")
+        ),
+    minPt = cms.double(18),
+    maxEta = cms.double(2.6)
+    )
+process.hltPFTauSequence = cms.Sequence(
+    process.hltAK5PFJetTracksAssociatorAtVertex+
+    process.hltPFTauTagInfo+process.hltPFTaus+
+    process.hltPFTauTrackFindingDiscriminator+
+    process.hltPFTauLooseIsolationDiscriminator
+    )
+
+process.icL1ExtraMETProducer = cms.EDProducer('ICL1ExtraEtMissProducer',
+  branchName = cms.untracked.string("l1extraMET"),
+  inputLabel = cms.InputTag("l1extraParticles","MET","RECO"),
+  minPt = cms.double(0.0),
+  maxEta = cms.double(999.0)
+  )
+
+process.icL1ExtraMuonsProducer = cms.EDProducer('ICL1ExtraMuonProducer',
+  branchName = cms.untracked.string("l1extraMuons"),
+  inputLabel = cms.InputTag("l1extraParticles","","RECO"),
+  minPt = cms.double(6.0),
+  maxEta = cms.double(2.2)
+  )
+
+process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICL1ExtraEmParticleProducer',
+  branchName = cms.untracked.string("l1extraEmIsolated"),
+  inputLabel = cms.InputTag("l1extraParticles","Isolated","RECO"),
+  minPt = cms.double(11.0),
+  maxEta = cms.double(2.2)
+  )
+
+## Only add HLT tau simulation in MC
+if not isData:
+  process.icSoftLeptonSequence += cms.Sequence(
+      process.hltPFTauSequence
+      +process.icHLTTauProducer
+      )
+
+process.patmetNoHF = process.patMETs.clone(
+    metSource = cms.InputTag('metNoHF'),
+    addMuonCorrections = cms.bool(False),
+    genMETSource = cms.InputTag('genMetTrue'),
+    addGenMET = cms.bool(False)
+    )
+
+process.icMetNoHFProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patmetNoHF"),
+    branchName = cms.untracked.string("metNoHF"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
+process.icSoftLeptonSequence += cms.Sequence(
+    process.icL1ExtraMETProducer
+    +process.icL1ExtraMuonsProducer
+    +process.icL1ExtraEmIsolatedProducer
+    +process.patmetNoHF
+    +process.icMetNoHFProducer
+    )
 
 
 ################################################################
@@ -278,8 +349,7 @@ process.mvaElectronIDSequence = cms.Sequence(process.mvaTrigV0 + process.mvaNonT
 ################################################################
 if (release == '53X'):
     process.load("JetMETCorrections.METPUSubtraction.mvaPFMET_leptons_cff")
-    #process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X")
-    from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X import mvaMetPairs
+    from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X_Dec2012 import mvaMetPairs
 else:
     process.load("RecoMET.METProducers.mvaPFMET_cff_leptons")
     process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons")
@@ -287,7 +357,7 @@ else:
 process.mvaMetPairsMT = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('pfAllMuons'),
   srcLeg2 = cms.InputTag('selectedPatTaus'),
-  leg1Pt = cms.double(7.0),  ## Need to drop this lower now to accommodate mu+tau+MET trigger
+  leg1Pt = cms.double(7.0), 
   leg1Eta = cms.double(2.6),
   leg2Pt = cms.double(18.0),
   leg2Eta = cms.double(2.6),
@@ -363,20 +433,10 @@ process.patPFMetByMVA = process.patMETs.clone(
     addGenMET = cms.bool(False)
 )
 
-process.patmetNoHF = process.patMETs.clone(
-    metSource = cms.InputTag('metNoHF'),
-    addMuonCorrections = cms.bool(False),
-    genMETSource = cms.InputTag('genMetTrue'),
-    addGenMET = cms.bool(False)
-)
 
-
-#--------------------------------------------------------------------------------
-# produce PFMET significance cov. matrix
-
-# CV: compute PFMET significance cov. matrix for uncorrected jets
-#     in order to include pile-up jets
-#    (which to a significant fraction get killed by L1Fastjet corrections)
+################################################################
+### Produce PFMET significance cov. matrix
+################################################################
 process.ak5PFJetsNotOverlappingWithLeptons = cms.EDFilter("PFJetAntiOverlapSelector",
   src = cms.InputTag('ak5PFJets'),
   srcNotToBeFiltered = cms.VInputTag('isomuons','isoelectrons','isotaus'),
@@ -407,8 +467,7 @@ process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingW
 ################################################################
 if (release == '53X'):
   from RecoJets.JetProducers.PileupJetID_cfi import *
-  # process.load("RecoJets.JetProducers.PileupJetID_cfi")
-
+  stdalgos = cms.VPSet(full_53x,cutbased,PhilV1)
   process.puJetMva = cms.EDProducer('PileupJetIdProducer',
                            produceJetIds = cms.bool(True),
                            jetids = cms.InputTag(""),
@@ -429,69 +488,54 @@ else:
     process.puJetMva.jets = cms.InputTag("selectedPatJetsAK5PF")
 
 
-
 ################################################################
 ### General Config
 ################################################################
 process.MessageLogger.cerr.FwkReport.reportEvery = 50000
-process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger',
-      'HLTConfigData')
-process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger',
-      'HLTConfigData')
-## Input source
+process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger','HLTConfigData' )
+process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLTConfigData')
+
 if (release == '42X'):
   if isData:
-    process.source = cms.Source(
-      "PoolSource",
-      fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/TauPlusX-2011A-Run166512-42X.root'
-      )
+    process.source = cms.Source("PoolSource",
+      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2011A-Run166512-42X.root')
     )
     process.GlobalTag.globaltag = cms.string('GR_R_42_V25::All')
   else:
-    process.source = cms.Source(
-      "PoolSource",
-      fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/NEW_SYNC_2011.root'
-      )
+    process.source = cms.Source("PoolSource",
+      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/NEW_SYNC_2011.root')
     )
     process.GlobalTag.globaltag = cms.string('START42_V17::All')
 if (release == '53X'):
   if isData:
-    process.source = cms.Source(
-      "PoolSource",
-      fileNames = cms.untracked.vstring(
-        #'file:/Volumes/Storage/samples/TauPlusX-2012C-PromptReco-v1-Sample.root'
-        #'file:/Volumes/Storage/samples/DoubleMu-2012C-24Aug2012-v1-Sample.root'
-        'file:/Volumes/Storage/samples/TauPlusX-2012D.root'
-      )
+    process.source = cms.Source("PoolSource",
+      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2012D.root')
     )
-    process.GlobalTag.globaltag = cms.string('GR_P_V42_AN2::All')
+    process.GlobalTag.globaltag = cms.string('GR_P_V42_AN3::All')
   else:
     process.source = cms.Source(
       "PoolSource",
       fileNames = cms.untracked.vstring(
         'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
-        #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
+        )
+        #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
-      )
+        #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
     )
-    process.GlobalTag.globaltag = cms.string('START53_V10::All')
+    process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
-if (release == '42X'):
-  process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
+
+
 
 ################################################################
-### Final PAT config
+### Lepton Isolation
 ################################################################
 from CommonTools.ParticleFlow.Tools.pfIsolation import setupPFElectronIso, setupPFMuonIso
-
 process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons')
 process.muIsoSequence = setupPFMuonIso(process, 'pfAllMuons')
-
 process.eleIsoSequence.remove(process.elPFIsoValueCharged03NoPFIdPFIso)
 process.eleIsoSequence.remove(process.elPFIsoValueChargedAll03NoPFIdPFIso)
 process.eleIsoSequence.remove(process.elPFIsoValueGamma03NoPFIdPFIso)
@@ -507,12 +551,11 @@ process.elPFIsoValueNeutral04PFIdPFIso.deposits[0].vetos    = cms.vstring()
 process.elPFIsoValuePU04PFIdPFIso.deposits[0].vetos         = cms.vstring()
 process.elPFIsoValueCharged04PFIdPFIso.deposits[0].vetos    = cms.vstring('EcalEndcaps:ConeVeto(0.015)')
 process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)')
-# adaptPFMuons(process,process.patMuons)
-# process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons')
-# process.muIsoSequence = setupPFMuonIso(process, 'pfAllMuons')
-# adaptPFIsoMuons( process, applyPostfix(process,"patMuons",""))
-# process.muonMatch.src = cms.InputTag("pfAllMuons")
-# adaptPFIsoElectrons( process, applyPostfix(process,"patElectrons",""))
+
+################################################################
+### Final PAT config
+################################################################
+process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
 
 if isData:
   runOnData(process)
@@ -521,8 +564,7 @@ removeSpecificPATObjects(process, ['Electrons', 'Muons'])
 
 removeCleaning(process)
 process.pfAllMuons.src = cms.InputTag("particleFlow")
-#process.patMuons.pfMuonSource = cms.InputTag("pfAllMuons")
-#process.patMuons.embedPFCandidate = cms.bool(False)
+
 process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
         cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"), 
         cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"), 
@@ -530,7 +572,6 @@ process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
        )
 if (release == '42X'):
   process.PFTau = process.recoTauClassicHPSSequence
-
 
 if (release == '42X'):
   from RecoJets.JetProducers.kt4PFJets_cfi import kt4PFJets
@@ -544,6 +585,14 @@ if (release == '42X'):
 if isEmbedded:
   process.jetTracksAssociatorAtVertexAK5PF.tracks = cms.InputTag("tmfTracks")
   
+process.btaggingAK5PF = cms.Sequence(
+  process.impactParameterTagInfosAK5PF
+  +process.secondaryVertexTagInfosAK5PF
+  +process.simpleSecondaryVertexHighEffBJetTagsAK5PF
+  +process.simpleSecondaryVertexHighPurBJetTagsAK5PF
+  +process.combinedSecondaryVertexBJetTagsAK5PF
+  )
+
 ################################################################
 ### MC specific config
 ################################################################
@@ -584,6 +633,7 @@ process.icMuonProducer = cms.EDProducer('ICMuonProducer',
     pfIsoPostfix = cms.string("PFIso"),
     isPF = cms.bool(True)
 )
+
 process.icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
     inputLabel = cms.InputTag("selectedPatJets"),
     branchName = cms.untracked.string("caloJets"))
@@ -630,25 +680,14 @@ process.icPfMVAMetProducer = cms.EDProducer('ICMetProducer',
     InputSig = cms.untracked.string("")
     )
 
-process.icMetNoHFProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patmetNoHF"),
-    branchName = cms.untracked.string("metNoHF"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
-    )
-
 process.icPfAllPairsMVAMetProducer = cms.EDProducer('ICMetVectorProducer',
-    mergeLabels = cms.untracked.vstring(
-        'mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM'
-        ),
+    mergeLabels = cms.untracked.vstring('mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM'),
     branchName = cms.untracked.string("pfMVAMetVector")
     )
 
 if isZStudy:
   process.icPfAllPairsMVAMetProducer.mergeLabels = cms.untracked.vstring(
-        'mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM',
-        'mvaMetPairsMM','mvaMetPairsEE'
-        )
+        'mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM','mvaMetPairsMM','mvaMetPairsEE')
 
 process.icTauProducer = cms.EDProducer('ICTauProducer',
     inputLabel = cms.InputTag("selectedPatTaus"),
@@ -751,6 +790,7 @@ process.icTauGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     addAllStatus3PtThreshold = cms.untracked.double(0.0)
 )
 if release == '42X':
+  process.icGenTauProductProducer.inputLabel = cms.InputTag("genParticles","","HLT")
   process.icTauGenParticleProducer.inputLabel = cms.InputTag("genParticles","","HLT")
 
 process.icPileupInfoProducer = cms.EDProducer('ICPileupInfoProducer')
@@ -762,16 +802,6 @@ process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
     )
 
 process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer')
-
-process.icL1ExtraMETProducer = cms.EDProducer('ICL1ExtraEtMissProducer',
-  branchName = cms.untracked.string("l1extraMET"),
-  inputLabel = cms.InputTag("l1extraParticles","MET","RECO")
-  )
-
-process.icL1ExtraMuonsProducer = cms.EDProducer('ICL1ExtraMuonProducer',
-  branchName = cms.untracked.string("l1extraMuons"),
-  inputLabel = cms.InputTag("l1extraParticles","","RECO")
-  )
 
 process.icSequence = cms.Sequence(
   process.icElectronProducer
@@ -785,16 +815,11 @@ process.icSequence = cms.Sequence(
   +process.icEventInfoProducer
   )
 
-### Add an extra sequence for Mu+Tau+MET trigger in 2012D data
-if release == '53X':
-  process.icSequence += (
-    process.icL1ExtraMETProducer
-    +process.icL1ExtraMuonsProducer
-    +process.patmetNoHF
-    +process.icMetNoHFProducer
-    +process.patMETsPFType1
-    +process.icPfMetType1Producer
-  )
+### Add extra sequences for Hinv
+process.icSequence += (
+  process.patMETsPFType1
+  +process.icPfMetType1Producer
+)
 
 process.icDataSequence = cms.Sequence(
   process.icTriggerPathProducer
@@ -967,10 +992,25 @@ if (release == '53X' and isData):
       hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
       StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
-  process.icMu8LooseTau20L1ETM26ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8LooseTau20L1ETM26"),
-      hltPath = cms.untracked.string("HLT_Mu8_eta2p1_LooseIsoPFTau20_L1ETM26_v"),
-      StoreOnlyIfFired = cms.untracked.bool(False)
+  process.icIsoMu8LooseTau20L1ETM26ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsIsoMu8LooseTau20L1ETM26"),
+      hltPath = cms.untracked.string("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_L1ETM26_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icIsoMu8LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsIsoMu8LooseTau20"),
+      hltPath = cms.untracked.string("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icEle13LooseTau20L1ETM36ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle13LooseTau20L1ETM36"),
+      hltPath = cms.untracked.string("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icEle13LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle13LooseTau20"),
+      hltPath = cms.untracked.string("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icTriggerSequence += (
     process.icEle20RhoLooseTau20ObjectProducer
@@ -979,7 +1019,10 @@ if (release == '53X' and isData):
     +process.icIsoMu17LooseTau20ObjectProducer
     +process.icMu8Ele17ObjectProducer
     +process.icMu17Ele8ObjectProducer
-    +process.icMu8LooseTau20L1ETM26ObjectProducer
+    +process.icIsoMu8LooseTau20L1ETM26ObjectProducer
+    +process.icIsoMu8LooseTau20ObjectProducer
+    +process.icEle13LooseTau20L1ETM36ObjectProducer
+    +process.icEle13LooseTau20ObjectProducer
     )
 
 ################################################################
@@ -994,7 +1037,7 @@ if ((release == '53X') and (not isData)):
   process.icIsoMu17LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsIsoMu17LooseTau20"),
       hltPath = cms.untracked.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(False) # Always need this trigger information for tau part of mtmet
+      StoreOnlyIfFired = cms.untracked.bool(notTp) 
       )    
   process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
@@ -1009,7 +1052,12 @@ if ((release == '53X') and (not isData)):
   process.icMu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsMu8"),
       hltPath = cms.untracked.string("HLT_Mu8_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
+      )
+  process.icEle8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsEle8"),
+      hltPath = cms.untracked.string("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
+      StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
   process.icTriggerSequence += (
     process.icEle22WP90RhoLooseTau20ObjectProducer
@@ -1017,6 +1065,7 @@ if ((release == '53X') and (not isData)):
     +process.icMu8Ele17ObjectProducer
     +process.icMu17Ele8ObjectProducer
     +process.icMu8ObjectProducer
+    +process.icEle8ObjectProducer
     )
 
 
@@ -1172,7 +1221,7 @@ if (release == '53X' and (not isData)):
     +process.icL1ETM40ObjectProducer 
     )
 
-
+process.icSequence += process.icSoftLeptonSequence
 process.icSequence += process.icTriggerSequence
  
 process.icEventProducer = cms.EDProducer('ICEventProducer')
@@ -1184,11 +1233,13 @@ if release == '42X':
 
 process.extra53XSequence = cms.Sequence()
 if release == '53X':
-  process.extra53XSequence += (process.softElectronCands)
+  process.extra53XSequence += (process.recoTauCommonSequence+process.ak5PFJetsLegacyHPSPiZeros+
+                               process.combinatoricRecoTaus+process.produceHPSPFTaus)
 
 process.mcSequence = cms.Sequence()
 if not isData:
   process.mcSequence += (process.genParticlesForJets+process.ak5GenJetsNoNuBSM)
+
 
 process.p = cms.Path(
   process.mcSequence
@@ -1209,4 +1260,4 @@ process.p = cms.Path(
   +process.icSequence
   )
 
-# print process.dumpPython()
+#print process.dumpPython()
