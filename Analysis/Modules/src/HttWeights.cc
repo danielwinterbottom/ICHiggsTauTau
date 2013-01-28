@@ -72,9 +72,12 @@ namespace ic {
     hist_muTauSF2011PFTau15MC = (TH2D*)gDirectory->Get("LooseIsoPFTau15PtEtaMC");
 
     if (do_emu_e_fakerates_ || do_emu_m_fakerates_) {
-      if (era_ >= era::data_2012_ichep) {
+      if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
         ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_12ifb.root");
         MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_12ifb.root");
+      } else if (era_ == era_ == era::data_2012_donly || era_ == era::data_2012_moriond) {
+        ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_19ifb.root");
+        MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_19ifb.root");
       } else {
         ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2011.root");
         MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2011.root");
@@ -951,8 +954,10 @@ namespace ic {
     if (do_emu_e_fakerates_) {
       Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
       double elefopt = (elec->pt() < 35) ? elec->pt() : 34.99;
+      double eleEta = elec->eta();
+      if (era_ == era::data_2012_donly || era_ == era::data_2012_moriond) eleEta = fabs(eleEta);
       int eleptbin = ElectronFakeRateHist_PtEta->GetXaxis()->FindFixBin(elefopt);
-      int eleetabin = ElectronFakeRateHist_PtEta->GetYaxis()->FindFixBin(fabs(elec->eta()));    
+      int eleetabin = ElectronFakeRateHist_PtEta->GetYaxis()->FindFixBin(eleEta);    
       double eleprob = ElectronFakeRateHist_PtEta->GetBinContent(eleptbin,eleetabin);
       double elefakerate = eleprob/(1.0 - eleprob);
       //double elefakerate_errlow = ElectronFakeRateHist_PtEta->GetError(elefopt,fabs(elec->eta()),mithep::TH2DAsymErr::kStatErrLow)/pow((1-ElectronFakeRateHist_PtEta->GetError(elefopt,fabs(elec->eta()),mithep::TH2DAsymErr::kStatErrLow)),2);
@@ -963,8 +968,10 @@ namespace ic {
     if (do_emu_m_fakerates_) {
       Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
       Double_t mufopt = (muon->pt() < 35) ? muon->pt() : 34.99;
+      double muEta = muon->eta();
+      if (era_ == era::data_2012_donly || era_ == era::data_2012_moriond) muEta = fabs(muEta);
       int muptbin = MuonFakeRateHist_PtEta->GetXaxis()->FindFixBin(mufopt);
-      int muetabin = MuonFakeRateHist_PtEta->GetYaxis()->FindFixBin(fabs(muon->eta()));    
+      int muetabin = MuonFakeRateHist_PtEta->GetYaxis()->FindFixBin(muEta);    
       double muprob = MuonFakeRateHist_PtEta->GetBinContent(muptbin,muetabin);
       double mufakerate = muprob/(1.0 - muprob);
       //double mufakerate_errlow = MuonFakeRateHist_PtEta->GetError(mufopt,fabs(muon->eta()),mithep::TH2DAsymErr::kStatErrLow)/pow((1-MuonFakeRateHist_PtEta->GetError(mufopt,fabs(muon->eta()),mithep::TH2DAsymErr::kStatErrLow)),2);
