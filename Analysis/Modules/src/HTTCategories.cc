@@ -21,8 +21,8 @@ namespace ic {
 
   void HTTCategories::InitSelection(std::string const& selection) {
     selections_[selection] = false;
-
   }
+  
   void HTTCategories::InitCategory(std::string const& category) {
     categories_[category] = false;
     InitMassPlots(category);

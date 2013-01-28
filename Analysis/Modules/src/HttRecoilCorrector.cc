@@ -84,6 +84,7 @@ namespace ic {
       || (sample_.find("WH_ZH_TTH_HToTauTau") != sample_.npos) ) {
       disable = false;
       if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
       if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
       if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
       std::cout << "Signal sample detected, using process file: " << process_file << std::endl;

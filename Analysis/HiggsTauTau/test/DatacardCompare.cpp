@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
   unsigned mode = 0;
   unsigned mssm_mode = 0;
   bool plot = false;
-  bool print_err = true;
+  bool print_err = false;
 
   po::options_description preconfig("Pre-Configuration");
   po::options_description config("Configuration");
