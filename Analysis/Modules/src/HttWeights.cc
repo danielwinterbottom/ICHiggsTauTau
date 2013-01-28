@@ -164,6 +164,7 @@ namespace ic {
         eventInfo->set_weight("top_factor", top_factor);
       }
     }
+    
 
     if (do_btag_weight_) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection

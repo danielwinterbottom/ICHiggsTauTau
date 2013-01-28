@@ -508,7 +508,7 @@ int main(int argc, char* argv[]){
   // Norm is the same for all methods
   double top_norm = Integral(plots[Token("TTJets",cat,os_sel)].hist_ptr());
   TH1F *top_hist;
-  string top_shape_str = is_2012 ? "TT" : "TTJets";
+  string top_shape_str = is_2012 ? "TTJets" : "TTJets";
   double top_norm_ss = Integral(plots[Token("TTJets",cat,ss_sel)].hist_ptr());
   TH1F *top_hist_ss = (TH1F*)(plots[Token(top_shape_str,cat,ss_sel)].hist_ptr()->Clone());
 
@@ -644,7 +644,8 @@ int main(int argc, char* argv[]){
       zl_norm = Integral(plots[Token("DYJetsToLL-L","inclusive",os_sel)].hist_ptr()) * zll_embed_eff; 
       zj_norm = Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()); 
       zll_norm = zl_norm + zj_norm;
-      zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-LSoup","vbf_loose", os_sel)].hist_ptr()->Clone());
+      if (channel == channel::et) zl_hist =  (TH1F*)(plots[Token("Special_18_DYJetsToLL-L","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
+      if (channel == channel::mt) zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-L","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
       zj_hist =  (TH1F*)(plots[Token("DYJetsToLL-JSoup","vbf_loose", os_sel)].hist_ptr()->Clone());
       zl_hist->Scale( zl_norm / Integral(zl_hist) );
       zj_hist->Scale( zj_norm / Integral(zj_hist) );
@@ -796,6 +797,7 @@ int main(int argc, char* argv[]){
       w_os_sel = w_os_con * w_factor_os;
       w_ss_sel = w_ss_con * w_factor_ss;
       w_hist = (TH1F*)(plots[Token("WJetsToLNuSoup",cat,os_sel)].hist_ptr()->Clone());
+      if (method == 3) w_hist->Add(plots[Token("WJetsToLNuSoup",cat,ss_sel)].hist_ptr());
       w_norm = w_os_sel;
     }
     // Extrapolation of B Jet

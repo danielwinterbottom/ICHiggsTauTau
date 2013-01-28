@@ -1,6 +1,6 @@
 ## Cross Sections
 XS_Data:-1.0
-# DY is 3503.7 * 1.011
+# DY is 3503.7 * 1.00
 XS_DYJetsToTauTau:3503.7
 XS_Embedded:-1.0
 XS_DYJetsToLL:3542.24
@@ -15,9 +15,9 @@ XS_ZZJetsTo2L2Q:2.502
 XS_ZZJetsTo4L:0.181
 XS_T-tW:11.1
 XS_Tbar-tW:11.1
-#Top XS is 225.2 * 0.98 = 
-XS_TTJets:220.69
-XS_TT:236.46
+#Top XS is 225.2 * 1.00 = 
+XS_TTJets:225.2
+XS_TT:225.2
 XS_GluGluToHToTauTau_M-125:1.2337
 XS_VBF_HToTauTau_M-125:0.0985
 XS_WH_ZH_TTH_HToTauTau_M-125:0.0772

@@ -69,7 +69,7 @@ int main(int argc, char* argv[]){
   std::string output_file;
   unsigned mode = 0;
   unsigned mssm_mode = 0;
-  bool plot = false;
+  bool plot = true;
   bool print_err = false;
 
   po::options_description preconfig("Pre-Configuration");

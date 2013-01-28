@@ -22,6 +22,7 @@ namespace ic {
     tree_name_ = tree_name;
     events_processed_ = 0;
     notify_on_fail_ = false;
+    notify_evt_on_fail_ = false;
     skim_path_ = "";
     print_module_list_ = false;
   }
@@ -131,6 +132,13 @@ namespace ic {
                 std::cout << "Run " << run << ", event " << evt << " rejected by module: " << modules_[module]->ModuleName() << std::endl;
                 }
               }
+              if (notify_evt_on_fail_) {
+                unsigned run = eventInfo->run();
+                unsigned evt = eventInfo->event();
+                if (notify_event_.find(evt) != notify_event_.end()) {
+                std::cout << "Run " << run << ", event " << evt << " rejected by module: " << modules_[module]->ModuleName() << std::endl;
+                }
+              }
               if (status == 1) break;
             }
             if (status == 0) modules_[module]->IncreaseProcessedCount();
@@ -172,6 +180,11 @@ namespace ic {
   void AnalysisBase::NotifyRunEvent(int const& run, int const& event) {
     notify_on_fail_ = true;
     notify_run_event_.insert(std::make_pair(run,event));
+  }
+
+    void AnalysisBase::NotifyEvent(int const& event) {
+    notify_evt_on_fail_ = true;
+    notify_event_.insert(event);
   }
 
 

@@ -183,7 +183,16 @@
 ./bin/DatacardCompare --mode=2 --inputs output/ValentinaMoriond-htt_em.inputs-sm-8TeV.root htt_em.inputs-sm-8TeV-moriond-andrew.root htt_em.inputs-sm-8TeV-newjec-moriond-andrew.root  \
 --labels MIT Imperial NewJEC  --category emu_0jet_low --output_file=output/dc_sync/compare_moriond_0jet_low_em-sm-8TeV.pdf
 
-
+./bin/DatacardCompare --mode=2 --inputs output/ValentinaMoriond-htt_em.inputs-sm-8TeV-mvis.root htt_em.inputs-sm-8TeV-mvis-moriond-andrew.root  \
+--labels MIT Imperial   --category emu_vbf --output_file=output/dc_sync/compare_moriond_vbf_em-sm-8TeV-mvis.pdf
+./bin/DatacardCompare --mode=2 --inputs output/ValentinaMoriond-htt_em.inputs-sm-8TeV-mvis.root htt_em.inputs-sm-8TeV-mvis-moriond-andrew.root  \
+--labels MIT Imperial  --category emu_boost_high --output_file=output/dc_sync/compare_moriond_boost_high_em-sm-8TeV-mvis.pdf
+./bin/DatacardCompare --mode=2 --inputs output/ValentinaMoriond-htt_em.inputs-sm-8TeV-mvis.root htt_em.inputs-sm-8TeV-mvis-moriond-andrew.root  \
+--labels MIT Imperial  --category emu_boost_low --output_file=output/dc_sync/compare_moriond_boost_low_em-sm-8TeV-mvis.pdf      
+./bin/DatacardCompare --mode=2 --inputs output/ValentinaMoriond-htt_em.inputs-sm-8TeV-mvis.root htt_em.inputs-sm-8TeV-mvis-moriond-andrew.root  \
+--labels MIT Imperial  --category emu_0jet_high --output_file=output/dc_sync/compare_moriond_0jet_high_em-sm-8TeV-mvis.pdf
+./bin/DatacardCompare --mode=2 --inputs output/ValentinaMoriond-htt_em.inputs-sm-8TeV-mvis.root htt_em.inputs-sm-8TeV-mvis-moriond-andrew.root  \
+--labels MIT Imperial  --category emu_0jet_low --output_file=output/dc_sync/compare_moriond_0jet_low_em-sm-8TeV-mvis.pdf
 
 
 

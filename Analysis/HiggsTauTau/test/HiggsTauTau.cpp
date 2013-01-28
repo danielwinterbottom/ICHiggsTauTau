@@ -295,8 +295,12 @@ int main(int argc, char* argv[]){
     muon_eta = 2.1;
     tau_pt = 20.0;
     tau_eta = 2.3;
-    if (special_mode == 20 || special_mode == 22) elec_dxy = 0.2;     
-    if (special_mode == 21 || special_mode == 22) muon_dxy = 0.2;   
+    if (special_mode == 20 || special_mode == 22 || special_mode == 23 || special_mode == 25) {
+      elec_dxy = 999.;  
+      muon_dxy = 999.;  
+      elec_dz = 999.;  
+      muon_dz = 999.;  
+    }   
   }
 
 
@@ -651,6 +655,8 @@ int main(int argc, char* argv[]){
     .set_max(999);    
   if (channel == channel::em) pairFilter
     .set_predicate( (bind(PairOneWithPt, _1, 20.0)) && (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.3));
+  if (channel == channel::em && special_mode == 25) pairFilter
+    .set_predicate( (bind(PairOneWithPt, _1, 20.0) ) );
 
   if (channel == channel::mtmet) pairFilter
     .set_predicate( (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.5) && (bind(&CompositeCandidate::PtOf, _1, "lepton1") <= 20.0));
@@ -850,7 +856,7 @@ int main(int argc, char* argv[]){
   if (channel == channel::em) {
                                   analysis.AddModule(&selElectronCopyCollection);
                                   analysis.AddModule(&selElectronFilter);
-                                  analysis.AddModule(&elecMuonOverlapFilter);
+    if (special_mode != 25)       analysis.AddModule(&elecMuonOverlapFilter);
                                   analysis.AddModule(&selMuonCopyCollection);
                                   analysis.AddModule(&selMuonFilter);
   
@@ -888,6 +894,26 @@ int main(int argc, char* argv[]){
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
   // Run analysis
+
+  analysis.NotifyEvent(158376);
+  analysis.NotifyEvent(159019);
+  analysis.NotifyEvent(1986548);
+  analysis.NotifyEvent(2082470);
+  analysis.NotifyEvent(2279792);
+  analysis.NotifyEvent(3010219);
+  analysis.NotifyEvent(4171159);
+
+     analysis.NotifyEvent(4667927);
+     analysis.NotifyEvent(5782427);
+     analysis.NotifyEvent(6044485);
+     analysis.NotifyEvent(6178582);
+     analysis.NotifyEvent(6468034);
+     analysis.NotifyEvent(6585177);
+     analysis.NotifyEvent(10201409);
+     analysis.NotifyEvent(10506566);
+     analysis.NotifyEvent(11484922);
+     analysis.NotifyEvent(11998312);
+     analysis.NotifyEvent(12580601);
   analysis.RunAnalysis();
   delete fs;
   return 0;

@@ -19,8 +19,8 @@ XS_ZZJetsTo2L2Q:2.502
 XS_ZZJetsTo4L:0.181
 XS_T-tW:11.1
 XS_Tbar-tW:11.1
-#Top XS is 225.2 * 0.98 = 
-XS_TTJets:220.69
+#Top XS is 225.2 * 1.00 = 
+XS_TTJets:225.2
 XS_TT:236.46
 XS_GluGluToHToTauTau_M-125:1.2337
 XS_VBF_HToTauTau_M-125:0.0985

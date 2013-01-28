@@ -24,7 +24,9 @@ namespace ic {
     std::vector<double> weighted_yields_;
     ic::TreeEvent event_;
     bool notify_on_fail_;
+    bool notify_evt_on_fail_;
     std::set< std::pair<int,int> > notify_run_event_;
+    std::set< int > notify_event_;
     std::string skim_path_;
     bool print_module_list_;
 
@@ -45,6 +47,7 @@ namespace ic {
     virtual void DoEventSetup();
     virtual bool PostModule(int status);
     virtual void NotifyRunEvent(int const& run, int const& event);
+virtual     void NotifyEvent(int const& event);
     void DoSkimming(std::string const& skim_path) { skim_path_ = skim_path; }
  };
 }
