@@ -891,8 +891,8 @@ int main(int argc, char* argv[]){
       data_ss_sel -= w_ss_sel;
       data_ss_sel -= Integral(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr());
       data_ss_sel -= Integral(plots[Token("TTJets",cat,ss_sel)].hist_ptr());
-      //data_ss_sel -= Integral(plots[Token("DYJetsToTauTau",cat,ss_sel)].hist_ptr());
-      data_ss_sel -= (Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr())*embed_norm);
+      data_ss_sel -= Integral(plots[Token("DYJetsToTauTau",cat,ss_sel)].hist_ptr());
+      //data_ss_sel -= (Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr())*embed_norm);
       double vv_ss_total = 0.0;
       for (unsigned i = 0; i < vv_samples.size(); ++i) vv_ss_total += Integral(plots[Token(vv_samples[i],cat,ss_sel)].hist_ptr());
       data_ss_sel -= vv_ss_total;
@@ -900,8 +900,8 @@ int main(int argc, char* argv[]){
       if (verbose) std::cout << "SS W: " << w_ss_sel << endl;
       if (verbose) std::cout << "SS DYJetsToLL: " << Integral(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr()) << endl;
       if (verbose) std::cout << "SS TTJets: " << Integral(plots[Token("TTJets",cat,ss_sel)].hist_ptr()) << endl;
-      if (verbose) std::cout << "[SS ZTT]: " << Integral(plots[Token("DYJetsToTauTau",cat,ss_sel)].hist_ptr()) << endl;
-      if (verbose) std::cout << "SS Embedded: " << Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr())*embed_norm << endl;
+      if (verbose) std::cout << "SS ZTT: " << Integral(plots[Token("DYJetsToTauTau",cat,ss_sel)].hist_ptr()) << endl;
+      if (verbose) std::cout << "[SS Embedded]: " << Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr())*embed_norm << endl;
       if (verbose) std::cout << "SS VV: " << vv_ss_total << std::endl;
       if (verbose) std::cout << "=> SS QCD: " << data_ss_sel << std::endl;
       qcd_norm = os_ss_ratio * data_ss_sel;
@@ -955,8 +955,8 @@ int main(int argc, char* argv[]){
     qcd_inclusive -= w_ss_sel_inclusive;
     qcd_inclusive -= Integral(plots[Token("DYJetsToLL","inclusive",ss_sel)].hist_ptr());
     qcd_inclusive -= Integral(plots[Token("TTJets","inclusive",ss_sel)].hist_ptr());
-    //qcd_inclusive -= Integral(plots[Token("DYJetsToTauTau","inclusive",ss_sel)].hist_ptr());
-    qcd_inclusive -= (Integral(plots[Token("Embedded","inclusive",ss_sel)].hist_ptr())*embed_norm);
+    qcd_inclusive -= Integral(plots[Token("DYJetsToTauTau","inclusive",ss_sel)].hist_ptr());
+    //qcd_inclusive -= (Integral(plots[Token("Embedded","inclusive",ss_sel)].hist_ptr())*embed_norm);
     double vv_ss_total_inc = 0.0;
     for (unsigned i = 0; i < vv_samples.size(); ++i) vv_ss_total_inc += Integral(plots[Token(vv_samples[i],"inclusive",ss_sel)].hist_ptr());
     qcd_inclusive -= vv_ss_total_inc;
@@ -964,8 +964,8 @@ int main(int argc, char* argv[]){
     if (verbose) std::cout << "SS W Inclusive: " << w_ss_sel_inclusive << std::endl;
     if (verbose) std::cout << "SS ZLL Inclusive: " << Integral(plots[Token("DYJetsToLL","inclusive",ss_sel)].hist_ptr()) << std::endl;
     if (verbose) std::cout << "SS TOP Inclusive: " << Integral(plots[Token("TTJets","inclusive",ss_sel)].hist_ptr()) << std::endl;
-    if (verbose) std::cout << "[SS ZTT Inclusive]: " << Integral(plots[Token("DYJetsToTauTau","inclusive",ss_sel)].hist_ptr()) << std::endl;
-    if (verbose) std::cout << "SS Embedded Inclusive: " << Integral(plots[Token("Embedded","inclusive",ss_sel)].hist_ptr())*embed_norm << std::endl;
+    if (verbose) std::cout << "SS ZTT Inclusive: " << Integral(plots[Token("DYJetsToTauTau","inclusive",ss_sel)].hist_ptr()) << std::endl;
+    if (verbose) std::cout << "[SS Embedded Inclusive]: " << Integral(plots[Token("Embedded","inclusive",ss_sel)].hist_ptr())*embed_norm << std::endl;
     if (verbose) std::cout << "SS VV Inclusive: " << vv_ss_total_inc << std::endl;
     qcd_inclusive = os_ss_ratio * qcd_inclusive;
     if (verbose) std::cout << "=> OS QCD Inclusive: " << qcd_inclusive << std::endl;
