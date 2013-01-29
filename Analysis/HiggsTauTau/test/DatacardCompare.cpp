@@ -48,6 +48,29 @@ void SetStyle(ic::TH1PlotElement & ele, unsigned color) {
   return;
 }
 
+void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
+  static bool first_time = true;
+  static vector<int> colors;
+  if (first_time) {
+    colors.push_back(4);
+    colors.push_back(2);
+    colors.push_back(8);
+    colors.push_back(9);
+    colors.push_back(44);
+    first_time = false;
+  }
+  unsigned color_idx = colors.at(color);
+  ele.set_marker_color(color_idx);
+  ele.set_line_color(color_idx);
+  ele.set_draw_stat_error_y(true);
+  ele.set_draw_line(false);
+  ele.set_draw_marker(true);
+  ele.set_marker_size(0.7);
+  ele.set_marker_style(20);
+  return;
+}
+
+
 
 int main(int argc, char* argv[]){
 
@@ -313,6 +336,7 @@ int main(int argc, char* argv[]){
     if (j == (comp_plots.size() - 1)) test_plot.append = 3;
 
     std::vector<ic::TH1PlotElement> ele;
+    std::vector<ic::RatioPlotElement> ratio;
 
     for (unsigned k = 0; k < inputs.size(); ++k) {
       std::string replacement = category;
@@ -322,7 +346,7 @@ int main(int argc, char* argv[]){
           boost::replace_first(replacement, "eleTau", "eTau");
         }
       }
-      std::cout << "Looking for plot: " << comp_plots[j] << std::endl;
+      // std::cout << "Looking for plot: " << comp_plots[j] << std::endl;
       ele.push_back(ic::TH1PlotElement(labels[k],tfiles[k],replacement,comp_plots[j]));
       if (ele.back().hist_ptr()) {
       SetStyle(ele.back(), k);
@@ -331,8 +355,16 @@ int main(int argc, char* argv[]){
       ele.back().set_legend_text(labels[k]);
       test_plot.AddTH1PlotElement(ele.back());
       }
-    }
 
+      if (k > 0) {
+        ratio.push_back(ic::RatioPlotElement("ratio"+boost::lexical_cast<string>(k), labels[k], labels[0]) );
+        SetStyle(ratio.back(),k);
+        test_plot.AddRatioPlotElement(ratio.back());
+      }
+    }
+    test_plot.draw_ratio_hist = true;
+    test_plot.ratio_y_axis_min = 0.8;
+    test_plot.ratio_y_axis_max = 1.2;
     test_plot.GeneratePlot();
   }
 }

@@ -1008,6 +1008,7 @@ int main(int argc, char* argv[]){
     if (verbose) std::cout << "Muon Fakes: " <<  Integral(plots["Special_21_Data_inclusive_os"].hist_ptr()) << std::endl;
     if (verbose) std::cout << "Double Fakes: " <<  Integral(plots["Special_22_Data_inclusive_os"].hist_ptr()) << std::endl;
     double qcd_dilepton = Integral(plots["Special_20_Data_inclusive_os"].hist_ptr()) + Integral(plots["Special_21_Data_inclusive_os"].hist_ptr()) - Integral(plots["Special_22_Data_inclusive_os"].hist_ptr()) ;
+    qcd_dilepton *= 0.83;
     std::cout << "Inclusive fakes (no pzeta cut): " << qcd_dilepton << std::endl;
     double qcd_category = qcd_dilepton * ( Integral(plots[Token("Data",cat,ss_sel)].hist_ptr()) / Integral(plots[Token("Data","inclusive","ss")].hist_ptr()) );
     std::cout << "Extrap. into category: " << qcd_category << std::endl;
@@ -1023,12 +1024,15 @@ int main(int argc, char* argv[]){
       TH1F *fr_hist = (TH1F*)(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()->Clone());
       fr_hist->Add((TH1F*)(plots[Token("Special_21_Data",cat,os_sel)].hist_ptr()->Clone()) ,1.0);
       fr_hist->Add((TH1F*)(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()->Clone()) ,-1.0);
-      qcd_hist->Scale(qcd_norm / Integral (qcd_hist));
-      fr_hist->Scale(qcd_norm / Integral (fr_hist));
       em_0jet_high_Up = (TH1F*)qcd_hist->Clone(TString("Fakes_CMS_htt_FakeShape_em_0jet_high_")+(is_2012 ? "8":"7")+"TeVUp");
       em_0jet_high_Down = (TH1F*)fr_hist->Clone(TString("Fakes_CMS_htt_FakeShape_em_0jet_high_")+(is_2012 ? "8":"7")+"TeVDown");
+      qcd_hist->Scale(0.2 / Integral (qcd_hist)); // 0.2
+      fr_hist->Scale(0.8 / Integral (fr_hist)); // 0.8
       qcd_hist->Add(fr_hist);//Fakes_CMS_htt_FakeShape_em_0jet_high_8TeVUp
-      qcd_hist->Scale(0.5);
+      qcd_hist->Scale(qcd_norm / Integral (qcd_hist));
+      em_0jet_high_Up->Scale(qcd_norm / Integral (em_0jet_high_Up));
+      em_0jet_high_Down->Scale(qcd_norm / Integral (em_0jet_high_Down));
+      
     } else if (method == 3) {
       qcd_norm = Integral(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()) + Integral(plots[Token("Special_21_Data",cat,os_sel)].hist_ptr()) - Integral(plots[Token("Special_22_Data",cat,os_sel)].hist_ptr()) ;
       qcd_hist = (TH1F*)(plots[Token("Special_20_Data",cat,os_sel)].hist_ptr()->Clone());
@@ -1121,7 +1125,7 @@ int main(int argc, char* argv[]){
         TH1F *VH = (TH1F*)(plots[Token("WH_ZH_TTH_HToTauTau_M-"+signal_masses[i],cat,os_sel)].hist_ptr()->Clone());
         VH->Scale(1./ (parser.GetParam<double>("XS_WH_ZH_TTH_HToTauTau_M-"+signal_masses[i])));
        if (Integral(VH) < 0.0000001) {
-         std::cout << "Histogram " << "WH_ZH_TTH_HToTauTau_M-"+signal_masses[i] << ":" << os_sel << " appears to be empty, adding small value in first bin!" << std::endl;
+         std::cout << "Histogram " << "WH_ZH_TTH_HToTauTau_M-"+signal_masses[i] << ":" << os_sel << " appears to be empty, adding small value in central bin!" << std::endl;
          VH->SetBinContent(1, 0.0000001);
        }
         VH->SetName(("VH"+signal_masses[i]+append).c_str());
