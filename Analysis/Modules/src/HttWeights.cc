@@ -1005,12 +1005,17 @@ namespace ic {
         } else {
           if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
             if (fabs(tau_cand[0]->eta()) < 1.5) {
-              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.82);
-              if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.65);
+              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.85);
+              if (tau->decay_mode() == 1) {
+                eventInfo->set_weight("etau_fakerate", 1.64);
+                event->Add("mass_scale", double(1.015));
+              }
             } else {
-              event->Add("mass_scale", double(1.015));
-              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.76);
-              if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.24);
+              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 1.85);
+              if (tau->decay_mode() == 1) {
+                eventInfo->set_weight("etau_fakerate", 0.28);
+                event->Add("mass_scale", double(1.015));
+              }
             } 
           }
           if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
@@ -1041,10 +1046,10 @@ namespace ic {
 
         } else {
           if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
-            eventInfo->set_weight("mtau_fakerate", 1.25);
+            eventInfo->set_weight("mtau_fakerate", 1.00);
           }
           if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
-            eventInfo->set_weight("mtau_fakerate", 1.25);
+            eventInfo->set_weight("mtau_fakerate", 1.00);
           }
         }
       }
