@@ -48,6 +48,7 @@ namespace ic {
       std::cout << "-----------------------------------------" << std::endl;
     std::cout << "event: " <<  eventInfo->event() << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "nGoodVertices: " << eventInfo->good_vertices() << std::endl;
 
     for (unsigned i = 0; i < taus.size(); ++i) {
       std::cout << "Tau " << i << ": " << taus[i]->vector() << std::endl;
@@ -70,7 +71,9 @@ namespace ic {
       std::cout << "-trackerLayersWithMeasurement: " << muons[i]->it_layers_with_measurement() << std::endl;
       std::cout << "-normalizedChi2: " << muons[i]->gt_normalized_chi2() << std::endl;
       std::cout << "-numberOfMatchedStations: " << muons[i]->matched_stations() << std::endl;
-
+      std::cout << "-dr03_tk_sum_pt: " << muons[i]->dr03_tk_sum_pt() << std::endl;
+      std::cout << "-dr03_ecal_rechit_sum_et: " << muons[i]->dr03_ecal_rechit_sum_et() << std::endl;
+      std::cout << "-dr03_hcal_tower_sum_et: " << muons[i]->dr03_hcal_tower_sum_et() << std::endl;
       double iso =  muons[i]->dr04_pfiso_charged_all() 
       + std::max(muons[i]->dr04_pfiso_neutral() + muons[i]->dr04_pfiso_gamma() - 0.5 * muons[i]->dr04_pfiso_pu(), 0.0);
       std::cout << "-isoSum: " << iso << std::endl;
@@ -90,6 +93,9 @@ namespace ic {
       std::cout << "-rel_iso_04_dbeta: " << iso << std::endl;
       std::cout << "-id_mvaNonTrigV0: " << elecs[i]->GetIdIso("mvaNonTrigV0") << std::endl;
       std::cout << "-id_mvaTrigV0: " << elecs[i]->GetIdIso("mvaTrigV0") << std::endl;
+      std::cout << "-dr03_tk_sum_pt: " << elecs[i]->dr03_tk_sum_pt() << std::endl;
+      std::cout << "-dr03_ecal_rechit_sum_et: " << elecs[i]->dr03_ecal_rechit_sum_et() << std::endl;
+      std::cout << "-dr03_hcal_tower_sum_et: " << elecs[i]->dr03_hcal_tower_sum_et() << std::endl;
     }
 
     for (unsigned i = 0; i < elecs.size(); ++i) {
