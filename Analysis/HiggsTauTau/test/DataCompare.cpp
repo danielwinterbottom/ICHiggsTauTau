@@ -153,6 +153,8 @@ int main(int argc, char* argv[]){
 
   lumi1d = boost::lexical_cast<double>(lumi1);
   lumi2d = boost::lexical_cast<double>(lumi2);
+  if (lumi1d < 0) p1.set_legend_text(label1);
+  if (lumi2d < 0) p2.set_legend_text(label2);
 
   p1.hist_ptr()->Rebin(rebin);
   p2.hist_ptr()->Rebin(rebin);
@@ -174,6 +176,11 @@ int main(int argc, char* argv[]){
     p1.hist_ptr()->Scale(1/p1.hist_ptr()->Integral());
     p2.hist_ptr()->Scale(1/p2.hist_ptr()->Integral());
   }
+  if (norm_mode == 4) {
+    std::cout << "No Normalisation!" << std::endl;
+
+  }
+
   ic::RatioPlotElement ratio("Ratio",label2,label1);
 
   SetStyleBlock(p1);
