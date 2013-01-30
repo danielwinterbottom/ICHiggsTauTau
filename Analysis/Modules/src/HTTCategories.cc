@@ -243,7 +243,7 @@ namespace ic {
 
     // Twojet Selection
     // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2 && n_jetsingap_ == 0) {
+    if (n_jets_ >= 2) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
         SetPassCategory("twojet_cjv");
         FillCoreControlPlots("twojet_cjv");

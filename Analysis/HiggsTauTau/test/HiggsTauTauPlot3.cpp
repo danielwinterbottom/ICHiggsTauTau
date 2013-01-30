@@ -405,6 +405,7 @@ int main(int argc, char* argv[]){
     // *** We should be able to override this
   	categories.push_back("vbf_loose");
     categories.push_back("vbf_loose_jets20");
+    categories.push_back("twojet_cjv");
     if (channel == channel::em) categories.push_back("vbf_no_cjv");
   }
 
@@ -647,13 +648,19 @@ int main(int argc, char* argv[]){
     }
   
     if (method == 5) {
+      double zll_twojet_embed_eff = (Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","twojet_cjv",os_sel)].hist_ptr()));
+      std::cout << "[MC Soup Norm in twojet_cjv]: " << Integral(plots[Token("DYJetsToLLSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Soup Norm in twojet_cjv -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Soup Norm in twojet_cjv -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[zll_twojet_embed_eff]: " << zll_twojet_embed_eff << std::endl;
+
       std::cout << "[MC Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLL","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL","vbf_loose",os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Norm in vbf_loose -L]: " << Integral(plots[Token("DYJetsToLL-L","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-L","vbf_loose",os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Norm in vbf_loose -J]: " << Integral(plots[Token("DYJetsToLL-J","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-J","vbf_loose",os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Soup Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Soup Norm in vbf_loose -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Soup Norm in vbf_loose -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
-      zl_norm = Integral(plots[Token("DYJetsToLL-L","inclusive",os_sel)].hist_ptr()) * zll_embed_eff; 
+      zl_norm = Integral(plots[Token("DYJetsToLL-L","twojet_cjv",os_sel)].hist_ptr()) * zll_twojet_embed_eff; 
       zj_norm = Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()); 
       zll_norm = zl_norm + zj_norm;
       if (channel == channel::et) zl_hist =  (TH1F*)(plots[Token("Special_18_DYJetsToLL-L","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
