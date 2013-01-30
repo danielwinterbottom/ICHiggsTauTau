@@ -20,7 +20,7 @@ namespace ic {
     // 2: Read mass from .out files
     file_counter = 0;
     event_counter = 0;
-    split_ = 2500;
+    split_ = 5000;
     outname_ = "svfit_test";
     fullpath_ = "SVFIT_2012/";
   }
