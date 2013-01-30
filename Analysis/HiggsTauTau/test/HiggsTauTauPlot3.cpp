@@ -605,19 +605,25 @@ int main(int argc, char* argv[]){
 		zll_hist_ss = (TH1F*)(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr()->Clone());
 		zll_norm_ss = Integral(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr());
 
-	  double zll_inclusive = Integral(plots[Token("DYJetsToLL","inclusive",os_sel)].hist_ptr());
+    double zll_inclusive = Integral(plots[Token("DYJetsToLL","inclusive",os_sel)].hist_ptr());
+    double zl_inclusive = Integral(plots[Token("DYJetsToLL-L","inclusive",os_sel)].hist_ptr());
+    double zj_inclusive = Integral(plots[Token("DYJetsToLL-J","inclusive",os_sel)].hist_ptr());
 
 	  double zll_embed_eff = (Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","inclusive",os_sel)].hist_ptr()));
     if (verbose) {
       std::cout << "ZLL Inclusive: " << zll_inclusive << std::endl;
+      std::cout << "ZL Inclusive: " << zl_inclusive << std::endl;
+      std::cout << "ZJ Inclusive: " << zj_inclusive << std::endl;
       std::cout << "Embedded Inclusive->Category Eff: " << zll_embed_eff << std::endl;
       std::cout << "ZLL Extrap. into Category: " << (zll_inclusive * zll_embed_eff) << std::endl;
+      std::cout << "ZL Extrap. into Category: " << (zl_inclusive * zll_embed_eff) << std::endl;
+      std::cout << "ZJ Extrap. into Category: " << (zj_inclusive * zll_embed_eff) << std::endl;
       std::cout << "[MC Norm in Category]: " << Integral(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in Category]: " << Integral(plots[Token("DYJetsToLLSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup",cat,os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Norm in Category -J]: " << Integral(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in Category -J]: " << Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Norm in Category -L]: " << Integral(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Norm in Category -J]: " << Integral(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Soup Norm in Category]: " << Integral(plots[Token("DYJetsToLLSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup",cat,os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Soup Norm in Category -L]: " << Integral(plots[Token("DYJetsToLL-LSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup",cat,os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Soup Norm in Category -J]: " << Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()) << std::endl;
 
     }
   
@@ -641,6 +647,12 @@ int main(int argc, char* argv[]){
     }
   
     if (method == 5) {
+      std::cout << "[MC Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLL","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL","vbf_loose",os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Norm in vbf_loose -L]: " << Integral(plots[Token("DYJetsToLL-L","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-L","vbf_loose",os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Norm in vbf_loose -J]: " << Integral(plots[Token("DYJetsToLL-J","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-J","vbf_loose",os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Soup Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Soup Norm in vbf_loose -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
+      std::cout << "[MC Soup Norm in vbf_loose -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
       zl_norm = Integral(plots[Token("DYJetsToLL-L","inclusive",os_sel)].hist_ptr()) * zll_embed_eff; 
       zj_norm = Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()); 
       zll_norm = zl_norm + zj_norm;

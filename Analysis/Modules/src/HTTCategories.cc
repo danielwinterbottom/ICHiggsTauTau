@@ -54,6 +54,11 @@ namespace ic {
     InitCoreControlPlots("inclusive");
 
     InitCategory("vbf");
+
+    InitCategory("twojet_cjv");
+    InitCoreControlPlots("twojet_cjv");
+
+
     InitCategory("vbf_no_cjv");
     InitCategory("vbf_loose");
     InitCategory("vbf_loose_jets20");
@@ -235,6 +240,16 @@ namespace ic {
     if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 500. && jdeta_ > 3.5) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf");
     }
+
+    // Twojet Selection
+    // In the em channel, additionally apply b-jet veto
+    if (n_jets_ >= 2 && n_jetsingap_ == 0) {
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
+        SetPassCategory("twojet_cjv");
+        FillCoreControlPlots("twojet_cjv");
+      }
+    }
+
 
     // VBF Selection with no CJV, used for VBF category Fakes estimate in em
     if (n_jets_ >= 2 && mjj_ > 500. && jdeta_ > 3.5) {
