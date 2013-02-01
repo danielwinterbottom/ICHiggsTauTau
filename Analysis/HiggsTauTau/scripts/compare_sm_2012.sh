@@ -36,78 +36,78 @@
 # ./bin/DatacardCompare --mode=2 --inputs Moriond-htt_em.inputs-sm-8TeV.root  \
 # --labels MoriondYields  --category emu_0jet_low --output_file=output/dc_sync/yields_moriond_0jet_low_em-sm-8TeV.pdf
 
-# ### HCP
-# ./bin/DatacardCompare --inputs HCP-htt_mt.inputs-sm-8TeV.root \
-# --labels HCPYields  --category muTau_inclusive --output_file=output/dc_sync/yields_hcp_inclusive_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_mt.inputs-sm-8TeV.root \
-# --labels HCPYields  --category muTau_vbf --output_file=output/dc_sync/yields_hcp_vbf_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_mt.inputs-sm-8TeV.root \
-# --labels HCPYields  --category muTau_boost_high --output_file=output/dc_sync/yields_hcp_boost_high_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_mt.inputs-sm-8TeV.root \
-# --labels HCPYields  --category muTau_boost_low --output_file=output/dc_sync/yields_hcp_boost_low_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_mt.inputs-sm-8TeV.root \
-# --labels HCPYields  --category muTau_0jet_high --output_file=output/dc_sync/yields_hcp_0jet_high_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_mt.inputs-sm-8TeV.root \
-# --labels HCPYields  --category muTau_0jet_low --output_file=output/dc_sync/yields_hcp_0jet_low_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_et.inputs-sm-8TeV.root \
-# --labels HCPYields --category eleTau_inclusive --output_file=output/dc_sync/yields_hcp_inclusive_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_et.inputs-sm-8TeV.root \
-# --labels HCPYields --category eleTau_vbf --output_file=output/dc_sync/yields_hcp_vbf_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_et.inputs-sm-8TeV.root \
-# --labels HCPYields --category eleTau_boost_high --output_file=output/dc_sync/yields_hcp_boost_high_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_et.inputs-sm-8TeV.root \
-# --labels HCPYields --category eleTau_boost_low --output_file=output/dc_sync/yields_hcp_boost_low_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_et.inputs-sm-8TeV.root \
-# --labels HCPYields --category eleTau_0jet_high --output_file=output/dc_sync/yields_hcp_0jet_high_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs HCP-htt_et.inputs-sm-8TeV.root \
-# --labels HCPYields --category eleTau_0jet_low --output_file=output/dc_sync/yields_hcp_0jet_low_et-sm-8TeV.pdf 
-# ./bin/DatacardCompare --mode=2 --inputs HCP-htt_em.inputs-sm-8TeV.root  \
-# --labels HCPYields   --category emu_vbf --output_file=output/dc_sync/yields_hcp_vbf_em-sm-8TeV.pdf
-# ./bin/DatacardCompare --mode=2 --inputs HCP-htt_em.inputs-sm-8TeV.root  \
-# --labels HCPYields  --category emu_boost_high --output_file=output/dc_sync/yields_hcp_boost_high_em-sm-8TeV.pdf
-# ./bin/DatacardCompare --mode=2 --inputs HCP-htt_em.inputs-sm-8TeV.root  \
-# --labels HCPYields  --category emu_boost_low --output_file=output/dc_sync/yields_hcp_boost_low_em-sm-8TeV.pdf      
-# ./bin/DatacardCompare --mode=2 --inputs HCP-htt_em.inputs-sm-8TeV.root  \
-# --labels HCPYields  --category emu_0jet_high --output_file=output/dc_sync/yields_hcp_0jet_high_em-sm-8TeV.pdf
-# ./bin/DatacardCompare --mode=2 --inputs HCP-htt_em.inputs-sm-8TeV.root  \
-# --labels HCPYields  --category emu_0jet_low --output_file=output/dc_sync/yields_hcp_0jet_low_em-sm-8TeV.pdf
+### HCP
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields  --category muTau_inclusive --output_file=output/dc_sync/yields_hcp_inclusive_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields  --category muTau_vbf --output_file=output/dc_sync/yields_hcp_vbf_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields  --category muTau_boost_high --output_file=output/dc_sync/yields_hcp_boost_high_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields  --category muTau_boost_low --output_file=output/dc_sync/yields_hcp_boost_low_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields  --category muTau_0jet_high --output_file=output/dc_sync/yields_hcp_0jet_high_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields  --category muTau_0jet_low --output_file=output/dc_sync/yields_hcp_0jet_low_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields --category eleTau_inclusive --output_file=output/dc_sync/yields_hcp_inclusive_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields --category eleTau_vbf --output_file=output/dc_sync/yields_hcp_vbf_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields --category eleTau_boost_high --output_file=output/dc_sync/yields_hcp_boost_high_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields --category eleTau_boost_low --output_file=output/dc_sync/yields_hcp_boost_low_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields --category eleTau_0jet_high --output_file=output/dc_sync/yields_hcp_0jet_high_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-hcp-andrew.root \
+--labels HCPYields --category eleTau_0jet_low --output_file=output/dc_sync/yields_hcp_0jet_low_et-sm-8TeV.pdf 
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-hcp-andrew.root  \
+--labels HCPYields   --category emu_vbf --output_file=output/dc_sync/yields_hcp_vbf_em-sm-8TeV.pdf
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-hcp-andrew.root  \
+--labels HCPYields  --category emu_boost_high --output_file=output/dc_sync/yields_hcp_boost_high_em-sm-8TeV.pdf
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-hcp-andrew.root  \
+--labels HCPYields  --category emu_boost_low --output_file=output/dc_sync/yields_hcp_boost_low_em-sm-8TeV.pdf      
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-hcp-andrew.root  \
+--labels HCPYields  --category emu_0jet_high --output_file=output/dc_sync/yields_hcp_0jet_high_em-sm-8TeV.pdf
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-hcp-andrew.root  \
+--labels HCPYields  --category emu_0jet_low --output_file=output/dc_sync/yields_hcp_0jet_low_em-sm-8TeV.pdf
 
 
-# ### DOnly
-# ./bin/DatacardCompare --inputs DOnly-htt_mt.inputs-sm-8TeV.root \
-# --labels DOnlyYields  --category muTau_inclusive --output_file=output/dc_sync/yields_donly_inclusive_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_mt.inputs-sm-8TeV.root \
-# --labels DOnlyYields  --category muTau_vbf --output_file=output/dc_sync/yields_donly_vbf_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_mt.inputs-sm-8TeV.root \
-# --labels DOnlyYields  --category muTau_boost_high --output_file=output/dc_sync/yields_donly_boost_high_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_mt.inputs-sm-8TeV.root \
-# --labels DOnlyYields  --category muTau_boost_low --output_file=output/dc_sync/yields_donly_boost_low_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_mt.inputs-sm-8TeV.root \
-# --labels DOnlyYields  --category muTau_0jet_high --output_file=output/dc_sync/yields_donly_0jet_high_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_mt.inputs-sm-8TeV.root \
-# --labels DOnlyYields  --category muTau_0jet_low --output_file=output/dc_sync/yields_donly_0jet_low_mt-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_et.inputs-sm-8TeV.root \
-# --labels DOnlyYields --category eleTau_inclusive --output_file=output/dc_sync/yields_donly_inclusive_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_et.inputs-sm-8TeV.root \
-# --labels DOnlyYields --category eleTau_vbf --output_file=output/dc_sync/yields_donly_vbf_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_et.inputs-sm-8TeV.root \
-# --labels DOnlyYields --category eleTau_boost_high --output_file=output/dc_sync/yields_donly_boost_high_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_et.inputs-sm-8TeV.root \
-# --labels DOnlyYields --category eleTau_boost_low --output_file=output/dc_sync/yields_donly_boost_low_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_et.inputs-sm-8TeV.root \
-# --labels DOnlyYields --category eleTau_0jet_high --output_file=output/dc_sync/yields_donly_0jet_high_et-sm-8TeV.pdf
-# ./bin/DatacardCompare --inputs DOnly-htt_et.inputs-sm-8TeV.root \
-# --labels DOnlyYields --category eleTau_0jet_low --output_file=output/dc_sync/yields_donly_0jet_low_et-sm-8TeV.pdf 
-# ./bin/DatacardCompare --mode=2 --inputs DOnly-htt_em.inputs-sm-8TeV.root  \
-# --labels DOnlyYields   --category emu_vbf --output_file=output/dc_sync/yields_donly_vbf_em-sm-8TeV.pdf
-# ./bin/DatacardCompare --mode=2 --inputs DOnly-htt_em.inputs-sm-8TeV.root  \
-# --labels DOnlyYields  --category emu_boost_high --output_file=output/dc_sync/yields_donly_boost_high_em-sm-8TeV.pdf
-# ./bin/DatacardCompare --mode=2 --inputs DOnly-htt_em.inputs-sm-8TeV.root  \
-# --labels DOnlyYields  --category emu_boost_low --output_file=output/dc_sync/yields_donly_boost_low_em-sm-8TeV.pdf      
-# ./bin/DatacardCompare --mode=2 --inputs DOnly-htt_em.inputs-sm-8TeV.root  \
-# --labels DOnlyYields  --category emu_0jet_high --output_file=output/dc_sync/yields_donly_0jet_high_em-sm-8TeV.pdf
-# ./bin/DatacardCompare --mode=2 --inputs DOnly-htt_em.inputs-sm-8TeV.root  \
-# --labels DOnlyYields  --category emu_0jet_low --output_file=output/dc_sync/yields_donly_0jet_low_em-sm-8TeV.pdf
+### DOnly
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields  --category muTau_inclusive --output_file=output/dc_sync/yields_donly_inclusive_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields  --category muTau_vbf --output_file=output/dc_sync/yields_donly_vbf_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields  --category muTau_boost_high --output_file=output/dc_sync/yields_donly_boost_high_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields  --category muTau_boost_low --output_file=output/dc_sync/yields_donly_boost_low_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields  --category muTau_0jet_high --output_file=output/dc_sync/yields_donly_0jet_high_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_mt.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields  --category muTau_0jet_low --output_file=output/dc_sync/yields_donly_0jet_low_mt-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields --category eleTau_inclusive --output_file=output/dc_sync/yields_donly_inclusive_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields --category eleTau_vbf --output_file=output/dc_sync/yields_donly_vbf_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields --category eleTau_boost_high --output_file=output/dc_sync/yields_donly_boost_high_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields --category eleTau_boost_low --output_file=output/dc_sync/yields_donly_boost_low_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields --category eleTau_0jet_high --output_file=output/dc_sync/yields_donly_0jet_high_et-sm-8TeV.pdf
+./bin/DatacardCompare --inputs htt_et.inputs-sm-8TeV-2012d-andrew.root \
+--labels DOnlyYields --category eleTau_0jet_low --output_file=output/dc_sync/yields_donly_0jet_low_et-sm-8TeV.pdf 
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-2012d-andrew.root  \
+--labels DOnlyYields   --category emu_vbf --output_file=output/dc_sync/yields_donly_vbf_em-sm-8TeV.pdf
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-2012d-andrew.root  \
+--labels DOnlyYields  --category emu_boost_high --output_file=output/dc_sync/yields_donly_boost_high_em-sm-8TeV.pdf
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-2012d-andrew.root  \
+--labels DOnlyYields  --category emu_boost_low --output_file=output/dc_sync/yields_donly_boost_low_em-sm-8TeV.pdf      
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-2012d-andrew.root  \
+--labels DOnlyYields  --category emu_0jet_high --output_file=output/dc_sync/yields_donly_0jet_high_em-sm-8TeV.pdf
+./bin/DatacardCompare --mode=2 --inputs htt_em.inputs-sm-8TeV-2012d-andrew.root  \
+--labels DOnlyYields  --category emu_0jet_low --output_file=output/dc_sync/yields_donly_0jet_low_em-sm-8TeV.pdf
 
 
 

@@ -2,23 +2,25 @@
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
-echo "Using job-wrapper: " $JOBWRAPPER
+echo "Using job-wrapper:    " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/Moriond_mc_2012.cfg
-echo "Config file: $CONFIG"
-FILELIST=filelists/Dec30_MC_53X
-echo "Filelist prefix: $FILELIST"
 
 if (( "$#" != "3" ))
 then
-    echo "<CHANNELS: 0=et,mt 1=em> <TAU ENERGY SCALE SHIFT: 0=none 1=down 2=up> <SIGNAL SAMPLES 0=subset, 1=all>"
-    exit
+  echo "Usage: mc_2012.sh [Moriond,HCP,DOnly] [0<et,mt>|1<em>|2<etmet,mtmet>] [0<central energy scale>|1<down>|2<up>] [0<signal subset>|1<all signal>]"
+  exit
 fi
 
-OPTION=$1
-DOTSCALE=$2
-DOSIGNAL=$3
+ERA=$1
+OPTION=$2
+DOTSCALE=$3
+DOSIGNAL=$4
+
+CONFIG=scripts/"$ERA"_mc_2012.cfg
+echo "Config file:     $CONFIG"
+FILELIST=filelists/Dec30_MC_53X
+echo "Filelist prefix: $FILELIST"
 
 if [ $DOTSCALE == 1 ]
 then

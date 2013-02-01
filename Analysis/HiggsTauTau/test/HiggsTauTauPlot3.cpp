@@ -163,6 +163,7 @@ int main(int argc, char* argv[]){
   bool is_2012;																	// false = 7 TeV, true = 8 TeV
   unsigned mssm_mode;														// 0 = SM, 1 = MSSM
   bool no_plot;																	// Don't actually generate image files if true
+  bool show_category;                           // Print the category name on the plot title
   bool verbose;																	// Verbose output, useful for diagnostic purposes
   bool non_mass_plot;														// In some places use alternative background estimate if true
   bool draw_ss;																	// Draw the same-sign plot instead of opposite-sign
@@ -195,7 +196,8 @@ int main(int argc, char* argv[]){
   double qcd_shift = 1.0;
   double top_shift = 1.0;
   double ztt_shift = 1.0;
-  double zll_shift = 1.0;
+  double zl_shift = 1.0;
+  double zj_shift = 1.0;
   double w_shift = 1.0;
   double vv_shift = 1.0;
   bool draw_band_on_stack = false;
@@ -223,6 +225,7 @@ int main(int argc, char* argv[]){
     ("draw_ratio",          po::value<bool>(&draw_ratio)->default_value(false))
     ("mssm_mode",           po::value<unsigned>(&mssm_mode)->required())
     ("no_plot",             po::value<bool>(&no_plot)->default_value(false))
+    ("show_category",       po::value<bool>(&show_category)->default_value(true))
     ("verbose",             po::value<bool>(&verbose)->default_value(false))
     ("non_mass_plot",       po::value<bool>(&non_mass_plot)->default_value(false))
     ("draw_ss",             po::value<bool>(&draw_ss)->default_value(false))
@@ -250,7 +253,8 @@ int main(int argc, char* argv[]){
     ("qcd_shift",           po::value<double>(&qcd_shift)->default_value(1.0))
     ("top_shift",           po::value<double>(&top_shift)->default_value(1.0))
     ("ztt_shift",           po::value<double>(&ztt_shift)->default_value(1.0))
-    ("zll_shift",           po::value<double>(&zll_shift)->default_value(1.0))
+    ("zl_shift",            po::value<double>(&zl_shift)->default_value(1.0))
+    ("zj_shift",            po::value<double>(&zj_shift)->default_value(1.0))
     ("w_shift",             po::value<double>(&w_shift)->default_value(1.0))
     ("vv_shift",            po::value<double>(&vv_shift)->default_value(1.0))
     ("band_size_fractional", po::value<double>(&band_size_fractional)->default_value(0.0));
@@ -343,14 +347,10 @@ int main(int argc, char* argv[]){
     files.push_back("Data");
     files.push_back("Special_3_Data"); 
     files.push_back("DYJetsToTauTau"); 
-    files.push_back("DYJetsToTauTauSoup"); 
     files.push_back("Embedded");
     files.push_back("DYJetsToLL");
     files.push_back("DYJetsToLL-L");
     files.push_back("DYJetsToLL-J");
-    files.push_back("DYJetsToLLSoup");
-    files.push_back("DYJetsToLL-LSoup");
-    files.push_back("DYJetsToLL-JSoup");
     files.push_back("Special_18_DYJetsToLL-L");
     files.push_back("WJetsToLNuSoup");
     files.push_back("WWJetsTo2L2Nu");
@@ -362,7 +362,13 @@ int main(int argc, char* argv[]){
     files.push_back("T-tW");
     files.push_back("Tbar-tW");
     files.push_back("TTJets");
-    if (is_2012) files.push_back("TT");
+    if (is_2012) {
+      files.push_back("TT");
+      files.push_back("DYJetsToTauTauSoup"); 
+      files.push_back("DYJetsToLLSoup");
+      files.push_back("DYJetsToLL-LSoup");
+      files.push_back("DYJetsToLL-JSoup");
+    }
   } else if (channel == channel::em) {
     files.push_back("Data");
     files.push_back("Special_20_Data"); 
@@ -625,10 +631,11 @@ int main(int argc, char* argv[]){
       std::cout << "[MC Norm in Category]: " << Integral(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Norm in Category -L]: " << Integral(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Norm in Category -J]: " << Integral(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in Category]: " << Integral(plots[Token("DYJetsToLLSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup",cat,os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in Category -L]: " << Integral(plots[Token("DYJetsToLL-LSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup",cat,os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in Category -J]: " << Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()) << std::endl;
-
+      if (is_2012) {
+        std::cout << "[MC Soup Norm in Category]: " << Integral(plots[Token("DYJetsToLLSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup",cat,os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in Category -L]: " << Integral(plots[Token("DYJetsToLL-LSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup",cat,os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in Category -J]: " << Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()) << std::endl;
+      }
     }
   
     if (method <= 4 || method >= 6) {
@@ -644,27 +651,46 @@ int main(int argc, char* argv[]){
         zl_norm = zl_norm_new;
         zj_norm = zj_norm_new;
       }
-      zll_hist = (TH1F*)(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()->Clone());
+      if (shift_backgrounds) {
+        zl_norm *= zl_shift;
+        zj_norm *= zj_shift;
+        zll_norm = zl_norm + zj_norm;
+      }
+      // zll_hist = (TH1F*)(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()->Clone());
       zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       if (method == 3 && channel == channel::et) zl_hist = (TH1F*)(plots[Token("Special_18_DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()->Clone());
+      zl_hist->Scale( zl_norm / Integral(zl_hist) );
+      zj_hist->Scale( zj_norm / Integral(zj_hist) );
+      zll_hist = (TH1F*)zl_hist->Clone();
+      zll_hist->Add(zj_hist);
     }
   
     if (method == 5) {
       double zll_twojet_embed_eff = (Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","twojet_cjv",os_sel)].hist_ptr()));
-      std::cout << "[MC Soup Norm in twojet_cjv]: " << Integral(plots[Token("DYJetsToLLSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in twojet_cjv -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in twojet_cjv -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
+      if (is_2012) {
+        std::cout << "[MC Soup Norm in twojet_cjv]: " << Integral(plots[Token("DYJetsToLLSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in twojet_cjv -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in twojet_cjv -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
+      }
       std::cout << "[zll_twojet_embed_eff]: " << zll_twojet_embed_eff << std::endl;
-
       std::cout << "[MC Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLL","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL","vbf_loose",os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Norm in vbf_loose -L]: " << Integral(plots[Token("DYJetsToLL-L","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-L","vbf_loose",os_sel)].hist_ptr()) << std::endl;
       std::cout << "[MC Norm in vbf_loose -J]: " << Integral(plots[Token("DYJetsToLL-J","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-J","vbf_loose",os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in vbf_loose -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
-      std::cout << "[MC Soup Norm in vbf_loose -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
-      zl_norm = Integral(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) * zll_twojet_embed_eff; 
-      zj_norm = Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()); 
+      if (is_2012) {
+        std::cout << "[MC Soup Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in vbf_loose -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in vbf_loose -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
+        zl_norm = Integral(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) * zll_twojet_embed_eff; 
+        zj_norm = Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()); 
+      } else {
+        zl_norm = Integral(plots[Token("DYJetsToLL-L","twojet_cjv",os_sel)].hist_ptr()) * zll_twojet_embed_eff; 
+        zj_norm = Integral(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr());         
+      }
+      if (shift_backgrounds) {
+        zl_norm *= zl_shift;
+        zj_norm *= zj_shift;
+      }
       zll_norm = zl_norm + zj_norm;
       if (channel == channel::et) zl_hist =  (TH1F*)(plots[Token("Special_18_DYJetsToLL-L","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
       if (channel == channel::mt) zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-L","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
@@ -692,15 +718,13 @@ int main(int argc, char* argv[]){
     zll_hist_ss = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());; 
   }
 
+
   zll_hist->Scale( zll_norm / Integral(zll_hist) );
   zll_hist_ss->Scale( zll_norm_ss / Integral(zll_hist_ss) );
   zl_hist->Scale( zl_norm / Integral(zl_hist) );
   zj_hist->Scale( zj_norm / Integral(zj_hist) );
-  if (method == 3 && channel == channel::et) {
-    std::cout << "Relaxed shape taken for ZL, merging into ZLL..." << std::endl;
-    zll_hist = (TH1F*)zl_hist->Clone();
-    zll_hist->Add(zj_hist);
-  }
+
+  
 
   ic::TH1PlotElement zll_shape("zll_shape", zll_hist);
   ic::TH1PlotElement zll_shape_ss("zll_shape_ss", zll_hist_ss);
@@ -727,7 +751,7 @@ int main(int argc, char* argv[]){
   ztt_norm = ztt_mc_inc_yield * embedded_eff;
   //if (use_ztt_mc) ztt_norm = Integral(os_sel["DYJetsToTauTau"+sel].hist_ptr());
   if (verbose) cout << "- [DYJetsToTauTau MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << endl;
-  if (verbose) cout << "- [DYJetsToTauTauSoup MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << endl;
+  if (verbose && is_2012) cout << "- [DYJetsToTauTauSoup MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << endl;
   
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
     //0/1 Jet, Inclusive
@@ -1349,14 +1373,16 @@ int main(int argc, char* argv[]){
     std::cout << "Shift ZTT: " << ztt_shift << std::endl;
     std::cout << "Shift QCD: " << qcd_shift << std::endl;
     std::cout << "Shift TOP: " << top_shift << std::endl;
-    std::cout << "Shift ZLL: " << zll_shift << std::endl;
-    std::cout << "Shift W: " << w_shift << std::endl;
-    std::cout << "Shift VV: " << vv_shift << std::endl;
+    std::cout << "Shift ZL: "  << zl_shift << std::endl;
+    std::cout << "Shift ZJ: "  << zj_shift << std::endl;
+    std::cout << "Shift W: "   << w_shift << std::endl;
+    std::cout << "Shift VV: "  << vv_shift << std::endl;
     top_shape.hist_ptr()->Scale(top_shift);
     qcd_shape.hist_ptr()->Scale(qcd_shift);
     w_shape.hist_ptr()  ->Scale(w_shift);
     vv_shape.hist_ptr() ->Scale(vv_shift);
-    zll_shape.hist_ptr()->Scale(zll_shift);
+    // zl_shape.hist_ptr()->Scale(zl_shift);
+    // zj_shape.hist_ptr()->Scale(zj_shift);
     ztt_shape.hist_ptr()->Scale(ztt_shift);
   }
 
@@ -1456,10 +1482,11 @@ int main(int argc, char* argv[]){
   plot.y_axis_title = "Events";
   if (norm_bins) plot.y_axis_title = "dN/dm_{#tau#tau} [1/GeV]";
   plot.title_left = "CMS Preliminary " + year_label +", #sqrt{s} = " + (is_2012 ? "8":"7") +" TeV, "+ lumi_data_label;
-  if (channel == channel::et) plot.title_right = "#tau_{e}#tau_{h}, "+category;
-  if (channel == channel::mt) plot.title_right = "#tau_{#mu}#tau_{h}, "+category;
-  if (channel == channel::mtmet) plot.title_right = "#tau_{#mu}#tau_{h}+MET, "+category;
-  if (channel == channel::em) plot.title_right = "#tau_{e}#tau_{#mu}, "+category;
+  string cat_app = show_category ? (", "+category) : "";
+  if (channel == channel::et) plot.title_right = "#tau_{e}#tau_{h}"+cat_app;
+  if (channel == channel::mt) plot.title_right = "#tau_{#mu}#tau_{h}"+cat_app;
+  if (channel == channel::mtmet) plot.title_right = "#tau_{#mu}#tau_{h}+MET"+cat_app;
+  if (channel == channel::em) plot.title_right = "#tau_{e}#tau_{#mu}"+cat_app;
   if (mssm_mode == 1) plot.legend_left = 0.45;
 
   plot.draw_ratio_hist = draw_ratio;

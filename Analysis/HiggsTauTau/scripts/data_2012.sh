@@ -2,23 +2,25 @@
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
-echo "Using job-wrapper: " $JOBWRAPPER
+echo "Using job-wrapper:    " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/Moriond_data_2012.cfg
-echo "Config file: $CONFIG"
-FILELIST=filelists/Dec30_Data_53X
-DATA_FILELIST=Moriond # Or HCP, DOnly for example
-echo "Data filelists with label: $DATA_FILELIST"
 
-if (( "$#" != "2" ))
+if (( "$#" != "3" ))
 then
-echo "<CHANNELS: 0=et,mt 1=em 2=mtmet> <TAU ENERGY SCALE SHIFT: 0=none 1=none,up,down>"
-    exit
+  echo "Usage: data_2012.sh [Moriond,HCP,DOnly] [0<et,mt>|1<em>|2<etmet,mtmet>] [0<central energy scale>|1<central,up,down>]"
+  exit
 fi
 
-OPTION=$1
-DOTSCALE=$2
+ERA=$1
+OPTION=$2
+DOTSCALE=$3
+
+CONFIG=scripts/"$ERA"_data_2012.cfg
+echo "Config file: $CONFIG"
+FILELIST=filelists/Dec30_Data_53X
+DATA_FILELIST=$ERA
+echo "Data filelists with label: $DATA_FILELIST"
 
 if [ $DOTSCALE == 1 ]
 then
@@ -140,8 +142,4 @@ then
     --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-3.log" jobs/$JOB-3.sh
     $JOBSUBMIT jobs/$JOB-3.sh
   fi  
-
-
-
-
 fi

@@ -64,7 +64,8 @@ namespace ic {
     InitCategory("vbf_loose_jets20");
     InitCategory("1jet_high");
     InitCategory("1jet_low");
-    
+    InitCategory("1jet_low_nometcut");
+
     InitCategory("0jet_high");
     InitCoreControlPlots("0jet_high");
 
@@ -279,6 +280,12 @@ namespace ic {
     // In the et channel, apply a MET > 30 cut
     if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
       if ( (channel_ == channel::et) ? (met_ > 30.) : true) SetPassCategory("1jet_low");
+    }
+
+    // 1-jet Low Category
+    // In the et channel, no met cut
+    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
+      SetPassCategory("1jet_low_nometcut");
     }
 
     // Eta veto no longer needed

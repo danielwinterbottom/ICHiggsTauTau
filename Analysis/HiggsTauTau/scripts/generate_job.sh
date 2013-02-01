@@ -4,8 +4,11 @@ then
     exit
 fi
 
+
 INPUT=$1
 OUTPUT=$2
+
+echo "Generating job $OUTPUT"
 
 echo "cd $PWD" &> $OUTPUT
 echo "export SCRAM_ARCH=slc5_amd64_gcc462" >> $OUTPUT

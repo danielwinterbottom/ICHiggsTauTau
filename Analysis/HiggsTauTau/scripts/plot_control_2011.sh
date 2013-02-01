@@ -1,473 +1,349 @@
-cd ../../Modules
-make -j4
-cd ../Analysis
-make -j4
-cd HiggsTauTau
-
-
-# --draw_band_on_stack=true --band_size_fractional= \
-# --shift_background=true \
-# --ztt_shift= \
-# --qcd_shift= \
-# --top_shift= \
-# --zll_shift= \
-# --w_shift= \
-# --vv_shift=
-
-CONFIG=scripts/plot_mssm_as_sm_2011.cfg
-
-
- ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-   --category=12 --plot_name="lead_bjet_pt"  --x_axis_label="Leading b-tagged Jet p_{T} [GeV]" \
-   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
-   --make_datacard=false --non_mass_plot=true \
-   --draw_band_on_stack=true --band_size_fractional=0.047312 \
-  --shift_background=true \
-  --ztt_shift=0.976924 \
-  --qcd_shift=1.150000 \
-  --top_shift=0.866549 \
-  --zll_shift=0.879083 \
-  --w_shift=1.030000 \
-  --vv_shift=0.726045
-
-
- ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-   --category=12 --plot_name="lead_bjet_pt"  --x_axis_label="Leading b-tagged Jet p_{T} [GeV]" \
-   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
-   --make_datacard=false --non_mass_plot=true \
-   --draw_band_on_stack=true --band_size_fractional=0.037522 \
-   --shift_background=true \
-   --ztt_shift=0.979171 \
-   --qcd_shift=0.962000 \
-   --top_shift=0.867239 \
-   --zll_shift=0.909931 \
-   --w_shift=1.174000 \
-   --vv_shift=0.727715
-
-../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-   --category=12 --plot_name="lead_bjet_eta"  --x_axis_label="Leading b-tagged Jet #eta" \
-   --custom_x_axis_range=true --x_axis_min=-3 --x_axis_max=3 \
-   --make_datacard=false --non_mass_plot=true --extra_pad=1.55 \
-   --draw_band_on_stack=true --band_size_fractional=0.047312 \
-   --shift_background=true \
-   --ztt_shift=0.976924 \
-   --qcd_shift=1.150000 \
-   --top_shift=0.866549 \
-   --zll_shift=0.879083 \
-   --w_shift=1.030000 \
-   --vv_shift=0.726045
-
- ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-   --category=12 --plot_name="lead_bjet_eta"  --x_axis_label="Leading b-tagged Jet #eta" \
-   --custom_x_axis_range=true --x_axis_min=-3 --x_axis_max=3 \
-   --make_datacard=false --non_mass_plot=true --extra_pad=1.55 \
-   --draw_band_on_stack=true --band_size_fractional=0.037522 \
-   --shift_background=true \
-   --ztt_shift=0.979171 \
-   --qcd_shift=0.962000 \
-   --top_shift=0.867239 \
-   --zll_shift=0.909931 \
-   --w_shift=1.174000 \
-   --vv_shift=0.727715
-
-
-
-
-
-
-# ../bin/HiggsTauTauPlot2 --cfg=scripts/plot_sm_2012.cfg --mode=1 --rebin=4 \
-# --category=1 --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss} [GeV]" \
-# --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-# --make_datacard=false --non_mass_plot=true \
-  # --shift_background=true \
-  # --ztt_shift=0.947422469 \
-  # --qcd_shift=0.947422469 \
-  # --top_shift=0.947422469 \
-  # --zll_shift=0.947422469 \
-  # --w_shift=0.947422469 \
-  # --vv_shift=0.947422469
-
-
-#  CATS=(
-#   '8'
-#   '0'
-#   '11'
-#   '12'
-#  )
-#  for i in "${CATS[@]}"
-#  do
-#    ../bin/HiggsTauTauPlot2 --cfg=$CONFIG  --tau_scale_mode=0 --mode=0 --rebin=1  \
-#      --category="$i" --plot_name="svfit_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
-#      --make_datacard=false --norm_bins=true --draw_ss=true
-#    ../bin/HiggsTauTauPlot2 --cfg=$CONFIG  --tau_scale_mode=0 --mode=1 --rebin=1 \
-#      --category="$i" --plot_name="svfit_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
-#      --make_datacard=false  --norm_bins=true --draw_ss=true
-#  done
-
-#  CATS=(
-#    '5'
-#    '7'
-#    '6'
-#    '1'
-#    '3'
-#    '2'
-#  )
-#  for i in "${CATS[@]}"
-#  do
-#    ../bin/HiggsTauTauPlot2 --cfg=$CONFIG  --tau_scale_mode=0 --mode=0 --rebin=1  \
-#      --category="$i" --plot_name="svfit_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
-#      --make_datacard=false --norm_bins=true --draw_ss=true --extra_pad=1.3
-#    ../bin/HiggsTauTauPlot2 --cfg=$CONFIG  --tau_scale_mode=0 --mode=1 --rebin=1 \
-#      --category="$i" --plot_name="svfit_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
-#      --make_datacard=false  --norm_bins=true --draw_ss=true --extra_pad=1.3
-#  done
-
-
-
-
-
-
-# CATS=(
-#  '7'
-#  '6'
-#  '5'
-# )
-# for i in "${CATS[@]}"
-# do
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=8  \
-#    --category="$i" --plot_name="lep1_mvamet_mt_all"  --x_axis_label="m_{T} [GeV]" \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.3
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=8 \
-#    --category="$i" --plot_name="lep1_mvamet_mt_all"  --x_axis_label="m_{T}  [GeV]" \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.3
-
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=10  \
-#    --category="$i" --plot_name="lep1_pt"  --x_axis_label="Electron p_{T} [GeV]" \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.3
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=10 \
-#    --category="$i" --plot_name="lep1_pt"  --x_axis_label="Muon p_{T} [GeV]" \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.3
-
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=10  \
-#    --category="$i" --plot_name="lep2_pt"  --x_axis_label="Tau p_{T} [GeV]" \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
-#    --make_datacard=false --non_mass_plot=true
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=10 \
-#    --category="$i" --plot_name="lep2_pt"  --x_axis_label="Tau p_{T} [GeV]" \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
-#    --make_datacard=false --non_mass_plot=true 
-
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=5  \
-#    --category="$i" --plot_name="lep1_eta"  --x_axis_label="Electron #eta" \
-#    --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.6
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=5 \
-#    --category="$i" --plot_name="lep1_eta"  --x_axis_label="Muon #eta" \
-#    --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.6
-
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=5  \
-#    --category="$i" --plot_name="lep2_eta"  --x_axis_label="Tau #eta" \
-#    --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.6
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=5 \
-#    --category="$i" --plot_name="lep2_eta"  --x_axis_label="Tau #eta" \
-#    --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.6    
-
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=10  \
-#    --category="$i" --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss} [GeV]" \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#    --make_datacard=false  --non_mass_plot=true
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=10 \
-#    --category="$i" --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss} [GeV]" \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#    --make_datacard=false --non_mass_plot=true
-# done
-
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=20  \
-#    --category=5 --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss} [GeV]" \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#    --make_datacard=false  --non_mass_plot=true --extra_pad=1.2
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=20 \
-#    --category=5 --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss} [GeV]" \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#    --make_datacard=false --non_mass_plot=true --extra_pad=1.2
-
-
-#  CATS=(
-
-#   '3'
-#   '2'
-#   '1'
-#   '0'
-#  )
-
-
-#  for i in "${CATS[@]}"
-#  do
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-#     --category="$i" --plot_name="lep1_mvamet_mt_all"  --x_axis_label="m_{T} [GeV]" \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.3
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-#     --category="$i" --plot_name="lep1_mvamet_mt_all"  --x_axis_label="m_{T}  [GeV]" \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.3
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=5  \
-#     --category="$i" --plot_name="lep1_pt"  --x_axis_label="Electron p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.3 --verbose=false
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=5 \
-#     --category="$i" --plot_name="lep1_pt"  --x_axis_label="Muon p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.3 --verbose=false
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=5  \
-#     --category="$i" --plot_name="lep2_pt"  --x_axis_label="Tau p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
-#     --make_datacard=false --non_mass_plot=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=5 \
-#     --category="$i" --plot_name="lep2_pt"  --x_axis_label="Tau p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
-#     --make_datacard=false --non_mass_plot=true 
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-#     --category="$i" --plot_name="lep1_eta"  --x_axis_label="Electron #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.6
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-#     --category="$i" --plot_name="lep1_eta"  --x_axis_label="Muon #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.6
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-#     --category="$i" --plot_name="lep2_eta"  --x_axis_label="Tau #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.6
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-#     --category="$i" --plot_name="lep2_eta"  --x_axis_label="Tau #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.6    
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=8  \
-#     --category="$i" --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false  --non_mass_plot=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=8 \
-#     --category="$i" --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false --non_mass_plot=true
-#  done
-
-
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-#     --category=9 --plot_name="lep1_mvamet_mt"  --x_axis_label="m_{T} [GeV]" \
-#     --make_datacard=false --non_mass_plot=true
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-#     --category=9 --plot_name="lep1_mvamet_mt"  --x_axis_label="m_{T}  [GeV]" \
-#     --make_datacard=false --non_mass_plot=true
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-#     --category=8 --plot_name="lep1_pt"  --x_axis_label="Electron p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false --non_mass_plot=true
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-  #   --category=8 --plot_name="lep1_pt"  --x_axis_label="Muon p_{T} [GeV]" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-  #   --make_datacard=false --non_mass_plot=true 
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-#     --category=8 --plot_name="lep2_pt"  --x_axis_label="Tau p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false --non_mass_plot=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-#     --category=8 --plot_name="lep2_pt"  --x_axis_label="Tau p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false --non_mass_plot=true 
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-#     --category=8 --plot_name="lep1_eta"  --x_axis_label="Electron #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.5
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-#     --category=8 --plot_name="lep1_eta"  --x_axis_label="Muon #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.4
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-#     --category=8 --plot_name="lep2_eta"  --x_axis_label="Tau #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.5
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-#     --category=8 --plot_name="lep2_eta"  --x_axis_label="Tau #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-2.4 --x_axis_max=2.4 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.4
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=1  \
-#     --category=8 --plot_name="n_jets"  --x_axis_label="Number of jets" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=5 --y_axis_min=10 \
-#     --make_datacard=false --non_mass_plot=true --log_y=true --extra_pad=10.0
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=1 \
-#     --category=8 --plot_name="n_jets"  --x_axis_label="Number of jets" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=5 --y_axis_min=10 \
-#     --make_datacard=false --non_mass_plot=true --log_y=true --extra_pad=10.0
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=1  \
-#     --category=8 --plot_name="n_bjets"  --x_axis_label="Number of b-tagged jets" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=4 \
-#     --make_datacard=false --non_mass_plot=true --log_y=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=1 \
-#     --category=8 --plot_name="n_bjets"  --x_axis_label="Number of b-tagged jets" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=4 \
-#     --make_datacard=false --non_mass_plot=true --log_y=true
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=1  \
-#     --category=8 --plot_name="lead_jet_pt"  --x_axis_label="Leading Jet p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
-#     --make_datacard=false --non_mass_plot=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=1 \
-#     --category=8 --plot_name="lead_jet_pt"  --x_axis_label="Leading Jet p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
-#     --make_datacard=false --non_mass_plot=true 
-
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-#     --category=8 --plot_name="lead_jet_eta"  --x_axis_label="Leading Jet #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.5
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-#     --category=8 --plot_name="lead_jet_eta"  --x_axis_label="Leading Jet #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.5
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-#     --category=8 --plot_name="sublead_jet_pt"  --x_axis_label="Trailing Jet p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
-#     --make_datacard=false --non_mass_plot=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-#     --category=8 --plot_name="sublead_jet_pt"  --x_axis_label="Trailing Jet p_{T} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
-#     --make_datacard=false --non_mass_plot=true
-
-#  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=5  \
-#     --category=8 --plot_name="sublead_jet_eta"  --x_axis_label="Trailing Jet #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.5
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=5 \
-#     --category=8 --plot_name="sublead_jet_eta"  --x_axis_label="Trailing Jet #eta" \
-#     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
-#     --make_datacard=false --non_mass_plot=true --extra_pad=1.5
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=5  \
-#     --category=8 --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss}  [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false  --non_mass_plot=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=5 \
-#     --category=8 --plot_name="mvamet_et"  --x_axis_label="E_{T}^{miss}  [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=80 \
-#     --make_datacard=false --non_mass_plot=true
-
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-#     --category=10 --plot_name="vbf_mjj"  --x_axis_label="M_{jj} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-#     --make_datacard=false --non_mass_plot=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-#     --category=10 --plot_name="vbf_mjj"  --x_axis_label="M_{jj} [GeV]" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-#     --make_datacard=false --non_mass_plot=true 
-
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-#     --category=10 --plot_name="vbf_dEta"  --x_axis_label="#Delta#eta_{jj}" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=6 \
-#     --make_datacard=false --non_mass_plot=true
-#   ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-#     --category=10 --plot_name="vbf_dEta"  --x_axis_label="#Delta#eta_{jj}" \
-#     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=6 \
-#     --make_datacard=false --non_mass_plot=true 
-
-
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-  #   --category=10 --plot_name="vbf_mjj"  --x_axis_label="M_{jj} [GeV]" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 --extra_pad=2.0 --signal_split_vbf=true \
-  #   --make_datacard=false --non_mass_plot=true --log_y=true --signal_no_stack=true
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-  #   --category=10 --plot_name="vbf_mjj"  --x_axis_label="M_{jj} [GeV]" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 --extra_pad=6.0 --signal_split_vbf=true \
-  #   --make_datacard=false --non_mass_plot=true  --log_y=true --signal_no_stack=true
-
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
-  #   --category=10 --plot_name="vbf_dEta"  --x_axis_label="#Delta#eta_{jj}" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=6 --extra_pad=4.0 --signal_split_vbf=true \
-  #   --make_datacard=false --non_mass_plot=true --log_y=true --signal_no_stack=true
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
-  #   --category=10 --plot_name="vbf_dEta"  --x_axis_label="#Delta#eta_{jj}" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=6 --extra_pad=3.0 --signal_split_vbf=true \
-  #   --make_datacard=false --non_mass_plot=true --log_y=true --signal_no_stack=true
-
-    
-
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-  #   --category=10 --plot_name="vbf_C1"  --x_axis_label="min(#eta_{vis}-#eta_{j1}, #eta_{vis}-#eta_{j2})" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=5 \
-  #   --make_datacard=false --non_mass_plot=true
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-  #   --category=10 --plot_name="vbf_C1"  --x_axis_label="min(#eta_{vis}-#eta_{j1}, #eta_{vis}-#eta_{j2})" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=5 \
-  #   --make_datacard=false --non_mass_plot=true 
-
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=10  \
-  #   --category=10 --plot_name="vbf_C2"  --x_axis_label="Visible Di-tau p_{T} (GeV)" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
-  #   --make_datacard=false --non_mass_plot=true
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=10 \
-  #   --category=10 --plot_name="vbf_C2"  --x_axis_label="Visible Di-tau p_{T} (GeV)" \
-  #   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
-  #   --make_datacard=false --non_mass_plot=true 
-
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
-  #   --category=10 --plot_name="vbf_mva_val"  --x_axis_label="VBF MVA Output" \
-  #   --custom_x_axis_range=true --x_axis_min=-1 --x_axis_max=1 \
-  #   --make_datacard=false --non_mass_plot=true
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
-  #   --category=10 --plot_name="vbf_mva_val"  --x_axis_label="VBF MVA Output" \
-  #   --custom_x_axis_range=true --x_axis_min=-1 --x_axis_max=1 \
-  #   --make_datacard=false --non_mass_plot=true
-
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=5  \
-  #   --category=10 --plot_name="vbf_mva_val"  --x_axis_label="VBF MVA Output" \
-  #   --custom_x_axis_range=true --x_axis_min=-1 --x_axis_max=1 \
-  #   --make_datacard=false --non_mass_plot=true \
-  #   --log_y=true --y_axis_min=0.9 --signal_no_stack=true --signal_split_vbf=true --extra_pad=10 \
-  #   --blind=true --x_blind_min=0.8 --x_blind_max=1
-
-  # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=5 \
-  #   --category=10 --plot_name="vbf_mva_val"  --x_axis_label="VBF MVA Output" \
-  #   --custom_x_axis_range=true --x_axis_min=-1 --x_axis_max=1 \
-  #   --make_datacard=false --non_mass_plot=true \
-  #   --log_y=true --y_axis_min=0.9 --signal_no_stack=true --signal_split_vbf=true --extra_pad=10 \
-  #   --blind=true --x_blind_min=0.8 --x_blind_max=1
-
-
- #  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=2  \
- #    --category=8 --plot_name="lead_bjet_pt"  --x_axis_label="Leading b-tagged Jet p_{T} [GeV]" \
- #    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
- #    --make_datacard=false --non_mass_plot=true
- #  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=2 \
- #    --category=8 --plot_name="lead_bjet_pt"  --x_axis_label="Leading b-tagged Jet p_{T} [GeV]" \
- #    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
- #    --make_datacard=false --non_mass_plot=true 
-
- # ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=0 --rebin=4  \
- #    --category=8 --plot_name="lead_bjet_eta"  --x_axis_label="Leading b-tagged Jet #eta" \
- #    --custom_x_axis_range=true --x_axis_min=-3 --x_axis_max=3 \
- #    --make_datacard=false --non_mass_plot=true --extra_pad=1.55
- #  ../bin/HiggsTauTauPlot2 --cfg=$CONFIG --mode=1 --rebin=4 \
- #    --category=8 --plot_name="lead_bjet_eta"  --x_axis_label="Leading b-tagged et #eta" \
- #    --custom_x_axis_range=true --x_axis_min=-3 --x_axis_max=3 \
- #    --make_datacard=false --non_mass_plot=true --extra_pad=1.55
-
-
+PROD=default
+PARAMS=./scripts/"$PROD"_params_2011.dat
+CONFIG=scripts/plot_sm_2011.cfg
+
+# SCALE_ET_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.030 --ztt_shift=0.991 \
+#               --qcd_shift=1.003 --top_shift=0.849 --zl_shift=1.002 --zj_shift=1.000 --w_shift=1.010 --vv_shift=0.787"
+# SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.025 --ztt_shift=0.976 \
+#               --qcd_shift=1.145 --top_shift=0.836 --zl_shift=0.837 --zj_shift=0.951 --w_shift=1.004 --vv_shift=0.777"
+# SCALE_ET_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.029 --ztt_shift=1.004 \
+#               --qcd_shift=0.981 --top_shift=0.847 --zl_shift=1.014 --zj_shift=0.891 --w_shift=0.945 --vv_shift=0.790"
+# SCALE_MT_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.028 --ztt_shift=0.989 \
+#               --qcd_shift=1.168 --top_shift=0.834 --zl_shift=0.844 --zj_shift=0.981 --w_shift=1.117 --vv_shift=0.780"
+
+SCALE_ET_INC=""
+SCALE_MT_INC=""
+SCALE_ET_JET=""
+SCALE_MT_JET=""
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et --rebin=1  \
+  --method=8 --category="inclusive" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=true --verbose=false \
+  --paramfile=$PARAMS $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt --rebin=1  \
+  --method=8 --category="inclusive" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=true --verbose=false \
+  --paramfile=$PARAMS $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em --rebin=1  \
+#   --method=8 --category="inclusive" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+#   --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=true --verbose=false \
+#   --paramfile=$PARAMS
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et --rebin=1  \
+  --method=8 --category="inclusive" --plot_name="m_vis_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=true --verbose=false \
+  --paramfile=$PARAMS $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt --rebin=1  \
+  --method=8 --category="inclusive" --plot_name="m_vis_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=true --verbose=false \
+  --paramfile=$PARAMS $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em --rebin=1  \
+#   --method=8 --category="inclusive" --plot_name="m_vis_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+#   --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=true --verbose=false \
+#   --paramfile=$PARAMS
+
+###### MET
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="met"  --x_axis_label="MVA MET [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="met"  --x_axis_label="MVA MET [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="met"  --x_axis_label="MVA MET [GeV]" \
+#   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS
+
+###### pt_1
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="pt_1"  --x_axis_label="Electron p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="pt_1"  --x_axis_label="Muon p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="pt_1"  --x_axis_label="Electron p_{T} [GeV]" \
+#   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS
+
+###### pt_2
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="pt_2"  --x_axis_label="Tau p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="pt_2"  --x_axis_label="Tau p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="pt_2"  --x_axis_label="Muon p_{T} [GeV]" \
+#   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS
+
+###### eta_1
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="eta_1"  --x_axis_label="Electron #eta" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.6 $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="eta_1"  --x_axis_label="Muon #eta" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.5 $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="eta_1"  --x_axis_label="Electron #eta" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS --extra_pad=1.4
+
+
+###### eta_2
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="eta_2"  --x_axis_label="Tau #eta" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.5 $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="eta_2"  --x_axis_label="Tau #eta" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.5 $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="eta_2"  --x_axis_label="Muon #eta" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS --extra_pad=1.4
+
+###### n_vtx
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="n_vtx"  --x_axis_label="Number of Vertices" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="n_vtx"  --x_axis_label="Number of Vertices" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="n_vtx"  --x_axis_label="Number of Vertices" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS
+
+###### n_jets (log)
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
+  --paramfile=$PARAMS --log_y=true $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
+  --paramfile=$PARAMS --log_y=true $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
+#   --paramfile=$PARAMS --log_y=true
+
+###### n_jets
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
+  --custom_x_axis_range=true --x_axis_min=-0.5 --x_axis_max=5.5 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=false \
+  --paramfile=$PARAMS --log_y=false $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
+  --custom_x_axis_range=true --x_axis_min=-0.5 --x_axis_max=5.5 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=false \
+  --paramfile=$PARAMS --log_y=false $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="n_jets"  --x_axis_label="Number of Jets" \
+#   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=false \
+#   --paramfile=$PARAMS --log_y=false
+
+###### n_bjets (log)
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
+  --paramfile=$PARAMS --log_y=true $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
+  --paramfile=$PARAMS --log_y=true $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=true \
+#   --paramfile=$PARAMS --log_y=true
+
+###### n_bjets
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
+  --custom_x_axis_range=true --x_axis_min=-0.5 --x_axis_max=3.5 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=false \
+  --paramfile=$PARAMS --log_y=false $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
+  --custom_x_axis_range=true --x_axis_min=-0.5 --x_axis_max=3.5 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=false \
+  --paramfile=$PARAMS --log_y=false $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="n_bjets"  --x_axis_label="Number of b-tagged Jets" \
+#   --custom_x_axis_range=true --x_axis_min=-0.5 --x_axis_max=4.5 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false --draw_ratio=false \
+#   --paramfile=$PARAMS --log_y=false
+
+###### jpt_1
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_ET_JET
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS $SCALE_MT_JET
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
+#   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS
+
+###### jeta_1
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="jeta_1"  --x_axis_label="Leading Jet #eta" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.4 $SCALE_ET_JET
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="jeta_1"  --x_axis_label="Leading Jet #eta" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.4 $SCALE_MT_JET
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="jeta_1"  --x_axis_label="Leading Jet #eta" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS --extra_pad=1.4
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et --rebin=1  \
+  --method=8 --category="inclusive" --plot_name="mt_1"  --x_axis_label="m_{T} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --replace_os_sel="os"  --replace_ss_sel="ss" $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt --rebin=1  \
+  --method=8 --category="inclusive" --plot_name="mt_1"  --x_axis_label="m_{T} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --replace_os_sel="os"  --replace_ss_sel="ss" $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em --rebin=1  \
+#   --method=8 --category="inclusive" --plot_name="pzeta"  --x_axis_label="#slash{P}_{#zeta} - 0.85 #times P_{#zeta}^{vis}" \
+#   --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS --replace_os_sel="os"  --replace_ss_sel="ss"
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="tau_decay_mode"  --x_axis_label="Tau Decay Mode" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.4 --draw_ratio=true \
+  --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong" $SCALE_ET_INC
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="tau_decay_mode"  --x_axis_label="Tau Decay Mode" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.4 --draw_ratio=true \
+  --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong" $SCALE_MT_INC
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="tau_decay_mode"  --x_axis_label="Tau Decay Mode" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=1 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS --extra_pad=1.4 --draw_ratio=true \
+#   --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong"
+
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_ET_JET
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_MT_JET
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS --extra_pad=1.0
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=et  \
+  --method=8 --category="inclusive" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_ET_JET
+
+./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=mt \
+  --method=8 --category="inclusive" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+  --make_datacard=false --norm_bins=false --verbose=false \
+  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_MT_JET
+
+# ./bin/HiggsTauTauPlot3 --cfg=$CONFIG --tau_scale_mode=0 --channel=em \
+#   --method=8 --category="inclusive" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --rebin=2 \
+#   --make_datacard=false --norm_bins=false --verbose=false \
+#   --paramfile=$PARAMS --extra_pad=1.0

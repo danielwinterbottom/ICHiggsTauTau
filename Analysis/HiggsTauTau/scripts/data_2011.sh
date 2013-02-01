@@ -2,8 +2,15 @@
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
-echo "Using job-wrapper: " $JOBWRAPPER
+echo "Using job-wrapper:    " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
+
+
+if (( "$#" != "2" ))
+then
+    echo "Usage: data_2011.sh [0<et,mt>|1<em>] [0<central energy scale>|1<central,up,down>]"
+    exit
+fi
 
 CONFIG=scripts/data_2011.cfg
 echo "Config file: $CONFIG"
@@ -11,12 +18,6 @@ FILELIST=filelists/Sept11_Data_42X
 echo "Filelist prefix: $FILELIST"
 DATA_FILELIST=Total
 echo "Data filelists with label: $DATA_FILELIST"
-
-if (( "$#" != "2" ))
-then
-    echo "<CHANNELS: 0=et,mt 1=em> <TAU ENERGY SCALE SHIFT: 0=none, 1=none,up,down>"
-    exit
-fi
 
 OPTION=$1
 DOTSCALE=$2
@@ -83,17 +84,17 @@ then
 
   # Special Mode Data
   JOB=Data_em_2011
-  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_20_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
   --special_mode=20 --output_name=$JOB.root &> jobs/Special_20_$JOB.log" jobs/Special_20_$JOB.sh
   $JOBSUBMIT jobs/Special_20_$JOB.sh
 
   JOB=Data_em_2011
-  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_21_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
   --special_mode=21 --output_name=$JOB.root &> jobs/Special_21_$JOB.log" jobs/Special_21_$JOB.sh
   $JOBSUBMIT jobs/Special_21_$JOB.sh
 
   JOB=Data_em_2011
-  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_25_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Special_22_Data_"$DATA_FILELIST"_em_skim.dat  --channel=em \
   --special_mode=22 --output_name=$JOB.root &> jobs/Special_22_$JOB.log" jobs/Special_22_$JOB.sh
   $JOBSUBMIT jobs/Special_22_$JOB.sh
 
@@ -109,7 +110,20 @@ then
 
   # Embedded
   JOB=Embedded_em_2011
-  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
-  --is_embedded=true --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --mass_scale_mode=2 --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
+  --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-2.log" jobs/$JOB-2.sh
+  $JOBSUBMIT jobs/$JOB-2.sh
+
+  if [ $DOTSCALE == 1 ]
+  then
+    JOB=Embedded_em_2011
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --mass_scale_mode=1 --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-1.log" jobs/$JOB-1.sh
+    $JOBSUBMIT jobs/$JOB-1.sh
+
+    JOB=Embedded_em_2011
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --mass_scale_mode=3 --filelist="$FILELIST"_Embedded_"$DATA_FILELIST"_em_skim.dat --channel=em \
+    --is_embedded=true --output_name=$JOB.root &> jobs/$JOB-3.log" jobs/$JOB-3.sh
+    $JOBSUBMIT jobs/$JOB-3.sh
+  fi  
 fi

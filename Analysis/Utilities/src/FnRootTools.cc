@@ -22,6 +22,4 @@ namespace ic {
     return files;
   }
 
-
-
 } //namespace

@@ -2,23 +2,25 @@
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
-echo "Using job-wrapper: " $JOBWRAPPER
+echo "Using job-wrapper:    " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
+
+
+if (( "$#" != "3" ))
+then
+  echo "Usage: mc_2011.sh [0<et,mt>|1<em>] [0<central energy scale>|1<down>|2<up>] [0<signal subset>|1<all signal>]"
+  exit
+fi
+
+OPTION=$1
+DOTSCALE=$2
+DOSIGNAL=$3
 
 CONFIG=scripts/mc_2011.cfg
 echo "Config file: $CONFIG"
 FILELIST=filelists/Sept11_MC_42X
 echo "Filelist prefix: $FILELIST"
 
-if (( "$#" != "3" ))
-then
-    echo "<CHANNELS: 0=et,mt 1=em> <TAU ENERGY SCALE SHIFT: 0=none 1=down 2=up> <SIGNAL SAMPLES 0=subset, 1=all>"
-    exit
-fi
-
-OPTION=$1
-DOTSCALE=$2
-DOSIGNAL=$3
 
 if [ $DOTSCALE == 1 ]
 then
@@ -44,20 +46,25 @@ PATHS=(
 'T-tW'
 'Tbar-tW'
 )
-if [ $OPTION == 2 ]
+if [ $OPTION == 1 ]
 then
-  PATHS=(
-  'DYJetsToTauTau'
-  'TTJets'
-  'WWJetsTo2L2Nu'
-  'WZJetsTo2L2Q'
-  'WZJetsTo3LNu'
-  'ZZJetsTo2L2Nu'
-  'ZZJetsTo2L2Q'
-  'ZZJetsTo4L'
-  'T-tW'
-  'Tbar-tW'
-  )
+  if [ $TSCALE == 0 ]
+  then
+    PATHS=(
+    'DYJetsToTauTau'
+    'TTJets'
+    'WWJetsTo2L2Nu'
+    'WZJetsTo2L2Q'
+    'WZJetsTo3LNu'
+    'ZZJetsTo2L2Nu'
+    'ZZJetsTo2L2Q'
+    'ZZJetsTo4L'
+    'T-tW'
+    'Tbar-tW'
+    )
+  else
+    PATHS=( )
+  fi
 fi
 
 
@@ -175,6 +182,26 @@ then
     $JOBSUBMIT jobs/$JOB-$j.sh
   done
 fi
+
+if [ $OPTION == 1 ]
+then
+  if [ $TSCALE == 0 ]
+  then
+    # DYJetsToTauTau
+    JOB=DYJetsToTauTau_em_2011
+   $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_DYJetsToLL_em_skim.dat --channel=em \
+     --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+    $JOBSUBMIT jobs/$JOB.sh
+  
+    # DYJetsToTauTauSoup
+    JOB=DYJetsToTauTauSoup_em_2011
+    $JOBWRAPPER "./bin/HiggsTauTau --cfg=$CONFIG --filelist="$FILELIST"_DYJetsToLLSoup_em_skim.dat --channel=em \
+     --ztautau_mode=1 --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+    $JOBSUBMIT jobs/$JOB.sh
+  fi
+fi
+
+
 
 for i in "${PATHS[@]}"
 do
