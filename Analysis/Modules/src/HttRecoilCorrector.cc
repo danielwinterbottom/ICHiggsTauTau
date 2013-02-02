@@ -93,7 +93,8 @@ namespace ic {
       boson_id_.push_back(36);
     }
 
-    if ( sample_.find("DYJetsToLL") != sample_.npos ) {
+    if ( sample_.find("DYJetsToLL") != sample_.npos 
+      || sample_.find("DYJetsToTauTau") != sample_.npos ) {
       disable = false;
       if (mc_ == mc::summer12_53X) {
         if (strategy_ == strategy::hcp2012) process_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";

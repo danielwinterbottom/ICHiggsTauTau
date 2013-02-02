@@ -50,28 +50,38 @@ namespace ic {
     InitSelection("ss_con");
     InitSelection("ss_con_mt_60-120");
 
+
     InitCategory("inclusive");
     InitCoreControlPlots("inclusive");
 
     InitCategory("vbf");
 
-    InitCategory("twojet_cjv");
-    InitCoreControlPlots("twojet_cjv");
-
-
     InitCategory("vbf_no_cjv");
+
     InitCategory("vbf_loose");
+
     InitCategory("vbf_loose_jets20");
+
+    InitCategory("twojet");
+    InitCoreControlPlots("twojet");
+    
+    InitCategory("1jet");
+    InitCoreControlPlots("1jet");
+
     InitCategory("1jet_high");
+
     InitCategory("1jet_low");
+
     InitCategory("1jet_low_nometcut");
 
     InitCategory("0jet_high");
-    InitCoreControlPlots("0jet_high");
 
     InitCategory("0jet_low");
+
     InitCategory("btag");
+
     InitCategory("btag_loose");
+
     InitCategory("nobtag");
 
     return 0;
@@ -225,7 +235,6 @@ namespace ic {
       if (os_) SetPassSelection("os");
       if (!os_) SetPassSelection("ss");
       if (!os_ && pzeta_ > -20) SetPassSelection("ss_sel");
-
     }
 
     // Define the 1- and 0-jet split based on pt_2
@@ -239,18 +248,11 @@ namespace ic {
     // VBF Selection
     // In the em channel, additionally apply b-jet veto
     if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 500. && jdeta_ > 3.5) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf");
-    }
-
-    // Twojet Selection
-    // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("twojet_cjv");
-        FillCoreControlPlots("twojet_cjv");
+        SetPassCategory("vbf");
+        FillCoreControlPlots("vbf");
       }
     }
-
 
     // VBF Selection with no CJV, used for VBF category Fakes estimate in em
     if (n_jets_ >= 2 && mjj_ > 500. && jdeta_ > 3.5) {
@@ -262,13 +264,29 @@ namespace ic {
     if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose");
     }
-
+    
     // Loose VBF Selection with low pT Jet Requirement
     // Used for background shape of QCD in VBF Category
     if (n_lowpt_jets_ >= 2 && n_jetsingap_lowpt_ == 0 && mjj_lowpt_ > 200. && jdeta_lowpt_ > 2.0) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose_jets20");
     }
 
+    // Twojet Selection
+    // In the em channel, additionally apply b-jet veto
+    if (n_jets_ >= 2) {
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
+        SetPassCategory("twojet");
+        FillCoreControlPlots("twojet");
+      }
+    }
+
+    // 1-jet (note no vbf veto: this is really for "inclusive" control plots)
+    if (n_jets_ >= 1) {
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
+        SetPassCategory("1jet");
+        FillCoreControlPlots("1jet");
+      }
+    }
 
     // 1-jet High Category
     // In the et channel, apply a MET > 30 cut
@@ -295,7 +313,6 @@ namespace ic {
     // }
     // 0-jet High Category
     if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) SetPassCategory("0jet_high");
-    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) FillCoreControlPlots("0jet_high");
 
     // 0-jet Low Category
     if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) SetPassCategory("0jet_low");
@@ -414,20 +431,23 @@ namespace ic {
           if (tau_decay_mode_ == 0) plots->tau_decay_mode->Fill(0. , wt_);
           if (tau_decay_mode_ == 1 || tau_decay_mode_ == 2) plots->tau_decay_mode->Fill(1., wt_);
           if (tau_decay_mode_ == 10) plots->tau_decay_mode->Fill(2., wt_);
-          if (n_jets_ >= 1) {
+          // Have to be careful here: we fill the jet control plots even
+          // though these values may not be defined. This is to be sure
+          // when plotting the inclusive category yield is consistent
+          // if (n_jets_ >= 1) {
             plots->jpt_1->Fill(jpt_1_, wt_);
             plots->jeta_1->Fill(jeta_1_, wt_);
-          }
-          if (n_jets_ >= 2) {
+          // }
+          // if (n_jets_ >= 2) {
             plots->jpt_2->Fill(jpt_2_, wt_);
             plots->jeta_2->Fill(jeta_2_, wt_);            
             plots->mjj->Fill(mjj_, wt_);
             plots->jdeta->Fill(jdeta_, wt_);
-          }
-          if (n_bjets_ >= 1) {
+          // }
+          // if (n_bjets_ >= 1) {
             plots->bpt_1->Fill(bpt_1_, wt_);
             plots->beta_1->Fill(beta_1_, wt_);
-          }
+          // }
         }
       } 
     }
@@ -463,6 +483,7 @@ namespace ic {
       }
       std::cout << std::endl;
     }
+
     return 0;
   }
 

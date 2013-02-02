@@ -411,7 +411,7 @@ int main(int argc, char* argv[]){
     // *** We should be able to override this
   	categories.push_back("vbf_loose");
     categories.push_back("vbf_loose_jets20");
-    categories.push_back("twojet_cjv");
+    categories.push_back("twojet");
     if (channel == channel::em) categories.push_back("vbf_no_cjv");
   }
 
@@ -667,11 +667,11 @@ int main(int argc, char* argv[]){
     }
   
     if (method == 5) {
-      double zll_twojet_embed_eff = (Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","twojet_cjv",os_sel)].hist_ptr()));
+      double zll_twojet_embed_eff = (Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","twojet",os_sel)].hist_ptr()));
       if (is_2012) {
-        std::cout << "[MC Soup Norm in twojet_cjv]: " << Integral(plots[Token("DYJetsToLLSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
-        std::cout << "[MC Soup Norm in twojet_cjv -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
-        std::cout << "[MC Soup Norm in twojet_cjv -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","twojet_cjv",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","twojet_cjv",os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in twojet]: " << Integral(plots[Token("DYJetsToLLSoup","twojet",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","twojet",os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in twojet -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","twojet",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","twojet",os_sel)].hist_ptr()) << std::endl;
+        std::cout << "[MC Soup Norm in twojet -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","twojet",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","twojet",os_sel)].hist_ptr()) << std::endl;
       }
       std::cout << "[zll_twojet_embed_eff]: " << zll_twojet_embed_eff << std::endl;
       std::cout << "[MC Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLL","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL","vbf_loose",os_sel)].hist_ptr()) << std::endl;
@@ -681,10 +681,10 @@ int main(int argc, char* argv[]){
         std::cout << "[MC Soup Norm in vbf_loose]: " << Integral(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLLSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
         std::cout << "[MC Soup Norm in vbf_loose -L]: " << Integral(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-LSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
         std::cout << "[MC Soup Norm in vbf_loose -J]: " << Integral(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToLL-JSoup","vbf_loose",os_sel)].hist_ptr()) << std::endl;
-        zl_norm = Integral(plots[Token("DYJetsToLL-LSoup","twojet_cjv",os_sel)].hist_ptr()) * zll_twojet_embed_eff; 
+        zl_norm = Integral(plots[Token("DYJetsToLL-LSoup","twojet",os_sel)].hist_ptr()) * zll_twojet_embed_eff; 
         zj_norm = Integral(plots[Token("DYJetsToLL-JSoup",cat,os_sel)].hist_ptr()); 
       } else {
-        zl_norm = Integral(plots[Token("DYJetsToLL-L","twojet_cjv",os_sel)].hist_ptr()) * zll_twojet_embed_eff; 
+        zl_norm = Integral(plots[Token("DYJetsToLL-L","twojet",os_sel)].hist_ptr()) * zll_twojet_embed_eff; 
         zj_norm = Integral(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr());         
       }
       if (shift_backgrounds) {
@@ -749,7 +749,8 @@ int main(int argc, char* argv[]){
   if (verbose) cout << "Eff: " << embedded_eff << std::endl;
   if (verbose) cout << "Error: " << embedded_eff_err << std::endl;
   ztt_norm = ztt_mc_inc_yield * embedded_eff;
-  //if (use_ztt_mc) ztt_norm = Integral(os_sel["DYJetsToTauTau"+sel].hist_ptr());
+  if (use_ztt_mc && is_2012) ztt_norm =  Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr());
+  if (use_ztt_mc && !is_2012) ztt_norm = Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr());
   if (verbose) cout << "- [DYJetsToTauTau MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << endl;
   if (verbose && is_2012) cout << "- [DYJetsToTauTauSoup MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << endl;
   
@@ -757,18 +758,26 @@ int main(int argc, char* argv[]){
     //0/1 Jet, Inclusive
     if (method <= 4 || method >= 6) {
       if (use_ztt_mc) {
-        ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
+        if (is_2012) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()->Clone());
+        if (!is_2012) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
       } else {
         ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());        
       }
     }
     // VBF
-    if (method == 5) ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());
+    if (method == 5) {
+      if (use_ztt_mc) {
+        if (is_2012) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()->Clone());
+        if (!is_2012) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
+      } else {
+        ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());        
+      }
+    }
   }
 
   if (channel == channel::em) {
     if (use_ztt_mc) {
-      ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
+      ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()->Clone());
     } else {
       ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());
     }

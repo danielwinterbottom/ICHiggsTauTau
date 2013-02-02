@@ -73,8 +73,6 @@ class HTTCategories : public ModuleBase {
     unsigned n_jetsingap_lowpt_; // Defined if n_lowpt_jets >= 2
 
     // Other VBF MVA variables?
-  
-
 
  public:
   HTTCategories(std::string const& name);

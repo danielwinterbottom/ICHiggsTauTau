@@ -289,6 +289,10 @@ int main(int argc, char* argv[]){
           shift_result->SetName((mcs[j]+sextrap[l].second.at(e)+append).c_str());
           shift_result->SetTitle((mcs[j]+sextrap[l].second.at(e)+append).c_str());
           if (no_rms) target_yield = src_hist->Integral();
+          if (target_yield < 0.0) {
+            cerr << "WARNING NEGATIVE YIELD!!!" << endl;
+            target_yield = 0.01;
+          }
           shift_result->Scale(target_yield / shift_result->Integral());
           double av_weight = ( src_hist->Integral() / double(src_hist->GetEntries()));
           shift_result->Sumw2();

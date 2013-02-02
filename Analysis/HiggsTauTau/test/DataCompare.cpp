@@ -85,13 +85,17 @@ int main(int argc, char* argv[]){
   string file1;
   string file2;
   string plot_folder;
+  string plot_folder2;
   string plot;
+  string plot2;
   string lumi1;
   string lumi2;
+  string outname;
   double lumi1d;
   double lumi2d;
   string label1;
   string label2;
+  string title;
   string x_axis_title;
   bool custom_x_axis_range;                     // Can optionally specify an x-axis range
   double x_axis_min;                            // If custom_x_axis_range is true, use this as min
@@ -108,7 +112,11 @@ int main(int argc, char* argv[]){
   ("file1",           po::value<string>(&file1)->required())
     ("file2",           po::value<string>(&file2)->required())
     ("plot_folder",              po::value<string>(&plot_folder)->required())
+    ("plot_folder2",              po::value<string>(&plot_folder2)->default_value(""))
     ("plot",             po::value<string>(&plot)->required())
+    ("plot2",             po::value<string>(&plot2)->default_value(""))
+    ("title",             po::value<string>(&title)->default_value(""))
+    ("outname",             po::value<string>(&outname)->default_value(""))
     ("lumi1",              po::value<string>(&lumi1)->required())
     ("lumi2",            po::value<string>(&lumi2)->required())
     ("label1",             po::value<string>(&label1)->required())
@@ -134,6 +142,7 @@ int main(int argc, char* argv[]){
 
   ic::Plot compare;
   compare.output_filename = label1+"_"+label2+"_"+channel+"_"+plot+".pdf";
+  if (outname != "") compare.output_filename = outname;
 
   compare.custom_x_axis_range = custom_x_axis_range;
   if (custom_x_axis_range){
@@ -149,7 +158,7 @@ int main(int argc, char* argv[]){
   if (channel == "em") channel = "#tau_{e}#tau_{#mu}";
 
   ic::TH1PlotElement p1(label1, &f1, plot_folder,plot, label1+" ("+lumi1 +" fb^{-1})");
-  ic::TH1PlotElement p2(label2, &f2, plot_folder,plot, label2+" ("+lumi2 +" fb^{-1})");
+  ic::TH1PlotElement p2(label2, &f2, plot_folder2 != "" ? plot_folder2 : plot_folder ,plot2 != "" ? plot2 : plot, label2+" ("+lumi2 +" fb^{-1})");
 
   lumi1d = boost::lexical_cast<double>(lumi1);
   lumi2d = boost::lexical_cast<double>(lumi2);
@@ -178,7 +187,6 @@ int main(int argc, char* argv[]){
   }
   if (norm_mode == 4) {
     std::cout << "No Normalisation!" << std::endl;
-
   }
 
   ic::RatioPlotElement ratio("Ratio",label2,label1);
@@ -204,6 +212,8 @@ int main(int argc, char* argv[]){
 
   ic::TextElement text(channel,0.08,0.19,0.89);
   compare.AddTextElement(text);
+
+  compare.title_left = title;
 
   compare.GeneratePlot();
 
