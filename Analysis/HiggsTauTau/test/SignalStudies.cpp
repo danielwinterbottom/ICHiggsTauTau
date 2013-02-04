@@ -147,6 +147,7 @@ int main(int argc, char* argv[]){
 
   std::vector<string> cats;
   cats.push_back(channel+"_vbf");
+  cats.push_back(channel+"_boost");
   cats.push_back(channel+"_boost_high");
   cats.push_back(channel+"_boost_low");
   cats.push_back(channel+"_0jet_high");
@@ -286,17 +287,23 @@ int main(int argc, char* argv[]){
           RooFormulaVar xfnorms("xfnorms","x-a",RooArgSet(x,a)) ; 
           RooHistPdf hx("hx","hx",no_rms ? xfnorms : xf,x,dx,1) ;
           TH1 * shift_result = hx.createHistogram("test",x, RooFit::Binning(xbins));
+          if (src_hist->Integral() <= 0.0) {
+            cout << "Extrapolation input histogram is empty... an empty histogram will be copied" << endl;
+            shift_result = (TH1F*)src_hist->Clone();
+          }
+          if (no_rms) target_yield = src_hist->Integral();
           shift_result->SetName((mcs[j]+sextrap[l].second.at(e)+append).c_str());
           shift_result->SetTitle((mcs[j]+sextrap[l].second.at(e)+append).c_str());
-          if (no_rms) target_yield = src_hist->Integral();
           if (target_yield < 0.0) {
             cerr << "WARNING NEGATIVE YIELD!!!" << endl;
             target_yield = 0.01;
           }
-          shift_result->Scale(target_yield / shift_result->Integral());
-          double av_weight = ( src_hist->Integral() / double(src_hist->GetEntries()));
-          shift_result->Sumw2();
-          for (int k = 1; k <= shift_result->GetNbinsX(); ++k) shift_result->SetBinError(k, shift_result->GetBinError(k) * av_weight);
+          if (shift_result->Integral() > 0) {
+            shift_result->Scale(target_yield / shift_result->Integral());
+            double av_weight = ( src_hist->Integral() / double(src_hist->GetEntries()));
+            shift_result->Sumw2();
+            for (int k = 1; k <= shift_result->GetNbinsX(); ++k) shift_result->SetBinError(k, shift_result->GetBinError(k) * av_weight);
+          }
           shift_result->Write("",TObject::kOverwrite);
           std::cout << "Transformed: " << cats[i] << ":" << mcs[j]+src_point+append << " to " << cats[i] << ":" << (mcs[j]+sextrap[l].second.at(e)+append) << std::endl;
         }

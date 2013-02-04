@@ -29,6 +29,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/SVFitTest.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
@@ -805,6 +806,19 @@ int main(int argc, char* argv[]){
     svfit.set_outname(svfit_override);
   }
 
+  SVFitTest svfitTest("SVFitTest");
+  svfitTest
+    .set_channel(channel)
+    .set_outname(output_name)
+    .set_run_mode(0)
+    .set_fail_mode(1)
+    .set_require_inputs_match(true)
+    .set_split(5000)
+    .set_dilepton_label("emtauCandidates")
+    .set_met_label(met_label)
+    .set_fullpath(svfit_override == "" ? svfit_folder : svfit_override);
+
+
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
@@ -888,6 +902,8 @@ int main(int argc, char* argv[]){
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) 
                                   analysis.AddModule(&svfit);
+                                  analysis.AddModule(&svfitTest);
+
 
                                   analysis.AddModule(&httWeights);
     if(quark_gluon_study)         analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 

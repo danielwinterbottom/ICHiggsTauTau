@@ -18,8 +18,8 @@ namespace ic {
     SVFitService();
     ~SVFitService();
 
-    double SVFitMassLepHad(Candidate const* lep, Candidate const* had, Met const* met);
-    double SVFitMassLepLep(Candidate const* lep1, Candidate const* lep2, Met const* met);
+    static double SVFitMassLepHad(Candidate const* lep, Candidate const* had, Met const* met);
+    static double SVFitMassLepLep(Candidate const* lep1, Candidate const* lep2, Met const* met);
 
   };
 }
