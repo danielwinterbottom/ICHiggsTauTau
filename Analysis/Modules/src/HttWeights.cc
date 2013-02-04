@@ -75,7 +75,7 @@ namespace ic {
       if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
         ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_12ifb.root");
         MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_12ifb.root");
-      } else if (era_ == era_ == era::data_2012_donly || era_ == era::data_2012_moriond) {
+      } else if (era_ == era::data_2012_donly || era_ == era::data_2012_moriond) {
         ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_19ifb.root");
         MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_19ifb.root");
       } else {

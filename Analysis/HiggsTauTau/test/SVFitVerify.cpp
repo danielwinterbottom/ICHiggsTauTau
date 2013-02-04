@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
 
   if (argc != 2){
     std::cerr << "Need 1 arg: <input>" << std::endl;
-    exit(1);
+    return 1;
   }
   std::string input = argv[1];
 

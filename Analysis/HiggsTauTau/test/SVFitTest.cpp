@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>  // for size_t.
+#include <stdint.h>
+
 #include "TFile.h"
 #include "TTree.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SVFitService.h"
