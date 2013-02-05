@@ -18,7 +18,7 @@ echo "Config file: $CONFIG"
 
 #Signal files and DYtoNuNu
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/VBFH120/
-for FILELIST in `ls filelists/Dec1_VBFH120_`
+for FILELIST in `ls filelists/Dec1_VBFH120_*`
   do
   echo "Processing files in "$FILELIST
 
@@ -56,7 +56,6 @@ for FILELIST in `ls filelists/Dec5_VBFZ*`
   $JOBSUBMIT jobs/$JOB.sh
 
 done
-
 
 
 #Process bkg common with HiggsTautau
