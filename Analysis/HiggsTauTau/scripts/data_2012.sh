@@ -7,20 +7,12 @@
 echo "Using job-wrapper:    " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-<<<<<<< data_2012.sh
-CONFIG=scripts/DOnly_data_2012.cfg
-echo "Config file: $CONFIG"
-FILELIST=filelists/Dec30_Data_53X
-DATA_FILELIST=DOnly # Or HCP, DOnly for example
-echo "Data filelists with label: $DATA_FILELIST"
-=======
 if [ "$PREFIXOVERRIDE" != "" ]
 then
   PREFIXOVERRIDE="$PREFIXOVERRIDE/Dec30/Data_53X/"
   echo "Using input prefix:   " $PREFIXOVERRIDE
   PREFIXOVERRIDE="--input_prefix=$PREFIXOVERRIDE"
 fi
->>>>>>> 1.18
 
 if (( "$#" != "3" ))
 then

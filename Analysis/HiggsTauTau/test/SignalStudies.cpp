@@ -92,8 +92,9 @@ int main(int argc, char* argv[]){
   string prod = "";
   string fit_input = "";
   string extrap = "";
+  string patch_shape = "";
   bool   no_rms = false;
-
+  bool   force_yield = false;
 
   po::options_description config("Configuration");
   config.add_options()
@@ -102,7 +103,9 @@ int main(int argc, char* argv[]){
     ("channel",               po::value<string>(&channel)->required(), "channel")
     ("prod",                  po::value<string>(&prod)->required(), "prod")
     ("fit_input",             po::value<string>(&fit_input)->default_value("110,115,120,125,130,135,140,145"), "fit_input")
+    ("patch_shape",           po::value<string>(&patch_shape)->default_value(""), "patch_shape")
     ("no_rms",                po::value<bool>(&no_rms)->default_value(false), "fit_input")
+    ("force_yield",           po::value<bool>(&force_yield)->default_value(false), "force_yield")
     ("extrap",                po::value<std::string>(&extrap)->required(), "extrap");
     // 145=135,125,115,105:
   po::variables_map vm;
@@ -112,12 +115,17 @@ int main(int argc, char* argv[]){
 
   Plot::SetTdrStyle();
 
+  TFile *patch_file = new TFile(patch_shape.c_str());
+
   TFile *input_dc = new TFile(input.c_str(),"UPDATE");
   cout << "Updating file: " << input << endl;
   cout << "Using channel: " << channel << endl;
   cout << "Applying to signal samples: " << prod << endl;
   cout << "Fit points:    " << fit_input << endl;
   cout << "Appending:     " << append << endl;
+  if (patch_shape != "") {
+    cout << "Patching shapes from file: " << patch_shape << endl;
+  }
 
   vector<string> mcs;
   boost::split(mcs, prod, boost::is_any_of(","));
@@ -287,17 +295,33 @@ int main(int argc, char* argv[]){
           RooFormulaVar xfnorms("xfnorms","x-a",RooArgSet(x,a)) ; 
           RooHistPdf hx("hx","hx",no_rms ? xfnorms : xf,x,dx,1) ;
           TH1 * shift_result = hx.createHistogram("test",x, RooFit::Binning(xbins));
+          TH1 * patch_result = NULL;
+          if (patch_shape != "") {
+            patch_file->cd();
+            if (!gDirectory->cd(("/"+cats[i]).c_str())) continue;
+            if (gDirectory->Get((mcs[j]+sextrap[l].second.at(e)+append).c_str())) {
+              cout << "TH1F appears to exist in patch file..." << endl;
+              patch_result = (TH1*)(gDirectory->Get((mcs[j]+sextrap[l].second.at(e)+append).c_str())->Clone("dummy"));
+            }
+            cout << "here2" << endl;
+            input_dc->cd();
+            if (!gDirectory->cd(("/"+cats[i]).c_str())) continue;
+            if (patch_result) std::cout << "Shape " << (mcs[j]+sextrap[l].second.at(e)+append) << " patched from file " << patch_shape << endl; 
+          }
+          if (patch_result) shift_result = patch_result;
           if (src_hist->Integral() <= 0.0) {
             cout << "Extrapolation input histogram is empty... an empty histogram will be copied" << endl;
             shift_result = (TH1F*)src_hist->Clone();
           }
-          if (no_rms) target_yield = src_hist->Integral();
+          if (no_rms && !force_yield) target_yield = src_hist->Integral();
           shift_result->SetName((mcs[j]+sextrap[l].second.at(e)+append).c_str());
           shift_result->SetTitle((mcs[j]+sextrap[l].second.at(e)+append).c_str());
+
           if (target_yield < 0.0) {
             cerr << "WARNING NEGATIVE YIELD!!!" << endl;
             target_yield = 0.01;
           }
+
           if (shift_result->Integral() > 0) {
             shift_result->Scale(target_yield / shift_result->Integral());
             double av_weight = ( src_hist->Integral() / double(src_hist->GetEntries()));

@@ -52,6 +52,7 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
   static bool first_time = true;
   static vector<int> colors;
   if (first_time) {
+    colors.push_back(1);
     colors.push_back(4);
     colors.push_back(2);
     colors.push_back(8);
@@ -94,6 +95,7 @@ int main(int argc, char* argv[]){
   unsigned mssm_mode = 0;
   bool plot = true;
   bool print_err = false;
+  bool show_errs = false;
 
   po::options_description preconfig("Pre-Configuration");
   po::options_description config("Configuration");
@@ -101,6 +103,7 @@ int main(int argc, char* argv[]){
     ("inputs",               po::value<std::vector<string> >(&inputs)->multitoken(), "inputs")
     ("labels",               po::value<std::vector<string> >(&labels)->multitoken(), "labels")
     ("category",               po::value<string>(&category)->required(), "category")
+    ("show_errs",               po::value<bool>(&show_errs)->default_value(false), "category")
     ("output_file",               po::value<string>(&output_file)->required(), "output_file")
     ("mode",               po::value<unsigned>(&mode)->default_value(0), "mode")
     ("mssm_mode",               po::value<unsigned>(&mssm_mode)->default_value(0), "mssm_mode");
@@ -350,6 +353,9 @@ int main(int argc, char* argv[]){
       ele.push_back(ic::TH1PlotElement(labels[k],tfiles[k],replacement,comp_plots[j]));
       if (ele.back().hist_ptr()) {
       SetStyle(ele.back(), k);
+      if (show_errs) {
+        ele.back().set_draw_stat_error_y(true);
+      }
       //drawn_ele[i]->hist_ptr()->Scale(1.0, "width");
       ele.back().hist_ptr()->Scale(1.0, "width");
       ele.back().set_legend_text(labels[k]);

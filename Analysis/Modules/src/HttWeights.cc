@@ -133,7 +133,7 @@ namespace ic {
 
     if (ggh_mass_ != "") {
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      GenParticle const* higgs;
+      GenParticle const* higgs = NULL;
       for (unsigned i = 0; i < parts.size(); ++i) {
         if (parts[i]->status() == 3 && parts[i]->pdgid() == 25) {
           higgs = parts[i];

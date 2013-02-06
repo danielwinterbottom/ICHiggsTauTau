@@ -155,12 +155,25 @@ namespace ic {
       Met * met = event->GetPtr<Met>(met_label_);
       //std::cout << "Old: " << ROOT::Math::PxPyPzEVector(met->vector()) << std::endl;
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
+      double t_scale = tau_scale_;
+      if (event->Exists("tau_scales")) {
+        // std::cout << "Tau scales found in event..." << std::endl;
+        std::map<std::size_t, double> const& tau_scales = event->Get< std::map<std::size_t, double>  > ("tau_scales");
+        std::map<std::size_t, double>::const_iterator it = tau_scales.find(tau->id());
+        if (it != tau_scales.end()) {
+          t_scale = it->second;
+          // std::cout << "Tau scale set to " << t_scale << " for " << it->first << std::endl;
+        } else {
+          // std::cout << "Scale for chosen tau not found!" << std::endl;
+          throw;
+        }
+      }
       //std::cout << "Tau: " << ROOT::Math::PxPyPzEVector(tau->vector()) << std::endl;
       double metx = met->vector().px();
       double mety = met->vector().py();
       double metet = met->vector().energy();
-      double dx = tau->vector().px() * (( 1. / tau_scale_) - 1.);
-      double dy = tau->vector().py() * (( 1. / tau_scale_) - 1.);
+      double dx = tau->vector().px() * (( 1. / t_scale) - 1.);
+      double dy = tau->vector().py() * (( 1. / t_scale) - 1.);
       metx = metx + dx;
       mety = mety + dy;
       metet = sqrt(metx*metx + mety*mety);

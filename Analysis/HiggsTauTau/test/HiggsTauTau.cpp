@@ -33,6 +33,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTTCategories.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTTTriggerFilter.h"
 
@@ -74,6 +75,7 @@ int main(int argc, char* argv[]){
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool quark_gluon_study;         // Run study on quark-gluon jet discriminators
   string allowed_tau_modes;       // "" means all, otherwise "1,10"=allow 1prong1pizero,3prong
+  bool moriond_tau_scale;         // Use new central tau scale shifts
 
   bool do_vbf_mva = true;
   // bool disable_mc_trigger = false;
@@ -135,6 +137,7 @@ int main(int argc, char* argv[]){
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
       ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
+      ("moriond_tau_scale",   po::value<bool>(&moriond_tau_scale)->default_value(false))
       ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""));
       // ("do_vbf_mva", po::value<bool>(&do_vbf_mva)->default_value(true), "0=disabled, 1 = enabled")
       // ("scan_trigger", po::value<bool>(&scan_trigger)->default_value(false), "true/false")
@@ -193,6 +196,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
+  std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -594,6 +598,11 @@ int main(int argc, char* argv[]){
     .set_input_label("taus")
     .set_shift(tau_shift);
 
+  HTTEnergyScale httEnergyScale = HTTEnergyScale("HTTEnergyScale")
+    .set_input_label("taus")
+    .set_shift(tau_shift)
+    .set_moriond_corrections(moriond_tau_scale);
+
   SimpleFilter<Tau> tauPtEtaFilter = SimpleFilter<Tau>("TauPtEtaFilter")
     .set_input_label("taus")
     .set_predicate(bind(MinPtMaxEta, _1, tau_pt, tau_eta))
@@ -688,14 +697,16 @@ int main(int argc, char* argv[]){
 
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
-  // ------------------------------------------------------------------------------------  
+  // ------------------------------------------------------------------------------------ 
+
+
   HttPairSelector httPairSelector = HttPairSelector("HttPairSelector")
     .set_channel(channel)
     .set_fs(fs)
     .set_met_label(met_label)
     .set_mva_met_from_vector(mva_met_mode == 1)
     .set_faked_tau_selector(faked_tau_selector)
-    .set_scale_met_for_tau(tau_scale_mode > 0)
+    .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
     .set_tau_scale(tau_shift)
     .set_allowed_tau_modes(allowed_tau_modes);
   if (channel == channel::em) httPairSelector.set_tau_scale(elec_shift);
@@ -802,6 +813,7 @@ int main(int argc, char* argv[]){
   SVFit svfit("SVFit");
   svfit.set_outname(output_name).set_op(svfit_mode).set_dilepton_label("emtauCandidates").set_met_label(met_label).set_channel(channel);
   svfit.set_fullpath(svfit_folder);
+  svfit.set_split(8000);
   if (svfit_override != "") {
     svfit.set_outname(svfit_override);
   }
@@ -827,10 +839,12 @@ int main(int argc, char* argv[]){
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
-  if (tau_scale_mode > 0 && channel != channel::em)
+  if (tau_scale_mode > 0 && channel != channel::em && !moriond_tau_scale)
                                   analysis.AddModule(&tauEnergyShifter);
   if (tau_scale_mode > 0 && channel == channel::em)         
                                   analysis.AddModule(&electronEnergyShifter);
+  if (moriond_tau_scale && channel != channel::em && (!is_data || is_embedded))          
+                                  analysis.AddModule(&httEnergyScale);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
 
   if (channel == channel::et) {

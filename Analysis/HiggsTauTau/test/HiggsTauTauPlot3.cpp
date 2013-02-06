@@ -746,10 +746,16 @@ int main(int argc, char* argv[]){
   if (verbose) cout << "- DYJetsToTauTau dilepton OS yield (no mT/pzeta cut): " << ztt_mc_inc_yield << std::endl;
   double embedded_eff = Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","inclusive","os")].hist_ptr());
   double embedded_eff_err = (Error(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr())) * embedded_eff;
-  if (verbose) cout << "Eff: " << embedded_eff << std::endl;
-  if (verbose) cout << "Error: " << embedded_eff_err << std::endl;
+  cout << "Embedded Eff: " << embedded_eff << std::endl;
+  cout << "Embedded Error: " << embedded_eff_err << std::endl;
   ztt_norm = ztt_mc_inc_yield * embedded_eff;
-  if (use_ztt_mc && is_2012) ztt_norm =  Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr());
+  if (use_ztt_mc && is_2012) {
+    ztt_norm =  Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr());
+    double ztt_mc_eff = Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) / Integral(plots[Token("DYJetsToTauTauSoup","inclusive","os")].hist_ptr());
+    double ztt_mc_eff_err = (Error(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) / Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr())) * ztt_mc_eff;
+    cout << "ZTT MC Eff: " << ztt_mc_eff << std::endl;
+    cout << "ZTT MC Error: " << ztt_mc_eff_err << std::endl;
+  }
   if (use_ztt_mc && !is_2012) ztt_norm = Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr());
   if (verbose) cout << "- [DYJetsToTauTau MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << endl;
   if (verbose && is_2012) cout << "- [DYJetsToTauTauSoup MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) << endl;
