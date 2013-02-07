@@ -75,6 +75,28 @@ void ICEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
   info_->set_jet_rho(*jets_rho_handle);
   info_->set_lepton_rho(*lepton_rho_handle);
+    
+  // MET filters
+
+  //Currently these bools are read in but not used in any way-change later
+  edm::Handle<bool> filter1;
+  iEvent.getByLabel("MyEcalDeadCellTriggerPrimitiveFilter", filter1);
+  //info_->set_something
+  //
+  edm::Handle<bool> filter2;
+  iEvent.getByLabel("MyecalLaserCorrFilter", filter2);
+  //
+  edm::Handle<bool> filter3;
+  iEvent.getByLabel("MyeeBadScFilter", filter3);
+  //
+  edm::Handle<bool> filter4;
+  iEvent.getByLabel("MyhcalLaserEventFilter", filter4);
+  //
+  edm::Handle<bool> filter5;
+  iEvent.getByLabel("MytrackingFailureFilter", filter5);
+  //std::cout << *filter1 << " " << *filter2 << " " << *filter3 << " " << *filter4 << " " << *filter5 <<std::endl;
+
+
 }
 
 // ------------ method called once each job just before starting event loop  ------------
