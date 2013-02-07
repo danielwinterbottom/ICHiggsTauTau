@@ -461,6 +461,61 @@ process.pfMEtSignCovMatrix = cms.EDProducer("PFMEtSignCovMatrixProducer",
 )
 process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingWithLeptons + process.pfCandsNotInJetForPFMEtSignCovMatrix + process.pfMEtSignCovMatrix)
 
+################################################################
+### MET Filters-curretly from Sasha's code
+################################################################
+## The iso-based HBHE noise filter
+process.load('CommonTools.RecoAlgos.HBHENoiseFilter_cfi')
+
+## The CSC beam halo tight filter 
+process.load('RecoMET.METAnalyzers.CSCHaloFilter_cfi')
+
+## The HCAL laser filter 
+process.load("RecoMET.METFilters.hcalLaserEventFilter_cfi")
+process.MyhcalLaserEventFilter = process.hcalLaserEventFilter.clone()
+process.MyhcalLaserEventFilter.taggingMode  = cms.bool(True)
+
+## The ECAL dead cell trigger primitive filter
+process.load('RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi')
+process.MyEcalDeadCellTriggerPrimitiveFilter = process.EcalDeadCellTriggerPrimitiveFilter.clone()
+process.MyEcalDeadCellTriggerPrimitiveFilter.taggingMode  = cms.bool(True)
+
+## The EE bad SuperCrystal filter
+process.load('RecoMET.METFilters.eeBadScFilter_cfi')
+process.MyeeBadScFilter = process.eeBadScFilter.clone()
+process.MyeeBadScFilter.taggingMode  = cms.bool(True)
+
+## The ECAL laser correction filter
+process.load('RecoMET.METFilters.ecalLaserCorrFilter_cfi')
+process.MyecalLaserCorrFilter = process.ecalLaserCorrFilter.clone()
+process.MyecalLaserCorrFilter.taggingMode  = cms.bool(True)
+
+## The Good vertices collection needed by the tracking failure filter
+process.goodVertices = cms.EDFilter(
+  "VertexSelector",
+  filter = cms.bool(False),
+  src = cms.InputTag("offlinePrimaryVertices"),
+  cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.rho < 2")
+) 
+
+## The tracking failure filter
+process.load('RecoMET.METFilters.trackingFailureFilter_cfi')
+process.MytrackingFailureFilter = process.trackingFailureFilter.clone()
+process.MytrackingFailureFilter.taggingMode  = cms.bool(True)
+
+## total sequence
+process.filterSequence = cms.Sequence(
+ # process.primaryVertexFilter *
+ # process.noscraping *
+  process.HBHENoiseFilter *
+  process.CSCTightHaloFilter *
+  process.MyhcalLaserEventFilter *
+  process.MyEcalDeadCellTriggerPrimitiveFilter *
+  process.goodVertices * process.MytrackingFailureFilter *
+  process.MyeeBadScFilter *
+  process.MyecalLaserCorrFilter
+ # process.hcallasereventfilter2012  
+) 
 
 ################################################################
 ### Configuration of MVA PU Jet ID
@@ -810,6 +865,7 @@ process.icSequence = cms.Sequence(
   +process.icPfMetProducer
   +process.icPfMVAMetProducer
   +process.icPfAllPairsMVAMetProducer
+  +process.filterSequence
   +process.icTauProducer
   +process.icVertexProducer
   +process.icEventInfoProducer
