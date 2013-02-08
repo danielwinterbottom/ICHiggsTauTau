@@ -122,12 +122,12 @@ int main(int argc, char* argv[]){
     else base1->GetXaxis()->SetTitle("Muon p_{T} (GeV)");
     
     
-    base1->GetXaxis()->SetLabelSize(0.042);
-    base1->GetXaxis()->SetTitleSize(0.042);
+    base1->GetXaxis()->SetLabelSize(0.045);
+    base1->GetXaxis()->SetTitleSize(0.045);
     base1->GetXaxis()->SetTitleOffset(1.1);
     
     base1->GetYaxis()->SetTitle("Efficiency");
-    base1->GetYaxis()->SetLabelSize(0.042);
+    base1->GetYaxis()->SetLabelSize(0.045);
     base1->GetYaxis()->SetTitleSize(0.045);
     base1->GetYaxis()->SetTitleOffset(1.0);
     base1->SetTitle(0);
@@ -160,21 +160,23 @@ int main(int argc, char* argv[]){
  if(Plot2or3==3)  legend1->AddEntry(grMC, labelMC, "p");
 //    legend1->AddEntry(grptdata, "2012 Data", "p");
     legend1->SetFillColor(0);
-    legend1->SetTextSize(0.04);
+    legend1->SetTextSize(0.045);
     legend1->SetBorderSize(0);
     legend1->Draw();
     canvas1->Update();
 
     TLatex *title_latex = new TLatex();
     title_latex->SetNDC();
-    title_latex->SetTextSize(0.04);
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV");        
+    title_latex->SetTextSize(0.045);
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
     TLatex *label_latex = new TLatex();
     label_latex->SetNDC();
-    label_latex->SetTextSize(0.04);
+    label_latex->SetTextSize(0.045);
     if(barrel=="B" && !elec)
     {
         label_latex->DrawLatex(0.14, 0.8, "|#eta|<0.8");
+        //label_latex->DrawLatex(0.14, 0.8, "0 < #eta < 0.8");
+     //   label_latex->DrawLatex(0.14, 0.8, "-0.8 < #eta < 0");
     }
     if(barrel=="B" && elec)
     {
@@ -183,6 +185,8 @@ int main(int argc, char* argv[]){
     if(barrel=="E" && !elec)
     {
         label_latex->DrawLatex(0.14, 0.8, "0.8<|#eta|<1.2");
+        //label_latex->DrawLatex(0.14, 0.8, "0.8 < #eta < 1.2");
+        //label_latex->DrawLatex(0.14, 0.8, "-1.2 < #eta < -0.8");
     }
     if(barrel=="E" && elec)
     {
@@ -191,6 +195,8 @@ int main(int argc, char* argv[]){
     if(barrel=="Eb")
     {
         label_latex->DrawLatex(0.14, 0.8, "|#eta|>1.2");
+        //label_latex->DrawLatex(0.14, 0.8, "#eta > 1.2");
+        //label_latex->DrawLatex(0.14, 0.8, "#eta < -1.2");
     }
     
     

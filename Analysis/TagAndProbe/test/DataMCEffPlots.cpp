@@ -55,11 +55,11 @@ int main(int argc, char* argv[]){
         base1->GetXaxis()->SetTitle("Electron p_{T} (GeV)");
     }
     else base1->GetXaxis()->SetTitle("Muon p_{T} (GeV)");
-    base1->GetXaxis()->SetLabelSize(0.042);
-    base1->GetXaxis()->SetTitleSize(0.042);
+    base1->GetXaxis()->SetLabelSize(0.045);
+    base1->GetXaxis()->SetTitleSize(0.045);
     base1->GetXaxis()->SetTitleOffset(1.1);
     base1->GetYaxis()->SetTitle("Efficiency");
-    base1->GetYaxis()->SetLabelSize(0.042);
+    base1->GetYaxis()->SetLabelSize(0.045);
     base1->GetYaxis()->SetTitleSize(0.045);
     base1->GetYaxis()->SetTitleOffset(1.0);
     base1->SetTitle(0);
@@ -75,15 +75,15 @@ int main(int argc, char* argv[]){
     legend1->AddEntry(grptMC, label2.c_str(), "p");
     legend1->AddEntry(grptdata, label1.c_str(), "p");
     legend1->SetFillColor(0);
-    legend1->SetTextSize(0.04);
+    legend1->SetTextSize(0.045);
     legend1->SetBorderSize(0);
     legend1->Draw();
     canvas1->Update();
 
     TLatex *title_latex = new TLatex();
     title_latex->SetNDC();
-    title_latex->SetTextSize(0.04);
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV");        
+    title_latex->SetTextSize(0.045);
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
     canvas1->Update();
 
     canvas1->Write();    
@@ -92,14 +92,14 @@ int main(int argc, char* argv[]){
     TH1F* base2 = new TH1F("base2", "base2" , 100, -2.2 ,2.2);
     if(elec)
     {
-        base2->GetXaxis()->SetTitle("Electron Eta");
+        base2->GetXaxis()->SetTitle("Electron #eta");
     }
-    else base2->GetXaxis()->SetTitle("Muon Eta");
-    base2->GetXaxis()->SetLabelSize(0.042);
-    base2->GetXaxis()->SetTitleSize(0.042);
+    else base2->GetXaxis()->SetTitle("Muon #eta");
+    base2->GetXaxis()->SetLabelSize(0.045);
+    base2->GetXaxis()->SetTitleSize(0.045);
     base2->GetXaxis()->SetTitleOffset(1.1);
     base2->GetYaxis()->SetTitle("Efficiency");
-    base2->GetYaxis()->SetLabelSize(0.042);
+    base2->GetYaxis()->SetLabelSize(0.045);
     base2->GetYaxis()->SetTitleSize(0.045);
     base2->GetYaxis()->SetTitleOffset(1.0);
     base2->SetTitle(0);
@@ -115,11 +115,11 @@ int main(int argc, char* argv[]){
     legend2->AddEntry(gretaMC, label2.c_str(), "p");
     legend2->AddEntry(gretadata, label1.c_str(), "p");
     legend2->SetFillColor(0);
-    legend2->SetTextSize(0.04);
+    legend2->SetTextSize(0.045);
     legend2->SetBorderSize(0);
     legend2->Draw();
     canvas2->Update();
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV");        
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
     canvas2->Update();
      
    
@@ -133,10 +133,10 @@ int main(int argc, char* argv[]){
     }
     else base3->GetXaxis()->SetTitle("Nvtx");
     base3->GetYaxis()->SetTitle("Efficiency");
-    base3->GetXaxis()->SetLabelSize(0.042);
-    base3->GetXaxis()->SetTitleSize(0.042);
+    base3->GetXaxis()->SetLabelSize(0.045);
+    base3->GetXaxis()->SetTitleSize(0.045);
     base3->GetXaxis()->SetTitleOffset(1.1);
-    base3->GetYaxis()->SetLabelSize(0.042);
+    base3->GetYaxis()->SetLabelSize(0.045);
     base3->GetYaxis()->SetTitleSize(0.045);
     base3->GetYaxis()->SetTitleOffset(1.0);
     base3->SetTitle(0);
@@ -152,11 +152,11 @@ int main(int argc, char* argv[]){
     legend3->AddEntry(grvtxMC, label2.c_str(), "p");
     legend3->AddEntry(grvtxdata, label1.c_str(), "p");
     legend3->SetFillColor(0);
-    legend3->SetTextSize(0.04);
+    legend3->SetTextSize(0.045);
     legend3->SetBorderSize(0);
     legend3->Draw();
     canvas3->Update();
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV");        
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
     canvas3->Update();
      
    
@@ -164,10 +164,10 @@ int main(int argc, char* argv[]){
     
     TCanvas* canvas4 = new TCanvas("canvas4", "canvas4", 200,10, 700, 500);
     TH1F* base4 = new TH1F("base4", "base4" , 100,  0 ,30);
-    base4->GetXaxis()->SetLabelSize(0.042);
-    base4->GetXaxis()->SetTitleSize(0.042);
+    base4->GetXaxis()->SetLabelSize(0.045);
+    base4->GetXaxis()->SetTitleSize(0.045);
     base4->GetXaxis()->SetTitleOffset(1.1);
-    base4->GetYaxis()->SetLabelSize(0.042);
+    base4->GetYaxis()->SetLabelSize(0.045);
     base4->GetYaxis()->SetTitleSize(0.045);
     base4->GetYaxis()->SetTitleOffset(1.0);
     base4->GetXaxis()->SetTitle("Nvtx");
@@ -204,6 +204,8 @@ int main(int argc, char* argv[]){
    
     base4->Draw();
     grsf->Draw("Psame");
+    canvas4->Update();
+    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
     canvas4->Update();
     canvas4->Write();
 
