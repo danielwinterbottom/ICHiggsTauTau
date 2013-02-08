@@ -16,7 +16,8 @@ PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/MET/
 
 echo "Config file: $CONFIG"
 
-for FILELIST in `ls filelists/Dec1_MET_*`
+#for FILELIST in `ls filelists/Dec1_MET_*`
+for FILELIST in `ls filelists/Dec1_MET_MET-2012C-11Dec2012-v1.dat`
   do
   echo "Processing files in "$FILELIST
 
