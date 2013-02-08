@@ -94,14 +94,15 @@ void fit(TString file1 /*,TString file2*/, TString data ,/*TString mc,*/bool fla
   if(!flat) {
   fit1 = new TF1("fit"+data,eff,min,100.,5);
   //fit2 = new TF1("fit"+mc,eff,min,100.,5);
- // fit1->SetParameters(21.999,1.46,0.9742,2.4796,0.9372);
+  //fit1->SetParameters(21.999,1.46,0.9742,2.4796,0.9372);
   //fit1->SetParameters(15.9199,0.83,0.57,2.167,0.9326);
   //fit1->SetParameters(15.9561,0.0076,0.000247,2.092,0.9554);
   //good for muon endcaps:
-  //fit1->SetParameters(15.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
+ fit1->SetParameters(15.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
   //fit1->SetParameters(17.07,0.000100,0.00060,1.56,0.965);
+  //fit1->SetParameters(16.6377,-1.23117,2.14735,1.17365,0.957028);
   //good for muon middle eta region:
-  fit1->SetParameters(17.4203,0.6201,1.13239,1.22927,0.93235);
+  //fit1->SetParameters(17.4203,0.6201,1.13239,1.22927,0.93235);
   //fit1->SetParameters(16.7859,0.443337,0.571078,1.62214,0.919211);
   //fit1->SetParameters(16.5,0.004877,0.000561,1.5,0.861);
   //fit1->SetParameters(20.5,0.2,0.04,1.001,54);
