@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ElectronTagAndProbe.h"
+#include "UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface/ElectronTagAndProbe.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/PileUpFunctions.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "boost/lexical_cast.hpp"
