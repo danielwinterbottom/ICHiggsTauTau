@@ -32,13 +32,14 @@ namespace ic {
     pt_2 = dir.make<TH1F>("pt_2","pt_2", 50, 0, 100); 
     eta_1 = dir.make<TH1F>("eta_1","eta_1", 60, -3, 3); 
     eta_2 = dir.make<TH1F>("eta_2","eta_2", 60, -3, 3); 
+    m_2 = dir.make<TH1F>("m_2","m_2", 40, 0, 2); 
     met = dir.make<TH1F>("met","met", 50, 0, 200); 
     met_phi = dir.make<TH1F>("met_phi","met_phi", 63, -3.15, 3.15); 
     n_jets = dir.make<TH1F>("n_jets","n_jets", 10, -0.5, 9.5); 
     n_bjets = dir.make<TH1F>("n_bjets","n_bjets", 5, -0.5, 4.5); 
     n_jetsingap = dir.make<TH1F>("n_jetsingap","n_jetsingap", 5, -0.5, 4.5); 
-    jpt_1 = dir.make<TH1F>("jpt_1","jpt_1", 50, 0, 200); 
-    jpt_2 = dir.make<TH1F>("jpt_2","jpt_2", 50, 0, 200); 
+    jpt_1 = dir.make<TH1F>("jpt_1","jpt_1", 40, 0, 200); 
+    jpt_2 = dir.make<TH1F>("jpt_2","jpt_2", 40, 0, 200); 
     jeta_1 = dir.make<TH1F>("jeta_1","jeta_1", 25, -5, 5); 
     jeta_2 = dir.make<TH1F>("jeta_2","jeta_2", 25, -5, 5); 
     bpt_1 = dir.make<TH1F>("bpt_1","bpt_1", 50, 0, 200); 

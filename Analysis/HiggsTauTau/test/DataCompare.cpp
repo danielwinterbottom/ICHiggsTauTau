@@ -82,6 +82,7 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
 
 int main(int argc, char* argv[]){
 
+  
   string file1;
   string file2;
   string plot_folder;
@@ -137,7 +138,6 @@ int main(int argc, char* argv[]){
 
   TFile f1(file1.c_str());
   TFile f2(file2.c_str());
-
 
 
   ic::Plot compare;

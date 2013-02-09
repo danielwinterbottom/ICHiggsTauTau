@@ -821,14 +821,14 @@ int main(int argc, char* argv[]){
   SVFitTest svfitTest("SVFitTest");
   svfitTest
     .set_channel(channel)
-    .set_outname(output_name)
+    .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(0)
     .set_fail_mode(1)
     .set_require_inputs_match(true)
     .set_split(5000)
     .set_dilepton_label("emtauCandidates")
     .set_met_label(met_label)
-    .set_fullpath(svfit_override == "" ? svfit_folder : svfit_override);
+    .set_fullpath(svfit_folder);
 
 
   // ------------------------------------------------------------------------------------

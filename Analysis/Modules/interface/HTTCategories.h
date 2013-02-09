@@ -48,6 +48,7 @@ class HTTCategories : public ModuleBase {
     double pt_2_;
     double eta_1_;
     double eta_2_;
+    double m_2_;
     double met_;
     double met_phi_;
 

@@ -19,6 +19,7 @@ string Token(string const& file, string const& category, string const& selection
 	return (file+"_"+category+"_"+selection);
 }
 
+
 double Integral(TH1F const* hist) {
   return hist->Integral(0, hist->GetNbinsX() + 1);
 }
@@ -143,6 +144,8 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
 
 
 int main(int argc, char* argv[]){
+
+  
 
 	// Configurable parameters
   string cfg;															      // The configuration file
@@ -305,6 +308,16 @@ int main(int argc, char* argv[]){
 
 
   std::cout << "**** HiggsTauTauPlot3 *****" << std::endl;
+  if (swap_inclusive) {
+    std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;  
+    std::cout << "SWAPPING INCLUSIVE WITH 0jet_low" << std::endl;
+    std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;  
+  }
+  if (use_ztt_mc) {
+    std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;  
+    std::cout << "Using ZTT MC" << std::endl;
+    std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;  
+  }
 
   string param_fmt = "%-25s %-40s\n";
   std::cout << boost::format(param_fmt) % "paramfile" 	% paramfile;
@@ -323,7 +336,7 @@ int main(int argc, char* argv[]){
 
   // Parse the parameter file
   SimpleParamParser parser;
-  std::cout << "** Parsing parameter file... **" << paramfile << std::endl;
+  if (verbose) std::cout << "** Parsing parameter file... **" << paramfile << std::endl;
   parser.ParseFile(paramfile);
   vector<string> signal_masses, mssm_signal_masses;
   std::string signal_masses_list = parser.GetParam<string>("SIGNAL_MASSES");
@@ -340,6 +353,9 @@ int main(int argc, char* argv[]){
   string year_label = parser.GetParam<string>("YEAR_LABEL");
   double data_lumi = parser.GetParam<double>("LUMI_DATA");
   string lumi_data_label = parser.GetParam<string>("LUMI_DATA_LABEL");
+
+  std::cout << "-------------------------" << std::endl;  
+
 
   // First, use channel to define the files to load
   vector<string> files;
@@ -505,7 +521,8 @@ int main(int argc, char* argv[]){
   TH1F *data_hist_ss = (TH1F*)(plots[Token("Data",cat,ss_sel)].hist_ptr()->Clone());
   ic::TH1PlotElement data_shape("data_shape", data_hist);
   ic::TH1PlotElement data_shape_ss("data_shape_ss", data_hist_ss);
-  std::cout << "** Data Norm: " << data_norm << std::endl;
+
+  std::cout << boost::format(param_fmt) % "Data Yield" % data_norm;
 
   // ---------------------------------------------------
   // Generate TOP Norm and TOP Shape
@@ -533,9 +550,11 @@ int main(int argc, char* argv[]){
   ic::TH1PlotElement top_shape("top_shape", top_hist);
   top_hist_ss->Scale(top_norm_ss / Integral(top_hist_ss));
   ic::TH1PlotElement top_shape_ss("top_shape_ss", top_hist_ss);
-  std::cout << "** Top Norm: " << top_norm << std::endl;
-  std::cout << "** Top Err: " << Error(plots[Token("TTJets",cat,os_sel)].hist_ptr()) << std::endl;
-  std::cout << "** Top Events: " << plots[Token("TTJets",cat,os_sel)].hist_ptr()->GetEntries() << std::endl;
+  std::cout << boost::format(param_fmt) % "Top Yield" % top_norm;
+  if (verbose) {
+    std::cout << "** Top Err: " << Error(plots[Token("TTJets",cat,os_sel)].hist_ptr()) << std::endl;
+    std::cout << "** Top Events: " << plots[Token("TTJets",cat,os_sel)].hist_ptr()->GetEntries() << std::endl;
+  }
 
   // ---------------------------------------------------
   // Generate VV Norm and VV Shape
@@ -596,8 +615,8 @@ int main(int argc, char* argv[]){
   vv_hist_ss->Scale( vv_norm_ss / Integral(vv_hist_ss) );
   ic::TH1PlotElement vv_shape_ss("vv_shape_ss", vv_hist_ss);
 
-  std::cout << "**Diboson Norm: " << vv_norm << std::endl;
-  std::cout << "**Diboson Err: " << Error(vv_hist) << std::endl;
+  std::cout << boost::format(param_fmt) % "VV Yield" % vv_norm;
+  if (verbose) std::cout << "**Diboson Err: " << Error(vv_hist) << std::endl;
 
   // // ---------------------------------------------------
   // // Generate ZLL, ZL and ZJ Norm and Shapes
@@ -645,9 +664,11 @@ int main(int argc, char* argv[]){
       if (zll_norm > 0) {
         double zl_norm_new = zll_norm * (zl_norm/(zl_norm+zj_norm));
         double zj_norm_new = zll_norm * (zj_norm/(zl_norm+zj_norm));
-        cout << "** Renormalising ZL and ZJ" << endl;
-        cout << "ZL old: " << zl_norm << ", ZL new: " << zl_norm_new << endl;
-        cout << "ZJ old: " << zj_norm << ", ZJ new: " << zj_norm_new << endl;
+        if (verbose) {
+          cout << "** Renormalising ZL and ZJ" << endl;
+          cout << "ZL old: " << zl_norm << ", ZL new: " << zl_norm_new << endl;
+          cout << "ZJ old: " << zj_norm << ", ZJ new: " << zj_norm_new << endl;          
+        }
         zl_norm = zl_norm_new;
         zj_norm = zj_norm_new;
       }
@@ -731,9 +752,9 @@ int main(int argc, char* argv[]){
   ic::TH1PlotElement zl_shape("zl_shape", zl_hist);
   ic::TH1PlotElement zj_shape("zj_shape", zj_hist);
 
-  std::cout << "**ZLL Norm: " << zll_norm << std::endl;
-  std::cout << "**ZL Norm: " << zl_norm << std::endl;
-  std::cout << "**ZJ Norm: " << zj_norm << std::endl;
+  std::cout << boost::format(param_fmt) % "ZLL Yield" % zll_norm;
+  std::cout << boost::format(param_fmt) % "ZL Yield" % zl_norm;
+  std::cout << boost::format(param_fmt) % "ZJ Yield" % zj_norm;
 
   // ---------------------------------------------------
   // Generate ZTT Shape and Norm
@@ -746,15 +767,19 @@ int main(int argc, char* argv[]){
   if (verbose) cout << "- DYJetsToTauTau dilepton OS yield (no mT/pzeta cut): " << ztt_mc_inc_yield << std::endl;
   double embedded_eff = Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","inclusive","os")].hist_ptr());
   double embedded_eff_err = (Error(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr())) * embedded_eff;
-  cout << "Embedded Eff: " << embedded_eff << std::endl;
-  cout << "Embedded Error: " << embedded_eff_err << std::endl;
+  if (verbose) {
+    cout << "Embedded Eff: " << embedded_eff << std::endl;
+    cout << "Embedded Error: " << embedded_eff_err << std::endl;
+  }
   ztt_norm = ztt_mc_inc_yield * embedded_eff;
   if (use_ztt_mc && is_2012) {
     ztt_norm =  Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr());
     double ztt_mc_eff = Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) / Integral(plots[Token("DYJetsToTauTauSoup","inclusive","os")].hist_ptr());
     double ztt_mc_eff_err = (Error(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()) / Integral(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr())) * ztt_mc_eff;
-    cout << "ZTT MC Eff: " << ztt_mc_eff << std::endl;
-    cout << "ZTT MC Error: " << ztt_mc_eff_err << std::endl;
+    if (verbose) {
+      cout << "ZTT MC Eff: " << ztt_mc_eff << std::endl;
+      cout << "ZTT MC Error: " << ztt_mc_eff_err << std::endl;      
+    }
   }
   if (use_ztt_mc && !is_2012) ztt_norm = Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr());
   if (verbose) cout << "- [DYJetsToTauTau MC Category Yield]: " << Integral(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << " +/- " << Error(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()) << endl;
@@ -776,7 +801,8 @@ int main(int argc, char* argv[]){
         if (is_2012) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()->Clone());
         if (!is_2012) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
       } else {
-        ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());        
+        if (is_2012) ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());        
+        if (!is_2012) ztt_hist = (TH1F*)(plots[Token("Embedded","vbf_loose",os_sel)].hist_ptr()->Clone());        
       }
     }
   }
@@ -795,7 +821,8 @@ int main(int argc, char* argv[]){
   ztt_hist->Scale( ztt_norm / Integral(ztt_hist) );
   ic::TH1PlotElement ztt_shape("ztt_shape", ztt_hist);
 
-  std::cout << "ZTT Norm: " << ztt_norm << std::endl;
+  std::cout << boost::format(param_fmt) % "ZTT Yield" % ztt_norm;
+
   // 5.3% (high), 1.5% (low)
   double ztt_norm_ss = Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr()) * embed_norm;
   TH1F *ztt_hist_ss = (TH1F*)(plots[Token("Embedded",cat,ss_sel)].hist_ptr()->Clone());;
@@ -929,7 +956,10 @@ int main(int argc, char* argv[]){
   
   ic::TH1PlotElement w_shape("w_shape", w_hist);
 	ic::TH1PlotElement w_shape_ss("w_shape_ss", w_hist_ss);
-  std::cout << "W Norm: " << w_norm << std::endl;
+  std::cout << w_norm << endl;
+  std::cout << boost::format(param_fmt) % "W Yield" % w_norm;
+
+
 
   // ---------------------------------------------------
   // Generate QCD Shape and Norm
@@ -970,7 +1000,7 @@ int main(int argc, char* argv[]){
       qcd_norm = os_ss_ratio * data_ss_sel;
       if (qcd_norm < 0.0) qcd_norm = 0.0000001;
       if (non_mass_plot || method == 0 || method == 8 || method == 11) {
-        std::cout << "Using Full Isolation for QCD shape!" << std::endl;
+        if (verbose) std::cout << "Using Full Isolation for QCD shape!" << std::endl;
         qcd_hist = (TH1F*)(plots[Token("Data",cat,ss_sel)].hist_ptr()->Clone());
         qcd_hist->Add(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr(), -1.0);
         qcd_hist->Add(plots[Token("Embedded",cat,ss_sel)].hist_ptr(), -1.0*embed_norm);
@@ -1070,9 +1100,9 @@ int main(int argc, char* argv[]){
     if (verbose) std::cout << "Double Fakes: " <<  Integral(plots["Special_22_Data_inclusive_os"].hist_ptr()) << std::endl;
     double qcd_dilepton = Integral(plots["Special_20_Data_inclusive_os"].hist_ptr()) + Integral(plots["Special_21_Data_inclusive_os"].hist_ptr()) - Integral(plots["Special_22_Data_inclusive_os"].hist_ptr()) ;
     qcd_dilepton *= 0.83;
-    std::cout << "Inclusive fakes (no pzeta cut): " << qcd_dilepton << std::endl;
+    if (verbose) std::cout << "Inclusive fakes (no pzeta cut): " << qcd_dilepton << std::endl;
     double qcd_category = qcd_dilepton * ( Integral(plots[Token("Data",cat,ss_sel)].hist_ptr()) / Integral(plots[Token("Data","inclusive","ss")].hist_ptr()) );
-    std::cout << "Extrap. into category: " << qcd_category << std::endl;
+    if (verbose) std::cout << "Extrap. into category: " << qcd_category << std::endl;
 
     if (method == 0 || method == 2) {
       qcd_norm = qcd_category;
@@ -1143,14 +1173,17 @@ int main(int argc, char* argv[]){
 
 
   ic::TH1PlotElement qcd_shape("qcd_shape", qcd_hist);
-  std::cout << "QCD Norm: " << qcd_norm << std::endl;
+
+  std::cout << boost::format(param_fmt) % "QCD Yield" % qcd_norm;
+
 
   double qcd_norm_ss = qcd_norm/os_ss_ratio;
   TH1F *qcd_hist_ss = (TH1F*)qcd_hist->Clone();
   qcd_hist_ss->Scale( qcd_norm_ss / Integral(qcd_hist_ss) );
   ic::TH1PlotElement qcd_shape_ss("qcd_shape_ss", qcd_hist_ss);
 
-  std::cout << "Background Norm: " << top_norm + vv_norm + zll_norm + ztt_norm + w_norm + qcd_norm << std::endl;
+
+  std::cout << boost::format(param_fmt) % "Background Yield" % (top_norm + vv_norm + zll_norm + ztt_norm + w_norm + qcd_norm);
 
 
   if (swap_inclusive) {
@@ -1357,19 +1390,23 @@ int main(int argc, char* argv[]){
   std::string kind_label = "sm";
   if (mssm_mode > 0) kind_label = "mssm";
 
-  plot.output_filename = plot_name + "_" + dc_cat_label + "_" + channel_str  + "_" + kind_label + "_" + year_label + (draw_ss ? "_ss" : "") + ".pdf";
-  if (log_y) plot.output_filename = plot_name + "_" + dc_cat_label + "_" +channel_str + "_" + kind_label + "_" + year_label + (draw_ss ? "_ss" : "")  + "_log.pdf";
+  plot.output_filename = plot_name + "_" + category + "_" + channel_str  + "_" + kind_label + "_" + year_label + (draw_ss ? "_ss" : "") + ".pdf";
+  if (log_y) plot.output_filename = plot_name + "_" + category + "_" +channel_str + "_" + kind_label + "_" + year_label + (draw_ss ? "_ss" : "")  + "_log.pdf";
   
   plot.x_bin_labels_ = x_axis_bin_labels;
 
   TH1F* signal_hist;
   if (mssm_mode == 0) {
     signal_hist = (TH1F*)(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()->Clone());
-    std::cout << "ggH Norm: " << Integral(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
-    std::cout << "ggH Err: " << Error(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
+    if (verbose) {
+      std::cout << "ggH Norm: " << Integral(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
+      std::cout << "ggH Err: " << Error(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;      
+    }
     if (!signal_split_vbf) signal_hist->Add(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr());
-    std::cout << "qqH Norm: " << Integral(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
-    std::cout << "qqH Err: " << Error(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
+    if (verbose) {
+      std::cout << "qqH Norm: " << Integral(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
+      std::cout << "qqH Err: " << Error(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;      
+    }
     signal_hist->Add(plots[Token("WH_ZH_TTH_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr());
     signal_hist->Scale(draw_signal_factor);
   } else {
@@ -1458,6 +1495,7 @@ int main(int argc, char* argv[]){
   w_shape.set_legend_text("Electroweak");
   data_shape.set_legend_text("Observed");
   ztt_shape.set_legend_text("Z#rightarrow#tau#tau");
+  if (use_ztt_mc) ztt_shape.set_legend_text("Z#rightarrow#tau#tau (MC)");
   zll_shape.set_legend_text("Z#rightarrowee");
   top_shape.set_legend_text("t#bar{t}");
   if (mssm_mode == 0) {

@@ -149,6 +149,7 @@ namespace ic {
     pt_2_ = lep2->pt();
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
+    m_2_ = lep2->M();
     met_ = met->pt();
     met_phi_ = met->phi();
 
@@ -423,6 +424,7 @@ namespace ic {
           plots->pt_2->Fill(pt_2_, wt_);
           plots->eta_1->Fill(eta_1_, wt_);
           plots->eta_2->Fill(eta_2_, wt_);
+          plots->m_2->Fill(m_2_, wt_);
           plots->met->Fill(met_, wt_);
           plots->met_phi->Fill(met_phi_, wt_);
           plots->n_jets->Fill(n_jets_, wt_);

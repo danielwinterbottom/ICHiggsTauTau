@@ -1,4 +1,4 @@
-PROD=Moriond
+PROD=HCP
 
 PARAMS=./scripts/"$PROD"_params_2012.dat
 TSCALE=(
@@ -26,6 +26,7 @@ do
       --method="$i" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
     --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true  --norm_bins=true --verbose=false \
     --paramfile=$PARAMS
+
   done
 
   CATS=('5')
