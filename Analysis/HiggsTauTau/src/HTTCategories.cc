@@ -75,8 +75,10 @@ namespace ic {
     InitCategory("1jet_low_nometcut");
 
     InitCategory("0jet_high");
+    InitCoreControlPlots("0jet_high");
 
     InitCategory("0jet_low");
+    InitCoreControlPlots("0jet_low");
 
     InitCategory("btag");
 
@@ -313,10 +315,16 @@ namespace ic {
     //   if (eta_2_ > -0.2 && eta_2_ < 1.0) em_0jet_high_muon_eta = false;
     // }
     // 0-jet High Category
-    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) SetPassCategory("0jet_high");
+    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) {
+      SetPassCategory("0jet_high");
+      FillCoreControlPlots("0jet_high");
+    }
 
     // 0-jet Low Category
-    if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) SetPassCategory("0jet_low");
+    if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) {
+      SetPassCategory("0jet_low");
+      FillCoreControlPlots("0jet_low");
+    }
 
 
     if (n_jets_ <= 1 && n_bjets_ > 0) SetPassCategory("btag");

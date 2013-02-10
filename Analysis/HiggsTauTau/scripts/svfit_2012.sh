@@ -3,14 +3,14 @@
 PATHS=(
 #'Data'
 #'Special_3_Data'
-#'Embedded'
-#'DYJetsToTauTau'
-'DYJetsToLL'
-'Special_18_DYJetsToLL-L'
-#'DYJetsToTauTauSoup'
-'DYJetsToLLSoup'
-'Special_18_DYJetsToLL-LSoup'
-'WJetsToLNuSoup'
+'Embedded'
+'DYJetsToTauTau'
+#'DYJetsToLL'
+#'Special_18_DYJetsToLL-L'
+'DYJetsToTauTauSoup'
+#'DYJetsToLLSoup'
+#'Special_18_DYJetsToLL-LSoup'
+#'WJetsToLNuSoup'
 #'TTJets' 
 #'TT' 
 #'WWJetsTo2L2Nu'
@@ -91,33 +91,33 @@ PATHS=(
 
 
 
-# for i in "${PATHS[@]}"
-# do
-#  cd svfit/moriond_svfit_2012/"$i"_et_2012_SVFIT
-#  echo `pwd`
-#  ./submit.sh
-#  cd -
-#  cd svfit/moriond_svfit_2012/"$i"_mt_2012_SVFIT
-#  echo `pwd`
-#  ./submit.sh
-#  cd -
-#  cd svfit/moriond_svfit_2012/TSCALE_UP/"$i"_et_2012_SVFIT
-#  echo `pwd`
-#  ./submit.sh
-#  cd -
-#  cd svfit/moriond_svfit_2012/TSCALE_UP/"$i"_mt_2012_SVFIT
-#  echo `pwd`
-#  ./submit.sh
-#  cd -
-#  cd svfit/moriond_svfit_2012/TSCALE_DOWN/"$i"_et_2012_SVFIT
-#  echo `pwd`
-#  ./submit.sh
-#  cd -
-#  cd svfit/moriond_svfit_2012/TSCALE_DOWN/"$i"_mt_2012_SVFIT
-#  echo `pwd`
-#  ./submit.sh
-#  cd -
-# done
+ for i in "${PATHS[@]}"
+ do
+  cd svfit/moriond_svfit_2012_newtscale/"$i"_et_2012_SVFIT
+  echo `pwd`
+  ./submit.sh
+  cd -
+  cd svfit/moriond_svfit_2012_newtscale/"$i"_mt_2012_SVFIT
+  echo `pwd`
+  ./submit.sh
+  cd -
+  cd svfit/moriond_svfit_2012_newtscale/TSCALE_UP/"$i"_et_2012_SVFIT
+  echo `pwd`
+  ./submit.sh
+  cd -
+  cd svfit/moriond_svfit_2012_newtscale/TSCALE_UP/"$i"_mt_2012_SVFIT
+  echo `pwd`
+  ./submit.sh
+  cd -
+  cd svfit/moriond_svfit_2012_newtscale/TSCALE_DOWN/"$i"_et_2012_SVFIT
+  echo `pwd`
+  ./submit.sh
+  cd -
+  cd svfit/moriond_svfit_2012_newtscale/TSCALE_DOWN/"$i"_mt_2012_SVFIT
+  echo `pwd`
+  ./submit.sh
+  cd -
+ done
 
 PATHS=(
 #'Data'
@@ -209,11 +209,11 @@ PATHS=(
 
 
 
-for i in "${PATHS[@]}"
-do
-cd svfit/moriond_svfit_2012/TSCALE_DOWN/"$i"_em_2012_SVFIT
-echo `pwd`
-./submit.sh
-cd -
+#for i in "${PATHS[@]}"
+#do
+#cd svfit/moriond_svfit_2012/TSCALE_DOWN/"$i"_em_2012_SVFIT
+#echo `pwd`
+#./submit.sh
+#cd -
 
-done 
+#done 

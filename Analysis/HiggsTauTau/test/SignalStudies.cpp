@@ -184,10 +184,10 @@ int main(int argc, char* argv[]){
       double mean[hists.size()];
       double rms[hists.size()];
       double yield[hists.size()];
-      for (unsigned i = 0; i < hists.size(); ++i) {
-        mean[i] = hists[i]->GetMean();    
-        rms[i] = hists[i]->GetRMS();    
-        yield[i] = hists[i]->Integral();    
+      for (unsigned k = 0; k < hists.size(); ++k) {
+        mean[k] = hists[k]->GetMean();    
+        rms[k] = hists[k]->GetRMS();    
+        yield[k] = hists[k]->Integral();    
       }
       TGraph gMean (8, &(vfit_input_vals[0]), mean);
       gMean.SetName("mean");

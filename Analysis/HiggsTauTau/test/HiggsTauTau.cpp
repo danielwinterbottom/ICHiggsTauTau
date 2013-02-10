@@ -600,7 +600,15 @@ int main(int argc, char* argv[]){
   HTTEnergyScale httEnergyScale = HTTEnergyScale("HTTEnergyScale")
     .set_input_label("taus")
     .set_shift(tau_shift)
-    .set_moriond_corrections(moriond_tau_scale);
+    .set_moriond_corrections(false);
+    if ( (output_name.find("GluGluToHToTauTau")     != output_name.npos) 
+      || (output_name.find("SUSYGluGluToHToTauTau") != output_name.npos)
+      || (output_name.find("SUSYBBHToTauTau")       != output_name.npos) 
+      || (output_name.find("VBF_HToTauTau")         != output_name.npos)  
+      || (output_name.find("WH_ZH_TTH_HToTauTau")   != output_name.npos) 
+      || (output_name.find("DYJetsToTauTau")        != output_name.npos) 
+      || (output_name.find("Embedded")              != output_name.npos) ) httEnergyScale.set_moriond_corrections(moriond_tau_scale);
+  
 
   SimpleFilter<Tau> tauPtEtaFilter = SimpleFilter<Tau>("TauPtEtaFilter")
     .set_input_label("taus")
@@ -804,7 +812,7 @@ int main(int argc, char* argv[]){
   SVFit svfit("SVFit");
   svfit.set_outname(output_name).set_op(svfit_mode).set_dilepton_label("emtauCandidates").set_met_label(met_label).set_channel(channel);
   svfit.set_fullpath(svfit_folder);
-  svfit.set_split(8000);
+  svfit.set_split(4000);
   if (svfit_override != "") {
     svfit.set_outname(svfit_override);
   }
