@@ -7,18 +7,24 @@ SCALE_MT_INC=""
 SCALE_ET_JET=""
 SCALE_MT_JET=""
 
-SCALE_ET_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.030 --ztt_shift=0.991 \
-              --qcd_shift=1.003 --top_shift=0.849 --zl_shift=1.002 --zj_shift=1.000 --w_shift=1.010 --vv_shift=0.787"
-SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.025 --ztt_shift=0.976 \
-              --qcd_shift=1.145 --top_shift=0.836 --zl_shift=0.837 --zj_shift=0.951 --w_shift=1.004 --vv_shift=0.777"
-SCALE_ET_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.029 --ztt_shift=1.004 \
-              --qcd_shift=0.981 --top_shift=0.847 --zl_shift=1.014 --zj_shift=0.891 --w_shift=0.945 --vv_shift=0.790"
-SCALE_MT_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.028 --ztt_shift=0.989 \
-              --qcd_shift=1.168 --top_shift=0.834 --zl_shift=0.844 --zj_shift=0.981 --w_shift=1.117 --vv_shift=0.780"
-SCALE_ET_MT="--shift_backgrounds=false --draw_band_on_stack=true --band_size_fractional=0.030 --ztt_shift=0.991 \
-              --qcd_shift=1.003 --top_shift=0.849 --zl_shift=1.002 --zj_shift=1.000 --w_shift=1.010 --vv_shift=0.787"
-SCALE_MT_MT="--shift_backgrounds=false --draw_band_on_stack=true --band_size_fractional=0.025 --ztt_shift=0.976 \
-              --qcd_shift=1.145 --top_shift=0.836 --zl_shift=0.837 --zj_shift=0.951 --w_shift=1.004 --vv_shift=0.777"
+SCALE_ET_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.0322901 --ztt_shift=0.983395 \
+              --qcd_shift=0.986000 --top_shift=0.832388 --zl_shift=0.876154 --zj_shift=0.909637 --w_shift=1.022000 --vv_shift=0.887384"
+
+SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.029195 --ztt_shift=0.997727 \
+              --qcd_shift=1.024000 --top_shift=0.844519 --zl_shift=0.912741 --zj_shift=0.966096 --w_shift=0.972000 --vv_shift=0.901944"
+
+SCALE_ET_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.049388 --ztt_shift=0.977003 \
+              --qcd_shift=0.983000 --top_shift=0.829288 --zl_shift=0.869488 --zj_shift=0.886917 --w_shift=0.950000 --vv_shift=0.888074"
+
+SCALE_MT_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.0360817 --ztt_shift=1.016185 \
+              --qcd_shift=1.148000 --top_shift=0.841374 --zl_shift=0.908523 --zj_shift=0.997668 --w_shift=1.099000 --vv_shift=0.901827"
+
+SCALE_ET_MT="--shift_backgrounds=false --draw_band_on_stack=true --band_size_fractional=0.0322901 --ztt_shift=0.983395 \
+              --qcd_shift=0.986000 --top_shift=0.832388 --zl_shift=0.876154 --zj_shift=0.909637 --w_shift=1.022000 --vv_shift=0.887384"
+
+SCALE_MT_MT="--shift_backgrounds=false --draw_band_on_stack=true --band_size_fractional=0.029195 --ztt_shift=0.997727 \
+              --qcd_shift=1.024000 --top_shift=0.844519 --zl_shift=0.912741 --zj_shift=0.966096 --w_shift=0.972000 --vv_shift=0.901944"
+
 
 
 ###############################################################################

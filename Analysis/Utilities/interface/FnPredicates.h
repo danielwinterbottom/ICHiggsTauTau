@@ -20,6 +20,7 @@ namespace ic {
 
   //Dummy
   template <class T> bool DummyFunction(T const* cand ){
+    (void)cand;
     return true;
   }
 

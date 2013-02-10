@@ -1,7 +1,6 @@
 PROD=Moriond
 PARAMS=./scripts/"$PROD"_params_2012.dat
 
-
 SCALE_ET_INC=""
 SCALE_ET_JET=""
 SCALE_ET_MT=""
@@ -30,6 +29,35 @@ SCALE_MT_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 SCALE_MT_MT="--shift_backgrounds=false --draw_band_on_stack=true --band_size_fractional=0.029962 --ztt_shift=0.972336 \
               --qcd_shift=1.034200 --top_shift=0.849368 --zl_shift=1.148073 --zj_shift=1.022327 --w_shift=1.048000 --vv_shift=0.729619"
 
+
+## Same-sign mass plots:
+# CATS=('8' '3' '2' '1' '0')
+# for i in "${CATS[@]}"
+# do
+#   ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=et --rebin=1  \
+#     --method="$i" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+#     --blind=false --x_blind_min=100 --x_blind_max=160 --norm_bins=true --verbose=false \
+#     --paramfile=$PARAMS --draw_ss=true
+
+#   ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=mt --rebin=1 \
+#     --method="$i" --plot_name="m_sv_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+#     --blind=false --x_blind_min=100 --x_blind_max=160 --norm_bins=true --verbose=false \
+#     --paramfile=$PARAMS --draw_ss=true
+# done
+
+# CATS=('5')
+# for i in "${CATS[@]}"
+# do
+#   ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=et --rebin=1  \
+#     --method="$i" --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
+#     --blind=false --x_blind_min=100 --x_blind_max=160 --norm_bins=true --verbose=false \
+#     --paramfile=$PARAMS --draw_ss=true
+
+#   ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=mt --rebin=1 \
+#     --method="$i" --plot_name="m_sv_sm"  --x_axis_label="m_{#tau#tau} [GeV]" \
+#     --blind=false --x_blind_min=100 --x_blind_max=160 --norm_bins=true --verbose=false \
+#     --paramfile=$PARAMS --draw_ss=true
+# done
 
 ###############################################################################
 #### Inclusive selection plots

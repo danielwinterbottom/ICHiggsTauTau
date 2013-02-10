@@ -18,8 +18,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSync.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/ZJetsControlPlots.h"
@@ -207,8 +205,6 @@ int main(int argc, char* argv[]){
 
   MakeRunStats runStats = MakeRunStats("RunStats")
     .set_output_name(output_folder+output_name+".runstats");
-
-  HttPrint httPrint("HttPrint");
 
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";

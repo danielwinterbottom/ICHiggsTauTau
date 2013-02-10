@@ -18,14 +18,13 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPairSelector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttWeights.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSelection.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttMetStudy.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPairSelector.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTWeights.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTMetStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttRecoilCorrector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttSync.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HttPrint.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTRecoilCorrector.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTSync.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
@@ -34,8 +33,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTTCategories.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HTTTriggerFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -366,7 +365,7 @@ int main(int argc, char* argv[]){
   MakeRunStats runStats = MakeRunStats("RunStats")
     .set_output_name(output_folder+output_name+".runstats");
 
-  HttPrint httPrint("HttPrint");
+  HTTPrint httPrint("HTTPrint");
 
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";
@@ -700,7 +699,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------ 
 
 
-  HttPairSelector httPairSelector = HttPairSelector("HttPairSelector")
+  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
     .set_fs(fs)
     .set_met_label(met_label)
@@ -711,14 +710,14 @@ int main(int argc, char* argv[]){
     .set_allowed_tau_modes(allowed_tau_modes);
   if (channel == channel::em) httPairSelector.set_tau_scale(elec_shift);
 
-  HttRecoilCorrector httRecoilCorrector = HttRecoilCorrector("HttRecoilCorrector")
+  HTTRecoilCorrector httRecoilCorrector = HTTRecoilCorrector("HTTRecoilCorrector")
     .set_sample(output_name)
     .set_channel(channel)
     .set_mc(mc)
     .set_met_label(met_label)
     .set_strategy(strategy::moriond2013);
 
-  HttWeights httWeights = HttWeights("HttWeights")
+  HTTWeights httWeights = HTTWeights("HTTWeights")
     .set_channel(channel)
     .set_era(era)
     .set_mc(mc)
@@ -774,20 +773,12 @@ int main(int argc, char* argv[]){
   }
 
 
-  HttSelection httSelection = HttSelection("HttSelection")
-    .set_fs(fs)
-    .set_channel(channel)
-    .set_met_label(met_label);
-  httSelection.set_mt_max_selection(mt_max_selection);
-  if (special_mode == 5 || special_mode == 12) httSelection.set_distinguish_os(false);
-  if (special_mode == 7) httSelection.set_mt_min_control(60.0).set_mt_max_control(120.0);
-
   QuarkGluonDiscriminatorStudy quarkGluonDiscriminatorStudy = QuarkGluonDiscriminatorStudy
     ("QuarkGluonDiscriminatorStudy")
   .set_fs(fs);  
   
-  // HttMetStudy httMetStudy = HttMetStudy
-  //   ("HttMetStudy")
+  // HTTMetStudy httMetStudy = HTTMetStudy
+  //   ("HTTMetStudy")
   //   .set_fs(fs)
   //   .set_mode(mode)
   //   .set_met_label(met_label);
@@ -806,7 +797,7 @@ int main(int argc, char* argv[]){
   if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
 
 
-  HttSync httSync("HttSync","SYNCFILE_" + output_name, channel);
+  HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
   if (strategy == strategy::ichep2012) httSync.set_jet_eta(5.0);
 
