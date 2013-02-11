@@ -8,6 +8,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 
 namespace po = boost::program_options;
@@ -196,6 +197,8 @@ int main(int argc, char* argv[]){
 
   // Options to manually shift backgrounds and draw uncertainty bands
   bool shift_backgrounds = false;
+  bool shift_tscale = false;
+  double tscale_shift = 0.0;
   double qcd_shift = 1.0;
   double top_shift = 1.0;
   double ztt_shift = 1.0;
@@ -252,7 +255,9 @@ int main(int argc, char* argv[]){
     ("swap_inclusive",      po::value<bool>(&swap_inclusive)->default_value(false))
     ("tau_scale_mode",      po::value<unsigned>(&tau_scale_mode)->default_value(0))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
+    ("shift_tscale",        po::value<bool>(&shift_tscale)->default_value(false))
     ("draw_band_on_stack",  po::value<bool>(&draw_band_on_stack)->default_value(false))
+    ("tscale_shift",        po::value<double>(&tscale_shift)->default_value(0.0))
     ("qcd_shift",           po::value<double>(&qcd_shift)->default_value(1.0))
     ("top_shift",           po::value<double>(&top_shift)->default_value(1.0))
     ("ztt_shift",           po::value<double>(&ztt_shift)->default_value(1.0))
@@ -386,6 +391,10 @@ int main(int argc, char* argv[]){
       files.push_back("DYJetsToLL-LSoup");
       files.push_back("DYJetsToLL-JSoup");
     }
+    if (shift_tscale) {
+      files.push_back("TSCALE_UP/Embedded");
+      files.push_back("TSCALE_DOWN/Embedded");
+    }
   } else if (channel == channel::em) {
     files.push_back("Data");
     files.push_back("Special_20_Data"); 
@@ -491,6 +500,11 @@ int main(int argc, char* argv[]){
   				} else {
   					lookup = f;
   				}
+          if (f.find("TSCALE_UP/") != f.npos || f.find("TSCALE_DOWN/") != f.npos) {
+            size_t found = f.find('/');
+            lookup = f.substr(found+1);
+            std::cout << "Found scaled: " << lookup << "\t" << c << "\t" << s << std::endl;
+          }
   				double sample_events = parser.GetParam<double>("EVT_"+lookup);
   				double sample_xs = parser.GetParam<double>("XS_"+lookup);
   				double sample_lumi = sample_events / sample_xs;
@@ -797,7 +811,7 @@ int main(int argc, char* argv[]){
         if (is_2012) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()->Clone());
         if (!is_2012) ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
       } else {
-        ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());        
+        ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());
       }
     }
     // VBF
@@ -824,6 +838,17 @@ int main(int argc, char* argv[]){
   if (verbose) std::cout << "Embedded->Norm Scaling: " << embed_norm << std::endl; 
   if (verbose) cout << "- [Embedded Category Yield]: " << Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr())*embed_norm << " +/- " << Error(plots[Token("Embedded",cat,os_sel)].hist_ptr())*embed_norm << endl;
   ztt_hist->Scale( ztt_norm / Integral(ztt_hist) );
+
+  TH1F *ztt_hist_up = NULL;
+  TH1F *ztt_hist_down = NULL;
+  if (shift_tscale) {
+    ztt_hist_up   = (TH1F*)(plots[Token("TSCALE_UP/Embedded",cat,os_sel)].hist_ptr()->Clone());
+    ztt_hist_down = (TH1F*)(plots[Token("TSCALE_DOWN/Embedded",cat,os_sel)].hist_ptr()->Clone());
+    ztt_hist_up->Scale(ztt_norm / Integral(ztt_hist_up));
+    ztt_hist_down->Scale(ztt_norm / Integral(ztt_hist_down));
+    ic::VerticalMorph(ztt_hist, ztt_hist_up, ztt_hist_down, tscale_shift);
+  }
+
   ic::TH1PlotElement ztt_shape("ztt_shape", ztt_hist);
 
   std::cout << boost::format(param_fmt) % "ZTT Yield" % ztt_norm;

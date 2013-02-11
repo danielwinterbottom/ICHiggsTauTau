@@ -11,23 +11,31 @@ SCALE_EM_INC=""
 SCALE_EM_JET=""
 SCALE_EM_MT=""
 
-SCALE_ET_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.034515 --ztt_shift=1.029518 \
-              --qcd_shift=0.970000 --top_shift=0.902772 --zl_shift=0.952106 --zj_shift=1.005999 --w_shift=1.244000 --vv_shift=0.769534"
+### To run without making post-fit plots, comment out the definitions below.
 
-SCALE_ET_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.044761 --ztt_shift=1.005839 \
-              --qcd_shift=1.029000 --top_shift=0.875811 --zl_shift=0.665334 --zj_shift=0.954358 --w_shift=1.051000 --vv_shift=0.762422"
+SCALE_ET_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.033604 --ztt_shift=1.003582 \
+              --qcd_shift=1.127000 --top_shift=0.748358 --zl_shift=1.104716 --zj_shift=1.125488 --w_shift=1.000000 --vv_shift=0.709526 \
+              --shift_tscale=true --tscale_shift=-0.4"
 
-SCALE_ET_MT="--shift_backgrounds=false --draw_band_on_stack=true --band_size_fractional=0.034515 --ztt_shift=1.029518 \
-              --qcd_shift=0.970000 --top_shift=0.902772 --zl_shift=0.952106 --zj_shift=1.005999 --w_shift=1.244000 --vv_shift=0.769534"
+SCALE_ET_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.044062 --ztt_shift=0.998062 \
+              --qcd_shift=1.033000 --top_shift=0.773659 --zl_shift=0.781297 --zj_shift=0.907874 --w_shift=1.064000 --vv_shift=0.719635 \
+              --shift_tscale=true --tscale_shift=-0.4"
 
-SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.029962 --ztt_shift=0.972336 \
-              --qcd_shift=1.034200 --top_shift=0.849368 --zl_shift=1.148073 --zj_shift=1.022327 --w_shift=1.048000 --vv_shift=0.729619"
+SCALE_ET_MT="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.033604 --ztt_shift=1.003582 \
+              --qcd_shift=1.127000 --top_shift=0.748358 --zl_shift=1.104716 --zj_shift=1.125488 --w_shift=1.000000 --vv_shift=0.709526 \
+              --shift_tscale=true --tscale_shift=-0.4"
 
-SCALE_MT_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.055049 --ztt_shift=0.960668 \
-              --qcd_shift=1.247000 --top_shift=0.825925 --zl_shift=1.142247 --zj_shift=1.043585 --w_shift=0.974000 --vv_shift=0.717769"
+SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.029575 --ztt_shift=0.960251 \
+              --qcd_shift=1.133200 --top_shift=0.714139 --zl_shift=1.059042 --zj_shift=1.462669 --w_shift=0.918000 --vv_shift=0.680721 \
+              --shift_tscale=true --tscale_shift=-0.3"
 
-SCALE_MT_MT="--shift_backgrounds=false --draw_band_on_stack=true --band_size_fractional=0.029962 --ztt_shift=0.972336 \
-              --qcd_shift=1.034200 --top_shift=0.849368 --zl_shift=1.148073 --zj_shift=1.022327 --w_shift=1.048000 --vv_shift=0.729619"
+SCALE_MT_JET="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.055069 --ztt_shift=0.957370 \
+              --qcd_shift=1.256000 --top_shift=0.698626 --zl_shift=1.088694 --zj_shift=1.021515 --w_shift=0.985000 --vv_shift=0.671322 \
+              --shift_tscale=true --tscale_shift=-0.3"
+
+SCALE_MT_MT="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fractional=0.029575 --ztt_shift=0.960251 \
+              --qcd_shift=1.133200 --top_shift=0.714139 --zl_shift=1.059042 --zj_shift=1.462669 --w_shift=1.000000 --vv_shift=0.680721 \
+              --shift_tscale=true --tscale_shift=-0.3"
 
 
 ## Same-sign mass plots:

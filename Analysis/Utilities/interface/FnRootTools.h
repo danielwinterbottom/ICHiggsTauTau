@@ -10,6 +10,7 @@
 #include "Math/VectorUtil.h"
 #include "TFile.h"
 #include "TTree.h"
+#include "TH1F.h"
 #include "UserCode/ICHiggsTauTau/interface/Objects.hh"
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 
@@ -65,6 +66,8 @@ namespace ic {
     tree->GetEntry(0);
     return (*object_ptr);
   }
+
+  void VerticalMorph(TH1F *central, TH1F const*up, TH1F const*down, double shift);
 
 
 } // namepsace

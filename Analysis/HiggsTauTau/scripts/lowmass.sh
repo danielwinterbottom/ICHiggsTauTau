@@ -7,13 +7,13 @@
 #   UserCode/HiggsAnalysis/HiggsToTauTau/datacards/collected/
 # is symlinked or copied to the current working directory.
 
-cp -v collected/Imperial/htt_mt.inputs-sm-7TeV.root htt_mt.inputs-sm-7TeV-extraptest.root 
-cp -v collected/Imperial/htt_et.inputs-sm-7TeV.root htt_et.inputs-sm-7TeV-extraptest.root 
-cp -v collected/Imperial/htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-extraptest.root 
-cp -v collected/Imperial/htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-extraptest.root 
-cp -v collected/MIT/htt_em.inputs-sm-7TeV.root htt_em.inputs-sm-7TeV-extraptest.root 
-cp -v collected/MIT/htt_em.inputs-sm-8TeV.root htt_em.inputs-sm-8TeV-extraptest.root
-cp -v collected/MIT/htt_tt.inputs-sm-8TeV.root htt_tt.inputs-sm-8TeV-extraptest.root 
+cp -v collected/Imperial/htt_mt.inputs-sm-7TeV.root htt_mt.inputs-sm-7TeV-lowsignal.root 
+cp -v collected/Imperial/htt_et.inputs-sm-7TeV.root htt_et.inputs-sm-7TeV-lowsignal.root 
+cp -v collected/Imperial/htt_mt.inputs-sm-8TeV-moriond-andrew.root htt_mt.inputs-sm-8TeV-lowsignal.root 
+cp -v collected/Imperial/htt_et.inputs-sm-8TeV-moriond-andrew.root htt_et.inputs-sm-8TeV-lowsignal.root 
+cp -v collected/MIT/htt_em.inputs-sm-7TeV.root htt_em.inputs-sm-7TeV-lowsignal.root 
+cp -v collected/MIT/htt_em.inputs-sm-8TeV.root htt_em.inputs-sm-8TeV-lowsignal.root
+cp -v collected/MIT/htt_tt.inputs-sm-8TeV.root htt_tt.inputs-sm-8TeV-lowsignal.root 
 
 # cp -v collected/CERN/htt_et.inputs-sm-8TeV.root htt_et.inputs-sm-8TeV-lowsignal.root 
 # cp -v collected/LLR/htt_mt.inputs-sm-8TeV.root htt_mt.inputs-sm-8TeV-lowsignal.root 
