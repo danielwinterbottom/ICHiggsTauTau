@@ -13,8 +13,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "AnalysisDataFormats/TauAnalysis/interface/PFMEtSignCovMatrix.h"
-
+#include "DataFormats/METReco/interface/PFMEtSignCovMatrix.h"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 

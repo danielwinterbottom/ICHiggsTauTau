@@ -85,6 +85,17 @@ process.out = cms.OutputModule("PoolOutputModule",
                                outputCommands = cms.untracked.vstring('drop *', *patEventContent )
                                )
 
+
+################################################################
+### Vertex Modules
+################################################################
+from PhysicsTools.SelectorUtils.pvSelector_cfi import pvSelector
+process.goodOfflinePrimaryVertices = cms.EDFilter(
+    "PrimaryVertexObjectFilter",
+    filterParams = pvSelector.clone( minNdof = cms.double(4.0), maxZ = cms.double(24.0) ),
+    src=cms.InputTag('offlinePrimaryVertices')
+    )
+
 ################################################################
 ### Start settting up the PAT default sequence
 ################################################################
@@ -95,127 +106,41 @@ from PhysicsTools.PatAlgos.tools.tauTools import *
 from PhysicsTools.PatAlgos.tools.jetTools import *
 from PhysicsTools.PatAlgos.tools.trigTools import *
 from PhysicsTools.PatAlgos.tools.metTools import *
+switchOnTrigger(process, outputModule="")
 
 if (release == '42X'):
   process.patDefaultSequence.remove(process.patFixedConePFTauDiscrimination)
   process.patDefaultSequence.remove(process.patShrinkingConePFTauDiscrimination)
   process.patDefaultSequence.remove(process.patCaloTauDiscrimination)
 
-#switchToPFTauHPS(process)
 
-from PhysicsTools.SelectorUtils.pvSelector_cfi import pvSelector
-process.goodOfflinePrimaryVertices = cms.EDFilter(
-    "PrimaryVertexObjectFilter",
-    filterParams = pvSelector.clone( minNdof = cms.double(4.0), maxZ = cms.double(24.0) ),
-    src=cms.InputTag('offlinePrimaryVertices')
-    )
-
-switchOnTrigger(process, outputModule="")
-
-# PAT Jet configuration
-if isData:
-  addJetCollection(process,
-    cms.InputTag('ak5PFJets'),
-    'AK5','PF',
-    doJTA=True,
-    doBTagging=True,
-    jetCorrLabel=('AK5PF', ['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual']),
-    doType1MET=False,
-    doL1Cleaning=False,
-    doL1Counters=False,
-    genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
-    doJetID      = True,
-    jetIdLabel   = "ak5"
-    )
-else:
-  addJetCollection(process,
-    cms.InputTag('ak5PFJets'),
-    'AK5','PF',
-    doJTA=True,
-    doBTagging=True,
-    jetCorrLabel=('AK5PF', ['L1FastJet','L2Relative', 'L3Absolute']),
-    doType1MET=False,
-    doL1Cleaning=False,
-    doL1Counters=False,
-    genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
-    doJetID      = True,
-    jetIdLabel   = "ak5"
-    )
-
-### Some fixes for JPT jets: do L1JPTOffset on reco, then
-### use these as input to PAT - only do L2L3/Residual in PAT
-if not (release == '42X'):
-  process.load('JetMETCorrections.Configuration.DefaultJEC_cff')
-  process.ak5JPTL1 = cms.ESProducer("JetCorrectionESChain",
-      correctors = cms.vstring('ak5L1JPTOffset')
+################################################################
+### Configure PAT Jets
+################################################################
+addJetCollection(process,
+  cms.InputTag('ak5PFJets'),
+  'AK5','PF',
+  doJTA=True,
+  doBTagging=True,
+  jetCorrLabel=('AK5PF', ['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] if isData else ['L1FastJet','L2Relative', 'L3Absolute']),
+  doType1MET=False,
+  doL1Cleaning=False,
+  doL1Counters=False,
+  genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
+  doJetID      = True,
+  jetIdLabel   = "ak5"
   )
-  process.ak5JPTJetsL1 = cms.EDProducer("JPTJetCorrectionProducer",
-      src = cms.InputTag("JetPlusTrackZSPCorJetAntiKt5"),
-      correctors = cms.vstring('ak5JPTL1')
+switchJetCollection(process,
+  cms.InputTag('ak5CaloJets'),
+  doJTA=False,
+  doBTagging=False,
+  jetCorrLabel=('AK5Calo', ['L1Offset','L2Relative', 'L3Absolute','L2L3Residual'] if isData else ['L1Offset','L2Relative', 'L3Absolute']),
+  doType1MET=False,
+  genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
+  doJetID = True,
+  jetIdLabel = "ak5"
   )
-  process.load("RecoJets.Configuration.RecoJPTJets_cff")
-  process.load("RecoJets.JetAssociationProducers.ak5JTA_cff")
-  process.ak5JetTracksAssociatorAtVertex.useAssigned = cms.bool(True)
-  process.ak5JetTracksAssociatorAtVertex.pvSrc = cms.InputTag("offlinePrimaryVertices")
-  process.redoJPTSequence = cms.Sequence(
-      process.ak5JTA
-      +process.jetPlusTrackZSPCorJetAntiKt5
-      +process.ak5JPTJetsL1
-      )
-
-if isData:
-  # addJetCollection( process,
-  #     cms.InputTag('ak5JPTJetsL1'),
-  #     'AK5','JPT',
-  #     doJTA        = True,
-  #     doBTagging   = True,
-  #     jetCorrLabel = ('AK5JPT', ['L2Relative','L3Absolute','L2L3Residual']),
-  #     doType1MET   = False,
-  #     doL1Cleaning = False,
-  #     doL1Counters = False,
-  #     genJetCollection = cms.InputTag("ak5GenJetsNoNuBSM"),
-  #     doJetID      = True,
-  #     jetIdLabel   = "ak5"
-  #     )
-  switchJetCollection(process,
-      cms.InputTag('ak5CaloJets'),
-      #'AK5','Calo',
-      doJTA=False,
-      doBTagging=False,
-      jetCorrLabel=('AK5Calo', ['L1Offset','L2Relative', 'L3Absolute','L2L3Residual']),
-      doType1MET=False,
-      genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
-      doJetID = True,
-      jetIdLabel = "ak5"
-      )
-else:
-  # addJetCollection( process,
-  #     cms.InputTag('ak5JPTJetsL1'),
-  #     'AK5','JPT',
-  #     doJTA        = True,
-  #     doBTagging   = True,
-  #     jetCorrLabel = ('AK5JPT', ['L2Relative', 'L3Absolute']),
-  #     doType1MET   = False,
-  #     doL1Cleaning = False,
-  #     doL1Counters = False,
-  #     genJetCollection = cms.InputTag("ak5GenJetsNoNuBSM"),
-  #     doJetID      = True,
-  #     jetIdLabel   = "ak5"
-  #     )
-  switchJetCollection(process,
-      cms.InputTag('ak5CaloJets'),
-      #'AK5','Calo',
-      doJTA=False,
-      doBTagging=False,
-      jetCorrLabel=('AK5Calo', ['L1Offset','L2Relative', 'L3Absolute']),
-      doType1MET=False,
-      genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
-      doJetID = True,
-      jetIdLabel = "ak5"
-      )
-
 process.patJets.embedGenPartonMatch = cms.bool(False)
-#process.patJetsAK5JPT.embedGenPartonMatch = cms.bool(False)
 process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
 
 ################################################################
@@ -327,14 +252,12 @@ process.patmetNoHF = process.patMETs.clone(
     genMETSource = cms.InputTag('genMetTrue'),
     addGenMET = cms.bool(False)
     )
-
 process.icMetNoHFProducer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patmetNoHF"),
     branchName = cms.untracked.string("metNoHF"),
     addGen = cms.untracked.bool(False),
     InputSig = cms.untracked.string("")
     )
-
 process.icSoftLeptonSequence += cms.Sequence(
     process.icL1ExtraMETProducer
     +process.icL1ExtraMuonsProducer
@@ -434,87 +357,95 @@ process.patPFMetByMVA = process.patMETs.clone(
 )
 
 
-################################################################
-### Produce PFMET significance cov. matrix
-################################################################
-process.ak5PFJetsNotOverlappingWithLeptons = cms.EDFilter("PFJetAntiOverlapSelector",
-  src = cms.InputTag('ak5PFJets'),
-  srcNotToBeFiltered = cms.VInputTag('isomuons','isoelectrons','isotaus'),
-  dRmin = cms.double(0.5),
-  invert = cms.bool(False),
-  filter = cms.bool(False)
-)
-from JetMETCorrections.Type1MET.pfMETCorrections_cff import pfCandsNotInJet
-process.pfCandsNotInJetForPFMEtSignCovMatrix = pfCandsNotInJet.clone()
-from RecoMET.METProducers.METSigParams_cfi import *
-process.pfMEtSignCovMatrix = cms.EDProducer("PFMEtSignCovMatrixProducer",
-  METSignificance_params,
-  src = cms.VInputTag(
-      'isoelectrons', 'isomuons', 'isotaus',
-      'ak5PFJetsNotOverlappingWithLeptons',
-      'pfCandsNotInJetForPFMEtSignCovMatrix'
-  ),
-  addJERcorr = cms.PSet(
-      inputFileName = cms.FileInPath('PhysicsTools/PatUtils/data/pfJetResolutionMCtoDataCorrLUT.root'),
-      lutName = cms.string('pfJetResolutionMCtoDataCorrLUT')
-  )
-)
-process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingWithLeptons + process.pfCandsNotInJetForPFMEtSignCovMatrix + process.pfMEtSignCovMatrix)
+# ################################################################
+# ### Produce PFMET significance cov. matrix
+# ################################################################
+# process.ak5PFJetsNotOverlappingWithLeptons = cms.EDFilter("PFJetAntiOverlapSelector",
+#   src = cms.InputTag('ak5PFJets'),
+#   srcNotToBeFiltered = cms.VInputTag('isomuons','isoelectrons','isotaus'),
+#   dRmin = cms.double(0.5),
+#   invert = cms.bool(False),
+#   filter = cms.bool(False)
+# )
+# from JetMETCorrections.Type1MET.pfMETCorrections_cff import pfCandsNotInJet
+# process.pfCandsNotInJetForPFMEtSignCovMatrix = pfCandsNotInJet.clone()
+# from RecoMET.METProducers.METSigParams_cfi import *
+# process.pfMEtSignCovMatrix = cms.EDProducer("PFMEtSignCovMatrixProducer",
+#   METSignificance_params,
+#   src = cms.VInputTag(
+#       'isoelectrons', 'isomuons', 'isotaus',
+#       'ak5PFJetsNotOverlappingWithLeptons',
+#       'pfCandsNotInJetForPFMEtSignCovMatrix'
+#   ),
+#   addJERcorr = cms.PSet(
+#       inputFileName = cms.FileInPath('PhysicsTools/PatUtils/data/pfJetResolutionMCtoDataCorrLUT.root'),
+#       lutName = cms.string('pfJetResolutionMCtoDataCorrLUT')
+#   )
+# )
+# process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingWithLeptons + process.pfCandsNotInJetForPFMEtSignCovMatrix + process.pfMEtSignCovMatrix)
 
 ################################################################
 ### MET Filters-curretly from Sasha's code
-################################################################
+#################################################################
 ## The iso-based HBHE noise filter
-process.load('CommonTools.RecoAlgos.HBHENoiseFilter_cfi')
+process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
 
-## The CSC beam halo tight filter 
-process.load('RecoMET.METAnalyzers.CSCHaloFilter_cfi')
-
-## The HCAL laser filter 
-process.load("RecoMET.METFilters.hcalLaserEventFilter_cfi")
-process.MyhcalLaserEventFilter = process.hcalLaserEventFilter.clone()
-process.MyhcalLaserEventFilter.taggingMode  = cms.bool(True)
+### The CSC beam halo tight filter 
+#process.load('RecoMET.METAnalyzers.CSCHaloFilter_cfi')
+#
+### The HCAL laser filter 
+#process.load("RecoMET.METFilters.hcalLaserEventFilter_cfi")
+#process.MyhcalLaserEventFilter = process.hcalLaserEventFilter.clone()
+#process.MyhcalLaserEventFilter.taggingMode  = cms.bool(True)
 
 ## The ECAL dead cell trigger primitive filter
 process.load('RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi')
-process.MyEcalDeadCellTriggerPrimitiveFilter = process.EcalDeadCellTriggerPrimitiveFilter.clone()
-process.MyEcalDeadCellTriggerPrimitiveFilter.taggingMode  = cms.bool(True)
+process.EcalDeadCellTriggerPrimitiveFilter.taggingMode  = cms.bool(True)
 
 ## The EE bad SuperCrystal filter
 process.load('RecoMET.METFilters.eeBadScFilter_cfi')
-process.MyeeBadScFilter = process.eeBadScFilter.clone()
-process.MyeeBadScFilter.taggingMode  = cms.bool(True)
+process.eeBadScFilter.taggingMode  = cms.bool(True)
+#
 
-## The ECAL laser correction filter
-process.load('RecoMET.METFilters.ecalLaserCorrFilter_cfi')
-process.MyecalLaserCorrFilter = process.ecalLaserCorrFilter.clone()
-process.MyecalLaserCorrFilter.taggingMode  = cms.bool(True)
-
+### The ECAL laser correction filter
+#process.load('RecoMET.METFilters.ecalLaserCorrFilter_cfi')
+#process.MyecalLaserCorrFilter = process.ecalLaserCorrFilter.clone()
+#process.MyecalLaserCorrFilter.taggingMode  = cms.bool(True)
+#
 ## The Good vertices collection needed by the tracking failure filter
 process.goodVertices = cms.EDFilter(
-  "VertexSelector",
-  filter = cms.bool(False),
-  src = cms.InputTag("offlinePrimaryVertices"),
-  cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.rho < 2")
+ "VertexSelector",
+ filter = cms.bool(False),
+ src = cms.InputTag("offlinePrimaryVertices"),
+ cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.rho < 2")
 ) 
 
 ## The tracking failure filter
 process.load('RecoMET.METFilters.trackingFailureFilter_cfi')
-process.MytrackingFailureFilter = process.trackingFailureFilter.clone()
-process.MytrackingFailureFilter.taggingMode  = cms.bool(True)
+process.trackingFailureFilter.taggingMode  = cms.bool(True)
 
-## total sequence
+process.load('RecoMET.METFilters.trackingPOGFilters_cff')
+## NOTE: to make tagging mode of the tracking POG filters (three of them), please do:
+process.manystripclus53X.taggedMode = cms.untracked.bool(True)
+process.manystripclus53X.forcedValue = cms.untracked.bool(False)
+process.toomanystripclus53X.taggedMode = cms.untracked.bool(True)
+process.toomanystripclus53X.forcedValue = cms.untracked.bool(False)
+process.logErrorTooManyClusters.taggedMode = cms.untracked.bool(True)
+process.logErrorTooManyClusters.forcedValue = cms.untracked.bool(False)
+#
+### total sequence
 process.filterSequence = cms.Sequence(
- # process.primaryVertexFilter *
- # process.noscraping *
-  process.HBHENoiseFilter *
-  process.CSCTightHaloFilter *
-  process.MyhcalLaserEventFilter *
-  process.MyEcalDeadCellTriggerPrimitiveFilter *
-  process.goodVertices * process.MytrackingFailureFilter *
-  process.MyeeBadScFilter *
-  process.MyecalLaserCorrFilter
- # process.hcallasereventfilter2012  
+# # process.primaryVertexFilter *
+# # process.noscraping *
+  process.HBHENoiseFilterResultProducer
+#  process.CSCTightHaloFilter *
+#  process.MyhcalLaserEventFilter *
+  +process.EcalDeadCellTriggerPrimitiveFilter
+  +process.goodVertices + process.trackingFailureFilter
+  +process.eeBadScFilter
+#  process.MyecalLaserCorrFilter
+# # process.hcallasereventfilter2012 
+  +process.trkPOGFilters 
 ) 
 
 ################################################################
@@ -541,49 +472,6 @@ else:
     process.load("CMGTools.External.pujetidsequence_cff")
     process.puJetId.jets = cms.InputTag("selectedPatJetsAK5PF")
     process.puJetMva.jets = cms.InputTag("selectedPatJetsAK5PF")
-
-
-################################################################
-### General Config
-################################################################
-process.MessageLogger.cerr.FwkReport.reportEvery = 50000
-process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger','HLTConfigData' )
-process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLTConfigData')
-
-if (release == '42X'):
-  if isData:
-    process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2011A-Run166512-42X.root')
-    )
-    process.GlobalTag.globaltag = cms.string('GR_R_42_V25::All')
-  else:
-    process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/NEW_SYNC_2011.root')
-    )
-    process.GlobalTag.globaltag = cms.string('START42_V17::All')
-if (release == '53X'):
-  if isData:
-    process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2012D.root')
-    )
-    process.GlobalTag.globaltag = cms.string('GR_P_V42_AN3::All')
-  else:
-    process.source = cms.Source(
-      "PoolSource",
-      fileNames = cms.untracked.vstring(
-        'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
-        )
-        #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
-        #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
-        #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
-    )
-    process.GlobalTag.globaltag = cms.string('START53_V15::All')
-
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
-
-
-
 
 ################################################################
 ### Lepton Isolation
@@ -627,8 +515,6 @@ process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
        )
 if (release == '42X'):
   process.PFTau = process.recoTauClassicHPSSequence
-
-if (release == '42X'):
   from RecoJets.JetProducers.kt4PFJets_cfi import kt4PFJets
   process.kt6PFJets = kt4PFJets.clone(
       rParam = cms.double(0.6),
@@ -665,6 +551,46 @@ if not isData:
   #process.genParticlesForPartonJets = process.genParticlesForJets.clone()
   #process.genParticlesForPartonJets.partonicFinalState = True
   #process.genParticlesForPartonJets.excludeFromResonancePids = cms.vuint32(11, 12, 13, 14, 15, 16)
+
+
+################################################################
+### General Config
+################################################################
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger','HLTConfigData' )
+process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLTConfigData')
+
+if (release == '42X'):
+  if isData:
+    process.source = cms.Source("PoolSource",
+      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2011A-Run166512-42X.root')
+    )
+    process.GlobalTag.globaltag = cms.string('GR_R_42_V25::All')
+  else:
+    process.source = cms.Source("PoolSource",
+      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/NEW_SYNC_2011.root')
+    )
+    process.GlobalTag.globaltag = cms.string('START42_V17::All')
+if (release == '53X'):
+  if isData:
+    process.source = cms.Source("PoolSource",
+      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2012D.root')
+    )
+    process.GlobalTag.globaltag = cms.string('GR_P_V42_AN3::All')
+  else:
+    process.source = cms.Source(
+      "PoolSource",
+      fileNames = cms.untracked.vstring(
+        'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+        )
+        #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+        #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
+        #'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
+    )
+    process.GlobalTag.globaltag = cms.string('START53_V15::All')
+
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
 
 ################################################################
 ## Configure private modules
@@ -716,7 +642,7 @@ process.icPfMetProducer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patMETsPF"),
     branchName = cms.untracked.string("pfMet"),
     addGen = cms.untracked.bool(True),
-    InputSig = cms.untracked.string("pfMEtSignCovMatrix")
+    InputSig = cms.untracked.string("")
     )
 if isData:
   process.icPfMetProducer.addGen = cms.untracked.bool(False)
@@ -827,7 +753,6 @@ process.icEmbeddedGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
 process.icGenTauProductProducer = cms.EDProducer('ICGenTauProductProducer',
   inputLabel = cms.InputTag("genParticles","","SIM"),
   )
-
 process.icTauGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     branchName = cms.untracked.string("genParticlesTaus"),
     inputLabel = cms.InputTag("genParticles","","SIM"),
@@ -853,7 +778,16 @@ process.icPileupInfoProducer = cms.EDProducer('ICPileupInfoProducer')
 process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
     jetsRhoLabel = cms.string("kt6PFJets"),
     leptonRhoLabel = cms.string("kt6PFJetsForLeptons"),
-    vertexLabel = cms.string('goodOfflinePrimaryVertices')
+    vertexLabel = cms.string('goodOfflinePrimaryVertices'),
+    filters = cms.PSet(
+      HBHENoiseFilter                     = cms.InputTag("HBHENoiseFilterResultProducer","HBHENoiseFilterResult"),
+      EcalDeadCellTriggerPrimitiveFilter  = cms.InputTag("EcalDeadCellTriggerPrimitiveFilter"),
+      eeBadScFilter                       = cms.InputTag("eeBadScFilter"),
+      trackingFailureFilter               = cms.InputTag("trackingFailureFilter"),
+      manystripclus53X                    = cms.InputTag("!manystripclus53X"),
+      toomanystripclus53X                 = cms.InputTag("!toomanystripclus53X"),
+      logErrorTooManyClusters             = cms.InputTag("!logErrorTooManyClusters"),
+      )
     )
 
 process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer')
@@ -865,7 +799,7 @@ process.icSequence = cms.Sequence(
   +process.icPfMetProducer
   +process.icPfMVAMetProducer
   +process.icPfAllPairsMVAMetProducer
-  +process.filterSequence
+ +process.filterSequence
   +process.icTauProducer
   +process.icVertexProducer
   +process.icEventInfoProducer
@@ -880,6 +814,7 @@ process.icSequence += (
 process.icDataSequence = cms.Sequence(
   process.icTriggerPathProducer
   )
+if isData: process.icSequence += process.icDataSequence
 
 process.icMCSequence = cms.Sequence(
   process.icPileupInfoProducer
@@ -888,19 +823,13 @@ process.icMCSequence = cms.Sequence(
   +process.icGenTauProductProducer
   +process.icTauGenParticleProducer
   )
+if not isData: process.icSequence += process.icMCSequence
 
 process.icEmbeddedSequence = cms.Sequence(
   process.icEmbeddedGenParticleProducer
   )
+if isEmbedded: process.icSequence += process.icEmbeddedSequence
 
-if isData:
-  process.icSequence += process.icDataSequence
-
-if not (isData):
-  process.icSequence += process.icMCSequence
-
-if isEmbedded:
-  process.icSequence += process.icEmbeddedSequence
 
 process.icTriggerSequence = cms.Sequence()
 notTp = not isTandP
@@ -1235,7 +1164,6 @@ if (release == '53X' and (not isData) and isZStudy):
     +process.icMu17Mu8ObjectProducer
     )
 
-
 ################################################################
 ## Define 2012 Hinv physics triggers for mc
 ################################################################
@@ -1245,25 +1173,21 @@ if (release == '53X' and (not isData)):
       hltPath = cms.untracked.string("HLT_DiPFJet40_PFMETnoMu65_MJJ600VBF_LeadingJets_v"), 
       StoreOnlyIfFired = cms.untracked.bool(True) 
       ) 
-
   process.icDiPFJet40PFMETnoMu65MJJ800VBFAllJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets"), 
       hltPath = cms.untracked.string("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"), 
       StoreOnlyIfFired = cms.untracked.bool(True) 
       ) 
-
   process.icDiPFJetAve80ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsDiPFJetAve80"), 
       hltPath = cms.untracked.string("HLT_DiPFJetAve80_v"), 
       StoreOnlyIfFired = cms.untracked.bool(True) 
       ) 
-
   process.icDiPFJetAve40ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsDiPFJetAve40"), 
       hltPath = cms.untracked.string("HLT_DiPFJetAve40_v"), 
       StoreOnlyIfFired = cms.untracked.bool(True) 
       ) 
-
   process.icL1ETM40ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
       branchName = cms.untracked.string("triggerObjectsL1ETM40"), 
       hltPath = cms.untracked.string("HLT_L1ETM40"), 
@@ -1293,9 +1217,7 @@ if release == '53X':
                                process.combinatoricRecoTaus+process.produceHPSPFTaus)
 
 process.mcSequence = cms.Sequence()
-if not isData:
-  process.mcSequence += (process.genParticlesForJets+process.ak5GenJetsNoNuBSM)
-
+if not isData: process.mcSequence += (process.genParticlesForJets+process.ak5GenJetsNoNuBSM)
 
 process.p = cms.Path(
   process.mcSequence
@@ -1311,7 +1233,7 @@ process.p = cms.Path(
   +process.patDefaultSequence
   +process.puJetMva
   +process.pfMEtMVAsequence
-  +process.prePatProductionSequence
+  # +process.prePatProductionSequence
   +process.patPFMetByMVA
   +process.icSequence
   )

@@ -22,7 +22,11 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
+#include "DataFormats/METReco/interface/BeamHaloSummary.h"
+
 #include "boost/format.hpp"
+
+
 
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& iConfig) {
@@ -30,7 +34,20 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& iConfig) {
   lepton_rho_name_ = iConfig.getParameter<std::string>("leptonRhoLabel");
 
   vertex_name_ = iConfig.getParameter<std::string>("vertexLabel");
-
+  if (iConfig.exists("filters")) {
+    edm::ParameterSet filter_params = iConfig.getParameter<edm::ParameterSet>("filters");
+    std::vector<std::string> filter_names = filter_params.getParameterNamesForType<edm::InputTag>();
+    for (std::vector<std::string>::const_iterator it = filter_names.begin(); it != filter_names.end(); ++it) {
+     filters_.push_back(std::make_pair(*it, filter_params.getParameter<edm::InputTag>(*it)));
+     if (filters_.back().second.label().at(0) == '!') {
+      std::cout << "Info in <ICEventInfoProducer>: Inverting logic for filter: " << filters_.back().first << std::endl;
+      std::string new_label = filters_.back().second.label();
+      new_label.erase(0,1);
+      filters_.back().second = edm::InputTag(new_label, filters_.back().second.instance(), filters_.back().second.process());
+      invert_filter_logic_.insert(filters_.back().first);
+     }
+    } 
+  }
   //embed_weight_ = iConfig.getParameter<std::string>("EmbedWeight");
 
   info_ = new ic::EventInfo();
@@ -77,25 +94,22 @@ void ICEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   info_->set_lepton_rho(*lepton_rho_handle);
     
   // MET filters
-
-  //Currently these bools are read in but not used in any way-change later
-  edm::Handle<bool> filter1;
-  iEvent.getByLabel("MyEcalDeadCellTriggerPrimitiveFilter", filter1);
-  //info_->set_something
-  //
-  edm::Handle<bool> filter2;
-  iEvent.getByLabel("MyecalLaserCorrFilter", filter2);
-  //
-  edm::Handle<bool> filter3;
-  iEvent.getByLabel("MyeeBadScFilter", filter3);
-  //
-  edm::Handle<bool> filter4;
-  iEvent.getByLabel("MyhcalLaserEventFilter", filter4);
-  //
-  edm::Handle<bool> filter5;
-  iEvent.getByLabel("MytrackingFailureFilter", filter5);
-  //std::cout << *filter1 << " " << *filter2 << " " << *filter3 << " " << *filter4 << " " << *filter5 <<std::endl;
-
+  if (iEvent.isRealData()) {
+    for (unsigned i = 0; i < filters_.size(); ++i) {
+      edm::Handle<bool> filter;
+      iEvent.getByLabel(filters_[i].second, filter);
+      bool filter_result = (*filter);
+      if (invert_filter_logic_.find(filters_[i].first) != invert_filter_logic_.end()) filter_result = !filter_result;
+      // std::cout << filters_[i].first << "\t\t" << filter_result << std::endl;
+      info_->set_filter_result(filters_[i].first, filter_result);
+      observed_filters_[filters_[i].first] = CityHash64(filters_[i].first);
+    }
+    edm::Handle<reco::BeamHaloSummary> beamHaloSummary;
+    if (iEvent.getByLabel("BeamHaloSummary",beamHaloSummary)) {
+      info_->set_filter_result("CSCTightHaloFilter", beamHaloSummary->CSCTightHaloId());
+      observed_filters_["CSCTightHaloFilter"] = CityHash64("CSCTightHaloFilter");  
+    }
+  }
 
 }
 
@@ -106,6 +120,14 @@ void ICEventInfoProducer::beginJob() {
 
 // ------------ method called once each job just after ending the event loop  ------------
 void ICEventInfoProducer::endJob() {
+  std::cout << "-----------------------------------------------------------------" << std::endl;
+  std::cout << "Info in <ICEventInfoProducerr>: EndJob Summary" << std::endl;
+  std::cout << "-----------------------------------------------------------------" << std::endl;
+  std::map<std::string, std::size_t>::const_iterator iter;
+  std::cout << "Filter Hash Summary:" << std::endl;
+  for (iter = observed_filters_.begin(); iter != observed_filters_.end(); ++iter) {
+    std::cout << boost::format("%-30s %-30s\n") % iter->first % iter->second;
+  }
 }
 
 // ------------ method called when starting to processes a run  ------------
