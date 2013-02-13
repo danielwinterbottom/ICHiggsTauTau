@@ -75,6 +75,7 @@ int main(int argc, char* argv[]){
   bool quark_gluon_study;         // Run study on quark-gluon jet discriminators
   string allowed_tau_modes;       // "" means all, otherwise "1,10"=allow 1prong1pizero,3prong
   bool moriond_tau_scale;         // Use new central tau scale shifts
+  bool large_tscale_shift;        // Shift tau energy scale by +/- 6% instead of 3%
 
   bool do_vbf_mva = true;
   // bool disable_mc_trigger = false;
@@ -137,6 +138,7 @@ int main(int argc, char* argv[]){
       ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
       ("moriond_tau_scale",   po::value<bool>(&moriond_tau_scale)->default_value(false))
+      ("large_tscale_shift",  po::value<bool>(&large_tscale_shift)->default_value(false))
       ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""));
       // ("do_vbf_mva", po::value<bool>(&do_vbf_mva)->default_value(true), "0=disabled, 1 = enabled")
       // ("scan_trigger", po::value<bool>(&scan_trigger)->default_value(false), "true/false")
@@ -196,6 +198,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
+  std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -592,6 +595,10 @@ int main(int argc, char* argv[]){
   double tau_shift = 1.0;
   if (tau_scale_mode == 1) tau_shift = 0.97;
   if (tau_scale_mode == 2) tau_shift = 1.03;
+  if (large_tscale_shift) {
+    if (tau_scale_mode == 1) tau_shift = 0.94;
+    if (tau_scale_mode == 2) tau_shift = 1.06;    
+  }
   EnergyShifter<Tau> tauEnergyShifter = EnergyShifter<Tau>
   ("TauEnergyShifter")
     .set_input_label("taus")

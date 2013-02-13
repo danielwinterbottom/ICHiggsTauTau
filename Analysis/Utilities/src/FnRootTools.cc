@@ -25,7 +25,6 @@ namespace ic {
   // Vertical morphing between template, based on implementation here:
   // http://root.cern.ch/root/html532/src/RooStats__HistFactory__FlexibleInterpVar.cxx.html#193
   void VerticalMorph(TH1F *central, TH1F const*up, TH1F const*down, double shift) {
-
     int nbins = central->GetNbinsX();
     if (up->GetNbinsX() != nbins || down->GetNbinsX() != nbins) {
       std::cerr << "Error in VerticalMorph: up and down histograms do not have the same binning" << std::endl;
@@ -47,7 +46,7 @@ namespace ic {
       }
       if (total <= 0) total = 1E-9;
       central->SetBinContent(i, total);
-      std::cout << "Bin " << i <<": Nominal " << nominal << "\tDown " << low << "\tUp " << high << "\tResult " << total << std::endl;
+      // std::cout << "Bin " << i <<": Nominal " << nominal << "\tDown " << low << "\tUp " << high << "\tResult " << total << std::endl;
     }
   }
 

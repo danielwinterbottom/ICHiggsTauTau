@@ -31,20 +31,24 @@ namespace ic {
     bool print_module_list_;
 
   public:
-    AnalysisBase(   std::string const& analysis_name, 
-                    std::vector<std::string> const& input,
-                    std::string const& tree_path,
-                    std::string const& tree_name,
-                    unsigned const& events     );
+    //! The standard AnalysisBase constructor constructor 
+    /*! 
+     */
+    AnalysisBase(   std::string const& analysis_name,       /**< [in] a name for the analysis object, purely decorative. */
+                    std::vector<std::string> const& input,  /**< [in] a vector of TFile paths  */
+                    std::string const& tree_path,           /**< [in] path to the directory containing the TTree in the TFile */   
+                    std::string const& tree_name,           /**< [in] the TTree name */  
+                    unsigned const& events                  /**< [in] the number of events to process, -1 means process all events. */
+                );             
 
-    
+
     void AddModule(ic::ModuleBase *module_ptr);
     inline std::string analysis_name() { return analysis_name_; }
     inline std::string tree_path() { return tree_path_; }
     inline std::string tree_name() { return tree_name_; }
     virtual ~AnalysisBase();
-    virtual int RunAnalysis();
-    virtual void DoEventSetup();
+    virtual int RunAnalysis();    
+    virtual void DoEventSetup();  
     virtual bool PostModule(int status);
     virtual void NotifyRunEvent(int const& run, int const& event);
 virtual     void NotifyEvent(int const& event);

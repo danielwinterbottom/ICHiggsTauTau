@@ -126,9 +126,10 @@ if options.do_2011: FILELIST='filelists/Sept11_Data_42X'
 
 if options.data:
 	for ch in channels:
-		JOB='Data_%s_%s' % (ch,YR)
-		os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s --output_name=%(JOB)s.root &> jobs/%(JOB)s.log" jobs/%(JOB)s.sh' % vars())
-		os.system('%(JOBSUBMIT)s jobs/%(JOB)s.sh' % vars())
+		if '0' in scales:
+			JOB='Data_%s_%s' % (ch,YR)
+			os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s --output_name=%(JOB)s.root &> jobs/%(JOB)s.log" jobs/%(JOB)s.sh' % vars())
+			os.system('%(JOBSUBMIT)s jobs/%(JOB)s.sh' % vars())
 
 		if ch in ['et', 'mt']:
 			for sc in scales:
@@ -137,37 +138,39 @@ if options.data:
 					' --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
 				os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
-			JOB='Data_%s_%s' % (ch,YR)
-			os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_2_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s'
-				' --special_mode=3 --output_name=%(JOB)s.root &> jobs/Special_3_%(JOB)s.log" jobs/Special_3_%(JOB)s.sh' % vars())
-			os.system('%(JOBSUBMIT)s jobs/Special_3_%(JOB)s.sh' % vars())
+			if '0' in scales:
+				JOB='Data_%s_%s' % (ch,YR)
+				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_2_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s'
+					' --special_mode=3 --output_name=%(JOB)s.root &> jobs/Special_3_%(JOB)s.log" jobs/Special_3_%(JOB)s.sh' % vars())
+				os.system('%(JOBSUBMIT)s jobs/Special_3_%(JOB)s.sh' % vars())
 
 
 		if ch in ['em']:
-			JOB='Data_%s_%s' % (ch,YR)
-			os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_20_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
-			--special_mode=20 --output_name=%(JOB)s.root &> jobs/Special_20_%(JOB)s.log" jobs/Special_20_%(JOB)s.sh' % vars())
-			os.system('%(JOBSUBMIT)s jobs/Special_20_%(JOB)s.sh' % vars())
+			if '0' in scales:
+				JOB='Data_%s_%s' % (ch,YR)
+				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_20_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+				--special_mode=20 --output_name=%(JOB)s.root &> jobs/Special_20_%(JOB)s.log" jobs/Special_20_%(JOB)s.sh' % vars())
+				os.system('%(JOBSUBMIT)s jobs/Special_20_%(JOB)s.sh' % vars())
 
-			JOB='Data_%s_%s' % (ch,YR)
-			os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_21_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
-			--special_mode=21 --output_name=%(JOB)s.root &> jobs/Special_21_%(JOB)s.log" jobs/Special_21_%(JOB)s.sh' % vars())
-			os.system('%(JOBSUBMIT)s jobs/Special_21_%(JOB)s.sh' % vars())
+				JOB='Data_%s_%s' % (ch,YR)
+				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_21_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+				--special_mode=21 --output_name=%(JOB)s.root &> jobs/Special_21_%(JOB)s.log" jobs/Special_21_%(JOB)s.sh' % vars())
+				os.system('%(JOBSUBMIT)s jobs/Special_21_%(JOB)s.sh' % vars())
 
-			JOB='Data_%s_%s' % (ch,YR)
-			os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_22_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
-			--special_mode=22 --output_name=%(JOB)s.root &> jobs/Special_22_%(JOB)s.log" jobs/Special_22_%(JOB)s.sh' % vars())
-			os.system('%(JOBSUBMIT)s jobs/Special_22_%(JOB)s.sh' % vars())
+				JOB='Data_%s_%s' % (ch,YR)
+				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_22_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+				--special_mode=22 --output_name=%(JOB)s.root &> jobs/Special_22_%(JOB)s.log" jobs/Special_22_%(JOB)s.sh' % vars())
+				os.system('%(JOBSUBMIT)s jobs/Special_22_%(JOB)s.sh' % vars())
 
-			JOB='Data_%s_%s' % (ch,YR)
-			os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_25_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
-			--special_mode=23 --output_name=%(JOB)s.root &> jobs/Special_23_%(JOB)s.log" jobs/Special_23_%(JOB)s.sh' % vars())
-			os.system('%(JOBSUBMIT)s jobs/Special_23_%(JOB)s.sh' % vars())
+				JOB='Data_%s_%s' % (ch,YR)
+				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_25_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+				--special_mode=23 --output_name=%(JOB)s.root &> jobs/Special_23_%(JOB)s.log" jobs/Special_23_%(JOB)s.sh' % vars())
+				os.system('%(JOBSUBMIT)s jobs/Special_23_%(JOB)s.sh' % vars())
 
-			JOB='Data_%s_%s' % (ch,YR)
-			os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_25_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
-			--special_mode=24 --output_name=%(JOB)s.root &> jobs/Special_24_%(JOB)s.log" jobs/Special_24_%(JOB)s.sh' % vars())
-			os.system('%(JOBSUBMIT)s jobs/Special_24_%(JOB)s.sh' % vars())
+				JOB='Data_%s_%s' % (ch,YR)
+				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_25_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+				--special_mode=24 --output_name=%(JOB)s.root &> jobs/Special_24_%(JOB)s.log" jobs/Special_24_%(JOB)s.sh' % vars())
+				os.system('%(JOBSUBMIT)s jobs/Special_24_%(JOB)s.sh' % vars())
 
 			if '0' in scales:
 				JOB='Embedded_%s_%s' % (ch,YR)
@@ -298,7 +301,6 @@ if options.mc:
 					soups = ['', 'Soup']
 					if options.do_2011: soups.remove('Soup')
 					for sp in soups:	
-
 						if options.do_2011:
 							JOB='DYJetsToTauTau%s_%s_%s' % (sp,ch,YR)
 							os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToTauTau%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
@@ -310,31 +312,33 @@ if options.mc:
 								' --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
 							os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
-						JOB='DYJetsToLL%s_%s_%s' % (sp,ch,YR)
-						os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
-							' --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
-						os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+						if sc in ['0']:
+							JOB='DYJetsToLL%s_%s_%s' % (sp,ch,YR)
+							os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
+								' --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+							os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
-						JOB='DYJetsToLL-L%s_%s_%s' % (sp,ch,YR)
-						os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
-							' --svfit_override=DYJetsToLL_%(ch)s_%(YR)s.root --faked_tau_selector=1 --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
-						os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+							JOB='DYJetsToLL-L%s_%s_%s' % (sp,ch,YR)
+							os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
+								' --svfit_override=DYJetsToLL%(sp)s_%(ch)s_%(YR)s.root --faked_tau_selector=1 --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+							os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
-						JOB='DYJetsToLL-J%s_%s_%s' % (sp,ch,YR)
-						os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
-							' --svfit_override=DYJetsToLL_%(ch)s_%(YR)s.root --faked_tau_selector=2 --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
-						os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+							JOB='DYJetsToLL-J%s_%s_%s' % (sp,ch,YR)
+							os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
+								' --svfit_override=DYJetsToLL%(sp)s_%(ch)s_%(YR)s.root --faked_tau_selector=2 --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+							os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
-					# Special Mode 18 DYJetsToLL-L
-					JOB='DYJetsToLL-L_%s_%s' % (ch,YR)
-					os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL_%(ch)s_skim.dat --channel=%(ch)s'
-						' --special_mode=18 --faked_tau_selector=1 --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/Special_18_%(JOB)s-%(sc)s.log" jobs/Special_18_%(JOB)s-%(sc)s.sh' % vars())
-					os.system('%(JOBSUBMIT)s jobs/Special_18_%(JOB)s-%(sc)s.sh' % vars())
+					if sc in ['0']:
+						# Special Mode 18 DYJetsToLL-L
+						JOB='DYJetsToLL-L_%s_%s' % (ch,YR)
+						os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL_%(ch)s_skim.dat --channel=%(ch)s'
+							' --special_mode=18 --faked_tau_selector=1 --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/Special_18_%(JOB)s-%(sc)s.log" jobs/Special_18_%(JOB)s-%(sc)s.sh' % vars())
+						os.system('%(JOBSUBMIT)s jobs/Special_18_%(JOB)s-%(sc)s.sh' % vars())
 
-				if ch in ['em']:
+				if ch in ['em'] and sc in ['0']:
 					for sp in ['', 'Soup']:	
 						JOB='DYJetsToTauTau%s_%s_%s' % (sp,ch,YR)
-						os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
+						os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=0 --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
 							' --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
 						os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 

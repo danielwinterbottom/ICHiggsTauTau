@@ -8,6 +8,8 @@ cd $1
 
 cp -v *Data* TSCALE_UP/
 cp -v *Data* TSCALE_DOWN/
+cp -v *DYJetsToLL* TSCALE_UP/
+cp -v *DYJetsToLL* TSCALE_DOWN/
 
 PATHS=(
 'TTJets'

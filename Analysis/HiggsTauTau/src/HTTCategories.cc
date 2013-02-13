@@ -56,6 +56,8 @@ namespace ic {
 
     InitCategory("vbf");
 
+    InitCategory("vbf_tight");
+
     InitCategory("vbf_no_cjv");
 
     InitCategory("vbf_loose");
@@ -254,6 +256,14 @@ namespace ic {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
         SetPassCategory("vbf");
         FillCoreControlPlots("vbf");
+      }
+    }
+
+    // VBF Selection
+    // In the em channel, additionally apply b-jet veto
+    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 800. && jdeta_ > 4.0) {
+      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
+        SetPassCategory("vbf_tight");
       }
     }
 
@@ -476,7 +486,7 @@ namespace ic {
     print_cats.push_back("inclusive");
     print_cats.push_back("vbf_loose");
     print_cats.push_back("vbf");
-    print_cats.push_back("vbf_test");
+    print_cats.push_back("vbf_tight");
     print_cats.push_back("1jet_high");
     print_cats.push_back("1jet_low");
     print_cats.push_back("0jet_high");
