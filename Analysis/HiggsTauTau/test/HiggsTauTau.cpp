@@ -322,7 +322,7 @@ int main(int argc, char* argv[]){
   // Lower pt thresholds on electrons and taus when skimming, 
   // to allow for energy scale shifts later
   if (do_skim) {
-    tau_pt = 19.0;
+    tau_pt = 18.0;
    if (channel == channel::em) elec_pt = 9.5;
   }
 
@@ -845,11 +845,11 @@ int main(int argc, char* argv[]){
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
-  if (tau_scale_mode > 0 && channel != channel::em && !moriond_tau_scale)
+  if (tau_scale_mode > 0 && channel != channel::em && !moriond_tau_scale && !do_skim)
                                   analysis.AddModule(&tauEnergyShifter);
   if (tau_scale_mode > 0 && channel == channel::em)         
                                   analysis.AddModule(&electronEnergyShifter);
-  if (moriond_tau_scale && channel != channel::em && (!is_data || is_embedded))          
+  if (moriond_tau_scale && channel != channel::em && (!is_data || is_embedded) && !do_skim)          
                                   analysis.AddModule(&httEnergyScale);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
 
