@@ -54,6 +54,9 @@ int main(int argc, char* argv[]){
   uint64_t objects_hash = 0;
   unsigned mode = 0;
   double svfit_mass;
+  ic::Candidate *svfit_vector = NULL;
+
+  TH1::AddDirectory(kFALSE);
 
   itree->SetBranchAddress("event_hash", &event_hash);
   itree->SetBranchAddress("objects_hash", &objects_hash);
@@ -67,17 +70,22 @@ int main(int argc, char* argv[]){
   otree->Branch("event_hash", &event_hash, "event_hash/l");
   otree->Branch("objects_hash", &objects_hash, "objects_hash/l");
   otree->Branch("svfit_mass", &svfit_mass);
-
+  otree->Branch("svfit_vector", &svfit_vector);
 
   ic::SVFitService svfit_service;
 
   for (unsigned i = 0; i < itree->GetEntries(); ++i) {
     itree->GetEntry(i);
+    std::pair<ic::Candidate, double> result;
     if (mode == 0) {
-      svfit_mass = svfit_service.SVFitMassLepHad(c1, c2, met);
+      result = svfit_service.SVFitCandidateLepHad(c1, c2, met);
     } else {
-      svfit_mass = svfit_service.SVFitMassLepLep(c1, c2, met);
+      result = svfit_service.SVFitCandidateLepLep(c1, c2, met);
     }
+    svfit_mass = result.second;
+    svfit_vector = &(result.first);
+    svfit_vector->set_id(objects_hash);
+    std::cout << "Mass: " << svfit_mass << "\tVector Mass: " << svfit_vector->M() << "\tVector pT: " << svfit_vector->pt() << std::endl;
     otree->Fill();
   }
 

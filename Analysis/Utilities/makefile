@@ -66,7 +66,7 @@ $(EXEDIR)/%: $(TESTDIR)/%.cpp $(LIBDIR)/lib$(LIBNAME).so $(BASEDIR)/interface/*.
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LIBS) -L$(LIBDIR) -l$(LIBNAME)
 
 $(OBJDIR)/%.$(OBJ_EXT): $(SRCDIR)/%.cc $(BASEDIR)/interface/%.h
-	$(CXX) $(CXXFLAGS) -fPIC -c $<  -o $@
+	$(CXX) $(CXXFLAGS) -fPIC -D__$(CMSSW_VERSION)__ -c $<  -o $@
 
 $(LIBDIR)/lib$(LIBNAME).so: $(OBJS) $(LIBDEPENDS)
 	$(LD) $(LDFLAGS) -o $(LIBDIR)/lib$(LIBNAME).so  $(OBJS) $(LIBS)
