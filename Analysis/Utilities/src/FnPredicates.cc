@@ -481,6 +481,11 @@ namespace ic {
     return false;
   }
 
+  bool PairDPhiLessThan(CompositeCandidate const* cand, double const& max){
+    if (ROOT::Math::VectorUtil::DeltaPhi(cand->At(0)->vector(),cand->At(1)->vector()) < max) return true;
+    return false;
+  }
+
   bool PairOppCharge(CompositeCandidate const& cand) {
     int charge = (cand.At(0)->charge() * cand.At(1)->charge());
     return (charge == -1);
