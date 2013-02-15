@@ -28,18 +28,22 @@ namespace ic {
   }
 
   int HinvDataTriggerFilter::Execute(TreeEvent *event) {
-    TriggerPathPtrVec const& triggerPathPtrVec = 
-    event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
-    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    unsigned run = eventInfo->run();
-    bool path_found = false;
-    bool mu_low_found = false;
 
-    for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
-      std::string name = triggerPathPtrVec[i]->name();
-      triggerPathPtrVec[i]->prescale();
-      if (name.find("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v") != name.npos) path_found = true; 
-      /*
+    bool path_found = false;
+
+    //dirty fix for data
+    if (!do_obj_match_) {
+
+      TriggerPathPtrVec const& triggerPathPtrVec = 
+	event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
+      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+      unsigned run = eventInfo->run();
+ 
+      for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
+	std::string name = triggerPathPtrVec[i]->name();
+	triggerPathPtrVec[i]->prescale();
+	if (name.find("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v") != name.npos) path_found = true; 
+	/*
       In preparation for Z->ee, Z->mm:
       if (channel == EE) {
         //2011 Triggers
@@ -58,9 +62,11 @@ namespace ic {
         if (run >= 190456 && run <= ??? && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
       }
       */
+      }
     }
+    //for MC
+    else {
 
-    if (do_obj_match_ && path_found) {
       std::string trig_obj_label;
 
       trig_obj_label = "triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets";
@@ -68,7 +74,8 @@ namespace ic {
       //jet_filter = "";  
       //std::vector<Electron *> & elmus = event->GetPtrVec<Electron>(lep1label_);
       //std::vector<Tau *> & taus = event->GetPtrVec<Tau>(lep2label_);
-      //std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
+      if (objs.size() > 0) path_found=true;
       //ic::erase_if(elmus, !boost::bind(IsFilterMatched, _1, objs, elmu_filter, 0.5));
       //ic::erase_if(taus, !boost::bind(IsFilterMatched, _1, objs, tau_filter, 0.5));
     } // do obj match
