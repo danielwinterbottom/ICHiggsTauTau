@@ -179,10 +179,8 @@ process.kt6PFJetsForLeptons.Rho_EtaMax = cms.double(2.5)
 ################################################################
 ### PAT Selections
 ################################################################
-# process.selectedPatJets.cut = 'pt > 15. & abs(eta) < 100.'
 process.selectedPatTaus.cut = 'pt > 18. & abs(eta) < 2.6 & tauID("decayModeFinding") > 0.5'
 process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
-#process.selectedPatJetsAK5JPT.cut = 'pt > 15. & abs(eta) < 100.'
 
 
 ################################################################
@@ -289,7 +287,7 @@ process.mvaMetPairsMT = mvaMetPairs.clone(
 process.mvaMetPairsET = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('gsfElectrons'),
   srcLeg2 = cms.InputTag('selectedPatTaus'),
-  leg1Pt = cms.double(18.0),
+  leg1Pt = cms.double(10.0),
   leg1Eta = cms.double(2.6),
   leg2Pt = cms.double(18.0),
   leg2Eta = cms.double(2.6),
@@ -356,33 +354,6 @@ process.patPFMetByMVA = process.patMETs.clone(
     addGenMET = cms.bool(False)
 )
 
-
-# ################################################################
-# ### Produce PFMET significance cov. matrix
-# ################################################################
-# process.ak5PFJetsNotOverlappingWithLeptons = cms.EDFilter("PFJetAntiOverlapSelector",
-#   src = cms.InputTag('ak5PFJets'),
-#   srcNotToBeFiltered = cms.VInputTag('isomuons','isoelectrons','isotaus'),
-#   dRmin = cms.double(0.5),
-#   invert = cms.bool(False),
-#   filter = cms.bool(False)
-# )
-# from JetMETCorrections.Type1MET.pfMETCorrections_cff import pfCandsNotInJet
-# process.pfCandsNotInJetForPFMEtSignCovMatrix = pfCandsNotInJet.clone()
-# from RecoMET.METProducers.METSigParams_cfi import *
-# process.pfMEtSignCovMatrix = cms.EDProducer("PFMEtSignCovMatrixProducer",
-#   METSignificance_params,
-#   src = cms.VInputTag(
-#       'isoelectrons', 'isomuons', 'isotaus',
-#       'ak5PFJetsNotOverlappingWithLeptons',
-#       'pfCandsNotInJetForPFMEtSignCovMatrix'
-#   ),
-#   addJERcorr = cms.PSet(
-#       inputFileName = cms.FileInPath('PhysicsTools/PatUtils/data/pfJetResolutionMCtoDataCorrLUT.root'),
-#       lutName = cms.string('pfJetResolutionMCtoDataCorrLUT')
-#   )
-# )
-# process.prePatProductionSequence = cms.Sequence(process.ak5PFJetsNotOverlappingWithLeptons + process.pfCandsNotInJetForPFMEtSignCovMatrix + process.pfMEtSignCovMatrix)
 
 ################################################################
 ### MET Filters-curretly from Sasha's code
@@ -556,7 +527,7 @@ if not isData:
 ################################################################
 ### General Config
 ################################################################
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 50000
 process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger','HLTConfigData' )
 process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLTConfigData')
 
@@ -590,7 +561,7 @@ if (release == '53X'):
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 ################################################################
 ## Configure private modules
@@ -615,27 +586,10 @@ process.icMuonProducer = cms.EDProducer('ICMuonProducer',
     isPF = cms.bool(True)
 )
 
-process.icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
-    inputLabel = cms.InputTag("selectedPatJets"),
-    branchName = cms.untracked.string("caloJets"))
-
 process.icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     inputLabel = cms.InputTag("selectedPatJetsAK5PF"),
     branchName = cms.untracked.string("pfJetsPFlow"),
     StoreTrackIds = cms.bool(False)
-    )
-
-process.icJPTJetProducer = cms.EDProducer('ICJPTJetProducer',
-    inputLabel = cms.InputTag("selectedPatJetsAK5JPT"),
-    branchName = cms.untracked.string("jptJets"),
-    StoreTrackIds = cms.bool(False)
-    )
-
-process.icCaloMetProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patMETs"),
-    branchName = cms.untracked.string("caloMet"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
     )
 
 process.icPfMetProducer = cms.EDProducer('ICMetProducer',
@@ -644,8 +598,7 @@ process.icPfMetProducer = cms.EDProducer('ICMetProducer',
     addGen = cms.untracked.bool(True),
     InputSig = cms.untracked.string("")
     )
-if isData:
-  process.icPfMetProducer.addGen = cms.untracked.bool(False)
+if isData: process.icPfMetProducer.addGen = cms.untracked.bool(False)
 
 process.icPfMetType1Producer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patMETsPFType1"),
@@ -665,7 +618,6 @@ process.icPfAllPairsMVAMetProducer = cms.EDProducer('ICMetVectorProducer',
     mergeLabels = cms.untracked.vstring('mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM'),
     branchName = cms.untracked.string("pfMVAMetVector")
     )
-
 if isZStudy:
   process.icPfAllPairsMVAMetProducer.mergeLabels = cms.untracked.vstring(
         'mvaMetPairsMT','mvaMetPairsET','mvaMetPairsEM','mvaMetPairsMM','mvaMetPairsEE')
@@ -684,18 +636,6 @@ process.icVertexProducer = cms.EDProducer('ICVertexProducer',
     FirstVertexOnly = cms.bool(True)
     )
 
-process.icTrackProducer = cms.EDProducer('ICTrackProducer',
-    mergeLabels = cms.untracked.vstring(
-        'icVertexProducer','icTauProducer',
-        'icPFJetProducer'
-        )
-    )
-
-process.icSuperClusterProducer = cms.EDProducer('ICSuperClusterProducer',
-    branchName = cms.untracked.string("superClusters"),
-    minEnergy = cms.untracked.double(15.0)
-    )
-
 process.icGenJetProducer = cms.EDProducer('ICGenJetProducer',
     inputLabel = cms.InputTag("ak5GenJetsNoNuBSM"),
     branchName = cms.untracked.string("genJets"),
@@ -711,8 +651,6 @@ process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     inputLabel = cms.InputTag("genParticles","","SIM"),
     mergeLabels = cms.untracked.vstring(
         'icPFJetProducer',
-        #'icJPTJetProducer',
-        #'icGenJetProducer',
         'icElectronProducer',
         'icMuonProducer'
         ),
@@ -753,6 +691,7 @@ process.icEmbeddedGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
 process.icGenTauProductProducer = cms.EDProducer('ICGenTauProductProducer',
   inputLabel = cms.InputTag("genParticles","","SIM"),
   )
+
 process.icTauGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     branchName = cms.untracked.string("genParticlesTaus"),
     inputLabel = cms.InputTag("genParticles","","SIM"),
@@ -802,16 +741,12 @@ process.icSequence = cms.Sequence(
   +process.icPfMetProducer
   +process.icPfMVAMetProducer
   +process.icPfAllPairsMVAMetProducer
+  +process.patMETsPFType1
+  +process.icPfMetType1Producer
   +process.icTauProducer
   +process.icVertexProducer
   +process.icEventInfoProducer
   )
-
-### Add extra sequences for Hinv
-process.icSequence += (
-  process.patMETsPFType1
-  +process.icPfMetType1Producer
-)
 
 process.icDataSequence = cms.Sequence(
   process.icTriggerPathProducer
@@ -832,6 +767,7 @@ process.icEmbeddedSequence = cms.Sequence(
   )
 if isEmbedded: process.icSequence += process.icEmbeddedSequence
 
+process.icSequence += process.icSoftLeptonSequence
 
 process.icTriggerSequence = cms.Sequence()
 notTp = not isTandP
@@ -1110,8 +1046,6 @@ if (release == '53X' and isData and isTandP):
       hltPath = cms.untracked.string("HLT_Ele20_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_SC4_Mass50_v"),
       StoreOnlyIfFired = cms.untracked.bool(True)
       )
-
-
   process.icTriggerSequence += (
     process.icIsoMu24ObjectProducer
     +process.icMu17TkMu8ObjectProducer
@@ -1119,14 +1053,6 @@ if (release == '53X' and isData and isTandP):
     +process.icEle17Ele8Mass50ObjectProducer
     +process.icEle20SC4Mass50ObjectProducer
     )
-
-################################################################
-## Define 2011 mm,ee physics triggers for data
-################################################################
-
-################################################################
-## Define 2011 mm,ee physics triggers for mc
-################################################################
 
 ################################################################
 ## Define 2012 mm,ee physics triggers for data
@@ -1194,7 +1120,7 @@ if (release == '53X' and (not isData)):
       branchName = cms.untracked.string("triggerObjectsL1ETM40"), 
       hltPath = cms.untracked.string("HLT_L1ETM40"), 
       StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
+      )
   process.icTriggerSequence += ( 
     process.icDiPFJet40PFMETnoMu65MJJ600VBFLeadingJetsObjectProducer 
     +process.icDiPFJet40PFMETnoMu65MJJ800VBFAllJetsObjectProducer 
@@ -1203,7 +1129,6 @@ if (release == '53X' and (not isData)):
     +process.icL1ETM40ObjectProducer 
     )
 
-process.icSequence += process.icSoftLeptonSequence
 process.icSequence += process.icTriggerSequence
  
 process.icEventProducer = cms.EDProducer('ICEventProducer')
@@ -1235,7 +1160,6 @@ process.p = cms.Path(
   +process.patDefaultSequence
   +process.puJetMva
   +process.pfMEtMVAsequence
-  # +process.prePatProductionSequence
   +process.patPFMetByMVA
   +process.icSequence
   )
