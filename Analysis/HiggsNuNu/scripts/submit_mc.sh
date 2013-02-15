@@ -99,6 +99,26 @@ for FILELIST in `ls filelists/Dec2_MC_*`
 
 done
 
+#QCD from Patrick
+PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Feb7/BKG/
+
+for FILELIST in `ls filelists/QCD*`
+  do
+  echo "Processing files in "$FILELIST
+
+  echo $FILELIST > tmp.txt
+  sed "s/filelists\///" tmp.txt > tmp2.txt
+
+  JOB=MC_`sed "s/\.dat//" tmp2.txt`
+
+  rm tmp.txt tmp2.txt
+
+  echo "JOB name = $JOB"
+
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
+
+done
 
 
 
