@@ -1,5 +1,9 @@
 /*! \mainpage
 
+This page documents the ICHiggsTauTau package, specificially the CMSSW-facing parts that's
+responsible for ntuple production. The main components are object definitions, consisting of
+one C++ class for each physics object and then a corresponding CMSSW producer module. 
+
 
 Objects
 =========================
@@ -16,15 +20,17 @@ CMSSW Producer: ICElectronProducer
 The ic::Electron class can be used with either particle-flow or gsf electrons.  
 The producer is configured like this:
 
-		process.icElectronProducer = cms.EDProducer('ICElectronProducer',
-		    input = cms.InputTag("gsfElectrons"),
-		    branchName = cms.string("electrons"),
-		    minPt = cms.double(9.5),
-		    maxEta = cms.double(2.6),
-		    vertexCollection = cms.InputTag("goodOfflinePrimaryVertices"),
-		    pfIsoPostfix = cms.string("PFIso"),
-		    isPF = cms.bool(False)
-		)
+~~~~~~~~~~~~~{.py}
+process.icElectronProducer = cms.EDProducer('ICElectronProducer',
+    input = cms.InputTag("gsfElectrons"),
+    branchName = cms.string("electrons"),
+    minPt = cms.double(9.5),
+    maxEta = cms.double(2.6),
+    vertexCollection = cms.InputTag("goodOfflinePrimaryVertices"),
+    pfIsoPostfix = cms.string("PFIso"),
+    isPF = cms.bool(False)
+)
+~~~~~~~~~~~~~
 
 The `vertexCollection` is used to to calculate impact parameters of the electron 
 track with respect to the first vertex in the given collection.  In this example
@@ -47,6 +53,7 @@ CMSSW Producer: ICMuonProducer
 The ic::Muon class can be used with either particle-flow or standard reco muons.  
 The producer is configured like this:
 
+~~~~~~~~~~~~~{.py}
 		process.icMuonProducer = cms.EDProducer('ICMuonProducer',
 		    input = cms.InputTag("pfAllMuons"),
 		    branchName = cms.string("electrons"),
@@ -56,6 +63,7 @@ The producer is configured like this:
 		    pfIsoPostfix = cms.string("PFIso"),
 		    isPF = cms.bool(True)
 		)
+~~~~~~~~~~~~~
 
 The `vertexCollection` is used to to calculate impact parameters of the muon 
 track with respect to the first vertex in the given collection.  In this example
