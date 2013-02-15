@@ -556,7 +556,7 @@ if not isData:
 ################################################################
 ### General Config
 ################################################################
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger','HLTConfigData' )
 process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLTConfigData')
 
@@ -590,7 +590,7 @@ if (release == '53X'):
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 ################################################################
 ## Configure private modules
@@ -778,8 +778,13 @@ process.icPileupInfoProducer = cms.EDProducer('ICPileupInfoProducer')
 process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
     jetsRhoLabel = cms.string("kt6PFJets"),
     leptonRhoLabel = cms.string("kt6PFJetsForLeptons"),
-    vertexLabel = cms.string('goodOfflinePrimaryVertices'),
-    filters = cms.PSet(
+    vertexLabel = cms.string('goodOfflinePrimaryVertices')
+    )
+
+process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer')
+
+if isData and release == '53X':
+  process.icEventInfoProducer.filters = cms.PSet(
       HBHENoiseFilter                     = cms.InputTag("HBHENoiseFilterResultProducer","HBHENoiseFilterResult"),
       EcalDeadCellTriggerPrimitiveFilter  = cms.InputTag("EcalDeadCellTriggerPrimitiveFilter"),
       eeBadScFilter                       = cms.InputTag("eeBadScFilter"),
@@ -788,9 +793,7 @@ process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
       toomanystripclus53X                 = cms.InputTag("!toomanystripclus53X"),
       logErrorTooManyClusters             = cms.InputTag("!logErrorTooManyClusters"),
       )
-    )
-
-process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer')
+  process.icSequence += process.filterSequence
 
 process.icSequence = cms.Sequence(
   process.icElectronProducer
@@ -799,7 +802,6 @@ process.icSequence = cms.Sequence(
   +process.icPfMetProducer
   +process.icPfMVAMetProducer
   +process.icPfAllPairsMVAMetProducer
- +process.filterSequence
   +process.icTauProducer
   +process.icVertexProducer
   +process.icEventInfoProducer
