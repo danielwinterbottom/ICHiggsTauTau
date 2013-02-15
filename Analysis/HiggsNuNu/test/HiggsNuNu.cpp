@@ -191,7 +191,8 @@ int main(int argc, char* argv[]){
     .set_print_weights(false);
 
   HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
-  dataMCTriggerPathFilter.set_do_obj_match(false);
+  if (is_data) dataMCTriggerPathFilter.set_do_obj_match(false);
+  else dataMCTriggerPathFilter.set_do_obj_match(true);
   
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
   ("JetEnergyCorrections")
@@ -295,6 +296,15 @@ int main(int argc, char* argv[]){
     .set_max(999);    
 
  
+  SimpleFilter<CompositeCandidate> dphiJetPairFilter = SimpleFilter<CompositeCandidate>("DphiJetPairFilter")
+    .set_input_label("jjCandidates")
+    .set_predicate( bind(PairDPhiLessThan, _1,1.0) )
+    .set_min(1)
+    .set_max(999);    
+
+ 
+
+
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
@@ -318,13 +328,9 @@ int main(int argc, char* argv[]){
 
   if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
     hinvWeights.set_do_w_soup(true);
-    if (mc == mc::fall11_42X) {
-      hinvWeights.SetWTargetFractions(0.752332, 0.171539, 0.0538005, 0.0159036, 0.00642444);
-      hinvWeights.SetWInputYields(81295381.0, 70712575.0, 25320546.0, 7541595.0, 12973738.0);
-    }
     if (mc == mc::summer12_53X) {
       hinvWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
-      hinvWeights.SetWInputYields(76102995.0, 23101598.0, 33884921.0, 15539503.0, 13382803.0);
+      hinvWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
     }
   }
   if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {
@@ -372,6 +378,12 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjCandidates")
     .set_sel_label("LeptonVeto");
 
+  HinvControlPlots controlPlots_dphi = HinvControlPlots("DPhi")
+    .set_fs(fs)
+    .set_met_label("pfMet")
+    .set_dijet_label("jjCandidates")
+    .set_sel_label("DPhi");
+
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
@@ -379,7 +391,7 @@ int main(int argc, char* argv[]){
    if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
    if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
    
-   if (is_data  && !do_skim) {
+   if (!do_skim) {
      analysis.AddModule(&dataMCTriggerPathFilter);
      ////analysis.AddModule(&runStats);
    }
@@ -410,6 +422,11 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&vetoMuonFilter);
 
      analysis.AddModule(&controlPlots_lepveto);
+
+     //dphi cut
+     analysis.AddModule(&dphiJetPairFilter);
+     analysis.AddModule(&controlPlots_dphi);
+
 
    }
 
