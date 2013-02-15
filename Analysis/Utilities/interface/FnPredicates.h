@@ -130,6 +130,7 @@ namespace ic {
   bool PairMassInRange(CompositeCandidate const* cand, double const& mLow, double const& mHigh);
   bool PairEtaProdLessThan(CompositeCandidate const* cand, double const& max);
   bool PairDEtaLessThan(CompositeCandidate const* cand, double const& max);
+  bool PairDPhiLessThan(CompositeCandidate const* cand, double const& max);
 
   bool PairOneWithPt(CompositeCandidate const* cand, double const& ptMin);
 
@@ -156,6 +157,12 @@ namespace ic {
   template<class T, class U>
   bool DEtaLessThan(std::pair<T,U> const& p, double const& max) {
     if (fabs(p.first->eta() - p.second->eta()) < max) return true;
+    return false;
+  }
+
+  template<class T, class U>
+  bool DPhiLessThan(std::pair<T,U> const& p, double const& max) {
+    if (ROOT::Math::VectorUtil::DeltaPhi(p.first->vector(), p.second->vector()) < max) return true;
     return false;
   }
 
