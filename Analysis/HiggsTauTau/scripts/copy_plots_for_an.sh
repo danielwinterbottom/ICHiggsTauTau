@@ -35,10 +35,10 @@ do
     cp -v jpt_2_twojet_mt_sm_$i.$j output/an_plots/jpt_2_muTau_$i.$j
     cp -v m_2_inclusive_et_sm_$i.$j output/an_plots/m_2_eTau_$i.$j
     cp -v m_2_inclusive_mt_sm_$i.$j output/an_plots/m_2_muTau_$i.$j
-    cp -v m_sv_sm_fine_inclusive_et_sm_$i.$j output/an_plots/mvis_eTau_$i.$j
-    cp -v m_sv_sm_fine_inclusive_mt_sm_$i.$j output/an_plots/mvis_muTau_$i.$j
-    cp -v m_vis_sm_fine_inclusive_et_sm_$i.$j output/an_plots/m_sv_eTau_$i.$j
-    cp -v m_vis_sm_fine_inclusive_mt_sm_$i.$j output/an_plots/m_sv_muTau_$i.$j
+    cp -v m_sv_sm_fine_inclusive_et_sm_$i.$j output/an_plots/m_sv_eTau_$i.$j
+    cp -v m_sv_sm_fine_inclusive_mt_sm_$i.$j output/an_plots/m_sv_muTau_$i.$j
+    cp -v m_vis_sm_fine_inclusive_et_sm_$i.$j output/an_plots/mvis_eTau_$i.$j
+    cp -v m_vis_sm_fine_inclusive_mt_sm_$i.$j output/an_plots/mvis_muTau_$i.$j
     cp -v met_inclusive_et_sm_$i.$j output/an_plots/mvamet_eTau_$i.$j
     cp -v met_inclusive_mt_sm_$i.$j output/an_plots/mvamet_muTau_$i.$j
     cp -v mjj_twojet_et_sm_$i.$j output/an_plots/mjj_eTau_$i.$j

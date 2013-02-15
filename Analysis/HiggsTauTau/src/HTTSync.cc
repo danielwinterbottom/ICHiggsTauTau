@@ -127,6 +127,8 @@ lOTree->Branch("jphi_1"     ,&lJPhi1         ,"lJPhi1/F"    );//Jet Phi
 lOTree->Branch("jptraw_1"   ,&lJPtRaw1       ,"lJPtRaw1/F"  );//Jet Raw Pt (before corrections)
 lOTree->Branch("jptunc_1"   ,&lJPtUnc1       ,"lJPtUnc1/F"  );//Jet Unc (relative to Jet corrected pT)
 lOTree->Branch("jmva_1"     ,&lJMVA1         ,"lJMVA1/F"    );//Jet MVA id value
+lOTree->Branch("jlrm_1"     ,&lLRM1          ,"lLRM1/F"    );//Jet MVA id value
+lOTree->Branch("jctm_1"     ,&lCTM1          ,"lCTM1/I"    );//Jet MVA id value
 lOTree->Branch("jpass_1"    ,&lJPass1        ,"lJPass1/B"   );//Whether Jet pass PU Id Loose WP
 
     //Second Jet  : 2nd leading jet (in pt) afer applying Jet energy corrections (excluding Tau)
@@ -136,6 +138,8 @@ lOTree->Branch("jphi_2"     ,&lJPhi2         ,"lJPhi2/F"    );//Jet Phi
 lOTree->Branch("jptraw_2"   ,&lJPtRaw2       ,"lJPtRaw2/F"  );//Jet Raw Pt (before corrections)
 lOTree->Branch("jptunc_2"   ,&lJPtUnc2       ,"lJPtUnc2/F"  );//Jet Unc (relative to Jet corrected pT)
 lOTree->Branch("jmva_2"     ,&lJMVA2         ,"lJMVA2/F"    );//Jet MVA id value
+lOTree->Branch("jlrm_2"     ,&lLRM2          ,"lLRM2/F"    );//Jet MVA id value
+lOTree->Branch("jctm_2"     ,&lCTM2          ,"lCTM2/I"    );//Jet MVA id value
 lOTree->Branch("jpass_2"    ,&lJPass2        ,"lJPass2/B"   );//Whether jet passes PU Id Loose WP 
 
     //B Tagged Jet : leading btagged jet (in pt) passing btag wp (pt > 20 + cvs medium)
@@ -361,6 +365,8 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lJPtUnc1 = 0.0;
       lJMVA1 = jets[0]->pu_id_mva_value();
       lJPass1 = jets[0]->pu_id_mva_loose();
+      lLRM1 = jets[0]->linear_radial_moment();
+      lCTM1 = jets[0]->charged_multiplicity_nopu();
     } else {
       lJPt1 = -9999;
       lJEta1 = -9999;
@@ -369,6 +375,8 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lJPtUnc1 = -9999;
       lJMVA1 = -9999;
       lJPass1 = false;
+      lLRM1 = -9999;
+      lCTM1 = -9999;
     }
 
     //Second Jet  : 2nd leading jet (in pt) afer applying Jet energy corrections (excluding Tau)
@@ -380,6 +388,8 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lJPtUnc2 = 0.0;
       lJMVA2 = jets[1]->pu_id_mva_value();
       lJPass2 = jets[1]->pu_id_mva_loose();
+      lLRM2 = jets[1]->linear_radial_moment();
+      lCTM2 = jets[1]->charged_multiplicity_nopu();
     } else {
       lJPt2 = -9999;
       lJEta2 = -9999;
@@ -388,6 +398,8 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lJPtUnc2 = -9999;
       lJMVA2 = -9999;
       lJPass2 = false;
+      lLRM2 = -9999;
+      lCTM2 = -9999;
     }
     
     std::vector<PFJet *> btag_jets = jets;

@@ -108,6 +108,8 @@ class HTTSync : public ModuleBase {
   float lJPtRaw1;
   float lJPtUnc1;
   float lJMVA1;
+  float lLRM1;
+  int lCTM1;
   bool  lJPass1;
 
   //Second Jet  : 2nd leading jet (in pt) afer applying Jet energy corrections (excluding Tau)
@@ -117,6 +119,8 @@ class HTTSync : public ModuleBase {
   float lJPtRaw2;
   float lJPtUnc2;
   float lJMVA2;
+  float lLRM2;
+  int lCTM2;
   bool  lJPass2;
   
   //B Tagged Jet : leading btagged jet (in pt) passing btag wp (pt > 20 + cvs medium)

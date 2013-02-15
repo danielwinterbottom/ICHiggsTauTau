@@ -75,33 +75,33 @@ SCALE_MT_MT="--shift_backgrounds=true --draw_band_on_stack=true --band_size_frac
 #### SVFit Mass
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=1 \
   --method=8 --category="inclusive" --plot_name="m_sv_sm_fine" \
-  --x_axis_label="m_{#tau#tau} [GeV]" --norm_bins=true \
+  --x_axis_label="M_{#tau#tau} [GeV]" --norm_bins=true \
   --paramfile=$PARAMS $SCALE_ET_INC
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=1 \
   --method=8 --category="inclusive" --plot_name="m_sv_sm_fine" \
-  --x_axis_label="m_{#tau#tau} [GeV]" --norm_bins=true \
+  --x_axis_label="M_{#tau#tau} [GeV]" --norm_bins=true \
   --paramfile=$PARAMS $SCALE_MT_INC
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=em --rebin=1 \
   --method=8 --category="inclusive" --plot_name="m_sv_sm_fine"  \
-  --x_axis_label="m_{#tau#tau} [GeV]" --norm_bins=true \
+  --x_axis_label="M_{#tau#tau} [GeV]" --norm_bins=true \
   --paramfile=$PARAMS
 
 #### Visible Mass
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=1 \
   --method=8 --category="inclusive" --plot_name="m_vis_sm_fine"  \
-  --x_axis_label="m_{#tau#tau} [GeV]" --norm_bins=true \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
   --paramfile=$PARAMS $SCALE_ET_INC
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=1 \
   --method=8 --category="inclusive" --plot_name="m_vis_sm_fine"  \
-  --x_axis_label="m_{#tau#tau} [GeV]" --norm_bins=true \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
   --paramfile=$PARAMS $SCALE_MT_INC
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=em --rebin=1 \
   --method=8 --category="inclusive" --plot_name="m_vis_sm_fine" \
-  --x_axis_label="m_{#tau#tau} [GeV]" --norm_bins=true \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
   --paramfile=$PARAMS
 
 #### MET
