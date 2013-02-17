@@ -29,19 +29,19 @@ USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau -lTauAnaly
 USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lFWCoreFWLite -lPhysicsToolsFWLite -lCommonToolsUtils
 
 #CXXFLAGS = -Wall -W -Wno-unused-function -Wno-parentheses -Wno-char-subscripts -Wno-unused-parameter -O2 
-CXXFLAGS = -Wall -W -O2 
+CXXFLAGS = -Wall -W -O2 -std=c++0x
 LDFLAGS = -shared -Wall -W 
 
 # If possible we'll use the clang compiler, it's faster and gives more helpful error messages
 # If it's not available, then fallback to gcc.
-CXX=clang++
-LD=clang++
-CLANGPATH := $(shell type -p clang++)
-ifeq ($(CLANGPATH),)
-$(warning clang++ not found, reverting to g++!)
 CXX=g++
 LD=g++
-endif
+# CLANGPATH := $(shell type -p clang++)
+# ifeq ($(CLANGPATH),)
+# $(warning clang++ not found, reverting to g++!)
+# CXX=g++
+# LD=g++
+# endif
 
 CXXFLAGS += $(USERINCLUDES)
 LIBS += $(USERLIBS)
