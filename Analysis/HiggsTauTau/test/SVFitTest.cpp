@@ -50,8 +50,8 @@ int main(int argc, char* argv[]){
   ic::Candidate *c1 = NULL;
   ic::Candidate *c2 = NULL;
   ic::Met *met = NULL;
-  uint64_t event_hash = 0;
-  uint64_t objects_hash = 0;
+  ULong64_t event_hash = 0;
+  ULong64_t objects_hash = 0;
   unsigned mode = 0;
   double svfit_mass;
   ic::Candidate *svfit_vector = NULL;
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
     svfit_mass = result.second;
     svfit_vector = &(result.first);
     svfit_vector->set_id(objects_hash);
-    std::cout << "Mass: " << svfit_mass << "\tVector Mass: " << svfit_vector->M() << "\tVector pT: " << svfit_vector->pt() << std::endl;
+    //std::cout << "Mass: " << svfit_mass << "\tVector Mass: " << svfit_vector->M() << "\tVector pT: " << svfit_vector->pt() << std::endl;
     otree->Fill();
   }
 

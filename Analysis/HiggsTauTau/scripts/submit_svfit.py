@@ -37,8 +37,8 @@ parser.add_option("--verify", dest="verify", action='store_true', default=False,
 if options.wrap: JOBWRAPPER=options.wrap
 if options.sub: 	JOBSUBMIT=options.sub
 
-ROOT.gSystem.Load("libFWCoreFWLite.dylib")
-ROOT.gSystem.Load("libUserCodeICHiggsTauTau.dylib")
+ROOT.gSystem.Load("libFWCoreFWLite")
+ROOT.gSystem.Load("libUserCodeICHiggsTauTau")
 ROOT.AutoLibraryLoader.enable()
 
 filesSeen = 0
@@ -59,14 +59,18 @@ for root, dirnames, filenames in os.walk(options.input):
         tin = fin.Get("svfit")
         fout =  ROOT.TFile(outfile)
         tout = fout.Get("svfit")
-        if tin.GetEntries() == tout.GetEntries():
-          print 'Both input and output trees have ' + str(tin.GetEntries()) + ' entries, passed verification'
-          submitTask = False
-          filesVerified += 1
+        if fout and tout:
+          if tin.GetEntries() == tout.GetEntries():
+            print 'Both input and output trees have ' + str(tin.GetEntries()) + ' entries, passed verification'
+            submitTask = False
+            filesVerified += 1
+          else:
+            print 'Failed verification, input and output trees with differet numbers of entries!'
+          fin.Close()
+          fout.Close()
         else:
-          print 'Failed verification, input and output trees with differet numbers of entries!'
-        fin.Close()
-        fout.Close()
+            print 'Failed verification, unable to open output file'
+            fin.Close()
       else:
         print 'Failed verification, output file not found!'
 
