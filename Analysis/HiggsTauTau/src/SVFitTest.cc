@@ -42,6 +42,7 @@ namespace ic {
   int SVFitTest::PreAnalysis() {
     std::cout << "***PreAnalysis Info for SVFitTest***" << std::endl;
     if (channel_ == channel::et) decay_mode_ = 0;
+    if (channel_ == channel::etmet) decay_mode_ = 0;
     if (channel_ == channel::mt) decay_mode_ = 0;
     if (channel_ == channel::mtmet) decay_mode_ = 0;
     if (channel_ == channel::em) decay_mode_ = 1;

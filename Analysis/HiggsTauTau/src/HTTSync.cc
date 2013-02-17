@@ -254,7 +254,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
 
     lMVis = dilepton.at(0)->M();
 
-    if (channel_ == channel::et) {
+    if (channel_ == channel::et || channel_ == channel::etmet) {
       if (event->Exists("svfitMass")) {
         lMSV = event->Get<double>("svfitMass");
       } else {
@@ -280,7 +280,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lPassIso2 = true;
       lMt2 = MT(htau, selectedMet);
 
-    } else if (channel_ == channel::mt) {
+    } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
       if (event->Exists("svfitMass")) {
         lMSV = event->Get<double>("svfitMass");
       } else {

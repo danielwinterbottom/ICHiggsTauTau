@@ -6,7 +6,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "boost/format.hpp"
-
+#include "TTreeCache.h"
 
 namespace ic {
 
@@ -113,12 +113,14 @@ namespace ic {
           outtree = tree_ptr->CloneTree(0);
           std::cout << "---->" << skim_path_+out_name << std::endl;
         }
-        //tree_ptr->SetCacheSize(10*1024*1024);
+        // tree_ptr->SetCacheSize(100000000);
+        // tree_ptr->SetCacheLearnEntries(1000);
+
         unsigned tree_events = tree_ptr->GetEntries();
         event_.SetTree(tree_ptr);
         DoEventSetup();
         for (unsigned evt = 0; evt < tree_events; ++evt) {
-          //tree_ptr->LoadTree(evt);
+          // tree_ptr->LoadTree(evt);
           event_.SetEvent(evt);
           EventInfo const* eventInfo = event_.GetPtr<EventInfo>("eventInfo");
 
@@ -155,7 +157,7 @@ namespace ic {
           }
           if (events_processed_ == events_to_process_) break;
         }
-        //tree_ptr->PrintCacheStats();
+        // tree_ptr->PrintCacheStats();
         file_ptr->Close();
         delete file_ptr;
         if (do_skim) {

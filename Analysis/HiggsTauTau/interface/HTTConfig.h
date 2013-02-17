@@ -151,7 +151,8 @@ struct channel_def {
 		em,
 		zee,
 		zmm,
-		mtmet
+		mtmet,
+		etmet
 	};
 };
 typedef safe_enum<channel_def> channel;
@@ -163,6 +164,7 @@ inline std::string Channel2String(channel const& in) {
 		(channel::em, "em")
 		(channel::zee, "zee")
 		(channel::zmm, "zmm")
+		(channel::etmet, "etmet")
 		(channel::mtmet, "mtmet");
 
 	if (conv.find(in) != conv.end()) {
@@ -179,6 +181,7 @@ inline channel String2Channel(std::string const& in) {
 	("em", channel::em)
 	("zee", channel::zee)
 	("zmm", channel::zmm)
+	("etmet", channel::etmet)
 	("mtmet", channel::mtmet);
 
 	if (conv.find(in) != conv.end()) {

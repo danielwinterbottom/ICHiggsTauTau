@@ -235,7 +235,7 @@ int main(int argc, char* argv[]){
 
   }
 
-  if (channel == channel::et) {
+  if (channel == channel::et || channel == channel::etmet) {
     lep1_label = "electrons";
     lep1sel_label = "selElectrons";
     lep2_label = "taus";
@@ -258,6 +258,8 @@ int main(int argc, char* argv[]){
     }
     tau_pt = 20.0;
     tau_eta = 2.3;
+    if (channel == channel::etmet) elec_pt = 13.0;
+
   }
 
   if (channel == channel::mt || channel == channel::mtmet) {
@@ -519,7 +521,7 @@ int main(int argc, char* argv[]){
                 && bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3
                 && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
                 && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2)
-    .set_min(0).set_max((channel == channel::et || channel == channel::em) ? 1 : 0);
+    .set_min(0).set_max((channel == channel::et || channel == channel::etmet || channel == channel::em) ? 1 : 0);
 
   // ------------------------------------------------------------------------------------
   // Muon Modules
@@ -642,15 +644,15 @@ int main(int argc, char* argv[]){
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
     .set_predicate(bind(&Tau::GetTauID, _1, "againstElectronLoose") > 0.5)
     .set_input_label("taus").set_min(1); 
-  if (channel == channel::et) tauElRejectFilter
+  if (channel == channel::et || channel == channel::etmet) tauElRejectFilter
     .set_predicate( bind(&Tau::GetTauID, _1, "againstElectronMVA") > 0.5);                        
-  if (channel == channel::et && !do_skim && special_mode != 18) tauElRejectFilter
+  if ( (channel == channel::et || channel == channel::etmet) && !do_skim && special_mode != 18) tauElRejectFilter
     .set_predicate( (bind(&Tau::GetTauID, _1, "againstElectronTightMVA2") > 0.5) && (bind(&Tau::GetTauID, _1, "againstElectronMVA") > 0.5) );                        
 
   SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
     .set_predicate(bind(&Tau::GetTauID, _1, "againstMuonTight") > 0.5)
     .set_input_label("taus").set_min(1);  
-  if (channel == channel::et) tauMuRejectFilter
+  if (channel == channel::et  || channel == channel::etmet) tauMuRejectFilter
     .set_predicate( bind(&Tau::GetTauID, _1, "againstMuonLoose") > 0.5);                        
 
   // ------------------------------------------------------------------------------------
@@ -692,6 +694,8 @@ int main(int argc, char* argv[]){
 
   if (channel == channel::mtmet) pairFilter
     .set_predicate( (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.5) && (bind(&CompositeCandidate::PtOf, _1, "lepton1") <= 20.0));
+  if (channel == channel::etmet) pairFilter
+    .set_predicate( (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.5) && (bind(&CompositeCandidate::PtOf, _1, "lepton1") <= 24.0));
 
   // ------------------------------------------------------------------------------------
   // Jet Modules
@@ -730,7 +734,8 @@ int main(int argc, char* argv[]){
     .set_channel(channel)
     .set_mc(mc)
     .set_met_label(met_label)
-    .set_strategy(strategy::moriond2013);
+    .set_strategy(strategy::moriond2013)
+    .set_w_hack(false);
 
   HTTWeights httWeights = HTTWeights("HTTWeights")
     .set_channel(channel)
@@ -750,8 +755,8 @@ int main(int argc, char* argv[]){
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     httWeights.set_do_btag_weight(true);
   }
-  if (output_name.find("DYJetsToLL") != output_name.npos && channel == channel::et) httWeights.set_do_etau_fakerate(true);
-  if (output_name.find("DYJetsToLL") != output_name.npos && channel == channel::mt) httWeights.set_do_mtau_fakerate(true);
+  if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
+  if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::mt || channel == channel::mtmet) ) httWeights.set_do_mtau_fakerate(true);
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
@@ -764,7 +769,7 @@ int main(int argc, char* argv[]){
     }
     if (mc == mc::summer12_53X) {
       httWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
-      httWeights.SetWInputYields(76102995.0, 23101598.0, 33884921.0, 15539503.0, 13382803.0);
+      httWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
     }
   }
   if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {
@@ -853,7 +858,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&httEnergyScale);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
 
-  if (channel == channel::et) {
+  if (channel == channel::et || channel == channel::etmet) {
                                   analysis.AddModule(&selElectronCopyCollection);
                                   analysis.AddModule(&selElectronFilter);
     if (!do_skim) {                              

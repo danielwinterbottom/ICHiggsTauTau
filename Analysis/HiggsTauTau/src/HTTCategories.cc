@@ -97,6 +97,7 @@ namespace ic {
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
     wt_ = eventInfo->total_weight();
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
@@ -224,7 +225,7 @@ namespace ic {
     }
 
     // Define which selections this event passes
-    if (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet) {
+    if (channel_ == channel::et || channel_ == channel::etmet || channel_ == channel::mt || channel_ == channel::mtmet) {
       if (os_ && mt_1_ < 20.0) SetPassSelection("os_sel");
       if (os_) SetPassSelection("os");
       if (!os_) SetPassSelection("ss");
@@ -304,13 +305,13 @@ namespace ic {
     // 1-jet High Category
     // In the et channel, apply a MET > 30 cut
     if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ > pt2_split && n_bjets_ == 0) {
-      if ( (channel_ == channel::et) ? (met_ > 30.) : true) SetPassCategory("1jet_high");
+      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) SetPassCategory("1jet_high");
     }
 
     // 1-jet Low Category
     // In the et channel, apply a MET > 30 cut
     if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
-      if ( (channel_ == channel::et) ? (met_ > 30.) : true) SetPassCategory("1jet_low");
+      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) SetPassCategory("1jet_low");
     }
 
     // 1-jet Low Category

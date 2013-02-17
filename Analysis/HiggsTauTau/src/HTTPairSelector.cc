@@ -205,7 +205,7 @@ namespace ic {
     if (faked_tau_selector_ > 0 && channel_ != channel::em) {
       std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
       std::vector<GenParticle *> sel_particles;
-      if (channel_ == channel::et) {
+      if (channel_ == channel::et || channel_ == channel::etmet) {
         // Add all status 3 electrons with pT > 8 to sel_particles
         for (unsigned i = 0; i < particles.size(); ++i) {
           if (particles[i]->status() == 3 && abs(particles[i]->pdgid()) == 11 && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);

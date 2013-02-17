@@ -361,10 +361,11 @@ process.patPFMetByMVA = process.patMETs.clone(
 ## The iso-based HBHE noise filter
 process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
 
-### The CSC beam halo tight filter 
+
+### The CSC beam halo tight filter  - IMPLEMENTED DIRECTLY in ICEventInfoProducer
 #process.load('RecoMET.METAnalyzers.CSCHaloFilter_cfi')
-#
-### The HCAL laser filter 
+
+### The HCAL laser filter - CAN BE IMPLEMENTED OFFLINE USING A SIMPLE LIST OF EVENTS TO VETO
 #process.load("RecoMET.METFilters.hcalLaserEventFilter_cfi")
 #process.MyhcalLaserEventFilter = process.hcalLaserEventFilter.clone()
 #process.MyhcalLaserEventFilter.taggingMode  = cms.bool(True)
@@ -378,7 +379,7 @@ process.load('RecoMET.METFilters.eeBadScFilter_cfi')
 process.eeBadScFilter.taggingMode  = cms.bool(True)
 #
 
-### The ECAL laser correction filter
+### The ECAL laser correction filter - CAN BE IMPLEMENTED OFFLINE USING A SIMPLE LIST OF EVENTS TO VETO
 #process.load('RecoMET.METFilters.ecalLaserCorrFilter_cfi')
 #process.MyecalLaserCorrFilter = process.ecalLaserCorrFilter.clone()
 #process.MyecalLaserCorrFilter.taggingMode  = cms.bool(True)

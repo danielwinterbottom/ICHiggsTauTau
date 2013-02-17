@@ -6,6 +6,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "boost/bind.hpp"
 
@@ -76,6 +77,10 @@ namespace ic {
         if (channel_ == channel::mtmet) {
           //2012 Triggers
           if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_L1ETM26_v") != name.npos) path_found = true;
+        }
+        if (channel_ == channel::etmet) {
+          //2012 Triggers
+          if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v") != name.npos) path_found = true;
         }
         if (path_found) break;
       }
@@ -202,6 +207,13 @@ namespace ic {
           leg2_filter = "hltMu8PFTau20TrackLooseIso";
         }
       }
+      if (channel_ == channel::etmet) {
+        if (run >= 203777/* && run <= xxxxx*/) {
+          trig_obj_label = "triggerObjectsEle13LooseTau20L1ETM36";
+          leg1_filter = "hltEle13WP90RhoTrackIsoFilter";
+          leg2_filter = "hltIsoEle13PFTau20TrackLooseIso";
+        }
+      }
     } else {
       if (channel_ == channel::et) {
         if (mc_ == mc::fall11_42X) {
@@ -240,11 +252,33 @@ namespace ic {
           em_alt_leg2_filter        = "hltL1Mu12EG7L3MuFiltered17";
         }
       }
+      /*
+      [2] HLT triggers in MC to "emulate" lepton legs of new triggers in data:
+      - HLT_Mu8_v16, mu filter to match: hltL3fL1sMu3L3Filtered8 apply cut
+      |eta|<2.1, in addition match to L1Extra Mu, pT>7, |eta|<2.1 to have
+      correct L1Mu seed
+      - HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v14, ele filter to
+      match: hltEle8TightIdLooseIsoTrackIsoFilter, apply cut pt>13 and
+      |eta|<2.1, in addition match to L1Extra IsolatedEG, pT>12, |eta|<2.17
+      to have correct L1EG seed
+
+      [3]. Reconstruct fixed cone PFTau with settings used at HLT with
+      offline PFlow and vertices. I can provide you python configuration. It
+      can be reconstructed on any stage of analysis where PFlow (and PFjets)
+      and vertices are accessible.
+      */
       if (channel_ == channel::mtmet) {
         if (mc_ == mc::summer12_53X) {
-          trig_obj_label   = "triggerObjectsIsoMu17LooseTau20";
-          leg1_filter      = "hltL3crIsoL1sMu14erORMu16erL1f0L2f14QL3f17QL3crIsoRhoFiltered0p15";
-          leg2_filter       = "hltIsoMuPFTau20TrackLooseIso";
+          trig_obj_label   = "triggerObjectsMu8"; // triggerObjectsMu8, hltTaus
+          leg1_filter      = "hltL3fL1sMu3L3Filtered8";
+          leg2_filter       = "";
+        }
+      }
+      if (channel_ == channel::etmet) {
+        if (mc_ == mc::summer12_53X) {
+          trig_obj_label   = "triggerObjectsEle8"; // triggerObjectsEle8, hltTaus
+          leg1_filter      = "hltEle8TightIdLooseIsoTrackIsoFilter";
+          leg2_filter       = "";
         }
       }
     }
@@ -280,27 +314,59 @@ namespace ic {
       }
     }
 
-    if (channel_ == channel::mtmet && is_data_) {
+    if ( (channel_ == channel::mtmet || channel_ == channel::etmet) && is_data_) {
       for (unsigned i = 0; i < dileptons.size(); ++i) {
-        // bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
-        // bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
-        bool leg1_match = true;
-        bool leg2_match = true;
+        bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
+        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
         if (leg1_match && leg2_match) dileptons_pass.push_back(dileptons[i]);
       }
     }
 
     if (channel_ == channel::mtmet && !is_data_) {
-      std::vector<TriggerObject *> const& mu8_obj = event->GetPtrVec<TriggerObject>("triggerObjectsMu8");
-      std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+      std::vector<TriggerObject *> mu8_obj = objs; // Make a copy of the Mu8 Trigger objects so we can filter
+      ic::erase_if(mu8_obj, !boost::bind(MinPtMaxEta, _1, 8.0, 2.1));
       std::vector<Candidate *> l1muon = event->GetPtrVec<Candidate>("l1extraMuons");
-      ic::erase_if(l1muon, !boost::bind(MinPtMaxEta, _1, 7.0, 2.5));
+      ic::erase_if(l1muon, !boost::bind(MinPtMaxEta, _1, 7.0, 2.1));
+      std::vector<Tau *> hlt_taus = event->GetPtrVec<Tau>("hltTaus");
+      ic::erase_if(hlt_taus, !boost::bind(MinPtMaxEta, _1, 20.0, 999.0));
+      ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5) );
+      ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "byIsolation") > 0.5) );
+      std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
       for (unsigned i = 0; i < dileptons.size(); ++i) {
-        bool leg1_match = IsFilterMatched(dileptons[i]->At(0), mu8_obj, "hltL3fL1sMu3L3Filtered8", 0.5);
-        // bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
-        bool leg2_match = true;
-        bool l1_met = l1met.at(0)->pt() > 29.;
-        if (leg1_match && leg2_match && l1_met && l1muon.size() > 0) dileptons_pass.push_back(dileptons[i]);
+        bool leg1_hlt_match = IsFilterMatched(dileptons[i]->At(0), mu8_obj, leg1_filter, 0.5);
+        std::vector<Candidate *> mu_as_vector;
+        mu_as_vector.push_back(dileptons[i]->At(0));
+        bool leg1_l1_match = MatchByDR(mu_as_vector, l1muon, 0.5, false, false).size() > 0;
+        bool leg1_match = leg1_hlt_match && leg1_l1_match;
+        std::vector<Candidate *> tau_as_vector;
+        tau_as_vector.push_back(dileptons[i]->At(1));
+        bool leg2_match = MatchByDR(tau_as_vector, hlt_taus, 0.5, false, false).size() > 0;
+        bool l1_met = l1met.at(0)->pt() > 26.;
+        if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
+      }
+    }
+
+    if (channel_ == channel::etmet && !is_data_) {
+      std::vector<TriggerObject *> ele8_obj = objs; // Make a copy of the Mu8 Trigger objects so we can filter
+      ic::erase_if(ele8_obj, !boost::bind(MinPtMaxEta, _1, 13.0, 2.1));
+      std::vector<Candidate *> l1emiso = event->GetPtrVec<Candidate>("l1extraEmIsolated");
+      ic::erase_if(l1emiso, !boost::bind(MinPtMaxEta, _1, 12.0, 2.17));
+      std::vector<Tau *> hlt_taus = event->GetPtrVec<Tau>("hltTaus");
+      ic::erase_if(hlt_taus, !boost::bind(MinPtMaxEta, _1, 20.0, 999.0));
+      ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5) );
+      ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "byIsolation") > 0.5) );
+      std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+      for (unsigned i = 0; i < dileptons.size(); ++i) {
+        bool leg1_hlt_match = IsFilterMatched(dileptons[i]->At(0), ele8_obj, leg1_filter, 0.5);
+        std::vector<Candidate *> ele_as_vector;
+        ele_as_vector.push_back(dileptons[i]->At(0));
+        bool leg1_l1_match = MatchByDR(ele_as_vector, l1emiso, 0.5, false, false).size() > 0;
+        bool leg1_match = leg1_hlt_match && leg1_l1_match;
+        std::vector<Candidate *> tau_as_vector;
+        tau_as_vector.push_back(dileptons[i]->At(1));
+        bool leg2_match = MatchByDR(tau_as_vector, hlt_taus, 0.5, false, false).size() > 0;
+        bool l1_met = l1met.at(0)->pt() > 36.;
+        if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
       }
     }
 
