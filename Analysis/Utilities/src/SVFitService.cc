@@ -71,7 +71,7 @@ namespace ic {
       algo.integrate();
     #endif
 
-    return std::make_pair(fitresult, algo.getMass());;
+    return std::make_pair(fitresult, algo.getMass());
   }
 
   std::pair<Candidate, double> SVFitService::SVFitCandidateLepLep(Candidate const* lep1, Candidate const* lep2, Met const* met) {
