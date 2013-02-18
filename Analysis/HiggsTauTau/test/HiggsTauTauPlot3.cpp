@@ -546,7 +546,7 @@ int main(int argc, char* argv[]){
 
   // Norm is the same for all methods
   double top_norm = Integral(plots[Token("TTJets",cat,os_sel)].hist_ptr());
-  TH1F *top_hist;
+  TH1F *top_hist = nullptr;
   string top_shape_str = is_2012 ? "TT" : "TTJets";
   if (channel == channel::em) top_shape_str = "TTJets";
   double top_norm_ss = Integral(plots[Token("TTJets",cat,ss_sel)].hist_ptr());
@@ -597,7 +597,7 @@ int main(int argc, char* argv[]){
   // Norm is the same for all methods
   double vv_norm = 0.0;
   for (unsigned i = 0; i < vv_samples.size(); ++i) vv_norm += Integral(plots[Token(vv_samples[i],cat,os_sel)].hist_ptr());
-  TH1F *vv_hist;
+  TH1F *vv_hist = nullptr;
   
   // Do SS
   double vv_norm_ss = 0.0;
@@ -639,9 +639,11 @@ int main(int argc, char* argv[]){
   if (verbose) cout << "**** ZLL: " << endl;
 
   double zll_norm, zl_norm, zj_norm;
-  TH1F *zll_hist, *zl_hist, *zj_hist;
+  TH1F *zll_hist = nullptr;
+  TH1F *zl_hist = nullptr;
+  TH1F *zj_hist = nullptr;
 
-  TH1F *zll_hist_ss; 
+  TH1F *zll_hist_ss = nullptr; 
   double zll_norm_ss = 0; 
 
 
@@ -781,7 +783,7 @@ int main(int argc, char* argv[]){
   if (verbose) cout << "**** ZTT: " << endl;
 
   double ztt_norm = 0;
-  TH1F *ztt_hist;
+  TH1F *ztt_hist = nullptr;
   double ztt_mc_inc_yield = Integral(plots[Token("DYJetsToTauTau","inclusive","os")].hist_ptr());
   if (verbose) cout << "- DYJetsToTauTau dilepton OS yield (no mT/pzeta cut): " << ztt_mc_inc_yield << std::endl;
   double embedded_eff = Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","inclusive","os")].hist_ptr());
@@ -879,8 +881,11 @@ int main(int argc, char* argv[]){
   if (verbose) cout << "**** W: " << endl;
 
   double w_norm = 0.0;
-  double w_os_sel, w_os_con, w_ss_sel, w_ss_con;
-  double w_ss_sel_inclusive;
+  double w_os_sel = 0.0;
+  double w_os_con = 0.0;
+  double w_ss_sel = 0.0;
+  double w_ss_con = 0.0;
+  double w_ss_sel_inclusive = 0.0;
   TH1F *w_hist = NULL;
 
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
@@ -999,10 +1004,10 @@ int main(int argc, char* argv[]){
   double qcd_norm = 0.0;
   double qcd_inclusive = 0.0;
   double os_ss_ratio = parser.GetParam<double>("QCD_OS_SS_RATIO");
-  TH1F * h1;
-  TH1F * h2;
-  TH1F * h3;
-  TH1F *qcd_hist = NULL;
+  TH1F * h1 = nullptr;
+  TH1F * h2 = nullptr;
+  TH1F * h3 = nullptr;
+  TH1F *qcd_hist = nullptr;
 
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
     //-----------------------

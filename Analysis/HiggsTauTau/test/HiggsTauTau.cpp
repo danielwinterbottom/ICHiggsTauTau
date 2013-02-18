@@ -351,6 +351,8 @@ int main(int argc, char* argv[]){
     "EventTree",          // TTree name
     max_events);          // Max. events to process (-1 = all)
   if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);
+  analysis.SetTTreeCaching(true);
+  analysis.StopOnFileFailure(true);
 
   // ------------------------------------------------------------------------------------
   // Misc Modules
