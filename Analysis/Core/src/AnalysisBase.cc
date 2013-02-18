@@ -15,16 +15,18 @@ namespace ic {
                                 std::string const& tree_path,
                                 std::string const& tree_name,
                                 unsigned const& events  ) {
-    input_file_paths_ = input;
-    events_to_process_ = events;
-    analysis_name_ = analysis_name;
-    tree_path_ = tree_path;
-    tree_name_ = tree_name;
-    events_processed_ = 0;
-    notify_on_fail_ = false;
-    notify_evt_on_fail_ = false;
-    skim_path_ = "";
-    print_module_list_ = false;
+    input_file_paths_     = input;
+    events_to_process_    = events;
+    analysis_name_        = analysis_name;
+    tree_path_            = tree_path;
+    tree_name_            = tree_name;
+    events_processed_     = 0;
+    notify_on_fail_       = false;
+    notify_evt_on_fail_   = false;
+    skim_path_            = "";
+    print_module_list_    = false;
+    ttree_caching_        = false;
+    stop_on_failed_file_  = true;
   }
 
   AnalysisBase::~AnalysisBase() {
@@ -52,9 +54,9 @@ namespace ic {
     TTree *tree_ptr = NULL;
     weighted_yields_.resize(modules_.size());
     bool do_skim = (skim_path_ != "");
-    if (do_skim) {
-      std::cout << "SKIM MODE ENABLED" << std::endl;
-    }
+    if (do_skim) std::cout << "Info in <ic::AnalysisBase>: Skimming mode enabled" << std::endl;
+    if (ttree_caching_) std::cout << "Info in <ic::AnalysisBase>: TTree caching enabled" << std::endl;
+  
     if (print_module_list_) {
       std::cout << "-------------------------------------" << std::endl;
       std::cout << "Module List" << std::endl;
@@ -87,20 +89,26 @@ namespace ic {
             continue;
           }
         }
-
-        //file_ptr = new TFile(input_file_paths_[file].c_str());
         file_ptr = TFile::Open(input_file_paths_[file].c_str());
         if (!file_ptr) {
           std::cerr << "Warning: Unable to open file \"" << input_file_paths_[file] <<
           "\"" << std::endl;
-          continue;
+          if (stop_on_failed_file_) {
+            throw;
+          } else {
+            continue;          
+          }
         }
         gDirectory->Cd(tree_path_.c_str());
         tree_ptr = dynamic_cast<TTree*>(gDirectory->Get(tree_name_.c_str()));
         if (!tree_ptr) {
           std::cerr << "Warning: Unable to find TTree \"" << tree_name_ <<
           "\" in file \"" << input_file_paths_[file] << "\"" << std::endl;
-          continue;
+          if (stop_on_failed_file_) {
+            throw;
+          } else {            
+            continue;
+          }
         }
         std::cout << "-- " << input_file_paths_[file] << std::endl;
         TFile *outf = NULL;
@@ -111,16 +119,19 @@ namespace ic {
           gDirectory->mkdir(tree_path_.c_str());
           gDirectory->cd(tree_path_.c_str());
           outtree = tree_ptr->CloneTree(0);
-          std::cout << "---->" << skim_path_+out_name << std::endl;
+          std::cout << "----> " << skim_path_+out_name << std::endl;
         }
-        // tree_ptr->SetCacheSize(100000000);
-        // tree_ptr->SetCacheLearnEntries(1000);
+
+        if (ttree_caching_) {
+          tree_ptr->SetCacheSize(100000000);
+          tree_ptr->SetCacheLearnEntries(100);          
+        }
 
         unsigned tree_events = tree_ptr->GetEntries();
         event_.SetTree(tree_ptr);
         DoEventSetup();
         for (unsigned evt = 0; evt < tree_events; ++evt) {
-          // tree_ptr->LoadTree(evt);
+          if (ttree_caching_) tree_ptr->LoadTree(evt);
           event_.SetEvent(evt);
           EventInfo const* eventInfo = event_.GetPtr<EventInfo>("eventInfo");
 
@@ -172,7 +183,6 @@ namespace ic {
     std::cout << "-------------------------------------" << std::endl;
     for (unsigned i = 0; i < modules_.size(); ++i) {
       std::cout << boost::format("%-40s %-20s %-20s\n") % modules_[i]->ModuleName() % modules_[i]->EventsProcessed() % weighted_yields_[i];
-      //std::cout << modules_[i]->ModuleName() << "\t\t" << modules_[i]->EventsProcessed() << std::endl;
     }
     std::for_each(modules_.begin(), modules_.end(), boost::bind(&ModuleBase::PostAnalysis,_1));
    return 0; 
@@ -184,10 +194,17 @@ namespace ic {
     notify_run_event_.insert(std::make_pair(run,event));
   }
 
-    void AnalysisBase::NotifyEvent(int const& event) {
+  void AnalysisBase::NotifyEvent(int const& event) {
     notify_evt_on_fail_ = true;
     notify_event_.insert(event);
   }
+  void AnalysisBase::SetTTreeCaching(bool const& value) {
+    ttree_caching_ = value;
+  }
+  void AnalysisBase::StopOnFileFailure(bool const& value) {
+    stop_on_failed_file_ = value;
+  }
+
 
 
 }

@@ -29,6 +29,8 @@ namespace ic {
     std::set< int > notify_event_;
     std::string skim_path_;
     bool print_module_list_;
+    bool ttree_caching_;
+    bool stop_on_failed_file_;
 
   public:
     //! The standard AnalysisBase constructor constructor 
@@ -51,8 +53,10 @@ namespace ic {
     virtual void DoEventSetup();  
     virtual bool PostModule(int status);
     virtual void NotifyRunEvent(int const& run, int const& event);
-virtual     void NotifyEvent(int const& event);
+    virtual void NotifyEvent(int const& event);
     void DoSkimming(std::string const& skim_path) { skim_path_ = skim_path; }
+    void SetTTreeCaching(bool const& value);
+    void StopOnFileFailure(bool const& value);
  };
 }
 
