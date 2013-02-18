@@ -27,12 +27,13 @@ string Token(string const& file, string const& selection) {
 }
 
 double Integral(TH1F const* hist) {
-  return hist->Integral(0, hist->GetNbinsX() + 1);
+  if (hist) return hist->Integral(0, hist->GetNbinsX() + 1);
+  else return 0;
 }
 
 double Error(TH1F const* hist) {
   double err = 0.0;
-  hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
+  if (hist) hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
   return err;
 }
 
@@ -214,6 +215,19 @@ int main(int argc, char* argv[]){
   files.push_back("Data_MET-2012C-24Aug2012-v1");
   files.push_back("Data_MET-2012C-11Dec2012-v1");
   files.push_back("Data_MET-2012C-PromptReco-v2");
+  files.push_back("Data_MET-2012D-PromptReco-v1");
+  files.push_back("MC_QCD-Pt-30to50-pythia6");
+  files.push_back("MC_QCD-Pt-50to80-pythia6");
+  files.push_back("MC_QCD-Pt-80to120-pythia6");
+  files.push_back("MC_QCD-Pt-120to170-pythia6");
+  files.push_back("MC_QCD-Pt-170to300-pythia6");
+  files.push_back("MC_QCD-Pt-300to470-pythia6");
+  files.push_back("MC_QCD-Pt-470to600-pythia6");
+  files.push_back("MC_QCD-Pt-600to800-pythia6");
+  files.push_back("MC_QCD-Pt-800to1000-pythia6");
+  files.push_back("MC_QCD-Pt-1000to1400-pythia6");
+  files.push_back("MC_QCD-Pt-1400to1800-pythia6");
+  files.push_back("MC_QCD-Pt-1800-pythia6");
   files.push_back("MC_TTJets");
   files.push_back("MC_T-tW");
   files.push_back("MC_Tbar-tW");
@@ -222,12 +236,13 @@ int main(int argc, char* argv[]){
   files.push_back("MC_W2JetsToLNu");
   files.push_back("MC_W3JetsToLNu");
   files.push_back("MC_W4JetsToLNu");
+  files.push_back("MC_WJetsToLNu-v1");
   files.push_back("MC_WJetsToLNu-v2");
   files.push_back("MC_DYJetsToLL");
-  files.push_back("MC_DY1JetsToLL");
-  files.push_back("MC_DY2JetsToLL");
-  files.push_back("MC_DY3JetsToLL");
-  files.push_back("MC_DY4JetsToLL");
+  //files.push_back("MC_DY1JetsToLL");
+  //files.push_back("MC_DY2JetsToLL");
+  //files.push_back("MC_DY3JetsToLL");
+  //files.push_back("MC_DY4JetsToLL");
   files.push_back("MC_ZJetsToNuNu_100_HT_200");
   files.push_back("MC_ZJetsToNuNu_200_HT_400");
   files.push_back("MC_ZJetsToNuNu_400_HT_inf");
@@ -243,6 +258,7 @@ int main(int argc, char* argv[]){
   selections.push_back("Mjj");
   selections.push_back("MET");
   selections.push_back("LeptonVeto");
+  selections.push_back("DPhi");
 
 
   std::map<std::string, TFile *> tfiles;
@@ -285,6 +301,19 @@ int main(int argc, char* argv[]){
     }//loop on selections
   }//loop on files
 
+  
+  //output a table with number of events selected
+   if (plot_name.find("n_jets") != plot_name.npos) {
+      std::cout << "\\begin{table}[h!]" << std::endl
+		<< "\\caption{Number of events selected in data and MC." << std::endl
+		<< "\\begin{tabular}{|l|c|c|c|c|c||c|c||c|}" << std::endl
+		<<"\\hline" << std::endl
+		<< "Step & QCD & Top & W+jets & Z+jets & Others & SumMC & Data & Signal 120 \\\\"
+		<< std::endl
+		<< "\\hline" << std::endl;
+   }
+
+
   for (unsigned k = 0; k < selections.size(); ++k) {
     ic::Plot plot;
     plot.output_filename = "PLOTS/"+plot_name + "_" + year_label + "_" + selections[k] + ".pdf";
@@ -294,6 +323,7 @@ int main(int argc, char* argv[]){
 
     ic::TH1PlotElement data_hist = ic::TH1PlotElement("Data");//+selections[k]);
     ic::TH1PlotElement signal_hist = ic::TH1PlotElement("Signal");
+    ic::TH1PlotElement qcd_hist = ic::TH1PlotElement("QCD");
     ic::TH1PlotElement top_hist = ic::TH1PlotElement("Top");
     ic::TH1PlotElement WJets_hist = ic::TH1PlotElement("WJets");
     ic::TH1PlotElement ZJetsToLL_hist = ic::TH1PlotElement("ZJetsToLL");
@@ -308,6 +338,7 @@ int main(int argc, char* argv[]){
       std::string nm = Token(f, s);
       SumHistograms(f,plots[nm],"Data",data_hist);
       SumHistograms(f,plots[nm],"VBF_H",signal_hist);
+      SumHistograms(f,plots[nm],"MC_QCD",qcd_hist);
       SumHistograms(f,plots[nm],"MC_T",top_hist);
       SumHistograms(f,plots[nm],"MC_W",WJets_hist);
       SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
@@ -321,6 +352,7 @@ int main(int argc, char* argv[]){
 
     SetSignalStyle(signal_hist,2);
     SetDataStyle(data_hist);
+    SetBkgStyle(qcd_hist,9);
     SetBkgStyle(top_hist,5);
     SetBkgStyle(WJets_hist,6);
     SetBkgStyle(ZJetsToLL_hist,4);
@@ -330,6 +362,7 @@ int main(int argc, char* argv[]){
 
     data_hist.set_legend_text("Data");
     signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
+    qcd_hist.set_legend_text("QCD");
     top_hist.set_legend_text("t#bar{t},tW,#bar{t}W");
     WJets_hist.set_legend_text("W+jets");
     ZJetsToLL_hist.set_legend_text("Z#rightarrow ll + jets");
@@ -337,8 +370,8 @@ int main(int argc, char* argv[]){
     VBFZ_hist.set_legend_text("VBF Z+2j");
     GJets_hist.set_legend_text("#gamma + jets");
 
-
     plot.AddTH1PlotElement(GJets_hist);
+    plot.AddTH1PlotElement(qcd_hist);
     plot.AddTH1PlotElement(top_hist);
     plot.AddTH1PlotElement(WJets_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);
@@ -375,12 +408,12 @@ int main(int argc, char* argv[]){
     plot.draw_ratio_hist = draw_ratio;
     plot.draw_signif = false;
     
-    string background_list = "GJets+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    string background_list = "GJets+QCD+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
     ic::RatioPlotElement ratio("DataOverMC","Data",background_list);
     
     plot.band_size_fractional_ = band_size_fractional;
     plot.draw_band_on_stack_ = draw_band_on_stack;
-    plot.samples_for_band_ = "GJets+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    plot.samples_for_band_ = "GJets+QCD+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
     
     SetStyle(ratio,1);
     ratio.set_multi_mode(true);
@@ -394,8 +427,51 @@ int main(int argc, char* argv[]){
     
     if (!no_plot) plot.GeneratePlot();
 
+     if (plot_name.find("n_jets") != plot_name.npos) {
+       double n_qcd = Integral(qcd_hist.hist_ptr());
+       double n_top = Integral(top_hist.hist_ptr());
+       double n_WJets = Integral(WJets_hist.hist_ptr());
+       double n_ZJets = Integral(ZJetsToNuNu_hist.hist_ptr())
+	 +Integral(ZJetsToLL_hist.hist_ptr())
+	 +Integral(VBFZ_hist.hist_ptr());
+       double n_others = 0;//Integral(GJets_hist.hist_ptr());
+       double n_data = Integral(data_hist.hist_ptr());
+       double n_signal = Integral(signal_hist.hist_ptr());
+       double n_Tot = n_qcd+n_top+n_WJets+n_ZJets+n_others;
+       
+       double err_qcd = Error(qcd_hist.hist_ptr());
+       double err_top = Error(top_hist.hist_ptr());
+       double err_WJets = Error(WJets_hist.hist_ptr());
+       double err_ZJets = Error(ZJetsToNuNu_hist.hist_ptr())
+	 +Error(ZJetsToLL_hist.hist_ptr())
+	 +Error(VBFZ_hist.hist_ptr());
+       double err_others = 0;//Error(GJets_hist.hist_ptr());
+       double err_data = Error(data_hist.hist_ptr());
+       double err_signal = Error(signal_hist.hist_ptr());
+       double err_Tot = err_qcd+err_top+err_WJets+err_ZJets+err_others;
+       
+       std::cout << selections[k] << " & " 
+		 << n_qcd << " $\\pm$ " << err_qcd << " & " 
+		 << n_top  << " $\\pm$ " << err_top << " & " 
+		 << n_WJets << " $\\pm$ " << err_WJets  << " & " 
+		 << n_ZJets << " $\\pm$ " << err_ZJets  << " & " 
+		 << n_others << " $\\pm$ " << err_others  << " & " 
+		 << n_Tot << " $\\pm$ " << err_Tot  << " & " 
+		 << n_data << " $\\pm$ " << err_data  << " & " 
+		 << n_signal << " $\\pm$ " << err_signal << " \\\\ "
+		 << std::endl; 
+     }
+
+
+
   }//loop on selection
 
-  return 0;
-  
+   if (plot_name.find("n_jets") != plot_name.npos) {
+     std::cout << "\\hline" << std::endl
+	       << "\\end{tabular}" << std::endl
+	       << "\\end{table}" << std::endl;
+   }
+
+   return 0;
+   
 }//main

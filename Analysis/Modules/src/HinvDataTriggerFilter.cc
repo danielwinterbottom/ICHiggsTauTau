@@ -12,7 +12,11 @@
 namespace ic {
 
   HinvDataTriggerFilter::HinvDataTriggerFilter(std::string const& name) : ModuleBase(name) {
-     do_obj_match_ = false;
+     is_data_ = false;
+     trigger_path_="";
+     trig_obj_label_="";
+     counter1_ = 0;
+     counter2_ = 0;
    }
 
   HinvDataTriggerFilter::~HinvDataTriggerFilter() {
@@ -20,19 +24,23 @@ namespace ic {
   }
 
   int HinvDataTriggerFilter::PreAnalysis() {
+    counter1_ = 0;
+    counter2_ = 0;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for HinvDataTriggerFilter" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Require match to HLT object: " << do_obj_match_ << std::endl;
+    std::cout << "Require match to HLT object: " << is_data_ << std::endl;
+    std::cout << "Trigger path : " << trigger_path_ << std::endl;
+    std::cout << "Trigger object label : " << trig_obj_label_ << std::endl;
     return 0;
   }
 
   int HinvDataTriggerFilter::Execute(TreeEvent *event) {
 
     bool path_found = false;
-
-    //dirty fix for data
-    if (!do_obj_match_) {
+    std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
+  
+    if (is_data_) {
 
       TriggerPathPtrVec const& triggerPathPtrVec = 
 	event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
@@ -42,40 +50,17 @@ namespace ic {
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
 	std::string name = triggerPathPtrVec[i]->name();
 	triggerPathPtrVec[i]->prescale();
-	if (name.find("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v") != name.npos) path_found = true; 
-	/*
-      In preparation for Z->ee, Z->mm:
-      if (channel == EE) {
-        //2011 Triggers
-        if (run >= 160404 && run <= 167913 && name.find("HLT_Ele17_CaloIdL_CaloIsoVL_Ele8_CaloIdL_CaloIsoVL_v") != name.npos) path_found = true;
-        if (run >= 170249 && run <= 180252 && name.find("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true;
-        //2012 Triggers
-        if (run >= 190456 && run <= ??? && name.find("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true;
-        
+	if (name.find(trigger_path_) != name.npos) path_found = true; 
       }
-      if (channel == MM) {
-        //2011 Triggers
-        if (run >= 160404 && run <= 163869 && name.find("HLT_DoubleMu7_v") != name.npos) path_found = true;
-        if (run >= 165088 && run <= 178380 && name.find("HLT_Mu13_Mu8_v") != name.npos) path_found = true;
-        if (run >= 178420 && run <= 180252 && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
-        //2012 Triggers
-        if (run >= 190456 && run <= ??? && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
-      }
-      */
-      }
+
+      if ( (objs.size()== 0) && path_found ) counter1_++;
+      if ( (objs.size() > 0) && !path_found ) counter2_++;
+
     }
     //for MC
     else {
 
-      std::string trig_obj_label;
-
-      trig_obj_label = "triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets";
-      //met_filter = "";
-      //jet_filter = "";  
-      //std::vector<Electron *> & elmus = event->GetPtrVec<Electron>(lep1label_);
-      //std::vector<Tau *> & taus = event->GetPtrVec<Tau>(lep2label_);
-      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
-      if (objs.size() > 0) path_found=true;
+     if (objs.size() > 0) path_found=true;
       //ic::erase_if(elmus, !boost::bind(IsFilterMatched, _1, objs, elmu_filter, 0.5));
       //ic::erase_if(taus, !boost::bind(IsFilterMatched, _1, objs, tau_filter, 0.5));
     } // do obj match
@@ -88,6 +73,8 @@ namespace ic {
   }
 
   int HinvDataTriggerFilter::PostAnalysis() {
+    std::cout << " -- Number of times path fired but no trigger object: " << counter1_ << std::endl;
+    std::cout << " -- Number of times path not fired but trigger objects: " << counter2_ << std::endl;
     return 0;
   }
 

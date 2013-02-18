@@ -16,7 +16,12 @@ namespace ic {
 
 class HinvDataTriggerFilter : public ModuleBase {
  private:
-  MEMBER_NP(bool, do_obj_match)
+  MEMBER_NP(bool, is_data)
+  MEMBER_NP(std::string, trigger_path)
+  MEMBER_NP(std::string, trig_obj_label)
+
+  unsigned counter1_;
+  unsigned counter2_;
 
 
  public:

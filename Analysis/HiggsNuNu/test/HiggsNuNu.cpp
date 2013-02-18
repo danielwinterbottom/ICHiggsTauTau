@@ -191,9 +191,10 @@ int main(int argc, char* argv[]){
     .set_print_weights(false);
 
   HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
-  if (is_data) dataMCTriggerPathFilter.set_do_obj_match(false);
-  else dataMCTriggerPathFilter.set_do_obj_match(true);
-  
+  dataMCTriggerPathFilter.set_is_data(is_data);
+  dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
+  dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
   ("JetEnergyCorrections")
   .set_input_label("pfJetsPFlow")
@@ -326,11 +327,12 @@ int main(int argc, char* argv[]){
     hinvWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true);
   }
 
-  if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
+  if (output_name.find("JetsToLNu") != output_name.npos) {
     hinvWeights.set_do_w_soup(true);
     if (mc == mc::summer12_53X) {
       hinvWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
-      hinvWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
+      //hinvWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
+      hinvWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
     }
   }
   if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {
@@ -354,11 +356,11 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjCandidates")
     .set_sel_label("JetPair");
 
-  HinvControlPlots controlPlots_deta = HinvControlPlots("EtaProdDEta")
+  HinvControlPlots controlPlots_met = HinvControlPlots("MET")
     .set_fs(fs)
     .set_met_label("pfMet")
     .set_dijet_label("jjCandidates")
-    .set_sel_label("EtaProdDEta");
+    .set_sel_label("MET");
 
   HinvControlPlots controlPlots_mjj = HinvControlPlots("Mjj")
     .set_fs(fs)
@@ -366,11 +368,11 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjCandidates")
     .set_sel_label("Mjj");
 
-  HinvControlPlots controlPlots_met = HinvControlPlots("MET")
+  HinvControlPlots controlPlots_deta = HinvControlPlots("EtaProdDEta")
     .set_fs(fs)
     .set_met_label("pfMet")
     .set_dijet_label("jjCandidates")
-    .set_sel_label("MET");
+    .set_sel_label("EtaProdDEta");
 
   HinvControlPlots controlPlots_lepveto = HinvControlPlots("LeptonVeto")
     .set_fs(fs)
@@ -404,23 +406,23 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&jjPairProducer);
      analysis.AddModule(&jetPairFilter);
      analysis.AddModule(&controlPlots_dijet);
-     analysis.AddModule(&etaProdJetPairFilter);
-     analysis.AddModule(&detaJetPairFilter);
-     analysis.AddModule(&controlPlots_deta);
-     analysis.AddModule(&massJetPairFilter);
-     analysis.AddModule(&controlPlots_mjj);
 
      //met modules
      analysis.AddModule(&metFilter);
      analysis.AddModule(&controlPlots_met);
 
+     //dijet modules
+     analysis.AddModule(&massJetPairFilter);
+     analysis.AddModule(&controlPlots_mjj);
+     analysis.AddModule(&etaProdJetPairFilter);
+     analysis.AddModule(&detaJetPairFilter);
+     analysis.AddModule(&controlPlots_deta);
+
      //lepton veto modules
      analysis.AddModule(&vetoElectronCopyCollection);
      analysis.AddModule(&vetoElectronFilter);
-     
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
-
      analysis.AddModule(&controlPlots_lepveto);
 
      //dphi cut
