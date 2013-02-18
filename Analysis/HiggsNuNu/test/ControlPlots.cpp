@@ -9,6 +9,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/Utilities.h"
 
 namespace po = boost::program_options;
 
@@ -27,15 +28,21 @@ string Token(string const& file, string const& selection) {
 }
 
 double Integral(TH1F const* hist) {
-  if (hist) return hist->Integral(0, hist->GetNbinsX() + 1);
+  if (hist) {
+    return hist->Integral(0, hist->GetNbinsX() + 1);
+  }
   else return 0;
 }
 
 double Error(TH1F const* hist) {
   double err = 0.0;
-  if (hist) hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
+  if (hist) {
+    hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
+  }
   return err;
 }
+
+
 
 void SetBkgStyle(ic::TH1PlotElement & ele, unsigned color) {
   //ele.set_marker_color(color);
@@ -254,9 +261,9 @@ int main(int argc, char* argv[]){
   //build a list of selections
   vector<string> selections;
   selections.push_back("JetPair");
-  selections.push_back("EtaProdDEta");
-  selections.push_back("Mjj");
   selections.push_back("MET");
+  selections.push_back("Mjj");
+  selections.push_back("EtaProdDEta");
   selections.push_back("LeptonVeto");
   selections.push_back("DPhi");
 
@@ -294,8 +301,13 @@ int main(int argc, char* argv[]){
 	double sample_events = parser.GetParam<double>("EVT_"+lookup);
 	double sample_xs = parser.GetParam<double>("XS_"+lookup);
 	double sample_lumi = sample_events / sample_xs;
-	if (sample_xs > 0) plots[nm].hist_ptr()->Scale( data_lumi / sample_lumi );
+	double sample_scale = 1;
+	if (sample_xs > 0) sample_scale = data_lumi / sample_lumi;
+	plots[nm].hist_ptr()->Scale(sample_scale);
 	plots[nm].hist_ptr()->Rebin(rebin);
+	
+	//if (k==0) std::cout << f << " " << sample_scale << std::endl;
+
       }
 
     }//loop on selections
@@ -363,21 +375,21 @@ int main(int argc, char* argv[]){
     data_hist.set_legend_text("Data");
     signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
     qcd_hist.set_legend_text("QCD");
+    GJets_hist.set_legend_text("#gamma + jets");
     top_hist.set_legend_text("t#bar{t},tW,#bar{t}W");
     WJets_hist.set_legend_text("W+jets");
+    VBFZ_hist.set_legend_text("VBF Z+2j");
     ZJetsToLL_hist.set_legend_text("Z#rightarrow ll + jets");
     ZJetsToNuNu_hist.set_legend_text("Z#rightarrow #nu#nu + jets");
-    VBFZ_hist.set_legend_text("VBF Z+2j");
-    GJets_hist.set_legend_text("#gamma + jets");
 
-    plot.AddTH1PlotElement(GJets_hist);
-    plot.AddTH1PlotElement(qcd_hist);
-    plot.AddTH1PlotElement(top_hist);
-    plot.AddTH1PlotElement(WJets_hist);
+    plot.AddTH1PlotElement(ZJetsToNuNu_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);
     plot.AddTH1PlotElement(VBFZ_hist);
-    plot.AddTH1PlotElement(ZJetsToNuNu_hist);
-
+    plot.AddTH1PlotElement(WJets_hist);
+    plot.AddTH1PlotElement(top_hist);
+    plot.AddTH1PlotElement(GJets_hist);
+    plot.AddTH1PlotElement(qcd_hist);
+    
     plot.AddTH1PlotElement(data_hist);
 
     if (draw_signal) {
@@ -427,40 +439,39 @@ int main(int argc, char* argv[]){
     
     if (!no_plot) plot.GeneratePlot();
 
-     if (plot_name.find("n_jets") != plot_name.npos) {
-       double n_qcd = Integral(qcd_hist.hist_ptr());
-       double n_top = Integral(top_hist.hist_ptr());
-       double n_WJets = Integral(WJets_hist.hist_ptr());
-       double n_ZJets = Integral(ZJetsToNuNu_hist.hist_ptr())
-	 +Integral(ZJetsToLL_hist.hist_ptr())
-	 +Integral(VBFZ_hist.hist_ptr());
-       double n_others = 0;//Integral(GJets_hist.hist_ptr());
-       double n_data = Integral(data_hist.hist_ptr());
-       double n_signal = Integral(signal_hist.hist_ptr());
-       double n_Tot = n_qcd+n_top+n_WJets+n_ZJets+n_others;
+    if (plot_name.find("n_jets") != plot_name.npos && plot_name.find("ingap") == plot_name.npos) {
+
+      Utilities n_qcd = Utilities(Integral(qcd_hist.hist_ptr()),Error(qcd_hist.hist_ptr()));
+      Utilities n_top = Utilities(Integral(top_hist.hist_ptr()),Error(top_hist.hist_ptr()));
+      Utilities n_WJets = Utilities(Integral(WJets_hist.hist_ptr()),Error(WJets_hist.hist_ptr()));
+      Utilities n_ZJets = Utilities(Integral(ZJetsToNuNu_hist.hist_ptr())
+  				    +Integral(ZJetsToLL_hist.hist_ptr())
+  				    +Integral(VBFZ_hist.hist_ptr()),
+  				    Error(ZJetsToNuNu_hist.hist_ptr())
+  				    +Error(ZJetsToLL_hist.hist_ptr())
+  				    +Error(VBFZ_hist.hist_ptr())
+  				    );
+      Utilities n_others = Utilities(Integral(GJets_hist.hist_ptr()),Error(GJets_hist.hist_ptr()));
+      Utilities n_data = Utilities(Integral(data_hist.hist_ptr()),Error(data_hist.hist_ptr()));
+      Utilities n_signal = Utilities(Integral(signal_hist.hist_ptr()),Error(signal_hist.hist_ptr()));
+      Utilities n_Tot = Utilities(n_qcd.rawNumber()+n_top.rawNumber()+n_WJets.rawNumber()+n_ZJets.rawNumber()+n_others.rawNumber(),
+       				  n_qcd.rawError()+n_top.rawError()+n_WJets.rawError()+n_ZJets.rawError()+n_others.rawError());
        
-       double err_qcd = Error(qcd_hist.hist_ptr());
-       double err_top = Error(top_hist.hist_ptr());
-       double err_WJets = Error(WJets_hist.hist_ptr());
-       double err_ZJets = Error(ZJetsToNuNu_hist.hist_ptr())
-	 +Error(ZJetsToLL_hist.hist_ptr())
-	 +Error(VBFZ_hist.hist_ptr());
-       double err_others = 0;//Error(GJets_hist.hist_ptr());
-       double err_data = Error(data_hist.hist_ptr());
-       double err_signal = Error(signal_hist.hist_ptr());
-       double err_Tot = err_qcd+err_top+err_WJets+err_ZJets+err_others;
-       
-       std::cout << selections[k] << " & " 
-		 << n_qcd << " $\\pm$ " << err_qcd << " & " 
-		 << n_top  << " $\\pm$ " << err_top << " & " 
-		 << n_WJets << " $\\pm$ " << err_WJets  << " & " 
-		 << n_ZJets << " $\\pm$ " << err_ZJets  << " & " 
-		 << n_others << " $\\pm$ " << err_others  << " & " 
-		 << n_Tot << " $\\pm$ " << err_Tot  << " & " 
-		 << n_data << " $\\pm$ " << err_data  << " & " 
-		 << n_signal << " $\\pm$ " << err_signal << " \\\\ "
-		 << std::endl; 
-     }
+      //std::cout.precision(2);
+      //std::cout << std::scientific;
+
+      std::cout << selections[k] << " & " 
+		<< n_qcd.roundedResult() << " & " 
+		<< n_top.roundedResult() << " & "
+		<< n_WJets.roundedResult() << " & "
+		<< n_ZJets.roundedResult() << " & "
+		<< n_others.roundedResult() << " & "
+		<< n_Tot.roundedResult() << " & "
+ 		<< n_data.roundedNumber() << " & "
+ 		<< n_signal.roundedResult()
+		<< " \\\\ "
+		<< std::endl; 
+    }
 
 
 
