@@ -219,7 +219,7 @@ namespace ic {
           first_drawn = true;
         } else {
           thstack.Add(ele.hist_ptr(), draw_options.c_str());
-          if (n_added_to_stack == 0) thstack.SetHistogram(ele.hist_ptr());
+          if (n_added_to_stack == 0) thstack.SetHistogram((TH1F*)ele.hist_ptr()->Clone());
           ++n_added_to_stack;
           if (n_added_to_stack == n_in_stack) {
             thstack.Draw();
