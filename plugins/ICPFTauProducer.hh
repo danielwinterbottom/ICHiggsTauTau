@@ -39,6 +39,8 @@ class ICPFTauProducer : public edm::EDProducer {
       std::map<std::string, std::size_t> observed_id_;
       double min_pt_;
       double max_eta_;
+      bool require_decay_mode_;
+      std::map<std::string, double> idcuts_;
 
 
 };

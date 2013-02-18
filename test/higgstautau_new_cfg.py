@@ -206,8 +206,13 @@ process.icHLTTauProducer = cms.EDProducer('ICPFTauProducer',
         decayModeFinding = cms.InputTag("hltPFTauTrackFindingDiscriminator"),
         byIsolation = cms.InputTag("hltPFTauLooseIsolationDiscriminator")
         ),
-    minPt = cms.double(18),
-    maxEta = cms.double(2.6)
+    tauIDCuts = cms.PSet(
+        hltPFTauTrackFindingDiscriminator = cms.double(0.5),
+        hltPFTauLooseIsolationDiscriminator = cms.double(0.5)
+        ),
+    minPt = cms.double(19),
+    maxEta = cms.double(2.6),
+    requireDecayMode = cms.bool(False)
     )
 process.hltPFTauSequence = cms.Sequence(
     process.hltAK5PFJetTracksAssociatorAtVertex+

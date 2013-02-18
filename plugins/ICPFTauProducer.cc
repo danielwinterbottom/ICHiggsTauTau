@@ -40,8 +40,19 @@ ICPFTauProducer::ICPFTauProducer(const edm::ParameterSet& iConfig) {
   for (std::vector<std::string>::const_iterator it = id_names.begin(); it != id_names.end(); ++it) {
    tau_ids_.push_back(std::make_pair(*it, id_params.getParameter<edm::InputTag>(*it)));
   }
+  if (iConfig.exists("tauIDCuts")) {
+    edm::ParameterSet idcut_params = iConfig.getParameter<edm::ParameterSet>("tauIDCuts");
+    std::vector<std::string> idcut_names = idcut_params.getParameterNamesForType<double>();
+    for (std::vector<std::string>::const_iterator it = idcut_names.begin(); it != idcut_names.end(); ++it) {
+     idcuts_[*it] = idcut_params.getParameter<double>(*it);
+      std::cout << "Info in <ICPFTauProducer>: Require " << *it << " > " << idcuts_[*it] << std::endl;
+    }    
+  }
   min_pt_ = iConfig.getParameter<double>("minPt");
   max_eta_ = iConfig.getParameter<double>("maxEta");
+  require_decay_mode_ = true;
+  if (iConfig.exists("requireDecayMode")) require_decay_mode_ = iConfig.getParameter<bool>("requireDecayMode");
+  std::cout << "Info in <ICPFTauProducer>: Require tau decay mode: " << require_decay_mode_ << std::endl;
   taus_ = new std::vector<ic::Tau>();
 }
 
@@ -75,8 +86,21 @@ void ICPFTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   unsigned idx = 0;
   for (iter = tauCollection->begin(); iter != tauCollection->end(); ++iter, ++idx) {
     
-    if (iter->decayMode() < 0.5) continue;
-    if (! (iter->decayMode() > 0.5 && iter->pt() > min_pt_ && fabs(iter->eta()) < max_eta_) ) continue;
+    if (iter->decayMode() < 0.5 && require_decay_mode_) continue;
+    if (! (iter->pt() > min_pt_ && fabs(iter->eta()) < max_eta_) ) continue;
+
+    bool failed_id = false;
+    for (auto idit = idcuts_.begin(); idit != idcuts_.end(); ++idit) {
+      edm::Handle<reco::PFTauDiscriminator> discr;
+      iEvent.getByLabel(idit->first, discr);
+      reco::PFTauRef tau_ref(tauCollection, idx);
+      if ((*discr)[tau_ref] <= idit->second ) {
+        failed_id = true;
+        break;
+      }
+    }
+    if (failed_id) continue;
+
 
     taus_->push_back(ic::Tau());
     ic::Tau & tau = taus_->back();
@@ -97,16 +121,23 @@ void ICPFTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       observed_id_[tau_ids_[i].first] = CityHash64(tau_ids_[i].first);
     }
     tau.set_decay_mode(iter->decayMode());
-    tau.set_lead_ecal_energy(iter->leadPFChargedHadrCand()->ecalEnergy());
-    tau.set_lead_hcal_energy(iter->leadPFChargedHadrCand()->hcalEnergy());
-    tau.set_lead_p(iter->leadPFChargedHadrCand()->p());
-    if(iter->leadPFChargedHadrCand()->trackRef().isNonnull() && vertexCollection->size() > 0) {
-      tau.set_lead_dxy_vertex(iter->leadPFChargedHadrCand()->trackRef()->dxy(vertexCollection->at(0).position()));
-      tau.set_lead_dz_vertex(iter->leadPFChargedHadrCand()->trackRef()->dz(vertexCollection->at(0).position()));
+    if (iter->leadPFChargedHadrCand().isNonnull()) {
+      tau.set_lead_ecal_energy(iter->leadPFChargedHadrCand()->ecalEnergy());
+      tau.set_lead_hcal_energy(iter->leadPFChargedHadrCand()->hcalEnergy());
+      tau.set_lead_p(iter->leadPFChargedHadrCand()->p());      
+      if(iter->leadPFChargedHadrCand()->trackRef().isNonnull() && vertexCollection->size() > 0) {
+        tau.set_lead_dxy_vertex(iter->leadPFChargedHadrCand()->trackRef()->dxy(vertexCollection->at(0).position()));
+        tau.set_lead_dz_vertex(iter->leadPFChargedHadrCand()->trackRef()->dz(vertexCollection->at(0).position()));
+      } else {
+        tau.set_lead_dxy_vertex(9999.0);
+        tau.set_lead_dz_vertex(9999.0);
+      }
     } else {
-      tau.set_lead_dxy_vertex(9999.0);
-      tau.set_lead_dz_vertex(9999.0);
+      tau.set_lead_ecal_energy(-9999.0);
+      tau.set_lead_hcal_energy(-9999.0);
+      tau.set_lead_p(-9999.0);    
     }
+    
 
     tau.set_vx(iter->vx());
     tau.set_vy(iter->vy());
@@ -115,17 +146,18 @@ void ICPFTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if (trackCollection->size() > 0) {
       reco::Track const* ptr_first = &(trackCollection->at(0));
       static boost::hash<reco::Track const*> track_hasher;
-
-      reco::PFCandidateRefVector const& charged_pf = iter->signalPFChargedHadrCands();
-      std::vector<std::size_t> trk_ids;
-      for (unsigned i = 0; i <charged_pf.size(); ++i) {
-        if (charged_pf[i]->trackRef().isNonnull()) {
-          unsigned idx = unsigned(&(*(charged_pf[i]->trackRef())) - ptr_first);
-          jet_tracks->push_back(idx);
-          trk_ids.push_back(track_hasher(&(*(charged_pf[i]->trackRef()))));
+      if (iter->signalPFChargedHadrCands().isNonnull()) {
+        reco::PFCandidateRefVector const& charged_pf = iter->signalPFChargedHadrCands();
+        std::vector<std::size_t> trk_ids;
+        for (unsigned i = 0; i <charged_pf.size(); ++i) {
+          if (charged_pf[i]->trackRef().isNonnull()) {
+            unsigned idx = unsigned(&(*(charged_pf[i]->trackRef())) - ptr_first);
+            jet_tracks->push_back(idx);
+            trk_ids.push_back(track_hasher(&(*(charged_pf[i]->trackRef()))));
+          }
         }
+        if (store_ids_) tau.set_constituent_tracks(trk_ids);        
       }
-      if (store_ids_) tau.set_constituent_tracks(trk_ids);
     }
   }
   iEvent.put(jet_tracks, "selectTracks");
