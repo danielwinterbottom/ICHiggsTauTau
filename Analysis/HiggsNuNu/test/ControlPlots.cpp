@@ -364,23 +364,24 @@ int main(int argc, char* argv[]){
 
     SetSignalStyle(signal_hist,2);
     SetDataStyle(data_hist);
-    SetBkgStyle(qcd_hist,9);
+    SetBkgStyle(qcd_hist,7);
     SetBkgStyle(top_hist,5);
     SetBkgStyle(WJets_hist,6);
-    SetBkgStyle(ZJetsToLL_hist,4);
+    SetBkgStyle(ZJetsToLL_hist,3);
     SetBkgStyle(ZJetsToNuNu_hist,3);
-    SetBkgStyle(VBFZ_hist,8);
+    SetBkgStyle(VBFZ_hist,3);
     SetBkgStyle(GJets_hist,7);
 
     data_hist.set_legend_text("Data");
     signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
-    qcd_hist.set_legend_text("QCD");
-    GJets_hist.set_legend_text("#gamma + jets");
+    qcd_hist.set_legend_text("QCD,#gamma+jets");
+    //GJets_hist.set_legend_text("#gamma + jets");
     top_hist.set_legend_text("t#bar{t},tW,#bar{t}W");
     WJets_hist.set_legend_text("W+jets");
-    VBFZ_hist.set_legend_text("VBF Z+2j");
-    ZJetsToLL_hist.set_legend_text("Z#rightarrow ll + jets");
-    ZJetsToNuNu_hist.set_legend_text("Z#rightarrow #nu#nu + jets");
+    //VBFZ_hist.set_legend_text("VBF Z+2j");
+    //ZJetsToLL_hist.set_legend_text("Z#rightarrow ll + jets");
+    //ZJetsToNuNu_hist.set_legend_text("Z#rightarrow #nu#nu + jets");
+    ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
 
     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);

@@ -125,9 +125,9 @@ int main(int argc, char* argv[]){
   muon_dz = 0.2;
   muon_dxy = 0.045;
   elec_pt = 10.0;
-  elec_eta = 2.4;
+  elec_eta = 5;//2.4;
   muon_pt = 10.0;
-  muon_eta = 2.4;
+  muon_eta = 5;//2.4;
   
   std::cout << "----------PARAMETERS----------" << std::endl;
   std::cout << boost::format("%-15s %-10s\n") % "elec_pt:" % elec_pt;
@@ -215,9 +215,9 @@ int main(int argc, char* argv[]){
     ("VetoElectronPtEtaFilter")
     .set_input_label("vetoElectrons").set_predicate(bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
 						    bind(Electron2011WP95ID, _1) && 
-						    bind(PF04Isolation<Electron>, _1, 0.5, 0.3) &&
-						    bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
-						    bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
+						    bind(PF04Isolation<Electron>, _1, 0.5, 0.3) //&&
+						    //bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
+						    //bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
 						    )
     .set_min(0)
     .set_max(0);
@@ -234,9 +234,9 @@ int main(int argc, char* argv[]){
     ("VetoMuonPtEtaFilter")
     .set_input_label("vetoMuons").set_predicate(bind(MinPtMaxEta, _1, muon_pt, muon_eta) &&
 						bind(&Muon::is_global, _1) && 
-						bind(PF04Isolation<Muon>, _1, 0.5, 0.3) &&
-						bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
-						bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
+						bind(PF04Isolation<Muon>, _1, 0.5, 0.3) //&&
+						//bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
+						//bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
 						)
     .set_min(0)
     .set_max(0);
@@ -369,11 +369,11 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjCandidates")
     .set_sel_label("Mjj");
 
-  HinvControlPlots controlPlots_deta = HinvControlPlots("EtaProdDEta")
+  HinvControlPlots controlPlots_deta = HinvControlPlots("DEta")
     .set_fs(fs)
     .set_met_label("pfMet")
     .set_dijet_label("jjCandidates")
-    .set_sel_label("EtaProdDEta");
+    .set_sel_label("DEta");
 
   HinvControlPlots controlPlots_lepveto = HinvControlPlots("LeptonVeto")
     .set_fs(fs)
@@ -405,19 +405,13 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&jetPtEtaFilter);
 
      analysis.AddModule(&jjPairProducer);
-     analysis.AddModule(&jetPairFilter);
+     analysis.AddModule(&etaProdJetPairFilter);
+     //analysis.AddModule(&jetPairFilter);
      analysis.AddModule(&controlPlots_dijet);
 
      //met modules
      analysis.AddModule(&metFilter);
      analysis.AddModule(&controlPlots_met);
-
-     //dijet modules
-     analysis.AddModule(&massJetPairFilter);
-     analysis.AddModule(&controlPlots_mjj);
-     analysis.AddModule(&etaProdJetPairFilter);
-     analysis.AddModule(&detaJetPairFilter);
-     analysis.AddModule(&controlPlots_deta);
 
      //lepton veto modules
      analysis.AddModule(&vetoElectronCopyCollection);
@@ -425,6 +419,12 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
      analysis.AddModule(&controlPlots_lepveto);
+
+     //dijet modules
+     analysis.AddModule(&massJetPairFilter);
+     analysis.AddModule(&controlPlots_mjj);
+     analysis.AddModule(&detaJetPairFilter);
+     analysis.AddModule(&controlPlots_deta);
 
      //dphi cut
      analysis.AddModule(&dphiJetPairFilter);

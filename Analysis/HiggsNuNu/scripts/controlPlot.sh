@@ -22,6 +22,15 @@ PARAMS=./scripts/Params.dat
     --log_y=true \
     --paramfile=$PARAMS
 
+###### n_vtx
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --plot_name="n_vtx"  --x_axis_label="Number of vertices" \
+    --y_axis_min=0.01 --extra_pad=1000 \
+    --rebin=1 \
+    --norm_bins=false --verbose=false \
+    --log_y=true \
+    --paramfile=$PARAMS
+
 ###### jpt_1
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
