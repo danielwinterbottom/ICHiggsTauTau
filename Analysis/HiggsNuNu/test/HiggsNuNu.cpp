@@ -125,9 +125,9 @@ int main(int argc, char* argv[]){
   muon_dz = 0.2;
   muon_dxy = 0.045;
   elec_pt = 10.0;
-  elec_eta = 5;//2.4;
+  elec_eta = 2.4;
   muon_pt = 10.0;
-  muon_eta = 5;//2.4;
+  muon_eta = 2.4;
   
   std::cout << "----------PARAMETERS----------" << std::endl;
   std::cout << boost::format("%-15s %-10s\n") % "elec_pt:" % elec_pt;
@@ -413,18 +413,18 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&metFilter);
      analysis.AddModule(&controlPlots_met);
 
+     //dijet modules
+     analysis.AddModule(&massJetPairFilter);
+     analysis.AddModule(&controlPlots_mjj);
+     analysis.AddModule(&detaJetPairFilter);
+     analysis.AddModule(&controlPlots_deta);
+
      //lepton veto modules
      analysis.AddModule(&vetoElectronCopyCollection);
      analysis.AddModule(&vetoElectronFilter);
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
      analysis.AddModule(&controlPlots_lepveto);
-
-     //dijet modules
-     analysis.AddModule(&massJetPairFilter);
-     analysis.AddModule(&controlPlots_mjj);
-     analysis.AddModule(&detaJetPairFilter);
-     analysis.AddModule(&controlPlots_deta);
 
      //dphi cut
      analysis.AddModule(&dphiJetPairFilter);

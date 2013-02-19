@@ -263,10 +263,9 @@ int main(int argc, char* argv[]){
   selections.push_back("JetPair");
   selections.push_back("MET");
   selections.push_back("Mjj");
-  selections.push_back("EtaProdDEta");
+  selections.push_back("DEta");
   selections.push_back("LeptonVeto");
   selections.push_back("DPhi");
-
 
   std::map<std::string, TFile *> tfiles;
   for (unsigned i = 0; i < files.size(); ++i) {
