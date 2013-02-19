@@ -84,6 +84,8 @@ namespace ic {
 
     InitCategory("btag");
 
+    InitCategory("sasha");
+
     InitCategory("btag_loose");
 
     InitCategory("nobtag");
@@ -338,7 +340,10 @@ namespace ic {
     }
 
 
+    if (n_lowpt_jets_ >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
+
     if (n_jets_ <= 1 && n_bjets_ > 0) SetPassCategory("btag");
+
     if (n_jets_ <= 1 && n_loose_bjets_ > 0) SetPassCategory("btag_loose");
     if (!PassesCategory("vbf") && n_bjets_ == 0) SetPassCategory("nobtag");
 
