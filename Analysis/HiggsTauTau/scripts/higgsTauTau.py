@@ -195,10 +195,6 @@ FILELIST='filelists/Dec30_MC_53X'
 if options.do_2011: FILELIST='filelists/Sept11_MC_42X'
 
 signal_mc= [
-	# 'GluGluToHToTauTau_M-90', 
-	# 'GluGluToHToTauTau_M-95',
-	# 'GluGluToHToTauTau_M-100', 
-	# 'GluGluToHToTauTau_M-105',
 	'GluGluToHToTauTau_M-110', 
 	'GluGluToHToTauTau_M-115',	
 	'GluGluToHToTauTau_M-120', 
@@ -207,13 +203,6 @@ signal_mc= [
 	'GluGluToHToTauTau_M-135', 
 	'GluGluToHToTauTau_M-140', 
 	'GluGluToHToTauTau_M-145', 
-	# 'GluGluToHToTauTau_M-150',
-	# 'GluGluToHToTauTau_M-155',
-	# 'GluGluToHToTauTau_M-160',
-	# 'VBF_HToTauTau_M-90',
-	# 'VBF_HToTauTau_M-95',
-	# 'VBF_HToTauTau_M-100', 
-	# 'VBF_HToTauTau_M-105',
 	'VBF_HToTauTau_M-110', 
 	'VBF_HToTauTau_M-115', 
 	'VBF_HToTauTau_M-120', 
@@ -222,13 +211,6 @@ signal_mc= [
 	'VBF_HToTauTau_M-135', 
 	'VBF_HToTauTau_M-140', 
 	'VBF_HToTauTau_M-145', 
-  # 'VBF_HToTauTau_M-150',
-  # 'VBF_HToTauTau_M-155',
-  # 'VBF_HToTauTau_M-160',
-  # 'WH_ZH_TTH_HToTauTau_M-90',
-  # 'WH_ZH_TTH_HToTauTau_M-95',
-  # 'WH_ZH_TTH_HToTauTau_M-100',
-  # 'WH_ZH_TTH_HToTauTau_M-105',
 	'WH_ZH_TTH_HToTauTau_M-110', 
 	'WH_ZH_TTH_HToTauTau_M-115', 
 	'WH_ZH_TTH_HToTauTau_M-120', 
@@ -237,9 +219,6 @@ signal_mc= [
 	'WH_ZH_TTH_HToTauTau_M-135',
 	'WH_ZH_TTH_HToTauTau_M-140', 
 	'WH_ZH_TTH_HToTauTau_M-145',
-	# 'WH_ZH_TTH_HToTauTau_M-150',
-	# 'WH_ZH_TTH_HToTauTau_M-155',
-	# 'WH_ZH_TTH_HToTauTau_M-160',
 	# 'SUSYGluGluToHToTauTau_M-80',
 	# 'SUSYGluGluToHToTauTau_M-90',
 	# 'SUSYGluGluToHToTauTau_M-100',
@@ -283,6 +262,32 @@ signal_mc= [
 	# 'SUSYBBHToTauTau_M-900',
 	# 'SUSYBBHToTauTau_M-1000'
 ]
+
+if not options.do_2011:
+  signal_mc += [
+	 'GluGluToHToTauTau_M-90', 
+	 'GluGluToHToTauTau_M-95',
+	 'GluGluToHToTauTau_M-100', 
+	 'GluGluToHToTauTau_M-105',
+	 'GluGluToHToTauTau_M-150',
+	 'GluGluToHToTauTau_M-155',
+	 'GluGluToHToTauTau_M-160',
+	 'VBF_HToTauTau_M-90',
+	 'VBF_HToTauTau_M-95',
+	 'VBF_HToTauTau_M-100', 
+	 'VBF_HToTauTau_M-105',
+   'VBF_HToTauTau_M-150',
+   'VBF_HToTauTau_M-155',
+   'VBF_HToTauTau_M-160',
+   'WH_ZH_TTH_HToTauTau_M-90',
+   'WH_ZH_TTH_HToTauTau_M-95',
+   'WH_ZH_TTH_HToTauTau_M-100',
+   'WH_ZH_TTH_HToTauTau_M-105',
+	 'WH_ZH_TTH_HToTauTau_M-150',
+	 'WH_ZH_TTH_HToTauTau_M-155',
+	 'WH_ZH_TTH_HToTauTau_M-160'
+   ]
+
 
 if options.mc:
 		for ch in channels:

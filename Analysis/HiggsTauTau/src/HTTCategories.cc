@@ -339,8 +339,9 @@ namespace ic {
       FillCoreControlPlots("0jet_low");
     }
 
-
-    if (n_lowpt_jets_ >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
+    auto lowpt_jets_copy = lowpt_jets;
+    ic::erase_if(lowpt_jets_copy,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    if (lowpt_jets_copy.size() >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
 
     if (n_jets_ <= 1 && n_bjets_ > 0) SetPassCategory("btag");
 
