@@ -113,6 +113,7 @@ int main(int argc, char* argv[]){
   string cfg;			     // The configuration file
   string paramfile;		     // The parameters files									
 
+  string plot_dir;                   // Name of the folder comtaining the output plots
   string plot_name;		     // Name of the plot to draw
   string folder;		     // Folder containing input files
   bool is_2012;			     // false = 7 TeV, true = 8 TeV
@@ -131,8 +132,9 @@ int main(int argc, char* argv[]){
   double y_axis_max;		     // If custom_y_axis_range is true, use this as max
   double extra_pad;		     // Expand the y-axis by an additional factor
   bool blind;			     // Blind some region of the data
-  double x_blind_min;		     // If bind is true, use this as min x for blinding
-  double x_blind_max;		     // If bind is true, use this as min x for blinding
+  double x_blind_min;		     // If bind is true, use this as min x for blinding.
+                                     // If min>max blind everything
+  double x_blind_max;		     // If bind is true, use this as max x for blinding
   bool log_y;			     // Draw plot in log scale
   bool norm_bins;		     // Normalise using bin width
   bool signal_no_stack;		     // Don't stack the signal contributions on the backgrounds
@@ -158,6 +160,7 @@ int main(int argc, char* argv[]){
   po::options_description config("Configuration");
   config.add_options()
     ("paramfile",           po::value<string>(&paramfile)->required())
+    ("plot_dir",            po::value<string>(&plot_dir)->default_value("PLOTS"))
     ("plot_name",           po::value<string>(&plot_name)->required())
     ("folder",              po::value<string>(&folder)->required())
     ("is_2012",             po::value<bool>(&is_2012)->required())
@@ -197,6 +200,7 @@ int main(int argc, char* argv[]){
 
   string param_fmt = "%-25s %-40s\n";
   std::cout << boost::format(param_fmt) % "paramfile" 	% paramfile;
+  std::cout << boost::format(param_fmt) % "plot_dir" 	% plot_dir;
   std::cout << boost::format(param_fmt) % "plot_name" 	% plot_name;
   std::cout << boost::format(param_fmt) % "folder" 			% folder;
   std::cout << boost::format(param_fmt) % "is_2012" 		% is_2012;
@@ -327,8 +331,8 @@ int main(int argc, char* argv[]){
 
   for (unsigned k = 0; k < selections.size(); ++k) {
     ic::Plot plot;
-    plot.output_filename = "PLOTS/"+plot_name + "_" + year_label + "_" + selections[k] + ".pdf";
-    if (log_y) plot.output_filename = "PLOTS/"+plot_name + "_" + year_label + "_" + selections[k]  + "_log.pdf";
+    plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k] + ".pdf";
+    if (log_y) plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k]  + "_log.pdf";
   
     plot.x_bin_labels_ = x_axis_bin_labels;
 
@@ -363,32 +367,72 @@ int main(int argc, char* argv[]){
 
     SetSignalStyle(signal_hist,2);
     SetDataStyle(data_hist);
-    SetBkgStyle(qcd_hist,7);
-    SetBkgStyle(top_hist,5);
-    SetBkgStyle(WJets_hist,6);
-    SetBkgStyle(ZJetsToLL_hist,3);
-    SetBkgStyle(ZJetsToNuNu_hist,3);
-    SetBkgStyle(VBFZ_hist,3);
-    SetBkgStyle(GJets_hist,7);
+    SetBkgStyle(qcd_hist,8);
+    SetBkgStyle(top_hist,2);
+    SetBkgStyle(WJets_hist,4);
+    SetBkgStyle(ZJetsToLL_hist,7);
+    SetBkgStyle(ZJetsToNuNu_hist,7);
+    SetBkgStyle(VBFZ_hist,7);
+    SetBkgStyle(GJets_hist,8);
+
+//     SetSignalStyle(signal_hist,2);
+//     SetDataStyle(data_hist);
+//     SetBkgStyle(qcd_hist,7);
+//     SetBkgStyle(top_hist,5);
+//     SetBkgStyle(WJets_hist,6);
+//     SetBkgStyle(ZJetsToLL_hist,3);
+//     SetBkgStyle(ZJetsToNuNu_hist,3);
+//     SetBkgStyle(VBFZ_hist,3);
+//     SetBkgStyle(GJets_hist,7);
 
     data_hist.set_legend_text("Data");
     signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
     qcd_hist.set_legend_text("QCD,#gamma+jets");
     //GJets_hist.set_legend_text("#gamma + jets");
+    ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
     top_hist.set_legend_text("t#bar{t},tW,#bar{t}W");
     WJets_hist.set_legend_text("W+jets");
     //VBFZ_hist.set_legend_text("VBF Z+2j");
     //ZJetsToLL_hist.set_legend_text("Z#rightarrow ll + jets");
     //ZJetsToNuNu_hist.set_legend_text("Z#rightarrow #nu#nu + jets");
-    ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
 
+
+
+    if (blind && 
+	( (k==selections.size()-1) ||
+	  (k==selections.size()-2 && plot_name.find("dphijj") != plot_name.npos )
+	  )) {
+      for (int j = 0; j < data_hist.hist_ptr()->GetNbinsX(); ++j) {
+	if (x_blind_min < x_blind_max){
+	  double low_edge = data_hist.hist_ptr()->GetBinLowEdge(j+1);
+	  double high_edge = data_hist.hist_ptr()->GetBinWidth(j+1)+data_hist.hist_ptr()->GetBinLowEdge(j+1);
+	  if ((low_edge > x_blind_min && low_edge < x_blind_max) || (high_edge > x_blind_min && high_edge < x_blind_max)) {
+	    data_hist.hist_ptr()->SetBinContent(j+1,0);
+	    data_hist.hist_ptr()->SetBinError(j+1,0);
+	  }
+	}
+	else {
+	  data_hist.hist_ptr()->SetBinContent(j+1,0);
+	  data_hist.hist_ptr()->SetBinError(j+1,0);
+	}
+      }
+    }
+
+    plot.AddTH1PlotElement(WJets_hist);
+    plot.AddTH1PlotElement(top_hist);
     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);
     plot.AddTH1PlotElement(VBFZ_hist);
-    plot.AddTH1PlotElement(WJets_hist);
-    plot.AddTH1PlotElement(top_hist);
     plot.AddTH1PlotElement(GJets_hist);
     plot.AddTH1PlotElement(qcd_hist);
+    
+//     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
+//     plot.AddTH1PlotElement(ZJetsToLL_hist);
+//     plot.AddTH1PlotElement(VBFZ_hist);
+//     plot.AddTH1PlotElement(WJets_hist);
+//     plot.AddTH1PlotElement(top_hist);
+//     plot.AddTH1PlotElement(GJets_hist);
+//     plot.AddTH1PlotElement(qcd_hist);
     
     plot.AddTH1PlotElement(data_hist);
 
