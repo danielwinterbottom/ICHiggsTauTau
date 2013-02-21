@@ -990,6 +990,11 @@ if ((release == '53X') and (not isData)):
       hltPath = cms.untracked.string("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
       StoreOnlyIfFired = cms.untracked.bool(notTp)
       )
+  process.icIsoMu24ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsIsoMu24"),
+      hltPath = cms.untracked.string("HLT_IsoMu24_eta2p1_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )  
   process.icTriggerSequence += (
     process.icEle22WP90RhoLooseTau20ObjectProducer
     +process.icIsoMu17LooseTau20ObjectProducer
@@ -997,6 +1002,7 @@ if ((release == '53X') and (not isData)):
     +process.icMu17Ele8ObjectProducer
     +process.icMu8ObjectProducer
     +process.icEle8ObjectProducer
+    +process.icIsoMu24ObjectProducer
     )
 
 
