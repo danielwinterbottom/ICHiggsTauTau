@@ -19,15 +19,16 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HinvDataTriggerFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HinvWeights.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HinvControlPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MetSelection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvDataTriggerFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
+
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
 
 

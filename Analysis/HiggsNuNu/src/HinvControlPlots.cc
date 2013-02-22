@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HinvControlPlots.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
 
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
@@ -56,6 +56,8 @@ namespace ic {
     misc_2dplots_ = new Dynamic2DHistoSet(fs_->mkdir("misc_2dplots"));
     InitCoreControlPlots();
     
+    yields_ = 0;
+
     return 0;
   }
 

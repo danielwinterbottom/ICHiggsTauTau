@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/HinvWeights.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
