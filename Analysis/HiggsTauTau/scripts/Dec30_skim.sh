@@ -99,7 +99,7 @@ CONFIG=scripts/Moriond_2012.cfg
 echo $CONFIG
 FILELIST=filelists/Dec30_MC_53X
 SKIMPATH=$SSD/Dec30/MC_53X
-PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec30/MC_53X/
+PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec30/MC_53X-Update/
 
 PATHS=(
       # 'DYJetsToLL'
@@ -125,7 +125,6 @@ PATHS=(
       # 'WH_ZH_TTH_HToTauTau_M-125'
       # 'SUSYGluGluToHToTauTau_M-160'
       # 'SUSYBBHToTauTau_M-160'
-
       'GluGluToHToTauTau_M-90' 
       'GluGluToHToTauTau_M-95' 
       'GluGluToHToTauTau_M-100' 

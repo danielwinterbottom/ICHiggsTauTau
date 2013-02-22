@@ -85,7 +85,7 @@ JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
  echo $CONFIG
  FILELIST=filelists/Dec30_MC_53X
  SKIMPATH=$SSD/Dec30/MC_53X
- PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec30/MC_53X/
+ PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec30/MC_53X-Update/
  PATHS=(
       # 'DYJetsToLL'
       # 'TTJets'
