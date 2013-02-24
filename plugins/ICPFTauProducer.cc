@@ -90,7 +90,7 @@ void ICPFTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if (! (iter->pt() > min_pt_ && fabs(iter->eta()) < max_eta_) ) continue;
 
     bool failed_id = false;
-    for (auto idit = idcuts_.begin(); idit != idcuts_.end(); ++idit) {
+    for (std::map<std::string, double>::const_iterator idit = idcuts_.begin(); idit != idcuts_.end(); ++idit) {
       edm::Handle<reco::PFTauDiscriminator> discr;
       iEvent.getByLabel(idit->first, discr);
       reco::PFTauRef tau_ref(tauCollection, idx);
