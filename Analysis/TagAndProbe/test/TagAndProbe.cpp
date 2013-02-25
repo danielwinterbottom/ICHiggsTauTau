@@ -32,6 +32,7 @@ int main(int argc, char* argv[]){
     std::string era, eraB;
     std::string configfile, outname,outnametrg,outnametrgB, filelist, outfolder;
     std::string skim_path="";
+    std::string input_prefix;
     int max_events;
     int run_low, run_low_B;
     int run_high, run_high_B;
@@ -77,6 +78,7 @@ int main(int argc, char* argv[]){
       ("second_trigger", po::value<bool>(&second_trigger)->default_value(false), "allows a measurement of a second trigger if there are two in era")
       ("is_elec", po::value<bool>(&iselec)->required(), "0=muons, 1=electrons")
       ("filelist", po::value<std::string>(&filelist)->required(), "input filelist")
+      ("input_prefix", po::value<std::string>(&input_prefix)->default_value(""))
       ("outfolder", po::value<std::string>(&outfolder)->default_value(""), "output folder");
     po::store(po::command_line_parser(argc, argv).
             options(config).allow_unregistered().run(), vm);
@@ -186,6 +188,8 @@ int main(int argc, char* argv[]){
     AutoLibraryLoader::enable();
     // Build a vector of input files
     std::vector<std::string> files = ParseFileLines(filelist);
+    for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
+    
     // Create ROOT output fileservice
     fwlite::TFileService *fsid, *fstrg, *fstrg2;
     if(!trg_only && !do_skim)
@@ -233,7 +237,7 @@ int main(int argc, char* argv[]){
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_path, "/", "pileup");
  
   std::string data_json;
-  if (era == "2012A" || era == "2012B" || era == "2012C" || era == "2012D") data_json = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/data/json/Cert_190456-208686_8TeV_PromptReco_Collisions12_JSON.txt" ;
+  if (era == "2012A" || era == "2012B" || era == "2012C" || era == "2012D") data_json = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/data/json/data_2012_moriond.txt" ;
   else data_json           =  "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/data/json/data_2011.txt";
 
   // Create analysis object
