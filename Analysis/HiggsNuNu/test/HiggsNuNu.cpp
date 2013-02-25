@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
       ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false));
+      ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -262,9 +263,12 @@ int main(int argc, char* argv[]){
   // Jet pT eta filter
   //CopyCollection<PFJet> jetCopyCollection("CopyToJet","pfJetsPFlow","selJets");
 
+  double jetptcut=50.0;
+  if(do_skim) jetptcut = 40.0;
+
   SimpleFilter<PFJet> jetPtEtaFilter = SimpleFilter<PFJet>
     ("JetPtEtaFilter")
-    .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, 50.0, 4.7));
+    .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptcut, 4.7));
 
   OneCollCompositeProducer<PFJet> jjPairProducer = OneCollCompositeProducer<PFJet>
     ("JetJetPairProducer")
@@ -293,6 +297,10 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(999);    
 
+
+  double minmjj=1200;
+  if(do_skim)minmjj=600;
+
   SimpleFilter<CompositeCandidate> massJetPairFilter = SimpleFilter<CompositeCandidate>("MassJetPairFilter")
     .set_input_label("jjLeadingCandidates")
     .set_predicate( bind(PairMassInRange, _1,1200,8000) )
@@ -312,9 +320,9 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
-
-  MetSelection metFilter = MetSelection("MetFilter","pfMet",130);
-
+  double metcut = 130;
+  if(do_skim) metcut = 80;
+  MetSelection metFilter = MetSelection("MetFilter",mettype,metcut);
 
   // ------------------------------------------------------------------------------------
   // Selection Modules
@@ -435,6 +443,14 @@ int main(int argc, char* argv[]){
 
    }
 
+   //Build Skimming Analysis
+   //analysis.AddModule(pointer to module defined above)
+   if(do_skim){
+     analysis.AddModule(&jetPtEtaFilter);
+     analysis.AddModule(&metFilter);
+     analysis.AddModule(&jjPairProducer);
+     analysis.AddModule(&massJetPairFilter);
+   }
    // Run analysis
    
    analysis.RunAnalysis();
