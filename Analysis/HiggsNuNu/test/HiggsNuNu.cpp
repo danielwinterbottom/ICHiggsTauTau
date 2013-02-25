@@ -269,38 +269,39 @@ int main(int argc, char* argv[]){
   OneCollCompositeProducer<PFJet> jjPairProducer = OneCollCompositeProducer<PFJet>
     ("JetJetPairProducer")
     .set_input_label("pfJetsPFlow")
-   .set_candidate_name_first("jet1")
-   .set_candidate_name_second("jet2")
-   .set_output_label("jjCandidates");                                                        
+    .set_candidate_name_first("jet1")
+    .set_candidate_name_second("jet2")
+    .set_select_leading_pair(true)
+    .set_output_label("jjLeadingCandidates");                                                        
 
   SimpleFilter<CompositeCandidate> jetPairFilter = SimpleFilter<CompositeCandidate>("JetPairFilter")
-    .set_input_label("jjCandidates")
+    .set_input_label("jjLeadingCandidates")
     .set_predicate( bind(DummyFunction<CompositeCandidate>, _1) )
     .set_min(1)
     .set_max(999);
 
   SimpleFilter<CompositeCandidate> etaProdJetPairFilter = SimpleFilter<CompositeCandidate>("EtaProdJetPairFilter")
-    .set_input_label("jjCandidates")
+    .set_input_label("jjLeadingCandidates")
     .set_predicate( bind(PairEtaProdLessThan, _1, 0))
     .set_min(1)
     .set_max(999);
 
 
   SimpleFilter<CompositeCandidate> detaJetPairFilter = SimpleFilter<CompositeCandidate>("DetaJetPairFilter")
-    .set_input_label("jjCandidates")
+    .set_input_label("jjLeadingCandidates")
     .set_predicate( !bind(PairDEtaLessThan, _1, 4.2) )
     .set_min(1)
     .set_max(999);    
 
   SimpleFilter<CompositeCandidate> massJetPairFilter = SimpleFilter<CompositeCandidate>("MassJetPairFilter")
-    .set_input_label("jjCandidates")
+    .set_input_label("jjLeadingCandidates")
     .set_predicate( bind(PairMassInRange, _1,1200,8000) )
     .set_min(1)
     .set_max(999);    
 
  
   SimpleFilter<CompositeCandidate> dphiJetPairFilter = SimpleFilter<CompositeCandidate>("DphiJetPairFilter")
-    .set_input_label("jjCandidates")
+    .set_input_label("jjLeadingCandidates")
     .set_predicate( bind(PairDPhiLessThan, _1,1.0) )
     .set_min(1)
     .set_max(999);    
@@ -355,37 +356,37 @@ int main(int argc, char* argv[]){
   HinvControlPlots controlPlots_dijet = HinvControlPlots("Dijet")
     .set_fs(fs)
     .set_met_label("pfMet")
-    .set_dijet_label("jjCandidates")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("JetPair");
 
   HinvControlPlots controlPlots_met = HinvControlPlots("MET")
     .set_fs(fs)
     .set_met_label("pfMet")
-    .set_dijet_label("jjCandidates")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("MET");
 
   HinvControlPlots controlPlots_mjj = HinvControlPlots("Mjj")
     .set_fs(fs)
     .set_met_label("pfMet")
-    .set_dijet_label("jjCandidates")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("Mjj");
 
   HinvControlPlots controlPlots_deta = HinvControlPlots("DEta")
     .set_fs(fs)
     .set_met_label("pfMet")
-    .set_dijet_label("jjCandidates")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DEta");
 
   HinvControlPlots controlPlots_lepveto = HinvControlPlots("LeptonVeto")
     .set_fs(fs)
     .set_met_label("pfMet")
-    .set_dijet_label("jjCandidates")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("LeptonVeto");
 
   HinvControlPlots controlPlots_dphi = HinvControlPlots("DPhi")
     .set_fs(fs)
     .set_met_label("pfMet")
-    .set_dijet_label("jjCandidates")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhi");
 
   // ------------------------------------------------------------------------------------
