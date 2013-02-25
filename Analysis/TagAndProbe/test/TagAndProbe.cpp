@@ -215,30 +215,30 @@ int main(int argc, char* argv[]){
         }
     }
   
-  std::string data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2011_HCP-500bins.root";
-  std::string mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Fall11_PU_S6-500bins.root";
+  std::string data_pu_path = "/data/pileup/Data_Pileup_2011_HCP-500bins.root";
+  std::string mc_pu_path = "/data/pileup/MC_Fall11_PU_S6-500bins.root";
   if (era == "2012A" || era=="2012B" || era=="2012")
   {
-      data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012_Moriond-600bins.root";
-      //data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012_HCP-600bins.root";
-      mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S10-600bins.root";
+      data_pu_path = "/data/pileup/Data_Pileup_2012_Moriond-600bins.root";
+      //data_pu_path = "/data/pileup/Data_Pileup_2012_HCP-600bins.root";
+      mc_pu_path = "/data/pileup/MC_Summer12_PU_S10-600bins.root";
   }
   if (era=="2012C")
   {
-      data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012C.root";
-      mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S10-600bins.root";
+      data_pu_path = "/data/pileup/Data_Pileup_2012C.root";
+      mc_pu_path = "/data/pileup/MC_Summer12_PU_S10-600bins.root";
   }
   if (era=="2012D")
   {
-      data_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/Data_Pileup_2012_DOnly-600bins.root";
-      mc_pu_path = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/TagAndProbe/data/pileup/MC_Summer12_PU_S10-600bins.root";
+      data_pu_path = "/data/pileup/Data_Pileup_2012_DOnly-600bins.root";
+      mc_pu_path = "/data/pileup/MC_Summer12_PU_S10-600bins.root";
   }
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_path, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_path, "/", "pileup");
  
   std::string data_json;
-  if (era == "2012A" || era == "2012B" || era == "2012C" || era == "2012D") data_json = "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/data/json/data_2012_moriond.txt" ;
-  else data_json           =  "/afs/cern.ch/work/r/rlane/private/CMSSW_HTAU/CMSSW_5_3_4/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/data/json/data_2011.txt";
+  if (era == "2012A" || era == "2012B" || era == "2012C" || era == "2012D") data_json = "../HiggsTauTau/data/json/data_2012_moriond.txt" ;
+  else data_json           =  "../HiggsTauTau/data/json/data_2011.txt";
 
   // Create analysis object
     ic::AnalysisBase analysis(
