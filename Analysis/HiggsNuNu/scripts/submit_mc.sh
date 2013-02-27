@@ -115,7 +115,7 @@ for FILELIST in `ls filelists/QCD*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --mc=summer12_52X --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --mc=summer12_53X --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
   $JOBSUBMIT jobs/$JOB.sh
 
 done
