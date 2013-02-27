@@ -149,51 +149,42 @@ inline mc String2MC(std::string const& in) {
 
 struct channel_def {
 	enum type {
-		et,							
-		mt,		
-		em,
-		zee,
-		zmm,
-		mtmet,
-		etmet
+		nunu,							
+		munu,
+		enu
 	};
 };
-typedef safe_enum<channel_def> channel;
 
-inline std::string Channel2String(channel const& in) {
-	static std::map<channel, std::string> conv = boost::assign::map_list_of
-		(channel::et, "et")
-		(channel::mt, "mt")
-		(channel::em, "em")
-		(channel::zee, "zee")
-		(channel::zmm, "zmm")
-		(channel::etmet, "etmet")
-		(channel::mtmet, "mtmet");
+ typedef safe_enum<channel_def> channel;
+ 
+ inline std::string Channel2String(channel const& in) {
+   static std::map<channel, std::string> conv = boost::assign::map_list_of
+     (channel::nunu, "nunu")
+     (channel::munu, "munu")
+     (channel::enu, "enu")
+     ;
 
-	if (conv.find(in) != conv.end()) {
-		return (conv[in]);
-	} else {
-		std::cerr << "Enum2String Error, enum not recognised" << std::endl;
-		throw;
-	}
-}
-inline channel String2Channel(std::string const& in) {
-	static std::map<std::string, channel> conv = boost::assign::map_list_of
-	("et", channel::et)
-	("mt", channel::mt)
-	("em", channel::em)
-	("zee", channel::zee)
-	("zmm", channel::zmm)
-	("etmet", channel::etmet)
-	("mtmet", channel::mtmet);
-
-	if (conv.find(in) != conv.end()) {
-		return (conv.find(in)->second);
-	} else {
-		std::cerr << "String2Enum Error, string " << in << " not recognised" << std::endl;
-		throw;
-	}
-}
+   if (conv.find(in) != conv.end()) {
+     return (conv[in]);
+   } else {
+     std::cerr << "Enum2String Error, enum not recognised" << std::endl;
+     throw;
+   }
+ }
+ inline channel String2Channel(std::string const& in) {
+   static std::map<std::string, channel> conv = boost::assign::map_list_of
+     ("nunu", channel::nunu)
+     ("munu", channel::munu)
+     ("enu", channel::enu)
+     ;
+   
+   if (conv.find(in) != conv.end()) {
+     return (conv.find(in)->second);
+   } else {
+     std::cerr << "String2Enum Error, string " << in << " not recognised" << std::endl;
+     throw;
+   }
+ }
 
 }
 

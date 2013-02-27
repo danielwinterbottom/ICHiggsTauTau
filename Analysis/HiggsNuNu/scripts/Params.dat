@@ -16,8 +16,8 @@ XS_MC_SingleTBar-s-powheg-tauola:1.76
 XS_MC_SingleT-t-powheg-tauola:56.4
 XS_MC_SingleTBar-t-powheg-tauola:30.7
 XS_MC_WW-pythia6-tauola:54.838
-XS_MC_WZ-pythia6-tauola:12.63
-XS_MC_ZZ-pythia6-tauola:5.196
+XS_MC_WZ-pythia6-tauola:33.21
+XS_MC_ZZ-pythia6-tauola:17.654
 XS_MC_DYJJ01JetsToLL_M-50_MJJ-200:0.45
 ## W and Z already reweighted by fractions: use NNLO xs
 XS_MC_W1JetsToLNu:37509
@@ -55,7 +55,6 @@ XS_MC_VBF_HToZZTo4Nu_M-150:1.280
 XS_MC_VBF_HToZZTo4Nu_M-200:0.8685 
 XS_MC_VBF_HToZZTo4Nu_M-300:0.4408 
 XS_MC_VBF_HToZZTo4Nu_M-400:0.2543
-
 ## Processed Events
 EVT_Data_MET-2012A-06Aug2012-v1:1.0
 EVT_Data_MET-2012A-13Jul2012-v1:1.0
@@ -111,7 +110,6 @@ EVT_MC_VBF_HToZZTo4Nu_M-150:100280.0
 EVT_MC_VBF_HToZZTo4Nu_M-200:100118.0
 EVT_MC_VBF_HToZZTo4Nu_M-300:100076.0
 EVT_MC_VBF_HToZZTo4Nu_M-400:100083.0
-
 ## Lumi
 LUMI_DATA:19603.0
 LUMI_DATA_LABEL:19.6 fb^{-1}

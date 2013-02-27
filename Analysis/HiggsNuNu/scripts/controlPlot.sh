@@ -6,7 +6,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="n_jets"  --x_axis_label="Number of jets" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
@@ -17,7 +17,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="n_jetsingap"  --x_axis_label="Number of jets in rapidity gap" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
@@ -27,7 +27,7 @@ PARAMS=./scripts/Params.dat
 ###### n_vtx
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="n_vtx"  --x_axis_label="Number of vertices" \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
@@ -38,7 +38,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
@@ -49,7 +49,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="jeta_1"  --x_axis_label="Leading Jet #eta" \
     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
@@ -61,7 +61,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="jpt_2"  --x_axis_label="Next-to-Leading Jet p_{T} [GeV]" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
@@ -72,7 +72,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="jeta_2"  --x_axis_label="Next-to-Leading Jet #eta" \
     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
@@ -84,7 +84,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3000 \
-    --y_axis_min=0.1 --extra_pad=1000 \
+    --y_axis_min=0.1 --extra_pad=10000 \
     --rebin=100 \
     --norm_bins=false \
     --log_y=true \
@@ -95,7 +95,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="detajj"  --x_axis_label="#Delta#eta_{jj}" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=5 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
@@ -106,7 +106,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.2 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
     --norm_bins=false \
     --log_y=true \
@@ -117,7 +117,7 @@ PARAMS=./scripts/Params.dat
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="met"  --x_axis_label="PF MET (GeV)" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-    --y_axis_min=0.01 --extra_pad=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=20 \
     --norm_bins=false \
     --log_y=true \

@@ -243,6 +243,13 @@ int main(int argc, char* argv[]){
   files.push_back("MC_TTJets");
   files.push_back("MC_T-tW");
   files.push_back("MC_Tbar-tW");
+  files.push_back("MC_SingleT-s-powheg-tauola");
+  files.push_back("MC_SingleTBar-s-powheg-tauola");
+  files.push_back("MC_SingleT-t-powheg-tauola");
+  files.push_back("MC_SingleTBar-t-powheg-tauola");
+  files.push_back("MC_WW-pythia6-tauola");
+  files.push_back("MC_WZ-pythia6-tauola");
+  files.push_back("MC_ZZ-pythia6-tauola");
   files.push_back("MC_DYJJ01JetsToLL_M-50_MJJ-200");
   files.push_back("MC_W1JetsToLNu");
   files.push_back("MC_W2JetsToLNu");
@@ -346,6 +353,8 @@ int main(int argc, char* argv[]){
     ic::TH1PlotElement ZJetsToNuNu_hist = ic::TH1PlotElement("ZJetsToNuNu");
     ic::TH1PlotElement VBFZ_hist = ic::TH1PlotElement("VBFZ");
     ic::TH1PlotElement GJets_hist = ic::TH1PlotElement("GJets");
+    ic::TH1PlotElement VV_hist = ic::TH1PlotElement("Dibosons");
+
  
     for (unsigned i = 0; i < files.size(); ++i) {
       string f = files[i];
@@ -356,43 +365,52 @@ int main(int argc, char* argv[]){
       SumHistograms(f,plots[nm],"VBF_H",signal_hist);
       SumHistograms(f,plots[nm],"MC_QCD",qcd_hist);
       SumHistograms(f,plots[nm],"MC_T",top_hist);
+      SumHistograms(f,plots[nm],"MC_SingleT",top_hist);
       SumHistograms(f,plots[nm],"MC_W",WJets_hist);
       SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
       SumHistograms(f,plots[nm],"ZJetsToNuNu",ZJetsToNuNu_hist);
       SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);
       SumHistograms(f,plots[nm],"GJets",GJets_hist);
+      SumHistograms(f,plots[nm],"MC_WW",VV_hist);
+      SumHistograms(f,plots[nm],"MC_WZ",VV_hist);
+      SumHistograms(f,plots[nm],"MC_ZZ",VV_hist);
+
  
     }//loop on files
 
     (signal_hist.hist_ptr())->Scale(draw_signal_factor);
 
-    SetSignalStyle(signal_hist,2);
-    SetDataStyle(data_hist);
-    SetBkgStyle(qcd_hist,8);
-    SetBkgStyle(top_hist,2);
-    SetBkgStyle(WJets_hist,4);
-    SetBkgStyle(ZJetsToLL_hist,7);
-    SetBkgStyle(ZJetsToNuNu_hist,7);
-    SetBkgStyle(VBFZ_hist,7);
-    SetBkgStyle(GJets_hist,8);
-
 //     SetSignalStyle(signal_hist,2);
 //     SetDataStyle(data_hist);
-//     SetBkgStyle(qcd_hist,7);
-//     SetBkgStyle(top_hist,5);
-//     SetBkgStyle(WJets_hist,6);
-//     SetBkgStyle(ZJetsToLL_hist,3);
-//     SetBkgStyle(ZJetsToNuNu_hist,3);
-//     SetBkgStyle(VBFZ_hist,3);
-//     SetBkgStyle(GJets_hist,7);
+//     SetBkgStyle(qcd_hist,8);
+//     SetBkgStyle(top_hist,2);
+//     SetBkgStyle(WJets_hist,4);
+//     SetBkgStyle(ZJetsToLL_hist,7);
+//     SetBkgStyle(ZJetsToNuNu_hist,7);
+//     SetBkgStyle(VBFZ_hist,7);
+//     SetBkgStyle(GJets_hist,8);
+//     SetBkgStyle(VV_hist,5);
+
+
+    SetSignalStyle(signal_hist,2);
+    SetDataStyle(data_hist);
+    SetBkgStyle(qcd_hist,7);
+    SetBkgStyle(top_hist,5);
+    SetBkgStyle(WJets_hist,6);
+    SetBkgStyle(ZJetsToLL_hist,3);
+    SetBkgStyle(ZJetsToNuNu_hist,3);
+    SetBkgStyle(VBFZ_hist,3);
+    SetBkgStyle(GJets_hist,7);
+    SetBkgStyle(VV_hist,4);
 
     data_hist.set_legend_text("Data");
     signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
     qcd_hist.set_legend_text("QCD,#gamma+jets");
     //GJets_hist.set_legend_text("#gamma + jets");
+    top_hist.set_legend_text("t#bar{t},t,tW");
     ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
-    top_hist.set_legend_text("t#bar{t},tW,#bar{t}W");
     WJets_hist.set_legend_text("W+jets");
+    VV_hist.set_legend_text("Dibosons");
     //VBFZ_hist.set_legend_text("VBF Z+2j");
     //ZJetsToLL_hist.set_legend_text("Z#rightarrow ll + jets");
     //ZJetsToNuNu_hist.set_legend_text("Z#rightarrow #nu#nu + jets");
@@ -419,11 +437,12 @@ int main(int argc, char* argv[]){
       }
     }
 
+    plot.AddTH1PlotElement(VV_hist);
     plot.AddTH1PlotElement(WJets_hist);
-    plot.AddTH1PlotElement(top_hist);
     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);
     plot.AddTH1PlotElement(VBFZ_hist);
+    plot.AddTH1PlotElement(top_hist);
     plot.AddTH1PlotElement(GJets_hist);
     plot.AddTH1PlotElement(qcd_hist);
     
@@ -465,12 +484,12 @@ int main(int argc, char* argv[]){
     plot.draw_ratio_hist = draw_ratio;
     plot.draw_signif = false;
     
-    string background_list = "GJets+QCD+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    string background_list = "VV+GJets+QCD+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
     ic::RatioPlotElement ratio("DataOverMC","Data",background_list);
     
     plot.band_size_fractional_ = band_size_fractional;
     plot.draw_band_on_stack_ = draw_band_on_stack;
-    plot.samples_for_band_ = "GJets+QCD+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    plot.samples_for_band_ = "VV+GJets+QCD+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
     
     SetStyle(ratio,1);
     ratio.set_multi_mode(true);
@@ -487,6 +506,7 @@ int main(int argc, char* argv[]){
     if (plot_name.find("n_jets") != plot_name.npos && plot_name.find("ingap") == plot_name.npos) {
 
       Utilities n_qcd = Utilities(Integral(qcd_hist.hist_ptr()),Error(qcd_hist.hist_ptr()));
+      Utilities n_VV = Utilities(Integral(VV_hist.hist_ptr()),Error(VV_hist.hist_ptr()));
       Utilities n_top = Utilities(Integral(top_hist.hist_ptr()),Error(top_hist.hist_ptr()));
       Utilities n_WJets = Utilities(Integral(WJets_hist.hist_ptr()),Error(WJets_hist.hist_ptr()));
       Utilities n_ZJets = Utilities(Integral(ZJetsToNuNu_hist.hist_ptr())
@@ -496,7 +516,9 @@ int main(int argc, char* argv[]){
   				    +Error(ZJetsToLL_hist.hist_ptr())
   				    +Error(VBFZ_hist.hist_ptr())
   				    );
-      Utilities n_others = Utilities(Integral(GJets_hist.hist_ptr()),Error(GJets_hist.hist_ptr()));
+      Utilities n_gjets = Utilities(Integral(GJets_hist.hist_ptr()),Error(GJets_hist.hist_ptr()));
+      Utilities n_others = Utilities(n_gjets.rawNumber()+n_VV.rawNumber(),
+				     n_gjets.rawError()+n_VV.rawError());
       Utilities n_data = Utilities(Integral(data_hist.hist_ptr()),Error(data_hist.hist_ptr()));
       Utilities n_signal = Utilities(Integral(signal_hist.hist_ptr()),Error(signal_hist.hist_ptr()));
       Utilities n_Tot = Utilities(n_qcd.rawNumber()+n_top.rawNumber()+n_WJets.rawNumber()+n_ZJets.rawNumber()+n_others.rawNumber(),
