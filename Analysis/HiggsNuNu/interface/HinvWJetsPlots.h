@@ -1,0 +1,96 @@
+#ifndef ICHiggsTauTau_Module_HinvWJetsPlots_h
+#define ICHiggsTauTau_Module_HinvWJetsPlots_h
+
+#include <string>
+
+#include "PhysicsTools/FWLite/interface/TFileService.h"
+
+#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
+
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+
+#include "UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h"
+#include "TH1F.h"
+#include "TH2F.h"
+
+
+namespace ic {
+
+  struct HinvWJetsControlPlots {
+    TH1F *n_electrons;
+    TH1F *n_muons;
+    TH1F *mt_enu;
+    TH1F *mt_munu;
+    TH1F *ept_1;
+    TH1F *ept_2;
+    TH1F *eeta_1;
+    TH1F *eeta_2;
+    TH1F *mupt_1;
+    TH1F *mupt_2;
+    TH1F *mueta_1;
+    TH1F *mueta_2;
+    TH1F *met_noelectrons;
+    TH1F *met_nomuons;
+
+    HinvWJetsControlPlots(TFileDirectory const& dir);
+
+  };
+
+
+  class HinvWJetsPlots : public ModuleBase {
+
+  private:
+
+    CLASS_MEMBER(HinvWJetsPlots,fwlite::TFileService*, fs);
+    CLASS_MEMBER(HinvWJetsPlots,std::string, met_label);
+    CLASS_MEMBER(HinvWJetsPlots,std::string, electrons_label);
+    CLASS_MEMBER(HinvWJetsPlots,std::string, muons_label);
+    CLASS_MEMBER(HinvWJetsPlots,std::string, sel_label);
+
+
+    double yields_;
+    HinvWJetsControlPlots* wjetsplots_;
+    DynamicHistoSet * misc_plots_;
+    Dynamic2DHistoSet * misc_2dplots_;
+
+    // Event Properties
+    double wt_;
+
+    unsigned n_electrons_;
+    unsigned n_muons_;
+    double mt_enu_;
+    double mt_munu_;
+    double ept_1_;
+    double ept_2_;
+    double eeta_1_;
+    double eeta_2_;
+    double mupt_1_;
+    double mupt_2_;
+    double mueta_1_;
+    double mueta_2_;
+    double met_noelectrons_;
+    double met_nomuons_;
+
+ 
+  public:
+    HinvWJetsPlots(std::string const& name);
+    virtual ~HinvWJetsPlots();
+    
+    virtual int PreAnalysis();
+    virtual int Execute(TreeEvent *event);
+    virtual int PostAnalysis();
+    virtual void PrintInfo();
+ 
+    void FillYields();
+    void InitPlots();
+    void FillPlots();
+   
+    void Reset();
+
+  };
+
+}
+
+
+#endif

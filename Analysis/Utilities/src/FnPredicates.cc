@@ -463,9 +463,6 @@ namespace ic {
     return false;
   }
 
-
-
-
   bool PairMassInRange(CompositeCandidate const* cand, double const& mLow, double const& mHigh) {
     double mass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
     return (mass > mLow && mass < mHigh);

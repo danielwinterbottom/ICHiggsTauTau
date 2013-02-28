@@ -74,7 +74,6 @@ namespace ic {
     double etaprodjj_;     // Defined if n_jets >= 2
     double drjj_;     // Defined if n_jets >= 2
     double dphijj_;     // Defined if n_jets >= 2
-
  
   public:
     HinvControlPlots(std::string const& name);
