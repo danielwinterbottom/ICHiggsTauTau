@@ -23,6 +23,13 @@ namespace ic {
   }
   
   int MTSelection::PreAnalysis(){
+    std::cout << " ** PreAnalysis Info for MTSelection **" << std::endl;
+    std::cout << "Running MTSelection with lepton collection: " << lepton_name_ << std::endl;
+    if (lepton_name_.find("elec") == lepton_name_.npos &&
+	lepton_name_.find("muon") == lepton_name_.npos){
+      std::cerr << " -- Invalid collection name: should contain \"elec\" or \"muon\" strings. MT cut will not be applied, exiting..." << std::endl;
+      throw;
+    }
     return 0;
   }
 
@@ -30,14 +37,23 @@ namespace ic {
   int MTSelection::Execute(TreeEvent *event){
 
     Met * lpfMet = event->GetPtr<Met>(input_name_);
-    std::vector<Candidate *> lLeptons = event->GetPtrVec<Candidate>(lepton_name_);
+    //load the collection under a different name to avoid troubles...
 
-    if (lLeptons.size()==0) return 1;
-    double lVal = MT(lpfMet,lLeptons[0]);
-
+    double lVal = -1;
+    if (lepton_name_.find("elec") != lepton_name_.npos){
+      std::vector<Electron *> lElecs = event->GetPtrVec<Electron>(lepton_name_);
+      if (lElecs.size()==0) return 1;
+      lVal = MT(lpfMet,lElecs[0]);
+    }
+    else if (lepton_name_.find("muon") != lepton_name_.npos){
+      std::vector<Muon *> lMuons = event->GetPtrVec<Muon>(lepton_name_);
+      if (lMuons.size()==0) return 1;
+      lVal = MT(lpfMet,lMuons[0]);
+    }
+ 
     if (lVal > min_ && lVal < max_) return 0;
     else return 1;
-
+    
   }
 
   int MTSelection::PostAnalysis(){
