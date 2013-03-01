@@ -108,17 +108,17 @@ SCALE_MT_MT="--shift_backgrounds=true --draw_band_on_stack=true --band_size_frac
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=1 --non_mass_plot=true \
   --method=8 --category="inclusive" --plot_name="met" --x_axis_label="E_{T}^{miss} [GeV]" \
   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
-  --paramfile=$PARAMS $SCALE_ET_INC
+  --paramfile=$PARAMS --extra_pad=1.1 $SCALE_ET_INC
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt  --rebin=1 --non_mass_plot=true \
   --method=8 --category="inclusive" --plot_name="met"  --x_axis_label="E_{T}^{miss} [GeV]" \
   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
-  --paramfile=$PARAMS $SCALE_MT_INC
+  --paramfile=$PARAMS --extra_pad=1.1 $SCALE_MT_INC
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=em  --rebin=1 --non_mass_plot=true \
   --method=8 --category="inclusive" --plot_name="met"  --x_axis_label="E_{T}^{miss} [GeV]" \
   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
-  --paramfile=$PARAMS
+  --paramfile=$PARAMS --extra_pad=1.1
 
 #### pt_1
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=2 --non_mass_plot=true  \
@@ -188,12 +188,12 @@ SCALE_MT_MT="--shift_backgrounds=true --draw_band_on_stack=true --band_size_frac
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=2 --non_mass_plot=true \
   --method=8 --category="inclusive" --plot_name="m_2"  --x_axis_label="Tau Mass [GeV]" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_ET_INC
+  --paramfile=$PARAMS --extra_pad=1.1 $SCALE_ET_INC
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=2 --non_mass_plot=true \
   --method=8 --category="inclusive" --plot_name="m_2"  --x_axis_label="Tau Mass [GeV]" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_MT_INC
+  --paramfile=$PARAMS --extra_pad=1.1 $SCALE_MT_INC
 
 #### n_vtx
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=1 --non_mass_plot=true   \
@@ -278,7 +278,7 @@ SCALE_MT_MT="--shift_backgrounds=true --draw_band_on_stack=true --band_size_frac
 
 #### mt_1 / pzeta
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=1 --non_mass_plot=true  \
-  --method=8 --category="inclusive" --plot_name="mt_1" --x_axis_label="m_{T} [GeV]" \
+  --method=8 --category="inclusive" --plot_name="mt_1" --x_axis_label="m_{T} [GeV]" --extra_pad=1.15 \
   --paramfile=$PARAMS --replace_os_sel="os"  --replace_ss_sel="ss" $SCALE_ET_MT
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=1 --non_mass_plot=true  \
@@ -381,30 +381,30 @@ SCALE_MT_MT="--shift_backgrounds=true --draw_band_on_stack=true --band_size_frac
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=2 --non_mass_plot=true  \
   --method=8 --category="twojet" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_ET_JET
+  --paramfile=$PARAMS --extra_pad=1.2 $SCALE_ET_JET
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=2 --non_mass_plot=true \
   --method=8 --category="twojet" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 -\
-  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_MT_JET
+  --paramfile=$PARAMS --extra_pad=1.2 $SCALE_MT_JET
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=em --rebin=2 --non_mass_plot=true \
   --method=8 --category="twojet" --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.0
+  --paramfile=$PARAMS --extra_pad=1.2
 
 #### jdeta
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=2 --non_mass_plot=true  \
   --method=8 --category="twojet" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_ET_JET
+  --paramfile=$PARAMS --extra_pad=1.2 $SCALE_ET_JET
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=2 --non_mass_plot=true \
   --method=8 --category="twojet" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.0 $SCALE_MT_JET
+  --paramfile=$PARAMS --extra_pad=1.2 $SCALE_MT_JET
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=em --rebin=2 --non_mass_plot=true \
   --method=8 --category="twojet" --plot_name="jdeta"  --x_axis_label="#Delta#eta_{jj}" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.0
+  --paramfile=$PARAMS --extra_pad=1.2

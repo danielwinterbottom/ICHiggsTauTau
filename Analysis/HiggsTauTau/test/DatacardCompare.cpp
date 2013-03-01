@@ -163,6 +163,12 @@ int main(int argc, char* argv[]){
     comp_plots.push_back("EWK");
   }
   if (mssm_mode == 0) {
+    comp_plots.push_back("VH90");
+    comp_plots.push_back("ggH90");
+    comp_plots.push_back("qqH90");
+    comp_plots.push_back("VH105");
+    comp_plots.push_back("ggH105");
+    comp_plots.push_back("qqH105");
     comp_plots.push_back("VH125");
     comp_plots.push_back("ggH125");
     comp_plots.push_back("qqH125");

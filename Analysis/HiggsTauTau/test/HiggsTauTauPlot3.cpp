@@ -194,6 +194,10 @@ int main(int argc, char* argv[]){
   bool make_datacard;														// Generate a datacard from this plot
   bool swap_inclusive;													// For datacard creation: swap labels of inclusive with 0jet_low
   unsigned tau_scale_mode = 0;									// The tau scale mode, used to append labels for plots
+  bool official_style;                          // Adopt official plotting style
+  bool draw_signal;                             // Draw signal in the plots
+
+
 
   // Options to manually shift backgrounds and draw uncertainty bands
   bool shift_backgrounds = false;
@@ -256,6 +260,8 @@ int main(int argc, char* argv[]){
     ("tau_scale_mode",      po::value<unsigned>(&tau_scale_mode)->default_value(0))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
     ("shift_tscale",        po::value<bool>(&shift_tscale)->default_value(false))
+    ("official_style",      po::value<bool>(&official_style)->default_value(false))
+    ("draw_signal",         po::value<bool>(&draw_signal)->default_value(true))
     ("draw_band_on_stack",  po::value<bool>(&draw_band_on_stack)->default_value(false))
     ("tscale_shift",        po::value<double>(&tscale_shift)->default_value(0.0))
     ("qcd_shift",           po::value<double>(&qcd_shift)->default_value(1.0))
@@ -351,7 +357,6 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "mssm_signal_masses" 	% mssm_signal_masses_list;
   boost::split(signal_masses, signal_masses_list, boost::is_any_of(","));
   boost::split(mssm_signal_masses, mssm_signal_masses_list, boost::is_any_of(","));
-  bool draw_signal = parser.GetParam<bool>("DRAW_SIGNAL");
   std::string draw_signal_mass = parser.GetParam<string>("DRAW_SIGNAL_MASS");
   std::string draw_mssm_signal_mass = parser.GetParam<string>("DRAW_MSSM_SIGNAL_MASS");
   unsigned draw_signal_factor = parser.GetParam<unsigned>("DRAW_SIGNAL_FACTOR");
@@ -1421,6 +1426,7 @@ int main(int argc, char* argv[]){
   }
 
   ic::Plot plot;
+  if (official_style) plot.use_htt_style = true;
   std::string kind_label = "sm";
   if (mssm_mode > 0) kind_label = "mssm";
 
@@ -1525,9 +1531,9 @@ int main(int argc, char* argv[]){
 
 
   qcd_shape.set_legend_text("QCD");
-  if (channel == channel::em) qcd_shape.set_legend_text("Fakes");
-  w_shape.set_legend_text("Electroweak");
-  data_shape.set_legend_text("Observed");
+  if (channel == channel::em) qcd_shape.set_legend_text("fakes");
+  w_shape.set_legend_text("electroweak");
+  data_shape.set_legend_text("observed");
   ztt_shape.set_legend_text("Z#rightarrow#tau#tau");
   if (use_ztt_mc) ztt_shape.set_legend_text("Z#rightarrow#tau#tau (MC)");
   zll_shape.set_legend_text("Z#rightarrowee");
@@ -1540,8 +1546,23 @@ int main(int argc, char* argv[]){
     signal_shape.set_legend_text(boost::lexical_cast<std::string>(draw_mssm_signal_factor)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_mssm_signal_mass+",tan#beta=8)");
   }
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
-    plot.AddTH1PlotElement(top_shape);
+    // top_shape.hist_ptr()->SetTitleSize  (0.055,"Y");
+    // top_shape.hist_ptr()->SetTitleOffset(1.600,"Y");
+    // top_shape.hist_ptr()->SetLabelOffset(0.014,"Y");
+    // top_shape.hist_ptr()->SetLabelSize  (0.040,"Y");
+    // top_shape.hist_ptr()->SetLabelFont  (42   ,"Y");
+    // top_shape.hist_ptr()->SetTitleSize  (0.055,"X");
+    // top_shape.hist_ptr()->SetTitleOffset(1.300,"X");
+    // top_shape.hist_ptr()->SetLabelOffset(0.014,"X");
+    // top_shape.hist_ptr()->SetLabelSize  (0.040,"X");
+    // top_shape.hist_ptr()->SetLabelFont  (42   ,"X");
+    // top_shape.hist_ptr()->SetMarkerStyle(20);
+    // // top_shape.hist_ptr()->SetMarkerColor(color);
+    // top_shape.hist_ptr()->SetMarkerSize (0.6);
+    // top_shape.hist_ptr()->GetYaxis()->SetTitleFont(42);
+    // top_shape.hist_ptr()->GetXaxis()->SetTitleFont(42);
     plot.AddTH1PlotElement(qcd_shape);
+    plot.AddTH1PlotElement(top_shape);
     plot.AddTH1PlotElement(w_shape);
   } else if (channel == channel::em) {
     plot.AddTH1PlotElement(qcd_shape);
@@ -1569,12 +1590,14 @@ int main(int argc, char* argv[]){
   plot.y_axis_title = "Events";
   if (norm_bins) plot.y_axis_title = "dN/dm_{#tau#tau} [1/GeV]";
   plot.title_left = "CMS Preliminary " + year_label +", #sqrt{s} = " + (is_2012 ? "8":"7") +" TeV, "+ lumi_data_label;
+  if (official_style) plot.title_left = std::string("CMS Preliminary, #sqrt{s} = ") + (is_2012 ? "8":"7") + " TeV, L = "+ lumi_data_label;
   string cat_app = show_category ? (", "+category) : "";
-  if (channel == channel::et) plot.title_right = "#tau_{e}#tau_{h}"+cat_app;
-  if (channel == channel::mt) plot.title_right = "#tau_{#mu}#tau_{h}"+cat_app;
-  if (channel == channel::mtmet) plot.title_right = "#tau_{#mu}#tau_{h}+MET"+cat_app;
-  if (channel == channel::em) plot.title_right = "#tau_{e}#tau_{#mu}"+cat_app;
+  if (channel == channel::et) plot.title_right = "e#tau_{h}"+cat_app;
+  if (channel == channel::mt) plot.title_right = "#mu#tau_{h}"+cat_app;
+  if (channel == channel::mtmet) plot.title_right = "#mu#tau_{h}+MET"+cat_app;
+  if (channel == channel::em) plot.title_right = "e#mu"+cat_app;
   if (mssm_mode == 1) plot.legend_left = 0.45;
+  if (official_style) plot.title_right = "";
 
   plot.draw_ratio_hist = draw_ratio;
   plot.draw_signif = false;
@@ -1605,7 +1628,17 @@ int main(int argc, char* argv[]){
   //   agilbert::TextElement text1("Data in ["+boost::lexical_cast<std::string>(x_blind_min)+","+boost::lexical_cast<std::string>(x_blind_max)+"] blinded",0.03, 0.16,0.89);
   //   plot.AddTextElement(text1);
   // }
-  ic::TextElement ss_text("Same-sign",0.04,0.19,0.89);
+  // plot.y_axis_min = 5.0;
+  if (official_style) {
+    string ch_label;
+    if (channel == channel::et) ch_label = "e#tau_{h}"+cat_app;
+    if (channel == channel::mt) ch_label = "#mu#tau_{h}"+cat_app;
+    if (channel == channel::mtmet) ch_label = "#mu#tau_{h}+MET"+cat_app;
+    if (channel == channel::em) ch_label = "e#mu"+cat_app;
+    ic::TextElement text1(ch_label,0.055, 0.21,0.84);
+    plot.AddTextElement(text1);
+  }
+  ic::TextElement ss_text("Same-sign",0.0,0.19,0.89);
   if (draw_ss) plot.AddTextElement(ss_text);
 
   if (!no_plot) plot.GeneratePlot();

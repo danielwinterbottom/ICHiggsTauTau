@@ -303,7 +303,7 @@ int main(int argc, char* argv[]){
               cout << "TH1F appears to exist in patch file..." << endl;
               patch_result = (TH1*)(gDirectory->Get((mcs[j]+sextrap[l].second.at(e)+append).c_str())->Clone("dummy"));
             }
-            cout << "here2" << endl;
+            // cout << "here2" << endl;
             input_dc->cd();
             if (!gDirectory->cd(("/"+cats[i]).c_str())) continue;
             if (patch_result) std::cout << "Shape " << (mcs[j]+sextrap[l].second.at(e)+append) << " patched from file " << patch_shape << endl; 
