@@ -40,6 +40,7 @@ namespace ic {
         draw_band_on_stack_ = false;
         band_size_fractional_ = 0.0;
         x_bin_labels_ = "";
+        use_htt_style = false;
       }
       ~Plot();
       int GeneratePlot();
@@ -90,7 +91,10 @@ namespace ic {
       std::string x_bin_labels_;
 
       std::string output_filename;
+
+      bool use_htt_style;
       static void SetTdrStyle();
+      static void SetHTTStyle();
 
       
     private:
