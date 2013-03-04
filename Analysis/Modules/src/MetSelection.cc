@@ -13,6 +13,7 @@ namespace ic {
 			     double max) : ModuleBase(name) {
     input_name_ = input_name;
     addLeptons_ = false;
+    nLepToAdd_ = 0;
     min_ = min;
     max_ = max;
   }
@@ -20,11 +21,13 @@ namespace ic {
   MetSelection::MetSelection(std::string const& name, 
 			     std::string input_name,
 			     std::string lepton_name,
+			     unsigned nLepToAdd,
 			     double min, 
 			     double max) : ModuleBase(name) {
     input_name_ = input_name;
     addLeptons_ = true;
     lepton_name_ = lepton_name;
+    nLepToAdd_ = nLepToAdd;
     min_ = min;
     max_ = max;
   }

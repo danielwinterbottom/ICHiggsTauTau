@@ -82,6 +82,8 @@ namespace ic {
     
     n_electrons_ = electrons.size();
     n_muons_ = muons.size();
+    met_noelectrons_ = met->pt();
+    met_nomuons_ = met->pt();
     
     ept_1_ = -1;
     eeta_1_ = -10;
@@ -90,7 +92,8 @@ namespace ic {
       ept_1_ = electrons[0]->pt();
       eeta_1_ = electrons[0]->eta();
       mt_enu_ = MT(electrons[0],met);
-    }
+      met_noelectrons_ += electrons[0]->pt();
+   }
     ept_2_ = -1;
     eeta_2_ = -10;
     if (n_electrons_ > 1){
@@ -105,6 +108,7 @@ namespace ic {
       mupt_1_ = muons[0]->pt();
       mueta_1_ = muons[0]->eta();
       mt_munu_ = MT(muons[0],met);
+      met_nomuons_ += muons[0]->pt();
     }
     mupt_2_ = -1;
     mueta_2_ = -10;
@@ -113,15 +117,7 @@ namespace ic {
       mueta_2_ = muons[1]->eta();
     }
     
-    met_noelectrons_ = met->pt();
-    for (unsigned iL(0); iL<n_electrons_; ++iL){
-      met_noelectrons_ += electrons[iL]->pt();
-    }
-
-    met_nomuons_ = met->pt();
-    for (unsigned iL(0); iL<n_muons_; ++iL){
-      met_nomuons_ += muons[iL]->pt();
-    }
+    
 
 
     FillPlots();

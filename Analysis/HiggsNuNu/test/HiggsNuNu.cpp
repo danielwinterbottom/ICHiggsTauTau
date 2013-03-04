@@ -377,8 +377,8 @@ int main(int argc, char* argv[]){
   double metcut = 130;
   if(do_skim) metcut = 80;
   MetSelection metFilter = MetSelection("MetFilter",mettype,metcut);
-  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter",mettype,"muonsPFlow",metcut);
-  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter",mettype,"electrons",metcut);
+  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter",mettype,"muonsPFlow",1,metcut);
+  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter",mettype,"electrons",1,metcut);
 
 
 
@@ -503,6 +503,10 @@ int main(int argc, char* argv[]){
      //analysis.AddModule(&jetPairFilter);
      analysis.AddModule(&controlPlots_dijet);
 
+     //filter leptons before changing MET...
+     analysis.AddModule(&selMuonFilter);
+     analysis.AddModule(&selElectronFilter);
+
      //met modules
      if (channel == channel::nunu){
        analysis.AddModule(&metFilter);
@@ -522,8 +526,6 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_deta);
 
      //add leptons just to plot them before specific W or Hinv selection
-     analysis.AddModule(&selMuonFilter);
-     analysis.AddModule(&selElectronFilter);
      analysis.AddModule(&wjetsPlots_deta);
 
      if (channel == channel::nunu){

@@ -277,6 +277,7 @@ int main(int argc, char* argv[]){
   selections.push_back("Mjj");
   selections.push_back("DEta");
   selections.push_back("LeptonVeto");
+  selections.push_back("WSelection");
   selections.push_back("DPhi");
 
   std::map<std::string, TFile *> tfiles;
@@ -292,9 +293,13 @@ int main(int argc, char* argv[]){
 
   // Get Plots and Scale
   map<string, ic::TH1PlotElement> plots;
+  bool skip[selections.size()];
+  for (unsigned k = 0; k < selections.size(); ++k) {
+    skip[k] = false;
+  }
   for (unsigned i = 0; i < files.size(); ++i) {
     for (unsigned k = 0; k < selections.size(); ++k) {
-
+      
       string f = files[i];
       string s = selections[k];
 
@@ -304,6 +309,11 @@ int main(int argc, char* argv[]){
 
       if (tfiles[f]->GetDirectory(("/"+s).c_str())) {
 	plots[nm] = ic::TH1PlotElement(nm, tfiles[f], "/"+s, plot_name);
+	if (!plots[nm].hist_ptr()) {
+	  if (!skip[k]) std::cerr << " Histogram " << nm << " not found. Skipping..." << std::endl;
+	  skip[k] = true;
+	  continue;
+	}
 	if (plots[nm].hist_ptr()->GetSumw2N() == 0) {
 	  cout << "Warning: Plot " << nm << " does not have a weights structure" << endl;
 	  plots[nm].hist_ptr()->Sumw2();
@@ -320,16 +330,22 @@ int main(int argc, char* argv[]){
 	//if (k==0) std::cout << f << " " << sample_scale << std::endl;
 
       }
+      else {
+	if (!skip[k]) std::cerr << " Directory " << s << " not found. Skipping..." << std::endl;
+	skip[k] = true;
+      }
 
     }//loop on selections
   }//loop on files
 
   
+  std::ofstream lTxtOutput;
+  lTxtOutput.open(plot_dir+"/SummaryTable.txt");
+
+
   //output a table with number of events selected
    if (plot_name.find("n_jets") != plot_name.npos) {
-      std::cout << "\\begin{table}[h!]" << std::endl
-		<< "\\caption{Number of events selected in data and MC." << std::endl
-		<< "\\begin{tabular}{|l|c|c|c|c|c||c|c||c|}" << std::endl
+     lTxtOutput << "\\begin{tabular}{|l|c|c|c|c|c||c|c||c|}" << std::endl
 		<<"\\hline" << std::endl
 		<< "Step & QCD & Top & W+jets & Z+jets & Others & SumMC & Data & Signal 120 \\\\"
 		<< std::endl
@@ -338,6 +354,7 @@ int main(int argc, char* argv[]){
 
 
   for (unsigned k = 0; k < selections.size(); ++k) {
+    if (skip[k]) continue;
     ic::Plot plot;
     plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k] + ".pdf";
     if (log_y) plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k]  + "_log.pdf";
@@ -404,12 +421,14 @@ int main(int argc, char* argv[]){
     SetBkgStyle(VV_hist,4);
 
     data_hist.set_legend_text("Data");
-    signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
+    if (draw_signal_factor>1) 
+      signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
+    else signal_hist.set_legend_text("VBF m_{H}=120 GeV");
+    ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
+    WJets_hist.set_legend_text("W+jets");
     qcd_hist.set_legend_text("QCD,#gamma+jets");
     //GJets_hist.set_legend_text("#gamma + jets");
     top_hist.set_legend_text("t#bar{t},t,tW");
-    ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
-    WJets_hist.set_legend_text("W+jets");
     VV_hist.set_legend_text("Dibosons");
     //VBFZ_hist.set_legend_text("VBF Z+2j");
     //ZJetsToLL_hist.set_legend_text("Z#rightarrow ll + jets");
@@ -438,13 +457,13 @@ int main(int argc, char* argv[]){
     }
 
     plot.AddTH1PlotElement(VV_hist);
+    plot.AddTH1PlotElement(top_hist);
+    plot.AddTH1PlotElement(GJets_hist);
+    plot.AddTH1PlotElement(qcd_hist);
     plot.AddTH1PlotElement(WJets_hist);
     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);
     plot.AddTH1PlotElement(VBFZ_hist);
-    plot.AddTH1PlotElement(top_hist);
-    plot.AddTH1PlotElement(GJets_hist);
-    plot.AddTH1PlotElement(qcd_hist);
     
 //     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
 //     plot.AddTH1PlotElement(ZJetsToLL_hist);
@@ -527,17 +546,17 @@ int main(int argc, char* argv[]){
       //std::cout.precision(2);
       //std::cout << std::scientific;
 
-      std::cout << selections[k] << " & " 
-		<< n_qcd.roundedResult() << " & " 
-		<< n_top.roundedResult() << " & "
-		<< n_WJets.roundedResult() << " & "
-		<< n_ZJets.roundedResult() << " & "
-		<< n_others.roundedResult() << " & "
-		<< n_Tot.roundedResult() << " & "
- 		<< n_data.roundedNumber() << " & "
- 		<< n_signal.roundedResult()
-		<< " \\\\ "
-		<< std::endl; 
+      lTxtOutput << selections[k] << " & " 
+		 << n_qcd.roundedResult() << " & " 
+		 << n_top.roundedResult() << " & "
+		 << n_WJets.roundedResult() << " & "
+		 << n_ZJets.roundedResult() << " & "
+		 << n_others.roundedResult() << " & "
+		 << n_Tot.roundedResult() << " & "
+		 << n_data.roundedNumber() << " & "
+		 << n_signal.roundedResult()
+		 << " \\\\ "
+		 << std::endl; 
     }
 
 
@@ -545,9 +564,9 @@ int main(int argc, char* argv[]){
   }//loop on selection
 
    if (plot_name.find("n_jets") != plot_name.npos) {
-     std::cout << "\\hline" << std::endl
-	       << "\\end{tabular}" << std::endl
-	       << "\\end{table}" << std::endl;
+     lTxtOutput << "\\hline" << std::endl
+		<< "\\end{tabular}" << std::endl;
+		
    }
 
    return 0;
