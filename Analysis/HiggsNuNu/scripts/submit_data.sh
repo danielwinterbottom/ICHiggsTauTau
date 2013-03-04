@@ -13,8 +13,12 @@ echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigNunu.cfg
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/MET/
+JOBDIR=jobs/Nunu/
+
 
 echo "Config file: $CONFIG"
+mkdir -p $JOBDIR
+
 
 for FILELIST in `ls filelists/Dec1_MET_*`
 #for FILELIST in `ls filelists/Dec1_MET_MET-2012C-11Dec2012-v1.dat`
@@ -30,8 +34,8 @@ for FILELIST in `ls filelists/Dec1_MET_*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 
@@ -51,8 +55,8 @@ for FILELIST in `ls filelists/MET-*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 

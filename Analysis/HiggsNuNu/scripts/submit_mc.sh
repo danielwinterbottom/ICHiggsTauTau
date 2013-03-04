@@ -14,6 +14,10 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfigNunuMC.cfg
 echo "Config file: $CONFIG"
 
+JOBDIR=jobs/Nunu/
+mkdir -p $JOBDIR
+
+
 #Process HiggsNuNu specific backgrounds
 
 #Signal files and DYtoNuNu
@@ -32,8 +36,8 @@ for FILELIST in `ls filelists/Dec1_VBFH120_* filelists/Dec1_ZJets_*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 
@@ -53,8 +57,8 @@ for FILELIST in `ls filelists/Dec5_VBFZ*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 
@@ -73,8 +77,8 @@ for FILELIST in `ls filelists/Feb1_GJets_*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 
@@ -94,8 +98,8 @@ for FILELIST in `ls filelists/Dec2_MC_*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 
@@ -115,8 +119,8 @@ for FILELIST in `ls filelists/QCD*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --mc=summer12_53X --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --mc=summer12_53X --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 
@@ -136,8 +140,8 @@ for FILELIST in `ls filelists/Feb18_BKG_*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> jobs/$JOB.log" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 
