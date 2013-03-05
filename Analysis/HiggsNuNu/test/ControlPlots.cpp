@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <map>
 #include "boost/lexical_cast.hpp"
@@ -340,14 +341,16 @@ int main(int argc, char* argv[]){
 
   
   std::ofstream lTxtOutput;
-  lTxtOutput.open(plot_dir+"/SummaryTable.txt");
 
+  bool lFillSummaryTable = plot_name.find("n_jets") != plot_name.npos && plot_name.find("ingap") == plot_name.npos;
 
   //output a table with number of events selected
-   if (plot_name.find("n_jets") != plot_name.npos) {
-     lTxtOutput << "\\begin{tabular}{|l|c|c|c|c|c||c|c||c|}" << std::endl
+  if (lFillSummaryTable){
+     //lTxtOutput << "\\begin{tabular}{|l|c|c|c|c|c||c|c||c|}" << std::endl
+     lTxtOutput.open(plot_dir+"/SummaryTable.txt",std::ios_base::out);
+     lTxtOutput << "\\begin{tabular}{|l|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}||p{0.07\\textwidth}|c||p{0.07\\textwidth}|}" << std::endl
 		<<"\\hline" << std::endl
-		<< "Step & QCD & Top & W+jets & Z+jets & Others & SumMC & Data & Signal 120 \\\\"
+		<< "Step & QCD & $\\gamma$+jets & Top & W+jets & Z+jets & VV & SumMC & Data & Signal 120 \\\\"
 		<< std::endl
 		<< "\\hline" << std::endl;
    }
@@ -426,7 +429,7 @@ int main(int argc, char* argv[]){
     else signal_hist.set_legend_text("VBF m_{H}=120 GeV");
     ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
     WJets_hist.set_legend_text("W+jets");
-    qcd_hist.set_legend_text("QCD,#gamma+jets");
+    //qcd_hist.set_legend_text("QCD,#gamma+jets");
     //GJets_hist.set_legend_text("#gamma + jets");
     top_hist.set_legend_text("t#bar{t},t,tW");
     VV_hist.set_legend_text("Dibosons");
@@ -458,8 +461,8 @@ int main(int argc, char* argv[]){
 
     plot.AddTH1PlotElement(VV_hist);
     plot.AddTH1PlotElement(top_hist);
-    plot.AddTH1PlotElement(GJets_hist);
-    plot.AddTH1PlotElement(qcd_hist);
+    //plot.AddTH1PlotElement(GJets_hist);
+    //plot.AddTH1PlotElement(qcd_hist);
     plot.AddTH1PlotElement(WJets_hist);
     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);
@@ -522,7 +525,7 @@ int main(int argc, char* argv[]){
     
     if (!no_plot) plot.GeneratePlot();
 
-    if (plot_name.find("n_jets") != plot_name.npos && plot_name.find("ingap") == plot_name.npos) {
+    if (lFillSummaryTable) {
 
       Utilities n_qcd = Utilities(Integral(qcd_hist.hist_ptr()),Error(qcd_hist.hist_ptr()));
       Utilities n_VV = Utilities(Integral(VV_hist.hist_ptr()),Error(VV_hist.hist_ptr()));
@@ -548,13 +551,18 @@ int main(int argc, char* argv[]){
 
       lTxtOutput << selections[k] << " & " 
 		 << n_qcd.roundedResult() << " & " 
+		 << n_gjets.roundedResult() << " & "
 		 << n_top.roundedResult() << " & "
 		 << n_WJets.roundedResult() << " & "
 		 << n_ZJets.roundedResult() << " & "
-		 << n_others.roundedResult() << " & "
-		 << n_Tot.roundedResult() << " & "
-		 << n_data.roundedNumber() << " & "
-		 << n_signal.roundedResult()
+		 << n_VV.roundedResult() << " & "
+		 << n_Tot.roundedResult() << " & ";
+
+      if (!blind || (k!=selections.size()-1))
+	lTxtOutput << n_data.roundedResult(false) << " & ";
+      else lTxtOutput << "XXX" <<  " & ";
+
+      lTxtOutput << n_signal.roundedResult()
 		 << " \\\\ "
 		 << std::endl; 
     }
@@ -563,11 +571,13 @@ int main(int argc, char* argv[]){
 
   }//loop on selection
 
-   if (plot_name.find("n_jets") != plot_name.npos) {
+  if (lFillSummaryTable){
      lTxtOutput << "\\hline" << std::endl
 		<< "\\end{tabular}" << std::endl;
 		
+     lTxtOutput.close();
    }
+
 
    return 0;
    

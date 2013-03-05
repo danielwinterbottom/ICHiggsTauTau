@@ -10,7 +10,6 @@ PARAMS=./scripts/Params.dat
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 ###### n_jetsingap
@@ -21,7 +20,6 @@ PARAMS=./scripts/Params.dat
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 ###### n_vtx
@@ -31,7 +29,6 @@ PARAMS=./scripts/Params.dat
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 ###### jpt_1
@@ -42,7 +39,6 @@ PARAMS=./scripts/Params.dat
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 ###### jeta_1
@@ -53,7 +49,6 @@ PARAMS=./scripts/Params.dat
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 
@@ -65,7 +60,6 @@ PARAMS=./scripts/Params.dat
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 ###### jeta_2
@@ -76,7 +70,6 @@ PARAMS=./scripts/Params.dat
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 
@@ -88,7 +81,6 @@ PARAMS=./scripts/Params.dat
     --rebin=100 \
     --norm_bins=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 ###### detajj
@@ -99,18 +91,17 @@ PARAMS=./scripts/Params.dat
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 ###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.2 \
-    --y_axis_min=0.01 --extra_pad=10000 \
+    --y_axis_min=0.01 --extra_pad=100000 \
     --rebin=1 \
     --norm_bins=false \
     --log_y=true \
-    --blind=true --x_blind_min=0 --x_blind_max=1. \
+    --blind=false --x_blind_min=0 --x_blind_max=1. \
     --paramfile=$PARAMS
 
 ###### met
@@ -121,7 +112,6 @@ PARAMS=./scripts/Params.dat
     --rebin=20 \
     --norm_bins=false \
     --log_y=true \
-    --blind=true --x_blind_min=1 --x_blind_max=0 \
     --paramfile=$PARAMS
 
 

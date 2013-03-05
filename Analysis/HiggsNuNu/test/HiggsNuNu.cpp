@@ -29,6 +29,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWJetsPlots.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -238,7 +239,7 @@ int main(int argc, char* argv[]){
 						    //bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
 						    )
     .set_min(0)
-    .set_max(0);
+    .set_max(999);
   
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>
     ("SelElectronPtEtaFilter")
@@ -253,11 +254,28 @@ int main(int argc, char* argv[]){
 
 
   SimpleFilter<Electron> oneElectronFilter = SimpleFilter<Electron>
-    ("oneElectronFilter")
+    ("OneElectronFilter")
     .set_input_label("electrons")
     .set_predicate( bind(DummyFunction<Electron>, _1) )
     .set_min(1)
     .set_max(1);
+
+
+  SimpleFilter<Electron> oneVetoElectronFilter = SimpleFilter<Electron>
+    ("OneVetoElectronFilter")
+    .set_input_label("vetoElectrons")
+    .set_predicate( bind(DummyFunction<Electron>, _1) )
+    .set_min(1)
+    .set_max(1);
+
+  SimpleFilter<Electron> zeroVetoElectronFilter = SimpleFilter<Electron>
+    ("ZeroVetoElectronFilter")
+    .set_input_label("vetoElectrons")
+    .set_predicate( bind(DummyFunction<Electron>, _1) )
+    .set_min(0)
+    .set_max(0);
+
+
 
   // ------------------------------------------------------------------------------------
   // Muon Modules
@@ -275,7 +293,7 @@ int main(int argc, char* argv[]){
 						//bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
 						)
     .set_min(0)
-    .set_max(0);
+    .set_max(999);
 
    
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>
@@ -292,11 +310,25 @@ int main(int argc, char* argv[]){
 
 
   SimpleFilter<Muon> oneMuonFilter = SimpleFilter<Muon>
-    ("oneMuonFilter")
+    ("OneMuonFilter")
     .set_input_label("muonsPFlow")
     .set_predicate( bind(DummyFunction<Muon>, _1) )
     .set_min(1)
     .set_max(1);
+
+  SimpleFilter<Muon> oneVetoMuonFilter = SimpleFilter<Muon>
+    ("OneVetoMuonFilter")
+    .set_input_label("vetoMuons")
+    .set_predicate( bind(DummyFunction<Muon>, _1) )
+    .set_min(1)
+    .set_max(1);
+
+  SimpleFilter<Muon> zeroVetoMuonFilter = SimpleFilter<Muon>
+    ("ZeroVetoMuonFilter")
+    .set_input_label("vetoMuons")
+    .set_predicate( bind(DummyFunction<Muon>, _1) )
+    .set_min(0)
+    .set_max(0);
 
   // ------------------------------------------------------------------------------------
   // Jet Modules
@@ -369,18 +401,21 @@ int main(int argc, char* argv[]){
     .set_max(999);    
 
  
-
-
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
   double metcut = 130;
   if(do_skim) metcut = 80;
   MetSelection metFilter = MetSelection("MetFilter",mettype,metcut);
-  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter",mettype,"muonsPFlow",1,metcut);
-  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter",mettype,"electrons",1,metcut);
 
+  unsigned nLepToAdd = 0;
+  if (channel == channel::munu || channel == channel::enu) nLepToAdd = 1; 
 
+  ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"muonsPFlow",2,nLepToAdd);
+  ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"electrons",1,nLepToAdd);
+
+  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",metcut);
+  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",metcut);
 
   //------------------------------------------------------------------------------------
   // W selection Modules
@@ -433,6 +468,17 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("JetPair");
 
+  HinvWJetsPlots wjetsPlots_dijet = HinvWJetsPlots("DijetWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("electrons")
+    .set_muons_label("muonsPFlow")
+    .set_sel_label("JetPair");
+
+  if (channel==channel::enu)
+    wjetsPlots_dijet.set_met_nolep_label("metNoElectrons");
+
   HinvControlPlots controlPlots_met = HinvControlPlots("METControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -454,9 +500,13 @@ int main(int argc, char* argv[]){
   HinvWJetsPlots wjetsPlots_deta = HinvWJetsPlots("DEtaWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
     .set_electrons_label("electrons")
     .set_muons_label("muonsPFlow")
     .set_sel_label("DEta");
+
+  if (channel==channel::enu)
+    wjetsPlots_deta.set_met_nolep_label("metNoElectrons");
 
   HinvControlPlots controlPlots_lepveto = HinvControlPlots("LeptonVetoControlPlots")
     .set_fs(fs)
@@ -473,9 +523,13 @@ int main(int argc, char* argv[]){
   HinvWJetsPlots wjetsPlots_wsel = HinvWJetsPlots("WSelectionWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
     .set_electrons_label("electrons")
     .set_muons_label("muonsPFlow")
     .set_sel_label("WSelection");
+
+  if (channel==channel::enu)
+    wjetsPlots_wsel.set_met_nolep_label("metNoElectrons");
 
   HinvControlPlots controlPlots_dphi = HinvControlPlots("DPhiControlPlots")
     .set_fs(fs)
@@ -492,12 +546,13 @@ int main(int argc, char* argv[]){
    
    if (!do_skim) {
      analysis.AddModule(&dataMCTriggerPathFilter);
+
      ////analysis.AddModule(&runStats);
      analysis.AddModule(&hinvWeights);
+
      //jet modules
      analysis.AddModule(&jetIDFilter);
      analysis.AddModule(&jetPtEtaFilter);
-
      analysis.AddModule(&jjPairProducer);
      analysis.AddModule(&etaProdJetPairFilter);
      //analysis.AddModule(&jetPairFilter);
@@ -506,6 +561,11 @@ int main(int argc, char* argv[]){
      //filter leptons before changing MET...
      analysis.AddModule(&selMuonFilter);
      analysis.AddModule(&selElectronFilter);
+     //add met without leptons for plots
+     analysis.AddModule(&metNoMuons);
+     analysis.AddModule(&metNoElectrons);
+
+     analysis.AddModule(&wjetsPlots_dijet);
 
      //met modules
      if (channel == channel::nunu){
@@ -528,22 +588,30 @@ int main(int argc, char* argv[]){
      //add leptons just to plot them before specific W or Hinv selection
      analysis.AddModule(&wjetsPlots_deta);
 
+     //prepare collections of veto leptons
+     analysis.AddModule(&vetoElectronCopyCollection);
+     analysis.AddModule(&vetoElectronFilter);
+     analysis.AddModule(&vetoMuonCopyCollection);
+     analysis.AddModule(&vetoMuonFilter);
+
      if (channel == channel::nunu){
        //lepton veto modules
-       analysis.AddModule(&vetoElectronCopyCollection);
-       analysis.AddModule(&vetoElectronFilter);
-       analysis.AddModule(&vetoMuonCopyCollection);
-       analysis.AddModule(&vetoMuonFilter);
+       analysis.AddModule(&zeroVetoMuonFilter);
+       analysis.AddModule(&zeroVetoElectronFilter);
        analysis.AddModule(&controlPlots_lepveto);
      }
      else if (channel == channel::munu){
        analysis.AddModule(&oneMuonFilter);
+       analysis.AddModule(&oneVetoMuonFilter);
+       analysis.AddModule(&zeroVetoElectronFilter);
        analysis.AddModule(&muonMTFilter);
        analysis.AddModule(&controlPlots_wsel);
        analysis.AddModule(&wjetsPlots_wsel);
      }
      else if (channel == channel::enu){
        analysis.AddModule(&oneElectronFilter);
+       analysis.AddModule(&oneVetoElectronFilter);
+       analysis.AddModule(&zeroVetoMuonFilter);
        analysis.AddModule(&electronMTFilter);
        analysis.AddModule(&controlPlots_wsel);
        analysis.AddModule(&wjetsPlots_wsel);

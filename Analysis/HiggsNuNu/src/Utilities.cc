@@ -1,24 +1,27 @@
+#include <iomanip>
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/Utilities.h"
 
 namespace ic{
 
 
-  Utilities::Utilities(const double aNumber, const double aError):
+  Utilities::Utilities(const double aNumber, const double aError, const bool aRoundToInt):
     number_(aNumber),
     error_(fabs(aError)),
     errorPlus_(fabs(aError)),
     errorMinus_(fabs(aError)),
     pos_(0),
+    roundToInt_(aRoundToInt),
     asymErrors_(false)
   {
     calculate();
   }
 
-  Utilities::Utilities(const double aNumber, const double aErrorPlus, const double aErrorMinus):
+  Utilities::Utilities(const double aNumber, const double aErrorPlus, const double aErrorMinus, const bool aRoundToInt):
     number_(aNumber),
     errorPlus_(fabs(aErrorPlus)),
     errorMinus_(fabs(aErrorMinus)),
     pos_(0),
+    roundToInt_(aRoundToInt),
     asymErrors_(true)
   {
     error_ = std::max(errorPlus_,errorMinus_);
@@ -37,8 +40,13 @@ void Utilities::calculate(){
   double lSignificantFigure = findDecade(lErr);
   double lCheck = findDecade(fabs(number_));
 
+
   if (lCheck < lSignificantFigure) lSignificantFigure = lCheck;
   pos_ = lSignificantFigure;
+
+  //do not round large numbers more than an integer.
+  if (roundToInt_ && pos_ > 1) pos_=1;
+
   roundedNumber_ = round(number_);
 
   //std::cout << "-- roundNumber = " << roundedNumber_ << " pos " << pos_ << std::endl;
@@ -96,9 +104,12 @@ double Utilities::findDecade(const double aErr) {
 
 std::string Utilities::round(const double aNumber) {
   double lTmp = 0;
-  if (aNumber > 0) lTmp = static_cast<int>(aNumber/pos_+fabs(aNumber)/aNumber*0.5)*pos_;
+  if (pos_ > 0 && aNumber != 0) 
+    lTmp = static_cast<int>(aNumber/pos_+fabs(aNumber)/aNumber*0.5)*pos_;
   std::ostringstream lStr;
-  lStr << lTmp;
+  unsigned lPrecision = (pos_ >= 1) ? 0 : static_cast<unsigned>(-log10(pos_));
+  lStr << std::fixed << std::setprecision(lPrecision) << lTmp;
+  //lStr << resetiosflags (ios_base::precision);
   return lStr.str();
 }
 
@@ -160,7 +171,7 @@ unsigned int Utilities::nDigitsAfterDot(std::string aStr) {
 //}
 
 
-  std::string Utilities::roundedResult(){
+  std::string Utilities::roundedResult(const bool aPrintError){
 
     //    std::string lRound = findDigit(roundedNumber_);
     //std::string lRoundErr = findDigit(roundedError_);
@@ -169,23 +180,23 @@ unsigned int Utilities::nDigitsAfterDot(std::string aStr) {
     std::ostringstream lTmp;
 
     //if (roundedNumber() > 100) lTmp << std::scientific ;
-    if (!asymErrors_) lTmp << "$ " 
-			   << roundedNumber_
-      //<< lRound 
-			   << " \\pm " 
-			   << roundedError_ 
-      //		   << lRoundErr 
-			   << " $" ;
-    else lTmp << "$ " 
-	      << roundedNumber_ 
-      //      << lRound 
-	      << " ^{+" 
-	      << roundedErrorPlus_ 
-      //      << lRoundErrPlus 
-	      << "} _{-" 
-	      << roundedErrorMinus_ 
-      //      << lRoundErrMinus 
-	      << "} $" ;
+    lTmp << "$ " 
+	 << roundedNumber_;
+    //<< lRound 
+    if (aPrintError){
+      if (!asymErrors_) lTmp << " \\pm " 
+			     << roundedError_ 
+	//		   << lRoundErr 
+			     << " $" ;
+      else lTmp << " ^{+" 
+		<< roundedErrorPlus_ 
+	//      << lRoundErrPlus 
+		<< "} _{-" 
+		<< roundedErrorMinus_ 
+	//      << lRoundErrMinus 
+		<< "} $" ;
+    }
+    else lTmp << " $" ;
 
     return lTmp.str();
   }

@@ -16,8 +16,8 @@ namespace ic {
     TH1F::SetDefaultSumw2();
     n_electrons = dir.make<TH1F>("n_electrons","n_electrons", 10, 0, 10); 
     n_muons = dir.make<TH1F>("n_muons","n_muons", 10, 0, 10); 
-    mt_enu = dir.make<TH1F>("mt_enu","mt_enu", 1000, 0, 500); 
-    mt_munu = dir.make<TH1F>("mt_munu","mt_munu", 1000, 0, 500); 
+    mt_enu = dir.make<TH1F>("mt_enu","mt_enu", 1002, -1, 500); 
+    mt_munu = dir.make<TH1F>("mt_munu","mt_munu", 1002, -1, 500); 
     ept_1 = dir.make<TH1F>("ept_1","ept_1", 1000, 0, 1000); 
     ept_2 = dir.make<TH1F>("ept_2","ept_2", 1000, 0, 1000); 
     eeta_1 = dir.make<TH1F>("eeta_1","eeta_1", 100, -5, 5); 
@@ -35,6 +35,7 @@ namespace ic {
   HinvWJetsPlots::HinvWJetsPlots(std::string const& name): ModuleBase(name){
     fs_ = NULL;
     met_label_ = "pfMet";
+    met_nolep_label_ = "metNoMuons";
     electrons_label_ = "electrons";
     muons_label_ = "muonsPFlow";
     sel_label_ = "JetPair";
@@ -47,6 +48,7 @@ namespace ic {
     std::cout << "** PreAnalysis Info for HinvWJetsPlots **" << std::endl;
     if (fs_) {
       std::cout << "MET Label: " << met_label_ << std::endl;
+      std::cout << "MET no leptons Label: " << met_nolep_label_ << std::endl;
       std::cout << "electrons Label: " << electrons_label_ << std::endl;
       std::cout << "muons Label: " << muons_label_ << std::endl;
       std::cout << "Selection Label: " << sel_label_ << std::endl;
@@ -68,6 +70,7 @@ namespace ic {
     wt_ = eventInfo->total_weight();
 
     Met const* met = event->GetPtr<Met>(met_label_);
+    Met const* met_nolep = event->GetPtr<Met>(met_nolep_label_);
 
     std::vector<Electron*> electrons = event->GetPtrVec<Electron>("electrons");
     std::sort(electrons.begin(), electrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
@@ -82,8 +85,8 @@ namespace ic {
     
     n_electrons_ = electrons.size();
     n_muons_ = muons.size();
-    met_noelectrons_ = met->pt();
-    met_nomuons_ = met->pt();
+    met_noelectrons_ = met_nolep->pt();
+    met_nomuons_ = met_nolep->pt();
     
     ept_1_ = -1;
     eeta_1_ = -10;
@@ -92,8 +95,7 @@ namespace ic {
       ept_1_ = electrons[0]->pt();
       eeta_1_ = electrons[0]->eta();
       mt_enu_ = MT(electrons[0],met);
-      met_noelectrons_ += electrons[0]->pt();
-   }
+    }
     ept_2_ = -1;
     eeta_2_ = -10;
     if (n_electrons_ > 1){
@@ -108,8 +110,7 @@ namespace ic {
       mupt_1_ = muons[0]->pt();
       mueta_1_ = muons[0]->eta();
       mt_munu_ = MT(muons[0],met);
-      met_nomuons_ += muons[0]->pt();
-    }
+     }
     mupt_2_ = -1;
     mueta_2_ = -10;
     if (n_muons_ > 1){
@@ -118,8 +119,6 @@ namespace ic {
     }
     
     
-
-
     FillPlots();
 
     return 0;

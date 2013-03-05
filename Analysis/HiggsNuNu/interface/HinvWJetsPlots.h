@@ -44,6 +44,7 @@ namespace ic {
 
     CLASS_MEMBER(HinvWJetsPlots,fwlite::TFileService*, fs);
     CLASS_MEMBER(HinvWJetsPlots,std::string, met_label);
+    CLASS_MEMBER(HinvWJetsPlots,std::string, met_nolep_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, electrons_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, muons_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, sel_label);

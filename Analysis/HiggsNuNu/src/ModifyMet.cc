@@ -1,0 +1,70 @@
+#include "Math/Vector4D.h"
+#include "Math/Vector4Dfwd.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
+#include "UserCode/ICHiggsTauTau/interface/Met.hh"
+#include "UserCode/ICHiggsTauTau/interface/Muon.hh"
+#include "UserCode/ICHiggsTauTau/interface/Electron.hh"
+
+
+namespace ic {
+
+  
+  ModifyMet::ModifyMet(std::string const& name, 
+		       std::string met_name,
+		       std::string lep_name,
+		       unsigned lepFlavour,
+		       unsigned nLepToAdd) : ModuleBase(name) {
+    met_name_ = met_name;
+    lep_name_ = lep_name;
+    lepFlavour_ = lepFlavour;
+    nLepToAdd_ = nLepToAdd;
+  }
+ 
+  ModifyMet::~ModifyMet(){
+    ;
+  }
+  
+  int ModifyMet::PreAnalysis(){
+    std::cout << "----------------------------------------" << std::endl
+	      << " PreAnalysis Info for ModifyMet " << std::endl
+	      << "----------------------------------------" << std::endl
+	      << "-- ModifyMet is run with parameters:" << std::endl
+	      << "---- met name : " << met_name_ << std::endl
+	      << "---- lepton name : " << lep_name_ << std::endl
+	      << "---- lepton flavour : " << lepFlavour_ << std::endl
+	      << "---- Number of leptons to add: " << nLepToAdd_ << std::endl
+	      << "---- outputcol name : " << ModuleName() << std::endl;
+   return 0;
+  }
+
+  int ModifyMet::Execute(TreeEvent *event){
+
+    Met * lMet = event->GetPtr<Met>(met_name_);
+
+    ROOT::Math::PtEtaPhiEVector lVec = lMet->vector();
+
+    if (lepFlavour_==2)
+      correctMet<Muon>(event,lVec);
+    else if (lepFlavour_==1)
+      correctMet<Electron>(event,lVec);
+
+    lMet->set_vector(lVec);
+
+    event->Add(ModuleName(), lMet);
+    return 0;
+  }
+
+  int ModifyMet::PostAnalysis(){
+    return 0;
+  }
+
+  void ModifyMet::PrintInfo(){
+    ;
+  }
+  
+
+
+
+}//namespace
+
+

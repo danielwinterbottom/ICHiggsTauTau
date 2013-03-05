@@ -16,8 +16,8 @@ public:
   Utilities(){};
   ~Utilities(){};
 
-  Utilities(const double aNumber, const double aError);
-  Utilities(const double aNumber, const double aErrorPlus, const double aErrorMinus);
+  Utilities(const double aNumber, const double aError, bool aRoundToInt=true);
+  Utilities(const double aNumber, const double aErrorPlus, const double aErrorMinus, const bool aRoundToInt=true);
 
   void calculate();
 
@@ -32,7 +32,7 @@ public:
 
   //std::string findDigit(const double aNumber);
 
-  std::string roundedResult();
+  std::string roundedResult(const bool aPrintError=true);
 
 
   inline double rawNumber(){
@@ -83,6 +83,7 @@ private:
   double errorMinus_;
 
   double pos_;
+  bool roundToInt_;
 
   //replace by std::vector<std::string> ?
   std::string roundedNumber_;
