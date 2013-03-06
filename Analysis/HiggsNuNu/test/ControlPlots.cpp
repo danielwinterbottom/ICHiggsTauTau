@@ -340,15 +340,16 @@ int main(int argc, char* argv[]){
   }//loop on files
 
   
-  std::ofstream lTxtOutput;
+  std::ofstream lTexOutput;
+  std::ofstream lDatOutput[selections.size()];
 
   bool lFillSummaryTable = plot_name.find("n_jets") != plot_name.npos && plot_name.find("ingap") == plot_name.npos;
 
   //output a table with number of events selected
   if (lFillSummaryTable){
-     //lTxtOutput << "\\begin{tabular}{|l|c|c|c|c|c||c|c||c|}" << std::endl
-     lTxtOutput.open(plot_dir+"/SummaryTable.txt",std::ios_base::out);
-     lTxtOutput << "\\begin{tabular}{|l|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}||p{0.07\\textwidth}|c||p{0.07\\textwidth}|}" << std::endl
+     //lTexOutput << "\\begin{tabular}{|l|c|c|c|c|c||c|c||c|}" << std::endl
+     lTexOutput.open(plot_dir+"/SummaryTable.txt",std::ios_base::out);
+     lTexOutput << "\\begin{tabular}{|l|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}||p{0.07\\textwidth}|c||p{0.07\\textwidth}|}" << std::endl
 		<<"\\hline" << std::endl
 		<< "Step & QCD & $\\gamma$+jets & Top & W+jets & Z+jets & VV & SumMC & Data & Signal 120 \\\\"
 		<< std::endl
@@ -358,6 +359,7 @@ int main(int argc, char* argv[]){
 
   for (unsigned k = 0; k < selections.size(); ++k) {
     if (skip[k]) continue;
+    if (lFillSummaryTable) lDatOutput[k].open(plot_dir+"/SummaryTable_"+selections[k]+".dat",std::ios_base::out);
     ic::Plot plot;
     plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k] + ".pdf";
     if (log_y) plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k]  + "_log.pdf";
@@ -549,7 +551,7 @@ int main(int argc, char* argv[]){
       //std::cout.precision(2);
       //std::cout << std::scientific;
 
-      lTxtOutput << selections[k] << " & " 
+      lTexOutput << selections[k] << " & " 
 		 << n_qcd.roundedResult() << " & " 
 		 << n_gjets.roundedResult() << " & "
 		 << n_top.roundedResult() << " & "
@@ -559,12 +561,25 @@ int main(int argc, char* argv[]){
 		 << n_Tot.roundedResult() << " & ";
 
       if (!blind || (k!=selections.size()-1))
-	lTxtOutput << n_data.roundedResult(false) << " & ";
-      else lTxtOutput << "XXX" <<  " & ";
+	lTexOutput << n_data.roundedResult(false) << " & ";
+      else lTexOutput << "XXX" <<  " & ";
 
-      lTxtOutput << n_signal.roundedResult()
+      lTexOutput << n_signal.roundedResult()
 		 << " \\\\ "
-		 << std::endl; 
+		 << std::endl;
+
+      lDatOutput[k] << "QCD " << n_qcd.roundedNumber() << " " << n_qcd.roundedError() << std::endl
+		    << "GJets " << n_gjets.roundedNumber() << " " << n_gjets.roundedError() << std::endl
+		    << "Top " << n_top.roundedNumber() << " " << n_top.roundedError() <<  std::endl
+		    << "WJets " << n_WJets.roundedNumber() << " " << n_WJets.roundedError() <<  std::endl
+		    << "ZJets " << n_ZJets.roundedNumber() << " " << n_ZJets.roundedError() <<  std::endl
+		    << "VV " << n_VV.roundedNumber() << " " << n_VV.roundedError() <<  std::endl
+		    << "Data " << n_data.roundedNumber() << " " << n_data.roundedError() <<  std::endl
+		    << "Signal " << n_signal.roundedNumber() << " " << n_signal.roundedError() 
+		    << std::endl;
+
+      lDatOutput[k].close();
+ 
     }
 
 
@@ -572,10 +587,10 @@ int main(int argc, char* argv[]){
   }//loop on selection
 
   if (lFillSummaryTable){
-     lTxtOutput << "\\hline" << std::endl
+     lTexOutput << "\\hline" << std::endl
 		<< "\\end{tabular}" << std::endl;
 		
-     lTxtOutput.close();
+     lTexOutput.close();
    }
 
 

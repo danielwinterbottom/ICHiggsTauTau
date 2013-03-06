@@ -151,7 +151,8 @@ struct channel_def {
 	enum type {
 		nunu,							
 		munu,
-		enu
+		enu,
+		taunu
 	};
 };
 
@@ -162,6 +163,7 @@ struct channel_def {
      (channel::nunu, "nunu")
      (channel::munu, "munu")
      (channel::enu, "enu")
+     (channel::taunu, "taunu")
      ;
 
    if (conv.find(in) != conv.end()) {
@@ -176,6 +178,7 @@ struct channel_def {
      ("nunu", channel::nunu)
      ("munu", channel::munu)
      ("enu", channel::enu)
+     ("taunu", channel::taunu)
      ;
    
    if (conv.find(in) != conv.end()) {

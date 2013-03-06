@@ -455,8 +455,23 @@ int main(int argc, char* argv[]){
     }
   }
 
+  // ------------------------------------------------------------------------------------
+  // Gen particle selection modules
+  // ------------------------------------------------------------------------------------
 
+  int lFlavour = 1;
+  if (channel == channel::enu) lFlavour = 11;
+  else if (channel == channel::munu) lFlavour = 13;
+  else if (channel == channel::taunu) lFlavour = 15;
+	
+  SimpleCounter<GenParticle> WtoLeptonFilter = SimpleCounter<GenParticle>("WtoLeptonSelector")
+    .set_input_label("genParticles")
+    .set_predicate(
+		   (bind(&GenParticle::status, _1) == 3) && 
+		   (bind(abs,(bind(&GenParticle::pdgid, _1))) == lFlavour))
+    .set_min(1);
 
+  
   // ------------------------------------------------------------------------------------
   // Plot Modules
   // ------------------------------------------------------------------------------------  
@@ -545,6 +560,11 @@ int main(int argc, char* argv[]){
    if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
    
    if (!do_skim) {
+     if (output_name.find("JetsToLNu") != output_name.npos &&
+	 channel != channel::nunu) {
+       analysis.AddModule(&WtoLeptonFilter);
+     }
+
      analysis.AddModule(&dataMCTriggerPathFilter);
 
      ////analysis.AddModule(&runStats);
