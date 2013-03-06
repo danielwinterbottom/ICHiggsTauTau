@@ -11,9 +11,9 @@ export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/DefaultConfigNunu.cfg
+CONFIG=scripts/DefaultConfigEnu.cfg
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/MET/
-JOBDIR=jobs/Nunu/
+JOBDIR=jobs/enu/
 
 
 echo "Config file: $CONFIG"

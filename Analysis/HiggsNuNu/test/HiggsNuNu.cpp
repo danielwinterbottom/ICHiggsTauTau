@@ -637,6 +637,9 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&wjetsPlots_wsel);
      }
 
+     //analysis.AddModule(&metFilter);
+     //analysis.AddModule(&controlPlots_met);
+
      //dphi cut
      analysis.AddModule(&dphiJetPairFilter);
      analysis.AddModule(&controlPlots_dphi);

@@ -11,10 +11,10 @@ export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/DefaultConfigNunuMC.cfg
+CONFIG=scripts/DefaultConfigEnuMC.cfg
 echo "Config file: $CONFIG"
 
-JOBDIR=jobs/Nunu/
+JOBDIR=jobs/enu/
 mkdir -p $JOBDIR
 
 
