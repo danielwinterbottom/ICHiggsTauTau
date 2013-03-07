@@ -11,12 +11,11 @@ export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CHANNEL=enu
 CONFIG=scripts/DefaultConfigEnuMC.cfg
 
 echo "Config file: $CONFIG"
 
-JOBDIR=jobs/$CHANNEL/
+JOBDIR=jobs/enu/
 mkdir -p $JOBDIR
 
 
@@ -94,22 +93,26 @@ for FILELIST in `ls filelists/Dec2_MC_*`
   echo $FILELIST > tmp.txt
 
   sed "s/filelists\/Dec2_MC_53X_//" tmp.txt > tmp2.txt
+  JOB=MC_`sed "s/\.dat//" tmp2.txt`
+ 
+  echo "JOB name = $JOB"
 
   grep "JetsToLNu" tmp.txt
   if (( "$?" == 0 )); then
-      PREFIX=/vols/ssd00/cms/invskims/$CHANNEL/Dec2/MC_53X/
+      for CHANNEL in enu munu taunu
+	do
+	PREFIX=/vols/ssd00/cms/invskims/$CHANNEL/Dec2/MC_53X/
+
+	$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB_$CHANNEL.root &> $JOBDIR/$JOB_$CHANNEL.log" $JOBDIR/$JOB_$CHANNEL.sh
+	$JOBSUBMIT $JOBDIR/$JOB_$CHANNEL.sh
+      done
   else 
       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
+      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+      $JOBSUBMIT $JOBDIR/$JOB.sh
   fi
 
-  JOB=MC_`sed "s/\.dat//" tmp2.txt`
-
-  rm tmp.txt tmp2.txt
-
-  echo "JOB name = $JOB"
-
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-  $JOBSUBMIT $JOBDIR/$JOB.sh
+ rm tmp.txt tmp2.txt
 
 done
 
