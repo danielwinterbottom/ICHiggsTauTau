@@ -18,7 +18,7 @@ for CHANNEL in enu munu taunu
   do
 
   JOBDIR=jobs/skim/$CHANNEL/
-  OUTDIR=output/skim/$CHANNEL/
+  OUTDIR=/vols/ssd00/cms/invskims/$CHANNEL/Dec2/MC_53X/
   mkdir -p $JOBDIR
   mkdir -p $OUTDIR
 
@@ -35,6 +35,8 @@ for CHANNEL in enu munu taunu
     
     LOOPOUTDIR=$OUTDIR/`sed "s/\.dat//" tmp2.txt`/
     JOB=MC_`sed "s/\.dat//" tmp2.txt`
+
+    mkdir -p $LOOPOUTDIR
     
     rm tmp.txt tmp2.txt
     

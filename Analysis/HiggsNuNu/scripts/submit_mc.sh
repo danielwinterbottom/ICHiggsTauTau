@@ -11,10 +11,12 @@ export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
+CHANNEL=enu
 CONFIG=scripts/DefaultConfigEnuMC.cfg
+
 echo "Config file: $CONFIG"
 
-JOBDIR=jobs/enu/
+JOBDIR=jobs/$CHANNEL/
 mkdir -p $JOBDIR
 
 
@@ -90,7 +92,15 @@ for FILELIST in `ls filelists/Dec2_MC_*`
   echo "Processing files in "$FILELIST
 
   echo $FILELIST > tmp.txt
+
   sed "s/filelists\/Dec2_MC_53X_//" tmp.txt > tmp2.txt
+
+  grep "JetsToLNu" tmp.txt
+  if (( "$?" == 0 )); then
+      PREFIX=/vols/ssd00/cms/invskims/$CHANNEL/Dec2/MC_53X/
+  else 
+      PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
+  fi
 
   JOB=MC_`sed "s/\.dat//" tmp2.txt`
 
