@@ -18,8 +18,8 @@ DOQCD=0
 for CHANNEL in nunu enu munu
   do
   
-  JOBDIR=jobs/$CHANNEL/
-  OUTPUTDIR=output/$CHANNEL/
+  JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+  OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
 
   echo "Config file: $CONFIG"
   mkdir -p $JOBDIR
