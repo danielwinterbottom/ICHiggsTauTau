@@ -721,8 +721,8 @@ namespace ic {
     HttStyle->SetCanvasColor     (0);
     HttStyle->SetCanvasBorderSize(10);
     HttStyle->SetCanvasBorderMode(0);
-    HttStyle->SetCanvasDefH      (700);
-    HttStyle->SetCanvasDefW      (700);
+    HttStyle->SetCanvasDefH      (600);
+    HttStyle->SetCanvasDefW      (600);
     HttStyle->SetCanvasDefX      (100);
     HttStyle->SetCanvasDefY      (100);
 
