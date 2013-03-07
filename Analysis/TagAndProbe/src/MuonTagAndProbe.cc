@@ -35,10 +35,11 @@ namespace ic {
     // Set up necessary histograms depending on mode. These histograms are named such
     // that the fitting code will still work.
     std::string label;
-    if(mode_==0 || mode_==10) label="id_";
-    if(mode_==1 || mode_==11) label="iso_";
-    if(mode_==2 || mode_==12) label="idiso_";
-    if(mode_==3) label="";
+    if(mode_==0 || mode_==10) label="id_";          //0=ID, 10=ID in finer bins
+    if(mode_==1 || mode_==11) label="iso_";         //1=Iso, 11=iso in finer bins
+    if(mode_==2 || mode_==12) label="idiso_";       //2=IDIso, 12=IDIso in finer bins
+    if(mode_==3) label="";                          //3=Trigger efficiencies for mutau channel
+    if(mode_==4) label="";                          //4=Trigger efficiencies for mutau+met channel
 
     if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
     {
@@ -138,17 +139,26 @@ namespace ic {
         mutau_filter = "hltSingleMuIsoL1s14L3IsoFiltered15eta2p1";
     }
     // 2012 Triggers
-    if ((data_ && run >= 190456 && run <= 193751) || (!data_ && era_=="2012A"))
+    if(!mode_==4)
     {
-        mutau_obj_label = "triggerObjectsIsoMu18LooseTau20";
-        mutau_filter = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f18QL3crIsoFiltered10";
+        if ((data_ && run >= 190456 && run <= 193751) || (!data_ && era_=="2012A"))
+        {
+            mutau_obj_label = "triggerObjectsIsoMu18LooseTau20";
+            mutau_filter = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f18QL3crIsoFiltered10";
+        }
+        if ((data_ && run >= 193752/* && run <= xxxxx*/) ||
+                (!data_ && (era_=="2012B"||era_=="2012C"||era_=="2012D" ) ))
+        {
+            mutau_obj_label = "triggerObjectsIsoMu17LooseTau20";
+            mutau_filter = "hltL3crIsoL1sMu14erORMu16erL1f0L2f14QL3f17QL3crIsoRhoFiltered0p15";
+        }
     }
-    if ((data_ && run >= 193752/* && run <= xxxxx*/) ||
-            (!data_ && (era_=="2012B"||era_=="2012C"||era_=="2012D" ) ))
-    {
-        mutau_obj_label = "triggerObjectsIsoMu17LooseTau20";
-        mutau_filter = "hltL3crIsoL1sMu14erORMu16erL1f0L2f14QL3f17QL3crIsoRhoFiltered0p15";
+    else
+    {    
+        mutau_obj_label = "triggerObjectsMu8LooseTau20L1ETM26";
+        mutau_filter = "hltL3fL1sMu7Eta2p1L1f0L2f7QL3Filtered8Q";
     }
+
     //set tag and probe trigger names and filter labels
     if(data_ && run >= 190456)
     {
