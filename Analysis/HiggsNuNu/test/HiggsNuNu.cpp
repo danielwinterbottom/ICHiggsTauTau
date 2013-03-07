@@ -418,7 +418,7 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<CompositeCandidate> dphiQCDJetPairFilter = SimpleFilter<CompositeCandidate>("DphiQCDJetPairFilter")
     .set_input_label("jjLeadingCandidates")
-    .set_predicate( !bind(PairDPhiLessThan, _1,2.7) )
+    .set_predicate( !bind(PairDPhiLessThan, _1,2.6) )
     .set_min(1)
     .set_max(999);    
 
