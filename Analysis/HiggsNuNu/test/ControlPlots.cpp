@@ -388,7 +388,7 @@ int main(int argc, char* argv[]){
       SumHistograms(f,plots[nm],"MC_QCD",qcd_hist);
       SumHistograms(f,plots[nm],"MC_T",top_hist);
       SumHistograms(f,plots[nm],"MC_SingleT",top_hist);
-      SumHistograms(f,plots[nm],"MC_W",WJets_hist);
+      SumHistograms(f,plots[nm],"JetsToLNu",WJets_hist);
       SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
       SumHistograms(f,plots[nm],"ZJetsToNuNu",ZJetsToNuNu_hist);
       SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);

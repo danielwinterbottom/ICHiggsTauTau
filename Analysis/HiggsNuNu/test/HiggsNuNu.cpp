@@ -63,6 +63,8 @@ int main(int argc, char* argv[]){
   bool make_sync_ntuple;          // Generate a sync ntuple
   
   string mettype;                 // MET input collection to be used
+  bool do_qcd_region;             // DeltaPhi cut > 2.7
+  double met_cut;                 // MET cut to apply for signal, QCD or skim
 
  // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -72,21 +74,23 @@ int main(int argc, char* argv[]){
   po::notify(vm);
   po::options_description config("Configuration");
   config.add_options()
-      ("max_events",          po::value<int>(&max_events)-> default_value(-1))
-      ("filelist",            po::value<string>(&filelist)->required())
-      ("input_prefix",        po::value<string>(&input_prefix)->default_value(""))
-      ("output_name",         po::value<string>(&output_name)->required())
-      ("output_folder",       po::value<string>(&output_folder)->default_value(""))
-      ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
-      ("skim_path",           po::value<string>(&skim_path)->default_value(""))
-      ("era",                 po::value<string>(&era_str)->required())
-      ("mc",                  po::value<string>(&mc_str)->required())
-      ("channel",             po::value<string>(&channel_str)->default_value("nunu"))
-      ("is_data",             po::value<bool>(&is_data)->required())
-      ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
-      ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
-      ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
-      ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"));
+    ("max_events",          po::value<int>(&max_events)-> default_value(-1))
+    ("filelist",            po::value<string>(&filelist)->required())
+    ("input_prefix",        po::value<string>(&input_prefix)->default_value(""))
+    ("output_name",         po::value<string>(&output_name)->required())
+    ("output_folder",       po::value<string>(&output_folder)->default_value(""))
+    ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
+    ("skim_path",           po::value<string>(&skim_path)->default_value(""))
+    ("era",                 po::value<string>(&era_str)->required())
+    ("mc",                  po::value<string>(&mc_str)->required())
+    ("channel",             po::value<string>(&channel_str)->default_value("nunu"))
+    ("is_data",             po::value<bool>(&is_data)->required())
+    ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
+    ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
+    ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
+    ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
+    ("do_qcd_region",       po::value<bool>(&do_qcd_region)->default_value(false))
+    ("met_cut",             po::value<double>(&met_cut)->default_value(130.));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -110,6 +114,8 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
+  std::cout << boost::format(param_fmt) % "do_qcd_region" % do_qcd_region;
+  std::cout << boost::format(param_fmt) % "met_cut" % met_cut;
 
 
   // Load necessary libraries for ROOT I/O of custom classes
@@ -167,6 +173,10 @@ int main(int argc, char* argv[]){
     "icEventProducer",    // TTree path
     "EventTree",          // TTree name
     max_events);          // Max. events to process (-1 = all)
+  if (do_skim && skim_path == "") {
+    std::cout << "-- Skimming mode: requires skim_path parameter to be set !! Quitting." << std::endl;
+    return 1;
+  }
   if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);
 
   // ------------------------------------------------------------------------------------
@@ -384,12 +394,18 @@ int main(int argc, char* argv[]){
     .set_max(999);    
 
 
-  double minmjj=1200;
+  double minmjj=900;
   if(do_skim)minmjj=600;
 
-  SimpleFilter<CompositeCandidate> massJetPairFilter = SimpleFilter<CompositeCandidate>("MassJetPairFilter")
+  SimpleFilter<CompositeCandidate> looseMassJetPairFilter = SimpleFilter<CompositeCandidate>("LooseMassJetPairFilter")
     .set_input_label("jjLeadingCandidates")
     .set_predicate( bind(PairMassInRange, _1,minmjj,8000) )
+    .set_min(1)
+    .set_max(999);
+    
+  SimpleFilter<CompositeCandidate> tightMassJetPairFilter = SimpleFilter<CompositeCandidate>("TightMassJetPairFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( bind(PairMassInRange, _1,1200,8000) )
     .set_min(1)
     .set_max(999);    
 
@@ -400,13 +416,17 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(999);    
 
+  SimpleFilter<CompositeCandidate> dphiQCDJetPairFilter = SimpleFilter<CompositeCandidate>("DphiQCDJetPairFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( !bind(PairDPhiLessThan, _1,2.7) )
+    .set_min(1)
+    .set_max(999);    
+
  
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
-  double metcut = 130;
-  if(do_skim) metcut = 80;
-  MetSelection metFilter = MetSelection("MetFilter",mettype,metcut);
+  MetSelection metFilter = MetSelection("MetFilter",mettype,met_cut);
 
   unsigned nLepToAdd = 0;
   if (channel == channel::munu || channel == channel::enu) nLepToAdd = 1; 
@@ -414,8 +434,8 @@ int main(int argc, char* argv[]){
   ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"muonsPFlow",2,nLepToAdd);
   ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"electrons",1,nLepToAdd);
 
-  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",metcut);
-  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",metcut);
+  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",met_cut);
+  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",met_cut);
 
   //------------------------------------------------------------------------------------
   // W selection Modules
@@ -500,11 +520,11 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("MET");
 
-  HinvControlPlots controlPlots_mjj = HinvControlPlots("MjjControlPlots")
+  HinvControlPlots controlPlots_looseMjj = HinvControlPlots("LooseMjjControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("Mjj");
+    .set_sel_label("LooseMjj");
 
   HinvControlPlots controlPlots_deta = HinvControlPlots("DEtaControlPlots")
     .set_fs(fs)
@@ -552,6 +572,34 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhi");
 
+  HinvWJetsPlots wjetsPlots_dphi = HinvWJetsPlots("DPhiWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("electrons")
+    .set_muons_label("muonsPFlow")
+    .set_sel_label("DPhi");
+
+  if (channel==channel::enu)
+    wjetsPlots_dphi.set_met_nolep_label("metNoElectrons");
+
+  HinvControlPlots controlPlots_tightMjj = HinvControlPlots("TightMjjControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("TightMjj");
+
+  HinvWJetsPlots wjetsPlots_tightMjj = HinvWJetsPlots("TightMjjWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("electrons")
+    .set_muons_label("muonsPFlow")
+    .set_sel_label("TightMjj");
+
+  if (channel==channel::enu)
+    wjetsPlots_tightMjj.set_met_nolep_label("metNoElectrons");
+
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
@@ -560,10 +608,6 @@ int main(int argc, char* argv[]){
    if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
    
    if (!do_skim) {
-     if (output_name.find("JetsToLNu") != output_name.npos &&
-	 channel != channel::nunu) {
-       analysis.AddModule(&WtoLeptonFilter);
-     }
 
      analysis.AddModule(&dataMCTriggerPathFilter);
 
@@ -588,23 +632,23 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&wjetsPlots_dijet);
 
      //met modules
-     if (channel == channel::nunu){
-       analysis.AddModule(&metFilter);
-     }
-     else if (channel == channel::munu){
+     if (channel == channel::munu){
        analysis.AddModule(&metNoMuonFilter);
      }
      else if (channel == channel::enu){
        analysis.AddModule(&metNoElectronFilter);
      }
+     else {
+       analysis.AddModule(&metFilter);
+     }
      analysis.AddModule(&controlPlots_met);
-
+     
      //dijet modules
-     analysis.AddModule(&massJetPairFilter);
-     analysis.AddModule(&controlPlots_mjj);
+     analysis.AddModule(&looseMassJetPairFilter);
+     analysis.AddModule(&controlPlots_looseMjj);
      analysis.AddModule(&detaJetPairFilter);
      analysis.AddModule(&controlPlots_deta);
-
+     
      //add leptons just to plot them before specific W or Hinv selection
      analysis.AddModule(&wjetsPlots_deta);
 
@@ -614,13 +658,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
 
-     if (channel == channel::nunu){
-       //lepton veto modules
-       analysis.AddModule(&zeroVetoMuonFilter);
-       analysis.AddModule(&zeroVetoElectronFilter);
-       analysis.AddModule(&controlPlots_lepveto);
-     }
-     else if (channel == channel::munu){
+     if (channel == channel::munu){
        analysis.AddModule(&oneMuonFilter);
        analysis.AddModule(&oneVetoMuonFilter);
        analysis.AddModule(&zeroVetoElectronFilter);
@@ -636,22 +674,35 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&controlPlots_wsel);
        analysis.AddModule(&wjetsPlots_wsel);
      }
-
-     //analysis.AddModule(&metFilter);
-     //analysis.AddModule(&controlPlots_met);
+     else {
+       //lepton veto modules
+       analysis.AddModule(&zeroVetoMuonFilter);
+       analysis.AddModule(&zeroVetoElectronFilter);
+       analysis.AddModule(&controlPlots_lepveto);
+     }
 
      //dphi cut
-     analysis.AddModule(&dphiJetPairFilter);
+     if (!do_qcd_region) analysis.AddModule(&dphiJetPairFilter);
+     else analysis.AddModule(&dphiQCDJetPairFilter);
      analysis.AddModule(&controlPlots_dphi);
- 
+
+     //tight Mjj cut
+     analysis.AddModule(&tightMassJetPairFilter);
+     analysis.AddModule(&controlPlots_tightMjj);
+
    }
    else {
      //Build Skimming Analysis
      //analysis.AddModule(pointer to module defined above)
-     analysis.AddModule(&jetPtEtaFilter);
-     analysis.AddModule(&metFilter);
-     analysis.AddModule(&jjPairProducer);
-     analysis.AddModule(&massJetPairFilter);
+     if (channel == channel::nunu){
+       analysis.AddModule(&jetPtEtaFilter);
+       analysis.AddModule(&metFilter);
+       analysis.AddModule(&jjPairProducer);
+       analysis.AddModule(&looseMassJetPairFilter);
+     }
+     else {
+       analysis.AddModule(&WtoLeptonFilter);
+     }
    }
    // Run analysis
    
