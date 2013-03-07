@@ -5,8 +5,9 @@
 #include "TH1F.h"
 #include "TF1.h"
 #include "TFile.h"
-#include "TGraph.h"
+#include "TGraphErrors.h"
 #include "TCanvas.h"
+#include "TLatex.h"
 
 
 
@@ -61,18 +62,24 @@ int PlotExtrap(string input, string cat, string mc, string fn){
   massesd.push_back(145);
 
   std::vector<double> yield;
+  std::vector<double> yield_err;
+  std::vector<double> mass_err;
 
   if (!gDirectory->cd(("/"+cat).c_str())) return 1;
   std::vector<TH1F *> hists;
   for (unsigned i = 0; i < masses.size(); ++i) {
     hists.push_back((TH1F*)gDirectory->Get((mc+masses[i]).c_str()));
+    double err = 0.0;
+    hists.back()->IntegralAndError(0, hists.back()->GetNbinsX() + 1, err);
     yield.push_back(hists.back()->Integral());
+    yield_err.push_back(err);
+    mass_err.push_back(0);
   }
 
   // TF1 fitted("fit","-33.19+x*0.3415",90,145);
   TF1 fitted("fit",fn.c_str(),90,145);
 
-  TGraph gYield (12, &(massesd[0]), &(yield[0]));
+  TGraphErrors gYield (12, &(massesd[0]), &(yield[0]), &(mass_err[0]), &(yield_err[0]));
   gYield.SetName("yield");
   TCanvas cYield("cYield","cYield",700,700);
   gYield.Draw("ap");
@@ -80,6 +87,14 @@ int PlotExtrap(string input, string cat, string mc, string fn){
   gYield.SetMinimum(0.0);
   gYield.GetXaxis()->SetTitle("Mass Point");
   gYield.GetYaxis()->SetTitle("Distribution Yield");
+
+
+  TLatex *title_latex = new TLatex();
+  title_latex->SetNDC();
+  title_latex->SetTextSize(0.03);
+  title_latex->SetTextAlign(31);
+  title_latex->DrawLatex(0.95,0.965, TString(cat) + ", " + TString(mc));
+
   cYield.SaveAs(("yield_"+cat+"_"+mc+".pdf").c_str());
   cYield.SaveAs(("yield_"+cat+"_"+mc+".png").c_str());
 

@@ -56,6 +56,8 @@ namespace ic {
 
     InitCategory("vbf");
 
+    InitCategory("tautau_vbf");
+
     InitCategory("vbf_tight");
 
     InitCategory("vbf_no_cjv");
@@ -262,12 +264,23 @@ namespace ic {
       }
     }
 
+
+
     // VBF Selection
     // In the em channel, additionally apply b-jet veto
     if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 800. && jdeta_ > 4.0) {
       if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
         SetPassCategory("vbf_tight");
       }
+    }
+
+    // Tau-tau-like VBF Selection
+    // In the em channel, additionally apply b-jet veto
+    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 250. && jdeta_ > 2.5) {
+      bool lepton_pt = pt_1_ > 30.0 && pt_2_ > 45.0;
+      bool pt_50_jet = jets[0]->pt() > 50.0 && fabs(jets[0]->eta()) < 3.0;
+      bool hpt = ((ditau->vector() + met->vector()).pt()) > 110.0;
+      if (lepton_pt && pt_50_jet && hpt) SetPassCategory("tautau_vbf");
     }
 
     // VBF Selection with no CJV, used for VBF category Fakes estimate in em
