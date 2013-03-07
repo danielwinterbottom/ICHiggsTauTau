@@ -28,14 +28,13 @@ for CHANNEL in nunu enu munu
 #Process HiggsNuNu specific backgrounds
 
 #Signal files and DYtoNuNu
-  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/VBFH120/
-  for FILELIST in `ls filelists/Dec1_VBFH120_* filelists/Dec1_ZJets_*`
+  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Mar20/MC/
+  for FILELIST in `ls filelists/Mar20_MC_VBF_HToZZTo4Nu* filelists/Mar20_MC_ZJetsToNuNu*`
     do
     echo "Processing files in "$FILELIST
     
     echo $FILELIST > tmp.txt
-    sed "s/filelists\/Dec1_VBFH120_//" tmp.txt > tmp2a.txt
-    sed "s/filelists\/Dec1_ZJets_//" tmp2a.txt > tmp2.txt
+    sed "s/filelists\/Mar20_MC_//" tmp.txt > tmp2.txt
     
     JOB=MC_`sed "s/\.dat//" tmp2.txt`
     
@@ -49,7 +48,7 @@ for CHANNEL in nunu enu munu
 done
 
 
-VBFZ
+#VBFZ
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec5/VBFZ/
 for FILELIST in `ls filelists/Dec5_VBFZ*`
   do
