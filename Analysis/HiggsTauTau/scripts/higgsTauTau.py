@@ -68,6 +68,9 @@ parser.add_option("--mc", dest="mc", action='store_true', default=False,
 parser.add_option("--2011", dest="do_2011", action='store_true', default=False,
                   help="Process the 2011 analysis, otherwise the 2012 analysis is processed by default.")
 
+parser.add_option("--short_signal", dest="short_signal", action='store_true', default=False,
+                  help="Only process the 125 signal samples")
+
 parser.add_option("-c", "--channels", dest="channels", type='string', action='callback',callback=split_callback,
                   help="A comma separted list of channels to process.  Supported channels: For 2102 %(CHANNELS_2012)s, for 2011 %(CHANNELS_2011)s" % vars())
 
@@ -287,6 +290,12 @@ if not options.do_2011:
 	 'WH_ZH_TTH_HToTauTau_M-155',
 	 'WH_ZH_TTH_HToTauTau_M-160'
    ]
+if options.short_signal:
+	signal_mc = [
+		'GluGluToHToTauTau_M-125', 
+		'VBF_HToTauTau_M-125',
+		'WH_ZH_TTH_HToTauTau_M-125'
+	]
 
 
 if options.mc:
