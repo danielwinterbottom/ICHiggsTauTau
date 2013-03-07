@@ -29,13 +29,17 @@ for CHANNEL in nunu enu munu
 
 #Signal files and DYtoNuNu
   PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Mar20/MC/
-  for FILELIST in `ls filelists/Mar20_MC_VBF_HToZZTo4Nu* filelists/Mar20_MC_ZJetsToNuNu*`
+#  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/VBFH120/
+#  for FILELIST in `ls filelists/Dec1_VBFH120_* filelists/Dec1_ZJets_*`
+  for FILELIST in `ls filelists/Mar20_MC_*`
     do
     echo "Processing files in "$FILELIST
     
     echo $FILELIST > tmp.txt
+    #sed "s/filelists\/Dec1_VBFH120_//" tmp.txt > tmp2a.txt
+    #sed "s/filelists\/Dec1_ZJets_//" tmp2a.txt > tmp2.txt
     sed "s/filelists\/Mar20_MC_//" tmp.txt > tmp2.txt
-    
+        
     JOB=MC_`sed "s/\.dat//" tmp2.txt`
     
     rm tmp.txt tmp2.txt
@@ -45,7 +49,7 @@ for CHANNEL in nunu enu munu
     $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
     $JOBSUBMIT $JOBDIR/$JOB.sh
 
-done
+  done
 
 
 #VBFZ
