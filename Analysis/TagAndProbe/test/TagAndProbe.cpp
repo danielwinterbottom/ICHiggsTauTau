@@ -274,10 +274,11 @@ int main(int argc, char* argv[]){
                    && (boost::bind(MinPtMaxEta, _1, 20, 2.1)))
     .set_min(1);
     
-    SimpleFilter<Electron> electronProbeFilter = SimpleFilter<Electron>
-    ("electronProbeFilter")
+    
+    SimpleCounter<Electron> electronCounter = SimpleCounter<Electron>
+    ("electronCounter")
+    .set_predicate( (boost::bind(DummyFunction<Electron>, _1)) )
     .set_input_label("electrons")
-    .set_predicate( boost::bind(MinPtMaxEta, _1, 10, 2.1) )
     .set_min(2);
 
     ElectronTagAndProbe electronIDTagAndProbe("electronIDTagAndProbe");
@@ -871,6 +872,7 @@ int main(int argc, char* argv[]){
         if(iselec)
         {
             if(!isdata) analysis.AddModule(&zEEFilter);
+            analysis.AddModule(&electronCounter);
             analysis.AddModule(&electronTagFilter);
    //         analysis.AddModule(&electronProbeFilter);
         }
