@@ -1,12 +1,12 @@
 JOBWRAPPER=./scripts/generate_job.sh
-JOBSUBMIT=true
-# JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+#JOBSUBMIT=true
+JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 
 
 CONFIG=scripts/Moriond_2012.cfg
 echo $CONFIG
 FILELIST=filelists/Feb20_Data_53X
-SKIMPATH=******/Feb20/Data_53X
+SKIMPATH=$SSD/Feb20/Data_53X
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Feb20/Data_53X/
 
  PATHS=(
