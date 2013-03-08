@@ -12,8 +12,8 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfig.cfg
-METCUT=130
-DOQCD=0
+METCUT=70
+DOQCD=1
 
 for CHANNEL in nunu enu munu
   do

@@ -12,8 +12,8 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigMC.cfg
-METCUT=130
-DOQCD=0
+METCUT=0
+DOQCD=1
 
 for CHANNEL in nunu enu munu
   do
@@ -106,20 +106,20 @@ for FILELIST in `ls filelists/Dec2_MC_*`
  
   echo "JOB name = $JOB"
 
-  grep "JetsToLNu" tmp.txt
-  if (( "$?" == 0 )); then
-      for FLAVOUR in enu munu taunu
-	do
-	PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
+#  grep "JetsToLNu" tmp.txt
+#  if (( "$?" == 0 )); then
+#      for FLAVOUR in enu munu taunu
+#	do
+#	PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
 
-	$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB_$FLAVOUR.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB_$FLAVOUR.log" $JOBDIR/$JOB_$FLAVOUR.sh
-	$JOBSUBMIT $JOBDIR/$JOB_$FLAVOUR.sh
-      done
-  else 
+#	$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB_$FLAVOUR.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB_$FLAVOUR.log" $JOBDIR/$JOB_$FLAVOUR.sh
+#	$JOBSUBMIT $JOBDIR/$JOB_$FLAVOUR.sh
+#      done
+#  else 
       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
       $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
       $JOBSUBMIT $JOBDIR/$JOB.sh
-  fi
+#  fi
 
  rm tmp.txt tmp2.txt
 

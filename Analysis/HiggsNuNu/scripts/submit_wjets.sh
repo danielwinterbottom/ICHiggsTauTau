@@ -11,39 +11,47 @@ export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/DefaultConfigSkimMC.cfg
+CONFIG=scripts/DefaultConfigMC.cfg
 echo "Config file: $CONFIG"
 
-for CHANNEL in enu munu taunu
+for METCUT in 0 70 130
   do
-
-  JOBDIR=jobs/skim/$CHANNEL/
-  OUTDIR=/vols/ssd00/cms/invskims/$CHANNEL/Dec2/MC_53X/
-  mkdir -p $JOBDIR
-  mkdir -p $OUTDIR
-
-
-#Process bkg common with HiggsTautau
-  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
-  for FILELIST in `ls filelists/Dec2_MC_53X_W*ToLNu*`
-#for FILELIST in `ls filelists/Dec30_MC_53X_DY*`
+  for DOQCD in 0 1
     do
-    echo "Processing files in "$FILELIST
+    for CHANNEL in nunu enu munu
+      do
     
-    echo $FILELIST > tmp.txt
-    sed "s/filelists\/Dec2_MC_53X_//" tmp.txt > tmp2.txt
-    
-    LOOPOUTDIR=$OUTDIR/`sed "s/\.dat//" tmp2.txt`/
-    JOB=MC_`sed "s/\.dat//" tmp2.txt`
-
-    mkdir -p $LOOPOUTDIR
-    
-    rm tmp.txt tmp2.txt
-    
-    echo "JOB name = $JOB"
-    echo "OUTPUT dir = $LOOPOUTDIR"
-    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --skim_path=$LOOPOUTDIR --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-    $JOBSUBMIT $JOBDIR/$JOB.sh
+      JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+      OUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+      mkdir -p $JOBDIR
+      mkdir -p $OUTDIR
+      
+      
+#Process W+jets skimmed files
+      for FLAVOUR in enu munu taunu
+	do
+	PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
+	for FILELIST in `ls filelists/Dec2_MC_53X_W*ToLNu*`
+	  do
+	  echo "Processing files in "$FILELIST
+	  
+	  echo $FILELIST > tmp.txt
+	  sed "s/filelists\/Dec2_MC_53X_//" tmp.txt > tmp2.txt
+	  
+	  JOB=MC_`sed "s/\.dat//" tmp2.txt`_$FLAVOUR
+	  
+	  rm tmp.txt tmp2.txt
+	  
+	  echo "JOB name = $JOB"
+	  echo "OUTPUT dir = $OUTDIR"
+	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBSUBMIT $JOBDIR/$JOB.sh
+	  
+	done
+	
+      done
+      
+    done
     
   done
 
