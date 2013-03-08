@@ -847,10 +847,6 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&muonVHIsoTagAndProbe);
                 analysis.AddModule(&muonVHIDIsoTagAndProbe);
             }
-            if(ltmet)
-            {
-                analysis.AddModule(&muonltmetTrgTagAndProbe);
-            }
             if(!trg_only && !VH)
             {
                 analysis.AddModule(&muonIDTagAndProbe);
@@ -860,10 +856,14 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&muonIsoFineTagAndProbe);
                 analysis.AddModule(&muonIDIsoFineTagAndProbe);
             }
-            if(!idiso_only && !VH)
+            if(!idiso_only && !VH && !ltmet)
             {
                 analysis.AddModule(&muonTrgATagAndProbe); 
                     if(second_trigger) analysis.AddModule(&muonTrgBTagAndProbe);
+            }
+            if(ltmet)
+            {
+                analysis.AddModule(&muonltmetTrgTagAndProbe);
             }
         }
     }

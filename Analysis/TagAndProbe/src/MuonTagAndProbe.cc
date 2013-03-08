@@ -41,7 +41,7 @@ namespace ic {
     if(mode_==3) label="";                          //3=Trigger efficiencies for mutau channel
     if(mode_==4) label="";                          //4=Trigger efficiencies for mutau+met channel
 
-    if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
+    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
     {
         for(unsigned i=0; i<pt_bins_.size()-1; i++)
         {
@@ -290,6 +290,7 @@ namespace ic {
     if(mode_==1 || mode_==11) label="iso_";
     if(mode_==2 || mode_==12) label="idiso_";
     if(mode_==3) label="";
+    if(mode_==4) label="";
     
     
     //Fill passing and failing histograms.
@@ -301,10 +302,10 @@ namespace ic {
             for(unsigned i=0; i<pt_bins_.size(); i++)
             {
                 std::string s=boost::lexical_cast<std::string>(i+1);
-                if((!(mode_==3) && passprobe_predicate_(pairs[k_final].second)) ||
-                        ((mode_==3) && IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )) )
+                if((!(mode_==3) && (!mode_==4) && passprobe_predicate_(pairs[k_final].second)) ||
+                        (((mode_==3) || (mode_==4)) && IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )) )
                 {
-                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
+                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
                     {
                         if(!split_pm_eta_)
                         {
@@ -400,10 +401,10 @@ namespace ic {
                         } 
                     }
                 }
-                if ((!(mode_==3) && !passprobe_predicate_(pairs[k_final].second))||
-                        ((mode_==3) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )))
+                if (((!(mode_==3) && (!mode_==4)) && !passprobe_predicate_(pairs[k_final].second))||
+                        (((mode_==3)|| (mode_==4) ) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )))
                 {
-                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
+                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
                     {
                         if(!split_pm_eta_)
                         {
@@ -552,7 +553,7 @@ namespace ic {
     if(mode_==2 || mode_==12) label="idiso_";
     if(mode_==3) label="";
      
-    if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
+    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
     {
          std::cout << "====================="+label+"====================" << std::endl;
          for(unsigned i=0; i<pt_bins_.size()-1; i++)
