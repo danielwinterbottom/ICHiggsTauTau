@@ -12,13 +12,16 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigMC.cfg
-METCUT=0
-DOQCD=1
 
-for CHANNEL in nunu enu munu
+for METCUT in 130 0 70
   do
-  JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
-  OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+  for DOQCD in 0 1 2
+    do
+
+    for CHANNEL in nunu enu munu
+      do
+      JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+      OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
 
   echo "Config file: $CONFIG"
 
@@ -46,7 +49,7 @@ for CHANNEL in nunu enu munu
     
     echo "JOB name = $JOB"
     
-    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
     $JOBSUBMIT $JOBDIR/$JOB.sh
 
   done
@@ -67,7 +70,7 @@ for FILELIST in `ls filelists/Dec5_VBFZ*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
   $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
@@ -87,7 +90,7 @@ for FILELIST in `ls filelists/Feb1_GJets_*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
   $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
@@ -112,12 +115,12 @@ for FILELIST in `ls filelists/Dec2_MC_*`
 #	do
 #	PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
 
-#	$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB_$FLAVOUR.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB_$FLAVOUR.log" $JOBDIR/$JOB_$FLAVOUR.sh
+#	$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB_$FLAVOUR.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB_$FLAVOUR.log" $JOBDIR/$JOB_$FLAVOUR.sh
 #	$JOBSUBMIT $JOBDIR/$JOB_$FLAVOUR.sh
 #      done
 #  else 
       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
-      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
       $JOBSUBMIT $JOBDIR/$JOB.sh
 #  fi
 
@@ -141,7 +144,7 @@ for FILELIST in `ls filelists/QCD*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --mc=summer12_53X --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --mc=summer12_53X --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
   $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
@@ -162,14 +165,17 @@ for FILELIST in `ls filelists/Feb18_BKG_*`
 
   echo "JOB name = $JOB"
 
-  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
   $JOBSUBMIT $JOBDIR/$JOB.sh
 
 done
 
 
-done
+    done
 
+  done
+
+done
 
 #if (( "$#" != "2" ))
 #then

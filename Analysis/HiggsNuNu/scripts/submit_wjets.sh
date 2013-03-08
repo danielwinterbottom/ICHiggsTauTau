@@ -16,7 +16,7 @@ echo "Config file: $CONFIG"
 
 for METCUT in 0 70 130
   do
-  for DOQCD in 0 1
+  for DOQCD in 0 1 2
     do
     for CHANNEL in nunu enu munu
       do
@@ -44,7 +44,7 @@ for METCUT in 0 70 130
 	  
 	  echo "JOB name = $JOB"
 	  echo "OUTPUT dir = $OUTDIR"
-	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	  $JOBSUBMIT $JOBDIR/$JOB.sh
 	  
 	done

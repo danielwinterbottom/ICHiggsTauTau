@@ -12,14 +12,16 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfig.cfg
-METCUT=70
-DOQCD=1
 
-for CHANNEL in nunu enu munu
+for METCUT in 130 0 70
   do
+  for DOQCD in 0 1 2
+    do
+    for CHANNEL in nunu enu munu
+      do
   
-  JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
-  OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+      JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+      OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
 
   echo "Config file: $CONFIG"
   mkdir -p $JOBDIR
@@ -40,7 +42,7 @@ for CHANNEL in nunu enu munu
 
     echo "JOB name = $JOB"
 
-    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
     $JOBSUBMIT $JOBDIR/$JOB.sh
 
   done
@@ -61,11 +63,15 @@ for CHANNEL in nunu enu munu
     
     echo "JOB name = $JOB"
     
-    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --do_qcd_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
     $JOBSUBMIT $JOBDIR/$JOB.sh
     
   done
 
+    done
+    
+  done
+  
 done
 
 

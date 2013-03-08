@@ -63,7 +63,7 @@ int main(int argc, char* argv[]){
   bool make_sync_ntuple;          // Generate a sync ntuple
   
   string mettype;                 // MET input collection to be used
-  bool do_qcd_region;             // DeltaPhi cut > 2.7
+  unsigned signal_region;             // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
 
  // Load the config
@@ -89,7 +89,7 @@ int main(int argc, char* argv[]){
     ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
     ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
-    ("do_qcd_region",       po::value<bool>(&do_qcd_region)->default_value(false))
+    ("signal_region",       po::value<unsigned>(&signal_region)->default_value(1))
     ("met_cut",             po::value<double>(&met_cut)->default_value(130.));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
-  std::cout << boost::format(param_fmt) % "do_qcd_region" % do_qcd_region;
+  std::cout << boost::format(param_fmt) % "signal_region" % signal_region;
   std::cout << boost::format(param_fmt) % "met_cut" % met_cut;
 
 
@@ -682,14 +682,19 @@ int main(int argc, char* argv[]){
      }
 
      //dphi cut
-     if (!do_qcd_region) analysis.AddModule(&dphiJetPairFilter);
-     else analysis.AddModule(&dphiQCDJetPairFilter);
-     analysis.AddModule(&controlPlots_dphi);
+     if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
+     else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
+     if (signal_region!=2) analysis.AddModule(&controlPlots_dphi);
 
      //tight Mjj cut
      analysis.AddModule(&tightMassJetPairFilter);
      analysis.AddModule(&controlPlots_tightMjj);
 
+     if (signal_region==2) {
+       analysis.AddModule(&dphiJetPairFilter);
+       analysis.AddModule(&controlPlots_dphi);
+     }
+     
    }
    else {
      //Build Skimming Analysis

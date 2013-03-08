@@ -275,11 +275,12 @@ int main(int argc, char* argv[]){
   vector<string> selections;
   selections.push_back("JetPair");
   selections.push_back("MET");
-  selections.push_back("Mjj");
+  selections.push_back("LooseMjj");
   selections.push_back("DEta");
   selections.push_back("LeptonVeto");
   selections.push_back("WSelection");
   selections.push_back("DPhi");
+  selections.push_back("TightMjj");
 
   std::map<std::string, TFile *> tfiles;
   for (unsigned i = 0; i < files.size(); ++i) {
