@@ -1,9 +1,23 @@
 #!/bin/sh
 PARAMS=./scripts/Params.dat
 
+for CHANNEL in nunu enu munu
+  do
+
+  for MET in 0 70 130
+    do
+
+    for DOQCD in 0 1
+      do
+
+      FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
+      PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/
+  
+      mkdir -p $PLOTDIR
 
 ###### n_jets
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="n_jets"  --x_axis_label="Number of jets" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
     --y_axis_min=0.01 --extra_pad=10000 \
@@ -14,6 +28,7 @@ PARAMS=./scripts/Params.dat
 
 ###### n_jetsingap
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="n_jetsingap"  --x_axis_label="Number of jets in rapidity gap" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
     --y_axis_min=0.01 --extra_pad=10000 \
@@ -24,6 +39,7 @@ PARAMS=./scripts/Params.dat
 
 ###### n_vtx
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="n_vtx"  --x_axis_label="Number of vertices" \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
@@ -33,6 +49,7 @@ PARAMS=./scripts/Params.dat
 
 ###### jpt_1
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
     --y_axis_min=0.01 --extra_pad=10000 \
@@ -43,6 +60,7 @@ PARAMS=./scripts/Params.dat
 
 ###### jeta_1
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="jeta_1"  --x_axis_label="Leading Jet #eta" \
     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
     --y_axis_min=0.01 --extra_pad=10000 \
@@ -54,6 +72,7 @@ PARAMS=./scripts/Params.dat
 
 ###### jpt_2
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="jpt_2"  --x_axis_label="Next-to-Leading Jet p_{T} [GeV]" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
     --y_axis_min=0.01 --extra_pad=10000 \
@@ -64,6 +83,7 @@ PARAMS=./scripts/Params.dat
 
 ###### jeta_2
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="jeta_2"  --x_axis_label="Next-to-Leading Jet #eta" \
     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
     --y_axis_min=0.01 --extra_pad=10000 \
@@ -75,6 +95,7 @@ PARAMS=./scripts/Params.dat
 
 ###### mjj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3000 \
     --y_axis_min=0.1 --extra_pad=10000 \
@@ -85,6 +106,7 @@ PARAMS=./scripts/Params.dat
 
 ###### detajj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="detajj"  --x_axis_label="#Delta#eta_{jj}" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=5 \
     --y_axis_min=0.01 --extra_pad=10000 \
@@ -95,6 +117,7 @@ PARAMS=./scripts/Params.dat
 
 ###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.2 \
     --y_axis_min=0.01 --extra_pad=100000 \
@@ -106,6 +129,7 @@ PARAMS=./scripts/Params.dat
 
 ###### met
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="met"  --x_axis_label="PF MET (GeV)" \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
     --y_axis_min=0.01 --extra_pad=10000 \
@@ -114,7 +138,9 @@ PARAMS=./scripts/Params.dat
     --log_y=true \
     --paramfile=$PARAMS
 
-
+    done
+  done
+done
 
 
 #plot_name=mjj
