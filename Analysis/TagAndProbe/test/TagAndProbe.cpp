@@ -545,9 +545,9 @@ int main(int argc, char* argv[]){
     .set_input_label("muonsPFlow")
     .set_min(1);
     
-    SimpleFilter<Muon> muonProbeFilter = SimpleFilter<Muon>
-    ("muonProbeFilter")
-    .set_predicate( (boost::bind(MinPtMaxEta, _1, 10, 2.1)) )
+    SimpleCounter<Muon> muonCounter = SimpleCounter<Muon>
+    ("muonCounter")
+    .set_predicate( (boost::bind(DummyFunction<Muon>, _1)) )
     .set_input_label("muonsPFlow")
     .set_min(2);
      
@@ -877,6 +877,7 @@ int main(int argc, char* argv[]){
         else
         {
             if(!isdata) analysis.AddModule(&zMuMuFilter);
+            analysis.AddModule(&muonCounter);
             analysis.AddModule(&muonTagFilter);
      //       analysis.AddModule(&muonProbeFilter);
         }
