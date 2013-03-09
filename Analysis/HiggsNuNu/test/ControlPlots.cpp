@@ -47,8 +47,8 @@ double Error(TH1F const* hist) {
 
 
 void SetBkgStyle(ic::TH1PlotElement & ele, unsigned color) {
-  //ele.set_marker_color(color);
-  //ele.set_line_color(color);
+  ele.set_marker_color(color);
+  ele.set_line_color(color);
   ele.set_fill_color(color);
   ele.set_fill_style(1001);
   ele.set_draw_fill(true);
@@ -67,10 +67,10 @@ void SetSignalStyle(ic::TH1PlotElement & ele, unsigned color) {
   ele.set_line_color(color);
   ele.set_fill_color(color);
   ele.set_fill_style(0);
-  ele.set_draw_fill(false);
+  ele.set_draw_fill(true);
   ele.set_draw_marker(false);
   ele.set_draw_line(true);
-  ele.set_smooth_curve(true);
+  ele.set_smooth_curve(false);
   ele.set_line_width(3);
   ele.set_draw_stat_error_y(false);
   ele.set_in_stack(false);
@@ -132,6 +132,8 @@ int main(int argc, char* argv[]){
   bool custom_y_axis_range;	     // Can optionally specify a y-axis range
   double y_axis_min;		     // If custom_y_axis_range is true, use this as min
   double y_axis_max;		     // If custom_y_axis_range is true, use this as max
+  double y_ratio_min;		     // Use this as min for ratio plot
+  double y_ratio_max;		     // Use this as max for ratio plot
   double extra_pad;		     // Expand the y-axis by an additional factor
   bool blind;			     // Blind some region of the data
   double x_blind_min;		     // If bind is true, use this as min x for blinding.
@@ -141,6 +143,8 @@ int main(int argc, char* argv[]){
   bool norm_bins;		     // Normalise using bin width
   bool signal_no_stack;		     // Don't stack the signal contributions on the backgrounds
   bool draw_ratio;                   // Draw a ratio box
+  bool plot_qcd;                     // Include QCD in plots
+  bool plot_wjets_comp;              // Separate Wjets components in plots
 
   // Options to manually shift backgrounds and draw uncertainty bands
   bool shift_backgrounds = false;
@@ -178,6 +182,8 @@ int main(int argc, char* argv[]){
     ("custom_y_axis_range", po::value<bool>(&custom_y_axis_range)->default_value(false))
     ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(0))
     ("y_axis_max",          po::value<double>(&y_axis_max)->default_value(0))
+    ("y_ratio_min",         po::value<double>(&y_ratio_min)->default_value(0))
+    ("y_ratio_max",         po::value<double>(&y_ratio_max)->default_value(2.))
     ("extra_pad",           po::value<double>(&extra_pad)->default_value(1.0))
     ("blind",               po::value<bool>(&blind)->default_value(false))
     ("x_blind_min",         po::value<double>(&x_blind_min)->default_value(0))
@@ -185,6 +191,8 @@ int main(int argc, char* argv[]){
     ("log_y",               po::value<bool>(&log_y)->default_value(false))
     ("norm_bins",           po::value<bool>(&norm_bins)->default_value(false))
     ("signal_no_stack",     po::value<bool>(&signal_no_stack)->default_value(false))
+    ("plot_qcd",            po::value<bool>(&plot_qcd)->default_value(true))
+    ("plot_wjets_comp",     po::value<bool>(&plot_wjets_comp)->default_value(true))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
     ("draw_band_on_stack",  po::value<bool>(&draw_band_on_stack)->default_value(false))
     ("qcd_shift",           po::value<double>(&qcd_shift)->default_value(1.0))
@@ -204,9 +212,12 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "paramfile" 	% paramfile;
   std::cout << boost::format(param_fmt) % "plot_dir" 	% plot_dir;
   std::cout << boost::format(param_fmt) % "plot_name" 	% plot_name;
-  std::cout << boost::format(param_fmt) % "folder" 			% folder;
+  std::cout << boost::format(param_fmt) % "folder" 		% folder;
   std::cout << boost::format(param_fmt) % "is_2012" 		% is_2012;
   std::cout << boost::format(param_fmt) % "no_plot" 		% no_plot;
+  std::cout << boost::format(param_fmt) % "plot_qcd" 		% plot_qcd;
+  std::cout << boost::format(param_fmt) % "plot_wjets_comp" 	% plot_wjets_comp;
+
 
   // Parse the parameter file
   SimpleParamParser parser;
@@ -252,12 +263,24 @@ int main(int argc, char* argv[]){
   files.push_back("MC_WZ-pythia6-tauola");
   files.push_back("MC_ZZ-pythia6-tauola");
   files.push_back("MC_DYJJ01JetsToLL_M-50_MJJ-200");
-  files.push_back("MC_W1JetsToLNu");
-  files.push_back("MC_W2JetsToLNu");
-  files.push_back("MC_W3JetsToLNu");
-  files.push_back("MC_W4JetsToLNu");
-  files.push_back("MC_WJetsToLNu-v1");
-  files.push_back("MC_WJetsToLNu-v2");
+  files.push_back("MC_W1JetsToLNu_enu");
+  files.push_back("MC_W2JetsToLNu_enu");
+  files.push_back("MC_W3JetsToLNu_enu");
+  files.push_back("MC_W4JetsToLNu_enu");
+  files.push_back("MC_WJetsToLNu-v1_enu");
+  files.push_back("MC_WJetsToLNu-v2_enu");
+  files.push_back("MC_W1JetsToLNu_munu");
+  files.push_back("MC_W2JetsToLNu_munu");
+  files.push_back("MC_W3JetsToLNu_munu");
+  files.push_back("MC_W4JetsToLNu_munu");
+  files.push_back("MC_WJetsToLNu-v1_munu");
+  files.push_back("MC_WJetsToLNu-v2_munu");
+  files.push_back("MC_W1JetsToLNu_taunu");
+  files.push_back("MC_W2JetsToLNu_taunu");
+  files.push_back("MC_W3JetsToLNu_taunu");
+  files.push_back("MC_W4JetsToLNu_taunu");
+  files.push_back("MC_WJetsToLNu-v1_taunu");
+  files.push_back("MC_WJetsToLNu-v2_taunu");
   files.push_back("MC_DYJetsToLL");
   //files.push_back("MC_DY1JetsToLL");
   //files.push_back("MC_DY2JetsToLL");
@@ -271,6 +294,10 @@ int main(int argc, char* argv[]){
   files.push_back("MC_GJets-HT-400ToInf-madgraph");
   files.push_back("MC_VBF_HToZZTo4Nu_M-120");
 
+
+  unsigned signal_region = folder.find("DOQCD0")!=folder.npos ? 0 : (folder.find("DOQCD1")!=folder.npos ? 1 : 2);
+  std::cout << "-- Processing signal region: " << signal_region << std::endl; 
+
   //build a list of selections
   vector<string> selections;
   selections.push_back("JetPair");
@@ -279,8 +306,14 @@ int main(int argc, char* argv[]){
   selections.push_back("DEta");
   selections.push_back("LeptonVeto");
   selections.push_back("WSelection");
-  selections.push_back("DPhi");
-  selections.push_back("TightMjj");
+  if (signal_region < 2) {
+    selections.push_back("DPhi");
+    selections.push_back("TightMjj");
+  }
+  else {
+    selections.push_back("TightMjj");
+    selections.push_back("DPhi");
+  }
 
   std::map<std::string, TFile *> tfiles;
   for (unsigned i = 0; i < files.size(); ++i) {
@@ -372,6 +405,9 @@ int main(int argc, char* argv[]){
     ic::TH1PlotElement qcd_hist = ic::TH1PlotElement("QCD");
     ic::TH1PlotElement top_hist = ic::TH1PlotElement("Top");
     ic::TH1PlotElement WJets_hist = ic::TH1PlotElement("WJets");
+    ic::TH1PlotElement WJets_enu_hist = ic::TH1PlotElement("WJets_enu");
+    ic::TH1PlotElement WJets_munu_hist = ic::TH1PlotElement("WJets_munu");
+    ic::TH1PlotElement WJets_taunu_hist = ic::TH1PlotElement("WJets_taunu");
     ic::TH1PlotElement ZJetsToLL_hist = ic::TH1PlotElement("ZJetsToLL");
     ic::TH1PlotElement ZJetsToNuNu_hist = ic::TH1PlotElement("ZJetsToNuNu");
     ic::TH1PlotElement VBFZ_hist = ic::TH1PlotElement("VBFZ");
@@ -390,6 +426,9 @@ int main(int argc, char* argv[]){
       SumHistograms(f,plots[nm],"MC_T",top_hist);
       SumHistograms(f,plots[nm],"MC_SingleT",top_hist);
       SumHistograms(f,plots[nm],"JetsToLNu",WJets_hist);
+      SumHistograms(f,plots[nm],"_enu",WJets_enu_hist);
+      SumHistograms(f,plots[nm],"_munu",WJets_munu_hist);
+      SumHistograms(f,plots[nm],"_taunu",WJets_taunu_hist);
       SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
       SumHistograms(f,plots[nm],"ZJetsToNuNu",ZJetsToNuNu_hist);
       SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);
@@ -414,12 +453,15 @@ int main(int argc, char* argv[]){
 //     SetBkgStyle(GJets_hist,8);
 //     SetBkgStyle(VV_hist,5);
 
-
-    SetSignalStyle(signal_hist,2);
+ 
+    SetSignalStyle(signal_hist,1);
     SetDataStyle(data_hist);
     SetBkgStyle(qcd_hist,7);
     SetBkgStyle(top_hist,5);
     SetBkgStyle(WJets_hist,6);
+    SetBkgStyle(WJets_enu_hist,2);
+    SetBkgStyle(WJets_munu_hist,kOrange);
+    SetBkgStyle(WJets_taunu_hist,6);
     SetBkgStyle(ZJetsToLL_hist,3);
     SetBkgStyle(ZJetsToNuNu_hist,3);
     SetBkgStyle(VBFZ_hist,3);
@@ -431,9 +473,16 @@ int main(int argc, char* argv[]){
       signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
     else signal_hist.set_legend_text("VBF m_{H}=120 GeV");
     ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
-    WJets_hist.set_legend_text("W+jets");
-    //qcd_hist.set_legend_text("QCD,#gamma+jets");
-    //GJets_hist.set_legend_text("#gamma + jets");
+    if (!plot_wjets_comp) WJets_hist.set_legend_text("W+jets");
+    else {
+      WJets_taunu_hist.set_legend_text("W#rightarrow#tau#nu+jets");
+      WJets_munu_hist.set_legend_text("W#rightarrow#mu#nu+jets");
+      WJets_enu_hist.set_legend_text("W#rightarrow e#nu+jets");
+    }
+    if (plot_qcd) {
+      qcd_hist.set_legend_text("QCD,#gamma+jets");
+      //GJets_hist.set_legend_text("#gamma + jets");
+    }
     top_hist.set_legend_text("t#bar{t},t,tW");
     VV_hist.set_legend_text("Dibosons");
     //VBFZ_hist.set_legend_text("VBF Z+2j");
@@ -441,11 +490,21 @@ int main(int argc, char* argv[]){
     //ZJetsToNuNu_hist.set_legend_text("Z#rightarrow #nu#nu + jets");
 
 
+    bool lBlind = blind && (
+			    ( signal_region < 2 &&  ( selections[k].find("TightMjj") != selections[k].npos ||
+						      selections[k].find("DPhi") != selections[k].npos ||
+						      (selections[k].find("LeptonVeto") != selections[k].npos && 
+						       plot_name.find("dphijj") != plot_name.npos )
+						      )
+			      ) ||
+			    ( signal_region == 2 && ( selections[k].find("DPhi") != selections[k].npos ||
+						      (selections[k].find("TightMjj") != selections[k].npos && 
+						       plot_name.find("dphijj") != plot_name.npos )
+						      )
+			      )
+			    );
 
-    if (blind && 
-	( (k==selections.size()-1) ||
-	  (k==selections.size()-2 && plot_name.find("dphijj") != plot_name.npos )
-	  )) {
+    if (lBlind) {
       for (int j = 0; j < data_hist.hist_ptr()->GetNbinsX(); ++j) {
 	if (x_blind_min < x_blind_max){
 	  double low_edge = data_hist.hist_ptr()->GetBinLowEdge(j+1);
@@ -464,12 +523,18 @@ int main(int argc, char* argv[]){
 
     plot.AddTH1PlotElement(VV_hist);
     plot.AddTH1PlotElement(top_hist);
-    //plot.AddTH1PlotElement(GJets_hist);
-    //plot.AddTH1PlotElement(qcd_hist);
-    plot.AddTH1PlotElement(WJets_hist);
+    if (plot_qcd){
+      plot.AddTH1PlotElement(GJets_hist);
+      plot.AddTH1PlotElement(qcd_hist);
+    }
+    if (!plot_wjets_comp) plot.AddTH1PlotElement(WJets_hist);
+    else {
+      plot.AddTH1PlotElement(WJets_enu_hist);
+      plot.AddTH1PlotElement(WJets_munu_hist);
+      plot.AddTH1PlotElement(WJets_taunu_hist);
+    }
     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);
-    plot.AddTH1PlotElement(VBFZ_hist);
     
 //     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
 //     plot.AddTH1PlotElement(ZJetsToLL_hist);
@@ -478,9 +543,12 @@ int main(int argc, char* argv[]){
 //     plot.AddTH1PlotElement(top_hist);
 //     plot.AddTH1PlotElement(GJets_hist);
 //     plot.AddTH1PlotElement(qcd_hist);
-    
-    plot.AddTH1PlotElement(data_hist);
 
+//moving signal after data screws up everything !!
+    plot.AddTH1PlotElement(VBFZ_hist);
+   
+    plot.AddTH1PlotElement(data_hist);
+ 
     if (draw_signal) {
       plot.AddTH1PlotElement(signal_hist);
     }
@@ -509,12 +577,14 @@ int main(int argc, char* argv[]){
     plot.draw_ratio_hist = draw_ratio;
     plot.draw_signif = false;
     
-    string background_list = "VV+GJets+QCD+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    string background_list = "VV+Top+WJets_enu+WJets_munu+WJets_taunu+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    if (!plot_wjets_comp) background_list = "VV+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    if (plot_qcd) background_list += "+GJets+QCD";
     ic::RatioPlotElement ratio("DataOverMC","Data",background_list);
     
     plot.band_size_fractional_ = band_size_fractional;
     plot.draw_band_on_stack_ = draw_band_on_stack;
-    plot.samples_for_band_ = "VV+GJets+QCD+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    plot.samples_for_band_ = background_list;
     
     SetStyle(ratio,1);
     ratio.set_multi_mode(true);
@@ -522,8 +592,8 @@ int main(int argc, char* argv[]){
     plot.ratio_y_axis_title = "Data/MC";
     plot.AddRatioPlotElement(ratio);
     plot.custom_ratio_y_axis_range = true;
-    plot.ratio_y_axis_min = 0.5;
-    plot.ratio_y_axis_max = 1.5;
+    plot.ratio_y_axis_min = y_ratio_min;
+    plot.ratio_y_axis_max = y_ratio_max;
     
     
     if (!no_plot) plot.GeneratePlot();
@@ -534,6 +604,9 @@ int main(int argc, char* argv[]){
       Utilities n_VV = Utilities(Integral(VV_hist.hist_ptr()),Error(VV_hist.hist_ptr()));
       Utilities n_top = Utilities(Integral(top_hist.hist_ptr()),Error(top_hist.hist_ptr()));
       Utilities n_WJets = Utilities(Integral(WJets_hist.hist_ptr()),Error(WJets_hist.hist_ptr()));
+      Utilities n_WJets_enu = Utilities(Integral(WJets_enu_hist.hist_ptr()),Error(WJets_enu_hist.hist_ptr()));
+      Utilities n_WJets_munu = Utilities(Integral(WJets_munu_hist.hist_ptr()),Error(WJets_munu_hist.hist_ptr()));
+      Utilities n_WJets_taunu = Utilities(Integral(WJets_taunu_hist.hist_ptr()),Error(WJets_taunu_hist.hist_ptr()));
       Utilities n_ZJets = Utilities(Integral(ZJetsToNuNu_hist.hist_ptr())
   				    +Integral(ZJetsToLL_hist.hist_ptr())
   				    +Integral(VBFZ_hist.hist_ptr()),
@@ -557,11 +630,14 @@ int main(int argc, char* argv[]){
 		 << n_gjets.roundedResult() << " & "
 		 << n_top.roundedResult() << " & "
 		 << n_WJets.roundedResult() << " & "
+	//<< n_WJets_enu.roundedResult() << " & "
+	//<< n_WJets_munu.roundedResult() << " & "
+	//<< n_WJets_taunu.roundedResult() << " & "
 		 << n_ZJets.roundedResult() << " & "
 		 << n_VV.roundedResult() << " & "
 		 << n_Tot.roundedResult() << " & ";
 
-      if (!blind || (k!=selections.size()-1))
+      if (!lBlind)
 	lTexOutput << n_data.roundedResult(false) << " & ";
       else lTexOutput << "XXX" <<  " & ";
 
@@ -573,6 +649,9 @@ int main(int argc, char* argv[]){
 		    << "GJets " << n_gjets.roundedNumber() << " " << n_gjets.roundedError() << std::endl
 		    << "Top " << n_top.roundedNumber() << " " << n_top.roundedError() <<  std::endl
 		    << "WJets " << n_WJets.roundedNumber() << " " << n_WJets.roundedError() <<  std::endl
+		    << "WJets_enu " << n_WJets_enu.roundedNumber() << " " << n_WJets_enu.roundedError() <<  std::endl
+		    << "WJets_munu " << n_WJets_munu.roundedNumber() << " " << n_WJets_munu.roundedError() <<  std::endl
+		    << "WJets_taunu " << n_WJets_taunu.roundedNumber() << " " << n_WJets_taunu.roundedError() <<  std::endl
 		    << "ZJets " << n_ZJets.roundedNumber() << " " << n_ZJets.roundedError() <<  std::endl
 		    << "VV " << n_VV.roundedNumber() << " " << n_VV.roundedError() <<  std::endl
 		    << "Data " << n_data.roundedNumber() << " " << n_data.roundedError() <<  std::endl

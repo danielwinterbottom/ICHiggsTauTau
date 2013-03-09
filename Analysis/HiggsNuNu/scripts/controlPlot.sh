@@ -1,16 +1,13 @@
 #!/bin/sh
 PARAMS=./scripts/Params.dat
 
-for CHANNEL in nunu
-# enu munu
+for CHANNEL in nunu enu munu
   do
 
-  for MET in 130
-# 0 70
+  for MET in 130 0 70
     do
 
-    for DOQCD in 0
-# 1
+    for DOQCD in 0 1 2
       do
 
       FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
@@ -18,10 +15,17 @@ for CHANNEL in nunu
   
       mkdir -p $PLOTDIR
 
+      BLIND=1
+      if (( "$CHANNEL" != "nunu" )) || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
+	  then
+	  let BLIND=0
+      fi
+
 ###### n_jets
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="n_jets"  --x_axis_label="Number of jets" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
@@ -33,6 +37,7 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="n_jetsingap"  --x_axis_label="Number of jets in rapidity gap" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
@@ -44,6 +49,7 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="n_vtx"  --x_axis_label="Number of vertices" \
+    --blind=$BLIND \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
@@ -54,6 +60,7 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=40 \
@@ -65,6 +72,7 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="jeta_1"  --x_axis_label="Leading Jet #eta" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=5 \
@@ -77,6 +85,7 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="jpt_2"  --x_axis_label="Next-to-Leading Jet p_{T} [GeV]" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=40 \
@@ -88,6 +97,7 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="jeta_2"  --x_axis_label="Next-to-Leading Jet #eta" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=-5 --x_axis_max=5 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=5 \
@@ -100,6 +110,7 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="mjj"  --x_axis_label="M_{jj} [GeV]" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3000 \
     --y_axis_min=0.1 --extra_pad=10000 \
     --rebin=100 \
@@ -111,6 +122,7 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="detajj"  --x_axis_label="#Delta#eta_{jj}" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=5 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
@@ -122,18 +134,19 @@ for CHANNEL in nunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
+    --blind=$BLIND --x_blind_min=0 --x_blind_max=1.  \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.2 \
     --y_axis_min=0.01 --extra_pad=100000 \
     --rebin=1 \
     --norm_bins=false \
     --log_y=true \
-    --blind=false --x_blind_min=0 --x_blind_max=1. \
     --paramfile=$PARAMS
 
 ###### met
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="met"  --x_axis_label="PF MET (GeV)" \
+    --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=20 \
