@@ -131,6 +131,7 @@ namespace ic {
   bool PairEtaProdLessThan(CompositeCandidate const* cand, double const& max);
   bool PairDEtaLessThan(CompositeCandidate const* cand, double const& max);
   bool PairDPhiLessThan(CompositeCandidate const* cand, double const& max);
+  bool PairAbsDPhiLessThan(CompositeCandidate const* cand, double const& max);
 
   bool PairOneWithPt(CompositeCandidate const* cand, double const& ptMin);
 

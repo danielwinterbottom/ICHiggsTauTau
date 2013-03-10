@@ -412,13 +412,13 @@ int main(int argc, char* argv[]){
  
   SimpleFilter<CompositeCandidate> dphiJetPairFilter = SimpleFilter<CompositeCandidate>("DphiJetPairFilter")
     .set_input_label("jjLeadingCandidates")
-    .set_predicate( bind(PairDPhiLessThan, _1,1.0) )
+    .set_predicate( bind(PairAbsDPhiLessThan, _1,1.0) )
     .set_min(1)
     .set_max(999);    
 
   SimpleFilter<CompositeCandidate> dphiQCDJetPairFilter = SimpleFilter<CompositeCandidate>("DphiQCDJetPairFilter")
     .set_input_label("jjLeadingCandidates")
-    .set_predicate( !bind(PairDPhiLessThan, _1,2.6) )
+    .set_predicate( !bind(PairAbsDPhiLessThan, _1,2.6) )
     .set_min(1)
     .set_max(999);    
 
@@ -684,15 +684,20 @@ int main(int argc, char* argv[]){
      //dphi cut
      if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
      else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
-     if (signal_region!=2) analysis.AddModule(&controlPlots_dphi);
-
+     if (signal_region!=2) {
+       analysis.AddModule(&controlPlots_dphi);
+       analysis.AddModule(&wjetsPlots_dphi);
+     }
      //tight Mjj cut
      analysis.AddModule(&tightMassJetPairFilter);
      analysis.AddModule(&controlPlots_tightMjj);
+     analysis.AddModule(&wjetsPlots_tightMjj);
+
 
      if (signal_region==2) {
        analysis.AddModule(&dphiJetPairFilter);
        analysis.AddModule(&controlPlots_dphi);
+       analysis.AddModule(&wjetsPlots_dphi);
      }
      
    }

@@ -27,7 +27,8 @@ namespace ic {
     detajj = dir.make<TH1F>("detajj","detajj", 100, 0, 10);
     etaprodjj = dir.make<TH1F>("etaprodjj","etaprodjj", 100, -25, 25);
     drjj = dir.make<TH1F>("drjj","drjj", 100, 0, 10);
-    dphijj = dir.make<TH1F>("dphijj","dphijj", 100, 0, 7);
+    dphijj = dir.make<TH1F>("dphijj","dphijj", 100, 0, 3.2);
+    
 
  
   };
@@ -101,7 +102,7 @@ namespace ic {
     detajj_ = fabs(jet1->eta() - jet2->eta());
     etaprodjj_ = jet1->eta() * jet2->eta();
     drjj_ = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),jet2->vector());
-    dphijj_ = ROOT::Math::VectorUtil::DeltaPhi(jet1->vector(),jet2->vector());
+    dphijj_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1->vector(),jet2->vector()));
 
     double eta_high = (jet1->eta() > jet2->eta()) ? jet1->eta() : jet2->eta();
     double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
