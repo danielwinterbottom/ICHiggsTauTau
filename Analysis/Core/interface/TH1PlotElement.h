@@ -36,6 +36,7 @@ namespace ic {
       bool draw_normalised_;
       unsigned rebin_factor_;
       bool smooth_curve_;
+      std::string draw_options_;
 
     public:
       TH1PlotElement(std::string name = "no_name");
@@ -77,6 +78,7 @@ namespace ic {
       double scale_factor() const { return scale_factor_; }
       bool draw_normalised() const { return draw_normalised_; }
       bool smooth_curve() const { return smooth_curve_; }
+      std::string draw_options() const { return draw_options_; }
 
       unsigned rebin_factor() const { return rebin_factor_; }
 
@@ -114,6 +116,9 @@ namespace ic {
       }
       void set_rebin_factor(unsigned rebin_factor) { 
         rebin_factor_ = rebin_factor;
+      }
+      void set_draw_options(std::string draw_options) { 
+        draw_options_ = draw_options; 
       }
   };
   

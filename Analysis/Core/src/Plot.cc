@@ -150,10 +150,10 @@ namespace ic {
       TH1PlotElement & ele = elements_[i];
       //This is a fix for histograms with negative bin content
       //for which Sumw2 has not already been called
-      for (int j = 0; j < ele.hist_ptr()->GetNbinsX(); ++j) {
-        if (ele.hist_ptr()->GetBinContent(j) < 0) 
-          ele.hist_ptr()->SetBinContent(j,0.0);
-      }
+      // for (int j = 0; j < ele.hist_ptr()->GetNbinsX(); ++j) {
+      //   if (ele.hist_ptr()->GetBinContent(j) < 0) 
+      //     ele.hist_ptr()->SetBinContent(j,0.0);
+      // }
       if (ele.hist_ptr()->GetSumw2N() == 0) ele.hist_ptr()->Sumw2();
       //If draw_normalised is set, this takes priority over any scale factor
       if (!ele.draw_normalised()) {
@@ -190,6 +190,7 @@ namespace ic {
       if (ele.smooth_curve()) draw_options += "C";
       if (ele.draw_marker()) draw_options += "P";
       if (ele.draw_stat_error_y()) draw_options += "E1";
+      if (ele.draw_options() != "") draw_options = ele.draw_options();
       //ele.hist_ptr()->Smooth(10);
 
       //Loop through bins of each histo (respecting any custom
@@ -222,9 +223,9 @@ namespace ic {
           ele.hist_ptr()->SetLabelOffset(0.014,"X");
           ele.hist_ptr()->SetLabelSize  (0.040,"X");
           ele.hist_ptr()->SetLabelFont  (42   ,"X");
-          ele.hist_ptr()->SetMarkerStyle(20);
+          // ele.hist_ptr()->SetMarkerStyle(20);
           // ele.hist_ptr()->SetMarkerColor(color);
-          ele.hist_ptr()->SetMarkerSize (0.6);
+          // ele.hist_ptr()->SetMarkerSize (0.6);
           ele.hist_ptr()->GetYaxis()->SetTitleFont(42);
           ele.hist_ptr()->GetXaxis()->SetTitleFont(42);          
         }

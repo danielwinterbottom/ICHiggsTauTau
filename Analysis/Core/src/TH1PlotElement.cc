@@ -60,5 +60,6 @@ namespace ic {
     draw_normalised_    = false;
     rebin_factor_       = 1;
     smooth_curve_       = false;
+    draw_options_       = "";
   }
 }
