@@ -4,14 +4,14 @@ PARAMS=./scripts/Params.dat
 for CHANNEL in nunu enu munu
   do
 
-  for MET in 0 70 130
+  for MET in 130
     do
 
     for DOQCD in 0 1 2
       do
 
       FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
-      PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/
+      PLOTDIR=PLOTS_withQCD/$CHANNEL/MET$MET/DOQCD$DOQCD/
 
       mkdir -p $PLOTDIR
 
@@ -30,7 +30,6 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
 ###### n_muons
@@ -42,7 +41,6 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=2 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
-    --log_y=false \
     --paramfile=$PARAMS
 
 ###### mT
@@ -50,22 +48,20 @@ for CHANNEL in nunu enu munu
     --folder=$FOLDER --plot_dir=$PLOTDIR \
     --plot_name="mt_munu"  --x_axis_label="m_{T}(#mu#nu) (GeV)" \
     --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=440 \
-    --y_axis_min=0.01 --extra_pad=10000 \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=300 \
+    --y_axis_min=0.01 --extra_pad=100 \
     --rebin=20 \
     --norm_bins=false --verbose=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR \
     --plot_name="mt_enu"  --x_axis_label="m_{T}(e#nu) (GeV)" \
     --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=440 \
-    --y_axis_min=0.01 --extra_pad=10000 \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=300 \
+    --y_axis_min=0.01 --extra_pad=100 \
     --rebin=20 \
     --norm_bins=false --verbose=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
 ###### mupt_1
@@ -77,7 +73,6 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=40 \
     --norm_bins=false --verbose=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
 ###### mueta_1
@@ -89,7 +84,6 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=5 \
     --norm_bins=false --verbose=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
 ###### ept_1
@@ -101,7 +95,6 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=40 \
     --norm_bins=false --verbose=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
 ###### eeta_1
@@ -113,7 +106,6 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=5 \
     --norm_bins=false --verbose=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
 ###### met no mu
@@ -125,7 +117,6 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=20 \
     --norm_bins=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
 ###### met no elec
@@ -137,7 +128,6 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=20 \
     --norm_bins=false \
-    --log_y=true \
     --paramfile=$PARAMS
 
     done

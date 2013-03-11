@@ -11,7 +11,7 @@ for CHANNEL in nunu enu munu
       do
 
       FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
-      PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/
+      PLOTDIR=PLOTS_withQCD/$CHANNEL/MET$MET/DOQCD$DOQCD/
   
       mkdir -p $PLOTDIR
 
@@ -22,16 +22,16 @@ for CHANNEL in nunu enu munu
       fi
 
 ###### n_jets
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --plot_name="n_jets"  --x_axis_label="Number of jets" \
-    --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
-    --y_axis_min=0.01 --extra_pad=10000 \
-    --rebin=1 \
-    --norm_bins=false --verbose=false \
-    --log_y=true \
-    --paramfile=$PARAMS
+#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+#    --folder=$FOLDER --plot_dir=$PLOTDIR  \
+#    --plot_name="n_jets"  --x_axis_label="Number of jets" \
+#    --blind=$BLIND \
+#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
+#    --y_axis_min=0.01 --extra_pad=10000 \
+#    --rebin=1 \
+#    --norm_bins=false --verbose=false \
+#    --log_y=true \
+#    --paramfile=$PARAMS
 
 ###### n_jetsingap
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \

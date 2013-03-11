@@ -716,6 +716,10 @@ int main(int argc, char* argv[]){
    }
    // Run analysis
    
+   analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
+   analysis.StopOnFileFailure(true);
+   analysis.SetTTreeCaching(true); 
+
    analysis.RunAnalysis();
    delete fs;
    return 0;

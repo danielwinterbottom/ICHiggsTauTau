@@ -607,20 +607,20 @@ int main(int argc, char* argv[]){
       Utilities n_WJets_enu = Utilities(Integral(WJets_enu_hist.hist_ptr()),Error(WJets_enu_hist.hist_ptr()));
       Utilities n_WJets_munu = Utilities(Integral(WJets_munu_hist.hist_ptr()),Error(WJets_munu_hist.hist_ptr()));
       Utilities n_WJets_taunu = Utilities(Integral(WJets_taunu_hist.hist_ptr()),Error(WJets_taunu_hist.hist_ptr()));
-      Utilities n_ZJets = Utilities(Integral(ZJetsToNuNu_hist.hist_ptr())
-  				    +Integral(ZJetsToLL_hist.hist_ptr())
-  				    +Integral(VBFZ_hist.hist_ptr()),
-  				    Error(ZJetsToNuNu_hist.hist_ptr())
-  				    +Error(ZJetsToLL_hist.hist_ptr())
-  				    +Error(VBFZ_hist.hist_ptr())
-  				    );
+      Utilities n_ZJets_nunu = Utilities(Integral(ZJetsToNuNu_hist.hist_ptr()),Error(ZJetsToNuNu_hist.hist_ptr()));
+      Utilities n_ZJets_ll   = Utilities(Integral(ZJetsToLL_hist.hist_ptr()),Error(ZJetsToLL_hist.hist_ptr()));
+      Utilities n_ZJets_vbf  = Utilities(Integral(VBFZ_hist.hist_ptr()),Error(VBFZ_hist.hist_ptr()));
+      Utilities n_ZJets = Utilities(n_ZJets_ll.rawNumber()+n_ZJets_nunu.rawNumber()+n_ZJets_vbf.rawNumber(),
+				    n_ZJets_ll.rawError()+n_ZJets_nunu.rawError()+n_ZJets_vbf.rawError());  
       Utilities n_gjets = Utilities(Integral(GJets_hist.hist_ptr()),Error(GJets_hist.hist_ptr()));
       Utilities n_others = Utilities(n_gjets.rawNumber()+n_VV.rawNumber(),
 				     n_gjets.rawError()+n_VV.rawError());
       Utilities n_data = Utilities(Integral(data_hist.hist_ptr()),Error(data_hist.hist_ptr()));
       Utilities n_signal = Utilities(Integral(signal_hist.hist_ptr()),Error(signal_hist.hist_ptr()));
-      Utilities n_Tot = Utilities(n_qcd.rawNumber()+n_top.rawNumber()+n_WJets.rawNumber()+n_ZJets.rawNumber()+n_others.rawNumber(),
-       				  n_qcd.rawError()+n_top.rawError()+n_WJets.rawError()+n_ZJets.rawError()+n_others.rawError());
+      Utilities n_Tot = Utilities(n_qcd.rawNumber()+n_top.rawNumber()+n_WJets.rawNumber()+
+				  n_ZJets.rawNumber()+n_others.rawNumber(),
+       				  n_qcd.rawError()+n_top.rawError()+n_WJets.rawError()+
+				  n_ZJets.rawError()+n_others.rawError());
        
       //std::cout.precision(2);
       //std::cout << std::scientific;
@@ -653,6 +653,9 @@ int main(int argc, char* argv[]){
 		    << "WJets_munu " << n_WJets_munu.roundedNumber() << " " << n_WJets_munu.roundedError() <<  std::endl
 		    << "WJets_taunu " << n_WJets_taunu.roundedNumber() << " " << n_WJets_taunu.roundedError() <<  std::endl
 		    << "ZJets " << n_ZJets.roundedNumber() << " " << n_ZJets.roundedError() <<  std::endl
+		    << "ZJets_ll " << n_ZJets_ll.roundedNumber() << " " << n_ZJets_ll.roundedError() <<  std::endl
+		    << "ZJets_nunu " << n_ZJets_nunu.roundedNumber() << " " << n_ZJets_nunu.roundedError() <<  std::endl
+		    << "ZJets_vbf " << n_ZJets_vbf.roundedNumber() << " " << n_ZJets_vbf.roundedError() <<  std::endl
 		    << "VV " << n_VV.roundedNumber() << " " << n_VV.roundedError() <<  std::endl
 		    << "Data " << n_data.roundedNumber() << " " << n_data.roundedError() <<  std::endl
 		    << "Signal " << n_signal.roundedNumber() << " " << n_signal.roundedError() 
