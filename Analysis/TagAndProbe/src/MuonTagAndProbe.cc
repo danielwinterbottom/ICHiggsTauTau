@@ -302,7 +302,7 @@ namespace ic {
             for(unsigned i=0; i<pt_bins_.size(); i++)
             {
                 std::string s=boost::lexical_cast<std::string>(i+1);
-                if((!(mode_==3) && (!mode_==4) && passprobe_predicate_(pairs[k_final].second)) ||
+                if((!(mode_==3) && !(mode_==4) && passprobe_predicate_(pairs[k_final].second)) ||
                         (((mode_==3) || (mode_==4)) && IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )) )
                 {
                     if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
@@ -401,7 +401,7 @@ namespace ic {
                         } 
                     }
                 }
-                if (((!(mode_==3) && (!mode_==4)) && !passprobe_predicate_(pairs[k_final].second))||
+                if (((!(mode_==3) && !(mode_==4)) && !passprobe_predicate_(pairs[k_final].second))||
                         (((mode_==3)|| (mode_==4) ) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )))
                 {
                     if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
