@@ -353,6 +353,7 @@ int main(int argc, char* argv[]){
   if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
+  analysis.RetryFileAfterFailure(7, 3);
 
   // ------------------------------------------------------------------------------------
   // Misc Modules
