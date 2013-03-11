@@ -113,6 +113,14 @@ namespace ic {
 		out << "----------------------------------------------------------------------------------------------------------------" << std::endl;
 	}
 
+	CategoryKey Nuisance::GetKey() const { return CategoryKey(mass, era, channel, category); }
+	CategoryKey Observation::GetKey() const { return CategoryKey(mass, era, channel, category); }
+	CategoryKey Process::GetKey() const { return CategoryKey(mass, era, channel, category); }
+
+	HTTSetup::HTTSetup() {
+		ignore_nuisance_correlations_ = false;
+	}
+
 	HTTSetup & HTTSetup::PrintAll() {
 		Observation::PrintHeader(std::cout);
 		for (unsigned i = 0; i < obs_.size(); ++i) std::cout << obs_[i] << std::endl;
@@ -130,9 +138,46 @@ namespace ic {
 		return result;
 	}
 
+	HTTSetup HTTSetup::category_id(std::vector<int> const& id) const {
+		HTTSetup result = *this;
+		ic::erase_if(result.params_, [&] (Nuisance const& val) { return std::find(id.begin(), id.end(), val.category_id) == id.end(); });
+		ic::erase_if(result.processes_, [&] (Process const& proc) { return std::find(id.begin(), id.end(), proc.category_id) == id.end(); });
+		ic::erase_if(result.obs_, [&] (Observation const& proc) { return std::find(id.begin(), id.end(), proc.category_id) == id.end(); });
+		return result;
+	}
+
+
 	HTTSetup HTTSetup::nuisance(std::vector<std::string> const& nuisance) const {
 		HTTSetup result = *this;
 		ic::erase_if(result.params_, [&] (Nuisance const& val) { return std::find(nuisance.begin(), nuisance.end(), val.nuisance) == nuisance.end(); });
+		return result;
+	}
+
+	HTTSetup HTTSetup::no_shapes() const {
+		HTTSetup result = *this;
+		ic::erase_if(result.params_, [&] (Nuisance const& val) { return val.type == "shape"; });
+		return result;
+	}
+
+	HTTSetup HTTSetup::signals() const {
+		HTTSetup result = *this;
+		ic::erase_if(result.params_, [&] (Nuisance const& val) { return val.process_id > 0; });
+		ic::erase_if(result.processes_, [&] (Process const& val) { return val.process_id > 0; });
+		return result;
+	}
+
+	HTTSetup HTTSetup::backgrounds() const {
+		HTTSetup result = *this;
+		ic::erase_if(result.params_, [&] (Nuisance const& val) { return val.process_id <= 0; });
+		ic::erase_if(result.processes_, [&] (Process const& val) { return val.process_id <= 0; });
+		return result;
+	}
+
+	HTTSetup HTTSetup::key_match(CategoryKey const & keyval) const {
+		HTTSetup result = *this;
+		ic::erase_if(result.params_, [&] (Nuisance const& val) { return !(val.GetKey() == keyval); });
+		ic::erase_if(result.processes_, [&] (Process const& proc) { return !(proc.GetKey() == keyval); });
+		ic::erase_if(result.obs_, [&] (Observation const& proc) { return !(proc.GetKey() == keyval); });
 		return result;
 	}
 
@@ -140,6 +185,14 @@ namespace ic {
 		double total = 0.0;
 		for (unsigned i = 0; i < processes_.size(); ++i) {
 			total += processes_[i].rate;
+		}
+		return total;
+	}
+
+		double HTTSetup::GetObservedRate() {
+		double total = 0.0;
+		for (unsigned i = 0; i < obs_.size(); ++i) {
+			total += obs_[i].rate;
 		}
 		return total;
 	}
@@ -167,7 +220,14 @@ namespace ic {
 							processes_[j].category 	!= params_[i].category 	||
 							processes_[j].process 	!= params_[i].process) continue;
 
-					if (params_[i].type == "lnN") dx += ( (params_[i].value-1.0) * processes_[j].rate ); 
+					if (ignore_nuisance_correlations_) {
+						if (params_[i].type == "lnN") {
+							double dxx = ( (params_[i].value-1.0) * processes_[j].rate );
+							dx = sqrt(dx*dx +  dxx*dxx); 
+						}
+					} else {
+						if (params_[i].type == "lnN") dx += ( (params_[i].value-1.0) * processes_[j].rate ); 
+					} 
 					if (params_[i].type == "shape") {
 						// Do we have the shapes?
 						if (!params_[i].shape_up || !params_[i].shape_down) {
@@ -176,16 +236,15 @@ namespace ic {
 						}
 						// The yield uncertainty due to a shape variation could be
 						// asymmetric - we take the mean variation here
-						double y = processes_[j].rate;
+						double y = params_[i].shape->Integral();
 						double y_up = params_[i].shape_up->Integral();
 						double y_down = params_[i].shape_down->Integral();
-						std::cout << "Var+ = " << y_up-y << std::endl;
-						std::cout << "Var- = " << y_down-y << std::endl;
+						// std::cout << "Var+ = " << y_up-y << std::endl;
+						// std::cout << "Var- = " << y_down-y << std::endl;
 						double var = (fabs(y_up-y)+fabs(y-y_down))/2.0;
-						std::cout << "MeanAbsVar = " << var << std::endl;
-						if ((y_up-y >= 0.)) 	dx += var; 
-						if ((y_up-y < 0.)) 	dx -= var; 
-
+						// std::cout << "MeanAbsVar = " << var << std::endl;
+						if ((y_up-y >= 0.)) 	dx += (var/y)*processes_[j].rate; 
+						if ((y_up-y < 0.)) 	dx -= (var/y)*processes_[j].rate; 
 					}
 				}
 			}
@@ -199,6 +258,66 @@ namespace ic {
 		return result;
 	}
 
+	TH1F 	HTTSetup::GetShape() {
+		TH1F shape = *(processes_[0].shape);
+		// Don't count shape norm. uncertainty in the total
+		double tot_uncert = this->no_shapes().GetUncertainty() / this->GetRate();
+		for (unsigned i = 1; i < processes_.size(); ++i) shape.Add(processes_[i].shape);
+
+		std::set<std::string> nuisances = this->GetNuisanceSet();
+		std::map<int, std::vector<double>> uncert_map;
+		for (auto& nu : nuisances) {
+			std::map<int, double> dx;
+			for (unsigned i = 0; i < params_.size(); ++i) {
+				if (params_[i].nuisance != nu) continue;
+				for (unsigned j = 0; j < processes_.size(); ++j) {
+					if (processes_[j].era 			!= params_[i].era 			||
+							processes_[j].channel 	!= params_[i].channel 	||
+							processes_[j].category 	!= params_[i].category 	||
+							processes_[j].process 	!= params_[i].process) continue;
+					if (params_[i].type == "shape") {
+						// Do we have the shapes?
+						if (!params_[i].shape_up || !params_[i].shape_down) {
+							std::cerr << "Warning in <HTTSetup::GetUncertainty>: Shape uncertainty histograms not loaded for nuisance " << params_[i].nuisance << std::endl;
+							continue;
+						}
+						for (int k = 1; k <= params_[i].shape->GetNbinsX(); ++k) {
+							double y = params_[i].shape->GetBinContent(k);
+							double y_up = params_[i].shape_up->GetBinContent(k);
+							double y_down = params_[i].shape_down->GetBinContent(k);
+							double var = (fabs(y_up-y)+fabs(y-y_down))/2.0;
+							if ((y_up-y >= 0.)) 	dx[k] += (var)*processes_[j].shape->Integral()/params_[i].shape->Integral(); 
+							if ((y_up-y < 0.)) 	dx[k] -= (var)*processes_[j].shape->Integral()/params_[i].shape->Integral(); 
+						}
+					}
+				}
+			}
+			for (auto it = dx.begin(); it != dx.end(); ++it) uncert_map[it->first].push_back(it->second);
+		}
+		std::map<int, double> result;
+
+		for (int i = 1; i <= shape.GetNbinsX(); ++i) {
+			uncert_map[i].push_back(shape.GetBinContent(i) * tot_uncert);
+		}
+
+		for (auto it = uncert_map.begin(); it != uncert_map.end(); ++it) {
+			double binresult = 0.0;
+			for (unsigned p = 0; p < it->second.size(); ++p) binresult += (it->second.at(p) * it->second.at(p));
+			result[it->first] = sqrt(binresult);
+		}
+		for (int i = 1; i <= shape.GetNbinsX(); ++i) {
+			shape.SetBinError(i, result[i]);
+		}
+
+		return shape;
+	}
+
+	TH1F 	HTTSetup::GetObservedShape() {
+		TH1F shape = *(obs_[0].shape);
+		for (unsigned i = 1; i < obs_.size(); ++i) shape.Add(obs_[i].shape);
+		return shape;
+	}
+
 
 	int HTTSetup::ParsePulls(std::string const& filename) {
 		PullsFromFile(filename, pulls_, false);
@@ -207,12 +326,12 @@ namespace ic {
 
 	void HTTSetup::ApplyPulls() {
 		std::map<std::string, Pull> pmap;
-		for (unsigned i = 0; i < pulls_.size(); ++i) {
-			pmap[pulls_[i].name] = pulls_[i];
-		}
+		for (unsigned i = 0; i < pulls_.size(); ++i) pmap[pulls_[i].name] = pulls_[i];
+		
 		for (unsigned i = 0; i < params_.size(); ++i) {
 			auto it = pmap.find(params_[i].nuisance);
 			if (it == pmap.end()) continue;
+
 			if (params_[i].type == "lnN") {
 				double yield_corr = (params_[i].value - 1.0) * it->second.splusb;
 				// std::cout << params_[i] << ":: Pull(" << it->second.splusb << "," << it->second.splusb_err << ")" << std::endl;
@@ -221,40 +340,119 @@ namespace ic {
 							processes_[j].channel 	!= params_[i].channel 	||
 							processes_[j].category 	!= params_[i].category 	||
 							processes_[j].process 	!= params_[i].process) continue;
-					processes_[j].rate += yield_corr*processes_[j].rate; 
+					processes_[j].rate += yield_corr*processes_[j].rate;
+					// Also scale the histogram if it exists
+					if (processes_[j].shape) processes_[j].shape->Scale(1. + yield_corr);
 				}
 				params_[i].value = ((params_[i].value - 1.0) * it->second.splusb_err) + 1.0;				
 			}
+
 			if (params_[i].type == "shape") {
 				for (unsigned j = 0; j < processes_.size(); ++j) {
 					if (processes_[j].era 			!= params_[i].era 			||
 							processes_[j].channel 	!= params_[i].channel 	||
 							processes_[j].category 	!= params_[i].category 	||
-							processes_[j].process 	!= params_[i].process) continue;
-					TH1F *central_new = (TH1F*)processes_[j].shape->Clone();
-					TH1F *up_new = (TH1F*)processes_[j].shape->Clone();
-					TH1F *down_new = (TH1F*)processes_[j].shape->Clone();
-					std::cout << params_[i].nuisance << "\tShift: " << it->second.splusb << "\t Error: " << it->second.splusb_err << std::endl;
+							processes_[j].process 	!= params_[i].process 	||
+							!params_[i].shape || !params_[i].shape_down || !params_[i].shape_up) continue;
+					TH1F *central_new = (TH1F*)params_[i].shape->Clone();
+					TH1F *up_new = (TH1F*)params_[i].shape->Clone();
+					TH1F *down_new = (TH1F*)params_[i].shape->Clone();
+
+					// for (unsigned k = 1; k <= central_new->GetNbinsX(); ++k) {
+					// 	double shift = 0.;
+					// 	if (it->second.splusb >= 0) {
+					// 		shift = params_[i].shape_up->GetBinContent(k) - params_[i].shape->GetBinContent(k);
+					// 	} else {
+					// 		shift = params_[i].shape->GetBinContent(k) - params_[i].shape_down->GetBinContent(k);
+					// 	}
+					// 	central_new->SetBinContent(k, params_[i].shape->GetBinContent(k) + it->second.splusb * shift);
+					// 	up_new->SetBinContent(k, params_[i].shape->GetBinContent(k) + (it->second.splusb + 1. * it->second.splusb_err) * shift);
+					// 	down_new->SetBinContent(k, params_[i].shape->GetBinContent(k) + (it->second.splusb - 1. * it->second.splusb_err) * shift);
+					// }
+
 					VerticalMorph(central_new, params_[i].shape_up, params_[i].shape_down, it->second.splusb);
-					std::cout << central_new->Integral() << "\t" << up_new->Integral() << "\t" << down_new->Integral() << std::endl;
 					VerticalMorph(up_new, params_[i].shape_up, params_[i].shape_down, it->second.splusb + it->second.splusb_err);
-				std::cout << central_new->Integral() << "\t" << up_new->Integral() << "\t" << down_new->Integral() << std::endl;
 					VerticalMorph(down_new, params_[i].shape_up, params_[i].shape_down, it->second.splusb - it->second.splusb_err);
-					std::cout << central_new->Integral() << "\t" << up_new->Integral() << "\t" << down_new->Integral() << std::endl;
-					// delete central;
-					// delete up;
-					// delete down;
-					processes_[j].shape = central_new;
+					
+					// std::cout << "Applying pull for nuisance: " << params_[i] << std::endl;
+					// std::cout << "To Process: " << processes_[j] << std::endl;
+					// std::cout << "New/Old rate ratio from morphing is " << central_new->Integral()/params_[i].shape->Integral() << std::endl;
+					TH1F *transformation = (TH1F*)central_new->Clone();
+					transformation->Add(params_[i].shape, -1); // Do shifted shape - original shape
+
+					// !!!! Official code doesn't seem to do this.
+					transformation->Scale(processes_[j].rate / params_[i].shape->Integral()); // Scale transformation up to current rate
+					
+					processes_[j].shape->Add(transformation);
+					// Scan and fix negative bins
+					for (int k = 1; k <= processes_[j].shape->GetNbinsX(); ++k) {
+						if (processes_[j].shape->GetBinContent(k) < 0.) processes_[j].shape->SetBinContent(k, 0.);
+					}
+					// Fix the normalisation of the new shape to the expected shift form the template morphing 
+					// But again, this isn't what the offical post-fit code does.  Visually, it just adjusts the bin contents
+					// and leaves it at that.  So change is in rate is absolute not fractional.
+					processes_[j].shape->Scale( processes_[j].rate * (central_new->Integral()/params_[i].shape->Integral()) / processes_[j].shape->Integral() );
+					// processes_[j].shape->Scale( (processes_[j].rate + transformation->Integral()) / processes_[j].shape->Integral() );
+					
+
+					// std::cout << "Current process rate is " << processes_[j].rate << std::endl;
+					processes_[j].rate = processes_[j].shape->Integral();
+					// std::cout << "New process rate is " << processes_[j].rate << std::endl;
+					if (transformation) delete transformation;
+					params_[i].shape = central_new;
 					params_[i].shape_up = up_new;
 					params_[i].shape_down = down_new;
-					processes_[j].rate = processes_[j].shape->Integral(); 
-
 				}
 			}
 
-
 		}
 	}
+
+	void HTTSetup::WeightSoverB() {
+		// First need to identify the unique set of (mass, era, channel, category) - these will be
+		// reweighted individually. 
+		std::vector<CategoryKey> keys;
+		for (unsigned i = 0; i  < processes_.size(); ++i) {
+			CategoryKey a(processes_[i].GetKey());
+			if (std::find(keys.begin(), keys.end(), a) == keys.end()) keys.push_back(a);
+		}
+		for (unsigned i = 0; i < keys.size(); ++i) {
+			double signal_yield = this->key_match(keys[i]).signals().GetRate();
+			std::cout << "Signal rate: " << signal_yield << std::endl;
+			double backgr_yield = this->key_match(keys[i]).backgrounds().GetRate();
+			std::cout << "Background rate: " << backgr_yield << std::endl;
+			double weight = signal_yield / backgr_yield;
+			for (unsigned j = 0; j < obs_.size(); ++j) {
+				if (obs_[j].GetKey() == keys[i]) {
+					obs_[j].rate *= weight;
+					if (obs_[j].shape) obs_[j].shape->Scale(weight);
+				}
+			}
+			for (unsigned j = 0; j < processes_.size(); ++j) {
+				if (processes_[j].GetKey() == keys[i]) {
+					processes_[j].rate *= weight;
+					if (processes_[j].shape) processes_[j].shape->Scale(weight);
+				}
+			}
+		}
+	}
+
+	void HTTSetup::VariableRebin(std::vector<double> bins) {
+		for (unsigned i = 0; i < processes_.size(); ++i) {
+			if (processes_[i].shape) {
+				processes_[i].shape = (TH1F*)processes_[i].shape->Rebin(bins.size()-1,"",&(bins[0]));
+			}
+		}
+		for (unsigned i = 0; i < obs_.size(); ++i) {
+			if (obs_[i].shape) obs_[i].shape = (TH1F*)obs_[i].shape->Rebin(bins.size()-1,"",&(bins[0]));
+		}
+		for (unsigned i = 0; i < params_.size(); ++i) {
+			if (params_[i].shape) params_[i].shape = (TH1F*)params_[i].shape->Rebin(bins.size()-1,"",&(bins[0]));
+			if (params_[i].shape_down) params_[i].shape_down = (TH1F*)params_[i].shape_down->Rebin(bins.size()-1,"",&(bins[0]));
+			if (params_[i].shape_up) params_[i].shape_up = (TH1F*)params_[i].shape_up->Rebin(bins.size()-1,"",&(bins[0]));
+		}
+	}
+
 
 	int HTTSetup::ParseDatacard(std::string const& filename) {
 		// Assume filename is of the form htt_$CHANNEL.inputs-$ANALYSIS-$ERA.root
@@ -353,21 +551,31 @@ namespace ic {
 			if (params_[i].process_id <= 0) name += params_[i].mass;
 			std::string up_name = name + "_" + params_[i].nuisance + "Up";
 			std::string down_name = name + "_" + params_[i].nuisance + "Down";
-			if (!(gDirectory->Get(up_name.c_str()))) {
+
+			TH1F* hist = (TH1F*)gDirectory->Get(name.c_str());
+			if (!hist) {
+				std::cerr << "Warning, histogram " << name << " not found in ROOT File" << std::endl;
+				continue;
+			} else {
+				params_[i].shape = (TH1F*)hist->Clone();	
+			}
+
+			TH1F* up_hist = (TH1F*)gDirectory->Get(up_name.c_str());
+			if (!up_hist) {
 				std::cerr << "Warning, histogram " << up_name << " not found in ROOT File" << std::endl;
 				continue;
 			} else {
-			TH1F* up_hist = (TH1F*)gDirectory->Get(up_name.c_str())->Clone();
-			params_[i].shape_up = up_hist;			
+				params_[i].shape_up = (TH1F*)up_hist->Clone();	
 			}
 
-			if (!(gDirectory->Get(down_name.c_str()))) {
+			TH1F* down_hist = (TH1F*)gDirectory->Get(down_name.c_str());
+			if (!down_hist) {
 				std::cerr << "Warning, histogram " << down_name << " not found in ROOT File" << std::endl;
 				continue;
 			} else {
-				TH1F* down_hist = (TH1F*)gDirectory->Get(down_name.c_str())->Clone();
-				params_[i].shape_down = down_hist;			
+				params_[i].shape_down = (TH1F*)down_hist->Clone();	
 			}
+
 		}
 		return 0;
 

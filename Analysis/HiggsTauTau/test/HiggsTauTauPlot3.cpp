@@ -196,7 +196,8 @@ int main(int argc, char* argv[]){
   unsigned tau_scale_mode = 0;									// The tau scale mode, used to append labels for plots
   bool official_style;                          // Adopt official plotting style
   bool draw_signal;                             // Draw signal in the plots
-
+  bool ztt_by_decay_mode;                       // For plotting only, split ZTT by decay mode
+  string add_text;
 
 
   // Options to manually shift backgrounds and draw uncertainty bands
@@ -231,6 +232,7 @@ int main(int argc, char* argv[]){
     ("replace_ss_sel",      po::value<string>(&replace_ss_sel)->default_value(""))
     ("method",           		po::value<unsigned>(&method)->required())
     ("category",            po::value<string>(&category)->default_value(""))
+    ("add_text",            po::value<string>(&add_text)->default_value(""))
     ("is_2012",             po::value<bool>(&is_2012)->required())
     ("draw_ratio",          po::value<bool>(&draw_ratio)->default_value(false))
     ("mssm_mode",           po::value<unsigned>(&mssm_mode)->required())
@@ -257,6 +259,7 @@ int main(int argc, char* argv[]){
     ("signal_split_vbf",    po::value<bool>(&signal_split_vbf)->default_value(false))
     ("make_datacard",       po::value<bool>(&make_datacard)->default_value(false))
     ("swap_inclusive",      po::value<bool>(&swap_inclusive)->default_value(false))
+    ("ztt_by_decay_mode",   po::value<bool>(&ztt_by_decay_mode)->default_value(false))
     ("tau_scale_mode",      po::value<unsigned>(&tau_scale_mode)->default_value(0))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
     ("shift_tscale",        po::value<bool>(&shift_tscale)->default_value(false))
@@ -421,6 +424,11 @@ int main(int argc, char* argv[]){
     files.push_back("TTJets");
     if (is_2012) files.push_back("TT");
   }
+  if (ztt_by_decay_mode) {
+    files.push_back("Embedded1P0PZ"); 
+    files.push_back("Embedded1P1PZ"); 
+    files.push_back("Embedded3P");
+  }
   if (mssm_mode == 0) {
     for (unsigned i = 0; i < signal_masses.size(); ++i) {
       files.push_back("GluGluToHToTauTau_M-"+signal_masses[i]);
@@ -510,6 +518,7 @@ int main(int argc, char* argv[]){
             lookup = f.substr(found+1);
             std::cout << "Found scaled: " << lookup << "\t" << c << "\t" << s << std::endl;
           }
+          if (f.find("Embedded") != f.npos) lookup = "Embedded";
   				double sample_events = parser.GetParam<double>("EVT_"+lookup);
   				double sample_xs = parser.GetParam<double>("XS_"+lookup);
   				double sample_lumi = sample_events / sample_xs;
@@ -1483,6 +1492,8 @@ int main(int argc, char* argv[]){
   w_shape.hist_ptr()->Add(vv_shape.hist_ptr());
 
 
+
+
   SetStyle(signal_shape, kBlue+3);
   signal_shape.set_line_style(11);
   signal_shape.set_fill_color(0);
@@ -1508,11 +1519,40 @@ int main(int argc, char* argv[]){
     signalvbf_shape.set_in_stack(false);
   }
 
+  ic::TH1PlotElement ztt_1p0pz_shape("ztt_1p0pz_shape", NULL, "Z#rightarrow#tau#tau (1 Prong 0 #pi^{0})");
+  ic::TH1PlotElement ztt_1p1pz_shape("ztt_1p1pz_shape", NULL, "Z#rightarrow#tau#tau (1 Prong 1 #pi^{0})");
+  ic::TH1PlotElement ztt_3p_shape("ztt_3p_shape", NULL, "Z#rightarrow#tau#tau (3 Prong)");
+
+
+
   std::vector<ic::TH1PlotElement *> drawn_ele;
   drawn_ele.push_back(&qcd_shape);
   drawn_ele.push_back(&w_shape);
   drawn_ele.push_back(&ztt_shape);
   drawn_ele.push_back(&top_shape);
+
+  if (ztt_by_decay_mode) {
+    ztt_1p0pz_shape.set_hist_ptr((TH1F*)(plots[Token("Embedded1P0PZ",cat,os_sel)].hist_ptr()->Clone()));
+    ztt_1p1pz_shape.set_hist_ptr((TH1F*)(plots[Token("Embedded1P1PZ",cat,os_sel)].hist_ptr()->Clone()));
+    ztt_3p_shape.set_hist_ptr((TH1F*)(plots[Token("Embedded3P",cat,os_sel)].hist_ptr()->Clone()));
+    double ztt_split_tot =  Integral(ztt_1p0pz_shape.hist_ptr()) + Integral(ztt_1p1pz_shape.hist_ptr()) + Integral(ztt_3p_shape.hist_ptr());
+    double ztt_1p0pz_frac = Integral(ztt_1p0pz_shape.hist_ptr()) / ztt_split_tot;
+    double ztt_1p1pz_frac = Integral(ztt_1p1pz_shape.hist_ptr()) / ztt_split_tot;
+    double ztt_3p_frac = Integral(ztt_3p_shape.hist_ptr()) / ztt_split_tot;
+    ztt_1p0pz_shape.hist_ptr()->Scale( ztt_1p0pz_frac * Integral(ztt_shape.hist_ptr()) /  Integral(ztt_1p0pz_shape.hist_ptr()) );
+    ztt_1p1pz_shape.hist_ptr()->Scale( ztt_1p1pz_frac * Integral(ztt_shape.hist_ptr()) /  Integral(ztt_1p1pz_shape.hist_ptr()) );
+    ztt_3p_shape.hist_ptr()->Scale( ztt_3p_frac * Integral(ztt_shape.hist_ptr()) /  Integral(ztt_3p_shape.hist_ptr()) );
+    SetStyle(ztt_1p0pz_shape, kOrange + 2);
+    SetStyle(ztt_1p1pz_shape, kOrange - 0);
+    SetStyle(ztt_3p_shape, 17);
+
+    drawn_ele.push_back(&ztt_1p0pz_shape);
+    drawn_ele.push_back(&ztt_1p1pz_shape);
+    drawn_ele.push_back(&ztt_3p_shape);
+    plot.legend_left = 0.54;
+  }
+
+
   if (channel == channel::et) drawn_ele.push_back(&zll_shape);
   if (draw_signal) drawn_ele.push_back(&signal_shape);
   if (draw_signal && signal_split_vbf) drawn_ele.push_back(&signalvbf_shape);
@@ -1570,7 +1610,13 @@ int main(int argc, char* argv[]){
     plot.AddTH1PlotElement(top_shape);
   }
   if (channel == channel::et) plot.AddTH1PlotElement(zll_shape);
-  plot.AddTH1PlotElement(ztt_shape);
+  if (!ztt_by_decay_mode) {
+    plot.AddTH1PlotElement(ztt_shape);
+  } else {
+    plot.AddTH1PlotElement(ztt_1p0pz_shape);    
+    plot.AddTH1PlotElement(ztt_1p1pz_shape);    
+    plot.AddTH1PlotElement(ztt_3p_shape);    
+  }
 
 
   if (!draw_ss) {
@@ -1603,12 +1649,14 @@ int main(int argc, char* argv[]){
   plot.draw_signif = false;
 
   string background_list = "top_shape+ztt_shape+w_shape+qcd_shape";
+  if (ztt_by_decay_mode) background_list = "top_shape+ztt_3p_shape+ztt_1p1pz_shape+ztt_1p0pz_shape+w_shape+qcd_shape";
   if (channel == channel::et) background_list += "+zll_shape";
   ic::RatioPlotElement ratio("Mug","data_shape",background_list);
   
   plot.band_size_fractional_ = band_size_fractional;
   plot.draw_band_on_stack_ = draw_band_on_stack;
   plot.samples_for_band_ = "top_shape+ztt_shape+w_shape+qcd_shape";
+  if (ztt_by_decay_mode) plot.samples_for_band_ = "top_shape+ztt_3p_shape+ztt_1p1pz_shape+ztt_1p0pz_shape+w_shape+qcd_shape";
   if (channel == channel::et) plot.samples_for_band_ += "+zll_shape";
 
   SetStyle(ratio,1);
@@ -1640,6 +1688,16 @@ int main(int argc, char* argv[]){
   }
   ic::TextElement ss_text("Same-sign",0.0,0.19,0.89);
   if (draw_ss) plot.AddTextElement(ss_text);
+
+  if (add_text.size() > 0) {
+    std::vector<string> tmp_vec;
+    boost::split(tmp_vec, add_text, boost::is_any_of(","));
+    if (tmp_vec.size() == 4) {
+      ic::TextElement tmp_text(tmp_vec[0], boost::lexical_cast<double>(tmp_vec[1]), boost::lexical_cast<double>(tmp_vec[2]) ,boost::lexical_cast<double>(tmp_vec[3]));
+      plot.AddTextElement(tmp_text);
+    }
+  }
+
 
   if (!no_plot) plot.GeneratePlot();
 
