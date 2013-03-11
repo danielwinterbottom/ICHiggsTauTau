@@ -44,8 +44,10 @@ namespace ic {
   bool MaxEtaSC(Electron const* electron, double const& maxEta);
   bool Electron2011WP85Iso(Electron const* elec, double const& rho);
   bool Electron2011WP85IsoNoRhoSub(Electron const* elec);
+  bool Electron2011WP70ID(Electron const* elec);
   bool Electron2011WP85ID(Electron const* elec);
   bool Electron2011WP95ID(Electron const* elec);
+  bool VetoElectronID(Electron const* elec);
   bool ElectronSimpleWP85Iso(Electron const* elec);
   bool ElectronSimpleWP85ID(Electron const* elec);
   bool ElectronHTTIdIso(Electron const* elec, unsigned const& mode);

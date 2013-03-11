@@ -16,8 +16,8 @@ namespace ic {
     TH1F::SetDefaultSumw2();
     n_electrons = dir.make<TH1F>("n_electrons","n_electrons", 10, 0, 10); 
     n_muons = dir.make<TH1F>("n_muons","n_muons", 10, 0, 10); 
-    mt_enu = dir.make<TH1F>("mt_enu","mt_enu", 1002, -1, 500); 
-    mt_munu = dir.make<TH1F>("mt_munu","mt_munu", 1002, -1, 500); 
+    mt_enu = dir.make<TH1F>("mt_enu","mt_enu", 500, 0, 500); 
+    mt_munu = dir.make<TH1F>("mt_munu","mt_munu", 500, 0, 500); 
     ept_1 = dir.make<TH1F>("ept_1","ept_1", 1000, 0, 1000); 
     ept_2 = dir.make<TH1F>("ept_2","ept_2", 1000, 0, 1000); 
     eeta_1 = dir.make<TH1F>("eeta_1","eeta_1", 100, -5, 5); 

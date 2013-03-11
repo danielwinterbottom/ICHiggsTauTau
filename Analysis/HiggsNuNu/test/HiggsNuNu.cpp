@@ -19,6 +19,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EffectiveAreaIsolationFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MetSelection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MTSelection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
@@ -132,23 +133,26 @@ int main(int argc, char* argv[]){
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
   
   double elec_dz, muon_dz, elec_dxy, muon_dxy;
+  double veto_elec_dz, veto_elec_dxy;
   double elec_pt, elec_eta, muon_pt, muon_eta;
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   
-  elec_dz = 0.2;
-  elec_dxy = 0.045;
+  elec_dz = 0.1;
+  elec_dxy = 0.02;
+  veto_elec_dz = 0.2;
+  veto_elec_dxy = 0.04;
   muon_dz = 0.2;
   muon_dxy = 0.045;
   
   elec_pt = 20.0;
   elec_eta = 2.4;
   muon_pt = 20.0;
-  muon_eta = 2.4;
+  muon_eta = 2.1;
   
   veto_elec_pt = 10.0;
   veto_elec_eta = 2.4;
   veto_muon_pt = 10.0;
-  veto_muon_eta = 2.4;
+  veto_muon_eta = 2.1;
    
   std::cout << "----------PARAMETERS----------" << std::endl;
   std::cout << boost::format("%-15s %-10s\n") % "elec_pt:" % elec_pt;
@@ -157,6 +161,8 @@ int main(int argc, char* argv[]){
   std::cout << boost::format("%-15s %-10s\n") % "veto_elec_eta:" % veto_elec_eta;
   std::cout << boost::format("%-15s %-10s\n") % "elec_dxy:" % elec_dxy;
   std::cout << boost::format("%-15s %-10s\n") % "elec_dz:" % elec_dz;
+  std::cout << boost::format("%-15s %-10s\n") % "veto_elec_dxy:" % veto_elec_dxy;
+  std::cout << boost::format("%-15s %-10s\n") % "veto_elec_dz:" % veto_elec_dz;
   std::cout << boost::format("%-15s %-10s\n") % "muon_pt:" % muon_pt;
   std::cout << boost::format("%-15s %-10s\n") % "muon_eta:" % muon_eta;
   std::cout << boost::format("%-15s %-10s\n") % "veto_muon_pt:" % veto_muon_pt;
@@ -243,29 +249,33 @@ int main(int argc, char* argv[]){
   SimpleFilter<Electron> vetoElectronFilter = SimpleFilter<Electron>
     ("VetoElectronPtEtaFilter")
     .set_input_label("vetoElectrons").set_predicate(bind(MinPtMaxEta, _1, veto_elec_pt, veto_elec_eta) &&
-						    bind(Electron2011WP95ID, _1) && 
-						    bind(PF04Isolation<Electron>, _1, 0.5, 0.3) //&&
-						    //bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
-						    //bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
+						    bind(VetoElectronID, _1) && 
+						    bind(fabs, bind(&Electron::dxy_vertex, _1)) < veto_elec_dxy && 
+						    bind(fabs, bind(&Electron::dz_vertex, _1)) < veto_elec_dz
 						    )
     .set_min(0)
     .set_max(999);
-  
+
+  EffectiveAreaIsolationFilter vetoElectronIso = EffectiveAreaIsolationFilter("VetoElectronIso","vetoElectrons",0.15);
+ 
+  //electron selection 
+  CopyCollection<Electron>  selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>
     ("SelElectronPtEtaFilter")
-    .set_input_label("electrons").set_predicate(bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
-						bind(ElectronHTTId, _1,true) &&
-						bind(PF04Isolation<Electron>, _1, 0.5, 0.1) &&
-						bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
-						bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
-						)
+    .set_input_label("selElectrons").set_predicate(bind(MinPtMaxEta, _1, elec_pt, elec_eta) &&
+						   bind(Electron2011WP70ID, _1) &&
+						   bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy && 
+						   bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz
+						   )
     .set_min(0)
     .set_max(999);
+
+  EffectiveAreaIsolationFilter selElectronIso = EffectiveAreaIsolationFilter("SelElectronIso","selElectrons",0.10);
 
 
   SimpleFilter<Electron> oneElectronFilter = SimpleFilter<Electron>
     ("OneElectronFilter")
-    .set_input_label("electrons")
+    .set_input_label("selElectrons")
     .set_predicate( bind(DummyFunction<Electron>, _1) )
     .set_min(1)
     .set_max(1);
@@ -297,35 +307,36 @@ int main(int argc, char* argv[]){
   SimpleFilter<Muon> vetoMuonFilter = SimpleFilter<Muon>
     ("VetoMuonPtEtaFilter")
     .set_input_label("vetoMuons").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
-						bind(&Muon::is_global, _1) && 
-						bind(PF04Isolation<Muon>, _1, 0.5, 0.3) //&&
-						//bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
-						//bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
+						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
+						//&& bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
+						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy 
+						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
 						)
     .set_min(0)
     .set_max(999);
 
-   
+  //sel muons
+  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");   
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>
     ("SelMuonPtEtaFilter")
-    .set_input_label("muonsPFlow").set_predicate(bind(MinPtMaxEta, _1, muon_pt, muon_eta) &&
-						 bind(&Muon::is_global, _1) && 
-						 bind(MuonTight, _1) && 
-						 bind(PF04Isolation<Muon>, _1, 0.5, 0.1) &&
-						 bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
-						 bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
-						 )
+    .set_input_label("selMuons").set_predicate(bind(MinPtMaxEta, _1, muon_pt, muon_eta) &&
+					       bind(&Muon::is_global, _1) &&
+					       bind(MuonTight, _1) && 
+					       bind(PF04Isolation<Muon>, _1, 0.5, 0.12) &&
+					       bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
+					       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
+					       )
     .set_min(0)
     .set_max(999);
 
 
   SimpleFilter<Muon> oneMuonFilter = SimpleFilter<Muon>
     ("OneMuonFilter")
-    .set_input_label("muonsPFlow")
+    .set_input_label("selMuons")
     .set_predicate( bind(DummyFunction<Muon>, _1) )
     .set_min(1)
     .set_max(1);
-
+  
   SimpleFilter<Muon> oneVetoMuonFilter = SimpleFilter<Muon>
     ("OneVetoMuonFilter")
     .set_input_label("vetoMuons")
@@ -431,8 +442,8 @@ int main(int argc, char* argv[]){
   unsigned nLepToAdd = 0;
   if (channel == channel::munu || channel == channel::enu) nLepToAdd = 1; 
 
-  ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"muonsPFlow",2,nLepToAdd);
-  ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"electrons",1,nLepToAdd);
+  ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"selMuons",2,nLepToAdd);
+  ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"selElectrons",1,nLepToAdd);
 
   MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",met_cut);
   MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",met_cut);
@@ -441,8 +452,8 @@ int main(int argc, char* argv[]){
   // W selection Modules
   // ------------------------------------------------------------------------------------
   double mtcut = 40;
-  MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"muonsPFlow",mtcut);
-  MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"electrons",mtcut);
+  MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",mtcut);
+  MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",mtcut);
 
 
   // ------------------------------------------------------------------------------------
@@ -507,8 +518,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
-    .set_electrons_label("electrons")
-    .set_muons_label("muonsPFlow")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
     .set_sel_label("JetPair");
 
   if (channel==channel::enu)
@@ -536,8 +547,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
-    .set_electrons_label("electrons")
-    .set_muons_label("muonsPFlow")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
     .set_sel_label("DEta");
 
   if (channel==channel::enu)
@@ -559,8 +570,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
-    .set_electrons_label("electrons")
-    .set_muons_label("muonsPFlow")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
     .set_sel_label("WSelection");
 
   if (channel==channel::enu)
@@ -576,8 +587,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
-    .set_electrons_label("electrons")
-    .set_muons_label("muonsPFlow")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
     .set_sel_label("DPhi");
 
   if (channel==channel::enu)
@@ -593,8 +604,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
-    .set_electrons_label("electrons")
-    .set_muons_label("muonsPFlow")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
     .set_sel_label("TightMjj");
 
   if (channel==channel::enu)
@@ -623,8 +634,12 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_dijet);
 
      //filter leptons before changing MET...
+     analysis.AddModule(&selElectronCopyCollection);
+     analysis.AddModule(&selMuonCopyCollection);
      analysis.AddModule(&selMuonFilter);
      analysis.AddModule(&selElectronFilter);
+     analysis.AddModule(&selElectronIso);
+
      //add met without leptons for plots
      analysis.AddModule(&metNoMuons);
      analysis.AddModule(&metNoElectrons);
@@ -655,6 +670,8 @@ int main(int argc, char* argv[]){
      //prepare collections of veto leptons
      analysis.AddModule(&vetoElectronCopyCollection);
      analysis.AddModule(&vetoElectronFilter);
+     analysis.AddModule(&vetoElectronIso);
+
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
 
@@ -662,7 +679,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&oneMuonFilter);
        analysis.AddModule(&oneVetoMuonFilter);
        analysis.AddModule(&zeroVetoElectronFilter);
-       analysis.AddModule(&muonMTFilter);
+       //analysis.AddModule(&muonMTFilter);
        analysis.AddModule(&controlPlots_wsel);
        analysis.AddModule(&wjetsPlots_wsel);
      }
@@ -670,7 +687,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&oneElectronFilter);
        analysis.AddModule(&oneVetoElectronFilter);
        analysis.AddModule(&zeroVetoMuonFilter);
-       analysis.AddModule(&electronMTFilter);
+       //analysis.AddModule(&electronMTFilter);
        analysis.AddModule(&controlPlots_wsel);
        analysis.AddModule(&wjetsPlots_wsel);
      }

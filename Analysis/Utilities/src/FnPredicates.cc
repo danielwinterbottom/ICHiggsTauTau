@@ -275,6 +275,58 @@ namespace ic {
               && (fabs(elec->conv_dist()) >= 0.02 || fabs(elec->conv_dcot()) >= 0.02)));
   }
 
+  bool Electron2011WP70ID(Electron const* elec) {
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.4442) in_barrel = false;
+
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+
+    return ( elec->gsf_tk_nhits()            <= 0
+	     && !elec->has_matched_conversion()
+	     && ( (in_barrel 
+		   && elec->sigma_IetaIeta()           < 0.01
+		   && fabs(elec->dphi_sc_tk_at_vtx())  < 0.03
+		   && fabs(elec->deta_sc_tk_at_vtx())  < 0.004
+		   && elec->hadronic_over_em() < 0.120
+		   && ooemoop < 0.050
+		   ) || 
+		  (!in_barrel 
+		   && elec->sigma_IetaIeta()           < 0.03
+		   && fabs(elec->dphi_sc_tk_at_vtx())  < 0.02
+		   && fabs(elec->deta_sc_tk_at_vtx())  < 0.005
+		   && elec->hadronic_over_em() < 0.100
+		   && ooemoop < 0.050
+		   )
+		  )
+	     );
+  }
+
+  bool VetoElectronID(Electron const* elec) {
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.4442) in_barrel = false;
+
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+
+    return ( elec->gsf_tk_nhits()            <= 999
+	     //&& !elec->has_matched_conversion()
+	     && ( (in_barrel 
+		   && elec->sigma_IetaIeta()           < 0.01
+		   && fabs(elec->dphi_sc_tk_at_vtx())  < 0.800
+		   && fabs(elec->deta_sc_tk_at_vtx())  < 0.007
+		   && elec->hadronic_over_em() < 0.150
+		   && ooemoop < 999.9
+		   ) || 
+		  (!in_barrel 
+		   && elec->sigma_IetaIeta()           < 0.03
+		   && fabs(elec->dphi_sc_tk_at_vtx())  < 0.700
+		   && fabs(elec->deta_sc_tk_at_vtx())  < 0.010
+		   && elec->hadronic_over_em() < 999.9
+		   && ooemoop < 999.9
+		   )
+		  )
+	     );
+  }
+
   bool Electron2011WP95ID(Electron const* elec) {
     //if (elec->has_matched_conversion()) return false;
     bool in_barrel = true;
