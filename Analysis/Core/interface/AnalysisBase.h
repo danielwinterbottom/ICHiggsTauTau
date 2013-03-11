@@ -31,6 +31,9 @@ namespace ic {
     bool print_module_list_;
     bool ttree_caching_;
     bool stop_on_failed_file_;
+    bool retry_on_fail_;
+    unsigned retry_pause_;
+    unsigned retry_attempts_;
 
   public:
     //! The standard AnalysisBase constructor constructor 
@@ -57,6 +60,7 @@ namespace ic {
     void DoSkimming(std::string const& skim_path) { skim_path_ = skim_path; }
     void SetTTreeCaching(bool const& value);
     void StopOnFileFailure(bool const& value);
+    void RetryFileAfterFailure(unsigned pause_in_seconds, unsigned retry_attempts);
  };
 }
 

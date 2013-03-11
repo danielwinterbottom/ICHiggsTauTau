@@ -2,7 +2,8 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include <boost/algorithm/string.hpp>
 
-#include <algorithm>
+#include <stdio.h>
+#include <thread>
 #include "TFile.h"
 #include "TTree.h"
 #include "boost/format.hpp"
@@ -27,6 +28,9 @@ namespace ic {
     print_module_list_    = false;
     ttree_caching_        = false;
     stop_on_failed_file_  = true;
+    retry_on_fail_        = false; 
+    retry_pause_          = 5;
+    retry_attempts_       = 1;
   }
 
   AnalysisBase::~AnalysisBase() {
@@ -93,7 +97,20 @@ namespace ic {
         if (!file_ptr) {
           std::cerr << "Warning: Unable to open file \"" << input_file_paths_[file] <<
           "\"" << std::endl;
-          if (stop_on_failed_file_) {
+          if (retry_on_fail_ && retry_attempts_ > 0) {
+            for (unsigned att = 0; att < retry_attempts_; ++att) {
+              std::cout << "Retry attempt " << att+1 << "/" << retry_attempts_ << " in " << retry_pause_ << " seconds" << std::endl;
+              sleep(retry_pause_);
+              file_ptr = TFile::Open(input_file_paths_[file].c_str());
+              if (file_ptr) {
+                std::cout << "File opened successfully" << std::endl;
+                break;
+              } else {
+                std::cout << "File open failed" << std::endl;
+              }
+            }
+          }
+          if (stop_on_failed_file_ && !file_ptr) {
             throw;
           } else {
             continue;          
@@ -204,6 +221,13 @@ namespace ic {
   void AnalysisBase::StopOnFileFailure(bool const& value) {
     stop_on_failed_file_ = value;
   }
+
+  void AnalysisBase::RetryFileAfterFailure(unsigned pause_in_seconds, unsigned retry_attempts) {
+    retry_on_fail_ = true;
+    retry_attempts_ = retry_attempts;
+    retry_pause_ = pause_in_seconds;
+  }
+
 
 
 
