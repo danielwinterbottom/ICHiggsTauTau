@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include "UserCode/ICHiggsTauTau//interface/city.h"
 
 namespace ic {
 
@@ -38,12 +39,13 @@ namespace ic {
     // Set up necessary histograms depending on mode. These histograms are named such
     // that the fitting code will still work.
     std::string label;
-    if(mode_==0 || mode_==10) label="id_";
-    if(mode_==1 || mode_==11) label="iso_";
-    if(mode_==2 || mode_==12) label="idiso_";
-    if(mode_==3) label="";
+    if(mode_==0 || mode_==10) label="id_";          //0=ID, 10=ID in finer bins
+    if(mode_==1 || mode_==11) label="iso_";         //1=Iso, 11=iso in finer bins
+    if(mode_==2 || mode_==12) label="idiso_";       //2=IDIso, 12=IDIso in finer bins
+    if(mode_==3) label="";                          //3=Trigger efficiencies for etau channel
+    if(mode_==4) label="";                          //4=Trigger efficiencies for etau+met channel
 
-    if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
+    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
     {
         for(unsigned i=0; i<pt_bins_.size()-1; i++)
         {
@@ -139,6 +141,12 @@ namespace ic {
         etau_obj_label = "triggerObjectsEle22WP90RhoLooseTau20";
         etau_filter = "hltEle22WP90RhoTrackIsoFilter";
     }
+    if(mode_==4)
+    {    
+        etau_obj_label = "triggerObjectsIsoMu8LooseTau20L1ETM26";
+        etau_filter = "hltL3fL1sMu7Eta2p1L1f0L2f7QL3Filtered8Q";
+    }
+
     //set tag and probe trigger names and filter labels
    
    if(data_ && run >= 190456)
@@ -242,6 +250,21 @@ namespace ic {
         }*/
     }
     else trigger=true;
+    
+    bool hasL1MET=false;
+
+    std::string filter="hltL1sL1IsoEG12erETM36";
+    std::size_t hash = CityHash64(filter);
+    if(data_)
+    {
+        for (unsigned i = 0; i < etau_objs.size(); ++i)
+        {
+            std::vector<std::size_t> const& labels = etau_objs[i]->filters();
+            if (std::find(labels.begin(),labels.end(), hash) == labels.end()) hasL1MET=true;
+        }
+    }
+    else hasL1MET=true;
+    
 
     std::vector<Electron *> tag_vector; 
     std::vector<Electron *> probe_vector; 
@@ -263,7 +286,8 @@ namespace ic {
                 good_tag=true;
             } 
             if( probe_predicate_((electrons[e1])) 
-                    && (!data_ || !probe_match || (data_ && IsFilterMatched((electrons)[e1], objs, probe_filter_e, 0.5)) ))
+                    && (!data_ || !probe_match || (data_ && IsFilterMatched((electrons)[e1], objs, probe_filter_e, 0.5)) )
+                  && (!(mode_==4) || hasL1MET)  )
             {
                 probe_vector.push_back((electrons)[e1]);
             }
@@ -300,6 +324,7 @@ namespace ic {
     if(mode_==1 || mode_==11) label="iso_";
     if(mode_==2 || mode_==12) label="idiso_";
     if(mode_==3) label="";
+    if(mode_==4) label="";
     
     
     //Fill passing and failing histograms.
@@ -311,11 +336,11 @@ namespace ic {
             for(unsigned i=0; i<pt_bins_.size(); i++)
             {
                 std::string s=boost::lexical_cast<std::string>(i+1);
-                if((!(mode_==3) && passprobe_predicate_(pairs[k_final].second)) ||
-                        ((mode_==3) && IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )) )
+                if((!(mode_==3) && !(mode_==4) && passprobe_predicate_(pairs[k_final].second)) ||
+                        (((mode_==3) ||(mode_==4)) && IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )) )
                 {
                     passing_count++;
-                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
+                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
                     {
                         if(fabs((pairs[k_final].second)->sc_eta()) < eta_bins_[0])
                         {
@@ -343,11 +368,11 @@ namespace ic {
                         } 
                     }
                 }
-                if ((!(mode_==3) && !passprobe_predicate_(pairs[k_final].second))||
-                        ((mode_==3) && !IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )))
+                if ((!(mode_==3) && !(mode_==4) && !passprobe_predicate_(pairs[k_final].second))||
+                        (((mode_==3)||(mode_==4)) && !IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )))
                 {
                     failing_count++;
-                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
+                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
                     {
                         if(fabs((pairs[k_final].second)->sc_eta()) < eta_bins_[0])
                         {
@@ -428,8 +453,9 @@ namespace ic {
     if(mode_==1 || mode_==11) label="iso_";
     if(mode_==2 || mode_==12) label="idiso_";
     if(mode_==3) label="";
+    if(mode_==4) label="";
      
-    if(mode_==0 || mode_==1 || mode_==2 || mode_==3)
+    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
     {
          std::cout << "====================="+label+"====================" << std::endl;
          for(unsigned i=0; i<pt_bins_.size()-1; i++)
