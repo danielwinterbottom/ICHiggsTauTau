@@ -31,7 +31,7 @@ int main(int argc, char* argv[]){
     f1->cd();
     TCanvas *c1 = new TCanvas("c1", "error plot", 200, 10, 700, 500);
 
-    TH1F *h1=c1->DrawFrame(10, -0.05, 60, 1);
+    TH1F *h1=c1->DrawFrame(0, -0.05, 60, 1);
     h1->SetYTitle("Efficiency");
     if(elec)
     {
@@ -331,7 +331,7 @@ int main(int argc, char* argv[]){
  
 
     TCanvas *c2 = new TCanvas("c2", "error plot", 200, 10, 700, 500);
-    TH1F *h2=c2->DrawFrame(10, -0.05, 60, 1);
+    TH1F *h2=c2->DrawFrame(0, -0.05, 60, 1);
     h2->SetYTitle("Efficiency");
     if(elec)
     {
@@ -350,7 +350,7 @@ int main(int argc, char* argv[]){
     gr2->Draw("P");
 
     TCanvas *c3 = new TCanvas("c3", "error plot", 200, 10, 700, 500);
-    TH1F *h3=c3->DrawFrame(10, -0.05, 60, 1);
+    TH1F *h3=c3->DrawFrame(0, -0.05, 60, 1);
     h3->SetYTitle("Efficiency");
     if(elec)
     {
