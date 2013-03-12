@@ -35,6 +35,8 @@ struct CoreControlPlots {
 	TH1F *n_vtx;
 	TH1F *mt_1;
 	TH1F *pzeta;
+	TH1F *pt_h;
+	TH1F *pt_tt;
 	TH1F *pt_1;
 	TH1F *pt_2;
 	TH1F *eta_1;
