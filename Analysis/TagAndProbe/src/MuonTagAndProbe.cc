@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include "UserCode/ICHiggsTauTau//interface/city.h"
 
 namespace ic {
 
@@ -235,11 +236,39 @@ namespace ic {
     }
     else trigger=true;
 
+    bool hasL1MET=false;
+    
+   /* if(data_)
+    {
+        for(unsigned k=0; k<triggerPathPtrVec.size(); k++)
+        {
+            std::string name=(triggerPathPtrVec[k])->name();
+            if(name.find("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_L1ETM26_v")!=name.npos)
+            {
+                hasL1MET=true;
+       //         prescalenum=triggerPathPtrVec[k]->prescale();
+            }
+        }
+    }
+    else hasL1MET=true;
+    */
+    std::string filter="hltL1sL1IsoEG12erETM36";
+    std::size_t hash = CityHash64(filter);
+    if(data_)
+    {
+        for (unsigned i = 0; i < mutau_objs.size(); ++i)
+        {
+            std::vector<std::size_t> const& labels = mutau_objs[i]->filters();
+            if (std::find(labels.begin(),labels.end(), hash) == labels.end()) hasL1MET=true;
+        }
+    }
+    else hasL1MET=true;
+    
     std::vector<Muon *> tag_vector; 
     std::vector<Muon *> probe_vector; 
     bool good_tag=false;
     //Make vectors of tag and probe candidates.
-
+    
     if(muons.size()>1 && trigger && ((data_ && run>=run_low_ && run<=run_high_) || !data_) )
     {
    //     prescales[run]+=prescalenum; 
@@ -254,7 +283,8 @@ namespace ic {
                 good_tag=true;
             } 
             if( probe_predicate_((muons[e1])) 
-                    && (!data_ || !probe_match || (data_ && IsFilterMatched((muons)[e1], objs, probe_filter_mu, 0.5)) ))
+                    && (!data_ || !probe_match || (data_ && IsFilterMatched((muons)[e1], objs, probe_filter_mu, 0.5)))
+                    && (!(mode_==4) || hasL1MET))
             {
                 probe_vector.push_back((muons)[e1]);
             }
@@ -552,6 +582,7 @@ namespace ic {
     if(mode_==1 || mode_==11) label="iso_";
     if(mode_==2 || mode_==12) label="idiso_";
     if(mode_==3) label="";
+    if(mode_==4) label="";
      
     if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
     {
