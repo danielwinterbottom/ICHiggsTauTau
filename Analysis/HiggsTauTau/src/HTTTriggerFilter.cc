@@ -202,9 +202,9 @@ namespace ic {
       }
       if (channel_ == channel::mtmet) {
         if (run >= 203777/* && run <= xxxxx*/) {
-          trig_obj_label = "triggerObjectsMu8LooseTau20L1ETM26";
-          leg1_filter = "hltL3fL1sMu7Eta2p1L1f0L2f7QL3Filtered8Q";
-          leg2_filter = "hltMu8PFTau20TrackLooseIso";
+          trig_obj_label = "triggerObjectsIsoMu8LooseTau20L1ETM26";
+          leg1_filter = "hltL3crIsoL1sMu7Eta2p1L1f0L2f7QL3f8QL3crIsoRhoFiltered0p15";
+          leg2_filter = "hltIsoMu8PFTau20TrackLooseIso";
         }
       }
       if (channel_ == channel::etmet) {
