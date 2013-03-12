@@ -38,7 +38,8 @@ struct strategy_def {
 	enum type {
 		ichep2012,			// ICHEP 2012 anaylsis strategy, e.g. PF MET, VBF MVA
 		hcp2012,				// HCP 2012 strategy, MVA MET, cut-based VBF
-		moriond2013			// Moriond 2013 strategy, currently same as HCP
+		moriond2013,		// Moriond 2013 strategy, currently same as HCP
+		paper2013				// Strategy for the final paper in 2013
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -47,7 +48,8 @@ inline std::string Strategy2String(strategy const& in) {
 	static std::map<strategy, std::string> conv = boost::assign::map_list_of
 		(strategy::ichep2012, 	"ichep2012")
 		(strategy::hcp2012, 		"hcp2012")
-		(strategy::moriond2013, "moriond2013");
+		(strategy::moriond2013, "moriond2013")
+		(strategy::paper2013, 	"paper2013");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -61,6 +63,7 @@ inline strategy String2Strategy(std::string const& in) {
 	("ichep2012", 	strategy::ichep2012)
 	("hcp2012", 		strategy::hcp2012)
 	("moriond2013", strategy::moriond2013);
+	("paper2013", 	strategy::paper2013);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
