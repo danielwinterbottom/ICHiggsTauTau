@@ -23,7 +23,7 @@ int main(int argc, char* argv[]){
     std::cout << i << "\t" << argv[i] << std::endl;
   }
   if (argc != 10){
-    std::cerr << "Need 8 args:<iselec> <B/E/Eb> <File1><label1> <File2><labelData2> <File3><label3> <Plot2or3>" << std::endl;
+    std::cerr << "Need 8 args:<iselec> <B/E/Eb> <File1><label1> <File2><labelData2> <File3><label3> <Plot1or2or3>" << std::endl;
     exit(1);
   }
 
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]){
     }
     
     TCanvas* canvas1 = new TCanvas("canvas1", "canvas1", 200,10, 700, 500);
-    TH1F* base1 = new TH1F("base1", "base1" , 100, 10 ,60);
+    TH1F* base1 = new TH1F("base1", "base1" , 100, 0 ,50);
     if(elec)
     {    
         base1->GetXaxis()->SetTitle("Electron p_{T} (GeV)");
@@ -135,15 +135,22 @@ int main(int argc, char* argv[]){
     base1->Draw();
     gr2012A->SetMarkerColor(1);
     fit2012A->SetLineColor(1);
-    //fit2012A->SetLineWidth(1);
+    if(Plot2or3==1)
+    {
+        gr2012A->SetMarkerColor(kBlue);
+        fit2012A->SetLineColor(kBlue);
+    }
     gr2012A->Draw("Psame");
     fit2012A->Draw("same");
-    gr2012B->SetMarkerColor(kBlue);
-    gr2012B->SetMarkerStyle(33);
-    fit2012B->SetLineColor(4);
-    //fit2012B->SetLineWidth(1);
-    gr2012B->Draw("Psame");
-    fit2012B->Draw("same");
+    if(Plot2or3!=1)
+    {
+        gr2012B->SetMarkerColor(kBlue);
+        gr2012B->SetMarkerStyle(33);
+        fit2012B->SetLineColor(4);
+        //fit2012B->SetLineWidth(1);
+        gr2012B->Draw("Psame");
+        fit2012B->Draw("same");
+    }
    if(Plot2or3==3)
    {
         grMC->SetMarkerColor(kRed);
@@ -156,7 +163,7 @@ int main(int argc, char* argv[]){
     
     TLegend * legend1 = new TLegend(0.50, 0.35, 0.75, 0.60);
     legend1->AddEntry(gr2012A, labeldata1, "p");
-    legend1->AddEntry(gr2012B, labeldata2, "p");
+    if(Plot2or3!=1) legend1->AddEntry(gr2012B, labeldata2, "p");
  if(Plot2or3==3)  legend1->AddEntry(grMC, labelMC, "p");
 //    legend1->AddEntry(grptdata, "2012 Data", "p");
     legend1->SetFillColor(0);
