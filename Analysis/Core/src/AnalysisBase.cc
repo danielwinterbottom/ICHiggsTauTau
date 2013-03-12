@@ -112,9 +112,7 @@ namespace ic {
           }
           if (stop_on_failed_file_ && !file_ptr) {
             throw;
-          } else {
-            continue;          
-          }
+          } 
         }
         gDirectory->Cd(tree_path_.c_str());
         tree_ptr = dynamic_cast<TTree*>(gDirectory->Get(tree_name_.c_str()));
