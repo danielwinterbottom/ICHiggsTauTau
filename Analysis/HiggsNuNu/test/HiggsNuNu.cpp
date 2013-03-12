@@ -756,7 +756,6 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_tightMjj);
      analysis.AddModule(&wjetsPlots_tightMjj);
 
-
      if (signal_region==2) {
        analysis.AddModule(&dphiJetPairFilter);
        analysis.AddModule(&controlPlots_dphi);

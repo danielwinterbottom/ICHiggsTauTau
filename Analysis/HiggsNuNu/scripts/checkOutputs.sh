@@ -26,7 +26,8 @@ done ;
 
 for CHANNEL in nunu enu munu
   do
-  for MET in 130 0 70
+  for MET in 130
+# 0 70
     do
     for DOQCD in 0 1 2
       do
@@ -48,11 +49,11 @@ for CHANNEL in nunu enu munu
 	SHFILE=`echo $LOGFILE | sed "s/log/sh/"`
 	grep -q "Error opening the file" $LOGFILE
 	if (( "$?" == 0 )); then
-	    echo "--> Error opening a file, resubmitting job $SHFILE!"
-	    ./scripts/submit_ic_batch_job.sh hepshort.q $SHFILE
+	    echo "--> Error opening a file, need to resubmit job $SHFILE!"
+	    echo "./scripts/submit_ic_batch_job.sh hepshort.q $SHFILE"
 	else
 	    tail -5 $LOGFILE
-	    echo "** SUGGESTION: resubmit with longer queue"
+	    echo "--> Error: Please fix and resubmit with command:"
 	    echo "./scripts/submit_ic_batch_job.sh hepmedium.q $SHFILE"
 	fi
 	fi

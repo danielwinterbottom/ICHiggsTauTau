@@ -15,7 +15,8 @@ echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigMC.cfg
 
-for METCUT in 130 0 70
+for METCUT in 130
+# 0 70
   do
   for DOQCD in 0 1 2
     do
