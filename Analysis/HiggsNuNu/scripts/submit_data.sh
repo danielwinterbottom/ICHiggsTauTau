@@ -5,7 +5,11 @@
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
 
-export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+#export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+
+JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
+JOBQUEUE="hepshort.q"
+export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 
 
 echo "Using job-wrapper: " $JOBWRAPPER
@@ -23,18 +27,27 @@ for METCUT in 130 0 70
       JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
       OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
 
-  echo "Config file: $CONFIG"
-  mkdir -p $JOBDIR
-  mkdir -p $OUTPUTDIR
+      echo "Config file: $CONFIG"
+      mkdir -p $JOBDIR
+      mkdir -p $OUTPUTDIR
+
+      for QUEUEDIR in short medium
+	do
+	
+	if (( "$QUEUEDIR" == "medium" ))
+	    then
+	    JOBQUEUE="hepmedium.q"
+	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
+	fi
 
   PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/MET/
-  for FILELIST in `ls filelists/Dec1_MET_*`
+  for FILELIST in `ls filelists/$QUEUEDIR/Dec1_MET_*`
 #for FILELIST in `ls filelists/Dec1_MET_MET-2012C-11Dec2012-v1.dat`
     do
     echo "Processing files in "$FILELIST
 
     echo $FILELIST > tmp.txt
-    sed "s/filelists\/Dec1_MET_//" tmp.txt > tmp2.txt
+    sed "s/filelists\/$QUEUEDIR\/Dec1_MET_//" tmp.txt > tmp2.txt
     
     JOB=Data_`sed "s/\.dat//" tmp2.txt`
 
@@ -50,12 +63,12 @@ for METCUT in 130 0 70
   
   PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Dec1/MET/
 
-  for FILELIST in `ls filelists/MET-*`
+  for FILELIST in `ls filelists/$QUEUEDIR/MET-*`
     do
     echo "Processing files in "$FILELIST
     
     echo $FILELIST > tmp.txt
-    sed "s/filelists\///" tmp.txt > tmp2.txt
+    sed "s/filelists\/$QUEUEDIR\///" tmp.txt > tmp2.txt
     
     JOB=Data_`sed "s/\.dat//" tmp2.txt`
     

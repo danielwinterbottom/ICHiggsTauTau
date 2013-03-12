@@ -1,13 +1,14 @@
 #!/bin/sh
 PARAMS=./scripts/Params.dat
 
-for CHANNEL in enu munu
+for CHANNEL in nunu enu munu
   do
 
-  for MET in 130 0 70
+  for MET in 130
+# 0 70
     do
 
-    for DOQCD in 0 2
+    for DOQCD in 0
       do
 
       FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/

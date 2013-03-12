@@ -152,7 +152,13 @@ struct channel_def {
 		nunu,							
 		munu,
 		enu,
-		taunu
+		taunu,
+		ee,
+		mumu,
+		emu,
+		tautau,
+		etau,
+		mutau
 	};
 };
 
@@ -164,6 +170,12 @@ struct channel_def {
      (channel::munu, "munu")
      (channel::enu, "enu")
      (channel::taunu, "taunu")
+     (channel::ee, "ee")
+     (channel::mumu, "mumu")
+     (channel::emu, "emu")
+     (channel::tautau, "tautau")
+     (channel::etau, "etau")
+     (channel::mutau, "mutau")
      ;
 
    if (conv.find(in) != conv.end()) {
@@ -179,6 +191,12 @@ struct channel_def {
      ("munu", channel::munu)
      ("enu", channel::enu)
      ("taunu", channel::taunu)
+     ("ee", channel::ee)
+     ("mumu", channel::mumu)
+     ("emu", channel::emu)
+     ("tautau", channel::tautau)
+     ("etau", channel::etau)
+     ("mutau", channel::mutau)
      ;
    
    if (conv.find(in) != conv.end()) {

@@ -440,13 +440,19 @@ int main(int argc, char* argv[]){
   MetSelection metFilter = MetSelection("MetFilter",mettype,met_cut);
 
   unsigned nLepToAdd = 0;
-  if (channel == channel::munu || channel == channel::enu) nLepToAdd = 1; 
+  if (channel == channel::munu || 
+      channel == channel::enu || 
+      channel == channel::emu
+      ) nLepToAdd = 1; 
 
   ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"selMuons",2,nLepToAdd);
   ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"selElectrons",1,nLepToAdd);
+  ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,nLepToAdd);
+
 
   MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",met_cut);
   MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",met_cut);
+  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",met_cut);
 
   //------------------------------------------------------------------------------------
   // W selection Modules
@@ -524,6 +530,8 @@ int main(int argc, char* argv[]){
 
   if (channel==channel::enu)
     wjetsPlots_dijet.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_dijet.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_met = HinvControlPlots("METControlPlots")
     .set_fs(fs)
@@ -553,6 +561,8 @@ int main(int argc, char* argv[]){
 
   if (channel==channel::enu)
     wjetsPlots_deta.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_deta.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_lepveto = HinvControlPlots("LeptonVetoControlPlots")
     .set_fs(fs)
@@ -576,6 +586,8 @@ int main(int argc, char* argv[]){
 
   if (channel==channel::enu)
     wjetsPlots_wsel.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_wsel.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_dphi = HinvControlPlots("DPhiControlPlots")
     .set_fs(fs)
@@ -593,6 +605,8 @@ int main(int argc, char* argv[]){
 
   if (channel==channel::enu)
     wjetsPlots_dphi.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_dphi.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_tightMjj = HinvControlPlots("TightMjjControlPlots")
     .set_fs(fs)
@@ -610,6 +624,8 @@ int main(int argc, char* argv[]){
 
   if (channel==channel::enu)
     wjetsPlots_tightMjj.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_tightMjj.set_met_nolep_label("metNoENoMu");
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -643,6 +659,7 @@ int main(int argc, char* argv[]){
      //add met without leptons for plots
      analysis.AddModule(&metNoMuons);
      analysis.AddModule(&metNoElectrons);
+     analysis.AddModule(&metNoENoMu);
 
      analysis.AddModule(&wjetsPlots_dijet);
 
@@ -652,6 +669,9 @@ int main(int argc, char* argv[]){
      }
      else if (channel == channel::enu){
        analysis.AddModule(&metNoElectronFilter);
+     }
+     else if (channel == channel::emu){
+       analysis.AddModule(&metNoENoMuFilter);
      }
      else {
        analysis.AddModule(&metFilter);
@@ -687,6 +707,15 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&oneElectronFilter);
        analysis.AddModule(&oneVetoElectronFilter);
        analysis.AddModule(&zeroVetoMuonFilter);
+       //analysis.AddModule(&electronMTFilter);
+       analysis.AddModule(&controlPlots_wsel);
+       analysis.AddModule(&wjetsPlots_wsel);
+     }
+     else if (channel == channel::emu){
+       analysis.AddModule(&oneElectronFilter);
+       analysis.AddModule(&oneVetoElectronFilter);
+       analysis.AddModule(&oneMuonFilter);
+       analysis.AddModule(&oneVetoMuonFilter);
        //analysis.AddModule(&electronMTFilter);
        analysis.AddModule(&controlPlots_wsel);
        analysis.AddModule(&wjetsPlots_wsel);

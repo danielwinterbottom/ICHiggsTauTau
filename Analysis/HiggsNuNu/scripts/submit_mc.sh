@@ -5,7 +5,9 @@
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
 
-export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
+JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
+JOBQUEUE="hepshort.q"
+export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 
 
 echo "Using job-wrapper: " $JOBWRAPPER
@@ -23,25 +25,33 @@ for METCUT in 130 0 70
       JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
       OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
 
-  echo "Config file: $CONFIG"
+      echo "Config file: $CONFIG"
 
-  mkdir -p $JOBDIR
-  mkdir -p $OUTPUTDIR
+      mkdir -p $JOBDIR
+      mkdir -p $OUTPUTDIR
+      
+      for QUEUEDIR in short medium
+	do
+
+	if (( "$QUEUEDIR" == "medium" ))
+	    then
+	    JOBQUEUE="hepmedium.q"
+	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
+	fi
 
 #Process HiggsNuNu specific backgrounds
-
 #Signal files and DYtoNuNu
   PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Mar20/MC/
 #  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/VBFH120/
 #  for FILELIST in `ls filelists/Dec1_VBFH120_* filelists/Dec1_ZJets_*`
-  for FILELIST in `ls filelists/Mar20_MC_*M-120*`
+  for FILELIST in `ls filelists/$QUEUEDIR/Mar20_MC_*`
     do
     echo "Processing files in "$FILELIST
     
     echo $FILELIST > tmp.txt
     #sed "s/filelists\/Dec1_VBFH120_//" tmp.txt > tmp2a.txt
     #sed "s/filelists\/Dec1_ZJets_//" tmp2a.txt > tmp2.txt
-    sed "s/filelists\/Mar20_MC_//" tmp.txt > tmp2.txt
+    sed "s/filelists\/$QUEUEDIR\/Mar20_MC_//" tmp.txt > tmp2.txt
         
     JOB=MC_`sed "s/\.dat//" tmp2.txt`
     
@@ -57,12 +67,12 @@ for METCUT in 130 0 70
 
 #VBFZ
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec5/VBFZ/
-for FILELIST in `ls filelists/Dec5_VBFZ*`
+for FILELIST in `ls filelists/$QUEUEDIR/Dec5_VBFZ*`
   do
   echo "Processing files in "$FILELIST
 
   echo $FILELIST > tmp.txt
-  sed "s/filelists\/Dec5_VBFZ_//" tmp.txt > tmp2.txt
+  sed "s/filelists\/$QUEUEDIR\/Dec5_VBFZ_//" tmp.txt > tmp2.txt
 
   JOB=MC_`sed "s/\.dat//" tmp2.txt`
 
@@ -76,35 +86,35 @@ for FILELIST in `ls filelists/Dec5_VBFZ*`
 done
 
 #GJets
-#PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Feb1/BKG/
-#for FILELIST in `ls filelists/Feb1_GJets_*`
-#  do
-#  echo "Processing files in "$FILELIST
-#
-#  echo $FILELIST > tmp.txt
-#  sed "s/filelists\/Feb1_GJets_//" tmp.txt > tmp2.txt
-#
-#  JOB=MC_`sed "s/\.dat//" tmp2.txt`
-#
-#  rm tmp.txt tmp2.txt
-#
-#  echo "JOB name = $JOB"
-#
-#  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-#  $JOBSUBMIT $JOBDIR/$JOB.sh
-#
-#done
+PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Feb1/BKG/
+for FILELIST in `ls filelists/$QUEUEDIR/Feb1_GJets_*`
+  do
+  echo "Processing files in "$FILELIST
+
+  echo $FILELIST > tmp.txt
+  sed "s/filelists\/$QUEUEDIR\/Feb1_GJets_//" tmp.txt > tmp2.txt
+
+  JOB=MC_`sed "s/\.dat//" tmp2.txt`
+
+  rm tmp.txt tmp2.txt
+
+  echo "JOB name = $JOB"
+
+  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
+
+done
 
 #Process bkg common with HiggsTautau
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
-for FILELIST in `ls filelists/Dec2_MC_*`
-#for FILELIST in `ls filelists/Dec30_MC_53X_DY*`
+for FILELIST in `ls filelists/$QUEUEDIR/Dec2_MC_*`
+#for FILELIST in `ls filelists/$QUEUEDIR/Dec30_MC_53X_DY*`
   do
   echo "Processing files in "$FILELIST
 
   echo $FILELIST > tmp.txt
 
-  sed "s/filelists\/Dec2_MC_53X_//" tmp.txt > tmp2.txt
+  sed "s/filelists\/$QUEUEDIR\/Dec2_MC_53X_//" tmp.txt > tmp2.txt
   JOB=MC_`sed "s/\.dat//" tmp2.txt`
  
   echo "JOB name = $JOB"
@@ -131,12 +141,12 @@ done
 #QCD from Patrick
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Feb7/BKG/
 
-for FILELIST in `ls filelists/QCD*`
+for FILELIST in `ls filelists/$QUEUEDIR/QCD*`
   do
   echo "Processing files in "$FILELIST
 
   echo $FILELIST > tmp.txt
-  sed "s/filelists\///" tmp.txt > tmp2.txt
+  sed "s/filelists\/$QUEUEDIR\///" tmp.txt > tmp2.txt
 
   JOB=MC_`sed "s/\.dat//" tmp2.txt`
 
@@ -152,12 +162,12 @@ done
 #Other BKG+signal from Patrick
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Feb7/BKG/
 
-for FILELIST in `ls filelists/Feb18_BKG_*`
+for FILELIST in `ls filelists/$QUEUEDIR/Feb18_BKG_*`
   do
   echo "Processing files in "$FILELIST
 
   echo $FILELIST > tmp.txt
-  sed "s/filelists\/Feb18_BKG_//" tmp.txt > tmp2.txt
+  sed "s/filelists\/$QUEUEDIR\/Feb18_BKG_//" tmp.txt > tmp2.txt
 
   JOB=MC_`sed "s/\.dat//" tmp2.txt`
 
@@ -170,11 +180,12 @@ for FILELIST in `ls filelists/Feb18_BKG_*`
 
 done
 
-
+      done
+      
     done
-
+    
   done
-
+  
 done
 
 #if (( "$#" != "2" ))
