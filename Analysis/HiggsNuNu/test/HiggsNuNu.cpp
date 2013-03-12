@@ -31,6 +31,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWJetsPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvJESUncertainty.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -62,7 +63,9 @@ int main(int argc, char* argv[]){
   bool is_embedded;               // true = embedded, false = not an embedded sample
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
-  
+  bool dojessyst;                 // Do Jet Energy Scale Systematic Run
+  bool upordown;                  // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
+
   string mettype;                 // MET input collection to be used
   unsigned signal_region;             // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
@@ -91,7 +94,9 @@ int main(int argc, char* argv[]){
     ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
     ("signal_region",       po::value<unsigned>(&signal_region)->default_value(1))
-    ("met_cut",             po::value<double>(&met_cut)->default_value(130.));
+    ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
+    ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
+    ("upordown",            po::value<bool>(&upordown)->default_value(true));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -108,6 +113,8 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "output" % (output_folder+output_name);
   std::cout << boost::format(param_fmt) % "do_skim" % do_skim;
   if (do_skim) std::cout << boost::format(param_fmt) % "skim_path" % skim_path;
+  std::cout << boost::format(param_fmt) % "dojessyst" % dojessyst;
+  if (dojessyst) std::cout << boost::format(param_fmt) % "upordown" % upordown;
   std::cout << boost::format(param_fmt) % "era" % era_str;
   std::cout << boost::format(param_fmt) % "mc" % mc_str;
   std::cout << boost::format(param_fmt) % "channel" % channel_str;
@@ -362,6 +369,13 @@ int main(int argc, char* argv[]){
   //  .set_reference_label("emtauCandidates")
   //  .set_min_dr(0.5);
 
+  HinvJESUncertainty<PFJet,Met> JESUncertaintyCorrector = HinvJESUncertainty<PFJet,Met>
+    ("JESUncertaintyCorrector")
+    .set_input_label("pfJetsPFlow")
+    .set_met_label(mettype)
+    .set_is_data(is_data)
+    .set_upordown(upordown);
+  
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
     .set_input_label("pfJetsPFlow")
@@ -642,6 +656,9 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&hinvWeights);
 
      //jet modules
+     if(dojessyst==true){
+       analysis.AddModule(&JESUncertaintyCorrector);
+     }
      analysis.AddModule(&jetIDFilter);
      analysis.AddModule(&jetPtEtaFilter);
      analysis.AddModule(&jjPairProducer);
