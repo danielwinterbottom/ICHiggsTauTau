@@ -33,10 +33,15 @@ for METCUT in 130 0 70
       for QUEUEDIR in short medium
 	do
 
-	if (( "$QUEUEDIR" == "medium" ))
+	if [ "$QUEUEDIR" = "medium" ]
 	    then
 	    JOBQUEUE="hepmedium.q"
 	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
+	    echo "Using job-submission: " $JOBSUBMIT
+	else
+	    JOBQUEUE="hepshort.q"
+	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
+	    echo "Using job-submission: " $JOBSUBMIT
 	fi
 
 #Process HiggsNuNu specific backgrounds
