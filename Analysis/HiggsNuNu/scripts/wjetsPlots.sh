@@ -4,10 +4,12 @@ PARAMS=./scripts/Params.dat
 for CHANNEL in nunu enu munu
   do
 
-  for MET in 130 0 70
+  for MET in 130
+# 0 70
     do
 
-    for DOQCD in 0 1 2
+    for DOQCD in 0
+# 1 2
       do
 
       FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
@@ -48,7 +50,7 @@ for CHANNEL in nunu enu munu
     --folder=$FOLDER --plot_dir=$PLOTDIR \
     --plot_name="mt_munu"  --x_axis_label="m_{T}(#mu#nu) (GeV)" \
     --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=300 \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=400 \
     --y_axis_min=0.01 --extra_pad=100 \
     --rebin=20 \
     --norm_bins=false --verbose=false \
@@ -58,7 +60,7 @@ for CHANNEL in nunu enu munu
     --folder=$FOLDER --plot_dir=$PLOTDIR \
     --plot_name="mt_enu"  --x_axis_label="m_{T}(e#nu) (GeV)" \
     --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=300 \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=400 \
     --y_axis_min=0.01 --extra_pad=100 \
     --rebin=10 \
     --norm_bins=false --verbose=false \

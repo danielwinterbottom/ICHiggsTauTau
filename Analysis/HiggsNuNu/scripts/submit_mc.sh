@@ -125,8 +125,10 @@ for FILELIST in `ls filelists/$QUEUEDIR/Dec2_MC_*`
 	do
 	PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
 
-	$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB_$FLAVOUR.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB_$FLAVOUR.log" $JOBDIR/$JOB_$FLAVOUR.sh
-	$JOBSUBMIT $JOBDIR/$JOB_$FLAVOUR.sh
+	WJOB=$JOB"_"$FLAVOUR
+
+	$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+	$JOBSUBMIT $JOBDIR/$WJOB.sh
       done
   else 
       PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
