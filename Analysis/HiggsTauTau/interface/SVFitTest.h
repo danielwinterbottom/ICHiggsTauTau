@@ -56,6 +56,8 @@ class SVFitTest : public ModuleBase {
   // We map from a combined hash of the run,ls,event to a the lepton+met hash and the mass value
   boost::unordered_map<std::size_t, std::pair<std::size_t,double> > mass_map;
   typedef boost::unordered_map<std::size_t, std::pair<std::size_t,double> >::const_iterator mass_map_const_it;
+  // And a similar map from a combined hash of the run,ls,event to a the lepton+met hash and the higgs 4-vector
+  boost::unordered_map<std::size_t, std::pair<std::size_t,Candidate> > p4_map;
  
   CLASS_MEMBER(SVFitTest, ic::channel, channel)
 

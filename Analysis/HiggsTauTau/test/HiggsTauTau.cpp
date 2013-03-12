@@ -64,8 +64,9 @@ int main(int argc, char* argv[]){
   bool is_embedded;               // true = embedded, false = not an embedded sample
   unsigned special_mode;          // 0 = normal processing, > 0 (see below)
   unsigned tau_scale_mode;        // 0 = no shift, 1 = shift down, 2 = shift up
-  unsigned mass_scale_mode;        // 0 = no shift, 1 = nominal, but in TSCALE_DOWN, 2 = shift up, 3 = shift up again, in TSCALE_UP
+  unsigned mass_scale_mode;       // 0 = no shift, 1 = nominal, but in TSCALE_DOWN, 2 = shift up, 3 = shift up again, in TSCALE_UP
   unsigned svfit_mode;            // 0 = not run, 1 = generate jobs, 2 = read-in job output
+  unsigned new_svfit_mode;        // 0 = not run, 1 = generate jobs, 2 = read-in job output
   string svfit_folder;            // Folder containing svfit jobs & output
   string svfit_override;          // Override the svfit results to use
   unsigned ztautau_mode;          // 0 = not run, 1 = select Z->tautau, 2 = select Z->ee and Z->mumu
@@ -130,6 +131,7 @@ int main(int argc, char* argv[]){
       ("tau_scale_mode",      po::value<unsigned>(&tau_scale_mode)->default_value(0))
       ("mass_scale_mode",     po::value<unsigned>(&mass_scale_mode)->default_value(0))
       ("svfit_mode",          po::value<unsigned>(&svfit_mode)->default_value(0))
+      ("new_svfit_mode",      po::value<unsigned>(&new_svfit_mode)->default_value(0))
       ("svfit_folder",        po::value<string>(&svfit_folder)->default_value(""))
       ("svfit_override",      po::value<string>(&svfit_override)->default_value(""))
       ("ztautau_mode",        po::value<unsigned>(&ztautau_mode)->default_value(0))
@@ -836,10 +838,10 @@ int main(int argc, char* argv[]){
   svfitTest
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
-    .set_run_mode(0)
+    .set_run_mode(new_svfit_mode)
     .set_fail_mode(1)
     .set_require_inputs_match(true)
-    .set_split(10000)
+    .set_split(15000)
     .set_dilepton_label("emtauCandidates")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder);

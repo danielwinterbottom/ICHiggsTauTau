@@ -42,6 +42,8 @@ class HTTCategories : public ModuleBase {
     unsigned n_vtx_;
     double m_sv_;
     double m_vis_;
+    double pt_h_;
+    double pt_tt_;
     double mt_1_;
     double pzeta_;
     double pt_1_;

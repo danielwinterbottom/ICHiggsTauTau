@@ -98,12 +98,15 @@ namespace ic {
           uint64_t    event_hash    = 0;
           uint64_t    objects_hash  = 0;
           double      svfit_mass    = 0;
+          Candidate * svfit_vector  = nullptr;
           otree->SetBranchAddress("event_hash"  , &event_hash);
           otree->SetBranchAddress("objects_hash", &objects_hash);
           otree->SetBranchAddress("svfit_mass"  , &svfit_mass);
+          otree->SetBranchAddress("svfit_vector"  , &svfit_vector);
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
-            mass_map[event_hash] = std::make_pair(objects_hash, svfit_mass);
+            // mass_map[event_hash] = std::make_pair(objects_hash, svfit_mass);
+            p4_map[event_hash] = std::make_pair(objects_hash, *svfit_vector);
           }
           ofile->Close();
           delete ofile;
@@ -155,14 +158,16 @@ int SVFitTest::Execute(TreeEvent *event) {
   }
 
   if (run_mode_ == 2) {
-    mass_map_const_it it = mass_map.find(event_hash);
+    // mass_map_const_it it = mass_map.find(event_hash);
+    auto it = p4_map.find(event_hash);
     bool fail_state = false;
-    if (it != mass_map.end()) {
+    if (it != p4_map.end()) {
       if (require_inputs_match_ && it->second.first != objects_hash) {
         std::cout << "Warning, objects hash does not match" << std::endl;
         fail_state = true;
       } else {
-        event->Add("svfitMassTest", it->second.second);
+        event->Add("svfitMass", it->second.second.M());
+        event->Add("svfitHiggs", it->second.second);
       }
     } else {
       fail_state = true;
@@ -177,9 +182,9 @@ int SVFitTest::Execute(TreeEvent *event) {
       } else {
         std::cout << "Calculating mass on-the-fly" << std::endl;
         if (decay_mode_ == 0) {
-          event->Add("svfitMassTest", SVFitService::SVFitMassLepHad(&c1, &c2, &met));
+          event->Add("svfitMass", SVFitService::SVFitMassLepHad(&c1, &c2, &met));
         } else {
-          event->Add("svfitMassTest", SVFitService::SVFitMassLepLep(&c1, &c2, &met));
+          event->Add("svfitMass", SVFitService::SVFitMassLepLep(&c1, &c2, &met));
         }
       }
     }

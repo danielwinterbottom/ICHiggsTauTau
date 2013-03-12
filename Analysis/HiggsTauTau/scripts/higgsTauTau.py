@@ -18,16 +18,19 @@ print "Using job-submission: " + JOBSUBMIT
 print "Using input prefix:   " + PREFIXOVERRIDE
 
 
-SUPPORTED_ERAS_2012 = ['Moriond', 'HCP', 'DOnly']
+SUPPORTED_ERAS_2012 = ['Paper', 'Moriond', 'HCP', 'DOnly']
 SUPPORTED_ERAS_2011 = ['Total']
 SUPPORTED_ERAS 			= [ ] ## Will be assigned from 2011 or 2012
 
-CHANNELS_2012 = ['et', 'mt', 'em']
+CHANNELS_2012 = ['et', 'mt', 'em', 'etmet', 'mtmet']
 CHANNELS_2011 = ['et', 'mt']
 CHANNELS 			= [ ] ## will be assigned from 2011 or 2012
 
 SCALES = ['0', '1', '2']
 
+PRODUCTION_2012 = 'Dec30'
+PRODUCTION_2011 = 'Sept11'
+PRODUCTION = ''
 
 def validate_channel(channel):
 	assert channel in CHANNELS, 'Error, channel %(channel)s duplicated or unrecognised' % vars()
@@ -49,6 +52,9 @@ parser.add_option("--wrapper", dest="wrapper",
 parser.add_option("--submit", dest="submit",
                   help="Specify the job-submission method. The current method is '%(JOBSUBMIT)s'"
                   " Using the --submit option overrides both the default and the environment variable. " % vars())
+
+parser.add_option("-p", "--production", dest="production",
+                  help="Specify the ntuple production to use.  The defaults are '%(PRODUCTION_2012)s' for 2012 and '%(PRODUCTION_2011)s' for 2011" % vars())
 
 parser.add_option("-i","--input_prefix", dest="input",
                   help="Specify the path prefix for the skimmed ntuple input. The current prefix is '%(PREFIXOVERRIDE)s'"
@@ -89,14 +95,17 @@ ERA = options.era
 
 SUPPORTED_ERAS = SUPPORTED_ERAS_2012
 CHANNELS = CHANNELS_2012
-PREFIXDATA="--is_data=1 --input_prefix="+PREFIXOVERRIDE+"/Dec30/Data_53X/"
-PREFIXMC="--is_data=0 --input_prefix="+PREFIXOVERRIDE+"/Dec30/MC_53X/"
+PRODUCTION = PRODUCTION_2012 if options.production == None else options.production
+PREFIXDATA="--is_data=1 --input_prefix="+PREFIXOVERRIDE+"/"+PRODUCTION+"/Data_53X/"
+PREFIXMC="--is_data=0 --input_prefix="+PREFIXOVERRIDE+"/"+PRODUCTION+"/MC_53X/"
 YR='2012'
 if options.do_2011:
 	SUPPORTED_ERAS = SUPPORTED_ERAS_2011
 	CHANNELS = CHANNELS_2011
-	PREFIXDATA="--is_data=1 --input_prefix="+PREFIXOVERRIDE+"/Sept11/Data_42X/"
-	PREFIXMC="--is_data=0 --input_prefix="+PREFIXOVERRIDE+"/Sept11/MC_42X/"
+	PRODUCTION = PRODUCTION_2011 if options.production == None else options.production
+	a = '123' if b else '456'
+	PREFIXDATA="--is_data=1 --input_prefix="+PREFIXOVERRIDE+"/"+PRODUCTION+"/Data_42X/"
+	PREFIXMC="--is_data=0 --input_prefix="+PREFIXOVERRIDE+"/"+PRODUCTION+"/MC_42X/"
 	YR='2011'
 
 ### Do some validation of the input
@@ -124,8 +133,8 @@ for scale in scales:
 CONFIG = 'scripts/%s_%s.cfg' % (ERA, YR)
 print 'Using config: %s'% CONFIG
 
-FILELIST='filelists/Dec30_Data_53X'
-if options.do_2011: FILELIST='filelists/Sept11_Data_42X'
+FILELIST='filelists/'+PRODUCTION+'_Data_53X'
+if options.do_2011: FILELIST='filelists/'+PRODUCTION+'_Data_42X'
 
 if options.data:
 	for ch in channels:
@@ -134,7 +143,7 @@ if options.data:
 			os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s --output_name=%(JOB)s.root &> jobs/%(JOB)s.log" jobs/%(JOB)s.sh' % vars())
 			os.system('%(JOBSUBMIT)s jobs/%(JOB)s.sh' % vars())
 
-		if ch in ['et', 'mt']:
+		if ch in ['et', 'mt', 'etmet', 'mtmet']:
 			for sc in scales:
 				JOB='Embedded_%s_%s' % (ch,YR)
 				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_Embedded_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s '
@@ -165,15 +174,26 @@ if options.data:
 				--special_mode=22 --output_name=%(JOB)s.root &> jobs/Special_22_%(JOB)s.log" jobs/Special_22_%(JOB)s.sh' % vars())
 				os.system('%(JOBSUBMIT)s jobs/Special_22_%(JOB)s.sh' % vars())
 
-				JOB='Data_%s_%s' % (ch,YR)
-				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_25_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
-				--special_mode=23 --output_name=%(JOB)s.root &> jobs/Special_23_%(JOB)s.log" jobs/Special_23_%(JOB)s.sh' % vars())
-				os.system('%(JOBSUBMIT)s jobs/Special_23_%(JOB)s.sh' % vars())
+				if PRODUCTION == 'Feb20':
+					JOB='Data_%s_%s' % (ch,YR)
+					os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_23_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+					--special_mode=23 --output_name=%(JOB)s.root &> jobs/Special_23_%(JOB)s.log" jobs/Special_23_%(JOB)s.sh' % vars())
+					os.system('%(JOBSUBMIT)s jobs/Special_23_%(JOB)s.sh' % vars())
 
-				JOB='Data_%s_%s' % (ch,YR)
-				os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_25_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
-				--special_mode=24 --output_name=%(JOB)s.root &> jobs/Special_24_%(JOB)s.log" jobs/Special_24_%(JOB)s.sh' % vars())
-				os.system('%(JOBSUBMIT)s jobs/Special_24_%(JOB)s.sh' % vars())
+					JOB='Data_%s_%s' % (ch,YR)
+					os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_24_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+					--special_mode=24 --output_name=%(JOB)s.root &> jobs/Special_24_%(JOB)s.log" jobs/Special_24_%(JOB)s.sh' % vars())
+					os.system('%(JOBSUBMIT)s jobs/Special_24_%(JOB)s.sh' % vars())
+				else:
+					JOB='Data_%s_%s' % (ch,YR)
+					os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_25_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+					--special_mode=23 --output_name=%(JOB)s.root &> jobs/Special_23_%(JOB)s.log" jobs/Special_23_%(JOB)s.sh' % vars())
+					os.system('%(JOBSUBMIT)s jobs/Special_23_%(JOB)s.sh' % vars())
+
+					JOB='Data_%s_%s' % (ch,YR)
+					os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_25_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
+					--special_mode=24 --output_name=%(JOB)s.root &> jobs/Special_24_%(JOB)s.log" jobs/Special_24_%(JOB)s.sh' % vars())
+					os.system('%(JOBSUBMIT)s jobs/Special_24_%(JOB)s.sh' % vars())
 
 			if '0' in scales:
 				JOB='Embedded_%s_%s' % (ch,YR)
@@ -194,8 +214,8 @@ if options.data:
 				os.system('%(JOBSUBMIT)s jobs/%(JOB)s-3.sh' % vars())
 
 
-FILELIST='filelists/Dec30_MC_53X'
-if options.do_2011: FILELIST='filelists/Sept11_MC_42X'
+FILELIST='filelists/'+PRODUCTION+'_MC_53X'
+if options.do_2011: FILELIST='filelists/'+PRODUCTION+'_MC_42X'
 
 signal_mc= [
 	'GluGluToHToTauTau_M-110', 
@@ -332,7 +352,7 @@ if options.mc:
 			if options.do_2011: central_samples.remove('TT')
 
 			for sc in scales:
-				if ch in ['et', 'mt']:
+				if ch in ['et', 'mt', 'etmet', 'mtmet']:
 					soups = ['', 'Soup']
 					if options.do_2011: soups.remove('Soup')
 					for sp in soups:	

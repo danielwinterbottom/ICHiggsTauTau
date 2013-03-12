@@ -137,6 +137,13 @@ namespace ic {
       m_sv_ = -9999;
     }
 
+    if (event->Exists("svfitHiggs")) {
+      pt_h_ = event->Get<Candidate>("svfitHiggs").pt();
+    } else {
+      pt_h_ = -9999;
+    }
+
+    pt_tt_ = (ditau->vector() + met->vector()).pt();
     m_vis_ = ditau->M();
 
     // This is the HCP hack for the em channel
@@ -150,6 +157,8 @@ namespace ic {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");
       m_vis_ = m_vis_ * event->Get<double>("mass_scale");
     }
+
+
 
     mt_1_ = MT(lep1, met);
     pzeta_ = PZeta(ditau, met, 0.85);
@@ -458,6 +467,8 @@ namespace ic {
           plots->n_vtx->Fill(n_vtx_, wt_);
           plots->mt_1->Fill(mt_1_, wt_);
           plots->pzeta->Fill(pzeta_, wt_);
+          plots->pt_h->Fill(pt_h_, wt_);
+          plots->pt_tt->Fill(pt_tt_, wt_);
           plots->pt_1->Fill(pt_1_, wt_);
           plots->pt_2->Fill(pt_2_, wt_);
           plots->eta_1->Fill(eta_1_, wt_);
