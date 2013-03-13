@@ -72,10 +72,10 @@ namespace ic {
     Met const* met = event->GetPtr<Met>(met_label_);
     Met const* met_nolep = event->GetPtr<Met>(met_nolep_label_);
 
-    std::vector<Electron*> electrons = event->GetPtrVec<Electron>("electrons");
+    std::vector<Electron*> electrons = event->GetPtrVec<Electron>(electrons_label_);
     std::sort(electrons.begin(), electrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
-    std::vector<Muon*> muons = event->GetPtrVec<Muon>("muonsPFlow");
+    std::vector<Muon*> muons = event->GetPtrVec<Muon>(muons_label_);
     std::sort(muons.begin(), muons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     
     // Define event properties
