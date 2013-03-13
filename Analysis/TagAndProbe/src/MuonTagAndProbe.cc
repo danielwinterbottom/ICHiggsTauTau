@@ -154,7 +154,7 @@ namespace ic {
     if(mode_==4)
     {    
         mutau_obj_label = "triggerObjectsIsoMu8LooseTau20L1ETM26";
-        mutau_filter = "hltL3fL1sMu7Eta2p1L1f0L2f7QL3Filtered8Q";
+        mutau_filter = "hltL3crIsoL1sMu7Eta2p1L1f0L2f7QL3f8QL3crIsoRhoFiltered0p15";
     }
 
     //set tag and probe trigger names and filter labels
@@ -252,14 +252,14 @@ namespace ic {
     }
     else hasL1MET=true;
     */
-    std::string filter="hltL1sL1IsoEG12erETM36";
+    std::string filter="hltL1sL1Mu7erETM26";
     std::size_t hash = CityHash64(filter);
     if(data_)
     {
         for (unsigned i = 0; i < mutau_objs.size(); ++i)
         {
             std::vector<std::size_t> const& labels = mutau_objs[i]->filters();
-            if (std::find(labels.begin(),labels.end(), hash) == labels.end()) hasL1MET=true;
+            if (std::find(labels.begin(),labels.end(), hash) != labels.end()) hasL1MET=true;
         }
     }
     else hasL1MET=true;

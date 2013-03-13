@@ -143,8 +143,8 @@ namespace ic {
     }
     if(mode_==4)
     {    
-        etau_obj_label = "triggerObjectsIsoMu8LooseTau20L1ETM26";
-        etau_filter = "hltL3fL1sMu7Eta2p1L1f0L2f7QL3Filtered8Q";
+        etau_obj_label = "triggerObjectsEle13LooseTau20L1ETM36";
+        etau_filter = "hltEle13WP90RhoTrackIsoFilter";
     }
 
     //set tag and probe trigger names and filter labels
@@ -260,7 +260,7 @@ namespace ic {
         for (unsigned i = 0; i < etau_objs.size(); ++i)
         {
             std::vector<std::size_t> const& labels = etau_objs[i]->filters();
-            if (std::find(labels.begin(),labels.end(), hash) == labels.end()) hasL1MET=true;
+            if (std::find(labels.begin(),labels.end(), hash) != labels.end()) hasL1MET=true;
         }
     }
     else hasL1MET=true;
