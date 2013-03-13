@@ -151,6 +151,10 @@ int main(int argc, char* argv[]){
     output_folder += "TSCALE_UP/";
   }
 
+  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
+    era = era::data_2012_donly;
+  }
+
 
   std::cout << "**** HiggsTauTau Analysis *****" << std::endl;
   string param_fmt = "%-25s %-40s\n";
@@ -755,6 +759,7 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_channel(channel)
     .set_era(era)
+    .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label);
   if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);

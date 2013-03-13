@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_Module_HTTCategories_h
-#define ICHiggsTauTau_Module_HTTCategories_h
+#ifndef ICHiggsTauTau_Module_TauIDCategories_h
+#define ICHiggsTauTau_Module_TauIDCategories_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -12,18 +12,18 @@
 
 namespace ic {
 
-class HTTCategories : public ModuleBase {
+class TauIDCategories : public ModuleBase {
 
  private:
   std::string jets_label_;
-  CLASS_MEMBER(HTTCategories, std::string, ditau_label)
-  CLASS_MEMBER(HTTCategories, std::string, met_label)
-  CLASS_MEMBER(HTTCategories, double, mass_shift)
-  CLASS_MEMBER(HTTCategories, ic::channel, channel)
-  CLASS_MEMBER(HTTCategories, ic::era, era)
-  CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
-  // CLASS_MEMBER(HTTCategories, bool, distinguish_os)
-  CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
+  CLASS_MEMBER(TauIDCategories, std::string, ditau_label)
+  CLASS_MEMBER(TauIDCategories, std::string, met_label)
+  CLASS_MEMBER(TauIDCategories, double, mass_shift)
+  CLASS_MEMBER(TauIDCategories, ic::channel, channel)
+  CLASS_MEMBER(TauIDCategories, ic::era, era)
+  CLASS_MEMBER(TauIDCategories, ic::strategy, strategy)
+  // CLASS_MEMBER(TauIDCategories, bool, distinguish_os)
+  CLASS_MEMBER(TauIDCategories, fwlite::TFileService*, fs)
 
   std::map<std::string, bool> categories_;
   std::map<std::string, bool> selections_;
@@ -82,8 +82,8 @@ class HTTCategories : public ModuleBase {
     // Other VBF MVA variables?
 
  public:
-  HTTCategories(std::string const& name);
-  virtual ~HTTCategories();
+  TauIDCategories(std::string const& name);
+  virtual ~TauIDCategories();
 
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);

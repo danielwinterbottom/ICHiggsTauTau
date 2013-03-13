@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauIDCategories.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
@@ -8,7 +8,7 @@
 
 namespace ic {
 
-  HTTCategories::HTTCategories(std::string const& name) : ModuleBase(name), 
+  TauIDCategories::TauIDCategories(std::string const& name) : ModuleBase(name), 
       channel_(channel::et), 
       era_(era::data_2012_moriond),
       strategy_(strategy::paper2013) {
@@ -18,20 +18,20 @@ namespace ic {
     fs_ = NULL;
   }
 
-  HTTCategories::~HTTCategories() {
+  TauIDCategories::~TauIDCategories() {
     ;
   }
 
-  void HTTCategories::InitSelection(std::string const& selection) {
+  void TauIDCategories::InitSelection(std::string const& selection) {
     selections_[selection] = false;
   }
   
-  void HTTCategories::InitCategory(std::string const& category) {
+  void TauIDCategories::InitCategory(std::string const& category) {
     categories_[category] = false;
     InitMassPlots(category);
   }
 
-  int HTTCategories::PreAnalysis() {
+  int TauIDCategories::PreAnalysis() {
     std::cout << "** PreAnalysis Info for HTT Categories **" << std::endl;
     if (fs_) {
       std::cout << "Channel: " << Channel2String(channel_) << std::endl;
@@ -98,7 +98,7 @@ namespace ic {
     return 0;
   }
 
-  int HTTCategories::Execute(TreeEvent *event) {
+  int TauIDCategories::Execute(TreeEvent *event) {
 
     Reset();
 
@@ -386,31 +386,31 @@ namespace ic {
     return 0;
   }
 
-  bool HTTCategories::PassesCategory(std::string const& category) const {
+  bool TauIDCategories::PassesCategory(std::string const& category) const {
     std::map<std::string, bool>::const_iterator it = categories_.find(category);
     if (it != categories_.end()) {
       return it->second;
     } else {
-      std::cerr << "Error in HTTCategories::PassesCategory: No category registered with label " << category << std::endl;
+      std::cerr << "Error in TauIDCategories::PassesCategory: No category registered with label " << category << std::endl;
       throw;
       return false;
     }
   }
 
 
-  void HTTCategories::InitMassPlots(std::string const& category) {
+  void TauIDCategories::InitMassPlots(std::string const& category) {
     for (std::map<std::string, bool>::const_iterator it = selections_.begin(); it != selections_.end(); ++it) {
       massplots_[category+"_"+it->first] = new MassPlots(fs_->mkdir(category+"_"+it->first));
     }
 
   }
-  void HTTCategories::InitCoreControlPlots(std::string const& category) {
+  void TauIDCategories::InitCoreControlPlots(std::string const& category) {
     for (std::map<std::string, bool>::const_iterator it = selections_.begin(); it != selections_.end(); ++it) {
       controlplots_[category+"_"+it->first] = new CoreControlPlots(fs_->mkdir(category+"_"+it->first));
     }
   }
 
-  void HTTCategories::Reset() {
+  void TauIDCategories::Reset() {
     for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
       it->second = false;
     }
@@ -419,29 +419,29 @@ namespace ic {
     }
   }
 
-  void HTTCategories::SetPassSelection(std::string const& selection) {
+  void TauIDCategories::SetPassSelection(std::string const& selection) {
     std::map<std::string, bool>::iterator it = selections_.find(selection);
     if (it != selections_.end()) {
       it->second = true;
     } else {
-      std::cerr << "Error in HTTCategories::SetPassSelection: No selection registered with label " << selection << std::endl;
+      std::cerr << "Error in TauIDCategories::SetPassSelection: No selection registered with label " << selection << std::endl;
       throw;
     }
   }
 
-  void HTTCategories::SetPassCategory(std::string const& category) {
+  void TauIDCategories::SetPassCategory(std::string const& category) {
     std::map<std::string, bool>::iterator it = categories_.find(category);
     if (it != categories_.end()) {
       it->second = true;
       FillMassPlots(category);
       FillYields(category);
     } else {
-      std::cerr << "Error in HTTCategories::SetPassCategory: No category registered with label " << category << std::endl;
+      std::cerr << "Error in TauIDCategories::SetPassCategory: No category registered with label " << category << std::endl;
       throw;
     }
   }
 
-  void HTTCategories::FillMassPlots(std::string const& category) {
+  void TauIDCategories::FillMassPlots(std::string const& category) {
     for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
       if (it->second) {
         std::map<std::string, MassPlots*>::iterator p_it = massplots_.find(category+"_"+it->first);
@@ -462,7 +462,7 @@ namespace ic {
     }
   }
 
-  void HTTCategories::FillYields(std::string const& category) {
+  void TauIDCategories::FillYields(std::string const& category) {
     for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
       if (it->second) {
         yields_[category+"_"+it->first] = yields_[category+"_"+it->first] + wt_;
@@ -471,7 +471,7 @@ namespace ic {
   }
 
 
-  void HTTCategories::FillCoreControlPlots(std::string const& category) {
+  void TauIDCategories::FillCoreControlPlots(std::string const& category) {
     for (std::map<std::string, bool>::iterator it = selections_.begin(); it != selections_.end(); ++it) {
       if (it->second) {
         std::map<std::string, CoreControlPlots*>::iterator p_it = controlplots_.find(category+"_"+it->first);
@@ -521,7 +521,7 @@ namespace ic {
 
 
 
-  int HTTCategories::PostAnalysis() {
+  int TauIDCategories::PostAnalysis() {
     std::cout << "** Post-Analysis Info for HTT Selection **" << std::endl;
     std::vector<std::string> print_selections;
     print_selections.push_back("os_sel");
@@ -553,7 +553,7 @@ namespace ic {
     return 0;
   }
 
-  void HTTCategories::PrintInfo() {
+  void TauIDCategories::PrintInfo() {
     ;
   }
 }

@@ -31,8 +31,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauIDCategories.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauIDTriggerFilter.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -337,17 +337,11 @@ int main(int argc, char* argv[]){
     .set_mc(&mc_pu)
     .set_print_weights(false);
 
-  // HTTTriggerFilter httTriggerFilter = HTTTriggerFilter("HTTTriggerFilter")
-  //   .set_channel(channel)
-  //   .set_mc(mc)
-  //   .set_is_data(is_data)
-  //   .set_pair_label("emtauCandidates");
-
-  // TauIDTriggerFilter tauIDTriggerFilter = TauIDTriggerFilter("TauIDTriggerFilter")
-  //   .set_channel(channel)
-  //   .set_mc(mc)
-  //   .set_is_data(is_data)
-  //   .set_pair_label("emtauCandidates");
+  TauIDTriggerFilter tauIDTriggerFilter = TauIDTriggerFilter("TauIDTriggerFilter")
+    .set_channel(channel)
+    .set_mc(mc)
+    .set_is_data(is_data)
+    .set_pair_label("emtauCandidates");
 
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
     .set_input_label("genParticles")
@@ -692,12 +686,12 @@ int main(int argc, char* argv[]){
     .set_do_top_factors(false)
     .set_do_btag_weight(false);
   if (!is_data) {
-    httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
+    httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     httWeights.set_do_btag_weight(true);
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::mt || channel == channel::mtmet) ) httWeights.set_do_mtau_fakerate(true);
-  if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
+  if (is_embedded) httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
 
@@ -740,25 +734,15 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Category Modules
   // ------------------------------------------------------------------------------------  
-  // HTTCategories httCategories = HTTCategories("HTTCategories")
-  //   .set_fs(fs)
-  //   .set_channel(channel)
-  //   .set_era(era)
-  //   .set_ditau_label("emtauCandidates")
-  //   .set_met_label(met_label);
-  // if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
-  // if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
-  // if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
-
-  // TauIDCategories tauIDCategories = TauIDCategories("TauIDCategories")
-  //   .set_fs(fs)
-  //   .set_channel(channel)
-  //   .set_era(era)
-  //   .set_ditau_label("emtauCandidates")
-  //   .set_met_label(met_label);
-  // if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
-  // if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
-  // if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
+  TauIDCategories tauIDCategories = TauIDCategories("TauIDCategories")
+    .set_fs(fs)
+    .set_channel(channel)
+    .set_era(era)
+    .set_ditau_label("emtauCandidates")
+    .set_met_label(met_label);
+  if (mass_scale_mode == 1) tauIDCategories.set_mass_shift(1.00);
+  if (mass_scale_mode == 2) tauIDCategories.set_mass_shift(1.01);
+  if (mass_scale_mode == 3) tauIDCategories.set_mass_shift(1.02);
 
 
   HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
@@ -867,7 +851,7 @@ int main(int argc, char* argv[]){
   }
 
   if (!do_skim) {
-    // if (!is_embedded)             analysis.AddModule(&httTriggerFilter);
+    if (!is_embedded)             analysis.AddModule(&tauIDTriggerFilter);
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
     //                            analysis.AddModule(&jetEnergyCorrections);
@@ -883,7 +867,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&httWeights);
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&httSync);
-    // if (!quark_gluon_study)       analysis.AddModule(&httCategories);
+    if (!quark_gluon_study)       analysis.AddModule(&tauIDCategories);
 
   }
 
