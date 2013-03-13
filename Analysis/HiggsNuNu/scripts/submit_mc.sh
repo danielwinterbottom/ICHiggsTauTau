@@ -17,7 +17,7 @@ CONFIG=scripts/DefaultConfigMC.cfg
 
 for METCUT in 130 # 0 70
   do
-  for DOQCD in 0 #1 
+  for DOQCD in 0 1 2 
     do
     for CHANNEL in nunu enu munu
       do
