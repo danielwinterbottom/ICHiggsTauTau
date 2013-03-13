@@ -20,17 +20,34 @@ for METCUT in 130 0 70
     do
     for CHANNEL in nunu enu munu
       do
-    
-      JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
-      OUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
-      mkdir -p $JOBDIR
-      mkdir -p $OUTDIR
-      
-      
+      for SYST in central #JESUP JESDOWN
+        do
+        SYSTOPTIONS="--dojessyst=false"
+        JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+        OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
+	
+        if [ "$SYST" = "JESUP" ]
+            then
+            SYSTOPTIONS="--dojessyst=true --upordown=true"
+            JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESUP
+            OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESUP
+        fi
+	
+        if [ "$SYST" = "JESDOWN" ]
+            then
+            SYSTOPTIONS="--dojessyst=true --upordown=false"
+            JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESDOWN
+            OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESDOWN
+        fi
+	
+	mkdir -p $JOBDIR
+	mkdir -p $OUTDIR
+	
+	
 #Process W+jets skimmed files
-      for FLAVOUR in enu munu taunu
-	do
-	PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
+	for FLAVOUR in enu munu taunu
+	  do
+	  PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
 	for FILELIST in `ls filelists/Dec2_MC_53X_W*ToLNu*`
 	  do
 	  echo "Processing files in "$FILELIST
@@ -44,9 +61,11 @@ for METCUT in 130 0 70
 	  
 	  echo "JOB name = $JOB"
 	  echo "OUTPUT dir = $OUTDIR"
-	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTDIR --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTDIR --met_cut=$METCUT --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	  $JOBSUBMIT $JOBDIR/$JOB.sh
 	  
+	done
+	
 	done
 	
       done
@@ -54,9 +73,8 @@ for METCUT in 130 0 70
     done
     
   done
-
+  
 done
-
 
 #if (( "$#" != "2" ))
 #then
