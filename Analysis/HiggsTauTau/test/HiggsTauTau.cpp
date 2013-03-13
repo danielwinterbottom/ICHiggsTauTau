@@ -14,13 +14,11 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CopyCollection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/IDOverlapFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPairSelector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTWeights.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTMetStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTSync.h"
@@ -78,20 +76,6 @@ int main(int argc, char* argv[]){
   bool moriond_tau_scale;         // Use new central tau scale shifts
   bool large_tscale_shift;        // Shift tau energy scale by +/- 6% instead of 3%
 
-  bool do_vbf_mva = true;
-  // bool disable_mc_trigger = false;
-  // bool disable_reweighting = false;
-  // bool do_btag_weight = false;
-
-  // Special Mode 2  Relaxed Selection Trigger   Weights 
-  // Special Mode 3  QCD Selection Trigger Weights 
-  // Special Mode 6  QCD Selection Trigger Weights Lower vbf pt to 20 GeV, lower vbf mva to 0.0
-  // Special Mode 7  Full Selection  Trigger Weights mT sideband: 60-120 GeV
-  // Special Mode 8  Full Selection  Trigger Weights twojet requires pt 20 GeV jets, eta < 4.7
-  // Special Mode 9  Full Selection  Trigger Weights npt20jets >= 1, npt30jets <= 1
-  // Speical Mode 10 Relaxed Selection Trigger Weights npt20jets >= 1, npt30jets <= 1
-  // Special Mode 18 - relax tau e rejection for ZL shape
-
   /* Skims/notes needed for em channel
   // Speical Mode 20 Fake Electron for emu
   // Speical Mode 21 Fake Muon for emu 
@@ -142,16 +126,9 @@ int main(int argc, char* argv[]){
       ("moriond_tau_scale",   po::value<bool>(&moriond_tau_scale)->default_value(false))
       ("large_tscale_shift",  po::value<bool>(&large_tscale_shift)->default_value(false))
       ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""));
-      // ("do_vbf_mva", po::value<bool>(&do_vbf_mva)->default_value(true), "0=disabled, 1 = enabled")
-      // ("scan_trigger", po::value<bool>(&scan_trigger)->default_value(false), "true/false")
-      // ("disable_mc_trigger", po::value<bool>(&disable_mc_trigger)->default_value(false), "true/false")
-      // ("disable_reweighting", po::value<bool>(&disable_reweighting)->default_value(false), "true/false")
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
-
-  // do_btag_weight = true;
-  // if (do_skim) disable_reweighting = true;
 
   // Some options must now be re-configured based on other options
   ic::strategy strategy = String2Strategy(strategy_str);
@@ -174,6 +151,7 @@ int main(int argc, char* argv[]){
     output_folder += "TSCALE_UP/";
   }
 
+
   std::cout << "**** HiggsTauTau Analysis *****" << std::endl;
   string param_fmt = "%-25s %-40s\n";
   std::cout << boost::format(param_fmt) % "max_events" % max_events;
@@ -190,6 +168,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "tau_scale_mode" % tau_scale_mode;
   std::cout << boost::format(param_fmt) % "mass_scale_mode" % mass_scale_mode;
   std::cout << boost::format(param_fmt) % "svfit_mode" % svfit_mode;
+  std::cout << boost::format(param_fmt) % "new_svfit_mode" % new_svfit_mode;
   if (svfit_mode > 0) {
     std::cout << boost::format(param_fmt) % "svfit_folder" % svfit_folder;
     std::cout << boost::format(param_fmt) % "svfit_override" % svfit_override;
@@ -215,33 +194,12 @@ int main(int argc, char* argv[]){
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
   
   // Setup Lepton kinematic cuts
-  std::string lep1_label, lep2_label, lep1sel_label, lep2sel_label, met_label;
-  double elec_dz, muon_dz, elec_dxy, muon_dxy, tau_dz, mt_max_selection;
+  std::string met_label;
+  double elec_dz, muon_dz, elec_dxy, muon_dxy, tau_dz;
   double elec_pt, elec_eta, muon_pt, muon_eta, tau_pt, tau_eta;
-
-  if (strategy == strategy::ichep2012) {
-    met_label = "pfMet";
-    mt_max_selection = 40.0;
-    do_vbf_mva = true;
-  }
-  if (strategy == strategy::hcp2012) {
-    met_label = "pfMVAMet";
-    mt_max_selection = 20.0;
-    do_vbf_mva = false;
-
-  }
-  if (strategy == strategy::moriond2013) {
-    met_label = "pfMVAMet";
-    mt_max_selection = 20.0;
-    do_vbf_mva = false;
-
-  }
+  met_label = "pfMVAMet";
 
   if (channel == channel::et || channel == channel::etmet) {
-    lep1_label = "electrons";
-    lep1sel_label = "selElectrons";
-    lep2_label = "taus";
-    lep2sel_label = "taus";
     elec_dz = 0.2;
     elec_dxy = 0.045;
     muon_dz = 0.2;
@@ -261,14 +219,9 @@ int main(int argc, char* argv[]){
     tau_pt = 20.0;
     tau_eta = 2.3;
     if (channel == channel::etmet) elec_pt = 13.0;
-
   }
 
   if (channel == channel::mt || channel == channel::mtmet) {
-    lep1_label = "muonsPFlow";
-    lep1sel_label = "selMuons";
-    lep2_label = "taus";
-    lep2sel_label = "taus";
     elec_dz = 0.2;
     elec_dxy = 0.045;
     muon_dz = 0.2;
@@ -291,10 +244,6 @@ int main(int argc, char* argv[]){
   }
 
   if (channel == channel::em) {
-    lep1_label = "electrons";
-    lep1sel_label = "selElectrons";
-    lep2_label = "muonsPFlow";
-    lep2sel_label = "selMuons";
     elec_dz = 0.1;
     elec_dxy = 0.02;
     muon_dz = 0.1;
@@ -322,7 +271,6 @@ int main(int argc, char* argv[]){
     }   
   }
 
-
   // Lower pt thresholds on electrons and taus when skimming, 
   // to allow for energy scale shifts later
   if (do_skim) {
@@ -342,8 +290,6 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "tau_pt" % tau_pt;
   std::cout << boost::format(param_fmt) % "tau_eta" % tau_eta;
   std::cout << boost::format(param_fmt) % "tau_dz" % tau_dz;
-  std::cout << boost::format(param_fmt) % "tau_dz" % tau_dz;
-  std::cout << boost::format(param_fmt) % "mt_max_selection" % mt_max_selection;
 
   // Create analysis object
   ic::AnalysisBase analysis(
@@ -361,13 +307,19 @@ int main(int argc, char* argv[]){
   // Misc Modules
   // ------------------------------------------------------------------------------------
 
-  string data_json;
-  if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
-  if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
-  if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
-  if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond_no_recovery.txt";
-  if (era == era::data_2012_moriond && channel == channel::em) data_json   =  "data/json/data_2012_moriond_valentina.txt";
-  if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
+  string data_json = "";
+  if (era == era::data_2011)              data_json = "data/json/json_data_2011_et_mt.txt";
+  if (era == era::data_2012_hcp)          data_json = "data/json/data_2012_hcp.txt";
+  if (era == era::data_2012_moriond) {
+    if (strategy == strategy::hcp2012 || strategy == strategy::moriond2013) {
+                                          data_json = "data/json/data_2012_moriond_no_recovery.txt";
+      if (channel == channel::em)         data_json = "data/json/data_2012_moriond_valentina.txt";
+    }
+    if (strategy == strategy::paper2013)  data_json = "data/json/data_2012_moriond_final.txt";
+  }
+  if (era == era::data_2012_donly)        data_json = "data/json/data_2012_donly.txt";
+
+
   LumiMask lumiMask = LumiMask("LumiMask")
     .set_produce_output_jsons("")
     .set_input_file(data_json);
@@ -382,7 +334,6 @@ int main(int argc, char* argv[]){
   if (mc == mc::summer12_53X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
   string data_pu_file;
   if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
-  if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
   if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
   if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
   if (era == era::data_2012_donly) data_pu_file     =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
@@ -415,7 +366,8 @@ int main(int argc, char* argv[]){
 
   double mssm_mass = 0.0;
   bool do_mass_filter = false;
-  if ((output_name.find("SUSYGluGluToHToTauTau") != output_name.npos) || (output_name.find("SUSYBBHToTauTau") != output_name.npos)) {
+  if ((output_name.find("SUSYGluGluToHToTauTau") != output_name.npos) || 
+      (output_name.find("SUSYBBHToTauTau") != output_name.npos)) {
     std::size_t pos = output_name.find("_M-");
     if (pos != output_name.npos) {
       std::string mass_string;
@@ -442,7 +394,6 @@ int main(int argc, char* argv[]){
 
 
   string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";
-
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
   ("JetEnergyCorrections")
   .set_input_label("pfJetsPFlow")
@@ -469,9 +420,9 @@ int main(int argc, char* argv[]){
   boost::function<bool (Electron const*)> elec_idiso_func;
   if (special_mode == 20 || special_mode == 22) {
     elec_idiso_func = bind(HttEMuFakeElectron, _1);
-  } else if (special_mode == 2 || special_mode == 5 || special_mode == 12) {
+  } else if (special_mode == 2) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
-  } else if (special_mode == 3 || special_mode == 6 || special_mode == 10) {
+  } else if (special_mode == 3) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
   } else if (special_mode == 23) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
@@ -481,9 +432,9 @@ int main(int argc, char* argv[]){
     elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
   } else {
     if (channel == channel::em) {
-      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+      elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
     } else {
-      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
+      elec_idiso_func = bind(ElectronHTTId, _1, true) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
     }
   }
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>("SelElectronFilter")
@@ -694,9 +645,6 @@ int main(int argc, char* argv[]){
     .set_max(999);    
   if (channel == channel::em) pairFilter
     .set_predicate( (bind(PairOneWithPt, _1, 20.0)) && (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.3));
- //if (channel == channel::em && (special_mode == 25 || special_mode == 20 || special_mode == 21 || special_mode == 22 ) ) pairFilter
- //   .set_predicate( (bind(PairOneWithPt, _1, 20.0) ) );
-
   if (channel == channel::mtmet) pairFilter
     .set_predicate( (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.5) && (bind(&CompositeCandidate::PtOf, _1, "lepton1") <= 20.0));
   if (channel == channel::etmet) pairFilter
@@ -721,8 +669,6 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------ 
-
-
   HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
     .set_fs(fs)
@@ -765,7 +711,7 @@ int main(int argc, char* argv[]){
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
-  //if (outname.find("TTJets") != outname.npos && mode == 2 && era == 0) httWeights.set_do_top_factors(true);
+
   if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
     httWeights.set_do_w_soup(true);
     if (mc == mc::fall11_42X) {
@@ -802,12 +748,6 @@ int main(int argc, char* argv[]){
     ("QuarkGluonDiscriminatorStudy")
   .set_fs(fs);  
   
-  // HTTMetStudy httMetStudy = HTTMetStudy
-  //   ("HTTMetStudy")
-  //   .set_fs(fs)
-  //   .set_mode(mode)
-  //   .set_met_label(met_label);
-
   // ------------------------------------------------------------------------------------
   // Category Modules
   // ------------------------------------------------------------------------------------  
@@ -824,10 +764,14 @@ int main(int argc, char* argv[]){
 
   HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
-  if (strategy == strategy::ichep2012) httSync.set_jet_eta(5.0);
 
   SVFit svfit("SVFit");
-  svfit.set_outname(output_name).set_op(svfit_mode).set_dilepton_label("emtauCandidates").set_met_label(met_label).set_channel(channel);
+  svfit
+    .set_outname(output_name)
+    .set_op(svfit_mode)
+    .set_dilepton_label("emtauCandidates")
+    .set_met_label(met_label)
+    .set_channel(channel);
   svfit.set_fullpath(svfit_folder);
   svfit.set_split(4000);
   if (svfit_override != "") {
@@ -936,19 +880,15 @@ int main(int argc, char* argv[]){
 
 
                                   analysis.AddModule(&httWeights);
-    if(quark_gluon_study)         analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
+    if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&httSync);
-    //                            analysis.AddModule(&httSelection);
-    //                            analysis.AddModule(&httMetStudy);
-    //                            analysis.AddModule(&jetVtxStudy);
-    if(!quark_gluon_study)        analysis.AddModule(&httCategories);
+    if (!quark_gluon_study)       analysis.AddModule(&httCategories);
 
   }
 
   if (do_skim) {
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
-  // Run analysis
 
 
   analysis.RunAnalysis();

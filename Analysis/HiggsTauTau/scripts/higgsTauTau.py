@@ -103,7 +103,6 @@ if options.do_2011:
 	SUPPORTED_ERAS = SUPPORTED_ERAS_2011
 	CHANNELS = CHANNELS_2011
 	PRODUCTION = PRODUCTION_2011 if options.production == None else options.production
-	a = '123' if b else '456'
 	PREFIXDATA="--is_data=1 --input_prefix="+PREFIXOVERRIDE+"/"+PRODUCTION+"/Data_42X/"
 	PREFIXMC="--is_data=0 --input_prefix="+PREFIXOVERRIDE+"/"+PRODUCTION+"/MC_42X/"
 	YR='2011'

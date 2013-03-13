@@ -40,10 +40,7 @@ namespace ic {
     std::string process_file;
     std::string data_file;
     std::string mc_file;
-    if (strategy_ == strategy::ichep2012) {
-      std::cout << "Recoil corrections not used for this strategy, module disabled." << std::endl;
-      return 0;
-    } else if (strategy_ == strategy::hcp2012) {
+    if (strategy_ == strategy::hcp2012) {
       if (mc_ == mc::summer12_53X) {
         data_file = "data/recoilfits/recoilfit_datamm53X_20pv_njet.root";
         mc_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";

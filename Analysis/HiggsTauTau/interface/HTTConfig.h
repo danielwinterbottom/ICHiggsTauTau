@@ -36,7 +36,6 @@ public:
 
 struct strategy_def {
 	enum type {
-		ichep2012,			// ICHEP 2012 anaylsis strategy, e.g. PF MET, VBF MVA
 		hcp2012,				// HCP 2012 strategy, MVA MET, cut-based VBF
 		moriond2013,		// Moriond 2013 strategy, currently same as HCP
 		paper2013				// Strategy for the final paper in 2013
@@ -46,7 +45,6 @@ typedef safe_enum<strategy_def> strategy;
 
 inline std::string Strategy2String(strategy const& in) {
 	static std::map<strategy, std::string> conv = boost::assign::map_list_of
-		(strategy::ichep2012, 	"ichep2012")
 		(strategy::hcp2012, 		"hcp2012")
 		(strategy::moriond2013, "moriond2013")
 		(strategy::paper2013, 	"paper2013");
@@ -60,9 +58,8 @@ inline std::string Strategy2String(strategy const& in) {
 
 inline strategy String2Strategy(std::string const& in) {
 	static std::map<std::string, strategy> conv = boost::assign::map_list_of
-	("ichep2012", 	strategy::ichep2012)
 	("hcp2012", 		strategy::hcp2012)
-	("moriond2013", strategy::moriond2013);
+	("moriond2013", strategy::moriond2013)
 	("paper2013", 	strategy::paper2013);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
@@ -75,7 +72,6 @@ inline strategy String2Strategy(std::string const& in) {
 struct era_def {
 	enum type {
 		data_2011,				// Entire 2011 dataset, mixture of prompt and re-reco
-		data_2012_ichep,	// ICHEP dataset for 2012: A+B re-reco
 		data_2012_hcp,		// HCP dataset for 2012: A+B re-reco C prompt
 		data_2012_moriond,// Moriond dataset for 2012: A+B re-reco, C+D prompt
 		data_2012_donly 	// 2012D prompt only
@@ -87,7 +83,6 @@ typedef safe_enum<era_def> era;
 inline std::string Era2String(era const& in) {
 	static std::map<era, std::string> conv = boost::assign::map_list_of
 		(era::data_2011, 					"data_2011")
-		(era::data_2012_ichep, 		"data_2012_ichep")
 		(era::data_2012_hcp, 			"data_2012_hcp")
 		(era::data_2012_moriond, 	"data_2012_moriond")
 		(era::data_2012_donly, 		"data_2012_donly");
@@ -102,7 +97,6 @@ inline std::string Era2String(era const& in) {
 inline era String2Era(std::string const& in) {
 	static std::map<std::string, era> conv = boost::assign::map_list_of
 	("data_2011",					era::data_2011)
-	("data_2012_ichep", 	era::data_2012_ichep)
 	("data_2012_hcp", 		era::data_2012_hcp)
 	("data_2012_moriond", era::data_2012_moriond)
 	("data_2012_donly", 	era::data_2012_donly);

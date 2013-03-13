@@ -72,7 +72,7 @@ namespace ic {
     hist_muTauSF2011PFTau15MC = (TH2D*)gDirectory->Get("LooseIsoPFTau15PtEtaMC");
 
     if (do_emu_e_fakerates_ || do_emu_m_fakerates_) {
-      if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
+      if (era_ == era::data_2012_hcp) {
         ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_12ifb.root");
         MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_12ifb.root");
       } else if (era_ == era::data_2012_donly || era_ == era::data_2012_moriond) {
@@ -157,15 +157,14 @@ namespace ic {
     if (do_top_factors_) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-      if (era_ >= era::data_2012_ichep) {
-        double top_factor = 1.0; // For 0-jet we'll scale by 0.97 in the datacard creation
-        if (jets.size() == 1) top_factor = 0.97938; // 0.097938 * 0.97 = 0.95
-        if (jets.size() > 1) top_factor = 0.90721; // 0.90721 * 0.97 = 0.88
-        eventInfo->set_weight("top_factor", top_factor);
-      }
+      // if (era_ >= era::data_2012_ichep) {
+      //   double top_factor = 1.0; // For 0-jet we'll scale by 0.97 in the datacard creation
+      //   if (jets.size() == 1) top_factor = 0.97938; // 0.097938 * 0.97 = 0.95
+      //   if (jets.size() > 1) top_factor = 0.90721; // 0.90721 * 0.97 = 0.88
+      //   eventInfo->set_weight("top_factor", top_factor);
+      // }
     }
     
-
     if (do_btag_weight_) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
@@ -215,10 +214,6 @@ namespace ic {
             emc22ABC   = Efficiency(e_pt, 20.9985, 0.002918, 0.000034313, 1.41479, 1.06506); // MC Reweighted to ABC
             emc22ABCD  = Efficiency(e_pt, 22.1217, 1.34054, 1.8885, 1.01855, 4.7241); // MC Reweighted to ABCD
           }
-          if (era_ == era::data_2012_ichep) {
-            ele_trg = (0.14 * edata20A) + (0.86 * edata22B);
-            ele_trg_mc = emc22ABC;
-          }
           if (era_ == era::data_2012_hcp) {
             ele_trg = (0.061 * edata20A) + (0.373 * edata22B) + (0.566 * edata22C);
             ele_trg_mc = emc22ABC;
@@ -256,10 +251,6 @@ namespace ic {
             tmc20AB     = Efficiency(t_pt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
             tmc20ABC    = Efficiency(t_pt, 18.29028052, 1.56239255, 11.03605631, 155.89290151, 0.85683995);
             tmcABCD     = Efficiency(t_pt, 18.257217,   1.632443,  9.283116,  40.219585,  0.858643);
-          }
-          if (era_ == era::data_2012_ichep) {
-            tau_trg = (0.14 * tdata20A) + (0.86 * tdata20B);
-            tau_trg_mc = tmc20AB;
           }
           if (era_ == era::data_2012_hcp) {
             tau_trg = tdata20ABC;
@@ -374,10 +365,6 @@ namespace ic {
             mcABC   = Efficiency(pt, 15.997, 0.000087304, 0.000000054, 1.67934, 0.871415);
             mcABCD  = Efficiency(pt, 16.0051, 2.45144e-05, 4.3335e-09, 1.66134, 0.87045);
           }
-          if (era_ == era::data_2012_ichep) {
-            mu_trg = (0.14 * mu18A) + (0.86 * mu17B);
-            mu_trg_mc = mcABC;
-          }
           if (era_ == era::data_2012_hcp) {
             mu_trg = (0.061 * mu18A) + (0.373 * mu17B) + (0.566 * mu17C);
             mu_trg_mc = mcABC;
@@ -415,10 +402,6 @@ namespace ic {
             tmc20ABC   = Efficiency(t_pt, 18.25975478, 1.32745225, 1.70380810, 149.18410074, 0.87377770);
             tdataABCD  = Efficiency(t_pt, 18.41225333,  0.76598912,  0.60544260,  5.38350881,  0.85870108);
             tmcABCD    = Efficiency(t_pt, 18.30439676,  1.44360240,  3.79358997,  1.07560564,  0.93103925);
-          }
-          if (era_ == era::data_2012_ichep) {
-              tau_trg = (0.14 * tdata20A) + (0.86 * tdata20B);
-              tau_trg_mc = tmc20AB;
           }
           if (era_ == era::data_2012_hcp) {
             tau_trg = tdata20ABC;
@@ -473,46 +456,6 @@ namespace ic {
         double e_trg = 1.0;
         double e_trg_mc = 1.0;
         if (mc_ == mc::summer12_53X) {
-          if (era_ == era::data_2012_ichep) {
-            if (m_eta < 0.8) {
-              if (m_pt <= 15.0)                { m_trg_mc = 0.9873; m_trg = 0.9716; }
-              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9876; m_trg = 0.9777; }
-              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9883; m_trg = 0.9784; }
-              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9892; m_trg = 0.9621; }
-              if (m_pt > 30.0)                 { m_trg_mc = 0.9747; m_trg = 0.9726; }
-            } else if (m_eta >= 0.8 && m_eta < 1.2) {
-              if (m_pt <= 15.0)                { m_trg_mc = 0.9688; m_trg = 0.9458; }
-              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9505; m_trg = 0.9319; }
-              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9925; m_trg = 0.9161; }
-              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9667; m_trg = 0.9489; }
-              if (m_pt > 30.0)                 { m_trg_mc = 0.9671; m_trg = 0.9111; }
-            } else {
-              if (m_pt <= 15.0)                { m_trg_mc = 0.9374; m_trg = 0.9100; }
-              if (m_pt > 15.0 && m_pt <= 20.0) { m_trg_mc = 0.9559; m_trg = 0.9459; }
-              if (m_pt > 20.0 && m_pt <= 25.0) { m_trg_mc = 0.9666; m_trg = 0.9291; }
-              if (m_pt > 25.0 && m_pt <= 30.0) { m_trg_mc = 0.9392; m_trg = 0.9035; }
-              if (m_pt > 30.0)                 { m_trg_mc = 0.9563; m_trg = 0.9075; }
-            }
-            if (e_eta < 0.8) {
-              if (e_pt <= 15.0)                { e_trg_mc = 0.7919; e_trg = 0.7925;}
-              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9091; e_trg = 0.9023;}
-              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9502; e_trg = 0.9213;}
-              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9629; e_trg = 0.9468;}
-              if (e_pt > 30.0)                 { e_trg_mc = 0.9609; e_trg = 0.9661;}
-            } else if (e_eta >= 0.8 && e_eta < 1.479) {
-              if (e_pt <= 15.0)                { e_trg_mc = 0.8268; e_trg = 0.7472;}
-              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9513; e_trg = 0.9299;}
-              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9844; e_trg = 0.9496;}
-              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9776; e_trg = 0.9796;}
-              if (e_pt > 30.0)                 { e_trg_mc = 0.9800; e_trg = 0.9795;}
-            } else {
-              if (e_pt <= 15.0)                { e_trg_mc = 0.7596; e_trg = 0.7378;} 
-              if (e_pt > 15.0 && e_pt <= 20.0) { e_trg_mc = 0.9240; e_trg = 0.8869;}
-              if (e_pt > 20.0 && e_pt <= 25.0) { e_trg_mc = 0.9632; e_trg = 0.9228;}
-              if (e_pt > 25.0 && e_pt <= 30.0) { e_trg_mc = 0.9803; e_trg = 0.9550;}
-              if (e_pt > 30.0)                 { e_trg_mc = 0.9850; e_trg = 0.9751;}
-            }
-          }
           if (era_ == era::data_2012_hcp) {
             if (m_eta < 0.8) {
               if (m_pt <= 15.0)                { m_trg_mc = 0.9873; m_trg = 0.9693; }
@@ -701,12 +644,6 @@ namespace ic {
         double ele_id = 1.0;
         double ele_iso = 1.0;
         if (mc_ == mc::summer12_53X) {
-          if (era_ == era::data_2012_ichep) {
-            if (pt > 24.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_id = 0.9189; ele_iso = 0.9643; }
-            if (pt > 24.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.8689; ele_iso = 0.9747; }
-            if (pt > 30.0 && sc_eta < 1.479)                { ele_id = 0.9593; ele_iso = 0.9877; }
-            if (pt > 30.0 && sc_eta >= 1.479)               { ele_id = 0.9223; ele_iso = 0.9938; }  
-          }
           if (era_ == era::data_2012_hcp) {
             if (pt > 24.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_id = 0.9130; ele_iso = 0.9602; }
             if (pt > 24.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_id = 0.8509; ele_iso = 0.9661; }
@@ -738,14 +675,6 @@ namespace ic {
         double mu_id = 1.0;
         double mu_iso = 1.0;
         if (mc_ == mc::summer12_53X) {
-          if (era_ == era::data_2012_ichep) {
-            if (pt > 20.0 && pt <= 30.0 && m_eta < 0.8)                   { mu_id = 0.9884; mu_iso = 0.9753; }
-            if (pt > 20.0 && pt <= 30.0 && m_eta >= 0.8 && m_eta < 1.2)   { mu_id = 0.9860; mu_iso = 0.9851; }
-            if (pt > 20.0 && pt <= 30.0 && m_eta >= 1.2)                  { mu_id = 0.9920; mu_iso = 0.9964; }
-            if (pt > 30.0 && m_eta < 0.8)                                 { mu_id = 0.9879; mu_iso = 0.9894; }
-            if (pt > 30.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9827; mu_iso = 0.9880; }
-            if (pt > 30.0 && m_eta >= 1.2)                                { mu_id = 0.9919; mu_iso = 1.0005; }
-          }
           if (era_ == era::data_2012_hcp) {
             if (pt > 20.0 && pt <= 30.0 && m_eta < 0.8)                   { mu_id = 0.9870; mu_iso = 0.9715; }
             if (pt > 20.0 && pt <= 30.0 && m_eta >= 0.8 && m_eta < 1.2)   { mu_id = 0.9837; mu_iso = 0.9826; }
@@ -789,7 +718,7 @@ namespace ic {
         double m_idiso = 1.0;
         double e_idiso = 1.0;
         if (mc_ == mc::summer12_53X) {
-          if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
+          if (era_ == era::data_2012_hcp) {
             if (m_eta < 0.8) {
               if (m_pt <= 15.0)                 m_idiso = 0.9845;
               if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 0.9644;
@@ -1003,7 +932,7 @@ namespace ic {
             if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.72);
           }
         } else {
-          if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
+          if (era_ == era::data_2012_hcp) {
             if (fabs(tau_cand[0]->eta()) < 1.5) {
               if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.85);
               if (tau->decay_mode() == 1) {
@@ -1045,7 +974,7 @@ namespace ic {
         if (mc_ == mc::fall11_42X) {
 
         } else {
-          if (era_ == era::data_2012_ichep || era_ == era::data_2012_hcp) {
+          if (era_ == era::data_2012_hcp) {
             eventInfo->set_weight("mtau_fakerate", 1.00);
           }
           if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {

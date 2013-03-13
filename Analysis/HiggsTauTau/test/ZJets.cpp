@@ -196,7 +196,6 @@ int main(int argc, char* argv[]){
 
   string data_json;
   if (era == era::data_2011) data_json           =  "data/json/data_2011.txt";
-  if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
   if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
   if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
   LumiMask lumiMask = LumiMask("LumiMask")
@@ -210,7 +209,6 @@ int main(int argc, char* argv[]){
   if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";
   if (mc == mc::summer12_53X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
   string data_pu_file;
-  if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
   if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
   if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
