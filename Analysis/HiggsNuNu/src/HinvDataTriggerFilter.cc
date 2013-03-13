@@ -38,7 +38,7 @@ namespace ic {
   int HinvDataTriggerFilter::Execute(TreeEvent *event) {
 
     bool path_found = false;
-    std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
+    //std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
   
     if (is_data_) {
 
@@ -53,13 +53,13 @@ namespace ic {
 	if (name.find(trigger_path_) != name.npos) path_found = true; 
       }
 
-      if ( (objs.size()== 0) && path_found ) counter1_++;
-      if ( (objs.size() > 0) && !path_found ) counter2_++;
+      //if ( (objs.size()== 0) && path_found ) counter1_++;
+      //if ( (objs.size() > 0) && !path_found ) counter2_++;
 
     }
     //for MC
     else {
-
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
      if (objs.size() > 0) path_found=true;
       //ic::erase_if(elmus, !boost::bind(IsFilterMatched, _1, objs, elmu_filter, 0.5));
       //ic::erase_if(taus, !boost::bind(IsFilterMatched, _1, objs, tau_filter, 0.5));
@@ -73,8 +73,8 @@ namespace ic {
   }
 
   int HinvDataTriggerFilter::PostAnalysis() {
-    std::cout << " -- Number of times path fired but no trigger object: " << counter1_ << std::endl;
-    std::cout << " -- Number of times path not fired but trigger objects: " << counter2_ << std::endl;
+    //std::cout << " -- Number of times path fired but no trigger object: " << counter1_ << std::endl;
+    //std::cout << " -- Number of times path not fired but trigger objects: " << counter2_ << std::endl;
     return 0;
   }
 
