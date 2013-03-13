@@ -6,14 +6,6 @@
 
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "CommonTools/Utils/interface/TFileDirectory.h"
-#include "UserCode/ICHiggsTauTau/interface/Objects.hh"
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
-
-
-#include <string>
-#include <iostream>
-
-#include "TTree.h"
 
 namespace ic {
 
@@ -56,8 +48,9 @@ struct CoreControlPlots {
 	TH1F *mjj;
 	TH1F *jdeta;
 	TH1F *tau_decay_mode;
+	TH1F *l1_met;
+	TH1F *calo_nohf_met;
 	CoreControlPlots(TFileDirectory const& dir);
-
 };
 
 }

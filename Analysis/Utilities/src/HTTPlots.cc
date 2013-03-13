@@ -1,8 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 
-
-
-
 namespace ic {
 
   MassPlots::MassPlots(TFileDirectory const& dir) {
@@ -49,6 +46,8 @@ namespace ic {
     mjj = dir.make<TH1F>("mjj","mjj", 40, 0, 1000); 
     jdeta = dir.make<TH1F>("jdeta","jdeta", 40, 0, 8); 
     tau_decay_mode = dir.make<TH1F>("tau_decay_mode","tau_decay_mode", 3, -0.5, 2.5); 
+    l1_met = dir.make<TH1F>("l1_met","l1_met", 50, 0, 200); 
+    calo_nohf_met = dir.make<TH1F>("calo_nohf_met","calo_nohf_met", 50, 0, 200); 
   };
 
 } //namespace
