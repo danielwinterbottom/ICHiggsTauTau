@@ -67,6 +67,7 @@ int main(int argc, char* argv[]){
   bool upordown;                  // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
 
   string mettype;                 // MET input collection to be used
+  bool doMetFilters;              // apply cleaning MET filters
   unsigned signal_region;             // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
 
@@ -95,6 +96,7 @@ int main(int argc, char* argv[]){
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
     ("signal_region",       po::value<unsigned>(&signal_region)->default_value(1))
     ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
+    ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
     ("upordown",            po::value<bool>(&upordown)->default_value(true));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -124,6 +126,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
   std::cout << boost::format(param_fmt) % "signal_region" % signal_region;
   std::cout << boost::format(param_fmt) % "met_cut" % met_cut;
+  std::cout << boost::format(param_fmt) % "doMetFilters" % doMetFilters;
 
 
   // Load necessary libraries for ROOT I/O of custom classes
@@ -451,7 +454,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
-  MetSelection metFilter = MetSelection("MetFilter",mettype,met_cut);
+  MetSelection metFilter = MetSelection("MetFilter",mettype,doMetFilters,met_cut);
 
   unsigned nLepToAdd = 0;
   if (channel == channel::munu || 
@@ -464,9 +467,9 @@ int main(int argc, char* argv[]){
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,nLepToAdd);
 
 
-  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",met_cut);
-  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",met_cut);
-  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",met_cut);
+  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",doMetFilters,met_cut);
+  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",doMetFilters,met_cut);
+  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",doMetFilters,met_cut);
 
   //------------------------------------------------------------------------------------
   // W selection Modules
