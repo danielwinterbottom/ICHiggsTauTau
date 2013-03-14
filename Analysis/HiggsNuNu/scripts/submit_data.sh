@@ -33,15 +33,15 @@ for METCUT in 130
         if [ "$SYST" = "JESUP" ]
             then
             SYSTOPTIONS="--dojessyst=true --upordown=true"
-            JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESUP
-            OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESUP
+            JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESUP/
+            OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESUP/
         fi
 	
         if [ "$SYST" = "JESDOWN" ]
             then
             SYSTOPTIONS="--dojessyst=true --upordown=false"
-            JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESDOWN
-            OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESDOWN
+            JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESDOWN/
+            OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESDOWN/
         fi  
 	
 	
