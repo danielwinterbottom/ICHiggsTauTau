@@ -41,8 +41,9 @@ namespace ic {
     if(mode_==2 || mode_==12) label="idiso_";       //2=IDIso, 12=IDIso in finer bins
     if(mode_==3) label="";                          //3=Trigger efficiencies for mutau channel
     if(mode_==4) label="";                          //4=Trigger efficiencies for mutau+met channel
+    if(mode_==5) label="";                          //5=Trigger efficiencies for IsoMu24 trigger
 
-    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
+    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4 || mode_==5)
     {
         for(unsigned i=0; i<pt_bins_.size()-1; i++)
         {
@@ -116,6 +117,8 @@ namespace ic {
     std::string trigger_name_mu;
     std::string mutau_obj_label;
     std::string mutau_filter;
+    std::string mutau_filter_A;
+    std::string mutau_filter_B;
 
     //Set trigger filter labels
     //Set etau trigger names if measuring trigger efficiencies.
@@ -156,6 +159,14 @@ namespace ic {
         mutau_obj_label = "triggerObjectsIsoMu8LooseTau20L1ETM26";
         mutau_filter = "hltL3crIsoL1sMu7Eta2p1L1f0L2f7QL3f8QL3crIsoRhoFiltered0p15";
     }
+    if(mode_==5)
+    {    
+        mutau_obj_label = "triggerObjectsIsoMu24";
+        mutau_filter_A="hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f24QL3crIsoFiltered10";
+        mutau_filter_B="hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f24QL3crIsoRhoFiltered0p15";
+        mutau_filter="";
+    }
+
 
     //set tag and probe trigger names and filter labels
     if(data_ && run >= 190456)
@@ -238,20 +249,6 @@ namespace ic {
 
     bool hasL1MET=false;
     
-   /* if(data_)
-    {
-        for(unsigned k=0; k<triggerPathPtrVec.size(); k++)
-        {
-            std::string name=(triggerPathPtrVec[k])->name();
-            if(name.find("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_L1ETM26_v")!=name.npos)
-            {
-                hasL1MET=true;
-       //         prescalenum=triggerPathPtrVec[k]->prescale();
-            }
-        }
-    }
-    else hasL1MET=true;
-    */
     std::string filter="hltL1sL1Mu7erETM26";
     std::size_t hash = CityHash64(filter);
     if(data_)
@@ -321,6 +318,7 @@ namespace ic {
     if(mode_==2 || mode_==12) label="idiso_";
     if(mode_==3) label="";
     if(mode_==4) label="";
+    if(mode_==5) label="";
     
     
     //Fill passing and failing histograms.
@@ -332,10 +330,12 @@ namespace ic {
             for(unsigned i=0; i<pt_bins_.size(); i++)
             {
                 std::string s=boost::lexical_cast<std::string>(i+1);
-                if((!(mode_==3) && !(mode_==4) && passprobe_predicate_(pairs[k_final].second)) ||
-                        (((mode_==3) || (mode_==4)) && IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )) )
+                if((!(mode_==3) && !(mode_==4) && !(mode_==5) && passprobe_predicate_(pairs[k_final].second)) ||
+                        (((mode_==3) || (mode_==4)) && IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 ))
+                        || ((mode_==5) &&
+                        (IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_A,0.5 ) || IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_B,0.5 ))  ) )
                 {
-                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
+                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4 || mode_==5)
                     {
                         if(!split_pm_eta_)
                         {
@@ -431,10 +431,12 @@ namespace ic {
                         } 
                     }
                 }
-                if (((!(mode_==3) && !(mode_==4)) && !passprobe_predicate_(pairs[k_final].second))||
-                        (((mode_==3)|| (mode_==4) ) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )))
+                if (((!(mode_==3) && !(mode_==4)) && !(mode_==5) && !passprobe_predicate_(pairs[k_final].second))||
+                        (((mode_==3)|| (mode_==4) ) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 ))
+                        || ((mode_==5) &&
+                        (!IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_A,0.5 ) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_B,0.5 ))  ) )
                 {
-                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
+                    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4 || mode_==5)
                     {
                         if(!split_pm_eta_)
                         {
@@ -583,8 +585,9 @@ namespace ic {
     if(mode_==2 || mode_==12) label="idiso_";
     if(mode_==3) label="";
     if(mode_==4) label="";
+    if(mode_==5) label="";
      
-    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
+    if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4 || mode_==5)
     {
          std::cout << "====================="+label+"====================" << std::endl;
          for(unsigned i=0; i<pt_bins_.size()-1; i++)

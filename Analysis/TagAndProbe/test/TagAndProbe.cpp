@@ -30,6 +30,7 @@ int main(int argc, char* argv[]){
     bool trg_only;
     bool VH;
     bool ltmet;
+    bool IsoMu24;
     std::string era, eraB;
     std::string configfile, outname,outnametrg,outnametrgB, filelist, outfolder;
     std::string skim_path="";
@@ -76,6 +77,7 @@ int main(int argc, char* argv[]){
       ("idiso_only", po::value<bool>(&idiso_only)->default_value(false), "to rerun just id and iso")
       ("VH", po::value<bool>(&VH)->default_value(false), "to just run the numbers for VH")
       ("ltmet", po::value<bool>(&ltmet)->default_value(false), "to run for lepton+tau+MET channels")
+      ("IsoMu24", po::value<bool>(&IsoMu24)->default_value(false), "to run for IsoMu24 efficiency measurement")
       ("trg_only", po::value<bool>(&trg_only)->default_value(false), "to rerun just trigger")
       ("second_trigger", po::value<bool>(&second_trigger)->default_value(false), "allows a measurement of a second trigger if there are two in era")
       ("is_elec", po::value<bool>(&iselec)->required(), "0=muons, 1=electrons")
@@ -805,6 +807,29 @@ int main(int argc, char* argv[]){
     .set_mode(4)
     .set_era(era);
 
+    MuonTagAndProbe muonIsoMu24TrgTagAndProbe("muonIsoMu24TrgTagAndProbe");
+    muonIsoMu24TrgTagAndProbe
+    .set_fs(fstrg)
+    .set_output_name((outfolder+"/muon_trg_count").c_str())
+    .set_tag_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045))
+    .set_probe_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 5, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045))
+    .set_data(isdata)
+    .set_pt_bins(pt_bins_trg)
+    .set_split_pm_eta(split_pm_eta)
+    .set_run_low(run_low)
+    .set_run_high(run_high)
+    .set_eta_bins(eta_bins)
+    .set_mode(5)
+    .set_era(era);
+
 
     if(!do_skim)
     {
@@ -856,7 +881,7 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&muonIsoFineTagAndProbe);
                 analysis.AddModule(&muonIDIsoFineTagAndProbe);
             }
-            if(!idiso_only && !VH && !ltmet)
+            if(!idiso_only && !VH && !ltmet && !IsoMu24)
             {
                 analysis.AddModule(&muonTrgATagAndProbe); 
                     if(second_trigger) analysis.AddModule(&muonTrgBTagAndProbe);
@@ -864,6 +889,10 @@ int main(int argc, char* argv[]){
             if(ltmet)
             {
                 analysis.AddModule(&muonltmetTrgTagAndProbe);
+            }
+            if(IsoMu24)
+            {
+                analysis.AddModule(&muonIsoMu24TrgTagAndProbe);
             }
         }
     }
