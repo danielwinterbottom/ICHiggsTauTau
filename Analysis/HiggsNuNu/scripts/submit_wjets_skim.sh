@@ -31,7 +31,7 @@ for CHANNEL in enu munu taunu
     echo "Processing files in "$FILELIST
     
     echo $FILELIST > tmp.txt
-    sed "s/filelists\/Feb20_MC_53X_//" tmp.txt > tmp2.txt
+    sed "s/filelists\/medium\/Feb20_MC_53X_//" tmp.txt > tmp2.txt
     
     LOOPOUTDIR=$OUTDIR/`sed "s/\.dat//" tmp2.txt`/
     JOB=MC_`sed "s/\.dat//" tmp2.txt`
