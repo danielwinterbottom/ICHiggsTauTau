@@ -65,7 +65,7 @@ for METCUT in 130
 	  
 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Mar20/MET/
 	  
-	  for FILELIST in `ls filelists/$QUEUEDIR/Mar20_MET_MET-2012*`
+	  for FILELIST in `ls filelists/$QUEUEDIR/Mar20_MET_*`
 	    do
 	    echo "Processing files in "$FILELIST
 	    
@@ -83,47 +83,6 @@ for METCUT in 130
 	    
 	  done
 	
-	done
-  
-#TEMPORARY! Run on previous files with mettype=pfmet and no filters
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan//Dec1/MET/
-	
-	for FILELIST in `ls filelists/short/Dec1_MET_MET-2012A-13Jul2012-v1.dat` 
-	  do
-	  echo "Processing files in "$FILELIST
-	  
-	  echo $FILELIST > tmp.txt
-	  sed "s/filelists\/$QUEUEDIR\/Dec1_MET_//" tmp.txt > tmp2.txt
-	  
-	  JOB=Data_`sed "s/\.dat//" tmp2.txt`
-	  
-	  rm tmp.txt tmp2.txt
-	  
-	  echo "JOB name = $JOB"
-	  
-	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --mettype=pfmet --doMetFilters=false --met_cut=$METCUT --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	  $JOBSUBMIT $JOBDIR/$JOB.sh
-	  
-	done
-	  
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Dec1/MET/
-
-	for FILELIST in `ls filelists/medium/MET-*`
-	  do
-	  echo "Processing files in "$FILELIST
-	  
-	  echo $FILELIST > tmp.txt
-	  sed "s/filelists\/medium\///" tmp.txt > tmp2.txt
-	  
-	  JOB=Data_`sed "s/\.dat//" tmp2.txt`
-	  
-	  rm tmp.txt tmp2.txt
-	  
-	  echo "JOB name = $JOB"
-	  
-	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --mettype=pfmet --doMetFilters=false --met_cut=$METCUT --signal_region=$DOQCD --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	  $JOBSUBMIT $JOBDIR/$JOB.sh
-	  
 	done
 	
       done
