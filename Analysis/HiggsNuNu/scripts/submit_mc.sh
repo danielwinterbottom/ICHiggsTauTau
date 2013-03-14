@@ -89,6 +89,7 @@ for METCUT in 130 # 0 70
 	  
 	  
 #VBFZ
+#run with pfmet and noMetFilters
 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec5/VBFZ/
 	  for FILELIST in `ls filelists/$QUEUEDIR/Dec5_VBFZ*`
 	    do
@@ -103,12 +104,13 @@ for METCUT in 130 # 0 70
 	    
 	    echo "JOB name = $JOB"
 
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --mettype=pfmet --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	    $JOBSUBMIT $JOBDIR/$JOB.sh
 	    
 	  done
 	  
 #GJets
+#run with pfmet and noMetFilters
 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Feb1/BKG/
 	  for FILELIST in `ls filelists/$QUEUEDIR/Feb1_GJets_*`
 	    do
@@ -123,21 +125,21 @@ for METCUT in 130 # 0 70
 
 	    echo "JOB name = $JOB"
 	    
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --mettype=pfmet --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	    $JOBSUBMIT $JOBDIR/$JOB.sh
 	    
 	  done
 	  
 #Process bkg common with HiggsTautau
-	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
-	  for FILELIST in `ls filelists/$QUEUEDIR/Dec2_MC_*`
+	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Feb20/MC_53X/
+	  for FILELIST in `ls filelists/$QUEUEDIR/Feb20_*`
 #for FILELIST in `ls filelists/$QUEUEDIR/Dec30_MC_53X_DY*`
 	    do
 	    echo "Processing files in "$FILELIST
 
 	    echo $FILELIST > tmp.txt
 	    
-	    sed "s/filelists\/$QUEUEDIR\/Dec2_MC_53X_//" tmp.txt > tmp2.txt
+	    sed "s/filelists\/$QUEUEDIR\/Feb20_MC_53X_//" tmp.txt > tmp2.txt
 	    JOB=MC_`sed "s/\.dat//" tmp2.txt`
 	    
 	    echo "JOB name = $JOB"
@@ -146,7 +148,7 @@ for METCUT in 130 # 0 70
 	    if (( "$?" == 0 )); then
 		for FLAVOUR in enu munu taunu
 		  do
-		  PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
+		  PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
 		  
 		  WJOB=$JOB"_"$FLAVOUR
 		  
@@ -154,7 +156,7 @@ for METCUT in 130 # 0 70
 		  $JOBSUBMIT $JOBDIR/$WJOB.sh
 		done
 	    else 
-		PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Dec2/MC_53X/
+		PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Feb20/MC_53X/
 		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 		$JOBSUBMIT $JOBDIR/$JOB.sh
 	    fi
@@ -164,6 +166,7 @@ for METCUT in 130 # 0 70
 	  done
 	  
 #QCD from Patrick
+#run without metfilters
 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Feb7/BKG/
 	  
 	  for FILELIST in `ls filelists/$QUEUEDIR/QCD*`
@@ -179,12 +182,13 @@ for METCUT in 130 # 0 70
 	    
 	    echo "JOB name = $JOB"
 	    
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --mc=summer12_53X --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	    $JOBSUBMIT $JOBDIR/$JOB.sh
 	    
 	  done
 	  
 #Other BKG+signal from Patrick
+#run without met filters
 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Feb7/BKG/
 	  
 	  for FILELIST in `ls filelists/$QUEUEDIR/Feb18_BKG_*`
@@ -200,7 +204,7 @@ for METCUT in 130 # 0 70
 	    
 	    echo "JOB name = $JOB"
 	    
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	    $JOBSUBMIT $JOBDIR/$JOB.sh
 	    
 	  done
