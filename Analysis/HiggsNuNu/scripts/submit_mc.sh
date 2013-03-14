@@ -21,7 +21,7 @@ for METCUT in 130 # 0 70
     do
     for CHANNEL in nunu enu munu
       do
-      for SYST in central #JESUP JESDOWN
+      for SYST in central JESUP JESDOWN
 	do
 	SYSTOPTIONS="--dojessyst=false"
 	JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
@@ -104,7 +104,7 @@ for METCUT in 130 # 0 70
 	    
 	    echo "JOB name = $JOB"
 
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --mettype=pfmet --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --mettype=pfMet --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	    $JOBSUBMIT $JOBDIR/$JOB.sh
 	    
 	  done
@@ -125,7 +125,7 @@ for METCUT in 130 # 0 70
 
 	    echo "JOB name = $JOB"
 	    
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --mettype=pfmet --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --mettype=pfMet --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	    $JOBSUBMIT $JOBDIR/$JOB.sh
 	    
 	  done
