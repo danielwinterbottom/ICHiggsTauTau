@@ -818,11 +818,7 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&electronVHIsoTagAndProbe);
                 analysis.AddModule(&electronVHIDIsoTagAndProbe);
             }
-            if(ltmet)
-            {
-                analysis.AddModule(&electronltmetTrgTagAndProbe);
-            }
-            if(!trg_only && !VH && !ltmet)
+            if(!trg_only && !VH)
             {
                 analysis.AddModule(&electronIDTagAndProbe);
                 analysis.AddModule(&electronIsoTagAndProbe);
@@ -835,6 +831,10 @@ int main(int argc, char* argv[]){
             {
                 analysis.AddModule(&electronTrgATagAndProbe);
                     if(second_trigger) analysis.AddModule(&electronTrgBTagAndProbe);
+            }
+            if(ltmet)
+            {
+                analysis.AddModule(&electronltmetTrgTagAndProbe);
             }
         }
         if(!iselec)
