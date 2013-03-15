@@ -21,7 +21,7 @@ for METCUT in 130 # 0 70
     do
     for CHANNEL in nunu enu munu
       do
-      for SYST in central JESUP JESDOWN
+      for SYST in central #JESUP JESDOWN
 	do
 	SYSTOPTIONS="--dojessyst=false"
 	JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
