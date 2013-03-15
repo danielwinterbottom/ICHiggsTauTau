@@ -10,11 +10,12 @@ namespace ic {
   class MetSelection : public ModuleBase {
   private:
     std::string input_name_;
+    bool doFilters_;
     double min_;
     double max_;
     
   public:
-    MetSelection(std::string const& name, std::string input_name, double min, double max=14000.);
+    MetSelection(std::string const& name, std::string input_name, bool doFilters_, double min, double max=14000.);
     virtual ~MetSelection();
 
     virtual int PreAnalysis();
