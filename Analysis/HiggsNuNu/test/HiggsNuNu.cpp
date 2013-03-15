@@ -6,6 +6,7 @@
 #include "boost/bind.hpp"
 #include "boost/function.hpp"
 #include "boost/format.hpp"
+#include "boost/algorithm/string.hpp"
 #include "TSystem.h"
 #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
@@ -68,6 +69,7 @@ int main(int argc, char* argv[]){
 
   string mettype;                 // MET input collection to be used
   bool doMetFilters;              // apply cleaning MET filters
+  string filters;
   unsigned signal_region;             // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
 
@@ -97,12 +99,15 @@ int main(int argc, char* argv[]){
     ("signal_region",       po::value<unsigned>(&signal_region)->default_value(1))
     ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
+    ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilterResult,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,!manystripclus53X,!toomanystripclus53X,!logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
     ("upordown",            po::value<bool>(&upordown)->default_value(true));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
 
+  vector<string> filtersVec;
+  boost::split(filtersVec, filters, boost::is_any_of(","));
 
   // Some options must now be re-configured based on other options
   ic::era era           = String2Era(era_str);
@@ -456,7 +461,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
-  MetSelection metFilter = MetSelection("MetFilter",mettype,doMetFilters,met_cut);
+  MetSelection metFilter = MetSelection("MetFilter",mettype,doMetFilters,filtersVec,met_cut);
 
   unsigned nLepToAdd = 0;
   if (channel == channel::munu || 
@@ -469,9 +474,9 @@ int main(int argc, char* argv[]){
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,nLepToAdd);
 
 
-  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",doMetFilters,met_cut);
-  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",doMetFilters,met_cut);
-  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",doMetFilters,met_cut);
+  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",doMetFilters,filtersVec,met_cut);
+  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",doMetFilters,filtersVec,met_cut);
+  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",doMetFilters,filtersVec,met_cut);
 
   //------------------------------------------------------------------------------------
   // W selection Modules

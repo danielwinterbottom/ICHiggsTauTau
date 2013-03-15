@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include <string>
+#include <vector>
 
 namespace ic {
 
@@ -11,11 +12,16 @@ namespace ic {
   private:
     std::string input_name_;
     bool doFilters_;
+    std::vector<std::string> filters_;
     double min_;
     double max_;
+
+    std::vector<double> counters_;
     
   public:
-    MetSelection(std::string const& name, std::string input_name, bool doFilters_, double min, double max=14000.);
+    MetSelection(std::string const& name, std::string input_name, 
+		 bool doFilters_, std::vector<std::string> filters, 
+		 double min, double max=14000.);
     virtual ~MetSelection();
 
     virtual int PreAnalysis();
