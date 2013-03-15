@@ -41,14 +41,17 @@ namespace ic {
     bool passFilters = true;
     if (doFilters_){
       EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
-      //std::map<std::size_t, float>::const_iterator it;
-      //for (it = eventInfo->filters().begin(); it != eventInfo->filters().end(); ++it) {
-      //std::cout << it->first << " " << it->second << std::endl;
-      //}
+      passFilters = eventInfo->good_vertices() > 0;
       for (unsigned iF(0); iF<filters_.size(); ++iF){
 	//std::cout << "-- Filter " << filters_[iF] << " : " << eventInfo->filter_result(filters_[iF]) << std::endl;
-	passFilters = passFilters && eventInfo->filter_result(filters_[iF]);
-	if (eventInfo->filter_result(filters_[iF])) counters_[iF]++;
+	if (filters_[iF].find("CSCTight")== filters_[iF].npos) {
+	  passFilters = passFilters && eventInfo->filter_result(filters_[iF]);
+	  if (eventInfo->filter_result(filters_[iF])) counters_[iF]++;
+	}
+	else {
+	  passFilters = passFilters && !eventInfo->filter_result(filters_[iF]);
+	  if (!eventInfo->filter_result(filters_[iF])) counters_[iF]++;
+	}
       }
     }
 
