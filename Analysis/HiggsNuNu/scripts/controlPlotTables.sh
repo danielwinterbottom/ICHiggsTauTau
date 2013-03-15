@@ -8,21 +8,34 @@ for CHANNEL in emu
 
     for DOQCD in 0
       do
+      for SYST in central #JESUP JESDOWN
+	do
+	FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
+	PLOTDIR=TABLES/$CHANNEL/MET$MET/DOQCD$DOQCD/
 
-      FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
-      PLOTDIR=TABLES/$CHANNEL/MET$MET/DOQCD$DOQCD/
-
-      mkdir -p $PLOTDIR
-      mkdir -p $PLOTDIR/wjetsComp/
-      BLIND=1
-      if [ "$CHANNEL" != "nunu" ] || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
-	  then
-	  let BLIND=0
-      fi
-
+	if [ "$SYST" = "JESUP" ]
+	    then
+	    FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/JESUP/
+	    PLOTDIR=TABLES/$CHANNEL/MET$MET/DOQCD$DOQCD/JESUP/
+	fi
+	if [ "$SYST" = "JESDOWN" ]
+	    then
+	    FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/JESDOWN/
+	    PLOTDIR=TABLES/$CHANNEL/MET$MET/DOQCD$DOQCD/JESDOWN/
+	fi
+	
+	
+	mkdir -p $PLOTDIR
+	mkdir -p $PLOTDIR/wjetsComp/
+	BLIND=1
+	if [ "$CHANNEL" != "nunu" ] || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
+	    then
+	    let BLIND=0
+	fi
+	
  #     echo $CHANNEL " " $MET " " $DOQCD " : BLIND variable is "$BLIND
-
-
+	
+	
 ###### jpt_1
 #./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
 #    --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
@@ -82,7 +95,7 @@ for CHANNEL in emu
 #    --norm_bins=false \
 #    --log_y=true \
 #    --paramfile=$PARAMS
-
+      done
     done
   done
 done

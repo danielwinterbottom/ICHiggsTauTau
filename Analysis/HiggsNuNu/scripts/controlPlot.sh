@@ -10,16 +10,31 @@ for CHANNEL in nunu enu munu
     for DOQCD in 0 1 2
       do
 
-      FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
-      PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/
-  
-      mkdir -p $PLOTDIR
+      for SYST in central #JESUP JESDOWN
+	do
 
-      BLIND=1
-      if (( "$CHANNEL" != "nunu" )) || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
-	  then
-	  let BLIND=0
-      fi
+	FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
+	PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/
+	
+	if [ "$SYST" = "JESUP" ]
+	    then
+	    FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/JESUP/
+	    PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/JESUP/
+	fi
+
+	if [ "$SYST" = "JESDOWN" ]
+	    then
+	    FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/JESDOWN/
+	    PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/JESDOWN/
+	fi
+	
+	mkdir -p $PLOTDIR
+	
+	BLIND=1
+	if (( "$CHANNEL" != "nunu" )) || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
+	    then
+	    let BLIND=0
+	fi
 
 ###### n_jets
 #./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -153,7 +168,7 @@ for CHANNEL in nunu enu munu
     --norm_bins=false \
     --log_y=true \
     --paramfile=$PARAMS
-
+      done
     done
   done
 done
