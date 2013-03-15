@@ -25,10 +25,10 @@ namespace ic {
     n_vtx = dir.make<TH1F>("n_vtx","n_vtx", 40, -0.5, 39.5); 
     mt_1 = dir.make<TH1F>("mt_1","mt_1", 40, 0, 160); 
     pzeta = dir.make<TH1F>("pzeta","pzeta", 50, -100, 100); 
-    pt_h = dir.make<TH1F>("pt_h","pt_h", 50, 0, 200); 
-    pt_tt = dir.make<TH1F>("pt_tt","pt_tt", 50, 0, 200); 
-    pt_1 = dir.make<TH1F>("pt_1","pt_1", 50, 0, 100); 
-    pt_2 = dir.make<TH1F>("pt_2","pt_2", 50, 0, 100); 
+    pt_h = dir.make<TH1F>("pt_h","pt_h", 100, 0, 400); 
+    pt_tt = dir.make<TH1F>("pt_tt","pt_tt", 100, 0, 400); 
+    pt_1 = dir.make<TH1F>("pt_1","pt_1", 100, 0, 200); 
+    pt_2 = dir.make<TH1F>("pt_2","pt_2", 100, 0, 200); 
     eta_1 = dir.make<TH1F>("eta_1","eta_1", 60, -3, 3); 
     eta_2 = dir.make<TH1F>("eta_2","eta_2", 60, -3, 3); 
     m_2 = dir.make<TH1F>("m_2","m_2", 40, 0, 2); 

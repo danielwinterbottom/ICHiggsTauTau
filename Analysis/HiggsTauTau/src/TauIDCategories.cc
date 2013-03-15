@@ -16,6 +16,7 @@ namespace ic {
     met_label_ = "pfMVAMet";
     mass_shift_ = 1.0;
     fs_ = NULL;
+    
   }
 
   TauIDCategories::~TauIDCategories() {
@@ -57,43 +58,15 @@ namespace ic {
     InitCategory("inclusive");
     InitCoreControlPlots("inclusive");
 
-    InitCategory("vbf");
+    InitCategory("tau_pt_20-30");
+    InitCategory("tau_pt_30-40");
+    InitCategory("tau_pt_40-50");
+    InitCategory("tau_pt_50-60");
 
-    InitCategory("tautau_vbf");
-
-    InitCategory("vbf_tight");
-
-    InitCategory("vbf_no_cjv");
-
-    InitCategory("vbf_loose");
-
-    InitCategory("vbf_loose_jets20");
-
-    InitCategory("twojet");
-    InitCoreControlPlots("twojet");
-    
-    InitCategory("1jet");
-    InitCoreControlPlots("1jet");
-
-    InitCategory("1jet_high");
-
-    InitCategory("1jet_low");
-
-    InitCategory("1jet_low_nometcut");
-
-    InitCategory("0jet_high");
-    InitCoreControlPlots("0jet_high");
-
-    InitCategory("0jet_low");
-    InitCoreControlPlots("0jet_low");
-
-    InitCategory("btag");
-
-    InitCategory("sasha");
-
-    InitCategory("btag_loose");
-
-    InitCategory("nobtag");
+    InitCategory("tau_pt_60-80");
+    InitCategory("tau_pt_80-100");
+    InitCategory("tau_pt_100-150");
+    InitCategory("tau_pt_150-200");
 
     return 0;
   }
@@ -269,119 +242,18 @@ namespace ic {
       if (!os_ && pzeta_ > -20) SetPassSelection("ss_sel");
     }
 
-    // Define the 1- and 0-jet split based on pt_2
-    double pt2_split = 40.0; // Tau pT for et,mt and mtmet
-    if (channel_ == channel::em) pt2_split = 35.0;  // Mu pT for em
-
     // Inclusive Category
     SetPassCategory("inclusive");
     FillCoreControlPlots("inclusive");
 
-    // VBF Selection
-    // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 500. && jdeta_ > 3.5) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("vbf");
-        FillCoreControlPlots("vbf");
-      }
-    }
-
-
-
-    // VBF Selection
-    // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 800. && jdeta_ > 4.0) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("vbf_tight");
-      }
-    }
-
-    // Tau-tau-like VBF Selection
-    // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 250. && jdeta_ > 2.5) {
-      bool lepton_pt = pt_1_ > 30.0 && pt_2_ > 45.0;
-      bool pt_50_jet = jets[0]->pt() > 50.0 && fabs(jets[0]->eta()) < 3.0;
-      bool hpt = ((ditau->vector() + met->vector()).pt()) > 110.0;
-      if (lepton_pt && pt_50_jet && hpt) SetPassCategory("tautau_vbf");
-    }
-
-    // VBF Selection with no CJV, used for VBF category Fakes estimate in em
-    if (n_jets_ >= 2 && mjj_ > 500. && jdeta_ > 3.5) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_no_cjv");
-    }
-
-    // Loose VBF Selection
-    // Used for background shape estimation in VBF category
-    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose");
-    }
-    
-    // Loose VBF Selection with low pT Jet Requirement
-    // Used for background shape of QCD in VBF Category
-    if (n_lowpt_jets_ >= 2 && n_jetsingap_lowpt_ == 0 && mjj_lowpt_ > 200. && jdeta_lowpt_ > 2.0) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose_jets20");
-    }
-
-    // Twojet Selection
-    // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("twojet");
-        FillCoreControlPlots("twojet");
-      }
-    }
-
-    // 1-jet (note no vbf veto: this is really for "inclusive" control plots)
-    if (n_jets_ >= 1) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("1jet");
-        FillCoreControlPlots("1jet");
-      }
-    }
-
-    // 1-jet High Category
-    // In the et channel, apply a MET > 30 cut
-    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ > pt2_split && n_bjets_ == 0) {
-      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) SetPassCategory("1jet_high");
-    }
-
-    // 1-jet Low Category
-    // In the et channel, apply a MET > 30 cut
-    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
-      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) SetPassCategory("1jet_low");
-    }
-
-    // 1-jet Low Category
-    // In the et channel, no met cut
-    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
-      SetPassCategory("1jet_low_nometcut");
-    }
-
-    // Eta veto no longer needed
-    // bool em_0jet_high_muon_eta = true;
-    // if (channel_ == channel::em && (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond || era_ == era::data_2012_donly) ) {
-    //   if (eta_2_ > -0.2 && eta_2_ < 1.0) em_0jet_high_muon_eta = false;
-    // }
-    // 0-jet High Category
-    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) {
-      SetPassCategory("0jet_high");
-      FillCoreControlPlots("0jet_high");
-    }
-
-    // 0-jet Low Category
-    if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) {
-      SetPassCategory("0jet_low");
-      FillCoreControlPlots("0jet_low");
-    }
-
-    auto lowpt_jets_copy = lowpt_jets;
-    ic::erase_if(lowpt_jets_copy,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-    if (lowpt_jets_copy.size() >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
-
-    if (n_jets_ <= 1 && n_bjets_ > 0) SetPassCategory("btag");
-
-    if (n_jets_ <= 1 && n_loose_bjets_ > 0) SetPassCategory("btag_loose");
-    if (!PassesCategory("vbf") && n_bjets_ == 0) SetPassCategory("nobtag");
+    if (pt_2_ > 20. && pt_2_ <= 30.) SetPassCategory("tau_pt_20-30");
+    if (pt_2_ > 30. && pt_2_ <= 40.) SetPassCategory("tau_pt_30-40");
+    if (pt_2_ > 40. && pt_2_ <= 50.) SetPassCategory("tau_pt_40-50");
+    if (pt_2_ > 50. && pt_2_ <= 60.) SetPassCategory("tau_pt_50-60");
+    if (pt_2_ > 60. && pt_2_ <= 80.) SetPassCategory("tau_pt_60-80");
+    if (pt_2_ > 80. && pt_2_ <= 100.) SetPassCategory("tau_pt_80-100");
+    if (pt_2_ > 100. && pt_2_ <= 150.) SetPassCategory("tau_pt_100-150");
+    if (pt_2_ > 150. && pt_2_ <= 200.) SetPassCategory("tau_pt_150-200");
 
     return 0;
   }

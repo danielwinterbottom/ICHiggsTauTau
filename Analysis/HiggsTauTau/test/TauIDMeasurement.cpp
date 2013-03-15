@@ -42,7 +42,6 @@ using std::vector;
 using namespace ic;
 
 int main(int argc, char* argv[]){
-
   // Configurable parameters
   string cfg;                     // The configuration file
   int max_events;                 // Maximum number of events to process
@@ -137,7 +136,6 @@ int main(int argc, char* argv[]){
   if (mass_scale_mode == 3) {
     output_folder += "TSCALE_UP/";
   }
-
 
   std::cout << "**** Tau ID Measurements *****" << std::endl;
   string param_fmt = "%-25s %-40s\n";
@@ -743,6 +741,16 @@ int main(int argc, char* argv[]){
   if (mass_scale_mode == 1) tauIDCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) tauIDCategories.set_mass_shift(1.01);
   if (mass_scale_mode == 3) tauIDCategories.set_mass_shift(1.02);
+
+  // HTTCategories tauIDCategories = HTTCategories("HTTCategories")
+  //   .set_fs(fs)
+  //   .set_channel(channel)
+  //   .set_era(era)
+  //   .set_ditau_label("emtauCandidates")
+  //   .set_met_label(met_label);
+  // if (mass_scale_mode == 1) tauIDCategories.set_mass_shift(1.00);
+  // if (mass_scale_mode == 2) tauIDCategories.set_mass_shift(1.01);
+  // if (mass_scale_mode == 3) tauIDCategories.set_mass_shift(1.02);
 
 
   HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);

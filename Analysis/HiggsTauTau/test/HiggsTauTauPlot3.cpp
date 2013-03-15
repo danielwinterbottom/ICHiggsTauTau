@@ -692,7 +692,7 @@ int main(int argc, char* argv[]){
       zll_norm = Integral(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr());
       zl_norm = Integral(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr());
       zj_norm = Integral(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr());
-      if (zll_norm > 0) {
+      if (zll_norm > 0 && (zl_norm > 0 || zj_norm > 0)) {
         double zl_norm_new = zll_norm * (zl_norm/(zl_norm+zj_norm));
         double zj_norm_new = zll_norm * (zj_norm/(zl_norm+zj_norm));
         if (verbose) {
@@ -712,8 +712,8 @@ int main(int argc, char* argv[]){
       zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       if (method == 3 && channel == channel::et) zl_hist = (TH1F*)(plots[Token("Special_18_DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()->Clone());
-      zl_hist->Scale( zl_norm / Integral(zl_hist) );
-      zj_hist->Scale( zj_norm / Integral(zj_hist) );
+      if (zl_norm > 0) zl_hist->Scale( zl_norm / Integral(zl_hist) );
+      if (zj_norm > 0) zj_hist->Scale( zj_norm / Integral(zj_hist) );
       zll_hist = (TH1F*)zl_hist->Clone();
       zll_hist->Add(zj_hist);
     }

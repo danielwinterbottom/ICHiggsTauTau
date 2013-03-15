@@ -141,7 +141,7 @@ if options.data:
 	for ch in channels:
 		if '0' in scales:
 			JOB='Data_%s_%s' % (ch,YR)
-			os.system('%(JOBWRAPPER)s "./bin/TauIDMeasurement --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s --output_name=%(JOB)s.root &> jobs/%(JOB)s.log" jobs/%(JOB)s.sh' % vars())
+			os.system('%(JOBWRAPPER)s "./bin/TauIDMeasurement --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_SingleMu_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s --output_name=%(JOB)s.root &> jobs/%(JOB)s.log" jobs/%(JOB)s.sh' % vars())
 			os.system('%(JOBSUBMIT)s jobs/%(JOB)s.sh' % vars())
 
 		if ch in ['et', 'mt']:
@@ -154,7 +154,7 @@ if options.data:
 		if ch in ['et', 'mt', 'etmet', 'mtmet']:
 			if '0' in scales:
 				JOB='Data_%s_%s' % (ch,YR)
-				os.system('%(JOBWRAPPER)s "./bin/TauIDMeasurement --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_2_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s'
+				os.system('%(JOBWRAPPER)s "./bin/TauIDMeasurement --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_2_SingleMu_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s'
 					' --special_mode=3 --output_name=%(JOB)s.root &> jobs/Special_3_%(JOB)s.log" jobs/Special_3_%(JOB)s.sh' % vars())
 				os.system('%(JOBSUBMIT)s jobs/Special_3_%(JOB)s.sh' % vars())
 

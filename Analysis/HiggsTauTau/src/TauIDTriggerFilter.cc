@@ -148,7 +148,7 @@ namespace ic {
           leg2_filter = "";
         }
         if (run >= 193752/* && run <= xxxxx*/) {
-          trig_obj_label = "";
+          trig_obj_label = "triggerObjectsIsoMu24";
           leg1_filter = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f24QL3crIsoRhoFiltered0p15";
           leg2_filter = "";
         }
