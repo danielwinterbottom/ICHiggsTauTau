@@ -143,16 +143,18 @@ int main(int argc, char* argv[]){
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
   
   double elec_dz, muon_dz, elec_dxy, muon_dxy;
-  double veto_elec_dz, veto_elec_dxy;
+  double veto_elec_dz, veto_elec_dxy, veto_muon_dz, veto_muon_dxy;
   double elec_pt, elec_eta, muon_pt, muon_eta;
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
-  
+
   elec_dz = 0.1;
   elec_dxy = 0.02;
   veto_elec_dz = 0.2;
   veto_elec_dxy = 0.04;
   muon_dz = 0.2;
   muon_dxy = 0.045;
+  veto_muon_dz = 0.2;
+  veto_muon_dxy = 0.045;
   
   elec_pt = 20.0;
   elec_eta = 2.4;
@@ -318,9 +320,9 @@ int main(int argc, char* argv[]){
     ("VetoMuonPtEtaFilter")
     .set_input_label("vetoMuons").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
 						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
-						//&& bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
-						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy 
-						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz
+						&& bind(PF04Isolation<Muon>, _1, 0.5, 0.2)
+						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
+						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
 						)
     .set_min(0)
     .set_max(999);

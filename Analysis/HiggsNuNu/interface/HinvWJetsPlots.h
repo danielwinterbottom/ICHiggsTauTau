@@ -30,6 +30,12 @@ namespace ic {
     TH1F *mupt_2;
     TH1F *mueta_1;
     TH1F *mueta_2;
+    TH1F *edxy_all;
+    TH1F *mudxy_all;
+    TH1F *edz_all;
+    TH1F *mudz_all;
+    TH1F *eiso_all;
+    TH1F *muiso_all;
     TH1F *met_noelectrons;
     TH1F *met_nomuons;
 
@@ -70,6 +76,8 @@ namespace ic {
     double mupt_2_;
     double mueta_1_;
     double mueta_2_;
+ 
+
     double met_noelectrons_;
     double met_nomuons_;
 
