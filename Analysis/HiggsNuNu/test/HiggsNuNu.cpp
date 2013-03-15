@@ -99,7 +99,7 @@ int main(int argc, char* argv[]){
     ("signal_region",       po::value<unsigned>(&signal_region)->default_value(1))
     ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
-    ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilterResult,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,!manystripclus53X,!toomanystripclus53X,!logErrorTooManyClusters,CSCTightHaloFilter"))
+    ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
     ("upordown",            po::value<bool>(&upordown)->default_value(true));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
