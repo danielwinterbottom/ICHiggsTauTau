@@ -289,6 +289,10 @@ int main(int argc, char* argv[]){
 
   EffectiveAreaIsolationFilter selElectronIso = EffectiveAreaIsolationFilter("SelElectronIso","selElectrons",0.10);
 
+  OverlapFilter<Electron, Muon> elecMuonOverlapFilter = OverlapFilter<Electron, Muon>("ElecMuonOverlapFilter")
+    .set_input_label("selElectrons")
+    .set_reference_label("vetoMuons")
+    .set_min_dr(0.3);
 
   SimpleFilter<Electron> oneElectronFilter = SimpleFilter<Electron>
     ("OneElectronFilter")
@@ -371,13 +375,6 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
-  //no need to remove overlap because events with leptons are rejected...
-  //or maybe remove overlap with tau candidates ??
-  //  OverlapFilter<PFJet, CompositeCandidate> jetLeptonOverlapFilter = OverlapFilter<PFJet, CompositeCandidate>
-  //  ("JetLeptonOverlapFilter")
-  //  .set_input_label("pfJetsPFlow")
-  //  .set_reference_label("emtauCandidates")
-  //  .set_min_dr(0.5);
 
   HinvJESUncertainty<PFJet,Met> JESUncertaintyCorrector = HinvJESUncertainty<PFJet,Met>
     ("JESUncertaintyCorrector")
@@ -400,6 +397,21 @@ int main(int argc, char* argv[]){
   SimpleFilter<PFJet> jetPtEtaFilter = SimpleFilter<PFJet>
     ("JetPtEtaFilter")
     .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptcut, 4.7));
+
+  //in principle no need to remove overlap because events with leptons are rejected...
+  //except for specific e/mu selection for W background estimation.
+  // and to calculate efficiencies of cuts correctly
+  //we want the leading jets to really be jets even before vetoing leptons...
+  //so: removal of jets matched with veto electrons and muons
+  OverlapFilter<PFJet, Electron> jetElecOverlapFilter = OverlapFilter<PFJet, Electron>("jetElecOverlapFilter")
+    .set_input_label("pfJetsPFlow")
+    .set_reference_label("vetoElectrons")
+    .set_min_dr(0.5);
+
+  OverlapFilter<PFJet, Muon> jetMuonOverlapFilter = OverlapFilter<PFJet, Muon>("jetMuonOverlapFilter")
+    .set_input_label("pfJetsPFlow")
+    .set_reference_label("vetoMuons")
+    .set_min_dr(0.5);
 
   OneCollCompositeProducer<PFJet> jjPairProducer = OneCollCompositeProducer<PFJet>
     ("JetJetPairProducer")
@@ -671,24 +683,69 @@ int main(int argc, char* argv[]){
      }
      analysis.AddModule(&jetIDFilter);
      analysis.AddModule(&jetPtEtaFilter);
-     analysis.AddModule(&jjPairProducer);
-     analysis.AddModule(&etaProdJetPairFilter);
-     //analysis.AddModule(&jetPairFilter);
-     analysis.AddModule(&controlPlots_dijet);
 
-     //filter leptons before changing MET...
+     //prepare collections of veto leptons
+     analysis.AddModule(&vetoElectronCopyCollection);
+     analysis.AddModule(&vetoElectronFilter);
+     analysis.AddModule(&vetoElectronIso);
+     analysis.AddModule(&vetoMuonCopyCollection);
+     analysis.AddModule(&vetoMuonFilter);
+
+     //filter leptons before making jet pairs and changing MET...
      analysis.AddModule(&selElectronCopyCollection);
-     analysis.AddModule(&selMuonCopyCollection);
-     analysis.AddModule(&selMuonFilter);
      analysis.AddModule(&selElectronFilter);
      analysis.AddModule(&selElectronIso);
+     analysis.AddModule(&selMuonCopyCollection);
+     analysis.AddModule(&selMuonFilter);
+     analysis.AddModule(&elecMuonOverlapFilter);
 
      //add met without leptons for plots
      analysis.AddModule(&metNoMuons);
      analysis.AddModule(&metNoElectrons);
      analysis.AddModule(&metNoENoMu);
 
+     //deal with removing overlap with selected leptons
+     analysis.AddModule(&jetMuonOverlapFilter);
+     analysis.AddModule(&jetElecOverlapFilter);
+     
+     //jet pair production and selection before plotting
+     analysis.AddModule(&jjPairProducer);
+     analysis.AddModule(&etaProdJetPairFilter);
+     analysis.AddModule(&controlPlots_dijet);
      analysis.AddModule(&wjetsPlots_dijet);
+
+     //lepton selections or veto
+     if (channel == channel::munu){
+       analysis.AddModule(&oneMuonFilter);
+       analysis.AddModule(&oneVetoMuonFilter);
+       analysis.AddModule(&zeroVetoElectronFilter);
+       //analysis.AddModule(&muonMTFilter);
+       analysis.AddModule(&controlPlots_wsel);
+       analysis.AddModule(&wjetsPlots_wsel);
+     }
+     else if (channel == channel::enu){
+       analysis.AddModule(&oneElectronFilter);
+       analysis.AddModule(&oneVetoElectronFilter);
+       analysis.AddModule(&zeroVetoMuonFilter);
+       //analysis.AddModule(&electronMTFilter);
+       analysis.AddModule(&controlPlots_wsel);
+       analysis.AddModule(&wjetsPlots_wsel);
+     }
+     else if (channel == channel::emu){
+       analysis.AddModule(&oneElectronFilter);
+       //analysis.AddModule(&oneVetoElectronFilter);
+       analysis.AddModule(&oneMuonFilter);
+       //analysis.AddModule(&oneVetoMuonFilter);
+       //analysis.AddModule(&electronMTFilter);
+       analysis.AddModule(&controlPlots_wsel);
+       analysis.AddModule(&wjetsPlots_wsel);
+     }
+     else {
+       //lepton veto modules
+       analysis.AddModule(&zeroVetoMuonFilter);
+       analysis.AddModule(&zeroVetoElectronFilter);
+       analysis.AddModule(&controlPlots_lepveto);
+     }
 
      //met modules
      if (channel == channel::munu){
@@ -710,49 +767,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_looseMjj);
      analysis.AddModule(&detaJetPairFilter);
      analysis.AddModule(&controlPlots_deta);
-     
-     //add leptons just to plot them before specific W or Hinv selection
      analysis.AddModule(&wjetsPlots_deta);
-
-     //prepare collections of veto leptons
-     analysis.AddModule(&vetoElectronCopyCollection);
-     analysis.AddModule(&vetoElectronFilter);
-     analysis.AddModule(&vetoElectronIso);
-
-     analysis.AddModule(&vetoMuonCopyCollection);
-     analysis.AddModule(&vetoMuonFilter);
-
-     if (channel == channel::munu){
-       analysis.AddModule(&oneMuonFilter);
-       analysis.AddModule(&oneVetoMuonFilter);
-       analysis.AddModule(&zeroVetoElectronFilter);
-       //analysis.AddModule(&muonMTFilter);
-       analysis.AddModule(&controlPlots_wsel);
-       analysis.AddModule(&wjetsPlots_wsel);
-     }
-     else if (channel == channel::enu){
-       analysis.AddModule(&oneElectronFilter);
-       analysis.AddModule(&oneVetoElectronFilter);
-       analysis.AddModule(&zeroVetoMuonFilter);
-       //analysis.AddModule(&electronMTFilter);
-       analysis.AddModule(&controlPlots_wsel);
-       analysis.AddModule(&wjetsPlots_wsel);
-     }
-     else if (channel == channel::emu){
-       analysis.AddModule(&oneElectronFilter);
-       analysis.AddModule(&oneVetoElectronFilter);
-       analysis.AddModule(&oneMuonFilter);
-       analysis.AddModule(&oneVetoMuonFilter);
-       //analysis.AddModule(&electronMTFilter);
-       analysis.AddModule(&controlPlots_wsel);
-       analysis.AddModule(&wjetsPlots_wsel);
-     }
-     else {
-       //lepton veto modules
-       analysis.AddModule(&zeroVetoMuonFilter);
-       analysis.AddModule(&zeroVetoElectronFilter);
-       analysis.AddModule(&controlPlots_lepveto);
-     }
 
      //dphi cut
      if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
