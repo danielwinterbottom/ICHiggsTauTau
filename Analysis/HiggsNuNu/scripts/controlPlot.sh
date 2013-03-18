@@ -4,28 +4,22 @@ PARAMS=./scripts/Params.dat
 for CHANNEL in nunu enu munu
   do
 
-  for MET in 130 0 70
+  for MET in 130 #0 70
     do
 
-    for DOQCD in 0 1 2
+    for DOQCD in 2
       do
 
       for SYST in central #JESUP JESDOWN
 	do
 
 	FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
-	PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/
+	PLOTDIR=PLOTS_QCD/$CHANNEL/MET$MET/DOQCD$DOQCD/
 	
-	if [ "$SYST" = "JESUP" ]
+	if [ "$SYST" != "central" ]
 	    then
-	    FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/JESUP/
-	    PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/JESUP/
-	fi
-
-	if [ "$SYST" = "JESDOWN" ]
-	    then
-	    FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/JESDOWN/
-	    PLOTDIR=PLOTS/$CHANNEL/MET$MET/DOQCD$DOQCD/JESDOWN/
+	    FOLDER=$FOLDER"/"$SYST"/"
+	    PLOTDIR=$PLOTDIR"/"$SYST"/"
 	fi
 	
 	mkdir -p $PLOTDIR

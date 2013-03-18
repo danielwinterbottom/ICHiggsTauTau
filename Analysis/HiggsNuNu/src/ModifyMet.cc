@@ -39,18 +39,23 @@ namespace ic {
 
   int ModifyMet::Execute(TreeEvent *event){
 
-    Met * lMet = event->GetPtr<Met>(met_name_);
 
-    ROOT::Math::PtEtaPhiEVector lVec = lMet->vector();
+    Met *lMet = event->GetPtr<Met>(met_name_);
+    event->Add(ModuleName()+"Product", *lMet);
+    Met *lMetPtr = &(event->Get<Met>(ModuleName()+"Product"));
+    event->Add(ModuleName(), lMetPtr);
+
+
+    ROOT::Math::PtEtaPhiEVector lVec = lMetPtr->vector();
 
     if (lepFlavour_==2)
       correctMet<Muon>(event,lVec);
     else if (lepFlavour_==1)
       correctMet<Electron>(event,lVec);
 
-    lMet->set_vector(lVec);
+    lMetPtr->set_vector(lVec);
+ 
 
-    event->Add(ModuleName(), lMet);
     return 0;
   }
 

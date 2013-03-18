@@ -560,8 +560,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
-    .set_electrons_label("selElectrons")
-    .set_muons_label("selMuons")
+    .set_electrons_label("electrons")
+    .set_muons_label("muonsPFlow")
     .set_sel_label("JetPair");
 
   if (channel==channel::enu)
