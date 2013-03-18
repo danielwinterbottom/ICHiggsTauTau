@@ -49,16 +49,16 @@ for CHANNEL in nunu enu munu
 #    --paramfile=$PARAMS
 
 ###### n_jetsingap
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --plot_name="n_jetsingap"  --x_axis_label="Number of jets in rapidity gap" \
-    --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
-    --y_axis_min=0.01 --extra_pad=10000 \
-    --rebin=1 \
-    --norm_bins=false --verbose=false \
-    --log_y=true \
-    --paramfile=$PARAMS
+#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+#    --folder=$FOLDER --plot_dir=$PLOTDIR  \
+#    --plot_name="n_jetsingap"  --x_axis_label="Number of jets in rapidity gap" \
+#    --blind=$BLIND \
+#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
+#    --y_axis_min=0.01 --extra_pad=10000 \
+#    --rebin=1 \
+#    --norm_bins=false --verbose=false \
+#    --log_y=true \
+#    --paramfile=$PARAMS
 
 ###### n_vtx
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -146,16 +146,16 @@ for CHANNEL in nunu enu munu
     --paramfile=$PARAMS
 
 ###### dphijj
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
-    --blind=$BLIND --x_blind_min=0 --x_blind_max=1.  \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.2 \
-    --y_axis_min=0.01 --extra_pad=100000 \
-    --rebin=1 \
-    --norm_bins=false \
-    --log_y=true \
-    --paramfile=$PARAMS
+#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+#    --folder=$FOLDER --plot_dir=$PLOTDIR  \
+#    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
+#    --blind=$BLIND --x_blind_min=0 --x_blind_max=1.  \
+#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.2 \
+#    --y_axis_min=0.01 --extra_pad=100000 \
+#    --rebin=1 \
+#    --norm_bins=false \
+#    --log_y=true \
+#    --paramfile=$PARAMS
 
 ###### met
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \

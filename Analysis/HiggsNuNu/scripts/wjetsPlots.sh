@@ -49,8 +49,9 @@ for CHANNEL in nunu enu munu
     --plot_name="mt_munu"  --x_axis_label="m_{T}(#mu#nu) (GeV)" \
     --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=400 \
-    --y_axis_min=0.01 --extra_pad=100 \
+    --y_axis_min=0.01 --extra_pad=2 \
     --rebin=20 \
+    --log_y=false \
     --norm_bins=false --verbose=false \
     --paramfile=$PARAMS
 
@@ -59,8 +60,9 @@ for CHANNEL in nunu enu munu
     --plot_name="mt_enu"  --x_axis_label="m_{T}(e#nu) (GeV)" \
     --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=400 \
-    --y_axis_min=0.01 --extra_pad=100 \
+    --y_axis_min=0.01 --extra_pad=2 \
     --rebin=20 \
+    --log_y=false \
     --norm_bins=false --verbose=false \
     --paramfile=$PARAMS
 
@@ -109,26 +111,26 @@ for CHANNEL in nunu enu munu
     --paramfile=$PARAMS
 
 ###### met no mu
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR \
-    --plot_name="met_nomuons"  --x_axis_label="PF MET + #mu (GeV)" \
-    --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-    --y_axis_min=0.01 --extra_pad=10000 \
-    --rebin=20 \
-    --norm_bins=false \
-    --paramfile=$PARAMS
+#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+#    --folder=$FOLDER --plot_dir=$PLOTDIR \
+#    --plot_name="met_nomuons"  --x_axis_label="PF MET + #mu (GeV)" \
+#    --blind=$BLIND \
+#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
+#    --y_axis_min=0.01 --extra_pad=10000 \
+#    --rebin=20 \
+#    --norm_bins=false \
+#    --paramfile=$PARAMS
 
 ###### met no elec
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR \
-    --plot_name="met_noelectrons"  --x_axis_label="PF MET + e (GeV)" \
-    --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-    --y_axis_min=0.01 --extra_pad=10000 \
-    --rebin=20 \
-    --norm_bins=false \
-    --paramfile=$PARAMS
+#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+#    --folder=$FOLDER --plot_dir=$PLOTDIR \
+#    --plot_name="met_noelectrons"  --x_axis_label="PF MET + e (GeV)" \
+#    --blind=$BLIND \
+#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
+#    --y_axis_min=0.01 --extra_pad=10000 \
+#    --rebin=20 \
+#    --norm_bins=false \
+#    --paramfile=$PARAMS
 
     done
   done

@@ -234,12 +234,12 @@ int main(int argc, char* argv[]){
 
   vector<string> files;
   files.push_back("Data_MET-2012A-06Aug2012-v1");
-  files.push_back("Data_MET-2012A-13Jul2012-v1");
+  files.push_back("Data_MET-2012A-13Jul2012-v1_0_795305fb");
   files.push_back("Data_MET-2012B-13Jul2012-v1");
   files.push_back("Data_MET-2012C-24Aug2012-v1");
   files.push_back("Data_MET-2012C-11Dec2012-v1");
   files.push_back("Data_MET-2012C-PromptReco-v2");
-  files.push_back("Data_MET-2012D-PromptReco-v1");
+  files.push_back("Data_MET-2012D-PromptReco-v1_7_193fb");
   files.push_back("MC_QCD-Pt-30to50-pythia6");
   files.push_back("MC_QCD-Pt-50to80-pythia6");
   files.push_back("MC_QCD-Pt-80to120-pythia6");
@@ -301,11 +301,11 @@ int main(int argc, char* argv[]){
   //build a list of selections
   vector<string> selections;
   selections.push_back("JetPair");
+  selections.push_back("LeptonVeto");
+  selections.push_back("WSelection");
   selections.push_back("MET");
   selections.push_back("LooseMjj");
   selections.push_back("DEta");
-  selections.push_back("LeptonVeto");
-  selections.push_back("WSelection");
   if (signal_region < 2) {
     selections.push_back("DPhi");
     selections.push_back("TightMjj");
@@ -345,7 +345,7 @@ int main(int argc, char* argv[]){
       if (tfiles[f]->GetDirectory(("/"+s).c_str())) {
 	plots[nm] = ic::TH1PlotElement(nm, tfiles[f], "/"+s, plot_name);
 	if (!plots[nm].hist_ptr()) {
-	  if (!skip[k]) std::cerr << " Histogram " << nm << " not found. Skipping..." << std::endl;
+	  if (!skip[k]) std::cerr << " Histogram " << plot_name << " not found for " << nm << ". Skipping..." << std::endl;
 	  skip[k] = true;
 	  continue;
 	}
