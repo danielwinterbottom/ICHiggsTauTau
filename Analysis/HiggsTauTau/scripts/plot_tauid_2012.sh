@@ -44,11 +44,14 @@ TAUPT=(
 'tau_pt_20-30'
 'tau_pt_30-40'
 'tau_pt_40-50'
-'tau_pt_50-60'
-'tau_pt_60-80'
-'tau_pt_80-100'
-'tau_pt_100-150'
-'tau_pt_150-200'
+'tau_pt_50-75'
+'tau_pt_75-100'
+'tau_pt_100-200'
+# 'tau_pt_50-60'
+# 'tau_pt_60-80'
+# 'tau_pt_80-100'
+# 'tau_pt_100-150'
+# 'tau_pt_150-200'
 )
 
 
@@ -56,7 +59,7 @@ for i in "${TAUPT[@]}"
 do
 
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 \
-  --method=8 --category=$i --plot_name="m_vis_sm"  \
+  --method=8 --category=$i --plot_name="m_vis_sm"  --verbose=false \
   --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
   --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=false --draw_signal=false
 done
@@ -115,97 +118,97 @@ done
 
 
 #### pTtt
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=5 \
-  --method=8 --category="inclusive" --plot_name="pt_tt"  \
-  --x_axis_label="Visible di-tau + E_{T}^{miss} p_{T} [GeV]" --norm_bins=false \
-  --paramfile=$PARAMS $SCALE_MT_INC  --use_ztt_mc=false --draw_ratio=true --log_y=true --draw_signal=false
+# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=5 \
+#   --method=8 --category="inclusive" --plot_name="pt_tt"  \
+#   --x_axis_label="Visible di-tau + E_{T}^{miss} p_{T} [GeV]" --norm_bins=false \
+#   --paramfile=$PARAMS $SCALE_MT_INC  --use_ztt_mc=false --draw_ratio=true --log_y=false --draw_signal=false
 
 
 
-# #### CaloMET
-# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=et --rebin=1 \
-#   --method=8 --category="inclusive" --plot_name="calo_nohf_met"  \
-#   --x_axis_label="CaloNoHF E_{T}^{miss} [GeV]" --norm_bins=false \
-#   --paramfile=$PARAMS $SCALE_ET_INC --use_ztt_mc=true
+# # #### CaloMET
+# # ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=et --rebin=1 \
+# #   --method=8 --category="inclusive" --plot_name="calo_nohf_met"  \
+# #   --x_axis_label="CaloNoHF E_{T}^{miss} [GeV]" --norm_bins=false \
+# #   --paramfile=$PARAMS $SCALE_ET_INC --use_ztt_mc=true
 
+# # ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 \
+# #   --method=8 --category="inclusive" --plot_name="calo_nohf_met"  \
+# #   --x_axis_label="CaloNoHF E_{T}^{miss} [GeV]" --norm_bins=false \
+# #   --paramfile=$PARAMS $SCALE_MT_INC  --use_ztt_mc=true
+
+# # ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=em --rebin=1 \
+# #   --method=8 --category="inclusive" --plot_name="calo_nohf_met" \
+# #   --x_axis_label="CaloNoHF E_{T}^{miss} [GeV]" --norm_bins=false \
+# #   --paramfile=$PARAMS --use_ztt_mc=true
+
+# # #### L1 MET
+# # ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=et --rebin=1 \
+# #   --method=8 --category="inclusive" --plot_name="l1_met"  \
+# #   --x_axis_label="L1 E_{T}^{miss} [GeV]" --norm_bins=false \
+# #   --paramfile=$PARAMS $SCALE_ET_INC --use_ztt_mc=true
+
+# # ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 \
+# #   --method=8 --category="inclusive" --plot_name="l1_met"  \
+# #   --x_axis_label="L1 E_{T}^{miss} [GeV]" --norm_bins=false \
+# #   --paramfile=$PARAMS $SCALE_MT_INC  --use_ztt_mc=true
+
+# # ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=em --rebin=1 \
+# #   --method=8 --category="inclusive" --plot_name="l1_met" \
+# #   --x_axis_label="L1 E_{T}^{miss} [GeV]" --norm_bins=false \
+# #   --paramfile=$PARAMS --use_ztt_mc=true
+
+# #### Visible Mass
 # ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 \
-#   --method=8 --category="inclusive" --plot_name="calo_nohf_met"  \
-#   --x_axis_label="CaloNoHF E_{T}^{miss} [GeV]" --norm_bins=false \
-#   --paramfile=$PARAMS $SCALE_MT_INC  --use_ztt_mc=true
-
-# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=em --rebin=1 \
-#   --method=8 --category="inclusive" --plot_name="calo_nohf_met" \
-#   --x_axis_label="CaloNoHF E_{T}^{miss} [GeV]" --norm_bins=false \
-#   --paramfile=$PARAMS --use_ztt_mc=true
-
-# #### L1 MET
-# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=et --rebin=1 \
-#   --method=8 --category="inclusive" --plot_name="l1_met"  \
-#   --x_axis_label="L1 E_{T}^{miss} [GeV]" --norm_bins=false \
-#   --paramfile=$PARAMS $SCALE_ET_INC --use_ztt_mc=true
-
-# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 \
-#   --method=8 --category="inclusive" --plot_name="l1_met"  \
-#   --x_axis_label="L1 E_{T}^{miss} [GeV]" --norm_bins=false \
-#   --paramfile=$PARAMS $SCALE_MT_INC  --use_ztt_mc=true
-
-# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=em --rebin=1 \
-#   --method=8 --category="inclusive" --plot_name="l1_met" \
-#   --x_axis_label="L1 E_{T}^{miss} [GeV]" --norm_bins=false \
-#   --paramfile=$PARAMS --use_ztt_mc=true
-
-#### Visible Mass
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 \
-  --method=8 --category="inclusive" --plot_name="m_vis_sm_fine"  \
-  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
-  --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
+#   --method=8 --category="inclusive" --plot_name="m_vis_sm_fine"  \
+#   --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
+#   --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
 
 
-#### MET
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt  --rebin=1 --non_mass_plot=true \
-  --method=8 --category="inclusive" --plot_name="met"  --x_axis_label="E_{T}^{miss} [GeV]" \
-  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
-  --paramfile=$PARAMS --extra_pad=1.1 $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
+# #### MET
+# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt  --rebin=1 --non_mass_plot=true \
+#   --method=8 --category="inclusive" --plot_name="met"  --x_axis_label="E_{T}^{miss} [GeV]" \
+#   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
+#   --paramfile=$PARAMS --extra_pad=1.1 $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
 
 
 
-#### pt_1
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 --non_mass_plot=true \
-  --method=8 --category="inclusive" --plot_name="pt_1"  --x_axis_label="Muon p_{T} [GeV]" \
-  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
+# #### pt_1
+# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 --non_mass_plot=true \
+#   --method=8 --category="inclusive" --plot_name="pt_1"  --x_axis_label="Muon p_{T} [GeV]" \
+#   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+#   --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
 
 
-#### pt_2
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=5 --non_mass_plot=true \
-  --method=8 --category="inclusive" --plot_name="pt_2"  --x_axis_label="Tau p_{T} [GeV]" \
-  --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false --y_axis_min=1
+# #### pt_2
+# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=5 --non_mass_plot=true \
+#   --method=8 --category="inclusive" --plot_name="pt_2"  --x_axis_label="Tau p_{T} [GeV]" \
+#   --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false --y_axis_min=1
 
 
-#### eta_1
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=2 --non_mass_plot=true \
-  --method=8 --category="inclusive" --plot_name="eta_1"  --x_axis_label="Muon #eta" \
-  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.4 $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
+# #### eta_1
+# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=2 --non_mass_plot=true \
+#   --method=8 --category="inclusive" --plot_name="eta_1"  --x_axis_label="Muon #eta" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+#   --paramfile=$PARAMS --extra_pad=1.4 $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
 
 
-#### eta_2
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=2 --non_mass_plot=true \
-  --method=8 --category="inclusive" --plot_name="eta_2"  --x_axis_label="Tau #eta" \
-  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.4 $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
+# #### eta_2
+# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=2 --non_mass_plot=true \
+#   --method=8 --category="inclusive" --plot_name="eta_2"  --x_axis_label="Tau #eta" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+#   --paramfile=$PARAMS --extra_pad=1.4 $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
 
-#### m_2
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=2 --non_mass_plot=true \
-  --method=8 --category="inclusive" --plot_name="m_2"  --x_axis_label="Tau Mass [GeV]" \
-  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS --extra_pad=1.1 $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
+# #### m_2
+# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=2 --non_mass_plot=true \
+#   --method=8 --category="inclusive" --plot_name="m_2"  --x_axis_label="Tau Mass [GeV]" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+#   --paramfile=$PARAMS --extra_pad=1.1 $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
 
-#### n_vtx
-./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 --non_mass_plot=true  \
-  --method=8 --category="inclusive" --plot_name="n_vtx"  --x_axis_label="Number of Vertices" \
-  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
+# #### n_vtx
+# ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg $FOLDER  --channel=mt --rebin=1 --non_mass_plot=true  \
+#   --method=8 --category="inclusive" --plot_name="n_vtx"  --x_axis_label="Number of Vertices" \
+#   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+#   --paramfile=$PARAMS $SCALE_MT_INC --draw_ratio=true --log_y=true --draw_signal=false
 
 
 # #### n_jets

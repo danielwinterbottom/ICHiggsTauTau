@@ -530,8 +530,11 @@ int main(int argc, char* argv[]){
   }
   string cat  	= category;
 
+
+  string yield_fmt = "%-25s %-20.3f %-20.3f\n";
+
   // ---------------------------------------------------
-  // DO DATA
+  // DATA
   // ---------------------------------------------------
   TH1F *data_hist_clean = (TH1F*)(plots[Token("Data",cat,os_sel)].hist_ptr()->Clone());
   TH1F *data_hist = (TH1F*)(plots[Token("Data",cat,os_sel)].hist_ptr()->Clone());
@@ -550,8 +553,8 @@ int main(int argc, char* argv[]){
   TH1F *data_hist_ss = (TH1F*)(plots[Token("Data",cat,ss_sel)].hist_ptr()->Clone());
   ic::TH1PlotElement data_shape("data_shape", data_hist);
   ic::TH1PlotElement data_shape_ss("data_shape_ss", data_hist_ss);
-
-  std::cout << boost::format(param_fmt) % "Data Yield" % data_norm;
+  double data_err = Error(data_hist_clean);
+  std::cout << boost::format(yield_fmt) % "Data " % data_norm % data_err;
 
   // ---------------------------------------------------
   // Generate TOP Norm and TOP Shape
@@ -560,6 +563,7 @@ int main(int argc, char* argv[]){
 
   // Norm is the same for all methods
   double top_norm = Integral(plots[Token("TTJets",cat,os_sel)].hist_ptr());
+  double top_err = Error(plots[Token("TTJets",cat,os_sel)].hist_ptr());
   TH1F *top_hist = nullptr;
   string top_shape_str = is_2012 ? "TT" : "TTJets";
   if (channel == channel::em) top_shape_str = "TTJets";
@@ -579,7 +583,8 @@ int main(int argc, char* argv[]){
   ic::TH1PlotElement top_shape("top_shape", top_hist);
   top_hist_ss->Scale(top_norm_ss / Integral(top_hist_ss));
   ic::TH1PlotElement top_shape_ss("top_shape_ss", top_hist_ss);
-  std::cout << boost::format(param_fmt) % "Top Yield" % top_norm;
+  std::cout << boost::format(yield_fmt) % "Top" % top_norm % top_err;
+
   if (verbose) {
     std::cout << "** Top Err: " << Error(plots[Token("TTJets",cat,os_sel)].hist_ptr()) << std::endl;
     std::cout << "** Top Events: " << plots[Token("TTJets",cat,os_sel)].hist_ptr()->GetEntries() << std::endl;
@@ -607,6 +612,7 @@ int main(int argc, char* argv[]){
     vv_samples.push_back("T-tW");
     vv_samples.push_back("Tbar-tW");
   }
+
 
   // Norm is the same for all methods
   double vv_norm = 0.0;
@@ -640,11 +646,12 @@ int main(int argc, char* argv[]){
   }
 
   vv_hist->Scale( vv_norm / Integral(vv_hist) );
+  double vv_err = Error(vv_hist);
   ic::TH1PlotElement vv_shape("vv_shape", vv_hist);
   vv_hist_ss->Scale( vv_norm_ss / Integral(vv_hist_ss) );
   ic::TH1PlotElement vv_shape_ss("vv_shape_ss", vv_hist_ss);
 
-  std::cout << boost::format(param_fmt) % "VV Yield" % vv_norm;
+  std::cout << boost::format(yield_fmt) % "VV" % vv_norm % vv_err;
   if (verbose) std::cout << "**Diboson Err: " << Error(vv_hist) << std::endl;
 
   // // ---------------------------------------------------
@@ -712,8 +719,8 @@ int main(int argc, char* argv[]){
       zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       if (method == 3 && channel == channel::et) zl_hist = (TH1F*)(plots[Token("Special_18_DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()->Clone());
-      if (zl_norm > 0) zl_hist->Scale( zl_norm / Integral(zl_hist) );
-      if (zj_norm > 0) zj_hist->Scale( zj_norm / Integral(zj_hist) );
+      if (Integral(zl_hist) > 0.0) zl_hist->Scale( zl_norm / Integral(zl_hist) );
+      if (Integral(zj_hist) > 0.0) zj_hist->Scale( zj_norm / Integral(zj_hist) );
       zll_hist = (TH1F*)zl_hist->Clone();
       zll_hist->Add(zj_hist);
     }
@@ -775,21 +782,23 @@ int main(int argc, char* argv[]){
   }
 
 
-  zll_hist->Scale( zll_norm / Integral(zll_hist) );
+  if (Integral(zll_hist) > 0.0) zll_hist->Scale( zll_norm / Integral(zll_hist) );
   zll_hist_ss->Scale( zll_norm_ss / Integral(zll_hist_ss) );
-  zl_hist->Scale( zl_norm / Integral(zl_hist) );
-  zj_hist->Scale( zj_norm / Integral(zj_hist) );
+  if (Integral(zl_hist) > 0.0) zl_hist->Scale( zl_norm / Integral(zl_hist) );
+  if (Integral(zj_hist) > 0.0) zj_hist->Scale( zj_norm / Integral(zj_hist) );
 
-  
+  double zll_err = Error(zll_hist);
+  double zl_err = Error(zl_hist);
+  double zj_err = Error(zj_hist);
 
   ic::TH1PlotElement zll_shape("zll_shape", zll_hist);
   ic::TH1PlotElement zll_shape_ss("zll_shape_ss", zll_hist_ss);
   ic::TH1PlotElement zl_shape("zl_shape", zl_hist);
   ic::TH1PlotElement zj_shape("zj_shape", zj_hist);
 
-  std::cout << boost::format(param_fmt) % "ZLL Yield" % zll_norm;
-  std::cout << boost::format(param_fmt) % "ZL Yield" % zl_norm;
-  std::cout << boost::format(param_fmt) % "ZJ Yield" % zj_norm;
+  std::cout << boost::format(yield_fmt) % "ZLL" % zll_norm % zll_err;
+  std::cout << boost::format(yield_fmt) % "ZL" % zl_norm % zl_err;
+  std::cout << boost::format(yield_fmt) % "ZJ" % zj_norm % zj_err;
 
   // ---------------------------------------------------
   // Generate ZTT Shape and Norm
@@ -867,7 +876,8 @@ int main(int argc, char* argv[]){
 
   ic::TH1PlotElement ztt_shape("ztt_shape", ztt_hist);
 
-  std::cout << boost::format(param_fmt) % "ZTT Yield" % ztt_norm;
+  double ztt_err = Error(ztt_hist);
+  std::cout << boost::format(yield_fmt) % "ZTT" % ztt_norm % ztt_err;
 
   // 5.3% (high), 1.5% (low)
   double ztt_norm_ss = Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr()) * embed_norm;
@@ -902,10 +912,16 @@ int main(int argc, char* argv[]){
   double w_ss_sel_inclusive = 0.0;
   TH1F *w_hist = NULL;
 
+  double w_err = 0.0;
+  double w_err_data_rel = 0.0;
+  double w_err_mc_rel = 0.0;
+
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
     // 0/1 Jet, B Jet, dilepton, inclusive, twojet
     if (method <= 4 || method >= 6) {
     	w_os_con = WSideband(plots, vv_samples, embed_norm, cat, os_con, verbose);
+      // Assume the stat error is just data in sideband * stat of W in signal region
+      w_err_data_rel = Error(plots[Token("Data",cat,os_con)].hist_ptr()) / Integral(plots[Token("Data",cat,os_con)].hist_ptr());
       if (verbose) std::cout << "=> OS Control W: " << w_os_con << std::endl;
       
       w_ss_con = WSideband(plots, vv_samples, embed_norm, cat, ss_con, verbose);
@@ -914,6 +930,7 @@ int main(int argc, char* argv[]){
     // Extrapolation for 0/1 Jet, dilepton, inclusive, twojet
     if (method <= 4|| method >= 8) {
     	double w_os_sel_r = Integral(plots[Token("WJetsToLNuSoup",cat,os_sel)].hist_ptr());
+      w_err_mc_rel = Error(plots[Token("WJetsToLNuSoup",cat,os_sel)].hist_ptr()) / Integral(plots[Token("WJetsToLNuSoup",cat,os_sel)].hist_ptr());
     	double w_os_con_r = Integral(plots[Token("WJetsToLNuSoup",cat,os_con)].hist_ptr());
     	double w_ss_sel_r = Integral(plots[Token("WJetsToLNuSoup",cat,ss_sel)].hist_ptr());
     	double w_ss_con_r = Integral(plots[Token("WJetsToLNuSoup",cat,ss_con)].hist_ptr());
@@ -1004,8 +1021,12 @@ int main(int argc, char* argv[]){
   }
   
   ic::TH1PlotElement w_shape("w_shape", w_hist);
+  // w_err_data_rel = 1. - w_err_data_rel;
+  // w_err_mc_rel = 1. - w_err_mc_rel;
+  w_err = sqrt(w_err_mc_rel*w_err_mc_rel + w_err_data_rel * w_err_data_rel);
+  w_err = w_err * Integral(w_hist);
 	ic::TH1PlotElement w_shape_ss("w_shape_ss", w_hist_ss);
-  std::cout << boost::format(param_fmt) % "W Yield" % w_norm;
+  std::cout << boost::format(yield_fmt) % "W" % w_norm % w_err;
 
 
 
@@ -1016,6 +1037,7 @@ int main(int argc, char* argv[]){
 
 
   double qcd_norm = 0.0;
+  double qcd_err = 0.0;
   double qcd_inclusive = 0.0;
   double os_ss_ratio = parser.GetParam<double>("QCD_OS_SS_RATIO");
   TH1F * h1 = nullptr;
@@ -1029,10 +1051,13 @@ int main(int argc, char* argv[]){
     //-----------------------
     if (method <= 4 || method >= 6) {
       double data_ss_sel = Integral(plots[Token("Data",cat,ss_sel)].hist_ptr());
+      qcd_err += Error(plots[Token("Data",cat,ss_sel)].hist_ptr()) * Error(plots[Token("Data",cat,ss_sel)].hist_ptr());
       data_ss_sel -= w_ss_sel;
+      qcd_err += pow(Error(plots[Token("Data",cat,ss_con)].hist_ptr()) / Integral(plots[Token("Data",cat,ss_con)].hist_ptr()) * w_ss_sel, 2.0);
       data_ss_sel -= Integral(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr());
       data_ss_sel -= Integral(plots[Token("TTJets",cat,ss_sel)].hist_ptr());
       data_ss_sel -= Integral(plots[Token("DYJetsToTauTau",cat,ss_sel)].hist_ptr());
+      qcd_err = sqrt(qcd_err);
       //data_ss_sel -= (Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr())*embed_norm);
       double vv_ss_total = 0.0;
       for (unsigned i = 0; i < vv_samples.size(); ++i) vv_ss_total += Integral(plots[Token(vv_samples[i],cat,ss_sel)].hist_ptr());
@@ -1222,7 +1247,7 @@ int main(int argc, char* argv[]){
 
   ic::TH1PlotElement qcd_shape("qcd_shape", qcd_hist);
 
-  std::cout << boost::format(param_fmt) % "QCD Yield" % qcd_norm;
+  std::cout << boost::format(yield_fmt) % "QCD" % qcd_norm % qcd_err;
 
 
   double qcd_norm_ss = qcd_norm/os_ss_ratio;

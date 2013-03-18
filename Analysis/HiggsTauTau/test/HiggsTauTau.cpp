@@ -877,7 +877,7 @@ int main(int argc, char* argv[]){
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
-                                  analysis.AddModule(&httRecoilCorrector);
+                                  //analysis.AddModule(&httRecoilCorrector);
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) 
                                   analysis.AddModule(&svfit);

@@ -68,6 +68,20 @@ namespace ic {
     InitCategory("tau_pt_100-150");
     InitCategory("tau_pt_150-200");
 
+    InitCategory("tau_pt_50-75");
+    InitCategory("tau_pt_75-100");
+    InitCategory("tau_pt_100-200");
+
+    InitCategory("z_pt_0-10");
+    InitCategory("z_pt_10-20");
+    InitCategory("z_pt_20-40");
+    InitCategory("z_pt_40-60");
+    InitCategory("z_pt_60-100");
+    InitCategory("z_pt_100-150");
+    InitCategory("z_pt_150-200");
+
+
+
     return 0;
   }
 
@@ -254,6 +268,19 @@ namespace ic {
     if (pt_2_ > 80. && pt_2_ <= 100.) SetPassCategory("tau_pt_80-100");
     if (pt_2_ > 100. && pt_2_ <= 150.) SetPassCategory("tau_pt_100-150");
     if (pt_2_ > 150. && pt_2_ <= 200.) SetPassCategory("tau_pt_150-200");
+    if (pt_2_ > 50. && pt_2_ <= 75.) SetPassCategory("tau_pt_50-75");
+    if (pt_2_ > 75. && pt_2_ <= 100.) SetPassCategory("tau_pt_75-100");
+    if (pt_2_ > 100. && pt_2_ <= 200.) SetPassCategory("tau_pt_100-200");
+
+
+    if (pt_tt_ > 0. && pt_tt_ <= 10.) SetPassCategory("z_pt_0-10");
+    if (pt_tt_ > 10. && pt_tt_ <= 20.) SetPassCategory("z_pt_10-20");
+    if (pt_tt_ > 20. && pt_tt_ <= 40.) SetPassCategory("z_pt_20-40");
+    if (pt_tt_ > 40. && pt_tt_ <= 60.) SetPassCategory("z_pt_40-60");
+    if (pt_tt_ > 60. && pt_tt_ <= 100.) SetPassCategory("z_pt_60-100");
+    if (pt_tt_ > 100. && pt_tt_ <= 150.) SetPassCategory("z_pt_100-150");
+    if (pt_tt_ > 150. && pt_tt_ <= 200.) SetPassCategory("z_pt_150-200");
+
 
     return 0;
   }

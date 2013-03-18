@@ -39,6 +39,7 @@ namespace ic {
 
     if (is_data_) {
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
       unsigned run = eventInfo->run();
       bool path_found = false;
       TriggerPathPtrVec const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPaths");
