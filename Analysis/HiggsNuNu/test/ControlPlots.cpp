@@ -233,12 +233,14 @@ int main(int argc, char* argv[]){
 
 
   vector<string> files;
+  //files.push_back("Data_MET-2012A-13Jul2012-v1");
   files.push_back("Data_MET-2012A-13Jul2012-v1_0_795305fb");
   files.push_back("Data_MET-2012A-06Aug2012-v1");
   files.push_back("Data_MET-2012B-13Jul2012-v1");
   files.push_back("Data_MET-2012C-24Aug2012-v1");
   files.push_back("Data_MET-2012C-11Dec2012-v1");
   files.push_back("Data_MET-2012C-PromptReco-v2");
+  //files.push_back("Data_MET-2012D-PromptReco-v1");
   files.push_back("Data_MET-2012D-PromptReco-v1_7_193fb");
   files.push_back("MC_QCD-Pt-30to50-pythia6");
   files.push_back("MC_QCD-Pt-50to80-pythia6");

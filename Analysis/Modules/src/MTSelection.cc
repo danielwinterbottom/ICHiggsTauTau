@@ -10,10 +10,12 @@ namespace ic {
   MTSelection::MTSelection(std::string const& name, 
 			   std::string input_name,
 			   std::string lepton_name,
+			   unsigned lepton_flavour,
 			   double min, 
 			   double max) : ModuleBase(name) {
     input_name_ = input_name;
     lepton_name_ = lepton_name;
+    lepton_flavour_ = lepton_flavour;
     min_ = min;
     max_ = max;
   }
@@ -25,11 +27,8 @@ namespace ic {
   int MTSelection::PreAnalysis(){
     std::cout << " ** PreAnalysis Info for MTSelection **" << std::endl;
     std::cout << "Running MTSelection with lepton collection: " << lepton_name_ << std::endl;
-    if (lepton_name_.find("elec") == lepton_name_.npos &&
-	lepton_name_.find("muon") == lepton_name_.npos){
-      std::cerr << " -- Invalid collection name: should contain \"elec\" or \"muon\" strings. MT cut will not be applied, exiting..." << std::endl;
-      throw;
-    }
+    std::cout << "Running MTSelection with lepton flavour: " << lepton_flavour_ << std::endl;
+
     return 0;
   }
 
@@ -37,15 +36,14 @@ namespace ic {
   int MTSelection::Execute(TreeEvent *event){
 
     Met * lpfMet = event->GetPtr<Met>(input_name_);
-    //load the collection under a different name to avoid troubles...
 
     double lVal = -1;
-    if (lepton_name_.find("elec") != lepton_name_.npos){
+    if (lepton_flavour_==1){
       std::vector<Electron *> lElecs = event->GetPtrVec<Electron>(lepton_name_);
       if (lElecs.size()==0) return 1;
       lVal = MT(lpfMet,lElecs[0]);
     }
-    else if (lepton_name_.find("muon") != lepton_name_.npos){
+    else if (lepton_flavour_==2){
       std::vector<Muon *> lMuons = event->GetPtrVec<Muon>(lepton_name_);
       if (lMuons.size()==0) return 1;
       lVal = MT(lpfMet,lMuons[0]);

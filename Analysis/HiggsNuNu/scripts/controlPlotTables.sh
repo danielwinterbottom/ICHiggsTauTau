@@ -3,7 +3,7 @@ PARAMS=./scripts/Params.dat
 
 for CHANNEL in nunu enu munu
   do
-  for MET in 130 0 70
+  for MET in 130 #0 70
     do
     for DOQCD in 0 1 2
       do
@@ -20,11 +20,11 @@ for CHANNEL in nunu enu munu
 	
 	mkdir -p $PLOTDIR
 	mkdir -p $PLOTDIR/wjetsComp/
-	BLIND=1
-	if [ "$CHANNEL" != "nunu" ] || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
-	    then
-	    let BLIND=0
-	fi
+	BLIND=0
+	#if [ "$CHANNEL" != "nunu" ] || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
+	#    then
+	#    let BLIND=0
+	#fi
 	
  #     echo $CHANNEL " " $MET " " $DOQCD " : BLIND variable is "$BLIND
 	

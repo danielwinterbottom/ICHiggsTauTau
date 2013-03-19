@@ -494,8 +494,9 @@ int main(int argc, char* argv[]){
   // W selection Modules
   // ------------------------------------------------------------------------------------
   double mtcut = 40;
-  MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",mtcut);
-  MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",mtcut);
+
+  MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",2,mtcut);
+  MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",1,mtcut);
 
 
   // ------------------------------------------------------------------------------------
@@ -556,6 +557,7 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("JetPair");
 
+  //set collections to all leptons for the first set of plots before selecting/vetoing them
   HinvWJetsPlots wjetsPlots_dijet = HinvWJetsPlots("DijetWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -736,7 +738,6 @@ int main(int argc, char* argv[]){
        //analysis.AddModule(&oneVetoElectronFilter);
        analysis.AddModule(&oneMuonFilter);
        //analysis.AddModule(&oneVetoMuonFilter);
-       //analysis.AddModule(&electronMTFilter);
        analysis.AddModule(&controlPlots_wsel);
        analysis.AddModule(&wjetsPlots_wsel);
      }

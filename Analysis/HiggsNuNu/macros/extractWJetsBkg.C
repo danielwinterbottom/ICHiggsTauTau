@@ -9,7 +9,7 @@
 #include "TMath.h"
 
 
-enum Selection {JetPair,MET,LooseMjj,DEta,Lep,DPhi,TightMjj};
+enum Selection {JetPair,Lep,MET,LooseMjj,DEta,DPhi,TightMjj};
 enum Sample {QCD,GJets,Top,WJets,WJets_enu,WJets_munu,WJets_taunu,ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,VV,Data,Signal};
 
 
@@ -96,30 +96,31 @@ int extractWJetsBkg(){//main
 
   std::vector<std::string> lSelVecSignal;
   lSelVecSignal.push_back("JetPair");
+  lSelVecSignal.push_back("LeptonVeto");
   lSelVecSignal.push_back("MET");
   lSelVecSignal.push_back("LooseMjj");
   lSelVecSignal.push_back("DEta");
-  lSelVecSignal.push_back("LeptonVeto");
   lSelVecSignal.push_back("DPhi");
   lSelVecSignal.push_back("TightMjj");
 
   std::vector<std::string> lSelVecControl;
   lSelVecControl.push_back("JetPair");
+  lSelVecControl.push_back("WSelection");
   lSelVecControl.push_back("MET");
   lSelVecControl.push_back("LooseMjj");
   lSelVecControl.push_back("DEta");
-  lSelVecControl.push_back("WSelection");
   lSelVecControl.push_back("DPhi");
   lSelVecControl.push_back("TightMjj");
 
+  std::string TOPDIR = "TABLES/";
+
   const unsigned nSteps = lSelVecSignal.size();
-  const unsigned nMets = 1;
-  //  unsigned MET[nMets] = {130,0,70};
-  unsigned MET[nMets] = {130};
 
-  for (unsigned iMET(0); iMET<nMets; ++iMET){//loop on MET values
+  unsigned MET[3] = {130,0,70};
 
-      std::cout << " -- Processing MET " << MET[iMET] << std::endl;
+  for (unsigned iMET(0); iMET<3; ++iMET){//loop on MET values
+
+    std::cout << " -- Processing MET " << MET[iMET] << std::endl;
 
     for (unsigned iQCD(0); iQCD<2; ++iQCD){//loop on signal region, just 0 and 1
 
@@ -134,7 +135,9 @@ int extractWJetsBkg(){//main
 
 	std::ifstream lTable;
 	std::ostringstream lName;
-	lName << "../TABLES/nunu/" << lFolder.str() << "/SummaryTable_" << lSelVecSignal[iS] << ".dat";
+
+
+	lName << TOPDIR << "/nunu/" << lFolder.str() << "/SummaryTable_" << lSelVecSignal[iS] << ".dat";
 	lTable.open(lName.str().c_str());
 	if(!lTable.is_open()){
 	  cerr<<"Unable to open file: "<<lName.str()<<endl;
@@ -144,7 +147,7 @@ int extractWJetsBkg(){//main
 	lTable.close();
 	
 	lName.str("");
-	lName << "../TABLES/enu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
+	lName << TOPDIR << "/enu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
 	lTable.open(lName.str().c_str());
 	if(!lTable.is_open()){
 	  cerr<<"Unable to open file: "<<lName.str()<<endl;
@@ -154,7 +157,7 @@ int extractWJetsBkg(){//main
 	lTable.close();
 	
 	lName.str("");
-	lName << "../TABLES/munu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
+	lName << TOPDIR << "/munu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
 	lTable.open(lName.str().c_str());
 	if(!lTable.is_open()){
 	  cerr<<"Unable to open file: "<<lName.str()<<endl;
@@ -172,7 +175,7 @@ int extractWJetsBkg(){//main
       std::string lChannel[3] = {"nunu","enu","munu"};
       for (unsigned iCh(0); iCh<3; ++iCh){//loop on channel
 	std::ostringstream lName;
-	lName << "../TABLES/" << lChannel[iCh] << "/MET" << MET[iMET] << "/DOQCD" << iQCD << "/WandZJetsTable.txt";
+	lName << TOPDIR << "/" << lChannel[iCh] << "/MET" << MET[iMET] << "/DOQCD" << iQCD << "/WandZJetsTable.txt";
 	std::ofstream lOutfile;
 	lOutfile.open(lName.str().c_str());
 
@@ -248,17 +251,17 @@ int extractWJetsBkg(){//main
 	    lNCMC = lSel[iCh][DPhi+iMjj][WJets_munu];
 	    lNSMC.sample = "$N_{W\\rightarrow \\mu\\nu}^{MC}$";
 	    lNCMC.sample = "$N_{W\\rightarrow \\mu\\nu}^{MC}$";
-	    eps_lepveto_S.num = lSel[0][DPhi+iMjj][WJets_munu];
-	    eps_lepveto_S.den = lSel[0][DEta][WJets_munu];
+	    eps_lepveto_S.num = lSel[0][Lep][WJets_munu];
+	    eps_lepveto_S.den = lSel[0][JetPair][WJets_munu];
 	    
-	    eps_VBF_S.num = lSel[0][DEta][WJets_munu];
-	    eps_VBF_S.den = lSel[0][JetPair][WJets_munu];
+	    eps_VBF_S.num = lSel[0][DPhi+iMjj][WJets_munu];
+	    eps_VBF_S.den = lSel[0][Lep][WJets_munu];
 	    
-	    eps_lepsel_C.num = lSel[iCh][DPhi+iMjj][WJets_munu];
-	    eps_lepsel_C.den = lSel[iCh][DEta][WJets_munu];
+	    eps_lepsel_C.num = lSel[iCh][Lep][WJets_munu];
+	    eps_lepsel_C.den = lSel[iCh][JetPair][WJets_munu];
 	    
-	    eps_VBF_C.num = lSel[iCh][DEta][WJets_munu];
-	    eps_VBF_C.den = lSel[iCh][JetPair][WJets_munu];
+	    eps_VBF_C.num = lSel[iCh][DPhi+iMjj][WJets_munu];
+	    eps_VBF_C.den = lSel[iCh][Lep][WJets_munu];
 	  }
 	  else {
 	    lNCdata.sample = "$N_{W\\rightarrow e\\nu}^{data}$";
@@ -267,17 +270,17 @@ int extractWJetsBkg(){//main
 	    lNCMC = lSel[iCh][DPhi+iMjj][WJets_enu];
 	    lNSMC.sample = "$N_{W\\rightarrow e\\nu}^{MC}$";
 	    lNCMC.sample = "$N_{W\\rightarrow e\\nu}^{MC}$";
-	    eps_lepveto_S.num = lSel[0][DPhi+iMjj][WJets_enu];
-	    eps_lepveto_S.den = lSel[0][DEta][WJets_enu];
+	    eps_lepveto_S.num = lSel[0][Lep][WJets_enu];
+	    eps_lepveto_S.den = lSel[0][JetPair][WJets_enu];
 	    
-	    eps_VBF_S.num = lSel[0][DEta][WJets_enu];
-	    eps_VBF_S.den = lSel[0][JetPair][WJets_enu];
+	    eps_VBF_S.num = lSel[0][DPhi+iMjj][WJets_enu];
+	    eps_VBF_S.den = lSel[0][Lep][WJets_enu];
 	    
-	    eps_lepsel_C.num = lSel[iCh][DPhi+iMjj][WJets_enu];
-	    eps_lepsel_C.den = lSel[iCh][DEta][WJets_enu];
+	    eps_lepsel_C.num = lSel[iCh][Lep][WJets_enu];
+	    eps_lepsel_C.den = lSel[iCh][JetPair][WJets_enu];
 	    
-	    eps_VBF_C.num = lSel[iCh][DEta][WJets_enu];
-	    eps_VBF_C.den = lSel[iCh][JetPair][WJets_enu];
+	    eps_VBF_C.num = lSel[iCh][DPhi+iMjj][WJets_enu];
+	    eps_VBF_C.den = lSel[iCh][Lep][WJets_enu];
 	  }
 	  lNSdata.number = lNCdata.number * lNSMC.number / lNCMC.number;
 	  lNSdata.error = lNSdata.number * sqrt(pow(lNCdata.error/lNCdata.number,2)+pow(lNCMC.error/lNCMC.number,2)+pow(lNSMC.error/lNSMC.number,2));
@@ -288,7 +291,7 @@ int extractWJetsBkg(){//main
 	  result.error = result.number * sqrt(pow(eps_lepveto_S.error()/eps_lepveto_S.eff(),2)+pow(eps_lepsel_C.error()/eps_lepsel_C.eff(),2)+pow(eps_VBF_S.error()/eps_VBF_S.eff(),2)+pow(eps_VBF_C.error()/eps_VBF_C.eff(),2)+pow(lNCdata.error/lNCdata.number,2));
 
 	  std::ostringstream lName;
-	  lName << "../TABLES/" << lChannel[iCh] << "/MET" << MET[iMET] << "/DOQCD" << iQCD ;
+	  lName << TOPDIR << "/" << lChannel[iCh] << "/MET" << MET[iMET] << "/DOQCD" << iQCD ;
 	  if (iMjj==0) lName << "/DataDrivenWJetsTable_looseMjj.txt";
 	  else if (iMjj==1) lName << "/DataDrivenWJetsTable_tightMjj.txt";
 	  std::ofstream lOutfile;
@@ -296,7 +299,8 @@ int extractWJetsBkg(){//main
 	  lOutfile << "\\begin{tabular}{|l|c|c|}" << std::endl
 		   << "\\hline" << std::endl
 		   << " & Signal Region & Control Region \\\\" << std::endl
-		   << "\\hline" << std::endl;
+		   << "\\hline" << std::endl
+		   << "$N_{data}$ & XXX & " << lSel[iCh][DPhi+iMjj][Data].number << "\\\\" << std::endl;
 	  lOutfile << std::setprecision(2)
 		   << lBkgSMC.sample << " & " 
 		   << " n/a & " 

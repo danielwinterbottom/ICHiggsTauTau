@@ -66,6 +66,28 @@ for CHANNEL in nunu enu munu
     --norm_bins=false --verbose=false \
     --paramfile=$PARAMS
 
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="mt_munu"  --x_axis_label="m_{T}(#mu#nu) (GeV)" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=400 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=20 \
+    --log_y=true \
+    --norm_bins=false --verbose=false \
+    --paramfile=$PARAMS
+
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="mt_enu"  --x_axis_label="m_{T}(e#nu) (GeV)" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=400 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=20 \
+    --log_y=true \
+    --norm_bins=false --verbose=false \
+    --paramfile=$PARAMS
+
 ###### mupt_1
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR \

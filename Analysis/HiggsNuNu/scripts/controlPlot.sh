@@ -158,7 +158,7 @@ for CHANNEL in nunu enu munu
     --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
     --y_axis_min=0.01 --extra_pad=10000 \
-    --rebin=20 \
+    --rebin=10 \
     --norm_bins=false \
     --log_y=true \
     --paramfile=$PARAMS
