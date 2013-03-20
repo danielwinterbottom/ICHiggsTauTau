@@ -122,31 +122,31 @@ if (release == '42X'):
 ################################################################
 ### Configure PAT Jets
 ################################################################
-addJetCollection(process,
+# addJetCollection(process,
+#   cms.InputTag('ak5PFJets'),
+#   'AK5','PF',
+#   doJTA=True,
+#   doBTagging=True,
+#   jetCorrLabel=('AK5PF', ['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] if isData else ['L1FastJet','L2Relative', 'L3Absolute']),
+#   doType1MET=False,
+#   doL1Cleaning=False,
+#   doL1Counters=False,
+#   genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
+#   doJetID      = True,
+#   jetIdLabel   = "ak5"
+#   )
+switchJetCollection(process,
   cms.InputTag('ak5PFJets'),
-  'AK5','PF',
   doJTA=True,
   doBTagging=True,
   jetCorrLabel=('AK5PF', ['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] if isData else ['L1FastJet','L2Relative', 'L3Absolute']),
-  doType1MET=False,
-  doL1Cleaning=False,
-  doL1Counters=False,
-  genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
-  doJetID      = True,
-  jetIdLabel   = "ak5"
-  )
-switchJetCollection(process,
-  cms.InputTag('ak5CaloJets'),
-  doJTA=False,
-  doBTagging=False,
-  jetCorrLabel=('AK5Calo', ['L1Offset','L2Relative', 'L3Absolute','L2L3Residual'] if isData else ['L1Offset','L2Relative', 'L3Absolute']),
-  doType1MET=False,
+  doType1MET=True,
   genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
   doJetID = True,
   jetIdLabel = "ak5"
   )
 process.patJets.embedGenPartonMatch = cms.bool(False)
-process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
+# process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
 
 ################################################################
 ### Set up METs
@@ -158,7 +158,10 @@ addPfMET(process, 'PF')
 
 # PAT will try and use type-1 corrected MET by default in 53X, here
 # we force it to use the uncorrected pfMet
-process.patMETsPF.metSource  = cms.InputTag("pfMet")
+process.patMETs.metSource  = cms.InputTag("pfType1CorrectedMet")
+process.patMETsNoCorr = process.patMETs.clone(
+  metSource  = cms.InputTag("pfMet")
+  )
 
 if isData:
   process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual")
@@ -167,9 +170,124 @@ else:
   process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3")
   process.patMETsPF.addGenMET = cms.bool(True)
 
-process.patMETsPFType1 = process.patMETsPF.clone(
-  metSource  = cms.InputTag("pfType1CorrectedMet"),
-  addGenMET = cms.bool(False)
+# process.patMETsPFType1 = process.patMETsPF.clone(
+#   metSource  = cms.InputTag("pfType1CorrectedMet"),
+#   addGenMET = cms.bool(False)
+#   )
+
+process.load("JetMETCorrections.Type1MET.pfMETCorrectionType0_cfi")
+process.pfType1CorrectedMet.applyType0Corrections = cms.bool(False)
+process.pfType1CorrectedMet.srcType1Corrections = cms.VInputTag(
+      cms.InputTag('pfMETcorrType0'),
+      cms.InputTag('pfJetMETcorr', 'type1')
+    )
+
+from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
+runMEtUncertainties(process, outputModule='')
+
+process.patType1CorrectedPFMetElectronEnUp.src = cms.InputTag('patMETs')
+process.patType1CorrectedPFMetElectronEnDown.src = cms.InputTag('patMETs')
+process.icPfMetElectronEnUpProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetElectronEnUp"),
+    branchName = cms.untracked.string("pfMetElectronEnUp"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+process.icPfMetElectronEnDownProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetElectronEnDown"),
+    branchName = cms.untracked.string("pfMetElectronEnDown"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
+process.patType1CorrectedPFMetMuonEnUp.src = cms.InputTag('patMETs')
+process.patType1CorrectedPFMetMuonEnDown.src = cms.InputTag('patMETs')
+process.icPfMetMuonEnUpProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetMuonEnUp"),
+    branchName = cms.untracked.string("pfMetMuonEnUp"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+process.icPfMetMuonEnDownProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetMuonEnDown"),
+    branchName = cms.untracked.string("pfMetMuonEnDown"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
+process.patType1CorrectedPFMetTauEnUp.src = cms.InputTag('patMETs')
+process.patType1CorrectedPFMetTauEnDown.src = cms.InputTag('patMETs')
+process.icPfMetTauEnUpProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetTauEnUp"),
+    branchName = cms.untracked.string("pfMetTauEnUp"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+process.icPfMetTauEnDownProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetTauEnDown"),
+    branchName = cms.untracked.string("pfMetTauEnDown"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
+process.patType1CorrectedPFMetJetResUp.src = cms.InputTag('patMETs')
+process.patType1CorrectedPFMetJetResDown.src = cms.InputTag('patMETs')
+process.icPfMetJetResUpProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetJetResUp"),
+    branchName = cms.untracked.string("pfMetJetResUp"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+process.icPfMetJetResDownProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetJetResDown"),
+    branchName = cms.untracked.string("pfMetJetResDown"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
+process.patType1CorrectedPFMetJetEnUp.src = cms.InputTag('patMETs')
+process.patType1CorrectedPFMetJetEnDown.src = cms.InputTag('patMETs')
+process.icPfMetJetEnUpProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetJetEnUp"),
+    branchName = cms.untracked.string("pfMetJetEnUp"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+process.icPfMetJetEnDownProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetJetEnDown"),
+    branchName = cms.untracked.string("pfMetJetEnDown"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
+process.patType1CorrectedPFMetUnclusteredEnUp.src = cms.InputTag('patMETs')
+process.patType1CorrectedPFMetUnclusteredEnDown.src = cms.InputTag('patMETs')
+process.icPfMetUnclusteredEnUpProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetUnclusteredEnUp"),
+    branchName = cms.untracked.string("pfMetUnclusteredEnUp"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+process.icPfMetUnclusteredEnDownProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patType1CorrectedPFMetUnclusteredEnDown"),
+    branchName = cms.untracked.string("pfMetUnclusteredEnDown"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
+process.icMetUncertaintySequence = cms.Sequence(
+  process.icPfMetElectronEnDownProducer
+  +process.icPfMetElectronEnUpProducer
+  +process.icPfMetMuonEnDownProducer
+  +process.icPfMetMuonEnUpProducer
+  +process.icPfMetTauEnDownProducer
+  +process.icPfMetTauEnUpProducer
+  +process.icPfMetJetResDownProducer
+  +process.icPfMetJetResUpProducer
+  +process.icPfMetJetEnDownProducer
+  +process.icPfMetJetEnUpProducer
+  +process.icPfMetUnclusteredEnDownProducer
+  +process.icPfMetUnclusteredEnUpProducer
   )
 
 
@@ -185,8 +303,9 @@ process.kt6PFJetsForLeptons.Rho_EtaMax = cms.double(2.5)
 ### PAT Selections
 ################################################################
 process.selectedPatTaus.cut = 'pt > 18. & abs(eta) < 2.6 & tauID("decayModeFinding") > 0.5'
-process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
-
+process.selectedAndFilteredPatJets = process.selectedPatJets.clone(
+  cut = 'pt > 15. & abs(eta) < 100.'
+  )
 
 ################################################################
 ### Configuration of Electron ID MVA
@@ -485,15 +604,15 @@ process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
 if isData:
   runOnData(process)
 
-removeSpecificPATObjects(process, ['Electrons', 'Muons'])
+# removeSpecificPATObjects(process, ['Electrons', 'Muons'])
 
-removeCleaning(process)
+# removeCleaning(process)
 process.pfAllMuons.src = cms.InputTag("particleFlow")
 
-process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
-        cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"), 
-        cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"), 
-        cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF"), 
+process.patJets.discriminatorSources = cms.VInputTag(
+        cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAOD"), 
+        cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAOD"), 
+        cms.InputTag("combinedSecondaryVertexBJetTagsAOD"), 
        )
 if (release == '42X'):
   process.PFTau = process.recoTauClassicHPSSequence
@@ -503,17 +622,17 @@ if (release == '42X'):
       doAreaFastjet = cms.bool(True),
       doRhoFastjet = cms.bool(True)
       )
-  process.patJetCorrFactorsAK5PF.rho = cms.InputTag("kt6PFJets", "rho")
+  process.patJetCorrFactors.rho = cms.InputTag("kt6PFJets", "rho")
 
 if isEmbedded:
-  process.jetTracksAssociatorAtVertexAK5PF.tracks = cms.InputTag("tmfTracks")
+  process.jetTracksAssociatorAtVertex.tracks = cms.InputTag("tmfTracks")
   
-process.btaggingAK5PF = cms.Sequence(
-  process.impactParameterTagInfosAK5PF
-  +process.secondaryVertexTagInfosAK5PF
-  +process.simpleSecondaryVertexHighEffBJetTagsAK5PF
-  +process.simpleSecondaryVertexHighPurBJetTagsAK5PF
-  +process.combinedSecondaryVertexBJetTagsAK5PF
+process.btaggingAOD = cms.Sequence(
+  process.impactParameterTagInfosAOD
+  +process.secondaryVertexTagInfosAOD
+  +process.simpleSecondaryVertexHighEffBJetTagsAOD
+  +process.simpleSecondaryVertexHighPurBJetTagsAOD
+  +process.combinedSecondaryVertexBJetTagsAOD
   )
 
 ################################################################
@@ -598,13 +717,13 @@ process.icMuonProducer = cms.EDProducer('ICMuonProducer',
 )
 
 process.icPFJetProducer = cms.EDProducer('ICPFJetProducer',
-    inputLabel = cms.InputTag("selectedPatJetsAK5PF"),
+    inputLabel = cms.InputTag("selectedAndFilteredPatJets"),
     branchName = cms.untracked.string("pfJetsPFlow"),
     StoreTrackIds = cms.bool(False)
     )
 
 process.icPfMetProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patMETsPF"),
+    inputLabel = cms.InputTag("patMETsNoCorr"),
     branchName = cms.untracked.string("pfMet"),
     addGen = cms.untracked.bool(True),
     InputSig = cms.untracked.string("")
@@ -612,7 +731,7 @@ process.icPfMetProducer = cms.EDProducer('ICMetProducer',
 if isData: process.icPfMetProducer.addGen = cms.untracked.bool(False)
 
 process.icPfMetType1Producer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patMETsPFType1"),
+    inputLabel = cms.InputTag("patMETs"),
     branchName = cms.untracked.string("pfMetType1"),
     addGen = cms.untracked.bool(False),
     InputSig = cms.untracked.string("")
@@ -751,10 +870,11 @@ process.icSequence += cms.Sequence(
   process.icElectronProducer
   +process.icMuonProducer
   +process.icPFJetProducer
+  +process.patMETsNoCorr
   +process.icPfMetProducer
   +process.icPfMVAMetProducer
   +process.icPfAllPairsMVAMetProducer
-  +process.patMETsPFType1
+  # +process.patMETsPFType1
   +process.icPfMetType1Producer
   +process.icTauProducer
   +process.icVertexProducer
@@ -1149,6 +1269,8 @@ if (release == '53X' and (not isData)):
     )
 
 process.icSequence += process.icTriggerSequence
+
+process.icSequence += process.icMetUncertaintySequence
  
 process.icEventProducer = cms.EDProducer('ICEventProducer')
 process.icSequence += process.icEventProducer
@@ -1176,7 +1298,9 @@ process.p = cms.Path(
   +process.eleIsoSequence
   +process.muIsoSequence
   +process.mvaElectronIDSequence
+  +process.type0PFMEtCorrection
   +process.patDefaultSequence
+  +process.selectedAndFilteredPatJets
   +process.puJetMva
   +process.pfMEtMVAsequence
   +process.patPFMetByMVA
