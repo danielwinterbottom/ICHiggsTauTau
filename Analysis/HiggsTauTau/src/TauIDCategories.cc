@@ -45,6 +45,8 @@ namespace ic {
     misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
     misc_2dplots_ = new Dynamic2DHistoSet(fs_->mkdir("misc_2dplots"));
 
+    misc_2dplots_->Create("tau_pt_vs_pt_z", 100, 0, 200, 100, 0, 200);
+
     InitSelection("os");
     InitSelection("os_sel");
     InitSelection("os_con");
@@ -280,6 +282,8 @@ namespace ic {
     if (pt_tt_ > 60. && pt_tt_ <= 100.) SetPassCategory("z_pt_60-100");
     if (pt_tt_ > 100. && pt_tt_ <= 150.) SetPassCategory("z_pt_100-150");
     if (pt_tt_ > 150. && pt_tt_ <= 200.) SetPassCategory("z_pt_150-200");
+
+    misc_2dplots_->Fill("tau_pt_vs_pt_z", pt_2_, pt_tt_, wt_);
 
 
     return 0;

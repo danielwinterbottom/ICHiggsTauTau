@@ -61,6 +61,10 @@ class SimpleParamParser {
           throw;
         }
       }
+
+    inline bool ParamExists(std::string name) {
+      return (param_map_.count(name));
+    }
 };
 
 #endif

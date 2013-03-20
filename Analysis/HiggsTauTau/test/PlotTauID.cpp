@@ -31,9 +31,9 @@ double Error(TH1F const* hist) {
   return err;
 }
 
-void SetDataStyle(ic::TH1PlotElement & ele) {
-  ele.set_marker_color(1);
-  ele.set_line_color(1);
+void SetDataStyle(ic::TH1PlotElement & ele, unsigned color) {
+  ele.set_marker_color(color);
+  ele.set_line_color(color);
   ele.set_fill_color(1);
   ele.set_fill_style(0);
   ele.set_draw_fill(false);
@@ -90,87 +90,109 @@ int main(int argc, char* argv[]){
   using namespace ic;
   using namespace std;
 
-
-  vector<string> lines = ParseFileLines("test.txt");
-
+  bool is_z_pt = false;
   double xbins[7] = { 20., 30., 40., 50., 75., 100., 200.};
-  std::vector<Yields> yields;
-
-  bool start_reading = false;
-  for (unsigned i = 0; i < lines.size(); ++i) {
-    vector<string> words;
-    boost::split(words, lines[i], boost::is_any_of(" "), boost::token_compress_on);
-    if (words.size() > 0) {
-      if (words[0] == "category") 
-        {
-          start_reading = true;
-          yields.push_back(Yields());
-        }
-    }
-    if (start_reading) {
-      if (words[0] == "Data") {
-        yields.back().data = boost::lexical_cast<double>(words[1]);
-        yields.back().data_err = boost::lexical_cast<double>(words[2]);
-      }
-      if (words[0] == "Top") {
-        yields.back().top = boost::lexical_cast<double>(words[1]);
-        yields.back().top_err = boost::lexical_cast<double>(words[2]);
-      }
-      if (words[0] == "VV") {
-        yields.back().vv = boost::lexical_cast<double>(words[1]);
-        yields.back().vv_err = boost::lexical_cast<double>(words[2]);
-      }
-      if (words[0] == "ZLL") {
-        yields.back().zll = boost::lexical_cast<double>(words[1]);
-        yields.back().zll_err = boost::lexical_cast<double>(words[2]);
-      }
-      if (words[0] == "ZTT") {
-        yields.back().ztt = boost::lexical_cast<double>(words[1]);
-        yields.back().ztt_err = boost::lexical_cast<double>(words[2]);
-      }
-      if (words[0] == "W") {
-        yields.back().w = boost::lexical_cast<double>(words[1]);
-        yields.back().w_err = boost::lexical_cast<double>(words[2]);
-      }
-      if (words[0] == "QCD") {
-        yields.back().qcd = boost::lexical_cast<double>(words[1]);
-        yields.back().qcd_err = boost::lexical_cast<double>(words[2]);
-        start_reading = false;
-      }
-    }
-  }
-
-  std::cout << "Found entries: " << yields.size() << std::endl;
-  TH1F result("result","result", 6, xbins);
-  for (unsigned i = 0; i < yields.size(); ++i) {
-    double data_ztt = yields[i].data - (
-        yields[i].qcd +
-        yields[i].w +
-        yields[i].top +
-        yields[i].vv +
-        yields[i].zll
-      );
-    double data_err = 0.0;
-    data_err += (
-      yields[i].data_err * yields[i].data_err +
-      yields[i].w_err * yields[i].w_err +
-      yields[i].top_err * yields[i].top_err +
-      yields[i].vv_err * yields[i].vv_err +
-      yields[i].zll_err * yields[i].zll_err
-      );
-    data_err = sqrt(data_err);
-    double mc_ztt = yields[i].ztt;
-    double tot_err = (data_ztt/mc_ztt) * sqrt ( pow(data_err/data_ztt,2) + pow(yields[i].ztt_err/mc_ztt,2) );
-    result.SetBinContent(i+1, data_ztt/mc_ztt);
-    result.SetBinError(i+1, tot_err);
+  std::vector<double> z_pt_bins;
+  if (is_z_pt) {
+    z_pt_bins = { 0., 10., 20., 40., 60., 100., 150., 200. }; //8
   }
 
   ic::Plot plot;
   plot.output_filename = "tau_id_pt.pdf";
-  TH1PlotElement ele("ratio", &result);
-  SetDataStyle(ele);
-  plot.AddTH1PlotElement(ele);
+  std::vector<std::string> compares = { "embedded_mva.txt", "embedded_mva2.txt"};
+  std::vector<std::string> labels = { "MVA Isolation", "MVA2 Isolation"};
+  std::vector<unsigned> color = { 1, 4};
+
+  for (unsigned c = 0; c < compares.size(); ++c) {
+    vector<string> lines = ParseFileLines(compares[c]);
+    std::vector<Yields> yields;
+    bool start_reading = false;
+    for (unsigned i = 0; i < lines.size(); ++i) {
+      vector<string> words;
+      boost::split(words, lines[i], boost::is_any_of(" "), boost::token_compress_on);
+      if (words.size() > 0) {
+        if (words[0] == "category") 
+          {
+            start_reading = true;
+            yields.push_back(Yields());
+          }
+      }
+      if (start_reading) {
+        if (words[0] == "Data") {
+          yields.back().data = boost::lexical_cast<double>(words[1]);
+          yields.back().data_err = boost::lexical_cast<double>(words[2]);
+        }
+        if (words[0] == "Top") {
+          yields.back().top = boost::lexical_cast<double>(words[1]);
+          yields.back().top_err = boost::lexical_cast<double>(words[2]);
+        }
+        if (words[0] == "VV") {
+          yields.back().vv = boost::lexical_cast<double>(words[1]);
+          yields.back().vv_err = boost::lexical_cast<double>(words[2]);
+        }
+        if (words[0] == "ZLL") {
+          yields.back().zll = boost::lexical_cast<double>(words[1]);
+          yields.back().zll_err = boost::lexical_cast<double>(words[2]);
+        }
+        if (words[0] == "ZTT") {
+          yields.back().ztt = boost::lexical_cast<double>(words[1]);
+          yields.back().ztt_err = boost::lexical_cast<double>(words[2]);
+        }
+        if (words[0] == "W") {
+          yields.back().w = boost::lexical_cast<double>(words[1]);
+          yields.back().w_err = boost::lexical_cast<double>(words[2]);
+        }
+        if (words[0] == "QCD") {
+          yields.back().qcd = boost::lexical_cast<double>(words[1]);
+          yields.back().qcd_err = boost::lexical_cast<double>(words[2]);
+          start_reading = false;
+        }
+      }
+    }
+
+    std::cout << "Found entries: " << yields.size() << std::endl;
+    TH1F *result = new TH1F(compares[c].c_str(),compares[c].c_str(),  is_z_pt ? 7 : 6, is_z_pt ? &(z_pt_bins[0]) : xbins);
+    for (unsigned i = 0; i < yields.size(); ++i) {
+      double data_ztt = yields[i].data - (
+          yields[i].qcd +
+          yields[i].w +
+          yields[i].top +
+          yields[i].vv +
+          yields[i].zll
+        );
+      double data_err = 0.0;
+      data_err += (
+        yields[i].data_err * yields[i].data_err +
+        yields[i].w_err * yields[i].w_err +
+        yields[i].top_err * yields[i].top_err +
+        yields[i].vv_err * yields[i].vv_err +
+        yields[i].zll_err * yields[i].zll_err
+        );
+      data_err = sqrt(data_err);
+      double mc_ztt = yields[i].ztt;
+      double tot_err = (data_ztt/mc_ztt) * sqrt ( pow(data_err/data_ztt,2) + pow(yields[i].ztt_err/mc_ztt,2) );
+      result->SetBinContent(i+1, data_ztt/mc_ztt);
+      result->SetBinError(i+1, tot_err);
+    }
+
+    TH1PlotElement ele(compares[c], result, labels[c]);
+    SetDataStyle(ele, color[c]);
+    plot.AddTH1PlotElement(ele);
+
+  }
+
+  plot.custom_y_axis_range = true;
+  plot.y_axis_max = 1.2;
+  plot.y_axis_min = 0.5;
+  plot.y_axis_title = "ZTT (Data/MC)";
+  plot.x_axis_title = "Tau p_{T} [GeV]";
   plot.GeneratePlot();
+
+
+
+
+
+
   // string input = "";
   // string append = "";
   // string channel = ""; // muTau
