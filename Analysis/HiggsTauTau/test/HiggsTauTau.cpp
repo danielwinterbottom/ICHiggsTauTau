@@ -524,6 +524,14 @@ int main(int argc, char* argv[]){
       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(&Muon::is_global, _1) &&
       bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.3);
+  if (strategy == strategy::paper2013) {
+    vetoMuonFilter.set_predicate(
+      bind(MinPtMaxEta, _1, 15.0, 2.4) &&
+      bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
+      bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
+      bind(&Muon::is_global, _1) && bind(&Muon::is_tracker, _1) &&
+      bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.3);
+  }
 
   OneCollCompositeProducer<Muon> vetoMuonPairProducer = OneCollCompositeProducer<Muon>("VetoPairProducer")
     .set_input_label("vetoMuons")
