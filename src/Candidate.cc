@@ -9,6 +9,6 @@ namespace ic {
   }
 
   void Candidate::Print() const {
-    std::cout << vector_ << std::endl;
+    std::cout << "[pt,eta,phi,e] = " << vector_ << " charge = " << charge_ << std::endl;
   }
 }
