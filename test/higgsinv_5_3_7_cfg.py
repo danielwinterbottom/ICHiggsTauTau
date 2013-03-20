@@ -7,26 +7,31 @@ import sys
 ### Read Options
 ################################################################
 options = VarParsing.VarParsing ('analysis')
+
 options.register ('isData',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Process as data?")
+
 options.register ('isEmbedded',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Process as embedded?")
+
 options.register ('release',
                   '', # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.string,          # string, int, or float
                   "Release label")
+
 options.register ('isTandP',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Tag and probe ntuples?")
+
 options.register ('isZStudy',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
@@ -576,7 +581,7 @@ process.icElectronProducer = cms.EDProducer('ICElectronProducer',
     input = cms.InputTag("gsfElectrons"),
     branchName = cms.string("electrons"),
     minPt = cms.double(9.5),
-    maxEta = cms.double(2.6),
+    maxEta = cms.double(5.0),
     vertexCollection = cms.InputTag("goodOfflinePrimaryVertices"),
     pfIsoPostfix = cms.string("PFIso"),
     isPF = cms.bool(False)
@@ -586,7 +591,7 @@ process.icMuonProducer = cms.EDProducer('ICMuonProducer',
     input = cms.InputTag("pfAllMuons"),
     branchName = cms.string("muonsPFlow"),
     minPt = cms.double(3.0),
-    maxEta = cms.double(2.6),
+    maxEta = cms.double(5.0),
     vertexCollection = cms.InputTag("goodOfflinePrimaryVertices"),
     pfIsoPostfix = cms.string("PFIso"),
     isPF = cms.bool(True)
