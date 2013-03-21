@@ -15,7 +15,7 @@ echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigMC.cfg
 
-for METCUT in 130 # 0 70
+for METCUT in 0 70
   do
   for DOQCD in 0 1 2 
     do
@@ -65,17 +65,13 @@ for METCUT in 130 # 0 70
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Mar20/MC/
-#  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec1/VBFH120/
-#  for FILELIST in `ls filelists/Dec1_VBFH120_* filelists/Dec1_ZJets_*`
 	  for FILELIST in `ls filelists/$QUEUEDIR/Mar20_MC_*`
 	    do
 	    echo "Processing files in "$FILELIST
     
 	    echo $FILELIST > tmp.txt
-    #sed "s/filelists\/Dec1_VBFH120_//" tmp.txt > tmp2a.txt
-    #sed "s/filelists\/Dec1_ZJets_//" tmp2a.txt > tmp2.txt
-	    sed "s/filelists\/$QUEUEDIR\/Mar20_MC_//" tmp.txt > tmp2.txt
-	    
+    	    sed "s/filelists\/$QUEUEDIR\/Mar20_MC_//" tmp.txt > tmp2.txt
+    	    	    
 	    JOB=MC_`sed "s/\.dat//" tmp2.txt`
 	    
 	    rm tmp.txt tmp2.txt
@@ -88,52 +84,9 @@ for METCUT in 130 # 0 70
 	  done
 	  
 	  
-#VBFZ
-#run with pfmet and noMetFilters
-	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Dec5/VBFZ/
-	  for FILELIST in `ls filelists/$QUEUEDIR/Dec5_VBFZ*`
-	    do
-	    echo "Processing files in "$FILELIST
-
-	    echo $FILELIST > tmp.txt
-	    sed "s/filelists\/$QUEUEDIR\/Dec5_VBFZ_//" tmp.txt > tmp2.txt
-	    
-	    JOB=MC_`sed "s/\.dat//" tmp2.txt`
-	    
-	    rm tmp.txt tmp2.txt
-	    
-	    echo "JOB name = $JOB"
-
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --mettype=pfMet --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	    $JOBSUBMIT $JOBDIR/$JOB.sh
-	    
-	  done
-	  
-#GJets
-#run with pfmet and noMetFilters
-	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/Feb1/BKG/
-	  for FILELIST in `ls filelists/$QUEUEDIR/Feb1_GJets_*`
-	    do
-	    echo "Processing files in "$FILELIST
-	    
-	    echo $FILELIST > tmp.txt
-	    sed "s/filelists\/$QUEUEDIR\/Feb1_GJets_//" tmp.txt > tmp2.txt
-	    
-	    JOB=MC_`sed "s/\.dat//" tmp2.txt`
-	    
-	    rm tmp.txt tmp2.txt
-
-	    echo "JOB name = $JOB"
-	    
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --mettype=pfMet --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	    $JOBSUBMIT $JOBDIR/$JOB.sh
-	    
-	  done
-	  
 #Process bkg common with HiggsTautau
 	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Feb20/MC_53X/
 	  for FILELIST in `ls filelists/$QUEUEDIR/Feb20_*`
-#for FILELIST in `ls filelists/$QUEUEDIR/Dec30_MC_53X_DY*`
 	    do
 	    echo "Processing files in "$FILELIST
 
@@ -165,50 +118,8 @@ for METCUT in 130 # 0 70
 	    
 	  done
 	  
-#QCD from Patrick
-#run without metfilters
-	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Feb7/BKG/
-	  
-	  for FILELIST in `ls filelists/$QUEUEDIR/QCD*`
-	    do
-	    echo "Processing files in "$FILELIST
-	    
-	    echo $FILELIST > tmp.txt
-	    sed "s/filelists\/$QUEUEDIR\///" tmp.txt > tmp2.txt
-	    
-	    JOB=MC_`sed "s/\.dat//" tmp2.txt`
-	    
-	    rm tmp.txt tmp2.txt
-	    
-	    echo "JOB name = $JOB"
-	    
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	    $JOBSUBMIT $JOBDIR/$JOB.sh
-	    
-	  done
-	  
-#Other BKG+signal from Patrick
-#run without met filters
-	  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Feb7/BKG/
-	  
-	  for FILELIST in `ls filelists/$QUEUEDIR/Feb18_BKG_*`
-	    do
-	    echo "Processing files in "$FILELIST
-	    
-	    echo $FILELIST > tmp.txt
-	    sed "s/filelists\/$QUEUEDIR\/Feb18_BKG_//" tmp.txt > tmp2.txt
-	    
-	    JOB=MC_`sed "s/\.dat//" tmp2.txt`
-	    
-	    rm tmp.txt tmp2.txt
-	    
-	    echo "JOB name = $JOB"
-	    
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --doMetFilters=false --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	    $JOBSUBMIT $JOBDIR/$JOB.sh
-	    
-	  done
 	done
+
       done
       
     done

@@ -493,11 +493,10 @@ int main(int argc, char* argv[]){
   //------------------------------------------------------------------------------------
   // W selection Modules
   // ------------------------------------------------------------------------------------
-  double mtcut = 40;
-
-  MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",2,mtcut);
-  MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",1,mtcut);
-
+  double mtcut_min = 60;
+  double mtcut_max = 120;
+  MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",2,mtcut_min,mtcut_max);
+  MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",1,mtcut_min,mtcut_max);
 
   // ------------------------------------------------------------------------------------
   // Selection Modules
@@ -516,7 +515,7 @@ int main(int argc, char* argv[]){
   if (output_name.find("JetsToLNu") != output_name.npos) {
     hinvWeights.set_do_w_soup(true);
     if (mc == mc::summer12_53X) {
-      hinvWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
+      hinvWeights.SetWTargetFractions(0.74069073, 0.1776316, 0.0575658, 0.0170724, 0.00703947);
       hinvWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
       //hinvWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
     }
