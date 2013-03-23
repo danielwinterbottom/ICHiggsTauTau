@@ -32,6 +32,8 @@ PRODUCTION_2012 = 'Dec30'
 PRODUCTION_2011 = 'Sept11'
 PRODUCTION = ''
 
+ANALYSES = ['sm', 'mssm']
+
 def validate_channel(channel):
 	assert channel in CHANNELS, 'Error, channel %(channel)s duplicated or unrecognised' % vars()
 	CHANNELS.remove(channel)
@@ -80,6 +82,9 @@ parser.add_option("--short_signal", dest="short_signal", action='store_true', de
 parser.add_option("-c", "--channels", dest="channels", type='string', action='callback',callback=split_callback,
                   help="A comma separted list of channels to process.  Supported channels: For 2102 %(CHANNELS_2012)s, for 2011 %(CHANNELS_2011)s" % vars())
 
+parser.add_option("-a", "--analyses", dest="analyses", type='string', action='callback',callback=split_callback,
+                  help="A comma separted list of analyses to process samples for. Supported: %(ANALYSES)s" % vars())
+
 parser.add_option("-s", "--energyscales", dest="scales", type='string', action='callback',callback=split_callback,
                   help="A comma separted list of energy/mass scale shifts.  Supports %(SCALES)s where 0 is central, 1 is down and 2 is up." % vars())
 
@@ -92,6 +97,7 @@ if options.input: 	PREFIXOVERRIDE=options.input
 channels = options.channels
 scales =options.scales
 ERA = options.era
+analyses = options.analyses
 
 SUPPORTED_ERAS = SUPPORTED_ERAS_2012
 CHANNELS = CHANNELS_2012
@@ -217,99 +223,25 @@ if options.data:
 FILELIST='filelists/'+PRODUCTION+'_MC_53X'
 if options.do_2011: FILELIST='filelists/'+PRODUCTION+'_MC_42X'
 
-signal_mc= [
-	'GluGluToHToTauTau_M-110', 
-	'GluGluToHToTauTau_M-115',	
-	'GluGluToHToTauTau_M-120', 
-	'GluGluToHToTauTau_M-125', 
-	'GluGluToHToTauTau_M-130', 
-	'GluGluToHToTauTau_M-135', 
-	'GluGluToHToTauTau_M-140', 
-	'GluGluToHToTauTau_M-145', 
-	'VBF_HToTauTau_M-110', 
-	'VBF_HToTauTau_M-115', 
-	'VBF_HToTauTau_M-120', 
-	'VBF_HToTauTau_M-125', 
-	'VBF_HToTauTau_M-130', 
-	'VBF_HToTauTau_M-135', 
-	'VBF_HToTauTau_M-140', 
-	'VBF_HToTauTau_M-145', 
-	'WH_ZH_TTH_HToTauTau_M-110', 
-	'WH_ZH_TTH_HToTauTau_M-115', 
-	'WH_ZH_TTH_HToTauTau_M-120', 
-	'WH_ZH_TTH_HToTauTau_M-125', 
-	'WH_ZH_TTH_HToTauTau_M-130', 
-	'WH_ZH_TTH_HToTauTau_M-135',
-	'WH_ZH_TTH_HToTauTau_M-140', 
-	'WH_ZH_TTH_HToTauTau_M-145',
-	# 'SUSYGluGluToHToTauTau_M-80',
-	# 'SUSYGluGluToHToTauTau_M-90',
-	# 'SUSYGluGluToHToTauTau_M-100',
-	# 'SUSYGluGluToHToTauTau_M-110',
-	# 'SUSYGluGluToHToTauTau_M-120',
-	# 'SUSYGluGluToHToTauTau_M-130',
-	# 'SUSYGluGluToHToTauTau_M-140',
-	# 'SUSYGluGluToHToTauTau_M-160',
-	# 'SUSYGluGluToHToTauTau_M-180',
-	# 'SUSYGluGluToHToTauTau_M-200',
-	# 'SUSYGluGluToHToTauTau_M-250',
-	# 'SUSYGluGluToHToTauTau_M-300',
-	# 'SUSYGluGluToHToTauTau_M-350',
-	# 'SUSYGluGluToHToTauTau_M-400',
-	# 'SUSYGluGluToHToTauTau_M-450',
-	# 'SUSYGluGluToHToTauTau_M-500',
-	# 'SUSYGluGluToHToTauTau_M-600',
-	# 'SUSYGluGluToHToTauTau_M-700',
-	# 'SUSYGluGluToHToTauTau_M-800',
-	# 'SUSYGluGluToHToTauTau_M-900',
-	# 'SUSYGluGluToHToTauTau_M-1000',
-	# 'SUSYBBHToTauTau_M-80',
-	# 'SUSYBBHToTauTau_M-90',
-	# 'SUSYBBHToTauTau_M-100',
-	# 'SUSYBBHToTauTau_M-110',
-	# 'SUSYBBHToTauTau_M-120',
-	# 'SUSYBBHToTauTau_M-130',
-	# 'SUSYBBHToTauTau_M-140',
-	# 'SUSYBBHToTauTau_M-160',
-	# 'SUSYBBHToTauTau_M-180',
-	# 'SUSYBBHToTauTau_M-200',
-	# 'SUSYBBHToTauTau_M-250',
-	# 'SUSYBBHToTauTau_M-300',
-	# 'SUSYBBHToTauTau_M-350',
-	# 'SUSYBBHToTauTau_M-400',
-	# 'SUSYBBHToTauTau_M-450',
-	# 'SUSYBBHToTauTau_M-500',
-	# 'SUSYBBHToTauTau_M-600',
-	# 'SUSYBBHToTauTau_M-700',
-	# 'SUSYBBHToTauTau_M-800',
-	# 'SUSYBBHToTauTau_M-900',
-	# 'SUSYBBHToTauTau_M-1000'
-]
+signal_mc = [ ]
 
-if not options.do_2011:
-  signal_mc += [
-	 'GluGluToHToTauTau_M-90', 
-	 'GluGluToHToTauTau_M-95',
-	 'GluGluToHToTauTau_M-100', 
-	 'GluGluToHToTauTau_M-105',
-	 'GluGluToHToTauTau_M-150',
-	 'GluGluToHToTauTau_M-155',
-	 'GluGluToHToTauTau_M-160',
-	 'VBF_HToTauTau_M-90',
-	 'VBF_HToTauTau_M-95',
-	 'VBF_HToTauTau_M-100', 
-	 'VBF_HToTauTau_M-105',
-   'VBF_HToTauTau_M-150',
-   'VBF_HToTauTau_M-155',
-   'VBF_HToTauTau_M-160',
-   'WH_ZH_TTH_HToTauTau_M-90',
-   'WH_ZH_TTH_HToTauTau_M-95',
-   'WH_ZH_TTH_HToTauTau_M-100',
-   'WH_ZH_TTH_HToTauTau_M-105',
-	 'WH_ZH_TTH_HToTauTau_M-150',
-	 'WH_ZH_TTH_HToTauTau_M-155',
-	 'WH_ZH_TTH_HToTauTau_M-160'
-   ]
+if 'sm' in analyses:
+	masses = ['110','115','120','125','130','135','140','145']
+	if not options.do_2011: masses += ['90','95','100','105','150','155','160']
+	for mass in masses :
+		signal_mc += [
+			'GluGluToHToTauTau_M-'+mass,
+			'VBF_HToTauTau_M-'+mass, 
+			'WH_ZH_TTH_HToTauTau_M-'+mass
+		]
+if 'mssm' in analyses:
+	masses = ['80','90','100','110','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000']
+	for mass in masses :
+		signal_mc += [
+			'SUSYGluGluToHToTauTau_M-'+mass,
+			'SUSYBBHToTauTau_M-'+mass
+		]
+
 if options.short_signal:
 	signal_mc = [
 		'GluGluToHToTauTau_M-125', 

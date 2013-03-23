@@ -95,9 +95,9 @@ namespace ic {
 
     InitCategory("vbf");
 
-    InitCategory("tautau_vbf");
+    // InitCategory("tautau_vbf");
 
-    InitCategory("vbf_tight");
+    // InitCategory("vbf_tight");
 
     InitCategory("vbf_no_cjv");
 
@@ -118,14 +118,20 @@ namespace ic {
     InitCategory("1jet_low_nometcut");
 
     InitCategory("0jet_high");
-    InitCoreControlPlots("0jet_high");
+    // InitCoreControlPlots("0jet_high");
 
     InitCategory("0jet_low");
-    InitCoreControlPlots("0jet_low");
+    // InitCoreControlPlots("0jet_low");
 
     InitCategory("btag");
 
-    InitCategory("sasha");
+    InitCategory("btag_low");
+    InitCategory("btag_low_loose");
+
+    InitCategory("btag_high");
+    InitCategory("btag_high_loose");
+
+    // InitCategory("sasha");
 
     InitCategory("btag_loose");
 
@@ -328,20 +334,20 @@ namespace ic {
 
     // VBF Selection
     // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 800. && jdeta_ > 4.0) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("vbf_tight");
-      }
-    }
+    // if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 800. && jdeta_ > 4.0) {
+    //   if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
+    //     SetPassCategory("vbf_tight");
+    //   }
+    // }
 
     // Tau-tau-like VBF Selection
     // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 250. && jdeta_ > 2.5) {
-      bool lepton_pt = pt_1_ > 30.0 && pt_2_ > 45.0;
-      bool pt_50_jet = jets[0]->pt() > 50.0 && fabs(jets[0]->eta()) < 3.0;
-      bool hpt = ((ditau->vector() + met->vector()).pt()) > 110.0;
-      if (lepton_pt && pt_50_jet && hpt) SetPassCategory("tautau_vbf");
-    }
+    // if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 250. && jdeta_ > 2.5) {
+    //   bool lepton_pt = pt_1_ > 30.0 && pt_2_ > 45.0;
+    //   bool pt_50_jet = jets[0]->pt() > 50.0 && fabs(jets[0]->eta()) < 3.0;
+    //   bool hpt = ((ditau->vector() + met->vector()).pt()) > 110.0;
+    //   if (lepton_pt && pt_50_jet && hpt) SetPassCategory("tautau_vbf");
+    // }
 
     // VBF Selection with no CJV, used for VBF category Fakes estimate in em
     if (n_jets_ >= 2 && mjj_ > 500. && jdeta_ > 3.5) {
@@ -403,22 +409,28 @@ namespace ic {
     // 0-jet High Category
     if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) {
       SetPassCategory("0jet_high");
-      FillCoreControlPlots("0jet_high");
+      // FillCoreControlPlots("0jet_high");
     }
 
     // 0-jet Low Category
     if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) {
       SetPassCategory("0jet_low");
-      FillCoreControlPlots("0jet_low");
+      // FillCoreControlPlots("0jet_low");
     }
 
-    auto lowpt_jets_copy = lowpt_jets;
-    ic::erase_if(lowpt_jets_copy,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-    if (lowpt_jets_copy.size() >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
+    // auto lowpt_jets_copy = lowpt_jets;
+    // ic::erase_if(lowpt_jets_copy,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    // if (lowpt_jets_copy.size() >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
 
-    if (n_jets_ <= 1 && n_bjets_ > 0) SetPassCategory("btag");
+    if (n_jets_ <= 1 && n_bjets_ > 0)                       SetPassCategory("btag");
+    if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low");
+    if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ > pt2_split)  SetPassCategory("btag_high");
 
-    if (n_jets_ <= 1 && n_loose_bjets_ > 0) SetPassCategory("btag_loose");
+    if (n_jets_ <= 1 && n_loose_bjets_ > 0)                       SetPassCategory("btag_loose");
+    if (n_jets_ <= 1 && n_loose_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low_loose");
+    if (n_jets_ <= 1 && n_loose_bjets_ > 0 && pt_2_ > pt2_split)  SetPassCategory("btag_high_loose");
+
+
     if (!PassesCategory("vbf") && n_bjets_ == 0) SetPassCategory("nobtag");
 
     return 0;
