@@ -30,7 +30,7 @@ struct events {
 
 };
 
-double sumSq(events evt1, events evt2){
+double sumSqErr(events evt1, events evt2){
   if (evt1.number==0 || evt2.number==0) return 0;
   return sqrt(pow(evt1.error/evt1.number,2)+pow(evt2.error/evt2.number,2));
 }
@@ -46,7 +46,8 @@ struct efficiency{
   }
 
   double error() const{
-    return eff()*sumSq(num,den);
+    if (den==0) return 0;
+    return 1/den*sqrt(num*(1-eff()));
   }
 
 };

@@ -57,6 +57,7 @@ namespace ic {
       std::cout << "f3 = " << zf3_ << "\t" << "n3 = " << zn3_ << "\t" << "w3 = " << zw3_ << std::endl;
       std::cout << "f4 = " << zf4_ << "\t" << "n4 = " << zn4_ << "\t" << "w4 = " << zw4_ << std::endl;
     }
+
     return 0;
   }
 
@@ -108,6 +109,9 @@ namespace ic {
       if (partons == 2) eventInfo->set_weight("wsoup", w2_);
       if (partons == 3) eventInfo->set_weight("wsoup", w3_);
       if (partons == 4) eventInfo->set_weight("wsoup", w4_);
+
+      if (partons == 0) event->Add("NoParton",true);
+
     }
 
     if (do_dy_soup_) {
@@ -137,6 +141,7 @@ namespace ic {
   }
 
   int HinvWeights::PostAnalysis() {
+ 
     return 0;
   }
 

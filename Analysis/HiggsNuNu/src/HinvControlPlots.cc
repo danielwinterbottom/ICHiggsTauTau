@@ -70,7 +70,7 @@ namespace ic {
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
 
     if (dijet_vec.size() == 0) {
-      std::cerr << " #### ERROR : require at least one jet pair..." << std::endl;
+      std::cerr << " #### HinvControlPlot-ERROR : require at least one jet pair..." << std::endl;
       //no point in making plots, go to the next module.... 
       return 0;
     }

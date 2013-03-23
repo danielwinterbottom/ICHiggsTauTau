@@ -29,6 +29,7 @@
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvDataTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWJetsPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
@@ -520,7 +521,9 @@ int main(int argc, char* argv[]){
       //hinvWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
     }
   }
-  if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {
+  if (output_name.find("JetsToLL") != output_name.npos && 
+      output_name.find("PtZ-100-madgraph") == output_name.npos && 
+      output_name.find("DYJJ01") == output_name.npos) {
     if (mc == mc::summer12_53X) {
       hinvWeights.set_do_dy_soup(true);
       hinvWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
@@ -537,13 +540,7 @@ int main(int argc, char* argv[]){
   else if (channel == channel::munu) lFlavour = 13;
   else if (channel == channel::taunu) lFlavour = 15;
 	
-  SimpleCounter<GenParticle> WtoLeptonFilter = SimpleCounter<GenParticle>("WtoLeptonSelector")
-    .set_input_label("genParticles")
-    .set_predicate(
-		   (bind(&GenParticle::status, _1) == 3) && 
-		   (bind(abs,(bind(&GenParticle::pdgid, _1))) == lFlavour))
-    .set_min(1);
-
+  HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
   
   // ------------------------------------------------------------------------------------
   // Plot Modules
