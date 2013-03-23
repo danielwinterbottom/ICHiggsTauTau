@@ -51,13 +51,15 @@ namespace ic {
     std::cout << "nGoodVertices: " << eventInfo->good_vertices() << std::endl;
 
     for (unsigned i = 0; i < taus.size(); ++i) {
-      std::cout << "Tau " << i << ": " << taus[i]->vector() << std::endl;
+      std::cout << "Tau " << i << std::endl;
+      taus[i]->Print();
       std::cout << "-lead_track_dz_with_vertex: " << taus[i]->lead_dz_vertex() << std::endl;
       std::cout << "-decayModeFinding: " << taus[i]->GetTauID("decayModeFinding") << std::endl;
       std::cout << "-byIsolationMVAraw: " << taus[i]->GetTauID("byIsolationMVAraw") << std::endl;
       std::cout << "-byLooseIsolationMVA: " << taus[i]->GetTauID("byLooseIsolationMVA") << std::endl;
       std::cout << "-againstElectronLoose: " << taus[i]->GetTauID("againstElectronLoose") << std::endl;
       std::cout << "-againstElectronMVA: " << taus[i]->GetTauID("againstElectronMVA") << std::endl;
+      std::cout << "-againstElectronTightMVA2: " << taus[i]->GetTauID("againstElectronTightMVA2") << std::endl;
       std::cout << "-againstMuonTight: " << taus[i]->GetTauID("againstMuonTight") << std::endl;
       std::cout << "-againstMuonLoose: " << taus[i]->GetTauID("againstMuonLoose") << std::endl;
     }
@@ -133,6 +135,21 @@ namespace ic {
           if (matches[j].first == (*it)) matched_genjet = matches[j].second;
         }
         std::cout << "-has matched genjet: " << matched_genjet->vector() << std::endl;
+      }
+    }
+
+    std::cout << "---Triggers" << std::endl;
+    std::vector<std::string> paths = { "triggerObjectsIsoMu17LooseTau20", "triggerObjectsEle22WP90RhoLooseTau20" };
+    for (auto path : paths) {
+      if (!eventInfo->is_data()) {
+        std::cout << "--" << path << std::endl;
+        auto objs = event->GetPtrVec<TriggerObject>(path);
+        for (auto cand : objs) {
+          cand->Print();
+          for (auto label : cand->filters()) {
+            std::cout << "-" << label << std::endl;
+          }
+        }
       }
     }
 
