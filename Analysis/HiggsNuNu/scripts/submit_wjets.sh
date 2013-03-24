@@ -16,44 +16,42 @@ echo "Config file: $CONFIG"
 
 for METCUT in 130 0 70
   do
-  for DOQCD in 0 1 2
+  for CHANNEL in nunu enu munu
     do
-    for CHANNEL in nunu enu munu
+    for SYST in central #JESUP JESDOWN
       do
-      for SYST in central #JESUP JESDOWN
-        do
-        SYSTOPTIONS="--dojessyst=false"
-        JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
-        OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/
-	
-        if [ "$SYST" = "JESUP" ]
-            then
-            SYSTOPTIONS="--dojessyst=true --upordown=true"
-            JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESUP
-            OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESUP
-        fi
-	
-        if [ "$SYST" = "JESDOWN" ]
-            then
-            SYSTOPTIONS="--dojessyst=true --upordown=false"
-            JOBDIR=jobs/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESDOWN
-            OUTPUTDIR=output/$CHANNEL/MET$METCUT/DOQCD$DOQCD/JESDOWN
-        fi
-	
-	mkdir -p $JOBDIR
-	mkdir -p $OUTDIR
-	
-	
+      SYSTOPTIONS="--dojessyst=false"
+      JOBDIR=jobs/$CHANNEL/MET$METCUT/
+      OUTPUTDIR=output/$CHANNEL/MET$METCUT/
+      
+      if [ "$SYST" = "JESUP" ]
+	  then
+	  SYSTOPTIONS="--dojessyst=true --upordown=true"
+	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESUP
+	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JESUP
+      fi
+      
+      if [ "$SYST" = "JESDOWN" ]
+	  then
+	  SYSTOPTIONS="--dojessyst=true --upordown=false"
+	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESDOWN
+	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JESDOWN
+      fi
+      
+      mkdir -p $JOBDIR
+      mkdir -p $OUTDIR
+      
+      
 #Process W+jets skimmed files
-	for FLAVOUR in enu munu taunu
-	  do
-	  PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Dec2/MC_53X/
-	for FILELIST in `ls filelists/Dec2_MC_53X_W*ToLNu*`
+      for FLAVOUR in enu munu taunu
+	do
+	PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
+	for FILELIST in `ls filelists/medium/Feb20*W*ToLNu*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
 	  echo $FILELIST > tmp.txt
-	  sed "s/filelists\/Dec2_MC_53X_//" tmp.txt > tmp2.txt
+	  sed "s/filelists\/medium\/Feb20_MC_53X_//" tmp.txt > tmp2.txt
 	  
 	  JOB=MC_`sed "s/\.dat//" tmp2.txt`_$FLAVOUR
 	  
@@ -61,11 +59,9 @@ for METCUT in 130 0 70
 	  
 	  echo "JOB name = $JOB"
 	  echo "OUTPUT dir = $OUTDIR"
-	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTDIR --met_cut=$METCUT --signal_region=$DOQCD $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	  $JOBSUBMIT $JOBDIR/$JOB.sh
 	  
-	done
-	
 	done
 	
       done
