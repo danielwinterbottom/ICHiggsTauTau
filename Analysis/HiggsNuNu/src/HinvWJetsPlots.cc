@@ -38,7 +38,7 @@ namespace ic {
 
     met_noelectrons = dir.make<TH1F>("met_noelectrons","met_noelectrons", 1000, 0, 1000); 
     met_nomuons = dir.make<TH1F>("met_nomuons","met_nomuons", 1000, 0, 1000); 
- 
+
   };
 
 
@@ -48,6 +48,7 @@ namespace ic {
     met_nolep_label_ = "metNoMuons";
     electrons_label_ = "electrons";
     muons_label_ = "muonsPFlow";
+    dijet_label_ = "jjCandidates";
     sel_label_ = "JetPair";
   }
 
@@ -61,6 +62,7 @@ namespace ic {
       std::cout << "MET no leptons Label: " << met_nolep_label_ << std::endl;
       std::cout << "electrons Label: " << electrons_label_ << std::endl;
       std::cout << "muons Label: " << muons_label_ << std::endl;
+      std::cout << "dijet Label: " << dijet_label_ << std::endl;
       std::cout << "Selection Label: " << sel_label_ << std::endl;
     }
 
@@ -69,6 +71,7 @@ namespace ic {
     InitPlots();
     
     yields_ = 0;
+    counter_ = 0;
 
     return 0;
   }
@@ -79,6 +82,9 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     wt_ = eventInfo->total_weight();
 
+    //counter for WJets 0 parton events
+    if (event->Get<bool>("NoParton")==true) ++counter_;
+    
     Met const* met = event->GetPtr<Met>(met_label_);
     Met const* met_nolep = event->GetPtr<Met>(met_nolep_label_);
 
@@ -88,11 +94,23 @@ namespace ic {
     std::vector<Muon*> muons = event->GetPtrVec<Muon>(muons_label_);
     std::sort(muons.begin(), muons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     
+    bool fillPlots = true;
+    std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
+    if (dijet_vec.size() != 0) {
+                                
+      CompositeCandidate const* dijet = dijet_vec.at(0);
+
+      if (sel_label_.find("QCD") != sel_label_.npos &&
+	  PairAbsDPhiLessThan(dijet,2.6)) fillPlots = false;
+      if (sel_label_.find("SIGNAL") != sel_label_.npos &&
+	  !PairAbsDPhiLessThan(dijet,1.0)) fillPlots = false;
+        
+    }
+
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
     // for each new event
-    
-    
+
     n_electrons_ = electrons.size();
     n_muons_ = muons.size();
     met_noelectrons_ = met_nolep->pt();
@@ -134,35 +152,42 @@ namespace ic {
 
       Electron * lElec = electrons[iele];
 
-      wjetsplots_->edxy_all->Fill(lElec->dxy_vertex(), wt_);
-      wjetsplots_->edz_all->Fill(lElec->dz_vertex(), wt_);
-      
       float lEffArea = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03 , lElec->sc_eta() , ElectronEffectiveArea::kEleEAData2012);
 
       double lIso = lElec->dr03_pfiso_charged()
 	+ std::max(lElec->dr03_pfiso_gamma() + lElec->dr03_pfiso_neutral() - lRho * lEffArea, 0.);
       lIso = lIso / lElec->pt();
 
-      wjetsplots_->eiso_all->Fill(lIso, wt_);
+      if (fillPlots) {
+	wjetsplots_->edxy_all->Fill(lElec->dxy_vertex(), wt_);
+	wjetsplots_->edz_all->Fill(lElec->dz_vertex(), wt_);
+	wjetsplots_->eiso_all->Fill(lIso, wt_);
+      }
 
     }//loop on electrons
 
 
-
-    for (unsigned iele(0); iele<n_muons_; ++iele){//loop on muons
-      wjetsplots_->mudxy_all->Fill(muons[iele]->dxy_vertex(), wt_);
-      wjetsplots_->mudz_all->Fill(muons[iele]->dz_vertex(), wt_);
-      wjetsplots_->muiso_all->Fill(PF04IsolationVal<Muon>(muons[iele],0.5), wt_);
-    }//loop on muons
-
-
+    if (fillPlots){
+      for (unsigned iele(0); iele<n_muons_; ++iele){//loop on muons
+	wjetsplots_->mudxy_all->Fill(muons[iele]->dxy_vertex(), wt_);
+	wjetsplots_->mudz_all->Fill(muons[iele]->dz_vertex(), wt_);
+	wjetsplots_->muiso_all->Fill(PF04IsolationVal<Muon>(muons[iele],0.5), wt_);
+      }//loop on muons
+    }
     
-    FillPlots();
+    if (fillPlots) FillPlots();
 
     return 0;
   }
 
   int  HinvWJetsPlots::PostAnalysis(){
+    if (counter_ != 0) {
+      std::cout << "===============================" << std::endl
+		<< " HinvWJetsPlots::PostAnalysis " << std::endl
+		<< "===============================" << std::endl
+		<< "-- no parton events = " << counter_ << std::endl;
+    }
+
     return 0;
   }
 

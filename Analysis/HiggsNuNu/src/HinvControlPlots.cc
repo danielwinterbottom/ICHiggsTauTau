@@ -69,51 +69,93 @@ namespace ic {
     wt_ = eventInfo->total_weight();
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
 
-    if (dijet_vec.size() == 0) {
-      std::cerr << " #### HinvControlPlot-ERROR : require at least one jet pair..." << std::endl;
-      //no point in making plots, go to the next module.... 
-      return 0;
-    }
-
-    CompositeCandidate const* dijet = dijet_vec.at(0);
-    Candidate const* jet1 = dijet->GetCandidate("jet1");
-    Candidate const* jet2 = dijet->GetCandidate("jet2");
     Met const* met = event->GetPtr<Met>(met_label_);
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     
+
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
     // for each new event
-    
-    n_vtx_ = eventInfo->good_vertices();
 
-    met_ = met->pt();
-    met_phi_ = met->phi();
+    jpt_1_ = -1;
+    jeta_1_ = -10;
+    jpt_2_ = -1;
+    jeta_2_ = -10;
 
-    n_jets_ = jets.size();
-    
-    jpt_1_ = jet1->pt();
-    jeta_1_ = jet1->eta();
-    jpt_2_ = jet2->pt();
-    jeta_2_ = jet2->eta();
+    mjj_ = -1;
+    detajj_ = -10;
+    etaprodjj_ = -100;
+    drjj_ = -1;
+    dphijj_ = -1;
 
-    mjj_ = dijet->M();
-    detajj_ = fabs(jet1->eta() - jet2->eta());
-    etaprodjj_ = jet1->eta() * jet2->eta();
-    drjj_ = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),jet2->vector());
-    dphijj_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1->vector(),jet2->vector()));
-
-    double eta_high = (jet1->eta() > jet2->eta()) ? jet1->eta() : jet2->eta();
-    double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
     n_jetsingap_ = 0;
-    if (n_jets_ > 2) {
-      for (unsigned i = 2; i < jets.size(); ++i) {
-	if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
+    bool fillPlots = true;
+      
+    if (dijet_vec.size() != 0) {
+      
+      CompositeCandidate const* dijet = dijet_vec.at(0);
+
+      if (sel_label_.find("QCD") != sel_label_.npos &&
+	  PairAbsDPhiLessThan(dijet,2.6)) fillPlots = false;
+      if (sel_label_.find("SIGNAL") != sel_label_.npos &&
+	  !PairAbsDPhiLessThan(dijet,1.0)) fillPlots = false;
+        
+      Candidate const* jet1 = dijet->GetCandidate("jet1");
+      Candidate const* jet2 = dijet->GetCandidate("jet2");
+
+      jpt_1_ = jet1->pt();
+      jeta_1_ = jet1->eta();
+      jpt_2_ = jet2->pt();
+      jeta_2_ = jet2->eta();
+      
+      mjj_ = dijet->M();
+      detajj_ = fabs(jet1->eta() - jet2->eta());
+      etaprodjj_ = jet1->eta() * jet2->eta();
+      drjj_ = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),jet2->vector());
+      dphijj_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1->vector(),jet2->vector()));
+      
+      double eta_high = (jet1->eta() > jet2->eta()) ? jet1->eta() : jet2->eta();
+      double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
+      n_jetsingap_ = 0;
+      if (n_jets_ > 2) {
+	for (unsigned i = 2; i < jets.size(); ++i) {
+	  if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
+	}
       }
     }
+    else if (jets.size() > 1) {
+      Candidate const* jet1 = jets[0];
+      Candidate const* jet2 = jets[1];
+      jpt_1_ = jet1->pt();
+      jeta_1_ = jet1->eta();
+      jpt_2_ = jet2->pt();
+      jeta_2_ = jet2->eta();
+      
+      mjj_ = (jet1->vector()+jet2->vector()).M();
+      detajj_ = fabs(jet1->eta() - jet2->eta());
+      etaprodjj_ = jet1->eta() * jet2->eta();
+      drjj_ = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),jet2->vector());
+      dphijj_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1->vector(),jet2->vector()));
+      
+      double eta_high = (jet1->eta() > jet2->eta()) ? jet1->eta() : jet2->eta();
+      double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
+      n_jetsingap_ = 0;
+      if (n_jets_ > 2) {
+	for (unsigned i = 2; i < jets.size(); ++i) {
+	  if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
+	}
+      }
+    }
+    
+    n_vtx_ = eventInfo->good_vertices();
+    
+    met_ = met->pt();
+    met_phi_ = met->phi();
+    
+    n_jets_ = jets.size();
 
-    FillCoreControlPlots();
+    if (fillPlots) FillCoreControlPlots();
 
     return 0;
   }

@@ -88,6 +88,7 @@ namespace ic {
 
     //eventInfo->set_weight("lepton", weight);
 
+    bool zeroParton = false;
 
     if (do_w_soup_) {
       std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
@@ -110,7 +111,7 @@ namespace ic {
       if (partons == 3) eventInfo->set_weight("wsoup", w3_);
       if (partons == 4) eventInfo->set_weight("wsoup", w4_);
 
-      if (partons == 0) event->Add("NoParton",true);
+      if (partons == 0) zeroParton = true;
 
     }
 
@@ -135,7 +136,10 @@ namespace ic {
       if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
       if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
       if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
+      if (partons == 0) zeroParton = true;
     }
+
+    event->Add("NoParton",zeroParton);
 
     return 0;
   }

@@ -53,6 +53,7 @@ namespace ic {
     CLASS_MEMBER(HinvWJetsPlots,std::string, met_nolep_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, electrons_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, muons_label);
+    CLASS_MEMBER(HinvWJetsPlots,std::string, dijet_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, sel_label);
 
 
@@ -81,6 +82,7 @@ namespace ic {
     double met_noelectrons_;
     double met_nomuons_;
 
+    unsigned counter_;
  
   public:
     HinvWJetsPlots(std::string const& name);

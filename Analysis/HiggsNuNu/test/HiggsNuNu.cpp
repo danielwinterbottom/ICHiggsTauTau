@@ -71,7 +71,7 @@ int main(int argc, char* argv[]){
   string mettype;                 // MET input collection to be used
   bool doMetFilters;              // apply cleaning MET filters
   string filters;
-  unsigned signal_region;             // DeltaPhi cut > 2.7
+  //unsigned signal_region;             // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
 
  // Load the config
@@ -97,7 +97,6 @@ int main(int argc, char* argv[]){
     ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
     ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
-    ("signal_region",       po::value<unsigned>(&signal_region)->default_value(1))
     ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
@@ -130,7 +129,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
-  std::cout << boost::format(param_fmt) % "signal_region" % signal_region;
+  //  std::cout << boost::format(param_fmt) % "signal_region" % signal_region;
   std::cout << boost::format(param_fmt) % "met_cut" % met_cut;
   std::cout << boost::format(param_fmt) % "doMetFilters" % doMetFilters;
 
@@ -474,7 +473,8 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
-  MetSelection metFilter = MetSelection("MetFilter",mettype,doMetFilters,filtersVec,met_cut);
+  MetSelection metFilters = MetSelection("MetFilters",mettype,doMetFilters,filtersVec,0);
+  MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut);
 
   unsigned nLepToAdd = 0;
   if (channel == channel::munu || 
@@ -487,9 +487,9 @@ int main(int argc, char* argv[]){
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,nLepToAdd);
 
 
-  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",doMetFilters,filtersVec,met_cut);
-  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",doMetFilters,filtersVec,met_cut);
-  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",doMetFilters,filtersVec,met_cut);
+  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",false,filtersVec,met_cut);
+  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut);
+  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut);
 
   //------------------------------------------------------------------------------------
   // W selection Modules
@@ -560,6 +560,7 @@ int main(int argc, char* argv[]){
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("electrons")
     .set_muons_label("muonsPFlow")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("JetPair");
 
   if (channel==channel::enu)
@@ -591,6 +592,7 @@ int main(int argc, char* argv[]){
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DEta");
 
   if (channel==channel::enu)
@@ -616,6 +618,7 @@ int main(int argc, char* argv[]){
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("WSelection");
 
   if (channel==channel::enu)
@@ -623,24 +626,45 @@ int main(int argc, char* argv[]){
   else if (channel==channel::emu)
     wjetsPlots_wsel.set_met_nolep_label("metNoENoMu");
 
-  HinvControlPlots controlPlots_dphi = HinvControlPlots("DPhiControlPlots")
+  HinvControlPlots controlPlots_dphi_qcd = HinvControlPlots("DPhiControlPlotsQCD")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhi");
+    .set_sel_label("DPhiQCD");
 
-  HinvWJetsPlots wjetsPlots_dphi = HinvWJetsPlots("DPhiWJetsPlots")
+  HinvWJetsPlots wjetsPlots_dphi_qcd = HinvWJetsPlots("DPhiWJetsPlotsQCD")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
-    .set_sel_label("DPhi");
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiQCD");
 
   if (channel==channel::enu)
-    wjetsPlots_dphi.set_met_nolep_label("metNoElectrons");
+    wjetsPlots_dphi_qcd.set_met_nolep_label("metNoElectrons");
   else if (channel==channel::emu)
-    wjetsPlots_dphi.set_met_nolep_label("metNoENoMu");
+    wjetsPlots_dphi_qcd.set_met_nolep_label("metNoENoMu");
+
+  HinvControlPlots controlPlots_dphi_signal = HinvControlPlots("DPhiControlPlotsSIGNAL")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiSIGNAL");
+
+  HinvWJetsPlots wjetsPlots_dphi_signal = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiSIGNAL");
+
+  if (channel==channel::enu)
+    wjetsPlots_dphi_signal.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_dphi_signal.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_tightMjj = HinvControlPlots("TightMjjControlPlots")
     .set_fs(fs)
@@ -654,6 +678,7 @@ int main(int argc, char* argv[]){
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("TightMjj");
 
   if (channel==channel::enu)
@@ -671,6 +696,7 @@ int main(int argc, char* argv[]){
    if (!do_skim) {
 
      analysis.AddModule(&dataMCTriggerPathFilter);
+     analysis.AddModule(&metFilters);
 
      ////analysis.AddModule(&runStats);
      analysis.AddModule(&hinvWeights);
@@ -706,11 +732,8 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&jetMuonOverlapFilter);
      analysis.AddModule(&jetElecOverlapFilter);
      
-     //jet pair production and selection before plotting
+     //jet pair production before plotting
      analysis.AddModule(&jjPairProducer);
-     analysis.AddModule(&etaProdJetPairFilter);
-     analysis.AddModule(&controlPlots_dijet);
-     analysis.AddModule(&wjetsPlots_dijet);
 
      //lepton selections or veto
      if (channel == channel::munu){
@@ -744,6 +767,19 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&controlPlots_lepveto);
      }
 
+     //jet pair selection
+     analysis.AddModule(&etaProdJetPairFilter);
+     analysis.AddModule(&controlPlots_dijet);
+     analysis.AddModule(&wjetsPlots_dijet);
+
+     //dijet modules
+     //loose Mjj WP removed 
+     //analysis.AddModule(&looseMassJetPairFilter);
+     //analysis.AddModule(&controlPlots_looseMjj);
+     analysis.AddModule(&detaJetPairFilter);
+     analysis.AddModule(&controlPlots_deta);
+     analysis.AddModule(&wjetsPlots_deta);
+
      //met modules
      if (channel == channel::munu){
        analysis.AddModule(&metNoMuonFilter);
@@ -755,34 +791,24 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&metNoENoMuFilter);
      }
      else {
-       analysis.AddModule(&metFilter);
+       analysis.AddModule(&metCut);
      }
      analysis.AddModule(&controlPlots_met);
-     
-     //dijet modules
-     analysis.AddModule(&looseMassJetPairFilter);
-     analysis.AddModule(&controlPlots_looseMjj);
-     analysis.AddModule(&detaJetPairFilter);
-     analysis.AddModule(&controlPlots_deta);
-     analysis.AddModule(&wjetsPlots_deta);
 
-     //dphi cut
-     if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
-     else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
-     if (signal_region!=2) {
-       analysis.AddModule(&controlPlots_dphi);
-       analysis.AddModule(&wjetsPlots_dphi);
-     }
      //tight Mjj cut
      analysis.AddModule(&tightMassJetPairFilter);
      analysis.AddModule(&controlPlots_tightMjj);
      analysis.AddModule(&wjetsPlots_tightMjj);
 
-     if (signal_region==2) {
-       analysis.AddModule(&dphiJetPairFilter);
-       analysis.AddModule(&controlPlots_dphi);
-       analysis.AddModule(&wjetsPlots_dphi);
-     }
+     //dphi cut: don't filter events anymore !
+     //Just plot histograms for different regions
+     ////if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
+     ////else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
+
+     analysis.AddModule(&controlPlots_dphi_qcd);
+     analysis.AddModule(&wjetsPlots_dphi_qcd);
+     analysis.AddModule(&controlPlots_dphi_signal);
+     analysis.AddModule(&wjetsPlots_dphi_signal);
      
    }
    else {
@@ -790,7 +816,7 @@ int main(int argc, char* argv[]){
      //analysis.AddModule(pointer to module defined above)
      if (channel == channel::nunu){
        analysis.AddModule(&jetPtEtaFilter);
-       analysis.AddModule(&metFilter);
+       analysis.AddModule(&metCut);
        analysis.AddModule(&jjPairProducer);
        analysis.AddModule(&looseMassJetPairFilter);
      }
