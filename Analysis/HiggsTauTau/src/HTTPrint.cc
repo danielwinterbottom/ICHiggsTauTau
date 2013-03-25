@@ -53,6 +53,7 @@ namespace ic {
     for (unsigned i = 0; i < taus.size(); ++i) {
       std::cout << "Tau " << i << std::endl;
       taus[i]->Print();
+      std::cout << "-decay_mode: " << taus[i]->decay_mode() << std::endl;
       std::cout << "-lead_track_dz_with_vertex: " << taus[i]->lead_dz_vertex() << std::endl;
       std::cout << "-decayModeFinding: " << taus[i]->GetTauID("decayModeFinding") << std::endl;
       std::cout << "-byIsolationMVAraw: " << taus[i]->GetTauID("byIsolationMVAraw") << std::endl;
@@ -64,7 +65,8 @@ namespace ic {
       std::cout << "-againstMuonLoose: " << taus[i]->GetTauID("againstMuonLoose") << std::endl;
     }
     for (unsigned i = 0; i < muons.size(); ++i) {
-      std::cout << "Muon " << i << ": " << muons[i]->vector() << std::endl;
+      std::cout << "Muon " << std::endl;
+      muons[i]->Print();
       std::cout << "-dxyVertex: " << muons[i]->dxy_vertex() << std::endl;
       std::cout << "-dzVertex: " << muons[i]->dz_vertex() << std::endl;
       std::cout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
@@ -76,11 +78,17 @@ namespace ic {
       std::cout << "-dr03_tk_sum_pt: " << muons[i]->dr03_tk_sum_pt() << std::endl;
       std::cout << "-dr03_ecal_rechit_sum_et: " << muons[i]->dr03_ecal_rechit_sum_et() << std::endl;
       std::cout << "-dr03_hcal_tower_sum_et: " << muons[i]->dr03_hcal_tower_sum_et() << std::endl;
+      std::cout << "-dr04_pfiso_charged_all " << muons[i]->dr04_pfiso_charged_all() << std::endl;
+      std::cout << "-dr04_pfiso_charged " << muons[i]->dr04_pfiso_charged() << std::endl;
+      std::cout << "-dr04_pfiso_neutral " << muons[i]->dr04_pfiso_neutral() << std::endl;
+      std::cout << "-dr04_pfiso_gamma " << muons[i]->dr04_pfiso_gamma() << std::endl;
+      std::cout << "-dr04_pfiso_pu " << muons[i]->dr04_pfiso_pu() << std::endl;
+
       double iso =  muons[i]->dr04_pfiso_charged_all() 
       + std::max(muons[i]->dr04_pfiso_neutral() + muons[i]->dr04_pfiso_gamma() - 0.5 * muons[i]->dr04_pfiso_pu(), 0.0);
-      std::cout << "-isoSum: " << iso << std::endl;
+      std::cout << "-dr04_pfiso_dbeta_sum: " << iso << std::endl;
       iso = iso / muons[i]->pt();
-      std::cout << "-isoRel: " << iso << std::endl;
+      std::cout << "-dr04_pfiso_dbeta_rel: " << iso << std::endl;
     }
 
 
