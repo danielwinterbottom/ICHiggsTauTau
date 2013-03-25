@@ -136,9 +136,9 @@ int main(int argc, char* argv[]){
   double y_ratio_max;		     // Use this as max for ratio plot
   double extra_pad;		     // Expand the y-axis by an additional factor
   bool blind;			     // Blind some region of the data
-  double x_blind_min;		     // If bind is true, use this as min x for blinding.
+  double x_blind_min;		     // If blind is true, use this as min x for blinding.
                                      // If min>max blind everything
-  double x_blind_max;		     // If bind is true, use this as max x for blinding
+  double x_blind_max;		     // If blind is true, use this as max x for blinding
   bool log_y;			     // Draw plot in log scale
   bool norm_bins;		     // Normalise using bin width
   bool signal_no_stack;		     // Don't stack the signal contributions on the backgrounds
@@ -232,13 +232,14 @@ int main(int argc, char* argv[]){
   string lumi_data_label = parser.GetParam<string>("LUMI_DATA_LABEL");
 
 
+  //List of input files
   vector<string> files;
   //files.push_back("Data_MET-2012A-13Jul2012-v1");
-  files.push_back("Data_MET-2012A-13Jul2012-v1_0_795305fb");
+  files.push_back("Data_MET-2012A-13Jul2012-v1");
   files.push_back("Data_MET-2012A-06Aug2012-v1");
   files.push_back("Data_MET-2012B-13Jul2012-v1");
   files.push_back("Data_MET-2012C-24Aug2012-v1");
-  files.push_back("Data_MET-2012C-11Dec2012-v1");
+  files.push_back("Data_MET-2012C-11Dec2012-v1"); 
   files.push_back("Data_MET-2012C-PromptReco-v2");
   //files.push_back("Data_MET-2012D-PromptReco-v1");
   files.push_back("Data_MET-2012D-PromptReco-v1_7_193fb");
