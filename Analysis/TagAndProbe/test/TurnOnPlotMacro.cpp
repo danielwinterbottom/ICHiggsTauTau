@@ -8,6 +8,7 @@
 #include "TLegend.h"
 #include "boost/lexical_cast.hpp"
 #include <string>
+#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
 
 double efficiency(double m, double m0, double sigma, double alpha, double n, double norm)  
  { 
@@ -73,6 +74,7 @@ int main(int argc, char* argv[]){
     exit(1);
   }
 
+    ic::Plot::SetTdrStyle();
     bool barrel;
     barrel = boost::lexical_cast<bool>(argv[2]);
 
