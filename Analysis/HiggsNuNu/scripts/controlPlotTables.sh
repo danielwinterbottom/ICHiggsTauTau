@@ -3,14 +3,12 @@ PARAMS=./scripts/Params.dat
 
 for CHANNEL in nunu enu munu
   do
-  for MET in 130 #0 70
+  for MET in 130 0 70
     do
-    for DOQCD in 0 1 2
+    for SYST in central #JESUP JESDOWN
       do
-      for SYST in central #JESUP JESDOWN
-	do
-	FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
-	PLOTDIR=TABLES/$CHANNEL/MET$MET/DOQCD$DOQCD/
+	FOLDER=./output/$CHANNEL/MET$MET/
+	PLOTDIR=TABLES/$CHANNEL/MET$MET/
 
 	if [ "$SYST" != "central" ]
 	    then
@@ -20,11 +18,11 @@ for CHANNEL in nunu enu munu
 	
 	mkdir -p $PLOTDIR
 	mkdir -p $PLOTDIR/wjetsComp/
-	BLIND=0
-	#if [ "$CHANNEL" != "nunu" ] || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
-	#    then
-	#    let BLIND=0
-	#fi
+	BLIND=1
+	if [ "$CHANNEL" != "nunu" ] || (( "$MET" != "130" ))
+	    then
+	    let BLIND=0
+	fi
 	
  #     echo $CHANNEL " " $MET " " $DOQCD " : BLIND variable is "$BLIND
 	
@@ -64,17 +62,17 @@ for CHANNEL in nunu enu munu
     --log_y=true \
     --paramfile=$PARAMS
 
-#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-#    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-#    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
-#    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
-#    --y_axis_min=0.01 --extra_pad=2 \
-#    --rebin=2 \
-#    --plot_wjets_comp=false \
-#    --norm_bins=false \
-#    --log_y=false \
-#    --paramfile=$PARAMS
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
+    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
+    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
+    --y_axis_min=0.01 --extra_pad=2 \
+    --rebin=2 \
+    --plot_wjets_comp=false \
+    --norm_bins=false \
+    --log_y=false \
+    --paramfile=$PARAMS
 
 ###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -88,7 +86,7 @@ for CHANNEL in nunu enu munu
     --norm_bins=false \
     --log_y=true \
     --paramfile=$PARAMS
-      done
+
     done
   done
 done

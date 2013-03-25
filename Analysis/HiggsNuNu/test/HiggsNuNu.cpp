@@ -552,6 +552,28 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("Trigger");
 
+  HinvControlPlots controlPlots_hlt = HinvControlPlots("HLTControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("HLTMetClean");
+
+  //set collections to all leptons for the first set of plots before selecting/vetoing them
+  HinvWJetsPlots wjetsPlots_hlt = HinvWJetsPlots("HLTWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("electrons")
+    .set_muons_label("muonsPFlow")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("HLTMetClean");
+
+  if (channel==channel::enu)
+    wjetsPlots_hlt.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_hlt.set_met_nolep_label("metNoENoMu");
+
+
   HinvControlPlots controlPlots_dijet = HinvControlPlots("DijetControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -711,6 +733,10 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&JESUncertaintyCorrector);
      }
      analysis.AddModule(&jetIDFilter);
+
+     analysis.AddModule(&controlPlots_hlt);
+     analysis.AddModule(&wjetsPlots_hlt);
+
      analysis.AddModule(&jetPtEtaFilter);
 
      //prepare collections of veto leptons

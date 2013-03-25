@@ -67,15 +67,18 @@ namespace ic {
     int n_pu = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
     double eta = fabs(jet->eta());
     bool result = false;
+
+    double neutralFrac = ( jet->neutral_had_energy() + jet->HF_had_energy() ) / jet->uncorrected_energy();
+
     if (eta < 2.4) {
-      result = jet->neutral_had_energy_frac()   < 0.99
-            && jet->neutral_em_energy_frac()    < 0.99
+      result = neutralFrac   < 0.99
+	    && jet->neutral_em_energy_frac()    < 0.99
             && n_pu                             > 0
             && jet->charged_had_energy_frac()   > 0.0
             && jet->charged_multiplicity()      > 0
             && jet->charged_em_energy_frac()    < 0.99;
     } else {
-      result = jet->neutral_had_energy_frac()   < 0.99
+      result = neutralFrac   < 0.99
             && jet->neutral_em_energy_frac()    < 0.99
             && n_pu                             > 0;
     }

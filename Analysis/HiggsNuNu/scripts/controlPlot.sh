@@ -3,18 +3,14 @@ PARAMS=./scripts/Params.dat
 
 for CHANNEL in nunu enu munu
   do
-
-  for MET in 130 #0 70
+  
+  for MET in 130 0 70
     do
-
-    for DOQCD in 2
+    for SYST in central #JESUP JESDOWN
       do
 
-      for SYST in central #JESUP JESDOWN
-	do
-
-	FOLDER=./output/$CHANNEL/MET$MET/DOQCD$DOQCD/
-	PLOTDIR=PLOTS_QCD/$CHANNEL/MET$MET/DOQCD$DOQCD/
+	FOLDER=./output/$CHANNEL/MET$MET/
+	PLOTDIR=PLOTS_QCD/$CHANNEL/MET$MET/
 	
 	if [ "$SYST" != "central" ]
 	    then
@@ -25,7 +21,7 @@ for CHANNEL in nunu enu munu
 	mkdir -p $PLOTDIR
 	
 	BLIND=1
-	if (( "$CHANNEL" != "nunu" )) || (( "$DOQCD" == "1" )) || (( "$MET" != "130" ))
+	if (( "$CHANNEL" != "nunu" )) || (( "$MET" != "130" ))
 	    then
 	    let BLIND=0
 	fi
@@ -140,16 +136,16 @@ for CHANNEL in nunu enu munu
     --paramfile=$PARAMS
 
 ###### dphijj
-#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-#    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-#    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
-#    --blind=$BLIND --x_blind_min=0 --x_blind_max=1.  \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.2 \
-#    --y_axis_min=0.01 --extra_pad=100000 \
-#    --rebin=1 \
-#    --norm_bins=false \
-#    --log_y=true \
-#    --paramfile=$PARAMS
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
+    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
+    --blind=$BLIND --x_blind_min=0 --x_blind_max=1.  \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
+    --y_axis_min=0.01 --extra_pad=100000 \
+    --rebin=2 \
+    --norm_bins=false \
+    --log_y=true \
+    --paramfile=$PARAMS
 
 ###### met
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -162,7 +158,7 @@ for CHANNEL in nunu enu munu
     --norm_bins=false \
     --log_y=true \
     --paramfile=$PARAMS
-      done
+
     done
   done
 done

@@ -185,6 +185,7 @@ namespace ic {
       std::cout << "===============================" << std::endl
 		<< " HinvWJetsPlots::PostAnalysis " << std::endl
 		<< "===============================" << std::endl
+		<< "-- Selection: " << sel_label_ << std::endl
 		<< "-- no parton events = " << counter_ << std::endl;
     }
 

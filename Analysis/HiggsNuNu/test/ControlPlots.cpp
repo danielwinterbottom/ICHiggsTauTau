@@ -284,10 +284,10 @@ int main(int argc, char* argv[]){
   files.push_back("MC_WJetsToLNu-v1_taunu");
   files.push_back("MC_WJetsToLNu-v2_taunu");
   files.push_back("MC_DYJetsToLL");
-  //files.push_back("MC_DY1JetsToLL");
-  //files.push_back("MC_DY2JetsToLL");
-  //files.push_back("MC_DY3JetsToLL");
-  //files.push_back("MC_DY4JetsToLL");
+  files.push_back("MC_DY1JetsToLL");
+  files.push_back("MC_DY2JetsToLL");
+  files.push_back("MC_DY3JetsToLL");
+  files.push_back("MC_DY4JetsToLL");
   files.push_back("MC_ZJetsToNuNu_100_HT_200");
   files.push_back("MC_ZJetsToNuNu_200_HT_400");
   files.push_back("MC_ZJetsToNuNu_400_HT_inf");
@@ -297,26 +297,18 @@ int main(int argc, char* argv[]){
   files.push_back("MC_VBF_HToZZTo4Nu_M-120");
 
 
-  unsigned signal_region = folder.find("DOQCD0")!=folder.npos ? 0 : (folder.find("DOQCD1")!=folder.npos ? 1 : 2);
-  std::cout << "-- Processing signal region: " << signal_region << std::endl; 
-
   //build a list of selections
   vector<string> selections;
-  selections.push_back("JetPair");
+  //selections.push_back("HLTMetClean");
   selections.push_back("LeptonVeto");
   selections.push_back("WSelection");
-  selections.push_back("MET");
-  selections.push_back("LooseMjj");
+  selections.push_back("JetPair");
   selections.push_back("DEta");
-  if (signal_region < 2) {
-    selections.push_back("DPhi");
-    selections.push_back("TightMjj");
-  }
-  else {
-    selections.push_back("TightMjj");
-    selections.push_back("DPhi");
-  }
-
+  selections.push_back("MET");
+  selections.push_back("TightMjj");
+  selections.push_back("DPhiSIGNAL");
+  selections.push_back("DPhiQCD");
+  
   std::map<std::string, TFile *> tfiles;
   for (unsigned i = 0; i < files.size(); ++i) {
     std::string filename = (files[i]+".root");
@@ -427,13 +419,15 @@ int main(int argc, char* argv[]){
       SumHistograms(f,plots[nm],"MC_QCD",qcd_hist);
       SumHistograms(f,plots[nm],"MC_T",top_hist);
       SumHistograms(f,plots[nm],"MC_SingleT",top_hist);
+      if (f.find("JetsToLL") != f.npos){
+	if (f.find("DYJJ") != f.npos) SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);
+	else SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
+      }
       SumHistograms(f,plots[nm],"JetsToLNu",WJets_hist);
       SumHistograms(f,plots[nm],"_enu",WJets_enu_hist);
       SumHistograms(f,plots[nm],"_munu",WJets_munu_hist);
       SumHistograms(f,plots[nm],"_taunu",WJets_taunu_hist);
-      SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
       SumHistograms(f,plots[nm],"ZJetsToNuNu",ZJetsToNuNu_hist);
-      SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);
       SumHistograms(f,plots[nm],"GJets",GJets_hist);
       SumHistograms(f,plots[nm],"MC_WW",VV_hist);
       SumHistograms(f,plots[nm],"MC_WZ",VV_hist);
@@ -493,17 +487,9 @@ int main(int argc, char* argv[]){
 
 
     bool lBlind = blind && (
-			    ( signal_region < 2 &&  ( selections[k].find("TightMjj") != selections[k].npos ||
-						      selections[k].find("DPhi") != selections[k].npos ||
-						      (selections[k].find("LeptonVeto") != selections[k].npos && 
-						       plot_name.find("dphijj") != plot_name.npos )
-						      )
-			      ) ||
-			    ( signal_region == 2 && ( selections[k].find("DPhi") != selections[k].npos ||
-						      (selections[k].find("TightMjj") != selections[k].npos && 
-						       plot_name.find("dphijj") != plot_name.npos )
-						      )
-			      )
+			    selections[k].find("DPhiSIGNAL") != selections[k].npos ||
+			    (selections[k].find("TightMjj") != selections[k].npos && 
+			     plot_name.find("dphijj") != plot_name.npos )
 			    );
 
     if (lBlind) {
@@ -546,7 +532,7 @@ int main(int argc, char* argv[]){
 //     plot.AddTH1PlotElement(GJets_hist);
 //     plot.AddTH1PlotElement(qcd_hist);
 
-//moving signal after data screws up everything !!
+//moving signal before data screws up everything !!
     plot.AddTH1PlotElement(VBFZ_hist);
    
     plot.AddTH1PlotElement(data_hist);
