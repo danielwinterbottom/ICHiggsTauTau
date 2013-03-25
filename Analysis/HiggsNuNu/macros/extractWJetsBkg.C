@@ -10,7 +10,7 @@
 
 
 enum Selection {Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL,DPhiQCD};
-enum Sample {QCD,GJets,Top,WJets,WJets_enu,WJets_munu,WJets_taunu,ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,VV,Data,Signal};
+enum Sample {QCD,GJets,Top,TTbar,SingleTop,TW,WJets,WJets_enu,WJets_munu,WJets_taunu,ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,VV,Data,Signal};
 
 
 struct events {
@@ -181,27 +181,49 @@ int extractWJetsBkg(){//main
 	  
 	  lOutfile << "\\begin{tabular}{|l|c|c|c||c|c|c|}" << std::endl
 		   << "\\hline" << std::endl
-		   << "Step & W$\\rightarrow e\\nu$ & W$\\rightarrow\\mu\\nu$ & W$\\rightarrow\\tau\\nu$ & Z$\\rightarrow\\nu\\nu$ & Z$\\rightarrow$ll & EWK Z+2j  \\\\" << std::endl
+		   << "Step & W$\\rightarrow e\\nu$ & W$\\rightarrow\\mu\\nu$ & W$\\rightarrow\\tau\\nu$ & Z$\\rightarrow\\nu\\nu$ & Z$\\rightarrow$ll & EWK Z+2j \\\\" << std::endl
 		   << "\\hline" << std::endl
-		   << "DPhi < 1.0 &  $" 
+		   << "$\\Delta\\phi<1.0$ &  $" 
 		   << lSel[iCh][DPhiSIGNAL][WJets_enu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][WJets_enu].error << "$ & $" 
 		   << lSel[iCh][DPhiSIGNAL][WJets_munu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][WJets_munu].error  << "$ & $" 
 		   << lSel[iCh][DPhiSIGNAL][WJets_taunu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][WJets_taunu].error << "$ & $" 
 		   << lSel[iCh][DPhiSIGNAL][ZJets_nunu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][ZJets_nunu].error << "$ & $" 
 		   << lSel[iCh][DPhiSIGNAL][ZJets_ll].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][ZJets_ll].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][ZJets_vbf].error 
+		   << lSel[iCh][DPhiSIGNAL][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][ZJets_vbf].error
 		   << "$ \\\\" << std::endl
-		   << "DPhi > 2.6 & $" 
+		   << "$\\Delta\\phi > 2.6$ & $" 
 		   << lSel[iCh][DPhiQCD][WJets_enu].number  << "\\pm" << lSel[iCh][DPhiQCD][WJets_enu].error << "$ & $" 
 		   << lSel[iCh][DPhiQCD][WJets_munu].number  << "\\pm" << lSel[iCh][DPhiQCD][WJets_munu].error  << "$ & $" 
 		   << lSel[iCh][DPhiQCD][WJets_taunu].number  << "\\pm" << lSel[iCh][DPhiQCD][WJets_taunu].error << "$ & $" 
 		   << lSel[iCh][DPhiQCD][ZJets_nunu].number  << "\\pm" << lSel[iCh][DPhiQCD][ZJets_nunu].error << "$ & $" 
 		   << lSel[iCh][DPhiQCD][ZJets_ll].number  << "\\pm" << lSel[iCh][DPhiQCD][ZJets_ll].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiQCD][ZJets_vbf].error 
+		   << lSel[iCh][DPhiQCD][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiQCD][ZJets_vbf].error
 		   << "$ \\\\" << std::endl
 		   << "\\hline" << std::endl
 		   << "\\end{tabular}" << std::endl;
+	  lOutfile.close();
+
+	  lName.str("");
+	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/TopTable.txt";
 	  
+	  lOutfile.open(lName.str().c_str());
+	  
+
+	  lOutfile << "\\begin{tabular}{|l|c|c|c|}" << std::endl
+		   << "\\hline" << std::endl
+		   << "Step & $t\\bar{t}$ & single top & $t,\\bar{t}\\rightarrow tW$  \\\\" << std::endl
+		   << "\\hline" << std::endl
+		   << "$\\Delta\\phi<1.0$ &  $"
+		   << lSel[iCh][DPhiSIGNAL][TTbar].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][TTbar].error  << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL][SingleTop].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][SingleTop].error  << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL][TW].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][TW].error << "$ \\\\" << std::endl;
+	  lOutfile << "$\\Delta\\phi > 2.6$ & $" 
+		   << lSel[iCh][DPhiQCD][TTbar].number  << "\\pm" << lSel[iCh][DPhiQCD][TTbar].error  << "$ & $" 
+		   << lSel[iCh][DPhiQCD][SingleTop].number  << "\\pm" << lSel[iCh][DPhiQCD][SingleTop].error  << "$ & $" 
+		   << lSel[iCh][DPhiQCD][TW].number  << "\\pm" << lSel[iCh][DPhiQCD][TW].error 
+		   << "$ \\\\" << std::endl
+		   << "\\hline" << std::endl
+		   << "\\end{tabular}" << std::endl;
 	  lOutfile.close();
 	  
 	}//loop on channel

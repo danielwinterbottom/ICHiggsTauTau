@@ -398,6 +398,9 @@ int main(int argc, char* argv[]){
     ic::TH1PlotElement signal_hist = ic::TH1PlotElement("Signal");
     ic::TH1PlotElement qcd_hist = ic::TH1PlotElement("QCD");
     ic::TH1PlotElement top_hist = ic::TH1PlotElement("Top");
+    ic::TH1PlotElement ttbar_hist = ic::TH1PlotElement("TTBar");
+    ic::TH1PlotElement singletop_hist = ic::TH1PlotElement("SingleTop");
+    ic::TH1PlotElement tW_hist = ic::TH1PlotElement("tW");
     ic::TH1PlotElement WJets_hist = ic::TH1PlotElement("WJets");
     ic::TH1PlotElement WJets_enu_hist = ic::TH1PlotElement("WJets_enu");
     ic::TH1PlotElement WJets_munu_hist = ic::TH1PlotElement("WJets_munu");
@@ -419,6 +422,9 @@ int main(int argc, char* argv[]){
       SumHistograms(f,plots[nm],"MC_QCD",qcd_hist);
       SumHistograms(f,plots[nm],"MC_T",top_hist);
       SumHistograms(f,plots[nm],"MC_SingleT",top_hist);
+      SumHistograms(f,plots[nm],"MC_TT",ttbar_hist);
+      SumHistograms(f,plots[nm],"MC_SingleT",singletop_hist);
+      SumHistograms(f,plots[nm],"tW",tW_hist);
       if (f.find("JetsToLL") != f.npos){
 	if (f.find("DYJJ") != f.npos) SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);
 	else SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
@@ -591,6 +597,9 @@ int main(int argc, char* argv[]){
       Utilities n_qcd = Utilities(Integral(qcd_hist.hist_ptr()),Error(qcd_hist.hist_ptr()));
       Utilities n_VV = Utilities(Integral(VV_hist.hist_ptr()),Error(VV_hist.hist_ptr()));
       Utilities n_top = Utilities(Integral(top_hist.hist_ptr()),Error(top_hist.hist_ptr()));
+      Utilities n_ttbar = Utilities(Integral(ttbar_hist.hist_ptr()),Error(ttbar_hist.hist_ptr()));
+      Utilities n_singletop = Utilities(Integral(singletop_hist.hist_ptr()),Error(singletop_hist.hist_ptr()));
+      Utilities n_tW = Utilities(Integral(tW_hist.hist_ptr()),Error(tW_hist.hist_ptr()));
       Utilities n_WJets = Utilities(Integral(WJets_hist.hist_ptr()),Error(WJets_hist.hist_ptr()));
       Utilities n_WJets_enu = Utilities(Integral(WJets_enu_hist.hist_ptr()),Error(WJets_enu_hist.hist_ptr()));
       Utilities n_WJets_munu = Utilities(Integral(WJets_munu_hist.hist_ptr()),Error(WJets_munu_hist.hist_ptr()));
@@ -636,6 +645,9 @@ int main(int argc, char* argv[]){
       lDatOutput[k] << "QCD " << n_qcd.roundedNumber() << " " << n_qcd.roundedError() << std::endl
 		    << "GJets " << n_gjets.roundedNumber() << " " << n_gjets.roundedError() << std::endl
 		    << "Top " << n_top.roundedNumber() << " " << n_top.roundedError() <<  std::endl
+		    << "TTbar " << n_ttbar.roundedNumber() << " " << n_ttbar.roundedError() <<  std::endl
+		    << "SingleTop " << n_singletop.roundedNumber() << " " << n_singletop.roundedError() <<  std::endl
+		    << "TW " << n_tW.roundedNumber() << " " << n_tW.roundedError() <<  std::endl
 		    << "WJets " << n_WJets.roundedNumber() << " " << n_WJets.roundedError() <<  std::endl
 		    << "WJets_enu " << n_WJets_enu.roundedNumber() << " " << n_WJets_enu.roundedError() <<  std::endl
 		    << "WJets_munu " << n_WJets_munu.roundedNumber() << " " << n_WJets_munu.roundedError() <<  std::endl

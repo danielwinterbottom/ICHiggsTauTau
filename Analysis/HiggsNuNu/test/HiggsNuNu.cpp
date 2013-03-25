@@ -745,7 +745,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&vetoElectronIso);
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
-A
+
      //filter leptons before making jet pairs and changing MET...
      analysis.AddModule(&selElectronCopyCollection);
      analysis.AddModule(&selElectronFilter);
