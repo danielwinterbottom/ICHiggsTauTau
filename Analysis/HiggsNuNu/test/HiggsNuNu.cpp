@@ -546,6 +546,11 @@ int main(int argc, char* argv[]){
   // Plot Modules
   // ------------------------------------------------------------------------------------  
   
+  HinvControlPlots controlPlots_trigger = HinvControlPlots("TriggerControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("Trigger");
 
   HinvControlPlots controlPlots_dijet = HinvControlPlots("DijetControlPlots")
     .set_fs(fs)
@@ -702,7 +707,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&hinvWeights);
 
      //jet modules
-     if(dojessyst==true){
+     if(dojessyst==true&&(!is_data)){
        analysis.AddModule(&JESUncertaintyCorrector);
      }
      analysis.AddModule(&jetIDFilter);
@@ -714,7 +719,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&vetoElectronIso);
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
-
+A
      //filter leptons before making jet pairs and changing MET...
      analysis.AddModule(&selElectronCopyCollection);
      analysis.AddModule(&selElectronFilter);
@@ -734,6 +739,7 @@ int main(int argc, char* argv[]){
      
      //jet pair production before plotting
      analysis.AddModule(&jjPairProducer);
+     
 
      //lepton selections or veto
      if (channel == channel::munu){
