@@ -331,7 +331,7 @@ namespace ic {
     if(flag)
     {
         for(unsigned k_final=0; k_final<pairs.size(); k_final++)
-        { 
+        {
             mass=((pairs[k_final].first)->vector()+(pairs[k_final].second)->vector()).M();
             for(unsigned i=0; i<pt_bins_.size(); i++)
             {
@@ -340,6 +340,7 @@ namespace ic {
                         (((mode_==3) ||(mode_==4)) && IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )) )
                 {
                     passing_count++;
+                  //  if(run==203994 && eventInfo->lumi_block()>318){std::cout << "Passing: " << "Run= " << run << " Lumi= " << eventInfo->lumi_block() << " Event= " << eventInfo->event() << std::endl;}
                     if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
                     {
                         if(fabs((pairs[k_final].second)->sc_eta()) < eta_bins_[0])
@@ -371,6 +372,7 @@ namespace ic {
                 if ((!(mode_==3) && !(mode_==4) && !passprobe_predicate_(pairs[k_final].second))||
                         (((mode_==3)||(mode_==4)) && !IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )))
                 {
+                    //if(run==206210 && eventInfo->lumi_block() < 195){std::cout << "Failing: " << "Run= " << run << " Lumi= " << eventInfo->lumi_block() << " Event= " << eventInfo->event() << std::endl;}
                     failing_count++;
                     if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4)
                     {
