@@ -453,6 +453,9 @@ int main(int argc, char* argv[]){
     categories.push_back("twojet");
     if (channel == channel::em) categories.push_back("vbf_no_cjv");
   }
+  if (method == 6) categories.push_back("btag_low_loose");
+  if (method == 7) categories.push_back("btag_high_loose");
+  if (method == 12) categories.push_back("btag_loose");
 
 
   // Now build a list of selections
@@ -719,6 +722,10 @@ int main(int argc, char* argv[]){
       zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       if (method == 3 && channel == channel::et) zl_hist = (TH1F*)(plots[Token("Special_18_DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
       zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()->Clone());
+      if (method == 6 || method == 7 || method == 12) {
+        zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L",cat+"_loose",os_sel)].hist_ptr()->Clone());
+        zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J",cat+"_loose",os_sel)].hist_ptr()->Clone());
+      }
       if (Integral(zl_hist) > 0.0) zl_hist->Scale( zl_norm / Integral(zl_hist) );
       if (Integral(zj_hist) > 0.0) zj_hist->Scale( zj_norm / Integral(zj_hist) );
       zll_hist = (TH1F*)zl_hist->Clone();
@@ -928,7 +935,7 @@ int main(int argc, char* argv[]){
       if (verbose) std::cout << "=> SS Control W: " << w_ss_con << std::endl;
     }
     // Extrapolation for 0/1 Jet, dilepton, inclusive, twojet
-    if (method <= 4|| method >= 8) {
+    if ( (method <= 4|| method >= 8) && method != 12 ) {
     	double w_os_sel_r = Integral(plots[Token("WJetsToLNuSoup",cat,os_sel)].hist_ptr());
       w_err_mc_rel = Error(plots[Token("WJetsToLNuSoup",cat,os_sel)].hist_ptr()) / Integral(plots[Token("WJetsToLNuSoup",cat,os_sel)].hist_ptr());
     	double w_os_con_r = Integral(plots[Token("WJetsToLNuSoup",cat,os_con)].hist_ptr());
@@ -1152,13 +1159,13 @@ int main(int argc, char* argv[]){
     // btag 
     //-----------------------
     if (method == 7) {
-    	double qcd_eff = (Integral(plots[Token("Special_3_Data",cat,ss_sel)].hist_ptr()) / Integral(plots[Token("Special_3_Data","inclusive",ss_sel)].hist_ptr()) );
-    	if (verbose) std::cout << "QCD Selection Category Efficiency: " << qcd_eff << std::endl;
-    	qcd_norm = qcd_inclusive * qcd_eff;
-      qcd_hist = (TH1F*)(plots[Token("Special_3_Data","onebjet_highpt_loose",ss_sel)].hist_ptr()->Clone());
+    	// double qcd_eff = (Integral(plots[Token("Special_3_Data",cat,ss_sel)].hist_ptr()) / Integral(plots[Token("Special_3_Data","inclusive",ss_sel)].hist_ptr()) );
+    	// if (verbose) std::cout << "QCD Selection Category Efficiency: " << qcd_eff << std::endl;
+    	// qcd_norm = qcd_inclusive * qcd_eff;
+      qcd_hist = (TH1F*)(plots[Token("Special_3_Data","btag_high_loose",ss_sel)].hist_ptr()->Clone());
     }
     if (method == 6) {
-       qcd_hist = (TH1F*)(plots[Token("Special_3_Data","onebjet_lowpt_loose", ss_sel)].hist_ptr()->Clone());
+       qcd_hist = (TH1F*)(plots[Token("Special_3_Data","btag_low_loose", ss_sel)].hist_ptr()->Clone());
     }
     if (method == 12) {
        qcd_hist = (TH1F*)(plots[Token("Special_3_Data","btag_loose", ss_sel)].hist_ptr()->Clone());
