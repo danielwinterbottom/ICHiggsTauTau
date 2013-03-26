@@ -182,6 +182,7 @@ int mTEfficiency(){//main
       nCdataOverMC[iF]->SetBinError(iB+1,lErr);
     }
     myc->cd();
+    nCdataOverMC[iF]->GetYaxis()->SetRangeUser(0.4,1.0);
     nCdataOverMC[iF]->Draw("PE");
     myc->Print( (lName.str()+".pdf").c_str());
     

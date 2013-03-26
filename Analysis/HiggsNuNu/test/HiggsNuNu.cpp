@@ -418,6 +418,14 @@ int main(int argc, char* argv[]){
     .set_input_label("pfJetsPFlow")
     .set_candidate_name_first("jet1")
     .set_candidate_name_second("jet2")
+    .set_select_leading_pair(false)
+    .set_output_label("jjCandidates");                                                        
+
+  OneCollCompositeProducer<PFJet> jjLeadingPairProducer = OneCollCompositeProducer<PFJet>
+    ("JetJetLeadingPairProducer")
+    .set_input_label("pfJetsPFlow")
+    .set_candidate_name_first("jet1")
+    .set_candidate_name_second("jet2")
     .set_select_leading_pair(true)
     .set_output_label("jjLeadingCandidates");                                                        
 
@@ -494,8 +502,8 @@ int main(int argc, char* argv[]){
   //------------------------------------------------------------------------------------
   // W selection Modules
   // ------------------------------------------------------------------------------------
-  double mtcut_min = 60;
-  double mtcut_max = 120;
+  double mtcut_min = 30;
+  double mtcut_max = 8000;
   MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",2,mtcut_min,mtcut_max);
   MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",1,mtcut_min,mtcut_max);
 
@@ -546,16 +554,11 @@ int main(int argc, char* argv[]){
   // Plot Modules
   // ------------------------------------------------------------------------------------  
   
-  HinvControlPlots controlPlots_trigger = HinvControlPlots("TriggerControlPlots")
-    .set_fs(fs)
-    .set_met_label(mettype)
-    .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("Trigger");
-
+ 
   HinvControlPlots controlPlots_hlt = HinvControlPlots("HLTControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
-    .set_dijet_label("jjLeadingCandidates")
+    .set_dijet_label("jjCandidates")
     .set_sel_label("HLTMetClean");
 
   //set collections to all leptons for the first set of plots before selecting/vetoing them
@@ -565,7 +568,7 @@ int main(int argc, char* argv[]){
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("electrons")
     .set_muons_label("muonsPFlow")
-    .set_dijet_label("jjLeadingCandidates")
+    .set_dijet_label("jjCandidates")
     .set_sel_label("HLTMetClean");
 
   if (channel==channel::enu)
@@ -732,12 +735,11 @@ int main(int argc, char* argv[]){
      if(dojessyst==true&&(!is_data)){
        analysis.AddModule(&JESUncertaintyCorrector);
      }
+
      analysis.AddModule(&jetIDFilter);
 
-     analysis.AddModule(&controlPlots_hlt);
-     analysis.AddModule(&wjetsPlots_hlt);
-
-     analysis.AddModule(&jetPtEtaFilter);
+    //jet pair production before plotting
+     analysis.AddModule(&jjPairProducer);
 
      //prepare collections of veto leptons
      analysis.AddModule(&vetoElectronCopyCollection);
@@ -759,14 +761,21 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&metNoElectrons);
      analysis.AddModule(&metNoENoMu);
 
+     //plot before cutting
+     analysis.AddModule(&controlPlots_hlt);
+     analysis.AddModule(&wjetsPlots_hlt);
+
+     //filter jets
+     analysis.AddModule(&jetPtEtaFilter);
+
      //deal with removing overlap with selected leptons
      analysis.AddModule(&jetMuonOverlapFilter);
      analysis.AddModule(&jetElecOverlapFilter);
      
-     //jet pair production before plotting
-     analysis.AddModule(&jjPairProducer);
+     //two-leading jet pair production before plotting
+     analysis.AddModule(&jjLeadingPairProducer);
      
-
+ 
      //lepton selections or veto
      if (channel == channel::munu){
        analysis.AddModule(&oneMuonFilter);
