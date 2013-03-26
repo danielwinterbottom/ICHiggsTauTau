@@ -807,7 +807,6 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------                     
-  //                              analysis.AddModule(&httPrint);
   if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
@@ -818,6 +817,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&electronEnergyShifter);
   if (moriond_tau_scale && channel != channel::em && (!is_data || is_embedded) && !do_skim)          
                                   analysis.AddModule(&httEnergyScale);
+                               analysis.AddModule(&httPrint);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
 
   if (channel == channel::et || channel == channel::etmet) {
