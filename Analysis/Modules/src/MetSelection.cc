@@ -60,13 +60,14 @@ namespace ic {
   }
 
   int MetSelection::PostAnalysis(){
-
-    std::cout << "----------------------------------------" << std::endl
-	      << " PostAnalysis Info for MetSelection" << std::endl
-	      << "----------------------------------------" << std::endl;
-
-    for (unsigned iF(0); iF<filters_.size(); ++iF){
-      std::cout << "-- Filter " << filters_[iF] << " : " << counters_[iF] << std::endl;
+    if (doFilters_){
+      std::cout << "----------------------------------------" << std::endl
+		<< " PostAnalysis Info for MetSelection" << std::endl
+		<< "----------------------------------------" << std::endl;
+      
+      for (unsigned iF(0); iF<filters_.size(); ++iF){
+	std::cout << "-- Filter " << filters_[iF] << " : " << counters_[iF] << std::endl;
+      }
     }
     return 0;
   }
