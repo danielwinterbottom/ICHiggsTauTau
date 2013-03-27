@@ -152,6 +152,12 @@ switchJetCollection(process,
 process.patJets.embedGenPartonMatch = cms.bool(False)
 # process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
 
+###############
+#assorted things
+##############
+process.selectedPatMuons.cut = cms.string("isGlobalMuon && pt>10. && abs(eta)<2.5")
+process.selectedPatElectrons.cut = cms.string("pt>10. && abs(eta)<2.5")
+
 ################################################################
 ### Set up METs
 ################################################################
@@ -209,8 +215,12 @@ else:
                       sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_mc,
                       doApplySysShiftCorr = False,
                       )
-  process.patType1CorrectedPFMetJetResUp.src = cms.InputTag('patMETs')
-  process.patType1CorrectedPFMetJetResDown.src = cms.InputTag('patMETs')
+  process.icpattype1correctedPfMetProducer = cms.EDProducer('ICMetProducer',
+                                                   inputLabel = cms.InputTag("patType1CorrectedPFMet"),
+                                                   branchName = cms.untracked.string("pattype1correctedpfMet"),
+                                                   addGen = cms.untracked.bool(False),
+                                                   InputSig = cms.untracked.string("")
+                                                   )
   process.icPfMetJetResUpProducer = cms.EDProducer('ICMetProducer',
                                                    inputLabel = cms.InputTag("patType1CorrectedPFMetJetResUp"),
                                                    branchName = cms.untracked.string("pfMetJetResUp"),
@@ -224,8 +234,6 @@ else:
                                                      InputSig = cms.untracked.string("")
                                                      )
   
-  process.patType1CorrectedPFMetJetEnUp.src = cms.InputTag('patMETs')
-  process.patType1CorrectedPFMetJetEnDown.src = cms.InputTag('patMETs')
   process.icPfMetJetEnUpProducer = cms.EDProducer('ICMetProducer',
                                                   inputLabel = cms.InputTag("patType1CorrectedPFMetJetEnUp"),
                                                   branchName = cms.untracked.string("pfMetJetEnUp"),
@@ -239,8 +247,7 @@ else:
                                                     InputSig = cms.untracked.string("")
                                                     )
   
-  process.patType1CorrectedPFMetUnclusteredEnUp.src = cms.InputTag('patMETs')
-  process.patType1CorrectedPFMetUnclusteredEnDown.src = cms.InputTag('patMETs')
+  
   process.icPfMetUnclusteredEnUpProducer = cms.EDProducer('ICMetProducer',
                                                           inputLabel = cms.InputTag("patType1CorrectedPFMetUnclusteredEnUp"),
                                                           branchName = cms.untracked.string("pfMetUnclusteredEnUp"),
@@ -261,6 +268,7 @@ else:
     +process.icPfMetJetEnUpProducer
     +process.icPfMetUnclusteredEnDownProducer
     +process.icPfMetUnclusteredEnUpProducer
+    +process.icpattype1correctedPfMetProducer
     )
   
 # Fix Type0 correction module
@@ -749,13 +757,13 @@ process.icPfMetProducer = cms.EDProducer('ICMetProducer',
     )
 if isData: process.icPfMetProducer.addGen = cms.untracked.bool(False)
 
-
 process.icPfMetType1Producer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patMETs"),
     branchName = cms.untracked.string("pfMetType1"),
     addGen = cms.untracked.bool(False),
     InputSig = cms.untracked.string("")
     )
+
 
 process.icPfMVAMetProducer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patPFMetByMVA"),
