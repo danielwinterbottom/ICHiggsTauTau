@@ -108,6 +108,15 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
   iEvent.getByLabel(edm::InputTag("mvaTrigV0"),mvaTrigV0);
   iEvent.getByLabel(edm::InputTag("mvaNonTrigV0"),mvaNonTrigV0);
 
+  // Add a flag to the idiso set if we find a reco muon with pT > 3
+  // with deltaR < 0.3 of this electron
+  edm::Handle<std::vector<reco::Muon> > recomuonCollection;
+  iEvent.getByLabel("muons",recomuonCollection);
+
+  // Try and get the collection of pfChargedAll particles so we can
+  // figure out if the pf electron ends up in the isolation cone
+  edm::Handle<std::vector<reco::PFCandidate> > pfChargedAll;
+  iEvent.getByLabel("pfAllChargedParticles",pfChargedAll);
 
 
   EcalClusterLazyTools lazyTool( iEvent, iSetup, edm::InputTag("reducedEcalRecHitsEB"),edm::InputTag("reducedEcalRecHitsEE"));
@@ -166,6 +175,23 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     ele.set_dr04_pfiso_gamma(dr04_pfiso_gamma);
     ele.set_dr04_pfiso_pu(dr04_pfiso_pu);
 
+    if (pfChargedAll.isValid()) {
+      // std::cout << "Electron has track id: " << iter->closestCtfTrackRef().index() << "\t" << iter->closestCtfTrackRef()->pt() << std::endl;
+      for (unsigned pf = 0; pf < pfChargedAll->size(); ++pf) {
+        reco::PFCandidate const& pfcand = pfChargedAll->at(pf);
+        bool barrel = fabs(pfcand.positionAtECALEntrance().eta())<1.479;
+        double dr_veto = barrel ? 0.01 : 0.015;
+        if (reco::deltaR(*iter, pfcand) < dr_veto || reco::deltaR(*iter, pfcand) > 0.4) continue;
+        if (pfcand.trackRef().isNonnull()) { // PF candidate has a track
+          // std::cout << "Found pf cand with track id: " << pfcand.trackRef().index() << "\t" << pfcand.trackRef()->pt() << "\t" << pfcand.pt() << std::endl;
+          if (pfcand.trackRef().index() == iter->closestCtfTrackRef().index()) {
+            // std::cout << "Warning! Found electron track in isolation sum!" << std::endl;
+            ele.SetIdIso("trackInIsoSum", pfcand.pt());
+            observed_idiso_["trackInIsoSum"] = CityHash64("trackInIsoSum");
+          }
+        }
+      }
+    }
 
     if (mvaTrigV0.isValid()) {
       ele.SetIdIso("mvaTrigV0", (*mvaTrigV0)[elec_ref]);
@@ -175,6 +201,16 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     if (mvaNonTrigV0.isValid()) {
       ele.SetIdIso("mvaNonTrigV0", (*mvaNonTrigV0)[elec_ref]);
       observed_idiso_["mvaNonTrigV0"] = CityHash64("mvaNonTrigV0");
+    }
+
+    for (unsigned mu = 0; mu < recomuonCollection->size(); ++mu) {
+      if (recomuonCollection->at(mu).pt() > 3. && fabs(recomuonCollection->at(mu).eta())) {
+        if (reco::deltaR(recomuonCollection->at(mu), *iter) < 0.3) {
+          ele.SetIdIso("matchedRecoMuon", 1.0);
+          observed_idiso_["matchedRecoMuon"] = CityHash64("matchedRecoMuon");
+          break;
+        }
+      }
     }
 
     ele.set_hadronic_over_em(iter->hadronicOverEm());
