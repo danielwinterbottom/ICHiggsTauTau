@@ -213,6 +213,7 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
   std::vector<mvaMEtUtilities::JetInfo>    jetInfo         = computeJetInfo(*uncorrJets, *corrJets, *vertices, hardScatterVertex, *corrector,evt,es,leptonInfo[i],pfCandidateInfo);
 
   mvaMEtAlgo_.setInput(leptonInfo[i], jetInfo, pfCandidateInfo, vertexInfo);
+  mvaMEtAlgo_.setHasPhotons(false);
   mvaMEtAlgo_.evaluateMVA();
 
   if (verbosity_) {
@@ -430,7 +431,7 @@ double MVAMETPairProducer::chargedFracInCone(const reco::Candidate *iCand,
       if      ( pfCandidate->trackRef().isNonnull()    ) dZ = fabs(pfCandidate->trackRef()->dz(hardScatterVertex->position()));
       else if ( pfCandidate->gsfTrackRef().isNonnull() ) dZ = fabs(pfCandidate->gsfTrackRef()->dz(hardScatterVertex->position()));
     }
-    if(dZ > 0.1) continue; 
+    if(fabs(dZ) > 0.1) continue; 
     lVis += pfCandidate->p4();
   }
   return lVis.pt()/iCand->pt();
