@@ -113,6 +113,10 @@ from PhysicsTools.PatAlgos.tools.trigTools import *
 from PhysicsTools.PatAlgos.tools.metTools import *
 switchOnTrigger(process, outputModule="")
 
+if isData:
+  removeMCMatching(process,['All'])
+  runOnData(process)
+
 if (release == '42X'):
   process.patDefaultSequence.remove(process.patFixedConePFTauDiscrimination)
   process.patDefaultSequence.remove(process.patShrinkingConePFTauDiscrimination)
@@ -151,9 +155,6 @@ process.patJets.embedGenPartonMatch = cms.bool(False)
 ################################################################
 ### Set up METs
 ################################################################
-if (release == '42X'):
-  process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
-  process.metAnalysisSequence=cms.Sequence(process.producePFMETCorrections)
 addPfMET(process, 'PF')
 
 # PAT will try and use type-1 corrected MET by default in 53X, here
@@ -601,8 +602,7 @@ process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalE
 ################################################################
 process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
 
-if isData:
-  runOnData(process)
+
 
 # removeSpecificPATObjects(process, ['Electrons', 'Muons'])
 
@@ -690,8 +690,8 @@ if (release == '53X'):
     )
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
 
 ################################################################
 ## Configure private modules
