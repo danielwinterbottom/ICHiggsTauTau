@@ -26,12 +26,14 @@ int main(int argc, char* argv[]){
     elec=boost::lexical_cast<bool>(argv[1]);
     isdata=boost::lexical_cast<bool>(argv[2]);
     std::string etatype=argv[3];
-    
+    int nbins=12;
+
     TFile *f1 = new TFile("TriggerBinnedHistos.root", "RECREATE");
     f1->cd();
     TCanvas *c1 = new TCanvas("c1", "error plot", 200, 10, 700, 500);
 
-    TH1F *h1=c1->DrawFrame(0, -0.05, 60, 1);
+    TH1F *h1=c1->DrawFrame(0, -0.05, 25, 1);
+    //TH1F *h1=c1->DrawFrame(0, -0.05, 60, 1);
     h1->SetYTitle("Efficiency");
     if(elec)
     {
@@ -95,7 +97,8 @@ int main(int argc, char* argv[]){
     //set bins with 'error bars' for width of bin
     Double_t x1[binbounds.size()];
     Double_t err_x1[binbounds.size()];
-    for(unsigned i=0; i<(binbounds.size())-1; i++)
+    //for(unsigned i=0; i<(binbounds.size())-1; i++)
+    for(unsigned i=0; i<nbins; i++)
     {
         x1[i]=binbounds[i]+((binbounds[i+1]-binbounds[i])/2.0);
         err_x1[i]=(binbounds[i+1]-binbounds[i])/2.0;
@@ -195,7 +198,7 @@ int main(int argc, char* argv[]){
         if(parts[1].find(bar)!=std::string::npos
             && (!(etatype=="abs") || (!(parts[1].find("Bplus")!=std::string::npos) && !(parts[1].find("Bminus")!=std::string::npos))))
         {
-            for(int j=2; j<12; j++)
+            for(int j=2; j<nbins; j++)
             {
                 if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
                 {
@@ -223,7 +226,7 @@ int main(int argc, char* argv[]){
             && (!(etatype=="abs") || (!(parts[1].find("Eplus")!=std::string::npos) && !(parts[1].find("Eminus")!=std::string::npos)
             && !(parts[1].find("Ebminus")!=std::string::npos) && !(parts[1].find("Ebplus")!=std::string::npos))))
         {
-            for(int j=2; j<12; j++)
+            for(int j=2; j<nbins; j++)
             {
                 if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
                 {
@@ -250,7 +253,7 @@ int main(int argc, char* argv[]){
         if(parts[1].find(end2)!=std::string::npos
             && (!(etatype=="abs") || (!(parts[1].find("Ebplus")!=std::string::npos) && !(parts[1].find("Ebminus")!=std::string::npos))))
         {
-            for(int j=2; j<12; j++)
+            for(int j=2; j<nbins; j++)
             {
                 if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
                 {
@@ -301,15 +304,15 @@ int main(int argc, char* argv[]){
     
     
     
-    for(int i=0; i<12; i++)
+    for(int i=0; i<nbins; i++)
     {
         std::cout << i << " " << yB[i] << " " << err_yB[i] << std::endl;
     }
-    for(int i=0; i<12; i++)
+    for(int i=0; i<nbins; i++)
     {
         std::cout << i << " " << yE[i] << " " << err_yE[i] << std::endl;
     }
-    for(int i=0; i<12; i++)
+    for(int i=0; i<nbins; i++)
     {
         std::cout << i << " " << yEb[i] << " " << err_yEb[i] << std::endl;
     }
