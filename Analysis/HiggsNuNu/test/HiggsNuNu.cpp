@@ -381,7 +381,8 @@ int main(int argc, char* argv[]){
     .set_input_label("pfJetsPFlow")
     .set_met_label(mettype)
     .set_is_data(is_data)
-    .set_upordown(upordown);
+    .set_upordown(upordown)
+    .set_fs(fs);
   
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
