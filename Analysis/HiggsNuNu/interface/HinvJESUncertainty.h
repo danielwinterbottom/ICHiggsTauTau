@@ -25,7 +25,7 @@ namespace ic {
     CLASS_MEMBER(HinvJESUncertainty, bool, upordown)
     CLASS_MEMBER(HinvJESUncertainty, std::string, input_label)
     CLASS_MEMBER(HinvJESUncertainty, std::string, met_label)
-      TH2F* JEScorrfac;
+    TH2F* JEScorrfac;
       
 
   public:
@@ -65,9 +65,10 @@ namespace ic {
 	total = new JetCorrectionUncertainty(*(new JetCorrectorParameters("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt")));
       }
       std::cout<<"Got parameters successfully"<<std::endl;
+      TFileDirectory const& dir = fs_->mkdir("JES");
+            JEScorrfac = dir.make<TH2F>("JEScorrfac","JEScorrfac",1000,0.,1000.,100,-5.,5.);
+      std::cout<<"Made plot dir"<<std::endl;
       return 0;
-      TFileDirectory dir = fs_->mkdir("JES");
-      JEScorrfac = dir.make<TH2F>("JEScorrfac","JEScorrfac",1000,0.,1000.,100,-5.,5.);
     }
     
     template <class T,class M>
