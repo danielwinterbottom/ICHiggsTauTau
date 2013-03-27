@@ -155,37 +155,123 @@ process.patJets.embedGenPartonMatch = cms.bool(False)
 ################################################################
 ### Set up METs
 ################################################################
+from PhysicsTools.PatAlgos.tools.metTools import addPfMET
 addPfMET(process, 'PF')
 
-# PAT will try and use type-1 corrected MET by default in 53X, here
-# we force it to use the uncorrected pfMet
-process.patMETs.metSource  = cms.InputTag("pfType1CorrectedMet")
 process.patMETsNoCorr = process.patMETs.clone(
-  metSource  = cms.InputTag("pfMet")
-  )
-
-if isData:
-  process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual")
-  process.patMETsPF.addGenMET = cms.bool(False)
-else:
-  process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3")
-  process.patMETsPF.addGenMET = cms.bool(True)
-
-# process.patMETsPFType1 = process.patMETsPF.clone(
-#   metSource  = cms.InputTag("pfType1CorrectedMet"),
-#   addGenMET = cms.bool(False)
-#   )
+    metSource  = cms.InputTag("pfMet")
+      )
 
 process.load("JetMETCorrections.Type1MET.pfMETCorrectionType0_cfi")
 process.pfType1CorrectedMet.applyType0Corrections = cms.bool(False)
 process.pfType1CorrectedMet.srcType1Corrections = cms.VInputTag(
-      cms.InputTag('pfMETcorrType0'),
-      cms.InputTag('pfJetMETcorr', 'type1')
-    )
+  cms.InputTag('pfMETcorrType0'),
+  cms.InputTag('pfJetMETcorr', 'type1')
+  )
 
+# Get PFMET from runMEtUncertainties
 from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
-runMEtUncertainties(process, outputModule='')
+process.load("JetMETCorrections.Type1MET.pfMETsysShiftCorrections_cfi")
 
+if isData:
+  runMEtUncertainties(process,
+                      electronCollection = cms.InputTag('cleanPatElectrons'),
+                      photonCollection = '',
+                      muonCollection = 'cleanPatMuons',
+                      tauCollection = '',
+                      jetCollection = cms.InputTag('selectedPatJets'),
+                      jetCorrLabel = 'L2L3Residual',
+                      doSmearJets = False,
+                      makeType1corrPFMEt = True,
+                      makeType1p2corrPFMEt = False,
+                      makePFMEtByMVA = False,
+                      makeNoPileUpPFMEt = False,
+                      doApplyType0corr = True,
+                      sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_data,
+                      doApplySysShiftCorr = False,
+                      )
+  process.patPFJetMETtype1p2Corr.jetCorrLabel = cms.string('L2L3Residual')
+  process.patPFJetMETtype2Corr.jetCorrLabel = cms.string('L2L3Residual')
+else:
+  runMEtUncertainties(process,
+                      electronCollection = cms.InputTag('cleanPatElectrons'),
+                      photonCollection = '',
+                      muonCollection = 'cleanPatMuons',
+                      tauCollection = '',
+                      jetCollection = cms.InputTag('selectedPatJets'),
+                      jetCorrLabel = 'L3Absolute',
+                      doSmearJets = True,
+                      makeType1corrPFMEt = True,
+                      makeType1p2corrPFMEt = False,
+                      makePFMEtByMVA = False,
+                      makeNoPileUpPFMEt = False,
+                      doApplyType0corr = True,
+                      sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_mc,
+                      doApplySysShiftCorr = False,
+                      )
+  process.patType1CorrectedPFMetJetResUp.src = cms.InputTag('patMETs')
+  process.patType1CorrectedPFMetJetResDown.src = cms.InputTag('patMETs')
+  process.icPfMetJetResUpProducer = cms.EDProducer('ICMetProducer',
+                                                   inputLabel = cms.InputTag("patType1CorrectedPFMetJetResUp"),
+                                                   branchName = cms.untracked.string("pfMetJetResUp"),
+                                                   addGen = cms.untracked.bool(False),
+                                                   InputSig = cms.untracked.string("")
+                                                   )
+  process.icPfMetJetResDownProducer = cms.EDProducer('ICMetProducer',
+                                                     inputLabel = cms.InputTag("patType1CorrectedPFMetJetResDown"),
+                                                     branchName = cms.untracked.string("pfMetJetResDown"),
+                                                     addGen = cms.untracked.bool(False),
+                                                     InputSig = cms.untracked.string("")
+                                                     )
+  
+  process.patType1CorrectedPFMetJetEnUp.src = cms.InputTag('patMETs')
+  process.patType1CorrectedPFMetJetEnDown.src = cms.InputTag('patMETs')
+  process.icPfMetJetEnUpProducer = cms.EDProducer('ICMetProducer',
+                                                  inputLabel = cms.InputTag("patType1CorrectedPFMetJetEnUp"),
+                                                  branchName = cms.untracked.string("pfMetJetEnUp"),
+                                                  addGen = cms.untracked.bool(False),
+                                                  InputSig = cms.untracked.string("")
+                                                  )
+  process.icPfMetJetEnDownProducer = cms.EDProducer('ICMetProducer',
+                                                    inputLabel = cms.InputTag("patType1CorrectedPFMetJetEnDown"),
+                                                    branchName = cms.untracked.string("pfMetJetEnDown"),
+                                                    addGen = cms.untracked.bool(False),
+                                                    InputSig = cms.untracked.string("")
+                                                    )
+  
+  process.patType1CorrectedPFMetUnclusteredEnUp.src = cms.InputTag('patMETs')
+  process.patType1CorrectedPFMetUnclusteredEnDown.src = cms.InputTag('patMETs')
+  process.icPfMetUnclusteredEnUpProducer = cms.EDProducer('ICMetProducer',
+                                                          inputLabel = cms.InputTag("patType1CorrectedPFMetUnclusteredEnUp"),
+                                                          branchName = cms.untracked.string("pfMetUnclusteredEnUp"),
+                                                          addGen = cms.untracked.bool(False),
+                                                          InputSig = cms.untracked.string("")
+                                                          )
+  process.icPfMetUnclusteredEnDownProducer = cms.EDProducer('ICMetProducer',
+                                                            inputLabel = cms.InputTag("patType1CorrectedPFMetUnclusteredEnDown"),
+                                                            branchName = cms.untracked.string("pfMetUnclusteredEnDown"),
+                                                            addGen = cms.untracked.bool(False),
+                                                            InputSig = cms.untracked.string("")
+                                                            )
+  
+  process.icMetUncertaintySequence = cms.Sequence(
+    process.icPfMetJetResDownProducer
+    +process.icPfMetJetResUpProducer
+    +process.icPfMetJetEnDownProducer
+    +process.icPfMetJetEnUpProducer
+    +process.icPfMetUnclusteredEnDownProducer
+    +process.icPfMetUnclusteredEnUpProducer
+    )
+  
+# Fix Type0 correction module
+process.patPFMETtype0Corr.correction.par3 = cms.double(0.909209)
+process.patPFMETtype0Corr.correction.par2 = cms.double(0.0303531)
+process.patPFMETtype0Corr.correction.par1 = cms.double(-0.703151)
+process.patPFMETtype0Corr.correction.par0 = cms.double(0.0)
+                                                                            
+
+#commented out because they aren't used by chayanit
+'''
 process.patType1CorrectedPFMetElectronEnUp.src = cms.InputTag('patMETs')
 process.patType1CorrectedPFMetElectronEnDown.src = cms.InputTag('patMETs')
 process.icPfMetElectronEnUpProducer = cms.EDProducer('ICMetProducer',
@@ -230,66 +316,9 @@ process.icPfMetTauEnDownProducer = cms.EDProducer('ICMetProducer',
     addGen = cms.untracked.bool(False),
     InputSig = cms.untracked.string("")
     )
+'''
 
-process.patType1CorrectedPFMetJetResUp.src = cms.InputTag('patMETs')
-process.patType1CorrectedPFMetJetResDown.src = cms.InputTag('patMETs')
-process.icPfMetJetResUpProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patType1CorrectedPFMetJetResUp"),
-    branchName = cms.untracked.string("pfMetJetResUp"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
-    )
-process.icPfMetJetResDownProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patType1CorrectedPFMetJetResDown"),
-    branchName = cms.untracked.string("pfMetJetResDown"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
-    )
 
-process.patType1CorrectedPFMetJetEnUp.src = cms.InputTag('patMETs')
-process.patType1CorrectedPFMetJetEnDown.src = cms.InputTag('patMETs')
-process.icPfMetJetEnUpProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patType1CorrectedPFMetJetEnUp"),
-    branchName = cms.untracked.string("pfMetJetEnUp"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
-    )
-process.icPfMetJetEnDownProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patType1CorrectedPFMetJetEnDown"),
-    branchName = cms.untracked.string("pfMetJetEnDown"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
-    )
-
-process.patType1CorrectedPFMetUnclusteredEnUp.src = cms.InputTag('patMETs')
-process.patType1CorrectedPFMetUnclusteredEnDown.src = cms.InputTag('patMETs')
-process.icPfMetUnclusteredEnUpProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patType1CorrectedPFMetUnclusteredEnUp"),
-    branchName = cms.untracked.string("pfMetUnclusteredEnUp"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
-    )
-process.icPfMetUnclusteredEnDownProducer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patType1CorrectedPFMetUnclusteredEnDown"),
-    branchName = cms.untracked.string("pfMetUnclusteredEnDown"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
-    )
-
-process.icMetUncertaintySequence = cms.Sequence(
-  process.icPfMetElectronEnDownProducer
-  +process.icPfMetElectronEnUpProducer
-  +process.icPfMetMuonEnDownProducer
-  +process.icPfMetMuonEnUpProducer
-  +process.icPfMetTauEnDownProducer
-  +process.icPfMetTauEnUpProducer
-  +process.icPfMetJetResDownProducer
-  +process.icPfMetJetResUpProducer
-  +process.icPfMetJetEnDownProducer
-  +process.icPfMetJetEnUpProducer
-  +process.icPfMetUnclusteredEnDownProducer
-  +process.icPfMetUnclusteredEnUpProducer
-  )
 
 
 ################################################################
@@ -711,6 +740,7 @@ process.icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     StoreTrackIds = cms.bool(False)
     )
 
+
 process.icPfMetProducer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patMETsNoCorr"),
     branchName = cms.untracked.string("pfMet"),
@@ -718,6 +748,7 @@ process.icPfMetProducer = cms.EDProducer('ICMetProducer',
     InputSig = cms.untracked.string("")
     )
 if isData: process.icPfMetProducer.addGen = cms.untracked.bool(False)
+
 
 process.icPfMetType1Producer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patMETs"),
@@ -1259,7 +1290,8 @@ if (release == '53X' and (not isData)):
 
 process.icSequence += process.icTriggerSequence
 
-process.icSequence += process.icMetUncertaintySequence
+if not isData:
+  process.icSequence += process.icMetUncertaintySequence
  
 process.icEventProducer = cms.EDProducer('ICEventProducer')
 process.icSequence += process.icEventProducer
