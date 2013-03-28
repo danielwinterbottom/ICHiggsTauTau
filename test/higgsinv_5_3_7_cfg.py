@@ -215,6 +215,40 @@ else:
                       sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_mc,
                       doApplySysShiftCorr = False,
                       )
+
+  process.icJetsmearedcentralJets = cms.EDProducer('ICPatJetCandidateProducer',
+                                                   
+                                                   branchName = cms.untracked.string("jetsmearedcentralJets"),
+                                                   
+                                                   inputLabel = cms.InputTag("lastJetCollection"),
+                                                   
+                                                   minPt = cms.double(25.0),
+                                                   
+                                                   maxEta = cms.double(5.0)
+                                                   
+                                                   )
+  process.icJetsmearedresupJets = cms.EDProducer('ICPatJetCandidateProducer',
+                                                 
+                                                 branchName = cms.untracked.string("jetsmearedresupJets"),
+                                                 
+                                                 inputLabel = cms.InputTag("jetCollectionResUp"),
+                                                 
+                                                 minPt = cms.double(25.0),
+                                                 
+                                                 maxEta = cms.double(5.0)
+                                                 
+                                                 )
+  process.icJetsmearedresdownJets = cms.EDProducer('ICPatJetCandidateProducer',
+                                                   
+                                                   branchName = cms.untracked.string("jetCollectionResDown"),
+                                                   
+                                                   inputLabel = cms.InputTag("lastJetCollection"),
+                                                   
+                                                   minPt = cms.double(25.0),
+                                                   
+                                                   maxEta = cms.double(5.0)
+
+                                                   )
   process.icpattype1correctedPfMetProducer = cms.EDProducer('ICMetProducer',
                                                    inputLabel = cms.InputTag("patType1CorrectedPFMet"),
                                                    branchName = cms.untracked.string("pattype1correctedpfMet"),
@@ -717,7 +751,7 @@ if (release == '53X'):
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
 
 ################################################################
 ## Configure private modules
