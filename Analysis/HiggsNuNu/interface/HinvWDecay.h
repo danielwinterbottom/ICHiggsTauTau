@@ -13,6 +13,11 @@ class HinvWDecay : public ModuleBase {
 
     unsigned flavour_;
 
+    unsigned countStatus3_;
+    unsigned countDecay_e_;
+    unsigned countDecay_mu_;
+    unsigned countRest_;
+
 
  public:
     HinvWDecay(std::string const& name, unsigned flavour);
