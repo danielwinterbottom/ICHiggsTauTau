@@ -34,6 +34,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWJetsPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvJESUncertainty.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -69,7 +70,7 @@ int main(int argc, char* argv[]){
   bool upordown;                  // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
 
   string mettype;                 // MET input collection to be used
-  bool doMetFilters;              // apply cleaning MET filters
+  bool doMetFilters;              // apply cleaning MET filters.
   string filters;
   //unsigned signal_region;             // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
@@ -256,6 +257,14 @@ int main(int argc, char* argv[]){
   .set_l2_file("data/jec/START53_V10_L2Relative_AK5PF.txt")
   .set_l3_file("data/jec/START53_V10_L3Absolute_AK5PF.txt");
   
+
+  MetLaserFilters metLaserFilters = MetLaserFilters("MetLaserFilters",
+						    "data/met_laser_filters/AllBadHCALLaser.txt",
+						    "data/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
+						    doMetFilters);
+
+
+
   // ------------------------------------------------------------------------------------
   // Electron Modules
   // ------------------------------------------------------------------------------------
@@ -727,10 +736,14 @@ int main(int argc, char* argv[]){
    if (!do_skim) {
 
      analysis.AddModule(&dataMCTriggerPathFilter);
-     analysis.AddModule(&metFilters);
 
      ////analysis.AddModule(&runStats);
      analysis.AddModule(&hinvWeights);
+
+     if (is_data) {
+       analysis.AddModule(&metFilters);
+       analysis.AddModule(&metLaserFilters);
+     }
 
      //jet modules
      if(dojessyst==true&&(!is_data)){
