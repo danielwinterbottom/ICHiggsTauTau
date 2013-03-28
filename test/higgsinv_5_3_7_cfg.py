@@ -220,7 +220,7 @@ else:
                                                    
                                                    branchName = cms.untracked.string("jetsmearedcentralJets"),
                                                    
-                                                   inputLabel = cms.InputTag("lastJetCollection"),
+                                                   inputLabel = cms.InputTag("smearedPatJets"),
                                                    
                                                    minPt = cms.double(25.0),
                                                    
@@ -231,7 +231,7 @@ else:
                                                  
                                                  branchName = cms.untracked.string("jetsmearedresupJets"),
                                                  
-                                                 inputLabel = cms.InputTag("jetCollectionResUp"),
+                                                 inputLabel = cms.InputTag("smearedPatJetsResUp"),
                                                  
                                                  minPt = cms.double(25.0),
                                                  
@@ -240,9 +240,9 @@ else:
                                                  )
   process.icJetsmearedresdownJets = cms.EDProducer('ICPatJetCandidateProducer',
                                                    
-                                                   branchName = cms.untracked.string("jetCollectionResDown"),
+                                                   branchName = cms.untracked.string("jetsmearedresdownJets"),
                                                    
-                                                   inputLabel = cms.InputTag("lastJetCollection"),
+                                                   inputLabel = cms.InputTag("smearedPatJetsResDown"),
                                                    
                                                    minPt = cms.double(25.0),
                                                    
@@ -298,6 +298,9 @@ else:
   process.icMetUncertaintySequence = cms.Sequence(
     process.icPfMetJetResDownProducer
     +process.icPfMetJetResUpProducer
+    +process.icJetsmearedcentralJets
+    +process.icJetsmearedresupJets
+    +process.icJetsmearedresdownJets
     +process.icPfMetJetEnDownProducer
     +process.icPfMetJetEnUpProducer
     +process.icPfMetUnclusteredEnDownProducer
@@ -750,7 +753,7 @@ if (release == '53X'):
     )
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
 
 ################################################################
