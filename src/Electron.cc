@@ -14,6 +14,10 @@ namespace ic {
     elec_idiso_[CityHash64(name)] = value;
   }
   
+  bool Electron::HasIdIso(std::string const& name) const {
+    return elec_idiso_.count(CityHash64(name)) > 0;
+  }
+
   float Electron::GetIdIso(std::string const& name) const {
     UFmap::const_iterator iter = elec_idiso_.find(CityHash64(name));
     if (iter != elec_idiso_.end()) {

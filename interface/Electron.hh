@@ -164,6 +164,7 @@ namespace ic {
       // inline void set_hlt_match_filters(std::vector<std::size_t>  const& hlt_match_filters) { hlt_match_filters_ = hlt_match_filters; }
 
       void SetIdIso(std::string const& name, float const& value);
+      bool HasIdIso(std::string const& name) const;
       float GetIdIso(std::string const& name) const;
 
       virtual void Print() const;

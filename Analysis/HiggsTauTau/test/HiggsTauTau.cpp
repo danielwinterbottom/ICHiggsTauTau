@@ -33,6 +33,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauDzFixer.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -562,12 +564,14 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Tau Modules
   // ------------------------------------------------------------------------------------
+  TauDzFixer tauDzFixer("TauDzFixer");
+
   double tau_shift = 1.0;
   if (tau_scale_mode == 1) tau_shift = 0.97;
   if (tau_scale_mode == 2) tau_shift = 1.03;
   if (large_tscale_shift) {
     if (tau_scale_mode == 1) tau_shift = 0.94;
-    if (tau_scale_mode == 2) tau_shift = 1.06;    
+    if (tau_scale_mode == 2) tau_shift = 1.06;
   }
   EnergyShifter<Tau> tauEnergyShifter = EnergyShifter<Tau>
   ("TauEnergyShifter")
@@ -832,6 +836,8 @@ int main(int argc, char* argv[]){
       if (special_mode != 18)     analysis.AddModule(&extraMuonVeto);
     }
                                   analysis.AddModule(&tauPtEtaFilter);
+  if (strategy == strategy::paper2013)
+                                  analysis.AddModule(&tauDzFixer);
                                   analysis.AddModule(&tauDzFilter);
                                   analysis.AddModule(&tauIsoFilter);
                                   analysis.AddModule(&tauElRejectFilter);

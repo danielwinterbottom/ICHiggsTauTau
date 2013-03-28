@@ -20,6 +20,8 @@
 #include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
 #include "DataFormats/L1Trigger/interface/L1EtMissParticle.h"
 #include "DataFormats/L1Trigger/interface/L1EmParticle.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
+
 
 template<class T>
 class ICL1ExtraProducer : public edm::EDProducer {
@@ -145,6 +147,8 @@ void ICL1ExtraProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& desc
 typedef ICL1ExtraProducer<l1extra::L1MuonParticle> ICL1ExtraMuonProducer;
 typedef ICL1ExtraProducer<l1extra::L1EtMissParticle> ICL1ExtraEtMissProducer;
 typedef ICL1ExtraProducer<l1extra::L1EmParticle> ICL1ExtraEmParticleProducer;
+typedef ICL1ExtraProducer<pat::Jet> ICPatJetCandidateProducer;
 DEFINE_FWK_MODULE(ICL1ExtraMuonProducer);
 DEFINE_FWK_MODULE(ICL1ExtraEtMissProducer);
 DEFINE_FWK_MODULE(ICL1ExtraEmParticleProducer);
+DEFINE_FWK_MODULE(ICPatJetCandidateProducer);
