@@ -128,6 +128,9 @@ void ICPFTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(iter->leadPFChargedHadrCand()->trackRef().isNonnull() && vertexCollection->size() > 0) {
         tau.set_lead_dxy_vertex(iter->leadPFChargedHadrCand()->trackRef()->dxy(vertexCollection->at(0).position()));
         tau.set_lead_dz_vertex(iter->leadPFChargedHadrCand()->trackRef()->dz(vertexCollection->at(0).position()));
+      } else if (iter->leadPFChargedHadrCand()->gsfTrackRef().isNonnull() && vertexCollection->size() > 0) {
+        tau.set_lead_dxy_vertex(iter->leadPFChargedHadrCand()->gsfTrackRef()->dxy(vertexCollection->at(0).position()));
+        tau.set_lead_dz_vertex(iter->leadPFChargedHadrCand()->gsfTrackRef()->dz(vertexCollection->at(0).position()));      
       } else {
         tau.set_lead_dxy_vertex(9999.0);
         tau.set_lead_dz_vertex(9999.0);
