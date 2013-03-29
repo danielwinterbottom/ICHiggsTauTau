@@ -1,7 +1,7 @@
-PROD=Feb20
+PROD=Moriond
 PARAMS=./scripts/"$PROD"_params_2012.dat
 
-FOLDER="--folder=./output/TauID_2012/"
+FOLDER="--folder=./output/TauID_MVA2_2012/"
 
 SCALE_ET_INC=""
 SCALE_ET_JET=""
@@ -41,12 +41,13 @@ SCALE_EM_MT=""
 
 
 TAUPT=(
-'tau_pt_20-30'
-'tau_pt_30-40'
-'tau_pt_40-50'
-'tau_pt_50-75'
-'tau_pt_75-100'
-'tau_pt_100-200'
+'inclusive'
+# 'tau_pt_20-30'
+# 'tau_pt_30-40'
+# 'tau_pt_40-50'
+# 'tau_pt_50-75'
+# 'tau_pt_75-100'
+# 'tau_pt_100-200'
 )
 
 # TAUPT=(

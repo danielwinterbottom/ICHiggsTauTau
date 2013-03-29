@@ -179,11 +179,12 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
       // std::cout << "Electron has track id: " << iter->closestCtfTrackRef().index() << "\t" << iter->closestCtfTrackRef()->pt() << std::endl;
       for (unsigned pf = 0; pf < pfChargedAll->size(); ++pf) {
         reco::PFCandidate const& pfcand = pfChargedAll->at(pf);
-        bool barrel = fabs(pfcand.positionAtECALEntrance().eta())<1.479;
+        bool barrel = fabs(iter->superCluster()->eta()) < 1.479;
         double dr_veto = barrel ? 0.01 : 0.015;
         if (reco::deltaR(*iter, pfcand) < dr_veto || reco::deltaR(*iter, pfcand) > 0.4) continue;
         if (pfcand.trackRef().isNonnull()) { // PF candidate has a track
           // std::cout << "Found pf cand with track id: " << pfcand.trackRef().index() << "\t" << pfcand.trackRef()->pt() << "\t" << pfcand.pt() << std::endl;
+          // std::cout << "Barrel?: " << barrel << " DeltaR is: " << reco::deltaR(*iter, pfcand) << std::endl; 
           if (pfcand.trackRef().index() == iter->closestCtfTrackRef().index()) {
             // std::cout << "Warning! Found electron track in isolation sum!" << std::endl;
             ele.SetIdIso("trackInIsoSum", pfcand.pt());
