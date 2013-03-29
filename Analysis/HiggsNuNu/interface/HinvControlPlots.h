@@ -20,6 +20,7 @@ namespace ic {
   struct HinvCoreControlPlots {
     TH1F *n_vtx;
     TH1F *met;
+    TH1F *met_noMuons;
     TH1F *met_phi;
     TH1F *n_jets;
     TH1F *n_jetsingap;
@@ -59,6 +60,7 @@ namespace ic {
 
     unsigned n_vtx_;
     double met_;
+    double met_noMuons_;
     double met_phi_;
 
     unsigned n_jets_;

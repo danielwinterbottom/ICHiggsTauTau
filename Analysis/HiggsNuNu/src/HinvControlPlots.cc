@@ -16,6 +16,7 @@ namespace ic {
     TH1F::SetDefaultSumw2();
     n_vtx = dir.make<TH1F>("n_vtx","n_vtx", 40, 0, 40); 
     met = dir.make<TH1F>("met","met", 1000, 0, 1000); 
+    met_noMuons = dir.make<TH1F>("met_noMuons","met_noMuons", 1000, 0, 1000); 
     met_phi = dir.make<TH1F>("met_phi","met_phi", 63, -3.15, 3.15); 
     n_jets = dir.make<TH1F>("n_jets","n_jets", 50, 0, 50); 
     n_jetsingap = dir.make<TH1F>("n_jetsingap","n_jetsingap", 50, 0, 50); 
@@ -70,6 +71,7 @@ namespace ic {
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
 
     Met const* met = event->GetPtr<Met>(met_label_);
+    Met const* met_noMuons = event->GetPtr<Met>("metNoMuons");
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     
@@ -101,6 +103,10 @@ namespace ic {
       if (sel_label_.find("SIGNAL") != sel_label_.npos &&
 	  !PairAbsDPhiLessThan(dijet,1.0)) fillPlots = false;
         
+      if (sel_label_.find("AN") != sel_label_.npos) {
+	if (!(met->pt() > 130 && dijet->M()>1000)) fillPlots=false;
+      }
+
       Candidate const* jet1 = dijet->GetCandidate("jet1");
       Candidate const* jet2 = dijet->GetCandidate("jet2");
 
@@ -151,6 +157,7 @@ namespace ic {
     n_vtx_ = eventInfo->good_vertices();
     
     met_ = met->pt();
+    met_noMuons_ = met_noMuons->pt();
     met_phi_ = met->phi();
     
     n_jets_ = jets.size();
@@ -181,6 +188,7 @@ namespace ic {
   void HinvControlPlots::FillCoreControlPlots() {
     controlplots_->n_vtx->Fill(n_vtx_, wt_);
     controlplots_->met->Fill(met_, wt_);
+    controlplots_->met_noMuons->Fill(met_noMuons_, wt_);
     controlplots_->met_phi->Fill(met_phi_, wt_);
     controlplots_->n_jets->Fill(n_jets_, wt_);
     controlplots_->n_jetsingap->Fill(n_jetsingap_, wt_);

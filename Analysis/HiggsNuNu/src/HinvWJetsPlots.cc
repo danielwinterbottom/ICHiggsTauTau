@@ -83,8 +83,12 @@ namespace ic {
     wt_ = eventInfo->total_weight();
 
     //counter for WJets 0 parton events
-    if (event->Get<bool>("NoParton")==true) ++counter_;
-    
+    try{
+      if (event->Get<bool>("NoParton")==true) ++counter_;
+    } catch(...) {
+      ;
+    }
+
     Met const* met = event->GetPtr<Met>(met_label_);
     Met const* met_nolep = event->GetPtr<Met>(met_nolep_label_);
 
@@ -104,6 +108,11 @@ namespace ic {
 	  PairAbsDPhiLessThan(dijet,2.6)) fillPlots = false;
       if (sel_label_.find("SIGNAL") != sel_label_.npos &&
 	  !PairAbsDPhiLessThan(dijet,1.0)) fillPlots = false;
+
+      if (sel_label_ == "AN") {
+	if (!(met_nolep->pt() > 130 && dijet->M()>1000)) fillPlots=false;
+      }
+
         
     }
 

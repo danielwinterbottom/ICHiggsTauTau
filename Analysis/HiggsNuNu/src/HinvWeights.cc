@@ -16,8 +16,14 @@ namespace ic {
     era_(era::data_2012_moriond) {
     do_trg_weights_     = false;
     trg_applied_in_mc_  = false;
+    do_idiso_weights_   = false;
     do_w_soup_          = false;
     do_dy_soup_          = false;
+    hist_trigSF_METL1 = 0;
+    hist_trigSF_METHLT = 0;
+    hist_trigSF_MjjHLT = 0;
+    hist_trigSF_JetHLT = 0;
+
   }
 
   HinvWeights::~HinvWeights() {
@@ -32,6 +38,7 @@ namespace ic {
     std::cout << "MC: " << MC2String(mc_) << std::endl;
     std::cout << "Do Trg Weights?: \t\t" << do_trg_weights_ << std::endl;
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
+    std::cout << "Do ID & iso weights?: \t\t" << do_idiso_weights_ << std::endl;
 
     if (do_w_soup_) {
       std::cout << "Making W Soup:" << std::endl;
@@ -58,6 +65,63 @@ namespace ic {
       std::cout << "f4 = " << zf4_ << "\t" << "n4 = " << zn4_ << "\t" << "w4 = " << zw4_ << std::endl;
     }
 
+    //get trigger scale factor histograms from file
+    triggerSF_ = new TFile("data/scale_factors/DataMCWeight_53X_v1.root");
+    hist_trigSF_METL1 = (TH1F*)gDirectory->Get("METL1");
+    hist_trigSF_METHLT = (TH1F*)gDirectory->Get("METHLT");
+    hist_trigSF_MjjHLT = (TH1F*)gDirectory->Get("MjjHLT");
+    hist_trigSF_JetHLT = (TH1F*)gDirectory->Get("JetHLT");
+
+    std::cout << " -- Content of histogram METL1 : " << std::endl;
+    for (int i(0); i< hist_trigSF_METL1->GetNbinsX()+2; ++i){
+      std::cout << " -- bin " << i << " [" 
+		<< hist_trigSF_METL1->GetXaxis()->GetBinLowEdge(i) << "-" 
+		<< hist_trigSF_METL1->GetXaxis()->GetBinUpEdge(i) << "] : "
+		<<  hist_trigSF_METL1->GetBinContent(i)
+		<< std::endl;
+    }
+
+    std::cout << " -- Content of histogram METHLT : " << std::endl;
+    for (int i(0); i< hist_trigSF_METHLT->GetNbinsX()+2; ++i){
+      std::cout << " -- bin " << i << " [" 
+		<< hist_trigSF_METHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
+		<< hist_trigSF_METHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
+		<<  hist_trigSF_METHLT->GetBinContent(i);
+		
+      //change first bins to "1": no data/MC scale factor applied...
+      if (i>0 && hist_trigSF_METHLT->GetBinContent(i) == 0) {
+	hist_trigSF_METHLT->SetBinContent(i,1);
+	std::cout << " -> changed to " <<  hist_trigSF_METHLT->GetBinContent(i);
+      }
+      std::cout	<< std::endl;
+      
+    }
+
+    std::cout << " -- Content of histogram MjjHLT : " << std::endl;
+    for (int i(0); i< hist_trigSF_MjjHLT->GetNbinsX()+2; ++i){
+      std::cout << " -- bin " << i << " [" 
+		<< hist_trigSF_MjjHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
+		<< hist_trigSF_MjjHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
+		<<  hist_trigSF_MjjHLT->GetBinContent(i);
+      std::cout	<< std::endl;
+    }
+
+    std::cout << " -- Content of histogram JetHLT : " << std::endl;
+    for (int i(0); i< hist_trigSF_JetHLT->GetNbinsX()+2; ++i){
+      std::cout << " -- bin " << i << " [" 
+		<< hist_trigSF_JetHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
+		<< hist_trigSF_JetHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
+		<<  hist_trigSF_JetHLT->GetBinContent(i);
+
+      //change first bins to "1": no data/MC scale factor applied...
+      if (i>0 && hist_trigSF_JetHLT->GetBinContent(i) == 0) {
+	hist_trigSF_JetHLT->SetBinContent(i,1);
+	std::cout << " -> changed to " <<  hist_trigSF_JetHLT->GetBinContent(i);
+      }
+      std::cout	<< std::endl;
+    }
+
+
     return 0;
   }
 
@@ -65,7 +129,7 @@ namespace ic {
 
     //std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
 
-    double weight = 1.0;
+    //double weight = 1.0;
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
  //    if (do_btag_weight_) {
@@ -81,6 +145,69 @@ namespace ic {
 //     }
 
     if (do_trg_weights_) {
+      //get METnoMuons:
+      Met const* metNoMu = event->GetPtr<Met>("metNoMuons");
+
+      double lValue = metNoMu->pt();
+      double lMax = hist_trigSF_METL1->GetXaxis()->GetBinCenter(hist_trigSF_METL1->GetNbinsX());
+      double lMin = hist_trigSF_METL1->GetXaxis()->GetBinCenter(1);
+      if (lValue > lMax)  lValue = lMax;
+      if (lValue < lMin)  lValue = lMin;
+      int lBin = hist_trigSF_METL1->GetXaxis()->FindFixBin(lValue);
+      double metl1 = hist_trigSF_METL1->GetBinContent(lBin);
+      eventInfo->set_weight("trig_metL1",metl1);
+      //std::cout << " -- MET L1 " << lValue << " " << metl1 << std::endl;
+
+      lMax = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(hist_trigSF_METHLT->GetNbinsX());
+      lMin = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(1);
+      if (lValue > lMax)  lValue = lMax;
+      if (lValue < lMin)  lValue = lMin;
+      lBin = hist_trigSF_METHLT->GetXaxis()->FindFixBin(lValue);
+      double methlt = hist_trigSF_METHLT->GetBinContent(lBin);
+      eventInfo->set_weight("trig_metHLT",methlt);
+      //std::cout << " -- MET HLT " << lValue << " " << methlt << std::endl;
+
+      //get 2 leading jets
+      std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>("jjCandidates");
+      if (dijet_vec.size() > 0) {
+	
+	CompositeCandidate const* dijet = dijet_vec.at(0);
+
+	Candidate const* jet1 = dijet->GetCandidate("jet1");
+	Candidate const* jet2 = dijet->GetCandidate("jet2");
+
+	lValue = dijet->M();
+	lMax = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(hist_trigSF_MjjHLT->GetNbinsX());
+	lMin = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(1);
+	if (lValue > lMax)  lValue = lMax;
+	if (lValue < lMin)  lValue = lMin;
+	lBin = hist_trigSF_MjjHLT->GetXaxis()->FindFixBin(lValue);
+	double mjjhlt = hist_trigSF_MjjHLT->GetBinContent(lBin);
+	eventInfo->set_weight("trig_mjjHLT",mjjhlt);
+	//std::cout << " -- Mjj HLT " << lValue << " " << mjjhlt << std::endl;
+
+	lMax = hist_trigSF_JetHLT->GetXaxis()->GetBinCenter(hist_trigSF_JetHLT->GetNbinsX());
+	lMin = hist_trigSF_JetHLT->GetXaxis()->GetBinCenter(1);
+	lValue = jet1->pt();
+	if (lValue < lMin)  lValue = lMin;
+	if (lValue > lMax)  lValue = lMax;
+	lBin = hist_trigSF_JetHLT->GetXaxis()->FindFixBin(lValue);
+	double jet1hlt = hist_trigSF_JetHLT->GetBinContent(lBin);
+	eventInfo->set_weight("trig_jet1HLT",jet1hlt);
+	//std::cout << " -- Jet1 HLT " << lValue << " " << jet1hlt << std::endl;
+
+	lValue = jet2->pt();
+	if (lValue > lMax)  lValue = lMax;
+	if (lValue < lMin)  lValue = lMin;
+	lBin = hist_trigSF_JetHLT->GetXaxis()->FindFixBin(lValue);
+	double jet2hlt = hist_trigSF_JetHLT->GetBinContent(lBin);
+	eventInfo->set_weight("trig_jet2HLT",jet2hlt);
+	//std::cout << " -- Jet2 HLT " << lValue << " " << jet2hlt << std::endl;
+
+      }
+
+
+
       //weight *= (ele_trg * tau_trg);
       //event->Add("trigweight_1", ele_trg);
       //event->Add("trigweight_2", tau_trg);

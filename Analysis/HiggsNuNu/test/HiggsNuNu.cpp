@@ -494,12 +494,14 @@ int main(int argc, char* argv[]){
   MetSelection metFilters = MetSelection("MetFilters",mettype,doMetFilters,filtersVec,0);
   MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut);
 
-  unsigned nLepToAdd = 0;
-  if (channel == channel::munu || 
-      channel == channel::enu || 
-      channel == channel::emu
-      ) nLepToAdd = 1; 
-
+  unsigned nLepToAdd = 100;
+  //no need to be explicit in the number of leptons: will take the number 
+  // that is asked in the selection (i.e. exactly one for the W->e,mu selections...)
+  //   if (channel == channel::munu || 
+  //       channel == channel::enu || 
+  //       channel == channel::emu
+  //       ) nLepToAdd = 1;
+  
   ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"selMuons",2,nLepToAdd);
   ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"selElectrons",1,nLepToAdd);
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,nLepToAdd);
@@ -608,11 +610,45 @@ int main(int argc, char* argv[]){
   else if (channel==channel::emu)
     wjetsPlots_dijet.set_met_nolep_label("metNoENoMu");
 
+  HinvControlPlots controlPlots_AN = HinvControlPlots("ANControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("AN");
+
+  HinvWJetsPlots wjetsPlots_AN = HinvWJetsPlots("ANWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("AN");
+
+  if (channel==channel::enu)
+    wjetsPlots_AN.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_AN.set_met_nolep_label("metNoENoMu");
+
   HinvControlPlots controlPlots_met = HinvControlPlots("METControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("MET");
+
+  HinvWJetsPlots wjetsPlots_met = HinvWJetsPlots("METWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("MET");
+
+  if (channel==channel::enu)
+    wjetsPlots_met.set_met_nolep_label("metNoElectrons");
+  else if (channel==channel::emu)
+    wjetsPlots_met.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_looseMjj = HinvControlPlots("LooseMjjControlPlots")
     .set_fs(fs)
@@ -738,8 +774,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&dataMCTriggerPathFilter);
 
      ////analysis.AddModule(&runStats);
-     analysis.AddModule(&hinvWeights);
-
+ 
      if (is_data) {
        analysis.AddModule(&metFilters);
        analysis.AddModule(&metLaserFilters);
@@ -775,6 +810,9 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&metNoElectrons);
      analysis.AddModule(&metNoENoMu);
 
+     //Need two jets and metnomuons to apply trigger weights.
+     analysis.AddModule(&hinvWeights);
+
      //plot before cutting
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);
@@ -788,7 +826,7 @@ int main(int argc, char* argv[]){
      
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
-     
+
  
      //lepton selections or veto
      if (channel == channel::munu){
@@ -827,10 +865,11 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_dijet);
      analysis.AddModule(&wjetsPlots_dijet);
 
-     //dijet modules
-     //loose Mjj WP removed 
+     //loose Mjj WP + met cut for control plots only 
      //analysis.AddModule(&looseMassJetPairFilter);
-     //analysis.AddModule(&controlPlots_looseMjj);
+     analysis.AddModule(&controlPlots_AN);
+     analysis.AddModule(&wjetsPlots_AN);
+
      analysis.AddModule(&detaJetPairFilter);
      analysis.AddModule(&controlPlots_deta);
      analysis.AddModule(&wjetsPlots_deta);
@@ -849,6 +888,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&metCut);
      }
      analysis.AddModule(&controlPlots_met);
+     analysis.AddModule(&wjetsPlots_met);
 
      //tight Mjj cut
      analysis.AddModule(&tightMassJetPairFilter);
