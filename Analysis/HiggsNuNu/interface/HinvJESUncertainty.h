@@ -74,6 +74,9 @@ namespace ic {
     
     template <class T,class M>
       int HinvJESUncertainty<T,M>::Execute(TreeEvent *event) {
+      if(is_data_){
+	return 0;
+      }
       std::vector<T *> & vec = event->GetPtrVec<T>(input_label_);//get the collection (should be a jet collection)
       M *met = event->GetPtr<M>(met_label_);//get the met
       /*double metpt = met->pt();
@@ -112,7 +115,7 @@ namespace ic {
 	  double newjetpx = jetpx*(1+uncert);
 	  double newjetpy = jetpy*(1+uncert);
 	  double newjetpz = jetpz*(1+uncert);
-	  double newjete = jete+uncert*sqrt(jetpx*jetpx+jetpy*jetpy+jetpz*jetpz);
+	  double newjete = jete*(1+uncert);
 	  ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  newjet(newjetpx,newjetpy,newjetpz,newjete);
 	  vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
 
@@ -131,7 +134,7 @@ namespace ic {
 	  double newjetpx = jetpx*(1-uncert);
 	  double newjetpy = jetpy*(1-uncert);
 	  double newjetpz = jetpz*(1-uncert);
-	  double newjete = jete-uncert*sqrt(jetpx*jetpx+jetpy*jetpy+jetpz*jetpz);
+	  double newjete = jete*(1-uncert);
 	  ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > newjet(newjetpx,newjetpy,newjetpz,newjete);
 	  vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
 
