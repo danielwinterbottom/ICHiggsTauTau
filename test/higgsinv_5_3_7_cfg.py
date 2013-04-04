@@ -151,6 +151,8 @@ switchJetCollection(process,
   )
 process.patJets.embedGenPartonMatch = cms.bool(False)
 # process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
+process.selectedPatJets.cut = cms.string("pt>10. && abs(eta)<5.")
+#print "cutting selected pat jets"
 
 ###############
 #assorted things
@@ -738,7 +740,8 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLT
 if (release == '53X'):
   if isData:
     process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/public/TauPlusX-2012D.root')
+      #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/public/TauPlusX-2012D.root')
+      fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/private/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/pickevents.root')
     )
     process.GlobalTag.globaltag = cms.string('GR_P_V42_AN3::All')
   else:
@@ -754,7 +757,7 @@ if (release == '53X'):
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 ################################################################
 ## Configure private modules
