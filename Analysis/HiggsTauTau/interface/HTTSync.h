@@ -53,6 +53,9 @@ class HTTSync : public ModuleBase {
   
   //SV Fit variables
   float lMSV;
+  float lPtSV;
+  float lEtaSV;
+  float lPhiSV;
   float lMVis;
   float lMSVUp;
   float lMSVDown;

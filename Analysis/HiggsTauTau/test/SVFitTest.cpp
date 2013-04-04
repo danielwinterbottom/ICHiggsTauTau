@@ -50,7 +50,9 @@ int main(int argc, char* argv[]){
   ic::Candidate *c1 = NULL;
   ic::Candidate *c2 = NULL;
   ic::Met *met = NULL;
-  ULong64_t event_hash = 0;
+  unsigned event = 0;
+  unsigned lumi = 0;
+  unsigned run = 0;
   ULong64_t objects_hash = 0;
   unsigned mode = 0;
   double svfit_mass;
@@ -58,7 +60,9 @@ int main(int argc, char* argv[]){
 
   TH1::AddDirectory(kFALSE);
 
-  itree->SetBranchAddress("event_hash", &event_hash);
+  itree->SetBranchAddress("event", &event);
+  itree->SetBranchAddress("lumi", &lumi);
+  itree->SetBranchAddress("run", &run);
   itree->SetBranchAddress("objects_hash", &objects_hash);
   itree->SetBranchAddress("lepton1", &c1);
   itree->SetBranchAddress("lepton2", &c2);
@@ -67,7 +71,9 @@ int main(int argc, char* argv[]){
 
   TFile *output = new TFile(output_file.c_str(),"RECREATE");
   TTree *otree = new TTree("svfit","svfit");
-  otree->Branch("event_hash", &event_hash, "event_hash/l");
+  otree->Branch("event", &event, "event/i");
+  otree->Branch("lumi", &lumi, "lumi/i");
+  otree->Branch("run", &run, "run/i");
   otree->Branch("objects_hash", &objects_hash, "objects_hash/l");
   otree->Branch("svfit_mass", &svfit_mass);
   otree->Branch("svfit_vector", &svfit_vector);

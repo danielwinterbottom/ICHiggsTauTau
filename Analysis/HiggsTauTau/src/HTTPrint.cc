@@ -46,7 +46,7 @@ namespace ic {
     if (events_.find(eventInfo->event()) != events_.end()) {
       std::vector<Muon*> const& muons = event->GetPtrVec<Muon>("muonsPFlow");
       std::cout << "-----------------------------------------" << std::endl;
-    std::cout << "event: " <<  eventInfo->event() << std::endl;
+    std::cout << "event: " <<  eventInfo->event() << " lumi: " << eventInfo->lumi_block() << " run: " << eventInfo->run() << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
     std::cout << "nGoodVertices: " << eventInfo->good_vertices() << std::endl;
 
@@ -58,18 +58,23 @@ namespace ic {
       std::cout << "-decayModeFinding: " << taus[i]->GetTauID("decayModeFinding") << std::endl;
       std::cout << "-byIsolationMVAraw: " << taus[i]->GetTauID("byIsolationMVAraw") << std::endl;
       std::cout << "-byLooseIsolationMVA: " << taus[i]->GetTauID("byLooseIsolationMVA") << std::endl;
+      std::cout << "-byLooseIsolationMVA2: " << taus[i]->GetTauID("byLooseIsolationMVA2") << std::endl;
       std::cout << "-againstElectronLoose: " << taus[i]->GetTauID("againstElectronLoose") << std::endl;
       std::cout << "-againstElectronMVA: " << taus[i]->GetTauID("againstElectronMVA") << std::endl;
       std::cout << "-againstElectronTightMVA2: " << taus[i]->GetTauID("againstElectronTightMVA2") << std::endl;
+      std::cout << "-againstElectronTightMVA3: " << taus[i]->GetTauID("againstElectronTightMVA3") << std::endl;
       std::cout << "-againstMuonTight: " << taus[i]->GetTauID("againstMuonTight") << std::endl;
+      std::cout << "-againstMuonTight2: " << taus[i]->GetTauID("againstMuonTight2") << std::endl;
       std::cout << "-againstMuonLoose: " << taus[i]->GetTauID("againstMuonLoose") << std::endl;
     }
+    
     for (unsigned i = 0; i < muons.size(); ++i) {
       std::cout << "Muon " << std::endl;
       muons[i]->Print();
       std::cout << "-dxyVertex: " << muons[i]->dxy_vertex() << std::endl;
       std::cout << "-dzVertex: " << muons[i]->dz_vertex() << std::endl;
       std::cout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
+      std::cout << "-isTrackerMuon: " << muons[i]->is_tracker() << std::endl;
       std::cout << "-numberOfValidPixelHits: " << muons[i]->it_pixel_hits() << std::endl;
       std::cout << "-numberOfValidMuonHits: " << muons[i]->gt_valid_muon_hits() << std::endl;
       std::cout << "-trackerLayersWithMeasurement: " << muons[i]->it_layers_with_measurement() << std::endl;
@@ -145,7 +150,7 @@ namespace ic {
         std::cout << "-has matched genjet: " << matched_genjet->vector() << std::endl;
       }
     }
-
+    /*
     std::cout << "---Triggers" << std::endl;
     std::vector<std::string> paths = { "triggerObjectsIsoMu17LooseTau20", "triggerObjectsEle22WP90RhoLooseTau20" };
     for (auto path : paths) {
@@ -159,7 +164,7 @@ namespace ic {
           }
         }
       }
-    }
+    }*/
 
 
   }

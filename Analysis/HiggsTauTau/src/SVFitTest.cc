@@ -21,7 +21,10 @@ namespace ic {
     out_cand2_ = NULL;
     out_met_ = NULL;
 
-    out_event_hash_ = 0;
+    //out_event_hash_ = 0;
+    out_event_ = 0;
+    out_lumi_ = 0;
+    out_run_ = 0;
     out_objects_hash_ = 0;
     decay_mode_ = 0;
     run_mode_ = 0;
@@ -46,7 +49,7 @@ namespace ic {
     if (channel_ == channel::mt) decay_mode_ = 0;
     if (channel_ == channel::mtmet) decay_mode_ = 0;
     if (channel_ == channel::em) decay_mode_ = 1;
-    std::cout << "Decay Mode: " << run_mode_ << std::endl;
+    std::cout << "Decay Mode: " << decay_mode_ << std::endl;
     std::cout << "Run Mode: " << run_mode_ << std::endl;
     std::cout << "Fail Mode: " << fail_mode_ << std::endl;
     std::cout << "Require inputs Match: " << require_inputs_match_ << std::endl;
@@ -95,18 +98,22 @@ namespace ic {
             std::cout << "Warning, unable to get tree in file " << path << std::endl;
             continue;
           }
-          uint64_t    event_hash    = 0;
-          uint64_t    objects_hash  = 0;
+          unsigned    event    = 0;
+          unsigned    lumi     = 0;
+          unsigned    run      = 0;
+          ULong64_t    objects_hash  = 0;
           double      svfit_mass    = 0;
           Candidate * svfit_vector  = nullptr;
-          otree->SetBranchAddress("event_hash"  , &event_hash);
+          otree->SetBranchAddress("event"  , &event);
+          otree->SetBranchAddress("lumi"  , &lumi);
+          otree->SetBranchAddress("run"  , &run);
           otree->SetBranchAddress("objects_hash", &objects_hash);
           otree->SetBranchAddress("svfit_mass"  , &svfit_mass);
           otree->SetBranchAddress("svfit_vector"  , &svfit_vector);
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
-            // mass_map[event_hash] = std::make_pair(objects_hash, svfit_mass);
-            p4_map[event_hash] = std::make_pair(objects_hash, *svfit_vector);
+            // mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
+            p4_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, *svfit_vector);
           }
           ofile->Close();
           delete ofile;
@@ -126,7 +133,7 @@ int SVFitTest::Execute(TreeEvent *event) {
   Candidate c1 = *(dilepton.at(0)->GetCandidate("lepton1"));
   Candidate c2 = *(dilepton.at(0)->GetCandidate("lepton2"));
   Met met = *(event->GetPtr<Met>(met_label_));
-  std::size_t event_hash = RunLumiEvtHash(eventInfo->run(), eventInfo->lumi_block(), eventInfo->event());
+  //std::size_t event_hash = RunLumiEvtHash(eventInfo->run(), eventInfo->lumi_block(), eventInfo->event());
   std::size_t objects_hash = ObjectsHash(&c1, &c2, &met);
 
   if (run_mode_ == 1) {
@@ -140,7 +147,9 @@ int SVFitTest::Execute(TreeEvent *event) {
       }
       out_file_ = new TFile((total_path_.string()+"/svfit_"+boost::lexical_cast<std::string>(file_counter_)+"_input.root").c_str(),"RECREATE");
       out_tree_ = new TTree("svfit","svfit");
-      out_tree_->Branch("event_hash", &out_event_hash_, "event_hash/l");
+      out_tree_->Branch("event", &out_event_, "event/i");
+      out_tree_->Branch("lumi", &out_lumi_, "lumi/i");
+      out_tree_->Branch("run", &out_run_, "run/i");
       out_tree_->Branch("objects_hash", &out_objects_hash_, "objects_hash/l");
       out_tree_->Branch("decay_mode", &decay_mode_);
       out_tree_->Branch("lepton1", &out_cand1_);
@@ -148,7 +157,10 @@ int SVFitTest::Execute(TreeEvent *event) {
       out_tree_->Branch("met", &out_met_);
       ++file_counter_;
     }
-    out_event_hash_ = event_hash;
+    //out_event_hash_ = event_hash;
+    out_event_ = eventInfo->event();
+    out_lumi_ = eventInfo->lumi_block();
+    out_run_ = eventInfo->run();
     out_objects_hash_ = objects_hash;
     out_cand1_ = &c1;
     out_cand2_ = &c2;
@@ -159,11 +171,11 @@ int SVFitTest::Execute(TreeEvent *event) {
 
   if (run_mode_ == 2) {
     // mass_map_const_it it = mass_map.find(event_hash);
-    auto it = p4_map.find(event_hash);
+    auto it = p4_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
     bool fail_state = false;
     if (it != p4_map.end()) {
+      ;
       if (require_inputs_match_ && it->second.first != objects_hash) {
-        std::cout << "Warning, objects hash does not match" << std::endl;
         fail_state = true;
       } else {
         event->Add("svfitMass", it->second.second.M());

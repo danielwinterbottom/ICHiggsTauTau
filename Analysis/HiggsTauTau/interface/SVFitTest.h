@@ -13,16 +13,19 @@
 
 #include <string>
 #include <fstream>
+#include <tuple>
 
 namespace ic {
 
 class SVFitTest : public ModuleBase {
  private:
+
+   typedef std::tuple<unsigned, unsigned, unsigned> tri_unsigned;
   inline std::size_t RunLumiEvtHash(unsigned run, unsigned lumi, unsigned evt) const {
     std::size_t id = 0;
-    boost::hash_combine(id, run);
-    boost::hash_combine(id, lumi);
     boost::hash_combine(id, evt);
+    boost::hash_combine(id, lumi);
+    boost::hash_combine(id, run);
     return id;
   }
 
@@ -36,7 +39,9 @@ class SVFitTest : public ModuleBase {
     // These variables for writing the svfit input
     TFile *out_file_;
     TTree *out_tree_;
-    uint64_t out_event_hash_;
+    uint64_t out_event_;
+    uint64_t out_lumi_;
+    uint64_t out_run_;
     uint64_t out_objects_hash_;
     Candidate *out_cand1_;
     Candidate *out_cand2_;
@@ -54,10 +59,10 @@ class SVFitTest : public ModuleBase {
 
   // std::map<std::string, double> mass_map;
   // We map from a combined hash of the run,ls,event to a the lepton+met hash and the mass value
-  boost::unordered_map<std::size_t, std::pair<std::size_t,double> > mass_map;
-  typedef boost::unordered_map<std::size_t, std::pair<std::size_t,double> >::const_iterator mass_map_const_it;
+  std::map<tri_unsigned, std::pair<std::size_t,double> > mass_map;
+  std::map<tri_unsigned, std::pair<std::size_t,double> >::const_iterator mass_map_const_it;
   // And a similar map from a combined hash of the run,ls,event to a the lepton+met hash and the higgs 4-vector
-  boost::unordered_map<std::size_t, std::pair<std::size_t,Candidate> > p4_map;
+  std::map<tri_unsigned, std::pair<std::size_t,Candidate> > p4_map;
  
   CLASS_MEMBER(SVFitTest, ic::channel, channel)
 

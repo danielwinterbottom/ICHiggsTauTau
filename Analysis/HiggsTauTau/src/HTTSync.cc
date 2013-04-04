@@ -73,6 +73,9 @@ lOTree->Branch("weight"     ,&lWeight        ,"lWeight/F"  );//mcweight*puweight
 lOTree->Branch("mvis"       ,&lMVis           ,"lMVis/F"     );//SV Fit using integration method
 
 lOTree->Branch("m_sv"       ,&lMSV           ,"lMSV/F"     );//SV Fit using integration method
+lOTree->Branch("pt_sv"      ,&lPtSV          ,"lPtSV/F"     );//SV Fit using integration method
+lOTree->Branch("eta_sv"      ,&lEtaSV          ,"lEtaSV/F"     );//SV Fit using integration method
+lOTree->Branch("phi_sv"      ,&lPhiSV          ,"lPhiSV/F"     );//SV Fit using integration method
 lOTree->Branch("m_sv_Up"    ,&lMSVUp         ,"lMSVUp/F"   );//High Energy scale shape
 lOTree->Branch("m_sv_Down"  ,&lMSVDown       ,"lMSVDown/F" );//Low Energy Scale Shape
 
@@ -253,14 +256,24 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
     lq2 = tau->charge();
 
     lMVis = dilepton.at(0)->M();
+      
+    if (event->Exists("svfitMass")) {
+      lMSV = event->Get<double>("svfitMass");
+    } else {
+      lMSV = -999.;
+    }
+    if (event->Exists("svfitHiggs")) {
+      Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
+      lPtSV = higgs.pt();
+      lEtaSV = higgs.eta();
+      lPhiSV = higgs.phi();
+    } else {
+      lPtSV = -999.;
+      lEtaSV = -999.;
+      lPhiSV = -999.;
+    }
 
     if (channel_ == channel::et || channel_ == channel::etmet) {
-      if (event->Exists("svfitMass")) {
-        lMSV = event->Get<double>("svfitMass");
-      } else {
-        lMSV = -999.;
-        //lMSV = sv_service_.SVFitMassLepHad(lepton, tau, pfMetMVA);
-      }
       Electron* elec = dynamic_cast<Electron*>(lepton);
       double iso =  elec->dr04_pfiso_charged_all() 
                     + std::max(elec->dr04_pfiso_neutral() + elec->dr04_pfiso_gamma() - 0.5 * elec->dr04_pfiso_pu(), 0.0);
@@ -281,13 +294,6 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lMt2 = MT(htau, selectedMet);
 
     } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
-      if (event->Exists("svfitMass")) {
-        lMSV = event->Get<double>("svfitMass");
-      } else {
-        lMSV = -999.;
-        //lMSV = sv_service_.SVFitMassLepHad(lepton, tau, pfMetMVA);
-
-      }      
       Muon* muon = dynamic_cast<Muon*>(lepton);
       double iso =  muon->dr04_pfiso_charged_all() 
                     + std::max(muon->dr04_pfiso_neutral() + muon->dr04_pfiso_gamma() - 0.5 * muon->dr04_pfiso_pu(), 0.0);
@@ -307,13 +313,7 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       lMt2 = MT(htau, selectedMet);
     } else if (channel_ == channel::em) {
       if (lepton->charge() == tau->charge()) return 0;
-      if (event->Exists("svfitMass")) {
-        lMSV = event->Get<double>("svfitMass");
-      } else {
-        lMSV = -999.;
-        //lMSV = sv_service_.SVFitMassLepLep(lepton, tau, pfMetMVA);
-
-      }      Electron* elec = dynamic_cast<Electron*>(lepton);
+      Electron* elec = dynamic_cast<Electron*>(lepton);
       double iso =  elec->dr04_pfiso_charged_all() 
                     + std::max(elec->dr04_pfiso_neutral() + elec->dr04_pfiso_gamma() - 0.5 * elec->dr04_pfiso_pu(), 0.0);
       iso = iso / elec->pt();

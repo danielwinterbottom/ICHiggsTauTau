@@ -420,6 +420,8 @@ int main(int argc, char* argv[]){
     .set_input_label("electrons")
     .set_shift(elec_shift);
 
+  HTTEMuExtras emuExtras("EMuExtras");
+
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
 
@@ -440,7 +442,7 @@ int main(int argc, char* argv[]){
     if (channel == channel::em) {
       elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
     } else {
-      elec_idiso_func = bind(ElectronHTTId, _1, true) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
+      elec_idiso_func = bind(ElectronHTTId, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
     }
   }
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>("SelElectronFilter")
@@ -801,7 +803,7 @@ int main(int argc, char* argv[]){
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(1)
-    .set_require_inputs_match(true)
+    .set_require_inputs_match(false)
     .set_split(15000)
     .set_dilepton_label("emtauCandidates")
     .set_met_label(met_label)
@@ -810,7 +812,15 @@ int main(int argc, char* argv[]){
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
-  // ------------------------------------------------------------------------------------                     
+  // ------------------------------------------------------------------------------------ 
+  std::vector<int> to_check = {
+
+  };
+  for (auto ch : to_check) {
+    analysis.NotifyEvent(ch);
+   httPrint.PrintEvent(ch);
+  }
+  
   if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
@@ -836,8 +846,8 @@ int main(int argc, char* argv[]){
       if (special_mode != 18)     analysis.AddModule(&extraMuonVeto);
     }
                                   analysis.AddModule(&tauPtEtaFilter);
-  if (strategy == strategy::paper2013)
-                                  analysis.AddModule(&tauDzFixer);
+  //if (strategy == strategy::paper2013)
+                                  //analysis.AddModule(&tauDzFixer);
                                   analysis.AddModule(&tauDzFilter);
                                   analysis.AddModule(&tauIsoFilter);
                                   analysis.AddModule(&tauElRejectFilter);
@@ -859,6 +869,8 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&extraMuonVeto);
     }
                                   analysis.AddModule(&tauPtEtaFilter);
+  if (strategy == strategy::paper2013)
+                                  //analysis.AddModule(&tauDzFixer);
                                   analysis.AddModule(&tauDzFilter);
                                   analysis.AddModule(&tauIsoFilter);
                                   analysis.AddModule(&tauElRejectFilter);
@@ -869,6 +881,8 @@ int main(int argc, char* argv[]){
   }
 
   if (channel == channel::em) {
+    if (strategy == strategy::paper2013)
+                                  analysis.AddModule(&emuExtras);
                                   analysis.AddModule(&selElectronCopyCollection);
                                   analysis.AddModule(&selElectronFilter);
     if (special_mode != 25)       

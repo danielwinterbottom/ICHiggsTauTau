@@ -36,7 +36,9 @@ namespace ic {
         if (ele->HasIdIso("trackInIsoSum")) {
           float current_iso = ele->dr04_pfiso_charged_all();
           float sub_iso = ele->GetIdIso("trackInIsoSum");
-          if (current_iso >= sub_iso) ele->set_dr04_pfiso_charged_all(current_iso - sub_iso);
+          if (current_iso >= sub_iso) {
+            ele->set_dr04_pfiso_charged_all(current_iso - sub_iso);
+          }
         }
       }
     }
