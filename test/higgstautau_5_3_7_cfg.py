@@ -162,12 +162,6 @@ else:
   process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3")
   process.patMETsPF.addGenMET = cms.bool(True)
 
-process.patMETsPFType1 = process.patMETsPF.clone(
-  metSource  = cms.InputTag("pfType1CorrectedMet"),
-  addGenMET = cms.bool(False)
-  )
-
-
 ################################################################
 ### Configure kt6PFJets for lepton isolation
 ################################################################
@@ -188,6 +182,7 @@ process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
 ################################################################
 process.load("EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi")
 process.mvaElectronIDSequence = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
+#process.mvaNonTrigV0.verbose = cms.untracked.bool(True)
 
 
 ################################################################
@@ -289,6 +284,9 @@ process.mvaMetPairsMT = mvaMetPairs.clone(
   leg2Eta = cms.double(2.6),
   minDeltaR = cms.double(0.49)
   )
+#process.mvaMetPairsMT.verbosity = cms.int32(1)
+#process.pfMEtMVA.verbosity = cms.int32(0)
+
 process.mvaMetPairsET = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('gsfElectrons'),
   srcLeg2 = cms.InputTag('selectedPatTaus'),
@@ -358,72 +356,6 @@ process.patPFMetByMVA = process.patMETs.clone(
     genMETSource = cms.InputTag('genMetTrue'),
     addGenMET = cms.bool(False)
 )
-
-
-################################################################
-### MET Filters-curretly from Sasha's code
-#################################################################
-## The iso-based HBHE noise filter
-process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
-
-
-### The CSC beam halo tight filter  - IMPLEMENTED DIRECTLY in ICEventInfoProducer
-#process.load('RecoMET.METAnalyzers.CSCHaloFilter_cfi')
-
-### The HCAL laser filter - CAN BE IMPLEMENTED OFFLINE USING A SIMPLE LIST OF EVENTS TO VETO
-#process.load("RecoMET.METFilters.hcalLaserEventFilter_cfi")
-#process.MyhcalLaserEventFilter = process.hcalLaserEventFilter.clone()
-#process.MyhcalLaserEventFilter.taggingMode  = cms.bool(True)
-
-## The ECAL dead cell trigger primitive filter
-process.load('RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi')
-process.EcalDeadCellTriggerPrimitiveFilter.taggingMode  = cms.bool(True)
-
-## The EE bad SuperCrystal filter
-process.load('RecoMET.METFilters.eeBadScFilter_cfi')
-process.eeBadScFilter.taggingMode  = cms.bool(True)
-#
-
-### The ECAL laser correction filter - CAN BE IMPLEMENTED OFFLINE USING A SIMPLE LIST OF EVENTS TO VETO
-#process.load('RecoMET.METFilters.ecalLaserCorrFilter_cfi')
-#process.MyecalLaserCorrFilter = process.ecalLaserCorrFilter.clone()
-#process.MyecalLaserCorrFilter.taggingMode  = cms.bool(True)
-#
-## The Good vertices collection needed by the tracking failure filter
-process.goodVertices = cms.EDFilter(
- "VertexSelector",
- filter = cms.bool(False),
- src = cms.InputTag("offlinePrimaryVertices"),
- cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.rho < 2")
-) 
-
-## The tracking failure filter
-process.load('RecoMET.METFilters.trackingFailureFilter_cfi')
-process.trackingFailureFilter.taggingMode  = cms.bool(True)
-
-process.load('RecoMET.METFilters.trackingPOGFilters_cff')
-## NOTE: to make tagging mode of the tracking POG filters (three of them), please do:
-process.manystripclus53X.taggedMode = cms.untracked.bool(True)
-process.manystripclus53X.forcedValue = cms.untracked.bool(False)
-process.toomanystripclus53X.taggedMode = cms.untracked.bool(True)
-process.toomanystripclus53X.forcedValue = cms.untracked.bool(False)
-process.logErrorTooManyClusters.taggedMode = cms.untracked.bool(True)
-process.logErrorTooManyClusters.forcedValue = cms.untracked.bool(False)
-#
-### total sequence
-process.filterSequence = cms.Sequence(
-# # process.primaryVertexFilter *
-# # process.noscraping *
-  process.HBHENoiseFilterResultProducer
-#  process.CSCTightHaloFilter *
-#  process.MyhcalLaserEventFilter *
-  +process.EcalDeadCellTriggerPrimitiveFilter
-  +process.goodVertices + process.trackingFailureFilter
-  +process.eeBadScFilter
-#  process.MyecalLaserCorrFilter
-# # process.hcallasereventfilter2012 
-  +process.trkPOGFilters 
-) 
 
 ################################################################
 ### Configuration of MVA PU Jet ID
@@ -571,7 +503,7 @@ if (release == '53X'):
     process.source = cms.Source(
       "PoolSource",
       fileNames = cms.untracked.vstring(
-        #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+        #'file:pickevents.root'
         'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
         )
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
@@ -618,13 +550,6 @@ process.icPfMetProducer = cms.EDProducer('ICMetProducer',
     InputSig = cms.untracked.string("")
     )
 if isData: process.icPfMetProducer.addGen = cms.untracked.bool(False)
-
-process.icPfMetType1Producer = cms.EDProducer('ICMetProducer',
-    inputLabel = cms.InputTag("patMETsPFType1"),
-    branchName = cms.untracked.string("pfMetType1"),
-    addGen = cms.untracked.bool(False),
-    InputSig = cms.untracked.string("")
-    )
 
 process.icPfMVAMetProducer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patPFMetByMVA"),
@@ -743,17 +668,6 @@ process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer')
 
 process.icSequence = cms.Sequence()
 
-if isData and release == '53X':
-  process.icEventInfoProducer.filters = cms.PSet(
-      HBHENoiseFilter                     = cms.InputTag("HBHENoiseFilterResultProducer","HBHENoiseFilterResult"),
-      EcalDeadCellTriggerPrimitiveFilter  = cms.InputTag("EcalDeadCellTriggerPrimitiveFilter"),
-      eeBadScFilter                       = cms.InputTag("eeBadScFilter"),
-      trackingFailureFilter               = cms.InputTag("trackingFailureFilter"),
-      manystripclus53X                    = cms.InputTag("!manystripclus53X"),
-      toomanystripclus53X                 = cms.InputTag("!toomanystripclus53X"),
-      logErrorTooManyClusters             = cms.InputTag("!logErrorTooManyClusters"),
-      )
-  process.icSequence += process.filterSequence
 
 process.icSequence += cms.Sequence(
   process.icElectronProducer
@@ -762,8 +676,6 @@ process.icSequence += cms.Sequence(
   +process.icPfMetProducer
   +process.icPfMVAMetProducer
   +process.icPfAllPairsMVAMetProducer
-  +process.patMETsPFType1
-  +process.icPfMetType1Producer
   +process.icTauProducer
   +process.icVertexProducer
   +process.icEventInfoProducer
@@ -1119,42 +1031,6 @@ if (release == '53X' and (not isData) and isZStudy):
     +process.icMu17Mu8ObjectProducer
     )
 
-################################################################
-## Define 2012 Hinv physics triggers for mc
-################################################################
-if (release == '53X' and (not isData)):
-  process.icDiPFJet40PFMETnoMu65MJJ600VBFLeadingJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsDiPFJet40PFMETnoMu65MJJ600VBFLeadingJets"), 
-      hltPath = cms.untracked.string("HLT_DiPFJet40_PFMETnoMu65_MJJ600VBF_LeadingJets_v"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-  process.icDiPFJet40PFMETnoMu65MJJ800VBFAllJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets"), 
-      hltPath = cms.untracked.string("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-  process.icDiPFJetAve80ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsDiPFJetAve80"), 
-      hltPath = cms.untracked.string("HLT_DiPFJetAve80_v"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-  process.icDiPFJetAve40ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsDiPFJetAve40"), 
-      hltPath = cms.untracked.string("HLT_DiPFJetAve40_v"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      ) 
-  process.icL1ETM40ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsL1ETM40"), 
-      hltPath = cms.untracked.string("HLT_L1ETM40"), 
-      StoreOnlyIfFired = cms.untracked.bool(True) 
-      )
-  process.icTriggerSequence += ( 
-    process.icDiPFJet40PFMETnoMu65MJJ600VBFLeadingJetsObjectProducer 
-    +process.icDiPFJet40PFMETnoMu65MJJ800VBFAllJetsObjectProducer 
-    +process.icDiPFJetAve80ObjectProducer 
-    +process.icDiPFJetAve40ObjectProducer 
-    +process.icL1ETM40ObjectProducer 
-    )
 
 process.icSequence += process.icTriggerSequence
  
