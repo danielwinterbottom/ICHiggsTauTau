@@ -49,6 +49,8 @@ namespace ic {
     std::cout << "event: " <<  eventInfo->event() << " lumi: " << eventInfo->lumi_block() << " run: " << eventInfo->run() << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
     std::cout << "nGoodVertices: " << eventInfo->good_vertices() << std::endl;
+    std::cout << "Jet Rho: " << eventInfo->jet_rho() << std::endl;
+    
 
     for (unsigned i = 0; i < taus.size(); ++i) {
       std::cout << "Tau " << i << std::endl;
@@ -118,6 +120,10 @@ namespace ic {
         std::cout << "Elec " << i << ", Muon " << j << " DR: " <<
           ROOT::Math::VectorUtil::DeltaR(elecs[i]->vector(), muons[j]->vector()) << std::endl;
       }
+    }
+    std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
+    for (auto met_pair : met_map) {
+      std::cout << "MVA MET: " << met_pair.second->pt() << std::endl;
     }
 
     std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
