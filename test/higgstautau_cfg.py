@@ -144,10 +144,10 @@ addPfMET(process, 'PF')
 process.patMETsPF.metSource  = cms.InputTag("pfMet")
 
 if isData:
-  process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual")
+  #process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual")
   process.patMETsPF.addGenMET = cms.bool(False)
 else:
-  process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3")
+  #process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3")
   process.patMETsPF.addGenMET = cms.bool(True)
 
 ################################################################
@@ -355,8 +355,8 @@ if (release == '53X'):
       )
 else:
   from RecoJets.JetProducers.PileupJetID_cfi import *
-    stdalgos = cms.VPSet(full,cutbased,PhilV1)
-      process.puJetMva = cms.EDProducer('PileupJetIdProducer',
+  stdalgos = cms.VPSet(full,cutbased,PhilV1)
+  process.puJetMva = cms.EDProducer('PileupJetIdProducer',
           produceJetIds = cms.bool(True),
           jetids = cms.InputTag(""),
           runMvas = cms.bool(True),
