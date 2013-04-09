@@ -9,30 +9,24 @@ import sys
 options = VarParsing.VarParsing ('analysis')
 options.register ('isData',
                   0, # default value
-                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
-                  VarParsing.VarParsing.varType.int,          # string, int, or float
-                  "Process as data?")
+                  VarParsing.VarParsing.multiplicity.singleton, 
+                  VarParsing.VarParsing.varType.int, "Process as data?")
 options.register ('isEmbedded',
                   0, # default value
-                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
-                  VarParsing.VarParsing.varType.int,          # string, int, or float
-                  "Process as embedded?")
+                  VarParsing.VarParsing.multiplicity.singleton, 
+                  VarParsing.VarParsing.varType.int, "Process as embedded?")
 options.register ('release',
                   '', # default value
-                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
-                  VarParsing.VarParsing.varType.string,          # string, int, or float
-                  "Release label")
+                  VarParsing.VarParsing.multiplicity.singleton, 
+                  VarParsing.VarParsing.varType.string, "Release label")
 options.register ('isTandP',
                   0, # default value
-                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
-                  VarParsing.VarParsing.varType.int,          # string, int, or float
-                  "Tag and probe ntuples?")
+                  VarParsing.VarParsing.multiplicity.singleton, 
+                  VarParsing.VarParsing.varType.int, "Tag and probe ntuples?")
 options.register ('isZStudy',
                   0, # default value
-                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
-                  VarParsing.VarParsing.varType.int,          # string, int, or float
-                  "Process for Z->ee or Z->mumu?")
-
+                  VarParsing.VarParsing.multiplicity.singleton, 
+                  VarParsing.VarParsing.varType.int, "Process for Z->ee or Z->mumu?")
 options.parseArguments()
 isData      = options.isData
 release     = options.release
@@ -109,10 +103,7 @@ from PhysicsTools.PatAlgos.tools.metTools import *
 switchOnTrigger(process, outputModule="")
 
 if (release == '42X'):
-  process.patDefaultSequence.remove(process.patFixedConePFTauDiscrimination)
-  process.patDefaultSequence.remove(process.patShrinkingConePFTauDiscrimination)
-  process.patDefaultSequence.remove(process.patCaloTauDiscrimination)
-
+  switchToPFTauHPS(process)
 
 ################################################################
 ### Configure PAT Jets
@@ -146,9 +137,6 @@ process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
 ################################################################
 ### Set up METs
 ################################################################
-if (release == '42X'):
-  process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
-  process.metAnalysisSequence=cms.Sequence(process.producePFMETCorrections)
 addPfMET(process, 'PF')
 
 # PAT will try and use type-1 corrected MET by default in 53X, here
@@ -269,11 +257,13 @@ process.icSoftLeptonSequence += cms.Sequence(
 ### Configuration of MVA MET
 ################################################################
 if (release == '53X'):
-    process.load("JetMETCorrections.METPUSubtraction.mvaPFMET_leptons_cff")
-    from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X_Dec2012 import mvaMetPairs
+  process.load("JetMETCorrections.METPUSubtraction.mvaPFMET_leptons_cff")
+  from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X_Dec2012 import mvaMetPairs
 else:
-    process.load("RecoMET.METProducers.mvaPFMET_cff_leptons")
-    process.load("UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons")
+  process.load("JetMETCorrections.METPUSubtraction.mvaPFMET_leptons_42X_cff")
+  from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_42X_Dec2012 import mvaMetPairs
+  process.pfMEtMVA.srcLeptons = cms.VInputTag("isomuons","isoelectrons","isotaus")
+  process.pfMEtMVA.useOld42  = cms.bool(False)
 
 process.mvaMetPairsMT = mvaMetPairs.clone(
   srcLeg1 = cms.InputTag('pfAllMuons'),
@@ -336,20 +326,6 @@ if isData:
 else:
   process.calibratedAK5PFJetsForPFMEtMVA.correctors = cms.vstring("ak5PFL1FastL2L3")
 
-if (release == '42X'):
-  process.pfMEtMVA.inputFileNames = cms.PSet(
-      DPhi = cms.FileInPath('pharris/MVAMet/data/gbrmetphi_42.root'),
-      CovU2 = cms.FileInPath('pharris/MVAMet/data/gbrmetu2cov_42.root'),
-      U = cms.FileInPath('pharris/MVAMet/data/gbrmet_42.root'),
-      CovU1 = cms.FileInPath('pharris/MVAMet/data/gbrmetu1cov_42.root')
-      )
-  process.pfMEtAllPairsMVA.inputFileNames = cms.PSet(
-      DPhi = cms.FileInPath('pharris/MVAMet/data/gbrmetphi_42.root'),
-      CovU2 = cms.FileInPath('pharris/MVAMet/data/gbrmetu2cov_42.root'),
-      U = cms.FileInPath('pharris/MVAMet/data/gbrmet_42.root'),
-      CovU1 = cms.FileInPath('pharris/MVAMet/data/gbrmetu1cov_42.root')
-      )
-
 process.patPFMetByMVA = process.patMETs.clone(
     metSource = cms.InputTag('pfMEtMVA'),
     addMuonCorrections = cms.bool(False),
@@ -364,23 +340,36 @@ if (release == '53X'):
   from RecoJets.JetProducers.PileupJetID_cfi import *
   stdalgos = cms.VPSet(full_53x,cutbased,PhilV1)
   process.puJetMva = cms.EDProducer('PileupJetIdProducer',
-                           produceJetIds = cms.bool(True),
-                           jetids = cms.InputTag(""),
-                           runMvas = cms.bool(True),
-                           jets = cms.InputTag("ak5PFJets"),
-                           vertexes = cms.InputTag("offlinePrimaryVertices"),
-                           algos = cms.VPSet(stdalgos),
-                           rho     = cms.InputTag("kt6PFJets","rho"),
-                           jec     = cms.string("AK5PF"),
-                           applyJec = cms.bool(True),
-                           inputIsCorrected = cms.bool(False),                                     
-                           residualsFromTxt = cms.bool(False),
-                           residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
-  )
+      produceJetIds = cms.bool(True),
+      jetids = cms.InputTag(""),
+      runMvas = cms.bool(True),
+      jets = cms.InputTag("ak5PFJets"),
+      vertexes = cms.InputTag("offlinePrimaryVertices"),
+      algos = cms.VPSet(stdalgos),
+      rho     = cms.InputTag("kt6PFJets","rho"),
+      jec     = cms.string("AK5PF"),
+      applyJec = cms.bool(True),
+      inputIsCorrected = cms.bool(False),                                     
+      residualsFromTxt = cms.bool(False),
+      residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
+      )
 else:
-    process.load("CMGTools.External.pujetidsequence_cff")
-    process.puJetId.jets = cms.InputTag("selectedPatJetsAK5PF")
-    process.puJetMva.jets = cms.InputTag("selectedPatJetsAK5PF")
+  from RecoJets.JetProducers.PileupJetID_cfi import *
+    stdalgos = cms.VPSet(full,cutbased,PhilV1)
+      process.puJetMva = cms.EDProducer('PileupJetIdProducer',
+          produceJetIds = cms.bool(True),
+          jetids = cms.InputTag(""),
+          runMvas = cms.bool(True),
+          jets = cms.InputTag("ak5PFJets"),
+          vertexes = cms.InputTag("offlinePrimaryVertices"),
+          algos = cms.VPSet(stdalgos),
+          rho     = cms.InputTag("kt6PFJets","rho"),
+          jec     = cms.string("AK5PF"),
+          applyJec = cms.bool(True),
+          inputIsCorrected = cms.bool(False),                                     
+          residualsFromTxt = cms.bool(False),
+          residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
+          )
 
 ################################################################
 ### Lepton Isolation
@@ -436,7 +425,7 @@ process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
         cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF"), 
        )
 if (release == '42X'):
-  process.PFTau = process.recoTauClassicHPSSequence
+  # process.PFTau = process.recoTauClassicHPSSequence
   from RecoJets.JetProducers.kt4PFJets_cfi import kt4PFJets
   process.kt6PFJets = kt4PFJets.clone(
       rParam = cms.double(0.6),
@@ -700,7 +689,7 @@ process.icEmbeddedSequence = cms.Sequence(
   )
 if isEmbedded: process.icSequence += process.icEmbeddedSequence
 
-process.icSequence += process.icSoftLeptonSequence
+if release == '53X': process.icSequence += process.icSoftLeptonSequence
 
 process.icTriggerSequence = cms.Sequence()
 notTp = not isTandP
@@ -1039,12 +1028,16 @@ process.icSequence += process.icEventProducer
 
 process.extra42XSequence = cms.Sequence()
 if release == '42X':
-  process.extra42XSequence += (process.PFTau+process.ak5PFJets+process.kt6PFJets)
+  process.extra42XSequence += (process.ak5PFJets
+                              +process.kt6PFJets
+                              +process.recoTauClassicHPSSequence)
 
 process.extra53XSequence = cms.Sequence()
 if release == '53X':
-  process.extra53XSequence += (process.recoTauCommonSequence+process.ak5PFJetsLegacyHPSPiZeros+
-                               process.combinatoricRecoTaus+process.produceHPSPFTaus)
+  process.extra53XSequence += (process.recoTauCommonSequence
+                              +process.ak5PFJetsLegacyHPSPiZeros
+                              +process.combinatoricRecoTaus
+                              +process.produceHPSPFTaus)
 
 process.mcSequence = cms.Sequence()
 if not isData: process.mcSequence += (process.genParticlesForJets+process.ak5GenJetsNoNuBSM)
