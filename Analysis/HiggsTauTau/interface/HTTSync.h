@@ -81,6 +81,12 @@ class HTTSync : public ModuleBase {
   float lM2;
   int   lq2;
   float lIso2;
+  float l3Hits_2;
+  float lagainstElectronMVA3raw_2;
+  float lbyIsolationMVA2raw_2;
+  float lagainstMuonLoose2_2;
+  float lagainstMuonMedium2_2;
+  float lagainstMuonTight2_2;
   float lMVA2;
   bool  lPassId2;
   bool  lPassIso2;

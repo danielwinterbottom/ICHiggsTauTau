@@ -216,7 +216,7 @@ namespace ic {
     met_ = met->pt();
     met_phi_ = met->phi();
 
-    if (strategy_ == strategy::paper2013) {
+    if (strategy_ == strategy::paper2013 && era_ != era::data_2011) {
       auto l1_met = event->GetPtrVec<Candidate>("l1extraMET");
       l1_met_ = l1_met.at(0)->pt();
       auto calo_nohf_met = event->GetPtr<Met>("metNoHF");

@@ -100,6 +100,15 @@ lOTree->Branch("eta_2"      ,&lEta2          ,"lEta2/F"    );//Eta
 lOTree->Branch("m_2"        ,&lM2            ,"lM2/F"      );//Mass (visible mass for hadronic Tau)
 lOTree->Branch("q_2"        ,&lq2            ,"lq2/I"      ); //Mass 
 lOTree->Branch("iso_2"      ,&lIso2          ,"lIso2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
+
+lOTree->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_2"      ,&l3Hits_2          ,"byCombinedIsolationDeltaBetaCorrRaw3Hits_2/F"    );
+lOTree->Branch("againstElectronMVA3raw_2"      ,&lagainstElectronMVA3raw_2          ,"againstElectronMVA3raw_2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
+lOTree->Branch("byIsolationMVA2raw_2"      ,&lbyIsolationMVA2raw_2          ,"byIsolationMVA2raw_2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
+lOTree->Branch("againstMuonLoose2_2"      ,&lagainstMuonLoose2_2          ,"againstMuonLoose2_2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
+lOTree->Branch("againstMuonMedium2_2"      ,&lagainstMuonMedium2_2          ,"againstMuonMedium2_2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
+lOTree->Branch("againstMuonTight2_2"      ,&lagainstMuonTight2_2          ,"againstMuonTight2_2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
+
+
 lOTree->Branch("mva_2"      ,&lMVA2          ,"lMMVA2/F"   );//MVA id (for anti electron id)
 lOTree->Branch("passid_2"   ,&lPassId2       ,"lPassId2/B" );//Whether it passes id  (not necessarily iso)
 lOTree->Branch("passiso_2"  ,&lPassIso2      ,"lPassIso2/B");//Whether it passes iso (not necessarily id)
@@ -289,6 +298,12 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       Tau* htau = dynamic_cast<Tau*>(tau);
       lIso2 = htau->GetTauID("byIsolationMVAraw");
       lMVA2 = htau->GetTauID("againstElectronMVA");
+      l3Hits_2 = htau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? htau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+      lagainstElectronMVA3raw_2 = htau->HasTauID("againstElectronMVA3raw") ? htau->GetTauID("againstElectronMVA3raw") : 0. ;
+      lbyIsolationMVA2raw_2 = htau->HasTauID("byIsolationMVA2raw") ? htau->GetTauID("byIsolationMVA2raw") : 0. ;
+      lagainstMuonLoose2_2 = htau->HasTauID("againstMuonLoose2") ? htau->GetTauID("againstMuonLoose2") : 0. ;
+      lagainstMuonMedium2_2 = htau->HasTauID("againstMuonMedium2") ? htau->GetTauID("againstMuonMedium2") : 0. ;
+      lagainstMuonTight2_2 = htau->HasTauID("againstMuonTight2") ? htau->GetTauID("againstMuonTight2") : 0. ;
       lPassId2 = true;
       lPassIso2 = true;
       lMt2 = MT(htau, selectedMet);
@@ -308,6 +323,12 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       Tau* htau = dynamic_cast<Tau*>(tau);
       lIso2 = htau->GetTauID("byIsolationMVAraw");
       lMVA2 = htau->GetTauID("againstElectronMVA");
+      l3Hits_2 = htau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? htau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+      lagainstElectronMVA3raw_2 = htau->HasTauID("againstElectronMVA3raw") ? htau->GetTauID("againstElectronMVA3raw") : 0. ;
+      lbyIsolationMVA2raw_2 = htau->HasTauID("byIsolationMVA2raw") ? htau->GetTauID("byIsolationMVA2raw") : 0. ;
+      lagainstMuonLoose2_2 = htau->HasTauID("againstMuonLoose2") ? htau->GetTauID("againstMuonLoose2") : 0. ;
+      lagainstMuonMedium2_2 = htau->HasTauID("againstMuonMedium2") ? htau->GetTauID("againstMuonMedium2") : 0. ;
+      lagainstMuonTight2_2 = htau->HasTauID("againstMuonTight2") ? htau->GetTauID("againstMuonTight2") : 0. ;
       lPassId2 = true;
       lPassIso2 = true;
       lMt2 = MT(htau, selectedMet);

@@ -19,11 +19,11 @@ print "Using input prefix:   " + PREFIXOVERRIDE
 
 
 SUPPORTED_ERAS_2012 = ['Paper', 'Moriond', 'HCP', 'DOnly']
-SUPPORTED_ERAS_2011 = ['Total']
+SUPPORTED_ERAS_2011 = ['Paper', 'Total']
 SUPPORTED_ERAS 			= [ ] ## Will be assigned from 2011 or 2012
 
 CHANNELS_2012 = ['et', 'mt', 'em', 'etmet', 'mtmet']
-CHANNELS_2011 = ['et', 'mt']
+CHANNELS_2011 = ['et', 'mt', 'em']
 CHANNELS 			= [ ] ## will be assigned from 2011 or 2012
 
 SCALES = ['0', '1', '2']
