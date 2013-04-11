@@ -1,6 +1,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface/ElectronTagAndProbe.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/PileUpFunctions.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/bind.hpp"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
@@ -23,6 +24,37 @@ namespace ic {
   }
 
   ElectronTagAndProbe::~ElectronTagAndProbe() {
+  }
+  
+  bool ElectronTagAndProbe::hasL1MET(TreeEvent *event, std::vector<TriggerObject *> &etau_objs) {
+    bool hasL1MET=false;
+    if(data_)
+    {
+        std::string filter="hltL1sL1IsoEG12erETM36";
+        std::size_t hash = CityHash64(filter);
+        for (unsigned i = 0; i < etau_objs.size(); ++i)
+        {
+            std::vector<std::size_t> const& labels = etau_objs[i]->filters();
+            if (std::find(labels.begin(),labels.end(), hash) != labels.end()) hasL1MET=true;
+        }
+    }
+    else
+    {
+        std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+        hasL1MET = l1met.at(0)->pt() > 36.;
+    }
+    
+    return hasL1MET;  
+  }
+
+  bool ElectronTagAndProbe::PassL1Lepton(TreeEvent *event, std::vector<TriggerObject *> &etau_objs, Electron* probeElectron) {
+    ic::erase_if(etau_objs, !boost::bind(MinPtMaxEta, _1, 13.0, 2.1));
+    std::vector<Candidate *> l1emiso = event->GetPtrVec<Candidate>("l1extraEmIsolated");
+    ic::erase_if(l1emiso, !boost::bind(MinPtMaxEta, _1, 12.0, 2.17));
+    std::vector<Candidate *> ele_as_vector;
+    ele_as_vector.push_back(probeElectron);
+    bool leg1_l1_match = MatchByDR(ele_as_vector, l1emiso, 0.5, false, false).size() > 0;
+    return leg1_l1_match;
   }
 
   int ElectronTagAndProbe::PreAnalysis() {
@@ -141,10 +173,15 @@ namespace ic {
         etau_obj_label = "triggerObjectsEle22WP90RhoLooseTau20";
         etau_filter = "hltEle22WP90RhoTrackIsoFilter";
     }
-    if(mode_==4)
+    if(mode_==4 && data_)
     {    
         etau_obj_label = "triggerObjectsEle13LooseTau20L1ETM36";
         etau_filter = "hltEle13WP90RhoTrackIsoFilter";
+    }
+    if(mode_==4 && !data_)
+    {    
+        etau_obj_label = "triggerObjectsEle8";
+        etau_filter = "hltEle8TightIdLooseIsoTrackIsoFilter";
     }
 
     //set tag and probe trigger names and filter labels
@@ -250,7 +287,7 @@ namespace ic {
         }*/
     }
     else trigger=true;
-    
+/*    
     bool hasL1MET=false;
 
     std::string filter="hltL1sL1IsoEG12erETM36";
@@ -264,7 +301,7 @@ namespace ic {
         }
     }
     else hasL1MET=true;
-    
+  */  
 
     std::vector<Electron *> tag_vector; 
     std::vector<Electron *> probe_vector; 
@@ -287,7 +324,7 @@ namespace ic {
             } 
             if( probe_predicate_((electrons[e1])) 
                     && (!data_ || !probe_match || (data_ && IsFilterMatched((electrons)[e1], objs, probe_filter_e, 0.5)) )
-                  && (!(mode_==4) || hasL1MET)  )
+                  && (!(mode_==4) || hasL1MET(event, etau_objs))  )
             {
                 probe_vector.push_back((electrons)[e1]);
             }
@@ -337,7 +374,8 @@ namespace ic {
             {
                 std::string s=boost::lexical_cast<std::string>(i+1);
                 if((!(mode_==3) && !(mode_==4) && passprobe_predicate_(pairs[k_final].second)) ||
-                        (((mode_==3) ||(mode_==4)) && IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )) )
+                        ((mode_==3)  && IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )) || 
+                        ((mode_==4) && IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 ) && PassL1Lepton(event, etau_objs, pairs[k_final].second) ) )
                 {
                     passing_count++;
                   //  if(run==203994 && eventInfo->lumi_block()>318){std::cout << "Passing: " << "Run= " << run << " Lumi= " << eventInfo->lumi_block() << " Event= " << eventInfo->event() << std::endl;}
@@ -370,7 +408,8 @@ namespace ic {
                     }
                 }
                 if ((!(mode_==3) && !(mode_==4) && !passprobe_predicate_(pairs[k_final].second))||
-                        (((mode_==3)||(mode_==4)) && !IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )))
+                        ((mode_==3) && !IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 )) ||
+                        ((mode_==4) && (!IsFilterMatched(pairs[k_final].second,etau_objs,etau_filter,0.5 ) || !PassL1Lepton(event, etau_objs, pairs[k_final].second)) ) )
                 {
                     //if(run==206210 && eventInfo->lumi_block() < 195){std::cout << "Failing: " << "Run= " << run << " Lumi= " << eventInfo->lumi_block() << " Event= " << eventInfo->event() << std::endl;}
                     failing_count++;

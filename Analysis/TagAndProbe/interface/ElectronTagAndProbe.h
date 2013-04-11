@@ -51,6 +51,8 @@ class ElectronTagAndProbe : public ModuleBase {
   ElectronTagAndProbe(std::string const& name);
   virtual ~ElectronTagAndProbe();
 
+  bool hasL1MET(TreeEvent *event, std::vector<TriggerObject *> &etau_objs);
+  bool PassL1Lepton(TreeEvent *event, std::vector<TriggerObject *> &etau_objs, Electron* probeElectron);
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
