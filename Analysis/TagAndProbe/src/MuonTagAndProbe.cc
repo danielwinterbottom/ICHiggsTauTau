@@ -27,7 +27,7 @@ namespace ic {
   MuonTagAndProbe::~MuonTagAndProbe() {
   }
     
-  bool MuonTagAndProbe::hasL1MET(TreeEvent *event, std::vector<TriggerObject *> &mutau_objs, Muon* probeMuon) {
+  bool MuonTagAndProbe::hasL1MET(TreeEvent *event, std::vector<TriggerObject *> &mutau_objs) {
     bool hasL1MET=false;
     if(data_)
     {
@@ -41,18 +41,21 @@ namespace ic {
     }
     else
     {
-        ic::erase_if(mutau_objs, !boost::bind(MinPtMaxEta, _1, 8.0, 2.1));
-        std::vector<Candidate *> l1muon = event->GetPtrVec<Candidate>("l1extraMuons");
-        ic::erase_if(l1muon, !boost::bind(MinPtMaxEta, _1, 7.0, 2.1));
         std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
-        std::vector<Candidate *> mu_as_vector;
-        mu_as_vector.push_back(probeMuon);
-        bool leg1_l1_match = MatchByDR(mu_as_vector, l1muon, 0.5, false, false).size() > 0;
-        bool l1_met = l1met.at(0)->pt() > 26.;
-        hasL1MET=l1_met && leg1_l1_match;
+        hasL1MET = l1met.at(0)->pt() > 26.;
     }
     
     return hasL1MET;  
+  }
+  
+  bool MuonTagAndProbe::PassL1Lepton(TreeEvent *event, std::vector<TriggerObject *> &mutau_objs, Muon* probeMuon) {
+    ic::erase_if(mutau_objs, !boost::bind(MinPtMaxEta, _1, 8.0, 2.1));
+    std::vector<Candidate *> l1muon = event->GetPtrVec<Candidate>("l1extraMuons");
+    ic::erase_if(l1muon, !boost::bind(MinPtMaxEta, _1, 7.0, 2.1));
+    std::vector<Candidate *> mu_as_vector;
+    mu_as_vector.push_back(probeMuon);
+    bool leg1_l1_match = MatchByDR(mu_as_vector, l1muon, 0.5, false, false).size() > 0;
+    return leg1_l1_match;
   }
 
 
@@ -282,26 +285,7 @@ namespace ic {
         }
     }
     else trigger=true;
-/*
-    bool hasL1MET=false;
     
-    std::string filter="hltL1sL1Mu7erETM26";
-    std::size_t hash = CityHash64(filter);
-    if(data_)
-    {
-        for (unsigned i = 0; i < mutau_objs.size(); ++i)
-        {
-            std::vector<std::size_t> const& labels = mutau_objs[i]->filters();
-            if (std::find(labels.begin(),labels.end(), hash) != labels.end()) hasL1MET=true;
-        }
-    }
-    else
-    {
-        std::vector<TriggerObject *> mu8_obj = objs; // Make a copy of the Mu8 Trigger objects so we can filter
-        ic::erase_if(mu8_obj, !boost::bind(MinPtMaxEta, _1, 8.0, 2.1));
-        std::vector<Candidate *> l1muon = event->GetPtrVec<Candidate>("l1extraMuons");
-    }
-  */  
     std::vector<Muon *> tag_vector; 
     std::vector<Muon *> probe_vector; 
     bool good_tag=false;
@@ -322,7 +306,7 @@ namespace ic {
             } 
             if( probe_predicate_((muons[e1])) 
                     && (!data_ || !probe_match || (data_ && IsFilterMatched((muons)[e1], objs, probe_filter_mu, 0.5)))
-                    && (!(mode_==4) || hasL1MET(event, mutau_objs, muons[e1])))
+                    && (!(mode_==4) || hasL1MET(event, mutau_objs)))
             {
                 probe_vector.push_back((muons)[e1]);
             }
@@ -372,7 +356,8 @@ namespace ic {
             {
                 std::string s=boost::lexical_cast<std::string>(i+1);
                 if((!(mode_==3) && !(mode_==4) && !(mode_==5) && passprobe_predicate_(pairs[k_final].second)) ||
-                        (((mode_==3) || (mode_==4)) && IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 ))
+                        ((mode_==3) && IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )) ||
+                        ((mode_==4) && IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 ) && PassL1Lepton(event, mutau_objs, pairs[k_final].second)) 
                         || ((mode_==5) &&
                         (IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_A,0.5 ) || IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_B,0.5 ))  ) )
                 {
@@ -473,7 +458,8 @@ namespace ic {
                     }
                 }
                 if (((!(mode_==3) && !(mode_==4)) && !(mode_==5) && !passprobe_predicate_(pairs[k_final].second))||
-                        (((mode_==3)|| (mode_==4) ) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 ))
+                        ((mode_==3) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 )) ||
+                        ((mode_==4) && (!IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter,0.5 ) || !PassL1Lepton(event, mutau_objs, pairs[k_final].second))) 
                         || ((mode_==5) &&
                         (!IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_A,0.5 ) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_B,0.5 ))  ) )
                 {
