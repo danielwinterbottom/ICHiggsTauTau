@@ -238,18 +238,40 @@ process.patmetNoHF = process.patMETs.clone(
     genMETSource = cms.InputTag('genMetTrue'),
     addGenMET = cms.bool(False)
     )
+
+process.patmetNoHFresidualCorrected = process.patMETs.clone(
+    metSource = cms.InputTag('metNoHFresidualCorrected'),
+    addMuonCorrections = cms.bool(False),
+    genMETSource = cms.InputTag('genMetTrue'),
+    addGenMET = cms.bool(False)
+    )
+
+process.load("UserCode.ICHiggsTauTau.sumCaloTowersInEtaSlices_cfi")
+
 process.icMetNoHFProducer = cms.EDProducer('ICMetProducer',
     inputLabel = cms.InputTag("patmetNoHF"),
     branchName = cms.untracked.string("metNoHF"),
     addGen = cms.untracked.bool(False),
     InputSig = cms.untracked.string("")
     )
+
+process.icMetNoHFCorrectedProducer = cms.EDProducer('ICMetProducer',
+    inputLabel = cms.InputTag("patmetNoHFresidualCorrected"),
+    branchName = cms.untracked.string("metNoHFCorrected"),
+    addGen = cms.untracked.bool(False),
+    InputSig = cms.untracked.string("")
+    )
+
 process.icSoftLeptonSequence += cms.Sequence(
     process.icL1ExtraMETProducer
     +process.icL1ExtraMuonsProducer
     +process.icL1ExtraEmIsolatedProducer
     +process.patmetNoHF
+    +process.sumCaloTowersInEtaSlicesNoHF
+    +process.metNoHFresidualCorrected
+    +process.patmetNoHFresidualCorrected
     +process.icMetNoHFProducer
+    +process.icMetNoHFCorrectedProducer
     )
 
 
@@ -500,7 +522,7 @@ if (release == '53X'):
     )
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 ################################################################
