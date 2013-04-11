@@ -522,7 +522,7 @@ if (release == '53X'):
     )
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 ################################################################
