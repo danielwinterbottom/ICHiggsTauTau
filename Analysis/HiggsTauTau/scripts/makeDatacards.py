@@ -36,13 +36,13 @@ parser.add_option("--mssm", dest="mssm", action='store_true', default=False,
                   help="Make datacards for the MSSM analysis")
 parser.add_option("-e", dest="energy", type='string', default='8',
                   help="The C.O.M. energy is written into the datacard name, default is 8")
-parser.add_option("--svfit_plot", dest="svfit_plot", type='string', default='m_sv_sm_fine',
+parser.add_option("--svfit_plot", dest="svfit_plot", type='string', default='',
                   help="Override the default svfit plot")
-parser.add_option("--svfit_vbf_plot", dest="svfit_vbf_plot", type='string', default='m_sv_sm',
+parser.add_option("--svfit_vbf_plot", dest="svfit_vbf_plot", type='string', default='',
                   help="Override the default svfit vbf category plot")
-parser.add_option("--mvis_plot", dest="mvis_plot", type='string', default='m_vis_sm_fine',
+parser.add_option("--mvis_plot", dest="mvis_plot", type='string', default='',
                   help="Override the default mvis plot")
-parser.add_option("--mvis_vbf_plot", dest="mvis_vbf_plot", type='string', default='m_vis_sm',
+parser.add_option("--mvis_vbf_plot", dest="mvis_vbf_plot", type='string', default='',
                   help="Override the default mvis vbf category plot")
 
 
@@ -78,16 +78,20 @@ folder = options.input
 COM = options.energy
 
 ANA = 'sm'
-if options.svfit_plot: svfit_plot=options.svfit_plot
-if options.svfit_vbf_plot: svfit_vbf_plot=options.svfit_vbf_plot
-if options.mvis_plot: mvis_plot=options.mvis_plot
-if options.mvis_vbf_plot: mvis_vbf_plot=options.mvis_vbf_plot
+svfit_plot="m_sv_sm_fine"
+svfit_vbf_plot="m_sv_sm"
+mvis_plot="m_vis_sm_fine"
+mvis_vbf_plot="m_vis_sm"
 if options.mssm:
   svfit_plot="m_sv_mssm_fine"
   svfit_vbf_plot="m_sv_mssm"
   mvis_plot="m_vis_mssm_fine"
   mvis_vbf_plot="m_vis_mssm"
   ANA = 'mssm'
+if options.svfit_plot: svfit_plot=options.svfit_plot
+if options.svfit_vbf_plot: svfit_vbf_plot=options.svfit_vbf_plot
+if options.mvis_plot: mvis_plot=options.mvis_plot
+if options.mvis_vbf_plot: mvis_vbf_plot=options.mvis_vbf_plot
 
 
 
