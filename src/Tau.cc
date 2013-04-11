@@ -34,6 +34,9 @@ namespace ic {
     }
   }
 
+  bool Tau::HasTauID(std::string const& name) const {
+    return tau_ids_.count(CityHash64(name)) > 0;
+  }
 
 /*
   std::string Tau::UnHashDiscr(std::size_t dis) const {

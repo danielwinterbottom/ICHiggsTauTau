@@ -74,6 +74,7 @@ namespace ic {
       
       void SetTauID(std::string const& name, float const& value);
       float GetTauID(std::string const& name) const;
+      bool HasTauID(std::string const& name) const;
 
     private:
       UFmap tau_ids_;
