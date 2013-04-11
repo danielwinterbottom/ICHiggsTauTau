@@ -51,6 +51,7 @@ class MuonTagAndProbe : public ModuleBase {
   MuonTagAndProbe(std::string const& name);
   virtual ~MuonTagAndProbe();
 
+  bool hasL1MET(TreeEvent *event, std::vector<TriggerObject *> &mutau_objs, Muon* probeMuon);
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();

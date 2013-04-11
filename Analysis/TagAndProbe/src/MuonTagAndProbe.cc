@@ -1,6 +1,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface/MuonTagAndProbe.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/PileUpFunctions.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/bind.hpp"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
@@ -25,6 +26,35 @@ namespace ic {
 
   MuonTagAndProbe::~MuonTagAndProbe() {
   }
+    
+  bool MuonTagAndProbe::hasL1MET(TreeEvent *event, std::vector<TriggerObject *> &mutau_objs, Muon* probeMuon) {
+    bool hasL1MET=false;
+    if(data_)
+    {
+        std::string filter="hltL1sL1Mu7erETM26";
+        std::size_t hash = CityHash64(filter);
+        for (unsigned i = 0; i < mutau_objs.size(); ++i)
+        {
+            std::vector<std::size_t> const& labels = mutau_objs[i]->filters();
+            if (std::find(labels.begin(),labels.end(), hash) != labels.end()) hasL1MET=true;
+        }
+    }
+    else
+    {
+        ic::erase_if(mutau_objs, !boost::bind(MinPtMaxEta, _1, 8.0, 2.1));
+        std::vector<Candidate *> l1muon = event->GetPtrVec<Candidate>("l1extraMuons");
+        ic::erase_if(l1muon, !boost::bind(MinPtMaxEta, _1, 7.0, 2.1));
+        std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+        std::vector<Candidate *> mu_as_vector;
+        mu_as_vector.push_back(probeMuon);
+        bool leg1_l1_match = MatchByDR(mu_as_vector, l1muon, 0.5, false, false).size() > 0;
+        bool l1_met = l1met.at(0)->pt() > 26.;
+        hasL1MET=l1_met && leg1_l1_match;
+    }
+    
+    return hasL1MET;  
+  }
+
 
   int MuonTagAndProbe::PreAnalysis() {
     std::string dataormc;
@@ -154,10 +184,15 @@ namespace ic {
         mutau_obj_label = "triggerObjectsIsoMu17LooseTau20";
         mutau_filter = "hltL3crIsoL1sMu14erORMu16erL1f0L2f14QL3f17QL3crIsoRhoFiltered0p15";
     }
-    if(mode_==4)
+    if(mode_==4 && data_)
     {    
         mutau_obj_label = "triggerObjectsIsoMu8LooseTau20L1ETM26";
         mutau_filter = "hltL3crIsoL1sMu7Eta2p1L1f0L2f7QL3f8QL3crIsoRhoFiltered0p15";
+    }
+    if(mode_==4 && !data_)
+    {    
+        mutau_obj_label = "triggerObjectsMu8";
+        mutau_filter = "hltL3fL1sMu3L3Filtered8";
     }
     if(mode_==5)
     {    
@@ -215,7 +250,8 @@ namespace ic {
     std::vector<Muon *> & muons = event->GetPtrVec<Muon>("muonsPFlow");
     std::vector<TriggerObject *> objs;
     if(data_) objs = event->GetPtrVec<TriggerObject>(tap_obj_label);
-    std::vector<TriggerObject *> const& mutau_objs = event->GetPtrVec<TriggerObject>(mutau_obj_label);
+    //std::vector<TriggerObject *> const& mutau_objs = event->GetPtrVec<TriggerObject>(mutau_obj_label);
+    std::vector<TriggerObject *> mutau_objs = event->GetPtrVec<TriggerObject>(mutau_obj_label);
     TriggerPathPtrVec triggerPathPtrVec;
     if(data_) triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPathPtrVec" , "triggerPaths");
     EventInfo * info = event->GetPtr<EventInfo>("eventInfo");
@@ -246,7 +282,7 @@ namespace ic {
         }
     }
     else trigger=true;
-
+/*
     bool hasL1MET=false;
     
     std::string filter="hltL1sL1Mu7erETM26";
@@ -259,8 +295,13 @@ namespace ic {
             if (std::find(labels.begin(),labels.end(), hash) != labels.end()) hasL1MET=true;
         }
     }
-    else hasL1MET=true;
-    
+    else
+    {
+        std::vector<TriggerObject *> mu8_obj = objs; // Make a copy of the Mu8 Trigger objects so we can filter
+        ic::erase_if(mu8_obj, !boost::bind(MinPtMaxEta, _1, 8.0, 2.1));
+        std::vector<Candidate *> l1muon = event->GetPtrVec<Candidate>("l1extraMuons");
+    }
+  */  
     std::vector<Muon *> tag_vector; 
     std::vector<Muon *> probe_vector; 
     bool good_tag=false;
@@ -281,7 +322,7 @@ namespace ic {
             } 
             if( probe_predicate_((muons[e1])) 
                     && (!data_ || !probe_match || (data_ && IsFilterMatched((muons)[e1], objs, probe_filter_mu, 0.5)))
-                    && (!(mode_==4) || hasL1MET))
+                    && (!(mode_==4) || hasL1MET(event, mutau_objs, muons[e1])))
             {
                 probe_vector.push_back((muons)[e1]);
             }
