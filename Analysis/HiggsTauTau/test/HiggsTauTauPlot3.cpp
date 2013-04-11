@@ -172,6 +172,7 @@ int main(int argc, char* argv[]){
   bool non_mass_plot;														// In some places use alternative background estimate if true
   bool draw_ss;																	// Draw the same-sign plot instead of opposite-sign
   bool use_ztt_mc;															// Use DYJetsToTauTau for shape instead of Embedded
+  bool add_sm_signal_as_bg;										  // Add the 125 GeV SM signal shapes
 
   // Plotting options
   string x_axis_label;													// Label for the X-axis
@@ -260,6 +261,7 @@ int main(int argc, char* argv[]){
     ("make_datacard",       po::value<bool>(&make_datacard)->default_value(false))
     ("swap_inclusive",      po::value<bool>(&swap_inclusive)->default_value(false))
     ("ztt_by_decay_mode",   po::value<bool>(&ztt_by_decay_mode)->default_value(false))
+    ("add_sm_signal_as_bg", po::value<bool>(&add_sm_signal_as_bg)->default_value(false))
     ("tau_scale_mode",      po::value<unsigned>(&tau_scale_mode)->default_value(0))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
     ("shift_tscale",        po::value<bool>(&shift_tscale)->default_value(false))
@@ -440,6 +442,11 @@ int main(int argc, char* argv[]){
       files.push_back("SUSYGluGluToHToTauTau_M-"+mssm_signal_masses[i]);
       files.push_back("SUSYBBHToTauTau_M-"+mssm_signal_masses[i]);
     }
+  }
+  if (add_sm_signal_as_bg) {
+    files.push_back("GluGluToHToTauTau_M-125");
+    files.push_back("VBF_HToTauTau_M-125");
+    files.push_back("WH_ZH_TTH_HToTauTau_M-125");
   }
 
   // Now build a list of categories to load plots from
@@ -1346,6 +1353,23 @@ int main(int argc, char* argv[]){
         if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(bbH, boost_high_clean);
         bbH->Write();
       }
+    }
+
+    if (add_sm_signal_as_bg) {
+      TH1F *VH_SM125 = (TH1F*)(plots[Token("WH_ZH_TTH_HToTauTau_M-125",cat,os_sel)].hist_ptr()->Clone());
+      VH_SM125->SetName(("VH_SM125"+append).c_str());
+      VH_SM125->SetTitle(("VH_SM125"+append).c_str());
+      VH_SM125->Write();
+
+      TH1F *ggH_SM125 = (TH1F*)(plots[Token("GluGluToHToTauTau_M-125",cat,os_sel)].hist_ptr()->Clone());
+      ggH_SM125->SetName(("ggH_SM125"+append).c_str());
+      ggH_SM125->SetTitle(("ggH_SM125"+append).c_str());
+      ggH_SM125->Write();
+
+      TH1F *qqH_SM125 = (TH1F*)(plots[Token("VBF_HToTauTau_M-125",cat,os_sel)].hist_ptr()->Clone());
+      qqH_SM125->SetName(("qqH_SM125"+append).c_str());
+      qqH_SM125->SetTitle(("qqH_SM125"+append).c_str());
+      qqH_SM125->Write();
     }
 
     TH1F *dc_ztt = (TH1F*)ztt_hist->Clone();

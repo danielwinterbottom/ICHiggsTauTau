@@ -78,16 +78,16 @@ folder = options.input
 COM = options.energy
 
 ANA = 'sm'
+if options.svfit_plot: svfit_plot=options.svfit_plot
+if options.svfit_vbf_plot: svfit_vbf_plot=options.svfit_vbf_plot
+if options.mvis_plot: mvis_plot=options.mvis_plot
+if options.mvis_vbf_plot: mvis_vbf_plot=options.mvis_vbf_plot
 if options.mssm:
   svfit_plot="m_sv_mssm_fine"
   svfit_vbf_plot="m_sv_mssm"
   mvis_plot="m_vis_mssm_fine"
   mvis_vbf_plot="m_vis_mssm"
   ANA = 'mssm'
-svfit_plot=options.svfit_plot
-svfit_vbf_plot=options.svfit_vbf_plot
-mvis_plot=options.mvis_plot
-mvis_vbf_plot=options.mvis_vbf_plot
 
 
 
