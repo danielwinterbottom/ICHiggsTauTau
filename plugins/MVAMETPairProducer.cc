@@ -1,5 +1,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/MVAMETPairProducer.hh"
+
 #include "FWCore/Utilities/interface/Exception.h"
+
 #include "RecoMET/METAlgorithms/interface/METAlgo.h" 
 #include "RecoMET/METAlgorithms/interface/PFSpecificAlgo.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
@@ -20,7 +22,6 @@
 #include "TLorentzVector.h"
 
 #include <boost/functional/hash.hpp>
-
 
 #include <TMatrixD.h>
 
@@ -70,8 +71,7 @@ namespace
 }
 
 MVAMETPairProducer::MVAMETPairProducer(const edm::ParameterSet& cfg) 
-  : mvaMEtAlgo_(cfg)
-  ,mvaJetIdAlgo_(cfg)
+   : mvaMEtAlgo_(cfg),mvaJetIdAlgo_(cfg)
 {
   srcCorrJets_     = cfg.getParameter<edm::InputTag>("srcCorrJets");
   srcUncorrJets_   = cfg.getParameter<edm::InputTag>("srcUncorrJets");
@@ -96,12 +96,12 @@ MVAMETPairProducer::MVAMETPairProducer(const edm::ParameterSet& cfg)
   srcRho_          = cfg.getParameter<edm::InputTag>("srcRho");
 
   globalThreshold_ = cfg.getParameter<double>("globalThreshold");
-  minCorrJetPt_    = cfg.getParameter<double>("minCorrJetPt");
 
+  minCorrJetPt_    = cfg.getParameter<double>     ("minCorrJetPt");
   useType1_        = cfg.getParameter<bool>       ("useType1");
   correctorLabel_  = cfg.getParameter<std::string>("corrector");
-
-
+  isOld42_         = cfg.getParameter<bool>       ("useOld42");
+  
   verbosity_ = ( cfg.exists("verbosity") ) ?
     cfg.getParameter<int>("verbosity") : 0;
 
@@ -115,28 +115,23 @@ MVAMETPairProducer::MVAMETPairProducer(const edm::ParameterSet& cfg)
     std::cout << " srcRho = " << srcVertices_.label() << std::endl;
   }
 
-
-
   produces<reco::PFMETCollection>();
   produces<std::vector<std::size_t> >("MVAMetId");
-
 }
 
-MVAMETPairProducer::~MVAMETPairProducer()
-{
-}
+MVAMETPairProducer::~MVAMETPairProducer(){}
 
 void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es) 
 { 
   // get jets (corrected and uncorrected)
   edm::Handle<reco::PFJetCollection> corrJets;
   evt.getByLabel(srcCorrJets_, corrJets);
-  
-  const JetCorrector* corrector = 0;
-  if(useType1_) corrector = JetCorrector::getJetCorrector (correctorLabel_, es);
 
   edm::Handle<reco::PFJetCollection> uncorrJets;
   evt.getByLabel(srcUncorrJets_, uncorrJets);
+
+  const JetCorrector* corrector = 0;
+  if(useType1_) corrector = JetCorrector::getJetCorrector (correctorLabel_, es);
 
   // get PFCandidates
   edm::Handle<reco::PFCandidateCollection> pfCandidates;
@@ -145,6 +140,14 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
   typedef edm::View<reco::Candidate> CandidateView;
   edm::Handle<CandidateView> pfCandidates_view;
   evt.getByLabel(srcPFCandidates_, pfCandidates_view);
+
+  // get vertices
+  edm::Handle<reco::VertexCollection> vertices;
+  evt.getByLabel(srcVertices_, vertices); 
+  // take vertex with highest sum(trackPt) as the vertex of the "hard scatter" interaction
+  // (= first entry in vertex collection)
+  const reco::Vertex* hardScatterVertex = ( vertices->size() >= 1 ) ?
+    &(vertices->front()) : 0;
 
   // get leptons
   // (excluded from sum over PFCandidates when computing hadronic recoil)
@@ -176,8 +179,8 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
       mvaMEtUtilities::leptonInfo pLeptonInfo2;
       pLeptonInfo1.p4_          = leg1_filtered[i]->p4();
       pLeptonInfo2.p4_          = leg2_filtered[j]->p4();
-      pLeptonInfo1.chargedFrac_ = chargedFrac(leg1_filtered[i]);
-      pLeptonInfo2.chargedFrac_ = chargedFrac(leg2_filtered[j]);
+      pLeptonInfo1.chargedFrac_ = chargedFrac(leg1_filtered[i],*pfCandidates,hardScatterVertex);
+      pLeptonInfo2.chargedFrac_ = chargedFrac(leg2_filtered[j],*pfCandidates,hardScatterVertex);
       leptonInfo.back().push_back(pLeptonInfo1); 
       leptonInfo.back().push_back(pLeptonInfo2); 
       (lId.back())++;
@@ -189,17 +192,9 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
     }
   }
 
-  // get vertices
-  edm::Handle<reco::VertexCollection> vertices;
-  evt.getByLabel(srcVertices_, vertices); 
-  // take vertex with highest sum(trackPt) as the vertex of the "hard scatter" interaction
-  // (= first entry in vertex collection)
-  const reco::Vertex* hardScatterVertex = ( vertices->size() >= 1 ) ?
-    &(vertices->front()) : 0;
-
   // get average energy density in the event
-  edm::Handle<double> rho;
-  evt.getByLabel(srcRho_, rho);
+  // edm::Handle<double> rho;
+  // evt.getByLabel(srcRho_, rho);
 
   // reconstruct "standard" particle-flow missing Et
   CommonMETData pfMEt_data;
@@ -215,16 +210,19 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
 
   for (unsigned i = 0; i < leptonInfo.size(); ++i) {
   // compute MVA based MET and estimate of its uncertainty
-  std::vector<mvaMEtUtilities::JetInfo>    jetInfo         = computeJetInfo(*uncorrJets, *corrJets, *vertices, hardScatterVertex, *rho,*corrector,evt,es,leptonInfo[i],pfCandidateInfo);
+  std::vector<mvaMEtUtilities::JetInfo>    jetInfo         = computeJetInfo(*uncorrJets, *corrJets, *vertices, hardScatterVertex, *corrector,evt,es,leptonInfo[i],pfCandidateInfo);
+
   mvaMEtAlgo_.setInput(leptonInfo[i], jetInfo, pfCandidateInfo, vertexInfo);
+  //mvaMEtAlgo_.setHasPhotons(false);
   mvaMEtAlgo_.evaluateMVA();
 
-  //std::cout << "MVA MET: " << i << std::endl;
-  //for (unsigned j = 0; j < leptonInfo[i].size(); ++j) {
-  //  std::cout << leptonInfo[i][j].p4_.pt() << "  ";
-  //}
-  //std::cout << std::endl;
-  //std::cout << "--: " << mvaMEtAlgo_.getMEt().pt() << std::endl;
+  if (verbosity_) {
+    std::cout << "MVA MET: " << i << std::endl;
+    for (unsigned j = 0; j < leptonInfo[i].size(); ++j) {
+     std::cout << leptonInfo[i][j].p4_.pt() << "  ";
+    }
+    std::cout << std::endl;
+  }
 
   pfMEt.setP4(mvaMEtAlgo_.getMEt());
   pfMEt.setSignificanceMatrix(mvaMEtAlgo_.getMEtCov());
@@ -268,17 +266,17 @@ std::vector<mvaMEtUtilities::JetInfo> MVAMETPairProducer::computeJetInfo(const r
                        const reco::PFJetCollection& corrJets, 
                        const reco::VertexCollection& vertices,
                        const reco::Vertex* hardScatterVertex,
-                       double rho,const JetCorrector &iCorrector,edm::Event &iEvent,const edm::EventSetup &iSetup,
+                       const JetCorrector &iCorrector,edm::Event &iEvent,const edm::EventSetup &iSetup,
                        std::vector<mvaMEtUtilities::leptonInfo> &iLeptons,std::vector<mvaMEtUtilities::pfCandInfo> &iCands)
 {
   const L1FastjetCorrector* lCorrector = dynamic_cast<const L1FastjetCorrector*>(&iCorrector);
   std::vector<mvaMEtUtilities::JetInfo> retVal;
   for ( reco::PFJetCollection::const_iterator uncorrJet = uncorrJets.begin();
-  uncorrJet != uncorrJets.end(); ++uncorrJet ) {
+    uncorrJet != uncorrJets.end(); ++uncorrJet ) {
     //int pIndex = uncorrJet-uncorrJets.begin();
     //edm::RefToBase<reco::Jet> jetRef(edm::Ref<PFJetCollection>(&uncorrJets,pIndex));
     for ( reco::PFJetCollection::const_iterator corrJet = corrJets.begin();
-    corrJet != corrJets.end(); ++corrJet ) {
+      corrJet != corrJets.end(); ++corrJet ) {
       // match corrected and uncorrected jets
       if ( uncorrJet->jetArea() != corrJet->jetArea() ) continue;
       if ( deltaR(corrJet->p4(),uncorrJet->p4()) > 0.01 ) continue;
@@ -297,29 +295,29 @@ std::vector<mvaMEtUtilities::JetInfo> MVAMETPairProducer::computeJetInfo(const r
       jetInfo.p4_ = corrJet->p4();
       double lType1Corr = 0;
       if(useType1_) { //Compute the type 1 correction ===> This code is crap 
-  double pCorr = lCorrector->correction(*uncorrJet,iEvent,iSetup);
-  lType1Corr = (corrJet->pt()-pCorr*uncorrJet->pt());
-  TLorentzVector pVec; pVec.SetPtEtaPhiM(lType1Corr,0,corrJet->phi(),0); 
-  reco::Candidate::LorentzVector pType1Corr; pType1Corr.SetCoordinates(pVec.Px(),pVec.Py(),pVec.Pz(),pVec.E());
-  //Filter to leptons
-  bool pOnLepton = false;
-  for(unsigned int i0 = 0; i0 < iLeptons.size(); i0++) if(deltaR(iLeptons[i0].p4_,corrJet->p4()) < 0.5) pOnLepton = true;
-  //Add it to PF Collection
-  if(corrJet->pt() > 10 && !pOnLepton) {
-    mvaMEtUtilities::pfCandInfo pfCandidateInfo;
-    pfCandidateInfo.p4_ = pType1Corr;
-    pfCandidateInfo.dZ_ = -999;
-    iCands.push_back(pfCandidateInfo);
-  }
-  //Scale
-  lType1Corr /=corrJet->pt();
+      double pCorr = lCorrector->correction(*uncorrJet,iEvent,iSetup);
+      lType1Corr = (corrJet->pt()-pCorr*uncorrJet->pt());
+      TLorentzVector pVec; pVec.SetPtEtaPhiM(lType1Corr,0,corrJet->phi(),0); 
+      reco::Candidate::LorentzVector pType1Corr; pType1Corr.SetCoordinates(pVec.Px(),pVec.Py(),pVec.Pz(),pVec.E());
+      //Filter to leptons
+      bool pOnLepton = false;
+      for(unsigned int i0 = 0; i0 < iLeptons.size(); i0++) if(deltaR(iLeptons[i0].p4_,corrJet->p4()) < 0.5) pOnLepton = true;
+      //Add it to PF Collection
+      if(corrJet->pt() > 10 && !pOnLepton) {
+        mvaMEtUtilities::pfCandInfo pfCandidateInfo;
+        pfCandidateInfo.p4_ = pType1Corr;
+        pfCandidateInfo.dZ_ = -999;
+        iCands.push_back(pfCandidateInfo);
       }
+      //Scale
+      lType1Corr /=corrJet->pt();
+        }
       
       // check that jet Pt used to compute MVA based jet id. is above threshold
       if ( !(jetInfo.p4_.pt() > minCorrJetPt_) ) continue;
       jetInfo.mva_ = mvaJetIdAlgo_.computeIdVariables(&(*corrJet), jetEnCorrFactor, hardScatterVertex, vertices, true).mva();
       jetInfo.neutralEnFrac_ = (uncorrJet->neutralEmEnergy() + uncorrJet->neutralHadronEnergy())/uncorrJet->energy();
-      if(fabs(corrJet->p4().eta()) > 2.5) jetInfo.neutralEnFrac_ = 1.; //===> This is a 53X fix only!
+      if(fabs(corrJet->p4().eta()) > 2.5 && !isOld42_) jetInfo.neutralEnFrac_ = 1.; //===> This is a 53X fix only!
       if(useType1_) jetInfo.neutralEnFrac_ += lType1Corr;
       retVal.push_back(jetInfo);
       break;
@@ -360,25 +358,22 @@ std::vector<reco::Vertex::Point> MVAMETPairProducer::computeVertexInfo(const rec
   }
   return retVal;
 }
-double MVAMETPairProducer::chargedFrac(const reco::Candidate *iCand) { 
+double MVAMETPairProducer::chargedFrac(const reco::Candidate *iCand,
+                  const reco::PFCandidateCollection& pfCandidates,const reco::Vertex* hardScatterVertex) { 
   if(iCand->isMuon())     {
-    //const reco::Muon *lMuon = 0; 
-    //lMuon = dynamic_cast<const reco::Muon*>(iCand);//} 
-    //std::cout << " ---> Iso Mu  : " << lMuon->pfIsolationR03().sumChargedHadronPt << " - " << lMuon->pfIsolationR03().sumPUPt << std::endl;
     return 1;
   }
   if(iCand->isElectron())   {
-    //const reco::GsfElectron *lElectron = 0; 
-    //lElectron = dynamic_cast<const reco::GsfElectron*>(iCand);//} 
-    //std::cout << " ---> Iso  : " << lElectron->pfIsolationVariables().neutralHadronIso << " -- " << lElectron->pfIsolationVariables().neutralHadronIso  << " -- " << lElectron->pfIsolationVariables().chargedHadronIso  << " -- " << lElectron->isolationVariables04().tkSumPt << " -- " << lElectron->pt() << " -- " << lElectron->eta() << std::endl;
     return 1.;
   }
+  if(iCand->isPhoton()  )   {return chargedFracInCone(iCand, pfCandidates,hardScatterVertex);}
+
   reco::PFCandidate const* pfTest = 0;
   pfTest = dynamic_cast<reco::PFCandidate const*>(iCand);
   if (pfTest != 0) {
     if (pfTest->muonRef().isNonnull()) return 1;
   }
-  if(iCand->isPhoton()  )   return 0.;
+
   double lPtTot = 0; double lPtCharged = 0;
   const reco::PFTau *lPFTau = 0; 
   lPFTau = dynamic_cast<const reco::PFTau*>(iCand);//} 
@@ -392,10 +387,12 @@ double MVAMETPairProducer::chargedFrac(const reco::Candidate *iCand) {
   else { 
     const pat::Tau *lPatPFTau = 0; 
     lPatPFTau = dynamic_cast<const pat::Tau*>(iCand);//} 
-    for (UInt_t i0 = 0; i0 < lPatPFTau->signalPFCands().size(); i0++) {
-      lPtTot += (lPatPFTau->signalPFCands())[i0]->pt(); 
-      if((lPatPFTau->signalPFCands())[i0]->charge() == 0) continue;
-      lPtCharged += (lPatPFTau->signalPFCands())[i0]->pt(); 
+    if(lPatPFTau != 0) { 
+      for (UInt_t i0 = 0; i0 < lPatPFTau->signalPFCands().size(); i0++) {
+        lPtTot += (lPatPFTau->signalPFCands())[i0]->pt(); 
+        if((lPatPFTau->signalPFCands())[i0]->charge() == 0) continue;
+        lPtCharged += (lPatPFTau->signalPFCands())[i0]->pt(); 
+      }
     }
   }
   if(lPtTot == 0) lPtTot = 1.;
@@ -417,6 +414,27 @@ bool MVAMETPairProducer::passPFLooseId(const PFJet *iJet) {
   if(iJet->chargedEmEnergy()/iJet->energy() >  0.99  && fabs(iJet->eta()) < 2.4 ) return false;
   if(iJet->chargedMultiplicity()            < 1      && fabs(iJet->eta()) < 2.4 ) return false;
   return true;
+}
+
+double MVAMETPairProducer::chargedFracInCone(const reco::Candidate *iCand,
+             const reco::PFCandidateCollection& pfCandidates,
+             const reco::Vertex* hardScatterVertex,double iDRMax)
+{
+
+  reco::Candidate::LorentzVector lVis(0,0,0,0);
+  for ( reco::PFCandidateCollection::const_iterator pfCandidate = pfCandidates.begin();
+  pfCandidate != pfCandidates.end(); ++pfCandidate ) {
+    if(deltaR(iCand->p4(),pfCandidate->p4()) > iDRMax)  continue;
+    double dZ = -999.; // PH: If no vertex is reconstructed in the event
+                       //     or PFCandidate has no track, set dZ to -999
+    if ( hardScatterVertex ) {
+      if      ( pfCandidate->trackRef().isNonnull()    ) dZ = fabs(pfCandidate->trackRef()->dz(hardScatterVertex->position()));
+      else if ( pfCandidate->gsfTrackRef().isNonnull() ) dZ = fabs(pfCandidate->gsfTrackRef()->dz(hardScatterVertex->position()));
+    }
+    if(fabs(dZ) > 0.1) continue; 
+    lVis += pfCandidate->p4();
+  }
+  return lVis.pt()/iCand->pt();
 }
 
 #include "FWCore/Framework/interface/MakerMacros.h"
