@@ -62,13 +62,14 @@ for METCUT in 0 70
 	
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Apr04/MC/
-	for FILELIST in `ls filelists/$QUEUEDIR/Apr04_MC_*`
+	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Mar20/MC/
+	for FILELIST in `ls filelists/Mar20/$QUEUEDIR/Mar20_MC_*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
+	  echo $FILELIST
 	  echo $FILELIST > tmp.txt
-	  sed "s/filelists\/$QUEUEDIR\/Apr04_MC_//" tmp.txt > tmp2.txt
+	  sed "s/filelists\/Mar20\/$QUEUEDIR\/Mar20_MC_//" tmp.txt > tmp2.txt
 	  
 	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
 	  
@@ -84,13 +85,13 @@ for METCUT in 0 70
 	
 #Process bkg common with HiggsTautau
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Feb20/MC_53X/
-	for FILELIST in `ls filelists/$QUEUEDIR/Feb20_*`
+	for FILELIST in `ls filelists/Mar20/$QUEUEDIR/Feb20_*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
 	  echo $FILELIST > tmp.txt
 	  
-	  sed "s/filelists\/$QUEUEDIR\/Feb20_MC_53X_//" tmp.txt > tmp2.txt
+	  sed "s/filelists\/Mar20\/$QUEUEDIR\/Feb20_MC_53X_//" tmp.txt > tmp2.txt
 	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
 	  
 	  echo "JOB name = $JOB"
