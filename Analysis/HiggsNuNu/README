@@ -21,6 +21,13 @@ ln -s ../../HiggsTauTau/data/json/ .
 ln -s ../../HiggsTauTau/data/pileup/ .
 ln -s ../../HiggsTauTau/data/met_laser_filters/ .
 
+--------------------------------------------
+## Also we need a symbolic link to the correct params file
+--------------------------------------------
+cd scripts
+ln -s ../filelists/CURRENTSAMPLE/ParamsCURRENTSAMPLE Params.dat
+
+
 ------------------------------------------------------
 ## to run the ntuple->root file with histograms steps:
 ------------------------------------------------------
