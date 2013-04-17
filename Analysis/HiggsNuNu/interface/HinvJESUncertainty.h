@@ -32,9 +32,10 @@ namespace ic {
     TH2F* JESdowncorrfac;
     TH2F* JESusedcorrfac;
     TH1F* JESmetdiff;
-    TH1F* JESwhichran;
+    TH1F* JESjetphidiff;
+    TH1F* JESjetetadiff;
+    TH1F* JESisordersame;
     
-
   public:
     HinvJESUncertainty(std::string const& name);
     virtual ~HinvJESUncertainty();    
@@ -80,7 +81,9 @@ namespace ic {
       JESdowncorrfac = dir.make<TH2F>("JESdowncorrfac","JESdowncorrfac",1000,0.,1000.,1000,-0.3,0.3);
       JESusedcorrfac = dir.make<TH2F>("JESusedcorrfac","JESusedcorrfac",1000,0.,1000.,1000,-0.3,0.3);
       JESmetdiff = dir.make<TH1F>("JESmetdiff","JESmetdiff",1000,-10.,10.);
-      JESwhichran = dir.make<TH1F>("JESwhichran","JESwhichran",1000,-10.,10.);
+      JESjetphidiff = dir.make<TH1F>("JESjetphidiff","JESjetphidiff",1000,-10.,10.);
+      JESjetetadiff = dir.make<TH1F>("JESjetetadiff","JESjetetadiff",1000,-10.,10.);
+      JESisordersame = dir.make<TH1F>("JESisordersame","JESisordersame",40,-10.,10.);
       std::cout<<"Made plot dir"<<std::endl;
       return 0;
     }
@@ -100,7 +103,16 @@ namespace ic {
       double newmetpx = metpx;
       double newmetpy = metpy;
       double newmetet = metet;
-      
+
+      double oldjet1pt = -1.;
+      double oldjet2pt = -1.;
+      int oldjet1index = -1;
+      int oldjet2index = -1;
+      double newjet1pt = -1.;
+      double newjet2pt = -1.;
+      int newjet1index = -1;
+      int newjet2index = -1;
+
       for (unsigned i = 0; i < vec.size(); ++i) {//loop over the collection
 	//Get jet information
 	double jetpx = vec[i]->vector().px();
@@ -109,7 +121,16 @@ namespace ic {
 	double jete = vec[i]->vector().E();
 	double jetpt = vec[i]->pt();
 	double jeteta = vec[i]->eta();
-	
+	double jetphi = vec[i]->phi();
+
+	if(jetpt > oldjet1pt){
+	  oldjet2index=oldjet1index;
+	  oldjet1index=i;
+	}
+	else if(jetpt > oldjet2pt) {
+	  oldjet2index=i;
+	}
+
 	//Get JES uncertainty
 	total->setJetPt(jetpt);
 	total->setJetEta(jeteta);
@@ -125,7 +146,6 @@ namespace ic {
 	if(dojessyst_){//if not central value correct by the JES uncertainty
 	  if(upordown_==true){//upper uncertainty
 	    JESusedcorrfac->Fill(jetpt,upuncert); //Fill histogram of uncertainty against pt
-	    JESwhichran->Fill(1.);
 	    //Correct jet
 	    double newjetpx = jetpx*(1+upuncert);
 	    double newjetpy = jetpy*(1+upuncert);
@@ -134,6 +154,22 @@ namespace ic {
 	    ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  newjet(newjetpx,newjetpy,newjetpz,newjete);
 	    vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
 	    
+	    //Check eta doesn't change
+	    double newjeteta = vec[i]->eta();
+	    double newjetphi = vec[i]->phi();
+	    JESjetphidiff->Fill(newjetphi-jetphi);
+	    JESjetetadiff->Fill(newjeteta-jeteta);
+
+	    //check if order of jets is same
+	    double newjetpt=vec[i]->pt();
+	    if(newjetpt > newjet1pt){
+	      newjet2index=newjet1index;
+	      newjet1index=i;
+	    }
+	    else if(newjetpt > newjet2pt) {
+	      newjet2index=i;
+	    }
+	    
 	    //Correct met
 	    newmetpx = metpx - (jetpx*upuncert);
 	    newmetpy = metpy - (jetpy*upuncert);
@@ -141,7 +177,6 @@ namespace ic {
 	  }
 	  else if(upordown_==false){//lower uncertainty
 	    JESusedcorrfac->Fill(jetpt,downuncert); //Fill histogram of uncertainty against pt
-	    JESwhichran->Fill(-1.);
 	    //Correct jet
 	    double newjetpx = jetpx*(1-downuncert);
 	    double newjetpy = jetpy*(1-downuncert);
@@ -149,23 +184,65 @@ namespace ic {
 	    double newjete = jete*(1-downuncert);
 	    ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > newjet(newjetpx,newjetpy,newjetpz,newjete);
 	    vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
-	    
+
+	    //check eta doesn't change
+	    double newjeteta = vec[i]->eta();
+	    double newjetphi = vec[i]->phi();
+	    JESjetphidiff->Fill(newjetphi-jetphi);
+	    JESjetetadiff->Fill(newjeteta-jeteta);
+
+	    //check if order of jets is same
+	    double newjetpt=vec[i]->pt();
+	    if(newjetpt > newjet1pt){
+	      newjet2index=newjet1index;
+	      newjet1index=i;
+	    }
+	    else if(newjetpt > newjet2pt) {
+	      newjet2index=i;
+	    }
+
 	    //Correct met
 	    newmetpx = newmetpx + (jetpx*downuncert);
 	    newmetpy = newmetpy + (jetpy*downuncert);	    
 	  }
 	}
-	else JESwhichran->Fill(0.);
+	else{//Central value
+	}
       }
+
+      //Set met in event to corrected met
       newmetet=sqrt(newmetpx*newmetpx+newmetpy*newmetpy);
-      JESmetdiff->Fill(newmetet-metet);
-      
       ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > new_met(newmetpx,newmetpy,0,newmetet);
       met->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(new_met));
       
+      JESmetdiff->Fill(newmetet-metet);
+
+      //Check if first two jets have changed
+      
+      if(oldjet1index==newjet1index){
+	if(oldjet2index==newjet2index){
+	  JESisordersame->Fill(1.);
+	  //numsame++;
+	}
+      }
+      else{
+	if(oldjet1index==newjet2index){
+	  if(oldjet2index==newjet1index){
+	    JESisordersame->Fill(-1.);
+	    //numswap++;
+	  }
+	}
+	if(oldjet1index!=newjet2index){
+	  if(oldjet2index!=newjet1index){
+	    JESisordersame->Fill(2.);
+	    //numdiff++;
+	  }
+	}
+      }
       return 0;
     }
-    
+
+
     template <class T,class M>
       int HinvJESUncertainty<T,M>::PostAnalysis() {
       return 0;
