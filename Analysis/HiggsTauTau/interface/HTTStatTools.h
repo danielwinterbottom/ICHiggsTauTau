@@ -23,11 +23,8 @@ namespace ic {
 		This "transformation" TH1F should then be scaled by a factor that takes us from the
 		nuisance central rate to the process central rate.  The transformation is then applied
 		to the process shape.  By construction the relative change in rate should be that 
-		from simply integrating the post and pre-transformed shapes in the nuisance: to be checked
+		from simply integrating the post and pre-transformed shapes in the nuisance.
 		We must finally switch the nuisance shapes for the post-fit versions. 
-
-		Bin-wise uncertainty with shapes.  Taken as average fractional on bin yield, 
-		should be simple enough.
 	*/
 
 struct Pull {

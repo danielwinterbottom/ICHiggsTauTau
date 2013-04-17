@@ -207,10 +207,9 @@ namespace ic {
 
 
 	double HTTSetup::GetUncertainty() {
-		// double total = this->GetRate();
 		std::set<std::string> nuisances = this->GetNuisanceSet();
 		std::vector<double> uncert_vec;
-		for (auto& nu : nuisances) {
+		for (auto & nu : nuisances) {
 			double dx = 0;
 			for (unsigned i = 0; i < params_.size(); ++i) {
 				if (params_[i].nuisance != nu) continue;
@@ -418,9 +417,9 @@ namespace ic {
 		}
 		for (unsigned i = 0; i < keys.size(); ++i) {
 			double signal_yield = this->key_match(keys[i]).signals().GetRate();
-			std::cout << "Signal rate: " << signal_yield << std::endl;
+			// std::cout << "Signal rate: " << signal_yield << std::endl;
 			double backgr_yield = this->key_match(keys[i]).backgrounds().GetRate();
-			std::cout << "Background rate: " << backgr_yield << std::endl;
+			// std::cout << "Background rate: " << backgr_yield << std::endl;
 			double weight = signal_yield / backgr_yield;
 			for (unsigned j = 0; j < obs_.size(); ++j) {
 				if (obs_[j].GetKey() == keys[i]) {
@@ -455,7 +454,6 @@ namespace ic {
 
 
 	int HTTSetup::ParseDatacard(std::string const& filename) {
-		// Assume filename is of the form htt_$CHANNEL.inputs-$ANALYSIS-$ERA.root
 		std::vector<std::string> as_vec;
 		boost::split(as_vec, filename, boost::is_any_of("/"));
 		if (as_vec.size() > 0) {
@@ -672,7 +670,6 @@ namespace ic {
 					params_.back().type = words[i][1];
 					params_.back().value = boost::lexical_cast<double>(words[i][p]);
 					params_.back().mass = mass;
-
 				}
 			}
 		}

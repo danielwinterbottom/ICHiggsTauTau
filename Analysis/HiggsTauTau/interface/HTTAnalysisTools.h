@@ -83,10 +83,13 @@ namespace ic {
   class HTTAnalysis {
 
     public:
-      HTTAnalysis(ic::channel ch, unsigned bkg_method, bool is_2012, int verbosity);
+      HTTAnalysis(ic::channel ch, std::string cat, std::string var, unsigned bkg_method, bool is_2012, int verbosity);
       void ParseParamFile(std::string const& file);
       void LoadHistograms();
       void NormaliseSamples();
+      void AnalyseData();
+      void AnalyseTop();
+      void AnalyseDiboson();
       inline Sample & Get(std::string file, std::string category, std::string selection) {
         auto it = input_shapes_.find(file+"_"+category+"_"+selection);
         if (it != input_shapes_.end()) {
@@ -104,6 +107,11 @@ namespace ic {
       unsigned verbosity_;
       double lumi_;
       ic::channel ch_;
+      std::string cat_;
+      std::string os_sel_;
+      std::string ss_sel_;
+      std::string os_con_;
+      std::string ss_con_;
       unsigned method_;
       bool is_2012_;
       std::string yr_;

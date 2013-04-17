@@ -17,14 +17,15 @@
 
 namespace ic {
 
-  HTTAnalysis::HTTAnalysis(ic::channel ch, unsigned bkg_method, bool is_2012, int verbosity) :
+  HTTAnalysis::HTTAnalysis(ic::channel ch, std::string cat, std::string var, unsigned bkg_method, bool is_2012, int verbosity) :
+      variable_(var),
       verbosity_(0),
       ch_(channel::et),
+      cat_(cat),
       method_(8),
       is_2012_(is_2012) {
 
     yr_ = is_2012_ ? "2012" : "2011";
-    
     // Define some sensible defaults
     input_files_ = {
       "Data",
@@ -66,7 +67,7 @@ namespace ic {
       });
     }
 
-    input_cats_ = {"inclusive"};
+    input_cats_ = {"inclusive",cat_};
     input_sels_ = {"os_sel", "ss_sel"};
     if (ch_ != channel::em) input_sels_.insert({"os_con","ss_con"});
 
@@ -146,78 +147,25 @@ namespace ic {
     }
   }
 
+  void HTTAnalysis::AnalyseData() {
+    // TH1F *data = this->Get("Data", cat_, os_sel_).shape()
+    return;
+  }
+
+  void HTTAnalysis::AnalyseTop() {
+
+  }
+
+  void HTTAnalysis::AnalyseDiboson() {
+
+  }
+
 
 
 
 
 
 }
-
-
-
-
-
-// namespace po = boost::program_options;
-
-// using namespace std;
-// using namespace ic;
-
-// string Token(string const& file, string const& category, string const& selection) {
-// 	return (file+"_"+category+"_"+selection);
-// }
-
-
-// double Integral(TH1F const* hist) {
-//   return hist->Integral(0, hist->GetNbinsX() + 1);
-// }
-
-// double Error(TH1F const* hist) {
-//   double err = 0.0;
-//   hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
-//   return err;
-// }
-
-// void Smooth(TH1F* h) {
-//   double yield =  h->Integral();
-//   for(int i = 0; i < h->GetNbinsX()+1; i++) h->SetBinContent(i,h->GetBinContent(i)/h->GetBinWidth(i));
-//   h->Smooth();
-//   for(int i = 0; i < h->GetNbinsX()+1; i++) h->SetBinContent(i,h->GetBinContent(i)*h->GetBinWidth(i));
-//   h->Scale(yield/h->Integral()); 
-// }
-
-// void FixEmptyBins(TH1F *hist, bool is_qcd, bool verbose) {
-//   if (verbose) cout << "Running FixEmptyBins with QCD Mode: " << is_qcd << endl;
-//   unsigned bins = hist->GetNbinsX();
-//   unsigned first_populated = 0;
-//   unsigned last_populated = 0;
-//   for (unsigned i = 1; i <= bins; ++i) {
-//     if (hist->GetBinContent(i) > 0. && first_populated == 0) first_populated = i;
-//     if (hist->GetBinContent(bins-(i-1)) > 0. && last_populated == 0) last_populated = bins-(i-1);
-//   }
-//   if (last_populated <= first_populated) {
-//     if (verbose) std::cout << "Error: Cannot correct this distribution!" << std::endl;
-//     return;
-//   }
-//   if (verbose) std::cout << "First populated bin: " << first_populated << std::endl;
-//   if (verbose) std::cout << "Last populated bin: " << last_populated << std::endl;
-//   double av_weight = ( hist->Integral() / double(hist->GetEntries()));
-//   if (!is_qcd) {
-//     if (verbose) std::cout << "Integral: " << hist->Integral() << std::endl;
-//     if (verbose) std::cout << "Entries: " << hist->GetEntries() << std::endl;
-//     if (verbose) std::cout << "Av. Weight: " << av_weight << std::endl;
-//   }
-//   for (unsigned i = first_populated+1; i < last_populated; ++i) {
-//     if (hist->GetBinContent(i) == 0.) {
-//       if (verbose) std::cout << "Bin " << i << " is empty!" << std::endl;
-//       if (is_qcd) {
-//         hist->SetBinError(i, 1.0);
-//       } else {
-//         if (verbose) std::cout << "Set weight to 1.0 * av_weight = " << (1.0 * av_weight) << std::endl;
-//         hist->SetBinError(i, av_weight);    
-//       }
-//     }
-//   }
-// }
 
 // double WSideband(map<string, ic::TH1PlotElement> & plots, vector<string> vv_samples, double embed_norm, string const& cat, string const& sel, bool verbose) {
 // 	double yield = Integral(plots[Token("Data",cat,sel)].hist_ptr());
@@ -238,56 +186,6 @@ namespace ic {
 // 	if (verbose) std::cout << "=> Control W: " << yield << std::endl;
 // 	return yield;
 // };
-
-// void CleanBinsUpTo(TH1F *hist, double max) {
-//   unsigned bins = hist->GetNbinsX();
-//   for (unsigned i = 1; i <= bins; ++i) {
-//     if (hist->GetBinCenter(i) < max) {
-//       hist->SetBinContent(i, 0.0);
-//       hist->SetBinError(i, 0.0);
-//     }
-//   }
-// }
-
-// void SetStyle(ic::TH1PlotElement & ele, unsigned color) {
-//   //ele.set_marker_color(color);
-//   //ele.set_line_color(color);
-//   ele.set_fill_color(color);
-//   ele.set_fill_style(1001);
-//   ele.set_draw_fill(true);
-//   ele.set_draw_marker(false);
-//   ele.set_draw_line(false);
-//   ele.set_line_width(3);
-//   ele.set_draw_stat_error_y(false);
-//   ele.set_in_stack(true);
-//   return;
-// }
-
-// void SetDataStyle(ic::TH1PlotElement & ele) {
-//   ele.set_marker_color(1);
-//   ele.set_line_color(1);
-//   ele.set_fill_color(1);
-//   ele.set_fill_style(0);
-//   ele.set_draw_fill(false);
-//   ele.set_line_width(3);
-//   ele.set_draw_marker(true);
-//   ele.set_draw_line(true);
-//   ele.set_marker_style(20);
-//   ele.set_draw_stat_error_y(true);
-//   ele.set_marker_size(1.3);
-//   return;
-// }
-
-// void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
-//   ele.set_marker_color(color);
-//   ele.set_line_color(color);
-//   ele.set_draw_stat_error_y(true);
-//   ele.set_draw_line(false);
-//   ele.set_draw_marker(true);
-//   ele.set_marker_size(1.3);
-//   ele.set_marker_style(20);
-//   return;
-// }
 
 
 // int main(int argc, char* argv[]){

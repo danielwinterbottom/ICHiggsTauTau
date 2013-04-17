@@ -43,6 +43,14 @@ int main(int argc, char* argv[]) {
   vector<string> v_eras;
   boost::split(v_eras, eras, boost::is_any_of(","));
 
+
+  // Decode the list of columns, of the format:
+  // $COL1,$COL2,$COL3,..,$COLN
+  // where $COLX = $LATEX_LABEL:$CAT1+$CAT2+..+$CATN
+  // and $CATX corresponds to category ids.
+  // Example, two columns, the first combining 0-jet low and
+  // 0-jet high, the second just vbf
+  //          "0-jet:0+1,VBF:5"      
   vector<pair<string,vector<string>>> v_columns;
   vector<string> tmp_columns;
   boost::split(tmp_columns, columns, boost::is_any_of(","));
