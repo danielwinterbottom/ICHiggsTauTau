@@ -813,7 +813,8 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------ 
-  std::vector<int> to_check = {
+  std::vector<int> to_check = 
+  {
   };
   for (auto ch : to_check) {
     analysis.NotifyEvent(ch);

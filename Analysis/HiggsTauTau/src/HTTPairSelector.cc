@@ -150,6 +150,15 @@ namespace ic {
         exit(0);
       }
     }
+    
+    if (channel_ != channel::em) {
+      Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
+      if (tau->decay_mode() == 0) {
+        double eoverp = (tau->lead_ecal_energy() + tau->lead_hcal_energy()) / tau->lead_p();
+        if (eoverp <= 0.2) return 1;
+      }
+    }
+
 
     if (scale_met_for_tau_ && channel_ != channel::em) {
       Met * met = event->GetPtr<Met>(met_label_);

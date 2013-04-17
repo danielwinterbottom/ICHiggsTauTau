@@ -112,11 +112,7 @@ namespace ic {
       std::set<std::string> input_cats_;
       std::set<std::string> input_sels_;
       std::map<std::string, double> sample_lumi_;
-
-
-
       std::map<std::string, Sample> input_shapes_;
-      std::map<std::string, TH1F *> output_shapes_;
   };
  
 }
