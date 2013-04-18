@@ -218,30 +218,30 @@ namespace ic {
       JESmetdiff->Fill(newmetet-metet);
 
       //Check if first two jets have changed
-      
+      if((oldjet1index==-1)||(newjet1index==-1)||(oldjet2index==-1)||(newjet2index==-1)){
+	JESisordersame->Fill(-2.);
+      }
       if(oldjet1index==newjet1index){
 	if(oldjet2index==newjet2index){
 	  JESisordersame->Fill(1.);
-	  //numsame++;
+	  return 0;
 	}
       }
-      else{
-	if(oldjet1index==newjet2index){
-	  if(oldjet2index==newjet1index){
-	    JESisordersame->Fill(-1.);
-	    //numswap++;
-	  }
+      if(oldjet1index==newjet2index){
+	if(oldjet2index==newjet1index){
+	  JESisordersame->Fill(-1.);
+	  return 0;
 	}
-	if(oldjet1index!=newjet2index){
-	  if(oldjet2index!=newjet1index){
-	    JESisordersame->Fill(2.);
-	    //numdiff++;
-	  }
+      }
+      if(oldjet1index!=newjet2index){
+	if(oldjet2index!=newjet1index){
+	  JESisordersame->Fill(2.);
+	  return 0;
 	}
       }
       return 0;
     }
-
+    
 
     template <class T,class M>
       int HinvJESUncertainty<T,M>::PostAnalysis() {
