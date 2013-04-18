@@ -831,7 +831,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&electronEnergyShifter);
   if (moriond_tau_scale && channel != channel::em && (!is_data || is_embedded) && !do_skim)          
                                   analysis.AddModule(&httEnergyScale);
-                               analysis.AddModule(&httPrint);
+  if (to_check.size() > 0)        analysis.AddModule(&httPrint);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
 
   if (channel == channel::et || channel == channel::etmet) {
@@ -869,7 +869,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&extraMuonVeto);
     }
                                   analysis.AddModule(&tauPtEtaFilter);
-  if (strategy == strategy::paper2013)
+  //if (strategy == strategy::paper2013)
                                   //analysis.AddModule(&tauDzFixer);
                                   analysis.AddModule(&tauDzFilter);
                                   analysis.AddModule(&tauIsoFilter);
