@@ -74,6 +74,7 @@ namespace ic {
 
   bool CaloJetID(CaloJet const* jet);
   bool PFJetID(PFJet const* jet);
+  bool PUJetID(PFJet const* jet, bool is_2012);
 
   double PZeta(CompositeCandidate const* cand, Candidate const* met, double const& alpha);
   double PZetaVis(CompositeCandidate const* cand);

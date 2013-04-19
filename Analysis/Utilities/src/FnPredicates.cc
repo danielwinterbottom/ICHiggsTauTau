@@ -85,6 +85,60 @@ namespace ic {
     return result;
   }
 
+  bool PUJetID(PFJet const* jet, bool is_2012) {
+    // Pt2030_Loose   = cms.vdouble(-0.80,-0.85,-0.84,-0.85),
+    // Pt3050_Loose   = cms.vdouble(-0.80,-0.74,-0.68,-0.77)
+    // #4 Eta Categories  0-2.5 2.5-2.75 2.75-3.0 3.0-5.0
+    double abs_eta = fabs(jet->eta());
+    double pt = jet->pt();
+    double pu_id_mva_value = jet->pu_id_mva_value();
+    if (is_2012) {
+      if (pt > 20. && pt <= 30) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.80);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.85);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.84);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.85);
+            } else return true;
+      } else if (pt > 30.) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.80);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.74);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.68);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.77);
+            } else return true;
+      } else return true;
+    } else {
+      if (pt > 20. && pt <= 30) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.40);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.85);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.7);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.6);
+            } else return true;
+      } else if (pt > 30.) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.40);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.85);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.7);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.6);
+            } else return true;
+      } else return true;
+    }
+  }
+
   double PZeta(CompositeCandidate const* cand, Candidate const* met, double const& alpha) {
     if (cand->AsVector().size() < 2) return 0.0;
     Candidate const* leg1 = cand->At(0);
