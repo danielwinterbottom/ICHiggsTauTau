@@ -14,12 +14,13 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigMC.cfg
+PRODUCTION=Mar20
 
-for METCUT in 0 70
+for METCUT in 130 #0 70
   do
   for CHANNEL in nunu enu munu
     do
-    for SYST in central #JESUP JESDOWN
+    for SYST in central JESUP JESDOWN
       do
       SYSTOPTIONS="--dojessyst=false"
       JOBDIR=jobs/$CHANNEL/MET$METCUT/
@@ -38,8 +39,6 @@ for METCUT in 0 70
 	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESDOWN/
 	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JESDOWN/
       fi
-
-
       
       echo "Config file: $CONFIG"
       
@@ -62,14 +61,14 @@ for METCUT in 0 70
 	
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Mar20/MC/
-	for FILELIST in `ls filelists/Mar20/$QUEUEDIR/Mar20_MC_*`
+	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
 	  echo $FILELIST
 	  echo $FILELIST > tmp.txt
-	  sed "s/filelists\/Mar20\/$QUEUEDIR\/Mar20_MC_//" tmp.txt > tmp2.txt
+	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
 	  
 	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
 	  
@@ -83,15 +82,26 @@ for METCUT in 0 70
 	done
 	
 	
-#Process bkg common with HiggsTautau
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Feb20/MC_53X/
-	for FILELIST in `ls filelists/Mar20/$QUEUEDIR/Feb20_*`
+#Process bkg common with HiggsTautau (ONLY NEEDED IN Mar20 and Apr04)
+	if [ "$PRODUCTION" = "Mar20" ]
+	    then
+	    SHAREDPREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Feb20/MC_53X/
+	    FILELISTPREFIX=Feb20_MC_53X_
+	else
+	    if [ "$PRODUCTION" = "Apr04" ]
+		then
+		SHAREDPREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MCtaushared/
+		FILELISTPREFIX=Apr04_MCtaushared_
+	    fi
+	fi
+	
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
 	  echo $FILELIST > tmp.txt
 	  
-	  sed "s/filelists\/Mar20\/$QUEUEDIR\/Feb20_MC_53X_//" tmp.txt > tmp2.txt
+	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${FILELISTPREFIX}//" tmp.txt > tmp2.txt
 	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
 	  
 	  echo "JOB name = $JOB"
@@ -109,7 +119,7 @@ for METCUT in 0 70
 	      done
 	  else 
 	      PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Feb20/MC_53X/
-	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	      $JOBSUBMIT $JOBDIR/$JOB.sh
 	  fi
 	  

@@ -16,12 +16,13 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfig.cfg
+PRODUCTION=Mar20
 
-for METCUT in 0 70
+for METCUT in 130 #0 70
   do
   for CHANNEL in nunu enu munu
     do
-    for SYST in central #JESUP JESDOWN
+    for SYST in central JESUP JESDOWN
       do
       SYSTOPTIONS="--dojessyst=false"
       JOBDIR=jobs/$CHANNEL/MET$METCUT/
@@ -60,14 +61,14 @@ for METCUT in 0 70
 	    echo "Using job-submission: " $JOBSUBMIT
 	fi
 	
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/Mar20/MET/
+	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MET/
 	
-	for FILELIST in `ls filelists/Mar20/$QUEUEDIR/Mar20_MET_*`
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
 	  echo $FILELIST > tmp.txt
-	  sed "s/filelists\/Mar20\/$QUEUEDIR\/Mar20_MET_//" tmp.txt > tmp2.txt
+	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MET_//" tmp.txt > tmp2.txt
 	  
 	  JOB=Data_`sed "s/\.dat//" tmp2.txt`
 	  
