@@ -5,9 +5,7 @@
 #include <boost/functional/hash.hpp>
 #include "boost/algorithm/string.hpp"
 #include "boost/lexical_cast.hpp"
-
-#include "TMVA/Reader.h"
-#include "TVector3.h"
+#include "boost/format.hpp"
 
 namespace ic {
 
@@ -29,43 +27,36 @@ namespace ic {
   }
 
   int HTTPairSelector::PreAnalysis() {
+    std::string param_fmt = "%-25s %-40s\n";
+
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for HTT Pair Selector" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Pair Collection Label: " << pair_label_ << std::endl;
-    std::cout << "MET Label: " << met_label_ << std::endl;
-    std::cout << "Use most isolated tau?: " << use_most_isolated_ << std::endl;
-    std::cout << "Scale MET for Tau: " << scale_met_for_tau_ << std::endl;
-    std::cout << "Tau Scale is: " << tau_scale_ << std::endl;
+    std::cout << boost::format(param_fmt) % "pair_label" % pair_label_;
+    std::cout << boost::format(param_fmt) % "met_label" % met_label_;
+    std::cout << boost::format(param_fmt) % "use_most_isolated" % use_most_isolated_;
+    std::cout << boost::format(param_fmt) % "scale_met_for_tau" % scale_met_for_tau_;
+    std::cout << boost::format(param_fmt) % "tau_scale" % tau_scale_;
+    std::string allowed_str = "";
     std::cout << "Allowed tau decay modes: ";
     if (allowed_tau_modes_ == "") {
-      std::cout << "all modes" << std::endl;
+      allowed_str = "all modes";
     } else {
       std::vector<std::string> tau_mode_vec;
       boost::split(tau_mode_vec, allowed_tau_modes_, boost::is_any_of(","));
       for (unsigned i = 0; i < tau_mode_vec.size(); ++i) {
         int tau_mode = boost::lexical_cast<int>(tau_mode_vec[i]);
         tau_mode_set_.insert(tau_mode);
-        std::cout << tau_mode << " ";
+        allowed_str += (tau_mode_vec[i] + " ");
       } 
-      std::cout << std::endl;
     }
-
-    if (faked_tau_selector_ == 1 && channel_ != channel::em) {
-      std::cout << "Requring tau candidate matched to lepton!" << std::endl;
-    }
-    if (faked_tau_selector_ == 2 && channel_ != channel::em) {
-      std::cout << "Requring tau candidate not matched to lepton!" << std::endl;
-    }
+    std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_str;
+    std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector_;
 
     if (fs_) {
       hists_[0] = new Dynamic2DHistoSet(fs_->mkdir("httpairselector"));
       for (unsigned i = 0; i < hists_.size(); ++i) {
         hists_[i]->Create("n_pairs", 4, -0.5, 3.5, 4, -0.5, 3.5);
-        hists_[i]->Create("taupt_ter_all", 50, 0, 250, 50, 0, 2);
-        hists_[i]->Create("taupt_ter_iso_pass", 50, 0, 250, 50, 0, 2);
-        hists_[i]->Create("taupt_ter_iso_iso_0p7", 50, 0, 250, 50, 0, 2);
-        hists_[i]->Create("tauiso_ter_all", 50, -1, 1, 50, 0, 2);
       }
     }
 
@@ -87,22 +78,6 @@ namespace ic {
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
       double wt = eventInfo->total_weight();
       hists_[0]->Fill("n_pairs", os_dilepton.size(), ss_dilepton.size(), wt);
-      if (event->Exists("pileupInfo")) {
-      std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
-      std::vector<GenJet *> & genjets = event->GetPtrVec<GenJet>("genJets");
-      std::vector<std::pair<Tau*, GenJet*> > matches = MatchByDR(taus, genjets, 0.5, true, true);
-      for (unsigned i = 0; i < matches.size(); ++i) {
-        double ter = matches[i].first->pt() / matches[i].second->pt();
-        double tpt = matches[i].first->pt();
-        double tiso = matches[i].first->GetTauID("byIsolationMVAraw");
-        bool pass_iso = matches[i].first->GetTauID("byLooseIsolationMVA") > 0.5;
-        hists_[0]->Fill("taupt_ter_all", tpt, ter, wt);
-        if (pass_iso) hists_[0]->Fill("taupt_ter_iso_pass", tpt, ter, wt);
-        if (tiso > 0.7) hists_[0]->Fill("taupt_ter_iso_iso_0p7", tpt, ter, wt);
-        hists_[0]->Fill("tauiso_ter_all", tiso, ter, wt);
-      }
-    }
-
     }
 
     // The first pair should have the highest "scalar sum pt" (0,1 = tau_h, 2 = muon) pT

@@ -603,32 +603,53 @@ int main(int argc, char* argv[]){
     .set_predicate(bind(fabs, bind(&Tau::lead_dz_vertex, _1)) < tau_dz)
     .set_min(1);
 
+  std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
+  if (strategy == strategy::hcp2012 || strategy == strategy::moriond2013) {
+    if (channel == channel::et || channel == channel::etmet) {
+      tau_iso_discr         = "byLooseIsolationMVA";
+      tau_anti_elec_discr_1 = "againstElectronMVA";
+      tau_anti_elec_discr_2 = "againstElectronTightMVA2";
+      tau_anti_muon_discr   = "againstMuonLoose";
+    }
+    if (channel == channel::mt || channel == channel::mtmet) {
+      tau_iso_discr         = "byLooseIsolationMVA";
+      tau_anti_elec_discr_1 = "againstElectronLoose";
+      tau_anti_elec_discr_2 = "againstElectronLoose";
+      tau_anti_muon_discr   = "againstMuonTight";
+    }
+  } else if (strategy == strategy::paper2013) {
+    if (channel == channel::et || channel == channel::etmet) {
+      tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      tau_anti_elec_discr_1 = "againstElectronTightMVA3";
+      tau_anti_elec_discr_2 = "againstElectronTightMVA3";
+      tau_anti_muon_discr   = "againstMuonLoose2";
+      // At the moment revert the relaxed Z->ee to the HCP/Moriond approach of
+      // just using againstElectronMVA (but need to make a separate special 18 skim)
+      if (special_mode == 18) tau_anti_elec_discr_1 = "againstElectronMVA"; 
+    }
+    if (channel == channel::mt || channel == channel::mtmet) {
+      tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      tau_anti_elec_discr_1 = "againstElectronLoose";
+      tau_anti_elec_discr_2 = "againstElectronLoose";
+      tau_anti_muon_discr   = "againstElectronLooseMVA3";
+    }
+  }
+
   SimpleFilter<Tau> tauIsoFilter = SimpleFilter<Tau>("TauIsoFilter")
     .set_input_label("taus")
-    .set_predicate((bind(&Tau::GetTauID, _1, "byLooseIsolationMVA") > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
+    .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
     .set_min(1);
-    if (special_mode == 1) {
-      tauIsoFilter.set_predicate( (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5));
-    } else if (special_mode == 2 || special_mode == 5 || special_mode == 6 || special_mode == 10 || special_mode == 12 || special_mode == 16) {
-      tauIsoFilter.set_predicate( (bind(&Tau::GetTauID, _1, "byIsolationMVAraw") > 0.7) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5));
-    } else if (special_mode == 4) {
-      tauIsoFilter.set_predicate( (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5));
-    }
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
-    .set_predicate(bind(&Tau::GetTauID, _1, "againstElectronLoose") > 0.5)
+    .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5)
     .set_input_label("taus").set_min(1); 
-  if (channel == channel::et || channel == channel::etmet) tauElRejectFilter
-    .set_predicate( bind(&Tau::GetTauID, _1, "againstElectronMVA") > 0.5);                        
   if ( (channel == channel::et || channel == channel::etmet) && !do_skim && special_mode != 18) tauElRejectFilter
-    .set_predicate( (bind(&Tau::GetTauID, _1, "againstElectronTightMVA2") > 0.5) && (bind(&Tau::GetTauID, _1, "againstElectronMVA") > 0.5) );                        
+    .set_predicate( (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5) && (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_2) > 0.5) );                        
 
   SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
-    .set_predicate(bind(&Tau::GetTauID, _1, "againstMuonTight") > 0.5)
-    .set_input_label("taus").set_min(1);  
-  if (channel == channel::et  || channel == channel::etmet) tauMuRejectFilter
-    .set_predicate( bind(&Tau::GetTauID, _1, "againstMuonLoose") > 0.5);                        
-
+    .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
+    .set_input_label("taus").set_min(1);
+                  
   // ------------------------------------------------------------------------------------
   // e/m + tau Pair Modules
   // ------------------------------------------------------------------------------------  
@@ -683,7 +704,6 @@ int main(int argc, char* argv[]){
     .set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
 
    
-
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------ 
