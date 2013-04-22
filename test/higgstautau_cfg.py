@@ -1050,6 +1050,7 @@ process.icSequence += process.icEventProducer
 
 process.extra42XSequence = cms.Sequence()
 if release == '42X':
+  process.ak5PFJets.doAreaFastjet = cms.bool(True)
   process.extra42XSequence += (process.ak5PFJets
                               +process.kt6PFJets
                               +process.recoTauClassicHPSSequence)
