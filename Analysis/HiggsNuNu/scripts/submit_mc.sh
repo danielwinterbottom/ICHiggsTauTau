@@ -108,14 +108,14 @@ for METCUT in 130 #0 70
 	  
 	  grep "JetsToLNu" tmp.txt
 	  PROCESSSKIM=0
-	  if (( "$?" == 0 ))&&(("$PROCESSSKIM"==1)); then
+	  if [[ (("$?" == 0)) && (("$PROCESSSKIM"==1)) ]]; then
 	      for FLAVOUR in enu munu taunu
 		do
 		if [ "$PRODUCTION" = "Mar20" ]
 		    then
 		    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
 		else
-		    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/$PRODUCTION/MC_53X/
+		    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/$PRODUCTION/
 		fi
 		
 		WJOB=$JOB"_"$FLAVOUR
