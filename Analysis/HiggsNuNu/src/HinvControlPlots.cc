@@ -240,8 +240,12 @@ namespace ic {
 
 
   void HinvControlPlots::FillWeightPlots(EventInfo const* info){
-    double wt_pu = info->weight("pileup");
-    double wt_trig = info->weight("trig_metL1")*info->weight("trig_metHLT")*info->weight("trig_mjjHLT")*info->weight("trig_jet1HLT")*info->weight("trig_jet2HLT");
+    double wt_pu = info->weight_defined("pileup")? info->weight("pileup") : 1.0;
+    double wt_trig = (info->weight_defined("trig_metL1")? info->weight("trig_metL1") : 1.0) *
+      (info->weight_defined("trig_metHLT") ? info->weight("trig_metHLT") : 1.0) *
+      (info->weight_defined("trig_mjjHLT") ? info->weight("trig_mjjHLT") : 1.0) *
+      (info->weight_defined("trig_jet1HLT") ? info->weight("trig_jet1HLT") : 1.0) *
+      (info->weight_defined("trig_jet2HLT") ? info->weight("trig_jet2HLT") : 1.0) ;
     //double wt_id = ;
     double wt = wt_/(wt_pu*wt_trig);
     weightplots_->met_noW->Fill(met_, wt);
@@ -257,9 +261,11 @@ namespace ic {
   }
 
   void HinvControlPlots::FillSystPlots(EventInfo const* info){
-    double wt_pu = info->weight("pileup");
-    systplots_->n_jets_puUp->Fill(n_jets_, wt_/wt_pu*info->weight("!pileup_up"));
-    systplots_->n_jets_puDown->Fill(n_jets_, wt_/wt_pu*info->weight("!pileup_down"));
+    double wt_pu = info->weight_defined("pileup") ? info->weight("pileup") : 1.0;
+    double wt_pu_up = info->weight_defined("!pileup_up") ? info->weight("!pileup_up") : 1.0 ;
+    double wt_pu_down = info->weight_defined("!pileup_down") ? info->weight("!pileup_down") : 1.0 ;
+    systplots_->n_jets_puUp->Fill(n_jets_, wt_/wt_pu*wt_pu_up);
+    systplots_->n_jets_puDown->Fill(n_jets_, wt_/wt_pu*wt_pu_down);
   }
 
 }//namespace
