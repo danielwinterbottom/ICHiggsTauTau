@@ -12,6 +12,7 @@ namespace ic {
 
   private:
     typedef std::map<std::string, double> SDMap;
+    typedef std::map<std::string, bool> SBMap;
     typedef std::map<std::size_t, float> TBMap;
 
   public:
@@ -57,17 +58,40 @@ namespace ic {
       return it != weights_.end();
     }
 
-    inline void set_weight(std::string const& label, double const& weight) {
+    inline void set_weight(std::string const& label, double const& weight, bool const& enabled = true) {
       weights_[label] = weight;
+      weight_status_[label] = enabled;
     }
 
+    // Product of all weights, ignoring those starting with the character '!'
     inline double total_weight() const {
       SDMap::const_iterator it;
       double weight = 1.0;
       for (it = weights_.begin(); it != weights_.end(); ++it) {
+        if (!(weight_status_.find(it->first)->second)) continue;
         weight = it->second * weight;
       }
       return weight;
+    }
+
+    inline bool weight_is_enabled(std::string label) {
+      if (weight_defined(label)) {
+        return weight_status_[label];
+      } else {
+        return false;
+      }
+    }
+
+    inline void enable_weight(std::string label) {
+      if (weight_defined(label)) { 
+        weight_status_[label] = true;
+      } 
+    }
+
+    inline void disable_weight(std::string label) {
+      if (weight_defined(label)) { 
+        weight_status_[label] = false;
+      } 
     }
 
     inline TBMap const& filters() const { return filters_; }
@@ -109,6 +133,7 @@ private:
       double jet_rho_;
       double lepton_rho_;
       SDMap weights_;
+      SBMap weight_status_;
       unsigned good_vertices_;
       TBMap filters_;
 
