@@ -107,10 +107,16 @@ for METCUT in 130 #0 70
 	  echo "JOB name = $JOB"
 	  
 	  grep "JetsToLNu" tmp.txt
-	  if (( "$?" == 0 )); then
+	  PROCESSSKIM=0
+	  if (( "$?" == 0 ))&&(("$PROCESSSKIM"==1)); then
 	      for FLAVOUR in enu munu taunu
 		do
-		PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
+		if [ "$PRODUCTION" = "Mar20" ]
+		    then
+		    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
+		else
+		    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/$PRODUCTION/MC_53X/
+		fi
 		
 		WJOB=$JOB"_"$FLAVOUR
 		
@@ -118,7 +124,6 @@ for METCUT in 130 #0 70
 		$JOBSUBMIT $JOBDIR/$WJOB.sh
 	      done
 	  else 
-	      PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/Feb20/MC_53X/
 	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	      $JOBSUBMIT $JOBDIR/$JOB.sh
 	  fi
