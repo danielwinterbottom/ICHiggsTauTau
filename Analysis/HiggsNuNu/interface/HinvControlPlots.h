@@ -38,6 +38,28 @@ namespace ic {
     
   };
 
+  struct HinvWeightPlots {
+    TH1F *met_noW;
+    TH1F *n_jets_noW;
+    TH1F *met_pu;
+    TH1F *n_jets_pu;
+    TH1F *met_pu_trig;
+    TH1F *n_jets_pu_trig;
+    //TH1F *met_pu_trig_id;
+    //TH1F *n_jets_pu_trig_id;
+
+    HinvWeightPlots(TFileDirectory const& dir);
+
+  };
+
+  struct HinvSystPlots {
+    TH1F *n_jets_puUp;
+    TH1F *n_jets_puDown;
+
+    HinvSystPlots(TFileDirectory const& dir);
+
+  };
+
 
   class HinvControlPlots : public ModuleBase {
 
@@ -51,6 +73,9 @@ namespace ic {
 
     double yields_;
     HinvCoreControlPlots* controlplots_;
+    HinvWeightPlots* weightplots_;
+    HinvSystPlots* systplots_;
+
     DynamicHistoSet * misc_plots_;
     Dynamic2DHistoSet * misc_2dplots_;
 
@@ -88,7 +113,11 @@ namespace ic {
  
     void FillYields();
     void InitCoreControlPlots();
+    void InitWeightPlots();
+    void InitSystPlots();
     void FillCoreControlPlots();
+    void FillWeightPlots(EventInfo const* info);
+    void FillSystPlots(EventInfo const* info);
    
     void Reset();
 

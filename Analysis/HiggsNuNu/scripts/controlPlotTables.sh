@@ -48,6 +48,19 @@ for CHANNEL in nunu enu munu
     --y_axis_min=0.01 --extra_pad=1000 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
+    --plot_qcd=false \
+    --log_y=true \
+    --paramfile=$PARAMS
+
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="n_jets"  --x_axis_label="Number of jets" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
+    --y_axis_min=0.01 --extra_pad=1000 \
+    --rebin=1 \
+    --norm_bins=false --verbose=false \
+    --plot_qcd=true \
     --log_y=true \
     --paramfile=$PARAMS
 
@@ -61,6 +74,7 @@ for CHANNEL in nunu enu munu
     --rebin=2 \
     --plot_wjets_comp=false \
     --norm_bins=false \
+    --plot_qcd=false \
     --log_y=true \
     --paramfile=$PARAMS
 
@@ -73,6 +87,7 @@ for CHANNEL in nunu enu munu
     --rebin=2 \
     --plot_wjets_comp=false \
     --norm_bins=false \
+    --plot_qcd=false \
     --log_y=false \
     --paramfile=$PARAMS
 
@@ -86,6 +101,7 @@ for CHANNEL in nunu enu munu
     --rebin=2 \
     --plot_wjets_comp=true \
     --norm_bins=false \
+    --plot_qcd=false \
     --log_y=true \
     --paramfile=$PARAMS
 

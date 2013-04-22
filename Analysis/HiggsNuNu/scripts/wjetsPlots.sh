@@ -130,26 +130,94 @@ for CHANNEL in nunu enu munu
     --paramfile=$PARAMS
 
 ###### met no mu
-#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-#    --folder=$FOLDER --plot_dir=$PLOTDIR \
-#    --plot_name="met_nomuons"  --x_axis_label="PF MET + #mu (GeV)" \
-#    --blind=$BLIND \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-#    --y_axis_min=0.01 --extra_pad=10000 \
-#    --rebin=20 \
-#    --norm_bins=false \
-#    --paramfile=$PARAMS
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="met_nomuons"  --x_axis_label="PF MET + #mu (GeV)" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=20 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
 
 ###### met no elec
-#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-#    --folder=$FOLDER --plot_dir=$PLOTDIR \
-#    --plot_name="met_noelectrons"  --x_axis_label="PF MET + e (GeV)" \
-#    --blind=$BLIND \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
-#    --y_axis_min=0.01 --extra_pad=10000 \
-#    --rebin=20 \
-#    --norm_bins=false \
-#    --paramfile=$PARAMS
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="met_noelectrons"  --x_axis_label="PF MET + e (GeV)" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=20 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
+
+###### mu dxy
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="mudxy_all"  --x_axis_label="Muon d_{xy}" \
+    --blind=$BLIND \
+    --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=2 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
+
+###### mu dz
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="mudz_all"  --x_axis_label="Muon d_{z}" \
+    --blind=$BLIND \
+    --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=2 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
+
+
+###### mu iso
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="muiso_all"  --x_axis_label="Muon iso" \
+    --blind=$BLIND \
+    --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=2 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
+
+###### e dxy
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="edxy_all"  --x_axis_label="Electron d_{xy}" \
+    --blind=$BLIND \
+    --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=2 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
+
+###### e dz
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="edz_all"  --x_axis_label="Electron d_{z}" \
+    --blind=$BLIND \
+    --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=2 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
+
+###### e iso
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="eiso_all"  --x_axis_label="Electron iso" \
+    --blind=$BLIND \
+    --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=2 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
+
 
 
   done

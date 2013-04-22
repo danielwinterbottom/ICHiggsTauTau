@@ -9,7 +9,7 @@
 #include "TMath.h"
 
 
-enum Selection {Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL,DPhiQCD};
+enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL,DPhiQCD};
 enum Sample {QCD,GJets,Top,TTbar,SingleTop,TW,WJets,WJets_enu,WJets_munu,WJets_taunu,ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,VV,Data,Signal};
 
 
@@ -96,6 +96,7 @@ std::istream & operator>>(std::istream & is, evtsArray & evtVec){
 int extractWJetsBkg(){//main
 
   std::vector<std::string> lSelVecSignal;
+  lSelVecSignal.push_back("HLTMetClean");
   lSelVecSignal.push_back("LeptonVeto");
   lSelVecSignal.push_back("JetPair");
   lSelVecSignal.push_back("DEta");
@@ -105,6 +106,7 @@ int extractWJetsBkg(){//main
   lSelVecSignal.push_back("DPhiQCD");
 
   std::vector<std::string> lSelVecControl;
+  lSelVecControl.push_back("HLTMetClean");
   lSelVecControl.push_back("WSelection");
   lSelVecControl.push_back("JetPair");
   lSelVecControl.push_back("DEta");
@@ -274,13 +276,13 @@ int extractWJetsBkg(){//main
 	      lNSMC.sample = "$N_{W\\rightarrow \\mu\\nu}^{MC}$";
 	      lNCMC.sample = "$N_{W\\rightarrow \\mu\\nu}^{MC}$";
 	      eps_lepveto_S.num = lSel[0][Lep][WJets_munu];
-	      eps_lepveto_S.den = lSel[0][JetPair][WJets_munu];
+	      eps_lepveto_S.den = lSel[0][Trig][WJets_munu];
 	      
 	      eps_VBF_S.num = lSel[0][DPhiSIGNAL+iQCD][WJets_munu];
 	      eps_VBF_S.den = lSel[0][Lep][WJets_munu];
 	      
 	      eps_lepsel_C.num = lSel[iCh][Lep][WJets_munu];
-	      eps_lepsel_C.den = lSel[iCh][JetPair][WJets_munu];
+	      eps_lepsel_C.den = lSel[iCh][Trig][WJets_munu];
 	      
 	      eps_VBF_C.num = lSel[iCh][DPhiSIGNAL+iQCD][WJets_munu];
 	      eps_VBF_C.den = lSel[iCh][Lep][WJets_munu];
@@ -293,13 +295,13 @@ int extractWJetsBkg(){//main
 	      lNSMC.sample = "$N_{W\\rightarrow e\\nu}^{MC}$";
 	      lNCMC.sample = "$N_{W\\rightarrow e\\nu}^{MC}$";
 	      eps_lepveto_S.num = lSel[0][Lep][WJets_enu];
-	      eps_lepveto_S.den = lSel[0][JetPair][WJets_enu];
+	      eps_lepveto_S.den = lSel[0][Trig][WJets_enu];
 	      
 	      eps_VBF_S.num = lSel[0][DPhiSIGNAL+iQCD][WJets_enu];
 	      eps_VBF_S.den = lSel[0][Lep][WJets_enu];
 	      
 	      eps_lepsel_C.num = lSel[iCh][Lep][WJets_enu];
-	      eps_lepsel_C.den = lSel[iCh][JetPair][WJets_enu];
+	      eps_lepsel_C.den = lSel[iCh][Trig][WJets_enu];
 	    
 	      eps_VBF_C.num = lSel[iCh][DPhiSIGNAL+iQCD][WJets_enu];
 	      eps_VBF_C.den = lSel[iCh][Lep][WJets_enu];

@@ -229,6 +229,7 @@ int main(int argc, char* argv[]){
   if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";
   if (mc == mc::summer12_53X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
   if (mc == mc::summer12_52X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S7-600bins.root";
+
   string data_pu_file;
   if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
   if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
@@ -238,6 +239,10 @@ int main(int argc, char* argv[]){
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
+
+  TH1D data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012-ShiftUp.root", "/", "pileup");
+  TH1D data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012-ShiftDown.root", "/", "pileup");
+
   if (!is_data) {
     std::cout << "** Pileup Files **" << std::endl;
     std::cout << boost::format(param_fmt) % "mc_pu_file" % mc_pu_file;
@@ -245,6 +250,14 @@ int main(int argc, char* argv[]){
   }
   PileupWeight pileupWeight = PileupWeight("PileupWeight")
     .set_data(&data_pu)
+    .set_mc(&mc_pu)
+    .set_print_weights(false);
+  PileupWeight pileupWeight_up = PileupWeight("PileupWeight_up","pileup_up")
+    .set_data(&data_pu_up)
+    .set_mc(&mc_pu)
+    .set_print_weights(false);
+  PileupWeight pileupWeight_down = PileupWeight("PileupWeight_down","pileup_down")
+    .set_data(&data_pu_down)
     .set_mc(&mc_pu)
     .set_print_weights(false);
 
@@ -349,6 +362,18 @@ int main(int argc, char* argv[]){
     .set_min(0)
     .set_max(999);
 
+  CopyCollection<Muon> vetoMuonNoIsoCopyCollection("CopyToVetoMuonsNoIso","muonsPFlow","vetoMuonsNoIso");
+  SimpleFilter<Muon> vetoMuonNoIsoFilter = SimpleFilter<Muon>
+    ("VetoMuonNoIsoPtEtaFilter")
+    .set_input_label("vetoMuonsNoIso").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
+						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
+						//&& bind(PF04Isolation<Muon>, _1, 0.5, 0.2)
+						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
+						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
+						)
+    .set_min(0)
+    .set_max(999);
+
   //sel muons
   CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");   
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>
@@ -424,7 +449,7 @@ int main(int argc, char* argv[]){
 
   OverlapFilter<PFJet, Muon> jetMuonOverlapFilter = OverlapFilter<PFJet, Muon>("jetMuonOverlapFilter")
     .set_input_label("pfJetsPFlow")
-    .set_reference_label("vetoMuons")
+    .set_reference_label("vetoMuonsNoIso")
     .set_min_dr(0.5);
 
   OneCollCompositeProducer<PFJet> jjPairProducer = OneCollCompositeProducer<PFJet>
@@ -805,6 +830,8 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&vetoElectronIso);
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
+     analysis.AddModule(&vetoMuonNoIsoCopyCollection);
+     analysis.AddModule(&vetoMuonNoIsoFilter);
 
      //filter leptons before making jet pairs and changing MET...
      analysis.AddModule(&selElectronCopyCollection);

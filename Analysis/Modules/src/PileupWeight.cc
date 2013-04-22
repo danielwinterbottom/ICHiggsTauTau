@@ -9,6 +9,16 @@ namespace ic {
     data_ = NULL;
     mc_ = NULL;
     print_weights_ = false;
+    label_ = "pileup";
+  }
+
+  PileupWeight::PileupWeight(std::string const& name,
+			     std::string const& label) : ModuleBase(name) {
+    is_valid_ = false;
+    data_ = NULL;
+    mc_ = NULL;
+    print_weights_ = false;
+    label_ = label;
   }
 
   PileupWeight::~PileupWeight() {
@@ -30,6 +40,7 @@ namespace ic {
       std::cout << "- Input data histogram has " << nbins_data << " bins in the range [" << min_data << "," << max_data << "]" << std::endl;
       std::cout << "- Input MC histogram has " << nbins_mc << " bins in the range [" << min_mc << "," << max_mc << "]" << std::endl;
       std::cout << "- Weights calculated for " << nbins << " bins" << std::endl;
+      std::cout << "- Weight label in EventInfo is " << label_ << std::endl;
     } else {
       std::cout << "Invalid histogram!" << std::endl;
     }
@@ -61,7 +72,7 @@ namespace ic {
     if (found_bin >= 1 && found_bin <= weights_->GetNbinsX()) {
       weight = weights_->GetBinContent(found_bin);
     }
-    eventInfo->set_weight("pileup", weight);
+    eventInfo->set_weight(label_, weight);
     return 0;
   }
   int PileupWeight::PostAnalysis() {

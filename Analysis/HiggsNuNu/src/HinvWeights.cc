@@ -206,8 +206,6 @@ namespace ic {
 
       }
 
-
-
       //weight *= (ele_trg * tau_trg);
       //event->Add("trigweight_1", ele_trg);
       //event->Add("trigweight_2", tau_trg);

@@ -40,16 +40,16 @@ for CHANNEL in nunu enu munu
 #    --paramfile=$PARAMS
 
 ###### n_jetsingap
-#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-#    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-#    --plot_name="n_jetsingap"  --x_axis_label="Number of jets in rapidity gap" \
-#    --blind=$BLIND \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
-#    --y_axis_min=0.01 --extra_pad=10000 \
-#    --rebin=1 \
-#    --norm_bins=false --verbose=false \
-#    --log_y=true \
-#    --paramfile=$PARAMS
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
+    --plot_name="n_jetsingap"  --x_axis_label="Number of jets in rapidity gap" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=1 \
+    --norm_bins=false --verbose=false \
+    --log_y=true \
+    --paramfile=$PARAMS
 
 ###### n_vtx
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -148,10 +148,33 @@ for CHANNEL in nunu enu munu
     --log_y=true \
     --paramfile=$PARAMS
 
+###### drjj
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
+    --plot_name="drjj"  --x_axis_label="#Delta R_{jj}" \
+    --blind=$BLIND --x_blind_min=0 --x_blind_max=1.  \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=10 \
+    --y_axis_min=0.01 --extra_pad=100000 \
+    --rebin=2 \
+    --norm_bins=false \
+    --log_y=true \
+    --paramfile=$PARAMS
+
 ###### met
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --plot_name="met"  --x_axis_label="PF MET (GeV)" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=10 \
+    --norm_bins=false \
+    --log_y=true \
+    --paramfile=$PARAMS
+###### metNoMuons
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR  \
+    --plot_name="met_noMuons"  --x_axis_label="PF MET + #mu (GeV)" \
     --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
     --y_axis_min=0.01 --extra_pad=10000 \

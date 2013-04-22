@@ -65,6 +65,7 @@ void SetSignalStyle(ic::TH1PlotElement & ele, unsigned color) {
   ele.set_marker_color(color);
   ele.set_marker_style(1);
   ele.set_line_color(color);
+  ele.set_line_style(2);
   ele.set_fill_color(color);
   ele.set_fill_style(0);
   ele.set_draw_fill(true);
@@ -234,7 +235,7 @@ int main(int argc, char* argv[]){
 
   //List of input files
   vector<string> files;
-  //files.push_back("Data_MET-2012A-13Jul2012-v1");
+  //files.push_back("Data_MET-2012A-13Jul2012-v1_0_795305fb");
   files.push_back("Data_MET-2012A-13Jul2012-v1");
   files.push_back("Data_MET-2012A-06Aug2012-v1");
   files.push_back("Data_MET-2012B-13Jul2012-v1");
@@ -243,6 +244,7 @@ int main(int argc, char* argv[]){
   files.push_back("Data_MET-2012C-PromptReco-v2");
   //files.push_back("Data_MET-2012D-PromptReco-v1");
   files.push_back("Data_MET-2012D-PromptReco-v1_7_269fb");
+  //files.push_back("Data_MET-2012D-PromptReco-v1_7_193fb");
   files.push_back("MC_QCD-Pt-30to50-pythia6");
   files.push_back("MC_QCD-Pt-50to80-pythia6");
   files.push_back("MC_QCD-Pt-80to120-pythia6");
@@ -300,10 +302,11 @@ int main(int argc, char* argv[]){
 
   //build a list of selections
   vector<string> selections;
-  //selections.push_back("HLTMetClean");
+  selections.push_back("HLTMetClean");
   selections.push_back("LeptonVeto");
   selections.push_back("WSelection");
   selections.push_back("JetPair");
+  selections.push_back("AN");
   selections.push_back("DEta");
   selections.push_back("MET");
   selections.push_back("TightMjj");

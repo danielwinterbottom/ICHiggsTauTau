@@ -23,8 +23,11 @@ class PileupWeight : public ModuleBase {
   MEMBER_NP(TH1*, mc)
   MEMBER_NP(bool, print_weights)
 
+  std::string label_;
+
  public:
   PileupWeight(std::string const& name);
+  PileupWeight(std::string const& name, std::string const& label);
   virtual ~PileupWeight();
 
   virtual int PreAnalysis();

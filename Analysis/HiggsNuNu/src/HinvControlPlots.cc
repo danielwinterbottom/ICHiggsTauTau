@@ -35,6 +35,25 @@ namespace ic {
   };
 
 
+  HinvWeightPlots::HinvWeightPlots(TFileDirectory const& dir) {
+    TH1F::SetDefaultSumw2();
+    met_noW = dir.make<TH1F>("met_noW","met_noW", 1000, 0, 1000);
+    n_jets_noW = dir.make<TH1F>("n_jets_noW","n_jets_noW", 50, 0, 50);
+    met_pu = dir.make<TH1F>("met_pu","met_pu", 1000, 0, 1000);
+    n_jets_pu = dir.make<TH1F>("n_jets_pu","n_jets_pu", 50, 0, 50);
+    met_pu_trig = dir.make<TH1F>("met_pu_trig","met_pu_trig", 1000, 0, 1000);
+    n_jets_pu_trig = dir.make<TH1F>("n_jets_pu_trig","n_jets_pu_trig", 50, 0, 50);
+    //met_pu_trig_id = dir.make<TH1F>("met_pu_trig_id","met_pu_trig_id", 1000, 0, 1000);
+    //n_jets_pu_trig_id = dir.make<TH1F>("n_jets_pu_trig_id","n_jets_pu_trig_id", 50, 0, 50);
+  };
+
+
+  HinvSystPlots::HinvSystPlots(TFileDirectory const& dir) {
+    TH1F::SetDefaultSumw2();
+    n_jets_puUp = dir.make<TH1F>("n_jets_puUp","n_jets_puUp", 50, 0, 50);
+    n_jets_puDown = dir.make<TH1F>("n_jets_puDown","n_jets_puDown", 50, 0, 50);
+  }
+
 
   HinvControlPlots::HinvControlPlots(std::string const& name): ModuleBase(name){
     fs_ = NULL;
@@ -57,6 +76,8 @@ namespace ic {
     misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
     misc_2dplots_ = new Dynamic2DHistoSet(fs_->mkdir("misc_2dplots"));
     InitCoreControlPlots();
+    InitWeightPlots();
+    InitSystPlots();
     
     yields_ = 0;
 
@@ -162,7 +183,11 @@ namespace ic {
     
     n_jets_ = jets.size();
 
-    if (fillPlots) FillCoreControlPlots();
+    if (fillPlots) {
+      FillCoreControlPlots();
+      FillWeightPlots(eventInfo);
+      FillSystPlots(eventInfo);
+    }
 
     return 0;
   }
@@ -177,6 +202,14 @@ namespace ic {
 
   void HinvControlPlots::InitCoreControlPlots() {
     controlplots_ = new HinvCoreControlPlots(fs_->mkdir(sel_label_));
+  }
+
+  void HinvControlPlots::InitWeightPlots() {
+    weightplots_ = new HinvWeightPlots(fs_->mkdir(sel_label_+"/weights"));
+  }
+
+  void HinvControlPlots::InitSystPlots() {
+    systplots_ = new HinvSystPlots(fs_->mkdir(sel_label_+"/systematics"));
   }
 
 
@@ -203,5 +236,28 @@ namespace ic {
     controlplots_->dphijj->Fill(dphijj_, wt_);
   }
 
+
+  void HinvControlPlots::FillWeightPlots(EventInfo const* info){
+    double wt_pu = info->weight("pileup");
+    double wt_trig = info->weight("trig_metL1")*info->weight("trig_metHLT")*info->weight("trig_mjjHLT")*info->weight("trig_jet1HLT")*info->weight("trig_jet2HLT");
+    //double wt_id = ;
+    double wt = wt_/(wt_pu*wt_trig);
+    weightplots_->met_noW->Fill(met_, wt);
+    weightplots_->n_jets_noW->Fill(n_jets_, wt);
+
+    wt = wt*wt_pu;
+    weightplots_->met_pu->Fill(met_, wt);
+    weightplots_->n_jets_pu->Fill(n_jets_, wt);
+
+    wt = wt*wt_trig;
+    weightplots_->met_pu_trig->Fill(met_, wt);
+    weightplots_->n_jets_pu_trig->Fill(n_jets_, wt);
+  }
+
+  void HinvControlPlots::FillSystPlots(EventInfo const* info){
+    double wt_pu = info->weight("pileup");
+    systplots_->n_jets_puUp->Fill(n_jets_, wt_/wt_pu*info->weight("pileup_up"));
+    systplots_->n_jets_puDown->Fill(n_jets_, wt_/wt_pu*info->weight("pileup_down"));
+  }
 
 }//namespace
