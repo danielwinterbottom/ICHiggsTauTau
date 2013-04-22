@@ -88,7 +88,9 @@ namespace ic {
 
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
     wt_ = eventInfo->total_weight();
+
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
 
     Met const* met = event->GetPtr<Met>(met_label_);
@@ -256,8 +258,8 @@ namespace ic {
 
   void HinvControlPlots::FillSystPlots(EventInfo const* info){
     double wt_pu = info->weight("pileup");
-    systplots_->n_jets_puUp->Fill(n_jets_, wt_/wt_pu*info->weight("pileup_up"));
-    systplots_->n_jets_puDown->Fill(n_jets_, wt_/wt_pu*info->weight("pileup_down"));
+    systplots_->n_jets_puUp->Fill(n_jets_, wt_/wt_pu*info->weight("!pileup_up"));
+    systplots_->n_jets_puDown->Fill(n_jets_, wt_/wt_pu*info->weight("!pileup_down"));
   }
 
 }//namespace

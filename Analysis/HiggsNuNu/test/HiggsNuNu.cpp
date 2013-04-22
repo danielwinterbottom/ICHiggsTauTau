@@ -252,11 +252,11 @@ int main(int argc, char* argv[]){
     .set_data(&data_pu)
     .set_mc(&mc_pu)
     .set_print_weights(false);
-  PileupWeight pileupWeight_up = PileupWeight("PileupWeight_up","pileup_up")
+  PileupWeight pileupWeight_up = PileupWeight("PileupWeight_up","!pileup_up")
     .set_data(&data_pu_up)
     .set_mc(&mc_pu)
     .set_print_weights(false);
-  PileupWeight pileupWeight_down = PileupWeight("PileupWeight_down","pileup_down")
+  PileupWeight pileupWeight_down = PileupWeight("PileupWeight_down","!pileup_down")
     .set_data(&data_pu_down)
     .set_mc(&mc_pu)
     .set_print_weights(false);
@@ -801,7 +801,11 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------  
 
    if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
-   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
+   if (!is_data && !do_skim)       {
+     analysis.AddModule(&pileupWeight);
+     analysis.AddModule(&pileupWeight_up);
+     analysis.AddModule(&pileupWeight_down);
+   }
    
    if (!do_skim) {
 
