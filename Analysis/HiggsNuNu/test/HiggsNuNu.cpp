@@ -60,6 +60,8 @@ int main(int argc, char* argv[]){
 
   string era_str;                 // Analysis data-taking era
   string mc_str;                  // Analysis MC production
+  string prod;                // Our prdocution string
+
   string channel_str;             // Analysis channel
 
   bool is_data;                   // true = data, false = mc         
@@ -92,6 +94,7 @@ int main(int argc, char* argv[]){
     ("skim_path",           po::value<string>(&skim_path)->default_value(""))
     ("era",                 po::value<string>(&era_str)->required())
     ("mc",                  po::value<string>(&mc_str)->required())
+    ("prod",                  po::value<string>(&prod)->required())
     ("channel",             po::value<string>(&channel_str)->default_value("nunu"))
     ("is_data",             po::value<bool>(&is_data)->required())
     ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
@@ -125,6 +128,7 @@ int main(int argc, char* argv[]){
   if (dojessyst) std::cout << boost::format(param_fmt) % "upordown" % upordown;
   std::cout << boost::format(param_fmt) % "era" % era_str;
   std::cout << boost::format(param_fmt) % "mc" % mc_str;
+  std::cout << boost::format(param_fmt) % "prod" % prod;
   std::cout << boost::format(param_fmt) % "channel" % channel_str;
   std::cout << boost::format(param_fmt) % "is_data" % is_data;
   std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
@@ -547,7 +551,12 @@ int main(int argc, char* argv[]){
     if (mc == mc::summer12_53X) {
       hinvWeights.set_do_dy_soup(true);
       hinvWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
-      hinvWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
+      if(prod=="Apr04"){
+	hinvWeights.SetDYInputYields(30459503.0, 23970248.0, 21852156.0, 11015445.0, 6402827.0);
+      }
+      else{
+	hinvWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
+      }
     }
   }
 
