@@ -58,17 +58,33 @@ namespace ic {
       return it != weights_.end();
     }
 
-    inline void set_weight(std::string const& label, double const& weight, bool const& enabled = true) {
+    inline void set_weight(std::string const& label, double const& weight, bool const& enabled) {
       weights_[label] = weight;
       weight_status_[label] = enabled;
     }
+
+    inline void set_weight(std::string label, double const& weight) {
+      bool enabled = true;
+      if (label.size() > 0) {
+        if (label.at(0) == '!') {
+          label.erase(0,1);
+          enabled = false;
+        }
+      }
+      weights_[label] = weight;
+      weight_status_[label] = enabled;
+    }
+
 
     // Product of all weights, ignoring those starting with the character '!'
     inline double total_weight() const {
       SDMap::const_iterator it;
       double weight = 1.0;
       for (it = weights_.begin(); it != weights_.end(); ++it) {
-        if (!(weight_status_.find(it->first)->second)) continue;
+        SBMap::const_iterator st_it = weight_status_.find(it->first);
+        if (st_it != weight_status_.end()) {
+          if (!st_it->second) continue;
+        }
         weight = it->second * weight;
       }
       return weight;
