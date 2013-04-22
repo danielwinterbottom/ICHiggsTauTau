@@ -1,5 +1,6 @@
 #!/bin/sh
-PARAMS=./scripts/Params.dat
+PRODUCTION=Mar20
+PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
 for CHANNEL in nunu enu munu
   do
