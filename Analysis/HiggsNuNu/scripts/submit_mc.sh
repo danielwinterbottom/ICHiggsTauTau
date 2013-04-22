@@ -14,7 +14,7 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigMC.cfg
-PRODUCTION=Mar20
+PRODUCTION=Apr04
 
 for METCUT in 130 #0 70
   do

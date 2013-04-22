@@ -26,11 +26,12 @@ done ;
 
 for CHANNEL in nunu enu munu
   do
-  for MET in 130 0 70
+  for MET in 130 #0 70
     do
-          
+    for SYST in "" JESUP JESDOWN
+      do
       if (( "$INJOBDIR" == "0" )); then
-	  JOBDIR=jobs/$CHANNEL/MET$MET/
+	  JOBDIR=jobs/$CHANNEL/MET$MET/$SYST
       fi
       
       echo "Processing directory: "$JOBDIR
@@ -63,6 +64,6 @@ for CHANNEL in nunu enu munu
       if (( "$INJOBDIR" == "1" )); then
 	  exit;
       fi
-      
-      done
+    done
+  done
 done
