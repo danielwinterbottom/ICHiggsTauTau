@@ -130,6 +130,10 @@ namespace ic {
         TTree *outtree = NULL;
         if (do_skim) {
           outf  = new TFile((skim_path_+out_name).c_str(), "RECREATE");
+          if (!outf->IsOpen()) {
+            std::cerr << "Error: Could not open output skim file for writing, an exception will be thrown" << std::endl;
+            throw;
+          }
           outf->cd();
           gDirectory->mkdir(tree_path_.c_str());
           gDirectory->cd(tree_path_.c_str());
