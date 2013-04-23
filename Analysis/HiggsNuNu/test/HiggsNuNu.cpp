@@ -524,10 +524,8 @@ int main(int argc, char* argv[]){
   // Met Modules
   // ------------------------------------------------------------------------------------  
 
-  if (fixForEWKZ)  mettype="metNoENoMu";
-
   MetSelection metFilters = MetSelection("MetFilters",mettype,doMetFilters,filtersVec,0);
-  MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut);
+
 
   unsigned nLepToAdd = 100;
   //no need to be explicit in the number of leptons: will take the number 
@@ -544,6 +542,11 @@ int main(int argc, char* argv[]){
   MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",false,filtersVec,met_cut);
   MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut);
   MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut);
+
+
+  if (fixForEWKZ)  mettype="metNoENoMu";
+  MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut);
+
 
   //------------------------------------------------------------------------------------
   // W selection Modules
@@ -854,6 +857,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&metNoMuons);
      analysis.AddModule(&metNoElectrons);
      analysis.AddModule(&metNoENoMu);
+
 
      //Need two jets and metnomuons to apply trigger weights.
      analysis.AddModule(&hinvWeights);
