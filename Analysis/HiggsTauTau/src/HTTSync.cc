@@ -13,11 +13,11 @@ namespace ic {
     output_name_ = output_name;
     jet_eta_ = 4.7;
     is_embedded_ = false;
-    reader = new TMVA::Reader( "!Color:!Silent" );
+    // reader = new TMVA::Reader( "!Color:!Silent" );
     vbfvars = std::vector<float>(8,0);
     //
     // Set up the TMVA reader
-    //
+    /*
     reader->AddVariable("mjj", &vbfvars[0]);
     reader->AddVariable("dEta", &vbfvars[1]);
     reader->AddVariable("dPhi", &vbfvars[2]);
@@ -29,7 +29,7 @@ namespace ic {
     std::string file = "data/vbf_mva/VBFMVA_BDTG.weights.xml";
     if (channel_ == channel::em) file = "data/vbf_mva/VBFMVA_EMu_BDTG.weights.xml";
     reader->BookMVA("BDTG", file);
-
+    */
     select_sel_mode_ = -1;
     select_category_ = "";
 
@@ -499,8 +499,8 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       vbfvars[7] = C2;
 
       // Evaluate MVA
-      float mvaValue = reader->EvaluateMVA(vbfvars, "BDTG");
-
+      // float mvaValue = reader->EvaluateMVA(vbfvars, "BDTG");
+      float mvaValue = 0.0;
       lMVA = mvaValue;
       lJDPhi = dPhi;
       lDiJetPt = vDiJet.Pt();

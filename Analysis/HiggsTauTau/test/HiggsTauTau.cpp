@@ -635,16 +635,22 @@ int main(int argc, char* argv[]){
     }
   }
 
+  std::cout << "** Tau Discriminators **" << std::endl;
+  std::cout << boost::format(param_fmt) % "isolation" %  tau_iso_discr;
+  std::cout << boost::format(param_fmt) % "anti-electron1" % tau_anti_elec_discr_1;
+  std::cout << boost::format(param_fmt) % "anti-electron2" % tau_anti_elec_discr_2;
+  std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
+
   SimpleFilter<Tau> tauIsoFilter = SimpleFilter<Tau>("TauIsoFilter")
     .set_input_label("taus")
     .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
     .set_min(1);
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
-    .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5)
+    .set_predicate( (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5) && (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_2) > 0.5) )                     
     .set_input_label("taus").set_min(1); 
-  if ( (channel == channel::et || channel == channel::etmet) && !do_skim && special_mode != 18) tauElRejectFilter
-    .set_predicate( (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5) && (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_2) > 0.5) );                        
+  if ( (channel == channel::et || channel == channel::etmet) && special_mode == 18) tauElRejectFilter
+    .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5);
 
   SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
@@ -925,8 +931,7 @@ int main(int argc, char* argv[]){
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
-    if (strategy != strategy::paper2013)   
-                                 analysis.AddModule(&httRecoilCorrector);
+                                  analysis.AddModule(&httRecoilCorrector);
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) 
                                   analysis.AddModule(&svfit);
