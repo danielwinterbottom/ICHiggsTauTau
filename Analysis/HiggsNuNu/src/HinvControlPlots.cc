@@ -204,14 +204,17 @@ namespace ic {
 
   void HinvControlPlots::InitCoreControlPlots() {
     controlplots_ = new HinvCoreControlPlots(fs_->mkdir(sel_label_));
+    std::cout << " Core control plots initialised" << std::endl;
   }
 
   void HinvControlPlots::InitWeightPlots() {
     weightplots_ = new HinvWeightPlots(fs_->mkdir(sel_label_+"/weights"));
+    std::cout << " weight plots initialised" << std::endl;
   }
 
   void HinvControlPlots::InitSystPlots() {
     systplots_ = new HinvSystPlots(fs_->mkdir(sel_label_+"/systematics"));
+    std::cout << " syst plots initialised" << std::endl;
   }
 
 

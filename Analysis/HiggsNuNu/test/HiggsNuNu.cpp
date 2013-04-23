@@ -211,6 +211,9 @@ int main(int argc, char* argv[]){
   // Misc Modules
   // ------------------------------------------------------------------------------------
   
+  bool fixForEWKZ = false;
+  if (output_name.find("DYJJ01") != output_name.npos) fixForEWKZ = true;
+
   string data_json;
   if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
   if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
@@ -520,6 +523,9 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
+
+  if (fixForEWKZ)  mettype="metNoENoMu";
+
   MetSelection metFilters = MetSelection("MetFilters",mettype,doMetFilters,filtersVec,0);
   MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut);
 
@@ -535,7 +541,6 @@ int main(int argc, char* argv[]){
   ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"selElectrons",1,nLepToAdd);
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,nLepToAdd);
 
-
   MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",false,filtersVec,met_cut);
   MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut);
   MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut);
@@ -543,7 +548,7 @@ int main(int argc, char* argv[]){
   //------------------------------------------------------------------------------------
   // W selection Modules
   // ------------------------------------------------------------------------------------
-  double mtcut_min = 30;
+  double mtcut_min = 0;
   double mtcut_max = 8000;
   MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",2,mtcut_min,mtcut_max);
   MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",1,mtcut_min,mtcut_max);
@@ -895,8 +900,10 @@ int main(int argc, char* argv[]){
      }
      else {
        //lepton veto modules
-       analysis.AddModule(&zeroVetoMuonFilter);
-       analysis.AddModule(&zeroVetoElectronFilter);
+       if (!fixForEWKZ){
+	 analysis.AddModule(&zeroVetoMuonFilter);
+	 analysis.AddModule(&zeroVetoElectronFilter);
+       }
        analysis.AddModule(&controlPlots_lepveto);
      }
 
