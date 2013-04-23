@@ -137,22 +137,18 @@ namespace ic {
 
     if (scale_met_for_tau_ && channel_ != channel::em) {
       Met * met = event->GetPtr<Met>(met_label_);
-      //std::cout << "Old: " << ROOT::Math::PxPyPzEVector(met->vector()) << std::endl;
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       double t_scale = tau_scale_;
       if (event->Exists("tau_scales")) {
-        // std::cout << "Tau scales found in event..." << std::endl;
         std::map<std::size_t, double> const& tau_scales = event->Get< std::map<std::size_t, double>  > ("tau_scales");
         std::map<std::size_t, double>::const_iterator it = tau_scales.find(tau->id());
         if (it != tau_scales.end()) {
           t_scale = it->second;
-          // std::cout << "Tau scale set to " << t_scale << " for " << it->first << std::endl;
         } else {
-          // std::cout << "Scale for chosen tau not found!" << std::endl;
+          std::cout << "Scale for chosen tau not found!" << std::endl;
           throw;
         }
       }
-      //std::cout << "Tau: " << ROOT::Math::PxPyPzEVector(tau->vector()) << std::endl;
       double metx = met->vector().px();
       double mety = met->vector().py();
       double metet = met->vector().energy();
@@ -163,13 +159,10 @@ namespace ic {
       metet = sqrt(metx*metx + mety*mety);
       ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
-      //std::cout << "New: " << ROOT::Math::PxPyPzEVector(met->vector()) << std::endl;
     }
     if (scale_met_for_tau_ && channel_ == channel::em) {
       Met * met = event->GetPtr<Met>(met_label_);
-      //std::cout << "Old: " << ROOT::Math::PxPyPzEVector(met->vector()) << std::endl;
       Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
-      //std::cout << "Tau: " << ROOT::Math::PxPyPzEVector(tau->vector()) << std::endl;
       double metx = met->vector().px();
       double mety = met->vector().py();
       double metet = met->vector().energy();
@@ -180,7 +173,6 @@ namespace ic {
       metet = sqrt(metx*metx + mety*mety);
       ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
-      //std::cout << "New: " << ROOT::Math::PxPyPzEVector(met->vector()) << std::endl;
     }
 
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
