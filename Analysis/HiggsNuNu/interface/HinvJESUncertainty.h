@@ -28,9 +28,7 @@ namespace ic {
     CLASS_MEMBER(HinvJESUncertainty, bool, upordown)
     CLASS_MEMBER(HinvJESUncertainty, std::string, input_label)
     CLASS_MEMBER(HinvJESUncertainty, std::string, met_label)
-    TH2F* JESupcorrfac;
-    TH2F* JESdowncorrfac;
-    TH2F* JESusedcorrfac;
+    TH2F* JEScorrfac;
     TH1F* JESmetdiff;
     TH1F* JESjetphidiff;
     TH1F* JESjetetadiff;
@@ -77,14 +75,13 @@ namespace ic {
       }
       std::cout<<"Got parameters successfully"<<std::endl;
       TFileDirectory const& dir = fs_->mkdir("JES");
-      JESupcorrfac = dir.make<TH2F>("JESupcorrfac","JESupcorrfac",1000,0.,1000.,1000,-0.3,0.3);
-      JESdowncorrfac = dir.make<TH2F>("JESdowncorrfac","JESdowncorrfac",1000,0.,1000.,1000,-0.3,0.3);
-      JESusedcorrfac = dir.make<TH2F>("JESusedcorrfac","JESusedcorrfac",1000,0.,1000.,1000,-0.3,0.3);
+      std::cout<<"Made plot dir"<<std::endl;
+      JEScorrfac = dir.make<TH2F>("JEScorrfac","JEScorrfac",1000,0.,1000.,1000,-0.3,0.3);
       JESmetdiff = dir.make<TH1F>("JESmetdiff","JESmetdiff",1000,-10.,10.);
       JESjetphidiff = dir.make<TH1F>("JESjetphidiff","JESjetphidiff",1000,-10.,10.);
       JESjetetadiff = dir.make<TH1F>("JESjetetadiff","JESjetetadiff",1000,-10.,10.);
       JESisordersame = dir.make<TH1F>("JESisordersame","JESisordersame",40,-10.,10.);
-      std::cout<<"Made plot dir"<<std::endl;
+
       return 0;
     }
     
@@ -125,10 +122,13 @@ namespace ic {
 
 	if(jetpt > oldjet1pt){
 	  oldjet2index=oldjet1index;
+	  oldjet2pt=oldjet1pt;
 	  oldjet1index=i;
+	  oldjet1pt=jetpt;
 	}
 	else if(jetpt > oldjet2pt) {
 	  oldjet2index=i;
+	  oldjet2pt=jetpt;
 	}
 
 	//Get JES uncertainty
@@ -140,12 +140,10 @@ namespace ic {
 	double downuncert = total->getUncertainty(false);
 	
 	//std::cout<<uncert<<std::endl;
-	JESupcorrfac->Fill(jetpt,upuncert); //Fill histogram of uncertainty against pt
-	JESdowncorrfac->Fill(jetpt,downuncert); //Fill histogram of uncertainty against pt
 	
 	if(dojessyst_){//if not central value correct by the JES uncertainty
 	  if(upordown_==true){//upper uncertainty
-	    JESusedcorrfac->Fill(jetpt,upuncert); //Fill histogram of uncertainty against pt
+	    JEScorrfac->Fill(jetpt,upuncert); //Fill histogram of uncertainty against pt
 	    //Correct jet
 	    double newjetpx = jetpx*(1+upuncert);
 	    double newjetpy = jetpy*(1+upuncert);
@@ -164,10 +162,13 @@ namespace ic {
 	    double newjetpt=vec[i]->pt();
 	    if(newjetpt > newjet1pt){
 	      newjet2index=newjet1index;
+	      newjet2pt=newjet1pt;
 	      newjet1index=i;
+	      newjet1pt=newjetpt;
 	    }
 	    else if(newjetpt > newjet2pt) {
 	      newjet2index=i;
+	      newjet2pt=newjetpt;
 	    }
 	    
 	    //Correct met
@@ -176,7 +177,7 @@ namespace ic {
 	    
 	  }
 	  else if(upordown_==false){//lower uncertainty
-	    JESusedcorrfac->Fill(jetpt,downuncert); //Fill histogram of uncertainty against pt
+	    JEScorrfac->Fill(jetpt,downuncert); //Fill histogram of uncertainty against pt
 	    //Correct jet
 	    double newjetpx = jetpx*(1-downuncert);
 	    double newjetpy = jetpy*(1-downuncert);
@@ -195,10 +196,13 @@ namespace ic {
 	    double newjetpt=vec[i]->pt();
 	    if(newjetpt > newjet1pt){
 	      newjet2index=newjet1index;
+	      newjet2pt=newjet1pt;
 	      newjet1index=i;
+	      newjet1pt=newjetpt;
 	    }
 	    else if(newjetpt > newjet2pt) {
 	      newjet2index=i;
+	      newjet2pt=newjetpt;
 	    }
 
 	    //Correct met
@@ -207,6 +211,10 @@ namespace ic {
 	  }
 	}
 	else{//Central value
+	  newjet1index=oldjet1index;
+	  newjet2index=oldjet2index;
+	  newjet1pt=oldjet1pt;
+	  newjet2pt=newjet2pt;
 	}
       }
 
@@ -219,7 +227,10 @@ namespace ic {
 
       //Check if first two jets have changed
       if((oldjet1index==-1)||(newjet1index==-1)||(oldjet2index==-1)||(newjet2index==-1)){
-	JESisordersame->Fill(-2.);
+	if(vec.size()>1){
+	  JESisordersame->Fill(-2.);
+	  std::cout<<"JET SWAP METHOD ERROR"<<std::endl;
+	}
       }
       if(oldjet1index==newjet1index){
 	if(oldjet2index==newjet2index){
@@ -230,12 +241,14 @@ namespace ic {
       if(oldjet1index==newjet2index){
 	if(oldjet2index==newjet1index){
 	  JESisordersame->Fill(-1.);
+	  std::cout<<"JETS SWAPPED"<<std::endl;
 	  return 0;
 	}
       }
       if(oldjet1index!=newjet2index){
 	if(oldjet2index!=newjet1index){
 	  JESisordersame->Fill(2.);
+	  std::cout<<"JETS DIFFERENT"<<std::endl;
 	  return 0;
 	}
       }
