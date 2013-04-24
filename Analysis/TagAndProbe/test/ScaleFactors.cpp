@@ -38,12 +38,15 @@ int main(int argc, char* argv[])
         getline(eff_data,b);
        
         if(b.find("id")!=std::string::npos
-            && !(b.find("idbins")!=std::string::npos))
+            && !(b.find("idbins")!=std::string::npos)
+            && !(b.find("idiso")!=std::string::npos ))
+
         { 
             dataideffs.push_back(b);
         } 
         if(b.find("iso")!=std::string::npos
-            && !(b.find("isobins")!=std::string::npos))
+            && !(b.find("isobins")!=std::string::npos)
+            && !(b.find("idiso")!=std::string::npos ))
         { 
             dataisoeffs.push_back(b);
         } 
@@ -62,12 +65,14 @@ int main(int argc, char* argv[])
         getline(eff_mc,b);
        
         if(b.find("id")!=std::string::npos
-            && !(b.find("idbins")!=std::string::npos))
+            && !(b.find("idbins")!=std::string::npos)
+            && !(b.find("idiso")!=std::string::npos ))
         { 
             mcideffs.push_back(b);
         } 
         if(b.find("iso")!=std::string::npos
-            && !(b.find("isobins")!=std::string::npos))
+            && !(b.find("isobins")!=std::string::npos)
+            && !(b.find("idiso")!=std::string::npos ))
         { 
             mcisoeffs.push_back(b);
         } 
