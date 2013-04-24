@@ -35,6 +35,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauDzFixer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -77,7 +78,7 @@ int main(int argc, char* argv[]){
   string allowed_tau_modes;       // "" means all, otherwise "1,10"=allow 1prong1pizero,3prong
   bool moriond_tau_scale;         // Use new central tau scale shifts
   bool large_tscale_shift;        // Shift tau energy scale by +/- 6% instead of 3%
-
+  bool do_tau_eff;                // Run the tau efficiency module
   /* Skims/notes needed for em channel
   // Speical Mode 20 Fake Electron for emu
   // Speical Mode 21 Fake Muon for emu 
@@ -127,6 +128,7 @@ int main(int argc, char* argv[]){
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
       ("moriond_tau_scale",   po::value<bool>(&moriond_tau_scale)->default_value(false))
       ("large_tscale_shift",  po::value<bool>(&large_tscale_shift)->default_value(false))
+      ("do_tau_eff",          po::value<bool>(&do_tau_eff)->default_value(false))
       ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -641,6 +643,17 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "anti-electron2" % tau_anti_elec_discr_2;
   std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
 
+  TauEfficiency tauEfficiency = TauEfficiency("TauEfficiency")
+    .set_fs(fs)
+    .set_channel(channel)
+    .set_is_data(is_data)
+    .set_is_embedded(is_embedded)
+    .set_gen_match(true)
+    .set_is_fake(false)
+    .set_tau_label("taus")
+    .set_gen_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus");
+
+
   SimpleFilter<Tau> tauIsoFilter = SimpleFilter<Tau>("TauIsoFilter")
     .set_input_label("taus")
     .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
@@ -875,6 +888,7 @@ int main(int argc, char* argv[]){
   //if (strategy == strategy::paper2013)
                                   //analysis.AddModule(&tauDzFixer);
                                   analysis.AddModule(&tauDzFilter);
+  if (do_tau_eff)                 analysis.AddModule(&tauEfficiency);
                                   analysis.AddModule(&tauIsoFilter);
                                   analysis.AddModule(&tauElRejectFilter);
                                   analysis.AddModule(&tauMuRejectFilter);
@@ -898,6 +912,7 @@ int main(int argc, char* argv[]){
   //if (strategy == strategy::paper2013)
                                   //analysis.AddModule(&tauDzFixer);
                                   analysis.AddModule(&tauDzFilter);
+  if (do_tau_eff)                 analysis.AddModule(&tauEfficiency);
                                   analysis.AddModule(&tauIsoFilter);
                                   analysis.AddModule(&tauElRejectFilter);
                                   analysis.AddModule(&tauMuRejectFilter);

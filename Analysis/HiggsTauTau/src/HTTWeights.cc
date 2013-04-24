@@ -260,7 +260,6 @@ namespace ic {
             tau_trg = tdataABCD;
             tau_trg_mc = tmcABCD;
           }
-
         } else if (mc_ == mc::fall11_42X) {
           if (fabs(e_eta) < 1.479) {
             double ele15_eb = Efficiency(e_pt, 14.8772, 0.311255, 0.221021, 1.87734, 0.986665);
@@ -633,6 +632,89 @@ namespace ic {
         weight *= (e_trg * m_trg);
         event->Add("trigweight_1", e_trg);
         event->Add("trigweight_2", m_trg);
+      } else if (channel_ == channel::etmet) {
+        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
+        Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+        double e_pt = elec->pt();
+        double e_eta = fabs(elec->sc_eta());
+        double t_pt = tau->pt();
+        double t_eta = fabs(tau->eta());
+        double ele_trg = 1.0;
+        double tau_trg = 1.0;
+        double ele_trg_mc = 1.0;
+        double tau_trg_mc = 1.0;
+        if (mc_ == mc::summer12_53X) {
+          double edataD   = 1.0;
+          double emcD     = 1.0;
+          if (e_eta < 1.479) {
+            edataD   = Efficiency(e_pt, 13.6024, 0.818415, 0.395957, 2.34391, 0.822224);
+          } else {
+            edataD   = Efficiency(e_pt, 14.1269, 1.37584, 0.408418, 118.504, 0.800704);
+          }
+          ele_trg = edataD;
+          ele_trg_mc = emcD;
+          double tdataABCD  = 1.0;
+          double tmcABCD    = 1.0;
+
+          if (t_eta < 1.5) {
+            tdataABCD   = Efficiency(t_pt, 18.686211,   1.993524,  3.202713,  3.612693,  0.871640);
+            tmcABCD     = Efficiency(t_pt, 18.431118,   1.572877,  3.301699,  4.760769,  0.899620);
+          } else {
+            tdataABCD   = Efficiency(t_pt, 18.472954,   1.606388,  3.468975,  55.629620,   0.828977);
+            tmcABCD     = Efficiency(t_pt, 18.257217,   1.632443,  9.283116,  40.219585,  0.858643);
+          }
+          tau_trg = tdataABCD;
+          tau_trg_mc = tmcABCD;
+        }
+        if (trg_applied_in_mc_) {
+          ele_trg = ele_trg / ele_trg_mc;
+          tau_trg = tau_trg / tau_trg_mc;
+        }
+        weight *= (ele_trg * tau_trg);
+        event->Add("trigweight_1", ele_trg);
+        event->Add("trigweight_2", tau_trg);
+      } else if (channel_ == channel::mtmet) {
+        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
+        double pt = muon->pt();
+        double m_eta = fabs(muon->eta());
+        Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+        double t_pt = tau->pt();
+        double t_eta = fabs(tau->eta());
+        double mu_trg = 1.0;
+        double tau_trg = 1.0;
+        double mu_trg_mc = 1.0;
+        double tau_trg_mc = 1.0;
+        if (mc_ == mc::summer12_53X) {
+          double muD = 1.0;
+          double mcD = 1.0;
+          if (m_eta >= 0 && m_eta < 0.8) {
+            muD   = Efficiency(pt, 6.9755, 0.000173944, 4.65439e-07, 1.20934, 1.35392);
+          } else if (m_eta >= 0.8 && m_eta < 1.2) {
+            muD   = Efficiency(pt, 7.005, 1.39453e-06, 1.77824e-11, 1.30978, 1.08927);
+          } else {
+            muD   = Efficiency(pt, 7.00501, 2.69916e-06, 2.54492e-11, 1.8705, 0.864745);
+          } 
+          mu_trg = muD;
+          mu_trg_mc = mcD;
+          double tdataABCD   = 1.0;
+          double tmcABCD    = 1.0;
+          if (fabs(t_eta) < 1.5) {
+            tdataABCD  = Efficiency(t_pt, 18.52036251,  1.47760312,  2.53574445,  1.71202550,  0.93019930);
+            tmcABCD    = Efficiency(t_pt, 18.88740627,  0.10718873,  0.12277723,  1.60581265,  0.95041892);
+          } else {
+            tdataABCD  = Efficiency(t_pt, 18.41225333,  0.76598912,  0.60544260,  5.38350881,  0.85870108);
+            tmcABCD    = Efficiency(t_pt, 18.30439676,  1.44360240,  3.79358997,  1.07560564,  0.93103925);
+          }
+          tau_trg = tdataABCD;
+          tau_trg_mc = tmcABCD;
+        } 
+        if (trg_applied_in_mc_) {
+          mu_trg = mu_trg / mu_trg_mc;
+          tau_trg = tau_trg / tau_trg_mc;
+        }
+        weight *= (mu_trg * tau_trg);
+        event->Add("trigweight_1", mu_trg);
+        event->Add("trigweight_2", tau_trg);
       }
     }
 
