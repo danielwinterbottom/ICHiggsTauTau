@@ -652,6 +652,7 @@ int main(int argc, char* argv[]){
     .set_is_fake(false)
     .set_tau_label("taus")
     .set_gen_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus");
+  if (is_data && special_mode == 3) tauEfficiency.set_is_fake(true);
 
 
   SimpleFilter<Tau> tauIsoFilter = SimpleFilter<Tau>("TauIsoFilter")

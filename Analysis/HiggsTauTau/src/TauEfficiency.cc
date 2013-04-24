@@ -61,10 +61,18 @@ namespace ic {
     if (event->Exists("selMuons")) {
         std::vector<Muon *> const& muons = event->GetPtrVec<Muon>("selMuons");
         ic::erase_if(taus, !boost::bind(MinDRToCollection<Muon*>, _1, muons, 0.5));
+        if (is_data_ && is_fake_) {
+          if (muons.size() != 1) return 0;
+          ic::erase_if(taus, [muons] (Tau const* tau) { return tau->charge() != muons[0]->charge(); });
+        }
     }
     if (event->Exists("selElectrons")) {
         std::vector<Electron *> const& elecs = event->GetPtrVec<Electron>("selElectrons");
         ic::erase_if(taus, !boost::bind(MinDRToCollection<Electron*>, _1, elecs, 0.5));
+        if (is_data_ && is_fake_) {
+          if (elecs.size() != 1) return 0;
+          ic::erase_if(taus, [elecs] (Tau const* tau) { return tau->charge() != elecs[0]->charge(); });
+        }
     }
     // Get the tau gen particles 
     std::vector<GenParticle *> parts;
