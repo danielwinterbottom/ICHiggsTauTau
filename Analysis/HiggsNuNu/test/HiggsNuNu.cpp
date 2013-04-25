@@ -76,6 +76,7 @@ int main(int argc, char* argv[]){
   string filters;
   //unsigned signal_region;             // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
+  bool dotrgeff;                  // Do trigger effeciency corrections
 
  // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -105,7 +106,8 @@ int main(int argc, char* argv[]){
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
-    ("upordown",            po::value<bool>(&upordown)->default_value(true));
+    ("upordown",            po::value<bool>(&upordown)->default_value(true))
+    ("dotrgeff",              po::value<bool>(&dotrgeff)->default_value(false)); 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -417,13 +419,15 @@ int main(int argc, char* argv[]){
   // Jet Modules
   // ------------------------------------------------------------------------------------  
 
-  HinvJESUncertainty<PFJet,Met> JESUncertaintyCorrector = HinvJESUncertainty<PFJet,Met>
-    ("JESUncertaintyCorrector")
-    .set_input_label("pfJetsPFlow")
-    .set_met_label(mettype)
-    .set_is_data(is_data)
-    .set_upordown(upordown)
-    .set_fs(fs);
+    HinvJESUncertainty<PFJet,Met> JESUncertaintyCorrector = HinvJESUncertainty<PFJet,Met>
+      ("JESUncertaintyCorrector")
+      .set_input_label("pfJetsPFlow")
+      .set_met_label(mettype)
+      .set_is_data(is_data)
+      .set_dojessyst(dojessyst)
+      .set_upordown(upordown)
+      .set_fs(fs);
+
   
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
@@ -523,9 +527,8 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
-
   MetSelection metFilters = MetSelection("MetFilters",mettype,doMetFilters,filtersVec,0);
-
+  
 
   unsigned nLepToAdd = 100;
   //no need to be explicit in the number of leptons: will take the number 
@@ -547,7 +550,6 @@ int main(int argc, char* argv[]){
   if (fixForEWKZ)  mettype="metNoENoMu";
   MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut);
 
-
   //------------------------------------------------------------------------------------
   // W selection Modules
   // ------------------------------------------------------------------------------------
@@ -563,12 +565,12 @@ int main(int argc, char* argv[]){
   HinvWeights hinvWeights = HinvWeights("HinvWeights")
     .set_era(era)
     .set_mc(mc)
-    .set_do_trg_weights(false)
+    .set_do_trg_weights(dotrgeff)
     .set_trg_applied_in_mc(true);
 
-  if (!is_data) {
+  /*if (!is_data) {
     hinvWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true);
-  }
+    }*/
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
     hinvWeights.set_do_w_soup(true);
@@ -820,22 +822,21 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&dataMCTriggerPathFilter);
 
      ////analysis.AddModule(&runStats);
- 
+     
      if (is_data) {
        analysis.AddModule(&metFilters);
        analysis.AddModule(&metLaserFilters);
      }
-
+     
      //jet modules
-     if(dojessyst==true&&(!is_data)){
-       analysis.AddModule(&JESUncertaintyCorrector);
-     }
-
+     analysis.AddModule(&JESUncertaintyCorrector);
+     
+     
      analysis.AddModule(&jetIDFilter);
 
     //jet pair production before plotting
      analysis.AddModule(&jjPairProducer);
-
+   
      //prepare collections of veto leptons
      analysis.AddModule(&vetoElectronCopyCollection);
      analysis.AddModule(&vetoElectronFilter);
@@ -844,7 +845,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&vetoMuonFilter);
      analysis.AddModule(&vetoMuonNoIsoCopyCollection);
      analysis.AddModule(&vetoMuonNoIsoFilter);
-
+   
      //filter leptons before making jet pairs and changing MET...
      analysis.AddModule(&selElectronCopyCollection);
      analysis.AddModule(&selElectronFilter);
@@ -852,12 +853,12 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&selMuonCopyCollection);
      analysis.AddModule(&selMuonFilter);
      analysis.AddModule(&elecMuonOverlapFilter);
-
+   
      //add met without leptons for plots
      analysis.AddModule(&metNoMuons);
      analysis.AddModule(&metNoElectrons);
      analysis.AddModule(&metNoENoMu);
-
+     
 
      //Need two jets and metnomuons to apply trigger weights.
      analysis.AddModule(&hinvWeights);
@@ -875,8 +876,9 @@ int main(int argc, char* argv[]){
      
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
+     analysis.AddModule(&jetPairFilter);
 
- 
+     
      //lepton selections or veto
      if (channel == channel::munu){
        analysis.AddModule(&oneMuonFilter);
@@ -910,7 +912,7 @@ int main(int argc, char* argv[]){
        }
        analysis.AddModule(&controlPlots_lepveto);
      }
-
+     
      //jet pair selection
      analysis.AddModule(&etaProdJetPairFilter);
      analysis.AddModule(&controlPlots_dijet);
@@ -926,6 +928,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&wjetsPlots_deta);
 
      //met modules
+       
      if (channel == channel::munu){
        analysis.AddModule(&metNoMuonFilter);
      }
@@ -938,6 +941,7 @@ int main(int argc, char* argv[]){
      else {
        analysis.AddModule(&metCut);
      }
+     
      analysis.AddModule(&controlPlots_met);
      analysis.AddModule(&wjetsPlots_met);
 
