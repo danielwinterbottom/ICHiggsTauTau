@@ -14,11 +14,11 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigMC.cfg
-PRODUCTION=Mar20
+PRODUCTION=Apr04
 
-for METCUT in 0
+for METCUT in 130 #0
   do
-  for CHANNEL in nunu #enu munu
+  for CHANNEL in nunu enu munu
     do
     for SYST in central #JESUP JESDOWN
       do
@@ -59,27 +59,27 @@ for METCUT in 0
 	    echo "Using job-submission: " $JOBSUBMIT
 	fi
 	
-#Process HiggsNuNu specific backgrounds
-#Signal files and DYtoNuNu
-#	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
-#	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
-#	  do
-#	  echo "Processing files in "$FILELIST
-#	  
-#	  echo $FILELIST
-#	  echo $FILELIST > tmp.txt
-#	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
-#	  
-#	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
-#	  
-#	  rm tmp.txt tmp2.txt
-#	  
-#	  echo "JOB name = $JOB"
-#	  
-#	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-#	  $JOBSUBMIT $JOBDIR/$JOB.sh
-#	  
-#	done
+Process HiggsNuNu specific backgrounds
+Signal files and DYtoNuNu
+	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
+	  do
+	  echo "Processing files in "$FILELIST
+	  
+	  echo $FILELIST
+	  echo $FILELIST > tmp.txt
+	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
+	  
+	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
+	  
+	  rm tmp.txt tmp2.txt
+	  
+	  echo "JOB name = $JOB"
+	  
+	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBSUBMIT $JOBDIR/$JOB.sh
+	  
+	done
 	
 	
 #Process bkg common with HiggsTautau (ONLY NEEDED IN Mar20 and Apr04)

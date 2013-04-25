@@ -16,11 +16,11 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfig.cfg
-PRODUCTION=Mar20
+PRODUCTION=Apr04
 
-for METCUT in 0
+for METCUT in 130 #0
   do
-  for CHANNEL in nunu #enu munu
+  for CHANNEL in nunu enu munu
     do
     for SYST in central #JESUP JESDOWN
       do
