@@ -244,6 +244,7 @@ int main(int argc, char* argv[]){
   if (era == "2012A" || era == "2012B" || era == "2012C" || era == "2012D") data_json = "../HiggsTauTau/data/json/data_2012_moriond.txt" ;
   else data_json           =  "../HiggsTauTau/data/json/data_2011.txt";
 
+//==============================================================================================
   // Create analysis object
     ic::AnalysisBase analysis(
         "TagAndProbe",        // Analysis name
@@ -253,7 +254,7 @@ int main(int argc, char* argv[]){
         max_events);          // Max. events to process (-1 = all)
   if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);
 
-    
+ //----------------------Generic Modules------------------------------------------  
     LumiMask lumiMask = LumiMask("LumiMask")
       .set_produce_output_jsons("")
       .set_input_file(data_json);
@@ -261,12 +262,19 @@ int main(int argc, char* argv[]){
     PileupWeight pileupWeight = PileupWeight
       ("PileupWeight").set_data(&data_pu).set_mc(&mc_pu).set_print_weights(false);
 
+//==============================================================================================
+//==========================================ELECTRONS=============================================
+//==============================================================================================
+
+
+//----------------------Skimming Modules------------------------------------------  
    SimpleCounter<GenParticle> zEEFilter = SimpleCounter<GenParticle>("ZToEESelector")
      .set_input_label("genParticles")
      .set_predicate(
        (bind(&GenParticle::status, _1) == 3) && 
        (bind(abs,(bind(&GenParticle::pdgid, _1))) == 11))
      .set_min(2);
+
 
     SimpleFilter<Electron> electronTagFilter = SimpleFilter<Electron>
     ("electronTagFilter")
@@ -282,6 +290,9 @@ int main(int argc, char* argv[]){
     .set_predicate( (boost::bind(DummyFunction<Electron>, _1)) )
     .set_input_label("electrons")
     .set_min(2);
+ 
+//==============================================================================================
+ //----------------------Id/Iso for ETau------------------------------------------  
 
     ElectronTagAndProbe electronIDTagAndProbe("electronIDTagAndProbe");
     electronIDTagAndProbe
@@ -341,7 +352,71 @@ int main(int argc, char* argv[]){
     .set_eta_bins(eta_bins)
     .set_mode(2)
     .set_era(era);
+   
+//==============================================================================================
+ //----------------------Id/Iso for ETau+MET------------------------------------------  
+    ElectronTagAndProbe electronltmetIDTagAndProbe("electronltmetIDTagAndProbe");
+    electronltmetIDTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_id_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate(boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate( (boost::bind(MinPtMaxEta, _1, 10, 2.1)))
+    .set_passprobe_predicate((boost::bind(ElectronHTTIdIso, _1, 1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045))
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(0)
+    .set_era(era);
+
+    ElectronTagAndProbe electronltmetIsoTagAndProbe("electronltmetIsoTagAndProbe");
+    electronltmetIsoTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_iso_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1) 
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(  boost::bind(ElectronHTTIdIso, _1, 1) 
+                        && (boost::bind(MinPtMaxEta, _1, 10, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) )
+    .set_passprobe_predicate(boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(1)
+    .set_era(era);
     
+    ElectronTagAndProbe electronltmetIDIsoTagAndProbe("electronltmetIDIsoTagAndProbe");
+    electronltmetIDIsoTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_idiso_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1)) 
+    .set_passprobe_predicate((boost::bind(ElectronHTTIdIso, _1, 1)) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) 
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1) )
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(2)
+    .set_era(era);
+    
+
+//==============================================================================================
+ //----------------------Id/Iso for VH electrons------------------------------------------  
     ElectronTagAndProbe electronVHIDTagAndProbe("electronVHIDTagAndProbe");
     electronVHIDTagAndProbe
     .set_fs(fsid)
@@ -401,6 +476,8 @@ int main(int argc, char* argv[]){
     .set_mode(2)
     .set_era(era);
      
+//==============================================================================================
+ //----------------------Fine Id/Iso for ETau------------------------------------------  
     ElectronTagAndProbe electronIDFineTagAndProbe("electronIDFineTagAndProbe");
     electronIDFineTagAndProbe
     .set_fs(fsid)
@@ -465,6 +542,76 @@ int main(int argc, char* argv[]){
     .set_vtx_bins(vtx_bins_fine)
     .set_mode(12)
     .set_era(era);
+
+//==============================================================================================
+ //----------------------Fine Id/Iso for ETau+MET------------------------------------------  
+    ElectronTagAndProbe electronltmetIDFineTagAndProbe("electronltmetIDFineTagAndProbe");
+    electronltmetIDFineTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_idbinned_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045))
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1))
+    .set_passprobe_predicate( (boost::bind(ElectronHTTIdIso, _1, 1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045))
+    .set_pt_bins(pt_bins_fine)
+    .set_eta_bins(eta_bins_fine)
+    .set_vtx_bins(vtx_bins_fine)
+    .set_mode(10)
+    .set_era(era);
+
+    ElectronTagAndProbe electronltmetIsoFineTagAndProbe("electronltmetIsoFineTagAndProbe");
+    electronltmetIsoFineTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_isobinned_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(  boost::bind(ElectronHTTIdIso, _1, 1) 
+                        && boost::bind(MinPtMaxEta, _1, 10, 2.1)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) )
+    .set_passprobe_predicate((boost::bind(ElectronHTTIdIso, _1, 1)) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) 
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1) )
+    .set_pt_bins(pt_bins_fine)
+    .set_eta_bins(eta_bins_fine)
+    .set_vtx_bins(vtx_bins_fine)
+    .set_mode(11)
+    .set_era(era);
+    
+    ElectronTagAndProbe electronltmetIDIsoFineTagAndProbe("electronltmetIDIsoFineTagAndProbe");
+    electronltmetIDIsoFineTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/electron_idisobinned_count").c_str())
+    .set_tag_predicate( boost::bind(ElectronHTTIdIso, _1, 1)
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1))) < 0.045))
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1))
+    .set_passprobe_predicate((boost::bind(ElectronHTTIdIso, _1, 1)) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Electron::dxy_vertex, _1) ))< 0.045) 
+                        && (boost::bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1))
+    .set_data(isdata)
+    .set_pt_bins(pt_bins_fine)
+    .set_eta_bins(eta_bins_fine)
+    .set_vtx_bins(vtx_bins_fine)
+    .set_mode(12)
+    .set_era(era);
+
+//==============================================================================================
+ //----------------------Trigger for ETau------------------------------------------  
     
     ElectronTagAndProbe electronTrgATagAndProbe("electronTrgATagAndProbe");
     electronTrgATagAndProbe
@@ -510,6 +657,8 @@ int main(int argc, char* argv[]){
     .set_mode(3)
     .set_era(eraB);
  
+//==============================================================================================
+ //----------------------Trigger for ETau+MET------------------------------------------  
     ElectronTagAndProbe electronltmetTrgTagAndProbe("electronltmetTrgTagAndProbe");
     electronltmetTrgTagAndProbe
     .set_fs(fstrg)
@@ -532,6 +681,11 @@ int main(int argc, char* argv[]){
     .set_mode(4)
     .set_era(era);
 
+//==============================================================================================
+//==========================================MUONS=============================================
+//==============================================================================================
+
+ //----------------------Skimming Modules------------------------------------------  
 
    SimpleCounter<GenParticle> zMuMuFilter = SimpleCounter<GenParticle>("ZToMuMuSelector")
      .set_input_label("genParticles")
@@ -553,6 +707,9 @@ int main(int argc, char* argv[]){
     .set_predicate( (boost::bind(DummyFunction<Muon>, _1)) )
     .set_input_label("muonsPFlow")
     .set_min(2);
+
+//==============================================================================================
+//----------------------Id/Iso for MuTau------------------------------------------  
      
     MuonTagAndProbe muonIDTagAndProbe("muonIDTagAndProbe");
     muonIDTagAndProbe
@@ -613,6 +770,8 @@ int main(int argc, char* argv[]){
     .set_mode(2)
     .set_era(era);
     
+//==============================================================================================
+//----------------------Id/Iso for VH muons------------------------------------------  
     MuonTagAndProbe muonVHIDTagAndProbe("muonVHIDTagAndProbe");
     muonVHIDTagAndProbe
     .set_fs(fsid)
@@ -672,7 +831,71 @@ int main(int argc, char* argv[]){
     .set_mode(2)
     .set_era(era);
     
+//==============================================================================================
+//----------------------Id/Iso for MuTau+MET------------------------------------------  
+ 
+    MuonTagAndProbe muonltmetIDTagAndProbe("muonltmetIDTagAndProbe");
+    muonltmetIDTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_id_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate(boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate( (boost::bind(MinPtMaxEta, _1, 10, 2.1)))
+    .set_passprobe_predicate((boost::bind(MuonTight, _1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045))
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(0)
+    .set_era(era);
+
+    MuonTagAndProbe muonltmetIsoTagAndProbe("muonltmetIsoTagAndProbe");
+    muonltmetIsoTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_iso_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1) 
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(  boost::bind(MuonTight, _1) 
+                        && (boost::bind(MinPtMaxEta, _1, 10, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) )
+    .set_passprobe_predicate(boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(1)
+    .set_era(era);
     
+    MuonTagAndProbe muonltmetIDIsoTagAndProbe("muonltmetIDIsoTagAndProbe");
+    muonltmetIDIsoTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_idiso_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1)) 
+    .set_passprobe_predicate((boost::bind(MuonTight, _1)) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) 
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1) )
+    .set_pt_bins(pt_bins)
+    .set_eta_bins(eta_bins)
+    .set_mode(2)
+    .set_era(era);
+
+//==============================================================================================
+ //----------------------Fine Id/Iso for MuTau------------------------------------------  
+
     MuonTagAndProbe muonIDFineTagAndProbe("muonIDFineTagAndProbe");
     muonIDFineTagAndProbe
     .set_fs(fsid)
@@ -737,7 +960,77 @@ int main(int argc, char* argv[]){
     .set_vtx_bins(vtx_bins_fine)
     .set_mode(12)
     .set_era(era);
+ 
+//==============================================================================================
+ //----------------------Fine Id/Iso for MuTau+MET------------------------------------------  
     
+    MuonTagAndProbe muonltmetIDFineTagAndProbe("muonltmetIDFineTagAndProbe");
+    muonltmetIDFineTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_idbinned_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045))
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1))
+    .set_passprobe_predicate( (boost::bind(MuonTight, _1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045))
+    .set_pt_bins(pt_bins_fine)
+    .set_eta_bins(eta_bins_fine)
+    .set_vtx_bins(vtx_bins_fine)
+    .set_mode(10)
+    .set_era(era);
+
+    MuonTagAndProbe muonltmetIsoFineTagAndProbe("muonltmetIsoFineTagAndProbe");
+    muonltmetIsoFineTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_isobinned_count").c_str())
+    .set_data(isdata)
+    .set_tag_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045) )
+    .set_probe_predicate(  boost::bind(MuonTight, _1) 
+                        && boost::bind(MinPtMaxEta, _1, 10, 2.1)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) )
+    .set_passprobe_predicate((boost::bind(MuonTight, _1)) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) 
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1) )
+    .set_pt_bins(pt_bins_fine)
+    .set_eta_bins(eta_bins_fine)
+    .set_vtx_bins(vtx_bins_fine)
+    .set_mode(11)
+    .set_era(era);
+    
+    MuonTagAndProbe muonltmetIDIsoFineTagAndProbe("muonltmetIDIsoFineTagAndProbe");
+    muonltmetIDIsoFineTagAndProbe
+    .set_fs(fsid)
+    .set_output_name((outfolder+"/muon_idisobinned_count").c_str())
+    .set_tag_predicate( boost::bind(MuonTight, _1)
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1)
+                        && (boost::bind(MinPtMaxEta, _1, 20, 2.1))
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1))) < 0.2)
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1))) < 0.045))
+    .set_probe_predicate(boost::bind(MinPtMaxEta, _1, 10, 2.1))
+    .set_passprobe_predicate((boost::bind(MuonTight, _1)) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dz_vertex, _1)) ) < 0.2) 
+                        && (boost::bind(fabs, (boost::bind(&Muon::dxy_vertex, _1) ))< 0.045) 
+                        && (boost::bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1))
+    .set_data(isdata)
+    .set_pt_bins(pt_bins_fine)
+    .set_eta_bins(eta_bins_fine)
+    .set_vtx_bins(vtx_bins_fine)
+    .set_mode(12)
+    .set_era(era);
+ 
+//==============================================================================================
+ //----------------------Trigger for MuTau------------------------------------------  
     MuonTagAndProbe muonTrgATagAndProbe("muonTrgATagAndProbe");
     muonTrgATagAndProbe
     .set_fs(fstrg)
@@ -784,6 +1077,8 @@ int main(int argc, char* argv[]){
     .set_mode(3)
     .set_era(eraB);
 
+//==============================================================================================
+ //----------------------Trigger for MuTau+MET------------------------------------------  
     MuonTagAndProbe muonltmetTrgTagAndProbe("muonltmetTrgTagAndProbe");
     muonltmetTrgTagAndProbe
     .set_fs(fstrg)
@@ -807,6 +1102,8 @@ int main(int argc, char* argv[]){
     .set_mode(4)
     .set_era(era);
 
+//==============================================================================================
+ //----------------------Trigger for IsoMu24------------------------------------------  
     MuonTagAndProbe muonIsoMu24TrgTagAndProbe("muonIsoMu24TrgTagAndProbe");
     muonIsoMu24TrgTagAndProbe
     .set_fs(fstrg)
@@ -831,6 +1128,8 @@ int main(int argc, char* argv[]){
     .set_era(era);
 
 
+//==============================================================================================
+
     if(!do_skim)
     {
         if(iselec)
@@ -843,7 +1142,7 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&electronVHIsoTagAndProbe);
                 analysis.AddModule(&electronVHIDIsoTagAndProbe);
             }
-            if(!trg_only && !VH)
+            if(!trg_only && !VH && !ltmet)
             {
                 analysis.AddModule(&electronIDTagAndProbe);
                 analysis.AddModule(&electronIsoTagAndProbe);
@@ -860,6 +1159,12 @@ int main(int argc, char* argv[]){
             if(ltmet)
             {
                 analysis.AddModule(&electronltmetTrgTagAndProbe);
+                analysis.AddModule(&electronltmetIDTagAndProbe);
+                analysis.AddModule(&electronltmetIsoTagAndProbe);
+                analysis.AddModule(&electronltmetIDIsoTagAndProbe);
+                analysis.AddModule(&electronltmetIDFineTagAndProbe);
+                analysis.AddModule(&electronltmetIsoFineTagAndProbe);
+                analysis.AddModule(&electronltmetIDIsoFineTagAndProbe);
             }
         }
         if(!iselec)
@@ -872,7 +1177,7 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&muonVHIsoTagAndProbe);
                 analysis.AddModule(&muonVHIDIsoTagAndProbe);
             }
-            if(!trg_only && !VH)
+            if(!trg_only && !VH && !ltmet)
             {
                 analysis.AddModule(&muonIDTagAndProbe);
                 analysis.AddModule(&muonIsoTagAndProbe);
@@ -888,6 +1193,12 @@ int main(int argc, char* argv[]){
             }
             if(ltmet)
             {
+                analysis.AddModule(&muonltmetIDTagAndProbe);
+                analysis.AddModule(&muonltmetIsoTagAndProbe);
+                analysis.AddModule(&muonltmetIDIsoTagAndProbe);
+                analysis.AddModule(&muonltmetIDFineTagAndProbe);
+                analysis.AddModule(&muonltmetIsoFineTagAndProbe);
+                analysis.AddModule(&muonltmetIDIsoFineTagAndProbe);
                 analysis.AddModule(&muonltmetTrgTagAndProbe);
             }
             if(IsoMu24)
