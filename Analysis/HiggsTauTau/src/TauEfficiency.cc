@@ -42,14 +42,14 @@ namespace ic {
       hists_->Create("barrel_mva1_den", 100, 0, 500, 100, -1, 1);
       hists_->Create("barrel_mva2_num", 100, 0, 500, 100, -1, 1);
       hists_->Create("barrel_mva2_den", 100, 0, 500, 100, -1, 1);
-      hists_->Create("barrel_3hit_num", 100, 0, 500, 100, 0, 10);
-      hists_->Create("barrel_3hit_den", 100, 0, 500, 100, 0, 10);
+      hists_->Create("barrel_3hit_num", 100, 0, 500, 200, 0, 20);
+      hists_->Create("barrel_3hit_den", 100, 0, 500, 200, 0, 20);
       hists_->Create("endcap_mva1_num", 100, 0, 500, 100, -1, 1);
       hists_->Create("endcap_mva1_den", 100, 0, 500, 100, -1, 1);
       hists_->Create("endcap_mva2_num", 100, 0, 500, 100, -1, 1);
       hists_->Create("endcap_mva2_den", 100, 0, 500, 100, -1, 1);
-      hists_->Create("endcap_3hit_num", 100, 0, 500, 100, 0, 10);
-      hists_->Create("endcap_3hit_den", 100, 0, 500, 100, 0, 10);
+      hists_->Create("endcap_3hit_num", 100, 0, 500, 200, 0, 20);
+      hists_->Create("endcap_3hit_den", 100, 0, 500, 200, 0, 20);
     }
 
     return 0;

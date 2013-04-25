@@ -33,9 +33,9 @@ namespace ic {
     Candidate *l1met = v_l1met.at(0);
     Met const* raw_calo = event->GetPtr<Met>(uncorrected_calo_met_label_);
     Met const* corr_calo = event->GetPtr<Met>(corrected_calo_met_label_);
-    std::cout << "pt: " << corr_calo->pt() / raw_calo->pt() << std::endl;
-    std::cout << "ex: " << corr_calo->vector().px() / raw_calo->vector().px() << std::endl;
-    std::cout << "ey: " << corr_calo->vector().py() / raw_calo->vector().py() << std::endl;
+    //std::cout << "pt: " << corr_calo->pt() / raw_calo->pt() << std::endl;
+    //std::cout << "ex: " << corr_calo->vector().px() / raw_calo->vector().px() << std::endl;
+    //std::cout << "ey: " << corr_calo->vector().py() / raw_calo->vector().py() << std::endl;
     return 0;
   }
   int HTTL1MetCorrector::PostAnalysis() {

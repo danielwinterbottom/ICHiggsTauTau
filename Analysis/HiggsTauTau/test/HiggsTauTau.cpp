@@ -35,6 +35,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauDzFixer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
 
 using boost::lexical_cast;
@@ -410,6 +411,8 @@ int main(int argc, char* argv[]){
   .set_l2_file("data/jec/"+jec_payload+"_L2Relative_AK5PF.txt")
   .set_l3_file("data/jec/"+jec_payload+"_L3Absolute_AK5PF.txt")
   .set_res_file("data/jec/"+jec_payload+"_L2L3Residual_AK5PF.txt");
+
+  HTTL1MetCorrector httL1MetCorrector("HTTL1MetCorrector");
   
   // ------------------------------------------------------------------------------------
   // Electron Modules
@@ -860,7 +863,7 @@ int main(int argc, char* argv[]){
     analysis.NotifyEvent(ch);
    httPrint.PrintEvent(ch);
   }
-  
+  //                              analysis.AddModule(&httL1MetCorrector); 
   if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
@@ -889,7 +892,11 @@ int main(int argc, char* argv[]){
   //if (strategy == strategy::paper2013)
                                   //analysis.AddModule(&tauDzFixer);
                                   analysis.AddModule(&tauDzFilter);
-  if (do_tau_eff)                 analysis.AddModule(&tauEfficiency);
+  if (do_tau_eff) {
+                                  analysis.AddModule(&tauElRejectFilter);
+                                  analysis.AddModule(&tauMuRejectFilter);
+                                  analysis.AddModule(&tauEfficiency);
+  }
                                   analysis.AddModule(&tauIsoFilter);
                                   analysis.AddModule(&tauElRejectFilter);
                                   analysis.AddModule(&tauMuRejectFilter);
@@ -913,7 +920,11 @@ int main(int argc, char* argv[]){
   //if (strategy == strategy::paper2013)
                                   //analysis.AddModule(&tauDzFixer);
                                   analysis.AddModule(&tauDzFilter);
-  if (do_tau_eff)                 analysis.AddModule(&tauEfficiency);
+  if (do_tau_eff) {
+                                  analysis.AddModule(&tauElRejectFilter);
+                                  analysis.AddModule(&tauMuRejectFilter);
+                                  analysis.AddModule(&tauEfficiency);
+  }
                                   analysis.AddModule(&tauIsoFilter);
                                   analysis.AddModule(&tauElRejectFilter);
                                   analysis.AddModule(&tauMuRejectFilter);
