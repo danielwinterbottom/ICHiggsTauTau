@@ -32,7 +32,7 @@ namespace ic {
     std::cout << "-------------------------------------" << std::endl;
 
     std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
-    std::cout << boost::format(param_fmt()) % "strategy"        % Channel2String(channel_);
+    std::cout << boost::format(param_fmt()) % "strategy"        % Strategy2String(strategy_);
     std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % dilepton_label_;

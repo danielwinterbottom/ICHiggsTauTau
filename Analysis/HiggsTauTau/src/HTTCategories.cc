@@ -1,4 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
@@ -33,12 +34,17 @@ namespace ic {
   }
 
   int HTTCategories::PreAnalysis() {
-    std::cout << "** PreAnalysis Info for HTT Categories **" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "HTTCategories" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;    
     if (fs_) {
-      std::cout << "Channel: " << Channel2String(channel_) << std::endl;
-      std::cout << "Ditau Label: " << ditau_label_ << std::endl;
-      std::cout << "MET Label: " << met_label_ << std::endl;
-      std::cout << "Mass Shift: " << mass_shift_ << std::endl;
+      std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
+      std::cout << boost::format(param_fmt()) % "strategy"        % Strategy2String(strategy_);
+      std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
+      std::cout << boost::format(param_fmt()) % "dilepton_label"  % ditau_label_;
+      std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
+      std::cout << boost::format(param_fmt()) % "mass_shift"      % mass_shift_;
+      std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
 
       if (write_tree_) {
         outtree_ = fs_->make<TTree>("ntuple","ntuple");
@@ -572,7 +578,9 @@ namespace ic {
 
 
   int HTTCategories::PostAnalysis() {
-    std::cout << "** Post-Analysis Info for HTT Selection **" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "HTTCategories" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;      
     std::vector<std::string> print_selections;
     print_selections.push_back("os_sel");
     print_selections.push_back("os_con");
@@ -582,7 +590,7 @@ namespace ic {
     print_cats.push_back("inclusive");
     print_cats.push_back("vbf_loose");
     print_cats.push_back("vbf");
-    print_cats.push_back("vbf_tight");
+    // print_cats.push_back("vbf_tight");
     print_cats.push_back("1jet_high");
     print_cats.push_back("1jet_low");
     print_cats.push_back("0jet_high");

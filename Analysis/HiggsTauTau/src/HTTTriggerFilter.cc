@@ -1,4 +1,5 @@
- #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
@@ -20,11 +21,13 @@ namespace ic {
   }
 
   int HTTTriggerFilter::PreAnalysis() {
-    std::cout << "** PreAnalysis Info for HTTTriggerFilter **" << std::endl;
-    std::cout << "Channel: " << Channel2String(channel_) << std::endl;
-    std::cout << "MC: " << MC2String(mc_) << std::endl;
-    std::cout << "Pair Collection: " << pair_label_ << std::endl;
-    std::cout << "Is Data?: " << is_data_ << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "HTTTriggerFilter" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;    
+    std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
+    std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
+    std::cout << boost::format(param_fmt()) % "dilepton_label"  % pair_label_;
+    std::cout << boost::format(param_fmt()) % "is_data_"        % is_data_;
     return 0;
   }
 

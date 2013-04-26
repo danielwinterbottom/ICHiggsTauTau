@@ -1,4 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 
@@ -16,10 +17,12 @@ namespace ic {
   }
 
   int HTTEnergyScale::PreAnalysis() {
-    std::cout << "** PreAnalysis Info for HTTEnergyScale **" << std::endl;
-    std::cout << "Using Moriond Corrections: " << moriond_corrections_ << std::endl;
-    std::cout << "Input: " << input_label_ << std::endl;
-    std::cout << "Shift: " << shift_ << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "HTTEnergyScale" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;    
+    std::cout << boost::format(param_fmt()) % "moriond_corrections" % moriond_corrections_;
+    std::cout << boost::format(param_fmt()) % "input_label"         % input_label_;
+    std::cout << boost::format(param_fmt()) % "shift"               % shift_;
     return 0;
   }
 

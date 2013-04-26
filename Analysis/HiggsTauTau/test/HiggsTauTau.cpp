@@ -161,8 +161,9 @@ int main(int argc, char* argv[]){
   }
 
 
-  std::cout << "**** HiggsTauTau Analysis *****" << std::endl;
-  string param_fmt = "%-25s %-40s\n";
+  std::cout << "-------------------------------------" << std::endl;
+  std::cout << "HiggsToTauTau Analysis" << std::endl;
+  std::cout << "-------------------------------------" << std::endl;      string param_fmt = "%-25s %-40s\n";
   std::cout << boost::format(param_fmt) % "max_events" % max_events;
   std::cout << boost::format(param_fmt) % "output" % (output_folder+output_name);
   std::cout << boost::format(param_fmt) % "do_skim" % do_skim;
