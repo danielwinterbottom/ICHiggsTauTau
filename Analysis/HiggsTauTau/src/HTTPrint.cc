@@ -71,7 +71,7 @@ namespace ic {
     }
     
     for (unsigned i = 0; i < muons.size(); ++i) {
-      std::cout << "Muon " << std::endl;
+      std::cout << "Muon " << i << std::endl;
       muons[i]->Print();
       std::cout << "-dxyVertex: " << muons[i]->dxy_vertex() << std::endl;
       std::cout << "-dzVertex: " << muons[i]->dz_vertex() << std::endl;
@@ -119,6 +119,18 @@ namespace ic {
       for (unsigned j = 0; j < muons.size(); ++j) {
         std::cout << "Elec " << i << ", Muon " << j << " DR: " <<
           ROOT::Math::VectorUtil::DeltaR(elecs[i]->vector(), muons[j]->vector()) << std::endl;
+      }
+    }
+    for (unsigned i = 0; i < muons.size(); ++i) {
+      for (unsigned j = 0; j < taus.size(); ++j) {
+       std::cout << "Muon " << i << ", Tau " << j << " DR: " <<
+          ROOT::Math::VectorUtil::DeltaR(muons[i]->vector(), taus[j]->vector()) << std::endl;
+      }
+    }
+    for (unsigned i = 0; i < elecs.size(); ++i) {
+      for (unsigned j = 0; j < taus.size(); ++j) {
+       std::cout << "Elec " << i << ", Tau " << j << " DR: " <<
+          ROOT::Math::VectorUtil::DeltaR(elecs[i]->vector(), taus[j]->vector()) << std::endl;
       }
     }
     std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
