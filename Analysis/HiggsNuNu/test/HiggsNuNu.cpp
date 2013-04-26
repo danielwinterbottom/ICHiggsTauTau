@@ -565,12 +565,12 @@ int main(int argc, char* argv[]){
   HinvWeights hinvWeights = HinvWeights("HinvWeights")
     .set_era(era)
     .set_mc(mc)
-    .set_do_trg_weights(dotrgeff)
+    .set_do_trg_weights(false)
     .set_trg_applied_in_mc(true);
-
-  /*if (!is_data) {
-    hinvWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true);
-    }*/
+  
+  if (!is_data) {
+    hinvWeights.set_do_trg_weights(dotrgeff).set_trg_applied_in_mc(true);
+  }
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
     hinvWeights.set_do_w_soup(true);
@@ -810,7 +810,7 @@ int main(int argc, char* argv[]){
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
 
-   if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
+  //if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
    if (!is_data && !do_skim)       {
      analysis.AddModule(&pileupWeight);
      analysis.AddModule(&pileupWeight_up);
