@@ -76,7 +76,8 @@ int main(int argc, char* argv[]){
   string filters;
   //unsigned signal_region;             // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
-  bool dotrgeff;                  // Do trigger effeciency corrections
+  bool dotrgeff;                  // Do trigger efficiency corrections
+  bool doidisoeff;                  // Do lepton ID-iso efficiency corrections
 
  // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -107,7 +108,8 @@ int main(int argc, char* argv[]){
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
     ("upordown",            po::value<bool>(&upordown)->default_value(true))
-    ("dotrgeff",              po::value<bool>(&dotrgeff)->default_value(false)); 
+    ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
+    ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false)); 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -136,10 +138,11 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
-  //  std::cout << boost::format(param_fmt) % "signal_region" % signal_region;
   std::cout << boost::format(param_fmt) % "met_cut" % met_cut;
   std::cout << boost::format(param_fmt) % "doMetFilters" % doMetFilters;
-
+  std::cout << boost::format(param_fmt) % "filters" % filters;
+  std::cout << boost::format(param_fmt) % "dotrgeff" % dotrgeff;
+  std::cout << boost::format(param_fmt) % "doidisoeff" % doidisoeff;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -566,10 +569,13 @@ int main(int argc, char* argv[]){
     .set_era(era)
     .set_mc(mc)
     .set_do_trg_weights(false)
-    .set_trg_applied_in_mc(true);
+    .set_trg_applied_in_mc(true)
+    .set_do_idiso_weights(false);
   
   if (!is_data) {
-    hinvWeights.set_do_trg_weights(dotrgeff).set_trg_applied_in_mc(true);
+    hinvWeights.set_do_trg_weights(dotrgeff)
+      .set_trg_applied_in_mc(true)
+      .set_do_idiso_weights(doidisoeff);
   }
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
@@ -820,7 +826,7 @@ int main(int argc, char* argv[]){
    if (!do_skim) {
 
      analysis.AddModule(&dataMCTriggerPathFilter);
-
+ 
      ////analysis.AddModule(&runStats);
      
      if (is_data) {
@@ -829,7 +835,7 @@ int main(int argc, char* argv[]){
      }
      
      //jet modules
-     analysis.AddModule(&JESUncertaintyCorrector);
+     if(dojessyst==true&&(!is_data)) analysis.AddModule(&JESUncertaintyCorrector);
      
      
      analysis.AddModule(&jetIDFilter);
@@ -861,6 +867,7 @@ int main(int argc, char* argv[]){
      
 
      //Need two jets and metnomuons to apply trigger weights.
+     //need sel leptons to apply idiso weights
      analysis.AddModule(&hinvWeights);
 
      //plot before cutting

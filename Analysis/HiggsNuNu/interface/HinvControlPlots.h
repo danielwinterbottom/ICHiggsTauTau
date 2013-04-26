@@ -45,8 +45,8 @@ namespace ic {
     TH1F *n_jets_pu;
     TH1F *met_pu_trig;
     TH1F *n_jets_pu_trig;
-    //TH1F *met_pu_trig_id;
-    //TH1F *n_jets_pu_trig_id;
+    TH1F *met_pu_trig_idiso;
+    TH1F *n_jets_pu_trig_idiso;
 
     HinvWeightPlots(TFileDirectory const& dir);
 

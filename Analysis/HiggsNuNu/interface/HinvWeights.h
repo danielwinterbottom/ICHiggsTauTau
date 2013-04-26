@@ -27,6 +27,11 @@ class HinvWeights : public ModuleBase {
   TH1F *hist_trigSF_MjjHLT;
   TH1F *hist_trigSF_JetHLT;
 
+  std::vector<double> eTight_idisoSF_;
+  //std::vector<double> eVeto_idisoSF_;
+
+  std::vector<double> muTight_idSF_;
+  std::vector<double> muTight_isoSF_;
 
   double f0_,f1_,f2_,f3_,f4_,n_inc_,n1_,n2_,n3_,n4_,w0_,w1_,w2_,w3_,w4_;
   double zf0_,zf1_,zf2_,zf3_,zf4_,zn_inc_,zn1_,zn2_,zn3_,zn4_,zw0_,zw1_,zw2_,zw3_,zw4_;
@@ -45,6 +50,10 @@ class HinvWeights : public ModuleBase {
   void SetWInputYields(double n_inc, double n1, double n2, double n3, double n4);
   void SetDYTargetFractions(double zf0, double zf1, double zf2, double zf3, double zf4);
   void SetDYInputYields(double zn_inc, double zn1, double zn2, double zn3, double zn4);
+
+  unsigned findElectronPtEtaBin(double pt, double eta);
+  unsigned findMuonPtEtaBin(double pt, double eta);
+
 
 };
 

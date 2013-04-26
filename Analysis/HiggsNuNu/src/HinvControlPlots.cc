@@ -43,8 +43,8 @@ namespace ic {
     n_jets_pu = dir.make<TH1F>("n_jets_pu","n_jets_pu", 50, 0, 50);
     met_pu_trig = dir.make<TH1F>("met_pu_trig","met_pu_trig", 1000, 0, 1000);
     n_jets_pu_trig = dir.make<TH1F>("n_jets_pu_trig","n_jets_pu_trig", 50, 0, 50);
-    //met_pu_trig_id = dir.make<TH1F>("met_pu_trig_id","met_pu_trig_id", 1000, 0, 1000);
-    //n_jets_pu_trig_id = dir.make<TH1F>("n_jets_pu_trig_id","n_jets_pu_trig_id", 50, 0, 50);
+    met_pu_trig_idiso = dir.make<TH1F>("met_pu_trig_idiso","met_pu_trig_idiso", 1000, 0, 1000);
+    n_jets_pu_trig_idiso = dir.make<TH1F>("n_jets_pu_trig_idiso","n_jets_pu_trig_idiso", 50, 0, 50);
   };
 
 
@@ -249,8 +249,10 @@ namespace ic {
       (info->weight_defined("trig_mjjHLT") ? info->weight("trig_mjjHLT") : 1.0) *
       (info->weight_defined("trig_jet1HLT") ? info->weight("trig_jet1HLT") : 1.0) *
       (info->weight_defined("trig_jet2HLT") ? info->weight("trig_jet2HLT") : 1.0) ;
-    //double wt_id = ;
-    double wt = wt_/(wt_pu*wt_trig);
+    double wt_idiso = (info->weight_defined("elecTight_idisoSF")? info->weight("elecTight_idisoSF") : 1.0) *
+      (info->weight_defined("muTight_idisoSF")? info->weight("muTight_idisoSF") : 1.0);
+
+    double wt = wt_/(wt_pu*wt_trig*wt_idiso);
     weightplots_->met_noW->Fill(met_, wt);
     weightplots_->n_jets_noW->Fill(n_jets_, wt);
 
@@ -258,9 +260,29 @@ namespace ic {
     weightplots_->met_pu->Fill(met_, wt);
     weightplots_->n_jets_pu->Fill(n_jets_, wt);
 
+    wt_trig = (info->weight_defined("trig_metL1")? info->weight("trig_metL1") : 
+	       (info->weight_defined("!trig_metL1")? info->weight("!trig_metL1") : 1.0)) *
+      (info->weight_defined("trig_metHLT") ? info->weight("trig_metHLT") : 
+       (info->weight_defined("!trig_metHLT") ?info->weight("!trig_metHLT") : 1.0)) *
+      (info->weight_defined("trig_mjjHLT") ? info->weight("trig_mjjHLT") : 
+       (info->weight_defined("!trig_mjjHLT") ? info->weight("!trig_mjjHLT") : 1.0)) *
+      (info->weight_defined("trig_jet1HLT") ? info->weight("trig_jet1HLT") : 
+       (info->weight_defined("!trig_jet1HLT") ? info->weight("!trig_jet1HLT") : 1.0)) *
+      (info->weight_defined("trig_jet2HLT") ? info->weight("trig_jet2HLT") : 
+       (info->weight_defined("!trig_jet2HLT") ? info->weight("!trig_jet2HLT") : 1.0)) ;
     wt = wt*wt_trig;
     weightplots_->met_pu_trig->Fill(met_, wt);
     weightplots_->n_jets_pu_trig->Fill(n_jets_, wt);
+
+    wt_idiso = (info->weight_defined("elecTight_idisoSF")? info->weight("elecTight_idisoSF") : 
+		(info->weight_defined("!elecTight_idisoSF")? info->weight("!elecTight_idisoSF") : 1.0)) *
+      (info->weight_defined("muTight_idisoSF")? info->weight("muTight_idisoSF") : 
+       (info->weight_defined("!muTight_idisoSF")? info->weight("!muTight_idisoSF") : 1.0));
+    wt = wt*wt_idiso;
+    weightplots_->met_pu_trig_idiso->Fill(met_, wt);
+    weightplots_->n_jets_pu_trig_idiso->Fill(n_jets_, wt);
+
+
   }
 
   void HinvControlPlots::FillSystPlots(EventInfo const* info){
