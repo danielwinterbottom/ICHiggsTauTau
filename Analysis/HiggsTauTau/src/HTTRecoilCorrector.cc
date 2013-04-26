@@ -27,15 +27,17 @@ namespace ic {
   }
 
   int HTTRecoilCorrector::PreAnalysis() {
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "PreAnalysis Info for HTT Recoil Corrector" << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Using MET: " << met_label_ << std::endl;
-    std::cout << "Channel: " << Channel2String(channel_) << std::endl;
-    std::cout << "Strategy: " << Strategy2String(strategy_) << std::endl;
-    std::cout << "MC: " << MC2String(mc_) << std::endl;
-    std::cout << "Era: " << Era2String(era_) << std::endl;
-    std::cout << "W Hack: " << w_hack_ << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "HTTRecoilCorrector" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+
+    std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
+    std::cout << boost::format(param_fmt()) % "strategy"        % Channel2String(channel_);
+    std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
+    std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
+    std::cout << boost::format(param_fmt()) % "dilepton_label"  % dilepton_label_;
+    std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
+    std::cout << boost::format(param_fmt()) % "jets_label"      % jets_label_;
 
     std::string process_file;
     std::string data_file;
@@ -48,10 +50,9 @@ namespace ic {
         data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
         mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
       } else {
-        std::cout << "MC not recognised, module disabled." << std::endl;
         return 0;
       }
-    } else if (strategy_ == strategy::moriond2013) {
+    } else if (strategy_ == strategy::moriond2013 || strategy_ == strategy::paper2013) {
       if (mc_ == mc::summer12_53X) { 
         data_file = "data/recoilfits/recoilfit_datamm53X_2012_njet.root";
         mc_file = "data/recoilfits/recoilfit_zmm53X_2012_njet.root";
@@ -59,7 +60,6 @@ namespace ic {
         data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
         mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
       } else {
-        std::cout << "MC not recognised, module disabled." << std::endl;
         return 0;
       }
     } else {
@@ -72,7 +72,9 @@ namespace ic {
       is_wjets_ = true;
       if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_wjets53X_20pv_njet.root";
       if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_wjets42X_20pv_njet.root";
-      std::cout << "W+Jets sample detected, using process file: " << process_file << std::endl;
+      std::cout << boost::format(param_fmt()) % "enabled"       % true;
+      std::cout << boost::format(param_fmt()) % "type"          % "W+Jets";
+      std::cout << boost::format(param_fmt()) % "process_file"  % process_file;
       boson_id_.push_back(24);
     }
 
@@ -86,7 +88,9 @@ namespace ic {
       if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
       if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
       if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
-      std::cout << "Signal sample detected, using process file: " << process_file << std::endl;
+      std::cout << boost::format(param_fmt()) % "enabled"       % true;
+      std::cout << boost::format(param_fmt()) % "type"          % "signal";
+      std::cout << boost::format(param_fmt()) % "process_file"  % process_file;      
       boson_id_.push_back(25);
       boson_id_.push_back(35);
       boson_id_.push_back(36);
@@ -100,21 +104,23 @@ namespace ic {
         if (strategy_ == strategy::moriond2013) process_file = "data/recoilfits/recoilfit_zmm53X_2012_njet.root";
       }
       if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
-      std::cout << "DYJetsToLL sample detected, using process file: " << process_file << std::endl;
+      std::cout << boost::format(param_fmt()) % "enabled"       % true;
+      std::cout << boost::format(param_fmt()) % "type"          % "Z+jets";
+      std::cout << boost::format(param_fmt()) % "process_file"  % process_file;        
       boson_id_.push_back(23);
     }
 
     if (disable) {
-      std::cout << "This sample does not require a recoil correction, module disabled!" << std::endl;
+      std::cout << boost::format(param_fmt()) % "enabled"      % false;
       return 0;
+    } else {
+      std::cout << boost::format(param_fmt()) % "data_file"  % data_file;        
+      std::cout << boost::format(param_fmt()) % "mc_file"  % mc_file;        
+      corrector_ = new RecoilCorrector(process_file);
+      corrector_->addMCFile(mc_file);
+      corrector_->addDataFile(data_file);
     }
 
-    std::cout << "Using data file: " << data_file << std::endl;
-    std::cout << "Using MC file: " << mc_file << std::endl;
-
-    corrector_ = new RecoilCorrector(process_file);
-    corrector_->addMCFile(mc_file);
-    corrector_->addDataFile(data_file);
     return 0;
   }
 
@@ -138,7 +144,7 @@ namespace ic {
       }
     }
     if (!boson) {
-      std::cerr << "Recoil Corrector could not find gen boson!" << std::endl;
+      std::cerr << "Error in <HTTRecoilCorrector>: Boson GenParticle not found, an exception will be thrown" << std::endl;
       throw;
     }
 
@@ -156,15 +162,6 @@ namespace ic {
     if (is_wjets_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet)) { // Use e or mu for et, mt and mtmet
       lep_pt = dilepton.at(0)->GetCandidate("lepton1")->pt();
       lep_phi = dilepton.at(0)->GetCandidate("lepton1")->phi();
-      if (w_hack_) {
-        std::vector<Candidate *> mu_cand;
-        mu_cand.push_back(dilepton.at(0)->GetCandidate("lepton1"));
-        std::vector<PFJet *> unfiltered_jets = event->GetPtrVec<PFJet>("pfJetsPFlowTemp","pfJetsPFlow");
-        ic::erase_if(unfiltered_jets,! boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-        ic::erase_if(unfiltered_jets,!(boost::bind(PFJetID, _1) && bind(&PFJet::pu_id_mva_loose, _1)) );
-        ic::erase_if(unfiltered_jets,! boost::bind(MinDRToCollection<Candidate *>, _1, mu_cand, 0.5));
-        njets = unfiltered_jets.size();
-      }
     } else if (is_wjets_ && (channel_ == channel::em) ) { // Use mu for em
       lep_pt = dilepton.at(0)->GetCandidate("lepton2")->pt();
       lep_phi = dilepton.at(0)->GetCandidate("lepton2")->phi();

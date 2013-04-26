@@ -122,32 +122,32 @@ namespace ic {
       std::string region = (fabs(tau->eta()) < 1.5) ? "barrel" : "endcap";
       TH2F *h_mva1_num = hists_->Get_Histo(region+"_mva1_num");
       TH2F *h_mva1_den = hists_->Get_Histo(region+"_mva1_den");
-      for (unsigned i = 1; i <= h_mva1_num->GetNbinsY(); ++i) {
+      for (int i = 1; i <= h_mva1_num->GetNbinsY(); ++i) {
         if (mva1 > h_mva1_num->GetYaxis()->GetBinLowEdge(i)) {
           h_mva1_num->Fill(tau->pt(), h_mva1_num->GetYaxis()->GetBinCenter(i), wt);
         }
       }
-      for (unsigned i = 1; i <= h_mva1_den->GetNbinsY(); ++i) {
+      for (int i = 1; i <= h_mva1_den->GetNbinsY(); ++i) {
         h_mva1_den->Fill(tau->pt(), h_mva1_den->GetYaxis()->GetBinCenter(i), wt);
       }
       TH2F *h_mva2_num = hists_->Get_Histo(region+"_mva2_num");
       TH2F *h_mva2_den = hists_->Get_Histo(region+"_mva2_den");
-      for (unsigned i = 1; i <= h_mva2_num->GetNbinsY(); ++i) {
+      for (int i = 1; i <= h_mva2_num->GetNbinsY(); ++i) {
         if (mva2 > h_mva2_num->GetYaxis()->GetBinLowEdge(i)) {
           h_mva2_num->Fill(tau->pt(), h_mva2_num->GetYaxis()->GetBinCenter(i), wt);
         }
       }
-      for (unsigned i = 1; i <= h_mva2_den->GetNbinsY(); ++i) {
+      for (int i = 1; i <= h_mva2_den->GetNbinsY(); ++i) {
         h_mva2_den->Fill(tau->pt(), h_mva2_den->GetYaxis()->GetBinCenter(i), wt);
       }
       TH2F *h_hits_num = hists_->Get_Histo(region+"_3hit_num");
       TH2F *h_hits_den = hists_->Get_Histo(region+"_3hit_den");
-      for (unsigned i = 1; i <= h_hits_num->GetNbinsY(); ++i) {
+      for (int i = 1; i <= h_hits_num->GetNbinsY(); ++i) {
         if (hits < (h_hits_num->GetYaxis()->GetBinLowEdge(i)+h_hits_num->GetYaxis()->GetBinWidth(i))) {
           h_hits_num->Fill(tau->pt(), h_hits_num->GetYaxis()->GetBinCenter(i), wt);
         }
       }
-      for (unsigned i = 1; i <= h_hits_den->GetNbinsY(); ++i) {
+      for (int i = 1; i <= h_hits_den->GetNbinsY(); ++i) {
         h_hits_den->Fill(tau->pt(), h_hits_den->GetYaxis()->GetBinCenter(i), wt);
       }
     }

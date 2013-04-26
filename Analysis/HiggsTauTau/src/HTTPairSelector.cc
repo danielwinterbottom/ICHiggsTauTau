@@ -29,16 +29,15 @@ namespace ic {
   int HTTPairSelector::PreAnalysis() {
     std::string param_fmt = "%-25s %-40s\n";
 
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "PreAnalysis Info for HTT Pair Selector" << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "HTTPairSelector" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
     std::cout << boost::format(param_fmt) % "pair_label" % pair_label_;
     std::cout << boost::format(param_fmt) % "met_label" % met_label_;
     std::cout << boost::format(param_fmt) % "use_most_isolated" % use_most_isolated_;
     std::cout << boost::format(param_fmt) % "scale_met_for_tau" % scale_met_for_tau_;
     std::cout << boost::format(param_fmt) % "tau_scale" % tau_scale_;
     std::string allowed_str = "";
-    std::cout << "Allowed tau decay modes: ";
     if (allowed_tau_modes_ == "") {
       allowed_str = "all modes";
     } else {

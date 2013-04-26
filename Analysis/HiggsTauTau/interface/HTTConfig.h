@@ -11,6 +11,10 @@
 
 namespace ic {
 
+inline std::string param_fmt() {
+	return "%-25s %-40s\n";
+}
+
 
 // We define a "type-safe" enum class
 // It stops us from doing something like Color c = Shape::square

@@ -1,4 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/SVFitTest.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
@@ -43,19 +44,21 @@ namespace ic {
   }
 
   int SVFitTest::PreAnalysis() {
-    std::cout << "***PreAnalysis Info for SVFitTest***" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "SVFitTest" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+
     if (channel_ == channel::et) decay_mode_ = 0;
     if (channel_ == channel::etmet) decay_mode_ = 0;
     if (channel_ == channel::mt) decay_mode_ = 0;
     if (channel_ == channel::mtmet) decay_mode_ = 0;
     if (channel_ == channel::em) decay_mode_ = 1;
-    std::cout << "Decay Mode: " << decay_mode_ << std::endl;
-    std::cout << "Run Mode: " << run_mode_ << std::endl;
-    std::cout << "Fail Mode: " << fail_mode_ << std::endl;
-    std::cout << "Require inputs Match: " << require_inputs_match_ << std::endl;
-    std::cout << "Dilepton Label: " << dilepton_label_ << std::endl;
-    std::cout << "MET Label: " << met_label_ << std::endl;
-
+    std::cout << boost::format(param_fmt()) % "decay_mode"              % decay_mode_;
+    std::cout << boost::format(param_fmt()) % "run_mode"                % run_mode_;
+    std::cout << boost::format(param_fmt()) % "fail_mode"               % fail_mode_;
+    std::cout << boost::format(param_fmt()) % "require_inputs_match"    % require_inputs_match_;
+    std::cout << boost::format(param_fmt()) % "dilepton_label"          % dilepton_label_;
+    std::cout << boost::format(param_fmt()) % "met_label"               % met_label_;
 
     // This code first strips the string ".root" from give filename
     // (if found) and appends "_SVIFIT".  This is then taken as the
@@ -68,20 +71,14 @@ namespace ic {
       outname_.erase(outname_.begin() + foundpos, outname_.begin() + foundpos + sub.length());
     outname_ += "_SVFIT";
     boost::filesystem::path folder_p(outname_);
-    std::cout << "Using directory: " << outname_ << std::endl;
+    std::cout << boost::format(param_fmt()) % "folder"         % outname_;
     if (fullpath_ == "") {
-      std::cout << "No path specified for SVFitTest directories, using the working directory:" << std::endl;
       fullpath_ = boost::filesystem::current_path().string();
-      std::cout << "--:" << fullpath_ << std::endl;
-    } else {
-      std::cout << "Path for SVFitTest directory specifed:" << std::endl;
-      std::cout << "--:" << fullpath_ << std::endl;
     }
+    std::cout << boost::format(param_fmt()) % "directory"      % fullpath_;
+
     total_path_ = operator/(fullpath_, folder_p);
     boost::filesystem::create_directories(total_path_);
-    std::cout << "Total path:" << std::endl;
-    std::cout << "--:" << total_path_.string() << std::endl;
-
     if (run_mode_ == 2) {
       boost::filesystem::directory_iterator it(total_path_);
       for (; it != boost::filesystem::directory_iterator(); ++it) {

@@ -39,87 +39,78 @@ namespace ic {
   }
 
   int HTTWeights::PreAnalysis() {
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "PreAnalysis Info for HTTWeights" << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "Channel: " << Channel2String(channel_) << std::endl;
-    std::cout << "Era: " << Era2String(era_) << std::endl;
-    std::cout << "MC: " << MC2String(mc_) << std::endl;
-    std::cout << "Do Trg Weights?: \t\t" << do_trg_weights_ << std::endl;
-    std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
-    std::cout << "Do ID & iso weights?: \t\t" << do_idiso_weights_ << std::endl;
-    std::cout << "Do ID weights?: \t\t" << do_id_weights_ << std::endl;
-    std::cout << "e->tau fake rate?: \t\t" << do_etau_fakerate_ << std::endl;
-    std::cout << "m->tau fake rate?: \t\t" << do_mtau_fakerate_ << std::endl;
-    std::cout << "e-mu elec fake rates?: \t\t" << do_emu_e_fakerates_ << std::endl;
-    std::cout << "e-mu muon fake rates?: \t\t" << do_emu_m_fakerates_ << std::endl;
-    std::cout << "e-mu TTBar scaling?: \t\t" << do_top_factors_ << std::endl;
-    std::cout << "Generate b-tag weight?: \t" << do_btag_weight_ << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "HTTWeights" << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
+    std::cout << boost::format(param_fmt()) % "channel"             % Channel2String(channel_);
+    std::cout << boost::format(param_fmt()) % "era"                 % Era2String(era_);
+    std::cout << boost::format(param_fmt()) % "mc"                  % MC2String(mc_);
+    std::cout << boost::format(param_fmt()) % "do_trg_weights"      % do_trg_weights_;
+    if (do_trg_weights_) {
+      std::cout << boost::format(param_fmt()) % "trg_applied_in_mc" % trg_applied_in_mc_;
+    }
+    std::cout << boost::format(param_fmt()) % "do_idiso_weights"    % do_idiso_weights_;
+    std::cout << boost::format(param_fmt()) % "do_id_weights"       % do_id_weights_;
+    std::cout << boost::format(param_fmt()) % "do_etau_fakerate"    % do_etau_fakerate_;
+    std::cout << boost::format(param_fmt()) % "do_mtau_fakerate"    % do_mtau_fakerate_;
+    std::cout << boost::format(param_fmt()) % "do_emu_e_fakerates"  % do_emu_e_fakerates_;
+    std::cout << boost::format(param_fmt()) % "do_emu_m_fakerates"  % do_emu_m_fakerates_;
+    std::cout << boost::format(param_fmt()) % "do_top_factors"      % do_top_factors_;
+    std::cout << boost::format(param_fmt()) % "do_btag_weight"      % do_btag_weight_;
 
     if (ggh_mass_ != "") {
       std::string file = "data/ggh_weights/weight_ptH_"+ggh_mass_+".root";
-      std::cout << "Applying Higgs pT reweighting with: " << file << std::endl;
+      std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
       ggh_weights_ = new TFile(file.c_str());
       gDirectory->cd("powheg_weight");
       ggh_hist_ = (TH1F*)gDirectory->Get(("weight_hqt_fehipro_fit_"+ggh_mass_).c_str());
     }
 
-    muTauSF2011 = new TFile("data/scale_factors/hltScaleFactors_2011.root");
-    hist_muTauSF2011 = (TH2D*)gDirectory->Get("LooseIsoPFTauRatio");
-    hist_muTauSF2011PFTau10 = (TH2D*)gDirectory->Get("LooseIsoPFTau10PtEta");
-    hist_muTauSF2011PFTau15 = (TH2D*)gDirectory->Get("LooseIsoPFTau15PtEta");
-    hist_muTauSF2011PFTau20 = (TH2D*)gDirectory->Get("LooseIsoPFTau20PtEta");
-    hist_muTauSF2011PFTau15MC = (TH2D*)gDirectory->Get("LooseIsoPFTau15PtEtaMC");
-
     if (do_emu_e_fakerates_ || do_emu_m_fakerates_) {
+      std::string electron_fr_file, muon_fr_file;
       if (era_ == era::data_2012_hcp) {
-        ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_12ifb.root");
-        MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_12ifb.root");
+        electron_fr_file  = "data/emu_fakerate/ElectronFakeRate_2012_12ifb.root";
+        muon_fr_file      = "data/emu_fakerate/MuonFakeRate_2012_12ifb.root";
       } else if (era_ == era::data_2012_donly || era_ == era::data_2012_moriond) {
-        ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2012_19ifb.root");
-        MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2012_19ifb.root");
+        electron_fr_file  = "data/emu_fakerate/ElectronFakeRate_2012_19ifb.root";
+        muon_fr_file      = "data/emu_fakerate/MuonFakeRate_2012_19ifb.root";
       } else {
-        ElectronFRFile = new TFile("data/emu_fakerate/ElectronFakeRate_2011.root");
-        MuonFRFile = new TFile("data/emu_fakerate/MuonFakeRate_2011.root");
-      }
+        electron_fr_file  = "data/emu_fakerate/ElectronFakeRate_2011.root";
+        muon_fr_file      = "data/emu_fakerate/MuonFakeRate_2011.root";
+      }    
+      std::cout << boost::format(param_fmt()) % "electron_fr_file"  % electron_fr_file;
+      std::cout << boost::format(param_fmt()) % "muon_fr_file"      % muon_fr_file;
+      ElectronFRFile = new TFile(electron_fr_file.c_str());
+      MuonFRFile = new TFile(muon_fr_file.c_str());
       ElectronFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(ElectronFRFile->Get("ElectronFakeRateDenominatorV4_Ele8CaloIdLCaloIsoVLCombinedSample_ptThreshold35_PtEta"));
       MuonFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(MuonFRFile->Get("MuonFakeRateDenominatorV6_Mu8PtCombinedSample_ptThreshold25_PtEta"));
       ElectronFakeRateHist_PtEta->SetDirectory(0);
       MuonFakeRateHist_PtEta->SetDirectory(0);
-      std::cout << "Muon: " << MuonFakeRateHist_PtEta->GetXaxis()->GetXmin() << "\t"
-                            << MuonFakeRateHist_PtEta->GetXaxis()->GetXmax() << "\t"
-                            << MuonFakeRateHist_PtEta->GetYaxis()->GetXmin() << "\t"
-                            << MuonFakeRateHist_PtEta->GetYaxis()->GetXmax() << std::endl;
-      std::cout << "Electron: " << ElectronFakeRateHist_PtEta->GetXaxis()->GetXmin() << "\t"
-                                << ElectronFakeRateHist_PtEta->GetXaxis()->GetXmax() << "\t"
-                                << ElectronFakeRateHist_PtEta->GetYaxis()->GetXmin() << "\t"
-                                << ElectronFakeRateHist_PtEta->GetYaxis()->GetXmax() << std::endl;
-
     }
 
     if (do_w_soup_) {
-      std::cout << "Making W Soup:" << std::endl;
+      std::cout << boost::format(param_fmt()) % "make_w_soup"      % true;
       std::cout << "nInc = " << n_inc_ << std::endl;
       w1_ = (n_inc_*f1_) / ( (n_inc_*f1_) + n1_ );
       w2_ = (n_inc_*f2_) / ( (n_inc_*f2_) + n2_ );
       w3_ = (n_inc_*f3_) / ( (n_inc_*f3_) + n3_ );
       w4_ = (n_inc_*f4_) / ( (n_inc_*f4_) + n4_ );
-      std::cout << "f1 = " << f1_ << "\t" << "n1 = " << n1_ << "\t" << "w1 = " << w1_ << std::endl;
-      std::cout << "f2 = " << f2_ << "\t" << "n2 = " << n2_ << "\t" << "w2 = " << w2_ << std::endl;
-      std::cout << "f3 = " << f3_ << "\t" << "n3 = " << n3_ << "\t" << "w3 = " << w3_ << std::endl;
-      std::cout << "f4 = " << f4_ << "\t" << "n4 = " << n4_ << "\t" << "w4 = " << w4_ << std::endl;
+      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % f1_ % n1_ % w1_;
+      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % f2_ % n2_ % w2_;
+      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % f3_ % n3_ % w3_;
+      std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % f4_ % n4_ % w4_;
     }
     if (do_dy_soup_) {
-      std::cout << "Making DY Soup:" << std::endl;
+      std::cout << boost::format(param_fmt()) % "make_dy_soup"      % true;
       std::cout << "nInc = " << zn_inc_ << std::endl;
       zw1_ = (zn_inc_*zf1_) / ( (zn_inc_*zf1_) + zn1_ );
       zw2_ = (zn_inc_*zf2_) / ( (zn_inc_*zf2_) + zn2_ );
       zw3_ = (zn_inc_*zf3_) / ( (zn_inc_*zf3_) + zn3_ );
       zw4_ = (zn_inc_*zf4_) / ( (zn_inc_*zf4_) + zn4_ );
-      std::cout << "f1 = " << zf1_ << "\t" << "n1 = " << zn1_ << "\t" << "w1 = " << zw1_ << std::endl;
-      std::cout << "f2 = " << zf2_ << "\t" << "n2 = " << zn2_ << "\t" << "w2 = " << zw2_ << std::endl;
-      std::cout << "f3 = " << zf3_ << "\t" << "n3 = " << zn3_ << "\t" << "w3 = " << zw3_ << std::endl;
-      std::cout << "f4 = " << zf4_ << "\t" << "n4 = " << zn4_ << "\t" << "w4 = " << zw4_ << std::endl;
+      std::cout << boost::format("f1=%-9.2f  n1=%-9i  w1=%-9.2f \n") % zf1_ % zn1_ % zw1_;
+      std::cout << boost::format("f2=%-9.2f  n2=%-9i  w2=%-9.2f \n") % zf2_ % zn2_ % zw2_;
+      std::cout << boost::format("f3=%-9.2f  n3=%-9i  w3=%-9.2f \n") % zf3_ % zn3_ % zw3_;
+      std::cout << boost::format("f4=%-9.2f  n4=%-9i  w4=%-9.2f \n") % zf4_ % zn4_ % zw4_;
     }
     return 0;
   }
@@ -227,28 +218,19 @@ namespace ic {
             ele_trg_mc = emc22ABCD;
           }
 
-          double tdata20A   = 1.0;
-          double tdata20B   = 1.0;
           double tdata20ABC = 1.0;
           double tdataABCD  = 1.0;
-          double tmc20AB    = 1.0;
           double tmc20ABC   = 1.0;
           double tmcABCD    = 1.0;
 
           if (t_eta < 1.5) {
-            tdata20A    = Efficiency(t_pt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
-            tdata20B    = Efficiency(t_pt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
             tdata20ABC  = Efficiency(t_pt, 18.43442868, 2.08967536, 3.27357845, 6.96327309, 0.85564484);
             tdataABCD   = Efficiency(t_pt, 18.686211,   1.993524,  3.202713,  3.612693,  0.871640);
-            tmc20AB     = Efficiency(t_pt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
             tmc20ABC    = Efficiency(t_pt, 18.40815138, 1.53235636, 3.55989632, 1.74542709, 0.90118450);
             tmcABCD     = Efficiency(t_pt, 18.431118,   1.572877,  3.301699,  4.760769,  0.899620);
           } else {
-            tdata20A    = Efficiency(t_pt, 18.84658959, 0.25958704, 0.17300958, 2.43491208, 0.85872017);
-            tdata20B    = Efficiency(t_pt, 18.48663118, 1.63417147, 20.25695815, 138.55422224, 0.89456038);
             tdata20ABC  = Efficiency(t_pt, 18.16839440, 1.86184564, 4.39116712, 1.01410741, 1.39240481);
             tdataABCD   = Efficiency(t_pt, 18.472954,   1.606388,  3.468975,  55.629620,   0.828977);
-            tmc20AB     = Efficiency(t_pt, 18.77448606, 0.45765507, 0.26077509, 13.43372485, 0.88037836);
             tmc20ABC    = Efficiency(t_pt, 18.29028052, 1.56239255, 11.03605631, 155.89290151, 0.85683995);
             tmcABCD     = Efficiency(t_pt, 18.257217,   1.632443,  9.283116,  40.219585,  0.858643);
           }
@@ -377,26 +359,17 @@ namespace ic {
             mu_trg_mc = mcABCD;
           }
 
-          double tdata20A    = 1.0;
-          double tdata20B    = 1.0;
           double tdata20ABC  = 1.0;
           double tdataABCD   = 1.0;
-          double tmc20AB     = 1.0;
           double tmc20ABC    = 1.0;
           double tmcABCD    = 1.0;
           if (fabs(t_eta) < 1.5) {
-            tdata20A   = Efficiency(t_pt, 18.52262128, 1.85879597, 3.48843815, 1.15491294, 1.02489024);
-            tdata20B   = Efficiency(t_pt, 17.92648563, 1.96846742, 4.46406075, 1.02023992, 1.52260575);
-            tmc20AB    = Efficiency(t_pt, 18.86257072, 0.25680380, 0.16916101, 2.42931257, 0.89590264);
             tdata20ABC = Efficiency(t_pt, 18.50940288, 1.62285299, 2.73232995, 1.79135412, 0.91481432);
             tmc20ABC   = Efficiency(t_pt, 18.80484409, 0.19082817, 0.19983010, 1.81979820, 0.93270649);
             tdataABCD  = Efficiency(t_pt, 18.52036251,  1.47760312,  2.53574445,  1.71202550,  0.93019930);
             tmcABCD    = Efficiency(t_pt, 18.88740627,  0.10718873,  0.12277723,  1.60581265,  0.95041892);
 
           } else {
-            tdata20A   = Efficiency(t_pt, 18.90119559, 0.14025596, 0.14482632, 1.56126508, 0.81188198);
-            tdata20B   = Efficiency(t_pt, 18.59856420, 2.49132550, 10.99643595, 1.50651123, 0.87952970);
-            tmc20AB    = Efficiency(t_pt, 18.74764561, 1.82036845, 701.46994969, 101.57913480, 0.82547043);
             tdata20ABC = Efficiency(t_pt, 18.45678784, 0.68697618, 0.57008697, 3.73470825, 0.84747211);
             tmc20ABC   = Efficiency(t_pt, 18.25975478, 1.32745225, 1.70380810, 149.18410074, 0.87377770);
             tdataABCD  = Efficiency(t_pt, 18.41225333,  0.76598912,  0.60544260,  5.38350881,  0.85870108);
