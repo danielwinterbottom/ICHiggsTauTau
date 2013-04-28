@@ -250,7 +250,7 @@ int main(int argc, char* argv[]){
     }
     tau_pt = 20.0;
     tau_eta = 2.3;
-    if (channel == channel::mtmet) muon_pt = 9.0;
+    if (channel == channel::mtmet) muon_pt = 8.0;
   }
 
   if (channel == channel::em) {
@@ -637,7 +637,10 @@ int main(int argc, char* argv[]){
       tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
       tau_anti_elec_discr_1 = "againstElectronLoose";
       tau_anti_elec_discr_2 = "againstElectronLoose";
-      tau_anti_muon_discr   = "againstElectronLooseMVA3";
+      tau_anti_muon_discr   = "againstMuonTight2";
+    }
+    if (do_skim) { // For 3hits make wp a bit looser when skimming
+      tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
     }
   }
 
@@ -663,6 +666,9 @@ int main(int argc, char* argv[]){
     .set_input_label("taus")
     .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
     .set_min(1);
+  if (strategy == strategy::paper2013 && do_skim) {
+    tauIsoFilter.set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) < 3.0) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5));
+  }
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
     .set_predicate( (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5) && (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_2) > 0.5) )                     

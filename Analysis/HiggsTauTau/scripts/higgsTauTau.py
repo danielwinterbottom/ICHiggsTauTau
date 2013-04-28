@@ -180,7 +180,7 @@ if options.data:
 				--special_mode=22 --output_name=%(JOB)s.root &> jobs/Special_22_%(JOB)s.log" jobs/Special_22_%(JOB)s.sh' % vars())
 				os.system('%(JOBSUBMIT)s jobs/Special_22_%(JOB)s.sh' % vars())
 
-				if PRODUCTION == 'Feb20':
+				if PRODUCTION == 'Feb20' or PRODUCTION == 'Apr11':
 					JOB='Data_%s_%s' % (ch,YR)
 					os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_23_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
 					--special_mode=23 --output_name=%(JOB)s.root &> jobs/Special_23_%(JOB)s.log" jobs/Special_23_%(JOB)s.sh' % vars())

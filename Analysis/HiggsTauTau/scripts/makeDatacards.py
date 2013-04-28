@@ -32,6 +32,8 @@ parser.add_option("--central", dest="central", action='store_true', default=Fals
                   help="Only process the central energy scale inputs.")
 parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
                   help="Only make inputs for visible mass, no svfit.")
+parser.add_option("--blind", dest="blind", action='store_true', default=False,
+                  help="blind data")
 parser.add_option("--mssm", dest="mssm", action='store_true', default=False,
                   help="Make datacards for the MSSM analysis")
 parser.add_option("-e", dest="energy", type='string', default='8',
@@ -93,8 +95,8 @@ if options.svfit_vbf_plot: svfit_vbf_plot=options.svfit_vbf_plot
 if options.mvis_plot: mvis_plot=options.mvis_plot
 if options.mvis_vbf_plot: mvis_vbf_plot=options.mvis_vbf_plot
 
-
-
+blind = "false"
+if options.blind: blind = "true"
 
 
 
@@ -107,14 +109,14 @@ for ch in channels:
       for cat in CATS:
         os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
           ' --method=%(cat)s --plot_name="%(svfit_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-          ' --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
+          ' --blind=%(blind)s --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
           ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
       CATS=[ '5' ]
       if options.mssm: CATS=[ '6','7','12' ]
       for cat in CATS:
         os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
           ' --method=%(cat)s --plot_name="%(svfit_vbf_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-          ' --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
+          ' --blind=%(blind)s --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
           ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
     os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root datacard_*.root' % vars())
     os.system('rm datacard_*.root')
@@ -125,14 +127,14 @@ for ch in channels:
     for cat in CATS:
       os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
         ' --method=%(cat)s --plot_name="%(mvis_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-        ' --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
+        ' --blind=%(blind)s --x_blind_min=80 --x_blind_max=140 --make_datacard=true --norm_bins=true --verbose=false'
         ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
     CATS=[ '5' ]
     if options.mssm: CATS=[ '6','7','12' ]
     for cat in CATS:
       os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
         ' --method=%(cat)s --plot_name="%(mvis_vbf_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-        ' --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
+        ' --blind=%(blind)s --x_blind_min=80 --x_blind_max=140 --make_datacard=true --norm_bins=true --verbose=false'
         ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
   os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV-mvis%(output)s.root datacard_*.root' % vars())
   os.system('rm datacard_*.root')
