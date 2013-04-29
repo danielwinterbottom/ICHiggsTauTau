@@ -694,7 +694,9 @@ process.icEventInfoProducer.weights = cms.PSet(
     tauspinner                          = cms.InputTag("TauSpinnerReco","TauSpinnerWT","EmbeddedSPIN"),
     zmm_eff                             = cms.InputTag("ZmumuEvtSelEffCorrWeightProducer","weight","EmbeddedRECO"),
     muon_rad                            = cms.InputTag("muonRadiationCorrWeightProducer","weight","EmbeddedRECO"),
-    kin_weight                          = cms.InputTag("embeddingKineReweightRECembedding","genTau2PtVsGenTau1Pt")
+    kin_weight1                         = cms.InputTag("embeddingKineReweightRECembedding","genTau2PtVsGenTau1Pt")
+    kin_weight2                         = cms.InputTag("embeddingKineReweightRECembedding","genTau2EtaVsGenTau1Eta")
+    kin_weight3                         = cms.InputTag("embeddingKineReweightRECembedding","genDiTauMassVsGenDiTauPt")
    # tauspinner                          = cms.InputTag("","","")
     )
 
