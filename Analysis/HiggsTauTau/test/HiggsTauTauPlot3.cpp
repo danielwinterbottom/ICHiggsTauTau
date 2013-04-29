@@ -173,6 +173,7 @@ int main(int argc, char* argv[]){
   bool draw_ss;																	// Draw the same-sign plot instead of opposite-sign
   bool use_ztt_mc;															// Use DYJetsToTauTau for shape instead of Embedded
   bool add_sm_signal_as_bg;										  // Add the 125 GeV SM signal shapes
+  bool is_paper;                                // Tweaking some things for the paper
 
   // Plotting options
   string x_axis_label;													// Label for the X-axis
@@ -267,6 +268,7 @@ int main(int argc, char* argv[]){
     ("shift_tscale",        po::value<bool>(&shift_tscale)->default_value(false))
     ("official_style",      po::value<bool>(&official_style)->default_value(false))
     ("draw_signal",         po::value<bool>(&draw_signal)->default_value(true))
+    ("is_paper",            po::value<bool>(&is_paper)->default_value(false))
     ("draw_band_on_stack",  po::value<bool>(&draw_band_on_stack)->default_value(false))
     ("tscale_shift",        po::value<double>(&tscale_shift)->default_value(0.0))
     ("qcd_shift",           po::value<double>(&qcd_shift)->default_value(1.0))
@@ -675,16 +677,18 @@ int main(int argc, char* argv[]){
   TH1F *zj_hist = nullptr;
 
   TH1F *zll_hist_ss = nullptr; 
-  double zll_norm_ss = 0; 
+  double zll_norm_ss = 0;
+
+  std::string soup = is_paper ? "Soup" : "";
 
 
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
-		zll_hist_ss = (TH1F*)(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr()->Clone());
-		zll_norm_ss = Integral(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr());
+		zll_hist_ss = (TH1F*)(plots[Token("DYJetsToLL"+soup,cat,ss_sel)].hist_ptr()->Clone());
+		zll_norm_ss = Integral(plots[Token("DYJetsToLL"+soup,cat,ss_sel)].hist_ptr());
 
-    double zll_inclusive = Integral(plots[Token("DYJetsToLL","inclusive",os_sel)].hist_ptr());
-    double zl_inclusive = Integral(plots[Token("DYJetsToLL-L","inclusive",os_sel)].hist_ptr());
-    double zj_inclusive = Integral(plots[Token("DYJetsToLL-J","inclusive",os_sel)].hist_ptr());
+    double zll_inclusive = Integral(plots[Token("DYJetsToLL"+soup,"inclusive",os_sel)].hist_ptr());
+    double zl_inclusive = Integral(plots[Token("DYJetsToLL-L"+soup,"inclusive",os_sel)].hist_ptr());
+    double zj_inclusive = Integral(plots[Token("DYJetsToLL-J"+soup,"inclusive",os_sel)].hist_ptr());
 
 	  double zll_embed_eff = (Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","inclusive",os_sel)].hist_ptr()));
     if (verbose) {
@@ -706,9 +710,9 @@ int main(int argc, char* argv[]){
     }
   
     if (method <= 4 || method >= 6) {
-      zll_norm = Integral(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr());
-      zl_norm = Integral(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr());
-      zj_norm = Integral(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr());
+      zll_norm = Integral(plots[Token("DYJetsToLL"+soup,cat,os_sel)].hist_ptr());
+      zl_norm = Integral(plots[Token("DYJetsToLL-L"+soup,cat,os_sel)].hist_ptr());
+      zj_norm = Integral(plots[Token("DYJetsToLL-J"+soup,cat,os_sel)].hist_ptr());
       if (zll_norm > 0 && (zl_norm > 0 || zj_norm > 0)) {
         double zl_norm_new = zll_norm * (zl_norm/(zl_norm+zj_norm));
         double zj_norm_new = zll_norm * (zj_norm/(zl_norm+zj_norm));
@@ -726,12 +730,12 @@ int main(int argc, char* argv[]){
         zll_norm = zl_norm + zj_norm;
       }
       // zll_hist = (TH1F*)(plots[Token("DYJetsToLL",cat,os_sel)].hist_ptr()->Clone());
-      zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
-      if (method == 3 && channel == channel::et) zl_hist = (TH1F*)(plots[Token("Special_18_DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
-      zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J",cat,os_sel)].hist_ptr()->Clone());
+      zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L"+soup,cat,os_sel)].hist_ptr()->Clone());
+      if (method == 3 && channel == channel::et && !is_paper) zl_hist = (TH1F*)(plots[Token("Special_18_DYJetsToLL-L",cat,os_sel)].hist_ptr()->Clone());
+      zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J"+soup,cat,os_sel)].hist_ptr()->Clone());
       if (method == 6 || method == 7 || method == 12) {
-        zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L",cat+"_loose",os_sel)].hist_ptr()->Clone());
-        zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J",cat+"_loose",os_sel)].hist_ptr()->Clone());
+        zl_hist = (TH1F*)(plots[Token("DYJetsToLL-L"+soup,cat+"_loose",os_sel)].hist_ptr()->Clone());
+        zj_hist = (TH1F*)(plots[Token("DYJetsToLL-J"+soup,cat+"_loose",os_sel)].hist_ptr()->Clone());
       }
       if (Integral(zl_hist) > 0.0) zl_hist->Scale( zl_norm / Integral(zl_hist) );
       if (Integral(zj_hist) > 0.0) zj_hist->Scale( zj_norm / Integral(zj_hist) );
@@ -769,9 +773,15 @@ int main(int argc, char* argv[]){
         zj_norm *= zj_shift;
       }
       zll_norm = zl_norm + zj_norm;
-      if (channel == channel::et) zl_hist =  (TH1F*)(plots[Token("Special_18_DYJetsToLL-L","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
-      if (channel == channel::mt) zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-L","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
-      zj_hist =  (TH1F*)(plots[Token("DYJetsToLL-J","vbf_loose", os_sel)].hist_ptr()->Clone());
+      if (channel == channel::et) {
+        if (!is_paper) {
+        zl_hist =  (TH1F*)(plots[Token("Special_18_DYJetsToLL-L","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
+        } else {
+        zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-LSoup","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
+        }
+      }
+      if (channel == channel::mt) zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-L"+soup,"vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
+      zj_hist =  (TH1F*)(plots[Token("DYJetsToLL-J"+soup,"vbf_loose", os_sel)].hist_ptr()->Clone());
       zl_hist->Scale( zl_norm / Integral(zl_hist) );
       zj_hist->Scale( zj_norm / Integral(zj_hist) );
       zll_hist = (TH1F*)zj_hist->Clone();

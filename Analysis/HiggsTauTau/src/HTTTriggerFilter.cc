@@ -168,7 +168,7 @@ namespace ic {
         if (run >= 170249 && run <= 180252) {
           trig_obj_label = "triggerObjectsMu8Ele17";
           leg1_filter = "hltMu8Ele17CaloIdTCaloIsoVLPixelMatchFilter";
-          leg2_filter = "hltL1MuOpenEG5L3Filtered8";  
+          leg2_filter = "hltL1MuOpenEG12L3Filtered8";  
         }
         // 2012 Triggers
         if (run >= 190456 && run <= 191690) {

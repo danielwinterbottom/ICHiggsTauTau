@@ -148,7 +148,10 @@ namespace ic {
     }
     for (unsigned i = 0; i < jets.size(); ++i) {
       std::cout << "Jet " << i << ": " << jets[i]->vector() << std::endl;
-      std::cout << "-pileup id loose: " << jets[i]->pu_id_mva_loose() << std::endl;
+      std::cout << "-pileup id mva: " << jets[i]->pu_id_mva_value()  << std::endl;
+      std::cout << "-pileup id loose (2012): " << PUJetID(jets[i], true)  << std::endl;
+      std::cout << "-pileup id loose (2011): " << PUJetID(jets[i], false)  << std::endl;
+      std::cout << "-PF ID: " << PFJetID(jets[i]) << std::endl;
       std::cout << "-beta: " << jets[i]->beta() << std::endl;
       std::cout << "-beta_max: " << jets[i]->beta_max() << std::endl;
       double charged_frac = (jets[i]->charged_em_energy() + jets[i]->charged_had_energy()) / jets[i]->uncorrected_energy();
