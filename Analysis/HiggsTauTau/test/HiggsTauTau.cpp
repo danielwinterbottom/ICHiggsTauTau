@@ -870,7 +870,9 @@ int main(int argc, char* argv[]){
     analysis.NotifyEvent(ch);
    httPrint.PrintEvent(ch);
   }
-  //                              analysis.AddModule(&httL1MetCorrector); 
+  if ( (channel == channel::etmet || 
+        channel == channel::mtmet)
+        && !is_data )             analysis.AddModule(&httL1MetCorrector); 
   if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
