@@ -35,6 +35,7 @@ class ICEventInfoProducer : public edm::EDProducer {
       std::string lepton_rho_name_;
       std::string vertex_name_;
       std::vector< std::pair<std::string, edm::InputTag> > filters_;
+      std::vector< std::pair<std::string, edm::InputTag> > weights_;
       std::set< std::string > invert_filter_logic_;
       std::map<std::string, std::size_t> observed_filters_;
 

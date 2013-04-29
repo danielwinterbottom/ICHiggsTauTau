@@ -48,6 +48,13 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& iConfig) {
      }
     } 
   }
+  if (iConfig.exists("weights")) {
+    edm::ParameterSet weight_params = iConfig.getParameter<edm::ParameterSet>("weights");
+    std::vector<std::string> weight_names = weight_params.getParameterNamesForType<edm::InputTag>();
+    for (std::vector<std::string>::const_iterator it = weight_names.begin(); it != weight_names.end(); ++it) {
+     weights_.push_back(std::make_pair(*it, weight_params.getParameter<edm::InputTag>(*it)));
+    } 
+  }
   //embed_weight_ = iConfig.getParameter<std::string>("EmbedWeight");
 
   info_ = new ic::EventInfo();
@@ -85,6 +92,13 @@ void ICEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   if (iEvent.getByLabel(edm::InputTag("generator","minVisPtFilter","EmbeddedRECO"),info_weight_handle))
     info_->set_weight("embed_weight", info_weight_handle->filterEfficiency());
 
+  for (unsigned i = 0; i < weights_.size(); ++i) {
+    edm::Handle<double> weight;
+    iEvent.getByLabel(weights_[i].second, weight);
+    double weights_result = (*weight);
+    // std::cout << weights_[i].first << "\t\t" << weights_result << std::endl;
+    info_->set_weight(weights_[i].first, weights_result);
+  }
   edm::Handle<reco::VertexCollection> vertexCollection;
   iEvent.getByLabel(vertex_name_,vertexCollection);
 
