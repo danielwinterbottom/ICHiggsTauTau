@@ -626,6 +626,7 @@ int main(int argc, char* argv[]){
   } else if (strategy == strategy::paper2013) {
     if (channel == channel::et || channel == channel::etmet) {
       tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      //tau_iso_discr         = "byLooseIsolationMVA2";
       tau_anti_elec_discr_1 = "againstElectronTightMVA3";
       tau_anti_elec_discr_2 = "againstElectronTightMVA3";
       tau_anti_muon_discr   = "againstMuonLoose2";
@@ -635,13 +636,14 @@ int main(int argc, char* argv[]){
     }
     if (channel == channel::mt || channel == channel::mtmet) {
       tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      //tau_iso_discr         = "byLooseIsolationMVA2";
       tau_anti_elec_discr_1 = "againstElectronLoose";
       tau_anti_elec_discr_2 = "againstElectronLoose";
       tau_anti_muon_discr   = "againstMuonTight2";
     }
-    if (do_skim) { // For 3hits make wp a bit looser when skimming
-      tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
-    }
+  //  if (do_skim) { // For 3hits make wp a bit looser when skimming
+  //    tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
+  //  }
   }
 
   std::cout << "** Tau Discriminators **" << std::endl;
@@ -666,9 +668,6 @@ int main(int argc, char* argv[]){
     .set_input_label("taus")
     .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
     .set_min(1);
-  if (strategy == strategy::paper2013 && do_skim) {
-    tauIsoFilter.set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) < 3.0) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5));
-  }
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
     .set_predicate( (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5) && (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_2) > 0.5) )                     
