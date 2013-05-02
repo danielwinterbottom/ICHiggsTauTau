@@ -12,8 +12,8 @@
 
 namespace ic {
 
-  HinvPrint::HinvPrint(std::string const& name) : ModuleBase(name) {
-
+  HinvPrint::HinvPrint(std::string const& name, bool runLumiEvt) : ModuleBase(name) {
+    runLumiEvt_ = runLumiEvt;
   }
 
   HinvPrint::~HinvPrint() {
@@ -21,6 +21,15 @@ namespace ic {
   }
 
   int HinvPrint::PreAnalysis() {
+    if (runLumiEvt_) {
+      std::ostringstream outName;
+      outName << "output/EventList.txt" ;
+      foutList_.open(outName.str());
+      if (!foutList_.is_open()){
+	std::cerr << " -- Failed to open file " << outName.str() << " for printing event list." << std::endl;
+	throw;
+      }
+    }
     return 0;
   }
 
@@ -31,7 +40,13 @@ namespace ic {
   int HinvPrint::Execute(TreeEvent *event) {
 
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
- 
+
+    if (runLumiEvt_) {
+      foutList_ << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
+      return 0; 
+    }
+
+
     if (events_.find(eventInfo->event()) != events_.end() || events_.size()==0) {
 
       std::ostringstream outName;
@@ -207,6 +222,7 @@ namespace ic {
 
   }
   int HinvPrint::PostAnalysis() {
+    foutList_.close();
     return 0;
   }
   

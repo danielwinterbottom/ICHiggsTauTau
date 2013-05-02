@@ -7,7 +7,9 @@
 #include "TFile.h"
 
 
-
+#include <sstream>
+#include <fstream>
+#include <iostream>
 #include <string>
 
 namespace ic {
@@ -15,9 +17,11 @@ namespace ic {
 class HinvPrint : public ModuleBase {
  private:
   std::set<unsigned> events_;
+  std::ofstream foutList_;
+  bool runLumiEvt_;
 
  public:
-  HinvPrint(std::string const& name);
+  HinvPrint(std::string const& name, bool runLumiEvt=false);
   virtual ~HinvPrint();
 
   virtual int PreAnalysis();

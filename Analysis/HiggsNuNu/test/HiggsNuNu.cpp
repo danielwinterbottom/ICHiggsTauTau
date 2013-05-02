@@ -219,6 +219,7 @@ int main(int argc, char* argv[]){
   
 
   HinvPrint hinvPrint("HinvPrint");
+  HinvPrint hinvPrintList("HinvPrintList",true);
 
 
   bool fixForEWKZ = false;
@@ -888,7 +889,7 @@ int main(int argc, char* argv[]){
      
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
-     analysis.AddModule(&hinvPrint);
+     //analysis.AddModule(&hinvPrint);
      analysis.AddModule(&jetPairFilter);
 
      
@@ -962,6 +963,8 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&tightMassJetPairFilter);
      analysis.AddModule(&controlPlots_tightMjj);
      analysis.AddModule(&wjetsPlots_tightMjj);
+
+     analysis.AddModule(&hinvPrintList);
 
      //dphi cut: don't filter events anymore !
      //Just plot histograms for different regions
