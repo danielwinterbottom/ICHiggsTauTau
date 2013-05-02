@@ -85,6 +85,29 @@ namespace ic {
     return result;
   }
 
+  bool PFJetIDNoHFCut(PFJet const* jet) {
+    int n_pu = jet->charged_multiplicity() + jet->neutral_multiplicity() + jet->HF_had_multiplicity() + jet->HF_em_multiplicity();
+    double eta = fabs(jet->eta());
+    bool result = false;
+
+    double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
+
+    if (eta < 2.4) {
+      result = neutralFrac   < 0.99
+	    && jet->neutral_em_energy_frac()    < 0.99
+            && n_pu                             > 0
+            && jet->charged_had_energy_frac()   > 0.0
+            && jet->charged_multiplicity()      > 0
+            && jet->charged_em_energy_frac()    < 0.99;
+    } else {
+      result = neutralFrac   < 0.99
+            && jet->neutral_em_energy_frac()    < 0.99
+            && n_pu                             > 0;
+    }
+    return result;
+  }
+
+
   bool PUJetID(PFJet const* jet, bool is_2012) {
     // Pt2030_Loose   = cms.vdouble(-0.80,-0.85,-0.84,-0.85),
     // Pt3050_Loose   = cms.vdouble(-0.80,-0.74,-0.68,-0.77)
@@ -138,6 +161,84 @@ namespace ic {
       } else return true;
     }
   }
+
+
+  bool PileupJetID(PFJet const* jet, unsigned training) {
+    double abs_eta = fabs(jet->eta());
+    double pt = jet->pt();
+    double pu_id_mva_value = jet->pu_id_mva_value();
+    if (training == 0) {
+      if (pt > 20. && pt <= 30.) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.80);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.85);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.84);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.85);
+            } else return true;
+      } else if (pt > 30.) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.80);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.74);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.68);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.77);
+            } else return true;
+      } else return true;
+    } else if (training == 1) {
+      if (pt > 20. && pt <= 30.) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.40);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.85);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.7);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.6);
+            } else return true;
+      } else if (pt > 30.) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.40);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.85);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.7);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.6);
+            } else return true;
+      } else return true;
+    } else if (training == 2) {
+      if (pt > 20. && pt <= 30.) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.63);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.60);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.55);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.45);
+            } else return true;
+      } else if (pt > 30.) {
+            if (abs_eta < 2.5) {
+                  return (pu_id_mva_value > -0.63);
+            } else if (abs_eta < 2.75) {
+                  return (pu_id_mva_value > -0.60);
+            } else if (abs_eta < 3.0) {
+                  return (pu_id_mva_value > -0.55);
+            } else if (abs_eta < 5.0) {
+                  return (pu_id_mva_value > -0.45);
+            } else return true;
+      } else return true;
+    } else {
+      return true;
+    }
+  }
+
+
 
   double PZeta(CompositeCandidate const* cand, Candidate const* met, double const& alpha) {
     if (cand->AsVector().size() < 2) return 0.0;

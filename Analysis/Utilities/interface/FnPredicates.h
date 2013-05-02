@@ -73,8 +73,14 @@ namespace ic {
 
 
   bool CaloJetID(CaloJet const* jet);
+
+  // Standard particle-flow jet id
   bool PFJetID(PFJet const* jet);
+  // Particle-flow jet id without the HF energy in the neutral energy cut
+  bool PFJetIDNoHFCut(PFJet const* jet);
   bool PUJetID(PFJet const* jet, bool is_2012);
+  // Pileup jet id cuts.  0 = 2011, 1 = 2012, 2 = 2012 (december training)
+  bool PileupJetID(PFJet const* jet, unsigned training);
 
   double PZeta(CompositeCandidate const* cand, Candidate const* met, double const& alpha);
   double PZetaVis(CompositeCandidate const* cand);
