@@ -931,8 +931,31 @@ namespace ic {
         event->Add("idweight_2", m_idiso);
         event->Add("isoweight_1", double(1.0));
         event->Add("isoweight_2", double(1.0));
+      } else if (channel_ == channel::etmet) {
+        Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
+        double pt = elec->pt();
+        double sc_eta = fabs(elec->sc_eta());
+        double ele_idiso = 1.0;
+        if (sc_eta < 0.8) {
+          if (pt <= 15.0)                  ele_idiso = 0.6794;
+          if (pt > 15.0 && pt <= 20.0)     ele_idiso = 0.8141;
+        } else if (sc_eta >= 0.8 && sc_eta < 1.479) {
+          if (pt <= 15.0)                  ele_idiso = 0.7353;
+          if (pt > 15.0 && pt <= 20.0)     ele_idiso = 0.8093;
+        } else {
+          if (pt <= 15.0)                  ele_idiso = 0.5834;
+          if (pt > 15.0 && pt <= 20.0)     ele_idiso = 0.7499;
+        }
+        if (pt > 20.0 && pt <= 30.0 && sc_eta < 1.479)  { ele_idiso = 0.9100*0.9468; }
+        if (pt > 20.0 && pt <= 30.0 && sc_eta >= 1.479) { ele_idiso = 0.8244*0.9586; }
+        
+        weight *= (ele_idiso);
+        event->Add("idweight_1", ele_idiso);
+        event->Add("idweight_2", double(1.0));
+        event->Add("isoweight_1", double(1.0));
+        event->Add("isoweight_2", double(1.0));
       }
-    }
+    } 
 
     eventInfo->set_weight("lepton", weight);
 

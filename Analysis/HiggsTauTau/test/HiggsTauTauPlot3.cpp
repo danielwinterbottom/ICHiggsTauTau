@@ -780,7 +780,7 @@ int main(int argc, char* argv[]){
         zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-LSoup","vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
         }
       }
-      if (channel == channel::mt) zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-L"+soup,"vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
+      if (channel == channel::mt || channel == channel::mtmet) zl_hist =  (TH1F*)(plots[Token("DYJetsToLL-L"+soup,"vbf_loose_jets20", os_sel)].hist_ptr()->Clone());
       zj_hist =  (TH1F*)(plots[Token("DYJetsToLL-J"+soup,"vbf_loose", os_sel)].hist_ptr()->Clone());
       zl_hist->Scale( zl_norm / Integral(zl_hist) );
       zj_hist->Scale( zj_norm / Integral(zj_hist) );
@@ -1170,7 +1170,11 @@ int main(int argc, char* argv[]){
       qcd_norm = qcd_inclusive * qcd_eff;
       // if (verbose) std::cout << "Numberator: " << Integral(ss_sel["Special_3_Data"+sel].hist_ptr()) << std::endl;
       // if (verbose) std::cout << "Denominator: " << Integral(ss_sel["Special_3_Datainclusive"].hist_ptr()) << std::endl;
-      qcd_hist = (TH1F*)(plots[Token("Special_3_Data","vbf_loose_jets20",ss_sel)].hist_ptr()->Clone());
+      if (channel == channel::mtmet) {
+        qcd_hist = (TH1F*)(plots[Token("Special_3_Data","vbf",ss_sel)].hist_ptr()->Clone());
+      } else {
+        qcd_hist = (TH1F*)(plots[Token("Special_3_Data","vbf_loose_jets20",ss_sel)].hist_ptr()->Clone());
+      }
     }
     //-----------------------
     // btag 
@@ -1523,6 +1527,7 @@ int main(int argc, char* argv[]){
       std::cout << "qqH Err: " << Error(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;      
     }
     signal_hist->Add(plots[Token("WH_ZH_TTH_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr());
+    std::cout << boost::format(yield_fmt) % "Signal" % Integral(signal_hist) % Error(signal_hist);
     signal_hist->Scale(draw_signal_factor);
   } else {
     signal_hist = (TH1F*)(plots[Token("SUSYGluGluToHToTauTau_M-"+draw_mssm_signal_mass,cat,os_sel)].hist_ptr()->Clone());

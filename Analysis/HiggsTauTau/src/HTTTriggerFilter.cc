@@ -27,7 +27,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % pair_label_;
-    std::cout << boost::format(param_fmt()) % "is_data_"        % is_data_;
+    std::cout << boost::format(param_fmt()) % "is_data"         % is_data_;
     return 0;
   }
 
@@ -327,6 +327,7 @@ namespace ic {
     }
 
     if (channel_ == channel::mtmet && !is_data_) {
+      /*
       std::vector<TriggerObject *> mu8_obj = objs; // Make a copy of the Mu8 Trigger objects so we can filter
       ic::erase_if(mu8_obj, !boost::bind(MinPtMaxEta, _1, 8.0, 2.1));
       std::vector<Candidate *> l1muon = event->GetPtrVec<Candidate>("l1extraMuons");
@@ -335,22 +336,25 @@ namespace ic {
       ic::erase_if(hlt_taus, !boost::bind(MinPtMaxEta, _1, 20.0, 999.0));
       ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5) );
       ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "byIsolation") > 0.5) );
+      */
       std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
       for (unsigned i = 0; i < dileptons.size(); ++i) {
-        bool leg1_hlt_match = IsFilterMatched(dileptons[i]->At(0), mu8_obj, leg1_filter, 0.5);
-        std::vector<Candidate *> mu_as_vector;
-        mu_as_vector.push_back(dileptons[i]->At(0));
-        bool leg1_l1_match = MatchByDR(mu_as_vector, l1muon, 0.5, false, false).size() > 0;
-        bool leg1_match = leg1_hlt_match && leg1_l1_match;
-        std::vector<Candidate *> tau_as_vector;
-        tau_as_vector.push_back(dileptons[i]->At(1));
-        bool leg2_match = MatchByDR(tau_as_vector, hlt_taus, 0.5, false, false).size() > 0;
+        // bool leg1_hlt_match = IsFilterMatched(dileptons[i]->At(0), mu8_obj, leg1_filter, 0.5);
+        // std::vector<Candidate *> mu_as_vector;
+        // mu_as_vector.push_back(dileptons[i]->At(0));
+        // bool leg1_l1_match = MatchByDR(mu_as_vector, l1muon, 0.5, false, false).size() > 0;
+        // bool leg1_match = leg1_hlt_match && leg1_l1_match;
+        // std::vector<Candidate *> tau_as_vector;
+        // tau_as_vector.push_back(dileptons[i]->At(1));
+        // bool leg2_match = MatchByDR(tau_as_vector, hlt_taus, 0.5, false, false).size() > 0;
         bool l1_met = l1met.at(0)->pt() > 26.;
-        if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
+        // if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
+        if (l1_met) dileptons_pass.push_back(dileptons[i]);
       }
     }
 
     if (channel_ == channel::etmet && !is_data_) {
+      /*
       std::vector<TriggerObject *> ele8_obj = objs; // Make a copy of the Mu8 Trigger objects so we can filter
       ic::erase_if(ele8_obj, !boost::bind(MinPtMaxEta, _1, 13.0, 2.1));
       std::vector<Candidate *> l1emiso = event->GetPtrVec<Candidate>("l1extraEmIsolated");
@@ -359,18 +363,20 @@ namespace ic {
       ic::erase_if(hlt_taus, !boost::bind(MinPtMaxEta, _1, 20.0, 999.0));
       ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5) );
       ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "byIsolation") > 0.5) );
+      */
       std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
       for (unsigned i = 0; i < dileptons.size(); ++i) {
-        bool leg1_hlt_match = IsFilterMatched(dileptons[i]->At(0), ele8_obj, leg1_filter, 0.5);
-        std::vector<Candidate *> ele_as_vector;
-        ele_as_vector.push_back(dileptons[i]->At(0));
-        bool leg1_l1_match = MatchByDR(ele_as_vector, l1emiso, 0.5, false, false).size() > 0;
-        bool leg1_match = leg1_hlt_match && leg1_l1_match;
-        std::vector<Candidate *> tau_as_vector;
-        tau_as_vector.push_back(dileptons[i]->At(1));
-        bool leg2_match = MatchByDR(tau_as_vector, hlt_taus, 0.5, false, false).size() > 0;
+        // bool leg1_hlt_match = IsFilterMatched(dileptons[i]->At(0), ele8_obj, leg1_filter, 0.5);
+        // std::vector<Candidate *> ele_as_vector;
+        // ele_as_vector.push_back(dileptons[i]->At(0));
+        // bool leg1_l1_match = MatchByDR(ele_as_vector, l1emiso, 0.5, false, false).size() > 0;
+        // bool leg1_match = leg1_hlt_match && leg1_l1_match;
+        // std::vector<Candidate *> tau_as_vector;
+        // tau_as_vector.push_back(dileptons[i]->At(1));
+        // bool leg2_match = MatchByDR(tau_as_vector, hlt_taus, 0.5, false, false).size() > 0;
         bool l1_met = l1met.at(0)->pt() > 36.;
-        if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
+        // if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
+        if (l1_met) dileptons_pass.push_back(dileptons[i]);
       }
     }
 

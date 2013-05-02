@@ -5,7 +5,7 @@ from optparse import OptionParser
 import os
 
 
-CHANNELS= ['et', 'mt', 'em']
+CHANNELS= ['et', 'mt', 'em','etmet','mtmet']
 SCALES= ['1', '2', '0']
 
 
@@ -127,14 +127,14 @@ for ch in channels:
     for cat in CATS:
       os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
         ' --method=%(cat)s --plot_name="%(mvis_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-        ' --blind=%(blind)s --x_blind_min=80 --x_blind_max=140 --make_datacard=true --norm_bins=true --verbose=false'
+        ' --blind=%(blind)s --x_blind_min=50 --x_blind_max=110 --make_datacard=true --norm_bins=true --verbose=false'
         ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
     CATS=[ '5' ]
     if options.mssm: CATS=[ '6','7','12' ]
     for cat in CATS:
       os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
         ' --method=%(cat)s --plot_name="%(mvis_vbf_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-        ' --blind=%(blind)s --x_blind_min=80 --x_blind_max=140 --make_datacard=true --norm_bins=true --verbose=false'
+        ' --blind=%(blind)s --x_blind_min=20 --x_blind_max=80 --make_datacard=true --norm_bins=true --verbose=false'
         ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
   os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV-mvis%(output)s.root datacard_*.root' % vars())
   os.system('rm datacard_*.root')

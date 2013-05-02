@@ -778,6 +778,7 @@ int main(int argc, char* argv[]){
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
+  if (channel == channel::etmet || channel == channel::mtmet) httWeights.set_trg_applied_in_mc(false);
 
   if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
     httWeights.set_do_w_soup(true);
@@ -853,7 +854,7 @@ int main(int argc, char* argv[]){
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(1)
     .set_require_inputs_match(false)
-    .set_split(10000)
+    .set_split(7000)
     .set_dilepton_label("emtauCandidates")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder);
@@ -966,7 +967,7 @@ int main(int argc, char* argv[]){
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
-                                  analysis.AddModule(&httRecoilCorrector);
+    if (mc != mc::fall11_42X)     analysis.AddModule(&httRecoilCorrector);
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) 
                                   analysis.AddModule(&svfit);

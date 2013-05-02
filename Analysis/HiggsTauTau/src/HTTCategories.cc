@@ -100,6 +100,7 @@ namespace ic {
     InitCoreControlPlots("inclusive");
 
     InitCategory("vbf");
+    InitCoreControlPlots("vbf");
 
     // InitCategory("tautau_vbf");
 
@@ -118,16 +119,18 @@ namespace ic {
     InitCoreControlPlots("1jet");
 
     InitCategory("1jet_high");
+    InitCoreControlPlots("1jet_high");
 
     InitCategory("1jet_low");
+    InitCoreControlPlots("1jet_low");
 
     InitCategory("1jet_low_nometcut");
 
     InitCategory("0jet_high");
-    // InitCoreControlPlots("0jet_high");
+    InitCoreControlPlots("0jet_high");
 
     InitCategory("0jet_low");
-    // InitCoreControlPlots("0jet_low");
+    InitCoreControlPlots("0jet_low");
 
     InitCategory("btag");
 
@@ -136,7 +139,7 @@ namespace ic {
 
     InitCategory("btag_high");
     InitCategory("btag_high_loose");
-
+    
     // InitCategory("sasha");
 
     InitCategory("btag_loose");
@@ -392,13 +395,19 @@ namespace ic {
     // 1-jet High Category
     // In the et channel, apply a MET > 30 cut
     if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ > pt2_split && n_bjets_ == 0) {
-      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) SetPassCategory("1jet_high");
+      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) {
+        SetPassCategory("1jet_high");
+        FillCoreControlPlots("1jet_high");
+      }
     }
 
     // 1-jet Low Category
     // In the et channel, apply a MET > 30 cut
     if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
-      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) SetPassCategory("1jet_low");
+      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) {
+        SetPassCategory("1jet_low");
+        FillCoreControlPlots("1jet_low");
+      }
     }
 
     // 1-jet Low Category
@@ -415,13 +424,13 @@ namespace ic {
     // 0-jet High Category
     if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) {
       SetPassCategory("0jet_high");
-      // FillCoreControlPlots("0jet_high");
+      FillCoreControlPlots("0jet_high");
     }
 
     // 0-jet Low Category
     if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) {
       SetPassCategory("0jet_low");
-      // FillCoreControlPlots("0jet_low");
+      FillCoreControlPlots("0jet_low");
     }
 
     // auto lowpt_jets_copy = lowpt_jets;
