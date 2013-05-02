@@ -669,17 +669,17 @@ namespace ic {
           } 
           mu_trg = muD;
           mu_trg_mc = mcD;
-          double tdataABCD   = 1.0;
-          double tmcABCD    = 1.0;
+          double tdataD   = 1.0;
+          double tmcD    = 1.0;
           if (fabs(t_eta) < 1.5) {
-            tdataABCD  = Efficiency(t_pt, 18.52036251,  1.47760312,  2.53574445,  1.71202550,  0.93019930);
-            tmcABCD    = Efficiency(t_pt, 18.88740627,  0.10718873,  0.12277723,  1.60581265,  0.95041892);
+            tdataD  = Efficiency(t_pt, 19.09,  0.236111,  0.140104,  2.361672, 0.9137);
+            tmcD    = Efficiency(t_pt, 18.84,  0.962342,  2.103198,  1.014981, 1.8846);
           } else {
-            tdataABCD  = Efficiency(t_pt, 18.41225333,  0.76598912,  0.60544260,  5.38350881,  0.85870108);
-            tmcABCD    = Efficiency(t_pt, 18.30439676,  1.44360240,  3.79358997,  1.07560564,  0.93103925);
+            tdataD  = Efficiency(t_pt, 19.49,  0.003359,  0.005832,  1.000378, 85.3401);
+            tmcD    = Efficiency(t_pt, 19.01,  0.492647,  0.449299,  137.190323, 0.8850);
           }
-          tau_trg = tdataABCD;
-          tau_trg_mc = tmcABCD;
+          tau_trg = tdataD;
+          tau_trg_mc = tmcD;
         } 
         if (trg_applied_in_mc_) {
           mu_trg = mu_trg / mu_trg_mc;

@@ -80,6 +80,7 @@ int main(int argc, char* argv[]){
   bool moriond_tau_scale;         // Use new central tau scale shifts
   bool large_tscale_shift;        // Shift tau energy scale by +/- 6% instead of 3%
   bool do_tau_eff;                // Run the tau efficiency module
+  unsigned pu_id_training;        // Pileup jet id training
   /* Skims/notes needed for em channel
   // Speical Mode 20 Fake Electron for emu
   // Speical Mode 21 Fake Muon for emu 
@@ -130,7 +131,8 @@ int main(int argc, char* argv[]){
       ("moriond_tau_scale",   po::value<bool>(&moriond_tau_scale)->default_value(false))
       ("large_tscale_shift",  po::value<bool>(&large_tscale_shift)->default_value(false))
       ("do_tau_eff",          po::value<bool>(&do_tau_eff)->default_value(false))
-      ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""));
+      ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""))
+      ("pu_id_training",     po::value<unsigned>(&pu_id_training)->default_value(1));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -190,6 +192,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
   std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
+  std::cout << boost::format(param_fmt) % "pu_id_training" % pu_id_training;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -727,10 +730,11 @@ int main(int argc, char* argv[]){
     .set_reference_label("emtauCandidates")
     .set_min_dr(0.5);
 
+
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
     .set_input_label("pfJetsPFlow")
-    .set_predicate((bind(PFJetID, _1)) && bind(PUJetID, _1, era != era::data_2011));
+    .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
 
    
   // ------------------------------------------------------------------------------------
