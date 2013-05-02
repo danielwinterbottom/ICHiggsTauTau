@@ -59,8 +59,8 @@ for METCUT in 130 #0
 	    echo "Using job-submission: " $JOBSUBMIT
 	fi
 	
-Process HiggsNuNu specific backgrounds
-Signal files and DYtoNuNu
+#Process HiggsNuNu specific backgrounds
+#Signal files and DYtoNuNu
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
 	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
 	  do

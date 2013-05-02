@@ -35,6 +35,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvJESUncertainty.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -216,6 +217,10 @@ int main(int argc, char* argv[]){
   // Misc Modules
   // ------------------------------------------------------------------------------------
   
+
+  HinvPrint hinvPrint("HinvPrint");
+
+
   bool fixForEWKZ = false;
   if (output_name.find("DYJJ01") != output_name.npos) fixForEWKZ = true;
 
@@ -459,7 +464,7 @@ int main(int argc, char* argv[]){
 
   OverlapFilter<PFJet, Muon> jetMuonOverlapFilter = OverlapFilter<PFJet, Muon>("jetMuonOverlapFilter")
     .set_input_label("pfJetsPFlow")
-    .set_reference_label("vetoMuonsNoIso")
+    .set_reference_label("vetoMuons") //NoIso")
     .set_min_dr(0.5);
 
   OneCollCompositeProducer<PFJet> jjPairProducer = OneCollCompositeProducer<PFJet>
@@ -883,6 +888,7 @@ int main(int argc, char* argv[]){
      
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
+     analysis.AddModule(&hinvPrint);
      analysis.AddModule(&jetPairFilter);
 
      

@@ -59,12 +59,13 @@ int metQCDSasha(){//main
   files.push_back("MC_W3JetsToLNu_taunu");
   files.push_back("MC_W4JetsToLNu_taunu");
 
-
+  std::string folder = "output_muNoIso";
+  std::string suffix = "_type01_muNoIso";
 
   const unsigned nFiles = files.size();
 
   TFile *fBkg[nFiles];
-  TFile *output = new TFile("BkgForQCDEstimation_muNoIso.root","RECREATE");
+  TFile *output = new TFile(("BkgForQCDEstimation"+suffix+".root").c_str(),"RECREATE");
 
   double lLumi = 19500.;
   
@@ -91,7 +92,7 @@ int metQCDSasha(){//main
   normalisation[7] = 54.838/9970431.0;
   normalisation[8] = 33.21/10000283.0;
   normalisation[9] = 17.654/9799908.0;
-  normalisation[10] = 0.45/510501.0;
+  normalisation[10] = (0.70/0.101*0.2)/510501.0;
   normalisation[11] = 3503.7/30459503.0;
   normalisation[12] = 3503.7/30459503.0;
   normalisation[13] = 3503.7/30459503.0;
@@ -144,7 +145,7 @@ int metQCDSasha(){//main
     //get histograms
     for (unsigned iBkg(0); iBkg<nFiles; ++iBkg){//loop on bkg files
       lPath.str("");
-      lPath << "../output_sashajetsel/nunu/MET0/" << files[iBkg] << ".root";
+      lPath << "../" << folder << "/nunu/MET0/" << files[iBkg] << ".root";
       fBkg[iBkg] = TFile::Open(lPath.str().c_str());
       fBkg[iBkg]->cd(lSelection[iS].c_str());
       met[iBkg][iS] = (TH1F*)gDirectory->Get(lHistName.str().c_str());
@@ -240,7 +241,7 @@ int metQCDSasha(){//main
       //thstack1.Draw();
 
     myc->Update();
-    myc->Print(("bkgQCDSasha_muNoIso_"+lSelection[iS]+".pdf").c_str());
+    myc->Print(("bkgQCDSasha"+suffix+"_"+lSelection[iS]+".pdf").c_str());
   
     output->Add(metRangeTotal[iS]);
 
