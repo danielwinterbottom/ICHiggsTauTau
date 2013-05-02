@@ -191,6 +191,43 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
   --paramfile=./scripts/Moriond_params_2012.dat --extra_pad=1.1 #$SCALE_MT_INC
 
 
+  PLOT="m_vis_sm"
+  ./bin/PlotCompare  \
+  -p "vbf:Full VBF:output/Paper_2013_3Hit/Special_3_Data_mtmet_2012.root:vbf_ss_sel/:m_vis_sm:-1:0:1" \
+  -p "vbf_loose_jets20:Loose VBF, Jets 20:output/Paper_2013_3Hit/Special_3_Data_mtmet_2012.root:vbf_loose_jets20_ss_sel/:m_vis_sm:-1:0:2" \
+  -p "vbf_no_cjv:Full VBF, No CJV:output/Paper_2013_3Hit/Special_3_Data_mtmet_2012.root:vbf_no_cjv_ss_sel/:m_vis_sm:-1:0:4" \
+  --x_axis_title="Visible Mass [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+  --outname="qcd_vbf_comp_mtmet_$PLOT.pdf" --ratios="" --rebin=1
 
 
+./bin/PlotCompare  \
+-p "0jet_low:0jet_low:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:0jet_low_os_sel/:pt_tt:-1:0:1" \
+-p "0jet_high:0jet_high:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:0jet_high_os_sel/:pt_tt:-1:0:2" \
+-p "1jet_low:1jet_low:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:1jet_low_os_sel/:pt_tt:-1:0:3" \
+-p "1jet_high:1jet_high:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:1jet_high_os_sel/:pt_tt:-1:0:4" \
+-p "inclusive:inclusive:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:inclusive_os_sel/:pt_tt:-1:0:6" \
+--x_axis_title="Simple Higgs p_{T} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+--outname="ggh_125_pt_tt.pdf" --rebin=2
+
+./bin/PlotCompare  \
+-p "0jet_low:0jet_low:output/Paper_2013_3Hit/Embedded_mt_2012.root:0jet_low_os_sel/:pt_tt:-1:0:1" \
+-p "0jet_high:0jet_high:output/Paper_2013_3Hit/Embedded_mt_2012.root:0jet_high_os_sel/:pt_tt:-1:0:2" \
+-p "1jet_low:1jet_low:output/Paper_2013_3Hit/Embedded_mt_2012.root:1jet_low_os_sel/:pt_tt:-1:0:3" \
+-p "1jet_high:1jet_high:output/Paper_2013_3Hit/Embedded_mt_2012.root:1jet_high_os_sel/:pt_tt:-1:0:4" \
+-p "inclusive:inclusive:output/Paper_2013_3Hit/Embedded_mt_2012.root:inclusive_os_sel/:pt_tt:-1:0:6" \
+--x_axis_title="Simple Higgs p_{T} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+--outname="embedded_pt_tt.pdf" --rebin=2
+
+
+./bin/PlotCompare  \
+-p "0jet_low:0jet_low:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:0jet_low_os_sel/:pt_h:-1:0:1" \
+-p "0jet_high:0jet_high:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:0jet_high_os_sel/:pt_h:-1:0:2" \
+-p "1jet_low:1jet_low:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:1jet_low_os_sel/:pt_h:-1:0:3" \
+-p "1jet_high:1jet_high:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:1jet_high_os_sel/:pt_h:-1:0:4" \
+--x_axis_title="Simple Higgs p_{T} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+--outname="ggh_125_pt_h.pdf" --rebin=2
 
