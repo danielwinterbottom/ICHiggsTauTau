@@ -80,6 +80,11 @@ int main(int argc, char* argv[]){
   bool dotrgeff;                  // Do trigger efficiency corrections
   bool doidisoeff;                  // Do lepton ID-iso efficiency corrections
 
+  bool printEventList;  //print run,lumi,evt of events selected
+  bool printEventContent; //print event content of events selected
+
+  std::string eventsToSkim; //name of input file containing run,lumi,evt of events to be skimmed
+
  // Load the config
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
@@ -110,7 +115,10 @@ int main(int argc, char* argv[]){
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
     ("upordown",            po::value<bool>(&upordown)->default_value(true))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
-    ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false)); 
+    ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
+    ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
+    ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
+    ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -218,8 +226,34 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   
 
+  HinvPrint hinvFilter("HinvFilter",true,false);
+
+  //fill hinvFilter with events to be skimmed from inputfile
+  std::ifstream lfin;
+  lfin.open(eventsToSkim);
+  if(!lfin.is_open()){
+    std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
+    return 1; 
+  }
+  while(1){
+    unsigned lEvt=0;
+    unsigned lRun=0;
+    unsigned lLumi=0;
+    lfin>>lRun;
+    lfin>>lLumi;
+    lfin>>lEvt;
+    if(lfin.eof()){
+      break; 
+    }
+    hinvFilter.PrintEvent(lRun,lLumi,lEvt);
+  }
+  lfin.close();
+
+  //print the event content
   HinvPrint hinvPrint("HinvPrint");
-  HinvPrint hinvPrintList("HinvPrintList",true);
+
+  //print run,lumi,evt of events selected
+  HinvPrint hinvPrintList("HinvPrintList",false,true);
 
 
   bool fixForEWKZ = false;
@@ -831,18 +865,20 @@ int main(int argc, char* argv[]){
    
    if (!do_skim) {
 
+     if (printEventList) analysis.AddModule(&hinvPrintList);
      analysis.AddModule(&dataMCTriggerPathFilter);
+     if (printEventList) analysis.AddModule(&hinvPrintList);
  
      ////analysis.AddModule(&runStats);
      
      if (is_data) {
        analysis.AddModule(&metFilters);
        analysis.AddModule(&metLaserFilters);
+       if (printEventList) analysis.AddModule(&hinvPrintList);
      }
      
      //jet modules
      if(dojessyst==true&&(!is_data)) analysis.AddModule(&JESUncertaintyCorrector);
-     
      
      analysis.AddModule(&jetIDFilter);
 
@@ -889,8 +925,10 @@ int main(int argc, char* argv[]){
      
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
-     //analysis.AddModule(&hinvPrint);
+     if (printEventContent) analysis.AddModule(&hinvPrint);
      analysis.AddModule(&jetPairFilter);
+
+     if (printEventList) analysis.AddModule(&hinvPrintList);
 
      
      //lepton selections or veto
@@ -922,13 +960,17 @@ int main(int argc, char* argv[]){
        //lepton veto modules
        if (!fixForEWKZ){
 	 analysis.AddModule(&zeroVetoMuonFilter);
+	 if (printEventList) analysis.AddModule(&hinvPrintList);
 	 analysis.AddModule(&zeroVetoElectronFilter);
-       }
+	 if (printEventList) analysis.AddModule(&hinvPrintList);
+      }
        analysis.AddModule(&controlPlots_lepveto);
      }
      
      //jet pair selection
      analysis.AddModule(&etaProdJetPairFilter);
+     if (printEventList) analysis.AddModule(&hinvPrintList);
+
      analysis.AddModule(&controlPlots_dijet);
      analysis.AddModule(&wjetsPlots_dijet);
 
@@ -940,6 +982,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&detaJetPairFilter);
      analysis.AddModule(&controlPlots_deta);
      analysis.AddModule(&wjetsPlots_deta);
+     if (printEventList) analysis.AddModule(&hinvPrintList);
 
      //met modules
        
@@ -959,12 +1002,14 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_met);
      analysis.AddModule(&wjetsPlots_met);
 
+     if (printEventList) analysis.AddModule(&hinvPrintList);
+
      //tight Mjj cut
      analysis.AddModule(&tightMassJetPairFilter);
      analysis.AddModule(&controlPlots_tightMjj);
      analysis.AddModule(&wjetsPlots_tightMjj);
 
-     analysis.AddModule(&hinvPrintList);
+     if (printEventList) analysis.AddModule(&hinvPrintList);
 
      //dphi cut: don't filter events anymore !
      //Just plot histograms for different regions
@@ -980,13 +1025,43 @@ int main(int argc, char* argv[]){
    else {
      //Build Skimming Analysis
      //analysis.AddModule(pointer to module defined above)
-     if (channel == channel::nunu){
+     if (is_data && channel == channel::nunu){
+       analysis.AddModule(&hinvFilter);
+       analysis.AddModule(&jetIDFilter);
+
+       //prepare collections of veto leptons
+       analysis.AddModule(&vetoElectronCopyCollection);
+       analysis.AddModule(&vetoElectronFilter);
+       analysis.AddModule(&vetoElectronIso);
+       analysis.AddModule(&vetoMuonCopyCollection);
+       analysis.AddModule(&vetoMuonFilter);
+       analysis.AddModule(&vetoMuonNoIsoCopyCollection);
+       analysis.AddModule(&vetoMuonNoIsoFilter);
+       
+       //filter leptons before making jet pairs and changing MET...
+       analysis.AddModule(&selElectronCopyCollection);
+       analysis.AddModule(&selElectronFilter);
+       analysis.AddModule(&selElectronIso);
+       analysis.AddModule(&selMuonCopyCollection);
+       analysis.AddModule(&selMuonFilter);
+       analysis.AddModule(&elecMuonOverlapFilter);
+   
+       //filter jets
        analysis.AddModule(&jetPtEtaFilter);
-       analysis.AddModule(&metCut);
-       analysis.AddModule(&jjPairProducer);
-       analysis.AddModule(&looseMassJetPairFilter);
+
+       //deal with removing overlap with selected leptons
+       analysis.AddModule(&jetMuonOverlapFilter);
+       analysis.AddModule(&jetElecOverlapFilter);
+     
+       //two-leading jet pair production before plotting
+       analysis.AddModule(&jjLeadingPairProducer);
+       analysis.AddModule(&hinvPrint);
+       //analysis.AddModule(&jetPtEtaFilter);
+       //analysis.AddModule(&metCut);
+       //analysis.AddModule(&jjPairProducer);
+       //analysis.AddModule(&looseMassJetPairFilter);
      }
-     else {
+     else if (!is_data){
        analysis.AddModule(&WtoLeptonFilter);
      }
    }

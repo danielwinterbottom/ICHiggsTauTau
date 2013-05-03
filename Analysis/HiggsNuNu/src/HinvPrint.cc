@@ -12,8 +12,9 @@
 
 namespace ic {
 
-  HinvPrint::HinvPrint(std::string const& name, bool runLumiEvt) : ModuleBase(name) {
+  HinvPrint::HinvPrint(std::string const& name, bool filter, bool runLumiEvt) : ModuleBase(name) {
     runLumiEvt_ = runLumiEvt;
+    filter_ = filter;
   }
 
   HinvPrint::~HinvPrint() {
@@ -33,8 +34,12 @@ namespace ic {
     return 0;
   }
 
-  void HinvPrint::PrintEvent(unsigned evt) {
-    events_.insert(evt);
+  void HinvPrint::PrintEvent(unsigned run, unsigned lumi, unsigned evt) {
+    RunLumiEvent lRLE;
+    lRLE.run = run;
+    lRLE.lumi = lumi;
+    lRLE.evt = evt;
+    events_.insert(lRLE);
   }
 
   int HinvPrint::Execute(TreeEvent *event) {
@@ -43,11 +48,17 @@ namespace ic {
 
     if (runLumiEvt_) {
       foutList_ << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
+      std::cout << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
       return 0; 
     }
 
+    RunLumiEvent lRLE;
+    lRLE.run = eventInfo->run();
+    lRLE.lumi = eventInfo->lumi_block();
+    lRLE.evt = eventInfo->event();
+    if (events_.find(lRLE) != events_.end() || events_.size()==0) {
 
-    if (events_.find(eventInfo->event()) != events_.end() || events_.size()==0) {
+      if (filter_) return 0;
 
       std::ostringstream outName;
       outName << "output/Event" << eventInfo->event() << ".txt" ;
@@ -216,8 +227,10 @@ namespace ic {
     }*/
 
     fout.close();
+    return 0;
 
     }
+    if (filter_) return 1;
     return 0;
 
   }

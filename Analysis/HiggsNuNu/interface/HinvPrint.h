@@ -14,21 +14,48 @@
 
 namespace ic {
 
+  struct RunLumiEvent {
+    unsigned run;
+    unsigned lumi;
+    unsigned evt;
+
+    bool operator==(const RunLumiEvent & rhs){
+      if (run == rhs.run &&
+	  lumi == rhs.lumi &&
+	  evt == rhs.evt) return true;
+      return false;
+    }
+
+    bool operator<(const RunLumiEvent & rhs) const{
+      if (run < rhs.run) return true;
+      else if (run == rhs.run){
+	if (lumi < rhs.lumi) return true;
+	else if (lumi == rhs.lumi){
+	  if (evt < rhs.evt) return true;
+	}
+      }
+      return false;
+    }
+
+
+  };
+
 class HinvPrint : public ModuleBase {
  private:
-  std::set<unsigned> events_;
+  std::set<RunLumiEvent> events_;
   std::ofstream foutList_;
   bool runLumiEvt_;
+  bool filter_;
 
  public:
-  HinvPrint(std::string const& name, bool runLumiEvt=false);
+  HinvPrint(std::string const& name, bool filter=false, bool runLumiEvt=false);
   virtual ~HinvPrint();
 
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
-  void PrintEvent(unsigned evt);
+  void PrintEvent(unsigned run, unsigned lumi, unsigned evt);
 
 
 

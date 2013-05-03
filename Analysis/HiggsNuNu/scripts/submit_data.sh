@@ -18,9 +18,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfig.cfg
 PRODUCTION=Apr04
 
-for METCUT in 130 #0
+for METCUT in 130
   do
-  for CHANNEL in nunu enu munu
+  for CHANNEL in nunu #enu munu
     do
     for SYST in central #JESUP JESDOWN
       do
@@ -77,7 +77,7 @@ for METCUT in 130 #0
 	  echo "JOB name = $JOB"
 	  
 	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	  $JOBSUBMIT $JOBDIR/$JOB.sh
+	  #$JOBSUBMIT $JOBDIR/$JOB.sh
 	  
 	done
 	

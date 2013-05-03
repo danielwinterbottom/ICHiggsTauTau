@@ -16,7 +16,7 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfigMC.cfg
 PRODUCTION=Apr04
 
-for METCUT in 130 #0
+for METCUT in 130 0
   do
   for CHANNEL in nunu enu munu
     do
@@ -107,7 +107,6 @@ for METCUT in 130 #0
 	  echo "JOB name = $JOB"
 	  
 	  grep "JetsToLNu" tmp.txt
-	  
 	  if (( "$?" == 0 )); then
 	      for FLAVOUR in enu munu taunu
 		do

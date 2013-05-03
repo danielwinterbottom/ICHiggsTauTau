@@ -26,9 +26,9 @@ done ;
 
 for CHANNEL in nunu enu munu
   do
-  for MET in 130 #0 70
+  for MET in 130 0 #70
     do
-    for SYST in "" JESUP JESDOWN
+    for SYST in "" #JESUP JESDOWN
       do
       if (( "$INJOBDIR" == "0" )); then
 	  JOBDIR=jobs/$CHANNEL/MET$MET/$SYST
