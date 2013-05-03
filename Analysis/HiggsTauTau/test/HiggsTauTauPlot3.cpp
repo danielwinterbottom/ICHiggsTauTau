@@ -1481,13 +1481,15 @@ int main(int argc, char* argv[]){
 
     TH1F *data_obs = (TH1F*)data_hist_clean->Clone();
     if (method == 3 && channel == channel::et && !is_2012) CleanBinsUpTo(data_obs, boost_high_clean);
-     if (blind) {
+    /* 
+    if (blind) {
        double data_err = 0.0;
        double data_tot = data_obs->IntegralAndError(0, data_obs->GetNbinsX() + 1, data_err);
        data_obs->Reset();
        data_obs->SetBinContent(1, data_tot);
        data_obs->SetBinError(1, data_err);
      }
+     */
     data_obs->SetName("data_obs");
     data_obs->SetTitle("data_obs");
     if (tau_scale_mode == 0) data_obs->Write();

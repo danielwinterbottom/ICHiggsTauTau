@@ -628,8 +628,8 @@ int main(int argc, char* argv[]){
     }
   } else if (strategy == strategy::paper2013) {
     if (channel == channel::et || channel == channel::etmet) {
-      tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
-      //tau_iso_discr         = "byLooseIsolationMVA2";
+      //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      tau_iso_discr         = "byLooseIsolationMVA2";
       tau_anti_elec_discr_1 = "againstElectronTightMVA3";
       tau_anti_elec_discr_2 = "againstElectronTightMVA3";
       tau_anti_muon_discr   = "againstMuonLoose2";
@@ -638,8 +638,8 @@ int main(int argc, char* argv[]){
       if (special_mode == 18) tau_anti_elec_discr_1 = "againstElectronMVA"; 
     }
     if (channel == channel::mt || channel == channel::mtmet) {
-      tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
-      //tau_iso_discr         = "byLooseIsolationMVA2";
+      //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      tau_iso_discr         = "byLooseIsolationMVA2";
       tau_anti_elec_discr_1 = "againstElectronLoose";
       tau_anti_elec_discr_2 = "againstElectronLoose";
       tau_anti_muon_discr   = "againstMuonTight2";

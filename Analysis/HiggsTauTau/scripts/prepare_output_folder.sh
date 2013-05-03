@@ -52,6 +52,8 @@ do
   cp -v "$i"_et_201[1,2].root TSCALE_DOWN/
   cp -v "$i"_mt_201[1,2].root TSCALE_UP/
   cp -v "$i"_mt_201[1,2].root TSCALE_DOWN/
+  cp -v "$i"_mtmet_201[1,2].root TSCALE_UP/
+  cp -v "$i"_mtmet_201[1,2].root TSCALE_DOWN/
 done
 
 
