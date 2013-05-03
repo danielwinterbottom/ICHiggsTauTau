@@ -61,7 +61,7 @@ namespace ic {
       if (filter_) return 0;
 
       std::ostringstream outName;
-      outName << "output/Event" << eventInfo->event() << ".txt" ;
+      outName << "output_synch/Run" << eventInfo->run() << "_Lumi" << eventInfo->lumi_block() << "_Event" << eventInfo->event() << ".txt" ;
       std::ofstream fout(outName.str());
       if (!fout.is_open()){
 	std::cerr << " -- Failed to open file " << outName.str() << " for printing event " << eventInfo->event() << std::endl;

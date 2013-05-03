@@ -16,7 +16,7 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfigMC.cfg
 PRODUCTION=Apr04
 
-for METCUT in 130 0
+for METCUT in 0 130
   do
   for CHANNEL in nunu enu munu
     do
