@@ -628,8 +628,8 @@ int main(int argc, char* argv[]){
     }
   } else if (strategy == strategy::paper2013) {
     if (channel == channel::et || channel == channel::etmet) {
-      //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
-      tau_iso_discr         = "byLooseIsolationMVA2";
+      tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      //tau_iso_discr         = "byLooseIsolationMVA2";
       tau_anti_elec_discr_1 = "againstElectronTightMVA3";
       tau_anti_elec_discr_2 = "againstElectronTightMVA3";
       tau_anti_muon_discr   = "againstMuonLoose2";
@@ -638,8 +638,8 @@ int main(int argc, char* argv[]){
       if (special_mode == 18) tau_anti_elec_discr_1 = "againstElectronMVA"; 
     }
     if (channel == channel::mt || channel == channel::mtmet) {
-      //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
-      tau_iso_discr         = "byLooseIsolationMVA2";
+      tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      //tau_iso_discr         = "byLooseIsolationMVA2";
       tau_anti_elec_discr_1 = "againstElectronLoose";
       tau_anti_elec_discr_2 = "againstElectronLoose";
       tau_anti_muon_discr   = "againstMuonTight2";
@@ -779,6 +779,7 @@ int main(int argc, char* argv[]){
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::mt || channel == channel::mtmet) ) httWeights.set_do_mtau_fakerate(true);
+  if (strategy == strategy::paper2013) httWeights.set_do_etau_fakerate(false);
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
