@@ -35,7 +35,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWJetsPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvJESUncertainty.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 
@@ -468,8 +468,8 @@ int main(int argc, char* argv[]){
   // Jet Modules
   // ------------------------------------------------------------------------------------  
 
-    HinvJESUncertainty<PFJet,Met> JESUncertaintyCorrector = HinvJESUncertainty<PFJet,Met>
-      ("JESUncertaintyCorrector")
+    JetMETModifier ModifyJetMET = JetMETModifier
+      ("ModifyJetMET")
       .set_input_label("pfJetsPFlow")
       .set_met_label(mettype)
       .set_is_data(is_data)
@@ -884,7 +884,7 @@ int main(int argc, char* argv[]){
      }
      
      //jet modules
-     if(dojessyst==true&&(!is_data)) analysis.AddModule(&JESUncertaintyCorrector);
+     if(dojessyst==true&&(!is_data)) analysis.AddModule(&ModifyJetMET);
      
      analysis.AddModule(&jetIDFilter);
 
