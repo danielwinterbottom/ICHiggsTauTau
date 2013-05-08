@@ -1,13 +1,16 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
+#include <utility>
 
 namespace ic {
 
   JetMETModifier::JetMETModifier(std::string const& name) : ModuleBase(name) {
     is_data_ = true;
     input_label_ = "pfJetsPFlow";
-    upordown_ = true; //true is up false is down                                                                                                                        
+    upordown_ = true; //true is up false is down
+    dosmear_ = false;
     dojessyst_ = false;
   }
 
@@ -23,23 +26,21 @@ namespace ic {
     std::cout << "If doing JES are we doing up error? "<<upordown_<<std::endl;
 
 
-    std::cout<<"Getting JES uncertainty parameters from file."<<std::endl;
+    std::cout<<"Getting JES uncertainty parameters from file: "<<jesuncfile_<<std::endl;
     //getting the correct uncertainty, note currently module is only being run on mc                                                                                  
-    if(is_data_){
-      total = new JetCorrectionUncertainty(*(new JetCorrectorParameters("data/jec/Fall12_V7_DATA_Uncertainty_AK5PF.txt")));
-    }
-    else{
-      total = new JetCorrectionUncertainty(*(new JetCorrectorParameters("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt")));
-    }
+    total = new JetCorrectionUncertainty(*(new JetCorrectorParameters(jesuncfile_)));
+    
     std::cout<<"Got parameters successfully"<<std::endl;
     TFileDirectory const& dir = fs_->mkdir("JES");
+    TFileDirectory const& dir2 = fs_->mkdir("Smear");
     std::cout<<"Made plot dir"<<std::endl;
     JEScorrfac = dir.make<TH2F>("JEScorrfac","JEScorrfac",1000,0.,1000.,1000,-0.3,0.3);
     JESmetdiff = dir.make<TH1F>("JESmetdiff","JESmetdiff",1000,-10.,10.);
     JESjetphidiff = dir.make<TH1F>("JESjetphidiff","JESjetphidiff",1000,-10.,10.);
     JESjetetadiff = dir.make<TH1F>("JESjetetadiff","JESjetetadiff",1000,-10.,10.);
     JESisordersame = dir.make<TH1F>("JESisordersame","JESisordersame",40,-10.,10.);
-
+    Smearptdiff = dir2.make<TH1F>("Smearptdiff","Smearptdiff",200,-10.,10.);
+    Smear50miss = dir2.make<TH1F>("Smear50miss","Smear50miss",20,-10.,10.);
     return 0;
   }
 
@@ -47,10 +48,17 @@ namespace ic {
     if(is_data_){
       return 0;
     }
-    std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//get the collection (should be a jet collection)                                                
-    Met *met = event->GetPtr<Met>(met_label_);//get the met                                                                                                             
+    std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//get the collection (should be a jet collection)
+    std::vector<Candidate *> & smearvec = event->GetPtrVec<Candidate>(smear_label_);
+    std::vector< std::pair<PFJet*, Candidate*> > jet_smeared_jet_pairs = MatchByDR(vec,smearvec,0.001, true, true);
+    if(jet_smeared_jet_pairs.size()!=vec.size()){
+      //std::cout<<"hmm no match for some of the jets"<<std::endl;
+    }
+    
+    
+    Met *met = event->GetPtr<Met>(met_label_);//get the met
 
-    //Get MET information and create variables to be updated                                                                                                            
+    //Get MET information and create variables to be updated
     double metpx = met->vector().px();
     double metpy = met->vector().py();
     double metet = met->vector().energy();
@@ -67,111 +75,143 @@ namespace ic {
     int newjet1index = -1;
     int newjet2index = -1;
 
-    for (unsigned i = 0; i < vec.size(); ++i) {//loop over the collection                                                                                               
+    for (int i = 0; unsigned(i) < vec.size(); ++i) {//loop over the collection                                                                                               
       //Get jet information                                                                                                                                             
-      double jetpx = vec[i]->vector().px();
-      double jetpy = vec[i]->vector().py();
-      double jetpz = vec[i]->vector().pz();
-      double jete = vec[i]->vector().E();
-      double jetpt = vec[i]->pt();
-      double jeteta = vec[i]->eta();
-      double jetphi = vec[i]->phi();
-      if(jetpt > oldjet1pt){
+      double oldjetpx = vec[i]->vector().px();
+      double oldjetpy = vec[i]->vector().py();
+      double oldjetpz = vec[i]->vector().pz();
+      double oldjete = vec[i]->vector().E();
+      double oldjetpt = vec[i]->pt();
+      double oldjeteta = vec[i]->eta();
+      double oldjetphi = vec[i]->phi();
+      double newjetpx;
+      double newjetpy;
+      double newjetpz;
+      double newjete;
+      double newjetpt;
+      double newjeteta;
+      double newjetphi;
+
+      if(dosmear_){
+	int index = -1;
+	for(int j = 0;unsigned(j)<jet_smeared_jet_pairs.size();j++){
+	  if(jet_smeared_jet_pairs[j].first->id()==vec[i]->id()){
+	    index = j;
+	    break;
+	  }
+	}
+	if(index == -1){
+	  //std::cout<<"No match for jet with pt: "<<oldjetpt<<std::endl;
+	  newjetpx = oldjetpx;
+	  newjetpy = oldjetpy;
+	  newjetpz = oldjetpz;
+	  newjete = oldjete;
+	  newjetpt = oldjetpt;
+	  newjeteta = oldjeteta;
+	  newjetphi = oldjetphi;
+	}
+	else{
+	  newjetpx = smearvec[index]->vector().px();
+	  newjetpy= smearvec[index]->vector().py();
+	  newjetpz= smearvec[index]->vector().pz();
+	  newjete= smearvec[index]->vector().E();
+	  newjetpt = smearvec[index]->pt();
+	  newjeteta = smearvec[index]->eta();
+	  newjetphi = smearvec[index]->phi();
+	}
+	
+	if(oldjetpt>50.){
+	  if(index==-1){
+	    Smear50miss->Fill(-1.);
+	    std::cout<<"Old 4 vectors"<<std::endl;
+	    for(unsigned l =0;l<vec.size();l++){
+	      std::cout<<"pt: "<<vec[l]->pt()<<" eta: "<<vec[l]->eta()<<" phi: "<<vec[l]->phi()<<std::endl;            
+	    }
+	    std::cout<<"Smeared 4 vectors"<<std::endl;
+	    for(unsigned l =0;l<smearvec.size();l++){
+	      std::cout<<"pt: "<<smearvec[l]->pt()<<" eta: "<<smearvec[l]->eta()<<" phi: "<<smearvec[l]->phi()<<std::endl;            
+	    }
+	  }
+	  else Smear50miss->Fill(1.);
+	}
+	Smearptdiff->Fill(newjetpt-oldjetpt);
+      }      
+      else{
+	newjetpx = oldjetpx;
+	newjetpy = oldjetpy;
+	newjetpz = oldjetpz;
+	newjete = oldjete;
+	newjetpt = oldjetpt;
+	newjeteta = oldjeteta;
+	newjetphi = oldjetphi;
+      }
+
+      //Get jet order
+      if(newjetpt > oldjet1pt){
         oldjet2index=oldjet1index;
         oldjet2pt=oldjet1pt;
         oldjet1index=i;
-        oldjet1pt=jetpt;
+        oldjet1pt=newjetpt;
       }
-      else if(jetpt > oldjet2pt) {
+      else if(newjetpt > oldjet2pt) {
         oldjet2index=i;
-        oldjet2pt=jetpt;
+	oldjet2pt=newjetpt;
       }
 
-      //Get JES uncertainty                                                                                                                                             
-      total->setJetPt(jetpt);
-      total->setJetEta(jeteta);
-      double upuncert = total->getUncertainty(true);
-      total->setJetPt(jetpt);
-      total->setJetEta(jeteta);
-      double downuncert = total->getUncertainty(false);
-
-      //std::cout<<uncert<<std::endl;                                                                                                                                   
-
-      if(dojessyst_){//if not central value correct by the JES uncertainty                                                                                              
-        if(upordown_==true){//upper uncertainty                                                                                                                         
-          JEScorrfac->Fill(jetpt,upuncert); //Fill histogram of uncertainty against pt                                                                                  
-          //Correct jet                                                                                                                                                 
-          double newjetpx = jetpx*(1+upuncert);
-          double newjetpy = jetpy*(1+upuncert);
-          double newjetpz = jetpz*(1+upuncert);
-          double newjete = jete*(1+upuncert);
-	  ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  newjet(newjetpx,newjetpy,newjetpz,newjete);
-          vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
-
-          //Check eta doesn't change                                                                                                                                    
-          double newjeteta = vec[i]->eta();
-          double newjetphi = vec[i]->phi();
-          JESjetphidiff->Fill(newjetphi-jetphi);
-          JESjetetadiff->Fill(newjeteta-jeteta);
-
-	  //check if order of jets is same                                                                                                                              
-          double newjetpt=vec[i]->pt();
-          if(newjetpt > newjet1pt){
-            newjet2index=newjet1index;
-            newjet2pt=newjet1pt;
-            newjet1index=i;
-            newjet1pt=newjetpt;
-          }
-          else if(newjetpt > newjet2pt) {
-            newjet2index=i;
-            newjet2pt=newjetpt;
-          }
-
-          //Correct met                                                                                                                                                 
-          newmetpx = metpx - (jetpx*upuncert);
-          newmetpy = metpy - (jetpy*upuncert);
-
-        }
-        else if(upordown_==false){//lower uncertainty                                                                                                                   
-          JEScorrfac->Fill(jetpt,downuncert); //Fill histogram of uncertainty against pt                                                                                
-          //Correct jet                                                                                                                                                 
-          double newjetpx = jetpx*(1-downuncert);
-          double newjetpy = jetpy*(1-downuncert);
-          double newjetpz = jetpz*(1-downuncert);
-          double newjete = jete*(1-downuncert);
-	  ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > newjet(newjetpx,newjetpy,newjetpz,newjete);
-          vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
-
-          //check eta doesn't change                                                                                                                                    
-          double newjeteta = vec[i]->eta();
-          double newjetphi = vec[i]->phi();
-          JESjetphidiff->Fill(newjetphi-jetphi);
-          JESjetetadiff->Fill(newjeteta-jeteta);
-
-          //check if order of jets is same                                                                                                                              
-          double newjetpt=vec[i]->pt();
-          if(newjetpt > newjet1pt){
-            newjet2index=newjet1index;
-            newjet2pt=newjet1pt;
-            newjet1index=i;
-            newjet1pt=newjetpt;
-          }
-          else if(newjetpt > newjet2pt) {
-            newjet2index=i;
-            newjet2pt=newjetpt;
-          }
-
-          //Correct met                                                                                                                                                 
-          newmetpx = newmetpx + (jetpx*downuncert);
-          newmetpy = newmetpy + (jetpy*downuncert);
-        }
-      }
-      else{//Central value                                                                                                                                              
+      if(!dojessyst_){//Central value                                                                                                                                              
         newjet1index=oldjet1index;
         newjet2index=oldjet2index;
         newjet1pt=oldjet1pt;
         newjet2pt=newjet2pt;
       }
+
+      else if(dojessyst_){//if not central value correct by the JES uncertainty
+	//Get JES uncertainty
+	total->setJetPt(newjetpt);
+	total->setJetEta(newjeteta);
+	double uncert = total->getUncertainty(upordown_);
+	JEScorrfac->Fill(newjetpt,uncert); //Fill histogram of uncertainty against pt	
+	float upordownmult;
+	if(upordown_==true){//upper uncertainty
+	  upordownmult=1.;
+	}
+	if(upordown_==false){//lower uncertainty
+	  upordownmult=-1.;
+	}
+	
+	//Correct jet
+	newjetpx = newjetpx*(1+upordownmult*uncert);
+	newjetpy = newjetpy*(1+upordownmult*uncert);
+	newjetpz = newjetpz*(1+upordownmult*uncert);
+	newjete = newjete*(1+upordownmult*uncert);
+	
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  jetforcomp(newjetpx,newjetpy,newjetpz,newjete);
+	
+	//Check eta doesn't change
+	double newjeteta = jetforcomp.eta();
+	double newjetphi = jetforcomp.phi();
+	JESjetphidiff->Fill(newjetphi-oldjetphi);
+	JESjetetadiff->Fill(newjeteta-oldjeteta);
+	
+	//check if order of jets is same
+	double newjetpt=vec[i]->pt();
+	if(newjetpt > newjet1pt){
+	  newjet2index=newjet1index;
+	  newjet2pt=newjet1pt;
+	  newjet1index=i;
+	  newjet1pt=newjetpt;
+	}
+	else if(newjetpt > newjet2pt) {
+	  newjet2index=i;
+            newjet2pt=newjetpt;
+	}
+	
+	//Correct met
+	newmetpx = metpx - (upordownmult*newjetpx*uncert);
+	newmetpy = metpy - (upordownmult*newjetpy*uncert);
+      }
+      ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  newjet(newjetpx,newjetpy,newjetpz,newjete);
+      vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
     }
 
     //Set met in event to corrected met                                                                                                                                 
@@ -185,7 +225,7 @@ namespace ic {
     if((oldjet1index==-1)||(newjet1index==-1)||(oldjet2index==-1)||(newjet2index==-1)){
       if(vec.size()>1){
         JESisordersame->Fill(-2.);
-	std::cout<<"JET SWAP METHOD ERROR"<<std::endl;
+	//std::cout<<"JET SWAP METHOD ERROR"<<std::endl;
       }
     }
     if(oldjet1index==newjet1index){
@@ -197,14 +237,14 @@ namespace ic {
     if(oldjet1index==newjet2index){
       if(oldjet2index==newjet1index){
         JESisordersame->Fill(-1.);
-	std::cout<<"JETS SWAPPED"<<std::endl;
+	//std::cout<<"JETS SWAPPED"<<std::endl;
         return 0;
       }
     }
     if(oldjet1index!=newjet2index){
       if(oldjet2index!=newjet1index){
         JESisordersame->Fill(2.);
-	std::cout<<"JETS DIFFERENT"<<std::endl;
+	//std::cout<<"JETS DIFFERENT"<<std::endl;
         return 0;
       }
     }

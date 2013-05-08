@@ -63,7 +63,7 @@ int main(int argc, char* argv[]){
 
   string era_str;                 // Analysis data-taking era
   string mc_str;                  // Analysis MC production
-  string prod;                // Our prdocution string
+  string prod;                    // Our prdocution string
 
   string channel_str;             // Analysis channel
 
@@ -75,12 +75,13 @@ int main(int argc, char* argv[]){
   bool upordown;                  // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
 
   string mettype;                 // MET input collection to be used
+  string jesuncfile;              // File to get JES uncertainties from
   bool doMetFilters;              // apply cleaning MET filters.
   string filters;
-  //unsigned signal_region;             // DeltaPhi cut > 2.7
+  //unsigned signal_region;       // DeltaPhi cut > 2.7
   double met_cut;                 // MET cut to apply for signal, QCD or skim
   bool dotrgeff;                  // Do trigger efficiency corrections
-  bool doidisoeff;                  // Do lepton ID-iso efficiency corrections
+  bool doidisoeff;                // Do lepton ID-iso efficiency corrections
 
   bool printEventList;  //print run,lumi,evt of events selected
   bool printEventContent; //print event content of events selected
@@ -120,7 +121,8 @@ int main(int argc, char* argv[]){
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
-    ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"));
+    ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
+    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -467,15 +469,23 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
-
-    JetMETModifier ModifyJetMET = JetMETModifier
-      ("ModifyJetMET")
-      .set_input_label("pfJetsPFlow")
-      .set_met_label(mettype)
-      .set_is_data(is_data)
-      .set_dojessyst(dojessyst)
-      .set_upordown(upordown)
-      .set_fs(fs);
+  string smear_label;
+  if(!is_data){
+    smear_label="jetsmearedcentralJets";
+  }
+  else{
+    smear_label="dummy";
+  }
+  JetMETModifier ModifyJetMET = JetMETModifier
+    ("ModifyJetMET")
+    .set_input_label("pfJetsPFlow")
+    .set_met_label(mettype)
+    .set_smear_label(smear_label)
+    .set_is_data(is_data)
+    .set_dojessyst(dojessyst)
+    .set_upordown(upordown)
+    .set_jesuncfile(jesuncfile)
+    .set_fs(fs);
 
   
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
@@ -884,7 +894,7 @@ int main(int argc, char* argv[]){
      }
      
      //jet modules
-     if(dojessyst==true&&(!is_data)) analysis.AddModule(&ModifyJetMET);
+     analysis.AddModule(&ModifyJetMET);
      
      analysis.AddModule(&jetIDFilter);
 

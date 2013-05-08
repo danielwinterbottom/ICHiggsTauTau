@@ -27,11 +27,16 @@ namespace ic {
     CLASS_MEMBER(JetMETModifier, bool, upordown)
     CLASS_MEMBER(JetMETModifier, std::string, input_label)
     CLASS_MEMBER(JetMETModifier, std::string, met_label)
+    CLASS_MEMBER(JetMETModifier, std::string, smear_label)
+    CLASS_MEMBER(JetMETModifier, bool, dosmear)
+    CLASS_MEMBER(JetMETModifier, std::string, jesuncfile)
     TH2F* JEScorrfac;
     TH1F* JESmetdiff;
     TH1F* JESjetphidiff;
     TH1F* JESjetetadiff;
     TH1F* JESisordersame;
+    TH1F* Smearptdiff;
+    TH1F* Smear50miss;
     
   public:
     JetMETModifier(std::string const& name);
