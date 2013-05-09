@@ -72,6 +72,7 @@ int main(int argc, char* argv[]){
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool dojessyst;                 // Do Jet Energy Scale Systematic Run
+  bool dosmear;                 // Do Smearing
   bool upordown;                  // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
 
   string mettype;                 // MET input collection to be used
@@ -122,6 +123,7 @@ int main(int argc, char* argv[]){
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
+    ("dosmear",        po::value<bool>(&dosmear)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -480,6 +482,7 @@ int main(int argc, char* argv[]){
     ("ModifyJetMET")
     .set_input_label("pfJetsPFlow")
     .set_met_label(mettype)
+    .set_dosmear(dosmear)
     .set_smear_label(smear_label)
     .set_is_data(is_data)
     .set_dojessyst(dojessyst)

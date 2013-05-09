@@ -62,8 +62,14 @@ namespace ic {
       std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//get the collection (should be a jet collection)
       std::vector<Candidate *> & smearvec = event->GetPtrVec<Candidate>(smear_label_);
       std::vector< std::pair<PFJet*, Candidate*> > jet_smeared_jet_pairs = MatchByDR(vec,smearvec,0.001, true, true);
-      if(jet_smeared_jet_pairs.size()!=vec.size()){
-	//std::cout<<"hmm no match for some of the jets"<<std::endl;
+      if(dosmear_){
+	if(jet_smeared_jet_pairs.size()!=vec.size()){
+	  vec.clear();
+	  for(int i = 0;unsigned(i) <jet_smeared_jet_pairs.size();i++){
+	    vec.push_back(jet_smeared_jet_pairs[i].first);
+	  }
+	  //std::cout<<"hmm no match for some of the jets"<<std::endl;
+	}
       }
       
       
@@ -104,7 +110,7 @@ namespace ic {
 	double newjetphi;
 
 	if(dosmear_){//Smearing section
-	  int index = -1;
+	int index = -1;
 	  //Check for matches between smeared and unsmeared jets
 	  for(int j = 0;unsigned(j)<jet_smeared_jet_pairs.size();j++){
 	    if(jet_smeared_jet_pairs[j].first->id()==vec[i]->id()){
