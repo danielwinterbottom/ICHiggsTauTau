@@ -71,10 +71,14 @@ namespace ic {
 	  //std::cout<<"hmm no match for some of the jets"<<std::endl;
 	}
       }
-      
-      
-      Met *met = event->GetPtr<Met>(met_label_);//get the met
-      
+
+      Met *met;
+      if(!dosmear_){
+	met = event->GetPtr<Met>(met_label_);//get the met
+      }
+      else if(dosmear){
+	met = event->GetPtr<Met>("pattype1correctedpfMet");
+      }
       //Get MET information and create variables to be updated
       double metpx = met->vector().px();
       double metpy = met->vector().py();
