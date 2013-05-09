@@ -897,8 +897,7 @@ int main(int argc, char* argv[]){
      }
      
      //jet modules
-     analysis.AddModule(&ModifyJetMET);
-     
+          
      analysis.AddModule(&jetIDFilter);
 
     //jet pair production before plotting
@@ -935,13 +934,18 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);
 
-     //filter jets
-     analysis.AddModule(&jetPtEtaFilter);
-
+    
      //deal with removing overlap with selected leptons
      analysis.AddModule(&jetMuonOverlapFilter);
      analysis.AddModule(&jetElecOverlapFilter);
-     
+
+     //Module to do jet smearing and systematics
+     analysis.AddModule(&ModifyJetMET);
+
+     //filter jets
+     analysis.AddModule(&jetPtEtaFilter);
+    
+ 
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
      if (printEventContent) analysis.AddModule(&hinvPrint);
