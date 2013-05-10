@@ -12,9 +12,10 @@
 
 namespace ic {
 
-  HinvPrint::HinvPrint(std::string const& name, bool filter, bool runLumiEvt) : ModuleBase(name) {
+  HinvPrint::HinvPrint(std::string const& name, bool is_data, bool filter, bool runLumiEvt) : ModuleBase(name) {
     runLumiEvt_ = runLumiEvt;
     filter_ = filter;
+    is_data_ = is_data;
   }
 
   HinvPrint::~HinvPrint() {
@@ -28,6 +29,12 @@ namespace ic {
       foutList_.open(outName.str());
       if (!foutList_.is_open()){
 	std::cerr << " -- Failed to open file " << outName.str() << " for printing event list." << std::endl;
+	if (is_data_){
+	  foutList_ << "Run lumiBlock Event" << std::endl;
+	}
+	else {
+	  foutList_ << "Event TotalWeight PUWeight TrigWeight IdIsoWeight" << std::endl;
+	}
 	throw;
       }
     }
@@ -47,8 +54,13 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
     if (runLumiEvt_) {
-      foutList_ << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
-      std::cout << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
+      if (is_data_){
+	foutList_ << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
+	//std::cout << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
+      }
+      else {
+	foutList_ << eventInfo->event() << " " << eventInfo->total_weight() << " " << eventInfo->weight("pileup") << " " << eventInfo->weight("trigger")<< " " << eventInfo->weight("idisoTight") << std::endl;
+      }
       return 0; 
     }
 

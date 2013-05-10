@@ -46,9 +46,10 @@ class HinvPrint : public ModuleBase {
   std::ofstream foutList_;
   bool runLumiEvt_;
   bool filter_;
+  bool is_data_;
 
  public:
-  HinvPrint(std::string const& name, bool filter=false, bool runLumiEvt=false);
+  HinvPrint(std::string const& name, bool is_data, bool filter=false, bool runLumiEvt=false);
   virtual ~HinvPrint();
 
   virtual int PreAnalysis();

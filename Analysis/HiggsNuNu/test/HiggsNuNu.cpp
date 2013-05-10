@@ -232,7 +232,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   
 
-  HinvPrint hinvFilter("HinvFilter",true,false);
+  HinvPrint hinvFilter("HinvFilter",is_data,true,false);
 
   //fill hinvFilter with events to be skimmed from inputfile
   std::ifstream levtlist;
@@ -260,10 +260,10 @@ int main(int argc, char* argv[]){
   levtlist.close();
 
   //print the event content
-  HinvPrint hinvPrint("HinvPrint");
+  HinvPrint hinvPrint("HinvPrint",is_data);
 
   //print run,lumi,evt of events selected
-  HinvPrint hinvPrintList("HinvPrintList",false,true);
+  HinvPrint hinvPrintList("HinvPrintList",is_data,false,true);
 
 
   bool fixForEWKZ = false;
@@ -1048,7 +1048,7 @@ int main(int argc, char* argv[]){
    else {
      //Build Skimming Analysis
      //analysis.AddModule(pointer to module defined above)
-     if (is_data && channel == channel::nunu){
+     if (channel == channel::nunu){
        analysis.AddModule(&hinvFilter);
        analysis.AddModule(&jetIDFilter);
 
