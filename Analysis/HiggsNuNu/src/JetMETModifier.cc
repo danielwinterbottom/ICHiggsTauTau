@@ -76,7 +76,7 @@ namespace ic {
       if(!dosmear_){
 	met = event->GetPtr<Met>(met_label_);//get the met
       }
-      else if(dosmear){
+      else if(dosmear_){
 	met = event->GetPtr<Met>("pattype1correctedpfMet");
       }
       //Get MET information and create variables to be updated
