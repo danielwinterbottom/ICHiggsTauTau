@@ -242,6 +242,10 @@ namespace ic {
     else eventInfo->set_weight("!trig_metHLT",methlt);
     //std::cout << " -- MET HLT " << lValue << " " << methlt << std::endl;
 
+    double mjjhlt = 1.0;
+    double jet1hlt = 1.0;
+    double jet2hlt = 1.0;
+
     //get 2 leading jets
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>("jjCandidates");
     if (dijet_vec.size() > 0) {
@@ -257,7 +261,7 @@ namespace ic {
       if (lValue > lMax)  lValue = lMax;
       if (lValue < lMin)  lValue = lMin;
       lBin = hist_trigSF_MjjHLT->GetXaxis()->FindFixBin(lValue);
-      double mjjhlt = hist_trigSF_MjjHLT->GetBinContent(lBin);
+      mjjhlt = hist_trigSF_MjjHLT->GetBinContent(lBin);
       if (do_trg_weights_) eventInfo->set_weight("trig_mjjHLT",mjjhlt);
       else eventInfo->set_weight("!trig_mjjHLT",mjjhlt);
       //std::cout << " -- Mjj HLT " << lValue << " " << mjjhlt << std::endl;
@@ -268,7 +272,7 @@ namespace ic {
       if (lValue < lMin)  lValue = lMin;
       if (lValue > lMax)  lValue = lMax;
       lBin = hist_trigSF_JetHLT->GetXaxis()->FindFixBin(lValue);
-      double jet1hlt = hist_trigSF_JetHLT->GetBinContent(lBin);
+      jet1hlt = hist_trigSF_JetHLT->GetBinContent(lBin);
       if (do_trg_weights_) eventInfo->set_weight("trig_jet1HLT",jet1hlt);
       else eventInfo->set_weight("!trig_jet1HLT",jet1hlt);
       //std::cout << " -- Jet1 HLT " << lValue << " " << jet1hlt << std::endl;
@@ -277,7 +281,7 @@ namespace ic {
       if (lValue > lMax)  lValue = lMax;
       if (lValue < lMin)  lValue = lMin;
       lBin = hist_trigSF_JetHLT->GetXaxis()->FindFixBin(lValue);
-      double jet2hlt = hist_trigSF_JetHLT->GetBinContent(lBin);
+      jet2hlt = hist_trigSF_JetHLT->GetBinContent(lBin);
       if (do_trg_weights_) eventInfo->set_weight("trig_jet2HLT",jet2hlt);
       else eventInfo->set_weight("!trig_jet2HLT",jet2hlt);
       //std::cout << " -- Jet2 HLT " << lValue << " " << jet2hlt << std::endl;
@@ -286,6 +290,8 @@ namespace ic {
       //event->Add("trigweight_1", ele_trg);
       //event->Add("trigweight_2", tau_trg);
     }
+
+    eventInfo->set_weight("!trigger",metl1*methlt*mjjhlt*jet1hlt*jet2hlt);
 
     //eventInfo->set_weight("lepton", weight);
 
@@ -360,6 +366,8 @@ namespace ic {
     if (do_idiso_weights_) eventInfo->set_weight("muTight_idisoSF",mu_weight);
     else eventInfo->set_weight("!muTight_idisoSF",mu_weight);
 
+
+    eventInfo->set_weight("!idisoTight",ele_weight*mu_weight);
 
     //TO DO: id+iso veto leptons
 
