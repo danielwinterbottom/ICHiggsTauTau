@@ -116,8 +116,8 @@ namespace ic {
     void InitWeightPlots();
     void InitSystPlots();
     void FillCoreControlPlots();
-    void FillWeightPlots(EventInfo const* info);
-    void FillSystPlots(EventInfo const* info);
+    void FillWeightPlots(EventInfo * info);
+    void FillSystPlots(EventInfo * info);
    
     void Reset();
 
