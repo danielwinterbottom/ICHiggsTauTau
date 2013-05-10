@@ -25,7 +25,10 @@ namespace ic {
   int HinvPrint::PreAnalysis() {
     if (runLumiEvt_) {
       std::ostringstream outName;
-      outName << "output/EventList.txt" ;
+      outName << "output_synch/EventList_";
+      if (is_data_) outName << "Data";
+      else outName << "MC";
+      outName << ".txt" ;
       foutList_.open(outName.str());
       if (!foutList_.is_open()){
 	std::cerr << " -- Failed to open file " << outName.str() << " for printing event list." << std::endl;
