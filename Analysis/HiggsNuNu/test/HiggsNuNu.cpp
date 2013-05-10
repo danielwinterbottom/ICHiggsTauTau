@@ -234,37 +234,38 @@ int main(int argc, char* argv[]){
 
   HinvPrint hinvFilter("HinvFilter",is_data,true,false);
 
-  //fill hinvFilter with events to be skimmed from inputfile
-  std::ifstream levtlist;
-  levtlist.open(eventsToSkim.c_str());
-  if(!levtlist.is_open()){
-    std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
-    return 1; 
-  }
-  unsigned counter = 0;
-  while(1){
-    unsigned lEvt=0;
-    unsigned lRun=0;
-    unsigned lLumi=0;
-    levtlist>>lRun;
-    levtlist>>lLumi;
-    levtlist>>lEvt;
-    std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
-    counter++;
-    if(levtlist.eof()){
-      break; 
+  if (do_skim && channel==channel::nunu){
+    //fill hinvFilter with events to be skimmed from inputfile
+    std::ifstream levtlist;
+    levtlist.open(eventsToSkim.c_str());
+    if(!levtlist.is_open()){
+      std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
+      return 1; 
     }
-    hinvFilter.PrintEvent(lRun,lLumi,lEvt);
+    unsigned counter = 0;
+    while(1){
+      unsigned lEvt=0;
+      unsigned lRun=0;
+      unsigned lLumi=0;
+      levtlist>>lRun;
+      levtlist>>lLumi;
+      levtlist>>lEvt;
+      std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
+      counter++;
+      if(levtlist.eof()){
+	break; 
+      }
+      hinvFilter.PrintEvent(lRun,lLumi,lEvt);
+    }
+    std::cout << " - Total of " << counter << " events added to skim." << std::endl;
+    levtlist.close();
   }
-  std::cout << " - Total of " << counter << " events added to skim." << std::endl;
-  levtlist.close();
 
   //print the event content
   HinvPrint hinvPrint("HinvPrint",is_data);
 
   //print run,lumi,evt of events selected
   HinvPrint hinvPrintList("HinvPrintList",is_data,false,true);
-
 
   bool fixForEWKZ = false;
   if (output_name.find("DYJJ01") != output_name.npos) fixForEWKZ = true;
