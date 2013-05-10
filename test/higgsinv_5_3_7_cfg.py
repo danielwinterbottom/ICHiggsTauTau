@@ -154,6 +154,7 @@ process.patJets.embedGenPartonMatch = cms.bool(False)
 process.selectedPatJets.cut = cms.string("pt>10. && abs(eta)<5.")
 #print "cutting selected pat jets"
 
+
 ###############
 #assorted things
 ##############
@@ -171,8 +172,8 @@ process.patMETsNoCorr = process.patMETs.clone(
       )
 
 process.load("JetMETCorrections.Type1MET.pfMETCorrectionType0_cfi")
-process.pfType1CorrectedMet.applyType0Corrections = cms.bool(False)
-process.pfType1CorrectedMet.srcType1Corrections = cms.VInputTag(
+process.pfType1CorrectedMet.applyType0Corrections = cms.bool(False) #set to false because this module does track based corrections
+process.pfType1CorrectedMet.srcType1Corrections = cms.VInputTag( #this section does pf based type0 corrections as recommended by workbookmetanalysis
   cms.InputTag('pfMETcorrType0'),
   cms.InputTag('pfJetMETcorr', 'type1')
   )
@@ -1376,4 +1377,4 @@ process.p = cms.Path(
   +process.icSequence
   )
 
-#print process.dumpPython()
+print process.dumpPython()
