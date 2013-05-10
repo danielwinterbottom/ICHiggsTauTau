@@ -33,6 +33,7 @@ namespace ic {
 
     if (doFilters_){
       badEvts_.clear();
+      //badRuns_.clear();
       //badEvts_.reserve(515891);
       if (!extractEvents(hcal_input_name_)) return 1;
       if (!extractEvents(ecal_input_name_)) return 1;
@@ -48,18 +49,20 @@ namespace ic {
 
      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
-     BadEvent lEvt;
-     lEvt.event = eventInfo->event();
+     RunLumiEvent lEvt;
+     lEvt.evt = eventInfo->event();
      lEvt.run = eventInfo->run();
      lEvt.lumi = eventInfo->lumi_block();
 
-     std::set<size_t>::iterator lIter = badEvts_.find(lEvt.RunLumiEvtHash());
+     //bool print = (lEvt.run == 204554) || (lEvt.run == 205311);
+     //if (print) std::cout << "--MetLaserFilters** Processing run " << lEvt.run << ":" << lEvt.lumi << ":" << lEvt.evt << std::endl;
+     std::set<RunLumiEvent>::iterator lIter = badEvts_.find(lEvt);
      if (lIter != badEvts_.end()) {
        badEvts_.erase(lIter);
-       //std::cout << " ---- Deleted event, size of badEvents = " << badEvts_.size() << std::endl;
+       //if (print) std::cout << " ----MetLaserFilters** Deleted event " << lEvt.run << ", size of badEvents = " << badEvts_.size() << std::endl;
        return 1;
      }
-
+     
      return 0;
   }
 

@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 
 #include <string>
 #include <boost/algorithm/string.hpp>
@@ -12,23 +13,7 @@
 
 namespace ic {
 
-  struct BadEvent {
-    int run;
-    int lumi;
-    unsigned event;
-
-    std::size_t RunLumiEvtHash() const {
-      std::size_t id = 0;
-      boost::hash_combine(id, run);
-      boost::hash_combine(id, lumi);
-      boost::hash_combine(id, event);
-      return id;
-    }
-
-
-  };
-  
-  std::istream & operator>>(std::istream & is, BadEvent & evt){
+  std::istream & operator>>(std::istream & is, RunLumiEvent & evt){
     std::string lLine;
     is>>lLine;
     std::vector<std::string> lVec;
@@ -41,22 +26,22 @@ namespace ic {
     else {
       std::istringstream(lVec[0])>>evt.run; 
       std::istringstream(lVec[1])>>evt.lumi;
-      std::istringstream(lVec[2])>>evt.event;
+      std::istringstream(lVec[2])>>evt.evt;
     } 
     return is; 
   }
 
-  typedef std::set <std::size_t> evtsHashArray;
+  typedef std::set <RunLumiEvent> evtsArray;
 
-  std::istream & operator>>(std::istream & is, evtsHashArray & evtSet){
+  std::istream & operator>>(std::istream & is, evtsArray & evtSet){
 
-    BadEvent temp; 
+    RunLumiEvent temp; 
     while(1){
       is>>temp; 
       if(is.eof()){
 	break; 
       }
-      evtSet.insert(temp.RunLumiEvtHash()); 
+      evtSet.insert(temp);
     }
     return is; 
   }
@@ -66,8 +51,8 @@ namespace ic {
     std::string hcal_input_name_;
     std::string ecal_input_name_;
     bool doFilters_;
-
-    evtsHashArray badEvts_;
+    
+    evtsArray badEvts_;
 
     bool extractEvents(std::string inputfile);
 
