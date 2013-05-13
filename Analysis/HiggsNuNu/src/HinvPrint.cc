@@ -71,7 +71,7 @@ namespace ic {
     RunLumiEvent lRLE;
     lRLE.run = eventInfo->run();
     lRLE.lumi = eventInfo->lumi_block();
-    if (!is_data) {
+    if (!is_data_) {
       lRLE.run = 0;
       lRLE.lumi = 0;
     }
