@@ -20,8 +20,10 @@ namespace ic {
   struct HinvWJetsControlPlots {
     TH1F *n_electrons;
     TH1F *n_muons;
+    TH1F *n_taus;
     TH1F *mt_enu;
     TH1F *mt_munu;
+    TH1F *mt_taunu;
     TH1F *ept_1;
     TH1F *ept_2;
     TH1F *eeta_1;
@@ -30,6 +32,10 @@ namespace ic {
     TH1F *mupt_2;
     TH1F *mueta_1;
     TH1F *mueta_2;
+    TH1F *taupt_1;
+    TH1F *taupt_2;
+    TH1F *taueta_1;
+    TH1F *taueta_2;
     TH1F *edxy_all;
     TH1F *mudxy_all;
     TH1F *edz_all;
@@ -53,6 +59,7 @@ namespace ic {
     CLASS_MEMBER(HinvWJetsPlots,std::string, met_nolep_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, electrons_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, muons_label);
+    CLASS_MEMBER(HinvWJetsPlots,std::string, taus_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, dijet_label);
     CLASS_MEMBER(HinvWJetsPlots,std::string, sel_label);
 
@@ -67,8 +74,10 @@ namespace ic {
 
     unsigned n_electrons_;
     unsigned n_muons_;
+    unsigned n_taus_;
     double mt_enu_;
     double mt_munu_;
+    double mt_taunu_;
     double ept_1_;
     double ept_2_;
     double eeta_1_;
@@ -77,7 +86,10 @@ namespace ic {
     double mupt_2_;
     double mueta_1_;
     double mueta_2_;
- 
+    double taupt_1_;
+    double taupt_2_;
+    double taueta_1_;
+    double taueta_2_;
 
     double met_noelectrons_;
     double met_nomuons_;

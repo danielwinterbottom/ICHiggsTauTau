@@ -17,8 +17,10 @@ namespace ic {
     TH1F::SetDefaultSumw2();
     n_electrons = dir.make<TH1F>("n_electrons","n_electrons", 10, 0, 10); 
     n_muons = dir.make<TH1F>("n_muons","n_muons", 10, 0, 10); 
+    n_taus = dir.make<TH1F>("n_taus","n_taus", 10, 0, 10); 
     mt_enu = dir.make<TH1F>("mt_enu","mt_enu", 500, 0, 500); 
     mt_munu = dir.make<TH1F>("mt_munu","mt_munu", 500, 0, 500); 
+    mt_taunu = dir.make<TH1F>("mt_taunu","mt_taunu", 500, 0, 500); 
     ept_1 = dir.make<TH1F>("ept_1","ept_1", 1000, 0, 1000); 
     ept_2 = dir.make<TH1F>("ept_2","ept_2", 1000, 0, 1000); 
     eeta_1 = dir.make<TH1F>("eeta_1","eeta_1", 100, -5, 5); 
@@ -27,6 +29,10 @@ namespace ic {
     mupt_2 = dir.make<TH1F>("mupt_2","mupt_2", 1000, 0, 1000); 
     mueta_1 = dir.make<TH1F>("mueta_1","mueta_1", 100, -5, 5); 
     mueta_2 = dir.make<TH1F>("mueta_2","mueta_2", 100, -5, 5);
+    taupt_1 = dir.make<TH1F>("taupt_1","taupt_1", 1000, 0, 1000); 
+    taupt_2 = dir.make<TH1F>("taupt_2","taupt_2", 1000, 0, 1000); 
+    taueta_1 = dir.make<TH1F>("taueta_1","taueta_1", 100, -5, 5); 
+    taueta_2 = dir.make<TH1F>("taueta_2","taueta_2", 100, -5, 5); 
 
     edxy_all = dir.make<TH1F>("edxy_all","edxy_all", 200, -1, 1);
     edz_all = dir.make<TH1F>("edz_all","edz_all", 200, -2, 2);
@@ -48,6 +54,7 @@ namespace ic {
     met_nolep_label_ = "metNoMuons";
     electrons_label_ = "electrons";
     muons_label_ = "muonsPFlow";
+    taus_label_ = "taus";
     dijet_label_ = "jjCandidates";
     sel_label_ = "JetPair";
   }
@@ -62,6 +69,7 @@ namespace ic {
       std::cout << "MET no leptons Label: " << met_nolep_label_ << std::endl;
       std::cout << "electrons Label: " << electrons_label_ << std::endl;
       std::cout << "muons Label: " << muons_label_ << std::endl;
+      std::cout << "taus Label: " << taus_label_ << std::endl;
       std::cout << "dijet Label: " << dijet_label_ << std::endl;
       std::cout << "Selection Label: " << sel_label_ << std::endl;
     }
@@ -98,6 +106,10 @@ namespace ic {
     std::vector<Muon*> muons = event->GetPtrVec<Muon>(muons_label_);
     std::sort(muons.begin(), muons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     
+    std::vector<Tau*> taus = event->GetPtrVec<Tau>(taus_label_);
+    std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+  
+
     bool fillPlots = true;
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
     if (dijet_vec.size() != 0) {
@@ -122,6 +134,7 @@ namespace ic {
 
     n_electrons_ = electrons.size();
     n_muons_ = muons.size();
+    n_taus_ = taus.size();
     met_noelectrons_ = met_nolep->pt();
     met_nomuons_ = met_nolep->pt();
     
@@ -153,6 +166,21 @@ namespace ic {
     if (n_muons_ > 1){
       mupt_2_ = muons[1]->pt();
       mueta_2_ = muons[1]->eta();
+    }
+
+    taupt_1_ = -1;
+    taueta_1_ = -10;
+    mt_taunu_ = -1;
+   if (n_taus_ > 0) {
+      taupt_1_ = taus[0]->pt();
+      taueta_1_ = taus[0]->eta();
+      mt_taunu_ = MT(taus[0],met);
+    }
+    taupt_2_ = -1;
+    taueta_2_ = -10;
+    if (n_taus_ > 1){
+      taupt_2_ = taus[1]->pt();
+      taueta_2_ = taus[1]->eta();
     }
 
      double lRho = eventInfo->lepton_rho();
@@ -218,8 +246,10 @@ namespace ic {
   void HinvWJetsPlots::FillPlots() {
     wjetsplots_->n_electrons->Fill(n_electrons_, wt_);
     wjetsplots_->n_muons->Fill(n_muons_, wt_);
+    wjetsplots_->n_taus->Fill(n_taus_, wt_);
     wjetsplots_->mt_enu->Fill(mt_enu_, wt_);
     wjetsplots_->mt_munu->Fill(mt_munu_, wt_);
+    wjetsplots_->mt_taunu->Fill(mt_taunu_, wt_);
     wjetsplots_->ept_1->Fill(ept_1_, wt_);
     wjetsplots_->eeta_1->Fill(eeta_1_, wt_);
     wjetsplots_->ept_2->Fill(ept_2_, wt_);
@@ -228,6 +258,10 @@ namespace ic {
     wjetsplots_->mueta_1->Fill(mueta_1_, wt_);
     wjetsplots_->mupt_2->Fill(mupt_2_, wt_);
     wjetsplots_->mueta_2->Fill(mueta_2_, wt_);            
+    wjetsplots_->taupt_1->Fill(taupt_1_, wt_);
+    wjetsplots_->taueta_1->Fill(taueta_1_, wt_);
+    wjetsplots_->taupt_2->Fill(taupt_2_, wt_);
+    wjetsplots_->taueta_2->Fill(taueta_2_, wt_);            
     wjetsplots_->met_noelectrons->Fill(met_noelectrons_, wt_);
     wjetsplots_->met_nomuons->Fill(met_nomuons_, wt_);
   }
