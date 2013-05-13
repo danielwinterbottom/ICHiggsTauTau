@@ -252,12 +252,14 @@ int main(int argc, char* argv[]){
 	levtlist>>lLumi;
       }
       levtlist>>lEvt;
-      std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
-      counter++;
+      if (lEvt!=0 || lRun!=0 || lLumi!=0){
+	std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
+	hinvFilter.PrintEvent(lRun,lLumi,lEvt);
+	counter++;
+      }
       if(levtlist.eof()){
 	break; 
       }
-      hinvFilter.PrintEvent(lRun,lLumi,lEvt);
     }
 
     std::cout << " - Total of " << counter << " events added to skim." << std::endl;
