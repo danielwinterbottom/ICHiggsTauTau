@@ -138,6 +138,14 @@ namespace ic {
 		return result;
 	}
 
+	HTTSetup HTTSetup::era(std::vector<std::string> const& process) const {
+		HTTSetup result = *this;
+		ic::erase_if(result.params_, [&] (Nuisance const& val) { return std::find(process.begin(), process.end(), val.era) == process.end(); });
+		ic::erase_if(result.processes_, [&] (Process const& proc) { return std::find(process.begin(), process.end(), proc.era) == process.end(); });
+		ic::erase_if(result.obs_, [&] (Observation const& proc) { return std::find(process.begin(), process.end(), proc.era) == process.end(); });
+		return result;
+	}
+
 	HTTSetup HTTSetup::category_id(std::vector<int> const& id) const {
 		HTTSetup result = *this;
 		ic::erase_if(result.params_, [&] (Nuisance const& val) { return std::find(id.begin(), id.end(), val.category_id) == id.end(); });

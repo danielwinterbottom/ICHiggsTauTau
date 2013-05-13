@@ -134,6 +134,7 @@ class HTTSetup {
 		void VariableRebin(std::vector<double> bins);
 		HTTSetup & PrintAll();
 		HTTSetup process(std::vector<std::string> const& process) const;
+		HTTSetup era(std::vector<std::string> const& era) const;
 		HTTSetup key_match(CategoryKey const & keyval) const;
 		HTTSetup category_id(std::vector<int> const& id) const;
 		HTTSetup no_shapes() const;
