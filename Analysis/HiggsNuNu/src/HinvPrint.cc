@@ -67,11 +67,14 @@ namespace ic {
       return 0; 
     }
 
-    std::cout << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
-
+ 
     RunLumiEvent lRLE;
     lRLE.run = eventInfo->run();
     lRLE.lumi = eventInfo->lumi_block();
+    if (!is_data) {
+      lRLE.run = 0;
+      lRLE.lumi = 0;
+    }
     lRLE.evt = eventInfo->event();
     if (events_.find(lRLE) != events_.end() || events_.size()==0) {
 
