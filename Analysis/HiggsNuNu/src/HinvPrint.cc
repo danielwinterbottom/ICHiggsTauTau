@@ -76,6 +76,7 @@ namespace ic {
       lRLE.lumi = 0;
     }
     lRLE.evt = eventInfo->event();
+
     if (events_.find(lRLE) != events_.end() || events_.size()==0) {
 
       if (filter_) return 0;
