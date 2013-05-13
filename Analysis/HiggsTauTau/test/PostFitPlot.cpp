@@ -94,8 +94,14 @@ int main(int argc, char* argv[]){
   string default_title  = "CMS Preliminary, #sqrt{s} = 7-8 TeV, L = 24.3 fb^{-1}";
   int signal_factor     = 1;
   bool blind;                                   // Blind some region of the data
-  double x_blind_min;                           // If bind is true, use this as min x for blinding
-  double x_blind_max;                           // If bind is true, use this as min x for blinding
+  bool custom_x_axis_range;                     // Choose own x axis range
+  double x_axis_min;                            // If custom_x_axis is true, use this as min x for the plot
+  double x_axis_max;                            // If custom_x_axis is true, use this as max x for the plot
+  bool custom_y_axis_range;                     // Choose own y axis range
+  double y_axis_min;                            // If custom_y_axis is true, use this as min y for the plot
+  double y_axis_max;                            // If custom_y_axis is true, use this as max y for the plot
+  double x_blind_min;                           // If blind is true, use this as min y for blinding
+  double x_blind_max;                           // If blind is true, use this as max x for blinding
 
   po::options_description config("Configuration");
   config.add_options()
@@ -113,7 +119,13 @@ int main(int argc, char* argv[]){
     ("mssm",                 po::value<bool>(&mssm)->default_value(false),                   "input is an MSSM datacard")
     ("log_y",                po::value<bool>(&log_y)->default_value(false),                  "y-axis in log scale")
     ("signal_factor",        po::value<int>(&signal_factor)->default_value(1),               "scale the signal by an integer factor")
-    ("blind",                po::value<bool>(&blind)->default_value(false),  "bind the data distribution")
+    ("blind",                po::value<bool>(&blind)->default_value(false),  "blind the data distribution")
+    ("custom_x_axis_range",  po::value<bool>(&custom_x_axis_range)->default_value(false),  "choose your own x axis range")
+    ("x_axis_min",           po::value<double>(&x_axis_min)->default_value(0), "set the min x-axis value")
+    ("x_axis_max",           po::value<double>(&x_axis_max)->default_value(1000000), "set the max x-axis value")
+    ("custom_y_axis_range",  po::value<bool>(&custom_y_axis_range)->default_value(false),  "choose your own y axis range")
+    ("y_axis_min",           po::value<double>(&y_axis_min)->default_value(0), "set the min y-axis value")
+    ("y_axis_max",           po::value<double>(&y_axis_max)->default_value(1000000), "set the max y-axis value")
     ("x_blind_min",          po::value<double>(&x_blind_min)->default_value(0), "set the min x-axis value for blinding")
     ("x_blind_max",          po::value<double>(&x_blind_max)->default_value(0), "set the max x-axis value for blinding");
   po::variables_map vm;
@@ -324,6 +336,16 @@ int main(int argc, char* argv[]){
   if (setup.process(signal_procs).GetRate() != 0.0) plot.AddTH1PlotElement(signal_shape);
   plot.AddTH1PlotElement(total_shape);
   plot.AddTH1PlotElement(data_shape);
+  plot.custom_x_axis_range = custom_x_axis_range;
+  if (custom_x_axis_range){
+    plot.x_axis_min = x_axis_min;
+    plot.x_axis_max = x_axis_max;
+  }
+  plot.custom_y_axis_range = custom_y_axis_range;
+  if (custom_y_axis_range){
+    plot.y_axis_min = y_axis_min;
+    plot.y_axis_max = y_axis_max;
+  }
   plot.legend_height = 0.045;
   plot.x_axis_title = "M_{#tau#tau} [GeV]";
   plot.y_axis_title = "dN/dm_{#tau#tau} [1/GeV]";
