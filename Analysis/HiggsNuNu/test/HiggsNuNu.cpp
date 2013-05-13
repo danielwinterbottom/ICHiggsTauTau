@@ -247,8 +247,10 @@ int main(int argc, char* argv[]){
       unsigned lEvt=0;
       unsigned lRun=0;
       unsigned lLumi=0;
-      levtlist>>lRun;
-      levtlist>>lLumi;
+      if (is_data) {
+	levtlist>>lRun;
+	levtlist>>lLumi;
+      }
       levtlist>>lEvt;
       std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
       counter++;
@@ -257,6 +259,7 @@ int main(int argc, char* argv[]){
       }
       hinvFilter.PrintEvent(lRun,lLumi,lEvt);
     }
+
     std::cout << " - Total of " << counter << " events added to skim." << std::endl;
     levtlist.close();
   }
