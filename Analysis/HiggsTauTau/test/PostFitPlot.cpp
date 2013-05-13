@@ -85,7 +85,12 @@ int main(int argc, char* argv[]){
   string datacard_path  = "";
   string root_file_path = "";
   string signal_mass    = "";
+  string title_left     = "";
+  string tanb           = "";
   bool postfit          = true;
+  bool mssm             = false;
+  bool log_y            = false;
+  string default_title  = "CMS Preliminary, #sqrt{s} = 7-8 TeV, L = 24.3 fb^{-1}";
 
   po::options_description config("Configuration");
   config.add_options()
@@ -96,10 +101,17 @@ int main(int argc, char* argv[]){
     ("root_file_path",       po::value<string>(&root_file_path)->required(),  "root_file_path")
     ("pulls_file",           po::value<string>(&pulls_file)->required(),      "pulls_file")
     ("signal_mass",          po::value<string>(&signal_mass)->required(),     "signal_mass")
-    ("postfit",              po::value<bool>(&postfit)->required(),           "postfit");
+    ("tanb",                 po::value<string>(&tanb)->required(),            "tanb")
+    ("title_left",           po::value<string>(&title_left)->default_value(default_title),   "title_left")
+    ("postfit",              po::value<bool>(&postfit)->required(),                          "postfit")
+    ("mssm",                 po::value<bool>(&mssm)->default_value(false),                   "mssm")
+    ("log_y",                po::value<bool>(&log_y)->default_value(false),                  "log_y");
   po::variables_map vm;
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::notify(vm);
+
+  vector<string> signal_procs = {"ggH", "qqH", "VH"};
+  if (mssm) signal_procs = {"ggH","bbH"};
 
   vector<string> v_eras;
   boost::split(v_eras, eras, boost::is_any_of(","));
@@ -113,7 +125,6 @@ int main(int argc, char* argv[]){
     v_columns = make_pair(tmp_split[0],tmp_cats);
   }
 
-
   HTTSetup setup;
   for (unsigned j = 0; j < v_eras.size(); ++j) {
     for (unsigned k = 0; k < v_columns.second.size(); ++k) {
@@ -122,7 +133,11 @@ int main(int argc, char* argv[]){
     }
   }
   for (unsigned i = 0; i < v_eras.size(); ++i) {
-    setup.ParseROOTFile(root_file_path+"/"+"htt_"+channel+".input_"+v_eras[i]+".root", channel, v_eras[i]);
+    if (!mssm) {
+      setup.ParseROOTFile(root_file_path+"/"+"htt_"+channel+".input_"+v_eras[i]+".root", channel, v_eras[i]);
+    } else {
+      setup.ParseROOTFile(root_file_path+"/"+"htt_"+channel+".inputs-mssm-"+v_eras[i]+"-0.root", channel, v_eras[i]);
+    }
   }
   setup.ParsePulls(pulls_file);
   if (postfit) setup.ApplyPulls();
@@ -148,8 +163,8 @@ int main(int argc, char* argv[]){
     % setup.process({"ZTT","ZL","ZJ","ZLL","W","QCD","VV","TT","Ztt","Fakes","EWK","ttbar"}).GetUncertainty();
 
   std::cout << boost::format("%-20s %-10.1f +/- %-10.1f\n") % "H->TauTau" 
-    % setup.process({"ggH","VH","qqH"}).GetRate() 
-    % setup.process({"ggH","VH","qqH"}).GetUncertainty();
+    % setup.process(signal_procs).GetRate() 
+    % setup.process(signal_procs).GetUncertainty();
 
     std::cout << boost::format("%-20s %-10.1f \n\n") % "Observed" 
       % setup.GetObservedRate();
@@ -162,8 +177,11 @@ int main(int argc, char* argv[]){
   plot.output_filename = (postfit ? "postfit_":"prefit_") + channel + "_" + catstring + ".pdf";
 
 
-  TH1F signal_hist = setup.process({"ggH","VH","qqH"}).GetShape();
-  ic::TH1PlotElement signal_shape("signal_shape", &signal_hist, "1#times H(125)#rightarrow#tau#tau");
+  TH1F signal_hist = setup.process(signal_procs).GetShape();
+  string signal_str = "1#times H("+signal_mass+")#rightarrow#tau#tau";
+  if (mssm) signal_str = "1#times #Phi#rightarrow#tau#tau(m_{A}="+signal_mass+",tan#beta="+tanb+")";
+  ic::TH1PlotElement signal_shape("signal_shape", &signal_hist, signal_str);
+
   SetStyle(signal_shape, kBlue+3);
   signal_shape.set_line_style(11);
   signal_shape.set_fill_color(0);
@@ -254,6 +272,7 @@ int main(int argc, char* argv[]){
   plot.AddTextElement(text);
   plot.AddTextElement(text2);
   plot.extra_pad = 1.1;
+  if (mssm) plot.y_axis_log = true;
   plot.GeneratePlot();
 
 

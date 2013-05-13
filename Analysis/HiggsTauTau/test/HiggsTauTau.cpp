@@ -974,9 +974,12 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&jetLeptonOverlapFilter);
     if (mc != mc::fall11_42X)     analysis.AddModule(&httRecoilCorrector);
 
-    if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) 
+    if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) {
                                   analysis.AddModule(&svfit);
+    }
+    if (!(svfit_override != "" && new_svfit_mode == 1)) {
                                   analysis.AddModule(&svfitTest);
+    }
 
 
                                   analysis.AddModule(&httWeights);

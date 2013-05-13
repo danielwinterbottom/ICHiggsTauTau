@@ -25,12 +25,28 @@
   --paramfile=./scripts/Moriond_params_2012.dat --log_y=true
 
   ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg  --tau_scale_mode=0 --channel=et --rebin=1  \
-  --method=2 --plot_name="m_vis_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
-  --blind=false --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=true --verbose=false \
-  --paramfile=./scripts/Moriond_params_2012.dat --log_y=true
+  --method=3 --plot_name="m_vis_sm_fine"  --x_axis_label="m_{#tau#tau} [GeV]" \
+  --blind=true --x_blind_min=100 --x_blind_max=160 --make_datacard=false --norm_bins=true --verbose=false \
+  --paramfile=./scripts/Moriond_params_2012.dat
 
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=1 --non_mass_plot=true  \
+  --method=3 --category="jet_high" --plot_name="mt_1" --x_axis_label="m_{T} [GeV]" --extra_pad=1.15 \
+  --paramfile=./scripts/Moriond_params_2012.dat --replace_os_sel="os"  --replace_ss_sel="ss"
 
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=1 --non_mass_plot=true \
+  --method=8 --category="1jet_high" --plot_name="met" --x_axis_label="E_{T}^{miss} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
+  --paramfile=./scripts/Moriond_params_2012.dat --extra_pad=1.1 
 
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=5 --non_mass_plot=true \
+  --method=1 --category="0jet_high" --plot_name="pt_2"  --x_axis_label="Tau p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 --draw_ratio=true \
+  --paramfile=./scripts/Moriond_params_2012.dat
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=5 --non_mass_plot=true \
+  --method=3 --category="1jet_high" --plot_name="pt_2"  --x_axis_label="Tau p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+  --paramfile=./scripts/Moriond_params_2012.dat
 
 ./bin/DataCompare  	--file2="output/Moriond_2012/SUSYGluGluToHToTauTau_M-90_mt_2012.root"  \
 --file1="htt_mt.inputs-sm-8TeV-lowsignal.root" \
@@ -230,4 +246,9 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 --x_axis_title="Simple Higgs p_{T} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
 --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
 --outname="ggh_125_pt_h.pdf" --rebin=2
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=1 --non_mass_plot=true \
+  --method=8 --category="inclusive" --plot_name="met" --x_axis_label="E_{T}^{miss} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
+  --paramfile=./scripts/Moriond_params_2012.dat --extra_pad=1.1
 
