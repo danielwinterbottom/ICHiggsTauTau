@@ -474,6 +474,49 @@ int main(int argc, char* argv[]){
     .set_min(0)
     .set_max(0);
 
+
+  // ------------------------------------------------------------------------------------
+  // Tau modules
+  // ------------------------------------------------------------------------------------
+
+  SimpleFilter<Tau> tauPtEtaFilter = SimpleFilter<Tau>("TauPtEtaFilter")
+    .set_input_label("taus")
+    .set_predicate(bind(MinPtMaxEta, _1, 20, 2.3))
+    .set_min(1);
+
+  SimpleFilter<Tau> tauDzFilter = SimpleFilter<Tau>("TauDzFilter")
+    .set_input_label("taus")
+    .set_predicate(bind(fabs, bind(&Tau::lead_dz_vertex, _1)) < 0.2)
+    .set_min(1);
+
+  std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
+  tau_iso_discr         = "byTightCombinedIsolationDeltaBetaCorr3Hits";
+  tau_anti_muon_discr   = "againstMuonLoose";
+  tau_anti_elec_discr_1 = "againstElectronLoose";
+  tau_anti_elec_discr_2 = "againstElectronLoose";
+  
+  //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+  
+  std::cout << "** Tau Discriminators **" << std::endl;
+  std::cout << boost::format(param_fmt) % "isolation" %  tau_iso_discr;
+  std::cout << boost::format(param_fmt) % "anti-electron1" % tau_anti_elec_discr_1;
+  std::cout << boost::format(param_fmt) % "anti-electron2" % tau_anti_elec_discr_2;
+  std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
+
+
+  SimpleFilter<Tau> tauIsoFilter = SimpleFilter<Tau>("TauIsoFilter")
+    .set_input_label("taus")
+    .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
+    .set_min(1);
+
+  SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
+    .set_predicate( (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5) && (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_2) > 0.5) )                     
+    .set_input_label("taus").set_min(1); 
+
+  SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
+    .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
+    .set_input_label("taus").set_min(1);
+
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
@@ -613,7 +656,6 @@ int main(int argc, char* argv[]){
   MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",false,filtersVec,met_cut);
   MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut);
   MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut);
-
 
   if (fixForEWKZ)  mettype="metNoENoMu";
   MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut);
@@ -890,16 +932,16 @@ int main(int argc, char* argv[]){
    
    if (!do_skim) {
 
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
      analysis.AddModule(&dataMCTriggerPathFilter);
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
  
      ////analysis.AddModule(&runStats);
      
      if (is_data) {
        analysis.AddModule(&metFilters);
        analysis.AddModule(&metLaserFilters);
-       if (printEventList) analysis.AddModule(&hinvPrintList);
+       //if (printEventList) analysis.AddModule(&hinvPrintList);
      }
      
      //jet modules
@@ -940,7 +982,8 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);
 
-    
+     if (printEventList) analysis.AddModule(&hinvPrintList);
+ 
      //deal with removing overlap with selected leptons
      analysis.AddModule(&jetMuonOverlapFilter);
      analysis.AddModule(&jetElecOverlapFilter);
@@ -951,10 +994,11 @@ int main(int argc, char* argv[]){
      //filter jets
      analysis.AddModule(&jetPtEtaFilter);
     
+     //if (printEventContent) analysis.AddModule(&hinvPrint);
  
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
-     if (printEventContent) analysis.AddModule(&hinvPrint);
+     //if (printEventContent) analysis.AddModule(&hinvPrint);
      analysis.AddModule(&jetPairFilter);
 
      if (printEventList) analysis.AddModule(&hinvPrintList);
@@ -982,6 +1026,17 @@ int main(int argc, char* argv[]){
        //analysis.AddModule(&oneVetoElectronFilter);
        analysis.AddModule(&oneMuonFilter);
        //analysis.AddModule(&oneVetoMuonFilter);
+       analysis.AddModule(&controlPlots_wsel);
+       analysis.AddModule(&wjetsPlots_wsel);
+     }
+     else if (channel == channel::taunu){
+       analysis.AddModule(&tauPtEtaFilter);
+       analysis.AddModule(&tauDzFilter);
+       analysis.AddModule(&tauIsoFilter);
+       analysis.AddModule(&tauElRejectFilter);
+       analysis.AddModule(&tauMuRejectFilter);
+       analysis.AddModule(&zeroVetoElectronFilter);
+       analysis.AddModule(&zeroVetoMuonFilter);
        analysis.AddModule(&controlPlots_wsel);
        analysis.AddModule(&wjetsPlots_wsel);
      }
