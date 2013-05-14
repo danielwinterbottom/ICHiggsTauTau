@@ -133,6 +133,7 @@ namespace ic {
     InitCoreControlPlots("0jet_low");
 
     InitCategory("btag");
+    InitCoreControlPlots("btag");
 
     InitCategory("btag_low");
     InitCategory("btag_low_loose");
@@ -437,7 +438,10 @@ namespace ic {
     // ic::erase_if(lowpt_jets_copy,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     // if (lowpt_jets_copy.size() >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
 
-    if (n_jets_ <= 1 && n_bjets_ > 0)                       SetPassCategory("btag");
+    if (n_jets_ <= 1 && n_bjets_ > 0) {
+      SetPassCategory("btag");
+      FillCoreControlPlots("btag");
+    }
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low");
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ > pt2_split)  SetPassCategory("btag_high");
 
