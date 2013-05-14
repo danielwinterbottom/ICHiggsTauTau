@@ -85,6 +85,7 @@ namespace ic {
 
     misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
     misc_2dplots_ = new Dynamic2DHistoSet(fs_->mkdir("misc_2dplots"));
+    misc_2dplots_->Create("jpt_vs_hpt", 50, 0, 200, 50, 0, 200);
 
     InitSelection("os");
     InitSelection("os_sel");
@@ -306,7 +307,11 @@ namespace ic {
 
     // Define which selections this event passes
     if (channel_ == channel::et || channel_ == channel::etmet || channel_ == channel::mt || channel_ == channel::mtmet) {
-      if (os_ && mt_1_ < 20.0) SetPassSelection("os_sel");
+      if (os_ && mt_1_ < 20.0) {
+        SetPassSelection("os_sel");
+        misc_2dplots_->Create("jpt_vs_hpt", 50, 0, 200, 50, 0, 200);
+        misc_2dplots_->Fill("jpt_vs_hpt", (jpt_1_ > 0.) ? jpt_1_ : 0., pt_h_);
+      }
       if (os_) SetPassSelection("os");
       if (!os_) SetPassSelection("ss");
       if (os_ && mt_1_ > 70.0) SetPassSelection("os_con");
@@ -339,8 +344,6 @@ namespace ic {
         FillCoreControlPlots("vbf");
       }
     }
-
-
 
     // VBF Selection
     // In the em channel, additionally apply b-jet veto
