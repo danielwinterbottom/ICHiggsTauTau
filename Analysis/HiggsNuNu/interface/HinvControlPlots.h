@@ -40,12 +40,16 @@ namespace ic {
 
   struct HinvWeightPlots {
     TH1F *met_noW;
+    TH1F *dphijj_noW;
     TH1F *n_jets_noW;
     TH1F *met_pu;
+    TH1F *dphijj_pu;
     TH1F *n_jets_pu;
     TH1F *met_pu_trig;
+    TH1F *dphijj_pu_trig;
     TH1F *n_jets_pu_trig;
     TH1F *met_pu_trig_idiso;
+    TH1F *dphijj_pu_trig_idiso;
     TH1F *n_jets_pu_trig_idiso;
 
     HinvWeightPlots(TFileDirectory const& dir);

@@ -33,6 +33,10 @@ namespace ic {
     taupt_2 = dir.make<TH1F>("taupt_2","taupt_2", 1000, 0, 1000); 
     taueta_1 = dir.make<TH1F>("taueta_1","taueta_1", 100, -5, 5); 
     taueta_2 = dir.make<TH1F>("taueta_2","taueta_2", 100, -5, 5); 
+    dRmin_taujet = dir.make<TH1F>("dRmin_taujet","dRmin_taujet", 500, 0, 10); 
+    dRmin_taujet1 = dir.make<TH1F>("dRmin_taujet1","dRmin_taujet1", 500, 0, 10); 
+    dRmin_taujet2 = dir.make<TH1F>("dRmin_taujet2","dRmin_taujet2", 500, 0, 10); 
+    taggingJetsFlavour = dir.make<TH1F>("taggingJetsFlavour","taggingJetsFlavour", 4, 0, 4);
 
     edxy_all = dir.make<TH1F>("edxy_all","edxy_all", 200, -1, 1);
     edz_all = dir.make<TH1F>("edz_all","edz_all", 200, -2, 2);
@@ -109,8 +113,14 @@ namespace ic {
     std::vector<Tau*> taus = event->GetPtrVec<Tau>(taus_label_);
     std::sort(taus.begin(), taus.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
   
-
+    n_electrons_ = electrons.size();
+    n_muons_ = muons.size();
+    n_taus_ = taus.size();
+    met_noelectrons_ = met_nolep->pt();
+    met_nomuons_ = met_nolep->pt();
+ 
     bool fillPlots = true;
+
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
     if (dijet_vec.size() != 0) {
                                 
@@ -126,18 +136,40 @@ namespace ic {
       }
 
         
+      dRmin_taujet_ = 10;
+      dRmin_taujet1_ = 10;
+      dRmin_taujet2_ = 10;
+      taggingJetsFlavour_ = 0;
+      double dR1min = 10;
+      double dR2min = 10;
+      Candidate const* jet1 = dijet->GetCandidate("jet1");
+      Candidate const* jet2 = dijet->GetCandidate("jet2");
+      for (unsigned iTau(0); iTau<n_taus_; ++iTau){
+	Tau *lTau = taus[iTau];
+
+	double dR1 = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),lTau->vector());
+	double dR2 = ROOT::Math::VectorUtil::DeltaR(jet2->vector(),lTau->vector());
+
+	if (dR1 < dR1min) {
+	  dR1min = dR1;
+	}
+	if (dR2 < dR2min) {
+	  dR2min = dR2;
+	}
+      }
+      dRmin_taujet_ = std::min(dR1min,dR2min);
+      dRmin_taujet1_ = dR1min;
+      dRmin_taujet2_ = dR2min;
+      if (dR1min < 0.5 && dR2min < 0.5) taggingJetsFlavour_ = 3;
+      else if (dR1min < 0.5) taggingJetsFlavour_ = 1;
+      else if (dR2min < 0.5) taggingJetsFlavour_ = 2;
+
     }
 
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
     // for each new event
-
-    n_electrons_ = electrons.size();
-    n_muons_ = muons.size();
-    n_taus_ = taus.size();
-    met_noelectrons_ = met_nolep->pt();
-    met_nomuons_ = met_nolep->pt();
-    
+   
     ept_1_ = -1;
     eeta_1_ = -10;
     mt_enu_ = -1;
@@ -183,7 +215,11 @@ namespace ic {
       taueta_2_ = taus[1]->eta();
     }
 
-     double lRho = eventInfo->lepton_rho();
+
+
+
+
+    double lRho = eventInfo->lepton_rho();
  
     for (unsigned iele(0); iele<n_electrons_; ++iele){//loop on electrons
 
@@ -261,7 +297,12 @@ namespace ic {
     wjetsplots_->taupt_1->Fill(taupt_1_, wt_);
     wjetsplots_->taueta_1->Fill(taueta_1_, wt_);
     wjetsplots_->taupt_2->Fill(taupt_2_, wt_);
-    wjetsplots_->taueta_2->Fill(taueta_2_, wt_);            
+    wjetsplots_->taueta_2->Fill(taueta_2_, wt_); 
+    wjetsplots_->dRmin_taujet->Fill(dRmin_taujet_, wt_);
+    wjetsplots_->dRmin_taujet1->Fill(dRmin_taujet1_, wt_);
+    wjetsplots_->dRmin_taujet2->Fill(dRmin_taujet2_, wt_);
+    wjetsplots_->taggingJetsFlavour->Fill(taggingJetsFlavour_, wt_);
+
     wjetsplots_->met_noelectrons->Fill(met_noelectrons_, wt_);
     wjetsplots_->met_nomuons->Fill(met_nomuons_, wt_);
   }

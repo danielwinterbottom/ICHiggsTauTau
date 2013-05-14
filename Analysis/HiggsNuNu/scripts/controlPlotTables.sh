@@ -2,23 +2,26 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
-for CHANNEL in nunu enu munu
+for CHANNEL in taunu nunu enu munu
   do
-  for MET in 130 #0 70
+  for MET in 130 #0 #70
     do
-    for SYST in central JESUP JESDOWN
+    for SYST in central #JESUP JESDOWN
       do
 	FOLDER=./output/$CHANNEL/MET$MET/
 	PLOTDIR=TABLES/$CHANNEL/MET$MET/
+	PLOTDIRQCD=TABLES/$CHANNEL/MET$MET/QCD/
 
 	if [ "$SYST" != "central" ]
             then
             FOLDER=$FOLDER"/"$SYST"/"
             PLOTDIR=$PLOTDIR"/"$SYST"/"
+            PLOTDIRQCD=$PLOTDIR"/"$SYST"/QCD/"
         fi
 
 	
 	mkdir -p $PLOTDIR
+	mkdir -p $PLOTDIRQCD
 	mkdir -p $PLOTDIR/wjetsComp/
 	BLIND=1
 	if [ "$CHANNEL" != "nunu" ] || (( "$MET" != "130" ))
@@ -53,7 +56,7 @@ for CHANNEL in nunu enu munu
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --folder=$FOLDER --plot_dir=$PLOTDIRQCD \
     --plot_name="n_jets"  --x_axis_label="Number of jets" \
     --blind=$BLIND \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
@@ -71,10 +74,23 @@ for CHANNEL in nunu enu munu
     --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
     --y_axis_min=0.01 --extra_pad=100000 \
-    --rebin=2 \
+    --rebin=4 \
     --plot_wjets_comp=false \
     --norm_bins=false \
     --plot_qcd=false \
+    --log_y=true \
+    --paramfile=$PARAMS
+
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIRQCD  \
+    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
+    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
+    --y_axis_min=0.01 --extra_pad=100000 \
+    --rebin=4 \
+    --plot_wjets_comp=false \
+    --norm_bins=false \
+    --plot_qcd=true \
     --log_y=true \
     --paramfile=$PARAMS
 
@@ -84,7 +100,7 @@ for CHANNEL in nunu enu munu
     --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
     --y_axis_min=0.01 --extra_pad=2 \
-    --rebin=2 \
+    --rebin=4 \
     --plot_wjets_comp=false \
     --norm_bins=false \
     --plot_qcd=false \
@@ -98,7 +114,7 @@ for CHANNEL in nunu enu munu
     --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
     --y_axis_min=0.01 --extra_pad=100000 \
-    --rebin=2 \
+    --rebin=4 \
     --plot_wjets_comp=true \
     --norm_bins=false \
     --plot_qcd=false \

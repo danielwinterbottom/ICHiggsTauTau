@@ -5,9 +5,9 @@ PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 for CHANNEL in nunu enu munu
   do
   
-  for MET in 130 #0 70
+  for MET in 130 0 #70
     do
-    for SYST in central JESUP JESDOWN
+    for SYST in central #JESUP JESDOWN
       do
 
 	FOLDER=./output/$CHANNEL/MET$MET/

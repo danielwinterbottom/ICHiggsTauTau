@@ -35,12 +35,16 @@ namespace ic {
   HinvWeightPlots::HinvWeightPlots(TFileDirectory const& dir) {
     TH1F::SetDefaultSumw2();
     met_noW = dir.make<TH1F>("met_noW","met_noW", 1000, 0, 1000);
+    dphijj_noW = dir.make<TH1F>("dphijj_noW","dphijj_noW", 100, 0, 3.1416);
     n_jets_noW = dir.make<TH1F>("n_jets_noW","n_jets_noW", 50, 0, 50);
     met_pu = dir.make<TH1F>("met_pu","met_pu", 1000, 0, 1000);
+    dphijj_pu = dir.make<TH1F>("dphijj_pu","dphijj_pu", 100, 0, 3.1416);
     n_jets_pu = dir.make<TH1F>("n_jets_pu","n_jets_pu", 50, 0, 50);
     met_pu_trig = dir.make<TH1F>("met_pu_trig","met_pu_trig", 1000, 0, 1000);
+    dphijj_pu_trig = dir.make<TH1F>("dphijj_pu_trig","dphijj_pu_trig", 100, 0, 3.1416);
     n_jets_pu_trig = dir.make<TH1F>("n_jets_pu_trig","n_jets_pu_trig", 50, 0, 50);
     met_pu_trig_idiso = dir.make<TH1F>("met_pu_trig_idiso","met_pu_trig_idiso", 1000, 0, 1000);
+    dphijj_pu_trig_idiso = dir.make<TH1F>("dphijj_pu_trig_idiso","dphijj_pu_trig_idiso",100, 0, 3.1416); 
     n_jets_pu_trig_idiso = dir.make<TH1F>("n_jets_pu_trig_idiso","n_jets_pu_trig_idiso", 50, 0, 50);
   };
 
@@ -254,10 +258,12 @@ namespace ic {
 
     double wt = wt_/(wt_pu*wt_trig*wt_idiso);
     weightplots_->met_noW->Fill(met_, wt);
+    weightplots_->dphijj_noW->Fill(dphijj_, wt);
     weightplots_->n_jets_noW->Fill(n_jets_, wt);
 
     wt = wt*wt_pu;
     weightplots_->met_pu->Fill(met_, wt);
+    weightplots_->dphijj_pu->Fill(dphijj_, wt);
     weightplots_->n_jets_pu->Fill(n_jets_, wt);
 
     //now add also trig and idiso also if they were not enabled
@@ -268,12 +274,14 @@ namespace ic {
       info->weight_defined("trig_jet2HLT") ? info->weight("trig_jet2HLT") : 1.0 ;
     wt = wt*wt_trig;
     weightplots_->met_pu_trig->Fill(met_, wt);
+    weightplots_->dphijj_pu_trig->Fill(dphijj_, wt);
     weightplots_->n_jets_pu_trig->Fill(n_jets_, wt);
     
     wt_idiso = info->weight_defined("elecTight_idisoSF") ? info->weight("elecTight_idisoSF") : 1.0 *
       info->weight_defined("muTight_idisoSF") ? info->weight("muTight_idisoSF") : 1.0;
     wt = wt*wt_idiso;
     weightplots_->met_pu_trig_idiso->Fill(met_, wt);
+    weightplots_->dphijj_pu_trig_idiso->Fill(dphijj_, wt);
     weightplots_->n_jets_pu_trig_idiso->Fill(n_jets_, wt);
     
 

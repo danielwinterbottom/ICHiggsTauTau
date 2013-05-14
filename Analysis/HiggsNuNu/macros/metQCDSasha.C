@@ -59,15 +59,15 @@ int metQCDSasha(){//main
   files.push_back("MC_W3JetsToLNu_taunu");
   files.push_back("MC_W4JetsToLNu_taunu");
 
-  std::string folder = "output_muNoIso";
-  std::string suffix = "_type01_muNoIso";
+  std::string folder = "output";
+  std::string suffix = "_type01_v10sel_notrigWeight_bis";
 
   const unsigned nFiles = files.size();
 
   TFile *fBkg[nFiles];
   TFile *output = new TFile(("BkgForQCDEstimation"+suffix+".root").c_str(),"RECREATE");
 
-  double lLumi = 19500.;
+  double lLumi = 19619.;
   
   int lColor[nFiles];
   for (unsigned iN(0); iN<7;++iN){
@@ -123,6 +123,7 @@ int metQCDSasha(){//main
   std::ostringstream lPath,lHistName;
 
   lHistName.str("");
+  //lHistName << "met_pu_trig";
   lHistName << "met";
 
   //lPath.str("");
@@ -132,9 +133,10 @@ int metQCDSasha(){//main
   std::string lSelection[2] = {"DPhiSIGNAL","DPhiQCD"};
 
   //define the binning
-  const unsigned nBins = 10;
-  double xmin[nBins+1] = {0,10,20,30,40,50,60,70,80,100,120};//,met[0]->GetXaxis()->GetBinUpEdge(met[0]->GetNbinsX())};
-
+  //const unsigned nBins = 10;
+  //double xmin[nBins+1] = {0,10,20,30,40,50,60,70,80,100,120};//,met[0]->GetXaxis()->GetBinUpEdge(met[0]->GetNbinsX())};
+  const unsigned nBins = 60;
+  double xmin[nBins+1];
 
   for (unsigned iS(0); iS<2; ++iS){//loop on selection
 
@@ -147,7 +149,8 @@ int metQCDSasha(){//main
       lPath.str("");
       lPath << "../" << folder << "/nunu/MET0/" << files[iBkg] << ".root";
       fBkg[iBkg] = TFile::Open(lPath.str().c_str());
-      fBkg[iBkg]->cd(lSelection[iS].c_str());
+      //fBkg[iBkg]->cd((lSelection[iS]+"/weights/").c_str());
+      fBkg[iBkg]->cd((lSelection[iS]+"/").c_str());
       met[iBkg][iS] = (TH1F*)gDirectory->Get(lHistName.str().c_str());
       met[iBkg][iS]->Sumw2();
       met[iBkg][iS]->Scale(lLumi*normalisation[iBkg]);
@@ -155,18 +158,22 @@ int metQCDSasha(){//main
       std::ostringstream lName;
       lName.str("");
       lName << "metRange_" << iBkg ;
-      metRange[iBkg][iS] = new TH1F(lName.str().c_str(),";MET range (GeV);Sum bkg (events)",nBins,xmin);
+      //metRange[iBkg][iS] = new TH1F(lName.str().c_str(),";MET range (GeV);Sum bkg (events)",nBins,xmin);
+      metRange[iBkg][iS] = new TH1F(lName.str().c_str(),";MET (GeV);Sum bkg (events)",nBins,0,300);
       metRange[iBkg][iS]->SetLineColor(lColor[iBkg]);
       metRange[iBkg][iS]->SetMarkerColor(lColor[iBkg]);
       metRange[iBkg][iS]->SetFillStyle(lStyle);
     }//loop on bkg files
-    metRangeTotal[iS] = new TH1F(("metRangeTotal_"+lSelection[iS]).c_str(),";MET range (GeV);Sum bkg (events)",nBins,xmin);
+    //metRangeTotal[iS] = new TH1F(("metRangeTotal_"+lSelection[iS]).c_str(),";MET range (GeV);Sum bkg (events)",nBins,xmin);
+    metRangeTotal[iS] = new TH1F(("metRangeTotal_"+lSelection[iS]).c_str(),";MET (GeV);Sum bkg (events)",nBins,0,300);
 
     unsigned binMin = 0;
     unsigned binMax = met[0][iS]->GetNbinsX();
   
+    for (unsigned iB(0); iB<nBins+1; iB++){
+      xmin[iB] = 5*iB;
+    }
     for (unsigned iB(0); iB<nBins; iB++){
-      
       for (int iX(0); iX<met[0][iS]->GetNbinsX(); ++iX){
 	if (met[0][iS]->GetBinLowEdge(iX+1) >= xmin[iB]){
 	  binMin = iX+1;
@@ -193,6 +200,9 @@ int metQCDSasha(){//main
       for (unsigned iBkg(0); iBkg<nFiles; ++iBkg){
 	double lBkgErr = 0;
 	double lBkg = met[iBkg][iS]->IntegralAndError(binMin,binMax,lBkgErr);
+	if (lBkg != lBkg) lBkg=0;
+	if (lBkgErr != lBkgErr) lBkgErr=0;
+
 	nBkg += lBkg;
 	nBkgErr += lBkgErr*lBkgErr;
 	//fill new histos

@@ -186,6 +186,11 @@ namespace ic {
 //     eVeto_idisoSF_[28] = ;
 //     eVeto_idisoSF_[29] = ;
     
+    //muonSF_ = new TFile("data/scale_factors/Muon_ID_iso_Efficiencies_Run_2012ABCD_53X.root");
+    //hist_muonSF_[0][0] = (TH1F*)gDirectory->Get("DATA_Loose_pt_abseta<0.9_2012ABCD");
+    //hist_muonSF_[0][1] = (TH1F*)gDirectory->Get("MC_Loose_pt_abseta<0.9_2012ABCD");
+    //hist_muonSF_[0][2] = (TH1F*)gDirectory->Get("DATA_over_MC_Loose_pt_abseta<0.9_2012ABCD");
+  
     muTight_idSF_.resize(3,0);
     muTight_idSF_[0] = 0.9939;
     muTight_idSF_[1] = 0.9902;

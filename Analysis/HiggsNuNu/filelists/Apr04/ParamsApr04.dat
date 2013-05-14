@@ -20,7 +20,7 @@ XS_MC_SingleTBar-t-powheg-tauola:30.7
 XS_MC_WW-pythia6-tauola:54.838
 XS_MC_WZ-pythia6-tauola:33.21
 XS_MC_ZZ-pythia6-tauola:17.654
-XS_MC_DYJJ01JetsToLL_M-50_MJJ-200:0.45
+XS_MC_DYJJ01JetsToLL_M-50_MJJ-200:1.4
 ## W and Z already reweighted by fractions: use NNLO xs
 XS_MC_W1JetsToLNu:37509
 XS_MC_W2JetsToLNu:37509

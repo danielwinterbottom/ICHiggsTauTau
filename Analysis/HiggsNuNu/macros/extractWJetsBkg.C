@@ -123,7 +123,7 @@ int extractWJetsBkg(){//main
 
   unsigned MET[3] = {130,0,70};
 
-  for (unsigned iMET(0); iMET<3; ++iMET){//loop on MET values
+  for (unsigned iMET(0); iMET<1; ++iMET){//loop on MET values
 
     std::cout << " -- Processing MET " << MET[iMET] << std::endl;
 
@@ -132,7 +132,7 @@ int extractWJetsBkg(){//main
 	std::ostringstream lFolder;
 	lFolder << "MET" << MET[iMET] << "/" << SYST[iSyst] << "/";
         
-	evtsArray lSel[3][nSteps];
+	evtsArray lSel[4][nSteps];
 	
 	for (unsigned iS(0); iS<nSteps; ++iS){//loop on steps
 	  
@@ -168,13 +168,23 @@ int extractWJetsBkg(){//main
 	  }
 	  lTable>>lSel[2][iS];
 	  lTable.close();
+		  
+	  lName.str("");
+	  lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
+	  lTable.open(lName.str().c_str());
+	  if(!lTable.is_open()){
+	    cerr<<"Unable to open file: "<<lName.str()<<endl;
+	    return 1; 
+	  }
+	  lTable>>lSel[3][iS];
+	  lTable.close();
 	  
 	}//loop on steps
 	
 	
 	//print Wjets components
-	std::string lChannel[3] = {"nunu","enu","munu"};
-	for (unsigned iCh(0); iCh<3; ++iCh){//loop on channel
+	std::string lChannel[4] = {"nunu","enu","munu","taunu"};
+	for (unsigned iCh(0); iCh<4; ++iCh){//loop on channel
 	  std::ostringstream lName;
 	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/WandZJetsTable.txt";
 	  

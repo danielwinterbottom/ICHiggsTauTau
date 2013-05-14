@@ -1,5 +1,5 @@
 
-% $Header: /cvsroot/latex-beamer/latex-beamer/solutions/generic-talks/generic-ornate-15min-45min.en.tex,v 1.5 2007/01/28 20:48:23 tantau Exp $
+% $Header: /local/reps/CMSSW/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/macros/MakeTexSummary.tex,v 1.1 2013/03/12 16:49:38 amagnan Exp $
 
 \documentclass[red,compress,xcolor=table]{beamer}
 
@@ -85,8 +85,8 @@
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
 
-\date[11/03/2013] % (optional)
-{11/03/2013}
+\date[10/05/2013] % (optional)
+{10/05/2013}
 %IC $H \rightarrow \tau \tau$ analysis meeting
 %SMP-VJ Meeting
 %TKCO Meeting
@@ -131,6 +131,20 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{W+jets MC numbers}
+
+{\tiny
+\centering $\nu\nu$ selection\\
+\input{../TABLES/nunu/MET130/WandZJetsTable.txt}\\
+\centering $e\nu$ selection\\
+\input{../TABLES/enu/MET130/WandZJetsTable.txt}\\
+\centering $\mu\nu$ selection\\
+\input{../TABLES/munu/MET130/WandZJetsTable.txt}
+}
+
+\end{frame}
+
+\begin{frame}
   \frametitle{Standard Selection - For Reference}
 
 \begin{center}
@@ -138,12 +152,12 @@
 {\tiny
 \hspace*{-1cm}
 \rowcolors{1}{lightgray}{}
-\input{../TABLES/nunu/MET130/DOQCD0/SummaryTable.txt}
+\input{../TABLES/nunu/MET130/SummaryTable.txt}
 }
 \centering W/Z+jets sample separated\\
   {\tiny
     \rowcolors{1}{lightgray}{}
-    \input{../TABLES/nunu/MET130/DOQCD0/WandZJetsTable.txt}
+    \input{../TABLES/nunu/MET130/WandZJetsTable.txt}
   }
 
 \end{center}
@@ -151,21 +165,28 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{W+jets selection - standard selection - signal region}
+  \frametitle{W+jets selection -  Electron selection}
 
 \vspace*{-1cm}
 \begin{center}
-\centering electron selection\\
 {\tiny
 \hspace*{-1cm}
 \rowcolors{1}{lightgray}{}
-\input{../TABLES/enu/MET130/DOQCD0/SummaryTable.txt}
+\input{../TABLES/enu/MET130/SummaryTable.txt}
 }
-\centering muon selection\\
+\end{center}
+
+
+\end{frame}
+\begin{frame}
+  \frametitle{W+jets selection -  Muon selection}
+
+\vspace*{-1cm}
+\begin{center}
 {\tiny
 \hspace*{-1cm}
 \rowcolors{1}{lightgray}{}
-\input{../TABLES/munu/MET130/DOQCD0/SummaryTable.txt}
+\input{../TABLES/munu/MET130/SummaryTable.txt}
 }
 \end{center}
 
@@ -180,7 +201,7 @@
 \begin{center}
     {\tiny
       \rowcolors{1}{lightgray}{}
-      \input{../TABLES/nunu/MET130/DOQCD0/WandZJetsTable.txt}
+      \input{../TABLES/nunu/MET130/WandZJetsTable.txt}
     }
 \end{center}
   \end{block}
@@ -188,33 +209,33 @@
 \vspace*{-0.2cm}
 \begin{columns}
   \column{0.5\textwidth}
-  \begin{block}{\scriptsize From data: electron looseMjj}
+  \begin{block}{\scriptsize From data: electron $\Delta\phi<1.0$}
     {\tiny
       \rowcolors{1}{lightgray}{}
-      \input{../TABLES/enu/MET130/DOQCD0/DataDrivenWJetsTable_looseMjj.txt}
+      \input{../TABLES/enu/MET130/DataDrivenWJetsTable_signal.txt}
     }
   \end{block}
   \column{0.5\textwidth}
-  \begin{block}{\scriptsize From data: electron tightMjj}
+  \begin{block}{\scriptsize From data: electron  $\Delta\phi>2.6$}
     {\tiny
       \rowcolors{1}{lightgray}{}
-      \input{../TABLES/enu/MET130/DOQCD0/DataDrivenWJetsTable_tightMjj.txt}
+      \input{../TABLES/enu/MET130/DataDrivenWJetsTable_QCD.txt}
     }
   \end{block}
 \end{columns}
 \begin{columns}
   \column{0.5\textwidth}
-  \begin{block}{\scriptsize From data: muon looseMjj}
+  \begin{block}{\scriptsize From data: muon  $\Delta\phi<1.0$}
     {\tiny
       \rowcolors{1}{lightgray}{}
-      \input{../TABLES/munu/MET130/DOQCD0/DataDrivenWJetsTable_looseMjj.txt}
+      \input{../TABLES/munu/MET130/DataDrivenWJetsTable_signal.txt}
     }
   \end{block}
   \column{0.5\textwidth}
-  \begin{block}{\scriptsize From data: muon tightMjj}
+  \begin{block}{\scriptsize From data: muon $\Delta\phi>2.6$}
     {\tiny
       \rowcolors{1}{lightgray}{}
-      \input{../TABLES/munu/MET130/DOQCD0/DataDrivenWJetsTable_tightMjj.txt}
+      \input{../TABLES/munu/MET130/DataDrivenWJetsTable_QCD.txt}
     }
   \end{block}
 \end{columns}
@@ -229,40 +250,23 @@
 
 \begin{columns}
   \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS/enu/MET130/DOQCD0/ept_1_2012_WSelection_log.pdf}
+  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/ept_1_2012_WSelection_log.pdf}
   \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS/enu/MET130/DOQCD0/eeta_1_2012_WSelection_log.pdf}
+  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/eeta_1_2012_WSelection_log.pdf}
   \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS/enu/MET130/DOQCD0/mt_enu_2012_DEta_log.pdf}
+  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/mt_enu_2012_DEta_log.pdf}
 \end{columns}
 \begin{columns}
   \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS/munu/MET130/DOQCD0/mupt_1_2012_WSelection_log.pdf}
+  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mupt_1_2012_WSelection_log.pdf}
   \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS/munu/MET130/DOQCD0/mueta_1_2012_WSelection_log.pdf}
+  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mueta_1_2012_WSelection_log.pdf}
   \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS/munu/MET130/DOQCD0/mt_munu_2012_DEta_log.pdf}
+  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mt_munu_2012_DEta_log.pdf}
 \end{columns}
 
 \end{frame}
 
-
-\begin{frame}
-  \frametitle{Control plots for W+jets estimates: loose Mjj selection}
-
-\begin{columns}
-  \column{0.5\textwidth}
-  \begin{block}{W$\rightarrow e\nu$}
-    \includegraphics[width=1.0\textwidth]{../TABLES/enu/MET130/DOQCD0/dphijj_2012_WSelection.pdf}
-  \end{block}
-  \column{0.5\textwidth}
-  \begin{block}{W$\rightarrow \mu\nu$}
-    \includegraphics[width=1.0\textwidth]{../TABLES/munu/MET130/DOQCD0/dphijj_2012_WSelection.pdf}
-  \end{block}
-\end{columns}
-
-
-\end{frame}
 
 \begin{frame}
   \frametitle{Control plots for W+jets estimates: tight Mjj selection}
@@ -270,11 +274,11 @@
 \begin{columns}
   \column{0.5\textwidth}
   \begin{block}{W$\rightarrow e\nu$}
-    \includegraphics[width=1.0\textwidth]{../TABLES/enu/MET130/DOQCD1/dphijj_2012_TightMjj.pdf}
+    \includegraphics[width=1.0\textwidth]{../TABLES/enu/MET130/dphijj_2012_TightMjj.pdf}
   \end{block}
   \column{0.5\textwidth}
   \begin{block}{W$\rightarrow \mu\nu$}
-    \includegraphics[width=1.0\textwidth]{../TABLES/munu/MET130/DOQCD1/dphijj_2012_TightMjj.pdf}
+    \includegraphics[width=1.0\textwidth]{../TABLES/munu/MET130/dphijj_2012_TightMjj.pdf}
   \end{block}
 \end{columns}
 

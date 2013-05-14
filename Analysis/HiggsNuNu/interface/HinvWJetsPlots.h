@@ -36,6 +36,10 @@ namespace ic {
     TH1F *taupt_2;
     TH1F *taueta_1;
     TH1F *taueta_2;
+    TH1F *dRmin_taujet;
+    TH1F *dRmin_taujet1;
+    TH1F *dRmin_taujet2;
+    TH1F *taggingJetsFlavour;
     TH1F *edxy_all;
     TH1F *mudxy_all;
     TH1F *edz_all;
@@ -90,6 +94,10 @@ namespace ic {
     double taupt_2_;
     double taueta_1_;
     double taueta_2_;
+    double dRmin_taujet_;
+    double dRmin_taujet1_;
+    double dRmin_taujet2_;
+    unsigned taggingJetsFlavour_;
 
     double met_noelectrons_;
     double met_nomuons_;
