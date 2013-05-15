@@ -242,7 +242,7 @@ int main(int argc, char* argv[]){
  
   std::string data_json;
   if (era == "2012A" || era == "2012B" || era == "2012C" || era == "2012D") data_json = "../HiggsTauTau/data/json/data_2012_moriond.txt" ;
-  else data_json           =  "../HiggsTauTau/data/json/data_2011.txt";
+  else data_json           =  "../HiggsTauTau/data/json/json_data_2011.txt";
 
 //==============================================================================================
   // Create analysis object
