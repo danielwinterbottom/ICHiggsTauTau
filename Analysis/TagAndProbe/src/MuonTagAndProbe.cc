@@ -37,6 +37,9 @@ namespace ic {
         {
             std::vector<std::size_t> const& labels = mutau_objs[i]->filters();
             if (std::find(labels.begin(),labels.end(), hash) != labels.end()) hasL1MET=true;
+            std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+            if(hasL1MET && (l1met.at(0)->pt() < 26)) hasL1MET=false;
+
         }
     }
     else
@@ -253,12 +256,10 @@ namespace ic {
     std::vector<Muon *> & muons = event->GetPtrVec<Muon>("muonsPFlow");
     std::vector<TriggerObject *> objs;
     if(data_) objs = event->GetPtrVec<TriggerObject>(tap_obj_label);
-    //std::vector<TriggerObject *> const& mutau_objs = event->GetPtrVec<TriggerObject>(mutau_obj_label);
     std::vector<TriggerObject *> mutau_objs = event->GetPtrVec<TriggerObject>(mutau_obj_label);
     TriggerPathPtrVec triggerPathPtrVec;
     if(data_) triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPathPtrVec" , "triggerPaths");
-    EventInfo * info = event->GetPtr<EventInfo>("eventInfo");
-    double vtx = info->good_vertices();
+    double vtx = eventInfo->good_vertices();
    
    //Calculate PU weight for each event (if MC).
 
@@ -361,6 +362,7 @@ namespace ic {
                         || ((mode_==5) &&
                         (IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_A,0.5 ) || IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_B,0.5 ))  ) )
                 {
+                    //if(run==206542 && eventInfo->event() > 350000000 && eventInfo->event()< 400000000 ) std::cout << run << ":  " << eventInfo->event() << std::endl;
                     if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4 || mode_==5)
                     {
                         if(!split_pm_eta_)
@@ -463,6 +465,7 @@ namespace ic {
                         || ((mode_==5) &&
                         (!IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_A,0.5 ) && !IsFilterMatched(pairs[k_final].second,mutau_objs,mutau_filter_B,0.5 ))  ) )
                 {
+                    //if(run==206542 && eventInfo->event() > 350000000 && eventInfo->event()< 400000000 ) std::cout << run << ":  " << eventInfo->event() << std::endl;
                     if(mode_==0 || mode_==1 || mode_==2 || mode_==3 || mode_==4 || mode_==5)
                     {
                         if(!split_pm_eta_)
