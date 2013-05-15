@@ -1156,7 +1156,7 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&electronTrgATagAndProbe);
                     if(second_trigger) analysis.AddModule(&electronTrgBTagAndProbe);
             }
-            if(ltmet)
+            if(ltmet && !trg_only)
             {
                 analysis.AddModule(&electronltmetTrgTagAndProbe);
                 analysis.AddModule(&electronltmetIDTagAndProbe);
@@ -1164,6 +1164,9 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&electronltmetIDIsoTagAndProbe);
                 analysis.AddModule(&electronltmetIDFineTagAndProbe);
                 analysis.AddModule(&electronltmetIsoFineTagAndProbe);
+            }
+            if(ltmet && trg_only)
+            {
                 analysis.AddModule(&electronltmetIDIsoFineTagAndProbe);
             }
         }
@@ -1191,7 +1194,7 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&muonTrgATagAndProbe); 
                     if(second_trigger) analysis.AddModule(&muonTrgBTagAndProbe);
             }
-            if(ltmet)
+            if(ltmet && !trg_only)
             {
                 analysis.AddModule(&muonltmetIDTagAndProbe);
                 analysis.AddModule(&muonltmetIsoTagAndProbe);
@@ -1199,6 +1202,9 @@ int main(int argc, char* argv[]){
                 analysis.AddModule(&muonltmetIDFineTagAndProbe);
                 analysis.AddModule(&muonltmetIsoFineTagAndProbe);
                 analysis.AddModule(&muonltmetIDIsoFineTagAndProbe);
+            }
+            if(ltmet && !idiso_only)
+            {
                 analysis.AddModule(&muonltmetTrgTagAndProbe);
             }
             if(IsoMu24)
