@@ -284,29 +284,29 @@ int main(int argc, char* argv[])
 
     int i_final, i_initial;
     if(elec) i_final=2;
-    else i_final=2;
+    else i_final=3;
     if(elec) i_initial=0;
     else i_initial=0;
 
     std::cout << "======================================================================" << std::endl;
-    for(int i=i_initial; i<=i_final; i++)
+    for(int i=0; i<i_final; i++)
     {   
         std::cout << y1_mc[i]<< " +/- " << err_y1_mc[i] << " " << y1_data[i] << " +/- " << err_y1_data[i] << " " <<(y1_data[i]/y1_mc[i]) <<
         " +/- " << PropError(y1_mc[i], err_y1_mc[i], y1_data[i], err_y1_data[i]) << std::endl; 
         std::cout << y2_mc[i]<< " +/- " << err_y2_mc[i] << " " << y2_data[i] << " +/- " << err_y2_data[i] << " " <<(y2_data[i]/y2_mc[i]) <<
         " +/- " << PropError(y2_mc[i], err_y2_mc[i], y2_data[i], err_y2_data[i]) << std::endl; 
-        std::cout << y3_mc[i]<< " +/- " << err_y3_mc[i] << " " << y3_data[i] << " +/- " << err_y3_data[i] << " " <<(y3_data[i]/y3_mc[i]) <<
+       if(!elec) std::cout << y3_mc[i]<< " +/- " << err_y3_mc[i] << " " << y3_data[i] << " +/- " << err_y3_data[i] << " " <<(y3_data[i]/y3_mc[i]) <<
         " +/- " << PropError(y3_mc[i], err_y3_mc[i], y3_data[i], err_y3_data[i]) << std::endl; 
     
     }
     std::cout << "======================================================================" << std::endl;
-    for(int i=i_initial; i<=i_final; i++)
+    for(int i=0; i<i_final; i++)
     {
         std::cout << y1iso_mc[i]<< " +/- " << err_y1iso_mc[i] << " " << y1iso_data[i] << " +/- " << err_y1iso_data[i] 
             << " " <<(y1iso_data[i]/y1iso_mc[i]) << " +/- " << PropError(y1iso_mc[i], err_y1iso_mc[i], y1iso_data[i], err_y1iso_data[i])<< std::endl; 
         std::cout << y2iso_mc[i]<< " +/- " << err_y2iso_mc[i] << " " << y2iso_data[i] << " +/- " << err_y2iso_data[i] 
             << " " <<(y2iso_data[i]/y2iso_mc[i]) << " +/- " << PropError(y2iso_mc[i], err_y2iso_mc[i], y2iso_data[i], err_y2iso_data[i])<<std::endl;  
-        std::cout << y3iso_mc[i]<< " +/- " << err_y3iso_mc[i] << " " << y3iso_data[i] << " +/- " << err_y3iso_data[i] 
+        if(!elec) std::cout << y3iso_mc[i]<< " +/- " << err_y3iso_mc[i] << " " << y3iso_data[i] << " +/- " << err_y3iso_data[i] 
             << " " <<(y3iso_data[i]/y3iso_mc[i]) << " +/- " << PropError(y3iso_mc[i], err_y3iso_mc[i], y3iso_data[i], err_y3iso_data[i])<<std::endl;  
     }
     std::cout << "======================================================================" << std::endl;
