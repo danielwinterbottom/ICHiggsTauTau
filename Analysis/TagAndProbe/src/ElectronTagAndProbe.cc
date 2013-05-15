@@ -36,6 +36,8 @@ namespace ic {
         {
             std::vector<std::size_t> const& labels = etau_objs[i]->filters();
             if (std::find(labels.begin(),labels.end(), hash) != labels.end()) hasL1MET=true;
+            std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+            if(hasL1MET && (l1met.at(0)->pt() < 36)) hasL1MET=false;
         }
     }
     else
