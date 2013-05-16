@@ -116,12 +116,13 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DPhiQCD");
 
   bool doTaus = false;
-
+  bool dojes = false;
+  
   std::string TOPDIR = "../TABLES/";
 
   const unsigned nSteps = lSelVecSignal.size();
 
-  std::string SYST[3] = {"","JESUP","JESDOWN"};
+  std::string SYST[3] = {"JESUP","JESDOWN",""};//Order so numbers from systematics can be saved to be put in central table as syst errors
 
   unsigned MET[3] = {130,0,70};
 
@@ -129,13 +130,18 @@ int extractWJetsBkg(){//main
 
     std::cout << " -- Processing MET " << MET[iMET] << std::endl;
 
-      for (unsigned iSyst(0); iSyst<1; ++iSyst){//loop over different systematics                                                                                      
-	std::cout<< "--Processing systematic " <<iSyst<<std::endl;
-	std::ostringstream lFolder;
-	lFolder << "MET" << MET[iMET] << "/" << SYST[iSyst] << "/";
-        
-	evtsArray lSel[4][nSteps];
-	
+    //create variables to store syst numbers
+    events systevents[2][3][3][4];
+    double systdiff[2][4];
+    double systperc[2][4];
+    
+    for (unsigned iSyst(0); iSyst<3; ++iSyst){//loop over different systematics NOTE TO JUST DO CENTRAL CHANGE to iSyst(2) don't do iSyst<1
+      std::cout<< "--Processing systematic " <<iSyst<<std::endl;
+      std::ostringstream lFolder;
+      lFolder << "MET" << MET[iMET] << "/" << SYST[iSyst] << "/";
+      
+      evtsArray lSel[4][nSteps];
+      
 	for (unsigned iS(0); iS<nSteps; ++iS){//loop on steps
 	  
 	  std::ifstream lTable;
@@ -243,10 +249,13 @@ int extractWJetsBkg(){//main
 	  
 	}//loop on channel
 	
-	for (unsigned int iQCD(0); iQCD<2; ++iQCD){//loop on Mjj WP
-	  
+	for (unsigned int iQCD(0); iQCD<2; ++iQCD){//DphiSignal or DphiQCD
+	  if(iQCD==0)std::cout<<"dphisignal"<<std::endl;
+	  if(iQCD==1)std::cout<<"dphiqcd"<<std::endl;
 	  for (unsigned iCh(1); iCh<3; ++iCh){//loop on lep flavour
-	    
+	    if(iCh==1)std::cout<<"enu"<<std::endl;
+	    if(iCh==2)std::cout<<"munu"<<std::endl;
+
 	    events lNCdata;
 	    events lBkgCMC;
 	    events lBkgSMC;
@@ -329,7 +338,26 @@ int extractWJetsBkg(){//main
 	    
 	    std::ostringstream lName;
 	    lName << TOPDIR << "/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] ;
-            
+
+	    if(dojes){//Get info jes info
+	      //save JES numbers
+	      systevents[iQCD][iCh][iSyst][0]=lNSMC;
+	      systevents[iQCD][iCh][iSyst][1]=lNCMC;
+	      systevents[iQCD][iCh][iSyst][2]=lNSdata;
+	      systevents[iQCD][iCh][iSyst][3]=lNCdata;
+	      if(iSyst==2){//get differences
+		for(int a=0;a<2;a++){//loop over up and down
+		  if(a==0)std::cout<<"JESUP"<<std::endl;
+		  if(a==1)std::cout<<"JESDOWN"<<std::endl;
+		  for(int b=0;b<4;b++){//loop over lns/cmc/data
+		    systdiff[a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][2][b].number);
+		    systperc[a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][2][b].number)*100/systevents[iQCD][iCh][2][b].number;
+		    std::cout<<systevents[iQCD][iCh][a][b].number<<" "<<systevents[iQCD][iCh][2][b].number<<" "<<systdiff[a][b]<<std::endl;
+		  }
+		}
+	      }
+	    }
+	    
 	    if (iQCD==0) lName << "/DataDrivenWJetsTable_signal.txt";
 	    else if (iQCD==1) lName << "/DataDrivenWJetsTable_QCD.txt";
 	    std::ofstream lOutfile;
@@ -351,11 +379,39 @@ int extractWJetsBkg(){//main
 		     << eps_VBF_C << " \\\\" << std::endl
 		     << std::setprecision(3)
 		     << lNSMC.sample  << " & " 
-		     << lNSMC << " & " 
-		     << lNCMC << " \\\\" << std::endl
+		     << lNSMC; 
+	    if(dojes&&iSyst==2){
+	      if(systdiff[0][0]>0) lOutfile << " $ ^{ + " << systdiff[0][0] << " ( + " << systperc[0][0] << "\\% ) } ";
+	      else lOutfile << " $ ^{ " << systdiff[0][0] << " ( " << systperc[0][0] << "\\% ) } ";
+	      if(systdiff[1][0]>0) lOutfile << " _{ " << systdiff[1][0] << " ( " << systperc[1][0] << "\\% ) } $ ";
+	      else lOutfile << " _{ " << systdiff[1][0] << " ( " << systperc[1][0] << "\\% ) } $ ";
+	    }
+	    lOutfile << " & " 
+		     << lNCMC; 
+	    if(dojes&&iSyst==2){
+	      if(systdiff[0][1]>0) lOutfile << " $ ^{ + " << systdiff[0][1] << " ( + " << systperc[0][1] << "\\% ) } ";
+	      else lOutfile << " $ ^{ " << systdiff[0][1] << " ( " << systperc[0][1] << "\\% ) } ";
+	      if(systdiff[1][1]>0) lOutfile << " _{ " << systdiff[1][1] << " ( " << systperc[1][1] << "\\% ) } $ ";
+	      else lOutfile << " _{ " << systdiff[1][1] << " ( " << systperc[1][1] << "\\% ) } $ ";
+	    }
+	    lOutfile << " \\\\" << std::endl
 		     << lNSdata.sample << " & " 
-		     << "\\textcolor{red}{" << lNSdata << "} & " 
-		     << lNCdata << " \\\\ " << std::endl 
+		     << "\\textcolor{red}{" << lNSdata;
+	    if(dojes&&iSyst==2){
+	      if(systdiff[0][2]>0) lOutfile << " $ ^{ + " << systdiff[0][2] << " ( + " << systperc[0][2] << "\\% ) } ";
+	      else lOutfile << " $ ^{ " << systdiff[0][2] << " ( " << systperc[0][2] << "\\% ) } ";
+	      if(systdiff[1][2]>0) lOutfile << " _{ " << systdiff[1][2] << " ( " << systperc[1][2] << "\\% ) } $ ";
+	      else lOutfile << " _{ " << systdiff[1][2] << " ( " << systperc[1][2] << "\\% ) } $ ";
+	    }
+	    lOutfile << "} & " 
+		     << lNCdata;
+	    if(dojes&&iSyst==2){
+	      if(systdiff[0][3]>0) lOutfile << " $ ^{ + " << systdiff[0][3] << " ( + " << systperc[0][3] << "\\% ) } ";
+	      else lOutfile << " $ ^{ " << systdiff[0][3] << " ( " << systperc[0][3] << "\\% ) } ";
+	      if(systdiff[1][3]>0) lOutfile << " _{ " << systdiff[1][3] << " ( " << systperc[1][3] << "\\% ) } $ ";
+	      else lOutfile << " _{ " << systdiff[1][3] << " ( " << systperc[1][3] << "\\% ) } $ ";
+	    }
+	    lOutfile << " \\\\ " << std::endl 
 		   << "\\hline" << std::endl
 	      //<< "with Eff & " << result << " & \\\\" << std::endl
 	      //	   << "\\hline" << std::endl
