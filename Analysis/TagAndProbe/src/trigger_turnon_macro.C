@@ -96,7 +96,7 @@ void fit(TString file1, TString data ,bool flat = false,float min=15.) {
   //fit1->SetParameters(15.9199,0.83,0.57,2.167,0.9326);
   //fit1->SetParameters(15.9561,0.0076,0.000247,2.092,0.9554);
   //good for muon endcaps:
- //fit1->SetParameters(15.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
+ fit1->SetParameters(15.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
  //fit1->SetParameters(7.00501,3.98289e-06,1.84732e-11,3.27047,0.830757);
 //fit1->SetParameters(7.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
   //fit1->SetParameters(17.07,0.000100,0.00060,1.56,0.965);
@@ -117,9 +117,9 @@ void fit(TString file1, TString data ,bool flat = false,float min=15.) {
   //fit1->SetParameters(6.999, 0.311255, 0.221021, 1.59659, 1.00737);
   //fit1->SetParameters(7.999, 1.6743, 1.0731, 1, 0.9543);
   //Ele15 barrel
-  fit1->SetParameters(14.8772,0.311255,0.221021,1.87734,0.986665);
+  //fit1->SetParameters(14.8772,0.311255,0.221021,1.87734,0.986665);
   //Ele15 endcap
- // fit1->SetParameters(19.6586,0.682633,0.279486,2.66423,0.973455);
+  //fit1->SetParameters(19.6586,0.682633,0.279486,2.66423,0.973455);
  //Ele20 Endcap
  //fit1->SetParameters(23.63,1.6077,1.72093,1.4131,1.1396);
  //fit1->SetParameters(6.999,1.6077,1.72093,1.4131,1.1396);
@@ -165,7 +165,7 @@ void fit(TString file1, TString data ,bool flat = false,float min=15.) {
   {
     if(data=="Graph1") etaregion="eta0p8";
     if(data=="Graph2") etaregion="eta1p2";
-    if(data=="Graph2") etaregion="Endcap";
+    if(data=="Graph3") etaregion="Endcap";
   }
 
   TString outfilename=outsubstr.Append(etaregion);
