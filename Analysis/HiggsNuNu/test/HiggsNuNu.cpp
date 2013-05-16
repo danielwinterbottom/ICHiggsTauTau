@@ -482,12 +482,12 @@ int main(int argc, char* argv[]){
   SimpleFilter<Tau> tauPtEtaFilter = SimpleFilter<Tau>("TauPtEtaFilter")
     .set_input_label("taus")
     .set_predicate(bind(MinPtMaxEta, _1, 20, 2.3))
-    .set_min(1);
+    .set_min(0);
 
   SimpleFilter<Tau> tauDzFilter = SimpleFilter<Tau>("TauDzFilter")
     .set_input_label("taus")
     .set_predicate(bind(fabs, bind(&Tau::lead_dz_vertex, _1)) < 0.2)
-    .set_min(1);
+    .set_min(0);
 
   std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
   tau_iso_discr         = "byTightCombinedIsolationDeltaBetaCorr3Hits";
@@ -507,16 +507,25 @@ int main(int argc, char* argv[]){
   SimpleFilter<Tau> tauIsoFilter = SimpleFilter<Tau>("TauIsoFilter")
     .set_input_label("taus")
     .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
-    .set_min(1);
+    .set_min(0);
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
     .set_predicate( (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5) && (bind(&Tau::GetTauID, _1, tau_anti_elec_discr_2) > 0.5) )                     
-    .set_input_label("taus").set_min(1); 
+    .set_input_label("taus")
+    .set_min(0); 
 
   SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
-    .set_input_label("taus").set_min(1);
+    .set_input_label("taus")
+    .set_min(0);
 
+
+  SimpleFilter<Tau> oneTauFilter = SimpleFilter<Tau>
+    ("OneTauFilter")
+    .set_input_label("taus")
+    .set_predicate( bind(DummyFunction<Tau>, _1) )
+    .set_min(1)
+    .set_max(1000);
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
@@ -967,6 +976,13 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&selMuonCopyCollection);
      analysis.AddModule(&selMuonFilter);
      analysis.AddModule(&elecMuonOverlapFilter);
+
+     //filter taus for plots
+     analysis.AddModule(&tauPtEtaFilter);
+     analysis.AddModule(&tauDzFilter);
+     analysis.AddModule(&tauIsoFilter);
+     analysis.AddModule(&tauElRejectFilter);
+     analysis.AddModule(&tauMuRejectFilter);
    
      //add met without leptons for plots
      analysis.AddModule(&metNoMuons);
@@ -1030,11 +1046,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&wjetsPlots_wsel);
      }
      else if (channel == channel::taunu){
-       analysis.AddModule(&tauPtEtaFilter);
-       analysis.AddModule(&tauDzFilter);
-       analysis.AddModule(&tauIsoFilter);
-       analysis.AddModule(&tauElRejectFilter);
-       analysis.AddModule(&tauMuRejectFilter);
+       analysis.AddModule(&oneTauFilter);
        analysis.AddModule(&zeroVetoElectronFilter);
        analysis.AddModule(&zeroVetoMuonFilter);
        analysis.AddModule(&controlPlots_wsel);
