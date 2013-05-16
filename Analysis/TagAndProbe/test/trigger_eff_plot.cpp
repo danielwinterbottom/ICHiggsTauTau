@@ -32,8 +32,7 @@ int main(int argc, char* argv[]){
     f1->cd();
     TCanvas *c1 = new TCanvas("c1", "error plot", 200, 10, 700, 500);
 
-    TH1F *h1=c1->DrawFrame(0, -0.05, 25, 1);
-    //TH1F *h1=c1->DrawFrame(0, -0.05, 60, 1);
+    TH1F *h1=c1->DrawFrame(0, -0.05, 60, 1);
     h1->SetYTitle("Efficiency");
     if(elec)
     {
