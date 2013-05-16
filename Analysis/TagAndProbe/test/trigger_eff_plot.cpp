@@ -75,7 +75,6 @@ int main(int argc, char* argv[]){
         }
     }
 
-    std::cout << "open files" << std::endl;
     vector<std::string> binning;
     vector<int> binbounds;
 
@@ -124,7 +123,6 @@ int main(int argc, char* argv[]){
         
     }
 
-    std::cout << "binning" << std::endl;
 
     const Int_t n3=3;
     Double_t x3[vtxbinbounds.size()];
@@ -303,19 +301,33 @@ int main(int argc, char* argv[]){
    
     
     
-    
+    if(elec) std::cout << "Efficiencies for Barrel: " <<std::endl;
+    if(!elec && etatype=="abs") std::cout << "Efficiencies for |eta| < 0.8: " <<std::endl;
+    if(!elec && etatype=="plus") std::cout << "Efficiencies for 0 < eta < 0.8: " <<std::endl;
+    if(!elec && etatype=="minus") std::cout << "Efficiencies for -0.8 < eta < 0: " <<std::endl;
     for(int i=0; i<nbins; i++)
     {
         std::cout << i << " " << yB[i] << " " << err_yB[i] << std::endl;
     }
+    if(elec) std::cout << "Efficiencies for Endcaps: " <<std::endl;
+    if(!elec && etatype=="abs") std::cout << "Efficiencies for 0.8 < |eta| < 1.2: " <<std::endl;
+    if(!elec && etatype=="plus") std::cout << "Efficiencies for 0.8 < eta < 1.2: " <<std::endl;
+    if(!elec && etatype=="minus") std::cout << "Efficiencies for -1.2 < eta < -0.8: " <<std::endl;
     for(int i=0; i<nbins; i++)
     {
         std::cout << i << " " << yE[i] << " " << err_yE[i] << std::endl;
     }
-    for(int i=0; i<nbins; i++)
+    if(!elec && etatype=="abs") std::cout << "Efficiencies for |eta| > 1.2: " <<std::endl;
+    if(!elec && etatype=="plus") std::cout << "Efficiencies for eta > 1.2: " <<std::endl;
+    if(!elec && etatype=="minus") std::cout << "Efficiencies for eta < -1.2: " <<std::endl;
+    if(!elec)
     {
-        std::cout << i << " " << yEb[i] << " " << err_yEb[i] << std::endl;
+        for(int i=0; i<nbins; i++)
+        {
+            std::cout << i << " " << yEb[i] << " " << err_yEb[i] << std::endl;
+        }
     }
+    std::cout << "Efficiencies in vtx bins (if needed): " << std::endl;
     for(int i=0; i<3; i++)
     {
         std::cout << i << " " << y3[i] << " " << err_y3[i] << std::endl;
