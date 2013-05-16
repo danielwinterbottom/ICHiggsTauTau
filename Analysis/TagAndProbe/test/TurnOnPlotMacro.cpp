@@ -70,14 +70,12 @@ int main(int argc, char* argv[]){
     std::cout << i << "\t" << argv[i] << std::endl;
   }
   if (argc != 8){
-    std::cerr << "Need 2 args: <filepath> <B/E> <par1> <par2> <par3> <par4> <par5>" << std::endl;
+    std::cerr << "Need 2 args: <filepath> <B/E/Eb> <par1> <par2> <par3> <par4> <par5>" << std::endl;
     exit(1);
   }
 
     ic::Plot::SetTdrStyle();
-    bool barrel;
-    barrel = boost::lexical_cast<bool>(argv[2]);
-
+    std::string barrel=boost::lexical_cast<std::string>(argv[2]);
 
     TFile* file2=new TFile(argv[1]);
 
@@ -86,11 +84,18 @@ int main(int argc, char* argv[]){
 
     TF1 *myfit;
     
-    if(barrel)
+    if(barrel=="B")
     {
         myfit= (TF1*)file2->Get("fitGraph1");
     }
-    else myfit= (TF1*)file2->Get("fitGraph2");
+    if(barrel=="E")
+    {
+        myfit= (TF1*)file2->Get("fitGraph2");
+    }
+    if(barrel=="Eb")
+    {
+        myfit= (TF1*)file2->Get("fitGraph3");
+    }
 
     //myfit->SetLineColor(kBlue);
 
@@ -124,7 +129,7 @@ int main(int argc, char* argv[]){
     myfit->Draw("same");
  
     TLegend * legend = new TLegend(0.6, 0.45, 0.75, 0.60);
-    legend->AddEntry(testfit, "Valentina's fit", "l");
+    legend->AddEntry(testfit, "Test fit", "l");
     legend->AddEntry(myfit, "My fit", "l");
     legend->AddEntry(gr, "Data", "p");
     legend->Draw();
