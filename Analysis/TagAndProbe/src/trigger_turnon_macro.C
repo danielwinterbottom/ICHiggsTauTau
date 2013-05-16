@@ -84,12 +84,10 @@ Double_t ratioFlat(Double_t *x, Double_t *par) {
 }
 
 
-void fit(TString file1 /*,TString file2*/, TString data ,/*TString mc,*/bool flat = false,float min=15.) {
+void fit(TString file1, TString data ,bool flat = false,float min=15.) {
   TFile *f1 = new TFile(file1); 
-  //TFile *f2 = new TFile(file2); 
   gStyle->SetOptFit(0);
   TF1* fit1;
-  //TF1* fit2;
 
   if(!flat) {
   fit1 = new TF1("fit"+data,eff,min,100.,5);
@@ -98,11 +96,14 @@ void fit(TString file1 /*,TString file2*/, TString data ,/*TString mc,*/bool fla
   //fit1->SetParameters(15.9199,0.83,0.57,2.167,0.9326);
   //fit1->SetParameters(15.9561,0.0076,0.000247,2.092,0.9554);
   //good for muon endcaps:
- fit1->SetParameters(15.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
+ //fit1->SetParameters(15.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
+ //fit1->SetParameters(7.00501,3.98289e-06,1.84732e-11,3.27047,0.830757);
+//fit1->SetParameters(7.998,7.7658e-05,6.3339e-08,1.6565,0.8614);
   //fit1->SetParameters(17.07,0.000100,0.00060,1.56,0.965);
   //fit1->SetParameters(16.6377,-1.23117,2.14735,1.17365,0.957028);
   //good for muon middle eta region:
   //fit1->SetParameters(17.4203,0.6201,1.13239,1.22927,0.93235);
+  //fit1->SetParameters(7.00501,3.98289e-06,1.84732e-11,3.27047,0.830757);
   //fit1->SetParameters(16.7859,0.443337,0.571078,1.62214,0.919211);
   //fit1->SetParameters(16.5,0.004877,0.000561,1.5,0.861);
   //fit1->SetParameters(20.5,0.2,0.04,1.001,54);
@@ -111,25 +112,27 @@ void fit(TString file1 /*,TString file2*/, TString data ,/*TString mc,*/bool fla
   //fit1->SetParameters(15.93,0.026,0.00487,1.9138,0.9777);
   //fit1->SetParameters(17.46,0.0494554,0.0628053,1.32332,0.90886);
   //fit1->SetParameters(15.03,0.55278,1.34236,1.003,3.36767); 
+  //fit1->SetParameters(4.999, 0.00025, 2.56072e-07, 1.59659, 1.00737);
+  //fit1->SetParameters(7.00501,3.98289e-05 ,1.84732e-10, 3.27047, 0.830757);
+  //fit1->SetParameters(6.999, 0.311255, 0.221021, 1.59659, 1.00737);
+  //fit1->SetParameters(7.999, 1.6743, 1.0731, 1, 0.9543);
   //Ele15 barrel
-  //fit1->SetParameters(14.8772,0.311255,0.221021,1.87734,0.986665);
+  fit1->SetParameters(14.8772,0.311255,0.221021,1.87734,0.986665);
   //Ele15 endcap
  // fit1->SetParameters(19.6586,0.682633,0.279486,2.66423,0.973455);
  //Ele20 Endcap
  //fit1->SetParameters(23.63,1.6077,1.72093,1.4131,1.1396);
+ //fit1->SetParameters(6.999,1.6077,1.72093,1.4131,1.1396);
   //fit2->SetParameters(19.1,1.2,1.7,1.4,0.8);
   }
   else
     {
       fit1 = new TF1("fit"+data,"pol0",min,50.);
-    //  fit2 = new TF1("fit"+mc,"pol0",min,50.);
       fit1->SetParameter(0.,1.);
-     // fit2->SetParameter(0.,1.)
     }
 
 
   fit1->SetLineWidth(2);
-  //fit2->SetLineWidth(2);
 
  
   TGraphAsymmErrors* g1 =(TGraphAsymmErrors*) f1->Get(data);
@@ -145,95 +148,63 @@ void fit(TString file1 /*,TString file2*/, TString data ,/*TString mc,*/bool fla
       g1->Fit(fit1,"","",min,100);
     }
 
-/*
-  TCanvas *c2 = new TCanvas("c2","DATA");
-  c2->cd();
-  g1->SetTitle(0);  
-  g1->GetYaxis()->SetTitle("Efficiency");  
-  g1->GetXaxis()->SetTitleColor(1);  
-  g1->GetXaxis()->SetTitle("p_{T} (GeV)");  
-  g1->Draw("AP");
-
-  fit2 = new TF1("fit2"+data,eff,min,100.,5);
-  fit2->SetParameters(fit1->GetParameter(0),
-			fit1->GetParameter(1),
-			fit1->GetParameter(2),
-			fit1->GetParameter(3),
-			fit1->GetParameter(4)
-            );
-
-  fit2->SetLineWidth(2);
-    for(unsigned int i=0;i<20;++i) {
-      g1->Fit(fit2,"","",min,100);
-    }
-*/
-/*
-  TGraphAsymmErrors* g2 =(TGraphAsymmErrors*) f2->Get(mc);
-  TCanvas *c2 = new TCanvas("cc","MC");
-  c2->cd();
-  g2->Draw("AP");
-  for(unsigned int i=0;i<20;++i) {
-    g2->Fit(fit2,"","",min,100.);
-   }
-*/
   c1->Update();
-  //c2->Update();
-
-  c1->SaveAs(data+".png");
-  c1->SaveAs(data+".pdf");
-  //c2->SaveAs(mc+".png");
-  //c2->SaveAs(mc+".pdf");
 
 
-/*
-  TF1 *corr ;
-  if(!flat) {
-    corr= new TF1("corr"+data,ratio,min,100.,10);
-    corr->SetParameters(fit1->GetParameter(0),
-			fit1->GetParameter(1),
-			fit1->GetParameter(2),
-			fit1->GetParameter(3),
-			fit1->GetParameter(4),
-			fit2->GetParameter(0),
-			fit2->GetParameter(1),
-			fit2->GetParameter(2),
-			fit2->GetParameter(3),
-			fit2->GetParameter(4));
+
+  TString outsubstr;
+  int position=file1.Index("Trigger");
+  outsubstr=file1.Remove(position, 24);
+  TString etaregion="";
+  if(file1.Contains("Ele"))
+  {
+    if(data=="Graph1") etaregion="Barrel";
+    if(data=="Graph2") etaregion="Endcap";
   }
-  else
-    {
-      corr= new TF1("corr"+data,ratioFlat,min,50.,2);
-      corr->SetParameters(fit1->GetParameter(0),
-			  fit2->GetParameter(0));
-    }
+  if(file1.Contains("Mu"))
+  {
+    if(data=="Graph1") etaregion="eta0p8";
+    if(data=="Graph2") etaregion="eta1p2";
+    if(data=="Graph2") etaregion="Endcap";
+  }
 
+  TString outfilename=outsubstr.Append(etaregion);
+  outfilename=outfilename.Append("Fit");
 
-  corr->SetLineWidth(2);
-  TCanvas *c3 = new TCanvas("c3");
-  c3->cd();
-  c3->DrawFrame(0.,0.,100.,2.);
-  corr->Draw("L");
-  c3->SaveAs("corr"+data+".png");
-*/
-  TFile *fc = new TFile("corrections.root","RECREATE");
+  std::ofstream paramsfile;
+  TString textfilename=outfilename;
+  TString rootfilename=outfilename;
+  textfilename=textfilename.Append(".txt");
+ 
+  paramsfile.open(textfilename);
+
+  paramsfile << fit1->GetParameter(0) << std::endl;  
+  paramsfile << fit1->GetParameter(1) << std::endl;  
+  paramsfile << fit1->GetParameter(2) << std::endl;  
+  paramsfile << fit1->GetParameter(3) << std::endl;  
+  paramsfile << fit1->GetParameter(4) << std::endl;  
+
+  rootfilename=rootfilename.Append(".root");  
+  
+  TFile *fc = new TFile(rootfilename,"RECREATE");
   fc->cd();
   fit1->Write("",TObject::kOverwrite);
-  //fit1->Draw("same");
   c1->Write();
   g1->Write();
-  //fit2->Write("",TObject::kOverwrite);
-  //corr->Write("",TObject::kOverwrite);
   fc->Close();
+    
+  TString pngfilename=outfilename;
+  TString pdffilename=outfilename;
 
+  pngfilename=pngfilename.Append(".png");
+  pdffilename=pdffilename.Append(".pdf");
 
-  cout << "Fits completed in "<<data /*<< " and " <<mc */<< endl;
+  c1->SaveAs(pngfilename);
+  c1->SaveAs(pdffilename);
+
+  cout << "Fits completed in "<<data << endl;
   printf("Results in DATA-------------\n");
   fit1->Print();
-  //fit2->Print();
-
-  //printf("Results in MC-------------\n");
-  //fit2->Print();
-
 
 } 
 
