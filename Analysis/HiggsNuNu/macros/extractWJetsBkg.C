@@ -115,6 +115,8 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DPhiSIGNAL");
   lSelVecControl.push_back("DPhiQCD");
 
+  bool doTaus = false;
+
   std::string TOPDIR = "../TABLES/";
 
   const unsigned nSteps = lSelVecSignal.size();
@@ -168,23 +170,24 @@ int extractWJetsBkg(){//main
 	  }
 	  lTable>>lSel[2][iS];
 	  lTable.close();
-		  
-	  lName.str("");
-	  lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
-	  lTable.open(lName.str().c_str());
-	  if(!lTable.is_open()){
-	    cerr<<"Unable to open file: "<<lName.str()<<endl;
-	    return 1; 
+
+	  if (doTaus){
+	    lName.str("");
+	    lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
+	    lTable.open(lName.str().c_str());
+	    if(!lTable.is_open()){
+	      cerr<<"Unable to open file: "<<lName.str()<<endl;
+	      return 1; 
+	    }
+	    lTable>>lSel[3][iS];
+	    lTable.close();
 	  }
-	  lTable>>lSel[3][iS];
-	  lTable.close();
-	  
 	}//loop on steps
 	
 	
 	//print Wjets components
 	std::string lChannel[4] = {"nunu","enu","munu","taunu"};
-	for (unsigned iCh(0); iCh<4; ++iCh){//loop on channel
+	for (unsigned iCh(0); iCh< (doTaus ? 4 : 3); ++iCh){//loop on channel
 	  std::ostringstream lName;
 	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/WandZJetsTable.txt";
 	  
