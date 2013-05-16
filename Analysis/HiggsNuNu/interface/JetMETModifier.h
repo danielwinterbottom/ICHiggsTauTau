@@ -24,10 +24,11 @@ namespace ic {
     CLASS_MEMBER(JetMETModifier,fwlite::TFileService*, fs);
     CLASS_MEMBER(JetMETModifier, bool, is_data)
     CLASS_MEMBER(JetMETModifier, bool, dojessyst)
-    CLASS_MEMBER(JetMETModifier, bool, upordown)
+    CLASS_MEMBER(JetMETModifier, bool, jesupordown)
+    CLASS_MEMBER(JetMETModifier, bool, dojersyst)
+    CLASS_MEMBER(JetMETModifier, bool, jerbetterorworse)
     CLASS_MEMBER(JetMETModifier, std::string, input_label)
     CLASS_MEMBER(JetMETModifier, std::string, met_label)
-    CLASS_MEMBER(JetMETModifier, std::string, smear_label)
     CLASS_MEMBER(JetMETModifier, bool, dosmear)
     CLASS_MEMBER(JetMETModifier, std::string, jesuncfile)
     TH2F* JEScorrfac;
@@ -37,6 +38,8 @@ namespace ic {
     TH1F* JESisordersame;
     TH1F* Smearptdiff;
     TH1F* Smear50miss;
+    TH1F* Smearjetgenjetptdiff;
+    TH1F* Smeargenmindr;
     
   public:
     JetMETModifier(std::string const& name);

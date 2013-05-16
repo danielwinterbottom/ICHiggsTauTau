@@ -72,8 +72,10 @@ int main(int argc, char* argv[]){
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool dojessyst;                 // Do Jet Energy Scale Systematic Run
-  bool dosmear;                 // Do Smearing
-  bool upordown;                  // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
+  bool jesupordown;               // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
+  bool dosmear;                   // Do Smearing
+  bool dojersyst;                 // Do Jet Energy Resolution Systematic Run
+  bool jerbetterorworse;          // If doing Jet Energy Resolution Systematic Run, run with with better or worse (true for better, false for worse)
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -117,7 +119,9 @@ int main(int argc, char* argv[]){
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
-    ("upordown",            po::value<bool>(&upordown)->default_value(true))
+    ("jesupordown",            po::value<bool>(&jesupordown)->default_value(true))
+    ("dojersyst",           po::value<bool>(&dojersyst)->default_value(false))
+    ("jerbetterorworse",            po::value<bool>(&jerbetterorworse)->default_value(true))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
@@ -144,7 +148,9 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "do_skim" % do_skim;
   if (do_skim) std::cout << boost::format(param_fmt) % "skim_path" % skim_path;
   std::cout << boost::format(param_fmt) % "dojessyst" % dojessyst;
-  if (dojessyst) std::cout << boost::format(param_fmt) % "upordown" % upordown;
+  if (dojessyst) std::cout << boost::format(param_fmt) % "jesupordown" % jesupordown;
+  std::cout << boost::format(param_fmt) % "dojersyst" % dojersyst;
+  if (dojessyst) std::cout << boost::format(param_fmt) % "jerbettorworse" % jerbetterorworse;
   std::cout << boost::format(param_fmt) % "era" % era_str;
   std::cout << boost::format(param_fmt) % "mc" % mc_str;
   std::cout << boost::format(param_fmt) % "prod" % prod;
@@ -529,22 +535,16 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
-  string smear_label;
-  if(!is_data){
-    smear_label="jetsmearedcentralJets";
-  }
-  else{
-    smear_label="dummy";
-  }
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
     .set_input_label("pfJetsPFlow")
     .set_met_label(mettype)
     .set_dosmear(dosmear)
-    .set_smear_label(smear_label)
     .set_is_data(is_data)
     .set_dojessyst(dojessyst)
-    .set_upordown(upordown)
+    .set_jesupordown(jesupordown)
+    .set_dojersyst(dojersyst)
+    .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
     .set_fs(fs);
 

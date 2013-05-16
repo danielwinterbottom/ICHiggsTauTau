@@ -1,5 +1,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include <utility>
@@ -9,8 +10,8 @@ namespace ic {
   JetMETModifier::JetMETModifier(std::string const& name) : ModuleBase(name) {
     is_data_ = true;
     input_label_ = "pfJetsPFlow";
-    upordown_ = true; //true is up false is down
-    dosmear_ = false;
+    jesupordown_ = true; //true is up false is down
+    dosmear_=false;
     dojessyst_ = false;
   }
 
@@ -26,15 +27,34 @@ namespace ic {
       std::cout<<"Sample is data, no corrections will be made."<<std::endl;
     }
     else{
-      std::cout << "Doing Smearing? "<<dosmear_<<std::endl;
-      if(!dojessyst_){
-	std::cout << "Doing central value"<<upordown_<<std::endl;
+      if(dosmear_){
+	std::cout << "Doing jet central value smearing. "<<std::endl;
       }
-      else if(dojessyst_&&upordown_){
-	std::cout << "Doing JESUP"<<upordown_<<std::endl;
+      else if((!dosmear_)&&dojersyst_){
+	std::cout << "Error: doing jersyst but not doing smearing won't work!"<<std::endl;
       }
-      else if(dojessyst_&&(!upordown_)){
-	std::cout << "Doing JESDOWN"<<upordown_<<std::endl;
+      else{
+	std::cout << "Not doing jet central value smearing. "<<std::endl;
+      }
+
+      if(dojessyst_&&dojersyst_){
+	std::cout << "Warning trying to do JES and JER at the same time."<<std::endl;
+      }
+      
+      if((!dojessyst_)&&(!dojersyst_)){
+	std::cout << "Doing central value"<<std::endl;
+      }
+      else if(dojessyst_&&jesupordown_){
+	std::cout << "Doing JESUP"<<std::endl;
+      }
+      else if(dojessyst_&&(!jesupordown_)){
+	std::cout << "Doing JESDOWN"<<std::endl;
+      }
+      else if(dojersyst_&&jerbetterorworse_){
+	std::cout << "Doing JERBETTER"<<std::endl;
+      }
+      else if(dojersyst_&&(!jerbetterorworse_)){
+	std::cout << "Doing JERWORSE"<<std::endl;
       }
     }
     std::cout<<"Getting JES uncertainty parameters from file: "<<jesuncfile_<<std::endl;
@@ -49,8 +69,10 @@ namespace ic {
     JESjetphidiff = dir.make<TH1F>("JESjetphidiff","JESjetphidiff",1000,-10.,10.);
     JESjetetadiff = dir.make<TH1F>("JESjetetadiff","JESjetetadiff",1000,-10.,10.);
     JESisordersame = dir.make<TH1F>("JESisordersame","JESisordersame",40,-10.,10.);
-    Smearptdiff = dir2.make<TH1F>("Smearptdiff","Smearptdiff",200,-10.,10.);
+    Smearptdiff = dir2.make<TH1F>("Smearptdiff","Smearptdiff",2000,-10.,10.);
     Smear50miss = dir2.make<TH1F>("Smear50miss","Smear50miss",20,-10.,10.);
+    Smearjetgenjetptdiff = dir2.make<TH1F>("Smearjetgenjetptdiff","Smearjetgenjetptdiff",2000,-10.,10.);
+    Smeargenmindr = dir2.make<TH1F>("Smeargenmindr","Smeargenmindr",1000,0.,10.);
     return 0;
   }
 
@@ -59,34 +81,31 @@ namespace ic {
       return 0;
     }
     else{
-      std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//get the collection (should be a jet collection)
-      std::vector<Candidate *> & smearvec = event->GetPtrVec<Candidate>(smear_label_);
-      std::vector< std::pair<PFJet*, Candidate*> > jet_smeared_jet_pairs = MatchByDR(vec,smearvec,0.001, true, true);
-      if(dosmear_){
-	if(jet_smeared_jet_pairs.size()!=vec.size()){
-	  vec.clear();
-	  for(int i = 0;unsigned(i) <jet_smeared_jet_pairs.size();i++){
-	    vec.push_back(jet_smeared_jet_pairs[i].first);
+      //Get the met and jet collections
+      std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
+      std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");//GenJet collection, note: could make this a parameter but we only have one collection at the moment in the ntuples
+      Met *met = event->GetPtr<Met>(met_label_);//MET collection
+      ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
+      ROOT::Math::PxPyPzEVector  newmet = oldmet;
+
+      //Do GenJet matching
+      std::vector< std::pair<PFJet*, GenJet*> > jet_genjet_pairs = MatchByDR(vec,genvec,0.5,true,true);
+
+      //Find closest gen jet to each jet
+      for (int i = 0; unsigned(i) < vec.size(); ++i) {//loop over the jet collection
+	double jeteta=vec[i]->vector().eta();
+	double jetphi=vec[i]->vector().phi();
+	double mindr=999;
+	for(int j = 0;unsigned(j)<genvec.size();j++){
+	  double dr = sqrt((jeteta-genvec[j]->vector().eta())*(jeteta-genvec[j]->vector().eta())+(jetphi-genvec[j]->vector().phi())*(jetphi-genvec[j]->vector().phi()));
+	  if(dr<mindr){
+	    mindr=dr;
 	  }
-	  //std::cout<<"hmm no match for some of the jets"<<std::endl;
 	}
+	Smeargenmindr->Fill(mindr);
       }
 
-      Met *met;
-      if(!dosmear_){
-	met = event->GetPtr<Met>(met_label_);//get the met
-      }
-      else if(dosmear_){
-	met = event->GetPtr<Met>("pattype1correctedpfMet");
-      }
-      //Get MET information and create variables to be updated
-      double metpx = met->vector().px();
-      double metpy = met->vector().py();
-      double metet = met->vector().energy();
-      double newmetpx = metpx;
-      double newmetpy = metpy;
-      double newmetet = metet;
-      
+      //initialise variables for finding highest two pt jets      
       double oldjet1pt = -1.;
       double oldjet2pt = -1.;
       int oldjet1index = -1;
@@ -96,151 +115,127 @@ namespace ic {
       int newjet1index = -1;
       int newjet2index = -1;
       
-      for (int i = 0; unsigned(i) < vec.size(); ++i) {//loop over the collection
+      for (int i = 0; unsigned(i) < vec.size(); ++i) {//loop over the jet collection
 	//Get jet information
-	double oldjetpx = vec[i]->vector().px();
-	double oldjetpy = vec[i]->vector().py();
-	double oldjetpz = vec[i]->vector().pz();
-	double oldjete = vec[i]->vector().E();
-	double oldjetpt = vec[i]->pt();
-	double oldjeteta = vec[i]->eta();
-	double oldjetphi = vec[i]->phi();
-	double newjetpx;
-	double newjetpy;
-	double newjetpz;
-	double newjete;
-	double newjetpt;
-	double newjeteta;
-	double newjetphi;
-
-	if(dosmear_){//Smearing section
-	int index = -1;
-	  //Check for matches between smeared and unsmeared jets
-	  for(int j = 0;unsigned(j)<jet_smeared_jet_pairs.size();j++){
-	    if(jet_smeared_jet_pairs[j].first->id()==vec[i]->id()){
-	      index = j;
-	      break;
-	    }
-	  }
-	  if(index == -1){//If no match use unsmeared jet
-	    //std::cout<<"No match for jet with pt: "<<oldjetpt<<std::endl;
-	    newjetpx = oldjetpx;
-	    newjetpy = oldjetpy;
-	    newjetpz = oldjetpz;
-	    newjete = oldjete;
-	    newjetpt = oldjetpt;
-	    newjeteta = oldjeteta;
-	    newjetphi = oldjetphi;
-	  }
-	  else{//If match use smeared 4 vector for jet
-	    newjetpx = smearvec[index]->vector().px();
-	    newjetpy= smearvec[index]->vector().py();
-	    newjetpz= smearvec[index]->vector().pz();
-	    newjete= smearvec[index]->vector().E();
-	    newjetpt = smearvec[index]->pt();
-	    newjeteta = smearvec[index]->eta();
-	    newjetphi = smearvec[index]->phi();
-	  }
-	  
-	  //Study how many jets above 50GeV have no match
-	  if(oldjetpt>50.){
-	    if(index==-1){
-	      Smear50miss->Fill(-1.);
-	      std::cout<<"Old 4 vectors"<<std::endl;
-	      for(unsigned l =0;l<vec.size();l++){
-		std::cout<<"pt: "<<vec[l]->pt()<<" eta: "<<vec[l]->eta()<<" phi: "<<vec[l]->phi()<<std::endl;            
-	      }
-	      std::cout<<"Smeared 4 vectors"<<std::endl;
-	      for(unsigned l =0;l<smearvec.size();l++){
-		std::cout<<"pt: "<<smearvec[l]->pt()<<" eta: "<<smearvec[l]->eta()<<" phi: "<<smearvec[l]->phi()<<std::endl;            
-	      }
-	    }
-	    else Smear50miss->Fill(1.);
-	  }
-	  Smearptdiff->Fill(newjetpt-oldjetpt);
-	}
+	ROOT::Math::PxPyPzEVector  oldjet = ROOT::Math::PxPyPzEVector(vec[i]->vector());
+	ROOT::Math::PxPyPzEVector  newjet;
 	
-	else{//If not doing smear use normal jet
-	  newjetpx = oldjetpx;
-	  newjetpy = oldjetpy;
-	  newjetpz = oldjetpz;
-	  newjete = oldjete;
-	  newjetpt = oldjetpt;
-	  newjeteta = oldjeteta;
-	  newjetphi = oldjetphi;
+	//SMEARING
+	if(dosmear_){
+	  int index = -1;
+          //Check for matches between smeared and unsmeared jets
+	  for(int j = 0;unsigned(j)<jet_genjet_pairs.size();j++){
+            if(jet_genjet_pairs[j].first->id()==vec[i]->id()){
+              index = j;
+              break;
+            }
+          }
+	  double JERptcorrfac=1.;//if no match leave jet alone
+	  if(index!=-1){//if gen jet match calculate correction factor for pt
+	    if(oldjet.pt()>50.) Smear50miss->Fill(-1.);
+	    double JERcencorrfac=1.;
+	    if(!dojersyst_){//doing central value
+	      if(fabs(oldjet.eta())<0.5)JERcencorrfac=1.052;
+	      else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.057;
+	      else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.096;
+	      else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.134;
+	      else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.288;
+	    }
+	    else if(dojersyst_&&jerbetterorworse_){//doing JERBETTER
+	      if(fabs(oldjet.eta())<0.5)JERcencorrfac=0.990;
+	      else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.001;
+	      else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.032;
+	      else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.042;
+	      else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.089;
+	    }
+	    else if(dojersyst_&&(!jerbetterorworse_)){//doing JERWORSE
+	      if(fabs(oldjet.eta())<0.5)JERcencorrfac=1.115;
+	      else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.114;
+	      else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.161;
+	      else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.228;
+	      else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.488;	      
+	    }
+	    //calculate 4 vector correction factor
+	    double ptcorrected = jet_genjet_pairs[index].second->pt()+JERcencorrfac*(oldjet.pt()-jet_genjet_pairs[index].second->pt());
+	    if(ptcorrected<0.)ptcorrected=0.;
+	    JERptcorrfac = ptcorrected/oldjet.pt();
+	    Smearjetgenjetptdiff->Fill(oldjet.pt()-jet_genjet_pairs[index].second->pt());
+	  }
+	  else if(oldjet.pt()>50.) Smear50miss->Fill(1.); 
+	  //correct jet 4 vector
+	  newjet = oldjet*JERptcorrfac;
+	  	  
+	  //correct met
+	  newmet.SetPx(newmet.px()-(newjet.px()-oldjet.px()));
+	  newmet.SetPy(newmet.py()-(newjet.py()-oldjet.py()));
+	  newmet.SetE(sqrt(newmet.px()*newmet.px()+newmet.py()*newmet.py()));  
 	}
+	else{//If not doing any smearing use normal jet
+	  newjet = oldjet;
+	}
+	Smearptdiff->Fill(newjet.pt()-oldjet.pt());
 	
-	//Get jet order
-	if(newjetpt > oldjet1pt){
+	//Get initial jet order
+	if(newjet.pt() > oldjet1pt){
 	  oldjet2index=oldjet1index;
 	  oldjet2pt=oldjet1pt;
 	  oldjet1index=i;
-	  oldjet1pt=newjetpt;
+	  oldjet1pt=newjet.pt();
 	}
-	else if(newjetpt > oldjet2pt) {
+	else if(newjet.pt() > oldjet2pt) {
 	  oldjet2index=i;
-	  oldjet2pt=newjetpt;
+	  oldjet2pt=newjet.pt();
 	}
 	
-	if(!dojessyst_){//Central value                                                                                                                                              
+	//JES SYSTEMATICS
+	if(!dojessyst_){//Central value
 	  newjet1index=oldjet1index;
 	  newjet2index=oldjet2index;
 	  newjet1pt=oldjet1pt;
 	  newjet2pt=newjet2pt;
 	}
-	
 	else if(dojessyst_){//if not central value correct by the JES uncertainty
 	  //Get JES uncertainty
-	  total->setJetPt(newjetpt);
-	  total->setJetEta(newjeteta);
-	  double uncert = total->getUncertainty(upordown_);
-	  JEScorrfac->Fill(newjetpt,uncert); //Fill histogram of uncertainty against pt	
-	  float upordownmult;
-	  if(upordown_==true) upordownmult=1.; //upper uncertainty
-	  else upordownmult=-1.; //lower uncertainty
+	  total->setJetPt(newjet.pt());
+	  total->setJetEta(newjet.eta());
+	  double uncert = total->getUncertainty(jesupordown_);
+	  JEScorrfac->Fill(newjet.pt(),uncert); //Fill histogram of uncertainty against pt	
+	  float jesupordownmult;
+	  if(jesupordown_==true) jesupordownmult=1.; //upper uncertainty
+	  else jesupordownmult=-1.; //lower uncertainty
 	  
-	  //Correct jet
-	  newjetpx = newjetpx*(1+upordownmult*uncert);
-	  newjetpy = newjetpy*(1+upordownmult*uncert);
-	  newjetpz = newjetpz*(1+upordownmult*uncert);
-	  newjete = newjete*(1+upordownmult*uncert);
+	  //Correct jet and met
+	  double deltapx = newjet.px()*jesupordownmult*uncert;
+	  double deltapy = newjet.py()*jesupordownmult*uncert;
+	  newjet=newjet*(1+jesupordownmult*uncert);
+	  newmet.SetPx(newmet.px()-deltapx);
+	  newmet.SetPy(newmet.py()-deltapy);
+	  newmet.SetE(newmet.px()*newmet.px()+newmet.py()*newmet.py());
 	  
-	  ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  jetforcomp(newjetpx,newjetpy,newjetpz,newjete);
-	  
-	  //Check eta doesn't change
-	  double newjeteta = jetforcomp.eta();
-	  double newjetphi = jetforcomp.phi();
-	  JESjetphidiff->Fill(newjetphi-oldjetphi);
-	  JESjetetadiff->Fill(newjeteta-oldjeteta);
+	  JESjetphidiff->Fill(newjet.phi()-oldjet.phi());
+	  JESjetetadiff->Fill(newjet.eta()-oldjet.eta());
 	
 	  //check if order of jets is same
-	  double newjetpt=vec[i]->pt();
-	  if(newjetpt > newjet1pt){
+	  if(newjet.pt() > newjet1pt){
 	    newjet2index=newjet1index;
 	    newjet2pt=newjet1pt;
 	    newjet1index=i;
-	    newjet1pt=newjetpt;
+	    newjet1pt=newjet.pt();
 	  }
-	  else if(newjetpt > newjet2pt) {
+	  else if(newjet.pt() > newjet2pt) {
 	    newjet2index=i;
-            newjet2pt=newjetpt;
-	  }
-	  
-	  //Correct met
-	  newmetpx = metpx - (upordownmult*newjetpx*uncert);
-	  newmetpy = metpy - (upordownmult*newjetpy*uncert);
+            newjet2pt=newjet.pt();
+	  }  
+
 	}
 	//Set jet in event to corrected jet
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >  newjet(newjetpx,newjetpy,newjetpz,newjete);
 	vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
-      }
+      }//end of loop over jets
       
       //Set met in event to corrected met
-      newmetet=sqrt(newmetpx*newmetpx+newmetpy*newmetpy);
-      ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > new_met(newmetpx,newmetpy,0,newmetet);
-      met->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(new_met));
+      met->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newmet));
       
-      JESmetdiff->Fill(newmetet-metet);
+      JESmetdiff->Fill(newmet.energy()-oldmet.energy());
       
       //Check if first two jets have changed
       if((oldjet1index==-1)||(newjet1index==-1)||(oldjet2index==-1)||(newjet2index==-1)){
