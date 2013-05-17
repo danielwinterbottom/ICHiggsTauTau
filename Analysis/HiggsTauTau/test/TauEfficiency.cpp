@@ -79,12 +79,13 @@ int main(int argc, char* argv[]){
 
   std::string region = "barrel";
 
-  std::string signal_file = "GluGluToHToTauTau_M-120_mt_2012_TauEff.root";
-  std::string backgr_file = "Special_3_TauPlusX-2012C-24Aug2012-v1_mt_TauEff.root";
+  std::string signal_file = "output/TauEfficiency/GluGluToHToTauTau_M-120_mt_2012_TauEff.root";
+  std::string backgr_file = "output/TauEfficiency/Special_3_TauPlusX-2012C-24Aug2012-v1_mt_TauEff.root";
   // std::string signal_file = "SUSYGluGluToHToTauTau_M-500_mt_2012_TauEff.root";
   // std::string backgr_file = "QCD_2012_TauEff.root";
 
   // Cut > 0.795
+  // Tight is 0.921
   TH2F fake_barrel_mva1_num = GetFromTFile<TH2F>(backgr_file, "/TauEfficiency/", region+"_mva1_num");
   TH2F fake_barrel_mva1_den = GetFromTFile<TH2F>(backgr_file, "/TauEfficiency/", region+"_mva1_den");
   TH2F real_barrel_mva1_num = GetFromTFile<TH2F>(signal_file, "/TauEfficiency/", region+"_mva1_num");
@@ -125,6 +126,7 @@ int main(int argc, char* argv[]){
 
 
   // Cut > 0.85
+  // Tight is 0.94
   TH2F fake_barrel_mva2_num = GetFromTFile<TH2F>(backgr_file, "/TauEfficiency/", region+"_mva2_num");
   TH2F fake_barrel_mva2_den = GetFromTFile<TH2F>(backgr_file, "/TauEfficiency/", region+"_mva2_den");
   TH2F real_barrel_mva2_num = GetFromTFile<TH2F>(signal_file, "/TauEfficiency/", region+"_mva2_num");
@@ -158,6 +160,7 @@ int main(int argc, char* argv[]){
   }
 
   // 3hits is < 2
+  // Tight is < 0.8
 
   TH2F fake_barrel_hits_num = GetFromTFile<TH2F>(backgr_file, "/TauEfficiency/", region+"_3hit_num");
   TH2F fake_barrel_hits_den = GetFromTFile<TH2F>(backgr_file, "/TauEfficiency/", region+"_3hit_den");
@@ -169,7 +172,7 @@ int main(int argc, char* argv[]){
   vector<double> hits_bkg_eff;
   vector<double> hits_bkg_err;
 
-  int hits_bin = fake_barrel_hits_num.GetYaxis()->FindBin(2);
+  int hits_bin = fake_barrel_hits_num.GetYaxis()->FindBin(2.0);
   TGraphErrors *hits_loose;
 
   for (int i = 1; i <= fake_barrel_hits_num.GetNbinsY(); ++i) {

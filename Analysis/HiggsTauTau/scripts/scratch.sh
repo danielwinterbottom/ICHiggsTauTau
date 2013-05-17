@@ -252,3 +252,18 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=100 \
   --paramfile=./scripts/Moriond_params_2012.dat --extra_pad=1.1
 
+
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=2 --non_mass_plot=true \
+  --method=8 --category="inclusive" --plot_name="pt_h"  --x_axis_label="Higgs p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+  --paramfile=./scripts/Moriond_params_2012.dat
+
+
+
+
+
+
+
+
+
