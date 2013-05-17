@@ -17,8 +17,8 @@ int main(int argc, char* argv[]){
     for (int i = 0; i < argc; ++i){
         std::cout << i << "\t" << argv[i] << std::endl;
     }
-    if (argc != 4){
-        std::cerr << "Need <iselec> <isdata> <plus/minus/abs>" << std::endl;
+    if (argc != 6){
+        std::cerr << "Need <iselec> <isdata> <plus/minus/abs> <xmin> <xmax>" << std::endl;
         exit(1);
     }
 
@@ -26,23 +26,12 @@ int main(int argc, char* argv[]){
     elec=boost::lexical_cast<bool>(argv[1]);
     isdata=boost::lexical_cast<bool>(argv[2]);
     std::string etatype=argv[3];
-    int nbins=12;
+    int xmin=boost::lexical_cast<int>(argv[4]);
+    int xmax=boost::lexical_cast<int>(argv[5]);
 
     TFile *f1 = new TFile("TriggerBinnedHistos.root", "RECREATE");
     f1->cd();
-    TCanvas *c1 = new TCanvas("c1", "error plot", 200, 10, 700, 500);
 
-    TH1F *h1=c1->DrawFrame(0, -0.05, 60, 1);
-    h1->SetYTitle("Efficiency");
-    if(elec)
-    {
-        h1->SetXTitle("Electron p_{T}");
-    }
-    else
-    { 
-        h1->SetXTitle("Muon p_{T}");
-    }
-    h1->GetXaxis()->SetTitleColor(1);
 
     ifstream bins, efficiencies, vtxbins;
 
@@ -96,7 +85,7 @@ int main(int argc, char* argv[]){
     Double_t x1[binbounds.size()];
     Double_t err_x1[binbounds.size()];
     //for(unsigned i=0; i<(binbounds.size())-1; i++)
-    for(unsigned i=0; i<nbins; i++)
+    for(unsigned i=0; i<12; i++)
     {
         x1[i]=binbounds[i]+((binbounds[i+1]-binbounds[i])/2.0);
         err_x1[i]=(binbounds[i+1]-binbounds[i])/2.0;
@@ -195,7 +184,7 @@ int main(int argc, char* argv[]){
         if(parts[1].find(bar)!=std::string::npos
             && (!(etatype=="abs") || (!(parts[1].find("Bplus")!=std::string::npos) && !(parts[1].find("Bminus")!=std::string::npos))))
         {
-            for(int j=2; j<nbins; j++)
+            for(int j=2; j<12; j++)
             {
                 if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
                 {
@@ -223,7 +212,7 @@ int main(int argc, char* argv[]){
             && (!(etatype=="abs") || (!(parts[1].find("Eplus")!=std::string::npos) && !(parts[1].find("Eminus")!=std::string::npos)
             && !(parts[1].find("Ebminus")!=std::string::npos) && !(parts[1].find("Ebplus")!=std::string::npos))))
         {
-            for(int j=2; j<nbins; j++)
+            for(int j=2; j<12; j++)
             {
                 if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
                 {
@@ -250,7 +239,7 @@ int main(int argc, char* argv[]){
         if(parts[1].find(end2)!=std::string::npos
             && (!(etatype=="abs") || (!(parts[1].find("Ebplus")!=std::string::npos) && !(parts[1].find("Ebminus")!=std::string::npos))))
         {
-            for(int j=2; j<nbins; j++)
+            for(int j=2; j<12; j++)
             {
                 if(parts[1].find(boost::lexical_cast<std::string>(j+1))!=std::string::npos)
                 {
@@ -304,7 +293,7 @@ int main(int argc, char* argv[]){
     if(!elec && etatype=="abs") std::cout << "Efficiencies for |eta| < 0.8: " <<std::endl;
     if(!elec && etatype=="plus") std::cout << "Efficiencies for 0 < eta < 0.8: " <<std::endl;
     if(!elec && etatype=="minus") std::cout << "Efficiencies for -0.8 < eta < 0: " <<std::endl;
-    for(int i=0; i<nbins; i++)
+    for(int i=0; i<12; i++)
     {
         std::cout << i << " " << yB[i] << " " << err_yB[i] << std::endl;
     }
@@ -312,7 +301,7 @@ int main(int argc, char* argv[]){
     if(!elec && etatype=="abs") std::cout << "Efficiencies for 0.8 < |eta| < 1.2: " <<std::endl;
     if(!elec && etatype=="plus") std::cout << "Efficiencies for 0.8 < eta < 1.2: " <<std::endl;
     if(!elec && etatype=="minus") std::cout << "Efficiencies for -1.2 < eta < -0.8: " <<std::endl;
-    for(int i=0; i<nbins; i++)
+    for(int i=0; i<12; i++)
     {
         std::cout << i << " " << yE[i] << " " << err_yE[i] << std::endl;
     }
@@ -321,7 +310,7 @@ int main(int argc, char* argv[]){
     if(!elec && etatype=="minus") std::cout << "Efficiencies for eta < -1.2: " <<std::endl;
     if(!elec)
     {
-        for(int i=0; i<nbins; i++)
+        for(int i=0; i<12; i++)
         {
             std::cout << i << " " << yEb[i] << " " << err_yEb[i] << std::endl;
         }
@@ -332,20 +321,35 @@ int main(int argc, char* argv[]){
         std::cout << i << " " << y3[i] << " " << err_y3[i] << std::endl;
     }
     
+    
+    TCanvas *c1 = new TCanvas("c1", "error plot", 200, 10, 700, 500);
+    
+    TH1F *h1=c1->DrawFrame(xmin, -0.05, xmax, 1);
+    h1->SetYTitle("Efficiency");
+    if(elec)
+    {
+        h1->SetXTitle("Electron p_{T}");
+    }
+    else
+    { 
+        h1->SetXTitle("Muon p_{T}");
+    }
+    h1->GetXaxis()->SetTitleColor(1);
+    
     TGraphErrors *gr1 = new TGraphErrors(n1,x1,yB,err_x1,err_yB);
     if(elec)
     {
         gr1->SetMarkerColor(kRed);
     }
     else gr1->SetMarkerColor(kBlue);
+    TAxis *gr1_x= gr1->GetXaxis();
+    gr1_x->SetLimits(xmin, xmax);
     gr1->SetMarkerStyle(20);
     gr1->Draw("P");
 
-    //endcaps
- 
 
     TCanvas *c2 = new TCanvas("c2", "error plot", 200, 10, 700, 500);
-    TH1F *h2=c2->DrawFrame(0, -0.05, 60, 1);
+    TH1F *h2=c2->DrawFrame(xmin, -0.05, xmax, 1);
     h2->SetYTitle("Efficiency");
     if(elec)
     {
@@ -353,18 +357,20 @@ int main(int argc, char* argv[]){
     }
     else h2->SetXTitle("Muon p_{T}");
     h2->GetXaxis()->SetTitleColor(1);
+
     TGraphErrors *gr2 = new TGraphErrors(n1,x1,yE,err_x1,err_yE);
     if(elec)
     {
         gr2->SetMarkerColor(kRed);
     }
     else gr2->SetMarkerColor(kBlue);
+    TAxis *gr2_x= gr2->GetXaxis();
+    gr2_x->SetLimits(xmin, xmax);
     gr2->SetMarkerStyle(20);
-    //gr2->GetYaxis->SetTitle("Efficiency");
     gr2->Draw("P");
 
     TCanvas *c3 = new TCanvas("c3", "error plot", 200, 10, 700, 500);
-    TH1F *h3=c3->DrawFrame(0, -0.05, 60, 1);
+    TH1F *h3=c3->DrawFrame(xmin, -0.05, xmax, 1);
     h3->SetYTitle("Efficiency");
     if(elec)
     {
@@ -378,8 +384,9 @@ int main(int argc, char* argv[]){
         gr3->SetMarkerColor(kRed);
     }
     else gr3->SetMarkerColor(kBlue);
+    TAxis *gr3_x= gr3->GetXaxis();
+    gr3_x->SetLimits(xmin, xmax);
     gr3->SetMarkerStyle(20);
-    //gr2->GetYaxis->SetTitle("Efficiency");
     gr3->Draw("P");
 
     TCanvas *c4 = new TCanvas("c4", "error plot", 200, 10, 700, 500);
