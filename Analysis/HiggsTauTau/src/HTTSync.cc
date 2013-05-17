@@ -117,6 +117,16 @@ lOTree->Branch("mt_2"       ,&lMt2           ,"lMt2/F"     );//mT of 2nd lepton 
     //Met related variables
 lOTree->Branch("met"        ,&lMet           ,"lMet/F"      ); //pfmet
 lOTree->Branch("metphi"     ,&lMetPhi        ,"lMetPhi/F"   ); //pfmet Phi
+
+lOTree->Branch("l1met"          ,&lL1Met          ,"lL1Met/F"    ); //l1met
+lOTree->Branch("l1metphi"       ,&lL1MetPhi       ,"lL1MetPhi/F" ); //pfmet Phi
+lOTree->Branch("l1metcorr"      ,&lL1MetCorr      ,"lL1Metcorr/F"    ); //l1met
+
+lOTree->Branch("calomet"        ,&lCaloMet        ,"lCaloMet/F"    ); 
+lOTree->Branch("calometphi"     ,&lCaloMetPhi     ,"lCaloMetPhi/F" ); 
+lOTree->Branch("calometcorr"    ,&lCaloMetCorr    ,"lCaloMetCorr/F"    ); 
+lOTree->Branch("calometphicorr" ,&lCaloMetPhiCorr ,"lCaloMetPhiCorr/F" ); 
+
 lOTree->Branch("mvamet"     ,&lMVAMet        ,"lMet/F"      ); //mvamet
 lOTree->Branch("mvametphi"  ,&lMVAMetPhi     ,"lMetPhi/F"   ); //mvamet Phi
 lOTree->Branch("pzetavis"   ,&lPZetaVis      ,"lPZetaVis/F" ); //pZeta Visible
@@ -376,6 +386,27 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
     lMVACov01 = pfMetMVA->xy_sig();
     lMVACov10 = pfMetMVA->yx_sig();
     lMVACov11 = pfMetMVA->yy_sig();
+
+    if (channel_ == channel::mtmet) {
+      std::vector<Candidate *> & v_l1met = event->GetPtrVec<Candidate>("l1extraMET");
+      Candidate *l1met = v_l1met.at(0);
+      lL1Met = l1met->pt();
+      lL1MetPhi = l1met->phi();
+      lL1MetCorr = l1met->pt();
+      Met const* calo_raw = event->GetPtr<Met>("metNoHF");
+      Met const* calo_corr = event->GetPtr<Met>("metNoHFCorrected");
+      lCaloMet = calo_raw->pt();
+      lCaloMetPhi = calo_raw->phi();
+      lCaloMetCorr = calo_corr->pt();
+      lCaloMetPhiCorr = calo_corr->phi();
+    } else {
+      lL1Met = 0.;
+      lL1MetPhi = 0.;
+      lL1MetCorr = 0.;
+      lCaloMetPhi = 0.;
+      lCaloMetCorr = 0.;
+      lCaloMetPhiCorr = 0.;
+    }
 
     //First Jet   : leading jet after applying Jet energy corrections (excluding hadronic Tau)
     if (jets.size() >= 1) {

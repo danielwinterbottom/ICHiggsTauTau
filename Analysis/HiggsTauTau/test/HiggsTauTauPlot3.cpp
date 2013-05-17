@@ -1111,6 +1111,8 @@ int main(int argc, char* argv[]){
 
       for (int j = 0; j < qcd_hist->GetNbinsX(); ++j) {
         if (qcd_hist->GetBinContent(j+1) < 0) {
+          // qcd_hist->SetBinContent(j+1,0.0);
+          // qcd_hist->SetBinError(j+1, 0.0);
           qcd_hist->SetBinContent(j+1,0.0000001);
           qcd_hist->SetBinError(j+1, 1.0);
         }

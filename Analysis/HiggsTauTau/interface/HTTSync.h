@@ -95,6 +95,16 @@ class HTTSync : public ModuleBase {
   //Met related variables
   float lMet;
   float lMetPhi;
+
+  float lL1Met;
+  float lL1MetPhi;
+  float lL1MetCorr;
+  
+  float lCaloMet;
+  float lCaloMetPhi;
+  float lCaloMetCorr;
+  float lCaloMetPhiCorr;
+  
   float lMVAMet;
   float lMVAMetPhi;
   float lPZetaVis;
