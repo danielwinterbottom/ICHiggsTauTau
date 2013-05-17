@@ -253,7 +253,7 @@ int main(int argc, char* argv[]){
     }
     tau_pt = 20.0;
     tau_eta = 2.3;
-    if (channel == channel::mtmet) muon_pt = 8.0;
+    if (channel == channel::mtmet) muon_pt = 9.0;
   }
 
   if (channel == channel::em) {
