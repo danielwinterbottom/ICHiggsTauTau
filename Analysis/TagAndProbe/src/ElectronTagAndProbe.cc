@@ -115,6 +115,9 @@ namespace ic {
     
     outFile.open((output_name_+"_"+dataormc+".txt").c_str());
 
+    //std::map<int, int> nrun;
+    //std::map<int, double> prescales;
+
     return 0;
   }
 
@@ -262,8 +265,8 @@ namespace ic {
         w = eventInfo->weight("pileup");
     }
     bool trigger=false;
-    // bool etau_trigger=false;
-    // int prescalenum;
+    bool etau_trigger=false;
+    int prescalenum;
     
     //See if trigger has fired (if data).
 
@@ -284,7 +287,8 @@ namespace ic {
             if(name.find("HLT_Ele18_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v")!=name.npos)
             {
                 etau_trigger=true;
-       //         prescalenum=triggerPathPtrVec[k]->prescale();
+                prescalenum=triggerPathPtrVec[k]->prescale();
+               if(etau_trigger && prescalenum >1) std::cout << prescalenum << std::endl;
             }
         }*/
     }
@@ -313,8 +317,8 @@ namespace ic {
     //std::cout << run_low_ << " " << run_high_ <<std::endl; 
     if(electrons.size()>1 && trigger && ((data_ && run>=run_low_ && run<=run_high_) || !data_))
     {
-   //     prescales[run]+=prescalenum; 
-     //   nrun[run]+=1;
+        //if(etau_trigger) prescales[run]+=prescalenum; 
+        //if(etau_trigger) nrun[run]+=1;
         //std::cout << run << " " << etau_obj_label << std::endl;
         for(unsigned e1=0; e1<electrons.size(); e1++)
         {
@@ -550,7 +554,26 @@ namespace ic {
          }
              std::cout << "================================================" << std::endl;
      } 
-     //outFile.close();  
+     //outFile.close(); 
+
+  /*  std::map<int,int>::const_iterator itr1;
+    std::map<int,int>::const_iterator itr2;
+
+    for(itr1=nrun.begin(); itr1!=nrun.end(); ++itr1)
+    {
+        for(itr2=prescales.begin(); itr2!=prescales.end(); ++itr2)
+        {
+            if((*itr1).first==(*itr2).first)
+            {
+                //std::cout << "RUN: " << (*itr1).first << " MEAN PRESCALE: " << ( (double((*itr2).second))/(double((*itr1).second)) ) << std::endl;
+                std::cout << "RUN: " << (*itr1).first << " NRUNS: " << (*itr1).second << " SUMPRESCALE: " << (*itr2).second<< " MEANPRESCALE: " <<  ( (double((*itr2).second))/(double((*itr1).second)) ) << std::endl;
+            }
+        }
+    }
+    
+*/
+
+
     return 0;
   }
 
