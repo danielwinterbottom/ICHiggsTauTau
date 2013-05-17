@@ -579,6 +579,11 @@ int main(int argc, char* argv[]){
     .set_reference_label("vetoMuons") //NoIso")
     .set_min_dr(0.5);
 
+  OverlapFilter<PFJet, Tau> jetTauOverlapFilter = OverlapFilter<PFJet, Tau>("jetTauOverlapFilter")
+    .set_input_label("pfJetsPFlow")
+    .set_reference_label("taus") //NoIso")
+    .set_min_dr(0.5);
+
   OneCollCompositeProducer<PFJet> jjPairProducer = OneCollCompositeProducer<PFJet>
     ("JetJetPairProducer")
     .set_input_label("pfJetsPFlow")
@@ -946,8 +951,10 @@ int main(int argc, char* argv[]){
      //if (printEventList) analysis.AddModule(&hinvPrintList);
  
      ////analysis.AddModule(&runStats);
-     
+
+    
      if (is_data) {
+       //FIXME: do MetFilters also on MC, but not saved right now in MC...
        analysis.AddModule(&metFilters);
        analysis.AddModule(&metLaserFilters);
        //if (printEventList) analysis.AddModule(&hinvPrintList);
@@ -1003,6 +1010,7 @@ int main(int argc, char* argv[]){
      //deal with removing overlap with selected leptons
      analysis.AddModule(&jetMuonOverlapFilter);
      analysis.AddModule(&jetElecOverlapFilter);
+     if (channel == channel::taunu) analysis.AddModule(&jetTauOverlapFilter);
 
      //Module to do jet smearing and systematics
      analysis.AddModule(&ModifyJetMET);
@@ -1011,13 +1019,9 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&jetPtEtaFilter);
     
      //if (printEventContent) analysis.AddModule(&hinvPrint);
- 
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
      //if (printEventContent) analysis.AddModule(&hinvPrint);
-     analysis.AddModule(&jetPairFilter);
-
-     if (printEventList) analysis.AddModule(&hinvPrintList);
 
      
      //lepton selections or veto
@@ -1062,7 +1066,10 @@ int main(int argc, char* argv[]){
       }
        analysis.AddModule(&controlPlots_lepveto);
      }
-     
+
+     analysis.AddModule(&jetPairFilter);
+     if (printEventList) analysis.AddModule(&hinvPrintList);
+
      //jet pair selection
      analysis.AddModule(&etaProdJetPairFilter);
      if (printEventList) analysis.AddModule(&hinvPrintList);
