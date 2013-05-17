@@ -18,6 +18,7 @@ namespace ic {
       mass_shift_ = 1.0;
       fs_ = NULL;
       write_tree_ = false;
+      experimental_ = false;
   }
 
   HTTCategories::~HTTCategories() {
@@ -45,6 +46,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
       std::cout << boost::format(param_fmt()) % "mass_shift"      % mass_shift_;
       std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
+      std::cout << boost::format(param_fmt()) % "experimental"    % experimental_;
 
       if (write_tree_) {
         outtree_ = fs_->make<TTree>("ntuple","ntuple");
@@ -86,6 +88,9 @@ namespace ic {
     misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
     misc_2dplots_ = new Dynamic2DHistoSet(fs_->mkdir("misc_2dplots"));
     misc_2dplots_->Create("jpt_vs_hpt", 50, 0, 200, 50, 0, 200);
+    misc_2dplots_->Create("hpt_vs_pt_tt", 50, 0, 200, 50, 0, 200);
+    misc_2dplots_->Create("gen_vs_hpt", 50, 0, 200, 50, 0, 200);
+    misc_2dplots_->Create("gen_vs_pt_tt", 50, 0, 200, 50, 0, 200);
 
     InitSelection("os");
     InitSelection("os_sel");
@@ -101,7 +106,7 @@ namespace ic {
     InitCoreControlPlots("inclusive");
 
     InitCategory("vbf");
-    InitCoreControlPlots("vbf");
+    // InitCoreControlPlots("vbf");
 
     // InitCategory("tautau_vbf");
 
@@ -120,18 +125,54 @@ namespace ic {
     InitCoreControlPlots("1jet");
 
     InitCategory("1jet_high");
-    InitCoreControlPlots("1jet_high");
+    // InitCoreControlPlots("1jet_high");
 
     InitCategory("1jet_low");
-    InitCoreControlPlots("1jet_low");
+    // InitCoreControlPlots("1jet_low");
 
     InitCategory("1jet_low_nometcut");
 
     InitCategory("0jet_high");
-    InitCoreControlPlots("0jet_high");
+    // InitCoreControlPlots("0jet_high");
 
     InitCategory("0jet_low");
-    InitCoreControlPlots("0jet_low");
+    // InitCoreControlPlots("0jet_low");
+    
+    if (experimental_) {
+      InitCategory("jpt_30_1jet_high");
+      InitCategory("jpt_30_1jet_low");
+      InitCategory("jpt_30_0jet_high");
+      InitCategory("jpt_30_0jet_low");
+      InitCategory("jpt_40_1jet_high");
+      InitCategory("jpt_40_1jet_low");
+      InitCategory("jpt_40_0jet_high");
+      InitCategory("jpt_40_0jet_low");
+      InitCategory("jpt_60_1jet_high");
+      InitCategory("jpt_60_1jet_low");
+      InitCategory("jpt_60_0jet_high");
+      InitCategory("jpt_60_0jet_low");
+      InitCategory("jpt_80_1jet_high");
+      InitCategory("jpt_80_1jet_low");
+      InitCategory("jpt_80_0jet_high");
+      InitCategory("jpt_80_0jet_low");
+
+      InitCategory("hpt_30_1jet_high");
+      InitCategory("hpt_30_1jet_low");
+      InitCategory("hpt_30_0jet_high");
+      InitCategory("hpt_30_0jet_low");
+      InitCategory("hpt_40_1jet_high");
+      InitCategory("hpt_40_1jet_low");
+      InitCategory("hpt_40_0jet_high");
+      InitCategory("hpt_40_0jet_low");
+      InitCategory("hpt_60_1jet_high");
+      InitCategory("hpt_60_1jet_low");
+      InitCategory("hpt_60_0jet_high");
+      InitCategory("hpt_60_0jet_low");
+      InitCategory("hpt_80_1jet_high");
+      InitCategory("hpt_80_1jet_low");
+      InitCategory("hpt_80_0jet_high");
+      InitCategory("hpt_80_0jet_low");
+    }
 
     InitCategory("btag");
     InitCoreControlPlots("btag");
@@ -201,6 +242,19 @@ namespace ic {
 
     pt_tt_ = (ditau->vector() + met->vector()).pt();
     m_vis_ = ditau->M();
+   
+    GenParticle const* boson = NULL;
+    if (experimental_ && event->Exists("genParticles")) {
+      std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
+      for (unsigned i = 0; i < parts.size(); ++i) {
+        unsigned id = abs(parts[i]->pdgid());
+        if (parts[i]->status() == 3) {
+          if (id == 25 || id == 35 || id == 36) {
+            boson = parts[i];
+          }
+        }
+      }
+    }
 
     // This is the HCP hack for the em channel
     // to better align the data with the embedded
@@ -309,8 +363,14 @@ namespace ic {
     if (channel_ == channel::et || channel_ == channel::etmet || channel_ == channel::mt || channel_ == channel::mtmet) {
       if (os_ && mt_1_ < 20.0) {
         SetPassSelection("os_sel");
-        misc_2dplots_->Create("jpt_vs_hpt", 50, 0, 200, 50, 0, 200);
-        misc_2dplots_->Fill("jpt_vs_hpt", (jpt_1_ > 0.) ? jpt_1_ : 0., pt_h_);
+        if (experimental_) {
+          misc_2dplots_->Fill("jpt_vs_hpt", (jpt_1_ > 0.) ? jpt_1_ : 0., pt_h_, wt_);
+          misc_2dplots_->Fill("hpt_vs_pt_tt", pt_h_, pt_tt_, wt_);
+          if (boson) {
+            misc_2dplots_->Fill("gen_vs_hpt", boson->pt(), pt_h_, wt_);
+            misc_2dplots_->Fill("gen_vs_pt_tt", boson->pt(), pt_tt_, wt_);
+          }
+        }
       }
       if (os_) SetPassSelection("os");
       if (!os_) SetPassSelection("ss");
@@ -413,6 +473,51 @@ namespace ic {
         FillCoreControlPlots("1jet_low");
       }
     }
+    
+
+    if (experimental_) {
+      if (!PassesCategory("vbf")  && pt_2_ > pt2_split && n_bjets_ == 0) {
+        if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) {
+          if (jpt_1_ > 30.) SetPassCategory("jpt_30_1jet_high");
+          if (jpt_1_ > 40.) SetPassCategory("jpt_40_1jet_high");
+          if (jpt_1_ > 60.) SetPassCategory("jpt_60_1jet_high");
+          if (jpt_1_ > 80.) SetPassCategory("jpt_80_1jet_high");
+          if (pt_h_ > 30.) SetPassCategory("hpt_30_1jet_high");
+          if (pt_h_ > 40.) SetPassCategory("hpt_40_1jet_high");
+          if (pt_h_ > 60.) SetPassCategory("hpt_60_1jet_high");
+          if (pt_h_ > 80.) SetPassCategory("hpt_80_1jet_high");
+        }
+        if (jpt_1_ <= 30.) SetPassCategory("jpt_30_0jet_high");
+        if (jpt_1_ <= 40.) SetPassCategory("jpt_40_0jet_high");
+        if (jpt_1_ <= 60.) SetPassCategory("jpt_60_0jet_high");
+        if (jpt_1_ <= 80.) SetPassCategory("jpt_80_0jet_high");
+        if (pt_h_ <= 30.) SetPassCategory("hpt_30_0jet_high");
+        if (pt_h_ <= 40.) SetPassCategory("hpt_40_0jet_high");
+        if (pt_h_ <= 60.) SetPassCategory("hpt_60_0jet_high");
+        if (pt_h_ <= 80.) SetPassCategory("hpt_80_0jet_high");
+      }
+      if (!PassesCategory("vbf")  && pt_2_ <= pt2_split && n_bjets_ == 0) {
+        if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) {
+          if (jpt_1_ > 30.) SetPassCategory("jpt_30_1jet_low");
+          if (jpt_1_ > 40.) SetPassCategory("jpt_40_1jet_low");
+          if (jpt_1_ > 60.) SetPassCategory("jpt_60_1jet_low");
+          if (jpt_1_ > 80.) SetPassCategory("jpt_80_1jet_low");
+          if (pt_h_ > 30.) SetPassCategory("hpt_30_1jet_low");
+          if (pt_h_ > 40.) SetPassCategory("hpt_40_1jet_low");
+          if (pt_h_ > 60.) SetPassCategory("hpt_60_1jet_low");
+          if (pt_h_ > 80.) SetPassCategory("hpt_80_1jet_low");
+        }
+        if (jpt_1_ <= 30.) SetPassCategory("jpt_30_0jet_low");
+        if (jpt_1_ <= 40.) SetPassCategory("jpt_40_0jet_low");
+        if (jpt_1_ <= 60.) SetPassCategory("jpt_60_0jet_low");
+        if (jpt_1_ <= 80.) SetPassCategory("jpt_80_0jet_low");
+        if (pt_h_ <= 30.) SetPassCategory("hpt_30_0jet_low");
+        if (pt_h_ <= 40.) SetPassCategory("hpt_40_0jet_low");
+        if (pt_h_ <= 60.) SetPassCategory("hpt_60_0jet_low");
+        if (pt_h_ <= 80.) SetPassCategory("hpt_80_0jet_low");
+      }
+    }
+    
 
     // 1-jet Low Category
     // In the et channel, no met cut

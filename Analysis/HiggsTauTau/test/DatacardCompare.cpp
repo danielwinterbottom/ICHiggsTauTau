@@ -261,10 +261,10 @@ int main(int argc, char* argv[]){
       qqh_yield_err[i] =       (TH1F*)gDirectory->Get("qqH125") ? Error((TH1F*)gDirectory->Get("qqH125")) : 0;
 
     } else {
-      ggh_yield[i] =       (TH1F*)gDirectory->Get("ggH120") ? Integral((TH1F*)gDirectory->Get("ggH120")) : 0;
-      qqh_yield[i] =       (TH1F*)gDirectory->Get("bbH120") ? Integral((TH1F*)gDirectory->Get("bbH120")) : 0;
-      ggh_yield_err[i] =       (TH1F*)gDirectory->Get("ggH120") ? Error((TH1F*)gDirectory->Get("ggH120")) : 0;
-      qqh_yield_err[i] =       (TH1F*)gDirectory->Get("bbH120") ? Error((TH1F*)gDirectory->Get("bbH120")) : 0;
+      ggh_yield[i] =       (TH1F*)gDirectory->Get("ggH160") ? Integral((TH1F*)gDirectory->Get("ggH160")) : 0;
+      qqh_yield[i] =       (TH1F*)gDirectory->Get("bbH160") ? Integral((TH1F*)gDirectory->Get("bbH160")) : 0;
+      ggh_yield_err[i] =       (TH1F*)gDirectory->Get("ggH160") ? Error((TH1F*)gDirectory->Get("ggH160")) : 0;
+      qqh_yield_err[i] =       (TH1F*)gDirectory->Get("bbH160") ? Error((TH1F*)gDirectory->Get("bbH160")) : 0;
 
     }
 

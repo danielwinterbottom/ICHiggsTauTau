@@ -23,6 +23,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, ic::era, era)
   CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
+  CLASS_MEMBER(HTTCategories, bool, experimental)
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
 
   std::map<std::string, bool> categories_;
@@ -32,8 +33,11 @@ class HTTCategories : public ModuleBase {
   std::map<std::string, CoreControlPlots*> controlplots_;
   DynamicHistoSet * misc_plots_;
   Dynamic2DHistoSet * misc_2dplots_;
+  
+
 
     TTree *outtree_;
+
 
 
   // Event Properties

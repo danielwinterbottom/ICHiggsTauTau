@@ -629,7 +629,7 @@ int main(int argc, char* argv[]){
   } else if (strategy == strategy::paper2013) {
     if (channel == channel::et || channel == channel::etmet) {
       tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
-      //tau_iso_discr         = "byLooseIsolationMVA2";
+      //tau_iso_discr         = "byTightIsolationMVA2";
       tau_anti_elec_discr_1 = "againstElectronTightMVA3";
       tau_anti_elec_discr_2 = "againstElectronTightMVA3";
       tau_anti_muon_discr   = "againstMuonLoose2";
@@ -639,7 +639,7 @@ int main(int argc, char* argv[]){
     }
     if (channel == channel::mt || channel == channel::mtmet) {
       tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
-      //tau_iso_discr         = "byLooseIsolationMVA2";
+      //tau_iso_discr         = "byTightIsolationMVA2";
       tau_anti_elec_discr_1 = "againstElectronLoose";
       tau_anti_elec_discr_2 = "againstElectronLoose";
       tau_anti_muon_discr   = "againstMuonTight2";
@@ -857,7 +857,7 @@ int main(int argc, char* argv[]){
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
-    .set_fail_mode(1)
+    .set_fail_mode(2)
     .set_require_inputs_match(false)
     .set_split(7000)
     .set_dilepton_label("emtauCandidates")
