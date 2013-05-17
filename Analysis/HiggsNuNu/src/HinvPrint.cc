@@ -59,11 +59,11 @@ namespace ic {
     if (runLumiEvt_) {
       if (is_data_){
 	foutList_ << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
-	std::cout << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
       }
       else {
 	foutList_ << eventInfo->event() << " " << eventInfo->total_weight() << " " << eventInfo->weight("pileup") << " " << eventInfo->weight("trigger")<< " " << eventInfo->weight("idisoTight") << std::endl;
       }
+      std::cout << "-- Event passed: " << eventInfo->run() << " " << eventInfo->lumi_block() << " " << eventInfo->event() << std::endl;
       return 0; 
     }
 
