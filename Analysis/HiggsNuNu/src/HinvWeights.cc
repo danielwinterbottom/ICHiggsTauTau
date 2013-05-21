@@ -147,6 +147,11 @@ namespace ic {
     eventsWithGenElectronFromTau_ = 0;
     eventsWithGenMuon_ = 0;
     eventsWithGenMuonFromTau_ = 0;
+    eventsWithGenElectronInAcc_ = 0;
+    eventsWithGenElectronFromTauInAcc_ = 0;
+    eventsWithGenMuonInAcc_ = 0;
+    eventsWithGenMuonFromTauInAcc_ = 0;
+    eventsWithGenTau_ = 0;
 
     return 0;
   }
@@ -324,47 +329,52 @@ namespace ic {
     std::vector<GenParticle*> const& genParts = event->GetPtrVec<GenParticle>("genParticles");
     double ele_veto_weight = 1.0;
     double mu_veto_weight = 1.0;
+
     for (unsigned iEle(0); iEle<genParts.size(); ++iEle){//loop on genparticles
 
       if (genParts[iEle]->status()!=3) continue;
-
+ 
       //do Electrons
-      if (abs(genParts[iEle]->pdgid()==11)){
+      if (abs(genParts[iEle]->pdgid())==11){
+	eventsWithGenElectron_++;
 	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.4) {
 	  unsigned lBin = findElectronPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
 	  ele_veto_weight *= (1-eVeto_idisoDataEff_[lBin])/(1-eVeto_idisoMCEff_[lBin]);
-	  eventsWithGenElectron_++;
+	  eventsWithGenElectronInAcc_++;
 	}
       }
 
       //doMuons
-      if (abs(genParts[iEle]->pdgid()==13)){
+      if (abs(genParts[iEle]->pdgid())==13){
+	eventsWithGenMuon_++;
 	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.1) {
 	  unsigned lBin = findMuonPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
 	  mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
-	  eventsWithGenMuon_++;
+	  eventsWithGenMuonInAcc_++;
 	}
       }
 
       //doTaus
-      if (abs(genParts[iEle]->pdgid()==15)){
-
+      if (abs(genParts[iEle]->pdgid())==15){
+	eventsWithGenTau_++;
 	//get the specific taus collection with daughters filled
 	std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
 	for (unsigned j = 0; j < taus.size(); ++j) {
 	  unsigned idDau = abs(taus[j]->pdgid());
 	  if (idDau==11) {
+	    eventsWithGenElectronFromTau_++;
 	    if (taus[j]->pt() > 10 && fabs(taus[j]->eta()) < 2.4){
 	      unsigned lBin = findElectronPtEtaBin(taus[j]->pt(),taus[j]->eta());
 	      ele_veto_weight *= (1-eVeto_idisoDataEff_[lBin])/(1-eVeto_idisoMCEff_[lBin]);
-	      eventsWithGenElectronFromTau_++;
+	      eventsWithGenElectronFromTauInAcc_++;
 	    }
 	  }
 	  if (idDau==13) {
+	    eventsWithGenMuonFromTau_++;
 	    if (taus[j]->pt() > 10 && fabs(taus[j]->eta()) < 2.1){
 	      unsigned lBin = findMuonPtEtaBin(taus[j]->pt(),taus[j]->eta());
 	      mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
-	      eventsWithGenMuonFromTau_++;
+	      eventsWithGenMuonFromTauInAcc_++;
 	    }
 	  }
 	}
@@ -383,10 +393,15 @@ namespace ic {
     std::cout << "PostAnalysis Info for HinvWeights" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << " -- eventsWithGenElectron_ = " << eventsWithGenElectron_ << std::endl;
+    std::cout << " -- eventsWithGenElectronInAcc_ = " << eventsWithGenElectronInAcc_ << std::endl;
     std::cout << " -- eventsWithGenElectronFromTau_ = " << eventsWithGenElectronFromTau_ << std::endl;
+    std::cout << " -- eventsWithGenElectronFromTauInAcc_ = " << eventsWithGenElectronFromTauInAcc_ << std::endl;
     std::cout << " -- eventsWithGenMuon_ = " << eventsWithGenMuon_ << std::endl;
+    std::cout << " -- eventsWithGenMuonInAcc_ = " << eventsWithGenMuonInAcc_ << std::endl;
     std::cout << " -- eventsWithGenMuonFromTau_ = " << eventsWithGenMuonFromTau_ << std::endl;
-
+    std::cout << " -- eventsWithGenMuonFromTauInAcc_ = " << eventsWithGenMuonFromTauInAcc_ << std::endl;
+    std::cout << " -- eventsWithGenTau_ = " << eventsWithGenTau_ << std::endl;
+ 
     return 0;
   }
 

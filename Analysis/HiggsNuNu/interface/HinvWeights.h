@@ -47,9 +47,13 @@ class HinvWeights : public ModuleBase {
 
   unsigned eventsWithGenElectron_;
   unsigned eventsWithGenMuon_;
+  unsigned eventsWithGenTau_;
   unsigned eventsWithGenElectronFromTau_;
   unsigned eventsWithGenMuonFromTau_;
-
+  unsigned eventsWithGenElectronInAcc_;
+  unsigned eventsWithGenMuonInAcc_;
+  unsigned eventsWithGenElectronFromTauInAcc_;
+  unsigned eventsWithGenMuonFromTauInAcc_;
 
  public:
   HinvWeights(std::string const& name);
