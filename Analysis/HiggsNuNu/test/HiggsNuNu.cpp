@@ -1010,14 +1010,9 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&metNoElectrons);
      analysis.AddModule(&metNoENoMu);
      
-
-     //Need two jets and metnomuons to apply trigger weights.
-     //need sel leptons to apply idiso weights
-     analysis.AddModule(&hinvWeights);
-
      //plot before cutting
      analysis.AddModule(&controlPlots_hlt);
-     analysis.AddModule(&wjetsPlots_hlt);
+     //analysis.AddModule(&wjetsPlots_hlt);
 
      if (printEventList) analysis.AddModule(&hinvPrintList);
  
@@ -1045,31 +1040,23 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&oneVetoMuonFilter);
        analysis.AddModule(&zeroVetoElectronFilter);
        //analysis.AddModule(&muonMTFilter);
-       analysis.AddModule(&controlPlots_wsel);
-       analysis.AddModule(&wjetsPlots_wsel);
      }
      else if (channel == channel::enu){
        analysis.AddModule(&oneElectronFilter);
        analysis.AddModule(&oneVetoElectronFilter);
        analysis.AddModule(&zeroVetoMuonFilter);
        //analysis.AddModule(&electronMTFilter);
-       analysis.AddModule(&controlPlots_wsel);
-       analysis.AddModule(&wjetsPlots_wsel);
      }
      else if (channel == channel::emu){
        analysis.AddModule(&oneElectronFilter);
        //analysis.AddModule(&oneVetoElectronFilter);
        analysis.AddModule(&oneMuonFilter);
        //analysis.AddModule(&oneVetoMuonFilter);
-       analysis.AddModule(&controlPlots_wsel);
-       analysis.AddModule(&wjetsPlots_wsel);
      }
      else if (channel == channel::taunu){
        analysis.AddModule(&oneTauFilter);
        analysis.AddModule(&zeroVetoElectronFilter);
        analysis.AddModule(&zeroVetoMuonFilter);
-       analysis.AddModule(&controlPlots_wsel);
-       analysis.AddModule(&wjetsPlots_wsel);
      }
      else {
        //lepton veto modules
@@ -1079,8 +1066,20 @@ int main(int argc, char* argv[]){
 	 analysis.AddModule(&zeroVetoElectronFilter);
 	 if (printEventList) analysis.AddModule(&hinvPrintList);
       }
+     }
+
+     //Need two jets and metnomuons to apply trigger weights.
+     //need sel leptons to apply idiso weights
+     if (!is_data) analysis.AddModule(&hinvWeights);
+
+     if (channel == channel::nunu){
        analysis.AddModule(&controlPlots_lepveto);
      }
+     else {
+       analysis.AddModule(&controlPlots_wsel);
+       analysis.AddModule(&wjetsPlots_wsel);
+     }
+
 
      analysis.AddModule(&jetPairFilter);
      if (printEventList) analysis.AddModule(&hinvPrintList);

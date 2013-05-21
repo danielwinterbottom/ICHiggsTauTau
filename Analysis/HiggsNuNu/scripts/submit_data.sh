@@ -20,7 +20,7 @@ PRODUCTION=Apr04
 
 for METCUT in 130
   do
-  for CHANNEL in nunu enu munu
+  for CHANNEL in nunu enu munu taunu
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE
       do

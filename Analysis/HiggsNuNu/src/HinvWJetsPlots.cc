@@ -95,10 +95,12 @@ namespace ic {
     wt_ = eventInfo->total_weight();
 
     //counter for WJets 0 parton events
-    try{
-      if (event->Get<bool>("NoParton")==true) ++counter_;
-    } catch(...) {
-      ;
+    if (!eventInfo->is_data()){
+      try{
+	if (event->Get<bool>("NoParton")==true) ++counter_;
+      } catch(...) {
+	;
+      }
     }
 
     Met const* met = event->GetPtr<Met>(met_label_);
