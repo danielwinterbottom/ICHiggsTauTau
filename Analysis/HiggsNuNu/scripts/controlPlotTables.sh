@@ -2,7 +2,7 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
-for CHANNEL in taunu nunu enu munu
+for CHANNEL in taunu nunu #enu munu
   do
   for MET in 130 #0 #70
     do

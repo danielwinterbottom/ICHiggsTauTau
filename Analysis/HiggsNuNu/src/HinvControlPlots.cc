@@ -61,6 +61,7 @@ namespace ic {
     met_label_ = "pfMet";
     dijet_label_ = "jjCandidates";
     sel_label_ = "JetPair";
+    channel_ = "nunu";
   }
 
   HinvControlPlots::~HinvControlPlots(){;}
@@ -72,6 +73,7 @@ namespace ic {
       std::cout << "MET Label: " << met_label_ << std::endl;
       std::cout << "dijet Label: " << dijet_label_ << std::endl;
       std::cout << "Selection Label: " << sel_label_ << std::endl;
+      std::cout << "Channel :" << channel_ << std::endl;
     }
 
     misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
@@ -253,8 +255,9 @@ namespace ic {
       (info->weight_is_enabled("trig_mjjHLT") ? info->weight("trig_mjjHLT") : 1.0) *
       (info->weight_is_enabled("trig_jet1HLT") ? info->weight("trig_jet1HLT") : 1.0) *
       (info->weight_is_enabled("trig_jet2HLT") ? info->weight("trig_jet2HLT") : 1.0) ;
-    double wt_idiso = (info->weight_is_enabled("elecTight_idisoSF")? info->weight("elecTight_idisoSF") : 1.0) *
-      (info->weight_is_enabled("muTight_idisoSF")? info->weight("muTight_idisoSF") : 1.0);
+    double wt_idiso = 1.0;
+    if (channel_ == "nunu" || channel_ == "taunu") wt_idiso = info->weight_is_enabled("idisoVeto")? info->weight("idisoVeto") : 1.0;
+    else wt_idiso = info->weight_is_enabled("idisoTight")? info->weight("idisoTight") : 1.0;
 
     double wt = wt_/(wt_pu*wt_trig*wt_idiso);
     weightplots_->met_noW->Fill(met_, wt);
@@ -277,8 +280,8 @@ namespace ic {
     weightplots_->dphijj_pu_trig->Fill(dphijj_, wt);
     weightplots_->n_jets_pu_trig->Fill(n_jets_, wt);
     
-    wt_idiso = info->weight_defined("elecTight_idisoSF") ? info->weight("elecTight_idisoSF") : 1.0 *
-      info->weight_defined("muTight_idisoSF") ? info->weight("muTight_idisoSF") : 1.0;
+    if (channel_ == "nunu" || channel_ == "taunu") wt_idiso = info->weight_defined("idisoVeto")? info->weight("idisoVeto") : 1.0;
+    else wt_idiso = info->weight_defined("idisoTight") ? info->weight("idisoTight") : 1.0;
     wt = wt*wt_idiso;
     weightplots_->met_pu_trig_idiso->Fill(met_, wt);
     weightplots_->dphijj_pu_trig_idiso->Fill(dphijj_, wt);

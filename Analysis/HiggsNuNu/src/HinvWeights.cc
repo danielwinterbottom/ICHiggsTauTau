@@ -7,6 +7,8 @@
 #include "TMath.h"
 #include "TSystem.h"
 #include "TFile.h"
+#include "iostream"
+#include "fstream"
 
 
 namespace ic {
@@ -16,7 +18,8 @@ namespace ic {
     era_(era::data_2012_moriond) {
     do_trg_weights_     = false;
     trg_applied_in_mc_  = false;
-    do_idiso_weights_   = false;
+    do_idiso_tight_weights_   = false;
+    do_idiso_veto_weights_   = false;
     do_w_soup_          = false;
     do_dy_soup_          = false;
     hist_trigSF_METL1 = 0;
@@ -38,7 +41,8 @@ namespace ic {
     std::cout << "MC: " << MC2String(mc_) << std::endl;
     std::cout << "Do Trg Weights?: \t\t" << do_trg_weights_ << std::endl;
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
-    std::cout << "Do ID & iso weights?: \t\t" << do_idiso_weights_ << std::endl;
+    std::cout << "Do ID & iso weights for Tight leptons ?: \t\t" << do_idiso_tight_weights_ << std::endl;
+    std::cout << "Do ID & iso weights for veto leptons ?: \t\t" << do_idiso_veto_weights_ << std::endl;
 
     if (do_w_soup_) {
       std::cout << "Making W Soup:" << std::endl;
@@ -122,84 +126,27 @@ namespace ic {
       std::cout	<< std::endl;
     }
 
-    eTight_idisoSF_.resize(30,0);
-    eTight_idisoSF_[0] = 0.818;
-    eTight_idisoSF_[1] = 0.928;
-    eTight_idisoSF_[2] = 0.973;
-    eTight_idisoSF_[3] = 0.979;
-    eTight_idisoSF_[4] = 0.984;
-    eTight_idisoSF_[5] = 0.983;
-    eTight_idisoSF_[6] = 0.84;
-    eTight_idisoSF_[7] = 0.914;
-    eTight_idisoSF_[8] = 0.948;
-    eTight_idisoSF_[9] = 0.961;
-    eTight_idisoSF_[10] = 0.972;
-    eTight_idisoSF_[10] = 0.977;
-    eTight_idisoSF_[12] = 1.008;
-    eTight_idisoSF_[13] = 0.877;
-    eTight_idisoSF_[14] = 0.983;
-    eTight_idisoSF_[15] = 0.983;
-    eTight_idisoSF_[16] = 0.957;
-    eTight_idisoSF_[17] = 0.978;
-    eTight_idisoSF_[18] = 0.906;
-    eTight_idisoSF_[19] = 0.907;
-    eTight_idisoSF_[20] = 0.957;
-    eTight_idisoSF_[21] = 0.962;
-    eTight_idisoSF_[22] = 0.985;
-    eTight_idisoSF_[23] = 0.986;
-    eTight_idisoSF_[24] = 0.991;
-    eTight_idisoSF_[25] = 0.939;
-    eTight_idisoSF_[26] = 1.001;
-    eTight_idisoSF_[27] = 1.002;
-    eTight_idisoSF_[28] = 0.999;
-    eTight_idisoSF_[29] = 0.995;
-    
-//     eVeto_idisoSF_.resize(30,0);
-//     eVeto_idisoSF_[0] = ;
-//     eVeto_idisoSF_[1] = ;
-//     eVeto_idisoSF_[2] = ;
-//     eVeto_idisoSF_[3] = ;
-//     eVeto_idisoSF_[4] = ;
-//     eVeto_idisoSF_[5] = ;
-//     eVeto_idisoSF_[6] = ;
-//     eVeto_idisoSF_[7] = ;
-//     eVeto_idisoSF_[8] = ;
-//     eVeto_idisoSF_[9] = ;
-//     eVeto_idisoSF_[10] = ;
-//     eVeto_idisoSF_[10] = ;
-//     eVeto_idisoSF_[12] = ;
-//     eVeto_idisoSF_[13] = ;
-//     eVeto_idisoSF_[14] = ;
-//     eVeto_idisoSF_[15] = ;
-//     eVeto_idisoSF_[16] = ;
-//     eVeto_idisoSF_[17] = ;
-//     eVeto_idisoSF_[18] = ;
-//     eVeto_idisoSF_[19] = ;
-//     eVeto_idisoSF_[20] = ;
-//     eVeto_idisoSF_[21] = ;
-//     eVeto_idisoSF_[22] = ;
-//     eVeto_idisoSF_[23] = ;
-//     eVeto_idisoSF_[24] = ;
-//     eVeto_idisoSF_[25] = ;
-//     eVeto_idisoSF_[26] = ;
-//     eVeto_idisoSF_[27] = ;
-//     eVeto_idisoSF_[28] = ;
-//     eVeto_idisoSF_[29] = ;
-    
-    //muonSF_ = new TFile("data/scale_factors/Muon_ID_iso_Efficiencies_Run_2012ABCD_53X.root");
-    //hist_muonSF_[0][0] = (TH1F*)gDirectory->Get("DATA_Loose_pt_abseta<0.9_2012ABCD");
-    //hist_muonSF_[0][1] = (TH1F*)gDirectory->Get("MC_Loose_pt_abseta<0.9_2012ABCD");
-    //hist_muonSF_[0][2] = (TH1F*)gDirectory->Get("DATA_over_MC_Loose_pt_abseta<0.9_2012ABCD");
-  
-    muTight_idSF_.resize(3,0);
-    muTight_idSF_[0] = 0.9939;
-    muTight_idSF_[1] = 0.9902;
-    muTight_idSF_[2] = 0.9970;
+    fillVector("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_);
+    fillVector("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+    fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
 
-    muTight_isoSF_.resize(3,0);
-    muTight_isoSF_[0] = 1.0004;
-    muTight_isoSF_[1] = 1.0031;
-    muTight_isoSF_[2] = 1.0050;
+    fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
+    fillVector("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
+    fillVector("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+    fillVector("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+    fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+    fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
+
+    for (unsigned iBin(0); iBin<muTight_idSF_.size();++iBin){
+      muTight_idisoSF_.push_back(muTight_idSF_[iBin]*muTight_isoSF_[iBin]);
+      muVeto_idisoDataEff_.push_back(muVeto_idDataEff_[iBin]*muVeto_isoDataEff_[iBin]);
+      muVeto_idisoMCEff_.push_back(muVeto_idMCEff_[iBin]*muVeto_isoMCEff_[iBin]);
+    }
+
+    eventsWithGenElectron_ = 0;
+    eventsWithGenElectronFromTau_ = 0;
+    eventsWithGenMuon_ = 0;
+    eventsWithGenMuonFromTau_ = 0;
 
     return 0;
   }
@@ -359,29 +306,87 @@ namespace ic {
     for (unsigned iEle(0); iEle<elecs.size();++iEle){
       ele_weight *= eTight_idisoSF_[findElectronPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta())];
     }
-    if (do_idiso_weights_) eventInfo->set_weight("elecTight_idisoSF",ele_weight);
-    else eventInfo->set_weight("!elecTight_idisoSF",ele_weight);
+    eventInfo->set_weight("!eleTight_idisoSF",ele_weight);
     
    std::vector<Muon*> const& mus = event->GetPtrVec<Muon>("selMuons");
     double mu_weight = 1.0;
     for (unsigned iEle(0); iEle<mus.size();++iEle){
-      mu_weight *= muTight_idSF_[findMuonPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta())];
-      mu_weight *= muTight_isoSF_[findMuonPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta())];
+      unsigned lBin = findMuonPtEtaBin(mus[iEle]->pt(),mus[iEle]->eta());
+      mu_weight *= muTight_idisoSF_[lBin];
     }
-    if (do_idiso_weights_) eventInfo->set_weight("muTight_idisoSF",mu_weight);
-    else eventInfo->set_weight("!muTight_idisoSF",mu_weight);
+    eventInfo->set_weight("!muTight_idisoSF",mu_weight);
 
-
-    eventInfo->set_weight("!idisoTight",ele_weight*mu_weight);
+    if (do_idiso_tight_weights_) eventInfo->set_weight("idisoTight",ele_weight*mu_weight);
+    else eventInfo->set_weight("!idisoTight",ele_weight*mu_weight);
 
     //TO DO: id+iso veto leptons
+    //first try: take leptons from W in pT,eta acceptance
+    std::vector<GenParticle*> const& genParts = event->GetPtrVec<GenParticle>("genParticles");
+    double ele_veto_weight = 1.0;
+    double mu_veto_weight = 1.0;
+    for (unsigned iEle(0); iEle<genParts.size(); ++iEle){//loop on genparticles
 
+      if (genParts[iEle]->status()!=3) continue;
+
+      //do Electrons
+      if (abs(genParts[iEle]->pdgid()==11)){
+	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.4) {
+	  unsigned lBin = findElectronPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
+	  ele_veto_weight *= (1-eVeto_idisoDataEff_[lBin])/(1-eVeto_idisoMCEff_[lBin]);
+	  eventsWithGenElectron_++;
+	}
+      }
+
+      //doMuons
+      if (abs(genParts[iEle]->pdgid()==13)){
+	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.1) {
+	  unsigned lBin = findMuonPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
+	  mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
+	  eventsWithGenMuon_++;
+	}
+      }
+
+      //doTaus
+      if (abs(genParts[iEle]->pdgid()==15)){
+
+	//get the specific taus collection with daughters filled
+	std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
+	for (unsigned j = 0; j < taus.size(); ++j) {
+	  unsigned idDau = abs(taus[j]->pdgid());
+	  if (idDau==11) {
+	    if (taus[j]->pt() > 10 && fabs(taus[j]->eta()) < 2.4){
+	      unsigned lBin = findElectronPtEtaBin(taus[j]->pt(),taus[j]->eta());
+	      ele_veto_weight *= (1-eVeto_idisoDataEff_[lBin])/(1-eVeto_idisoMCEff_[lBin]);
+	      eventsWithGenElectronFromTau_++;
+	    }
+	  }
+	  if (idDau==13) {
+	    if (taus[j]->pt() > 10 && fabs(taus[j]->eta()) < 2.1){
+	      unsigned lBin = findMuonPtEtaBin(taus[j]->pt(),taus[j]->eta());
+	      mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
+	      eventsWithGenMuonFromTau_++;
+	    }
+	  }
+	}
+      }
+
+    }//loop on genparticles
+
+    if (do_idiso_veto_weights_) eventInfo->set_weight("idisoVeto",ele_veto_weight*mu_veto_weight);
+    else eventInfo->set_weight("!idisoVeto",ele_veto_weight*mu_veto_weight);
 
     return 0;
   }
 
   int HinvWeights::PostAnalysis() {
- 
+    std::cout << "----------------------------------------" << std::endl;
+    std::cout << "PostAnalysis Info for HinvWeights" << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+    std::cout << " -- eventsWithGenElectron_ = " << eventsWithGenElectron_ << std::endl;
+    std::cout << " -- eventsWithGenElectronFromTau_ = " << eventsWithGenElectronFromTau_ << std::endl;
+    std::cout << " -- eventsWithGenMuon_ = " << eventsWithGenMuon_ << std::endl;
+    std::cout << " -- eventsWithGenMuonFromTau_ = " << eventsWithGenMuonFromTau_ << std::endl;
+
     return 0;
   }
 
@@ -480,10 +485,52 @@ namespace ic {
     else if (fabs(eta) < 1.2) etaBin=1;
     else etaBin=2;
 
-    return etaBin;
+    unsigned ptBin = 0;
+    if (pt<20) ptBin=0;
+    else if (pt<25) ptBin=1;
+    else if (pt<30) ptBin=2;
+    else if (pt<35) ptBin=3;
+    else if (pt<40) ptBin=4;
+    else if (pt<50) ptBin=5;
+    else if (pt<60) ptBin=6;
+    else if (pt<90) ptBin=7;
+    else if (pt<140) ptBin=8;
+    else if (pt<300) ptBin=9;
+    else ptBin=10;
+
+    return 11*etaBin+ptBin;
   }
 
+  void HinvWeights::fillVector(const std::string & aFileName, std::vector<double> & aVector){
 
+    double pTmin = 0;
+    double pTmax = 0;
+    double etaMin = 0;
+    double etaMax = 0;
+    double SF = 0;
+    double SFerrPlus = 0;
+    double SFerrMinus = 0;
+
+    std::ifstream lInput;
+    lInput.open(aFileName);
+    if(!lInput.is_open()){
+      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
+      aVector.resize(30,1);
+      return;
+    }
+    while(1){
+      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrPlus>>SFerrMinus;
+      //protect against blank line at the end of the file
+      if (pTmin > 1) aVector.push_back(SF);
+      if(lInput.eof()){
+	break; 
+      }
+    }
+
+    std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
+    lInput.close();
+
+  }
 
 
 }

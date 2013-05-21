@@ -691,12 +691,15 @@ int main(int argc, char* argv[]){
     .set_mc(mc)
     .set_do_trg_weights(false)
     .set_trg_applied_in_mc(true)
-    .set_do_idiso_weights(false);
+    .set_do_idiso_tight_weights(false)
+    .set_do_idiso_veto_weights(false);
   
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)
-      .set_trg_applied_in_mc(true)
-      .set_do_idiso_weights(doidisoeff);
+      .set_trg_applied_in_mc(true);
+    if (channel==channel::nunu || channel == channel::taunu)
+      hinvWeights.set_do_idiso_veto_weights(doidisoeff);
+    else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
   }
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
@@ -742,7 +745,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjCandidates")
-    .set_sel_label("HLTMetClean");
+    .set_sel_label("HLTMetClean")
+    .set_channel(channel_str);
 
   //set collections to all leptons for the first set of plots before selecting/vetoing them
   HinvWJetsPlots wjetsPlots_hlt = HinvWJetsPlots("HLTWJetsPlots")
@@ -764,7 +768,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("JetPair");
+    .set_sel_label("JetPair")
+    .set_channel(channel_str);
 
   //set collections to all leptons for the first set of plots before selecting/vetoing them
   HinvWJetsPlots wjetsPlots_dijet = HinvWJetsPlots("DijetWJetsPlots")
@@ -785,7 +790,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("AN");
+    .set_sel_label("AN")
+    .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_AN = HinvWJetsPlots("ANWJetsPlots")
     .set_fs(fs)
@@ -805,7 +811,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("MET");
+    .set_sel_label("MET")
+    .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_met = HinvWJetsPlots("METWJetsPlots")
     .set_fs(fs)
@@ -825,13 +832,15 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("LooseMjj");
+    .set_sel_label("LooseMjj")
+    .set_channel(channel_str);
 
   HinvControlPlots controlPlots_deta = HinvControlPlots("DEtaControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DEta");
+    .set_sel_label("DEta")
+    .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_deta = HinvWJetsPlots("DEtaWJetsPlots")
     .set_fs(fs)
@@ -851,13 +860,15 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("LeptonVeto");
+    .set_sel_label("LeptonVeto")
+    .set_channel(channel_str);
 
   HinvControlPlots controlPlots_wsel = HinvControlPlots("WSelectionControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("WSelection");
+    .set_sel_label("WSelection")
+    .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_wsel = HinvWJetsPlots("WSelectionWJetsPlots")
     .set_fs(fs)
@@ -877,7 +888,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiQCD");
+    .set_sel_label("DPhiQCD")
+    .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_qcd = HinvWJetsPlots("DPhiWJetsPlotsQCD")
     .set_fs(fs)
@@ -897,7 +909,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiSIGNAL");
+    .set_sel_label("DPhiSIGNAL")
+    .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_signal = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL")
     .set_fs(fs)
@@ -917,7 +930,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("TightMjj");
+    .set_sel_label("TightMjj")
+    .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_tightMjj = HinvWJetsPlots("TightMjjWJetsPlots")
     .set_fs(fs)
@@ -1010,7 +1024,8 @@ int main(int argc, char* argv[]){
      //deal with removing overlap with selected leptons
      analysis.AddModule(&jetMuonOverlapFilter);
      analysis.AddModule(&jetElecOverlapFilter);
-     if (channel == channel::taunu) analysis.AddModule(&jetTauOverlapFilter);
+     //no need to clean taus, we don't do it in the signal selection.
+     //if (channel == channel::taunu) analysis.AddModule(&jetTauOverlapFilter);
 
      //Module to do jet smearing and systematics
      analysis.AddModule(&ModifyJetMET);

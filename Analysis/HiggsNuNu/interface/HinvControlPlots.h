@@ -73,6 +73,7 @@ namespace ic {
     CLASS_MEMBER(HinvControlPlots,std::string, met_label);
     CLASS_MEMBER(HinvControlPlots,std::string, dijet_label);
     CLASS_MEMBER(HinvControlPlots,std::string, sel_label);
+    CLASS_MEMBER(HinvControlPlots,std::string, channel);
 
 
     double yields_;

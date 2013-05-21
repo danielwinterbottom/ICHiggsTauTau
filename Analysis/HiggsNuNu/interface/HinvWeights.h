@@ -17,7 +17,8 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, ic::era, era)
   CLASS_MEMBER(HinvWeights, bool, do_trg_weights)
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
-  CLASS_MEMBER(HinvWeights, bool, do_idiso_weights)
+  CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)
+  CLASS_MEMBER(HinvWeights, bool, do_idiso_veto_weights)
   CLASS_MEMBER(HinvWeights, bool, do_w_soup)
   CLASS_MEMBER(HinvWeights, bool, do_dy_soup)
 
@@ -28,13 +29,26 @@ class HinvWeights : public ModuleBase {
   TH1F *hist_trigSF_JetHLT;
 
   std::vector<double> eTight_idisoSF_;
-  //std::vector<double> eVeto_idisoSF_;
+  std::vector<double> eVeto_idisoDataEff_;
+  std::vector<double> eVeto_idisoMCEff_;
 
   std::vector<double> muTight_idSF_;
   std::vector<double> muTight_isoSF_;
+  std::vector<double> muVeto_idDataEff_;
+  std::vector<double> muVeto_isoDataEff_;
+  std::vector<double> muVeto_idMCEff_;
+  std::vector<double> muVeto_isoMCEff_;
+  std::vector<double> muTight_idisoSF_;
+  std::vector<double> muVeto_idisoDataEff_;
+  std::vector<double> muVeto_idisoMCEff_;
 
   double f0_,f1_,f2_,f3_,f4_,n_inc_,n1_,n2_,n3_,n4_,w0_,w1_,w2_,w3_,w4_;
   double zf0_,zf1_,zf2_,zf3_,zf4_,zn_inc_,zn1_,zn2_,zn3_,zn4_,zw0_,zw1_,zw2_,zw3_,zw4_;
+
+  unsigned eventsWithGenElectron_;
+  unsigned eventsWithGenMuon_;
+  unsigned eventsWithGenElectronFromTau_;
+  unsigned eventsWithGenMuonFromTau_;
 
 
  public:
@@ -53,6 +67,7 @@ class HinvWeights : public ModuleBase {
 
   unsigned findElectronPtEtaBin(double pt, double eta);
   unsigned findMuonPtEtaBin(double pt, double eta);
+  void fillVector(const std::string & aFileName, std::vector<double> & aVector);
 
 
 };
