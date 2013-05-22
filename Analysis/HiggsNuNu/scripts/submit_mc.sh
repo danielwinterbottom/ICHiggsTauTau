@@ -20,7 +20,7 @@ for METCUT in 130
   do
   for CHANNEL in nunu enu munu taunu
     do
-    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE
+    for SYST in central JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
       JOBDIR=jobs/$CHANNEL/MET$METCUT/
@@ -28,14 +28,14 @@ for METCUT in 130
       
       if [ "$SYST" = "JESUP" ]
 	  then
-	  SYSTOPTIONS="--dojessyst=true --jesupordown=true"
+	  SYSTOPTIONS="--dojessyst=true --jesupordown=true --dojersyst=false"
 	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESUP/
 	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JESUP/
       fi
       
       if [ "$SYST" = "JESDOWN" ]
 	  then
-	  SYSTOPTIONS="--dojessyst=true --jesupordown=false"
+	  SYSTOPTIONS="--dojessyst=true --jesupordown=false --dojersyst=false"
 	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESDOWN/
 	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JESDOWN/
       fi
