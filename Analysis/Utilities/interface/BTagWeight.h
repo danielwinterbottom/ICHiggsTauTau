@@ -29,7 +29,7 @@ public:
   double SF(int flavor, std::string const& algo_label, double pt, double eta, bool is_2012) const;
   std::pair<float,float> weight(std::vector<JetInfo> jets, int minTags, int maxTags) const;
   double GetWeight(std::vector<PFJet *> const& jets, std::string const& tagger, unsigned min, unsigned max, bool is_2012 = false) const;
-  void ReTag(std::vector<PFJet *> & jets, bool is_2012) const;
+  std::map<std::size_t, bool> ReTag(std::vector<PFJet *> & jets, bool is_2012) const;
   double GetLouvainWeight(std::vector<PFJet *> const& jets, std::string const& tagger, unsigned min, unsigned max) const;
 
 private:
