@@ -53,6 +53,10 @@ namespace ic {
     TH1F::SetDefaultSumw2();
     n_jets_puUp = dir.make<TH1F>("n_jets_puUp","n_jets_puUp", 50, 0, 50);
     n_jets_puDown = dir.make<TH1F>("n_jets_puDown","n_jets_puDown", 50, 0, 50);
+    n_vtx_puUp = dir.make<TH1F>("n_vtx_puUp","n_vtx_puUp", 40, 0, 40);
+    n_vtx_puDown = dir.make<TH1F>("n_vtx_puDown","n_vtx_puDown", 40, 0, 40);
+    dphijj_puUp = dir.make<TH1F>("dphijj_puUp","dphijj_puUp", 100, 0, 3.1416);
+    dphijj_puDown = dir.make<TH1F>("dphijj_puDown","dphijj_puDown", 100, 0, 3.1416);
   }
 
 
@@ -296,6 +300,10 @@ namespace ic {
     double wt_pu_down = info->weight_defined("pileup_down") ? info->weight("pileup_down") : 1.0 ;
     systplots_->n_jets_puUp->Fill(n_jets_, wt_/wt_pu*wt_pu_up);
     systplots_->n_jets_puDown->Fill(n_jets_, wt_/wt_pu*wt_pu_down);
+    systplots_->n_vtx_puUp->Fill(n_vtx_, wt_/wt_pu*wt_pu_down);
+    systplots_->n_vtx_puDown->Fill(n_vtx_, wt_/wt_pu*wt_pu_down);
+    systplots_->dphijj_puUp->Fill(dphijj_, wt_/wt_pu*wt_pu_down);
+    systplots_->dphijj_puDown->Fill(dphijj_, wt_/wt_pu*wt_pu_down);
   }
 
 }//namespace
