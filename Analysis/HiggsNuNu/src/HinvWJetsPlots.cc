@@ -97,7 +97,8 @@ namespace ic {
     //counter for WJets 0 parton events
     if (!eventInfo->is_data()){
       try{
-	if (event->Get<bool>("NoParton")==true) ++counter_;
+	bool lNoParton = event->Get<bool>("NoParton");
+	if (lNoParton) ++counter_;
       } catch(...) {
 	;
       }
