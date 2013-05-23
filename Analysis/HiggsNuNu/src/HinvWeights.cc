@@ -518,14 +518,6 @@ namespace ic {
 
   void HinvWeights::fillVector(const std::string & aFileName, std::vector<double> & aVector){
 
-    double pTmin = 0;
-    double pTmax = 0;
-    double etaMin = 0;
-    double etaMax = 0;
-    double SF = 0;
-    double SFerrPlus = 0;
-    double SFerrMinus = 0;
-
     std::ifstream lInput;
     lInput.open(aFileName);
     if(!lInput.is_open()){
@@ -534,6 +526,13 @@ namespace ic {
       return;
     }
     while(1){
+      double pTmin = 0;
+      double pTmax = 0;
+      double etaMin = 0;
+      double etaMax = 0;
+      double SF = 0;
+      double SFerrPlus = 0;
+      double SFerrMinus = 0;
       lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrPlus>>SFerrMinus;
       //protect against blank line at the end of the file
       if (pTmin > 1) aVector.push_back(SF);

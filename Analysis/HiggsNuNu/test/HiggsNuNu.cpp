@@ -1021,6 +1021,10 @@ int main(int argc, char* argv[]){
      //Module to do jet smearing and systematics
      analysis.AddModule(&ModifyJetMET);
 
+     //Need two jets and metnomuons to apply trigger weights.
+     //need sel leptons to apply idiso weights
+     if (!is_data) analysis.AddModule(&hinvWeights);
+
      //plot before cutting
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);
@@ -1067,10 +1071,6 @@ int main(int argc, char* argv[]){
 	 if (printEventList) analysis.AddModule(&hinvPrintList);
       }
      }
-
-     //Need two jets and metnomuons to apply trigger weights.
-     //need sel leptons to apply idiso weights
-     if (!is_data) analysis.AddModule(&hinvWeights);
 
      if (channel == channel::nunu){
        analysis.AddModule(&controlPlots_lepveto);
