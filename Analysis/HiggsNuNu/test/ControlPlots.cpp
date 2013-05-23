@@ -122,6 +122,8 @@ int main(int argc, char* argv[]){
   bool is_2012;			     // false = 7 TeV, true = 8 TeV
   bool no_plot;			     // Don't actually generate image files if true
   bool verbose;			     // Verbose output, useful for diagnostic purposes
+  bool dopusyst;                     // Do PU uncertainty
+  bool puupordown;                   // If doing PU uncertainty do up or down
 
   // Plotting options
   string x_axis_label;		     // Label for the X-axis
@@ -174,6 +176,8 @@ int main(int argc, char* argv[]){
     ("draw_ratio",          po::value<bool>(&draw_ratio)->default_value(false))
     ("no_plot",             po::value<bool>(&no_plot)->default_value(false))
     ("verbose",             po::value<bool>(&verbose)->default_value(false))
+    ("dopusyst",            po::value<bool>(&dopusyst)->default_value(false))
+    ("puupordown",          po::value<bool>(&puupordown)->default_value(false))
     ("x_axis_label",        po::value<string>(&x_axis_label)->required())
     ("x_axis_bin_labels",   po::value<string>(&x_axis_bin_labels)->default_value(""))
     ("rebin",               po::value<unsigned>(&rebin)->default_value(1))
@@ -313,6 +317,22 @@ int main(int argc, char* argv[]){
   selections.push_back("DPhiSIGNAL");
   selections.push_back("DPhiQCD");
   
+  vector<string> selectionsdir = selections;
+
+  if(dopusyst){//If do PU uncertainty get n_jets hist from systematics directory
+    if((plot_name.find("n_jets") != plot_name.npos && plot_name.find("ingap") == plot_name.npos) || (plot_name.find("n_vtx") != plot_name.npos) || (plot_name.find("dphijj") != plot_name.npos)){
+      for(int m=0;unsigned(m)<selections.size();m++){
+	selectionsdir[m]+="/systematics";
+      }
+      if(puupordown){//Do PUUP error
+	plot_name+="_puUp";
+      }
+      else if(!puupordown){//Do PUDOWN error
+	plot_name+="_puDown";
+      }
+    }
+  }
+
   std::map<std::string, TFile *> tfiles;
   for (unsigned i = 0; i < files.size(); ++i) {
     std::string filename = (files[i]+".root");
@@ -326,15 +346,15 @@ int main(int argc, char* argv[]){
 
   // Get Plots and Scale
   map<string, ic::TH1PlotElement> plots;
-  bool skip[selections.size()];
-  for (unsigned k = 0; k < selections.size(); ++k) {
+  bool skip[selectionsdir.size()];
+  for (unsigned k = 0; k < selectionsdir.size(); ++k) {
     skip[k] = false;
   }
   for (unsigned i = 0; i < files.size(); ++i) {
-    for (unsigned k = 0; k < selections.size(); ++k) {
+    for (unsigned k = 0; k < selectionsdir.size(); ++k) {
       
       string f = files[i];
-      string s = selections[k];
+      string s = selectionsdir[k];
 
       std::string nm = Token(f, s);
       if (plots.count(nm)) continue;
@@ -418,7 +438,7 @@ int main(int argc, char* argv[]){
  
     for (unsigned i = 0; i < files.size(); ++i) {
       string f = files[i];
-      string s = selections[k];
+      string s = selectionsdir[k];
 
       std::string nm = Token(f, s);
       SumHistograms(f,plots[nm],"Data",data_hist);

@@ -2,21 +2,33 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
-for CHANNEL in taunu nunu #enu munu
+for CHANNEL in nunu enu munu #taunu
   do
   for MET in 130 #0 #70
     do
-    for SYST in central #JESUP JESDOWN
+    for SYST in PUUP PUDOWN #central JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
       do
 	FOLDER=./output/$CHANNEL/MET$MET/
 	PLOTDIR=TABLES/$CHANNEL/MET$MET/
 	PLOTDIRQCD=TABLES/$CHANNEL/MET$MET/QCD/
+	DOPUSYST="false"
+	PUUPORDOWN="false"
 
-	if [ "$SYST" != "central" ]
+	if [ "$SYST" != "central" ] #if not doing central
             then
-            FOLDER=$FOLDER"/"$SYST"/"
-            PLOTDIR=$PLOTDIR"/"$SYST"/"
-            PLOTDIRQCD=$PLOTDIR"/"$SYST"/QCD/"
+	    if [[ "$SYST" != PU* ]] #For PU syst info is in central root file if not doing PU get output from syst subdirectory
+		then
+		FOLDER=$FOLDER"/"$SYST"/"
+	    else #If doing PU syst pass correct options
+		DOPUSYST="true"
+		
+		if [ "$SYST" = "PUUP" ]
+		    then
+		    PUUPORDOWN="true" #note this is false by default so PUDOWN will have correct option already
+		fi
+	    fi
+	    PLOTDIR=$PLOTDIR"/"$SYST"/"
+	    PLOTDIRQCD=$PLOTDIR"/"$SYST"/QCD/"
         fi
 
 	
@@ -53,7 +65,9 @@ for CHANNEL in taunu nunu #enu munu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS \
+    --dopusyst=$DOPUSYST \
+    --puupordown=$PUUPORDOWN
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIRQCD \
@@ -65,7 +79,9 @@ for CHANNEL in taunu nunu #enu munu
     --norm_bins=false --verbose=false \
     --plot_qcd=true \
     --log_y=true \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS \
+    --dopusyst=$DOPUSYST \
+    --puupordown=$PUUPORDOWN
 
 ###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -79,7 +95,9 @@ for CHANNEL in taunu nunu #enu munu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS \
+    --dopusyst=$DOPUSYST \
+    --puupordown=$PUUPORDOWN
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIRQCD  \
@@ -92,7 +110,9 @@ for CHANNEL in taunu nunu #enu munu
     --norm_bins=false \
     --plot_qcd=true \
     --log_y=true \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS \
+    --dopusyst=$DOPUSYST \
+    --puupordown=$PUUPORDOWN
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
@@ -105,7 +125,9 @@ for CHANNEL in taunu nunu #enu munu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=false \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS \
+    --dopusyst=$DOPUSYST \
+    --puupordown=$PUUPORDOWN
 
 ###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -119,7 +141,9 @@ for CHANNEL in taunu nunu #enu munu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS \
+    --dopusyst=$DOPUSYST \
+    --puupordown=$PUUPORDOWN
 
     done
   done

@@ -59,6 +59,10 @@ namespace ic {
   struct HinvSystPlots {
     TH1F *n_jets_puUp;
     TH1F *n_jets_puDown;
+    TH1F *n_vtx_puUp;
+    TH1F *n_vtx_puDown;
+    TH1F *dphijj_puUp;
+    TH1F *dphijj_puDown;
 
     HinvSystPlots(TFileDirectory const& dir);
 
