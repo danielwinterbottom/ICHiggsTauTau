@@ -182,7 +182,7 @@ int main(int argc, char* argv[]){
   double veto_elec_dz, veto_elec_dxy, veto_muon_dz, veto_muon_dxy;
   double elec_pt, elec_eta, muon_pt, muon_eta;
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
-
+  
   elec_dz = 0.1;
   elec_dxy = 0.02;
   veto_elec_dz = 0.2;
@@ -218,8 +218,8 @@ int main(int argc, char* argv[]){
   std::cout << boost::format("%-15s %-10s\n") % "muon_dxy:" % muon_dxy;
   std::cout << boost::format("%-15s %-10s\n") % "muon_dz:" % muon_dz;
   
-
-
+  
+  
   // Create analysis object
   ic::AnalysisBase analysis(
     "HiggsNuNu",        // Analysis name
@@ -310,8 +310,8 @@ int main(int argc, char* argv[]){
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
 
-  TH1D data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012-ShiftUp.root", "/", "pileup");
-  TH1D data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012-ShiftDown.root", "/", "pileup");
+  TH1D data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
+  TH1D data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
 
   if (!is_data) {
     std::cout << "** Pileup Files **" << std::endl;
@@ -1010,10 +1010,6 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&metNoElectrons);
      analysis.AddModule(&metNoENoMu);
      
-     //plot before cutting
-     analysis.AddModule(&controlPlots_hlt);
-     //analysis.AddModule(&wjetsPlots_hlt);
-
      if (printEventList) analysis.AddModule(&hinvPrintList);
  
      //deal with removing overlap with selected leptons
@@ -1024,6 +1020,10 @@ int main(int argc, char* argv[]){
 
      //Module to do jet smearing and systematics
      analysis.AddModule(&ModifyJetMET);
+
+     //plot before cutting
+     analysis.AddModule(&controlPlots_hlt);
+     analysis.AddModule(&wjetsPlots_hlt);
 
      //filter jets
      analysis.AddModule(&jetPtEtaFilter);
