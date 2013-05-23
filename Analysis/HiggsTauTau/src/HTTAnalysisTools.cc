@@ -158,7 +158,6 @@ namespace ic {
                                       std::string const& category, 
                                       std::string const& weight) {
 
-    TH1F hist = 
     std::string full_selection;
     if (weight != "" && (selection != "" || category != "")) full_selection += "( ";
 
@@ -171,9 +170,9 @@ namespace ic {
     ttrees_[sample]->Draw("0.5>>htemp(1,0,1)", full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
     std::cout << full_selection << std::endl;
-    //TH1F *htemp = (TH1F*)gDirectory->Get("htemp");
+    TH1F *htemp = (TH1F*)gDirectory->Get("htemp");
     auto result = std::make_pair(Integral(htemp), Error(htemp));
-    // gDirectory->Delete("htemp;*");
+    gDirectory->Delete("htemp;*");
     return result;
   }
 
