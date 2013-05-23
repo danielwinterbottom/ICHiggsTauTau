@@ -95,6 +95,9 @@ int main(int argc, char* argv[]){
   unsigned rebin;                               // Rebin factor
   string channel;
   string ratios;
+  double ratio_y_min;
+  double ratio_y_max;
+  string ratio_axis_label;
 
   po::options_description config("Configuration");
   po::variables_map vm;
@@ -111,6 +114,9 @@ int main(int argc, char* argv[]){
     ("x_axis_min",          po::value<double>(&x_axis_min)->default_value(0))
     ("x_axis_max",          po::value<double>(&x_axis_max)->default_value(0))
     ("rebin",               po::value<unsigned>(&rebin)->default_value(1))
+    ("ratio_axis_label",    po::value<string>(&ratio_axis_label)->default_value("Ratio"))
+    ("ratio_y_min",          po::value<double>(&ratio_y_min)->default_value(0.8))
+    ("ratio_y_max",          po::value<double>(&ratio_y_max)->default_value(1.2))
     ;
     po::store(po::command_line_parser(argc, argv).
               options(config).allow_unregistered().run(), vm);
@@ -169,8 +175,14 @@ int main(int argc, char* argv[]){
     if (split[6] == "0") {
       SetStyle(elements.back(), col, *marker_it);
       ++marker_it;
-    } else {
+    } else if (split[6] == "1") {
       SetStyleBlock(elements.back());
+    } else if (split[6] == "2") {
+      SetStyle(elements.back(), col, *marker_it);
+      elements.back().set_draw_line(true);
+      elements.back().set_line_color(col);
+      elements.back().set_draw_fill(true);
+
     }
   }
   
@@ -211,7 +223,9 @@ int main(int argc, char* argv[]){
   compare.y_axis_title = "Events";
 
   compare.draw_ratio_hist = relements.size() > 0;
-  compare.ratio_y_axis_title = "Ratio";
+  compare.ratio_y_axis_title = ratio_axis_label;
+  compare.ratio_y_axis_min = ratio_y_min;
+  compare.ratio_y_axis_max = ratio_y_max;
   compare.extra_pad = 1.15;
 
 

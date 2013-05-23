@@ -1095,7 +1095,7 @@ int main(int argc, char* argv[]){
       if (verbose) std::cout << "SS VV: " << vv_ss_total << std::endl;
       if (verbose) std::cout << "=> SS QCD: " << data_ss_sel << std::endl;
       qcd_norm = os_ss_ratio * data_ss_sel;
-      if (qcd_norm < 0.0) qcd_norm = 0.0000001;
+      if (qcd_norm <= 0.0) qcd_norm = 0.0000001;
       if (non_mass_plot || method == 0 || method == 8 || method == 11) {
         if (verbose) std::cout << "Using Full Isolation for QCD shape!" << std::endl;
         qcd_hist = (TH1F*)(plots[Token("Data",cat,ss_sel)].hist_ptr()->Clone());

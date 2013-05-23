@@ -254,16 +254,75 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 
 
 
+### Plot the Higgs pT
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=2 --non_mass_plot=true \
   --method=8 --category="inclusive" --plot_name="pt_h"  --x_axis_label="Higgs p_{T} [GeV]" \
   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
-  --paramfile=./scripts/Moriond_params_2012.dat
+  --paramfile=./scripts/Moriond_params_2012.dat --signal_no_stack=true --log_y=true --draw_ratio=true \
+  --exra_pad=3
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=et --rebin=2 --non_mass_plot=true \
+  --method=8 --category="inclusive" --plot_name="pt_h"  --x_axis_label="Higgs p_{T} [GeV]" \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+  --paramfile=./scripts/Moriond_params_2012.dat --signal_no_stack=true --log_y=true --draw_ratio=true \
+  --extra_pad=5
+
+./bin/PlotCompare  \
+-p "ggH125:ggH125:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:inclusive_os_sel/:pt_h:-1:2:1" \
+-p "Embedded_ZTT:Embedded_ZTT:output/Paper_2013_3Hit/Embedded_mt_2012.root:inclusive_os_sel/:pt_h:-1:2:2" \
+--x_axis_title=" p_{T}^{H} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+--outname="ggh125_vs_embedded_pt_h.pdf" --rebin=2
+
+# -p "1jet_low:1jet_low:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:1jet_low_os_sel/:pt_h:-1:0:3" \
+# -p "1jet_high:1jet_high:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:1jet_high_os_sel/:pt_h:-1:0:4" \
 
 
+./bin/PlotCompare  \
+-p "ggH125:ggH125:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:hpt_60_1jet_high_os_sel/:m_sv_sm_fine:-1:2:1" \
+-p "Embedded_ZTT:Embedded_ZTT:output/Paper_2013_3Hit/Embedded_mt_2012.root:hpt_60_1jet_high_os_sel/:m_sv_sm_fine:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+--outname="ggh125_vs_embedded_hpt_60_1jet_high.pdf" --rebin=2 \
+--ratios="ggH125/Embedded_ZTT/1" --ratio_axis_label="ggH/ZTT" --ratio_y_min=0 --ratio_y_max=20
 
+./bin/PlotCompare  \
+-p "ggH125:ggH125:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:jpt_60_1jet_high_os_sel/:m_sv_sm_fine:-1:2:1" \
+-p "Embedded_ZTT:Embedded_ZTT:output/Paper_2013_3Hit/Embedded_mt_2012.root:jpt_60_1jet_high_os_sel/:m_sv_sm_fine:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+--outname="ggh125_vs_embedded_jpt_60_1jet_high.pdf" --rebin=2 \
+--ratios="ggH125/Embedded_ZTT/1" --ratio_axis_label="ggH/ZTT" --ratio_y_min=0 --ratio_y_max=20
 
+./bin/PlotCompare  \
+-p "ggH125:ggH125:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:hpt_60_0jet_high_os_sel/:m_sv_sm_fine:-1:2:1" \
+-p "Embedded_ZTT:Embedded_ZTT:output/Paper_2013_3Hit/Embedded_mt_2012.root:hpt_60_0jet_high_os_sel/:m_sv_sm_fine:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+--outname="ggh125_vs_embedded_hpt_60_0jet_high.pdf" --rebin=2 \
+--ratios="ggH125/Embedded_ZTT/1" --ratio_axis_label="ggH/ZTT" --ratio_y_min=0 --ratio_y_max=20
 
+./bin/PlotCompare  \
+-p "ggH125:ggH125:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:hpt_30_0jet_high_os_sel/:m_sv_sm_fine:-1:2:1" \
+-p "Embedded_ZTT:Embedded_ZTT:output/Paper_2013_3Hit/Embedded_mt_2012.root:hpt_30_0jet_high_os_sel/:m_sv_sm_fine:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+--outname="ggh125_vs_embedded_hpt_30_0jet_high.pdf" --rebin=2 \
+--ratios="ggH125/Embedded_ZTT/1" --ratio_axis_label="ggH/ZTT" --ratio_y_min=0 --ratio_y_max=20
 
+./bin/PlotCompare  \
+-p "ggH125:ggH125:output/Paper_2013_3Hit/GluGluToHToTauTau_M-125_mt_2012.root:jpt_60_0jet_high_os_sel/:m_sv_sm_fine:-1:2:1" \
+-p "Embedded_ZTT:Embedded_ZTT:output/Paper_2013_3Hit/Embedded_mt_2012.root:jpt_60_0jet_high_os_sel/:m_sv_sm_fine:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+--outname="ggh125_vs_embedded_jpt_60_0jet_high.pdf" --rebin=2 \
+--ratios="ggH125/Embedded_ZTT/1" --ratio_axis_label="ggH/ZTT" --ratio_y_min=0 --ratio_y_max=20
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2012.cfg --channel=mt --rebin=1 \
+  --method=3 --category="inclusive" --plot_name="pt_tt" \
+  --x_axis_label="M_{#tau#tau} [GeV]" --norm_bins=true \
+  --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
+  --paramfile=./scripts/Moriond_params_2012.dat --replace_os_sel="os_con"  --replace_ss_sel="ss_con"
 
 
 

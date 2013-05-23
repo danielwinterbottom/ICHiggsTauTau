@@ -163,9 +163,10 @@ namespace ic {
       //double inclusive_btag_weight = btag_weight.GetWeight(jets, "CSVM", 1, 99, is_2012_);
       double no_btag_weight = 1.0;
       double inclusive_btag_weight = 1.0;
-      btag_weight.ReTag(jets, mc_ == mc::summer12_53X);
+      std::map<std::size_t, bool> retag_result = btag_weight.ReTag(jets, mc_ == mc::summer12_53X);
       event->Add("no_btag_weight", no_btag_weight);
       event->Add("inclusive_btag_weight", inclusive_btag_weight);
+      event->Add("retag_result", retag_result);
     }
 
     if (do_trg_weights_) {

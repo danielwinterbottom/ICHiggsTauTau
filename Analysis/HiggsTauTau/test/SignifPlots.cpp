@@ -50,7 +50,7 @@ int main(int argc, char* argv[]){
   // for (auto t : types) {
   //   vector<double> y_vals;
   //   for (unsigned i = 0; i < vals.size(); ++i) {
-  //     TGraph tmp = GetFromTFile<TGraph>("output/limits/categories/"+t+"_"+vals[i]+"/"+ (limit ? (ch+"_limit") : "limits_significance")+".root",ch+"/","expected");
+  //     TGraph tmp = GetFromTFile<TGraph>("output/categories/"+t+"_"+vals[i]+"/"+ (limit ? (ch+"_limit") : "limits_significance")+".root",ch+"/","expected");
   //     double x, y;
   //     tmp.GetPoint(3, x, y);
   //     std::cout << t << "\t" << vals[i] << "\t" << x << "\t" << y << endl;
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
 
   // vector<double> xm_vals = { 30 };
   // vector<double> y_vals;
-  // TGraph tmp = GetFromTFile<TGraph>("output/limits/categories/moriond/"+ (limit ? (ch+"_limit") : "limits_significance")+".root",ch+"/","expected");
+  // TGraph tmp = GetFromTFile<TGraph>("output/categories/moriond/"+ (limit ? (ch+"_limit") : "limits_significance")+".root",ch+"/","expected");
   // double x, y;
   // tmp.GetPoint(3, x, y);
   // y_vals.push_back(y);
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]){
 
 
   for (auto l : lines) {
-    graphs.push_back(GetFromTFile<TGraph>("output/limits/categories/"+l+"/limits_significance.root","mt/","expected"));
+    graphs.push_back(GetFromTFile<TGraph>("output/categories/"+ l + "/" + (limit ? (ch+"_limit") : "limits_significance") + ".root",ch+"/","expected"));
     double x, y;
     graphs.back().GetPoint(3, x, y);
     std::cout << l << "\t" << x << "\t" << y << endl;
@@ -81,8 +81,8 @@ int main(int argc, char* argv[]){
   canv.SetGridx(1);
   canv.SetGridy(1);
   graphs[0].GetXaxis()->SetLimits(graphs[0].GetX()[0]-.1, graphs[0].GetX()[graphs[0].GetN()-1]+.1);
-  graphs[0].SetMinimum(1.0);
-  graphs[0].SetMaximum(2.5);
+  graphs[0].SetMinimum(0.51);
+  graphs[0].SetMaximum(3.0);
   if (relative) {
     graphs[0].SetMinimum(0.8);
     graphs[0].SetMaximum(1.6);    
@@ -100,8 +100,8 @@ int main(int argc, char* argv[]){
   graphs[0].Draw("APL");
   graphs[0].GetYaxis()->SetTitleFont(42);
   graphs[0].GetXaxis()->SetTitleFont(42);   
-  // graphs[0].GetXaxis()->SetTitle("m_{H} [GeV]");
-  graphs[0].GetXaxis()->SetTitle("Cut Value [GeV]");
+  graphs[0].GetXaxis()->SetTitle("m_{H} [GeV]");
+  // graphs[0].GetXaxis()->SetTitle("Cut Value [GeV]");
   if (!limit) {
     graphs[0].GetYaxis()->SetTitle("Exp. Significance");
     if (relative) graphs[0].GetYaxis()->SetTitle("Exp. Signif. / Default");   
@@ -113,7 +113,7 @@ int main(int argc, char* argv[]){
   
   double benchmark = graphs[0].GetY()[0];
   for (unsigned i = 0; i < graphs.size(); ++i) {
-    SetTGraphStyle(&(graphs[i]), i + 3);
+    SetTGraphStyle(&(graphs[i]), i + 6);
     if (relative) {
       for (unsigned j = 0; j < graphs[i].GetN(); ++j) {
         graphs[i].GetY()[j] /= benchmark;

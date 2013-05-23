@@ -214,9 +214,27 @@ namespace ic {
     ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     std::vector<PFJet*> loose_bjets = bjets;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
-    ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
 
 
+
+    // Instead of changing b-tag value in the promote/demote method we look for a map of bools
+    // that say whether a jet should pass the WP or not
+    if (event->Exists("retag_result")) {
+      std::vector<PFJet*> bjets_tmp;
+      std::map<std::size_t,bool> const& retag_result = event->Get<std::map<std::size_t,bool> >("retag_result"); 
+      for (unsigned i = 0; i < bjets.size(); ++i) {
+        std::map<std::size_t,bool>::const_iterator it = retag_result.find(bjets[i]->id());
+        if (it != retag_result.end()) {
+          if (it->second) bjets_tmp.push_back(bjets[i]);
+        } else {
+          bjets_tmp.push_back(bjets[i]);
+        }
+      }
+      bjets = bjets_tmp;
+    } else {
+      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
+    } 
+    
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
     // for each new event
@@ -262,6 +280,8 @@ namespace ic {
     if (channel_ == channel::em) {
       m_sv_ = m_sv_ * mass_shift_;
       m_vis_ = m_vis_ * mass_shift_;
+      em_gf_mva_ = event->Exists("em_gf_mva") ? event->Get<double>("em_gf_mva") : 0.;
+      em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
     if (event->Exists("mass_scale")) {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");

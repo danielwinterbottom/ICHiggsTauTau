@@ -84,6 +84,9 @@ class HTTCategories : public ModuleBase {
     double l1_met_;
     double calo_nohf_met_;
 
+    double em_gf_mva_;
+    double em_vbf_mva_;
+
     // Other VBF MVA variables?
 
  public:
