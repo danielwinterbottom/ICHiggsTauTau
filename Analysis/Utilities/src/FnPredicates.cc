@@ -238,6 +238,15 @@ namespace ic {
     }
   }
 
+  bool IsReBTagged(Jet const* jet, std::map<std::size_t, bool> const& tag_map) {
+    std::map<std::size_t,bool>::const_iterator it = tag_map.find(jet->id());
+    if (it != tag_map.end()) {
+      return it->second;
+    } else {
+      std::cout << "Warning in IsReBTagged: Jet with id " << jet->id() << " not found in result map" << std::endl;
+      return true;
+    }
+  }
 
 
   double PZeta(CompositeCandidate const* cand, Candidate const* met, double const& alpha) {

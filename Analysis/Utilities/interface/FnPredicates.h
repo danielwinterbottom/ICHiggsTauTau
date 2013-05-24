@@ -82,6 +82,8 @@ namespace ic {
   // Pileup jet id cuts.  0 = 2011, 1 = 2012, 2 = 2012 (december training)
   bool PileupJetID(PFJet const* jet, unsigned training);
 
+  bool IsReBTagged(Jet const* jet, std::map<std::size_t, bool> const& tag_map);
+
   double PZeta(CompositeCandidate const* cand, Candidate const* met, double const& alpha);
   double PZetaVis(CompositeCandidate const* cand);
 
