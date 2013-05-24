@@ -455,8 +455,13 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
     }
     
     std::vector<PFJet *> btag_jets = jets;
-    ic::erase_if(btag_jets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
     ic::erase_if(btag_jets, !boost::bind(MinPtMaxEta, _1, 20, 2.4));
+    if (event->Exists("retag_result")) {
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+      ic::erase_if(btag_jets, !boost::bind(IsReBTagged, _1, retag_result));
+    } else {
+      ic::erase_if(btag_jets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
+    } 
 
     if (btag_jets.size() >= 1) {
     //B Tagged Jet : leading btagged jet (in pt) passing btag wp (pt > 20 + cvs medium)

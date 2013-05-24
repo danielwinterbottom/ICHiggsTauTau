@@ -13,6 +13,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "TPad.h"
 #include "TROOT.h"
+#include "TEfficiency.h"
+
 
 namespace ic {
 
@@ -120,16 +122,15 @@ namespace ic {
     if (it != sample_info_.end()) {
       double evt = it->second.first;
       double xs = it->second.second;
-      return (evt/(xs*lumi_));
+      return ((xs*lumi_)/evt);
     } else {
       return 1.0;
     }
   }
-  TH1F HTTAnalysis::GetShape(std::string const& variable,
-                                       std::string const& sample, 
-                                       std::string const& selection, 
-                                       std::string const& category, 
-                                       std::string const& weight) {
+
+  std::string HTTAnalysis::BuildCutString(std::string const& selection,
+      std::string const& category,
+      std::string const& weight) {
     std::string full_selection;
     if (weight != "" && (selection != "" || category != "")) full_selection += "( ";
 
@@ -138,44 +139,249 @@ namespace ic {
     if (category != "")                     full_selection += ("(" + category + ")");
     if (weight != "" && (selection != "" || category != "")) full_selection += " ) * ";
     if (weight != "") full_selection += ("("+weight+")");
-    std::cout << full_selection << std::endl;
+    return full_selection;                                      
+  }
+
+  std::string HTTAnalysis::BuildVarString(std::string const& variable) {
     std::string full_variable = variable;
     if (full_variable.find("(") != full_variable.npos) {
       full_variable.insert(full_variable.find("("),">>htemp");
     }
-    //std::cout << full_variable << std::endl;
+    return full_variable;
+  }
+
+  TH1F HTTAnalysis::GetShape(std::string const& variable,
+                                       std::string const& sample, 
+                                       std::string const& selection, 
+                                       std::string const& category, 
+                                       std::string const& weight) {
+    TH1::SetDefaultSumw2(true);
+    std::string full_variable = BuildVarString(variable);
+    std::string full_selection = BuildCutString(selection, category, weight);
+    // std::cout << full_selection << std::endl;
+    // std::cout << full_variable << std::endl;
     TH1::AddDirectory(true);
     ttrees_[sample]->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
     TH1F *htemp = (TH1F*)gDirectory->Get("htemp");
     TH1F result = (*htemp);
     gDirectory->Delete("htemp;*");
+    auto rate = GetRate(sample, selection, category, weight);
+    SetNorm(&result, rate.first);
     return result;
   }
+
+  TH1F HTTAnalysis::GetLumiScaledShape(std::string const& variable,
+                                       std::string const& sample, 
+                                       std::string const& selection, 
+                                       std::string const& category, 
+                                       std::string const& weight) {
+    TH1F result = GetShape(variable, sample, selection, category, weight);
+    result.Scale(GetLumiScale(sample));
+    return result;
+  }
+
+  TH1F HTTAnalysis::GetLumiScaledShape(std::string const& variable,
+                                       std::vector<std::string> const& samples, 
+                                       std::string const& selection, 
+                                       std::string const& category, 
+                                       std::string const& weight) {
+
+    TH1F result = GetLumiScaledShape(variable, samples.at(0), selection, category, weight);
+    if (samples.size() > 1) {
+      for (unsigned i = 1; i < samples.size(); ++i) {
+        TH1F tmp = GetLumiScaledShape(variable, samples.at(i), selection, category, weight);
+        result.Add(&tmp);
+      }
+    }
+    return result;
+  }
+
 
   std::pair<double, double> HTTAnalysis::GetRate(std::string const& sample, 
                                       std::string const& selection, 
                                       std::string const& category, 
                                       std::string const& weight) {
-
-    std::string full_selection;
-    if (weight != "" && (selection != "" || category != "")) full_selection += "( ";
-
-    if (selection != "")                    full_selection += ("(" + selection + ")");
-    if (selection != "" && category != "")  full_selection += " && ";
-    if (category != "")                     full_selection += ("(" + category + ")");
-    if (weight != "" && (selection != "" || category != "")) full_selection += " ) * ";
-    if (weight != "") full_selection += ("("+weight+")");
+    std::string full_selection = BuildCutString(selection, category, weight);
     TH1::AddDirectory(true);
     ttrees_[sample]->Draw("0.5>>htemp(1,0,1)", full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
-    std::cout << full_selection << std::endl;
     TH1F *htemp = (TH1F*)gDirectory->Get("htemp");
     auto result = std::make_pair(Integral(htemp), Error(htemp));
     gDirectory->Delete("htemp;*");
     return result;
   }
 
+  std::pair<double, double> HTTAnalysis::GetLumiScaledRate(std::string const& sample, 
+                                      std::string const& selection, 
+                                      std::string const& category, 
+                                      std::string const& weight) {
+    auto result = GetRate(sample, selection, category, weight);
+    double sf = GetLumiScale(sample);
+    result.first *= sf;
+    result.second *= sf;
+    return result;
+  }
+  std::pair<double, double> HTTAnalysis::GetLumiScaledRate(std::vector<std::string> const& samples, 
+                                      std::string const& selection, 
+                                      std::string const& category, 
+                                      std::string const& weight) {
+    auto result = GetLumiScaledRate(samples.at(0), selection, category, weight);
+    double err_sqr = result.second * result.second;
+    if (samples.size() > 1) {
+      for (unsigned i = 1; i < samples.size(); ++i) {
+        auto tmp = GetLumiScaledRate(samples.at(i), selection, category, weight);
+        result.first += tmp.first;
+        err_sqr += (tmp.second * tmp.second);
+      }
+    }
+    result.second = sqrt(err_sqr);
+    return result;
+  }
+
+  std::pair<double, double> HTTAnalysis::SampleEfficiency(std::string const& sample, 
+                          std::string const& ref_selection, 
+                          std::string const& ref_category,
+                          std::string const& target_selection, 
+                          std::string const& target_category,  
+                          std::string const& weight) {
+    auto num = GetRate(sample, target_selection, target_category, weight);
+    auto den = GetRate(sample, ref_selection, ref_category, weight);
+    // std::cout << "num: " << num.first << "\t" << num.second << std::endl;
+    double num_eff = std::pow(num.first / num.second, 2.0) ;
+    // std::cout << "Effective numerator = " << num_eff << std::endl;
+    unsigned num_eff_rounded = unsigned(num_eff+0.5);
+    // std::cout << "Effective numerator (rounded) = " << num_eff_rounded << std::endl;
+    // std::cout << "den: " << den.first << "\t" << den.second << std::endl;
+    double den_eff = std::pow(den.first / den.second, 2.0) ;
+    // std::cout << "Effective denominator = " << den_eff << std::endl;
+    unsigned den_eff_rounded = unsigned(den_eff+0.5);
+    // std::cout << "Effective denominator (rounded) = " << den_eff_rounded << std::endl;
+    double eff = num_eff / den_eff;
+    TEfficiency teff;
+    double eff_err = teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683 ,1)-(eff);
+    auto result = std::make_pair(eff, eff_err);
+    return result;
+  }
+
+  HTTAnalysis::Value HTTAnalysis::SampleRatio(std::string const& sample, 
+                          std::string const& ref_selection, 
+                          std::string const& ref_category,
+                          std::string const& target_selection, 
+                          std::string const& target_category,  
+                          std::string const& weight) {
+    Value num = GetRate(sample, target_selection, target_category, weight);
+    Value den = GetRate(sample, ref_selection, ref_category, weight);
+    return ValueDivide(num, den);
+  }
+
+  HTTAnalysis::Value HTTAnalysis::GetRateViaRefEfficiency(std::string const& target_sample, 
+                          std::string const& ref_sample,
+                          std::string const& ref_selection, 
+                          std::string const& ref_category,
+                          std::string const& target_selection, 
+                          std::string const& target_category,  
+                          std::string const& weight) {
+    auto ref_rate = GetLumiScaledRate(ref_sample, ref_selection, ref_category, weight);
+    auto target_eff = SampleEfficiency(target_sample, ref_selection, ref_category, target_selection, target_category, weight);
+    return ValueProduct(ref_rate, target_eff);
+  }
+
+  HTTAnalysis::Value HTTAnalysis::GetRateViaWMethod(std::string const& w_sample,
+                          std::string const& ratio_category,
+                          std::string const& ratio_control_selection,
+                          std::string const& ratio_signal_selection,
+                          std::string const& data_sample,
+                          std::string const& category,
+                          std::string const& control_selection,
+                          std::vector<std::string> const& sub_samples,
+                          std::string const& weight,
+                          std::map<std::string, std::function<Value()>> dict
+                          ) {
+    Value ratio = SampleRatio(w_sample, ratio_control_selection, ratio_category, ratio_signal_selection, ratio_category, weight);
+    Value data_control = GetRate(data_sample, control_selection, category, weight);
+    Value total_bkg;
+    for (unsigned i = 0; i < sub_samples.size(); ++i) {
+      Value bkr;
+      if (dict.count(sub_samples[i])) {
+        bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
+      } else {
+        bkr = GetLumiScaledRate(sub_samples[i], control_selection, category, weight);
+      }
+      double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
+      total_bkg.first += bkr.first;
+      total_bkg.second = new_err;
+    }
+    double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
+    Value w_control(data_control.first - total_bkg.first, w_control_err);
+    Value w_signal = ValueProduct(w_control, ratio);
+    return w_signal;
+  }
+
+  HTTAnalysis::Value HTTAnalysis::GetRateViaQCDMethod(HTTAnalysis::Value const& ratio,
+                          std::string const& data_sample,
+                          std::string const& control_selection,
+                          std::string const& category,
+                          std::vector<std::string> const& sub_samples,
+                          std::string const& weight,
+                          std::map<std::string, std::function<Value()>> dict
+                          ) {
+    Value data_control = GetRate(data_sample, control_selection, category, weight);
+    Value total_bkg;
+    for (unsigned i = 0; i < sub_samples.size(); ++i) {
+      Value bkr;
+      if (dict.count(sub_samples[i])) {
+        bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
+      } else {
+        bkr = GetLumiScaledRate(sub_samples[i], control_selection, category, weight);
+      }
+      double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
+      total_bkg.first += bkr.first;
+      total_bkg.second = new_err;
+    }
+    double qcd_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
+    Value qcd_control(data_control.first - total_bkg.first, qcd_control_err);
+    Value qcd_signal = ValueProduct(qcd_control, ratio);
+    return qcd_signal;
+  }
+
+  TH1F HTTAnalysis::GetShapeViaQCDMethod(std::string const& variable,
+                          std::string const& data_sample,
+                          std::string const& selection,
+                          std::string const& category,
+                          std::vector<std::string> const& sub_samples,
+                          std::string const& weight,
+                          std::map<std::string, std::function<Value()>> dict
+                          ) {
+    TH1F result = GetLumiScaledShape(variable, data_sample, selection, category, weight);
+    for (unsigned i = 0; i < sub_samples.size(); ++i) {
+      if (dict.count(sub_samples[i])) {
+        Value bkr_rate = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
+        TH1F tmp = GetShape(variable, sub_samples.at(i), selection, category, weight);
+        SetNorm(&tmp, bkr_rate.first);
+        result.Add(&tmp, -1.);
+      } else {
+        TH1F tmp = GetLumiScaledShape(variable, sub_samples[i], selection, category, weight);
+        result.Add(&tmp, -1.);
+      }
+    }
+    return result;
+  }
+
+  HTTAnalysis::Value HTTAnalysis::ValueProduct(Value const& p1, Value const& p2) {
+    double f = p1.first * p2.first;
+    double a_sqrd = std::pow(p1.second / p1.first, 2.0);
+    double b_sqrd = std::pow(p2.second / p2.first, 2.0);
+    double f_err = f * sqrt( a_sqrd + b_sqrd );
+    return std::make_pair(f, f_err);
+  }
+  HTTAnalysis::Value HTTAnalysis::ValueDivide(Value const& p1, Value const& p2) {
+    double f = p1.first / p2.first;
+    double a_sqrd = std::pow(p1.second / p1.first, 2.0);
+    double b_sqrd = std::pow(p2.second / p2.first, 2.0);
+    double f_err = f * sqrt( a_sqrd + b_sqrd );
+    return std::make_pair(f, f_err);
+  }
 
 
 }

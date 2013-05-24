@@ -220,17 +220,8 @@ namespace ic {
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not
     if (event->Exists("retag_result")) {
-      std::vector<PFJet*> bjets_tmp;
-      std::map<std::size_t,bool> const& retag_result = event->Get<std::map<std::size_t,bool> >("retag_result"); 
-      for (unsigned i = 0; i < bjets.size(); ++i) {
-        std::map<std::size_t,bool>::const_iterator it = retag_result.find(bjets[i]->id());
-        if (it != retag_result.end()) {
-          if (it->second) bjets_tmp.push_back(bjets[i]);
-        } else {
-          bjets_tmp.push_back(bjets[i]);
-        }
-      }
-      bjets = bjets_tmp;
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+      ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
     } else {
       ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
     } 
