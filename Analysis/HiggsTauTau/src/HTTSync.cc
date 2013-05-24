@@ -100,6 +100,8 @@ lOTree->Branch("eta_2"      ,&lEta2          ,"lEta2/F"    );//Eta
 lOTree->Branch("m_2"        ,&lM2            ,"lM2/F"      );//Mass (visible mass for hadronic Tau)
 lOTree->Branch("q_2"        ,&lq2            ,"lq2/I"      ); //Mass 
 lOTree->Branch("iso_2"      ,&lIso2          ,"lIso2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
+lOTree->Branch("d0_2"       ,&lD02           ,"lD02/F"      );//d0 with respect to primary vertex
+lOTree->Branch("dZ_2"       ,&lDZ2           ,"lDZ2/F"      );//dZ with respect to primary vertex
 
 lOTree->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_2"      ,&l3Hits_2          ,"byCombinedIsolationDeltaBetaCorrRaw3Hits_2/F"    );
 lOTree->Branch("againstElectronMVA3raw_2"      ,&lagainstElectronMVA3raw_2          ,"againstElectronMVA3raw_2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
@@ -189,6 +191,9 @@ lOTree->Branch("nbtag"      ,&lNBTag         ,"lNBTag/I");
     //number of jets passing jet id ( pt > 30 )
 lOTree->Branch("njets"      ,&lNJets         ,"lNJets/I");
 lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
+      
+lOTree->Branch("mva_gf"      ,&em_gf_mva_         ,"MVAGF/F");
+lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
 
 
     return 0;
@@ -361,10 +366,14 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
                     + std::max(muon->dr04_pfiso_neutral() + muon->dr04_pfiso_gamma() - 0.5 * muon->dr04_pfiso_pu(), 0.0);
       isom = isom / muon->pt();
       lIso2 = isom;
+      lD02 = muon->dxy_vertex();
+      lDZ2 = muon->dz_vertex();
       lMVA2 = 0.0;
       lPassId2 = true;
       lPassIso2 = true;
       lMt2 = MT(muon, selectedMet);
+      em_gf_mva_ = event->Exists("em_gf_mva") ? event->Get<double>("em_gf_mva") : 0.;
+      em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
 
 

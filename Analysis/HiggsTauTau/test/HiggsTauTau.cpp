@@ -35,6 +35,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauDzFixer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuMVA.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
 
@@ -430,6 +431,7 @@ int main(int argc, char* argv[]){
     .set_shift(elec_shift);
 
   HTTEMuExtras emuExtras("EMuExtras");
+  HTTEMuMVA emuMVA = HTTEMuMVA("EMuMVA");
 
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
@@ -988,6 +990,9 @@ int main(int argc, char* argv[]){
 
 
                                   analysis.AddModule(&httWeights);
+    if (strategy == strategy::paper2013 && channel == channel::em) {
+                                  analysis.AddModule(&emuMVA);
+    }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&httSync);
     if (!quark_gluon_study)       analysis.AddModule(&httCategories);

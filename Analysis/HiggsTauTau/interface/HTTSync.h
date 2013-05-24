@@ -81,6 +81,8 @@ class HTTSync : public ModuleBase {
   float lM2;
   int   lq2;
   float lIso2;
+  float lD02;
+  float lDZ2;
   float l3Hits_2;
   float lagainstElectronMVA3raw_2;
   float lbyIsolationMVA2raw_2;
@@ -167,6 +169,10 @@ class HTTSync : public ModuleBase {
   //number of jets passing jet id ( pt > 30 )
   int   lNJets;
   int   lNJetsPt20;
+      
+  
+  float em_gf_mva_;
+  float em_vbf_mva_;
 
   ic::channel channel_;
   TMVA::Reader *reader;

@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsTauTau_HTTEmuMVA_h
-#define ICHiggsTauTau_HiggsTauTau_HTTEmuMVA_h
+#ifndef ICHiggsTauTau_HiggsTauTau_HTTEMuMVA_h
+#define ICHiggsTauTau_HiggsTauTau_HTTEMuMVA_h
 
 // #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -13,13 +13,13 @@ namespace ic {
 
 class TreeEvent;
 
-class HTTEmuMVA : public ModuleBase {
+class HTTEMuMVA : public ModuleBase {
  private:
  
- 	CLASS_MEMBER(HTTEmuMVA, std::string, ditau_label)
- 	CLASS_MEMBER(HTTEmuMVA, std::string, met_label)
- 	CLASS_MEMBER(HTTEmuMVA, std::string, gf_mva_file)
- 	CLASS_MEMBER(HTTEmuMVA, std::string, vbf_mva_file)
+ 	CLASS_MEMBER(HTTEMuMVA, std::string, ditau_label)
+ 	CLASS_MEMBER(HTTEMuMVA, std::string, met_label)
+ 	CLASS_MEMBER(HTTEMuMVA, std::string, gf_mva_file)
+ 	CLASS_MEMBER(HTTEMuMVA, std::string, vbf_mva_file)
 
  	TMVA::Reader *gf_reader_;
  	TMVA::Reader *vbf_reader_;
@@ -33,8 +33,8 @@ class HTTEmuMVA : public ModuleBase {
  	float mu_dxy_;
 
  public:
-  HTTEmuMVA(std::string const& name);
-  virtual ~HTTEmuMVA();
+  HTTEMuMVA(std::string const& name);
+  virtual ~HTTEMuMVA();
 
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);
