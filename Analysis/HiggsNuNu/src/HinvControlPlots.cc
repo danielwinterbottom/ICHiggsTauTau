@@ -286,6 +286,8 @@ namespace ic {
     
     if (channel_ == "nunu" || channel_ == "taunu") wt_idiso = info->weight_defined("idisoVeto")? info->weight("idisoVeto") : 1.0;
     else wt_idiso = info->weight_defined("idisoTight") ? info->weight("idisoTight") : 1.0;
+    //check against NAN
+    if (wt_idiso != wt_idiso) wt_idiso=1.0;
     wt = wt*wt_idiso;
     weightplots_->met_pu_trig_idiso->Fill(met_, wt);
     weightplots_->dphijj_pu_trig_idiso->Fill(dphijj_, wt);

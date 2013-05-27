@@ -522,7 +522,8 @@ namespace ic {
     lInput.open(aFileName);
     if(!lInput.is_open()){
       std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
-      aVector.resize(30,1);
+      //max expected size for e and mu is 33...
+      aVector.resize(33,1);
       return;
     }
     while(1){
