@@ -122,8 +122,6 @@ int main(int argc, char* argv[]){
   bool is_2012;			     // false = 7 TeV, true = 8 TeV
   bool no_plot;			     // Don't actually generate image files if true
   bool verbose;			     // Verbose output, useful for diagnostic purposes
-  bool dopusyst;                     // Do PU uncertainty
-  bool puupordown;                   // If doing PU uncertainty do up or down
 
   // Plotting options
   string x_axis_label;		     // Label for the X-axis
@@ -176,8 +174,6 @@ int main(int argc, char* argv[]){
     ("draw_ratio",          po::value<bool>(&draw_ratio)->default_value(false))
     ("no_plot",             po::value<bool>(&no_plot)->default_value(false))
     ("verbose",             po::value<bool>(&verbose)->default_value(false))
-    ("dopusyst",            po::value<bool>(&dopusyst)->default_value(false))
-    ("puupordown",          po::value<bool>(&puupordown)->default_value(false))
     ("x_axis_label",        po::value<string>(&x_axis_label)->required())
     ("x_axis_bin_labels",   po::value<string>(&x_axis_bin_labels)->default_value(""))
     ("rebin",               po::value<unsigned>(&rebin)->default_value(1))

@@ -7,26 +7,19 @@ for CHANNEL in nunu enu munu
   
   for MET in 130 #0 70
     do
-    for SYST in central JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
+    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
       do
 
 	FOLDER=./output/$CHANNEL/MET$MET/
 	PLOTDIR=PLOTS/$CHANNEL/MET$MET/
-	DOPUSYST="false"
-	PUUPORDOWN="false"
-
+	
 	if [ "$SYST" != "central" ] #if not doing central                                                                                                               
             then
             if [[ "$SYST" != PU* ]] #For PU syst info is in central root file if not doing PU get output from syst subdirectory                                         
                 then
                 FOLDER=$FOLDER"/"$SYST"/"
-            else #If doing PU syst pass correct options                                                                                                                 
-                DOPUSYST="true"
-
-                if [ "$SYST" = "PUUP" ]
-                    then
-                    PUUPORDOWN="true" #note this is false by default so PUDOWN will have correct option already                                                         
-                fi
+            #else #If doing PU syst pass correct options
+		#CORRECT WITH CORRECT PU OPTIONS
             fi
             PLOTDIR=$PLOTDIR"/"$SYST"/"
 	fi	
@@ -41,9 +34,17 @@ for CHANNEL in nunu enu munu
 	fi
 
 ###### n_jets
+# n_jetsplotname="n_jets"
+# if [[ "$SYST" = PUUP ]]
+#     then
+#     n_jetsplotname="n_jets_puUp"
+# elif [[ "$SYST" = PUDOWN ]]
+#     then
+#     n_jetsplotname="n_jets_puDown"
+# fi
 #./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
 #    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-#    --plot_name="n_jets"  --x_axis_label="Number of jets" \
+#    --plot_name=$n_jetsplotname  --x_axis_label="Number of jets" \
 #    --blind=$BLIND \
 #    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
 #    --y_axis_min=0.01 --extra_pad=10000 \
@@ -62,23 +63,26 @@ for CHANNEL in nunu enu munu
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
-
+    --paramfile=$PARAMS
 
 ###### n_vtx
+n_vtxplotname="n_vtx"
+if [[ "$SYST" = PUUP ]]
+    then
+    n_vtxplotname="n_vtx_puUp"
+elif [[ "$SYST" = PUDOWN ]]
+    then
+    n_vtxplotname="n_vtx_puDown"
+fi
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --plot_name="n_vtx"  --x_axis_label="Number of vertices" \
+    --plot_name=$n_vtxplotname  --x_axis_label="Number of vertices" \
     --blind=$BLIND \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ###### jpt_1
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -90,9 +94,7 @@ for CHANNEL in nunu enu munu
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ###### jeta_1
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -104,10 +106,7 @@ for CHANNEL in nunu enu munu
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
-
+    --paramfile=$PARAMS
 
 ###### jpt_2
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -119,9 +118,7 @@ for CHANNEL in nunu enu munu
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ###### jeta_2
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -133,10 +130,7 @@ for CHANNEL in nunu enu munu
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
-
+    --paramfile=$PARAMS
 
 ###### mjj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -148,9 +142,7 @@ for CHANNEL in nunu enu munu
     --rebin=100 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ###### detajj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -162,23 +154,27 @@ for CHANNEL in nunu enu munu
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ###### dphijj
+dphijjplotname="dphijj"
+if [[ "$SYST" = PUUP ]]
+    then
+    dphijjplotname="dphijj_puUp"
+elif [[ "$SYST" = PUDOWN ]]
+    then
+    dphijjplotname="dphijj_puDown"
+fi
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
+    --plot_name=$dphijjplotname  --x_axis_label="#Delta#phi_{jj}" \
     --blind=$BLIND --x_blind_min=0 --x_blind_max=1.  \
     --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
     --y_axis_min=0.01 --extra_pad=100000 \
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ###### drjj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -190,9 +186,7 @@ for CHANNEL in nunu enu munu
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ###### met
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -204,9 +198,8 @@ for CHANNEL in nunu enu munu
     --rebin=10 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
+
 ###### metNoMuons
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
@@ -217,9 +210,7 @@ for CHANNEL in nunu enu munu
     --rebin=10 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
     done
   done
