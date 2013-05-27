@@ -11,30 +11,11 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 
-// namespace po = boost::program_options;
-
-// using namespace std;
-// using namespace ic;
-
-
-
-/*
-  GetHistogram(string sample, string category, string selection, string weights)
-  GetQCDHistogram
-  GetWNorm(string w_sample "WJetsToLNu", string data_sample="Data", 
-  vec_backgrounds "Diboson, ZTT, Top", string category, string selection,  ) {
-    ... work out Diboson is just an alias for ZZJetsTo... etc
-    ... iterate on this, working out that I only need to integrate on the selection and scale by xs factor
-    ... work out that ZTT is just an alias for Embedded
-    ... work out that we need to call GetEmbeddedNorm first
-
-  GetEmbeddedNorm(string "Embedded", string "DYJetsToTauTauSoup", string norm_selection, norm_category, string selection, string category )
-    e.g. norm_selection = "os", norm_category = "inclusive", selection="os && mt_1 < 20.", category="vbf"
-
-  
-
-  }
-
+//! HTTAnalysisTools
+/*!
+  A set of classes and functions that can be used to analyse the output of 
+  the HiggsTauTau program. This includes creating histograms from flat
+  TTrees and running the data-driven background techniques.  
 */
 
 namespace ic {
@@ -76,10 +57,17 @@ namespace ic {
 
     public:
       HTTAnalysis(ic::channel ch, std::string year, int verbosity);
+      //! Read a parameter file for cross section and luminosity information
+      /*! \param file Full path to the parameter file.  See the main HTTAnalysisTools 
+          desription for further details.
+      */
       void ParseParamFile(std::string const& file);
       void ReadTrees(std::string const& folder, std::string const& prefix = "");
       double GetLumiScale(std::string const& sample);
 
+      //! Generate a histogram for a specific samples
+      /*! \param variable A string containing the name of a histogram branch
+      */
       TH1F GetShape(std::string const& variable,
                               std::string const& sample, 
                               std::string const& selection, 

@@ -233,11 +233,10 @@ namespace ic {
   std::map<std::size_t, bool> BTagWeight::ReTag(std::vector<PFJet *> & jets, bool is_2012) const {
     std::map<std::size_t, bool> pass_result;
     for (unsigned i = 0; i < jets.size(); ++i) {
+      rand->SetSeed((int)((jets[i]->eta()+5)*100000));
+
       double eff = BEff(jets[i]->parton_flavour(), "CSVM", jets[i]->pt(), jets[i]->eta());
       double sf = SF(jets[i]->parton_flavour(), "CSVM", jets[i]->pt(), jets[i]->eta(), is_2012);
-      // double x = jets[i]->pt();
-      // unsigned flav = std::abs(jets[i]->parton_flavour());
-      // if (is_2012 && flav !=5 && flav != 4) sf *= 1.10422 + -0.000523856*x + 1.14251e-06*x*x;
       double demoteProb_btag = 0;
       double promoteProb_btag = 0;
       if(sf < 1) {
@@ -259,7 +258,7 @@ namespace ic {
             // jets[i]->SetBDiscriminator("combinedSecondaryVertexBJetTags", 0.70);
             pass_result[jets[i]->id()] = true;
           } else {
-            pass_result[jets[i]->id()] = false;            
+            pass_result[jets[i]->id()] = false;  
           }
         }
       }
