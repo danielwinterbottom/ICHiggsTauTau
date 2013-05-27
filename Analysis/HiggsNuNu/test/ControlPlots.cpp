@@ -316,22 +316,36 @@ int main(int argc, char* argv[]){
   selections.push_back("TightMjj");
   selections.push_back("DPhiSIGNAL");
   selections.push_back("DPhiQCD");
-  
+ 
   vector<string> selectionsdir = selections;
 
-  if(dopusyst){//If do PU uncertainty get n_jets hist from systematics directory
-    if((plot_name.find("n_jets") != plot_name.npos && plot_name.find("ingap") == plot_name.npos) || (plot_name.find("n_vtx") != plot_name.npos) || (plot_name.find("dphijj") != plot_name.npos)){
-      for(int m=0;unsigned(m)<selections.size();m++){
-	selectionsdir[m]+="/systematics";
-      }
-      if(puupordown){//Do PUUP error
-	plot_name+="_puUp";
-      }
-      else if(!puupordown){//Do PUDOWN error
-	plot_name+="_puDown";
-      }
+//   if(dopusyst){//If do PU uncertainty get n_jets hist from systematics directory
+//     if((plot_name.find("n_jets") != plot_name.npos && plot_name.find("ingap") == plot_name.npos) || (plot_name.find("n_vtx") != plot_name.npos) || (plot_name.find("dphijj") != plot_name.npos)){
+//       for(int m=0;unsigned(m)<selections.size();m++){
+// 	selectionsdir[m]+="/systematics";
+//       }
+//       if(puupordown){//Do PUUP error
+// 	plot_name+="_puUp";
+//       }
+//       else if(!puupordown){//Do PUDOWN error
+// 	plot_name+="_puDown";
+//       }
+//     }
+//   }
+
+  if (plot_name.find("Up") != plot_name.npos  || plot_name.find("Down") != plot_name.npos) {
+    for(int m=0;unsigned(m)<selections.size();m++){
+      selectionsdir[m]+="/systematics";
     }
   }
+  else if (plot_name.find("_pu") != plot_name.npos || plot_name.find("_noW") != plot_name.npos) {
+    for(int m=0;unsigned(m)<selections.size();m++){
+      selectionsdir[m]+="/weights";
+    }
+  }
+
+  std::string lSuffix = "";
+  if (plot_name.find("n_jets")!= plot_name.npos) lSuffix = plot_name.substr(plot_name.find("n_jets")+6,plot_name.npos);
 
   std::map<std::string, TFile *> tfiles;
   for (unsigned i = 0; i < files.size(); ++i) {
@@ -400,7 +414,7 @@ int main(int argc, char* argv[]){
   //output a table with number of events selected
   if (lFillSummaryTable){
      //lTexOutput << "\\begin{tabular}{|l|c|c|c|c|c||c|c||c|}" << std::endl
-     lTexOutput.open(plot_dir+"/SummaryTable.txt",std::ios_base::out);
+     lTexOutput.open(plot_dir+"/SummaryTable"+lSuffix+".txt",std::ios_base::out);
      lTexOutput << "\\begin{tabular}{|l|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}|p{0.07\\textwidth}||p{0.07\\textwidth}|c||p{0.07\\textwidth}|}" << std::endl
 		<<"\\hline" << std::endl
 		<< "Step & QCD & $\\gamma$+jets & Top & W+jets & Z+jets & VV & SumMC & Data & Signal 120 \\\\"
@@ -411,7 +425,7 @@ int main(int argc, char* argv[]){
 
   for (unsigned k = 0; k < selections.size(); ++k) {
     if (skip[k]) continue;
-    if (lFillSummaryTable) lDatOutput[k].open(plot_dir+"/SummaryTable_"+selections[k]+".dat",std::ios_base::out);
+    if (lFillSummaryTable) lDatOutput[k].open(plot_dir+"/SummaryTable_"+selections[k]+lSuffix+".dat",std::ios_base::out);
     ic::Plot plot;
     plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k] + ".pdf";
     if (log_y) plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k]  + "_log.pdf";
