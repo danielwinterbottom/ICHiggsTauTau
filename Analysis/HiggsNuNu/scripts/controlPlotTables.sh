@@ -11,21 +11,19 @@ for CHANNEL in nunu enu munu #taunu
 	FOLDER=./output_vetoSF/$CHANNEL/MET$MET/
 	PLOTDIR=TABLES/$CHANNEL/MET$MET/
 	PLOTDIRQCD=TABLES/$CHANNEL/MET$MET/QCD/
-	DOPUSYST="false"
-	PUUPORDOWN="false"
 
 	if [ "$SYST" != "central" ] #if not doing central
             then
 	    if [[ "$SYST" != PU* ]] #For PU syst info is in central root file if not doing PU get output from syst subdirectory
 		then
 		FOLDER=$FOLDER"/"$SYST"/"
-	    else #If doing PU syst pass correct options
-		DOPUSYST="true"
+	    # else #If doing PU syst pass correct options
+# 		DOPUSYST="true"
 		
-		if [ "$SYST" = "PUUP" ]
-		    then
-		    PUUPORDOWN="true" #note this is false by default so PUDOWN will have correct option already
-		fi
+# 		if [ "$SYST" = "PUUP" ]
+# 		    then
+# 		    PUUPORDOWN="true" #note this is false by default so PUDOWN will have correct option already
+# 		fi
 	    fi
 	    PLOTDIR=$PLOTDIR"/"$SYST"/"
 	    PLOTDIRQCD=$PLOTDIR"/"$SYST"/QCD/"
@@ -129,9 +127,7 @@ for CHANNEL in nunu enu munu #taunu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIRQCD  \
@@ -144,9 +140,7 @@ for CHANNEL in nunu enu munu #taunu
     --norm_bins=false \
     --plot_qcd=true \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
@@ -159,9 +153,7 @@ for CHANNEL in nunu enu munu #taunu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=false \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
 ###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -175,9 +167,7 @@ for CHANNEL in nunu enu munu #taunu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
-    --paramfile=$PARAMS \
-    --dopusyst=$DOPUSYST \
-    --puupordown=$PUUPORDOWN
+    --paramfile=$PARAMS
 
     done
   done
