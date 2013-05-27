@@ -962,7 +962,7 @@ int main(int argc, char* argv[]){
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
      analysis.AddModule(&dataMCTriggerPathFilter);
-     //if (printEventList) analysis.AddModule(&hinvPrintList);
+     if (printEventList) analysis.AddModule(&hinvPrintList);
  
      ////analysis.AddModule(&runStats);
 
@@ -1010,7 +1010,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&metNoElectrons);
      analysis.AddModule(&metNoENoMu);
      
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
  
      //deal with removing overlap with selected leptons
      analysis.AddModule(&jetMuonOverlapFilter);
@@ -1062,9 +1062,9 @@ int main(int argc, char* argv[]){
        //lepton veto modules
        if (!fixForEWKZ){
 	 analysis.AddModule(&zeroVetoMuonFilter);
-	 if (printEventList) analysis.AddModule(&hinvPrintList);
+	 //if (printEventList) analysis.AddModule(&hinvPrintList);
 	 analysis.AddModule(&zeroVetoElectronFilter);
-	 if (printEventList) analysis.AddModule(&hinvPrintList);
+	 //if (printEventList) analysis.AddModule(&hinvPrintList);
       }
      }
 
@@ -1083,11 +1083,11 @@ int main(int argc, char* argv[]){
 
 
      analysis.AddModule(&jetPairFilter);
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      //jet pair selection
      analysis.AddModule(&etaProdJetPairFilter);
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      analysis.AddModule(&controlPlots_dijet);
      analysis.AddModule(&wjetsPlots_dijet);
@@ -1100,7 +1100,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&detaJetPairFilter);
      analysis.AddModule(&controlPlots_deta);
      analysis.AddModule(&wjetsPlots_deta);
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      //met modules
        
@@ -1120,14 +1120,14 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_met);
      analysis.AddModule(&wjetsPlots_met);
 
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      //tight Mjj cut
      analysis.AddModule(&tightMassJetPairFilter);
      analysis.AddModule(&controlPlots_tightMjj);
      analysis.AddModule(&wjetsPlots_tightMjj);
 
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      //dphi cut: don't filter events anymore !
      //Just plot histograms for different regions
