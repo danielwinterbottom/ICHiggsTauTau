@@ -505,9 +505,11 @@ int main(int argc, char* argv[]){
     SetBkgStyle(VV_hist,4);
 
     data_hist.set_legend_text("Data");
-    if (draw_signal_factor>1) 
-      signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
-    else signal_hist.set_legend_text("VBF m_{H}=120 GeV");
+    if (draw_signal) {
+      if (draw_signal_factor>1) 
+	signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
+      else signal_hist.set_legend_text("VBF m_{H}=120 GeV");
+    }
     ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
     if (!plot_wjets_comp) WJets_hist.set_legend_text("W+jets");
     else {

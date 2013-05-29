@@ -248,7 +248,7 @@ namespace ic {
       //event->Add("trigweight_2", tau_trg);
     }
 
-    eventInfo->set_weight("!trigger",metl1*methlt*mjjhlt*jet1hlt*jet2hlt);
+    //eventInfo->set_weight("!trigger",metl1*methlt*mjjhlt*jet1hlt*jet2hlt);
 
     //eventInfo->set_weight("lepton", weight);
 

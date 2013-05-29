@@ -117,9 +117,14 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DPhiSIGNAL");
   lSelVecControl.push_back("DPhiQCD");
 
+  //std::string lSuffix = "";
+  const unsigned nWeights = 4;
+  std::string lSuffix[nWeights] = {"","_pu","_pu_trig","_pu_trig_idiso"};
+
   bool doTaus = false;
-  bool dojes = true;
-  bool dojer = true;
+  bool dojes = false;
+  bool dojer = false;
+  bool doWeights = true;
 
   std::string TOPDIR = "../TABLES/";
 
@@ -128,6 +133,8 @@ int extractWJetsBkg(){//main
   std::string SYST[5] = {"JESUP","JESDOWN","JERBETTER","JERWORSE",""};//Order so numbers from systematics can be saved to be put in central table as syst errors
 
   unsigned MET[3] = {130,0,70};
+
+  for (unsigned iW(0); iW<(doWeights?nWeights:1); ++iW){//loop on different weights
 
   for (unsigned iMET(0); iMET<1; ++iMET){//loop on MET values
 
@@ -160,7 +167,7 @@ int extractWJetsBkg(){//main
 	  std::ostringstream lName;
 	  
 	  
-	  lName << TOPDIR << "/nunu/" << lFolder.str() << "/SummaryTable_" << lSelVecSignal[iS] << ".dat";
+	  lName << TOPDIR << "/nunu/" << lFolder.str() << "/SummaryTable_" << lSelVecSignal[iS] << lSuffix[iW] << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
 	    cerr<<"Unable to open file: "<<lName.str()<<endl;
@@ -170,7 +177,7 @@ int extractWJetsBkg(){//main
 	  lTable.close();
 	  
 	  lName.str("");
-	  lName << TOPDIR << "/enu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
+	  lName << TOPDIR << "/enu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
 	    cerr<<"Unable to open file: "<<lName.str()<<endl;
@@ -180,7 +187,7 @@ int extractWJetsBkg(){//main
 	  lTable.close();
 	  
 	  lName.str("");
-	  lName << TOPDIR << "/munu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
+	  lName << TOPDIR << "/munu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
 	    cerr<<"Unable to open file: "<<lName.str()<<endl;
@@ -191,7 +198,7 @@ int extractWJetsBkg(){//main
 
 	  if (doTaus){
 	    lName.str("");
-	    lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << ".dat";
+	    lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << ".dat";
 	    lTable.open(lName.str().c_str());
 	    if(!lTable.is_open()){
 	      cerr<<"Unable to open file: "<<lName.str()<<endl;
@@ -207,7 +214,7 @@ int extractWJetsBkg(){//main
 	std::string lChannel[4] = {"nunu","enu","munu","taunu"};
 	for (unsigned iCh(0); iCh< (doTaus ? 4 : 3); ++iCh){//loop on channel
 	  std::ostringstream lName;
-	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/WandZJetsTable.txt";
+	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/WandZJetsTable" << lSuffix[iW] << ".txt";
 	  
 	  std::ofstream lOutfile;
 	  lOutfile.open(lName.str().c_str());
@@ -237,7 +244,7 @@ int extractWJetsBkg(){//main
 	  lOutfile.close();
 
 	  lName.str("");
-	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/TopTable.txt";
+	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/TopTable" << lSuffix[iW] << ".txt";
 	  
 	  lOutfile.open(lName.str().c_str());
 	  
@@ -262,11 +269,11 @@ int extractWJetsBkg(){//main
 	}//loop on channel
 	
 	for (unsigned int iQCD(0); iQCD<2; ++iQCD){//DphiSignal or DphiQCD
-	  if(iQCD==0)std::cout<<"dphisignal"<<std::endl;
-	  if(iQCD==1)std::cout<<"dphiqcd"<<std::endl;
+	  if(iQCD==0)std::cout<<" ----- dphisignal -----"<<std::endl;
+	  if(iQCD==1)std::cout<<" ----- dphiqcd -----"<<std::endl;
 	  for (unsigned iCh(1); iCh<3; ++iCh){//loop on lep flavour
-	    if(iCh==1)std::cout<<"enu"<<std::endl;
-	    if(iCh==2)std::cout<<"munu"<<std::endl;
+	    if(iCh==1)std::cout<<" - enu"<<std::endl;
+	    if(iCh==2)std::cout<<" - munu"<<std::endl;
 
 	    events lNCdata;
 	    events lBkgCMC;
@@ -404,8 +411,8 @@ int extractWJetsBkg(){//main
 	    std::ostringstream lName;
 	    lName << TOPDIR << "/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] ;
 
-	    if (iQCD==0) lName << "/DataDrivenWJetsTable_signal.txt";
-	    else if (iQCD==1) lName << "/DataDrivenWJetsTable_QCD.txt";
+	    if (iQCD==0) lName << "/DataDrivenWJetsTable_signal" << lSuffix[iW] << " .txt";
+	    else if (iQCD==1) lName << "/DataDrivenWJetsTable_QCD" << lSuffix[iW] << ".txt";
 	    std::ofstream lOutfile;
 	    lOutfile.open(lName.str().c_str());
 	    lOutfile << "\\begin{tabular}{|l|c|c|}" << std::endl
@@ -455,6 +462,8 @@ int extractWJetsBkg(){//main
 	      //	   << "\\hline" << std::endl
 		     << "\\end{tabular}" << std::endl; 
 	    lOutfile.close();
+
+	    std::cout << "*** " << lSuffix[iW] << ": result = " << lNSdata << std::endl;
 	    
 	  }//loop on lep flavour
 	  
@@ -468,7 +477,7 @@ int extractWJetsBkg(){//main
 	  if(iSample==1) lName <<"lNCMC";
 	  if(iSample==2) lName <<"lNSdata";
 	  if(iSample==3) lName <<"lNCdata";
-	  lName << ".txt";
+	  lName << lSuffix[iW] << ".txt";
 	  std::ofstream lOutfile;
 	  lOutfile.open(lName.str().c_str());
 	  lOutfile << "\\begin{tabular}{l c c c c}" << std::endl
@@ -520,6 +529,8 @@ int extractWJetsBkg(){//main
     
   }//loop on MET values
   
+  }//loop on weights
+
   return 0;
 }//main
   

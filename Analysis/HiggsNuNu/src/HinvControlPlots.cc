@@ -251,6 +251,21 @@ namespace ic {
 
 
   void HinvControlPlots::FillWeightPlots(EventInfo * info){
+
+    //bool lPrint=false;
+    //if(sel_label_.find("DEta")!= sel_label_.npos) lPrint = true;
+//     if (lPrint) {
+//       std::cout << "------ debug ------" << std::endl
+// 		<< "-- Total weight: " << wt_ << std::endl
+// 		<< "--  pileup:" << info->weight_is_enabled("pileup") << " " << info->weight_defined("pileup") << " " << info->weight("pileup") << std::endl
+// 		<< "-- trig_metL1: " << info->weight_is_enabled("trig_metL1") << " " << info->weight_defined("trig_metL1") << " " << info->weight("trig_metL1") << std::endl
+// 		<< "-- trig_metHLT: " << info->weight_is_enabled("trig_metHLT") << " " << info->weight_defined("trig_metHLT") << " " << info->weight("trig_metHLT") << std::endl
+// 		<< "-- trig_mjjHLT: " << info->weight_is_enabled("trig_mjjHLT") << " " << info->weight_defined("trig_mjjHLT") << " " << info->weight("trig_mjjHLT") << std::endl
+// 		<< "-- trig_jet1HLT: " << info->weight_is_enabled("trig_jet1HLT") << " " << info->weight_defined("trig_jet1HLT") << " " << info->weight("trig_jet1HLT") << std::endl
+// 		<< "-- trig_jet2HLT: " << info->weight_is_enabled("trig_jet2HLT") << " " << info->weight_defined("trig_jet2HLT") << " " << info->weight("trig_jet2HLT") << std::endl
+// 		<< "-- idisoVeto: " << info->weight_is_enabled("idisoVeto") << " " << info->weight_defined("idisoVeto") << " " << info->weight("idisoVeto") << std::endl;
+//     }
+
     //first check what is in total_weight: without the !
     //need to do this because for W samples, additional weight from parton reweighting....
     double wt_pu = info->weight_is_enabled("pileup")? info->weight("pileup") : 1.0;
@@ -274,11 +289,12 @@ namespace ic {
     weightplots_->n_jets_pu->Fill(n_jets_, wt);
 
     //now add also trig and idiso also if they were not enabled
-    wt_trig = info->weight_defined("trig_metL1") ? info->weight("trig_metL1") : 1.0 *
-      info->weight_defined("trig_metHLT") ? info->weight("trig_metHLT") : 1.0  *
-      info->weight_defined("trig_mjjHLT") ? info->weight("trig_mjjHLT") : 1.0 *
-      info->weight_defined("trig_jet1HLT") ? info->weight("trig_jet1HLT") : 1.0  *
-      info->weight_defined("trig_jet2HLT") ? info->weight("trig_jet2HLT") : 1.0 ;
+    wt_trig = (info->weight_defined("trig_metL1") ? info->weight("trig_metL1") : 1.0) *
+      (info->weight_defined("trig_metHLT") ? info->weight("trig_metHLT") : 1.0)  *
+      (info->weight_defined("trig_mjjHLT") ? info->weight("trig_mjjHLT") : 1.0) *
+      (info->weight_defined("trig_jet1HLT") ? info->weight("trig_jet1HLT") : 1.0)  *
+      (info->weight_defined("trig_jet2HLT") ? info->weight("trig_jet2HLT") : 1.0) ;
+
     wt = wt*wt_trig;
     weightplots_->met_pu_trig->Fill(met_, wt);
     weightplots_->dphijj_pu_trig->Fill(dphijj_, wt);
@@ -293,7 +309,6 @@ namespace ic {
     weightplots_->dphijj_pu_trig_idiso->Fill(dphijj_, wt);
     weightplots_->n_jets_pu_trig_idiso->Fill(n_jets_, wt);
     
-
   }
 
   void HinvControlPlots::FillSystPlots(EventInfo * info){
