@@ -13,6 +13,7 @@ namespace ic {
     jesupordown_ = true; //true is up false is down
     dosmear_=false;
     dojessyst_ = false;
+    dodatajessyst= false;
   }
 
   JetMETModifier::~JetMETModifier() {
@@ -24,7 +25,7 @@ namespace ic {
     std::cout << "PreAnalysis Info for JetMETModifier" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     if(is_data_){
-      std::cout<<"Sample is data, no corrections will be made."<<std::endl;
+      //std::cout<<"Sample is data, no corrections will be made."<<std::endl;
     }
     else{
       if(dosmear_){
@@ -71,13 +72,15 @@ namespace ic {
     JESisordersame = dir.make<TH1F>("JESisordersame","JESisordersame",40,-10.,10.);
     Smearptdiff = dir2.make<TH1F>("Smearptdiff","Smearptdiff",2000,-10.,10.);
     Smear50miss = dir2.make<TH1F>("Smear50miss","Smear50miss",20,-10.,10.);
-    Smearjetgenjetptdiff = dir2.make<TH1F>("Smearjetgenjetptdiff","Smearjetgenjetptdiff",2000,-10.,10.);
+    Smearjetgenjetptdiff = dir2.make<TH1F>("Smearjetgenjetptdiff","Smearjetgenjetptdiff",600,-30.,30.);
     Smeargenmindr = dir2.make<TH1F>("Smeargenmindr","Smeargenmindr",1000,0.,10.);
+    Smearjetgenjetptratio = dir2.make<TH1F>("Smearjetgenjetptratio","Smearjetgenjetptratio",100,0.,10.);
+    Smearjetgenjetptratioetabin = dir2.make<TH2F>("Smearjetgenjetptratioetabin","Smearjetgenjetptratioetabin",100,0.,10.,100,-5.,5.);
     return 0;
   }
 
   int JetMETModifier::Execute(TreeEvent *event) {
-    if(is_data_){
+    if(is_data_&& !dodatajessyst_){
       return 0;
     }
     else{
@@ -160,6 +163,8 @@ namespace ic {
 	    if(ptcorrected<0.)ptcorrected=0.;
 	    JERptcorrfac = ptcorrected/oldjet.pt();
 	    Smearjetgenjetptdiff->Fill(oldjet.pt()-jet_genjet_pairs[index].second->pt());
+	    Smearjetgenjetptratio->Fill(oldjet.pt()/jet_genjet_pairs[index].second->pt());
+	    Smearjetgenjetptratioetabin->Fill(oldjet.pt()/jet_genjet_pairs[index].second->pt(),oldjet.eta());
 	  }
 	  else if(oldjet.pt()>50.) Smear50miss->Fill(1.); 
 	  //correct jet 4 vector
