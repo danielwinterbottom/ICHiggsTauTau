@@ -13,7 +13,7 @@ namespace ic {
     jesupordown_ = true; //true is up false is down
     dosmear_=false;
     dojessyst_ = false;
-    dodatajessyst= false;
+    dodatajessyst_= false;
   }
 
   JetMETModifier::~JetMETModifier() {
