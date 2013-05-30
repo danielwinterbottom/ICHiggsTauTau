@@ -16,6 +16,7 @@ namespace ic {
   HinvWeights::HinvWeights(std::string const& name) : ModuleBase(name),
     mc_(mc::summer12_53X),
     era_(era::data_2012_moriond) {
+    save_weights_ = true;
     do_trg_weights_     = false;
     trg_applied_in_mc_  = false;
     do_idiso_tight_weights_   = false;
@@ -40,10 +41,12 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "Era: " << Era2String(era_) << std::endl;
     std::cout << "MC: " << MC2String(mc_) << std::endl;
+    std::cout << "Save weights: " << save_weights_ << std::endl;
     std::cout << "Do Trg Weights?: \t\t" << do_trg_weights_ << std::endl;
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
     std::cout << "Do ID & iso weights for Tight leptons ?: \t\t" << do_idiso_tight_weights_ << std::endl;
     std::cout << "Do ID & iso weights for veto leptons ?: \t\t" << do_idiso_veto_weights_ << std::endl;
+
 
     if (do_w_soup_) {
       std::cout << "Making W Soup:" << std::endl;
@@ -70,6 +73,7 @@ namespace ic {
       std::cout << "f4 = " << zf4_ << "\t" << "n4 = " << zn4_ << "\t" << "w4 = " << zw4_ << std::endl;
     }
 
+    if (save_weights_){
     // do weights even if not applied, to fill histo with weight for comparison !
     //get trigger scale factor histograms from file
     triggerSF_ = new TFile("data/scale_factors/DataMCWeight_53X_v1.root");
@@ -153,16 +157,18 @@ namespace ic {
     eventsWithGenMuonInAcc_ = 0;
     eventsWithGenMuonFromTauInAcc_ = 0;
     eventsWithGenTau_ = 0;
+    }
 
     return 0;
   }
 
   int HinvWeights::Execute(TreeEvent *event) {
 
-    //std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
+    EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
+
+    if (save_weights_){
 
     //double weight = 1.0;
-    EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
  //    if (do_btag_weight_) {
 //       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
@@ -253,59 +259,6 @@ namespace ic {
 
     //eventInfo->set_weight("lepton", weight);
 
-    bool zeroParton = false;
-
-    if (do_w_soup_) {
-      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      bool count_jets = false;
-      unsigned partons = 0;
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        if (parts[i]->status() != 3) continue;
-        unsigned id = abs(parts[i]->pdgid());
-        if (count_jets) { 
-          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
-        }
-        if (id == 24) count_jets = true; 
-      }
-      if (partons > 4) {
-        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
-        throw;
-      }
-      if (partons == 1) eventInfo->set_weight("wsoup", w1_);
-      if (partons == 2) eventInfo->set_weight("wsoup", w2_);
-      if (partons == 3) eventInfo->set_weight("wsoup", w3_);
-      if (partons == 4) eventInfo->set_weight("wsoup", w4_);
-
-      if (partons == 0) zeroParton = true;
-
-    }
-
-    if (do_dy_soup_) {
-      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-      bool count_jets = false;
-      unsigned partons = 0;
-      for (unsigned i = 0; i < parts.size(); ++i) {
-        // std::cout << i << "\t" << parts[i]->status() << "\t" << parts[i]->pdgid() << "\t" << parts[i]->vector() << std::endl;
-        if (parts[i]->status() != 3) continue;
-        unsigned id = abs(parts[i]->pdgid());
-        if (count_jets) { 
-          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
-        }
-        if (id == 23) count_jets = true; 
-      }
-      if (partons > 4) {
-        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
-        throw;
-      }
-      if (partons == 1) eventInfo->set_weight("dysoup", zw1_);
-      if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
-      if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
-      if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
-      if (partons == 0) zeroParton = true;
-    }
-
-    event->Add("NoParton",zeroParton);
-
     //ID+iso tight leptons
     std::vector<Electron*> const& elecs = event->GetPtrVec<Electron>("selElectrons");
     double ele_weight = 1.0;
@@ -386,10 +339,69 @@ namespace ic {
     if (do_idiso_veto_weights_) eventInfo->set_weight("idisoVeto",ele_veto_weight*mu_veto_weight);
     else eventInfo->set_weight("!idisoVeto",ele_veto_weight*mu_veto_weight);
 
+
+
+    }
+
+
+    bool zeroParton = false;
+
+    if (do_w_soup_) {
+      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      bool count_jets = false;
+      unsigned partons = 0;
+      for (unsigned i = 0; i < parts.size(); ++i) {
+        if (parts[i]->status() != 3) continue;
+        unsigned id = abs(parts[i]->pdgid());
+        if (count_jets) { 
+          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+        }
+        if (id == 24) count_jets = true; 
+      }
+      if (partons > 4) {
+        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+        throw;
+      }
+      if (partons == 1) eventInfo->set_weight("wsoup", w1_);
+      if (partons == 2) eventInfo->set_weight("wsoup", w2_);
+      if (partons == 3) eventInfo->set_weight("wsoup", w3_);
+      if (partons == 4) eventInfo->set_weight("wsoup", w4_);
+
+      if (partons == 0) zeroParton = true;
+
+    }
+
+    if (do_dy_soup_) {
+      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      bool count_jets = false;
+      unsigned partons = 0;
+      for (unsigned i = 0; i < parts.size(); ++i) {
+        // std::cout << i << "\t" << parts[i]->status() << "\t" << parts[i]->pdgid() << "\t" << parts[i]->vector() << std::endl;
+        if (parts[i]->status() != 3) continue;
+        unsigned id = abs(parts[i]->pdgid());
+        if (count_jets) { 
+          if (id == 1 || id == 2 || id == 3 || id == 4 || id == 5 || id == 6 || id == 21) partons++;
+        }
+        if (id == 23) count_jets = true; 
+      }
+      if (partons > 4) {
+        std::cerr << "Error making soup, event has " << partons << " partons!" << std::endl;
+        throw;
+      }
+      if (partons == 1) eventInfo->set_weight("dysoup", zw1_);
+      if (partons == 2) eventInfo->set_weight("dysoup", zw2_);
+      if (partons == 3) eventInfo->set_weight("dysoup", zw3_);
+      if (partons == 4) eventInfo->set_weight("dysoup", zw4_);
+      if (partons == 0) zeroParton = true;
+    }
+
+    if (!save_weights_) event->Add("NoParton",zeroParton);
+
     return 0;
   }
 
   int HinvWeights::PostAnalysis() {
+    if (save_weights_) {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PostAnalysis Info for HinvWeights" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
@@ -402,7 +414,8 @@ namespace ic {
     std::cout << " -- eventsWithGenMuonFromTau_ = " << eventsWithGenMuonFromTau_ << std::endl;
     std::cout << " -- eventsWithGenMuonFromTauInAcc_ = " << eventsWithGenMuonFromTauInAcc_ << std::endl;
     std::cout << " -- eventsWithGenTau_ = " << eventsWithGenTau_ << std::endl;
- 
+    }
+
     return 0;
   }
 

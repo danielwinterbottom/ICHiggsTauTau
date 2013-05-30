@@ -15,6 +15,7 @@ class HinvWeights : public ModuleBase {
  private:
   CLASS_MEMBER(HinvWeights, ic::mc, mc)
   CLASS_MEMBER(HinvWeights, ic::era, era)
+  CLASS_MEMBER(HinvWeights, bool, save_weights)
   CLASS_MEMBER(HinvWeights, bool, do_trg_weights)
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)

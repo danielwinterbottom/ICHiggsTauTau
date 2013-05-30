@@ -689,6 +689,7 @@ int main(int argc, char* argv[]){
   HinvWeights hinvWeights = HinvWeights("HinvWeights")
     .set_era(era)
     .set_mc(mc)
+    .set_save_weights(true)
     .set_do_trg_weights(false)
     .set_trg_applied_in_mc(true)
     .set_do_idiso_tight_weights(false)
@@ -704,25 +705,34 @@ int main(int argc, char* argv[]){
     else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
   }
 
+  HinvWeights xsWeights = HinvWeights("XSWeights")
+    .set_era(era)
+    .set_mc(mc)
+    .set_save_weights(false)
+    .set_do_trg_weights(false)
+    .set_trg_applied_in_mc(false)
+    .set_do_idiso_tight_weights(false)
+    .set_do_idiso_veto_weights(false);
+
   if (output_name.find("JetsToLNu") != output_name.npos) {
-    hinvWeights.set_do_w_soup(true);
+    xsWeights.set_do_w_soup(true);
     if (mc == mc::summer12_53X) {
-      hinvWeights.SetWTargetFractions(0.74069073, 0.1776316, 0.0575658, 0.0170724, 0.00703947);
-      hinvWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
-      //hinvWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
+      xsWeights.SetWTargetFractions(0.74069073, 0.1776316, 0.0575658, 0.0170724, 0.00703947);
+      xsWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
+      //xsWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
     }
   }
   if (output_name.find("JetsToLL") != output_name.npos && 
       output_name.find("PtZ-100-madgraph") == output_name.npos && 
       output_name.find("DYJJ01") == output_name.npos) {
     if (mc == mc::summer12_53X) {
-      hinvWeights.set_do_dy_soup(true);
-      hinvWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
+      xsWeights.set_do_dy_soup(true);
+      xsWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
       if(prod=="Apr04"){
-	hinvWeights.SetDYInputYields(30459503.0, 23970248.0, 21852156.0, 11015445.0, 6402827.0);
+	xsWeights.SetDYInputYields(30459503.0, 23970248.0, 21852156.0, 11015445.0, 6402827.0);
       }
       else{
-	hinvWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
+	xsWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
       }
     }
   }
@@ -958,6 +968,8 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&pileupWeight);
      analysis.AddModule(&pileupWeight_up);
      analysis.AddModule(&pileupWeight_down);
+     //just apply W and Z weights
+     analysis.AddModule(&xsWeights);
    }
    
    if (!do_skim) {
