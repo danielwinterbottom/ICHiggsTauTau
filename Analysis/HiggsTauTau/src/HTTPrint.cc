@@ -161,6 +161,7 @@ namespace ic {
       std::cout << "-L2Relative: " << jets[i]->GetJecFactor("L2Relative") << std::endl;
       std::cout << "-L3Absolute: " << jets[i]->GetJecFactor("L3Absolute") << std::endl;
       std::cout << "-L2L3Residual: " << jets[i]->GetJecFactor("L2L3Residual") << std::endl;
+      std::cout << "-CSV: " << jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags") << std::endl;
 
       std::vector<PFJet*>::const_iterator it = std::find(matched_jets.begin(),matched_jets.end(), jets[i]);
       if (it != matched_jets.end()) {

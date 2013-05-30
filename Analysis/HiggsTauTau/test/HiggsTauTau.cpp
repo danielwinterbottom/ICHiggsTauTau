@@ -866,7 +866,7 @@ int main(int argc, char* argv[]){
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(2)
     .set_require_inputs_match(false)
-    .set_split(7000)
+    .set_split(5000)
     .set_dilepton_label("emtauCandidates")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder);
@@ -979,7 +979,7 @@ int main(int argc, char* argv[]){
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
-    if (mc != mc::fall11_42X && !make_sync_ntuple)     analysis.AddModule(&httRecoilCorrector);
+                                  analysis.AddModule(&httRecoilCorrector);
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) {
                                   analysis.AddModule(&svfit);
