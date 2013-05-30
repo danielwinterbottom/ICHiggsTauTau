@@ -118,8 +118,8 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DPhiQCD");
 
   //std::string lSuffix = "";
-  const unsigned nWeights = 4;
-  std::string lSuffix[nWeights] = {"","_pu","_pu_trig","_pu_trig_idiso"};
+  const unsigned nWeights = 6;
+  std::string lSuffix[nWeights] = {"","_pu","_puUp","_puDown","_pu_trig","_pu_trig_idiso"};
 
   bool doTaus = false;
   bool dojes = false;
