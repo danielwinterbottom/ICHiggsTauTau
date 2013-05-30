@@ -22,6 +22,7 @@ namespace ic {
     do_idiso_veto_weights_   = false;
     do_w_soup_          = false;
     do_dy_soup_          = false;
+    input_met_ = "metNoMuons";
     hist_trigSF_METL1 = 0;
     hist_trigSF_METHLT = 0;
     hist_trigSF_MjjHLT = 0;
@@ -176,7 +177,7 @@ namespace ic {
 //     }
 
     //get METnoMuons:
-    Met const* metNoMu = event->GetPtr<Met>("metNoMuons");
+    Met const* metNoMu = event->GetPtr<Met>(input_met_);
     
     double lValue = metNoMu->pt();
     double lMax = hist_trigSF_METL1->GetXaxis()->GetBinCenter(hist_trigSF_METL1->GetNbinsX());
@@ -187,7 +188,7 @@ namespace ic {
     double metl1 = hist_trigSF_METL1->GetBinContent(lBin);
     if (do_trg_weights_) eventInfo->set_weight("trig_metL1",metl1);
     else eventInfo->set_weight("!trig_metL1",metl1);
-      //std::cout << " -- MET L1 " << lValue << " " << metl1 << std::endl;
+    //std::cout << " -- MET L1 " << lValue << " " << metl1 << std::endl;
 
     lMax = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(hist_trigSF_METHLT->GetNbinsX());
     lMin = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(1);
@@ -204,7 +205,7 @@ namespace ic {
     double jet2hlt = 1.0;
 
     //get 2 leading jets
-    std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>("jjCandidates");
+    std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>("jjLeadingCandidates");
     if (dijet_vec.size() > 0) {
       
       CompositeCandidate const* dijet = dijet_vec.at(0);

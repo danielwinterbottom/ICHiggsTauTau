@@ -97,6 +97,8 @@ namespace ic {
       fout << "Lepton Rho: " << eventInfo->lepton_rho() << std::endl;
       Met *lMet = event->GetPtr<Met>("pfMetType1");
       fout << "PF MET type0+1 : " << lMet->pt() << std::endl;
+      Met *lMetNoMu = event->GetPtr<Met>("metNoMuons");
+      fout << "PF MET no muons : " << lMetNoMu->pt() << std::endl;
 
       fout << "-----------------------------------------" << std::endl;
       fout << "   Printing collection muonsPFlow" << std::endl;

@@ -21,6 +21,8 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_idiso_veto_weights)
   CLASS_MEMBER(HinvWeights, bool, do_w_soup)
   CLASS_MEMBER(HinvWeights, bool, do_dy_soup)
+  CLASS_MEMBER(HinvWeights, std::string, input_met)
+  
 
   TFile *triggerSF_;
   TH1F *hist_trigSF_METL1;
