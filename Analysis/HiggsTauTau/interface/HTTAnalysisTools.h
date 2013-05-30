@@ -62,6 +62,8 @@ namespace ic {
           desription for further details.
       */
       void ParseParamFile(std::string const& file);
+      void AddSMSignalSamples(std::vector<std::string> masses);
+      void AddMSSMSignalSamples(std::vector<std::string> masses);
       void ReadTrees(std::string const& folder, std::string const& prefix = "");
       double GetLumiScale(std::string const& sample);
 
@@ -155,6 +157,8 @@ namespace ic {
                               std::string const& weight,
                               std::map<std::string, std::function<Value()>> dict
                               );
+      // void FillAllByMethod(std::map<std::string, std::pair<Value, TH1F>> & m,
+      //                       unsigned method)
 
 
 

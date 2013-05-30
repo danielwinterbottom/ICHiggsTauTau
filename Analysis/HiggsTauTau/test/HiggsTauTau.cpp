@@ -322,7 +322,13 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
 
   string data_json = "";
-  if (era == era::data_2011)              data_json = "data/json/json_data_2011_et_mt.txt";
+  if (era == era::data_2011) {
+    if (channel == channel::em) {
+      data_json = "data/json/json_data_2011.txt";
+    } else{
+      data_json = "data/json/json_data_2011_et_mt.txt";
+    }
+  }             
   if (era == era::data_2012_hcp)          data_json = "data/json/data_2012_hcp.txt";
   if (era == era::data_2012_moriond) {
     if (strategy == strategy::hcp2012 || strategy == strategy::moriond2013) {
@@ -404,7 +410,7 @@ int main(int argc, char* argv[]){
     .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
     .set_min(1);
-  if (era == era::data_2011) embeddedMassFilter.set_input_label("genParticles");
+  if (era == era::data_2011 && strategy == strategy::hcp2012) embeddedMassFilter.set_input_label("genParticles");
 
 
   string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";

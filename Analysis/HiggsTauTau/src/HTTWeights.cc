@@ -59,6 +59,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_btag_weight"      % do_btag_weight_;
 
     if (ggh_mass_ != "") {
+      if (ggh_mass_ == "90" || ggh_mass_ == "95" || 
+          ggh_mass_ == "100" || ggh_mass_ == "105") ggh_mass_ = "110";
       std::string file = "data/ggh_weights/weight_ptH_"+ggh_mass_+".root";
       std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
       ggh_weights_ = new TFile(file.c_str());
@@ -83,7 +85,11 @@ namespace ic {
       ElectronFRFile = new TFile(electron_fr_file.c_str());
       MuonFRFile = new TFile(muon_fr_file.c_str());
       ElectronFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(ElectronFRFile->Get("ElectronFakeRateDenominatorV4_Ele8CaloIdLCaloIsoVLCombinedSample_ptThreshold35_PtEta"));
-      MuonFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(MuonFRFile->Get("MuonFakeRateDenominatorV6_Mu8PtCombinedSample_ptThreshold25_PtEta"));
+      if (mc_ == mc::fall11_42X) {
+        MuonFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(MuonFRFile->Get("MuonFakeRateDenominatorV4_Mu8PtCombinedSample_ptThreshold15_PtEta"));        
+      } else {
+        MuonFakeRateHist_PtEta = (mithep::TH2DAsymErr*)(MuonFRFile->Get("MuonFakeRateDenominatorV6_Mu8PtCombinedSample_ptThreshold25_PtEta"));        
+      }
       ElectronFakeRateHist_PtEta->SetDirectory(0);
       MuonFakeRateHist_PtEta->SetDirectory(0);
     }

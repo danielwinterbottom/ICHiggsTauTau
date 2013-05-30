@@ -93,6 +93,21 @@ namespace ic {
     }
   }
 
+  void HTTAnalysis::AddSMSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("GluGluToHToTauTau_M-"+m);
+      sample_names_.push_back("VBF_HToTauTau_M-"+m);
+      sample_names_.push_back("WH_ZH_TTH_HToTauTau_M-"+m);
+    }
+  }
+
+  void HTTAnalysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
+      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
+    }
+  };
+
 
   void HTTAnalysis::ReadTrees(std::string const& folder, std::string const& prefix) {
     if (verbosity_) std::cout << "Reading input files..." << std::endl;
