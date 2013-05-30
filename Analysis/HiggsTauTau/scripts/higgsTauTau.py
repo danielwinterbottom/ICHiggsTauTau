@@ -289,7 +289,7 @@ if options.proc_bkg or options.proc_all:
           soups = ['', 'Soup']
           if options.do_2011: soups.remove('Soup')
           for sp in soups:  
-            if options.do_2011:
+            if options.do_2011 and ERA=='Total':
               JOB='DYJetsToTauTau%s_%s_%s' % (sp,ch,YR)
               os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToTauTau%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
                 ' --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
@@ -324,7 +324,9 @@ if options.proc_bkg or options.proc_all:
             os.system('%(JOBSUBMIT)s jobs/Special_18_%(JOB)s-%(sc)s.sh' % vars())
 
         if ch in ['em'] and sc in ['0']:
-          for sp in ['', 'Soup']: 
+          soups = ['', 'Soup']
+          if options.do_2011: soups.remove('Soup')
+          for sp in soups: 
             JOB='DYJetsToTauTau%s_%s_%s' % (sp,ch,YR)
             os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=0 --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
               ' --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
