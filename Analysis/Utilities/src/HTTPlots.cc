@@ -4,8 +4,8 @@ namespace ic {
 
   MassPlots::MassPlots(TFileDirectory const& dir) {
     TH1F::SetDefaultSumw2();
-    m_sv = dir.make<TH1F>("m_sv","m_sv", 350, 0, 350); 
-    m_vis = dir.make<TH1F>("m_vis","m_vis",  350, 0, 350); 
+    m_sv = dir.make<TH1F>("m_sv","m_sv", 70, 0, 350); 
+    m_vis = dir.make<TH1F>("m_vis","m_vis",  70, 0, 350); 
     double bins_sm[14] =        { 0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350. };
     double bins_sm_fine[27] =   { 0., 10, 20., 30., 40., 50., 60., 70., 80., 90., 100., 110, 120., 130., 140., 150., 160., 170., 180., 190., 200., 225., 250., 275., 300., 325., 350. };
     double bins_mssm[19] =      {0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500}; 
