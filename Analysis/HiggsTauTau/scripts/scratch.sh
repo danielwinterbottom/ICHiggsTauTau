@@ -324,5 +324,8 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
   --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=150 \
   --paramfile=./scripts/Moriond_params_2012.dat --replace_os_sel="os_con"  --replace_ss_sel="ss_con"
 
-
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_sm_2011.cfg  --tau_scale_mode=0 --channel=em --rebin=1 \
+  --method=8 --plot_name=m_vis_sm_fine  --x_axis_label="m_{#tau#tau} [GeV]"
+  --make_datacard=false --norm_bins=true --verbose=true
+  --paramfile=scripts/Paper_params_2011.dat --folder=output/Paper_2013/
 
