@@ -46,7 +46,8 @@ namespace ic {
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
     std::cout << "Do ID & iso weights for Tight leptons ?: \t\t" << do_idiso_tight_weights_ << std::endl;
     std::cout << "Do ID & iso weights for veto leptons ?: \t\t" << do_idiso_veto_weights_ << std::endl;
-
+    std::cout << "Input MET for MET HLT:  \t\t" << input_met_ << std::endl;
+    std::cout << "Note: Input MET for MET L1 is always metNoMuons." << std::endl;
 
     if (do_w_soup_) {
       std::cout << "Making W Soup:" << std::endl;
@@ -183,9 +184,10 @@ namespace ic {
 //     }
 
     //get METnoMuons:
-    Met const* metNoMu = event->GetPtr<Met>(input_met_);
+    Met const* metHLT = event->GetPtr<Met>(input_met_);
+    Met const* metL1 = event->GetPtr<Met>("metNoMuons");
     
-    double lValue = metNoMu->pt();
+    double lValue = metL1->pt();
     double lMax = hist_trigSF_METL1->GetXaxis()->GetBinCenter(hist_trigSF_METL1->GetNbinsX());
     double lMin = hist_trigSF_METL1->GetXaxis()->GetBinCenter(1);
     if (lValue > lMax)  lValue = lMax;
@@ -196,6 +198,7 @@ namespace ic {
     else eventInfo->set_weight("!trig_metL1",metl1);
     //std::cout << " -- MET L1 " << lValue << " " << metl1 << std::endl;
 
+    lValue = metHLT->pt();
     lMax = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(hist_trigSF_METHLT->GetNbinsX());
     lMin = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(1);
     if (lValue > lMax)  lValue = lMax;

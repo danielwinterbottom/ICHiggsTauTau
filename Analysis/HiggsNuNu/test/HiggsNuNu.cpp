@@ -695,7 +695,7 @@ int main(int argc, char* argv[]){
     .set_do_idiso_tight_weights(false)
     .set_do_idiso_veto_weights(false)
     .set_input_met("metNoMuons");
-  if (channel == channel::enu) hinvWeights.set_input_met("metNoENoMu");
+  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
   
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)

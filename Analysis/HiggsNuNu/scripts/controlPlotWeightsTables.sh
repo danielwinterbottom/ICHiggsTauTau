@@ -3,9 +3,9 @@ PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
 
-for CHANNEL in nunu #enu munu #taunu
+for CHANNEL in nunu enu munu taunu
   do
-  for MET in 130 0 #70
+  for MET in 130 #70
     do
     for SYST in central #PUUP PUDOWN #central JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
       do

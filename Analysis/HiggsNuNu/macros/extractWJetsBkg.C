@@ -121,7 +121,7 @@ int extractWJetsBkg(){//main
   const unsigned nWeights = 6;
   std::string lSuffix[nWeights] = {"","_pu","_puUp","_puDown","_pu_trig","_pu_trig_idiso"};
 
-  bool doTaus = false;
+  bool doTaus = true;
   bool dojes = false;
   bool dojer = false;
   bool doWeights = true;
@@ -135,6 +135,8 @@ int extractWJetsBkg(){//main
   unsigned MET[3] = {130,0,70};
 
   for (unsigned iW(0); iW<(doWeights?nWeights:1); ++iW){//loop on different weights
+
+    std::cout << " -- Processing weight " << lSuffix[iW] << std::endl;
 
   for (unsigned iMET(0); iMET<1; ++iMET){//loop on MET values
 
@@ -268,6 +270,31 @@ int extractWJetsBkg(){//main
 	  
 	}//loop on channel
 	
+
+	if (doTaus){
+
+	  events nData = lSel[3][DPhiSIGNAL][Data];
+	  events nBkg = lSel[3][DPhiSIGNAL][Top];
+	  nBkg += lSel[3][DPhiSIGNAL][ZJets];
+	  nBkg += lSel[3][DPhiSIGNAL][VV];
+	  efficiency eps_tau;
+	  eps_tau.num = lSel[3][DPhiSIGNAL][WJets_taunu];
+	  eps_tau.den = lSel[0][DPhiSIGNAL][WJets_taunu];
+
+	  events nDataW = nData;
+	  nDataW -= nBkg;
+	  events result = nDataW;
+	  result.number = nDataW.number/eps_tau.eff();
+	  result.error = sqrt(pow(nDataW.error/eps_tau.eff(),2)+pow(nDataW.number*eps_tau.error()/pow(eps_tau.eff(),2),2));
+
+	  std::cout << "------ taunu estimates:---------" << std::endl
+		    << "nData = $" << nData.number  << "\\pm " << nData.error  << "$" << std::endl
+		    << "nBkg = $" << nBkg.number  << "\\pm " << nBkg.error  << "$" << std::endl
+		    << "eff_tau = " << eps_tau << std::endl
+		    << "*** result = " << result.number  << "\\pm " << result.error << "$" << std::endl;
+	}
+
+
 	for (unsigned int iQCD(0); iQCD<2; ++iQCD){//DphiSignal or DphiQCD
 	  if(iQCD==0)std::cout<<" ----- dphisignal -----"<<std::endl;
 	  if(iQCD==1)std::cout<<" ----- dphiqcd -----"<<std::endl;
@@ -411,25 +438,25 @@ int extractWJetsBkg(){//main
 	    std::ostringstream lName;
 	    lName << TOPDIR << "/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] ;
 
-	    if (iQCD==0) lName << "/DataDrivenWJetsTable_signal" << lSuffix[iW] << " .txt";
+	    if (iQCD==0) lName << "/DataDrivenWJetsTable_signal" << lSuffix[iW] << ".txt";
 	    else if (iQCD==1) lName << "/DataDrivenWJetsTable_QCD" << lSuffix[iW] << ".txt";
 	    std::ofstream lOutfile;
 	    lOutfile.open(lName.str().c_str());
 	    lOutfile << "\\begin{tabular}{|l|c|c|}" << std::endl
 		     << "\\hline" << std::endl
-		     << " & Signal Region & Control Region \\\\" << std::endl
+		     << " & Signal sample & Control sample \\\\" << std::endl
 		     << "\\hline" << std::endl
 		     << "$N_{data}$ & XXX & " << lSel[iCh][DPhiSIGNAL+iQCD][Data].number << "\\\\" << std::endl;
 	    lOutfile << std::setprecision(3)
 		     << lBkgSMC.sample << " & " 
 		     << " n/a & " 
 		     << lBkgCMC << " \\\\" << std::endl
-		     << eps_lepveto_S.name  << " & " 
-		     << eps_lepveto_S  << " & " 
-		     << eps_lepsel_C << " \\\\" << std::endl
-		     << eps_VBF_S.name  << " & " 
-		     << eps_VBF_S  << " & " 
-		     << eps_VBF_C << " \\\\" << std::endl
+	      //<< eps_lepveto_S.name  << " & " 
+	      //<< eps_lepveto_S  << " & " 
+	      //<< eps_lepsel_C << " \\\\" << std::endl
+	      //<< eps_VBF_S.name  << " & " 
+	      //<< eps_VBF_S  << " & " 
+	      //<< eps_VBF_C << " \\\\" << std::endl
 		     << std::setprecision(3)
 		     << lNSMC.sample  << " & " 
 		     << lNSMC; 

@@ -3,15 +3,15 @@ PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
 
-for CHANNEL in nunu #enu munu #taunu
+for CHANNEL in nunu enu munu taunu
   do
   for MET in 130 0 #70
     do
     for SYST in central #PUUP PUDOWN #central JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
       do
-	FOLDER=./output_noVetoSF/$CHANNEL/MET$MET/
-	PLOTDIR=TABLES_noVetoSF/$CHANNEL/MET$MET/
-	PLOTDIRQCD=TABLES_noVetoSF/$CHANNEL/MET$MET/QCD/
+	FOLDER=./output/$CHANNEL/MET$MET/
+	PLOTDIR=TABLES/$CHANNEL/MET$MET/
+	PLOTDIRQCD=TABLES/$CHANNEL/MET$MET/QCD/
 
 	if [ "$SYST" != "central" ] #if not doing central
             then
@@ -66,18 +66,6 @@ for CHANNEL in nunu #enu munu #taunu
     --log_y=true \
     --paramfile=$PARAMS
  
-#./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-#    --folder=$FOLDER --plot_dir=$PLOTDIR \
-#    --plot_name="n_jets_puUp"  --x_axis_label="Number of jets" \
-#    --blind=$BLIND \
-#    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
-#    --y_axis_min=0.01 --extra_pad=1000 \
-#    --rebin=1 \
-#    --norm_bins=false --verbose=false \
-#    --plot_qcd=false \
-#    --log_y=true \
-#    --paramfile=$PARAMS
-
 ###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
@@ -118,7 +106,6 @@ for CHANNEL in nunu #enu munu #taunu
     --log_y=false \
     --paramfile=$PARAMS
 
-###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR"/wjetsComp/"  \
     --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
