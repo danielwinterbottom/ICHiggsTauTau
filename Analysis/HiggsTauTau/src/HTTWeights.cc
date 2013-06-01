@@ -582,27 +582,43 @@ namespace ic {
             }
           }
         } else if (mc_ == mc::fall11_42X) {
-          if (m_eta < 1.5) {
-            if (m_pt <= 15.0) m_trg = 1.01;
-            if (m_pt > 15.0 && m_pt <= 20.0) m_trg = 0.99;
-            if (m_pt > 20.0 && m_pt <= 30.0) m_trg = 0.99;
-            if (m_pt > 30.0) m_trg = 0.992;
+          if (m_eta < 0.8) {
+            if (m_pt <= 15.0)                 { m_trg_mc = 0.984910277; m_trg = 0.9660; }
+            if (m_pt > 15.0 && m_pt <= 20.0)  { m_trg_mc = 0.985725938; m_trg = 0.9668; }
+            if (m_pt > 20.0 && m_pt <= 25.0)  { m_trg_mc = 0.984354758; m_trg = 0.9878; }
+            if (m_pt > 25.0 && m_pt <= 30.0)  { m_trg_mc = 0.986547085; m_trg = 0.9680; }
+            if (m_pt > 30.0)                  { m_trg_mc = 0.988551569; m_trg = 0.9671; }
+          } else if (m_eta >= 0.8 && m_eta < 1.2) {
+            if (m_pt <= 15.0)                 { m_trg_mc = 0.967889432; m_trg = 0.9314; }
+            if (m_pt > 15.0 && m_pt <= 20.0)  { m_trg_mc = 0.975998366; m_trg = 0.9556; }
+            if (m_pt > 20.0 && m_pt <= 25.0)  { m_trg_mc = 0.979876161; m_trg = 0.9495; }
+            if (m_pt > 25.0 && m_pt <= 30.0)  { m_trg_mc = 0.976183175; m_trg = 0.9550; }
+            if (m_pt > 30.0)                  { m_trg_mc = 0.982728307; m_trg = 0.9502; }
           } else {
-            if (m_pt <= 15.0) m_trg = 1.03;
-            if (m_pt > 15.0 && m_pt <= 20.0) m_trg = 1.07;
-            if (m_pt > 20.0 && m_pt <= 30.0) m_trg = 1.04;
-            if (m_pt > 30.0) m_trg = 1.06;
+            if (m_pt <= 15.0)                 { m_trg_mc = 0.958862737; m_trg = 0.9207; }
+            if (m_pt > 15.0 && m_pt <= 20.0)  { m_trg_mc = 0.966324889; m_trg = 0.9613; }
+            if (m_pt > 20.0 && m_pt <= 25.0)  { m_trg_mc = 0.967505674; m_trg = 0.9379; }
+            if (m_pt > 25.0 && m_pt <= 30.0)  { m_trg_mc = 0.970721649; m_trg = 0.9416; }
+            if (m_pt > 30.0)                  { m_trg_mc = 0.969919372; m_trg = 0.9383; }
           }
-          if (e_eta < 1.479) {
-            if (e_pt <= 15.0) e_trg = 0.98;
-            if (e_pt > 15.0 && e_pt <= 20.0) e_trg = 1.00;
-            if (e_pt > 20.0 && e_pt <= 30.0) e_trg = 1.001;
-            if (e_pt > 30.0) e_trg = 1.003;
+          if (e_eta < 0.8) {
+            if (e_pt <= 15.0)                 { e_trg_mc = 0.786907216; e_trg = 0.7633; }
+            if (e_pt > 15.0 && e_pt <= 20.0)  { e_trg_mc = 0.806727273; e_trg = 0.8874; }
+            if (e_pt > 20.0 && e_pt <= 25.0)  { e_trg_mc = 0.938775510; e_trg = 0.9200; }
+            if (e_pt > 25.0 && e_pt <= 30.0)  { e_trg_mc = 0.958571429; e_trg = 0.9394; }
+            if (e_pt > 30.0)                  { e_trg_mc = 0.974040404; e_trg = 0.9643; }
+          } else if (e_eta >= 0.8 && e_eta < 1.479) {
+            if (e_pt <= 15.0)                 { e_trg_mc = 0.750612245; e_trg = 0.7356; }
+            if (e_pt > 15.0 && e_pt <= 20.0)  { e_trg_mc = 0.849722222; e_trg = 0.9177; }
+            if (e_pt > 20.0 && e_pt <= 25.0)  { e_trg_mc = 0.961111111; e_trg = 0.9515; }
+            if (e_pt > 25.0 && e_pt <= 30.0)  { e_trg_mc = 0.977171717; e_trg = 0.9674; }
+            if (e_pt > 30.0)                  { e_trg_mc = 0.977800000; e_trg = 0.9778; }
           } else {
-            if (e_pt <= 15.0) e_trg = 0.97;
-            if (e_pt > 15.0 && e_pt <= 20.0) e_trg = 1.05;
-            if (e_pt > 20.0 && e_pt <= 30.0) e_trg = 1.00;
-            if (e_pt > 30.0) e_trg = 1.008;
+            if (e_pt <= 15.0)                 { e_trg_mc = 0.865432099; e_trg = 0.7010; }
+            if (e_pt > 15.0 && e_pt <= 20.0)  { e_trg_mc = 0.809523810; e_trg = 0.8500; }
+            if (e_pt > 20.0 && e_pt <= 25.0)  { e_trg_mc = 0.971145833; e_trg = 0.9323; }
+            if (e_pt > 25.0 && e_pt <= 30.0)  { e_trg_mc = 0.967291667; e_trg = 0.9286; }
+            if (e_pt > 30.0)                  { e_trg_mc = 0.983535354; e_trg = 0.9737; }
           }
         }
         if (trg_applied_in_mc_) {
@@ -913,23 +929,31 @@ namespace ic {
             }
           }
         } else {
-          if (m_eta < 1.5) {
-            if (m_pt <= 15.0)                 m_idiso = 0.9895;
-            if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 1.0168;
-            if (m_pt > 20.0)                  m_idiso = 1.0061;
+          if (m_eta < 0.8) {
+            if (m_pt <= 15.0)                 m_idiso = 0.9303;
+            if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 1.0176;
+            if (m_pt > 20.0)                  m_idiso = 0.9998;
+          } else if (m_eta >= 0.8 && m_eta < 1.2) {
+            if (m_pt <= 15.0)                 m_idiso = 1.0125;
+            if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 1.0040;
+            if (m_pt > 20.0)                  m_idiso = 1.0006;
           } else {
-            if (m_pt <= 15.0)                 m_idiso = 1.0303;
-            if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 1.0247;
-            if (m_pt > 20.0)                  m_idiso = 1.0144;
+            if (m_pt <= 15.0)                 m_idiso = 0.9994;
+            if (m_pt > 15.0 && m_pt <= 20.0)  m_idiso = 1.0063;
+            if (m_pt > 20.0)                  m_idiso = 1.0045;
           }
-          if (e_eta < 1.479) {
-            if (e_pt <= 15.0)                 e_idiso = 1.0396;
-            if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.9622;
-            if (e_pt > 20.0)                  e_idiso = 0.9849;
+          if (e_eta < 0.8) {
+            if (e_pt <= 15.0)                 e_idiso = 1.0078;
+            if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.9612;
+            if (e_pt > 20.0)                  e_idiso = 0.9862;
+          } else if (e_eta >= 0.8 && e_eta < 1.479) {
+            if (e_pt <= 15.0)                 e_idiso = 1.1236;
+            if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 0.9773;
+            if (e_pt > 20.0)                  e_idiso = 0.9786;
           } else {
-            if (e_pt <= 15.0)                 e_idiso = 0.9758;
-            if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 1.1483;
-            if (e_pt > 20.0)                  e_idiso = 1.0117;
+            if (e_pt <= 15.0)                 e_idiso = 0.9336;
+            if (e_pt > 15.0 && e_pt <= 20.0)  e_idiso = 1.0600;
+            if (e_pt > 20.0)                  e_idiso = 1.0136;  
           }
         }
         // if (do_id_weights_) mu_iso = 1.0;
