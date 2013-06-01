@@ -137,6 +137,9 @@ namespace ic {
 
       static Value ValueProduct(Value const& p1, Value const& p2);
       static Value ValueDivide(Value const& p1, Value const& p2);
+      static Value ValueAdd(Value const& p1, Value const& p2);
+      static Value ValueSubtract(Value const& p1, Value const& p2);
+      static void PrintValue(std::string const& label, Value const& val);
 
       Value GetRateViaWMethod(std::string const& w_sample,
                               std::string const& ratio_category,

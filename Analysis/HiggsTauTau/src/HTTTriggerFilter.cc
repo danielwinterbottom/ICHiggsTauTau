@@ -187,10 +187,15 @@ namespace ic {
           em_alt_leg1_filter = "hltL1NonIsoHLTNonIsoMu17Ele8PixelMatchFilter";
           em_alt_leg2_filter = "hltL1MuOpenEG5L3Filtered17";  
         }
-        if (run >= 170249 && run <= 180252) {
+        if (run >= 170249 && run <= 173198) {
           em_alt_trig_obj_label = "triggerObjectsMu17Ele8";
           em_alt_leg1_filter = "hltMu17Ele8CaloIdTPixelMatchFilter";
           em_alt_leg2_filter = "hltL1Mu7EG5L3MuFiltered17";  
+        }
+        if (run >= 173236 && run <= 180252) {
+          em_alt_trig_obj_label = "triggerObjectsMu17Ele8";
+          em_alt_leg1_filter = "hltMu17Ele8CaloIdTPixelMatchFilter";
+          em_alt_leg2_filter = "hltL1Mu12EG5L3MuFiltered17";  
         }
         // 2012 Triggers
         if (run >= 190456 && run <= 193751) {

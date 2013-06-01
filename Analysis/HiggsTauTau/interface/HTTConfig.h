@@ -15,6 +15,10 @@ inline std::string param_fmt() {
 	return "%-25s %-40s\n";
 }
 
+inline std::string value_fmt() {
+	return "%-20s %-9.2f +/-   %-9.2f";
+}
+
 
 // We define a "type-safe" enum class
 // It stops us from doing something like Color c = Shape::square

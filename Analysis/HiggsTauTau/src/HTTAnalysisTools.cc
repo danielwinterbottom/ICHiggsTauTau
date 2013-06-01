@@ -217,6 +217,8 @@ namespace ic {
                                       std::string const& selection, 
                                       std::string const& category, 
                                       std::string const& weight) {
+    if (verbosity_ > 1) std::cout << "--GetRate-- Sample:\"" << sample << "\" Selection:\"" << selection << "\" Category:\"" 
+      << category << "\" Weight:\"" << weight << "\"" << std::endl;
     std::string full_selection = BuildCutString(selection, category, weight);
     TH1::AddDirectory(true);
     ttrees_[sample]->Draw("0.5>>htemp(1,0,1)", full_selection.c_str(), "goff");
@@ -297,8 +299,15 @@ namespace ic {
                           std::string const& target_selection, 
                           std::string const& target_category,  
                           std::string const& weight) {
+    if (verbosity_) {
+      std::cout << "--GetRateViaRefEfficiency--" << std::endl;
+      std::cout << "-Target: sample=" << target_sample << " selection=\"" << target_selection << "\" category=\"" << target_category << "\"" << std::endl;
+      std::cout << "-Reference: sample=" << ref_sample << " selection=\"" << ref_selection << "\" category=\"" << ref_category << "\"" << std::endl;
+    }
     auto ref_rate = GetLumiScaledRate(ref_sample, ref_selection, ref_category, weight);
+    PrintValue("-RefRate", ref_rate);
     auto target_eff = SampleEfficiency(target_sample, ref_selection, ref_category, target_selection, target_category, weight);
+    PrintValue("-TargetEff", target_eff);
     return ValueProduct(ref_rate, target_eff);
   }
 
@@ -397,7 +406,20 @@ namespace ic {
     double f_err = f * sqrt( a_sqrd + b_sqrd );
     return std::make_pair(f, f_err);
   }
+  HTTAnalysis::Value HTTAnalysis::ValueAdd(Value const& p1, Value const& p2) {
+    double f = p1.first + p2.first;
+    double f_err = sqrt( p1.second*p1.second + p2.second*p2.second );
+    return std::make_pair(f, f_err);
+  }
+  HTTAnalysis::Value HTTAnalysis::ValueSubtract(Value const& p1, Value const& p2) {
+    double f = p1.first - p2.first;
+    double f_err = sqrt( p1.second*p1.second + p2.second*p2.second );
+    return std::make_pair(f, f_err);
+  }
 
+  void HTTAnalysis::PrintValue(std::string const& label, Value const& val) {
+    std::cout << (boost::format("%-12s %-10.2f +/-   %-10.2f  (%.4f)") % (label+":") % val.first % val.second % (val.second/val.first)) << std::endl;
+  }
 
 }
 
