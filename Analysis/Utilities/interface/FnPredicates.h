@@ -56,6 +56,7 @@ namespace ic {
 
   bool HttEMuFakeElectron(Electron const* elec);
   bool HttEMuFakeMuon(Muon const* muon);
+  bool HttEMuFakeMuon2011(Muon const* muon);
 
   bool ElectronHTT2011IdIso(Electron const* elec);
 

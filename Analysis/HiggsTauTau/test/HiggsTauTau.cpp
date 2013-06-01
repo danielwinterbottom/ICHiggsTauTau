@@ -511,7 +511,11 @@ int main(int argc, char* argv[]){
 
   boost::function<bool (Muon const*)> muon_idiso_func;
   if (special_mode == 21 || special_mode == 22) {
-    muon_idiso_func = bind(HttEMuFakeMuon, _1);
+    if (era == era::data_2011) {
+      muon_idiso_func = bind(HttEMuFakeMuon2011, _1);
+    } else {
+      muon_idiso_func = bind(HttEMuFakeMuon, _1);
+    }
   } else if (special_mode == 2 || special_mode == 5 || special_mode == 12) {
     muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
   } else if (special_mode == 3 || special_mode == 6 || special_mode == 10) {

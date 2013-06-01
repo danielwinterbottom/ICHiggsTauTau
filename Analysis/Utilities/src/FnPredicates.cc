@@ -757,6 +757,24 @@ namespace ic {
     return (pass && !( MuonTight(muon) && PF04IsolationEB(muon, 0.5, 0.15, 0.1) && fabs(muon->dxy_vertex()) < 0.02 && fabs(muon->dz_vertex()) < 0.1 )); // !(usual tight muon && pf iso < 0.15(0.1) barrel(endcap))
   }
 
+  bool HttEMuFakeMuon2011(Muon const* muon) {
+    bool pass_iso = false;
+    if ( (muon->dr03_tk_sum_pt()/muon->pt())          < 0.2 &&
+         (muon->dr03_ecal_rechit_sum_et()/muon->pt()) < 0.2 &&
+         (muon->dr03_hcal_tower_sum_et()/muon->pt())  < 0.2 ) pass_iso = true;
+    
+    bool pass = ( 
+        muon->is_global() &&  // isGlobalMuon()
+        muon->gt_valid_muon_hits() > 0 &&  // globalTrack()->hitPattern().numberOfValidMuonHits()
+        muon->gt_normalized_chi2() < 10 && // globalTrack()->normalizedChi2()
+        muon->matched_stations() > 1 && // numberOfMatchedStations()
+        fabs(muon->dxy_vertex()) < 0.2 &&
+        fabs(muon->dz_vertex()) < 0.1 &&
+        pass_iso
+        );
+    return (pass && !( MuonTight(muon) && PF04IsolationEB(muon, 0.5, 0.15, 0.1) && fabs(muon->dxy_vertex()) < 0.02 && fabs(muon->dz_vertex()) < 0.1 )); // !(usual tight muon && pf iso < 0.15(0.1) barrel(endcap))
+  }
+
 
   bool MuonIso(Muon const* muon) {
     bool isoCut = (
