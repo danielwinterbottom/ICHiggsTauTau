@@ -877,7 +877,7 @@ int main(int argc, char* argv[]){
 
   if (channel == channel::em) {
     if (use_ztt_mc) {
-      ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTauSoup",cat,os_sel)].hist_ptr()->Clone());
+      ztt_hist = (TH1F*)(plots[Token("DYJetsToTauTau",cat,os_sel)].hist_ptr()->Clone());
     } else {
       ztt_hist = (TH1F*)(plots[Token("Embedded",cat,os_sel)].hist_ptr()->Clone());
     }

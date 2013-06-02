@@ -174,6 +174,9 @@ namespace ic {
       InitCategory("hpt_80_0jet_low");
     }
 
+    InitCategory("prebtag");
+    InitCoreControlPlots("prebtag");
+
     InitCategory("btag");
     InitCoreControlPlots("btag");
 
@@ -210,9 +213,10 @@ namespace ic {
     std::vector<PFJet*> lowpt_jets = jets;
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
     ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
-    std::vector<PFJet*> bjets = lowpt_jets;
-    ic::erase_if(bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-    std::vector<PFJet*> loose_bjets = bjets;
+    std::vector<PFJet*> prebjets = lowpt_jets;
+    ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    std::vector<PFJet*> bjets = prebjets;
+    std::vector<PFJet*> loose_bjets = prebjets;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
 
 
@@ -366,6 +370,12 @@ namespace ic {
     } else {
       bpt_1_ = -9999;
       beta_1_ = -9999;
+    }
+
+    if (prebjets.size() >= 1) {
+      bcsv_1_ = prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+    } else {
+      bcsv_1_ = -9999;
     }
 
     if (write_tree_) outtree_->Fill();
@@ -556,11 +566,16 @@ namespace ic {
     // auto lowpt_jets_copy = lowpt_jets;
     // ic::erase_if(lowpt_jets_copy,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     // if (lowpt_jets_copy.size() >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
+    if (n_jets_ <= 1 && prebjets.size() > 0) {
+      SetPassCategory("prebtag");
+      FillCoreControlPlots("prebtag");
+    }
 
     if (n_jets_ <= 1 && n_bjets_ > 0) {
       SetPassCategory("btag");
       FillCoreControlPlots("btag");
     }
+    
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low");
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ > pt2_split)  SetPassCategory("btag_high");
 
@@ -701,6 +716,7 @@ namespace ic {
           // if (n_bjets_ >= 1) {
             plots->bpt_1->Fill(bpt_1_, wt_);
             plots->beta_1->Fill(beta_1_, wt_);
+            plots->bcsv_1->Fill(bcsv_1_, wt_);
           // }
         }
       } 
