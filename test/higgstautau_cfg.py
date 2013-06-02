@@ -169,26 +169,27 @@ process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
 ### Configuration of Electron ID MVA
 ################################################################
 process.load("EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi")
-process.mvaTrigNoIPV0 = cms.EDFilter("NewElectronIdMVAProducer",
-    verbose = cms.untracked.bool(False),
-    vertexTag = cms.InputTag('offlinePrimaryVertices'),
-    electronTag = cms.InputTag('gsfElectrons'),
-    reducedEBRecHitCollection = cms.InputTag('reducedEcalRecHitsEB'),
-    reducedEERecHitCollection = cms.InputTag('reducedEcalRecHitsEE'),
-    method = cms.string("BDT"),
-    mvaWeightFile = cms.vstring(
-      "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat1.weights.xml",
-      "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat2.weights.xml",
-      "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat3.weights.xml",
-      "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat4.weights.xml",
-      "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat5.weights.xml",
-      "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat6.weights.xml",
-      ),
-    Trig = cms.bool(True),
-    NoIP = cms.bool(True),
-    )
-process.mvaElectronIDSequence = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0 + process.mvaTrigNoIPV0)
-#process.mvaNonTrigV0.verbose = cms.untracked.bool(True)
+process.mvaElectronIDSequence = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
+if release == '53X':
+  process.mvaTrigNoIPV0 = cms.EDFilter("NewElectronIdMVAProducer",
+      verbose = cms.untracked.bool(False),
+      vertexTag = cms.InputTag('offlinePrimaryVertices'),
+      electronTag = cms.InputTag('gsfElectrons'),
+      reducedEBRecHitCollection = cms.InputTag('reducedEcalRecHitsEB'),
+      reducedEERecHitCollection = cms.InputTag('reducedEcalRecHitsEE'),
+      method = cms.string("BDT"),
+      mvaWeightFile = cms.vstring(
+        "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat1.weights.xml",
+        "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat2.weights.xml",
+        "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat3.weights.xml",
+        "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat4.weights.xml",
+        "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat5.weights.xml",
+        "EgammaAnalysis/ElectronTools/data/Electrons_BDTG_TrigNoIPV0_2012_Cat6.weights.xml",
+        ),
+      Trig = cms.bool(True),
+      NoIP = cms.bool(True)
+      )
+  process.mvaElectronIDSequence += process.mvaTrigNoIPV0
 
 
 ################################################################
