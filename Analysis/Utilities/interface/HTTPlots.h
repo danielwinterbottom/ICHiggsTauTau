@@ -45,6 +45,7 @@ struct CoreControlPlots {
 	TH1F *jeta_2;
 	TH1F *bpt_1;
 	TH1F *beta_1;
+	TH1F *bcsv_1;
 	TH1F *mjj;
 	TH1F *jdeta;
 	TH1F *tau_decay_mode;
