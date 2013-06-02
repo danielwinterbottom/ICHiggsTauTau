@@ -1,6 +1,6 @@
 JOBWRAPPER=./scripts/generate_job.sh
-JOBSUBMIT=true
-# JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+#JOBSUBMIT=true
+JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 
 
 CONFIG=scripts/Paper_2011.cfg
@@ -11,11 +11,11 @@ SKIMPATH=$SSD/Apr11/Data_42X
 PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Apr11/Data_42X/
 
 PATHS=(
-  # 'MuEG-2011A-May10ReReco-v1'
-  # 'MuEG-2011A-PromptReco-v4'
-  # 'MuEG-2011A-05Aug2011-v1'
-  # 'MuEG-2011A-03Oct2011-v1'
-  # 'MuEG-2011B-PromptReco-v1'
+   'MuEG-2011A-May10ReReco-v1'
+   'MuEG-2011A-PromptReco-v4'
+   'MuEG-2011A-05Aug2011-v1'
+   'MuEG-2011A-03Oct2011-v1'
+   'MuEG-2011B-PromptReco-v1'
 )
 for i in "${PATHS[@]}"
 do
@@ -28,23 +28,23 @@ do
   mkdir -p $SKIMPATH/em_skim/Special_23_$i/
   mkdir -p $SKIMPATH/em_skim/Special_24_$i/
 
-  JOB="$i"_em_skim
-  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
-  --do_skim=true --skim_path=$SKIMPATH/em_skim/"$i"/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
-
-  JOB=Special_23_"$i"_em_skim
-  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
-  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_23_"$i"/ --special_mode=23 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_23_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
-  
-  JOB=Special_24_"$i"_em_skim
-  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
-  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_24_"$i"/ --special_mode=24 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_24_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
+#  JOB="$i"_em_skim
+#  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
+#  --do_skim=true --skim_path=$SKIMPATH/em_skim/"$i"/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#  $JOBSUBMIT jobs/$JOB.sh
+#
+#  JOB=Special_23_"$i"_em_skim
+#  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
+#  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_23_"$i"/ --special_mode=23 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_23_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#  $JOBSUBMIT jobs/$JOB.sh
+#  
+#  JOB=Special_24_"$i"_em_skim
+#  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
+#  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_24_"$i"/ --special_mode=24 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_24_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#  $JOBSUBMIT jobs/$JOB.sh
 
   JOB=Special_20_"$i"_em_skim
   $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
@@ -66,11 +66,11 @@ do
 done
 
 PATHS=(
-  # 'Embedded-EM-2011A-May10ReReco-v1'
-  # 'Embedded-EM-2011A-PromptReco-v4'
-  # 'Embedded-EM-2011A-05Aug2011-v1'
-  # 'Embedded-EM-2011A-03Oct2011-v1'
-  # 'Embedded-EM-2011B-PromptReco-v1'
+#   'Embedded-EM-2011A-May10ReReco-v1'
+#   'Embedded-EM-2011A-PromptReco-v4'
+#   'Embedded-EM-2011A-05Aug2011-v1'
+#   'Embedded-EM-2011A-03Oct2011-v1'
+#   'Embedded-EM-2011B-PromptReco-v1'
 )
 for i in "${PATHS[@]}"
 do
