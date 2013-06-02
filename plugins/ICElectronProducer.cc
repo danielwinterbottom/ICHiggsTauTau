@@ -92,6 +92,7 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 
   edm::Handle<edm::ValueMap<float> > mvaTrigV0;
   edm::Handle<edm::ValueMap<float> > mvaNonTrigV0;
+  edm::Handle<edm::ValueMap<float> > mvaTrigNoIPV0;
 
   iEvent.getByLabel(edm::InputTag("elPFIsoValueChargedAll03PFId"+pfiso_postfix_),charged_all_iso_03);
   iEvent.getByLabel(edm::InputTag("elPFIsoValueCharged03PFId"+pfiso_postfix_),charged_iso_03);
@@ -107,6 +108,7 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
 
   iEvent.getByLabel(edm::InputTag("mvaTrigV0"),mvaTrigV0);
   iEvent.getByLabel(edm::InputTag("mvaNonTrigV0"),mvaNonTrigV0);
+  iEvent.getByLabel(edm::InputTag("mvaTrigNoIPV0"),mvaTrigNoIPV0);
 
   // Add a flag to the idiso set if we find a reco muon with pT > 3
   // with deltaR < 0.3 of this electron
@@ -202,6 +204,10 @@ void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     if (mvaNonTrigV0.isValid()) {
       ele.SetIdIso("mvaNonTrigV0", (*mvaNonTrigV0)[elec_ref]);
       observed_idiso_["mvaNonTrigV0"] = CityHash64("mvaNonTrigV0");
+    }
+    if (mvaTrigNoIPV0.isValid()) {
+      ele.SetIdIso("mvaTrigNoIPV0", (*mvaTrigNoIPV0)[elec_ref]);
+      observed_idiso_["mvaTrigNoIPV0"] = CityHash64("mvaTrigNoIPV0");
     }
 
     for (unsigned mu = 0; mu < recomuonCollection->size(); ++mu) {
