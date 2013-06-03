@@ -680,6 +680,7 @@ int main(int argc, char* argv[]){
   double zll_norm_ss = 0;
 
   std::string soup = is_paper ? "Soup" : "";
+  if (!is_2012) soup = "";
 
 
   if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
