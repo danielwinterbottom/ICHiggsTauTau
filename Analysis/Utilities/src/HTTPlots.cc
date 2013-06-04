@@ -31,6 +31,7 @@ namespace ic {
     pt_2 = dir.make<TH1F>("pt_2","pt_2", 100, 0, 200); 
     eta_1 = dir.make<TH1F>("eta_1","eta_1", 60, -3, 3); 
     eta_2 = dir.make<TH1F>("eta_2","eta_2", 60, -3, 3); 
+    z_2 = dir.make<TH1F>("z_2","z_2", 50, -20, 20); 
     m_2 = dir.make<TH1F>("m_2","m_2", 40, 0, 2); 
     met = dir.make<TH1F>("met","met", 50, 0, 200); 
     met_phi = dir.make<TH1F>("met_phi","met_phi", 63, -3.15, 3.15); 

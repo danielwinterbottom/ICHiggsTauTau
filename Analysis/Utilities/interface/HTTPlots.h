@@ -33,6 +33,7 @@ struct CoreControlPlots {
 	TH1F *pt_2;
 	TH1F *eta_1;
 	TH1F *eta_2;
+	TH1F *z_2;
 	TH1F *m_2;
 	TH1F *met;
 	TH1F *met_phi;

@@ -292,6 +292,7 @@ namespace ic {
     pt_2_ = lep2->pt();
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
+
     m_2_ = lep2->M();
     met_ = met->pt();
     met_phi_ = met->phi();
@@ -309,8 +310,10 @@ namespace ic {
     Tau const* tau = dynamic_cast<Tau const*>(lep2);
     if (tau) {
       tau_decay_mode_ = tau->decay_mode();
+      z_2_ = tau->vz() + (130. / tan(tau->vector().theta()));
     } else {
       tau_decay_mode_ = 0;
+      z_2_ = 0.;
     }
 
     n_jets_ = jets.size();
@@ -689,6 +692,7 @@ namespace ic {
           plots->pt_2->Fill(pt_2_, wt_);
           plots->eta_1->Fill(eta_1_, wt_);
           plots->eta_2->Fill(eta_2_, wt_);
+          plots->z_2->Fill(z_2_, wt_);
           plots->m_2->Fill(m_2_, wt_);
           plots->met->Fill(met_, wt_);
           plots->l1_met->Fill(l1_met_, wt_);

@@ -1302,8 +1302,10 @@ int main(int argc, char* argv[]){
     if (tau_scale_mode == 2 && channel != channel::em) append = "_CMS_scale_t_"+dc_mode_label_alt+(is_2012 ? "_8":"_7")+"TeVUp";
     if (tau_scale_mode == 1 && channel == channel::em) append = string("_CMS_scale_e")+(is_2012 ? "_8":"_7")+"TeVDown";
     if (tau_scale_mode == 2 && channel == channel::em) append = string("_CMS_scale_e")+(is_2012 ? "_8":"_7")+"TeVUp";
-    if (tau_scale_mode == 1 && channel == channel::em && (method == 1 || method == 3)) append = string("_CMS_scale_e_highpt")+(is_2012 ? "_8":"_7")+"TeVDown";
-    if (tau_scale_mode == 2 && channel == channel::em && (method == 1 || method == 3)) append = string("_CMS_scale_e_highpt")+(is_2012 ? "_8":"_7")+"TeVUp";
+    if (tau_scale_mode == 1 && channel == channel::em && (method == 1 || method == 3) && is_2012) append = string("_CMS_scale_e_highpt")+(is_2012 ? "_8":"_7")+"TeVDown";
+    if (tau_scale_mode == 2 && channel == channel::em && (method == 1 || method == 3) && is_2012) append = string("_CMS_scale_e_highpt")+(is_2012 ? "_8":"_7")+"TeVUp";
+    if (tau_scale_mode == 1 && channel == channel::em && (method == 1 || method == 3) && !is_2012) append = string("_CMS_scale_e")+(is_2012 ? "_8":"_7")+"TeVDown";
+    if (tau_scale_mode == 2 && channel == channel::em && (method == 1 || method == 3) && !is_2012) append = string("_CMS_scale_e")+(is_2012 ? "_8":"_7")+"TeVUp";
 
     TFile datacard(("datacard_"+dc_mode_label+"_"+dc_cat_label+"_"+year_label+append+".root").c_str(),"RECREATE");
     datacard.cd();
