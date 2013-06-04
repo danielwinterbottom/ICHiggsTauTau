@@ -125,7 +125,7 @@ switchJetCollection(process,
   cms.InputTag('ak5CaloJets'),
   doJTA=False,
   doBTagging=False,
-  jetCorrLabel=('AK5Calo', ['L1Offset','L2Relative', 'L3Absolute','L2L3Residual'] if isData else ['L1Offset','L2Relative', 'L3Absolute']),
+  jetCorrLabel=('AK5Calo', ['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] if isData else ['L1FastJet','L2Relative', 'L3Absolute']),
   doType1MET=False,
   genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
   doJetID = True,
@@ -528,7 +528,7 @@ if (release == '53X'):
     process.source = cms.Source("PoolSource",
       fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2012D.root')
     )
-    process.GlobalTag.globaltag = cms.string('GR_P_V42_AN3::All')
+    process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
   else:
     process.source = cms.Source(
       "PoolSource",
@@ -539,7 +539,7 @@ if (release == '53X'):
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
     )
-    process.GlobalTag.globaltag = cms.string('START53_V15::All')
+    process.GlobalTag.globaltag = cms.string('START53_V22::All')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
