@@ -292,6 +292,23 @@ SCALE_ET_MT=""
   --paramfile=$PARAMS $SCALE_EM_INC --log_y=false \
   --blind=true --x_blind_min=110 --x_blind_max=1500
 
+## Inclusive mvis 
+  
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_mssm_$YEAR.cfg --channel=et --rebin=1 \
+  --method=8 --category="inclusive" --plot_name="m_vis" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
+  --paramfile=$PARAMS $SCALE_ET_INC --log_y=false \
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_mssm_$YEAR.cfg --channel=mt --rebin=1 \
+  --method=8 --category="inclusive" --plot_name="m_vis" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
+  --paramfile=$PARAMS $SCALE_MT_INC --log_y=false \
+
+./bin/HiggsTauTauPlot3 --cfg=scripts/plot_mssm_$YEAR.cfg --channel=em --rebin=1 \
+  --method=8 --category="inclusive" --plot_name="m_vis" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" --norm_bins=true \
+  --paramfile=$PARAMS $SCALE_EM_INC --log_y=false \
+
 
 ## btag with MSSM binning
 ./bin/HiggsTauTauPlot3 --cfg=scripts/plot_mssm_$YEAR.cfg --channel=et --rebin=1 \
@@ -368,3 +385,4 @@ SCALE_ET_MT=""
   --x_axis_label="M_{#tau#tau} [GeV]" --norm_bins=true \
   --paramfile=$PARAMS $SCALE_EM_INC --log_y=false \
   --blind=true --x_blind_min=110 --x_blind_max=1500
+
