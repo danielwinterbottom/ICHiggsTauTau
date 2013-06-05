@@ -50,7 +50,7 @@ metNoHFresidualCorrected = cms.EDProducer("CaloMEtFromEtaSliceSumsProducer",
     residualCorrLabel = cms.string("ak5CaloResidual"), # apply data/MC residual correction
     ##residualCorrLabel = cms.string(""), # do not apply data/MC residual correction                                    
     residualCorrEtaMax = cms.double(9.9),
-    extraCorrFactor = cms.double(1.0),                                       
+    extraCorrFactor = cms.double(1.05),                                       
     isMC = cms.bool(True),
     verbosity = cms.int32(0)                                          
 )                                          

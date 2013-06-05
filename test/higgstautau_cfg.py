@@ -245,11 +245,11 @@ process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICL1ExtraEmParticleProduce
   )
 
 ## Only add HLT tau simulation in MC
-if not isData:
-  process.icSoftLeptonSequence += cms.Sequence(
-      process.hltPFTauSequence
-      +process.icHLTTauProducer
-      )
+# if not isData:
+#   process.icSoftLeptonSequence += cms.Sequence(
+#       process.hltPFTauSequence
+#       +process.icHLTTauProducer
+#       )
 
 process.patmetNoHF = process.patMETs.clone(
     metSource = cms.InputTag('metNoHF'),
@@ -283,8 +283,8 @@ process.icMetNoHFCorrectedProducer = cms.EDProducer('ICMetProducer',
 
 process.icSoftLeptonSequence += cms.Sequence(
     process.icL1ExtraMETProducer
-    +process.icL1ExtraMuonsProducer
-    +process.icL1ExtraEmIsolatedProducer
+    #+process.icL1ExtraMuonsProducer
+    #+process.icL1ExtraEmIsolatedProducer
     +process.patmetNoHF
     +process.sumCaloTowersInEtaSlicesNoHF
     +process.metNoHFresidualCorrected
