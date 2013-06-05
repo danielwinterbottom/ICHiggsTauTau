@@ -596,6 +596,29 @@ namespace ic {
     return pass_mva;
   }
 
+  bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp) {
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;
+    if (elec->gsf_tk_nhits() > 0) return false;
+    bool pass_mva = false;
+    double pt = elec->pt();
+    double eta = fabs(elec->sc_eta());
+    double idmva = elec->GetIdIso("mvaTrigNoIPV0");
+    if (pt <= 20.0 && eta <= 0.8                  && idmva > -0.3500) pass_mva = true;
+    if (pt <= 20.0 && eta >  0.8 && eta <= 1.479  && idmva >  0.0000) pass_mva = true;
+    if (pt <= 20.0 && eta >  1.479                && idmva >  0.0250) pass_mva = true;
+    if (!loose_wp) {
+      if (pt >  20.0 && eta <= 0.8                  && idmva > 0.7875) pass_mva = true;
+      if (pt >  20.0 && eta >  0.8 && eta <= 1.479  && idmva > 0.9500) pass_mva = true;
+      if (pt >  20.0 && eta >  1.479                && idmva > 0.9250) pass_mva = true;
+    } else {
+      if (pt >  20.0 && eta <= 0.8                  && idmva > 0.7000) pass_mva = true;
+      if (pt >  20.0 && eta >  0.8 && eta <= 1.479  && idmva > 0.9000) pass_mva = true;
+      if (pt >  20.0 && eta >  1.479                && idmva > 0.8375) pass_mva = true;
+    }
+    return pass_mva;
+  }
+
   bool HttEMuFakeElectron(Electron const* elec) {
     if (elec->has_matched_conversion()) return false; // ConversionTools::hasMatchedConversion(...)
     bool in_barrel = fabs(elec->sc_eta()) < 1.479;
