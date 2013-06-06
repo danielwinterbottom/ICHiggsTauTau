@@ -15,14 +15,14 @@ namespace ic {
   }
 
 
-  double BTagWeight::LouvainBEff(int flavor, std::string const& algo_label, double pt, double eta) const {
+  double BTagWeight::LouvainBEff(int flavor, BTagWeight::tagger const& tag, double pt, double eta) const {
     int algo = 1;
-    if (algo_label == "SSVHEM") {
+    if (tag == tagger::SSVHEM) {
       algo = 1;
-    } else if (algo_label == "SSVHPT") {
+    } else if (tag == tagger::SSVHPT) {
       algo = 2;
     } else {
-      std::cerr << "LouvainBEff not available for working point: " << algo_label << std::endl;
+      std::cerr << "LouvainBEff not available for tagger" << std::endl;
       throw;
     }
     flavor = std::abs(flavor);
@@ -78,113 +78,89 @@ namespace ic {
     }
   }
 
-  double BTagWeight::BEff(int flavor, std::string const& algo_label, double pt, double eta) const {
-    int algo = 1;
-    double x = pt;
-    if (fabs(eta) > 2.4) {
-      std::cerr << "Jet eta is too large: " << eta << std::endl;
-      throw;
+  double BTagWeight::BEff(BTagWeight::payload const& set, 
+              unsigned flavour, 
+              BTagWeight::tagger const& algo, 
+              double pt, 
+              double eta) const {
+    eta = fabs(eta);
+    if (eta >= 2.4) {
+      std::cerr << "Warning in <BTagWeight::BEff>: Jet eta is too large: " << eta << std::endl;
+      return 0.0;
     }
-    if (algo_label == "SSVHEM") {
-      algo = 1;
-    } else if (algo_label == "SSVHPT") {
-      algo = 2;
-    } else if (algo_label == "CSVM") {
-      algo = 3;
+    double x = std::min(pt, 670.0);
+    if (flavour == 5) {
+      if (algo == tagger::SSVHEM) return 0.64939;
+      if (algo == tagger::SSVHPT) return 0.48337;
+      if (algo == tagger::CSVM)   return 0.72973;  
+    } else if (flavour == 4) {
+      if (algo == tagger::SSVHEM) return 0.17134;
+      if (algo == tagger::SSVHPT) return 0.06522;
+      if (algo == tagger::CSVM)   return 0.19249;
     } else {
-      std::cerr << "BEff not available for working point: " << algo_label << std::endl;
-      throw;
-    }
-    flavor = std::abs(flavor);
-    if (flavor == 5) {
-      if (algo == 1) return 0.64939;
-      if (algo == 2) return 0.48337;
-      if (algo == 3) return 0.72973;  
-      // if (algo == 3) {
-      //   if (x < 40.) return 0.583456;
-      //   if (x < 60.) return 0.683128;
-      //   if (x < 80.) return 0.726616;
-      //   if (x < 100.) return 0.753785;
-      //   if (x < 150.) return 0.760325;
-      //   if (x < 200.) return 0.744039;
-      //   if (x < 300.) return 0.702678;
-      //   return 0.585133;
-      // }
-      // if (algo == 3) {
-      //   if (x < 40.) return 0.523783;
-      //   if (x < 60.) return 0.623438;
-      //   if (x < 80.) return 0.687386;
-      //   if (x < 100.) return 0.708507;
-      //   if (x < 150.) return 0.728597;
-      //   if (x < 200.) return 0.720094;
-      //   if (x < 300.) return 0.67827;
-      //   return 0.585133;
-      // }
-
-
-    } else if (flavor == 4) {
-      if (algo == 1) return 0.17134;
-      if (algo == 2) return 0.06522;
-      if (algo == 3) return 0.19249;
-    } else {
-      if (algo == 1) return (((-0.000420178+(0.00029105*x))+(-8.9398e-07*(x*x)))+(1.35401e-09*(x*(x*x))))+(-7.93826e-13*(x*(x*(x*x))));
-      if (algo == 2) return (-2.9605e-05+(2.35624e-05*x))+(-1.77552e-08*(x*x));
-      if (algo == 3) return (0.0113428+(5.18983e-05*x))+(-2.59881e-08*(x*x));
+      if (algo == tagger::SSVHEM) return (((-0.000420178+(0.00029105*x))+(-8.9398e-07*(x*x)))+(1.35401e-09*(x*(x*x))))+(-7.93826e-13*(x*(x*(x*x))));
+      if (algo == tagger::SSVHPT) return (-2.9605e-05+(2.35624e-05*x))+(-1.77552e-08*(x*x));
+      if (algo == tagger::CSVM)   {
+        if (eta < 0.8)                return (0.00967751+(2.54564e-05*x))+(-6.92256e-10*(x*x));
+        if (eta >= 0.8 && eta < 1.6)  return (0.00974141+(5.09503e-05*x))+(2.0641e-08*(x*x));
+        if (eta >= 1.6 && eta < 2.4)  return (0.013595+(0.000104538*x))+(-1.36087e-08*(x*x));
+      }
     }
     return 1.0;
   }
 
 
-  double BTagWeight::SF(int flavor, std::string const& algo_label, double pt, double eta, bool is_2012) const {
-    int algo = 1;
-    double x = pt;
-    if (fabs(eta) > 2.4) {
-      std::cerr << "Jet eta is too large: " << eta << std::endl;
-      throw;
-    }
-    if (algo_label == "SSVHEM") {
-      algo = 1;
-    } else if (algo_label == "SSVHPT") {
-      algo = 2;
-    } else if (algo_label == "CSVM") {
-      algo = 3;
-    } else {
-      std::cerr << "SF not available for working point: " << algo_label << std::endl;
-      throw;
+  double BTagWeight::SF(BTagWeight::payload const& set, 
+            unsigned flavour, 
+            BTagWeight::tagger const& algo, 
+            double pt, 
+            double eta) const {
+    eta = fabs(eta);
+    if (eta >= 2.4) {
+      std::cerr << "Warning in <BTagWeight::BEff>: Jet eta is too large: " << eta << std::endl;
+      return 0.0;
     }
     double sf = 1.0;
-    flavor = std::abs(flavor);
-    if (!is_2012) {
-      if (pt < 30.0) x = 30.0;
-      if (flavor == 5 || flavor == 4) {
-        if (algo == 1) sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x)));
-        if (algo == 2) sf = 0.422556*((1.+(0.437396*x))/(1.+(0.193806*x)));
-        if (algo == 3) sf = 0.6981*((1.+(0.414063*x))/(1.+(0.300155*x)));
-      } else {
-        if (algo == 1) sf = ((0.890254+(0.000553319*x))+(-1.29993e-06*(x*x)))+(4.19294e-10*(x*(x*x)));
-        if (algo == 2) sf = ((0.97409+(0.000646241*x))+(-2.86294e-06*(x*x)))+(2.79484e-09*(x*(x*x)));
-        if (algo == 3) sf = ((1.04318+(0.000848162*x))+(-2.5795e-06*(x*x)))+(1.64156e-09*(x*(x*x)));
+    if (flavour == 5 || flavour == 4) {
+      if (set == payload::ALL2011) {
+        double x = std::max(30., std::min(pt, 670.0));
+        if (algo == tagger::SSVHEM) sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x)));
+        if (algo == tagger::SSVHPT) sf = 0.422556*((1.+(0.437396*x))/(1.+(0.193806*x)));
+        if (algo == tagger::CSVM)   sf = 0.6981*((1.+(0.414063*x))/(1.+(0.300155*x)));
+      } else if (set == payload::MORIOND2013) {
+        double x = std::max(20., std::min(pt, 800.0));
+        if (algo == tagger::CSVM)   sf = 0.726981*((1.+(0.253238*x))/(1.+(0.188389*x)));
+      } else if (set == payload::EPS13) {
+        double x = std::max(20., std::min(pt, 800.0));
+        if (algo == tagger::CSVM)   sf = (0.938887+(0.00017124*x))+(-2.76366e-07*(x*x));
       }
     } else {
-      if (pt < 20.0) x = 20.0;
-      if (flavor == 5 || flavor == 4) {
-        if (algo == 1) sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x))); // This is just the same as 2011
-        if (algo == 2) sf = 0.422556*((1.+(0.437396*x))/(1.+(0.193806*x))); // This is just the same as 2011
-        if (algo == 3) sf = 0.726981*((1.+(0.253238*x))/(1.+(0.188389*x)));
-      } else {
-        if (algo == 1) sf = ((0.890254+(0.000553319*x))+(-1.29993e-06*(x*x)))+(4.19294e-10*(x*(x*x))); // This is just the same as 2011
-        if (algo == 2) sf = ((0.97409+(0.000646241*x))+(-2.86294e-06*(x*x)))+(2.79484e-09*(x*(x*x))); // This is just the same as 2011
-        if (algo == 3) {
-          if (fabs(eta) < 0.8)                      sf = ((1.06238+(0.00198635*x))+(-4.89082e-06*(x*x)))+(3.29312e-09*(x*(x*x)));
-          if (fabs(eta) >= 0.8 && fabs(eta) < 1.6)  sf = ((1.08048+(0.00110831*x))+(-2.96189e-06*(x*x)))+(2.16266e-09*(x*(x*x)));
-          if (fabs(eta) >= 0.8)                     sf = ((1.09145+(0.000687171*x))+(-2.45054e-06*(x*x)))+(1.7844e-09*(x*(x*x)));
+      if (set == payload::ALL2011) {
+        double x = std::max(20., std::min(pt, 670.0));
+        if (algo == tagger::SSVHEM)     sf = ((0.890254+(0.000553319*x))+(-1.29993e-06*(x*x)))+(4.19294e-10*(x*(x*x)));
+        if (algo == tagger::SSVHPT)     sf = ((0.97409+(0.000646241*x))+(-2.86294e-06*(x*x)))+(2.79484e-09*(x*(x*x)));
+        if (algo == tagger::CSVM) {
+          if (eta < 0.8)                sf = ((1.06182+(0.000617034*x))+(-1.5732e-06*(x*x)))+(3.02909e-10*(x*(x*x)));
+          if (eta >= 0.8 && eta < 1.6)  sf = ((1.111+(-9.64191e-06*x))+(1.80811e-07*(x*x)))+(-5.44868e-10*(x*(x*x)));
+          if (eta >= 1.6 && eta < 2.4)  sf = ((1.08498+(-0.000701422*x))+(3.43612e-06*(x*x)))+(-4.11794e-09*(x*(x*x)));          
+        }
+      } else if (set == payload::MORIOND2013) {
+        double x = std::max(20., std::min(pt, 800.0));
+        if (algo == tagger::CSVM) {
+          if (eta < 0.8)                sf = ((1.06238+(0.00198635*x))+(-4.89082e-06*(x*x)))+(3.29312e-09*(x*(x*x)));
+          if (eta >= 0.8 && eta < 1.6)  sf = ((1.08048+(0.00110831*x))+(-2.96189e-06*(x*x)))+(2.16266e-09*(x*(x*x)));
+          if (eta >= 1.6 && eta < 2.4)  sf = ((1.09145+(0.000687171*x))+(-2.45054e-06*(x*x)))+(1.7844e-09*(x*(x*x)));
+        }
+      } else if (set == payload::EPS13) {
+        double x = std::max(20., std::min(pt, 1000.0));
+        if (algo == tagger::CSVM) {
+          if (eta < 0.8)                sf = ((1.07541+(0.00231827*x))+(-4.74249e-06*(x*x)))+(2.70862e-09*(x*(x*x)));
+          if (eta >= 0.8 && eta < 1.6)  sf = ((1.05613+(0.00114031*x))+(-2.56066e-06*(x*x)))+(1.67792e-09*(x*(x*x)));
+          if (eta >= 1.6 && eta < 2.4)  sf = ((1.05625+(0.000487231*x))+(-2.22792e-06*(x*x)))+(1.70262e-09*(x*(x*x)));
         }
       }
-
     }
-
     return sf;
-
   }
 
   std::pair<float,float> BTagWeight::weight(std::vector<JetInfo> jets, int minTags, int maxTags) const {
@@ -216,27 +192,29 @@ namespace ic {
     return std::pair<float,float>(pData,pMC);
   }
 
-  double BTagWeight::GetWeight(std::vector<PFJet *> const& jets, std::string const& tagger, unsigned min, unsigned max, bool is_2012) const {
+  double BTagWeight::GetWeight( std::vector<PFJet *> const& jets, 
+                    BTagWeight::payload const& set, 
+                    BTagWeight::tagger const& algo, 
+                    unsigned min, 
+                    unsigned max) const {
     std::vector<BTagWeight::JetInfo> infos;
     for (unsigned i = 0; i < jets.size(); ++i) {
-      double eff = BEff(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta());
-      double sf = SF(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta(), is_2012);
-      double x = jets[i]->pt();
-      unsigned flav = std::abs(jets[i]->parton_flavour());
-      if (tagger == "CSVM" && is_2012 && flav !=5 && flav != 4) sf *= 1.10422 + -0.000523856*x + 1.14251e-06*x*x;
+      double eff = BEff(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
+      double sf = SF(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
       infos.push_back(BTagWeight::JetInfo(eff, sf));
     }
     std::pair<float, float> result = weight(infos, min, max);
     return result.first / result.second;
   }
 
-  std::map<std::size_t, bool> BTagWeight::ReTag(std::vector<PFJet *> & jets, bool is_2012) const {
+  std::map<std::size_t, bool> BTagWeight::ReTag(std::vector<PFJet *> const& jets, 
+                                    BTagWeight::payload const& set, 
+                                    BTagWeight::tagger const& algo) const {
     std::map<std::size_t, bool> pass_result;
     for (unsigned i = 0; i < jets.size(); ++i) {
       rand->SetSeed((int)((jets[i]->eta()+5)*100000));
-
-      double eff = BEff(jets[i]->parton_flavour(), "CSVM", jets[i]->pt(), jets[i]->eta());
-      double sf = SF(jets[i]->parton_flavour(), "CSVM", jets[i]->pt(), jets[i]->eta(), is_2012);
+      double eff = BEff(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
+      double sf = SF(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
       double demoteProb_btag = 0;
       double promoteProb_btag = 0;
       if(sf < 1) {
@@ -245,35 +223,31 @@ namespace ic {
         promoteProb_btag = fabs(sf - 1.0)/((sf/eff) - 1.0);
       }
       bool passtag = jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags") > 0.679;
-
-        if(passtag) {                       // if tagged
-          if(demoteProb_btag > 0. && rand->Uniform() < demoteProb_btag) {
-            // jets[i]->SetBDiscriminator("combinedSecondaryVertexBJetTags", 0.60);
-            pass_result[jets[i]->id()] = false;
-          } else {
-            pass_result[jets[i]->id()] = true;            
-          }
+      if(passtag) {                       // if tagged
+        if(demoteProb_btag > 0. && rand->Uniform() < demoteProb_btag) {
+          // jets[i]->SetBDiscriminator("combinedSecondaryVertexBJetTags", 0.60);
+          pass_result[jets[i]->id()] = false;
         } else {
-          if(promoteProb_btag > 0. && rand->Uniform() < promoteProb_btag) {
-            // jets[i]->SetBDiscriminator("combinedSecondaryVertexBJetTags", 0.70);
-            pass_result[jets[i]->id()] = true;
-          } else {
-            pass_result[jets[i]->id()] = false;  
-          }
+          pass_result[jets[i]->id()] = true;            
+        }
+      } else {
+        if(promoteProb_btag > 0. && rand->Uniform() < promoteProb_btag) {
+          // jets[i]->SetBDiscriminator("combinedSecondaryVertexBJetTags", 0.70);
+          pass_result[jets[i]->id()] = true;
+        } else {
+          pass_result[jets[i]->id()] = false;  
         }
       }
-      return pass_result;
     }
+    return pass_result;
+  }
  
 
-
-
-
-  double BTagWeight::GetLouvainWeight(std::vector<PFJet *> const& jets, std::string const& tagger, unsigned min, unsigned max) const {
+  double BTagWeight::GetLouvainWeight(std::vector<PFJet *> const& jets, BTagWeight::tagger const& algo, unsigned min, unsigned max) const {
     std::vector<BTagWeight::JetInfo> infos;
     for (unsigned i = 0; i < jets.size(); ++i) {
-      double eff = LouvainBEff(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta());
-      double sf = SF(jets[i]->parton_flavour(), tagger, jets[i]->pt(), jets[i]->eta(), false);
+      double eff = LouvainBEff(std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
+      double sf = SF(payload::ALL2011, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
       infos.push_back(BTagWeight::JetInfo(eff, sf));
     }
     std::pair<float, float> result = weight(infos, min, max);

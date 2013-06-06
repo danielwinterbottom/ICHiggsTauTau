@@ -14,7 +14,10 @@ namespace ic {
 
 class BTagWeight {
 
+
 public:
+enum class payload { ALL2011, MORIOND2013, EPS13 };
+enum class tagger { SSVHEM, SSVHPT, CSVM };
   struct JetInfo {
     JetInfo(float mceff,float datasf) : eff(mceff), sf(datasf) {}
     float eff;
@@ -24,13 +27,32 @@ public:
   BTagWeight();
   ~BTagWeight();
 
-  double LouvainBEff(int flavor, std::string const& algo, double pt, double eta) const;
-  double BEff(int flavor, std::string const& algo_label, double pt, double eta) const;
-  double SF(int flavor, std::string const& algo_label, double pt, double eta, bool is_2012) const;
+  double LouvainBEff(int flavor, BTagWeight::tagger const& tag, double pt, double eta) const;
+  double GetLouvainWeight(std::vector<PFJet *> const& jets, BTagWeight::tagger const& algo, unsigned min, unsigned max) const;
+
+  double BEff(BTagWeight::payload const& set, 
+              unsigned flavour, 
+              BTagWeight::tagger const& algo, 
+              double pt, 
+              double eta) const;
+
+  double SF(BTagWeight::payload const& set, 
+            unsigned flavour, 
+            BTagWeight::tagger const& algo, 
+            double pt, 
+            double eta) const;
+
   std::pair<float,float> weight(std::vector<JetInfo> jets, int minTags, int maxTags) const;
-  double GetWeight(std::vector<PFJet *> const& jets, std::string const& tagger, unsigned min, unsigned max, bool is_2012 = false) const;
-  std::map<std::size_t, bool> ReTag(std::vector<PFJet *> & jets, bool is_2012) const;
-  double GetLouvainWeight(std::vector<PFJet *> const& jets, std::string const& tagger, unsigned min, unsigned max) const;
+
+  double GetWeight( std::vector<PFJet *> const& jets, 
+                    BTagWeight::payload const& set, 
+                    BTagWeight::tagger const& algo, 
+                    unsigned min, 
+                    unsigned max) const;
+  
+  std::map<std::size_t, bool> ReTag(std::vector<PFJet *> const& jets, 
+                                    BTagWeight::payload const& set, 
+                                    BTagWeight::tagger const& algo) const;
 
 private:
 

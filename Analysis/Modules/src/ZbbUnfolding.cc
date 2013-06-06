@@ -257,10 +257,10 @@ namespace ic {
     unsigned nHP = std::count_if(reco_jets.begin(),reco_jets.end(), bind(&PFJet::GetBDiscriminator, _1, "simpleSecondaryVertexHighPurBJetTags") > 2.0);
     double bfactor_HE = 1.0;
     double bfactor_HP = 1.0;
-     if (nHE >= 2 && btag_rw_) bfactor_HE = btag_weight.GetLouvainWeight(reco_jets, "SSVHEM", 2, 100);
-     if (nHE == 1 && btag_rw_) bfactor_HE = btag_weight.GetLouvainWeight(reco_jets, "SSVHEM", 1, 1);
-     if (nHP >= 2 && btag_rw_) bfactor_HP = btag_weight.GetLouvainWeight(reco_jets, "SSVHPT", 2, 100);
-     if (nHP == 1 && btag_rw_) bfactor_HP = btag_weight.GetLouvainWeight(reco_jets, "SSVHPT", 1, 1);
+     if (nHE >= 2 && btag_rw_) bfactor_HE = btag_weight.GetLouvainWeight(reco_jets, BTagWeight::tagger::SSVHEM, 2, 100);
+     if (nHE == 1 && btag_rw_) bfactor_HE = btag_weight.GetLouvainWeight(reco_jets, BTagWeight::tagger::SSVHEM, 1, 1);
+     if (nHP >= 2 && btag_rw_) bfactor_HP = btag_weight.GetLouvainWeight(reco_jets, BTagWeight::tagger::SSVHPT, 2, 100);
+     if (nHP == 1 && btag_rw_) bfactor_HP = btag_weight.GetLouvainWeight(reco_jets, BTagWeight::tagger::SSVHPT, 1, 1);
      if (nHE > 2) nHE = 2;
      if (nHP > 2) nHP = 2;
     e_b_HE_mat(2-nHE,rec_Zb-1) += weight*bfactor_HE;
