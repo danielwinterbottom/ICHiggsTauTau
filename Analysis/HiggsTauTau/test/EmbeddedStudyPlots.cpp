@@ -25,6 +25,14 @@ int main(int argc, char* argv[]){
 	std::string cat_vbf = "";
 	std::string cat_vbf_loose = "";
 	std::string var = "m_vis(15,0,150)";
+	/*
+		alias concept:
+		m_vis[0,10,20,30,40,50,60,70,80,90,100,150,200,250,300,350]
+		m_vis[$smfinebins]
+		categories: "@et_boost_high@" --> "n_jets>=1 && met>30. && !$et_vbf$"
+		or "njets>=1 && nbjets==0 && !("+vbf+")";
+
+	*/
 	std::string wt = "wt";
 
 	//// Data
@@ -36,7 +44,7 @@ int main(int argc, char* argv[]){
 	// BlindHistogram(&data, 60., 120.);
 
 	//// Top
-	auto top_norm = ana.GetLumiScaledRate("TT", os_sel, cat_vbf, wt);
+	auto top_norm = ana.GetLumiScaledRate("TTJets", os_sel, cat_vbf, wt);
 	TH1F top_hist = ana.GetLumiScaledShape(var, "TT", os_sel, cat_vbf_loose, wt);
 	SetNorm(&top_hist, top_norm.first);
 	HTTAnalysis::PrintValue("Top", top_norm);
@@ -53,6 +61,8 @@ int main(int argc, char* argv[]){
 		"ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
 		"T-tW", "Tbar-tW"
 	};
+	// just have this vector defined somewhere or try an alias system:
+	// vector<string> x = {"@diboson","blah"} -->
 	auto vv_norm = ana.GetLumiScaledRate(vv_samples, os_sel, cat_vbf, wt);
 	TH1F vv_hist = ana.GetLumiScaledShape(var, vv_samples, os_sel, cat_vbf_loose, wt);
 	SetNorm(&vv_hist, vv_norm.first);
