@@ -65,6 +65,88 @@ namespace ic {
 
     lumi_ = 10000.;
 
+    /*
+      vbf_no_cjv
+      vbf_loose
+    
+    */
+    if (ch_ != channel::em) {
+      alias_map_["inclusive"]         = "";
+      alias_map_["vbf"]               = "(n_jet>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
+      alias_map_["vbf_no_cjv"]        = "(n_jet>=2 && mjj>500. && jdeta>3.5)";
+      alias_map_["vbf_loose"]         = "(n_jet>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
+      alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
+      alias_map_["twojet"]            = "(n_jet>=2)";
+      alias_map_["1jet"]              = "(n_jet>=1)";
+      alias_map_["1jet_high"]         = "!"+alias_map_["vbf"]+" && n_jet>=1 && pt_2>40. && n_bjets==0";
+      if (ch_ == channel::et) alias_map_["1jet_high"] += " && met>30.";
+      alias_map_["1jet_low"]          = "!"+alias_map_["vbf"]+" && n_jet>=1 && pt_2<=40. && n_bjets==0";
+      if (ch_ == channel::et) alias_map_["1jet_low"] += " && met>30.";
+      alias_map_["0jet_high"]         = "n_jet==0 && pt_2>40. && n_bjets==0";
+      alias_map_["0jet_low"]          = "n_jet==0 && pt_2<=40. && n_bjets==0";
+    } else {
+      alias_map_["inclusive"]         = "";
+      alias_map_["vbf"]               = "(n_jet>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["vbf_no_cjv"]        = "(n_jet>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["vbf_loose"]         = "(n_jet>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && n_bjets==0)";
+      alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && n_bjets==0)";
+      alias_map_["twojet"]            = "(n_jet>=2 && n_bjets==0)";
+      alias_map_["1jet"]              = "(n_jet>=1 && n_bjets==0)";
+      alias_map_["1jet_high"]         = "!"+alias_map_["vbf"]+" && n_jet>=1 && pt_2>35. && n_bjets==0";
+      alias_map_["1jet_low"]          = "!"+alias_map_["vbf"]+" && n_jet>=1 && pt_2<=35. && n_bjets==0";
+      alias_map_["0jet_high"]         = "n_jet==0 && pt_2>35. && n_bjets==0";
+      alias_map_["0jet_low"]          = "n_jet==0 && pt_2<=35. && n_bjets==0";
+    }
+    // alias_map_["prebtag"] = "n_jet<=1 && "
+    alias_map_["btag"]          = "(n_jet<=1 && n_bjets>=1)";
+    alias_map_["btag_loose"]    = "(n_jet<=1 && n_loose_bjets>=1)";
+    alias_map_["nobtag"]        = "!"+alias_map_["vbf"]+" && n_bjets==0";
+
+    alias_map_["w_extrp_os_sdb_sel"]        = "os && mt_1>70.";
+    alias_map_["w_extrp_os_sig_sel"]        = "os && mt_1<20.";
+    alias_map_["w_os_sdb_sel"]              = "os && mt_1>70.";
+    alias_map_["vbf_w_extrp_os_sdb_sel"]    = "os && mt_1>60. && mt_1<120.";
+    alias_map_["vbf_w_extrp_os_sig_sel"]    = "os && mt_1<20.";
+    alias_map_["vbf_w_os_sdb_sel"]          = "os && mt_1>60. && mt_1<120.";
+    alias_map_["w_shape_sel"]               = "os && mt_1<20.";
+    alias_map_["qcd_sdb_sel"]               = "!os && mt_1<20.";
+    alias_map_["w_extrp_ss_sdb_sel"]        = "!os && mt_1>70.";
+    alias_map_["w_extrp_ss_sig_sel"]        = "!os && mt_1<20.";
+    alias_map_["w_ss_sdb_sel"]              = "!os && mt_1>70.";
+    alias_map_["em_qcd_sel"]                = "os";
+    alias_map_["ss_sel"]                    = "!os && pzeta>-20.";
+
+    samples_alias_map_["vv_samples"] = {
+     "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
+     "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
+     "T-tW", "Tbar-tW"
+    };
+    samples_alias_map_["w_sub_samples"] = {
+     "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
+     "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
+     "T-tW", "Tbar-tW"
+    };
+    if (year_ == "2011") {
+      boost::range::push_back(samples_alias_map_["w_sub_samples"], std::vector<std::string>{
+        "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
+    } else {
+      boost::range::push_back(samples_alias_map_["w_sub_samples"], std::vector<std::string>{
+        "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
+    }
+    samples_alias_map_["qcd_sub_samples"] = {
+     "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
+     "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
+     "T-tW", "Tbar-tW", "WJetsToLNuSoup"
+    };
+    if (year_ == "2011") {
+      boost::range::push_back(samples_alias_map_["qcd_sub_samples"], std::vector<std::string>{
+        "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
+    } else {
+      boost::range::push_back(samples_alias_map_["qcd_sub_samples"], std::vector<std::string>{
+        "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
+    }
+
+
   }
 
   void HTTAnalysis::ParseParamFile(std::string const& file) {
@@ -141,6 +223,209 @@ namespace ic {
     } else {
       return 1.0;
     }
+  }
+
+  void HTTAnalysis::FillHistoMap(HistoMap & hmap, unsigned method,
+                        std::string variable,
+                        std::string selection,
+                        std::string category,
+                        std::string weight,
+                        std::string postfix) {
+    std::string var = variable;
+    std::string sel = selection;
+    std::string cat = category;
+    std::string wt = weight;
+    bool use_soup = false;
+    std::string soup = (year_ == "2011") ? "" : "Soup";
+    if (!use_soup) soup = "";
+
+    // Data
+    auto data_norm = this->GetRate("Data", sel, cat, wt);
+    TH1F data_hist = this->GetShape(var, "Data", sel, cat, wt);
+    SetNorm(&data_hist, data_norm.first);
+    hmap["data_obs"+postfix] = std::make_pair(data_hist, data_norm);
+
+    // Top
+    auto top_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
+    std::string top_shape_sample = (year_ == "2011") ? "TTJets" : "TT";
+    std::string top_shape_cat = cat;
+    if (method == 5) {
+      if (ch_ == channel::em) {
+        top_shape_cat = this->ResolveAlias("vbf_no_cjv");
+      } else {
+        top_shape_cat = this->ResolveAlias("vbf_loose");
+      }
+    }
+    TH1F top_hist = this->GetLumiScaledShape(var, top_shape_sample, sel, top_shape_cat, wt);
+    SetNorm(&top_hist, top_norm.first);
+    std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
+    hmap[top_map_label+postfix] = std::make_pair(top_hist, top_norm);
+
+    // Diboson
+    std::vector<std::string> vv_samples = this->ResolveSamplesAlias("vv_samples");
+    auto vv_norm = this->GetLumiScaledRate(vv_samples, sel, cat, wt);
+    if (ch_ == channel::em && (method == 0 || method == 1)) {
+      vv_norm = ValueProduct(vv_norm, std::make_pair(1.23, 0.0));
+    }
+    std::string vv_shape_cat = cat;
+    if (method == 5 && ch_ != channel::em) {
+      vv_shape_cat = this->ResolveAlias("vbf_loose");
+    }
+    TH1F vv_hist = this->GetLumiScaledShape(var, vv_samples, sel, cat, wt);
+    SetNorm(&vv_hist, vv_norm.first);
+    std::string vv_map_label = (ch_ == channel::em) ? "EWK" : "VV";
+    hmap[vv_map_label+postfix] = std::make_pair(vv_hist, vv_norm);
+
+    // Z->ll
+    if (ch_ != channel::em) {
+      Value zl_norm, zj_norm, zll_norm;
+      TH1F zl_hist, zj_hist, zll_hist;
+      if (method == 5) {
+        zl_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToLL-L"+soup, sel, this->ResolveAlias("twojet"), sel, cat, wt);
+        zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+soup, sel, cat, wt);
+        zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+soup, sel, this->ResolveAlias("vbf_loose_jets20"), wt);
+        zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+soup, sel, this->ResolveAlias("vbf_loose"), wt);
+      } else {
+        std::string zll_shape_cat = cat;
+        if (method == 6)  zll_shape_cat = "btag_low_loose";
+        if (method == 7)  zll_shape_cat = "btag_high_loose";
+        if (method == 12) zll_shape_cat = "btag_loose";
+        zll_shape_cat = this->ResolveAlias(zll_shape_cat);
+        zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+soup, sel, zll_shape_cat, wt);
+        zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+soup, sel, zll_shape_cat, wt);
+        zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+soup, sel, zll_shape_cat, wt);
+        zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+soup, sel, zll_shape_cat, wt);
+      }
+      SetNorm(&zl_hist, zl_norm.first);
+      SetNorm(&zj_hist, zj_norm.first);
+      zll_norm = ValueAdd(zl_norm, zj_norm);
+      zll_hist = zl_hist;
+      zll_hist.Add(&zj_hist);
+      hmap["ZLL"+postfix] = std::make_pair(zll_hist, zll_norm);
+      hmap["ZL"+postfix]  = std::make_pair(zl_hist, zl_norm);
+      hmap["ZJ"+postfix]  = std::make_pair(zj_hist, zj_norm);
+    }
+
+    // Z->tautau
+    auto ztt_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToTauTau"+soup, "os", "", sel, cat, wt);
+    TH1F ztt_hist = this->GetShape(var, "Embedded", sel, cat, wt);
+    SetNorm(&ztt_hist, ztt_norm.first);
+    std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
+    hmap[ztt_map_label+postfix] = std::make_pair(ztt_hist, ztt_norm);
+
+    // W+jets
+    if (ch_ != channel::em) {
+      std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+      std::string w_extrap_cat = cat;
+      std::string w_extrp_sdb_sel = this->ResolveAlias("w_extrp_os_sdb_sel");
+      std::string w_extrp_sig_sel = this->ResolveAlias("w_extrp_os_sig_sel");
+      std::string w_sdb_sel = this->ResolveAlias("w_os_sdb_sel");
+      if (method == 5) {
+        w_extrap_cat    = this->ResolveAlias("vbf_loose");
+        w_extrp_sdb_sel = this->ResolveAlias("vbf_w_extrp_os_sdb_sel");
+        w_extrp_sig_sel = this->ResolveAlias("vbf_w_extrp_os_sig_sel");
+        w_sdb_sel       = this->ResolveAlias("vbf_w_os_sdb_sel");
+      }
+      if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
+      if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
+      if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
+      
+      auto w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+          "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+      std::string w_shape_cat = cat;
+      std::string w_shape_sel = this->ResolveAlias("w_shape_sel");
+      if (method == 5)  w_shape_cat = this->ResolveAlias("vbf_loose");
+      if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
+      if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
+      if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
+      TH1F w_hist = this->GetShape(var, "WJetsToLNuSoup", w_shape_sel, w_shape_cat, wt);
+      SetNorm(&w_hist, w_norm.first);
+      hmap["W"+postfix] = std::make_pair(w_hist, w_norm);
+    }
+
+    // QCD/Fakes
+    Value qcd_norm;
+    TH1F qcd_hist;
+    if (ch_ != channel::em) {
+      std::vector<std::string> qcd_sub_samples = this->ResolveSamplesAlias("qcd_sub_samples");
+      std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+      std::string qcd_sdb_sel = this->ResolveAlias("qcd_sdb_sel");
+      std::string w_extrp_sdb_sel = this->ResolveAlias("w_extrp_ss_sdb_sel");
+      std::string w_extrp_sig_sel = this->ResolveAlias("w_extrp_ss_sig_sel");
+      std::string w_sdb_sel = this->ResolveAlias("w_ss_sdb_sel");
+      std::string qcd_cat = cat;
+      if (method == 5) qcd_cat = this->ResolveAlias("inclusive");
+      qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.06,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+        {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
+          return this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+            "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());}
+        } 
+      });
+      if (method == 5) {
+        Value qcd_eff = this->SampleEfficiency("Special_3_Data", qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
+        qcd_norm = ValueProduct(qcd_norm, qcd_eff);
+      }
+      if (method == 0 || method == 8 || method == 11) {
+        qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+          {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
+            return this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+              "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());} 
+          }
+        });
+      } else {
+        if (method == 5)  qcd_cat = this->ResolveAlias("vbf_loose_jets20");
+        if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
+        if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
+        if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
+        qcd_hist = this->GetShape(var, "Special_3_Data", qcd_sdb_sel, qcd_cat, wt);
+      }
+    } else {
+      Value qcd_dilepton = ValueAdd( this->GetRate("Special_20_Data", this->ResolveAlias("em_qcd_sel"), "", wt),
+                                     this->GetRate("Special_21_Data", this->ResolveAlias("em_qcd_sel"), "", wt));
+      qcd_dilepton = ValueSubtract(qcd_dilepton, this->GetRate("Special_22_Data", this->ResolveAlias("em_qcd_sel"), "", wt));
+      qcd_dilepton = ValueProduct(qcd_dilepton, std::make_pair(0.83,0.));
+      Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("em_qcd_sel"), "", sel, cat, wt);
+      if (method == 0 || method == 2) {
+        qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
+        qcd_hist = this->GetShape(var, "Special_23_Data", this->ResolveAlias("ss_sel"), cat, wt);
+      } else if (method == 1) {
+        qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
+        qcd_hist = this->GetShape(var, "Special_24_Data", this->ResolveAlias("ss_sel"), cat, wt);
+        TH1F fr_hist =  this->GetShape(var, "Special_20_Data", sel, cat, wt);
+        TH1F fr_m_hist =  this->GetShape(var, "Special_21_Data", sel, cat, wt);
+        TH1F fr_em_hist = this->GetShape(var, "Special_22_Data", sel, cat, wt);
+        fr_hist.Add(&fr_m_hist,1.0);
+        fr_hist.Add(&fr_em_hist,-1.0);
+        qcd_hist.Scale(0.2 / Integral(&qcd_hist));
+        fr_hist.Scale(0.8 / Integral(&fr_hist));
+        qcd_hist.Add(&fr_hist,1.0);
+      } else if (method == 3) {
+        qcd_norm = ValueAdd(this->GetRate("Special_20_Data", sel, cat, wt),
+                            this->GetRate("Special_21_Data", sel, cat, wt));
+        qcd_norm = ValueSubtract(qcd_norm, this->GetRate("Special_22_Data", sel, cat, wt));
+        qcd_hist        = this->GetShape(var, "Special_20_Data", sel, cat, wt);
+        TH1F fr_m_hist  = this->GetShape(var, "Special_21_Data", sel, cat, wt);
+        TH1F fr_em_hist = this->GetShape(var, "Special_22_Data", sel, cat, wt);
+        qcd_hist.Add(&fr_m_hist,1.0);
+        qcd_hist.Add(&fr_em_hist,-1.0);
+      } else if (method == 5) {
+       qcd_norm = ValueAdd(this->GetRate("Special_20_Data", sel, cat, wt),
+                           this->GetRate("Special_21_Data", sel, cat, wt));
+       qcd_norm = ValueSubtract(qcd_norm, this->GetRate("Special_22_Data", sel, cat, wt));
+       qcd_hist        = this->GetShape(var, "Special_20_Data", sel, this->ResolveAlias("vbf_no_cjv"), wt);
+       TH1F fr_m_hist  = this->GetShape(var, "Special_21_Data", sel, this->ResolveAlias("vbf_no_cjv"), wt);
+       TH1F fr_em_hist = this->GetShape(var, "Special_22_Data", sel, this->ResolveAlias("vbf_no_cjv"), wt);
+       qcd_hist.Add(&fr_m_hist,1.0);
+       qcd_hist.Add(&fr_em_hist,-1.0); 
+     } else {
+      qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
+      qcd_hist = this->GetShape(var, "Data", this->ResolveAlias("ss_sel"), cat, wt);
+     }
+    }
+    SetNorm(&qcd_hist, qcd_norm.first);
+    std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
+    hmap[qcd_map_label+postfix] = std::make_pair(qcd_hist, qcd_norm);
+    return;
   }
 
   std::string HTTAnalysis::BuildCutString(std::string const& selection,
@@ -274,9 +559,9 @@ namespace ic {
     // std::cout << "Effective denominator = " << den_eff << std::endl;
     unsigned den_eff_rounded = unsigned(den_eff+0.5);
     // std::cout << "Effective denominator (rounded) = " << den_eff_rounded << std::endl;
-    double eff = num_eff / den_eff;
+    double eff = num.first / den.first;
     TEfficiency teff;
-    double eff_err = teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683 ,1)-(eff);
+    double eff_err = teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683 ,1)-(num_eff/den_eff);
     auto result = std::make_pair(eff, eff_err);
     return result;
   }
@@ -418,8 +703,28 @@ namespace ic {
   }
 
   void HTTAnalysis::PrintValue(std::string const& label, Value const& val) {
-    std::cout << (boost::format("%-12s %-10.2f +/-   %-10.2f  (%.4f)") % (label+":") % val.first % val.second % (val.second/val.first)) << std::endl;
+    std::cout << (boost::format("%-12s %-10.8f +/-   %-10.2f  (%.4f)") % (label+":") % val.first % val.second % (val.second/val.first)) << std::endl;
   }
+
+  std::string HTTAnalysis::ResolveAlias(std::string const& al) {
+    if (alias_map_.count(al)) {
+      return alias_map_.find(al)->second;
+    } else {
+      std::cerr << "Warning in <HTTAnalysis::ResolveAlias>: No alias for " << al << " found" << std::endl;
+      return al;
+    }
+  }
+
+  std::vector<std::string> HTTAnalysis::ResolveSamplesAlias(std::string const& al) {
+    if (samples_alias_map_.count(al)) {
+      return samples_alias_map_.find(al)->second;
+    } else {
+      std::cerr << "Warning in <HTTAnalysis::ResolveSamplesAlias>: No alias for " << al << " found" << std::endl;
+      return std::vector<std::string>();
+    }
+  }
+
+
 
 }
 

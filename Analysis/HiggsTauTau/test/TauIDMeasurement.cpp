@@ -23,7 +23,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauIDCategories.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauIDTriggerFilter.h"
 
 using boost::lexical_cast;
@@ -436,15 +436,17 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Category Modules
   // ------------------------------------------------------------------------------------  
-  TauIDCategories tauIDCategories = TauIDCategories("TauIDCategories")
+  HTTCategories httCategories = HTTCategories("HTTCategories")
     .set_fs(fs)
     .set_channel(channel)
     .set_era(era)
+    .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
-    .set_met_label(met_label);
-  if (mass_scale_mode == 1) tauIDCategories.set_mass_shift(1.00);
-  if (mass_scale_mode == 2) tauIDCategories.set_mass_shift(1.01);
-  if (mass_scale_mode == 3) tauIDCategories.set_mass_shift(1.02);
+    .set_met_label(met_label)
+    .set_write_tree(false);
+  if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
+  if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
+  if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -474,7 +476,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&jetLeptonOverlapFilter);
                                   analysis.AddModule(&httRecoilCorrector);
                                   analysis.AddModule(&httWeights);
-                                  analysis.AddModule(&tauIDCategories);
+                                  analysis.AddModule(&httCategories);
   
 
   analysis.RunAnalysis();

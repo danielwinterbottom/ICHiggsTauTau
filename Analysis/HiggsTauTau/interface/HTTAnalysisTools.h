@@ -54,7 +54,8 @@ namespace ic {
   class HTTAnalysis {
     public:
       typedef std::pair<double, double> Value;
-
+      typedef std::map<std::string, std::pair<TH1F, Value>> HistoMap;
+      typedef std::map<std::string, std::function<std::pair<double,double>()>> ValueFnMap;
     public:
       HTTAnalysis(ic::channel ch, std::string year, int verbosity);
       //! Read a parameter file for cross section and luminosity information
@@ -66,6 +67,12 @@ namespace ic {
       void AddMSSMSignalSamples(std::vector<std::string> masses);
       void ReadTrees(std::string const& folder, std::string const& prefix = "");
       double GetLumiScale(std::string const& sample);
+      void FillHistoMap(HistoMap & hmap, unsigned method,
+                        std::string variable,
+                        std::string selection,
+                        std::string category,
+                        std::string weight,
+                        std::string postfix);
 
       //! Generate a histogram for a specific samples
       /*! \param variable A string containing the name of a histogram branch
@@ -93,7 +100,6 @@ namespace ic {
                               std::string const& weight,
                               std::map<std::string, std::function<Value()>> dict
                               );
-
       Value GetRate(std::string const& sample, 
                               std::string const& selection, 
                               std::string const& category, 
@@ -106,7 +112,6 @@ namespace ic {
                               std::string const& selection,
                               std::string const& category,
                               std::string const& weight);
-
       // Sample efficiency is only correctly defined if the
       // "target" selection and category gives a strict subset
       // of the events in the "reference" selection and category
@@ -116,7 +121,6 @@ namespace ic {
                               std::string const& target_selection, 
                               std::string const& target_category,  
                               std::string const& weight);
-
       // Sample ratio is only correctly defined if the events defined
       // by "target" and "ref" and mutually exclusive (and therefore 
       // can be treated as statistically independent populations)
@@ -162,6 +166,8 @@ namespace ic {
                               );
       // void FillAllByMethod(std::map<std::string, std::pair<Value, TH1F>> & m,
       //                       unsigned method)
+      std::string ResolveAlias(std::string const& al);
+      std::vector<std::string> ResolveSamplesAlias(std::string const& al);
 
 
 
@@ -176,6 +182,8 @@ namespace ic {
       std::map<std::string, std::pair<double, double>> sample_info_;
       std::map<std::string, TFile *> tfiles_;
       std::map<std::string, TTree *> ttrees_;
+      std::map<std::string, std::string> alias_map_;
+      std::map<std::string, std::vector<std::string>> samples_alias_map_;
 
       std::string BuildCutString(std::string const& selection,
                                  std::string const& category,

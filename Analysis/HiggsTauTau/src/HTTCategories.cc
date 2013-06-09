@@ -52,6 +52,7 @@ namespace ic {
         outtree_ = fs_->make<TTree>("ntuple","ntuple");
         outtree_->Branch("wt",                &wt_);
         outtree_->Branch("os",                &os_);
+        outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("m_sv",              &m_sv_);
         outtree_->Branch("m_vis",             &m_vis_);
         outtree_->Branch("pt_h",              &pt_h_);
@@ -62,19 +63,23 @@ namespace ic {
         outtree_->Branch("pt_2",              &pt_2_);
         outtree_->Branch("eta_1",             &eta_1_);
         outtree_->Branch("eta_2",             &eta_2_);
+        outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("m_2",               &m_2_);
         outtree_->Branch("met",               &met_);
         outtree_->Branch("met_phi",           &met_phi_);
         outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
-        outtree_->Branch("n_jet",             &n_jets_);
+        outtree_->Branch("n_jets",            &n_jets_);
         outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
         outtree_->Branch("n_bjets",           &n_bjets_);
+        outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
+        outtree_->Branch("n_jetsingap",       &n_jetsingap_);
         outtree_->Branch("jpt_1",             &jpt_1_);
         outtree_->Branch("jpt_2",             &jpt_2_);
         outtree_->Branch("jeta_1",            &jeta_1_);
         outtree_->Branch("jeta_2",            &jeta_2_);
         outtree_->Branch("bpt_1",             &bpt_1_);
         outtree_->Branch("beta_1",            &beta_1_);
+        outtree_->Branch("bcsv_1",            &bcsv_1_);
         outtree_->Branch("mjj",               &mjj_);
         outtree_->Branch("jdeta",             &jdeta_);
         outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
@@ -82,6 +87,8 @@ namespace ic {
         outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
         outtree_->Branch("l1_met",            &l1_met_);
         outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
+        outtree_->Branch("em_gf_mva",         &em_gf_mva_);
+        outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
       }
     }
 
