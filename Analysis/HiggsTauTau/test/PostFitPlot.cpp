@@ -102,7 +102,8 @@ int main(int argc, char* argv[]){
   double y_axis_max;                            // If custom_y_axis is true, use this as max y for the plot
   double x_blind_min;                           // If blind is true, use this as min y for blinding
   double x_blind_max;                           // If blind is true, use this as max x for blinding
-
+  string x_axis_label;
+  bool norm_y_axis;
   po::options_description config("Configuration");
   config.add_options()
     ("help,h",  "print the help message")
@@ -114,8 +115,10 @@ int main(int argc, char* argv[]){
     ("pulls_file",           po::value<string>(&pulls_file)->required(),      "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
     ("signal_mass",          po::value<string>(&signal_mass)->required(),     "[REQUIRED] signal mass point to plot, though note this will not be drawn if the total signal rate is zero")
     ("postfit",              po::value<bool>(&postfit)->required(),           "[REQUIRED] use the pulls file to make a post-fit plot")
+    ("norm_y_axis",          po::value<bool>(&norm_y_axis)->default_value(true), "[REQUIRED] use the pulls file to make a post-fit plot")
     ("tanb",                 po::value<string>(&tanb)->default_value(""),     "the value of tan(beta) for the signal, will be used to calculate cross sections. Required if making an MSSM plot")
     ("title_left",           po::value<string>(&title_left)->default_value(default_title),   "the plot title")
+    ("x_axis_label",         po::value<string>(&x_axis_label)->default_value("M_{#tau#tau} [GeV]"),   "the plot title")
     ("mssm",                 po::value<bool>(&mssm)->default_value(false),                   "input is an MSSM datacard")
     ("log_y",                po::value<bool>(&log_y)->default_value(false),                  "y-axis in log scale")
     ("signal_factor",        po::value<int>(&signal_factor)->default_value(1),               "scale the signal by an integer factor")
@@ -265,18 +268,20 @@ int main(int argc, char* argv[]){
   SetStyle(qcd_shape, kMagenta-10);
 
   vector<string> ewk_str = {"W","VV","EWK"};
-  if (channel != "et") {
-    ewk_str.push_back("ZLL");
-    ewk_str.push_back("ZL");
-    ewk_str.push_back("ZJ");
-  }
+  // if (channel != "et") {
+  //   ewk_str.push_back("ZLL");
+  //   ewk_str.push_back("ZL");
+  //   ewk_str.push_back("ZJ");
+  // }
 
   TH1F ewk_hist = setup.process(ewk_str).GetShape();
   ic::TH1PlotElement ewk_shape("ewk_shape", &ewk_hist, "electroweak");
   SetStyle(ewk_shape, kRed    + 2);
 
   TH1F zee_hist = setup.process({"ZLL","ZL","ZJ"}).GetShape();
-  ic::TH1PlotElement zee_shape("zee_shape", &zee_hist, "Z#rightarrowee");
+  string zee_legend = "Z#rightarrowee";
+  if (channel == "mt") zee_legend = "Z#rightarrow#mu#mu";
+  ic::TH1PlotElement zee_shape("zee_shape", &zee_hist, zee_legend);
   SetStyle(zee_shape, kAzure  + 2);
 
 
@@ -315,7 +320,7 @@ int main(int argc, char* argv[]){
 
   for (unsigned i = 0; i < drawn_ele.size(); ++i) {
      drawn_ele[i]->set_line_width(2);
-     drawn_ele[i]->hist_ptr()->Scale(1.0, "width");
+     if (norm_y_axis) drawn_ele[i]->hist_ptr()->Scale(1.0, "width");
   }
   total_shape.set_marker_size(0);
   total_shape.set_fill_color(1);
@@ -332,8 +337,9 @@ int main(int argc, char* argv[]){
   plot.AddTH1PlotElement(top_shape);
   plot.AddTH1PlotElement(ewk_shape);
   if (channel == "et") plot.AddTH1PlotElement(zee_shape);
+  if (channel == "mt") plot.AddTH1PlotElement(zee_shape);
   plot.AddTH1PlotElement(ztt_shape);
-  if (setup.process(signal_procs).GetRate() != 0.0) plot.AddTH1PlotElement(signal_shape);
+  // if (setup.process(signal_procs).GetRate() != 0.0) plot.AddTH1PlotElement(signal_shape);
   plot.AddTH1PlotElement(total_shape);
   plot.AddTH1PlotElement(data_shape);
   plot.custom_x_axis_range = custom_x_axis_range;
@@ -347,7 +353,7 @@ int main(int argc, char* argv[]){
     plot.y_axis_max = y_axis_max;
   }
   plot.legend_height = 0.045;
-  plot.x_axis_title = "M_{#tau#tau} [GeV]";
+  plot.x_axis_title = x_axis_label;
   plot.y_axis_title = "dN/dm_{#tau#tau} [1/GeV]";
   plot.title_left = title_left;
   string channel_str = "";

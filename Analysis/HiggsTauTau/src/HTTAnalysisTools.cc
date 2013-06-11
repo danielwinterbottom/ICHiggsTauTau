@@ -72,34 +72,34 @@ namespace ic {
     */
     if (ch_ != channel::em) {
       alias_map_["inclusive"]         = "";
-      alias_map_["vbf"]               = "(n_jet>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
-      alias_map_["vbf_no_cjv"]        = "(n_jet>=2 && mjj>500. && jdeta>3.5)";
-      alias_map_["vbf_loose"]         = "(n_jet>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
+      alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
+      alias_map_["vbf_no_cjv"]        = "(n_jets>=2 && mjj>500. && jdeta>3.5)";
+      alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
       alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
-      alias_map_["twojet"]            = "(n_jet>=2)";
-      alias_map_["1jet"]              = "(n_jet>=1)";
-      alias_map_["1jet_high"]         = "!"+alias_map_["vbf"]+" && n_jet>=1 && pt_2>40. && n_bjets==0";
+      alias_map_["twojet"]            = "(n_jets>=2)";
+      alias_map_["1jet"]              = "(n_jets>=1)";
+      alias_map_["1jet_high"]         = "!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>40. && n_bjets==0";
       if (ch_ == channel::et) alias_map_["1jet_high"] += " && met>30.";
-      alias_map_["1jet_low"]          = "!"+alias_map_["vbf"]+" && n_jet>=1 && pt_2<=40. && n_bjets==0";
+      alias_map_["1jet_low"]          = "!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=40. && n_bjets==0";
       if (ch_ == channel::et) alias_map_["1jet_low"] += " && met>30.";
-      alias_map_["0jet_high"]         = "n_jet==0 && pt_2>40. && n_bjets==0";
-      alias_map_["0jet_low"]          = "n_jet==0 && pt_2<=40. && n_bjets==0";
+      alias_map_["0jet_high"]         = "n_jets==0 && pt_2>40. && n_bjets==0";
+      alias_map_["0jet_low"]          = "n_jets==0 && pt_2<=40. && n_bjets==0";
     } else {
       alias_map_["inclusive"]         = "";
-      alias_map_["vbf"]               = "(n_jet>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
-      alias_map_["vbf_no_cjv"]        = "(n_jet>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)";
-      alias_map_["vbf_loose"]         = "(n_jet>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && n_bjets==0)";
+      alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["vbf_no_cjv"]        = "(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && n_bjets==0)";
       alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && n_bjets==0)";
-      alias_map_["twojet"]            = "(n_jet>=2 && n_bjets==0)";
-      alias_map_["1jet"]              = "(n_jet>=1 && n_bjets==0)";
-      alias_map_["1jet_high"]         = "!"+alias_map_["vbf"]+" && n_jet>=1 && pt_2>35. && n_bjets==0";
-      alias_map_["1jet_low"]          = "!"+alias_map_["vbf"]+" && n_jet>=1 && pt_2<=35. && n_bjets==0";
-      alias_map_["0jet_high"]         = "n_jet==0 && pt_2>35. && n_bjets==0";
-      alias_map_["0jet_low"]          = "n_jet==0 && pt_2<=35. && n_bjets==0";
+      alias_map_["twojet"]            = "(n_jets>=2 && n_bjets==0)";
+      alias_map_["1jet"]              = "(n_jets>=1 && n_bjets==0)";
+      alias_map_["1jet_high"]         = "!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0";
+      alias_map_["1jet_low"]          = "!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0";
+      alias_map_["0jet_high"]         = "n_jets==0 && pt_2>35. && n_bjets==0";
+      alias_map_["0jet_low"]          = "n_jets==0 && pt_2<=35. && n_bjets==0";
     }
     // alias_map_["prebtag"] = "n_jet<=1 && "
-    alias_map_["btag"]          = "(n_jet<=1 && n_bjets>=1)";
-    alias_map_["btag_loose"]    = "(n_jet<=1 && n_loose_bjets>=1)";
+    alias_map_["btag"]          = "(n_jets<=1 && n_bjets>=1)";
+    alias_map_["btag_loose"]    = "(n_jets<=1 && n_loose_bjets>=1)";
     alias_map_["nobtag"]        = "!"+alias_map_["vbf"]+" && n_bjets==0";
 
     alias_map_["w_extrp_os_sdb_sel"]        = "os && mt_1>70.";
@@ -131,7 +131,7 @@ namespace ic {
         "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
     } else {
       boost::range::push_back(samples_alias_map_["w_sub_samples"], std::vector<std::string>{
-        "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
+        "TTJets", "DYJetsToTauTauSoup", "DYJetsToLL-LSoup", "DYJetsToLL-JSoup"});      
     }
     samples_alias_map_["qcd_sub_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
@@ -140,10 +140,10 @@ namespace ic {
     };
     if (year_ == "2011") {
       boost::range::push_back(samples_alias_map_["qcd_sub_samples"], std::vector<std::string>{
-        "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
+        "TTJets", "DYJetsToTauTauSoup", "DYJetsToLL-LSoup", "DYJetsToLL-JSoup"});      
     } else {
       boost::range::push_back(samples_alias_map_["qcd_sub_samples"], std::vector<std::string>{
-        "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
+        "TTJets", "DYJetsToTauTauSoup", "DYJetsToLL-LSoup", "DYJetsToLL-JSoup"});      
     }
 
 
@@ -214,6 +214,35 @@ namespace ic {
     }
   }
 
+  void HTTAnalysis::ReadTreesWithFallback(std::string const& folder, std::string const& fallback_folder) {
+    if (verbosity_) std::cout << "Reading input files..." << std::endl;
+    for (auto name : sample_names_) {
+      // The input file is folder + sample name + channel + year
+      std::string input_filename = folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
+      std::string label = name;
+      if (verbosity_) std::cout << input_filename << " --> " << label << std::endl;
+      TFile *tmp_file = new TFile(input_filename.c_str());
+      if (!(tmp_file->IsOpen())) {
+        std::cerr << "Info in <HTTAnalysis::ReadTrees>: Trying fallback " << input_filename << std::endl;
+        input_filename = fallback_folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
+        if (verbosity_) std::cout << input_filename << " --> " << label << std::endl;
+        tmp_file = new TFile(input_filename.c_str());
+        if (!tmp_file) {
+          std::cerr << "Warning in <HTTAnalysis::ReadTrees>: Unable to extract TTree from file " << input_filename << std::endl;
+          continue;
+        }
+      }
+      gDirectory->cd("/");
+      TTree *tmp_tree = dynamic_cast<TTree*>(gDirectory->Get("ntuple"));
+      if (!tmp_tree) {
+        std::cerr << "Warning in <HTTAnalysis::ReadTrees>: Unable to extract TTree from file " << input_filename << std::endl;
+        continue;        
+      }
+      tfiles_[label] = tmp_file;
+      ttrees_[label] = tmp_tree;
+    }
+  }
+
   double HTTAnalysis::GetLumiScale(std::string const& sample) {
     auto it = sample_info_.find(sample);
     if (it != sample_info_.end()) {
@@ -235,7 +264,7 @@ namespace ic {
     std::string sel = selection;
     std::string cat = category;
     std::string wt = weight;
-    bool use_soup = false;
+    bool use_soup = true;
     std::string soup = (year_ == "2011") ? "" : "Soup";
     if (!use_soup) soup = "";
 
@@ -243,8 +272,10 @@ namespace ic {
     auto data_norm = this->GetRate("Data", sel, cat, wt);
     TH1F data_hist = this->GetShape(var, "Data", sel, cat, wt);
     SetNorm(&data_hist, data_norm.first);
+    PrintValue("data_obs"+postfix, data_norm);
     hmap["data_obs"+postfix] = std::make_pair(data_hist, data_norm);
 
+    Value total_bkr;
     // Top
     auto top_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
     std::string top_shape_sample = (year_ == "2011") ? "TTJets" : "TT";
@@ -259,6 +290,8 @@ namespace ic {
     TH1F top_hist = this->GetLumiScaledShape(var, top_shape_sample, sel, top_shape_cat, wt);
     SetNorm(&top_hist, top_norm.first);
     std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
+    PrintValue(top_map_label+postfix, top_norm);
+    total_bkr = ValueAdd(total_bkr, top_norm);
     hmap[top_map_label+postfix] = std::make_pair(top_hist, top_norm);
 
     // Diboson
@@ -274,6 +307,8 @@ namespace ic {
     TH1F vv_hist = this->GetLumiScaledShape(var, vv_samples, sel, cat, wt);
     SetNorm(&vv_hist, vv_norm.first);
     std::string vv_map_label = (ch_ == channel::em) ? "EWK" : "VV";
+    PrintValue(vv_map_label+postfix, vv_norm);
+    total_bkr = ValueAdd(total_bkr, vv_norm);
     hmap[vv_map_label+postfix] = std::make_pair(vv_hist, vv_norm);
 
     // Z->ll
@@ -301,6 +336,10 @@ namespace ic {
       zll_norm = ValueAdd(zl_norm, zj_norm);
       zll_hist = zl_hist;
       zll_hist.Add(&zj_hist);
+      PrintValue("ZLL"+postfix, zll_norm);
+      PrintValue("ZL"+postfix, zl_norm);
+      PrintValue("ZJ"+postfix, zj_norm);
+      total_bkr = ValueAdd(total_bkr, zll_norm);
       hmap["ZLL"+postfix] = std::make_pair(zll_hist, zll_norm);
       hmap["ZL"+postfix]  = std::make_pair(zl_hist, zl_norm);
       hmap["ZJ"+postfix]  = std::make_pair(zj_hist, zj_norm);
@@ -311,6 +350,8 @@ namespace ic {
     TH1F ztt_hist = this->GetShape(var, "Embedded", sel, cat, wt);
     SetNorm(&ztt_hist, ztt_norm.first);
     std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
+    PrintValue(ztt_map_label+postfix, ztt_norm);
+    total_bkr = ValueAdd(total_bkr, ztt_norm);
     hmap[ztt_map_label+postfix] = std::make_pair(ztt_hist, ztt_norm);
 
     // W+jets
@@ -340,6 +381,8 @@ namespace ic {
       if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
       TH1F w_hist = this->GetShape(var, "WJetsToLNuSoup", w_shape_sel, w_shape_cat, wt);
       SetNorm(&w_hist, w_norm.first);
+      PrintValue("W"+postfix, w_norm);
+      total_bkr = ValueAdd(total_bkr, w_norm);
       hmap["W"+postfix] = std::make_pair(w_hist, w_norm);
     }
 
@@ -424,7 +467,12 @@ namespace ic {
     }
     SetNorm(&qcd_hist, qcd_norm.first);
     std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
+    PrintValue(qcd_map_label+postfix, qcd_norm);
+    total_bkr = ValueAdd(total_bkr, qcd_norm);
     hmap[qcd_map_label+postfix] = std::make_pair(qcd_hist, qcd_norm);
+
+    PrintValue("Total"+postfix, total_bkr);
+
     return;
   }
 

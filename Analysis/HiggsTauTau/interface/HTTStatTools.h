@@ -128,7 +128,7 @@ class HTTSetup {
 		int ParseROOTFile(std::string const& filename);
 		int ParsePulls(std::string const& filename);
 		HTTSetup();
-		void ApplyPulls();
+		void ApplyPulls(bool use_b_only = false);
 		void WeightSoverB();
 		inline void AddProcess(Process proc) { processes_.push_back(proc); }
 		void VariableRebin(std::vector<double> bins);

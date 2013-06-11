@@ -66,6 +66,8 @@ namespace ic {
       void AddSMSignalSamples(std::vector<std::string> masses);
       void AddMSSMSignalSamples(std::vector<std::string> masses);
       void ReadTrees(std::string const& folder, std::string const& prefix = "");
+      void ReadTreesWithFallback(std::string const& folder, std::string const& fallback_folder);
+
       double GetLumiScale(std::string const& sample);
       void FillHistoMap(HistoMap & hmap, unsigned method,
                         std::string variable,

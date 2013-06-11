@@ -331,7 +331,7 @@ namespace ic {
 		return 0;
 	}
 
-	void HTTSetup::ApplyPulls() {
+	void HTTSetup::ApplyPulls(bool use_b_only) {
 		std::map<std::string, Pull> pmap;
 		for (unsigned i = 0; i < pulls_.size(); ++i) pmap[pulls_[i].name] = pulls_[i];
 		
@@ -340,7 +340,7 @@ namespace ic {
 			if (it == pmap.end()) continue;
 
 			if (params_[i].type == "lnN") {
-				double yield_corr = (params_[i].value - 1.0) * it->second.splusb;
+				double yield_corr = (params_[i].value - 1.0) * ((use_b_only) ? it->second.bonly : it->second.splusb);
 				// std::cout << params_[i] << ":: Pull(" << it->second.splusb << "," << it->second.splusb_err << ")" << std::endl;
 				for (unsigned j = 0; j < processes_.size(); ++j) {
 					if (processes_[j].era 			!= params_[i].era 			||
@@ -351,7 +351,7 @@ namespace ic {
 					// Also scale the histogram if it exists
 					if (processes_[j].shape) processes_[j].shape->Scale(1. + yield_corr);
 				}
-				params_[i].value = ((params_[i].value - 1.0) * it->second.splusb_err) + 1.0;				
+				params_[i].value = ((params_[i].value - 1.0) * it->second.bonly_err) + 1.0;				
 			}
 
 			if (params_[i].type == "shape") {
@@ -377,9 +377,9 @@ namespace ic {
 					// 	down_new->SetBinContent(k, params_[i].shape->GetBinContent(k) + (it->second.splusb - 1. * it->second.splusb_err) * shift);
 					// }
 
-					VerticalMorph(central_new, params_[i].shape_up, params_[i].shape_down, it->second.splusb);
-					VerticalMorph(up_new, params_[i].shape_up, params_[i].shape_down, it->second.splusb + it->second.splusb_err);
-					VerticalMorph(down_new, params_[i].shape_up, params_[i].shape_down, it->second.splusb - it->second.splusb_err);
+					VerticalMorph(central_new, params_[i].shape_up, params_[i].shape_down, (use_b_only ? it->second.bonly : it->second.splusb));
+					VerticalMorph(up_new, params_[i].shape_up, params_[i].shape_down,   (use_b_only ? (it->second.bonly + it->second.bonly_err) : (it->second.splusb + it->second.splusb_err)));
+					VerticalMorph(down_new, params_[i].shape_up, params_[i].shape_down, (use_b_only ? (it->second.bonly - it->second.bonly_err) : (it->second.splusb - it->second.splusb_err)));
 					
 					// std::cout << "Applying pull for nuisance: " << params_[i] << std::endl;
 					// std::cout << "To Process: " << processes_[j] << std::endl;
