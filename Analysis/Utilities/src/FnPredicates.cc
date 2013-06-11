@@ -23,8 +23,6 @@ namespace ic {
     return (abs(part->pdgid()) == pdgid && part->vector().M() > m_low && part->vector().M() < m_high);
   }
 
-
-
   bool IsFilterMatched(Candidate const* cand, std::vector<TriggerObject *> const& objs, std::string const& filter, double const& max_dr) {
     std::size_t hash = CityHash64(filter);
     for (unsigned i = 0; i < objs.size(); ++i) {

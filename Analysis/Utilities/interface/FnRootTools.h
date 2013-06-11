@@ -1,22 +1,15 @@
 #ifndef ICHiggsTauTau_Utilities_FnRootTools_h
 #define ICHiggsTauTau_Utilities_FnRootTools_h
-#include <algorithm>
+#include <iostream>
 #include <vector>
 #include <string>
-#include <utility>
-#include <cmath>
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
-#include "Math/VectorUtil.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1F.h"
-#include "UserCode/ICHiggsTauTau/interface/Objects.hh"
-#include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
-
-#include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 
 namespace ic {
+
+  std::vector<std::vector<unsigned>> GenerateCombinations(std::vector<unsigned> vec);
 
   template <class T> 
   T GetFromTFile(std::string const& filepath, std::string const& objectpath, std::string const& objectname) {
