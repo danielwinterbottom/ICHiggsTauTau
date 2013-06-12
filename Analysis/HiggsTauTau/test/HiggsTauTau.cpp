@@ -663,8 +663,10 @@ int main(int argc, char* argv[]){
 
   std::cout << "** Tau Discriminators **" << std::endl;
   std::cout << boost::format(param_fmt) % "isolation" %  tau_iso_discr;
-  std::cout << boost::format(param_fmt) % "anti-electron1" % tau_anti_elec_discr_1;
-  std::cout << boost::format(param_fmt) % "anti-electron2" % tau_anti_elec_discr_2;
+  if(strategy != strategy::paper2013) std::cout << boost::format(param_fmt) % "anti-electron1" % tau_anti_elec_discr_1;
+  if(strategy != strategy::paper2013) std::cout << boost::format(param_fmt) % "anti-electron2" % tau_anti_elec_discr_2;
+  if(strategy == strategy::paper2013) std::cout << boost::format(param_fmt) % "anti-electron1" % "Using optimised WP";
+  if(strategy == strategy::paper2013) std::cout << boost::format(param_fmt) % "anti-electron2" % "Using optimised WP";
   std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
 
   TauEfficiency tauEfficiency = TauEfficiency("TauEfficiency")
@@ -693,6 +695,8 @@ int main(int argc, char* argv[]){
     .set_input_label("taus").set_min(1); 
   if ( (channel == channel::et || channel == channel::etmet) && special_mode == 18) tauElRejectFilter
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5);
+  if ( (channel == channel::et || channel == channel::etmet) && strategy == strategy::paper2013) tauElRejectFilter
+    .set_predicate(bind(passAntiEMVA, _1, 0) > 0.5); 
 
   SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)

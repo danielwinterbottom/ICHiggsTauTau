@@ -308,6 +308,24 @@ namespace ic {
     return 0.0;
   }
 
+  bool passAntiEMVA(Tau const * tau, int WP){
+   
+    int iCat=(int)(tau->GetTauID("againstElectronMVA3category")+0.5);
+    float raw=tau->GetTauID("againstElectronMVA3raw");
+
+    //Code from Ivo
+    if(iCat>15) return true;
+
+    static float cutsMedium[16]={0.933,0.921,0.944,0.945,0.918,0.941,0.981,0.943,0.956,0.947,0.951,0.95,0.897,0.958,0.955,0.942};
+    static float cutsTight[16]={ 0.96,0.968,0.971,0.972,0.969,0.959,0.981,0.965,0.975,0.972,0.974,0.971,0.897,0.971,0.961,0.97};
+    static float cutsVeryTight[16]={0.978,0.98,0.982,0.985,0.977,0.974,0.989,0.977,0.986,0.983,0.984,0.983,0.971,0.987,0.977,0.981};
+    float cut=0;
+    if(WP==0) cut = cutsMedium[iCat];
+    if(WP==1) cut = cutsTight[iCat];
+    if(WP==2) cut = cutsVeryTight[iCat];
+    return (raw>cut);
+  }
+
 
   bool ElectronZbbID(Electron const * elec) {
     if (InEcalGap(elec)) return false;
