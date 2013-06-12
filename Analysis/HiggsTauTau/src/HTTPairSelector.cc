@@ -125,6 +125,7 @@ namespace ic {
       }
     }
     
+    /*
     if (channel_ != channel::em) {
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       if (tau->decay_mode() == 0) {
@@ -132,6 +133,7 @@ namespace ic {
         if (eoverp <= 0.2) return 1;
       }
     }
+    */
 
 
     if (scale_met_for_tau_ && channel_ != channel::em) {

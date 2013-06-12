@@ -645,7 +645,7 @@ int main(int argc, char* argv[]){
       //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
       tau_anti_elec_discr_1 = "againstElectronTightMVA3";
       tau_anti_elec_discr_2 = "againstElectronTightMVA3";
-      tau_anti_muon_discr   = "againstMuonLoose2";
+      tau_anti_muon_discr   = "againstMuonLoose";
       // At the moment revert the relaxed Z->ee to the HCP/Moriond approach of
       // just using againstElectronMVA (but need to make a separate special 18 skim)
       if (special_mode == 18) tau_anti_elec_discr_1 = "againstElectronMVA"; 
@@ -655,7 +655,7 @@ int main(int argc, char* argv[]){
       //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
       tau_anti_elec_discr_1 = "againstElectronLoose";
       tau_anti_elec_discr_2 = "againstElectronLoose";
-      tau_anti_muon_discr   = "againstMuonTight2";
+      tau_anti_muon_discr   = "againstMuonTight";
     }
   //  if (do_skim) { // For 3hits make wp a bit looser when skimming
   //    tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";

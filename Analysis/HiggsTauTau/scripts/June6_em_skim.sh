@@ -84,40 +84,40 @@ do
 done
 
 
-FILELIST=filelists/June6_MC_53X
-SKIMPATH=$SSD/June6/MC_53X
-
-PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/MC_53X/
-JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
-PATHS=(
-'DYJetsToLL'
-'DY1JetsToLL'
-'DY2JetsToLL'
-'DY3JetsToLL'
-'DY4JetsToLL'
-'TTJets'
-'TT-v1'
-'TT-v2'
-'T-tW'
-'Tbar-tW'
-'WWJetsTo2L2Nu'
-'WZJetsTo2L2Q'
-'WZJetsTo3LNu'
-'ZZJetsTo2L2Nu'
-'ZZJetsTo2L2Q'
-'ZZJetsTo4L'
- 
-)
-for i in "${PATHS[@]}"
-do
-  echo "$i"
-  mkdir -p $SKIMPATH/em_skim/$i/
-  JOB="$i"_em_skim
-  $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
-  --do_skim=true --skim_path=$SKIMPATH/em_skim/"$i"/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
-done
+#FILELIST=filelists/June6_MC_53X
+#SKIMPATH=$SSD/June6/MC_53X
+#
+#PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/MC_53X/
+#JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+#PATHS=(
+#'DYJetsToLL'
+#'DY1JetsToLL'
+#'DY2JetsToLL'
+#'DY3JetsToLL'
+#'DY4JetsToLL'
+#'TTJets'
+#'TT-v1'
+#'TT-v2'
+#'T-tW'
+#'Tbar-tW'
+#'WWJetsTo2L2Nu'
+#'WZJetsTo2L2Q'
+#'WZJetsTo3LNu'
+#'ZZJetsTo2L2Nu'
+#'ZZJetsTo2L2Q'
+#'ZZJetsTo4L'
+# 
+#)
+#for i in "${PATHS[@]}"
+#do
+#  echo "$i"
+#  mkdir -p $SKIMPATH/em_skim/$i/
+#  JOB="$i"_em_skim
+#  $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
+#  --do_skim=true --skim_path=$SKIMPATH/em_skim/"$i"/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#  $JOBSUBMIT jobs/$JOB.sh
+#done
 
 # PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/MC_53X/
 # JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
