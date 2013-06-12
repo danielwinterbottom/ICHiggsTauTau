@@ -417,7 +417,7 @@ int main(int argc, char* argv[]){
     .set_do_top_factors(false)
     .set_do_btag_weight(false);
   if (!is_data) {
-    httWeights.set_do_trg_weights(false).set_trg_applied_in_mc(true).set_do_idiso_weights(false);
+    httWeights.set_do_singlemu_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     httWeights.set_do_btag_weight(true);
   }
   if (output_name.find("DYJetsToLL") != output_name.npos) httWeights.set_do_mtau_fakerate(true);
@@ -443,7 +443,7 @@ int main(int argc, char* argv[]){
     .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label)
-    .set_write_tree(false);
+    .set_write_tree(true);
   if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
   if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);

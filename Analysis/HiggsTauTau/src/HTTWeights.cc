@@ -21,6 +21,7 @@ namespace ic {
     era_(era::data_2012_moriond) {
     do_trg_weights_     = false;
     trg_applied_in_mc_  = false;
+    do_singlemu_trg_weights_ = false;
     do_etau_fakerate_   = false;
     do_mtau_fakerate_   = false;
     do_idiso_weights_   = false;
@@ -714,6 +715,23 @@ namespace ic {
         event->Add("trigweight_1", mu_trg);
         event->Add("trigweight_2", tau_trg);
       }
+    }
+    if (do_singlemu_trg_weights_) {
+        Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
+        double m_pt = muon->pt();
+        double m_eta = fabs(muon->eta());
+        double m_trg = 1.0;
+        double m_trg_mc = 1.0;
+        if (m_eta < 0.9) {
+          if (m_pt > 25.0)                { m_trg_mc = 0.93125; m_trg = 0.91403; }
+        } else if (m_eta >= 0.9 && m_eta < 1.2) {
+          if (m_pt > 25.0)                { m_trg_mc = 0.85067; m_trg = 0.81797; }
+        } else {
+          if (m_pt > 25.0)                { m_trg_mc = 0.80169; m_trg = 0.79945; }
+        }
+        if (trg_applied_in_mc_) m_trg = m_trg / m_trg_mc;
+        weight *= (m_trg);
+        event->Add("trigweight_1", m_trg);
     }
 
     if (do_idiso_weights_ || do_id_weights_) {

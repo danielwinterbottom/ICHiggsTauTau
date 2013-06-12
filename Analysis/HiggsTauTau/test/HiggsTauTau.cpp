@@ -697,7 +697,7 @@ int main(int argc, char* argv[]){
   if ( (channel == channel::et || channel == channel::etmet) && special_mode == 18) tauElRejectFilter
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_elec_discr_1) > 0.5);
   if ( (channel == channel::et || channel == channel::etmet) && strategy == strategy::paper2013) tauElRejectFilter
-    .set_predicate(bind(passAntiEMVA, _1, 0) > 0.5); 
+    .set_predicate(bind(passAntiEMVA, _1, 0)); 
 
   SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
