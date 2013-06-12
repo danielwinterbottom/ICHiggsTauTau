@@ -254,7 +254,7 @@ namespace ic {
     }
   }
 
-  void HTTAnalysis::FillHistoMap(HistoMap & hmap, unsigned method,
+  void HTTAnalysis::FillHistoMap(HistValueMap & hmap, unsigned method,
                         std::string variable,
                         std::string selection,
                         std::string category,

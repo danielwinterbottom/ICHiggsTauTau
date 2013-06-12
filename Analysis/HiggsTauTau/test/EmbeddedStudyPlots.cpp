@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
 
 	string sel = "os && mt_1<20.";
 
-	HTTAnalysis::HistoMap hmap;
+	HTTAnalysis::HistValueMap hmap;
 	ana.FillHistoMap(hmap, 8, var, sel, cat, "wt", "");
 	hmap["ggH125"] 	= std::make_pair(ana.GetLumiScaledShape(var, "GluGluToHToTauTau_M-125"	, sel, cat, "wt"), ana.GetLumiScaledRate("GluGluToHToTauTau_M-125"	, sel, cat, "wt"));
 	hmap["qqH125"] 	= std::make_pair(ana.GetLumiScaledShape(var, "VBF_HToTauTau_M-125"			, sel, cat, "wt"), ana.GetLumiScaledRate("VBF_HToTauTau_M-125"			, sel, cat, "wt"));

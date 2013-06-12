@@ -82,8 +82,8 @@ struct era_def {
 		data_2011,				// Entire 2011 dataset, mixture of prompt and re-reco
 		data_2012_hcp,		// HCP dataset for 2012: A+B re-reco C prompt
 		data_2012_moriond,// Moriond dataset for 2012: A+B re-reco, C+D prompt
-		data_2012_donly 	// 2012D prompt only
-
+		data_2012_donly, 	// 2012D prompt only
+		data_2012_rereco
 	};
 };
 typedef safe_enum<era_def> era;
@@ -93,7 +93,8 @@ inline std::string Era2String(era const& in) {
 		(era::data_2011, 					"data_2011")
 		(era::data_2012_hcp, 			"data_2012_hcp")
 		(era::data_2012_moriond, 	"data_2012_moriond")
-		(era::data_2012_donly, 		"data_2012_donly");
+		(era::data_2012_donly, 		"data_2012_donly")
+		(era::data_2012_rereco, 	"data_2012_rereco");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -107,7 +108,8 @@ inline era String2Era(std::string const& in) {
 	("data_2011",					era::data_2011)
 	("data_2012_hcp", 		era::data_2012_hcp)
 	("data_2012_moriond", era::data_2012_moriond)
-	("data_2012_donly", 	era::data_2012_donly);
+	("data_2012_donly", 	era::data_2012_donly)
+	("data_2012_rereco", 	era::data_2012_rereco);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {

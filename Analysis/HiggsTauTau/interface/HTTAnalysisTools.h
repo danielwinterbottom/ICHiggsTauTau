@@ -54,7 +54,8 @@ namespace ic {
   class HTTAnalysis {
     public:
       typedef std::pair<double, double> Value;
-      typedef std::map<std::string, std::pair<TH1F, Value>> HistoMap;
+      typedef std::pair<TH1F, Value> HistValuePair;
+      typedef std::map<std::string, HistValuePair> HistValueMap;
       typedef std::map<std::string, std::function<std::pair<double,double>()>> ValueFnMap;
     public:
       HTTAnalysis(ic::channel ch, std::string year, int verbosity);
@@ -69,12 +70,37 @@ namespace ic {
       void ReadTreesWithFallback(std::string const& folder, std::string const& fallback_folder);
 
       double GetLumiScale(std::string const& sample);
-      void FillHistoMap(HistoMap & hmap, unsigned method,
+      void FillHistoMap(HistValueMap & hmap, unsigned method,
                         std::string variable,
                         std::string selection,
                         std::string category,
                         std::string weight,
                         std::string postfix);
+      // HistValuePair GenerateData(unsigned method,
+      //                   std::string variable,
+      //                   std::string selection,
+      //                   std::string category,
+      //                   std::string weight);
+      // HistValuePair GenerateZTT(unsigned method,
+      //                   std::string variable,
+      //                   std::string selection,
+      //                   std::string category,
+      //                   std::string weight);
+      // HistValuePair GenerateTOP(unsigned method,
+      //                   std::string variable,
+      //                   std::string selection,
+      //                   std::string category,
+      //                   std::string weight);
+      // HistValuePair GenerateVV(unsigned method,
+      //                   std::string variable,
+      //                   std::string selection,
+      //                   std::string category,
+      //                   std::string weight);
+      // HistValuePair GenerateW(unsigned method,
+      //                   std::string variable,
+      //                   std::string selection,
+      //                   std::string category,
+      //                   std::string weight);
 
       //! Generate a histogram for a specific samples
       /*! \param variable A string containing the name of a histogram branch

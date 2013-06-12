@@ -338,7 +338,7 @@ int main(int argc, char* argv[]){
     if (strategy == strategy::paper2013)  data_json = "data/json/data_2012_moriond_final.txt";
   }
   if (era == era::data_2012_donly)        data_json = "data/json/data_2012_donly.txt";
-
+  if (era == era::data_2012_rereco)       data_json = "data/json/data_2012_rereco.txt";
 
   LumiMask lumiMask = LumiMask("LumiMask")
     .set_produce_output_jsons("")
@@ -357,6 +357,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
   if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
   if (era == era::data_2012_donly) data_pu_file     =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
+  if (era == era::data_2012_rereco) data_pu_file    =  "data/pileup/Data_Pileup_2012_ReReco-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -793,6 +794,7 @@ int main(int argc, char* argv[]){
     .set_do_emu_m_fakerates(false)
     .set_do_top_factors(false)
     .set_do_btag_weight(false);
+  if (era == era::data_2012_rereco) httWeights.set_era(era::data_2012_moriond);
   if (!is_data) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     httWeights.set_do_btag_weight(true);
