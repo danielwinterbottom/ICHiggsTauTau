@@ -60,6 +60,23 @@ namespace ic {
   }
 
 
+  // Initialization of HinvDijetMETPlots struct
+  HinvDijetMETPlots::HinvDijetMETPlots(TFileDirectory const& dir) {
+    TH1F::SetDefaultSumw2();
+    htMET              = dir.make<TH1F>("htMET",             "htMET",             500,    0,1000);
+    vecSumTriObjectPt  = dir.make<TH1F>("vecSumTriObjectPt", "vecSumTriObjectPt", 500,    0, 500);
+    scalSumTriObjectPt = dir.make<TH1F>("scalSumTriObjectPt","scalSumTriObjectPt",500,    0,1000);
+    dijetOverMetPt     = dir.make<TH1F>("dijetOverMetPt",    "dijetOverMetPt",    100,    0,   1);
+    alphaT             = dir.make<TH1F>("alphaT",            "alphaT",            100,    0,  10);
+    betaT              = dir.make<TH1F>("betaT",             "betaT",             100,    0,  10);
+    
+    vecSum_htMET       = dir.make<TH2F>("vecSum_htMET",   "vecSum_htMET",   100,0,500,100,0,1000);
+    dijetFrac_htMET    = dir.make<TH2F>("dijetFrac_htMET","dijetFrac_htMET",100,0,  1,100,0,1000);
+    alphaT_htMET       = dir.make<TH2F>("alphaT_htMET",   "alphaT_htMET",   100,0, 10,100,0,1000);
+    betaT_htMET        = dir.make<TH2F>("betaT_htMET",    "betaT_htMET",    100,0, 10,100,0,1000);
+  };
+
+  
   HinvControlPlots::HinvControlPlots(std::string const& name): ModuleBase(name){
     fs_ = NULL;
     met_label_ = "pfMet";
@@ -85,6 +102,7 @@ namespace ic {
     InitCoreControlPlots();
     InitWeightPlots();
     InitSystPlots();
+    InitDijetMETPlots();
     
     yields_ = 0;
 
@@ -123,8 +141,21 @@ namespace ic {
     dphijj_ = -1;
 
     n_jetsingap_ = 0;
-    bool fillPlots = true;
-      
+    
+    // Start: HinvDijetMETPlots Variables __________________________________
+    ROOT::Math::PtEtaPhiEVector diffVector;
+    double diffEtValue;
+    double diffPtValue;
+    double scalSumPt;
+    
+    double dijet_MET;
+    double htPlusMET = 0;
+    // End: Filling HinvDijetMETPlots Variables ____________________________
+    
+    // Enable filling of plots
+    bool fillPlots             = true;
+    bool fillHinvDijetMETPlots = true;
+    
     if (dijet_vec.size() != 0) {
       
       CompositeCandidate const* dijet = dijet_vec.at(0);
@@ -160,13 +191,26 @@ namespace ic {
 	  if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
 	}
       }
+      
+      
+      // Start: Calculating HinvDijetMETPlots __________________________________
+      htPlusMET = dijet->ScalarPtSum() + met->vector().Pt();
+      
+      diffVector   = dijet->vector() + met->vector();
+      diffEtValue  = diffVector.Et();
+      diffPtValue  = diffVector.Pt();
+
+      dijet_MET = dijet->vector().Pt()/(met->vector().Pt()+dijet->vector().Pt());
+      scalSumPt = dijet->vector().Pt()+met->vector().Pt();
+      // End: Calculating HinvDijetMETPlots ____________________________________
+      
     }
     else if (jets.size() > 1) {
       Candidate const* jet1 = jets[0];
       Candidate const* jet2 = jets[1];
-      jpt_1_ = jet1->pt();
+      jpt_1_  = jet1->pt();
       jeta_1_ = jet1->eta();
-      jpt_2_ = jet2->pt();
+      jpt_2_  = jet2->pt();
       jeta_2_ = jet2->eta();
       
       mjj_ = (jet1->vector()+jet2->vector()).M();
@@ -183,6 +227,18 @@ namespace ic {
 	  if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
 	}
       }
+      
+       // Start: Calculating HinvDijetMETPlots __________________________________
+       ROOT::Math::PtEtaPhiEVector dijet = jet1->vector()+jet2->vector();
+
+       diffVector  = dijet + met->vector();
+       diffEtValue = diffVector.Et();
+       diffPtValue = diffVector.Pt();
+       
+       dijet_MET = dijet.Pt()/(met->vector().Pt()+dijet.Pt());
+       scalSumPt = dijet.Pt()+met->vector().Pt();
+       // End: Calculating HinvDijetMETPlots ____________________________________
+      
     }
     
     n_vtx_ = eventInfo->good_vertices();
@@ -199,6 +255,24 @@ namespace ic {
       FillSystPlots(eventInfoNonConst);
     }
 
+    // Start: Filling HinvDijetMETPlots __________________________________
+    if (fillHinvDijetMETPlots) {
+      //dijetMETPlots_->vecSumTriObjectEt ->Fill(diffEtValue,wt_);
+      dijetMETPlots_->vecSumTriObjectPt ->Fill(diffPtValue,wt_);
+      dijetMETPlots_->dijetOverMetPt    ->Fill(dijet_MET,  wt_);
+      dijetMETPlots_->scalSumTriObjectPt->Fill(scalSumPt,  wt_);
+      dijetMETPlots_->htMET             ->Fill(htPlusMET,  wt_);
+
+      //dijetMETPlots_->alphaT->Fill(htPlusMET,wt_);
+      //dijetMETPlots_->betaT ->Fill(htPlusMET,wt_);
+
+      dijetMETPlots_->vecSum_htMET   ->Fill(diffPtValue,htPlusMET,wt_);
+      dijetMETPlots_->dijetFrac_htMET->Fill(dijet_MET,  htPlusMET,wt_);
+      //dijetBalancePlots_->alphaT_htMET   ->Fill(htPlusMET,wt_);
+      //dijetBalancePlots_->betaT_htMET    ->Fill(htPlusMET,wt_);
+    }
+    // End: Filling HinvDijetMETPlots ____________________________________
+    
     return 0;
   }
 
@@ -225,7 +299,11 @@ namespace ic {
     std::cout << " syst plots initialised" << std::endl;
   }
 
-
+  void HinvControlPlots::InitDijetMETPlots() {
+    dijetMETPlots_ = new HinvDijetMETPlots(fs_->mkdir(sel_label_+"/dijetMet"));
+    std::cout << " dijetMET plots initialised" << std::endl;
+  }
+      
  void HinvControlPlots::FillYields() {
    yields_ = yields_ + wt_;
  }

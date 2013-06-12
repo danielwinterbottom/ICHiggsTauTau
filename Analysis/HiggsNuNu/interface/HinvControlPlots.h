@@ -68,6 +68,24 @@ namespace ic {
 
   };
 
+  // Plots for possible new variables based on topology of
+  // the dijet and MET system
+  struct HinvDijetMETPlots {
+    TH1F *vecSumTriObjectPt;
+    TH1F *scalSumTriObjectPt;
+    TH1F *htMET;
+    TH1F *dijetOverMetPt;
+    TH1F *alphaT;
+    TH1F *betaT;
+    TH2F *vecSum_htMET;
+    TH2F *dijetFrac_htMET;
+    TH2F *alphaT_htMET;
+    TH2F *betaT_htMET;
+    
+    HinvDijetMETPlots(TFileDirectory const& dir);
+    
+  };
+  
 
   class HinvControlPlots : public ModuleBase {
 
@@ -81,10 +99,11 @@ namespace ic {
 
 
     double yields_;
-    HinvCoreControlPlots* controlplots_;
-    HinvWeightPlots* weightplots_;
-    HinvSystPlots* systplots_;
-
+    HinvCoreControlPlots *controlplots_;
+    HinvWeightPlots      *weightplots_;
+    HinvSystPlots        *systplots_;
+    HinvDijetMETPlots    *dijetMETPlots_;
+    
     DynamicHistoSet * misc_plots_;
     Dynamic2DHistoSet * misc_2dplots_;
 
@@ -124,6 +143,7 @@ namespace ic {
     void InitCoreControlPlots();
     void InitWeightPlots();
     void InitSystPlots();
+    void InitDijetMETPlots();
     void FillCoreControlPlots();
     void FillWeightPlots(EventInfo * info);
     void FillSystPlots(EventInfo * info);
