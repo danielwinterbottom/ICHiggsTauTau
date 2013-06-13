@@ -82,7 +82,8 @@ int main(int argc, char* argv[]){
   bool doMetFilters;              // apply cleaning MET filters.
   string filters;
   //unsigned signal_region;       // DeltaPhi cut > 2.7
-  double met_cut;                 // MET cut to apply for signal, QCD or skim
+  double met_cut;                 // MET cut min to apply for signal, QCD or skim
+  double met_cut_max;                 // MET cut max to apply for signal, QCD or skim
   bool dotrgeff;                  // Do trigger efficiency corrections
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
 
@@ -116,6 +117,7 @@ int main(int argc, char* argv[]){
     ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
     ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
+    ("met_cut_max",             po::value<double>(&met_cut_max)->default_value(14000.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
@@ -159,7 +161,8 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
-  std::cout << boost::format(param_fmt) % "met_cut" % met_cut;
+  std::cout << boost::format(param_fmt) % "met_cut" % met_cut ;
+  std::cout << boost::format(param_fmt) % "met_cut_max" % met_cut_max ;
   std::cout << boost::format(param_fmt) % "doMetFilters" % doMetFilters;
   std::cout << boost::format(param_fmt) % "filters" % filters;
   std::cout << boost::format(param_fmt) % "dotrgeff" % dotrgeff;
@@ -667,12 +670,12 @@ int main(int argc, char* argv[]){
   ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"selElectrons",1,nLepToAdd);
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,nLepToAdd);
 
-  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",false,filtersVec,met_cut);
-  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut);
-  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut);
+  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",false,filtersVec,met_cut,met_cut_max);
+  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut,met_cut_max);
+  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut,met_cut_max);
 
   if (fixForEWKZ)  mettype="metNoENoMu";
-  MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut);
+  MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut,met_cut_max);
 
   //------------------------------------------------------------------------------------
   // W selection Modules

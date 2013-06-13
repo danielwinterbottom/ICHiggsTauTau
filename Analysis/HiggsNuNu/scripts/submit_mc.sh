@@ -18,9 +18,9 @@ PRODUCTION=Apr04
 
 for METCUT in 130
   do
-  for CHANNEL in nunu enu munu taunu
+  for CHANNEL in taunu #munu taunu
     do
-    for SYST in central JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
       JOBDIR=jobs/$CHANNEL/MET$METCUT/
