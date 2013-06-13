@@ -18,11 +18,11 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfig.cfg
 PRODUCTION=Apr04
 
-for METCUT in 130
+for METCUT in 120 #130
   do
-  for CHANNEL in nunu enu munu #taunu
+  for CHANNEL in nunu #enu munu #taunu
     do
-    for SYST in central JESUP JESDOWN JERBETTER JERWORSE #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
+    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
       JOBDIR=jobs/$CHANNEL/MET$METCUT/

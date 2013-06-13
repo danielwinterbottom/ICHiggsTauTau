@@ -24,9 +24,9 @@ while [ $# -gt 0 ] ; do
 done ;
 
 
-for CHANNEL in nunu taunu enu munu
+for CHANNEL in nunu #taunu enu munu
   do
-  for MET in 130
+  for MET in 120
     do
     for SYST in "" #JESUP JESDOWN
       do
