@@ -742,7 +742,8 @@ if (release == '53X'):
   if isData:
     process.source = cms.Source("PoolSource",
       #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/public/TauPlusX-2012D.root')
-      fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/private/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/pickevents.root')
+      #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/private/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/pickevents.root')
+      fileNames = cms.untracked.vstring("/store/user/srimanob/invHiggs/22Jan13/0008F234-739C-E211-A836-002590832A48.root")
     )
     process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
   else:
