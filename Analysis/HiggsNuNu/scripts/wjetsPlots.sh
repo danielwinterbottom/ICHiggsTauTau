@@ -1,16 +1,19 @@
 #!/bin/sh
-PARAMS=./scripts/Params.dat
+PRODUCTION=Apr04
+PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
-for CHANNEL in nunu enu munu
+for CHANNEL in enu
   do
 
-  for MET in 130 0
+  for MET in 0
     do
 
       FOLDER=./output/$CHANNEL/MET$MET/
-      PLOTDIR=PLOTS_QCD/$CHANNEL/MET$MET/
+      PLOTDIR=PLOTS/$CHANNEL/MET$MET/
+      PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
 
       mkdir -p $PLOTDIR
+      mkdir -p $PLOTDIRQCD
 
       BLIND=1
       if (( "$CHANNEL" != "nunu" )) || (( "$MET" != "130" ))
@@ -145,7 +148,18 @@ for CHANNEL in nunu enu munu
     --folder=$FOLDER --plot_dir=$PLOTDIR \
     --plot_name="met_noelectrons"  --x_axis_label="PF MET + e (GeV)" \
     --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=1000 \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=700 \
+    --y_axis_min=0.01 --extra_pad=10000 \
+    --rebin=20 \
+    --norm_bins=false \
+    --paramfile=$PARAMS
+
+###### met
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="met"  --x_axis_label="PF MET (GeV)" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=700 \
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=20 \
     --norm_bins=false \

@@ -1042,6 +1042,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);
 
+ 
      //filter jets
      analysis.AddModule(&jetPtEtaFilter);
     
@@ -1050,6 +1051,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&jjLeadingPairProducer);
      //if (printEventContent) analysis.AddModule(&hinvPrint);
 
+     //analysis.AddModule(&hinvPrint);
      
      //lepton selections or veto
      if (channel == channel::munu){

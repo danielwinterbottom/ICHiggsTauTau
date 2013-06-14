@@ -145,6 +145,7 @@ int main(int argc, char* argv[]){
   bool signal_no_stack;		     // Don't stack the signal contributions on the backgrounds
   bool draw_ratio;                   // Draw a ratio box
   bool plot_qcd;                     // Include QCD in plots
+  bool plot_data_qcd;                // Include QCD from data in plots
   bool plot_wjets_comp;              // Separate Wjets components in plots
 
   // Options to manually shift backgrounds and draw uncertainty bands
@@ -193,6 +194,7 @@ int main(int argc, char* argv[]){
     ("norm_bins",           po::value<bool>(&norm_bins)->default_value(false))
     ("signal_no_stack",     po::value<bool>(&signal_no_stack)->default_value(false))
     ("plot_qcd",            po::value<bool>(&plot_qcd)->default_value(true))
+    ("plot_data_qcd",       po::value<bool>(&plot_data_qcd)->default_value(false))
     ("plot_wjets_comp",     po::value<bool>(&plot_wjets_comp)->default_value(true))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
     ("draw_band_on_stack",  po::value<bool>(&draw_band_on_stack)->default_value(false))
@@ -217,6 +219,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "is_2012" 		% is_2012;
   std::cout << boost::format(param_fmt) % "no_plot" 		% no_plot;
   std::cout << boost::format(param_fmt) % "plot_qcd" 		% plot_qcd;
+  std::cout << boost::format(param_fmt) % "plot_data_qcd" 	% plot_data_qcd;
   std::cout << boost::format(param_fmt) % "plot_wjets_comp" 	% plot_wjets_comp;
 
 
@@ -245,6 +248,7 @@ int main(int argc, char* argv[]){
   files.push_back("Data_MET-2012D-PromptReco-v1");
   //files.push_back("Data_MET-2012D-PromptReco-v1_7_269fb");
   //files.push_back("Data_MET-2012D-PromptReco-v1_7_193fb");
+  if (plot_data_qcd) files.push_back("Data_MET0to120");
   files.push_back("MC_QCD-Pt-30to50-pythia6");
   files.push_back("MC_QCD-Pt-50to80-pythia6");
   files.push_back("MC_QCD-Pt-80to120-pythia6");
@@ -429,6 +433,7 @@ int main(int argc, char* argv[]){
     plot.x_bin_labels_ = x_axis_bin_labels;
 
     ic::TH1PlotElement data_hist = ic::TH1PlotElement("Data");//+selections[k]);
+    ic::TH1PlotElement data_qcd_hist = ic::TH1PlotElement("DataQCD");
     ic::TH1PlotElement signal_hist = ic::TH1PlotElement("Signal");
     ic::TH1PlotElement qcd_hist = ic::TH1PlotElement("QCD");
     ic::TH1PlotElement top_hist = ic::TH1PlotElement("Top");
@@ -451,7 +456,10 @@ int main(int argc, char* argv[]){
       string s = selectionsdir[k];
 
       std::string nm = Token(f, s);
-      SumHistograms(f,plots[nm],"Data",data_hist);
+
+      if (f.find("0to120") == f.npos) 
+	SumHistograms(f,plots[nm],"Data",data_hist);
+      SumHistograms(f,plots[nm],"Data_MET0to120",data_qcd_hist);
       SumHistograms(f,plots[nm],"VBF_H",signal_hist);
       SumHistograms(f,plots[nm],"MC_QCD",qcd_hist);
       SumHistograms(f,plots[nm],"MC_T",top_hist);
@@ -493,6 +501,7 @@ int main(int argc, char* argv[]){
     SetSignalStyle(signal_hist,1);
     SetDataStyle(data_hist);
     SetBkgStyle(qcd_hist,7);
+    SetBkgStyle(data_qcd_hist,7);
     SetBkgStyle(top_hist,5);
     SetBkgStyle(WJets_hist,6);
     SetBkgStyle(WJets_enu_hist,2);
@@ -510,16 +519,17 @@ int main(int argc, char* argv[]){
 	signal_hist.set_legend_text("VBF m_{H}=120 GeV #times"+boost::lexical_cast<std::string>(draw_signal_factor));
       else signal_hist.set_legend_text("VBF m_{H}=120 GeV");
     }
+    if (plot_qcd || plot_data_qcd) {
+      qcd_hist.set_legend_text("QCD,#gamma+jets");
+      data_qcd_hist.set_legend_text("QCD");
+      //GJets_hist.set_legend_text("#gamma + jets");
+    }
     ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
     if (!plot_wjets_comp) WJets_hist.set_legend_text("W+jets");
     else {
       WJets_taunu_hist.set_legend_text("W#rightarrow#tau#nu+jets");
       WJets_munu_hist.set_legend_text("W#rightarrow#mu#nu+jets");
       WJets_enu_hist.set_legend_text("W#rightarrow e#nu+jets");
-    }
-    if (plot_qcd) {
-      qcd_hist.set_legend_text("QCD,#gamma+jets");
-      //GJets_hist.set_legend_text("#gamma + jets");
     }
     top_hist.set_legend_text("t#bar{t},t,tW");
     VV_hist.set_legend_text("Dibosons");
@@ -553,10 +563,6 @@ int main(int argc, char* argv[]){
 
     plot.AddTH1PlotElement(VV_hist);
     plot.AddTH1PlotElement(top_hist);
-    if (plot_qcd){
-      plot.AddTH1PlotElement(GJets_hist);
-      plot.AddTH1PlotElement(qcd_hist);
-    }
     if (!plot_wjets_comp) plot.AddTH1PlotElement(WJets_hist);
     else {
       plot.AddTH1PlotElement(WJets_enu_hist);
@@ -576,6 +582,13 @@ int main(int argc, char* argv[]){
 
 //moving signal before data screws up everything !!
     plot.AddTH1PlotElement(VBFZ_hist);
+    if (plot_qcd){
+      plot.AddTH1PlotElement(GJets_hist);
+      plot.AddTH1PlotElement(qcd_hist);
+    }
+    else if (plot_data_qcd){
+      plot.AddTH1PlotElement(data_qcd_hist);
+    }
    
     plot.AddTH1PlotElement(data_hist);
  
@@ -610,6 +623,7 @@ int main(int argc, char* argv[]){
     string background_list = "VV+Top+WJets_enu+WJets_munu+WJets_taunu+ZJetsToLL+VBFZ+ZJetsToNuNu";
     if (!plot_wjets_comp) background_list = "VV+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
     if (plot_qcd) background_list += "+GJets+QCD";
+    else if (plot_data_qcd) background_list += "+DataQCD";
     ic::RatioPlotElement ratio("DataOverMC","Data",background_list);
     
     plot.band_size_fractional_ = band_size_fractional;
@@ -649,6 +663,7 @@ int main(int argc, char* argv[]){
       Utilities n_others = Utilities(n_gjets.rawNumber()+n_VV.rawNumber(),
 				     n_gjets.rawError()+n_VV.rawError());
       Utilities n_data = Utilities(Integral(data_hist.hist_ptr()),Error(data_hist.hist_ptr()));
+      Utilities n_data_qcd = Utilities(Integral(data_qcd_hist.hist_ptr()),Error(data_qcd_hist.hist_ptr()));
       Utilities n_signal = Utilities(Integral(signal_hist.hist_ptr()),Error(signal_hist.hist_ptr()));
       Utilities n_Tot = Utilities(n_qcd.rawNumber()+n_top.rawNumber()+n_WJets.rawNumber()+
 				  n_ZJets.rawNumber()+n_others.rawNumber(),
@@ -693,6 +708,7 @@ int main(int argc, char* argv[]){
 		    << "ZJets_nunu " << n_ZJets_nunu.roundedNumber() << " " << n_ZJets_nunu.roundedError() <<  std::endl
 		    << "ZJets_vbf " << n_ZJets_vbf.roundedNumber() << " " << n_ZJets_vbf.roundedError() <<  std::endl
 		    << "VV " << n_VV.roundedNumber() << " " << n_VV.roundedError() <<  std::endl
+		    << "Data_QCD " << n_data_qcd.roundedNumber() << " " << n_data_qcd.roundedError() <<  std::endl
 		    << "Data " << n_data.roundedNumber() << " " << n_data.roundedError() <<  std::endl
 		    << "Signal " << n_signal.roundedNumber() << " " << n_signal.roundedError() 
 		    << std::endl;

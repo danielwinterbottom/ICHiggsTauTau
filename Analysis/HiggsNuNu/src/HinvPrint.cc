@@ -174,6 +174,7 @@ namespace ic {
 
     for (unsigned i = 0; i < jets.size(); ++i) {
       fout << "Jet " << i << ": " << jets[i]->vector() << std::endl;
+      std::cout << " - Event " << eventInfo->event() << " jet " << i << " pT = " << jets[i]->pt() << " E_T = " << jets[i]->vector().Et() << " mass " << jets[i]->M() << std::endl;
       fout << "-pileup id loose: " << jets[i]->pu_id_mva_loose() << std::endl;
       fout << "-beta: " << jets[i]->beta() << std::endl;
       fout << "-beta_max: " << jets[i]->beta_max() << std::endl;
