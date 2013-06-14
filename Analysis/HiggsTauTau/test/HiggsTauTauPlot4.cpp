@@ -2,6 +2,7 @@
 #include <vector>
 #include "TH1F.h"
 #include "boost/program_options.hpp"
+#include "boost/regex.hpp"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTAnalysisTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPlotTools.h"
 
@@ -28,7 +29,11 @@ int main(int argc, char* argv[]){
 	string sm_masses_str;															// A string like alias1:value1,alias2:value2 etc
 	string mssm_masses_str;														// A string like alias1:value1,alias2:value2 etc
 	string syst_tau_scale;
+	string syst_qcd_shape;
 	string add_sm_background;
+	double sub_ztt_top_frac;
+	string fix_empty_bins;
+	string fix_empty_hists;
 	// Program options
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
@@ -51,7 +56,12 @@ int main(int argc, char* argv[]){
 	  ("sm_masses",           po::value<string>(&sm_masses_str)->default_value(""))
 	  ("mssm_masses",         po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("syst_tau_scale",      po::value<string>(&syst_tau_scale)->default_value(""))
-	  ("add_sm_background",   po::value<string>(&add_sm_background)->default_value(""));
+	  ("syst_qcd_shape",      po::value<string>(&syst_qcd_shape)->default_value(""))
+	  ("add_sm_background",   po::value<string>(&add_sm_background)->default_value(""))
+	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
+	  ("fix_empty_bins",   		po::value<string>(&fix_empty_bins)->default_value(""))
+	  ("fix_empty_hists",   	po::value<string>(&fix_empty_hists)->default_value(""));
+
 
 	HTTPlot plot;
 	config.add(plot.GenerateOptions(""));
@@ -92,6 +102,12 @@ int main(int argc, char* argv[]){
 	ana.AddSMSignalSamples(sm_masses);
 	ana.AddMSSMSignalSamples(mssm_masses);
 
+	vector<string> emptybins_regex;
+	boost::split(emptybins_regex, fix_empty_bins, boost::is_any_of(","));
+
+	vector<string> emptyhists_regex;
+	boost::split(emptyhists_regex, fix_empty_hists, boost::is_any_of(","));
+
 	ana.ReadTrees(folder);
 	ana.ParseParamFile(paramfile);
 
@@ -130,22 +146,19 @@ int main(int argc, char* argv[]){
 		ana_tscale_up.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
 	}
 
-
-	// **** Can run on hmap
-	// if (method == 6 || method == 7) {
-	//   double top_norm_diff = (method == 7) ? (0.053*ztt_norm) : (0.015*ztt_norm);
-	//   std::cout << "TOP ZTT Subtraction fraction: " << (top_norm_diff/top_norm) << std::endl;
-	//   top_norm = top_norm - top_norm_diff;
-	//   top_shape.hist_ptr()->Scale(top_norm / Integral(top_shape.hist_ptr()));
-	// }
-
-	// **** Can run on hmap
-	// if (method == 12) {
-	//   double top_norm_diff = (0.015*ztt_norm);
-	//   std::cout << "TOP ZTT Subtraction fraction: " << (top_norm_diff/top_norm) << std::endl;
-	//   top_norm = top_norm - top_norm_diff;
-	//   top_shape.hist_ptr()->Scale(top_norm / Integral(top_shape.hist_ptr()));
-	// }
+	if (sub_ztt_top_frac > 0.) {
+		std::string top_label = (channel_str == "em") ? "ttbar" : "TT";
+		std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
+		std::cout << "[HiggsTauTauPlot4] Subtracting " << top_label 
+			<< " contamination in " << ztt_label << ": " << sub_ztt_top_frac << std::endl;
+		HTTAnalysis::Value ztt_rate = hmap[ztt_label].second;
+		HTTAnalysis::Value & top_rate = hmap[top_label].second;
+		HTTAnalysis::Value contamination = HTTAnalysis::ValueProduct(ztt_rate, std::make_pair(sub_ztt_top_frac,0.));
+		HTTAnalysis::PrintValue("Contamination", contamination);
+		top_rate = HTTAnalysis::ValueSubtract(top_rate, contamination);
+		SetNorm(&(hmap[top_label].first), top_rate.first);
+		HTTAnalysis::PrintValue("New "+top_label+ " rate", top_rate);
+	}
 
 	// **** Can run on hmap
 	// for (int j = 0; j < qcd_hist->GetNbinsX(); ++j) {
@@ -175,40 +188,37 @@ int main(int argc, char* argv[]){
 	// em_0jet_high_Down->Scale(qcd_norm / Integral (em_0jet_high_Down));
 
 	// **** Can do this with the hmap
-	// if (channel == channel::mt && method == 2) {
-	//   h1 = (TH1F*)(qcd_hist->Clone());
-	//   h2 = (TH1F*)h1->Clone(TString("QCD_CMS_htt_QCDShape_mutau_boost_low_")+(is_2012 ? "8":"7")+"TeVUp");
-	//   h3 = (TH1F*)h1->Clone(TString("QCD_CMS_htt_QCDShape_mutau_boost_low_")+(is_2012 ? "8":"7")+"TeVDown");
-	//   float x;
-	//   float y;
-	//   float c;
-	//   float cUp;
-	//   float cDown;
-	//   for(int i=1;i<h1->GetNbinsX();++i){
-	//     x = h1->GetXaxis()->GetBinCenter(i);
-	//     if(x < (is_2012 ? 70 : 50) ){
-	//       y = h1->GetBinContent(i);
-	//       c = 1.15;  // or whatever other correction we want to apply
-	//       cUp = 1.3;
-	//       cDown = 1.0;
-	//       h1->SetBinContent(i,y*c);
-	//       h2->SetBinContent(i,y*cUp);
-	//       h3->SetBinContent(i,y*cDown);
-	//     }  
-	//   }
-	//   qcd_hist = h1;
-	//   h2->Scale( qcd_norm / Integral(h2) );
-	//   h3->Scale( qcd_norm / Integral(h3) );
-	// }s
-
-	// *** Have to create another HTTAnalysis and run standard procedure
-	// if (tau_scale_mode == 1 && channel != channel::em) append = "_CMS_scale_t_"+dc_mode_label_alt+(is_2012 ? "_8":"_7")+"TeVDown";
-	// if (tau_scale_mode == 2 && channel != channel::em) append = "_CMS_scale_t_"+dc_mode_label_alt+(is_2012 ? "_8":"_7")+"TeVUp";
-	// if (tau_scale_mode == 1 && channel == channel::em) append = string("_CMS_scale_e")+(is_2012 ? "_8":"_7")+"TeVDown";
-	// if (tau_scale_mode == 2 && channel == channel::em) append = string("_CMS_scale_e")+(is_2012 ? "_8":"_7")+"TeVUp";
-
-	// qcd_hist->Scale( qcd_norm / Integral(qcd_hist) );
-
+	if (syst_qcd_shape != "") {
+	  TH1F h1 = hmap["QCD"].first;
+	  TH1F h2 = hmap["QCD"].first;
+	  TH1F h3 = hmap["QCD"].first;
+	  // TH1F h2 = (TH1F*)h1->Clone(TString("QCD_CMS_htt_QCDShape_mutau_boost_low_")+(is_2012 ? "8":"7")+"TeVUp");
+	  // TH1F h3 = (TH1F*)h1->Clone(TString("QCD_CMS_htt_QCDShape_mutau_boost_low_")+(is_2012 ? "8":"7")+"TeVDown");
+	  float x;
+	  float y;
+	  float c;
+	  float cUp;
+	  float cDown;
+	  for(int i=1;i<h1.GetNbinsX();++i){
+	    x = h1.GetXaxis()->GetBinCenter(i);
+	    if(x < (is_2012 ? 70 : 50) ){
+	      y = h1.GetBinContent(i);
+	      c = 1.15; 
+	      cUp = 1.3;
+	      cDown = 1.0;
+	      h1.SetBinContent(i,y*c);
+	      h2.SetBinContent(i,y*cUp);
+	      h3.SetBinContent(i,y*cDown);
+	    }  
+	  }
+	  SetNorm(&h1, hmap["QCD"].second.first); // this isn't exactly readable code
+	  SetNorm(&h2, hmap["QCD"].second.first);
+	  SetNorm(&h3, hmap["QCD"].second.first);
+	  hmap["QCD"].first = h1;
+	  hmap["QCD_"+syst_qcd_shape+"Up"].first = h2;
+	  hmap["QCD_"+syst_qcd_shape+"Down"].first = h3;
+	}
+	
 	// *** Can do this with hmap
 	//  VH->Scale(1./ (parser.GetParam<double>("XS_WH_ZH_TTH_HToTauTau_M-"+signal_masses[i])));
 	// if (Integral(VH) < 0.0000001) {
@@ -216,7 +226,31 @@ int main(int argc, char* argv[]){
 	//   VH->SetBinContent(1, 0.0000001);
 	// }
 
+	if (emptybins_regex.size() > 0) {
+		vector<boost::regex> regex_vec;
+		for (auto str : emptybins_regex) regex_vec.push_back(boost::regex(str));
+		for (auto & entry : hmap) {
+			for (auto const& rgx : regex_vec) {
+				if (boost::regex_match(entry.first, rgx)) {
+					std::cout << "[HiggsTauTauPlot4] Running FixEmptyBins on shape: " << entry.first << std::endl;
+					FixEmptyBins(&(entry.second.first), false);
+				}
+			}
+		}
+	}
 
+	if (emptyhists_regex.size() > 0) {
+		vector<boost::regex> regex_vec;
+		for (auto str : emptyhists_regex) regex_vec.push_back(boost::regex(str));
+		for (auto & entry : hmap) {
+			for (auto const& rgx : regex_vec) {
+				if (boost::regex_match(entry.first, rgx)) {
+					std::cout << "[HiggsTauTauPlot4] Running FixEmptyHist on shape: " << entry.first << std::endl;
+					FixEmptyHist(&(entry.second.first), false);
+				}
+			}
+		}
+	}
 
 	if (datacard != "") {
 		std::string dc_mode_label;
@@ -235,7 +269,7 @@ int main(int argc, char* argv[]){
 			iter.second.first.SetName(iter.first.c_str());
 			iter.second.first.Write();
 		}
-		std::cout << "[HiggsTauTauPlot4] writing datacard input " << tfile_name << std::endl;
+		std::cout << "[HiggsTauTauPlot4] Writing datacard input " << tfile_name << std::endl;
 		dc_file.Close();
 	}
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");

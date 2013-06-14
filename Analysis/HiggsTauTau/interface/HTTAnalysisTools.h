@@ -52,6 +52,39 @@ namespace ic {
     }
   }
 
+  inline void FixEmptyBins(TH1F * hist, bool verbose) {
+    unsigned bins = hist->GetNbinsX();
+    unsigned first_populated = 0;
+    unsigned last_populated = 0;
+    for (unsigned i = 1; i <= bins; ++i) {
+      if (hist->GetBinContent(i) > 0. && first_populated == 0) first_populated = i;
+      if (hist->GetBinContent(bins-(i-1)) > 0. && last_populated == 0) last_populated = bins-(i-1);
+    }
+    if (last_populated <= first_populated) {
+      if (verbose) std::cout << "Error: Cannot correct this distribution!" << std::endl;
+      return;
+    }
+    if (verbose) std::cout << "First populated bin: " << first_populated << std::endl;
+    if (verbose) std::cout << "Last populated bin: " << last_populated << std::endl;
+    double av_weight = ( hist->Integral() / double(hist->GetEntries()));
+    for (unsigned i = first_populated+1; i < last_populated; ++i) {
+      if (hist->GetBinContent(i) == 0.) {
+        if (verbose) std::cout << "Bin " << i << " is empty!" << std::endl;
+        if (verbose) std::cout << "Set weight to 1.0 * av_weight = " << (1.0 * av_weight) << std::endl;
+        hist->SetBinError(i, av_weight);    
+      }
+    }
+  }
+
+  inline void FixEmptyHist(TH1F * hist, bool verbose) {
+    unsigned centre_bin = hist->GetNbinsX() / 2;
+    if (hist->Integral() == 0.0) {
+      std::cout << "[FixEmptyHist] Histogram is empty, inserting small value in central bin" << std::endl;
+      hist->SetBinContent(centre_bin, 0.0000001);
+    }
+  }
+
+
 
   class HTTAnalysis {
     public:
