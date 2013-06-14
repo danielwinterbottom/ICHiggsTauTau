@@ -183,25 +183,25 @@ from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
 process.load("JetMETCorrections.Type1MET.pfMETsysShiftCorrections_cfi")
 
 if isData:
-  runMEtUncertainties(process,
-                      electronCollection = cms.InputTag('cleanPatElectrons'),
-                      photonCollection = '',
-                      muonCollection = 'cleanPatMuons',
-                      tauCollection = '',
-                      jetCollection = cms.InputTag('selectedPatJets'),
-                      jetCorrLabel = 'L2L3Residual',
-                      doSmearJets = False,
-                      makeType1corrPFMEt = True,
-                      makeType1p2corrPFMEt = False,
-                      makePFMEtByMVA = False,
-                      makeNoPileUpPFMEt = False,
-                      doApplyType0corr = True,
-                      #sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_data,
-                      doApplySysShiftCorr = False,
-                      )
-  process.patPFJetMETtype1p2Corr.jetCorrLabel = cms.string('L2L3Residual')
-  process.patPFJetMETtype2Corr.jetCorrLabel = cms.string('L2L3Residual')
-  #print "not doing runmetunc for data"
+#   runMEtUncertainties(process,
+#                       electronCollection = cms.InputTag('cleanPatElectrons'),
+#                       photonCollection = '',
+#                       muonCollection = 'cleanPatMuons',
+#                       tauCollection = '',
+#                       jetCollection = cms.InputTag('selectedPatJets'),
+#                       jetCorrLabel = 'L2L3Residual',
+#                       doSmearJets = False,
+#                       makeType1corrPFMEt = True,
+#                       makeType1p2corrPFMEt = False,
+#                       makePFMEtByMVA = False,
+#                       makeNoPileUpPFMEt = False,
+#                       doApplyType0corr = True,
+#                       #sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_data,
+#                       doApplySysShiftCorr = False,
+#                       )
+#   process.patPFJetMETtype1p2Corr.jetCorrLabel = cms.string('L2L3Residual')
+#   process.patPFJetMETtype2Corr.jetCorrLabel = cms.string('L2L3Residual')
+  print "not doing runmetunc for data"
 else:
   runMEtUncertainties(process,
                       electronCollection = cms.InputTag('cleanPatElectrons'),
