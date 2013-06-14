@@ -29,7 +29,7 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for JetMETModifier" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    if(is_data_){
+    if(is_data_&&!dodatajessyst_){
       std::cout<<"Sample is data, no corrections will be made."<<std::endl;
     }
     else{
