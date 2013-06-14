@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include <utility>
+#include <algorithm>
 
 namespace ic {
 
@@ -13,7 +14,11 @@ namespace ic {
     jesupordown_ = true; //true is up false is down
     dosmear_=false;
     dojessyst_ = false;
+    dojersyst_ = false;
     dodatajessyst_= false;
+    dogaus_=false;
+    doetsmear_=false;
+    doaltmatch_=false;
   }
 
   JetMETModifier::~JetMETModifier() {
@@ -25,7 +30,7 @@ namespace ic {
     std::cout << "PreAnalysis Info for JetMETModifier" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     if(is_data_){
-      //std::cout<<"Sample is data, no corrections will be made."<<std::endl;
+      std::cout<<"Sample is data, no corrections will be made."<<std::endl;
     }
     else{
       if(dosmear_){
@@ -80,19 +85,43 @@ namespace ic {
   }
 
   int JetMETModifier::Execute(TreeEvent *event) {
-    if(is_data_&& !dodatajessyst_){
+    if(is_data_){
       return 0;
     }
     else{
-      //Get the met and jet collections
+      //GET MET AND JET COLLECTIONS
       std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
       std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");//GenJet collection, note: could make this a parameter but we only have one collection at the moment in the ntuples
       Met *met = event->GetPtr<Met>(met_label_);//MET collection
       ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
       ROOT::Math::PxPyPzEVector  newmet = oldmet;
 
-      //Do GenJet matching
-      std::vector< std::pair<PFJet*, GenJet*> > jet_genjet_pairs = MatchByDR(vec,genvec,0.5,true,true);
+      //MATCH GEN JETS
+      std::vector< std::pair<PFJet*, GenJet*> > jet_genjet_pairs;
+
+      if(!doaltmatch_)jet_genjet_pairs = MatchByDR(vec,genvec,0.5,true,true);//TWIKI METHOD
+      else{//RUNMETUNCERTAINTIES METHOD
+	std::vector< std::pair<PFJet*,GenJet*> > pairVec = MakePairs(vec,genvec);//Make all possible pairs
+	std::vector< std::pair<PFJet*,GenJet*> > filteredpairVec;
+	for(int g =0;unsigned(g)<pairVec.size();g++){//Filter pairs with too large a dr separation
+	  double dr=sqrt( (pairVec[g].first->eta()-pairVec[g].second->eta())*(pairVec[g].first->eta()-pairVec[g].second->eta()) + (pairVec[g].first->phi()-pairVec[g].second->phi())*(pairVec[g].first->phi()-pairVec[g].second->phi()) );
+	  if(dr<std::min(0.5,0.3+0.1*exp(-0.05*pairVec[g].second->pt()))) filteredpairVec.push_back(pairVec[g]);
+	}
+	std::sort(filteredpairVec.begin(), filteredpairVec.end(), DRCompare<PFJet*,GenJet*>);//sort the pairs by dr
+	//get the vector of unique pairs choosing the pairs with the smallest dr separation
+	std::vector<PFJet*> fVec;
+	std::vector<GenJet*> sVec;
+	std::pair<PFJet*,GenJet*> aPair;
+        BOOST_FOREACH(aPair, pairVec) {
+          bool inFVec = std::count(fVec.begin(),fVec.end(),aPair.first);
+          bool inSVec = std::count(sVec.begin(),sVec.end(),aPair.second);
+          if (!inFVec && !inSVec) {
+            jet_genjet_pairs.push_back(aPair);
+            fVec.push_back(aPair.first);
+            sVec.push_back(aPair.second);
+          }
+        }
+      }
 
       //Find closest gen jet to each jet
       for (int i = 0; unsigned(i) < vec.size(); ++i) {//loop over the jet collection
@@ -118,7 +147,7 @@ namespace ic {
       int newjet1index = -1;
       int newjet2index = -1;
       
-      for (int i = 0; unsigned(i) < vec.size(); ++i) {//loop over the jet collection
+      for (int i = 0; unsigned(i) < vec.size(); ++i) {//LOOP OVER JET COLLECTION
 	//Get jet information
 	ROOT::Math::PxPyPzEVector  oldjet = ROOT::Math::PxPyPzEVector(vec[i]->vector());
 	ROOT::Math::PxPyPzEVector  newjet;
@@ -133,7 +162,7 @@ namespace ic {
               break;
             }
           }
-	  double JERptcorrfac=1.;//if no match leave jet alone
+	  double JERscalefac=1.;//if no match leave jet alone
 	  if(index!=-1){//if gen jet match calculate correction factor for pt
 	    if(oldjet.pt()>50.) Smear50miss->Fill(-1.);
 	    double JERcencorrfac=1.;
@@ -159,16 +188,36 @@ namespace ic {
 	      else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.488;	      
 	    }
 	    //calculate 4 vector correction factor
-	    double ptcorrected = jet_genjet_pairs[index].second->pt()+JERcencorrfac*(oldjet.pt()-jet_genjet_pairs[index].second->pt());
-	    if(ptcorrected<0.)ptcorrected=0.;
-	    JERptcorrfac = ptcorrected/oldjet.pt();
-	    Smearjetgenjetptdiff->Fill(oldjet.pt()-jet_genjet_pairs[index].second->pt());
-	    Smearjetgenjetptratio->Fill(oldjet.pt()/jet_genjet_pairs[index].second->pt());
-	    Smearjetgenjetptratioetabin->Fill(oldjet.pt()/jet_genjet_pairs[index].second->pt(),oldjet.eta());
+	    if(!doetsmear_){//do twiki smearing
+	      double ptcorrected = jet_genjet_pairs[index].second->pt()+JERcencorrfac*(oldjet.pt()-jet_genjet_pairs[index].second->pt());
+	      if(ptcorrected<0.)ptcorrected=0.;
+	      JERscalefac = ptcorrected/oldjet.pt();
+	      Smearjetgenjetptdiff->Fill(oldjet.pt()-jet_genjet_pairs[index].second->pt());
+	      Smearjetgenjetptratio->Fill(oldjet.pt()/jet_genjet_pairs[index].second->pt());
+	      Smearjetgenjetptratioetabin->Fill(oldjet.pt()/jet_genjet_pairs[index].second->pt(),oldjet.eta());
+	    }
+	    else{//do runmetuncertainties smearing
+	      double et = oldjet.energy()/cosh(oldjet.eta());
+	      double etraw = vec[i]->uncorrected_energy()/cosh(oldjet.eta());
+	      double etgen = jet_genjet_pairs[index].second->energy()/cosh(oldjet.eta());
+	      double etcorrected=et*(1+(JERcencorrfac-1)*(et-etgen)/std::max(et,etraw));
+	      if(etcorrected<0.)etcorrected=0.;
+	      JERscalefac=etcorrected/et;
+	      Smearjetgenjetptdiff->Fill(et-etgen);
+	      Smearjetgenjetptratio->Fill(et/etgen);
+	      Smearjetgenjetptratioetabin->Fill(et/etgen,oldjet.eta());
+	    }
+	  } 
+	  else{//Jets with no gen match
+	    if(oldjet.pt()>50.){
+	      Smear50miss->Fill(1.);
+	    }
+	    if(dogaus_){//Do Gaussian smearing for JERWORSE
+	      
+	    }
 	  }
-	  else if(oldjet.pt()>50.) Smear50miss->Fill(1.); 
 	  //correct jet 4 vector
-	  newjet = oldjet*JERptcorrfac;
+	  newjet = oldjet*JERscalefac;
 	  	  
 	  //correct met
 	  newmet.SetPx(newmet.px()-(newjet.px()-oldjet.px()));

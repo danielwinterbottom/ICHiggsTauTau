@@ -74,6 +74,9 @@ int main(int argc, char* argv[]){
   bool dojessyst;                 // Do Jet Energy Scale Systematic Run
   bool jesupordown;               // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
   bool dosmear;                   // Do Smearing
+  bool doaltmatch;                // Do runmetuncertainties gen jet matching
+  bool doetsmear;                 // Do runmetuncertainties smearing
+  bool dogaus;                    // Do gaussian smearing for jets with no gen jet match
   bool dojersyst;                 // Do Jet Energy Resolution Systematic Run
   bool jerbetterorworse;          // If doing Jet Energy Resolution Systematic Run, run with with better or worse (true for better, false for worse)
 
@@ -130,6 +133,9 @@ int main(int argc, char* argv[]){
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
     ("dosmear",        po::value<bool>(&dosmear)->default_value(false))
+    ("doaltmatch",        po::value<bool>(&doaltmatch)->default_value(false))
+    ("doetsmear",        po::value<bool>(&doetsmear)->default_value(false))
+    ("dogaus",        po::value<bool>(&dogaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -543,6 +549,9 @@ int main(int argc, char* argv[]){
     .set_input_label("pfJetsPFlow")
     .set_met_label(mettype)
     .set_dosmear(dosmear)
+    .set_doaltmatch(doaltmatch)
+    .set_doetsmear(doetsmear)
+    .set_dogaus(dogaus)
     .set_is_data(is_data)
     .set_dojessyst(dojessyst)
     .set_jesupordown(jesupordown)
@@ -979,7 +988,7 @@ int main(int argc, char* argv[]){
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
      analysis.AddModule(&dataMCTriggerPathFilter);
-     if (printEventList) analysis.AddModule(&hinvPrintList);
+     //if (printEventList) analysis.AddModule(&hinvPrintList);
  
      ////analysis.AddModule(&runStats);
 

@@ -27,10 +27,14 @@ namespace ic {
       CLASS_MEMBER(JetMETModifier, bool, dodatajessyst)
     CLASS_MEMBER(JetMETModifier, bool, jesupordown)
     CLASS_MEMBER(JetMETModifier, bool, dojersyst)
+    CLASS_MEMBER(JetMETModifier, bool, dojerworsegauss)
     CLASS_MEMBER(JetMETModifier, bool, jerbetterorworse)
     CLASS_MEMBER(JetMETModifier, std::string, input_label)
     CLASS_MEMBER(JetMETModifier, std::string, met_label)
     CLASS_MEMBER(JetMETModifier, bool, dosmear)
+    CLASS_MEMBER(JetMETModifier, bool, dogaus)
+    CLASS_MEMBER(JetMETModifier, bool, doetsmear)
+    CLASS_MEMBER(JetMETModifier, bool, doaltmatch)
     CLASS_MEMBER(JetMETModifier, std::string, jesuncfile)
     TH2F* JEScorrfac;
     TH1F* JESmetdiff;

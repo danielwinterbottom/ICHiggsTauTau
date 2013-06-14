@@ -1,0 +1,510 @@
+
+% $Header: /local/reps/CMSSW/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/macros/MakeTexSummary.tex,v 1.2 2013/05/14 12:26:51 amagnan Exp $
+
+\documentclass[red,compress,xcolor=table]{beamer}
+
+% This file is a solution template for:
+
+% - Giving a talk on some subject.
+% - The talk is between 15min and 45min long.
+% - Style is ornate.
+
+
+
+% Copyright 2004 by Till Tantau <tantau@users.sourceforge.net>.
+%
+% In principle, this file can be redistributed and/or modified under
+% the terms of the GNU Public License, version 2.
+%
+% However, this file is supposed to be a template to be modified
+% for your own needs. For this reason, if you use this file as a
+% template and not specifically distribute it as part of a another
+% package/program, I grant the extra permission to freely copy and
+% modify this file as you see fit and even to delete this copyright
+% notice. 
+
+
+\mode<presentation>
+{
+  %\usetheme{Warsaw}
+  \usetheme{Warsaw}
+  %\usecolortheme{lily}
+  \usetheme{Frankfurt}
+
+  % or ...
+  %\useoutertheme{split}
+
+  \setbeamercovered{transparent}
+  %\pagestyle{plain}
+  \setbeamerfont*{frametitle}{size=\normalsize,series=\bfseries}
+  \setbeamertemplate{navigation symbols}{$\circ$}                      
+
+  % or whatever (possibly just delete it)
+}
+
+\usepackage[english]{babel}
+% or whatever
+\usepackage[dvips]{}
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{tabularx,colortbl}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\usepackage{wasysym}
+\usepackage{url}
+
+\usepackage[table]{xcolor}
+
+
+%\input{/home/amagnan/talks/CMS/colours.tex}
+
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+\begingroup
+	\def\facewith#1{$\bigcirc\mskip-13.3mu{}^{..}
+	\mskip-11mu\scriptscriptstyle#1\ $}
+	\xdef\frowny{\facewith\frown}
+	\xdef\smiley{\facewith\smile}
+	\xdef\neutry{\facewith-}
+\endgroup
+
+\title%[short title] % (optional, use only with long paper titles)
+{Extract of Summary Tables and Plots}
+
+\subtitle
+{} % (optional)
+
+\author[A.-M. Magnan] % (optional, use only with lots of authors)
+{P. Dunne, A.-M. Magnan, S. Nikitenko\\
+  Imperial College London}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\date[10/05/2013] % (optional)
+{10/05/2013}
+%IC $H \rightarrow \tau \tau$ analysis meeting
+%SMP-VJ Meeting
+%TKCO Meeting
+
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+%\AtBeginSection[]
+%{
+%  \begin{frame}<beamer>{Outline}
+%    \tableofcontents[currentsection]%,currentsubsection]
+%  \end{frame}
+%}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{W+jets MC numbers}
+
+{\tiny
+\centering $\nu\nu$ selection\\
+\input{../TABLES/nunu/MET130/WandZJetsTable.txt}\\
+\centering $e\nu$ selection\\
+\input{../TABLES/enu/MET130/WandZJetsTable.txt}\\
+\centering $\mu\nu$ selection\\
+\input{../TABLES/munu/MET130/WandZJetsTable.txt}
+}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Standard Selection - For Reference}
+
+\begin{center}
+\centering Signal selection\\
+{\tiny
+\hspace*{-1cm}
+\rowcolors{1}{lightgray}{}
+\input{../TABLES/nunu/MET130/SummaryTable.txt}
+}
+\centering W/Z+jets sample separated\\
+  {\tiny
+    \rowcolors{1}{lightgray}{}
+    \input{../TABLES/nunu/MET130/WandZJetsTable.txt}
+  }
+
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{W+jets selection -  Electron selection}
+
+\vspace*{-1cm}
+\begin{center}
+{\tiny
+\hspace*{-1cm}
+\rowcolors{1}{lightgray}{}
+\input{../TABLES/enu/MET130/SummaryTable.txt}
+}
+\end{center}
+
+
+\end{frame}
+\begin{frame}
+  \frametitle{W+jets selection -  Muon selection}
+
+\vspace*{-1cm}
+\begin{center}
+{\tiny
+\hspace*{-1cm}
+\rowcolors{1}{lightgray}{}
+\input{../TABLES/munu/MET130/SummaryTable.txt}
+}
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data-driven W+jets estimates - standard selection - signal region - central}
+
+\vspace*{-0.5cm}
+\begin{block}{\scriptsize From MC}
+\begin{center}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/nunu/MET130/WandZJetsTable.txt}
+    }
+\end{center}
+  \end{block}
+
+\vspace*{-0.2cm}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron $\Delta\phi<1.0$}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron  $\Delta\phi>2.6$}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon  $\Delta\phi<1.0$}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon $\Delta\phi>2.6$}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data-driven W+jets estimates - standard selection - signal region - JESUP}
+
+\vspace*{-0.5cm}
+\begin{block}{\scriptsize From MC}
+\begin{center}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/nunu/MET130/JESUP/WandZJetsTable.txt}
+    }
+\end{center}
+  \end{block}
+
+\vspace*{-0.2cm}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron signal}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/JESUP/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron QCD}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/JESUP/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon signal}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/JESUP/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon QCD}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/JESUP/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data-driven W+jets estimates - standard selection - signal region - JESDOWN}
+
+\vspace*{-0.5cm}
+\begin{block}{\scriptsize From MC}
+\begin{center}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/nunu/MET130/JESDOWN/WandZJetsTable.txt}
+    }
+\end{center}
+  \end{block}
+
+\vspace*{-0.2cm}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron signal}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/JESDOWN/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron QCD}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/JESDOWN/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon signal}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/JESDOWN/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon QCD}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/JESDOWN/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data-driven W+jets estimates - standard selection - signal region - JERBETTER}
+
+\vspace*{-0.5cm}
+\begin{block}{\scriptsize From MC}
+\begin{center}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/nunu/MET130/JERBETTER/WandZJetsTable.txt}
+    }
+\end{center}
+  \end{block}
+
+\vspace*{-0.2cm}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron signal}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/JERBETTER/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron QCD}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/JERBETTER/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon signal}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/JERBETTER/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon QCD}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/JERBETTER/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Data-driven W+jets estimates - standard selection - signal region - JERWORSE}
+
+\vspace*{-0.5cm}
+\begin{block}{\scriptsize From MC}
+\begin{center}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/nunu/MET130/JERWORSE/WandZJetsTable.txt}
+    }
+\end{center}
+  \end{block}
+
+\vspace*{-0.2cm}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron signal}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/JERWORSE/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: electron QCD}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/enu/MET130/JERWORSE/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon signal}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/JERWORSE/DataDrivenWJetsTable_signal.txt}
+    }
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{\scriptsize From data: muon QCD}
+    {\tiny
+      \rowcolors{1}{lightgray}{}
+      \input{../TABLES/munu/MET130/JERWORSE/DataDrivenWJetsTable_QCD.txt}
+    }
+  \end{block}
+\end{columns}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Control plots (1)}
+
+\begin{columns}
+  \column{0.3\textwidth}
+  %\includegraphics[width=1.0\textwidth]{../PLOTS/enu/MET130/DOQCD0/ept_1_2012_WSelection_log.pdf}
+
+  \column{0.3\textwidth}
+  %\includegraphics[width=1.0\textwidth]{../PLOTS/enu/MET130/DOQCD0/eeta_1_2012_WSelection_log.pdf}
+
+  \column{0.3\textwidth}
+  %\includegraphics[width=1.0\textwidth]{../PLOTS/enu/MET130/DOQCD0/mt_enu_2012_DEta_log.pdf}
+\end{columns}
+\begin{columns}
+  \column{0.3\textwidth}
+  %\includegraphics[width=1.0\textwidth]{../PLOTS/munu/MET130/DOQCD0/mupt_1_2012_WSelection_log.pdf}
+  \column{0.3\textwidth}
+  %\includegraphics[width=1.0\textwidth]{../PLOTS/munu/MET130/DOQCD0/mueta_1_2012_WSelection_log.pdf}
+  \column{0.3\textwidth}
+  %\includegraphics[width=1.0\textwidth]{../PLOTS/munu/MET130/DOQCD0/mt_munu_2012_DEta_log.pdf}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Control plots for W+jets estimates: loose Mjj selection}
+
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{W$\rightarrow e\nu$}
+    %\includegraphics[width=1.0\textwidth]{../TABLES/enu/MET130/DOQCD0/dphijj_2012_WSelection.pdf}
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{W$\rightarrow \mu\nu$}
+    %\includegraphics[width=1.0\textwidth]{../TABLES/munu/MET130/DOQCD0/dphijj_2012_WSelection.pdf}
+  \end{block}
+\end{columns}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Control plots for W+jets estimates: tight Mjj selection}
+
+\begin{columns}
+  \column{0.5\textwidth}
+  \begin{block}{W$\rightarrow e\nu$}
+    %\includegraphics[width=1.0\textwidth]{../TABLES/enu/MET130/DOQCD1/dphijj_2012_TightMjj.pdf}
+  \end{block}
+  \column{0.5\textwidth}
+  \begin{block}{W$\rightarrow \mu\nu$}
+    %\includegraphics[width=1.0\textwidth]{../TABLES/munu/MET130/DOQCD1/dphijj_2012_TightMjj.pdf}
+  \end{block}
+\end{columns}
+
+
+\end{frame}
+
+
+\end{document}
+
+
