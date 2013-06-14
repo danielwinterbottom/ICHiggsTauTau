@@ -1,3 +1,5 @@
+#ifndef ICHiggsTauTau_HiggsTauTau_HTTAnalysisTools_h
+#define ICHiggsTauTau_HiggsTauTau_HTTAnalysisTools_h
 #include <iostream>
 #include <vector>
 #include <map>
@@ -20,17 +22,17 @@
 
 namespace ic {
 
-  double Integral(TH1F const* hist) {
+  inline double Integral(TH1F const* hist) {
     return hist->Integral(0, hist->GetNbinsX() + 1);
   }
 
-  double Error(TH1F const* hist) {
+  inline double Error(TH1F const* hist) {
     double err = 0.0;
     hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
     return err;
   }
 
-  void BlindHistogram(TH1F * hist, double x_min, double x_max) {
+  inline void BlindHistogram(TH1F * hist, double x_min, double x_max) {
     for (int j = 0; j < hist->GetNbinsX(); ++j) {
       double low_edge = hist->GetBinLowEdge(j+1);
       double high_edge = hist->GetBinWidth(j+1)+hist->GetBinLowEdge(j+1);
@@ -41,7 +43,7 @@ namespace ic {
     }
   }
 
-  void SetNorm(TH1F * hist, double norm) {
+  inline void SetNorm(TH1F * hist, double norm) {
     if (Integral(hist) == 0.0) {
       std::cout << "Warning, attempt to scale histogram with integral of 0.0" << std::endl;
       return;
@@ -57,50 +59,73 @@ namespace ic {
       typedef std::pair<TH1F, Value> HistValuePair;
       typedef std::map<std::string, HistValuePair> HistValueMap;
       typedef std::map<std::string, std::function<std::pair<double,double>()>> ValueFnMap;
+    
     public:
+      //! Constructor specifying channel, year and the level of verbosity
       HTTAnalysis(ic::channel ch, std::string year, int verbosity);
+
       //! Read a parameter file for cross section and luminosity information
-      /*! \param file Full path to the parameter file.  See the main HTTAnalysisTools 
-          desription for further details.
+      /*! Argument \p file is the full path to the parameter file. 
       */
       void ParseParamFile(std::string const& file);
+
+      //! For each value in \p masses adds the three SM signal samples to the list of samples to load
+      /*! Example usage:
+
+              analysis.AddSMSignalSamples({"105","110","115","120"}});
+
+          Here we use a C++11 initializer list to declare the vector in-place.
+          NB. This method does no validation on the input strings, it simply adds the sample names
+          to the internal list. It should therefore be called before #ReadTrees.
+      */
       void AddSMSignalSamples(std::vector<std::string> masses);
+      
+      //! For each value in \p masses adds the two MSSM signal samples to the list of samples to load
+      /*! \sa AddSMSignalSamples
+      */
       void AddMSSMSignalSamples(std::vector<std::string> masses);
-      void ReadTrees(std::string const& folder, std::string const& prefix = "");
-      void ReadTreesWithFallback(std::string const& folder, std::string const& fallback_folder);
+
+      //! Read a parameter file for cross section and luminosity information
+      /*! Argument \p file is the full path to the parameter file. 
+      */
+      void ReadTrees(std::string const& folder, std::string const& fallback_folder = "");
 
       double GetLumiScale(std::string const& sample);
+      double GetLumiScaleFixedXS(std::string const& sample, double xs);
       void FillHistoMap(HistValueMap & hmap, unsigned method,
-                        std::string variable,
-                        std::string selection,
-                        std::string category,
-                        std::string weight,
+                        std::string var,
+                        std::string sel,
+                        std::string cat,
+                        std::string wt,
                         std::string postfix);
-      // HistValuePair GenerateData(unsigned method,
-      //                   std::string variable,
-      //                   std::string selection,
-      //                   std::string category,
-      //                   std::string weight);
-      // HistValuePair GenerateZTT(unsigned method,
-      //                   std::string variable,
-      //                   std::string selection,
-      //                   std::string category,
-      //                   std::string weight);
-      // HistValuePair GenerateTOP(unsigned method,
-      //                   std::string variable,
-      //                   std::string selection,
-      //                   std::string category,
-      //                   std::string weight);
-      // HistValuePair GenerateVV(unsigned method,
-      //                   std::string variable,
-      //                   std::string selection,
-      //                   std::string category,
-      //                   std::string weight);
-      // HistValuePair GenerateW(unsigned method,
-      //                   std::string variable,
-      //                   std::string selection,
-      //                   std::string category,
-      //                   std::string weight);
+      HistValuePair GenerateData(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs = -1.0);
+      
+      void FillSMSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+      void FillMSSMSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
 
       //! Generate a histogram for a specific samples
       /*! \param variable A string containing the name of a histogram branch
@@ -120,18 +145,22 @@ namespace ic {
                               std::string const& selection, 
                               std::string const& category, 
                               std::string const& weight);
+
       TH1F GetShapeViaQCDMethod(std::string const& variable,
                               std::string const& data_sample,
                               std::string const& selection,
                               std::string const& category,
                               std::vector<std::string> const& sub_samples,
                               std::string const& weight,
-                              std::map<std::string, std::function<Value()>> dict
-                              );
+                              std::map<std::string, std::function<Value()>> dict);
+      TH1F GetShapeViaFakesMethod(std::string const& var,
+                                  std::string const& sel,
+                                  std::string const& cat,
+                                  std::string const& wt);
       Value GetRate(std::string const& sample, 
-                              std::string const& selection, 
-                              std::string const& category, 
-                              std::string const& weight);
+                    std::string const& selection, 
+                    std::string const& category, 
+                    std::string const& weight);
       Value GetLumiScaledRate(std::string const& sample, 
                               std::string const& selection,
                               std::string const& category,
@@ -166,6 +195,9 @@ namespace ic {
                               std::string const& target_selection, 
                               std::string const& target_category,  
                               std::string const& weight);
+      Value GetRateViaFakesMethod(std::string const& sel,
+                                  std::string const& cat,
+                                  std::string const& wt);
 
       static Value ValueProduct(Value const& p1, Value const& p2);
       static Value ValueDivide(Value const& p1, Value const& p2);
@@ -173,15 +205,30 @@ namespace ic {
       static Value ValueSubtract(Value const& p1, Value const& p2);
       static void PrintValue(std::string const& label, Value const& val);
 
+      //! Get event rate using the W-sideband data-driven method
+      /*! The behaviour of this function is as follows:
+          1. Use sample \p w_sample to calculate the number of events in
+             selection \p ratio_signal_sel over the number in selection
+             \p ratio_control_sel for a given category \p ratio_cat. This
+            gives the low/high \f$m_{T}\f$ ratio. 
+          2. The selection \p control_sel and category \p cat are then used
+             to calculate the rate in \p Data and subtract the contribution
+             from the list of samples in \p sub_samples.  For each background
+             that is subtracted the function #GetLumiScaledRate is used to 
+             evaluate the rate, unless an entry in \p dict is provided in 
+             which case the corresponding function will be evaluated instead.
+          3. The method returns the background-subtracted data yield (2)  
+             multiplied by the extrapolation factor (1) 
+      */
       Value GetRateViaWMethod(std::string const& w_sample,
-                              std::string const& ratio_category,
-                              std::string const& ratio_control_selection,
-                              std::string const& ratio_signal_selection,
+                              std::string const& ratio_cat,
+                              std::string const& ratio_control_sel,
+                              std::string const& ratio_signal_sel,
                               std::string const& data_sample,
-                              std::string const& category,
-                              std::string const& control_selection,
+                              std::string const& cat,
+                              std::string const& control_sel,
                               std::vector<std::string> const& sub_samples,
-                              std::string const& weight,
+                              std::string const& wt,
                               std::map<std::string, std::function<Value()>> dict
                               );
       Value GetRateViaQCDMethod(Value const& ratio,
@@ -192,11 +239,9 @@ namespace ic {
                               std::string const& weight,
                               std::map<std::string, std::function<Value()>> dict
                               );
-      // void FillAllByMethod(std::map<std::string, std::pair<Value, TH1F>> & m,
-      //                       unsigned method)
       std::string ResolveAlias(std::string const& al);
       std::vector<std::string> ResolveSamplesAlias(std::string const& al);
-
+      void SetAlias(std::string const& al, std::string const& val);
 
 
     private:
@@ -205,6 +250,7 @@ namespace ic {
       std::string input_folder_;
       unsigned verbosity_;
       double lumi_;
+      std::string dy_soup_;
       std::vector<std::string> sample_names_;
       std::vector<std::string> signal_masses_;
       std::map<std::string, std::pair<double, double>> sample_info_;
@@ -221,4 +267,6 @@ namespace ic {
   };
  
 }
+
+#endif
 

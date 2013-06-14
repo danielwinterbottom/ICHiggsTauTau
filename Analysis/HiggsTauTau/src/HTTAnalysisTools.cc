@@ -18,16 +18,14 @@
 
 namespace ic {
 
-  HTTAnalysis::HTTAnalysis(ic::channel ch, std::string year, int verbosity) :
-      ch_(ch),
-      year_(year),
-      verbosity_(verbosity) {
+  HTTAnalysis::HTTAnalysis(ic::channel ch, std::string year, int verbosity) : ch_(ch), year_(year), verbosity_(verbosity)  {
+    lumi_ = 1.;
+    using boost::range::push_back;
     // Define some sensible defaults
     sample_names_ = {
       "Data",
       "Embedded",
       "DYJetsToTauTau",
-      "DYJetsToTauTauSoup",
       "WJetsToLNuSoup",
       "WWJetsTo2L2Nu",
       "WZJetsTo2L2Q",
@@ -38,23 +36,25 @@ namespace ic {
       "T-tW",
       "Tbar-tW",
       "TTJets",
-      "TT"
     };
-
+    if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
+        "TT",
+        "DYJetsToTauTauSoup"});
     if (ch_ != channel::em) {
-      boost::range::push_back(sample_names_, std::vector<std::string>{
+      push_back(sample_names_, std::vector<std::string>{
         "Special_3_Data",
         "DYJetsToLL",
         "DYJetsToLL-L",
         "DYJetsToLL-J",
-        "DYJetsToLLSoup",
-        "DYJetsToLL-LSoup",
-        "DYJetsToLL-JSoup",
         "Special_18_DYJetsToLL-L",
         "WJetsToLNuSoup"
       });
+      if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
+          "DYJetsToLLSoup",
+          "DYJetsToLL-LSoup",
+          "DYJetsToLL-JSoup"});
     } else {
-      boost::range::push_back(sample_names_, std::vector<std::string>{
+      push_back(sample_names_, std::vector<std::string>{
         "Special_20_Data",
         "Special_21_Data",
         "Special_22_Data",
@@ -63,114 +63,123 @@ namespace ic {
       });
     }
 
-    lumi_ = 10000.;
+    // Automatically set preference for DY Soup postfix
+    if (year == "2011") {
+      dy_soup_ = "";
+    } else {
+      dy_soup_ = "Soup";
+    }
 
-    /*
-      vbf_no_cjv
-      vbf_loose
-    
-    */
     if (ch_ != channel::em) {
+      // SM Categories
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
-      alias_map_["vbf_no_cjv"]        = "(n_jets>=2 && mjj>500. && jdeta>3.5)";
+      alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>40. && n_bjets==0)";
+      alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=40. && n_bjets==0)";
+      if (ch_ == channel::et) {
+        alias_map_["1jet_high"] += " && met>30.";
+        alias_map_["1jet_low"]  += " && met>30.";
+      }
+      alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>40. && n_bjets==0)";
+      alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=40. && n_bjets==0)";
+      // Categories for background estimates and control plots
       alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
       alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
       alias_map_["twojet"]            = "(n_jets>=2)";
       alias_map_["1jet"]              = "(n_jets>=1)";
-      alias_map_["1jet_high"]         = "!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>40. && n_bjets==0";
-      if (ch_ == channel::et) alias_map_["1jet_high"] += " && met>30.";
-      alias_map_["1jet_low"]          = "!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=40. && n_bjets==0";
-      if (ch_ == channel::et) alias_map_["1jet_low"] += " && met>30.";
-      alias_map_["0jet_high"]         = "n_jets==0 && pt_2>40. && n_bjets==0";
-      alias_map_["0jet_low"]          = "n_jets==0 && pt_2<=40. && n_bjets==0";
     } else {
+      // SM Categories
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0)";
+      alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0)";
+      alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>35. && n_bjets==0)";
+      alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=35. && n_bjets==0)";
+      // Categories for background estimates and control plots
       alias_map_["vbf_no_cjv"]        = "(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)";
       alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && n_bjets==0)";
       alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && n_bjets==0)";
       alias_map_["twojet"]            = "(n_jets>=2 && n_bjets==0)";
       alias_map_["1jet"]              = "(n_jets>=1 && n_bjets==0)";
-      alias_map_["1jet_high"]         = "!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0";
-      alias_map_["1jet_low"]          = "!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0";
-      alias_map_["0jet_high"]         = "n_jets==0 && pt_2>35. && n_bjets==0";
-      alias_map_["0jet_low"]          = "n_jets==0 && pt_2<=35. && n_bjets==0";
     }
-    // alias_map_["prebtag"] = "n_jet<=1 && "
-    alias_map_["btag"]          = "(n_jets<=1 && n_bjets>=1)";
-    alias_map_["btag_loose"]    = "(n_jets<=1 && n_loose_bjets>=1)";
-    alias_map_["nobtag"]        = "!"+alias_map_["vbf"]+" && n_bjets==0";
-
+    // alias_map_["prebtag"]                   =  "n_jet<=1 && ";
+    // Standard MSSM Categories
+    alias_map_["btag"]                      = "(n_jets<=1 && n_bjets>=1)";
+    alias_map_["nobtag"]                    = "!"+alias_map_["vbf"]+" && n_bjets==0";
+    // Categories for background estimates and control plots
+    alias_map_["btag_loose"]                = "(n_jets<=1 && n_loose_bjets>=1)";
+    // Selection control regions
+    // Sideband region for OS W+jets extrapolation
     alias_map_["w_extrp_os_sdb_sel"]        = "os && mt_1>70.";
-    alias_map_["w_extrp_os_sig_sel"]        = "os && mt_1<20.";
+    // Signal region for OS W+jets extrapolation
+    alias_map_["w_extrp_os_sig_sel"]        = "os && mt_1<20."; // change for mT plot
+    alias_map_["os_sel"]                    = "os && mt_1<20.";
+    // Sideband region for OS W+jets estimation
     alias_map_["w_os_sdb_sel"]              = "os && mt_1>70.";
+    // Sideband region for OS W+jets extrapolation in VBF method (5)
     alias_map_["vbf_w_extrp_os_sdb_sel"]    = "os && mt_1>60. && mt_1<120.";
-    alias_map_["vbf_w_extrp_os_sig_sel"]    = "os && mt_1<20.";
+    // Signal region for OS W+jets extrapolation in VBF method (5)
+    alias_map_["vbf_w_extrp_os_sig_sel"]    = "os && mt_1<20."; // change for mT plot
+    // Sideband region for OS W+jets estimation in VBF method (5)
     alias_map_["vbf_w_os_sdb_sel"]          = "os && mt_1>60. && mt_1<120.";
-    alias_map_["w_shape_sel"]               = "os && mt_1<20.";
-    alias_map_["qcd_sdb_sel"]               = "!os && mt_1<20.";
+    // Signal region for W+jets shape (i.e. with os or not)
+    alias_map_["w_shape_sel"]               = "os && mt_1<20."; // change for mT plot
+    // Sideband region for QCD estimate
+    alias_map_["qcd_sdb_sel"]               = "!os && mt_1<20."; // change for mT plot
+    // Sideband region for SS W+jets extrapolation
     alias_map_["w_extrp_ss_sdb_sel"]        = "!os && mt_1>70.";
-    alias_map_["w_extrp_ss_sig_sel"]        = "!os && mt_1<20.";
+    // Signal region for SS W+jets extrapolation
+    alias_map_["w_extrp_ss_sig_sel"]        = "!os && mt_1<20."; // change for mT plot
+    // Sideband region for SS W+jets estimation
     alias_map_["w_ss_sdb_sel"]              = "!os && mt_1>70.";
+    // Inclusive region for e-mu fake rate normalisation
     alias_map_["em_qcd_sel"]                = "os";
+    // Sideband region for e-mu SS fake shape estimation
     alias_map_["ss_sel"]                    = "!os && pzeta>-20.";
 
+    // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
      "T-tW", "Tbar-tW"
     };
+
+    // Samples to subtract in sideband for W+jets estimate
     samples_alias_map_["w_sub_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
-     "T-tW", "Tbar-tW"
-    };
-    if (year_ == "2011") {
-      boost::range::push_back(samples_alias_map_["w_sub_samples"], std::vector<std::string>{
-        "TTJets", "DYJetsToTauTau", "DYJetsToLL"});      
-    } else {
-      boost::range::push_back(samples_alias_map_["w_sub_samples"], std::vector<std::string>{
-        "TTJets", "DYJetsToTauTauSoup", "DYJetsToLL-LSoup", "DYJetsToLL-JSoup"});      
-    }
+     "T-tW", "Tbar-tW", "TTJets", "DYJetsToTauTau"+dy_soup_, 
+     "DYJetsToLL-L"+dy_soup_, "DYJetsToLL-J"+dy_soup_};
+
     samples_alias_map_["qcd_sub_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
-     "T-tW", "Tbar-tW", "WJetsToLNuSoup"
-    };
-    if (year_ == "2011") {
-      boost::range::push_back(samples_alias_map_["qcd_sub_samples"], std::vector<std::string>{
-        "TTJets", "DYJetsToTauTauSoup", "DYJetsToLL-LSoup", "DYJetsToLL-JSoup"});      
-    } else {
-      boost::range::push_back(samples_alias_map_["qcd_sub_samples"], std::vector<std::string>{
-        "TTJets", "DYJetsToTauTauSoup", "DYJetsToLL-LSoup", "DYJetsToLL-JSoup"});      
-    }
-
-
+     "T-tW", "Tbar-tW", "WJetsToLNuSoup", 
+     "TTJets", "DYJetsToTauTau"+dy_soup_, 
+     "DYJetsToLL-L"+dy_soup_, "DYJetsToLL-J"+dy_soup_};
   }
 
   void HTTAnalysis::ParseParamFile(std::string const& file) {
-
     SimpleParamParser parser;
     parser.ParseFile(file);
+    std::cout << "[HTTAnalysis::ParseParamFile] Extracting sample info from file " << file << std::endl;
     lumi_ = parser.GetParam<double>("LUMI_DATA");
-    // std::string mass_str = parser.GetParam<std::string>("SIGNAL_MASSES");
-    // boost::split(signal_masses_, mass_str, boost::is_any_of(","));
-    // boost::range::for_each(signal_masses_, [this] (std::string const& mass) {
-    //   input_files_.push_back("GluGluToHToTauTau_M-"+mass);
-    //   input_files_.push_back("VBF_HToTauTau_M-"+mass);
-    //   input_files_.push_back("WH_ZH_TTH_HToTauTau_M-"+mass);
-    // });
-    if (verbosity_) std::cout << "Extracting sample info..." << std::endl;
+    std::cout << "[HTTAnalysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
+    if (verbosity_ > 0) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
+    if (verbosity_ > 0) std::cout << "-----------------------------------------------------------------------------------------\n";
     for (auto sample : sample_names_) {
+      std::string lookup = sample;
+      if (sample.find("Special") != sample.npos) {
+        size_t found = sample.find('_');
+        found = sample.find('_',found+1);
+        lookup = sample.substr(found+1);
+      }
       if (parser.ParamExists("XS_"+sample) && parser.ParamExists("EVT_"+sample)) {
         double evt = parser.GetParam<double>("EVT_"+sample);
         double xs = parser.GetParam<double>("XS_"+sample);
         if (xs <= 0) continue;
         sample_info_[sample] = std::make_pair(evt, xs);
-        if (verbosity_) {
-          std::cout << sample << " evt=" << evt << " xs= " << xs << " l_eff= " << evt/xs << " l_rel= " << (evt/(xs*lumi_)) << std::endl;
-        }
+        if (verbosity_ > 0) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % sample % unsigned(evt+0.5) % xs % (evt/xs) % (evt/(xs*lumi_));
       }
     }
   }
@@ -188,59 +197,36 @@ namespace ic {
       sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
       sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
     }
-  };
-
-
-  void HTTAnalysis::ReadTrees(std::string const& folder, std::string const& prefix) {
-    if (verbosity_) std::cout << "Reading input files..." << std::endl;
-    for (auto name : sample_names_) {
-      // The input file is folder + sample name + channel + year
-      std::string input_filename = folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
-      std::string label = (prefix == "") ? name : (prefix + "/" + name);
-      if (verbosity_) std::cout << input_filename << " --> " << label << std::endl;
-      TFile *tmp_file = new TFile(input_filename.c_str());
-      if (!tmp_file) {
-        std::cerr << "Warning in <HTTAnalysis::ReadTrees>: Unable to open file " << input_filename << std::endl;
-        continue;
-      }
-      gDirectory->cd("/");
-      TTree *tmp_tree = dynamic_cast<TTree*>(gDirectory->Get("ntuple"));
-      if (!tmp_tree) {
-        std::cerr << "Warning in <HTTAnalysis::ReadTrees>: Unable to extract TTree from file " << input_filename << std::endl;
-        continue;        
-      }
-      tfiles_[label] = tmp_file;
-      ttrees_[label] = tmp_tree;
-    }
   }
 
-  void HTTAnalysis::ReadTreesWithFallback(std::string const& folder, std::string const& fallback_folder) {
-    if (verbosity_) std::cout << "Reading input files..." << std::endl;
+  void HTTAnalysis::ReadTrees(std::string const& folder, std::string const& fallback_folder) {
+    std::cout << "[HTTAnalysis::ReadTrees] Reading input files..." << std::endl;
+    std::vector<std::string> result_summary;
     for (auto name : sample_names_) {
       // The input file is folder + sample name + channel + year
       std::string input_filename = folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
       std::string label = name;
-      if (verbosity_) std::cout << input_filename << " --> " << label << std::endl;
-      TFile *tmp_file = new TFile(input_filename.c_str());
-      if (!(tmp_file->IsOpen())) {
-        std::cerr << "Info in <HTTAnalysis::ReadTrees>: Trying fallback " << input_filename << std::endl;
+      TFile *tmp_file = TFile::Open(input_filename.c_str());
+      if (!tmp_file && fallback_folder != "") {
+        if (verbosity_ > 2) std::cout << "[HTTAnalysis::ReadTrees] " << input_filename << " not found, trying fallback folder" << std::endl;
         input_filename = fallback_folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
-        if (verbosity_) std::cout << input_filename << " --> " << label << std::endl;
-        tmp_file = new TFile(input_filename.c_str());
-        if (!tmp_file) {
-          std::cerr << "Warning in <HTTAnalysis::ReadTrees>: Unable to extract TTree from file " << input_filename << std::endl;
-          continue;
-        }
+        tmp_file = TFile::Open(input_filename.c_str());
       }
+      if (!tmp_file) {
+        std::cout << "[HTTAnalysis::ReadTrees] Warning: " << input_filename << " cannot be opened" << std::endl;
+        continue;
+      }
+      if (verbosity_ > 0) result_summary.push_back((boost::format("%-70s %s %-30s\n") % input_filename % "-->" % label).str());
       gDirectory->cd("/");
       TTree *tmp_tree = dynamic_cast<TTree*>(gDirectory->Get("ntuple"));
       if (!tmp_tree) {
-        std::cerr << "Warning in <HTTAnalysis::ReadTrees>: Unable to extract TTree from file " << input_filename << std::endl;
+        std::cerr << "[HTTAnalysis::ReadTrees] Warning: Unable to extract TTree from file " << input_filename << std::endl;
         continue;        
       }
       tfiles_[label] = tmp_file;
       ttrees_[label] = tmp_tree;
     }
+    for (auto str : result_summary) std::cout << str;
   }
 
   double HTTAnalysis::GetLumiScale(std::string const& sample) {
@@ -254,29 +240,69 @@ namespace ic {
     }
   }
 
-  void HTTAnalysis::FillHistoMap(HistValueMap & hmap, unsigned method,
-                        std::string variable,
-                        std::string selection,
-                        std::string category,
-                        std::string weight,
-                        std::string postfix) {
-    std::string var = variable;
-    std::string sel = selection;
-    std::string cat = category;
-    std::string wt = weight;
-    bool use_soup = true;
-    std::string soup = (year_ == "2011") ? "" : "Soup";
-    if (!use_soup) soup = "";
+  double HTTAnalysis::GetLumiScaleFixedXS(std::string const& sample, double xs) {
+      auto it = sample_info_.find(sample);
+    if (it != sample_info_.end()) {
+      double evt = it->second.first;;
+      return ((xs*lumi_)/evt);
+    } else {
+      return 1.0;
+    }
+  }
 
-    // Data
+
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateData(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     auto data_norm = this->GetRate("Data", sel, cat, wt);
     TH1F data_hist = this->GetShape(var, "Data", sel, cat, wt);
     SetNorm(&data_hist, data_norm.first);
-    PrintValue("data_obs"+postfix, data_norm);
-    hmap["data_obs"+postfix] = std::make_pair(data_hist, data_norm);
+    return std::make_pair(data_hist, data_norm);
+  }
 
-    Value total_bkr;
-    // Top
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT]\n";
+    auto ztt_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToTauTau"+dy_soup_, "os", "", sel, cat, wt);
+    TH1F ztt_hist = this->GetShape(var, "Embedded", sel, cat, wt);
+    SetNorm(&ztt_hist, ztt_norm.first);
+    return std::make_pair(ztt_hist, ztt_norm);
+  }
+
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    Value zl_norm;
+    TH1F zl_hist;
+    if (method == 5) {
+      zl_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("twojet"), sel, cat, wt);
+      zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("vbf_loose_jets20"), wt);
+    } else {
+      std::string zll_shape_cat = cat;
+      if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
+      if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
+      if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
+      zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
+    }
+    SetNorm(&zl_hist, zl_norm.first);
+    return std::make_pair(zl_hist, zl_norm);
+  }
+
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    Value zj_norm;
+    TH1F zj_hist;
+    if (method == 5) {
+      zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+dy_soup_, sel, cat, wt);
+      zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+dy_soup_, sel, this->ResolveAlias("vbf_loose"), wt);
+    } else {
+      std::string zll_shape_cat = cat;
+      if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
+      if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
+      if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+dy_soup_, sel, zll_shape_cat, wt);
+      zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+dy_soup_, sel, zll_shape_cat, wt);
+    }
+    SetNorm(&zj_hist, zj_norm.first);
+    return std::make_pair(zj_hist, zj_norm);
+  }
+
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     auto top_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
     std::string top_shape_sample = (year_ == "2011") ? "TTJets" : "TT";
     std::string top_shape_cat = cat;
@@ -289,12 +315,10 @@ namespace ic {
     }
     TH1F top_hist = this->GetLumiScaledShape(var, top_shape_sample, sel, top_shape_cat, wt);
     SetNorm(&top_hist, top_norm.first);
-    std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
-    PrintValue(top_map_label+postfix, top_norm);
-    total_bkr = ValueAdd(total_bkr, top_norm);
-    hmap[top_map_label+postfix] = std::make_pair(top_hist, top_norm);
+    return std::make_pair(top_hist, top_norm);
+  }
 
-    // Diboson
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     std::vector<std::string> vv_samples = this->ResolveSamplesAlias("vv_samples");
     auto vv_norm = this->GetLumiScaledRate(vv_samples, sel, cat, wt);
     if (ch_ == channel::em && (method == 0 || method == 1)) {
@@ -306,87 +330,39 @@ namespace ic {
     }
     TH1F vv_hist = this->GetLumiScaledShape(var, vv_samples, sel, cat, wt);
     SetNorm(&vv_hist, vv_norm.first);
-    std::string vv_map_label = (ch_ == channel::em) ? "EWK" : "VV";
-    PrintValue(vv_map_label+postfix, vv_norm);
-    total_bkr = ValueAdd(total_bkr, vv_norm);
-    hmap[vv_map_label+postfix] = std::make_pair(vv_hist, vv_norm);
+    return std::make_pair(vv_hist, vv_norm);
+  }
 
-    // Z->ll
-    if (ch_ != channel::em) {
-      Value zl_norm, zj_norm, zll_norm;
-      TH1F zl_hist, zj_hist, zll_hist;
-      if (method == 5) {
-        zl_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToLL-L"+soup, sel, this->ResolveAlias("twojet"), sel, cat, wt);
-        zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+soup, sel, cat, wt);
-        zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+soup, sel, this->ResolveAlias("vbf_loose_jets20"), wt);
-        zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+soup, sel, this->ResolveAlias("vbf_loose"), wt);
-      } else {
-        std::string zll_shape_cat = cat;
-        if (method == 6)  zll_shape_cat = "btag_low_loose";
-        if (method == 7)  zll_shape_cat = "btag_high_loose";
-        if (method == 12) zll_shape_cat = "btag_loose";
-        zll_shape_cat = this->ResolveAlias(zll_shape_cat);
-        zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+soup, sel, zll_shape_cat, wt);
-        zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+soup, sel, zll_shape_cat, wt);
-        zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+soup, sel, zll_shape_cat, wt);
-        zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+soup, sel, zll_shape_cat, wt);
-      }
-      SetNorm(&zl_hist, zl_norm.first);
-      SetNorm(&zj_hist, zj_norm.first);
-      zll_norm = ValueAdd(zl_norm, zj_norm);
-      zll_hist = zl_hist;
-      zll_hist.Add(&zj_hist);
-      PrintValue("ZLL"+postfix, zll_norm);
-      PrintValue("ZL"+postfix, zl_norm);
-      PrintValue("ZJ"+postfix, zj_norm);
-      total_bkr = ValueAdd(total_bkr, zll_norm);
-      hmap["ZLL"+postfix] = std::make_pair(zll_hist, zll_norm);
-      hmap["ZL"+postfix]  = std::make_pair(zl_hist, zl_norm);
-      hmap["ZJ"+postfix]  = std::make_pair(zj_hist, zj_norm);
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+    std::string w_extrap_cat = cat;
+    std::string w_extrp_sdb_sel = this->ResolveAlias("w_extrp_os_sdb_sel");
+    std::string w_extrp_sig_sel = this->ResolveAlias("w_extrp_os_sig_sel");
+    std::string w_sdb_sel = this->ResolveAlias("w_os_sdb_sel");
+    if (method == 5) {
+      w_extrap_cat    = this->ResolveAlias("vbf_loose");
+      w_extrp_sdb_sel = this->ResolveAlias("vbf_w_extrp_os_sdb_sel");
+      w_extrp_sig_sel = this->ResolveAlias("vbf_w_extrp_os_sig_sel");
+      w_sdb_sel       = this->ResolveAlias("vbf_w_os_sdb_sel");
     }
-
-    // Z->tautau
-    auto ztt_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToTauTau"+soup, "os", "", sel, cat, wt);
-    TH1F ztt_hist = this->GetShape(var, "Embedded", sel, cat, wt);
-    SetNorm(&ztt_hist, ztt_norm.first);
-    std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
-    PrintValue(ztt_map_label+postfix, ztt_norm);
-    total_bkr = ValueAdd(total_bkr, ztt_norm);
-    hmap[ztt_map_label+postfix] = std::make_pair(ztt_hist, ztt_norm);
-
-    // W+jets
-    if (ch_ != channel::em) {
-      std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
-      std::string w_extrap_cat = cat;
-      std::string w_extrp_sdb_sel = this->ResolveAlias("w_extrp_os_sdb_sel");
-      std::string w_extrp_sig_sel = this->ResolveAlias("w_extrp_os_sig_sel");
-      std::string w_sdb_sel = this->ResolveAlias("w_os_sdb_sel");
-      if (method == 5) {
-        w_extrap_cat    = this->ResolveAlias("vbf_loose");
-        w_extrp_sdb_sel = this->ResolveAlias("vbf_w_extrp_os_sdb_sel");
-        w_extrp_sig_sel = this->ResolveAlias("vbf_w_extrp_os_sig_sel");
-        w_sdb_sel       = this->ResolveAlias("vbf_w_os_sdb_sel");
-      }
-      if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
-      if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
-      if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
-      
-      auto w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
-          "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
-      std::string w_shape_cat = cat;
-      std::string w_shape_sel = this->ResolveAlias("w_shape_sel");
-      if (method == 5)  w_shape_cat = this->ResolveAlias("vbf_loose");
-      if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
-      if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
-      if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
-      TH1F w_hist = this->GetShape(var, "WJetsToLNuSoup", w_shape_sel, w_shape_cat, wt);
-      SetNorm(&w_hist, w_norm.first);
-      PrintValue("W"+postfix, w_norm);
-      total_bkr = ValueAdd(total_bkr, w_norm);
-      hmap["W"+postfix] = std::make_pair(w_hist, w_norm);
-    }
-
-    // QCD/Fakes
+    if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
+    if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
+    if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
+    
+    auto w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+        "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+    std::string w_shape_cat = cat;
+    std::string w_shape_sel = this->ResolveAlias("w_shape_sel");
+    if (method == 5)  w_shape_cat = this->ResolveAlias("vbf_loose");
+    if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
+    if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
+    if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
+    TH1F w_hist = this->GetShape(var, "WJetsToLNuSoup", w_shape_sel, w_shape_cat, wt);
+    SetNorm(&w_hist, w_norm.first);
+    return std::make_pair(w_hist, w_norm);
+  }
+  
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     Value qcd_norm;
     TH1F qcd_hist;
     if (ch_ != channel::em) {
@@ -398,10 +374,11 @@ namespace ic {
       std::string w_sdb_sel = this->ResolveAlias("w_ss_sdb_sel");
       std::string qcd_cat = cat;
       if (method == 5) qcd_cat = this->ResolveAlias("inclusive");
+      Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+            "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
       qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.06,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
         {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
-          return this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
-            "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());}
+          return w_ss_norm;}
         } 
       });
       if (method == 5) {
@@ -411,8 +388,7 @@ namespace ic {
       if (method == 0 || method == 8 || method == 11) {
         qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
           {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
-            return this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
-              "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());} 
+            return w_ss_norm;} 
           }
         });
       } else {
@@ -423,9 +399,7 @@ namespace ic {
         qcd_hist = this->GetShape(var, "Special_3_Data", qcd_sdb_sel, qcd_cat, wt);
       }
     } else {
-      Value qcd_dilepton = ValueAdd( this->GetRate("Special_20_Data", this->ResolveAlias("em_qcd_sel"), "", wt),
-                                     this->GetRate("Special_21_Data", this->ResolveAlias("em_qcd_sel"), "", wt));
-      qcd_dilepton = ValueSubtract(qcd_dilepton, this->GetRate("Special_22_Data", this->ResolveAlias("em_qcd_sel"), "", wt));
+      Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
       qcd_dilepton = ValueProduct(qcd_dilepton, std::make_pair(0.83,0.));
       Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("em_qcd_sel"), "", sel, cat, wt);
       if (method == 0 || method == 2) {
@@ -434,45 +408,129 @@ namespace ic {
       } else if (method == 1) {
         qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
         qcd_hist = this->GetShape(var, "Special_24_Data", this->ResolveAlias("ss_sel"), cat, wt);
-        TH1F fr_hist =  this->GetShape(var, "Special_20_Data", sel, cat, wt);
-        TH1F fr_m_hist =  this->GetShape(var, "Special_21_Data", sel, cat, wt);
-        TH1F fr_em_hist = this->GetShape(var, "Special_22_Data", sel, cat, wt);
-        fr_hist.Add(&fr_m_hist,1.0);
-        fr_hist.Add(&fr_em_hist,-1.0);
+        TH1F fr_hist =  this->GetShapeViaFakesMethod(var, sel, cat, wt);
         qcd_hist.Scale(0.2 / Integral(&qcd_hist));
         fr_hist.Scale(0.8 / Integral(&fr_hist));
         qcd_hist.Add(&fr_hist,1.0);
       } else if (method == 3) {
-        qcd_norm = ValueAdd(this->GetRate("Special_20_Data", sel, cat, wt),
-                            this->GetRate("Special_21_Data", sel, cat, wt));
-        qcd_norm = ValueSubtract(qcd_norm, this->GetRate("Special_22_Data", sel, cat, wt));
-        qcd_hist        = this->GetShape(var, "Special_20_Data", sel, cat, wt);
-        TH1F fr_m_hist  = this->GetShape(var, "Special_21_Data", sel, cat, wt);
-        TH1F fr_em_hist = this->GetShape(var, "Special_22_Data", sel, cat, wt);
-        qcd_hist.Add(&fr_m_hist,1.0);
-        qcd_hist.Add(&fr_em_hist,-1.0);
+        qcd_norm = this->GetRateViaFakesMethod(sel, cat, wt);
+        qcd_hist = this->GetShapeViaFakesMethod(var, sel, cat, wt); 
       } else if (method == 5) {
-       qcd_norm = ValueAdd(this->GetRate("Special_20_Data", sel, cat, wt),
-                           this->GetRate("Special_21_Data", sel, cat, wt));
-       qcd_norm = ValueSubtract(qcd_norm, this->GetRate("Special_22_Data", sel, cat, wt));
-       qcd_hist        = this->GetShape(var, "Special_20_Data", sel, this->ResolveAlias("vbf_no_cjv"), wt);
-       TH1F fr_m_hist  = this->GetShape(var, "Special_21_Data", sel, this->ResolveAlias("vbf_no_cjv"), wt);
-       TH1F fr_em_hist = this->GetShape(var, "Special_22_Data", sel, this->ResolveAlias("vbf_no_cjv"), wt);
-       qcd_hist.Add(&fr_m_hist,1.0);
-       qcd_hist.Add(&fr_em_hist,-1.0); 
+        qcd_norm = this->GetRateViaFakesMethod(sel, cat, wt);
+        qcd_hist = this->GetShapeViaFakesMethod(var, sel, this->ResolveAlias("vbf_no_cjv"), wt);
      } else {
       qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
       qcd_hist = this->GetShape(var, "Data", this->ResolveAlias("ss_sel"), cat, wt);
      }
     }
     SetNorm(&qcd_hist, qcd_norm.first);
+    return std::make_pair(qcd_hist, qcd_norm);
+  }
+
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs) {
+    Value signal_norm;
+    if (xs > 0) {
+      if (verbosity_ > 0) std::cout << "[HTTAnalysis::GenerateSignal] " << sample << " scaled to lumi using cross section " << xs << " pb" << std::endl;
+      signal_norm = GetRate(sample, sel, cat, wt);
+      signal_norm = ValueProduct(signal_norm, std::make_pair(this->GetLumiScaleFixedXS(sample, xs), 0.0));
+    } else {
+      signal_norm = GetLumiScaledRate(sample, sel, cat, wt);
+    }
+    TH1F signal_shape = this->GetShape(var, sample, sel, cat, wt);
+    SetNorm(&signal_shape, signal_norm.first);
+    return std::make_pair(signal_shape, signal_norm);
+  }
+
+  void HTTAnalysis::FillSMSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+      hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
+      hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
+      hmap["VH"+infix+m+postfix]  = this->GenerateSignal("WH_ZH_TTH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+  void HTTAnalysis::FillMSSMSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+      hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
+    }
+  }
+
+  void HTTAnalysis::FillHistoMap(HistValueMap & hmap, unsigned method,
+                        std::string var,
+                        std::string sel,
+                        std::string cat,
+                        std::string wt,
+                        std::string postfix) {
+    Value total_bkr;
+    // Data
+    auto data_pair = this->GenerateData(method, var, sel, cat, wt);
+    PrintValue("data_obs"+postfix, data_pair.second);
+    hmap["data_obs"+postfix] = data_pair;
+    // Top
+    auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
+    std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
+    PrintValue(top_map_label+postfix, top_pair.second);
+    total_bkr = ValueAdd(total_bkr, top_pair.second);
+    hmap[top_map_label+postfix] = top_pair;
+    // Diboson
+    auto vv_pair = this->GenerateVV(method, var, sel, cat, wt);
+    std::string vv_map_label = (ch_ == channel::em) ? "EWK" : "VV";
+    PrintValue(vv_map_label+postfix, vv_pair.second);
+    total_bkr = ValueAdd(total_bkr, vv_pair.second);
+    hmap[vv_map_label+postfix] = vv_pair;
+    // Z->ll
+    if (ch_ != channel::em) {
+      auto zl_pair = this->GenerateZL(method, var, sel, cat, wt);
+      auto zj_pair = this->GenerateZJ(method, var, sel, cat, wt);
+      Value zll_norm = ValueAdd(zl_pair.second, zj_pair.second);
+      TH1F zll_hist = zl_pair.first;
+      zll_hist.Add(&zj_pair.first);
+      PrintValue("ZLL"+postfix, zll_norm);
+      PrintValue("ZL"+postfix, zl_pair.second);
+      PrintValue("ZJ"+postfix, zj_pair.second);
+      total_bkr = ValueAdd(total_bkr, zll_norm);
+      hmap["ZLL"+postfix] = std::make_pair(zll_hist, zll_norm);
+      hmap["ZL"+postfix]  = zl_pair;
+      hmap["ZJ"+postfix]  = zj_pair;
+    }
+    // Z->tautau
+    auto ztt_pair = this->GenerateZTT(method, var, sel, cat, wt);
+    std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
+    PrintValue(ztt_map_label+postfix, ztt_pair.second);
+    total_bkr = ValueAdd(total_bkr, ztt_pair.second);
+    hmap[ztt_map_label+postfix] = ztt_pair;
+    // W+jets
+    if (ch_ != channel::em) {
+      auto w_pair = this->GenerateW(method, var, sel, cat, wt);
+      PrintValue("W"+postfix, w_pair.second);
+      total_bkr = ValueAdd(total_bkr, w_pair.second);
+      hmap["W"+postfix] = w_pair;
+    }
+    // QCD/Fakes
+    auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
     std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
-    PrintValue(qcd_map_label+postfix, qcd_norm);
-    total_bkr = ValueAdd(total_bkr, qcd_norm);
-    hmap[qcd_map_label+postfix] = std::make_pair(qcd_hist, qcd_norm);
-
+    PrintValue(qcd_map_label+postfix, qcd_pair.second);
+    total_bkr = ValueAdd(total_bkr, qcd_pair.second);
+    hmap[qcd_map_label+postfix] = qcd_pair;
+    // Print the total background yield
     PrintValue("Total"+postfix, total_bkr);
-
     return;
   }
 
@@ -498,6 +556,7 @@ namespace ic {
     return full_variable;
   }
 
+
   TH1F HTTAnalysis::GetShape(std::string const& variable,
                                        std::string const& sample, 
                                        std::string const& selection, 
@@ -505,13 +564,28 @@ namespace ic {
                                        std::string const& weight) {
     TH1::SetDefaultSumw2(true);
     std::string full_variable = BuildVarString(variable);
+    std::size_t begin_var = full_variable.find("[");
+    std::size_t end_var   = full_variable.find("]");
+    TH1F *htemp = nullptr;
+    if (begin_var != full_variable.npos && end_var != full_variable.npos) {
+      std::string binning = full_variable.substr(begin_var+1, end_var-begin_var-1);
+      std::vector<std::string> string_vec;
+      boost::split(string_vec, binning, boost::is_any_of(","));
+      std::vector<double> bin_vec;
+      for (auto str : string_vec) bin_vec.push_back(boost::lexical_cast<double>(str));
+      TH1::AddDirectory(true);
+      htemp = new TH1F("htemp","htemp", bin_vec.size()-1, &(bin_vec[0]));
+      TH1::AddDirectory(false);
+      full_variable.erase(begin_var, full_variable.npos);
+      full_variable += ">>htemp";
+    }
     std::string full_selection = BuildCutString(selection, category, weight);
     // std::cout << full_selection << std::endl;
     // std::cout << full_variable << std::endl;
     TH1::AddDirectory(true);
     ttrees_[sample]->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
-    TH1F *htemp = (TH1F*)gDirectory->Get("htemp");
+    htemp = (TH1F*)gDirectory->Get("htemp");
     TH1F result = (*htemp);
     gDirectory->Delete("htemp;*");
     auto rate = GetRate(sample, selection, category, weight);
@@ -633,44 +707,67 @@ namespace ic {
                           std::string const& target_category,  
                           std::string const& weight) {
     if (verbosity_) {
-      std::cout << "--GetRateViaRefEfficiency--" << std::endl;
-      std::cout << "-Target: sample=" << target_sample << " selection=\"" << target_selection << "\" category=\"" << target_category << "\"" << std::endl;
-      std::cout << "-Reference: sample=" << ref_sample << " selection=\"" << ref_selection << "\" category=\"" << ref_category << "\"" << std::endl;
+      std::cout << "[HTTAnalysis::GetRateViaRefEfficiency]\n";
+      std::cout << "ReferenceRate:   " << boost::format("%s,'%s','%s','%s'\n") % ref_sample % ref_selection 
+                % ref_category % weight;
+      std::cout << "Efficiency:      " << boost::format("%s,'%s','%s','%s'\n") %target_sample % target_selection 
+                % target_category % weight;
     }
     auto ref_rate = GetLumiScaledRate(ref_sample, ref_selection, ref_category, weight);
-    PrintValue("-RefRate", ref_rate);
+    if (verbosity_) PrintValue("ReferenceRate", ref_rate);
     auto target_eff = SampleEfficiency(target_sample, ref_selection, ref_category, target_selection, target_category, weight);
-    PrintValue("-TargetEff", target_eff);
+    if (verbosity_) PrintValue("Efficiency", target_eff);
     return ValueProduct(ref_rate, target_eff);
   }
 
+  HTTAnalysis::Value HTTAnalysis::GetRateViaFakesMethod(std::string const& sel,
+                              std::string const& cat, 
+                              std::string const& wt) {
+    auto norm = ValueAdd(this->GetRate("Special_20_Data", sel, cat, wt),
+                         this->GetRate("Special_21_Data", sel, cat, wt));
+    norm = ValueSubtract(norm, this->GetRate("Special_22_Data", sel, cat, wt));
+    return norm;
+  }
+
+
   HTTAnalysis::Value HTTAnalysis::GetRateViaWMethod(std::string const& w_sample,
-                          std::string const& ratio_category,
-                          std::string const& ratio_control_selection,
-                          std::string const& ratio_signal_selection,
+                          std::string const& ratio_cat,
+                          std::string const& ratio_control_sel,
+                          std::string const& ratio_signal_sel,
                           std::string const& data_sample,
-                          std::string const& category,
-                          std::string const& control_selection,
+                          std::string const& cat,
+                          std::string const& control_sel,
                           std::vector<std::string> const& sub_samples,
-                          std::string const& weight,
+                          std::string const& wt,
                           std::map<std::string, std::function<Value()>> dict
                           ) {
-    Value ratio = SampleRatio(w_sample, ratio_control_selection, ratio_category, ratio_signal_selection, ratio_category, weight);
-    Value data_control = GetRate(data_sample, control_selection, category, weight);
+    if (verbosity_) {
+      std::cout << "[HTTAnalysis::GetRateViaWMethod]\n";
+      std::cout << "ExtrapFactor:   " << boost::format("%s,'%s'/'%s','%s','%s'\n") % w_sample % ratio_signal_sel 
+                % ratio_control_sel % ratio_cat % wt;
+      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_sel % cat % wt;
+    }
+    Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
+    Value data_control = GetRate(data_sample, control_sel, cat, wt);
+    if (verbosity_) PrintValue(data_sample, data_control);
     Value total_bkg;
     for (unsigned i = 0; i < sub_samples.size(); ++i) {
       Value bkr;
       if (dict.count(sub_samples[i])) {
         bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
       } else {
-        bkr = GetLumiScaledRate(sub_samples[i], control_selection, category, weight);
+        bkr = GetLumiScaledRate(sub_samples[i], control_sel, cat, wt);
       }
+      if (verbosity_) PrintValue("-"+sub_samples[i], bkr);
       double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
       total_bkg.first += bkr.first;
       total_bkg.second = new_err;
     }
+    if (verbosity_) PrintValue("TotalBkg", total_bkg);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
     Value w_control(data_control.first - total_bkg.first, w_control_err);
+    if (verbosity_) PrintValue("WSideband", w_control);
+    if (verbosity_) PrintValue("ExtrapFactor", ratio);
     Value w_signal = ValueProduct(w_control, ratio);
     return w_signal;
   }
@@ -683,7 +780,12 @@ namespace ic {
                           std::string const& weight,
                           std::map<std::string, std::function<Value()>> dict
                           ) {
+    if (verbosity_) {
+      std::cout << "[HTTAnalysis::GetRateViaQCDMethod]\n";
+      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_selection % category % weight;
+    }
     Value data_control = GetRate(data_sample, control_selection, category, weight);
+    if (verbosity_) PrintValue(data_sample, data_control);
     Value total_bkg;
     for (unsigned i = 0; i < sub_samples.size(); ++i) {
       Value bkr;
@@ -692,13 +794,17 @@ namespace ic {
       } else {
         bkr = GetLumiScaledRate(sub_samples[i], control_selection, category, weight);
       }
+      if (verbosity_) PrintValue("-"+sub_samples[i], bkr);
       double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
       total_bkg.first += bkr.first;
       total_bkg.second = new_err;
     }
+    if (verbosity_) PrintValue("TotalBkg", total_bkg);
     double qcd_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
     Value qcd_control(data_control.first - total_bkg.first, qcd_control_err);
+    if (verbosity_) PrintValue("QCDSideband", qcd_control);
     Value qcd_signal = ValueProduct(qcd_control, ratio);
+    if (verbosity_) PrintValue("OS/SS Factor", ratio);
     return qcd_signal;
   }
 
@@ -723,6 +829,18 @@ namespace ic {
       }
     }
     return result;
+  }
+
+  TH1F HTTAnalysis::GetShapeViaFakesMethod(std::string const& var,
+                              std::string const& sel,
+                              std::string const& cat,
+                              std::string const& wt) {
+    TH1F fr_e_hist =  this->GetShape(var, "Special_20_Data", sel, cat, wt);
+    TH1F fr_m_hist =  this->GetShape(var, "Special_21_Data", sel, cat, wt);
+    TH1F fr_em_hist = this->GetShape(var, "Special_22_Data", sel, cat, wt);
+    fr_e_hist.Add(&fr_m_hist,1.0);
+    fr_e_hist.Add(&fr_em_hist,-1.0);
+    return fr_e_hist;
   }
 
   HTTAnalysis::Value HTTAnalysis::ValueProduct(Value const& p1, Value const& p2) {
@@ -751,7 +869,7 @@ namespace ic {
   }
 
   void HTTAnalysis::PrintValue(std::string const& label, Value const& val) {
-    std::cout << (boost::format("%-12s %-10.8f +/-   %-10.2f  (%.4f)") % (label+":") % val.first % val.second % (val.second/val.first)) << std::endl;
+    std::cout << (boost::format("%-45s %10.3f +/-   %10.3f  (%.4f)") % (label+":") % val.first % val.second % (val.second/val.first)) << std::endl;
   }
 
   std::string HTTAnalysis::ResolveAlias(std::string const& al) {
@@ -771,6 +889,11 @@ namespace ic {
       return std::vector<std::string>();
     }
   }
+
+  void HTTAnalysis::SetAlias(std::string const& al, std::string const& val) {
+    alias_map_[al] = val;
+  }
+
 
 
 
