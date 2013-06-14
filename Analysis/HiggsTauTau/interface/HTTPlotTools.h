@@ -83,6 +83,7 @@ namespace ic {
       static void SetSignalStyle(ic::TH1PlotElement & ele, unsigned color);
       static void SetDataStyle(ic::TH1PlotElement & ele);
       static void SetRatioStyle(ic::RatioPlotElement & ele, unsigned color);
+      inline std::string plot_name() const { return plot_name_; }
 
 
     private:

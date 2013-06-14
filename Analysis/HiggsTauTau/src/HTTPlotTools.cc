@@ -99,7 +99,7 @@ namespace ic {
     namespace po = boost::program_options;
     config_.add_options()
       ((prefix+"use_htt_style").c_str(),        po::value<bool>(&use_htt_style_)->default_value(false))
-      ((prefix+"plot_name").c_str(),            po::value<std::string>(&plot_name_)->required())
+      ((prefix+"plot_name").c_str(),            po::value<std::string>(&plot_name_)->default_value(""))
       ((prefix+"x_axis_label").c_str(),         po::value<std::string>(&x_axis_label_)->default_value(""))
       ((prefix+"y_axis_label").c_str(),         po::value<std::string>(&y_axis_label_)->default_value("Events"))
       ((prefix+"x_axis_bin_labels").c_str(),    po::value<std::string>(&x_axis_bin_labels_)->default_value(""))
