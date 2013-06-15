@@ -50,30 +50,31 @@ namespace ic {
     CLASS_MEMBER(HTTPlot,   std::string,    x_axis_label)
     CLASS_MEMBER(HTTPlot,   std::string,    y_axis_label)
     CLASS_MEMBER(HTTPlot,   std::string,    x_axis_bin_labels)
-    // CLASS_MEMBER(HTTPlot,   unsigned,       rebin)
     CLASS_MEMBER(HTTPlot,   bool,           custom_x_axis_range)
     CLASS_MEMBER(HTTPlot,   double,         x_axis_min)
     CLASS_MEMBER(HTTPlot,   double,         x_axis_max)
     CLASS_MEMBER(HTTPlot,   bool,           custom_y_axis_min)
     CLASS_MEMBER(HTTPlot,   double,         y_axis_min)
     CLASS_MEMBER(HTTPlot,   double,         extra_pad)
-    // CLASS_MEMBER(HTTPlot, bool, blind)
-    // CLASS_MEMBER(HTTPlot, double, x_blind_min)
-    // CLASS_MEMBER(HTTPlot, double, x_blind_max)
-    CLASS_MEMBER(HTTPlot, bool, log_y)
-    CLASS_MEMBER(HTTPlot, bool, draw_ratio)
-    CLASS_MEMBER(HTTPlot, bool, norm_bins)
-    // CLASS_MEMBER(HTTPlot, bool, stack_signal)
-    // CLASS_MEMBER(HTTPlot, bool, signal_split_vbf)
+    CLASS_MEMBER(HTTPlot,   bool,           blind)
+    CLASS_MEMBER(HTTPlot,   double,         x_blind_min)
+    CLASS_MEMBER(HTTPlot,   double,         x_blind_max)
+    CLASS_MEMBER(HTTPlot,   bool,           log_y)
+    CLASS_MEMBER(HTTPlot,   bool,           draw_ratio)
+    CLASS_MEMBER(HTTPlot,   bool,           norm_bins)
+    CLASS_MEMBER(HTTPlot,   std::string,    title_left)
+    CLASS_MEMBER(HTTPlot,   std::string,    title_right)
+    CLASS_MEMBER(HTTPlot,   std::string,    background_scheme)
+    CLASS_MEMBER(HTTPlot,   std::string,    signal_scheme)
+    CLASS_MEMBER(HTTPlot,   std::string,    draw_signal_mass) // if "" then don't draw
+    CLASS_MEMBER(HTTPlot,   std::string,    draw_signal_tanb) // if "" then don't draw
+    CLASS_MEMBER(HTTPlot,   unsigned,       signal_scale) // if "" then don't draw
+    CLASS_MEMBER(HTTPlot,   double,         auto_error_band)
+    CLASS_MEMBER(HTTPlot,   bool,           draw_error_band)
+
     // CLASS_MEMBER(HTTPlot, bool, ztt_by_decay_mode)
     // CLASS_MEMBER(HTTPlot, bool, shift_backgrounds)
     // CLASS_MEMBER(HTTPlot, bool, draw_error_band)
-    // CLASS_MEMBER(HTTPlot, double, band_size_fractional)
-    CLASS_MEMBER(HTTPlot, std::string, background_scheme)
-    CLASS_MEMBER(HTTPlot, std::string, signal_scheme)
-    CLASS_MEMBER(HTTPlot, std::string, draw_signal_mass) // if "" then don't draw
-    CLASS_MEMBER(HTTPlot, std::string, draw_signal_tanb) // if "" then don't draw
-    CLASS_MEMBER(HTTPlot, unsigned, signal_scale) // if "" then don't draw
 
     public:
       HTTPlot();
@@ -84,6 +85,8 @@ namespace ic {
       static void SetDataStyle(ic::TH1PlotElement & ele);
       static void SetRatioStyle(ic::RatioPlotElement & ele, unsigned color);
       inline std::string plot_name() const { return plot_name_; }
+      inline std::string draw_signal_mass() const { return draw_signal_mass_; }
+      inline std::string draw_signal_tanb() const { return draw_signal_tanb_; }
 
 
     private:

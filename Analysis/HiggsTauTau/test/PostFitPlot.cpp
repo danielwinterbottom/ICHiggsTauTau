@@ -339,7 +339,7 @@ int main(int argc, char* argv[]){
   if (channel == "et") plot.AddTH1PlotElement(zee_shape);
   if (channel == "mt") plot.AddTH1PlotElement(zee_shape);
   plot.AddTH1PlotElement(ztt_shape);
-  // if (setup.process(signal_procs).GetRate() != 0.0) plot.AddTH1PlotElement(signal_shape);
+  if (setup.process(signal_procs).GetRate() != 0.0) plot.AddTH1PlotElement(signal_shape);
   plot.AddTH1PlotElement(total_shape);
   plot.AddTH1PlotElement(data_shape);
   plot.custom_x_axis_range = custom_x_axis_range;

@@ -39,9 +39,13 @@ namespace ic {
       PlotBkgComponent("zll","Z#rightarrow#mu#mu",{"ZL","ZJ"},kAzure  + 2),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
     };
-
-
-
+    bkg_schemes_["mt_with_zmm_zll"] = {
+      PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
+      PlotBkgComponent("ewk","electroweak",{"W","VV"},kRed    + 2),
+      PlotBkgComponent("zll","Z#rightarrow#mu#mu",{"ZLL"},kAzure  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
+    };
   }
 
   void HTTPlot::SetMCStackStyle(ic::TH1PlotElement & ele, unsigned color) {
@@ -50,7 +54,7 @@ namespace ic {
     ele.set_draw_fill(true);
     ele.set_draw_marker(false);
     ele.set_draw_line(false);
-    ele.set_line_width(3);
+    ele.set_line_width(2);
     ele.set_draw_stat_error_y(false);
     ele.set_in_stack(true);
     return;
@@ -103,7 +107,6 @@ namespace ic {
       ((prefix+"x_axis_label").c_str(),         po::value<std::string>(&x_axis_label_)->default_value(""))
       ((prefix+"y_axis_label").c_str(),         po::value<std::string>(&y_axis_label_)->default_value("Events"))
       ((prefix+"x_axis_bin_labels").c_str(),    po::value<std::string>(&x_axis_bin_labels_)->default_value(""))
-      // ((prefix+"rebin").c_str(),                po::value<unsigned>(&rebin_)->default_value(1))
       ((prefix+"custom_y_axis_min").c_str(),    po::value<bool>(&custom_y_axis_min_)->default_value(false))
       ((prefix+"y_axis_min").c_str(),           po::value<double>(&y_axis_min_)->default_value(0.0))
       ((prefix+"custom_x_axis_range").c_str(),  po::value<bool>(&custom_x_axis_range_)->default_value(false))
@@ -114,17 +117,21 @@ namespace ic {
       ((prefix+"signal_scheme").c_str(),        po::value<std::string>(&signal_scheme_)->default_value(""))
       ((prefix+"draw_signal_mass").c_str(),     po::value<std::string>(&draw_signal_mass_)->default_value(""))
       ((prefix+"draw_signal_tanb").c_str(),     po::value<std::string>(&draw_signal_tanb_)->default_value(""))
+      ((prefix+"title_left").c_str(),           po::value<std::string>(&title_left_)->default_value(""))
+      ((prefix+"title_right").c_str(),          po::value<std::string>(&title_right_)->default_value(""))
       ((prefix+"signal_scale").c_str(),         po::value<unsigned>(&signal_scale_)->default_value(1))
       ((prefix+"log_y").c_str(),                po::value<bool>(&log_y_)->default_value(false))
       ((prefix+"draw_ratio").c_str(),           po::value<bool>(&draw_ratio_)->default_value(false))
-      ((prefix+"norm_bins").c_str(),            po::value<bool>(&norm_bins_)->default_value(false));
+      ((prefix+"norm_bins").c_str(),            po::value<bool>(&norm_bins_)->default_value(false))
+      ((prefix+"blind").c_str(),                po::value<bool>(&blind_)->default_value(false))
+      ((prefix+"x_blind_min").c_str(),          po::value<double>(&x_blind_min_)->default_value(0))
+      ((prefix+"x_blind_max").c_str(),          po::value<double>(&x_blind_max_)->default_value(0))
+      ((prefix+"auto_error_band").c_str(),      po::value<double>(&auto_error_band_)->default_value(-1.0))
+      ((prefix+"draw_error_band").c_str(),      po::value<bool>(&draw_error_band_)->default_value(false));
 
     return config_;
     // ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(-10))
     // ("extra_pad",           po::value<double>(&extra_pad)->default_value(1.0))
-    // ("blind",               po::value<bool>(&blind)->default_value(false))
-    // ("x_blind_min",         po::value<double>(&x_blind_min)->default_value(0))
-    // ("x_blind_max",         po::value<double>(&x_blind_max)->default_value(0))
     // ("norm_bins",           po::value<bool>(&norm_bins)->default_value(false))
     // ("signal_no_stack",     po::value<bool>(&signal_no_stack)->default_value(false))
     // ("signal_split_vbf",    po::value<bool>(&signal_split_vbf)->default_value(false))
@@ -162,6 +169,11 @@ namespace ic {
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
         {"ggH","bbH"}, kBlue+3, true)
     };
+    sig_schemes_["mssm_nostack"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
+        {"ggH","bbH"}, kBlue+3, false)
+    };
     sig_schemes_["sm_split_vbf"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau (ggH+VH)"),
@@ -175,8 +187,6 @@ namespace ic {
 
     ic::Plot plot;
     if (use_htt_style_) plot.use_htt_style = true;
-    // std::string kind_label = "sm";
-    // if (mssm_mode > 0) kind_label = "mssm";
 
     plot.output_filename = plot_name_+".pdf";
     if (log_y_) {
@@ -200,16 +210,31 @@ namespace ic {
 
     plot.draw_ratio_hist = draw_ratio_;
 
+    plot.title_left = title_left_;
+    plot.title_right = title_right_;
+
     // should check if data actually exists: we might want to make a plot
     // where it doesn't
     TH1PlotElement data_plot("data", &hmap["data_obs"].first, "observed");
     if (norm_bins_) data_plot.hist_ptr()->Scale(1.0, "width");
+    if (blind_) {
+      TH1F *data_hist = &hmap["data_obs"].first;
+      for (int j = 0; j < data_hist->GetNbinsX(); ++j) {
+        double low_edge = data_hist->GetBinLowEdge(j+1);
+        double high_edge = data_hist->GetBinWidth(j+1)+data_hist->GetBinLowEdge(j+1);
+        if ((low_edge > x_blind_min_ && low_edge < x_blind_max_) || (high_edge > x_blind_min_ && high_edge < x_blind_max_)) {
+          data_hist->SetBinContent(j+1,0);
+          data_hist->SetBinError(j+1,0);
+        }
+      }
+    }
 
     // should checkt the bakground scheme actually exists
     std::vector<PlotBkgComponent> bkg_scheme = bkg_schemes_[background_scheme_];
     std::vector<TH1PlotElement> bkg_elements;
 
     std::string bkr_list_for_ratio = "";
+
 
     for (unsigned i = 0; i < bkg_scheme.size(); ++i) {
       if (i == 0) bkr_list_for_ratio += bkg_scheme[i].name;
@@ -237,6 +262,33 @@ namespace ic {
       if (norm_bins_) sig_elements.back().hist_ptr()->Scale(1.0, "width");
       plot.AddTH1PlotElement(sig_elements.back());
     }
+    TH1F error_band;
+    TH1PlotElement err_element;
+    if (draw_error_band_) {
+      if (auto_error_band_ <= 0.) {
+        error_band = hmap["Bkg"].first;
+        if (norm_bins_) error_band.Scale(1.0, "width");
+      } else {
+        error_band = *((TH1F*)bkg_elements[0].hist_ptr()->Clone());
+        for (unsigned i = 1; i < bkg_elements.size(); ++i) {
+          error_band.Add(bkg_elements[i].hist_ptr());
+        }
+        for (unsigned i = 1; i <= unsigned(error_band.GetNbinsX()); ++i) {
+          error_band.SetBinError(i, error_band.GetBinContent(i)*auto_error_band_);
+        }
+      }
+    err_element = TH1PlotElement("error_shape", &error_band,"bkg. uncertainty");
+    err_element.set_marker_size(0);
+    err_element.set_fill_color(1);
+    err_element.set_fill_style(3013);
+    err_element.set_line_width(1);
+    err_element.set_draw_stat_error_y(true);
+    err_element.set_draw_fill(true);
+    err_element.set_draw_line(false);
+    err_element.set_draw_marker(false);
+    err_element.set_draw_options("e2");
+    plot.AddTH1PlotElement(err_element);
+    }
 
     ic::RatioPlotElement ratio("ratio","data",bkr_list_for_ratio);
     HTTPlot::SetRatioStyle(ratio,1);
@@ -252,32 +304,6 @@ namespace ic {
     plot.GeneratePlot();
 
 
-    // TH1F* signal_hist;
-    // if (mssm_mode == 0) {
-    //   signal_hist = (TH1F*)(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()->Clone());
-    //   if (verbose) {
-    //     std::cout << "ggH Norm: " << Integral(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
-    //     std::cout << "ggH Err: " << Error(plots[Token("GluGluToHToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;      
-    //   }
-    //   if (!signal_split_vbf) signal_hist->Add(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr());
-    //   if (verbose) {
-    //     std::cout << "qqH Norm: " << Integral(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;
-    //     std::cout << "qqH Err: " << Error(plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()) << std::endl;      
-    //   }
-    //   signal_hist->Add(plots[Token("WH_ZH_TTH_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr());
-    //   std::cout << boost::format(yield_fmt) % "Signal" % Integral(signal_hist) % Error(signal_hist);
-    //   signal_hist->Scale(draw_signal_factor);
-    // } else {
-    //   signal_hist = (TH1F*)(plots[Token("SUSYGluGluToHToTauTau_M-"+draw_mssm_signal_mass,cat,os_sel)].hist_ptr()->Clone());
-    //   signal_hist->Add(plots[Token("SUSYBBHToTauTau_M-"+draw_mssm_signal_mass,cat,os_sel)].hist_ptr());
-    //   signal_hist->Scale(draw_mssm_signal_factor);
-    // }
-    // ic::TH1PlotElement signal_shape("signal_shape", signal_hist);
-    // ic::TH1PlotElement signalvbf_shape;
-    // if (mssm_mode == 0) {
-    //   signalvbf_shape =  ic::TH1PlotElement("signalvbf_shape", (TH1F*)plots[Token("VBF_HToTauTau_M-"+draw_signal_mass,cat,os_sel)].hist_ptr()->Clone());
-    //   signalvbf_shape.hist_ptr()->Scale(draw_signal_factor);
-    // } 
 
     // if (shift_backgrounds) {
     //   std::cout << "Shift ZTT: " << ztt_shift << std::endl;
@@ -302,30 +328,6 @@ namespace ic {
 
 
 
-
-    // SetStyle(signal_shape, kBlue+3);
-    // signal_shape.set_line_style(11);
-    // signal_shape.set_fill_color(0);
-    // signal_shape.set_line_color(kBlue+3);
-    // signal_shape.set_line_width(3);
-
-
-
-    // if (mssm_mode == 0) {
-    //   SetStyle(signalvbf_shape, 1);
-    //   signalvbf_shape.set_line_style(2);
-    //   signalvbf_shape.set_fill_color(0);
-    //   signalvbf_shape.set_line_color(1);
-    // }
-    // SetStyle(zll_plot, kAzure  + 2);
-    // HTTPlot::SetMCStackStyle(qcd_plot, kMagenta-10);
-    // HTTPlot::SetMCStackStyle(ewk_plot, kRed    + 2);
-    // HTTPlot::SetMCStackStyle(ztt_plot, kOrange - 4);
-    // HTTPlot::SetMCStackStyle(top_plot, kBlue   - 8);
-    // if (signal_no_stack) {
-    //   signal_shape.set_in_stack(false);
-    //   signalvbf_shape.set_in_stack(false);
-    // }
 
     // ic::TH1PlotElement ztt_1p0pz_shape("ztt_1p0pz_shape", NULL, "Z#rightarrow#tau#tau (1 Prong 0 #pi^{0})");
     // ic::TH1PlotElement ztt_1p1pz_shape("ztt_1p1pz_shape", NULL, "Z#rightarrow#tau#tau (1 Prong 1 #pi^{0})");

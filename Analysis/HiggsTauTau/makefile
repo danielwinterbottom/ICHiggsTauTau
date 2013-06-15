@@ -52,6 +52,7 @@ EXEDIR = $(BASEDIR)/bin
 SRCDIR = $(BASEDIR)/src
 OBJDIR = $(BASEDIR)/obj
 TESTDIR = $(BASEDIR)/test
+BASEMENTDIR = $(BASEDIR)/basement
 DOCDIR= $(BASEDIR)/docs
 OBJ_EXT=o
 TEST_EXT=cpp
@@ -59,11 +60,17 @@ TEST_EXT=cpp
 # Build a list of srcs and bins to build
 SRCS=$(wildcard $(BASEDIR)/src/*.cc)
 EXES=$(wildcard $(BASEDIR)/test/*.cpp)
+OLDEXES=$(wildcard $(BASEDIR)/basement/*.cpp)
 OBJS=$(subst $(SRCDIR), $(OBJDIR),$(subst cc,$(OBJ_EXT),$(SRCS)))
 BINS=$(subst $(TESTDIR), $(EXEDIR),$(subst .$(TEST_EXT),,$(EXES)))
+OLDBINS=$(subst $(BASEMENTDIR), $(EXEDIR),$(subst .$(TEST_EXT),,$(OLDEXES)))
+
 
 all: buildlibs
 	@$(MAKE) --no-print-directory lib $(BINS)
+
+basement: buildlibs
+	@$(MAKE) --no-print-directory lib $(OLDBINS)
 
 buildlibs:
 	$(MAKE) -C ../
@@ -72,6 +79,9 @@ docs: all
 	doxygen Doxyfile
 	
 $(EXEDIR)/%:  $(TESTDIR)/%.cpp $(LIBDIR)/lib$(LIBNAME).so $(wildcard $(BASEDIR)/interface/*.h) 
+	$(CXX) -o $@ $(CXXFLAGS) $< $(LIBS) -L$(LIBDIR) -l$(LIBNAME)
+
+$(EXEDIR)/%:  $(BASEMENTDIR)/%.cpp $(LIBDIR)/lib$(LIBNAME).so $(wildcard $(BASEDIR)/interface/*.h) 
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LIBS) -L$(LIBDIR) -l$(LIBNAME)
 
 

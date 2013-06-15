@@ -275,7 +275,7 @@ namespace ic {
       std::string ResolveAlias(std::string const& al);
       std::vector<std::string> ResolveSamplesAlias(std::string const& al);
       void SetAlias(std::string const& al, std::string const& val);
-
+      inline double GetLumi() const { return lumi_; };
 
     private:
       ic::channel ch_;
