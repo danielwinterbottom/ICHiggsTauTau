@@ -26,7 +26,6 @@ namespace ic {
       "Data",
       "Embedded",
       "DYJetsToTauTau",
-      "WJetsToLNuSoup",
       "WWJetsTo2L2Nu",
       "WZJetsTo2L2Q",
       "WZJetsTo3LNu",
@@ -132,10 +131,15 @@ namespace ic {
     alias_map_["w_extrp_ss_sig_sel"]        = "!os && mt_1<20."; // change for mT plot
     // Sideband region for SS W+jets estimation
     alias_map_["w_ss_sdb_sel"]              = "!os && mt_1>70.";
+
+    if (ch_ == channel::em) {
     // Inclusive region for e-mu fake rate normalisation
-    alias_map_["em_qcd_sel"]                = "os";
-    // Sideband region for e-mu SS fake shape estimation
-    alias_map_["ss_sel"]                    = "!os && pzeta>-20.";
+      alias_map_["em_qcd_sel"]                = "os";
+      // Sideband region for e-mu SS fake shape estimation
+      alias_map_["ss_sel"]                    = "!os && pzeta>-20.";
+      alias_map_["ss"]                        = "!os";
+      alias_map_["os_sel"]                    = "os && pzeta>-20.";
+    }
 
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
@@ -277,7 +281,7 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
-      zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
+      zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, cat, wt);
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
     }
     SetNorm(&zl_hist, zl_norm.first);
@@ -295,7 +299,7 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
-      zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+dy_soup_, sel, zll_shape_cat, wt);
+      zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+dy_soup_, sel, cat, wt);
       zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+dy_soup_, sel, zll_shape_cat, wt);
     }
     SetNorm(&zj_hist, zj_norm.first);
@@ -328,7 +332,7 @@ namespace ic {
     if (method == 5 && ch_ != channel::em) {
       vv_shape_cat = this->ResolveAlias("vbf_loose");
     }
-    TH1F vv_hist = this->GetLumiScaledShape(var, vv_samples, sel, cat, wt);
+    TH1F vv_hist = this->GetLumiScaledShape(var, vv_samples, sel, vv_shape_cat, wt);
     SetNorm(&vv_hist, vv_norm.first);
     return std::make_pair(vv_hist, vv_norm);
   }
@@ -401,7 +405,7 @@ namespace ic {
     } else {
       Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
       qcd_dilepton = ValueProduct(qcd_dilepton, std::make_pair(0.83,0.));
-      Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("em_qcd_sel"), "", sel, cat, wt);
+      Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("ss"), "", this->ResolveAlias("ss_sel"), cat, wt);
       if (method == 0 || method == 2) {
         qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
         qcd_hist = this->GetShape(var, "Special_23_Data", this->ResolveAlias("ss_sel"), cat, wt);

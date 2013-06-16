@@ -105,14 +105,14 @@ for ch in channels:
   if not options.mvis:
     for sc in scales:
       CATS=[ '8','3','2','1','0' ]
-      if options.mssm: CATS=[ '8','3','2','1','0','11' ]
+      if options.mssm: CATS=[ '8','11' ]
       for cat in CATS:
         os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
           ' --method=%(cat)s --plot_name="%(svfit_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
           ' --blind=%(blind)s --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
           ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
       CATS=[ '5' ]
-      if options.mssm: CATS=[ '6','7','12' ]
+      if options.mssm: CATS=[ '12' ]
       for cat in CATS:
         os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
           ' --method=%(cat)s --plot_name="%(svfit_vbf_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
@@ -123,14 +123,14 @@ for ch in channels:
 
   for sc in scales:
     CATS=[ '8','3','2','1','0' ]
-    if options.mssm: CATS=[ '8','3','2','1','0','11' ]
+    if options.mssm: CATS=[ '8','11' ]
     for cat in CATS:
       os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
         ' --method=%(cat)s --plot_name="%(mvis_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
         ' --blind=%(blind)s --x_blind_min=50 --x_blind_max=110 --make_datacard=true --norm_bins=true --verbose=false'
         ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
     CATS=[ '5' ]
-    if options.mssm: CATS=[ '6','7','12' ]
+    if options.mssm: CATS=['12' ]
     for cat in CATS:
       os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
         ' --method=%(cat)s --plot_name="%(mvis_vbf_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'

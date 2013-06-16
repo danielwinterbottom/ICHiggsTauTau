@@ -414,9 +414,13 @@ int main(int argc, char* argv[]){
     .set_min(1);
   if (era == era::data_2011 && strategy == strategy::hcp2012) embeddedMassFilter.set_input_label("genParticles");
 
+
   EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
-    .set_file("data/rechit_weights/embeddingKineReweight_recEmbedding_mutau.root")
-    .set_genparticle_label("genParticlesTaus");
+    .set_genparticle_label("genParticlesEmbedded");
+  if (channel == channel::et) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_ePtGt20tauPtGt18_recEmbedded.root");
+  if (channel == channel::mt) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_muPtGt16tauPtGt18_recEmbedded.root");
+  if (channel == channel::em) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_recEmbedding_emu.root");
+  if (channel == channel::mtmet) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_muPt7to25tauPtGt18_recEmbedded.root");
 
   string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
@@ -861,7 +865,7 @@ int main(int argc, char* argv[]){
     .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label)
-    .set_write_tree(false);
+    .set_write_tree(true);
   if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
   if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);

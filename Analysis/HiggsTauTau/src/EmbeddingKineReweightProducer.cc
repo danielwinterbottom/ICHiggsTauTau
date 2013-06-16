@@ -40,20 +40,16 @@ namespace ic {
       bool has_tau_daughter = false;
       for (unsigned j = 0; j < parts.size(); ++j) {
         if (std::find(daughters.begin(),daughters.end(),parts[j]->index()) == daughters.end()) continue;
-        if (abs(parts[i]->pdgid()) == 15) has_tau_daughter = true;
+        if (abs(parts[j]->pdgid()) == 15) has_tau_daughter = true;
       }
       if (has_tau_daughter) continue;
       taus.push_back(parts[i]);
     }
     if (taus.size() != 2) {
-      std::cout << "Problem, have " << taus.size() << " taus!" << std::endl;
+      std::cout << "Warning in EmbeddingKineReweightProducer:  have " << taus.size() << " taus!" << std::endl;
+      return 1;
     }
-    taus[0]->Print();
-    taus[1]->Print();
-    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    std::cout << "genTau2PtVsGenTau1Pt: " << eventInfo->weight("kin_weight1") << std::endl;
-    std::cout << "genTau2EtaVsGenTau1Eta: " << eventInfo->weight("kin_weight2") << std::endl;
-    std::cout << "genDiTauMassVsGenDiTauPt: " << eventInfo->weight("kin_weight3") << std::endl;
+    EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
     double x,y;
     int bin_x, bin_y;
@@ -67,7 +63,8 @@ namespace ic {
     if (bin_x >= genTau2PtVsGenTau1Pt_.GetXaxis()->GetNbins()) bin_x = genTau2PtVsGenTau1Pt_.GetXaxis()->GetNbins();
     if (bin_y >= genTau2PtVsGenTau1Pt_.GetYaxis()->GetNbins()) bin_y = genTau2PtVsGenTau1Pt_.GetYaxis()->GetNbins();
     double new_kin_weight1 = genTau2PtVsGenTau1Pt_.GetBinContent(bin_x, bin_y);
-    std::cout << "[NEW]genTau2PtVsGenTau1Pt: " << new_kin_weight1 << std::endl;
+    if (new_kin_weight1 > 10.0) new_kin_weight1 = 10.0;
+    eventInfo->set_weight("kin_weight1",new_kin_weight1);
 
     x = taus[0]->eta();
     y = taus[1]->eta();
@@ -78,7 +75,8 @@ namespace ic {
     if (bin_x >= genTau2EtaVsGenTau1Eta_.GetXaxis()->GetNbins()) bin_x = genTau2EtaVsGenTau1Eta_.GetXaxis()->GetNbins();
     if (bin_y >= genTau2EtaVsGenTau1Eta_.GetYaxis()->GetNbins()) bin_y = genTau2EtaVsGenTau1Eta_.GetYaxis()->GetNbins();
     double new_kin_weight2 = genTau2EtaVsGenTau1Eta_.GetBinContent(bin_x, bin_y);
-    std::cout << "[NEW]genTau2EtaVsGenTau1Eta: " << new_kin_weight2 << std::endl;
+    if (new_kin_weight2 > 10.0) new_kin_weight2 = 10.0;
+    eventInfo->set_weight("kin_weight2",new_kin_weight2);
     
     x = (taus[0]->vector()+taus[1]->vector()).pt();
     y = (taus[0]->vector()+taus[1]->vector()).M();
@@ -89,8 +87,9 @@ namespace ic {
     if (bin_x >= genDiTauMassVsGenDiTauPt_.GetXaxis()->GetNbins()) bin_x = genDiTauMassVsGenDiTauPt_.GetXaxis()->GetNbins();
     if (bin_y >= genDiTauMassVsGenDiTauPt_.GetYaxis()->GetNbins()) bin_y = genDiTauMassVsGenDiTauPt_.GetYaxis()->GetNbins();
     double new_kin_weight3 = genDiTauMassVsGenDiTauPt_.GetBinContent(bin_x, bin_y);
-    std::cout << "[NEW]genDiTauMassVsGenDiTauPt: " << new_kin_weight3 << std::endl;
-    
+    if (new_kin_weight3 > 10.0) new_kin_weight3 = 10.0;
+    eventInfo->set_weight("kin_weight3",new_kin_weight3);
+
     return 0;
   }
 

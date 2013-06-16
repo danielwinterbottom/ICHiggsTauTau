@@ -171,7 +171,7 @@ namespace ic {
       double no_btag_weight = 1.0;
       double inclusive_btag_weight = 1.0;
       BTagWeight::payload set = BTagWeight::payload::ALL2011;
-      if (mc_ == mc::summer12_53X) set = BTagWeight::payload::MORIOND2013;
+      if (mc_ == mc::summer12_53X) set = BTagWeight::payload::EPS13;
       std::map<std::size_t, bool> retag_result = btag_weight.ReTag(jets, set, BTagWeight::tagger::CSVM);
       event->Add("no_btag_weight", no_btag_weight);
       event->Add("inclusive_btag_weight", inclusive_btag_weight);

@@ -27,10 +27,16 @@ namespace ic {
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange - 4)
     };
     bkg_schemes_["mt_default"] = {
-      PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak"          ,{"W","VV","ZL","ZJ"},kRed    + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
+      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}              ,kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}               ,kBlue   - 8),
+      PlotBkgComponent("ewk","electroweak"          ,{"W","VV","ZL","ZJ"} ,kRed    + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,kOrange - 4)
+    };
+    bkg_schemes_["em_default"] = {
+      PlotBkgComponent("qcd","fakes"                ,{"Fakes"}            ,kMagenta-10),
+      PlotBkgComponent("ewk","electroweak"          ,{"EWK"}              ,kRed    + 2),
+      PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,kBlue   - 8),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,kOrange - 4)
     };
     bkg_schemes_["mt_with_zmm"] = {
       PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),

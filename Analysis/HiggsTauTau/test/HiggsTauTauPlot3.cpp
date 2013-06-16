@@ -833,6 +833,7 @@ int main(int argc, char* argv[]){
   double ztt_norm = 0;
   TH1F *ztt_hist = nullptr;
   double ztt_mc_inc_yield = Integral(plots[Token("DYJetsToTauTau","inclusive","os")].hist_ptr());
+  if (is_paper && is_2012 )ztt_mc_inc_yield = Integral(plots[Token("DYJetsToTauTauSoup","inclusive","os")].hist_ptr());
   if (verbose) cout << "- DYJetsToTauTau dilepton OS yield (no mT/pzeta cut): " << ztt_mc_inc_yield << std::endl;
   double embedded_eff = Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded","inclusive","os")].hist_ptr());
   double embedded_eff_err = (Error(plots[Token("Embedded",cat,os_sel)].hist_ptr()) / Integral(plots[Token("Embedded",cat,os_sel)].hist_ptr())) * embedded_eff;
@@ -1079,9 +1080,11 @@ int main(int argc, char* argv[]){
       qcd_err += Error(plots[Token("Data",cat,ss_sel)].hist_ptr()) * Error(plots[Token("Data",cat,ss_sel)].hist_ptr());
       data_ss_sel -= w_ss_sel;
       qcd_err += pow(Error(plots[Token("Data",cat,ss_con)].hist_ptr()) / Integral(plots[Token("Data",cat,ss_con)].hist_ptr()) * w_ss_sel, 2.0);
-      data_ss_sel -= Integral(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr());
+      if (is_2012 && !is_paper) data_ss_sel -= Integral(plots[Token("DYJetsToLL",cat,ss_sel)].hist_ptr());
+      if (is_2012 && is_paper) data_ss_sel -= Integral(plots[Token("DYJetsToLLSoup",cat,ss_sel)].hist_ptr());
       data_ss_sel -= Integral(plots[Token("TTJets",cat,ss_sel)].hist_ptr());
-      data_ss_sel -= Integral(plots[Token("DYJetsToTauTau",cat,ss_sel)].hist_ptr());
+      if (is_2012 && !is_paper) data_ss_sel -= Integral(plots[Token("DYJetsToTauTau",cat,ss_sel)].hist_ptr());
+      if (is_2012 && is_paper) data_ss_sel -= Integral(plots[Token("DYJetsToTauTauSoup",cat,ss_sel)].hist_ptr());
       qcd_err = sqrt(qcd_err);
       //data_ss_sel -= (Integral(plots[Token("Embedded",cat,ss_sel)].hist_ptr())*embed_norm);
       double vv_ss_total = 0.0;
