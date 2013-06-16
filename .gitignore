@@ -19,3 +19,7 @@ sync*/
 # Python
 __init__.py
 *.pyc
+
+# filelist folders
+filelists/
+jobs/
