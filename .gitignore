@@ -23,3 +23,6 @@ __init__.py
 # filelist folders
 filelists/
 jobs/
+*.root
+*.png
+*.pdf
