@@ -15,3 +15,7 @@ bin/
 output/
 svfit/
 sync*/
+
+# Python
+__init__.py
+*.pyc
