@@ -309,6 +309,9 @@ namespace ic {
   }
 
   bool passAntiEMVA(Tau const * tau, int WP){
+    
+    double z_2 = tau->vz() + (130. / tan(tau->vector().theta()));
+    if (z_2 > -1.5 && z_2 < 0.5) return false;
    
     int iCat=(int)(tau->GetTauID("againstElectronMVA3category")+0.5);
     float raw=tau->GetTauID("againstElectronMVA3raw");
@@ -324,6 +327,10 @@ namespace ic {
     if(WP==1) cut = cutsTight[iCat];
     if(WP==2) cut = cutsVeryTight[iCat];
     return (raw>cut);
+  }
+
+  double TauEoverP(Tau const* tau) {
+    return (tau->lead_ecal_energy() + tau->lead_hcal_energy()) / tau->lead_p();
   }
 
 

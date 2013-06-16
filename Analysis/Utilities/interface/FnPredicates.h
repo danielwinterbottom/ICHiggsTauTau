@@ -42,6 +42,7 @@ namespace ic {
   bool InEcalGap(Electron const* electron);
   bool MaxEtaSC(Electron const* electron, double const& maxEta);
   bool passAntiEMVA(Tau const * tau, int WP);
+  double TauEoverP(Tau const* tau);
   bool Electron2011WP85Iso(Electron const* elec, double const& rho);
   bool Electron2011WP85IsoNoRhoSub(Electron const* elec);
   bool Electron2011WP70ID(Electron const* elec);
