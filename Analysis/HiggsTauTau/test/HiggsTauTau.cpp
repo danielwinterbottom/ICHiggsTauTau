@@ -38,6 +38,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuMVA.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -413,6 +414,9 @@ int main(int argc, char* argv[]){
     .set_min(1);
   if (era == era::data_2011 && strategy == strategy::hcp2012) embeddedMassFilter.set_input_label("genParticles");
 
+  EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
+    .set_file("data/rechit_weights/embeddingKineReweight_recEmbedding_mutau.root")
+    .set_genparticle_label("genParticlesTaus");
 
   string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
@@ -702,6 +706,10 @@ int main(int argc, char* argv[]){
   SimpleFilter<Tau> tauMuRejectFilter = SimpleFilter<Tau>("TauMuRejectFilter")
     .set_predicate(bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
     .set_input_label("taus").set_min(1);
+  if ( (channel == channel::mt || channel == channel::mtmet) && strategy == strategy::paper2013) tauMuRejectFilter
+    .set_predicate((bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
+      && (bind(TauEoverP,_1) > 0.2));
+
                   
   // ------------------------------------------------------------------------------------
   // e/m + tau Pair Modules
@@ -914,6 +922,9 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&httEnergyScale);
   if (to_check.size() > 0)        analysis.AddModule(&httPrint);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
+  if (is_embedded && era == era::data_2012_rereco) {
+                                  analysis.AddModule(&rechitWeights);
+  }
 
   if (channel == channel::et || channel == channel::etmet) {
                                   analysis.AddModule(&selElectronCopyCollection);
