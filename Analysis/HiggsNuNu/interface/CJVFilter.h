@@ -17,13 +17,11 @@ namespace ic {
   
   class CJVFilter : public ModuleBase {
   private:
-    CLASS_MEMBER(CJVFilter,fwlite::TFileService*, fs);
     CLASS_MEMBER(CJVFilter, bool, is_data)
     CLASS_MEMBER(CJVFilter, std::string, jetsinput_label)
     CLASS_MEMBER(CJVFilter, std::string, pairinput_label)
     CLASS_MEMBER(CJVFilter, double, ptcut)
-    TH1F* genericplot;  
-        
+            
   public:
     CJVFilter(std::string const& name);
     virtual ~CJVFilter();    

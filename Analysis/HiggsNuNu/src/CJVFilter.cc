@@ -10,7 +10,7 @@ namespace ic {
 
   CJVFilter::CJVFilter(std::string const& name) : ModuleBase(name) {
     is_data_ = true;
-    jetsjetsinput_label_ = "cjvpfJetsPFlow";
+    jetsinput_label_ = "cjvpfJetsPFlow";
     pairinput_label_ = "jjLeadingCandidates";
     ptcut_ = 30.;
   }
@@ -24,10 +24,6 @@ namespace ic {
     std::cout << "PreAnalysis Info for CJVFilter" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "doing CJV"<<std::endl;
-    
-    TFileDirectory const& dir = fs_->mkdir("CJV");
-    std::cout<<"Made plot dir"<<std::endl;
-    genericplot = dir.make<TH1F>("genericplot","genericplot",100,0.,10.,100,-5.,5.);
     return 0;
   }
 
@@ -39,33 +35,34 @@ namespace ic {
       std::cout<<"Error: More than one leading pair skipping event"<<std::endl;
       return 1;
     }
-    PFJet oneleadingjet = pairvec[0]->first;
-    PFJet otherleadingjet = pairvec[0]->second;
+    double oneleadingjeteta = pairvec[0]->At(0)->eta();
+    double otherleadingjeteta = pairvec[0]->At(1)->eta();
     double etahigh=0.;
     double etalow=0.;
-    if(oneleadingjet.eta()>otherleadingjet.eta()){
-      etahigh=oneleadingjet.eta();
-      etalow=otherleadingjet.eta();
+    if(oneleadingjeteta>otherleadingjeteta){
+      etahigh=oneleadingjeteta;
+      etalow=otherleadingjeteta;
     }
     else{
-      etahigh=otherleadingjet.eta();
-      etalow=oneleadingjet.eta();
+      etahigh=otherleadingjeteta;
+      etalow=oneleadingjeteta;
     }
     int njetsingap=0;
     for (int i = 0; unsigned(i) < jetvec.size(); ++i) {//loop over the jet collection 
-      double jeteta=vec[i]->vector().eta();
-      double jetpt=vec[i]->vector().pt();
-      if(jetpt>30.&&jeteta>etalow&&jeteta<etahigh){
+      double jeteta=jetvec[i]->vector().eta();
+      double jetpt=jetvec[i]->vector().pt();
+      if(jetpt>30.&&(jeteta>etalow)&&(jeteta<etahigh)){//if jet is above pt threshold increase jets in gap cound
 	njetsingap++;
       }
       
     }
     
-    if(njetsingap==0){//set to if no central jets return 0
+    if(njetsingap==0){//if no central jets pass event
       return 0;
     }
-    else{
+    else{//otherwise reject event
       return 1;
+    }
   }
 
 

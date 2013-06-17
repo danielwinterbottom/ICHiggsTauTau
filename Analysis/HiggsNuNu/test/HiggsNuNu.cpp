@@ -561,7 +561,7 @@ int main(int argc, char* argv[]){
     .set_jesuncfile(jesuncfile)
     .set_fs(fs);
 
-  CopyCollection<PFJet> cjvjetsCopyCollection("copytocjvjets","pdJetsPFlow","cjvpfJetsPFlow");
+  CopyCollection<PFJet> cjvjetsCopyCollection("copytocjvjets","pfJetsPFlow","cjvpfJetsPFlow");
 
   SimpleFilter<PFJet> cjvjetsIDFilter = SimpleFilter<PFJet>
     ("cjvJetsIDFilter")
@@ -575,6 +575,7 @@ int main(int argc, char* argv[]){
 
   CJVFilter FilterCJV = CJVFilter("FilterCJV")
     .set_jetsinput_label("cjvpfJetsPFlow");
+  
   
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
