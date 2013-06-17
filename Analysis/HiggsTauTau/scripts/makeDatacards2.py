@@ -4,15 +4,12 @@ import sys
 from optparse import OptionParser
 import os
 
-
 CHANNELS= ['et', 'mt', 'em','mtmet']
 SCHEMES = ['old_sm','old_mssm']
-
 
 def validate_channel(channel):
   assert channel in CHANNELS, 'Error, channel %(channel)s duplicated or unrecognised' % vars()
   CHANNELS.remove(channel)
-
 
 def split_callback(option, opt, value, parser):
   setattr(parser.values, option.dest, value.split(','))
@@ -31,26 +28,13 @@ parser.add_option("-c", "--channels", dest="channels", type='string', action='ca
 parser.add_option("--blind", dest="blind", action='store_true', default=False,
                   help="blind data")
 parser.add_option("--extra", dest="extra", type='string', default='',
-                  help="Extra command line options")
+                  help="Extra command line options, applied to every datacard")
 parser.add_option("-s", "--scheme", dest="scheme_str", type='string', default='old_sm',
                   help="datacard scheme")
-# parser.add_option("--central", dest="central", action='store_true', default=False,
-#                   help="Only process the central energy scale inputs.")
-# parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
-#                   help="Only make inputs for visible mass, no svfit.")
-parser.add_option("--mssm", dest="mssm", action='store_true', default=False,
-                  help="Make datacards for the MSSM analysis")
+parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
+                  help="Only make inputs for visible mass, no svfit.")
 parser.add_option("-e", dest="energy", type='string', default='8',
                   help="The C.O.M. energy is written into the datacard name, default is 8")
-# parser.add_option("--svfit_plot", dest="svfit_plot", type='string', default='',
-#                   help="Override the default svfit plot")
-# parser.add_option("--svfit_vbf_plot", dest="svfit_vbf_plot", type='string', default='',
-#                   help="Override the default svfit vbf category plot")
-# parser.add_option("--mvis_plot", dest="mvis_plot", type='string', default='',
-#                   help="Override the default mvis plot")
-# parser.add_option("--mvis_vbf_plot", dest="mvis_vbf_plot", type='string', default='',
-#                   help="Override the default mvis vbf category plot")
-
 
 (options, args) = parser.parse_args()
 
@@ -98,7 +82,7 @@ if options.scheme_str == 'old_sm':
   ]
   bkg_schemes = {
     'et' : 'et_default',
-    'mt' : 'mt_default',
+    'mt' : 'mt_with_zmm',
     'em' : 'em_default'
   }
   sig_scheme = 'sm_default'
@@ -114,114 +98,78 @@ if options.scheme_str == 'old_mssm' :
   ]
   bkg_schemes = {
     'et' : 'et_default',
-    'mt' : 'mt_default',
+    'mt' : 'mt_with_zmm',
     'em' : 'em_default'
   }
   sig_scheme = 'mssm_default'
   ANA = 'mssm'
 
-  
 
-for ch in channels:
-  for x in scheme:
-    cat_num = x[0]
-    cat_str = x[1]
-    dc      = x[2]
-    bin     = x[3]
-    bkg_scheme = bkg_schemes[ch]
-    extra = options.extra
+plots = [ ('m_vis','M_{#tau#tau}^{vis} [GeV]', '-mvis') ]
+if not options.mvis: plots += ('m_sv','M_{#tau#tau} [GeV]', ''),
 
-    if ch == 'et':
-      extra += ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"'
-      extra += ' --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"'
-    
-    if ch == 'mt': 
-      extra += ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"'
-      extra += ' --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"'
-      if cat_num == '2': 
-        extra += ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV"'
-    
-    if ch == 'em':
-      extra += ' --fix_empty_bins="Fakes"'
-      if COM=='8' and (cat_num in ['1', '3']): 
-        extra += ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"'
-      else:
-        extra += ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
-      if cat_num == '1':
-        extra += ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'
+for pl in plots:
+  dc_app  = pl[2]
+  for ch in channels:
+    for x in scheme:
+      cat_num = x[0]
+      cat_str = x[1]
+      dc      = x[2]
+      bin     = x[3]
+      var     = pl[0]
+      xlab    = pl[1]
+      bkg_scheme = bkg_schemes[ch]
+      extra = options.extra
 
-    # if options.scheme_str == 'old_mssm':
-    extra += ' --add_extra_binning="(150,0,1500):_fine_binning"'
+      # Always fix signal shapes with no entries
+      extra += ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
 
-    os.system('./bin/HiggsTauTauPlot4 --cfg=%(CFG)s --channel=%(ch)s'
-      ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
-      ' --var="m_vis[%(bin)s]" --norm_bins=true '
-      ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
-      ' --x_axis_label="m_{#tau#tau} [GeV]"'
-      ' --blind=%(blind)s --x_blind_min=50 --x_blind_max=110 --verbose=false'
-      ' --paramfile=%(PARAMS)s --folder=%(folder)s %(extra)s' % vars())
-    print '\n'
+      # For the btag method subtract embedded contamination
+      # from ttbar
+      if cat_num == '12':
+        extra += ' --sub_ztt_top_frac=0.015'
 
+      if ch == 'et':
+        extra += ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"'
+        extra += ' --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"'
+        # To increase statistics, don't apply the os selection for the
+        # W shape when using the boost_high method
+        if cat_num == '3':
+          extra += ' --set_alias="w_shape_sel:mt_1<20."'
 
-# ANA = 'sm'
-# svfit_plot="m_sv_sm_fine"
-# svfit_vbf_plot="m_sv_sm"
-# mvis_plot="m_vis_sm_fine"
-# mvis_vbf_plot="m_vis_sm"
-# if options.mssm:
-#   svfit_plot="m_sv_mssm_fine"
-#   svfit_vbf_plot="m_sv_mssm"
-#   mvis_plot="m_vis_mssm_fine"
-#   mvis_vbf_plot="m_vis_mssm"
-#   ANA = 'mssm'
-# if options.svfit_plot: svfit_plot=options.svfit_plot
-# if options.svfit_vbf_plot: svfit_vbf_plot=options.svfit_vbf_plot
-# if options.mvis_plot: mvis_plot=options.mvis_plot
-# if options.mvis_vbf_plot: mvis_vbf_plot=options.mvis_vbf_plot
+      if ch == 'mt': 
+        extra += ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"'
+        extra += ' --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"'
+        # For the boost_low method do the QCD low-mass shape uncertainty
+        if cat_num == '2': 
+          extra += ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV"'
+        # To increase statistics, don't apply the os selection for the
+        # W shape when using the boost_high method
+        if cat_num == '3':
+          extra += ' --set_alias="w_shape_sel:mt_1<20."'
 
-# blind = "false"
-# if options.blind: blind = "true"
+      if ch == 'em':
+        extra += ' --fix_empty_bins="Fakes"'
+        if COM=='8' and (cat_num in ['1', '3']): 
+          extra += ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"'
+        else:
+          extra += ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
+        if cat_num == '1':
+          extra += ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'
 
+      if options.scheme_str == 'old_mssm':
+        extra += ' --add_extra_binning="(150,0,1500):_fine_binning"'
+        extra += ' --add_sm_background="125"'
 
-
-# for ch in channels:
-
-#   if not options.mvis:
-#     for sc in scales:
-#       CATS=[ '8','3','2','1','0' ]
-#       if options.mssm: CATS=[ '8','11' ]
-#       for cat in CATS:
-#         os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
-#           ' --method=%(cat)s --plot_name="%(svfit_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-#           ' --blind=%(blind)s --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
-#           ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
-#       CATS=[ '5' ]
-#       if options.mssm: CATS=[ '12' ]
-#       for cat in CATS:
-#         os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
-#           ' --method=%(cat)s --plot_name="%(svfit_vbf_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-#           ' --blind=%(blind)s --x_blind_min=100 --x_blind_max=160 --make_datacard=true --norm_bins=true --verbose=false'
-#           ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
-#     os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(output)s.root datacard_*.root' % vars())
-#     os.system('rm datacard_*.root')
-
-#   for sc in scales:
-#     CATS=[ '8','3','2','1','0' ]
-#     if options.mssm: CATS=[ '8','11' ]
-#     for cat in CATS:
-#       os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
-#         ' --method=%(cat)s --plot_name="%(mvis_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-#         ' --blind=%(blind)s --x_blind_min=50 --x_blind_max=110 --make_datacard=true --norm_bins=true --verbose=false'
-#         ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
-#     CATS=[ '5' ]
-#     if options.mssm: CATS=['12' ]
-#     for cat in CATS:
-#       os.system('./bin/HiggsTauTauPlot3 --cfg=%(CFG)s  --tau_scale_mode=%(sc)s --channel=%(ch)s --rebin=1'
-#         ' --method=%(cat)s --plot_name="%(mvis_vbf_plot)s"  --x_axis_label="m_{#tau#tau} [GeV]"'
-#         ' --blind=%(blind)s --x_blind_min=20 --x_blind_max=80 --make_datacard=true --norm_bins=true --verbose=false'
-#         ' --paramfile=%(PARAMS)s --folder=%(folder)s' % vars())
-#   os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV-mvis%(output)s.root datacard_*.root' % vars())
-#   os.system('rm datacard_*.root')
+      os.system('./bin/HiggsTauTauPlot4 --cfg=%(CFG)s --channel=%(ch)s'
+        ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
+        ' --var="%(var)s[%(bin)s]" --norm_bins=true '
+        ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
+        ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
+        ' --blind=%(blind)s --x_blind_min=50 --x_blind_max=110 --verbose=false'
+        ' --paramfile=%(PARAMS)s --folder=%(folder)s %(extra)s' % vars())
+    os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_*.root' % vars())
+    os.system('rm datacard_*.root')
 
 
 
