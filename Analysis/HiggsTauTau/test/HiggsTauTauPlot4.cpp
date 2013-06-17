@@ -35,6 +35,7 @@ int main(int argc, char* argv[]){
 	double sub_ztt_top_frac;
 	string fix_empty_bins;
 	string fix_empty_hists;
+	string add_extra_binning;
 	bool auto_titles;
 	// Program options
   po::options_description preconfig("Pre-Configuration");
@@ -64,6 +65,7 @@ int main(int argc, char* argv[]){
 	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
 	  ("fix_empty_bins",   		po::value<string>(&fix_empty_bins)->default_value(""))
 	  ("fix_empty_hists",   	po::value<string>(&fix_empty_hists)->default_value(""))
+	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
 	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true));
 
 
@@ -127,6 +129,17 @@ int main(int argc, char* argv[]){
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "", 1.0);
 	if (add_sm_background != "") ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
+
+	// ************************************************************************
+	// Additional Binning
+	// ************************************************************************
+	if (add_extra_binning != "") {
+		std::vector<std::string> extra_binning;
+		boost::split(extra_binning, add_extra_binning, boost::is_any_of(":"));
+		if (extra_binning.size() == 2) {
+			ana.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", extra_binning[1]);
+		}
+	}
 
 	// ************************************************************************
 	// Add tau/electron energy scale systematics
