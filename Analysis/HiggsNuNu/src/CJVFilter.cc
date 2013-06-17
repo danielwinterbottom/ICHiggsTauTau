@@ -31,9 +31,12 @@ namespace ic {
     //GET JET COLLECTIONS
     std::vector<PFJet *> & jetvec = event->GetPtrVec<PFJet>(jetsinput_label_);//Main jet collection
     std::vector<CompositeCandidate *> & pairvec = event->GetPtrVec<CompositeCandidate>(pairinput_label_);//Jet Pair collection
-    if(pairvec.size()>1){
-      std::cout<<"Error: More than one leading pair skipping event"<<std::endl;
+    if(pairvec.size()<1){
+      std::cout<<"Error: no leading pair skipping event"<<std::endl;
       return 1;
+    }
+    if(pairvec.size()>1){
+      std::cout<<"Warning: more than one pair"<<std::endl;
     }
     double oneleadingjeteta = pairvec[0]->At(0)->eta();
     double otherleadingjeteta = pairvec[0]->At(1)->eta();
@@ -51,8 +54,9 @@ namespace ic {
     for (int i = 0; unsigned(i) < jetvec.size(); ++i) {//loop over the jet collection 
       double jeteta=jetvec[i]->vector().eta();
       double jetpt=jetvec[i]->vector().pt();
-      if(jetpt>30.&&(jeteta>etalow)&&(jeteta<etahigh)){//if jet is above pt threshold increase jets in gap cound
+      if(jetpt>ptcut_&&(jeteta>etalow)&&(jeteta<etahigh)){//if jet is above pt threshold increase jets in gap cound
 	njetsingap++;
+	return 1;
       }
       
     }
