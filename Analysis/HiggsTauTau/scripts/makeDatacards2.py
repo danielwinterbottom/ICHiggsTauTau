@@ -88,7 +88,7 @@ if options.scheme_str == 'old_sm':
   sig_scheme = 'sm_default'
   ANA = 'sm'
 
-if options.scheme_str == 'new_sm_et_em':
+if options.scheme_str == 'new_sm_et_mt':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   scheme = [
@@ -183,7 +183,7 @@ for pl in plots:
         extra += ' --add_extra_binning="(150,0,1500):_fine_binning"'
         extra += ' --add_sm_background="125"'
 
-      if options.scheme_str == 'new_sm' and ch in ['et','mt']:
+      if options.scheme_str == 'new_sm_et_mt' and ch in ['et','mt']:
         extra += ' --set_alias="w_extrp_os_sig_sel:os && mt_1<30.,os_sel:os && mt_1<30.,vbf_w_extrp_os_sig_sel:os && mt_1<30.,w_shape_sel:os && mt_1<30.,qcd_sdb_sel:!os && mt_1<30.,w_extrp_ss_sig_sel:!os && mt_1<30."'
         if cat_num == '3':
           extra = extra.replace('w_shape_sel:os && mt_1<30.','w_shape_sel:mt_1<30.')

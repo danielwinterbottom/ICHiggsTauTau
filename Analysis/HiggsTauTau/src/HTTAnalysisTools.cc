@@ -89,11 +89,11 @@ namespace ic {
       alias_map_["new_1jet_high"]         = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
       alias_map_["new_v1jet_high"]        = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";
       alias_map_["new_1jet_medium"]       = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
-      if (ch_ == channel::et) {
-        alias_map_["new_1jet_high"]     += " && met>30.";
-        alias_map_["new_v1jet_high"]    += " && met>30.";
-        alias_map_["new_1jet_medium"]   += " && met>30.";
-      }
+//      if (ch_ == channel::et) {
+//        alias_map_["new_1jet_high"]     += " && met>30.";
+//        alias_map_["new_v1jet_high"]    += " && met>30.";
+//        alias_map_["new_1jet_medium"]   += " && met>30.";
+//      }
       alias_map_["new_0jet_high"]         = "(n_jets==0 && pt_2>45. && n_bjets==0)";
       alias_map_["new_0jet_medium"]       = "(n_jets==0 && pt_2>30. && pt_2<=45. && n_bjets==0)";
       alias_map_["new_0jet_low"]          = "(n_jets==0 && pt_2<=30. && n_bjets==0)";
@@ -186,8 +186,8 @@ namespace ic {
     std::cout << "[HTTAnalysis::ParseParamFile] Extracting sample info from file " << file << std::endl;
     lumi_ = parser.GetParam<double>("LUMI_DATA");
     std::cout << "[HTTAnalysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
-    if (verbosity_ > 0) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
-    if (verbosity_ > 0) std::cout << "-----------------------------------------------------------------------------------------\n";
+    if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
+    if (verbosity_ > 1) std::cout << "-----------------------------------------------------------------------------------------\n";
     for (auto sample : sample_names_) {
       std::string lookup = sample;
       if (sample.find("Special") != sample.npos) {
@@ -200,7 +200,7 @@ namespace ic {
         double xs = parser.GetParam<double>("XS_"+sample);
         if (xs <= 0) continue;
         sample_info_[sample] = std::make_pair(evt, xs);
-        if (verbosity_ > 0) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % sample % unsigned(evt+0.5) % xs % (evt/xs) % (evt/(xs*lumi_));
+        if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % sample % unsigned(evt+0.5) % xs % (evt/xs) % (evt/(xs*lumi_));
       }
     }
   }
@@ -230,7 +230,7 @@ namespace ic {
       TFile *tmp_file = nullptr;
       if (boost::filesystem::exists(input_filename)) tmp_file = TFile::Open(input_filename.c_str());
       if (!tmp_file && fallback_folder != "") {
-        if (verbosity_ > 2) std::cout << "[HTTAnalysis::ReadTrees] " << input_filename << " not found, trying fallback folder" << std::endl;
+        if (verbosity_ > 1) std::cout << "[HTTAnalysis::ReadTrees] " << input_filename << " not found, trying fallback folder" << std::endl;
         input_filename = fallback_folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
         if (boost::filesystem::exists(input_filename)) tmp_file = TFile::Open(input_filename.c_str());
       }
@@ -238,7 +238,7 @@ namespace ic {
         std::cout << "[HTTAnalysis::ReadTrees] Warning: " << input_filename << " cannot be opened" << std::endl;
         continue;
       }
-      if (verbosity_ > 0) result_summary.push_back((boost::format("%-70s %s %-30s\n") % input_filename % "-->" % label).str());
+      if (verbosity_ > 1) result_summary.push_back((boost::format("%-70s %s %-30s\n") % input_filename % "-->" % label).str());
       gDirectory->cd("/");
       TTree *tmp_tree = dynamic_cast<TTree*>(gDirectory->Get("ntuple"));
       if (!tmp_tree) {
@@ -452,7 +452,7 @@ namespace ic {
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs) {
     Value signal_norm;
     if (xs > 0) {
-      if (verbosity_ > 0) std::cout << "[HTTAnalysis::GenerateSignal] " << sample << " scaled to lumi using cross section " << xs << " pb" << std::endl;
+      if (verbosity_ > 1) std::cout << "[HTTAnalysis::GenerateSignal] " << sample << " scaled to lumi using cross section " << xs << " pb" << std::endl;
       signal_norm = GetRate(sample, sel, cat, wt);
       signal_norm = ValueProduct(signal_norm, std::make_pair(this->GetLumiScaleFixedXS(sample, xs), 0.0));
     } else {
