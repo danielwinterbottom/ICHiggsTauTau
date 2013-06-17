@@ -88,6 +88,28 @@ if options.scheme_str == 'old_sm':
   sig_scheme = 'sm_default'
   ANA = 'sm'
 
+if options.scheme_str == 'new_sm_et_em':
+  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
+  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
+  scheme = [
+    ("8",   "inclusive",        "inclusive",    BINS_FINE, ""),
+    ("5",   "new_vbf",          "vbf",          BINS, ""),
+    ("5",   "new_vbf_tight",    "vbf_tight",    BINS, ""),
+    ("0",   "new_0jet_low",     "0jet_low",     BINS_FINE, ""),
+    ("1",   "new_0jet_medium",  "0jet_medium",  BINS_FINE, ""),
+    ("1",   "new_0jet_high",    "0jet_high",    BINS_FINE, ""),
+    ("2",   "new_1jet_medium",  "boost_medium", BINS_FINE, ""),
+    ("3",   "new_1jet_high",    "boost_high",   BINS_FINE, ""),
+    ("3",   "new_v1jet_high",   "vboost_high",  BINS_FINE, "")
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default'
+  }
+  sig_scheme = 'sm_default'
+  ANA = 'sm'
+
 if options.scheme_str == 'old_mssm' :
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500"
@@ -134,7 +156,7 @@ for pl in plots:
         extra += ' --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"'
         # To increase statistics, don't apply the os selection for the
         # W shape when using the boost_high method
-        if cat_num == '3':
+        if cat_num == '3' and options.scheme_str == 'old_sm':
           extra += ' --set_alias="w_shape_sel:mt_1<20."'
 
       if ch == 'mt': 
@@ -142,10 +164,10 @@ for pl in plots:
         extra += ' --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"'
         # For the boost_low method do the QCD low-mass shape uncertainty
         if cat_num == '2': 
-          extra += ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV"'
+          extra += ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_'+dc+'_'+COM+'TeV"'
         # To increase statistics, don't apply the os selection for the
         # W shape when using the boost_high method
-        if cat_num == '3':
+        if cat_num == '3' and options.scheme_str == 'old_sm':
           extra += ' --set_alias="w_shape_sel:mt_1<20."'
 
       if ch == 'em':
@@ -160,6 +182,11 @@ for pl in plots:
       if options.scheme_str == 'old_mssm':
         extra += ' --add_extra_binning="(150,0,1500):_fine_binning"'
         extra += ' --add_sm_background="125"'
+
+      if options.scheme_str == 'new_sm' and ch in ['et','mt']:
+        extra += ' --set_alias="w_extrp_os_sig_sel:os && mt_1<30.,os_sel:os && mt_1<30.,vbf_w_extrp_os_sig_sel:os && mt_1<30.,w_shape_sel:os && mt_1<30.,qcd_sdb_sel:!os && mt_1<30.,w_extrp_ss_sig_sel:!os && mt_1<30."'
+        if cat_num == '3':
+          extra = extra.replace('w_shape_sel:os && mt_1<30.','w_shape_sel:mt_1<30.')
 
       os.system('./bin/HiggsTauTauPlot4 --cfg=%(CFG)s --channel=%(ch)s'
         ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
