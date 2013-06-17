@@ -50,6 +50,12 @@ namespace ic {
       if((!dojessyst_)&&(!dojersyst_)){
 	std::cout << "Doing central value"<<std::endl;
       }
+      else if(dodatajessyst_&&dojessyst_&&jesupordown_){
+	std::cout<< "Doing Data JESUP"<<std::endl;
+      }
+      else if(dodatajessyst_&&dojessyst_&&!jesupordown_){
+	std::cout<< "Doing Data JESDOWN"<<std::endl;
+      }
       else if(dojessyst_&&jesupordown_){
 	std::cout << "Doing JESUP"<<std::endl;
       }
@@ -248,7 +254,7 @@ namespace ic {
 	  newjet1pt=oldjet1pt;
 	  newjet2pt=newjet2pt;
 	}
-	else if(dojessyst_){//if not central value correct by the JES uncertainty
+	else if(dojessyst_&&((is_data_&&dodatajessyst_)||(!is_data_&&!dodatajessyst_))){//if not central value correct by the JES uncertainty
 	  //Get JES uncertainty
 	  total->setJetPt(newjet.pt());
 	  total->setJetEta(newjet.eta());
