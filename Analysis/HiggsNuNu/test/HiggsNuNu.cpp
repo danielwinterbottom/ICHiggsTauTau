@@ -38,6 +38,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -560,11 +561,26 @@ int main(int argc, char* argv[]){
     .set_jesuncfile(jesuncfile)
     .set_fs(fs);
 
+  CopyCollection<PFJet> cjvjetsCopyCollection("copytocjvjets","pdJetsPFlow","cjvpfJetsPFlow");
+
+  SimpleFilter<PFJet> cjvjetsIDFilter = SimpleFilter<PFJet>
+    ("cjvJetsIDFilter")
+    .set_input_label("cjvpfJetsPFlow")
+    .set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
+
+  double cjvptcut = 20.0;
+  SimpleFilter<PFJet> cjvjetsPtEtaFilter = SimpleFilter<PFJet>
+    ("JetPtEtaFilter")
+    .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, cjvptcut, 4.7));
+
+  CJVFilter FilterCJV = CJVFilter("FilterCJV")
+    .set_jetsinput_label("cjvpfJetsPFlow");
   
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
     .set_input_label("pfJetsPFlow")
     .set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
+
 
   // Jet pT eta filter
   //CopyCollection<PFJet> jetCopyCollection("CopyToJet","pfJetsPFlow","selJets");
@@ -575,6 +591,7 @@ int main(int argc, char* argv[]){
   SimpleFilter<PFJet> jetPtEtaFilter = SimpleFilter<PFJet>
     ("JetPtEtaFilter")
     .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptcut, 4.7));
+
 
   //in principle no need to remove overlap because events with leptons are rejected...
   //except for specific e/mu selection for W background estimation.
@@ -659,6 +676,7 @@ int main(int argc, char* argv[]){
     .set_predicate( !bind(PairAbsDPhiLessThan, _1,2.6) )
     .set_min(1)
     .set_max(999);    
+
 
  
   // ------------------------------------------------------------------------------------
@@ -1051,7 +1069,11 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);
 
- 
+     //copy collection of jets for CJV
+     analysis.AddModule(&cjvjetsCopyCollection);
+     analysis.AddModule(&cjvjetsIDFilter);
+     analysis.AddModule(&cjvjetsPtEtaFilter);
+     
      //filter jets
      analysis.AddModule(&jetPtEtaFilter);
     
@@ -1154,6 +1176,9 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&tightMassJetPairFilter);
      analysis.AddModule(&controlPlots_tightMjj);
      analysis.AddModule(&wjetsPlots_tightMjj);
+
+     //do central jet veto
+     analysis.AddModule(&FilterCJV);
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
