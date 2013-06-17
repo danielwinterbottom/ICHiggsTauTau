@@ -6,3 +6,4 @@ data/jec
 data/json
 data/met_laser_filters
 data/pileup
+bin/*
