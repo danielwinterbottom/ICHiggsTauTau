@@ -104,6 +104,7 @@ namespace ic {
 
     Met const* met = event->GetPtr<Met>(met_label_);
     Met const* met_nolep = event->GetPtr<Met>(met_nolep_label_);
+    Met const* met_noe = event->GetPtr<Met>("metNoElectrons");
 
     std::vector<Electron*> electrons = event->GetPtrVec<Electron>(electrons_label_);
     std::sort(electrons.begin(), electrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
@@ -117,7 +118,7 @@ namespace ic {
     n_electrons_ = electrons.size();
     n_muons_ = muons.size();
     n_taus_ = taus.size();
-    met_noelectrons_ = met_nolep->pt();
+    met_noelectrons_ = met_noe->pt();
     met_nomuons_ = met_nolep->pt();
  
     bool fillPlots = true;
