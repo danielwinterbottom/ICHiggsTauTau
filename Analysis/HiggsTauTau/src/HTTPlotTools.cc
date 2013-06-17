@@ -75,7 +75,7 @@ namespace ic {
     ele.set_line_style(11);
     ele.set_fill_color(0);
     ele.set_line_color(color);
-    ele.set_line_width(3);
+    ele.set_line_width(2);
     return;
   }
   void HTTPlot::SetDataStyle(ic::TH1PlotElement & ele) {
@@ -89,7 +89,7 @@ namespace ic {
     ele.set_draw_line(true);
     ele.set_marker_style(20);
     ele.set_draw_stat_error_y(true);
-    ele.set_marker_size(1.3);
+    ele.set_marker_size(1.1);
     return;
   }
 

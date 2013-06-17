@@ -8,6 +8,7 @@
 #include "boost/program_options.hpp"
 #include "boost/range/algorithm.hpp"
 #include "boost/range/algorithm_ext.hpp"
+#include "boost/filesystem.hpp"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
@@ -210,11 +211,12 @@ namespace ic {
       // The input file is folder + sample name + channel + year
       std::string input_filename = folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
       std::string label = name;
-      TFile *tmp_file = TFile::Open(input_filename.c_str());
+      TFile *tmp_file = nullptr;
+      if (boost::filesystem::exists(input_filename)) tmp_file = TFile::Open(input_filename.c_str());
       if (!tmp_file && fallback_folder != "") {
         if (verbosity_ > 2) std::cout << "[HTTAnalysis::ReadTrees] " << input_filename << " not found, trying fallback folder" << std::endl;
         input_filename = fallback_folder+"/"+name+"_"+Channel2String(ch_)+"_"+year_+".root";
-        tmp_file = TFile::Open(input_filename.c_str());
+        if (boost::filesystem::exists(input_filename)) tmp_file = TFile::Open(input_filename.c_str());
       }
       if (!tmp_file) {
         std::cout << "[HTTAnalysis::ReadTrees] Warning: " << input_filename << " cannot be opened" << std::endl;

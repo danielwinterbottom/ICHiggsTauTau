@@ -35,6 +35,7 @@ int main(int argc, char* argv[]){
 	double sub_ztt_top_frac;
 	string fix_empty_bins;
 	string fix_empty_hists;
+	string add_extra_binning;
 	bool auto_titles;
 	// Program options
   po::options_description preconfig("Pre-Configuration");
@@ -64,6 +65,7 @@ int main(int argc, char* argv[]){
 	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
 	  ("fix_empty_bins",   		po::value<string>(&fix_empty_bins)->default_value(""))
 	  ("fix_empty_hists",   	po::value<string>(&fix_empty_hists)->default_value(""))
+	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
 	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true));
 
 
@@ -72,6 +74,22 @@ int main(int argc, char* argv[]){
 	po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
 	po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
 	po::notify(vm);
+
+	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+	std::cout << "HiggsTauTauPlot4" << std::endl;
+	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+	std::cout << boost::format(param_fmt()) % "paramfile" 	% paramfile;
+	std::cout << boost::format(param_fmt()) % "cfg" 				% cfg;
+	std::cout << boost::format(param_fmt()) % "folder" 			% folder;
+	std::cout << boost::format(param_fmt()) % "channel"     % channel_str;
+	std::cout << boost::format(param_fmt()) % "variable" 		% var;
+	std::cout << boost::format(param_fmt()) % "method" 		  % method;
+	std::cout << boost::format(param_fmt()) % "category"    % cat;
+	std::cout << boost::format(param_fmt()) % "datacard"    % datacard;
+	std::cout << boost::format(param_fmt()) % "is_2012" 		% is_2012;
+	std::cout << boost::format(param_fmt()) % "sm_masses" 	% sm_masses_str;
+	std::cout << boost::format(param_fmt()) % "mssm_masses" % mssm_masses_str;
+	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
 	// ************************************************************************
 	// Extract variable name and set output filename
@@ -129,9 +147,26 @@ int main(int argc, char* argv[]){
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 
 	// ************************************************************************
+	// Additional Binning
+	// ************************************************************************
+	if (add_extra_binning != "") {
+
+		std::vector<std::string> extra_binning;
+		boost::split(extra_binning, add_extra_binning, boost::is_any_of(":"));
+		if (extra_binning.size() == 2) {
+			std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+			std::cout << "[HiggsTauTauPlot4] Adding alternative binning \"" << extra_binning[0] 
+				<< "\" with postfix \"" << extra_binning[1] << "\"" << std::endl;
+			ana.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", extra_binning[1]);
+		}
+	}
+
+	// ************************************************************************
 	// Add tau/electron energy scale systematics
 	// ************************************************************************
 	if (syst_tau_scale != "") {
+		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+		std::cout << "[HiggsTauTauPlot4] Doing energy scale systematics..." << std::endl;
 		HTTAnalysis ana_tscale_down(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
 		for (auto const& a : alias_vec) ana_tscale_down.SetAlias(a.first, a.second);
 		ana_tscale_down.AddSMSignalSamples(sm_masses);
@@ -153,6 +188,7 @@ int main(int argc, char* argv[]){
 		ana_tscale_up.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
 		if (add_sm_background != "") ana_tscale_up.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst_tau_scale+"Up");
 		ana_tscale_up.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
+		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 	}
 
 	// ************************************************************************
@@ -176,6 +212,7 @@ int main(int argc, char* argv[]){
 	// Generate Fake-rate vs same-sign systematic histograms
 	// ************************************************************************
 	if (syst_fakes_shape != "") {
+		std::cout << "[HiggsTauTauPlot4] Adding fake shape systematic..." << std::endl;
 		HTTAnalysis::Value fakes_rate = hmap["Fakes"].second;
 		TH1F fr_hist = ana.GetShapeViaFakesMethod(var, sel, cat, "wt");
 		SetNorm(&fr_hist, fakes_rate.first);
@@ -189,6 +226,7 @@ int main(int argc, char* argv[]){
 	// Generate low-mass shifted QCD histograms & systematics
 	// ************************************************************************
 	if (syst_qcd_shape != "") {
+		std::cout << "[HiggsTauTauPlot4] Adding QCD low-mass shape systematic..." << std::endl;
 	  TH1F h1 = hmap["QCD"].first;
 	  TH1F h2 = hmap["QCD"].first;
 	  TH1F h3 = hmap["QCD"].first;
