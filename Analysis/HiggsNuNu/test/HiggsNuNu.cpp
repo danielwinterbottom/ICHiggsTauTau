@@ -985,6 +985,22 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("TightMjj");
 
+  HinvControlPlots controlPlots_cjv = HinvControlPlots("CJVControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("CJV")
+    .set_channel(channel_str);
+
+  HinvWJetsPlots wjetsPlots_cjv = HinvWJetsPlots("CJVWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("CJV");
+
   //if (channel==channel::enu)
   //wjetsPlots_tightMjj.set_met_nolep_label("metNoElectrons");
   //else if (channel==channel::emu)
@@ -1179,7 +1195,11 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&wjetsPlots_tightMjj);
 
      //do central jet veto
-     analysis.AddModule(&FilterCJV);
+     if (channel != channel::taunu){
+       analysis.AddModule(&FilterCJV);
+       analysis.AddModule(&controlPlots_cjv);
+       analysis.AddModule(&wjetsPlots_cjv);
+     }
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
