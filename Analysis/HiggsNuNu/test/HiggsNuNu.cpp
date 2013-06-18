@@ -73,6 +73,7 @@ int main(int argc, char* argv[]){
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool dojessyst;                 // Do Jet Energy Scale Systematic Run
+  bool dodatajessyst;             // Do Alternate Data Jet Energy Scale Method Systematic Run
   bool jesupordown;               // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
   bool dosmear;                   // Do Smearing
   bool doaltmatch;                // Do runmetuncertainties gen jet matching
@@ -125,6 +126,7 @@ int main(int argc, char* argv[]){
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
+    ("dodatajessyst",           po::value<bool>(&dodatajessyst)->default_value(false))
     ("jesupordown",            po::value<bool>(&jesupordown)->default_value(true))
     ("dojersyst",           po::value<bool>(&dojersyst)->default_value(false))
     ("jerbetterorworse",            po::value<bool>(&jerbetterorworse)->default_value(true))
@@ -555,6 +557,7 @@ int main(int argc, char* argv[]){
     .set_dogaus(dogaus)
     .set_is_data(is_data)
     .set_dojessyst(dojessyst)
+    .set_dodatajessyst(dodatajessyst)
     .set_jesupordown(jesupordown)
     .set_dojersyst(dojersyst)
     .set_jerbetterorworse(jerbetterorworse)
