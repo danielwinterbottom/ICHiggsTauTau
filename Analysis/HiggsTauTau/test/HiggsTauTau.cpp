@@ -672,10 +672,10 @@ int main(int argc, char* argv[]){
 
   std::cout << "** Tau Discriminators **" << std::endl;
   std::cout << boost::format(param_fmt) % "isolation" %  tau_iso_discr;
-  if(strategy != strategy::paper2013) std::cout << boost::format(param_fmt) % "anti-electron1" % tau_anti_elec_discr_1;
-  if(strategy != strategy::paper2013) std::cout << boost::format(param_fmt) % "anti-electron2" % tau_anti_elec_discr_2;
-  if(strategy == strategy::paper2013) std::cout << boost::format(param_fmt) % "anti-electron1" % "Using optimised WP";
-  if(strategy == strategy::paper2013) std::cout << boost::format(param_fmt) % "anti-electron2" % "Using optimised WP";
+  if(strategy != strategy::paper2013 || !(channel == channel::et || channel == channel::etmet)) std::cout << boost::format(param_fmt) % "anti-electron1" % tau_anti_elec_discr_1;
+  if(strategy != strategy::paper2013 || !(channel == channel::et || channel == channel::etmet)) std::cout << boost::format(param_fmt) % "anti-electron2" % tau_anti_elec_discr_2;
+  if(strategy == strategy::paper2013 && (channel == channel::et || channel == channel::etmet)) std::cout << boost::format(param_fmt) % "anti-electron1" % "Using optimised WP";
+  if(strategy == strategy::paper2013 && (channel == channel::et || channel == channel::etmet)) std::cout << boost::format(param_fmt) % "anti-electron2" % "Using optimised WP";
   std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
 
   TauEfficiency tauEfficiency = TauEfficiency("TauEfficiency")
