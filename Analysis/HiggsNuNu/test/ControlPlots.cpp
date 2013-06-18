@@ -31,7 +31,12 @@ string Token(string const& file, string const& selection) {
 
 double Integral(TH1F const* hist) {
   if (hist) {
-    return hist->Integral(0, hist->GetNbinsX() + 1);
+    double ltmp =hist->Integral(0, hist->GetNbinsX() + 1); 
+    if (ltmp<=0 || ltmp != ltmp) {
+      std::cout << " -- Warning: integral is <=0 or NAN. Setting to 0." << std::endl;
+      ltmp=0;
+    }
+    return ltmp;
   }
   else return 0;
 }
@@ -40,6 +45,10 @@ double Error(TH1F const* hist) {
   double err = 0.0;
   if (hist) {
     hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
+    if (err<=0 || err != err) {
+      std::cout << " -- Warning: error on integral is <=0 or NAN. Setting to 0." << std::endl;
+      err=0;
+    }
   }
   return err;
 }
@@ -707,9 +716,10 @@ int main(int argc, char* argv[]){
 		    << "ZJets_ll " << n_ZJets_ll.roundedNumber() << " " << n_ZJets_ll.roundedError() <<  std::endl
 		    << "ZJets_nunu " << n_ZJets_nunu.roundedNumber() << " " << n_ZJets_nunu.roundedError() <<  std::endl
 		    << "ZJets_vbf " << n_ZJets_vbf.roundedNumber() << " " << n_ZJets_vbf.roundedError() <<  std::endl
-		    << "VV " << n_VV.roundedNumber() << " " << n_VV.roundedError() <<  std::endl
-		    << "Data_QCD " << n_data_qcd.roundedNumber() << " " << n_data_qcd.roundedError() <<  std::endl
-		    << "Data " << n_data.roundedNumber() << " " << n_data.roundedError() <<  std::endl
+		    << "VV " << n_VV.roundedNumber() << " " << n_VV.roundedError() <<  std::endl;
+      if (plot_data_qcd)
+	lDatOutput[k] << "Data_QCD " << n_data_qcd.roundedNumber() << " " << n_data_qcd.roundedError() <<  std::endl;
+      lDatOutput[k] << "Data " << n_data.roundedNumber() << " " << n_data.roundedError() <<  std::endl
 		    << "Signal " << n_signal.roundedNumber() << " " << n_signal.roundedError() 
 		    << std::endl;
 

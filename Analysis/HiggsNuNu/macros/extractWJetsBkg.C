@@ -124,7 +124,7 @@ int extractWJetsBkg(){//main
   bool doTaus = true;
   bool dojes = false;
   bool dojer = false;
-  bool doWeights = true;
+  bool doWeights = false;
 
   std::string TOPDIR = "../TABLES/";
 
