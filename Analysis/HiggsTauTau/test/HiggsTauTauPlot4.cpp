@@ -257,12 +257,12 @@ int main(int argc, char* argv[]){
 	vector<string> emptybins_regex;
 	boost::split(emptybins_regex, fix_empty_bins, boost::is_any_of(","));
 	if (emptybins_regex.size() > 0) {
+		std::cout << "[HiggsTauTauPlot4] Running FixEmptyBins with patterns: " << fix_empty_bins << std::endl;
 		vector<boost::regex> regex_vec;
 		for (auto str : emptybins_regex) regex_vec.push_back(boost::regex(str));
 		for (auto & entry : hmap) {
 			for (auto const& rgx : regex_vec) {
 				if (boost::regex_match(entry.first, rgx)) {
-					std::cout << "[HiggsTauTauPlot4] Running FixEmptyBins on shape: " << entry.first << std::endl;
 					FixEmptyBins(&(entry.second.first), false);
 				}
 			}
@@ -275,12 +275,12 @@ int main(int argc, char* argv[]){
 	vector<string> emptyhists_regex;
 	boost::split(emptyhists_regex, fix_empty_hists, boost::is_any_of(","));
 	if (emptyhists_regex.size() > 0) {
+		std::cout << "[HiggsTauTauPlot4] Running FixEmptyHist with patterns: " << fix_empty_hists << std::endl;
 		vector<boost::regex> regex_vec;
 		for (auto str : emptyhists_regex) regex_vec.push_back(boost::regex(str));
 		for (auto & entry : hmap) {
 			for (auto const& rgx : regex_vec) {
 				if (boost::regex_match(entry.first, rgx)) {
-					std::cout << "[HiggsTauTauPlot4] Running FixEmptyHist on shape: " << entry.first << std::endl;
 					FixEmptyHist(&(entry.second.first), false);
 				}
 			}

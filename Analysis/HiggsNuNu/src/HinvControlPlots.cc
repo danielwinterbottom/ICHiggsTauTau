@@ -154,7 +154,8 @@ namespace ic {
     
     // Enable filling of plots
     bool fillPlots             = true;
-    bool fillHinvDijetMETPlots = true;
+    //AM-FIX: no need for different bool, or signal/QCD won't be filled properly !
+    //bool fillHinvDijetMETPlots = true;
     
     if (dijet_vec.size() != 0) {
       
@@ -186,9 +187,13 @@ namespace ic {
       double eta_high = (jet1->eta() > jet2->eta()) ? jet1->eta() : jet2->eta();
       double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
       n_jetsingap_ = 0;
-      if (n_jets_ > 2) {
-	for (unsigned i = 2; i < jets.size(); ++i) {
-	  if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
+      std::vector<PFJet*> cjvjets = event->GetPtrVec<PFJet>("cjvpfJetsPFlow");
+      std::sort(cjvjets.begin(), cjvjets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+
+
+      if (cjvjets.size() > 2) {
+	for (unsigned i = 0; i < cjvjets.size(); ++i) {
+	  if (cjvjets[i]->pt() > 30.0 &&  cjvjets[i]->eta() > eta_low && cjvjets[i]->eta() < eta_high) ++n_jetsingap_;
 	}
       }
       
@@ -256,7 +261,7 @@ namespace ic {
     }
 
     // Start: Filling HinvDijetMETPlots __________________________________
-    if (fillHinvDijetMETPlots) {
+    if (fillPlots) {
       //dijetMETPlots_->vecSumTriObjectEt ->Fill(diffEtValue,wt_);
       dijetMETPlots_->vecSumTriObjectPt ->Fill(diffPtValue,wt_);
       dijetMETPlots_->dijetOverMetPt    ->Fill(dijet_MET,  wt_);

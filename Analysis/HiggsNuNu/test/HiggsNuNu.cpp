@@ -570,8 +570,8 @@ int main(int argc, char* argv[]){
 
   double cjvptcut = 20.0;
   SimpleFilter<PFJet> cjvjetsPtEtaFilter = SimpleFilter<PFJet>
-    ("JetPtEtaFilter")
-    .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, cjvptcut, 4.7));
+    ("CJVJetsPtEtaFilter")
+    .set_input_label("cjvpfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, cjvptcut, 4.7));
 
   CJVFilter FilterCJV = CJVFilter("FilterCJV")
     .set_jetsinput_label("cjvpfJetsPFlow");
@@ -726,7 +726,7 @@ int main(int argc, char* argv[]){
     .set_do_idiso_tight_weights(false)
     .set_do_idiso_veto_weights(false)
     .set_input_met("metNoMuons");
-  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
+  //  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
   
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)
@@ -801,10 +801,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjCandidates")
     .set_sel_label("HLTMetClean");
 
-  if (channel==channel::enu)
-    wjetsPlots_hlt.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_hlt.set_met_nolep_label("metNoENoMu");
+  //  if (channel==channel::enu)
+  //wjetsPlots_hlt.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_hlt.set_met_nolep_label("metNoENoMu");
 
 
   HinvControlPlots controlPlots_dijet = HinvControlPlots("DijetControlPlots")
@@ -824,10 +824,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("JetPair");
 
-  if (channel==channel::enu)
-    wjetsPlots_dijet.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_dijet.set_met_nolep_label("metNoENoMu");
+  //if (channel==channel::enu)
+  //wjetsPlots_dijet.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_dijet.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_AN = HinvControlPlots("ANControlPlots")
     .set_fs(fs)
@@ -845,10 +845,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("AN");
 
-  if (channel==channel::enu)
-    wjetsPlots_AN.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_AN.set_met_nolep_label("metNoENoMu");
+  //if (channel==channel::enu)
+  //wjetsPlots_AN.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_AN.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_met = HinvControlPlots("METControlPlots")
     .set_fs(fs)
@@ -866,10 +866,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("MET");
 
-  if (channel==channel::enu)
-    wjetsPlots_met.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_met.set_met_nolep_label("metNoENoMu");
+  //if (channel==channel::enu)
+  //wjetsPlots_met.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_met.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_looseMjj = HinvControlPlots("LooseMjjControlPlots")
     .set_fs(fs)
@@ -894,10 +894,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DEta");
 
-  if (channel==channel::enu)
-    wjetsPlots_deta.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_deta.set_met_nolep_label("metNoENoMu");
+  //if (channel==channel::enu)
+  //wjetsPlots_deta.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_deta.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_lepveto = HinvControlPlots("LeptonVetoControlPlots")
     .set_fs(fs)
@@ -922,10 +922,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("WSelection");
 
-  if (channel==channel::enu)
-    wjetsPlots_wsel.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_wsel.set_met_nolep_label("metNoENoMu");
+  //if (channel==channel::enu)
+  //wjetsPlots_wsel.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_wsel.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_dphi_qcd = HinvControlPlots("DPhiControlPlotsQCD")
     .set_fs(fs)
@@ -943,10 +943,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiQCD");
 
-  if (channel==channel::enu)
-    wjetsPlots_dphi_qcd.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_dphi_qcd.set_met_nolep_label("metNoENoMu");
+  //if (channel==channel::enu)
+  //wjetsPlots_dphi_qcd.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_dphi_qcd.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_dphi_signal = HinvControlPlots("DPhiControlPlotsSIGNAL")
     .set_fs(fs)
@@ -964,10 +964,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiSIGNAL");
 
-  if (channel==channel::enu)
-    wjetsPlots_dphi_signal.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_dphi_signal.set_met_nolep_label("metNoENoMu");
+  //if (channel==channel::enu)
+  //wjetsPlots_dphi_signal.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_dphi_signal.set_met_nolep_label("metNoENoMu");
 
   HinvControlPlots controlPlots_tightMjj = HinvControlPlots("TightMjjControlPlots")
     .set_fs(fs)
@@ -985,10 +985,10 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("TightMjj");
 
-  if (channel==channel::enu)
-    wjetsPlots_tightMjj.set_met_nolep_label("metNoElectrons");
-  else if (channel==channel::emu)
-    wjetsPlots_tightMjj.set_met_nolep_label("metNoENoMu");
+  //if (channel==channel::enu)
+  //wjetsPlots_tightMjj.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_tightMjj.set_met_nolep_label("metNoENoMu");
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -1022,15 +1022,15 @@ int main(int argc, char* argv[]){
      //jet modules
           
      analysis.AddModule(&jetIDFilter);
-   
+
      //prepare collections of veto leptons
      analysis.AddModule(&vetoElectronCopyCollection);
      analysis.AddModule(&vetoElectronFilter);
      analysis.AddModule(&vetoElectronIso);
      analysis.AddModule(&vetoMuonCopyCollection);
      analysis.AddModule(&vetoMuonFilter);
-     analysis.AddModule(&vetoMuonNoIsoCopyCollection);
-     analysis.AddModule(&vetoMuonNoIsoFilter);
+     // analysis.AddModule(&vetoMuonNoIsoCopyCollection);
+     //analysis.AddModule(&vetoMuonNoIsoFilter);
    
      //filter leptons before making jet pairs and changing MET...
      analysis.AddModule(&selElectronCopyCollection);
@@ -1066,15 +1066,15 @@ int main(int argc, char* argv[]){
     //jet pair production before plotting
      analysis.AddModule(&jjPairProducer);
 
+     //copy collection of jets for CJV before plotting
+     analysis.AddModule(&cjvjetsCopyCollection);
+     analysis.AddModule(&cjvjetsIDFilter);
+     analysis.AddModule(&cjvjetsPtEtaFilter);
+       
      //plot before cutting
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);
 
-     //copy collection of jets for CJV
-     analysis.AddModule(&cjvjetsCopyCollection);
-     analysis.AddModule(&cjvjetsIDFilter);
-     analysis.AddModule(&cjvjetsPtEtaFilter);
-     
      //filter jets
      analysis.AddModule(&jetPtEtaFilter);
     
@@ -1158,12 +1158,12 @@ int main(int argc, char* argv[]){
      if (channel == channel::munu){
        analysis.AddModule(&metNoMuonFilter);
      }
-     else if (channel == channel::enu){
-       analysis.AddModule(&metNoElectronFilter);
-     }
-     else if (channel == channel::emu){
-       analysis.AddModule(&metNoENoMuFilter);
-     }
+     //else if (channel == channel::enu){
+     //analysis.AddModule(&metNoElectronFilter);
+     // }
+     //else if (channel == channel::emu){
+     //analysis.AddModule(&metNoENoMuFilter);
+     //}
      else {
        analysis.AddModule(&metCut);
      }
