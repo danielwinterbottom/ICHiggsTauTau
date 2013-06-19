@@ -63,7 +63,8 @@ private:
 
   TF1 *louvain_eff_;
   TRandom3  *rand;
-  TH1F *SFb_error_;
+  TH1F *SFb_error_2012_;
+  TH1F *SFb_error_2011_;
   
 };
 
