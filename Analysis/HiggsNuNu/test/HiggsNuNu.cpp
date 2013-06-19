@@ -92,6 +92,8 @@ int main(int argc, char* argv[]){
   bool dotrgeff;                  // Do trigger efficiency corrections
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
 
+  double mjj_cut;                 // mjjcut
+
   bool printEventList;  //print run,lumi,evt of events selected
   bool printEventContent; //print event content of events selected
 
@@ -114,7 +116,7 @@ int main(int argc, char* argv[]){
     ("skim_path",           po::value<string>(&skim_path)->default_value(""))
     ("era",                 po::value<string>(&era_str)->required())
     ("mc",                  po::value<string>(&mc_str)->required())
-    ("prod",                  po::value<string>(&prod)->required())
+    ("prod",                 po::value<string>(&prod)->required())
     ("channel",             po::value<string>(&channel_str)->default_value("nunu"))
     ("is_data",             po::value<bool>(&is_data)->required())
     ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
@@ -122,23 +124,24 @@ int main(int argc, char* argv[]){
     ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
     ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
-    ("met_cut_max",             po::value<double>(&met_cut_max)->default_value(14000.))
+    ("met_cut_max",         po::value<double>(&met_cut_max)->default_value(14000.))
+    ("mjj_cut",             po::value<double>(&mjj_cut)->default_value(1200.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
-    ("dodatajessyst",           po::value<bool>(&dodatajessyst)->default_value(false))
-    ("jesupordown",            po::value<bool>(&jesupordown)->default_value(true))
+    ("dodatajessyst",       po::value<bool>(&dodatajessyst)->default_value(false))
+    ("jesupordown",         po::value<bool>(&jesupordown)->default_value(true))
     ("dojersyst",           po::value<bool>(&dojersyst)->default_value(false))
-    ("jerbetterorworse",            po::value<bool>(&jerbetterorworse)->default_value(true))
+    ("jerbetterorworse",    po::value<bool>(&jerbetterorworse)->default_value(true))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
-    ("dosmear",        po::value<bool>(&dosmear)->default_value(false))
-    ("doaltmatch",        po::value<bool>(&doaltmatch)->default_value(false))
-    ("doetsmear",        po::value<bool>(&doetsmear)->default_value(false))
-    ("dogaus",        po::value<bool>(&dogaus)->default_value(false))
+    ("dosmear",             po::value<bool>(&dosmear)->default_value(false))
+    ("doaltmatch",          po::value<bool>(&doaltmatch)->default_value(false))
+    ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
+    ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -664,7 +667,7 @@ int main(int argc, char* argv[]){
     
   SimpleFilter<CompositeCandidate> tightMassJetPairFilter = SimpleFilter<CompositeCandidate>("TightMassJetPairFilter")
     .set_input_label("jjLeadingCandidates")
-    .set_predicate( bind(PairMassInRange, _1,1200,8000) )
+    .set_predicate( bind(PairMassInRange, _1,mjj_cut,8000) )
     .set_min(1)
     .set_max(999);    
 
