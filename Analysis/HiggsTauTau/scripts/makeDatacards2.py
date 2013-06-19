@@ -32,6 +32,8 @@ parser.add_option("-s", "--scheme", dest="scheme", type='string', default='old_s
                   help="datacard scheme")
 parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
                   help="Only make inputs for visible mass, no svfit.")
+parser.add_option("--svfit", dest="svfit", action='store_true', default=False,
+                  help="Only make inputs for svfit mass.")
 parser.add_option("-e", dest="energy", type='string', default='8',
                   help="The C.O.M. energy is written into the datacard name, default is 8")
 
@@ -72,9 +74,9 @@ extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
 
 #### Apply these options for specific channels
 extra_channel = {
-  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
-  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
-  "mtmet" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
+  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "mtmet" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes"'
 }
 
@@ -129,38 +131,42 @@ if options.scheme == 'old_sm':
 #### New SM scheme
 #################################################################
 if options.scheme == 'new_sm':
-  extra_global += ' --set_alias="sel:mt_1<30."'
+  extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mtmet"] += ' --set_alias="sel:mt_1<30."'
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   scheme_et = [
-    ("8",   "inclusive",        "inclusive",    BINS_FINE, ""),
-    ("5",   "new_vbf",          "vbf_loose",    BINS, ""),
-    ("5",   "new_vbf_tight",    "vbf_tight",    BINS, ""),
-    ("0",   "new_0jet_low",     "0jet_low",     BINS_FINE, ""),
-    ("1",   "new_0jet_medium",  "0jet_medium",  BINS_FINE, ""),
-    ("1",   "new_0jet_high",    "0jet_high",    BINS_FINE, ""),
-    ("2",   "new_1jet_medium",  "1jet_medium", BINS_FINE, ""),
-    ("3",   "new_1jet_high_low-higgs",      "1jet_high_low-higgs",      BINS_FINE, ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_medium-higgs",   "1jet_high_medium-higgs",   BINS_FINE, ' --set_alias="w_shape_os:1"')
+    ("8",   "inclusive",                "inclusive",            BINS_FINE,  ""),
+    ("5",   "new_vbf",                  "vbf_loose",            BINS,       ""),
+    ("5",   "new_vbf_tight",            "vbf_tight",            BINS,       ""),
+    ("0",   "new_0jet_low",             "0jet_low",             BINS_FINE,  ""),
+    ("1",   "new_0jet_medium",          "0jet_medium",          BINS_FINE,  ""),
+    ("1",   "new_0jet_high",            "0jet_high",            BINS_FINE,  ""),
+    ("2",   "new_1jet_medium",          "1jet_medium",          BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_highhiggs",  "1jet_high_highhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_mt = [
-    ("8",   "inclusive",        "inclusive",    BINS_FINE, ""),
-    ("5",   "new_vbf",          "vbf_loose",    BINS, ""),
-    ("5",   "new_vbf_tight",    "vbf_tight",    BINS, ""),
-    ("0",   "new_0jet_low",     "0jet_low",     BINS_FINE, ""),
-    ("1",   "new_0jet_medium",  "0jet_medium",  BINS_FINE, ""),
-    ("1",   "new_0jet_high",    "0jet_high",    BINS_FINE, ""),
-    ("2",   "new_1jet_medium",  "1jet_medium", BINS_FINE, ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
-    ("3",   "new_1jet_high_low-higgs",      "1jet_high_low-higgs",      BINS_FINE, ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_medium-higgs",   "1jet_high_medium-higgs",   BINS_FINE, ' --set_alias="w_shape_os:1"')
+    ("8",   "inclusive",                "inclusive",            BINS_FINE,  ""),
+    ("5",   "new_vbf",                  "vbf_loose",            BINS,       ""),
+    ("5",   "new_vbf_tight",            "vbf_tight",            BINS,       ""),
+    ("0",   "new_0jet_low",             "0jet_low",             BINS_FINE,  ""),
+    ("1",   "new_0jet_medium",          "0jet_medium",          BINS_FINE,  ""),
+    ("1",   "new_0jet_high",            "0jet_high",            BINS_FINE,  ""),
+    ("2",   "new_1jet_medium",          "1jet_medium",          BINS_FINE,  ' --set_alias="w_shape_os:1" --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
+    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_highhiggs",  "1jet_high_highhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
+  scheme_mtmet = scheme_mt
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
-    ("2",   "1jet_low",     "boost_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("5",   "new_vbf",      "vbf_loose",  BINS,      ' --set_alias="sel:em_vbf_mva>-0.15" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("5",   "new_vbf_tight","vbf_tight",  BINS,      ' --set_alias="sel:em_vbf_mva>-0.15" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
+    ("2",   "1jet_low",     "1jet_low",   BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("3",   "1jet_high",    "1jet_high",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -188,6 +194,7 @@ if options.scheme == 'old_mssm':
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
     ("12",   "btag",        "btag",       BINS,       ' --sub_ztt_top_frac=0.015') 
   ]
+  scheme_mtmet = scheme_mt
   scheme_em = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
@@ -207,7 +214,7 @@ if options.scheme == 'old_mssm':
 if options.scheme == 'new_mssm':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1100,1200,1300,1400,1500,1600,1800,2000"
   # BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500"
-  extra_global += ' --add_extra_binning="(200,0,2000):_fine_binning"'
+  extra_global += ' --add_extra_binning="(400,0,2000):_fine_binning"'
   extra_global += ' --add_sm_background="125"'
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
@@ -219,6 +226,7 @@ if options.scheme == 'new_mssm':
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
     ("12",   "btag",        "btag",       BINS_FINE,  ' --sub_ztt_top_frac=0.015')
   ]
+  scheme_mtmet = scheme_mt
   scheme_em = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
@@ -232,31 +240,6 @@ if options.scheme == 'new_mssm':
   sig_scheme = 'mssm_default'
   ANA = 'mssm'
 
-# #################################################################
-# #### New SM scheme
-# #################################################################
-# if options.scheme_str == 'new_sm':
-#   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
-#   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
-#   scheme = [
-#     ("8",   "inclusive",        "inclusive",    BINS_FINE, ""),
-#     ("5",   "new_vbf",          "vbf",          BINS, ""),
-#     ("5",   "new_vbf_tight",    "vbf_tight",    BINS, ""),
-#     ("0",   "new_0jet_low",     "0jet_low",     BINS_FINE, ""),
-#     ("1",   "new_0jet_medium",  "0jet_medium",  BINS_FINE, ""),
-#     ("1",   "new_0jet_high",    "0jet_high",    BINS_FINE, ""),
-#     ("2",   "new_1jet_medium",  "boost_medium", BINS_FINE, ""),
-#     ("3",   "new_1jet_high",    "boost_high",   BINS_FINE, ""),
-#     ("3",   "new_v1jet_high",   "vboost_high",  BINS_FINE, "")
-#   ]
-#   bkg_schemes = {
-#     'et' : 'et_default',
-#     'mt' : 'mt_with_zmm',
-#     'em' : 'em_default'
-#   }
-#   sig_scheme = 'sm_default'
-#   ANA = 'sm'
-
 cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
@@ -264,8 +247,12 @@ cat_schemes = {
   'mtmet' : scheme_mtmet
 }
 
-plots = [ ('m_vis','M_{#tau#tau}^{vis} [GeV]', '-mvis', "60","2500" if ANA=='mssm' else "120") ]
-if not options.mvis: plots += ('m_sv','M_{#tau#tau} [GeV]', "100","2500" if ANA=='mssm' else "160"),
+plots = [ 
+  ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' ,   "60"    ,"2500" if ANA=='mssm' else "120"),
+  ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"2500" if ANA=='mssm' else "160")
+ ]
+if options.mvis: del plots[1]
+if options.svfit: del plots[0]
 
 for pl in plots:
   var     = pl[0]

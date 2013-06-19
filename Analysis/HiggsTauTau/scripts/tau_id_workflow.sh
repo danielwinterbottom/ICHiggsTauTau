@@ -3,7 +3,7 @@ LABEL="20 < p_{T}^{#tau} < 30"
 FILENAME="pt_20-30_pt_tt_50"
 /Users/Andrew/Code/scripts/cmssw_env_107.sh
 eval `scramv1 runtime -sh`
-./bin/EmbeddedStudyPlots --var="m_vis(50,0,250)" --cat="pt_2>20. && pt_2<30. && pt_tt>50." --datacard="muTau_inclusive"
+./bin/EmbeddedStudyPlots --var="m_vis(50,0,250)" --cat="pt_2>20. && pt_2<30 && pt_tt>10" --datacard="muTau_inclusive"
 mv datacard_muTau_inclusive.root output/TauID_2012/htt_mt.input_8TeV.root
 
 cd /Users/Andrew/Code/CMSSW_6_1_1/src/
@@ -11,7 +11,7 @@ cd /Users/Andrew/Code/CMSSW_6_1_1/src/
 eval `scramv1 runtime -sh`
 create-datacard.py -i TauID_2012/htt_mt.input_8TeV.root -u setups_tauid/unc-sm-8TeV-00.vals -c setups_tauid/cgs-sm-8TeV-00.conf -d setups_tauid/unc-sm-8TeV-00.conf -o TauID_2012/htt_mt_0_8TeV.txt 125
 text2workspace.py TauID_2012/htt_mt_0_8TeV.txt -o tmp.root -m 125
-combine -M MaxLikelihoodFit tmp.root -v 2 --out=TauID_2012/fitoutput/ --robustFit=1 --stepSize=0.5  --minimizerStrategy=0 --minimizerTolerance=0.1 --preFitValue=0.1  --X-rtd FITTER_DYN_STEP  --cminFallbackAlgo="Minuit;0.001"
+combine -M MaxLikelihoodFit tmp.root -v 1 --out=TauID_2012/fitoutput/ --robustFit=1 --stepSize=0.5  --minimizerStrategy=0 --minimizerTolerance=0.1 --preFitValue=0.1  --X-rtd FITTER_DYN_STEP  --cminFallbackAlgo="Minuit;0.001"
 python $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/test/diffNuisances.py -A -a -f text TauID_2012/fitoutput/mlfit.root > TauID_2012/fitoutput/mlfit.txt
 
 cd -

@@ -34,6 +34,7 @@ int main(int argc, char* argv[]){
 	string add_sm_background;
 	double sub_ztt_top_frac;
 	string fix_empty_bins;
+	string fix_negative_bins;
 	string fix_empty_hists;
 	string add_extra_binning;
 	bool auto_titles;
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]){
 	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
 	  ("fix_empty_bins",   		po::value<string>(&fix_empty_bins)->default_value(""))
 	  ("fix_empty_hists",   	po::value<string>(&fix_empty_hists)->default_value(""))
+	  ("fix_negative_bins",  	po::value<string>(&fix_negative_bins)->default_value(""))
 	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
 	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true));
 
@@ -268,6 +270,25 @@ int main(int argc, char* argv[]){
 			}
 		}
 	}
+
+	// ************************************************************************
+	// Fix Negative Bins
+	// ************************************************************************
+	vector<string> negbins_regex;
+	boost::split(negbins_regex, fix_negative_bins, boost::is_any_of(","));
+	if (negbins_regex.size() > 0) {
+		std::cout << "[HiggsTauTauPlot4] Running FixNegativeBins with patterns: " << fix_negative_bins << std::endl;
+		vector<boost::regex> regex_vec;
+		for (auto str : negbins_regex) regex_vec.push_back(boost::regex(str));
+		for (auto & entry : hmap) {
+			for (auto const& rgx : regex_vec) {
+				if (boost::regex_match(entry.first, rgx)) {
+					FixNegativeBins(&(entry.second.first), false);
+				}
+			}
+		}
+	}
+
 
 	// ************************************************************************
 	// Fix Empty Histograms

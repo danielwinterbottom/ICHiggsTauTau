@@ -86,13 +86,13 @@ namespace ic {
       alias_map_["inclusive"]                   = "";
       alias_map_["new_vbf_tight"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
       alias_map_["new_vbf"]                     = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
-      alias_map_["new_1jet_high_low-higgs"]     = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
-      alias_map_["new_1jet_high_medium-higgs"]  = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";
+      alias_map_["new_1jet_high_lowhiggs"]      = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
+      alias_map_["new_1jet_high_highhiggs"]     = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";
       alias_map_["new_1jet_medium"]             = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
       if (ch_ == channel::et) {
-        alias_map_["new_1jet_high"]     += " && met>30.";
-        alias_map_["new_v1jet_high"]    += " && met>30.";
-        alias_map_["new_1jet_medium"]   += " && met>30.";
+        alias_map_["new_1jet_high_lowhiggs"]     += " && met>30.";
+        alias_map_["new_1jet_high_highhiggs"]    += " && met>30.";
+        alias_map_["new_1jet_medium"]             += " && met>30.";
       } 
       alias_map_["new_0jet_high"]         = "(n_jets==0 && pt_2>45. && n_bjets==0)";
       alias_map_["new_0jet_medium"]       = "(n_jets==0 && pt_2>30. && pt_2<=45. && n_bjets==0)";
@@ -107,6 +107,8 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["new_vbf_tight"]     = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
+      alias_map_["new_vbf"]           = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0)";
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>35. && n_bjets==0)";
@@ -391,11 +393,17 @@ namespace ic {
       qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.06,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
         {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
           return w_ss_norm;}
-        } 
+        }
       });
       if (method == 5) {
         Value qcd_eff = this->SampleEfficiency("Special_3_Data", qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         qcd_norm = ValueProduct(qcd_norm, qcd_eff);
+      }
+      if (qcd_norm.first <= 0.0) {
+        double default_rate = 0.0000001;
+        std::cout << "[HTTAnalysis::GenerateQCD] Warning, QCD rate is negative (" 
+          << qcd_norm.first << "), setting to " << default_rate << " and maintaining error" << std::endl;
+        qcd_norm.first = default_rate;
       }
       if (method == 0 || method == 8 || method == 11) {
         qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
@@ -697,6 +705,10 @@ namespace ic {
     double eff = num.first / den.first;
     TEfficiency teff;
     double eff_err = teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683 ,1)-(num_eff/den_eff);
+    if (num.first == 0.0) {
+      std::cout << "[HTTAnalysis::SampleEfficiency] Numerator is zero, setting error to zero" << std::endl;
+      eff_err = 0.0;
+    }
     auto result = std::make_pair(eff, eff_err);
     return result;
   }
@@ -857,6 +869,10 @@ namespace ic {
   }
 
   HTTAnalysis::Value HTTAnalysis::ValueProduct(Value const& p1, Value const& p2) {
+    if (p1.first == 0.0 || p2.first == 0.0) {
+      std::cout << "[HTTAnalysis::ValueProduct] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
+      return std::make_pair(0.0, 0.0);
+    }
     double f = p1.first * p2.first;
     double a_sqrd = std::pow(p1.second / p1.first, 2.0);
     double b_sqrd = std::pow(p2.second / p2.first, 2.0);
@@ -864,6 +880,10 @@ namespace ic {
     return std::make_pair(f, f_err);
   }
   HTTAnalysis::Value HTTAnalysis::ValueDivide(Value const& p1, Value const& p2) {
+    if (p1.first == 0.0 || p2.first == 0.0) {
+      std::cout << "[HTTAnalysis::ValueDivide] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
+      return std::make_pair(0.0, 0.0);
+    }
     double f = p1.first / p2.first;
     double a_sqrd = std::pow(p1.second / p1.first, 2.0);
     double b_sqrd = std::pow(p2.second / p2.first, 2.0);

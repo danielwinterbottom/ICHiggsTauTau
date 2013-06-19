@@ -806,7 +806,7 @@ int main(int argc, char* argv[]){
     .set_channel(channel)
     .set_mc(mc)
     .set_met_label(met_label)
-    .set_strategy(strategy::moriond2013)
+    .set_strategy(strategy)
     .set_w_hack(false);
 
   HTTWeights httWeights = HTTWeights("HTTWeights")
