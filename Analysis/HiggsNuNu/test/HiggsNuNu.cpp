@@ -175,6 +175,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
   std::cout << boost::format(param_fmt) % "met_cut" % met_cut ;
   std::cout << boost::format(param_fmt) % "met_cut_max" % met_cut_max ;
+  std::cout << boost::format(param_fmt) % "mjj_cut" % mjj_cut ;
   std::cout << boost::format(param_fmt) % "doMetFilters" % doMetFilters;
   std::cout << boost::format(param_fmt) % "filters" % filters;
   std::cout << boost::format(param_fmt) % "dotrgeff" % dotrgeff;
