@@ -6,6 +6,7 @@
 #include <math.h>
 #include <iostream>
 #include "TF1.h"
+#include "TH1.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "TRandom3.h"
 
@@ -40,7 +41,9 @@ enum class tagger { SSVHEM, SSVHPT, CSVM };
             unsigned flavour, 
             BTagWeight::tagger const& algo, 
             double pt, 
-            double eta) const;
+            double eta,
+            int Btag_mode,
+            int Bfake_mode) const;
 
   std::pair<float,float> weight(std::vector<JetInfo> jets, int minTags, int maxTags) const;
 
@@ -52,12 +55,16 @@ enum class tagger { SSVHEM, SSVHPT, CSVM };
   
   std::map<std::size_t, bool> ReTag(std::vector<PFJet *> const& jets, 
                                     BTagWeight::payload const& set, 
-                                    BTagWeight::tagger const& algo) const;
+                                    BTagWeight::tagger const& algo,
+                                    int Btag_mode,
+                                    int Bfake_mode) const;
 
 private:
 
   TF1 *louvain_eff_;
   TRandom3  *rand;
+  TH1F *SFb_error_2012_;
+  TH1F *SFb_error_2011_;
   
 };
 

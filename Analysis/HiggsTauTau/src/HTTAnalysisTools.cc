@@ -83,17 +83,17 @@ namespace ic {
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>40. && n_bjets==0)";
       alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=40. && n_bjets==0)";
       // New SM categories
-      alias_map_["inclusive"]             = "";
-      alias_map_["new_vbf_tight"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
-      alias_map_["new_vbf"]               = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
-      alias_map_["new_1jet_high"]         = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
-      alias_map_["new_v1jet_high"]        = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";
-      alias_map_["new_1jet_medium"]       = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
-//      if (ch_ == channel::et) {
-//        alias_map_["new_1jet_high"]     += " && met>30.";
-//        alias_map_["new_v1jet_high"]    += " && met>30.";
-//        alias_map_["new_1jet_medium"]   += " && met>30.";
-//      }
+      alias_map_["inclusive"]                   = "";
+      alias_map_["new_vbf_tight"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
+      alias_map_["new_vbf"]                     = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
+      alias_map_["new_1jet_high_lowhiggs"]      = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
+      alias_map_["new_1jet_high_highhiggs"]     = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";
+      alias_map_["new_1jet_medium"]             = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
+      if (ch_ == channel::et) {
+        alias_map_["new_1jet_high_lowhiggs"]     += " && met>30.";
+        alias_map_["new_1jet_high_highhiggs"]    += " && met>30.";
+        alias_map_["new_1jet_medium"]             += " && met>30.";
+      } 
       alias_map_["new_0jet_high"]         = "(n_jets==0 && pt_2>45. && n_bjets==0)";
       alias_map_["new_0jet_medium"]       = "(n_jets==0 && pt_2>30. && pt_2<=45. && n_bjets==0)";
       alias_map_["new_0jet_low"]          = "(n_jets==0 && pt_2<=30. && n_bjets==0)";
@@ -107,6 +107,8 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["new_vbf_tight"]     = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
+      alias_map_["new_vbf"]           = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0)";
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>35. && n_bjets==0)";
@@ -124,38 +126,28 @@ namespace ic {
     alias_map_["nobtag"]                    = "!"+alias_map_["vbf"]+" && n_bjets==0";
     // Categories for background estimates and control plots
     alias_map_["btag_loose"]                = "(n_jets<=1 && n_loose_bjets>=1)";
+    
     // Selection control regions
     // Sideband region for OS W+jets extrapolation
-    alias_map_["w_extrp_os_sdb_sel"]        = "os && mt_1>70.";
-    // Signal region for OS W+jets extrapolation
-    alias_map_["w_extrp_os_sig_sel"]        = "os && mt_1<20."; // change for mT plot
-    alias_map_["os_sel"]                    = "os && mt_1<20.";
-    // Sideband region for OS W+jets estimation
-    alias_map_["w_os_sdb_sel"]              = "os && mt_1>70.";
-    // Sideband region for OS W+jets extrapolation in VBF method (5)
-    alias_map_["vbf_w_extrp_os_sdb_sel"]    = "os && mt_1>60. && mt_1<120.";
-    // Signal region for OS W+jets extrapolation in VBF method (5)
-    alias_map_["vbf_w_extrp_os_sig_sel"]    = "os && mt_1<20."; // change for mT plot
-    // Sideband region for OS W+jets estimation in VBF method (5)
-    alias_map_["vbf_w_os_sdb_sel"]          = "os && mt_1>60. && mt_1<120.";
-    // Signal region for W+jets shape (i.e. with os or not)
-    alias_map_["w_shape_sel"]               = "os && mt_1<20."; // change for mT plot
-    // Sideband region for QCD estimate
-    alias_map_["qcd_sdb_sel"]               = "!os && mt_1<20."; // change for mT plot
+    // options (mt_signal_region, w_os_extrap_require_os, w_ss_extrap_require_ss, vbf_w_os_extrap_requires_os)
+    // option w_extrap_diagnostics
+    alias_map_["sel"]                    = "mt_1<20.";
+    alias_map_["w_sdb"]                  = "mt_1>70.";
+    alias_map_["w_vbf_sdb"]              = "mt_1>60. && mt_1<120.";
+    alias_map_["w_os"]                   = "os";
+    alias_map_["w_vbf_os"]               = "os";
+    alias_map_["w_ss"]                   = "!os";
+    alias_map_["w_shape_os"]             = "os"; 
+
     // Sideband region for SS W+jets extrapolation
-    alias_map_["w_extrp_ss_sdb_sel"]        = "!os && mt_1>70.";
-    // Signal region for SS W+jets extrapolation
-    alias_map_["w_extrp_ss_sig_sel"]        = "!os && mt_1<20."; // change for mT plot
     // Sideband region for SS W+jets estimation
-    alias_map_["w_ss_sdb_sel"]              = "!os && mt_1>70.";
 
     if (ch_ == channel::em) {
     // Inclusive region for e-mu fake rate normalisation
       alias_map_["em_qcd_sel"]                = "os";
       // Sideband region for e-mu SS fake shape estimation
-      alias_map_["ss_sel"]                    = "!os && pzeta>-20.";
       alias_map_["ss"]                        = "!os";
-      alias_map_["os_sel"]                    = "os && pzeta>-20.";
+      alias_map_["sel"]                       = "pzeta>-20.";
     }
 
     // Samples to combine for diboson contribution
@@ -358,14 +350,14 @@ namespace ic {
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     std::string w_extrap_cat = cat;
-    std::string w_extrp_sdb_sel = this->ResolveAlias("w_extrp_os_sdb_sel");
-    std::string w_extrp_sig_sel = this->ResolveAlias("w_extrp_os_sig_sel");
-    std::string w_sdb_sel = this->ResolveAlias("w_os_sdb_sel");
+    std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
+    std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
+    std::string w_sdb_sel = "os && "+this->ResolveAlias("w_sdb");
     if (method == 5) {
       w_extrap_cat    = this->ResolveAlias("vbf_loose");
-      w_extrp_sdb_sel = this->ResolveAlias("vbf_w_extrp_os_sdb_sel");
-      w_extrp_sig_sel = this->ResolveAlias("vbf_w_extrp_os_sig_sel");
-      w_sdb_sel       = this->ResolveAlias("vbf_w_os_sdb_sel");
+      w_extrp_sdb_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("w_vbf_sdb");
+      w_extrp_sig_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("sel");
+      w_sdb_sel       = "os && "+this->ResolveAlias("w_vbf_sdb");
     }
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
@@ -374,7 +366,7 @@ namespace ic {
     auto w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
     std::string w_shape_cat = cat;
-    std::string w_shape_sel = this->ResolveAlias("w_shape_sel");
+    std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
     if (method == 5)  w_shape_cat = this->ResolveAlias("vbf_loose");
     if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
@@ -390,10 +382,10 @@ namespace ic {
     if (ch_ != channel::em) {
       std::vector<std::string> qcd_sub_samples = this->ResolveSamplesAlias("qcd_sub_samples");
       std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
-      std::string qcd_sdb_sel = this->ResolveAlias("qcd_sdb_sel");
-      std::string w_extrp_sdb_sel = this->ResolveAlias("w_extrp_ss_sdb_sel");
-      std::string w_extrp_sig_sel = this->ResolveAlias("w_extrp_ss_sig_sel");
-      std::string w_sdb_sel = this->ResolveAlias("w_ss_sdb_sel");
+      std::string qcd_sdb_sel = "!os && " + this->ResolveAlias("sel");
+      std::string w_extrp_sdb_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("w_sdb");
+      std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
+      std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
       if (method == 5) qcd_cat = this->ResolveAlias("inclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
@@ -401,11 +393,17 @@ namespace ic {
       qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.06,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
         {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
           return w_ss_norm;}
-        } 
+        }
       });
       if (method == 5) {
         Value qcd_eff = this->SampleEfficiency("Special_3_Data", qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         qcd_norm = ValueProduct(qcd_norm, qcd_eff);
+      }
+      if (qcd_norm.first <= 0.0) {
+        double default_rate = 0.0000001;
+        std::cout << "[HTTAnalysis::GenerateQCD] Warning, QCD rate is negative (" 
+          << qcd_norm.first << "), setting to " << default_rate << " and maintaining error" << std::endl;
+        qcd_norm.first = default_rate;
       }
       if (method == 0 || method == 8 || method == 11) {
         qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
@@ -423,13 +421,14 @@ namespace ic {
     } else {
       Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
       qcd_dilepton = ValueProduct(qcd_dilepton, std::make_pair(0.83,0.));
-      Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("ss"), "", this->ResolveAlias("ss_sel"), cat, wt);
+      std::string ss_sel = "!os && "+this->ResolveAlias("sel");
+      Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("ss"), "", ss_sel, cat, wt);
       if (method == 0 || method == 2) {
         qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-        qcd_hist = this->GetShape(var, "Special_23_Data", this->ResolveAlias("ss_sel"), cat, wt);
+        qcd_hist = this->GetShape(var, "Special_23_Data", ss_sel, cat, wt);
       } else if (method == 1) {
         qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-        qcd_hist = this->GetShape(var, "Special_24_Data", this->ResolveAlias("ss_sel"), cat, wt);
+        qcd_hist = this->GetShape(var, "Special_24_Data", ss_sel, cat, wt);
         TH1F fr_hist =  this->GetShapeViaFakesMethod(var, sel, cat, wt);
         qcd_hist.Scale(0.2 / Integral(&qcd_hist));
         fr_hist.Scale(0.8 / Integral(&fr_hist));
@@ -442,7 +441,7 @@ namespace ic {
         qcd_hist = this->GetShapeViaFakesMethod(var, sel, this->ResolveAlias("vbf_no_cjv"), wt);
      } else {
       qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-      qcd_hist = this->GetShape(var, "Data", this->ResolveAlias("ss_sel"), cat, wt);
+      qcd_hist = this->GetShape(var, "Data", ss_sel, cat, wt);
      }
     }
     SetNorm(&qcd_hist, qcd_norm.first);
@@ -706,6 +705,10 @@ namespace ic {
     double eff = num.first / den.first;
     TEfficiency teff;
     double eff_err = teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683 ,1)-(num_eff/den_eff);
+    if (num.first == 0.0) {
+      std::cout << "[HTTAnalysis::SampleEfficiency] Numerator is zero, setting error to zero" << std::endl;
+      eff_err = 0.0;
+    }
     auto result = std::make_pair(eff, eff_err);
     return result;
   }
@@ -866,6 +869,10 @@ namespace ic {
   }
 
   HTTAnalysis::Value HTTAnalysis::ValueProduct(Value const& p1, Value const& p2) {
+    if (p1.first == 0.0 || p2.first == 0.0) {
+      std::cout << "[HTTAnalysis::ValueProduct] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
+      return std::make_pair(0.0, 0.0);
+    }
     double f = p1.first * p2.first;
     double a_sqrd = std::pow(p1.second / p1.first, 2.0);
     double b_sqrd = std::pow(p2.second / p2.first, 2.0);
@@ -873,6 +880,10 @@ namespace ic {
     return std::make_pair(f, f_err);
   }
   HTTAnalysis::Value HTTAnalysis::ValueDivide(Value const& p1, Value const& p2) {
+    if (p1.first == 0.0 || p2.first == 0.0) {
+      std::cout << "[HTTAnalysis::ValueDivide] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
+      return std::make_pair(0.0, 0.0);
+    }
     double f = p1.first / p2.first;
     double a_sqrd = std::pow(p1.second / p1.first, 2.0);
     double b_sqrd = std::pow(p2.second / p2.first, 2.0);

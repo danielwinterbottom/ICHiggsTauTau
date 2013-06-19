@@ -171,7 +171,7 @@ int main(int argc, char* argv[]){
     }
   }
   setup.ParsePulls(pulls_file);
-  if (postfit) setup.ApplyPulls();
+  if (postfit) setup.ApplyPulls(true);
 
   std::cout << boost::format("%-20s %-10.1f +/- %-10.1f\n") % "Z->TauTau" 
     % setup.process({"ZTT","Ztt"}).GetRate() 

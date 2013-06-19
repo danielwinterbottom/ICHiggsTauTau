@@ -29,7 +29,7 @@ namespace ic {
     Candidate *l1met = v_l1met.at(0);
     double raw_l1 = l1met->pt();
     double raw_calo = event->GetPtr<Met>(uncorrected_calo_met_label_)->pt();
-    double corr_calo = event->GetPtr<Met>(corrected_calo_met_label_)->pt() * 1.05; // +5% residual hack
+    double corr_calo = event->GetPtr<Met>(corrected_calo_met_label_)->pt(); 
     double R =  0.9389 - ( 0.00128 * sqrt(raw_calo) );
     double H = -0.0623 + ( 0.02164 * sqrt(raw_calo) );
     double K =  0.6729 - ( 0.00024 *      raw_calo  );

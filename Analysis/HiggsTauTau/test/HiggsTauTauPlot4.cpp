@@ -25,15 +25,16 @@ int main(int argc, char* argv[]){
 	unsigned verbosity;														// Verbose output, useful for diagnostic purposes
 	bool is_paper;                                // Tweaking some things for the paper
 	string datacard;             									// Channel, e.g. et
-	string set_alias;															// A string like alias1:value1,alias2:value2 etc
-	string sm_masses_str;															// A string like alias1:value1,alias2:value2 etc
-	string mssm_masses_str;														// A string like alias1:value1,alias2:value2 etc
+	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
+	string sm_masses_str;													
+	string mssm_masses_str;												
 	string syst_tau_scale;
 	string syst_qcd_shape;
 	string syst_fakes_shape;
 	string add_sm_background;
 	double sub_ztt_top_frac;
 	string fix_empty_bins;
+	string fix_negative_bins;
 	string fix_empty_hists;
 	string add_extra_binning;
 	bool auto_titles;
@@ -55,7 +56,7 @@ int main(int argc, char* argv[]){
 	  ("verbosity",           po::value<unsigned>(&verbosity)->default_value(0))
 	  ("is_paper",            po::value<bool>(&is_paper)->default_value(false))
 	  ("datacard",            po::value<string>(&datacard)->default_value(""))
-	  ("set_alias",           po::value<string>(&set_alias)->default_value(""))
+	  ("set_alias",           po::value<vector<string>>(&set_alias)->composing())
 	  ("sm_masses",           po::value<string>(&sm_masses_str)->default_value(""))
 	  ("mssm_masses",         po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("syst_tau_scale",      po::value<string>(&syst_tau_scale)->default_value(""))
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]){
 	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
 	  ("fix_empty_bins",   		po::value<string>(&fix_empty_bins)->default_value(""))
 	  ("fix_empty_hists",   	po::value<string>(&fix_empty_hists)->default_value(""))
+	  ("fix_negative_bins",  	po::value<string>(&fix_negative_bins)->default_value(""))
 	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
 	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true));
 
@@ -108,14 +110,11 @@ int main(int argc, char* argv[]){
 	// Load alias overrides
 	// ************************************************************************
 	std::vector<std::pair<std::string, std::string>> alias_vec;
-	if (set_alias != "") {
-		std::vector<std::string> alias_list;
-		boost::split(alias_list, set_alias, boost::is_any_of(","));
-		for (unsigned i = 0; i < alias_list.size(); ++i) {
-			std::vector<std::string> alias_part;
-			boost::split(alias_part, alias_list[i], boost::is_any_of(":"));
-			if (alias_part.size() == 2) alias_vec.push_back(std::make_pair(alias_part[0],alias_part[1]));
-		}
+	for (unsigned i = 0; i < set_alias.size(); ++i) {
+		std::vector<std::string> alias_part;
+		boost::split(alias_part, set_alias[i], boost::is_any_of(":"));
+		if (alias_part.size() == 2) alias_vec.push_back(std::make_pair(alias_part[0],alias_part[1]));
+		std::cout << "[HiggsTauTauPlot4] Setting alias: " << alias_part[0] << " --> \"" << alias_part[1] << "\"" << std::endl;
 	}
 
 	// ************************************************************************
@@ -132,13 +131,14 @@ int main(int argc, char* argv[]){
 	HTTAnalysis ana(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
+	if (add_sm_background != "") ana.AddSMSignalSamples({add_sm_background});
 	ana.AddMSSMSignalSamples(mssm_masses);
 	ana.ReadTrees(folder);
 	ana.ParseParamFile(paramfile);
 
 	HTTAnalysis::HistValueMap hmap;
 
-	std::string sel = ana.ResolveAlias("os_sel");
+	std::string sel = "os && "+ana.ResolveAlias("sel");
 	cat = ana.ResolveAlias(cat);
 
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
@@ -170,6 +170,7 @@ int main(int argc, char* argv[]){
 		HTTAnalysis ana_tscale_down(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
 		for (auto const& a : alias_vec) ana_tscale_down.SetAlias(a.first, a.second);
 		ana_tscale_down.AddSMSignalSamples(sm_masses);
+		if (add_sm_background != "") ana_tscale_down.AddSMSignalSamples({add_sm_background});
 		ana_tscale_down.AddMSSMSignalSamples(mssm_masses);
 		ana_tscale_down.ReadTrees(folder+"/TSCALE_DOWN", folder);
 		ana_tscale_down.ParseParamFile(paramfile);
@@ -181,6 +182,7 @@ int main(int argc, char* argv[]){
 		HTTAnalysis ana_tscale_up(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
 		for (auto const& a : alias_vec) ana_tscale_up.SetAlias(a.first, a.second);
 		ana_tscale_up.AddSMSignalSamples(sm_masses);
+		if (add_sm_background != "") ana_tscale_up.AddSMSignalSamples({add_sm_background});
 		ana_tscale_up.AddMSSMSignalSamples(mssm_masses);
 		ana_tscale_up.ReadTrees(folder+"/TSCALE_UP", folder);
 		ana_tscale_up.ParseParamFile(paramfile);
@@ -216,7 +218,7 @@ int main(int argc, char* argv[]){
 		HTTAnalysis::Value fakes_rate = hmap["Fakes"].second;
 		TH1F fr_hist = ana.GetShapeViaFakesMethod(var, sel, cat, "wt");
 		SetNorm(&fr_hist, fakes_rate.first);
-		TH1F qcd_hist = ana.GetShape(var, "Special_24_Data", ana.ResolveAlias("ss_sel"), cat, "wt");
+		TH1F qcd_hist = ana.GetShape(var, "Special_24_Data", "!os && "+ana.ResolveAlias("sel"), cat, "wt");
 		SetNorm(&qcd_hist, fakes_rate.first);
 		hmap["Fakes_"+syst_fakes_shape+"Up"]  = std::make_pair(qcd_hist, fakes_rate);
 		hmap["Fakes_"+syst_fakes_shape+"Down"] = std::make_pair(fr_hist, fakes_rate);
@@ -268,6 +270,25 @@ int main(int argc, char* argv[]){
 			}
 		}
 	}
+
+	// ************************************************************************
+	// Fix Negative Bins
+	// ************************************************************************
+	vector<string> negbins_regex;
+	boost::split(negbins_regex, fix_negative_bins, boost::is_any_of(","));
+	if (negbins_regex.size() > 0) {
+		std::cout << "[HiggsTauTauPlot4] Running FixNegativeBins with patterns: " << fix_negative_bins << std::endl;
+		vector<boost::regex> regex_vec;
+		for (auto str : negbins_regex) regex_vec.push_back(boost::regex(str));
+		for (auto & entry : hmap) {
+			for (auto const& rgx : regex_vec) {
+				if (boost::regex_match(entry.first, rgx)) {
+					FixNegativeBins(&(entry.second.first), false);
+				}
+			}
+		}
+	}
+
 
 	// ************************************************************************
 	// Fix Empty Histograms

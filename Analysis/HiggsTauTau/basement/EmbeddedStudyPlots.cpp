@@ -40,21 +40,25 @@ int main(int argc, char* argv[]){
 	ana.ReadTrees("output/TauID_2012");
 	ana.ParseParamFile("scripts/Paper_params_2012.dat");
 
-	string sel = "os && mt_1<20.";
+	string sel = "os && mt_1<5.";
+  ana.SetAlias("sel","mt_1<5.");
 
 	HTTAnalysis::HistValueMap hmap;
+
 	ana.FillHistoMap(hmap, 8, var, sel, cat, "wt", "");
 	ana.FillSMSignal(hmap, {"125"}, var, sel, cat, "wt", "", "");
 
-	// HTTAnalysis ana_tscale_down(channel::mt, "2012", 0);
-	// ana_tscale_down.ReadTrees("output/TauID_2012/TSCALE_DOWN", "output/TauID_2012");
-	// ana_tscale_down.ParseParamFile("scripts/Paper_params_2012.dat");
-	// ana_tscale_down.FillHistoMap(hmap, 8, var, sel, cat, "wt", "_CMS_scale_t_mutau_8TeVDown");
+  HTTAnalysis ana_tscale_down(channel::mt, "2012", 0);
+  ana_tscale_down.SetAlias("sel","mt_1<5.");
+  ana_tscale_down.ReadTrees("output/TauID_2012/TSCALE_DOWN", "output/TauID_2012");
+  ana_tscale_down.ParseParamFile("scripts/Paper_params_2012.dat");
+  ana_tscale_down.FillHistoMap(hmap, 8, var, sel, cat, "wt", "_CMS_scale_t_mutau_8TeVDown");
 
-	// HTTAnalysis ana_tscale_up(channel::mt, "2012", 0);
-	// ana_tscale_up.ReadTrees("output/TauID_2012/TSCALE_UP", "output/TauID_2012");
-	// ana_tscale_up.ParseParamFile("scripts/Paper_params_2012.dat");
-	// ana_tscale_up.FillHistoMap(hmap, 8, var, sel, cat, "wt", "_CMS_scale_t_mutau_8TeVUp");
+  HTTAnalysis ana_tscale_up(channel::mt, "2012", 0);
+  ana_tscale_up.SetAlias("sel","mt_1<5.");
+  ana_tscale_up.ReadTrees("output/TauID_2012/TSCALE_UP", "output/TauID_2012");
+  ana_tscale_up.ParseParamFile("scripts/Paper_params_2012.dat");
+  ana_tscale_up.FillHistoMap(hmap, 8, var, sel, cat, "wt", "_CMS_scale_t_mutau_8TeVUp");
 
 	TFile dc_file(("datacard_"+datacard+".root").c_str(),"RECREATE");
 	dc_file.cd();

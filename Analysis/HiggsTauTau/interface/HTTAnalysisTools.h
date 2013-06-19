@@ -76,6 +76,15 @@ namespace ic {
     }
   }
 
+  inline void FixNegativeBins(TH1F * hist, bool verbose) {
+    for (int j = 0; j < hist->GetNbinsX(); ++j) {
+      if (hist->GetBinContent(j+1) < 0) {
+        if (verbose) std::cout << "[FixNegativeBins] Bin " << j << " is negative, setting to small positive value" << std::endl;
+        hist->SetBinContent(j+1,0.0000001);
+      }
+    }
+  }
+
   inline void FixEmptyHist(TH1F * hist, bool verbose) {
     unsigned centre_bin = hist->GetNbinsX() / 2;
     if (hist->Integral() == 0.0) {

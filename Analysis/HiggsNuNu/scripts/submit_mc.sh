@@ -24,34 +24,35 @@ for METCUT in 130 #0
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
       JOBDIR=jobs/$CHANNEL/MET$METCUT/
-      OUTPUTDIR=output/$CHANNEL/MET$METCUT/
+      OUTPUTPREFIX=output
+      OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=true --jesupordown=true --dojersyst=false"
 	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESUP/
-	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JESUP/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JESUP/
       fi
       
       if [ "$SYST" = "JESDOWN" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=true --jesupordown=false --dojersyst=false"
 	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESDOWN/
-	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JESDOWN/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JESDOWN/
       fi
 
       if [ "$SYST" = "JERBETTER" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=true"
 	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JERBETTER/
-	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JERBETTER/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JERBETTER/
       fi
 
       if [ "$SYST" = "JERWORSE" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
 	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JERWORSE/
-	  OUTPUTDIR=output/$CHANNEL/MET$METCUT/JERWORSE/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
       fi
 
       
