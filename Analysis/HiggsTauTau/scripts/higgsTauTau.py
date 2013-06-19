@@ -152,7 +152,7 @@ if options.proc_data or options.proc_all:
       os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s --output_name=%(JOB)s.root &> jobs/%(JOB)s.log" jobs/%(JOB)s.sh' % vars())
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s.sh' % vars())
 
-    if ch in ['et', 'mt']:
+    if ch in ['et', 'mt', 'mtmet']:
       for sc in scales:
         JOB='Embedded_%s_%s' % (ch,YR)
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_Embedded_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s '

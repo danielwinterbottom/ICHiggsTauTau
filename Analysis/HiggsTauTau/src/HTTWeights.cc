@@ -1006,6 +1006,24 @@ namespace ic {
         event->Add("isoweight_1", double(1.0));
         event->Add("isoweight_2", double(1.0));
       }
+    } else if (channel_ == channel::mtmet) {
+      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
+      double pt = muon->pt();
+      double m_eta = fabs(muon->eta());
+      double mu_id = 1.0;
+      double mu_iso = 1.0;
+      if (pt > 8.0 && pt <= 15.0 && m_eta < 0.8)                    { mu_id = 0.9790; mu_iso = 0.9963; }
+      if (pt > 8.0 && pt <= 15.0 && m_eta >= 0.8 && m_eta < 1.2)    { mu_id = 0.9809; mu_iso = 0.9769; }
+      if (pt > 8.0 && pt <= 15.0 && m_eta >= 1.2)                   { mu_id = 0.9967; mu_iso = 0.9870; }
+      if (pt > 15.0 && m_eta < 0.8)                                 { mu_id = 0.9746; mu_iso = 0.9842; }
+      if (pt > 15.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9796; mu_iso = 0.9664; }
+      if (pt > 15.0 && m_eta >= 1.2)                                { mu_id = 0.9864; mu_iso = 0.9795; }
+      if (do_id_weights_) mu_iso = 1.0;
+      weight *= (mu_id * mu_iso);
+      event->Add("idweight_1", mu_id);
+      event->Add("idweight_2", double(1.0));
+      event->Add("isoweight_1", mu_iso);
+      event->Add("isoweight_2", double(1.0));
     } 
 
     eventInfo->set_weight("lepton", weight);

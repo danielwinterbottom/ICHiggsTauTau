@@ -160,9 +160,9 @@ int main(int argc, char* argv[]){
     output_folder += "TSCALE_UP/";
   }
 
-  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
-    era = era::data_2012_donly;
-  }
+//  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
+//    era = era::data_2012_donly;
+//  }
 
 
   std::cout << "-------------------------------------" << std::endl;
@@ -359,6 +359,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
   if (era == era::data_2012_donly) data_pu_file     =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2012_rereco) data_pu_file    =  "data/pileup/Data_Pileup_2012_ReReco-600bins.root";
+  if (channel == channel::mtmet) data_pu_file       =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");

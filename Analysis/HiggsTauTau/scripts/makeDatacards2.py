@@ -74,6 +74,7 @@ extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
 extra_channel = {
   "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
   "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "mtmet" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes"'
 }
 
@@ -99,6 +100,14 @@ if options.scheme == 'old_sm':
     ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV"'),
     ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
+  scheme_mtmet = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("5",   "vbf",          "vbf",        BINS,       ''),
+    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
+    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV"'),
+    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
+  ]
   scheme_em = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
@@ -110,6 +119,7 @@ if options.scheme == 'old_sm':
   bkg_schemes = {
     'et' : 'et_default',
     'mt' : 'mt_with_zmm',
+    'mtmet' : 'mt_with_zmm',
     'em' : 'em_default'
   }
   sig_scheme = 'sm_default'
@@ -250,7 +260,8 @@ if options.scheme == 'new_mssm':
 cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
-  'em' : scheme_em
+  'em' : scheme_em,
+  'mtmet' : scheme_mtmet
 }
 
 plots = [ ('m_vis','M_{#tau#tau}^{vis} [GeV]', '-mvis', "60","2500" if ANA=='mssm' else "120") ]
