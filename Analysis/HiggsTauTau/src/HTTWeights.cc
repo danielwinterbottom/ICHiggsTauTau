@@ -30,6 +30,8 @@ namespace ic {
     do_emu_m_fakerates_   = false;
     do_top_factors_     = false;
     do_btag_weight_     = false;
+    btag_mode_          = 0;
+    bfake_mode_         = 0;
     do_w_soup_          = false;
     do_dy_soup_          = false;
     ggh_mass_           = "";
@@ -58,6 +60,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_emu_m_fakerates"  % do_emu_m_fakerates_;
     std::cout << boost::format(param_fmt()) % "do_top_factors"      % do_top_factors_;
     std::cout << boost::format(param_fmt()) % "do_btag_weight"      % do_btag_weight_;
+    std::cout << boost::format(param_fmt()) % "btag_mode"           % btag_mode_;
+    std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
 
     if (ggh_mass_ != "") {
       if (ggh_mass_ == "90" || ggh_mass_ == "95" || 
@@ -172,7 +176,7 @@ namespace ic {
       double inclusive_btag_weight = 1.0;
       BTagWeight::payload set = BTagWeight::payload::ALL2011;
       if (mc_ == mc::summer12_53X) set = BTagWeight::payload::EPS13;
-      std::map<std::size_t, bool> retag_result = btag_weight.ReTag(jets, set, BTagWeight::tagger::CSVM);
+      std::map<std::size_t, bool> retag_result = btag_weight.ReTag(jets, set, BTagWeight::tagger::CSVM, btag_mode_, bfake_mode_);
       event->Add("no_btag_weight", no_btag_weight);
       event->Add("inclusive_btag_weight", inclusive_btag_weight);
       event->Add("retag_result", retag_result);
@@ -1006,6 +1010,24 @@ namespace ic {
         event->Add("isoweight_1", double(1.0));
         event->Add("isoweight_2", double(1.0));
       }
+    } else if (channel_ == channel::mtmet) {
+      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton1"));
+      double pt = muon->pt();
+      double m_eta = fabs(muon->eta());
+      double mu_id = 1.0;
+      double mu_iso = 1.0;
+      if (pt > 8.0 && pt <= 15.0 && m_eta < 0.8)                    { mu_id = 0.9790; mu_iso = 0.9963; }
+      if (pt > 8.0 && pt <= 15.0 && m_eta >= 0.8 && m_eta < 1.2)    { mu_id = 0.9809; mu_iso = 0.9769; }
+      if (pt > 8.0 && pt <= 15.0 && m_eta >= 1.2)                   { mu_id = 0.9967; mu_iso = 0.9870; }
+      if (pt > 15.0 && m_eta < 0.8)                                 { mu_id = 0.9746; mu_iso = 0.9842; }
+      if (pt > 15.0 && m_eta >= 0.8 && m_eta < 1.2)                 { mu_id = 0.9796; mu_iso = 0.9664; }
+      if (pt > 15.0 && m_eta >= 1.2)                                { mu_id = 0.9864; mu_iso = 0.9795; }
+      if (do_id_weights_) mu_iso = 1.0;
+      weight *= (mu_id * mu_iso);
+      event->Add("idweight_1", mu_id);
+      event->Add("idweight_2", double(1.0));
+      event->Add("isoweight_1", mu_iso);
+      event->Add("isoweight_2", double(1.0));
     } 
 
     eventInfo->set_weight("lepton", weight);

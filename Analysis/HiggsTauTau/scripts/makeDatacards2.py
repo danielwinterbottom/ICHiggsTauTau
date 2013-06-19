@@ -5,7 +5,6 @@ from optparse import OptionParser
 import os
 
 CHANNELS= ['et', 'mt', 'em','mtmet']
-SCHEMES = ['old_sm','old_mssm']
 
 def validate_channel(channel):
   assert channel in CHANNELS, 'Error, channel %(channel)s duplicated or unrecognised' % vars()
@@ -29,7 +28,7 @@ parser.add_option("--blind", dest="blind", action='store_true', default=False,
                   help="blind data")
 parser.add_option("--extra", dest="extra", type='string', default='',
                   help="Extra command line options, applied to every datacard")
-parser.add_option("-s", "--scheme", dest="scheme_str", type='string', default='old_sm',
+parser.add_option("-s", "--scheme", dest="scheme", type='string', default='old_sm',
                   help="datacard scheme")
 parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
                   help="Only make inputs for visible mass, no svfit.")
@@ -44,10 +43,7 @@ if output:
   print 'Appending "%(output)s" to datacard outputs' % vars()
 
 channels = options.channels
-# scales = SCALES
-# if options.central: scales = ['0']
 
-# print 'Processing energy scales: %(scales)s' % vars()
 print 'Processing channels:      %(channels)s' % vars()
 
 ### Do some validation of the input
@@ -63,44 +59,108 @@ for channel in channels:
 
 PARAMS=options.params
 CFG=options.config
-folder = options.folder
-blind = options.blind
-blind = "false"
-if options.blind: blind = "true"
+FOLDER = options.folder
+BLIND = options.blind
+BLIND = "false"
+if options.blind: BLIND = "true"
 COM = options.energy
 
-if options.scheme_str == 'old_sm':
+########## Set up schemes and options
+
+#### Always apply these options:
+extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
+
+#### Apply these options for specific channels
+extra_channel = {
+  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
+  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "mtmet" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "em" : ' --fix_empty_bins="Fakes"'
+}
+
+#################################################################
+#### Old SM scheme
+#################################################################
+if options.scheme == 'old_sm':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
-  scheme = [
+  scheme_et = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ""),
     ("5",   "vbf",          "vbf",        BINS, ""),
     ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ""),
     ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
     ("2",   "1jet_low",     "boost_low",  BINS_FINE, ""),
-    ("3",   "1jet_high",    "boost_high", BINS_FINE, "")
+    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_mt = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("5",   "vbf",          "vbf",        BINS,       ''),
+    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
+    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV"'),
+    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_mtmet = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE,  ''),
+    ("5",   "vbf",          "vbf",        BINS,       ''),
+    ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
+    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV"'),
+    ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_em = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
+    ("2",   "1jet_low",     "boost_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
   ]
   bkg_schemes = {
     'et' : 'et_default',
     'mt' : 'mt_with_zmm',
+    'mtmet' : 'mt_with_zmm',
     'em' : 'em_default'
   }
   sig_scheme = 'sm_default'
   ANA = 'sm'
 
-if options.scheme_str == 'new_sm_et_mt':
+#################################################################
+#### New SM scheme
+#################################################################
+if options.scheme == 'new_sm':
+  extra_global += ' --set_alias="sel:mt_1<30."'
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
-  scheme = [
+  scheme_et = [
     ("8",   "inclusive",        "inclusive",    BINS_FINE, ""),
-    ("5",   "new_vbf",          "vbf",          BINS, ""),
+    ("5",   "new_vbf",          "vbf_loose",    BINS, ""),
     ("5",   "new_vbf_tight",    "vbf_tight",    BINS, ""),
     ("0",   "new_0jet_low",     "0jet_low",     BINS_FINE, ""),
     ("1",   "new_0jet_medium",  "0jet_medium",  BINS_FINE, ""),
     ("1",   "new_0jet_high",    "0jet_high",    BINS_FINE, ""),
-    ("2",   "new_1jet_medium",  "boost_medium", BINS_FINE, ""),
-    ("3",   "new_1jet_high",    "boost_high",   BINS_FINE, ""),
-    ("3",   "new_v1jet_high",   "vboost_high",  BINS_FINE, "")
+    ("2",   "new_1jet_medium",  "1jet_medium", BINS_FINE, ""),
+    ("3",   "new_1jet_high_low-higgs",      "1jet_high_low-higgs",      BINS_FINE, ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_medium-higgs",   "1jet_high_medium-higgs",   BINS_FINE, ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_mt = [
+    ("8",   "inclusive",        "inclusive",    BINS_FINE, ""),
+    ("5",   "new_vbf",          "vbf_loose",    BINS, ""),
+    ("5",   "new_vbf_tight",    "vbf_tight",    BINS, ""),
+    ("0",   "new_0jet_low",     "0jet_low",     BINS_FINE, ""),
+    ("1",   "new_0jet_medium",  "0jet_medium",  BINS_FINE, ""),
+    ("1",   "new_0jet_high",    "0jet_high",    BINS_FINE, ""),
+    ("2",   "new_1jet_medium",  "1jet_medium", BINS_FINE, ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
+    ("3",   "new_1jet_high_low-higgs",      "1jet_high_low-higgs",      BINS_FINE, ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_medium-higgs",   "1jet_high_medium-higgs",   BINS_FINE, ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_em = [
+    ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
+    ("2",   "1jet_low",     "boost_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -110,13 +170,28 @@ if options.scheme_str == 'new_sm_et_mt':
   sig_scheme = 'sm_default'
   ANA = 'sm'
 
-if options.scheme_str == 'old_mssm' :
+#################################################################
+#### Old MSSM scheme
+#################################################################
+if options.scheme == 'old_mssm':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500"
-  scheme = [
-    ("8",    "inclusive",   "inclusive",  BINS_FINE, ""),
-    ("11",   "nobtag",      "nobtag",     BINS_FINE, ""),
-    ("12",   "btag",        "btag",       BINS, "")
+  # extra_global += ' --add_extra_binning="(150,0,1500):_fine_binning"'
+  # extra_global += ' --add_sm_background="125"'
+  scheme_et = [
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
+    ("12",   "btag",        "btag",       BINS,       ' --sub_ztt_top_frac=0.015') 
+  ]
+  scheme_mt = [
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
+    ("12",   "btag",        "btag",       BINS,       ' --sub_ztt_top_frac=0.015') 
+  ]
+  scheme_em = [
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("12",   "btag",        "btag",       BINS,       ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --sub_ztt_top_frac=0.015') 
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -126,75 +201,96 @@ if options.scheme_str == 'old_mssm' :
   sig_scheme = 'mssm_default'
   ANA = 'mssm'
 
+#################################################################
+#### New MSSM scheme
+#################################################################
+if options.scheme == 'new_mssm':
+  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1100,1200,1300,1400,1500,1600,1800,2000"
+  # BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500"
+  extra_global += ' --add_extra_binning="(200,0,2000):_fine_binning"'
+  extra_global += ' --add_sm_background="125"'
+  scheme_et = [
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
+    ("12",   "btag",        "btag",       BINS_FINE,  ' --sub_ztt_top_frac=0.015')
+  ]
+  scheme_mt = [
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
+    ("12",   "btag",        "btag",       BINS_FINE,  ' --sub_ztt_top_frac=0.015')
+  ]
+  scheme_em = [
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("12",   "btag",        "btag",       BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --sub_ztt_top_frac=0.015') 
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'em' : 'em_default'
+  }
+  sig_scheme = 'mssm_default'
+  ANA = 'mssm'
 
-plots = [ ('m_vis','M_{#tau#tau}^{vis} [GeV]', '-mvis') ]
-if not options.mvis: plots += ('m_sv','M_{#tau#tau} [GeV]', ''),
+# #################################################################
+# #### New SM scheme
+# #################################################################
+# if options.scheme_str == 'new_sm':
+#   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
+#   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
+#   scheme = [
+#     ("8",   "inclusive",        "inclusive",    BINS_FINE, ""),
+#     ("5",   "new_vbf",          "vbf",          BINS, ""),
+#     ("5",   "new_vbf_tight",    "vbf_tight",    BINS, ""),
+#     ("0",   "new_0jet_low",     "0jet_low",     BINS_FINE, ""),
+#     ("1",   "new_0jet_medium",  "0jet_medium",  BINS_FINE, ""),
+#     ("1",   "new_0jet_high",    "0jet_high",    BINS_FINE, ""),
+#     ("2",   "new_1jet_medium",  "boost_medium", BINS_FINE, ""),
+#     ("3",   "new_1jet_high",    "boost_high",   BINS_FINE, ""),
+#     ("3",   "new_v1jet_high",   "vboost_high",  BINS_FINE, "")
+#   ]
+#   bkg_schemes = {
+#     'et' : 'et_default',
+#     'mt' : 'mt_with_zmm',
+#     'em' : 'em_default'
+#   }
+#   sig_scheme = 'sm_default'
+#   ANA = 'sm'
+
+cat_schemes = {
+  'et' : scheme_et,
+  'mt' : scheme_mt,
+  'em' : scheme_em,
+  'mtmet' : scheme_mtmet
+}
+
+plots = [ ('m_vis','M_{#tau#tau}^{vis} [GeV]', '-mvis', "60","2500" if ANA=='mssm' else "120") ]
+if not options.mvis: plots += ('m_sv','M_{#tau#tau} [GeV]', "100","2500" if ANA=='mssm' else "160"),
 
 for pl in plots:
+  var     = pl[0]
+  xlab    = pl[1]
   dc_app  = pl[2]
+  blind_min = pl[3]
+  blind_max = pl[4]
   for ch in channels:
+    scheme = cat_schemes[ch]
+    bkg_scheme = bkg_schemes[ch]
     for x in scheme:
       cat_num = x[0]
       cat_str = x[1]
       dc      = x[2]
       bin     = x[3]
-      var     = pl[0]
-      xlab    = pl[1]
-      bkg_scheme = bkg_schemes[ch]
-      extra = options.extra
-
-      # Always fix signal shapes with no entries
-      extra += ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
-
-      # For the btag method subtract embedded contamination
-      # from ttbar
-      if cat_num == '12':
-        extra += ' --sub_ztt_top_frac=0.015'
-
-      if ch == 'et':
-        extra += ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"'
-        extra += ' --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"'
-        # To increase statistics, don't apply the os selection for the
-        # W shape when using the boost_high method
-        if cat_num == '3' and options.scheme_str == 'old_sm':
-          extra += ' --set_alias="w_shape_sel:mt_1<20."'
-
-      if ch == 'mt': 
-        extra += ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"'
-        extra += ' --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"'
-        # For the boost_low method do the QCD low-mass shape uncertainty
-        if cat_num == '2': 
-          extra += ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_'+dc+'_'+COM+'TeV"'
-        # To increase statistics, don't apply the os selection for the
-        # W shape when using the boost_high method
-        if cat_num == '3' and options.scheme_str == 'old_sm':
-          extra += ' --set_alias="w_shape_sel:mt_1<20."'
-
-      if ch == 'em':
-        extra += ' --fix_empty_bins="Fakes"'
-        if COM=='8' and (cat_num in ['1', '3']): 
-          extra += ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"'
-        else:
-          extra += ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
-        if cat_num == '1':
-          extra += ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'
-
-      if options.scheme_str == 'old_mssm':
-        extra += ' --add_extra_binning="(150,0,1500):_fine_binning"'
-        extra += ' --add_sm_background="125"'
-
-      if options.scheme_str == 'new_sm_et_mt' and ch in ['et','mt']:
-        extra += ' --set_alias="w_extrp_os_sig_sel:os && mt_1<30.,os_sel:os && mt_1<30.,vbf_w_extrp_os_sig_sel:os && mt_1<30.,w_shape_sel:os && mt_1<30.,qcd_sdb_sel:!os && mt_1<30.,w_extrp_ss_sig_sel:!os && mt_1<30."'
-        if cat_num == '3':
-          extra = extra.replace('w_shape_sel:os && mt_1<30.','w_shape_sel:mt_1<30.')
+      opts    = x[4]
+      extra = options.extra + extra_global + extra_channel[ch] + opts
 
       os.system('./bin/HiggsTauTauPlot4 --cfg=%(CFG)s --channel=%(ch)s'
         ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
         ' --var="%(var)s[%(bin)s]" --norm_bins=true '
         ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
         ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
-        ' --blind=%(blind)s --x_blind_min=50 --x_blind_max=110 --verbose=false'
-        ' --paramfile=%(PARAMS)s --folder=%(folder)s %(extra)s' % vars())
+        ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbose=false'
+        ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(extra)s' % vars())
     os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_*.root' % vars())
     os.system('rm datacard_*.root')
 

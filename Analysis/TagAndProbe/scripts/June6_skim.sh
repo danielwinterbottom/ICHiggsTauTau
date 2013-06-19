@@ -54,7 +54,9 @@ JOBSUBMIT=true
  
  CONFIG=data/cfg_files/2012ElectronSkim.cfg
  echo $CONFIG
- PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/Data_53X/
+ PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/MC_53X/
+ SKIMPATH=$SSD/June6/MC_53X
+ FILELIST=filelists/June6_MC_53X
  
  PATHS=(
        'DYJetsToLL'
@@ -74,7 +76,7 @@ JOBSUBMIT=true
  
  CONFIG=data/cfg_files/2012MuonSkim.cfg
  echo $CONFIG
- PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/Data_53X/
+ PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/MC_53X/
  
  PATHS=(
        'DYJetsToLL'

@@ -754,6 +754,8 @@ namespace ic {
     print_cats.push_back("1jet_low");
     print_cats.push_back("0jet_high");
     print_cats.push_back("0jet_low");
+    print_cats.push_back("btag");
+    print_cats.push_back("nobtag");
     std::cout << boost::format("%-20s") % "Selections:";
     for (unsigned i = 0; i < print_selections.size(); ++i) {
       std::cout << boost::format("%-12s") % print_selections[i];
