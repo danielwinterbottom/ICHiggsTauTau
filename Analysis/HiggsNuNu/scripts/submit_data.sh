@@ -18,9 +18,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfig.cfg
 PRODUCTION=Apr04
 
-for METCUT in 130 #0
+for METCUT in 130 0
   do
-  for CHANNEL in nunu #enu munu taunu
+  for CHANNEL in nunu enu munu taunu
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
       do
