@@ -68,6 +68,8 @@ int main(int argc, char* argv[]){
   bool is_embedded;               // true = embedded, false = not an embedded sample
   unsigned special_mode;          // 0 = normal processing, > 0 (see below)
   unsigned tau_scale_mode;        // 0 = no shift, 1 = shift down, 2 = shift up
+  unsigned btag_mode;             // 0 = no shift, 1 = shift down, 2 = shift up
+  unsigned bfake_mode;            // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned mass_scale_mode;       // 0 = no shift, 1 = nominal, but in TSCALE_DOWN, 2 = shift up, 3 = shift up again, in TSCALE_UP
   unsigned svfit_mode;            // 0 = not run, 1 = generate jobs, 2 = read-in job output
   unsigned new_svfit_mode;        // 0 = not run, 1 = generate jobs, 2 = read-in job output
@@ -120,6 +122,8 @@ int main(int argc, char* argv[]){
       ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
       ("special_mode",        po::value<unsigned>(&special_mode)->default_value(0))
       ("tau_scale_mode",      po::value<unsigned>(&tau_scale_mode)->default_value(0))
+      ("btag_mode",           po::value<unsigned>(&btag_mode)->default_value(0))
+      ("bfake_mode",          po::value<unsigned>(&bfake_mode)->default_value(0))
       ("mass_scale_mode",     po::value<unsigned>(&mass_scale_mode)->default_value(0))
       ("svfit_mode",          po::value<unsigned>(&svfit_mode)->default_value(0))
       ("new_svfit_mode",      po::value<unsigned>(&new_svfit_mode)->default_value(0))
@@ -158,6 +162,18 @@ int main(int argc, char* argv[]){
   }
   if (mass_scale_mode == 3) {
     output_folder += "TSCALE_UP/";
+  }
+  if (btag_mode == 1) {
+    output_folder += "BTAG_DOWN/";
+  }
+  if (btag_mode == 2) {
+    output_folder += "BTAG_UP/";
+  }
+  if (bfake_mode == 1) {
+    output_folder += "BFAKE_DOWN/";
+  }
+  if (bfake_mode == 2) {
+    output_folder += "BFAKE_UP/";
   }
 
 //  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
@@ -810,7 +826,7 @@ int main(int argc, char* argv[]){
   if (era == era::data_2012_rereco) httWeights.set_era(era::data_2012_moriond);
   if (!is_data) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
-    httWeights.set_do_btag_weight(true);
+    httWeights.set_do_btag_weight(true).set_btag_mode(btag_mode).set_bfake_mode(bfake_mode);
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::mt || channel == channel::mtmet) ) httWeights.set_do_mtau_fakerate(true);

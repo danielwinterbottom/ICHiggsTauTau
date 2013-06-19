@@ -8,6 +8,30 @@ namespace ic {
   BTagWeight::BTagWeight() {
     louvain_eff_ = new TF1("sigmoidTimesL","[0]+([3]+[4]*x)/(1+exp([1]-x*[2]))",20,1000);
     rand = new TRandom3(0);
+    static float ptbins[] = {20, 30, 40, 50, 60, 70, 80, 100, 120, 160, 210, 260, 320, 400, 500, 600, 800};
+    static float SFb_error[] = {
+     0.0415707,
+     0.0204209,
+     0.0223227,
+     0.0206655,
+     0.0199325,
+     0.0174121,
+     0.0202332,
+     0.0182446,
+     0.0159777,
+     0.0218531,
+     0.0204688,
+     0.0265191,
+     0.0313175,
+     0.0415417,
+     0.0740446,
+     0.0596716 };
+    unsigned nbins=sizeof(ptbins)/sizeof(ptbins[0]) - 1;
+    SFb_error_ = new TH1F("SFb_error", "SFb_error",nbins, ptbins);
+    for(unsigned i=0; i<nbins; i++)
+    { 
+       SFb_error_->SetBinContent(i+1, SFb_error[i]) ;
+    }
 
   }
   BTagWeight::~BTagWeight() {
@@ -106,6 +130,7 @@ namespace ic {
         if (eta >= 1.6 && eta < 2.4)  return (0.013595+(0.000104538*x))+(-1.36087e-08*(x*x));
       }
     }
+
     return 1.0;
   }
 
@@ -114,7 +139,9 @@ namespace ic {
             unsigned flavour, 
             BTagWeight::tagger const& algo, 
             double pt, 
-            double eta) const {
+            double eta,
+            int Btag_mode,
+            int Bfake_mode) const {
     eta = fabs(eta);
     if (eta >= 2.4) {
       std::cerr << "Warning in <BTagWeight::BEff>: Jet eta is too large: " << eta << std::endl;
@@ -126,13 +153,20 @@ namespace ic {
         double x = std::max(30., std::min(pt, 670.0));
         if (algo == tagger::SSVHEM) sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x)));
         if (algo == tagger::SSVHPT) sf = 0.422556*((1.+(0.437396*x))/(1.+(0.193806*x)));
-        if (algo == tagger::CSVM)   sf = 0.6981*((1.+(0.414063*x))/(1.+(0.300155*x)));
+        if (algo == tagger::CSVM) sf = 0.6981*((1.+(0.414063*x))/(1.+(0.300155*x)));
+        
       } else if (set == payload::MORIOND2013) {
         double x = std::max(20., std::min(pt, 800.0));
         if (algo == tagger::CSVM)   sf = 0.726981*((1.+(0.253238*x))/(1.+(0.188389*x)));
       } else if (set == payload::EPS13) {
         double x = std::max(20., std::min(pt, 800.0));
-        if (algo == tagger::CSVM)   sf = (0.938887+(0.00017124*x))+(-2.76366e-07*(x*x));
+        if (algo == tagger::CSVM) {
+            sf = (0.938887+(0.00017124*x))+(-2.76366e-07*(x*x));
+            //Adding uncertainty shifts for HiggsTauTau systematic study. Currently only implemented for tagger we are using in HiggsTauTau
+            double err_SFb=SFb_error_->GetBinContent(SFb_error_->FindBin(pt));
+            if(Btag_mode==1) sf=sf-err_SFb; 
+            if(Btag_mode==2) sf=sf+err_SFb;
+        }
       }
     } else {
       if (set == payload::ALL2011) {
@@ -154,12 +188,30 @@ namespace ic {
       } else if (set == payload::EPS13) {
         double x = std::max(20., std::min(pt, 1000.0));
         if (algo == tagger::CSVM) {
-          if (eta < 0.8)                sf = ((1.07541+(0.00231827*x))+(-4.74249e-06*(x*x)))+(2.70862e-09*(x*(x*x)));
-          if (eta >= 0.8 && eta < 1.6)  sf = ((1.05613+(0.00114031*x))+(-2.56066e-06*(x*x)))+(1.67792e-09*(x*(x*x)));
-          if (eta >= 1.6 && eta < 2.4)  sf = ((1.05625+(0.000487231*x))+(-2.22792e-06*(x*x)))+(1.70262e-09*(x*(x*x)));
+          if(Bfake_mode==0)
+          {
+            if (eta < 0.8)                sf = ((1.07541+(0.00231827*x))+(-4.74249e-06*(x*x)))+(2.70862e-09*(x*(x*x)));
+            if (eta >= 0.8 && eta < 1.6)  sf = ((1.05613+(0.00114031*x))+(-2.56066e-06*(x*x)))+(1.67792e-09*(x*(x*x)));
+            if (eta >= 1.6 && eta < 2.4)  sf = ((1.05625+(0.000487231*x))+(-2.22792e-06*(x*x)))+(1.70262e-09*(x*(x*x)));
+          }
+          //Adding uncertainty shifts for HiggsTauTau systematic study. Currently only implemented for tagger we are using in HiggsTauTau
+          if(Bfake_mode==1)
+          {
+            if (eta < 0.8)                sf = ((0.964527+(0.00149055*x))+(-2.78338e-06*(x*x)))+(1.51771e-09*(x*(x*x))); 
+            if (eta >= 0.8 && eta < 1.6)  sf = ((0.946051+(0.000759584*x))+(-1.52491e-06*(x*x)))+(9.65822e-10*(x*(x*x)));
+            if (eta >= 1.6 && eta < 2.4)  sf = ((0.956736+(0.000280197*x))+(-1.42739e-06*(x*x)))+(1.0085e-09*(x*(x*x)));
+          }
+          if(Bfake_mode==2)
+          {
+            if (eta < 0.8)                sf = ((1.18638+(0.00314148*x))+(-6.68993e-06*(x*x)))+(3.89288e-09*(x*(x*x))); 
+            if (eta >= 0.8 && eta < 1.6)  sf = ((1.16624+(0.00151884*x))+(-3.59041e-06*(x*x)))+(2.38681e-09*(x*(x*x)));
+            if (eta >= 1.6 && eta < 2.4)  sf = ((1.15575+(0.000693344*x))+(-3.02661e-06*(x*x)))+(2.39752e-09*(x*(x*x)));
+          }
         }
       }
     }
+    
+
     return sf;
   }
 
@@ -200,7 +252,7 @@ namespace ic {
     std::vector<BTagWeight::JetInfo> infos;
     for (unsigned i = 0; i < jets.size(); ++i) {
       double eff = BEff(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
-      double sf = SF(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
+      double sf = SF(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta(), 0, 0);
       infos.push_back(BTagWeight::JetInfo(eff, sf));
     }
     std::pair<float, float> result = weight(infos, min, max);
@@ -209,12 +261,14 @@ namespace ic {
 
   std::map<std::size_t, bool> BTagWeight::ReTag(std::vector<PFJet *> const& jets, 
                                     BTagWeight::payload const& set, 
-                                    BTagWeight::tagger const& algo) const {
+                                    BTagWeight::tagger const& algo,
+                                    int Btag_mode,
+                                    int Bfake_mode) const {
     std::map<std::size_t, bool> pass_result;
     for (unsigned i = 0; i < jets.size(); ++i) {
       rand->SetSeed((int)((jets[i]->eta()+5)*100000));
       double eff = BEff(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
-      double sf = SF(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
+      double sf = SF(set, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta(), Btag_mode, Bfake_mode);
       double demoteProb_btag = 0;
       double promoteProb_btag = 0;
       if(sf < 1) {
@@ -247,7 +301,7 @@ namespace ic {
     std::vector<BTagWeight::JetInfo> infos;
     for (unsigned i = 0; i < jets.size(); ++i) {
       double eff = LouvainBEff(std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
-      double sf = SF(payload::ALL2011, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
+      double sf = SF(payload::ALL2011, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta(), 0, 0);
       infos.push_back(BTagWeight::JetInfo(eff, sf));
     }
     std::pair<float, float> result = weight(infos, min, max);

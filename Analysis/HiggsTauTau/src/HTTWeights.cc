@@ -30,6 +30,8 @@ namespace ic {
     do_emu_m_fakerates_   = false;
     do_top_factors_     = false;
     do_btag_weight_     = false;
+    btag_mode_          = 0;
+    bfake_mode_         = 0;
     do_w_soup_          = false;
     do_dy_soup_          = false;
     ggh_mass_           = "";
@@ -58,6 +60,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_emu_m_fakerates"  % do_emu_m_fakerates_;
     std::cout << boost::format(param_fmt()) % "do_top_factors"      % do_top_factors_;
     std::cout << boost::format(param_fmt()) % "do_btag_weight"      % do_btag_weight_;
+    std::cout << boost::format(param_fmt()) % "btag_mode"           % btag_mode_;
+    std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
 
     if (ggh_mass_ != "") {
       if (ggh_mass_ == "90" || ggh_mass_ == "95" || 
@@ -172,7 +176,7 @@ namespace ic {
       double inclusive_btag_weight = 1.0;
       BTagWeight::payload set = BTagWeight::payload::ALL2011;
       if (mc_ == mc::summer12_53X) set = BTagWeight::payload::EPS13;
-      std::map<std::size_t, bool> retag_result = btag_weight.ReTag(jets, set, BTagWeight::tagger::CSVM);
+      std::map<std::size_t, bool> retag_result = btag_weight.ReTag(jets, set, BTagWeight::tagger::CSVM, btag_mode_, bfake_mode_);
       event->Add("no_btag_weight", no_btag_weight);
       event->Add("inclusive_btag_weight", inclusive_btag_weight);
       event->Add("retag_result", retag_result);
