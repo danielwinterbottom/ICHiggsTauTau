@@ -11,8 +11,8 @@
 using std::showpos;
 using std::noshowpos;
 
-enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL,DPhiQCD};
-//enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,CJV,DPhiSIGNAL,DPhiQCD};
+//enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL,DPhiQCD};
+enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,CJV,DPhiSIGNAL,DPhiQCD};
 enum Sample {QCD,GJets,Top,TTbar,SingleTop,TW,WJets,WJets_enu,WJets_munu,WJets_taunu,ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,VV,Data,Signal};
 
 

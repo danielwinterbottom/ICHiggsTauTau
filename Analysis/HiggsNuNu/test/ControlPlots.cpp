@@ -323,7 +323,7 @@ int main(int argc, char* argv[]){
   selections.push_back("DEta");
   selections.push_back("MET");
   selections.push_back("TightMjj");
-  //selections.push_back("CJV");
+  selections.push_back("CJV");
   selections.push_back("DPhiSIGNAL");
   selections.push_back("DPhiQCD");
  
@@ -550,7 +550,7 @@ int main(int argc, char* argv[]){
 
     bool lBlind = blind && (
 			    selections[k].find("DPhiSIGNAL") != selections[k].npos ||
-			    (selections[k].find("TightMjj") != selections[k].npos && 
+			    (selections[k].find("CJV") != selections[k].npos && 
 			     plot_name.find("dphijj") != plot_name.npos )
 			    );
 
