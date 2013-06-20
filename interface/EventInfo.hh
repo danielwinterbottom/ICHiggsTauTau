@@ -59,7 +59,12 @@ namespace ic {
     }
 
     inline void set_weight(std::string const& label, double const& weight, bool const& enabled) {
-      weights_[label] = weight;
+      if (weight != weight) {
+	std::cerr << " -- weight " << label << " has NAN value, setting to 1..." << std::endl;
+	//weight = 1.;
+	weights_[label] = 1.;
+      }
+      else weights_[label] = weight;
       weight_status_[label] = enabled;
     }
 
@@ -71,7 +76,11 @@ namespace ic {
           enabled = false;
         }
       }
-      weights_[label] = weight;
+      if (weight != weight) {
+	std::cerr << " -- weight " << label << " has NAN value, setting to 1..." << std::endl;
+	weights_[label] = 1.0;
+      }
+      else weights_[label] = weight;
       weight_status_[label] = enabled;
     }
 
