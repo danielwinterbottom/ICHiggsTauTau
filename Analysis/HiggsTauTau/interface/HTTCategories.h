@@ -49,6 +49,8 @@ class HTTCategories : public ModuleBase {
   double pt_2_;
   double eta_1_;
   double eta_2_;
+  double iso_1_;
+  double iso_2_;
   double z_2_;
   double m_2_;
   double met_;
@@ -75,6 +77,8 @@ class HTTCategories : public ModuleBase {
   double mjj_lowpt_;       // Defined if n_lowpt_jets >= 2
   double jdeta_lowpt_;     // Defined if n_lowpt_jets >= 2
   unsigned n_jetsingap_lowpt_; // Defined if n_lowpt_jets >= 2
+
+  unsigned n_prebjets_;
 
   double l1_met_;
   double calo_nohf_met_;

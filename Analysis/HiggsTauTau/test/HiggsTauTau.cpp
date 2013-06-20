@@ -473,7 +473,7 @@ int main(int argc, char* argv[]){
     elec_idiso_func = bind(HttEMuFakeElectron, _1);
   } else if (special_mode == 2) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
-  } else if (special_mode == 3) {
+  } else if (special_mode == 3 || special_mode == 4) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
   } else if (special_mode == 23) {
     elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
@@ -542,9 +542,9 @@ int main(int argc, char* argv[]){
     } else {
       muon_idiso_func = bind(HttEMuFakeMuon, _1);
     }
-  } else if (special_mode == 2 || special_mode == 5 || special_mode == 12) {
+  } else if (special_mode == 2) {
     muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
-  } else if (special_mode == 3 || special_mode == 6 || special_mode == 10) {
+  } else if (special_mode == 3 || special_mode == 4) {
     muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
   } else if (special_mode == 25) {
     muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
@@ -712,7 +712,9 @@ int main(int argc, char* argv[]){
     .set_predicate((bind(&Tau::GetTauID, _1, tau_iso_discr) > 0.5) && (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5))
     .set_min(1);
   if (strategy == strategy::paper2013) {
-    tauIsoFilter.set_predicate(    (bind(&Tau::GetTauID, _1, tau_iso_discr)       < 1.5) 
+    double tau_3hit_cut = 1.5;
+    if (special_mode == 4 || special_mode == 5) tau_3hit_cut = 10.;
+    tauIsoFilter.set_predicate(    (bind(&Tau::GetTauID, _1, tau_iso_discr)       < tau_3hit_cut)
                                 && (bind(&Tau::GetTauID, _1, "decayModeFinding")  > 0.5));
   }
 

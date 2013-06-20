@@ -66,6 +66,7 @@ namespace ic {
     if (ggh_mass_ != "") {
       if (ggh_mass_ == "90" || ggh_mass_ == "95" || 
           ggh_mass_ == "100" || ggh_mass_ == "105") ggh_mass_ = "110";
+      if (ggh_mass_ == "150" || ggh_mass_ == "155" || ggh_mass_ == "160") ggh_mass_ = "145";
       std::string file = "data/ggh_weights/weight_ptH_"+ggh_mass_+".root";
       std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
       ggh_weights_ = new TFile(file.c_str());

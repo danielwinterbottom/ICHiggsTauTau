@@ -71,6 +71,7 @@ namespace ic {
         outtree_->Branch("n_jets",            &n_jets_);
         outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
         outtree_->Branch("n_bjets",           &n_bjets_);
+        outtree_->Branch("n_prebjets",        &n_prebjets_);
         outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
         outtree_->Branch("n_jetsingap",       &n_jetsingap_);
         outtree_->Branch("jpt_1",             &jpt_1_);
@@ -304,6 +305,30 @@ namespace ic {
     met_ = met->pt();
     met_phi_ = met->phi();
 
+    if (strategy_ == strategy::paper2013) {
+      if (channel_ == channel::et) {
+        Electron const* elec = dynamic_cast<Electron const*>(lep1);
+        iso_1_ = PF04IsolationVal(elec, 0.5);
+        Tau const* tau = dynamic_cast<Tau const*>(lep2);
+        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+      }
+      if (channel_ == channel::mt || channel_ == channel::mtmet) {
+        Muon const* muon = dynamic_cast<Muon const*>(lep1);
+        iso_1_ = PF04IsolationVal(muon, 0.5);
+        Tau const* tau = dynamic_cast<Tau const*>(lep2);
+        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+      }
+      if (channel_ == channel::em) {
+        Electron const* elec = dynamic_cast<Electron const*>(lep1);
+        iso_1_ = PF04IsolationVal(elec, 0.5);
+        Muon const* muon = dynamic_cast<Muon const*>(lep2);
+        iso_2_ = PF04IsolationVal(muon, 0.5);
+      }
+    } else {
+      iso_1_ = 0.0;
+      iso_2_ = 0.0;
+    }
+
     if (strategy_ == strategy::paper2013 && era_ != era::data_2011) {
       auto l1_met = event->GetPtrVec<Candidate>("l1extraMET");
       l1_met_ = l1_met.at(0)->pt();
@@ -326,6 +351,7 @@ namespace ic {
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();
     n_bjets_ = bjets.size();
+    n_prebjets_ = prebjets.size();
     n_loose_bjets_ = loose_bjets.size();
 
     if (n_jets_ >= 1) {
