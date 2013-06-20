@@ -886,6 +886,11 @@ int main(int argc, char* argv[]){
   if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
   if (mass_scale_mode == 3) httCategories.set_mass_shift(1.02);
+  if (era == era::data_2012_rereco && strategy == strategy::paper2013) {
+    if (mass_scale_mode == 1) httCategories.set_mass_shift(0.99);
+    if (mass_scale_mode == 2) httCategories.set_mass_shift(1.00);
+    if (mass_scale_mode == 3) httCategories.set_mass_shift(1.01);
+  }
 
 
   HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
