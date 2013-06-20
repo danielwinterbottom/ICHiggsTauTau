@@ -733,13 +733,16 @@ int main(int argc, char* argv[]){
     .set_do_idiso_veto_weights(false)
     .set_input_met("metNoMuons");
   //  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
-  
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_trg_applied_in_mc(true);
     if (channel==channel::nunu || channel == channel::taunu)
       hinvWeights.set_do_idiso_veto_weights(doidisoeff);
     else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
+    if (fixForEWKZ){ 
+      hinvWeights.set_do_idiso_veto_weights(false);
+      hinvWeights.set_do_idiso_tight_weights(false);
+    }
   }
 
   HinvWeights xsWeights = HinvWeights("XSWeights")
