@@ -116,9 +116,20 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DEta");
   lSelVecControl.push_back("MET");
   lSelVecControl.push_back("TightMjj");
-  lSelVecSignal.push_back("CJV");
+  lSelVecControl.push_back("CJV");
   lSelVecControl.push_back("DPhiSIGNAL");
   lSelVecControl.push_back("DPhiQCD");
+
+  std::vector<std::string> lSelVecTau;
+  lSelVecTau.push_back("HLTMetClean");
+  lSelVecTau.push_back("WSelection");
+  lSelVecTau.push_back("JetPair");
+  lSelVecTau.push_back("DEta");
+  lSelVecTau.push_back("MET");
+  lSelVecTau.push_back("TightMjj");
+  lSelVecTau.push_back("TightMjj");//duplicate so same size as the others...
+  lSelVecTau.push_back("DPhiSIGNAL");
+  lSelVecTau.push_back("DPhiQCD");
 
   //std::string lSuffix = "";
   const unsigned nWeights = 6;
@@ -129,6 +140,7 @@ int extractWJetsBkg(){//main
   bool dojer = false;
   bool doWeights = false;
 
+  //std::string TOPDIR = "../TABLES_mjj1200/";
   std::string TOPDIR = "../TABLES/";
 
   const unsigned nSteps = lSelVecSignal.size();
@@ -202,8 +214,9 @@ int extractWJetsBkg(){//main
 	  lTable.close();
 
 	  if (doTaus){
+	    //if (iS==nSteps-1) continue;
 	    lName.str("");
-	    lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << ".dat";
+	    lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecTau[iS] << lSuffix[iW] << ".dat";
 	    lTable.open(lName.str().c_str());
 	    if(!lTable.is_open()){
 	      cerr<<"Unable to open file: "<<lName.str()<<endl;
@@ -282,19 +295,54 @@ int extractWJetsBkg(){//main
 	  nBkg += lSel[3][DPhiSIGNAL][VV];
 	  efficiency eps_tau;
 	  eps_tau.num = lSel[3][DPhiSIGNAL][WJets_taunu];
-	  eps_tau.den = lSel[0][DPhiSIGNAL][WJets_taunu];
+	  //eps_tau.den = lSel[0][DPhiSIGNAL][WJets_taunu];
+	  //Access number in signal region before CJV:
+	  //Run interactively:
+	  //cd output/nunu/MET130
+	  //hadd MC_Wtaunu.root MC_W*JetsToLNu_taunu.root
+	  //cd TightMjj
+	  //dphijj->Scale(19600*37509./76102995)
+	  //double err=0
+	  // dphijj->IntegralAndError(0,32,err)
+	  //dphijj->GetBinLowEdge(32)
+	  //(const Double_t)9.73895999999999984e-01
+	  //hardcode result:
+	  //mjj 1200
+	  //eps_tau.den.number = 131;
+	  //eps_tau.den.error = 10;
+	  eps_tau.den.number = 167;
+	  eps_tau.den.error = 11;
+
+	  efficiency eps_tau_cjv;
+	  eps_tau_cjv.num = lSel[0][DPhiSIGNAL][WJets_taunu];
+	  eps_tau_cjv.den.number = eps_tau.den.number;
+	  eps_tau.den.error = eps_tau.den.error;
 
 	  events nDataW = nData;
 	  nDataW -= nBkg;
+	  events result_nocjv = nDataW;
+	  result_nocjv.number = nDataW.number/eps_tau.eff();
+	  result_nocjv.error = sqrt(pow(nDataW.error/eps_tau.eff(),2)+pow(nDataW.number*eps_tau.error()/pow(eps_tau.eff(),2),2));
+
 	  events result = nDataW;
-	  result.number = nDataW.number/eps_tau.eff();
-	  result.error = sqrt(pow(nDataW.error/eps_tau.eff(),2)+pow(nDataW.number*eps_tau.error()/pow(eps_tau.eff(),2),2));
+	  result.number = nDataW.number*lSel[0][DPhiSIGNAL][WJets_taunu].number/lSel[3][DPhiSIGNAL][WJets_taunu].number;
+	  result.error = result.number*sqrt(pow(nDataW.error/nDataW.number,2)+pow(lSel[0][DPhiSIGNAL][WJets_taunu].error/lSel[0][DPhiSIGNAL][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL][WJets_taunu].error/lSel[3][DPhiSIGNAL][WJets_taunu].number,2));
+
+	  events crosscheck = result_nocjv;
+	  crosscheck.number = result_nocjv.number*eps_tau_cjv.eff();
+	  crosscheck.error = crosscheck.number*sqrt(pow(result_nocjv.error/result_nocjv.number,2)+pow(eps_tau_cjv.error()/eps_tau_cjv.eff(),2));
 
 	  std::cout << "------ taunu estimates:---------" << std::endl
 		    << "nData = $" << nData.number  << "\\pm " << nData.error  << "$" << std::endl
 		    << "nBkg = $" << nBkg.number  << "\\pm " << nBkg.error  << "$" << std::endl
 		    << "eff_tau = " << eps_tau << std::endl
-		    << "*** result = " << result.number  << "\\pm " << result.error << "$" << std::endl;
+		    << "*** result no CJV = $" << result_nocjv.number  << "\\pm " << result_nocjv.error << " \pm " << 0.08*result.number<< "$" << std::endl
+		    << "eff_tau_cvj = " << eps_tau_cjv << std::endl
+		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \pm " << 0.08*result.number<< "$" << std::endl
+		    << "***crosscheck = $" << crosscheck.number << "\\pm " << crosscheck.error << "$" << std::endl
+		    << "****** MC Estimates: $" << eps_tau.den.number << "\\pm " << eps_tau.den.error << "$, $" << lSel[0][DPhiSIGNAL][WJets_taunu].number << "\\pm " << lSel[0][DPhiSIGNAL][WJets_taunu].error << "$" << std::endl
+	    ;
+	  
 	}
 
 
