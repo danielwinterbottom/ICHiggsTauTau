@@ -8,16 +8,19 @@ Y_AXIS_TITLE='dN/dm_{#tau#tau} [1/GeV]'
 
 ########## et SM
 ./bin/HiggsTauTauPlot4 \
-	--cfg=scripts/new_plot_2012.cfg \
-	--channel=et \
+	--cfg=scripts/new_plot_sm_2012.cfg \
+	--channel=mt \
 	--method=8 \
-	--cat="inclusive" \
-	--datacard="inclusive" \
-	--var="m_vis[$SM_BINS]" --norm_bins=true \
-  --background_scheme="et_default" \
+	--cat="pt_2>45. && n_jets>=1 && n_bjets==0" \
+	--datacard="1jet_high_test" \
+	--var="pt_tt(10,0,200)" --norm_bins=false \
+  --background_scheme="mt_with_zmm" \
   --signal_scheme="sm_default" \
-  --x_axis_label="M_{#tau#tau}^{vis} [GeV]" \
-  --blind=true --x_blind_min=100 --x_blind_max=160
+  --x_axis_label="p_{T}^{#tau#tau} [GeV]" \
+  --blind=false --x_blind_min=100 --x_blind_max=160 \
+  --set_alias="ZTT_Eff_Sample:DYJetsToTauTauSoup" \
+  --set_alias="ZTT_Shape_Sample:DYJetsToTauTauSoup" \
+  --plot_name="pt_tt_1jet_high_mc"
 
 ./bin/HiggsTauTauPlot4 \
 	--cfg=scripts/new_plot_2012.cfg \

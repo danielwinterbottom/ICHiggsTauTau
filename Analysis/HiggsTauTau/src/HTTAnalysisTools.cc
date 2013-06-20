@@ -150,6 +150,9 @@ namespace ic {
       alias_map_["sel"]                       = "pzeta>-20.";
     }
 
+    alias_map_["ZTT_Eff_Sample"] = "Embedded";
+    alias_map_["ZTT_Shape_Sample"] = "Embedded";
+
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
@@ -274,8 +277,8 @@ namespace ic {
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT]\n";
-    auto ztt_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToTauTau"+dy_soup_, "os", "", sel, cat, wt);
-    TH1F ztt_hist = this->GetShape(var, "Embedded", sel, cat, wt);
+    auto ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", "", sel, cat, wt);
+    TH1F ztt_hist = this->GetShape(var, this->ResolveAlias("ZTT_Shape_Sample"), sel, cat, wt);
     SetNorm(&ztt_hist, ztt_norm.first);
     return std::make_pair(ztt_hist, ztt_norm);
   }
