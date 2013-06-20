@@ -105,6 +105,7 @@ int extractWJetsBkg(){//main
   lSelVecSignal.push_back("DEta");
   lSelVecSignal.push_back("MET");
   lSelVecSignal.push_back("TightMjj");
+  lSelVecSignal.push_back("CJV");
   lSelVecSignal.push_back("DPhiSIGNAL");
   lSelVecSignal.push_back("DPhiQCD");
 
@@ -115,6 +116,7 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DEta");
   lSelVecControl.push_back("MET");
   lSelVecControl.push_back("TightMjj");
+  lSelVecSignal.push_back("CJV");
   lSelVecControl.push_back("DPhiSIGNAL");
   lSelVecControl.push_back("DPhiQCD");
 
