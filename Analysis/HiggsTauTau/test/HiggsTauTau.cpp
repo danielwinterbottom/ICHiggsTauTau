@@ -434,7 +434,8 @@ int main(int argc, char* argv[]){
 
 
   EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
-    .set_genparticle_label("genParticlesEmbedded");
+    .set_genparticle_label("genParticlesEmbedded")
+    .set_channel(channel);
   if (channel == channel::et) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_ePtGt20tauPtGt18_recEmbedded.root");
   if (channel == channel::mt) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_muPtGt16tauPtGt18_recEmbedded.root");
   if (channel == channel::em) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_recEmbedding_emu.root");

@@ -2,18 +2,22 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
+#include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "TH2D.h"
 #include "TFile.h"
 namespace ic {
 
-  EmbeddingKineReweightProducer::EmbeddingKineReweightProducer(std::string const& name) : ModuleBase(name) {
+  EmbeddingKineReweightProducer::EmbeddingKineReweightProducer(std::string const& name) : ModuleBase(name),
+  channel_(channel::et) {
     genparticle_label_ = "genParticlesTaus";
+    ditau_label_ = "emtauCandidates";
     file_ = "";
   }
 
   EmbeddingKineReweightProducer::~EmbeddingKineReweightProducer() {
-    ;
+    if (electron_id_hist_) delete electron_id_hist_;
   }
 
   int EmbeddingKineReweightProducer::PreAnalysis() {
@@ -28,6 +32,72 @@ namespace ic {
     genDiTauMassVsGenDiTauPt_ = GetFromTFile<TH2D>(f, "/", "embeddingKineReweight_diMuonMass_vs_diMuonPt");
     f->Close();
     delete f;
+
+    if (channel_ == channel::et) {
+      double xAxis1[10] = {10, 15, 20, 25, 30, 40, 55, 70, 100, 200}; 
+      double yAxis1[4] = {0, 0.8, 1.479, 2.5}; 
+      electron_id_hist_ = new TH2F("hPtEtaSF", "", 9, xAxis1,3, yAxis1);
+      electron_id_hist_->SetBinContent(14,0.95);
+      electron_id_hist_->SetBinContent(15,0.96);
+      electron_id_hist_->SetBinContent(16,0.97);
+      electron_id_hist_->SetBinContent(17,0.98);
+      electron_id_hist_->SetBinContent(18,1.00);
+      electron_id_hist_->SetBinContent(19,0.98);
+      electron_id_hist_->SetBinContent(20,0.99);
+      electron_id_hist_->SetBinContent(21,1.00);
+      electron_id_hist_->SetBinContent(25,0.89);
+      electron_id_hist_->SetBinContent(26,0.93);
+      electron_id_hist_->SetBinContent(27,0.94);
+      electron_id_hist_->SetBinContent(28,0.98);
+      electron_id_hist_->SetBinContent(29,0.96);
+      electron_id_hist_->SetBinContent(30,0.97);
+      electron_id_hist_->SetBinContent(31,0.98);
+      electron_id_hist_->SetBinContent(32,0.93);
+      electron_id_hist_->SetBinContent(36,0.66);
+      electron_id_hist_->SetBinContent(37,0.75);
+      electron_id_hist_->SetBinContent(38,0.78);
+      electron_id_hist_->SetBinContent(39,0.84);
+      electron_id_hist_->SetBinContent(40,0.89);
+      electron_id_hist_->SetBinContent(41,0.89);
+      electron_id_hist_->SetBinContent(42,0.93);
+      electron_id_hist_->SetBinContent(43,1.00);
+    }
+    if (channel_ == channel::em) {
+      double xAxis1[10] = {10, 15, 20, 25, 30, 40, 55, 70, 100, 200}; 
+      double yAxis1[4] = {0, 0.8, 1.479, 2.5}; 
+      electron_id_hist_ = new TH2F("hPtEtaSF", "", 9, xAxis1,3, yAxis1);
+      electron_id_hist_->SetBinContent(12,0.81);
+      electron_id_hist_->SetBinContent(13,0.91);
+      electron_id_hist_->SetBinContent(14,0.95);
+      electron_id_hist_->SetBinContent(15,0.96);
+      electron_id_hist_->SetBinContent(16,0.97);
+      electron_id_hist_->SetBinContent(17,0.98);
+      electron_id_hist_->SetBinContent(18,0.99);
+      electron_id_hist_->SetBinContent(19,0.98);
+      electron_id_hist_->SetBinContent(20,0.99);
+      electron_id_hist_->SetBinContent(21,0.98);
+      electron_id_hist_->SetBinContent(23,0.78);
+      electron_id_hist_->SetBinContent(24,0.89);
+      electron_id_hist_->SetBinContent(25,0.92);
+      electron_id_hist_->SetBinContent(26,0.94);
+      electron_id_hist_->SetBinContent(27,0.94);
+      electron_id_hist_->SetBinContent(28,0.97);
+      electron_id_hist_->SetBinContent(29,0.97);
+      electron_id_hist_->SetBinContent(30,0.99);
+      electron_id_hist_->SetBinContent(31,1.00);
+      electron_id_hist_->SetBinContent(32,1.00);
+      electron_id_hist_->SetBinContent(34,0.46);
+      electron_id_hist_->SetBinContent(35,0.66);
+      electron_id_hist_->SetBinContent(36,0.73);
+      electron_id_hist_->SetBinContent(37,0.80);
+      electron_id_hist_->SetBinContent(38,0.83);
+      electron_id_hist_->SetBinContent(39,0.86);
+      electron_id_hist_->SetBinContent(40,0.88);
+      electron_id_hist_->SetBinContent(41,0.91);
+      electron_id_hist_->SetBinContent(42,0.93);
+      electron_id_hist_->SetBinContent(43,1.00);
+    }
+
     return 0;
   }
 
@@ -89,6 +159,19 @@ namespace ic {
     double new_kin_weight3 = genDiTauMassVsGenDiTauPt_.GetBinContent(bin_x, bin_y);
     if (new_kin_weight3 > 10.0) new_kin_weight3 = 10.0;
     eventInfo->set_weight("kin_weight3",new_kin_weight3);
+
+    if (channel_ == channel::et || channel_ == channel::em) {
+      std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
+      CompositeCandidate const* ditau = ditau_vec.at(0);
+      Electron const* elec = dynamic_cast<Electron const*>(ditau->GetCandidate("lepton1"));
+      double pt = elec->pt();
+      double eta = fabs(elec->sc_eta());
+      pt  = std::max(10., std::min(pt, 199.9));
+      eta = std::max(0., std::min(pt, 2.49));
+      int bin = electron_id_hist_->FindFixBin(pt,eta);
+      double eff = electron_id_hist_->GetBinContent(bin);
+      eventInfo->set_weight("kin_weight4", eff);
+    }
 
     return 0;
   }

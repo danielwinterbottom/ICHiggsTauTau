@@ -2,6 +2,7 @@
 #define ICHiggsTauTau_HiggsTauTau_EmbeddingKineReweightProducer_h
 
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include <string>
 #include "TH2D.h"
 
@@ -12,11 +13,15 @@ class TreeEvent;
 class EmbeddingKineReweightProducer : public ModuleBase {
 private:
   CLASS_MEMBER(EmbeddingKineReweightProducer, std::string, genparticle_label)
+  CLASS_MEMBER(EmbeddingKineReweightProducer, std::string, ditau_label)
   CLASS_MEMBER(EmbeddingKineReweightProducer, std::string, file)
+  CLASS_MEMBER(EmbeddingKineReweightProducer, ic::channel, channel)
 
   TH2D genTau2PtVsGenTau1Pt_;
   TH2D genTau2EtaVsGenTau1Eta_;                                              
   TH2D genDiTauMassVsGenDiTauPt_;
+
+  TH2F *electron_id_hist_;
 
 public:
  EmbeddingKineReweightProducer(std::string const& name);
