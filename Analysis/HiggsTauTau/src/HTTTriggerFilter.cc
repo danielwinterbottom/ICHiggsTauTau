@@ -323,13 +323,11 @@ namespace ic {
       }
     }
 
-    if ( (channel_ == channel::mtmet || channel_ == channel::etmet) && is_data_) {
-      std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+    if ( channel_ == channel::mtmet && is_data_) {
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
         bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
-        bool l1_met = l1met.at(0)->pt() > 26.;
-        if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
+        if (leg1_match && leg2_match) dileptons_pass.push_back(dileptons[i]);
       }
     }
 
@@ -344,7 +342,7 @@ namespace ic {
       ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5) );
       ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "byIsolation") > 0.5) );
       */
-      std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
+      // std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         // bool leg1_hlt_match = IsFilterMatched(dileptons[i]->At(0), mu8_obj, leg1_filter, 0.5);
         // std::vector<Candidate *> mu_as_vector;
@@ -354,36 +352,9 @@ namespace ic {
         // std::vector<Candidate *> tau_as_vector;
         // tau_as_vector.push_back(dileptons[i]->At(1));
         // bool leg2_match = MatchByDR(tau_as_vector, hlt_taus, 0.5, false, false).size() > 0;
-        bool l1_met = l1met.at(0)->pt() > 26.;
+        // bool l1_met = l1met.at(0)->pt() > 26.;
         // if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
-        if (l1_met) dileptons_pass.push_back(dileptons[i]);
-      }
-    }
-
-    if (channel_ == channel::etmet && !is_data_) {
-      /*
-      std::vector<TriggerObject *> ele8_obj = objs; // Make a copy of the Mu8 Trigger objects so we can filter
-      ic::erase_if(ele8_obj, !boost::bind(MinPtMaxEta, _1, 13.0, 2.1));
-      std::vector<Candidate *> l1emiso = event->GetPtrVec<Candidate>("l1extraEmIsolated");
-      ic::erase_if(l1emiso, !boost::bind(MinPtMaxEta, _1, 12.0, 2.17));
-      std::vector<Tau *> hlt_taus = event->GetPtrVec<Tau>("hltTaus");
-      ic::erase_if(hlt_taus, !boost::bind(MinPtMaxEta, _1, 20.0, 999.0));
-      ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5) );
-      ic::erase_if(hlt_taus, !(boost::bind(&Tau::GetTauID, _1, "byIsolation") > 0.5) );
-      */
-      std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
-      for (unsigned i = 0; i < dileptons.size(); ++i) {
-        // bool leg1_hlt_match = IsFilterMatched(dileptons[i]->At(0), ele8_obj, leg1_filter, 0.5);
-        // std::vector<Candidate *> ele_as_vector;
-        // ele_as_vector.push_back(dileptons[i]->At(0));
-        // bool leg1_l1_match = MatchByDR(ele_as_vector, l1emiso, 0.5, false, false).size() > 0;
-        // bool leg1_match = leg1_hlt_match && leg1_l1_match;
-        // std::vector<Candidate *> tau_as_vector;
-        // tau_as_vector.push_back(dileptons[i]->At(1));
-        // bool leg2_match = MatchByDR(tau_as_vector, hlt_taus, 0.5, false, false).size() > 0;
-        bool l1_met = l1met.at(0)->pt() > 36.;
-        // if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
-        if (l1_met) dileptons_pass.push_back(dileptons[i]);
+        if (true) dileptons_pass.push_back(dileptons[i]); // we'll apply this in HTTPairSelector instead
       }
     }
 

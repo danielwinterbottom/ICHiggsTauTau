@@ -37,6 +37,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuMVA.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCut.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 
@@ -450,6 +451,7 @@ int main(int argc, char* argv[]){
   .set_res_file("data/jec/"+jec_payload+"_L2L3Residual_AK5PF.txt");
 
   HTTL1MetCorrector httL1MetCorrector("HTTL1MetCorrector");
+  HTTL1MetCut httL1MetCut("HTTL1MetCut");
   
   // ------------------------------------------------------------------------------------
   // Electron Modules
@@ -1043,8 +1045,9 @@ int main(int argc, char* argv[]){
     if (!(svfit_override != "" && new_svfit_mode == 1)) {
                                   analysis.AddModule(&svfitTest);
     }
-
-
+    if (channel == channel::mtmet && (!is_data || is_embedded)) {
+                                  analysis.AddModule(&httL1MetCut);
+    }  
                                   analysis.AddModule(&httWeights);
     if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);

@@ -63,6 +63,10 @@ namespace ic {
   }
 
   int HTTPairSelector::Execute(TreeEvent *event) {
+
+    // ************************************************************************
+    // Do the actual pair selection, either by highest pT or most isolated tau
+    // ************************************************************************
     std::vector<CompositeCandidate *> & dilepton = event->GetPtrVec<CompositeCandidate>(pair_label_);
     std::vector<CompositeCandidate *> os_dilepton;
     std::vector<CompositeCandidate *> ss_dilepton;
@@ -83,23 +87,18 @@ namespace ic {
     std::sort(os_dilepton.begin(),os_dilepton.end(), boost::bind(&CompositeCandidate::ScalarPtSum, _1) > boost::bind(&CompositeCandidate::ScalarPtSum, _2));
     std::sort(ss_dilepton.begin(),ss_dilepton.end(), boost::bind(&CompositeCandidate::ScalarPtSum, _1) > boost::bind(&CompositeCandidate::ScalarPtSum, _2));
     
-    double max_tau_iso_os = -10.0;
-    double max_tau_iso_ss = -10.0;
+    // Or alternatively sort by isolation
     if (use_most_isolated_ && channel_ != channel::em) {
-      for (unsigned i = 0; i < os_dilepton.size(); ++i) {
-        Tau const* temp  = dynamic_cast<Tau const*>(os_dilepton[i]->GetCandidate("lepton2"));
-        if (temp->GetTauID("byIsolationMVAraw") > max_tau_iso_os) {
-                os_dilepton[0] = os_dilepton[i];
-                max_tau_iso_os = temp->GetTauID("byIsolationMVAraw");
-        }
-      }
-      for (unsigned i = 0; i < ss_dilepton.size(); ++i) {
-        Tau const* temp  = dynamic_cast<Tau const*>(ss_dilepton[i]->GetCandidate("lepton2"));
-        if (temp->GetTauID("byIsolationMVAraw") > max_tau_iso_ss) {
-                ss_dilepton[0] = ss_dilepton[i];
-                max_tau_iso_ss = temp->GetTauID("byIsolationMVAraw");
-        }
-      }
+      std::sort(os_dilepton.begin(), os_dilepton.end(), [](CompositeCandidate const* c1, CompositeCandidate const* c2) {
+        Tau const* tau1  = dynamic_cast<Tau const*>(c1->GetCandidate("lepton2"));
+        Tau const* tau2  = dynamic_cast<Tau const*>(c2->GetCandidate("lepton2"));
+        return (tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
+      });
+      std::sort(ss_dilepton.begin(), ss_dilepton.end(), [](CompositeCandidate const* c1, CompositeCandidate const* c2) {
+        Tau const* tau1  = dynamic_cast<Tau const*>(c1->GetCandidate("lepton2"));
+        Tau const* tau2  = dynamic_cast<Tau const*>(c2->GetCandidate("lepton2"));
+        return (tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
+      });
     }
 
     if (os_dilepton.size() > 0) { // Take OS in preference to SS
@@ -109,13 +108,17 @@ namespace ic {
     }
     if (result.size() == 0) return 1;  //Require at least one dilepton
 
-
+    // ************************************************************************
+    // In the mtmet channel apply random l1met cut
+    // ************************************************************************
     if (channel_ == channel::mtmet) {
       std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
         if (l1met.at(0)->pt() <= 26.) return 1;
     }
 
-
+    // ************************************************************************
+    // If using pair-wise mva met select the appropriate met
+    // ************************************************************************
     if (mva_met_from_vector_) {
       std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
       std::size_t id = 0;
@@ -131,17 +134,9 @@ namespace ic {
       }
     }
     
-    /*
-    if (channel_ != channel::em) {
-      Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
-      if (tau->decay_mode() == 0) {
-        double eoverp = (tau->lead_ecal_energy() + tau->lead_hcal_energy()) / tau->lead_p();
-        if (eoverp <= 0.2) return 1;
-      }
-    }
-    */
-
-
+   // ************************************************************************
+   // Scale met for the tau energy scale shift
+   // ************************************************************************
     if (scale_met_for_tau_ && channel_ != channel::em) {
       Met * met = event->GetPtr<Met>(met_label_);
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
@@ -167,6 +162,9 @@ namespace ic {
       ROOT::Math::PxPyPzEVector new_met(metx, mety, 0, metet);
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
     }
+    // ************************************************************************
+    // Scale met for the electron energy scale shift
+    // ************************************************************************
     if (scale_met_for_tau_ && channel_ == channel::em) {
       Met * met = event->GetPtr<Met>(met_label_);
       Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
@@ -182,6 +180,9 @@ namespace ic {
       met->set_vector(ROOT::Math::PtEtaPhiEVector(new_met));
     }
 
+    // ************************************************************************
+    // Select l->tau or jet->tau fakes
+    // ************************************************************************
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
@@ -209,12 +210,13 @@ namespace ic {
       // If we want ZJ and there is a match, fail the event
       if (faked_tau_selector_ == 2 && matches.size() > 0) return 1; 
     }
-
+    // ************************************************************************
+    // Restrict decay modes
+    // ************************************************************************
     Tau const* tau_ptr = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
     if (tau_ptr && allowed_tau_modes_ != "") {
       if (tau_mode_set_.find(tau_ptr->decay_mode()) == tau_mode_set_.end()) return 1;
     }
-
 
     dilepton = result;
     return 0;
