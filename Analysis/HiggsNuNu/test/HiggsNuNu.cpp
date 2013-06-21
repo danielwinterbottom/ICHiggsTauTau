@@ -1132,8 +1132,10 @@ int main(int argc, char* argv[]){
      }
      else if (channel == channel::taunu){
        analysis.AddModule(&oneTauFilter);
-       analysis.AddModule(&zeroVetoElectronFilter);
-       analysis.AddModule(&zeroVetoMuonFilter);
+       if (!fixForEWKZ){
+	 analysis.AddModule(&zeroVetoElectronFilter);
+	 analysis.AddModule(&zeroVetoMuonFilter);
+       }
      }
      else {
        //lepton veto modules
@@ -1222,7 +1224,14 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&wjetsPlots_dphi_qcd);
      analysis.AddModule(&controlPlots_dphi_signal);
      analysis.AddModule(&wjetsPlots_dphi_signal);
-     
+
+     //do central jet veto for taunu at the end
+     if (channel == channel::taunu){
+       analysis.AddModule(&FilterCJV);
+       analysis.AddModule(&controlPlots_cjv);
+       analysis.AddModule(&wjetsPlots_cjv);
+     }
+
      //debug
      //analysis.AddModule(&dphiJetPairFilter);
      //if (!is_data) analysis.AddModule(&hinvWeights);
