@@ -324,14 +324,16 @@ namespace ic {
     }
 
     if ( (channel_ == channel::mtmet || channel_ == channel::etmet) && is_data_) {
+      std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
         bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
-        if (leg1_match && leg2_match) dileptons_pass.push_back(dileptons[i]);
+        bool l1_met = l1met.at(0)->pt() > 26.;
+        if (leg1_match && leg2_match && l1_met) dileptons_pass.push_back(dileptons[i]);
       }
     }
 
-    if (channel_ == channel::mtmet && !is_data_) {
+    if (channel_ == channel::mtmet) {
       /*
       std::vector<TriggerObject *> mu8_obj = objs; // Make a copy of the Mu8 Trigger objects so we can filter
       ic::erase_if(mu8_obj, !boost::bind(MinPtMaxEta, _1, 8.0, 2.1));
