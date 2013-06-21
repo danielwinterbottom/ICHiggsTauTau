@@ -828,7 +828,6 @@ int main(int argc, char* argv[]){
     .set_do_emu_m_fakerates(false)
     .set_do_top_factors(false)
     .set_do_btag_weight(false);
-  if (era == era::data_2012_rereco) httWeights.set_era(era::data_2012_moriond);
   if (!is_data) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
     httWeights.set_do_btag_weight(true).set_btag_mode(btag_mode).set_bfake_mode(bfake_mode);
@@ -953,9 +952,6 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&httEnergyScale);
   if (to_check.size() > 0)        analysis.AddModule(&httPrint);
   if (is_embedded)                analysis.AddModule(&embeddedMassFilter);
-  if (is_embedded && era == era::data_2012_rereco) {
-                                  analysis.AddModule(&rechitWeights);
-  }
 
   if (channel == channel::et || channel == channel::etmet) {
                                   analysis.AddModule(&selElectronCopyCollection);
@@ -1050,6 +1046,9 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&httL1MetCut);
     }  
                                   analysis.AddModule(&httWeights);
+   if (is_embedded && era == era::data_2012_rereco) {
+                                  analysis.AddModule(&rechitWeights);
+   }
     if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
     }
