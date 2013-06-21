@@ -51,6 +51,8 @@ namespace ic {
       if (write_tree_) {
         outtree_ = fs_->make<TTree>("ntuple","ntuple");
         outtree_->Branch("wt",                &wt_);
+        outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
+        outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
         outtree_->Branch("os",                &os_);
         outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("m_sv",              &m_sv_);
@@ -211,6 +213,11 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
     wt_ = eventInfo->total_weight();
+    wt_ggh_pt_up_ = 1.0;
+    wt_ggh_pt_down_ = 1.0;
+    if (event->Exists("wt_ggh_pt_up"))   wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
+    if (event->Exists("wt_ggh_pt_down")) wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
+
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
@@ -226,8 +233,6 @@ namespace ic {
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
-
-
 
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not

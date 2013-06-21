@@ -43,6 +43,8 @@ class HTTWeights : public ModuleBase {
   TFile *MuonFRFile;
   TFile *ggh_weights_;
   TH1F *ggh_hist_;
+  TH1F *ggh_hist_up_;
+  TH1F *ggh_hist_down_;
   mithep::TH2DAsymErr* MuonFakeRateHist_PtEta;
   mithep::TH2DAsymErr* ElectronFakeRateHist_PtEta;
   BTagWeight btag_weight;

@@ -35,6 +35,9 @@ namespace ic {
     do_w_soup_          = false;
     do_dy_soup_         = false;
     ggh_mass_           = "";
+    ggh_hist_           = nullptr;
+    ggh_hist_up_        = nullptr;
+    ggh_hist_down_      = nullptr;
   }
 
   HTTWeights::~HTTWeights() {
@@ -63,7 +66,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "btag_mode"           % btag_mode_;
     std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
 
-    if (ggh_mass_ != "") {
+    if (ggh_mass_ != "" && mc_ == mc::fall11_42X) {
       if (ggh_mass_ == "90" || ggh_mass_ == "95" || 
           ggh_mass_ == "100" || ggh_mass_ == "105") ggh_mass_ = "110";
       if (ggh_mass_ == "150" || ggh_mass_ == "155" || ggh_mass_ == "160") ggh_mass_ = "145";
@@ -72,6 +75,22 @@ namespace ic {
       ggh_weights_ = new TFile(file.c_str());
       gDirectory->cd("powheg_weight");
       ggh_hist_ = (TH1F*)gDirectory->Get(("weight_hqt_fehipro_fit_"+ggh_mass_).c_str());
+    }
+    if (ggh_mass_ != "" && mc_ == mc::summer12_53X) {
+      if (  ggh_mass_ ==  "90"  || ggh_mass_ ==  "95" || ggh_mass_ == "100"
+         || ggh_mass_ == "105"  || ggh_mass_ == "110" ) ggh_mass_ = "100";
+      if (  ggh_mass_ == "115"  || ggh_mass_ ==  "120" || ggh_mass_ == "125"
+         || ggh_mass_ == "130"  || ggh_mass_ == "135" ) ggh_mass_ = "125";
+      if (  ggh_mass_ == "140"  || ggh_mass_ == "145" || ggh_mass_ == "150"
+         || ggh_mass_ == "155"  || ggh_mass_ == "160" ) ggh_mass_ = "150";
+
+      std::string file = "data/ggh_weights/HRes_weight_pTH_mH"+ggh_mass_+"_8TeV.root";
+      std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
+      ggh_weights_ = new TFile(file.c_str());
+      ggh_weights_->cd();
+      ggh_hist_ = (TH1F*)gDirectory->Get("Nominal");
+      ggh_hist_up_ = (TH1F*)gDirectory->Get("Up");
+      ggh_hist_down_ = (TH1F*)gDirectory->Get("Down");
     }
 
     if (do_emu_e_fakerates_ || do_emu_m_fakerates_) {
@@ -158,6 +177,12 @@ namespace ic {
         //std::cout << "pt: " << h_pt << "\tweight: " <<  pt_weight << std::endl;
       }
       eventInfo->set_weight("ggh", pt_weight);
+      if (mc_ == mc::summer12_53X) {
+        double weight_up   = ggh_hist_up_->GetBinContent(fbin)   / pt_weight;
+        double weight_down = ggh_hist_down_->GetBinContent(fbin) / pt_weight;
+        event->Add("wt_ggh_pt_up", weight_up);
+        event->Add("wt_ggh_pt_down", weight_down);
+      }
     }
 
     if (do_top_factors_) {
