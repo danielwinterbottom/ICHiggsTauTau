@@ -130,6 +130,7 @@ if options.scheme == 'old_sm':
 #################################################################
 #### New SM scheme
 #################################################################
+extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
 if options.scheme == 'new_sm':
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
@@ -216,6 +217,9 @@ if options.scheme == 'new_mssm':
   # BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500"
   extra_global += ' --add_extra_binning="(400,0,2000):_fine_binning"'
   extra_global += ' --add_sm_background="125"'
+  extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mtmet"] += ' --set_alias="sel:mt_1<30."'
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),

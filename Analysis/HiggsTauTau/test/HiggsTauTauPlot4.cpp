@@ -31,6 +31,7 @@ int main(int argc, char* argv[]){
 	string syst_tau_scale;
 	string syst_qcd_shape;
 	string syst_fakes_shape;
+	string syst_ggh_pt;
 	string add_sm_background;
 	double sub_ztt_top_frac;
 	string fix_empty_bins;
@@ -62,6 +63,7 @@ int main(int argc, char* argv[]){
 	  ("syst_tau_scale",      po::value<string>(&syst_tau_scale)->default_value(""))
 	  ("syst_qcd_shape",      po::value<string>(&syst_qcd_shape)->default_value(""))
 	  ("syst_fakes_shape",    po::value<string>(&syst_fakes_shape)->default_value(""))
+	  ("syst_ggh_pt",    			po::value<string>(&syst_ggh_pt)->default_value(""))
 	  ("add_sm_background",   po::value<string>(&add_sm_background)->default_value(""))
 	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
 	  ("fix_empty_bins",   		po::value<string>(&fix_empty_bins)->default_value(""))
@@ -145,6 +147,17 @@ int main(int argc, char* argv[]){
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "", 1.0);
 	if (add_sm_background != "") ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
+
+	// ************************************************************************
+	// ggH pT Reweighting
+	// ************************************************************************
+	if (syst_ggh_pt != "") {
+		std::cout << "[HiggsTauTauPlot4] Adding ggH pT systematic..." << std::endl;
+		for (auto m : sm_masses) {
+			hmap["ggH"+m+"_"+syst_ggh_pt+"Up"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, var, sel, cat, "wt*wt_ggh_pt_up", 1.0);
+			hmap["ggH"+m+"_"+syst_ggh_pt+"Down"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, var, sel, cat, "wt*wt_ggh_pt_down", 1.0);
+		}
+	}
 
 	// ************************************************************************
 	// Additional Binning
