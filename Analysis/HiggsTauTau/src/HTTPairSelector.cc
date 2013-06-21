@@ -109,14 +109,6 @@ namespace ic {
     if (result.size() == 0) return 1;  //Require at least one dilepton
 
     // ************************************************************************
-    // In the mtmet channel apply random l1met cut
-    // ************************************************************************
-    if (channel_ == channel::mtmet) {
-      std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
-        if (l1met.at(0)->pt() <= 26.) return 1;
-    }
-
-    // ************************************************************************
     // If using pair-wise mva met select the appropriate met
     // ************************************************************************
     if (mva_met_from_vector_) {
