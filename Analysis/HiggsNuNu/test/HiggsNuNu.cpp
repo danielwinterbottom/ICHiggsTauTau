@@ -953,6 +953,22 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiQCD");
 
+  HinvControlPlots controlPlots_dphi_qcd_nocjv = HinvControlPlots("DPhiControlPlotsQCD_noCJV")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiQCD-noCJV")
+    .set_channel(channel_str);
+
+  HinvWJetsPlots wjetsPlots_dphi_qcd_nocjv = HinvWJetsPlots("DPhiWJetsPlotsQCD_noCJV")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiQCD-noCJV");
+
   //if (channel==channel::enu)
   //wjetsPlots_dphi_qcd.set_met_nolep_label("metNoElectrons");
   //else if (channel==channel::emu)
@@ -973,6 +989,22 @@ int main(int argc, char* argv[]){
     .set_muons_label("selMuons")
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiSIGNAL");
+
+  HinvControlPlots controlPlots_dphi_signal_nocjv = HinvControlPlots("DPhiControlPlotsSIGNAL_noCJV")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiSIGNAL-noCJV")
+    .set_channel(channel_str);
+
+  HinvWJetsPlots wjetsPlots_dphi_signal_nocjv = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_noCJV")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiSIGNAL-noCJV");
 
   //if (channel==channel::enu)
   //wjetsPlots_dphi_signal.set_met_nolep_label("metNoElectrons");
@@ -1206,13 +1238,16 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_tightMjj);
      analysis.AddModule(&wjetsPlots_tightMjj);
 
-     //do central jet veto
-     if (channel != channel::taunu){
-       analysis.AddModule(&FilterCJV);
-       analysis.AddModule(&controlPlots_cjv);
-       analysis.AddModule(&wjetsPlots_cjv);
-     }
+     analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
+     analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);
+     analysis.AddModule(&controlPlots_dphi_signal_nocjv);
+     analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
 
+     //do central jet veto
+     analysis.AddModule(&FilterCJV);
+     analysis.AddModule(&controlPlots_cjv);
+     analysis.AddModule(&wjetsPlots_cjv);
+     
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      //dphi cut: don't filter events anymore !
@@ -1224,13 +1259,6 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&wjetsPlots_dphi_qcd);
      analysis.AddModule(&controlPlots_dphi_signal);
      analysis.AddModule(&wjetsPlots_dphi_signal);
-
-     //do central jet veto for taunu at the end
-     if (channel == channel::taunu){
-       analysis.AddModule(&FilterCJV);
-       analysis.AddModule(&controlPlots_cjv);
-       analysis.AddModule(&wjetsPlots_cjv);
-     }
 
      //debug
      //analysis.AddModule(&dphiJetPairFilter);
