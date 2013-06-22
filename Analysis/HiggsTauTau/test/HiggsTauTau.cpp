@@ -139,7 +139,7 @@ int main(int argc, char* argv[]){
       ("large_tscale_shift",  po::value<bool>(&large_tscale_shift)->default_value(false))
       ("do_tau_eff",          po::value<bool>(&do_tau_eff)->default_value(false))
       ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""))
-      ("pu_id_training",     po::value<unsigned>(&pu_id_training)->default_value(1));
+      ("pu_id_training",      po::value<unsigned>(&pu_id_training)->default_value(1));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -394,6 +394,7 @@ int main(int argc, char* argv[]){
     .set_channel(channel)
     .set_mc(mc)
     .set_is_data(is_data)
+    .set_is_embedded(is_embedded)
     .set_pair_label("emtauCandidates");
 
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
@@ -1028,7 +1029,9 @@ int main(int argc, char* argv[]){
   }
 
   if (!do_skim) {
-    if (!is_embedded)             analysis.AddModule(&httTriggerFilter);
+    if (!is_embedded || era == era::data_2012_rereco)  { // Don't usually want trigger for embedded
+                                  analysis.AddModule(&httTriggerFilter);
+    }
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
     //                            analysis.AddModule(&jetEnergyCorrections);

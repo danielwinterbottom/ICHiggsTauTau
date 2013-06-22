@@ -17,6 +17,7 @@ class HTTTriggerFilter : public ModuleBase {
   CLASS_MEMBER(HTTTriggerFilter, ic::mc, mc)
   CLASS_MEMBER(HTTTriggerFilter, std::string, pair_label)
   CLASS_MEMBER(HTTTriggerFilter, bool, is_data)
+  CLASS_MEMBER(HTTTriggerFilter, bool, is_embedded)
 
  public:
   HTTTriggerFilter(std::string const& name);

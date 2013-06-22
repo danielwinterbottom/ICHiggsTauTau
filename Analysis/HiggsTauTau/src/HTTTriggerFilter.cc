@@ -28,6 +28,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "mc"              % MC2String(mc_);
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % pair_label_;
     std::cout << boost::format(param_fmt()) % "is_data"         % is_data_;
+    std::cout << boost::format(param_fmt()) % "is_embedded"     % is_embedded_;
     return 0;
   }
 
@@ -85,6 +86,9 @@ namespace ic {
         if (channel_ == channel::etmet) {
           //2012 Triggers
           if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v") != name.npos) path_found = true;
+        }
+        if (is_embedded_) {
+          if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
         }
         if (path_found) break;
       }
@@ -292,6 +296,7 @@ namespace ic {
       }
     }
 
+    if (is_embedded_) return 0; // Don't do object matching for embedded events
 
     std::vector<CompositeCandidate *> & dileptons = event->GetPtrVec<CompositeCandidate>(pair_label_);
     std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label);
