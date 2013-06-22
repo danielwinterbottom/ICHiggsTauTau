@@ -232,7 +232,7 @@ signal_mc = [ ]
 if options.proc_sm or options.proc_all:
   masses = ['110','115','120','125','130','135','140','145']
   if not options.do_2011: masses += ['90','95','100','105','150','155','160']
-  if options.do_2011 and ERA=='Paper' : masses += ['90','95','100','105']
+  if options.do_2011 and ERA=='Paper' : masses += ['90','95','100','105','150','155','160']
   if options.short_signal: masses = ['125']
   for mass in masses :
     signal_mc += [
