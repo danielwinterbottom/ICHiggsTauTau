@@ -29,6 +29,8 @@ int main(int argc, char* argv[]){
 	string sm_masses_str;													
 	string mssm_masses_str;												
 	string syst_tau_scale;
+	string syst_eff_b;
+	string syst_fake_b;
 	string syst_qcd_shape;
 	string syst_fakes_shape;
 	string syst_ggh_pt;
@@ -61,6 +63,8 @@ int main(int argc, char* argv[]){
 	  ("sm_masses",           po::value<string>(&sm_masses_str)->default_value(""))
 	  ("mssm_masses",         po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("syst_tau_scale",      po::value<string>(&syst_tau_scale)->default_value(""))
+	  ("syst_eff_b",      		po::value<string>(&syst_eff_b)->default_value(""))
+	  ("syst_fake_b",      		po::value<string>(&syst_fake_b)->default_value(""))
 	  ("syst_qcd_shape",      po::value<string>(&syst_qcd_shape)->default_value(""))
 	  ("syst_fakes_shape",    po::value<string>(&syst_fakes_shape)->default_value(""))
 	  ("syst_ggh_pt",    			po::value<string>(&syst_ggh_pt)->default_value(""))
@@ -174,36 +178,66 @@ int main(int argc, char* argv[]){
 		}
 	}
 
+
+	vector<pair<string,string>> systematics;
+
 	// ************************************************************************
 	// Add tau/electron energy scale systematics
 	// ************************************************************************
 	if (syst_tau_scale != "") {
-		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-		std::cout << "[HiggsTauTauPlot4] Doing energy scale systematics..." << std::endl;
-		HTTAnalysis ana_tscale_down(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
-		for (auto const& a : alias_vec) ana_tscale_down.SetAlias(a.first, a.second);
-		ana_tscale_down.AddSMSignalSamples(sm_masses);
-		if (add_sm_background != "") ana_tscale_down.AddSMSignalSamples({add_sm_background});
-		ana_tscale_down.AddMSSMSignalSamples(mssm_masses);
-		ana_tscale_down.ReadTrees(folder+"/TSCALE_DOWN", folder);
-		ana_tscale_down.ParseParamFile(paramfile);
-		ana_tscale_down.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst_tau_scale+"Down");
-		ana_tscale_down.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Down", 1.0);
-		if (add_sm_background != "") ana_tscale_down.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst_tau_scale+"Down");
-		ana_tscale_down.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Down", 1.0);
+		systematics.push_back(make_pair("/TSCALE_DOWN", syst_tau_scale+"Down"));
+		systematics.push_back(make_pair("/TSCALE_UP", syst_tau_scale+"Up"));
+		// std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+		// std::cout << "[HiggsTauTauPlot4] Doing energy scale systematics..." << std::endl;
+		// HTTAnalysis ana_tscale_down(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
+		// for (auto const& a : alias_vec) ana_tscale_down.SetAlias(a.first, a.second);
+		// ana_tscale_down.AddSMSignalSamples(sm_masses);
+		// if (add_sm_background != "") ana_tscale_down.AddSMSignalSamples({add_sm_background});
+		// ana_tscale_down.AddMSSMSignalSamples(mssm_masses);
+		// ana_tscale_down.ReadTrees(folder+"/TSCALE_DOWN", folder);
+		// ana_tscale_down.ParseParamFile(paramfile);
+		// ana_tscale_down.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst_tau_scale+"Down");
+		// ana_tscale_down.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Down", 1.0);
+		// if (add_sm_background != "") ana_tscale_down.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst_tau_scale+"Down");
+		// ana_tscale_down.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Down", 1.0);
 
-		HTTAnalysis ana_tscale_up(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
-		for (auto const& a : alias_vec) ana_tscale_up.SetAlias(a.first, a.second);
-		ana_tscale_up.AddSMSignalSamples(sm_masses);
-		if (add_sm_background != "") ana_tscale_up.AddSMSignalSamples({add_sm_background});
-		ana_tscale_up.AddMSSMSignalSamples(mssm_masses);
-		ana_tscale_up.ReadTrees(folder+"/TSCALE_UP", folder);
-		ana_tscale_up.ParseParamFile(paramfile);
-		ana_tscale_up.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst_tau_scale+"Up");
-		ana_tscale_up.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
-		if (add_sm_background != "") ana_tscale_up.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst_tau_scale+"Up");
-		ana_tscale_up.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
+		// HTTAnalysis ana_tscale_up(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
+		// for (auto const& a : alias_vec) ana_tscale_up.SetAlias(a.first, a.second);
+		// ana_tscale_up.AddSMSignalSamples(sm_masses);
+		// if (add_sm_background != "") ana_tscale_up.AddSMSignalSamples({add_sm_background});
+		// ana_tscale_up.AddMSSMSignalSamples(mssm_masses);
+		// ana_tscale_up.ReadTrees(folder+"/TSCALE_UP", folder);
+		// ana_tscale_up.ParseParamFile(paramfile);
+		// ana_tscale_up.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst_tau_scale+"Up");
+		// ana_tscale_up.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
+		// if (add_sm_background != "") ana_tscale_up.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst_tau_scale+"Up");
+		// ana_tscale_up.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
+		// std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+	}
+
+	if (syst_eff_b != "") {
+		systematics.push_back(make_pair("/BTAG_DOWN", syst_eff_b+"Down"));
+		systematics.push_back(make_pair("/BTAG_UP", syst_eff_b+"Up"));
+	}
+	if (syst_fake_b != "") {
+		systematics.push_back(make_pair("/BFAKE_DOWN", syst_fake_b+"Down"));
+		systematics.push_back(make_pair("/BFAKE_UP", syst_fake_b+"Up"));
+	}
+
+	for (auto const& syst : systematics) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+		std::cout << "[HiggsTauTauPlot4] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
+		HTTAnalysis ana_syst(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
+		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
+		ana_syst.AddSMSignalSamples(sm_masses);
+		if (add_sm_background != "") ana_syst.AddSMSignalSamples({add_sm_background});
+		ana_syst.AddMSSMSignalSamples(mssm_masses);
+		ana_syst.ReadTrees(folder+syst.first, folder);
+		ana_syst.ParseParamFile(paramfile);
+		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
+		ana_syst.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		if (add_sm_background != "") ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
+		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 	}
 
 	// ************************************************************************
