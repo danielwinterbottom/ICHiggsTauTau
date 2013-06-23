@@ -252,9 +252,15 @@ int main(int argc, char* argv[]){
 		HTTAnalysis::Value & top_rate = hmap[top_label].second;
 		HTTAnalysis::Value contamination = HTTAnalysis::ValueProduct(ztt_rate, std::make_pair(sub_ztt_top_frac,0.));
 		HTTAnalysis::PrintValue("Contamination", contamination);
-		top_rate = HTTAnalysis::ValueSubtract(top_rate, contamination);
-		SetNorm(&(hmap[top_label].first), top_rate.first);
 		HTTAnalysis::PrintValue("New "+top_label+ " rate", top_rate);
+		boost::regex top_regex(top_label+".*");
+		for (auto & entry : hmap) {
+			if (boost::regex_match(entry.first, top_regex)) {
+				std::cout << "Correcting rate in " << entry.first << std::endl;
+				entry.second.second = HTTAnalysis::ValueSubtract(entry.second.second, contamination);
+				SetNorm(&(entry.second.first), entry.second.second.first);
+			}
+		}
 	}
 
 	// ************************************************************************
