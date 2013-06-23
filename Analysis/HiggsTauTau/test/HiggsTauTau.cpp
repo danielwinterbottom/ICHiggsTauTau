@@ -28,6 +28,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/SVFitTest.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/JetEnergyUncertainty.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
@@ -71,6 +72,7 @@ int main(int argc, char* argv[]){
   unsigned tau_scale_mode;        // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned btag_mode;             // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned bfake_mode;            // 0 = no shift, 1 = shift down, 2 = shift up
+  unsigned jes_mode;              // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned mass_scale_mode;       // 0 = no shift, 1 = nominal, but in TSCALE_DOWN, 2 = shift up, 3 = shift up again, in TSCALE_UP
   unsigned svfit_mode;            // 0 = not run, 1 = generate jobs, 2 = read-in job output
   unsigned new_svfit_mode;        // 0 = not run, 1 = generate jobs, 2 = read-in job output
@@ -125,6 +127,7 @@ int main(int argc, char* argv[]){
       ("tau_scale_mode",      po::value<unsigned>(&tau_scale_mode)->default_value(0))
       ("btag_mode",           po::value<unsigned>(&btag_mode)->default_value(0))
       ("bfake_mode",          po::value<unsigned>(&bfake_mode)->default_value(0))
+      ("jes_mode",            po::value<unsigned>(&jes_mode)->default_value(0))
       ("mass_scale_mode",     po::value<unsigned>(&mass_scale_mode)->default_value(0))
       ("svfit_mode",          po::value<unsigned>(&svfit_mode)->default_value(0))
       ("new_svfit_mode",      po::value<unsigned>(&new_svfit_mode)->default_value(0))
@@ -175,6 +178,12 @@ int main(int argc, char* argv[]){
   }
   if (bfake_mode == 2) {
     output_folder += "BFAKE_UP/";
+  }
+  if (jes_mode == 1) {
+    output_folder += "JES_DOWN/";
+  }
+  if (jes_mode == 2) {
+    output_folder += "JES_UP/";
   }
 
 //  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
@@ -451,6 +460,22 @@ int main(int argc, char* argv[]){
   .set_l2_file("data/jec/"+jec_payload+"_L2Relative_AK5PF.txt")
   .set_l3_file("data/jec/"+jec_payload+"_L3Absolute_AK5PF.txt")
   .set_res_file("data/jec/"+jec_payload+"_L2L3Residual_AK5PF.txt");
+
+  string jes_input_file = "data/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
+  string jes_input_set  = "SubTotalDataMC";
+  if (era == era::data_2012_moriond || era == era::data_2012_donly || era == era::data_2012_hcp) {
+    jes_input_file = "data/jec/Fall12_V7_DATA_UncertaintySources_AK5PF.txt";
+    jes_input_set  = "SubTotalMC";
+  }
+  if (era == era::data_2012_rereco) {
+    jes_input_file = "data/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+    jes_input_set  = "SubTotalMC";
+  }
+  auto jetEnergyUncertainty = JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
+  .set_input_label("pfJetsPFlow")
+  .set_jes_shift_mode(jes_mode)
+  .set_uncert_file(jes_input_file)
+  .set_uncert_set(jes_input_set);
 
   HTTL1MetCorrector httL1MetCorrector("HTTL1MetCorrector");
   HTTL1MetCut httL1MetCut("HTTL1MetCut");
@@ -1034,6 +1059,7 @@ int main(int argc, char* argv[]){
     }
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
+    if (jes_mode > 0 && !is_data) analysis.AddModule(&jetEnergyUncertainty);
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
