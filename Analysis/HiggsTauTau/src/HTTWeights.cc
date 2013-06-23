@@ -488,8 +488,8 @@ namespace ic {
             mu_trg = (0.034 * mu12) + (0.368 * mu15) + (0.598 * mu15_2p1);
             mu_trg_mc = 0.923;
           } else if (m_eta >= 0.8 && m_eta < 1.2) {
-            double mu12 = 86.8;
-            double mu15 = 87.1 ;
+            double mu12 = 0.868;
+            double mu15 = 0.871;
             double mu15_2p1 = Efficiency(pt, 15.9995, 1.35931e-07, 7.88264e-11, 4.60253, 0.855461);
             mu_trg = (0.034 * mu12) + (0.368 * mu15) + (0.598 * mu15_2p1);
             mu_trg_mc = 0.879;

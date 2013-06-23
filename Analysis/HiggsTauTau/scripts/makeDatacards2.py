@@ -84,6 +84,7 @@ extra_channel = {
 #### Old SM scheme
 #################################################################
 if options.scheme == 'old_sm':
+  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   scheme_et = [
@@ -130,8 +131,8 @@ if options.scheme == 'old_sm':
 #################################################################
 #### New SM scheme
 #################################################################
-extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
 if options.scheme == 'new_sm':
+  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<30."'
@@ -161,6 +162,7 @@ if options.scheme == 'new_sm':
     ("2",   "new_1jet_medium",          "1jet_medium",          BINS_FINE,  ' --set_alias="w_shape_os:1" --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
     ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high_highhiggs",  "1jet_high_highhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_mtmet = scheme_mt
