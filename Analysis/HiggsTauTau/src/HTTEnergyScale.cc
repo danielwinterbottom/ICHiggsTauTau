@@ -1,14 +1,10 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
-#include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
-
-#include "boost/filesystem.hpp"
-
 
 namespace ic {
 
-  HTTEnergyScale::HTTEnergyScale(std::string const& name) : ModuleBase(name), channel_(channel::et) {
+  HTTEnergyScale::HTTEnergyScale(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::moriond2013) {
     moriond_corrections_ = false;
   }
 
@@ -37,7 +33,11 @@ namespace ic {
         if (dm == 0) {
           central_shift = 1.00;
         } else if (dm == 1 || dm == 2) {
-          central_shift = 1.015 + 0.001 * TMath::Min(TMath::Max(pt-45. ,0.),10.0);
+          if (strategy_ == strategy::paper2013) {
+            central_shift = 1.025 + 0.001 * TMath::Min(TMath::Max(pt-45. ,0.),10.0);
+          } else {
+            central_shift = 1.015 + 0.001 * TMath::Min(TMath::Max(pt-45. ,0.),10.0);
+          }
         } else if (dm == 10) {
           central_shift = 1.012 + 0.001 * TMath::Min(TMath::Max(pt-32. ,0.),18.0);
         }
@@ -45,8 +45,6 @@ namespace ic {
         central_shift = 1.00;
       }
       double total_shift = central_shift * shift_;
-      // std::cout << "total shift: " << total_shift << " for " << taus[i]->id() << std::endl;
-
       taus[i]->set_pt(taus[i]->pt() * total_shift);
       taus[i]->set_energy(taus[i]->energy() * total_shift);
       tau_scales[taus[i]->id()] = total_shift;

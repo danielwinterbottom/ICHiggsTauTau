@@ -659,6 +659,7 @@ int main(int argc, char* argv[]){
   HTTEnergyScale httEnergyScale = HTTEnergyScale("HTTEnergyScale")
     .set_input_label("taus")
     .set_shift(tau_shift)
+    .set_strategy(strategy)
     .set_moriond_corrections(false);
     if ( (output_name.find("GluGluToHToTauTau")     != output_name.npos) 
       || (output_name.find("SUSYGluGluToHToTauTau") != output_name.npos)
