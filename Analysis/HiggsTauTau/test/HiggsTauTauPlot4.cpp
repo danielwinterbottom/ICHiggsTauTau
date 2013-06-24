@@ -31,6 +31,7 @@ int main(int argc, char* argv[]){
 	string syst_tau_scale;
 	string syst_eff_b;
 	string syst_fake_b;
+	string syst_scale_j;
 	string syst_qcd_shape;
 	string syst_fakes_shape;
 	string syst_ggh_pt;
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]){
 	  ("syst_tau_scale",      po::value<string>(&syst_tau_scale)->default_value(""))
 	  ("syst_eff_b",      		po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_fake_b",      		po::value<string>(&syst_fake_b)->default_value(""))
+	  ("syst_scale_j",        po::value<string>(&syst_scale_j)->default_value(""))
 	  ("syst_qcd_shape",      po::value<string>(&syst_qcd_shape)->default_value(""))
 	  ("syst_fakes_shape",    po::value<string>(&syst_fakes_shape)->default_value(""))
 	  ("syst_ggh_pt",    			po::value<string>(&syst_ggh_pt)->default_value(""))
@@ -222,6 +224,10 @@ int main(int argc, char* argv[]){
 	if (syst_fake_b != "") {
 		systematics.push_back(make_pair("/BFAKE_DOWN", syst_fake_b+"Down"));
 		systematics.push_back(make_pair("/BFAKE_UP", syst_fake_b+"Up"));
+	}
+	if (syst_scale_j != "") {
+		systematics.push_back(make_pair("/JES_DOWN", syst_scale_j+"Down"));
+		systematics.push_back(make_pair("/JES_UP", syst_scale_j+"Up"));
 	}
 
 	for (auto const& syst : systematics) {

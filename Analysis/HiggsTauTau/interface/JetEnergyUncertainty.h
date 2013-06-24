@@ -60,6 +60,7 @@ template <class T>
 int JetEnergyUncertainty<T>::Execute(TreeEvent *event) {
   std::vector<T *> & vec = event->GetPtrVec<T>(input_label_);
   for (unsigned i = 0; i < vec.size(); ++i) {
+    if (fabs(vec[i]->eta()) > 5.0) continue;
     uncert_->setJetPt(vec[i]->pt());
     uncert_->setJetEta(vec[i]->eta());
     if (jes_shift_mode_ == 1) {

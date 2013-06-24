@@ -17,7 +17,7 @@ namespace ic {
   }
 
   EmbeddingKineReweightProducer::~EmbeddingKineReweightProducer() {
-    if (electron_id_hist_) delete electron_id_hist_;
+  //  if (electron_id_hist_) delete electron_id_hist_;
   }
 
   int EmbeddingKineReweightProducer::PreAnalysis() {
