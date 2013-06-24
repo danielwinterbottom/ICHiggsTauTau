@@ -31,15 +31,18 @@ if f:
       print '%-10s %-19s %-19s' % ("Process","Down","Up")
       for pr in options.processes:
         h_central = ROOT.gDirectory.Get(pr)
+        if not h_central: continue
         y_central = h_central.Integral(0, h_central.GetNbinsX()+1)
         e_central = ROOT.Double(0.0)
         h_central.IntegralAndError(0, h_central.GetNbinsX()+1, e_central)
         neff_central = (y_central/e_central)**2
 
         h_down = ROOT.gDirectory.Get(pr+"_"+options.systematic+"Down")
+        if not h_down: continue
         y_down = h_down.Integral(0, h_down.GetNbinsX()+1)
 
         h_up = ROOT.gDirectory.Get(pr+"_"+options.systematic+"Up")
+        if not h_up: continue
         y_up = h_up.Integral(0, h_up.GetNbinsX()+1)
 
         up_ratio = y_up/y_central

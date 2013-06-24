@@ -85,14 +85,17 @@ namespace ic {
       // New SM categories
       alias_map_["inclusive"]                   = "";
       alias_map_["new_vbf_tight"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
-      alias_map_["new_vbf"]                     = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
+      alias_map_["new_vbf_loose"]               = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
+      alias_map_["new_vbf"]                     = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
       alias_map_["new_1jet_high_lowhiggs"]      = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
+      alias_map_["new_1jet_high"]               = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0)";
       alias_map_["new_1jet_high_highhiggs"]     = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";
       alias_map_["new_1jet_medium"]             = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
       if (ch_ == channel::et) {
+        alias_map_["new_1jet_high"]              += " && met>30.";
         alias_map_["new_1jet_high_lowhiggs"]     += " && met>30.";
         alias_map_["new_1jet_high_highhiggs"]    += " && met>30.";
-        alias_map_["new_1jet_medium"]             += " && met>30.";
+        alias_map_["new_1jet_medium"]            += " && met>30.";
       } 
       alias_map_["new_0jet_high"]         = "(n_jets==0 && pt_2>45. && n_bjets==0)";
       alias_map_["new_0jet_medium"]       = "(n_jets==0 && pt_2>30. && pt_2<=45. && n_bjets==0)";
@@ -108,7 +111,7 @@ namespace ic {
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
       alias_map_["new_vbf_tight"]     = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
-      alias_map_["new_vbf"]           = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
+      alias_map_["new_vbf_loose"]     = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0)";
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>35. && n_bjets==0)";

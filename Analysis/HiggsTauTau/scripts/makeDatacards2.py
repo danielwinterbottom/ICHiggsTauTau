@@ -139,30 +139,35 @@ if options.scheme == 'new_sm':
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   scheme_et = [
     ("8",   "inclusive",                "inclusive",            BINS_FINE,  ""),
-    ("5",   "new_vbf",                  "vbf_loose",            BINS,       ""),
+    ("5",   "new_vbf",                  "vbf",                  BINS,       ""),
+    ("5",   "new_vbf_loose",            "vbf_loose",            BINS,       ""),
     ("5",   "new_vbf_tight",            "vbf_tight",            BINS,       ""),
     ("0",   "new_0jet_low",             "0jet_low",             BINS_FINE,  ""),
     ("1",   "new_0jet_medium",          "0jet_medium",          BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",            BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",          BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high_highhiggs",  "1jet_high_highhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_mt = [
     ("8",   "inclusive",                "inclusive",            BINS_FINE,  ""),
-    ("5",   "new_vbf",                  "vbf_loose",            BINS,       ""),
+    ("5",   "new_vbf",                  "vbf",                  BINS,       ""),
+    ("5",   "new_vbf_loose",            "vbf_loose",            BINS,       ""),
     ("5",   "new_vbf_tight",            "vbf_tight",            BINS,       ""),
     ("0",   "new_0jet_low",             "0jet_low",             BINS_FINE,  ""),
     ("1",   "new_0jet_medium",          "0jet_medium",          BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",            BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",          BINS_FINE,  ' --set_alias="w_shape_os:1" --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
+    ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high_highhiggs",  "1jet_high_highhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_mtmet = scheme_mt
   scheme_em = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("5",   "new_vbf",      "vbf_loose",  BINS,      ' --set_alias="sel:em_vbf_mva>-0.15" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="sel:em_vbf_mva>-0.15" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("5",   "new_vbf_loose","vbf_loose",  BINS,      ' --set_alias="sel:em_vbf_mva>-0.15" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("5",   "new_vbf_tight","vbf_tight",  BINS,      ' --set_alias="sel:em_vbf_mva>-0.15" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
