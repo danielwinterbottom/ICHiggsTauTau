@@ -86,7 +86,7 @@ namespace ic {
       alias_map_["inclusive"]                   = "";
       alias_map_["new_vbf_tight"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
       alias_map_["new_vbf_loose"]               = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
-      alias_map_["new_vbf"]                     = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
+      alias_map_["new_vbf"]                     = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
       alias_map_["new_1jet_high_lowhiggs"]      = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
       alias_map_["new_1jet_high"]               = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0)";
       alias_map_["new_1jet_high_highhiggs"]     = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";

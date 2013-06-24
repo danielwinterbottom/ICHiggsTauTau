@@ -179,6 +179,7 @@ if options.scheme == 'new_sm':
   bkg_schemes = {
     'et' : 'et_default',
     'mt' : 'mt_with_zmm',
+    'mtmet' : 'mt_with_zmm',
     'em' : 'em_default'
   }
   sig_scheme = 'sm_default'
