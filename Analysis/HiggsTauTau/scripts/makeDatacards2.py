@@ -76,7 +76,7 @@ extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
 extra_channel = {
   "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
   "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
-  "mtmet" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "mtmet" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutaumet_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes"'
 }
 
@@ -149,7 +149,7 @@ if options.scheme == 'new_sm':
     ("2",   "new_1jet_medium",          "1jet_medium",          BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_highhiggs",  "1jet_high_highhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
+    ("3",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_mt = [
     ("8",   "inclusive",                "inclusive",            BINS_FINE,  ""),
@@ -163,7 +163,7 @@ if options.scheme == 'new_sm':
     ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_highhiggs",  "1jet_high_highhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
+    ("3",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs", BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_mtmet = scheme_mt
   scheme_em = [
