@@ -167,7 +167,7 @@ namespace ic {
       double pt = elec->pt();
       double eta = fabs(elec->sc_eta());
       pt  = std::max(10., std::min(pt, 199.9));
-      eta = std::max(0., std::min(pt, 2.49));
+      eta = std::max(0., std::min(eta, 2.49));
       int bin = electron_id_hist_->FindFixBin(pt,eta);
       double eff = electron_id_hist_->GetBinContent(bin);
       eventInfo->set_weight("kin_weight4", eff);
