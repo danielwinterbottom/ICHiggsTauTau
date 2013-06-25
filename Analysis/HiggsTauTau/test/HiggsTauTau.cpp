@@ -761,7 +761,7 @@ int main(int argc, char* argv[]){
     .set_input_label("taus").set_min(1);
   if ( (channel == channel::mt || channel == channel::mtmet) && strategy == strategy::paper2013) tauMuRejectFilter
     .set_predicate((bind(&Tau::GetTauID, _1, tau_anti_muon_discr) > 0.5)
-      && (bind(TauEoverP,_1) > 0.2));
+      && (bind(TauEoverP,_1, 0.2)));
 
                   
   // ------------------------------------------------------------------------------------

@@ -329,10 +329,13 @@ namespace ic {
     return (raw>cut);
   }
 
-  double TauEoverP(Tau const* tau) {
-    return (tau->lead_ecal_energy() + tau->lead_hcal_energy()) / tau->lead_p();
+  bool TauEoverP(Tau const* tau, double cut) {
+    if (tau->decay_mode() != 0) {
+      return true;
+    } else {
+      return ((tau->lead_ecal_energy() + tau->lead_hcal_energy()) / tau->lead_p()) > cut;
+    }
   }
-
 
   bool ElectronZbbID(Electron const * elec) {
     if (InEcalGap(elec)) return false;
