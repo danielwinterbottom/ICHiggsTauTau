@@ -333,7 +333,9 @@ namespace ic {
     if (tau->decay_mode() != 0) {
       return true;
     } else {
-      return ((tau->lead_ecal_energy() + tau->lead_hcal_energy()) / tau->lead_p()) > cut;
+      double e_over_p = (tau->lead_ecal_energy() + tau->lead_hcal_energy()) / tau->lead_p();
+      if (e_over_p != e_over_p) return true;
+      return e_over_p > cut;
     }
   }
 

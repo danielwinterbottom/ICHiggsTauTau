@@ -958,7 +958,6 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------ 
   std::vector<int> to_check =
   {
-    263132
   };
   for (auto ch : to_check) {
     analysis.NotifyEvent(ch);
