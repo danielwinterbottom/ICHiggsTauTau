@@ -104,7 +104,7 @@ int main(int argc, char* argv[]){
   vector<double> mva1_bkg_err;
 
   int mva1_bin = fake_barrel_mva1_num.GetYaxis()->FindBin(0.795);
-  TGraphErrors *mva1_loose;
+  TGraphErrors *mva1_loose = NULL;
   for (int i = 1; i <= fake_barrel_mva1_num.GetNbinsY(); ++i) {
     TH1D *proj_fake_barrel_mva1_num = fake_barrel_mva1_num.ProjectionX("proj_fake_barrel_mva1_num",i,i,"");
     TH1D *proj_fake_barrel_mva1_den = fake_barrel_mva1_den.ProjectionX("proj_fake_barrel_mva1_den",i,i,"");
@@ -138,7 +138,7 @@ int main(int argc, char* argv[]){
   vector<double> mva2_bkg_err;
 
   int mva2_bin = fake_barrel_mva2_num.GetYaxis()->FindBin(0.85);
-  TGraphErrors *mva2_loose;
+  TGraphErrors *mva2_loose = NULL;
 
   for (int i = 1; i <= fake_barrel_mva2_num.GetNbinsY(); ++i) {
     TH1D *proj_fake_barrel_mva2_num = fake_barrel_mva2_num.ProjectionX("proj_fake_barrel_mva2_num",i,i,"");
@@ -173,7 +173,7 @@ int main(int argc, char* argv[]){
   vector<double> hits_bkg_err;
 
   int hits_bin = fake_barrel_hits_num.GetYaxis()->FindBin(2.0);
-  TGraphErrors *hits_loose;
+  TGraphErrors *hits_loose = NULL;
 
   for (int i = 1; i <= fake_barrel_hits_num.GetNbinsY(); ++i) {
     TH1D *proj_fake_barrel_hits_num = fake_barrel_hits_num.ProjectionX("proj_fake_barrel_hits_num",i,i,"");

@@ -115,7 +115,7 @@ int main(int argc, char* argv[]){
   for (unsigned i = 0; i < graphs.size(); ++i) {
     SetTGraphStyle(&(graphs[i]), i + 6);
     if (relative) {
-      for (unsigned j = 0; j < graphs[i].GetN(); ++j) {
+      for (int j = 0; j < graphs[i].GetN(); ++j) {
         graphs[i].GetY()[j] /= benchmark;
       }      
     }

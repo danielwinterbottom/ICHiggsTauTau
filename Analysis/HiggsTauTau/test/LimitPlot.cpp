@@ -38,12 +38,12 @@ int main(int argc, char* argv[]){
   TGraph exp2 = GetFromTFile<TGraph>("presel-plots/"+ch+"_limit.root", ch+"/", "expected");
   TGraph obs2 = GetFromTFile<TGraph>("presel-plots/"+ch+"_limit.root", ch+"/", "observed");
 
-  for (unsigned i = 0; i < exp1.GetN(); ++i) {
+  for (int i = 0; i < exp1.GetN(); ++i) {
     double diff = fabs(exp1.GetY()[i] - exp2.GetY()[i]) / exp1.GetY()[i];
     exp1.GetY()[i] = diff;
     std::cout << exp1.GetX()[i] << std::endl;
   }
-  for (unsigned i = 0; i < obs1.GetN(); ++i) {
+  for (int i = 0; i < obs1.GetN(); ++i) {
     double diff = fabs(obs1.GetY()[i] - obs2.GetY()[i]) / obs1.GetY()[i];
     obs1.GetY()[i] = diff;
   }

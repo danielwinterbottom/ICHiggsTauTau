@@ -197,10 +197,10 @@ int main(int argc, char* argv[]){
   ic::TH1PlotElement total_shape("total_shape", &total_hist,"bkg. uncertainty");
 
   TH1F copy_hist = total_hist;
-  for (unsigned i = 1; i <= copy_hist.GetNbinsX(); ++i) copy_hist.SetBinError(i, 0);
+  for (int i = 1; i <= copy_hist.GetNbinsX(); ++i) copy_hist.SetBinError(i, 0);
 
   TH1F err_hist = total_hist;
-  for (unsigned i = 1; i <= err_hist.GetNbinsX(); ++i) err_hist.SetBinContent(i, 0);
+  for (int i = 1; i <= err_hist.GetNbinsX(); ++i) err_hist.SetBinContent(i, 0);
   ic::TH1PlotElement err_shape("err_shape", &err_hist,"bkg. uncertainty");
 
   TH1F data_hist = setup.GetObservedShape();
