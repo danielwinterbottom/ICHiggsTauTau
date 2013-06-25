@@ -57,7 +57,9 @@ namespace ic {
       taus[i]->Print();
       std::cout << "-decay_mode: " << taus[i]->decay_mode() << std::endl;
       std::cout << "-lead_track_dz_with_vertex: " << taus[i]->lead_dz_vertex() << std::endl;
+      std::cout << "-e_over_p: " << ((taus[i]->lead_ecal_energy() + taus[i]->lead_hcal_energy()) / taus[i]->lead_p()) << std::endl;
       std::cout << "-decayModeFinding: " << taus[i]->GetTauID("decayModeFinding") << std::endl;
+      std::cout << "-byCombinedIsolationDeltaBetaCorrRaw3Hits: " << taus[i]->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") << std::endl;
       std::cout << "-byIsolationMVAraw: " << taus[i]->GetTauID("byIsolationMVAraw") << std::endl;
       std::cout << "-byLooseIsolationMVA: " << taus[i]->GetTauID("byLooseIsolationMVA") << std::endl;
       std::cout << "-byLooseIsolationMVA2: " << taus[i]->GetTauID("byLooseIsolationMVA2") << std::endl;
