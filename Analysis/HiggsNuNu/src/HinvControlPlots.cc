@@ -76,6 +76,15 @@ namespace ic {
     betaT_htMET        = dir.make<TH2F>("betaT_htMET",    "betaT_htMET",    100,0, 10,100,0,1000);
   };
 
+  //Initialisation of HinvHTPlots struct
+  HinvHTPlots::HinvHTPlots(TFileDirectory const& dir) {
+    TH1F::SetDefaultSumw2();
+    Ht                 = dir.make<TH1F>("Ht",                "Ht",                1000,   0,1000);
+    SqrtHt             = dir.make<TH1F>("SqrtHt",            "SqrtHt",            1000,   0,1000);
+    MetHt              = dir.make<TH2F>("MetHt",             "MetHt",             1000,0,1000,1000,0,1000);
+    MetSqrtHt          = dir.make<TH2F>("SqrtMetHt",         "SqrtMetHt",         1000,0,1000,1000,0,1000);
+  };
+
   
   HinvControlPlots::HinvControlPlots(std::string const& name): ModuleBase(name){
     fs_ = NULL;
@@ -103,7 +112,8 @@ namespace ic {
     InitWeightPlots();
     InitSystPlots();
     InitDijetMETPlots();
-    
+    InitHTPlots();
+
     yields_ = 0;
 
     return 0;
@@ -151,7 +161,13 @@ namespace ic {
     double dijet_MET;
     double htPlusMET = 0;
     // End: Filling HinvDijetMETPlots Variables ____________________________
-    
+
+    //Start: HinvHTPlots variables
+    double ht =0;
+    double sqrtht=0;
+    double metet=0;
+    // End: HinvHTPlots variables
+
     // Enable filling of plots
     bool fillPlots             = true;
     //AM-FIX: no need for different bool, or signal/QCD won't be filled properly !
@@ -208,7 +224,7 @@ namespace ic {
       dijet_MET = dijet->vector().Pt()/(met->vector().Pt()+dijet->vector().Pt());
       scalSumPt = dijet->vector().Pt()+met->vector().Pt();
       // End: Calculating HinvDijetMETPlots ____________________________________
-      
+ 
     }
     else if (jets.size() > 1) {
       Candidate const* jet1 = jets[0];
@@ -245,6 +261,13 @@ namespace ic {
        // End: Calculating HinvDijetMETPlots ____________________________________
       
     }
+    //Start: Calculating ht things
+    for(int i =0; unsigned(i)<jets.size();++i){
+      ht+=jets[i]->vector().Et();
+    }
+    sqrtht=sqrt(ht);
+    metet=met->vector().Et();
+    //End: Calculating ht things
     
     n_vtx_ = eventInfo->good_vertices();
     
@@ -277,7 +300,16 @@ namespace ic {
       //dijetBalancePlots_->betaT_htMET    ->Fill(htPlusMET,wt_);
     }
     // End: Filling HinvDijetMETPlots ____________________________________
-    
+
+    //Start: Filling HinvHTPlots
+    if(fillPlots){
+      HTPlots_->Ht->Fill(ht);
+      HTPlots_->SqrtHt->Fill(sqrtht);
+      HTPlots_->MetHt->Fill(ht,metet);
+      HTPlots_->MetSqrtHt->Fill(sqrtht,metet);
+    }
+    //End: Filling HinvHTPlots
+
     return 0;
   }
 
@@ -307,6 +339,11 @@ namespace ic {
   void HinvControlPlots::InitDijetMETPlots() {
     dijetMETPlots_ = new HinvDijetMETPlots(fs_->mkdir(sel_label_+"/dijetMet"));
     std::cout << " dijetMET plots initialised" << std::endl;
+  }
+
+  void HinvControlPlots::InitHTPlots() {
+    HTPlots_ = new HinvHTPlots(fs_->mkdir(sel_label_+"/Ht"));
+    std::cout << " Ht plots initialised" << std::endl;
   }
       
  void HinvControlPlots::FillYields() {

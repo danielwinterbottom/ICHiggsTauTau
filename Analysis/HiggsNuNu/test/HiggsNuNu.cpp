@@ -570,6 +570,10 @@ int main(int argc, char* argv[]){
     .set_jesuncfile(jesuncfile)
     .set_fs(fs);
 
+  
+  
+  
+
   CopyCollection<PFJet> cjvjetsCopyCollection("copytocjvjets","pfJetsPFlow","cjvpfJetsPFlow");
 
   SimpleFilter<PFJet> cjvjetsIDFilter = SimpleFilter<PFJet>
@@ -853,6 +857,7 @@ int main(int argc, char* argv[]){
     .set_sel_label("AN")
     .set_channel(channel_str);
 
+  
   HinvWJetsPlots wjetsPlots_AN = HinvWJetsPlots("ANWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -874,7 +879,7 @@ int main(int argc, char* argv[]){
     .set_sel_label("MET")
     .set_channel(channel_str);
 
-  HinvWJetsPlots wjetsPlots_met = HinvWJetsPlots("METWJetsPlots")
+    HinvWJetsPlots wjetsPlots_met = HinvWJetsPlots("METWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
@@ -1270,7 +1275,6 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&wjetsPlots_dphi_qcd);
      analysis.AddModule(&controlPlots_dphi_signal);
      analysis.AddModule(&wjetsPlots_dphi_signal);
-
      //debug
      //analysis.AddModule(&dphiJetPairFilter);
      //if (!is_data) analysis.AddModule(&hinvWeights);
