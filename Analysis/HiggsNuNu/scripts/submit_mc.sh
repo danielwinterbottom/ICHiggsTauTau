@@ -16,7 +16,7 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfigMC.cfg
 PRODUCTION=Apr04
 
-for METCUT in 130 0
+for METCUT in 130
   do
   for CHANNEL in nunu enu munu taunu
     do
@@ -126,16 +126,16 @@ for METCUT in 130 0
 	  if (( "$?" == 0 )); then
 	      for FLAVOUR in enu munu taunu
 		do
-		if [ "$PRODUCTION" = "Mar20" ]
-		    then
-		    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
-		else
-		    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/$PRODUCTION/
-		fi
+		#if [ "$PRODUCTION" = "Mar20" ]
+		#    then
+		#    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
+		#else
+		#    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/$PRODUCTION/
+		#fi
 		
 		WJOB=$JOB"_"$FLAVOUR
 		
-		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
 		$JOBSUBMIT $JOBDIR/$WJOB.sh
 	      done
 	  else 

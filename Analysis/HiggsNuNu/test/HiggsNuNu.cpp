@@ -67,7 +67,7 @@ int main(int argc, char* argv[]){
   string prod;                    // Our prdocution string
 
   string channel_str;             // Analysis channel
-
+  string wstream;                 // W stream: enu, munu or taunu, or nunu for everything
   bool is_data;                   // true = data, false = mc         
   bool is_embedded;               // true = embedded, false = not an embedded sample
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
@@ -118,6 +118,7 @@ int main(int argc, char* argv[]){
     ("mc",                  po::value<string>(&mc_str)->required())
     ("prod",                 po::value<string>(&prod)->required())
     ("channel",             po::value<string>(&channel_str)->default_value("nunu"))
+    ("wstream",             po::value<string>(&wstream)->default_value("nunu"))
     ("is_data",             po::value<bool>(&is_data)->required())
     ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
     ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
@@ -169,6 +170,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "mc" % mc_str;
   std::cout << boost::format(param_fmt) % "prod" % prod;
   std::cout << boost::format(param_fmt) % "channel" % channel_str;
+  std::cout << boost::format(param_fmt) % "wstream" % wstream;
   std::cout << boost::format(param_fmt) % "is_data" % is_data;
   std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
@@ -783,10 +785,15 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
 
   int lFlavour = 1;
-  if (channel == channel::enu) lFlavour = 11;
-  else if (channel == channel::munu) lFlavour = 13;
-  else if (channel == channel::taunu) lFlavour = 15;
-	
+  //if (channel == channel::enu) lFlavour = 11;
+  //else if (channel == channel::munu) lFlavour = 13;
+  //else if (channel == channel::taunu) lFlavour = 15;
+  if (wstream == "enu") lFlavour = 11;
+  else if (wstream == "munu") lFlavour = 13;
+  else if (wstream == "taunu") lFlavour = 15;
+
+
+
   HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
   
   // ------------------------------------------------------------------------------------
@@ -1056,7 +1063,7 @@ int main(int argc, char* argv[]){
    if (!is_data && !do_skim)       {
      //do W streaming to e,mu,tau
      if (output_name.find("JetsToLNu") != output_name.npos) {
-       analysis.AddModule(&WtoLeptonFilter);
+       if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
      }
      analysis.AddModule(&pileupWeight);
      analysis.AddModule(&pileupWeight_up);
