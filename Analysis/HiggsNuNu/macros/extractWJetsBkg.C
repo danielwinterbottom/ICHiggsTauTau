@@ -138,7 +138,7 @@ int extractWJetsBkg(){//main
   bool doTaus = true;
   bool dojes = false;
   bool dojer = false;
-  bool doWeights = false;
+  bool doWeights = true;
 
   //std::string TOPDIR = "../TABLES_mjj1200/";
   std::string TOPDIR = "../TABLES/";
@@ -336,9 +336,9 @@ int extractWJetsBkg(){//main
 		    << "nData = $" << nData.number  << "\\pm " << nData.error  << "$" << std::endl
 		    << "nBkg = $" << nBkg.number  << "\\pm " << nBkg.error  << "$" << std::endl
 		    << "eff_tau = " << eps_tau << std::endl
-		    << "*** result no CJV = $" << result_nocjv.number  << "\\pm " << result_nocjv.error << " \pm " << 0.08*result.number<< "$" << std::endl
+		    << "*** result no CJV = $" << result_nocjv.number  << "\\pm " << result_nocjv.error << " \\pm " << 0.08*result.number<< "$" << std::endl
 		    << "eff_tau_cvj = " << eps_tau_cjv << std::endl
-		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \pm " << 0.08*result.number<< "$" << std::endl
+		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \\pm " << 0.08*result.number<< "$" << std::endl
 		    << "***crosscheck = $" << crosscheck.number << "\\pm " << crosscheck.error << "$" << std::endl
 		    << "****** MC Estimates: $" << eps_tau.den.number << "\\pm " << eps_tau.den.error << "$, $" << lSel[0][DPhiSIGNAL][WJets_taunu].number << "\\pm " << lSel[0][DPhiSIGNAL][WJets_taunu].error << "$" << std::endl
 	    ;
@@ -541,7 +541,7 @@ int extractWJetsBkg(){//main
 		     << "\\end{tabular}" << std::endl; 
 	    lOutfile.close();
 
-	    std::cout << "*** " << lSuffix[iW] << ": result = " << lNSdata << std::endl;
+	    std::cout << "*** " << lSuffix[iW] << ": result = " << lNSdata << " MC: " << lNSMC << std::endl;
 	    
 	  }//loop on lep flavour
 	  
