@@ -861,7 +861,7 @@ int main(int argc, char* argv[]){
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::mt || channel == channel::mtmet) ) httWeights.set_do_mtau_fakerate(true);
-  //if (strategy == strategy::paper2013) httWeights.set_do_etau_fakerate(false);
+  if (strategy == strategy::paper2013) httWeights.set_do_etau_fakerate(false);
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
@@ -1036,12 +1036,14 @@ int main(int argc, char* argv[]){
   }
 
   if (channel == channel::em) {
-    if (strategy == strategy::paper2013)
+    if (strategy == strategy::paper2013) {
                                   analysis.AddModule(&emuExtras);
+    }
                                   analysis.AddModule(&selElectronCopyCollection);
                                   analysis.AddModule(&selElectronFilter);
-    if (special_mode != 25)       
+    if (special_mode != 25) {
                                   analysis.AddModule(&elecMuonOverlapFilter);
+    }
                                   analysis.AddModule(&selMuonCopyCollection);
                                   analysis.AddModule(&selMuonFilter);
   

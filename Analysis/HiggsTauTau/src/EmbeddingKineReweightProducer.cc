@@ -160,6 +160,7 @@ namespace ic {
     if (new_kin_weight3 > 10.0) new_kin_weight3 = 10.0;
     eventInfo->set_weight("kin_weight3",new_kin_weight3);
 
+    /*
     if (channel_ == channel::et || channel_ == channel::em) {
       std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
       CompositeCandidate const* ditau = ditau_vec.at(0);
@@ -172,6 +173,7 @@ namespace ic {
       double eff = electron_id_hist_->GetBinContent(bin);
       eventInfo->set_weight("kin_weight4", eff);
     }
+    */
 
     return 0;
   }
