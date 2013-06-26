@@ -1056,7 +1056,10 @@ int main(int argc, char* argv[]){
   }
 
   if (!do_skim) {
-    if (!is_embedded || era == era::data_2012_rereco)  { // Don't usually want trigger for embedded
+    if (!is_embedded)  { // Don't usually want trigger for embedded
+                                  analysis.AddModule(&httTriggerFilter);
+    }
+    if (is_embedded && strategy == strategy::paper2013) {
                                   analysis.AddModule(&httTriggerFilter);
     }
     //                            analysis.AddModule(&runStats);

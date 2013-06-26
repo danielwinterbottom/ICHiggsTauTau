@@ -88,6 +88,7 @@ namespace ic {
           if (run >= 203768 /*&& run <= ???*/ && name.find("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v") != name.npos) path_found = true;
         }
         if (is_embedded_) {
+          path_found = false;
           if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
         }
         if (path_found) break;
