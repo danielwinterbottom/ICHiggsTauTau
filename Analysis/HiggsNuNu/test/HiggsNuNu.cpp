@@ -1054,6 +1054,10 @@ int main(int argc, char* argv[]){
 
   //if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
    if (!is_data && !do_skim)       {
+     //do W streaming to e,mu,tau
+     if (output_name.find("JetsToLNu") != output_name.npos) {
+       analysis.AddModule(&WtoLeptonFilter);
+     }
      analysis.AddModule(&pileupWeight);
      analysis.AddModule(&pileupWeight_up);
      analysis.AddModule(&pileupWeight_down);
