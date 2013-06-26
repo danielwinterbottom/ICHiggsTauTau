@@ -62,8 +62,9 @@ int studyWenu(){//main
   datafiles.push_back("Data_MET-2012C-PromptReco-v2");
   datafiles.push_back("Data_MET-2012D-PromptReco-v1");
 
-  std::string folder = "output";
-  std::string suffix = "";
+  std::string folder = "output_mjj1100";
+  std::string suffix = "_mjj1100";
+  //std::string suffix = "metL1HLTnomu";//metL1noenomu
 
   const unsigned nBkgFiles = bkgfiles.size();
   const unsigned nWFiles = Wfiles.size();
@@ -77,27 +78,15 @@ int studyWenu(){//main
 
   double lLumi = 19619.;
   
-  int lColor[nBkgFiles];
-  for (unsigned iN(0); iN<7;++iN){
-    lColor[iN] = 5;
-  }
-  lColor[7] = 4;
-  lColor[8] = 4;
-  lColor[9] = 4;
-  for (unsigned iN(10); iN<20;++iN){
-    lColor[iN] = 3;
-  }
-
-  int lStyle = 1001;
   double normalisation[nBkgFiles];
   normalisation[0] = 234./6923750.0;
   normalisation[1] = 11.1/497658.0;
   normalisation[2] = 11.1/493460.0;
   normalisation[3] = 3.79/259961.0;
   normalisation[4] = 1.76/139974.0;
-  normalisation[5] = 56.4/99876.0;
+  normalisation[5] = 56.4/3758227.0;
   normalisation[6] = 30.7/1935072.0;
-  normalisation[7] = 54.838/9970431.0;
+  normalisation[7] = 54.838/10000431.0;
   normalisation[8] = 33.21/10000283.0;
   normalisation[9] = 17.654/9799908.0;
   normalisation[10] = (0.70/0.101*0.2)/510501.0;
@@ -112,31 +101,28 @@ int studyWenu(){//main
   normalisation[19] = 5.274/1006928.0;
 
   double w_normalisation[nWFiles];
-  int lWColor = 6;
   for (unsigned iN(0); iN<nWFiles;++iN){
     w_normalisation[iN] = 37509/76102995.0;
   }
 
   TCanvas *myc = new TCanvas("myc","",800,1000);
   gStyle->SetOptStat(0);
-  myc->Divide(2,3);
+  //myc->Divide(2,3);
 
   std::ostringstream lPath;
 
   std::string lHistName[3] = {"met","met","met_noelectrons"};
-  //  std::string lSelection = "DPhiSIGNAL";
+  //std::string lHistName[3] = {"met","met_pu","met_noelectrons"};
+   //  std::string lSelection = "DPhiSIGNAL";
   std::vector<std::string> selections;
-  //selections.push_back("HLTMetClean");
-  //selections.push_back("LeptonVeto");
-  //selections.push_back("WSelection");
-  //selections.push_back("JetPair");
   selections.push_back("AN");
   selections.push_back("DEta");
   selections.push_back("MET");
   selections.push_back("TightMjj");
-  selections.push_back("DPhiSIGNAL");
+  selections.push_back("CJV");
   selections.push_back("DPhiQCD");
-
+  selections.push_back("DPhiSIGNAL");
+  
   const unsigned nSel = selections.size();
 
   TH1F *metBkg[3];
@@ -145,10 +131,11 @@ int studyWenu(){//main
   TH1F *metDataminusBkg[3];
 
   std::string lRegion[3] = {"nunu","enu","enu"};
+  //std::string lRegion[3] = {"nunu","enu-metL1HLTnomu","enu-metL1HLTnomu"};
+  //std::string lRegion[3] = {"nunu","enu-metL1noenomu","enu-metL1noenomu"};
 
   for (unsigned iS(0); iS<nSel; ++iS){//loop on selections
-    myc->cd(1);
-
+ 
     for (unsigned iP(0); iP<3; ++iP){//loop on points
       lPath.str("");
       lPath << "../" << folder << "/" << lRegion[iP] << "/MET0/";
@@ -157,25 +144,32 @@ int studyWenu(){//main
       for (unsigned iBkg(0); iBkg<nBkgFiles; ++iBkg){//loop on bkg files
 	fBkg[iBkg] = TFile::Open((lPath.str()+bkgfiles[iBkg]+".root").c_str());
 	//fBkg[iBkg]->cd((lSelection[iS]+"/weights/").c_str());
+	//if (iP < 2) 
 	fBkg[iBkg]->cd((selections[iS]+"/").c_str());
+	//else  fBkg[iBkg]->cd((selections[iS]+"/weights/").c_str());
+
+	TH1F *lTmpHist = (TH1F*)gDirectory->Get(lHistName[iP].c_str());
+	lTmpHist->Sumw2();
+	lTmpHist->Scale(lLumi*normalisation[iBkg]);
 	if (iBkg==0) {
-	  metBkg[iP] = (TH1F*)gDirectory->Get(lHistName[iP].c_str());
+	  metBkg[iP] = lTmpHist;
 	  metBkg[iP]->Sumw2();
-	  metBkg[iP]->Scale(lLumi*normalisation[iBkg]);
 	}
 	else {
-	  TH1F *lTmpHist = (TH1F*)gDirectory->Get(lHistName[iP].c_str());
-	  //lTmpHist->Sumw2();
-	  lTmpHist->Scale(lLumi*normalisation[iBkg]);
 	  metBkg[iP]->Add(lTmpHist);
 	}
+	//double lErr=0;
+	//double lContent = lTmpHist->IntegralAndError(131,metBkg[iP]->GetNbinsX()+1,lErr);
+	//if (iS==nSel-1 && iP==2) std::cout << lTmpHist->GetBinLowEdge(131) << "-1000, Bkg " << iBkg << " " << lContent << " +/- " << lErr << std::endl;
       }//loop on bkg hists
       for (unsigned iW(0); iW<nWFiles; ++iW){//loop on w files
 	fW[iW] = TFile::Open((lPath.str()+Wfiles[iW]+".root").c_str());
 	//fW[iW]->cd((lSelection[iS]+"/weights/").c_str());
+	//if (iP < 2) 
 	fW[iW]->cd((selections[iS]+"/").c_str());
+	//else fW[iW]->cd((selections[iS]+"/weights/").c_str());
 	if (iW==0) {
-	  metW[iP] = (TH1F*)gDirectory->Get(lHistName[iP].c_str());
+	  metW[iP] = (TH1F*)gDirectory->Get(lHistName[iP].c_str())->Clone();
 	  metW[iP]->Sumw2();
 	  metW[iP]->Scale(lLumi*w_normalisation[iW]);
 	}
@@ -187,9 +181,11 @@ int studyWenu(){//main
       }//loop on w hists
       for (unsigned iD(0); iD<nData;++iD){//loop on data files
 	fData[iD] = TFile::Open((lPath.str()+datafiles[iD]+".root").c_str());
+	//if (iP < 2) 
 	fData[iD]->cd((selections[iS]+"/").c_str());
+	//else fData[iD]->cd((selections[iS]+"/weights/").c_str());
 	if (iD==0) {
-	  metData[iP] = (TH1F*)gDirectory->Get(lHistName[iP].c_str());
+	  metData[iP] = (TH1F*)gDirectory->Get(lHistName[iP].c_str())->Clone();
 	  metData[iP]->Sumw2();
 	}
 	else {
@@ -198,48 +194,72 @@ int studyWenu(){//main
 	}
       }//loop on data hists
       metDataminusBkg[iP] = (TH1F*)metData[iP]->Clone();
+      metDataminusBkg[iP]->Sumw2();
       metDataminusBkg[iP]->Add(metBkg[iP],-1);
 
-      myc->cd(1);
-      metW[iP]->Rebin(10);
+      myc->cd();
+      metW[iP]->Rebin(25);
       metW[iP]->GetXaxis()->SetRangeUser(0,400);
       metW[iP]->GetXaxis()->SetTitle("MET (GeV)");
-      metW[iP]->GetYaxis()->SetTitle("Events/20 GeV");
+      metW[iP]->GetYaxis()->SetTitle("Events/25 GeV");
       metW[iP]->SetTitle(("MC W, "+selections[iS]).c_str());
       metW[iP]->SetLineColor(1+iP);
       metW[iP]->SetMarkerColor(1+iP);
       metW[iP]->SetMarkerStyle(20+iP);
       if (iP==0) metW[iP]->Draw("PE");
-      else metW[iP]->Draw("PEsame");
+      else metW[iP]->Draw("histsame");
+    }
 
-      myc->cd(2);
-      metData[iP]->Rebin(10);
-      metBkg[iP]->Rebin(10);
-      metDataminusBkg[iP]->Rebin(10);
+    
+    TLegend *legend = new TLegend(0.5,0.7,0.9,0.9);
+    legend->SetFillColor(10);
+    legend->AddEntry(metW[0],"Signal region","P");
+    legend->AddEntry(metW[1],"e+#nu with MET","L");
+    legend->AddEntry(metW[2],"e+#nu with MET+e","L");
+    //legend->AddEntry(metData[1],"Data","P");
+    //legend->AddEntry(metBkg[1],"Sum BKG","P");
+    //legend->AddEntry(metDataminusBkg[1],"Data-bkg","P");
+
+    myc->cd();
+    legend->Draw("same");
+
+    myc->Update();
+    myc->Print(("METWenu"+suffix+"_"+selections[iS]+"_MCW_MET.pdf").c_str());
+
+    for (unsigned iP(0); iP<3; ++iP){//loop on points
+
+      myc->cd();
+      metData[iP]->Rebin(25);
+      metData[iP]->SetLineColor(6);
+      metData[iP]->SetMarkerColor(6);
+      metData[iP]->SetMarkerStyle(25);
+      metBkg[iP]->Rebin(25);
+      metBkg[iP]->SetLineColor(7);
+      metBkg[iP]->SetMarkerColor(7);
+      metBkg[iP]->SetMarkerStyle(27);
+      metDataminusBkg[iP]->Rebin(25);
       metDataminusBkg[iP]->GetXaxis()->SetRangeUser(0,400);
+      //metDataminusBkg[iP]->GetYaxis()->SetRangeUser(-50,100);
       metDataminusBkg[iP]->GetXaxis()->SetTitle("MET (GeV)");
-      metDataminusBkg[iP]->GetYaxis()->SetTitle("Events/20 GeV");
+      metDataminusBkg[iP]->GetYaxis()->SetTitle("Data - BKG");
       metDataminusBkg[iP]->SetTitle(("Data - MC Bkg, "+selections[iS]).c_str());
       metDataminusBkg[iP]->SetLineColor(1+iP);
       metDataminusBkg[iP]->SetMarkerColor(1+iP);
       metDataminusBkg[iP]->SetMarkerStyle(20+iP);
       if (iP==1) metDataminusBkg[iP]->Draw("PE");
       else metDataminusBkg[iP]->Draw("PEsame");
+      //metData[iP]->Draw("PEsame");
+      //metBkg[iP]->Draw("PEsame");
       
-
 
     }//loop on points
 
-    TLegend *legend = new TLegend(0.6,0.6,0.9,0.9);
-    legend->SetFillColor(10);
-    legend->AddEntry(metW[0],"MET nunu","P");
-    legend->AddEntry(metW[1],"MET enu","P");
-    legend->AddEntry(metW[2],"MET+e enu","P");
 
-    myc->cd(1);
-    legend->Draw("same");
-    myc->cd(2);
-    legend->Draw("same");
+    myc->Update();
+    myc->Print(("METWenu"+suffix+"_"+selections[iS]+"_DATAminusBKG.pdf").c_str());
+
+    //myc->cd(2);
+    //legend->Draw("same");
    
 
     TH1F *grRatio[2];
@@ -275,7 +295,7 @@ int studyWenu(){//main
     grRatioBkg[1]->SetMarkerColor(3);
     grRatioBkg[1]->SetMarkerStyle(22);
 
-    for (unsigned iB(0); iB<grRatioBkg[0]->GetNbinsX(); ++iB){//loop on bins
+    for (unsigned iB(0); iB<static_cast<unsigned>(grRatioBkg[0]->GetNbinsX()); ++iB){//loop on bins
       double lErr1=0,lErr2=0,lErr3=0,lErr4=0;
       double lContent1 = metW[0]->IntegralAndError(iB+1,metW[0]->GetNbinsX()+1,lErr1);
       double lContent2 = metW[1]->IntegralAndError(iB+1,metW[1]->GetNbinsX()+1,lErr2);
@@ -292,56 +312,82 @@ int studyWenu(){//main
       if (lErr4 != lErr4) lErr4=0;
       double lContent = 0;
       if (lContent2 != 0) lContent = lContent1*(lContent3-lContent4)/lContent2;
-      grRatioBkg[0]->SetBinContent(iB+1,lContent);
+      grRatioBkg[0]->SetBinContent(iB+1,std::max(lContent,0.));
       double lErr = lContent*sqrt(pow(lErr1/lContent1,2)+pow(lErr2/lContent2,2)+pow(sqrt(lErr3*lErr3+lErr4*lErr4)/(lContent3-lContent4),2));
-     if (lErr != lErr) lErr = 0;
+      if (lErr != lErr) lErr = 0;
       grRatioBkg[0]->SetBinError(iB+1,lErr);
 
-      std::cout << " - Bin " << iB+1 << "[" << metW[0]->GetBinLowEdge(iB+1) << "," << metW[0]->GetBinLowEdge(metW[0]->GetNbinsX()+1) << "]" << std::endl;
-      std::cout << " W nunu " << lContent1 << " +/- " << lErr1 << std::endl;
-      std::cout << " W enu " << lContent2 << " +/- " << lErr2<< std::endl;
-      std::cout << " Data enu " << lContent3 << " +/- " << lErr3 << std::endl;
-      std::cout << " bkg enu " << lContent4 << " +/- " << lErr4 << std::endl;
-      std::cout << " Result = " << lContent << " +/- " << lErr << std::endl;
-
-      lContent2 = metDataminusBkg[2]->IntegralAndError(iB+1,metDataminusBkg[2]->GetNbinsX()+1,lErr2);
-      lContent3 = metW[2]->IntegralAndError(iB+1,metW[2]->GetNbinsX()+1,lErr3);
+ 
+      lContent2 = metW[2]->IntegralAndError(iB+1,metW[2]->GetNbinsX()+1,lErr2);
+      lContent3 = metData[2]->IntegralAndError(iB+1,metData[2]->GetNbinsX()+1,lErr3);
+      lContent4 = metBkg[2]->IntegralAndError(iB+1,metBkg[2]->GetNbinsX()+1,lErr4);
       if (lContent2 != lContent2) lContent2=0;
       if (lContent3 != lContent3) lContent3=0;
+      if (lContent4 != lContent4) lContent4=0;
       if (lErr2 != lErr2) lErr2=0;
       if (lErr3 != lErr3) lErr3=0;
-      if (lContent3 != 0) grRatioBkg[1]->SetBinContent(iB+1,lContent1*lContent2/lContent3);
-      lErr = lContent1*lContent2/lContent3*sqrt(pow(lErr1/lContent1,2)+pow(lErr2/lContent2,2)+pow(lErr3/lContent3,2));
+      if (lErr4 != lErr4) lErr4=0;
+      if (lContent3 != 0) lContent = lContent1*(lContent3-lContent4)/lContent2;
+      grRatioBkg[1]->SetBinContent(iB+1,lContent);
+      lErr = lContent*sqrt(pow(lErr1/lContent1,2)+pow(lErr2/lContent2,2)+pow(sqrt(lErr3*lErr3+lErr4*lErr4)/(lContent3-lContent4),2));
       if (lErr != lErr) lErr = 0;
       grRatioBkg[1]->SetBinError(iB+1,lErr);
 
+//       if (iB < 20) {
+// 	std::cout << " - Bin " << iB+1 << "[" << metW[0]->GetBinLowEdge(iB+1) << "," << metW[0]->GetBinLowEdge(metW[0]->GetNbinsX()+1) << "]" << std::endl;
+// 	std::cout << " W nunu " << lContent1 << " +/- " << lErr1 << " " << lErr1/lContent1 << std::endl;
+// 	std::cout << " W enu " << lContent2 << " +/- " << lErr2<< " " << lErr2/lContent2 << std::endl;
+// 	std::cout << " Data enu " << lContent3 << " +/- " << lErr3 << std::endl;
+// 	std::cout << " bkg enu " << lContent4 << " +/- " << lErr4 << std::endl;
+// 	std::cout << " Data-bkg = " << (lContent3-lContent4)<< " +/- " << sqrt(lErr3*lErr3+lErr4*lErr4) << std::endl;
+// 	std::cout << " Result = " << lContent << " +/- " << lErr << std::endl;
+//       }
     }
 
 
-    myc->cd(3);
+    myc->cd();
     grRatio[0]->GetYaxis()->SetRangeUser(0,10);
     grRatio[0]->GetYaxis()->SetTitle("N^{S}_{MC}/N^{C}_{MC}(MET)");
+    grRatio[0]->SetTitle("");
     grRatio[0]->Draw("PE");
-    myc->cd(5);
+
+    myc->Update();
+    myc->Print(("METWenu"+suffix+"_"+selections[iS]+"_ratioMC_MET.pdf").c_str());
+
+    myc->cd();
     grRatio[1]->GetYaxis()->SetRangeUser(0,10);
     grRatio[1]->GetYaxis()->SetTitle("N^{S}_{MC}/N^{C}_{MC}(MET+e)");
+    grRatio[1]->SetTitle("");
     grRatio[1]->Draw("PE");
 
-    myc->cd(4);
+    myc->Update();
+    myc->Print(("METWenu"+suffix+"_"+selections[iS]+"_ratioMC_METnoE.pdf").c_str());
+
+
+    myc->cd();
     //grRatioBkg[0]->GetYaxis()->SetRangeUser(0,100);
     grRatioBkg[0]->GetYaxis()->SetTitle("N^{S}_{WMC}/N^{C}_{WMC}#times N^{C}_{WData}(MET)");
     grRatioBkg[0]->GetXaxis()->SetTitle("minimum MET (GeV)");
+    grRatioBkg[0]->SetTitle("");
     grRatioBkg[0]->Draw("PE");
-    myc->cd(6);
-    //grRatioBkg[1]->GetYaxis()->SetRangeUser(0,100);
-    grRatioBkg[1]->GetYaxis()->SetTitle("N^{S}_{WMC}/N^{C}_{WMC}#times N^{C}_{WData} (MET+e)");
-    grRatioBkg[1]->GetXaxis()->SetTitle("minimum MET+e (GeV)");
-    grRatioBkg[1]->Draw("PE");
-
-
-
+    grRatioBkg[1]->Draw("PEsame");
+    legend->Draw("same");
     myc->Update();
-    myc->Print(("METWenu"+suffix+"_"+selections[iS]+".pdf").c_str());
+    myc->Print(("METWenu"+suffix+"_"+selections[iS]+"_Westimate.pdf").c_str());
+
+ //    myc->cd();
+//     //grRatioBkg[1]->GetYaxis()->SetRangeUser(0,100);
+//     grRatioBkg[1]->GetYaxis()->SetTitle("N^{S}_{WMC}/N^{C}_{WMC}#times N^{C}_{WData} (MET+e)");
+//     grRatioBkg[1]->GetXaxis()->SetTitle("minimum MET+e (GeV)");
+//     grRatioBkg[1]->SetTitle("");
+//     grRatioBkg[1]->Draw("PE");
+
+//     myc->Update();
+//     myc->Print(("METWenu"+suffix+"_"+selections[iS]+"_Westimate_METnoE.pdf").c_str());
+
+
+    //myc->Update();
+    //myc->Print(("METWenu"+suffix+"_"+selections[iS]+".pdf").c_str());
   }//loop on selections
   
   return 0;
