@@ -67,6 +67,7 @@ lOTree->Branch("isoweight_2"  ,&lIsoweight_2     ,"isoweight_2/F");//Effieiency 
 
 lOTree->Branch("effweight"  ,&lEffWeight     ,"lEffWeight/F");//Effieiency Scale factor (all components multiplied in)
 lOTree->Branch("weight"     ,&lWeight        ,"lWeight/F"  );//mcweight*puweight*effweight
+lOTree->Branch("embeddedWeight"     ,&lEmbeddedWeight        ,"lEmbeddedWeight/F"  );
 
     //SV Fit variables
 
@@ -262,6 +263,18 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
     if (event->Exists("isoweight_2")) lIsoweight_2 = event->Get<double>("isoweight_2");
     if (eventInfo->weight_defined("lepton")) lEffWeight = eventInfo->weight("lepton"); 
     lWeight = eventInfo->total_weight();
+
+    if (eventInfo->weight_defined("tauspinner")) {
+      lEmbeddedWeight = eventInfo->weight("tauspinner") *
+        eventInfo->weight("zmm_eff") *
+        eventInfo->weight("muon_rad") *
+        eventInfo->weight("kin_weight1") *
+        eventInfo->weight("kin_weight2") *
+        eventInfo->weight("kin_weight3") *
+        eventInfo->weight("embed_weight");
+     } else {
+      lEmbeddedWeight = 0.;
+     }
     
 
     ///First lepton :  muon for mu Tau, electron for e Tau, electron for e mu, Leading (in pT) Tau for Tau Tau
