@@ -135,7 +135,7 @@ int extractWJetsBkg(){//main
   const unsigned nWeights = 6;
   std::string lSuffix[nWeights] = {"","_pu","_puUp","_puDown","_pu_trig","_pu_trig_idiso"};
 
-  bool doTaus = true;
+  bool doTaus = false;
   bool dojes = false;
   bool dojer = false;
   bool doWeights = true;
