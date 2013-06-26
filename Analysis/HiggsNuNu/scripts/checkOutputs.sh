@@ -42,18 +42,26 @@ for CHANNEL in nunu taunu enu munu
 	do
 	grep -q "Processing Complete" $LOGFILE
 	if (( "$?" == 1 )); then
-	echo "File $LOGFILE failed !"
-	let RESULT=1
-	SHFILE=`echo $LOGFILE | sed "s/log/sh/"`
-	grep -q "Error opening the file" $LOGFILE
-	if (( "$?" == 0 )); then
-	    echo "--> Error opening a file, need to resubmit job $SHFILE!"
-	    echo "./scripts/submit_ic_batch_job.sh hepshort.q $SHFILE"
-	else
-	    tail -5 $LOGFILE
-	    echo "--> Error: Please fix and resubmit with command:"
-	    echo "./scripts/submit_ic_batch_job.sh hepmedium.q $SHFILE"
+	    echo "File $LOGFILE failed !"
+	    let RESULT=1
+	    SHFILE=`echo $LOGFILE | sed "s/log/sh/"`
+	    grep -q "Error opening the file" $LOGFILE
+	    if (( "$?" == 0 )); then
+		echo "--> Error opening a file, need to resubmit job $SHFILE!"
+		echo "./scripts/submit_ic_batch_job.sh hepshort.q $SHFILE"
+	    else
+		tail -5 $LOGFILE
+		echo "--> Error: Please fix and resubmit with command:"
+		echo "./scripts/submit_ic_batch_job.sh hepmedium.q $SHFILE"
+	    fi
 	fi
+	grep -qi "nan" $LOGFILE | grep -v ".root"
+	if (( "$?" == 0 )); then
+	    grep -qi "nan" $LOGFILE | grep -v "value"
+	    if (( "$?" == 0 )); then
+		echo "File $LOGFILE failed ! Found NAN value."
+		let RESULT=1
+	    fi
 	fi
       done
 
