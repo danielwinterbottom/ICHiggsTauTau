@@ -12,7 +12,7 @@ using std::showpos;
 using std::noshowpos;
 
 //enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL,DPhiQCD};
-enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,CJV,DPhiSIGNAL,DPhiQCD};
+enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL_noCJV,DPhiQCD_noCJV,CJV,DPhiSIGNAL,DPhiQCD};
 enum Sample {QCD,GJets,Top,TTbar,SingleTop,TW,WJets,WJets_enu,WJets_munu,WJets_taunu,ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,VV,Data,Signal};
 
 
@@ -105,6 +105,8 @@ int extractWJetsBkg(){//main
   lSelVecSignal.push_back("DEta");
   lSelVecSignal.push_back("MET");
   lSelVecSignal.push_back("TightMjj");
+  lSelVecSignal.push_back("DPhiSIGNAL-noCJV");
+  lSelVecSignal.push_back("DPhiQCD-noCJV");
   lSelVecSignal.push_back("CJV");
   lSelVecSignal.push_back("DPhiSIGNAL");
   lSelVecSignal.push_back("DPhiQCD");
@@ -116,6 +118,8 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DEta");
   lSelVecControl.push_back("MET");
   lSelVecControl.push_back("TightMjj");
+  lSelVecControl.push_back("DPhiSIGNAL-noCJV");
+  lSelVecControl.push_back("DPhiQCD-noCJV");
   lSelVecControl.push_back("CJV");
   lSelVecControl.push_back("DPhiSIGNAL");
   lSelVecControl.push_back("DPhiQCD");
@@ -127,7 +131,9 @@ int extractWJetsBkg(){//main
   lSelVecTau.push_back("DEta");
   lSelVecTau.push_back("MET");
   lSelVecTau.push_back("TightMjj");
-  lSelVecTau.push_back("TightMjj");//duplicate so same size as the others...
+  lSelVecTau.push_back("DPhiSIGNAL-noCJV");
+  lSelVecTau.push_back("DPhiQCD-noCJV");
+  lSelVecTau.push_back("CJV");
   lSelVecTau.push_back("DPhiSIGNAL");
   lSelVecTau.push_back("DPhiQCD");
 
@@ -289,13 +295,13 @@ int extractWJetsBkg(){//main
 
 	if (doTaus){
 
-	  events nData = lSel[3][DPhiSIGNAL][Data];
-	  events nBkg = lSel[3][DPhiSIGNAL][Top];
-	  nBkg += lSel[3][DPhiSIGNAL][ZJets];
-	  nBkg += lSel[3][DPhiSIGNAL][VV];
+	  events nData = lSel[3][DPhiSIGNAL_noCJV][Data];
+	  events nBkg = lSel[3][DPhiSIGNAL_noCJV][Top];
+	  nBkg += lSel[3][DPhiSIGNAL_noCJV][ZJets];
+	  nBkg += lSel[3][DPhiSIGNAL_noCJV][VV];
 	  efficiency eps_tau;
-	  eps_tau.num = lSel[3][DPhiSIGNAL][WJets_taunu];
-	  //eps_tau.den = lSel[0][DPhiSIGNAL][WJets_taunu];
+	  eps_tau.num = lSel[3][DPhiSIGNAL_noCJV][WJets_taunu];
+	  //eps_tau.den = lSel[0][DPhiSIGNAL_noCJV][WJets_taunu];
 	  //Access number in signal region before CJV:
 	  //Run interactively:
 	  //cd output/nunu/MET130
@@ -314,7 +320,7 @@ int extractWJetsBkg(){//main
 	  eps_tau.den.error = 11;
 
 	  efficiency eps_tau_cjv;
-	  eps_tau_cjv.num = lSel[0][DPhiSIGNAL][WJets_taunu];
+	  eps_tau_cjv.num = lSel[0][DPhiSIGNAL_noCJV][WJets_taunu];
 	  eps_tau_cjv.den.number = eps_tau.den.number;
 	  eps_tau.den.error = eps_tau.den.error;
 
@@ -325,8 +331,8 @@ int extractWJetsBkg(){//main
 	  result_nocjv.error = sqrt(pow(nDataW.error/eps_tau.eff(),2)+pow(nDataW.number*eps_tau.error()/pow(eps_tau.eff(),2),2));
 
 	  events result = nDataW;
-	  result.number = nDataW.number*lSel[0][DPhiSIGNAL][WJets_taunu].number/lSel[3][DPhiSIGNAL][WJets_taunu].number;
-	  result.error = result.number*sqrt(pow(nDataW.error/nDataW.number,2)+pow(lSel[0][DPhiSIGNAL][WJets_taunu].error/lSel[0][DPhiSIGNAL][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL][WJets_taunu].error/lSel[3][DPhiSIGNAL][WJets_taunu].number,2));
+	  result.number = nDataW.number*lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].number/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number;
+	  result.error = result.number*sqrt(pow(nDataW.error/nDataW.number,2)+pow(lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number,2));
 
 	  events crosscheck = result_nocjv;
 	  crosscheck.number = result_nocjv.number*eps_tau_cjv.eff();
@@ -340,7 +346,7 @@ int extractWJetsBkg(){//main
 		    << "eff_tau_cvj = " << eps_tau_cjv << std::endl
 		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \\pm " << 0.08*result.number<< "$" << std::endl
 		    << "***crosscheck = $" << crosscheck.number << "\\pm " << crosscheck.error << "$" << std::endl
-		    << "****** MC Estimates: $" << eps_tau.den.number << "\\pm " << eps_tau.den.error << "$, $" << lSel[0][DPhiSIGNAL][WJets_taunu].number << "\\pm " << lSel[0][DPhiSIGNAL][WJets_taunu].error << "$" << std::endl
+		    << "****** MC Estimates: $" << eps_tau.den.number << "\\pm " << eps_tau.den.error << "$, $" << lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].number << "\\pm " << lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].error << "$" << std::endl
 	    ;
 	  
 	}

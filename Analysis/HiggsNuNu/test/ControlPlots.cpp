@@ -323,6 +323,8 @@ int main(int argc, char* argv[]){
   selections.push_back("DEta");
   selections.push_back("MET");
   selections.push_back("TightMjj");
+  selections.push_back("DPhiSIGNAL-noCJV");
+  selections.push_back("DPhiQCD-noCJV");
   selections.push_back("CJV");
   selections.push_back("DPhiSIGNAL");
   selections.push_back("DPhiQCD");
@@ -648,7 +650,6 @@ int main(int argc, char* argv[]){
     plot.custom_ratio_y_axis_range = true;
     plot.ratio_y_axis_min = y_ratio_min;
     plot.ratio_y_axis_max = y_ratio_max;
-    
     
     if (!no_plot) plot.GeneratePlot();
 
