@@ -23,6 +23,7 @@
 
 int qcdMethod2() {//main
   
+
   std::vector<std::string> files;
   files.push_back("MC_TTJets");//0
   files.push_back("MC_T-tW");//1
@@ -100,131 +101,173 @@ int qcdMethod2() {//main
 
   TFile *fData;
   
+
+  /////////////////////////////////////////////////////////
+  ///////// To be updated with additional histos /////////
+  ////////////////////////////////////////////////////////
+  const unsigned nHists = 2;
+  std::string lHistName[nHists] = {"met","n_jetsingap"};
+
+  bool doCJV[nHists] = {true,false};
+
+  //for plotting variables normalised to data luminosity
+  unsigned lRebin[nHists] = {5,1};
+  double xmin[nHists] = {0,0};
+  double xmax[nHists] = {300,10};
+  double ymin[nHists] = {0.01,0.01};
+  double ymax[nHists] = {50000,500000};
+  std::string xAxisTitle[nHists] = {"MET (GeV)","n_{jets} p_{T}>30 GeV #eta_{1} < #eta < #eta_{2}"};
+  std::string yAxisTitle[nHists] = {"Entries / 5 GeV","Entries"};
+  int lLogY[nHists] = {1,1};
+
+  //for histos normalised to unity
+  double xminNorm[nHists] = {0,0};
+  double xmaxNorm[nHists] = {130,10};
+  double yminNorm[nHists] = {0,0.0001};
+  double ymaxNorm[nHists] = {0.2,0.5};
+  int lLogYNorm[nHists] = {0,1};
+
+  //output file
+  std::string lOutputPDF[nHists] = {"METshapes_method2.pdf","NjetsInGAP_method2.pdf"};
+
+  TLegend *leg[nHists];
+  leg[0] = new TLegend(0.55,0.6,0.89,0.89);
+  leg[1] = new TLegend(0.55,0.7,0.89,0.89);
+
+  //////////////////////////////////////////////////////
+  ////// end section to modify /////////////////////////
+  //////////////////////////////////////////////////////
+
+
   const unsigned nSel = 4;
   std::string lSelection[nSel] = {"DPhiQCD-noCJV","DPhiQCD","DPhiSIGNAL-noCJV","DPhiSIGNAL"};
   std::string lSelectionName[nSel] = {"#Delta#phi_{jj}>2.6, no CJV","#Delta#phi_{jj}>2.6, CJV","#Delta#phi_{jj}<1.0, no CJV","#Delta#phi_{jj}<1.0, CJV"};
   
-  TCanvas *myc = new TCanvas("myc","myc",1200,1200);
-  myc->Divide(2,2);
+  int lColor[nSel] = {kGray+1,kRed-4,kGreen-9,kBlue-4};
+  
+  TCanvas *myc = new TCanvas("myc","myc",1200,600);
+  myc->Divide(2,1);
   gStyle->SetOptStat(0);
   
-  std::ostringstream lPath,lHistName;
+  std::ostringstream lPath;
   
   std::string folder = "output";
 
-  lHistName.str("");
-  lHistName << "met";
-  
-  TH1F *hMET[nSel];
-  TH1F *hMETBKG[nSel];
-  TH1F *hMETQCD[nSel];
 
-  TLegend *leg = new TLegend(0.6,0.12,0.9,0.42);
-  leg->SetFillColor(10);
-  
-  for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
-    fData = TFile::Open("../output/nunu/MET0/Data.root");
-    fData->cd(lSelection[iS].c_str());
-    hMET[iS] = (TH1F*)gDirectory->Get(lHistName.str().c_str())->Clone();
-  }
+  for (unsigned iH(0); iH<nHists;++iH){//loop on hists
 
-  std::cout << " -- Data files uploaded..." << std::endl;
-
-  for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
-   //get histograms
-    for (unsigned iBkg(0); iBkg<nFiles; ++iBkg){//loop on bkg files
-      lPath.str("");
-      lPath << "../" << folder << "/nunu/MET0/" << files[iBkg] << ".root";
-      fBkg[iBkg] = TFile::Open(lPath.str().c_str());
-      fBkg[iBkg]->cd(lSelection[iS].c_str());
-      TH1F *lTmp = (TH1F*)gDirectory->Get(lHistName.str().c_str());
-      //met[iBkg][iS]->Sumw2();
-      lTmp->Scale(lLumi*normalisation[iBkg]);
-      if (iBkg==0) hMETBKG[iS] = (TH1F*)lTmp->Clone();
-      else hMETBKG[iS]->Add(lTmp);
-      
-    }//loop on bkg files
-
-    hMETQCD[iS] = (TH1F*)hMET[iS]->Clone();
-    hMETQCD[iS]->Add(hMETBKG[iS],-1);
-
-  }//loop on selection
-
-  std::cout << " -- BKG files uploaded..." << std::endl;
-
-  int lColor[nSel] = {kGray+1,kRed-4,kGreen-9,kBlue-4};
-
-  for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
+    TH1F *hMET[nSel];
+    TH1F *hMETBKG[nSel];
+    TH1F *hMETQCD[nSel];
     
-    hMET[iS]->SetLineColor(iS+1);
-    hMET[iS]->SetMarkerColor(iS+1);
-    hMET[iS]->SetMarkerStyle(20+iS);  
-    hMET[iS]->Rebin(5);
-    hMET[iS]->GetXaxis()->SetRangeUser(0,300);
-    hMET[iS]->GetYaxis()->SetRangeUser(0.01,50000);
-    hMET[iS]->SetTitle("");
-    hMET[iS]->GetXaxis()->SetTitle("MET (GeV)");
-    hMET[iS]->GetYaxis()->SetTitle("Entries / 5 GeV");
+    leg[iH]->SetFillColor(10);
+    
+    for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
+      fData = TFile::Open("../output/nunu/MET0/Data.root");
+      fData->cd(lSelection[iS].c_str());
+      hMET[iS] = (TH1F*)gDirectory->Get(lHistName[iH].c_str())->Clone();
+    }
+    
+    std::cout << " -- Data files uploaded..." << std::endl;
+    
+    for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
+      //get histograms
+      for (unsigned iBkg(0); iBkg<nFiles; ++iBkg){//loop on bkg files
+	lPath.str("");
+	lPath << "../" << folder << "/nunu/MET0/" << files[iBkg] << ".root";
+	fBkg[iBkg] = TFile::Open(lPath.str().c_str());
+	fBkg[iBkg]->cd(lSelection[iS].c_str());
+	TH1F *lTmp = (TH1F*)gDirectory->Get(lHistName[iH].c_str());
+	//met[iBkg][iS]->Sumw2();
+	lTmp->Scale(lLumi*normalisation[iBkg]);
+	if (iBkg==0) hMETBKG[iS] = (TH1F*)lTmp->Clone();
+	else hMETBKG[iS]->Add(lTmp);
+	
+      }//loop on bkg files
+      
+      hMETQCD[iS] = (TH1F*)hMET[iS]->Clone();
+      hMETQCD[iS]->Add(hMETBKG[iS],-1);
+      
+    }//loop on selection
 
-    hMETBKG[iS]->SetLineColor(iS+1);
-    hMETBKG[iS]->SetFillColor(lColor[iS]);
-    hMETBKG[iS]->SetFillStyle(1001);
-    //hMETBKG[iS]->SetMarkerStyle(20+iS);  
-    hMETBKG[iS]->Rebin(5);
-    hMETBKG[iS]->GetXaxis()->SetRangeUser(0,300);
-    hMETBKG[iS]->GetYaxis()->SetRangeUser(0.01,50000);
-    hMETBKG[iS]->SetTitle("");
-    hMETBKG[iS]->GetXaxis()->SetTitle("MET (GeV)");
-    hMETBKG[iS]->GetYaxis()->SetTitle("Entries / 5 GeV");
+    std::cout << " -- BKG files uploaded..." << std::endl;
+    
+    
+    for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
+      if (!doCJV[iH] && iS%2==1) continue;
+      hMET[iS]->SetLineColor(iS+1);
+      hMET[iS]->SetMarkerColor(iS+1);
+      hMET[iS]->SetMarkerStyle(20+iS);  
+      hMET[iS]->Rebin(lRebin[iH]);
+      hMET[iS]->GetXaxis()->SetRangeUser(xmin[iH],xmax[iH]);
+      hMET[iS]->GetYaxis()->SetRangeUser(ymin[iH],ymax[iH]);
+      hMET[iS]->SetTitle("");
+      hMET[iS]->GetXaxis()->SetTitle(xAxisTitle[iH].c_str());
+      hMET[iS]->GetYaxis()->SetTitle(yAxisTitle[iH].c_str());
+    
+      
+      hMETBKG[iS]->SetLineColor(iS+1);
+      hMETBKG[iS]->SetFillColor(lColor[iS]);
+      hMETBKG[iS]->SetFillStyle(1001);
+      //hMETBKG[iS]->SetMarkerStyle(20+iS);  
+      hMETBKG[iS]->Rebin(lRebin[iH]);
+      hMETBKG[iS]->GetXaxis()->SetRangeUser(xmin[iH],xmax[iH]);
+      hMETBKG[iS]->GetYaxis()->SetRangeUser(ymin[iH],ymax[iH]);
+      hMETBKG[iS]->SetTitle("");
+      hMETBKG[iS]->GetXaxis()->SetTitle(xAxisTitle[iH].c_str());
+      hMETBKG[iS]->GetYaxis()->SetTitle(yAxisTitle[iH].c_str());
+      
+      myc->cd(1);
+      gPad->SetLogy(lLogY[iH]);
+      gPad->SetGridx(1);
+      if (iS==0) hMETBKG[iS]->Draw("hist");
+      else hMETBKG[iS]->Draw("histsame");
+    }
+    for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
+      if (!doCJV[iH] && iS%2==1) continue;
+      myc->cd(1);
+      hMET[iS]->Draw("PEsame");
+
+      leg[iH]->AddEntry(hMET[iS],lSelectionName[iS].c_str(),"P");
+      
+      myc->cd(2);
+      gPad->SetLogy(lLogYNorm[iH]);
+      gPad->SetGridx(1);
+      hMETQCD[iS]->SetLineColor(iS+1);
+      hMETQCD[iS]->SetMarkerColor(iS+1);
+      hMETQCD[iS]->SetMarkerStyle(20+iS);  
+      hMETQCD[iS]->Rebin(lRebin[iH]);
+      hMETQCD[iS]->GetXaxis()->SetRangeUser(xminNorm[iH],xmaxNorm[iH]);
+      hMETQCD[iS]->GetYaxis()->SetRangeUser(yminNorm[iH],ymaxNorm[iH]);
+      hMETQCD[iS]->SetTitle("");
+      hMETQCD[iS]->GetXaxis()->SetTitle(xAxisTitle[iH].c_str());
+      hMETQCD[iS]->GetYaxis()->SetTitle("Arb. Units");
+      
+      //if (iS==0) hMETQCD[iS]->DrawNormalized("PE");
+      //else hMETQCD[iS]->DrawNormalized("PEsame");
+      double integral = 1;//hMETQCD[0]->Integral(0,hMETQCD[0]->FindBin(130));
+      hMETQCD[iS]->Sumw2();
+      hMETQCD[iS]->Scale(integral/hMETQCD[iS]->Integral());
+
+      hMETQCD[iS]->GetYaxis()->SetRangeUser(yminNorm[iH],ymaxNorm[iH]);
+      
+      if (iS==0) hMETQCD[iS]->Draw("PE");
+      else hMETQCD[iS]->Draw("PEsame");
+      
+    }//loop on selection
 
     myc->cd(1);
-    gPad->SetLogy(1);
-    gPad->SetGridx(1);
-    if (iS==0) hMETBKG[iS]->Draw("hist");
-    else hMETBKG[iS]->Draw("histsame");
-  }
-  for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
-    myc->cd(1);
-    hMET[iS]->Draw("PEsame");
-
-    leg->AddEntry(hMET[iS],lSelectionName[iS].c_str(),"P");
+    leg[iH]->Draw("same");
     
     myc->cd(2);
-    gPad->SetLogy(0);
-    gPad->SetGridx(1);
-    hMETQCD[iS]->SetLineColor(iS+1);
-    hMETQCD[iS]->SetMarkerColor(iS+1);
-    hMETQCD[iS]->SetMarkerStyle(20+iS);  
-    hMETQCD[iS]->Rebin(5);
-    hMETQCD[iS]->GetXaxis()->SetRangeUser(0,130);
-    hMETQCD[iS]->SetTitle("");
-    hMETQCD[iS]->GetXaxis()->SetTitle("MET (GeV)");
-    hMETQCD[iS]->GetYaxis()->SetTitle("Arb. Units");
- 
-    //if (iS==0) hMETQCD[iS]->DrawNormalized("PE");
-    //else hMETQCD[iS]->DrawNormalized("PEsame");
-    double integral = 1;//hMETQCD[0]->Integral(0,hMETQCD[0]->FindBin(130));
-    hMETQCD[iS]->Sumw2();
-    hMETQCD[iS]->Scale(integral/hMETQCD[iS]->Integral());
+    //leg[iH]->Draw("same");
+    
+    
+    myc->Update();
+    myc->Print(lOutputPDF[iH].c_str());
 
-    hMETQCD[iS]->GetYaxis()->SetRangeUser(0,0.2);
+  }//loop on hists
 
-
-    if (iS==0) hMETQCD[iS]->Draw("PE");
-    else hMETQCD[iS]->Draw("PEsame");
-
-  }//loop on selection
-
-  myc->cd(1);
-  leg->Draw("same");
-  
-  myc->cd(2);
-  //leg->Draw("same");
-
-
-  myc->Update();
-  myc->Print("METshapes_method2.pdf");
-  
   return 0;
   
 }//main
