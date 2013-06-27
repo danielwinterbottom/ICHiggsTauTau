@@ -15,7 +15,8 @@
 #include "TPad.h"
 #include "TROOT.h"
 #include "TEfficiency.h"
-
+#include "TEntryList.h"
+#include "TMath.h"
 
 namespace ic {
 
@@ -282,12 +283,16 @@ namespace ic {
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT]\n";
     auto ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", "", sel, cat, wt);
+    if (this->AliasDefined("ztt_shape_cat")) cat = this->ResolveAlias("ztt_shape_cat");
     TH1F ztt_hist = this->GetShape(var, this->ResolveAlias("ZTT_Shape_Sample"), sel, cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
     return std::make_pair(ztt_hist, ztt_norm);
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZL]\n";
     Value zl_norm;
     TH1F zl_hist;
     if (method == 5) {
@@ -306,6 +311,7 @@ namespace ic {
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZJ]\n";
     Value zj_norm;
     TH1F zj_hist;
     if (method == 5) {
@@ -324,6 +330,7 @@ namespace ic {
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateTOP]\n";
     auto top_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
     std::string top_shape_sample = (year_ == "2011") ? "TTJets" : "TT";
     std::string top_shape_cat = cat;
@@ -340,6 +347,7 @@ namespace ic {
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateVV]\n";
     std::vector<std::string> vv_samples = this->ResolveSamplesAlias("vv_samples");
     auto vv_norm = this->GetLumiScaledRate(vv_samples, sel, cat, wt);
     if (ch_ == channel::em && (method == 0 || method == 1)) {
@@ -355,6 +363,7 @@ namespace ic {
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateW]\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     std::string w_extrap_cat = cat;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
@@ -384,6 +393,7 @@ namespace ic {
   }
   
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateQCD]\n";
     Value qcd_norm;
     TH1F qcd_hist;
     if (ch_ != channel::em) {
@@ -932,6 +942,116 @@ namespace ic {
 
   void HTTAnalysis::SetAlias(std::string const& al, std::string const& val) {
     alias_map_[al] = val;
+  }
+
+  double HTTAnalysis::KolmogorovTest(std::string const& variable,
+      std::string const& sample1, std::string const& selection1, std::string const& category1,
+      std::string const& sample2, std::string const& selection2, std::string const& category2,
+      std::string const& weight) {
+    std::cout << "[HTTAnalysis::KolmogorovTest] Calculating statistic for shapes:" << std::endl;
+    std::cout << "[1] " << boost::format("%s,'%s','%s','%s'\n") % sample1 % selection1 % category1 % weight;
+    std::cout << "[2] " << boost::format("%s,'%s','%s','%s'\n") % sample2 % selection2 % category2 % weight;
+    std::string full1 = BuildCutString(selection1, category1, weight);
+    std::string full2 = BuildCutString(selection2, category2, weight);
+    TH1::AddDirectory(true);
+    ttrees_[sample1]->Draw(">>elist", full1.c_str(), "entrylist");
+    TEntryList *elist1 = (TEntryList*)gDirectory->Get("elist");
+    TH1::AddDirectory(false);
+    unsigned entries1 = elist1->GetN();
+    double x1;
+    double wt1;
+    std::vector<std::pair<double,double>> a(entries1,std::make_pair(0.,0.));
+    ttrees_[sample1]->SetBranchAddress(variable.c_str(), &x1);
+    ttrees_[sample1]->SetBranchAddress(weight.c_str(), &wt1);
+    for (unsigned i = 0; i < entries1; ++i) {
+      unsigned entry = elist1->GetEntry(i);
+      ttrees_[sample1]->GetEntry(entry);
+      a[i].first = x1;
+      a[i].second = wt1;
+    }
+    gDirectory->Delete("elist;*");
+    TH1::AddDirectory(true);
+    ttrees_[sample2]->Draw(">>elist", full2.c_str(), "entrylist");
+    TEntryList *elist2 = (TEntryList*)gDirectory->Get("elist");
+    TH1::AddDirectory(false);
+    unsigned entries2 = elist2->GetN();
+    double x2;
+    double wt2;
+    std::vector<std::pair<double,double>> b(entries2,std::make_pair(0.,0.));
+    ttrees_[sample2]->SetBranchAddress(variable.c_str(), &x2);
+    ttrees_[sample2]->SetBranchAddress(weight.c_str(), &wt2);
+    for (unsigned i = 0; i < entries2; ++i) {
+      unsigned entry = elist2->GetEntry(i);
+      ttrees_[sample2]->GetEntry(entry);
+      b[i].first = x2;
+      b[i].second = wt2;
+    }
+    gDirectory->Delete("elist;*");
+    std::sort(a.begin(), a.end(), [](const std::pair<double, double>& first, const std::pair<double, double>& second)
+      {
+        return first.first < second.first;
+      });
+    std::sort(b.begin(), b.end(), [](const std::pair<double, double>& first, const std::pair<double, double>& second)
+      {
+        return first.first < second.first;
+      });
+    double prob = -1;
+    int na = a.size();
+    int nb = b.size();
+    double rna = 0.;
+    double rnb = 0.;
+    for (unsigned i = 0; i < a.size(); ++i) rna += a[i].second;
+    for (unsigned i = 0; i < b.size(); ++i) rnb += b[i].second;
+
+    /* 
+      The implementation below shamelessly stolen from:
+      http://root.cern.ch/root/html/TMath.html#TMath:KolmogorovTest
+      and modified to take into account weighted events.  Quite possible
+      that this is not statistically valid, but seems to behave well enough
+      when weights are close to unity.
+    */
+    // double rna = a.size();
+    // double rnb = b.size();
+    std::cout << "Entries: (1) " << rna << " (2) " << rnb << std::endl;
+    // double sa  = 1./rna;
+    // double sb  = 1./rnb;
+    double rdiff = 0;
+    double rdmax = 0;
+    int ia = 0;
+    int ib = 0;
+    bool ok = false;
+    for (int i=0;i<na+nb;i++) {
+      if (a[ia].first < b[ib].first) {
+         rdiff -= a[ia].second/rna;
+         ia++;
+         if (ia >= na) {ok = true; break;}
+      } else if (a[ia].first > b[ib].first) {
+         rdiff += b[ib].second/rnb;
+         ib++;
+         if (ib >= nb) {ok = true; break;}
+      } else {
+         // special cases for the ties
+         double x = a[ia].first;
+         while(a[ia].first == x && ia < na) {
+            rdiff -= a[ia].second/rna;
+            ia++;
+         }
+         while(b[ib].first == x && ib < nb) {
+            rdiff += b[ib].second/rnb;
+            ib++;
+         }
+         if (ia >= na) {ok = true; break;}
+         if (ib >= nb) {ok = true; break;}
+      }
+      rdmax = TMath::Max(rdmax,TMath::Abs(rdiff));
+    }
+    if (ok) {
+      rdmax = TMath::Max(rdmax,TMath::Abs(rdiff));
+      Double_t z = rdmax * TMath::Sqrt(rna*rnb/(rna+rnb));
+      prob = TMath::KolmogorovProb(z);
+    }
+    std::cout << " Kolmogorov Probability = " << prob << ", rmax=" << rdmax << std::endl;
+    return prob;
   }
 
 

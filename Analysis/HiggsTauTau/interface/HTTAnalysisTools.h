@@ -284,7 +284,12 @@ namespace ic {
       std::string ResolveAlias(std::string const& al);
       std::vector<std::string> ResolveSamplesAlias(std::string const& al);
       void SetAlias(std::string const& al, std::string const& val);
+      inline bool AliasDefined(std::string const& al) { return alias_map_.count(al); }
       inline double GetLumi() const { return lumi_; };
+      double KolmogorovTest(std::string const& variable,
+                              std::string const& sample1, std::string const& selection1, std::string const& category1,
+                              std::string const& sample2, std::string const& selection2, std::string const& category2,
+                              std::string const& weight);
 
     private:
       ic::channel ch_;
