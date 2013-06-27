@@ -573,6 +573,8 @@ int main(int argc, char* argv[]){
   
   
   
+  CopyCollection<PFJet> alljetsCopyCollection("copytoalljets","pfJetsPFlow","AllpfJetsPFlow");
+
 
   CopyCollection<PFJet> cjvjetsCopyCollection("copytocjvjets","pfJetsPFlow","cjvpfJetsPFlow");
 
@@ -1094,7 +1096,8 @@ int main(int argc, char* argv[]){
      }
      
      //jet modules
-          
+     analysis.AddModule(&alljetsCopyCollection);
+
      analysis.AddModule(&jetIDFilter);
 
      //prepare collections of veto leptons
