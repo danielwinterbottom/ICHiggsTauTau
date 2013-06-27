@@ -105,35 +105,37 @@ int qcdMethod2() {//main
   /////////////////////////////////////////////////////////
   ///////// To be updated with additional histos /////////
   ////////////////////////////////////////////////////////
-  const unsigned nHists = 2;
-  std::string lHistName[nHists] = {"met","n_jetsingap"};
+  const unsigned nHists = 4;
+  std::string lHistName[nHists] = {"met","n_jetsingap","Ht/Ht","Ht/SqrtHt"};
 
-  bool doCJV[nHists] = {true,false};
-  bool lBlind[nHists] = {true,false};
+  bool doCJV[nHists] = {true,false,true,true};
+  bool lBlind[nHists] = {true,false,false,false};
 
   //for plotting variables normalised to data luminosity
-  unsigned lRebin[nHists] = {5,1};
-  double xmin[nHists] = {0,0};
-  double xmax[nHists] = {300,10};
-  double ymin[nHists] = {0.01,0.01};
-  double ymax[nHists] = {50000,500000};
-  std::string xAxisTitle[nHists] = {"MET (GeV)","n_{jets} p_{T}>30 GeV #eta_{1} < #eta < #eta_{2}"};
-  std::string yAxisTitle[nHists] = {"Entries / 5 GeV","Entries"};
-  int lLogY[nHists] = {1,1};
+  unsigned lRebin[nHists] = {5,1,20,1};
+  double xmin[nHists] = {0,0,0,5};
+  double xmax[nHists] = {300,10,800,35};
+  double ymin[nHists] = {0.01,0.01,0,0};
+  double ymax[nHists] = {50000,500000,22000,28000};
+  std::string xAxisTitle[nHists] = {"MET (GeV)","n_{jets} p_{T}>30 GeV #eta_{1} < #eta < #eta_{2}","H_{T}/GeV","\sqrt_{H_{T}}/GeV^{1/2}"};
+  std::string yAxisTitle[nHists] = {"Entries / 5 GeV","Entries","Entries","Entries"};
+  int lLogY[nHists] = {1,1,0,0};
 
   //for histos normalised to unity
-  double xminNorm[nHists] = {0,0};
-  double xmaxNorm[nHists] = {130,10};
-  double yminNorm[nHists] = {0,0.0001};
-  double ymaxNorm[nHists] = {0.2,0.5};
-  int lLogYNorm[nHists] = {0,1};
+  double xminNorm[nHists] = {0,0,0,5};
+  double xmaxNorm[nHists] = {130,10,800,35};
+  double yminNorm[nHists] = {0,0.0001,0,0};
+  double ymaxNorm[nHists] = {0.2,0.5,1,1};
+  int lLogYNorm[nHists] = {0,1,0,0};
 
   //output file
-  std::string lOutputPDF[nHists] = {"METshapes_method2.pdf","NjetsInGAP_method2.pdf"};
+  std::string lOutputPDF[nHists] = {"METshapes_method2.pdf","NjetsInGAP_method2.pdf","ht.pdf","sqrtht.pdf"};
 
   TLegend *leg[nHists];
   leg[0] = new TLegend(0.55,0.6,0.89,0.89);
   leg[1] = new TLegend(0.55,0.7,0.89,0.89);
+  leg[2] = new TLegend(0.55,0.7,0.89,0.89);
+  leg[3] = new TLegend(0.55,0.7,0.89,0.89);
 
   //////////////////////////////////////////////////////
   ////// end section to modify /////////////////////////
