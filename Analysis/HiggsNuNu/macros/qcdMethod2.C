@@ -109,6 +109,7 @@ int qcdMethod2() {//main
   std::string lHistName[nHists] = {"met","n_jetsingap"};
 
   bool doCJV[nHists] = {true,false};
+  bool lBlind[nHists] = {true,false};
 
   //for plotting variables normalised to data luminosity
   unsigned lRebin[nHists] = {5,1};
@@ -163,7 +164,9 @@ int qcdMethod2() {//main
     leg[iH]->SetFillColor(10);
     
     for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
-      fData = TFile::Open("../output/nunu/MET0/Data.root");
+      lPath.str("");
+      lPath << "../" << folder  << "/nunu/MET0/Data.root" ;
+      fData = TFile::Open(lPath.str().c_str());
       fData->cd(lSelection[iS].c_str());
       hMET[iS] = (TH1F*)gDirectory->Get(lHistName[iH].c_str())->Clone();
     }
@@ -187,6 +190,19 @@ int qcdMethod2() {//main
       
       hMETQCD[iS] = (TH1F*)hMET[iS]->Clone();
       hMETQCD[iS]->Add(hMETBKG[iS],-1);
+
+      if (iS>1 && lBlind[iH]) {
+	//blind signal region in data
+	for (unsigned iB(0); iB<hMET[iS]->GetNbinsX(); ++iB){
+	  if (hMET[iS]->GetBinLowEdge(iB+1) > 130) {
+	    hMET[iS]->SetBinContent(iB+1,0);
+	    hMETQCD[iS]->SetBinContent(iB+1,0);
+	    hMET[iS]->SetBinError(iB+1,0);
+	    hMETQCD[iS]->SetBinError(iB+1,0);    
+	  }
+	}
+      }
+
       
     }//loop on selection
 
