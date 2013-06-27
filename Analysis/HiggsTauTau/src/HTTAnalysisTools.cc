@@ -288,7 +288,7 @@ namespace ic {
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT]\n";
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT] --------------------------------------------------------\n";
     auto ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", "", sel, cat, wt);
     if (this->AliasDefined("ztt_shape_cat")) cat = this->ResolveAlias("ztt_shape_cat");
     TH1F ztt_hist = this->GetShape(var, this->ResolveAlias("ZTT_Shape_Sample"), sel, cat, wt);
@@ -299,12 +299,14 @@ namespace ic {
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZL]\n";
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZL] ---------------------------------------------------------\n";
     Value zl_norm;
     TH1F zl_hist;
     if (method == 5) {
       zl_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("twojet"), sel, cat, wt);
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("vbf_loose_jets20"), wt);
+      if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+        % ("DYJetsToLL-L"+dy_soup_) % sel % this->ResolveAlias("vbf_loose_jets20") % wt;
     } else {
       std::string zll_shape_cat = cat;
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
@@ -312,18 +314,22 @@ namespace ic {
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
       zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, cat, wt);
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
+      if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+        % ("DYJetsToLL-L"+dy_soup_) % sel % zll_shape_cat % wt;
     }
     SetNorm(&zl_hist, zl_norm.first);
     return std::make_pair(zl_hist, zl_norm);
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZJ]\n";
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateZJ] ---------------------------------------------------------\n";
     Value zj_norm;
     TH1F zj_hist;
     if (method == 5) {
       zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+dy_soup_, sel, cat, wt);
       zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+dy_soup_, sel, this->ResolveAlias("vbf_loose"), wt);
+      if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+        % ("DYJetsToLL-J"+dy_soup_) % sel % this->ResolveAlias("vbf_loose") % wt;
     } else {
       std::string zll_shape_cat = cat;
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
@@ -331,13 +337,15 @@ namespace ic {
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
       zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+dy_soup_, sel, cat, wt);
       zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+dy_soup_, sel, zll_shape_cat, wt);
+      if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+        % ("DYJetsToLL-J"+dy_soup_) % sel % zll_shape_cat % wt;
     }
     SetNorm(&zj_hist, zj_norm.first);
     return std::make_pair(zj_hist, zj_norm);
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTAnalysis::GenerateTOP]\n";
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateTOP] --------------------------------------------------------\n";
     auto top_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
     std::string top_shape_sample = (year_ == "2011") ? "TTJets" : "TT";
     std::string top_shape_cat = cat;
@@ -349,28 +357,33 @@ namespace ic {
       }
     }
     TH1F top_hist = this->GetLumiScaledShape(var, top_shape_sample, sel, top_shape_cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % top_shape_sample % sel % top_shape_cat % wt;
     SetNorm(&top_hist, top_norm.first);
     return std::make_pair(top_hist, top_norm);
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTAnalysis::GenerateVV]\n";
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateVV] ---------------------------------------------------------\n";
     std::vector<std::string> vv_samples = this->ResolveSamplesAlias("vv_samples");
     auto vv_norm = this->GetLumiScaledRate(vv_samples, sel, cat, wt);
     if (ch_ == channel::em && (method == 0 || method == 1)) {
       vv_norm = ValueProduct(vv_norm, std::make_pair(1.23, 0.0));
+      PrintValue("Scaling Norm", std::make_pair(1.23, 0.0));
     }
     std::string vv_shape_cat = cat;
     if (method == 5 && ch_ != channel::em) {
       vv_shape_cat = this->ResolveAlias("vbf_loose");
     }
     TH1F vv_hist = this->GetLumiScaledShape(var, vv_samples, sel, vv_shape_cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % "vv_samples" % sel % vv_shape_cat % wt;
     SetNorm(&vv_hist, vv_norm.first);
     return std::make_pair(vv_hist, vv_norm);
   }
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTAnalysis::GenerateW]\n";
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     std::string w_extrap_cat = cat;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
@@ -395,12 +408,14 @@ namespace ic {
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
     TH1F w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, w_shape_cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % this->ResolveAlias("W_Shape_Sample") % w_shape_sel % w_shape_cat % wt;
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
   }
   
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTAnalysis::GenerateQCD]\n";
+    if (verbosity_) std::cout << "[HTTAnalysis::GenerateQCD] --------------------------------------------------------\n";
     Value qcd_norm;
     TH1F qcd_hist;
     if (ch_ != channel::em) {
@@ -441,6 +456,9 @@ namespace ic {
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
         if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
         qcd_hist = this->GetShape(var, this->ResolveAlias("QCD_Shape_Sample"), qcd_sdb_sel, qcd_cat, wt);
+        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+          % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
+
       }
     } else {
       Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
@@ -449,23 +467,41 @@ namespace ic {
       Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("ss"), "", ss_sel, cat, wt);
       if (method == 0 || method == 2) {
         qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
+        PrintValue("FR Inclusive", qcd_dilepton);
+        PrintValue("SS Eff", qcd_eff);
         qcd_hist = this->GetShape(var, "Special_23_Data", ss_sel, cat, wt);
+        if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+          % "Special_23_Data" % ss_sel % cat % wt;
       } else if (method == 1) {
+        PrintValue("FR Inclusive", qcd_dilepton);
+        PrintValue("SS Eff", qcd_eff);
         qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
         qcd_hist = this->GetShape(var, "Special_24_Data", ss_sel, cat, wt);
+        if (verbosity_) std::cout << "SS Shape(0.2): " << boost::format("%s,'%s','%s','%s'\n")
+          % "Special_24_Data" % ss_sel % cat % wt;
         TH1F fr_hist =  this->GetShapeViaFakesMethod(var, sel, cat, wt);
+        if (verbosity_) std::cout << "FR Shape(0.8): " << boost::format("%s,'%s','%s','%s'\n")
+          % "               " % sel % cat % wt;
         qcd_hist.Scale(0.2 / Integral(&qcd_hist));
         fr_hist.Scale(0.8 / Integral(&fr_hist));
         qcd_hist.Add(&fr_hist,1.0);
       } else if (method == 3) {
         qcd_norm = this->GetRateViaFakesMethod(sel, cat, wt);
         qcd_hist = this->GetShapeViaFakesMethod(var, sel, cat, wt); 
+        if (verbosity_) std::cout << "FR Shape: " << boost::format("%s,'%s','%s','%s'\n")
+          % "               " % sel % cat % wt;
       } else if (method == 5) {
         qcd_norm = this->GetRateViaFakesMethod(sel, cat, wt);
         qcd_hist = this->GetShapeViaFakesMethod(var, sel, this->ResolveAlias("vbf_no_cjv"), wt);
+        if (verbosity_) std::cout << "FR Shape: " << boost::format("%s,'%s','%s','%s'\n")
+          % "               " % sel % this->ResolveAlias("vbf_no_cjv") % wt;
      } else {
       qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
+      PrintValue("FR Inclusive", qcd_dilepton);
+      PrintValue("SS Eff", qcd_eff);
       qcd_hist = this->GetShape(var, "Data", ss_sel, cat, wt);
+      if (verbosity_) std::cout << "SS Shape: " << boost::format("%s,'%s','%s','%s'\n")
+        % "Data" % ss_sel % cat % wt;
      }
     }
     SetNorm(&qcd_hist, qcd_norm.first);
@@ -865,6 +901,11 @@ namespace ic {
                           std::string const& weight,
                           std::map<std::string, std::function<Value()>> dict
                           ) {
+    if (verbosity_) {
+      std::cout << "[HTTAnalysis::GetShapeViaQCDMethod]\n";
+      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % selection % category % weight;
+
+    }
     TH1F result = GetLumiScaledShape(variable, data_sample, selection, category, weight);
     for (unsigned i = 0; i < sub_samples.size(); ++i) {
       if (dict.count(sub_samples[i])) {
