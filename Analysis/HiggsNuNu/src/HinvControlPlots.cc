@@ -330,9 +330,9 @@ namespace ic {
       HTPlots_->unclusteredEt->Fill(unclVec.Et(),wt_);
       HTPlots_->METminusMHT->Fill((met->vector()+mhtVec).Et(),wt_);
 
-      std::cout << " MHT " << mhtVec << std::endl
-		<< " MuVEC " << muVec << std::endl
-		<< " Uncl " << unclVec << std::endl;
+      //std::cout << " MHT " << mhtVec << std::endl
+      //		<< " MuVEC " << muVec << std::endl
+      //	<< " Uncl " << unclVec << std::endl;
 
     }
     //End: Filling HinvHTPlots
