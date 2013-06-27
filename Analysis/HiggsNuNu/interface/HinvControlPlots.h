@@ -33,6 +33,10 @@ namespace ic {
     TH1F *etaprodjj;
     TH1F *drjj;
     TH1F *dphijj;
+    //TH1F *dphi_metj1;
+    //TH1F *dphi_metj2;
+    //TH1F *dphi_metj3;
+    //TH1F *mindphi_metj;
 
     HinvCoreControlPlots(TFileDirectory const& dir);
     
@@ -91,6 +95,9 @@ namespace ic {
     TH1F *SqrtHt;
     TH2F *MetHt;
     TH2F *MetSqrtHt;
+    TH1F *unclusteredEt;
+    TH1F *MHT;
+    TH1F *METminusMHT;
     HinvHTPlots(TFileDirectory const& dir);
     
   };
@@ -139,6 +146,7 @@ namespace ic {
     double etaprodjj_;     // Defined if n_jets >= 2
     double drjj_;     // Defined if n_jets >= 2
     double dphijj_;     // Defined if n_jets >= 2
+
  
   public:
     HinvControlPlots(std::string const& name);
