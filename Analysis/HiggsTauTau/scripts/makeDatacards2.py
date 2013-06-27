@@ -139,31 +139,55 @@ if options.scheme == 'new_sm':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   scheme_et = [
-    ("8",   "inclusive",                "inclusive",            BINS_FINE,  ""),
-    ("5",   "new_vbf",                  "vbf",                  BINS,       ""),
-    ("5",   "new_vbf_loose",            "vbf_loose",            BINS,       ""),
-    ("5",   "new_vbf_tight",            "vbf_tight",            BINS,       ""),
-    ("0",   "new_0jet_low",             "0jet_low",             BINS_FINE,  ""),
-    ("1",   "new_0jet_medium",          "0jet_medium",          BINS_FINE,  ""),
-    ("1",   "new_0jet_high",            "0jet_high",            BINS_FINE,  ""),
-    ("2",   "new_1jet_medium",          "1jet_medium",          BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  ' --set_alias="w_shape_os:1"')
+    ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),
+    ("5",   "new_vbf",                  "vbf",                    BINS,       (
+      ' --set_alias="w_vbf_os:1"'
+      ' --set_alias="w_shape_os:1"')),
+    ("5",   "new_vbf_loose",            "vbf_loose",              BINS,       (
+      ' --set_alias="w_vbf_os:1"'
+      ' --set_alias="w_shape_os:1"')),
+    ("5",   "new_vbf_tight",            "vbf_tight",              BINS,       (
+      ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
+      ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
+      ' --set_alias="w_vbf_os:1"'
+      ' --set_alias="w_shape_os:1"'
+      ' --set_alias="QCD_Eff_Sample:Special_4_Data"')),
+    ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE,  ""),
+    ("1",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
+    ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
+    ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
+      ' --set_alias="w_shape_os:1"'
+      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'))
   ]
   scheme_mt = [
-    ("8",   "inclusive",                "inclusive",            BINS_FINE,  ""),
-    ("5",   "new_vbf",                  "vbf",                  BINS,       ""),
-    ("5",   "new_vbf_loose",            "vbf_loose",            BINS,       ""),
-    ("5",   "new_vbf_tight",            "vbf_tight",            BINS,       ""),
-    ("0",   "new_0jet_low",             "0jet_low",             BINS_FINE,  ""),
-    ("1",   "new_0jet_medium",          "0jet_medium",          BINS_FINE,  ""),
-    ("1",   "new_0jet_high",            "0jet_high",            BINS_FINE,  ""),
-    ("2",   "new_1jet_medium",          "1jet_medium",          BINS_FINE,  ' --set_alias="w_shape_os:1" --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
-    ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",   BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high",            "1jet_high",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs", BINS_FINE,  ' --set_alias="w_shape_os:1"')
+    ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),
+    ("5",   "new_vbf",                  "vbf",                    BINS, (
+      ' --set_alias="w_vbf_os:1"'
+      ' --set_alias="w_shape_os:1"')),
+    ("5",   "new_vbf_loose",            "vbf_loose",              BINS, (
+      ' --set_alias="w_vbf_os:1"'
+      ' --set_alias="w_shape_os:1"')),
+    ("5",   "new_vbf_tight",            "vbf_tight",              BINS, (     
+      ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
+      ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
+      ' --set_alias="w_vbf_os:1"'
+      ' --set_alias="w_shape_os:1"'
+      ' --set_alias="QCD_Eff_Sample:Special_4_Data"')),
+    ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE,  ""),
+    ("1",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
+    ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
+    ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  ' --set_alias="w_shape_os:1" --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
+    ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
+      ' --set_alias="w_shape_os:1"'
+      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'))
   ]
   scheme_mtmet = scheme_mt
   scheme_em = [

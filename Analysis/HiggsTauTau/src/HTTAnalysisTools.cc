@@ -51,6 +51,8 @@ namespace ic {
         "WJetsToLNuSoup"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
+          "Special_4_Data",
+          "Special_5_WJetsToLNuSoup",
           "DYJetsToLLSoup",
           "DYJetsToLL-LSoup",
           "DYJetsToLL-JSoup"});
@@ -105,9 +107,11 @@ namespace ic {
 
       // Categories for background estimates and control plots
       alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
+      alias_map_["w_vbf_extrap_cat"]  = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
       alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
       alias_map_["twojet"]            = "(n_jets>=2)";
       alias_map_["1jet"]              = "(n_jets>=1)";
+
     } else {
       // SM Categories
       alias_map_["inclusive"]         = "";
@@ -155,8 +159,11 @@ namespace ic {
       alias_map_["sel"]                       = "pzeta>-20.";
     }
 
-    alias_map_["ZTT_Eff_Sample"] = "Embedded";
-    alias_map_["ZTT_Shape_Sample"] = "Embedded";
+    alias_map_["QCD_Eff_Sample"]    = "Special_3_Data";
+    alias_map_["ZTT_Eff_Sample"]    = "Embedded";
+    alias_map_["ZTT_Shape_Sample"]  = "Embedded";
+    alias_map_["QCD_Shape_Sample"]  = "Special_3_Data";
+    alias_map_["W_Shape_Sample"]    = "WJetsToLNuSoup";
 
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
@@ -370,7 +377,7 @@ namespace ic {
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
     std::string w_sdb_sel = "os && "+this->ResolveAlias("w_sdb");
     if (method == 5) {
-      w_extrap_cat    = this->ResolveAlias("vbf_loose");
+      w_extrap_cat    = this->ResolveAlias("w_vbf_extrap_cat");
       w_extrp_sdb_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("w_vbf_sdb");
       w_extrp_sig_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("sel");
       w_sdb_sel       = "os && "+this->ResolveAlias("w_vbf_sdb");
@@ -387,7 +394,7 @@ namespace ic {
     if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
-    TH1F w_hist = this->GetShape(var, "WJetsToLNuSoup", w_shape_sel, w_shape_cat, wt);
+    TH1F w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, w_shape_cat, wt);
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
   }
@@ -413,7 +420,7 @@ namespace ic {
         }
       });
       if (method == 5) {
-        Value qcd_eff = this->SampleEfficiency("Special_3_Data", qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
+        Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         qcd_norm = ValueProduct(qcd_norm, qcd_eff);
       }
       if (qcd_norm.first <= 0.0) {
@@ -433,7 +440,7 @@ namespace ic {
         if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
         if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
-        qcd_hist = this->GetShape(var, "Special_3_Data", qcd_sdb_sel, qcd_cat, wt);
+        qcd_hist = this->GetShape(var, this->ResolveAlias("QCD_Shape_Sample"), qcd_sdb_sel, qcd_cat, wt);
       }
     } else {
       Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
