@@ -83,6 +83,9 @@ namespace ic {
     SqrtHt             = dir.make<TH1F>("SqrtHt",            "SqrtHt",            1000,   0,1000);
     MetHt              = dir.make<TH2F>("MetHt",             "MetHt",             1000,0,1000,1000,0,1000);
     MetSqrtHt          = dir.make<TH2F>("SqrtMetHt",         "SqrtMetHt",         1000,0,1000,1000,0,1000);
+    unclusteredEt = dir.make<TH1F>("unclusteredEt","unclusteredEt",1000,0,1000);
+    MHT = dir.make<TH1F>("MHT","MHT",1000,0,1000);
+    METminusMHT = dir.make<TH1F>("METminusMHT","METminusMHT",1000,0,1000);
   };
 
   
@@ -134,6 +137,9 @@ namespace ic {
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     
+    std::vector<PFJet*> alljets = event->GetPtrVec<PFJet>("AllpfJetsPFlow");
+    std::sort(alljets.begin(), alljets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    
 
     // Define event properties
     // IMPORTANT: Make sure each property is re-set
@@ -153,20 +159,15 @@ namespace ic {
     n_jetsingap_ = 0;
     
     // Start: HinvDijetMETPlots Variables __________________________________
-    ROOT::Math::PtEtaPhiEVector diffVector;
-    double diffEtValue;
-    double diffPtValue;
-    double scalSumPt;
+    ROOT::Math::PtEtaPhiEVector diffVector(0,0,0,0);
+    double diffEtValue = 0;
+    double diffPtValue = 0;
+    double scalSumPt = 0;
     
-    double dijet_MET;
+    double dijet_MET = 0;
     double htPlusMET = 0;
     // End: Filling HinvDijetMETPlots Variables ____________________________
 
-    //Start: HinvHTPlots variables
-    double ht =0;
-    double sqrtht=0;
-    double metet=0;
-    // End: HinvHTPlots variables
 
     // Enable filling of plots
     bool fillPlots             = true;
@@ -261,12 +262,30 @@ namespace ic {
        // End: Calculating HinvDijetMETPlots ____________________________________
       
     }
+
+    //Start: HinvHTPlots variables
+    double ht =0;
+    double sqrtht=0;
+    double metet=0;
+    ROOT::Math::PtEtaPhiEVector mhtVec(0,0,0,0);
+    ROOT::Math::PtEtaPhiEVector muVec(0,0,0,0);
+     // End: HinvHTPlots variables
+
     //Start: Calculating ht things
-    for(int i =0; unsigned(i)<jets.size();++i){
-      ht+=jets[i]->vector().Et();
+    for(int i =0; unsigned(i)<alljets.size();++i){
+      ht+=alljets[i]->vector().Et();
+      mhtVec += alljets[i]->vector();
     }
     sqrtht=sqrt(ht);
     metet=met->vector().Et();
+
+    std::vector<Muon*> allMuons = event->GetPtrVec<Muon>("muonsPFlow");
+    for(int i =0; unsigned(i)<allMuons.size();++i){
+      muVec += allMuons[i]->vector();
+    }
+
+    ROOT::Math::PtEtaPhiEVector unclVec = mhtVec + muVec + met->vector();
+
     //End: Calculating ht things
     
     n_vtx_ = eventInfo->good_vertices();
@@ -303,10 +322,18 @@ namespace ic {
 
     //Start: Filling HinvHTPlots
     if(fillPlots){
-      HTPlots_->Ht->Fill(ht);
-      HTPlots_->SqrtHt->Fill(sqrtht);
-      HTPlots_->MetHt->Fill(ht,metet);
-      HTPlots_->MetSqrtHt->Fill(sqrtht,metet);
+      HTPlots_->Ht->Fill(ht,wt_);
+      HTPlots_->SqrtHt->Fill(sqrtht,wt_);
+      HTPlots_->MetHt->Fill(ht,metet,wt_);
+      HTPlots_->MetSqrtHt->Fill(sqrtht,metet,wt_);
+      HTPlots_->MHT->Fill(mhtVec.Et(),wt_);
+      HTPlots_->unclusteredEt->Fill(unclVec.Et(),wt_);
+      HTPlots_->METminusMHT->Fill((met->vector()+mhtVec).Et(),wt_);
+
+      std::cout << " MHT " << mhtVec << std::endl
+		<< " MuVEC " << muVec << std::endl
+		<< " Uncl " << unclVec << std::endl;
+
     }
     //End: Filling HinvHTPlots
 
