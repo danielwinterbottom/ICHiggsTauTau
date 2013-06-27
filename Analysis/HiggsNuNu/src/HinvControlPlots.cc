@@ -264,8 +264,7 @@ namespace ic {
     double sqrtht=0;
     double metet=0;
     ROOT::Math::PtEtaPhiEVector mhtVec(0,0,0,0);
-    ROOT::Math::PtEtaPhiEVector muVec(0,0,0,0);
-     // End: HinvHTPlots variables
+    // End: HinvHTPlots variables
 
     //Start: Calculating ht things
     for(int i =0; unsigned(i)<alljets.size();++i){
@@ -275,12 +274,7 @@ namespace ic {
     sqrtht=sqrt(ht);
     metet=met->vector().Et();
 
-    std::vector<Muon*> allMuons = event->GetPtrVec<Muon>("muonsPFlow");
-    for(int i =0; unsigned(i)<allMuons.size();++i){
-      muVec += allMuons[i]->vector();
-    }
-
-    ROOT::Math::PtEtaPhiEVector unclVec = mhtVec + muVec + met->vector();
+    ROOT::Math::PtEtaPhiEVector unclVec = mhtVec + met->vector();
 
     //End: Calculating ht things
     
