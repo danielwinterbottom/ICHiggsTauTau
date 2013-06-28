@@ -642,6 +642,14 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Tau Modules
   // ------------------------------------------------------------------------------------
+  bool real_tau_sample = ( (output_name.find("GluGluToHToTauTau")     != output_name.npos)
+                        || (output_name.find("SUSYGluGluToHToTauTau") != output_name.npos)
+                        || (output_name.find("SUSYBBHToTauTau")       != output_name.npos)
+                        || (output_name.find("VBF_HToTauTau")         != output_name.npos)
+                        || (output_name.find("WH_ZH_TTH_HToTauTau")   != output_name.npos)
+                        || (output_name.find("DYJetsToTauTau")        != output_name.npos)
+                        || (output_name.find("Embedded")              != output_name.npos) );
+
   TauDzFixer tauDzFixer("TauDzFixer");
 
   double tau_shift = 1.0;
@@ -661,13 +669,7 @@ int main(int argc, char* argv[]){
     .set_shift(tau_shift)
     .set_strategy(strategy)
     .set_moriond_corrections(false);
-    if ( (output_name.find("GluGluToHToTauTau")     != output_name.npos) 
-      || (output_name.find("SUSYGluGluToHToTauTau") != output_name.npos)
-      || (output_name.find("SUSYBBHToTauTau")       != output_name.npos) 
-      || (output_name.find("VBF_HToTauTau")         != output_name.npos)  
-      || (output_name.find("WH_ZH_TTH_HToTauTau")   != output_name.npos) 
-      || (output_name.find("DYJetsToTauTau")        != output_name.npos) 
-      || (output_name.find("Embedded")              != output_name.npos) ) httEnergyScale.set_moriond_corrections(moriond_tau_scale);
+    if (real_tau_sample) httEnergyScale.set_moriond_corrections(moriond_tau_scale);
   
 
   SimpleFilter<Tau> tauPtEtaFilter = SimpleFilter<Tau>("TauPtEtaFilter")
@@ -861,7 +863,7 @@ int main(int argc, char* argv[]){
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::mt || channel == channel::mtmet) ) httWeights.set_do_mtau_fakerate(true);
-  if (strategy == strategy::paper2013) httWeights.set_do_etau_fakerate(false);
+  if (real_tau_sample) httWeights.set_do_tau_mode_scale(true);
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);

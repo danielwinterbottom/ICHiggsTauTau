@@ -329,3 +329,10 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
   --make_datacard=false --norm_bins=true --verbose=true
   --paramfile=scripts/Paper_params_2011.dat --folder=output/Paper_2013/
 
+
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=et --set_alias="sel:mt_1<10." \
+  --method=8 --cat="met>20" --var="m_2(20,0,2)" --extra_pad=1.1\
+  --x_axis_label="Tau Mass [GeV]" --datacard="inclusive" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
+  --background_scheme="et_default" --signal_scheme="sm_default" --draw_ratio=true

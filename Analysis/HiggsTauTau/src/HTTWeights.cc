@@ -38,6 +38,7 @@ namespace ic {
     ggh_hist_           = nullptr;
     ggh_hist_up_        = nullptr;
     ggh_hist_down_      = nullptr;
+    do_tau_mode_scale_  = false;
   }
 
   HTTWeights::~HTTWeights() {
@@ -57,6 +58,7 @@ namespace ic {
     }
     std::cout << boost::format(param_fmt()) % "do_idiso_weights"    % do_idiso_weights_;
     std::cout << boost::format(param_fmt()) % "do_id_weights"       % do_id_weights_;
+    std::cout << boost::format(param_fmt()) % "do_tau_mode_scale"   % do_tau_mode_scale_;
     std::cout << boost::format(param_fmt()) % "do_etau_fakerate"    % do_etau_fakerate_;
     std::cout << boost::format(param_fmt()) % "do_mtau_fakerate"    % do_mtau_fakerate_;
     std::cout << boost::format(param_fmt()) % "do_emu_e_fakerates"  % do_emu_e_fakerates_;
@@ -83,7 +85,6 @@ namespace ic {
          || ggh_mass_ == "130"  || ggh_mass_ == "135" ) ggh_mass_ = "125";
       if (  ggh_mass_ == "140"  || ggh_mass_ == "145" || ggh_mass_ == "150"
          || ggh_mass_ == "155"  || ggh_mass_ == "160" ) ggh_mass_ = "150";
-
       std::string file = "data/ggh_weights/HRes_weight_pTH_mH"+ggh_mass_+"_8TeV.root";
       std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
       ggh_weights_ = new TFile(file.c_str());
@@ -280,15 +281,15 @@ namespace ic {
             tdataABCD   = Efficiency(t_pt, 18.686211,   1.993524,  3.202713,  3.612693,  0.871640);
             tmc20ABC    = Efficiency(t_pt, 18.40815138, 1.53235636, 3.55989632, 1.74542709, 0.90118450);
             tmcABCD     = Efficiency(t_pt, 18.431118,   1.572877,  3.301699,  4.760769,  0.899620);
-            tdataRERECO = Efficiency(t_pt, 18.920740, 1.705521, 1.996879, 35.638721, 0.901402);
-            tmcRERECO   = Efficiency(t_pt, 18.531258, 0.283163, 0.120956, 5.559196, 0.915048);
+            tdataRERECO = Efficiency(t_pt, 18.538229, 0.651562, 0.324869, 13.099048, 0.902365);
+            tmcRERECO   = Efficiency(t_pt, 18.525766, 0.275904, 0.126185, 4.957594, 0.915910);
           } else {
             tdata20ABC  = Efficiency(t_pt, 18.16839440, 1.86184564, 4.39116712, 1.01410741, 1.39240481);
             tdataABCD   = Efficiency(t_pt, 18.472954,   1.606388,  3.468975,  55.629620,   0.828977);
             tmc20ABC    = Efficiency(t_pt, 18.29028052, 1.56239255, 11.03605631, 155.89290151, 0.85683995);
             tmcABCD     = Efficiency(t_pt, 18.257217,   1.632443,  9.283116,  40.219585,  0.858643);
-            tdataRERECO = Efficiency(t_pt, 18.712473, 0.263371, 0.146785, 3.342299, 0.853802);
-            tmcRERECO   = Efficiency(t_pt, 18.641788, 0.742923, 0.598460, 134.920670, 0.865315);
+            tdataRERECO = Efficiency(t_pt, 18.756548, 0.230732, 0.142859, 3.358497, 0.851919);
+            tmcRERECO   = Efficiency(t_pt, 18.552006, 0.632002, 0.426891, 133.934952, 0.866543);
 
           }
           if (era_ == era::data_2012_hcp) {
@@ -458,15 +459,16 @@ namespace ic {
             tmc20ABC   = Efficiency(t_pt, 18.80484409, 0.19082817, 0.19983010, 1.81979820, 0.93270649);
             tdataABCD  = Efficiency(t_pt, 18.52036251,  1.47760312,  2.53574445,  1.71202550,  0.93019930);
             tmcABCD    = Efficiency(t_pt, 18.88740627,  0.10718873,  0.12277723,  1.60581265,  0.95041892);
-            tdataRERECO  = Efficiency(t_pt, 18.444056, 0.363077, 0.126673, 4.798026, 0.932726);
-            tmcRERECO    = Efficiency(t_pt, 18.540892, 1.323321, 2.901140, 1.001297, 12.472203);
+            tdataRERECO  = Efficiency(t_pt, 18.604910, 0.276042, 0.137039, 2.698437, 0.940721);
+            tmcRERECO    = Efficiency(t_pt, 18.537441, 1.385790, 3.102076, 1.002486, 6.275127);
           } else {
             tdata20ABC = Efficiency(t_pt, 18.45678784, 0.68697618, 0.57008697, 3.73470825, 0.84747211);
             tmc20ABC   = Efficiency(t_pt, 18.25975478, 1.32745225, 1.70380810, 149.18410074, 0.87377770);
             tdataABCD  = Efficiency(t_pt, 18.41225333,  0.76598912,  0.60544260,  5.38350881,  0.85870108);
             tmcABCD    = Efficiency(t_pt, 18.30439676,  1.44360240,  3.79358997,  1.07560564,  0.93103925);
-            tdataRERECO  = Efficiency(t_pt, 18.556707, 0.243482, 0.121221, 2.636403, 0.894483);
-            tmcRERECO    = Efficiency(t_pt, 18.151899, 0.446117, 0.159085, 120.380318, 0.890775);
+            tdataRERECO  = Efficiency(t_pt, 18.701715, 0.216523, 0.148111, 2.245081, 0.895320);
+            tmcRERECO    = Efficiency(t_pt, 18.393366, 1.526254, 2.021678, 124.741631, 0.894280);
+
           }
           if (era_ == era::data_2012_hcp) {
             tau_trg = tdata20ABC;
@@ -1257,7 +1259,7 @@ namespace ic {
               }
             } 
           }
-          if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly || era_ == era::data_2012_rereco) {
+          if (era_ == era::data_2012_moriond || era_ == era::data_2012_donly) {
             if (fabs(tau_cand[0]->eta()) < 1.5) {
               if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.85);
               if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.52);
@@ -1266,6 +1268,15 @@ namespace ic {
               if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.94);
               if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.32);
             } 
+          }
+          if (era_ == era::data_2012_rereco) {
+            if (fabs(tau_cand[0]->eta()) < 1.5) {
+              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 1.37);
+              if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 2.18);
+            } else {
+              if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 1.11);
+              if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.47);
+            }
           }
         }
       }
@@ -1290,6 +1301,13 @@ namespace ic {
             eventInfo->set_weight("mtau_fakerate", 1.00);
           }
         }
+      }
+    }
+
+    if (do_tau_mode_scale_) {
+      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+      if (tau->decay_mode() == 0 && era_ == era::data_2012_rereco) {
+        eventInfo->set_weight("tau_mode_scale", 0.88);
       }
     }
 
