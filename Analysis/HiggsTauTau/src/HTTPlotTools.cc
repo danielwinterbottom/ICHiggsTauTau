@@ -99,7 +99,7 @@ namespace ic {
     ele.set_draw_stat_error_y(true);
     ele.set_draw_line(false);
     ele.set_draw_marker(true);
-    ele.set_marker_size(1.3);
+    ele.set_marker_size(1.1);
     ele.set_marker_style(20);
     return;
   }
