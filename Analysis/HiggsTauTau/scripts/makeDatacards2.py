@@ -86,6 +86,9 @@ extra_channel = {
 if options.scheme == 'control_plots':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
+  extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mtmet"] += ' --set_alias="sel:mt_1<30."'
   scheme_et = [
     ("8",   "inclusive",    "0jet_low",   BINS_FINE, ""),
     ("5",   "vbf",          "vbf",        BINS, ""),
@@ -96,11 +99,11 @@ if options.scheme == 'control_plots':
   scheme_mt = scheme_et
   scheme_mtmet = scheme_et
   scheme_em = [
-    ("8",   "inclusive",    "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
-    ("2",   "1jet",         "boost_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("3",   "twojet",       "boost_high", BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
+    ("8",   "inclusive",    "0jet_low",   BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="sel:em_vbf_mva>-0.15" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
+    ("2",   "1jet",         "boost_low",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("3",   "twojet",       "boost_high", BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
   ]
   bkg_schemes = {
     'et' : 'et_default',
