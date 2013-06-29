@@ -98,6 +98,8 @@ int main(int argc, char* argv[]){
   for (unsigned i = 0; i < samples.size(); ++i) {
     rate_prefit[i] = setup.process({samples[i]}).GetRate();
   }
+  double err_band = setup.process(samples).GetUncertainty()/setup.process(samples).GetRate();
+  std::cout << err_band << std::endl;
   setup.ApplyPulls(true);
   std::cout << "--shift_backgrounds=\"";
   for (unsigned i = 0; i < samples.size(); ++i) {
@@ -105,7 +107,7 @@ int main(int argc, char* argv[]){
     if (i != samples.size()-1) std::cout << ",";
   }
   std::cout << "\" --auto_error_band=";
-  double err_band = setup.process(samples).GetUncertainty()/setup.process(samples).GetRate();
+  err_band = setup.process(samples).GetUncertainty()/setup.process(samples).GetRate();
   std::cout << err_band << std::endl;
 
 

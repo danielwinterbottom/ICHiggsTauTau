@@ -367,12 +367,12 @@ namespace ic {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateVV] ---------------------------------------------------------\n";
     std::vector<std::string> vv_samples = this->ResolveSamplesAlias("vv_samples");
     auto vv_norm = this->GetLumiScaledRate(vv_samples, sel, cat, wt);
-    if (ch_ == channel::em && (method == 0 || method == 1)) {
-      vv_norm = ValueProduct(vv_norm, std::make_pair(1.23, 0.0));
-      PrintValue("Scaling Norm", std::make_pair(1.23, 0.0));
-    }
+    // if (ch_ == channel::em && (method == 0 || method == 1)) {
+    //   vv_norm = ValueProduct(vv_norm, std::make_pair(1.23, 0.0));
+    //   PrintValue("Scaling Norm", std::make_pair(1.23, 0.0));
+    // }
     std::string vv_shape_cat = cat;
-    if (method == 5 && ch_ != channel::em) {
+    if (method == 5) {
       vv_shape_cat = this->ResolveAlias("vbf_loose");
     }
     TH1F vv_hist = this->GetLumiScaledShape(var, vv_samples, sel, vv_shape_cat, wt);
@@ -403,7 +403,8 @@ namespace ic {
         "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
     std::string w_shape_cat = cat;
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
-    if (method == 5)  w_shape_cat = this->ResolveAlias("vbf_loose");
+    if (method == 5)  w_shape_cat = cat;
+    // if (method == 5)  w_shape_cat = this->ResolveAlias("vbf_loose");
     if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
@@ -426,7 +427,7 @@ namespace ic {
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
-      if (method == 5) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 5 || method == 4) qcd_cat = this->ResolveAlias("inclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
       qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.06,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
@@ -434,7 +435,7 @@ namespace ic {
           return w_ss_norm;}
         }
       });
-      if (method == 5) {
+      if (method == 5 || method == 4) {
         Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         qcd_norm = ValueProduct(qcd_norm, qcd_eff);
       }
