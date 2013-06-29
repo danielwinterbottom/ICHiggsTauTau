@@ -81,6 +81,37 @@ extra_channel = {
 }
 
 #################################################################
+#### Control plots
+#################################################################
+if options.scheme == 'control_plots':
+  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
+  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
+  scheme_et = [
+    ("8",   "inclusive",    "0jet_low",   BINS_FINE, ""),
+    ("5",   "vbf",          "vbf",        BINS, ""),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ""),
+    ("2",   "1jet",         "boost_low",  BINS_FINE, ""),
+    ("3",   "twojet",       "boost_high", BINS_FINE, ' --set_alias="w_shape_os:1"')
+  ]
+  scheme_mt = scheme_et
+  scheme_mtmet = scheme_et
+  scheme_em = [
+    ("8",   "inclusive",    "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
+    ("2",   "1jet",         "boost_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("3",   "twojet",       "boost_high", BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'mtmet' : 'mt_with_zmm',
+    'em' : 'em_default'
+  }
+  sig_scheme = 'sm_default'
+  ANA = 'sm'
+
+#################################################################
 #### Old SM scheme
 #################################################################
 if options.scheme == 'old_sm':

@@ -189,32 +189,6 @@ int main(int argc, char* argv[]){
 	if (syst_tau_scale != "") {
 		systematics.push_back(make_pair("/TSCALE_DOWN", syst_tau_scale+"Down"));
 		systematics.push_back(make_pair("/TSCALE_UP", syst_tau_scale+"Up"));
-		// std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-		// std::cout << "[HiggsTauTauPlot4] Doing energy scale systematics..." << std::endl;
-		// HTTAnalysis ana_tscale_down(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
-		// for (auto const& a : alias_vec) ana_tscale_down.SetAlias(a.first, a.second);
-		// ana_tscale_down.AddSMSignalSamples(sm_masses);
-		// if (add_sm_background != "") ana_tscale_down.AddSMSignalSamples({add_sm_background});
-		// ana_tscale_down.AddMSSMSignalSamples(mssm_masses);
-		// ana_tscale_down.ReadTrees(folder+"/TSCALE_DOWN", folder);
-		// ana_tscale_down.ParseParamFile(paramfile);
-		// ana_tscale_down.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst_tau_scale+"Down");
-		// ana_tscale_down.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Down", 1.0);
-		// if (add_sm_background != "") ana_tscale_down.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst_tau_scale+"Down");
-		// ana_tscale_down.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Down", 1.0);
-
-		// HTTAnalysis ana_tscale_up(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
-		// for (auto const& a : alias_vec) ana_tscale_up.SetAlias(a.first, a.second);
-		// ana_tscale_up.AddSMSignalSamples(sm_masses);
-		// if (add_sm_background != "") ana_tscale_up.AddSMSignalSamples({add_sm_background});
-		// ana_tscale_up.AddMSSMSignalSamples(mssm_masses);
-		// ana_tscale_up.ReadTrees(folder+"/TSCALE_UP", folder);
-		// ana_tscale_up.ParseParamFile(paramfile);
-		// ana_tscale_up.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst_tau_scale+"Up");
-		// ana_tscale_up.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
-		// if (add_sm_background != "") ana_tscale_up.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst_tau_scale+"Up");
-		// ana_tscale_up.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst_tau_scale+"Up", 1.0);
-		// std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 	}
 
 	if (syst_eff_b != "") {
