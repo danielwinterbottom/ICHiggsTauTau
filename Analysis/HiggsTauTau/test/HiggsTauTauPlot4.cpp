@@ -37,10 +37,12 @@ int main(int argc, char* argv[]){
 	string syst_ggh_pt;
 	string add_sm_background;
 	double sub_ztt_top_frac;
+	double shift_tscale;
 	string fix_empty_bins;
 	string fix_negative_bins;
 	string fix_empty_hists;
 	string add_extra_binning;
+	string shift_backgrounds;
 	bool auto_titles;
 	// Program options
   po::options_description preconfig("Pre-Configuration");
@@ -72,10 +74,12 @@ int main(int argc, char* argv[]){
 	  ("syst_ggh_pt",    			po::value<string>(&syst_ggh_pt)->default_value(""))
 	  ("add_sm_background",   po::value<string>(&add_sm_background)->default_value(""))
 	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
+	  ("shift_tscale",    		po::value<double>(&shift_tscale)->default_value(0.0))
 	  ("fix_empty_bins",   		po::value<string>(&fix_empty_bins)->default_value(""))
 	  ("fix_empty_hists",   	po::value<string>(&fix_empty_hists)->default_value(""))
 	  ("fix_negative_bins",  	po::value<string>(&fix_negative_bins)->default_value(""))
 	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
+	  ("shift_backgrounds",   po::value<string>(&shift_backgrounds)->default_value(""))
 	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true));
 
 
@@ -370,6 +374,45 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "");
+
+	// ************************************************************************
+	// Shift backgrounds
+	// ************************************************************************
+	vector<string> shift_strs;
+	boost::split(shift_strs, shift_backgrounds, boost::is_any_of(","));
+	if (shift_strs.size() > 0) {
+		std::cout << "[HiggsTauTauPlot4] Shifting background yields... " << std::endl;
+		for (auto shift : shift_strs) {
+			std::vector<std::string> shift_part;
+			boost::split(shift_part, shift, boost::is_any_of(":"));
+			if (shift_part.size() != 2) continue;
+			string regex_str = shift_part[0]/*+".*"*/;
+			boost::regex rgx = boost::regex(regex_str);
+			double shift_val = boost::lexical_cast<double>(shift_part[1]);
+			for (auto & entry : hmap) {
+				if (boost::regex_match(entry.first, rgx)) {
+					std::cout << "Scaling " << entry.first << " by " << shift_val << std::endl;
+					entry.second.first.Scale(shift_val);
+					entry.second.second.first *= shift_val; // the yield
+					entry.second.second.second *= shift_val; // the yield error
+				}
+			}
+		}
+	}
+	
+	// ************************************************************************
+	// Shift tau energy scale
+	// ************************************************************************
+	if (shift_tscale != 0.0) {
+		std::cout << "[HiggsTauTauPlot4] Shifting tau energy scale by pull: " << shift_tscale << std::endl;
+		TH1F ztt_central = hmap["ZTT"].first;
+		TH1F ztt_down = hmap["ZTT_"+syst_tau_scale+"Down"].first;
+		TH1F ztt_up = hmap["ZTT_"+syst_tau_scale+"Up"].first;
+		ztt_down.Scale(Integral(&ztt_central) / Integral(&ztt_down));
+		ztt_up.Scale(Integral(&ztt_central) / Integral(&ztt_up));
+		ic::VerticalMorph(&ztt_central, &ztt_up, &ztt_down, shift_tscale);
+		hmap["ZTT"].first = ztt_central;
+	}
 
 	// ************************************************************************
 	// Deduce titles
