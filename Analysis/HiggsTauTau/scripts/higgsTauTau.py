@@ -166,7 +166,7 @@ if options.proc_data or options.proc_all:
           ' --special_mode=3 --output_name=%(JOB)s.root &> jobs/Special_3_%(JOB)s.log" jobs/Special_3_%(JOB)s.sh' % vars())
         os.system('%(JOBSUBMIT)s jobs/Special_3_%(JOB)s.sh' % vars())
 
-    if ch in ['et', 'mt'] and (not options.do_2011) and PRODUCTION == 'June6':
+    if ch in ['et', 'mt']  and (PRODUCTION == 'June6' or PRODUCTION == 'Apr11'):
       if '0' in scales:
         JOB='Data_%s_%s' % (ch,YR)
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --filelist=%(FILELIST)s_Special_4_Data_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s'
@@ -290,7 +290,8 @@ if options.proc_bkg or options.proc_all:
           'Tbar-tW'
         ]
       
-      if options.do_2011: central_samples.remove('TT')
+      if options.do_2011:
+        central_samples.remove('TT')
 
       for sc in scales:
         if ch in ['et', 'mt', 'etmet', 'mtmet']:
@@ -339,6 +340,11 @@ if options.proc_bkg or options.proc_all:
             os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=0 --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
               ' --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
             os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+            if sc in ['0']:
+              JOB='DYJetsToLL%s_%s_%s' % (sp,ch,YR)
+              os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
+                ' --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+              os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
         for sa in central_samples:
           if sc in ['0']:
@@ -348,7 +354,7 @@ if options.proc_bkg or options.proc_all:
             os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
 
-        if ch in ['et', 'mt'] and (not options.do_2011) and PRODUCTION == 'June6':
+        if ch in ['et', 'mt']  and (PRODUCTION == 'June6' or PRODUCTION == 'Apr11'):
           if sc in ['0']:
             JOB='WJetsToLNuSoup_%s_%s' % (ch,YR)
             os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_Special_5_WJetsToLNuSoup_%(ch)s_skim.dat --channel=%(ch)s'

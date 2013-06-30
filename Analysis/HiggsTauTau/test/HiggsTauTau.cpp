@@ -1061,7 +1061,7 @@ int main(int argc, char* argv[]){
     if (!is_embedded)  { // Don't usually want trigger for embedded
                                   analysis.AddModule(&httTriggerFilter);
     }
-    if (is_embedded && strategy == strategy::paper2013) {
+    if (is_embedded && strategy == strategy::paper2013 && era == era::data_2012_rereco) {
                                   analysis.AddModule(&httTriggerFilter);
     }
     //                            analysis.AddModule(&runStats);

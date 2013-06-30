@@ -171,6 +171,7 @@ namespace ic {
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
      "T-tW", "Tbar-tW"
     };
+    if (ch_ == channel::em) samples_alias_map_["vv_samples"].push_back("DYJetsToLL"+dy_soup_);
 
     // Samples to subtract in sideband for W+jets estimate
     samples_alias_map_["w_sub_samples"] = {
