@@ -62,8 +62,11 @@ namespace ic {
         "Special_21_Data",
         "Special_22_Data",
         "Special_23_Data",
-        "Special_24_Data"
+        "Special_24_Data",
+        "DYJetsToLL"
       });
+      if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
+          "DYJetsToLLSoup"});
     }
 
     // Automatically set preference for DY Soup postfix
@@ -467,16 +470,14 @@ namespace ic {
       qcd_dilepton = ValueProduct(qcd_dilepton, std::make_pair(0.83,0.));
       std::string ss_sel = "!os && "+this->ResolveAlias("sel");
       Value qcd_eff = this->SampleEfficiency("Data", this->ResolveAlias("ss"), "", ss_sel, cat, wt);
+      if (verbosity_) PrintValue("FR Inclusive", qcd_dilepton);
+      if (verbosity_) PrintValue("SS Eff", qcd_eff);
       if (method == 0 || method == 2) {
         qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-        PrintValue("FR Inclusive", qcd_dilepton);
-        PrintValue("SS Eff", qcd_eff);
         qcd_hist = this->GetShape(var, "Special_23_Data", ss_sel, cat, wt);
         if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
           % "Special_23_Data" % ss_sel % cat % wt;
       } else if (method == 1) {
-        PrintValue("FR Inclusive", qcd_dilepton);
-        PrintValue("SS Eff", qcd_eff);
         qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
         qcd_hist = this->GetShape(var, "Special_24_Data", ss_sel, cat, wt);
         if (verbosity_) std::cout << "SS Shape(0.2): " << boost::format("%s,'%s','%s','%s'\n")
@@ -499,8 +500,6 @@ namespace ic {
           % "               " % sel % this->ResolveAlias("vbf_no_cjv") % wt;
      } else {
       qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-      PrintValue("FR Inclusive", qcd_dilepton);
-      PrintValue("SS Eff", qcd_eff);
       qcd_hist = this->GetShape(var, "Data", ss_sel, cat, wt);
       if (verbosity_) std::cout << "SS Shape: " << boost::format("%s,'%s','%s','%s'\n")
         % "Data" % ss_sel % cat % wt;
@@ -810,9 +809,14 @@ namespace ic {
   HTTAnalysis::Value HTTAnalysis::GetRateViaFakesMethod(std::string const& sel,
                               std::string const& cat, 
                               std::string const& wt) {
-    auto norm = ValueAdd(this->GetRate("Special_20_Data", sel, cat, wt),
-                         this->GetRate("Special_21_Data", sel, cat, wt));
-    norm = ValueSubtract(norm, this->GetRate("Special_22_Data", sel, cat, wt));
+    auto e_fakes = this->GetRate("Special_20_Data", sel, cat, wt);
+    auto m_fakes = this->GetRate("Special_21_Data", sel, cat, wt);
+    auto em_fakes = this->GetRate("Special_22_Data", sel, cat, wt);
+    if (verbosity_) PrintValue("Electron Fakes", e_fakes);
+    if (verbosity_) PrintValue("Muon Fakes", m_fakes);
+    if (verbosity_) PrintValue("Double Fakes", em_fakes);
+    auto norm = ValueAdd(e_fakes, m_fakes);
+    norm = ValueSubtract(norm, em_fakes);
     return norm;
   }
 
