@@ -371,6 +371,11 @@ int main(int argc, char* argv[]){
     test_plot.draw_ratio_hist = true;
     test_plot.ratio_y_axis_min = 0.8;
     test_plot.ratio_y_axis_max = 1.2;
+    if (mssm_mode > 0) {
+      test_plot.custom_x_axis_range = true;
+      test_plot.x_axis_min = 0;
+      test_plot.x_axis_max = 350;
+    }
     test_plot.GeneratePlot();
   }
 }

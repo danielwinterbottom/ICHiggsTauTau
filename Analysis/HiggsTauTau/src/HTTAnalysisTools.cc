@@ -80,14 +80,21 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
+      alias_map_["th_vbf"]            = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>40. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=40. && n_bjets==0)";
+      alias_map_["th_1jet_high"]      = "(!"+alias_map_["vbf"]+" && pt_tt>60. && pt_2>40. && n_bjets==0)";
+      alias_map_["th_1jet_low"]       = "(!"+alias_map_["vbf"]+" && pt_tt>60. && pt_2<=40. && n_bjets==0)";
       if (ch_ == channel::et) {
         alias_map_["1jet_high"] += " && met>30.";
         alias_map_["1jet_low"]  += " && met>30.";
+        alias_map_["th_1jet_high"] += " && met>30.";
+        alias_map_["th_1jet_low"]  += " && met>30.";
       }
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>40. && n_bjets==0)";
       alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=40. && n_bjets==0)";
+      alias_map_["th_0jet_high"]         = "(pt_tt<=60. && pt_2>40. && n_bjets==0)";
+      alias_map_["th_0jet_low"]          = "(pt_tt<=60. && pt_2<=40. && n_bjets==0)";
       // New SM categories
       alias_map_["inclusive"]                   = "";
       alias_map_["new_vbf_tight"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
@@ -119,12 +126,17 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["th_vbf"]            = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
       alias_map_["new_vbf_tight"]     = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
       alias_map_["new_vbf_loose"]     = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0)";
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>35. && n_bjets==0)";
       alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=35. && n_bjets==0)";
+      alias_map_["th_1jet_high"]      = "(!"+alias_map_["vbf"]+" && pt_tt>60. && pt_2>35. && n_bjets==0)";
+      alias_map_["th_1jet_low"]       = "(!"+alias_map_["vbf"]+" && pt_tt>60. && pt_2<=35. && n_bjets==0)";
+      alias_map_["th_0jet_high"]      = "(pt_tt<=60. && pt_2>35. && n_bjets==0)";
+      alias_map_["th_0jet_low"]       = "(pt_tt<=60. && pt_2<=35. && n_bjets==0)";
       // Categories for background estimates and control plots
       alias_map_["vbf_no_cjv"]        = "(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)";
       alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && n_bjets==0)";
@@ -351,7 +363,8 @@ namespace ic {
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateTOP] --------------------------------------------------------\n";
     auto top_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
-    std::string top_shape_sample = (year_ == "2011") ? "TTJets" : "TT";
+    // std::string top_shape_sample = (year_ == "2011") ? "TTJets" : "TT";
+    std::string top_shape_sample = "TTJets";
     std::string top_shape_cat = cat;
     if (method == 5) {
       if (ch_ == channel::em) {
