@@ -23,50 +23,54 @@ namespace ic {
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "PreAnalysis Info for CJVFilter" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
-    std::cout << "doing CJV"<<std::endl;
+    std::cout << "doing CJV with pT cut : " << ptcut_ << std::endl;
     return 0;
   }
 
   int CJVFilter::Execute(TreeEvent *event) {
+      
+
     //GET JET COLLECTIONS
-    std::vector<PFJet *> & jetvec = event->GetPtrVec<PFJet>(jetsinput_label_);//Main jet collection
+    std::vector<PFJet *> & jetvec = event->GetPtrVec<PFJet>(jetsinput_label_);//CJV jet collection
     std::vector<CompositeCandidate *> & pairvec = event->GetPtrVec<CompositeCandidate>(pairinput_label_);//Jet Pair collection
     if(pairvec.size()<1){
-      std::cout<<"Error: no leading pair skipping event"<<std::endl;
-      return 1;
+      std::cout<<"Error: no leading pair, doing nothing ... "<<std::endl;
+      return 0;
     }
     if(pairvec.size()>1){
       std::cout<<"Warning: more than one pair"<<std::endl;
     }
-    double oneleadingjeteta = pairvec[0]->At(0)->eta();
-    double otherleadingjeteta = pairvec[0]->At(1)->eta();
-    double etahigh=0.;
-    double etalow=0.;
-    if(oneleadingjeteta>otherleadingjeteta){
-      etahigh=oneleadingjeteta;
-      etalow=otherleadingjeteta;
-    }
-    else{
-      etahigh=otherleadingjeteta;
-      etalow=oneleadingjeteta;
-    }
-    int njetsingap=0;
-    for (int i = 0; unsigned(i) < jetvec.size(); ++i) {//loop over the jet collection 
-      double jeteta=jetvec[i]->vector().eta();
-      double jetpt=jetvec[i]->vector().pt();
-      if(jetpt>ptcut_&&(jeteta>etalow)&&(jeteta<etahigh)){//if jet is above pt threshold increase jets in gap cound
-	njetsingap++;
-	return 1;
-      }
-      
-    }
+
+    Candidate const* jet1 = pairvec[0]->GetCandidate("jet1");
+    Candidate const* jet2 = pairvec[0]->GetCandidate("jet2");
+
+    double etahigh = (jet1->eta() > jet2->eta()) ? jet1->eta() : jet2->eta();
+    double etalow = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
     
-    if(njetsingap==0){//if no central jets pass event
-      return 0;
+    unsigned njetsingap=0;
+    //no need to loop if only two jets in the event....
+    if (jetvec.size()>2){
+      for (unsigned i = 0; i < jetvec.size(); ++i) {//loop over the jet collection 
+	double jeteta=jetvec[i]->eta();
+	double jetpt=jetvec[i]->pt();
+	if(jetpt>ptcut_&&(jeteta>etalow)&&(jeteta<etahigh)){//if jet is above pt threshold increase jets in gap cound
+	  njetsingap++;
+	  //return 1;
+	}
+      }
     }
-    else{//otherwise reject event
-      return 1;
-    }
+
+    //do not filter anymore, just add to the event
+
+    event->Add("nJetsInGap",njetsingap);
+    return 0;
+
+    //if(njetsingap==0){//if no central jets pass event
+      //return 0;
+    //}
+    //else{//otherwise reject event
+      //return 1;
+    //}
   }
 
 

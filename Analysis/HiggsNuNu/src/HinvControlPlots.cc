@@ -155,12 +155,10 @@ namespace ic {
     etaprodjj_ = -100;
     drjj_ = -1;
     dphijj_ = -1;
-
-    n_jetsingap_ = 0;
     
     // Start: HinvDijetMETPlots Variables __________________________________
     ROOT::Math::PtEtaPhiEVector diffVector(0,0,0,0);
-    double diffEtValue = 0;
+    //double diffEtValue = 0;
     double diffPtValue = 0;
     double scalSumPt = 0;
     
@@ -173,19 +171,16 @@ namespace ic {
     bool fillPlots             = true;
     //AM-FIX: no need for different bool, or signal/QCD won't be filled properly !
     //bool fillHinvDijetMETPlots = true;
+
+    //get nJetsInGap from the event.
+    n_jetsingap_ = 0;
+
+    if (event->Exists("nJetsInGap")) n_jetsingap_ = event->Get<unsigned>("nJetsInGap");
+    //else std::cerr << " WARNING ! Variable nJetsInGap not found in event ! Set to 0." << std::endl;
     
     if (dijet_vec.size() != 0) {
       
       CompositeCandidate const* dijet = dijet_vec.at(0);
-
-      if (sel_label_.find("QCD") != sel_label_.npos &&
-	  PairAbsDPhiLessThan(dijet,2.6)) fillPlots = false;
-      if (sel_label_.find("SIGNAL") != sel_label_.npos &&
-	  !PairAbsDPhiLessThan(dijet,1.0)) fillPlots = false;
-        
-      if (sel_label_.find("AN") != sel_label_.npos) {
-	if (!(met->pt() > 130 && dijet->M()>1000)) fillPlots=false;
-      }
 
       Candidate const* jet1 = dijet->GetCandidate("jet1");
       Candidate const* jet2 = dijet->GetCandidate("jet2");
@@ -201,25 +196,26 @@ namespace ic {
       drjj_ = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),jet2->vector());
       dphijj_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1->vector(),jet2->vector()));
       
-      double eta_high = (jet1->eta() > jet2->eta()) ? jet1->eta() : jet2->eta();
-      double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
-      n_jetsingap_ = 0;
-      std::vector<PFJet*> cjvjets = event->GetPtrVec<PFJet>("cjvpfJetsPFlow");
-      std::sort(cjvjets.begin(), cjvjets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-
-
-      if (cjvjets.size() > 2) {
-	for (unsigned i = 0; i < cjvjets.size(); ++i) {
-	  if (cjvjets[i]->pt() > 30.0 &&  cjvjets[i]->eta() > eta_low && cjvjets[i]->eta() < eta_high) ++n_jetsingap_;
-	}
+      //decide whether to fill plots or not for a few specific selections
+      //allowing to have them in parallel to the main stream
+        
+      if (sel_label_.find("AN") != sel_label_.npos) {
+	if (!(met->pt() > 130 && dijet->M()>1000)) fillPlots=false;
       }
-      
+
+      if (sel_label_.find("CJVfail") != sel_label_.npos && n_jetsingap_==0) fillPlots = false;
+      if (sel_label_.find("CJVpass") != sel_label_.npos && n_jetsingap_!=0) fillPlots = false;
+
+      if (sel_label_.find("QCD") != sel_label_.npos &&
+	  PairAbsDPhiLessThan(dijet,2.6)) fillPlots = false;
+      if (sel_label_.find("SIGNAL") != sel_label_.npos &&
+	  !PairAbsDPhiLessThan(dijet,1.0)) fillPlots = false;
       
       // Start: Calculating HinvDijetMETPlots __________________________________
       htPlusMET = dijet->ScalarPtSum() + met->vector().Pt();
       
       diffVector   = dijet->vector() + met->vector();
-      diffEtValue  = diffVector.Et();
+      //diffEtValue  = diffVector.Et();
       diffPtValue  = diffVector.Pt();
 
       dijet_MET = dijet->vector().Pt()/(met->vector().Pt()+dijet->vector().Pt());
@@ -254,7 +250,7 @@ namespace ic {
        ROOT::Math::PtEtaPhiEVector dijet = jet1->vector()+jet2->vector();
 
        diffVector  = dijet + met->vector();
-       diffEtValue = diffVector.Et();
+       //diffEtValue = diffVector.Et();
        diffPtValue = diffVector.Pt();
        
        dijet_MET = dijet.Pt()/(met->vector().Pt()+dijet.Pt());

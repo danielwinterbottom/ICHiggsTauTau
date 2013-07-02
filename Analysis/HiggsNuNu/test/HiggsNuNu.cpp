@@ -196,8 +196,10 @@ int main(int argc, char* argv[]){
   // Create ROOT output fileservice
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
   
-  double elec_dz, muon_dz, elec_dxy, muon_dxy;
-  double veto_elec_dz, veto_elec_dxy, veto_muon_dz, veto_muon_dxy;
+  double elec_dz, elec_dxy;
+  double muon_dz, muon_dxy;
+  double veto_elec_dz, veto_elec_dxy;
+  //double veto_muon_dz, veto_muon_dxy;
   double elec_pt, elec_eta, muon_pt, muon_eta;
   double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
   
@@ -207,8 +209,8 @@ int main(int argc, char* argv[]){
   veto_elec_dxy = 0.04;
   muon_dz = 0.2;
   muon_dxy = 0.045;
-  veto_muon_dz = 0.2;
-  veto_muon_dxy = 0.045;
+  //veto_muon_dz = 0.2;
+  //veto_muon_dxy = 0.045;
   
   elec_pt = 20.0;
   elec_eta = 2.4;
@@ -583,14 +585,15 @@ int main(int argc, char* argv[]){
     .set_input_label("cjvpfJetsPFlow")
     .set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
 
-  double cjvptcut = 20.0;
+  double cjvptcut = 30.0;
   SimpleFilter<PFJet> cjvjetsPtEtaFilter = SimpleFilter<PFJet>
     ("CJVJetsPtEtaFilter")
     .set_input_label("cjvpfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, cjvptcut, 4.7));
 
   CJVFilter FilterCJV = CJVFilter("FilterCJV")
-    .set_jetsinput_label("cjvpfJetsPFlow");
-  
+    .set_jetsinput_label("cjvpfJetsPFlow")
+    .set_pairinput_label("jjLeadingCandidates")
+    .set_ptcut(30);
   
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
@@ -951,27 +954,27 @@ int main(int argc, char* argv[]){
   //else if (channel==channel::emu)
   //wjetsPlots_wsel.set_met_nolep_label("metNoENoMu");
 
-  HinvControlPlots controlPlots_dphi_qcd = HinvControlPlots("DPhiControlPlotsQCD")
+  HinvControlPlots controlPlots_dphi_qcd_cjvpass = HinvControlPlots("DPhiControlPlotsQCD_cjvpass")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiQCD")
+    .set_sel_label("DPhiQCD_CJVpass")
     .set_channel(channel_str);
 
-  HinvWJetsPlots wjetsPlots_dphi_qcd = HinvWJetsPlots("DPhiWJetsPlotsQCD")
+  HinvWJetsPlots wjetsPlots_dphi_qcd_cjvpass = HinvWJetsPlots("DPhiWJetsPlotsQCD_cjvpass")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiQCD");
+    .set_sel_label("DPhiQCD_CJVpass");
 
   HinvControlPlots controlPlots_dphi_qcd_nocjv = HinvControlPlots("DPhiControlPlotsQCD_noCJV")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiQCD-noCJV")
+    .set_sel_label("DPhiQCD_noCJV")
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_qcd_nocjv = HinvWJetsPlots("DPhiWJetsPlotsQCD_noCJV")
@@ -981,34 +984,50 @@ int main(int argc, char* argv[]){
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiQCD-noCJV");
+    .set_sel_label("DPhiQCD_noCJV");
 
-  //if (channel==channel::enu)
-  //wjetsPlots_dphi_qcd.set_met_nolep_label("metNoElectrons");
-  //else if (channel==channel::emu)
-  //wjetsPlots_dphi_qcd.set_met_nolep_label("metNoENoMu");
-
-  HinvControlPlots controlPlots_dphi_signal = HinvControlPlots("DPhiControlPlotsSIGNAL")
+  HinvControlPlots controlPlots_dphi_qcd_cjvfail = HinvControlPlots("DPhiControlPlotsQCD_cjvfail")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiSIGNAL")
+    .set_sel_label("DPhiQCD_CJVfail")
     .set_channel(channel_str);
 
-  HinvWJetsPlots wjetsPlots_dphi_signal = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL")
+  HinvWJetsPlots wjetsPlots_dphi_qcd_cjvfail = HinvWJetsPlots("DPhiWJetsPlotsQCD_cjvfail")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiSIGNAL");
+    .set_sel_label("DPhiQCD_CJVfail");
+
+  //if (channel==channel::enu)
+  //wjetsPlots_dphi_qcd.set_met_nolep_label("metNoElectrons");
+  //else if (channel==channel::emu)
+  //wjetsPlots_dphi_qcd.set_met_nolep_label("metNoENoMu");
+
+  HinvControlPlots controlPlots_dphi_signal_cjvpass = HinvControlPlots("DPhiControlPlotsSIGNAL_cjvpass")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiSIGNAL_CJVpass")
+    .set_channel(channel_str);
+
+  HinvWJetsPlots wjetsPlots_dphi_signal_cjvpass = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_cjvpass")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiSIGNAL_CJVpass");
 
   HinvControlPlots controlPlots_dphi_signal_nocjv = HinvControlPlots("DPhiControlPlotsSIGNAL_noCJV")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiSIGNAL-noCJV")
+    .set_sel_label("DPhiSIGNAL_noCJV")
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_signal_nocjv = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_noCJV")
@@ -1018,7 +1037,23 @@ int main(int argc, char* argv[]){
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiSIGNAL-noCJV");
+    .set_sel_label("DPhiSIGNAL_noCJV");
+
+  HinvControlPlots controlPlots_dphi_signal_cjvfail = HinvControlPlots("DPhiControlPlotsSIGNAL_cjvfail")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiSIGNAL_CJVfail")
+    .set_channel(channel_str);
+
+  HinvWJetsPlots wjetsPlots_dphi_signal_cjvfail = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_cjvfail")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("DPhiSIGNAL_CJVfail");
 
   //if (channel==channel::enu)
   //wjetsPlots_dphi_signal.set_met_nolep_label("metNoElectrons");
@@ -1041,21 +1076,37 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("TightMjj");
 
-  HinvControlPlots controlPlots_cjv = HinvControlPlots("CJVControlPlots")
+  HinvControlPlots controlPlots_cjvpass = HinvControlPlots("CJVControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("CJV")
+    .set_sel_label("CJVpass")
     .set_channel(channel_str);
 
-  HinvWJetsPlots wjetsPlots_cjv = HinvWJetsPlots("CJVWJetsPlots")
+  HinvWJetsPlots wjetsPlots_cjvpass = HinvWJetsPlots("CJVWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("CJV");
+    .set_sel_label("CJVpass");
+
+  HinvControlPlots controlPlots_cjvfail = HinvControlPlots("CJVFailControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("CJVfail")
+    .set_channel(channel_str);
+
+  HinvWJetsPlots wjetsPlots_cjvfail = HinvWJetsPlots("CJVFailWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("CJVfail");
 
   //if (channel==channel::enu)
   //wjetsPlots_tightMjj.set_met_nolep_label("metNoElectrons");
@@ -1215,6 +1266,9 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&jetPairFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
+     //record the number of jets in the gap
+     analysis.AddModule(&FilterCJV);
+
      //jet pair selection
      analysis.AddModule(&etaProdJetPairFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
@@ -1257,15 +1311,22 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_tightMjj);
      analysis.AddModule(&wjetsPlots_tightMjj);
 
+     //save signal and QCD regions without CJV
      analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
      analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);
      analysis.AddModule(&controlPlots_dphi_signal_nocjv);
      analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
 
-     //do central jet veto
-     analysis.AddModule(&FilterCJV);
-     analysis.AddModule(&controlPlots_cjv);
-     analysis.AddModule(&wjetsPlots_cjv);
+     //save all, signal and QCD regions with failed CJV
+     analysis.AddModule(&controlPlots_cjvfail);
+     analysis.AddModule(&wjetsPlots_cjvfail);
+     analysis.AddModule(&controlPlots_dphi_qcd_cjvfail);
+     analysis.AddModule(&wjetsPlots_dphi_qcd_cjvfail);
+     analysis.AddModule(&controlPlots_dphi_signal_cjvfail);
+     analysis.AddModule(&wjetsPlots_dphi_signal_cjvfail);
+
+     analysis.AddModule(&controlPlots_cjvpass);
+     analysis.AddModule(&wjetsPlots_cjvpass);
      
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
@@ -1274,10 +1335,10 @@ int main(int argc, char* argv[]){
      ////if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
      ////else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
 
-     analysis.AddModule(&controlPlots_dphi_qcd);
-     analysis.AddModule(&wjetsPlots_dphi_qcd);
-     analysis.AddModule(&controlPlots_dphi_signal);
-     analysis.AddModule(&wjetsPlots_dphi_signal);
+     analysis.AddModule(&controlPlots_dphi_qcd_cjvpass);
+     analysis.AddModule(&wjetsPlots_dphi_qcd_cjvpass);
+     analysis.AddModule(&controlPlots_dphi_signal_cjvpass);
+     analysis.AddModule(&wjetsPlots_dphi_signal_cjvpass);
      //debug
      //analysis.AddModule(&dphiJetPairFilter);
      //if (!is_data) analysis.AddModule(&hinvWeights);

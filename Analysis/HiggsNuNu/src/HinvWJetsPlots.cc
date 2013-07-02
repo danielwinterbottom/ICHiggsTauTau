@@ -123,19 +123,26 @@ namespace ic {
  
     bool fillPlots = true;
 
+    unsigned nJetsInGap = 0;
+
+    if (event->Exists("nJetsInGap")) nJetsInGap = event->Get<unsigned>("nJetsInGap");
+    //else std::cerr << " WARNING ! Variable nJetsInGap not found in event ! Set to 0." << std::endl;
+    
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
     if (dijet_vec.size() != 0) {
                                 
       CompositeCandidate const* dijet = dijet_vec.at(0);
 
+      if (sel_label_ == "AN") {
+	if (!(met_nolep->pt() > 130 && dijet->M()>1000)) fillPlots=false;
+      }
+
+      if (sel_label_.find("CJVfail") != sel_label_.npos && nJetsInGap ==0) fillPlots = false;
+
       if (sel_label_.find("QCD") != sel_label_.npos &&
 	  PairAbsDPhiLessThan(dijet,2.6)) fillPlots = false;
       if (sel_label_.find("SIGNAL") != sel_label_.npos &&
 	  !PairAbsDPhiLessThan(dijet,1.0)) fillPlots = false;
-
-      if (sel_label_ == "AN") {
-	if (!(met_nolep->pt() > 130 && dijet->M()>1000)) fillPlots=false;
-      }
 
         
       dRmin_taujet_ = 10;

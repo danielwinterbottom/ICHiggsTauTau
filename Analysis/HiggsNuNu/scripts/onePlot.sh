@@ -1,21 +1,23 @@
 #!/bin/sh
 PRODUCTION=Apr04
-PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
-#PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
+#PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
+PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
 
-for CHANNEL in nunu #enu enu-metL1noenomu enu-metL1HLTnomu
+for CHANNEL in enu munu
   do
   for MET in 130
     do
 
-	FOLDER=./output/$CHANNEL/MET$MET/
+	FOLDER=./output_mjj1100/$CHANNEL/MET$MET/
 	PLOTDIR=PLOTS/$CHANNEL/MET$MET/
 	PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
-	PLOTDIRDATAQCD=PLOTS/$CHANNEL/MET$MET/DATAQCD/
+	#PLOTDIRDATAQCD=PLOTS/$CHANNEL/MET$MET/DATAQCD/
 
 	mkdir -p $PLOTDIR
 	mkdir -p $PLOTDIRQCD
-	mkdir -p $PLOTDIRDATAQCD
+	mkdir -p $PLOTDIR/wjetsComp/
+
+	#mkdir -p $PLOTDIRDATAQCD
 	BLIND=1
 	if [ "$CHANNEL" != "nunu" ] || (( "$MET" != "130" ))
 	    then
@@ -27,40 +29,15 @@ for CHANNEL in nunu #enu enu-metL1noenomu enu-metL1HLTnomu
 	
 ###### 
 
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIRQCD  \
-    --plot_name="met_phi"  --x_axis_label="MET #phi" \
-    --blind=$BLIND  --x_blind_min=1. --x_blind_max=0. \
-    --custom_x_axis_range=true --x_axis_min=-3.15 --x_axis_max=3.15 \
-    --y_axis_min=0.01 --extra_pad=10 \
-    --rebin=1 \
-    --plot_wjets_comp=false \
-    --norm_bins=false \
-    --plot_qcd=true \
-    --log_y=true \
-    --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIRQCD  \
-    --plot_name="met_phi"  --x_axis_label="MET #phi" \
-    --blind=$BLIND  --x_blind_min=1. --x_blind_max=0. \
-    --custom_x_axis_range=true --x_axis_min=-3.15 --x_axis_max=3.15 \
-    --y_axis_min=0.01 --extra_pad=1 \
-    --rebin=1 \
-    --plot_wjets_comp=false \
-    --norm_bins=false \
-    --plot_qcd=true \
-    --log_y=false \
-    --paramfile=$PARAMS
-
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --plot_name="met_phi"  --x_axis_label="MET #phi" \
-    --blind=$BLIND  --x_blind_min=1 --x_blind_max=0. \
-    --custom_x_axis_range=true --x_axis_min=-3.15 --x_axis_max=3.15 \
-    --y_axis_min=0.01 --extra_pad=10 \
-    --rebin=1 \
-    --plot_wjets_comp=false \
+    --folder=$FOLDER --plot_dir=$PLOTDIR"/wjetsComp/"  \
+    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
+    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=3.15 \
+    --y_axis_min=0.1 --extra_pad=1000 \
+    --rebin=4 \
+    --plot_wjets_comp=true \
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \

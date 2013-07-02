@@ -2,7 +2,7 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
-for CHANNEL in enu #munu
+for CHANNEL in nunu enu munu taunu
   do
   
   for MET in 0 130 #0 70
@@ -10,7 +10,7 @@ for CHANNEL in enu #munu
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
       do
 
-	FOLDER=./output/$CHANNEL/MET$MET/
+	FOLDER=./output_mjj1100/$CHANNEL/MET$MET/
 	PLOTDIR=PLOTS/$CHANNEL/MET$MET/
 	PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
 	
@@ -29,11 +29,13 @@ for CHANNEL in enu #munu
 	mkdir -p $PLOTDIR
 	mkdir -p $PLOTDIRQCD
 	
+	
 	BLIND=1
-	if (( "$CHANNEL" != "nunu" )) || (( "$MET" != "130" ))
+	if [ "$CHANNEL" != "nunu" ] || (( "$MET" != "130" ))
 	    then
 	    let BLIND=0
 	fi
+	
 
 ###### n_jets
 # n_jetsplotname="n_jets"
@@ -212,6 +214,17 @@ fi
     --rebin=10 \
     --norm_bins=false \
     --log_y=true \
+    --paramfile=$PARAMS
+
+###### n_taus
+./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
+    --folder=$FOLDER --plot_dir=$PLOTDIR \
+    --plot_name="n_taus"  --x_axis_label="Number of taus" \
+    --blind=$BLIND \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=5 \
+    --y_axis_min=0.01 --extra_pad=2 \
+    --rebin=1 \
+    --norm_bins=false --verbose=false \
     --paramfile=$PARAMS
 
     done
