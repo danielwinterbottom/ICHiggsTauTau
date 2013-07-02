@@ -331,8 +331,8 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 
 
 
-./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=et --set_alias="sel:mt_1<10." \
-  --method=8 --cat="met>20" --var="m_2(20,0,2)" --extra_pad=1.1\
-  --x_axis_label="Tau Mass [GeV]" --datacard="inclusive" \
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=mt --set_alias="sel:mt_1<30." \
+  --method=8 --cat="n_jets==0" --var="pt_tt(40,0,200)" --extra_pad=1.1\
+  --x_axis_label="Tau p_{T} [GeV]" --datacard="inclusive" \
   --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --background_scheme="et_default" --signal_scheme="sm_default" --draw_ratio=true
+  --background_scheme="mt_default" --signal_scheme="sm_default" --draw_ratio=true

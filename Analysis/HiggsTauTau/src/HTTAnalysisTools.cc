@@ -456,6 +456,7 @@ namespace ic {
           }
         });
       } else {
+        if (method == 4)  qcd_cat = cat;
         if (method == 5)  qcd_cat = this->ResolveAlias("vbf_loose_jets20");
         if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
