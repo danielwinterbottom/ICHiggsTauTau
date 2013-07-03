@@ -254,7 +254,8 @@ namespace ic {
 	  newjet1pt=oldjet1pt;
 	  newjet2pt=newjet2pt;
 	}
-	else if(dojessyst_&&((is_data_&&dodatajessyst_)||(!is_data_&&!dodatajessyst_))){//if not central value correct by the JES uncertainty
+	//else if((is_data_&&dodatajessyst_)||(!is_data_&&!dodatajessyst_)){//if not central value correct by the JES uncertainty
+	else if(!is_data_){
 	  //Get JES uncertainty
 	  total->setJetPt(newjet.pt());
 	  total->setJetEta(newjet.eta());

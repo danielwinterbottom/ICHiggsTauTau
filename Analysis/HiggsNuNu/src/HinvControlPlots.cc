@@ -81,11 +81,37 @@ namespace ic {
     TH1F::SetDefaultSumw2();
     Ht                 = dir.make<TH1F>("Ht",                "Ht",                1000,   0,1000);
     SqrtHt             = dir.make<TH1F>("SqrtHt",            "SqrtHt",            1000,   0,1000);
-    MetHt              = dir.make<TH2F>("MetHt",             "MetHt",             1000,0,1000,1000,0,1000);
-    MetSqrtHt          = dir.make<TH2F>("SqrtMetHt",         "SqrtMetHt",         1000,0,1000,1000,0,1000);
-    unclusteredEt = dir.make<TH1F>("unclusteredEt","unclusteredEt",1000,0,1000);
-    MHT = dir.make<TH1F>("MHT","MHT",1000,0,1000);
-    METminusMHT = dir.make<TH1F>("METminusMHT","METminusMHT",1000,0,1000);
+    MetHt              = dir.make<TH2F>("MetHt",             "MetHt",             1000,   0,1000,1000,0,1000);
+    MetSqrtHt          = dir.make<TH2F>("SqrtMetHt",         "SqrtMetHt",         1000,   0,1000,1000,0,1000);
+    unclusteredEt      = dir.make<TH1F>("unclusteredEt",     "unclusteredEt",     1000,   0,1000);
+    MHT                = dir.make<TH1F>("MHT",               "MHT",               1000,   0,1000);
+    dphimetMHT         = dir.make<TH1F>("dphimetMHT",        "dphimetMHT",        630,    0,6.3);
+    MetHt0to10         = dir.make<TH1F>("MetHt0to10",        "MetHt0to10",        1000,   0,1000);
+    MetHt10to20         = dir.make<TH1F>("MetHt10to20",        "MetHt10to20",        1000,   0,1000);
+    MetHt20to30         = dir.make<TH1F>("MetHt20to30",        "MetHt20to30",        1000,   0,1000);
+    MetHt30to40         = dir.make<TH1F>("MetHt30to40",        "MetHt30to40",        1000,   0,1000);
+    MetHt40to50         = dir.make<TH1F>("MetHt40to50",        "MetHt40to50",        1000,   0,1000);
+    MetHt50to60         = dir.make<TH1F>("MetHt50to60",        "MetHt50to60",        1000,   0,1000);
+    MetHt60to70         = dir.make<TH1F>("MetHt60to70",        "MetHt60to70",        1000,   0,1000);
+    MetHt70to80         = dir.make<TH1F>("MetHt70to80",        "MetHt70to80",        1000,   0,1000);
+    MetHt80to90         = dir.make<TH1F>("MetHt80to90",        "MetHt80to90",        1000,   0,1000);
+    MetHt90to100         = dir.make<TH1F>("MetHt90to100",        "MetHt90to100",        1000,   0,1000);
+    MetHt100to110         = dir.make<TH1F>("MetHt100to110",        "MetHt100to110",        1000,   0,1000);
+    MetHt110to120         = dir.make<TH1F>("MetHt110to120",        "MetHt110to120",        1000,   0,1000);
+    MetHt120to130         = dir.make<TH1F>("MetHt120to130",        "MetHt120to130",        1000,   0,1000);
+    MetSqrtHt0to10         = dir.make<TH1F>("MetSqrtHt0to10",        "MetSqrtHt0to10",        1000,   0,1000);
+    MetSqrtHt10to20         = dir.make<TH1F>("MetSqrtHt10to20",        "MetSqrtHt10to20",        1000,   0,1000);
+    MetSqrtHt20to30         = dir.make<TH1F>("MetSqrtHt20to30",        "MetSqrtHt20to30",        1000,   0,1000);
+    MetSqrtHt30to40         = dir.make<TH1F>("MetSqrtHt30to40",        "MetSqrtHt30to40",        1000,   0,1000);
+    MetSqrtHt40to50         = dir.make<TH1F>("MetSqrtHt40to50",        "MetSqrtHt40to50",        1000,   0,1000);
+    MetSqrtHt50to60         = dir.make<TH1F>("MetSqrtHt50to60",        "MetSqrtHt50to60",        1000,   0,1000);
+    MetSqrtHt60to70         = dir.make<TH1F>("MetSqrtHt60to70",        "MetSqrtHt60to70",        1000,   0,1000);
+    MetSqrtHt70to80         = dir.make<TH1F>("MetSqrtHt70to80",        "MetSqrtHt70to80",        1000,   0,1000);
+    MetSqrtHt80to90         = dir.make<TH1F>("MetSqrtHt80to90",        "MetSqrtHt80to90",        1000,   0,1000);
+    MetSqrtHt90to100         = dir.make<TH1F>("MetSqrtHt90to100",        "MetSqrtHt90to100",        1000,   0,1000);
+    MetSqrtHt100to110         = dir.make<TH1F>("MetSqrtHt100to110",        "MetSqrtHt100to110",        1000,   0,1000);
+    MetSqrtHt110to120         = dir.make<TH1F>("MetSqrtHt110to120",        "MetSqrtHt110to120",        1000,   0,1000);
+    MetSqrtHt120to130         = dir.make<TH1F>("MetSqrtHt120to130",        "MetSqrtHt120to130",        1000,   0,1000);
   };
 
   
@@ -317,9 +343,60 @@ namespace ic {
       HTPlots_->MetHt->Fill(ht,metet,wt_);
       HTPlots_->MetSqrtHt->Fill(sqrtht,metet,wt_);
       HTPlots_->MHT->Fill(mhtVec.Et(),wt_);
+      HTPlots_->dphimetMHT->Fill(fabs(mhtVec.Phi()-met->vector().Phi()),wt_);
       HTPlots_->unclusteredEt->Fill(unclVec.Et(),wt_);
-      HTPlots_->METminusMHT->Fill((met->vector()+mhtVec).Et(),wt_);
-
+      if((metet>0.)&&(metet<=10.)){
+	HTPlots_->MetHt0to10->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt0to10->Fill(ht,wt_);
+      }
+      else if((metet>10.)&&(metet<=20.)){
+	HTPlots_->MetHt10to20->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt10to20->Fill(ht,wt_);
+      }
+      else if((metet>20.)&&(metet<=30.)){
+	HTPlots_->MetHt20to30->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt20to30->Fill(ht,wt_);
+      }
+      else if((metet>30.)&&(metet<=40.)){
+	HTPlots_->MetHt30to40->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt30to40->Fill(ht,wt_);
+      }
+      else if((metet>40.)&&(metet<=50.)){
+	HTPlots_->MetHt40to50->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt40to50->Fill(ht,wt_);
+      }
+      else if((metet>50.)&&(metet<=60.)){
+	HTPlots_->MetHt50to60->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt50to60->Fill(ht,wt_);
+      }
+      else if((metet>60.)&&(metet<=70.)){
+	HTPlots_->MetHt60to70->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt60to70->Fill(ht,wt_);
+      }
+      else if((metet>70.)&&(metet<=80.)){
+	HTPlots_->MetHt70to80->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt70to80->Fill(ht,wt_);
+      }
+      else if((metet>80.)&&(metet<=90.)){
+	HTPlots_->MetHt80to90->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt80to90->Fill(ht,wt_);
+      }
+      else if((metet>90.)&&(metet<=100.)){
+	HTPlots_->MetHt90to100->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt90to100->Fill(ht,wt_);
+      }
+      else if((metet>100.)&&(metet<=110.)){
+	HTPlots_->MetHt100to110->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt100to110->Fill(ht,wt_);
+      }
+      else if((metet>110.)&&(metet<=120.)){
+	HTPlots_->MetHt110to120->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt110to120->Fill(ht,wt_);
+      }
+      else if((metet>120.)&&(metet<=130.)){
+	HTPlots_->MetHt120to130->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt120to130->Fill(ht,wt_);
+      }
       //std::cout << " MHT " << mhtVec << std::endl
       //		<< " MuVEC " << muVec << std::endl
       //	<< " Uncl " << unclVec << std::endl;
@@ -461,3 +538,5 @@ namespace ic {
   }
 
 }//namespace
+
+
