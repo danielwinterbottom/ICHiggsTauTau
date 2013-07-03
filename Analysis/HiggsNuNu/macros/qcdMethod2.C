@@ -111,7 +111,7 @@ int qcdMethod2() {//main
   bool lBlind[nHists] = {true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 
   //for plotting variables normalised to data luminosity
-  unsigned lRebin[nHists] = {5,1,20,1,20,20,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+  unsigned lRebin[nHists] = {5,1,20,1,20,20,20,40,40,40,40,40,40,40,40,40,40,40,40,40};
   double xmin[nHists] = {0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   double xmax[nHists] = {300,10,800,35,400,500,6.3,800,800,800,800,800,800,800,800,800,800,800,800,800};
   double ymin[nHists] = {0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01};
@@ -124,7 +124,7 @@ int qcdMethod2() {//main
   double xminNorm[nHists] = {0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   double xmaxNorm[nHists] = {130,10,800,35,400,500,6.3,800,800,800,800,800,800,800,800,800,800,800,800,800};
   double yminNorm[nHists] = {0,0.0001,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  double ymaxNorm[nHists] = {0.2,0.5,0.3,0.25,0.3,0.2,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5};
+  double ymaxNorm[nHists] = {0.2,0.5,0.3,0.25,0.3,0.2,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.5};
   int lLogYNorm[nHists] = {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
   //output file
@@ -180,27 +180,27 @@ int qcdMethod2() {//main
     
     leg[iH]->SetFillColor(10);
 
-    TFile *fData; 
+    TFile *fData[nSel];
     
     for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
       lPath.str("");
       lPath << "../" << folder  << "/nunu/MET0/Data.root" ;
-      fData = TFile::Open(lPath.str().c_str());
-      fData->cd(lSelection[iS].c_str());
+      fData[iS] = new TFile(lPath.str().c_str());//TFile::Open(lPath.str().c_str());
+      fData[iS]->cd(lSelection[iS].c_str());
       hMET[iS] = (TH1F*)gDirectory->Get(lHistName[iH].c_str())->Clone();
     }
     
     std::cout << " -- Data files uploaded..." << std::endl;
 
-    TFile *fBkg[nFiles];
+    TFile *fBkg[nSel][nFiles];
     
     for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
       //get histograms
       for (unsigned iBkg(0); iBkg<nFiles; ++iBkg){//loop on bkg files
 	lPath.str("");
 	lPath << "../" << folder << "/nunu/MET0/" << files[iBkg] << ".root";
-	fBkg[iBkg] = TFile::Open(lPath.str().c_str());
-	fBkg[iBkg]->cd(lSelection[iS].c_str());
+	fBkg[iS][iBkg] = new TFile(lPath.str().c_str());//TFile::Open(lPath.str().c_str());
+	fBkg[iS][iBkg]->cd(lSelection[iS].c_str());
 	TH1F *lTmp = (TH1F*)gDirectory->Get(lHistName[iH].c_str());
 	//met[iBkg][iS]->Sumw2();
 	lTmp->Scale(lLumi*normalisation[iBkg]);
@@ -303,9 +303,13 @@ int qcdMethod2() {//main
     myc->Update();
     myc->Print(lOutputPDF[iH].c_str());
 
-    fData->Close();
-    for(int iBkg=0;iBkg<nFiles;iBkg++){
-      fBkg[iBkg]->Close();
+    for(int iS=0;iS<nSel;iS++){
+      fData[iS]->Close();
+      fData[iS]->Delete();
+      for(int iBkg=0;iBkg<nFiles;iBkg++){
+	fBkg[iS][iBkg]->Close();
+	fBkg[iS][iBkg]->Delete();
+      }
     }
   }//loop on hists
 
