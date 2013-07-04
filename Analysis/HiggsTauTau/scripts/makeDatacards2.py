@@ -272,8 +272,8 @@ if options.scheme == 'new_sm':
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  ' --set_alias="w_shape_os:1" --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
     ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  ' --set_alias="w_shape_os:1"'),
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'

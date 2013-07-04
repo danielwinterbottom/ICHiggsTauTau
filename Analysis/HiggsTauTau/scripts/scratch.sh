@@ -341,9 +341,8 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 
 
 ./bin/PlotCompare  \
--p "ZL:ZL:output/Paper_2012/DYJetsToLL-LSoup_et_2012.root:twojet_os_sel/:pt_tt:-1:2:1" \
--p "Embedded:Embedded:output/Paper_2012/Embedded_et_2012.root:twojet_os_sel/:pt_tt:-1:2:2" \
---x_axis_title="p_{T}^{#tau#tau} [GeV]" --norm_mode=3  --big_label="e#tau_{h}" \
---custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
---outname="pt_tt_ZL_vs_embedded.pdf" --rebin=5 \
---ratios="ZL/Embedded/1" --ratio_axis_label="ZL/Embedded" --ratio_y_min=0 --ratio_y_max=5
+-p "Inclusive:Inclusive:htt_mt.inputs-sm-8TeV-wjets.root:muTau_0jet_high/:W:-1:2:1" \
+-p "Soup:Soup:collected/Imperial/htt_mt.inputs-sm-8TeV.root:muTau_0jet_high/:W:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--outname="muTau_0jet_high_W.pdf"  \
+--ratios="Inclusive/Soup/1" --ratio_axis_label="Inclusive/Soup" --ratio_y_min=0 --ratio_y_max=2

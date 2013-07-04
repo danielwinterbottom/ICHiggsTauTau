@@ -48,3 +48,20 @@ fi
 --labels $7 $8  --show_errs=$6 --category "$1"_btag --output_file=output/dc_sync/compare_btag_$5.pdf
 ./bin/DatacardCompare --mssm_mode=1  --mode=$2 --inputs $3 $4  \
 --labels $7 $8  --show_errs=$6 --category "$1"_nobtag --output_file=output/dc_sync/compare_nobtag_$5.pdf
+
+TMPFILES=""
+
+CATS=12
+if [ "$1" = "emu" ] 
+then
+  CATS=8
+fi
+
+for i in $(seq 1 $CATS) 
+do
+  gs -q -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$i -dLastPage=$i -sOutputFile=compare_tmp_$i.pdf output/dc_sync/compare_*_$5.pdf > /dev/null 2>&1
+  TMPFILES=$TMPFILES" compare_tmp_$i.pdf"
+done
+
+gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=compare_$5.pdf $TMPFILES
+rm compare_tmp_*.pdf

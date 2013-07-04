@@ -6,6 +6,7 @@
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
 #include "TROOT.h"
+#include "TError.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
@@ -74,6 +75,8 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
 
 
 int main(int argc, char* argv[]){
+
+  gErrorIgnoreLevel = 6000;
 
  // 00      $CHANNEL_incl_low             incl  pt-low
  // 01      $CHANNEL_incl_high            incl  pt-high
