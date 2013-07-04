@@ -68,6 +68,7 @@ lOTree->Branch("isoweight_2"  ,&lIsoweight_2     ,"isoweight_2/F");//Effieiency 
 lOTree->Branch("effweight"  ,&lEffWeight     ,"lEffWeight/F");//Effieiency Scale factor (all components multiplied in)
 lOTree->Branch("weight"     ,&lWeight        ,"lWeight/F"  );//mcweight*puweight*effweight
 lOTree->Branch("embeddedWeight"     ,&lEmbeddedWeight        ,"lEmbeddedWeight/F"  );
+lOTree->Branch("signalWeight"     ,&lSignalWeight        ,"lSignalWeight/F"  );
 
     //SV Fit variables
 
@@ -274,6 +275,11 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
         eventInfo->weight("embed_weight");
      } else {
       lEmbeddedWeight = 0.;
+     }
+    if (eventInfo->weight_defined("ggh")) {
+      lSignalWeight = eventInfo->weight("ggh");
+     } else {
+      lSignalWeight = 0.;
      }
     
 

@@ -51,6 +51,7 @@ class HTTSync : public ModuleBase {
   float lEffWeight;
   float lWeight;
   float lEmbeddedWeight;
+  float lSignalWeight;
   //SV Fit variables
   float lMSV;
   float lPtSV;
