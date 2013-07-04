@@ -232,6 +232,7 @@ if options.scheme == 'new_sm':
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_tight",            "vbf_tight",              BINS,       (
       ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
+      ' --set_alias="twojet:(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)"'
       ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"'
@@ -260,6 +261,7 @@ if options.scheme == 'new_sm':
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_tight",            "vbf_tight",              BINS, (     
       ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
+      ' --set_alias="twojet:(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)"'
       ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"'

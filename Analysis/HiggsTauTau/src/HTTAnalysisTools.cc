@@ -44,6 +44,8 @@ namespace ic {
     if (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
         "Special_3_Data",
+        "Special_4_Data",
+        "Special_5_WJetsToLNuSoup",
         "DYJetsToLL",
         "DYJetsToLL-L",
         "DYJetsToLL-J",
@@ -51,8 +53,6 @@ namespace ic {
         "WJetsToLNuSoup"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
-          "Special_4_Data",
-          "Special_5_WJetsToLNuSoup",
           "DYJetsToLLSoup",
           "DYJetsToLL-LSoup",
           "DYJetsToLL-JSoup"});

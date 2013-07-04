@@ -820,6 +820,8 @@ int main(int argc, char* argv[]){
     .set_input_label("pfJetsPFlow")
     .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
 
+  CopyCollection<PFJet>
+    filteredJetCopyCollection("CopyFilteredJets","pfJetsPFlow","pfJetsPFlowFiltered");
    
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
@@ -841,7 +843,7 @@ int main(int argc, char* argv[]){
     .set_mc(mc)
     .set_met_label(met_label)
     .set_strategy(strategy)
-    .set_w_hack(false);
+    .set_w_hack(true);
 
   HTTWeights httWeights = HTTWeights("HTTWeights")
     .set_channel(channel)
@@ -947,7 +949,7 @@ int main(int argc, char* argv[]){
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
-    .set_fail_mode(2)
+    .set_fail_mode(1)
     .set_require_inputs_match(false)
     .set_split(7000)
     .set_dilepton_label("emtauCandidates")
@@ -1069,6 +1071,7 @@ int main(int argc, char* argv[]){
     if (jes_mode > 0 && !is_data) analysis.AddModule(&jetEnergyUncertainty);
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
+                                  analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
                                   analysis.AddModule(&httRecoilCorrector);
 

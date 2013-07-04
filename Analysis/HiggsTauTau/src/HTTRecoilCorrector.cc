@@ -173,6 +173,14 @@ namespace ic {
     if (is_wjets_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet)) { // Use e or mu for et, mt and mtmet
       lep_pt = dilepton.at(0)->GetCandidate("lepton1")->pt();
       lep_phi = dilepton.at(0)->GetCandidate("lepton1")->phi();
+      if (w_hack_) {
+        std::vector<Candidate *> mu_cand;
+        mu_cand.push_back(dilepton.at(0)->GetCandidate("lepton1"));
+        std::vector<PFJet *> filtered_jets = event->GetPtrVec<PFJet>("pfJetsPFlowFiltered");
+        ic::erase_if(filtered_jets,! boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
+        ic::erase_if(filtered_jets,! boost::bind(MinDRToCollection<Candidate *>, _1, mu_cand, 0.5));
+        njets = filtered_jets.size();
+      }
     } else if (is_wjets_ && (channel_ == channel::em) ) { // Use mu for em
       lep_pt = dilepton.at(0)->GetCandidate("lepton2")->pt();
       lep_phi = dilepton.at(0)->GetCandidate("lepton2")->phi();
