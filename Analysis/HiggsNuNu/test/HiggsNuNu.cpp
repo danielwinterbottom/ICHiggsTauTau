@@ -81,6 +81,7 @@ int main(int argc, char* argv[]){
   bool dogaus;                    // Do gaussian smearing for jets with no gen jet match
   bool dojersyst;                 // Do Jet Energy Resolution Systematic Run
   bool jerbetterorworse;          // If doing Jet Energy Resolution Systematic Run, run with with better or worse (true for better, false for worse)
+  bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -134,6 +135,7 @@ int main(int argc, char* argv[]){
     ("jesupordown",         po::value<bool>(&jesupordown)->default_value(true))
     ("dojersyst",           po::value<bool>(&dojersyst)->default_value(false))
     ("jerbetterorworse",    po::value<bool>(&jerbetterorworse)->default_value(true))
+    ("docrosschecktau",    po::value<bool>(&docrosschecktau)->default_value(false))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
@@ -516,7 +518,12 @@ int main(int argc, char* argv[]){
     .set_min(0);
 
   std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
-  tau_iso_discr         = "byTightCombinedIsolationDeltaBetaCorr3Hits";
+  if(!docrosschecktau){
+    tau_iso_discr       = "byTightCombinedIsolationDeltaBetaCorr3Hits";
+  }
+  else{
+    tau_iso_discr       = "byMediumIsolationMVA2";
+  }
   tau_anti_muon_discr   = "againstMuonLoose";
   tau_anti_elec_discr_1 = "againstElectronLoose";
   tau_anti_elec_discr_2 = "againstElectronLoose";
