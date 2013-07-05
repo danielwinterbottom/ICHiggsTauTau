@@ -454,6 +454,11 @@ namespace ic {
       });
       if (method == 5 || method == 4) {
         Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
+        if (verbosity_) {
+          std::cout << "CategoryEff:   " << boost::format("%s,'%s','%s'/'%s','%s'\n") % this->ResolveAlias("QCD_Eff_Sample")  % qcd_sdb_sel 
+            % cat % qcd_cat % wt;
+          PrintValue("CategoryEff", qcd_eff);
+        }
         qcd_norm = ValueProduct(qcd_norm, qcd_eff);
       }
       if (qcd_norm.first <= 0.0) {
