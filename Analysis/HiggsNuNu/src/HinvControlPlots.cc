@@ -226,7 +226,12 @@ namespace ic {
       //allowing to have them in parallel to the main stream
         
       if (sel_label_.find("AN") != sel_label_.npos) {
-	if (!(met->pt() > 130 && dijet->M()>1000)) fillPlots=false;
+	if(channel_ == "munu"){
+	  if (!(met_noMuons->pt() > 130 && dijet->M()>1000)) fillPlots=false;
+	}
+	else{
+	  if (!(met->pt() > 130 && dijet->M()>1000)) fillPlots=false;
+	}
       }
 
       if (sel_label_.find("CJVfail") != sel_label_.npos && n_jetsingap_==0) fillPlots = false;
