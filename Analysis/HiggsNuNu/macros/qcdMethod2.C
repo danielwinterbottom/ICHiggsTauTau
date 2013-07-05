@@ -103,54 +103,39 @@ int qcdMethod2() {//main
   /////////////////////////////////////////////////////////
   ///////// To be updated with additional histos /////////
   ////////////////////////////////////////////////////////
-  const unsigned nHists = 20;
+  const unsigned nHists = 33;
   //ADD MET BINNED HT PLOTS
-  std::string lHistName[nHists] = {"met","n_jetsingap","Ht/Ht","Ht/SqrtHt","Ht/unclusteredEt","Ht/MHT","Ht/dphimetMHT","Ht/MetHt0to10","Ht/MetHt10to20","Ht/MetHt20to30","Ht/MetHt30to40","Ht/MetHt40to50","Ht/MetHt50to60","Ht/MetHt60to70","Ht/MetHt70to80","Ht/MetHt80to90","Ht/MetHt90to100","Ht/MetHt100to110","Ht/MetHt110to120","Ht/MetHt120to130"};
+  std::string lHistName[nHists] = {"met","n_jetsingap","Ht/Ht","Ht/SqrtHt","Ht/unclusteredEt","Ht/MHT","Ht/dphimetMHT","Ht/MetHt0to10","Ht/MetHt10to20","Ht/MetHt20to30","Ht/MetHt30to40","Ht/MetHt40to50","Ht/MetHt50to60","Ht/MetHt60to70","Ht/MetHt70to80","Ht/MetHt80to90","Ht/MetHt90to100","Ht/MetHt100to110","Ht/MetHt110to120","Ht/MetHt120to130","Ht/MetSqrtHt0to10","Ht/MetSqrtHt10to20","Ht/MetSqrtHt20to30","Ht/MetSqrtHt30to40","Ht/MetSqrtHt40to50","Ht/MetSqrtHt50to60","Ht/MetSqrtHt60to70","Ht/MetSqrtHt70to80","Ht/MetSqrtHt80to90","Ht/MetSqrtHt90to100","Ht/MetSqrtHt100to110","Ht/MetSqrtHt110to120","Ht/MetSqrtHt120to130"};
 
-  bool doCJV[nHists] = {true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
-  bool lBlind[nHists] = {true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
+  bool doCJV[nHists] = {true,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+  bool lBlind[nHists] = {true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 
   //for plotting variables normalised to data luminosity
-  unsigned lRebin[nHists] = {5,1,20,1,20,20,20,40,40,40,40,40,40,40,40,40,40,40,40,40};
-  double xmin[nHists] = {0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  double xmax[nHists] = {300,10,800,35,400,500,6.3,800,800,800,800,800,800,800,800,800,800,800,800,800};
-  double ymin[nHists] = {0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01};
-  double ymax[nHists] = {50000,500000,30000,50000,60000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000};
-  std::string xAxisTitle[nHists] = {"MET (GeV)","n_{jets} p_{T}>30 GeV #eta_{1} < #eta < #eta_{2}","H_{T}/GeV","\sqrt_{H_{T}}/GeV^{1/2}","unclustered E_{T}/GeV","|mH_{T}|/GeV","#Delta#phi_{MET-MHT}","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV"};
-  std::string yAxisTitle[nHists] = {"Entries / 5 GeV","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries"};
-  int lLogY[nHists] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+  unsigned lRebin[nHists] = {5,1,20,1,20,20,20,80,80,80,80,80,80,80,80,80,80,80,80,80,2,2,2,2,2,2,2,2,2,2,2,2,2};
+  double xmin[nHists] = {0,0,100,10,0,0,0,100,100,100,100,100,100,100,100,100,100,100,100,100,10,10,10,10,10,10,10,10,10,10,10,10,10};
+  double xmax[nHists] = {300,10,800,35,400,500,6.3,800,800,800,800,800,800,800,800,800,800,800,800,800,35,35,35,35,35,35,35,35,35,35,35,35,35};
+  double ymin[nHists] = {0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01};
+  double ymax[nHists] = {60000,500000,50000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000};
+  std::string plotTitle[nHists] = {"","","","","","","","0>Met>=10 GeV","10>Met>=20 GeV","20>Met>=30 GeV","30>Met>=40 GeV","40>Met>=50 GeV","50>Met>=60 GeV","60>Met>=70 GeV","70>Met>=80 GeV","80>Met>=90 GeV","90>Met>=100 GeV","100>Met>=110 GeV","110>Met>=120 GeV","120>Met>=130 GeV","0>Met>=10 GeV","10>Met>=20 GeV","20>Met>=30 GeV","30>Met>=40 GeV","40>Met>=50 GeV","50>Met>=60 GeV","60>Met>=70 GeV","70>Met>=80 GeV","80>Met>=90 GeV","90>Met>=100 GeV","100>Met>=110 GeV","110>Met>=120 GeV","120>Met>=130 GeV"};
+  std::string xAxisTitle[nHists] = {"MET (GeV)","n_{jets} p_{T}>30 GeV #eta_{1} < #eta < #eta_{2}","H_{T}/GeV","\sqrt_{H_{T}}/GeV^{1/2}","unclustered E_{T}/GeV","|mH_{T}|/GeV","#Delta#phi_{MET-MHT}","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","H_{T}/GeV","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}","\sqrt_{H_{T}}/GeV^{1/2}"};
+  std::string yAxisTitle[nHists] = {"Entries / 5 GeV","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries","Entries"};
+  int lLogY[nHists] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
   //for histos normalised to unity
-  double xminNorm[nHists] = {0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  double xmaxNorm[nHists] = {130,10,800,35,400,500,6.3,800,800,800,800,800,800,800,800,800,800,800,800,800};
-  double yminNorm[nHists] = {0,0.0001,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  double ymaxNorm[nHists] = {0.2,0.5,0.3,0.25,0.3,0.2,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.5};
-  int lLogYNorm[nHists] = {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  double xminNorm[nHists] = {0,0,0,5,0,0,0,100,100,100,100,100,100,100,100,100,100,100,100,100,10,10,10,10,10,10,10,10,10,10,10,10,10};
+  double xmaxNorm[nHists] = {130,10,800,35,400,500,6.3,800,800,800,800,800,800,800,800,800,800,800,800,800,35,35,35,35,35,35,35,35,35,35,35,35,35};
+  double yminNorm[nHists] = {0,0.0001,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  double ymaxNorm[nHists] = {0.15,1,0.3,0.25,0.3,0.2,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6,0.6};
+  int lLogYNorm[nHists] = {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
   //output file
-  std::string lOutputPDF[nHists] = {"METshapes_method2.pdf","NjetsInGAP_method2.pdf","ht.pdf","sqrtht.pdf","unclusteredet.pdf","mht.pdf","dphimetmht.pdf","metht0to10.pdf","metht10to20.pdf","metht20to30.pdf","metht30to40.pdf","metht40to50.pdf","metht50to60.pdf","metht60to70.pdf","metht70to80.pdf","metht80to90.pdf","metht90to100.pdf","metht100to110.pdf","metht110to120.pdf","metht120to130.pdf"};
+  std::string lOutputPDF[nHists] = {"METshapes_method2.pdf","NjetsInGAP_method2.pdf","ht.pdf","sqrtht.pdf","unclusteredet.pdf","mht.pdf","dphimetmht.pdf","metht0to10.pdf","metht10to20.pdf","metht20to30.pdf","metht30to40.pdf","metht40to50.pdf","metht50to60.pdf","metht60to70.pdf","metht70to80.pdf","metht80to90.pdf","metht90to100.pdf","metht100to110.pdf","metht110to120.pdf","metht120to130.pdf","metsqrtht0to10.pdf","metsqrtht10to20.pdf","metsqrtht20to30.pdf","metsqrtht30to40.pdf","metsqrtht40to50.pdf","metsqrtht50to60.pdf","metsqrtht60to70.pdf","metsqrtht70to80.pdf","metsqrtht80to90.pdf","metsqrtht90to100.pdf","metsqrtht100to110.pdf","metsqrtht110to120.pdf","metsqrtht120to130.pdf"};
 
   TLegend *leg[nHists];
-  leg[0] = new TLegend(0.55,0.6,0.89,0.89);
-  leg[1] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[2] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[3] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[4] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[5] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[6] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[7] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[8] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[9] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[10] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[11] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[12] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[13] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[14] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[15] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[16] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[17] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[18] = new TLegend(0.55,0.7,0.89,0.89);
-  leg[19] = new TLegend(0.55,0.7,0.89,0.89);
+  for(int j =0;j<nHists;j++){
+    leg[j] = new TLegend(0.55,0.6,0.89,0.89);
+  }
+
 
   //////////////////////////////////////////////////////
   ////// end section to modify /////////////////////////
@@ -158,7 +143,7 @@ int qcdMethod2() {//main
 
 
   const unsigned nSel = 4;
-  std::string lSelection[nSel] = {"DPhiQCD-noCJV","DPhiQCD","DPhiSIGNAL-noCJV","DPhiSIGNAL"};
+  std::string lSelection[nSel] = {"DPhiQCD_noCJV","DPhiQCD_CJVpass","DPhiSIGNAL_noCJV","DPhiSIGNAL_CJVpass"};
   std::string lSelectionName[nSel] = {"#Delta#phi_{jj}>2.6, no CJV","#Delta#phi_{jj}>2.6, CJV","#Delta#phi_{jj}<1.0, no CJV","#Delta#phi_{jj}<1.0, CJV"};
   
   int lColor[nSel] = {kGray+1,kRed-4,kGreen-9,kBlue-4};
@@ -167,13 +152,14 @@ int qcdMethod2() {//main
   myc->Divide(2,1);
   gStyle->SetOptStat(0);
   
+
   std::ostringstream lPath;
     
   std::string folder = "output";
 
 
   for (unsigned iH(0); iH<nHists;++iH){//loop on hists
-
+    
     TH1F *hMET[nSel];
     TH1F *hMETBKG[nSel];
     TH1F *hMETQCD[nSel];
@@ -250,7 +236,7 @@ int qcdMethod2() {//main
       hMETBKG[iS]->Rebin(lRebin[iH]);
       hMETBKG[iS]->GetXaxis()->SetRangeUser(xmin[iH],xmax[iH]);
       hMETBKG[iS]->GetYaxis()->SetRangeUser(ymin[iH],ymax[iH]);
-      hMETBKG[iS]->SetTitle("");
+      hMETBKG[iS]->SetTitle(plotTitle[iH].c_str());
       hMETBKG[iS]->GetXaxis()->SetTitle(xAxisTitle[iH].c_str());
       hMETBKG[iS]->GetYaxis()->SetTitle(yAxisTitle[iH].c_str());
       

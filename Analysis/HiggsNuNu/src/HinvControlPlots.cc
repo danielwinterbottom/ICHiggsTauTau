@@ -347,55 +347,55 @@ namespace ic {
       HTPlots_->unclusteredEt->Fill(unclVec.Et(),wt_);
       if((metet>0.)&&(metet<=10.)){
 	HTPlots_->MetHt0to10->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt0to10->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt0to10->Fill(sqrtht,wt_);
       }
       else if((metet>10.)&&(metet<=20.)){
 	HTPlots_->MetHt10to20->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt10to20->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt10to20->Fill(sqrtht,wt_);
       }
       else if((metet>20.)&&(metet<=30.)){
 	HTPlots_->MetHt20to30->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt20to30->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt20to30->Fill(sqrtht,wt_);
       }
       else if((metet>30.)&&(metet<=40.)){
 	HTPlots_->MetHt30to40->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt30to40->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt30to40->Fill(sqrtht,wt_);
       }
       else if((metet>40.)&&(metet<=50.)){
 	HTPlots_->MetHt40to50->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt40to50->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt40to50->Fill(sqrtht,wt_);
       }
       else if((metet>50.)&&(metet<=60.)){
 	HTPlots_->MetHt50to60->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt50to60->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt50to60->Fill(sqrtht,wt_);
       }
       else if((metet>60.)&&(metet<=70.)){
 	HTPlots_->MetHt60to70->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt60to70->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt60to70->Fill(sqrtht,wt_);
       }
       else if((metet>70.)&&(metet<=80.)){
 	HTPlots_->MetHt70to80->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt70to80->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt70to80->Fill(sqrtht,wt_);
       }
       else if((metet>80.)&&(metet<=90.)){
 	HTPlots_->MetHt80to90->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt80to90->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt80to90->Fill(sqrtht,wt_);
       }
       else if((metet>90.)&&(metet<=100.)){
 	HTPlots_->MetHt90to100->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt90to100->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt90to100->Fill(sqrtht,wt_);
       }
       else if((metet>100.)&&(metet<=110.)){
 	HTPlots_->MetHt100to110->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt100to110->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt100to110->Fill(sqrtht,wt_);
       }
       else if((metet>110.)&&(metet<=120.)){
 	HTPlots_->MetHt110to120->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt110to120->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt110to120->Fill(sqrtht,wt_);
       }
       else if((metet>120.)&&(metet<=130.)){
 	HTPlots_->MetHt120to130->Fill(ht,wt_);
-	HTPlots_->MetSqrtHt120to130->Fill(ht,wt_);
+	HTPlots_->MetSqrtHt120to130->Fill(sqrtht,wt_);
       }
       //std::cout << " MHT " << mhtVec << std::endl
       //		<< " MuVEC " << muVec << std::endl
