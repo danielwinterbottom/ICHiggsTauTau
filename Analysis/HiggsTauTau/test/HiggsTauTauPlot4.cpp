@@ -374,6 +374,26 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "");
+	if (sm_masses.size() != 0) {
+		string m = plot.draw_signal_mass();
+		HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
+		HTTAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
+		HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
+	}
+
+	// ************************************************************************
+	// Print H->WW contribution for e-mu
+	// ************************************************************************
+	if (channel_str == "em" && is_2012) {
+		hmap["ggH125_WW"] = std::make_pair(
+      ana.GetLumiScaledShape(var, "GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
+      ana.GetLumiScaledRate("GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"));
+		hmap["qqH125_WW"] = std::make_pair(
+      ana.GetLumiScaledShape(var, "VBF_HToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
+      ana.GetLumiScaledRate("VBF_HToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"));
+		HTTAnalysis::PrintValue("ggH125_WW", hmap["ggH125_WW"].second);
+		HTTAnalysis::PrintValue("qqH125_WW", hmap["qqH125_WW"].second);
+	}
 
 	// ************************************************************************
 	// Shift backgrounds
