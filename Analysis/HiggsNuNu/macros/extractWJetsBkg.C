@@ -12,7 +12,7 @@ using std::showpos;
 using std::noshowpos;
 
 //enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL,DPhiQCD};
-enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL_noCJV,DPhiQCD_noCJV,CJV,DPhiSIGNAL,DPhiQCD};
+enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL_noCJV,DPhiQCD_noCJV,CJVpass,CJVfail,DPhiSIGNAL_CJVpass,DPhiQCD_CJVpass};
 enum Sample {QCD,GJets,Top,TTbar,SingleTop,TW,WJets,WJets_enu,WJets_munu,WJets_taunu,ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,VV,Data,Signal};
 
 
@@ -105,11 +105,12 @@ int extractWJetsBkg(){//main
   lSelVecSignal.push_back("DEta");
   lSelVecSignal.push_back("MET");
   lSelVecSignal.push_back("TightMjj");
-  lSelVecSignal.push_back("DPhiSIGNAL-noCJV");
-  lSelVecSignal.push_back("DPhiQCD-noCJV");
-  lSelVecSignal.push_back("CJV");
-  lSelVecSignal.push_back("DPhiSIGNAL");
-  lSelVecSignal.push_back("DPhiQCD");
+  lSelVecSignal.push_back("DPhiSIGNAL_noCJV");
+  lSelVecSignal.push_back("DPhiQCD_noCJV");
+  lSelVecSignal.push_back("CJVpass");
+  lSelVecSignal.push_back("CJVfail");
+  lSelVecSignal.push_back("DPhiSIGNAL_CJVpass");
+  lSelVecSignal.push_back("DPhiQCD_CJVpass");
 
   std::vector<std::string> lSelVecControl;
   lSelVecControl.push_back("HLTMetClean");
@@ -118,11 +119,12 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DEta");
   lSelVecControl.push_back("MET");
   lSelVecControl.push_back("TightMjj");
-  lSelVecControl.push_back("DPhiSIGNAL-noCJV");
-  lSelVecControl.push_back("DPhiQCD-noCJV");
-  lSelVecControl.push_back("CJV");
-  lSelVecControl.push_back("DPhiSIGNAL");
-  lSelVecControl.push_back("DPhiQCD");
+  lSelVecControl.push_back("DPhiSIGNAL_noCJV");
+  lSelVecControl.push_back("DPhiQCD_noCJV");
+  lSelVecControl.push_back("CJVpass");
+  lSelVecControl.push_back("CJVfail");
+  lSelVecControl.push_back("DPhiSIGNAL_CJVpass");
+  lSelVecControl.push_back("DPhiQCD_CJVpass");
 
   std::vector<std::string> lSelVecTau;
   lSelVecTau.push_back("HLTMetClean");
@@ -131,20 +133,21 @@ int extractWJetsBkg(){//main
   lSelVecTau.push_back("DEta");
   lSelVecTau.push_back("MET");
   lSelVecTau.push_back("TightMjj");
-  lSelVecTau.push_back("DPhiSIGNAL-noCJV");
-  lSelVecTau.push_back("DPhiQCD-noCJV");
-  lSelVecTau.push_back("CJV");
-  lSelVecTau.push_back("DPhiSIGNAL");
-  lSelVecTau.push_back("DPhiQCD");
+  lSelVecTau.push_back("DPhiSIGNAL_noCJV");
+  lSelVecTau.push_back("DPhiQCD_noCJV");
+  lSelVecTau.push_back("CJVpass");
+  lSelVecTau.push_back("CJVfail");
+  lSelVecTau.push_back("DPhiSIGNAL_CJVpass");
+  lSelVecTau.push_back("DPhiQCD_CJVpass");
 
   //std::string lSuffix = "";
   const unsigned nWeights = 6;
   std::string lSuffix[nWeights] = {"","_pu","_puUp","_puDown","_pu_trig","_pu_trig_idiso"};
 
-  bool doTaus = false;
+  bool doTaus = true;
   bool dojes = false;
   bool dojer = false;
-  bool doWeights = true;
+  bool doWeights = false;
 
   //std::string TOPDIR = "../TABLES_mjj1200/";
   std::string TOPDIR = "../TABLES/";
@@ -248,20 +251,20 @@ int extractWJetsBkg(){//main
 		   << "Step & W$\\rightarrow e\\nu$ & W$\\rightarrow\\mu\\nu$ & W$\\rightarrow\\tau\\nu$ & Z$\\rightarrow\\nu\\nu$ & Z$\\rightarrow$ll & EWK Z+2j \\\\" << std::endl
 		   << "\\hline" << std::endl
 		   << "$\\Delta\\phi<1.0$ &  $" 
-		   << lSel[iCh][DPhiSIGNAL][WJets_enu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][WJets_enu].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL][WJets_munu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][WJets_munu].error  << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL][WJets_taunu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][WJets_taunu].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL][ZJets_nunu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][ZJets_nunu].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL][ZJets_ll].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][ZJets_ll].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][ZJets_vbf].error
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_enu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_enu].error << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_munu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_munu].error  << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_taunu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_taunu].error << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_nunu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_nunu].error << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_ll].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_ll].error << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_vbf].error
 		   << "$ \\\\" << std::endl
 		   << "$\\Delta\\phi > 2.6$ & $" 
-		   << lSel[iCh][DPhiQCD][WJets_enu].number  << "\\pm" << lSel[iCh][DPhiQCD][WJets_enu].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD][WJets_munu].number  << "\\pm" << lSel[iCh][DPhiQCD][WJets_munu].error  << "$ & $" 
-		   << lSel[iCh][DPhiQCD][WJets_taunu].number  << "\\pm" << lSel[iCh][DPhiQCD][WJets_taunu].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD][ZJets_nunu].number  << "\\pm" << lSel[iCh][DPhiQCD][ZJets_nunu].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD][ZJets_ll].number  << "\\pm" << lSel[iCh][DPhiQCD][ZJets_ll].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiQCD][ZJets_vbf].error
+		   << lSel[iCh][DPhiQCD_CJVpass][WJets_enu].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][WJets_enu].error << "$ & $" 
+		   << lSel[iCh][DPhiQCD_CJVpass][WJets_munu].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][WJets_munu].error  << "$ & $" 
+		   << lSel[iCh][DPhiQCD_CJVpass][WJets_taunu].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][WJets_taunu].error << "$ & $" 
+		   << lSel[iCh][DPhiQCD_CJVpass][ZJets_nunu].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][ZJets_nunu].error << "$ & $" 
+		   << lSel[iCh][DPhiQCD_CJVpass][ZJets_ll].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][ZJets_ll].error << "$ & $" 
+		   << lSel[iCh][DPhiQCD_CJVpass][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][ZJets_vbf].error
 		   << "$ \\\\" << std::endl
 		   << "\\hline" << std::endl
 		   << "\\end{tabular}" << std::endl;
@@ -278,13 +281,13 @@ int extractWJetsBkg(){//main
 		   << "Step & $t\\bar{t}$ & single top & $t,\\bar{t}\\rightarrow tW$  \\\\" << std::endl
 		   << "\\hline" << std::endl
 		   << "$\\Delta\\phi<1.0$ &  $"
-		   << lSel[iCh][DPhiSIGNAL][TTbar].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][TTbar].error  << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL][SingleTop].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][SingleTop].error  << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL][TW].number  << "\\pm" << lSel[iCh][DPhiSIGNAL][TW].error << "$ \\\\" << std::endl;
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][TTbar].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][TTbar].error  << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][SingleTop].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][SingleTop].error  << "$ & $" 
+		   << lSel[iCh][DPhiSIGNAL_CJVpass][TW].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][TW].error << "$ \\\\" << std::endl;
 	  lOutfile << "$\\Delta\\phi > 2.6$ & $" 
-		   << lSel[iCh][DPhiQCD][TTbar].number  << "\\pm" << lSel[iCh][DPhiQCD][TTbar].error  << "$ & $" 
-		   << lSel[iCh][DPhiQCD][SingleTop].number  << "\\pm" << lSel[iCh][DPhiQCD][SingleTop].error  << "$ & $" 
-		   << lSel[iCh][DPhiQCD][TW].number  << "\\pm" << lSel[iCh][DPhiQCD][TW].error 
+		   << lSel[iCh][DPhiQCD_CJVpass][TTbar].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][TTbar].error  << "$ & $" 
+		   << lSel[iCh][DPhiQCD_CJVpass][SingleTop].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][SingleTop].error  << "$ & $" 
+		   << lSel[iCh][DPhiQCD_CJVpass][TW].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][TW].error 
 		   << "$ \\\\" << std::endl
 		   << "\\hline" << std::endl
 		   << "\\end{tabular}" << std::endl;
@@ -301,7 +304,7 @@ int extractWJetsBkg(){//main
 	  nBkg += lSel[3][DPhiSIGNAL_noCJV][VV];
 	  efficiency eps_tau;
 	  eps_tau.num = lSel[3][DPhiSIGNAL_noCJV][WJets_taunu];
-	  //eps_tau.den = lSel[0][DPhiSIGNAL_noCJV][WJets_taunu];
+	  //eps_tau.den = lSel[0][DPhiSIGNAL_CJVpass_noCJV][WJets_taunu];
 	  //Access number in signal region before CJV:
 	  //Run interactively:
 	  //cd output/nunu/MET130
@@ -316,13 +319,14 @@ int extractWJetsBkg(){//main
 	  //mjj 1200
 	  //eps_tau.den.number = 131;
 	  //eps_tau.den.error = 10;
-	  eps_tau.den.number = 167;
-	  eps_tau.den.error = 11;
+	  eps_tau.den = lSel[0][DPhiSIGNAL_noCJV][WJets_taunu];
+	  //eps_tau.den.number = 167;
+	  //eps_tau.den.error = 11;
 
 	  efficiency eps_tau_cjv;
-	  eps_tau_cjv.num = lSel[0][DPhiSIGNAL_noCJV][WJets_taunu];
+	  eps_tau_cjv.num = lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu];
 	  eps_tau_cjv.den.number = eps_tau.den.number;
-	  eps_tau.den.error = eps_tau.den.error;
+	  eps_tau_cjv.den.error = eps_tau.den.error;
 
 	  events nDataW = nData;
 	  nDataW -= nBkg;
@@ -331,8 +335,8 @@ int extractWJetsBkg(){//main
 	  result_nocjv.error = sqrt(pow(nDataW.error/eps_tau.eff(),2)+pow(nDataW.number*eps_tau.error()/pow(eps_tau.eff(),2),2));
 
 	  events result = nDataW;
-	  result.number = nDataW.number*lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].number/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number;
-	  result.error = result.number*sqrt(pow(nDataW.error/nDataW.number,2)+pow(lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number,2));
+	  result.number = nDataW.number*lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number;
+	  result.error = result.number*sqrt(pow(nDataW.error/nDataW.number,2)+pow(lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].error/lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number,2));
 
 	  events crosscheck = result_nocjv;
 	  crosscheck.number = result_nocjv.number*eps_tau_cjv.eff();
@@ -343,7 +347,7 @@ int extractWJetsBkg(){//main
 		    << "nBkg = $" << nBkg.number  << "\\pm " << nBkg.error  << "$" << std::endl
 		    << "eff_tau = " << eps_tau << std::endl
 		    << "*** result no CJV = $" << result_nocjv.number  << "\\pm " << result_nocjv.error << " \\pm " << 0.08*result.number<< "$" << std::endl
-		    << "eff_tau_cvj = " << eps_tau_cjv << std::endl
+		    << "eff_tau_cjv = " << eps_tau_cjv << std::endl
 		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \\pm " << 0.08*result.number<< "$" << std::endl
 		    << "***crosscheck = $" << crosscheck.number << "\\pm " << crosscheck.error << "$" << std::endl
 		    << "****** MC Estimates: $" << eps_tau.den.number << "\\pm " << eps_tau.den.error << "$, $" << lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].number << "\\pm " << lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].error << "$" << std::endl
@@ -364,23 +368,23 @@ int extractWJetsBkg(){//main
 	    events lBkgSMC;
 	    events lNCMC;
 	    events lNSMC;
-	    // std::cout << lSel[iCh][DPhiSIGNAL+iQCD][Data] 
-	    // 	    << " " << lSel[iCh][DPhiSIGNAL+iQCD][Top]
-	    // 	    << " " << lSel[iCh][DPhiSIGNAL+iQCD][VV]
-	    // 	    << " " << lSel[iCh][DPhiSIGNAL+iQCD][ZJets]
+	    // std::cout << lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][Data] 
+	    // 	    << " " << lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][Top]
+	    // 	    << " " << lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][VV]
+	    // 	    << " " << lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][ZJets]
 	    // 	    << std::endl;
 	    
-	    lNCdata = lSel[iCh][DPhiSIGNAL+iQCD][Data];
-	    lNCdata -= lSel[iCh][DPhiSIGNAL+iQCD][Top];
-	    lNCdata -= lSel[iCh][DPhiSIGNAL+iQCD][VV];
-	    lNCdata -= lSel[iCh][DPhiSIGNAL+iQCD][ZJets];
-	    lBkgCMC = lSel[iCh][DPhiSIGNAL+iQCD][Top];
-	    lBkgCMC += lSel[iCh][DPhiSIGNAL+iQCD][VV];
-	    lBkgCMC += lSel[iCh][DPhiSIGNAL+iQCD][ZJets];
+	    lNCdata = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][Data];
+	    lNCdata -= lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][Top];
+	    lNCdata -= lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][VV];
+	    lNCdata -= lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][ZJets];
+	    lBkgCMC = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][Top];
+	    lBkgCMC += lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][VV];
+	    lBkgCMC += lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][ZJets];
 	    lBkgCMC.sample = "$N_{EWK}$";
-	    lBkgSMC = lSel[0][DPhiSIGNAL+iQCD][Top];
-	    lBkgSMC += lSel[0][DPhiSIGNAL+iQCD][VV];
-	    lBkgSMC += lSel[0][DPhiSIGNAL+iQCD][ZJets];
+	    lBkgSMC = lSel[0][DPhiSIGNAL_CJVpass+iQCD][Top];
+	    lBkgSMC += lSel[0][DPhiSIGNAL_CJVpass+iQCD][VV];
+	    lBkgSMC += lSel[0][DPhiSIGNAL_CJVpass+iQCD][ZJets];
 	    lBkgSMC.sample = "$N_{EWK}$";
 	    
 	    efficiency eps_lepveto_S;
@@ -396,39 +400,39 @@ int extractWJetsBkg(){//main
 	    if (iCh==2) {
 	      lNCdata.sample = "$N_{W\\rightarrow \\mu\\nu}^{data}$";
 	      lNSdata.sample = "$N_{W\\rightarrow \\mu\\nu}^{data}$";
-	      lNSMC = lSel[0][DPhiSIGNAL+iQCD][WJets_munu];
-	      lNCMC = lSel[iCh][DPhiSIGNAL+iQCD][WJets_munu];
+	      lNSMC = lSel[0][DPhiSIGNAL_CJVpass+iQCD][WJets_munu];
+	      lNCMC = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][WJets_munu];
 	      lNSMC.sample = "$N_{W\\rightarrow \\mu\\nu}^{MC}$";
 	      lNCMC.sample = "$N_{W\\rightarrow \\mu\\nu}^{MC}$";
 	      eps_lepveto_S.num = lSel[0][Lep][WJets_munu];
 	      eps_lepveto_S.den = lSel[0][Trig][WJets_munu];
 	      
-	      eps_VBF_S.num = lSel[0][DPhiSIGNAL+iQCD][WJets_munu];
+	      eps_VBF_S.num = lSel[0][DPhiSIGNAL_CJVpass+iQCD][WJets_munu];
 	      eps_VBF_S.den = lSel[0][Lep][WJets_munu];
 	      
 	      eps_lepsel_C.num = lSel[iCh][Lep][WJets_munu];
 	      eps_lepsel_C.den = lSel[iCh][Trig][WJets_munu];
 	      
-	      eps_VBF_C.num = lSel[iCh][DPhiSIGNAL+iQCD][WJets_munu];
+	      eps_VBF_C.num = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][WJets_munu];
 	      eps_VBF_C.den = lSel[iCh][Lep][WJets_munu];
 	    }
 	    else {
 	      lNCdata.sample = "$N_{W\\rightarrow e\\nu}^{data}$";
 	      lNSdata.sample = "$N_{W\\rightarrow e\\nu}^{data}$";
-	      lNSMC = lSel[0][DPhiSIGNAL+iQCD][WJets_enu];
-	      lNCMC = lSel[iCh][DPhiSIGNAL+iQCD][WJets_enu];
+	      lNSMC = lSel[0][DPhiSIGNAL_CJVpass+iQCD][WJets_enu];
+	      lNCMC = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][WJets_enu];
 	      lNSMC.sample = "$N_{W\\rightarrow e\\nu}^{MC}$";
 	      lNCMC.sample = "$N_{W\\rightarrow e\\nu}^{MC}$";
 	      eps_lepveto_S.num = lSel[0][Lep][WJets_enu];
 	      eps_lepveto_S.den = lSel[0][Trig][WJets_enu];
 	      
-	      eps_VBF_S.num = lSel[0][DPhiSIGNAL+iQCD][WJets_enu];
+	      eps_VBF_S.num = lSel[0][DPhiSIGNAL_CJVpass+iQCD][WJets_enu];
 	      eps_VBF_S.den = lSel[0][Lep][WJets_enu];
 	      
 	      eps_lepsel_C.num = lSel[iCh][Lep][WJets_enu];
 	      eps_lepsel_C.den = lSel[iCh][Trig][WJets_enu];
 	    
-	      eps_VBF_C.num = lSel[iCh][DPhiSIGNAL+iQCD][WJets_enu];
+	      eps_VBF_C.num = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][WJets_enu];
 	      eps_VBF_C.den = lSel[iCh][Lep][WJets_enu];
 	    }
 	    lNSdata.number = lNCdata.number * lNSMC.number / lNCMC.number;
@@ -503,7 +507,7 @@ int extractWJetsBkg(){//main
 		     << "\\hline" << std::endl
 		     << " & Signal sample & Control sample \\\\" << std::endl
 		     << "\\hline" << std::endl
-		     << "$N_{data}$ & XXX & " << lSel[iCh][DPhiSIGNAL+iQCD][Data].number << "\\\\" << std::endl;
+		     << "$N_{data}$ & XXX & " << lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][Data].number << "\\\\" << std::endl;
 	    lOutfile << std::setprecision(3)
 		     << lBkgSMC.sample << " & " 
 		     << " n/a & " 
