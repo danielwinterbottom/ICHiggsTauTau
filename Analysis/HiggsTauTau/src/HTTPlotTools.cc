@@ -188,6 +188,14 @@ namespace ic {
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau (qqH)"),
         {"qqH"}, 1, false)
     };
+    sig_schemes_["sm_split_ww"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau"),
+        {"ggH","VH","qqH"}, kBlue+3, true),
+      PlotSigComponent("ww",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow WW"),
+        {"ggHWW","qqHWW"}, 8, true)
+    };
 
 
 
@@ -264,7 +272,10 @@ namespace ic {
       }
       sig_elements.back().hist_ptr()->Scale(signal_scale_);
       HTTPlot::SetSignalStyle(sig_elements.back(), sig_scheme[i].color);
-      sig_elements.back().set_in_stack(sig_scheme[i].in_stack);
+      if (!sig_scheme[i].in_stack) {
+        sig_elements.back().set_in_stack(false);
+        sig_elements.back().set_line_width(3);
+      }
       if (norm_bins_) sig_elements.back().hist_ptr()->Scale(1.0, "width");
       plot.AddTH1PlotElement(sig_elements.back());
     }

@@ -385,14 +385,14 @@ int main(int argc, char* argv[]){
 	// Print H->WW contribution for e-mu
 	// ************************************************************************
 	if (channel_str == "em" && is_2012) {
-		hmap["ggH125_WW"] = std::make_pair(
+		hmap["ggHWW125"] = std::make_pair(
       ana.GetLumiScaledShape(var, "GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
       ana.GetLumiScaledRate("GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"));
-		hmap["qqH125_WW"] = std::make_pair(
+		hmap["qqHWW125"] = std::make_pair(
       ana.GetLumiScaledShape(var, "VBF_HToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
       ana.GetLumiScaledRate("VBF_HToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"));
-		HTTAnalysis::PrintValue("ggH125_WW", hmap["ggH125_WW"].second);
-		HTTAnalysis::PrintValue("qqH125_WW", hmap["qqH125_WW"].second);
+		HTTAnalysis::PrintValue("ggHWW125", hmap["ggHWW125"].second);
+		HTTAnalysis::PrintValue("qqHWW125", hmap["qqHWW125"].second);
 	}
 
 	// ************************************************************************

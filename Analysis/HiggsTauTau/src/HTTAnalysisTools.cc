@@ -63,7 +63,9 @@ namespace ic {
         "Special_22_Data",
         "Special_23_Data",
         "Special_24_Data",
-        "DYJetsToLL"
+        "DYJetsToLL",
+        "GluGluToHToWWTo2LAndTau2Nu_M-125",
+        "VBF_HToWWTo2LAndTau2Nu_M-125"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
           "DYJetsToLLSoup"});
