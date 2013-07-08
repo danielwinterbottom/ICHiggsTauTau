@@ -247,6 +247,31 @@ int main(int argc, char* argv[]){
 		}
 	}
 
+  // ************************************************************************
+	// Check ttbar MC embedded
+	// ************************************************************************
+  if (is_2012) {
+    HTTAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    HTTAnalysis::Value embedded_ttbar_inc = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", "os", "", "wt");
+    HTTAnalysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
+    HTTAnalysis::Value embedded_data_inc = ana.GetRate("Embedded", "os", "", "wt");
+    HTTAnalysis::PrintValue("EmbeddedTop", embedded_ttbar);
+    HTTAnalysis::PrintValue("EmbeddedData", embedded_data);
+    double uncorr_eff = embedded_data.first / embedded_data_inc.first;
+    double corr_eff = (embedded_data.first - embedded_ttbar.first) / (embedded_data_inc.first - embedded_ttbar_inc.first);
+    std::cout << "Uncorrected Eff:  " << uncorr_eff << std::endl;
+    std::cout << "Corrected Eff:    " << corr_eff << std::endl;
+    std::cout << "Ratio:            " << corr_eff/uncorr_eff << std::endl;
+		std::string top_label = (channel_str == "em") ? "ttbar" : "TT";
+		std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
+    HTTAnalysis::Value scaled_embedded = hmap[ztt_label].second;
+    double norm_sf = scaled_embedded.first / embedded_data.first;
+    double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
+    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
+    hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, 0.));
+  }
+
 	// ************************************************************************
 	// Generate Fake-rate vs same-sign systematic histograms
 	// ************************************************************************
@@ -346,6 +371,20 @@ int main(int argc, char* argv[]){
 	}
 
 	// ************************************************************************
+	// Print H->WW contribution for e-mu
+	// ************************************************************************
+	if (channel_str == "em" && is_2012) {
+		hmap["ggHWW125"] = std::make_pair(
+      ana.GetLumiScaledShape(var, "GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
+      ana.GetLumiScaledRate("GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"));
+		hmap["qqHWW125"] = std::make_pair(
+      ana.GetLumiScaledShape(var, "VBF_HToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
+      ana.GetLumiScaledRate("VBF_HToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"));
+		HTTAnalysis::PrintValue("ggHWW125", hmap["ggHWW125"].second);
+		HTTAnalysis::PrintValue("qqHWW125", hmap["qqHWW125"].second);
+	}
+
+	// ************************************************************************
 	// Write datacard
 	// ************************************************************************
 	if (datacard != "") {
@@ -381,19 +420,7 @@ int main(int argc, char* argv[]){
 		HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
 	}
 
-	// ************************************************************************
-	// Print H->WW contribution for e-mu
-	// ************************************************************************
-	if (channel_str == "em" && is_2012) {
-		hmap["ggHWW125"] = std::make_pair(
-      ana.GetLumiScaledShape(var, "GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
-      ana.GetLumiScaledRate("GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"));
-		hmap["qqHWW125"] = std::make_pair(
-      ana.GetLumiScaledShape(var, "VBF_HToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
-      ana.GetLumiScaledRate("VBF_HToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"));
-		HTTAnalysis::PrintValue("ggHWW125", hmap["ggHWW125"].second);
-		HTTAnalysis::PrintValue("qqHWW125", hmap["qqHWW125"].second);
-	}
+
 
 	// ************************************************************************
 	// Shift backgrounds

@@ -98,6 +98,9 @@ int main(int argc, char* argv[]){
   double ratio_y_min;
   double ratio_y_max;
   string ratio_axis_label;
+  bool log_y;
+  bool norm_bins;
+  string title_left;
 
   po::options_description config("Configuration");
   po::variables_map vm;
@@ -111,12 +114,15 @@ int main(int argc, char* argv[]){
     ("norm_mode",           po::value<int>(&norm_mode)->required())
     ("x_axis_title",        po::value<string>(&x_axis_title)->default_value(""))
     ("custom_x_axis_range", po::value<bool>(&custom_x_axis_range)->default_value(false))
+    ("log_y",               po::value<bool>(&log_y)->default_value(false))
     ("x_axis_min",          po::value<double>(&x_axis_min)->default_value(0))
     ("x_axis_max",          po::value<double>(&x_axis_max)->default_value(0))
     ("rebin",               po::value<unsigned>(&rebin)->default_value(1))
     ("ratio_axis_label",    po::value<string>(&ratio_axis_label)->default_value("Ratio"))
-    ("ratio_y_min",          po::value<double>(&ratio_y_min)->default_value(0.8))
-    ("ratio_y_max",          po::value<double>(&ratio_y_max)->default_value(1.2))
+    ("title_left",          po::value<string>(&title_left)->default_value(""))
+    ("ratio_y_min",         po::value<double>(&ratio_y_min)->default_value(0.8))
+    ("ratio_y_max",         po::value<double>(&ratio_y_max)->default_value(1.2))
+    ("norm_bins",           po::value<bool>(&norm_bins)->default_value(false))
     ;
     po::store(po::command_line_parser(argc, argv).
               options(config).allow_unregistered().run(), vm);
@@ -162,6 +168,7 @@ int main(int argc, char* argv[]){
     if (norm_mode == 3) {
       elements.back().hist_ptr()->Scale(1. / rate.back());
     }
+    if (norm_bins) elements.back().hist_ptr()->Scale(1.0, "width");
 
     if (elements.size() > 1) {
       if (norm_mode == 1) {
@@ -201,6 +208,7 @@ int main(int argc, char* argv[]){
   }
 
   ic::Plot compare;
+  compare.title_left = title_left;
   compare.output_filename = outname;
   compare.custom_x_axis_range = custom_x_axis_range;
   if (custom_x_axis_range){
@@ -228,11 +236,12 @@ int main(int argc, char* argv[]){
   compare.ratio_y_axis_max = ratio_y_max;
   compare.extra_pad = 1.15;
 
+  compare.y_axis_log = log_y;
+
 
   ic::TextElement text(channel,0.07,0.19,0.89);
   compare.AddTextElement(text);
 
-  compare.title_left = title;
 
   compare.GeneratePlot();
 

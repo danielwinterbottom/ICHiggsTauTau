@@ -40,7 +40,8 @@ namespace ic {
     };
     if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
         "TT",
-        "DYJetsToTauTauSoup"});
+        "DYJetsToTauTauSoup",
+        "RecHit-TTJets_FullLeptMGDecays"});
     if (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
         "Special_3_Data",

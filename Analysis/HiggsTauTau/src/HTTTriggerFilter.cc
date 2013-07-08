@@ -296,6 +296,14 @@ namespace ic {
         }
       }
     }
+    if (!is_data_ && is_embedded_) {
+      std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>("triggerObjectsMu17Mu8");
+      if (objs.size() > 0) {
+        return 0;
+      } else {
+        return 1;
+      }
+    }
 
     if (is_embedded_) return 0; // Don't do object matching for embedded events
 
