@@ -325,8 +325,10 @@ int main(int argc, char* argv[]){
   selections.push_back("TightMjj");
   selections.push_back("DPhiSIGNAL_noCJV");
   selections.push_back("DPhiQCD_noCJV");
-  selections.push_back("CJVpass");
   selections.push_back("CJVfail");
+  selections.push_back("DPhiSIGNAL_CJVfail");
+  selections.push_back("DPhiQCD_CJVfail");
+  selections.push_back("CJVpass");
   selections.push_back("DPhiSIGNAL_CJVpass");
   selections.push_back("DPhiQCD_CJVpass");
  
