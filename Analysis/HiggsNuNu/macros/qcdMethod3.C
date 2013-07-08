@@ -64,9 +64,9 @@ int qcdMethod3() {//main
   files.push_back("MC_W3JetsToLNu_taunu");
   files.push_back("MC_W4JetsToLNu_taunu");
 
-  //const unsigned nSamples = 9;
-  //unsigned indices[nSamples+1] = {0,1,7,10,11,16,20,26,32,38};
-  //std::string samples[nSamples] = {"TTJets","single top","VV","EWK Z+2j","DYJets","Znunu","Wenu","Wmunu","Wtaunu"};
+  const unsigned nSamples = 9;
+  unsigned indices[nSamples+1] = {0,1,7,10,11,16,20,26,32,38};
+  std::string samples[nSamples] = {"TTJets","single top","VV","EWK Z+2j","DYJets","Znunu","Wenu","Wmunu","Wtaunu"};
 
   const unsigned nFiles = files.size();
 
@@ -123,6 +123,8 @@ int qcdMethod3() {//main
 
   TH1F *hMET[nSel];
   TH1F *hMETBKG[nSel];
+  double nBkgLowMET[nSamples][nSel];
+  double nBkgHighMET[nSamples][nSel];
   TH1F *hMETQCD[nSel];
   
   for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
@@ -139,9 +141,15 @@ int qcdMethod3() {//main
   }
     
   std::cout << " -- Data files uploaded..." << std::endl;
-    
+  int bin130 = hMET[0]->FindBin(130)-1;
+  std::cout << " Check: bin130 edges = " << hMET[0]->GetBinLowEdge(bin130) << " " << hMET[0]->GetXaxis()->GetBinUpEdge(bin130) << std::endl;
+  int binMax = hMET[0]->GetNbinsX()+1;
+
   for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
     //get histograms
+    unsigned idx=0;
+    std::cout << " -- Processing selection: " << lSelection[iS] << std::endl;
+
     for (unsigned iBkg(0); iBkg<nFiles; ++iBkg){//loop on bkg files
       lPath.str("");
       lPath << "../" << folder << "/nunu/MET0/" << files[iBkg] << ".root";
@@ -152,6 +160,16 @@ int qcdMethod3() {//main
       lTmp->Scale(lLumi*normalisation[iBkg]);
       if (iBkg==0) hMETBKG[iS] = (TH1F*)lTmp->Clone();
       else hMETBKG[iS]->Add(lTmp);
+
+      if (iBkg == indices[idx]){
+	nBkgLowMET[idx][iS] += lTmp->Integral(0,bin130);
+	nBkgHighMET[idx][iS] += lTmp->Integral(bin130+1,binMax);
+	idx++;
+      }
+      if (iBkg > indices[idx-1] && iBkg < indices[idx]){
+	nBkgLowMET[idx-1][iS] += lTmp->Integral(0,bin130);
+	nBkgHighMET[idx-1][iS] += lTmp->Integral(bin130+1,binMax);
+      }
       
     }//loop on bkg files
     
@@ -166,8 +184,6 @@ int qcdMethod3() {//main
   double lNum[3][nSel][2];
 
   for (unsigned iS(0); iS<nSel; ++iS){//loop on selection
-    int bin130 = hMET[iS]->FindBin(130)-1;
-    std::cout << " Check: bin130 edges = " << hMET[iS]->GetBinLowEdge(bin130) << " " << hMET[iS]->GetXaxis()->GetBinUpEdge(bin130) << std::endl;
     lNum[0][iS][0] = hMET[iS]->IntegralAndError(0,bin130,lErr[0][iS][0]);
     lNum[0][iS][1] = hMET[iS]->IntegralAndError(bin130+1,hMET[iS]->GetNbinsX()+1,lErr[0][iS][1]);
     lNum[1][iS][0] = hMETBKG[iS]->IntegralAndError(0,bin130,lErr[1][iS][0]);
@@ -186,6 +202,13 @@ int qcdMethod3() {//main
     for (unsigned iS(0); iS<2; ++iS){//loop on selection
       for (unsigned iR(0); iR<2; ++iR){//loop on region MET<130 - MET>130
 	std::cout << lABCD[iR+2*iS] << " = " << lNum[iP][iS][iR] << " \\pm " << lErr[iP][iS][iR] << std::endl;
+	if (iP==1){
+	  for (unsigned iSample(0); iSample<nSamples; ++iSample){
+	    std::cout << samples[iSample] << " :  " ;
+	    if (iR==0) std::cout << nBkgLowMET[iSample][iS] <<std::endl;
+	    else std::cout << nBkgHighMET[iSample][iS] << std::endl;
+	  }
+	}
       }
     }//loop on selection
   }
@@ -196,6 +219,13 @@ int qcdMethod3() {//main
     for (unsigned iS(2); iS<nSel; ++iS){//loop on selection
       for (unsigned iR(0); iR<2; ++iR){//loop on region MET<130 - MET>130
 	std::cout << lABCD[iR+2*(iS-2)] << " = " << lNum[iP][iS][iR] << " \\pm " << lErr[iP][iS][iR] << std::endl;
+	if (iP==1){
+	  for (unsigned iSample(0); iSample<nSamples; ++iSample){
+	    std::cout << samples[iSample] << " :  " ;
+	    if (iR==0) std::cout << nBkgLowMET[iSample][iS] <<std::endl;
+	    else std::cout << nBkgHighMET[iSample][iS] << std::endl;
+	  }
+	}
       }
     }//loop on selection
   }
