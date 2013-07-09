@@ -32,6 +32,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvDataTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWDecay.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWJetsPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
@@ -68,6 +69,9 @@ int main(int argc, char* argv[]){
 
   string channel_str;             // Analysis channel
   string wstream;                 // W stream: enu, munu or taunu, or nunu for everything
+
+  bool ignoreLeptons;             // for Znunu estimates using DYJets samples
+
   bool is_data;                   // true = data, false = mc         
   bool is_embedded;               // true = embedded, false = not an embedded sample
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
@@ -121,6 +125,7 @@ int main(int argc, char* argv[]){
     ("prod",                 po::value<string>(&prod)->required())
     ("channel",             po::value<string>(&channel_str)->default_value("nunu"))
     ("wstream",             po::value<string>(&wstream)->default_value("nunu"))
+    ("ignoreLeptons",       po::value<bool>(&ignoreLeptons)->default_value(false))
     ("is_data",             po::value<bool>(&is_data)->required())
     ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
     ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
@@ -302,8 +307,11 @@ int main(int argc, char* argv[]){
   //print run,lumi,evt of events selected
   HinvPrint hinvPrintList("HinvPrintList",is_data,false,true);
 
-  bool fixForEWKZ = false;
-  if (output_name.find("DYJJ01") != output_name.npos) fixForEWKZ = true;
+  bool is_ewkZ = false;
+  if (output_name.find("DYJJ01") != output_name.npos) {
+    ignoreLeptons = true;
+    is_ewkZ = true;
+  }
 
   string data_json;
   if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
@@ -490,12 +498,26 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(1);
   
+  SimpleFilter<Muon> twoMuonFilter = SimpleFilter<Muon>
+    ("TwoMuonFilter")
+    .set_input_label("selMuons")
+    .set_predicate( bind(DummyFunction<Muon>, _1) )
+    .set_min(2)
+    .set_max(2);
+  
   SimpleFilter<Muon> oneVetoMuonFilter = SimpleFilter<Muon>
     ("OneVetoMuonFilter")
     .set_input_label("vetoMuons")
     .set_predicate( bind(DummyFunction<Muon>, _1) )
     .set_min(1)
     .set_max(1);
+
+  SimpleFilter<Muon> twoVetoMuonFilter = SimpleFilter<Muon>
+    ("TwoVetoMuonFilter")
+    .set_input_label("vetoMuons")
+    .set_predicate( bind(DummyFunction<Muon>, _1) )
+    .set_min(2)
+    .set_max(2);
 
   SimpleFilter<Muon> zeroVetoMuonFilter = SimpleFilter<Muon>
     ("ZeroVetoMuonFilter")
@@ -736,7 +758,8 @@ int main(int argc, char* argv[]){
   MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut,met_cut_max);
   MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut,met_cut_max);
 
-  if (fixForEWKZ)  mettype="metNoENoMu";
+  if (is_ewkZ)  mettype="metNoENoMu";
+  else if (ignoreLeptons) mettype="metNoMuons";
   MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut,met_cut_max);
 
   //------------------------------------------------------------------------------------
@@ -767,7 +790,7 @@ int main(int argc, char* argv[]){
     if (channel==channel::nunu || channel == channel::taunu)
       hinvWeights.set_do_idiso_veto_weights(doidisoeff);
     else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
-    if (fixForEWKZ){ 
+    if (ignoreLeptons){ 
       hinvWeights.set_do_idiso_veto_weights(false);
       hinvWeights.set_do_idiso_tight_weights(false);
     }
@@ -820,7 +843,13 @@ int main(int argc, char* argv[]){
 
 
   HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
-  
+
+  //if (wstream == "ee") lFlavour = 11;
+  //else if (wstream == "mumu") lFlavour = 13;
+  //else if (wstream == "tautau") lFlavour = 15;
+  //do only muons for Znunu estimate...
+  HinvZDecay ZmassFilter = HinvZDecay("ZmassFilter",13);
+
   // ------------------------------------------------------------------------------------
   // Plot Modules
   // ------------------------------------------------------------------------------------  
@@ -1139,6 +1168,7 @@ int main(int argc, char* argv[]){
      if (output_name.find("JetsToLNu") != output_name.npos) {
        if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
      }
+     if (ignoreLeptons && !is_ewkZ) analysis.AddModule(&ZmassFilter);
      analysis.AddModule(&pileupWeight);
      analysis.AddModule(&pileupWeight_up);
      analysis.AddModule(&pileupWeight_down);
@@ -1236,6 +1266,12 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&zeroVetoElectronFilter);
        //analysis.AddModule(&muonMTFilter);
      }
+     else if (channel == channel::mumu){
+       analysis.AddModule(&twoMuonFilter);
+       analysis.AddModule(&twoVetoMuonFilter);
+       analysis.AddModule(&zeroVetoElectronFilter);
+       //analysis.AddModule(&muonMTFilter);
+     }
      else if (channel == channel::enu){
        analysis.AddModule(&oneElectronFilter);
        analysis.AddModule(&oneVetoElectronFilter);
@@ -1250,14 +1286,14 @@ int main(int argc, char* argv[]){
      }
      else if (channel == channel::taunu){
        analysis.AddModule(&oneTauFilter);
-       if (!fixForEWKZ){
+       if (!ignoreLeptons){
 	 analysis.AddModule(&zeroVetoElectronFilter);
 	 analysis.AddModule(&zeroVetoMuonFilter);
        }
      }
      else {
        //lepton veto modules
-       if (!fixForEWKZ){
+       if (!ignoreLeptons){
 	 analysis.AddModule(&zeroVetoMuonFilter);
 	 //if (printEventList) analysis.AddModule(&hinvPrintList);
 	 analysis.AddModule(&zeroVetoElectronFilter);
@@ -1304,7 +1340,7 @@ int main(int argc, char* argv[]){
 
      //met modules
        
-     if (channel == channel::munu){
+     if (channel == channel::munu || channel == channel::mumu){
        analysis.AddModule(&metNoMuonFilter);
      }
      //else if (channel == channel::enu){
