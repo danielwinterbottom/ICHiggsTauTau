@@ -145,7 +145,7 @@ int extractWJetsBkg(){//main
   std::string lSuffix[nWeights] = {"","_pu","_puUp","_puDown","_pu_trig","_pu_trig_idiso"};
 
   bool doTaus = true;
-  bool docrosschecktau=false;
+  bool docrosschecktau=true;
   bool dojes = false;
   bool dojer = false;
   bool doWeights = false;
@@ -167,7 +167,7 @@ int extractWJetsBkg(){//main
 
     std::cout << " -- Processing MET " << MET[iMET] << std::endl;
 
-    //create variables to store syst numbers
+    //create variables to store systB numbers
     events systevents[2][3][5][4];//[iqcd][ich][isyst][lnsmc,lncmc,lnsdata,lncdata]
     double systdiff[2][3][4][4];
     double systperc[2][3][4][4];
@@ -346,14 +346,30 @@ int extractWJetsBkg(){//main
 	  crosscheck.number = result_nocjv.number*eps_tau_cjv.eff();
 	  crosscheck.error = crosscheck.number*sqrt(pow(result_nocjv.error/result_nocjv.number,2)+pow(eps_tau_cjv.error()/eps_tau_cjv.eff(),2));
 
+	  double totsyst=0.;
+	  double wenusyst=0.;
+	  double multsyst=sqrt(pow(eps_tau.error()/eps_tau.eff(),2)+pow(eps_tau_cjv.error()/eps_tau_cjv.eff(),2)+pow(0.08,2))*result.number;
+	  if(!docrosschecktau){
+	    wenusyst=lSel[3][DPhiSIGNAL_noCJV][WJets_enu].number;
+	    totsyst=sqrt(pow(multsyst,2)+pow(wenusyst,2));
+	  }
+	  else{
+	    totsyst=multsyst;
+	  }
+
 	  std::cout << "------ taunu estimates:---------" << std::endl
 		    << "nData = $" << nData.number  << "\\pm " << nData.error  << "$" << std::endl
 		    << "nBkg = $" << nBkg.number  << "\\pm " << nBkg.error  << "$" << std::endl
 		    << "eff_tau = " << eps_tau << std::endl
-		    << "*** result no CJV = $" << result_nocjv.number  << "\\pm " << result_nocjv.error << " \\pm " << 0.08*result.number<< "$" << std::endl
+		    << "*** result no CJV = $" << result_nocjv.number  << "\\pm " << result_nocjv.error << "$" << std::endl
 		    << "eff_tau_cjv = " << eps_tau_cjv << std::endl
-		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \\pm " << 0.08*result.number<< "$" << std::endl
+		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \\pm " << totsyst<< "$" << std::endl
 		    << "***crosscheck = $" << crosscheck.number << "\\pm " << crosscheck.error << "$" << std::endl
+	            << "***syst breakdown:"<<std::endl
+	            << "eps_tau_id:" << eps_tau.error()/eps_tau.eff()*result.number <<std::endl
+	            << "eps_tau_cjv:" << eps_tau_cjv.error()/eps_tau_cjv.eff()*result.number<<std::endl
+	            << "data/mc scale factor:"<<0.08*result.number<<std::endl
+	            << "remaining W->enu:"<<wenusyst<<std::endl
 		    << "****** MC Estimates: $" << eps_tau.den.number << "\\pm " << eps_tau.den.error << "$, $" << lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].number << "\\pm " << lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].error << "$" << std::endl
 	    ;
 	  
