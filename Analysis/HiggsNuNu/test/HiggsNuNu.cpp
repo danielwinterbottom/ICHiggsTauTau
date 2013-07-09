@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
   bool dojersyst;                 // Do Jet Energy Resolution Systematic Run
   bool jerbetterorworse;          // If doing Jet Energy Resolution Systematic Run, run with with better or worse (true for better, false for worse)
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
+  bool taulepdiscrtight;          // Use tight electron and muon discriminants
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -136,6 +137,7 @@ int main(int argc, char* argv[]){
     ("dojersyst",           po::value<bool>(&dojersyst)->default_value(false))
     ("jerbetterorworse",    po::value<bool>(&jerbetterorworse)->default_value(true))
     ("docrosschecktau",    po::value<bool>(&docrosschecktau)->default_value(false))
+    ("taulepdiscrtight",    po::value<bool>(&taulepdiscrtight)->default_value(false))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
@@ -524,9 +526,16 @@ int main(int argc, char* argv[]){
   else{
     tau_iso_discr       = "byMediumIsolationMVA2";
   }
-  tau_anti_muon_discr   = "againstMuonLoose";
-  tau_anti_elec_discr_1 = "againstElectronLoose";
-  tau_anti_elec_discr_2 = "againstElectronLoose";
+  if(!taulepdiscrtight){
+    tau_anti_muon_discr   = "againstMuonTight";
+    tau_anti_elec_discr_1 = "againstElectronTight";
+    tau_anti_elec_discr_2 = "againstElectronTight";
+  }
+  else{
+    tau_anti_muon_discr   = "againstMuonLoose";
+    tau_anti_elec_discr_1 = "againstElectronLoose";
+    tau_anti_elec_discr_2 = "againstElectronLoose";
+  }
   
   //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
   

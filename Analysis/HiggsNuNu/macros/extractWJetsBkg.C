@@ -145,6 +145,7 @@ int extractWJetsBkg(){//main
   std::string lSuffix[nWeights] = {"","_pu","_puUp","_puDown","_pu_trig","_pu_trig_idiso"};
 
   bool doTaus = true;
+  bool docrosschecktau=false;
   bool dojes = false;
   bool dojer = false;
   bool doWeights = false;
@@ -330,6 +331,9 @@ int extractWJetsBkg(){//main
 
 	  events nDataW = nData;
 	  nDataW -= nBkg;
+	  if(docrosschecktau){
+	    nDataW -= lSel[3][DPhiSIGNAL_noCJV][WJets_enu];
+	  }
 	  events result_nocjv = nDataW;
 	  result_nocjv.number = nDataW.number/eps_tau.eff();
 	  result_nocjv.error = sqrt(pow(nDataW.error/eps_tau.eff(),2)+pow(nDataW.number*eps_tau.error()/pow(eps_tau.eff(),2),2));
