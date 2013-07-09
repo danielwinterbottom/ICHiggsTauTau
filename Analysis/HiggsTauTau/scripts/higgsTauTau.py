@@ -292,7 +292,12 @@ if options.proc_bkg or options.proc_all:
       
       if options.do_2011:
         central_samples.remove('TT')
-
+      if PRODUCTION=='June6' and (not options.do_2011):
+        central_samples += [
+          'TTJetsFullLept',
+          'TTJetsSemiLept',
+          'TTJetsHadronicExt'
+        ]
       for sc in scales:
         if ch in ['et', 'mt', 'etmet', 'mtmet']:
           soups = ['', 'Soup']

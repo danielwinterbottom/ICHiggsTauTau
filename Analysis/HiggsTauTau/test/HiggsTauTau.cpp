@@ -864,6 +864,7 @@ int main(int argc, char* argv[]){
     httWeights.set_do_btag_weight(true).set_btag_mode(btag_mode).set_bfake_mode(bfake_mode);
   }
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::et || channel == channel::etmet) ) httWeights.set_do_etau_fakerate(true);
+  if (mc == mc::fall11_42X) httWeights.set_do_etau_fakerate(false);
   if (output_name.find("DYJetsToLL") != output_name.npos && (channel == channel::mt || channel == channel::mtmet) ) httWeights.set_do_mtau_fakerate(true);
   if (real_tau_sample && channel != channel::em) httWeights.set_do_tau_mode_scale(true);
   if (is_embedded) httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(false).set_do_idiso_weights(false).set_do_id_weights(true);
