@@ -248,6 +248,7 @@ if options.scheme == 'new_sm':
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
+      ' --set_alias="QCD_Eff_Sample:Special_4_Data"'
       ' --set_alias="QCD_Shape_Sample:Special_4_Data"'))
   ]
   scheme_mt = [
@@ -279,6 +280,7 @@ if options.scheme == 'new_sm':
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
+      ' --set_alias="QCD_Eff_Sample:Special_4_Data"'
       ' --set_alias="QCD_Shape_Sample:Special_4_Data"'))
   ]
   scheme_mtmet = scheme_mt
