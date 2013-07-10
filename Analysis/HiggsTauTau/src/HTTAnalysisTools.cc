@@ -43,8 +43,7 @@ namespace ic {
         "TTJetsFullLept",
         "TTJetsSemiLept",
         "TTJetsHadronicExt",
-        "DYJetsToTauTauSoup",
-        "RecHit-TTJets_FullLeptMGDecays"});
+        "DYJetsToTauTauSoup"});
     if (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
         "Special_3_Data",
@@ -67,9 +66,7 @@ namespace ic {
         "Special_22_Data",
         "Special_23_Data",
         "Special_24_Data",
-        "DYJetsToLL",
-        "GluGluToHToWWTo2LAndTau2Nu_M-125",
-        "VBF_HToWWTo2LAndTau2Nu_M-125"
+        "DYJetsToLL"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
           "DYJetsToLLSoup"});
@@ -220,6 +217,11 @@ namespace ic {
       samples_alias_map_["qcd_sub_samples"].push_back(top_sample);
     }
   }
+
+  void HTTAnalysis::AddSample(std::string const& sample) {
+    sample_names_.push_back(sample);
+  }
+
 
   void HTTAnalysis::ParseParamFile(std::string const& file) {
     SimpleParamParser parser;

@@ -44,6 +44,7 @@ int main(int argc, char* argv[]){
 	string add_extra_binning;
 	string shift_backgrounds;
 	bool auto_titles;
+	bool check_ztt_top_frac;
 	// Program options
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
@@ -80,7 +81,8 @@ int main(int argc, char* argv[]){
 	  ("fix_negative_bins",  	po::value<string>(&fix_negative_bins)->default_value(""))
 	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
 	  ("shift_backgrounds",   po::value<string>(&shift_backgrounds)->default_value(""))
-	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true));
+	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true))
+	  ("check_ztt_top_frac",  po::value<bool>(&check_ztt_top_frac)->default_value(false));
 
 
 	HTTPlot plot;
@@ -145,6 +147,7 @@ int main(int argc, char* argv[]){
 	ana.AddSMSignalSamples(sm_masses);
 	if (add_sm_background != "") ana.AddSMSignalSamples({add_sm_background});
 	ana.AddMSSMSignalSamples(mssm_masses);
+	if (is_2012 && check_ztt_top_frac) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
 	ana.ReadTrees(folder);
 	ana.ParseParamFile(paramfile);
 
@@ -173,7 +176,6 @@ int main(int argc, char* argv[]){
 	// Additional Binning
 	// ************************************************************************
 	if (add_extra_binning != "") {
-
 		std::vector<std::string> extra_binning;
 		boost::split(extra_binning, add_extra_binning, boost::is_any_of(":"));
 		if (extra_binning.size() == 2) {
@@ -181,9 +183,10 @@ int main(int argc, char* argv[]){
 			std::cout << "[HiggsTauTauPlot4] Adding alternative binning \"" << extra_binning[0] 
 				<< "\" with postfix \"" << extra_binning[1] << "\"" << std::endl;
 			ana.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", extra_binning[1]);
+			ana.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
+			ana.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 		}
 	}
-
 
 	vector<pair<string,string>> systematics;
 
@@ -194,7 +197,6 @@ int main(int argc, char* argv[]){
 		systematics.push_back(make_pair("/TSCALE_DOWN", syst_tau_scale+"Down"));
 		systematics.push_back(make_pair("/TSCALE_UP", syst_tau_scale+"Up"));
 	}
-
 	if (syst_eff_b != "") {
 		systematics.push_back(make_pair("/BTAG_DOWN", syst_eff_b+"Down"));
 		systematics.push_back(make_pair("/BTAG_UP", syst_eff_b+"Up"));
@@ -250,7 +252,9 @@ int main(int argc, char* argv[]){
   // ************************************************************************
 	// Check ttbar MC embedded
 	// ************************************************************************
-  if (is_2012) {
+  if (is_2012 && check_ztt_top_frac) {
+		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+		std::cout << "[HiggsTauTauPlot4] Checking TOP contamination in ZTT embedded..." << std::endl;
     HTTAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
     HTTAnalysis::Value embedded_ttbar_inc = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", "os", "", "wt");
     HTTAnalysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
@@ -373,6 +377,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Print H->WW contribution for e-mu
 	// ************************************************************************
+	/*
 	if (channel_str == "em" && is_2012) {
 		hmap["ggHWW125"] = std::make_pair(
       ana.GetLumiScaledShape(var, "GluGluToHToWWTo2LAndTau2Nu_M-125", sel, cat, "wt"),
@@ -383,6 +388,7 @@ int main(int argc, char* argv[]){
 		HTTAnalysis::PrintValue("ggHWW125", hmap["ggHWW125"].second);
 		HTTAnalysis::PrintValue("qqHWW125", hmap["qqHWW125"].second);
 	}
+	*/
 
 	// ************************************************************************
 	// Write datacard

@@ -106,6 +106,9 @@ namespace ic {
       //! Constructor specifying channel, year and the level of verbosity
       HTTAnalysis(ic::channel ch, std::string year, int verbosity);
 
+      //! Add a single sample to the list of files that will be opened
+      void AddSample(std::string const& sample);
+
       //! Read a parameter file for cross section and luminosity information
       /*! Argument \p file is the full path to the parameter file. 
       */
