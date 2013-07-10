@@ -191,19 +191,31 @@ namespace ic {
     };
     if (ch_ == channel::em) samples_alias_map_["vv_samples"].push_back("DYJetsToLL"+dy_soup_);
 
+    samples_alias_map_["top_samples"] = {
+     "TTJetsFullLept", "TTJetsSemiLept", "TTJetsHadronicExt"
+    };
+    if (year == "2011") {
+      samples_alias_map_["top_samples"] = { "TTJets" };
+    }
+
     // Samples to subtract in sideband for W+jets estimate
     samples_alias_map_["w_sub_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
-     "T-tW", "Tbar-tW", "TTJets", "DYJetsToTauTau"+dy_soup_, 
+     "T-tW", "Tbar-tW", "DYJetsToTauTau"+dy_soup_,
      "DYJetsToLL-L"+dy_soup_, "DYJetsToLL-J"+dy_soup_};
 
     samples_alias_map_["qcd_sub_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
      "T-tW", "Tbar-tW", "WJetsToLNuSoup", 
-     "TTJets", "DYJetsToTauTau"+dy_soup_, 
+     "DYJetsToTauTau"+dy_soup_,
      "DYJetsToLL-L"+dy_soup_, "DYJetsToLL-J"+dy_soup_};
+
+    for (auto const& top_sample : samples_alias_map_["top_samples"]) {
+      samples_alias_map_["w_sub_samples"].push_back(top_sample);
+      samples_alias_map_["qcd_sub_samples"].push_back(top_sample);
+    }
   }
 
   void HTTAnalysis::ParseParamFile(std::string const& file) {
@@ -365,9 +377,19 @@ namespace ic {
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateTOP] --------------------------------------------------------\n";
-    auto top_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
+    std::vector<std::string> top_samples = this->ResolveSamplesAlias("top_samples");
+    if (verbosity_) {
+      std::cout << "top_samples: ";
+      for (unsigned i = 0; i < top_samples.size(); ++i) {
+        std::cout << top_samples[i];
+        if (i != top_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
+    auto top_norm = this->GetLumiScaledRate(top_samples, sel, cat, wt);
+    // auto top_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
     // std::string top_shape_sample = (year_ == "2011") ? "TTJets" : "TT";
-    std::string top_shape_sample = "TTJets";
+    // std::string top_shape_sample = "TTJets";
     std::string top_shape_cat = cat;
     if (method == 5) {
       if (ch_ == channel::em) {
@@ -376,9 +398,10 @@ namespace ic {
         top_shape_cat = this->ResolveAlias("vbf_loose");
       }
     }
-    TH1F top_hist = this->GetLumiScaledShape(var, top_shape_sample, sel, top_shape_cat, wt);
+    TH1F top_hist = this->GetLumiScaledShape(var, top_samples, sel, top_shape_cat, wt);
+    // TH1F top_hist = this->GetLumiScaledShape(var, top_shape_sample, sel, top_shape_cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % top_shape_sample % sel % top_shape_cat % wt;
+      % "top_samples" % sel % top_shape_cat % wt;
     SetNorm(&top_hist, top_norm.first);
     return std::make_pair(top_hist, top_norm);
   }

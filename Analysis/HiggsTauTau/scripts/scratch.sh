@@ -346,3 +346,22 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
 --outname="muTau_0jet_high_W.pdf"  \
 --ratios="Inclusive/Soup/1" --ratio_axis_label="Inclusive/Soup" --ratio_y_min=0 --ratio_y_max=2
+
+
+
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=et --set_alias="sel:mt_1<30." \
+  --method=8 --var="m_vis(40,70,130)" --cat="tau_decay_mode==1 && abs(eta_2)<1.5" \
+  --x_axis_label="M_{#tau#tau}^{vis} [GeV]"  \
+  --norm_bins=true --datacard="inclusive"\
+  --background_scheme="et_default" --signal_scheme="sm_default"
+
+
+./bin/PlotCompare  \
+-p "Ztt:Ztt:htt_em.inputs-mssm-8TeV-mvis.root:emu_btag/:Ztt:-1:2:1" \
+-p "ttbarEmbedded:ttbarEmbedded:htt_em.inputs-mssm-8TeV-mvis.root:emu_btag/:ttbarEmbedded:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=1  --big_label="#mu#tau_{h}" \
+--outname="emu_btag.pdf"
+
+
+
