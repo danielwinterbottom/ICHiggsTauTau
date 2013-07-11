@@ -1082,7 +1082,10 @@ int main(int argc, char* argv[]){
     if (!(svfit_override != "" && new_svfit_mode == 1)) {
                                   analysis.AddModule(&svfitTest);
     }
-    if (channel == channel::mtmet && (!is_data || is_embedded)) {
+    if (channel == channel::mtmet   // Only apply the L1 MET cut on MC and
+      && (!is_data || is_embedded)  // embedded, when not skimming or generating
+      && !do_skim                   // svfit jobs
+      && svfit_mode != 1) {
                                   analysis.AddModule(&httL1MetCut);
     }  
                                   analysis.AddModule(&httWeights);
