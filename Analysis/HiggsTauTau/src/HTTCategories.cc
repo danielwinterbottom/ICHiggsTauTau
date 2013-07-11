@@ -65,6 +65,7 @@ namespace ic {
         outtree_->Branch("pt_2",              &pt_2_);
         outtree_->Branch("eta_1",             &eta_1_);
         outtree_->Branch("eta_2",             &eta_2_);
+        outtree_->Branch("iso_2",             &iso_2_);
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("m_2",               &m_2_);
         outtree_->Branch("met",               &met_);
