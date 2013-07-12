@@ -882,6 +882,10 @@ int main(int argc, char* argv[]){
       httWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
       httWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
     }
+    if (mc == mc::summer12_53X && strategy == strategy::paper2013) {
+      httWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
+      httWeights.SetWInputYields(76102995.0, 52926398.0, 64738774.0, 15539503.0, 13382803.0);
+    }
   }
   if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {
     if (mc == mc::summer12_53X) {
@@ -1085,7 +1089,7 @@ int main(int argc, char* argv[]){
     if (channel == channel::mtmet   // Only apply the L1 MET cut on MC and
       && (!is_data || is_embedded)  // embedded, when not skimming or generating
       && !do_skim                   // svfit jobs
-      && svfit_mode != 1) {
+      && new_svfit_mode != 1) {
                                   analysis.AddModule(&httL1MetCut);
     }  
                                   analysis.AddModule(&httWeights);

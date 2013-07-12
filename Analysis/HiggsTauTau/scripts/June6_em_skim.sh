@@ -125,7 +125,9 @@ PATHS=(
 'ZZJetsTo2L2Nu'
 'ZZJetsTo2L2Q'
 'ZZJetsTo4L'
- 
+'TTJetsHadronicExt'
+'TTJetsSemiLept'
+'TTJetsFullLept'
 )
 for i in "${PATHS[@]}"
 do

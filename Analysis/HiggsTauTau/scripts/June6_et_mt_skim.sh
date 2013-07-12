@@ -1,6 +1,6 @@
 JOBWRAPPER=./scripts/generate_job.sh
-#JOBSUBMIT=true
-JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+JOBSUBMIT=true
+#JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 
 CONFIG=scripts/Paper_2012.cfg
 echo $CONFIG
@@ -164,6 +164,11 @@ PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/MC_53X/
  'ZZJetsTo2L2Nu'
  'ZZJetsTo2L2Q'
  'ZZJetsTo4L'
+'TTJetsHadronicExt'
+'TTJetsSemiLept'
+'TTJetsFullLept'
+'W1JetsToLNuExt'
+'W2JetsToLNuExt'
  )
  for i in "${PATHS[@]}"
  do
@@ -192,6 +197,8 @@ PATHS=(
 'W2JetsToLNu'
 'W3JetsToLNu'
 'W4JetsToLNu'
+'W1JetsToLNuExt'
+'W2JetsToLNuExt'
 )
 for i in "${PATHS[@]}"
 do
@@ -213,7 +220,7 @@ do
 done
 
 
- JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
+# JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/MC_53X/
  PATHS=(
  'SUSYGluGluToHToTauTau_M-80'
@@ -279,7 +286,7 @@ done
    $JOBSUBMIT jobs/$JOB.sh
  done
 
- JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
+# JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/June6/MC_53X/
  PATHS=(
  'GluGluToHToTauTau_M-90' 

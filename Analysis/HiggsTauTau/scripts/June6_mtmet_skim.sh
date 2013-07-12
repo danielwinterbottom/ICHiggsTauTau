@@ -1,6 +1,6 @@
 JOBWRAPPER=./scripts/generate_job.sh
-#JOBSUBMIT=true
-JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+JOBSUBMIT=true
+#JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 
 
 CONFIG=scripts/Paper_2012.cfg
@@ -19,6 +19,7 @@ do
 
   mkdir -p $SKIMPATH/mtmet_skim/$i/
   mkdir -p $SKIMPATH/mtmet_skim/Special_2_$i/
+  mkdir -p $SKIMPATH/mtmet_skim/Special_4_$i/
 
   JOB="$i"_mtmet_skim
   $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=mtmet --output_folder=./ --output_name=Dummy_$JOB.root \
@@ -30,6 +31,12 @@ do
   $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=mtmet --output_folder=./ --output_name=Dummy_$JOB.root \
   --do_skim=true --skim_path=$SKIMPATH/mtmet_skim/Special_2_"$i"/ --special_mode=2 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
   ./scripts/hadd_and_filelist.sh $SKIMPATH mtmet_skim/Special_2_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
+  
+  JOB=Special_4_"$i"_mtmet_skim
+  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=mtmet --output_folder=./ --output_name=Dummy_$JOB.root \
+  --do_skim=true --skim_path=$SKIMPATH/mtmet_skim/Special_4_"$i"/ --special_mode=4 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+  ./scripts/hadd_and_filelist.sh $SKIMPATH mtmet_skim/Special_4_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
   $JOBSUBMIT jobs/$JOB.sh
 done
 
@@ -77,6 +84,11 @@ PATHS=(
 'ZZJetsTo2L2Nu'
 'ZZJetsTo2L2Q'
 'ZZJetsTo4L'
+'TTJetsHadronicExt'
+'TTJetsSemiLept'
+'TTJetsFullLept'
+'W1JetsToLNuExt'
+'W2JetsToLNuExt'
 )
 for i in "${PATHS[@]}"
 do
@@ -91,7 +103,29 @@ do
   $JOBSUBMIT jobs/$JOB.sh
 done
 
- JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
+PATHS=(
+'WJetsToLNu-v1'
+'WJetsToLNu-v2'
+'W1JetsToLNu'
+'W2JetsToLNu'
+'W3JetsToLNu'
+'W4JetsToLNu'
+'W1JetsToLNuExt'
+'W2JetsToLNuExt'
+)
+for i in "${PATHS[@]}"
+do
+  echo "$i"
+  mkdir -p $SKIMPATH/mtmet_skim/Special_5_$i/
+
+  JOB=Special_5_"$i"_mtmet_skim
+  $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=mtmet --output_folder=./ --output_name=Dummy_$JOB.root \
+  --do_skim=true --skim_path=$SKIMPATH/mtmet_skim/Special_5_"$i"/ --special_mode=5 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+  ./scripts/hadd_and_filelist.sh $SKIMPATH mtmet_skim/Special_5_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+  $JOBSUBMIT jobs/$JOB.sh
+done
+
+ #JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
  PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/June6/MC_53X/
  PATHS=(
  'GluGluToHToTauTau_M-90' 
