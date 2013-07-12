@@ -548,7 +548,7 @@ int main(int argc, char* argv[]){
   else{
     tau_iso_discr       = "byMediumIsolationMVA2";
   }
-  if(!taulepdiscrtight){
+  if(taulepdiscrtight){
     tau_anti_muon_discr   = "againstMuonTight";
     tau_anti_elec_discr_1 = "againstElectronTight";
     tau_anti_elec_discr_2 = "againstElectronTight";
