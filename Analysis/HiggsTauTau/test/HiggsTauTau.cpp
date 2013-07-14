@@ -73,6 +73,7 @@ int main(int argc, char* argv[]){
   unsigned btag_mode;             // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned bfake_mode;            // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned jes_mode;              // 0 = no shift, 1 = shift down, 2 = shift up
+  unsigned l1met_mode;              // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned mass_scale_mode;       // 0 = no shift, 1 = nominal, but in TSCALE_DOWN, 2 = shift up, 3 = shift up again, in TSCALE_UP
   unsigned svfit_mode;            // 0 = not run, 1 = generate jobs, 2 = read-in job output
   unsigned new_svfit_mode;        // 0 = not run, 1 = generate jobs, 2 = read-in job output
@@ -128,6 +129,7 @@ int main(int argc, char* argv[]){
       ("btag_mode",           po::value<unsigned>(&btag_mode)->default_value(0))
       ("bfake_mode",          po::value<unsigned>(&bfake_mode)->default_value(0))
       ("jes_mode",            po::value<unsigned>(&jes_mode)->default_value(0))
+      ("l1met_mode",          po::value<unsigned>(&l1met_mode)->default_value(0))
       ("mass_scale_mode",     po::value<unsigned>(&mass_scale_mode)->default_value(0))
       ("svfit_mode",          po::value<unsigned>(&svfit_mode)->default_value(0))
       ("new_svfit_mode",      po::value<unsigned>(&new_svfit_mode)->default_value(0))
@@ -161,30 +163,17 @@ int main(int argc, char* argv[]){
     output_folder += "TSCALE_UP/";
     svfit_folder += "TSCALE_UP/";
   }
-  if (mass_scale_mode == 1) {
-    output_folder += "TSCALE_DOWN/";
-  }
-  if (mass_scale_mode == 3) {
-    output_folder += "TSCALE_UP/";
-  }
-  if (btag_mode == 1) {
-    output_folder += "BTAG_DOWN/";
-  }
-  if (btag_mode == 2) {
-    output_folder += "BTAG_UP/";
-  }
-  if (bfake_mode == 1) {
-    output_folder += "BFAKE_DOWN/";
-  }
-  if (bfake_mode == 2) {
-    output_folder += "BFAKE_UP/";
-  }
-  if (jes_mode == 1) {
-    output_folder += "JES_DOWN/";
-  }
-  if (jes_mode == 2) {
-    output_folder += "JES_UP/";
-  }
+  if (mass_scale_mode == 1) output_folder += "TSCALE_DOWN/";
+  if (mass_scale_mode == 3) output_folder += "TSCALE_UP/";
+  if (btag_mode == 1) output_folder += "BTAG_DOWN/";
+  if (btag_mode == 2) output_folder += "BTAG_UP/";
+  if (bfake_mode == 1) output_folder += "BFAKE_DOWN/";
+  if (bfake_mode == 2) output_folder += "BFAKE_UP/";
+  if (jes_mode == 1) output_folder += "JES_DOWN/";
+  if (jes_mode == 2) output_folder += "JES_UP/";
+  if (l1met_mode == 1) output_folder += "L1MET_DOWN/";
+  if (l1met_mode == 2) output_folder += "L1MET_UP/";
+  
 
 //  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
 //    era = era::data_2012_donly;
@@ -478,6 +467,7 @@ int main(int argc, char* argv[]){
   .set_uncert_set(jes_input_set);
 
   HTTL1MetCorrector httL1MetCorrector("HTTL1MetCorrector");
+  httL1MetCorrector.set_l1_met_mode(l1met_mode);
   HTTL1MetCut httL1MetCut("HTTL1MetCut");
   
   // ------------------------------------------------------------------------------------

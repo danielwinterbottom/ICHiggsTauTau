@@ -294,6 +294,8 @@ namespace ic {
                               std::string const& sample2, std::string const& selection2, std::string const& category2,
                               std::string const& weight);
 
+      void SetQCDRatio(double const& ratio);
+
     private:
       ic::channel ch_;
       std::string year_;
@@ -301,6 +303,7 @@ namespace ic {
       unsigned verbosity_;
       double lumi_;
       std::string dy_soup_;
+      double qcd_os_ss_factor_;
       std::vector<std::string> sample_names_;
       std::vector<std::string> signal_masses_;
       std::map<std::string, std::pair<double, double>> sample_info_;

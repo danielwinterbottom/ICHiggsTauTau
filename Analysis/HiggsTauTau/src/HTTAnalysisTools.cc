@@ -22,6 +22,7 @@ namespace ic {
 
   HTTAnalysis::HTTAnalysis(ic::channel ch, std::string year, int verbosity) : ch_(ch), year_(year), verbosity_(verbosity)  {
     lumi_ = 1.;
+    qcd_os_ss_factor_ = 1.06;
     using boost::range::push_back;
     // Define some sensible defaults
     sample_names_ = {
@@ -218,10 +219,13 @@ namespace ic {
     }
   }
 
+  void HTTAnalysis::SetQCDRatio(double const& ratio){
+    qcd_os_ss_factor_ = ratio;
+  }
+
   void HTTAnalysis::AddSample(std::string const& sample) {
     sample_names_.push_back(sample);
   }
-
 
   void HTTAnalysis::ParseParamFile(std::string const& file) {
     SimpleParamParser parser;
@@ -478,7 +482,7 @@ namespace ic {
       if (method == 5 || method == 4) qcd_cat = this->ResolveAlias("inclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
-      qcd_norm = this->GetRateViaQCDMethod(std::make_pair(1.06,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+      qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
         {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
           return w_ss_norm;}
         }

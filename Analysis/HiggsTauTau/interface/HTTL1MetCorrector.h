@@ -16,6 +16,7 @@ class HTTL1MetCorrector : public ModuleBase {
  private:
   // CLASS_MEMBER(HTTL1MetCorrector, ic::channel, channel)
   CLASS_MEMBER(HTTL1MetCorrector, std::string, l1_met_label)
+  CLASS_MEMBER(HTTL1MetCorrector, unsigned, l1_met_mode)
   CLASS_MEMBER(HTTL1MetCorrector, std::string, uncorrected_calo_met_label)
   CLASS_MEMBER(HTTL1MetCorrector, std::string, corrected_calo_met_label)
 

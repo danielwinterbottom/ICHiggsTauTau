@@ -32,6 +32,7 @@ int main(int argc, char* argv[]){
 	string syst_eff_b;
 	string syst_fake_b;
 	string syst_scale_j;
+	string syst_l1met;
 	string syst_qcd_shape;
 	string syst_fakes_shape;
 	string syst_ggh_pt;
@@ -45,6 +46,7 @@ int main(int argc, char* argv[]){
 	string shift_backgrounds;
 	bool auto_titles;
 	bool check_ztt_top_frac;
+  double qcd_os_ss_factor;
 	// Program options
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
@@ -70,6 +72,7 @@ int main(int argc, char* argv[]){
 	  ("syst_eff_b",      		po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_fake_b",      		po::value<string>(&syst_fake_b)->default_value(""))
 	  ("syst_scale_j",        po::value<string>(&syst_scale_j)->default_value(""))
+	  ("syst_l1met",          po::value<string>(&syst_l1met)->default_value(""))
 	  ("syst_qcd_shape",      po::value<string>(&syst_qcd_shape)->default_value(""))
 	  ("syst_fakes_shape",    po::value<string>(&syst_fakes_shape)->default_value(""))
 	  ("syst_ggh_pt",    			po::value<string>(&syst_ggh_pt)->default_value(""))
@@ -82,7 +85,8 @@ int main(int argc, char* argv[]){
 	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
 	  ("shift_backgrounds",   po::value<string>(&shift_backgrounds)->default_value(""))
 	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true))
-	  ("check_ztt_top_frac",  po::value<bool>(&check_ztt_top_frac)->default_value(false));
+	  ("check_ztt_top_frac",  po::value<bool>(&check_ztt_top_frac)->default_value(false))
+	  ("qcd_os_ss_factor",  	po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
 
 
 	HTTPlot plot;
@@ -143,6 +147,7 @@ int main(int argc, char* argv[]){
 	// Setup HTTAnalysis 
 	// ************************************************************************
 	HTTAnalysis ana(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
+  ana.SetQCDRatio(qcd_os_ss_factor);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
 	if (add_sm_background != "") ana.AddSMSignalSamples({add_sm_background});
@@ -209,11 +214,16 @@ int main(int argc, char* argv[]){
 		systematics.push_back(make_pair("/JES_DOWN", syst_scale_j+"Down"));
 		systematics.push_back(make_pair("/JES_UP", syst_scale_j+"Up"));
 	}
+	if (syst_l1met != "") {
+		systematics.push_back(make_pair("/L1MET_DOWN", syst_l1met+"Down"));
+		systematics.push_back(make_pair("/L1MET_UP", syst_l1met+"Up"));
+	}
 
 	for (auto const& syst : systematics) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 		std::cout << "[HiggsTauTauPlot4] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
 		HTTAnalysis ana_syst(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
+    ana_syst.SetQCDRatio(qcd_os_ss_factor);
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
 		if (add_sm_background != "") ana_syst.AddSMSignalSamples({add_sm_background});
@@ -397,7 +407,7 @@ int main(int argc, char* argv[]){
 		std::string dc_mode_label;
 		if (channel_str == "et") 			dc_mode_label = "eleTau";
 		if (channel_str == "mt") 			dc_mode_label = "muTau";
-		if (channel_str == "mtmet") 	dc_mode_label = "muTauMet";
+		if (channel_str == "mtmet") 	dc_mode_label = "muTauSoft";
 		if (channel_str == "em") 			dc_mode_label = "emu";
 		std::string tfile_name = "datacard_"+reduced_var+"_"+datacard+"_"+channel_str+(is_2012 ? "_2012":"_2011")+".root";
 		TFile dc_file(tfile_name.c_str(),"RECREATE");
@@ -476,7 +486,7 @@ int main(int argc, char* argv[]){
 		plot.set_title_left((boost::format("CMS Preliminary, #sqrt{s} = %s TeV, L = %.1f fb^{-1}") % com % fb_lumi).str());
 		if (channel_str == "et") 		plot.set_title_right("e#tau_{h}");
 		if (channel_str == "mt") 		plot.set_title_right("#mu#tau_{h}");
-		if (channel_str == "mtmet") plot.set_title_right("#mu#tau_{h}+MET");
+		if (channel_str == "mtmet") plot.set_title_right("#mu_{soft}#tau_{h}");
 		if (channel_str == "em") 		plot.set_title_right("e#mu");
 	}
 	plot.GeneratePlot(hmap);
