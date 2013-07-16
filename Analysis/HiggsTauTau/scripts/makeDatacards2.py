@@ -215,6 +215,7 @@ if options.scheme == 'thesis_sm':
 #################################################################
 if options.scheme == 'new_sm':
   extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
+  extra_channel["em"] += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'

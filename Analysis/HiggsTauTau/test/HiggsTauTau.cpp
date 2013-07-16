@@ -638,7 +638,8 @@ int main(int argc, char* argv[]){
                         || (output_name.find("VBF_HToTauTau")         != output_name.npos)
                         || (output_name.find("WH_ZH_TTH_HToTauTau")   != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
-                        || (output_name.find("Embedded")              != output_name.npos) );
+                        || (output_name.find("Embedded")              != output_name.npos)
+                        || (output_name.find("RecHit")                != output_name.npos) );
 
   TauDzFixer tauDzFixer("TauDzFixer");
 

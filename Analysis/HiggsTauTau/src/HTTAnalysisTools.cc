@@ -40,6 +40,7 @@ namespace ic {
       "TTJets",
     };
     if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
+        "RecHit",
         "TT",
         "TTJetsFullLept",
         "TTJetsSemiLept",
@@ -259,6 +260,13 @@ namespace ic {
       sample_names_.push_back("WH_ZH_TTH_HToTauTau_M-"+m);
     }
   }
+  void HTTAnalysis::AddHWWSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("GluGluToHToWWTo2LAndTau2Nu_M-"+m);
+      sample_names_.push_back("VBF_HToWWTo2LAndTau2Nu_M-"+m);
+      sample_names_.push_back("WH_ZH_TTH_HToWW_M-"+m);
+    }
+  }
 
   void HTTAnalysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
@@ -343,7 +351,7 @@ namespace ic {
     Value zl_norm;
     TH1F zl_hist;
     if (method == 5) {
-      zl_norm = this->GetRateViaRefEfficiency("Embedded", "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("twojet"), sel, cat, wt);
+      zl_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("twojet"), sel, cat, wt);
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("vbf_loose_jets20"), wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
         % ("DYJetsToLL-L"+dy_soup_) % sel % this->ResolveAlias("vbf_loose_jets20") % wt;
@@ -590,6 +598,22 @@ namespace ic {
       hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
       hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
       hmap["VH"+infix+m+postfix]  = this->GenerateSignal("WH_ZH_TTH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+    }
+  }
+  
+  void HTTAnalysis::FillHWWSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+      hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToWWTo2LAndTau2Nu_M-"+m,    var, sel, cat, wt, fixed_xs);
+      hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToWWTo2LAndTau2Nu_M-"+m,        var, sel, cat, wt, fixed_xs);
+      hmap["VH"+infix+m+postfix]  = this->GenerateSignal("WH_ZH_TTH_HToWW_M-"+m,  var, sel, cat, wt, fixed_xs);
     }
   }
 

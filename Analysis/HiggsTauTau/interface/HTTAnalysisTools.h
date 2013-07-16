@@ -125,6 +125,8 @@ namespace ic {
       */
       void AddSMSignalSamples(std::vector<std::string> masses);
       
+      void AddHWWSignalSamples(std::vector<std::string> masses);
+      
       //! For each value in \p masses adds the two MSSM signal samples to the list of samples to load
       /*! \sa AddSMSignalSamples
       */
@@ -154,6 +156,15 @@ namespace ic {
       HistValuePair GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs = -1.0);
       
       void FillSMSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+      void FillHWWSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,
                         std::string const& sel,

@@ -120,6 +120,9 @@ namespace ic {
       return 1;
     }
     EventInfo *eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    if (!eventInfo->weight_defined("kin_weight1") ||
+        !eventInfo->weight_defined("kin_weight2") ||
+        !eventInfo->weight_defined("kin_weight3")) return 0;
 
     double x,y;
     int bin_x, bin_y;

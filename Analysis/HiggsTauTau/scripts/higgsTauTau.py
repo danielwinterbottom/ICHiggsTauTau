@@ -158,6 +158,10 @@ if options.proc_data or options.proc_all:
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_Embedded_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s '
           ' --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+        JOB='RecHit_%s_%s' % (ch,YR)
+        os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_RecHit_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s '
+          ' --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
     if ch in ['et', 'mt', 'etmet', 'mtmet']:
       if '0' in scales:
@@ -235,6 +239,7 @@ FILELIST='filelists/'+PRODUCTION+'_MC_53X'
 if options.do_2011: FILELIST='filelists/'+PRODUCTION+'_MC_42X'
 
 signal_mc = [ ]
+signal_mc_ww = [ ]
 
 if options.proc_sm or options.proc_all:
   masses = ['110','115','120','125','130','135','140','145']
@@ -247,6 +252,15 @@ if options.proc_sm or options.proc_all:
       'VBF_HToTauTau_M-'+mass, 
       'WH_ZH_TTH_HToTauTau_M-'+mass
     ]
+  if  not options.do_2011:
+    ww_masses = ['110','115','120','125','130','135','140','145','150','155','160']
+    if options.short_signal: ww_masses = ['125']
+    for ww_mass in ww_masses :
+      signal_mc_ww += [
+        'GluGluToHToWWTo2LAndTau2Nu_M-'+ww_mass,
+        'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
+        'WH_ZH_TTH_HToWW_M-'+ww_mass
+      ]
 if options.proc_mssm or options.proc_all:
   masses = ['90','100','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000']
   if not options.do_2011: masses += ['80','110']
@@ -378,6 +392,16 @@ if options.proc_sm or options.proc_mssm or options.proc_all:
               ' --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
           os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
+
+if options.proc_sm or options.proc_all:
+    for ch in channels:
+      if ch == 'em':
+        for sc in scales:
+          for sa in signal_mc_ww:
+            JOB='%s_%s_%s' % (sa,ch,YR)
+            os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_%(sa)s_%(ch)s_skim.dat --channel=%(ch)s'
+                ' --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+            os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
 
 

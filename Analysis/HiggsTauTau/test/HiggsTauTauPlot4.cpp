@@ -27,6 +27,7 @@ int main(int argc, char* argv[]){
 	string datacard;             									// Channel, e.g. et
 	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
 	string sm_masses_str;													
+	string hww_masses_str;
 	string mssm_masses_str;												
 	string syst_tau_scale;
 	string syst_eff_b;
@@ -67,6 +68,7 @@ int main(int argc, char* argv[]){
 	  ("datacard",            po::value<string>(&datacard)->default_value(""))
 	  ("set_alias",           po::value<vector<string>>(&set_alias)->composing())
 	  ("sm_masses",           po::value<string>(&sm_masses_str)->default_value(""))
+	  ("hww_masses",           po::value<string>(&hww_masses_str)->default_value(""))
 	  ("mssm_masses",         po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("syst_tau_scale",      po::value<string>(&syst_tau_scale)->default_value(""))
 	  ("syst_eff_b",      		po::value<string>(&syst_eff_b)->default_value(""))
@@ -108,6 +110,7 @@ int main(int argc, char* argv[]){
 	std::cout << boost::format(param_fmt()) % "datacard"    % datacard;
 	std::cout << boost::format(param_fmt()) % "is_2012" 		% is_2012;
 	std::cout << boost::format(param_fmt()) % "sm_masses" 	% sm_masses_str;
+	std::cout << boost::format(param_fmt()) % "hww_masses" 	% hww_masses_str;
 	std::cout << boost::format(param_fmt()) % "mssm_masses" % mssm_masses_str;
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
@@ -140,6 +143,8 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	std::vector<std::string> sm_masses;
 	if (sm_masses_str != "") boost::split(sm_masses, sm_masses_str, boost::is_any_of(","));
+	std::vector<std::string> hww_masses;
+	if (hww_masses_str != "") boost::split(hww_masses, hww_masses_str, boost::is_any_of(","));
 	std::vector<std::string> mssm_masses;
 	if (mssm_masses_str != "") boost::split(mssm_masses, mssm_masses_str, boost::is_any_of(","));
 
@@ -150,6 +155,7 @@ int main(int argc, char* argv[]){
   ana.SetQCDRatio(qcd_os_ss_factor);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
+	ana.AddHWWSignalSamples(hww_masses);
 	if (add_sm_background != "") ana.AddSMSignalSamples({add_sm_background});
 	ana.AddMSSMSignalSamples(mssm_masses);
 	if (is_2012 && check_ztt_top_frac) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
@@ -163,6 +169,7 @@ int main(int argc, char* argv[]){
 
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "", 1.0);
+	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "", 1.0);
 	if (add_sm_background != "") ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 
@@ -226,12 +233,14 @@ int main(int argc, char* argv[]){
     ana_syst.SetQCDRatio(qcd_os_ss_factor);
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
+		ana_syst.AddHWWSignalSamples(hww_masses);
 		if (add_sm_background != "") ana_syst.AddSMSignalSamples({add_sm_background});
 		ana_syst.AddMSSMSignalSamples(mssm_masses);
 		ana_syst.ReadTrees(folder+syst.first, folder);
 		ana_syst.ParseParamFile(paramfile);
 		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
 		ana_syst.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		ana_syst.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
 		if (add_sm_background != "") ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 	}
@@ -428,6 +437,7 @@ int main(int argc, char* argv[]){
 	// Replace signal histograms using the correct cross sections, for plotting
 	// ************************************************************************
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
+	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "");
 	if (sm_masses.size() != 0) {
 		string m = plot.draw_signal_mass();

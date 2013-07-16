@@ -68,6 +68,10 @@ done
  'RecHit-ETau-2012B-22Jan2013-v1'
  'RecHit-ETau-2012C-22Jan2013-v1'
  'RecHit-ETau-2012D-22Jan2013-v1'
+ 'Embedded-ETau-2012A-22Jan2013-v1'
+ 'Embedded-ETau-2012B-22Jan2013-v1'
+ 'Embedded-ETau-2012C-22Jan2013-v1'
+ 'Embedded-ETau-2012D-22Jan2013-v1'
  )
  for i in "${PATHS[@]}"
  do
@@ -87,6 +91,10 @@ done
  'RecHit-MTau-2012B-22Jan2013-v1'
  'RecHit-MTau-2012C-22Jan2013-v1'
  'RecHit-MTau-2012D-22Jan2013-v1'
+ 'Embedded-MTau-2012A-22Jan2013-v1'
+ 'Embedded-MTau-2012B-22Jan2013-v1'
+ 'Embedded-MTau-2012C-22Jan2013-v1'
+ 'Embedded-MTau-2012D-22Jan2013-v1'
  )
  for i in "${PATHS[@]}"
  do
