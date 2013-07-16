@@ -39,7 +39,7 @@ unsigned nsig = 50;
 unsigned nbkg = 500;
 
 RooRealVar x("x","x",-5,5);
-RooRealVar lM("m","m" ,200,1500);
+RooRealVar lM("m","m" ,300,1500);
 TH1F ggh = GetFromTFile<TH1F>("htt_em.inputs-mssm-8TeV-0.root", "/emu_nobtag", "ggH800_fine_binning");
 ggh.Rebin(10);
 RooDataHist ggh_hist("ggh_hist","ggh_hist",RooArgSet(lM),&ggh);
@@ -54,9 +54,23 @@ RooRealVar lB("b","b" ,0.0785294 , -10.5,10.5);
 RooGenericPdf *lFit = new RooGenericPdf("genPdf","exp(-m/(a+b*m))",RooArgList(lM,lA,lB));
 
 RooRealVar lNB("nb","nb",nbkg,0,1000000);
-RooRealVar lNSig("nsig","nsig",nsig,-100,100000);
+RooRealVar lNSig("nsig","nsig",nsig,-1000,100000);
 // RooAddPdf    *lGenMod = new RooAddPdf  ("genmod","genmod",RooArgList(*lFit ,gauss),RooArgList(lNB,lNSig));
 RooAddPdf    *lGenMod = new RooAddPdf  ("genmod","genmod",RooArgList(*lFit ,ggh_pdf),RooArgList(lNB,lNSig));
+
+
+
+RooRealVar lA1("a1","a1" ,50,  0.1,1000);
+RooRealVar lB1("b1","b1" ,0.0 , -30.5,30.5); 
+RooGenericPdf *lTest  = 0; 
+// lFit = new RooGenericPdf("genPdf","exp(-m/(a+b*m))",RooArgList(lM,lA,lB));
+lTest = new RooGenericPdf("genPdf","exp(-a*pow(m,b))",RooArgList(lM,lA,lB));
+lA1.setVal(0.3); lB1.setVal(0.5);
+// lTest = new RooGenericPdf("genPdf","a*exp(b*m)",RooArgList(lM,lA,lB));
+// lTest = new RooGenericPdf("genPdf","a/pow(m,b)",RooArgList(lM,lA,lB));
+RooAddPdf    *lFitMod = new RooAddPdf  ("fitmod","fitmod",RooArgList(*lTest,ggh_pdf),RooArgList(lNB,lNSig));
+
+
 
 // RooDataHist *dataHist = gauss.generateBinned(x, 10, RooFit::ExpectedData()); 
 // TH1 *hist = dataHist->createHistogram("hist",x,RooFit::Binning(20,-5,5));
@@ -74,10 +88,10 @@ lC01->SaveAs("binned.pdf");
 
 
 
-RooMCStudy mgr(*lGenMod,lM,RooFit::FitModel(*lGenMod),RooFit::Silence(),RooFit::Extended(true),RooFit::Verbose(1),RooFit::Binned(kTRUE),RooFit::FitOptions(RooFit::Save(kTRUE),RooFit::Strategy(0)));
-mgr.generateAndFit(2000,nsig+nbkg);
+RooMCStudy mgr(*lGenMod,lM,RooFit::FitModel(*lFitMod),RooFit::Silence(),RooFit::Extended(true),RooFit::Verbose(1),RooFit::Binned(kTRUE),RooFit::FitOptions(RooFit::Save(kTRUE),RooFit::Strategy(0)));
+mgr.generateAndFit(3000,nsig+nbkg);
 std::cout << mean.getVal() << std::endl;
-RooPlot* lFrame1 = mgr.plotPull(lNSig,-5,5,50,true);
+RooPlot* lFrame1 = mgr.plotPull(lNSig,-1.5,1.5,50,true);
 // RooPlot* lFrame1 = mgr.plotParam(lNSig,RooFit::FrameRange(-200, 200),RooFit::FrameBins(100));
 TCanvas* lC00 = new TCanvas("pulls","pulls",600,600) ;
 lC00->cd();
