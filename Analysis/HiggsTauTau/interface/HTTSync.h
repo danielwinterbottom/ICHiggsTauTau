@@ -75,6 +75,8 @@ class HTTSync : public ModuleBase {
   bool  lPassIso1;
   float lMt1;
 
+  float lPtTT;
+
   ///Second lepton :  hadronic Tau for mu Tau had for e Tau, Muon for e mu, Trailing (in pT)  Tau for Tau Tau
   float lPt2;
   float lPhi2;

@@ -105,6 +105,8 @@ lOTree->Branch("iso_2"      ,&lIso2          ,"lIso2/F"    );//MVA iso for hadro
 lOTree->Branch("d0_2"       ,&lD02           ,"lD02/F"      );//d0 with respect to primary vertex
 lOTree->Branch("dZ_2"       ,&lDZ2           ,"lDZ2/F"      );//dZ with respect to primary vertex
 
+lOTree->Branch("pt_tt"       ,&lPtTT           ,"lPtTT/F"     );//pT
+
 lOTree->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_2"      ,&l3Hits_2          ,"byCombinedIsolationDeltaBetaCorrRaw3Hits_2/F"    );
 lOTree->Branch("againstElectronMVA3raw_2"      ,&lagainstElectronMVA3raw_2          ,"againstElectronMVA3raw_2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
 lOTree->Branch("byIsolationMVA2raw_2"      ,&lbyIsolationMVA2raw_2          ,"byIsolationMVA2raw_2/F"    );//MVA iso for hadronic Tau, Delta Beta for muon
@@ -315,6 +317,8 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
       lEtaSV = -999.;
       lPhiSV = -999.;
     }
+    
+    lPtTT = (dilepton.at(0)->vector() + selectedMet->vector()).pt();
 
     if (channel_ == channel::et || channel_ == channel::etmet) {
       Electron* elec = dynamic_cast<Electron*>(lepton);
