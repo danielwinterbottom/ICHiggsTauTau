@@ -47,6 +47,12 @@ class HTTCategories : public ModuleBase {
   double pt_tt_;
   double mt_1_;
   double pzeta_;
+  double pzetavis_;
+  double pzetamiss_;
+  double emu_dphi_;
+  double emu_csv_;
+  double emu_dxy_1_;
+  double emu_dxy_2_;
   double pt_1_;
   double pt_2_;
   double eta_1_;

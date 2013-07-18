@@ -91,8 +91,16 @@ namespace ic {
         outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
         outtree_->Branch("l1_met",            &l1_met_);
         outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
-        outtree_->Branch("em_gf_mva",         &em_gf_mva_);
-        outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
+        if (channel_ == channel::em) {
+          outtree_->Branch("em_gf_mva",         &em_gf_mva_);
+          outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
+          outtree_->Branch("pzetavis",          &pzetavis_);
+          outtree_->Branch("pzetamiss",         &pzetamiss_);
+          outtree_->Branch("emu_dphi",          &emu_dphi_);
+          outtree_->Branch("emu_csv",           &emu_csv_);
+          outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
+          outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
+        }
       }
     }
 
@@ -301,6 +309,9 @@ namespace ic {
 
     mt_1_ = MT(lep1, met);
     pzeta_ = PZeta(ditau, met, 0.85);
+    pzetavis_ = PZetaVis(ditau);
+    pzetamiss_ = PZeta(ditau, met, 0.0);
+    emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
 
     pt_1_ = lep1->pt();
     pt_2_ = lep2->pt();
@@ -310,6 +321,9 @@ namespace ic {
     m_2_ = lep2->M();
     met_ = met->pt();
     met_phi_ = met->phi();
+
+    emu_dxy_1_ = 0.0;
+    emu_dxy_2_ = 0.0;
 
     if (strategy_ == strategy::paper2013) {
       if (channel_ == channel::et) {
@@ -329,6 +343,8 @@ namespace ic {
         iso_1_ = PF04IsolationVal(elec, 0.5);
         Muon const* muon = dynamic_cast<Muon const*>(lep2);
         iso_2_ = PF04IsolationVal(muon, 0.5);
+        emu_dxy_1_ = -1. * elec->dxy_vertex();
+        emu_dxy_2_ = -1. * muon->dxy_vertex();
       }
     } else {
       iso_1_ = 0.0;
@@ -419,6 +435,8 @@ namespace ic {
     } else {
       bcsv_1_ = -9999;
     }
+    emu_csv_ = (prebjets.size() > 0) ? prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags") : -1.0;
+
 
     if (write_tree_) outtree_->Fill();
 
