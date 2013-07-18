@@ -149,7 +149,9 @@ if options.scheme == 'old_sm':
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("5",   "vbf",          "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, (
+      (' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')+
+       ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"')),
     ("2",   "1jet_low",     "boost_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("3",   "1jet_high",    "boost_high", BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
   ]
@@ -197,9 +199,12 @@ if options.scheme == 'thesis_sm':
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("5",   "th_vbf",       "vbf",        BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("0",   "th_0jet_low",  "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("1",   "th_0jet_high", "0jet_high",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
+    ("1",   "th_0jet_high", "0jet_high",  BINS_FINE, (
+      (' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')+
+      ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"')),
     ("2",   "th_1jet_low",  "boost_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("3",   "th_1jet_high", "boost_high", BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
+    ("3",   "th_1jet_high", "boost_high", BINS_FINE, (
+      (' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')))
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -336,7 +341,10 @@ if options.scheme == 'new_sm':
       ' --set_alias="vbf_no_cjv:(n_jets>=2 && mjj>500. && jdeta>3.5 && pt_tt>100.)"'
       ' --set_alias="vbf_loose:(n_jets>=2 && mjj>500. && jdeta>3.5 && pt_tt>100.)"')),
     ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"'),
+    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, (
+      ' --set_alias="sel:em_gf_mva>-0.5"'+
+      (' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')+
+      ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"')),
     ("2",   "1jet_low",     "1jet_low",   BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
     ("3",   "1jet_high",    "1jet_high",  BINS_FINE, ' --set_alias="sel:em_gf_mva>-0.5" --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
   ]
