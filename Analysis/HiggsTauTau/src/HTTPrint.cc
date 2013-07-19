@@ -174,9 +174,13 @@ namespace ic {
         std::cout << "-has matched genjet: " << matched_genjet->vector() << std::endl;
       }
     }
-    /*
+   /*
     std::cout << "---Triggers" << std::endl;
-    std::vector<std::string> paths = { "triggerObjectsIsoMu17LooseTau20", "triggerObjectsEle22WP90RhoLooseTau20" };
+    std::vector<std::string> paths = { "triggerObjectsIsoMu15LooseTau15" };
+    std::vector<std::string> labels = { "hltSingleMuIsoL3IsoFiltered15", "hltPFTau15TrackLooseIso" };
+    for (auto label : labels) {
+      std::cout << label << " hash is: " << CityHash64(label) << std::endl; 
+    }
     for (auto path : paths) {
       if (!eventInfo->is_data()) {
         std::cout << "--" << path << std::endl;
@@ -188,7 +192,8 @@ namespace ic {
           }
         }
       }
-    }*/
+    }
+    */
 
 
   }
