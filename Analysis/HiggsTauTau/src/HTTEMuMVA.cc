@@ -15,10 +15,10 @@ namespace ic {
   HTTEMuMVA::HTTEMuMVA(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    gf_mva_file_ = "data/vbf_mva/HttEmu_gf_v1.weights.xml";
-    vbf_mva_file_ = "data/vbf_mva/HttEmu_vbf_v1.weights.xml";
+    gf_mva_file_ = "data/vbf_mva/HttEmu_v2.weights.xml";
+    // vbf_mva_file_ = "data/vbf_mva/HttEmu_vbf_v1.weights.xml";
     gf_reader_ = nullptr;
-    vbf_reader_ = nullptr;
+    // vbf_reader_ = nullptr;
   }
 
   HTTEMuMVA::~HTTEMuMVA() {
@@ -32,10 +32,10 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % ditau_label_;
     std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
     std::cout << boost::format(param_fmt()) % "gf_mva_file"     % gf_mva_file_;
-    std::cout << boost::format(param_fmt()) % "vbf_mva_file"    % vbf_mva_file_;
+    // std::cout << boost::format(param_fmt()) % "vbf_mva_file"    % vbf_mva_file_;
     gf_reader_ = new TMVA::Reader("!Color:!Silent:Error");
-    vbf_reader_ = new TMVA::Reader("!Color:!Silent:Error");
-    std::vector<TMVA::Reader *> readers = {gf_reader_, vbf_reader_};
+    // vbf_reader_ = new TMVA::Reader("!Color:!Silent:Error");
+    std::vector<TMVA::Reader *> readers = {gf_reader_};
     for (auto & r : readers) {
       r->AddVariable("pzetavis", &pzetavis_);
       r->AddVariable("pzetamiss", &pzetamiss_);
@@ -43,9 +43,9 @@ namespace ic {
       r->AddVariable("mvamet", &mvamet_);
       r->AddVariable("csv", &csv_);
       r->AddVariable("d01", &el_dxy_);
-      r->AddVariable("d02", &mu_dxy_);
+      // r->AddVariable("d02", &mu_dxy_);
     }
-    vbf_reader_->BookMVA("BDTG", vbf_mva_file_);
+    // vbf_reader_->BookMVA("BDTG", vbf_mva_file_);
     gf_reader_->BookMVA("BDTG", gf_mva_file_);
     return 0;
   }
@@ -62,17 +62,21 @@ namespace ic {
     pzetamiss_ = PZeta(ditau, met, 0.0);
     dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(ditau->At(0)->vector(), ditau->At(1)->vector()));
     mvamet_ = met->pt();
-    csv_ = (jets.size() > 0) ? jets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags") : -1.0;
+    csv_ = -1.;
+    if (jets.size() > 0) {
+      double csv = jets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+      if (csv > 0.244) csv_ = csv;
+    }
     el_dxy_ = -1. * dynamic_cast<Electron const*>(ditau->GetCandidate("lepton1"))->dxy_vertex();
     mu_dxy_ = -1. * dynamic_cast<Muon const*>(ditau->GetCandidate("lepton2"))->dxy_vertex();
     event->Add("em_gf_mva", gf_reader_->EvaluateMVA("BDTG"));
-    event->Add("em_vbf_mva", vbf_reader_->EvaluateMVA("BDTG"));
+    // event->Add("em_vbf_mva", vbf_reader_->EvaluateMVA("BDTG"));
     return 0;
   }
 
   int HTTEMuMVA::PostAnalysis() {
     if (gf_reader_) delete gf_reader_;
-    if (vbf_reader_) delete vbf_reader_;
+    // if (vbf_reader_) delete vbf_reader_;
     return 0;
   }
 

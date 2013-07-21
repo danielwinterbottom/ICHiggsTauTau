@@ -93,7 +93,7 @@ namespace ic {
         outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
         if (channel_ == channel::em) {
           outtree_->Branch("em_gf_mva",         &em_gf_mva_);
-          outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
+          // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
           outtree_->Branch("pzetavis",          &pzetavis_);
           outtree_->Branch("pzetamiss",         &pzetamiss_);
           outtree_->Branch("emu_dphi",          &emu_dphi_);
@@ -298,7 +298,7 @@ namespace ic {
       m_sv_ = m_sv_ * mass_shift_;
       m_vis_ = m_vis_ * mass_shift_;
       em_gf_mva_ = event->Exists("em_gf_mva") ? event->Get<double>("em_gf_mva") : 0.;
-      em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
+      // em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
     if (event->Exists("mass_scale")) {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");
@@ -435,7 +435,7 @@ namespace ic {
     } else {
       bcsv_1_ = -9999;
     }
-    emu_csv_ = (prebjets.size() > 0) ? prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags") : -1.0;
+    emu_csv_ = (bcsv_1_ > 0.244) ? bcsv_1_ : -1.0;
 
 
     if (write_tree_) outtree_->Fill();

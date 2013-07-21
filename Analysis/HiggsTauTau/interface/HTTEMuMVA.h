@@ -19,10 +19,10 @@ class HTTEMuMVA : public ModuleBase {
  	CLASS_MEMBER(HTTEMuMVA, std::string, ditau_label)
  	CLASS_MEMBER(HTTEMuMVA, std::string, met_label)
  	CLASS_MEMBER(HTTEMuMVA, std::string, gf_mva_file)
- 	CLASS_MEMBER(HTTEMuMVA, std::string, vbf_mva_file)
+  // CLASS_MEMBER(HTTEMuMVA, std::string, vbf_mva_file)
 
  	TMVA::Reader *gf_reader_;
- 	TMVA::Reader *vbf_reader_;
+  // TMVA::Reader *vbf_reader_;
 
  	float pzetavis_;
  	float pzetamiss_;
