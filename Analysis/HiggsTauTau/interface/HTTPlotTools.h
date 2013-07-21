@@ -87,16 +87,13 @@ namespace ic {
       inline std::string plot_name() const { return plot_name_; }
       inline std::string draw_signal_mass() const { return draw_signal_mass_; }
       inline std::string draw_signal_tanb() const { return draw_signal_tanb_; }
-
+      void AddTextElement(ic::TextElement & ele);
 
     private:
       boost::program_options::options_description config_;
       std::map<std::string, std::vector<PlotBkgComponent>> bkg_schemes_;
       std::map<std::string, std::vector<PlotSigComponent>> sig_schemes_;
-
-
-
-
+      std::vector<ic::TextElement> text_;
   };
 
     

@@ -149,6 +149,19 @@ int main(int argc, char* argv[]){
   }
   TH1F total_hist = setup.process({"ZTT","ZL","ZJ","ZLL","W","QCD","VV","TT","Ztt","Fakes","EWK","ttbar"}).GetShape();
   hmap["Bkg"] = make_pair(total_hist, make_pair(0.,0.));
+
+  string channel_str;
+  if (channel == "et") channel_str = "e#tau_{h}";
+  if (channel == "mt") channel_str = "#mu#tau_{h}";
+  if (channel == "em") channel_str = "e#mu";
+  if (channel == "tt") channel_str = "#tau_{h}#tau_{h}";
+  if (!postfit) channel_str += " (pre-fit)";
+
+  ic::TextElement text(channel_str,0.04,0.22,0.86);
+  ic::TextElement text2(v_columns.first,0.04,0.22,0.79);
+  plot.AddTextElement(text);
+  plot.AddTextElement(text2);
+
   plot.GeneratePlot(hmap);
 
 

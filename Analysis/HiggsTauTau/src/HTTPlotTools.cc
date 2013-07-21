@@ -286,7 +286,9 @@ namespace ic {
       plot.AddTH1PlotElement(sig_elements.back());
     }
     TH1F error_band;
+    TH1F bkg_total;
     TH1PlotElement err_element;
+    TH1PlotElement bkg_element;
     if (draw_error_band_) {
       if (auto_error_band_ <= 0.) {
         error_band = hmap["Bkg"].first;
@@ -300,23 +302,52 @@ namespace ic {
           error_band.SetBinError(i, error_band.GetBinContent(i)*auto_error_band_);
         }
       }
-    err_element = TH1PlotElement("error_shape", &error_band,"bkg. uncertainty");
-    err_element.set_marker_size(0);
-    err_element.set_fill_color(1);
-    err_element.set_fill_style(3013);
-    err_element.set_line_width(1);
-    err_element.set_draw_stat_error_y(true);
-    err_element.set_draw_fill(true);
-    err_element.set_draw_line(false);
-    err_element.set_draw_marker(false);
-    err_element.set_draw_options("e2");
-    plot.AddTH1PlotElement(err_element);
+      bkg_total = error_band;
+      for (unsigned i = 1; i <= unsigned(bkg_total.GetNbinsX()); ++i) {
+        bkg_total.SetBinError(i, 0.0);
+      } 
+      err_element = TH1PlotElement("error_shape", &error_band,"bkg. uncertainty");
+      bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
+
+      err_element.set_marker_size(0);
+      err_element.set_fill_color(1);
+      err_element.set_fill_style(3013);
+      err_element.set_line_width(1);
+      err_element.set_draw_stat_error_y(true);
+      err_element.set_draw_fill(true);
+      err_element.set_draw_line(false);
+      err_element.set_draw_marker(false);
+      err_element.set_draw_options("e2");
+      bkg_element.set_marker_size(0);
+      bkg_element.set_fill_color(1);
+      bkg_element.set_fill_style(0);
+      bkg_element.set_line_width(1);
+      bkg_element.set_draw_stat_error_y(true);
+      bkg_element.set_draw_fill(true);
+      bkg_element.set_draw_line(false);
+      bkg_element.set_draw_marker(false);
+      bkg_element.set_draw_options("e2");
+      plot.AddTH1PlotElement(err_element);
+      plot.AddTH1PlotElement(bkg_element);
     }
 
-    ic::RatioPlotElement ratio("ratio","data",bkr_list_for_ratio);
+    ic::RatioPlotElement ratio("ratio","data","bkg_shape");
+    ic::RatioPlotElement err_ratio("err_ratio","error_shape","bkg_shape");
+    if (draw_error_band_) {
+      err_ratio.set_marker_size(0);
+      err_ratio.set_fill_color(1);
+      err_ratio.set_fill_style(3013);
+      err_ratio.set_line_width(1);
+      err_ratio.set_draw_stat_error_y(true);
+      err_ratio.set_draw_fill(false);
+      err_ratio.set_draw_line(false);
+      err_ratio.set_draw_marker(false);
+      err_ratio.set_draw_options("e2");
+      plot.AddRatioPlotElement(err_ratio);
+    }
     HTTPlot::SetRatioStyle(ratio,1);
     ratio.set_multi_mode(true);
-    plot.ratio_y_axis_title = "Data/MC";
+    plot.ratio_y_axis_title = "Data/Background";
     plot.AddRatioPlotElement(ratio);
     plot.custom_ratio_y_axis_range = true;
     plot.ratio_y_axis_min = 0.5;
@@ -324,204 +355,16 @@ namespace ic {
     HTTPlot::SetDataStyle(data_plot);
     plot.AddTH1PlotElement(data_plot);
     plot.legend_height = 0.045;
+
+    for (auto & ele : text_) plot.AddTextElement(ele);
+
     plot.GeneratePlot();
-
-
-
-    // if (shift_backgrounds) {
-    //   std::cout << "Shift ZTT: " << ztt_shift << std::endl;
-    //   std::cout << "Shift QCD: " << qcd_shift << std::endl;
-    //   std::cout << "Shift TOP: " << top_shift << std::endl;
-    //   std::cout << "Shift ZL: "  << zl_shift << std::endl;
-    //   std::cout << "Shift ZJ: "  << zj_shift << std::endl;
-    //   std::cout << "Shift W: "   << w_shift << std::endl;
-    //   std::cout << "Shift VV: "  << vv_shift << std::endl;
-    //   top_shape.hist_ptr()->Scale(top_shift);
-    //   qcd_shape.hist_ptr()->Scale(qcd_shift);
-    //   w_shape.hist_ptr()  ->Scale(w_shift);
-    //   vv_shape.hist_ptr() ->Scale(vv_shift);
-    //   // zl_shape.hist_ptr()->Scale(zl_shift);
-    //   // zj_shape.hist_ptr()->Scale(zj_shift);
-    //   ztt_shape.hist_ptr()->Scale(ztt_shift);
-    // }
-
-
-    // if (channel == channel::mt || channel == channel::mtmet) w_shape.hist_ptr()->Add(zll_shape.hist_ptr());
-    // w_shape.hist_ptr()->Add(vv_shape.hist_ptr());
-
-
-
-
-    // ic::TH1PlotElement ztt_1p0pz_shape("ztt_1p0pz_shape", NULL, "Z#rightarrow#tau#tau (1 Prong 0 #pi^{0})");
-    // ic::TH1PlotElement ztt_1p1pz_shape("ztt_1p1pz_shape", NULL, "Z#rightarrow#tau#tau (1 Prong 1 #pi^{0})");
-    // ic::TH1PlotElement ztt_3p_shape("ztt_3p_shape", NULL, "Z#rightarrow#tau#tau (3 Prong)");
-
-
-
-    // std::vector<ic::TH1PlotElement *> drawn_ele;
-    // drawn_ele.push_back(&qcd_plot);
-    // drawn_ele.push_back(&ewk_plot);
-    // drawn_ele.push_back(&ztt_plot);
-    // drawn_ele.push_back(&top_plot);
-
-    // if (ztt_by_decay_mode) {
-    //   ztt_1p0pz_shape.set_hist_ptr((TH1F*)(plots[Token("Embedded1P0PZ",cat,os_sel)].hist_ptr()->Clone()));
-    //   ztt_1p1pz_shape.set_hist_ptr((TH1F*)(plots[Token("Embedded1P1PZ",cat,os_sel)].hist_ptr()->Clone()));
-    //   ztt_3p_shape.set_hist_ptr((TH1F*)(plots[Token("Embedded3P",cat,os_sel)].hist_ptr()->Clone()));
-    //   double ztt_split_tot =  Integral(ztt_1p0pz_shape.hist_ptr()) + Integral(ztt_1p1pz_shape.hist_ptr()) + Integral(ztt_3p_shape.hist_ptr());
-    //   double ztt_1p0pz_frac = Integral(ztt_1p0pz_shape.hist_ptr()) / ztt_split_tot;
-    //   double ztt_1p1pz_frac = Integral(ztt_1p1pz_shape.hist_ptr()) / ztt_split_tot;
-    //   double ztt_3p_frac = Integral(ztt_3p_shape.hist_ptr()) / ztt_split_tot;
-    //   ztt_1p0pz_shape.hist_ptr()->Scale( ztt_1p0pz_frac * Integral(ztt_shape.hist_ptr()) /  Integral(ztt_1p0pz_shape.hist_ptr()) );
-    //   ztt_1p1pz_shape.hist_ptr()->Scale( ztt_1p1pz_frac * Integral(ztt_shape.hist_ptr()) /  Integral(ztt_1p1pz_shape.hist_ptr()) );
-    //   ztt_3p_shape.hist_ptr()->Scale( ztt_3p_frac * Integral(ztt_shape.hist_ptr()) /  Integral(ztt_3p_shape.hist_ptr()) );
-    //   SetStyle(ztt_1p0pz_shape, kOrange + 2);
-    //   SetStyle(ztt_1p1pz_shape, kOrange - 0);
-    //   SetStyle(ztt_3p_shape, 17);
-
-    //   drawn_ele.push_back(&ztt_1p0pz_shape);
-    //   drawn_ele.push_back(&ztt_1p1pz_shape);
-    //   drawn_ele.push_back(&ztt_3p_shape);
-    //   plot.legend_left = 0.54;
-    // }
-
-
-    // if (channel == channel::et) drawn_ele.push_back(&zll_shape);
-    // if (draw_signal) drawn_ele.push_back(&signal_shape);
-    // if (draw_signal && signal_split_vbf) drawn_ele.push_back(&signalvbf_shape);
-
-
-    // drawn_ele.push_back(&data_plot);
-    // for (unsigned i = 0; i < drawn_ele.size(); ++i) {
-    //   //drawn_ele[i]->set_rebin_factor(rebin);
-       // drawn_ele[i]->set_line_width(2);
-       // if (norm_bins) drawn_ele[i]->hist_ptr()->Scale(1.0, "width");
-    // }
-    // if (signal_no_stack) {
-    //   signalvbf_shape.set_line_width(3);
-    //   signal_shape.set_line_width(3);
-    // }
-
-
-    // qcd_shape.set_legend_text("QCD");
-    // if (channel == channel::em) qcd_shape.set_legend_text("fakes");
-    // w_shape.set_legend_text("electroweak");
-    // data_shape.set_legend_text("observed");
-    // ztt_shape.set_legend_text("Z#rightarrow#tau#tau");
-    // if (use_ztt_mc) ztt_shape.set_legend_text("Z#rightarrow#tau#tau (MC)");
-    // zll_shape.set_legend_text("Z#rightarrowee");
-    // top_shape.set_legend_text("t#bar{t}");
-    // if (mssm_mode == 0) {
-    //   signal_shape.set_legend_text(boost::lexical_cast<std::string>(draw_signal_factor)+"#times H("+draw_signal_mass+")#rightarrow#tau#tau");
-    //   if (signal_split_vbf) signal_shape.set_legend_text(boost::lexical_cast<std::string>(draw_signal_factor)+"#times H("+draw_signal_mass+")#rightarrow#tau#tau (ggH+VH)");
-    //   if (signal_split_vbf) signalvbf_shape.set_legend_text(boost::lexical_cast<std::string>(draw_signal_factor)+"#times H("+draw_signal_mass+")#rightarrow#tau#tau (qqH)");
-    // } else {
-    //   signal_shape.set_legend_text(boost::lexical_cast<std::string>(draw_mssm_signal_factor)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_mssm_signal_mass+",tan#beta=8)");
-    // }
-    // if (channel == channel::et || channel == channel::mt || channel == channel::mtmet) {
-    //   // top_shape.hist_ptr()->SetTitleSize  (0.055,"Y");
-    //   // top_shape.hist_ptr()->SetTitleOffset(1.600,"Y");
-    //   // top_shape.hist_ptr()->SetLabelOffset(0.014,"Y");
-    //   // top_shape.hist_ptr()->SetLabelSize  (0.040,"Y");
-    //   // top_shape.hist_ptr()->SetLabelFont  (42   ,"Y");
-    //   // top_shape.hist_ptr()->SetTitleSize  (0.055,"X");
-    //   // top_shape.hist_ptr()->SetTitleOffset(1.300,"X");
-    //   // top_shape.hist_ptr()->SetLabelOffset(0.014,"X");
-    //   // top_shape.hist_ptr()->SetLabelSize  (0.040,"X");
-    //   // top_shape.hist_ptr()->SetLabelFont  (42   ,"X");
-    //   // top_shape.hist_ptr()->SetMarkerStyle(20);
-    //   // // top_shape.hist_ptr()->SetMarkerColor(color);
-    //   // top_shape.hist_ptr()->SetMarkerSize (0.6);
-    //   // top_shape.hist_ptr()->GetYaxis()->SetTitleFont(42);
-    //   // top_shape.hist_ptr()->GetXaxis()->SetTitleFont(42);
-    //   plot.AddTH1PlotElement(qcd_plot);
-    //   plot.AddTH1PlotElement(top_plot);
-    //   plot.AddTH1PlotElement(ewk_plot);
-    // // } else if (channel == channel::em) {
-    //   // plot.AddTH1PlotElement(qcd_shape);
-    //   // plot.AddTH1PlotElement(w_shape);
-    //   // plot.AddTH1PlotElement(top_shape);
-    // // }
-    // // if (channel == channel::et) plot.AddTH1PlotElement(zll_shape);
-    // // if (!ztt_by_decay_mode) {
-    //   plot.AddTH1PlotElement(ztt_plot);
-    // } else {
-    //   plot.AddTH1PlotElement(ztt_1p0pz_shape);    
-    //   plot.AddTH1PlotElement(ztt_1p1pz_shape);    
-    //   plot.AddTH1PlotElement(ztt_3p_shape);    
-    // }
-
-
-    // if (!draw_ss) {
-    //   if (draw_signal) plot.AddTH1PlotElement(signal_shape);
-    //   if (draw_signal && signal_split_vbf) plot.AddTH1PlotElement(signalvbf_shape);
-    // }
-
-    // if (norm_bins) plot.y_axis_title = "dN/dm_{#tau#tau} [1/GeV]";
-    // plot.title_left = "CMS Preliminary " + year_label +", #sqrt{s} = " + (is_2012 ? "8":"7") +" TeV, "+ lumi_data_label;
-    // if (official_style) plot.title_left = std::string("CMS Preliminary, #sqrt{s} = ") + (is_2012 ? "8":"7") + " TeV, L = "+ lumi_data_label;
-    // string cat_app = show_category ? (", "+category) : "";
-    // if (channel == channel::et) plot.title_right = "e#tau_{h}"+cat_app;
-    // if (channel == channel::mt) plot.title_right = "#mu#tau_{h}"+cat_app;
-    // if (channel == channel::mtmet) plot.title_right = "#mu#tau_{h}+MET"+cat_app;
-    // if (channel == channel::em) plot.title_right = "e#mu"+cat_app;
-    // if (mssm_mode == 1) plot.legend_left = 0.45;
-    // if (official_style) plot.title_right = "";
-
-    // plot.draw_ratio_hist = draw_ratio;
-    // plot.draw_signif = false;
-
-    // string background_list = "top_shape+ztt_shape+w_shape+qcd_shape";
-    // if (ztt_by_decay_mode) background_list = "top_shape+ztt_3p_shape+ztt_1p1pz_shape+ztt_1p0pz_shape+w_shape+qcd_shape";
-    // if (channel == channel::et) background_list += "+zll_shape";
-    // ic::RatioPlotElement ratio("Mug","data_shape",background_list);
-    
-    // plot.band_size_fractional_ = band_size_fractional;
-    // plot.draw_band_on_stack_ = draw_band_on_stack;
-    // plot.samples_for_band_ = "top_shape+ztt_shape+w_shape+qcd_shape";
-    // if (ztt_by_decay_mode) plot.samples_for_band_ = "top_shape+ztt_3p_shape+ztt_1p1pz_shape+ztt_1p0pz_shape+w_shape+qcd_shape";
-    // if (channel == channel::et) plot.samples_for_band_ += "+zll_shape";
-
-    // SetStyle(ratio,1);
-    // ratio.set_multi_mode(true);
-    // //plot.ratio_y_axis_title = "#frac{(N_{obs}-N_{exp})}{#sqrt{N_{obs}}}";
-    // plot.ratio_y_axis_title = "Data/MC";
-    // plot.AddRatioPlotElement(ratio);
-    // plot.custom_ratio_y_axis_range = true;
-    // plot.ratio_y_axis_min = 0.5;
-    // plot.ratio_y_axis_max = 1.5;
-    
-    // if (y_axis_min > 0) plot.y_axis_min = y_axis_min;
-    
-    // // // plot.y_axis_min = 5.0;
-    // // if (blind) {
-    // //   agilbert::TextElement text1("Data in ["+boost::lexical_cast<std::string>(x_blind_min)+","+boost::lexical_cast<std::string>(x_blind_max)+"] blinded",0.03, 0.16,0.89);
-    // //   plot.AddTextElement(text1);
-    // // }
-    // // plot.y_axis_min = 5.0;
-    // if (official_style) {
-    //   string ch_label;
-    //   if (channel == channel::et) ch_label = "e#tau_{h}"+cat_app;
-    //   if (channel == channel::mt) ch_label = "#mu#tau_{h}"+cat_app;
-    //   if (channel == channel::mtmet) ch_label = "#mu#tau_{h}+MET"+cat_app;
-    //   if (channel == channel::em) ch_label = "e#mu"+cat_app;
-    //   ic::TextElement text1(ch_label,0.055, 0.21,0.84);
-    //   plot.AddTextElement(text1);
-    // }
-    // ic::TextElement ss_text("Same-sign",0.0,0.19,0.89);
-    // if (draw_ss) plot.AddTextElement(ss_text);
-
-    // if (add_text.size() > 0) {
-    //   std::vector<string> tmp_vec;
-    //   boost::split(tmp_vec, add_text, boost::is_any_of(","));
-    //   if (tmp_vec.size() == 4) {
-    //     ic::TextElement tmp_text(tmp_vec[0], boost::lexical_cast<double>(tmp_vec[1]), boost::lexical_cast<double>(tmp_vec[2]) ,boost::lexical_cast<double>(tmp_vec[3]));
-    //     plot.AddTextElement(tmp_text);
-    //   }
-    // }
-
-
   }
+
+  void HTTPlot::AddTextElement(ic::TextElement & ele) {
+    text_.push_back(ele);
+  }
+
 
 
 
