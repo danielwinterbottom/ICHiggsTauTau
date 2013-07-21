@@ -500,6 +500,8 @@ namespace ic {
           if (ratios_[k].draw_fill()) draw_options += "HIST";
           if (ratios_[k].draw_marker()) draw_options += "P";
           if (ratios_[k].draw_stat_error_y()) draw_options += "E1";
+          if (ratios_[k].draw_options() != "") draw_options = ratios_[k].draw_options();
+
           if (k == 0)
           {
             ratio_ele[k]->GetXaxis()->SetLabelSize(0.10);

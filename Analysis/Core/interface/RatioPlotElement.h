@@ -30,6 +30,7 @@ namespace ic {
       bool draw_stat_error_y_;
       bool draw_bin_width_x_;
       bool multi_mode_;
+      std::string draw_options_;
 
     public:
       RatioPlotElement(std::string name = "no_name");
@@ -56,6 +57,7 @@ namespace ic {
       bool draw_stat_error_y() const { return draw_stat_error_y_; }
       bool draw_bin_width_x() const { return draw_bin_width_x_; }
       bool multi_mode() const { return multi_mode_; }
+      std::string draw_options() const { return draw_options_; }
 
       //Setters
       void set_name(std::string name) { name_ = name; }
@@ -79,6 +81,7 @@ namespace ic {
         draw_bin_width_x_ = draw_bin_width_x;
       }
       void set_multi_mode(bool multi_mode) { multi_mode_ = multi_mode; }
+      void set_draw_options(std::string draw_options) { draw_options_ = draw_options; }
 
 
   };
