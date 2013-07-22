@@ -1237,11 +1237,11 @@ namespace ic {
       if (matches.size() > 0) {
         if (mc_ == mc::fall11_42X) {
           if (fabs(tau_cand[0]->eta()) < 1.5) {
-            if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.87);
-            if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.19);
+            if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 1.142);
+            if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 1.617);
           } else {
-            if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.40);
-            if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.72);
+            if (tau->decay_mode() == 0) eventInfo->set_weight("etau_fakerate", 0.859);
+            if (tau->decay_mode() == 1) eventInfo->set_weight("etau_fakerate", 0.610);
           }
         } else {
           if (era_ == era::data_2012_hcp) {
