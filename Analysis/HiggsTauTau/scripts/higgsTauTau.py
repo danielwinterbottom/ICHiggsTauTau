@@ -157,9 +157,9 @@ if options.proc_data or options.proc_all:
         JOB='Embedded_%s_%s' % (ch,YR)
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_Embedded_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s '
           ' --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
     if ch in ['et', 'mt'] and not options.do_2011:
       for sc in scales:
-        os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
         JOB='RecHit_%s_%s' % (ch,YR)
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_RecHit_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s '
           ' --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
@@ -223,6 +223,7 @@ if options.proc_data or options.proc_all:
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --mass_scale_mode=2 --filelist=%(FILELIST)s_Embedded_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
           --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-2.log" jobs/%(JOB)s-2.sh' % vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-2.sh' % vars())
+      if '0' in scales and not options.do_2011:
         JOB='RecHit_%s_%s' % (ch,YR)
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --mass_scale_mode=2 --filelist=%(FILELIST)s_RecHit_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
           --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-2.log" jobs/%(JOB)s-2.sh' % vars())
@@ -233,6 +234,7 @@ if options.proc_data or options.proc_all:
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --mass_scale_mode=1 --filelist=%(FILELIST)s_Embedded_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
           --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-1.log" jobs/%(JOB)s-1.sh' % vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-1.sh' % vars())
+      if '1' in scales and not options.do_2011:
         JOB='RecHit_%s_%s' % (ch,YR)
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --mass_scale_mode=1 --filelist=%(FILELIST)s_RecHit_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
           --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-1.log" jobs/%(JOB)s-1.sh' % vars())
@@ -243,6 +245,7 @@ if options.proc_data or options.proc_all:
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --mass_scale_mode=3 --filelist=%(FILELIST)s_Embedded_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
           --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-3.log" jobs/%(JOB)s-3.sh' % vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-3.sh' % vars())
+      if '2' in scales and not options.do_2011:
         JOB='RecHit_%s_%s' % (ch,YR)
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --mass_scale_mode=3 --filelist=%(FILELIST)s_RecHit_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s \
           --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-3.log" jobs/%(JOB)s-3.sh' % vars())
