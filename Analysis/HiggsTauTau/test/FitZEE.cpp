@@ -31,8 +31,8 @@ using namespace ic;
 int main(int argc, char* argv[]){
 
   ic::Plot::SetTdrStyle();
-  TH1F data = GetFromTFile<TH1F>("datacard_m_vis_inclusive_et_2012.root", "/eleTau_inclusive", "data_obs");
-  TH1F zee = GetFromTFile<TH1F>("datacard_m_vis_inclusive_et_2012.root", "/eleTau_inclusive", "ZL");
+  TH1F data = GetFromTFile<TH1F>("datacard_m_vis_inclusive_et_2011.root", "/eleTau_inclusive", "data_obs");
+  TH1F zee = GetFromTFile<TH1F>("datacard_m_vis_inclusive_et_2011.root", "/eleTau_inclusive", "ZL");
 
   double data_rate = data.Integral();
   double zee_init_rate = zee.Integral();
@@ -66,11 +66,13 @@ int main(int argc, char* argv[]){
   plot->GetYaxis()->SetTitle("");
   plot->GetXaxis()->SetTitle("m(e#tau)");
   plot->Draw();
-  C.Print("plotZEE.ps");
+  C.Print("plotZEE.pdf");
 
   double fit_frac = yield.getVal();
+  double fit_frac_err = yield.getError();
   double zee_fit_rate = data_rate * fit_frac;
-  std::cout << "Scale factor: " << zee_fit_rate / zee_init_rate << std::endl;
+  double err = (data_rate * fit_frac_err) / zee_init_rate;
+  std::cout << "Scale factor: " << zee_fit_rate / zee_init_rate << " +/- " << err << std::endl;
 
   return 0;
 }
