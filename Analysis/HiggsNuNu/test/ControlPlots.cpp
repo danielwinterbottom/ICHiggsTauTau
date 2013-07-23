@@ -280,7 +280,7 @@ int main(int argc, char* argv[]){
   files.push_back("MC_WW-pythia6-tauola");
   files.push_back("MC_WZ-pythia6-tauola");
   files.push_back("MC_ZZ-pythia6-tauola");
-  files.push_back("MC_DYJJ01JetsToLL_M-50_MJJ-200");
+  //files.push_back("MC_DYJJ01JetsToLL_M-50_MJJ-200");//old ewkz
   files.push_back("MC_W1JetsToLNu_enu");
   files.push_back("MC_W2JetsToLNu_enu");
   files.push_back("MC_W3JetsToLNu_enu");
@@ -311,6 +311,11 @@ int main(int argc, char* argv[]){
   files.push_back("MC_GJets-HT-200To400-madgraph");
   files.push_back("MC_GJets-HT-400ToInf-madgraph");
   files.push_back("MC_VBF_HToZZTo4Nu_M-120");
+  files.push_back("MC_TT-v1");
+  files.push_back("MC_TT-v2");
+  files.push_back("MC_EWK-Z2j");
+  files.push_back("MC_EWK-W2jminus");
+  files.push_back("MC_EWK-W2jplus");
 
 
   //build a list of selections
@@ -464,6 +469,7 @@ int main(int argc, char* argv[]){
     ic::TH1PlotElement VBFZ_hist = ic::TH1PlotElement("VBFZ");
     ic::TH1PlotElement GJets_hist = ic::TH1PlotElement("GJets");
     ic::TH1PlotElement VV_hist = ic::TH1PlotElement("Dibosons");
+    ic::TH1PlotElement ttpowheg_hist = ic::TH1PlotElement("TTBarPowheg");
 
  
     for (unsigned i = 0; i < files.size(); ++i) {
@@ -477,16 +483,21 @@ int main(int argc, char* argv[]){
       SumHistograms(f,plots[nm],"Data_MET0to120",data_qcd_hist);
       SumHistograms(f,plots[nm],"VBF_H",signal_hist);
       SumHistograms(f,plots[nm],"MC_QCD",qcd_hist);
-      SumHistograms(f,plots[nm],"MC_T",top_hist);
+      SumHistograms(f,plots[nm],"MC_TTJets",top_hist);
+      SumHistograms(f,plots[nm],"MC_T-tW",top_hist);
+      SumHistograms(f,plots[nm],"MC_Tbar-tW",top_hist);
+      SumHistograms(f,plots[nm],"MC_TTJets",top_hist);
       SumHistograms(f,plots[nm],"MC_SingleT",top_hist);
-      SumHistograms(f,plots[nm],"MC_TT",ttbar_hist);
+      SumHistograms(f,plots[nm],"MC_TTJets",ttbar_hist);
+      SumHistograms(f,plots[nm],"MC_TT-v",ttpowheg_hist);
       SumHistograms(f,plots[nm],"MC_SingleT",singletop_hist);
       SumHistograms(f,plots[nm],"tW",tW_hist);
+      if (f.find("EWK-Z2j") != f.npos) SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);
       if (f.find("JetsToLL") != f.npos){
-	if (f.find("DYJJ") != f.npos) SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);
-	else SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
+	SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
       }
       SumHistograms(f,plots[nm],"JetsToLNu",WJets_hist);
+      SumHistograms(f,plots[nm],"EWK-W2j",WJets_hist);
       SumHistograms(f,plots[nm],"_enu",WJets_enu_hist);
       SumHistograms(f,plots[nm],"_munu",WJets_munu_hist);
       SumHistograms(f,plots[nm],"_taunu",WJets_taunu_hist);
@@ -495,7 +506,7 @@ int main(int argc, char* argv[]){
       SumHistograms(f,plots[nm],"MC_WW",VV_hist);
       SumHistograms(f,plots[nm],"MC_WZ",VV_hist);
       SumHistograms(f,plots[nm],"MC_ZZ",VV_hist);
-
+      
  
     }//loop on files
 
@@ -662,6 +673,7 @@ int main(int argc, char* argv[]){
       Utilities n_VV = Utilities(Integral(VV_hist.hist_ptr()),Error(VV_hist.hist_ptr()));
       Utilities n_top = Utilities(Integral(top_hist.hist_ptr()),Error(top_hist.hist_ptr()));
       Utilities n_ttbar = Utilities(Integral(ttbar_hist.hist_ptr()),Error(ttbar_hist.hist_ptr()));
+      Utilities n_ttpowheg = Utilities(Integral(ttpowheg_hist.hist_ptr()),Error(ttpowheg_hist.hist_ptr()));
       Utilities n_singletop = Utilities(Integral(singletop_hist.hist_ptr()),Error(singletop_hist.hist_ptr()));
       Utilities n_tW = Utilities(Integral(tW_hist.hist_ptr()),Error(tW_hist.hist_ptr()));
       Utilities n_WJets = Utilities(Integral(WJets_hist.hist_ptr()),Error(WJets_hist.hist_ptr()));
@@ -711,6 +723,7 @@ int main(int argc, char* argv[]){
 		    << "GJets " << n_gjets.roundedNumber() << " " << n_gjets.roundedError() << std::endl
 		    << "Top " << n_top.roundedNumber() << " " << n_top.roundedError() <<  std::endl
 		    << "TTbar " << n_ttbar.roundedNumber() << " " << n_ttbar.roundedError() <<  std::endl
+		    << "TTbarPowheg " << n_ttpowheg.roundedNumber() << " " << n_ttpowheg.roundedError() <<  std::endl
 		    << "SingleTop " << n_singletop.roundedNumber() << " " << n_singletop.roundedError() <<  std::endl
 		    << "TW " << n_tW.roundedNumber() << " " << n_tW.roundedError() <<  std::endl
 		    << "WJets " << n_WJets.roundedNumber() << " " << n_WJets.roundedError() <<  std::endl
