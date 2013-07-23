@@ -269,37 +269,38 @@ int main(int argc, char* argv[]){
 
   HinvPrint hinvFilter("HinvFilter",is_data,true,false);
 
-  if (do_skim && channel==channel::nunu){
-    //fill hinvFilter with events to be skimmed from inputfile
-    std::ifstream levtlist;
-    levtlist.open(eventsToSkim.c_str());
-    if(!levtlist.is_open()){
-      std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
-      return 1; 
-    }
-    unsigned counter = 0;
-    while(1){
-      unsigned lEvt=0;
-      unsigned lRun=0;
-      unsigned lLumi=0;
-      if (is_data) {
-	levtlist>>lRun;
-	levtlist>>lLumi;
-      }
-      levtlist>>lEvt;
-      if (lEvt!=0 || lRun!=0 || lLumi!=0){
-	std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
-	hinvFilter.PrintEvent(lRun,lLumi,lEvt);
-	counter++;
-      }
-      if(levtlist.eof()){
-	break; 
-      }
-    }
+  //COMMENTED OUT FOR OTHER SKIM
+  // if (do_skim && channel==channel::nunu){
+//     //fill hinvFilter with events to be skimmed from inputfile
+//     std::ifstream levtlist;
+//     levtlist.open(eventsToSkim.c_str());
+//     if(!levtlist.is_open()){
+//       std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
+//       return 1; 
+//     }
+//     unsigned counter = 0;
+//     while(1){
+//       unsigned lEvt=0;
+//       unsigned lRun=0;
+//       unsigned lLumi=0;
+//       if (is_data) {
+// 	levtlist>>lRun;
+// 	levtlist>>lLumi;
+//       }
+//       levtlist>>lEvt;
+//       if (lEvt!=0 || lRun!=0 || lLumi!=0){
+// 	std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
+// 	hinvFilter.PrintEvent(lRun,lLumi,lEvt);
+// 	counter++;
+//       }
+//       if(levtlist.eof()){
+// 	break; 
+//       }
+//     }
 
-    std::cout << " - Total of " << counter << " events added to skim." << std::endl;
-    levtlist.close();
-  }
+//     std::cout << " - Total of " << counter << " events added to skim." << std::endl;
+//     levtlist.close();
+//   }
 
   //print the event content
   HinvPrint hinvPrint("HinvPrint",is_data);
@@ -308,7 +309,8 @@ int main(int argc, char* argv[]){
   HinvPrint hinvPrintList("HinvPrintList",is_data,false,true);
 
   bool is_ewkZ = false;
-  if (output_name.find("DYJJ01") != output_name.npos) {
+  //if (output_name.find("DYJJ01") != output_name.npos) {
+  if (output_name.find("EWK-Z2j") != output_name.npos) {
     ignoreLeptons = true;
     is_ewkZ = true;
   }
@@ -1398,45 +1400,48 @@ int main(int argc, char* argv[]){
    else {
      //Build Skimming Analysis
      //analysis.AddModule(pointer to module defined above)
-     if (channel == channel::nunu){
-       analysis.AddModule(&hinvFilter);
-       analysis.AddModule(&jetIDFilter);
+     analysis.AddModule(&dataMCTriggerPathFilter);
 
-       //prepare collections of veto leptons
-       analysis.AddModule(&vetoElectronCopyCollection);
-       analysis.AddModule(&vetoElectronFilter);
-       analysis.AddModule(&vetoElectronIso);
-       analysis.AddModule(&vetoMuonCopyCollection);
-       analysis.AddModule(&vetoMuonFilter);
-       analysis.AddModule(&vetoMuonNoIsoCopyCollection);
-       analysis.AddModule(&vetoMuonNoIsoFilter);
+     //SINGLE EVENT SKIMMING
+     // if (channel == channel::nunu){
+//        analysis.AddModule(&hinvFilter);
+//        analysis.AddModule(&jetIDFilter);
+
+//        //prepare collections of veto leptons
+//        analysis.AddModule(&vetoElectronCopyCollection);
+//        analysis.AddModule(&vetoElectronFilter);
+//        analysis.AddModule(&vetoElectronIso);
+//        analysis.AddModule(&vetoMuonCopyCollection);
+//        analysis.AddModule(&vetoMuonFilter);
+//        analysis.AddModule(&vetoMuonNoIsoCopyCollection);
+//        analysis.AddModule(&vetoMuonNoIsoFilter);
        
-       //filter leptons before making jet pairs and changing MET...
-       analysis.AddModule(&selElectronCopyCollection);
-       analysis.AddModule(&selElectronFilter);
-       analysis.AddModule(&selElectronIso);
-       analysis.AddModule(&selMuonCopyCollection);
-       analysis.AddModule(&selMuonFilter);
-       analysis.AddModule(&elecMuonOverlapFilter);
+//        //filter leptons before making jet pairs and changing MET...
+//        analysis.AddModule(&selElectronCopyCollection);
+//        analysis.AddModule(&selElectronFilter);
+//        analysis.AddModule(&selElectronIso);
+//        analysis.AddModule(&selMuonCopyCollection);
+//        analysis.AddModule(&selMuonFilter);
+//        analysis.AddModule(&elecMuonOverlapFilter);
    
-       //filter jets
-       analysis.AddModule(&jetPtEtaFilter);
+//        //filter jets
+//        analysis.AddModule(&jetPtEtaFilter);
 
-       //deal with removing overlap with selected leptons
-       analysis.AddModule(&jetMuonOverlapFilter);
-       analysis.AddModule(&jetElecOverlapFilter);
+//        //deal with removing overlap with selected leptons
+//        analysis.AddModule(&jetMuonOverlapFilter);
+//        analysis.AddModule(&jetElecOverlapFilter);
      
-       //two-leading jet pair production before plotting
-       analysis.AddModule(&jjLeadingPairProducer);
-       analysis.AddModule(&hinvPrint);
-       //analysis.AddModule(&jetPtEtaFilter);
-       //analysis.AddModule(&metCut);
-       //analysis.AddModule(&jjPairProducer);
-       //analysis.AddModule(&looseMassJetPairFilter);
-     }
-     else if (!is_data){
-       analysis.AddModule(&WtoLeptonFilter);
-     }
+//        //two-leading jet pair production before plotting
+//        analysis.AddModule(&jjLeadingPairProducer);
+//        analysis.AddModule(&hinvPrint);
+//        //analysis.AddModule(&jetPtEtaFilter);
+//        //analysis.AddModule(&metCut);
+//        //analysis.AddModule(&jjPairProducer);
+//        //analysis.AddModule(&looseMassJetPairFilter);
+//      }
+//      else if (!is_data){
+//        analysis.AddModule(&WtoLeptonFilter);
+//      }
    }
    // Run analysis
    
