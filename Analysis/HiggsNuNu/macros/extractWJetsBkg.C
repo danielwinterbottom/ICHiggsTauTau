@@ -50,7 +50,8 @@ struct efficiency{
 
   double error() const{
     if (den.number==0) return 0;
-    return 1/den.number*sqrt(num.number*(1-eff()));
+    //return 1/den.number*sqrt(num.number*(1-eff()));
+    return eff()*sqrt(pow(num.error/num.number,2)+pow(den.error/den.number,2)-2*(num.error*den.error/(num.number*den.number)));
   }
 
 };
@@ -145,13 +146,13 @@ int extractWJetsBkg(){//main
   std::string lSuffix[nWeights] = {"","_pu","_puUp","_puDown","_pu_trig","_pu_trig_idiso"};
 
   bool doTaus = true;
-  bool docrosschecktau=true;
+  bool docrosschecktau=false;
   bool dojes = false;
   bool dojer = false;
   bool doWeights = false;
 
   //std::string TOPDIR = "../TABLES_mjj1200/";
-  std::string TOPDIR = "../TABLES/";
+  std::string TOPDIR = "../oldanalysisruns/080713_taunominaltightlepiddiscr/TABLES/";
 
   const unsigned nSteps = lSelVecSignal.size();
 
@@ -340,7 +341,7 @@ int extractWJetsBkg(){//main
 
 	  events result = nDataW;
 	  result.number = nDataW.number*lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number;
-	  result.error = result.number*sqrt(pow(nDataW.error/nDataW.number,2)+pow(lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].error/lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number,2));
+	  result.error = result.number*sqrt(pow(nDataW.error/nDataW.number,2));//+pow(lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].error/lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number,2));
 
 	  events crosscheck = result_nocjv;
 	  crosscheck.number = result_nocjv.number*eps_tau_cjv.eff();
@@ -348,7 +349,8 @@ int extractWJetsBkg(){//main
 
 	  double totsyst=0.;
 	  double wenusyst=0.;
-	  double multsyst=sqrt(pow(eps_tau.error()/eps_tau.eff(),2)+pow(eps_tau_cjv.error()/eps_tau_cjv.eff(),2)+pow(0.08,2))*result.number;
+	  double multsyst=sqrt(pow(lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].error/lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number,2)+pow(0.08,2))*result.number;//sqrt(pow(eps_tau.error()/eps_tau.eff(),2)+pow(eps_tau_cjv.error()/eps_tau_cjv.eff(),2)+pow(0.08,2))*result.number;
+	  //double multsyst=0.08*result.number;
 	  if(!docrosschecktau){
 	    wenusyst=lSel[3][DPhiSIGNAL_noCJV][WJets_enu].number;
 	    totsyst=sqrt(pow(multsyst,2)+pow(wenusyst,2));
@@ -361,8 +363,12 @@ int extractWJetsBkg(){//main
 		    << "nData = $" << nData.number  << "\\pm " << nData.error  << "$" << std::endl
 		    << "nBkg = $" << nBkg.number  << "\\pm " << nBkg.error  << "$" << std::endl
 		    << "eff_tau = " << eps_tau << std::endl
+	            << eps_tau.num <<std::endl
+	            << eps_tau.den <<std::endl
 		    << "*** result no CJV = $" << result_nocjv.number  << "\\pm " << result_nocjv.error << "$" << std::endl
 		    << "eff_tau_cjv = " << eps_tau_cjv << std::endl
+	            << eps_tau_cjv.num <<std::endl
+	            << eps_tau_cjv.den <<std::endl
 		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \\pm " << totsyst<< "$" << std::endl
 		    << "***crosscheck = $" << crosscheck.number << "\\pm " << crosscheck.error << "$" << std::endl
 	            << "***syst breakdown:"<<std::endl
