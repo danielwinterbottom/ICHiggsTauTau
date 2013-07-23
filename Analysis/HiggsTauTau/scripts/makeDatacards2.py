@@ -324,6 +324,56 @@ if options.scheme == 'new_sm':
   ANA = 'sm'
 
 #################################################################
+#### Control Plots
+#################################################################
+if options.scheme == 'control_plots':
+  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
+  extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.681"'
+  if COM=='8': extra_channel["em"] += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
+  extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mtmet"] += ' --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'
+  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
+  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
+  scheme_et = [
+    ("8",   "inclusive",                "0jet_low",              BINS_FINE,  ""),
+    ("2",   "twojet",                   "vbf_loose",             BINS,      (' --set_alias="w_shape_os:1"')),
+    ("2",   "twojet",                   "vbf",                   BINS,      (' --set_alias="w_shape_os:1"')),
+    ("2",   "1jet",                     "1jet_medium",           BINS_FINE, (' --set_alias="w_shape_os:1"'))
+  ]
+  scheme_mt = [
+    ("8",   "inclusive",                "0jet_low",              BINS_FINE,  ""),
+    ("2",   "twojet",                   "vbf_loose",             BINS,      (' --set_alias="w_shape_os:1"')),
+    ("2",   "twojet",                   "vbf",                   BINS,      (' --set_alias="w_shape_os:1"')),
+    ("2",   "1jet",                     "1jet_medium",           BINS_FINE, (' --set_alias="w_shape_os:1" --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'))
+  ]
+  scheme_mtmet = [
+    ("8",   "inclusive",                "inclusive",              BINS_FINE,  ' --syst_l1met=CMS_L1etm_mutausoft_inclusive_8TeV'),
+    ("2",   "twojet",                   "vbf",                    BINS, (
+      ' --syst_l1met=CMS_L1etm_mutausoft_vbf_8TeV'
+      ' --set_alias="w_shape_os:1"')),
+    ("2",   "1jet",                     "1jet_medium",            BINS_FINE, (
+      ' --syst_l1met=CMS_L1etm_mutausoft_1jet_medium_8TeV'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutausoft_1jet_medium_'+COM+'TeV"'
+      ' --set_alias="w_shape_os:1" '
+      ' --qcd_os_ss_factor=1.098'))
+  ]
+  scheme_em = [
+    ("8",   "inclusive",       "0jet_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("2",   "twojet",          "vbf_loose", BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("2",   "twojet",          "vbf",       BINS,      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("2",   "1jet",            "1jet_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+    'mtmet' : 'mt_default',
+    'em' : 'em_default'
+  }
+  sig_scheme = 'sm_default'
+  ANA = 'sm'
+
+#################################################################
 #### Old MSSM scheme
 #################################################################
 if options.scheme == 'old_mssm':

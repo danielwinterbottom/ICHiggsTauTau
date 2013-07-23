@@ -874,7 +874,7 @@ int main(int argc, char* argv[]){
     }
     if (mc == mc::summer12_53X && strategy == strategy::paper2013) {
       httWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
-      httWeights.SetWInputYields(76102995.0, 52926398.0, 64738774.0, 15539503.0, 13382803.0);
+      httWeights.SetWInputYields(76102995.0, 52926398.0, 64738774.0, 30780647.0, 13382803.0);
     }
   }
   if (output_name.find("DYJets") != output_name.npos && output_name.find("Soup") != output_name.npos) {

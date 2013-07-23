@@ -21,7 +21,6 @@ __init__.py
 *.pyc
 
 # filelist folders
-#filelists/
 jobs/
 *.root
 *.png
