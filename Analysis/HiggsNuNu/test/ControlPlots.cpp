@@ -314,8 +314,12 @@ int main(int argc, char* argv[]){
   files.push_back("MC_TT-v1");
   files.push_back("MC_TT-v2");
   files.push_back("MC_EWK-Z2j");
-  files.push_back("MC_EWK-W2jminus");
-  files.push_back("MC_EWK-W2jplus");
+  files.push_back("MC_EWK-W2jminus_enu");
+  files.push_back("MC_EWK-W2jplus_enu");
+  files.push_back("MC_EWK-W2jminus_munu");
+  files.push_back("MC_EWK-W2jplus_munu");
+  files.push_back("MC_EWK-W2jminus_taunu");
+  files.push_back("MC_EWK-W2jplus_taunu");
 
 
   //build a list of selections
