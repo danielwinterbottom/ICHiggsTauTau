@@ -16,42 +16,43 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfigMC.cfg
 PRODUCTION=Apr04
 
-for METCUT in 130
+for METCUT in 130 #0 130
   do
   for CHANNEL in nunu enu munu taunu
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-      JOBDIR=jobs/$CHANNEL/MET$METCUT/
-      OUTPUTPREFIX=output
+      JOBDIRPREFIX=jobs
+      JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
+      OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=true --jesupordown=true --dojersyst=false"
-	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESUP/
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JESUP/
 	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JESUP/
       fi
       
       if [ "$SYST" = "JESDOWN" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=true --jesupordown=false --dojersyst=false"
-	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JESDOWN/
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JESDOWN/
 	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JESDOWN/
       fi
 
       if [ "$SYST" = "JERBETTER" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=true"
-	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JERBETTER/
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JERBETTER/
 	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JERBETTER/
       fi
 
       if [ "$SYST" = "JERWORSE" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
-	  JOBDIR=jobs/$CHANNEL/MET$METCUT/JERWORSE/
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
 	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
       fi
 
@@ -87,14 +88,24 @@ for METCUT in 130
 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
 	  
 	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
-	  
-	  rm tmp.txt tmp2.txt
-	  
+
 	  echo "JOB name = $JOB"
-	  
-	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	  $JOBSUBMIT $JOBDIR/$JOB.sh
-	  
+
+	  grep "EWK-W2j" tmp.txt
+	  if (( "$?" == 0 )); then
+	      for FLAVOUR in enu munu taunu
+		do
+		WJOB=$JOB"_"$FLAVOUR
+		
+		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+                $JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
+	      done
+	  else  
+	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	      $JOBSUBMIT $JOBDIR/$JOB.sh
+	  fi
+	  rm tmp.txt tmp2.txt
+
 	done
 	
 	
@@ -122,7 +133,8 @@ for METCUT in 130
 	  
 	  echo "JOB name = $JOB"
 	  
-	  grep "JetsToLNu" tmp.txt
+	  
+	  grep  "JetsToLNu" tmp.txt
 	  if (( "$?" == 0 )); then
 	      for FLAVOUR in enu munu taunu
 		do
@@ -138,7 +150,7 @@ for METCUT in 130
 		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
 		$JOBSUBMIT $JOBDIR/$WJOB.sh
 	      done
-	  else 
+	  else  
 	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	      $JOBSUBMIT $JOBDIR/$JOB.sh
 	  fi
