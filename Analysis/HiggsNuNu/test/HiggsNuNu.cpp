@@ -308,11 +308,11 @@ int main(int argc, char* argv[]){
   //print run,lumi,evt of events selected
   HinvPrint hinvPrintList("HinvPrintList",is_data,false,true);
 
-  bool is_ewkZ = false;
+  //bool is_ewkZ = false;
   //if (output_name.find("DYJJ01") != output_name.npos) {
-  if (output_name.find("EWK-Z2j") != output_name.npos) {
+  if (output_name.find("EWK-Z2jiglep") != output_name.npos) {
     ignoreLeptons = true;
-    is_ewkZ = true;
+    //is_ewkZ = true;
   }
 
   string data_json;
@@ -760,8 +760,8 @@ int main(int argc, char* argv[]){
   MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut,met_cut_max);
   MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut,met_cut_max);
 
-  if (is_ewkZ)  mettype="metNoENoMu";
-  else if (ignoreLeptons) mettype="metNoMuons";
+  //if (is_ewkZ)  mettype="metNoENoMu";
+  if (ignoreLeptons) mettype="metNoMuons";
   MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut,met_cut_max);
 
   //------------------------------------------------------------------------------------
@@ -1170,7 +1170,7 @@ int main(int argc, char* argv[]){
      if (output_name.find("JetsToLNu") != output_name.npos) {
        if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
      }
-     if (ignoreLeptons && !is_ewkZ) analysis.AddModule(&ZmassFilter);
+     if (ignoreLeptons) analysis.AddModule(&ZmassFilter);
      analysis.AddModule(&pileupWeight);
      analysis.AddModule(&pileupWeight_up);
      analysis.AddModule(&pileupWeight_down);
