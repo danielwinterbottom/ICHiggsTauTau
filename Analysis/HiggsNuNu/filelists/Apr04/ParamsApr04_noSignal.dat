@@ -22,6 +22,8 @@ XS_MC_WZ-pythia6-tauola:33.21
 XS_MC_ZZ-pythia6-tauola:17.654
 XS_MC_DYJJ01JetsToLL_M-50_MJJ-200:1.4
 ## W and Z already reweighted by fractions: use NNLO xs
+XS_MC_TT-v1:211.0
+XS_MC_TT-v2:211.0
 XS_MC_W1JetsToLNu:37509
 XS_MC_W2JetsToLNu:37509
 XS_MC_W3JetsToLNu:37509
@@ -86,6 +88,8 @@ EVT_Data_MET-2012C-PromptReco-v2:1.0
 EVT_Data_MET-2012D-PromptReco-v1:1.0
 EVT_Data_MET-2012D-PromptReco-v1_7_269fb:1.0
 EVT_MC_TTJets:6923750.0
+EVT_MC_TT-v1:28150723
+EVT_MC_TT-v2:28150723
 EVT_MC_T-tW:497658.0
 EVT_MC_Tbar-tW:493460.0
 EVT_MC_SingleT-s-powheg-tauola:259961.0
