@@ -34,12 +34,16 @@ namespace ic {
           central_shift = 1.00;
         } else if (dm == 1 || dm == 2) {
           if (strategy_ == strategy::paper2013) {
-            central_shift = 1.025 + 0.001 * TMath::Min(TMath::Max(pt-45. ,0.),10.0);
+            central_shift = 1.012;
           } else {
             central_shift = 1.015 + 0.001 * TMath::Min(TMath::Max(pt-45. ,0.),10.0);
           }
         } else if (dm == 10) {
-          central_shift = 1.012 + 0.001 * TMath::Min(TMath::Max(pt-32. ,0.),18.0);
+          if (strategy_ == strategy::paper2013) {
+            central_shift = 1.012;
+          } else {
+            central_shift = 1.012 + 0.001 * TMath::Min(TMath::Max(pt-32. ,0.),18.0);
+          }
         }
       } else {
         central_shift = 1.00;
