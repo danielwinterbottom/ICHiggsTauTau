@@ -336,6 +336,25 @@ namespace ic {
       bkg_element.set_draw_options("e2");
       plot.AddTH1PlotElement(err_element);
       plot.AddTH1PlotElement(bkg_element);
+    } else {
+        bkg_total = *((TH1F*)bkg_elements[0].hist_ptr()->Clone());
+        for (unsigned i = 1; i < bkg_elements.size(); ++i) {
+          bkg_total.Add(bkg_elements[i].hist_ptr());
+        }
+        for (unsigned i = 1; i <= unsigned(bkg_total.GetNbinsX()); ++i) {
+          bkg_total.SetBinError(i, 0.0);
+        }
+        bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
+        bkg_element.set_marker_size(0);
+        bkg_element.set_fill_color(1);
+        bkg_element.set_fill_style(0);
+        bkg_element.set_line_width(1);
+        bkg_element.set_draw_stat_error_y(true);
+        bkg_element.set_draw_fill(true);
+        bkg_element.set_draw_line(false);
+        bkg_element.set_draw_marker(false);
+        bkg_element.set_draw_options("e2");
+        plot.AddTH1PlotElement(bkg_element);
     }
 
     ic::RatioPlotElement ratio("ratio","data","bkg_shape");
