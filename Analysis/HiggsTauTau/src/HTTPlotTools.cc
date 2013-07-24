@@ -26,6 +26,13 @@ namespace ic {
       PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZL","ZJ"}  , kAzure  + 2),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange - 4)
     };
+    bkg_schemes_["et_zll"] = {
+      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}      , kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       , kBlue   - 8),
+      PlotBkgComponent("ewk","electroweak"          ,{"W","VV"}   , kRed    + 2),
+      PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZLL"}      , kAzure  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange - 4)
+    };
     bkg_schemes_["mt_default"] = {
       PlotBkgComponent("qcd","QCD"                  ,{"QCD"}              ,kMagenta-10),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}               ,kBlue   - 8),

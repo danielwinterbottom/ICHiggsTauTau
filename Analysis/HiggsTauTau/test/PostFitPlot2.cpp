@@ -115,7 +115,7 @@ int main(int argc, char* argv[]){
 
   string catstring = "";
   for (unsigned i = 0; i < v_columns.second.size(); ++i) catstring += v_columns.second.at(i);
-  plot.set_plot_name((postfit ? "postfit_":"prefit_") + channel + "_" + catstring);
+  plot.set_plot_name((postfit ? "postfit_":"prefit_") + channel + "_" + catstring + "_" + eras);
 
   if (mssm) {
     double d_mass = boost::lexical_cast<double>(signal_mass);

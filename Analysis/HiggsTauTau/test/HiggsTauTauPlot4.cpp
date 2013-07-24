@@ -477,14 +477,15 @@ int main(int argc, char* argv[]){
 	// Shift tau energy scale
 	// ************************************************************************
 	if (shift_tscale != 0.0) {
-		std::cout << "[HiggsTauTauPlot4] Shifting tau energy scale by pull: " << shift_tscale << std::endl;
-		TH1F ztt_central = hmap["ZTT"].first;
-		TH1F ztt_down = hmap["ZTT_"+syst_tau_scale+"Down"].first;
-		TH1F ztt_up = hmap["ZTT_"+syst_tau_scale+"Up"].first;
+		std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
+		std::cout << "[HiggsTauTauPlot4] Shifting energy scale by pull: " << shift_tscale << std::endl;
+		TH1F ztt_central = hmap[ztt_label].first;
+		TH1F ztt_down = hmap[ztt_label+"_"+syst_tau_scale+"Down"].first;
+		TH1F ztt_up = hmap[ztt_label+"_"+syst_tau_scale+"Up"].first;
 		ztt_down.Scale(Integral(&ztt_central) / Integral(&ztt_down));
 		ztt_up.Scale(Integral(&ztt_central) / Integral(&ztt_up));
 		ic::VerticalMorph(&ztt_central, &ztt_up, &ztt_down, shift_tscale);
-		hmap["ZTT"].first = ztt_central;
+		hmap[ztt_label].first = ztt_central;
 	}
 
 	// ************************************************************************

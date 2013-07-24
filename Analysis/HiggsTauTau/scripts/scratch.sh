@@ -364,4 +364,49 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 --outname="emu_btag.pdf"
 
 
+./bin/PrintShifts --channel=et --selection="inclusive:0" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
+./bin/PrintShifts --channel=et --selection="1jet:3" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
+./bin/PrintShifts --channel=et --selection="twojet:6" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
+./bin/PrintShifts --channel=mt --selection="inclusive:0" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
+./bin/PrintShifts --channel=mt --selection="1jet:3" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
+./bin/PrintShifts --channel=mt --selection="twojet:6" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
+./bin/PrintShifts --channel=em --selection="inclusive:0" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
+./bin/PrintShifts --channel=em --selection="1jet:2" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
+./bin/PrintShifts --channel=em --selection="twojet:4" --eras="8TeV" \
+  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
+  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
+  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
+
 

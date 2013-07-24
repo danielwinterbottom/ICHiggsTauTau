@@ -185,14 +185,14 @@ if options.scheme == 'thesis_sm':
 #### New SM scheme
 #################################################################
 if options.scheme == 'new_sm':
+  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
+  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.681"'
   if COM=='8': extra_channel["em"] += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'
-  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
-  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   scheme_et = [
     ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),
     ("5",   "new_vbf",                  "vbf",                    BINS,       (
@@ -294,31 +294,35 @@ if options.scheme == 'new_sm':
       ' --set_alias="QCD_Shape_Sample:Special_4_Data"'))
   ]
   scheme_em = [
-    ("8",   "inclusive",    "inclusive",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("5",   "vbf",          "vbf",        BINS,      (
-      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
-      ' --set_alias="vbf_no_cjv:(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)"'
-      ' --set_alias="vbf_loose:(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)"')),
-    ("5",   "new_vbf_loose","vbf_loose",  BINS,      (
-      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
-      ' --set_alias="vbf_no_cjv:(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)"'
-      ' --set_alias="vbf_loose:(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)"')),
-    ("5",   "new_vbf_tight","vbf_tight",  BINS,      (
-      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
-      ' --set_alias="vbf_no_cjv:(n_jets>=2 && mjj>500. && jdeta>3.5 && pt_tt>100.)"'
-      ' --set_alias="vbf_loose:(n_jets>=2 && mjj>500. && jdeta>3.5 && pt_tt>100.)"')),
-    ("0",   "0jet_low",     "0jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("1",   "0jet_high",    "0jet_high",  BINS_FINE, (
-      (' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')+
-      ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"')),
-    ("2",   "1jet_low",     "1jet_low",   BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("3",   "1jet_high",    "1jet_high",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')
+    ("8",   "inclusive",    "inclusive",              BINS_FINE, (
+        ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
+    ("5",   "new_vbf_loose","vbf_loose",              BINS,      (
+        ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
+        ' --set_alias="vbf_no_cjv:(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)"'
+        ' --set_alias="vbf_loose:(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)"')),
+    ("5",   "vbf",          ("vbf" if COM=='8' else "vbf_loose"), BINS,      (
+        ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
+        ' --set_alias="vbf_no_cjv:(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)"'
+        ' --set_alias="vbf_loose:(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)"')),
+    ("5",   "new_vbf_tight","vbf_tight",              BINS,      (
+        ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
+        ' --set_alias="vbf_no_cjv:(n_jets>=2 && mjj>500. && jdeta>3.5 && pt_tt>100.)"'
+        ' --set_alias="vbf_loose:(n_jets>=2 && mjj>500. && jdeta>3.5 && pt_tt>100.)"')),
+    ("0",   "0jet_low",     "0jet_low",             BINS_FINE, (
+        ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
+    ("1",   "0jet_high",    "0jet_high",            BINS_FINE, (
+        (' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')+
+        ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"')),
+    ("2",   "1jet_low",     "1jet_low",             BINS_FINE, (
+        ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
+    ("3",   "1jet_high",    "1jet_high",            BINS_FINE, (
+        ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'))
   ]
   bkg_schemes = {
-    'et' : 'et_default',
-    'mt' : 'mt_with_zmm',
+    'et'    : 'et_default',
+    'mt'    : 'mt_with_zmm',
     'mtmet' : 'mt_default',
-    'em' : 'em_default'
+    'em'    : 'em_default'
   }
   sig_scheme = 'sm_default'
   ANA = 'sm'
@@ -379,8 +383,6 @@ if options.scheme == 'control_plots':
 if options.scheme == 'old_mssm':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500"
-  # extra_global += ' --add_extra_binning="(150,0,1500):_fine_binning"'
-  # extra_global += ' --add_sm_background="125"'
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
