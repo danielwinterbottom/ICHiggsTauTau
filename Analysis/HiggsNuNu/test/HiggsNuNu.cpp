@@ -33,6 +33,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MCFMStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWJetsPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
@@ -103,6 +104,8 @@ int main(int argc, char* argv[]){
   bool printEventList;  //print run,lumi,evt of events selected
   bool printEventContent; //print event content of events selected
 
+  bool doMCFMstudy;
+
   std::string eventsToSkim; //name of input file containing run,lumi,evt of events to be skimmed
 
  // Load the config
@@ -152,7 +155,8 @@ int main(int argc, char* argv[]){
     ("doaltmatch",          po::value<bool>(&doaltmatch)->default_value(false))
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
-    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"));
+    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
+    ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -266,6 +270,8 @@ int main(int argc, char* argv[]){
   // Misc Modules
   // ------------------------------------------------------------------------------------
   
+  MCFMStudy mcfmStudy = MCFMStudy("MCFMStudy",13,75,105);
+
 
   HinvPrint hinvFilter("HinvFilter",is_data,true,false);
 
@@ -1164,6 +1170,12 @@ int main(int argc, char* argv[]){
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
 
+  if (doMCFMstudy) {
+    analysis.AddModule(&mcfmStudy);
+  }
+  else {
+
+
   //if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
    if (!is_data && !do_skim)       {
      //do W streaming to e,mu,tau
@@ -1444,6 +1456,8 @@ int main(int argc, char* argv[]){
 //        analysis.AddModule(&WtoLeptonFilter);
 //      }
    }
+
+  }
    // Run analysis
    
    analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
