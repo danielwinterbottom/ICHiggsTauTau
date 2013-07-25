@@ -20,7 +20,7 @@ PRODUCTION=Apr04
 
 for METCUT in 130
   do
-  for CHANNEL in nunu enu munu taunu
+  for CHANNEL in nunu enu munu taunu mumu
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
       do

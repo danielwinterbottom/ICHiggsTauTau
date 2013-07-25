@@ -1167,7 +1167,8 @@ int main(int argc, char* argv[]){
   //if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
    if (!is_data && !do_skim)       {
      //do W streaming to e,mu,tau
-     if (output_name.find("JetsToLNu") != output_name.npos) {
+     if (output_name.find("JetsToLNu") != output_name.npos ||
+	 output_name.find("EWK-W2j") != output_name.npos) {
        if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
      }
      if (ignoreLeptons) analysis.AddModule(&ZmassFilter);
