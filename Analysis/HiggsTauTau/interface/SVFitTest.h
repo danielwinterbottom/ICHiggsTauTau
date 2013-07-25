@@ -60,7 +60,6 @@ class SVFitTest : public ModuleBase {
   // std::map<std::string, double> mass_map;
   // We map from a combined hash of the run,ls,event to a the lepton+met hash and the mass value
   std::map<tri_unsigned, std::pair<std::size_t,double> > mass_map;
-  std::map<tri_unsigned, std::pair<std::size_t,double> >::const_iterator mass_map_const_it;
   // And a similar map from a combined hash of the run,ls,event to a the lepton+met hash and the higgs 4-vector
   std::map<tri_unsigned, std::pair<std::size_t,Candidate> > p4_map;
  

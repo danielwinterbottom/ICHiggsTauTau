@@ -23,7 +23,8 @@ namespace ic {
     NSVfitStandaloneAlgorithm algo(measuredTauLeptons, met_vec, covMET, 0);
     algo.addLogM(false);
     #if defined(__CMSSW_5_3_7__)
-      algo.integrateMarkovChain();
+      algo.integrateVEGAS();
+      // algo.integrateMarkovChain();
     #else
       algo.integrate();
     #endif
@@ -43,7 +44,8 @@ namespace ic {
     NSVfitStandaloneAlgorithm algo(measuredTauLeptons, met_vec, covMET, 0);
     algo.addLogM(false);
     #if defined(__CMSSW_5_3_7__)
-      algo.integrateMarkovChain();
+      algo.integrateVEGAS();
+      // algo.integrateMarkovChain();
     #else
       algo.integrate();
     #endif
@@ -65,7 +67,8 @@ namespace ic {
     Candidate fitresult;
 
     #if defined(__CMSSW_5_3_7__)
-      algo.integrateMarkovChain();
+      algo.integrateVEGAS();
+      // algo.integrateMarkovChain();
       fitresult.set_vector(ROOT::Math::PtEtaPhiEVector(algo.fittedDiTauSystem()));
     #else
       algo.integrate();
@@ -89,7 +92,8 @@ namespace ic {
     Candidate fitresult;
 
     #if defined(__CMSSW_5_3_7__)
-      algo.integrateMarkovChain();
+      algo.integrateVEGAS();
+      // algo.integrateMarkovChain();
       fitresult.set_vector(ROOT::Math::PtEtaPhiEVector(algo.fittedDiTauSystem()));
     #else
       algo.integrate();

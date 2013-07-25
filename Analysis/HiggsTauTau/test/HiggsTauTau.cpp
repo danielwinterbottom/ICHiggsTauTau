@@ -946,7 +946,7 @@ int main(int argc, char* argv[]){
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(1)
     .set_require_inputs_match(false)
-    .set_split(7000)
+    .set_split(10000)
     .set_dilepton_label("emtauCandidates")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder);

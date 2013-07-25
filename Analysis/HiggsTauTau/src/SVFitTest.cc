@@ -109,8 +109,8 @@ namespace ic {
           otree->SetBranchAddress("svfit_vector"  , &svfit_vector);
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
-            // mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
-            p4_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, *svfit_vector);
+            mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
+            // p4_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, *svfit_vector);
           }
           ofile->Close();
           delete ofile;
@@ -167,16 +167,16 @@ int SVFitTest::Execute(TreeEvent *event) {
   }
 
   if (run_mode_ == 2) {
-    // mass_map_const_it it = mass_map.find(event_hash);
-    auto it = p4_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
+    // auto it = p4_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
+    auto it = mass_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
     bool fail_state = false;
-    if (it != p4_map.end()) {
+    if (it != mass_map.end()) {
       ;
       if (require_inputs_match_ && it->second.first != objects_hash) {
         fail_state = true;
       } else {
-        event->Add("svfitMass", it->second.second.M());
-        event->Add("svfitHiggs", it->second.second);
+        event->Add("svfitMass", it->second.second);
+        //event->Add("svfitHiggs", it->second.second);
       }
     } else {
       fail_state = true;
