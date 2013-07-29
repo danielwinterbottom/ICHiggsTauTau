@@ -641,6 +641,14 @@ int main(int argc, char* argv[]){
                         || (output_name.find("Embedded")              != output_name.npos)
                         || (output_name.find("RecHit")                != output_name.npos) );
 
+  // At Moriond we correct the tau ES in  all "real tau" samples
+  // For the paper, we only correct the embedded samples.
+  bool correct_es_sample = real_tau_sample;
+  if (era == era::data_2012_rereco) {
+    correct_es_sample  = ( (output_name.find("Embedded")              != output_name.npos)
+                        || (output_name.find("RecHit")                != output_name.npos) );
+  }
+
   TauDzFixer tauDzFixer("TauDzFixer");
 
   double tau_shift = 1.0;
@@ -660,7 +668,7 @@ int main(int argc, char* argv[]){
     .set_shift(tau_shift)
     .set_strategy(strategy)
     .set_moriond_corrections(false);
-    if (real_tau_sample) httEnergyScale.set_moriond_corrections(moriond_tau_scale);
+    if (correct_es_sample) httEnergyScale.set_moriond_corrections(moriond_tau_scale);
   
 
   SimpleFilter<Tau> tauPtEtaFilter = SimpleFilter<Tau>("TauPtEtaFilter")
