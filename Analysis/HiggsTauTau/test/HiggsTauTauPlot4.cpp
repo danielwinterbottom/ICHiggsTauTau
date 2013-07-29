@@ -37,6 +37,7 @@ int main(int argc, char* argv[]){
 	string syst_qcd_shape;
 	string syst_fakes_shape;
 	string syst_ggh_pt;
+	string syst_zl_shift;
 	string add_sm_background;
 	double sub_ztt_top_frac;
 	double shift_tscale;
@@ -78,6 +79,7 @@ int main(int argc, char* argv[]){
 	  ("syst_qcd_shape",      po::value<string>(&syst_qcd_shape)->default_value(""))
 	  ("syst_fakes_shape",    po::value<string>(&syst_fakes_shape)->default_value(""))
 	  ("syst_ggh_pt",    			po::value<string>(&syst_ggh_pt)->default_value(""))
+	  ("syst_zl_shift",    		po::value<string>(&syst_zl_shift)->default_value(""))
 	  ("add_sm_background",   po::value<string>(&add_sm_background)->default_value(""))
 	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
 	  ("shift_tscale",    		po::value<double>(&shift_tscale)->default_value(0.0))
@@ -312,30 +314,62 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Generate low-mass shifted QCD histograms & systematics
 	// ************************************************************************
+	// Specifiy this with parameters:
+	// "name:xmax:central:band"
 	if (syst_qcd_shape != "") {
-		std::cout << "[HiggsTauTauPlot4] Adding QCD low-mass shape systematic..." << std::endl;
-	  TH1F h1 = hmap["QCD"].first;
-	  TH1F h2 = hmap["QCD"].first;
-	  TH1F h3 = hmap["QCD"].first;
-	  float x, y, c, cUp, cDown;
-	  for(int i=1;i<h1.GetNbinsX();++i){
-	    x = h1.GetXaxis()->GetBinCenter(i);
-	    if(x < (is_2012 ? 70 : 50) ){
-	      y = h1.GetBinContent(i);
-	      c = 1.15; 
-	      cUp = 1.3;
-	      cDown = 1.0;
-	      h1.SetBinContent(i,y*c);
-	      h2.SetBinContent(i,y*cUp);
-	      h3.SetBinContent(i,y*cDown);
-	    }  
-	  }
-	  SetNorm(&h1, hmap["QCD"].second.first); // this isn't exactly readable code
-	  SetNorm(&h2, hmap["QCD"].second.first);
-	  SetNorm(&h3, hmap["QCD"].second.first);
-	  hmap["QCD"].first = h1;
-	  hmap["QCD_"+syst_qcd_shape+"Up"].first = h2;
-	  hmap["QCD_"+syst_qcd_shape+"Down"].first = h3;
+		vector<string> sub_strings;
+		boost::split(sub_strings, syst_qcd_shape, boost::is_any_of(":"));
+		if (sub_strings.size() == 4) {
+			string syst_qcd_name 		= sub_strings[0];
+			double syst_qcd_xmax 		= boost::lexical_cast<double>(sub_strings[1]);
+			double syst_qcd_central = boost::lexical_cast<double>(sub_strings[2]);
+			double syst_qcd_band 		= boost::lexical_cast<double>(sub_strings[3]);
+			std::cout << "[HiggsTauTauPlot4] Adding QCD low-mass shape systematic..." << std::endl;
+			std::cout << boost::format(param_fmt()) % "name" % syst_qcd_name;
+			std::cout << boost::format(param_fmt()) % "xmax" % syst_qcd_xmax;
+			std::cout << boost::format(param_fmt()) % "central" % syst_qcd_central;
+			std::cout << boost::format(param_fmt()) % "uncertainty" % syst_qcd_band;
+		  TH1F h1 = hmap["QCD"].first;
+		  TH1F h2 = hmap["QCD"].first;
+		  TH1F h3 = hmap["QCD"].first;
+		  float x, y;
+		  for(int i=1;i<h1.GetNbinsX();++i){
+		    x = h1.GetXaxis()->GetBinCenter(i);
+		    if(x < syst_qcd_xmax){
+		      y = h1.GetBinContent(i);
+		      h1.SetBinContent(i,y*syst_qcd_central);
+		      h2.SetBinContent(i,y*(syst_qcd_central+syst_qcd_band));
+		      h3.SetBinContent(i,y*(syst_qcd_central-syst_qcd_band));
+		    }  
+		  }
+		  SetNorm(&h1, hmap["QCD"].second.first); // this isn't exactly readable code
+		  SetNorm(&h2, hmap["QCD"].second.first);
+		  SetNorm(&h3, hmap["QCD"].second.first);
+		  hmap["QCD"].first = h1;
+		  hmap["QCD_"+syst_qcd_name+"Up"].first = h2;
+		  hmap["QCD_"+syst_qcd_name+"Down"].first = h3;
+		}
+	}
+
+	// ************************************************************************
+	// Generate ZL mass shifted sytematic shapes
+	// ************************************************************************
+	// Specifiy this with parameters:
+	// "name:shift_up:shift_down", e.g. name:1.02:0.98
+	if (syst_zl_shift != "") {
+		vector<string> sub_strings;
+		boost::split(sub_strings, syst_zl_shift, boost::is_any_of(":"));
+		if (sub_strings.size() == 3) {
+			string syst_zl_name 			= sub_strings[0];
+			string syst_zl_shift_up 	= sub_strings[1];
+			string syst_zl_shift_down = sub_strings[2];
+			std::cout << "[HiggsTauTauPlot4] Adding ZL mass shift shape systematic..." << std::endl;
+			std::cout << boost::format(param_fmt()) % "name" % syst_zl_name;
+			std::cout << boost::format(param_fmt()) % "shift_up" % syst_zl_shift_up;
+			std::cout << boost::format(param_fmt()) % "shift_down" % syst_zl_shift_down;
+			hmap["ZL_"+syst_zl_name+"Up"] = ana.GenerateZL(method, syst_zl_shift_up+"*"+var, sel, cat, "wt");
+			hmap["ZL_"+syst_zl_name+"Down"] = ana.GenerateZL(method, syst_zl_shift_down+"*"+var, sel, cat, "wt");
+		}
 	}
 
 	// ************************************************************************

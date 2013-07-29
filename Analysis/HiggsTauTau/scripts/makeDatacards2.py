@@ -74,9 +74,9 @@ extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
 
 #### Apply these options for specific channels
 extra_channel = {
-  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
-  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
-  "mtmet" : ' --extra_pad=1.2 --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutausoft_'+COM+'TeV"',
+  "et" : ' --fix_empty_bins="QCD.*,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD.*" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
+  "mt" : ' --fix_empty_bins="QCD.*,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD.*" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "mtmet" : ' --extra_pad=1.2 --fix_empty_bins="QCD.*,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutausoft_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes"'
 }
 
@@ -191,19 +191,24 @@ if options.scheme == 'new_sm':
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.681"'
   if COM=='8': extra_channel["em"] += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'
   scheme_et = [
     ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),
     ("5",   "new_vbf",                  "vbf",                    BINS,       (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_'+COM+'TeV:60:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_loose",            "vbf_loose",              BINS,       (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_loose_'+COM+'TeV:60:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_tight",            "vbf_tight",              BINS,       (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_tight_'+COM+'TeV:60:1.0:0.10"'
       ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
       ' --set_alias="twojet:(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)"'
       ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
@@ -215,10 +220,14 @@ if options.scheme == 'new_sm':
     ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE,  ""),
     ("1",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
-    ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_medium_'+COM+'TeV:60:1.0:0.10"'
+      ' --set_alias="w_shape_os:1"')),
+    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_high_lowhiggs_'+COM+'TeV:60:1.0:0.10"'
+      ' --set_alias="w_shape_os:1"')),
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_high_mediumhiggs_'+COM+'TeV:60:1.0:0.10"'
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="QCD_Eff_Sample:Special_4_Data"'
@@ -227,14 +236,17 @@ if options.scheme == 'new_sm':
   scheme_mt = [
     ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),
     ("5",   "new_vbf",                  "vbf",                    BINS, (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_'+COM+'TeV:60:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_loose",            "vbf_loose",              BINS, (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_loose_'+COM+'TeV:60:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_tight",            "vbf_tight",              BINS, (     
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_tight_'+COM+'TeV:60:1.0:0.10"'
       ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
       ' --set_alias="twojet:(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)"'
       ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
@@ -246,10 +258,14 @@ if options.scheme == 'new_sm':
     ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE,  ""),
     ("1",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
-    ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  ' --set_alias="w_shape_os:1" --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV"'),
-    ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE,  ' --set_alias="w_shape_os:1"'),
-    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  ' --set_alias="w_shape_os:1"'),
+    ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  (
+      ' --set_alias="w_shape_os:1"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV":60:1.1:0.10')),
+    ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_high_lowhiggs_'+COM+'TeV":60:1.1:0.10'
+      ' --set_alias="w_shape_os:1"')),
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_high_mediumhiggs_'+COM+'TeV":60:1.1:0.10'
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="QCD_Eff_Sample:Special_4_Data"'
@@ -335,7 +351,9 @@ if options.scheme == 'control_plots':
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.681"'
   if COM=='8': extra_channel["em"] += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
@@ -418,17 +436,23 @@ if options.scheme == 'new_mssm':
   extra_global += ' --add_extra_binning="(400,0,2000):_fine_binning"'
   extra_global += ' --add_sm_background="125"'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<30."'
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
-    ("12",   "btag",        "btag",       BINS,  ' --sub_ztt_top_frac=0.015')
+    ("12",   "btag",        "btag",       BINS,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_btag_'+COM+'TeV:60:1.0:0.10"'
+      ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_mt = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
-    ("12",   "btag",        "btag",       BINS,  ' --sub_ztt_top_frac=0.015')
+    ("12",   "btag",        "btag",       BINS,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_btag_'+COM+'TeV:60:1.0:0.10"'
+      ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_mtmet = scheme_mt
   scheme_em = [

@@ -510,7 +510,7 @@ namespace ic {
           << qcd_norm.first << "), setting to " << default_rate << " and maintaining error" << std::endl;
         qcd_norm.first = default_rate;
       }
-      if (method == 0 || method == 8 || method == 11) {
+      if (method == 0 || method == 8 || method == 11 || (method == 2 && ch_ == channel::et)) {
         qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
           {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
             return w_ss_norm;} 
