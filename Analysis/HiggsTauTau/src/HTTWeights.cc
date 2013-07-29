@@ -69,14 +69,19 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
 
     if (ggh_mass_ != "" && mc_ == mc::fall11_42X) {
-      if (ggh_mass_ == "90" || ggh_mass_ == "95" || 
-          ggh_mass_ == "100" || ggh_mass_ == "105") ggh_mass_ = "110";
-      if (ggh_mass_ == "150" || ggh_mass_ == "155" || ggh_mass_ == "160") ggh_mass_ = "145";
-      std::string file = "data/ggh_weights/weight_ptH_"+ggh_mass_+".root";
+      // if (ggh_mass_ == "90" || ggh_mass_ == "95" ||
+      //     ggh_mass_ == "100" || ggh_mass_ == "105") ggh_mass_ = "110";
+      // if (ggh_mass_ == "150" || ggh_mass_ == "155" || ggh_mass_ == "160") ggh_mass_ = "145";
+      // std::string file = "data/ggh_weights/weight_ptH_"+ggh_mass_+".root";
+      std::string file = "data/ggh_weights/HRes_weight_pTH_mH125_7TeV.root";
       std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
       ggh_weights_ = new TFile(file.c_str());
-      gDirectory->cd("powheg_weight");
-      ggh_hist_ = (TH1F*)gDirectory->Get(("weight_hqt_fehipro_fit_"+ggh_mass_).c_str());
+      ggh_weights_->cd();
+      ggh_hist_ = (TH1F*)gDirectory->Get("Nominal");
+      ggh_hist_up_ = (TH1F*)gDirectory->Get("Up");
+      ggh_hist_down_ = (TH1F*)gDirectory->Get("Down");
+      // gDirectory->cd("powheg_weight");
+      // ggh_hist_ = (TH1F*)gDirectory->Get(("weight_hqt_fehipro_fit_"+ggh_mass_).c_str());
     }
     if (ggh_mass_ != "" && mc_ == mc::summer12_53X) {
       if (  ggh_mass_ ==  "90"  || ggh_mass_ ==  "95" || ggh_mass_ == "100"
@@ -178,7 +183,7 @@ namespace ic {
         //std::cout << "pt: " << h_pt << "\tweight: " <<  pt_weight << std::endl;
       }
       eventInfo->set_weight("ggh", pt_weight);
-      if (mc_ == mc::summer12_53X) {
+      if (mc_ == mc::summer12_53X || mc_ == mc::fall11_42X) {
         double weight_up   = ggh_hist_up_->GetBinContent(fbin)   / pt_weight;
         double weight_down = ggh_hist_down_->GetBinContent(fbin) / pt_weight;
         event->Add("wt_ggh_pt_up", weight_up);
