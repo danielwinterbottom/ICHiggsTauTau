@@ -19,12 +19,12 @@ XS_ZZJetsTo2L2Q:2.502
 XS_ZZJetsTo4L:0.181
 XS_T-tW:11.1
 XS_Tbar-tW:11.1
-#Top XS is 225.2 * 1.00 = 
-XS_TTJets:225.2
-XS_TT:225.2
-XS_TTJetsFullLept:23.646
-XS_TTJetsSemiLept:98.6376
-XS_TTJetsHadronicExt:102.9164
+### Use CMS measured 249.5 pb and 0.96 scaling
+XS_TTJets:239.52
+XS_TT:239.52
+XS_TTJetsFullLept:25.1496
+XS_TTJetsSemiLept:104.90976
+XS_TTJetsHadronicExt:109.46064
 XS_RecHit-TTJets_FullLeptMGDecays:23.646
 XS_GluGluToHToTauTau_M-125:1.2337
 XS_VBF_HToTauTau_M-125:0.0985
