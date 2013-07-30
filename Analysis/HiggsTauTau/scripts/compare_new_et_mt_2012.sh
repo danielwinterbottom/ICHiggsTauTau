@@ -34,6 +34,9 @@ fi
 --labels $7 $8  --show_errs=$6 --category "$1"_inclusive --output_file=output/dc_sync/compare_inclusive_$5.pdf
 
 ./bin/DatacardCompare --mode=$2 --inputs $3 $4  \
+--labels $7 $8  --show_errs=$6 --category "$1"_vbf --output_file=output/dc_sync/compare_vbf_$5.pdf
+
+./bin/DatacardCompare --mode=$2 --inputs $3 $4  \
 --labels $7 $8  --show_errs=$6 --category "$1"_vbf_loose --output_file=output/dc_sync/compare_vbf_loose_$5.pdf
 
 ./bin/DatacardCompare --mode=$2 --inputs $3 $4  \
