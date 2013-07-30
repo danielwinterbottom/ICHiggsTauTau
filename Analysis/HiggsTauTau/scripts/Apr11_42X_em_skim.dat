@@ -1,33 +1,33 @@
 JOBWRAPPER=./scripts/generate_job.sh
 #JOBSUBMIT=true
-JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
+JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
 
 
 CONFIG=scripts/Paper_2011.cfg
 echo $CONFIG
 
-FILELIST=filelists/Apr11_Data_42X
-SKIMPATH=$SSD/Apr11/Data_42X
-PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Apr11/Data_42X/
-
-PATHS=(
-   'MuEG-2011A-May10ReReco-v1'
-   'MuEG-2011A-PromptReco-v4'
-   'MuEG-2011A-05Aug2011-v1'
-   'MuEG-2011A-03Oct2011-v1'
-   'MuEG-2011B-PromptReco-v1'
-)
-for i in "${PATHS[@]}"
-do
-  echo "$i"
-
-  mkdir -p $SKIMPATH/em_skim/$i/
-  mkdir -p $SKIMPATH/em_skim/Special_20_$i/
-  mkdir -p $SKIMPATH/em_skim/Special_21_$i/
-  mkdir -p $SKIMPATH/em_skim/Special_22_$i/
-  mkdir -p $SKIMPATH/em_skim/Special_23_$i/
-  mkdir -p $SKIMPATH/em_skim/Special_24_$i/
-
+#FILELIST=filelists/Apr11_Data_42X
+#SKIMPATH=$SSD/Apr11/Data_42X
+#PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/Apr11/Data_42X/
+#
+#PATHS=(
+#   'MuEG-2011A-May10ReReco-v1'
+#   'MuEG-2011A-PromptReco-v4'
+#   'MuEG-2011A-05Aug2011-v1'
+#   'MuEG-2011A-03Oct2011-v1'
+#   'MuEG-2011B-PromptReco-v1'
+#)
+#for i in "${PATHS[@]}"
+#do
+#  echo "$i"
+#
+#  mkdir -p $SKIMPATH/em_skim/$i/
+#  mkdir -p $SKIMPATH/em_skim/Special_20_$i/
+#  mkdir -p $SKIMPATH/em_skim/Special_21_$i/
+#  mkdir -p $SKIMPATH/em_skim/Special_22_$i/
+#  mkdir -p $SKIMPATH/em_skim/Special_23_$i/
+#  mkdir -p $SKIMPATH/em_skim/Special_24_$i/
+#
 #  JOB="$i"_em_skim
 #  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
 #  --do_skim=true --skim_path=$SKIMPATH/em_skim/"$i"/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
@@ -46,44 +46,44 @@ do
 #  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_24_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
 #  $JOBSUBMIT jobs/$JOB.sh
 
-  JOB=Special_20_"$i"_em_skim
-  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
-  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_20_"$i"/ --special_mode=20 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_20_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
-
-  JOB=Special_21_"$i"_em_skim
-  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
-  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_21_"$i"/ --special_mode=21 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_21_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
-
-  JOB=Special_22_"$i"_em_skim
-  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
-  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_22_"$i"/ --special_mode=22 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_22_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
-done
-
-PATHS=(
-#   'Embedded-EM-2011A-May10ReReco-v1'
-#   'Embedded-EM-2011A-PromptReco-v4'
-#   'Embedded-EM-2011A-05Aug2011-v1'
-#   'Embedded-EM-2011A-03Oct2011-v1'
-#   'Embedded-EM-2011B-PromptReco-v1'
-)
-for i in "${PATHS[@]}"
-do
-  echo "$i"
-
-  mkdir -p $SKIMPATH/em_skim/$i/
-
-  JOB="$i"_em_skim
-  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
-  --do_skim=true --skim_path=$SKIMPATH/em_skim/"$i"/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-  $JOBSUBMIT jobs/$JOB.sh
-done
+#  JOB=Special_20_"$i"_em_skim
+#  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
+#  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_20_"$i"/ --special_mode=20 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_20_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#  $JOBSUBMIT jobs/$JOB.sh
+#
+#  JOB=Special_21_"$i"_em_skim
+#  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
+#  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_21_"$i"/ --special_mode=21 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_21_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#  $JOBSUBMIT jobs/$JOB.sh
+#
+#  JOB=Special_22_"$i"_em_skim
+#  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
+#  --do_skim=true --skim_path=$SKIMPATH/em_skim/Special_22_"$i"/ --special_mode=22 --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/Special_22_"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#  $JOBSUBMIT jobs/$JOB.sh
+#done
+#
+#PATHS=(
+##   'Embedded-EM-2011A-May10ReReco-v1'
+##   'Embedded-EM-2011A-PromptReco-v4'
+##   'Embedded-EM-2011A-05Aug2011-v1'
+##   'Embedded-EM-2011A-03Oct2011-v1'
+##   'Embedded-EM-2011B-PromptReco-v1'
+#)
+#for i in "${PATHS[@]}"
+#do
+#  echo "$i"
+#
+#  mkdir -p $SKIMPATH/em_skim/$i/
+#
+#  JOB="$i"_em_skim
+#  $JOBWRAPPER "./bin/HiggsTauTau --is_data=1 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=em --output_folder=./ --output_name=Dummy_$JOB.root \
+#  --do_skim=true --skim_path=$SKIMPATH/em_skim/"$i"/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#  ./scripts/hadd_and_filelist.sh $SKIMPATH em_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#  $JOBSUBMIT jobs/$JOB.sh
+#done
 
 
 FILELIST=filelists/Apr11_MC_42X
@@ -184,6 +184,44 @@ PATHS=(
 # 'SUSYBBHToTauTau_M-800'
 # 'SUSYBBHToTauTau_M-900'
 # 'SUSYBBHToTauTau_M-1000'
+ 'GluGluToHToWWTo2LAndTau2Nu_M-110'
+ 'VBF_HToWWTo2LAndTau2Nu_M-110'
+ 'GluGluToHToWWTo2LAndTau2Nu_M-115'
+ 'VBF_HToWWTo2LAndTau2Nu_M-115'
+ 'GluGluToHToWWTo2L2Nu_M-120'
+ 'GluGluToHToWWTo2Tau2Nu_M-120'
+ 'GluGluToHToWWToLNuTauNu_M-120'
+ 'VBF_HToWWTo2L2Nu_M-120'
+ 'VBF_HToWWTo2Tau2Nu_M-120'
+ 'VBF_HToWWToLNuTauNu_M-120'
+ 'GluGluToHToWWTo2LAndTau2Nu_M-125'
+ 'VBF_HToWWTo2LAndTau2Nu_M-125'
+ 'GluGluToHToWWTo2L2Nu_M-130'
+ 'GluGluToHToWWTo2Tau2Nu_M-130'
+ 'GluGluToHToWWToLNuTauNu_M-130'
+ 'VBF_HToWWTo2L2Nu_M-130'
+ 'VBF_HToWWTo2Tau2Nu_M-130'
+ 'VBF_HToWWToLNuTauNu_M-130'
+ '/GluGluToHToWWTo2LAndTau2Nu_M-135'
+ 'VBF_HToWWTo2LAndTau2Nu_M-135'
+ 'GluGluToHToWWTo2L2Nu_M-140'
+ 'GluGluToHToWWTo2Tau2Nu_M-140'
+ 'GluGluToHToWWToLNuTauNu_M-140'
+ 'VBF_HToWWTo2L2Nu_M-140'
+ 'VBF_HToWWTo2Tau2Nu_M-140'
+ 'VBF_HToWWToLNuTauNu_M-140'
+ 'GluGluToHToWWTo2L2Nu_M-150'
+ 'GluGluToHToWWTo2Tau2Nu_M-150'
+ 'GluGluToHToWWToLNuTauNu_M-150'
+ 'VBF_HToWWTo2L2Nu_M-150'
+ 'VBF_HToWWTo2Tau2Nu_M-150'
+ 'VBF_HToWWToLNuTauNu_M-150'
+ 'GluGluToHToWWTo2L2Nu_M-160'
+ 'GluGluToHToWWTo2Tau2Nu_M-160'
+ 'GluGluToHToWWToLNuTauNu_M-160'
+ 'VBF_HToWWTo2L2Nu_M-160'
+ 'VBF_HToWWTo2Tau2Nu_M-160'
+ 'VBF_HToWWToLNuTauNu_M-160'
 )
 for i in "${PATHS[@]}"
 do

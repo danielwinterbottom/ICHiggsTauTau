@@ -201,7 +201,7 @@ namespace ic {
         {"ggH","VH","qqH"}, kBlue+3, true),
       PlotSigComponent("ww",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrowWW"),
-        {"ggH_hww","qqH_hww"}, 8, true)
+        {"ggH_hww","qqH_hww"}, kGreen+3, true)
     };
     sig_schemes_["sm_split_ww_nostack"] = {
       PlotSigComponent("sig",
@@ -209,7 +209,7 @@ namespace ic {
         {"ggH","VH","qqH"}, kBlue+3, false),
       PlotSigComponent("ww",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrowWW"),
-        {"ggH_hww","qqH_hww"}, 8, false)
+        {"ggH_hww","qqH_hww"}, kGreen+3, false)
     };
 
     ic::Plot plot;

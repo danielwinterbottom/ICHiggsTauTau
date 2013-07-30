@@ -276,7 +276,7 @@ if options.proc_sm or options.proc_all:
       signal_mc_ww += [
         'GluGluToHToWWTo2LAndTau2Nu_M-'+ww_mass,
         'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
-        'WH_ZH_TTH_HToWW_M-'+ww_mass
+        #'WH_ZH_TTH_HToWW_M-'+ww_mass
       ]
 if options.proc_mssm or options.proc_all:
   masses = ['90','100','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000']

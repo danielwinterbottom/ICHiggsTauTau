@@ -264,7 +264,6 @@ namespace ic {
     for (auto m : masses) {
       sample_names_.push_back("GluGluToHToWWTo2LAndTau2Nu_M-"+m);
       sample_names_.push_back("VBF_HToWWTo2LAndTau2Nu_M-"+m);
-      sample_names_.push_back("WH_ZH_TTH_HToWW_M-"+m);
     }
   }
 
@@ -613,7 +612,6 @@ namespace ic {
     for (auto const& m : masses) {
       hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToWWTo2LAndTau2Nu_M-"+m,    var, sel, cat, wt, fixed_xs);
       hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToWWTo2LAndTau2Nu_M-"+m,        var, sel, cat, wt, fixed_xs);
-      hmap["VH"+infix+m+postfix]  = this->GenerateSignal("WH_ZH_TTH_HToWW_M-"+m,  var, sel, cat, wt, fixed_xs);
     }
   }
 

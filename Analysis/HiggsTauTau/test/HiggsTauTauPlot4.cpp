@@ -473,11 +473,20 @@ int main(int argc, char* argv[]){
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
 	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "");
-	if (sm_masses.size() != 0) {
-		string m = plot.draw_signal_mass();
-		HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
-		HTTAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
-		HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
+	if (hww_masses.size() != 0) {
+		//
+    //string m = plot.draw_signal_mass();
+		for (auto m : sm_masses) {
+     //HTTAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
+		 //HTTAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
+		 //HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
+    }
+		for (auto m : hww_masses) {
+     HTTAnalysis::PrintValue("ggH(WW/tt)"+m, HTTAnalysis::ValueDivide(hmap["ggH_hww"+m].second,hmap["ggH"+m].second));
+    }
+		for (auto m : hww_masses) {
+		 HTTAnalysis::PrintValue("qqH(WW/tt)"+m, HTTAnalysis::ValueDivide(hmap["qqH_hww"+m].second,hmap["qqH"+m].second));
+    }
 	}
 
 
