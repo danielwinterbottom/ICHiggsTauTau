@@ -442,14 +442,16 @@ if options.scheme == 'new_mssm':
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<30."'
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
-    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  (
+    ' --syst_qcd_shape="CMS_htt_QCDShape_etau_nobtag_'+COM+'TeV:60:1.0:0.10"')),
     ("12",   "btag",        "btag",       BINS,  (
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_btag_'+COM+'TeV:60:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_mt = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
-    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_nobtag_'+COM+'TeV:60:1.0:0.10"')),
     ("12",   "btag",        "btag",       BINS,  (
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_btag_'+COM+'TeV:60:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))

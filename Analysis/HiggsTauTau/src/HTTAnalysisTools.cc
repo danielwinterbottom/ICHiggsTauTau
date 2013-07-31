@@ -232,7 +232,7 @@ namespace ic {
     SimpleParamParser parser;
     parser.ParseFile(file);
     std::cout << "[HTTAnalysis::ParseParamFile] Extracting sample info from file " << file << std::endl;
-    lumi_ = parser.GetParam<double>("LUMI_DATA");
+    lumi_ = parser.GetParam<double>("LUMI_DATA_"+Channel2String(ch_));
     std::cout << "[HTTAnalysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
     if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
     if (verbosity_ > 1) std::cout << "-----------------------------------------------------------------------------------------\n";
