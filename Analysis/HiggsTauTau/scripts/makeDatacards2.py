@@ -189,7 +189,7 @@ if options.scheme == 'new_sm':
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.681"'
-  if COM=='8': extra_channel["em"] += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
+  if COM=='8': extra_global += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'

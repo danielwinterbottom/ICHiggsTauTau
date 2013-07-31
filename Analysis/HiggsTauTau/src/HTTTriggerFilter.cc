@@ -45,7 +45,8 @@ namespace ic {
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
       unsigned run = eventInfo->run();
-      bool path_found = false;
+      bool path_found     = false;
+      bool fallback_found = false;
       TriggerPathPtrVec const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPaths");
 
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
@@ -65,6 +66,10 @@ namespace ic {
         if (channel_ == channel::mt) {
           if (run >= 160404 && run <= 163869 && name.find("HLT_IsoMu12_LooseIsoPFTau10_v") != name.npos) path_found = true;//215.634 pb
           if (run >= 165088 && run <= 173198 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) path_found = true; // 1787 pb
+          if (run >= 165088 && run <= 180252 && name.find("HLT_IsoMu15_LooseIsoPFTau15_v") != name.npos) {
+            path_found      = true; // 1787 pb
+            fallback_found  = true; // 1787 pb
+          }
           if (run >= 173236 && run <= 180252 && name.find("HLT_IsoMu15_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true; //2979 pb
           //2012 Triggers
           if (run >= 190456 && run <= 193751 && name.find("HLT_IsoMu18_eta2p1_LooseIsoPFTau20_v") != name.npos) path_found = true;          
@@ -89,9 +94,12 @@ namespace ic {
         }
         if (is_embedded_) {
           path_found = false;
-          if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) path_found = true;
+          if (run >= 190456 /*&& run <= ???*/ && name.find("HLT_Mu17_Mu8_v") != name.npos) {
+            path_found = true;
+            break;
+          }
         }
-        if (path_found) break;
+        // if (path_found) break;
       }
       if (!path_found) return 1;
 
@@ -150,6 +158,11 @@ namespace ic {
           trig_obj_label = "triggerObjectsIsoMu15LooseTau20";
           leg1_filter = "hltSingleMuIsoL1s14L3IsoFiltered15eta2p1";
           leg2_filter = "hltPFTau20TrackLooseIso";  
+        }
+        if (run >= 165088 && run <= 180252 && fallback_found == true) {
+          trig_obj_label = "triggerObjectsIsoMu15LooseTau15";
+          leg1_filter = "hltSingleMuIsoL3IsoFiltered15";
+          leg2_filter = "hltPFTau15TrackLooseIso";  
         }
         // 2012 Triggers
         if (run >= 190456 && run <= 193751) {

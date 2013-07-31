@@ -412,7 +412,7 @@ if options.proc_sm or options.proc_mssm or options.proc_all:
 
 if options.proc_sm or options.proc_all:
     for ch in channels:
-      if ch == 'em':
+      #if ch == 'em':
         for sc in scales:
           for sa in signal_mc_ww:
             JOB='%s_%s_%s' % (sa,ch,YR)

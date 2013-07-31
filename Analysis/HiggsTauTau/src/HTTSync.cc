@@ -317,8 +317,9 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
       lEtaSV = -999.;
       lPhiSV = -999.;
     }
-    
     lPtTT = (dilepton.at(0)->vector() + selectedMet->vector()).pt();
+
+    if (lepton->charge() == tau->charge()) return 0;
 
     if (channel_ == channel::et || channel_ == channel::etmet) {
       Electron* elec = dynamic_cast<Electron*>(lepton);
