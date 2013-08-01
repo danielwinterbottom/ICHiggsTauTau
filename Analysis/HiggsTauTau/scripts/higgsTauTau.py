@@ -276,7 +276,25 @@ if options.proc_sm or options.proc_all:
       signal_mc_ww += [
         'GluGluToHToWWTo2LAndTau2Nu_M-'+ww_mass,
         'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
-        #'WH_ZH_TTH_HToWW_M-'+ww_mass
+      ]
+  if options.do_2011:
+    ww_masses = ['110','115','125','135']
+    if options.short_signal: ww_masses = ['125']
+    for ww_mass in ww_masses :
+      signal_mc_ww += [
+        'GluGluToHToWWTo2LAndTau2Nu_M-'+ww_mass,
+        'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
+      ]
+    ww_masses = ['120','130','140','160']
+    if options.short_signal: ww_masses = [ ]
+    for ww_mass in ww_masses :
+      signal_mc_ww += [
+        'GluGluToHToWWTo2L2Nu_M-'+ww_mass,
+        'GluGluToHToWWTo2Tau2Nu_M-'+ww_mass,
+        'GluGluToHToWWToLNuTauNu_M-'+ww_mass,
+        'VBF_HToWWTo2L2Nu_M-'+ww_mass,
+        'VBF_HToWWTo2Tau2Nu_M-'+ww_mass,
+        'VBF_HToWWToLNuTauNu_M-'+ww_mass
       ]
 if options.proc_mssm or options.proc_all:
   masses = ['90','100','120','130','140','160','180','200','250','300','350','400','450','500','600','700','800','900','1000']
@@ -342,7 +360,7 @@ if options.proc_bkg or options.proc_all:
             else:
               JOB='DYJetsToTauTau%s_%s_%s' % (sp,ch,YR)
               os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
-                ' --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+                ' --ztautau_mode=1 --faked_tau_selector=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
               os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
             if sc in ['0']:
@@ -359,6 +377,11 @@ if options.proc_bkg or options.proc_all:
               JOB='DYJetsToLL-J%s_%s_%s' % (sp,ch,YR)
               os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
                 ' --svfit_override=DYJetsToLL%(sp)s_%(ch)s_%(YR)s.root --faked_tau_selector=2 --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+              os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+
+              JOB='DYJetsToTauTau-L%s_%s_%s' % (sp,ch,YR)
+              os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
+                ' --svfit_override=DYJetsToTauTau%(sp)s_%(ch)s_%(YR)s.root --faked_tau_selector=1 --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
               os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
           if sc in ['0']:

@@ -184,12 +184,12 @@ namespace ic {
       if (channel_ == channel::et || channel_ == channel::etmet) {
         // Add all status 3 electrons with pT > 8 to sel_particles
         for (unsigned i = 0; i < particles.size(); ++i) {
-          if (particles[i]->status() == 3 && abs(particles[i]->pdgid()) == 11 && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
+          if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
         }
       } else if (channel_ == channel::mt || channel_ == channel::mtmet) {
         // Add all status 3 muons with pT > 8 to sel_particles
        for (unsigned i = 0; i < particles.size(); ++i) {
-         if (particles[i]->status() == 3 && abs(particles[i]->pdgid()) == 13 && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
+         if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.) sel_particles.push_back(particles[i]);
        } 
       }
       // Get the reco tau from the pair
