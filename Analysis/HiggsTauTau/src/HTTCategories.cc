@@ -96,6 +96,7 @@ namespace ic {
           // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
           outtree_->Branch("pzetavis",          &pzetavis_);
           outtree_->Branch("pzetamiss",         &pzetamiss_);
+          outtree_->Branch("mt_ll",             &mt_ll_);
           outtree_->Branch("emu_dphi",          &emu_dphi_);
           outtree_->Branch("emu_csv",           &emu_csv_);
           outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
@@ -308,6 +309,7 @@ namespace ic {
 
 
     mt_1_ = MT(lep1, met);
+    mt_ll_ = MT(ditau, met);
     pzeta_ = PZeta(ditau, met, 0.85);
     pzetavis_ = PZetaVis(ditau);
     pzetamiss_ = PZeta(ditau, met, 0.0);

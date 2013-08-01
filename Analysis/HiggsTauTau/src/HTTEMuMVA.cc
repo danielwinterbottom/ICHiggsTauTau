@@ -15,7 +15,7 @@ namespace ic {
   HTTEMuMVA::HTTEMuMVA(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    gf_mva_file_ = "data/vbf_mva/HttEmu_v2.weights.xml";
+    gf_mva_file_ = "data/vbf_mva/HttEmu_v3.weights.xml";
     // vbf_mva_file_ = "data/vbf_mva/HttEmu_vbf_v1.weights.xml";
     gf_reader_ = nullptr;
     // vbf_reader_ = nullptr;
@@ -41,6 +41,7 @@ namespace ic {
       r->AddVariable("pzetamiss", &pzetamiss_);
       r->AddVariable("dphi", &dphi_);
       r->AddVariable("mvamet", &mvamet_);
+      r->AddVariable("mtll", &mt_ll_);
       r->AddVariable("csv", &csv_);
       r->AddVariable("d01", &el_dxy_);
       // r->AddVariable("d02", &mu_dxy_);
@@ -62,6 +63,7 @@ namespace ic {
     pzetamiss_ = PZeta(ditau, met, 0.0);
     dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(ditau->At(0)->vector(), ditau->At(1)->vector()));
     mvamet_ = met->pt();
+    mt_ll_ = MT(ditau, met);
     csv_ = -1.;
     if (jets.size() > 0) {
       double csv = jets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");

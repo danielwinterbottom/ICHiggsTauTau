@@ -46,6 +46,7 @@ class HTTCategories : public ModuleBase {
   double pt_h_;
   double pt_tt_;
   double mt_1_;
+  double mt_ll_;
   double pzeta_;
   double pzetavis_;
   double pzetamiss_;
