@@ -53,6 +53,7 @@ namespace ic {
         "Special_5_WJetsToLNuSoup",
         "DYJetsToLL",
         "DYJetsToLL-L",
+        "DYJetsToTauTau-L",
         "DYJetsToLL-J",
         "Special_18_DYJetsToLL-L",
         "WJetsToLNuSoup"
@@ -60,6 +61,7 @@ namespace ic {
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
           "DYJetsToLLSoup",
           "DYJetsToLL-LSoup",
+          "DYJetsToTauTau-LSoup",
           "DYJetsToLL-JSoup"});
     } else {
       push_back(sample_names_, std::vector<std::string>{
@@ -261,9 +263,27 @@ namespace ic {
     }
   }
   void HTTAnalysis::AddHWWSignalSamples(std::vector<std::string> masses) {
-    for (auto m : masses) {
-      sample_names_.push_back("GluGluToHToWWTo2LAndTau2Nu_M-"+m);
-      sample_names_.push_back("VBF_HToWWTo2LAndTau2Nu_M-"+m);
+    if (year_ == "2012") {
+      for (auto m : masses) {
+        sample_names_.push_back("GluGluToHToWWTo2LAndTau2Nu_M-"+m);
+        sample_names_.push_back("VBF_HToWWTo2LAndTau2Nu_M-"+m);
+      }      
+    } else {
+      for (auto m : masses) {
+        if (m == "110" || m == "115" || m == "125" || m == "135") {
+          sample_names_.push_back("GluGluToHToWWTo2LAndTau2Nu_M-"+m);
+          sample_names_.push_back("VBF_HToWWTo2LAndTau2Nu_M-"+m);          
+        } else if (m == "145" || m == "155") { // no samples, will do horizontal morphing
+          continue;
+        } else {
+          sample_names_.push_back("GluGluToHToWWTo2L2Nu_M-"+m);
+          sample_names_.push_back("GluGluToHToWWTo2Tau2Nu_M-"+m);          
+          sample_names_.push_back("GluGluToHToWWToLNuTauNu_M-"+m);
+          sample_names_.push_back("VBF_HToWWTo2L2Nu_M-"+m);          
+          sample_names_.push_back("VBF_HToWWTo2Tau2Nu_M-"+m);
+          sample_names_.push_back("VBF_HToWWToLNuTauNu_M-"+m);          
+        }
+      }      
     }
   }
 
@@ -342,6 +362,11 @@ namespace ic {
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
+    auto ztt_leptonic_norm = this->GetLumiScaledRate("DYJetsToTauTau-L"+dy_soup_, sel, cat, wt);
+    TH1F ztt_leptonic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-L"+dy_soup_, sel, cat, wt);
+    SetNorm(&ztt_leptonic_hist, ztt_leptonic_norm.first);
+    ztt_norm = ValueAdd(ztt_norm, ztt_leptonic_norm);
+    ztt_hist.Add(&ztt_leptonic_hist);
     return std::make_pair(ztt_hist, ztt_norm);
   }
 
@@ -609,9 +634,37 @@ namespace ic {
                     std::string const& infix,
                     std::string const& postfix,
                     double fixed_xs) {
-    for (auto const& m : masses) {
-      hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToWWTo2LAndTau2Nu_M-"+m,    var, sel, cat, wt, fixed_xs);
-      hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToWWTo2LAndTau2Nu_M-"+m,        var, sel, cat, wt, fixed_xs);
+    if (year_ == "2012") {
+      for (auto const& m : masses) {
+        hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToWWTo2LAndTau2Nu_M-"+m,    var, sel, cat, wt, fixed_xs);
+        hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToWWTo2LAndTau2Nu_M-"+m,        var, sel, cat, wt, fixed_xs);
+      }      
+    } else {
+      for (auto const& m : masses) {
+        if (m == "110" || m == "115" || m == "125" || m == "135") {
+          hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToWWTo2LAndTau2Nu_M-"+m,    var, sel, cat, wt, fixed_xs);
+          hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToWWTo2LAndTau2Nu_M-"+m,        var, sel, cat, wt, fixed_xs);          
+        } else if (m == "145" || m == "155") { // no samples, will do horizontal morphing
+          continue;
+        } else {
+          HistValuePair ggh_tmp_1 = this->GenerateSignal("GluGluToHToWWTo2L2Nu_M-"+m,    var, sel, cat, wt, fixed_xs * (4./9.));
+          HistValuePair ggh_tmp_2 = this->GenerateSignal("GluGluToHToWWTo2Tau2Nu_M-"+m,    var, sel, cat, wt, fixed_xs * (1./9.));
+          HistValuePair ggh_tmp_3 = this->GenerateSignal("GluGluToHToWWToLNuTauNu_M-"+m,    var, sel, cat, wt, fixed_xs * (4./9.));
+          ggh_tmp_1.first.Add(&(ggh_tmp_2.first));
+          ggh_tmp_1.first.Add(&(ggh_tmp_3.first));
+          ggh_tmp_1.second = ValueAdd(ggh_tmp_1.second, ggh_tmp_2.second);
+          ggh_tmp_1.second = ValueAdd(ggh_tmp_1.second, ggh_tmp_3.second);
+          hmap["ggH"+infix+m+postfix] = ggh_tmp_1;
+          HistValuePair qqh_tmp_1 = this->GenerateSignal("VBF_HToWWTo2L2Nu_M-"+m,    var, sel, cat, wt, fixed_xs * (4./9.));
+          HistValuePair qqh_tmp_2 = this->GenerateSignal("VBF_HToWWTo2Tau2Nu_M-"+m,    var, sel, cat, wt, fixed_xs * (1./9.));
+          HistValuePair qqh_tmp_3 = this->GenerateSignal("VBF_HToWWToLNuTauNu_M-"+m,    var, sel, cat, wt, fixed_xs * (4./9.));
+          qqh_tmp_1.first.Add(&(qqh_tmp_2.first));
+          qqh_tmp_1.first.Add(&(qqh_tmp_3.first));
+          qqh_tmp_1.second = ValueAdd(qqh_tmp_1.second, qqh_tmp_2.second);
+          qqh_tmp_1.second = ValueAdd(qqh_tmp_1.second, qqh_tmp_3.second);
+          hmap["qqH"+infix+m+postfix] = qqh_tmp_1;     
+        }
+      }
     }
   }
 

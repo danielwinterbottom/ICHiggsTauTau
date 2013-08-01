@@ -364,6 +364,33 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 --outname="emu_btag.pdf"
 
 
+./bin/PlotCompare  \
+-p "ZTT:ZTT:output/Paper_2012_Vegas/DYJetsToTauTauSoup_et_2012.root:inclusive_os_sel/:m_sv:-1:2:1" \
+-p "ZTT-L:ZTT-L:output/Paper_2012_Vegas/DYJetsToTauTau-LSoup_et_2012.root:inclusive_os_sel/:m_sv:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=1  --big_label="e#tau_{h}" \
+--outname="etau_check.pdf"
+
+./bin/PlotCompare  \
+-p "Ztt:Ztt:htt_em.inputs-mssm-8TeV-mvis.root:emu_btag/:Ztt:-1:2:1" \
+-p "ttbarEmbedded:ttbarEmbedded:htt_em.inputs-mssm-8TeV-mvis.root:emu_btag/:ttbarEmbedded:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
+--outname="emu_btag.pdf"
+
+
+./bin/PlotCompare  \
+-p "ZTT:ZTT(all):output/Paper_2012_Vegas/DYJetsToTauTauSoup_et_2012.root:inclusive_os_sel/:m_sv:-1:2:1" \
+-p "ZTT-J:ZTT(veto-#tau_{h}-lepton-match):output/Paper_2012_Vegas/DYJetsToTauTau-JSoup_et_2012.root:inclusive_os_sel/:m_sv:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="e#tau_{h}" \
+--outname="etau_diff.pdf" \
+--ratios="ZTT/ZTT-J/1" --ratio_axis_label="Ratio" --ratio_y_min=0.9 --ratio_y_max=1.1
+
+./bin/PlotCompare  \
+-p "ZTT:ZTT(all):output/Paper_2012_Vegas/DYJetsToTauTauSoup_mt_2012.root:inclusive_os_sel/:m_sv:-1:2:1" \
+-p "ZTT-J:ZTT(veto-#tau_{h}-lepton-match):output/Paper_2012_Vegas/DYJetsToTauTau-JSoup_mt_2012.root:inclusive_os_sel/:m_sv:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
+--outname="mutau_diff.pdf" \
+--ratios="ZTT/ZTT-J/1" --ratio_axis_label="Ratio" --ratio_y_min=0.9 --ratio_y_max=1.1
+
 ./bin/PrintShifts --channel=et --selection="inclusive:0" --eras="8TeV" \
   --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
   --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \

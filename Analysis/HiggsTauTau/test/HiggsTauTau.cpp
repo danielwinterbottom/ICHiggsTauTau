@@ -640,6 +640,7 @@ int main(int argc, char* argv[]){
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
                         || (output_name.find("Embedded")              != output_name.npos)
                         || (output_name.find("RecHit")                != output_name.npos) );
+  if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
 
   // At Moriond we correct the tau ES in  all "real tau" samples
   // For the paper, we only correct the embedded samples.
