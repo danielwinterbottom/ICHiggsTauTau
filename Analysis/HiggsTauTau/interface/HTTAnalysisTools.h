@@ -43,9 +43,9 @@ namespace ic {
     }
   }
 
-  inline void SetNorm(TH1F * hist, double norm) {
+  inline void SetNorm(TH1F * hist, double norm, bool verbose = false) {
     if (Integral(hist) == 0.0) {
-      std::cout << "Warning, attempt to scale histogram with integral of 0.0" << std::endl;
+      if (verbose) std::cout << "Warning, attempt to scale histogram with integral of 0.0" << std::endl;
       return;
     } else {
       hist->Scale(norm / Integral(hist));
@@ -88,7 +88,7 @@ namespace ic {
   inline void FixEmptyHist(TH1F * hist, bool verbose) {
     unsigned centre_bin = hist->GetNbinsX() / 2;
     if (hist->Integral() == 0.0) {
-      std::cout << "[FixEmptyHist] Histogram is empty, inserting small value in central bin" << std::endl;
+      if (verbose) std::cout << "[FixEmptyHist] Histogram is empty, inserting small value in central bin" << std::endl;
       hist->SetBinContent(centre_bin, 0.0000001);
     }
   }

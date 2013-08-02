@@ -11,6 +11,7 @@
 #include "boost/filesystem.hpp"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/th1fmorph.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "TPad.h"
 #include "TROOT.h"
@@ -55,7 +56,7 @@ namespace ic {
         "DYJetsToLL-L",
         "DYJetsToTauTau-L",
         "DYJetsToLL-J",
-        "Special_18_DYJetsToLL-L",
+        //"Special_18_DYJetsToLL-L",
         "WJetsToLNuSoup"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
@@ -362,11 +363,14 @@ namespace ic {
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
-    auto ztt_leptonic_norm = this->GetLumiScaledRate("DYJetsToTauTau-L"+dy_soup_, sel, cat, wt);
-    TH1F ztt_leptonic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-L"+dy_soup_, sel, cat, wt);
-    SetNorm(&ztt_leptonic_hist, ztt_leptonic_norm.first);
-    ztt_norm = ValueAdd(ztt_norm, ztt_leptonic_norm);
-    ztt_hist.Add(&ztt_leptonic_hist);
+    if (ch_ != channel::em) {
+      auto ztt_leptonic_norm = this->GetLumiScaledRate("DYJetsToTauTau-L"+dy_soup_, sel, cat, wt);
+      TH1F ztt_leptonic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-L"+dy_soup_, sel, cat, wt);
+      SetNorm(&ztt_leptonic_hist, ztt_leptonic_norm.first);
+      if (verbosity_) PrintValue("ZTT-Leptonic", ztt_leptonic_norm); 
+      ztt_norm = ValueAdd(ztt_norm, ztt_leptonic_norm);
+      ztt_hist.Add(&ztt_leptonic_hist);
+    }
     return std::make_pair(ztt_hist, ztt_norm);
   }
 
@@ -663,6 +667,31 @@ namespace ic {
           qqh_tmp_1.second = ValueAdd(qqh_tmp_1.second, qqh_tmp_2.second);
           qqh_tmp_1.second = ValueAdd(qqh_tmp_1.second, qqh_tmp_3.second);
           hmap["qqH"+infix+m+postfix] = qqh_tmp_1;     
+        }
+      }
+      for (auto const& m : masses) {
+        if (m == "145" || m == "155") { // no samples, will do horizontal morphing
+          double x1, x2, x;
+          std::string s1, s2;
+          if (m == "145") {
+            x = 145; x1 = 140; x2 = 150; s1 = "140"; s2 = "150";
+          }
+          if (m == "155") {
+            x = 155; x1 = 150; x2 = 160; s1 = "150"; s2 = "160";
+          }
+          std::vector<std::string> procs = {"ggH", "qqH"};
+          for (auto p : procs) {
+            double yield = 1.0;
+            double y1 = hmap[p+infix+s1+postfix].second.first;
+            double y2 = hmap[p+infix+s2+postfix].second.first;
+            if (x2 == x1) {
+              yield =  0.5*(y1+y2);
+            } else {
+              yield = y1 + ((y2 - y1)/(x2 - x1))*(x-x1);
+            }
+            hmap[p+infix+m+postfix].first = *(th1fmorph("morphed","morphed", &(hmap[p+infix+s1+postfix].first), &(hmap[p+infix+s2+postfix].first), x1, x2, x, yield, 0));
+            hmap[p+infix+m+postfix].second = std::make_pair(yield,0.0);
+          }
         }
       }
     }

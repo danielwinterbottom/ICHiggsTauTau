@@ -285,7 +285,7 @@ if options.proc_sm or options.proc_all:
         'GluGluToHToWWTo2LAndTau2Nu_M-'+ww_mass,
         'VBF_HToWWTo2LAndTau2Nu_M-'+ww_mass, 
       ]
-    ww_masses = ['120','130','140','160']
+    ww_masses = ['120','130','140','150','160']
     if options.short_signal: ww_masses = [ ]
     for ww_mass in ww_masses :
       signal_mc_ww += [
@@ -384,12 +384,14 @@ if options.proc_bkg or options.proc_all:
                 ' --svfit_override=DYJetsToTauTau%(sp)s_%(ch)s_%(YR)s.root --faked_tau_selector=1 --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
               os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
+          """
           if sc in ['0']:
             # Special Mode 18 DYJetsToLL-L
             JOB='DYJetsToLL-L_%s_%s' % (ch,YR)
             os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL_%(ch)s_skim.dat --channel=%(ch)s'
               ' --special_mode=18 --faked_tau_selector=1 --ztautau_mode=2 --output_name=%(JOB)s.root &> jobs/Special_18_%(JOB)s-%(sc)s.log" jobs/Special_18_%(JOB)s-%(sc)s.sh' % vars())
             os.system('%(JOBSUBMIT)s jobs/Special_18_%(JOB)s-%(sc)s.sh' % vars())
+          """
 
         if ch in ['em'] and sc in ['0']:
           soups = ['', 'Soup']
