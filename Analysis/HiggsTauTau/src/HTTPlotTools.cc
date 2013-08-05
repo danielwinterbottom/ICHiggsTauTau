@@ -33,6 +33,14 @@ namespace ic {
       PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZLL"}      , kAzure  + 2),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange - 4)
     };
+    bkg_schemes_["et_with_zj"] = {
+      PlotBkgComponent("qcd","QCD"                      ,{"QCD"}      , kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"                 ,{"TT"}       , kBlue   - 8),
+      PlotBkgComponent("ewk","electroweak"              ,{"W","VV"}   , kRed    + 2),
+      PlotBkgComponent("zl","Z#rightarrowee (lepton)"   ,{"ZL"}       , kAzure  + 2),
+      PlotBkgComponent("zj","Z#rightarrowee (jet)"      ,{"ZJ"}       , kGreen  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau"     ,{"ZTT"}      , kOrange - 4)
+    };
     bkg_schemes_["mt_default"] = {
       PlotBkgComponent("qcd","QCD"                  ,{"QCD"}              ,kMagenta-10),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}               ,kBlue   - 8),
@@ -50,6 +58,14 @@ namespace ic {
       PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
       PlotBkgComponent("ewk","electroweak",{"W","VV"},kRed    + 2),
       PlotBkgComponent("zll","Z#rightarrow#mu#mu",{"ZL","ZJ"},kAzure  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
+    };
+    bkg_schemes_["mt_with_zj"] = {
+      PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
+      PlotBkgComponent("ewk","electroweak",{"W","VV"},kRed    + 2),
+      PlotBkgComponent("zl","Z#rightarrow#mu#mu (lepton)",{"ZL"},kAzure  + 2),
+      PlotBkgComponent("zj","Z#rightarrow#mu#mu (jet)",{"ZJ"},kGreen  + 2),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
     };
     bkg_schemes_["mt_with_zmm_zll"] = {

@@ -179,21 +179,21 @@ int main(int argc, char* argv[]){
     if (mode != 2) {
     std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
          % (category)  % ("data_obs") % ("ZTT") % ("W") % ("QCD")
-                % ("TT") % ("VV") % ("ZLL") % ("ZJ") % ("ZL") % ("TOT") % ("DATA/MC") % ("VH") % ("ggH") % ("qqH");
+                % ("TT") % ("VV") % ("ZLL") % ("ZJ") % ("ZL") % ("TOT") % ("DATA/MC") % ("VH125") % ("ggH125") % ("qqH125");
     } else {
      std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
           % (category)  % ("data_obs") % ("Ztt") % ("Fakes") % ("ttbar")
-                 % ("EWK") % ("TOT") % ("DATA/MC")  % ("VH") % ("ggH") % ("qqH"); 
+                 % ("EWK") % ("TOT") % ("DATA/MC")  % ("VH") % ("ggH125") % ("qqH125");
     }
   } else {
     if (mode != 2) {
     std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
          % (category)  % ("data_obs") % ("ZTT") % ("W") % ("QCD")
-                % ("TT") % ("VV") % ("ZLL") % ("ZJ") % ("ZL") % ("TOT") % ("DATA/MC") % ("ggH") % ("bbH");
+                % ("TT") % ("VV") % ("ZLL") % ("ZJ") % ("ZL") % ("TOT") % ("DATA/MC") % ("ggH160") % ("bbH160");
     } else {
      std::cout << boost::format("%-25s %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f %-9.2f\n") 
           % (category)  % ("data_obs") % ("Ztt") % ("Fakes") % ("ttbar")
-                 % ("EWK") % ("TOT") % ("DATA/MC")  % ("ggH") % ("bbH"); 
+                 % ("EWK") % ("TOT") % ("DATA/MC")  % ("ggH160") % ("bbH160");
     }
   }
   for (unsigned i = 0; i < inputs.size(); ++i) {
@@ -205,11 +205,6 @@ int main(int argc, char* argv[]){
     tfiles[i]->cd();
     std::string replacement = category;
 
-    if (mode != 2) {
-    if (category.find("eleTau") != category.npos && labels[i].find("MIT") != labels[i].npos) {
-      boost::replace_all(replacement, "eleTau", "eTau");
-    }
-    }
     gDirectory->cd(replacement.c_str());
 
     if (mode !=2) {

@@ -31,11 +31,13 @@ void SetTGraphStyle(TGraph * gr, int color) {
 
 int main(int argc, char* argv[]){
 
-  string ch = "mt";
+  string ch = "mt-8TeV";
   bool limit = true;
   bool relative = false;
 
-  vector<string> lines = { "hpt_30", "jpt_30", "hpt_60", "jpt_60" };
+  vector<string> lines = { "def", "test" };
+  vector<unsigned> cols = { 1 , 2 };
+  vector<string> labels = { "Ignore H#rightarrowWW" , "H#rightarrow#tau#tau+H#rightarrowWW" };
   vector<string> types = { "jpt", "hpt", "jpt_0jet", "hpt_0jet" };
   // vector<string> lines = { "jpt", "hpt", "jpt_0jet", "hpt_0jet", "moriond" };
   vector<string> vals = { "30", "40", "60", "80" };
@@ -69,7 +71,7 @@ int main(int argc, char* argv[]){
 
 
   for (auto l : lines) {
-    graphs.push_back(GetFromTFile<TGraph>("output/categories/"+ l + "/" + (limit ? (ch+"_limit") : "limits_significance") + ".root",ch+"/","expected"));
+    graphs.push_back(GetFromTFile<TGraph>("output/sm-hww/"+ l + "/" + (limit ? (ch+"_limit") : "limits_significance") + ".root",ch+"/","expected"));
     double x, y;
     graphs.back().GetPoint(3, x, y);
     std::cout << l << "\t" << x << "\t" << y << endl;
@@ -82,7 +84,7 @@ int main(int argc, char* argv[]){
   canv.SetGridy(1);
   graphs[0].GetXaxis()->SetLimits(graphs[0].GetX()[0]-.1, graphs[0].GetX()[graphs[0].GetN()-1]+.1);
   graphs[0].SetMinimum(0.51);
-  graphs[0].SetMaximum(3.0);
+  graphs[0].SetMaximum(5.0);
   if (relative) {
     graphs[0].SetMinimum(0.8);
     graphs[0].SetMaximum(1.6);    
@@ -106,21 +108,21 @@ int main(int argc, char* argv[]){
     graphs[0].GetYaxis()->SetTitle("Exp. Significance");
     if (relative) graphs[0].GetYaxis()->SetTitle("Exp. Signif. / Default");   
   } else {
-    graphs[0].GetYaxis()->SetTitle("Exp. Limit");    
+    graphs[0].GetYaxis()->SetTitle("95\% CL Limit on #sigma/#sigma_{SM}");    
     if (relative) graphs[0].GetYaxis()->SetTitle("Exp. Limit / Default");   
   }
   TLegend *legend = new TLegend(0.17,0.65,0.47,0.85,"","brNDC");
   
   double benchmark = graphs[0].GetY()[0];
   for (unsigned i = 0; i < graphs.size(); ++i) {
-    SetTGraphStyle(&(graphs[i]), i + 6);
+    SetTGraphStyle(&(graphs[i]), cols[i]);
     if (relative) {
       for (int j = 0; j < graphs[i].GetN(); ++j) {
         graphs[i].GetY()[j] /= benchmark;
       }      
     }
     graphs[i].Draw("PLsame");
-    legend->AddEntry(&(graphs)[i], lines[i].c_str(), "lP");
+    legend->AddEntry(&(graphs)[i], labels[i].c_str(), "lP");
 
   }
 

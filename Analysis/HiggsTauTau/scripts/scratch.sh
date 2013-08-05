@@ -376,7 +376,21 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
 --outname="emu_btag.pdf"
 
+./bin/PlotCompare  \
+-p "powheg:powheg:output/Paper_2012_Vegas/GluGluToHToTauTau_M-125_mt_2012.root:inclusive_os_sel/:n_jets:-1:2:1" \
+-p "minlo:minlo:output/Paper_2012_Vegas/GluGluToHToTauTau_M-125-minloHJJ_mt_2012.root:inclusive_os_sel/:n_jets:-1:2:2" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
+--outname="powheg_vs_minlo_n_jets.pdf" \
+--ratios="minlo/powheg/1" --ratio_axis_label="minlo/powheg" --ratio_y_min=0.5 --ratio_y_max=1.5
 
+./bin/PlotCompare  \
+-p "110:m_{H} = 110 GeV:htt_em.inputs-sm-8TeV.root:emu_vbf_tight/:qqH_hww110:-1:2:1" \
+-p "125:m_{H} = 125 GeV:htt_em.inputs-sm-8TeV.root:emu_vbf_tight/:qqH_hww125:-1:2:2" \
+-p "145:m_{H} = 145 GeV:htt_em.inputs-sm-8TeV.root:emu_vbf_tight/:qqH_hww145:-1:2:3" \
+--x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="e#mu" \
+--outname="hww_shape.pdf"
+
+htt_em.inputs-sm-8TeV.root
 ./bin/PlotCompare  \
 -p "ZTT:ZTT(all):output/Paper_2012_Vegas/DYJetsToTauTauSoup_et_2012.root:inclusive_os_sel/:m_sv:-1:2:1" \
 -p "ZTT-J:ZTT(veto-#tau_{h}-lepton-match):output/Paper_2012_Vegas/DYJetsToTauTau-JSoup_et_2012.root:inclusive_os_sel/:m_sv:-1:2:2" \
