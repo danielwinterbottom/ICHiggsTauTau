@@ -32,8 +32,8 @@ string Token(string const& file, string const& selection) {
 double Integral(TH1F const* hist) {
   if (hist) {
     double ltmp =hist->Integral(0, hist->GetNbinsX() + 1); 
-    if (ltmp<=0 || ltmp != ltmp) {
-      std::cout << " -- Warning: integral is <=0 or NAN. Setting to 0." << std::endl;
+    if (ltmp<0 || ltmp != ltmp) {
+      std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
       ltmp=0;
     }
     return ltmp;
@@ -45,15 +45,24 @@ double Error(TH1F const* hist) {
   double err = 0.0;
   if (hist) {
     hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
-    if (err<=0 || err != err) {
-      std::cout << " -- Warning: error on integral is <=0 or NAN. Setting to 0." << std::endl;
+    if (err<0 || err != err) {
+      std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
       err=0;
     }
   }
   return err;
 }
 
-
+double sumSqErr(double n1, double n2, 
+		double n3 = 0, double n4 = 0, 
+		double n5 = 0, double n6 = 0,
+		double n7 = 0, double n8 = 0){
+  return sqrt(pow(n1,2)+pow(n2,2)+
+	      pow(n3,2)+pow(n4,2)+
+	      pow(n5,2)+pow(n6,2)+
+	      pow(n7,2)+pow(n8,2)
+	      );
+}
 
 void SetBkgStyle(ic::TH1PlotElement & ele, unsigned color) {
   ele.set_marker_color(color);
@@ -271,6 +280,10 @@ int main(int argc, char* argv[]){
   files.push_back("MC_QCD-Pt-1400to1800-pythia6");
   files.push_back("MC_QCD-Pt-1800-pythia6");
   files.push_back("MC_TTJets");
+  //powheg samples
+  files.push_back("MC_TT-v1");
+  files.push_back("MC_TT-v2");
+  //
   files.push_back("MC_T-tW");
   files.push_back("MC_Tbar-tW");
   files.push_back("MC_SingleT-s-powheg-tauola");
@@ -280,7 +293,6 @@ int main(int argc, char* argv[]){
   files.push_back("MC_WW-pythia6-tauola");
   files.push_back("MC_WZ-pythia6-tauola");
   files.push_back("MC_ZZ-pythia6-tauola");
-  //files.push_back("MC_DYJJ01JetsToLL_M-50_MJJ-200");//old ewkz
   files.push_back("MC_W1JetsToLNu_enu");
   files.push_back("MC_W2JetsToLNu_enu");
   files.push_back("MC_W3JetsToLNu_enu");
@@ -311,9 +323,8 @@ int main(int argc, char* argv[]){
   files.push_back("MC_GJets-HT-200To400-madgraph");
   files.push_back("MC_GJets-HT-400ToInf-madgraph");
   files.push_back("MC_VBF_HToZZTo4Nu_M-120");
-  files.push_back("MC_TT-v1");
-  files.push_back("MC_TT-v2");
   files.push_back("MC_EWK-Z2j");
+  files.push_back("MC_EWK-Z2jiglep");
   files.push_back("MC_EWK-W2jminus_enu");
   files.push_back("MC_EWK-W2jplus_enu");
   files.push_back("MC_EWK-W2jminus_munu");
@@ -340,6 +351,23 @@ int main(int argc, char* argv[]){
   selections.push_back("CJVpass");
   selections.push_back("DPhiSIGNAL_CJVpass");
   selections.push_back("DPhiQCD_CJVpass");
+  vector<string> latex;
+  latex.push_back("HLTMetClean");
+  latex.push_back("LeptonVeto");
+  latex.push_back("WSelection");
+  latex.push_back("JetPair");
+  latex.push_back("AN");
+  latex.push_back("DEta");
+  latex.push_back("MET");
+  latex.push_back("TightMjj");
+  latex.push_back("SIG noCJV");
+  latex.push_back("QCD noCJV");
+  latex.push_back("CJVfail");
+  latex.push_back("SIG CJVfail");
+  latex.push_back("QCD CJVfail");
+  latex.push_back("CJVpass");
+  latex.push_back("SIG CJVpass");
+  latex.push_back("QCD CJVpass");
  
   vector<string> selectionsdir = selections;
 
@@ -451,8 +479,8 @@ int main(int argc, char* argv[]){
     if (skip[k]) continue;
     if (lFillSummaryTable) lDatOutput[k].open(plot_dir+"/SummaryTable_"+selections[k]+lSuffix+".dat",std::ios_base::out);
     ic::Plot plot;
-    plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k] + ".pdf";
-    if (log_y) plot.output_filename = plot_dir+"/"+plot_name + "_" + year_label + "_" + selections[k]  + "_log.pdf";
+    plot.output_filename = plot_dir+"/"+plot_name + "_" + selections[k] + ".pdf";
+    if (log_y) plot.output_filename = plot_dir+"/"+plot_name + "_" + selections[k]  + "_log.pdf";
   
     plot.x_bin_labels_ = x_axis_bin_labels;
 
@@ -462,6 +490,7 @@ int main(int argc, char* argv[]){
     ic::TH1PlotElement qcd_hist = ic::TH1PlotElement("QCD");
     ic::TH1PlotElement top_hist = ic::TH1PlotElement("Top");
     ic::TH1PlotElement ttbar_hist = ic::TH1PlotElement("TTBar");
+    ic::TH1PlotElement ttpowheg_hist = ic::TH1PlotElement("TTBarPowheg");
     ic::TH1PlotElement singletop_hist = ic::TH1PlotElement("SingleTop");
     ic::TH1PlotElement tW_hist = ic::TH1PlotElement("tW");
     ic::TH1PlotElement WJets_hist = ic::TH1PlotElement("WJets");
@@ -471,9 +500,13 @@ int main(int argc, char* argv[]){
     ic::TH1PlotElement ZJetsToLL_hist = ic::TH1PlotElement("ZJetsToLL");
     ic::TH1PlotElement ZJetsToNuNu_hist = ic::TH1PlotElement("ZJetsToNuNu");
     ic::TH1PlotElement VBFZ_hist = ic::TH1PlotElement("VBFZ");
+    ic::TH1PlotElement VBFZnunu_hist = ic::TH1PlotElement("VBFZnunu");
+    ic::TH1PlotElement VBFW_hist = ic::TH1PlotElement("VBFW");
+    ic::TH1PlotElement VBFW_enu_hist = ic::TH1PlotElement("VBFW_enu");
+    ic::TH1PlotElement VBFW_munu_hist = ic::TH1PlotElement("VBFW_munu");
+    ic::TH1PlotElement VBFW_taunu_hist = ic::TH1PlotElement("VBFW_taunu");
     ic::TH1PlotElement GJets_hist = ic::TH1PlotElement("GJets");
     ic::TH1PlotElement VV_hist = ic::TH1PlotElement("Dibosons");
-    ic::TH1PlotElement ttpowheg_hist = ic::TH1PlotElement("TTBarPowheg");
 
  
     for (unsigned i = 0; i < files.size(); ++i) {
@@ -486,27 +519,40 @@ int main(int argc, char* argv[]){
 	SumHistograms(f,plots[nm],"Data",data_hist);
       SumHistograms(f,plots[nm],"Data_MET0to120",data_qcd_hist);
       SumHistograms(f,plots[nm],"VBF_H",signal_hist);
+      //qcd
       SumHistograms(f,plots[nm],"MC_QCD",qcd_hist);
+      SumHistograms(f,plots[nm],"GJets",GJets_hist);
+      //top
       SumHistograms(f,plots[nm],"MC_TTJets",top_hist);
       SumHistograms(f,plots[nm],"MC_T-tW",top_hist);
       SumHistograms(f,plots[nm],"MC_Tbar-tW",top_hist);
-      SumHistograms(f,plots[nm],"MC_TTJets",top_hist);
       SumHistograms(f,plots[nm],"MC_SingleT",top_hist);
+      //top-separated
       SumHistograms(f,plots[nm],"MC_TTJets",ttbar_hist);
       SumHistograms(f,plots[nm],"MC_TT-v",ttpowheg_hist);
       SumHistograms(f,plots[nm],"MC_SingleT",singletop_hist);
       SumHistograms(f,plots[nm],"tW",tW_hist);
-      if (f.find("EWK-Z2j") != f.npos) SumHistograms(f,plots[nm],"DYJJ",VBFZ_hist);
-      if (f.find("JetsToLL") != f.npos){
-	SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
-      }
+      //ewk V+2j
+      SumHistograms(f,plots[nm],"EWK-Z2j",VBFZ_hist);
+      SumHistograms(f,plots[nm],"EWK-Z2jiglep",VBFZnunu_hist);
+      SumHistograms(f,plots[nm],"EWK-W2j",VBFW_hist);
+      SumHistograms(f,plots[nm],"EWK-W2jminus_enu",VBFW_enu_hist);
+      SumHistograms(f,plots[nm],"EWK-W2jplus_enu",VBFW_enu_hist);
+      SumHistograms(f,plots[nm],"EWK-W2jminus_munu",VBFW_munu_hist);
+      SumHistograms(f,plots[nm],"EWK-W2jplus_munu",VBFW_munu_hist);
+      SumHistograms(f,plots[nm],"EWK-W2jminus_taunu",VBFW_taunu_hist);
+      SumHistograms(f,plots[nm],"EWK-W2jplus_taunu",VBFW_taunu_hist);
+      //Z and W
+      SumHistograms(f,plots[nm],"JetsToLL",ZJetsToLL_hist);
       SumHistograms(f,plots[nm],"JetsToLNu",WJets_hist);
-      SumHistograms(f,plots[nm],"EWK-W2j",WJets_hist);
-      SumHistograms(f,plots[nm],"_enu",WJets_enu_hist);
-      SumHistograms(f,plots[nm],"_munu",WJets_munu_hist);
-      SumHistograms(f,plots[nm],"_taunu",WJets_taunu_hist);
+      //SumHistograms(f,plots[nm],"EWK-W2j",WJets_hist);
+      if (f.find("JetsToLNu") != f.npos){
+	SumHistograms(f,plots[nm],"enu",WJets_enu_hist);
+	SumHistograms(f,plots[nm],"munu",WJets_munu_hist);
+	SumHistograms(f,plots[nm],"taunu",WJets_taunu_hist);
+      }
       SumHistograms(f,plots[nm],"ZJetsToNuNu",ZJetsToNuNu_hist);
-      SumHistograms(f,plots[nm],"GJets",GJets_hist);
+      //VV
       SumHistograms(f,plots[nm],"MC_WW",VV_hist);
       SumHistograms(f,plots[nm],"MC_WZ",VV_hist);
       SumHistograms(f,plots[nm],"MC_ZZ",VV_hist);
@@ -515,6 +561,9 @@ int main(int argc, char* argv[]){
     }//loop on files
 
     (signal_hist.hist_ptr())->Scale(draw_signal_factor);
+
+    // std::cout << " DEBUG: " << WJets_hist.hist_ptr()->Integral() << " " << WJets_enu_hist.hist_ptr()->Integral()+WJets_munu_hist.hist_ptr()->Integral()+WJets_taunu_hist .hist_ptr()->Integral()<< std::endl;
+
 
 //     SetSignalStyle(signal_hist,2);
 //     SetDataStyle(data_hist);
@@ -534,9 +583,13 @@ int main(int argc, char* argv[]){
     SetBkgStyle(data_qcd_hist,7);
     SetBkgStyle(top_hist,5);
     SetBkgStyle(WJets_hist,6);
+    SetBkgStyle(VBFW_hist,6);
     SetBkgStyle(WJets_enu_hist,2);
     SetBkgStyle(WJets_munu_hist,kOrange);
     SetBkgStyle(WJets_taunu_hist,6);
+    SetBkgStyle(VBFW_enu_hist,2);
+    SetBkgStyle(VBFW_munu_hist,kOrange);
+    SetBkgStyle(VBFW_taunu_hist,6);
     SetBkgStyle(ZJetsToLL_hist,3);
     SetBkgStyle(ZJetsToNuNu_hist,3);
     SetBkgStyle(VBFZ_hist,3);
@@ -555,7 +608,7 @@ int main(int argc, char* argv[]){
       //GJets_hist.set_legend_text("#gamma + jets");
     }
     ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
-    if (!plot_wjets_comp) WJets_hist.set_legend_text("W+jets");
+    if (!plot_wjets_comp) WJets_hist.set_legend_text("W+jets, EWK W");
     else {
       WJets_taunu_hist.set_legend_text("W#rightarrow#tau#nu+jets");
       WJets_munu_hist.set_legend_text("W#rightarrow#mu#nu+jets");
@@ -593,24 +646,22 @@ int main(int argc, char* argv[]){
 
     plot.AddTH1PlotElement(VV_hist);
     plot.AddTH1PlotElement(top_hist);
-    if (!plot_wjets_comp) plot.AddTH1PlotElement(WJets_hist);
+    if (!plot_wjets_comp) {
+      plot.AddTH1PlotElement(WJets_hist);
+      plot.AddTH1PlotElement(VBFW_hist);
+    }
     else {
       plot.AddTH1PlotElement(WJets_enu_hist);
+      plot.AddTH1PlotElement(VBFW_enu_hist);
       plot.AddTH1PlotElement(WJets_munu_hist);
+      plot.AddTH1PlotElement(VBFW_munu_hist);
       plot.AddTH1PlotElement(WJets_taunu_hist);
+      plot.AddTH1PlotElement(VBFW_taunu_hist);
     }
     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
     plot.AddTH1PlotElement(ZJetsToLL_hist);
     
-//     plot.AddTH1PlotElement(ZJetsToNuNu_hist);
-//     plot.AddTH1PlotElement(ZJetsToLL_hist);
-//     plot.AddTH1PlotElement(VBFZ_hist);
-//     plot.AddTH1PlotElement(WJets_hist);
-//     plot.AddTH1PlotElement(top_hist);
-//     plot.AddTH1PlotElement(GJets_hist);
-//     plot.AddTH1PlotElement(qcd_hist);
-
-//moving signal before data screws up everything !!
+    //moving signal before data screws up everything !!
     plot.AddTH1PlotElement(VBFZ_hist);
     if (plot_qcd){
       plot.AddTH1PlotElement(GJets_hist);
@@ -650,8 +701,8 @@ int main(int argc, char* argv[]){
     plot.draw_ratio_hist = draw_ratio;
     plot.draw_signif = false;
     
-    string background_list = "VV+Top+WJets_enu+WJets_munu+WJets_taunu+ZJetsToLL+VBFZ+ZJetsToNuNu";
-    if (!plot_wjets_comp) background_list = "VV+Top+WJets+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    string background_list = "VV+Top+WJets_enu+WJets_munu+WJets_taunu+VBFW_enu+VBFW_munu+VBFW_taunu+ZJetsToLL+VBFZ+ZJetsToNuNu";
+    if (!plot_wjets_comp) background_list = "VV+Top+WJets+VBFW+ZJetsToLL+VBFZ+ZJetsToNuNu";
     if (plot_qcd) background_list += "+GJets+QCD";
     else if (plot_data_qcd) background_list += "+DataQCD";
     ic::RatioPlotElement ratio("DataOverMC","Data",background_list);
@@ -675,39 +726,52 @@ int main(int argc, char* argv[]){
 
       Utilities n_qcd = Utilities(Integral(qcd_hist.hist_ptr()),Error(qcd_hist.hist_ptr()));
       Utilities n_VV = Utilities(Integral(VV_hist.hist_ptr()),Error(VV_hist.hist_ptr()));
+      Utilities n_gjets = Utilities(Integral(GJets_hist.hist_ptr()),Error(GJets_hist.hist_ptr()));
+      //top
       Utilities n_top = Utilities(Integral(top_hist.hist_ptr()),Error(top_hist.hist_ptr()));
       Utilities n_ttbar = Utilities(Integral(ttbar_hist.hist_ptr()),Error(ttbar_hist.hist_ptr()));
       Utilities n_ttpowheg = Utilities(Integral(ttpowheg_hist.hist_ptr()),Error(ttpowheg_hist.hist_ptr()));
       Utilities n_singletop = Utilities(Integral(singletop_hist.hist_ptr()),Error(singletop_hist.hist_ptr()));
       Utilities n_tW = Utilities(Integral(tW_hist.hist_ptr()),Error(tW_hist.hist_ptr()));
+      //W+jets
       Utilities n_WJets = Utilities(Integral(WJets_hist.hist_ptr()),Error(WJets_hist.hist_ptr()));
+      Utilities n_EWKW = Utilities(Integral(VBFW_hist.hist_ptr()),Error(VBFW_hist.hist_ptr()));
       Utilities n_WJets_enu = Utilities(Integral(WJets_enu_hist.hist_ptr()),Error(WJets_enu_hist.hist_ptr()));
       Utilities n_WJets_munu = Utilities(Integral(WJets_munu_hist.hist_ptr()),Error(WJets_munu_hist.hist_ptr()));
       Utilities n_WJets_taunu = Utilities(Integral(WJets_taunu_hist.hist_ptr()),Error(WJets_taunu_hist.hist_ptr()));
+      Utilities n_EWKW_enu = Utilities(Integral(VBFW_enu_hist.hist_ptr()),Error(VBFW_enu_hist.hist_ptr()));
+      Utilities n_EWKW_munu = Utilities(Integral(VBFW_munu_hist.hist_ptr()),Error(VBFW_munu_hist.hist_ptr()));
+      Utilities n_EWKW_taunu = Utilities(Integral(VBFW_taunu_hist.hist_ptr()),Error(VBFW_taunu_hist.hist_ptr()));
+      Utilities n_WJets_tot = Utilities(n_WJets.rawNumber()+n_EWKW.rawNumber(),
+					sumSqErr(n_WJets.rawError(),n_EWKW.rawError()));
+      //Z+jets
       Utilities n_ZJets_nunu = Utilities(Integral(ZJetsToNuNu_hist.hist_ptr()),Error(ZJetsToNuNu_hist.hist_ptr()));
       Utilities n_ZJets_ll   = Utilities(Integral(ZJetsToLL_hist.hist_ptr()),Error(ZJetsToLL_hist.hist_ptr()));
       Utilities n_ZJets_vbf  = Utilities(Integral(VBFZ_hist.hist_ptr()),Error(VBFZ_hist.hist_ptr()));
+      Utilities n_ZJets_vbf_nunu  = Utilities(Integral(VBFZnunu_hist.hist_ptr()),Error(VBFZnunu_hist.hist_ptr()));
       Utilities n_ZJets = Utilities(n_ZJets_ll.rawNumber()+n_ZJets_nunu.rawNumber()+n_ZJets_vbf.rawNumber(),
-				    n_ZJets_ll.rawError()+n_ZJets_nunu.rawError()+n_ZJets_vbf.rawError());  
-      Utilities n_gjets = Utilities(Integral(GJets_hist.hist_ptr()),Error(GJets_hist.hist_ptr()));
+				    sumSqErr(n_ZJets_ll.rawError(),n_ZJets_nunu.rawError(),n_ZJets_vbf.rawError()));
+      //others  
       Utilities n_others = Utilities(n_gjets.rawNumber()+n_VV.rawNumber(),
-				     n_gjets.rawError()+n_VV.rawError());
+				     sumSqErr(n_gjets.rawError(),n_VV.rawError()));
       Utilities n_data = Utilities(Integral(data_hist.hist_ptr()),Error(data_hist.hist_ptr()));
       Utilities n_data_qcd = Utilities(Integral(data_qcd_hist.hist_ptr()),Error(data_qcd_hist.hist_ptr()));
       Utilities n_signal = Utilities(Integral(signal_hist.hist_ptr()),Error(signal_hist.hist_ptr()));
-      Utilities n_Tot = Utilities(n_qcd.rawNumber()+n_top.rawNumber()+n_WJets.rawNumber()+
+      Utilities n_Tot = Utilities(n_qcd.rawNumber()+n_top.rawNumber()+
+				  n_WJets.rawNumber()+n_EWKW.rawNumber()+
 				  n_ZJets.rawNumber()+n_others.rawNumber(),
-       				  n_qcd.rawError()+n_top.rawError()+n_WJets.rawError()+
-				  n_ZJets.rawError()+n_others.rawError());
+       				  sumSqErr(n_qcd.rawError(),n_top.rawError(),
+					   n_WJets.rawError(),n_EWKW.rawError(),
+					   n_ZJets.rawError(),n_others.rawError()));
        
       //std::cout.precision(2);
       //std::cout << std::scientific;
 
-      lTexOutput << selections[k] << " & " 
+      lTexOutput << latex[k] << " & " 
 		 << n_qcd.roundedResult() << " & " 
 		 << n_gjets.roundedResult() << " & "
 		 << n_top.roundedResult() << " & "
-		 << n_WJets.roundedResult() << " & "
+		 << n_WJets_tot.roundedResult() << " & "
 	//<< n_WJets_enu.roundedResult() << " & "
 	//<< n_WJets_munu.roundedResult() << " & "
 	//<< n_WJets_taunu.roundedResult() << " & "
@@ -723,26 +787,32 @@ int main(int argc, char* argv[]){
 		 << " \\\\ "
 		 << std::endl;
 
-      lDatOutput[k] << "QCD " << n_qcd.roundedNumber() << " " << n_qcd.roundedError() << std::endl
-		    << "GJets " << n_gjets.roundedNumber() << " " << n_gjets.roundedError() << std::endl
-		    << "Top " << n_top.roundedNumber() << " " << n_top.roundedError() <<  std::endl
-		    << "TTbar " << n_ttbar.roundedNumber() << " " << n_ttbar.roundedError() <<  std::endl
-		    << "TTbarPowheg " << n_ttpowheg.roundedNumber() << " " << n_ttpowheg.roundedError() <<  std::endl
-		    << "SingleTop " << n_singletop.roundedNumber() << " " << n_singletop.roundedError() <<  std::endl
-		    << "TW " << n_tW.roundedNumber() << " " << n_tW.roundedError() <<  std::endl
-		    << "WJets " << n_WJets.roundedNumber() << " " << n_WJets.roundedError() <<  std::endl
-		    << "WJets_enu " << n_WJets_enu.roundedNumber() << " " << n_WJets_enu.roundedError() <<  std::endl
-		    << "WJets_munu " << n_WJets_munu.roundedNumber() << " " << n_WJets_munu.roundedError() <<  std::endl
-		    << "WJets_taunu " << n_WJets_taunu.roundedNumber() << " " << n_WJets_taunu.roundedError() <<  std::endl
-		    << "ZJets " << n_ZJets.roundedNumber() << " " << n_ZJets.roundedError() <<  std::endl
-		    << "ZJets_ll " << n_ZJets_ll.roundedNumber() << " " << n_ZJets_ll.roundedError() <<  std::endl
-		    << "ZJets_nunu " << n_ZJets_nunu.roundedNumber() << " " << n_ZJets_nunu.roundedError() <<  std::endl
-		    << "ZJets_vbf " << n_ZJets_vbf.roundedNumber() << " " << n_ZJets_vbf.roundedError() <<  std::endl
-		    << "VV " << n_VV.roundedNumber() << " " << n_VV.roundedError() <<  std::endl;
+      lDatOutput[k] << "QCD " << n_qcd.rawNumber() << " " << n_qcd.rawError() << std::endl
+		    << "GJets " << n_gjets.rawNumber() << " " << n_gjets.rawError() << std::endl
+		    << "Top " << n_top.rawNumber() << " " << n_top.rawError() <<  std::endl
+		    << "TTbar " << n_ttbar.rawNumber() << " " << n_ttbar.rawError() <<  std::endl
+		    << "TTbarPowheg " << n_ttpowheg.rawNumber() << " " << n_ttpowheg.rawError() <<  std::endl
+		    << "SingleTop " << n_singletop.rawNumber() << " " << n_singletop.rawError() <<  std::endl
+		    << "TW " << n_tW.rawNumber() << " " << n_tW.rawError() <<  std::endl
+		    << "WJets " << n_WJets_tot.rawNumber() << " " << n_WJets_tot.rawError() <<  std::endl
+		    << "QCD_WJets " << n_WJets.rawNumber() << " " << n_WJets.rawError() <<  std::endl
+		    << "EWK_WJets " << n_EWKW.rawNumber() << " " << n_EWKW.rawError() <<  std::endl
+		    << "QCD_WJets_enu " << n_WJets_enu.rawNumber() << " " << n_WJets_enu.rawError() <<  std::endl
+		    << "EWK_WJets_enu " << n_EWKW_enu.rawNumber() << " " << n_EWKW_enu.rawError() <<  std::endl
+		    << "QCD_WJets_munu " << n_WJets_munu.rawNumber() << " " << n_WJets_munu.rawError() <<  std::endl
+		    << "EWK_WJets_munu " << n_EWKW_munu.rawNumber() << " " << n_EWKW_munu.rawError() <<  std::endl
+		    << "QCD_WJets_taunu " << n_WJets_taunu.rawNumber() << " " << n_WJets_taunu.rawError() <<  std::endl
+		    << "EWK_WJets_taunu " << n_EWKW_taunu.rawNumber() << " " << n_EWKW_taunu.rawError() <<  std::endl
+		    << "ZJets " << n_ZJets.rawNumber() << " " << n_ZJets.rawError() <<  std::endl
+		    << "ZJets_ll " << n_ZJets_ll.rawNumber() << " " << n_ZJets_ll.rawError() <<  std::endl
+		    << "ZJets_nunu " << n_ZJets_nunu.rawNumber() << " " << n_ZJets_nunu.rawError() <<  std::endl
+		    << "ZJets_vbf " << n_ZJets_vbf.rawNumber() << " " << n_ZJets_vbf.rawError() <<  std::endl
+		    << "ZJets_vbf_nunu " << n_ZJets_vbf_nunu.rawNumber() << " " << n_ZJets_vbf_nunu.rawError() <<  std::endl
+		    << "VV " << n_VV.rawNumber() << " " << n_VV.rawError() <<  std::endl;
       if (plot_data_qcd)
-	lDatOutput[k] << "Data_QCD " << n_data_qcd.roundedNumber() << " " << n_data_qcd.roundedError() <<  std::endl;
-      lDatOutput[k] << "Data " << n_data.roundedNumber() << " " << n_data.roundedError() <<  std::endl
-		    << "Signal " << n_signal.roundedNumber() << " " << n_signal.roundedError() 
+	lDatOutput[k] << "Data_QCD " << n_data_qcd.rawNumber() << " " << n_data_qcd.rawError() <<  std::endl;
+      lDatOutput[k] << "Data " << n_data.rawNumber() << " " << n_data.rawError() <<  std::endl
+		    << "Signal " << n_signal.rawNumber() << " " << n_signal.rawError() 
 		    << std::endl;
 
       lDatOutput[k].close();

@@ -12,30 +12,58 @@ using std::showpos;
 using std::noshowpos;
 
 //enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL,DPhiQCD};
-enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL_noCJV,DPhiQCD_noCJV,CJVpass,CJVfail,DPhiSIGNAL_CJVpass,DPhiQCD_CJVpass};
-enum Sample {QCD,GJets,Top,TTbar,SingleTop,TW,WJets,WJets_enu,WJets_munu,WJets_taunu,ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,VV,Data,Signal};
-
+//enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL_noCJV,DPhiQCD_noCJV,CJVfail,DPhiSIGNAL_CJVfail,DPhiQCD_CJVfail,CJVpass,DPhiSIGNAL_CJVpass,DPhiQCD_CJVpass};
+enum Selection {Trig,Lep,JetPair,DEta,MET,TightMjj,DPhiSIGNAL_noCJV,DPhiQCD_noCJV,CJVpass,DPhiSIGNAL_CJVpass,DPhiQCD_CJVpass};
+enum Sample {QCD,GJets,Top,TTbar,TTbarPowheg,SingleTop,TW,
+	     WJets,QCD_WJets,EWK_WJets,QCD_WJets_enu,EWK_WJets_enu,QCD_WJets_munu,EWK_WJets_munu,QCD_WJets_taunu,EWK_WJets_taunu,
+	     ZJets,ZJets_ll,ZJets_nunu,ZJets_vbf,ZJets_vbf_nunu,
+	     VV,Data,Signal};
 
 struct events {
   std::string sample;
   double number;
-  double error;
+  double stat;
+  double syst;
+  double tauidSyst;
+  std::pair<double,double> jerSyst;// = std::pair<double,double>(0,0);
+  std::pair<double,double> jesSyst;
+  std::pair<double,double> puSyst;
+
+  double error() const{
+    return sqrt(pow(stat,2)+pow(syst,2));
+  }
+  
+  std::pair<double,double> totalError() const{
+    return std::pair<double,double>(sqrt(pow(stat,2)+pow(totalSyst().first,2)),
+				    -sqrt(pow(stat,2)+pow(totalSyst().second,2)));
+  }
+  
+  std::pair<double,double> totalSyst() const{
+    return std::pair<double,double>(sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.first,2)+pow(jesSyst.first,2)+pow(puSyst.first,2)),
+				    -sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.second,2)+pow(jesSyst.second,2)+pow(puSyst.second,2)));
+  }
+
+  double systSym() const {
+    return std::max(fabs(totalSyst().first),fabs(totalSyst().second));
+  }
 
   void operator+=(const events & rhs){
     this->number += rhs.number;
-    this->error = sqrt(pow(this->error,2)+pow(rhs.error,2));
+    this->stat = sqrt(pow(this->stat,2)+pow(rhs.stat,2));
+    this->syst = sqrt(pow(this->syst,2)+pow(rhs.syst,2));
   }
 
   void operator-=(const events & rhs){
     this->number -= rhs.number;
-    this->error = sqrt(pow(this->error,2)+pow(rhs.error,2));
+    this->stat = sqrt(pow(this->stat,2)+pow(rhs.stat,2));
+    this->syst = sqrt(pow(this->syst,2)+pow(rhs.syst,2));
   }
 
 };
 
 double sumSqErr(events evt1, events evt2){
   if (evt1.number==0 || evt2.number==0) return 0;
-  return sqrt(pow(evt1.error/evt1.number,2)+pow(evt2.error/evt2.number,2));
+  return sqrt(pow(evt1.error()/evt1.number,2)+pow(evt2.error()/evt2.number,2));
 }
 
 struct efficiency{
@@ -51,7 +79,7 @@ struct efficiency{
   double error() const{
     if (den.number==0) return 0;
     //return 1/den.number*sqrt(num.number*(1-eff()));
-    return eff()*sqrt(pow(num.error/num.number,2)+pow(den.error/den.number,2)-2*(num.error*den.error/(num.number*den.number)));
+    return eff()*sqrt(pow(num.error()/num.number,2)+pow(den.error()/den.number,2)-2*(num.error()*den.error()/(num.number*den.number)));
   }
 
 };
@@ -59,8 +87,7 @@ struct efficiency{
 std::ostream & operator<<(std::ostream & aOs, const events & evt){
   aOs //<< "$" << evt.sample << " $ & "
       << "$" <<  evt.number
-      << " \\pm " << evt.error
-      << "$";// \\\\"
+      << " \\pm " << evt.stat << " (stat) \\pm " << evt.syst << " (mcStat) $";// \\\\"
   //<< std::endl;
   return aOs;
 }
@@ -77,7 +104,7 @@ std::ostream & operator<<(std::ostream & aOs, const efficiency & eff){
 std::istream & operator>>(std::istream & is, events & evt){
   is>>evt.sample; 
   is>>evt.number;
-  is>>evt.error; 
+  is>>evt.stat; 
   return is; 
 }
 
@@ -109,7 +136,6 @@ int extractWJetsBkg(){//main
   lSelVecSignal.push_back("DPhiSIGNAL_noCJV");
   lSelVecSignal.push_back("DPhiQCD_noCJV");
   lSelVecSignal.push_back("CJVpass");
-  lSelVecSignal.push_back("CJVfail");
   lSelVecSignal.push_back("DPhiSIGNAL_CJVpass");
   lSelVecSignal.push_back("DPhiQCD_CJVpass");
 
@@ -123,7 +149,6 @@ int extractWJetsBkg(){//main
   lSelVecControl.push_back("DPhiSIGNAL_noCJV");
   lSelVecControl.push_back("DPhiQCD_noCJV");
   lSelVecControl.push_back("CJVpass");
-  lSelVecControl.push_back("CJVfail");
   lSelVecControl.push_back("DPhiSIGNAL_CJVpass");
   lSelVecControl.push_back("DPhiQCD_CJVpass");
 
@@ -137,26 +162,44 @@ int extractWJetsBkg(){//main
   lSelVecTau.push_back("DPhiSIGNAL_noCJV");
   lSelVecTau.push_back("DPhiQCD_noCJV");
   lSelVecTau.push_back("CJVpass");
-  lSelVecTau.push_back("CJVfail");
   lSelVecTau.push_back("DPhiSIGNAL_CJVpass");
   lSelVecTau.push_back("DPhiQCD_CJVpass");
 
-  //std::string lSuffix = "";
-  const unsigned nWeights = 6;
-  std::string lSuffix[nWeights] = {"","_pu","_puUp","_puDown","_pu_trig","_pu_trig_idiso"};
+  std::vector<std::string> latex;
+  latex.push_back("HLTMetClean");
+  latex.push_back("LepSel");
+  latex.push_back("JetPair");
+  latex.push_back("DEta");
+  latex.push_back("MET");
+  latex.push_back("TightMjj");
+  latex.push_back("SIG noCJV");
+  latex.push_back("QCD noCJV");
+  latex.push_back("CJVpass");
+  latex.push_back("SIG CJVpass");
+  latex.push_back("QCD CJVpass");
 
-  bool doTaus = true;
+  //std::string lSuffix = "";
+  const unsigned nWeights = 4;
+  std::string lSuffix[nWeights] = {"","_pu","_pu_trig","_pu_trig_idiso"};
+
+  bool doTaus = false;
   bool docrosschecktau=false;
   bool dojes = false;
   bool dojer = false;
   bool doWeights = false;
 
-  //std::string TOPDIR = "../TABLES_mjj1200/";
-  std::string TOPDIR = "../oldanalysisruns/080713_taunominaltightlepiddiscr/TABLES/";
+  const unsigned nSysts = 7;
+  const unsigned nCh = 4;
+  std::string lChannel[nCh] = {"nunu","enu","munu","taunu"};
+
+  std::string TOPDIR = "../TABLES/";
+  //std::string TOPDIR = "../oldanalysisruns/080713_taunominaltightlepiddiscr/TABLES/";
 
   const unsigned nSteps = lSelVecSignal.size();
 
-  std::string SYST[5] = {"JESUP","JESDOWN","JERBETTER","JERWORSE",""};//Order so numbers from systematics can be saved to be put in central table as syst errors
+  //reserve two slots for the puup and down
+  std::string SYST[nSysts] = {"JESUP","JESDOWN","JERBETTER","JERWORSE","","",""};//Order so numbers from systematics can be saved to be put in central table as syst errors
+  std::string lSuffixSyst[nSysts] = {"","","","","_puUp","_puDown",""};
 
   unsigned MET[3] = {130,0,70};
 
@@ -169,25 +212,33 @@ int extractWJetsBkg(){//main
     std::cout << " -- Processing MET " << MET[iMET] << std::endl;
 
     //create variables to store systB numbers
-    events systevents[2][3][5][4];//[iqcd][ich][isyst][lnsmc,lncmc,lnsdata,lncdata]
-    double systdiff[2][3][4][4];
-    double systperc[2][3][4][4];
-    double totalsystupshift[2][3][4];//[iqcd][ich][lnsmc,lncmc,lnsdata,lncdata]
-    double totalsystdownshift[2][3][4];
-    double totalsystupperc[2][3][4];
-    double totalsystdownperc[2][3][4];
+    double systdiff[2][nCh-1][nSysts-1][4];
+    double systperc[2][nCh-1][nSysts-1][4];
+    double totalsystupshift[2][nCh-1][4];//[iqcd][ich][lnsmc,lncmc,lnsdata,lncdata]
+    double totalsystdownshift[2][nCh-1][4];
+    double totalsystupperc[2][nCh-1][4];
+    double totalsystdownperc[2][nCh-1][4];
+    bool fileExists[nCh][nSysts];
+    for (unsigned iCh(0); iCh<nCh;++iCh){
+      for (unsigned iSyst(0); iSyst<nSysts; ++iSyst){
+	fileExists[iCh][iSyst] = true;
+      }
+    }
 
+    events systevents[2][nCh-1][nSysts][4];//[iqcd][ich][isyst][lnsmc,lncmc,lnsdata,lncdata]
+    events result_nocjv[nSysts];
+    events result[nSysts];
 
     int isyststart=0;
     if(!dojes&&!dojer){
-      isyststart=4;
+      isyststart=nSysts-1;
     }
-    for (unsigned iSyst(isyststart); iSyst<5; ++iSyst){//loop over different systematics NOTE TO JUST DO CENTRAL CHANGE to iSyst(4) don't do iSyst<1
+    for (unsigned iSyst(isyststart); iSyst<nSysts; ++iSyst){//loop over different systematics NOTE TO JUST DO CENTRAL CHANGE to iSyst(nSysts-1) don't do iSyst<1
       std::cout<< "--Processing systematic " <<iSyst<<std::endl;
       std::ostringstream lFolder;
       lFolder << "MET" << MET[iMET] << "/" << SYST[iSyst] << "/";
       
-      evtsArray lSel[4][nSteps];
+      evtsArray lSel[nCh][nSteps];
       
 	for (unsigned iS(0); iS<nSteps; ++iS){//loop on steps
 	  
@@ -195,103 +246,144 @@ int extractWJetsBkg(){//main
 	  std::ostringstream lName;
 	  
 	  
-	  lName << TOPDIR << "/nunu/" << lFolder.str() << "/SummaryTable_" << lSelVecSignal[iS] << lSuffix[iW] << ".dat";
+	  lName << TOPDIR << "/nunu/" << lFolder.str() << "/SummaryTable_" << lSelVecSignal[iS] << lSuffix[iW] << lSuffixSyst[iSyst]  << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
 	    cerr<<"Unable to open file: "<<lName.str()<<endl;
-	    return 1; 
+	    fileExists[0][iSyst] = false;
+	    //return 1; 
 	  }
-	  lTable>>lSel[0][iS];
-	  lTable.close();
+	  else {
+	    lTable>>lSel[0][iS];
+	    lTable.close();
+	  }
 	  
 	  lName.str("");
-	  lName << TOPDIR << "/enu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << ".dat";
+	  lName << TOPDIR << "/enu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << lSuffixSyst[iSyst] << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
 	    cerr<<"Unable to open file: "<<lName.str()<<endl;
-	    return 1; 
+	    fileExists[1][iSyst] = false;
+	    //return 1; 
 	  }
-	  lTable>>lSel[1][iS];
-	  lTable.close();
+	  else {
+	    lTable>>lSel[1][iS];
+	    lTable.close();
+	  }
 	  
 	  lName.str("");
-	  lName << TOPDIR << "/munu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << ".dat";
+	  lName << TOPDIR << "/munu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << lSuffixSyst[iSyst] << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
 	    cerr<<"Unable to open file: "<<lName.str()<<endl;
-	    return 1; 
+	    fileExists[2][iSyst] = false;
+	    //return 1; 
 	  }
-	  lTable>>lSel[2][iS];
-	  lTable.close();
+	  else {
+	    lTable>>lSel[2][iS];
+	    lTable.close();
+	  }
 
 	  if (doTaus){
 	    //if (iS==nSteps-1) continue;
 	    lName.str("");
-	    lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecTau[iS] << lSuffix[iW] << ".dat";
+	    lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecTau[iS] << lSuffix[iW] << lSuffixSyst[iSyst] << ".dat";
 	    lTable.open(lName.str().c_str());
 	    if(!lTable.is_open()){
 	      cerr<<"Unable to open file: "<<lName.str()<<endl;
-	      return 1; 
+	      fileExists[3][iSyst] = false;
+	      //return 1; 
 	    }
-	    lTable>>lSel[3][iS];
-	    lTable.close();
+	    else {
+	      lTable>>lSel[3][iS];
+	      lTable.close();
+	    }
 	  }
 	}//loop on steps
 	
 	
+	std::cout << " -- TABLES have been read in." << std::endl;
+
 	//print Wjets components
-	std::string lChannel[4] = {"nunu","enu","munu","taunu"};
 	for (unsigned iCh(0); iCh< (doTaus ? 4 : 3); ++iCh){//loop on channel
+	  if (!fileExists[iCh][iSyst]) continue;
+	  std::cout << " -- Processing channel: " << lChannel[iCh] << std::endl;
+
 	  std::ostringstream lName;
-	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/WandZJetsTable" << lSuffix[iW] << ".txt";
+	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/WJetsTable" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
 	  
 	  std::ofstream lOutfile;
 	  lOutfile.open(lName.str().c_str());
 	  
-	  lOutfile << "\\begin{tabular}{|l|c|c|c||c|c|c|}" << std::endl
+	  lOutfile << "\\begin{tabular}{|l|c|c|c|c|c|c|}" << std::endl
 		   << "\\hline" << std::endl
-		   << "Step & W$\\rightarrow e\\nu$ & W$\\rightarrow\\mu\\nu$ & W$\\rightarrow\\tau\\nu$ & Z$\\rightarrow\\nu\\nu$ & Z$\\rightarrow$ll & EWK Z+2j \\\\" << std::endl
+		   << "Step & QCD W$\\rightarrow e\\nu$ & EWK W$\\rightarrow e\\nu$ & QCD W$\\rightarrow\\mu\\nu$ & EWK W$\\rightarrow\\mu\\nu$ & QCD W$\\rightarrow\\tau\\nu$ & EWK W$\\rightarrow\\tau\\nu$  \\\\" << std::endl
+		   << "\\hline" << std::endl;
+
+	  for (unsigned iS(5); iS<nSteps; ++iS){//loop on steps
+
+	    lOutfile << latex[iS];
+	    lOutfile << std::setprecision(3) << " &  $"
+		     << lSel[iCh][iS][QCD_WJets_enu].number  << "\\pm" << lSel[iCh][iS][QCD_WJets_enu].error() << "$ & $" 
+		     << lSel[iCh][iS][EWK_WJets_enu].number  << "\\pm" << lSel[iCh][iS][EWK_WJets_enu].error() << "$ & $" 
+		     << lSel[iCh][iS][QCD_WJets_munu].number  << "\\pm" << lSel[iCh][iS][QCD_WJets_munu].error()  << "$ & $" 
+		     << lSel[iCh][iS][EWK_WJets_munu].number  << "\\pm" << lSel[iCh][iS][EWK_WJets_munu].error()  << "$ & $" 
+		     << lSel[iCh][iS][QCD_WJets_taunu].number  << "\\pm" << lSel[iCh][iS][QCD_WJets_taunu].error() << "$ & $" 
+		     << lSel[iCh][iS][EWK_WJets_taunu].number  << "\\pm" << lSel[iCh][iS][EWK_WJets_taunu].error() 
+		     << "$ \\\\" << std::endl;
+	  }//loop on steps
+	  lOutfile << "\\hline" << std::endl
+		   << "\\end{tabular}" << std::endl;
+	  lOutfile.close();
+	  
+	  lName.str("");
+	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/ZJetsTable" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
+	  
+	  lOutfile.open(lName.str().c_str());
+	  
+	  lOutfile << "\\begin{tabular}{|l|c|c|c|c|}" << std::endl
 		   << "\\hline" << std::endl
-		   << "$\\Delta\\phi<1.0$ &  $" 
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_enu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_enu].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_munu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_munu].error  << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_taunu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][WJets_taunu].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_nunu].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_nunu].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_ll].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_ll].error << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][ZJets_vbf].error
-		   << "$ \\\\" << std::endl
-		   << "$\\Delta\\phi > 2.6$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][WJets_enu].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][WJets_enu].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][WJets_munu].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][WJets_munu].error  << "$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][WJets_taunu].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][WJets_taunu].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][ZJets_nunu].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][ZJets_nunu].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][ZJets_ll].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][ZJets_ll].error << "$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][ZJets_vbf].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][ZJets_vbf].error
-		   << "$ \\\\" << std::endl
-		   << "\\hline" << std::endl
+		   << "Step & Z$\\rightarrow\\nu\\nu$ & EWK Z->nunu+2j  & Z$\\rightarrow$ll & EWK Z->ll+2j \\\\" << std::endl
+		   << "\\hline" << std::endl;
+
+	  for (unsigned iS(5); iS<nSteps; ++iS){//loop on steps
+
+	    lOutfile << latex[iS];
+	    lOutfile << std::setprecision(3) << " &  $"
+		     << lSel[iCh][iS][ZJets_nunu].number  << "\\pm" << lSel[iCh][iS][ZJets_nunu].error() << "$ & $" 
+		     << lSel[iCh][iS][ZJets_vbf_nunu].number  << "\\pm" << lSel[iCh][iS][ZJets_vbf_nunu].error() << "$ & $" 
+		     << lSel[iCh][iS][ZJets_ll].number  << "\\pm" << lSel[iCh][iS][ZJets_ll].error() << "$ & $" 
+		     << lSel[iCh][iS][ZJets_vbf].number-lSel[iCh][iS][ZJets_vbf_nunu].number << "\\pm" 
+		     << sqrt(pow(lSel[iCh][iS][ZJets_vbf].error(),2)-pow(lSel[iCh][iS][ZJets_vbf_nunu].error(),2))
+		     << "$ \\\\" << std::endl;
+	  }//loop on steps
+	  lOutfile << "\\hline" << std::endl
 		   << "\\end{tabular}" << std::endl;
 	  lOutfile.close();
 
 	  lName.str("");
-	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/TopTable" << lSuffix[iW] << ".txt";
+	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/TopTable" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
 	  
 	  lOutfile.open(lName.str().c_str());
 	  
+	  
+	  lOutfile << "\\begin{tabular}{|l|c|c|c|c|}" << std::endl
+		   << "\\hline" << std::endl
+		   << "Step & $t\\bar{t}$ & $t\\bar{t}$ POWHEG & single top & $t,\\bar{t}\\rightarrow tW$  \\\\" << std::endl
+		   << "\\hline" << std::endl;
 
-	  lOutfile << "\\begin{tabular}{|l|c|c|c|}" << std::endl
-		   << "\\hline" << std::endl
-		   << "Step & $t\\bar{t}$ & single top & $t,\\bar{t}\\rightarrow tW$  \\\\" << std::endl
-		   << "\\hline" << std::endl
-		   << "$\\Delta\\phi<1.0$ &  $"
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][TTbar].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][TTbar].error  << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][SingleTop].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][SingleTop].error  << "$ & $" 
-		   << lSel[iCh][DPhiSIGNAL_CJVpass][TW].number  << "\\pm" << lSel[iCh][DPhiSIGNAL_CJVpass][TW].error << "$ \\\\" << std::endl;
-	  lOutfile << "$\\Delta\\phi > 2.6$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][TTbar].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][TTbar].error  << "$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][SingleTop].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][SingleTop].error  << "$ & $" 
-		   << lSel[iCh][DPhiQCD_CJVpass][TW].number  << "\\pm" << lSel[iCh][DPhiQCD_CJVpass][TW].error 
-		   << "$ \\\\" << std::endl
-		   << "\\hline" << std::endl
+
+	  for (unsigned iS(5); iS<nSteps; ++iS){//loop on steps
+
+	    lOutfile << latex[iS];
+	    lOutfile << std::setprecision(3) << " &  $"
+		     << lSel[iCh][iS][TTbar].number  << "\\pm" << lSel[iCh][iS][TTbar].error()  << "$ & $" 
+		     << lSel[iCh][iS][TTbarPowheg].number  << "\\pm" << lSel[iCh][iS][TTbarPowheg].error()  << "$ & $" 
+		     << lSel[iCh][iS][SingleTop].number  << "\\pm" << lSel[iCh][iS][SingleTop].error()  << "$ & $" 
+		     << lSel[iCh][iS][TW].number  << "\\pm" << lSel[iCh][iS][TW].error() << "$ \\\\" << std::endl;
+	  }//loop on steps
+
+	  lOutfile << "\\hline" << std::endl
 		   << "\\end{tabular}" << std::endl;
 	  lOutfile.close();
 	  
@@ -299,93 +391,143 @@ int extractWJetsBkg(){//main
 	
 
 	if (doTaus){
+	  if (!fileExists[3][iSyst] || !fileExists[0][iSyst]) continue;
+	  std::cout << " -- Extracting tau results" << std::endl;
 
 	  events nData = lSel[3][DPhiSIGNAL_noCJV][Data];
 	  events nBkg = lSel[3][DPhiSIGNAL_noCJV][Top];
 	  nBkg += lSel[3][DPhiSIGNAL_noCJV][ZJets];
 	  nBkg += lSel[3][DPhiSIGNAL_noCJV][VV];
+	  events nBkg_cjv = lSel[3][DPhiSIGNAL_CJVpass][Top];
+	  nBkg_cjv += lSel[3][DPhiSIGNAL_CJVpass][ZJets];
+	  nBkg_cjv += lSel[3][DPhiSIGNAL_CJVpass][VV];
 	  efficiency eps_tau;
-	  eps_tau.num = lSel[3][DPhiSIGNAL_noCJV][WJets_taunu];
-	  //eps_tau.den = lSel[0][DPhiSIGNAL_CJVpass_noCJV][WJets_taunu];
-	  //Access number in signal region before CJV:
-	  //Run interactively:
-	  //cd output/nunu/MET130
-	  //hadd MC_Wtaunu.root MC_W*JetsToLNu_taunu.root
-	  //cd TightMjj
-	  //dphijj->Scale(19600*37509./76102995)
-	  //double err=0
-	  // dphijj->IntegralAndError(0,32,err)
-	  //dphijj->GetBinLowEdge(32)
-	  //(const Double_t)9.73895999999999984e-01
-	  //hardcode result:
-	  //mjj 1200
-	  //eps_tau.den.number = 131;
-	  //eps_tau.den.error = 10;
-	  eps_tau.den = lSel[0][DPhiSIGNAL_noCJV][WJets_taunu];
-	  //eps_tau.den.number = 167;
-	  //eps_tau.den.error = 11;
+	  eps_tau.num = lSel[3][DPhiSIGNAL_noCJV][QCD_WJets_taunu];
+	  eps_tau.num += lSel[3][DPhiSIGNAL_noCJV][EWK_WJets_taunu];
+	  eps_tau.den = lSel[0][DPhiSIGNAL_noCJV][QCD_WJets_taunu];
+	  eps_tau.den += lSel[0][DPhiSIGNAL_noCJV][EWK_WJets_taunu];
+	  efficiency eps_tau_noew;
+	  eps_tau_noew.num = lSel[3][DPhiSIGNAL_noCJV][QCD_WJets_taunu];
+	  eps_tau_noew.den = lSel[0][DPhiSIGNAL_noCJV][QCD_WJets_taunu];
+	  efficiency eps_tau_cjvpass;
+	  eps_tau_cjvpass.num = lSel[3][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
+	  eps_tau_cjvpass.num += lSel[3][DPhiSIGNAL_CJVpass][EWK_WJets_taunu];
+	  eps_tau_cjvpass.den = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
+	  eps_tau_cjvpass.den += lSel[0][DPhiSIGNAL_CJVpass][EWK_WJets_taunu];
+	  efficiency eps_tau_cjvpass_noew;
+	  eps_tau_cjvpass_noew.num = lSel[3][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
+	  eps_tau_cjvpass_noew.den = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
 
 	  efficiency eps_tau_cjv;
-	  eps_tau_cjv.num = lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu];
+	  eps_tau_cjv.num = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
+	  eps_tau_cjv.num += lSel[0][DPhiSIGNAL_CJVpass][EWK_WJets_taunu];
 	  eps_tau_cjv.den.number = eps_tau.den.number;
-	  eps_tau_cjv.den.error = eps_tau.den.error;
+	  eps_tau_cjv.den.stat = eps_tau.den.stat;
+	  efficiency eps_tau_cjv_noew;
+	  eps_tau_cjv_noew.num = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
+	  eps_tau_cjv_noew.den.number = eps_tau.den.number;
+	  eps_tau_cjv_noew.den.stat = eps_tau.den.stat;
 
 	  events nDataW = nData;
 	  nDataW -= nBkg;
 	  if(docrosschecktau){
-	    nDataW -= lSel[3][DPhiSIGNAL_noCJV][WJets_enu];
+	    nDataW -= lSel[3][DPhiSIGNAL_noCJV][QCD_WJets_enu];
+	    nDataW -= lSel[3][DPhiSIGNAL_noCJV][EWK_WJets_enu];
 	  }
-	  events result_nocjv = nDataW;
-	  result_nocjv.number = nDataW.number/eps_tau.eff();
-	  result_nocjv.error = sqrt(pow(nDataW.error/eps_tau.eff(),2)+pow(nDataW.number*eps_tau.error()/pow(eps_tau.eff(),2),2));
+	  result_nocjv[iSyst] = nDataW;
+	  result_nocjv[iSyst].number = nDataW.number/eps_tau.eff();
+	  result_nocjv[iSyst].stat = nDataW.stat;
+	  result_nocjv[iSyst].syst = result_nocjv[iSyst].number*sqrt(pow(eps_tau.error()/eps_tau.eff(),2));
+	  result_nocjv[iSyst].tauidSyst = 0.08*result_nocjv[iSyst].number;
 
-	  events result = nDataW;
-	  result.number = nDataW.number*lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number;
-	  result.error = result.number*sqrt(pow(nDataW.error/nDataW.number,2));//+pow(lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].error/lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number,2));
+	  events effProduct;
+	  effProduct.number = eps_tau_cjv.num.number / eps_tau.num.number;
+	  effProduct.stat = effProduct.number*sqrt(pow(eps_tau_cjv.num.stat/eps_tau_cjv.num.number,2)+pow(eps_tau.num.stat/eps_tau.num.number,2));
+	  result[iSyst] = nDataW;
+	  result[iSyst].number = nDataW.number*effProduct.number;
+	  result[iSyst].stat = result[iSyst].number*sqrt(pow(nDataW.stat/nDataW.number,2));
 
-	  events crosscheck = result_nocjv;
-	  crosscheck.number = result_nocjv.number*eps_tau_cjv.eff();
-	  crosscheck.error = crosscheck.number*sqrt(pow(result_nocjv.error/result_nocjv.number,2)+pow(eps_tau_cjv.error()/eps_tau_cjv.eff(),2));
+	  result[iSyst].syst=sqrt(pow(effProduct.stat/effProduct.number,2))*result[iSyst].number;
+	  result[iSyst].tauidSyst = 0.08*result[iSyst].number;
 
-	  double totsyst=0.;
-	  double wenusyst=0.;
-	  double multsyst=sqrt(pow(lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].error/lSel[0][DPhiSIGNAL_CJVpass][WJets_taunu].number,2)+pow(lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].error/lSel[3][DPhiSIGNAL_noCJV][WJets_taunu].number,2)+pow(0.08,2))*result.number;//sqrt(pow(eps_tau.error()/eps_tau.eff(),2)+pow(eps_tau_cjv.error()/eps_tau_cjv.eff(),2)+pow(0.08,2))*result.number;
-	  //double multsyst=0.08*result.number;
-	  if(!docrosschecktau){
-	    wenusyst=lSel[3][DPhiSIGNAL_noCJV][WJets_enu].number;
-	    totsyst=sqrt(pow(multsyst,2)+pow(wenusyst,2));
-	  }
-	  else{
-	    totsyst=multsyst;
-	  }
+	  events result_nocjv_noew = nDataW;
+	  result_nocjv_noew.number = nDataW.number/eps_tau_noew.eff();
+	  result_nocjv_noew.stat = nDataW.stat;
+	  result_nocjv_noew.syst = nDataW.number*eps_tau_noew.error()/pow(eps_tau_noew.eff(),2);
 
-	  std::cout << "------ taunu estimates:---------" << std::endl
-		    << "nData = $" << nData.number  << "\\pm " << nData.error  << "$" << std::endl
-		    << "nBkg = $" << nBkg.number  << "\\pm " << nBkg.error  << "$" << std::endl
-		    << "eff_tau = " << eps_tau << std::endl
-	            << eps_tau.num <<std::endl
-	            << eps_tau.den <<std::endl
-		    << "*** result no CJV = $" << result_nocjv.number  << "\\pm " << result_nocjv.error << "$" << std::endl
-		    << "eff_tau_cjv = " << eps_tau_cjv << std::endl
-	            << eps_tau_cjv.num <<std::endl
-	            << eps_tau_cjv.den <<std::endl
-		    << "*** result CJV = $" << result.number  << "\\pm " << result.error << " \\pm " << totsyst<< "$" << std::endl
-		    << "***crosscheck = $" << crosscheck.number << "\\pm " << crosscheck.error << "$" << std::endl
-	            << "***syst breakdown:"<<std::endl
-	            << "eps_tau_id:" << eps_tau.error()/eps_tau.eff()*result.number <<std::endl
-	            << "eps_tau_cjv:" << eps_tau_cjv.error()/eps_tau_cjv.eff()*result.number<<std::endl
-	            << "data/mc scale factor:"<<0.08*result.number<<std::endl
-	            << "remaining W->enu:"<<wenusyst<<std::endl
-		    << "****** MC Estimates: $" << eps_tau.den.number << "\\pm " << eps_tau.den.error << "$, $" << lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].number << "\\pm " << lSel[0][DPhiSIGNAL_noCJV][WJets_taunu].error << "$" << std::endl
-	    ;
+	  events effProduct_noew;
+	  effProduct_noew.number = eps_tau_cjv_noew.num.number / eps_tau_noew.num.number;
+	  effProduct_noew.stat = effProduct_noew.number*sqrt(pow(eps_tau_cjv_noew.num.stat/eps_tau_cjv_noew.num.number,2)+pow(eps_tau_noew.num.stat/eps_tau_noew.num.number,2));
+	  events result_noew = nDataW;
+	  result_noew.number = nDataW.number*effProduct_noew.number;
+	  result_noew.stat = result_noew.number*sqrt(pow(nDataW.stat/nDataW.number,2));
+
+	  result_noew.syst=sqrt(pow(effProduct_noew.stat/effProduct_noew.number,2)+pow(0.08,2))*result_noew.number;
+
+	  //AMM- commenting this for the moment
+	  // 	  if(!docrosschecktau){
+	  // 	    wenusyst=lSel[3][DPhiSIGNAL_noCJV][WJets_enu].number;
+	  // 	    totsyst=sqrt(pow(multsyst,2)+pow(wenusyst,2));
+	  // 	  }
+	  // 	  else{
+	  // 	    totsyst=multsyst;
+	  // 	  }
+
+	  std::ostringstream lName;
+	  lName.str("");
+	  lName << TOPDIR <<"/" << lChannel[3] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/DataDrivenWJetsTable_signal" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
 	  
-	}
+ 	  std::ofstream lOutfile;
+ 	  lOutfile.open(lName.str().c_str());
+	  
+ 	  lOutfile << "\\begin{tabular}{|l|c|c|c|c|}" << std::endl
+ 		   << "\\hline" << std::endl
+ 		   << " & \\multicolumn{2}{c|}{no CJV} & \\multicolumn{2}{c|}{CJV} \\\\" << std::endl
+ 		   << "\\hline" << std::endl
+ 		   << " & $\\nu\\nu$ & $\\tau\\nu$ & $\\nu\\nu$ & $\\tau\\nu$ \\\\" << std::endl
+		   << "\\hline" << std::endl
+		   << std::setprecision(3)
+ 		   << "nData & - & $" << nData.number  << "\\pm " << nData.error()  << "$ & - & " << lSel[3][DPhiSIGNAL_CJVpass][Data] << "  \\\\" << std::endl
+ 		   << "nBkg &  & $" << nBkg.number  << "\\pm " << nBkg.error()  << "$ & - & " << nBkg_cjv << " \\\\" << std::endl
+		   << "\\hline" << std::endl
+ 		   << "n(W$\\rightarrow \\tau \\nu$) & " << eps_tau.den << " & " << eps_tau.num << " & " << eps_tau_cjvpass.den << " & " <<eps_tau_cjvpass.num << " \\\\" << std::endl
+		   << "\\hline" << std::endl
+ 		   << "$\\varepsilon_{tauID}$ & \\multicolumn{2}{c|}{" << eps_tau << "} & \\multicolumn{2}{c|}{" << eps_tau_cjvpass << "} \\\\" << std::endl
+		   << "\\hline" << std::endl
+ 		   << "$\\varepsilon_{CJV}$ &  \\multicolumn{4}{c|}{ " << eps_tau_cjv << " }\\\\" <<  std::endl
+		   << "\\hline" << std::endl
+ 		   << "W$\\rightarrow \\tau\\nu$ estimates & \\multicolumn{2}{c|}{ $" << result_nocjv[iSyst].number  << "\\pm " << result_nocjv[iSyst].stat << "(stat) \\pm " << result_nocjv[iSyst].syst << "(mcStat) $} & \\multicolumn{2}{c|}{ $" << result[iSyst].number  << "\\pm " << result[iSyst].stat << "(stat) \\pm " << result[iSyst].syst << "(mcStat) $} \\\\" << std::endl
+		   << "\\hline" << std::endl
+		   << "\\hline" << std::endl
+ 		   << " \\multicolumn{5}{|c|}{Without EWK W+2j included}\\\\" <<  std::endl
+		   << "\\hline" << std::endl
+		   << "n(W$\\rightarrow \\tau \\nu$) & " << eps_tau_noew.den << " & " << eps_tau_noew.num << " & " << eps_tau_cjvpass_noew.den << " & " <<eps_tau_cjvpass_noew.num << " \\\\" << std::endl
+		   << "\\hline" << std::endl
+ 		   << "$\\varepsilon_{tauID}$ & \\multicolumn{2}{c|}{" << eps_tau_noew << "} & \\multicolumn{2}{c|}{" << eps_tau_cjvpass_noew << "} \\\\" << std::endl
+		   << "\\hline" << std::endl
+ 		   << "$\\varepsilon_{CJV}$ &  \\multicolumn{4}{c|}{ " << eps_tau_cjv_noew << " }\\\\" <<  std::endl
+		   << "\\hline" << std::endl
+ 		   << "W$\\rightarrow \\tau\\nu$ estimates & \\multicolumn{2}{c|}{ $" << result_nocjv_noew.number  << "\\pm " << result_nocjv_noew.stat << "(stat) \\pm " << result_nocjv_noew.syst << "(mcStat) $} & \\multicolumn{2}{c|}{ $" << result_noew.number  << "\\pm " << result_noew.stat << "(stat) \\pm " << result_noew.syst << "(mcStat) $} \\\\" << std::endl
+ 		   << "\\hline" << std::endl
+ 		   << "\\end{tabular}" << std::endl;
+ 	  lOutfile.close();
+
+// 	    //<< "eps_tau_id:" << eps_tau.error()/eps_tau.eff()*result.number <<std::endl
+// 	    //   << "eps_tau_cjv:" << eps_tau_cjv.error()/eps_tau_cjv.eff()*result.number<<std::endl
+// 	    //   << "data/mc scale factor:"<<0.08*result.number<<std::endl
+// 	    //      << "remaining W->enu:"<<wenusyst<<std::endl
+ 
+	  
+	}//do taus
 
 
 	for (unsigned int iQCD(0); iQCD<2; ++iQCD){//DphiSignal or DphiQCD
 	  if(iQCD==0)std::cout<<" ----- dphisignal -----"<<std::endl;
 	  if(iQCD==1)std::cout<<" ----- dphiqcd -----"<<std::endl;
 	  for (unsigned iCh(1); iCh<3; ++iCh){//loop on lep flavour
+
+	    if (!fileExists[iCh][iSyst] || !fileExists[0][iSyst]) continue;
+
 	    if(iCh==1)std::cout<<" - enu"<<std::endl;
 	    if(iCh==2)std::cout<<" - munu"<<std::endl;
 
@@ -407,69 +549,69 @@ int extractWJetsBkg(){//main
 	    lBkgCMC = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][Top];
 	    lBkgCMC += lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][VV];
 	    lBkgCMC += lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][ZJets];
-	    lBkgCMC.sample = "$N_{EWK}$";
+	    lBkgCMC.sample = "$N_{EWKbkg}$";
 	    lBkgSMC = lSel[0][DPhiSIGNAL_CJVpass+iQCD][Top];
 	    lBkgSMC += lSel[0][DPhiSIGNAL_CJVpass+iQCD][VV];
 	    lBkgSMC += lSel[0][DPhiSIGNAL_CJVpass+iQCD][ZJets];
-	    lBkgSMC.sample = "$N_{EWK}$";
+	    lBkgSMC.sample = "$N_{EWKbkg}$";
 	    
 	    efficiency eps_lepveto_S;
-	    eps_lepveto_S.name = "$\\epsilon_{lepsel}$";
+	    eps_lepveto_S.name = "$\\varepsilon_{lepsel}$";
 	    efficiency eps_VBF_S;
-	    eps_VBF_S.name = "$\\epsilon_{VBF}$";
+	    eps_VBF_S.name = "$\\varepsilon_{VBF}$";
 	    efficiency eps_lepsel_C;
-	    eps_lepsel_C.name = "$\\epsilon_{lepsel}$";
+	    eps_lepsel_C.name = "$\\varepsilon_{lepsel}$";
 	    efficiency eps_VBF_C;
-	    eps_VBF_C.name = "$\\epsilon_{VBF}$";
+	    eps_VBF_C.name = "$\\varepsilon_{VBF}$";
 	    events lNSdata;
 	    
-	    if (iCh==2) {
+	    unsigned shiftSample = 0;
+	    if (iCh==1) shiftSample = 2;
+
+	    lNSMC = lSel[0][DPhiSIGNAL_CJVpass+iQCD][QCD_WJets_munu-shiftSample];
+	    lNSMC += lSel[0][DPhiSIGNAL_CJVpass+iQCD][EWK_WJets_munu-shiftSample];
+	    lNCMC = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][QCD_WJets_munu-shiftSample];
+	    lNCMC += lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][EWK_WJets_munu-shiftSample];
+
+	    if (iCh==2){
 	      lNCdata.sample = "$N_{W\\rightarrow \\mu\\nu}^{data}$";
 	      lNSdata.sample = "$N_{W\\rightarrow \\mu\\nu}^{data}$";
-	      lNSMC = lSel[0][DPhiSIGNAL_CJVpass+iQCD][WJets_munu];
-	      lNCMC = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][WJets_munu];
 	      lNSMC.sample = "$N_{W\\rightarrow \\mu\\nu}^{MC}$";
 	      lNCMC.sample = "$N_{W\\rightarrow \\mu\\nu}^{MC}$";
-	      eps_lepveto_S.num = lSel[0][Lep][WJets_munu];
-	      eps_lepveto_S.den = lSel[0][Trig][WJets_munu];
-	      
-	      eps_VBF_S.num = lSel[0][DPhiSIGNAL_CJVpass+iQCD][WJets_munu];
-	      eps_VBF_S.den = lSel[0][Lep][WJets_munu];
-	      
-	      eps_lepsel_C.num = lSel[iCh][Lep][WJets_munu];
-	      eps_lepsel_C.den = lSel[iCh][Trig][WJets_munu];
-	      
-	      eps_VBF_C.num = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][WJets_munu];
-	      eps_VBF_C.den = lSel[iCh][Lep][WJets_munu];
 	    }
 	    else {
 	      lNCdata.sample = "$N_{W\\rightarrow e\\nu}^{data}$";
 	      lNSdata.sample = "$N_{W\\rightarrow e\\nu}^{data}$";
-	      lNSMC = lSel[0][DPhiSIGNAL_CJVpass+iQCD][WJets_enu];
-	      lNCMC = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][WJets_enu];
 	      lNSMC.sample = "$N_{W\\rightarrow e\\nu}^{MC}$";
 	      lNCMC.sample = "$N_{W\\rightarrow e\\nu}^{MC}$";
-	      eps_lepveto_S.num = lSel[0][Lep][WJets_enu];
-	      eps_lepveto_S.den = lSel[0][Trig][WJets_enu];
-	      
-	      eps_VBF_S.num = lSel[0][DPhiSIGNAL_CJVpass+iQCD][WJets_enu];
-	      eps_VBF_S.den = lSel[0][Lep][WJets_enu];
-	      
-	      eps_lepsel_C.num = lSel[iCh][Lep][WJets_enu];
-	      eps_lepsel_C.den = lSel[iCh][Trig][WJets_enu];
-	    
-	      eps_VBF_C.num = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][WJets_enu];
-	      eps_VBF_C.den = lSel[iCh][Lep][WJets_enu];
 	    }
+	    
+	    eps_lepveto_S.num = lSel[0][Lep][QCD_WJets_munu-shiftSample];
+	    eps_lepveto_S.num += lSel[0][Lep][EWK_WJets_munu-shiftSample];
+	    eps_lepveto_S.den = lSel[0][Trig][QCD_WJets_munu-shiftSample];
+	    eps_lepveto_S.den += lSel[0][Trig][EWK_WJets_munu-shiftSample];
+	    
+	    eps_VBF_S.num = lSel[0][DPhiSIGNAL_CJVpass+iQCD][QCD_WJets_munu-shiftSample];
+	    eps_VBF_S.num += lSel[0][DPhiSIGNAL_CJVpass+iQCD][EWK_WJets_munu-shiftSample];
+	    eps_VBF_S.den = lSel[0][Lep][QCD_WJets_munu-shiftSample];
+	    eps_VBF_S.den += lSel[0][Lep][EWK_WJets_munu-shiftSample];
+	    
+	    eps_lepsel_C.num = lSel[iCh][Lep][QCD_WJets_munu-shiftSample];
+	    eps_lepsel_C.num += lSel[iCh][Lep][EWK_WJets_munu-shiftSample];
+	    eps_lepsel_C.den = lSel[iCh][Trig][QCD_WJets_munu-shiftSample];
+	    eps_lepsel_C.den += lSel[iCh][Trig][EWK_WJets_munu-shiftSample];
+	    
+	    eps_VBF_C.num = lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][QCD_WJets_munu-shiftSample];
+	    eps_VBF_C.num += lSel[iCh][DPhiSIGNAL_CJVpass+iQCD][EWK_WJets_munu-shiftSample];
+	    eps_VBF_C.den = lSel[iCh][Lep][QCD_WJets_munu-shiftSample];
+	    eps_VBF_C.den += lSel[iCh][Lep][EWK_WJets_munu-shiftSample];
+	    
 	    lNSdata.number = lNCdata.number * lNSMC.number / lNCMC.number;
-	    lNSdata.error = lNSdata.number * sqrt(pow(lNCdata.error/lNCdata.number,2)+pow(lNCMC.error/lNCMC.number,2)+pow(lNSMC.error/lNSMC.number,2));
+	    lNSdata.stat = lNCdata.stat* lNSMC.number / lNCMC.number;
+	    lNSdata.syst = lNSdata.number * sqrt(pow(lNCMC.stat/lNCMC.number,2)+pow(lNSMC.stat/lNSMC.number,2));
 	    
 	    
-	    events result;
-	    result.number = lNCdata.number *(eps_lepveto_S.eff()/eps_lepsel_C.eff())*(eps_VBF_S.eff()/eps_VBF_C.eff());
-	    result.error = result.number * sqrt(pow(eps_lepveto_S.error()/eps_lepveto_S.eff(),2)+pow(eps_lepsel_C.error()/eps_lepsel_C.eff(),2)+pow(eps_VBF_S.error()/eps_VBF_S.eff(),2)+pow(eps_VBF_C.error()/eps_VBF_C.eff(),2)+pow(lNCdata.error/lNCdata.number,2));
 	    
-	    	    
 	    //SYSTEMATIC INFORMATION
 	    if(dojes&&dojer){
 	      //save JES and JER numbers
@@ -477,46 +619,33 @@ int extractWJetsBkg(){//main
 	      systevents[iQCD][iCh][iSyst][1]=lNCMC;
 	      systevents[iQCD][iCh][iSyst][2]=lNSdata;
 	      systevents[iQCD][iCh][iSyst][3]=lNCdata;
-	      if(iSyst==4){//get differences
-		for(int a=0;a<4;a++){//loop over jes up and down
+	      if(iSyst==nSysts-1){//get differences
+		for(int a=0;a<6;a++){//loop over jes up and down
 		  if(a==0)std::cout<<"JESUP"<<std::endl;
 		  if(a==1)std::cout<<"JESDOWN"<<std::endl;
 		  if(a==2)std::cout<<"JERBETTER"<<std::endl;
 		  if(a==3)std::cout<<"JERWORSE"<<std::endl;
+		  if(a==4)std::cout<<"PUUP"<<std::endl;
+		  if(a==5)std::cout<<"PUDOWN"<<std::endl;
 		  for(int b=0;b<4;b++){//loop over lns/cmc/data to get differences and percentage differences
-		    systdiff[iQCD][iCh][a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][4][b].number);
-		    systperc[iQCD][iCh][a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][4][b].number)*100/systevents[iQCD][iCh][2][b].number;
-		    std::cout<<systevents[iQCD][iCh][a][b].number<<" "<<systevents[iQCD][iCh][4][b].number<<" "<<systdiff[iQCD][iCh][a][b]<<std::endl;
+		    systdiff[iQCD][iCh][a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][nSysts-1][b].number);
+		    systperc[iQCD][iCh][a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][nSysts-1][b].number)*100/systevents[iQCD][iCh][nSysts-1][b].number;
+		    std::cout<<systevents[iQCD][iCh][a][b].number<<" "<<systevents[iQCD][iCh][nSysts-1][b].number<<" "<<systdiff[iQCD][iCh][a][b]<<std::endl;
 		  }
 		}
 		//get max up shift and down shift
 		for(int b=0;b<4;b++){
-		  double maxjesupshift=0.;
-		  double maxjesdownshift=0;
-		  double maxjerupshift=0.;
-		  double maxjerdownshift=0.;
-		  for(int a=0;a<2;a++){
-		    if(systdiff[iQCD][iCh][a][b]<0){
-		      if(systdiff[iQCD][iCh][a][b]<maxjesdownshift) maxjesdownshift=systdiff[iQCD][iCh][a][b];
-		    }
-		    if(systdiff[iQCD][iCh][a][b]>0){
-		      if(systdiff[iQCD][iCh][a][b]>maxjesupshift) maxjesupshift=systdiff[iQCD][iCh][a][b];
-		    }
-		  }
-		  for(int a=2;a<4;a++){
-		    if(systdiff[iQCD][iCh][a][b]<0){
-		      if(systdiff[iQCD][iCh][a][b]<maxjerdownshift) maxjerdownshift=systdiff[iQCD][iCh][a][b];
-		    }
-		    if(systdiff[iQCD][iCh][a][b]>0){
-		      if(systdiff[iQCD][iCh][a][b]>maxjerupshift) maxjerupshift=systdiff[iQCD][iCh][a][b];
-		    }
-		  }
-		
-		//add max jesup/downshift and jerup/downshift in quadrature
-		totalsystupshift[iQCD][iCh][b] = sqrt(maxjesupshift*maxjesupshift+maxjerupshift*maxjerupshift);
-		totalsystdownshift[iQCD][iCh][b] = -1*sqrt(maxjesdownshift*maxjesdownshift+maxjerdownshift*maxjerdownshift);
-		totalsystupperc[iQCD][iCh][b]=totalsystupshift[iQCD][iCh][b]*100/systevents[iQCD][iCh][4][b].number;
-		totalsystdownperc[iQCD][iCh][b]=totalsystdownshift[iQCD][iCh][b]*100/systevents[iQCD][iCh][4][b].number;
+		  double maxjesupshift=std::max(std::max(systdiff[iQCD][iCh][0][b],0.),std::max(systdiff[iQCD][iCh][1][b],0.));
+		  double maxjesdownshift=std::min(std::min(systdiff[iQCD][iCh][0][b],0.),std::min(systdiff[iQCD][iCh][1][b],0.));
+		  double maxjerupshift=std::max(std::max(systdiff[iQCD][iCh][2][b],0.),std::max(systdiff[iQCD][iCh][3][b],0.));
+		  double maxjerdownshift=std::min(std::min(systdiff[iQCD][iCh][2][b],0.),std::min(systdiff[iQCD][iCh][3][b],0.));
+		  double maxpuupshift=std::max(std::max(systdiff[iQCD][iCh][4][b],0.),std::max(systdiff[iQCD][iCh][5][b],0.));
+		  double maxpudownshift=std::min(std::min(systdiff[iQCD][iCh][4][b],0.),std::min(systdiff[iQCD][iCh][5][b],0.));
+		  //add max jesup/downshift and jerup/downshift in quadrature
+		  totalsystupshift[iQCD][iCh][b] = sqrt(maxjesupshift*maxjesupshift+maxjerupshift*maxjerupshift+maxpuupshift*maxpuupshift);
+		  totalsystdownshift[iQCD][iCh][b] = -1*sqrt(maxjesdownshift*maxjesdownshift+maxjerdownshift*maxjerdownshift+maxpudownshift*maxpudownshift);
+		  totalsystupperc[iQCD][iCh][b]=totalsystupshift[iQCD][iCh][b]*100/systevents[iQCD][iCh][nSysts-1][b].number;
+		  totalsystdownperc[iQCD][iCh][b]=totalsystdownshift[iQCD][iCh][b]*100/systevents[iQCD][iCh][nSysts-1][b].number;
 		}
 	      }
 	    }
@@ -525,8 +654,8 @@ int extractWJetsBkg(){//main
 	    std::ostringstream lName;
 	    lName << TOPDIR << "/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] ;
 
-	    if (iQCD==0) lName << "/DataDrivenWJetsTable_signal" << lSuffix[iW] << ".txt";
-	    else if (iQCD==1) lName << "/DataDrivenWJetsTable_QCD" << lSuffix[iW] << ".txt";
+	    if (iQCD==0) lName << "/DataDrivenWJetsTable_signal" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
+	    else if (iQCD==1) lName << "/DataDrivenWJetsTable_QCD" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
 	    std::ofstream lOutfile;
 	    lOutfile.open(lName.str().c_str());
 	    lOutfile << "\\begin{tabular}{|l|c|c|}" << std::endl
@@ -547,26 +676,26 @@ int extractWJetsBkg(){//main
 		     << std::setprecision(3)
 		     << lNSMC.sample  << " & " 
 		     << lNSMC; 
-	    if((dojer&&dojes)&&iSyst==4){
+	    if((dojer&&dojes)&&iSyst==nSysts-1){
 	      lOutfile << " $ ^{ + " << totalsystupshift[iQCD][iCh][0] << " ( + " << totalsystupperc[iQCD][iCh][0] << "\\% ) } ";
 	      lOutfile << " _{ " << totalsystdownshift[iQCD][iCh][0] << " ( " << totalsystdownperc[iQCD][iCh][0] << "\\% ) } $ ";
 	    }
 	    lOutfile << " & " 
 		     << lNCMC; 
-	    if((dojer&&dojes)&&iSyst==4){
+	    if((dojer&&dojes)&&iSyst==nSysts-1){
 	      lOutfile << " $ ^{ + " << totalsystupshift[iQCD][iCh][1] << " ( + " << totalsystupperc[iQCD][iCh][1] << "\\% ) } ";
 	      lOutfile << " _{ " << totalsystdownshift[iQCD][iCh][1] << " ( " << totalsystdownperc[iQCD][iCh][1] << "\\% ) } $ ";
 	    }
 	    lOutfile << " \\\\" << std::endl
 		     << lNSdata.sample << " & " 
 		     << "\\textcolor{red}{" << lNSdata;
-	    if((dojer&&dojes)&&iSyst==4){
+	    if((dojer&&dojes)&&iSyst==nSysts-1){
 	      lOutfile << " $ ^{ + " << totalsystupshift[iQCD][iCh][2] << " ( + " << totalsystupperc[iQCD][iCh][2] << "\\% ) } ";
 	      lOutfile << " _{ " << totalsystdownshift[iQCD][iCh][2] << " ( " << totalsystdownperc[iQCD][iCh][2] << "\\% ) } $ ";
 	    }
 	    lOutfile << "} & " 
 		     << lNCdata;
-	    if((dojer&&dojes)&&iSyst==4){
+	    if((dojer&&dojes)&&iSyst==nSysts-1){
 	      lOutfile << " $ ^{ + " << totalsystupshift[iQCD][iCh][3] << " ( + " << totalsystupperc[iQCD][iCh][3] << "\\% ) } ";
 	      lOutfile << " _{ " << totalsystdownshift[iQCD][iCh][3] << " ( " << totalsystdownperc[iQCD][iCh][3] << "\\% ) } $ ";
 	    }
@@ -577,74 +706,177 @@ int extractWJetsBkg(){//main
 		     << "\\end{tabular}" << std::endl; 
 	    lOutfile.close();
 
-	    std::cout << "*** " << lSuffix[iW] << ": result = " << lNSdata << " MC: " << lNSMC << std::endl;
+	    std::cout << "*** " << lSuffix[iW] << lSuffixSyst[iSyst] << ": result = " << lNSdata << " MC: " << lNSMC << std::endl;
 	    
 	  }//loop on lep flavour
 	  
 	}//loop on signal region
-	
+
 	//SUMMARY TABLES WITH SYST ERRORS SEPARATE
-	for(int iSample=0;iSample<4;iSample++){
-	  std::ostringstream lName;
-	  lName << TOPDIR << "/MET" << MET[iMET] << "DataDrivenWJetsSystErrorTable";
-	  if(iSample==0) lName <<"lNSMC";
-	  if(iSample==1) lName <<"lNCMC";
-	  if(iSample==2) lName <<"lNSdata";
-	  if(iSample==3) lName <<"lNCdata";
-	  lName << lSuffix[iW] << ".txt";
-	  std::ofstream lOutfile;
-	  lOutfile.open(lName.str().c_str());
-	  lOutfile << "\\begin{tabular}{l c c c c}" << std::endl
-		   << "\\hline" << std::endl << " "
-		   << systevents[0][1][4][iSample].sample
-		   << " & Electron $d\\phi < 1.0$ & Electron $d\\phi>2.6$ & Muon $d\\phi < 1.0$ & Muon $d\\phi > 2.6$ \\\\" << std::endl
-		   << "\\hline" << std::endl;
-	  lOutfile << std::setprecision(3)//central value
-		   << "Central num. of events"  << " & " 
-		   << systevents[0][1][4][iSample].number << " & "
-		   << systevents[1][1][4][iSample].number << " & "
-	           << systevents[0][2][4][iSample].number << " & "
-	           << systevents[1][2][4][iSample].number << " \\\\" << std::endl;
-	  lOutfile << "Statistical"  << " & " 
-		   << "$\\pm$" << systevents[0][1][4][iSample].error*100/systevents[0][1][4][iSample].number << "\\% & "
-		   << "$\\pm$" << systevents[1][1][4][iSample].error*100/systevents[1][1][4][iSample].number << "\\% & "
-	           << "$\\pm$" << systevents[0][2][4][iSample].error*100/systevents[0][2][4][iSample].number << "\\% & "
-	           << "$\\pm$" << systevents[1][2][4][iSample].error*100/systevents[1][2][4][iSample].number << "\\% \\\\" << std::endl;
-	  lOutfile << "JESUP"  << " & "; 
-	  lOutfile << showpos;
-	  lOutfile << systperc[0][1][0][iSample] << "\\% & "
-		   << systperc[1][1][0][iSample] << "\\% & "
-	           << systperc[0][2][0][iSample] << "\\% & "
-	           << systperc[1][2][0][iSample] << "\\% \\\\" << std::endl;
-	  lOutfile << "JESDOWN"  << " & " 
-		   << systperc[0][1][1][iSample] << "\\% & "
-		   << systperc[1][1][1][iSample] << "\\% & "
-	           << systperc[0][2][1][iSample] << "\\% & "
-	           << systperc[1][2][1][iSample] << "\\% \\\\" << std::endl;
-	  lOutfile << "JERBETTER"  << " & " 
-		   << systperc[0][1][2][iSample] << "\\% & "
-		   << systperc[1][1][2][iSample] << "\\% & "
-	           << systperc[0][2][2][iSample] << "\\% & "
-	           << systperc[1][2][2][iSample] << "\\% \\\\" << std::endl;
-	  lOutfile << "JERWORSE"  << " & "
-		   << systperc[0][1][3][iSample] << "\\% & "
-		   << systperc[1][1][3][iSample] << "\\% & "
-	           << systperc[0][2][3][iSample] << "\\% & "
-	           << systperc[1][2][3][iSample] << "\\% \\\\" << std::endl;
-	  lOutfile << noshowpos;
-	  lOutfile << "\\hline" << std::endl
-		   << "\\end{tabular}" << std::endl; 
-	  lOutfile << noshowpos;
-	  lOutfile.close();
-	}
+	if (iSyst == nSysts-1 && dojer && dojes){
+	  for(int iSample=0;iSample<4;iSample++){
+	    std::ostringstream lName;
+	    lName << TOPDIR << "/MET" << MET[iMET] << "DataDrivenWJetsSystErrorTable";
+	    if(iSample==0) lName <<"lNSMC";
+	    if(iSample==1) lName <<"lNCMC";
+	    if(iSample==2) lName <<"lNSdata";
+	    if(iSample==3) lName <<"lNCdata";
+	    lName << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
+	    std::ofstream lOutfile;
+	    lOutfile.open(lName.str().c_str());
+	    lOutfile << "\\begin{tabular}{l c c c c}" << std::endl
+		     << "\\hline" << std::endl << " "
+		     << systevents[0][1][nSysts-1][iSample].sample
+		     << " & Electron $d\\phi < 1.0$ & Electron $d\\phi>2.6$ & Muon $d\\phi < 1.0$ & Muon $d\\phi > 2.6$ \\\\" << std::endl
+		     << "\\hline" << std::endl;
+	    lOutfile << std::setprecision(3)//central value
+		     << "Central num. of events"  << " & " 
+		     << systevents[0][1][nSysts-1][iSample].number << " & "
+		     << systevents[1][1][nSysts-1][iSample].number << " & "
+		     << systevents[0][2][nSysts-1][iSample].number << " & "
+		     << systevents[1][2][nSysts-1][iSample].number << " \\\\" << std::endl;
+	    lOutfile << "Statistical"  << " & " 
+		     << "$\\pm$" << systevents[0][1][nSysts-1][iSample].error()*100/systevents[0][1][nSysts-1][iSample].number << "\\% & "
+		     << "$\\pm$" << systevents[1][1][nSysts-1][iSample].error()*100/systevents[1][1][nSysts-1][iSample].number << "\\% & "
+		     << "$\\pm$" << systevents[0][2][nSysts-1][iSample].error()*100/systevents[0][2][nSysts-1][iSample].number << "\\% & "
+		     << "$\\pm$" << systevents[1][2][nSysts-1][iSample].error()*100/systevents[1][2][nSysts-1][iSample].number << "\\% \\\\" << std::endl;
+	    lOutfile << "JESUP"  << " & "; 
+	    lOutfile << showpos;
+	    lOutfile << systperc[0][1][0][iSample] << "\\% & "
+		     << systperc[1][1][0][iSample] << "\\% & "
+		     << systperc[0][2][0][iSample] << "\\% & "
+		     << systperc[1][2][0][iSample] << "\\% \\\\" << std::endl;
+	    lOutfile << "JESDOWN"  << " & " 
+		     << systperc[0][1][1][iSample] << "\\% & "
+		     << systperc[1][1][1][iSample] << "\\% & "
+		     << systperc[0][2][1][iSample] << "\\% & "
+		     << systperc[1][2][1][iSample] << "\\% \\\\" << std::endl;
+	    lOutfile << "JERBETTER"  << " & " 
+		     << systperc[0][1][2][iSample] << "\\% & "
+		     << systperc[1][1][2][iSample] << "\\% & "
+		     << systperc[0][2][2][iSample] << "\\% & "
+		     << systperc[1][2][2][iSample] << "\\% \\\\" << std::endl;
+	    lOutfile << "JERWORSE"  << " & "
+		     << systperc[0][1][3][iSample] << "\\% & "
+		     << systperc[1][1][3][iSample] << "\\% & "
+		     << systperc[0][2][3][iSample] << "\\% & "
+		     << systperc[1][2][3][iSample] << "\\% \\\\" << std::endl;
+	    lOutfile << "PUUP"  << " & "
+		     << systperc[0][1][4][iSample] << "\\% & "
+		     << systperc[1][1][4][iSample] << "\\% & "
+		     << systperc[0][2][4][iSample] << "\\% & "
+		     << systperc[1][2][4][iSample] << "\\% \\\\" << std::endl;
+	    lOutfile << "PUDOWN"  << " & " 
+		     << systperc[0][1][5][iSample] << "\\% & "
+		     << systperc[1][1][5][iSample] << "\\% & "
+		     << systperc[0][2][5][iSample] << "\\% & "
+		     << systperc[1][2][5][iSample] << "\\% \\\\" << std::endl;
+	    lOutfile << noshowpos;
+	    lOutfile << "\\hline" << std::endl
+		     << "\\end{tabular}" << std::endl; 
+	    lOutfile << noshowpos;
+	    lOutfile.close();
+	  }
+	}//if dojes/jer
 	
 	
     }//loop on systematics
     
+    //print tau systematics
+    std::cout << " -- Tau results with systematics" << std::endl;
+    double jesUp = result_nocjv[0].number - result_nocjv[nSysts-1].number;
+    double jesDown = result_nocjv[1].number - result_nocjv[nSysts-1].number;
+    //select the maximum positive value
+    result_nocjv[nSysts-1].jesSyst.first = std::max(std::max(jesUp,0.),std::max(jesDown,0.));
+    //select the minimum negative value
+    result_nocjv[nSysts-1].jesSyst.second = std::min(std::min(jesUp,0.),std::min(jesDown,0.));
+    double jerBetter = result_nocjv[2].number - result_nocjv[nSysts-1].number;
+    double jerWorse = result_nocjv[3].number - result_nocjv[nSysts-1].number;
+    result_nocjv[nSysts-1].jerSyst.first = std::max(std::max(jerBetter,0.),std::max(jerWorse,0.));
+    result_nocjv[nSysts-1].jerSyst.second = std::min(std::min(jerBetter,0.),std::min(jerWorse,0.));
+    double puUp = result_nocjv[4].number - result_nocjv[nSysts-1].number;
+    double puDown = result_nocjv[5].number - result_nocjv[nSysts-1].number;
+    result_nocjv[nSysts-1].puSyst.first = std::max(std::max(puUp,0.),std::max(puDown,0.));
+    result_nocjv[nSysts-1].puSyst.second = std::min(std::min(puUp,0.),std::min(puDown,0.));
+
+    std::cout << result_nocjv[0].number << " "
+	      << result_nocjv[1].number << " "
+	      << result_nocjv[2].number << " "
+	      << result_nocjv[3].number << " "
+	      << result_nocjv[4].number << std::endl;
+    std::cout << jesUp << " " << jesDown << " " << jerBetter << " " << jerWorse << std::endl;
+
+    std::cout << "\\% Systematics & stat & MCstat & tauID & JES & JER & PU \\\\" << std::endl 
+	      << "Result_noCJV & " 
+	       << std::setprecision(3)
+	      << result_nocjv[nSysts-1].stat << " & " 
+	      << result_nocjv[nSysts-1].syst << " & "
+	      << result_nocjv[nSysts-1].tauidSyst << " & "
+	      << "$^{"<< result_nocjv[nSysts-1].jesSyst.first << "}_{"<< result_nocjv[nSysts-1].jesSyst.second << "}$ &  "
+	      << "$^{"<< result_nocjv[nSysts-1].jerSyst.first << "}_{"<< result_nocjv[nSysts-1].jerSyst.second << "}$ & "
+	      << "$^{"<< result_nocjv[nSysts-1].puSyst.first << "}_{"<< result_nocjv[nSysts-1].puSyst.second << "}$ \\\\"
+	      << std::endl
+	      << "\\% unc. & " 
+	      << result_nocjv[nSysts-1].stat/result_nocjv[nSysts-1].number*100 << " & " 
+	      << result_nocjv[nSysts-1].syst/result_nocjv[nSysts-1].number*100 << " & "
+	      << result_nocjv[nSysts-1].tauidSyst/result_nocjv[nSysts-1].number*100 << " & "
+	      << "$^{"<< result_nocjv[nSysts-1].jesSyst.first/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].jesSyst.second/result_nocjv[nSysts-1].number*100 << "}$ & "
+	      << "$^{"<< result_nocjv[nSysts-1].jerSyst.first/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].jerSyst.second/result_nocjv[nSysts-1].number*100 << "}$ & "
+	      << "$^{"<< result_nocjv[nSysts-1].puSyst.first/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].puSyst.second/result_nocjv[nSysts-1].number*100 << "}$ \\\\ "
+	      << std::endl
+	      << "Result_Nocjv = $" 
+	      << result_nocjv[nSysts-1].number << " \\pm " 
+	      << result_nocjv[nSysts-1].stat << " (stat) ^{" 
+	      << result_nocjv[nSysts-1].totalSyst().first  << "}_{"
+	      << result_nocjv[nSysts-1].totalSyst().second << "} (syst) $"
+	      << std::endl;
+
+    jesUp = result[0].number - result[nSysts-1].number;
+    jesDown = result[1].number - result[nSysts-1].number;
+    //select the maximum positive value
+    result[nSysts-1].jesSyst.first = std::max(std::max(jesUp,0.),std::max(jesDown,0.));
+    //select the minimum negative value
+    result[nSysts-1].jesSyst.second = std::min(std::min(jesUp,0.),std::min(jesDown,0.));
+    jerBetter = result[2].number - result[nSysts-1].number;
+    jerWorse = result[3].number - result[nSysts-1].number;
+    result[nSysts-1].jerSyst.first = std::max(std::max(jerBetter,0.),std::max(jerWorse,0.));
+    result[nSysts-1].jerSyst.second = std::min(std::min(jerBetter,0.),std::min(jerWorse,0.));
+    puUp = result[4].number - result[nSysts-1].number;
+    puDown = result[5].number - result[nSysts-1].number;
+    result[nSysts-1].puSyst.first = std::max(std::max(puUp,0.),std::max(puDown,0.));
+    result[nSysts-1].puSyst.second = std::min(std::min(puUp,0.),std::min(puDown,0.));
+
+    std::cout << "\\hline" << std::endl 
+	      << "Result & " 
+	      << result[nSysts-1].stat << " & " 
+	      << result[nSysts-1].syst << " & "
+	      << result[nSysts-1].tauidSyst << " & "
+	      << "$^{"<< result[nSysts-1].jesSyst.first << "}_{"<< result[nSysts-1].jesSyst.second << "}$ & "
+	      << "$^{"<< result[nSysts-1].jerSyst.first << "}_{"<< result[nSysts-1].jerSyst.second << "}$ & "
+	      << "$^{"<< result[nSysts-1].puSyst.first << "}_{"<< result[nSysts-1].puSyst.second << "}$ \\\\"
+	      << std::endl
+	      << "\\% unc. & " 
+	      << result[nSysts-1].stat/result[nSysts-1].number*100 << " & " 
+	      << result[nSysts-1].syst/result[nSysts-1].number*100 << " & "
+	      << result[nSysts-1].tauidSyst/result[nSysts-1].number*100 << " & "
+	      << "$^{"<< result[nSysts-1].jesSyst.first/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].jesSyst.second/result[nSysts-1].number*100 << "}$ & "
+	      << "$^{"<< result[nSysts-1].jerSyst.first/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].jerSyst.second/result[nSysts-1].number*100 << "}$ & "
+	      << "$^{"<< result[nSysts-1].puSyst.first/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].puSyst.second/result[nSysts-1].number*100 << "}$ \\\\ "
+	      << std::endl
+	      << "Result = $" 
+	      << result[nSysts-1].number << " \\pm " 
+	      << result[nSysts-1].stat << " (stat) ^{" 
+	      << result[nSysts-1].totalSyst().first  << "}_{"
+	      << result[nSysts-1].totalSyst().second << "} (syst) $"
+	      << std::endl;
+
+
+
+    
   }//loop on MET values
   
   }//loop on weights
-
+  
   return 0;
 }//main
   

@@ -32,12 +32,13 @@
   \usetheme{Frankfurt}
 
   % or ...
-  %\useoutertheme{split}
+  \useoutertheme{split}
 
   \setbeamercovered{transparent}
   %\pagestyle{plain}
   \setbeamerfont*{frametitle}{size=\normalsize,series=\bfseries}
   \setbeamertemplate{navigation symbols}{$\circ$}                      
+  \setbeamertemplate{footline}[frame number]
 
   % or whatever (possibly just delete it)
 }
@@ -85,8 +86,8 @@
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
 
-\date[10/05/2013] % (optional)
-{10/05/2013}
+\date[26/07/2013] % (optional)
+{26/07/2013}
 %IC $H \rightarrow \tau \tau$ analysis meeting
 %SMP-VJ Meeting
 %TKCO Meeting
@@ -131,82 +132,8 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{W+jets MC numbers}
-
-{\tiny
-\centering $\nu\nu$ selection\\
-\input{../TABLES/nunu/MET130/WandZJetsTable.txt}\\
-\centering $e\nu$ selection\\
-\input{../TABLES/enu/MET130/WandZJetsTable.txt}\\
-\centering $\mu\nu$ selection\\
-\input{../TABLES/munu/MET130/WandZJetsTable.txt}
-}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Standard Selection - For Reference}
-
-\begin{center}
-\centering Signal selection\\
-{\tiny
-\hspace*{-1cm}
-\rowcolors{1}{lightgray}{}
-\input{../TABLES/nunu/MET130/SummaryTable.txt}
-}
-\centering W/Z+jets sample separated\\
-  {\tiny
-    \rowcolors{1}{lightgray}{}
-    \input{../TABLES/nunu/MET130/WandZJetsTable.txt}
-  }
-
-\end{center}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{W+jets selection -  Electron selection}
-
-\vspace*{-1cm}
-\begin{center}
-{\tiny
-\hspace*{-1cm}
-\rowcolors{1}{lightgray}{}
-\input{../TABLES/enu/MET130/SummaryTable.txt}
-}
-\end{center}
-
-
-\end{frame}
-\begin{frame}
-  \frametitle{W+jets selection -  Muon selection}
-
-\vspace*{-1cm}
-\begin{center}
-{\tiny
-\hspace*{-1cm}
-\rowcolors{1}{lightgray}{}
-\input{../TABLES/munu/MET130/SummaryTable.txt}
-}
-\end{center}
-
-
-\end{frame}
-
-\begin{frame}
   \frametitle{Data-driven W+jets estimates - standard selection - signal region}
 
-\vspace*{-0.5cm}
-\begin{block}{\scriptsize From MC}
-\begin{center}
-    {\tiny
-      \rowcolors{1}{lightgray}{}
-      \input{../TABLES/nunu/MET130/WandZJetsTable.txt}
-    }
-\end{center}
-  \end{block}
-
-\vspace*{-0.2cm}
 \begin{columns}
   \column{0.5\textwidth}
   \begin{block}{\scriptsize From data: electron $\Delta\phi<1.0$}
@@ -246,45 +173,183 @@
 
 
 \begin{frame}
-\frametitle{Control plots (1)}
+  \frametitle{Data-driven W to tau estimates}
 
-\begin{columns}
-  \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/ept_1_2012_WSelection_log.pdf}
-  \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/eeta_1_2012_WSelection_log.pdf}
-  \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/mt_enu_2012_DEta_log.pdf}
-\end{columns}
-\begin{columns}
-  \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mupt_1_2012_WSelection_log.pdf}
-  \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mueta_1_2012_WSelection_log.pdf}
-  \column{0.3\textwidth}
-  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mt_munu_2012_DEta_log.pdf}
-\end{columns}
+\begin{center}
+    {\tiny
+      \input{../TABLES/taunu/MET130/DataDrivenWJetsTable_signal.txt}
+    }
+\end{center}
 
 \end{frame}
+
+
+%\begin{frame}
+%\frametitle{Control plots (1)}
+%
+%\begin{columns}
+%  \column{0.3\textwidth}
+%  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/ept_1_2012_WSelection_log.pdf}
+%  \column{0.3\textwidth}
+%  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/eeta_1_2012_WSelection_log.pdf}
+%  \column{0.3\textwidth}
+%  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/enu/MET130/mt_enu_2012_DEta_log.pdf}
+%\end{columns}
+%\begin{columns}
+%  \column{0.3\textwidth}
+%  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mupt_1_2012_WSelection_log.pdf}
+%  \column{0.3\textwidth}
+%  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mueta_1_2012_WSelection_log.pdf}
+%  \column{0.3\textwidth}
+%  \includegraphics[width=1.0\textwidth]{../PLOTS_QCD/munu/MET130/mt_munu_2012_DEta_log.pdf}
+%\end{columns}
+%
+%\end{frame}
 
 
 \begin{frame}
   \frametitle{Control plots for W+jets estimates: tight Mjj selection}
 
 \begin{columns}
-  \column{0.5\textwidth}
+  \column{0.3\textwidth}
   \begin{block}{W$\rightarrow e\nu$}
-    \includegraphics[width=1.0\textwidth]{../TABLES/enu/MET130/dphijj_2012_TightMjj.pdf}
+    \includegraphics[width=1.0\textwidth]{../TABLES/enu/MET130/wjetsComp/dphijj_2012_TightMjj_log.pdf}
   \end{block}
-  \column{0.5\textwidth}
+  \column{0.3\textwidth}
   \begin{block}{W$\rightarrow \mu\nu$}
-    \includegraphics[width=1.0\textwidth]{../TABLES/munu/MET130/dphijj_2012_TightMjj.pdf}
+    \includegraphics[width=1.0\textwidth]{../TABLES/munu/MET130/wjetsComp/dphijj_2012_TightMjj_log.pdf}
+  \end{block}
+  \column{0.3\textwidth}
+  \begin{block}{W$\rightarrow \tau\nu$}
+    \includegraphics[width=1.0\textwidth]{../TABLES/taunu/MET130/wjetsComp/dphijj_2012_TightMjj_log.pdf}
   \end{block}
 \end{columns}
 
 
 \end{frame}
 
+
+\begin{frame}
+  \frametitle{Standard signal Selection - For Reference}
+
+\vspace*{-1cm}
+\begin{center}
+{\tiny
+\hspace*{-1cm}
+\rowcolors{1}{lightgray}{}
+\input{../TABLES/nunu/MET130/SummaryTable.txt}
+}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{W+jets selection -  Electron selection}
+
+\vspace*{-1cm}
+\begin{center}
+{\tiny
+\hspace*{-1cm}
+\rowcolors{1}{lightgray}{}
+\input{../TABLES/enu/MET130/SummaryTable.txt}
+}
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{W+jets selection -  Muon selection}
+
+\vspace*{-1cm}
+\begin{center}
+{\tiny
+\hspace*{-1cm}
+\rowcolors{1}{lightgray}{}
+\input{../TABLES/munu/MET130/SummaryTable.txt}
+}
+\end{center}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{W+jets selection -  Tau selection}
+
+\vspace*{-1cm}
+\begin{center}
+{\tiny
+\hspace*{-1cm}
+\rowcolors{1}{lightgray}{}
+\input{../TABLES/taunu/MET130/SummaryTable.txt}
+}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Z+jets selection -  MuMu selection}
+
+\vspace*{-1cm}
+\begin{center}
+{\tiny
+\hspace*{-1cm}
+\rowcolors{1}{lightgray}{}
+\input{../TABLES/mumu/MET130/SummaryTable.txt}
+}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{W+jets MC numbers}
+\vspace*{-0.5cm}
+{\tiny
+\centering $\nu\nu$ selection\\
+\hspace*{-1cm}
+\input{../TABLES/nunu/MET130/WJetsTable.txt}\\
+\centering $e\nu$ selection\\
+\hspace*{-1cm}
+\input{../TABLES/enu/MET130/WJetsTable.txt}\\
+\centering $\mu\nu$ selection\\
+\hspace*{-1cm}
+\input{../TABLES/munu/MET130/WJetsTable.txt}\\
+\centering $\tau\nu$ selection\\
+\hspace*{-1cm}
+\input{../TABLES/taunu/MET130/WJetsTable.txt}
+}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Z+jets MC numbers}
+\vspace*{-0.5cm}
+{\tiny
+\centering $\nu\nu$ selection\\
+\input{../TABLES/nunu/MET130/ZJetsTable.txt}\\
+\centering $e\nu$ selection\\
+\input{../TABLES/enu/MET130/ZJetsTable.txt}\\
+\centering $\mu\nu$ selection\\
+\input{../TABLES/munu/MET130/ZJetsTable.txt}\\
+\centering $\tau\nu$ selection\\
+\input{../TABLES/taunu/MET130/ZJetsTable.txt}
+}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Top MC numbers}
+\vspace*{-0.5cm}
+{\tiny
+\centering $\nu\nu$ selection\\
+\input{../TABLES/nunu/MET130/TopTable.txt}\\
+\centering $e\nu$ selection\\
+\input{../TABLES/enu/MET130/TopTable.txt}\\
+\centering $\mu\nu$ selection\\
+\input{../TABLES/munu/MET130/TopTable.txt}\\
+\centering $\tau\nu$ selection\\
+\input{../TABLES/taunu/MET130/TopTable.txt}
+}
+\end{frame}
 
 \end{document}
 

@@ -8,9 +8,12 @@ XS_Data_MET-2012C-11Dec2012-v1:-1.0
 XS_Data_MET-2012C-PromptReco-v2:-1.0
 XS_Data_MET-2012D-PromptReco-v1:-1.0
 XS_Data_MET-2012D-PromptReco-v1_7_269fb:-1.0
+XS_Data_MET0to120:0.0236239639
 # DY is 3503.7 * 1.00
 #XS_DYJetsToLL:3503.7
 XS_MC_TTJets:234
+XS_MC_TT-v1:211.0
+XS_MC_TT-v2:211.0
 XS_MC_T-tW:11.1
 XS_MC_Tbar-tW:11.1
 XS_MC_SingleT-s-powheg-tauola:3.79
@@ -22,8 +25,6 @@ XS_MC_WZ-pythia6-tauola:33.21
 XS_MC_ZZ-pythia6-tauola:17.654
 XS_MC_DYJJ01JetsToLL_M-50_MJJ-200:1.4
 ## W and Z already reweighted by fractions: use NNLO xs
-XS_MC_TT-v1:211.0
-XS_MC_TT-v2:211.0
 XS_MC_W1JetsToLNu:37509
 XS_MC_W2JetsToLNu:37509
 XS_MC_W3JetsToLNu:37509
@@ -86,7 +87,7 @@ XS_MC_EWK-W2jplus_munu:6.48
 XS_MC_EWK-W2jminus_taunu:4.09
 XS_MC_EWK-W2jplus_taunu:6.48
 XS_MC_EWK-Z2j:0.888
-XS_MC_EWK-Z2jiglep:0.888
+XS_MC_EWK-Z2jiglep:1.776
 ## Processed Events
 EVT_Data_MET-2012A-06Aug2012-v1:1.0
 EVT_Data_MET-2012A-13Jul2012-v1:1.0
@@ -97,6 +98,7 @@ EVT_Data_MET-2012C-11Dec2012-v1:1.0
 EVT_Data_MET-2012C-PromptReco-v2:1.0
 EVT_Data_MET-2012D-PromptReco-v1:1.0
 EVT_Data_MET-2012D-PromptReco-v1_7_269fb:1.0
+EVT_Data_MET0to120:19619.0
 EVT_MC_TTJets:6923750.0
 EVT_MC_TT-v1:28150723
 EVT_MC_TT-v2:28150723
