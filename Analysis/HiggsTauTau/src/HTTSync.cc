@@ -226,6 +226,8 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 0.0, jet_eta_));
+    std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+
 
     std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
     //if (!PairOppSign(dilepton[0])) return 0;

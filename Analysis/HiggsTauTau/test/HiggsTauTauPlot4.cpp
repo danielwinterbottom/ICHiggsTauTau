@@ -482,10 +482,10 @@ int main(int argc, char* argv[]){
 		 //HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
     }
 		for (auto m : hww_masses) {
-     HTTAnalysis::PrintValue("ggH(WW/tt)"+m, HTTAnalysis::ValueDivide(hmap["ggH_hww"+m].second,hmap["ggH"+m].second));
+     HTTAnalysis::PrintValue("ggH(WW/Total)"+m, HTTAnalysis::ValueDivide(hmap["ggH_hww"+m].second,HTTAnalysis::ValueAdd(hmap["ggH"+m].second, hmap["ggH_hww"+m].second)));
     }
 		for (auto m : hww_masses) {
-		 HTTAnalysis::PrintValue("qqH(WW/tt)"+m, HTTAnalysis::ValueDivide(hmap["qqH_hww"+m].second,hmap["qqH"+m].second));
+		 HTTAnalysis::PrintValue("qqH(WW/Total)"+m, HTTAnalysis::ValueDivide(hmap["qqH_hww"+m].second,HTTAnalysis::ValueAdd(hmap["qqH"+m].second, hmap["qqH_hww"+m].second)));
     }
 	}
 
