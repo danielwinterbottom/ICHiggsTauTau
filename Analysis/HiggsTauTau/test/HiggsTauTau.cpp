@@ -953,7 +953,7 @@ int main(int argc, char* argv[]){
     .set_run_mode(new_svfit_mode)
     .set_fail_mode(1)
     .set_require_inputs_match(false)
-    .set_split(18000)
+    .set_split(7000)
     .set_dilepton_label("emtauCandidates")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder);
@@ -1085,7 +1085,7 @@ int main(int argc, char* argv[]){
     }
     if (channel == channel::mtmet   // Only apply the L1 MET cut on MC and
       && (!is_data || is_embedded)  // embedded, when not skimming or generating
-      && !do_skim                   // svfit jobs
+      && !do_skim  && !make_sync_ntuple        // svfit jobs
       && new_svfit_mode != 1) {
                                   analysis.AddModule(&httL1MetCut);
     }  

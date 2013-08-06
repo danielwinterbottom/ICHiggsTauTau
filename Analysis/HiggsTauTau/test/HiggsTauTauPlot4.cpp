@@ -450,7 +450,7 @@ int main(int argc, char* argv[]){
 		std::string dc_mode_label;
 		if (channel_str == "et") 			dc_mode_label = "eleTau";
 		if (channel_str == "mt") 			dc_mode_label = "muTau";
-		if (channel_str == "mtmet") 	dc_mode_label = "muTauSoft";
+		if (channel_str == "mtmet") 	dc_mode_label = "muTau_soft";
 		if (channel_str == "em") 			dc_mode_label = "emu";
 		std::string tfile_name = "datacard_"+reduced_var+"_"+datacard+"_"+channel_str+(is_2012 ? "_2012":"_2011")+".root";
 		TFile dc_file(tfile_name.c_str(),"RECREATE");

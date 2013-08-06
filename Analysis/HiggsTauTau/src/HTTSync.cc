@@ -267,12 +267,13 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
     if (event->Exists("isoweight_1")) lIsoweight_1 = event->Get<double>("isoweight_1");
     if (event->Exists("isoweight_2")) lIsoweight_2 = event->Get<double>("isoweight_2");
     if (eventInfo->weight_defined("lepton")) lEffWeight = eventInfo->weight("lepton"); 
+    if (eventInfo->weight_defined("tau_mode_scale")) lEffWeight *= eventInfo->weight("tau_mode_scale");
     lWeight = eventInfo->total_weight();
 
     if (eventInfo->weight_defined("tauspinner")) {
       lEmbeddedWeight = eventInfo->weight("tauspinner") *
         eventInfo->weight("zmm_eff") *
-        eventInfo->weight("muon_rad") *
+        //eventInfo->weight("muon_rad") *
         eventInfo->weight("kin_weight1") *
         eventInfo->weight("kin_weight2") *
         eventInfo->weight("kin_weight3") *

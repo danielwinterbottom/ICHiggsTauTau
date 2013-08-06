@@ -147,6 +147,11 @@ namespace ic {
       std::vector<GenJet*> const& gen_jets = event->GetPtrVec<GenJet>("genJets");
       matches = MatchByDR(jets, gen_jets, 0.5, true, true);
       matched_jets = ExtractFirst(matches);
+      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
+      std::cout << "GenParticles: " << std::endl;
+      for (unsigned i = 0; i < particles.size(); ++i) {
+        std::cout << i << "  " << particles[i]->status() << "  " << particles[i]->pdgid() << "  " << particles[i]->vector() << std::endl;
+      }
     }
     for (unsigned i = 0; i < jets.size(); ++i) {
       std::cout << "Jet " << i << ": " << jets[i]->vector() << std::endl;
