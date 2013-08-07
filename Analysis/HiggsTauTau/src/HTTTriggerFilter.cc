@@ -80,8 +80,8 @@ namespace ic {
           if (run >= 160404 && run <= 167913 && name.find("HLT_Mu8_Ele17_CaloIdL_v") != name.npos) path_found = true;
           if (run >= 170249 && run <= 180252 && name.find("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_v") != name.npos) path_found = true;
           if (run >= 190456/* && run <= xxxxx*/ && name.find("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
-          if (run >= 160404 && run <= 167913 && name.find("HLT_Mu17_Ele8_CaloIdL_v") != name.npos) path_found = true;
-          if (run >= 170249 && run <= 180252 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v") != name.npos) path_found = true;
+          if (run >= 160404 && run <= 173198 && name.find("HLT_Mu17_Ele8_CaloIdL_v") != name.npos) path_found = true;
+          if (run >= 173199 && run <= 180252 && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v") != name.npos) path_found = true;
           if (run >= 190456/* && run <= xxxxx*/ && name.find("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v") != name.npos) path_found = true; 
         }
         if (channel_ == channel::mtmet) {
@@ -216,9 +216,9 @@ namespace ic {
           em_alt_leg2_filter = "hltL1MuOpenEG5L3Filtered17";
         }
         if (run >= 170249 && run <= 173198) {
-          em_alt_trig_obj_label = "triggerObjectsMu17Ele8";
-          em_alt_leg1_filter = "hltMu17Ele8CaloIdTPixelMatchFilter";
-          em_alt_leg2_filter = "hltL1Mu7EG5L3MuFiltered17";  
+          em_alt_trig_obj_label = "triggerObjectsMu17Ele8IdL";
+          em_alt_leg1_filter = "hltL1NonIsoHLTNonIsoMu17Ele8PixelMatchFilter";
+          em_alt_leg2_filter = "hltL1Mu7EG5L3MuFiltered17";
         }
         if (run >= 173236 && run <= 180252) {
           em_alt_trig_obj_label = "triggerObjectsMu17Ele8";
