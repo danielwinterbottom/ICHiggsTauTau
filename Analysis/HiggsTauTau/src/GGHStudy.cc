@@ -25,8 +25,8 @@ namespace ic {
       hists_->Create("overlap_jets", 5, -0.5, 4.5);
       hists_->Create("njets", 5, -0.5, 4.5);
     }
-    std::string file = "minlo_hres_weights_125.root";
-    //std::string file = "data/ggh_weights/HRes_weight_pTH_mH125_8TeV.root";
+    //std::string file = "minlo_hres_weights_125.root";
+    std::string file = "data/ggh_weights/HRes_weight_pTH_mH125_8TeV.root";
     ggh_weights_ = new TFile(file.c_str());
     ggh_weights_->cd();
     ggh_hist_ = (TH1F*)gDirectory->Get("Nominal");
@@ -35,6 +35,8 @@ namespace ic {
 
   int GGHStudy::Execute(TreeEvent *event) {
     double wt = 1.0;
+    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    if (eventInfo->weight_defined("gen_weight")) wt *= eventInfo->weight("gen_weight");
     std::vector<GenParticle *> const& gen_particles = event->GetPtrVec<GenParticle>("genParticles");
     // std::vector<GenParticle *> const& gen_taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
     std::vector<GenJet *> gen_jets = event->GetPtrVec<GenJet>("genJets");
@@ -82,7 +84,6 @@ namespace ic {
     hists_->Fill("njets", kinematic_jets, wt);
 
     // // Get the stuff we need from the event
-    // EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     // double wt = eventInfo->total_weight();
     // std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(dilepton_label_);
     // std::vector<Vertex *> const& vertices = event->GetPtrVec<Vertex>("vertices");
