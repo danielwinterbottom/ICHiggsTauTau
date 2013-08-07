@@ -889,9 +889,13 @@ int main(int argc, char* argv[]){
       httWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
     }
   }
-  if (output_name.find("GluGluToHToTauTau_M-") != output_name.npos 
-      && output_name.find("SUSYGluGluToHToTauTau_M-") == output_name.npos
-      && output_name.find("minloHJJ") == output_name.npos) {
+  if ( (output_name.find("GluGluToHToTauTau_M-")          != output_name.npos ||
+        output_name.find("GluGluToHToWWTo2LAndTau2Nu_M-") != output_name.npos ||
+        output_name.find("GluGluToHToWWTo2L2Nu_M-")       != output_name.npos ||
+        output_name.find("GluGluToHToWWTo2Tau2Nu_M-")     != output_name.npos ||
+        output_name.find("GluGluToHToWWToLNuTauNu_M-")    != output_name.npos) &&
+      output_name.find("SUSYGluGluToHToTauTau_M-")  == output_name.npos
+      && output_name.find("minloHJJ")               == output_name.npos) {
     std::size_t pos = output_name.find("_M-");
     if (pos != output_name.npos) {
       std::string mass_string;

@@ -380,7 +380,7 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 -p "powheg:powheg:output/Paper_2012_Vegas/GluGluToHToTauTau_M-125_mt_2012.root:inclusive_os_sel/:n_jets:-1:2:1" \
 -p "minlo:minlo:output/Paper_2012_Vegas/GluGluToHToTauTau_M-125-minloHJJ_mt_2012.root:inclusive_os_sel/:n_jets:-1:2:2" \
 --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label="#mu#tau_{h}" \
---outname="powheg_vs_minlo_n_jets.pdf" \
+--outname="powheg_vs_minlo_n_jets_reco.pdf" \
 --ratios="minlo/powheg/1" --ratio_axis_label="minlo/powheg" --ratio_y_min=0.5 --ratio_y_max=1.5
 
 ./bin/PlotCompare  \
@@ -450,4 +450,20 @@ htt_em.inputs-sm-8TeV.root
   --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
   --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
 
+./bin/PlotCompare  \
+-p "minlo-hres:minlo+HRes:GluGluToHToTauTau_M-125-minloHJJ-WithHRes_mt_2012.root:ggh_study/:njets:-1:2:8" \
+-p "minlo:minlo:GluGluToHToTauTau_M-125-minloHJJ_mt_2012.root:ggh_study/:njets:-1:2:2" \
+-p "hres:powheg+HRes:GluGluToHToTauTau_M-125_WithHRes_mt_2012.root:ggh_study/:njets:-1:2:4" \
+-p "powheg:powheg:GluGluToHToTauTau_M-125_mt_2012.root:ggh_study/:njets:-1:2:1" \
+--x_axis_title="Number of Jets" --norm_mode=3  --big_label="Generator" \
+--outname="powheg_vs_minlo_n_jets.pdf" \
+--ratios="minlo/powheg/2:hres/powheg/4:minlo-hres/powheg/8" --ratio_axis_label="Ratio" --ratio_y_min=0.5 --ratio_y_max=1.5
 
+./bin/PlotCompare  \
+-p "minlo-hres:minlo+HRes:GluGluToHToTauTau_M-125-minloHJJ-WithHRes_mt_2012.root:ggh_study/:h_pt:-1:2:8" \
+-p "minlo:minlo:GluGluToHToTauTau_M-125-minloHJJ_mt_2012.root:ggh_study/:h_pt:-1:2:2" \
+-p "hres:powheg+HRes:GluGluToHToTauTau_M-125_WithHRes_mt_2012.root:ggh_study/:h_pt:-1:2:4" \
+-p "powheg:powheg:GluGluToHToTauTau_M-125_mt_2012.root:ggh_study/:h_pt:-1:2:1" \
+--x_axis_title="Higgs p_{T} [GeV]" --norm_mode=3  --big_label="Generator" \
+--outname="powheg_vs_minlo_hpt.pdf" --rebin=5 \
+--ratios="minlo/powheg/2:hres/powheg/4:minlo-hres/powheg/8" --ratio_axis_label="Ratio" --ratio_y_min=0.5 --ratio_y_max=1.5
