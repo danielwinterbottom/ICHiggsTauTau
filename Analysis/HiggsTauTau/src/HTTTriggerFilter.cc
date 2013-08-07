@@ -178,10 +178,15 @@ namespace ic {
       }
       if (channel_ == channel::em) {
         // 2011 Triggers
-        if (run >= 160404 && run <= 167913) {
+        if (run >= 160404 && run <= 163261) {
           trig_obj_label = "triggerObjectsMu8Ele17IdL";
           leg1_filter = "hltL1NonIsoHLTNonIsoMu8Ele17PixelMatchFilter";
-          leg2_filter = "hltL1MuOpenEG5L3Filtered8";  
+          leg2_filter = "hltL1Mu3EG5L3Filtered8";
+        }
+        if (run >= 163262 && run <= 167913) {
+          trig_obj_label = "triggerObjectsMu8Ele17IdL";
+          leg1_filter = "hltL1NonIsoHLTNonIsoMu8Ele17PixelMatchFilter";
+          leg2_filter = "hltL1MuOpenEG5L3Filtered8";
         }
         if (run >= 170249 && run <= 180252) {
           trig_obj_label = "triggerObjectsMu8Ele17";
@@ -200,10 +205,15 @@ namespace ic {
           leg2_filter = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8";
         }
         // 2011 Triggers
-        if (run >= 160404 && run <= 167913) {
+        if (run >= 160404 && run <= 163261) {
           em_alt_trig_obj_label = "triggerObjectsMu17Ele8IdL";
           em_alt_leg1_filter = "hltL1NonIsoHLTNonIsoMu17Ele8PixelMatchFilter";
-          em_alt_leg2_filter = "hltL1MuOpenEG5L3Filtered17";  
+          em_alt_leg2_filter = "hltL1Mu3EG5L3Filtered17";  // V1,V2
+        }
+        if (run >= 163262 && run <= 167913) {
+          em_alt_trig_obj_label = "triggerObjectsMu17Ele8IdL";
+          em_alt_leg1_filter = "hltL1NonIsoHLTNonIsoMu17Ele8PixelMatchFilter";
+          em_alt_leg2_filter = "hltL1MuOpenEG5L3Filtered17";
         }
         if (run >= 170249 && run <= 173198) {
           em_alt_trig_obj_label = "triggerObjectsMu17Ele8";
