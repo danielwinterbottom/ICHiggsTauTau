@@ -19,6 +19,7 @@ class GGHStudy : public ModuleBase {
   DynamicHistoSet * hists_;
   TFile *ggh_weights_;
   TH1F *ggh_hist_;
+  unsigned no_taus;
 
 
   // void PrintEff(std::string const& name, double const& num, double const& den) {

@@ -19,16 +19,18 @@ namespace ic {
 
   int GGHStudy::PreAnalysis() {
     if (fs_) {
+      TH1::SetDefaultSumw2(true);
       hists_ = new DynamicHistoSet(fs_->mkdir("ggh_study"));
       hists_->Create("h_pt", 500, 0, 500);
       hists_->Create("overlap_jets", 5, -0.5, 4.5);
       hists_->Create("njets", 5, -0.5, 4.5);
     }
-    return 0;
-    std::string file = "data/ggh_weights/HRes_weight_pTH_mH125_8TeV.root";
+    std::string file = "minlo_hres_weights_125.root";
+    //std::string file = "data/ggh_weights/HRes_weight_pTH_mH125_8TeV.root";
     ggh_weights_ = new TFile(file.c_str());
     ggh_weights_->cd();
     ggh_hist_ = (TH1F*)gDirectory->Get("Nominal");
+    return 0;
   }
 
   int GGHStudy::Execute(TreeEvent *event) {
@@ -61,10 +63,12 @@ namespace ic {
 
     // Find the two status 3 taus
     std::vector<GenParticle *> taus = gen_particles;
+    // for (unsigned i = 0; i < taus.size(); ++i) std::cout << taus[i]->index() << " " << taus[i]->status() << " " << taus[i]->pdgid() << " " << taus[i]->vector() << std::endl;
     ic::erase_if(taus, [] (GenParticle const* part) { return !(abs(part->pdgid()) == 15 && part->status() == 3); });
     if (taus.size() != 2) {
-      std::cout << "More than two status 3 taus!" << std::endl;
-      throw;
+      //std::cout << "More than two status 3 taus!" << std::endl;
+      ++no_taus;
+      return 0;
     }
 
     // Remove gen jets overlapping with taus
@@ -206,7 +210,7 @@ namespace ic {
         //   % "Exact Overlap:" % justpair_yields_[0] % justpair_yields_[1] % justpair_yields_[2] % justpair_yields_[3];
         // PrintEff("OS-Sel Frac", justpair_yields_[0], total_yields_[0]);
         // PrintEff("SS-Sel Frac", justpair_yields_[1], total_yields_[1]);
-
+        std::cout << "no_taus: " << no_taus << std::endl;
     return 0;
   }
 
