@@ -973,6 +973,7 @@ int main(int argc, char* argv[]){
     analysis.NotifyEvent(ch);
    httPrint.PrintEvent(ch);
   }
+  httPrint.set_skip_events(false);
   if ( (channel == channel::etmet || 
         channel == channel::mtmet)
         && !is_data )             analysis.AddModule(&httL1MetCorrector); 

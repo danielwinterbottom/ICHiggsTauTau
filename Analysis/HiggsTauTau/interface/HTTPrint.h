@@ -15,7 +15,7 @@ namespace ic {
 class HTTPrint : public ModuleBase {
  private:
   std::set<unsigned> events_;
-
+  CLASS_MEMBER(HTTPrint, bool, skip_events)
  public:
   HTTPrint(std::string const& name);
   virtual ~HTTPrint();

@@ -10,7 +10,7 @@
 namespace ic {
 
   HTTPrint::HTTPrint(std::string const& name) : ModuleBase(name) {
-
+    skip_events_ = false;
   }
 
   HTTPrint::~HTTPrint() {
@@ -201,6 +201,8 @@ namespace ic {
     */
 
 
+  } else if (skip_events_) {
+    return 1;
   }
   return 0;
 
