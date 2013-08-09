@@ -67,6 +67,8 @@ namespace ic {
       std::cout << "-againstElectronMVA: " << taus[i]->GetTauID("againstElectronMVA") << std::endl;
       std::cout << "-againstElectronTightMVA2: " << taus[i]->GetTauID("againstElectronTightMVA2") << std::endl;
       std::cout << "-againstElectronTightMVA3: " << taus[i]->GetTauID("againstElectronTightMVA3") << std::endl;
+      std::cout << "-againstElectronMVA3category: " << taus[i]->GetTauID("againstElectronMVA3category") << std::endl;
+      std::cout << "-againstElectronMVA3raw: " << taus[i]->GetTauID("againstElectronMVA3raw") << std::endl;
       std::cout << "-againstMuonTight: " << taus[i]->GetTauID("againstMuonTight") << std::endl;
       std::cout << "-againstMuonTight2: " << taus[i]->GetTauID("againstMuonTight2") << std::endl;
       std::cout << "-againstMuonLoose: " << taus[i]->GetTauID("againstMuonLoose") << std::endl;
