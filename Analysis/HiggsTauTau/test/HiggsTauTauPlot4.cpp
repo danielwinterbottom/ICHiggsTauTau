@@ -189,6 +189,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Additional Binning
 	// ************************************************************************
+  string extra_binning_postfix;
 	if (add_extra_binning != "") {
 		std::vector<std::string> extra_binning;
 		boost::split(extra_binning, add_extra_binning, boost::is_any_of(":"));
@@ -196,6 +197,7 @@ int main(int argc, char* argv[]){
 			std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 			std::cout << "[HiggsTauTauPlot4] Adding alternative binning \"" << extra_binning[0] 
 				<< "\" with postfix \"" << extra_binning[1] << "\"" << std::endl;
+      extra_binning_postfix = extra_binning[1];
 			ana.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", extra_binning[1]);
 			ana.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 			ana.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
@@ -348,6 +350,19 @@ int main(int argc, char* argv[]){
 		  hmap["QCD"].first = h1;
 		  hmap["QCD_"+syst_qcd_name+"Up"].first = h2;
 		  hmap["QCD_"+syst_qcd_name+"Down"].first = h3;
+      if (extra_binning_postfix != "") {
+		    TH1F h1f = hmap["QCD"+extra_binning_postfix].first;
+        float x, y;
+        for(int i=1;i<h1f.GetNbinsX();++i){
+          x = h1f.GetXaxis()->GetBinCenter(i);
+          if(x < syst_qcd_xmax){
+            y = h1f.GetBinContent(i);
+            h1f.SetBinContent(i,y*syst_qcd_central);
+          }  
+        }
+        SetNorm(&h1f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
+        hmap["QCD"+extra_binning_postfix].first = h1f;
+      }
 		}
 	}
 
