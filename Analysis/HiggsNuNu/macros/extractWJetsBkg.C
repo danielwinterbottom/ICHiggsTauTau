@@ -182,7 +182,7 @@ int extractWJetsBkg(){//main
   const unsigned nWeights = 4;
   std::string lSuffix[nWeights] = {"","_pu","_pu_trig","_pu_trig_idiso"};
 
-  bool doTaus = false;
+  bool doTaus = true;
   bool docrosschecktau=false;
   bool dojes = false;
   bool dojer = false;
@@ -193,6 +193,7 @@ int extractWJetsBkg(){//main
   std::string lChannel[nCh] = {"nunu","enu","munu","taunu"};
 
   std::string TOPDIR = "../TABLES/";
+  //std::string TOPDIR = "/vols/cms04/pjd12/invcmssws/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/TABLES/";
   //std::string TOPDIR = "../oldanalysisruns/080713_taunominaltightlepiddiscr/TABLES/";
 
   const unsigned nSteps = lSelVecSignal.size();
