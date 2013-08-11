@@ -482,18 +482,39 @@ namespace ic {
 		}
 	}
 
+	int HTTSetup::ParseDatacard(std::string const& filename, std::string mass) {
+		std::vector<std::string> as_vec;
+		boost::split(as_vec, filename, boost::is_any_of("/"));
+		if (as_vec.size() > 0) {
+			std::vector<std::string> tmp;
+			boost::split(tmp, as_vec.back(), boost::is_any_of(".-_"));
+			if (tmp.size() == 5) {
+				std::cout << "Info in <HTTSetup::ParseDatacard>: For file " << as_vec.back() 
+					<< " interpret channel, id, era and mass as \"" << tmp[1] << "\", \"" << tmp[2] << "\", \"" << tmp[3]
+					<< "\" and \"" << mass << "\" respectively" << std::endl;
+				return this->ParseDatacard(filename, tmp[1], boost::lexical_cast<int>(tmp[2]), tmp[3], mass);
+			} else {
+				std::cout << "Warning in <HTTSetup::ParseDatacard>: Unable to interpret channel and era from file name" << std::endl;
+				return 1;
+			}
+		} else {
+			std::cout << "Warning in <HTTSetup::ParseDatacard>: Unable to interpret channel and era from file name" << std::endl;
+			return 1;
+		}
+	}
+
+//htt_mt.input_7TeV.root
 	int HTTSetup::ParseROOTFile(std::string const& filename) {
 		// Assume filename is of the form htt_$CHANNEL.inputs-$ANALYSIS-$ERA.root
 		std::vector<std::string> as_vec;
 		boost::split(as_vec, filename, boost::is_any_of("/"));
 		if (as_vec.size() > 0) {
 			std::vector<std::string> tmp;
-			boost::split(tmp, as_vec.back(), boost::is_any_of(".-"));
+			boost::split(tmp, as_vec.back(), boost::is_any_of(".-_"));
 			if (tmp.size() == 5) {
-				boost::erase_all(tmp[0],"htt_");
 				std::cout << "Info in <HTTSetup::ParseROOTFile>: For file " << as_vec.back() 
-					<< " interpret channel and era as \"" << tmp[0] << "\" and \"" << tmp[3] << "\" respectively" << std::endl;
-				return this->ParseROOTFile(filename, tmp[0], tmp[3]);
+					<< " interpret channel and era as \"" << tmp[1] << "\" and \"" << tmp[3] << "\" respectively" << std::endl;
+				return this->ParseROOTFile(filename, tmp[1], tmp[3]);
 			} else {
 				std::cout << "Warning in <HTTSetup::ParseROOTFile>: Unable to interpret channel and era from file name" << std::endl;
 				return 1;
@@ -683,5 +704,13 @@ namespace ic {
 		}
 		return 0;
 	}
+
+	bool HTTSetup::HasProcess(std::string const& process) const {
+		for (unsigned i = 0; i < processes_.size(); ++i) {
+			if (processes_[i].process == process) return true;
+		}
+		return false;
+	}
+
 
 }

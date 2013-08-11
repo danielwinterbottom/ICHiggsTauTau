@@ -125,6 +125,7 @@ class HTTSetup {
 		int ParseDatacard(std::string const& filename, std::string const& channel, int category_id, std::string era, std::string mass);
 		int ParseROOTFile(std::string const& filename, std::string const& channel, std::string era);
 		int ParseDatacard(std::string const& filename);
+		int ParseDatacard(std::string const& filename, std::string mass);
 		int ParseROOTFile(std::string const& filename);
 		int ParsePulls(std::string const& filename);
 		HTTSetup();
@@ -148,6 +149,7 @@ class HTTSetup {
 		TH1F 	GetShape();
 		TH1F 	GetObservedShape();
 		std::set<std::string> GetNuisanceSet();
+		bool HasProcess(std::string const& process) const;
 };
 
 void PullsFromFile(std::string const& filename, std::vector<ic::Pull> & pullvec, bool verbose);

@@ -460,10 +460,35 @@ htt_em.inputs-sm-8TeV.root
 --ratios="minlo/powheg/2:hres/powheg/4:minlo-hres/powheg/8" --ratio_axis_label="Ratio" --ratio_y_min=0.5 --ratio_y_max=1.5
 
 ./bin/PlotCompare  \
--p "minlo-hres:minlo+HRes:GluGluToHToTauTau_M-125-minloHJJ-WithHRes_mt_2012.root:ggh_study/:h_pt:-1:2:8" \
+-p "minlo:minlo:GluGluToHToTauTau_M-125-minloHJJ_mt_2012.root:ggh_study/:njets:-1:2:2" \
+-p "hres:powheg+HRes:GluGluToHToTauTau_M-125_WithHRes_mt_2012.root:ggh_study/:njets:-1:2:4" \
+-p "powheg:powheg:GluGluToHToTauTau_M-125_mt_2012.root:ggh_study/:njets:-1:2:1" \
+--x_axis_title="Number of Jets" --norm_mode=3  --big_label="Generator" \
+--outname="powheg_vs_minlo_n_jets.pdf" \
+--ratios="minlo/powheg/2:hres/powheg/4" --ratio_axis_label="Ratio" --ratio_y_min=0.5 --ratio_y_max=1.5
+
+
+./bin/PlotCompare  \
 -p "minlo:minlo:GluGluToHToTauTau_M-125-minloHJJ_mt_2012.root:ggh_study/:h_pt:-1:2:2" \
 -p "hres:powheg+HRes:GluGluToHToTauTau_M-125_WithHRes_mt_2012.root:ggh_study/:h_pt:-1:2:4" \
 -p "powheg:powheg:GluGluToHToTauTau_M-125_mt_2012.root:ggh_study/:h_pt:-1:2:1" \
 --x_axis_title="Higgs p_{T} [GeV]" --norm_mode=3  --big_label="Generator" \
 --outname="powheg_vs_minlo_hpt.pdf" --rebin=5 \
---ratios="minlo/powheg/2:hres/powheg/4:minlo-hres/powheg/8" --ratio_axis_label="Ratio" --ratio_y_min=0.5 --ratio_y_max=1.5
+--ratios="minlo/powheg/2:hres/powheg/4" --ratio_axis_label="Ratio" --ratio_y_min=0.5 --ratio_y_max=1.5
+
+
+./bin/SOBPlot --cfg=scripts/new_plot_sm_2012.cfg \
+ --datacard_regex="htt_.._._.TeV.txt" --root_file_regex="htt.*root" \
+ --datacard_path=Paper-LIMITS/sm-v1/mt/125/ --root_file_path=Paper-LIMITS/sm-v1/mt/common/ --pulls_file=Paper-LIMITS/sm-v1/mt/125/out/mlfit.txt \
+ --signal_mass=125 --postfit=false --mssm=false --log_y=false \
+ --title_left="CMS Preliminary, #sqrt{s} = 8 TeV, L = 19.8 fb^{-1}" \
+ --blind=true --x_blind_min=100 --x_blind_max=160 --norm_bins=true \
+ --background_scheme=all --signal_scheme=sm_default --draw_error_band=true \
+ --x_axis_label="M_{#tau#tau} [GeV]" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
+ --extra_pad=1.2 --draw_ratio=true
+
+
+
+
+
+

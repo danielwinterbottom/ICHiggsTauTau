@@ -155,7 +155,6 @@ int main(int argc, char* argv[]){
     comp_plots.push_back("QCD");
     comp_plots.push_back("TT");
     comp_plots.push_back("VV");
-    comp_plots.push_back("ZLL");
     comp_plots.push_back("ZL");
     comp_plots.push_back("ZJ");
   } else {
@@ -322,61 +321,70 @@ int main(int argc, char* argv[]){
   std::cout << std::endl;
 
   if (plot) {
+    for (unsigned j = 0; j < comp_plots.size(); ++j) {
+      ic::Plot test_plot;
+      test_plot.output_filename = output_file;
+      test_plot.y_axis_title = "Events";
+      test_plot.x_axis_title = "SVFit Mass (GeV)";
+      test_plot.title_left = "Comparison: " + comp_plots[j];
+      test_plot.title_right = category;
 
-  for (unsigned j = 0; j < comp_plots.size(); ++j) {
-    ic::Plot test_plot;
-    test_plot.output_filename = output_file;
-    test_plot.y_axis_title = "Events";
-    test_plot.x_axis_title = "SVFit Mass (GeV)";
-    test_plot.title_left = "Comparison: " + comp_plots[j];
-    test_plot.title_right = category;
+
+      if (j == 0) test_plot.append = 1;
+      if (j > 0 && j < (comp_plots.size()-1)) test_plot.append = 2;
+      if (j == (comp_plots.size() - 1)) test_plot.append = 3;
+
+      std::vector<ic::TH1PlotElement> ele;
+      std::vector<ic::RatioPlotElement> ratio;
+      std::vector<double> yields;
 
 
-    if (j == 0) test_plot.append = 1;
-    if (j > 0 && j < (comp_plots.size()-1)) test_plot.append = 2;
-    if (j == (comp_plots.size() - 1)) test_plot.append = 3;
+      for (unsigned k = 0; k < inputs.size(); ++k) {
+        std::string replacement = category;
+        // std::cout << "Looking for plot: " << comp_plots[j] << std::endl;
+        ele.push_back(ic::TH1PlotElement(labels[k],tfiles[k],replacement,comp_plots[j]));
+        if (ele.back().hist_ptr()) {
+          yields.push_back(Integral(ele.back().hist_ptr()));
+          SetStyle(ele.back(), k);
+          if (show_errs) {
+            ele.back().set_draw_stat_error_y(true);
+          }
+      //drawn_ele[i]->hist_ptr()->Scale(1.0, "width");
+          ele.back().hist_ptr()->Scale(1.0, "width");
+          ele.back().set_legend_text(labels[k]);
+          test_plot.AddTH1PlotElement(ele.back());
+        } else {
+          yields.push_back(0.0);
+        }
 
-    std::vector<ic::TH1PlotElement> ele;
-    std::vector<ic::RatioPlotElement> ratio;
-
-    for (unsigned k = 0; k < inputs.size(); ++k) {
-      std::string replacement = category;
-
-      if (mode != 2) {
-        if (category.find("eleTau") != category.npos && labels[k].find("MIT") != labels[k].npos) {
-          boost::replace_first(replacement, "eleTau", "eTau");
+        if (k > 0) {
+          ratio.push_back(ic::RatioPlotElement("ratio"+boost::lexical_cast<string>(k), labels[k], labels[0]) );
+          SetStyle(ratio.back(),k);
+          test_plot.AddRatioPlotElement(ratio.back());
         }
       }
-      // std::cout << "Looking for plot: " << comp_plots[j] << std::endl;
-      ele.push_back(ic::TH1PlotElement(labels[k],tfiles[k],replacement,comp_plots[j]));
-      if (ele.back().hist_ptr()) {
-      SetStyle(ele.back(), k);
-      if (show_errs) {
-        ele.back().set_draw_stat_error_y(true);
+      test_plot.draw_ratio_hist = true;
+      test_plot.ratio_y_axis_min = 0.8;
+      test_plot.ratio_y_axis_max = 1.2;
+      if (mssm_mode > 0) {
+        test_plot.custom_x_axis_range = true;
+        test_plot.x_axis_min = 0;
+        test_plot.x_axis_max = 350;
       }
-      //drawn_ele[i]->hist_ptr()->Scale(1.0, "width");
-      ele.back().hist_ptr()->Scale(1.0, "width");
-      ele.back().set_legend_text(labels[k]);
-      test_plot.AddTH1PlotElement(ele.back());
+      if (inputs.size() == 2) {
+        double y1 = yields[0];
+        double y2 = yields[1];
+        if (y1 > 0 && y2 > 0) {
+          double diff = 100*(fabs(y2-y1))/y1;
+          std::string diff_str = (boost::format("Difference: %.1f%%") % diff).str();
+          ic::TextElement text(diff_str,0.03,0.19,0.89);
+          test_plot.AddTextElement(text);
+        }
       }
-
-      if (k > 0) {
-        ratio.push_back(ic::RatioPlotElement("ratio"+boost::lexical_cast<string>(k), labels[k], labels[0]) );
-        SetStyle(ratio.back(),k);
-        test_plot.AddRatioPlotElement(ratio.back());
-      }
+      test_plot.extra_pad = 1.1;
+      test_plot.GeneratePlot();
     }
-    test_plot.draw_ratio_hist = true;
-    test_plot.ratio_y_axis_min = 0.8;
-    test_plot.ratio_y_axis_max = 1.2;
-    if (mssm_mode > 0) {
-      test_plot.custom_x_axis_range = true;
-      test_plot.x_axis_min = 0;
-      test_plot.x_axis_max = 350;
-    }
-    test_plot.GeneratePlot();
   }
-}
 
   return 0;
 }

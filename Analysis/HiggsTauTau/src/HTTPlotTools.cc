@@ -19,6 +19,13 @@
 namespace ic {
 
   HTTPlot::HTTPlot() : config_("Config") {
+    bkg_schemes_["all"] = {
+      PlotBkgComponent("qcd","QCD"                  ,{"QCD","Fakes"}      , kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT","ttbar"}       , kBlue   - 8),
+      PlotBkgComponent("ewk","electroweak"          ,{"W","VV","EWK"}     , kRed    + 2),
+      PlotBkgComponent("zll","Z#rightarrowll"       ,{"ZL","ZJ","ZLL"}    , kAzure  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT","Ztt"}        , kOrange - 4)
+    };
     bkg_schemes_["et_default"] = {
       PlotBkgComponent("qcd","QCD"                  ,{"QCD"}      , kMagenta-10),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       , kBlue   - 8),
@@ -282,14 +289,22 @@ namespace ic {
     for (unsigned i = 0; i < bkg_scheme.size(); ++i) {
       if (i == 0) bkr_list_for_ratio += bkg_scheme[i].name;
       if (i != 0) bkr_list_for_ratio += ("+"+bkg_scheme[i].name);
-      bkg_elements.push_back(TH1PlotElement(bkg_scheme[i].name, &(hmap[bkg_scheme[i].plots[0]].first), bkg_scheme[i].legend));
-      for (unsigned j = 1; j < bkg_scheme[i].plots.size(); ++j) {
-        bkg_elements.back().hist_ptr()->Add(&hmap[bkg_scheme[i].plots[j]].first);
+      bool valid_element = false;
+      for (unsigned j = 0; j < bkg_scheme[i].plots.size(); ++j) {
+        if (hmap.count(bkg_scheme[i].plots[j])) {
+          if (!valid_element) {
+            bkg_elements.push_back(TH1PlotElement(bkg_scheme[i].name, &(hmap[bkg_scheme[i].plots[j]].first), bkg_scheme[i].legend));            
+            valid_element = true;
+          } else {
+            bkg_elements.back().hist_ptr()->Add(&hmap[bkg_scheme[i].plots[j]].first);          
+          }
+        }
       }
-      HTTPlot::SetMCStackStyle(bkg_elements.back(), bkg_scheme[i].color);
-      if (norm_bins_) bkg_elements.back().hist_ptr()->Scale(1.0, "width");
-
-      plot.AddTH1PlotElement(bkg_elements.back());
+      if (valid_element) {
+        HTTPlot::SetMCStackStyle(bkg_elements.back(), bkg_scheme[i].color);
+        if (norm_bins_) bkg_elements.back().hist_ptr()->Scale(1.0, "width");
+        plot.AddTH1PlotElement(bkg_elements.back());        
+      }
     }
 
     std::vector<PlotSigComponent> sig_scheme = sig_schemes_[signal_scheme_];
