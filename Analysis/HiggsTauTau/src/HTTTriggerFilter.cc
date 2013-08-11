@@ -58,6 +58,10 @@ namespace ic {
           if (run >= 165088 && run <= 167913 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v") != name.npos) path_found = true;
           if (run >= 170249 && run <= 173198 && name.find("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TightIsoPFTau20_v") != name.npos) path_found = true;
           if (run >= 173236 && run <= 178380 && name.find("HLT_Ele18_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v") != name.npos) path_found = true;
+          if (run >= 173236 && run <= 178380 && name.find("HLT_Ele20_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v") != name.npos) {
+            path_found      = true;
+            fallback_found  = true; 
+          }
           if (run >= 178420 && run <= 180252 && name.find("HLT_Ele20_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v") != name.npos) path_found = true;
           // 2012 Triggers
           if (run >= 190456 && run <= 193751 && name.find("HLT_Ele20_CaloIdVT_CaloIsoRhoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v") != name.npos) path_found = true; 
@@ -124,6 +128,11 @@ namespace ic {
           trig_obj_label = "triggerObjectsEle18MediumTau20";
           leg1_filter = "hltEle18CaloIdVTCaloIsoTTrkIdTTrkIsoTTrackIsoFilter";
           leg2_filter = "hltPFTauMediumIso20TrackMediumIso";  
+        }
+        if (run >= 173236 && run <= 178380 && fallback_found == true) {
+          trig_obj_label = "triggerObjectsEle20MediumTau20";
+          leg1_filter = "hltEle20CaloIdVTCaloIsoTTrkIdTTrkIsoTTrackIsoFilterL1SingleEG18orL1SingleEG20";
+          leg2_filter = "hltPFTauMediumIso20TrackMediumIso";
         }
         if (run >= 178420 && run <= 180252) {
           trig_obj_label = "triggerObjectsEle20MediumTau20";
