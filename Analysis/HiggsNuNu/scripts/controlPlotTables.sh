@@ -5,26 +5,26 @@ PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
 for CHANNEL in nunu taunu enu munu
   do
-  for MET in 130
+  for MET in 130 #0 #70
     do
-    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #PUUP PUDOWN central
+    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #PUUP PUDOWN
       do
-      FOLDER=./output/$CHANNEL/MET$MET/
-      PLOTDIR=TABLES/$CHANNEL/MET$MET/
-      PLOTDIRQCD=TABLES/$CHANNEL/MET$MET/QCD/
+	FOLDER=output/$CHANNEL/MET$MET/ # ./oldanalysisruns/090813_nopuidorjer/output/$CHANNEL/MET$MET/
+	PLOTDIR=TABLES/$CHANNEL/MET$MET/
+	PLOTDIRQCD=TABLES/$CHANNEL/MET$MET/QCD/
 
 	if [ "$SYST" != "central" ] #if not doing central
             then
 	    if [[ "$SYST" != PU* ]] #For PU syst info is in central root file if not doing PU get output from syst subdirectory
 		then
 		FOLDER=$FOLDER"/"$SYST"/"
-	    # else #If doing PU syst pass correct options
-# 		DOPUSYST="true"
-		
-# 		if [ "$SYST" = "PUUP" ]
-# 		    then
-# 		    PUUPORDOWN="true" #note this is false by default so PUDOWN will have correct option already
-# 		fi
+# 	    else #If doing PU syst pass correct options
+#  		DOPUSYST="true"
+	
+#  		if [ "$SYST" = "PUUP" ]
+#  		    then
+#  		    PUUPORDOWN="true" #note this is false by default so PUDOWN will have correct option already
+#  		fi
 	    fi
 	    PLOTDIR=$PLOTDIR"/"$SYST"/"
 	    PLOTDIRQCD=$PLOTDIR"/"$SYST"/QCD/"
@@ -34,7 +34,7 @@ for CHANNEL in nunu taunu enu munu
 	mkdir -p $PLOTDIR
 	mkdir -p $PLOTDIRQCD
 	mkdir -p $PLOTDIR/wjetsComp/
-	BLIND=1
+	BLIND=0
 	if [ "$CHANNEL" != "nunu" ] || (( "$MET" != "130" ))
 	    then
 	    let BLIND=0
