@@ -74,9 +74,9 @@ extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
 
 #### Apply these options for specific channels
 extra_channel = {
-  "et" : ' --fix_empty_bins="QCD.*,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD.*" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
-  "mt" : ' --fix_empty_bins="QCD.*,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD.*" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
-  "mtmet" : ' --extra_pad=1.2 --fix_empty_bins="QCD.*,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_soft_'+COM+'TeV"',
+  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD.*" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
+  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD.*" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "mtmet" : ' --extra_pad=1.2 --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_soft_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes"'
 }
 

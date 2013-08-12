@@ -158,7 +158,10 @@ int main(int argc, char* argv[]){
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
 	ana.AddHWWSignalSamples(hww_masses);
-	if (add_sm_background != "") ana.AddSMSignalSamples({add_sm_background});
+	if (add_sm_background != "") {
+		ana.AddSMSignalSamples({add_sm_background});
+		ana.AddHWWSignalSamples({add_sm_background});
+	}
 	ana.AddMSSMSignalSamples(mssm_masses);
 	if (is_2012 && check_ztt_top_frac) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
 	ana.ReadTrees(folder);
@@ -172,7 +175,10 @@ int main(int argc, char* argv[]){
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
 	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "", 1.0);
 	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "", 1.0);
-	if (add_sm_background != "") ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
+	if (add_sm_background != "") {
+		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
+		ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "");
+	}
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 
 	// ************************************************************************
@@ -238,14 +244,20 @@ int main(int argc, char* argv[]){
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
 		ana_syst.AddHWWSignalSamples(hww_masses);
-		if (add_sm_background != "") ana_syst.AddSMSignalSamples({add_sm_background});
+		if (add_sm_background != "") {
+			ana_syst.AddSMSignalSamples({add_sm_background});
+			ana_syst.AddHWWSignalSamples({add_sm_background});
+		}
 		ana_syst.AddMSSMSignalSamples(mssm_masses);
 		ana_syst.ReadTrees(folder+syst.first, folder);
 		ana_syst.ParseParamFile(paramfile);
 		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
 		ana_syst.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		ana_syst.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
-		if (add_sm_background != "") ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
+		if (add_sm_background != "") {
+			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
+			ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
+		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 	}
 
@@ -352,16 +364,24 @@ int main(int argc, char* argv[]){
 		  hmap["QCD_"+syst_qcd_name+"Down"].first = h3;
       if (extra_binning_postfix != "") {
 		    TH1F h1f = hmap["QCD"+extra_binning_postfix].first;
+		    TH1F h2f = hmap["QCD"+extra_binning_postfix].first;
+		    TH1F h3f = hmap["QCD"+extra_binning_postfix].first;
         float x, y;
         for(int i=1;i<h1f.GetNbinsX();++i){
           x = h1f.GetXaxis()->GetBinCenter(i);
           if(x < syst_qcd_xmax){
             y = h1f.GetBinContent(i);
             h1f.SetBinContent(i,y*syst_qcd_central);
+            h2f.SetBinContent(i,y*(syst_qcd_central+syst_qcd_band));
+            h3f.SetBinContent(i,y*(syst_qcd_central-syst_qcd_band));
           }  
         }
         SetNorm(&h1f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
+        SetNorm(&h2f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
+        SetNorm(&h3f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
         hmap["QCD"+extra_binning_postfix].first = h1f;
+        hmap["QCD"+syst_qcd_name+"Up"+extra_binning_postfix].first = h2f;
+        hmap["QCD"+syst_qcd_name+"Down"+extra_binning_postfix].first = h3f;
       }
 		}
 	}
