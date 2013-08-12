@@ -380,8 +380,8 @@ int main(int argc, char* argv[]){
         SetNorm(&h2f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
         SetNorm(&h3f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
         hmap["QCD"+extra_binning_postfix].first = h1f;
-        hmap["QCD"+syst_qcd_name+"Up"+extra_binning_postfix].first = h2f;
-        hmap["QCD"+syst_qcd_name+"Down"+extra_binning_postfix].first = h3f;
+        hmap["QCD_"+syst_qcd_name+"Up"+extra_binning_postfix].first = h2f;
+        hmap["QCD_"+syst_qcd_name+"Down"+extra_binning_postfix].first = h3f;
       }
 		}
 	}
