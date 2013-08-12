@@ -181,6 +181,12 @@ namespace ic {
         std::cout << "-has matched genjet: " << matched_genjet->vector() << std::endl;
       }
     }
+    if (eventInfo->is_data()) {
+      TriggerPathPtrVec const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPaths");
+      for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
+        std::cout << "Trigger path: " << triggerPathPtrVec[i]->name() << "  Prescale: " << triggerPathPtrVec[i]->prescale() << std::endl;
+      }
+    }
    /*
     std::cout << "---Triggers" << std::endl;
     std::vector<std::string> paths = { "triggerObjectsIsoMu15LooseTau15" };

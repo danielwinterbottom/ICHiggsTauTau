@@ -310,6 +310,7 @@ namespace ic {
                                     BTagWeight::tagger const& algo,
                                     int Btag_mode,
                                     int Bfake_mode) const {
+    bool verbose = false;
     std::map<std::size_t, bool> pass_result;
     for (unsigned i = 0; i < jets.size(); ++i) {
       rand->SetSeed((int)((jets[i]->eta()+5)*100000));
@@ -322,20 +323,31 @@ namespace ic {
       } else {
         promoteProb_btag = fabs(sf - 1.0)/((sf/eff) - 1.0);
       }
+      if (verbose) {
+        std::cout << "Jet " << i << " " << jets[i]->vector() << "  csv: " << jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags") << "  parton flavour: " << jets[i]->parton_flavour() << std::endl;
+        std::cout << "-- random seed: " << ((int)((jets[i]->eta()+5)*100000)) << std::endl;
+        std::cout << "-- efficiency: " << eff << std::endl;
+        std::cout << "-- scale factor: " << sf << std::endl;
+      }
       bool passtag = jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags") > 0.679;
+      double randVal = rand->Uniform();
       if(passtag) {                       // if tagged
-        if(demoteProb_btag > 0. && rand->Uniform() < demoteProb_btag) {
+        if(demoteProb_btag > 0. && randVal < demoteProb_btag) {
           // jets[i]->SetBDiscriminator("combinedSecondaryVertexBJetTags", 0.60);
           pass_result[jets[i]->id()] = false;
+          if (verbose) std::cout << "-- demote prob is " << demoteProb_btag << ", rand is " << randVal << ". Jet is demoted" << std::endl;
         } else {
           pass_result[jets[i]->id()] = true;            
+          if (verbose) std::cout << "-- demote prob is " << demoteProb_btag << ", rand is " << randVal << ". Jet remains tagged" << std::endl;
         }
       } else {
-        if(promoteProb_btag > 0. && rand->Uniform() < promoteProb_btag) {
+        if(promoteProb_btag > 0. && randVal < promoteProb_btag) {
           // jets[i]->SetBDiscriminator("combinedSecondaryVertexBJetTags", 0.70);
           pass_result[jets[i]->id()] = true;
+          if (verbose) std::cout << "-- promote prob is " << promoteProb_btag << ", rand is " << randVal << ". Jet is promoted" << std::endl;
         } else {
           pass_result[jets[i]->id()] = false;  
+          if (verbose) std::cout << "-- promote prob is " << promoteProb_btag << ", rand is " << randVal << ". Jet remains untagged" << std::endl;
         }
       }
     }
