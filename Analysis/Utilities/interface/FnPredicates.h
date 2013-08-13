@@ -63,6 +63,7 @@ namespace ic {
   bool ElectronHTT2011IdIso(Electron const* elec);
 
   bool ElectronZbbID(Electron const * elec);
+  bool MVAMETElectron(Electron const * elec);
 
   bool GenParticleInMassBand(GenParticle const* part, int pdgid, double m_low, double m_high);
 

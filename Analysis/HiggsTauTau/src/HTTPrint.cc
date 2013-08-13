@@ -117,6 +117,7 @@ namespace ic {
       std::cout << "-dr03_tk_sum_pt: " << elecs[i]->dr03_tk_sum_pt() << std::endl;
       std::cout << "-dr03_ecal_rechit_sum_et: " << elecs[i]->dr03_ecal_rechit_sum_et() << std::endl;
       std::cout << "-dr03_hcal_tower_sum_et: " << elecs[i]->dr03_hcal_tower_sum_et() << std::endl;
+      std::cout << "-Pass MVAMET Preselection?: " << MVAMETElectron(elecs[i]) << std::endl;
     }
 
     for (unsigned i = 0; i < elecs.size(); ++i) {

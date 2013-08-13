@@ -359,6 +359,30 @@ namespace ic {
               && fabs(elec->deta_sc_tk_at_vtx())  < 0.007
               && OneOverEOneOverP                 < 0.05) );
   }
+  
+  bool MVAMETElectron(Electron const * elec) {
+    if (fabs(elec->eta()) > 1.4442 && fabs(elec->eta()) < 1.566) return false;
+    bool pass_kin = elec->pt() > 9.5 && fabs(elec->eta()) < 2.5;
+    bool in_barrel = true;
+    if (fabs(elec->eta()) > 1.4442) in_barrel = false;
+    double OneOverEOneOverP = fabs( (1./elec->ecal_energy()) - (1./(elec->ecal_energy()/elec->sc_e_over_p())) );
+    double pass_iso = (elec->dr03_tk_sum_pt()/elec->pt()) < 0.2;
+    return pass_kin && pass_iso && 
+          ( (in_barrel 
+              && elec->gsf_tk_nhits()            == 0
+              && elec->sigma_IetaIeta()           < 0.01
+              && fabs(elec->dphi_sc_tk_at_vtx())  < 0.8
+              && fabs(elec->deta_sc_tk_at_vtx())  < 0.007
+              && OneOverEOneOverP                 < 0.05
+              && elec->hadronic_over_em()         < 0.15)
+          || (!in_barrel 
+              && elec->gsf_tk_nhits()            == 0
+              && elec->sigma_IetaIeta()           < 0.03
+              && fabs(elec->dphi_sc_tk_at_vtx())  < 0.10
+              && fabs(elec->deta_sc_tk_at_vtx())  < 0.009
+              && OneOverEOneOverP                 < 0.05
+              && elec->hadronic_over_em()         < 0.10) );
+  }
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut) {
     double eta = fabs(elec->sc_eta());
