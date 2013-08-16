@@ -105,6 +105,7 @@ int main(int argc, char* argv[]){
   bool printEventContent; //print event content of events selected
 
   bool doMCFMstudy;
+  bool turnoffpuid;
 
   std::string eventsToSkim; //name of input file containing run,lumi,evt of events to be skimmed
 
@@ -157,6 +158,7 @@ int main(int argc, char* argv[]){
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false));
+    ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -628,8 +630,13 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<PFJet> cjvjetsIDFilter = SimpleFilter<PFJet>
     ("cjvJetsIDFilter")
-    .set_input_label("cjvpfJetsPFlow")
-    .set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
+    .set_input_label("cjvpfJetsPFlow");
+  if(!turnoffpuid){
+    cjvjetsIDFilter.set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
+  }
+  else{
+    cjvjetsIDFilter.set_predicate(bind(PFJetID, _1));
+  }
 
   double cjvptcut = 30.0;
   SimpleFilter<PFJet> cjvjetsPtEtaFilter = SimpleFilter<PFJet>
@@ -643,10 +650,14 @@ int main(int argc, char* argv[]){
   
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
-    .set_input_label("pfJetsPFlow")
-    .set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
-
-
+    .set_input_label("pfJetsPFlow");
+    if(!turnoffpuid){
+      jetIDFilter.set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
+    }
+    else{
+      jetIDFilter.set_predicate(bind(PFJetID, _1));
+    }
+    
   // Jet pT eta filter
   //CopyCollection<PFJet> jetCopyCollection("CopyToJet","pfJetsPFlow","selJets");
 
