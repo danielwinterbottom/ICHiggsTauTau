@@ -688,6 +688,7 @@ namespace ic {
 			if (start_nuisance_scan && words[i].size()-1 == words[r].size()) {
 				for (unsigned p = 2; p < words[i].size(); ++p) {
 					if (words[i][p] == "-") continue;
+					if (words[i][0].at(0) == '#') continue;
 					params_.push_back(Nuisance());
 					params_.back().channel = channel;
 					params_.back().category_id = category_id;

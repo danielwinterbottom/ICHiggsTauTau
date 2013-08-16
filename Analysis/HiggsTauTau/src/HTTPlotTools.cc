@@ -210,6 +210,16 @@ namespace ic {
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
         {"ggH","bbH"}, kBlue+3, false)
     };
+    sig_schemes_["mssm_nopars"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau"),
+        {"ggH","bbH"}, kBlue+3, true)
+    };
+    sig_schemes_["mssm_nostack_nopars"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau"),
+        {"ggH","bbH"}, kBlue+3, false)
+    };
     sig_schemes_["sm_split_vbf"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau (ggH+VH)"),

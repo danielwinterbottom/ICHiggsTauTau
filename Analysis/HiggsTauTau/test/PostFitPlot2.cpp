@@ -63,6 +63,8 @@ int main(int argc, char* argv[]){
 
   vector<string> v_eras;
   boost::split(v_eras, eras, boost::is_any_of(","));
+  std::string era_file_label;
+  for (unsigned i = 0; i < v_eras.size(); ++i) era_file_label += v_eras[i];
 
   pair<string,vector<string>> v_columns;
   vector<string> tmp_split;
@@ -115,7 +117,7 @@ int main(int argc, char* argv[]){
 
   string catstring = "";
   for (unsigned i = 0; i < v_columns.second.size(); ++i) catstring += v_columns.second.at(i);
-  plot.set_plot_name((postfit ? "postfit_":"prefit_") + channel + "_" + catstring + "_" + eras);
+  plot.set_plot_name(channel + "_" + catstring + "_" + era_file_label+ (postfit ? "_postfit":"_prefit"));
 
   if (mssm) {
     double d_mass = boost::lexical_cast<double>(signal_mass);
@@ -139,12 +141,16 @@ int main(int argc, char* argv[]){
       double xs_ggh = xs_tool.Give_Xsec_ggFA(d_mass, d_tanb) / 1000.;
       double xs_bbh = xs_tool.Give_Xsec_bbA5f(d_mass, d_tanb) / 1000.;
       std::cout << "Era: " << v_eras[i] << " BR: " << br << " XS(ggH): " << xs_ggh << " XS(bbH): " << xs_bbh << std::endl; 
+      double ggh_era = setup.era({v_eras[i]}).process({"ggH"}).GetRate();
+      double bbh_era = setup.era({v_eras[i]}).process({"bbH"}).GetRate();
+      double ggh_diff = ggh_era * (br*xs_ggh - 1.);
+      double bbh_diff = bbh_era * (br*xs_bbh - 1.);
+      std::cout << "Scaling ggH: " << ggh_era << " ---> " << ggh_era*br*xs_ggh << endl;
+      std::cout << "Scaling bbH: " << bbh_era << " ---> " << bbh_era*br*xs_bbh << endl;
       TH1F & ggh_hist = hmap["ggH"+signal_mass].first;
       TH1F & bbh_hist = hmap["bbH"+signal_mass].first;
-      std::cout << "Scaling ggH: " << Integral(&ggh_hist) << " ---> " << Integral(&ggh_hist)*br*xs_ggh << endl;
-      std::cout << "Scaling bbH: " << Integral(&bbh_hist) << " ---> " << Integral(&bbh_hist)*br*xs_bbh << endl;
-      ggh_hist.Scale(br * xs_ggh);
-      bbh_hist.Scale(br * xs_bbh);
+      ggh_hist.Scale((ggh_diff+Integral(&ggh_hist))/Integral(&ggh_hist));
+      bbh_hist.Scale((bbh_diff+Integral(&bbh_hist))/Integral(&bbh_hist));
     }
   }
   TH1F total_hist = setup.process({"ZTT","ZL","ZJ","ZLL","W","QCD","VV","TT","Ztt","Fakes","EWK","ttbar"}).GetShape();
@@ -161,6 +167,15 @@ int main(int argc, char* argv[]){
   ic::TextElement text2(v_columns.first,0.04,0.22,0.79);
   plot.AddTextElement(text);
   plot.AddTextElement(text2);
+
+  if (mssm) {
+    ic::TextElement text_ma("m_{A}="+signal_mass+" GeV",0.035,0.41,0.86);
+    ic::TextElement text_tanb("tan#beta="+tanb,0.035,0.41,0.81);
+    ic::TextElement text_scen("m^{h}_{max}",0.035,0.41,0.76);
+    plot.AddTextElement(text_ma);
+    plot.AddTextElement(text_tanb);
+    plot.AddTextElement(text_scen);
+  }
 
   plot.GeneratePlot(hmap);
 
