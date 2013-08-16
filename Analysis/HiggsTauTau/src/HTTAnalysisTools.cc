@@ -155,7 +155,7 @@ namespace ic {
     // alias_map_["prebtag"]                   =  "n_jet<=1 && ";
     // Standard MSSM Categories
     alias_map_["btag"]                      = "(n_jets<=1 && n_bjets>=1)";
-    alias_map_["nobtag"]                    = "!"+alias_map_["vbf"]+" && n_bjets==0";
+    alias_map_["nobtag"]                    = "n_bjets==0";
     // Categories for background estimates and control plots
     alias_map_["btag_loose"]                = "(n_jets<=1 && n_loose_bjets>=1)";
     
