@@ -33,6 +33,7 @@ int main(int argc, char* argv[]){
   string root_file_path = "";
   string signal_mass    = "";
   bool mssm             = false;
+  bool splusb_pulls     = false;
   po::variables_map vm;
   po::options_description config("Configuration");
   config.add_options()
@@ -43,8 +44,9 @@ int main(int argc, char* argv[]){
     ("datacard_path",        po::value<string>(&datacard_path)->required(),   "[REQUIRED] path to the folder containing datacard *.txt files")
     ("root_file_path",       po::value<string>(&root_file_path)->required(),  "[REQUIRED] path to the folder containing datacard *.root files")
     ("pulls_file",           po::value<string>(&pulls_file)->required(),      "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
-    ("signal_mass",          po::value<string>(&signal_mass)->required(),      "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
-    ("mssm",                 po::value<bool>(&mssm)->default_value(false),                   "input is an MSSM datacard");
+    ("signal_mass",          po::value<string>(&signal_mass)->required(),     "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
+    ("mssm",                 po::value<bool>(&mssm)->default_value(false),    "input is an MSSM datacard")
+    ("splusb_pulls",         po::value<bool>(&splusb_pulls)->default_value(false), "Use s+b pulls instead of b-only");
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::notify(vm);
 
@@ -64,6 +66,7 @@ int main(int argc, char* argv[]){
     boost::split(tmp_cats, tmp_split[1], boost::is_any_of("+"));
     v_columns = make_pair(tmp_split[0],tmp_cats);
   }
+  std::cout << "------ Scale factors for " << channel << ", " << eras << ", " << selection << std::endl;
 
   // string tanb = plot.draw_signal_tanb();
   HTTSetup setup;
@@ -99,14 +102,14 @@ int main(int argc, char* argv[]){
     rate_prefit[i] = setup.process({samples[i]}).GetRate();
   }
   double err_band = setup.process(samples).GetUncertainty()/setup.process(samples).GetRate();
-  std::cout << err_band << std::endl;
-  setup.ApplyPulls(true);
-  std::cout << "--shift_backgrounds=\"";
+  std::cout << "Prefit error band: " << err_band << std::endl;
+  setup.ApplyPulls(!splusb_pulls);
+  std::cout << "--shift_backgrounds=";
   for (unsigned i = 0; i < samples.size(); ++i) {
     std::cout << samples[i] << ":" << setup.process({samples[i]}).GetRate()/rate_prefit[i];
     if (i != samples.size()-1) std::cout << ",";
   }
-  std::cout << "\" --auto_error_band=";
+  std::cout << " --auto_error_band=";
   err_band = setup.process(samples).GetUncertainty()/setup.process(samples).GetRate();
   std::cout << err_band << std::endl;
 
