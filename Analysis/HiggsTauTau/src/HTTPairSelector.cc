@@ -178,7 +178,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if (faked_tau_selector_ > 0 && channel_ != channel::em) {
+    if ((faked_tau_selector_ == 1 || faked_tau_selector_ == 2) && channel_ != channel::em) {
       std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
       std::vector<GenParticle *> sel_particles;
       if (channel_ == channel::et || channel_ == channel::etmet) {
@@ -200,7 +200,21 @@ namespace ic {
       // If we want ZL and there's no match, fail the event
       if (faked_tau_selector_ == 1 && matches.size() == 0) return 1;
       // If we want ZJ and there is a match, fail the event
-      if (faked_tau_selector_ == 2 && matches.size() > 0) return 1; 
+      if (faked_tau_selector_ == 2 && matches.size() > 0) return 1;
+    }
+    if ((faked_tau_selector_ == 3 || faked_tau_selector_ == 4) && channel_ != channel::em) {
+      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticlesEmbedded");
+      std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+      std::vector<GenJet *> gen_taus_ptr;
+      for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+      std::vector<Candidate *> tau;
+      tau.push_back(result[0]->GetCandidate("lepton2"));
+      // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
+      std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
+      // If we want ZL and there's no match, fail the event
+      if (faked_tau_selector_ == 3 && matches.size() == 0) return 1;
+      // If we want ZJ and there is a match, fail the event
+      if (faked_tau_selector_ == 4 && matches.size() > 0) return 1;
     }
     // ************************************************************************
     // Restrict decay modes

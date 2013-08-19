@@ -250,6 +250,12 @@ namespace ic {
   bool MassDiffCompare(Candidate const* p1, Candidate const* p2, double const& mass);
   
 
+  std::vector<GenParticle *> ExtractStableDaughters(GenParticle * part, std::vector<GenParticle *> const& input);
+
+  std::vector<GenParticle *> ExtractDaughters(GenParticle * part, std::vector<GenParticle *> const& input);
+
+  std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic);
+
   /*
   //---------------------------------------------------------------------------
   //Typedefs

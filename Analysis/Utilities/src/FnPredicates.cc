@@ -6,6 +6,7 @@
 #include "TRandom2.h"
 #include "TMath.h"
 #include <utility>
+#include <set>
 
 namespace ic {
 
@@ -891,6 +892,75 @@ namespace ic {
       double md1 = fabs(m1 - mass);
       double md2 = fabs (m2 - mass);
       return (md1 < md2);
+  }
+
+  std::vector<GenParticle *> ExtractStableDaughters(GenParticle * part, std::vector<GenParticle *> const& input) {
+    std::vector<GenParticle *> tmp = ExtractDaughters(part, input);
+    std::set<GenParticle *> result_set;
+    bool all_found = false;
+    while (!all_found) {
+      std::vector<GenParticle *> tmp_other;
+      unsigned n_st1 = 0;
+      for (unsigned i = 0; i < tmp.size(); ++i) {
+        if (tmp[i]->status() == 1) {
+          ++n_st1;
+          result_set.insert(tmp[i]);
+        } else {
+          std::vector<GenParticle *> tmp_daughters = ExtractDaughters(tmp[i], input);
+          for (unsigned j = 0; j < tmp_daughters.size(); ++j) tmp_other.push_back(tmp_daughters[j]);
+        }
+      }
+      tmp = tmp_other;
+      if (tmp.size() == 0) all_found = true;
+    }
+    std::vector<GenParticle *> result;
+    for (auto it : result_set) result.push_back(it);
+    return result;
+  }
+
+  std::vector<GenParticle *> ExtractDaughters(GenParticle * part, std::vector<GenParticle *> const& input) {
+    std::vector<GenParticle *> result;
+    std::vector<int> daughters = part->daughters();
+    for (unsigned i = 0; i < input.size(); ++i) {
+      if (std::find(daughters.begin(), daughters.end(), input[i]->index()) != daughters.end()) {
+        result.push_back(input[i]);
+      }
+    }
+    return result;
+  }
+
+  std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic) {
+    std::vector<GenJet> taus;
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      if (abs(parts[i]->pdgid()) == 15) {
+        std::vector<GenParticle *> daughters = ExtractDaughters(parts[i], parts);
+        bool has_tau_daughter = false;
+        bool has_lepton_daughter = false;
+        for (unsigned j = 0; j < daughters.size(); ++j) {
+          if (abs(daughters[j]->pdgid()) == 15) has_tau_daughter = true;
+          if (abs(daughters[j]->pdgid()) == 11 || abs(daughters[j]->pdgid()) == 13) has_lepton_daughter = true;
+        }
+        if (has_tau_daughter) continue;
+        if (has_lepton_daughter && !include_leptonic) continue;
+        std::vector<GenParticle *> jet_parts = ExtractStableDaughters(parts[i], parts);
+        taus.push_back(GenJet());
+        std::cout << "Building tau jet starting from: " << parts[i]->index() << " " << parts[i]->status() << " " << parts[i]->pdgid() << " " << parts[i]->vector() << std::endl;
+        ROOT::Math::PtEtaPhiEVector vec;
+        std::vector<std::size_t> id_vec;
+        for (unsigned k = 0; k < jet_parts.size(); ++k) {
+          if (  abs(jet_parts[k]->pdgid()) == 12 || 
+                abs(jet_parts[k]->pdgid()) == 14 ||
+                abs(jet_parts[k]->pdgid()) == 16 ) continue;
+          std::cout << " -- " << jet_parts[k]->index() << " " << jet_parts[k]->status() << " " << jet_parts[k]->pdgid() << " " << jet_parts[k]->vector() << std::endl;
+          vec += jet_parts[k]->vector();
+          taus.back().set_charge(taus.back().charge() + jet_parts[k]->charge());
+          id_vec.push_back(jet_parts[k]->id());
+        }
+        taus.back().set_vector(vec);
+        taus.back().set_constituents(id_vec);
+      }
+    }
+    return taus;
   }
 
 
