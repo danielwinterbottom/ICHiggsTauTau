@@ -103,10 +103,10 @@ do
     mv -v bcsv_1_prebtag_mt_$i.$j output/an_plots/bcsv_muTau_$i.$j
     mv -v bpt_1_btag_em_$i.$j output/an_plots/bpt_emu_$i.$j
     mv -v beta_1_btag_em_$i.$j output/an_plots/beta_1_emu_$i.$j
-    mv -v bpt_1_btag_mt_$i.$j output/an_plots/bpt_eTau_$i.$j
-    mv -v beta_1_btag_mt_$i.$j output/an_plots/beta_1_eTau_$i.$j
-    mv -v bpt_1_btag_et_$i.$j output/an_plots/bpt_muTau_$i.$j
-    mv -v beta_1_btag_et_$i.$j output/an_plots/beta_1_muTau_$i.$j
+    mv -v bpt_1_btag_mt_$i.$j output/an_plots/bpt_muTau_$i.$j
+    mv -v beta_1_btag_mt_$i.$j output/an_plots/beta_1_muTau_$i.$j
+    mv -v bpt_1_btag_et_$i.$j output/an_plots/bpt_eTau_$i.$j
+    mv -v beta_1_btag_et_$i.$j output/an_plots/beta_1_eTau_$i.$j
   done
 done
 

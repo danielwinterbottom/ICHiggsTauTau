@@ -232,7 +232,7 @@ echo "Applying 7TeV scale factors..."
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="inclusive" --var="pt_tt(30,0,300)" \
   --x_axis_label="p_{T}^{#tau#tau} [GeV]" --datacard="inclusive" \
-  --background_scheme="et_default" $MT_INC_SHIFT
+  --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="inclusive" --var="pt_tt(30,0,300)" \
@@ -249,7 +249,7 @@ echo "Applying 7TeV scale factors..."
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="inclusive" --var="pt_tt(30,0,300)" \
   --x_axis_label="p_{T}^{#tau#tau} [GeV]" --datacard="inclusive" --log_y=true --draw_ratio=true \
-  --background_scheme="et_default" $MT_INC_SHIFT
+  --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="inclusive" --var="pt_tt(30,0,300)" \
