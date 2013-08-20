@@ -383,6 +383,11 @@ if options.proc_bkg or options.proc_all:
               os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
                 ' --faked_tau_selector=1 --ztautau_mode=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
               os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+              
+              JOB='DYJetsToTauTau-JJ%s_%s_%s' % (sp,ch,YR)
+              os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
+                ' --svfit_override=DYJetsToTauTau%(sp)s_%(ch)s_%(YR)s.root --ztautau_mode=1 --faked_tau_selector=2 --hadronic_tau_selector=2  --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+              os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
           """
           if sc in ['0']:

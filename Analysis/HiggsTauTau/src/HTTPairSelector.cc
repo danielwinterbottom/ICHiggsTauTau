@@ -13,6 +13,7 @@ namespace ic {
     pair_label_ = "emtauCandidates";
     mva_met_from_vector_ = true;
     faked_tau_selector_ = 0;
+    hadronic_tau_selector_ = 0;
     met_label_ = "pfMVAMet";
     fs_ = NULL;
     hists_.resize(1);
@@ -20,6 +21,7 @@ namespace ic {
     scale_met_for_tau_ = 0;
     tau_scale_ = 1.0;
     allowed_tau_modes_ = "";
+    gen_taus_label_ = "genParticlesTaus";
   }
 
   HTTPairSelector::~HTTPairSelector() {
@@ -32,11 +34,11 @@ namespace ic {
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "HTTPairSelector" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
-    std::cout << boost::format(param_fmt) % "pair_label" % pair_label_;
-    std::cout << boost::format(param_fmt) % "met_label" % met_label_;
-    std::cout << boost::format(param_fmt) % "use_most_isolated" % use_most_isolated_;
-    std::cout << boost::format(param_fmt) % "scale_met_for_tau" % scale_met_for_tau_;
-    std::cout << boost::format(param_fmt) % "tau_scale" % tau_scale_;
+    std::cout << boost::format(param_fmt) % "pair_label"            % pair_label_;
+    std::cout << boost::format(param_fmt) % "met_label"             % met_label_;
+    std::cout << boost::format(param_fmt) % "use_most_isolated"     % use_most_isolated_;
+    std::cout << boost::format(param_fmt) % "scale_met_for_tau"     % scale_met_for_tau_;
+    std::cout << boost::format(param_fmt) % "tau_scale"             % tau_scale_;
     std::string allowed_str = "";
     if (allowed_tau_modes_ == "") {
       allowed_str = "all modes";
@@ -49,8 +51,10 @@ namespace ic {
         allowed_str += (tau_mode_vec[i] + " ");
       } 
     }
-    std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_str;
-    std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector_;
+    std::cout << boost::format(param_fmt) % "allowed_tau_modes"     % allowed_str;
+    std::cout << boost::format(param_fmt) % "faked_tau_selector"    % faked_tau_selector_;
+    std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector_;
+    std::cout << boost::format(param_fmt) % "gen_taus_label"        % gen_taus_label_;
 
     if (fs_) {
       hists_[0] = new Dynamic2DHistoSet(fs_->mkdir("httpairselector"));
@@ -178,7 +182,7 @@ namespace ic {
     // mode 0 = e-tau, mode 1 = mu-tau, mode 2 = e-mu
     // faked_tau_selector = 1 -> ZL, = 2 -> ZJ
     // This code only to be run on Z->ee or Z->mumu events (remove Z->tautau first!)
-    if ((faked_tau_selector_ == 1 || faked_tau_selector_ == 2) && channel_ != channel::em) {
+    if (faked_tau_selector_ > 0  && channel_ != channel::em) {
       std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
       std::vector<GenParticle *> sel_particles;
       if (channel_ == channel::et || channel_ == channel::etmet) {
@@ -202,19 +206,19 @@ namespace ic {
       // If we want ZJ and there is a match, fail the event
       if (faked_tau_selector_ == 2 && matches.size() > 0) return 1;
     }
-    if ((faked_tau_selector_ == 3 || faked_tau_selector_ == 4) && channel_ != channel::em) {
-      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticlesEmbedded");
+    if (hadronic_tau_selector_ > 0 && channel_ != channel::em) {
+      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
       std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
       std::vector<GenJet *> gen_taus_ptr;
       for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
       std::vector<Candidate *> tau;
       tau.push_back(result[0]->GetCandidate("lepton2"));
       // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
-      std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
+      std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 1.0, true, true);
       // If we want ZL and there's no match, fail the event
-      if (faked_tau_selector_ == 3 && matches.size() == 0) return 1;
+      if (hadronic_tau_selector_ == 1 && matches.size() == 0) return 1;
       // If we want ZJ and there is a match, fail the event
-      if (faked_tau_selector_ == 4 && matches.size() > 0) return 1;
+      if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
     }
     // ************************************************************************
     // Restrict decay modes

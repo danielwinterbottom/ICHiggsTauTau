@@ -101,6 +101,8 @@ int main(int argc, char* argv[]){
   bool log_y;
   bool norm_bins;
   string title_left;
+  bool custom_y_axis_min;
+  double y_axis_min;
 
   po::options_description config("Configuration");
   po::variables_map vm;
@@ -123,6 +125,8 @@ int main(int argc, char* argv[]){
     ("ratio_y_min",         po::value<double>(&ratio_y_min)->default_value(0.8))
     ("ratio_y_max",         po::value<double>(&ratio_y_max)->default_value(1.2))
     ("norm_bins",           po::value<bool>(&norm_bins)->default_value(false))
+    ("custom_y_axis_min",   po::value<bool>(&custom_y_axis_min)->default_value(false))
+    ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(0.0))
     ;
     po::store(po::command_line_parser(argc, argv).
               options(config).allow_unregistered().run(), vm);
@@ -237,6 +241,10 @@ int main(int argc, char* argv[]){
   compare.extra_pad = 1.15;
 
   compare.y_axis_log = log_y;
+
+  if (custom_y_axis_min) {
+    compare.y_axis_min = y_axis_min;
+  }
 
 
   ic::TextElement text(channel,0.07,0.19,0.89);

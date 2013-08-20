@@ -81,6 +81,7 @@ int main(int argc, char* argv[]){
   string svfit_override;          // Override the svfit results to use
   unsigned ztautau_mode;          // 0 = not run, 1 = select Z->tautau, 2 = select Z->ee and Z->mumu
   unsigned faked_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
+  unsigned hadronic_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool quark_gluon_study;         // Run study on quark-gluon jet discriminators
@@ -137,6 +138,7 @@ int main(int argc, char* argv[]){
       ("svfit_override",      po::value<string>(&svfit_override)->default_value(""))
       ("ztautau_mode",        po::value<unsigned>(&ztautau_mode)->default_value(0))
       ("faked_tau_selector",  po::value<unsigned>(&faked_tau_selector)->default_value(0))
+      ("hadronic_tau_selector",  po::value<unsigned>(&hadronic_tau_selector)->default_value(0))
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
       ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
@@ -204,6 +206,7 @@ int main(int argc, char* argv[]){
   }
   std::cout << boost::format(param_fmt) % "ztautau_mode" % ztautau_mode;
   std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector;
+  std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
@@ -828,6 +831,8 @@ int main(int argc, char* argv[]){
     .set_met_label(met_label)
     .set_mva_met_from_vector(mva_met_mode == 1)
     .set_faked_tau_selector(faked_tau_selector)
+    .set_hadronic_tau_selector(hadronic_tau_selector)
+    .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
     .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
     .set_tau_scale(tau_shift)
     .set_allowed_tau_modes(allowed_tau_modes);

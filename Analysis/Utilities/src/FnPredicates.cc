@@ -944,14 +944,12 @@ namespace ic {
         if (has_lepton_daughter && !include_leptonic) continue;
         std::vector<GenParticle *> jet_parts = ExtractStableDaughters(parts[i], parts);
         taus.push_back(GenJet());
-        std::cout << "Building tau jet starting from: " << parts[i]->index() << " " << parts[i]->status() << " " << parts[i]->pdgid() << " " << parts[i]->vector() << std::endl;
         ROOT::Math::PtEtaPhiEVector vec;
         std::vector<std::size_t> id_vec;
         for (unsigned k = 0; k < jet_parts.size(); ++k) {
           if (  abs(jet_parts[k]->pdgid()) == 12 || 
                 abs(jet_parts[k]->pdgid()) == 14 ||
                 abs(jet_parts[k]->pdgid()) == 16 ) continue;
-          std::cout << " -- " << jet_parts[k]->index() << " " << jet_parts[k]->status() << " " << jet_parts[k]->pdgid() << " " << jet_parts[k]->vector() << std::endl;
           vec += jet_parts[k]->vector();
           taus.back().set_charge(taus.back().charge() + jet_parts[k]->charge());
           id_vec.push_back(jet_parts[k]->id());

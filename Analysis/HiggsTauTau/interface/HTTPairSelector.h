@@ -20,9 +20,11 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, bool, mva_met_from_vector)
   CLASS_MEMBER(HTTPairSelector, bool, use_most_isolated)
   CLASS_MEMBER(HTTPairSelector, unsigned, faked_tau_selector)
+  CLASS_MEMBER(HTTPairSelector, unsigned, hadronic_tau_selector)
   CLASS_MEMBER(HTTPairSelector, bool, scale_met_for_tau)
   CLASS_MEMBER(HTTPairSelector, double, tau_scale)
   CLASS_MEMBER(HTTPairSelector, std::string, allowed_tau_modes)
+  CLASS_MEMBER(HTTPairSelector, std::string, gen_taus_label)
   CLASS_MEMBER(HTTPairSelector, fwlite::TFileService*, fs)
   std::vector<Dynamic2DHistoSet *> hists_;
   std::set<int> tau_mode_set_;
