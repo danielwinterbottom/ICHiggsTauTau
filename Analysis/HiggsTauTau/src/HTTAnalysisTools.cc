@@ -55,6 +55,7 @@ namespace ic {
         "DYJetsToLL",
         "DYJetsToLL-L",
         "DYJetsToTauTau-L",
+        //"DYJetsToTauTau-JJ",
         "DYJetsToLL-J",
         //"Special_18_DYJetsToLL-L",
         "WJetsToLNuSoup"
@@ -63,6 +64,7 @@ namespace ic {
           "DYJetsToLLSoup",
           "DYJetsToLL-LSoup",
           "DYJetsToTauTau-LSoup",
+          //"DYJetsToTauTau-JJSoup",
           "DYJetsToLL-JSoup"});
     } else {
       push_back(sample_names_, std::vector<std::string>{
@@ -208,6 +210,7 @@ namespace ic {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
      "T-tW", "Tbar-tW", "DYJetsToTauTau"+dy_soup_,
+     "DYJetsToTauTau-L"+dy_soup_, /*"DYJetsToTauTau-JJ"+dy_soup_,*/
      "DYJetsToLL-L"+dy_soup_, "DYJetsToLL-J"+dy_soup_};
 
     samples_alias_map_["qcd_sub_samples"] = {
@@ -215,6 +218,7 @@ namespace ic {
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
      "T-tW", "Tbar-tW", "WJetsToLNuSoup", 
      "DYJetsToTauTau"+dy_soup_,
+     "DYJetsToTauTau-L"+dy_soup_, /*"DYJetsToTauTau-JJ"+dy_soup_,*/
      "DYJetsToLL-L"+dy_soup_, "DYJetsToLL-J"+dy_soup_};
 
     for (auto const& top_sample : samples_alias_map_["top_samples"]) {
@@ -370,6 +374,14 @@ namespace ic {
       if (verbosity_) PrintValue("ZTT-Leptonic", ztt_leptonic_norm); 
       ztt_norm = ValueAdd(ztt_norm, ztt_leptonic_norm);
       ztt_hist.Add(&ztt_leptonic_hist);
+      /*
+      auto ztt_hadronic_norm = this->GetLumiScaledRate("DYJetsToTauTau-JJ"+dy_soup_, sel, cat, wt);
+      TH1F ztt_hadronic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-JJ"+dy_soup_, sel, cat, wt);
+      SetNorm(&ztt_hadronic_hist, ztt_hadronic_norm.first);
+      if (verbosity_) PrintValue("ZTT-Hadronic", ztt_hadronic_norm);
+      ztt_norm = ValueAdd(ztt_norm, ztt_hadronic_norm);
+      ztt_hist.Add(&ztt_hadronic_hist);
+      */
     }
     return std::make_pair(ztt_hist, ztt_norm);
   }
@@ -911,24 +923,33 @@ namespace ic {
                           std::string const& weight) {
     auto num = GetRate(sample, target_selection, target_category, weight);
     auto den = GetRate(sample, ref_selection, ref_category, weight);
-    // std::cout << "num: " << num.first << "\t" << num.second << std::endl;
     double num_eff = std::pow(num.first / num.second, 2.0) ;
-    // std::cout << "Effective numerator = " << num_eff << std::endl;
     unsigned num_eff_rounded = unsigned(num_eff+0.5);
-    // std::cout << "Effective numerator (rounded) = " << num_eff_rounded << std::endl;
-    // std::cout << "den: " << den.first << "\t" << den.second << std::endl;
     double den_eff = std::pow(den.first / den.second, 2.0) ;
-    // std::cout << "Effective denominator = " << den_eff << std::endl;
     unsigned den_eff_rounded = unsigned(den_eff+0.5);
-    // std::cout << "Effective denominator (rounded) = " << den_eff_rounded << std::endl;
     double eff = num.first / den.first;
     TEfficiency teff;
-    double eff_err = teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683 ,1)-(num_eff/den_eff);
+    double eff_err_up   = teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683,1)-(num_eff/den_eff);
+    double eff_err_down = (num_eff/den_eff)-teff.ClopperPearson(den_eff_rounded,num_eff_rounded,0.683,0);
+    double eff_err = (eff_err_up/(num_eff/den_eff)) * eff;
     if (num.first == 0.0) {
       std::cout << "[HTTAnalysis::SampleEfficiency] Numerator is zero, setting error to zero" << std::endl;
       eff_err = 0.0;
     }
     auto result = std::make_pair(eff, eff_err);
+    if (verbosity_ > 1) {
+      std::cout << "[HTTAnalysis::SampleEfficiency]" << std::endl;
+      std::cout << "Numerator:   " << boost::format("%s,'%s','%s','%s'\n") % sample % target_selection
+                % target_category % weight;
+      std::cout << "Denominator: " << boost::format("%s,'%s','%s','%s'\n") % sample % ref_selection
+                % ref_category % weight;
+      PrintValue("Numerator",num);
+      PrintValue("Denominator",den);
+      std::cout << "Effective Numerator:   " << num_eff_rounded << std::endl;
+      std::cout << "Effective Denominator: " << den_eff_rounded << std::endl;
+      std::cout << "Error down (relative): " << eff_err_down/(num_eff/den_eff) << std::endl;
+      std::cout << "Error up   (relative): " << eff_err_up/(num_eff/den_eff) << std::endl;
+    }
     return result;
   }
 

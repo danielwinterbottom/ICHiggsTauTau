@@ -207,7 +207,7 @@ int main(int argc, char* argv[]){
     boost::split(tmp, r, boost::is_any_of("/"));
     if (tmp.size() != 3) continue;
     relements.emplace_back(r, tmp[0], tmp[1]);
-    SetStyle(relements.back(), boost::lexical_cast<double>(tmp[2]), *marker_it);
+    SetStyle(relements.back(), boost::lexical_cast<double>(tmp[2]), 20);
     ++marker_it;
   }
 

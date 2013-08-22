@@ -104,13 +104,18 @@ namespace ic {
         }
       }
     }
-
+    TH1F::SetDefaultSumw2();
     misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
     misc_2dplots_ = new Dynamic2DHistoSet(fs_->mkdir("misc_2dplots"));
     misc_2dplots_->Create("jpt_vs_hpt", 50, 0, 200, 50, 0, 200);
     misc_2dplots_->Create("hpt_vs_pt_tt", 50, 0, 200, 50, 0, 200);
     misc_2dplots_->Create("gen_vs_hpt", 50, 0, 200, 50, 0, 200);
     misc_2dplots_->Create("gen_vs_pt_tt", 50, 0, 200, 50, 0, 200);
+    misc_2dplots_->Create("m_gen_m_sv", 75, 0, 1500, 75, 0, 1500);
+    misc_2dplots_->Create("m_gen_m_vis", 75, 0, 1500, 75, 0, 1500);
+    misc_2dplots_->Create("orig_met_m_sv", 75, 0, 750, 75, 0, 1500);
+    misc_2dplots_->Create("orig_met_m_vis", 75, 0, 750, 75, 0, 1500);
+    misc_plots_->Create("M",150,0,1500);
 
     InitSelection("os");
     InitSelection("os_sel");
@@ -438,6 +443,27 @@ namespace ic {
       bcsv_1_ = -9999;
     }
     emu_csv_ = (bcsv_1_ > 0.244) ? bcsv_1_ : -1.0;
+
+    if ((event->Exists("genParticlesEmbedded") || event->Exists("genParticles")) && os_ && mt_1_ <30.) {
+      // recalculate met
+      ROOT::Math::PtEtaPhiEVector met_vec = met->vector();
+      ROOT::Math::PtEtaPhiEVector ditau_vec = ditau->vector();
+      ROOT::Math::PtEtaPhiEVector dimu_vec;
+      std::string gen_label = event->Exists("genParticlesEmbedded") ? "genParticlesEmbedded" : "genParticles";
+      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_label);
+      for (unsigned i = 0; i < particles.size(); ++i) {
+        if (particles[i]->pdgid() == 23) {
+          misc_plots_->Fill("M",particles[i]->vector().M(),wt_);
+          misc_2dplots_->Fill("m_gen_m_sv",particles[i]->vector().M(),m_sv_,wt_);
+          misc_2dplots_->Fill("m_gen_m_vis",particles[i]->vector().M(),m_vis_,wt_);
+          dimu_vec = particles[i]->vector();
+          met_vec += ditau_vec;
+          met_vec -= dimu_vec;
+          misc_2dplots_->Fill("orig_met_m_sv",met_vec.pt(),m_sv_,wt_);
+          misc_2dplots_->Fill("orig_met_m_vis",met_vec.pt(),m_vis_,wt_);
+        }
+      }
+    }
 
 
     if (write_tree_) outtree_->Fill();
