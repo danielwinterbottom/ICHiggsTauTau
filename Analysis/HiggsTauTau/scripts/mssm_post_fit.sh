@@ -1,10 +1,10 @@
 ## Examples
 
 mass=160
-et_input=output/mloutput_0313-bbb-full/et
-mt_input=output/mloutput_0313-bbb-full/mt
-em_input=output/mloutput_0313-bbb-full/em
-tt_input=output/mloutput_0313-bbb-full/tt
+et_input=output/mloutput_0313-hcp-tails/cmb
+mt_input=output/mloutput_0313-hcp-tails/cmb
+em_input=output/mloutput_0313-hcp-tails/cmb
+tt_input=output/mloutput_0313-hcp-tails/cmb
 et_scheme="et_default"
 mt_scheme="mt_with_zmm"
 em_scheme="em_default"

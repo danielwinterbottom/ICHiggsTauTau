@@ -90,21 +90,15 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
-      alias_map_["th_vbf"]            = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>40. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=40. && n_bjets==0)";
-      alias_map_["th_1jet_high"]      = "(!"+alias_map_["vbf"]+" && pt_tt>60. && pt_2>40. && n_bjets==0)";
-      alias_map_["th_1jet_low"]       = "(!"+alias_map_["vbf"]+" && pt_tt>60. && pt_2<=40. && n_bjets==0)";
       if (ch_ == channel::et) {
         alias_map_["1jet_high"] += " && met>30.";
         alias_map_["1jet_low"]  += " && met>30.";
-        alias_map_["th_1jet_high"] += " && met>30.";
-        alias_map_["th_1jet_low"]  += " && met>30.";
+
       }
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>40. && n_bjets==0)";
       alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=40. && n_bjets==0)";
-      alias_map_["th_0jet_high"]         = "(pt_tt<=60. && pt_2>40. && n_bjets==0)";
-      alias_map_["th_0jet_low"]          = "(pt_tt<=60. && pt_2<=40. && n_bjets==0)";
       // New SM categories
       alias_map_["inclusive"]                   = "";
       alias_map_["new_vbf_tight"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
@@ -130,23 +124,19 @@ namespace ic {
       alias_map_["w_vbf_extrap_cat"]  = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
       alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
       alias_map_["twojet"]            = "(n_jets>=2)";
+      alias_map_["zl_denominator"]    = "(n_jets>=2)";
       alias_map_["1jet"]              = "(n_jets>=1)";
 
     } else {
       // SM Categories
       alias_map_["inclusive"]         = "";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
-      alias_map_["th_vbf"]            = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
       alias_map_["new_vbf_tight"]     = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
       alias_map_["new_vbf_loose"]     = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0)";
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>35. && n_bjets==0)";
       alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=35. && n_bjets==0)";
-      alias_map_["th_1jet_high"]      = "(!"+alias_map_["vbf"]+" && pt_tt>60. && pt_2>35. && n_bjets==0)";
-      alias_map_["th_1jet_low"]       = "(!"+alias_map_["vbf"]+" && pt_tt>60. && pt_2<=35. && n_bjets==0)";
-      alias_map_["th_0jet_high"]      = "(pt_tt<=60. && pt_2>35. && n_bjets==0)";
-      alias_map_["th_0jet_low"]       = "(pt_tt<=60. && pt_2<=35. && n_bjets==0)";
       // Categories for background estimates and control plots
       alias_map_["vbf_no_cjv"]        = "(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)";
       alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && n_bjets==0)";
@@ -186,6 +176,7 @@ namespace ic {
 
     alias_map_["QCD_Eff_Sample"]    = "Special_3_Data";
     alias_map_["ZTT_Eff_Sample"]    = "Embedded";
+    alias_map_["ZL_Eff_Sample"]     = "DYJetsToLL-L"+dy_soup_;
     alias_map_["ZTT_Shape_Sample"]  = "Embedded";
     alias_map_["QCD_Shape_Sample"]  = "Special_3_Data";
     alias_map_["W_Shape_Sample"]    = "WJetsToLNuSoup";
@@ -391,7 +382,11 @@ namespace ic {
     Value zl_norm;
     TH1F zl_hist;
     if (method == 5) {
-      zl_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("twojet"), sel, cat, wt);
+      if (this->ResolveAlias("ZL_Eff_Sample") != "DYJetsToLL-L"+dy_soup_) {
+        zl_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZL_Eff_Sample"), "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("zl_denominator"), sel, cat, wt);
+      } else {
+        zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, cat, wt);
+      }
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, this->ResolveAlias("vbf_loose_jets20"), wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
         % ("DYJetsToLL-L"+dy_soup_) % sel % this->ResolveAlias("vbf_loose_jets20") % wt;

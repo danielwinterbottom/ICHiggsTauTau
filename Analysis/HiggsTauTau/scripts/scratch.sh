@@ -405,50 +405,7 @@ htt_em.inputs-sm-8TeV.root
 --outname="mutau_diff.pdf" \
 --ratios="ZTT/ZTT-J/1" --ratio_axis_label="Ratio" --ratio_y_min=0.9 --ratio_y_max=1.1
 
-./bin/PrintShifts --channel=et --selection="inclusive:0" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
 
-./bin/PrintShifts --channel=et --selection="1jet:3" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
-
-./bin/PrintShifts --channel=et --selection="twojet:6" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
-
-./bin/PrintShifts --channel=mt --selection="inclusive:0" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
-
-./bin/PrintShifts --channel=mt --selection="1jet:3" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
-
-./bin/PrintShifts --channel=mt --selection="twojet:6" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
-
-./bin/PrintShifts --channel=em --selection="inclusive:0" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
-
-./bin/PrintShifts --channel=em --selection="1jet:2" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
-
-./bin/PrintShifts --channel=em --selection="twojet:4" --eras="8TeV" \
-  --datacard_path=Paper-LIMITS/post-fit-sm-v3/cmb/125 \
-  --root_file_path=Paper-LIMITS/post-fit-sm-v3/cmb/common \
-  --pulls_file=Paper-LIMITS/post-fit-sm-v3/cmb/125/out/mlfit.txt --signal_mass=125
 
 ./bin/PlotCompare  \
 -p "minlo-hres:minlo+HRes:GluGluToHToTauTau_M-125-minloHJJ-WithHRes_mt_2012.root:ggh_study/:njets:-1:2:8" \
@@ -488,7 +445,30 @@ htt_em.inputs-sm-8TeV.root
  --extra_pad=1.2 --draw_ratio=true
 
 
+ ./bin/PlotCompare  \
+ -p "All:Embedded(all):Embedded_mt_2012_All.root:inclusive_os_sel/:m_sv:-1:2:1" \
+ -p "NoFakes:Embedded(veto fakes):Embedded_mt_2012_RealTau.root:inclusive_os_sel/:m_sv:-1:2:2" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="e#tau_{h}" \
+ --log_y=true \
+ --ratios="NoFakes/All/2" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="embedded_fake_taus_mt.pdf"
+
+ ./bin/PlotCompare  \
+ -p "All:Embedded(all):DYJetsToTauTauSoup_mt_2012_All.root:inclusive_os_sel/:m_sv:-1:2:1" \
+ -p "NoFakes:Embedded(veto fakes):DYJetsToTauTauSoup_mt_2012_RealTau.root:inclusive_os_sel/:m_sv:-1:2:2" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="e#tau_{h}" \
+ --log_y=true \
+ --ratios="NoFakes/All/2" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="ztt_fake_taus_mt.pdf"
 
 
+./bin/PlotCompare  \
+ -p "ZTT:Embedded Data:output/Paper_2012_Vegas/Embedded_mt_2012.root:inclusive_os/:m_sv_mssm:-1:2:1" \
+ -p "ZTTMC:MC:output/Paper_2012_Vegas/DYJetsToTauTauSoup_mt_2012.root:inclusive_os/:m_sv_mssm:-1:2:2" \
+ -p "ZTTEmbedMC:Embedded MC:output/Paper_2012_Vegas/RecHit-DYJetsToLL_mt_2012.root:inclusive_os/:m_sv_mssm:-1:2:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label=" " \
+ --log_y=true --rebin=1 \
+ --ratios="ZTTMC/ZTT/2:ZTTEmbedMC/ZTT/4" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="ztt_sample_gen_mass.pdf"
 
 
