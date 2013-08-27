@@ -100,7 +100,7 @@ if options.scheme == 'old_sm':
     ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
     ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
     ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
-    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV:60:1.15:0.15"'),
+    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV:50:1.15:0.15"'),
     ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_mtmet = [
@@ -108,7 +108,7 @@ if options.scheme == 'old_sm':
     ("5",   "vbf",          "vbf",        BINS,       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
     ("0",   "0jet_low",     "0jet_low",   BINS_FINE,  ''),
     ("1",   "0jet_high",    "0jet_high",  BINS_FINE,  ''),
-    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV:60:1.15:0.15"'),
+    ("2",   "1jet_low",     "boost_low",  BINS_FINE,  ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_boost_low_'+COM+'TeV:50:1.15:0.15"'),
     ("3",   "1jet_high",    "boost_high", BINS_FINE,  ' --set_alias="w_shape_os:1"')
   ]
   scheme_em = [
@@ -149,17 +149,17 @@ if options.scheme == 'new_sm':
   scheme_et = [
     ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),
     ("5",   "new_vbf",                  "vbf",                    BINS,       (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_loose",            "vbf_loose",              BINS,       (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_loose_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_loose_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_tight",            "vbf_tight",              BINS,       (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_tight_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_tight_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
       ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
       ' --set_alias="w_vbf_extrap_cat:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
@@ -171,13 +171,13 @@ if options.scheme == 'new_sm':
     ("1",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_medium_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_medium_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_shape_os:1"')),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_high_lowhiggs_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_high_lowhiggs_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_shape_os:1"')),
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_high_mediumhiggs_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_high_mediumhiggs_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="QCD_Eff_Sample:Special_4_Data"'
@@ -186,17 +186,17 @@ if options.scheme == 'new_sm':
   scheme_mt = [
     ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),
     ("5",   "new_vbf",                  "vbf",                    BINS, (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_loose",            "vbf_loose",              BINS, (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_loose_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_loose_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_tight",            "vbf_tight",              BINS, (     
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_tight_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_tight_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
       ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
       ' --set_alias="w_vbf_extrap_cat:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
@@ -209,12 +209,12 @@ if options.scheme == 'new_sm':
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  (
       ' --set_alias="w_shape_os:1"'
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV":60:1.1:0.10')),
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV":50:1.1:0.10')),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_high_lowhiggs_'+COM+'TeV":60:1.1:0.10'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_high_lowhiggs_'+COM+'TeV":50:1.1:0.10'
       ' --set_alias="w_shape_os:1"')),
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_high_mediumhiggs_'+COM+'TeV":60:1.1:0.10'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_high_mediumhiggs_'+COM+'TeV":50:1.1:0.10'
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="QCD_Eff_Sample:Special_4_Data"'
@@ -240,7 +240,7 @@ if options.scheme == 'new_sm':
       ' --qcd_os_ss_factor=0.766')),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE, (
       ' --syst_l1met=CMS_L1etm_mutau_soft_1jet_medium_8TeV'
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_soft_1jet_medium_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_soft_1jet_medium_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_shape_os:1" '
       ' --qcd_os_ss_factor=1.098')),
     ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE, (
@@ -300,30 +300,30 @@ if options.scheme == 'control_plots':
   scheme_et = [
     ("8",   "inclusive",                "0jet_low",              BINS_FINE,  ""),
     ("2",   "twojet",                   "vbf_loose",             BINS,       (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_loose_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_loose_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"')),
     ("2",   "twojet",                   "vbf",                   BINS,       (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"')),
     ("2",   "1jet",                     "1jet_medium",           BINS_FINE,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_medium_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_medium_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_shape_os:1"'))
   ]
   scheme_mt = [
     ("8",   "inclusive",                "0jet_low",              BINS_FINE,  ""),
     ("2",   "twojet",                   "vbf_loose",             BINS, (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_loose_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_loose_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"')),
     ("2",   "twojet",                   "vbf",                   BINS, (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"')),
     ("2",   "1jet",                     "1jet_medium",           BINS_FINE,  (
       ' --set_alias="w_shape_os:1"'
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV":60:1.1:0.10'))
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV":50:1.1:0.10'))
   ]
   scheme_mtmet = [
     ("8",   "inclusive",                "inclusive",              BINS_FINE,  ' --syst_l1met=CMS_L1etm_mutausoft_inclusive_8TeV'),
@@ -333,7 +333,7 @@ if options.scheme == 'control_plots':
       ' --set_alias="w_shape_os:1"')),
     ("2",   "1jet",                     "1jet_medium",            BINS_FINE, (
       ' --syst_l1met=CMS_L1etm_mutausoft_1jet_medium_8TeV'
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutausoft_1jet_medium_'+COM+'TeV:60:1.1:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutausoft_1jet_medium_'+COM+'TeV:50:1.1:0.10"'
       ' --set_alias="w_shape_os:1" '
       ' --qcd_os_ss_factor=1.098'))
   ]
@@ -402,17 +402,17 @@ if options.scheme == 'new_mssm' or options.scheme == 'new_mssm_fb':
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  (
-    ' --syst_qcd_shape="CMS_htt_QCDShape_etau_nobtag_'+COM+'TeV:60:1.0:0.10"')),
+    ' --syst_qcd_shape="CMS_htt_QCDShape_etau_nobtag_'+COM+'TeV:50:1.0:0.10"')),
     ("12",   "btag",        "btag",       BINS,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_btag_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_btag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_mt = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_nobtag_'+COM+'TeV:60:1.1:0.10"')),
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_nobtag_'+COM+'TeV:50:1.1:0.10"')),
     ("12",   "btag",        "btag",       BINS,  (
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_btag_'+COM+'TeV:60:1.0:0.10"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_btag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_mtmet = scheme_mt

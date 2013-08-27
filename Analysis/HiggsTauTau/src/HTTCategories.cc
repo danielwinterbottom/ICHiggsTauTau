@@ -111,7 +111,8 @@ namespace ic {
     misc_2dplots_->Create("hpt_vs_pt_tt", 50, 0, 200, 50, 0, 200);
     misc_2dplots_->Create("gen_vs_hpt", 50, 0, 200, 50, 0, 200);
     misc_2dplots_->Create("gen_vs_pt_tt", 50, 0, 200, 50, 0, 200);
-    misc_2dplots_->Create("m_gen_m_sv", 75, 0, 1500, 75, 0, 1500);
+    misc_2dplots_->Create("m_gen_m_sv_nobtag", 75, 0, 1500, 75, 0, 1500);
+    misc_2dplots_->Create("m_gen_m_sv_btag", 75, 0, 1500, 75, 0, 1500);
     misc_2dplots_->Create("m_gen_m_vis", 75, 0, 1500, 75, 0, 1500);
     misc_2dplots_->Create("orig_met_m_sv", 75, 0, 750, 75, 0, 1500);
     misc_2dplots_->Create("orig_met_m_vis", 75, 0, 750, 75, 0, 1500);
@@ -454,7 +455,12 @@ namespace ic {
       for (unsigned i = 0; i < particles.size(); ++i) {
         if (particles[i]->pdgid() == 23) {
           misc_plots_->Fill("M",particles[i]->vector().M(),wt_);
-          misc_2dplots_->Fill("m_gen_m_sv",particles[i]->vector().M(),m_sv_,wt_);
+          if (n_jets_ <= 1 && n_bjets_ > 0) {
+            misc_2dplots_->Fill("m_gen_m_sv_btag",particles[i]->vector().M(),m_sv_,wt_);
+          }
+          if (n_bjets_ == 0) {
+            misc_2dplots_->Fill("m_gen_m_sv_nobtag",particles[i]->vector().M(),m_sv_,wt_);
+          }
           misc_2dplots_->Fill("m_gen_m_vis",particles[i]->vector().M(),m_vis_,wt_);
           dimu_vec = particles[i]->vector();
           met_vec += ditau_vec;
@@ -470,7 +476,7 @@ namespace ic {
 
     // Define which selections this event passes
     if (channel_ == channel::et || channel_ == channel::etmet || channel_ == channel::mt || channel_ == channel::mtmet) {
-      if (os_ && mt_1_ < 20.0) {
+      if (os_ && mt_1_ < 30.0) {
         SetPassSelection("os_sel");
         if (experimental_) {
           misc_2dplots_->Fill("jpt_vs_hpt", (jpt_1_ > 0.) ? jpt_1_ : 0., pt_h_, wt_);
@@ -485,7 +491,7 @@ namespace ic {
       if (!os_) SetPassSelection("ss");
       if (os_ && mt_1_ > 70.0) SetPassSelection("os_con");
       if (os_ && mt_1_ > 60.0 && mt_1_ < 120.) SetPassSelection("os_con_mt_60-120");
-      if (!os_ && mt_1_ < 20.0) SetPassSelection("ss_sel");
+      if (!os_ && mt_1_ < 30.0) SetPassSelection("ss_sel");
       if (!os_ && mt_1_ > 70.0) SetPassSelection("ss_con");
       if (!os_ && mt_1_ > 60.0 && mt_1_ < 120.) SetPassSelection("ss_con_mt_60-120");
     }

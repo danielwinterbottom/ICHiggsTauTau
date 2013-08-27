@@ -55,7 +55,7 @@ namespace ic {
         "DYJetsToLL",
         "DYJetsToLL-L",
         "DYJetsToTauTau-L",
-        //"DYJetsToTauTau-JJ",
+        "DYJetsToTauTau-JJ",
         "DYJetsToLL-J",
         //"Special_18_DYJetsToLL-L",
         "WJetsToLNuSoup"
@@ -64,7 +64,7 @@ namespace ic {
           "DYJetsToLLSoup",
           "DYJetsToLL-LSoup",
           "DYJetsToTauTau-LSoup",
-          //"DYJetsToTauTau-JJSoup",
+          "DYJetsToTauTau-JJSoup",
           "DYJetsToLL-JSoup"});
     } else {
       push_back(sample_names_, std::vector<std::string>{
@@ -196,25 +196,33 @@ namespace ic {
       samples_alias_map_["top_samples"] = { "TTJets" };
     }
 
+    samples_alias_map_["zj_samples"] = {
+     "DYJetsToTauTau-JJ"+dy_soup_, "DYJetsToLL-J"+dy_soup_
+    };
+
     // Samples to subtract in sideband for W+jets estimate
     samples_alias_map_["w_sub_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
      "T-tW", "Tbar-tW", "DYJetsToTauTau"+dy_soup_,
-     "DYJetsToTauTau-L"+dy_soup_, /*"DYJetsToTauTau-JJ"+dy_soup_,*/
-     "DYJetsToLL-L"+dy_soup_, "DYJetsToLL-J"+dy_soup_};
+     "DYJetsToTauTau-L"+dy_soup_,
+     "DYJetsToLL-L"+dy_soup_};
 
     samples_alias_map_["qcd_sub_samples"] = {
      "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
      "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
-     "T-tW", "Tbar-tW", "WJetsToLNuSoup", 
+     "T-tW", "Tbar-tW", "WJetsToLNuSoup",
      "DYJetsToTauTau"+dy_soup_,
-     "DYJetsToTauTau-L"+dy_soup_, /*"DYJetsToTauTau-JJ"+dy_soup_,*/
-     "DYJetsToLL-L"+dy_soup_, "DYJetsToLL-J"+dy_soup_};
+     "DYJetsToTauTau-L"+dy_soup_,
+     "DYJetsToLL-L"+dy_soup_};
 
     for (auto const& top_sample : samples_alias_map_["top_samples"]) {
       samples_alias_map_["w_sub_samples"].push_back(top_sample);
       samples_alias_map_["qcd_sub_samples"].push_back(top_sample);
+    }
+    for (auto const& zj_sample : samples_alias_map_["zj_samples"]) {
+      samples_alias_map_["w_sub_samples"].push_back(zj_sample);
+      samples_alias_map_["qcd_sub_samples"].push_back(zj_sample);
     }
   }
 
@@ -406,22 +414,32 @@ namespace ic {
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateZJ] ---------------------------------------------------------\n";
+    std::vector<std::string> zj_samples = this->ResolveSamplesAlias("zj_samples");
+    if (verbosity_) {
+      std::cout << "zj_samples: ";
+      for (unsigned i = 0; i < zj_samples.size(); ++i) {
+        std::cout << zj_samples[i];
+        if (i != zj_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
+
     Value zj_norm;
     TH1F zj_hist;
     if (method == 5) {
-      zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+dy_soup_, sel, cat, wt);
-      zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+dy_soup_, sel, this->ResolveAlias("vbf_loose"), wt);
+      zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt);
+      zj_hist = this->GetLumiScaledShape(var,zj_samples, sel, this->ResolveAlias("vbf_loose"), wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-        % ("DYJetsToLL-J"+dy_soup_) % sel % this->ResolveAlias("vbf_loose") % wt;
+        % "zj_samples" % sel % this->ResolveAlias("vbf_loose") % wt;
     } else {
       std::string zll_shape_cat = cat;
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
-      zj_norm = this->GetLumiScaledRate("DYJetsToLL-J"+dy_soup_, sel, cat, wt);
-      zj_hist = this->GetLumiScaledShape(var, "DYJetsToLL-J"+dy_soup_, sel, zll_shape_cat, wt);
+      zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt);
+      zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-        % ("DYJetsToLL-J"+dy_soup_) % sel % zll_shape_cat % wt;
+        % "zj_samples" % sel % zll_shape_cat % wt;
     }
     SetNorm(&zj_hist, zj_norm.first);
     return std::make_pair(zj_hist, zj_norm);

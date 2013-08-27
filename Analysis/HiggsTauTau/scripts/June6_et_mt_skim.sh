@@ -114,7 +114,7 @@ echo $CONFIG
 FILELIST=filelists/June6_MC_53X
 SKIMPATH=$SSD/June6/MC_53X
 
-#PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/June6/MC_53X/
+PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/June6/MC_53X/
 #PATHS=(
 #'RecHit-ETau-DYJetsToLL'
 #'RecHit-ETau-TTJets_FullLeptMGDecays'
@@ -131,22 +131,23 @@ SKIMPATH=$SSD/June6/MC_53X
 #   ./scripts/hadd_and_filelist.sh $SKIMPATH et_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
 #   $JOBSUBMIT jobs/$JOB.sh
 # done
-#PATHS=(
+PATHS=(
+'Embedded-MTau-DYJetsToLL'
 #'RecHit-MTau-DYJetsToLL'
 #'RecHit-MTau-TTJets_FullLeptMGDecays'
-# )
-# for i in "${PATHS[@]}"
-# do
-#   echo "$i"
-#
-#   mkdir -p $SKIMPATH/mt_skim/$i/
-#
-#   JOB="$i"_mt_skim
-#   $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=mt --output_folder=./ --output_name=Dummy_$JOB.root \
-#   --do_skim=true --skim_path=$SKIMPATH/mt_skim/$i/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-#   ./scripts/hadd_and_filelist.sh $SKIMPATH mt_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-#   $JOBSUBMIT jobs/$JOB.sh
-# done
+ )
+ for i in "${PATHS[@]}"
+ do
+   echo "$i"
+
+   mkdir -p $SKIMPATH/mt_skim/$i/
+
+   JOB="$i"_mt_skim
+   $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=mt --output_folder=./ --output_name=Dummy_$JOB.root \
+   --do_skim=true --skim_path=$SKIMPATH/mt_skim/$i/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+   ./scripts/hadd_and_filelist.sh $SKIMPATH mt_skim/"$i" "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+   $JOBSUBMIT jobs/$JOB.sh
+ done
 #
 #PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/rlane/June6/MC_53X/
 # PATHS=(
@@ -296,8 +297,8 @@ SKIMPATH=$SSD/June6/MC_53X
 # done
 
 # JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepshort.q"
- PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/June6/MC_53X/
- PATHS=(
+# PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/agilbert/June6/MC_53X/
+# PATHS=(
 # 'GluGluToHToTauTau_M-90' 
 # 'GluGluToHToTauTau_M-95' 
 # 'GluGluToHToTauTau_M-100' 
@@ -347,50 +348,50 @@ SKIMPATH=$SSD/June6/MC_53X
 #  'GluGluToHToWWTo2LAndTau2Nu_M-95' 
 #  'GluGluToHToWWTo2LAndTau2Nu_M-100' 
 #  'GluGluToHToWWTo2LAndTau2Nu_M-105' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-110' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-115' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-120' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-125'
-  'GluGluToHToWWTo2LAndTau2Nu_M-130' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-135' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-140' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-145' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-150' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-155' 
-  'GluGluToHToWWTo2LAndTau2Nu_M-160' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-110' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-115' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-120' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-125'
+#  'GluGluToHToWWTo2LAndTau2Nu_M-130' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-135' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-140' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-145' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-150' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-155' 
+#  'GluGluToHToWWTo2LAndTau2Nu_M-160' 
 #  'VBF_HToWWTo2LAndTau2Nu_M-90' 
 #  'VBF_HToWWTo2LAndTau2Nu_M-95' 
 #  'VBF_HToWWTo2LAndTau2Nu_M-100' 
 #  'VBF_HToWWTo2LAndTau2Nu_M-105' 
-  'VBF_HToWWTo2LAndTau2Nu_M-110' 
-  'VBF_HToWWTo2LAndTau2Nu_M-115' 
-  'VBF_HToWWTo2LAndTau2Nu_M-120' 
-  'VBF_HToWWTo2LAndTau2Nu_M-125'
-  'VBF_HToWWTo2LAndTau2Nu_M-130' 
-  'VBF_HToWWTo2LAndTau2Nu_M-135' 
-  'VBF_HToWWTo2LAndTau2Nu_M-140' 
-  'VBF_HToWWTo2LAndTau2Nu_M-145' 
-  'VBF_HToWWTo2LAndTau2Nu_M-150' 
-  'VBF_HToWWTo2LAndTau2Nu_M-155' 
-  'VBF_HToWWTo2LAndTau2Nu_M-160' 
- )
- for i in "${PATHS[@]}"
- do
-   echo "$i"
-
-   mkdir -p $SKIMPATH/et_skim/$i
-   mkdir -p $SKIMPATH/mt_skim/$i
-
-   JOB="$i"_et_skim
-   $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=et --output_folder=./ --output_name=Dummy_$JOB.root \
-   --do_skim=true --skim_path=$SKIMPATH/et_skim/$i/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-   ./scripts/hadd_and_filelist.sh $SKIMPATH et_skim/$i "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-   $JOBSUBMIT jobs/$JOB.sh
-
-   JOB="$i"_mt_skim
-   $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=mt --output_folder=./ --output_name=Dummy_$JOB.root \
-   --do_skim=true --skim_path=$SKIMPATH/mt_skim/$i/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
-   ./scripts/hadd_and_filelist.sh $SKIMPATH mt_skim/$i "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
-   $JOBSUBMIT jobs/$JOB.sh
- done
+#  'VBF_HToWWTo2LAndTau2Nu_M-110' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-115' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-120' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-125'
+#  'VBF_HToWWTo2LAndTau2Nu_M-130' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-135' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-140' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-145' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-150' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-155' 
+#  'VBF_HToWWTo2LAndTau2Nu_M-160' 
+# )
+# for i in "${PATHS[@]}"
+# do
+#   echo "$i"
+#
+#   mkdir -p $SKIMPATH/et_skim/$i
+#   mkdir -p $SKIMPATH/mt_skim/$i
+#
+#   JOB="$i"_et_skim
+#   $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=et --output_folder=./ --output_name=Dummy_$JOB.root \
+#   --do_skim=true --skim_path=$SKIMPATH/et_skim/$i/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#   ./scripts/hadd_and_filelist.sh $SKIMPATH et_skim/$i "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#   $JOBSUBMIT jobs/$JOB.sh
+#
+#   JOB="$i"_mt_skim
+#   $JOBWRAPPER "./bin/HiggsTauTau --is_data=0 --cfg=$CONFIG --filelist="$FILELIST"_"$i".dat --channel=mt --output_folder=./ --output_name=Dummy_$JOB.root \
+#   --do_skim=true --skim_path=$SKIMPATH/mt_skim/$i/ --input_prefix=$PREFIX &> jobs/$JOB.log ; \
+#   ./scripts/hadd_and_filelist.sh $SKIMPATH mt_skim/$i "$FILELIST"_"$JOB".dat" jobs/$JOB.sh
+#   $JOBSUBMIT jobs/$JOB.sh
+# done
 

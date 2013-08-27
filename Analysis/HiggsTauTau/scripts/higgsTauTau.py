@@ -156,7 +156,7 @@ if options.proc_data or options.proc_all:
       for sc in scales:
         JOB='Embedded_%s_%s' % (ch,YR)
         os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXDATA)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_Embedded_%(ERA)s_%(ch)s_skim.dat --channel=%(ch)s '
-          ' --is_embedded=true --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+          ' --is_embedded=true --hadronic_tau_selector=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
     #if ch in ['et', 'mt'] and not options.do_2011:
     #  for sc in scales:
@@ -360,7 +360,7 @@ if options.proc_bkg or options.proc_all:
             else:
               JOB='DYJetsToTauTau%s_%s_%s' % (sp,ch,YR)
               os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
-                ' --ztautau_mode=1 --faked_tau_selector=2 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+                ' --ztautau_mode=1 --faked_tau_selector=2 --hadronic_tau_selector=1 --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
               os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
             if sc in ['0']:
@@ -386,7 +386,7 @@ if options.proc_bkg or options.proc_all:
               
               JOB='DYJetsToTauTau-JJ%s_%s_%s' % (sp,ch,YR)
               os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_DYJetsToLL%(sp)s_%(ch)s_skim.dat --channel=%(ch)s'
-                ' --svfit_override=DYJetsToTauTau%(sp)s_%(ch)s_%(YR)s.root --ztautau_mode=1 --faked_tau_selector=2 --hadronic_tau_selector=2  --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+                ' --ztautau_mode=1 --faked_tau_selector=2 --hadronic_tau_selector=2  --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
               os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
 
           """

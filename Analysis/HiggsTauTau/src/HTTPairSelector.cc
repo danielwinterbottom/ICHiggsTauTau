@@ -60,6 +60,7 @@ namespace ic {
       hists_[0] = new Dynamic2DHistoSet(fs_->mkdir("httpairselector"));
       for (unsigned i = 0; i < hists_.size(); ++i) {
         hists_[i]->Create("n_pairs", 4, -0.5, 3.5, 4, -0.5, 3.5);
+        hists_[i]->Create("pt_gen_reco", 50, 0, 100, 50, 0, 100);
       }
     }
 
@@ -211,12 +212,16 @@ namespace ic {
       std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
       std::vector<GenJet *> gen_taus_ptr;
       for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+      ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));
       std::vector<Candidate *> tau;
       tau.push_back(result[0]->GetCandidate("lepton2"));
       // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
-      std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 1.0, true, true);
+      std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
       // If we want ZL and there's no match, fail the event
       if (hadronic_tau_selector_ == 1 && matches.size() == 0) return 1;
+      if (fs_ && matches.size() == 1) {
+        hists_[0]->Fill("pt_gen_reco", matches[0].second->pt(), matches[0].first->pt(), 1);
+      }
       // If we want ZJ and there is a match, fail the event
       if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
     }
