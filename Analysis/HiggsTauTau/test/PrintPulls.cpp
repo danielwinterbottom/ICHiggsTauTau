@@ -128,6 +128,7 @@ int main(int argc, char* argv[]){
   for (unsigned i = 0; i < pulls1sorted.size(); ++i) {
     if (bbb_treatment == 1) {
       if (pulls1sorted[i].name.find("_bin_") != pulls1sorted[i].name.npos) continue;
+      if (pulls1sorted[i].name.find("fine_binning") != pulls1sorted[i].name.npos) continue;
     }
     if (bbb_treatment == 2) {
       if (pulls1sorted[i].name.find("_bin_") == pulls1sorted[i].name.npos) continue;
@@ -166,7 +167,7 @@ int main(int argc, char* argv[]){
   }
 
 
-  pad1->SetBottomMargin(0.05);
+  pad1->SetBottomMargin(0.07);
   pad1->SetLeftMargin(0.45);
   pad1->SetRightMargin(0.03);
   pad1->SetTopMargin(0.05);
@@ -201,6 +202,9 @@ int main(int argc, char* argv[]){
   // gStyle->SetErrorX(0.0);
   gStyle->SetEndErrorSize(5);
 
+  hpulls->GetXaxis()->SetTitle("Pull (#sigma)");
+  hpulls->GetXaxis()->CenterTitle();
+  hpulls->GetXaxis()->SetTitleSize(0.04);
   hpulls->Draw("");
   hpulls->GetXaxis()->SetLabelSize(ts1);
   vals.Draw("pSAME");
@@ -216,7 +220,7 @@ int main(int argc, char* argv[]){
 
   if (pad2) {
     pad2->cd();
-    pad2->SetBottomMargin(0.05);
+    pad2->SetBottomMargin(0.07);
     pad2->SetLeftMargin(0.1);
     pad2->SetRightMargin(0.2);
     pad2->SetTopMargin(0.05);

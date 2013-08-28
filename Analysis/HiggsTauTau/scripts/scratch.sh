@@ -446,12 +446,72 @@ htt_em.inputs-sm-8TeV.root
 
 
  ./bin/PlotCompare  \
- -p "All:Embedded(all):Embedded_mt_2012_All.root:inclusive_os_sel/:m_sv:-1:2:1" \
- -p "NoFakes:Embedded(veto fakes):Embedded_mt_2012_RealTau.root:inclusive_os_sel/:m_sv:-1:2:2" \
- --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="e#tau_{h}" \
- --log_y=true \
- --ratios="NoFakes/All/2" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ -p "All:Embedded (all):Embedded_mt_2012_All.root:inclusive_os_sel/:m_sv_sm_fine:-1:2:1" \
+ -p "NoFakes:Embedded (veto jet#rightarrow#tau):Embedded_mt_2012_NoFakes.root:inclusive_os_sel/:m_sv_sm_fine:-1:2:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
+ --log_y=true --norm_bins=true \
+ --ratios="NoFakes/All/4" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
  --outname="embedded_fake_taus_mt.pdf"
+ ./bin/PlotCompare  \
+ -p "All:Embedded (all):Embedded_et_2012_All.root:inclusive_os_sel/:m_sv_sm_fine:-1:2:1" \
+ -p "NoFakes:Embedded (veto jet#rightarrow#tau):Embedded_et_2012_NoFakes.root:inclusive_os_sel/:m_sv_sm_fine:-1:2:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="e#tau_{h}" \
+ --log_y=true --norm_bins=true \
+ --ratios="NoFakes/All/4" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="embedded_fake_taus_et.pdf"
+
+ ./bin/PlotCompare  \
+ -p "All:MC (all):DYJetsToTauTauSoup_mt_2012_All.root:inclusive_os_sel/:m_sv_sm_fine:-1:2:1" \
+ -p "NoFakes:MC (veto jet#rightarrow#tau):DYJetsToTauTauSoup_mt_2012_NoFakes.root:inclusive_os_sel/:m_sv_sm_fine:-1:2:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
+ --log_y=true --norm_bins=true  \
+ --ratios="NoFakes/All/4" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="mc_fake_taus_mt.pdf"
+ ./bin/PlotCompare  \
+ -p "All:MC (all):DYJetsToTauTauSoup_et_2012_All.root:inclusive_os_sel/:m_sv_sm_fine:-1:2:1" \
+ -p "NoFakes:MC (veto jet#rightarrow#tau):DYJetsToTauTauSoup_et_2012_NoFakes.root:inclusive_os_sel/:m_sv_sm_fine:-1:2:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="e#tau_{h}" \
+ --log_y=true --norm_bins=true  \
+ --ratios="NoFakes/All/4" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="mc_fake_taus_et.pdf"
+
+ ./bin/PlotCompare  \
+ -p "Def:Current Default:htt_mt.inputs-mssm-8TeV-0.root:muTau_inclusive/:ZTT:-1:2:1" \
+ -p "NoFakes:Veto jet#rightarrow#tau:htt_mt.inputs-mssm-8TeV-no-fakes.root:muTau_inclusive/:ZTT:-1:2:2" \
+ -p "WithFakes:Adding MC jet#rightarrow#tau:htt_mt.inputs-mssm-8TeV-add-fakes.root:muTau_inclusive/:ZTT:-1:2:9" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
+ --log_y=true --norm_bins=true \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=345 \
+ --ratios="NoFakes/Def/2:WithFakes/Def/9" --ratio_axis_label="Ratio(/Default)"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="fake_taus_mt_datacard.pdf"
+./bin/PlotCompare  \
+ -p "Def:Current Default:htt_et.inputs-mssm-8TeV-0.root:eleTau_inclusive/:ZTT:-1:2:1" \
+ -p "NoFakes:Veto jet#rightarrow#tau:htt_et.inputs-mssm-8TeV-no-fakes.root:eleTau_inclusive/:ZTT:-1:2:2" \
+ -p "WithFakes:Adding MC jet#rightarrow#tau:htt_et.inputs-mssm-8TeV-add-fakes.root:eleTau_inclusive/:ZTT:-1:2:9" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="e#tau_{h}" \
+ --log_y=true --norm_bins=true \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=345 \
+ --ratios="NoFakes/Def/2:WithFakes/Def/9" --ratio_axis_label="Ratio(/Default)"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="fake_taus_et_datacard.pdf"
+
+ ./bin/PlotCompare  \
+ -p "Def:Current Default:htt_mt.inputs-mssm-8TeV-0.root:muTau_inclusive/:ZJ:-1:2:1" \
+ -p "WithFakes:Adding ZTT jet#rightarrow#tau:htt_mt.inputs-mssm-8TeV-with-zj.root:muTau_inclusive/:ZJ:-1:2:9" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="#mu#tau_{h}" \
+ --log_y=true --norm_bins=true \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=345 \
+ --ratios="WithFakes/Def/9" --ratio_axis_label="Ratio(/Default)"  --ratio_y_min=0.5 --ratio_y_max=3 \
+ --outname="fake_taus_mt_zj.pdf"
+./bin/PlotCompare  \
+ -p "Def:Current Default:htt_et.inputs-mssm-8TeV-0.root:eleTau_inclusive/:ZJ:-1:2:1" \
+ -p "WithFakes:Adding ZTT jet#rightarrow#tau:htt_et.inputs-mssm-8TeV-with-zj.root:eleTau_inclusive/:ZJ:-1:2:9" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label="e#tau_{h}" \
+ --log_y=true --norm_bins=true \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=345 \
+ --ratios="WithFakes/Def/9" --ratio_axis_label="Ratio(/Default)"  --ratio_y_min=0.5 --ratio_y_max=3 \
+ --outname="fake_taus_et_zj.pdf"
+
+
 
  ./bin/PlotCompare  \
  -p "All:Embedded(all):DYJetsToTauTauSoup_mt_2012_All.root:inclusive_os_sel/:m_sv:-1:2:1" \
