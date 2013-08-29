@@ -539,12 +539,15 @@ namespace ic {
 				} 
 				std::string name = processes_[i].process;
 				if (processes_[i].process_id <= 0) name += processes_[i].mass;
-				TH1F* hist = (TH1F*)gDirectory->Get(name.c_str())->Clone();
+				TH1F* hist = (TH1F*)gDirectory->Get(name.c_str());
 				if (!hist) {
 					std::cerr << "Warning, histogram " << name << " not found in ROOT File" << std::endl;
 					continue;
+				} else {
+					hist = (TH1F*)hist->Clone();
 				}
 				processes_[i].shape = hist;
+				processes_[i].rate = hist->Integral();
 			}
 		}
 
@@ -556,10 +559,12 @@ namespace ic {
 					continue;
 				} 
 				std::string name = obs_[i].process;
-				TH1F* hist = (TH1F*)gDirectory->Get(name.c_str())->Clone();
+				TH1F* hist = (TH1F*)gDirectory->Get(name.c_str());
 				if (!hist) {
 					std::cerr << "Warning, histogram " << name << " not found in ROOT File" << std::endl;
 					continue;
+				} else {
+					hist = (TH1F*)hist->Clone();
 				}
 				obs_[i].shape = hist;
 			}
@@ -712,6 +717,16 @@ namespace ic {
 		}
 		return false;
 	}
+
+	void HTTSetup::ScaleProcessByEra(std::string const& process, std::string const& era, double scale) {
+		for (unsigned i = 0; i < processes_.size(); ++i) {
+			if (processes_[i].process == process && processes_[i].era == era) {
+				processes_[i].rate *= scale;
+				if (processes_[i].shape) processes_[i].shape->Scale(scale);
+			} 
+		}
+	}
+
 
 
 }

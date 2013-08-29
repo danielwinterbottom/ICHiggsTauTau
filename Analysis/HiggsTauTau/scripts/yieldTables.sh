@@ -1,53 +1,43 @@
-# ./bin/YieldTable --channel=mt --columns="0-Jet:0+1,1-Jet low \$p_{T}\$:2,1-Jet high \$p_{T}\$:3,VBF:5" --eras="7TeV,8TeV" \
-# --datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
-# --signal_mass=125 --postfit=true
 
-# ./bin/YieldTable --channel=et --columns="0-Jet:0+1,1-Jet low \$p_{T}\$:2,1-Jet high \$p_{T}\$:3,VBF:5" --eras="7TeV,8TeV" \
-# --datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
-# --signal_mass=125 --postfit=true
+mass=160
+tanb=8
+et_input=output/mloutput_0829/et
+mt_input=output/mloutput_0829/mt
+em_input=output/mloutput_0829/em
+tt_input=output/mloutput_0829/tt
+mm_input=output/mloutput_0829/mm
+postfit="true"
+no_correlations="false"
+no_shapes="false"
+params="scripts/Paper_params_2011.dat,scripts/Paper_params_2012.dat"
 
-# ./bin/YieldTable --channel=em --columns="0-Jet:0+1,1-Jet low \$p_{T}\$:2,1-Jet high \$p_{T}\$:3,VBF:5" --eras="7TeV,8TeV" \
-# --datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
-# --signal_mass=125 --postfit=true
 
-./bin/PostFitPlot --channel=mt --selection="no btag:8" --eras="8TeV" \
---datacard_path=output/mssm-3hits-loose/mt/800/ --root_file_path=output/mssm-3hits-loose/mt/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=500 --postfit=false --mssm=true --log_y=true --tanb=90
+./bin/YieldTable --channel=mt --columns="B-Tag:9,No B-Tag:8" --eras="7TeV,8TeV" \
+	--datacard_path=$mt_input/$mass --root_file_path=$mt_input/common \
+	--pulls_file=$mt_input/160/out/mlfit.txt \
+	--signal_mass=$mass --tanb=$tanb --postfit=$postfit --mssm=true \
+	--era_params="$params" --no_correlations=$no_correlations --no_shapes=$no_shapes
 
-./bin/PostFitPlot --channel=mt --selection="btag:9" --eras="8TeV" \
---datacard_path=output/mssm-3hits-loose/mt/160/ --root_file_path=output/mssm-3hits-loose/mt/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=160 --postfit=false --mssm=true --log_y=true --tanb=20 \
---title_left="CMS Preliminary, #sqrt{s} = 8 TeV, L = 19.4 fb^{-1}" \
---blind=true --x_blind_min=100 --x_blind_max=1500
+./bin/YieldTable --channel=et --columns="B-Tag:9,No B-Tag:8" --eras="7TeV,8TeV" \
+	--datacard_path=$et_input/$mass --root_file_path=$et_input/common \
+	--pulls_file=$et_input/160/out/mlfit.txt \
+	--signal_mass=$mass --tanb=$tanb --postfit=$postfit --mssm=true \
+	--era_params="$params" --no_correlations=$no_correlations --no_shapes=$no_shapes
 
-./bin/PostFitPlot --channel=mt --selection="0-Jet:0+1" --eras="7TeV,8TeV" \
---datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=125 --postfit=false
+./bin/YieldTable --channel=em --columns="B-Tag:9,No B-Tag:8" --eras="7TeV,8TeV" \
+	--datacard_path=$em_input/$mass --root_file_path=$em_input/common \
+	--pulls_file=$em_input/160/out/mlfit.txt \
+	--signal_mass=$mass --tanb=$tanb --postfit=$postfit --mssm=true \
+	--era_params="$params" --no_correlations=$no_correlations --no_shapes=$no_shapes
 
-./bin/PostFitPlot --channel=mt --selection="1-Jet Low p_{T}:2" --eras="7TeV,8TeV" \
---datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=125 --postfit=false
+./bin/YieldTable --channel=mm --columns="B-Tag:9,No B-Tag:8" --eras="7TeV,8TeV" \
+	--datacard_path=$mm_input/$mass --root_file_path=$mm_input/common \
+	--pulls_file=$mm_input/160/out/mlfit.txt \
+	--signal_mass=$mass --tanb=$tanb --postfit=$postfit --mssm=true \
+	--era_params="$params" --no_correlations=$no_correlations --no_shapes=$no_shapes
 
-./bin/PostFitPlot --channel=mt --selection="1-Jet High p_{T}:3" --eras="7TeV,8TeV" \
---datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=125 --postfit=false
-
-./bin/PostFitPlot --channel=mt --selection="VBF:5" --eras="7TeV,8TeV" \
---datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=125 --postfit=false
-
-./bin/PostFitPlot --channel=et --selection="0-Jet:0+1" --eras="7TeV,8TeV" \
---datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=125 --postfit=false
-
-./bin/PostFitPlot --channel=et --selection="1-Jet Low p_{T}:2" --eras="7TeV,8TeV" \
---datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=125 --postfit=false
-
-./bin/PostFitPlot --channel=et --selection="1-Jet High p_{T}:3" --eras="7TeV,8TeV" \
---datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=125 --postfit=false
-
-./bin/PostFitPlot --channel=et --selection="VBF:5" --eras="7TeV,8TeV" \
---datacard_path=bin-by-bin/cmb/125/ --root_file_path=bin-by-bin/cmb/common/ --pulls_file=bin-by-bin/cmb/125/out/mlfit.txt \
---signal_mass=125 --postfit=false
+./bin/YieldTable --channel=tt --columns="B-Tag:9,No B-Tag:8" --eras="8TeV" \
+	--datacard_path=$tt_input/$mass --root_file_path=$tt_input/common \
+	--pulls_file=$tt_input/160/out/mlfit.txt \
+	--signal_mass=$mass --tanb=$tanb --postfit=$postfit --mssm=true \
+	--era_params="scripts/Paper_params_2012.dat" --no_correlations=$no_correlations --no_shapes=$no_shapes

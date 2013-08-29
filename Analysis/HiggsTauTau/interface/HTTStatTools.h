@@ -150,6 +150,7 @@ class HTTSetup {
 		TH1F 	GetObservedShape();
 		std::set<std::string> GetNuisanceSet();
 		bool HasProcess(std::string const& process) const;
+		void ScaleProcessByEra(std::string const& process, std::string const& era, double scale);
 };
 
 void PullsFromFile(std::string const& filename, std::vector<ic::Pull> & pullvec, bool verbose);
