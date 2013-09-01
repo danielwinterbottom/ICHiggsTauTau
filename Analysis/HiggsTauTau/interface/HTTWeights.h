@@ -28,6 +28,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_emu_m_fakerates)
   CLASS_MEMBER(HTTWeights, bool, do_top_factors)
   CLASS_MEMBER(HTTWeights, bool, do_btag_weight)
+  CLASS_MEMBER(HTTWeights, bool, do_topquark_weights)
   CLASS_MEMBER(HTTWeights, int, btag_mode)
   CLASS_MEMBER(HTTWeights, int, bfake_mode)
   CLASS_MEMBER(HTTWeights, std::string, ggh_mass)

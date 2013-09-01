@@ -871,6 +871,7 @@ int main(int argc, char* argv[]){
   if (special_mode == 20 || special_mode == 22) httWeights.set_do_emu_e_fakerates(true);
   if (special_mode == 21 || special_mode == 22) httWeights.set_do_emu_m_fakerates(true);
   if (channel == channel::etmet || channel == channel::mtmet) httWeights.set_trg_applied_in_mc(false);
+  if (output_name.find("TTJets") != output_name.npos) httWeights.set_do_topquark_weights(true);
 
   if (output_name.find("WJetsToLNuSoup") != output_name.npos) {
     httWeights.set_do_w_soup(true);

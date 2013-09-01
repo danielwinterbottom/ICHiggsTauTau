@@ -39,6 +39,7 @@ namespace ic {
     ggh_hist_up_        = nullptr;
     ggh_hist_down_      = nullptr;
     do_tau_mode_scale_  = false;
+    do_topquark_weights_ = false;
   }
 
   HTTWeights::~HTTWeights() {
@@ -67,6 +68,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_btag_weight"      % do_btag_weight_;
     std::cout << boost::format(param_fmt()) % "btag_mode"           % btag_mode_;
     std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
+    std::cout << boost::format(param_fmt()) % "do_topquark_weights" % do_topquark_weights_;
 
     if (ggh_mass_ != "" && mc_ == mc::fall11_42X) {
       // if (ggh_mass_ == "90" || ggh_mass_ == "95" ||
@@ -189,6 +191,23 @@ namespace ic {
         event->Add("wt_ggh_pt_up", weight_up);
         event->Add("wt_ggh_pt_down", weight_down);
       }
+    }
+
+    if (do_topquark_weights_) {
+      double top_wt = 1.0;
+      std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      for (unsigned i = 0; i < parts.size(); ++i) {
+        if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
+          double pt = parts[i]->pt();
+          std::cout << "Top quark: " << i << parts[i]->pdgid() << " pt: " << pt << std::endl;
+          if (pt < 463.12) {
+            top_wt *= (1.18246+(2.10061E-6*pt*(pt-2*463.312)));
+          } else {
+            top_wt *= 0.732;
+          }
+        }
+      }    
+      eventInfo->set_weight("topquark_weight", top_wt);
     }
 
     if (do_top_factors_) {
