@@ -182,6 +182,15 @@ int main(int argc, char* argv[]){
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 
 	// ************************************************************************
+	// Alternative W
+	// ************************************************************************
+	auto w_low = ana.GenerateW(method, var, sel, cat+" && m_sv<200", "wt");
+	auto w_high = ana.GenerateW(method, var, sel, cat+" && m_sv>=200", "wt");
+	w_low.first.Add(&w_high.first);
+	w_low.second = HTTAnalysis::ValueAdd(w_low.second, w_high.second);
+	hmap["WBinned"] = w_low;
+
+	// ************************************************************************
 	// ggH pT Reweighting
 	// ************************************************************************
 	if (syst_ggh_pt != "") {
