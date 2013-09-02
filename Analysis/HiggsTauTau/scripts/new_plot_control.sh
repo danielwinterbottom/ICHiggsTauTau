@@ -351,7 +351,7 @@ echo "Applying 7TeV scale factors..."
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt \
   --method=8 --cat="inclusive" --set_alias="sel:1" --var="mt_1(40,0,160)" \
-  --x_axis_label="m_{T} [GeV]" --datacard="inclusive" --extra_pad=1.1 $EM_BAND_ONLY \
+  --x_axis_label="m_{T} [GeV]" --datacard="inclusive" --extra_pad=1.1 $MT_BAND_ONLY \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \

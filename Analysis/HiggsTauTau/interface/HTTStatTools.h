@@ -142,6 +142,7 @@ class HTTSetup {
 		HTTSetup signals() const;
 		HTTSetup backgrounds() const;
 		HTTSetup nuisance(std::vector<std::string> const& nuisance) const;
+		HTTSetup nuisance_pred(std::function<bool(Nuisance const&)> fn) const;
 		double GetRate();
 		double GetObservedRate();
 		double GetUncertainty();
@@ -151,6 +152,7 @@ class HTTSetup {
 		std::set<std::string> GetNuisanceSet();
 		bool HasProcess(std::string const& process) const;
 		void ScaleProcessByEra(std::string const& process, std::string const& era, double scale);
+		std::pair<double, int> GetPullsChi2(bool splusb) const;
 };
 
 void PullsFromFile(std::string const& filename, std::vector<ic::Pull> & pullvec, bool verbose);

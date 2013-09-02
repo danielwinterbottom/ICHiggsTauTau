@@ -92,6 +92,10 @@ int main(int argc, char* argv[]){
     }
   }
   setup.ParsePulls(pulls_file);
+  auto chi2_splusb = setup.GetPullsChi2(true);
+  auto chi2_bonly = setup.GetPullsChi2(false);
+  std::cout << "Chi2 s+b:    " << chi2_splusb.first << " " << chi2_splusb.second << std::endl;
+  std::cout << "Chi2 b-only: " << chi2_bonly.first << " " << chi2_bonly.second << std::endl;
   if (postfit) setup.ApplyPulls();
 
   HTTAnalysis::HistValueMap hmap;
@@ -179,6 +183,16 @@ int main(int argc, char* argv[]){
 
   plot.GeneratePlot(hmap);
 
+  std::string tfile_name = channel + "_" + catstring + "_" + era_file_label+ (postfit ? "_postfit":"_prefit")+".root";
+  TFile dc_file(tfile_name.c_str(),"RECREATE");
+  dc_file.cd();
+  for (auto iter : hmap) {
+    iter.second.first.SetTitle(iter.first.c_str());
+    iter.second.first.SetName(iter.first.c_str());
+    iter.second.first.Write();
+  }
+  std::cout << "[HiggsTauTauPlot4] Writing datacard input " << tfile_name << std::endl;
+  dc_file.Close();
 
   return 0;
 }

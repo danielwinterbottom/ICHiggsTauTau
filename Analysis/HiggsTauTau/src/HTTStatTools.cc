@@ -161,6 +161,13 @@ namespace ic {
 		return result;
 	}
 
+	HTTSetup HTTSetup::nuisance_pred(std::function<bool(Nuisance const&)> fn) const {
+		HTTSetup result = *this;
+		ic::erase_if(result.params_, std::not1(fn));
+		return result;
+	}
+
+
 	HTTSetup HTTSetup::no_shapes() const {
 		HTTSetup result = *this;
 		ic::erase_if(result.params_, [&] (Nuisance const& val) { return val.type == "shape"; });
@@ -726,6 +733,15 @@ namespace ic {
 			} 
 		}
 	}
+
+	std::pair<double, int> HTTSetup::GetPullsChi2(bool splusb) const {
+		double tot = 0.0;
+		for (unsigned i = 0; i < pulls_.size(); ++i) {
+			tot += splusb ? (pulls_[i].splusb*pulls_[i].splusb) : (pulls_[i].bonly*pulls_[i].bonly);
+		}
+		return std::make_pair(tot, pulls_.size());
+	}
+
 
 
 
