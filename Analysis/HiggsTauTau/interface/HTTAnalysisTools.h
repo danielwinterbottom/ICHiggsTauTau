@@ -306,6 +306,7 @@ namespace ic {
                               std::string const& weight);
 
       void SetQCDRatio(double const& ratio);
+      inline void SetVerbosity(unsigned const& verbosity) { verbosity_ = verbosity; }
 
     private:
       ic::channel ch_;

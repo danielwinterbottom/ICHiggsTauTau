@@ -49,6 +49,8 @@ int main(int argc, char* argv[]){
 	bool auto_titles;
 	bool check_ztt_top_frac;
   double qcd_os_ss_factor;
+  string w_binned;
+
 	// Program options
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
@@ -69,7 +71,7 @@ int main(int argc, char* argv[]){
 	  ("datacard",            po::value<string>(&datacard)->default_value(""))
 	  ("set_alias",           po::value<vector<string>>(&set_alias)->composing())
 	  ("sm_masses",           po::value<string>(&sm_masses_str)->default_value(""))
-	  ("hww_masses",           po::value<string>(&hww_masses_str)->default_value(""))
+	  ("hww_masses",          po::value<string>(&hww_masses_str)->default_value(""))
 	  ("mssm_masses",         po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("syst_tau_scale",      po::value<string>(&syst_tau_scale)->default_value(""))
 	  ("syst_eff_b",      		po::value<string>(&syst_eff_b)->default_value(""))
@@ -88,6 +90,7 @@ int main(int argc, char* argv[]){
 	  ("fix_negative_bins",  	po::value<string>(&fix_negative_bins)->default_value(""))
 	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
 	  ("shift_backgrounds",   po::value<string>(&shift_backgrounds)->default_value(""))
+	  ("w_binned",            po::value<string>(&w_binned)->default_value(""))
 	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true))
 	  ("check_ztt_top_frac",  po::value<bool>(&check_ztt_top_frac)->default_value(false))
 	  ("qcd_os_ss_factor",  	po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
@@ -182,15 +185,6 @@ int main(int argc, char* argv[]){
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 
 	// ************************************************************************
-	// Alternative W
-	// ************************************************************************
-	auto w_low = ana.GenerateW(method, var, sel, cat+" && m_sv<200", "wt");
-	auto w_high = ana.GenerateW(method, var, sel, cat+" && m_sv>=200", "wt");
-	w_low.first.Add(&w_high.first);
-	w_low.second = HTTAnalysis::ValueAdd(w_low.second, w_high.second);
-	hmap["WBinned"] = w_low;
-
-	// ************************************************************************
 	// ggH pT Reweighting
 	// ************************************************************************
 	if (syst_ggh_pt != "") {
@@ -205,6 +199,7 @@ int main(int argc, char* argv[]){
 	// Additional Binning
 	// ************************************************************************
   string extra_binning_postfix;
+  string extra_binning_range = "";
 	if (add_extra_binning != "") {
 		std::vector<std::string> extra_binning;
 		boost::split(extra_binning, add_extra_binning, boost::is_any_of(":"));
@@ -212,12 +207,47 @@ int main(int argc, char* argv[]){
 			std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 			std::cout << "[HiggsTauTauPlot4] Adding alternative binning \"" << extra_binning[0] 
 				<< "\" with postfix \"" << extra_binning[1] << "\"" << std::endl;
+      extra_binning_range = extra_binning[0];
       extra_binning_postfix = extra_binning[1];
 			ana.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", extra_binning[1]);
 			ana.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 			ana.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 		}
 	}
+	
+  // ************************************************************************
+	// Alternative W
+	// ************************************************************************
+  //ana.SetVerbosity(1);
+  if (w_binned != "") {
+    std::vector<std::string> w_bins;
+    boost::split(w_bins, w_binned, boost::is_any_of(","));
+    std::vector<std::string> vars = { var };
+    std::vector<std::string> vars_postfix = { "" };
+    if (extra_binning_range != "") {
+      vars.push_back(reduced_var+extra_binning_range);
+      vars_postfix.push_back(extra_binning_postfix);
+    }
+    for (unsigned j = 0; j < vars.size(); ++j) {
+
+      auto new_w = hmap["W"+vars_postfix[j]];
+      if (w_bins.size() >= 2) {
+        for (unsigned i = 0; i < (w_bins.size()-1); ++i) {
+          std::string new_cat = cat + " && "+reduced_var+">"+w_bins[i]+" && "+reduced_var+"<="+w_bins[i+1];
+          auto w_range = ana.GenerateW(method, vars[j], sel, new_cat, "wt");
+          if (i == 0) {
+            new_w = w_range;
+          } else {
+            new_w.first.Add(&w_range.first);
+            new_w.second = HTTAnalysis::ValueAdd(new_w.second, w_range.second);
+          }
+          HTTAnalysis::PrintValue(w_bins[i]+"-"+w_bins[i+1], w_range.second);
+          //ana.SetVerbosity(verbosity);
+        }
+      }
+      hmap["W"+vars_postfix[j]] = new_w;
+    }
+  }
 
 	vector<pair<string,string>> systematics;
 

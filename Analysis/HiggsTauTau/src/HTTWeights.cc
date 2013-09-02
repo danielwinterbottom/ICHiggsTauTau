@@ -199,7 +199,6 @@ namespace ic {
       for (unsigned i = 0; i < parts.size(); ++i) {
         if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
           double pt = parts[i]->pt();
-          std::cout << "Top quark: " << i << parts[i]->pdgid() << " pt: " << pt << std::endl;
           if (pt < 463.12) {
             top_wt *= (1.18246+(2.10061E-6*pt*(pt-2*463.312)));
           } else {
