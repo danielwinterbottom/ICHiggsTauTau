@@ -24,6 +24,7 @@ int main(int argc, char* argv[]){
 	bool is_2012;																	// false = 7 TeV, true = 8 TeV
 	unsigned verbosity;														// Verbose output, useful for diagnostic purposes
 	bool is_paper;                                // Tweaking some things for the paper
+	bool do_ss;                            		    // Tweaking some things for the paper
 	string datacard;             									// Channel, e.g. et
 	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
 	string sm_masses_str;													
@@ -68,6 +69,7 @@ int main(int argc, char* argv[]){
 	  ("is_2012",             po::value<bool>(&is_2012)->required())
 	  ("verbosity",           po::value<unsigned>(&verbosity)->default_value(0))
 	  ("is_paper",            po::value<bool>(&is_paper)->default_value(false))
+	  ("do_ss", 	            po::value<bool>(&do_ss)->default_value(false))
 	  ("datacard",            po::value<string>(&datacard)->default_value(""))
 	  ("set_alias",           po::value<vector<string>>(&set_alias)->composing())
 	  ("sm_masses",           po::value<string>(&sm_masses_str)->default_value(""))
@@ -158,6 +160,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	HTTAnalysis ana(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
   ana.SetQCDRatio(qcd_os_ss_factor);
+  if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
 	ana.AddHWWSignalSamples(hww_masses);
@@ -173,6 +176,12 @@ int main(int argc, char* argv[]){
 	HTTAnalysis::HistValueMap hmap;
 
 	std::string sel = "os && "+ana.ResolveAlias("sel");
+	if (do_ss) {
+		sel = "!os && "+ana.ResolveAlias("sel");
+		ana.SetAlias("w_os", "!os");
+		ana.SetAlias("w_vbf_os", "!os");
+		ana.SetAlias("w_shape_os", "!os");
+	}
 	cat = ana.ResolveAlias(cat);
 
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
