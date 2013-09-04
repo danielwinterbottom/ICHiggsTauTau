@@ -19,6 +19,7 @@ namespace ic {
     sample_ = "";
     disable = true;
     is_wjets_ = false;
+    is_ttbar_ = false;
     w_hack_ = false;
   }
 
@@ -87,6 +88,19 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "process_file"  % process_file;
       boson_id_.push_back(24);
     }
+    
+    /*
+    if ( (sample_.find("TTJets") != sample_.npos) ) {
+      disable = false;
+      is_ttbar_ = true;
+      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_wjets53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_wjets42X_20pv_njet.root";
+      std::cout << boost::format(param_fmt()) % "enabled"       % true;
+      std::cout << boost::format(param_fmt()) % "type"          % "TTJets";
+      std::cout << boost::format(param_fmt()) % "process_file"  % process_file;
+      boson_id_.push_back(24);
+    }
+    */
 
     if ( (sample_.find("GluGluToHToTauTau") != sample_.npos) 
       || (sample_.find("SUSYGluGluToHToTauTau") != sample_.npos)
@@ -144,18 +158,28 @@ namespace ic {
     Met * pfMet = event->GetPtr<Met>(met_label_);
     std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
     GenParticle const* boson = NULL;
+    GenParticle const* boson2 = NULL;
     for (unsigned i = 0; i < parts.size(); ++i) {
       unsigned id = abs(parts[i]->pdgid());
       if (parts[i]->status() == 3) {
         for (unsigned j = 0; j < boson_id_.size(); ++j) {
           if (id == boson_id_[j]) {
-            boson = parts[i];
+            if (!is_ttbar_) {
+              boson = parts[i];
+            } else {
+              if (!boson) boson = parts[i];
+              if (boson && !boson2) boson2 = parts[i];
+            }
           }
         }
       }
     }
     if (!boson) {
       std::cerr << "Error in <HTTRecoilCorrector>: Boson GenParticle not found, an exception will be thrown" << std::endl;
+      throw;
+    }
+    if (is_ttbar_ && !boson && !boson2) {
+      std::cerr << "Error in <HTTRecoilCorrector>: Boson GenParticles not found, an exception will be thrown" << std::endl;
       throw;
     }
 
@@ -168,6 +192,10 @@ namespace ic {
     double pfmetphi = pfMet->phi();
     double genpt = boson->pt();
     double genphi = boson->phi();
+    if (is_ttbar_) {
+      genpt = (boson->vector()+boson2->vector()).pt();
+      genphi = (boson->vector()+boson2->vector()).phi();
+    }
     double lep_pt = dilepton.at(0)->pt();
     double lep_phi = dilepton.at(0)->phi();
     if (is_wjets_ && (channel_ == channel::et || channel_ == channel::mt || channel_ == channel::mtmet)) { // Use e or mu for et, mt and mtmet

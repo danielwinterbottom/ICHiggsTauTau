@@ -15,6 +15,7 @@ class HTTRecoilCorrector : public ModuleBase {
   bool disable;
   RecoilCorrector * corrector_;
   bool is_wjets_;
+  bool is_ttbar_;
   std::vector<unsigned> boson_id_;
   CLASS_MEMBER(HTTRecoilCorrector, std::string, dilepton_label)
   CLASS_MEMBER(HTTRecoilCorrector, std::string, met_label)
