@@ -156,6 +156,7 @@ namespace ic {
     // option w_extrap_diagnostics
     alias_map_["sel"]                    = "mt_1<20.";
     alias_map_["w_sdb"]                  = "mt_1>70.";
+    alias_map_["w_sdb_os"]               = "os";
     alias_map_["w_vbf_sdb"]              = "mt_1>60. && mt_1<120.";
     alias_map_["w_os"]                   = "os";
     alias_map_["w_vbf_os"]               = "os";
@@ -500,12 +501,12 @@ namespace ic {
     std::string w_extrap_cat = cat;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
-    std::string w_sdb_sel = "os && "+this->ResolveAlias("w_sdb");
+    std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
     if (method == 5) {
       w_extrap_cat    = this->ResolveAlias("w_vbf_extrap_cat");
       w_extrp_sdb_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("w_vbf_sdb");
       w_extrp_sig_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("sel");
-      w_sdb_sel       = "os && "+this->ResolveAlias("w_vbf_sdb");
+      w_sdb_sel       = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_vbf_sdb");
     }
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");

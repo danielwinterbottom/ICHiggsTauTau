@@ -179,6 +179,7 @@ int main(int argc, char* argv[]){
 	if (do_ss) {
 		sel = "!os && "+ana.ResolveAlias("sel");
 		ana.SetAlias("w_os", "!os");
+		ana.SetAlias("w_sdb_os", "!os");
 		ana.SetAlias("w_vbf_os", "!os");
 		ana.SetAlias("w_shape_os", "!os");
 	}
