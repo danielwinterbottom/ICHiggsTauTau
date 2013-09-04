@@ -29,6 +29,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_top_factors)
   CLASS_MEMBER(HTTWeights, bool, do_btag_weight)
   CLASS_MEMBER(HTTWeights, bool, do_topquark_weights)
+  CLASS_MEMBER(HTTWeights, bool, do_tau_fake_weights)
   CLASS_MEMBER(HTTWeights, int, btag_mode)
   CLASS_MEMBER(HTTWeights, int, bfake_mode)
   CLASS_MEMBER(HTTWeights, std::string, ggh_mass)
@@ -50,6 +51,7 @@ class HTTWeights : public ModuleBase {
   mithep::TH2DAsymErr* MuonFakeRateHist_PtEta;
   mithep::TH2DAsymErr* ElectronFakeRateHist_PtEta;
   BTagWeight btag_weight;
+  TF1 *tau_fake_weights_;
 
   double f0_,f1_,f2_,f3_,f4_,n_inc_,n1_,n2_,n3_,n4_,w0_,w1_,w2_,w3_,w4_;
   double zf0_,zf1_,zf2_,zf3_,zf4_,zn_inc_,zn1_,zn2_,zn3_,zn4_,zw0_,zw1_,zw2_,zw3_,zw4_;

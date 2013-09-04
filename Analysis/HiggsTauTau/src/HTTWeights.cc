@@ -40,6 +40,7 @@ namespace ic {
     ggh_hist_down_      = nullptr;
     do_tau_mode_scale_  = false;
     do_topquark_weights_ = false;
+    do_tau_fake_weights_ = false;
   }
 
   HTTWeights::~HTTWeights() {
@@ -69,6 +70,11 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "btag_mode"           % btag_mode_;
     std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
     std::cout << boost::format(param_fmt()) % "do_topquark_weights" % do_topquark_weights_;
+    std::cout << boost::format(param_fmt()) % "do_tau_fake_weights" % do_tau_fake_weights_;
+
+    if (do_tau_fake_weights_) {
+     tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
+    }
 
     if (ggh_mass_ != "" && mc_ == mc::fall11_42X) {
       // if (ggh_mass_ == "90" || ggh_mass_ == "95" ||
@@ -207,6 +213,13 @@ namespace ic {
         }
       }    
       eventInfo->set_weight("topquark_weight", top_wt);
+    }
+    
+    if (do_tau_fake_weights_) {
+      Tau const* tau = dynamic_cast<Tau const*>(dilepton[0]->GetCandidate("lepton2"));
+      double fake_pt = tau->pt() < 200. ? tau->pt() : 200.;
+      double fake_weight = tau_fake_weights_->Eval(fake_pt);
+      eventInfo->set_weight("tau_fake_weight",fake_weight);
     }
 
     if (do_top_factors_) {
