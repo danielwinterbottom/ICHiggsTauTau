@@ -400,18 +400,24 @@ if options.scheme == 'new_mssm' or options.scheme == 'new_mssm_fb':
   extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<30."'
   scheme_et = [
-    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_inclusive_'+COM+'TeV"')),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  (
-    ' --syst_qcd_shape="CMS_htt_QCDShape_etau_nobtag_'+COM+'TeV:50:1.0:0.10"')),
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_nobtag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_nobtag_'+COM+'TeV:50:1.0:0.10"')),
     ("12",   "btag",        "btag",       BINS,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_btag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_btag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_mt = [
-    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
+    ("8",    "inclusive",   "inclusive",  BINS_FINE, (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_inclusive_'+COM+'TeV"')),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_nobtag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_nobtag_'+COM+'TeV:50:1.1:0.10"')),
     ("12",   "btag",        "btag",       BINS,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_btag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_btag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
   ]

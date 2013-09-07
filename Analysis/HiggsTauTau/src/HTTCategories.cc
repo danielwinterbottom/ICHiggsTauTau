@@ -235,6 +235,10 @@ namespace ic {
     wt_ = eventInfo->total_weight();
     wt_ggh_pt_up_ = 1.0;
     wt_ggh_pt_down_ = 1.0;
+    wt_tau_fake_up_ = 1.0;
+    wt_tau_fake_down_ = 1.0;
+    wt_tquark_up_ = 1.0;
+    wt_tquark_down_ = 1.0;
     if (event->Exists("wt_ggh_pt_up"))   wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down")) wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
     if (event->Exists("wt_tau_fake_up"))   wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");

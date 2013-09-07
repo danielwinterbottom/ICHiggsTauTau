@@ -39,6 +39,7 @@ int main(int argc, char* argv[]){
 	string syst_fakes_shape;
 	string syst_ggh_pt;
 	string syst_tquark;
+	string syst_w_fake_rate;
 	string syst_zl_shift;
   string syst_fakes_os_ss_shape;
 	string add_sm_background;
@@ -87,6 +88,7 @@ int main(int argc, char* argv[]){
 	  ("syst_fakes_os_ss_shape",  po::value<string>(&syst_fakes_os_ss_shape)->default_value(""))
 	  ("syst_ggh_pt",    			    po::value<string>(&syst_ggh_pt)->default_value(""))
 	  ("syst_tquark",    			    po::value<string>(&syst_tquark)->default_value(""))
+	  ("syst_w_fake_rate",   	    po::value<string>(&syst_w_fake_rate)->default_value(""))
 	  ("syst_zl_shift",    		    po::value<string>(&syst_zl_shift)->default_value(""))
 	  ("add_sm_background",       po::value<string>(&add_sm_background)->default_value(""))
 	  ("sub_ztt_top_frac",        po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
@@ -269,12 +271,23 @@ int main(int argc, char* argv[]){
 	if (syst_tquark != "") {
 		std::cout << "[HiggsTauTauPlot4] Adding top-quark weight systematic..." << std::endl;
     for (unsigned j = 0; j < vars.size(); ++j) {
-		  hmap["ttbar_"+syst_tquark+"Up"+vars_postfix[j]] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_up");
-		  hmap["ttbar_"+syst_tquark+"Down"+vars_postfix[j]] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_down");
+		  hmap["ttbar"+vars_postfix[j]+"_"+syst_tquark+"Up"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_up");
+		  hmap["ttbar"+vars_postfix[j]+"_"+syst_tquark+"Down"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_down");
     }
 	}
 
-	vector<pair<string,string>> systematics;
+  // ************************************************************************
+	// W+jets fake-rate Reweighting
+	// ************************************************************************
+	if (syst_w_fake_rate != "") {
+		std::cout << "[HiggsTauTauPlot4] Adding W+jets fake-rate systematic..." << std::endl;
+    for (unsigned j = 0; j < vars.size(); ++j) {
+		  hmap["W_"+syst_w_fake_rate+"Up"+vars_postfix[j]] = ana.GenerateW(method, vars[j], sel, cat, "wt*wt_tau_fake_up");
+		  hmap["W_"+syst_w_fake_rate+"Down"+vars_postfix[j]] = ana.GenerateW(method, vars[j], sel, cat, "wt*wt_tau_fake_down");
+    }
+	}
+	
+  vector<pair<string,string>> systematics;
 
 	// ************************************************************************
 	// Add tau/electron energy scale systematics
