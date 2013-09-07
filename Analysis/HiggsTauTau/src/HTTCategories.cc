@@ -53,6 +53,10 @@ namespace ic {
         outtree_->Branch("wt",                &wt_);
         outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
         outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
+        outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
+        outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
+        outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
+        outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
         outtree_->Branch("os",                &os_);
         outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("m_sv",              &m_sv_);
@@ -233,6 +237,10 @@ namespace ic {
     wt_ggh_pt_down_ = 1.0;
     if (event->Exists("wt_ggh_pt_up"))   wt_ggh_pt_up_   = event->Get<double>("wt_ggh_pt_up");
     if (event->Exists("wt_ggh_pt_down")) wt_ggh_pt_down_ = event->Get<double>("wt_ggh_pt_down");
+    if (event->Exists("wt_tau_fake_up"))   wt_tau_fake_up_   = event->Get<double>("wt_tau_fake_up");
+    if (event->Exists("wt_tau_fake_down")) wt_tau_fake_down_ = event->Get<double>("wt_tau_fake_down");
+    if (event->Exists("wt_tquark_up"))   wt_tquark_up_   = event->Get<double>("wt_tquark_up");
+    if (event->Exists("wt_tquark_down")) wt_tquark_down_ = event->Get<double>("wt_tquark_down");
 
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);

@@ -613,12 +613,15 @@ namespace ic {
         qcd_hist = this->GetShapeViaFakesMethod(var, sel, this->ResolveAlias("vbf_no_cjv"), wt);
         if (verbosity_) std::cout << "FR Shape: " << boost::format("%s,'%s','%s','%s'\n")
           % "               " % sel % this->ResolveAlias("vbf_no_cjv") % wt;
-     } else {
-      qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
-      qcd_hist = this->GetShape(var, "Data", ss_sel, cat, wt);
-      if (verbosity_) std::cout << "SS Shape: " << boost::format("%s,'%s','%s','%s'\n")
-        % "Data" % ss_sel % cat % wt;
-     }
+      } else {
+       qcd_norm = ValueProduct(qcd_dilepton, qcd_eff);
+       qcd_hist = this->GetShape(var, "Data", ss_sel, cat, wt);
+       if (verbosity_) std::cout << "SS Shape: " << boost::format("%s,'%s','%s','%s'\n")
+         % "Data" % ss_sel % cat % wt;
+      }
+      if (method == 12) {
+        qcd_norm = ValueProduct(qcd_norm, std::make_pair(0.67,0.));
+      }
     }
     SetNorm(&qcd_hist, qcd_norm.first);
     return std::make_pair(qcd_hist, qcd_norm);
@@ -815,8 +818,10 @@ namespace ic {
 
   std::string HTTAnalysis::BuildVarString(std::string const& variable) {
     std::string full_variable = variable;
-    if (full_variable.find("(") != full_variable.npos) {
-      full_variable.insert(full_variable.find("("),">>htemp");
+    if (full_variable.find_last_of("(") != full_variable.npos 
+        && full_variable.find("[") == full_variable.npos
+        && full_variable.find("]") == full_variable.npos) {
+      full_variable.insert(full_variable.find_last_of("("),">>htemp");
     }
     return full_variable;
   }

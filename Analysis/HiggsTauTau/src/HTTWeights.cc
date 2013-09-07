@@ -41,6 +41,7 @@ namespace ic {
     do_tau_mode_scale_  = false;
     do_topquark_weights_ = false;
     do_tau_fake_weights_ = false;
+    do_tt_muon_weights_ = false;
   }
 
   HTTWeights::~HTTWeights() {
@@ -201,17 +202,22 @@ namespace ic {
 
     if (do_topquark_weights_) {
       double top_wt = 1.0;
+      double top_wt_up = 1.0;
+      double top_wt_down = 1.0;
       std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
       for (unsigned i = 0; i < parts.size(); ++i) {
         if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
           double pt = parts[i]->pt();
-          if (pt < 463.12) {
-            top_wt *= (1.18246+(2.10061E-6*pt*(pt-2*463.312)));
-          } else {
-            top_wt *= 0.732;
-          }
+          pt = std::min(pt, 400.);
+          if (mc_ == mc::summer12_53X) top_wt *= std::exp(0.156-0.00137*pt);
+          if (mc_ == mc::fall11_42X)   top_wt *= std::exp(0.199-0.00166*pt);
         }
-      }    
+      }
+      top_wt = std::sqrt(top_wt);
+      top_wt_up = top_wt * top_wt;
+      top_wt_down = 1.0;
+      event->Add("wt_tquark_up", top_wt_up / top_wt);
+      event->Add("wt_tquark_down", top_wt_down / top_wt);
       eventInfo->set_weight("topquark_weight", top_wt);
     }
     
@@ -220,6 +226,10 @@ namespace ic {
       double fake_pt = tau->pt() < 200. ? tau->pt() : 200.;
       double fake_weight = tau_fake_weights_->Eval(fake_pt);
       eventInfo->set_weight("tau_fake_weight",fake_weight);
+      double weight_up   = (fake_weight + 0.5*(1.0-fake_weight)) / fake_weight;
+      double weight_down = (fake_weight - 0.5*(1.0-fake_weight)) / fake_weight;
+      event->Add("wt_tau_fake_up", weight_up);
+      event->Add("wt_tau_fake_down", weight_down);
     }
 
     if (do_top_factors_) {
@@ -1226,6 +1236,62 @@ namespace ic {
       }
     }
     eventInfo->set_weight("lepton", weight);
+
+
+    if (do_tt_muon_weights_) {
+      Muon const* muon = dynamic_cast<Muon const*>(dilepton[0]->GetCandidate("lepton2"));
+      double m_pt = muon->pt();
+      double m_eta = fabs(muon->eta());
+      double m_wt = 1.0;
+      /*
+      if (m_eta < 0.4) {
+        if (m_pt > 20.0 && m_pt <= 40.0)  m_wt = 1.005;
+        if (m_pt > 40.0 && m_pt <= 60.0)  m_wt = 0.982;
+        if (m_pt > 60.0 && m_pt <= 80.0)  m_wt = 0.933;
+        if (m_pt > 80.0 && m_pt <= 100.0) m_wt = 0.893;
+        if (m_pt > 100.0)                 m_wt = 0.939;
+      } else if (m_eta >= 0.4 && m_eta < 1.2) {
+        if (m_pt > 20.0 && m_pt <= 40.0)  m_wt = 1.009;
+        if (m_pt > 40.0 && m_pt <= 60.0)  m_wt = 1.061;
+        if (m_pt > 60.0 && m_pt <= 80.0)  m_wt = 1.054;
+        if (m_pt > 80.0 && m_pt <= 100.0) m_wt = 1.144;
+        if (m_pt > 100.0)                 m_wt = 1.206;
+      } else if (m_eta >= 1.2 && m_eta < 1.6) {
+        if (m_pt > 20.0 && m_pt <= 40.0)  m_wt = 0.987;
+        if (m_pt > 40.0 && m_pt <= 60.0)  m_wt = 1.074;
+        if (m_pt > 60.0 && m_pt <= 80.0)  m_wt = 1.073;
+        if (m_pt > 80.0 && m_pt <= 100.0) m_wt = 1.149;
+        if (m_pt > 100.0)                 m_wt = 1.443;
+      } else {
+        if (m_pt > 20.0 && m_pt <= 40.0)  m_wt = 1.075;
+        if (m_pt > 40.0 && m_pt <= 60.0)  m_wt = 1.090;
+        if (m_pt > 60.0 && m_pt <= 80.0)  m_wt = 1.172;
+        if (m_pt > 80.0 && m_pt <= 100.0) m_wt = 1.297;
+        if (m_pt > 100.0)                 m_wt = 1.603;
+      }
+      */
+      if (m_eta < 0.4) {
+        if (m_pt > 20.0 && m_pt <= 30.0)  m_wt = 1.027;
+        if (m_pt > 30.0 && m_pt <= 50.0)  m_wt = 0.932;
+        if (m_pt > 50.0 && m_pt <= 75.0)  m_wt = 0.889;
+        if (m_pt > 75.0 && m_pt <= 100.0) m_wt = 0.913;
+        if (m_pt > 100.0)                 m_wt = 0.913;
+      } else if (m_eta >= 0.4 && m_eta < 0.8) {
+        if (m_pt > 20.0 && m_pt <= 30.0)  m_wt = 1.068;
+        if (m_pt > 30.0 && m_pt <= 50.0)  m_wt = 0.950;
+        if (m_pt > 50.0 && m_pt <= 75.0)  m_wt = 1.060;
+        if (m_pt > 75.0 && m_pt <= 100.0) m_wt = 1.009;
+        if (m_pt > 100.0)                 m_wt = 1.009;
+      } else if (m_eta >= 0.8) {
+        if (m_pt > 20.0 && m_pt <= 30.0)  m_wt = 0.954;
+        if (m_pt > 30.0 && m_pt <= 50.0)  m_wt = 1.068;
+        if (m_pt > 50.0 && m_pt <= 75.0)  m_wt = 1.060;
+        if (m_pt > 75.0 && m_pt <= 100.0) m_wt = 1.056;
+        if (m_pt > 100.0)                 m_wt = 1.056;
+      }
+      eventInfo->set_weight("tt_muon_weight", m_wt);
+    }
+
 
     if (do_emu_e_fakerates_) {
       Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));

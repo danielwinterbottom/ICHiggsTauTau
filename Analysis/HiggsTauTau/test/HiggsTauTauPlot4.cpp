@@ -38,7 +38,9 @@ int main(int argc, char* argv[]){
 	string syst_qcd_shape;
 	string syst_fakes_shape;
 	string syst_ggh_pt;
+	string syst_tquark;
 	string syst_zl_shift;
+  string syst_fakes_os_ss_shape;
 	string add_sm_background;
 	double sub_ztt_top_frac;
 	double shift_tscale;
@@ -60,42 +62,44 @@ int main(int argc, char* argv[]){
   po::notify(vm);
   po::options_description config("Configuration");
   config.add_options()
-  	("paramfile",           po::value<string>(&paramfile)->required())
-  	("folder",              po::value<string>(&folder)->required())
-  	("channel",             po::value<string>(&channel_str)->required())
-  	("method",           		po::value<unsigned>(&method)->required())
-	  ("var",              		po::value<string>(&var)->required())
-	  ("cat",             		po::value<string>(&cat)->default_value(""))
-	  ("is_2012",             po::value<bool>(&is_2012)->required())
-	  ("verbosity",           po::value<unsigned>(&verbosity)->default_value(0))
-	  ("is_paper",            po::value<bool>(&is_paper)->default_value(false))
-	  ("do_ss", 	            po::value<bool>(&do_ss)->default_value(false))
-	  ("datacard",            po::value<string>(&datacard)->default_value(""))
-	  ("set_alias",           po::value<vector<string>>(&set_alias)->composing())
-	  ("sm_masses",           po::value<string>(&sm_masses_str)->default_value(""))
-	  ("hww_masses",          po::value<string>(&hww_masses_str)->default_value(""))
-	  ("mssm_masses",         po::value<string>(&mssm_masses_str)->default_value(""))
-	  ("syst_tau_scale",      po::value<string>(&syst_tau_scale)->default_value(""))
-	  ("syst_eff_b",      		po::value<string>(&syst_eff_b)->default_value(""))
-	  ("syst_fake_b",      		po::value<string>(&syst_fake_b)->default_value(""))
-	  ("syst_scale_j",        po::value<string>(&syst_scale_j)->default_value(""))
-	  ("syst_l1met",          po::value<string>(&syst_l1met)->default_value(""))
-	  ("syst_qcd_shape",      po::value<string>(&syst_qcd_shape)->default_value(""))
-	  ("syst_fakes_shape",    po::value<string>(&syst_fakes_shape)->default_value(""))
-	  ("syst_ggh_pt",    			po::value<string>(&syst_ggh_pt)->default_value(""))
-	  ("syst_zl_shift",    		po::value<string>(&syst_zl_shift)->default_value(""))
-	  ("add_sm_background",   po::value<string>(&add_sm_background)->default_value(""))
-	  ("sub_ztt_top_frac",    po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
-	  ("shift_tscale",    		po::value<double>(&shift_tscale)->default_value(0.0))
-	  ("fix_empty_bins",   		po::value<string>(&fix_empty_bins)->default_value(""))
-	  ("fix_empty_hists",   	po::value<string>(&fix_empty_hists)->default_value(""))
-	  ("fix_negative_bins",  	po::value<string>(&fix_negative_bins)->default_value(""))
-	  ("add_extra_binning",   po::value<string>(&add_extra_binning)->default_value(""))
-	  ("shift_backgrounds",   po::value<string>(&shift_backgrounds)->default_value(""))
-	  ("w_binned",            po::value<string>(&w_binned)->default_value(""))
-	  ("auto_titles",   			po::value<bool>(&auto_titles)->default_value(true))
-	  ("check_ztt_top_frac",  po::value<bool>(&check_ztt_top_frac)->default_value(false))
-	  ("qcd_os_ss_factor",  	po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
+  	("paramfile",               po::value<string>(&paramfile)->required())
+  	("folder",                  po::value<string>(&folder)->required())
+  	("channel",                 po::value<string>(&channel_str)->required())
+  	("method",           		    po::value<unsigned>(&method)->required())
+	  ("var",              		    po::value<string>(&var)->required())
+	  ("cat",             		    po::value<string>(&cat)->default_value(""))
+	  ("is_2012",                 po::value<bool>(&is_2012)->required())
+	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
+	  ("is_paper",                po::value<bool>(&is_paper)->default_value(false))
+	  ("do_ss", 	                po::value<bool>(&do_ss)->default_value(false))
+	  ("datacard",                po::value<string>(&datacard)->default_value(""))
+	  ("set_alias",               po::value<vector<string>>(&set_alias)->composing())
+	  ("sm_masses",               po::value<string>(&sm_masses_str)->default_value(""))
+	  ("hww_masses",              po::value<string>(&hww_masses_str)->default_value(""))
+	  ("mssm_masses",             po::value<string>(&mssm_masses_str)->default_value(""))
+	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
+	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
+	  ("syst_fake_b",      		    po::value<string>(&syst_fake_b)->default_value(""))
+	  ("syst_scale_j",            po::value<string>(&syst_scale_j)->default_value(""))
+	  ("syst_l1met",              po::value<string>(&syst_l1met)->default_value(""))
+	  ("syst_qcd_shape",          po::value<string>(&syst_qcd_shape)->default_value(""))
+	  ("syst_fakes_shape",        po::value<string>(&syst_fakes_shape)->default_value(""))
+	  ("syst_fakes_os_ss_shape",  po::value<string>(&syst_fakes_os_ss_shape)->default_value(""))
+	  ("syst_ggh_pt",    			    po::value<string>(&syst_ggh_pt)->default_value(""))
+	  ("syst_tquark",    			    po::value<string>(&syst_tquark)->default_value(""))
+	  ("syst_zl_shift",    		    po::value<string>(&syst_zl_shift)->default_value(""))
+	  ("add_sm_background",       po::value<string>(&add_sm_background)->default_value(""))
+	  ("sub_ztt_top_frac",        po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
+	  ("shift_tscale",    		    po::value<double>(&shift_tscale)->default_value(0.0))
+	  ("fix_empty_bins",   		    po::value<string>(&fix_empty_bins)->default_value(""))
+	  ("fix_empty_hists",   	    po::value<string>(&fix_empty_hists)->default_value(""))
+	  ("fix_negative_bins",  	    po::value<string>(&fix_negative_bins)->default_value(""))
+	  ("add_extra_binning",       po::value<string>(&add_extra_binning)->default_value(""))
+	  ("shift_backgrounds",       po::value<string>(&shift_backgrounds)->default_value(""))
+	  ("w_binned",                po::value<string>(&w_binned)->default_value(""))
+	  ("auto_titles",   			    po::value<bool>(&auto_titles)->default_value(true))
+	  ("check_ztt_top_frac",      po::value<bool>(&check_ztt_top_frac)->default_value(false))
+	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
 
 
 	HTTPlot plot;
@@ -204,7 +208,7 @@ int main(int argc, char* argv[]){
 			hmap["ggH"+m+"_"+syst_ggh_pt+"Down"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, var, sel, cat, "wt*wt_ggh_pt_down", 1.0);
 		}
 	}
-
+	
 	// ************************************************************************
 	// Additional Binning
 	// ************************************************************************
@@ -224,6 +228,12 @@ int main(int argc, char* argv[]){
 			ana.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 		}
 	}
+  std::vector<std::string> vars = { var };
+  std::vector<std::string> vars_postfix = { "" };
+  if (extra_binning_range != "") {
+    vars.push_back(reduced_var+extra_binning_range);
+    vars_postfix.push_back(extra_binning_postfix);
+  }
 	
   // ************************************************************************
 	// Alternative W
@@ -232,14 +242,7 @@ int main(int argc, char* argv[]){
   if (w_binned != "") {
     std::vector<std::string> w_bins;
     boost::split(w_bins, w_binned, boost::is_any_of(","));
-    std::vector<std::string> vars = { var };
-    std::vector<std::string> vars_postfix = { "" };
-    if (extra_binning_range != "") {
-      vars.push_back(reduced_var+extra_binning_range);
-      vars_postfix.push_back(extra_binning_postfix);
-    }
     for (unsigned j = 0; j < vars.size(); ++j) {
-
       auto new_w = hmap["W"+vars_postfix[j]];
       if (w_bins.size() >= 2) {
         for (unsigned i = 0; i < (w_bins.size()-1); ++i) {
@@ -258,6 +261,18 @@ int main(int argc, char* argv[]){
       hmap["W"+vars_postfix[j]] = new_w;
     }
   }
+
+  
+  // ************************************************************************
+	// top-quark pT Reweighting
+	// ************************************************************************
+	if (syst_tquark != "") {
+		std::cout << "[HiggsTauTauPlot4] Adding top-quark weight systematic..." << std::endl;
+    for (unsigned j = 0; j < vars.size(); ++j) {
+		  hmap["ttbar_"+syst_tquark+"Up"+vars_postfix[j]] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_up");
+		  hmap["ttbar_"+syst_tquark+"Down"+vars_postfix[j]] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_down");
+    }
+	}
 
 	vector<pair<string,string>> systematics;
 
@@ -392,48 +407,56 @@ int main(int argc, char* argv[]){
 			std::cout << boost::format(param_fmt()) % "xmax" % syst_qcd_xmax;
 			std::cout << boost::format(param_fmt()) % "central" % syst_qcd_central;
 			std::cout << boost::format(param_fmt()) % "uncertainty" % syst_qcd_band;
-		  TH1F h1 = hmap["QCD"].first;
-		  TH1F h2 = hmap["QCD"].first;
-		  TH1F h3 = hmap["QCD"].first;
-		  float x, y;
-		  for(int i=1;i<h1.GetNbinsX();++i){
-		    x = h1.GetXaxis()->GetBinCenter(i);
-		    if(x < syst_qcd_xmax){
-		      y = h1.GetBinContent(i);
-		      h1.SetBinContent(i,y*syst_qcd_central);
-		      h2.SetBinContent(i,y*(syst_qcd_central+syst_qcd_band));
-		      h3.SetBinContent(i,y*(syst_qcd_central-syst_qcd_band));
-		    }  
-		  }
-		  SetNorm(&h1, hmap["QCD"].second.first); // this isn't exactly readable code
-		  SetNorm(&h2, hmap["QCD"].second.first);
-		  SetNorm(&h3, hmap["QCD"].second.first);
-		  hmap["QCD"].first = h1;
-		  hmap["QCD_"+syst_qcd_name+"Up"].first = h2;
-		  hmap["QCD_"+syst_qcd_name+"Down"].first = h3;
-      if (extra_binning_postfix != "") {
-		    TH1F h1f = hmap["QCD"+extra_binning_postfix].first;
-		    TH1F h2f = hmap["QCD"+extra_binning_postfix].first;
-		    TH1F h3f = hmap["QCD"+extra_binning_postfix].first;
+		  std::string qcd_label = (channel_str == "em") ? "Fakes" : "QCD";
+      for (unsigned j = 0; j < vars.size(); ++j) {
+        TH1F h1 = hmap[qcd_label+vars_postfix[j]].first;
+        TH1F h2 = hmap[qcd_label+vars_postfix[j]].first;
+        TH1F h3 = hmap[qcd_label+vars_postfix[j]].first;
         float x, y;
-        for(int i=1;i<h1f.GetNbinsX();++i){
-          x = h1f.GetXaxis()->GetBinCenter(i);
+        for(int i=1;i<h1.GetNbinsX();++i){
+          x = h1.GetXaxis()->GetBinCenter(i);
           if(x < syst_qcd_xmax){
-            y = h1f.GetBinContent(i);
-            h1f.SetBinContent(i,y*syst_qcd_central);
-            h2f.SetBinContent(i,y*(syst_qcd_central+syst_qcd_band));
-            h3f.SetBinContent(i,y*(syst_qcd_central-syst_qcd_band));
+            y = h1.GetBinContent(i);
+            h1.SetBinContent(i,y*syst_qcd_central);
+            h2.SetBinContent(i,y*(syst_qcd_central+syst_qcd_band));
+            h3.SetBinContent(i,y*(syst_qcd_central-syst_qcd_band));
           }  
         }
-        SetNorm(&h1f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
-        SetNorm(&h2f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
-        SetNorm(&h3f, hmap["QCD"+extra_binning_postfix].second.first); // this isn't exactly readable code
-        hmap["QCD"+extra_binning_postfix].first = h1f;
-        hmap["QCD_"+syst_qcd_name+"Up"+extra_binning_postfix].first = h2f;
-        hmap["QCD_"+syst_qcd_name+"Down"+extra_binning_postfix].first = h3f;
+        SetNorm(&h1, hmap[qcd_label+vars_postfix[j]].second.first); // this isn't exactly readable code
+        SetNorm(&h2, hmap[qcd_label+vars_postfix[j]].second.first);
+        SetNorm(&h3, hmap[qcd_label+vars_postfix[j]].second.first);
+        hmap[qcd_label+vars_postfix[j]].first = h1;
+        hmap[qcd_label+"_"+syst_qcd_name+"Up"+vars_postfix[j]].first = h2;
+        hmap[qcd_label+"_"+syst_qcd_name+"Down"+vars_postfix[j]].first = h3;
       }
 		}
 	}
+	// ************************************************************************
+	// Apply special e-mu OS/SS fakes correction 
+	// ************************************************************************
+	if (syst_fakes_os_ss_shape != "") {
+		  std::string qcd_label = (channel_str == "em") ? "Fakes" : "QCD";
+      for (unsigned j = 0; j < vars.size(); ++j) {
+        TH1F weights = ic::GetFromTFile<TH1F>("data/scale_factors/OS_SS_weights.root","/","OSoverSS_msv_nobtag_ratio");
+        TH1F h1 = hmap[qcd_label+vars_postfix[j]].first;
+        TH1F h2 = hmap[qcd_label+vars_postfix[j]].first;
+        TH1F h3 = hmap[qcd_label+vars_postfix[j]].first;
+        float x, y;
+        for(int i=1;i<h1.GetNbinsX();++i){
+          x = h1.GetXaxis()->GetBinCenter(i);
+          y = h1.GetBinContent(i);
+          float corr = weights.GetBinContent(weights.FindBin(x));
+          h1.SetBinContent(i, y*corr);
+          h2.SetBinContent(i, y*std::max(2.0*corr - 1.0, 0.0));
+        }
+        SetNorm(&h1, hmap[qcd_label+vars_postfix[j]].second.first); // this isn't exactly readable code
+        SetNorm(&h2, hmap[qcd_label+vars_postfix[j]].second.first);
+        SetNorm(&h3, hmap[qcd_label+vars_postfix[j]].second.first);
+        hmap[qcd_label+vars_postfix[j]].first = h1;
+        hmap[qcd_label+"_"+syst_fakes_os_ss_shape+"Up"+vars_postfix[j]].first = h2;
+        hmap[qcd_label+"_"+syst_fakes_os_ss_shape+"Down"+vars_postfix[j]].first = h3;
+      }
+  }
 
 	// ************************************************************************
 	// Generate ZL mass shifted sytematic shapes

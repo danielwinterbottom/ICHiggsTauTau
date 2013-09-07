@@ -74,8 +74,8 @@ extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
 
 #### Apply these options for specific channels
 extra_channel = {
-  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD.*" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
-  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD.*" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
+  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
   "mtmet" : ' --extra_pad=1.2 --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_soft_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes"'
 }
@@ -417,9 +417,18 @@ if options.scheme == 'new_mssm' or options.scheme == 'new_mssm_fb':
   ]
   scheme_mtmet = scheme_mt
   scheme_em = [
-    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("11",   "nobtag",      "nobtag",     BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
-    ("12",   "btag",        "btag",       BINS,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV" --sub_ztt_top_frac=0.015') 
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
+      ' --syst_tquark="CMS_htt_TTbarShape_em_inclusive_'+COM+'TeV"'
+      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
+    ("11",   "nobtag",      "nobtag",     BINS_FINE,  (
+      ' --syst_tquark="CMS_htt_TTbarShape_em_nobtag_'+COM+'TeV"'
+      ' --syst_fakes_os_ss_shape="CMS_htt_FakeShape_em_nobtag_'+COM+'TeV"'
+      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
+    ("12",   "btag",        "btag",       BINS,  (
+      ' --syst_tquark="CMS_htt_TTbarShape_em_btag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_FakeShape_em_btag_'+COM+'TeV:50:1.1:0.10"'
+      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
+      ' --sub_ztt_top_frac=0.015'))
   ]
   bkg_schemes = {
     'et' : 'et_default',
