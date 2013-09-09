@@ -64,6 +64,7 @@ lOTree->Branch("idweight_1"  ,&lIdweight_1     ,"idweight_1/F");//Effieiency Sca
 lOTree->Branch("idweight_2"  ,&lIdweight_2     ,"idweight_2/F");//Effieiency Scale factor (all components multiplied in)
 lOTree->Branch("isoweight_1"  ,&lIsoweight_1     ,"isoweight_1/F");//Effieiency Scale factor (all components multiplied in)
 lOTree->Branch("isoweight_2"  ,&lIsoweight_2     ,"isoweight_2/F");//Effieiency Scale factor (all components multiplied in)
+lOTree->Branch("fakeweight"  ,&lFakeWeight     ,"lFakeWeight/F");//Effieiency Scale factor (all components multiplied in)
 
 lOTree->Branch("effweight"  ,&lEffWeight     ,"lEffWeight/F");//Effieiency Scale factor (all components multiplied in)
 lOTree->Branch("weight"     ,&lWeight        ,"lWeight/F"  );//mcweight*puweight*effweight
@@ -267,6 +268,7 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
     if (event->Exists("isoweight_1")) lIsoweight_1 = event->Get<double>("isoweight_1");
     if (event->Exists("isoweight_2")) lIsoweight_2 = event->Get<double>("isoweight_2");
     if (eventInfo->weight_defined("lepton")) lEffWeight = eventInfo->weight("lepton"); 
+    if (eventInfo->weight_defined("tau_fake_weight")) lFakeWeight = eventInfo->weight("tau_fake_weight"); 
     if (eventInfo->weight_defined("tau_mode_scale")) lEffWeight *= eventInfo->weight("tau_mode_scale");
     lWeight = eventInfo->total_weight();
 

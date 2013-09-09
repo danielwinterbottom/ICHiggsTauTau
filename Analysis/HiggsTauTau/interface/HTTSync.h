@@ -40,6 +40,7 @@ class HTTSync : public ModuleBase {
   //Event Weights
   float lMCWeight;
   float lPUWeight;
+  float lFakeWeight;
 
   float lTrigweight_1;
   float lTrigweight_2;
