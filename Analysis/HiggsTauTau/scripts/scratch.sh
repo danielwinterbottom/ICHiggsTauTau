@@ -577,6 +577,47 @@ htt_em.inputs-sm-8TeV.root
 
 
  ./bin/PlotCompare  \
+ -p "nominal:nominal:htt_em.inputs-mssm-8TeV-ttweight-sf.root:/emu_nobtag:ttbar:-1:0:1" \
+ -p "up:up:htt_em.inputs-mssm-8TeV-ttweight-sf.root:/emu_nobtag:ttbar_CMS_b_eff_8TeVUp:-1:0:4" \
+ -p "down:down:htt_em.inputs-mssm-8TeV-ttweight-sf.root:/emu_nobtag:ttbar_CMS_b_eff_8TeVDown:-1:0:1" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=true \
+ --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
+ --title_left="emu_nobtag, 8TeV, TT" \
+ --ratios="up/nominal/4:down/nominal/1" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="em_ttbar_8_8TeV_topweight.pdf"
+
+./bin/PlotCompare  \
+ -p "ttbar:ttbar:output/Paper_2012_Vegas/TTJetsFullLept_em_2012.root:/inclusive_os:m_sv_mssm_fine:-1:0:1" \
+ -p "single:single-top:output/Paper_2012_Vegas/T-tW_em_2012.root:/inclusive_os:m_sv_mssm_fine:-1:0:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=1  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=true \
+ --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
+ --title_left="emu_nobtag, 8TeV, TT" \
+ --ratios="single/ttbar/4" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="em_ttbar_vs_single.pdf"
+
+./bin/PlotCompare  \
+ -p "Default:Default:backup_def/WJetsToLNuSoup_mt_2012.root:/inclusive_os_sel:m_sv_mssm_fine:-1:0:1" \
+ -p "Weights:Weights:output/Paper_2012_Vegas/WJetsToLNuSoup_mt_2012.root:/inclusive_os_sel:m_sv_mssm_fine:-1:0:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=true --rebin=1 --norm_bins=true \
+ --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
+ --title_left="muTau, W+jets, 8TeV" \
+ --ratios="Weights/Default/4" --ratio_axis_label="Weighted/Default"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="mt_WJets_weight_effect.pdf"
+
+./bin/PlotCompare  \
+ -p "Default:Default:htt_mt.inputs-mssm-8TeV-mt30.root:/muTau_inclusive:QCD:-1:0:1" \
+ -p "Weights:Weights:htt_mt.inputs-mssm-8TeV-mt30-corr.root:/muTau_inclusive:QCD:-1:0:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=true --rebin=1 --norm_bins=true \
+ --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
+ --title_left="muTau, W+jets, 8TeV" \
+ --ratios="Weights/Default/4" --ratio_axis_label="Weighted/Default"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="mt_WJets_weight_effect_dc.pdf"
+
+ ./bin/PlotCompare  \
  -p "Default:Default:htt_et.inputs-mssm-8TeV.root:/eleTau_nobtag:W:-1:0:1" \
  -p "WBinned:Binned:htt_et.inputs-mssm-8TeV.root:/eleTau_nobtag:WBinned:-1:0:4" \
  --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label=" " \
@@ -589,14 +630,71 @@ htt_em.inputs-sm-8TeV.root
  ./bin/PrintPulls  --input1=mlfit-et-with-tail.txt --input2=mlfit-et-no-tail.txt \
  --splusb_1=0 --splusb_2=0 --filter_regex=".*_bin.*" --label1="Default" --label2="ExcludeLowMass"
 
-./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2012.cfg --channel=em --set_alias="sel:pzeta<-30" \
-  --method=8 --cat="n_bjets>0 && n_jets>1" --var="m_sv[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500]" --extra_pad=1.5  \
-  --x_axis_label="D_{#zeta} [GeV]" --datacard="inclusive" --log_y=true \
+
+
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=em --set_alias="sel:pzeta>-30" \
+  --method=8 --cat="n_jets>1 && n_bjets>0 && met>20 && pt_2>20 && pt_2<50" --var="TMath::Abs(eta_2)[0,0.4,0.8,2.1]" --x_axis_label="Muon |#eta|" \
+  --datacard="pt_20_50" --extra_pad=1.1 --norm_bins=true \
+  --background_scheme="em_default" --log_y=false --draw_ratio=true
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=em --set_alias="sel:pzeta>-30" \
+  --method=8 --cat="m_sv>300 && n_bjets>0 && n_jets>1" --var="eta_2(12,-3,3)" --x_axis_label="Muon Eta [GeV]" \
+  --datacard="btag_ctl" --extra_pad=1.1 --norm_bins=false \
+  --background_scheme="em_default" --log_y=false --draw_ratio=true
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2012.cfg --channel=em --set_alias="sel:pzeta>-30" \
+  --method=8 --cat="n_bjets==0 && mt_ll<20" --var="m_sv[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500]" --extra_pad=1.5  \
+  --x_axis_label="m_{#tau#tau} [GeV]" --datacard="inclusive" --log_y=true \
   --background_scheme="em_default" --draw_ratio=true --norm_bins=true
 
-./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2012.cfg --channel=em --set_alias="sel:1"   --method=8 --cat="n_bjets>=1 && m_sv>300" --var="pzeta(10,-200,200)" --extra_pad=1.5    --x_axis_label="D_{#zeta} [GeV]" --datacard="inclusive"   --background_scheme="em_default" --draw_ratio=true
+ ./bin/PlotCompare  \
+ -p "Default:Default:htt_em.inputs-mssm-8TeV-top_weight.root:/emu_nobtag:ttbar:-1:0:1" \
+ -p "Weights:Weights:htt_em.inputs-mssm-8TeV-top_weight_mu_weight.root:/emu_nobtag:ttbar:-1:0:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=true \
+ --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
+ --title_left="emu_nobtag, 8TeV, ttbar" \
+ --ratios="Weights/Default/1" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="em_TT_8_8TeV_weights.pdf"
+
+  ./bin/PlotCompare  \
+ -p "Default:Default:htt_em.inputs-mssm-8TeV-top_weight.root:/emu_nobtag:ttbar:-1:0:1" \
+ -p "Up:Up:htt_em.inputs-mssm-8TeV-top_weight.root:/emu_nobtag:ttbar_CMS_htt_TopQuark_emu_nobtag_8TeVUp:-1:0:4" \
+ -p "Down:Down:htt_em.inputs-mssm-8TeV-top_weight.root:/emu_nobtag:ttbar_CMS_htt_TopQuark_emu_nobtag_8TeVDown:-1:0:7" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=true \
+ --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
+ --title_left="emu_nobtag, 8TeV, ttbar" \
+ --ratios="Up/Default/4:Down/Default/7" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="em_TT_8_8TeV_weights.pdf"
 
 
-./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2012.cfg --auto_title=false --title_right="nobtag && m_sv[0,200]" --channel=mt   --method=8 --cat="n_bjets==0 && m_sv<200" --set_alias="sel:1" --var="mt_1(10,0,200)"   --x_axis_label="m_{T} [GeV]" --datacard="m_sv_0_200" --extra_pad=1.1    --background_scheme="mt_with_zmm" --draw_ratio=true
-./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2012.cfg --auto_title=false --title_right="nobtag && m_sv[200,400]" --channel=mt   --method=8 --cat="n_bjets==0 && m_sv>200 && m_sv<400" --set_alias="sel:1" --var="mt_1(10,0,200)"   --x_axis_label="m_{T} [GeV]" --datacard="m_sv_200_400" --extra_pad=1.1    --background_scheme="mt_with_zmm" --draw_ratio=true
-./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2012.cfg --auto_title=false --title_right="nobtag && m_sv[400,inf]" --channel=mt   --method=8 --cat="n_bjets==0 && m_sv>400" --set_alias="sel:1" --var="mt_1(10,0,200)"   --x_axis_label="m_{T} [GeV]" --datacard="m_sv_400_inf" --extra_pad=1.1    --background_scheme="mt_with_zmm" --draw_ratio=true
+
+
+### e-tau and mu-tau svfit mass
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2012.cfg --channel=et --set_alias="sel:mt_1>50" \
+  --method=8 --cat="inclusive" --var="m_sv[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500]" --extra_pad=1.5  \
+  --x_axis_label="m_{#tau#tau} [GeV]" --datacard="inclusive_mt50_weights" --log_y=true \
+  --background_scheme="et_default" --draw_ratio=true --norm_bins=true
+
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2012.cfg --channel=mt --set_alias="sel:mt_1>50" \
+  --method=8 --cat="inclusive" --var="m_sv[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500]" --extra_pad=1.5  \
+  --x_axis_label="m_{#tau#tau} [GeV]" --datacard="inclusive_mt50" --log_y=true \
+  --background_scheme="mt_with_zmm" --draw_ratio=true --norm_bins=true
+
+
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_mssm_2011.cfg --channel=et --set_alias="sel:mt_1>50"   \
+--method=8 --cat="inclusive" --var="pt_2(30,0,300)" --extra_pad=1.5 --log_y=true  \
+--x_axis_label="Tau p_{T} [GeV]" --datacard="inclusive_mt50"   --background_scheme="et_default" --draw_ratio=true
+
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2011.cfg --channel=mt \
+  --method=8 --cat="n_jets==0 && pt_2>20 && pt_2<=25. && n_bjets==0" --set_alias="sel:1" --var="mt_1(20,0,160)" \
+  --x_axis_label="m_{T} [GeV]" --datacard="0jet_low" --extra_pad=1.1 \
+  --background_scheme="mt_with_zmm"
+
+
+

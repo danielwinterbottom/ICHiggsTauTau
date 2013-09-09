@@ -1,20 +1,20 @@
 ## Examples
 
 mass=160
-et_input=output/mloutput_0313-hcp-tails/cmb
-mt_input=output/mloutput_0313-hcp-tails/cmb
-em_input=output/mloutput_0313-hcp-tails/cmb
-tt_input=output/mloutput_0313-hcp-tails/cmb
+et_input=LIMITS-130831-mssm-test/bbb-mlfit/et
+mt_input=LIMITS-130831-mssm-test/bbb-mlfit/mt
+em_input=LIMITS-130831-mssm-test/bbb-mlfit/em
+tt_input=LIMITS-130831-mssm-test/bbb-mlfit/tt
 et_scheme="et_default"
 mt_scheme="mt_with_zmm"
 em_scheme="em_default"
 tt_scheme="mt_default"
 
-blind="--blind=true --x_blind_min=100 --x_blind_max=2000"
+blind="--blind=false --x_blind_min=100 --x_blind_max=2000"
 cfg="scripts/new_plot_mssm_2012.cfg"
 
 POSTFITS=(
-	'false' 
+	'false'
 	'true'
 	)
 ERAS=(
@@ -29,7 +29,7 @@ ERA_LABELS=(
 	)
 
 XAXES=(
-	'--custom_x_axis_range=true --x_axis_min=0 --x_axis_max=350'
+	'--custom_x_axis_range=true --x_axis_min=0 --x_axis_max=350 '
 	'--custom_y_axis_min=true --y_axis_min=0.001 --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=2000'
 	)
 LOGS=(
