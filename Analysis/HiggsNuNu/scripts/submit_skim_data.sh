@@ -15,7 +15,7 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-CONFIG=scripts/DefaultConfigData.cfg
+CONFIG=scripts/DefaultConfig.cfg
 PRODUCTION=Apr04
 
 for METCUT in 130
@@ -23,10 +23,10 @@ for METCUT in 130
   for CHANNEL in taunu
     do
     JOBDIRPREFIX=jobs
-    JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
+    JOBDIR=$JOBDIRPREFIX/skim/$CHANNEL/MET$METCUT/
     OUTPUTPREFIX=output
-    OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
-    SKIMPREFIX=/vols/ssd00/cms/invskims/tau/
+    OUTPUTDIR=$OUTPUTPREFIX/skim/$CHANNEL/MET$METCUT/
+    SKIMPREFIX=/vols/ssd00/cms/amagnan/tauskims/
     SKIMDIR=$SKIMPREFIX/$CHANNEL/MET$METCUT/
       
     echo "Config file: $CONFIG"
@@ -67,7 +67,7 @@ for METCUT in 130
 	echo "JOB name = $JOB"
 	
 	$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --channel=$CHANNEL --do_skim=1 --skim_path=$SKIMDIR/$FILESTR/ &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	#$JOBSUBMIT $JOBDIR/$JOB.sh
+	$JOBSUBMIT $JOBDIR/$JOB.sh
 	
 	
       done

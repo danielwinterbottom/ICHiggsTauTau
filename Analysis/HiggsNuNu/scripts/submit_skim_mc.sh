@@ -22,10 +22,10 @@ for METCUT in 130 #0 130
     do
     
       JOBDIRPREFIX=jobs
-      JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
+      JOBDIR=$JOBDIRPREFIX/skim/$CHANNEL/MET$METCUT/
       OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
-      OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
-      SKIMPREFIX=/vols/ssd00/cms/invskims/tau/
+      OUTPUTDIR=$OUTPUTPREFIX/skim/$CHANNEL/MET$METCUT/
+      SKIMPREFIX=/vols/ssd00/cms/amagnan/tauskims/
       SKIMDIR=$SKIMPREFIX/$CHANNEL/MET$METCUT/
  
       echo "Config file: $CONFIG"
@@ -75,11 +75,11 @@ for METCUT in 130 #0 130
 		mkdir -p $SKIMDIR/$FILESTR/$FLAVOUR/
 
 		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --channel=$CHANNEL --wstream=$FLAVOUR --do_skim=1 --skim_path=$SKIMDIR/$FILESTR/$FLAVOUR/ &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
-                #$JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
+                $JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
 	      done
 	  else  
 	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --channel=$CHANNEL --do_skim=1 --skim_path=$SKIMDIR/$FILESTR/ &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	      #$JOBSUBMIT $JOBDIR/$JOB.sh
+	      $JOBSUBMIT $JOBDIR/$JOB.sh
 	  fi
 	  rm tmp.txt tmp2.txt
 
@@ -131,17 +131,15 @@ for METCUT in 130 #0 130
 		mkdir -p $SKIMDIR/$FILESTR/$FLAVOUR/
 
 		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --channel=$CHANNEL --wstream=$FLAVOUR --do_skim=1 --skim_path=$SKIMDIR/$FILESTR/$FLAVOUR/ &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
-		#$JOBSUBMIT $JOBDIR/$WJOB.sh
+		$JOBSUBMIT $JOBDIR/$WJOB.sh
 	      done
 	  else  
 	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT --channel=$CHANNEL --do_skim=1 --skim_path=$SKIMDIR/$FILESTR/ &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	      #$JOBSUBMIT $JOBDIR/$JOB.sh
+	      $JOBSUBMIT $JOBDIR/$JOB.sh
 	  fi
 	  
 	  rm tmp.txt tmp2.txt
 	  
-	done
-	
       done
       
     done
