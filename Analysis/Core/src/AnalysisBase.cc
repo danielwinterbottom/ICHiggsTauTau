@@ -31,6 +31,7 @@ namespace ic {
     retry_on_fail_        = false; 
     retry_pause_          = 5;
     retry_attempts_       = 1;
+    skim_after_module_    = -1;
   }
 
   AnalysisBase::~AnalysisBase() {
@@ -58,7 +59,10 @@ namespace ic {
     TTree *tree_ptr = NULL;
     weighted_yields_.resize(modules_.size());
     bool do_skim = (skim_path_ != "");
-    if (do_skim) std::cout << "Info in <ic::AnalysisBase>: Skimming mode enabled" << std::endl;
+    if (do_skim) {
+      std::cout << "Info in <ic::AnalysisBase>: Skimming mode enabled" << std::endl;
+      if (skim_after_module_ < 0) skim_after_module_ = modules_.size() - 1;
+    }
     if (ttree_caching_) std::cout << "Info in <ic::AnalysisBase>: TTree caching enabled" << std::endl;
   
     if (print_module_list_) {
@@ -176,7 +180,7 @@ namespace ic {
             if (status == 0) modules_[module]->IncreaseProcessedCount();
             if (status == 0) weighted_yields_[module] += eventInfo->total_weight();
 
-            if (do_skim && module == (modules_.size() - 1)) {
+            if (do_skim && module == skim_after_module_) {
               tree_ptr->GetEntry(evt);
               outtree->Fill();
             }
@@ -228,6 +232,15 @@ namespace ic {
     retry_on_fail_ = true;
     retry_attempts_ = retry_attempts;
     retry_pause_ = pause_in_seconds;
+  }
+
+  void AnalysisBase::WriteSkimHere() {
+    if (modules_.size() == 0) {
+      std::cout << "Warning in <ic::AnalysisBase>: Request to write skim before first module is ignored" << std::endl;
+    } else {
+      std::cout << "Info in <ic::AnalysisBase>: Writing skim output after module \"" << modules_.back()->ModuleName() << "\"" << std::endl;
+      skim_after_module_ = modules_.size() - 1;
+    }
   }
 
 

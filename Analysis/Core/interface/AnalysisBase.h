@@ -34,6 +34,7 @@ namespace ic {
     bool retry_on_fail_;
     unsigned retry_pause_;
     unsigned retry_attempts_;
+    int skim_after_module_;
 
   public:
     //! The standard AnalysisBase constructor constructor 
@@ -58,6 +59,7 @@ namespace ic {
     virtual void NotifyRunEvent(int const& run, int const& event);
     virtual void NotifyEvent(int const& event);
     void DoSkimming(std::string const& skim_path) { skim_path_ = skim_path; }
+    void WriteSkimHere();
     void SetTTreeCaching(bool const& value);
     void StopOnFileFailure(bool const& value);
     void RetryFileAfterFailure(unsigned pause_in_seconds, unsigned retry_attempts);
