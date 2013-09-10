@@ -84,6 +84,8 @@ class HTTCategories : public ModuleBase {
   double beta_1_;    // Defined if n_bjets >= 1
   double bcsv_1_; 
 
+  int j1_dm_;
+
   double mjj_;       // Defined if n_jets >= 2
   double jdeta_;     // Defined if n_jets >= 2
 

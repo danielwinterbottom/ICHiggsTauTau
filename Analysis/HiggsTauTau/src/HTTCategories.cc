@@ -82,6 +82,7 @@ namespace ic {
         outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
         outtree_->Branch("n_jetsingap",       &n_jetsingap_);
         outtree_->Branch("jpt_1",             &jpt_1_);
+        outtree_->Branch("j1_dm",             &j1_dm_);
         outtree_->Branch("jpt_2",             &jpt_2_);
         outtree_->Branch("jeta_1",            &jeta_1_);
         outtree_->Branch("jeta_2",            &jeta_2_);
@@ -399,6 +400,14 @@ namespace ic {
     if (n_jets_ >= 1) {
       jpt_1_ = jets[0]->pt();
       jeta_1_ = jets[0]->eta();
+      std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
+      std::vector<ic::Jet *> leadjet = { jets[0] };
+      std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
+      if (matches.size() == 1) {
+        j1_dm_ = matches[0].second->decay_mode();
+      } else {
+        j1_dm_ = -1;
+      }
     } else {
       jpt_1_ = -9999;
       jeta_1_ = -9999;
