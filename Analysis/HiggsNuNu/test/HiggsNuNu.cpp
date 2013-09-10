@@ -157,7 +157,7 @@ int main(int argc, char* argv[]){
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
-    ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false));
+    ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -662,7 +662,7 @@ int main(int argc, char* argv[]){
   //CopyCollection<PFJet> jetCopyCollection("CopyToJet","pfJetsPFlow","selJets");
 
   double jetptcut=50.0;
-  if(do_skim) jetptcut = 40.0;
+  if(do_skim) jetptcut = 30.0;
 
   SimpleFilter<PFJet> jetPtEtaFilter = SimpleFilter<PFJet>
     ("JetPtEtaFilter")
@@ -1202,14 +1202,15 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&xsWeights);
    }
    
-   if (!do_skim) {
+   //if (!do_skim) {
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
      analysis.AddModule(&dataMCTriggerPathFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
  
      ////analysis.AddModule(&runStats);
-
+     //NEW: change skimming to write event at a specific moment in the chain of modules.
+     //if (do_skim) analysis.WriteSkimHere();
     
      if (is_data) {
        //FIXME: do MetFilters also on MC, but not saved right now in MC...
@@ -1261,7 +1262,7 @@ int main(int argc, char* argv[]){
      //if (channel == channel::taunu) analysis.AddModule(&jetTauOverlapFilter);
 
      //Module to do jet smearing and systematics
-     analysis.AddModule(&ModifyJetMET);
+     if (!do_skim) analysis.AddModule(&ModifyJetMET);
 
     //jet pair production before plotting
      analysis.AddModule(&jjPairProducer);
@@ -1329,7 +1330,7 @@ int main(int argc, char* argv[]){
 
      //Need two jets and metnomuons to apply trigger weights.
      //need sel leptons to apply idiso weights
-     if (!is_data) analysis.AddModule(&hinvWeights);
+     if (!is_data && !do_skim) analysis.AddModule(&hinvWeights);
 
 
      if (channel == channel::nunu){
@@ -1340,6 +1341,8 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&wjetsPlots_wsel);
      }
 
+     //NEW: change skimming to write event at a specific moment in the chain of modules.
+     if (do_skim) analysis.WriteSkimHere();
 
      analysis.AddModule(&jetPairFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
@@ -1420,11 +1423,11 @@ int main(int argc, char* argv[]){
      //debug
      //analysis.AddModule(&dphiJetPairFilter);
      //if (!is_data) analysis.AddModule(&hinvWeights);
-   }
-   else {
+     //}
+     //else {
      //Build Skimming Analysis
      //analysis.AddModule(pointer to module defined above)
-     analysis.AddModule(&dataMCTriggerPathFilter);
+     //analysis.AddModule(&dataMCTriggerPathFilter);
 
      //SINGLE EVENT SKIMMING
      // if (channel == channel::nunu){
@@ -1466,7 +1469,7 @@ int main(int argc, char* argv[]){
 //      else if (!is_data){
 //        analysis.AddModule(&WtoLeptonFilter);
 //      }
-   }
+     //}
 
   }
    // Run analysis
