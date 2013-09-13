@@ -314,7 +314,6 @@ if options.proc_bkg or options.proc_all:
         central_samples = [
           'WJetsToLNuSoup',
           'TTJets',
-          'TT',
           'WWJetsTo2L2Nu',
           'WZJetsTo2L2Q',
           'WZJetsTo3LNu',
@@ -328,7 +327,6 @@ if options.proc_bkg or options.proc_all:
       if ch in ['em']:
         central_samples = [
           'TTJets',
-          'TT',
           'WWJetsTo2L2Nu',
           'WZJetsTo2L2Q',
           'WZJetsTo3LNu',
@@ -339,9 +337,8 @@ if options.proc_bkg or options.proc_all:
           'Tbar-tW'
         ]
       
-      if options.do_2011:
-        central_samples.remove('TT')
       if PRODUCTION=='June6' and (not options.do_2011):
+        central_samples.remove('TTJets')
         central_samples += [
           'TTJetsFullLept',
           'TTJetsSemiLept',
@@ -349,8 +346,8 @@ if options.proc_bkg or options.proc_all:
         ]
       for sc in scales:
         if ch in ['et', 'mt', 'etmet', 'mtmet']:
-          soups = ['', 'Soup']
-          if options.do_2011: soups.remove('Soup')
+          soups = ['Soup']
+          if options.do_2011: soups = ['']
           for sp in soups:  
             if options.do_2011 and ERA=='Total':
               JOB='DYJetsToTauTau%s_%s_%s' % (sp,ch,YR)
