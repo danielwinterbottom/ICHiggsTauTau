@@ -105,7 +105,7 @@ echo "Applying 7TeV scale factors..."
   --x_axis_label="M_{#tau#tau} [GeV]" $ET_INC_SHIFT \
   --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
-  --blind=true --x_blind_min=100 --x_blind_max=2000 \
+  --blind=false --x_blind_min=100 --x_blind_max=2000 \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
@@ -113,7 +113,7 @@ echo "Applying 7TeV scale factors..."
   --x_axis_label="M_{#tau#tau} [GeV]" $MT_INC_SHIFT \
   --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
-  --blind=true --x_blind_min=100 --x_blind_max=2000 \
+  --blind=false --x_blind_min=100 --x_blind_max=2000 \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
@@ -121,7 +121,7 @@ echo "Applying 7TeV scale factors..."
   --x_axis_label="M_{#tau#tau} [GeV]" $EM_INC_SHIFT \
   --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
-  --blind=true --x_blind_min=100 --x_blind_max=2000 \
+  --blind=false --x_blind_min=100 --x_blind_max=2000 \
   --background_scheme="em_default"
 
 #### Visible Mass
@@ -151,7 +151,7 @@ echo "Applying 7TeV scale factors..."
   --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $ET_INC_SHIFT \
   --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
-  --blind=true --x_blind_min=110 --x_blind_max=2000 \
+  --blind=false --x_blind_min=110 --x_blind_max=2000 \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
@@ -159,7 +159,7 @@ echo "Applying 7TeV scale factors..."
   --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $MT_INC_SHIFT \
   --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
-  --blind=true --x_blind_min=110 --x_blind_max=2000 \
+  --blind=false --x_blind_min=110 --x_blind_max=2000 \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
@@ -167,7 +167,7 @@ echo "Applying 7TeV scale factors..."
   --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
   --norm_bins=true --datacard="inclusive" --log_y=true --draw_ratio=true \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
-  --blind=true --x_blind_min=110 --x_blind_max=2000 \
+  --blind=false --x_blind_min=110 --x_blind_max=2000 \
   --background_scheme="em_default"
 
 #### MET
@@ -191,12 +191,12 @@ echo "Applying 7TeV scale factors..."
 #### pt_1
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="pt_1(50,0,100)" \
+  --method=8 --cat="inclusive" --var="pt_1(25,0,100)" \
   --x_axis_label="Electron p_{T} [GeV]" --datacard="inclusive" \
   --background_scheme="et_default" $ET_INC_SHIFT
   
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="pt_1(50,0,100)" \
+  --method=8 --cat="inclusive" --var="pt_1(25,0,100)" \
   --x_axis_label="Muon p_{T} [GeV]" --datacard="inclusive" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
@@ -208,12 +208,12 @@ echo "Applying 7TeV scale factors..."
 #### pt_2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="pt_2(50,0,100)" \
+  --method=8 --cat="inclusive" --var="pt_2(20,0,100)" \
   --x_axis_label="Tau p_{T} [GeV]" --datacard="inclusive" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="pt_2(50,0,100)" \
+  --method=8 --cat="inclusive" --var="pt_2(20,0,100)" \
   --x_axis_label="Tau p_{T} [GeV]" --datacard="inclusive" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
@@ -300,6 +300,26 @@ echo "Applying 7TeV scale factors..."
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="inclusive" --var="m_2(20,0,2)" --extra_pad=1.1\
   --x_axis_label="Tau Mass [GeV]" --datacard="inclusive" \
+  --background_scheme="mt_with_zmm" $MT_INC_SHIFT
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
+  --method=8 --cat="tau_decay_mode==1" --var="m_2(20,0,2)" --extra_pad=1.5 \
+  --x_axis_label="Tau Mass [GeV]" --datacard="1prong" \
+  --background_scheme="et_default" $ET_INC_SHIFT
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
+  --method=8 --cat="tau_decay_mode==1" --var="m_2(20,0,2)" --extra_pad=1.5\
+  --x_axis_label="Tau Mass [GeV]" --datacard="1prong" \
+  --background_scheme="mt_with_zmm" $MT_INC_SHIFT
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
+  --method=8 --cat="tau_decay_mode==10" --var="m_2(20,0,2)" --extra_pad=1.5 \
+  --x_axis_label="Tau Mass [GeV]" --datacard="3prong" \
+  --background_scheme="et_default" $ET_INC_SHIFT
+
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
+  --method=8 --cat="tau_decay_mode==10" --var="m_2(20,0,2)" --extra_pad=1.5 \
+  --x_axis_label="Tau Mass [GeV]" --datacard="3prong" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 #### n_jets (log)
