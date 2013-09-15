@@ -140,12 +140,12 @@ if options.scheme == 'new_sm':
   extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.5"'
   extra_global += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
-  extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["et"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<30."'
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
-  extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mtmet"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_soft_'+COM+'TeV:1.02:0.98"'
-  extra_channel["mtmet"] += ' --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'
+  extra_channel["mtmet"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'
   scheme_et = [
     ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),
     ("5",   "new_vbf",                  "vbf",                    BINS,       (
@@ -160,9 +160,9 @@ if options.scheme == 'new_sm':
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_tight",            "vbf_tight",              BINS,       (
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_tight_'+COM+'TeV:50:1.0:0.10"'
-      ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
-      ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
-      ' --set_alias="w_vbf_extrap_cat:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
+      ' --set_alias="vbf_loose_jets20:(pt_2>30. && n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
+      ' --set_alias="vbf_loose:(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
+      ' --set_alias="w_vbf_extrap_cat:(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
@@ -195,11 +195,11 @@ if options.scheme == 'new_sm':
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
-    ("5",   "new_vbf_tight",            "vbf_tight",              BINS, (     
+    ("5",   "new_vbf_tight",            "vbf_tight",              BINS, (
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_tight_'+COM+'TeV:50:1.0:0.10"'
-      ' --set_alias="vbf_loose_jets20:(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
-      ' --set_alias="vbf_loose:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
-      ' --set_alias="w_vbf_extrap_cat:(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
+      ' --set_alias="vbf_loose_jets20:(pt_2>30. && n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && pt_tt>100.)"'
+      ' --set_alias="vbf_loose:(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
+      ' --set_alias="w_vbf_extrap_cat:(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
@@ -226,7 +226,7 @@ if options.scheme == 'new_sm':
       ' --syst_l1met=CMS_L1etm_mutau_soft_vbf_8TeV'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_vbf_os:1"'
-      ' --set_alias="vbf_loose_jets20:(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)"'
+      ' --set_alias="vbf_loose_jets20:(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE, (

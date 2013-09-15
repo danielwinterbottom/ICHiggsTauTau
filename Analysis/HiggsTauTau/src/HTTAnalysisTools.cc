@@ -100,9 +100,9 @@ namespace ic {
       alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>40. && n_bjets==0)";
       alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=40. && n_bjets==0)";
       // New SM categories
-      alias_map_["new_vbf_tight"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
-      alias_map_["new_vbf_loose"]               = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
-      alias_map_["new_vbf"]                     = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
+      alias_map_["new_vbf_tight"]               = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
+      alias_map_["new_vbf_loose"]               = "(!"+alias_map_["new_vbf_tight"]+" && (pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
+      alias_map_["new_vbf"]                     = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
       alias_map_["new_1jet_high_lowhiggs"]      = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
       alias_map_["new_1jet_high"]               = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0)";
       alias_map_["new_1jet_high_highhiggs"]     = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";
@@ -119,9 +119,9 @@ namespace ic {
       alias_map_["new_0jet_low"]          = "(n_jets==0 && pt_2<=30. && n_bjets==0)";
 
       // Categories for background estimates and control plots
-      alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
-      alias_map_["w_vbf_extrap_cat"]  = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
-      alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
+      alias_map_["vbf_loose"]         = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
+      alias_map_["w_vbf_extrap_cat"]  = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
+      alias_map_["vbf_loose_jets20"]  = "(pt_2>30. && n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
       alias_map_["twojet"]            = "(n_jets>=2)";
       alias_map_["zl_denominator"]    = "(n_jets>=2)";
       alias_map_["1jet"]              = "(n_jets>=1)";
@@ -360,7 +360,7 @@ namespace ic {
 
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT] --------------------------------------------------------\n";
-    auto ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", "", sel, cat, wt);
+    auto ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     if (this->AliasDefined("ztt_shape_cat")) cat = this->ResolveAlias("ztt_shape_cat");
     TH1F ztt_hist = this->GetShape(var, this->ResolveAlias("ZTT_Shape_Sample"), sel, cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
