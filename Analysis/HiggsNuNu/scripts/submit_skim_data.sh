@@ -20,13 +20,13 @@ PRODUCTION=Apr04
 
 for METCUT in 130
   do
-  for CHANNEL in taunu
+  for CHANNEL in nunu
     do
     JOBDIRPREFIX=jobs
     JOBDIR=$JOBDIRPREFIX/skim/$CHANNEL/MET$METCUT/
     OUTPUTPREFIX=output
     OUTPUTDIR=$OUTPUTPREFIX/skim/$CHANNEL/MET$METCUT/
-    SKIMPREFIX=/vols/ssd00/cms/amagnan/tauskims/
+    SKIMPREFIX=/vols/ssd00/cms/amagnan/trigskims/
     SKIMDIR=$SKIMPREFIX/$CHANNEL/MET$METCUT/
       
     echo "Config file: $CONFIG"

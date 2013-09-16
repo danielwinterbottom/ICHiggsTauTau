@@ -1208,9 +1208,10 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&dataMCTriggerPathFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
  
+    //NEW: change skimming to write event at a specific moment in the chain of modules.
+     if (do_skim) analysis.WriteSkimHere();
+
      ////analysis.AddModule(&runStats);
-     //NEW: change skimming to write event at a specific moment in the chain of modules.
-     //if (do_skim) analysis.WriteSkimHere();
     
      if (is_data) {
        //FIXME: do MetFilters also on MC, but not saved right now in MC...
@@ -1341,9 +1342,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&wjetsPlots_wsel);
      }
 
-     //NEW: change skimming to write event at a specific moment in the chain of modules.
-     if (do_skim) analysis.WriteSkimHere();
-
+ 
      analysis.AddModule(&jetPairFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 

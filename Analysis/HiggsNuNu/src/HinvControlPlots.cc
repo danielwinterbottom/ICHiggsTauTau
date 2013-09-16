@@ -115,6 +115,14 @@ namespace ic {
   };
 
   
+  HinvGenPlots::HinvGenPlots(TFileDirectory const& dir) {
+    TH1F::SetDefaultSumw2();
+    taupt = dir.make<TH1F>("taupt","taupt", 1000, 0, 1000); 
+    taueta = dir.make<TH1F>("taueta","taueta", 100, -5, 5);
+    tauptvseta = dir.make<TH2F>("tauptvseta","tauptvseta", 100, -5, 5, 500,0,500);
+  }
+
+
   HinvControlPlots::HinvControlPlots(std::string const& name): ModuleBase(name){
     fs_ = NULL;
     met_label_ = "pfMet";
@@ -142,6 +150,7 @@ namespace ic {
     InitSystPlots();
     InitDijetMETPlots();
     InitHTPlots();
+    InitGenPlots();
 
     yields_ = 0;
 
@@ -317,11 +326,36 @@ namespace ic {
     
     n_jets_ = jets.size();
 
-    if (fillPlots) {
+    if (fillPlots) {//if fillplots
       FillCoreControlPlots();
       FillWeightPlots(eventInfoNonConst);
       FillSystPlots(eventInfoNonConst);
-    }
+
+      //get genjet matched with leading tau
+      std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
+      if (taus.size() > 0) {
+	//std::cout << "first tauParticle pdgid = " << taus[0]->pdgid() << std::endl;
+      
+	std::vector<GenJet *> genjets = event->GetPtrVec<GenJet>("genJets");
+	GenJet *gentau = 0;
+	
+	double mindR = 10;
+	for (unsigned iG(0); iG < genjets.size(); ++iG){//loop on genjets
+	  double dR = ROOT::Math::VectorUtil::DeltaR(taus[0]->vector(),genjets[iG]->vector());
+	  if (dR < mindR){
+	    mindR = dR;
+	    gentau = genjets[iG];
+	  }
+	}//loop on genjets
+	
+	if (mindR < 0.5) {
+	  genPlots_->taupt->Fill(gentau->pt(),wt_);
+	  genPlots_->taueta->Fill(gentau->eta(),wt_);
+	  genPlots_->tauptvseta->Fill(gentau->eta(),gentau->pt(),wt_);
+	}
+      }
+
+    }//if fillplots
 
     // Start: Filling HinvDijetMETPlots __________________________________
     if (fillPlots) {
@@ -443,6 +477,11 @@ namespace ic {
   void HinvControlPlots::InitHTPlots() {
     HTPlots_ = new HinvHTPlots(fs_->mkdir(sel_label_+"/Ht"));
     std::cout << " Ht plots initialised" << std::endl;
+  }
+  
+  void HinvControlPlots::InitGenPlots() {
+    genPlots_ = new HinvGenPlots(fs_->mkdir(sel_label_+"/Gen"));
+    std::cout << " Gen plots initialised" << std::endl;
   }
       
  void HinvControlPlots::FillYields() {

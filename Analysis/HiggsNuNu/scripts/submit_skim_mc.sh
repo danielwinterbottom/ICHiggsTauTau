@@ -18,14 +18,14 @@ PRODUCTION=Apr04
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in taunu #enu munu taunu mumu
+  for CHANNEL in nunu #enu munu taunu mumu
     do
     
       JOBDIRPREFIX=jobs
       JOBDIR=$JOBDIRPREFIX/skim/$CHANNEL/MET$METCUT/
       OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/skim/$CHANNEL/MET$METCUT/
-      SKIMPREFIX=/vols/ssd00/cms/amagnan/tauskims/
+      SKIMPREFIX=/vols/ssd00/cms/amagnan/trigskims/
       SKIMDIR=$SKIMPREFIX/$CHANNEL/MET$METCUT/
  
       echo "Config file: $CONFIG"

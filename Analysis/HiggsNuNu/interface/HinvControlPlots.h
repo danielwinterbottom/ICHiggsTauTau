@@ -128,6 +128,14 @@ namespace ic {
     HinvHTPlots(TFileDirectory const& dir);
     
   };
+
+  struct HinvGenPlots {
+    TH1F *taupt;
+    TH1F *taueta;
+    TH2F *tauptvseta;
+
+    HinvGenPlots(TFileDirectory const& dir);
+  };
   
 
   class HinvControlPlots : public ModuleBase {
@@ -147,6 +155,7 @@ namespace ic {
     HinvSystPlots        *systplots_;
     HinvDijetMETPlots    *dijetMETPlots_;
     HinvHTPlots          *HTPlots_;
+    HinvGenPlots *genPlots_;
 
     DynamicHistoSet * misc_plots_;
     Dynamic2DHistoSet * misc_2dplots_;
@@ -190,6 +199,8 @@ namespace ic {
     void InitSystPlots();
     void InitDijetMETPlots();
     void InitHTPlots();
+    void InitGenPlots();
+
     void FillCoreControlPlots();
     void FillWeightPlots(EventInfo * info);
     void FillSystPlots(EventInfo * info);
