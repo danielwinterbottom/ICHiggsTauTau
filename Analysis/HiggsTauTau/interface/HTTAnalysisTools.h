@@ -93,6 +93,16 @@ namespace ic {
     }
   }
 
+  inline void InflateErrors(TH1F * hist, double factor) {
+    for (int j = 1; j <= hist->GetNbinsX(); ++j) {
+      if (hist->GetBinContent(j) > 0) {
+        double extra = factor * hist->GetBinContent(j);
+        double err = hist->GetBinError(j);
+        double new_err = std::sqrt(err*err + extra*extra);
+        hist->SetBinError(j, new_err);
+      }
+    }
+  }
 
 
   class HTTAnalysis {

@@ -145,6 +145,7 @@ if options.scheme == 'new_sm':
   extra_channel["mt"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mtmet"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_soft_'+COM+'TeV:1.02:0.98"'
+  extra_channel["mtmet"] += ' --inflate_errors="QCD:0.15"'
   extra_channel["mtmet"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'
   scheme_et = [
     ("8",   "inclusive",                "inclusive",              BINS_FINE,  ""),

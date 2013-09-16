@@ -37,6 +37,9 @@ namespace ic {
     double raw_calo = event->GetPtr<Met>(uncorrected_calo_met_label_)->pt();
     double corr_calo = event->GetPtr<Met>(corrected_calo_met_label_)->pt(); 
 
+    if (l1_met_mode_ == 1) corr_calo *= 0.95;
+    if (l1_met_mode_ == 2) corr_calo *= 1.05;
+
     double R = 0.9322;
     double K = 0.6693;
     double H = (0.8828 - 1.0) + (0.0499*TMath::Log(raw_calo));
@@ -49,8 +52,6 @@ namespace ic {
 
     double l1_ratio = corr_l1 / raw_l1;
     
-    if (l1_met_mode_ == 1) l1_ratio *= 0.95;
-    if (l1_met_mode_ == 2) l1_ratio *= 1.05;
 
     l1met->set_pt(l1met->pt() * l1_ratio);
     l1met->set_energy(l1met->energy() * l1_ratio);

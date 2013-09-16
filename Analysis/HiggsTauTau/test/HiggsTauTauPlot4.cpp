@@ -48,6 +48,7 @@ int main(int argc, char* argv[]){
 	string fix_empty_bins;
 	string fix_negative_bins;
 	string fix_empty_hists;
+	string inflate_errors;
 	string add_extra_binning;
 	string shift_backgrounds;
 	bool auto_titles;
@@ -95,6 +96,7 @@ int main(int argc, char* argv[]){
 	  ("shift_tscale",    		    po::value<double>(&shift_tscale)->default_value(0.0))
 	  ("fix_empty_bins",   		    po::value<string>(&fix_empty_bins)->default_value(""))
 	  ("fix_empty_hists",   	    po::value<string>(&fix_empty_hists)->default_value(""))
+	  ("inflate_errors",     	    po::value<string>(&inflate_errors)->default_value(""))
 	  ("fix_negative_bins",  	    po::value<string>(&fix_negative_bins)->default_value(""))
 	  ("add_extra_binning",       po::value<string>(&add_extra_binning)->default_value(""))
 	  ("shift_backgrounds",       po::value<string>(&shift_backgrounds)->default_value(""))
@@ -264,7 +266,6 @@ int main(int argc, char* argv[]){
     }
   }
 
-  
   // ************************************************************************
 	// top-quark pT Reweighting
 	// ************************************************************************
@@ -285,6 +286,19 @@ int main(int argc, char* argv[]){
 		  hmap["W_"+syst_w_fake_rate+"Up"+vars_postfix[j]] = ana.GenerateW(method, vars[j], sel, cat, "wt*wt_tau_fake_up");
 		  hmap["W_"+syst_w_fake_rate+"Down"+vars_postfix[j]] = ana.GenerateW(method, vars[j], sel, cat, "wt*wt_tau_fake_down");
     }
+	}
+
+  // ************************************************************************
+	// Update ZTT L1MET systematics
+	// ************************************************************************
+	if (syst_l1met != "") {
+    string backup_eff = ana.ResolveAlias("ZTT_Eff_Sample");
+    string backup_shape = ana.ResolveAlias("ZTT_Shape_Sample");
+    ana.SetAlias("ZTT_Eff_Sample","DYJetsToTauTauSoup");
+    ana.SetAlias("ZTT_Shape_Sample","DYJetsToTauTauSoup");
+    hmap["ZTTMC"] = ana.GenerateZTT(method, var, sel, cat, "wt");
+    ana.SetAlias("ZTT_Eff_Sample", backup_eff);
+    ana.SetAlias("ZTT_Shape_Sample", backup_shape);
 	}
 	
   vector<pair<string,string>> systematics;
@@ -336,7 +350,30 @@ int main(int argc, char* argv[]){
 			ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
-	}
+	  if (syst.second == syst_l1met+"Down" || syst.second == syst_l1met+"Up") {
+      string backup_eff = ana_syst.ResolveAlias("ZTT_Eff_Sample");
+      string backup_shape = ana_syst.ResolveAlias("ZTT_Shape_Sample");
+      ana_syst.SetAlias("ZTT_Eff_Sample","DYJetsToTauTauSoup");
+      ana_syst.SetAlias("ZTT_Shape_Sample","DYJetsToTauTauSoup");
+      hmap["ZTTMC_"+syst.second] = ana_syst.GenerateZTT(method, var, sel, cat, "wt");
+      ana_syst.SetAlias("ZTT_Eff_Sample", backup_eff);
+      ana_syst.SetAlias("ZTT_Shape_Sample", backup_shape);
+      TH1F const& mc_central = hmap["ZTTMC"].first;
+      TH1F const& mc_shift = hmap["ZTTMC_"+syst.second].first;
+      TH1F const& em_central = hmap["ZTT"].first;
+      TH1F & em_shift = hmap["ZTT_"+syst.second].first;
+      for (int i = 1; i <= em_shift.GetNbinsX(); ++i) {
+        if (mc_central.GetBinContent(i) > 0.){
+          double bin_shift = mc_shift.GetBinContent(i) / mc_central.GetBinContent(i);
+          em_shift.SetBinContent(i, em_central.GetBinContent(i) * bin_shift);
+          em_shift.SetBinError(i, 0.);
+        } else {
+          em_shift.SetBinContent(i, em_central.GetBinContent(i));
+          em_shift.SetBinError(i, 0.);
+        }
+      }
+	  }
+  }
 
 	// ************************************************************************
 	// Reduce top yield to account for contamination in embedded
@@ -547,6 +584,30 @@ int main(int argc, char* argv[]){
 		}
 	}
 
+  // ************************************************************************
+	// Inflate errors
+	// ************************************************************************
+	vector<string> inflate_regex;
+	boost::split(inflate_regex, inflate_errors, boost::is_any_of(","));
+	if (inflate_regex.size() > 0) {
+		vector<boost::regex> regex_vec;
+		vector<double> err_vec;
+		for (auto str : inflate_regex) {
+      vector<string> tmp_vec;
+	    boost::split(tmp_vec, str, boost::is_any_of(":"));
+      if (tmp_vec.size() != 2) continue;
+      regex_vec.push_back(boost::regex(tmp_vec[0]));
+      err_vec.push_back(boost::lexical_cast<double>(tmp_vec[1]));
+    }
+		for (auto & entry : hmap) {
+			for (unsigned i = 0; i < regex_vec.size(); ++i) {
+				if (boost::regex_match(entry.first, regex_vec[i])) {
+					InflateErrors(&(entry.second.first), err_vec[i]);
+				}
+			}
+		}
+	}
+
 	// ************************************************************************
 	// Print H->WW contribution for e-mu
 	// ************************************************************************
@@ -601,15 +662,13 @@ int main(int argc, char* argv[]){
 		 //HTTAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
 		 //HTTAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
     }
-		for (auto m : hww_masses) {
-     HTTAnalysis::PrintValue("ggH(WW/Total)"+m, HTTAnalysis::ValueDivide(hmap["ggH_hww"+m].second,HTTAnalysis::ValueAdd(hmap["ggH"+m].second, hmap["ggH_hww"+m].second)));
-    }
-		for (auto m : hww_masses) {
-		 HTTAnalysis::PrintValue("qqH(WW/Total)"+m, HTTAnalysis::ValueDivide(hmap["qqH_hww"+m].second,HTTAnalysis::ValueAdd(hmap["qqH"+m].second, hmap["qqH_hww"+m].second)));
-    }
+		// for (auto m : hww_masses) {
+    //  HTTAnalysis::PrintValue("ggH(WW/Total)"+m, HTTAnalysis::ValueDivide(hmap["ggH_hww"+m].second,HTTAnalysis::ValueAdd(hmap["ggH"+m].second, hmap["ggH_hww"+m].second)));
+    // }
+		// for (auto m : hww_masses) {
+		//  HTTAnalysis::PrintValue("qqH(WW/Total)"+m, HTTAnalysis::ValueDivide(hmap["qqH_hww"+m].second,HTTAnalysis::ValueAdd(hmap["qqH"+m].second, hmap["qqH_hww"+m].second)));
+    // }
 	}
-
-
 
 	// ************************************************************************
 	// Shift backgrounds
