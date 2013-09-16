@@ -295,6 +295,10 @@ namespace ic {
 							std::cerr << "Warning in <HTTSetup::GetUncertainty>: Shape uncertainty histograms not loaded for nuisance " << params_[i].nuisance << std::endl;
 							continue;
 						}
+						if (params_[i].shape->Integral() == 0.) {
+							std::cerr << "Warning in <HTTSetup::GetUncertainty>: Shape uncertainty defined for empty histogram" << std::endl;
+							continue;
+						}
 						for (int k = 1; k <= params_[i].shape->GetNbinsX(); ++k) {
 							double y = params_[i].shape->GetBinContent(k);
 							double y_up = params_[i].shape_up->GetBinContent(k);
@@ -368,6 +372,10 @@ namespace ic {
 							processes_[j].category 	!= params_[i].category 	||
 							processes_[j].process 	!= params_[i].process 	||
 							!params_[i].shape || !params_[i].shape_down || !params_[i].shape_up) continue;
+					if (params_[i].shape->Integral() == 0.) {
+						std::cerr << "Warning in <HTTSetup::ApplyPulls>: Shape uncertainty defined for empty histogram" << std::endl;
+						continue;
+					}					
 					TH1F *central_new = (TH1F*)params_[i].shape->Clone();
 					TH1F *up_new = (TH1F*)params_[i].shape->Clone();
 					TH1F *down_new = (TH1F*)params_[i].shape->Clone();
