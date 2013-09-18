@@ -53,6 +53,7 @@ int main(int argc, char* argv[]){
 	string shift_backgrounds;
 	bool auto_titles;
 	bool check_ztt_top_frac;
+	unsigned scan_bins;
   double qcd_os_ss_factor;
   string w_binned;
 
@@ -103,6 +104,7 @@ int main(int argc, char* argv[]){
 	  ("w_binned",                po::value<string>(&w_binned)->default_value(""))
 	  ("auto_titles",   			    po::value<bool>(&auto_titles)->default_value(true))
 	  ("check_ztt_top_frac",      po::value<bool>(&check_ztt_top_frac)->default_value(false))
+	  ("scan_bins",               po::value<unsigned>(&scan_bins)->default_value(0))
 	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
 
 
@@ -607,6 +609,49 @@ int main(int argc, char* argv[]){
 			}
 		}
 	}
+
+  // ************************************************************************
+	// Scan and fix bins that have data, no bkg and some signal
+	// ************************************************************************
+  if (scan_bins) {
+    vector<string> bkgs = {"ZTT","ZL","ZJ","W","QCD","TT","VV"};
+    if (channel_str == "em") bkgs = {"Ztt","Fakes","EWK","ttbar"}; 
+    vector<string> sm_procs = {"ggH","qqH","VH"};
+    vector<string> mssm_procs = {"ggH","bbH"};
+    TH1F const& data = hmap["data_obs"].first;
+    for (int i = 1; i <= data.GetNbinsX(); ++i) {
+      double bkg_tot = 0.;
+      double data_bin = data.GetBinContent(i);
+      bool has_signal = false;
+      for (auto bkg : bkgs) bkg_tot += hmap[bkg].first.GetBinContent(i);
+      if (data_bin > 0. && bkg_tot == 0.) {
+        std::cout << "\e[31mWarning: Bin [" << data.GetBinLowEdge(i) << "," << data.GetBinLowEdge(i+1) << "] has data but no background\e[m" << std::endl;
+        for (auto sm_mass : sm_masses) {
+          for (auto proc : sm_procs) {
+            if (hmap[proc+sm_mass].first.GetBinContent(i) > 0.) {
+              std::cout << "\e[31mWarning: Template " << proc+sm_mass << " is populated in this bin\e[m" << std::endl;
+              has_signal = true;
+            }
+          }
+        }
+        for (auto mssm_mass : mssm_masses) {
+          for (auto proc : sm_procs) {
+            if (hmap[proc+mssm_mass].first.GetBinContent(i) > 0.) {
+              std::cout << "\e[31mWarning: Template " << proc+mssm_mass << " is populated in this bin\e[m" << std::endl;
+              has_signal = true;
+            }
+          }
+        }
+        if (has_signal && scan_bins>1) {
+          std::cout << "\e[32mWarning: This bin will be set to zero in all templates\e[m" << std::endl;
+          for (auto & entry : hmap) {
+            entry.second.first.SetBinContent(i, 0.);
+            entry.second.first.SetBinError(i, 0.);
+          }
+        }
+      }
+    }
+  }
 
 	// ************************************************************************
 	// Print H->WW contribution for e-mu

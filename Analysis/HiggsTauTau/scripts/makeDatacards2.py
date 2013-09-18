@@ -137,7 +137,7 @@ if options.scheme == 'old_sm':
 if options.scheme == 'new_sm':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
-  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
+  extra_global += ' --syst_ggh_pt="QCDscale_ggH1in" --scan_bins=2'
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.5"'
   extra_global += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
   extra_channel["et"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<30."'
@@ -169,7 +169,7 @@ if options.scheme == 'new_sm':
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="QCD_Eff_Sample:Special_4_Data"')),
     ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE,  ""),
-    ("1",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
+    ("0",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  (
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_medium_'+COM+'TeV:50:1.0:0.10"'
@@ -206,7 +206,7 @@ if options.scheme == 'new_sm':
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="QCD_Eff_Sample:Special_4_Data"')),
     ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE,  ""),
-    ("1",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
+    ("0",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  (
       ' --set_alias="w_shape_os:1"'
@@ -232,22 +232,22 @@ if options.scheme == 'new_sm':
       ' --set_alias="w_shape_os:1"')),
     ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE, (
       ' --syst_l1met=CMS_L1etm_mutau_soft_0jet_low_8TeV'
-      ' --qcd_os_ss_factor=1.058')),
+      ' --qcd_os_ss_factor=1.06')),
     ("1",   "new_0jet_medium",          "0jet_medium",            BINS_FINE, (
       ' --syst_l1met=CMS_L1etm_mutau_soft_0jet_medium_8TeV'
-      ' --qcd_os_ss_factor=0.981')),
+      ' --qcd_os_ss_factor=1.06')),
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE, (
       ' --syst_l1met=CMS_L1etm_mutau_soft_0jet_high_8TeV'
-      ' --qcd_os_ss_factor=0.766')),
+      ' --qcd_os_ss_factor=1.06')),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE, (
       ' --syst_l1met=CMS_L1etm_mutau_soft_1jet_medium_8TeV'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_soft_1jet_medium_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_shape_os:1" '
-      ' --qcd_os_ss_factor=1.098')),
+      ' --qcd_os_ss_factor=1.06')),
     ("3",   "new_1jet_high",            "1jet_high",              BINS_FINE, (
       ' --syst_l1met=CMS_L1etm_mutau_soft_1jet_high_8TeV'
       ' --set_alias="w_shape_os:1"'
-      ' --qcd_os_ss_factor=1.016'))
+      ' --qcd_os_ss_factor=1.06'))
   ]
   scheme_em = [
     ("8",   "inclusive",    "inclusive",              BINS_FINE, (
@@ -265,14 +265,16 @@ if options.scheme == 'new_sm':
         ' --set_alias="vbf_no_cjv:(n_jets>=2 && mjj>500. && jdeta>3.5 && pt_tt>100.)"'
         ' --set_alias="vbf_loose:(n_jets>=2 && mjj>500. && jdeta>3.5 && pt_tt>100.)"')),
     ("0",   "0jet_low",     "0jet_low",             BINS_FINE, (
+        ' --syst_fakes_os_ss_shape="CMS_htt_FakeShape_em_0jet_low_'+COM+'TeV"'
         ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
     ("1",   "0jet_high",    "0jet_high",            BINS_FINE, (
-        (' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')+
+        ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"'
         ' --syst_fakes_shape="CMS_htt_FakeShape_em_0jet_high_'+COM+'TeV"')),
     ("2",   "1jet_low",     "1jet_low",             BINS_FINE, (
+        ' --syst_fakes_os_ss_shape="CMS_htt_FakeShape_em_1jet_low_'+COM+'TeV"'
         ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
     ("3",   "1jet_high",    "1jet_high",            BINS_FINE, (
-        ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"' if COM=='8' else ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'))
+        ' --syst_tau_scale="CMS_scale_e_highpt_'+COM+'TeV"'))
   ]
   bkg_schemes = {
     'et'    : 'et_default',
@@ -336,7 +338,7 @@ if options.scheme == 'control_plots':
       ' --syst_l1met=CMS_L1etm_mutausoft_1jet_medium_8TeV'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutausoft_1jet_medium_'+COM+'TeV:50:1.1:0.10"'
       ' --set_alias="w_shape_os:1" '
-      ' --qcd_os_ss_factor=1.098'))
+      ' --qcd_os_ss_factor=1.06'))
   ]
   scheme_em = [
     ("8",   "inclusive",       "0jet_low",  BINS_FINE, ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
