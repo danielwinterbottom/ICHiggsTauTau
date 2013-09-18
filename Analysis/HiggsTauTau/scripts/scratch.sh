@@ -332,10 +332,10 @@ SCALE_MT_INC="--shift_backgrounds=true --draw_band_on_stack=true --band_size_fra
 
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="n_jets==0" --var="pt_tt(40,0,200)" --extra_pad=1.1\
-  --x_axis_label="Tau p_{T} [GeV]" --datacard="inclusive" \
-  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 \
-  --background_scheme="mt_default" --signal_scheme="sm_default" --draw_ratio=true
+  --method=1 --cat="(n_jets==0 && pt_2>30. && pt_2<=45. && n_bjets==0 && met<15)" --var="m_sv(35,0,350)" --extra_pad=1.1\
+  --x_axis_label="M_{#tau#tau} [GeV]" --datacard="0jet_medium_ss_met" \
+  --custom_x_axis_range=false --x_axis_min=0 --x_axis_max=150 --do_ss=true \
+  --background_scheme="mt_with_zmm"  --draw_ratio=true --set_alias="ZTT_Eff_Sample:DYJetsToTauTauSoup"
 
 
 
@@ -556,14 +556,14 @@ htt_em.inputs-sm-8TeV.root
 
 
  ./bin/PlotCompare  \
- -p "W:Default:htt_mt.inputs-mssm-8TeV.root:/muTau_nobtag:W:-1:0:1" \
- -p "WBinned:Binned:htt_mt.inputs-mssm-8TeV.root:/muTau_nobtag:WBinned:-1:0:4" \
+ -p "W:Default:htt_mt.inputs-sm-8TeV.root:/muTau_0jet_low:W:-1:0:1" \
+ -p "WBinned:Binned:htt_mt.inputs-sm-8TeV.root:/muTau_0jet_low:WBinned:-1:0:4" \
  --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label=" " \
  --log_y=false --rebin=1 --norm_bins=true \
  --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
- --title_left="muTau_nobtag, 8TeV, W" \
+ --title_left="muTau_0jet_low, 8TeV, W" \
  --ratios="WBinned/W/1" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
- --outname="mt_W_8_8TeV_binned.pdf"
+ --outname="mt_W_0_8TeV_binned.pdf"
 
  ./bin/PlotCompare  \
  -p "ttbar:Default:htt_em.inputs-mssm-8TeV-0-topweight.root:/emu_nobtag:ttbar:-1:0:1" \
@@ -669,7 +669,15 @@ htt_em.inputs-sm-8TeV.root
  --ratios="Up/Default/4:Down/Default/7" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
  --outname="em_TT_8_8TeV_weights.pdf"
 
-
+ ./bin/PlotCompare  \
+ -p "FullIso:FullIso:htt_mt.inputs-sm-8TeV-qcd.root:/muTau_0jet_medium:QCD:-1:0:1" \
+ -p "AntiIso:AntiIso:htt_mt.inputs-sm-8TeV.root:/muTau_0jet_medium:QCD:-1:0:4" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=true \
+ --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
+ --title_left="muTau_0jet_medium, 8TeV, QCD" \
+ --ratios="AntiIso/FullIso/1" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="mt_QCD_1_8TeV.pdf"
 
 
 ### e-tau and mu-tau svfit mass

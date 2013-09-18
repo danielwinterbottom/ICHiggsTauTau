@@ -88,6 +88,9 @@ namespace ic {
       inline std::string draw_signal_mass() const { return draw_signal_mass_; }
       inline std::string draw_signal_tanb() const { return draw_signal_tanb_; }
       void AddTextElement(ic::TextElement & ele);
+      inline bool blind() const { return blind_; }
+      inline double x_blind_min() const { return x_blind_min_; }
+      inline double x_blind_max() const { return x_blind_max_; }
 
     private:
       boost::program_options::options_description config_;

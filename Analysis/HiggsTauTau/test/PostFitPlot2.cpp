@@ -167,10 +167,40 @@ int main(int argc, char* argv[]){
   if (channel == "tt") channel_str = "#tau_{h}#tau_{h}";
   if (!postfit) channel_str += " (pre-fit)";
 
+  TH1F data_chi2 = hmap["data_obs"].first;
+  TH1F bkg_chi2 = hmap["Bkg"].first;
+  if (plot.blind()) {
+    for (int j = 0; j < data_chi2.GetNbinsX(); ++j) {
+      double low_edge = data_chi2.GetBinLowEdge(j+1);
+      double high_edge = data_chi2.GetBinWidth(j+1)+data_chi2.GetBinLowEdge(j+1);
+      if ((low_edge > plot.x_blind_min() && low_edge < plot.x_blind_max()) || (high_edge > plot.x_blind_min() && high_edge < plot.x_blind_max())) {
+        data_chi2.SetBinContent(j+1,0);
+        data_chi2.SetBinError(j+1,0);
+        bkg_chi2.SetBinContent(j+1,0);
+        bkg_chi2.SetBinError(j+1,0);
+      }
+    }
+  }
+  double chi2_prob = data_chi2.Chi2Test(&(bkg_chi2),"UW");
+  for (int j = 0; j < data_chi2.GetNbinsX(); ++j) {
+    double low_edge = data_chi2.GetBinLowEdge(j+1);
+    double high_edge = data_chi2.GetBinWidth(j+1)+data_chi2.GetBinLowEdge(j+1);
+    if ((low_edge > -1. && low_edge < 60.) || (high_edge > -1. && high_edge < 60.)) {
+      data_chi2.SetBinContent(j+1,0);
+      data_chi2.SetBinError(j+1,0);
+      bkg_chi2.SetBinContent(j+1,0);
+      bkg_chi2.SetBinError(j+1,0);
+    }
+  }
+  double chi2_prob_cut = data_chi2.Chi2Test(&(bkg_chi2),"UW");
+
+
   ic::TextElement text(channel_str,0.04,0.22,0.86);
   ic::TextElement text2(v_columns.first,0.04,0.22,0.79);
+
   plot.AddTextElement(text);
   plot.AddTextElement(text2);
+  plot.set_title_right((boost::format("P(#chi^{2}): %.4f, P(#chi^{2}, M>60 GeV): %.4f")%chi2_prob%chi2_prob_cut).str());
 
   if (mssm) {
     ic::TextElement text_ma("m_{A}="+signal_mass+" GeV",0.035,0.41,0.86);
@@ -182,6 +212,8 @@ int main(int argc, char* argv[]){
   }
 
   plot.GeneratePlot(hmap);
+
+
 
   std::string tfile_name = channel + "_" + catstring + "_" + era_file_label+ (postfit ? "_postfit":"_prefit")+".root";
   TFile dc_file(tfile_name.c_str(),"RECREATE");
