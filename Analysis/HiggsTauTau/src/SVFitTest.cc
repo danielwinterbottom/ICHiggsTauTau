@@ -175,8 +175,12 @@ int SVFitTest::Execute(TreeEvent *event) {
       if (require_inputs_match_ && it->second.first != objects_hash) {
         fail_state = true;
       } else {
-        event->Add("svfitMass", it->second.second);
-        //event->Add("svfitHiggs", it->second.second);
+        if (it->second.second < 1.) {
+          std::cout << "Warning, SVFit mass is invalid: " << it->second.second << std::endl;
+        } else {
+          event->Add("svfitMass", it->second.second);
+          //event->Add("svfitHiggs", it->second.second);
+        }
       }
     } else {
       fail_state = true;

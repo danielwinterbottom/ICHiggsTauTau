@@ -563,7 +563,7 @@ namespace ic {
           << qcd_norm.first << "), setting to " << default_rate << " and maintaining error" << std::endl;
         qcd_norm.first = default_rate;
       }
-      if (method == 0 || method == 8 || method == 11 || (method == 2 && ch_ == channel::et)) {
+      if (method == 0 || method == 8 || method == 11) {
         qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
           {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
             return w_ss_norm;} 
@@ -955,7 +955,7 @@ namespace ic {
       eff_err = 0.0;
     }
     auto result = std::make_pair(eff, eff_err);
-    if (verbosity_ > 1) {
+    if (verbosity_ > 0) {
       std::cout << "[HTTAnalysis::SampleEfficiency]" << std::endl;
       std::cout << "Numerator:   " << boost::format("%s,'%s','%s','%s'\n") % sample % target_selection
                 % target_category % weight;

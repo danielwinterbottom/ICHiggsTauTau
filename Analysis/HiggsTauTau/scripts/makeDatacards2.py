@@ -66,6 +66,7 @@ BLIND = options.blind
 BLIND = "false"
 if options.blind: BLIND = "true"
 COM = options.energy
+YEAR = ('2012' if COM=='8' else '2011')
 
 ########## Set up schemes and options
 
@@ -152,6 +153,8 @@ if options.scheme == 'new_sm':
     ("5",   "new_vbf",                  "vbf",                    BINS,       (
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_vbf_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'
+      ' --set_alias="QCD_Eff_Sample:Special_4_Data"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_loose",            "vbf_loose",              BINS,       (
@@ -166,16 +169,19 @@ if options.scheme == 'new_sm':
       ' --set_alias="w_vbf_extrap_cat:(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"'
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="QCD_Eff_Sample:Special_4_Data"')),
     ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE,  ""),
     ("0",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  (
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_medium_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_shape_os:1"')),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  (
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_high_lowhiggs_'+COM+'TeV:50:1.0:0.10"'
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'
       ' --set_alias="w_shape_os:1"')),
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet_high_mediumhiggs_'+COM+'TeV:50:1.0:0.10"'
@@ -189,6 +195,8 @@ if options.scheme == 'new_sm':
     ("5",   "new_vbf",                  "vbf",                    BINS, (
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_vbf_'+COM+'TeV:50:1.0:0.10"'
       ' --set_alias="w_vbf_os:1"'
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'
+      ' --set_alias="QCD_Eff_Sample:Special_4_Data"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="w_shape_os:1"')),
     ("5",   "new_vbf_loose",            "vbf_loose",              BINS, (
@@ -203,16 +211,19 @@ if options.scheme == 'new_sm':
       ' --set_alias="w_vbf_extrap_cat:(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && pt_tt>100.)"'
       ' --set_alias="w_vbf_os:1"'
       ' --set_alias="w_shape_os:1"'
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'
       ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'
       ' --set_alias="QCD_Eff_Sample:Special_4_Data"')),
     ("0",   "new_0jet_low",             "0jet_low",               BINS_FINE,  ""),
     ("0",   "new_0jet_medium",          "0jet_medium",            BINS_FINE,  ""),
     ("1",   "new_0jet_high",            "0jet_high",              BINS_FINE,  ""),
     ("2",   "new_1jet_medium",          "1jet_medium",            BINS_FINE,  (
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'
       ' --set_alias="w_shape_os:1"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_medium_'+COM+'TeV":50:1.1:0.10')),
     ("3",   "new_1jet_high_lowhiggs",   "1jet_high_lowhiggs",     BINS_FINE,  (
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_high_lowhiggs_'+COM+'TeV":50:1.1:0.10'
+      ' --set_alias="QCD_Shape_Sample:Special_4_Data"'
       ' --set_alias="w_shape_os:1"')),
     ("4",   "new_1jet_high_highhiggs",  "1jet_high_mediumhiggs",  BINS_FINE,  (
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet_high_mediumhiggs_'+COM+'TeV":50:1.1:0.10'
@@ -478,19 +489,13 @@ for pl in plots:
       opts    = x[4]
       extra = options.extra + extra_global + extra_channel[ch] + opts
 
-      os.system('./bin/HiggsTauTauPlot4 --cfg=%(CFG)s --channel=%(ch)s'
+      os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot4 --cfg=%(CFG)s --channel=%(ch)s'
         ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
         ' --var="%(var)s[%(bin)s]" --norm_bins=true '
         ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
         ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
         ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbose=false'
         ' --paramfile=%(PARAMS)s --folder=%(FOLDER)s %(extra)s' % vars())
-    os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_*.root' % vars())
-    os.system('rm datacard_*.root')
-
-
-
-
-
-
+    os.system('hadd -f htt_%(ch)s.inputs-%(ANA)s-%(COM)sTeV%(dc_app)s%(output)s.root datacard_%(var)s_*_%(ch)s_%(YEAR)s.root' % vars())
+    os.system('rm datacard_%(var)s_*_%(ch)s_%(YEAR)s.root' % vars())
 
