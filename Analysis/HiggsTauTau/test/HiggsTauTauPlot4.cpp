@@ -204,6 +204,15 @@ int main(int argc, char* argv[]){
 	}
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 
+
+	// ************************************************************************
+	// Split ZTT into decay modes
+	// ************************************************************************
+	hmap["ZTT-1P0PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==0", "wt");
+	hmap["ZTT-1P1PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==1", "wt");
+	hmap["ZTT-3P"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==10", "wt");
+
+
 	// ************************************************************************
 	// ggH pT Reweighting
 	// ************************************************************************

@@ -699,10 +699,18 @@ htt_em.inputs-sm-8TeV.root
 --x_axis_label="Tau p_{T} [GeV]" --datacard="inclusive_mt50"   --background_scheme="et_default" --draw_ratio=true
 
 
-./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2011.cfg --channel=mt \
-  --method=8 --cat="n_jets==0 && pt_2>20 && pt_2<=25. && n_bjets==0" --set_alias="sel:1" --var="mt_1(20,0,160)" \
-  --x_axis_label="m_{T} [GeV]" --datacard="0jet_low" --extra_pad=1.1 \
-  --background_scheme="mt_with_zmm"
+./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2011.cfg --channel=et \
+  --method=8 --cat="n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0" --set_alias="sel:mt_1<15" --var="m_sv(35,0,350)" \
+  --x_axis_label="Tau p_{T} [GeV]" --datacard="1jet_medium" --extra_pad=1.1 \
+  --background_scheme="et_default" --set_alias="QCD_Shape_Sample:Special_4_Data"
+
+
+  ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=mt --set_alias="sel:mt_1<30." \
+  --method=8 --cat="inclusive" --var="m_2(36,0,1.8)" \
+  --x_axis_label="Tau Mass [GeV]" --datacard="inclusive" \
+  --background_scheme="tau_modes" --draw_ratio=false --extra_pad=1.0 --use_htt_style=true \
+  --draw_error_band=true \
+  --shift_backgrounds="ZTT-1P0PZ:1.00828,ZTT-1P1PZ:1.00828,ZTT-3P:1.00828,ZTT:1.00828,QCD:1.054,W:0.973361,ZL:1.01038,ZJ:1.5733,VV:0.975726,TT:1.02835" --auto_error_band=0.0359505
 
 
 

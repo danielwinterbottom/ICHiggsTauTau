@@ -82,6 +82,14 @@ namespace ic {
       PlotBkgComponent("zll","Z#rightarrow#mu#mu",{"ZLL"},kAzure  + 2),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
     };
+    bkg_schemes_["tau_modes"] = {
+      PlotBkgComponent("qcd","QCD"            ,{"QCD"}                ,kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"       ,{"TT"}                 ,kBlue   - 8),
+      PlotBkgComponent("ewk","electroweak"    ,{"W","VV","ZL","ZJ"}   ,kRed    + 2),
+      PlotBkgComponent("ztt1","Z#rightarrow#tau#tau (1 Prong 0 #pi^{0})"   ,{"ZTT-1P0PZ"}  ,kOrange + 2),
+      PlotBkgComponent("ztt2","Z#rightarrow#tau#tau (1 Prong 1 #pi^{0})"   ,{"ZTT-1P1PZ"}  ,kOrange - 0),
+      PlotBkgComponent("ztt3","Z#rightarrow#tau#tau (3 Prong) "            ,{"ZTT-3P"}     ,17)
+    };
   }
 
   void HTTPlot::SetMCStackStyle(ic::TH1PlotElement & ele, unsigned color) {
