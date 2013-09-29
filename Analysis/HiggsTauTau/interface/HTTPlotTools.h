@@ -94,6 +94,8 @@ namespace ic {
       inline double extra_pad() const { return extra_pad_; }
       inline std::string x_axis_label() const { return x_axis_label_; }
       inline std::string y_axis_label() const { return y_axis_label_; }
+      inline std::string title_left() const { return title_left_; }
+      inline std::string title_right() const { return title_right_; }
     private:
       boost::program_options::options_description config_;
       std::map<std::string, std::vector<PlotBkgComponent>> bkg_schemes_;

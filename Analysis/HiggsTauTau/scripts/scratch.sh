@@ -435,15 +435,14 @@ htt_em.inputs-sm-8TeV.root
 
 
 ./bin/SOBPlot --cfg=scripts/new_plot_sm_2012.cfg \
- --datacard_regex="htt_.._[12345]_.TeV.txt" --root_file_regex="htt.*root" \
- --datacard_path=limit_area/LIMITS-130924-sm/hww-bg/et/125 \
- --root_file_path=limit_area/LIMITS-130924-sm/hww-bg/et/common/ \
+ --datacard_path=limit_area/LIMITS-130924-sm/hww-bg/et/125      --datacard_regex="htt_.._._.TeV.txt" \
+ --root_file_path=limit_area/LIMITS-130924-sm/hww-bg/et/common  --root_file_regex="htt.*root" \
  --pulls_file=limit_area/LIMITS-130924-sm/hww-bg/et/125/out/mlfit.txt \
- --signal_mass=125 --postfit=true --mssm=false  \
+ --signal_mass=125 --postfit=true --mssm=false --norm_bins=true \
  --title_left="CMS Preliminary, #sqrt{s} = 8 TeV, L = 19.8 fb^{-1}" \
- --blind=false --x_blind_min=100 --x_blind_max=160 --norm_bins=true \
+ --blind=false --x_blind_min=100 --x_blind_max=160 \
  --background_scheme=all --signal_scheme=sm_default --draw_error_band=true \
- --x_axis_label="M_{#tau#tau} [GeV]" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
+ --x_axis_label="m_{#tau#tau} [GeV]" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
  --extra_pad=1.2
 
 

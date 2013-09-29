@@ -468,19 +468,10 @@ namespace ic {
 				}
 			}
 			std::cout << "Found 68\% limits at " << lower_limit << "," << upper_limit << std::endl;
-			// double sig_68 = IntegrateFloatRange(&sig_shape, lower_limit, upper_limit) / sig_tot;
-			// std::cout << "Found 68\% fraction " << sig_68 << std::endl;
 			double signal_yield = IntegrateFloatRange(&sig_shape, lower_limit, upper_limit);
-			double backgr_yield = IntegrateFloatRange(&bkg_shape, lower_limit, upper_limit);
-
-
-			// double signal_yield = this->key_match(keys[i]).signals().GetRate();
-			// std::cout << "Signal rate: " << signal_yield << std::endl;
-			// double backgr_yield = this->key_match(keys[i]).backgrounds().GetRate();
-			// std::cout << "Background rate: " << backgr_yield << std::endl;
-
-			
+			double backgr_yield = IntegrateFloatRange(&bkg_shape, lower_limit, upper_limit);			
 			double weight = signal_yield / backgr_yield;
+			std::cout << "S/B: " << weight << std::endl;
 			for (unsigned j = 0; j < obs_.size(); ++j) {
 				if (obs_[j].GetKey() == keys[i]) {
 					obs_[j].rate *= weight;

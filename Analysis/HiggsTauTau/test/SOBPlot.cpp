@@ -74,8 +74,14 @@ int main(int argc, char* argv[]){
   string pulls_file       = "";
   string datacard_path    = "";
   string root_file_path   = "";
-  bool postfit          = true;
-  bool mssm             = false;
+  string output           = "";
+  string text1            = "";
+  string text2            = "";
+  bool postfit            = true;
+  bool mssm               = false;
+  bool ignore_corrs       = false;
+  bool rebin_to_vbf       = true;
+  bool split_zll          = false;
 
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
@@ -85,13 +91,19 @@ int main(int argc, char* argv[]){
   po::options_description config("Configuration");
   config.add_options()
     ("help,h",  "print the help message")
-    ("datacard_regex",       po::value<string>(&datacard_regex)->required(),   "[REQUIRED] regular expression for datacards to parse")
-    ("root_file_regex",      po::value<string>(&root_file_regex)->required(),  "[REQUIRED] regular expression for root files to parse")
-    ("datacard_path",        po::value<string>(&datacard_path)->required(),   "[REQUIRED] path to the folder containing datacard *.txt files")
-    ("root_file_path",       po::value<string>(&root_file_path)->required(),  "[REQUIRED] path to the folder containing datacard *.root files")
-    ("pulls_file",           po::value<string>(&pulls_file)->required(),      "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
-    ("postfit",              po::value<bool>(&postfit)->required(),           "[REQUIRED] use the pulls file to make a post-fit plot")
-    ("mssm",                 po::value<bool>(&mssm)->default_value(false),                   "input is an MSSM datacard");
+    ("datacard_regex",       po::value<string>(&datacard_regex)->required(),            "[REQUIRED] regular expression for datacards to parse")
+    ("root_file_regex",      po::value<string>(&root_file_regex)->required(),           "[REQUIRED] regular expression for root files to parse")
+    ("datacard_path",        po::value<string>(&datacard_path)->required(),             "[REQUIRED] path to the folder containing datacard *.txt files")
+    ("root_file_path",       po::value<string>(&root_file_path)->required(),            "[REQUIRED] path to the folder containing datacard *.root files")
+    ("pulls_file",           po::value<string>(&pulls_file)->required(),                "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
+    ("output",               po::value<string>(&output)->required(),                    "[REQUIRED] output name (no extension)")
+    ("text1",                po::value<string>(&text1)->default_value(""),              "[REQUIRED] output name (no extension)")
+    ("text2",                po::value<string>(&text2)->default_value(""),              "[REQUIRED] output name (no extension)")
+    ("postfit",              po::value<bool>(&postfit)->required(),                     "[REQUIRED] use the pulls file to make a post-fit plot")
+    ("ignore_corrs",         po::value<bool>(&ignore_corrs)->default_value(false),      "Ignore all nuisance parameter correlations when evaulating uncertainties")
+    ("rebin_to_vbf",         po::value<bool>(&rebin_to_vbf)->default_value(true),       "Use wider vbf binning for all categories")
+    ("split_zll",            po::value<bool>(&split_zll)->default_value(false),         "Draw Z->ll component separately from electroweak")
+    ("mssm",                 po::value<bool>(&mssm)->default_value(false),              "input is an MSSM datacard");
   HTTPlot plot;
   config.add(plot.GenerateOptions("")); // The string here is a prefix for the options parameters
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -127,7 +139,7 @@ int main(int argc, char* argv[]){
     setup.ApplyPulls();
   } 
 
-  // setup.SetIgnoreNuisanceCorrelations(true);
+  setup.SetIgnoreNuisanceCorrelations(ignore_corrs);
   // setup = setup.no_shapes();
 
   double sig_yield_before = setup.signals().GetRate();
@@ -135,7 +147,7 @@ int main(int argc, char* argv[]){
   double sig_yield_after = setup.signals().GetRate();
   double scale_all = sig_yield_before / sig_yield_after;
 
-  // setup.VariableRebin({0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
+  if (rebin_to_vbf) setup.VariableRebin({0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
 
   vector<string> samples = {"ZTT","QCD","W","ZL","ZJ","ZLL","VV","TT","Ztt","Fakes","EWK","ttbar"};
 
@@ -162,8 +174,13 @@ int main(int argc, char* argv[]){
   qcd_hist.SetTitle("QCD");
 
   TH1F ewk_hist = setup.process({"W","ZL","ZJ","ZLL","VV","EWK"}).GetShape();
+  if (split_zll) ewk_hist = setup.process({"W","VV","EWK"}).GetShape();
   SetMCStackStyle(ewk_hist, kRed    + 2);
   ewk_hist.SetTitle("electroweak");
+
+  TH1F zll_hist = setup.process({"ZL","ZJ","ZLL"}).GetShape();
+  SetMCStackStyle(zll_hist, kAzure  + 2);
+  zll_hist.SetTitle("Z#rightarrowll");
 
   TH1F top_hist = setup.process({"TT","ttbar"}).GetShape();
   SetMCStackStyle(top_hist, kBlue   - 8);
@@ -206,6 +223,7 @@ int main(int argc, char* argv[]){
   vector<TH1F *> drawn_hists;
   drawn_hists.push_back(&qcd_hist);
   drawn_hists.push_back(&ewk_hist);
+  drawn_hists.push_back(&zll_hist);
   drawn_hists.push_back(&ztt_hist);
   drawn_hists.push_back(&top_hist);
   drawn_hists.push_back(&signal_hist);
@@ -224,6 +242,7 @@ int main(int argc, char* argv[]){
   thstack.Add(&qcd_hist, "HIST");
   thstack.Add(&top_hist, "HIST");
   thstack.Add(&ewk_hist, "HIST");
+  if (split_zll) thstack.Add(&zll_hist, "HIST");
   thstack.Add(&ztt_hist, "HIST");
   thstack.Add(&signal_hist, "HIST");
 
@@ -246,15 +265,18 @@ int main(int argc, char* argv[]){
   total_hist.Draw("SAMEE2");
   data_hist.Draw("SAME");
 
-  TLegend *legend = new TLegend(0.7,0.20,0.9,0.40,"","brNDC");
+  TLegend *legend = new TLegend(0.65,0.20,0.9,0.40,"","brNDC");
   legend->AddEntry(&signal_hist, "", "F");
   legend->AddEntry(&data_hist, "", "LP");
   legend->AddEntry(&ztt_hist, "", "F");
-  legend->AddEntry(&top_hist, "", "F");
+  if (split_zll) legend->AddEntry(&zll_hist, "", "F");
   legend->AddEntry(&ewk_hist, "", "F");
+  legend->AddEntry(&top_hist, "", "F");
   legend->AddEntry(&qcd_hist, "", "F");
   LegendStyle(legend);
   legend->Draw();
+
+
 
 
   TPad padBack("padBack","padBack",0.53,0.52,0.975,0.956);//TPad must be created after TCanvas otherwise ROOT crashes
@@ -264,6 +286,17 @@ int main(int argc, char* argv[]){
   pad.cd();
   pad.SetFillColor(0);
   pad.SetFillStyle(0);
+  double sig_max_val = signal_hist.GetBinContent(signal_hist.GetMaximumBin());
+  double dif_max_val = 0;
+  for (int i = 1; i < diff_hist.GetNbinsX(); ++i) {
+    dif_max_val = std::max(diff_hist.GetBinContent(i) + diff_hist.GetBinError(i), dif_max_val);
+  }  
+  double err_max_val = 0;
+  for (int i = 1; i < err_hist.GetNbinsX(); ++i) {
+    err_max_val = std::max(err_hist.GetBinContent(i) + err_hist.GetBinError(i), err_max_val);
+  }
+  double inset_y_max = 1.3 * std::max({sig_max_val, dif_max_val, err_max_val});
+
   err_hist.GetYaxis()->SetNdivisions(5);
   err_hist.GetYaxis()->SetLabelSize(0.05);
   err_hist.GetXaxis()->SetTitle("#bf{m_{#tau#tau} [GeV]}    ");
@@ -274,7 +307,7 @@ int main(int argc, char* argv[]){
   err_hist.SetNdivisions(405);
   err_hist.Draw("E2");
   err_hist.GetXaxis()->SetRangeUser(40,199);
-  // err_hist.GetYaxis()->SetRangeUser(-0.5,1.5);
+  err_hist.GetYaxis()->SetRangeUser(-inset_y_max,inset_y_max);
   signal_hist.Draw("HISTSAME");
   diff_hist.Draw("SAME");
   pad.RedrawAxis();
@@ -290,7 +323,19 @@ int main(int argc, char* argv[]){
   canv.cd();
   padBack.Draw();
   pad.Draw();
-  canv.SaveAs("test_sob.pdf");
+  TLatex *title_latex = new TLatex();
+  title_latex->SetNDC();
+  title_latex->SetTextSize(0.03);
+  title_latex->SetTextFont(62);
+  title_latex->SetTextAlign(31);
+  title_latex->DrawLatex(0.95,0.93,plot.title_right().c_str());
+  title_latex->SetTextAlign(11);
+  title_latex->DrawLatex(0.15,0.93,plot.title_left().c_str());
+  title_latex->SetTextSize(0.04);
+  title_latex->DrawLatex(0.20,0.87,text1.c_str());
+  title_latex->DrawLatex(0.20,0.82,text2.c_str());
+  canv.SaveAs((output+".pdf").c_str());
+  canv.SaveAs((output+".png").c_str());
 
 
   return 0;
