@@ -558,24 +558,6 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	// ************************************************************************
-	// Fix Negative Bins
-	// ************************************************************************
-	vector<string> negbins_regex;
-	boost::split(negbins_regex, fix_negative_bins, boost::is_any_of(","));
-	if (negbins_regex.size() > 0) {
-		std::cout << "[HiggsTauTauPlot4] Running FixNegativeBins with patterns: " << fix_negative_bins << std::endl;
-		vector<boost::regex> regex_vec;
-		for (auto str : negbins_regex) regex_vec.push_back(boost::regex(str));
-		for (auto & entry : hmap) {
-			for (auto const& rgx : regex_vec) {
-				if (boost::regex_match(entry.first, rgx)) {
-					FixNegativeBins(&(entry.second.first), false);
-				}
-			}
-		}
-	}
-
 
 	// ************************************************************************
 	// Fix Empty Histograms
@@ -633,8 +615,8 @@ int main(int argc, char* argv[]){
       double data_bin = data.GetBinContent(i);
       bool has_signal = false;
       for (auto bkg : bkgs) bkg_tot += hmap[bkg].first.GetBinContent(i);
-      if (data_bin > 0. && bkg_tot == 0.) {
-        std::cout << "\e[31mWarning: Bin [" << data.GetBinLowEdge(i) << "," << data.GetBinLowEdge(i+1) << "] has data but no background\e[m" << std::endl;
+      if (data_bin > 0. && bkg_tot <= 0.) {
+        std::cout << "\e[31mWarning: Bin [" << data.GetBinLowEdge(i) << "," << data.GetBinLowEdge(i+1) << "] has data and total background: " <<  bkg_tot << "\e[m" << std::endl;
         for (auto sm_mass : sm_masses) {
           for (auto proc : sm_procs) {
             if (hmap[proc+sm_mass].first.GetBinContent(i) > 0.) {
@@ -661,6 +643,25 @@ int main(int argc, char* argv[]){
       }
     }
   }
+	
+  // ************************************************************************
+	// Fix Negative Bins
+	// ************************************************************************
+	vector<string> negbins_regex;
+	boost::split(negbins_regex, fix_negative_bins, boost::is_any_of(","));
+	if (negbins_regex.size() > 0) {
+		std::cout << "[HiggsTauTauPlot4] Running FixNegativeBins with patterns: " << fix_negative_bins << std::endl;
+		vector<boost::regex> regex_vec;
+		for (auto str : negbins_regex) regex_vec.push_back(boost::regex(str));
+		for (auto & entry : hmap) {
+			for (auto const& rgx : regex_vec) {
+				if (boost::regex_match(entry.first, rgx)) {
+					FixNegativeBins(&(entry.second.first), false);
+				}
+			}
+		}
+	}
+
 
 	// ************************************************************************
 	// Print H->WW contribution for e-mu
