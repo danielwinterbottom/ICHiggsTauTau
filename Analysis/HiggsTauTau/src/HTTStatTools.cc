@@ -1,4 +1,5 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTStatTools.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTAnalysisTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include <vector>
 #include <map>
@@ -439,10 +440,46 @@ namespace ic {
 			if (std::find(keys.begin(), keys.end(), a) == keys.end()) keys.push_back(a);
 		}
 		for (unsigned i = 0; i < keys.size(); ++i) {
-			double signal_yield = this->key_match(keys[i]).signals().GetRate();
+			std::cout << "Calculating S/B weight for: " << keys[i].channel << " " << keys[i].era << " " << keys[i].category << std::endl;
+
+			TH1F sig_shape = this->key_match(keys[i]).signals().GetShape();
+			TH1F bkg_shape = this->key_match(keys[i]).backgrounds().GetShape();
+
+			// Find the range from the lowest edge containing 15.9% of the signal
+			double xmin = sig_shape.GetXaxis()->GetXmin();
+			double xmax = sig_shape.GetXaxis()->GetXmax();
+			unsigned steps = 350;
+			double step_size = (xmax-xmin)/double(steps);
+			double sig_tot = sig_shape.Integral();
+			double lower_limit = 0;
+			double upper_limit = 0;
+			for (unsigned j = 0; j < steps; ++j) {
+				double integral = IntegrateFloatRange(&sig_shape, xmin, xmin+(step_size*double(j)));
+				if (integral/sig_tot > 0.159) {
+					lower_limit = xmin+(step_size*double(j));
+					break;
+				}
+			}
+			for (unsigned j = 0; j < steps; ++j) {
+				double integral = IntegrateFloatRange(&sig_shape, xmax - (step_size*double(j)), xmax);
+				if (integral/sig_tot > 0.159) {
+					upper_limit = xmax - (step_size*double(j));
+					break;
+				}
+			}
+			std::cout << "Found 68\% limits at " << lower_limit << "," << upper_limit << std::endl;
+			// double sig_68 = IntegrateFloatRange(&sig_shape, lower_limit, upper_limit) / sig_tot;
+			// std::cout << "Found 68\% fraction " << sig_68 << std::endl;
+			double signal_yield = IntegrateFloatRange(&sig_shape, lower_limit, upper_limit);
+			double backgr_yield = IntegrateFloatRange(&bkg_shape, lower_limit, upper_limit);
+
+
+			// double signal_yield = this->key_match(keys[i]).signals().GetRate();
 			// std::cout << "Signal rate: " << signal_yield << std::endl;
-			double backgr_yield = this->key_match(keys[i]).backgrounds().GetRate();
+			// double backgr_yield = this->key_match(keys[i]).backgrounds().GetRate();
 			// std::cout << "Background rate: " << backgr_yield << std::endl;
+
+			
 			double weight = signal_yield / backgr_yield;
 			for (unsigned j = 0; j < obs_.size(); ++j) {
 				if (obs_[j].GetKey() == keys[i]) {

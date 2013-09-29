@@ -91,7 +91,9 @@ namespace ic {
       inline bool blind() const { return blind_; }
       inline double x_blind_min() const { return x_blind_min_; }
       inline double x_blind_max() const { return x_blind_max_; }
-
+      inline double extra_pad() const { return extra_pad_; }
+      inline std::string x_axis_label() const { return x_axis_label_; }
+      inline std::string y_axis_label() const { return y_axis_label_; }
     private:
       boost::program_options::options_description config_;
       std::map<std::string, std::vector<PlotBkgComponent>> bkg_schemes_;

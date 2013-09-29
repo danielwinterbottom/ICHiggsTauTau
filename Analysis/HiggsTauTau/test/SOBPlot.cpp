@@ -9,6 +9,7 @@
 #include "TH2F.h"
 #include "TStyle.h"
 #include "THStack.h"
+#include "TLine.h"
 
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
@@ -53,6 +54,16 @@ void SetDataStyle(TH1F & ele) {
   ele.SetMarkerStyle(20);
   ele.SetMarkerSize(1.1);
   return;
+}
+
+void LegendStyle(TLegend *legend) {
+  legend->SetBorderSize(1);
+  legend->SetTextFont(42);
+  legend->SetLineColor(0);
+  legend->SetLineStyle(1);
+  legend->SetLineWidth(1);
+  legend->SetFillColor(0);
+  legend->SetFillStyle(1001);
 }
 
 
@@ -111,11 +122,20 @@ int main(int argc, char* argv[]){
     }
   }
 
+  if (postfit) {
+    setup.ParsePulls(pulls_file);
+    setup.ApplyPulls();
+  } 
+
+  // setup.SetIgnoreNuisanceCorrelations(true);
+  // setup = setup.no_shapes();
+
+  double sig_yield_before = setup.signals().GetRate();
   setup.WeightSoverB();
+  double sig_yield_after = setup.signals().GetRate();
+  double scale_all = sig_yield_before / sig_yield_after;
 
-  setup.VariableRebin({0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
-
-  setup.PrintAll();
+  // setup.VariableRebin({0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
 
   vector<string> samples = {"ZTT","QCD","W","ZL","ZJ","ZLL","VV","TT","Ztt","Fakes","EWK","ttbar"};
 
@@ -126,60 +146,62 @@ int main(int argc, char* argv[]){
   TCanvas canv;
 
   TH1F signal_hist = setup.process(signal_procs).GetShape();
-  // ic::TH1PlotElement signal_shape("signal_shape", &signal_hist, "1#times H(125)#rightarrow#tau#tau");
   SetMCStackStyle(signal_hist, kRed);
   signal_hist.SetFillColor(kRed);
   signal_hist.SetFillStyle(3004);
   signal_hist.SetLineColor(kRed);
   signal_hist.SetLineWidth(2);
+  signal_hist.SetTitle(("H("+plot.draw_signal_mass()+")#rightarrow#tau#tau").c_str());
 
   TH1F ztt_hist = setup.process({"ZTT","Ztt"}).GetShape();
-  // ic::TH1PlotElement ztt_shape("ztt_shape", &ztt_hist, "Z#rightarrow#tau#tau");
   SetMCStackStyle(ztt_hist, kOrange - 4);
+  ztt_hist.SetTitle("Z#rightarrow#tau#tau");
 
   TH1F qcd_hist = setup.process({"QCD","Fakes"}).GetShape();
-  // ic::TH1PlotElement qcd_shape("qcd_shape", &qcd_hist, "QCD");
   SetMCStackStyle(qcd_hist, kMagenta-10);
+  qcd_hist.SetTitle("QCD");
 
   TH1F ewk_hist = setup.process({"W","ZL","ZJ","ZLL","VV","EWK"}).GetShape();
-  // ic::TH1PlotElement ewk_shape("ewk_shape", &ewk_hist, "electroweak");
   SetMCStackStyle(ewk_hist, kRed    + 2);
+  ewk_hist.SetTitle("electroweak");
 
   TH1F top_hist = setup.process({"TT","ttbar"}).GetShape();
-  // ic::TH1PlotElement top_shape("top_shape", &top_hist, "t#bar{t}");
   SetMCStackStyle(top_hist, kBlue   - 8);
+  top_hist.SetTitle("t#bar{t}");
 
+  // total_hist will be used to draw the background error on the main plot
   TH1F total_hist = setup.process({"ZTT","ZL","ZJ","ZLL","W","QCD","VV","TT","Ztt","Fakes","EWK","ttbar"}).GetShape();
-  // ic::TH1PlotElement total_shape("total_shape", &total_hist,"bkg. uncertainty");
-
-
   total_hist.SetMarkerSize(0);
   total_hist.SetFillColor(1);
   total_hist.SetFillStyle(3013);
   total_hist.SetLineWidth(1);
-  // total_shape.set_draw_options("e2");
+  total_hist.SetTitle("bkg. uncertainty");
 
+
+  // copy_hist removes the bin errors from total_hist, and will be used
+  // to determine the data-bkg histogram for the inset plot
   TH1F copy_hist = total_hist;
   for (int i = 1; i <= copy_hist.GetNbinsX(); ++i) copy_hist.SetBinError(i, 0);
 
+  // err_hist removes the bin contents from total_hist, and will be used
+  // to draw the error band on the inset plot
   TH1F err_hist = total_hist;
   for (int i = 1; i <= err_hist.GetNbinsX(); ++i) err_hist.SetBinContent(i, 0);
-  // ic::TH1PlotElement err_shape("err_shape", &err_hist,"bkg. uncertainty");
   err_hist.SetMarkerSize(0.0);
   err_hist.SetFillColor(1);
   err_hist.SetFillStyle(3013);
   err_hist.SetLineWidth(3);
-  // err_hist.set_draw_options("HISTE2");
+  err_hist.SetTitle("bkg. uncertainty");
 
   TH1F data_hist = setup.GetObservedShape();
   SetDataStyle(data_hist);
-  BlindHistogram(&data_hist, 100, 160);
+  data_hist.SetTitle("observed");
+  if (plot.blind()) BlindHistogram(&data_hist, plot.x_blind_min(), plot.x_blind_max());
 
   TH1F diff_hist = data_hist;
   diff_hist.Add(&copy_hist, -1.);
-  // ic::TH1PlotElement diff_shape("diff_shape", &diff_hist,"Data - Background");
   SetDataStyle(diff_hist);
-  
+  diff_hist.SetTitle("observed - bkg.");
 
   vector<TH1F *> drawn_hists;
   drawn_hists.push_back(&qcd_hist);
@@ -192,10 +214,9 @@ int main(int argc, char* argv[]){
   drawn_hists.push_back(&err_hist);
   drawn_hists.push_back(&total_hist);
  
-
   for (unsigned i = 0; i < drawn_hists.size(); ++i) {
      drawn_hists[i]->SetLineWidth(2);
-     // drawn_hists[i]->hist_ptr()->Scale(sig_before/sig_after);
+     drawn_hists[i]->Scale(scale_all);
      drawn_hists[i]->Scale(1.0, "width");
   }
 
@@ -206,9 +227,35 @@ int main(int argc, char* argv[]){
   thstack.Add(&ztt_hist, "HIST");
   thstack.Add(&signal_hist, "HIST");
 
+  thstack.SetMaximum(thstack.GetMaximum()*1.1*plot.extra_pad());
   thstack.Draw();
+  thstack.GetXaxis()->SetTitle(plot.x_axis_label().c_str());
+  thstack.GetYaxis()->SetTitle(plot.y_axis_label().c_str());
+  thstack.GetHistogram()->SetTitleSize  (0.055,"Y");
+  thstack.GetHistogram()->SetTitleOffset(1.200,"Y");
+  thstack.GetHistogram()->SetLabelOffset(0.014,"Y");
+  thstack.GetHistogram()->SetLabelSize  (0.040,"Y");
+  thstack.GetHistogram()->SetLabelFont  (42   ,"Y");
+  thstack.GetHistogram()->SetTitleSize  (0.055,"X");
+  thstack.GetHistogram()->SetTitleOffset(1.100,"X");
+  thstack.GetHistogram()->SetLabelOffset(0.014,"X");
+  thstack.GetHistogram()->SetLabelSize  (0.040,"X");
+  thstack.GetHistogram()->SetLabelFont  (42   ,"X");
+
+  // canv.Update();
   total_hist.Draw("SAMEE2");
   data_hist.Draw("SAME");
+
+  TLegend *legend = new TLegend(0.7,0.20,0.9,0.40,"","brNDC");
+  legend->AddEntry(&signal_hist, "", "F");
+  legend->AddEntry(&data_hist, "", "LP");
+  legend->AddEntry(&ztt_hist, "", "F");
+  legend->AddEntry(&top_hist, "", "F");
+  legend->AddEntry(&ewk_hist, "", "F");
+  legend->AddEntry(&qcd_hist, "", "F");
+  LegendStyle(legend);
+  legend->Draw();
+
 
   TPad padBack("padBack","padBack",0.53,0.52,0.975,0.956);//TPad must be created after TCanvas otherwise ROOT crashes
   padBack.SetFillColor(0);
@@ -218,74 +265,32 @@ int main(int argc, char* argv[]){
   pad.SetFillColor(0);
   pad.SetFillStyle(0);
   err_hist.GetYaxis()->SetNdivisions(5);
-  err_hist.GetYaxis()->SetLabelSize(0.06);
+  err_hist.GetYaxis()->SetLabelSize(0.05);
   err_hist.GetXaxis()->SetTitle("#bf{m_{#tau#tau} [GeV]}    ");
   err_hist.GetXaxis()->SetTitleColor(kBlack);
-  err_hist.GetXaxis()->SetTitleSize(0.07);
+  err_hist.GetXaxis()->SetTitleSize(0.06);
   err_hist.GetXaxis()->SetTitleOffset(0.95);
-  err_hist.GetXaxis()->SetLabelSize(0.06);
-  err_hist.SetNdivisions(505);
+  err_hist.GetXaxis()->SetLabelSize(0.05);
+  err_hist.SetNdivisions(405);
   err_hist.Draw("E2");
-  err_hist.GetXaxis()->SetRangeUser(60,179);
+  err_hist.GetXaxis()->SetRangeUser(40,199);
+  // err_hist.GetYaxis()->SetRangeUser(-0.5,1.5);
   signal_hist.Draw("HISTSAME");
   diff_hist.Draw("SAME");
   pad.RedrawAxis();
+  TLine line;
+  line.DrawLine(40,0,200,0);
+  TLegend *inlegend = new TLegend(0.60,0.75,0.9,0.90,"","brNDC");
+  inlegend->AddEntry(&signal_hist, "", "F");
+  inlegend->AddEntry(&diff_hist, "", "LP");
+  inlegend->AddEntry(&err_hist, "", "F");
+  LegendStyle(inlegend);
+  inlegend->Draw();
 
   canv.cd();
   padBack.Draw();
   pad.Draw();
   canv.SaveAs("test_sob.pdf");
-
-  // plot.GeneratePlot(hmap);
-
-
-  // setup.ParsePulls("bin-by-bin/cmb/125/out/mlfit.txt");
-  // setup.ApplyPulls();
-
-
-
-  // ic::TH1PlotElement data_shape("data_shape", &data_hist, "observed");
-
-
-
-
-  // plot.AddTH1PlotElement(qcd_shape);
-  // plot.AddTH1PlotElement(top_shape);
-  // plot.AddTH1PlotElement(ewk_shape);
-  // plot.AddTH1PlotElement(ztt_shape);
-  // plot.AddTH1PlotElement(signal_shape);
-  // plot.AddTH1PlotElement(total_shape);
-  // plot.AddTH1PlotElement(data_shape);
-  // plot.legend_height = 0.045;
-  // plot.x_axis_title = "M_{#tau#tau} [GeV]";
-  // plot.y_axis_title = "S/B Weighted dN/dm_{#tau#tau} [1/GeV]";
-  // plot.title_left = "CMS Preliminary, #sqrt{s} = 7-8 TeV, L = 24.3 fb^{-1}";
-  // ic::TextElement text("e#mu, e#tau_{h}, #mu#tau_{h}, #tau_{h}#tau_{h}",0.04,0.20,0.85);
-  // plot.AddTextElement(text);
-  // plot.extra_pad = 1.2;
-  // plot.GeneratePlot();
-
-  // signal_shape.set_draw_options("][HIST");
-
-  // ic::Plot diffplot;
-  // signal_shape.set_in_stack(false);
-  // diffplot.use_htt_style = true;
-  // diffplot.output_filename = "test_diff_plot.pdf";
-  // diffplot.AddTH1PlotElement(err_shape);
-  // diffplot.AddTH1PlotElement(signal_shape);
-  // diffplot.AddTH1PlotElement(diff_shape);
-  // diffplot.legend_height = 0.045;
-  // diffplot.x_axis_title = "M_{#tau#tau} [GeV]";
-  // diffplot.y_axis_title = "";
-  // diffplot.custom_x_axis_range = true;
-  // diffplot.x_axis_min = 60;
-  // diffplot.x_axis_max = 179;
-  // // diffplot.custom_y_axis_range = true;
-  // // diffplot.y_axis_min = -0.1;
-  // // diffplot.y_axis_max = 0.1;
-  // diffplot.extra_pad = 1.5;
-  // diffplot.title_left = "CMS Preliminary, #sqrt{s} = 7-8 TeV, L = 24.3 fb^{-1}";
-  // diffplot.GeneratePlot();
 
 
   return 0;

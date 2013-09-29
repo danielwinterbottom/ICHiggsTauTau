@@ -26,6 +26,19 @@ namespace ic {
     return hist->Integral(0, hist->GetNbinsX() + 1);
   }
 
+  inline double IntegrateFloatRange(TH1F const* hist, double xmin, double xmax) {
+    TAxis *axis = hist->GetXaxis();
+    int bmin = axis->FindBin(xmin);
+    int bmax = axis->FindBin(xmax);
+    double integral = hist->Integral(bmin, bmax);
+    integral -= hist->GetBinContent(bmin)*(xmin-axis->GetBinLowEdge(bmin))/
+              axis->GetBinWidth(bmin);
+    integral -= hist->GetBinContent(bmax)*(axis->GetBinUpEdge(bmax)-xmax)/
+              axis->GetBinWidth(bmax);
+    return integral;
+  }
+
+
   inline double Error(TH1F const* hist) {
     double err = 0.0;
     hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
