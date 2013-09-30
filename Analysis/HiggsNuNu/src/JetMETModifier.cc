@@ -87,6 +87,8 @@ namespace ic {
     Smeargenmindr = dir2.make<TH1F>("Smeargenmindr","Smeargenmindr",1000,0.,10.);
     Smearjetgenjetptratio = dir2.make<TH1F>("Smearjetgenjetptratio","Smearjetgenjetptratio",100,0.,10.);
     Smearjetgenjetptratioetabin = dir2.make<TH2F>("Smearjetgenjetptratioetabin","Smearjetgenjetptratioetabin",100,0.,10.,100,-5.,5.);
+    Smearicjetrunmetjetptdiff = dir2.make<TH1F>("Smearicjetrunmetjetptdiff","Smearicjetrunmetjetptdiff",600,-30.,30.);
+    Smearicjetrunmetjetptratio = dir2.make<TH1F>("Smearicjetrunmetjetptratio","Smearicjetrunmetjetptratio",100,0.,10.);
     return 0;
   }
 
@@ -101,6 +103,13 @@ namespace ic {
       Met *met = event->GetPtr<Met>(met_label_);//MET collection
       ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
       ROOT::Math::PxPyPzEVector  newmet = oldmet;
+
+      //GET RUNMETUNCS COLLECTIONS FOR COMPARISON
+      std::vector<PFJet *> & runmetuncvec = event->GetPtrVec<PFJet>("jetsmearedcentralJets");//Main jet collection
+
+      //MATCH RUNMETUNCS JETS
+      std::vector< std::pair<PFJet*, PFJet*> > jet_runmetjet_pairs;
+      jet_runmetjet_pairs = MatchByDR(vec,runmetuncvec,0.5,true,true);
 
       //MATCH GEN JETS
       std::vector< std::pair<PFJet*, GenJet*> > jet_genjet_pairs;
@@ -234,6 +243,24 @@ namespace ic {
 	  newjet = oldjet;
 	}
 	Smearptdiff->Fill(newjet.pt()-oldjet.pt());
+
+	//Get runmetuncjet matching icjet
+	int runmetindex = -1;
+	//Check for matches between ic and runmetunc jets
+	for(int j = 0;unsigned(j)<jet_runmetjet_pairs.size();j++){
+	  if(jet_runmetjet_pairs[j].first->id()==vec[i]->id()){
+	    runmetindex = j;
+	    break;
+	  }
+	}
+	if(runmetindex!=-1){
+	  Smearicjetrunmetjetptdiff->Fill(jet_runmetjet_pairs[runmetindex].second->pt()-newjet.pt());
+	  Smearicjetrunmetjetptratio->Fill(jet_runmetjet_pairs[runmetindex].second->pt()/newjet.pt());
+	}
+	else{
+	  Smearicjetrunmetjetptdiff->Fill(100);
+	  Smearicjetrunmetjetptratio->Fill(0);
+	}
 	
 	//Get initial jet order
 	if(newjet.pt() > oldjet1pt){

@@ -47,6 +47,8 @@ namespace ic {
     TH1F* Smeargenmindr;
     TH1F* Smearjetgenjetptratio;
     TH2F* Smearjetgenjetptratioetabin;
+    TH1F* Smearicjetrunmetjetptdiff;
+    TH1F* Smearicjetrunmetjetptratio;
     
   public:
     JetMETModifier(std::string const& name);
