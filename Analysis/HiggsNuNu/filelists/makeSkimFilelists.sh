@@ -10,13 +10,18 @@ else
     SKIMDIR=$1
     PATHDIR=$2
     
-    for iFile in `ls $SKIMDIR/$PATHDIR`
+    BASEDIR=`pwd`
+
+    cd $SKIMDIR/$PATHDIR
+
+    for iFile in `ls *.root`
       do
       echo $iFile > tmp
       iFileBase=`sed "s/.root//" tmp`
       echo "File base name = $iFileBase"
-      mkdir -p "skim/"$PATHDIR
-      echo $iFile > "skim/"$PATHDIR/$iFileBase.dat
+
+      mkdir -p $BASEDIR"/skim/"$PATHDIR
+      echo $iFile > $BASEDIR"/skim/"$PATHDIR/$iFileBase.dat
     done
 
 fi
