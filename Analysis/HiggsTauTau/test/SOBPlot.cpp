@@ -55,6 +55,17 @@ void SetDataStyle(TH1F & ele) {
   ele.SetMarkerSize(1.1);
   return;
 }
+void SetDataStyle(TGraphAsymmErrors & ele) {
+  ele.SetMarkerColor(1);
+  ele.SetLineColor(1);
+  ele.SetFillColor(1);
+  ele.SetFillStyle(0);
+  ele.SetLineWidth(2);
+  ele.SetMarkerStyle(20);
+  ele.SetMarkerSize(1.1);
+  return;
+}
+
 
 void LegendStyle(TLegend *legend) {
   legend->SetBorderSize(1);
@@ -82,6 +93,7 @@ int main(int argc, char* argv[]){
   bool ignore_corrs       = false;
   bool rebin_to_vbf       = true;
   bool split_zll          = false;
+  bool poisson_errors     = false;
 
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
@@ -103,6 +115,7 @@ int main(int argc, char* argv[]){
     ("ignore_corrs",         po::value<bool>(&ignore_corrs)->default_value(false),      "Ignore all nuisance parameter correlations when evaulating uncertainties")
     ("rebin_to_vbf",         po::value<bool>(&rebin_to_vbf)->default_value(true),       "Use wider vbf binning for all categories")
     ("split_zll",            po::value<bool>(&split_zll)->default_value(false),         "Draw Z->ll component separately from electroweak")
+    ("poisson_errors",       po::value<bool>(&poisson_errors)->default_value(false),    "Draw data with poisson error bars")
     ("mssm",                 po::value<bool>(&mssm)->default_value(false),              "input is an MSSM datacard");
   HTTPlot plot;
   config.add(plot.GenerateOptions("")); // The string here is a prefix for the options parameters
@@ -141,13 +154,14 @@ int main(int argc, char* argv[]){
 
   setup.SetIgnoreNuisanceCorrelations(ignore_corrs);
   // setup = setup.no_shapes();
+  if (rebin_to_vbf) setup.VariableRebin({0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
 
   double sig_yield_before = setup.signals().GetRate();
   setup.WeightSoverB();
   double sig_yield_after = setup.signals().GetRate();
   double scale_all = sig_yield_before / sig_yield_after;
+  std::cout << "Scale all distributions: " << scale_all << std::endl;
 
-  if (rebin_to_vbf) setup.VariableRebin({0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
 
   vector<string> samples = {"ZTT","QCD","W","ZL","ZJ","ZLL","VV","TT","Ztt","Fakes","EWK","ttbar"};
 
@@ -211,7 +225,9 @@ int main(int argc, char* argv[]){
   err_hist.SetTitle("bkg. uncertainty");
 
   TH1F data_hist = setup.GetObservedShape();
+  TGraphAsymmErrors data_errors = setup.GetObservedShapeErrors();
   SetDataStyle(data_hist);
+  SetDataStyle(data_errors);
   data_hist.SetTitle("observed");
   if (plot.blind()) BlindHistogram(&data_hist, plot.x_blind_min(), plot.x_blind_max());
 
@@ -236,6 +252,21 @@ int main(int argc, char* argv[]){
      drawn_hists[i]->SetLineWidth(2);
      drawn_hists[i]->Scale(scale_all);
      drawn_hists[i]->Scale(1.0, "width");
+  }
+  TGraphAsymmErrors diff_errors = data_errors; 
+  for (int k = 0; k < data_errors.GetN(); ++k) {
+    double x;
+    double y;
+    double width = data_hist.GetBinWidth(k+1);
+    data_errors.GetPoint(k, x, y);
+    data_errors.SetPoint(k, x, scale_all * (y/width));
+    double err_y_up =  scale_all * (data_errors.GetErrorYhigh(k)/width);
+    double err_y_dn =  scale_all * (data_errors.GetErrorYlow(k)/width);
+    data_errors.SetPointEYhigh(k, err_y_up);
+    data_errors.SetPointEYlow(k, err_y_dn);
+    diff_errors.SetPoint(k, x, (scale_all * (y/width)) - total_hist.GetBinContent(k+1));
+    diff_errors.SetPointEYhigh(k, err_y_up);
+    diff_errors.SetPointEYlow(k, err_y_dn);
   }
 
   THStack thstack("stack","stack");
@@ -263,7 +294,11 @@ int main(int argc, char* argv[]){
 
   // canv.Update();
   total_hist.Draw("SAMEE2");
-  data_hist.Draw("SAME");
+  if (!poisson_errors){
+    data_hist.Draw("SAME");
+  } else {
+    data_errors.Draw("SAMEP");
+  }
 
   TLegend *legend = new TLegend(0.65,0.20,0.9,0.40,"","brNDC");
   legend->AddEntry(&signal_hist, "", "F");
@@ -309,7 +344,11 @@ int main(int argc, char* argv[]){
   err_hist.GetXaxis()->SetRangeUser(40,199);
   err_hist.GetYaxis()->SetRangeUser(-inset_y_max,inset_y_max);
   signal_hist.Draw("HISTSAME");
-  diff_hist.Draw("SAME");
+  if (!poisson_errors){
+    diff_hist.Draw("SAME");
+  } else {
+    diff_errors.Draw("SAMEP");
+  }
   pad.RedrawAxis();
   TLine line;
   line.DrawLine(40,0,200,0);
@@ -332,7 +371,7 @@ int main(int argc, char* argv[]){
   title_latex->SetTextAlign(11);
   title_latex->DrawLatex(0.15,0.93,plot.title_left().c_str());
   title_latex->SetTextSize(0.04);
-  title_latex->DrawLatex(0.20,0.87,text1.c_str());
+  title_latex->DrawLatex(0.20,0.87,(text1 + (postfit? "" : " (prefit)")).c_str());
   title_latex->DrawLatex(0.20,0.82,text2.c_str());
   canv.SaveAs((output+".pdf").c_str());
   canv.SaveAs((output+".png").c_str());

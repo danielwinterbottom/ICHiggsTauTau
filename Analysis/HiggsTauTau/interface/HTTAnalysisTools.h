@@ -117,7 +117,6 @@ namespace ic {
     }
   }
 
-
   class HTTAnalysis {
     public:
       typedef std::pair<double, double> Value;

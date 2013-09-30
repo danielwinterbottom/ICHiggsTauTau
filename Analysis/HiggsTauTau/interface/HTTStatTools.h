@@ -7,6 +7,7 @@
 #include <string>
 #include <iostream>
 #include "TH1F.h"
+#include "TGraphAsymmErrors.h"
 #include "boost/assign/list_of.hpp"
 
 namespace ic {
@@ -106,8 +107,9 @@ struct Observation {
 	int 					category_id;
 	std::string   process;
 
-	double 				rate;
-	TH1F *				shape;
+	double 							rate;
+	TH1F *							shape;
+	TGraphAsymmErrors * errors;
 	friend std::ostream& operator<< (std::ostream &out, Observation &val);
 	CategoryKey GetKey() const;
 	static void PrintHeader(std::ostream &out);
@@ -149,6 +151,7 @@ class HTTSetup {
 		inline void SetIgnoreNuisanceCorrelations(bool const& val) {ignore_nuisance_correlations_ = val; }
 		TH1F 	GetShape();
 		TH1F 	GetObservedShape();
+		TGraphAsymmErrors GetObservedShapeErrors();
 		std::set<std::string> GetNuisanceSet();
 		bool HasProcess(std::string const& process) const;
 		void ScaleProcessByEra(std::string const& process, std::string const& era, double scale);
@@ -158,6 +161,8 @@ class HTTSetup {
 void PullsFromFile(std::string const& filename, std::vector<ic::Pull> & pullvec, bool verbose);
 
 bool BvsSBComparator(Pull const& pull1, Pull const& pull2);
+
+TGraphAsymmErrors BuildPoissonErrors(TH1F const& hist);
 
 }
 

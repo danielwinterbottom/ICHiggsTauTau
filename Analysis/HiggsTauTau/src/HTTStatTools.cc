@@ -5,6 +5,8 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include "Math/QuantFuncMathCore.h"
+#include "TMath.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"
@@ -12,6 +14,24 @@
 
 
 namespace ic {
+
+	TGraphAsymmErrors BuildPoissonErrors(TH1F const& hist) {
+		TGraphAsymmErrors result(&hist);
+		double alpha = 1 - 0.6827;
+		for (int k = 0; k <result.GetN(); ++k) {
+			double x;
+			double y;
+			result.GetPoint(k, x, y);
+			// double err_y_up = 0.5 + std::sqrt(y+0.25);
+			// double err_y_dn = -0.5 + std::sqrt(y+0.25);
+			double L =  (y==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,y,1.));
+			double U =  ROOT::Math::gamma_quantile_c(alpha/2,y+1,1) ;
+			result.SetPointEYhigh(k, U - y);
+			result.SetPointEYlow(k, y - L);
+		}
+		return result;
+	}
+
 
 	void Pull::Print() const {
 		std::cout << boost::format("%-60s %-4.2f +/- %-4.2f   %+-4.2f +/- %-4.2f   %+-4.2f +/- %-4.2f   %+-4.2f \n")
@@ -337,6 +357,30 @@ namespace ic {
 		return shape;
 	}
 
+	TGraphAsymmErrors HTTSetup::GetObservedShapeErrors() {
+		TGraphAsymmErrors shape = *(obs_[0].errors);
+		for (int k = 0; k < shape.GetN(); ++k) {
+			double x;
+			double y;
+			shape.GetPoint(k, x, y);
+		}
+		for (unsigned i = 1; i < obs_.size(); ++i) {
+			TGraphAsymmErrors const* add = obs_[i].errors;
+			for (int k = 0; k < add->GetN(); ++k) {
+				double x1, x2;
+				double y1, y2;
+				shape.GetPoint(k, x1, y1);
+				add->GetPoint(k, x2, y2);
+				shape.SetPoint(k, x1, y1+y2);
+				shape.SetPointEYlow(k, std::sqrt(std::pow(shape.GetErrorYlow(k),2.) + std::pow(add->GetErrorYlow(k),2.)));
+				shape.SetPointEYhigh(k, std::sqrt(std::pow(shape.GetErrorYhigh(k),2.) + std::pow(add->GetErrorYhigh(k),2.)));
+			}
+		}
+
+		return shape;
+	}
+
+
 
 	int HTTSetup::ParsePulls(std::string const& filename) {
 		PullsFromFile(filename, pulls_, false);
@@ -476,6 +520,19 @@ namespace ic {
 				if (obs_[j].GetKey() == keys[i]) {
 					obs_[j].rate *= weight;
 					if (obs_[j].shape) obs_[j].shape->Scale(weight);
+					if (obs_[j].errors) {
+						for (int k = 0; k < obs_[j].errors->GetN(); ++k) {
+							double x;
+							double y;
+							obs_[j].errors->GetPoint(k, x, y);
+							obs_[j].errors->SetPoint(k, x, y*weight);
+							double err_y_up = weight * obs_[j].errors->GetErrorYhigh(k);
+							double err_y_dn = weight * obs_[j].errors->GetErrorYlow(k);
+							obs_[j].errors->SetPointEYhigh(k, err_y_up);
+							obs_[j].errors->SetPointEYlow(k, err_y_dn);
+
+						}
+					}
 				}
 			}
 			for (unsigned j = 0; j < processes_.size(); ++j) {
@@ -494,7 +551,12 @@ namespace ic {
 			}
 		}
 		for (unsigned i = 0; i < obs_.size(); ++i) {
-			if (obs_[i].shape) obs_[i].shape = (TH1F*)obs_[i].shape->Rebin(bins.size()-1,"",&(bins[0]));
+			if (obs_[i].shape) {
+				obs_[i].shape = (TH1F*)obs_[i].shape->Rebin(bins.size()-1,"",&(bins[0]));
+				// If we rebin then recreate the errors from scratch
+				if (obs_[i].errors) delete obs_[i].errors;
+				obs_[i].errors = new TGraphAsymmErrors(BuildPoissonErrors(*(obs_[i].shape)));
+			}
 		}
 		for (unsigned i = 0; i < params_.size(); ++i) {
 			if (params_[i].shape) params_[i].shape = (TH1F*)params_[i].shape->Rebin(bins.size()-1,"",&(bins[0]));
@@ -610,6 +672,8 @@ namespace ic {
 					hist = (TH1F*)hist->Clone();
 				}
 				obs_[i].shape = hist;
+				// Create poisson errors
+				obs_[i].errors = new TGraphAsymmErrors(BuildPoissonErrors(*hist));
 			}
 		}
 
