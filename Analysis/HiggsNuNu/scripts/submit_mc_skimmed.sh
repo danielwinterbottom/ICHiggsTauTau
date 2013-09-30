@@ -93,11 +93,11 @@ for METCUT in 130 #0 130
 	      WJOB=$JOB"_"$FLAVOUR
 	      
 	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh 0
-	      #$JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
+	      $JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
 	    done
 	else  
 	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh 0
-	    #$JOBSUBMIT $JOBDIR/$JOB.sh
+	    $JOBSUBMIT $JOBDIR/$JOB.sh
 	fi
 	
 	rm tmp.txt tmp2.txt
