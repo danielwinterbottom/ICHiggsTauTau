@@ -1188,19 +1188,21 @@ int main(int argc, char* argv[]){
 
 
   //if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
-   if (!is_data && !do_skim)       {
-     //do W streaming to e,mu,tau
-     if (output_name.find("JetsToLNu") != output_name.npos ||
-	 output_name.find("EWK-W2j") != output_name.npos) {
-       if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
-     }
-     if (ignoreLeptons) analysis.AddModule(&ZmassFilter);
-     analysis.AddModule(&pileupWeight);
-     analysis.AddModule(&pileupWeight_up);
-     analysis.AddModule(&pileupWeight_down);
-     //just apply W and Z weights
-     analysis.AddModule(&xsWeights);
-   }
+    if (!is_data) {
+      //do W streaming to e,mu,tau
+      if (output_name.find("JetsToLNu") != output_name.npos ||
+	  output_name.find("EWK-W2j") != output_name.npos) {
+	if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
+      }
+      if (ignoreLeptons) analysis.AddModule(&ZmassFilter);
+      if (!do_skim)       {
+	analysis.AddModule(&pileupWeight);
+	analysis.AddModule(&pileupWeight_up);
+	analysis.AddModule(&pileupWeight_down);
+	//just apply W and Z weights
+	analysis.AddModule(&xsWeights);
+      }
+    }
    
    //if (!do_skim) {
 
