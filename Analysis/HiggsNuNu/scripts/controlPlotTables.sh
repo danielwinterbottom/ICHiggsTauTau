@@ -3,7 +3,7 @@ PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
 
-for CHANNEL in nunu taunu enu munu
+for CHANNEL in nunu/Skim #taunu enu munu
   do
   for MET in 130 #0 #70
     do

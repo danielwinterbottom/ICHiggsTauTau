@@ -1244,10 +1244,6 @@ int main(int argc, char* argv[]){
 
      //filter taus for plots
      analysis.AddModule(&tauPtEtaFilter);
-     analysis.AddModule(&tauDzFilter);
-     analysis.AddModule(&tauIsoFilter);
-     analysis.AddModule(&tauElRejectFilter);
-     analysis.AddModule(&tauMuRejectFilter);
    
      //add met without leptons for plots
      analysis.AddModule(&metNoMuons);
@@ -1276,6 +1272,12 @@ int main(int argc, char* argv[]){
      //plot before cutting
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);
+
+     //filter taus
+     analysis.AddModule(&tauDzFilter);
+     analysis.AddModule(&tauIsoFilter);
+     analysis.AddModule(&tauElRejectFilter);
+     analysis.AddModule(&tauMuRejectFilter);
 
      //filter jets
      analysis.AddModule(&jetPtEtaFilter);

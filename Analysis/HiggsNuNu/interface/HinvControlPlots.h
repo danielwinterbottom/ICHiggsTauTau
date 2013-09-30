@@ -133,6 +133,14 @@ namespace ic {
     TH1F *taupt;
     TH1F *taueta;
     TH2F *tauptvseta;
+    TH1F *mindR_gentau_tagjets;
+    TH1F *dR_genjet_gentau;
+    TH1F *dR_recotau_genjet;
+    TH1F *dR_recotau_status3tau;
+    TH1F *recotaupt;
+    TH1F *recotaueta;
+    TH1F *recotaupt_status3;
+    TH1F *recotaueta_status3;
 
     HinvGenPlots(TFileDirectory const& dir);
   };
