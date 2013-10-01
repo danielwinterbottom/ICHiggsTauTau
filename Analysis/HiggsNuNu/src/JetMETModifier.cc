@@ -104,11 +104,11 @@ namespace ic {
       ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
       ROOT::Math::PxPyPzEVector  newmet = oldmet;
 
-      //GET RUNMETUNCS COLLECTIONS FOR COMPARISON
-      std::vector<PFJet *> & runmetuncvec = event->GetPtrVec<PFJet>("jetsmearedcentralJets");//Main jet collection
+       //GET RUNMETUNCS COLLECTIONS FOR COMPARISON
+      std::vector<ic::Candidate *> & runmetuncvec = event->GetPtrVec<ic::Candidate>("jetsmearedcentralJets");//Main jet collection
 
       //MATCH RUNMETUNCS JETS
-      std::vector< std::pair<PFJet*, PFJet*> > jet_runmetjet_pairs;
+      std::vector< std::pair<PFJet*, ic::Candidate*> > jet_runmetjet_pairs;
       jet_runmetjet_pairs = MatchByDR(vec,runmetuncvec,0.5,true,true);
 
       //MATCH GEN JETS
