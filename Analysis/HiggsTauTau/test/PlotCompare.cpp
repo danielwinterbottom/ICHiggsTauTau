@@ -194,7 +194,14 @@ int main(int argc, char* argv[]){
       elements.back().set_line_color(col);
       elements.back().set_draw_fill(true);
 
+    } else if (split[6] == "3") {
+      SetStyle(elements.back(), col, 0);
+      elements.back().set_draw_line(true);
+      elements.back().set_line_color(col);
+      elements.back().set_draw_fill(true);
+
     }
+  
   }
   
   marker_it = markers.begin();
