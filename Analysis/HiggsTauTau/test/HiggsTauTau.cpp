@@ -41,6 +41,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCut.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/BTagCheck.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -969,6 +970,8 @@ int main(int argc, char* argv[]){
     .set_met_label(met_label)
     .set_fullpath(svfit_folder);
 
+  BTagCheck btagCheck("BTagCheck");
+  btagCheck.set_fs(fs);
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -1107,6 +1110,7 @@ int main(int argc, char* argv[]){
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&httSync);
     if (!quark_gluon_study)       analysis.AddModule(&httCategories);
+                                  //analysis.AddModule(&btagCheck);
 
   }
 

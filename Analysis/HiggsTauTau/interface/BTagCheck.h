@@ -15,6 +15,7 @@ class BTagCheck : public ModuleBase {
  private:
   CLASS_MEMBER(BTagCheck, fwlite::TFileService*, fs)
   Dynamic2DHistoSet * hists_;
+  DynamicHistoSet * hists1d_;
 
  public:
   BTagCheck(std::string const& name);
