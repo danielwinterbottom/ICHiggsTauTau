@@ -43,6 +43,8 @@ class HTTCategories : public ModuleBase {
   double wt_tau_fake_down_;
   double wt_tquark_up_;
   double wt_tquark_down_;
+  double wt_tau_id_up_;
+  double wt_tau_id_down_;
   bool os_;
   unsigned n_vtx_;
   double m_sv_;

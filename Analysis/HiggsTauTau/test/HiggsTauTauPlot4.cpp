@@ -40,6 +40,7 @@ int main(int argc, char* argv[]){
 	string syst_ggh_pt;
 	string syst_tquark;
 	string syst_w_fake_rate;
+	string syst_eff_t;
 	string syst_zl_shift;
   string syst_fakes_os_ss_shape;
 	string add_sm_background;
@@ -82,6 +83,7 @@ int main(int argc, char* argv[]){
 	  ("mssm_masses",             po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
+	  ("syst_eff_t",      		    po::value<string>(&syst_eff_t)->default_value(""))
 	  ("syst_fake_b",      		    po::value<string>(&syst_fake_b)->default_value(""))
 	  ("syst_scale_j",            po::value<string>(&syst_scale_j)->default_value(""))
 	  ("syst_l1met",              po::value<string>(&syst_l1met)->default_value(""))
@@ -208,9 +210,9 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Split ZTT into decay modes
 	// ************************************************************************
-	hmap["ZTT-1P0PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==0", "wt");
-	hmap["ZTT-1P1PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==1", "wt");
-	hmap["ZTT-3P"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==10", "wt");
+	// hmap["ZTT-1P0PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==0", "wt");
+	// hmap["ZTT-1P1PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==1", "wt");
+	// hmap["ZTT-3P"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==10", "wt");
 
 
 	// ************************************************************************
@@ -297,6 +299,29 @@ int main(int argc, char* argv[]){
 		  hmap["W_"+syst_w_fake_rate+"Up"+vars_postfix[j]] = ana.GenerateW(method, vars[j], sel, cat, "wt*wt_tau_fake_up");
 		  hmap["W_"+syst_w_fake_rate+"Down"+vars_postfix[j]] = ana.GenerateW(method, vars[j], sel, cat, "wt*wt_tau_fake_down");
     }
+	}
+
+  // ************************************************************************
+	// Tau ID Weights
+	// ************************************************************************
+	if (syst_eff_t != "") {
+		std::cout << "[HiggsTauTauPlot4] Adding high tau pT ID systematic..." << std::endl;
+    ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
+    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt*wt_tau_id_up", "_hww", "_"+syst_eff_t+"Up", 1.0);
+    ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
+    if (add_sm_background != "") {
+			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up");
+			ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_hww_SM", "_"+syst_eff_t+"Up");
+    }
+    ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
+    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt*wt_tau_id_down", "_hww", "_"+syst_eff_t+"Down", 1.0);
+    ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
+    if (add_sm_background != "") {
+			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
+			ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_hww_SM", "_"+syst_eff_t+"Down");
+    }
+ 		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, sel, cat, "wt*wt_tau_id_up");
+ 		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, sel, cat, "wt*wt_tau_id_down");
 	}
 
   // ************************************************************************

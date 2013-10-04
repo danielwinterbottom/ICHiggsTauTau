@@ -860,6 +860,7 @@ int main(int argc, char* argv[]){
     .set_do_emu_e_fakerates(false)
     .set_do_emu_m_fakerates(false)
     .set_do_top_factors(false)
+    .set_do_tau_id_weights(real_tau_sample)
     .set_do_btag_weight(false);
   if (!is_data) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);

@@ -36,6 +36,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, bool, do_w_soup)
   CLASS_MEMBER(HTTWeights, bool, do_dy_soup)
   CLASS_MEMBER(HTTWeights, bool, do_tt_muon_weights)
+  CLASS_MEMBER(HTTWeights, bool, do_tau_id_weights)
 
   TFile *muTauSF2011;
   TH2D *hist_muTauSF2011;

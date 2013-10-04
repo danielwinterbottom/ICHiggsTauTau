@@ -19,29 +19,29 @@ namespace ic {
     channel_(channel::et),
     mc_(mc::summer12_53X),
     era_(era::data_2012_moriond) {
-    do_trg_weights_     = false;
-    trg_applied_in_mc_  = false;
-    do_singlemu_trg_weights_ = false;
-    do_etau_fakerate_   = false;
-    do_mtau_fakerate_   = false;
-    do_idiso_weights_   = false;
-    do_id_weights_      = false;
-    do_emu_e_fakerates_   = false;
-    do_emu_m_fakerates_   = false;
-    do_top_factors_     = false;
-    do_btag_weight_     = false;
-    btag_mode_          = 0;
-    bfake_mode_         = 0;
-    do_w_soup_          = false;
-    do_dy_soup_         = false;
-    ggh_mass_           = "";
-    ggh_hist_           = nullptr;
-    ggh_hist_up_        = nullptr;
-    ggh_hist_down_      = nullptr;
-    do_tau_mode_scale_  = false;
-    do_topquark_weights_ = false;
-    do_tau_fake_weights_ = false;
-    do_tt_muon_weights_ = false;
+    do_trg_weights_           = false;
+    trg_applied_in_mc_        = false;
+    do_singlemu_trg_weights_  = false;
+    do_etau_fakerate_         = false;
+    do_mtau_fakerate_         = false;
+    do_idiso_weights_         = false;
+    do_id_weights_            = false;
+    do_emu_e_fakerates_       = false;
+    do_emu_m_fakerates_       = false;
+    do_top_factors_           = false;
+    do_btag_weight_           = false;
+    btag_mode_                = 0;
+    bfake_mode_               = 0;
+    do_w_soup_                = false;
+    do_dy_soup_               = false;
+    ggh_mass_                 = "";
+    ggh_hist_                 = nullptr;
+    ggh_hist_up_              = nullptr;
+    ggh_hist_down_            = nullptr;
+    do_tau_mode_scale_        = false;
+    do_topquark_weights_      = false;
+    do_tau_fake_weights_      = false;
+    do_tt_muon_weights_       = false;
   }
 
   HTTWeights::~HTTWeights() {
@@ -72,6 +72,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
     std::cout << boost::format(param_fmt()) % "do_topquark_weights" % do_topquark_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_fake_weights" % do_tau_fake_weights_;
+    std::cout << boost::format(param_fmt()) % "do_tau_id_weights"   % do_tau_id_weights_;
 
     if (do_tau_fake_weights_) {
      tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
@@ -230,6 +231,24 @@ namespace ic {
       double weight_down = (fake_weight - 0.5*(1.0-fake_weight)) / fake_weight;
       event->Add("wt_tau_fake_up", weight_up);
       event->Add("wt_tau_fake_down", weight_down);
+    }
+
+    if (do_tau_id_weights_) {
+      std::vector<Candidate *> tau = { (dilepton[0]->GetCandidate("lepton2")) };
+      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticlesTaus");
+      std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
+      std::vector<GenJet *> gen_taus_ptr;
+      for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
+      std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
+      double weight_up    = 1.0;
+      double weight_down  = 1.0;
+      if (matches.size() == 1) {
+        double weight = (0.20*matches[0].second->pt())/1000.;
+        weight_up   = 1.0 +weight;
+        weight_down = std::max(0.0, 1.0 - weight);
+        event->Add("wt_tau_id_up", weight_up);
+        event->Add("wt_tau_id_down", weight_down);
+      }
     }
 
     if (do_top_factors_) {
