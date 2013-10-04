@@ -42,6 +42,7 @@ namespace ic {
     do_topquark_weights_      = false;
     do_tau_fake_weights_      = false;
     do_tt_muon_weights_       = false;
+    gen_tau_collection_       = "genParticlesTaus";
   }
 
   HTTWeights::~HTTWeights() {
@@ -235,7 +236,7 @@ namespace ic {
 
     if (do_tau_id_weights_) {
       std::vector<Candidate *> tau = { (dilepton[0]->GetCandidate("lepton2")) };
-      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticlesTaus");
+      std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_tau_collection_);
       std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
       std::vector<GenJet *> gen_taus_ptr;
       for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
