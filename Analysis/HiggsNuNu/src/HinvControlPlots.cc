@@ -333,11 +333,12 @@ namespace ic {
     met_phi_ = met->phi();
     
     n_jets_ = jets.size();
-
     if (fillPlots) {//if fillplots
       FillCoreControlPlots();
       FillWeightPlots(eventInfoNonConst);
       FillSystPlots(eventInfoNonConst);
+
+      if(!is_data_){
 
       //get genjet matched with leading tau
       std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
@@ -412,8 +413,9 @@ namespace ic {
 	  }
 	}
       }
-
+      }
     }//if fillplots
+    
 
     // Start: Filling HinvDijetMETPlots __________________________________
     if (fillPlots) {

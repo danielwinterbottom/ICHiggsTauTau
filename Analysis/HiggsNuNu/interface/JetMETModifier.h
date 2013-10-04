@@ -24,7 +24,7 @@ namespace ic {
     CLASS_MEMBER(JetMETModifier,fwlite::TFileService*, fs);
     CLASS_MEMBER(JetMETModifier, bool, is_data)
     CLASS_MEMBER(JetMETModifier, bool, dojessyst)
-      CLASS_MEMBER(JetMETModifier, bool, dodatajessyst)
+    CLASS_MEMBER(JetMETModifier, bool, dodatajessyst)
     CLASS_MEMBER(JetMETModifier, bool, jesupordown)
     CLASS_MEMBER(JetMETModifier, bool, dojersyst)
     CLASS_MEMBER(JetMETModifier, bool, dojerworsegauss)
@@ -35,6 +35,7 @@ namespace ic {
     CLASS_MEMBER(JetMETModifier, bool, dogaus)
     CLASS_MEMBER(JetMETModifier, bool, doetsmear)
     CLASS_MEMBER(JetMETModifier, bool, doaltmatch)
+    CLASS_MEMBER(JetMETModifier, bool, dojerdebug)
     CLASS_MEMBER(JetMETModifier, std::string, jesuncfile)
     TH2F* JEScorrfac;
     TH1F* JESmetdiff;
@@ -47,8 +48,15 @@ namespace ic {
     TH1F* Smeargenmindr;
     TH1F* Smearjetgenjetptratio;
     TH2F* Smearjetgenjetptratioetabin;
-    TH1F* Smearicjetrunmetjetptdiff;
-    TH1F* Smearicjetrunmetjetptratio;
+    TH1F* icjetrunmetjetptdiff;
+    TH1F* icjetrunmetjetptratio;
+    TH1F* icjetpt;
+    TH1F* runmetjetpt;
+    TH1F* nojerjetpt;
+    TH1F* matchedicjetpt;
+    TH1F* matchedrunmetjetpt;
+    TH1F* matchednojerjetpt;
+
     
   public:
     JetMETModifier(std::string const& name);

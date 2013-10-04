@@ -19,6 +19,7 @@ namespace ic {
     dogaus_=false;
     doetsmear_=false;
     doaltmatch_=false;
+    dojerdebug_=false;
   }
 
   JetMETModifier::~JetMETModifier() {
@@ -75,6 +76,7 @@ namespace ic {
     std::cout<<"Got parameters successfully"<<std::endl;
     TFileDirectory const& dir = fs_->mkdir("JES");
     TFileDirectory const& dir2 = fs_->mkdir("Smear");
+    TFileDirectory const& dir3 = fs_->mkdir("RunMetComparison");
     std::cout<<"Made plot dir"<<std::endl;
     JEScorrfac = dir.make<TH2F>("JEScorrfac","JEScorrfac",1000,0.,1000.,1000,-0.3,0.3);
     JESmetdiff = dir.make<TH1F>("JESmetdiff","JESmetdiff",1000,-10.,10.);
@@ -87,8 +89,16 @@ namespace ic {
     Smeargenmindr = dir2.make<TH1F>("Smeargenmindr","Smeargenmindr",1000,0.,10.);
     Smearjetgenjetptratio = dir2.make<TH1F>("Smearjetgenjetptratio","Smearjetgenjetptratio",100,0.,10.);
     Smearjetgenjetptratioetabin = dir2.make<TH2F>("Smearjetgenjetptratioetabin","Smearjetgenjetptratioetabin",100,0.,10.,100,-5.,5.);
-    Smearicjetrunmetjetptdiff = dir2.make<TH1F>("Smearicjetrunmetjetptdiff","Smearicjetrunmetjetptdiff",600,-30.,30.);
-    Smearicjetrunmetjetptratio = dir2.make<TH1F>("Smearicjetrunmetjetptratio","Smearicjetrunmetjetptratio",100,0.,10.);
+    
+    //Runmetunccomparisons
+    icjetrunmetjetptdiff = dir3.make<TH1F>("icjetrunmetjetptdiff","icjetrunmetjetptdiff",600,-30.,30.);
+    icjetrunmetjetptratio = dir3.make<TH1F>("icjetrunmetjetptratio","icjetrunmetjetptratio",10100,0.,10.1);
+    icjetpt = dir3.make<TH1F>("icjetpt","icjetpt",10000,0.,1000.);
+    runmetjetpt = dir3.make<TH1F>("runmetjetpt","runmetjetpt",10000,0.,1000.);
+    nojerjetpt = dir3.make<TH1F>("nojerjetpt","nojerjetpt",10000,0.,1000.);
+    matchedicjetpt = dir3.make<TH1F>("matchedicjetpt","matchedicjetpt",10000,0.,1000.);
+    matchedrunmetjetpt = dir3.make<TH1F>("matchedrunmetjetpt","matchedrunmetjetpt",10000,0.,1000.);
+    matchednojerjetpt = dir3.make<TH1F>("matchednojerjetpt","matchednojerjetpt",10000,0.,1000.);
     return 0;
   }
 
@@ -104,13 +114,18 @@ namespace ic {
       ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
       ROOT::Math::PxPyPzEVector  newmet = oldmet;
 
-       //GET RUNMETUNCS COLLECTIONS FOR COMPARISON
-      std::vector<ic::Candidate *> & runmetuncvec = event->GetPtrVec<ic::Candidate>("jetsmearedcentralJets");//Main jet collection
-
-      //MATCH RUNMETUNCS JETS
+      //GET RUNMETUNCS COLLECTIONS FOR COMPARISON
+      std::vector<ic::Candidate *> runmetuncvec;
       std::vector< std::pair<PFJet*, ic::Candidate*> > jet_runmetjet_pairs;
-      jet_runmetjet_pairs = MatchByDR(vec,runmetuncvec,0.5,true,true);
-
+      if(dojerdebug_){
+	runmetuncvec = event->GetPtrVec<ic::Candidate>("jetsmearedcentralJets");//Main jet collection
+	for (int i = 0; unsigned(i) < runmetuncvec.size(); ++i) {//loop over the runmetjet collection
+	  runmetjetpt->Fill(runmetuncvec[i]->vector().pt());
+	}
+	//MATCH RUNMETUNCS JETS	
+	jet_runmetjet_pairs = MatchByDR(vec,runmetuncvec,0.5,true,true);
+      }
+      
       //MATCH GEN JETS
       std::vector< std::pair<PFJet*, GenJet*> > jet_genjet_pairs;
 
@@ -166,17 +181,19 @@ namespace ic {
 	//Get jet information
 	ROOT::Math::PxPyPzEVector  oldjet = ROOT::Math::PxPyPzEVector(vec[i]->vector());
 	ROOT::Math::PxPyPzEVector  newjet;
+
+	int index = -1;
+	//Check for matches between smeared and unsmeared jets
+	for(int j = 0;unsigned(j)<jet_genjet_pairs.size();j++){
+	  if(jet_genjet_pairs[j].first->id()==vec[i]->id()){
+	    index = j;
+	    break;
+	  }
+	}
 	
+
 	//SMEARING
 	if(dosmear_){
-	  int index = -1;
-          //Check for matches between smeared and unsmeared jets
-	  for(int j = 0;unsigned(j)<jet_genjet_pairs.size();j++){
-            if(jet_genjet_pairs[j].first->id()==vec[i]->id()){
-              index = j;
-              break;
-            }
-          }
 	  double JERscalefac=1.;//if no match leave jet alone
 	  if(index!=-1){//if gen jet match calculate correction factor for pt
 	    if(oldjet.pt()>50.) Smear50miss->Fill(-1.);
@@ -246,20 +263,28 @@ namespace ic {
 
 	//Get runmetuncjet matching icjet
 	int runmetindex = -1;
-	//Check for matches between ic and runmetunc jets
-	for(int j = 0;unsigned(j)<jet_runmetjet_pairs.size();j++){
-	  if(jet_runmetjet_pairs[j].first->id()==vec[i]->id()){
-	    runmetindex = j;
-	    break;
+	if(dojerdebug_){
+	  //Check for matches between ic and runmetunc jets
+	  for(int j = 0;unsigned(j)<jet_runmetjet_pairs.size();j++){
+	    if(jet_runmetjet_pairs[j].first->id()==vec[i]->id()){
+	      runmetindex = j;
+	      break;
+	    }
 	  }
-	}
-	if(runmetindex!=-1){
-	  Smearicjetrunmetjetptdiff->Fill(jet_runmetjet_pairs[runmetindex].second->pt()-newjet.pt());
-	  Smearicjetrunmetjetptratio->Fill(jet_runmetjet_pairs[runmetindex].second->pt()/newjet.pt());
-	}
-	else{
-	  Smearicjetrunmetjetptdiff->Fill(100);
-	  Smearicjetrunmetjetptratio->Fill(0);
+	  icjetpt->Fill(newjet.pt());
+	  nojerjetpt->Fill(oldjet.pt());
+	  if(runmetindex!=-1){
+	    matchedicjetpt->Fill(newjet.pt());
+	    matchednojerjetpt->Fill(oldjet.pt());
+	    matchedrunmetjetpt->Fill(jet_runmetjet_pairs[runmetindex].second->pt());
+	    
+	    icjetrunmetjetptdiff->Fill(jet_runmetjet_pairs[runmetindex].second->pt()-newjet.pt());
+	    icjetrunmetjetptratio->Fill(jet_runmetjet_pairs[runmetindex].second->pt()/newjet.pt());
+	  }
+	  else{
+	    icjetrunmetjetptdiff->Fill(10);
+	    icjetrunmetjetptratio->Fill(0);
+	  }
 	}
 	
 	//Get initial jet order

@@ -88,6 +88,7 @@ int main(int argc, char* argv[]){
   bool jerbetterorworse;          // If doing Jet Energy Resolution Systematic Run, run with with better or worse (true for better, false for worse)
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
   bool taulepdiscrtight;          // Use tight electron and muon discriminants
+  bool dojerdebug;                // Access runmetunc collections for debugging
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -145,8 +146,9 @@ int main(int argc, char* argv[]){
     ("jesupordown",         po::value<bool>(&jesupordown)->default_value(true))
     ("dojersyst",           po::value<bool>(&dojersyst)->default_value(false))
     ("jerbetterorworse",    po::value<bool>(&jerbetterorworse)->default_value(true))
-    ("docrosschecktau",    po::value<bool>(&docrosschecktau)->default_value(false))
+    ("docrosschecktau",     po::value<bool>(&docrosschecktau)->default_value(false))
     ("taulepdiscrtight",    po::value<bool>(&taulepdiscrtight)->default_value(false))
+    ("dojerdebug",          po::value<bool>(&dojerdebug)->default_value(false))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
@@ -618,7 +620,9 @@ int main(int argc, char* argv[]){
     .set_dojersyst(dojersyst)
     .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
+    .set_dojerdebug(dojerdebug)
     .set_fs(fs);
+  
 
   
   
@@ -879,6 +883,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjCandidates")
     .set_sel_label("HLTMetClean")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   //set collections to all leptons for the first set of plots before selecting/vetoing them
@@ -902,6 +907,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("JetPair")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   //set collections to all leptons for the first set of plots before selecting/vetoing them
@@ -923,6 +929,7 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
+    .set_is_data(is_data)
     .set_sel_label("AN")
     .set_channel(channel_str);
 
@@ -946,6 +953,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("MET")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
     HinvWJetsPlots wjetsPlots_met = HinvWJetsPlots("METWJetsPlots")
@@ -967,6 +975,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("LooseMjj")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvControlPlots controlPlots_deta = HinvControlPlots("DEtaControlPlots")
@@ -974,6 +983,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DEta")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_deta = HinvWJetsPlots("DEtaWJetsPlots")
@@ -995,6 +1005,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("LeptonVeto")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvControlPlots controlPlots_wsel = HinvControlPlots("WSelectionControlPlots")
@@ -1002,6 +1013,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("WSelection")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_wsel = HinvWJetsPlots("WSelectionWJetsPlots")
@@ -1023,6 +1035,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiQCD_CJVpass")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_qcd_cjvpass = HinvWJetsPlots("DPhiWJetsPlotsQCD_cjvpass")
@@ -1039,6 +1052,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiQCD_noCJV")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_qcd_nocjv = HinvWJetsPlots("DPhiWJetsPlotsQCD_noCJV")
@@ -1055,6 +1069,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiQCD_CJVfail")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_qcd_cjvfail = HinvWJetsPlots("DPhiWJetsPlotsQCD_cjvfail")
@@ -1076,6 +1091,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiSIGNAL_CJVpass")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_signal_cjvpass = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_cjvpass")
@@ -1091,7 +1107,8 @@ int main(int argc, char* argv[]){
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("DPhiSIGNAL_noCJV")
+    .set_sel_label("DPhiSIGNAL_noCJV") 
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_signal_nocjv = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_noCJV")
@@ -1108,6 +1125,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DPhiSIGNAL_CJVfail")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_dphi_signal_cjvfail = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_cjvfail")
@@ -1129,6 +1147,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("TightMjj")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_tightMjj = HinvWJetsPlots("TightMjjWJetsPlots")
@@ -1145,6 +1164,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("CJVpass")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_cjvpass = HinvWJetsPlots("CJVWJetsPlots")
@@ -1161,6 +1181,7 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("CJVfail")
+    .set_is_data(is_data)
     .set_channel(channel_str);
 
   HinvWJetsPlots wjetsPlots_cjvfail = HinvWJetsPlots("CJVFailWJetsPlots")
@@ -1400,6 +1421,9 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);
      analysis.AddModule(&controlPlots_dphi_signal_nocjv);
      analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
+
+     //if(printEventList) analysis.AddModule(&hinvPrintList);
+     //if(printEventContent) analysis.AddModule(&hinvPrint);
 
      //save all, signal and QCD regions with failed CJV
      analysis.AddModule(&controlPlots_cjvfail);
