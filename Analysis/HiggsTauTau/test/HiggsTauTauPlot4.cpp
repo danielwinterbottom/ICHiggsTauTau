@@ -669,53 +669,52 @@ int main(int argc, char* argv[]){
     }
   }
 
-  unsigned default_bbb = 0;
-  unsigned bbb_removed = 0;
-  double bbb_level = 0.1;
-  double my_threshold = 0.1;
+
 
   if (true) {
-    vector<string> tot_bkgs = {"ZTT","ZL","ZJ","W","QCD","TT","VV"};
-    //vector<string> bkgs = {"ZTT","ZL","ZJ","W","QCD","TT","VV"};
-    vector<string> bkgs = {"ZL","ZJ","WMerged"};
-    vector<string> sm_procs = {"ggH","qqH","VH"};
-    vector<string> mssm_procs = {"ggH","bbH"};
-  
-    TH1F tot_bkg = hmap[tot_bkgs[0]].first;
-    TH1F bbb_bkg = hmap[bkgs[0]].first;
     TH1F w = hmap["W"].first;
     w.Add(&(hmap["QCD"].first));
     hmap["WMerged"].first = w;
-    for (unsigned i = 1; i < tot_bkgs.size(); ++i) {
-      tot_bkg.Add(&(hmap[tot_bkgs[i]].first));
-    }
-    for (unsigned i = 1; i < bkgs.size(); ++i) {
-      bbb_bkg.Add(&(hmap[bkgs[i]].first));
-    }
+  	
+  	unsigned bbb_added 		= 0;
+  	unsigned bbb_removed 	= 0;
+  	double add_threshold 			= 0.1;
+  	double remove_threshold 	= 0.1;
+  	bool expand_after_removal = true;
 
-    for (unsigned i = 1; i <= tot_bkg.GetNbinsX(); ++i) {
-      double tot_bbb_err = bbb_bkg.GetBinError(i); 
-      double tot_bbb_val = bbb_bkg.GetBinContent(i);
-      //std::cout << "Bin " << i << ": total bkg = " << tot_bkg.GetBinContent(i) << "  total err = " << tot_bkg.GetBinError(i) << std::endl;
-      //std::cout << "Bin " << i << ": bbb bkg = " << tot_bbb_val << "  bbb err = " << tot_bbb_err << std::endl;
+    vector<string> all_bkgs = {"ZTT","ZL","ZJ","W","QCD","TT","VV"};
+    vector<string> bbb_bkgs = {"ZL","ZJ","WMerged"};
+    vector<string> sm_procs = {"ggH","qqH","VH"};
+    vector<string> mssm_procs = {"ggH","bbH"};
+  
+    TH1F all_bkg = hmap[all_bkgs[0]].first;
+    TH1F bbb_bkg = hmap[bbb_bkgs[0]].first;
+    for (unsigned i = 1; i < all_bkgs.size(); ++i) all_bkg.Add(&(hmap[all_bkgs[i]].first));
+    for (unsigned i = 1; i < bbb_bkgs.size(); ++i) bbb_bkg.Add(&(hmap[bbb_bkgs[i]].first));
+    
+    for (int i = 1; i <= all_bkg.GetNbinsX(); ++i) {
+      // double all_val = bbb_bkg.GetBinContent(i);
+      // double all_err = bbb_bkg.GetBinError(i); 
+      
       double tot_bbb_add = 0.;
-      for (unsigned j = 0; j < bkgs.size(); ++j) {
-        TH1F const& hist = hmap[bkgs[j]].first;
-        if (hist.GetBinContent(i) > 0. && hist.GetBinError(i)/hist.GetBinContent(i) > bbb_level) {
-          default_bbb++;
+
+      for (unsigned j = 0; j < bbb_bkgs.size(); ++j) {
+        TH1F const& hist = hmap[bbb_bkgs[j]].first;
+        if (hist.GetBinContent(i) == 0. && hist.GetBinError(i) == 0.) continue;
+        if (hist.GetBinError(i)/hist.GetBinContent(i) > add_threshold) {
+          bbb_added++;
           tot_bbb_add += (hist.GetBinError(i)*hist.GetBinError(i));
         }
       }
       if (tot_bbb_add == 0.) continue;
-      //std::cout << "Bin " << i << ": bbb added bkg^2 = " << tot_bbb_add  << std::endl;
+
       std::vector<std::pair<std::string, double>> results;
-      for (unsigned j = 0; j < bkgs.size(); ++j) {
-        TH1F const& hist = hmap[bkgs[j]].first;
-        std::cout << bkgs[j] << "  " << hist.GetBinContent(i) << "  " << hist.GetBinError(i) << std::endl;
-        if (hist.GetBinContent(i) > 0. && hist.GetBinError(i)/hist.GetBinContent(i) > bbb_level) {
+      for (unsigned j = 0; j < bbb_bkgs.size(); ++j) {
+        TH1F const& hist = hmap[bbb_bkgs[j]].first;
+        if (hist.GetBinContent(i) == 0. && hist.GetBinError(i) == 0.) continue;
+        if (hist.GetBinError(i)/hist.GetBinContent(i) > add_threshold) {
           double frac = hist.GetBinError(i)*hist.GetBinError(i)/tot_bbb_add;
-          std::cout << "Frac: " << frac << std::endl;
-          results.push_back(std::make_pair(bkgs[j], frac));
+          results.push_back(std::make_pair(bbb_bkgs[j], frac));
         }
       }
       sort(results.begin(), results.end(),
@@ -724,18 +723,35 @@ int main(int argc, char* argv[]){
       double removed = 0.;
       for (unsigned j = 0; j < results.size(); ++j) {
         bool remove = false;
-        if ((removed+results[j].second) < my_threshold) {
+        if ((removed+results[j].second) < remove_threshold) {
           remove = true;
           bbb_removed++;
           removed += results[j].second;
+          hmap[results[j].first].first.SetBinError(i, 0.0);
+          if (results[j].first == "WMerged") {
+          	hmap["W"].first.SetBinError(i, 0.0);
+          	hmap["QCD"].first.SetBinError(i, 0.0);
+          }
         }
         std::cout << results[j].first << "\t" << results[j].second << "\t" << remove << std::endl;
       }
-
+      if (expand_after_removal) {
+      	for (unsigned j = 0; j < results.size(); ++j) {
+      		double expand = 1./(1.-removed);
+      		TH1F & hist = hmap[results[j].first].first;
+      		std::cout << results[j].first << "\t" << hist.GetBinError(j) << " --> ";
+      		hist.SetBinError(i, hist.GetBinError(i) * expand);
+      		if (results[j].first == "WMerged") {
+      			hmap["W"].first.SetBinError(i, hmap["W"].first.GetBinError(i) * expand);
+      			hmap["QCD"].first.SetBinError(i, hmap["QCD"].first.GetBinError(i) * expand);
+      		}
+		      std::cout << hist.GetBinError(j) << std::endl;
+      	}
+      }
     }
-    std::cout << "TOTAL bbb added:   " << default_bbb << std::endl;
+    std::cout << "TOTAL bbb added:   " << bbb_added << std::endl;
     std::cout << "TOTAL bbb removed: " << bbb_removed << std::endl;
-    std::cout << "TOTAL bbb    ====> " << default_bbb-bbb_removed << std::endl;
+    std::cout << "TOTAL bbb    ====> " << bbb_added-bbb_removed << std::endl;
   }
 	
   // ************************************************************************
