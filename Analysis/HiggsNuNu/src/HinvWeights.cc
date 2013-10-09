@@ -22,7 +22,9 @@ namespace ic {
     do_idiso_tight_weights_   = false;
     do_idiso_veto_weights_   = false;
     do_w_soup_          = false;
-    do_dy_soup_          = false;
+    do_dy_soup_         = false;
+    do_idiso_err_       = false;
+    do_idiso_errupordown_ = true;
     input_met_ = "metNoMuons";
     hist_trigSF_METL1 = 0;
     hist_trigSF_METHLT = 0;
@@ -132,17 +134,31 @@ namespace ic {
       std::cout	<< std::endl;
     }
 
-    fillVector("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_);
-    fillVector("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
-    fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
-
-    fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
-    fillVector("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
-    fillVector("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-    fillVector("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-    fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-    fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
-
+    if(!do_idiso_err_){
+      fillVector("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_);
+      fillVector("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+      fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+      
+      fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
+      fillVector("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
+      fillVector("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+      fillVector("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+      fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+      fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
+    }
+    else{
+      fillVectorError("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
+      
+      fillVectorError("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
+    }
+    
     for (unsigned iBin(0); iBin<muTight_idSF_.size();++iBin){
       muTight_idisoSF_.push_back(muTight_idSF_[iBin]*muTight_isoSF_[iBin]);
       muVeto_idisoDataEff_.push_back(muVeto_idDataEff_[iBin]*muVeto_isoDataEff_[iBin]);
@@ -554,6 +570,43 @@ namespace ic {
       lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrPlus>>SFerrMinus;
       //protect against blank line at the end of the file
       if (pTmin > 1) aVector.push_back(SF);
+      if(lInput.eof()){
+	break; 
+      }
+    }
+
+    std::cout << " ---- Size of vector for file " << aFileName << " = " << aVector.size() << std::endl;
+    lInput.close();
+
+  }
+
+  void HinvWeights::fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown){
+
+    std::ifstream lInput;
+    lInput.open(aFileName);
+    if(!lInput.is_open()){
+      std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
+      //max expected size for e and mu is 33...
+      aVector.resize(33,1);
+      return;
+    }
+    while(1){
+      double pTmin = 0;
+      double pTmax = 0;
+      double etaMin = 0;
+      double etaMax = 0;
+      double SF = 0;
+      double SFerrPlus = 0;
+      double SFerrMinus = 0;
+      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrPlus>>SFerrMinus;
+      //protect against blank line at the end of the file
+      if(upordown){
+	if (pTmin > 1) aVector.push_back(SF+SFerrPlus);
+      }
+      else{
+	if (pTmin > 1) aVector.push_back(SF+SFerrMinus);
+      }
+
       if(lInput.eof()){
 	break; 
       }

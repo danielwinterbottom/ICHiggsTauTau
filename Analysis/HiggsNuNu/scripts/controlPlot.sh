@@ -5,12 +5,12 @@ PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 for CHANNEL in nunu enu munu taunu
   do
   
-  for MET in 0 130 #0 70
+  for MET in 130 #0 130 #0 70
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
       do
 
-	FOLDER=./output_mjj1100/$CHANNEL/MET$MET/
+	FOLDER=./output/$CHANNEL/MET$MET/
 	PLOTDIR=PLOTS/$CHANNEL/MET$MET/
 	PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
 	

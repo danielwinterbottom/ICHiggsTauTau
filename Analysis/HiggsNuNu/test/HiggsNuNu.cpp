@@ -99,6 +99,8 @@ int main(int argc, char* argv[]){
   double met_cut_max;                 // MET cut max to apply for signal, QCD or skim
   bool dotrgeff;                  // Do trigger efficiency corrections
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
+  bool doidisoerr;                // Do lepton ID-iso efficiency correction error
+  bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
 
   double mjj_cut;                 // mjjcut
 
@@ -151,6 +153,8 @@ int main(int argc, char* argv[]){
     ("dojerdebug",          po::value<bool>(&dojerdebug)->default_value(false))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
+    ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
+    ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
@@ -805,13 +809,16 @@ int main(int argc, char* argv[]){
     .set_trg_applied_in_mc(true)
     .set_do_idiso_tight_weights(false)
     .set_do_idiso_veto_weights(false)
+    .set_do_idiso_err(doidisoerr)
+    .set_do_idiso_errupordown(doidisoerrupordown)
     .set_input_met("metNoMuons");
   //  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_trg_applied_in_mc(true);
-    if (channel==channel::nunu || channel == channel::taunu)
+    if (channel==channel::nunu || channel == channel::taunu){
       hinvWeights.set_do_idiso_veto_weights(doidisoeff);
+    }
     else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
     if (ignoreLeptons){ 
       hinvWeights.set_do_idiso_veto_weights(false);
@@ -1422,7 +1429,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_dphi_signal_nocjv);
      analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
 
-     //if(printEventList) analysis.AddModule(&hinvPrintList);
+     if(printEventList) analysis.AddModule(&hinvPrintList);
      //if(printEventContent) analysis.AddModule(&hinvPrint);
 
      //save all, signal and QCD regions with failed CJV

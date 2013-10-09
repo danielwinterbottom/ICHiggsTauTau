@@ -355,7 +355,7 @@ namespace ic {
 	    mindR = dR;
 	    gentau = genjets[iG];
 	  }
-	}//loop on genjets
+	}//end of loop on genjets
 	
 	genPlots_->dR_genjet_gentau->Fill(mindR);
 
@@ -377,14 +377,14 @@ namespace ic {
 	    if (gentau->pt()>20 && fabs(gentau->eta())<2.3) genPlots_->mindR_gentau_tagjets->Fill(std::min(dR1,dR2));
 	    
 	  }
-	  //get recojet matched with genjet
 
+	  //get recojet matched with genjet
 	  mindR = 10;
 	  PFJet* recotau = 0;
 	  PFJet* recotau_status3 = 0;
 	  double mindR_status3 = 10;
 
-	  for (unsigned iR(0); iR < alljets.size(); ++iR){//loop on recotaus
+	  for (unsigned iR(0); iR < alljets.size(); ++iR){//loop on reco jets
 	    //match to genjets
 	    double dR = ROOT::Math::VectorUtil::DeltaR(alljets[iR]->vector(),gentau->vector());
 	    if (dR < mindR){
@@ -398,7 +398,7 @@ namespace ic {
 	      recotau_status3 = alljets[iR];
 	    }
 
-	  }//loop on recotaus
+	  }//end of loop on reco jets
 
 	  genPlots_->dR_recotau_genjet->Fill(mindR);
 	  genPlots_->dR_recotau_status3tau->Fill(mindR_status3);
@@ -414,7 +414,7 @@ namespace ic {
 	}
       }
       }
-    }//if fillplots
+    }//end of if fillplots
     
 
     // Start: Filling HinvDijetMETPlots __________________________________

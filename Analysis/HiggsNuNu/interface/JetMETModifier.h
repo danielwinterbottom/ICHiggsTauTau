@@ -56,6 +56,10 @@ namespace ic {
     TH1F* matchedicjetpt;
     TH1F* matchedrunmetjetpt;
     TH1F* matchednojerjetpt;
+    TH1F* icjetnosmearptratio;
+    TH1F* runmetjetnosmearptratio;
+    TH1F* runmetjetgenjetptratio;
+    TH1F* icjetgenjetptratio;
 
     
   public:

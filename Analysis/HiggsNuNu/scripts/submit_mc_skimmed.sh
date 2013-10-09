@@ -5,8 +5,8 @@
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
 
-JOBSCRIPT="./scripts/submit_cern_batch_job.sh" 
-JOBQUEUE="1nh"
+JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
+JOBQUEUE="hepshort.q"
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 
 
@@ -18,7 +18,7 @@ PRODUCTION=Apr04
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in nunu #enu munu taunu mumu
+  for CHANNEL in nunu enu munu taunu #mumu
   do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
@@ -26,34 +26,34 @@ for METCUT in 130 #0 130
       JOBDIRPREFIX=jobs/
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/Skim/
       OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
-      OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/Skim/
+      OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=true --jesupordown=true --dojersyst=false"
-	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/Skim/JESUP/
-	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/Skim/JESUP/
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JESUP/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JESUP/
       fi
       
       if [ "$SYST" = "JESDOWN" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=true --jesupordown=false --dojersyst=false"
-	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/Skim/JESDOWN/
-	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/Skim/JESDOWN/
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JESDOWN/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JESDOWN/
       fi
 
       if [ "$SYST" = "JERBETTER" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=true"
-	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/Skim/JERBETTER/
-	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/Skim/JERBETTER/
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JERBETTER/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JERBETTER/
       fi
 
       if [ "$SYST" = "JERWORSE" ]
 	  then
 	  SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
-	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/Skim/JERWORSE/
-	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/Skim/JERWORSE/
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
       fi
 
       echo "Config file: $CONFIG"
@@ -61,15 +61,15 @@ for METCUT in 130 #0 130
       mkdir -p $JOBDIR
       mkdir -p $OUTPUTDIR
       
-      PREFIX=/afs/cern.ch/work/a/amagnan/SkimFiles/Apr04/$CHANNEL/
-      for FILELIST in `ls filelists/skim/$PRODUCTION/$CHANNEL/*`
+      PREFIX=/vols/ssd00/cms/amagnan/trigskims/nunu/MET130/ #/afs/cern.ch/work/a/amagnan/SkimFiles/Apr04/$CHANNEL/
+      for FILELIST in `ls filelists/skim/$PRODUCTION/nunu/*`
   #for FILELIST in `ls filelists/skim/$PRODUCTION/$CHANNEL/EWK-W2j*_*nu.dat`
 	do
 	echo "Processing files in "$FILELIST
 	
 	echo $FILELIST
 	echo $FILELIST > tmp.txt
-	sed "s/filelists\/skim\/${PRODUCTION}\/$CHANNEL\///" tmp.txt > tmp2.txt
+	sed "s/filelists\/skim\/${PRODUCTION}\/nunu\///" tmp.txt > tmp2.txt
 	
 	JOB=MC_`sed "s/\.dat//" tmp2.txt`
     #JOB=`sed "s/\.dat//" tmp2.txt`

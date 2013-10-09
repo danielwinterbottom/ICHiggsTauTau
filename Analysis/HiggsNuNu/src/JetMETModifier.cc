@@ -93,6 +93,10 @@ namespace ic {
     //Runmetunccomparisons
     icjetrunmetjetptdiff = dir3.make<TH1F>("icjetrunmetjetptdiff","icjetrunmetjetptdiff",600,-30.,30.);
     icjetrunmetjetptratio = dir3.make<TH1F>("icjetrunmetjetptratio","icjetrunmetjetptratio",10100,0.,10.1);
+    icjetnosmearptratio = dir3.make<TH1F>("icjetnosmearptratio","icjetnosmearptratio",10100,0.,10.1);
+    runmetjetnosmearptratio = dir3.make<TH1F>("runmetjetnosmearptratio","runmetjetnosmearptratio",10100,0.,10.1);
+    runmetjetgenjetptratio = dir3.make<TH1F>("runmetjetgenjetptratio","runmetjetgenjetptratio",10100,0.,10.1);
+    icjetgenjetptratio = dir3.make<TH1F>("icjetgenjetptratio","icjetgenjetptratio",10100,0.,10.1);
     icjetpt = dir3.make<TH1F>("icjetpt","icjetpt",10000,0.,1000.);
     runmetjetpt = dir3.make<TH1F>("runmetjetpt","runmetjetpt",10000,0.,1000.);
     nojerjetpt = dir3.make<TH1F>("nojerjetpt","nojerjetpt",10000,0.,1000.);
@@ -110,6 +114,7 @@ namespace ic {
       //GET MET AND JET COLLECTIONS
       std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
       std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");//GenJet collection, note: could make this a parameter but we only have one collection at the moment in the ntuples
+      std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");//Tau Collection
       Met *met = event->GetPtr<Met>(met_label_);//MET collection
       ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
       ROOT::Math::PxPyPzEVector  newmet = oldmet;
@@ -277,9 +282,14 @@ namespace ic {
 	    matchedicjetpt->Fill(newjet.pt());
 	    matchednojerjetpt->Fill(oldjet.pt());
 	    matchedrunmetjetpt->Fill(jet_runmetjet_pairs[runmetindex].second->pt());
-	    
-	    icjetrunmetjetptdiff->Fill(jet_runmetjet_pairs[runmetindex].second->pt()-newjet.pt());
-	    icjetrunmetjetptratio->Fill(jet_runmetjet_pairs[runmetindex].second->pt()/newjet.pt());
+	    if(index!=-1){
+	      icjetrunmetjetptdiff->Fill(jet_runmetjet_pairs[runmetindex].second->pt()-newjet.pt());
+	      icjetrunmetjetptratio->Fill(jet_runmetjet_pairs[runmetindex].second->pt()/newjet.pt());
+	      icjetnosmearptratio->Fill(newjet.pt()/oldjet.pt());
+	      runmetjetnosmearptratio->Fill(jet_runmetjet_pairs[runmetindex].second->pt()/oldjet.pt());
+	      icjetgenjetptratio->Fill(newjet.pt()/jet_genjet_pairs[index].second->pt());
+	      runmetjetgenjetptratio->Fill((jet_runmetjet_pairs[runmetindex].second->pt())/jet_genjet_pairs[index].second->pt());
+	    }
 	  }
 	  else{
 	    icjetrunmetjetptdiff->Fill(10);

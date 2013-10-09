@@ -23,6 +23,8 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_w_soup)
   CLASS_MEMBER(HinvWeights, bool, do_dy_soup)
   CLASS_MEMBER(HinvWeights, std::string, input_met)
+  CLASS_MEMBER(HinvWeights, bool, do_idiso_err)
+  CLASS_MEMBER(HinvWeights, bool, do_idiso_errupordown)
   
 
   TFile *triggerSF_;
@@ -75,6 +77,7 @@ class HinvWeights : public ModuleBase {
   unsigned findElectronPtEtaBin(double pt, double eta);
   unsigned findMuonPtEtaBin(double pt, double eta);
   void fillVector(const std::string & aFileName, std::vector<double> & aVector);
+  void fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
 
 
 };
