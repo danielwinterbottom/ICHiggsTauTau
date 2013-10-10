@@ -24,6 +24,7 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_dy_soup)
   CLASS_MEMBER(HinvWeights, std::string, input_met)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_err)
+  CLASS_MEMBER(HinvWeights, bool, do_idiso_errmuore)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_errupordown)
   
 

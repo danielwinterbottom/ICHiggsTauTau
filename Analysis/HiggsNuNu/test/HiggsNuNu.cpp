@@ -101,6 +101,7 @@ int main(int argc, char* argv[]){
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
   bool doidisoerr;                // Do lepton ID-iso efficiency correction error
   bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
+  bool doidisoerrmuore;           // Do lepton ID-iso efficiency correction error for muons or electrons
 
   double mjj_cut;                 // mjjcut
 
@@ -155,6 +156,7 @@ int main(int argc, char* argv[]){
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
+    ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
@@ -811,6 +813,7 @@ int main(int argc, char* argv[]){
     .set_do_idiso_veto_weights(false)
     .set_do_idiso_err(doidisoerr)
     .set_do_idiso_errupordown(doidisoerrupordown)
+    .set_do_idiso_errmuore(doidisoerrmuore)
     .set_input_met("metNoMuons");
   //  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
   if (!is_data) {

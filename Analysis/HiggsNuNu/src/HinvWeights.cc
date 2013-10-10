@@ -25,6 +25,7 @@ namespace ic {
     do_dy_soup_         = false;
     do_idiso_err_       = false;
     do_idiso_errupordown_ = true;
+    do_idiso_errmuore_ = true;
     input_met_ = "metNoMuons";
     hist_trigSF_METL1 = 0;
     hist_trigSF_METHLT = 0;
@@ -146,10 +147,10 @@ namespace ic {
       fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
       fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
     }
-    else{
-      fillVectorError("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
+    else if(do_idiso_errmuore_){
+      fillVector("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_);
+      fillVector("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+      fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
       
       fillVectorError("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
       fillVectorError("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
@@ -158,6 +159,19 @@ namespace ic {
       fillVectorError("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
       fillVectorError("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
     }
+    else{
+      fillVectorError("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
+      
+      fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
+      fillVector("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
+      fillVector("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+      fillVector("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+      fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+      fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);    
+    }
+
     
     for (unsigned iBin(0); iBin<muTight_idSF_.size();++iBin){
       muTight_idisoSF_.push_back(muTight_idSF_[iBin]*muTight_isoSF_[iBin]);
