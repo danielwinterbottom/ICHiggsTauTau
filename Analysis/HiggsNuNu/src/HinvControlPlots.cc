@@ -368,8 +368,8 @@ namespace ic {
 	      genmatch = genjets[iG];
 	    }
 	  }//loop on genjets
-	  if (mindR < 0.5 && iR<5) genPlots_->recojet_isMatched[iR]->Fill(1,wt_);
-	  else if (iR<5) genPlots_->recojet_isMatched[iR]->Fill(0,wt_);
+	  if (mindR < 0.5 && iR<5) genPlots_->recojet_isMatched[iR]->Fill(1.,wt_);
+	  else if (iR<5) genPlots_->recojet_isMatched[iR]->Fill(0.,wt_);
 	}//loop on recojets
 
 	//get genjet matched with leading tau
