@@ -3,7 +3,7 @@ PRODUCTION=Apr04
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
 
-for CHANNEL in nunu taunu
+for CHANNEL in taunu
   do
   for MET in 130
     do
@@ -31,10 +31,10 @@ for CHANNEL in nunu taunu
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
-     --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
-    --plot_name="jCSV_3"  --x_axis_label="Jet3 CSV discriminant" \
+    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
+    --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
     --y_axis_min=0.1 --extra_pad=100 \
-    --rebin=4 \
+    --rebin=20 \
     --plot_wjets_comp=false \
     --norm_bins=false \
     --plot_qcd=false \
@@ -43,11 +43,11 @@ for CHANNEL in nunu taunu
     --paramfile=$PARAMS
 
 
-
   done
 done
 
 
+#    --plot_name="jCSV_1"  --x_axis_label="Jet 1 discriminant" \
 #   --plot_name="detajj"  --x_axis_label="#Delta#eta_{jj}" \
 #    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
 #    --plot_name="n_jets"  --x_axis_label="Jet multiplicity" \
@@ -57,7 +57,7 @@ done
 #    --x_blind_min=0 --x_blind_max=1.\
 #    --plot_name="met_noelectrons"  --x_axis_label="PF MET + e (GeV)" \
 #    --plot_name="met"  --x_axis_label="PF MET (GeV)" \
-#
+#    --plot_name="dphijj"  --x_axis_label="#Delta#phi_{jj}" \
 #    --plot_name="met_noMuons"  --x_axis_label="PF MET + #mu (GeV)" \
 #    --plot_name="n_taus"  --x_axis_label="#tau multiplicity" \
 #    --plot_name="taupt_1"  --x_axis_label="p_{T}(#tau) (GeV)" \

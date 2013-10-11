@@ -351,8 +351,8 @@ namespace ic {
       //fill btagging
       for (unsigned iR(0); iR < jets.size(); ++iR){//loop on recojets
 	double lCSV = jets[iR]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-	controlplots_->jCSV_allJets->Fill(lCSV);
-	if (iR<4)controlplots_->jCSV[iR]->Fill(lCSV);
+	controlplots_->jCSV_allJets->Fill(lCSV,wt_);
+	if (iR<4)controlplots_->jCSV[iR]->Fill(lCSV,wt_);
       }
 
       if(!is_data_){
@@ -368,8 +368,8 @@ namespace ic {
 	      genmatch = genjets[iG];
 	    }
 	  }//loop on genjets
-	  if (mindR < 0.5 && iR<5) genPlots_->recojet_isMatched[iR]->Fill(1);
-	  else if (iR<5) genPlots_->recojet_isMatched[iR]->Fill(0);
+	  if (mindR < 0.5 && iR<5) genPlots_->recojet_isMatched[iR]->Fill(1,wt_);
+	  else if (iR<5) genPlots_->recojet_isMatched[iR]->Fill(0,wt_);
 	}//loop on recojets
 
 	//get genjet matched with leading tau
@@ -389,7 +389,7 @@ namespace ic {
 	    }
 	  }//end of loop on genjets
 	  
-	  genPlots_->dR_genjet_gentau->Fill(mindR);
+	  genPlots_->dR_genjet_gentau->Fill(mindR,wt_);
 	  
 	  if (mindR < 0.5) {
 	    genPlots_->taupt->Fill(gentau->pt(),wt_);
@@ -406,7 +406,7 @@ namespace ic {
 	      
 	      double dR1 = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),gentau->vector());
 	      double dR2 = ROOT::Math::VectorUtil::DeltaR(jet2->vector(),gentau->vector());
-	      if (gentau->pt()>20 && fabs(gentau->eta())<2.3) genPlots_->mindR_gentau_tagjets->Fill(std::min(dR1,dR2));
+	      if (gentau->pt()>20 && fabs(gentau->eta())<2.3) genPlots_->mindR_gentau_tagjets->Fill(std::min(dR1,dR2),wt_);
 	      
 	    }
 	    
@@ -432,8 +432,8 @@ namespace ic {
 	      
 	    }//end of loop on reco jets
 	    
-	    genPlots_->dR_recotau_genjet->Fill(mindR);
-	    genPlots_->dR_recotau_status3tau->Fill(mindR_status3);
+	    genPlots_->dR_recotau_genjet->Fill(mindR,wt_);
+	    genPlots_->dR_recotau_status3tau->Fill(mindR_status3,wt_);
 	    
 	    if (mindR < 0.5 && gentau->pt()>20 && fabs(gentau->eta())<2.3) {
 	      genPlots_->recotaupt->Fill(recotau->pt(),wt_);
