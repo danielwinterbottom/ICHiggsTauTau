@@ -8,6 +8,8 @@
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include "Math/VectorUtil.h"
+#include "TVector3.h"
+
 #include "UserCode/ICHiggsTauTau/interface/Objects.hh"
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
@@ -142,6 +144,7 @@ namespace ic {
     return fabs(cand->vz() - vz);
   }
 
+  bool PairPtSelection(CompositeCandidate const* cand, double const& jetpt1, double const& jetpt2);
   bool PairMassInRange(CompositeCandidate const* cand, double const& mLow, double const& mHigh);
   bool PairEtaProdLessThan(CompositeCandidate const* cand, double const& max);
   bool PairDEtaLessThan(CompositeCandidate const* cand, double const& max);
@@ -248,13 +251,16 @@ namespace ic {
   
 
   bool MassDiffCompare(Candidate const* p1, Candidate const* p2, double const& mass);
-  
 
   std::vector<GenParticle *> ExtractStableDaughters(GenParticle * part, std::vector<GenParticle *> const& input);
 
   std::vector<GenParticle *> ExtractDaughters(GenParticle * part, std::vector<GenParticle *> const& input);
 
   std::vector<GenJet> BuildTauJets(std::vector<GenParticle *> const& parts, bool include_leptonic);
+
+  ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met);
+
+  
 
   /*
   //---------------------------------------------------------------------------

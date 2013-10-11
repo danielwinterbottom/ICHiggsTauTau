@@ -24,6 +24,8 @@ namespace ic {
     TH1F *mt_enu;
     TH1F *mt_munu;
     TH1F *mt_taunu;
+    TH1F *zeppenfeld_enu;
+    TH1F *zeppenfeld_munu;
     TH1F *ept_1;
     TH1F *ept_2;
     TH1F *eeta_1;
@@ -82,6 +84,8 @@ namespace ic {
     double mt_enu_;
     double mt_munu_;
     double mt_taunu_;
+    double zepp_e_;
+    double zepp_mu_;
     double ept_1_;
     double ept_2_;
     double eeta_1_;

@@ -11,12 +11,14 @@ namespace ic {
   private:
     std::string input_name_;
     std::string lepton_name_;
+    std::string jet_name_;
     unsigned lepton_flavour_;
     double min_;
     double max_;
+    bool doZeppenfeldCut_;
 
   public:
-    MTSelection(std::string const& name, std::string input_name, std::string lepton_name_, unsigned lepton_flavour, double min, double max=14000.);
+    MTSelection(std::string const& name, std::string input_name, std::string lepton_name, unsigned lepton_flavour, double min, double max=14000., bool doZeppenfeldCut=false, std::string jet_name="");
     virtual ~MTSelection();
 
     virtual int PreAnalysis();

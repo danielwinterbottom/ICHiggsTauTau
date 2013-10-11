@@ -28,6 +28,8 @@ namespace ic {
     TH1F *jpt_2;
     TH1F *jeta_1;
     TH1F *jeta_2;
+    TH1F *jCSV_allJets;
+    TH1F *jCSV[4];
     TH1F *mjj;
     TH1F *detajj;
     TH1F *etaprodjj;
@@ -141,6 +143,8 @@ namespace ic {
     TH1F *recotaueta;
     TH1F *recotaupt_status3;
     TH1F *recotaueta_status3;
+
+    TH1F *recojet_isMatched[5];
 
     HinvGenPlots(TFileDirectory const& dir);
   };

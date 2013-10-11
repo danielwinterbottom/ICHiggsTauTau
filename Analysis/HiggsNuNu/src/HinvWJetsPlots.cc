@@ -21,6 +21,8 @@ namespace ic {
     mt_enu = dir.make<TH1F>("mt_enu","mt_enu", 500, 0, 500); 
     mt_munu = dir.make<TH1F>("mt_munu","mt_munu", 500, 0, 500); 
     mt_taunu = dir.make<TH1F>("mt_taunu","mt_taunu", 500, 0, 500); 
+    zeppenfeld_enu = dir.make<TH1F>("zeppenfeld_enu","zeppenfeld_enu",200,0,10);
+    zeppenfeld_munu = dir.make<TH1F>("zeppenfeld_munu","zeppenfeld_munu",200,0,10);
     ept_1 = dir.make<TH1F>("ept_1","ept_1", 1000, 0, 1000); 
     ept_2 = dir.make<TH1F>("ept_2","ept_2", 1000, 0, 1000); 
     eeta_1 = dir.make<TH1F>("eeta_1","eeta_1", 100, -5, 5); 
@@ -125,6 +127,9 @@ namespace ic {
 
     unsigned nJetsInGap = 0;
 
+    zepp_e_ = -1;
+    zepp_mu_ = -1;
+
     if (event->Exists("nJetsInGap")) nJetsInGap = event->Get<unsigned>("nJetsInGap");
     //else std::cerr << " WARNING ! Variable nJetsInGap not found in event ! Set to 0." << std::endl;
     
@@ -173,6 +178,15 @@ namespace ic {
       else if (dR1min < 0.5) taggingJetsFlavour_ = 1;
       else if (dR2min < 0.5) taggingJetsFlavour_ = 2;
 
+      ROOT::Math::PtEtaPhiEVector lWreco(0,0,0,0);
+      if (n_electrons_ > 0) {
+	lWreco = ic::reconstructWboson(electrons[0],met);
+	zepp_e_ = fabs(lWreco.Rapidity() - (jet1->vector().Rapidity()+jet2->vector().Rapidity())/2.);
+      }
+      if (n_muons_ > 0) {
+	lWreco = ic::reconstructWboson(muons[0],met);
+	zepp_mu_ = fabs(lWreco.Rapidity() - (jet1->vector().Rapidity()+jet2->vector().Rapidity())/2.);
+      }
     }
 
     // Define event properties
@@ -295,6 +309,8 @@ namespace ic {
     wjetsplots_->mt_enu->Fill(mt_enu_, wt_);
     wjetsplots_->mt_munu->Fill(mt_munu_, wt_);
     wjetsplots_->mt_taunu->Fill(mt_taunu_, wt_);
+    wjetsplots_->zeppenfeld_enu->Fill(zepp_e_,wt_);
+    wjetsplots_->zeppenfeld_munu->Fill(zepp_mu_,wt_);
     wjetsplots_->ept_1->Fill(ept_1_, wt_);
     wjetsplots_->eeta_1->Fill(eeta_1_, wt_);
     wjetsplots_->ept_2->Fill(ept_2_, wt_);

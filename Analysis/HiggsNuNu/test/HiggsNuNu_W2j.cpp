@@ -235,15 +235,15 @@ int main(int argc, char* argv[]){
   //veto_muon_dz = 0.2;
   //veto_muon_dxy = 0.045;
   
-  elec_pt = 20.0;
+  elec_pt = 30.0;
   elec_eta = 2.4;
-  muon_pt = 20.0;
-  muon_eta = 2.1;
+  muon_pt = 25.0;
+  muon_eta = 2.4;
   
-  veto_elec_pt = 10.0;
+  veto_elec_pt = 20.0;
   veto_elec_eta = 2.4;
   veto_muon_pt = 10.0;
-  veto_muon_eta = 2.1;
+  veto_muon_eta = 2.4;
    
   std::cout << "----------PARAMETERS----------" << std::endl;
   std::cout << boost::format("%-15s %-10s\n") % "elec_pt:" % elec_pt;
@@ -717,10 +717,10 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<CompositeCandidate> jetPairFilter = SimpleFilter<CompositeCandidate>("JetPairFilter")
     .set_input_label("jjLeadingCandidates")
-    .set_predicate( bind(PairPtSelection, _1, 50, 50) )
+    .set_predicate( bind(PairPtSelection, _1, 60, 50) )
     .set_min(1)
     .set_max(999);
-  
+
   SimpleFilter<CompositeCandidate> etaProdJetPairFilter = SimpleFilter<CompositeCandidate>("EtaProdJetPairFilter")
     .set_input_label("jjLeadingCandidates")
     .set_predicate( bind(PairEtaProdLessThan, _1, 0))
@@ -735,7 +735,7 @@ int main(int argc, char* argv[]){
     .set_max(999);    
 
 
-  double minmjj=900;
+  double minmjj=1000;
   if(do_skim)minmjj=600;
 
   SimpleFilter<CompositeCandidate> looseMassJetPairFilter = SimpleFilter<CompositeCandidate>("LooseMassJetPairFilter")
@@ -794,10 +794,10 @@ int main(int argc, char* argv[]){
   //------------------------------------------------------------------------------------
   // W selection Modules
   // ------------------------------------------------------------------------------------
-  double mtcut_min = 0;
+  double mtcut_min = 30;
   double mtcut_max = 8000;
-  MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",2,mtcut_min,mtcut_max);
-  MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",1,mtcut_min,mtcut_max);
+  MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",2,mtcut_min,mtcut_max,1,"pfJetsPFlow");
+  MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",1,mtcut_min,mtcut_max,1,"pfJetsPFlow");
 
   // ------------------------------------------------------------------------------------
   // Selection Modules
@@ -988,6 +988,15 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  HinvWJetsPlots wjetsPlots_looseMjj = HinvWJetsPlots("LooseMjjWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("LooseMjj");
+
   HinvControlPlots controlPlots_deta = HinvControlPlots("DEtaControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1004,6 +1013,23 @@ int main(int argc, char* argv[]){
     .set_muons_label("selMuons")
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("DEta");
+
+  HinvControlPlots controlPlots_mtzepp = HinvControlPlots("MtZeppControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("MtZepp")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  HinvWJetsPlots wjetsPlots_mtzepp = HinvWJetsPlots("MtZeppWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("MtZepp");
 
   //if (channel==channel::enu)
   //wjetsPlots_deta.set_met_nolep_label("metNoElectrons");
@@ -1284,7 +1310,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&metNoENoMu);
      
      //if (printEventList) analysis.AddModule(&hinvPrintList);
-
+ 
      //deal with removing overlap with selected leptons
      analysis.AddModule(&jetMuonOverlapFilter);
      analysis.AddModule(&jetElecOverlapFilter);
@@ -1333,7 +1359,6 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&twoMuonFilter);
        analysis.AddModule(&twoVetoMuonFilter);
        analysis.AddModule(&zeroVetoElectronFilter);
-       //analysis.AddModule(&muonMTFilter);
      }
      else if (channel == channel::enu){
        analysis.AddModule(&oneElectronFilter);
@@ -1385,7 +1410,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&FilterCJV);
 
      //jet pair selection
-     analysis.AddModule(&etaProdJetPairFilter);
+     //analysis.AddModule(&etaProdJetPairFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      analysis.AddModule(&controlPlots_dijet);
@@ -1396,118 +1421,45 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_AN);
      analysis.AddModule(&wjetsPlots_AN);
 
-     analysis.AddModule(&detaJetPairFilter);
-     analysis.AddModule(&controlPlots_deta);
-     analysis.AddModule(&wjetsPlots_deta);
+     //analysis.AddModule(&detaJetPairFilter);
+     //analysis.AddModule(&controlPlots_deta);
+     //analysis.AddModule(&wjetsPlots_deta);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      //met modules
        
-     if (channel == channel::munu || channel == channel::mumu){
-       analysis.AddModule(&metNoMuonFilter);
-     }
+     //if (channel == channel::munu || channel == channel::mumu){
+       //  analysis.AddModule(&metNoMuonFilter);
+     //}
      //else if (channel == channel::enu){
      //analysis.AddModule(&metNoElectronFilter);
      // }
      //else if (channel == channel::emu){
      //analysis.AddModule(&metNoENoMuFilter);
      //}
-     else {
+     //else {
        analysis.AddModule(&metCut);
-     }
+       //}
      
      analysis.AddModule(&controlPlots_met);
      analysis.AddModule(&wjetsPlots_met);
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
-
+    if (channel == channel::munu){
+      analysis.AddModule(&muonMTFilter);
+    }
+    else if (channel == channel::enu){
+      analysis.AddModule(&electronMTFilter);
+    }
+    analysis.AddModule(&controlPlots_mtzepp);
+    analysis.AddModule(&wjetsPlots_mtzepp);
+     
      //tight Mjj cut
-     analysis.AddModule(&tightMassJetPairFilter);
-     analysis.AddModule(&controlPlots_tightMjj);
-     analysis.AddModule(&wjetsPlots_tightMjj);
+     analysis.AddModule(&looseMassJetPairFilter);
+     analysis.AddModule(&controlPlots_looseMjj);
+     analysis.AddModule(&wjetsPlots_looseMjj);
 
-     //save signal and QCD regions without CJV
-     analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
-     analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);
-     analysis.AddModule(&controlPlots_dphi_signal_nocjv);
-     analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
-
-     if(printEventList) analysis.AddModule(&hinvPrintList);
-     //if(printEventContent) analysis.AddModule(&hinvPrint);
-
-     //save all, signal and QCD regions with failed CJV
-     analysis.AddModule(&controlPlots_cjvfail);
-     analysis.AddModule(&wjetsPlots_cjvfail);
-     analysis.AddModule(&controlPlots_dphi_qcd_cjvfail);
-     analysis.AddModule(&wjetsPlots_dphi_qcd_cjvfail);
-     analysis.AddModule(&controlPlots_dphi_signal_cjvfail);
-     analysis.AddModule(&wjetsPlots_dphi_signal_cjvfail);
-
-     analysis.AddModule(&controlPlots_cjvpass);
-     analysis.AddModule(&wjetsPlots_cjvpass);
-     
-     //if (printEventList) analysis.AddModule(&hinvPrintList);
-
-     //dphi cut: don't filter events anymore !
-     //Just plot histograms for different regions
-     ////if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
-     ////else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
-
-     analysis.AddModule(&controlPlots_dphi_qcd_cjvpass);
-     analysis.AddModule(&wjetsPlots_dphi_qcd_cjvpass);
-     analysis.AddModule(&controlPlots_dphi_signal_cjvpass);
-     analysis.AddModule(&wjetsPlots_dphi_signal_cjvpass);
-     //debug
-     //analysis.AddModule(&dphiJetPairFilter);
-     //if (!is_data) analysis.AddModule(&hinvWeights);
-     //}
-     //else {
-     //Build Skimming Analysis
-     //analysis.AddModule(pointer to module defined above)
-     //analysis.AddModule(&dataMCTriggerPathFilter);
-
-     //SINGLE EVENT SKIMMING
-     // if (channel == channel::nunu){
-//        analysis.AddModule(&hinvFilter);
-//        analysis.AddModule(&jetIDFilter);
-
-//        //prepare collections of veto leptons
-//        analysis.AddModule(&vetoElectronCopyCollection);
-//        analysis.AddModule(&vetoElectronFilter);
-//        analysis.AddModule(&vetoElectronIso);
-//        analysis.AddModule(&vetoMuonCopyCollection);
-//        analysis.AddModule(&vetoMuonFilter);
-//        analysis.AddModule(&vetoMuonNoIsoCopyCollection);
-//        analysis.AddModule(&vetoMuonNoIsoFilter);
-       
-//        //filter leptons before making jet pairs and changing MET...
-//        analysis.AddModule(&selElectronCopyCollection);
-//        analysis.AddModule(&selElectronFilter);
-//        analysis.AddModule(&selElectronIso);
-//        analysis.AddModule(&selMuonCopyCollection);
-//        analysis.AddModule(&selMuonFilter);
-//        analysis.AddModule(&elecMuonOverlapFilter);
-   
-//        //filter jets
-//        analysis.AddModule(&jetPtEtaFilter);
-
-//        //deal with removing overlap with selected leptons
-//        analysis.AddModule(&jetMuonOverlapFilter);
-//        analysis.AddModule(&jetElecOverlapFilter);
-     
-//        //two-leading jet pair production before plotting
-//        analysis.AddModule(&jjLeadingPairProducer);
-//        analysis.AddModule(&hinvPrint);
-//        //analysis.AddModule(&jetPtEtaFilter);
-//        //analysis.AddModule(&metCut);
-//        //analysis.AddModule(&jjPairProducer);
-//        //analysis.AddModule(&looseMassJetPairFilter);
-//      }
-//      else if (!is_data){
-//        analysis.AddModule(&WtoLeptonFilter);
-//      }
-     //}
-
+ 
   }
    // Run analysis
    

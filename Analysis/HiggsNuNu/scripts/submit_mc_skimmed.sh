@@ -5,8 +5,10 @@
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
 
-JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
-JOBQUEUE="hepshort.q"
+#JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
+JOBSCRIPT="./scripts/submit_cern_batch_job.sh" 
+#JOBQUEUE="hepshort.q"
+JOBQUEUE="1nh"
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 
 
@@ -18,13 +20,13 @@ PRODUCTION=Apr04
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in nunu enu munu taunu #mumu
+  for CHANNEL in nunu taunu #mumu
   do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
       JOBDIRPREFIX=jobs/
-      JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/Skim/
+      JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
       OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
@@ -61,7 +63,8 @@ for METCUT in 130 #0 130
       mkdir -p $JOBDIR
       mkdir -p $OUTPUTDIR
       
-      PREFIX=/vols/ssd00/cms/amagnan/trigskims/nunu/MET130/ #/afs/cern.ch/work/a/amagnan/SkimFiles/Apr04/$CHANNEL/
+      #PREFIX=/vols/ssd00/cms/amagnan/trigskims/nunu/MET130/
+      PREFIX=/afs/cern.ch/work/a/amagnan/SkimFiles/Apr04/nunu/
       for FILELIST in `ls filelists/skim/$PRODUCTION/nunu/*`
   #for FILELIST in `ls filelists/skim/$PRODUCTION/$CHANNEL/EWK-W2j*_*nu.dat`
 	do
@@ -71,7 +74,17 @@ for METCUT in 130 #0 130
 	echo $FILELIST > tmp.txt
 	sed "s/filelists\/skim\/${PRODUCTION}\/nunu\///" tmp.txt > tmp2.txt
 	
-	JOB=MC_`sed "s/\.dat//" tmp2.txt`
+
+	grep "MET-2012" tmp.txt
+	if (( "$?" == 0 )); then
+	    #continue
+	    JOB=Data_`sed "s/\.dat//" tmp2.txt`
+	    CONFIG=scripts/DefaultConfig.cfg
+	else 
+	    continue
+	    JOB=MC_`sed "s/\.dat//" tmp2.txt`
+	    CONFIG=scripts/DefaultConfigMC.cfg
+	fi
     #JOB=`sed "s/\.dat//" tmp2.txt`
 	
 	echo "JOB name = $JOB"
@@ -93,11 +106,11 @@ for METCUT in 130 #0 130
 	      WJOB=$JOB"_"$FLAVOUR
 	      
 	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh 0
-	      $JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
+	      $JOBSUBMIT $JOBDIR/$WJOB.sh $WJOB                                                                                   
 	    done
 	else  
 	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh 0
-	    $JOBSUBMIT $JOBDIR/$JOB.sh
+	    $JOBSUBMIT $JOBDIR/$JOB.sh $JOB
 	fi
 	
 	rm tmp.txt tmp2.txt

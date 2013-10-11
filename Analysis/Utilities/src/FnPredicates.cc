@@ -758,6 +758,11 @@ namespace ic {
     }
     return false;
   }
+  
+  bool PairPtSelection(CompositeCandidate const* cand, double const& jetpt1, double const& jetpt2){
+    if (cand->At(0)->pt()>jetpt1 && cand->At(1)->pt()>jetpt2) return true;
+    return false;
+  }
 
   bool PairMassInRange(CompositeCandidate const* cand, double const& mLow, double const& mHigh) {
     double mass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
@@ -961,6 +966,50 @@ namespace ic {
     return taus;
   }
 
+  ROOT::Math::PtEtaPhiEVector reconstructWboson(Candidate const*  lepton, Candidate const* met){
+
+
+    const double metX = met->vector().px();
+    const double metY = met->vector().py();
+    ROOT::Math::PxPyPzEVector nuP4;
+    nuP4.SetPx(metX);
+    nuP4.SetPy(metY);
+    double massW = 80.4;
+    double bestW = -1000;
+    double lowestMassDifference = -1;
+    double step = 1;
+    for (int i = -500; i<500;++i){
+
+      double currentW = step*i;
+      nuP4.SetPz(currentW);
+      nuP4.SetE(std::sqrt(metX*metX+metY*metY+currentW*currentW ) );
+  
+      double M = (nuP4+lepton->vector()).M();
+      double diff = std::abs(massW-M);
+      //      std::cout << i << " " << diff << std::endl;
+      if ( diff < lowestMassDifference  || lowestMassDifference <0 ) {
+          lowestMassDifference = diff;
+          bestW = currentW;
+      }
+
+    }
+
+    if (bestW > -700) {
+      nuP4.SetPz(bestW);
+      nuP4.SetE(std::sqrt(metX*metX+metY*metY+bestW*bestW ) );
+      std::cout << " NUz=" << bestW << " M_W=" << (nuP4+lepton->vector()).M() <<std::endl;
+    } else {
+      std::cout << " Cannot reconstruct nu!\n";
+      nuP4.SetPz(0);
+      nuP4.SetE( std::sqrt(metX*metX+metY*metY) );
+      //return;
+    }
+
+    ROOT::Math::PtEtaPhiEVector lWreco;
+    lWreco = lepton->vector() + nuP4;
+    return lWreco;
+    
+  }
 
   /*
   

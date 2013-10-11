@@ -21,7 +21,7 @@ options.register ('isEmbedded',
                   "Process as embedded?")
 
 options.register ('release',
-                  '', # default value
+                  '53X', # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.string,          # string, int, or float
                   "Release label")
@@ -746,8 +746,9 @@ if (release == '53X'):
     process.source = cms.Source("PoolSource",
       #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/public/TauPlusX-2012D.root')
       #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/private/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/pickevents.root')
-      fileNames = cms.untracked.vstring("/store/user/srimanob/invHiggs/22Jan13/0008F234-739C-E211-A836-002590832A48.root")
-    )
+      #fileNames = cms.untracked.vstring("/store/user/srimanob/invHiggs/22Jan13/0008F234-739C-E211-A836-002590832A48.root")
+      fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/embedded.root')       
+     )
     process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
   else:
     process.source = cms.Source(
@@ -762,7 +763,7 @@ if (release == '53X'):
     process.GlobalTag.globaltag = cms.string('START53_V15::All')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 ################################################################
 ## Configure private modules

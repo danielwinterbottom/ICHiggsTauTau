@@ -2,17 +2,17 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
-for CHANNEL in nunu enu munu taunu
+for CHANNEL in enu munu 
   do
   
-  for MET in 130 #0 130 #0 70
+  for MET in 30 #0 130 #0 70
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
       do
 
-	FOLDER=./output/$CHANNEL/MET$MET/
-	PLOTDIR=PLOTS/$CHANNEL/MET$MET/
-	PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
+	FOLDER=./output_W2j/$CHANNEL/MET$MET/
+	PLOTDIR=PLOTS_W2j/$CHANNEL/MET$MET/
+	PLOTDIRQCD=PLOTS_W2j/$CHANNEL/MET$MET/QCD/
 	
 	if [ "$SYST" != "central" ] #if not doing central                                                                                                               
             then
@@ -157,7 +157,7 @@ fi
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
     --norm_bins=false \
-    --log_y=true \
+    --log_y=false \
     --paramfile=$PARAMS
 
 ###### dphijj

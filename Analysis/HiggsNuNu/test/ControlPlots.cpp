@@ -166,6 +166,8 @@ int main(int argc, char* argv[]){
   bool plot_data_qcd;                // Include QCD from data in plots
   bool plot_wjets_comp;              // Separate Wjets components in plots
 
+  bool addOverflows;                 //add two bins to histo for underflows and overflows.
+
   // Options to manually shift backgrounds and draw uncertainty bands
   bool shift_backgrounds = false;
   double qcd_shift = 1.0;
@@ -214,6 +216,7 @@ int main(int argc, char* argv[]){
     ("plot_qcd",            po::value<bool>(&plot_qcd)->default_value(true))
     ("plot_data_qcd",       po::value<bool>(&plot_data_qcd)->default_value(false))
     ("plot_wjets_comp",     po::value<bool>(&plot_wjets_comp)->default_value(true))
+    ("addOverflows",        po::value<bool>(&addOverflows)->default_value(false))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
     ("draw_band_on_stack",  po::value<bool>(&draw_band_on_stack)->default_value(false))
     ("qcd_shift",           po::value<double>(&qcd_shift)->default_value(1.0))
@@ -342,6 +345,7 @@ int main(int argc, char* argv[]){
   selections.push_back("AN");
   selections.push_back("DEta");
   selections.push_back("MET");
+  selections.push_back("LooseMjj");
   selections.push_back("TightMjj");
   selections.push_back("DPhiSIGNAL_noCJV");
   selections.push_back("DPhiQCD_noCJV");
@@ -351,6 +355,7 @@ int main(int argc, char* argv[]){
   selections.push_back("CJVpass");
   selections.push_back("DPhiSIGNAL_CJVpass");
   selections.push_back("DPhiQCD_CJVpass");
+  selections.push_back("MtZepp");
   vector<string> latex;
   latex.push_back("HLTMetClean");
   latex.push_back("LeptonVeto");
@@ -359,6 +364,7 @@ int main(int argc, char* argv[]){
   latex.push_back("AN");
   latex.push_back("DEta");
   latex.push_back("MET");
+  latex.push_back("LooseMjj");
   latex.push_back("TightMjj");
   latex.push_back("SIG noCJV");
   latex.push_back("QCD noCJV");
@@ -368,7 +374,8 @@ int main(int argc, char* argv[]){
   latex.push_back("CJVpass");
   latex.push_back("SIG CJVpass");
   latex.push_back("QCD CJVpass");
- 
+  latex.push_back("MtZepp");
+
   vector<string> selectionsdir = selections;
 
 //   if(dopusyst){//If do PU uncertainty get n_jets hist from systematics directory
@@ -446,6 +453,8 @@ int main(int argc, char* argv[]){
 	plots[nm].hist_ptr()->Scale(sample_scale);
 	plots[nm].hist_ptr()->Rebin(rebin);
 	
+	if (addOverflows) plots[nm].AddOverflows();
+
 	//if (k==0) std::cout << f << " " << sample_scale << std::endl;
 
       }
@@ -583,13 +592,13 @@ int main(int argc, char* argv[]){
     SetBkgStyle(data_qcd_hist,7);
     SetBkgStyle(top_hist,5);
     SetBkgStyle(WJets_hist,6);
-    SetBkgStyle(VBFW_hist,6);
+    SetBkgStyle(VBFW_hist,kViolet-6);
     SetBkgStyle(WJets_enu_hist,2);
     SetBkgStyle(WJets_munu_hist,kOrange);
     SetBkgStyle(WJets_taunu_hist,6);
-    SetBkgStyle(VBFW_enu_hist,2);
-    SetBkgStyle(VBFW_munu_hist,kOrange);
-    SetBkgStyle(VBFW_taunu_hist,6);
+    SetBkgStyle(VBFW_enu_hist,kRed);
+    SetBkgStyle(VBFW_munu_hist,kOrange+8);
+    SetBkgStyle(VBFW_taunu_hist,kViolet-6);
     SetBkgStyle(ZJetsToLL_hist,3);
     SetBkgStyle(ZJetsToNuNu_hist,3);
     SetBkgStyle(VBFZ_hist,3);
@@ -608,7 +617,10 @@ int main(int argc, char* argv[]){
       //GJets_hist.set_legend_text("#gamma + jets");
     }
     ZJetsToNuNu_hist.set_legend_text("Z+jets,EWK Z");
-    if (!plot_wjets_comp) WJets_hist.set_legend_text("W+jets, EWK W");
+    if (!plot_wjets_comp) {
+      WJets_hist.set_legend_text("QCD W+jets");
+      VBFW_hist.set_legend_text("EWK W+jets");
+    }
     else {
       WJets_taunu_hist.set_legend_text("W#rightarrow#tau#nu+jets");
       WJets_munu_hist.set_legend_text("W#rightarrow#mu#nu+jets");
