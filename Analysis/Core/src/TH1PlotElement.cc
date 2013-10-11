@@ -38,6 +38,35 @@ namespace ic {
     hist_ptr_ = hist_ptr;
   }
 
+  void TH1PlotElement::AddOverflows() {
+
+    //modify hist_ptr to add under/overflow bins
+    Int_t nx    = hist_ptr_->GetNbinsX()+2;
+    Double_t *xbins= new Double_t[nx+1];
+    for (Int_t i=1;i<nx;i++)
+      xbins[i]=hist_ptr_->GetBinLowEdge(i);
+    
+    xbins[0]=xbins[1]-hist_ptr_->GetBinWidth(0);
+    xbins[nx]=xbins[nx-1]+hist_ptr_->GetBinWidth(nx-1);
+
+    char *tempName= new char[strlen(hist_ptr_->GetName())+10];
+    sprintf(tempName,"%swtOverFlow",hist_ptr_->GetName());
+    // Book a temporary histogram having ab extra bin for overflows
+    TH1F *htmp = new TH1F(tempName, hist_ptr_->GetTitle(), nx, xbins);
+    
+    // Fill the new hitogram including the extra bin for overflows
+    for (Int_t i=1; i<=nx; i++){
+      htmp->SetBinContent(i,hist_ptr_->GetBinContent(i-1));
+      htmp->SetBinError(i,hist_ptr_->GetBinError(i-1));
+    }
+    // Restore the number of entries
+    htmp->SetEntries(hist_ptr_->GetEntries());
+
+    hist_ptr_ = htmp;
+  }
+
+
+
   void TH1PlotElement::SetDefaults() {
     hist_ptr_           = 0;
     legend_text_        = "";
