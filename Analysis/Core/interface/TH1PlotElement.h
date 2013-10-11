@@ -54,7 +54,9 @@ namespace ic {
       void SetElement(TH1F* hist_ptr);
 
       void SetDefaults();
-      
+
+      void AddOverflows();
+
       //Getters
       std::string name() const { return name_; }
       TH1F* hist_ptr() const { return hist_ptr_; }
