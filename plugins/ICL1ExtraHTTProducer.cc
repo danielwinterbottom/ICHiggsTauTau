@@ -144,6 +144,6 @@ void ICL1ExtraHTTProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& d
 }
 
 //define this as a plug-in
-typedef ICL1ExtraHTTProducer<l1extra::L1EtMissParticle> ICL1ExtraHTTProducer;
+typedef ICL1ExtraHTTProducer<l1extra::L1EtMissParticle> ICL1ExtraHTTProducerModule;
 
-DEFINE_FWK_MODULE(ICL1ExtraHTTProducer);
+DEFINE_FWK_MODULE(ICL1ExtraHTTProducerModule);

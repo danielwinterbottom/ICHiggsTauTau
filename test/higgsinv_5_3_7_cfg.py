@@ -430,7 +430,7 @@ process.icL1ExtraMETProducer = cms.EDProducer('ICL1ExtraEtMissProducer',
   maxEta = cms.double(999.0)
   )
 
-process.icL1ExtraHTTProducer = cms.EDProducer('ICL1ExtraHTTProducer',
+process.icL1ExtraHTTProducer = cms.EDProducer('ICL1ExtraHTTProducerModule',
   branchName = cms.untracked.string("l1extraHTT"),
   inputLabel = cms.InputTag("l1extraParticles","MHT","RECO"),
   minPt = cms.double(0.0),
