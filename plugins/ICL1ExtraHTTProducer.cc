@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/plugins/ICL1ExtraProducer.hh"
+#include "UserCode/ICHiggsTauTau/plugins/ICL1ExtraHTTProducer.hh"
 #include <boost/functional/hash.hpp>
 #include <memory>
 
@@ -24,10 +24,10 @@
 
 
 template<class T>
-class ICL1ExtraProducer : public edm::EDProducer {
+class ICL1ExtraHTTProducer : public edm::EDProducer {
    public:
-      explicit ICL1ExtraProducer(const edm::ParameterSet&);
-      ~ICL1ExtraProducer();
+      explicit ICL1ExtraHTTProducer(const edm::ParameterSet&);
+      ~ICL1ExtraHTTProducer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -55,7 +55,7 @@ class ICL1ExtraProducer : public edm::EDProducer {
 
 
 template<class T>
-ICL1ExtraProducer<T>::ICL1ExtraProducer(const edm::ParameterSet& iConfig) {
+ICL1ExtraHTTProducer<T>::ICL1ExtraHTTProducer(const edm::ParameterSet& iConfig) {
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
   input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
   min_pt_ = iConfig.getParameter<double>("minPt");
@@ -65,7 +65,7 @@ ICL1ExtraProducer<T>::ICL1ExtraProducer(const edm::ParameterSet& iConfig) {
 }
 
 template<class T>
-ICL1ExtraProducer<T>::~ICL1ExtraProducer() {
+ICL1ExtraHTTProducer<T>::~ICL1ExtraHTTProducer() {
  // do anything here that needs to be done at desctruction time
  // (e.g. close files, deallocate resources etc.)
  delete cand_vec;
@@ -75,7 +75,7 @@ ICL1ExtraProducer<T>::~ICL1ExtraProducer() {
 
 // ------------ method called to produce the data  ------------
 template<class T>
-void ICL1ExtraProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void ICL1ExtraHTTProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   
 
   boost::hash<T const*> hasher;
@@ -102,40 +102,40 @@ void ICL1ExtraProducer<T>::produce(edm::Event& iEvent, const edm::EventSetup& iS
 
 // ------------ method called once each job just before starting event loop  ------------
 template<class T>
-void ICL1ExtraProducer<T>::beginJob() {
+void ICL1ExtraHTTProducer<T>::beginJob() {
  ic::StaticTree::tree_->Branch(branch_name_.c_str() ,&cand_vec);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 template<class T>
-void ICL1ExtraProducer<T>::endJob() {
+void ICL1ExtraHTTProducer<T>::endJob() {
 }
 
 // ------------ method called when starting to processes a run  ------------
 template<class T>
-void ICL1ExtraProducer<T>::beginRun(edm::Run&, edm::EventSetup const&) {
+void ICL1ExtraHTTProducer<T>::beginRun(edm::Run&, edm::EventSetup const&) {
 }
 
 // ------------ method called when ending the processing of a run  ------------
 template<class T>
-void ICL1ExtraProducer<T>::endRun(edm::Run&, edm::EventSetup const&) {
+void ICL1ExtraHTTProducer<T>::endRun(edm::Run&, edm::EventSetup const&) {
 }
 
 // ------------ method called when starting to processes a luminosity block  ------------
 template<class T>
-void ICL1ExtraProducer<T>::beginLuminosityBlock(edm::LuminosityBlock&, 
+void ICL1ExtraHTTProducer<T>::beginLuminosityBlock(edm::LuminosityBlock&, 
                                              edm::EventSetup const&) {
 }
 
 // ------------ method called when ending the processing of a luminosity block  ------------
 template<class T>
-void ICL1ExtraProducer<T>::endLuminosityBlock(edm::LuminosityBlock&, 
+void ICL1ExtraHTTProducer<T>::endLuminosityBlock(edm::LuminosityBlock&, 
                                            edm::EventSetup const&) {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 template<class T>
-void ICL1ExtraProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+void ICL1ExtraHTTProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -144,11 +144,6 @@ void ICL1ExtraProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& desc
 }
 
 //define this as a plug-in
-typedef ICL1ExtraProducer<l1extra::L1MuonParticle> ICL1ExtraMuonProducer;
-typedef ICL1ExtraProducer<l1extra::L1EtMissParticle> ICL1ExtraEtMissProducer;
-typedef ICL1ExtraProducer<l1extra::L1EmParticle> ICL1ExtraEmParticleProducer;
-typedef ICL1ExtraProducer<pat::Jet> ICPatJetCandidateProducer;
-DEFINE_FWK_MODULE(ICL1ExtraMuonProducer);
-DEFINE_FWK_MODULE(ICL1ExtraEtMissProducer);
-DEFINE_FWK_MODULE(ICL1ExtraEmParticleProducer);
-DEFINE_FWK_MODULE(ICPatJetCandidateProducer);
+typedef ICL1ExtraHTTProducer<l1extra::L1EtMissParticle> ICL1ExtraHTTProducer;
+
+DEFINE_FWK_MODULE(ICL1ExtraHTTProducer);
