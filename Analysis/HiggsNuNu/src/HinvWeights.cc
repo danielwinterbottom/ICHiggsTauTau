@@ -52,6 +52,13 @@ namespace ic {
     std::cout << "Input MET for MET HLT:  \t\t" << input_met_ << std::endl;
     std::cout << "Note: Input MET for MET L1 is always metNoMuons." << std::endl;
 
+    //Making output histograms
+    TFileDirectory const& dir = fs_->mkdir("leptoneffweights");
+    tighteleweight = dir.make<TH1F>("tighteleweight","tighteleweight",2000,0.,2.);
+    tightmuweight  = dir.make<TH1F>("tightmuweight","tightmuweight",2000,0.,2.);
+    vetoeleweight = dir.make<TH1F>("vetoeleweight","vetoeleweight",2000,0.,2.);
+    vetomuweight  = dir.make<TH1F>("vetomuweight","vetomuweight",2000,0.,2.);
+
     if (do_w_soup_) {
       std::cout << "Making W Soup:" << std::endl;
       std::cout << "nInc = " << n_inc_ << std::endl;
@@ -299,7 +306,8 @@ namespace ic {
       ele_weight *= eTight_idisoSF_[findElectronPtEtaBin(elecs[iEle]->pt(),elecs[iEle]->eta())];
     }
     eventInfo->set_weight("!eleTight_idisoSF",ele_weight);
-    
+    tighteleweight->Fill(ele_weight);
+
    std::vector<Muon*> const& mus = event->GetPtrVec<Muon>("selMuons");
     double mu_weight = 1.0;
     for (unsigned iEle(0); iEle<mus.size();++iEle){
@@ -307,6 +315,7 @@ namespace ic {
       mu_weight *= muTight_idisoSF_[lBin];
     }
     eventInfo->set_weight("!muTight_idisoSF",mu_weight);
+    tightmuweight->Fill(mu_weight);
 
     if (do_idiso_tight_weights_) eventInfo->set_weight("idisoTight",ele_weight*mu_weight);
     else eventInfo->set_weight("!idisoTight",ele_weight*mu_weight);
@@ -368,7 +377,8 @@ namespace ic {
       }
 
     }//loop on genparticles
-
+    vetoeleweight->Fill(ele_veto_weight);
+    vetomuweight->Fill(mu_veto_weight);
     if (do_idiso_veto_weights_) eventInfo->set_weight("idisoVeto",ele_veto_weight*mu_veto_weight);
     else eventInfo->set_weight("!idisoVeto",ele_veto_weight*mu_veto_weight);
 
@@ -618,7 +628,7 @@ namespace ic {
 	if (pTmin > 1) aVector.push_back(SF+SFerrPlus);
       }
       else{
-	if (pTmin > 1) aVector.push_back(SF+SFerrMinus);
+	if (pTmin > 1) aVector.push_back(SF-SFerrMinus);
       }
 
       if(lInput.eof()){

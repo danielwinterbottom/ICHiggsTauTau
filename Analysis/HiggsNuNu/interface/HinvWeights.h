@@ -7,12 +7,13 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagWeight.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 #include <string>
-
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 
 namespace ic {
 
 class HinvWeights : public ModuleBase {
  private:
+  CLASS_MEMBER(HinvWeights, fwlite::TFileService*, fs);
   CLASS_MEMBER(HinvWeights, ic::mc, mc)
   CLASS_MEMBER(HinvWeights, ic::era, era)
   CLASS_MEMBER(HinvWeights, bool, save_weights)
@@ -26,13 +27,18 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_idiso_err)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_errmuore)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_errupordown)
-  
+
 
   TFile *triggerSF_;
   TH1F *hist_trigSF_METL1;
   TH1F *hist_trigSF_METHLT;
   TH1F *hist_trigSF_MjjHLT;
   TH1F *hist_trigSF_JetHLT;
+
+  TH1F *tighteleweight;
+  TH1F *tightmuweight;
+  TH1F *vetoeleweight;
+  TH1F *vetomuweight;
 
   std::vector<double> eTight_idisoSF_;
   std::vector<double> eVeto_idisoDataEff_;

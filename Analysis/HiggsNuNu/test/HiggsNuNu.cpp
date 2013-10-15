@@ -814,6 +814,7 @@ int main(int argc, char* argv[]){
     .set_do_idiso_err(doidisoerr)
     .set_do_idiso_errupordown(doidisoerrupordown)
     .set_do_idiso_errmuore(doidisoerrmuore)
+    .set_fs(fs)
     .set_input_met("metNoMuons");
   //  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
   if (!is_data) {
@@ -836,7 +837,9 @@ int main(int argc, char* argv[]){
     .set_do_trg_weights(false)
     .set_trg_applied_in_mc(false)
     .set_do_idiso_tight_weights(false)
+    .set_fs(fs)
     .set_do_idiso_veto_weights(false);
+  
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
     xsWeights.set_do_w_soup(true);
