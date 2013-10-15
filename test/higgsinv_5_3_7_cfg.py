@@ -430,6 +430,13 @@ process.icL1ExtraMETProducer = cms.EDProducer('ICL1ExtraEtMissProducer',
   maxEta = cms.double(999.0)
   )
 
+process.icL1ExtraHTTProducer = cms.EDProducer('ICL1ExtraHTTProducer',
+  branchName = cms.untracked.string("l1extraHTT"),
+  inputLabel = cms.InputTag("l1extraParticles","MHT","RECO"),
+  minPt = cms.double(0.0),
+  maxEta = cms.double(999.0)
+  )
+
 process.icL1ExtraMuonsProducer = cms.EDProducer('ICL1ExtraMuonProducer',
   branchName = cms.untracked.string("l1extraMuons"),
   inputLabel = cms.InputTag("l1extraParticles","","RECO"),
@@ -465,6 +472,7 @@ process.icMetNoHFProducer = cms.EDProducer('ICMetProducer',
     )
 process.icSoftLeptonSequence += cms.Sequence(
     process.icL1ExtraMETProducer
+    +process.icL1ExtraHTTProducer
     +process.icL1ExtraMuonsProducer
     +process.icL1ExtraEmIsolatedProducer
     +process.patmetNoHF
