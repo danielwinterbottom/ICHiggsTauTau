@@ -77,6 +77,7 @@ namespace ic {
     TFileDirectory const& dir = fs_->mkdir("JES");
     TFileDirectory const& dir2 = fs_->mkdir("Smear");
     TFileDirectory const& dir3 = fs_->mkdir("RunMetComparison");
+    TFileDirectory const& dir4 = fs_->mkdir("ResMeasurement");
     std::cout<<"Made plot dir"<<std::endl;
     JEScorrfac = dir.make<TH2F>("JEScorrfac","JEScorrfac",1000,0.,1000.,1000,-0.3,0.3);
     JESmetdiff = dir.make<TH1F>("JESmetdiff","JESmetdiff",1000,-10.,10.);
@@ -103,6 +104,16 @@ namespace ic {
     matchedicjetpt = dir3.make<TH1F>("matchedicjetpt","matchedicjetpt",10000,0.,1000.);
     matchedrunmetjetpt = dir3.make<TH1F>("matchedrunmetjetpt","matchedrunmetjetpt",10000,0.,1000.);
     matchednojerjetpt = dir3.make<TH1F>("matchednojerjetpt","matchednojerjetpt",10000,0.,1000.);
+
+    //Jet resolution measurements
+    std::string etas[5]={"0p0-0p5","0p5-1p1","1p1-1p7","1p7-2p3","2p3-5p0"};
+    std::string pts[13]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};
+    for(int i =0;i<5;i++){
+      for(int j=0;j<13;j++){
+	recogenjetptratio[i][j] = dir4.make<TH1F>(("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),300,0.,3.);
+      }
+    }
+    
     return 0;
   }
 
@@ -188,14 +199,44 @@ namespace ic {
 	ROOT::Math::PxPyPzEVector  newjet;
 
 	int index = -1;
-	//Check for matches between smeared and unsmeared jets
+	//Check for matches between reco and gen jets
 	for(int j = 0;unsigned(j)<jet_genjet_pairs.size();j++){
 	  if(jet_genjet_pairs[j].first->id()==vec[i]->id()){
 	    index = j;
 	    break;
 	  }
 	}
+
 	
+	//MAKE PLOTS FOR RESOLUTION MEASUREMENT
+	if(index!=-1){
+	  int ipt=-1;
+	  int ieta=-1;
+	  double pt=oldjet.pt();
+	  double eta=oldjet.eta();
+	  if     (pt<20)           ipt=0;
+	  else if((20<=pt)&&(pt<40))   ipt=1;
+	  else if((40<=pt)&&(pt<60))   ipt=2;
+	  else if((60<=pt)&&(pt<80))   ipt=3;
+	  else if((80<=pt)&&(pt<100))  ipt=4;
+	  else if((100<=pt)&&(pt<120)) ipt=5;
+	  else if((120<=pt)&&(pt<140)) ipt=6;
+	  else if((140<=pt)&&(pt<160)) ipt=7;
+	  else if((160<=pt)&&(pt<180)) ipt=8;
+	  else if((180<=pt)&&(pt<200)) ipt=9;
+	  else if((200<=pt)&&(pt<250)) ipt=10;
+	  else if((250<=pt)&&(pt<300)) ipt=11;
+	  else if(300<=pt)         ipt=12;
+	  else std::cout<<"problem with jet pt value"<<std::endl;
+	  
+	  if     ((2.3<fabs(eta))&&(fabs(eta)<=5))   ieta=4;
+	  else if((1.7<fabs(eta))&&(fabs(eta)<=2.3)) ieta=3;
+	  else if((1.1<fabs(eta))&&(fabs(eta)<=1.7)) ieta=2;
+	  else if((0.5<fabs(eta))&&(fabs(eta)<=1.1)) ieta=1;
+	  else if((0.<fabs(eta))&&(fabs(eta)<=0.5))  ieta=0;
+
+	  recogenjetptratio[ieta][ipt]->Fill(pt/jet_genjet_pairs[index].second->pt());
+	}
 
 	//SMEARING
 	if(dosmear_){

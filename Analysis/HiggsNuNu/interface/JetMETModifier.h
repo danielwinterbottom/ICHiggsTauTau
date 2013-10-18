@@ -61,6 +61,7 @@ namespace ic {
     TH1F* runmetjetgenjetptratio;
     TH1F* icjetgenjetptratio;
 
+    TH1F* recogenjetptratio[5][13]; //BINNED JET 
     
   public:
     JetMETModifier(std::string const& name);
