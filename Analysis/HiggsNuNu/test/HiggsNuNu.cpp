@@ -862,7 +862,7 @@ int main(int argc, char* argv[]){
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
     xsWeights.set_do_w_soup(true);
-    xsWeights.set_do_w_reweighting(true);
+    xsWeights.set_do_w_reweighting(false);
 
     if (mc == mc::summer12_53X) {
       xsWeights.SetWTargetFractions(0.74069073, 0.1776316, 0.0575658, 0.0170724, 0.00703947);
@@ -875,7 +875,7 @@ int main(int argc, char* argv[]){
       output_name.find("DYJJ01") == output_name.npos) {
     if (mc == mc::summer12_53X) {
       xsWeights.set_do_dy_soup(true);
-      xsWeights.set_do_dy_reweighting(true);
+      xsWeights.set_do_dy_reweighting(false);
       xsWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
       if(prod=="Apr04"){
 	xsWeights.SetDYInputYields(30459503.0, 23970248.0, 21852156.0, 11015445.0, 6402827.0);
