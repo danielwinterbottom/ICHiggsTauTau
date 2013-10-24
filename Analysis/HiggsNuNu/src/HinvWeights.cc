@@ -182,9 +182,25 @@ namespace ic {
     
     for (unsigned iBin(0); iBin<muTight_idSF_.size();++iBin){
       muTight_idisoSF_.push_back(muTight_idSF_[iBin]*muTight_isoSF_[iBin]);
+      if(muVeto_idDataEff_[iBin]>1)muVeto_idDataEff_[iBin]=1;
+      if(muVeto_isoDataEff_[iBin]>1)muVeto_isoDataEff_[iBin]=1;
+      if(muVeto_idMCEff_[iBin]>1)muVeto_idMCEff_[iBin]=1;
+      if(muVeto_isoMCEff_[iBin]>1)muVeto_isoMCEff_[iBin]=1;
+      if(muVeto_idDataEff_[iBin]<0)muVeto_idDataEff_[iBin]=0;
+      if(muVeto_isoDataEff_[iBin]<0)muVeto_isoDataEff_[iBin]=0;
+      if(muVeto_idMCEff_[iBin]<0)muVeto_idMCEff_[iBin]=0;
+      if(muVeto_isoMCEff_[iBin]<0)muVeto_isoMCEff_[iBin]=0;
       muVeto_idisoDataEff_.push_back(muVeto_idDataEff_[iBin]*muVeto_isoDataEff_[iBin]);
       muVeto_idisoMCEff_.push_back(muVeto_idMCEff_[iBin]*muVeto_isoMCEff_[iBin]);
     }
+
+    for (unsigned iBin(0); iBin<eVeto_idisoDataEff_.size();++iBin){
+      if(eVeto_idisoDataEff_[iBin]>1)eVeto_idisoDataEff_[iBin]=1;
+      if(eVeto_idisoMCEff_[iBin]>1)eVeto_idisoMCEff_[iBin]=1;
+      if(eVeto_idisoDataEff_[iBin]<0)eVeto_idisoDataEff_[iBin]=0;
+      if(eVeto_idisoMCEff_[iBin]<0)eVeto_idisoMCEff_[iBin]=0;
+    }
+    
 
     eventsWithGenElectron_ = 0;
     eventsWithGenElectronFromTau_ = 0;
