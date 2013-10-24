@@ -32,7 +32,6 @@ namespace ic {
   //----------------------------------------------------------
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta);
 
-
   //----------------------------------------------------------
   // Vertex
   //----------------------------------------------------------
@@ -89,6 +88,8 @@ namespace ic {
   bool PileupJetID(PFJet const* jet, unsigned training);
 
   bool IsReBTagged(Jet const* jet, std::map<std::size_t, bool> const& tag_map);
+
+  bool CSVMediumWP(Jet const* cand, double const& minDiscri);
 
   double PZeta(CompositeCandidate const* cand, Candidate const* met, double const& alpha);
   double PZetaVis(CompositeCandidate const* cand);

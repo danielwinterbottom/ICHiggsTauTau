@@ -5,8 +5,10 @@
 namespace ic {
 
   HinvWDecay::HinvWDecay(std::string const& name,
-			 unsigned flavour) : ModuleBase(name) {
+			 unsigned flavour,
+			 bool isEmbedded) : ModuleBase(name) {
     flavour_ = flavour;
+    isEmbedded_ = isEmbedded;
   }
 
   HinvWDecay::~HinvWDecay() {
@@ -18,7 +20,7 @@ namespace ic {
     std::cout << "PreAnalysis Info for HinvWDecay" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << "Flavour: " << flavour_ << std::endl;
-
+    if (isEmbedded_) std::cout << "Using embedded genparticles." << std::endl;
     countStatus3_ = 0;
     countDecay_e_ = 0;
     countDecay_mu_ = 0;
@@ -29,16 +31,24 @@ namespace ic {
 
   int HinvWDecay::Execute(TreeEvent *event) {
 
-    std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+    bool debug = false;
+
+    std::vector<GenParticle*> & parts = event->GetPtrVec<GenParticle>("genParticles");
+    if (isEmbedded_) parts = event->GetPtrVec<GenParticle>("genParticlesEmbedded");
 
     for (unsigned i = 0; i < parts.size(); ++i) {
-      if (parts[i]->status() != 3) continue;
+
+      if (debug) std::cout << i << " " << parts[i]->status() << " " << parts[i]->pdgid() << std::endl;
+
+      if ((!isEmbedded_ && parts[i]->status() != 3) || 
+	  (isEmbedded_ && parts[i]->status() != 2)
+	  ) continue;
 
       unsigned id = abs(parts[i]->pdgid());
 
       ////if e or mu found and e or mu channel asked, just pass
       if (id == flavour_ && flavour_ != 15) {
-	////std::cout << " -- Found status 3 id " << id << ". Keeping event." << std::endl;
+	if (debug) std::cout << " -- Found status 3 id " << id << ". Keeping event." << std::endl;
 	countStatus3_++;
 	return 0;
       }
@@ -48,12 +58,19 @@ namespace ic {
 	if (flavour_==15) countStatus3_++;
 	
 	//get the specific taus collection with daughters filled
-	std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
+	std::vector<GenParticle*> & taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
+	if (isEmbedded_) taus = event->GetPtrVec<GenParticle>("genParticlesEmbedded");
+
 	unsigned counter = 0;
 	bool lDecay = false;
 	for (unsigned j = 0; j < taus.size(); ++j) {
-	  if (taus[j]->status() == 3) counter++;
-	  //std::cout << " ---- Tau particle " << j << " id " << taus[j]->pdgid() << " status " << taus[j]->status()  << std::endl;
+	  if ((!isEmbedded_ && taus[j]->status() == 3) || 
+	      (isEmbedded_ && taus[j]->status() == 2 && fabs(taus[j]->pdgid())==15)
+	      ) {
+	    counter++;
+	    if (debug) std::cout << " ---- Tau particle " << j << " id " << taus[j]->pdgid() << " status " << taus[j]->status()  << std::endl;
+	    continue;
+	  }
 	  unsigned idDau = abs(taus[j]->pdgid());
 
 
@@ -68,12 +85,14 @@ namespace ic {
 	  if (idDau==11) {
 	    lDecay=true;
 	    countDecay_e_++;
+	    if (debug) std::cout << " -- Found tau decaying to an electron." << std::endl;
 	    if (flavour_!=11) return 1;
 	    else return 0;
 	  }
 	  if (idDau==13) {
 	    lDecay=true;
 	    countDecay_mu_++;
+	    if (debug) std::cout << " -- Found tau decaying to a muon." << std::endl;
 	    if (flavour_!=13) return 1;
 	    else return 0;
 	  }
@@ -91,6 +110,7 @@ namespace ic {
 	  //std::cout << " -- Found tau decaying hadronically. Keeping event." << std::endl;
 	if (!lDecay) {
 	  countRest_++;
+	  if (debug) std::cout << " -- Found tau decaying hadronically." << std::endl;
 	  if (flavour_ == 15) return 0;
 	  else return 1;
 	}
@@ -100,6 +120,8 @@ namespace ic {
       }//found a tau status 3
        
     }//loop on genparticles
+
+    if (debug) std::cout << " -- Found nothing, rejecting event." << std::endl;
 
     return 1;
   }

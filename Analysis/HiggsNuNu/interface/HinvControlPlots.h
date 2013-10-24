@@ -157,6 +157,7 @@ namespace ic {
     CLASS_MEMBER(HinvControlPlots,fwlite::TFileService*, fs);
     CLASS_MEMBER(HinvControlPlots,std::string, met_label);
     CLASS_MEMBER(HinvControlPlots,std::string, dijet_label);
+    CLASS_MEMBER(HinvControlPlots,std::string, genparticles_label);
     CLASS_MEMBER(HinvControlPlots,std::string, sel_label);
     CLASS_MEMBER(HinvControlPlots,std::string, channel);
     CLASS_MEMBER(HinvControlPlots,bool, is_data);

@@ -183,24 +183,6 @@ from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
 process.load("JetMETCorrections.Type1MET.pfMETsysShiftCorrections_cfi")
 
 if isData:
-#   runMEtUncertainties(process,
-#                       electronCollection = cms.InputTag('cleanPatElectrons'),
-#                       photonCollection = '',
-#                       muonCollection = 'cleanPatMuons',
-#                       tauCollection = '',
-#                       jetCollection = cms.InputTag('selectedPatJets'),
-#                       jetCorrLabel = 'L2L3Residual',
-#                       doSmearJets = False,
-#                       makeType1corrPFMEt = True,
-#                       makeType1p2corrPFMEt = False,
-#                       makePFMEtByMVA = False,
-#                       makeNoPileUpPFMEt = False,
-#                       doApplyType0corr = True,
-#                       #sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_data,
-#                       doApplySysShiftCorr = False,
-#                       )
-#   process.patPFJetMETtype1p2Corr.jetCorrLabel = cms.string('L2L3Residual')
-#   process.patPFJetMETtype2Corr.jetCorrLabel = cms.string('L2L3Residual')
   print "not doing runmetunc for data"
 else:
   runMEtUncertainties(process,
@@ -219,9 +201,7 @@ else:
                       #sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_mc,
                       doApplySysShiftCorr = False,
                       )
-
-  #process.producePatPFMETCorrections.replace(process.patPFJetMETtype2Corr,process.patPFJetMETtype2Corr + process.type0PFMEtCorrectionPFCandToVertexAssociation + process.patPFMETtype0Corr)
-
+  process.producePatPFMETCorrections.replace(process.patPFJetMETtype2Corr,process.patPFJetMETtype2Corr + process.type0PFMEtCorrectionPFCandToVertexAssociation + process.patPFMETtype0Corr)
   process.icJetsmearedcentralJets = cms.EDProducer('ICPatJetCandidateProducer',
                                                    
                                                    branchName = cms.untracked.string("jetsmearedcentralJets"),
@@ -314,11 +294,11 @@ else:
     +process.icpattype1correctedPfMetProducer
     )
   
-# Fix Type0 correction module taken out because not using runmetuncertainties
-# process.patPFMETtype0Corr.correction.par3 = cms.double(0.909209)
-# process.patPFMETtype0Corr.correction.par2 = cms.double(0.0303531)
-# process.patPFMETtype0Corr.correction.par1 = cms.double(-0.703151)
-# process.patPFMETtype0Corr.correction.par0 = cms.double(0.0)
+  # Fix Type0 correction module
+  process.patPFMETtype0Corr.correction.par3 = cms.double(0.909209)
+  process.patPFMETtype0Corr.correction.par2 = cms.double(0.0303531)
+  process.patPFMETtype0Corr.correction.par1 = cms.double(-0.703151)
+  process.patPFMETtype0Corr.correction.par0 = cms.double(0.0)
                                                                             
 
 #commented out because they aren't used by chayanit
@@ -747,16 +727,18 @@ if (release == '53X'):
       #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/public/TauPlusX-2012D.root')
       #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/private/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/pickevents.root')
       #fileNames = cms.untracked.vstring("/store/user/srimanob/invHiggs/22Jan13/0008F234-739C-E211-A836-002590832A48.root")
-      fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/embedded.root')       
+      fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/embedded_dataTestFile.root')       
      )
     process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
   else:
     process.source = cms.Source(
       "PoolSource",
       fileNames = cms.untracked.vstring(
-        #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
-        'file:/afs/cern.ch/work/p/pdunne/public/VBF_HToTauTau_M-125-53X.root'
-        )
+      #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
+      #'file:/afs/cern.ch/work/p/pdunne/public/VBF_HToTauTau_M-125-53X.root'
+      'file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/testFile_W2j.root'       
+      #'file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/embedded_mcW2jTestfile.root'       
+      )
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
     )

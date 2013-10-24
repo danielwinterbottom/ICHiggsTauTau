@@ -12,6 +12,7 @@ class HinvWDecay : public ModuleBase {
  private:
 
     unsigned flavour_;
+    bool isEmbedded_;
 
     unsigned countStatus3_;
     unsigned countDecay_e_;
@@ -20,7 +21,7 @@ class HinvWDecay : public ModuleBase {
 
 
  public:
-    HinvWDecay(std::string const& name, unsigned flavour);
+    HinvWDecay(std::string const& name, unsigned flavour, bool isEmbedded=false);
     virtual ~HinvWDecay();
     
     virtual int PreAnalysis();

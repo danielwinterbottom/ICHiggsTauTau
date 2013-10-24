@@ -111,6 +111,8 @@ int main(int argc, char* argv[]){
   bool doMCFMstudy;
   bool turnoffpuid;
 
+  bool doTopCR;
+
   std::string eventsToSkim; //name of input file containing run,lumi,evt of events to be skimmed
 
  // Load the config
@@ -166,6 +168,7 @@ int main(int argc, char* argv[]){
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false))
+    ("doTopCR",             po::value<bool>(&doTopCR)->default_value(false))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -205,6 +208,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "filters" % filters;
   std::cout << boost::format(param_fmt) % "dotrgeff" % dotrgeff;
   std::cout << boost::format(param_fmt) % "doidisoeff" % doidisoeff;
+  std::cout << boost::format(param_fmt) % "doTopCR" % doTopCR;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -634,6 +638,7 @@ int main(int argc, char* argv[]){
   
   
   CopyCollection<PFJet> alljetsCopyCollection("copytoalljets","pfJetsPFlow","AllpfJetsPFlow");
+  CopyCollection<PFJet> bjetsCopyCollection("copytobjets","pfJetsPFlow","bTaggedpfJetsPFlow");
 
 
   CopyCollection<PFJet> cjvjetsCopyCollection("copytocjvjets","pfJetsPFlow","cjvpfJetsPFlow");
@@ -678,6 +683,20 @@ int main(int argc, char* argv[]){
     ("JetPtEtaFilter")
     .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptcut, 4.7));
 
+
+  SimpleFilter<PFJet> fourJetsFilter = SimpleFilter<PFJet>
+    ("FourJetsFilter")
+    .set_input_label("pfJetsPFlow")
+    .set_predicate( bind(DummyFunction<PFJet>, _1) )
+    .set_min(4)
+    .set_max(1000);
+
+  SimpleFilter<PFJet> oneBtaggedJetFilter = SimpleFilter<PFJet>
+    ("oneBtaggedJetFilter")
+    .set_input_label("bTaggedpfJetsPFlow")
+    .set_predicate( bind(CSVMediumWP, _1, 0.679) )
+    .set_min(1)
+    .set_max(1000);
 
   //in principle no need to remove overlap because events with leptons are rejected...
   //except for specific e/mu selection for W background estimation.
@@ -843,6 +862,8 @@ int main(int argc, char* argv[]){
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
     xsWeights.set_do_w_soup(true);
+    xsWeights.set_do_w_reweighting(true);
+
     if (mc == mc::summer12_53X) {
       xsWeights.SetWTargetFractions(0.74069073, 0.1776316, 0.0575658, 0.0170724, 0.00703947);
       xsWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
@@ -854,6 +875,7 @@ int main(int argc, char* argv[]){
       output_name.find("DYJJ01") == output_name.npos) {
     if (mc == mc::summer12_53X) {
       xsWeights.set_do_dy_soup(true);
+      xsWeights.set_do_dy_reweighting(true);
       xsWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
       if(prod=="Apr04"){
 	xsWeights.SetDYInputYields(30459503.0, 23970248.0, 21852156.0, 11015445.0, 6402827.0);
@@ -1352,7 +1374,7 @@ int main(int argc, char* argv[]){
      }
      else if (channel == channel::taunu){
        analysis.AddModule(&oneTauFilter);
-       if (!ignoreLeptons){
+       if (!ignoreLeptons && !doTopCR){
 	 analysis.AddModule(&zeroVetoElectronFilter);
 	 analysis.AddModule(&zeroVetoMuonFilter);
        }
@@ -1383,6 +1405,12 @@ int main(int argc, char* argv[]){
  
      analysis.AddModule(&jetPairFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
+
+     if (doTopCR) {
+       analysis.AddModule(&fourJetsFilter);
+       analysis.AddModule(&bjetsCopyCollection);
+       analysis.AddModule(&oneBtaggedJetFilter);
+     }
 
      //record the number of jets in the gap
      analysis.AddModule(&FilterCJV);

@@ -178,14 +178,16 @@ namespace ic {
       else if (dR1min < 0.5) taggingJetsFlavour_ = 1;
       else if (dR2min < 0.5) taggingJetsFlavour_ = 2;
 
-      ROOT::Math::PtEtaPhiEVector lWreco(0,0,0,0);
+      ROOT::Math::PtEtaPhiEVector lVreco(0,0,0,0);
       if (n_electrons_ > 0) {
-	lWreco = ic::reconstructWboson(electrons[0],met);
-	zepp_e_ = fabs(lWreco.Rapidity() - (jet1->vector().Rapidity()+jet2->vector().Rapidity())/2.);
+	lVreco = ic::reconstructWboson(electrons[0],met);
+	if (n_electrons_>=2) lVreco = electrons[0]->vector()+electrons[1]->vector();
+	zepp_e_ = fabs(lVreco.Rapidity() - (jet1->vector().Rapidity()+jet2->vector().Rapidity())/2.);
       }
       if (n_muons_ > 0) {
-	lWreco = ic::reconstructWboson(muons[0],met);
-	zepp_mu_ = fabs(lWreco.Rapidity() - (jet1->vector().Rapidity()+jet2->vector().Rapidity())/2.);
+	lVreco = ic::reconstructWboson(muons[0],met);
+	if (n_muons_>=2) lVreco = muons[0]->vector()+muons[1]->vector();
+	zepp_mu_ = fabs(lVreco.Rapidity() - (jet1->vector().Rapidity()+jet2->vector().Rapidity())/2.);
       }
     }
 

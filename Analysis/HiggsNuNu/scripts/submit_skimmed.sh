@@ -8,6 +8,7 @@
 #JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
 
 DOCERN=1
+OTHEROPTIONS="--doTopCR=false"
 
 if (( "$DOCERN" == "1" )); then
     JOBSCRIPT="./scripts/submit_cern_batch_job.sh" 
@@ -30,7 +31,7 @@ PRODUCTION=Apr04
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in nunu taunu #mumu
+  for CHANNEL in munu mumu #mumu
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
@@ -114,19 +115,19 @@ for METCUT in 130 #0 130
 	      
 
 	      if (( "$DOCERN" == "1" )); then
-		  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh 0
+		  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR $OTHEROPTIONS &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh 0
 		  $JOBSUBMIT $JOBDIR/$WJOB.sh $WJOB  
 	      else 
-		  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+		  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR $OTHEROPTIONS &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
 		  $JOBSUBMIT $JOBDIR/$WJOB.sh
 	      fi                                                                                 
 	    done
 	else  
 	    if (( "$DOCERN" == "1" )); then
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh 0
+	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL $OTHEROPTIONS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh 0
 	    $JOBSUBMIT $JOBDIR/$JOB.sh $JOB
 	    else
-		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL $OTHEROPTIONS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 		$JOBSUBMIT $JOBDIR/$JOB.sh
 	    fi
 	fi

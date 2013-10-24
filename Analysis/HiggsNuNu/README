@@ -3,6 +3,19 @@
 ###################
 
 ---------------
+## crab step
+---------------
+
+- Configurations using multicrab are in: UserCode/ICHiggsTauTau/test/higgsinvcrab
+- edit crab_* and default_crab_* to adapt paths to python config, options, output directories etc...
+- multicrab -cfg <crab_data.cfg>  -create -submit all
+- mutlicrab -status, -getoutput, -report ...
+- to make filelists to run analysis: go to analysis directory, and execute:
+./scripts/filelist_from_crab.sh <crabdir>
+
+
+
+---------------
 ## to compile
 ---------------
 

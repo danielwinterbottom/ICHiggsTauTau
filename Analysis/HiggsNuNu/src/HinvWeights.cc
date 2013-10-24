@@ -22,7 +22,9 @@ namespace ic {
     do_idiso_tight_weights_   = false;
     do_idiso_veto_weights_   = false;
     do_w_soup_          = false;
+    do_w_reweighting_   = false;
     do_dy_soup_         = false;
+    do_dy_reweighting_   = false;
     do_idiso_err_       = false;
     do_idiso_errupordown_ = true;
     do_idiso_errmuore_ = true;
@@ -83,6 +85,15 @@ namespace ic {
       std::cout << "f3 = " << zf3_ << "\t" << "n3 = " << zn3_ << "\t" << "w3 = " << zw3_ << std::endl;
       std::cout << "f4 = " << zf4_ << "\t" << "n4 = " << zn4_ << "\t" << "w4 = " << zw4_ << std::endl;
     }
+
+    if (do_w_reweighting_) {
+      std::cout << "Applying reweighting of W events to NLO MCFM." << std::endl;
+    }
+    if (do_dy_reweighting_) {
+      std::cout << "Applying reweighting of DY events to NLO MCFM." << std::endl;
+    }
+
+
 
     if (save_weights_){
     // do weights even if not applied, to fill histo with weight for comparison !
@@ -430,6 +441,31 @@ namespace ic {
 
     }
 
+    if (do_w_reweighting_ || do_dy_reweighting_) {
+      double vReweight = 1.0;
+
+      std::vector<GenJet *> genjets = event->GetPtrVec<GenJet>("genJets");
+      if (genjets.size() > 1) {
+	double lMjj = (genjets[0]->vector()+genjets[1]->vector()).M();
+
+	GenParticle* lBoson = 0;
+	std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+	
+	for (unsigned i = 0; i < parts.size(); ++i) {
+	  if (parts[i]->status() != 3) continue;
+	  unsigned id = abs(parts[i]->pdgid());
+	  if (id==24 || id==23) lBoson = parts[i];
+	}
+	if (lBoson){
+	  double y_star = fabs(lBoson->vector().Rapidity() - (genjets[0]->vector().Rapidity()+genjets[1]->vector().Rapidity())/2.);
+	  vReweight = nloReweighting(lMjj,y_star);
+	}
+      }
+      
+      eventInfo->set_weight("vReweighting", vReweight);
+
+    }
+
     if (do_dy_soup_) {
       std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
       bool count_jets = false;
@@ -657,5 +693,21 @@ namespace ic {
 
   }
 
+  double HinvWeights::nloReweighting(const double & aMjj, const double & aYstar){
+
+    double weight = 1.0;
+
+    //double y_par0 = 8.49667e-01;
+    //double y_par1 = 1.49687e-01;
+    TF1 *f0c = new TF1("f0c","[0]+[1]*x "); // |Ystar|
+    f0c->SetParameters(8.49667e-01, 1.49687e-01 );  //NLOmcfm/MadgraphGenJ 80M
+    
+    TF1 *f1l = new TF1("f1l","[0]+[1]*log(x)+[2]*x "); // mjj (in GeV)
+    f1l->SetParameters( 3.92568e-01, 1.20734e-01, -2.55622e-04  ); //NLOmcfm/MadgraphGenJ 80M 
+    
+    weight = f0c->Eval(aYstar)*f1l->Eval(aMjj);
+    
+    return weight;
+  };
 
 }

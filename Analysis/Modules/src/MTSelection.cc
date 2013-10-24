@@ -63,7 +63,8 @@ namespace ic {
     double lZepp = 0;
     if (doZeppenfeldCut_) {
       std::vector<PFJet*> lJets = event->GetPtrVec<PFJet>(jet_name_);
-      lZepp = fabs(lWreco.Y() - (lJets[0]->vector().Y()+lJets[1]->vector().Y())/2.);
+      
+      lZepp = fabs(lWreco.Rapidity() - (lJets[0]->vector().Rapidity()+lJets[1]->vector().Rapidity())/2.);
     }
 
     if (lVal > min_ && lVal < max_ && lZepp < 1.2) return 0;

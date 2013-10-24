@@ -2,17 +2,17 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 
-for CHANNEL in enu munu 
+for CHANNEL in mumu #enu munu 
   do
   
-  for MET in 30 #0 130 #0 70
+  for MET in 130 
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
       do
 
-	FOLDER=./output_W2j/$CHANNEL/MET$MET/
-	PLOTDIR=PLOTS_W2j/$CHANNEL/MET$MET/
-	PLOTDIRQCD=PLOTS_W2j/$CHANNEL/MET$MET/QCD/
+	FOLDER=./output/$CHANNEL/MET$MET/
+	PLOTDIR=PLOTS/$CHANNEL/MET$MET/
+	PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
 	
 	if [ "$SYST" != "central" ] #if not doing central                                                                                                               
             then
@@ -55,7 +55,7 @@ for CHANNEL in enu munu
 #    --rebin=1 \
 #    --norm_bins=false --verbose=false \
 #    --log_y=true \
-#    --paramfile=$PARAMS
+#    --plot_qcd=false --paramfile=$PARAMS
 
 ###### n_jetsingap
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -67,7 +67,7 @@ for CHANNEL in enu munu
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### n_vtx
 n_vtxplotname="n_vtx"
@@ -86,7 +86,7 @@ fi
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### jpt_1
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -98,7 +98,7 @@ fi
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### jeta_1
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -110,7 +110,7 @@ fi
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### jpt_2
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -122,7 +122,7 @@ fi
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### jeta_2
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -134,7 +134,7 @@ fi
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### mjj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -146,7 +146,7 @@ fi
     --rebin=100 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### detajj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -158,7 +158,7 @@ fi
     --rebin=2 \
     --norm_bins=false \
     --log_y=false \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### dphijj
 dphijjplotname="dphijj"
@@ -178,7 +178,7 @@ fi
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### drjj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -190,7 +190,7 @@ fi
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### met
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -202,7 +202,7 @@ fi
     --rebin=10 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### metNoMuons
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -214,7 +214,7 @@ fi
     --rebin=10 \
     --norm_bins=false \
     --log_y=true \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
 ###### n_taus
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -225,7 +225,7 @@ fi
     --y_axis_min=0.01 --extra_pad=2 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
-    --paramfile=$PARAMS
+    --plot_qcd=false --paramfile=$PARAMS
 
     done
   done

@@ -38,6 +38,13 @@ namespace ic {
     return ( (cand->pt() > minPt) && (std::fabs(cand->eta()) < maxEta) ); 
   }
 
+
+  bool CSVMediumWP(Jet const* cand, double const& minDiscri) {
+    return (cand->GetBDiscriminator("combinedSecondaryVertexBJetTags") > minDiscri);
+  }
+
+
+
   bool InEcalGap(Electron const* electron) {
     double scEta = fabs(electron->sc_eta());
     return (scEta >= 1.4442 && scEta <= 1.566);
@@ -997,7 +1004,7 @@ namespace ic {
     if (bestW > -700) {
       nuP4.SetPz(bestW);
       nuP4.SetE(std::sqrt(metX*metX+metY*metY+bestW*bestW ) );
-      std::cout << " NUz=" << bestW << " M_W=" << (nuP4+lepton->vector()).M() <<std::endl;
+      //std::cout << " NUz=" << bestW << " M_W=" << (nuP4+lepton->vector()).M() <<std::endl;
     } else {
       std::cout << " Cannot reconstruct nu!\n";
       nuP4.SetPz(0);

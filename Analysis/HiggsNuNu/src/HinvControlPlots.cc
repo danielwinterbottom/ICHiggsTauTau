@@ -145,6 +145,7 @@ namespace ic {
     fs_ = NULL;
     met_label_ = "pfMet";
     dijet_label_ = "jjCandidates";
+    genparticles_label_ = "genParticlesTaus";
     sel_label_ = "JetPair";
     channel_ = "nunu";
   }
@@ -157,6 +158,7 @@ namespace ic {
     if (fs_) {
       std::cout << "MET Label: " << met_label_ << std::endl;
       std::cout << "dijet Label: " << dijet_label_ << std::endl;
+      std::cout << "gen particles label: " << genparticles_label_ << std::endl;
       std::cout << "Selection Label: " << sel_label_ << std::endl;
       std::cout << "Channel :" << channel_ << std::endl;
     }
@@ -373,16 +375,23 @@ namespace ic {
 	}//loop on recojets
 
 	//get genjet matched with leading tau
-	std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");
-	if (taus.size() > 0) {
-	  //std::cout << "first tauParticle pdgid = " << taus[0]->pdgid() << std::endl;
+	std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>(genparticles_label_);
+	GenParticle* theTau = 0;
+	for (unsigned iTau(0); iTau<taus.size(); ++iTau){
+	  if (fabs(taus[iTau]->pdgid())==15) {
+	    theTau=taus[iTau];
+	    break;
+	  }
+	}
+	if (theTau) {
+	  //std::cout << "first tauParticle pdgid = " << theTau->pdgid() << std::endl;
 	  
 	  
 	  GenJet *gentau = 0;
 	  
 	  double mindR = 10;
 	  for (unsigned iG(0); iG < genjets.size(); ++iG){//loop on genjets
-	    double dR = ROOT::Math::VectorUtil::DeltaR(taus[0]->vector(),genjets[iG]->vector());
+	    double dR = ROOT::Math::VectorUtil::DeltaR(theTau->vector(),genjets[iG]->vector());
 	    if (dR < mindR){
 	      mindR = dR;
 	      gentau = genjets[iG];
@@ -424,7 +433,7 @@ namespace ic {
 		recotau = alljets[iR];
 	      }
 	      //match to status 3 tau
-	      double dR_status3 = ROOT::Math::VectorUtil::DeltaR(alljets[iR]->vector(),taus[0]->vector());
+	      double dR_status3 = ROOT::Math::VectorUtil::DeltaR(alljets[iR]->vector(),theTau->vector());
 	      if (dR_status3 < mindR_status3){
 		mindR_status3 = dR_status3;
 		recotau_status3 = alljets[iR];

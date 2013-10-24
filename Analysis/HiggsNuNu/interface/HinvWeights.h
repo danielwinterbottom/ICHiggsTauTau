@@ -22,7 +22,9 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_veto_weights)
   CLASS_MEMBER(HinvWeights, bool, do_w_soup)
+  CLASS_MEMBER(HinvWeights, bool, do_w_reweighting)
   CLASS_MEMBER(HinvWeights, bool, do_dy_soup)
+  CLASS_MEMBER(HinvWeights, bool, do_dy_reweighting)
   CLASS_MEMBER(HinvWeights, std::string, input_met)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_err)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_errmuore)
@@ -84,6 +86,8 @@ class HinvWeights : public ModuleBase {
   unsigned findMuonPtEtaBin(double pt, double eta);
   void fillVector(const std::string & aFileName, std::vector<double> & aVector);
   void fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown);
+
+  double nloReweighting(const double & aMjj, const double & aYstar);
 
 
 };
