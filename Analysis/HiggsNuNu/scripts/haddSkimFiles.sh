@@ -1,9 +1,10 @@
 #!/bin/sh
 
-SKIMDIR=/vols/ssd00/cms/amagnan/trigskims/nunu/MET130/
-OUTPUTDIR=/vols/ssd00/cms/amagnan/trigskims/nunu/MET130/
+SKIMDIR=/vols/ssd00/cms/amagnan/trigskims/Oct21/nunu/MET130/
+OUTPUTDIR=/vols/ssd00/cms/amagnan/trigskims/Oct21/nunu/MET130/
 
-FILELISTDIR=/home/hep/magnan/CMS/CMSSW_5_3_11/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/filelists/skim/Apr04/nunu/
+FILELISTDIR=/home/hep/magnan/CMS/CMSSW_5_3_11/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/filelists/skim/Oct21/nunu/
+mkdir -p $FILELISTDIR
 
 source /vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/root/5.34.01-cms9/bin/thisroot.sh
 
@@ -26,7 +27,10 @@ for iW in `ls`
 #for iW in EWK-W2jminus EWK-W2jplus
   do
   rm $iW".root"
+done
 
+for iW in `ls`
+  do
   ls $iW/enu
   if (( "$?" == "0" )); then
       hadd -O $iW".root" $iW/enu/EventTree*

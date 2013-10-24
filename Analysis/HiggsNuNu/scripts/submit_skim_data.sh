@@ -16,7 +16,7 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfig.cfg
-PRODUCTION=Apr04
+PRODUCTION=Oct21
 
 for METCUT in 130
   do
@@ -26,7 +26,7 @@ for METCUT in 130
     JOBDIR=$JOBDIRPREFIX/skim/$CHANNEL/MET$METCUT/
     OUTPUTPREFIX=output
     OUTPUTDIR=$OUTPUTPREFIX/skim/$CHANNEL/MET$METCUT/
-    SKIMPREFIX=/vols/ssd00/cms/amagnan/trigskims/
+    SKIMPREFIX=/vols/ssd00/cms/amagnan/trigskims/$PRODUCTION/
     SKIMDIR=$SKIMPREFIX/$CHANNEL/MET$METCUT/
       
     echo "Config file: $CONFIG"
@@ -48,19 +48,20 @@ for METCUT in 130
 	  echo "Using job-submission: " $JOBSUBMIT
       fi
       
-      PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MET/
+      #PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MET/
+      PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/amagnan/$PRODUCTION/METembedded/
       
-      for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*`
+      for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_METembedded_*`
 	do
 	echo "Processing files in "$FILELIST
 	
 	echo $FILELIST > tmp.txt
-	sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MET_//" tmp.txt > tmp2.txt
+	sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_METembedded_MET/METembedded/" tmp.txt > tmp2.txt
 	
 	FILESTR=`sed "s/\.dat//" tmp2.txt`
 	mkdir -p $SKIMDIR/$FILESTR/
 
-	JOB=Data_`sed "s/\.dat//" tmp2.txt`
+	JOB=DataEmbedded_`sed "s/\.dat//" tmp2.txt`
 	
 	rm tmp.txt tmp2.txt
 	
