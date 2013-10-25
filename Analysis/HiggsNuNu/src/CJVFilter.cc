@@ -10,7 +10,7 @@ namespace ic {
 
   CJVFilter::CJVFilter(std::string const& name) : ModuleBase(name) {
     is_data_ = true;
-    jetsinput_label_ = "cjvpfJetsPFlow";
+    jetsinput_label_ = "pfJetsPFlow";
     pairinput_label_ = "jjLeadingCandidates";
     ptcut_ = 30.;
   }

@@ -643,29 +643,6 @@ int main(int argc, char* argv[]){
   CopyCollection<PFJet> alljetsCopyCollection("copytoalljets","pfJetsPFlow","AllpfJetsPFlow");
   CopyCollection<PFJet> bjetsCopyCollection("copytobjets","pfJetsPFlow","bTaggedpfJetsPFlow");
 
-
-  CopyCollection<PFJet> cjvjetsCopyCollection("copytocjvjets","pfJetsPFlow","cjvpfJetsPFlow");
-
-  SimpleFilter<PFJet> cjvjetsIDFilter = SimpleFilter<PFJet>
-    ("cjvJetsIDFilter")
-    .set_input_label("cjvpfJetsPFlow");
-  if(!turnoffpuid){
-    cjvjetsIDFilter.set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
-  }
-  else{
-    cjvjetsIDFilter.set_predicate(bind(PFJetID, _1));
-  }
-
-  double cjvptcut = 30.0;
-  SimpleFilter<PFJet> cjvjetsPtEtaFilter = SimpleFilter<PFJet>
-    ("CJVJetsPtEtaFilter")
-    .set_input_label("cjvpfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, cjvptcut, 4.7));
-
-  CJVFilter FilterCJV = CJVFilter("FilterCJV")
-    .set_jetsinput_label("cjvpfJetsPFlow")
-    .set_pairinput_label("jjLeadingCandidates")
-    .set_ptcut(30);
-  
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
     .set_input_label("pfJetsPFlow");
@@ -687,6 +664,11 @@ int main(int argc, char* argv[]){
     .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptcut, 4.7));
 
 
+  CJVFilter FilterCJV = CJVFilter("FilterCJV")
+    .set_jetsinput_label("pfJetsPFlow")
+    .set_pairinput_label("jjLeadingCandidates")
+    .set_ptcut(30);
+  
   SimpleFilter<PFJet> fourJetsFilter = SimpleFilter<PFJet>
     ("FourJetsFilter")
     .set_input_label("pfJetsPFlow")
@@ -924,6 +906,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_hlt.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   //set collections to all leptons for the first set of plots before selecting/vetoing them
   HinvWJetsPlots wjetsPlots_hlt = HinvWJetsPlots("HLTWJetsPlots")
     .set_fs(fs)
@@ -948,6 +932,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_dijet.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   //set collections to all leptons for the first set of plots before selecting/vetoing them
   HinvWJetsPlots wjetsPlots_dijet = HinvWJetsPlots("DijetWJetsPlots")
     .set_fs(fs)
@@ -970,6 +956,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_sel_label("AN")
     .set_channel(channel_str);
+
+  if (is_embedded) controlPlots_AN.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
 
   
   HinvWJetsPlots wjetsPlots_AN = HinvWJetsPlots("ANWJetsPlots")
@@ -994,6 +982,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_met.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
     HinvWJetsPlots wjetsPlots_met = HinvWJetsPlots("METWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1016,6 +1006,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_looseMjj.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   HinvControlPlots controlPlots_deta = HinvControlPlots("DEtaControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1023,6 +1015,8 @@ int main(int argc, char* argv[]){
     .set_sel_label("DEta")
     .set_is_data(is_data)
     .set_channel(channel_str);
+
+  if (is_embedded) controlPlots_deta.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
 
   HinvWJetsPlots wjetsPlots_deta = HinvWJetsPlots("DEtaWJetsPlots")
     .set_fs(fs)
@@ -1046,6 +1040,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_lepveto.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   HinvControlPlots controlPlots_wsel = HinvControlPlots("WSelectionControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1053,6 +1049,8 @@ int main(int argc, char* argv[]){
     .set_sel_label("WSelection")
     .set_is_data(is_data)
     .set_channel(channel_str);
+
+  if (is_embedded) controlPlots_wsel.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
 
   HinvWJetsPlots wjetsPlots_wsel = HinvWJetsPlots("WSelectionWJetsPlots")
     .set_fs(fs)
@@ -1076,6 +1074,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_dphi_qcd_cjvpass.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   HinvWJetsPlots wjetsPlots_dphi_qcd_cjvpass = HinvWJetsPlots("DPhiWJetsPlotsQCD_cjvpass")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1093,6 +1093,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_dphi_qcd_nocjv.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   HinvWJetsPlots wjetsPlots_dphi_qcd_nocjv = HinvWJetsPlots("DPhiWJetsPlotsQCD_noCJV")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1109,6 +1111,8 @@ int main(int argc, char* argv[]){
     .set_sel_label("DPhiQCD_CJVfail")
     .set_is_data(is_data)
     .set_channel(channel_str);
+
+  if (is_embedded) controlPlots_dphi_qcd_cjvfail.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
 
   HinvWJetsPlots wjetsPlots_dphi_qcd_cjvfail = HinvWJetsPlots("DPhiWJetsPlotsQCD_cjvfail")
     .set_fs(fs)
@@ -1132,6 +1136,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_dphi_signal_cjvpass.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   HinvWJetsPlots wjetsPlots_dphi_signal_cjvpass = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_cjvpass")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1149,6 +1155,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_dphi_signal_nocjv.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   HinvWJetsPlots wjetsPlots_dphi_signal_nocjv = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_noCJV")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1165,6 +1173,8 @@ int main(int argc, char* argv[]){
     .set_sel_label("DPhiSIGNAL_CJVfail")
     .set_is_data(is_data)
     .set_channel(channel_str);
+
+  if (is_embedded) controlPlots_dphi_signal_cjvfail.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
 
   HinvWJetsPlots wjetsPlots_dphi_signal_cjvfail = HinvWJetsPlots("DPhiWJetsPlotsSIGNAL_cjvfail")
     .set_fs(fs)
@@ -1188,6 +1198,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_tightMjj.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   HinvWJetsPlots wjetsPlots_tightMjj = HinvWJetsPlots("TightMjjWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1205,6 +1217,8 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_cjvpass.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
   HinvWJetsPlots wjetsPlots_cjvpass = HinvWJetsPlots("CJVWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
@@ -1221,6 +1235,8 @@ int main(int argc, char* argv[]){
     .set_sel_label("CJVfail")
     .set_is_data(is_data)
     .set_channel(channel_str);
+
+  if (is_embedded) controlPlots_cjvfail.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
 
   HinvWJetsPlots wjetsPlots_cjvfail = HinvWJetsPlots("CJVFailWJetsPlots")
     .set_fs(fs)
@@ -1325,11 +1341,6 @@ int main(int argc, char* argv[]){
     //jet pair production before plotting
      analysis.AddModule(&jjPairProducer);
 
-     //copy collection of jets for CJV before plotting
-     analysis.AddModule(&cjvjetsCopyCollection);
-     analysis.AddModule(&cjvjetsIDFilter);
-     analysis.AddModule(&cjvjetsPtEtaFilter);
-       
      //plot before cutting
      analysis.AddModule(&controlPlots_hlt);
      analysis.AddModule(&wjetsPlots_hlt);

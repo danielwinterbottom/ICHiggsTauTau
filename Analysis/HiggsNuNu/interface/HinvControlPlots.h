@@ -161,6 +161,7 @@ namespace ic {
     CLASS_MEMBER(HinvControlPlots,std::string, sel_label);
     CLASS_MEMBER(HinvControlPlots,std::string, channel);
     CLASS_MEMBER(HinvControlPlots,bool, is_data);
+    CLASS_MEMBER(HinvControlPlots,bool, is_embedded);
 
 
     double yields_;

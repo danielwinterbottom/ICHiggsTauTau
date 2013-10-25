@@ -11,7 +11,7 @@
 #include "fstream"
 
 
-namespace ic {
+namespace ic {//namespace
 
   HinvWeights::HinvWeights(std::string const& name) : ModuleBase(name),
     mc_(mc::summer12_53X),
@@ -626,10 +626,9 @@ namespace ic {
   }
 
   void HinvWeights::fillVector(const std::string & aFileName, std::vector<double> & aVector){
-
     std::ifstream lInput;
     lInput.open(aFileName);
-    if(!lInput.is_open()){
+    if(!lInput.is_open()) {
       std::cerr << "Unable to open file: " << aFileName << ". Setting vector content to 1." << std::endl;
       //max expected size for e and mu is 33...
       aVector.resize(33,1);
@@ -655,6 +654,7 @@ namespace ic {
     lInput.close();
 
   }
+
 
   void HinvWeights::fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown){
 
@@ -710,4 +710,5 @@ namespace ic {
     return weight;
   };
 
-}
+
+}//namespace

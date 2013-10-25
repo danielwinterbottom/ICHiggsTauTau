@@ -148,19 +148,27 @@ namespace ic {
     genparticles_label_ = "genParticlesTaus";
     sel_label_ = "JetPair";
     channel_ = "nunu";
+    is_data_ = false;
+    is_embedded_ = false;
   }
 
   HinvControlPlots::~HinvControlPlots(){;}
 
 
   int  HinvControlPlots::PreAnalysis(){
-    std::cout << "** PreAnalysis Info for HinvControlPlots **" << std::endl;
+    std::cout << "-------------------------------------------- " << std::endl
+	      << "** PreAnalysis Info for HinvControlPlots **" << std::endl
+	      << "-------------------------------------------- " << std::endl;
     if (fs_) {
       std::cout << "MET Label: " << met_label_ << std::endl;
       std::cout << "dijet Label: " << dijet_label_ << std::endl;
       std::cout << "gen particles label: " << genparticles_label_ << std::endl;
       std::cout << "Selection Label: " << sel_label_ << std::endl;
       std::cout << "Channel :" << channel_ << std::endl;
+      if (is_embedded_ && is_data_) std::cout << "Processing set for embedded data !" << std::endl;
+      else if (is_data_) std::cout << "Processing set for data !" << std::endl;
+      else if (is_embedded_) std::cout << "Processing set for embedded MC !" << std::endl;
+      else  std::cout << "Processing set for MC !" << std::endl;
     }
 
     misc_plots_ = new DynamicHistoSet(fs_->mkdir("misc_plots"));
@@ -357,24 +365,8 @@ namespace ic {
 	if (iR<4)controlplots_->jCSV[iR]->Fill(lCSV,wt_);
       }
 
-      if(!is_data_){
-	//get recojets matched to genjets
-	std::vector<GenJet *> genjets = event->GetPtrVec<GenJet>("genJets");
-	for (unsigned iR(0); iR < jets.size(); ++iR){//loop on recojets
-	  double mindR = 10;
-	  GenJet *genmatch = 0;
-	  for (unsigned iG(0); iG < genjets.size(); ++iG){//loop on genjets
-	    double dR = ROOT::Math::VectorUtil::DeltaR(jets[iR]->vector(),genjets[iG]->vector());
-	    if (dR < mindR){
-	      mindR = dR;
-	      genmatch = genjets[iG];
-	    }
-	  }//loop on genjets
-	  if (mindR < 0.5 && iR<5) genPlots_->recojet_isMatched[iR]->Fill(1.,wt_);
-	  else if (iR<5) genPlots_->recojet_isMatched[iR]->Fill(0.,wt_);
-	}//loop on recojets
+      if(!is_data_ || is_embedded_){
 
-	//get genjet matched with leading tau
 	std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>(genparticles_label_);
 	GenParticle* theTau = 0;
 	for (unsigned iTau(0); iTau<taus.size(); ++iTau){
@@ -383,78 +375,113 @@ namespace ic {
 	    break;
 	  }
 	}
-	if (theTau) {
-	  //std::cout << "first tauParticle pdgid = " << theTau->pdgid() << std::endl;
-	  
-	  
-	  GenJet *gentau = 0;
-	  
-	  double mindR = 10;
-	  for (unsigned iG(0); iG < genjets.size(); ++iG){//loop on genjets
-	    double dR = ROOT::Math::VectorUtil::DeltaR(theTau->vector(),genjets[iG]->vector());
-	    if (dR < mindR){
-	      mindR = dR;
-	      gentau = genjets[iG];
-	    }
-	  }//end of loop on genjets
-	  
-	  genPlots_->dR_genjet_gentau->Fill(mindR,wt_);
-	  
-	  if (mindR < 0.5) {
-	    genPlots_->taupt->Fill(gentau->pt(),wt_);
-	    genPlots_->taueta->Fill(gentau->eta(),wt_);
-	    genPlots_->tauptvseta->Fill(gentau->eta(),gentau->pt(),wt_);
-	    
-	    //get dR with tagging jets
-	    if (dijet_vec.size() != 0) {
-	      
-	      CompositeCandidate const* dijet = dijet_vec.at(0);
-	      
-	      Candidate const* jet1 = dijet->GetCandidate("jet1");
-	      Candidate const* jet2 = dijet->GetCandidate("jet2");
-	      
-	      double dR1 = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),gentau->vector());
-	      double dR2 = ROOT::Math::VectorUtil::DeltaR(jet2->vector(),gentau->vector());
-	      if (gentau->pt()>20 && fabs(gentau->eta())<2.3) genPlots_->mindR_gentau_tagjets->Fill(std::min(dR1,dR2),wt_);
-	      
-	    }
-	    
-	    //get recojet matched with genjet
-	    mindR = 10;
-	    PFJet* recotau = 0;
-	    PFJet* recotau_status3 = 0;
-	    double mindR_status3 = 10;
-	    
-	    for (unsigned iR(0); iR < alljets.size(); ++iR){//loop on reco jets
-	      //match to genjets
-	      double dR = ROOT::Math::VectorUtil::DeltaR(alljets[iR]->vector(),gentau->vector());
+	GenJet *gentau = 0;
+
+	//get recojets matched to genjets
+	if (!is_embedded_) {
+	  std::vector<GenJet *> genjets = event->GetPtrVec<GenJet>("genJets");
+
+	  //get generically the jets matched...
+	  for (unsigned iR(0); iR < jets.size(); ++iR){//loop on recojets
+	    double mindR = 10;
+	    GenJet *genmatch = 0;
+	    for (unsigned iG(0); iG < genjets.size(); ++iG){//loop on genjets
+	      double dR = ROOT::Math::VectorUtil::DeltaR(jets[iR]->vector(),genjets[iG]->vector());
 	      if (dR < mindR){
 		mindR = dR;
-		recotau = alljets[iR];
+		genmatch = genjets[iG];
 	      }
-	      //match to status 3 tau
-	      double dR_status3 = ROOT::Math::VectorUtil::DeltaR(alljets[iR]->vector(),theTau->vector());
-	      if (dR_status3 < mindR_status3){
-		mindR_status3 = dR_status3;
-		recotau_status3 = alljets[iR];
+	    }//loop on genjets
+	    if (mindR < 0.5 && iR<5) genPlots_->recojet_isMatched[iR]->Fill(1.,wt_);
+	    else if (iR<5) genPlots_->recojet_isMatched[iR]->Fill(0.,wt_);
+	  }//loop on recojets
+
+	  //get genjet matched with leading tau
+	  if (theTau) {
+	    //std::cout << "first tauParticle pdgid = " << theTau->pdgid() << std::endl;
+	    double mindR = 10;
+	    for (unsigned iG(0); iG < genjets.size(); ++iG){//loop on genjets
+	      double dR = ROOT::Math::VectorUtil::DeltaR(theTau->vector(),genjets[iG]->vector());
+	      if (dR < mindR){
+		mindR = dR;
+		if (mindR < 0.5) gentau = genjets[iG];
 	      }
-	      
-	    }//end of loop on reco jets
+	    }//end of loop on genjets
 	    
-	    genPlots_->dR_recotau_genjet->Fill(mindR,wt_);
-	    genPlots_->dR_recotau_status3tau->Fill(mindR_status3,wt_);
-	    
-	    if (mindR < 0.5 && gentau->pt()>20 && fabs(gentau->eta())<2.3) {
-	      genPlots_->recotaupt->Fill(recotau->pt(),wt_);
-	      genPlots_->recotaueta->Fill(recotau->eta(),wt_);
-	    }
-	    if (mindR_status3 < 0.5) {
-	      genPlots_->recotaupt_status3->Fill(recotau_status3->pt(),wt_);
-	      genPlots_->recotaueta_status3->Fill(recotau_status3->eta(),wt_);
+	    genPlots_->dR_genjet_gentau->Fill(mindR,wt_);
+	  }//if theTau
+
+	}//if !embedded
+	if (gentau) {
+	  genPlots_->taupt->Fill(gentau->pt(),wt_);
+	  genPlots_->taueta->Fill(gentau->eta(),wt_);
+	  genPlots_->tauptvseta->Fill(gentau->eta(),gentau->pt(),wt_);
+	}
+	else if (theTau){
+	  genPlots_->taupt->Fill(theTau->pt(),wt_);
+	  genPlots_->taueta->Fill(theTau->eta(),wt_);
+	  genPlots_->tauptvseta->Fill(theTau->eta(),theTau->pt(),wt_);
+	}
+	//get dR with tagging jets
+	if (dijet_vec.size() != 0) {
+	  
+	  CompositeCandidate const* dijet = dijet_vec.at(0);
+	  
+	  Candidate const* jet1 = dijet->GetCandidate("jet1");
+	  Candidate const* jet2 = dijet->GetCandidate("jet2");
+	  
+	  double dR1 = 10;
+	  double dR2 = 10;
+	  if (gentau) {
+	    dR1 = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),gentau->vector());
+	    dR2 = ROOT::Math::VectorUtil::DeltaR(jet2->vector(),gentau->vector());
+	    if (gentau->pt()>10 && fabs(gentau->eta())<2.4) genPlots_->mindR_gentau_tagjets->Fill(std::min(dR1,dR2),wt_);
+	  }
+	  else if (theTau){
+	    dR1 = ROOT::Math::VectorUtil::DeltaR(jet1->vector(),theTau->vector());
+	    dR2 = ROOT::Math::VectorUtil::DeltaR(jet2->vector(),theTau->vector());
+	    if (theTau->pt()>10 && fabs(theTau->eta())<2.4) genPlots_->mindR_gentau_tagjets->Fill(std::min(dR1,dR2),wt_);
+	  }
+	  
+	}
+	
+	//get recojet matched with genjet or gentau
+	double mindR = 10;
+	PFJet* recotau = 0;
+	PFJet* recotau_status3 = 0;
+	double mindR_status3 = 10;
+	
+	for (unsigned iR(0); iR < alljets.size(); ++iR){//loop on reco jets
+	  //match to genjets
+	  if (gentau){
+	    double dR = ROOT::Math::VectorUtil::DeltaR(alljets[iR]->vector(),gentau->vector());
+	    if (dR < mindR){
+	      mindR = dR;
+	      recotau = alljets[iR];
 	    }
 	  }
+	  if (theTau){
+	    //match to status 3 tau
+	    double dR_status3 = ROOT::Math::VectorUtil::DeltaR(alljets[iR]->vector(),theTau->vector());
+	    if (dR_status3 < mindR_status3){
+	      mindR_status3 = dR_status3;
+	      recotau_status3 = alljets[iR];
+	    }
+	  }
+	}//end of loop on reco jets
+	    
+	genPlots_->dR_recotau_genjet->Fill(mindR,wt_);
+	genPlots_->dR_recotau_status3tau->Fill(mindR_status3,wt_);
+	
+	if (gentau && mindR < 0.5 && gentau->pt()>10 && fabs(gentau->eta())<2.4) {
+	  genPlots_->recotaupt->Fill(recotau->pt(),wt_);
+	  genPlots_->recotaueta->Fill(recotau->eta(),wt_);
 	}
-      }
+	if (theTau && mindR_status3 < 0.5 && theTau->pt()>10 && fabs(theTau->eta())<2.4) {
+	  genPlots_->recotaupt_status3->Fill(recotau_status3->pt(),wt_);
+	  genPlots_->recotaueta_status3->Fill(recotau_status3->eta(),wt_);
+	}
+      }//for MC or embedded data
     }//end of if fillplots
     
 

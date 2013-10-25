@@ -59,6 +59,12 @@ namespace ic {
       lVal = MT(lpfMet,lMuons[0]);
       lWreco = ic::reconstructWboson(lMuons[0],lpfMet);
      }
+     else if (lepton_flavour_==3){
+      std::vector<Tau *> lTaus = event->GetPtrVec<Tau>(lepton_name_);
+      if (lTaus.size()==0) return 1;
+      lVal = MT(lpfMet,lTaus[0]);
+      lWreco = ic::reconstructWboson(lTaus[0],lpfMet);
+     }
  
     double lZepp = 0;
     if (doZeppenfeldCut_) {

@@ -254,6 +254,7 @@ int main(int argc, char* argv[]){
   unsigned draw_signal_factor = parser.GetParam<unsigned>("DRAW_SIGNAL_FACTOR");
   string year_label = parser.GetParam<string>("YEAR_LABEL");
   double data_lumi = parser.GetParam<double>("LUMI_DATA");
+  double data_embedded_lumi = parser.GetParam<double>("LUMI_DATA_EMBEDDED");
   string lumi_data_label = parser.GetParam<string>("LUMI_DATA_LABEL");
 
 

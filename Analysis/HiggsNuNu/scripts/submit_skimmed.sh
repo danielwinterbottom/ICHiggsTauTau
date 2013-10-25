@@ -10,14 +10,19 @@
 OTHEROPTIONS="--doTopCR=false"
 DOCERN=0
 
+EXECUTABLE=HiggsNuNu
+#EXECUTABLE=TauEmbedClosure
+
 if (( "$DOCERN" == "1" )); then
     JOBSCRIPT="./scripts/submit_cern_batch_job.sh" 
     JOBQUEUE="1nh"
     PREFIX=/afs/cern.ch/work/a/amagnan/SkimFiles/Apr04/nunu/
+    PREFIXEMBED=/afs/cern.ch/work/a/amagnan/SkimFiles/Oct21/nunu/
 else 
     JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
     JOBQUEUE="hepshort.q"
     PREFIX=/vols/ssd00/cms/amagnan/trigskims/nunu/MET130/
+    PREFIXEMBED=/vols/ssd00/cms/amagnan/trigskims/Oct21/nunu/MET130/
 fi
 
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
@@ -74,6 +79,7 @@ for METCUT in 130 #0 130
       mkdir -p $JOBDIR
       mkdir -p $OUTPUTDIR
       
+
       for FILELIST in `ls filelists/skim/$PRODUCTION/nunu/*`
 	do
 	echo "Processing files in "$FILELIST
@@ -115,19 +121,19 @@ for METCUT in 130 #0 130
 	      
 
 	      if (( "$DOCERN" == "1" )); then
-		  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR $OTHEROPTIONS &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh 0
+		  $JOBWRAPPER "./bin/$EXECUTABLE --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR $OTHEROPTIONS &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh 0
 		  $JOBSUBMIT $JOBDIR/$WJOB.sh $WJOB  
 	      else 
-		  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR $OTHEROPTIONS &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+		  $JOBWRAPPER "./bin/$EXECUTABLE --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR $OTHEROPTIONS &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
 		  $JOBSUBMIT $JOBDIR/$WJOB.sh
 	      fi                                                                                 
 	    done
 	else  
 	    if (( "$DOCERN" == "1" )); then
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL $OTHEROPTIONS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh 0
+	    $JOBWRAPPER "./bin/$EXECUTABLE --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL $OTHEROPTIONS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh 0
 	    $JOBSUBMIT $JOBDIR/$JOB.sh $JOB
 	    else
-		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL $OTHEROPTIONS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+		$JOBWRAPPER "./bin/$EXECUTABLE --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL $OTHEROPTIONS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 		$JOBSUBMIT $JOBDIR/$JOB.sh
 	    fi
 	fi
@@ -135,6 +141,33 @@ for METCUT in 130 #0 130
 	rm tmp.txt tmp2.txt
 	
       done
+
+: '
+      for FILELIST in `ls filelists/skim/Oct21/nunu/METembedded*`
+	do
+	#continue
+	echo "Processing files in "$FILELIST
+	
+	echo $FILELIST
+	echo $FILELIST > tmp.txt
+	sed "s/filelists\/skim\/Oct21\/nunu\///" tmp.txt > tmp2.txt
+
+	JOB=DataEmbedded_`sed "s/\.dat//" tmp2.txt`
+	CONFIG=scripts/DefaultConfig.cfg
+	echo "JOB name = $JOB"
+
+	if (( "$DOCERN" == "1" )); then
+	    $JOBWRAPPER "./bin/$EXECUTABLE --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIXEMBED --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL $OTHEROPTIONS --is_embedded=true &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh 0
+	    $JOBSUBMIT $JOBDIR/$JOB.sh $JOB
+	else
+	    $JOBWRAPPER "./bin/$EXECUTABLE --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIXEMBED --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL $OTHEROPTIONS --is_embedded=true &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	    $JOBSUBMIT $JOBDIR/$JOB.sh
+	fi
+	
+	rm tmp.txt tmp2.txt
+	
+      done
+'
 
     done
     

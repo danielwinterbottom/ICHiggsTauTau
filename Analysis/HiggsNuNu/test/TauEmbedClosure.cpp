@@ -284,6 +284,95 @@ int main(int argc, char* argv[]){
   // Misc Modules
   // ------------------------------------------------------------------------------------
   
+  string data_json;
+  if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
+  if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
+  if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
+  if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
+  if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
+  LumiMask lumiMask = LumiMask("LumiMask")
+    .set_produce_output_jsons("")
+    .set_input_file(data_json);
+
+  MakeRunStats runStats = MakeRunStats("RunStats")
+    .set_output_name(output_folder+output_name+".runstats");
+  
+  
+  string mc_pu_file;
+  if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";
+  if (mc == mc::summer12_53X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
+  if (mc == mc::summer12_52X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S7-600bins.root";
+
+  string data_pu_file;
+  if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
+  if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
+  if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
+  if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
+  if (era == era::data_2012_donly) data_pu_file     =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
+
+  TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
+  TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
+
+  TH1D data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
+  TH1D data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
+
+  if (!is_data) {
+    std::cout << "** Pileup Files **" << std::endl;
+    std::cout << boost::format(param_fmt) % "mc_pu_file" % mc_pu_file;
+    std::cout << boost::format(param_fmt) % "data_pu_file" % data_pu_file;
+  }
+  PileupWeight pileupWeight = PileupWeight("PileupWeight")
+    .set_data(&data_pu)
+    .set_mc(&mc_pu)
+    .set_print_weights(false);
+  PileupWeight pileupWeight_up = PileupWeight("PileupWeight_up","!pileup_up")
+    .set_data(&data_pu_up)
+    .set_mc(&mc_pu)
+    .set_print_weights(false);
+  PileupWeight pileupWeight_down = PileupWeight("PileupWeight_down","!pileup_down")
+    .set_data(&data_pu_down)
+    .set_mc(&mc_pu)
+    .set_print_weights(false);
+
+  HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
+  dataMCTriggerPathFilter.set_is_data(is_data);
+  dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
+  dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+
+  JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
+  ("JetEnergyCorrections")
+  .set_input_label("pfJetsPFlow")
+  .set_is_data(is_data)
+  .set_l1_file("data/jec/START53_V10_L1FastJet_AK5PF.txt")
+  .set_l2_file("data/jec/START53_V10_L2Relative_AK5PF.txt")
+  .set_l3_file("data/jec/START53_V10_L3Absolute_AK5PF.txt");
+  
+
+  MetLaserFilters metLaserFilters = MetLaserFilters("MetLaserFilters",
+						    "data/met_laser_filters/AllBadHCALLaser.txt",
+						    "data/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
+						    doMetFilters);
+
+
+  // ------------------------------------------------------------------------------------
+  // Electron Modules
+  // ------------------------------------------------------------------------------------
+
+ 
+  // Electron Veto
+  CopyCollection<Electron>  vetoElectronCopyCollection("CopyToVetoElectrons","electrons","vetoElectrons");
+
+  SimpleFilter<Electron> vetoElectronFilter = SimpleFilter<Electron>
+    ("VetoElectronPtEtaFilter")
+    .set_input_label("vetoElectrons").set_predicate(bind(MinPtMaxEta, _1, veto_elec_pt, veto_elec_eta) &&
+						    bind(VetoElectronID, _1) && 
+						    bind(fabs, bind(&Electron::dxy_vertex, _1)) < veto_elec_dxy && 
+						    bind(fabs, bind(&Electron::dz_vertex, _1)) < veto_elec_dz
+						    )
+    .set_min(0)
+    .set_max(999);
+
+  EffectiveAreaIsolationFilter vetoElectronIso = EffectiveAreaIsolationFilter("VetoElectronIso","vetoElectrons",0.15);
  
   //electron selection 
   CopyCollection<Electron>  selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
@@ -299,10 +388,64 @@ int main(int argc, char* argv[]){
 
   EffectiveAreaIsolationFilter selElectronIso = EffectiveAreaIsolationFilter("SelElectronIso","selElectrons",0.10);
 
+  OverlapFilter<Electron, Muon> elecMuonOverlapFilter = OverlapFilter<Electron, Muon>("ElecMuonOverlapFilter")
+    .set_input_label("selElectrons")
+    .set_reference_label("vetoMuons")
+    .set_min_dr(0.3);
+
+  SimpleFilter<Electron> oneElectronFilter = SimpleFilter<Electron>
+    ("OneElectronFilter")
+    .set_input_label("selElectrons")
+    .set_predicate( bind(DummyFunction<Electron>, _1) )
+    .set_min(1)
+    .set_max(1);
+
+
+  SimpleFilter<Electron> oneVetoElectronFilter = SimpleFilter<Electron>
+    ("OneVetoElectronFilter")
+    .set_input_label("vetoElectrons")
+    .set_predicate( bind(DummyFunction<Electron>, _1) )
+    .set_min(1)
+    .set_max(1);
+
+  SimpleFilter<Electron> zeroVetoElectronFilter = SimpleFilter<Electron>
+    ("ZeroVetoElectronFilter")
+    .set_input_label("vetoElectrons")
+    .set_predicate( bind(DummyFunction<Electron>, _1) )
+    .set_min(0)
+    .set_max(0);
+
+
   // ------------------------------------------------------------------------------------
   // Muon Modules
   // ------------------------------------------------------------------------------------
   
+  // Muon Veto
+  CopyCollection<Muon> vetoMuonCopyCollection("CopyToVetoMuons","muonsPFlow","vetoMuons");
+
+  SimpleFilter<Muon> vetoMuonFilter = SimpleFilter<Muon>
+    ("VetoMuonPtEtaFilter")
+    .set_input_label("vetoMuons").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
+						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
+						&& bind(PF04Isolation<Muon>, _1, 0.5, 0.2)
+						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
+						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
+						)
+    .set_min(0)
+    .set_max(999);
+
+  CopyCollection<Muon> vetoMuonNoIsoCopyCollection("CopyToVetoMuonsNoIso","muonsPFlow","vetoMuonsNoIso");
+  SimpleFilter<Muon> vetoMuonNoIsoFilter = SimpleFilter<Muon>
+    ("VetoMuonNoIsoPtEtaFilter")
+    .set_input_label("vetoMuonsNoIso").set_predicate(bind(MinPtMaxEta, _1, veto_muon_pt, veto_muon_eta) &&
+						(bind(&Muon::is_global, _1) || bind(&Muon::is_tracker, _1))
+						//&& bind(PF04Isolation<Muon>, _1, 0.5, 0.2)
+						//&& bind(fabs, bind(&Muon::dxy_vertex, _1)) < veto_muon_dxy 
+						//&& bind(fabs, bind(&Muon::dz_vertex, _1)) < veto_muon_dz
+						)
+    .set_min(0)
+    .set_max(999);
+
   //sel muons
   CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");   
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>
@@ -325,13 +468,42 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(1);
   
+  SimpleFilter<Muon> twoMuonFilter = SimpleFilter<Muon>
+    ("TwoMuonFilter")
+    .set_input_label("selMuons")
+    .set_predicate( bind(DummyFunction<Muon>, _1) )
+    .set_min(2)
+    .set_max(2);
+  
+  SimpleFilter<Muon> oneVetoMuonFilter = SimpleFilter<Muon>
+    ("OneVetoMuonFilter")
+    .set_input_label("vetoMuons")
+    .set_predicate( bind(DummyFunction<Muon>, _1) )
+    .set_min(1)
+    .set_max(1);
+
+  SimpleFilter<Muon> twoVetoMuonFilter = SimpleFilter<Muon>
+    ("TwoVetoMuonFilter")
+    .set_input_label("vetoMuons")
+    .set_predicate( bind(DummyFunction<Muon>, _1) )
+    .set_min(2)
+    .set_max(2);
+
+  SimpleFilter<Muon> zeroVetoMuonFilter = SimpleFilter<Muon>
+    ("ZeroVetoMuonFilter")
+    .set_input_label("vetoMuons")
+    .set_predicate( bind(DummyFunction<Muon>, _1) )
+    .set_min(0)
+    .set_max(0);
+
+
   // ------------------------------------------------------------------------------------
   // Tau modules
   // ------------------------------------------------------------------------------------
 
   SimpleFilter<Tau> tauPtEtaFilter = SimpleFilter<Tau>("TauPtEtaFilter")
     .set_input_label("taus")
-    .set_predicate(bind(MinPtMaxEta, _1, 20, 2.3))
+    .set_predicate(bind(MinPtMaxEta, _1, 10, 2.4))
     .set_min(0);
 
   SimpleFilter<Tau> tauDzFilter = SimpleFilter<Tau>("TauDzFilter")
@@ -389,36 +561,43 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(1000);
 
+  SimpleFilter<GenParticle> oneGenTauPtEtaFilter = SimpleFilter<GenParticle>
+    ("OneGenTauPtEtaFilter")
+    .set_input_label("genParticlesTaus")
+    .set_predicate( (bind(fabs, bind(&GenParticle::pdgid, _1))==15) && 
+		    (bind(&GenParticle::pt, _1)>10) && 
+		    (bind(fabs, bind(&GenParticle::eta, _1)) < 2.4) )
+    .set_min(1)
+    .set_max(1000);
+
+  if (is_embedded) oneGenTauPtEtaFilter.set_input_label("genParticlesEmbedded");
+
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
+
+  JetMETModifier ModifyJetMET = JetMETModifier
+    ("ModifyJetMET")
+    .set_input_label("pfJetsPFlow")
+    .set_met_label(mettype)
+    .set_dosmear(dosmear)
+    .set_doaltmatch(doaltmatch)
+    .set_doetsmear(doetsmear)
+    .set_dogaus(dogaus)
+    .set_is_data(is_data)
+    .set_dojessyst(dojessyst)
+    .set_dodatajessyst(dodatajessyst)
+    .set_jesupordown(jesupordown)
+    .set_dojersyst(dojersyst)
+    .set_jerbetterorworse(jerbetterorworse)
+    .set_jesuncfile(jesuncfile)
+    .set_dojerdebug(dojerdebug)
+    .set_fs(fs);
+  
   
   CopyCollection<PFJet> alljetsCopyCollection("copytoalljets","pfJetsPFlow","AllpfJetsPFlow");
   CopyCollection<PFJet> bjetsCopyCollection("copytobjets","pfJetsPFlow","bTaggedpfJetsPFlow");
 
-
-  CopyCollection<PFJet> cjvjetsCopyCollection("copytocjvjets","pfJetsPFlow","cjvpfJetsPFlow");
-
-  SimpleFilter<PFJet> cjvjetsIDFilter = SimpleFilter<PFJet>
-    ("cjvJetsIDFilter")
-    .set_input_label("cjvpfJetsPFlow");
-  if(!turnoffpuid){
-    cjvjetsIDFilter.set_predicate((bind(PFJetID, _1)) && bind(&PFJet::pu_id_mva_loose, _1));
-  }
-  else{
-    cjvjetsIDFilter.set_predicate(bind(PFJetID, _1));
-  }
-
-  double cjvptcut = 30.0;
-  SimpleFilter<PFJet> cjvjetsPtEtaFilter = SimpleFilter<PFJet>
-    ("CJVJetsPtEtaFilter")
-    .set_input_label("cjvpfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, cjvptcut, 4.7));
-
-  CJVFilter FilterCJV = CJVFilter("FilterCJV")
-    .set_jetsinput_label("cjvpfJetsPFlow")
-    .set_pairinput_label("jjLeadingCandidates")
-    .set_ptcut(30);
-  
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
     .set_input_label("pfJetsPFlow");
@@ -439,11 +618,21 @@ int main(int argc, char* argv[]){
     ("JetPtEtaFilter")
     .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptcut, 4.7));
 
+  CJVFilter FilterCJV = CJVFilter("FilterCJV")
+    .set_jetsinput_label("pfJetsPFlow")
+    .set_pairinput_label("jjLeadingCandidates")
+    .set_ptcut(30);
+  
   //in principle no need to remove overlap because events with leptons are rejected...
   //except for specific e/mu selection for W background estimation.
   // and to calculate efficiencies of cuts correctly
   //we want the leading jets to really be jets even before vetoing leptons...
   //so: removal of jets matched with veto electrons and muons
+
+  OverlapFilter<PFJet, Electron> jetElecOverlapFilter = OverlapFilter<PFJet, Electron>("jetElecOverlapFilter")
+    .set_input_label("pfJetsPFlow")
+    .set_reference_label("vetoElectrons")
+    .set_min_dr(0.5);
 
   OverlapFilter<PFJet, Muon> jetMuonOverlapFilter = OverlapFilter<PFJet, Muon>("jetMuonOverlapFilter")
     .set_input_label("pfJetsPFlow")
@@ -477,18 +666,143 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(999);
   
+  SimpleFilter<CompositeCandidate> etaProdJetPairFilter = SimpleFilter<CompositeCandidate>("EtaProdJetPairFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( bind(PairEtaProdLessThan, _1, 0))
+    .set_min(1)
+    .set_max(999);
+
+
+  SimpleFilter<CompositeCandidate> detaJetPairFilter = SimpleFilter<CompositeCandidate>("DetaJetPairFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( !bind(PairDEtaLessThan, _1, 4.2) )
+    .set_min(1)
+    .set_max(999);    
+
+
+  double minmjj=900;
+  if(do_skim)minmjj=600;
+
+  SimpleFilter<CompositeCandidate> looseMassJetPairFilter = SimpleFilter<CompositeCandidate>("LooseMassJetPairFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( bind(PairMassInRange, _1,minmjj,8000) )
+    .set_min(1)
+    .set_max(999);
+    
+  SimpleFilter<CompositeCandidate> tightMassJetPairFilter = SimpleFilter<CompositeCandidate>("TightMassJetPairFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( bind(PairMassInRange, _1,mjj_cut,8000) )
+    .set_min(1)
+    .set_max(999);    
+
+ 
+  SimpleFilter<CompositeCandidate> dphiJetPairFilter = SimpleFilter<CompositeCandidate>("DphiJetPairFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( bind(PairAbsDPhiLessThan, _1,2.0) )
+    .set_min(1)
+    .set_max(999);    
+
+  SimpleFilter<CompositeCandidate> dphiQCDJetPairFilter = SimpleFilter<CompositeCandidate>("DphiQCDJetPairFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( !bind(PairAbsDPhiLessThan, _1,2.6) )
+    .set_min(1)
+    .set_max(999);    
+
   //------------------------------------------------------------------------------------
   // W selection Modules
   // ------------------------------------------------------------------------------------
+  MetSelection metFilters = MetSelection("MetFilters",mettype,doMetFilters,filtersVec,0);
+  
   ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"selMuons",2,100);
   ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"selElectrons",1,100);
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,100);
 
+  MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",false,filtersVec,met_cut,met_cut_max);
+  MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut,met_cut_max);
+  MetSelection metNoENoMuFilter = MetSelection("MetNoENoMuFilter","metNoENoMu",false,filtersVec,met_cut,met_cut_max);
 
-  double mtcut_min = 0;
+  //if (is_ewkZ)  mettype="metNoENoMu";
+  if (ignoreLeptons) mettype="metNoMuons";
+  MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut,met_cut_max);
+
+
+  //------------------------------------------------------------------------------------
+  // W selection Modules
+  // ------------------------------------------------------------------------------------
+
+  double mtcut_min = 30;
   double mtcut_max = 8000;
   MTSelection muonMTFilter = MTSelection("MuonMTFilter",mettype,"selMuons",2,mtcut_min,mtcut_max);
   MTSelection electronMTFilter = MTSelection("ElectronMTFilter",mettype,"selElectrons",1,mtcut_min,mtcut_max);
+  MTSelection tauMTFilter = MTSelection("TauMTFilter",mettype,"taus",3,mtcut_min,mtcut_max);
+
+  // ------------------------------------------------------------------------------------
+  // Selection Modules
+  // ------------------------------------------------------------------------------------  
+  
+  HinvWeights hinvWeights = HinvWeights("HinvWeights")
+    .set_era(era)
+    .set_mc(mc)
+    .set_save_weights(true)
+    .set_do_trg_weights(false)
+    .set_trg_applied_in_mc(true)
+    .set_do_idiso_tight_weights(false)
+    .set_do_idiso_veto_weights(false)
+    .set_do_idiso_err(doidisoerr)
+    .set_do_idiso_errupordown(doidisoerrupordown)
+    .set_do_idiso_errmuore(doidisoerrmuore)
+    .set_fs(fs)
+    .set_input_met("metNoMuons");
+  //  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
+  if (!is_data) {
+    hinvWeights.set_do_trg_weights(dotrgeff)
+      .set_trg_applied_in_mc(true);
+    if (channel==channel::nunu || channel == channel::taunu){
+      hinvWeights.set_do_idiso_veto_weights(doidisoeff);
+    }
+    else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
+    if (ignoreLeptons){ 
+      hinvWeights.set_do_idiso_veto_weights(false);
+      hinvWeights.set_do_idiso_tight_weights(false);
+    }
+  }
+
+  HinvWeights xsWeights = HinvWeights("XSWeights")
+    .set_era(era)
+    .set_mc(mc)
+    .set_save_weights(false)
+    .set_do_trg_weights(false)
+    .set_trg_applied_in_mc(false)
+    .set_do_idiso_tight_weights(false)
+    .set_fs(fs)
+    .set_do_idiso_veto_weights(false);
+  
+
+  if (output_name.find("JetsToLNu") != output_name.npos) {
+    xsWeights.set_do_w_soup(true);
+    xsWeights.set_do_w_reweighting(false);
+
+    if (mc == mc::summer12_53X) {
+      xsWeights.SetWTargetFractions(0.74069073, 0.1776316, 0.0575658, 0.0170724, 0.00703947);
+      xsWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
+      //xsWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
+    }
+  }
+  if (output_name.find("JetsToLL") != output_name.npos && 
+      output_name.find("PtZ-100-madgraph") == output_name.npos && 
+      output_name.find("DYJJ01") == output_name.npos) {
+    if (mc == mc::summer12_53X) {
+      xsWeights.set_do_dy_soup(true);
+      xsWeights.set_do_dy_reweighting(false);
+      xsWeights.SetDYTargetFractions(0.723342373, 0.190169492, 0.061355932, 0.017322034, 0.007810169);
+      if(prod=="Apr04"){
+	xsWeights.SetDYInputYields(30459503.0, 23970248.0, 21852156.0, 11015445.0, 6402827.0);
+      }
+      else{
+	xsWeights.SetDYInputYields(30459503.0, 24045248.0, 21852156.0, 11015445.0, 6402827.0);
+      }
+    }
+  }
 
   // ------------------------------------------------------------------------------------
   // Gen particle selection modules
@@ -504,7 +818,7 @@ int main(int argc, char* argv[]){
 
 
 
-  HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour,true);
+  HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour,is_embedded ? true: false);
 
   //if (wstream == "ee") lFlavour = 11;
   //else if (wstream == "mumu") lFlavour = 13;
@@ -517,43 +831,65 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------  
   
  
-  HinvControlPlots controlPlots_hlt = HinvControlPlots("HLTControlPlots")
+  HinvControlPlots controlPlots_jetpair = HinvControlPlots("JetPairControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
-    .set_dijet_label("jjCandidates")
-    .set_genparticles_label("genParticlesEmbedded")
-    .set_sel_label("HLTMetClean")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("JetPair")
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  if (is_embedded) controlPlots_jetpair.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
+
   //set collections to all leptons for the first set of plots before selecting/vetoing them
-  HinvWJetsPlots wjetsPlots_hlt = HinvWJetsPlots("HLTWJetsPlots")
+  HinvWJetsPlots wjetsPlots_jetpair = HinvWJetsPlots("JetPairWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("electrons")
     .set_muons_label("muonsPFlow")
-    .set_dijet_label("jjCandidates")
-    .set_sel_label("HLTMetClean");
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("JetPair");
 
  
-  HinvControlPlots controlPlots_wsel = HinvControlPlots("WSelectionControlPlots")
+  HinvControlPlots controlPlots_vbf = HinvControlPlots("VbfControlPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
-    .set_genparticles_label("genParticlesEmbedded")
-    .set_sel_label("WSelection")
+    .set_sel_label("VBF")
     .set_is_data(is_data)
     .set_channel(channel_str);
 
-  HinvWJetsPlots wjetsPlots_wsel = HinvWJetsPlots("WSelectionWJetsPlots")
+  if (is_embedded) controlPlots_vbf.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
+  HinvWJetsPlots wjetsPlots_vbf = HinvWJetsPlots("VbfWJetsPlots")
     .set_fs(fs)
     .set_met_label(mettype)
     .set_met_nolep_label("metNoMuons")
     .set_electrons_label("selElectrons")
     .set_muons_label("selMuons")
     .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("WSelection");
+    .set_sel_label("VBF");
+
+  HinvControlPlots controlPlots_tauID = HinvControlPlots("TauIDControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("TauID")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  if (is_embedded) controlPlots_tauID.set_genparticles_label("genParticlesEmbedded").set_is_embedded(true);
+
+  HinvWJetsPlots wjetsPlots_tauID = HinvWJetsPlots("TauIDWJetsPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_met_nolep_label("metNoMuons")
+    .set_electrons_label("selElectrons")
+    .set_muons_label("selMuons")
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("TauID");
 
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
@@ -562,62 +898,108 @@ int main(int argc, char* argv[]){
   //if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
   if (!is_data) {
     //do W streaming to e,mu,tau
-    if (wstream == "taunu") analysis.AddModule(&WtoLeptonFilter);
+    if (output_name.find("JetsToLNu") != output_name.npos ||
+	output_name.find("EWK-W2j") != output_name.npos) {
+      if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
+    }
+     if (!do_skim)       {
+      analysis.AddModule(&pileupWeight);
+      analysis.AddModule(&pileupWeight_up);
+      analysis.AddModule(&pileupWeight_down);
+      //just apply W and Z weights
+      analysis.AddModule(&xsWeights);
+    }
   }
+  analysis.AddModule(&dataMCTriggerPathFilter);
 
+  if (is_data && !is_embedded) {
+    //FIXME: do MetFilters also on MC, but not saved right now in MC...
+    analysis.AddModule(&metFilters);
+    analysis.AddModule(&metLaserFilters);
+    //if (printEventList) analysis.AddModule(&hinvPrintList);
+  }
+     
   analysis.AddModule(&alljetsCopyCollection);
-
   analysis.AddModule(&jetIDFilter);
 
-  analysis.AddModule(&selMuonCopyCollection);
-  analysis.AddModule(&selMuonFilter);
-
+  //prepare collections of veto leptons
+  analysis.AddModule(&vetoElectronCopyCollection);
+  analysis.AddModule(&vetoElectronFilter);
+  analysis.AddModule(&vetoElectronIso);
+  analysis.AddModule(&vetoMuonCopyCollection);
+  analysis.AddModule(&vetoMuonFilter);
+  // analysis.AddModule(&vetoMuonNoIsoCopyCollection);
+  //analysis.AddModule(&vetoMuonNoIsoFilter);
+  
+  //filter leptons before making jet pairs and changing MET...
   analysis.AddModule(&selElectronCopyCollection);
   analysis.AddModule(&selElectronFilter);
   analysis.AddModule(&selElectronIso);
- 
+  analysis.AddModule(&selMuonCopyCollection);
+  analysis.AddModule(&selMuonFilter);
+  analysis.AddModule(&elecMuonOverlapFilter);
+  
   analysis.AddModule(&metNoMuons);
   analysis.AddModule(&metNoElectrons);
   analysis.AddModule(&metNoENoMu);
  
   //deal with removing overlap with selected leptons
   analysis.AddModule(&jetMuonOverlapFilter);
+  analysis.AddModule(&jetElecOverlapFilter);
+  //no need to clean taus, we don't do it in the signal selection.
   //if (channel == channel::taunu) analysis.AddModule(&jetTauOverlapFilter);
-
+  
+  //Module to do jet smearing and systematics
+  if (!do_skim) analysis.AddModule(&ModifyJetMET);
   //jet pair production before plotting
+  //filter jets
+  analysis.AddModule(&jetPtEtaFilter);
   analysis.AddModule(&jjPairProducer);
+  //two-leading jet pair production before plotting
+  analysis.AddModule(&jjLeadingPairProducer);
+  analysis.AddModule(&jetPairFilter);
+  
+  //filter taus
+  analysis.AddModule(&tauPtEtaFilter);
+  analysis.AddModule(&tauMTFilter);
+  analysis.AddModule(&zeroVetoElectronFilter);
+  analysis.AddModule(&zeroVetoMuonFilter);
+  
+  if (!is_data || is_embedded) analysis.AddModule(&oneGenTauPtEtaFilter);
+
+  //record the number of jets in the gap
+  analysis.AddModule(&FilterCJV);
 
   //plot before cutting
-  analysis.AddModule(&controlPlots_hlt);
-  analysis.AddModule(&wjetsPlots_hlt);
+  analysis.AddModule(&controlPlots_jetpair);
+  analysis.AddModule(&wjetsPlots_jetpair);
 
-  //filter taus
-  analysis.AddModule(&tauPtEtaFilter);   
+  //jet pair selection
+  analysis.AddModule(&etaProdJetPairFilter);
+  analysis.AddModule(&detaJetPairFilter);
+  analysis.AddModule(&metCut);
+  analysis.AddModule(&tightMassJetPairFilter);
+  //dphi signal cut
+  analysis.AddModule(&dphiJetPairFilter);
+  
+
+  analysis.AddModule(&controlPlots_vbf);
+  analysis.AddModule(&wjetsPlots_vbf);
+
+
+  //tauID  
   analysis.AddModule(&tauDzFilter);
   analysis.AddModule(&tauIsoFilter);
   analysis.AddModule(&tauElRejectFilter);
   analysis.AddModule(&tauMuRejectFilter);
   
-    
-  //if (printEventContent) analysis.AddModule(&hinvPrint);
-  //two-leading jet pair production before plotting
-  analysis.AddModule(&jjLeadingPairProducer);
-  //if (printEventContent) analysis.AddModule(&hinvPrint);
-  
-  //analysis.AddModule(&hinvPrint);
-     
-  if (channel == channel::munu){
-    analysis.AddModule(&oneMuonFilter);
-  }
-  else if (channel == channel::taunu){
-    analysis.AddModule(&oneTauFilter);
-  }
+  //lepton selections or veto
+  //if (channel == channel::taunu) 
+  analysis.AddModule(&oneTauFilter);
 
-  
-  //plot before cutting
-  analysis.AddModule(&controlPlots_wsel);
-  analysis.AddModule(&wjetsPlots_wsel);
-  
+  analysis.AddModule(&controlPlots_tauID);
+  analysis.AddModule(&wjetsPlots_tauID);
+
   // Run analysis
   
   analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );

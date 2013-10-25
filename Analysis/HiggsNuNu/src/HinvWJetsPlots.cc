@@ -23,6 +23,7 @@ namespace ic {
     mt_taunu = dir.make<TH1F>("mt_taunu","mt_taunu", 500, 0, 500); 
     zeppenfeld_enu = dir.make<TH1F>("zeppenfeld_enu","zeppenfeld_enu",200,0,10);
     zeppenfeld_munu = dir.make<TH1F>("zeppenfeld_munu","zeppenfeld_munu",200,0,10);
+    zeppenfeld_taunu = dir.make<TH1F>("zeppenfeld_taunu","zeppenfeld_taunu",200,0,10);
     ept_1 = dir.make<TH1F>("ept_1","ept_1", 1000, 0, 1000); 
     ept_2 = dir.make<TH1F>("ept_2","ept_2", 1000, 0, 1000); 
     eeta_1 = dir.make<TH1F>("eeta_1","eeta_1", 100, -5, 5); 
@@ -69,7 +70,9 @@ namespace ic {
 
 
   int  HinvWJetsPlots::PreAnalysis(){
-    std::cout << "** PreAnalysis Info for HinvWJetsPlots **" << std::endl;
+    std::cout << "----------------------------------------- " << std::endl
+	      << "** PreAnalysis Info for HinvWJetsPlots **" << std::endl
+	      << "----------------------------------------- " << std::endl;
     if (fs_) {
       std::cout << "MET Label: " << met_label_ << std::endl;
       std::cout << "MET no leptons Label: " << met_nolep_label_ << std::endl;
@@ -129,6 +132,7 @@ namespace ic {
 
     zepp_e_ = -1;
     zepp_mu_ = -1;
+    zepp_tau_ = -1;
 
     if (event->Exists("nJetsInGap")) nJetsInGap = event->Get<unsigned>("nJetsInGap");
     //else std::cerr << " WARNING ! Variable nJetsInGap not found in event ! Set to 0." << std::endl;
@@ -188,6 +192,11 @@ namespace ic {
 	lVreco = ic::reconstructWboson(muons[0],met);
 	if (n_muons_>=2) lVreco = muons[0]->vector()+muons[1]->vector();
 	zepp_mu_ = fabs(lVreco.Rapidity() - (jet1->vector().Rapidity()+jet2->vector().Rapidity())/2.);
+      }
+      if (n_taus_ > 0) {
+	lVreco = ic::reconstructWboson(taus[0],met);
+	//if (n_taus_>=2) lVreco = muons[0]->vector()+muons[1]->vector();
+	zepp_tau_ = fabs(lVreco.Rapidity() - (jet1->vector().Rapidity()+jet2->vector().Rapidity())/2.);
       }
     }
 
@@ -313,6 +322,7 @@ namespace ic {
     wjetsplots_->mt_taunu->Fill(mt_taunu_, wt_);
     wjetsplots_->zeppenfeld_enu->Fill(zepp_e_,wt_);
     wjetsplots_->zeppenfeld_munu->Fill(zepp_mu_,wt_);
+    wjetsplots_->zeppenfeld_taunu->Fill(zepp_tau_,wt_);
     wjetsplots_->ept_1->Fill(ept_1_, wt_);
     wjetsplots_->eeta_1->Fill(eeta_1_, wt_);
     wjetsplots_->ept_2->Fill(ept_2_, wt_);
