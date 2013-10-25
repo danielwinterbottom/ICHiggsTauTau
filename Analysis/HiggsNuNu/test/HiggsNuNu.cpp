@@ -84,6 +84,7 @@ int main(int argc, char* argv[]){
   bool doaltmatch;                // Do runmetuncertainties gen jet matching
   bool doetsmear;                 // Do runmetuncertainties smearing
   bool dogaus;                    // Do gaussian smearing for jets with no gen jet match
+  bool dospring10gaus;                    // Do gaussian smearing for jets with no gen jet match
   bool dojersyst;                 // Do Jet Energy Resolution Systematic Run
   bool jerbetterorworse;          // If doing Jet Energy Resolution Systematic Run, run with with better or worse (true for better, false for worse)
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
@@ -166,6 +167,7 @@ int main(int argc, char* argv[]){
     ("doaltmatch",          po::value<bool>(&doaltmatch)->default_value(false))
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
+    ("dospring10gaus",      po::value<bool>(&dospring10gaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false))
     ("doTopCR",             po::value<bool>(&doTopCR)->default_value(false))
@@ -623,6 +625,7 @@ int main(int argc, char* argv[]){
     .set_doaltmatch(doaltmatch)
     .set_doetsmear(doetsmear)
     .set_dogaus(dogaus)
+    .set_dospring10gaus(dospring10gaus)
     .set_is_data(is_data)
     .set_dojessyst(dojessyst)
     .set_dodatajessyst(dodatajessyst)

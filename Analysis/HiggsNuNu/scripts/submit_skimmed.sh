@@ -7,8 +7,8 @@
 
 #JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
 
-DOCERN=1
 OTHEROPTIONS="--doTopCR=false"
+DOCERN=0
 
 if (( "$DOCERN" == "1" )); then
     JOBSCRIPT="./scripts/submit_cern_batch_job.sh" 
@@ -31,14 +31,14 @@ PRODUCTION=Apr04
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in munu mumu #mumu
+  for CHANNEL in nunu enu munu taunu 
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
       JOBDIRPREFIX=jobs/
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
-      OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
+      OUTPUTPREFIX=lepeffoffoutput/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]

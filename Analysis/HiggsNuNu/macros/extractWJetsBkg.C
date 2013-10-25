@@ -192,7 +192,7 @@ int extractWJetsBkg(){//main
   const unsigned nCh = 4;
   std::string lChannel[nCh] = {"nunu","enu","munu","taunu"};
 
-  std::string TOPDIR = "../TABLES/";
+  std::string TOPDIR = "../spring10gausTABLES/";
   //std::string TOPDIR = "/vols/cms04/pjd12/invcmssws/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/TABLES/";
   //std::string TOPDIR = "../oldanalysisruns/080713_taunominaltightlepiddiscr/TABLES/";
   //std::string TOPDIR = "../TABLES_mjj1200/";
@@ -448,6 +448,9 @@ int extractWJetsBkg(){//main
 	  effProduct.stat = effProduct.number*sqrt(pow(eps_tau_cjv.num.stat/eps_tau_cjv.num.number,2)+pow(eps_tau.num.stat/eps_tau.num.number,2));
 	  result[iSyst] = nDataW;
 	  result[iSyst].number = nDataW.number*effProduct.number;
+	  if(iSyst==nSysts-1){
+	    std::cout<<"Tau result is: "<<result[iSyst].number<<std::endl<<"Made up of: nDataW: "<<nDataW.number<<" N_{CJVtaureco}: "<<eps_tau_cjv.num.number<<" N_{N_{noCJVnotaureq}: "<<eps_tau.num.number<<std::endl;
+	  }
 	  result[iSyst].stat = result[iSyst].number*sqrt(pow(nDataW.stat/nDataW.number,2));
 
 	  result[iSyst].syst=sqrt(pow(effProduct.stat/effProduct.number,2))*result[iSyst].number;
@@ -610,6 +613,7 @@ int extractWJetsBkg(){//main
 	    eps_VBF_C.den += lSel[iCh][Lep][EWK_WJets_munu-shiftSample];
 	    
 	    lNSdata.number = lNCdata.number * lNSMC.number / lNCMC.number;
+	    std::cout<<"lNSdata is: "<<lNSdata.number<<std::endl<<"Made up of: lNCdata: "<<lNCdata.number<<" lNSMC: "<<lNSMC.number<<" lNCMC: "<<lNCMC.number<<std::endl;
 	    lNSdata.stat = lNCdata.stat* lNSMC.number / lNCMC.number;
 	    lNSdata.syst = lNSdata.number * sqrt(pow(lNCMC.stat/lNCMC.number,2)+pow(lNSMC.stat/lNSMC.number,2));
 	    

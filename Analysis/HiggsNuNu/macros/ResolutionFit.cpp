@@ -27,9 +27,9 @@
       }
       recogenptratio->Fit("gaus");
 
-//       TCanvas *c2 = new TCanvas();
-//       recogenptratio->Draw();
-//       c2->SaveAs(("recogenptratio"+etabins[i]+"_"+ptbins[j]+".pdf").c_str());
+      //       TCanvas *c2 = new TCanvas();
+      //       recogenptratio->Draw();
+      //       c2->SaveAs(("recogenptratio"+etabins[i]+"_"+ptbins[j]+".pdf").c_str());
 
       //GET FIT RESULT
       TF1 *fitfunc=recogenptratio->GetFunction("gaus");
@@ -95,9 +95,12 @@
   file->GetObject("fsigma_Spring10_PtResolution_AK5PF_JetEta2",tf[3]);
   file->GetObject("fsigma_Spring10_PtResolution_AK5PF_JetEta3.65",tf[4]);
   
+  //FIT RESOLUTION
+  TF1 *resfunc[5];
   
   
-  //DRAW OUTPUT
+  //OUTPUT
+  TFile outfile("MCresolutions.root","recreate");
   std::string names[5]={"0<#eta<0.5","0.5<#eta<1.1","1.1<#eta<1.7","1.7<#eta<2.3","2.3<#eta<5"};
   for(int i = 0;i<netabins;i++){
     TCanvas *c1 = new TCanvas();
@@ -105,17 +108,28 @@
     leg->AddEntry(res[i],"Resolution from our W MC","lp");
     leg->AddEntry(tf[i],"Resolution from Spring10","l");
     
+    resfunc[i] = new TF1("resfunc","sqrt((([0]<0)?-1:1)*[0]*[0]/(x*x)+[1]*[1]*pow(x,[2]-1)+[3]*[3])",0.,400.);
+    res[i]->Fit(resfunc[i]);
+    res[i]->GetFunction("resfunc")->SetLineColor(4);
+    
     tf[i]->SetRange(20,400);
     res[i]->GetXaxis()->SetRangeUser(20,400);
     res[i]->SetTitle(names[i].c_str());
     res[i]->SetLineColor(4);
     res[i]->GetXaxis()->SetTitle("p_{T}/GeV");
     res[i]->GetYaxis()->SetTitle("#sigma_{MC}/p_{T}");
-
-
-    res[i]->Draw("ALP");
+    
+    
+    res[i]->Draw("AP");
     tf[i]->Draw("Same");    
     leg->Draw("Same");
     c1->SaveAs(("resforeta"+etabins[i]+".pdf").c_str());
+    res[i]->SetName(("resforeta"+etabins[i]).c_str());
+    res[i]->Write();
+    resfunc[i]->SetName(("resfuncforeta"+etabins[i]).c_str());
+    resfunc[i]->Write();
+    tf[i]->SetName(("spring10resforeta"+etabins[i]).c_str());
+    tf[i]->Write();
   }
+  outfile->Close();
 }

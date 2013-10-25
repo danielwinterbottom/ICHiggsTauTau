@@ -5,6 +5,10 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include <utility>
 #include <algorithm>
+#include "TRandom3.h"
+#include <sstream>
+#include <string>
+#include <iostream>
 
 namespace ic {
 
@@ -17,6 +21,7 @@ namespace ic {
     dojersyst_ = false;
     dodatajessyst_= false;
     dogaus_=false;
+    dospring10gaus_=false;
     doetsmear_=false;
     doaltmatch_=false;
     dojerdebug_=false;
@@ -106,14 +111,47 @@ namespace ic {
     matchednojerjetpt = dir3.make<TH1F>("matchednojerjetpt","matchednojerjetpt",10000,0.,1000.);
 
     //Jet resolution measurements
+    int npts = 70;
+    int netas = 5;
     std::string etas[5]={"0p0-0p5","0p5-1p1","1p1-1p7","1p7-2p3","2p3-5p0"};
-    std::string pts[13]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};
-    for(int i =0;i<5;i++){
-      for(int j=0;j<13;j++){
+    //    int netas=10;
+    //std::string etas[10]={"0p0-0p5","0p5-1p0","1p0-1p5","1p5-2p0","2p0-2p5","2p5-3p0","3p0-3p5","3p5-4p0","4p0-4p5","4p5-9p9"};
+    //std::string pts[13]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};
+
+    //Set pts
+    for(int i=0;i<60;i++){
+      std::ostringstream convert;
+      convert << i;
+      std::string binlow=convert.str();
+      std::ostringstream convert2;
+      convert2 << (i+1);
+      std::string binhigh=convert2.str();
+      pts[i]=(binlow+"-"+binhigh);
+    } 
+    for(int i=60;i<67;i++){
+      std::ostringstream convert;
+      convert << ((i-60)*20)+60;
+      std::string binlow=convert.str();
+      std::ostringstream convert2;
+      convert2 << ((i-59)*20)+60;
+      std::string binhigh=convert2.str();
+      pts[i]=(binlow+"-"+binhigh);
+    }
+    pts[67]="200-250";
+    pts[68]="250-300";
+    pts[69]="300-inf";
+
+    for(int i =0;i<netas;i++){
+      for(int j=0;j<npts;j++){
 	recogenjetptratio[i][j] = dir4.make<TH1F>(("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),300,0.,3.);
       }
     }
-    
+    TFile *resin=new TFile("data/MCres/MCresolutions.root","read");
+    for(int i=0;i<netas;i++){
+      resin->GetObject(("resforeta"+etas[i]).c_str(),res[i]);
+      resin->GetObject(("resfuncforeta"+etas[i]).c_str(),resfunc[i]);
+      resin->GetObject(("spring10resforeta"+etas[i]).c_str(),spring10resfunc[i]);
+    }
     return 0;
   }
 
@@ -214,57 +252,101 @@ namespace ic {
 	  int ieta=-1;
 	  double pt=oldjet.pt();
 	  double eta=oldjet.eta();
-	  if     (pt<20)           ipt=0;
-	  else if((20<=pt)&&(pt<40))   ipt=1;
-	  else if((40<=pt)&&(pt<60))   ipt=2;
-	  else if((60<=pt)&&(pt<80))   ipt=3;
-	  else if((80<=pt)&&(pt<100))  ipt=4;
-	  else if((100<=pt)&&(pt<120)) ipt=5;
-	  else if((120<=pt)&&(pt<140)) ipt=6;
-	  else if((140<=pt)&&(pt<160)) ipt=7;
-	  else if((160<=pt)&&(pt<180)) ipt=8;
-	  else if((180<=pt)&&(pt<200)) ipt=9;
-	  else if((200<=pt)&&(pt<250)) ipt=10;
-	  else if((250<=pt)&&(pt<300)) ipt=11;
-	  else if(300<=pt)         ipt=12;
-	  else std::cout<<"problem with jet pt value"<<std::endl;
-	  
-	  if     ((2.3<fabs(eta))&&(fabs(eta)<=5))   ieta=4;
-	  else if((1.7<fabs(eta))&&(fabs(eta)<=2.3)) ieta=3;
-	  else if((1.1<fabs(eta))&&(fabs(eta)<=1.7)) ieta=2;
-	  else if((0.5<fabs(eta))&&(fabs(eta)<=1.1)) ieta=1;
-	  else if((0.<fabs(eta))&&(fabs(eta)<=0.5))  ieta=0;
 
-	  recogenjetptratio[ieta][ipt]->Fill(pt/jet_genjet_pairs[index].second->pt());
+	  //GET PT BIN
+	  double binedges[70][2];
+	  for(int m=0;m<70;m++){
+	    std::string s=pts[m];
+	    std::string delimiter = "-";
+	    size_t pos = 0;
+	    std::string token;
+	    pos = s.find(delimiter);
+	    token = s.substr(0, pos);
+	    if(token=="inf"){
+	      token="999999";//SET INF BEHAVIOUR                                                                                                
+	    }
+	    binedges[m][0]=atof(token.c_str());
+	    s.erase(0, pos + delimiter.length());
+	    if(s=="inf"){
+	      s="999999";//SET INF BIN BEHAVIOUR
+	    }
+	    binedges[m][1]=atof(s.c_str());
+	  }
+	  for(int m=0;m<70;m++){
+	    if(pt>=binedges[m][0]){
+	      if(pt<binedges[m][1]){
+		ipt=m;
+		break;
+	      }
+	    }
+	  }
+	  if(ipt==-1)std::cout<<"problem with jet pt value"<<std::endl;
+	  
+// 	  if     (pt<20)           ipt=0;
+// 	  else if((20<=pt)&&(pt<40))   ipt=1;
+// 	  else if((40<=pt)&&(pt<60))   ipt=2;
+// 	  else if((60<=pt)&&(pt<80))   ipt=3;
+// 	  else if((80<=pt)&&(pt<100))  ipt=4;
+// 	  else if((100<=pt)&&(pt<120)) ipt=5;
+// 	  else if((120<=pt)&&(pt<140)) ipt=6;
+// 	  else if((140<=pt)&&(pt<160)) ipt=7;
+// 	  else if((160<=pt)&&(pt<180)) ipt=8;
+// 	  else if((180<=pt)&&(pt<200)) ipt=9;
+// 	  else if((200<=pt)&&(pt<250)) ipt=10;
+// 	  else if((250<=pt)&&(pt<300)) ipt=11;
+// 	  else if(300<=pt)         ipt=12;
+// 	  else std::cout<<"problem with jet pt value"<<std::endl;
+
+	  //GET ETA BIN
+ 	  if     ((2.3<fabs(eta))&&(fabs(eta)<=5))   ieta=4;
+ 	  else if((1.7<fabs(eta))&&(fabs(eta)<=2.3)) ieta=3;
+ 	  else if((1.1<fabs(eta))&&(fabs(eta)<=1.7)) ieta=2;
+ 	  else if((0.5<fabs(eta))&&(fabs(eta)<=1.1)) ieta=1;
+ 	  else if((0.<fabs(eta))&&(fabs(eta)<=0.5))  ieta=0;
+	  else std::cout<<"problem with jet eta value"<<std::endl;
+
+// 	  if     ((4.5<fabs(eta))&&(fabs(eta)<=9.9)) ieta=9;
+// 	  else if((4.0<fabs(eta))&&(fabs(eta)<=4.5)) ieta=8;
+// 	  else if((3.5<fabs(eta))&&(fabs(eta)<=4.0)) ieta=7;
+// 	  else if((3.0<fabs(eta))&&(fabs(eta)<=3.5)) ieta=6;
+// 	  else if((2.5<fabs(eta))&&(fabs(eta)<=3.0)) ieta=5;
+// 	  else if((2.0<fabs(eta))&&(fabs(eta)<=2.5)) ieta=4;
+// 	  else if((1.5<fabs(eta))&&(fabs(eta)<=2.0)) ieta=3;
+// 	  else if((1.0<fabs(eta))&&(fabs(eta)<=1.5)) ieta=2;
+// 	  else if((0.5<fabs(eta))&&(fabs(eta)<=1.0)) ieta=1;
+// 	  else if((0.0<fabs(eta))&&(fabs(eta)<=0.5)) ieta=0;
+	  if(ieta!=-1&&ipt!=-1){
+	    recogenjetptratio[ieta][ipt]->Fill(pt/jet_genjet_pairs[index].second->pt());
+	  }
 	}
 
 	//SMEARING
 	if(dosmear_){
 	  double JERscalefac=1.;//if no match leave jet alone
+	  double JERcencorrfac=1.;
+	  if(!dojersyst_){//doing central value
+	    if(fabs(oldjet.eta())<0.5)JERcencorrfac=1.052;
+	    else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.057;
+	    else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.096;
+	    else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.134;
+	    else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.288;
+	  }
+	  else if(dojersyst_&&jerbetterorworse_){//doing JERBETTER
+	    if(fabs(oldjet.eta())<0.5)JERcencorrfac=0.990;
+	    else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.001;
+	    else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.032;
+	    else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.042;
+	    else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.089;
+	  }
+	  else if(dojersyst_&&(!jerbetterorworse_)){//doing JERWORSE
+	    if(fabs(oldjet.eta())<0.5)JERcencorrfac=1.115;
+	    else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.114;
+	    else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.161;
+	    else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.228;
+	    else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.488;	      
+	  }
 	  if(index!=-1){//if gen jet match calculate correction factor for pt
 	    if(oldjet.pt()>50.) Smear50miss->Fill(-1.);
-	    double JERcencorrfac=1.;
-	    if(!dojersyst_){//doing central value
-	      if(fabs(oldjet.eta())<0.5)JERcencorrfac=1.052;
-	      else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.057;
-	      else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.096;
-	      else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.134;
-	      else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.288;
-	    }
-	    else if(dojersyst_&&jerbetterorworse_){//doing JERBETTER
-	      if(fabs(oldjet.eta())<0.5)JERcencorrfac=0.990;
-	      else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.001;
-	      else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.032;
-	      else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.042;
-	      else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.089;
-	    }
-	    else if(dojersyst_&&(!jerbetterorworse_)){//doing JERWORSE
-	      if(fabs(oldjet.eta())<0.5)JERcencorrfac=1.115;
-	      else if(fabs(oldjet.eta())<1.1)JERcencorrfac=1.114;
-	      else if(fabs(oldjet.eta())<1.7)JERcencorrfac=1.161;
-	      else if(fabs(oldjet.eta())<2.3)JERcencorrfac=1.228;
-	      else if(fabs(oldjet.eta())<5.0)JERcencorrfac=1.488;	      
-	    }
 	    //calculate 4 vector correction factor
 	    if(!doetsmear_){//do twiki smearing
 	      double ptcorrected = jet_genjet_pairs[index].second->pt()+JERcencorrfac*(oldjet.pt()-jet_genjet_pairs[index].second->pt());
@@ -291,6 +373,24 @@ namespace ic {
 	      Smear50miss->Fill(1.);
 	    }
 	    if(dogaus_){//Do Gaussian smearing for JERWORSE
+	      TRandom3 randomno;
+	      int etabin=-1;
+	      if(fabs(oldjet.eta())<0.5)etabin=0;
+	      else if(fabs(oldjet.eta())<1.1)etabin=1;
+	      else if(fabs(oldjet.eta())<1.7)etabin=2;
+	      else if(fabs(oldjet.eta())<2.3)etabin=3;
+	      else if(fabs(oldjet.eta())<5.0)etabin=4;
+	      //std::cout<<"etabin is: "<<etabin<<std::endl;
+	      double mcrespt=oldjet.pt();
+	      if(mcrespt<25.)mcrespt=25.;
+	      double sigmamc=(resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
+	      double spring10sigmamc=(spring10resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
+ 	      double gauscorr;
+ 	      //std::cout<<"Jet pt and eta are: "<<oldjet.pt()<<" "<<oldjet.eta()<<"Sigma MC is: "<<sigmamc<<" "<<spring10sigmamc<<" Gaus corr is: "<<gauscorr<<std::endl;
+	      if(!dospring10gaus_) gauscorr=randomno.Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
+	      else gauscorr==randomno.Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
+	      double ptcorrected=oldjet.pt()+gauscorr;
+	      JERscalefac=ptcorrected/oldjet.pt();
 	      
 	    }
 	  }

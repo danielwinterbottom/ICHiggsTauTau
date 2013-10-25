@@ -14,6 +14,9 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Math/GenVector/VectorUtil.h"
 #include "Math/Vector4Dfwd.h"
+#include "TGraphErrors.h"
+#include "TF1.h"
+
 
 namespace ic {
   
@@ -33,6 +36,7 @@ namespace ic {
     CLASS_MEMBER(JetMETModifier, std::string, met_label)
     CLASS_MEMBER(JetMETModifier, bool, dosmear)
     CLASS_MEMBER(JetMETModifier, bool, dogaus)
+    CLASS_MEMBER(JetMETModifier, bool, dospring10gaus)
     CLASS_MEMBER(JetMETModifier, bool, doetsmear)
     CLASS_MEMBER(JetMETModifier, bool, doaltmatch)
     CLASS_MEMBER(JetMETModifier, bool, dojerdebug)
@@ -61,8 +65,12 @@ namespace ic {
     TH1F* runmetjetgenjetptratio;
     TH1F* icjetgenjetptratio;
 
-    TH1F* recogenjetptratio[5][13]; //BINNED JET 
-    
+    std::string pts[70];
+    TH1F* recogenjetptratio[5][70]; //BINNED JET 
+    TGraphErrors* res[5]; 
+    TF1* resfunc[5];
+    TF1* spring10resfunc[5]; 
+	
   public:
     JetMETModifier(std::string const& name);
     virtual ~JetMETModifier();    

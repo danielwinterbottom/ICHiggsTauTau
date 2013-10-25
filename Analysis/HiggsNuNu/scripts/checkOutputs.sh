@@ -28,7 +28,7 @@ for CHANNEL in nunu taunu enu munu
   do
   for MET in 130 0
     do
-    for SYST in "" #JESUP JESDOWN
+    for SYST in "" # Skim JESUP JESDOWN
       do
       if (( "$INJOBDIR" == "0" )); then
 	  JOBDIR=jobs/$CHANNEL/MET$MET/$SYST

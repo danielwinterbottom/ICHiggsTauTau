@@ -9,8 +9,8 @@ for CHANNEL in nunu taunu enu munu
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #PUUP PUDOWN
       do
-	FOLDER=output/$CHANNEL/MET$MET/ # ./oldanalysisruns/090813_nopuidorjer/output/$CHANNEL/MET$MET/
-	PLOTDIR=TABLES/$CHANNEL/MET$MET/
+	FOLDER=gitpullcheckoutput/$CHANNEL/MET$MET/ # ./oldanalysisruns/090813_nopuidorjer/output/$CHANNEL/MET$MET/
+	PLOTDIR=gitchecknogausTABLES/$CHANNEL/MET$MET/
 	PLOTDIRQCD=TABLES/$CHANNEL/MET$MET/QCD/
 
 	if [ "$SYST" != "central" ] #if not doing central

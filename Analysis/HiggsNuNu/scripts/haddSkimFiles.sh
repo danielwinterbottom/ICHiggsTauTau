@@ -3,7 +3,8 @@
 SKIMDIR=/vols/ssd00/cms/amagnan/trigskims/Oct21/nunu/MET130/
 OUTPUTDIR=/vols/ssd00/cms/amagnan/trigskims/Oct21/nunu/MET130/
 
-FILELISTDIR=/home/hep/magnan/CMS/CMSSW_5_3_11/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/filelists/skim/Oct21/nunu/
+
+FILELISTDIR=/vols/cms04/pjd12/invcmssws/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/filelists/skim/Apr04/nunu/ #/home/hep/magnan/CMS/CMSSW_5_3_11/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/filelists/skim/Apr04/nunu/
 mkdir -p $FILELISTDIR
 
 source /vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/root/5.34.01-cms9/bin/thisroot.sh
@@ -21,7 +22,8 @@ source /vols/sl5_exp_software/cms/slc5_amd64_gcc462/lcg/root/5.34.01-cms9/bin/th
 cd $SKIMDIR
 pwd
 
-for iW in `ls`
+for iW in MET-2012A-06Aug2012-v1 MET-2012A-13Jul2012-v1 MET-2012B-13Jul2012-v1 MET-2012C-11Dec2012-v1 MET-2012C-24Aug2012-v1 MET-2012C-PromptReco-v2 MET-2012D-PromptReco-v1
+#`ls`
 #for iW in W1JetsToLNu W2JetsToLNu WJetsToLNu-v2
 #for iW in W3JetsToLNu W4JetsToLNu WJetsToLNu-v1
 #for iW in EWK-W2jminus EWK-W2jplus
