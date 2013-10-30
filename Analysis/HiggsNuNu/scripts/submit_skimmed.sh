@@ -43,7 +43,7 @@ for METCUT in 130 #0 130
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
       JOBDIRPREFIX=jobs/
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
-      OUTPUTPREFIX=20gevpuweightedoutput/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
+      OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]
