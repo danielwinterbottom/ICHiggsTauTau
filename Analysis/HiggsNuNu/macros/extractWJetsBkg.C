@@ -192,7 +192,7 @@ int extractWJetsBkg(){//main
   const unsigned nCh = 4;
   std::string lChannel[nCh] = {"nunu","enu","munu","taunu"};
 
-  std::string TOPDIR = "../spring10gausTABLES/";
+  std::string TOPDIR = "../20gevpuweightedgausTABLES/";
   //std::string TOPDIR = "/vols/cms04/pjd12/invcmssws/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/TABLES/";
   //std::string TOPDIR = "../oldanalysisruns/080713_taunominaltightlepiddiscr/TABLES/";
   //std::string TOPDIR = "../TABLES_mjj1200/";
