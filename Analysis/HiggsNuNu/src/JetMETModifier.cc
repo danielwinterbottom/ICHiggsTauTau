@@ -111,7 +111,7 @@ namespace ic {
     matchednojerjetpt = dir3.make<TH1F>("matchednojerjetpt","matchednojerjetpt",10000,0.,1000.);
 
     //Jet resolution measurements
-    int npts = 70;
+    int npts = 40;
     int netas = 5;
     std::string etas[5]={"0p0-0p5","0p5-1p1","1p1-1p7","1p7-2p3","2p3-5p0"};
     //    int netas=10;
@@ -119,27 +119,27 @@ namespace ic {
     //std::string pts[13]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};
 
     //Set pts
-    for(int i=0;i<60;i++){
+    for(int i=0;i<30;i++){
       std::ostringstream convert;
-      convert << i;
+      convert << 2*i;
       std::string binlow=convert.str();
       std::ostringstream convert2;
-      convert2 << (i+1);
+      convert2 << 2*(i+1);
       std::string binhigh=convert2.str();
       pts[i]=(binlow+"-"+binhigh);
     } 
-    for(int i=60;i<67;i++){
+    for(int i=30;i<37;i++){
       std::ostringstream convert;
-      convert << ((i-60)*20)+60;
+      convert << ((i-30)*20)+60;
       std::string binlow=convert.str();
       std::ostringstream convert2;
-      convert2 << ((i-59)*20)+60;
+      convert2 << ((i-29)*20)+60;
       std::string binhigh=convert2.str();
       pts[i]=(binlow+"-"+binhigh);
     }
-    pts[67]="200-250";
-    pts[68]="250-300";
-    pts[69]="300-inf";
+    pts[37]="200-250";
+    pts[38]="250-300";
+    pts[39]="300-inf";
 
     for(int i =0;i<netas;i++){
       for(int j=0;j<npts;j++){
@@ -160,6 +160,9 @@ namespace ic {
       return 0;
     }
     else{
+      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+      double wt_ = eventInfo->total_weight();
+
       //GET MET AND JET COLLECTIONS
       std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
       std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");//GenJet collection, note: could make this a parameter but we only have one collection at the moment in the ntuples
@@ -316,7 +319,7 @@ namespace ic {
 // 	  else if((0.5<fabs(eta))&&(fabs(eta)<=1.0)) ieta=1;
 // 	  else if((0.0<fabs(eta))&&(fabs(eta)<=0.5)) ieta=0;
 	  if(ieta!=-1&&ipt!=-1){
-	    recogenjetptratio[ieta][ipt]->Fill(pt/jet_genjet_pairs[index].second->pt());
+	    recogenjetptratio[ieta][ipt]->Fill(pt/jet_genjet_pairs[index].second->pt(),wt_);
 	  }
 	}
 
@@ -382,7 +385,7 @@ namespace ic {
 	      else if(fabs(oldjet.eta())<5.0)etabin=4;
 	      //std::cout<<"etabin is: "<<etabin<<std::endl;
 	      double mcrespt=oldjet.pt();
-	      if(mcrespt<25.)mcrespt=25.;
+	      if(mcrespt<20.)mcrespt=20.;
 	      double sigmamc=(resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
 	      double spring10sigmamc=(spring10resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
  	      double gauscorr;
