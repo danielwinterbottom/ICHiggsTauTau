@@ -21,8 +21,12 @@ do
     
     echo $mass $xs $yield >>inputinfo.txt
 
+    #GET FIRST ERROR IN CARDS
+    grep -A 1 -e "----------" $card > tmp.txt
+    firsterr=`tail -1 tmp.txt | awk '{print $1}'`
+    
     #GET ERROR INFO FROM CARDS
-    for sources in `grep -A 1000 "lumi_8TeV" $card | awk '{print $1}'`
+    for sources in `grep -A 10000 "$firsterr" $card | awk '{print $1}'`
     do
 	#CHECK SOURCE TYPE - CURRENTLY lnN and gmN DEALT WITH
 	if [ `grep "$sources" $card | awk '{print $2}'` = "lnN" ]
@@ -90,7 +94,7 @@ do
     echo ------------ >>${CARDDIR}/InterpolatedCards/vbfhinv_${newmass}_8TeV.txt 
 
     #PUT NEW ERRORS IN
-    for sources in `grep -A 1000 "lumi_8TeV" $CARDDIR/vbfhinv_125_8TeV.txt | awk '{print $1}'`
+    for sources in `grep -A 10000 "$firsterr" $CARDDIR/vbfhinv_125_8TeV.txt | awk '{print $1}'`
     do
 	if [ `grep -m 1 "" sourceuncs/$sources.txt | awk '{print $2}'` = "noeff" ]
         then
