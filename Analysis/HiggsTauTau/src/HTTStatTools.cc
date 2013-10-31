@@ -94,7 +94,7 @@ namespace ic {
 	}
 
 	std::ostream& operator<< (std::ostream &out, Process &val) {
-		out << boost::format("%-8s %-8s %-8s %-22s %-4i %-40s %-4i %-10.5g %-8i")
+		out << boost::format("%-8s %-8s %-8s %-30s %-4i %-20s %-4i %-10.5g %-8i")
 		% val.mass
 		% val.era
 		% val.channel
@@ -109,7 +109,7 @@ namespace ic {
 
 	void Process::PrintHeader(std::ostream &out) {
 		out << "---------------------------------------------------------------------------------------------------------------------" << std::endl;
-		out << boost::format("%-8s %-8s %-8s %-22s %-4i %-40s %-4i %-10.5g %-8i\n")
+		out << boost::format("%-8s %-8s %-8s %-30s %-4i %-20s %-4i %-10.5g %-8i\n")
 		% "Mass" % "Era" % "Channel" % "Category" % "ID" % "Process" % "PID" % "Rate" % "Shape";
 		out << "---------------------------------------------------------------------------------------------------------------------" << std::endl;
 	}
@@ -243,9 +243,12 @@ namespace ic {
 
 
 	double HTTSetup::GetUncertainty() {
+		// Process::PrintHeader(std::cout);
 		std::set<std::string> nuisances = this->GetNuisanceSet();
 		std::vector<double> uncert_vec;
 		for (auto & nu : nuisances) {
+			// std::cout << "--- Nuisance: " << nu << std::endl;
+			// std::cout << "--- Correlated between: " << std::endl;
 			double dx = 0;
 			for (unsigned i = 0; i < params_.size(); ++i) {
 				if (params_[i].nuisance != nu) continue;
@@ -254,7 +257,7 @@ namespace ic {
 							processes_[j].channel 	!= params_[i].channel 	||
 							processes_[j].category 	!= params_[i].category 	||
 							processes_[j].process 	!= params_[i].process) continue;
-
+					// std::cout << processes_[j] << std::endl;
 					if (ignore_nuisance_correlations_) {
 						if (params_[i].type == "lnN") {
 							double dxx = ( (params_[i].value-1.0) * processes_[j].rate );
@@ -267,6 +270,10 @@ namespace ic {
 						// Do we have the shapes?
 						if (!params_[i].shape_up || !params_[i].shape_down) {
 							std::cerr << "Warning in <HTTSetup::GetUncertainty>: Shape uncertainty histograms not loaded for nuisance " << params_[i].nuisance << std::endl;
+							continue;
+						}
+						if (params_[i].shape->Integral() == 0.) {
+							std::cerr << "Warning in <HTTSetup::GetUncertainty>: Shape uncertainty defined for empty histogram" << std::endl;
 							continue;
 						}
 						// The yield uncertainty due to a shape variation could be
@@ -313,11 +320,11 @@ namespace ic {
 					if (params_[i].type == "shape") {
 						// Do we have the shapes?
 						if (!params_[i].shape_up || !params_[i].shape_down) {
-							std::cerr << "Warning in <HTTSetup::GetUncertainty>: Shape uncertainty histograms not loaded for nuisance " << params_[i].nuisance << std::endl;
+							std::cerr << "Warning in <HTTSetup::GetShape>: Shape uncertainty histograms not loaded for nuisance " << params_[i].nuisance << std::endl;
 							continue;
 						}
 						if (params_[i].shape->Integral() == 0.) {
-							std::cerr << "Warning in <HTTSetup::GetUncertainty>: Shape uncertainty defined for empty histogram" << std::endl;
+							std::cerr << "Warning in <HTTSetup::GetShape>: Shape uncertainty defined for empty histogram" << std::endl;
 							continue;
 						}
 						for (int k = 1; k <= params_[i].shape->GetNbinsX(); ++k) {
