@@ -19,10 +19,6 @@ options.register ('release',
                   '', # default value
                   VarParsing.VarParsing.multiplicity.singleton, 
                   VarParsing.VarParsing.varType.string, "Release label")
-options.register ('channel',
-                  '', # default value
-                  VarParsing.VarParsing.multiplicity.singleton, 
-                  VarParsing.VarParsing.varType.string, "channel")
 options.register ('isTandP',
                   0, # default value
                   VarParsing.VarParsing.multiplicity.singleton, 
@@ -34,7 +30,6 @@ options.register ('isZStudy',
 options.parseArguments()
 isData      = options.isData
 release     = options.release
-channel     = options.channel
 isEmbedded  = options.isEmbedded
 isTandP     = options.isTandP
 isZStudy    = options.isZStudy
@@ -126,6 +121,30 @@ addJetCollection(process,
   doJetID      = True,
   jetIdLabel   = "ak5"
   )
+addJetCollection(process,
+  cms.InputTag('ak5PFJets','','RECO'),
+  'AK5','PFRECO',
+  doJTA=True,
+  doBTagging=True,
+  jetCorrLabel=('AK5PF', ['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] if isData else ['L1FastJet','L2Relative', 'L3Absolute']),
+  doType1MET=False,
+  doL1Cleaning=False,
+  doL1Counters=False,
+  genJetCollection=cms.InputTag("ak5GenJetsNoNuBSM"),
+  doJetID      = True,
+  jetIdLabel   = "ak5"
+  )
+
+
+process.impactParameterTagInfosAK5PFRECO.primaryVertex = cms.InputTag("offlinePrimaryVertices","","RECO")
+process.jetTracksAssociatorAtVertexAK5PFRECO.tracks = cms.InputTag("generalTracks","","RECO")
+process.jetTracksAssociatorAtVertexAK5PFRECO.pvSrc = cms.InputTag("offlinePrimaryVertices","","RECO")
+process.secondaryVertexTagInfosAK5PFRECO.beamSpotTag = cms.InputTag("offlineBeamSpot","","RECO")
+#process.secondaryVertexTagInfosAK5PFRECO.extSVCollection = cms.InputTag("secondaryVertices","","RECO")
+process.patJetCorrFactorsAK5PFRECO.primaryVertices = cms.InputTag("offlinePrimaryVertices","","RECO")
+process.patJetCorrFactorsAK5PFRECO.rho = cms.InputTag("kt6PFJets","rho","RECO")
+
+
 switchJetCollection(process,
   cms.InputTag('ak5CaloJets'),
   doJTA=False,
@@ -138,6 +157,7 @@ switchJetCollection(process,
   )
 process.patJets.embedGenPartonMatch = cms.bool(False)
 process.patJetsAK5PF.embedGenPartonMatch = cms.bool(False)
+process.patJetsAK5PFRECO.embedGenPartonMatch = cms.bool(False)
 
 ################################################################
 ### Set up METs
@@ -168,6 +188,7 @@ process.kt6PFJetsForLeptons.Rho_EtaMax = cms.double(2.5)
 ################################################################
 process.selectedPatTaus.cut = 'pt > 18. & abs(eta) < 2.6 & tauID("decayModeFinding") > 0.5'
 process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
+process.selectedPatJetsAK5PFRECO.cut = 'pt > 15. & abs(eta) < 100.'
 
 
 ################################################################
@@ -230,21 +251,21 @@ process.hltPFTauSequence = cms.Sequence(
 
 process.icL1ExtraMETProducer = cms.EDProducer('ICL1ExtraEtMissProducer',
   branchName = cms.untracked.string("l1extraMET"),
-  inputLabel = cms.InputTag("l1extraParticles","MET","EmbeddedRECO"),
+  inputLabel = cms.InputTag("l1extraParticles","MET","RECO"),
   minPt = cms.double(0.0),
   maxEta = cms.double(999.0)
   )
 
 process.icL1ExtraMuonsProducer = cms.EDProducer('ICL1ExtraMuonProducer',
   branchName = cms.untracked.string("l1extraMuons"),
-  inputLabel = cms.InputTag("l1extraParticles","","EmbeddedRECO"),
+  inputLabel = cms.InputTag("l1extraParticles","","RECO"),
   minPt = cms.double(6.0),
   maxEta = cms.double(2.2)
   )
 
 process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICL1ExtraEmParticleProducer',
   branchName = cms.untracked.string("l1extraEmIsolated"),
-  inputLabel = cms.InputTag("l1extraParticles","Isolated","EmbeddedRECO"),
+  inputLabel = cms.InputTag("l1extraParticles","Isolated","RECO"),
   minPt = cms.double(11.0),
   maxEta = cms.double(2.2)
   )
@@ -470,6 +491,11 @@ process.patJetsAK5PF.discriminatorSources = cms.VInputTag(
         cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"), 
         cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF"), 
        )
+process.patJetsAK5PFRECO.discriminatorSources = cms.VInputTag(
+        cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PFRECO"), 
+        cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PFRECO"), 
+        cms.InputTag("combinedSecondaryVertexBJetTagsAK5PFRECO"), 
+       )
 if (release == '42X'):
   # process.PFTau = process.recoTauClassicHPSSequence
   from RecoJets.JetProducers.kt4PFJets_cfi import kt4PFJets
@@ -480,8 +506,8 @@ if (release == '42X'):
       )
   process.patJetCorrFactorsAK5PF.rho = cms.InputTag("kt6PFJets", "rho")
 
-#if isEmbedded:
-#  process.jetTracksAssociatorAtVertexAK5PF.tracks = cms.InputTag("tmfTracks")
+if isEmbedded:
+  process.jetTracksAssociatorAtVertexAK5PF.tracks = cms.InputTag("tmfTracks")
   
 process.btaggingAK5PF = cms.Sequence(
   process.impactParameterTagInfosAK5PF
@@ -489,6 +515,13 @@ process.btaggingAK5PF = cms.Sequence(
   +process.simpleSecondaryVertexHighEffBJetTagsAK5PF
   +process.simpleSecondaryVertexHighPurBJetTagsAK5PF
   +process.combinedSecondaryVertexBJetTagsAK5PF
+  )
+process.btaggingAK5PFRECO = cms.Sequence(
+  process.impactParameterTagInfosAK5PFRECO
+  +process.secondaryVertexTagInfosAK5PFRECO
+  +process.simpleSecondaryVertexHighEffBJetTagsAK5PFRECO
+  +process.simpleSecondaryVertexHighPurBJetTagsAK5PFRECO
+  +process.combinedSecondaryVertexBJetTagsAK5PFRECO
   )
 
 ################################################################
@@ -513,7 +546,7 @@ if not isData:
 ################################################################
 ### General Config
 ################################################################
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 50000
 process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger','HLTConfigData' )
 process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLTConfigData')
 
@@ -531,7 +564,7 @@ if (release == '42X'):
 if (release == '53X'):
   if isData:
     process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/rechit.root')
+      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/pfembedded_53X.root')
     )
     process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
   else:
@@ -539,7 +572,7 @@ if (release == '53X'):
       "PoolSource",
       fileNames = cms.untracked.vstring(
         #'file:pickevents.root'
-        'file:/Volumes/Storage/samples/rechit-dy-mt.root'
+        'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
         )
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
@@ -576,6 +609,13 @@ process.icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     inputLabel = cms.InputTag("selectedPatJetsAK5PF"),
     branchName = cms.untracked.string("pfJetsPFlow"),
     StoreTrackIds = cms.bool(False)
+    )
+
+process.icPFRECOJetProducer = cms.EDProducer('ICPFJetProducer',
+    inputLabel = cms.InputTag("selectedPatJetsAK5PFRECO"),
+    branchName = cms.untracked.string("pfJetsReco"),
+    StoreTrackIds = cms.bool(False),
+    AddPileupID = cms.bool(False)
     )
 
 process.icPfMetProducer = cms.EDProducer('ICMetProducer',
@@ -698,43 +738,17 @@ process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
     leptonRhoLabel = cms.string("kt6PFJetsForLeptons"),
     vertexLabel = cms.string('goodOfflinePrimaryVertices')
     )
-process.load('TauAnalysis/MCEmbeddingTools/embeddingKineReweight_cff')
-if channel == 'mt':
-  print 'using weight file for channel mt'
-  process.embeddingKineReweightRECembedding.inputFileName = cms.FileInPath('TauAnalysis/MCEmbeddingTools/data/embeddingKineReweight_recEmbedding_mutau.root')
-if channel == 'et':
-  print 'using weight file for channel et'
-  process.embeddingKineReweightRECembedding.inputFileName = cms.FileInPath('TauAnalysis/MCEmbeddingTools/data/embeddingKineReweight_recEmbedding_etau.root')
-if channel == 'em':
-  print 'using weight file for channel em'
-  process.embeddingKineReweightRECembedding.inputFileName = cms.FileInPath('TauAnalysis/MCEmbeddingTools/data/embeddingKineReweight_recEmbedding_emu.root')
-
-process.icEventInfoProducer.weights = cms.PSet(
-    tauspinner                          = cms.InputTag("TauSpinnerReco","TauSpinnerWT"),
-    zmm_eff                             = cms.InputTag("ZmumuEvtSelEffCorrWeightProducer","weight","EmbeddedRECO"),
-    kin_weight1                         = cms.InputTag("embeddingKineReweightRECembedding","genTau2PtVsGenTau1Pt"),
-    kin_weight2                         = cms.InputTag("embeddingKineReweightRECembedding","genTau2EtaVsGenTau1Eta"),
-    kin_weight3                         = cms.InputTag("embeddingKineReweightRECembedding","genDiTauMassVsGenDiTauPt")
-   # tauspinner                          = cms.InputTag("","","")
-    )
-
-
 
 process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer')
 
 process.icSequence = cms.Sequence()
 
-process.icEmbeddedSequence = cms.Sequence(
-  process.icEmbeddedGenParticleProducer
-  +process.embeddingKineReweightSequenceRECembedding
-  )
-
-if isEmbedded: process.icSequence += process.icEmbeddedSequence
 
 process.icSequence += cms.Sequence(
   process.icElectronProducer
   +process.icMuonProducer
   +process.icPFJetProducer
+  +process.icPFRECOJetProducer
   +process.icPfMetProducer
   +process.icPfMVAMetProducer
   +process.icPfAllPairsMVAMetProducer
@@ -756,6 +770,11 @@ process.icMCSequence = cms.Sequence(
   +process.icTauGenParticleProducer
   )
 if not isData: process.icSequence += process.icMCSequence
+
+process.icEmbeddedSequence = cms.Sequence(
+  process.icEmbeddedGenParticleProducer
+  )
+if isEmbedded: process.icSequence += process.icEmbeddedSequence
 
 if release == '53X': process.icSequence += process.icSoftLeptonSequence
 
@@ -1096,6 +1115,7 @@ process.icSequence += process.icEventProducer
 
 process.extra42XSequence = cms.Sequence()
 if release == '42X':
+  process.ak5PFJets.doAreaFastjet = cms.bool(True)
   process.extra42XSequence += (process.ak5PFJets
                               +process.kt6PFJets
                               +process.recoTauClassicHPSSequence)
