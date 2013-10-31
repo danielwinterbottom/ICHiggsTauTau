@@ -642,7 +642,7 @@ namespace ic {//namespace
       double SF = 0;
       double SFerrPlus = 0;
       double SFerrMinus = 0;
-      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrPlus>>SFerrMinus;
+      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
       //protect against blank line at the end of the file
       if (pTmin > 1) aVector.push_back(SF);
       if(lInput.eof()){
@@ -674,7 +674,7 @@ namespace ic {//namespace
       double SF = 0;
       double SFerrPlus = 0;
       double SFerrMinus = 0;
-      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrPlus>>SFerrMinus;
+      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
       //protect against blank line at the end of the file
       if(upordown){
 	if (pTmin > 1) aVector.push_back(SF+SFerrPlus);
