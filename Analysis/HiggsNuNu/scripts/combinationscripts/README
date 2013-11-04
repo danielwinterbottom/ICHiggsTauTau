@@ -1,9 +1,0 @@
-Invisible Higgs Combination Tools:
-
-Making interpolated VBF cards:
-To make cards at mass points other than those where we have MC copy the combination scripts directory to a release of CombinedLimit and run the newcardmaker.sh script after making sure that CARDDIR points to your uninterpolated cards, and XSDATAFILE points to the signal process cross-section file.
-IMPORTANT
-The script assumes that all errors are either lnN or gmN if you have other uncertainties please contact me (pdunne@cern.ch) to have them added
-
-Getting the impact of the errors:
-As for making interpolated cards except errors can be of any form
