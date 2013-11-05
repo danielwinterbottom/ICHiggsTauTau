@@ -28,6 +28,9 @@ namespace ic {//namespace
     do_idiso_err_       = false;
     do_idiso_errupordown_ = true;
     do_idiso_errmuore_ = true;
+    do_lumixs_weights_ = false;
+    input_params_ = "filelists/Apr04/ParamsApr04.dat";
+    sample_name_= "test";
     input_met_ = "metNoMuons";
     hist_trigSF_METL1 = 0;
     hist_trigSF_METHLT = 0;
@@ -60,6 +63,60 @@ namespace ic {//namespace
     tightmuweight  = dir.make<TH1F>("tightmuweight","tightmuweight",2000,0.,2.);
     vetoeleweight = dir.make<TH1F>("vetoeleweight","vetoeleweight",2000,0.,2.);
     vetomuweight  = dir.make<TH1F>("vetomuweight","vetomuweight",2000,0.,2.);
+
+    if(do_lumixs_weights_){
+      //Get Sample name file
+      std::string suffix=".root";
+      std::size_t found = sample_name_.find(suffix);
+      if(found==std::string::npos){
+	lumixsweight=1;
+	std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
+      }
+      else{
+	sample_name_.erase(found,5);
+	std::cout << "Sample Name: "<<sample_name_<<std::endl;
+	
+	//Get lumi xs and events from params file
+	std::ifstream params(input_params_.c_str());
+	if(params.is_open()){
+	  std::string line;
+	  double xs=-1;
+	  double lumi=-1;
+	  double events=-1;
+	  while(getline(params,line)){
+	    std::size_t isfound =line.find(sample_name_);
+	    if(isfound!=std::string::npos){
+	      if(line.find("XS")!=std::string::npos){
+		std::size_t colonpos = line.find(':');
+		line.erase(0,colonpos+1);
+		xs=atof(line.c_str());
+		std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+	      }
+	      if(line.find("EVT")!=std::string::npos){
+		std::size_t colonpos = line.find(':');
+		line.erase(0,colonpos+1);
+		events=atof(line.c_str());
+		std::cout<<"EVT is: "<<events<<std::endl;
+	      }
+	    }
+	    if(line.find("LUMI_DATA:")!=std::string::npos){
+		std::size_t colonpos = line.find(':');
+		line.erase(0,colonpos+1);
+		lumi=atof(line.c_str());
+		std::cout<<"LUMI is: "<<lumi<<std::endl;
+	    }
+	  }
+	  if((lumi!=-1)&&(xs!=-1)&&(events!=-1)){
+	    lumixsweight=lumi*xs/events;
+	  }
+	  else std::cout<<"Failed to get lumi, xs and evt from params"<<std::endl;
+	}
+	else{
+	  lumixsweight=1;
+	  std::cout<<"Couldn't open params file"<<std::endl;
+	}
+      }
+    }
 
     if (do_w_soup_) {
       std::cout << "Making W Soup:" << std::endl;
@@ -97,6 +154,8 @@ namespace ic {//namespace
 
     if (save_weights_){
     // do weights even if not applied, to fill histo with weight for comparison !
+    
+
     //get trigger scale factor histograms from file
     triggerSF_ = new TFile("data/scale_factors/DataMCWeight_53X_v1.root");
     hist_trigSF_METL1 = (TH1F*)gDirectory->Get("METL1");
@@ -233,6 +292,10 @@ namespace ic {//namespace
 
     if (save_weights_){
 
+    if(do_lumixs_weights_){
+      if (do_trg_weights_) eventInfo->set_weight("lumixs",lumixsweight);
+      else eventInfo->set_weight("!lumixs",lumixsweight);
+    }
     //double weight = 1.0;
 
  //    if (do_btag_weight_) {

@@ -51,7 +51,6 @@ namespace po = boost::program_options;
 using std::string;
 using std::vector;
 using namespace ic;
-
 int main(int argc, char* argv[]){
   
   // Configurable parameters
@@ -103,6 +102,8 @@ int main(int argc, char* argv[]){
   bool doidisoerr;                // Do lepton ID-iso efficiency correction error
   bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
   bool doidisoerrmuore;           // Do lepton ID-iso efficiency correction error for muons or electrons
+  bool dolumixsweight;            // Do lumi*xs/evt weight online
+  string inputparams;               // Params file to use for info on lumi xs and evt
 
   double mjj_cut;                 // mjjcut
 
@@ -160,6 +161,8 @@ int main(int argc, char* argv[]){
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
+    ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
+    ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Apr04/ParamsApr04.dat"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
@@ -841,8 +844,11 @@ int main(int argc, char* argv[]){
     .set_do_trg_weights(false)
     .set_trg_applied_in_mc(false)
     .set_do_idiso_tight_weights(false)
-    .set_fs(fs)
-    .set_do_idiso_veto_weights(false);
+    .set_do_idiso_veto_weights(false)
+    .set_do_lumixs_weights(dolumixsweight)
+    .set_input_params(inputparams)
+    .set_sample_name(output_name)
+    .set_fs(fs);
   
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
