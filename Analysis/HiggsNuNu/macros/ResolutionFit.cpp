@@ -109,6 +109,7 @@
     }
   }
 
+
   //GET SPRING10 RESOLUTION
   //   TFile file("spring10ptresolutions10etabins.root","read");
   //   TF1 *tf[10];
@@ -130,6 +131,14 @@
   file->GetObject("fsigma_Spring10_PtResolution_AK5PF_JetEta1.4",tf[2]);
   file->GetObject("fsigma_Spring10_PtResolution_AK5PF_JetEta2",tf[3]);
   file->GetObject("fsigma_Spring10_PtResolution_AK5PF_JetEta3.65",tf[4]);
+
+//   TFile file("autumn13ptresolutions.root","read");
+//   TF1 *tf[5];
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta0.25",tf[0]);
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta0.8",tf[1]);
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta1.4",tf[2]);
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta2",tf[3]);
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta3.65",tf[4]);
   
   //FIT RESOLUTION
   TF1 *resfunc[5];
