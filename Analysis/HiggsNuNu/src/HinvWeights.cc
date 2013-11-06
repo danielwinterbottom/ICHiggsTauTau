@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "TMath.h"
 #include "TSystem.h"
 #include "TFile.h"
@@ -75,46 +76,21 @@ namespace ic {//namespace
       else{
 	sample_name_.erase(found,5);
 	std::cout << "Sample Name: "<<sample_name_<<std::endl;
-	
+
 	//Get lumi xs and events from params file
-	std::ifstream params(input_params_.c_str());
-	if(params.is_open()){
-	  std::string line;
-	  double xs=-1;
-	  double lumi=-1;
-	  double events=-1;
-	  while(getline(params,line)){
-	    std::size_t isfound =line.find(sample_name_);
-	    if(isfound!=std::string::npos){
-	      if(line.find("XS")!=std::string::npos){
-		std::size_t colonpos = line.find(':');
-		line.erase(0,colonpos+1);
-		xs=atof(line.c_str());
-		std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
-	      }
-	      if(line.find("EVT")!=std::string::npos){
-		std::size_t colonpos = line.find(':');
-		line.erase(0,colonpos+1);
-		events=atof(line.c_str());
-		std::cout<<"EVT is: "<<events<<std::endl;
-	      }
-	    }
-	    if(line.find("LUMI_DATA:")!=std::string::npos){
-		std::size_t colonpos = line.find(':');
-		line.erase(0,colonpos+1);
-		lumi=atof(line.c_str());
-		std::cout<<"LUMI is: "<<lumi<<std::endl;
-	    }
-	  }
-	  if((lumi!=-1)&&(xs!=-1)&&(events!=-1)){
-	    lumixsweight=lumi*xs/events;
-	  }
-	  else std::cout<<"Failed to get lumi, xs and evt from params"<<std::endl;
-	}
-	else{
-	  lumixsweight=1;
-	  std::cout<<"Couldn't open params file"<<std::endl;
-	}
+	SimpleParamParser parser;
+	std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
+	parser.ParseFile(input_params_);
+
+	double xs=parser.GetParam<double>("XS_"+sample_name_);
+	double events=parser.GetParam<double>("EVT_"+sample_name_);
+	double lumi=parser.GetParam<double>("LUMI_DATA");
+
+	std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+	std::cout<<"EVT is: "<<events<<std::endl;
+	std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
+
+	lumixsweight=xs*lumi/events;
       }
     }
 
