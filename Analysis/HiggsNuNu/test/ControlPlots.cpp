@@ -167,6 +167,7 @@ int main(int argc, char* argv[]){
   bool plot_wjets_comp;              // Separate Wjets components in plots
 
   bool addOverflows;                 //add two bins to histo for underflows and overflows.
+  bool dolumixsweight;               //dolumixsweights in controlplots
 
   // Options to manually shift backgrounds and draw uncertainty bands
   bool shift_backgrounds = false;
@@ -217,6 +218,7 @@ int main(int argc, char* argv[]){
     ("plot_data_qcd",       po::value<bool>(&plot_data_qcd)->default_value(false))
     ("plot_wjets_comp",     po::value<bool>(&plot_wjets_comp)->default_value(true))
     ("addOverflows",        po::value<bool>(&addOverflows)->default_value(false))
+    ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
     ("draw_band_on_stack",  po::value<bool>(&draw_band_on_stack)->default_value(false))
     ("qcd_shift",           po::value<double>(&qcd_shift)->default_value(1.0))
@@ -254,7 +256,7 @@ int main(int argc, char* argv[]){
   unsigned draw_signal_factor = parser.GetParam<unsigned>("DRAW_SIGNAL_FACTOR");
   string year_label = parser.GetParam<string>("YEAR_LABEL");
   double data_lumi = parser.GetParam<double>("LUMI_DATA");
-  double data_embedded_lumi = parser.GetParam<double>("LUMI_DATA_EMBEDDED");
+  //double data_embedded_lumi = parser.GetParam<double>("LUMI_DATA_EMBEDDED");
   string lumi_data_label = parser.GetParam<string>("LUMI_DATA_LABEL");
 
 
@@ -445,13 +447,17 @@ int main(int argc, char* argv[]){
 	  cout << "Warning: Plot " << nm << " does not have a weights structure" << endl;
 	  plots[nm].hist_ptr()->Sumw2();
 	}
-	string lookup = f;
-	double sample_events = parser.GetParam<double>("EVT_"+lookup);
-	double sample_xs = parser.GetParam<double>("XS_"+lookup);
-	double sample_lumi = sample_events / sample_xs;
-	double sample_scale = 1;
-	if (sample_xs > 0) sample_scale = data_lumi / sample_lumi;
-	plots[nm].hist_ptr()->Scale(sample_scale);
+
+	if(dolumixsweight){
+	  string lookup = f;
+	  double sample_events = parser.GetParam<double>("EVT_"+lookup);
+	  double sample_xs = parser.GetParam<double>("XS_"+lookup);
+	  double sample_lumi = sample_events / sample_xs;
+	  double sample_scale = 1;
+	  if (sample_xs > 0) sample_scale = data_lumi / sample_lumi;
+	  std::cout<<"Doing lumixsweight: "<<sample_scale<<std::endl;
+	  plots[nm].hist_ptr()->Scale(sample_scale);
+	}
 	plots[nm].hist_ptr()->Rebin(rebin);
 	
 	if (addOverflows) plots[nm].AddOverflows();

@@ -1,7 +1,7 @@
 {
   //SCRIPT RUNS ON A HADD OF MC FILES
   //OPEN SIGNAL MC FILE
-  TFile *f = new TFile("../40binspuweightedMCforresmeasurment.root");//../output/nunu/MET130/MC_VBF_HToZZTo4Nu_M-120.root");
+  TFile *f = new TFile("40binspuweightedMCforresmeasurment.root");//../output/nunu/MET130/MC_VBF_HToZZTo4Nu_M-120.root");
   
   
   //SET UP LOOP OVER PT AND ETA BINS

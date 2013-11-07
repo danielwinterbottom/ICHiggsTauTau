@@ -30,6 +30,7 @@ namespace ic {//namespace
     do_idiso_errupordown_ = true;
     do_idiso_errmuore_ = true;
     do_lumixs_weights_ = false;
+    save_lumixs_weights_ = true;
     input_params_ = "filelists/Apr04/ParamsApr04.dat";
     sample_name_= "test";
     input_met_ = "metNoMuons";
@@ -81,16 +82,20 @@ namespace ic {//namespace
 	SimpleParamParser parser;
 	std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
 	parser.ParseFile(input_params_);
-
+	std::cout<<"parsed"<<std::endl;
 	double xs=parser.GetParam<double>("XS_"+sample_name_);
+	std::cout<<"got xs"<<std::endl;
 	double events=parser.GetParam<double>("EVT_"+sample_name_);
+	std::cout<<"got events"<<std::endl;
 	double lumi=parser.GetParam<double>("LUMI_DATA");
+	std::cout<<"got lumi"<<std::endl;
 
 	std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
 	std::cout<<"EVT is: "<<events<<std::endl;
 	std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
 
 	lumixsweight=xs*lumi/events;
+	std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
       }
     }
 
@@ -266,13 +271,18 @@ namespace ic {//namespace
 
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
+    if(do_lumixs_weights_){
+      //std::cout<<"weight before lumixs: "<<eventInfo->total_weight()<<std::endl;
+      //std::cout<<"intended lumixsweight: "<<lumixsweight<<std::endl;
+      eventInfo->set_weight("lumixs",lumixsweight);
+      //std::cout<<"weight after lumixs: "<<eventInfo->total_weight()<<std::endl;
+      //std::cout<<"lumixsweight info "<<eventInfo->weight_is_enabled("lumixs") << " " << eventInfo->weight_defined("lumixs") << " " << eventInfo->weight("lumixs") << std::endl;
+    }
+    //else eventInfo->set_weight("!lumixs",lumixsweight);
+    
     if (save_weights_){
 
-    if(do_lumixs_weights_){
-      if (do_trg_weights_) eventInfo->set_weight("lumixs",lumixsweight);
-      else eventInfo->set_weight("!lumixs",lumixsweight);
-    }
-    //double weight = 1.0;
+          //double weight = 1.0;
 
  //    if (do_btag_weight_) {
 //       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
@@ -448,6 +458,7 @@ namespace ic {//namespace
     if (do_idiso_veto_weights_) eventInfo->set_weight("idisoVeto",ele_veto_weight*mu_veto_weight);
     else eventInfo->set_weight("!idisoVeto",ele_veto_weight*mu_veto_weight);
 
+    
 
 
     }
@@ -530,7 +541,7 @@ namespace ic {//namespace
     }
 
     if (!save_weights_) event->Add("NoParton",zeroParton);
-
+    //std::cout<<"Final weight: "<<eventInfo->total_weight()<<std::endl;
     return 0;
   }
 

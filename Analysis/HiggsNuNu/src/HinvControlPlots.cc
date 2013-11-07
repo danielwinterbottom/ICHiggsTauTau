@@ -192,7 +192,7 @@ namespace ic {
     EventInfo * eventInfoNonConst = event->GetPtr<EventInfo>("eventInfo");
 
     wt_ = eventInfo->total_weight();
-
+    
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
 
     Met const* met = event->GetPtr<Met>(met_label_);

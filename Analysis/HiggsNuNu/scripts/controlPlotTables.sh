@@ -2,6 +2,7 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
+DOLUMIXSWEIGHT=true #should be true if controlplots is to take care of lumi*xs/events weight
 
 for CHANNEL in nunu taunu enu munu
   do
@@ -64,7 +65,9 @@ for CHANNEL in nunu taunu enu munu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
+
  
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR \
@@ -76,6 +79,7 @@ for CHANNEL in nunu taunu enu munu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -88,6 +92,7 @@ for CHANNEL in nunu taunu enu munu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ###### dphijj
@@ -102,6 +107,7 @@ for CHANNEL in nunu taunu enu munu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -115,6 +121,7 @@ for CHANNEL in nunu taunu enu munu
     --norm_bins=false \
     --plot_qcd=true \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -128,6 +135,7 @@ for CHANNEL in nunu taunu enu munu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -141,6 +149,7 @@ for CHANNEL in nunu taunu enu munu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
     done
