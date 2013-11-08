@@ -455,7 +455,7 @@ int main(int argc, char* argv[]){
 	  double sample_lumi = sample_events / sample_xs;
 	  double sample_scale = 1;
 	  if (sample_xs > 0) sample_scale = data_lumi / sample_lumi;
-	  std::cout<<"Doing lumixsweight: "<<sample_scale<<std::endl;
+	  //std::cout<<"Doing lumixsweight: "<<sample_scale<<std::endl;
 	  plots[nm].hist_ptr()->Scale(sample_scale);
 	}
 	plots[nm].hist_ptr()->Rebin(rebin);
