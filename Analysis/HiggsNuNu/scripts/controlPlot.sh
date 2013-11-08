@@ -1,6 +1,7 @@
 #!/bin/sh
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
+DOLUMIXSWEIGHT=false #True if controlplots should do lumixs weight, or false if it is already done in higgsnunu
 
 for CHANNEL in mumu #enu munu 
   do
@@ -67,6 +68,7 @@ for CHANNEL in mumu #enu munu
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### n_vtx
@@ -86,6 +88,7 @@ fi
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### jpt_1
@@ -98,6 +101,7 @@ fi
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### jeta_1
@@ -110,6 +114,7 @@ fi
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### jpt_2
@@ -122,6 +127,7 @@ fi
     --rebin=40 \
     --norm_bins=false --verbose=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### jeta_2
@@ -134,6 +140,7 @@ fi
     --rebin=5 \
     --norm_bins=false --verbose=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### mjj
@@ -146,6 +153,7 @@ fi
     --rebin=100 \
     --norm_bins=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### detajj
@@ -158,6 +166,7 @@ fi
     --rebin=2 \
     --norm_bins=false \
     --log_y=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### dphijj
@@ -178,6 +187,7 @@ fi
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### drjj
@@ -190,6 +200,7 @@ fi
     --rebin=2 \
     --norm_bins=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### met
@@ -202,6 +213,7 @@ fi
     --rebin=10 \
     --norm_bins=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### metNoMuons
@@ -214,6 +226,7 @@ fi
     --rebin=10 \
     --norm_bins=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### n_taus
@@ -225,6 +238,7 @@ fi
     --y_axis_min=0.01 --extra_pad=2 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --plot_qcd=false --paramfile=$PARAMS
 
     done
