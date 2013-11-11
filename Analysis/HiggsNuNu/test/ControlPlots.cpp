@@ -165,6 +165,7 @@ int main(int argc, char* argv[]){
   bool plot_qcd;                     // Include QCD in plots
   bool plot_data_qcd;                // Include QCD from data in plots
   bool plot_wjets_comp;              // Separate Wjets components in plots
+  bool use_embedded_data;            // use embedded data instead of data
 
   bool addOverflows;                 //add two bins to histo for underflows and overflows.
   bool dolumixsweight;               //dolumixsweights in controlplots
@@ -217,6 +218,7 @@ int main(int argc, char* argv[]){
     ("plot_qcd",            po::value<bool>(&plot_qcd)->default_value(true))
     ("plot_data_qcd",       po::value<bool>(&plot_data_qcd)->default_value(false))
     ("plot_wjets_comp",     po::value<bool>(&plot_wjets_comp)->default_value(true))
+    ("use_embedded_data",   po::value<bool>(&use_embedded_data)->default_value(false))
     ("addOverflows",        po::value<bool>(&addOverflows)->default_value(false))
     ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
@@ -244,6 +246,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "plot_qcd" 		% plot_qcd;
   std::cout << boost::format(param_fmt) % "plot_data_qcd" 	% plot_data_qcd;
   std::cout << boost::format(param_fmt) % "plot_wjets_comp" 	% plot_wjets_comp;
+  std::cout << boost::format(param_fmt) % "use_embedded_data" 	% use_embedded_data ;
 
 
   // Parse the parameter file
@@ -256,23 +259,28 @@ int main(int argc, char* argv[]){
   unsigned draw_signal_factor = parser.GetParam<unsigned>("DRAW_SIGNAL_FACTOR");
   string year_label = parser.GetParam<string>("YEAR_LABEL");
   double data_lumi = parser.GetParam<double>("LUMI_DATA");
-  //double data_embedded_lumi = parser.GetParam<double>("LUMI_DATA_EMBEDDED");
+  double data_embedded_lumi = 9964.0;//parser.GetParam<double>("LUMI_DATA_EMBEDDED");
   string lumi_data_label = parser.GetParam<string>("LUMI_DATA_LABEL");
 
 
   //List of input files
   vector<string> files;
   //files.push_back("Data_MET-2012A-13Jul2012-v1_0_795305fb");
-  files.push_back("Data_MET-2012A-13Jul2012-v1");
-  files.push_back("Data_MET-2012A-06Aug2012-v1");
-  files.push_back("Data_MET-2012B-13Jul2012-v1");
-  files.push_back("Data_MET-2012C-24Aug2012-v1");
-  files.push_back("Data_MET-2012C-11Dec2012-v1"); 
-  files.push_back("Data_MET-2012C-PromptReco-v2");
-  files.push_back("Data_MET-2012D-PromptReco-v1");
-  //files.push_back("Data_MET-2012D-PromptReco-v1_7_269fb");
-  //files.push_back("Data_MET-2012D-PromptReco-v1_7_193fb");
-  if (plot_data_qcd) files.push_back("Data_MET0to120");
+  if (use_embedded_data) {
+    files.push_back("DataEmbedded_METembedded-all");
+  }
+  else {
+    files.push_back("Data_MET-2012A-13Jul2012-v1");
+    files.push_back("Data_MET-2012A-06Aug2012-v1");
+    files.push_back("Data_MET-2012B-13Jul2012-v1");
+    files.push_back("Data_MET-2012C-24Aug2012-v1");
+    files.push_back("Data_MET-2012C-11Dec2012-v1"); 
+    files.push_back("Data_MET-2012C-PromptReco-v2");
+    files.push_back("Data_MET-2012D-PromptReco-v1");
+    //files.push_back("Data_MET-2012D-PromptReco-v1_7_269fb");
+    //files.push_back("Data_MET-2012D-PromptReco-v1_7_193fb");
+    if (plot_data_qcd) files.push_back("Data_MET0to120");
+  }
   files.push_back("MC_QCD-Pt-30to50-pythia6");
   files.push_back("MC_QCD-Pt-50to80-pythia6");
   files.push_back("MC_QCD-Pt-80to120-pythia6");
@@ -359,6 +367,7 @@ int main(int argc, char* argv[]){
   selections.push_back("DPhiSIGNAL_CJVpass");
   selections.push_back("DPhiQCD_CJVpass");
   selections.push_back("MtZepp");
+  selections.push_back("VBF");
   vector<string> latex;
   latex.push_back("HLTMetClean");
   latex.push_back("LeptonVeto");
@@ -378,6 +387,7 @@ int main(int argc, char* argv[]){
   latex.push_back("SIG CJVpass");
   latex.push_back("QCD CJVpass");
   latex.push_back("MtZepp");
+  latex.push_back("VBF");
 
   vector<string> selectionsdir = selections;
 
@@ -455,9 +465,11 @@ int main(int argc, char* argv[]){
 	  double sample_lumi = sample_events / sample_xs;
 	  double sample_scale = 1;
 	  if (sample_xs > 0) sample_scale = data_lumi / sample_lumi;
+	  if (use_embedded_data) sample_scale = data_lumi / data_embedded_lumi;
 	  //std::cout<<"Doing lumixsweight: "<<sample_scale<<std::endl;
 	  plots[nm].hist_ptr()->Scale(sample_scale);
 	}
+
 	plots[nm].hist_ptr()->Rebin(rebin);
 	
 	if (addOverflows) plots[nm].AddOverflows();
