@@ -9,6 +9,7 @@ XS_Data_MET-2012C-PromptReco-v2:-1.0
 XS_Data_MET-2012D-PromptReco-v1:-1.0
 XS_Data_MET-2012D-PromptReco-v1_7_269fb:-1.0
 XS_Data_MET0to120:0.0236239639
+XS_DataEmbedded_METembedded-all:-1.0
 # DY is 3503.7 * 1.00
 #XS_DYJetsToLL:3503.7
 XS_MC_TTJets:234
@@ -99,6 +100,7 @@ EVT_Data_MET-2012C-PromptReco-v2:1.0
 EVT_Data_MET-2012D-PromptReco-v1:1.0
 EVT_Data_MET-2012D-PromptReco-v1_7_269fb:1.0
 EVT_Data_MET0to120:19619.0
+EVT_DataEmbedded_METembedded-all:1.0
 EVT_MC_TTJets:6923750.0
 EVT_MC_TT-v1:28150723
 EVT_MC_TT-v2:28150723
