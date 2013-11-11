@@ -453,7 +453,7 @@ int extractWJetsBkg(){//main
 	  }
 	  result_nocjv[iSyst] = nDataW;
 	  result_nocjv[iSyst].number = nDataW.number/eps_tau.eff();
-	  result_nocjv[iSyst].stat = result_nocjv[iSyst].number*sqrt(pow(nDataW.stat/nDataW.number,2);
+	  result_nocjv[iSyst].stat = result_nocjv[iSyst].number*sqrt(pow(nDataW.stat/nDataW.number,2));
 	  result_nocjv[iSyst].syst = result_nocjv[iSyst].number*sqrt(pow(eps_tau.error()/eps_tau.eff(),2));
 	  result_nocjv[iSyst].tauidSyst = 0.08*result_nocjv[iSyst].number;
 	  
