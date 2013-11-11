@@ -504,7 +504,7 @@ int main(int argc, char* argv[]){
     .set_max(999);
 
   //sel muons
-  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");   
+  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>
     ("SelMuonPtEtaFilter")
     .set_input_label("selMuons").set_predicate(bind(MinPtMaxEta, _1, muon_pt, muon_eta) &&
@@ -1296,7 +1296,7 @@ int main(int argc, char* argv[]){
 
      ////analysis.AddModule(&runStats);
     
-     if (is_data) {
+     if (is_data && !is_embedded ) {
        //FIXME: do MetFilters also on MC, but not saved right now in MC...
        analysis.AddModule(&metFilters);
        analysis.AddModule(&metLaserFilters);
@@ -1456,13 +1456,7 @@ int main(int argc, char* argv[]){
        
      if (channel == channel::munu || channel == channel::mumu){
        analysis.AddModule(&metNoMuonFilter);
-     }
-     //else if (channel == channel::enu){
-     //analysis.AddModule(&metNoElectronFilter);
-     // }
-     //else if (channel == channel::emu){
-     //analysis.AddModule(&metNoENoMuFilter);
-     //}
+      }
      else {
        analysis.AddModule(&metCut);
      }
