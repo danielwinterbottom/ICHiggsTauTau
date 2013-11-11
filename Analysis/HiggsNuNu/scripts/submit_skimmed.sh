@@ -8,7 +8,7 @@
 #JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
 
 OTHEROPTIONS="--doTopCR=false"
-DOCERN=0
+DOCERN=1
 
 EXECUTABLE=HiggsNuNu
 #EXECUTABLE=TauEmbedClosure
@@ -36,12 +36,12 @@ PRODUCTION=Apr04
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in nunu enu munu taunu 
+  for CHANNEL in nunu #enu munu taunu 
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-      JOBDIRPREFIX=jobs/
+      JOBDIRPREFIX=jobs_tauEmbed/
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
       OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
@@ -142,7 +142,7 @@ for METCUT in 130 #0 130
 	
       done
 
-: '
+' :
       for FILELIST in `ls filelists/skim/Oct21/nunu/METembedded*`
 	do
 	#continue
