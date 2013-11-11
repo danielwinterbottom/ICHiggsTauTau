@@ -8,10 +8,10 @@ for CHANNEL in nunu #taunu
   for MET in 130
     do
 
-	FOLDER=./output/$CHANNEL/MET$MET/
-	PLOTDIR=PLOTS/$CHANNEL/MET$MET/
-	PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
-	#PLOTDIRDATAQCD=PLOTS/$CHANNEL/MET$MET/DATAQCD/
+	FOLDER=./output_tauEmbed/$CHANNEL/MET$MET/
+	PLOTDIR=PLOTS_tauEmbed/$CHANNEL/MET$MET/
+	PLOTDIRQCD=PLOTS_tauEmbed/$CHANNEL/MET$MET/QCD/
+	#PLOTDIRDATAQCD=PLOTS_tauEmbed/$CHANNEL/MET$MET/DATAQCD/
 
 	mkdir -p $PLOTDIR
 	mkdir -p $PLOTDIRQCD
@@ -32,80 +32,17 @@ for CHANNEL in nunu #taunu
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
     --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
-    --plot_name="jCSV_1"  --x_axis_label="Jet 1 discriminant" \
+    --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
+    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=400 \
     --y_axis_min=0.1 --extra_pad=100 \
-    --rebin=10 \
-    --plot_wjets_comp=false \
+    --rebin=20 \
+    --use_embedded_data=true \
+    --plot_wjets_comp=true \
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
-    --addOverflows=false \
+    --addOverflows=true \
     --paramfile=$PARAMS
-
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
-    --plot_name="jCSV_2"  --x_axis_label="Jet 2 discriminant" \
-    --y_axis_min=0.1 --extra_pad=100 \
-    --rebin=10 \
-    --plot_wjets_comp=false \
-    --norm_bins=false \
-    --plot_qcd=false \
-    --log_y=true \
-    --addOverflows=false \
-    --paramfile=$PARAMS
-
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
-    --plot_name="jCSV_3"  --x_axis_label="Jet 3 discriminant" \
-    --y_axis_min=0.1 --extra_pad=100 \
-    --rebin=10 \
-    --plot_wjets_comp=false \
-    --norm_bins=false \
-    --plot_qcd=false \
-    --log_y=true \
-    --addOverflows=false \
-    --paramfile=$PARAMS
-
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
-    --plot_name="jCSV_4"  --x_axis_label="Jet 4 discriminant" \
-    --y_axis_min=0.1 --extra_pad=100 \
-    --rebin=10 \
-    --plot_wjets_comp=false \
-    --norm_bins=false \
-    --plot_qcd=false \
-    --log_y=true \
-    --addOverflows=false \
-    --paramfile=$PARAMS
-
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR  \
-    --blind=$BLIND  --x_blind_min=0 --x_blind_max=1. \
-    --plot_name="jCSV_allJets"  --x_axis_label="CSV discriminant" \
-    --y_axis_min=0.1 --extra_pad=100 \
-    --rebin=10 \
-    --plot_wjets_comp=false \
-    --norm_bins=false \
-    --plot_qcd=false \
-    --log_y=true \
-    --addOverflows=false \
-    --paramfile=$PARAMS
-
-./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
-    --folder=$FOLDER --plot_dir=$PLOTDIR \
-    --plot_name="n_jets"  --x_axis_label="Number of jets (p_{T}^{i>2}>30 GeV)" \
-    --blind=$BLIND \
-    --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=20 \
-    --y_axis_min=0.01 --extra_pad=1000 \
-    --rebin=1 \
-    --norm_bins=false --verbose=false \
-    --plot_qcd=false \
-    --log_y=true \
-    --paramfile=$PARAMS
- 
 
   done
 done
@@ -127,3 +64,4 @@ done
 #    --plot_name="taupt_1"  --x_axis_label="p_{T}(#tau) (GeV)" \
 #    --plot_name="mt_taunu"  --x_axis_label="m_{T}(#tau#nu) (GeV)" \
 #    --plot_name="taueta_1"  --x_axis_label="#eta(#tau) (GeV)" \
+#    --plot_name="jpt_1"  --x_axis_label="Leading Jet p_{T} [GeV]" \
