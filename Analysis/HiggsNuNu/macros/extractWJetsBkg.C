@@ -34,6 +34,12 @@ struct events {
   std::pair<double,double> puSyst;
   double puUp;
   double puDown;
+  std::pair<double,double> eleeffSyst;
+  double eleeffUp;
+  double eleeffDown;
+  std::pair<double,double> mueffSyst;
+  double mueffUp;
+  double mueffDown;
 
   double error() const{
     return sqrt(pow(stat,2)+pow(syst,2));
@@ -44,9 +50,10 @@ struct events {
 				    -sqrt(pow(stat,2)+pow(totalSyst().second,2)));
   }
   
+  //NEEDS UPDATING TO ADD LEPEFFSYST
   std::pair<double,double> totalSyst() const{
-    return std::pair<double,double>(sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.first,2)+pow(jesSyst.first,2)+pow(puSyst.first,2)),
-				    -sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.second,2)+pow(jesSyst.second,2)+pow(puSyst.second,2)));
+    return std::pair<double,double>(sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.first,2)+pow(jesSyst.first,2)+pow(puSyst.first,2)+pow(eleeffSyst.first,2)+pow(mueffSyst.first,2)),
+				    -sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.second,2)+pow(jesSyst.second,2)+pow(puSyst.second,2)+pow(eleeffSyst.second,2)+pow(mueffSyst.second,2)));
   }
 
   double systSym() const {
@@ -136,13 +143,15 @@ int extractWJetsBkg(){//main
   std::string TOPDIR = "../TABLES/";
   bool doTaus = true;
   bool docrosschecktau=false;
-  bool dojes = true;
-  bool dojer = true;
+  bool dojes = false;
+  bool dojer = false;
+  bool doeleerr = false;
+  bool domuerr = false;
   bool doWeights = false;
   bool verbose = false;
   bool dolatex = false;
   bool domcest = false;
-
+  
   //SETUP
   std::vector<std::string> lSelVecSignal;
   lSelVecSignal.push_back("HLTMetClean");
@@ -201,10 +210,10 @@ int extractWJetsBkg(){//main
   std::string lSuffixName[nWeights] = {"Central","_pu","_pu_trig","_pu_trig_idiso"};
   std::string lSuffix[nWeights] = {"","_pu","_pu_trig","_pu_trig_idiso"};
 
-  const unsigned nSysts = 7;
-  std::string SYSTNAME[nSysts]= {"JESUP","JESDOWN","JERBETTER","JERWORSE","PUUP","PUDOWN","CENTRAL"};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
-  std::string SYST[nSysts]= {"JESUP","JESDOWN","JERBETTER","JERWORSE","","",""};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
-  std::string lSuffixSyst[nSysts] = {"","","","","_puUp","_puDown",""};
+  const unsigned nSysts = 11;
+  std::string SYSTNAME[nSysts]= {"ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","PUUP","PUDOWN","CENTRAL"};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
+  std::string SYST[nSysts]= {"JESUP","JESDOWN","JERBETTER","JERWORSE","ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","","",""};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
+  std::string lSuffixSyst[nSysts] = {"","","","","","","","","_puUp","_puDown",""};
 
   const unsigned nCh = 4;
   std::string lChannel[nCh] = {"nunu","enu","munu","taunu"};
@@ -216,9 +225,9 @@ int extractWJetsBkg(){//main
 
   for (unsigned iW(0); iW<(doWeights?nWeights:1); ++iW){//LOOP OVER WEIGHTS
     std::cout << "Processing weight: " << lSuffixName[iW] << std::endl;
-
+    
     for (unsigned iMET(0); iMET<1; ++iMET){//loop on MET values
-
+      
       std::cout << "  Processing MET cut: " << MET[iMET] <<" GeV"<< std::endl;
       
       //create variables to store syst numbers
@@ -234,19 +243,27 @@ int extractWJetsBkg(){//main
 	  fileExists[iCh][iSyst] = true;
 	}
       }
-
+      
       //VARIABLES TO STORE EVENT NUMBERS
       events systevents[2][nCh-1][nSysts][4];//[iqcd][ich][isyst][lnsmc,lncmc,lnsdata,lncdata]
       events result_nocjv[nSysts];
       events result[nSysts];
-
-      int isyststart=0;
-      if(!dojes&&!dojer){
-	isyststart=nSysts-3;
-      }
-      for (unsigned iSyst(isyststart); iSyst<nSysts; ++iSyst){//loop over different systematics if not doing jes and jet automatically only does central
+      
+      for (unsigned iSyst(0); iSyst<nSysts; ++iSyst){//loop over different systematics if not doing jes and jet automatically only does central
+	if(!dojes){
+	  if(iSyst==0||iSyst==1)continue;
+	}
+	if(!dojer){
+	  if(iSyst==2||iSyst==3)continue;
+	}
+	if(!doeleerr){
+	  if(iSyst==4||iSyst==5)continue;
+	}
+	if(!domuerr){
+	  if(iSyst==6||iSyst==7)continue;
+	}
 	std::cout<< "    Processing systematic: " <<SYSTNAME[iSyst]<<std::endl;
-
+	
 	std::ostringstream lFolder;
 	lFolder << "MET" << MET[iMET] << "/" << SYST[iSyst] << "/";
 	
@@ -316,10 +333,10 @@ int extractWJetsBkg(){//main
 	
 	//std::cout << "    TABLES have been read in." << std::endl;
 	
-		for (unsigned iCh(0); iCh< (doTaus ? 4 : 3); ++iCh){//loop on channel
+	for (unsigned iCh(0); iCh< (doTaus ? 4 : 3); ++iCh){//loop on channel
 	  if (!fileExists[iCh][iSyst]) continue;
 	  //std::cout << "        Processing channel: " << lChannel[iCh] << std::endl;
-	
+	  
 	  //print Wjets components to WJetsTable
 	  std::ostringstream lName;
 	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/WJetsTable" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
@@ -331,7 +348,7 @@ int extractWJetsBkg(){//main
 		   << "\\hline" << std::endl
 		   << "Step & QCD W$\\rightarrow e\\nu$ & EWK W$\\rightarrow e\\nu$ & QCD W$\\rightarrow\\mu\\nu$ & EWK W$\\rightarrow\\mu\\nu$ & QCD W$\\rightarrow\\tau\\nu$ & EWK W$\\rightarrow\\tau\\nu$  \\\\" << std::endl
 		   << "\\hline" << std::endl;
-
+	  
 	  for (unsigned iS(5); iS<nSteps; ++iS){//loop on steps
 	    
 	    lOutfile << latex[iS];
@@ -409,7 +426,7 @@ int extractWJetsBkg(){//main
 	if (doTaus){
 	  if (!fileExists[3][iSyst] || !fileExists[0][iSyst]) continue;
 	  if(verbose)std::cout << "      Extracting tau results:" << std::endl;
-
+	  
 	  events nData = lSel[3][DPhiSIGNAL_noCJV][Data];
 	  events nBkg = lSel[3][DPhiSIGNAL_noCJV][Top];
 	  nBkg += lSel[3][DPhiSIGNAL_noCJV][ZJets];
@@ -644,23 +661,25 @@ int extractWJetsBkg(){//main
 	    
 	    
 	    //SYSTEMATIC INFORMATION
-	    if(dojes&&dojer){
-	      //save JES and JER numbers
-	      systevents[iQCD][iCh][iSyst][0]=lNSMC;
-	      systevents[iQCD][iCh][iSyst][1]=lNCMC;
-	      systevents[iQCD][iCh][iSyst][2]=lNSdata;
-	      systevents[iQCD][iCh][iSyst][3]=lNCdata;
-	      if(iSyst==nSysts-1){//get differences
-		
-		for(int a=0;a<6;a++){//loop over jes up and down
-		  if(verbose){
+	    systevents[iQCD][iCh][iSyst][0]=lNSMC;
+	    systevents[iQCD][iCh][iSyst][1]=lNCMC;
+	    systevents[iQCD][iCh][iSyst][2]=lNSdata;
+	    systevents[iQCD][iCh][iSyst][3]=lNCdata;
+	    if(iSyst==nSysts-1){//get differences
+	      
+	      for(int a=0;a<10;a++){//loop over jes up and down
+		if(verbose){
 		  if(a==0)std::cout<<"JESUP"<<std::endl;
 		  if(a==1)std::cout<<"JESDOWN"<<std::endl;
 		  if(a==2)std::cout<<"JERBETTER"<<std::endl;
 		  if(a==3)std::cout<<"JERWORSE"<<std::endl;
-		  if(a==4)std::cout<<"PUUP"<<std::endl;
-		  if(a==5)std::cout<<"PUDOWN"<<std::endl;
-		  }
+		  if(a==4)std::cout<<"ELEEFFUP"<<std::endl;
+		  if(a==5)std::cout<<"ELEEFFDOWN"<<std::endl;
+		  if(a==6)std::cout<<"MUEFFUP"<<std::endl;
+		  if(a==7)std::cout<<"MUEFFDOWN"<<std::endl;
+		  if(a==8)std::cout<<"PUUP"<<std::endl;
+		  if(a==9)std::cout<<"PUDOWN"<<std::endl;
+		}
 		  for(int b=0;b<4;b++){//loop over lns/cmc/data to get differences and percentage differences
 		    systdiff[iQCD][iCh][a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][nSysts-1][b].number);
 		    systperc[iQCD][iCh][a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][nSysts-1][b].number)*100/systevents[iQCD][iCh][nSysts-1][b].number;
@@ -674,11 +693,15 @@ int extractWJetsBkg(){//main
 		  double maxjesdownshift=std::min(std::min(systdiff[iQCD][iCh][0][b],0.),std::min(systdiff[iQCD][iCh][1][b],0.));
 		  double maxjerupshift=std::max(std::max(systdiff[iQCD][iCh][2][b],0.),std::max(systdiff[iQCD][iCh][3][b],0.));
 		  double maxjerdownshift=std::min(std::min(systdiff[iQCD][iCh][2][b],0.),std::min(systdiff[iQCD][iCh][3][b],0.));
-		  double maxpuupshift=std::max(std::max(systdiff[iQCD][iCh][4][b],0.),std::max(systdiff[iQCD][iCh][5][b],0.));
-		  double maxpudownshift=std::min(std::min(systdiff[iQCD][iCh][4][b],0.),std::min(systdiff[iQCD][iCh][5][b],0.));
+		  double maxeleeffupshift=std::max(std::max(systdiff[iQCD][iCh][4][b],0.),std::max(systdiff[iQCD][iCh][5][b],0.));
+		  double maxeleeffdownshift=std::min(std::min(systdiff[iQCD][iCh][4][b],0.),std::min(systdiff[iQCD][iCh][5][b],0.));
+		  double maxmueffupshift=std::max(std::max(systdiff[iQCD][iCh][6][b],0.),std::max(systdiff[iQCD][iCh][7][b],0.));
+		  double maxmueffdownshift=std::min(std::min(systdiff[iQCD][iCh][6][b],0.),std::min(systdiff[iQCD][iCh][7][b],0.));
+		  double maxpuupshift=std::max(std::max(systdiff[iQCD][iCh][8][b],0.),std::max(systdiff[iQCD][iCh][9][b],0.));
+		  double maxpudownshift=std::min(std::min(systdiff[iQCD][iCh][8][b],0.),std::min(systdiff[iQCD][iCh][9][b],0.));
 		  //add max jesup/downshift and jerup/downshift in quadrature
-		  totalsystupshift[iQCD][iCh][b] = sqrt(maxjesupshift*maxjesupshift+maxjerupshift*maxjerupshift+maxpuupshift*maxpuupshift);
-		  totalsystdownshift[iQCD][iCh][b] = -1*sqrt(maxjesdownshift*maxjesdownshift+maxjerdownshift*maxjerdownshift+maxpudownshift*maxpudownshift);
+		  totalsystupshift[iQCD][iCh][b] = sqrt(maxjesupshift*maxjesupshift+maxjerupshift*maxjerupshift+maxpuupshift*maxpuupshift+maxeleeffupshift*maxeleeffupshift+maxmueffupshift*maxmueffupshift);
+		  totalsystdownshift[iQCD][iCh][b] = -1*sqrt(maxjesdownshift*maxjesdownshift+maxjerdownshift*maxjerdownshift+maxpudownshift*maxpudownshift+maxeleeffdownshift*maxeleeffdownshift+maxmueffdownshift*maxmueffdownshift);
 		  totalsystupperc[iQCD][iCh][b]=totalsystupshift[iQCD][iCh][b]*100/systevents[iQCD][iCh][nSysts-1][b].number;
 		  totalsystdownperc[iQCD][iCh][b]=totalsystdownshift[iQCD][iCh][b]*100/systevents[iQCD][iCh][nSysts-1][b].number;
 		}
@@ -687,10 +710,15 @@ int extractWJetsBkg(){//main
 	      lNSdata.jesDown=systdiff[iQCD][iCh][1][2];
 	      lNSdata.jerBetter=systdiff[iQCD][iCh][2][2];
 	      lNSdata.jerWorse=systdiff[iQCD][iCh][3][2];
-	      lNSdata.puUp=systdiff[iQCD][iCh][4][2];
-	      lNSdata.puDown=systdiff[iQCD][iCh][5][2];
+	      lNSdata.eleeffUp=systdiff[iQCD][iCh][4][2];
+	      lNSdata.eleeffDown=systdiff[iQCD][iCh][5][2];
+	      lNSdata.mueffUp=systdiff[iQCD][iCh][6][2];
+	      lNSdata.mueffDown=systdiff[iQCD][iCh][7][2];
+	      lNSdata.puUp=systdiff[iQCD][iCh][8][2];
+	      lNSdata.puDown=systdiff[iQCD][iCh][9][2];
 
-	    }
+	      
+	      //}
 	    
 	    //TOTAL SUMMARY TABLE WITH TOTAL SYST ERRORS
 	    std::ostringstream lName;
@@ -758,7 +786,11 @@ int extractWJetsBkg(){//main
 	      if(iCh==2)std::cout << "      munu result = ";
 	      if(!dolatex){
 		std::cout<<std::setprecision(3)<<lNSdata.number <<" \u00b1 " << lNSdata.stat <<"(stat.) \u00b1 "<<lNSdata.syst<<"(MC stat.) ";
-		if(dojes&&dojer)std::cout<<showpos<<lNSdata.jesUp<<"(JES up) "<<lNSdata.jesDown<<"(JES down) "<<lNSdata.jerBetter<<"(JER better) "<<lNSdata.jerWorse<<"(JER worse) "<<lNSdata.puUp<<"(PU up) "<<lNSdata.puDown<<"(PU down) "<<noshowpos;
+		if(dojes)std::cout<<showpos<<lNSdata.jesUp<<"(JES up) "<<lNSdata.jesDown<<"(JES down) "<<noshowpos;
+		if(dojer)std::cout<<showpos<<lNSdata.jerBetter<<"(JER better) "<<lNSdata.jerWorse<<"(JER worse) "<<noshowpos;
+		if(doeleerr)std::cout<<showpos<<lNSdata.eleeffUp<<"(ELEEFF up) "<<lNSdata.eleeffDown<<"(ELEEFF down) "<<noshowpos;
+		if(domuerr)std::cout<<showpos<<lNSdata.mueffUp<<"(MUEFF up) "<<lNSdata.mueffDown<<"(MUEFF down) "<<noshowpos;
+		std::cout<<showpos<<lNSdata.puUp<<"(PU up) "<<lNSdata.puDown<<"(PU down) "<<noshowpos;
 		if(domcest){
 		std::cout<< " MC: " << lNSMC << std::endl;
 		}
@@ -823,15 +855,15 @@ int extractWJetsBkg(){//main
 		     << systperc[0][2][3][iSample] << "\\% & "
 		     << systperc[1][2][3][iSample] << "\\% \\\\" << std::endl;
 	    lOutfile << "PUUP"  << " & "
-		     << systperc[0][1][4][iSample] << "\\% & "
-		     << systperc[1][1][4][iSample] << "\\% & "
-		     << systperc[0][2][4][iSample] << "\\% & "
-		     << systperc[1][2][4][iSample] << "\\% \\\\" << std::endl;
+		     << systperc[0][1][8][iSample] << "\\% & "
+		     << systperc[1][1][8][iSample] << "\\% & "
+		     << systperc[0][2][8][iSample] << "\\% & "
+		     << systperc[1][2][8][iSample] << "\\% \\\\" << std::endl;
 	    lOutfile << "PUDOWN"  << " & " 
-		     << systperc[0][1][5][iSample] << "\\% & "
-		     << systperc[1][1][5][iSample] << "\\% & "
-		     << systperc[0][2][5][iSample] << "\\% & "
-		     << systperc[1][2][5][iSample] << "\\% \\\\" << std::endl;
+		     << systperc[0][1][9][iSample] << "\\% & "
+		     << systperc[1][1][9][iSample] << "\\% & "
+		     << systperc[0][2][9][iSample] << "\\% & "
+		     << systperc[1][2][9][iSample] << "\\% \\\\" << std::endl;
 	    lOutfile << noshowpos;
 	    lOutfile << "\\hline" << std::endl
 		     << "\\end{tabular}" << std::endl; 
@@ -851,18 +883,31 @@ int extractWJetsBkg(){//main
     double jesDown = result_nocjv[1].number - result_nocjv[nSysts-1].number;
     double jerBetter = result_nocjv[2].number - result_nocjv[nSysts-1].number;
     double jerWorse = result_nocjv[3].number - result_nocjv[nSysts-1].number;
-    double puUp = result_nocjv[4].number - result_nocjv[nSysts-1].number;
-    double puDown = result_nocjv[5].number - result_nocjv[nSysts-1].number;
+    double eleeffUp = result_nocjv[4].number - result_nocjv[nSysts-1].number;
+    double eleeffDown = result_nocjv[5].number - result_nocjv[nSysts-1].number;
+    double mueffUp = result_nocjv[6].number - result_nocjv[nSysts-1].number;
+    double mueffDown = result_nocjv[7].number - result_nocjv[nSysts-1].number;
+    double puUp = result_nocjv[8].number - result_nocjv[nSysts-1].number;
+    double puDown = result_nocjv[9].number - result_nocjv[nSysts-1].number;
+    
     result_nocjv[nSysts-1].jesUp = jesUp;
     result_nocjv[nSysts-1].jesDown = jesDown;
     result_nocjv[nSysts-1].jerBetter = jerBetter;
     result_nocjv[nSysts-1].jerWorse = jerWorse;
+    result_nocjv[nSysts-1].eleeffUp = eleeffUp;
+    result_nocjv[nSysts-1].eleeffDown = eleeffDown;
+    result_nocjv[nSysts-1].mueffUp = mueffUp;
+    result_nocjv[nSysts-1].mueffDown = mueffDown;
     result_nocjv[nSysts-1].puUp = puUp;
     result_nocjv[nSysts-1].puDown = puDown;
     result_nocjv[nSysts-1].jerSyst.first = std::max(std::max(jerBetter,0.),std::max(jerWorse,0.));
     result_nocjv[nSysts-1].jerSyst.second = std::min(std::min(jerBetter,0.),std::min(jerWorse,0.));
     result_nocjv[nSysts-1].jesSyst.first = std::max(std::max(jesUp,0.),std::max(jesDown,0.));
     result_nocjv[nSysts-1].jesSyst.second = std::min(std::min(jesUp,0.),std::min(jesDown,0.));
+    result_nocjv[nSysts-1].eleeffSyst.first = std::max(std::max(eleeffUp,0.),std::max(eleeffDown,0.));
+    result_nocjv[nSysts-1].eleeffSyst.second = std::min(std::min(eleeffUp,0.),std::min(eleeffDown,0.));    
+    result_nocjv[nSysts-1].mueffSyst.first = std::max(std::max(mueffUp,0.),std::max(mueffDown,0.));
+    result_nocjv[nSysts-1].mueffSyst.second = std::min(std::min(mueffUp,0.),std::min(mueffDown,0.));    
     result_nocjv[nSysts-1].puSyst.first = std::max(std::max(puUp,0.),std::max(puDown,0.));
     result_nocjv[nSysts-1].puSyst.second = std::min(std::min(puUp,0.),std::min(puDown,0.));    
 
@@ -883,7 +928,11 @@ int extractWJetsBkg(){//main
     if(!dolatex){
       std::cout<<"      No CJV result";
       std::cout<<" = "<<std::setprecision(3)<<result_nocjv[nSysts-1].number <<" \u00b1 " << result_nocjv[nSysts-1].stat <<"(stat.) \u00b1 "<<result_nocjv[nSysts-1].syst<<"(MC stat.) ";
-      if(dojes&&dojer)std::cout<<showpos<<result_nocjv[nSysts-1].jesUp<<"(JES up) "<<result_nocjv[nSysts-1].jesDown<<"(JES down) "<<result_nocjv[nSysts-1].jerBetter<<"(JER better) "<<result_nocjv[nSysts-1].jerWorse<<"(JER worse) "<<result_nocjv[nSysts-1].puUp<<"(PU up) "<<result_nocjv[nSysts-1].puDown<<"(PU down) "<<noshowpos;
+      if(dojes)std::cout<<showpos<<result_nocjv[nSysts-1].jesUp<<"(JES up) "<<result_nocjv[nSysts-1].jesDown<<"(JES down) "<<noshowpos;
+      if(dojer)std::cout<<showpos<<result_nocjv[nSysts-1].jerBetter<<"(JER better) "<<result_nocjv[nSysts-1].jerWorse<<"(JER worse) "<<noshowpos;
+      if(doeleerr)std::cout<<showpos<<result_nocjv[nSysts-1].eleeffUp<<"(ELEEFF up) "<<result_nocjv[nSysts-1].eleeffDown<<"(ELEEFF down) "<<noshowpos;
+      if(domuerr)std::cout<<showpos<<result_nocjv[nSysts-1].mueffUp<<"(MUEFF up) "<<result_nocjv[nSysts-1].mueffDown<<"(MUEFF down) "<<noshowpos;
+      std::cout<<showpos<<result_nocjv[nSysts-1].puUp<<"(PU up) "<<result_nocjv[nSysts-1].puDown<<"(PU down) "<<noshowpos;
       std::cout<<std::endl;
     }
     else{
@@ -918,18 +967,30 @@ int extractWJetsBkg(){//main
     jesDown = result[1].number - result[nSysts-1].number;
     jerBetter = result[2].number - result[nSysts-1].number;
     jerWorse = result[3].number - result[nSysts-1].number;
-    puUp = result[4].number - result[nSysts-1].number;
-    puDown = result[5].number - result[nSysts-1].number;
+    eleeffUp = result[4].number - result[nSysts-1].number;
+    eleeffDown = result[5].number - result[nSysts-1].number;
+    mueffUp = result[6].number - result[nSysts-1].number;
+    mueffDown = result[7].number - result[nSysts-1].number;
+    puUp = result[8].number - result[nSysts-1].number;
+    puDown = result[9].number - result[nSysts-1].number;
     result[nSysts-1].jesUp = jesUp;
     result[nSysts-1].jesDown = jesDown;
     result[nSysts-1].jerBetter = jerBetter;
     result[nSysts-1].jerWorse = jerWorse;
+    result[nSysts-1].eleeffUp = eleeffUp;
+    result[nSysts-1].eleeffDown = eleeffDown;
+    result[nSysts-1].mueffUp = mueffUp;
+    result[nSysts-1].mueffDown = mueffDown;
     result[nSysts-1].puUp = puUp;
     result[nSysts-1].puDown = puDown;
     result[nSysts-1].jerSyst.first = std::max(std::max(jerBetter,0.),std::max(jerWorse,0.));
     result[nSysts-1].jerSyst.second = std::min(std::min(jerBetter,0.),std::min(jerWorse,0.));
     result[nSysts-1].jesSyst.first = std::max(std::max(jesUp,0.),std::max(jesDown,0.));
     result[nSysts-1].jesSyst.second = std::min(std::min(jesUp,0.),std::min(jesDown,0.));
+    result[nSysts-1].eleeffSyst.first = std::max(std::max(eleeffUp,0.),std::max(eleeffDown,0.));
+    result[nSysts-1].eleeffSyst.second = std::min(std::min(eleeffUp,0.),std::min(eleeffDown,0.));    
+    result[nSysts-1].mueffSyst.first = std::max(std::max(mueffUp,0.),std::max(mueffDown,0.));
+    result[nSysts-1].mueffSyst.second = std::min(std::min(mueffUp,0.),std::min(mueffDown,0.));    
     result[nSysts-1].puSyst.first = std::max(std::max(puUp,0.),std::max(puDown,0.));
     result[nSysts-1].puSyst.second = std::min(std::min(puUp,0.),std::min(puDown,0.));    
 
@@ -939,7 +1000,11 @@ int extractWJetsBkg(){//main
     if(!dolatex){
       std::cout<<"      CJV Pass";
       std::cout<<" result = "<<std::setprecision(3)<<result[nSysts-1].number <<" \u00b1 " << result[nSysts-1].stat <<"(stat.) \u00b1 "<<result[nSysts-1].syst<<"(MC stat.) ";
-      if(dojes&&dojer)std::cout<<showpos<<result[nSysts-1].jesUp<<"(JES up) "<<result[nSysts-1].jesDown<<"(JES down) "<<result[nSysts-1].jerBetter<<"(JER better) "<<result[nSysts-1].jerWorse<<"(JER worse) "<<result[nSysts-1].puUp<<"(PU up) "<<result[nSysts-1].puDown<<"(PU down) "<<noshowpos;
+      if(dojes)std::cout<<showpos<<result[nSysts-1].jesUp<<"(JES up) "<<result[nSysts-1].jesDown<<"(JES down) "<<noshowpos;
+      if(dojer)std::cout<<showpos<<result[nSysts-1].jerBetter<<"(JER better) "<<result[nSysts-1].jerWorse<<"(JER worse) "<<noshowpos;
+      if(doeleerr)std::cout<<showpos<<result[nSysts-1].eleeffUp<<"(ELEEFF up) "<<result[nSysts-1].eleeffDown<<"(ELEEFF down) "<<noshowpos;
+      if(domuerr)std::cout<<showpos<<result[nSysts-1].mueffUp<<"(MUEFF up) "<<result[nSysts-1].mueffDown<<"(MUEFF down) "<<noshowpos;
+      std::cout<<showpos<<result[nSysts-1].puUp<<"(PU up) "<<result[nSysts-1].puDown<<"(PU down) "<<noshowpos;
       std::cout<<std::endl;
     
     }
@@ -970,12 +1035,12 @@ int extractWJetsBkg(){//main
 	      << std::endl;
     }
 
-
     
+   
   }//loop on MET values
-  
+    
   }//loop on weights
-  
+    
   return 0;
 }//main
   
