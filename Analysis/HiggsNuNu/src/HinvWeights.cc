@@ -56,6 +56,10 @@ namespace ic {//namespace
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
     std::cout << "Do ID & iso weights for Tight leptons ?: \t\t" << do_idiso_tight_weights_ << std::endl;
     std::cout << "Do ID & iso weights for veto leptons ?: \t\t" << do_idiso_veto_weights_ << std::endl;
+    std::cout << "Do ID & iso weight errors ?: \t\t" << do_idiso_err_ <<std::endl;
+    std::cout << "Do ID & iso weight error for muore ?: \t\t" << do_idiso_errmuore_ <<std::endl;
+ std::cout << "Do ID & iso weight errors up or down?: \t\t" << do_idiso_errupordown_ <<std::endl;
+    
     std::cout << "Input MET for MET HLT:  \t\t" << input_met_ << std::endl;
     std::cout << "Note: Input MET for MET L1 is always metNoMuons." << std::endl;
 
@@ -194,8 +198,8 @@ namespace ic {//namespace
     }
 
     if(!do_idiso_err_){
-      fillVector("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_);
-      fillVector("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+      fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
+      fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
       fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
       
       fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
@@ -206,8 +210,8 @@ namespace ic {//namespace
       fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
     }
     else if(do_idiso_errmuore_){
-      fillVector("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_);
-      fillVector("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+      fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
+      fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
       fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
       
       fillVectorError("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
@@ -218,8 +222,8 @@ namespace ic {//namespace
       fillVectorError("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
     }
     else{
-      fillVectorError("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
       fillVectorError("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
       
       fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);

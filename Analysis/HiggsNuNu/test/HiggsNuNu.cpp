@@ -105,6 +105,8 @@ int main(int argc, char* argv[]){
   bool dolumixsweight;            // Do lumi*xs/evt weight online
   string inputparams;               // Params file to use for info on lumi xs and evt
 
+  int randomseed;
+
   double mjj_cut;                 // mjjcut
 
   bool printEventList;  //print run,lumi,evt of events selected
@@ -174,7 +176,8 @@ int main(int argc, char* argv[]){
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false))
     ("doTopCR",             po::value<bool>(&doTopCR)->default_value(false))
-    ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false));
+    ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
+    ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -620,6 +623,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
+
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
     .set_input_label("pfJetsPFlow")
@@ -637,6 +641,7 @@ int main(int argc, char* argv[]){
     .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
     .set_dojerdebug(dojerdebug)
+    .set_randomseed(randomseed)
     .set_fs(fs);
   
 
@@ -809,6 +814,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Selection Modules
   // ------------------------------------------------------------------------------------  
+
   
   HinvWeights hinvWeights = HinvWeights("HinvWeights")
     .set_era(era)

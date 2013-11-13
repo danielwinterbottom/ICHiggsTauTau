@@ -8,7 +8,7 @@
 #JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
 
 OTHEROPTIONS="--doTopCR=false"
-DOCERN=1
+DOCERN=0
 
 EXECUTABLE=HiggsNuNu
 #EXECUTABLE=TauEmbedClosure
@@ -36,12 +36,12 @@ PRODUCTION=Apr04
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in nunu #enu munu taunu 
+  for CHANNEL in nunu enu munu taunu 
     do
-    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-      JOBDIRPREFIX=jobs_tauEmbed/
+      JOBDIRPREFIX=jobs/
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
       OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
@@ -72,6 +72,34 @@ for METCUT in 130 #0 130
 	  SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
 	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
 	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
+      fi
+
+      if [ "$SYST" = "ELEEFFUP" ]
+	  then
+	  SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=true"
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/ELEEFFUP/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/ELEEFFUP/
+      fi
+
+      if [ "$SYST" = "ELEEFFDOWN" ]
+	  then
+	  SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=false"
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/ELEEFFDOWN/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/ELEEFFDOWN/
+      fi
+
+      if [ "$SYST" = "MUEFFUP" ]
+	  then
+	  SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=true"
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/MUEFFUP/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/MUEFFUP/
+      fi
+
+      if [ "$SYST" = "MUEFFDOWN" ]
+	  then
+	  SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/MUEFFDOWN/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/MUEFFDOWN/
       fi
 
       echo "Config file: $CONFIG"

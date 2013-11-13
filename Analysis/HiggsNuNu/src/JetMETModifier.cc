@@ -25,6 +25,7 @@ namespace ic {
     doetsmear_=false;
     doaltmatch_=false;
     dojerdebug_=false;
+    randomno = new TRandom3(randomseed_);
   }
 
   JetMETModifier::~JetMETModifier() {
@@ -41,6 +42,7 @@ namespace ic {
     else{
       if(dosmear_){
 	std::cout << "Doing jet central value smearing. "<<std::endl;
+	std::cout<<"Random seed for jet smearing is: "<<randomseed_<<std::endl;
       }
       else if((!dosmear_)&&dojersyst_){
 	std::cout << "Error: doing jersyst but not doing smearing won't work!"<<std::endl;
@@ -376,7 +378,6 @@ namespace ic {
 	      Smear50miss->Fill(1.);
 	    }
 	    if(dogaus_){//Do Gaussian smearing for JERWORSE
-	      TRandom3 randomno;
 	      int etabin=-1;
 	      if(fabs(oldjet.eta())<0.5)etabin=0;
 	      else if(fabs(oldjet.eta())<1.1)etabin=1;
@@ -390,8 +391,8 @@ namespace ic {
 	      double spring10sigmamc=(spring10resfunc[etabin]->Eval(mcrespt)*oldjet.pt());
  	      double gauscorr;
  	      //std::cout<<"Jet pt and eta are: "<<oldjet.pt()<<" "<<oldjet.eta()<<"Sigma MC is: "<<sigmamc<<" "<<spring10sigmamc<<" Gaus corr is: "<<gauscorr<<std::endl;
-	      if(!dospring10gaus_) gauscorr=randomno.Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
-	      else gauscorr==randomno.Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
+	      if(!dospring10gaus_) gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
+	      else gauscorr==randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
 	      double ptcorrected=oldjet.pt()+gauscorr;
 	      JERscalefac=ptcorrected/oldjet.pt();
 	      

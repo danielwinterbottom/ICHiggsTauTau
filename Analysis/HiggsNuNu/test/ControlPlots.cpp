@@ -345,6 +345,8 @@ int main(int argc, char* argv[]){
   files.push_back("MC_EWK-W2jplus_munu");
   files.push_back("MC_EWK-W2jminus_taunu");
   files.push_back("MC_EWK-W2jplus_taunu");
+  files.push_back("MC_WGamma");
+  
 
 
   //build a list of selections
@@ -584,6 +586,8 @@ int main(int argc, char* argv[]){
       SumHistograms(f,plots[nm],"MC_WW",VV_hist);
       SumHistograms(f,plots[nm],"MC_WZ",VV_hist);
       SumHistograms(f,plots[nm],"MC_ZZ",VV_hist);
+      SumHistograms(f,plots[nm],"MC_WGamma",VV_hist);
+      
       
  
     }//loop on files

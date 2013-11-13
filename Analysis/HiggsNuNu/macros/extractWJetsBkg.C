@@ -211,7 +211,7 @@ int extractWJetsBkg(){//main
   std::string lSuffix[nWeights] = {"","_pu","_pu_trig","_pu_trig_idiso"};
 
   const unsigned nSysts = 11;
-  std::string SYSTNAME[nSysts]= {"ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","PUUP","PUDOWN","CENTRAL"};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
+  std::string SYSTNAME[nSysts]= {"JESUP","JESDOWN","JERBETTER","JERWORSE","ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","PUUP","PUDOWN","CENTRAL"};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
   std::string SYST[nSysts]= {"JESUP","JESDOWN","JERBETTER","JERWORSE","ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","","",""};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
   std::string lSuffixSyst[nSysts] = {"","","","","","","","","_puUp","_puDown",""};
 
