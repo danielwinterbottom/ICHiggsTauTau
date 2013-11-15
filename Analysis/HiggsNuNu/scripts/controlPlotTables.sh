@@ -2,13 +2,13 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
-DOLUMIXSWEIGHT=true #should be true if controlplots is to take care of lumi*xs/events weight
+DOLUMIXSWEIGHT=false #should be true if controlplots is to take care of lumi*xs/events weight
 
 for CHANNEL in nunu taunu enu munu
   do
   for MET in 130 #0 #70
     do
-    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #PUUP PUDOWN
+    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
       do
 	FOLDER=output/$CHANNEL/MET$MET/ # ./oldanalysisruns/090813_nopuidorjer/output/$CHANNEL/MET$MET/
 	PLOTDIR=TABLES/$CHANNEL/MET$MET/
