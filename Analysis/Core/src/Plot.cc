@@ -72,7 +72,7 @@ namespace ic {
     y_axis_max = max;
   }
 
-  int Plot::GeneratePlot() {
+  int Plot::GeneratePlot(std::vector<std::string> types) {
 
     if (use_htt_style) {
       SetHTTStyle();
@@ -548,17 +548,22 @@ namespace ic {
       }
     }
     canv->Update();
-    if (append > 0) {
-      if (append == 1) canv->Print((output_filename+"(").c_str(),"pdf");
-      if (append == 2) canv->Print((output_filename).c_str(),"pdf");
-      if (append == 3) canv->Print((output_filename+")").c_str(),"pdf");
-    } else {    
-      canv->SaveAs(output_filename.c_str());
-      std::size_t pos = output_filename.find(".pdf");
-      if (pos != output_filename.npos) {
-        std::string png_version = output_filename.substr(0, pos);
-        png_version+=".png";
-        canv->SaveAs(png_version.c_str());
+    std::size_t pos = output_filename.find(".pdf");
+    if (pos != output_filename.npos) {
+      output_filename = output_filename.substr(0, pos);
+    }
+
+    for (auto const& type : types) {
+      if (type == "pdf") {
+        if (append > 0) {
+          if (append == 1) canv->Print((output_filename+"(").c_str(),"pdf");
+          if (append == 2) canv->Print((output_filename).c_str(),"pdf");
+          if (append == 3) canv->Print((output_filename+")").c_str(),"pdf");
+        } else {
+          canv->SaveAs((output_filename+".pdf").c_str());
+        }
+      } else {
+        canv->SaveAs((output_filename+"."+type).c_str());
       }
     }
     delete legend;
