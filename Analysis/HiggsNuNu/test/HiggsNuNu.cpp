@@ -534,7 +534,7 @@ int main(int argc, char* argv[]){
     .set_predicate( bind(DummyFunction<Muon>, _1) )
     .set_min(2)
     .set_max(2);
-  
+
   SimpleFilter<Muon> oneVetoMuonFilter = SimpleFilter<Muon>
     ("OneVetoMuonFilter")
     .set_input_label("vetoMuons")
@@ -903,7 +903,7 @@ int main(int argc, char* argv[]){
   //else if (wstream == "mumu") lFlavour = 13;
   //else if (wstream == "tautau") lFlavour = 15;
   //do only muons for Znunu estimate...
-  HinvZDecay ZmassFilter = HinvZDecay("ZmassFilter",13);
+  HinvZDecay ZmassFilter = HinvZDecay("ZmassFilter",13,60,120);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
@@ -1384,6 +1384,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&twoMuonFilter);
        analysis.AddModule(&twoVetoMuonFilter);
        analysis.AddModule(&zeroVetoElectronFilter);
+       analysis.AddModule(&ZmassFilter);
        //analysis.AddModule(&muonMTFilter);
      }
      else if (channel == channel::enu){
