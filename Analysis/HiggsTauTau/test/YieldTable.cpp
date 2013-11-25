@@ -283,7 +283,11 @@ int main(int argc, char* argv[]) {
   for (unsigned i = 0; i < n_cols; ++i) cout << boost::format(fmt) % tot_yields[i] % tot_errors[i] ;
   cout << "\\\\\n";
 
-  cout << boost::format("%-30s") % "h,H,A$\\rightarrow \\tau\\tau$";
+  if (mssm) {
+    cout << boost::format("%-30s") % "h,H,A$\\rightarrow \\tau\\tau$";
+  } else {
+    cout << boost::format("%-30s") % "H$\\rightarrow \\tau\\tau$";
+  }
   for (unsigned i = 0; i < n_cols; ++i) cout << boost::format(fmt) %sig_yields[i] % sig_errors[i];
   cout << "\\\\\n";
 
@@ -301,6 +305,18 @@ int main(int argc, char* argv[]) {
     cout << "\\\\\n";
     cout << "\\hline\n";
     cout << boost::format("%-30s") % "bb$\\rightarrow$ A";
+    for (unsigned i = 0; i < n_cols; ++i) cout << boost::format("& \\multicolumn{2}{|c|}{%-10.2e}") % signal_eff[i][1];
+    cout << "\\\\\n";
+    cout << "\\hline\n";
+  } else {
+    cout << "\\multicolumn{5}{c}{ } \\\\\n";
+    cout << "\\multicolumn{2}{l}{Signal Eff.} &  \\multicolumn{3}{c}{ } \\\\\n";
+    cout << "\\hline\n";
+    cout << boost::format("%-30s") % "ggH$\\rightarrow \\tau\\tau$";
+    for (unsigned i = 0; i < n_cols; ++i) cout << boost::format("& \\multicolumn{2}{|c|}{%-10.2e}") % signal_eff[i][0];
+    cout << "\\\\\n";
+    cout << "\\hline\n";
+    cout << boost::format("%-30s") % "qqH$\\rightarrow \\tau\\tau$";
     for (unsigned i = 0; i < n_cols; ++i) cout << boost::format("& \\multicolumn{2}{|c|}{%-10.2e}") % signal_eff[i][1];
     cout << "\\\\\n";
     cout << "\\hline\n";

@@ -17,6 +17,7 @@
 #include "TGraphErrors.h"
 #include "TF1.h"
 
+class TRandom3;
 
 namespace ic {
   
@@ -41,6 +42,7 @@ namespace ic {
     CLASS_MEMBER(JetMETModifier, bool, doaltmatch)
     CLASS_MEMBER(JetMETModifier, bool, dojerdebug)
     CLASS_MEMBER(JetMETModifier, std::string, jesuncfile)
+    CLASS_MEMBER(JetMETModifier, int, randomseed)
     TH2F* JEScorrfac;
     TH1F* JESmetdiff;
     TH1F* JESjetphidiff;
@@ -64,6 +66,7 @@ namespace ic {
     TH1F* runmetjetnosmearptratio;
     TH1F* runmetjetgenjetptratio;
     TH1F* icjetgenjetptratio;
+    TRandom3* randomno;
 
     std::string pts[70];
     TH1F* recogenjetptratio[5][70]; //BINNED JET 

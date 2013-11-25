@@ -707,11 +707,36 @@ htt_em.inputs-sm-8TeV.root
 
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="m_2(36,0,1.8)" \
-  --x_axis_label="Tau Mass [GeV]" --datacard="inclusive" \
-  --background_scheme="tau_modes" --draw_ratio=false --extra_pad=1.0 --use_htt_style=true \
-  --draw_error_band=true \
-  --shift_backgrounds="ZTT-1P0PZ:1.00828,ZTT-1P1PZ:1.00828,ZTT-3P:1.00828,ZTT:1.00828,QCD:1.054,W:0.973361,ZL:1.01038,ZJ:1.5733,VV:0.975726,TT:1.02835" --auto_error_band=0.0359505
+  --method=8 --cat="pt_2>30." --var="m_2(30,0,2)" \
+  --x_axis_label="Tau Mass [GeV]" --datacard="tau_modes" \
+  --background_scheme="tau_modes" --draw_ratio=false --extra_pad=1.1 --use_htt_style=false \
+  --draw_error_band=true --set_alias="inclusive:pt_2>30" \
+  --shift_backgrounds="ZTT-1P0PZ:0.969187,ZTT-1P1PZ:0.969187,ZTT-3P:0.969187,ZTT:0.969187,QCD:1.0294,W:1.02621,ZL:1.05848,ZJ:1.18723,VV:0.985107,TT:1.09626" --auto_error_band=0.0397582
 
 
+  ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=et --set_alias="sel:mt_1<30." \
+  --method=8 --cat="pt_2>30." --var="m_2(30,0,2)" \
+  --x_axis_label="Tau Mass [GeV]" --datacard="tau_modes" \
+  --background_scheme="tau_modes" --draw_ratio=false --extra_pad=1.1 --use_htt_style=false \
+  --draw_error_band=true --set_alias="inclusive:pt_2>30" \
+  --shift_backgrounds="ZTT-1P0PZ:1.00229,ZTT-1P1PZ:1.00229,ZTT-3P:1.00229,ZTT:1.00229,QCD:1.025,W:0.954,ZL:0.883037,ZJ:0.96123,VV:0.902555,TT:0.886183" --auto_error_band=0.040
+
+ ./bin/PlotCompare  \
+ -p "W2j0:W2j0:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j:-1:0:1" \
+ -p "W2j_mjj100:W2j_mjj100:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_mjj100:-1:0:2" \
+ -p "W2j_mjj200:W2j_mjj200:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_mjj200:-1:0:3" \
+ -p "W2j_mjj300:W2j_mjj300:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_mjj300:-1:0:4" \
+ -p "W2j_mjj400:W2j_mjj400:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_mjj400:-1:0:5" \
+ -p "W2j_mjj500:W2j_mjj500:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_mjj500:-1:0:6" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=true \
+ --custom_x_axis_range=false --x_axis_min=100 --x_axis_max=300 \
+ --title_left="muTau W+jets comparison" \
+ --outname="mt_W_mjj_comp.pdf"
+
+ --ratios="AntiIso/FullIso/1" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+
+ -p "W2j_jdeta1:W2j_jdeta1:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_jdeta1:-1:0:2" \
+ -p "W2j_jdeta2:W2j_jdeta2:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_jdeta2:-1:0:3" \
+ -p "W2j_jdeta3:W2j_jdeta3:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_jdeta3:-1:0:4" \
 

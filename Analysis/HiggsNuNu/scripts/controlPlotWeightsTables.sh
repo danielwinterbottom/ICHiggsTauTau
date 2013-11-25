@@ -2,6 +2,7 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
+DOLUMIXSWEIGHT=false #True if controlplots should do lumixs weight, or false if it is already done in higgsnunu
 
 for CHANNEL in nunu enu munu taunu
   do
@@ -64,6 +65,7 @@ for CHANNEL in nunu enu munu taunu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
  
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -76,6 +78,7 @@ for CHANNEL in nunu enu munu taunu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -88,6 +91,7 @@ for CHANNEL in nunu enu munu taunu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -100,6 +104,7 @@ for CHANNEL in nunu enu munu taunu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -112,6 +117,7 @@ for CHANNEL in nunu enu munu taunu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -124,6 +130,7 @@ for CHANNEL in nunu enu munu taunu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -136,6 +143,7 @@ for CHANNEL in nunu enu munu taunu
     --norm_bins=false --verbose=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
     --paramfile=$PARAMS
 
     done

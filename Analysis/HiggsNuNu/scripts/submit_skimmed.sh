@@ -38,12 +38,12 @@ for METCUT in 130 #0 130
   do
   for CHANNEL in nunu enu munu taunu 
     do
-    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
       JOBDIRPREFIX=jobs/
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
-      OUTPUTPREFIX=lepeffoffoutput/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
+      OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]
@@ -72,6 +72,34 @@ for METCUT in 130 #0 130
 	  SYSTOPTIONS="--dojessyst=false --dojersyst=true --jerbetterorworse=false"
 	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
 	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/JERWORSE/
+      fi
+
+      if [ "$SYST" = "ELEEFFUP" ]
+	  then
+	  SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=true"
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/ELEEFFUP/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/ELEEFFUP/
+      fi
+
+      if [ "$SYST" = "ELEEFFDOWN" ]
+	  then
+	  SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=false"
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/ELEEFFDOWN/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/ELEEFFDOWN/
+      fi
+
+      if [ "$SYST" = "MUEFFUP" ]
+	  then
+	  SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=true"
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/MUEFFUP/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/MUEFFUP/
+      fi
+
+      if [ "$SYST" = "MUEFFDOWN" ]
+	  then
+	  SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
+	  JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/MUEFFDOWN/
+	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/MUEFFDOWN/
       fi
 
       echo "Config file: $CONFIG"
@@ -142,7 +170,7 @@ for METCUT in 130 #0 130
 	
       done
 
-: '
+' :
       for FILELIST in `ls filelists/skim/Oct21/nunu/METembedded*`
 	do
 	#continue

@@ -26,8 +26,20 @@ struct events {
   double syst;
   double tauidSyst;
   std::pair<double,double> jerSyst;// = std::pair<double,double>(0,0);
+  double jerBetter;
+  double jerWorse;
   std::pair<double,double> jesSyst;
+  double jesUp;
+  double jesDown;
   std::pair<double,double> puSyst;
+  double puUp;
+  double puDown;
+  std::pair<double,double> eleeffSyst;
+  double eleeffUp;
+  double eleeffDown;
+  std::pair<double,double> mueffSyst;
+  double mueffUp;
+  double mueffDown;
 
   double error() const{
     return sqrt(pow(stat,2)+pow(syst,2));
@@ -38,9 +50,10 @@ struct events {
 				    -sqrt(pow(stat,2)+pow(totalSyst().second,2)));
   }
   
+  //NEEDS UPDATING TO ADD LEPEFFSYST
   std::pair<double,double> totalSyst() const{
-    return std::pair<double,double>(sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.first,2)+pow(jesSyst.first,2)+pow(puSyst.first,2)),
-				    -sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.second,2)+pow(jesSyst.second,2)+pow(puSyst.second,2)));
+    return std::pair<double,double>(sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.first,2)+pow(jesSyst.first,2)+pow(puSyst.first,2)+pow(eleeffSyst.first,2)+pow(mueffSyst.first,2)),
+				    -sqrt(pow(tauidSyst,2)+pow(syst,2)+pow(jerSyst.second,2)+pow(jesSyst.second,2)+pow(puSyst.second,2)+pow(eleeffSyst.second,2)+pow(mueffSyst.second,2)));
   }
 
   double systSym() const {
@@ -126,6 +139,20 @@ std::istream & operator>>(std::istream & is, evtsArray & evtVec){
 
 int extractWJetsBkg(){//main
 
+  //OPTIONS
+  std::string TOPDIR = "../TABLES/";
+  bool doTaus = true;
+  bool docrosschecktau=false;
+  bool dojes = false;
+  bool dojer = false;
+  bool doeleerr = false;
+  bool domuerr = false;
+  bool doWeights = false;
+  bool verbose = false;
+  bool dolatex = false;
+  bool domcest = false;
+  
+  //SETUP
   std::vector<std::string> lSelVecSignal;
   lSelVecSignal.push_back("HLTMetClean");
   lSelVecSignal.push_back("LeptonVeto");
@@ -180,79 +207,78 @@ int extractWJetsBkg(){//main
 
   //std::string lSuffix = "";
   const unsigned nWeights = 4;
+  std::string lSuffixName[nWeights] = {"Central","_pu","_pu_trig","_pu_trig_idiso"};
   std::string lSuffix[nWeights] = {"","_pu","_pu_trig","_pu_trig_idiso"};
 
-  bool doTaus = true;
-  bool docrosschecktau=false;
-  bool dojes = false;
-  bool dojer = false;
-  bool doWeights = false;
+  const unsigned nSysts = 11;
+  std::string SYSTNAME[nSysts]= {"JESUP","JESDOWN","JERBETTER","JERWORSE","ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","PUUP","PUDOWN","CENTRAL"};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
+  std::string SYST[nSysts]= {"JESUP","JESDOWN","JERBETTER","JERWORSE","ELEEFFUP","ELEEFFDOWN","MUEFFUP","MUEFFDOWN","","",""};//Order so numbers from systematics can be saved to be put in central table as syst errors two slots saved for pu weights and last is central
+  std::string lSuffixSyst[nSysts] = {"","","","","","","","","_puUp","_puDown",""};
 
-  const unsigned nSysts = 7;
   const unsigned nCh = 4;
   std::string lChannel[nCh] = {"nunu","enu","munu","taunu"};
 
-  std::string TOPDIR = "../spring10gausTABLES/";
-  //std::string TOPDIR = "/vols/cms04/pjd12/invcmssws/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/TABLES/";
-  //std::string TOPDIR = "../oldanalysisruns/080713_taunominaltightlepiddiscr/TABLES/";
-  //std::string TOPDIR = "../TABLES_mjj1200/";
-  //std::string TOPDIR = "../oldanalysisruns/220713_taunominaltightwithsysts/TABLES/";
-
   const unsigned nSteps = lSelVecSignal.size();
 
-  //reserve two slots for the puup and down
-  std::string SYST[nSysts] = {"JESUP","JESDOWN","JERBETTER","JERWORSE","","",""};//Order so numbers from systematics can be saved to be put in central table as syst errors
-  std::string lSuffixSyst[nSysts] = {"","","","","_puUp","_puDown",""};
 
   unsigned MET[3] = {130,0,70};
 
-  for (unsigned iW(0); iW<(doWeights?nWeights:1); ++iW){//loop on different weights
-
-    std::cout << " -- Processing weight " << lSuffix[iW] << std::endl;
-
-  for (unsigned iMET(0); iMET<1; ++iMET){//loop on MET values
-
-    std::cout << " -- Processing MET " << MET[iMET] << std::endl;
-
-    //create variables to store systB numbers
-    double systdiff[2][nCh-1][nSysts-1][4];
-    double systperc[2][nCh-1][nSysts-1][4];
-    double totalsystupshift[2][nCh-1][4];//[iqcd][ich][lnsmc,lncmc,lnsdata,lncdata]
-    double totalsystdownshift[2][nCh-1][4];
-    double totalsystupperc[2][nCh-1][4];
-    double totalsystdownperc[2][nCh-1][4];
-    bool fileExists[nCh][nSysts];
-    for (unsigned iCh(0); iCh<nCh;++iCh){
-      for (unsigned iSyst(0); iSyst<nSysts; ++iSyst){
-	fileExists[iCh][iSyst] = true;
+  for (unsigned iW(0); iW<(doWeights?nWeights:1); ++iW){//LOOP OVER WEIGHTS
+    std::cout << "Processing weight: " << lSuffixName[iW] << std::endl;
+    
+    for (unsigned iMET(0); iMET<1; ++iMET){//loop on MET values
+      
+      std::cout << "  Processing MET cut: " << MET[iMET] <<" GeV"<< std::endl;
+      
+      //create variables to store syst numbers
+      double systdiff[2][nCh-1][nSysts-1][4];
+      double systperc[2][nCh-1][nSysts-1][4];
+      double totalsystupshift[2][nCh-1][4];//[iqcd][ich][lnsmc,lncmc,lnsdata,lncdata]
+      double totalsystdownshift[2][nCh-1][4];
+      double totalsystupperc[2][nCh-1][4];
+      double totalsystdownperc[2][nCh-1][4];
+      bool fileExists[nCh][nSysts];
+      for (unsigned iCh(0); iCh<nCh;++iCh){
+	for (unsigned iSyst(0); iSyst<nSysts; ++iSyst){
+	  fileExists[iCh][iSyst] = true;
+	}
       }
-    }
-
-    events systevents[2][nCh-1][nSysts][4];//[iqcd][ich][isyst][lnsmc,lncmc,lnsdata,lncdata]
-    events result_nocjv[nSysts];
-    events result[nSysts];
-
-    int isyststart=0;
-    if(!dojes&&!dojer){
-      isyststart=nSysts-1;
-    }
-    for (unsigned iSyst(isyststart); iSyst<nSysts; ++iSyst){//loop over different systematics NOTE TO JUST DO CENTRAL CHANGE to iSyst(nSysts-1) don't do iSyst<1
-      std::cout<< "--Processing systematic " <<iSyst<<std::endl;
-      std::ostringstream lFolder;
-      lFolder << "MET" << MET[iMET] << "/" << SYST[iSyst] << "/";
       
-      evtsArray lSel[nCh][nSteps];
+      //VARIABLES TO STORE EVENT NUMBERS
+      events systevents[2][nCh-1][nSysts][4];//[iqcd][ich][isyst][lnsmc,lncmc,lnsdata,lncdata]
+      events result_nocjv[nSysts];
+      events result[nSysts];
       
+      for (unsigned iSyst(0); iSyst<nSysts; ++iSyst){//loop over different systematics if not doing jes and jet automatically only does central
+	if(!dojes){
+	  if(iSyst==0||iSyst==1)continue;
+	}
+	if(!dojer){
+	  if(iSyst==2||iSyst==3)continue;
+	}
+	if(!doeleerr){
+	  if(iSyst==4||iSyst==5)continue;
+	}
+	if(!domuerr){
+	  if(iSyst==6||iSyst==7)continue;
+	}
+	std::cout<< "    Processing systematic: " <<SYSTNAME[iSyst]<<std::endl;
+	
+	std::ostringstream lFolder;
+	lFolder << "MET" << MET[iMET] << "/" << SYST[iSyst] << "/";
+	
+	evtsArray lSel[nCh][nSteps];
+	
 	for (unsigned iS(0); iS<nSteps; ++iS){//loop on steps
 	  
 	  std::ifstream lTable;
 	  std::ostringstream lName;
 	  
-	  
+	  //READ SUMMARY TABLES INTO LSEL
 	  lName << TOPDIR << "/nunu/" << lFolder.str() << "/SummaryTable_" << lSelVecSignal[iS] << lSuffix[iW] << lSuffixSyst[iSyst]  << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
-	    cerr<<"Unable to open file: "<<lName.str()<<endl;
+	    std::cerr<<"Unable to open file: "<<lName.str()<<std::endl;
 	    fileExists[0][iSyst] = false;
 	    //return 1; 
 	  }
@@ -265,7 +291,7 @@ int extractWJetsBkg(){//main
 	  lName << TOPDIR << "/enu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << lSuffixSyst[iSyst] << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
-	    cerr<<"Unable to open file: "<<lName.str()<<endl;
+	    std::cerr<<"Unable to open file: "<<lName.str()<<std::endl;
 	    fileExists[1][iSyst] = false;
 	    //return 1; 
 	  }
@@ -278,7 +304,7 @@ int extractWJetsBkg(){//main
 	  lName << TOPDIR << "/munu/" << lFolder.str() << "/SummaryTable_" << lSelVecControl[iS] << lSuffix[iW] << lSuffixSyst[iSyst] << ".dat";
 	  lTable.open(lName.str().c_str());
 	  if(!lTable.is_open()){
-	    cerr<<"Unable to open file: "<<lName.str()<<endl;
+	    std::cerr<<"Unable to open file: "<<lName.str()<<std::endl;
 	    fileExists[2][iSyst] = false;
 	    //return 1; 
 	  }
@@ -286,14 +312,14 @@ int extractWJetsBkg(){//main
 	    lTable>>lSel[2][iS];
 	    lTable.close();
 	  }
-
+	  
 	  if (doTaus){
 	    //if (iS==nSteps-1) continue;
 	    lName.str("");
 	    lName << TOPDIR << "/taunu/" << lFolder.str() << "/SummaryTable_" << lSelVecTau[iS] << lSuffix[iW] << lSuffixSyst[iSyst] << ".dat";
 	    lTable.open(lName.str().c_str());
 	    if(!lTable.is_open()){
-	      cerr<<"Unable to open file: "<<lName.str()<<endl;
+	      std::cerr<<"Unable to open file: "<<lName.str()<<std::endl;
 	      fileExists[3][iSyst] = false;
 	      //return 1; 
 	    }
@@ -305,13 +331,13 @@ int extractWJetsBkg(){//main
 	}//loop on steps
 	
 	
-	std::cout << " -- TABLES have been read in." << std::endl;
-
-	//print Wjets components
+	//std::cout << "    TABLES have been read in." << std::endl;
+	
 	for (unsigned iCh(0); iCh< (doTaus ? 4 : 3); ++iCh){//loop on channel
 	  if (!fileExists[iCh][iSyst]) continue;
-	  std::cout << " -- Processing channel: " << lChannel[iCh] << std::endl;
-
+	  //std::cout << "        Processing channel: " << lChannel[iCh] << std::endl;
+	  
+	  //print Wjets components to WJetsTable
 	  std::ostringstream lName;
 	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/WJetsTable" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
 	  
@@ -322,9 +348,9 @@ int extractWJetsBkg(){//main
 		   << "\\hline" << std::endl
 		   << "Step & QCD W$\\rightarrow e\\nu$ & EWK W$\\rightarrow e\\nu$ & QCD W$\\rightarrow\\mu\\nu$ & EWK W$\\rightarrow\\mu\\nu$ & QCD W$\\rightarrow\\tau\\nu$ & EWK W$\\rightarrow\\tau\\nu$  \\\\" << std::endl
 		   << "\\hline" << std::endl;
-
+	  
 	  for (unsigned iS(5); iS<nSteps; ++iS){//loop on steps
-
+	    
 	    lOutfile << latex[iS];
 	    lOutfile << std::setprecision(3) << " &  $"
 		     << lSel[iCh][iS][QCD_WJets_enu].number  << "\\pm" << lSel[iCh][iS][QCD_WJets_enu].error() << "$ & $" 
@@ -339,6 +365,8 @@ int extractWJetsBkg(){//main
 		   << "\\end{tabular}" << std::endl;
 	  lOutfile.close();
 	  
+	  
+	  //print Zjets components to ZJetsTable
 	  lName.str("");
 	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/ZJetsTable" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
 	  
@@ -348,9 +376,9 @@ int extractWJetsBkg(){//main
 		   << "\\hline" << std::endl
 		   << "Step & Z$\\rightarrow\\nu\\nu$ & EWK Z->nunu+2j  & Z$\\rightarrow$ll & EWK Z->ll+2j \\\\" << std::endl
 		   << "\\hline" << std::endl;
-
+	  
 	  for (unsigned iS(5); iS<nSteps; ++iS){//loop on steps
-
+	    
 	    lOutfile << latex[iS];
 	    lOutfile << std::setprecision(3) << " &  $"
 		     << lSel[iCh][iS][ZJets_nunu].number  << "\\pm" << lSel[iCh][iS][ZJets_nunu].error() << "$ & $" 
@@ -364,6 +392,7 @@ int extractWJetsBkg(){//main
 		   << "\\end{tabular}" << std::endl;
 	  lOutfile.close();
 
+	  //print top components to TopTable
 	  lName.str("");
 	  lName << TOPDIR <<"/" << lChannel[iCh] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/TopTable" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
 	  
@@ -374,10 +403,10 @@ int extractWJetsBkg(){//main
 		   << "\\hline" << std::endl
 		   << "Step & $t\\bar{t}$ & $t\\bar{t}$ POWHEG & single top & $t,\\bar{t}\\rightarrow tW$  \\\\" << std::endl
 		   << "\\hline" << std::endl;
-
-
+	  
+	  
 	  for (unsigned iS(5); iS<nSteps; ++iS){//loop on steps
-
+	    
 	    lOutfile << latex[iS];
 	    lOutfile << std::setprecision(3) << " &  $"
 		     << lSel[iCh][iS][TTbar].number  << "\\pm" << lSel[iCh][iS][TTbar].error()  << "$ & $" 
@@ -385,18 +414,19 @@ int extractWJetsBkg(){//main
 		     << lSel[iCh][iS][SingleTop].number  << "\\pm" << lSel[iCh][iS][SingleTop].error()  << "$ & $" 
 		     << lSel[iCh][iS][TW].number  << "\\pm" << lSel[iCh][iS][TW].error() << "$ \\\\" << std::endl;
 	  }//loop on steps
-
+	  
 	  lOutfile << "\\hline" << std::endl
 		   << "\\end{tabular}" << std::endl;
 	  lOutfile.close();
 	  
 	}//loop on channel
 	
-
+	
+	//Get w->taunu result
 	if (doTaus){
 	  if (!fileExists[3][iSyst] || !fileExists[0][iSyst]) continue;
-	  std::cout << " -- Extracting tau results" << std::endl;
-
+	  if(verbose)std::cout << "      Extracting tau results:" << std::endl;
+	  
 	  events nData = lSel[3][DPhiSIGNAL_noCJV][Data];
 	  events nBkg = lSel[3][DPhiSIGNAL_noCJV][Top];
 	  nBkg += lSel[3][DPhiSIGNAL_noCJV][ZJets];
@@ -421,54 +451,57 @@ int extractWJetsBkg(){//main
 	  eps_tau_cjvpass_noew.num = lSel[3][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
 	  eps_tau_cjvpass_noew.den = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
 
-	  efficiency eps_tau_cjv;
-	  eps_tau_cjv.num = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
-	  eps_tau_cjv.num += lSel[0][DPhiSIGNAL_CJVpass][EWK_WJets_taunu];
-	  eps_tau_cjv.den.number = eps_tau.den.number;
-	  eps_tau_cjv.den.stat = eps_tau.den.stat;
-	  efficiency eps_tau_cjv_noew;
-	  eps_tau_cjv_noew.num = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
-	  eps_tau_cjv_noew.den.number = eps_tau.den.number;
-	  eps_tau_cjv_noew.den.stat = eps_tau.den.stat;
+	  efficiency eps_cjv;
+	  eps_cjv.num = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
+	  eps_cjv.num += lSel[0][DPhiSIGNAL_CJVpass][EWK_WJets_taunu];
+	  eps_cjv.den = lSel[0][DPhiSIGNAL_noCJV][QCD_WJets_taunu];
+	  eps_cjv.den += lSel[0][DPhiSIGNAL_noCJV][EWK_WJets_taunu];
 
+	  efficiency eps_cjv_noew;
+	  eps_cjv_noew.num = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
+	  eps_cjv_noew.den = lSel[0][DPhiSIGNAL_CJVpass][QCD_WJets_taunu];
+	  
+	  //GET NDATA
 	  events nDataW = nData;
 	  nDataW -= nBkg;
-	  if(docrosschecktau){
+	  if(docrosschecktau){//remove enu contamination if doing cross-check
 	    nDataW -= lSel[3][DPhiSIGNAL_noCJV][QCD_WJets_enu];
 	    nDataW -= lSel[3][DPhiSIGNAL_noCJV][EWK_WJets_enu];
 	  }
 	  result_nocjv[iSyst] = nDataW;
 	  result_nocjv[iSyst].number = nDataW.number/eps_tau.eff();
-	  result_nocjv[iSyst].stat = nDataW.stat;
+	  result_nocjv[iSyst].stat = result_nocjv[iSyst].number*sqrt(pow(nDataW.stat/nDataW.number,2));
 	  result_nocjv[iSyst].syst = result_nocjv[iSyst].number*sqrt(pow(eps_tau.error()/eps_tau.eff(),2));
 	  result_nocjv[iSyst].tauidSyst = 0.08*result_nocjv[iSyst].number;
-
+	  
+	  //GET PRODUCT OF EFFICIENCIES WITH CORRECT ERROR (DENOMINATOR FACTORISES SO CAN'T JUST USE SEPARATE EFFICIENCIES
 	  events effProduct;
-	  effProduct.number = eps_tau_cjv.num.number / eps_tau.num.number;
-	  effProduct.stat = effProduct.number*sqrt(pow(eps_tau_cjv.num.stat/eps_tau_cjv.num.number,2)+pow(eps_tau.num.stat/eps_tau.num.number,2));
+	  effProduct.number = eps_cjv.num.number / eps_tau.num.number;
+	  effProduct.stat = effProduct.number*sqrt(pow(eps_cjv.num.stat/eps_cjv.num.number,2)+pow(eps_tau.num.stat/eps_tau.num.number,2));
 	  result[iSyst] = nDataW;
 	  result[iSyst].number = nDataW.number*effProduct.number;
-	  if(iSyst==nSysts-1){
-	    std::cout<<"Tau result is: "<<result[iSyst].number<<std::endl<<"Made up of: nDataW: "<<nDataW.number<<" N_{CJVtaureco}: "<<eps_tau_cjv.num.number<<" N_{N_{noCJVnotaureq}: "<<eps_tau.num.number<<std::endl;
-	  }
+	  	  
 	  result[iSyst].stat = result[iSyst].number*sqrt(pow(nDataW.stat/nDataW.number,2));
-
+	  
 	  result[iSyst].syst=sqrt(pow(effProduct.stat/effProduct.number,2))*result[iSyst].number;
 	  result[iSyst].tauidSyst = 0.08*result[iSyst].number;
-
+	  
 	  events result_nocjv_noew = nDataW;
 	  result_nocjv_noew.number = nDataW.number/eps_tau_noew.eff();
 	  result_nocjv_noew.stat = nDataW.stat;
 	  result_nocjv_noew.syst = nDataW.number*eps_tau_noew.error()/pow(eps_tau_noew.eff(),2);
-
+	  
 	  events effProduct_noew;
-	  effProduct_noew.number = eps_tau_cjv_noew.num.number / eps_tau_noew.num.number;
-	  effProduct_noew.stat = effProduct_noew.number*sqrt(pow(eps_tau_cjv_noew.num.stat/eps_tau_cjv_noew.num.number,2)+pow(eps_tau_noew.num.stat/eps_tau_noew.num.number,2));
+	  effProduct_noew.number = eps_cjv_noew.num.number / eps_tau_noew.num.number;
+	  effProduct_noew.stat = effProduct_noew.number*sqrt(pow(eps_cjv_noew.num.stat/eps_cjv_noew.num.number,2)+pow(eps_tau_noew.num.stat/eps_tau_noew.num.number,2));
 	  events result_noew = nDataW;
 	  result_noew.number = nDataW.number*effProduct_noew.number;
 	  result_noew.stat = result_noew.number*sqrt(pow(nDataW.stat/nDataW.number,2));
 
 	  result_noew.syst=sqrt(pow(effProduct_noew.stat/effProduct_noew.number,2)+pow(0.08,2))*result_noew.number;
+
+	  if(verbose)std::cout<<"        N_S_Data is: "<<result[iSyst].number<<std::endl<<"        Made up of: nDataW: "<<nDataW.number<<" N_{CJVtaureco}: "<<eps_cjv.num.number<<" N_{N_{noCJVnotaureq}: "<<eps_tau.num.number<<std::endl;
+	  
 
 	  //AMM- commenting this for the moment
 	  // 	  if(!docrosschecktau){
@@ -478,7 +511,7 @@ int extractWJetsBkg(){//main
 	  // 	  else{
 	  // 	    totsyst=multsyst;
 	  // 	  }
-
+	  
 	  std::ostringstream lName;
 	  lName.str("");
 	  lName << TOPDIR <<"/" << lChannel[3] << "/MET" << MET[iMET] << "/" << SYST[iSyst] << "/DataDrivenWJetsTable_signal" << lSuffix[iW] << lSuffixSyst[iSyst] << ".txt";
@@ -494,49 +527,56 @@ int extractWJetsBkg(){//main
 		   << "\\hline" << std::endl
 		   << std::setprecision(3)
  		   << "nData & - & $" << nData.number  << "\\pm " << nData.error()  << "$ & - & " << lSel[3][DPhiSIGNAL_CJVpass][Data] << "  \\\\" << std::endl
- 		   << "nBkg &  & $" << nBkg.number  << "\\pm " << nBkg.error()  << "$ & - & " << nBkg_cjv << " \\\\" << std::endl
+ 		   << "nBkg & - & $" << nBkg.number  << "\\pm " << nBkg.error()  << "$ & - & " << nBkg_cjv << " \\\\" << std::endl
 		   << "\\hline" << std::endl
- 		   << "n(W$\\rightarrow \\tau \\nu$) & " << eps_tau.den << " & " << eps_tau.num << " & " << eps_tau_cjvpass.den << " & " <<eps_tau_cjvpass.num << " \\\\" << std::endl
+ 		   << "n$_{MC}$(W$\\rightarrow \\tau \\nu$) & " << eps_tau.den.number << " \\pm" << eps_tau.den.stat << " (stat.) " << " & " << eps_tau.num.number <<" \\pm "<<eps_tau.num.stat <<" (stat.)"<< " & " << eps_tau_cjvpass.den.number <<" \\pm"<<eps_tau_cjvpass.den.stat<<" (stat.) " << " & " <<eps_tau_cjvpass.num.number<<" \\pm"<<eps_tau_cjvpass.num.stat<<" (stat.) " << " \\\\" << std::endl
 		   << "\\hline" << std::endl
  		   << "$\\varepsilon_{tauID}$ & \\multicolumn{2}{c|}{" << eps_tau << "} & \\multicolumn{2}{c|}{" << eps_tau_cjvpass << "} \\\\" << std::endl
 		   << "\\hline" << std::endl
- 		   << "$\\varepsilon_{CJV}$ &  \\multicolumn{4}{c|}{ " << eps_tau_cjv << " }\\\\" <<  std::endl
+ 		   << "$\\varepsilon_{CJV}$ &  \\multicolumn{4}{c|}{ " << eps_cjv << " }\\\\" <<  std::endl
 		   << "\\hline" << std::endl
  		   << "W$\\rightarrow \\tau\\nu$ estimates & \\multicolumn{2}{c|}{ $" << result_nocjv[iSyst].number  << "\\pm " << result_nocjv[iSyst].stat << "(stat) \\pm " << result_nocjv[iSyst].syst << "(mcStat) $} & \\multicolumn{2}{c|}{ $" << result[iSyst].number  << "\\pm " << result[iSyst].stat << "(stat) \\pm " << result[iSyst].syst << "(mcStat) $} \\\\" << std::endl
 		   << "\\hline" << std::endl
+		   << "\\hline" << std::endl;
+	  lOutfile << " \\multicolumn{5}{|c|}{Without EWK W+2j included}\\\\" <<  std::endl
 		   << "\\hline" << std::endl
- 		   << " \\multicolumn{5}{|c|}{Without EWK W+2j included}\\\\" <<  std::endl
-		   << "\\hline" << std::endl
-		   << "n(W$\\rightarrow \\tau \\nu$) & " << eps_tau_noew.den << " & " << eps_tau_noew.num << " & " << eps_tau_cjvpass_noew.den << " & " <<eps_tau_cjvpass_noew.num << " \\\\" << std::endl
+		   << "n(W$\\rightarrow \\tau \\nu$) & " << eps_tau_noew.den.number << "\\pm"<<eps_tau_noew.den.stat <<" (stat.)"<< " & " << eps_tau_noew.num.number <<" \\pm "<<eps_tau_noew.num.stat<<" (stat.)"<< " & " << eps_tau_cjvpass_noew.den.number <<" \\pm "<<eps_tau_cjvpass_noew.den.stat<<" (stat.)" << " & " <<eps_tau_cjvpass_noew.num.number <<" \\pm "<< eps_tau_cjvpass_noew.num.stat <<" (stat.)" << " \\\\" << std::endl
 		   << "\\hline" << std::endl
  		   << "$\\varepsilon_{tauID}$ & \\multicolumn{2}{c|}{" << eps_tau_noew << "} & \\multicolumn{2}{c|}{" << eps_tau_cjvpass_noew << "} \\\\" << std::endl
 		   << "\\hline" << std::endl
- 		   << "$\\varepsilon_{CJV}$ &  \\multicolumn{4}{c|}{ " << eps_tau_cjv_noew << " }\\\\" <<  std::endl
+ 		   << "$\\varepsilon_{CJV}$ &  \\multicolumn{4}{c|}{ " << eps_cjv_noew << " }\\\\" <<  std::endl
 		   << "\\hline" << std::endl
  		   << "W$\\rightarrow \\tau\\nu$ estimates & \\multicolumn{2}{c|}{ $" << result_nocjv_noew.number  << "\\pm " << result_nocjv_noew.stat << "(stat) \\pm " << result_nocjv_noew.syst << "(mcStat) $} & \\multicolumn{2}{c|}{ $" << result_noew.number  << "\\pm " << result_noew.stat << "(stat) \\pm " << result_noew.syst << "(mcStat) $} \\\\" << std::endl
  		   << "\\hline" << std::endl
  		   << "\\end{tabular}" << std::endl;
  	  lOutfile.close();
-
-// 	    //<< "eps_tau_id:" << eps_tau.error()/eps_tau.eff()*result.number <<std::endl
-// 	    //   << "eps_tau_cjv:" << eps_tau_cjv.error()/eps_tau_cjv.eff()*result.number<<std::endl
+	  
+	  // 	    //<< "eps_tau_id:" << eps_tau.error()/eps_tau.eff()*result.number <<std::endl
+	  // 	    //   << "eps_cjv:" << eps_cjv.error()/eps_cjv.eff()*result.number<<std::endl
 // 	    //   << "data/mc scale factor:"<<0.08*result.number<<std::endl
 // 	    //      << "remaining W->enu:"<<wenusyst<<std::endl
- 
+	  
 	  
 	}//do taus
-
-
+	
+	
 	for (unsigned int iQCD(0); iQCD<2; ++iQCD){//DphiSignal or DphiQCD
-	  if(iQCD==0)std::cout<<" ----- dphisignal -----"<<std::endl;
-	  if(iQCD==1)std::cout<<" ----- dphiqcd -----"<<std::endl;
+	  if(verbose&&iSyst!=nSysts-1){
+	    if(iQCD==0)std::cout<<"      Dphi signal:"<<std::endl;
+	    if(iQCD==1)std::cout<<"      Dphi qcd:"<<std::endl;
+	  }
+	  if(iSyst==nSysts-1){
+	    if(iQCD==0)std::cout<<"    Dphi signal:"<<std::endl;
+	    if(iQCD==1)std::cout<<"    Dphi qcd:"<<std::endl;
+	  }
 	  for (unsigned iCh(1); iCh<3; ++iCh){//loop on lep flavour
-
+	    
 	    if (!fileExists[iCh][iSyst] || !fileExists[0][iSyst]) continue;
 
-	    if(iCh==1)std::cout<<" - enu"<<std::endl;
-	    if(iCh==2)std::cout<<" - munu"<<std::endl;
-
+	    if(verbose){
+	      if(iCh==1)std::cout<<"        Extracting e results:"<<std::endl;
+	      if(iCh==2)std::cout<<"        Extracting mu results:"<<std::endl;
+	    }
 	    events lNCdata;
 	    events lBkgCMC;
 	    events lBkgSMC;
@@ -613,49 +653,72 @@ int extractWJetsBkg(){//main
 	    eps_VBF_C.den += lSel[iCh][Lep][EWK_WJets_munu-shiftSample];
 	    
 	    lNSdata.number = lNCdata.number * lNSMC.number / lNCMC.number;
-	    std::cout<<"lNSdata is: "<<lNSdata.number<<std::endl<<"Made up of: lNCdata: "<<lNCdata.number<<" lNSMC: "<<lNSMC.number<<" lNCMC: "<<lNCMC.number<<std::endl;
+	    if(verbose)std::cout<<"          N_S_Data is: "<<lNSdata.number<<std::endl<<"          Made up of: lNCdata: "<<lNCdata.number<<" lNSMC: "<<lNSMC.number<<" lNCMC: "<<lNCMC.number<<std::endl;
 	    lNSdata.stat = lNCdata.stat* lNSMC.number / lNCMC.number;
 	    lNSdata.syst = lNSdata.number * sqrt(pow(lNCMC.stat/lNCMC.number,2)+pow(lNSMC.stat/lNSMC.number,2));
 	    
 	    
 	    
+	    
 	    //SYSTEMATIC INFORMATION
-	    if(dojes&&dojer){
-	      //save JES and JER numbers
-	      systevents[iQCD][iCh][iSyst][0]=lNSMC;
-	      systevents[iQCD][iCh][iSyst][1]=lNCMC;
-	      systevents[iQCD][iCh][iSyst][2]=lNSdata;
-	      systevents[iQCD][iCh][iSyst][3]=lNCdata;
-	      if(iSyst==nSysts-1){//get differences
-		for(int a=0;a<6;a++){//loop over jes up and down
+	    systevents[iQCD][iCh][iSyst][0]=lNSMC;
+	    systevents[iQCD][iCh][iSyst][1]=lNCMC;
+	    systevents[iQCD][iCh][iSyst][2]=lNSdata;
+	    systevents[iQCD][iCh][iSyst][3]=lNCdata;
+	    if(iSyst==nSysts-1){//get differences
+	      
+	      for(int a=0;a<10;a++){//loop over jes up and down
+		if(verbose){
 		  if(a==0)std::cout<<"JESUP"<<std::endl;
 		  if(a==1)std::cout<<"JESDOWN"<<std::endl;
 		  if(a==2)std::cout<<"JERBETTER"<<std::endl;
 		  if(a==3)std::cout<<"JERWORSE"<<std::endl;
-		  if(a==4)std::cout<<"PUUP"<<std::endl;
-		  if(a==5)std::cout<<"PUDOWN"<<std::endl;
+		  if(a==4)std::cout<<"ELEEFFUP"<<std::endl;
+		  if(a==5)std::cout<<"ELEEFFDOWN"<<std::endl;
+		  if(a==6)std::cout<<"MUEFFUP"<<std::endl;
+		  if(a==7)std::cout<<"MUEFFDOWN"<<std::endl;
+		  if(a==8)std::cout<<"PUUP"<<std::endl;
+		  if(a==9)std::cout<<"PUDOWN"<<std::endl;
+		}
 		  for(int b=0;b<4;b++){//loop over lns/cmc/data to get differences and percentage differences
 		    systdiff[iQCD][iCh][a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][nSysts-1][b].number);
 		    systperc[iQCD][iCh][a][b]=(systevents[iQCD][iCh][a][b].number-systevents[iQCD][iCh][nSysts-1][b].number)*100/systevents[iQCD][iCh][nSysts-1][b].number;
-		    std::cout<<systevents[iQCD][iCh][a][b].number<<" "<<systevents[iQCD][iCh][nSysts-1][b].number<<" "<<systdiff[iQCD][iCh][a][b]<<std::endl;
+		    if(verbose)std::cout<<systevents[iQCD][iCh][a][b].number<<" "<<systevents[iQCD][iCh][nSysts-1][b].number<<" "<<systdiff[iQCD][iCh][a][b]<<std::endl;
 		  }
 		}
+		
 		//get max up shift and down shift
 		for(int b=0;b<4;b++){
 		  double maxjesupshift=std::max(std::max(systdiff[iQCD][iCh][0][b],0.),std::max(systdiff[iQCD][iCh][1][b],0.));
 		  double maxjesdownshift=std::min(std::min(systdiff[iQCD][iCh][0][b],0.),std::min(systdiff[iQCD][iCh][1][b],0.));
 		  double maxjerupshift=std::max(std::max(systdiff[iQCD][iCh][2][b],0.),std::max(systdiff[iQCD][iCh][3][b],0.));
 		  double maxjerdownshift=std::min(std::min(systdiff[iQCD][iCh][2][b],0.),std::min(systdiff[iQCD][iCh][3][b],0.));
-		  double maxpuupshift=std::max(std::max(systdiff[iQCD][iCh][4][b],0.),std::max(systdiff[iQCD][iCh][5][b],0.));
-		  double maxpudownshift=std::min(std::min(systdiff[iQCD][iCh][4][b],0.),std::min(systdiff[iQCD][iCh][5][b],0.));
+		  double maxeleeffupshift=std::max(std::max(systdiff[iQCD][iCh][4][b],0.),std::max(systdiff[iQCD][iCh][5][b],0.));
+		  double maxeleeffdownshift=std::min(std::min(systdiff[iQCD][iCh][4][b],0.),std::min(systdiff[iQCD][iCh][5][b],0.));
+		  double maxmueffupshift=std::max(std::max(systdiff[iQCD][iCh][6][b],0.),std::max(systdiff[iQCD][iCh][7][b],0.));
+		  double maxmueffdownshift=std::min(std::min(systdiff[iQCD][iCh][6][b],0.),std::min(systdiff[iQCD][iCh][7][b],0.));
+		  double maxpuupshift=std::max(std::max(systdiff[iQCD][iCh][8][b],0.),std::max(systdiff[iQCD][iCh][9][b],0.));
+		  double maxpudownshift=std::min(std::min(systdiff[iQCD][iCh][8][b],0.),std::min(systdiff[iQCD][iCh][9][b],0.));
 		  //add max jesup/downshift and jerup/downshift in quadrature
-		  totalsystupshift[iQCD][iCh][b] = sqrt(maxjesupshift*maxjesupshift+maxjerupshift*maxjerupshift+maxpuupshift*maxpuupshift);
-		  totalsystdownshift[iQCD][iCh][b] = -1*sqrt(maxjesdownshift*maxjesdownshift+maxjerdownshift*maxjerdownshift+maxpudownshift*maxpudownshift);
+		  totalsystupshift[iQCD][iCh][b] = sqrt(maxjesupshift*maxjesupshift+maxjerupshift*maxjerupshift+maxpuupshift*maxpuupshift+maxeleeffupshift*maxeleeffupshift+maxmueffupshift*maxmueffupshift);
+		  totalsystdownshift[iQCD][iCh][b] = -1*sqrt(maxjesdownshift*maxjesdownshift+maxjerdownshift*maxjerdownshift+maxpudownshift*maxpudownshift+maxeleeffdownshift*maxeleeffdownshift+maxmueffdownshift*maxmueffdownshift);
 		  totalsystupperc[iQCD][iCh][b]=totalsystupshift[iQCD][iCh][b]*100/systevents[iQCD][iCh][nSysts-1][b].number;
 		  totalsystdownperc[iQCD][iCh][b]=totalsystdownshift[iQCD][iCh][b]*100/systevents[iQCD][iCh][nSysts-1][b].number;
 		}
 	      }
-	    }
+	      lNSdata.jesUp=systdiff[iQCD][iCh][0][2];
+	      lNSdata.jesDown=systdiff[iQCD][iCh][1][2];
+	      lNSdata.jerBetter=systdiff[iQCD][iCh][2][2];
+	      lNSdata.jerWorse=systdiff[iQCD][iCh][3][2];
+	      lNSdata.eleeffUp=systdiff[iQCD][iCh][4][2];
+	      lNSdata.eleeffDown=systdiff[iQCD][iCh][5][2];
+	      lNSdata.mueffUp=systdiff[iQCD][iCh][6][2];
+	      lNSdata.mueffDown=systdiff[iQCD][iCh][7][2];
+	      lNSdata.puUp=systdiff[iQCD][iCh][8][2];
+	      lNSdata.puDown=systdiff[iQCD][iCh][9][2];
+
+	      
+	      //}
 	    
 	    //TOTAL SUMMARY TABLE WITH TOTAL SYST ERRORS
 	    std::ostringstream lName;
@@ -713,8 +776,31 @@ int extractWJetsBkg(){//main
 		     << "\\end{tabular}" << std::endl; 
 	    lOutfile.close();
 
-	    std::cout << "*** " << lSuffix[iW] << lSuffixSyst[iSyst] << ": result = " << lNSdata << " MC: " << lNSMC << std::endl;
-	    
+	    if(verbose&&iSyst!=nSysts-1){
+	      if(iCh==1)std::cout << "         enu result = " << lNSdata << " MC: " << lNSMC << std::endl;
+	      if(iCh==2)std::cout << "         munu result = " << lNSdata << " MC: " << lNSMC << std::endl;
+	    }
+
+	    if(iSyst==nSysts-1){
+	      if(iCh==1)std::cout << "      enu result = ";
+	      if(iCh==2)std::cout << "      munu result = ";
+	      if(!dolatex){
+		std::cout<<std::setprecision(3)<<lNSdata.number <<" \u00b1 " << lNSdata.stat <<"(stat.) \u00b1 "<<lNSdata.syst<<"(MC stat.) ";
+		if(dojes)std::cout<<showpos<<lNSdata.jesUp<<"(JES up) "<<lNSdata.jesDown<<"(JES down) "<<noshowpos;
+		if(dojer)std::cout<<showpos<<lNSdata.jerBetter<<"(JER better) "<<lNSdata.jerWorse<<"(JER worse) "<<noshowpos;
+		if(doeleerr)std::cout<<showpos<<lNSdata.eleeffUp<<"(ELEEFF up) "<<lNSdata.eleeffDown<<"(ELEEFF down) "<<noshowpos;
+		if(domuerr)std::cout<<showpos<<lNSdata.mueffUp<<"(MUEFF up) "<<lNSdata.mueffDown<<"(MUEFF down) "<<noshowpos;
+		std::cout<<showpos<<lNSdata.puUp<<"(PU up) "<<lNSdata.puDown<<"(PU down) "<<noshowpos;
+		if(domcest){
+		std::cout<< " MC: " << lNSMC << std::endl;
+		}
+		else std::cout<<std::endl;
+		
+	      }
+	      else{
+		std::cout<< lNSdata << " MC: " << lNSMC << std::endl;
+	      }
+	    }
 	  }//loop on lep flavour
 	  
 	}//loop on signal region
@@ -769,15 +855,15 @@ int extractWJetsBkg(){//main
 		     << systperc[0][2][3][iSample] << "\\% & "
 		     << systperc[1][2][3][iSample] << "\\% \\\\" << std::endl;
 	    lOutfile << "PUUP"  << " & "
-		     << systperc[0][1][4][iSample] << "\\% & "
-		     << systperc[1][1][4][iSample] << "\\% & "
-		     << systperc[0][2][4][iSample] << "\\% & "
-		     << systperc[1][2][4][iSample] << "\\% \\\\" << std::endl;
+		     << systperc[0][1][8][iSample] << "\\% & "
+		     << systperc[1][1][8][iSample] << "\\% & "
+		     << systperc[0][2][8][iSample] << "\\% & "
+		     << systperc[1][2][8][iSample] << "\\% \\\\" << std::endl;
 	    lOutfile << "PUDOWN"  << " & " 
-		     << systperc[0][1][5][iSample] << "\\% & "
-		     << systperc[1][1][5][iSample] << "\\% & "
-		     << systperc[0][2][5][iSample] << "\\% & "
-		     << systperc[1][2][5][iSample] << "\\% \\\\" << std::endl;
+		     << systperc[0][1][9][iSample] << "\\% & "
+		     << systperc[1][1][9][iSample] << "\\% & "
+		     << systperc[0][2][9][iSample] << "\\% & "
+		     << systperc[1][2][9][iSample] << "\\% \\\\" << std::endl;
 	    lOutfile << noshowpos;
 	    lOutfile << "\\hline" << std::endl
 		     << "\\end{tabular}" << std::endl; 
@@ -789,101 +875,172 @@ int extractWJetsBkg(){//main
 	
     }//loop on systematics
     
-    //print tau systematics
-    std::cout << " -- Tau results with systematics" << std::endl;
+    //print tau results
+    std::cout << "    Tau results with systematics:" << std::endl;
+
+    //NO CJV RESULTS
     double jesUp = result_nocjv[0].number - result_nocjv[nSysts-1].number;
     double jesDown = result_nocjv[1].number - result_nocjv[nSysts-1].number;
-    //select the maximum positive value
-    result_nocjv[nSysts-1].jesSyst.first = std::max(std::max(jesUp,0.),std::max(jesDown,0.));
-    //select the minimum negative value
-    result_nocjv[nSysts-1].jesSyst.second = std::min(std::min(jesUp,0.),std::min(jesDown,0.));
     double jerBetter = result_nocjv[2].number - result_nocjv[nSysts-1].number;
     double jerWorse = result_nocjv[3].number - result_nocjv[nSysts-1].number;
+    double eleeffUp = result_nocjv[4].number - result_nocjv[nSysts-1].number;
+    double eleeffDown = result_nocjv[5].number - result_nocjv[nSysts-1].number;
+    double mueffUp = result_nocjv[6].number - result_nocjv[nSysts-1].number;
+    double mueffDown = result_nocjv[7].number - result_nocjv[nSysts-1].number;
+    double puUp = result_nocjv[8].number - result_nocjv[nSysts-1].number;
+    double puDown = result_nocjv[9].number - result_nocjv[nSysts-1].number;
+    
+    result_nocjv[nSysts-1].jesUp = jesUp;
+    result_nocjv[nSysts-1].jesDown = jesDown;
+    result_nocjv[nSysts-1].jerBetter = jerBetter;
+    result_nocjv[nSysts-1].jerWorse = jerWorse;
+    result_nocjv[nSysts-1].eleeffUp = eleeffUp;
+    result_nocjv[nSysts-1].eleeffDown = eleeffDown;
+    result_nocjv[nSysts-1].mueffUp = mueffUp;
+    result_nocjv[nSysts-1].mueffDown = mueffDown;
+    result_nocjv[nSysts-1].puUp = puUp;
+    result_nocjv[nSysts-1].puDown = puDown;
     result_nocjv[nSysts-1].jerSyst.first = std::max(std::max(jerBetter,0.),std::max(jerWorse,0.));
     result_nocjv[nSysts-1].jerSyst.second = std::min(std::min(jerBetter,0.),std::min(jerWorse,0.));
-    double puUp = result_nocjv[4].number - result_nocjv[nSysts-1].number;
-    double puDown = result_nocjv[5].number - result_nocjv[nSysts-1].number;
+    result_nocjv[nSysts-1].jesSyst.first = std::max(std::max(jesUp,0.),std::max(jesDown,0.));
+    result_nocjv[nSysts-1].jesSyst.second = std::min(std::min(jesUp,0.),std::min(jesDown,0.));
+    result_nocjv[nSysts-1].eleeffSyst.first = std::max(std::max(eleeffUp,0.),std::max(eleeffDown,0.));
+    result_nocjv[nSysts-1].eleeffSyst.second = std::min(std::min(eleeffUp,0.),std::min(eleeffDown,0.));    
+    result_nocjv[nSysts-1].mueffSyst.first = std::max(std::max(mueffUp,0.),std::max(mueffDown,0.));
+    result_nocjv[nSysts-1].mueffSyst.second = std::min(std::min(mueffUp,0.),std::min(mueffDown,0.));    
     result_nocjv[nSysts-1].puSyst.first = std::max(std::max(puUp,0.),std::max(puDown,0.));
-    result_nocjv[nSysts-1].puSyst.second = std::min(std::min(puUp,0.),std::min(puDown,0.));
+    result_nocjv[nSysts-1].puSyst.second = std::min(std::min(puUp,0.),std::min(puDown,0.));    
 
-    std::cout << result_nocjv[0].number << " "
-	      << result_nocjv[1].number << " "
-	      << result_nocjv[2].number << " "
-	      << result_nocjv[3].number << " "
-	      << result_nocjv[4].number << std::endl;
-    std::cout << jesUp << " " << jesDown << " " << jerBetter << " " << jerWorse << std::endl;
 
-    std::cout << "\\% Systematics & stat & MCstat & tauID & JES & JER & PU \\\\" << std::endl 
-	      << "Result_noCJV & " 
-	       << std::setprecision(3)
+	     
+    if(verbose){
+      std::cout <<"      Syst results:"<<std::endl;
+      std::cout << "        "<<result_nocjv[0].number << " "
+		<< result_nocjv[1].number << " "
+                << result_nocjv[2].number << " "
+		<< result_nocjv[3].number << " "
+		<< result_nocjv[4].number << " "
+		<< result_nocjv[5].number << " "
+		<< result_nocjv[6].number << std::endl;
+      std::cout << "        "<< jesUp << " " << jesDown << " " << jerBetter << " " << jerWorse << std::endl;
+    }
+    
+    if(!dolatex){
+      std::cout<<"      No CJV result";
+      std::cout<<" = "<<std::setprecision(3)<<result_nocjv[nSysts-1].number <<" \u00b1 " << result_nocjv[nSysts-1].stat <<"(stat.) \u00b1 "<<result_nocjv[nSysts-1].syst<<"(MC stat.) ";
+      if(dojes)std::cout<<showpos<<result_nocjv[nSysts-1].jesUp<<"(JES up) "<<result_nocjv[nSysts-1].jesDown<<"(JES down) "<<noshowpos;
+      if(dojer)std::cout<<showpos<<result_nocjv[nSysts-1].jerBetter<<"(JER better) "<<result_nocjv[nSysts-1].jerWorse<<"(JER worse) "<<noshowpos;
+      if(doeleerr)std::cout<<showpos<<result_nocjv[nSysts-1].eleeffUp<<"(ELEEFF up) "<<result_nocjv[nSysts-1].eleeffDown<<"(ELEEFF down) "<<noshowpos;
+      if(domuerr)std::cout<<showpos<<result_nocjv[nSysts-1].mueffUp<<"(MUEFF up) "<<result_nocjv[nSysts-1].mueffDown<<"(MUEFF down) "<<noshowpos;
+      std::cout<<showpos<<result_nocjv[nSysts-1].puUp<<"(PU up) "<<result_nocjv[nSysts-1].puDown<<"(PU down) "<<noshowpos;
+      std::cout<<std::endl;
+    }
+    else{
+      //std::cout<<":"<<std::endl;
+    std::cout << "        \\% Errors & Data stat & MC stat & tauID & JES & JER & PU \\\\" << std::endl 
+	      << "        No CJV Errors & " 
+	      << std::setprecision(3)
 	      << result_nocjv[nSysts-1].stat << " & " 
 	      << result_nocjv[nSysts-1].syst << " & "
 	      << result_nocjv[nSysts-1].tauidSyst << " & "
-	      << "$^{"<< result_nocjv[nSysts-1].jesSyst.first << "}_{"<< result_nocjv[nSysts-1].jesSyst.second << "}$ &  "
-	      << "$^{"<< result_nocjv[nSysts-1].jerSyst.first << "}_{"<< result_nocjv[nSysts-1].jerSyst.second << "}$ & "
-	      << "$^{"<< result_nocjv[nSysts-1].puSyst.first << "}_{"<< result_nocjv[nSysts-1].puSyst.second << "}$ \\\\"
+	      << "$^{"<< result_nocjv[nSysts-1].jesUp << "}_{"<< result_nocjv[nSysts-1].jesDown << "}$ &  "
+	      << "$^{"<< result_nocjv[nSysts-1].jerBetter << "}_{"<< result_nocjv[nSysts-1].jerWorse << "}$ & "
+	      << "$^{"<< result_nocjv[nSysts-1].puUp << "}_{"<< result_nocjv[nSysts-1].puDown << "}$ \\\\"
 	      << std::endl
-	      << "\\% unc. & " 
+	      << "        \\% perc. unc. & " 
 	      << result_nocjv[nSysts-1].stat/result_nocjv[nSysts-1].number*100 << " & " 
 	      << result_nocjv[nSysts-1].syst/result_nocjv[nSysts-1].number*100 << " & "
 	      << result_nocjv[nSysts-1].tauidSyst/result_nocjv[nSysts-1].number*100 << " & "
-	      << "$^{"<< result_nocjv[nSysts-1].jesSyst.first/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].jesSyst.second/result_nocjv[nSysts-1].number*100 << "}$ & "
-	      << "$^{"<< result_nocjv[nSysts-1].jerSyst.first/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].jerSyst.second/result_nocjv[nSysts-1].number*100 << "}$ & "
-	      << "$^{"<< result_nocjv[nSysts-1].puSyst.first/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].puSyst.second/result_nocjv[nSysts-1].number*100 << "}$ \\\\ "
-	      << std::endl
-	      << "Result_Nocjv = $" 
+	      << "$^{"<< result_nocjv[nSysts-1].jesUp/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].jesDown/result_nocjv[nSysts-1].number*100 << "}$ & "
+	      << "$^{"<< result_nocjv[nSysts-1].jerBetter/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].jerWorse/result_nocjv[nSysts-1].number*100 << "}$ & "
+	      << "$^{"<< result_nocjv[nSysts-1].puUp/result_nocjv[nSysts-1].number*100 << "}_{"<< result_nocjv[nSysts-1].puDown/result_nocjv[nSysts-1].number*100 << "}$ \\\\ "
+	      << std::endl;
+    std::cout<< "        No CJV Result = $" 
 	      << result_nocjv[nSysts-1].number << " \\pm " 
 	      << result_nocjv[nSysts-1].stat << " (stat) ^{" 
 	      << result_nocjv[nSysts-1].totalSyst().first  << "}_{"
 	      << result_nocjv[nSysts-1].totalSyst().second << "} (syst) $"
 	      << std::endl;
-
+    }
+    //CJV PASS RESULTS
     jesUp = result[0].number - result[nSysts-1].number;
     jesDown = result[1].number - result[nSysts-1].number;
-    //select the maximum positive value
-    result[nSysts-1].jesSyst.first = std::max(std::max(jesUp,0.),std::max(jesDown,0.));
-    //select the minimum negative value
-    result[nSysts-1].jesSyst.second = std::min(std::min(jesUp,0.),std::min(jesDown,0.));
     jerBetter = result[2].number - result[nSysts-1].number;
     jerWorse = result[3].number - result[nSysts-1].number;
+    eleeffUp = result[4].number - result[nSysts-1].number;
+    eleeffDown = result[5].number - result[nSysts-1].number;
+    mueffUp = result[6].number - result[nSysts-1].number;
+    mueffDown = result[7].number - result[nSysts-1].number;
+    puUp = result[8].number - result[nSysts-1].number;
+    puDown = result[9].number - result[nSysts-1].number;
+    result[nSysts-1].jesUp = jesUp;
+    result[nSysts-1].jesDown = jesDown;
+    result[nSysts-1].jerBetter = jerBetter;
+    result[nSysts-1].jerWorse = jerWorse;
+    result[nSysts-1].eleeffUp = eleeffUp;
+    result[nSysts-1].eleeffDown = eleeffDown;
+    result[nSysts-1].mueffUp = mueffUp;
+    result[nSysts-1].mueffDown = mueffDown;
+    result[nSysts-1].puUp = puUp;
+    result[nSysts-1].puDown = puDown;
     result[nSysts-1].jerSyst.first = std::max(std::max(jerBetter,0.),std::max(jerWorse,0.));
     result[nSysts-1].jerSyst.second = std::min(std::min(jerBetter,0.),std::min(jerWorse,0.));
-    puUp = result[4].number - result[nSysts-1].number;
-    puDown = result[5].number - result[nSysts-1].number;
+    result[nSysts-1].jesSyst.first = std::max(std::max(jesUp,0.),std::max(jesDown,0.));
+    result[nSysts-1].jesSyst.second = std::min(std::min(jesUp,0.),std::min(jesDown,0.));
+    result[nSysts-1].eleeffSyst.first = std::max(std::max(eleeffUp,0.),std::max(eleeffDown,0.));
+    result[nSysts-1].eleeffSyst.second = std::min(std::min(eleeffUp,0.),std::min(eleeffDown,0.));    
+    result[nSysts-1].mueffSyst.first = std::max(std::max(mueffUp,0.),std::max(mueffDown,0.));
+    result[nSysts-1].mueffSyst.second = std::min(std::min(mueffUp,0.),std::min(mueffDown,0.));    
     result[nSysts-1].puSyst.first = std::max(std::max(puUp,0.),std::max(puDown,0.));
-    result[nSysts-1].puSyst.second = std::min(std::min(puUp,0.),std::min(puDown,0.));
+    result[nSysts-1].puSyst.second = std::min(std::min(puUp,0.),std::min(puDown,0.));    
 
-    std::cout << "\\hline" << std::endl 
-	      << "Result & " 
+
+    
+
+    if(!dolatex){
+      std::cout<<"      CJV Pass";
+      std::cout<<" result = "<<std::setprecision(3)<<result[nSysts-1].number <<" \u00b1 " << result[nSysts-1].stat <<"(stat.) \u00b1 "<<result[nSysts-1].syst<<"(MC stat.) ";
+      if(dojes)std::cout<<showpos<<result[nSysts-1].jesUp<<"(JES up) "<<result[nSysts-1].jesDown<<"(JES down) "<<noshowpos;
+      if(dojer)std::cout<<showpos<<result[nSysts-1].jerBetter<<"(JER better) "<<result[nSysts-1].jerWorse<<"(JER worse) "<<noshowpos;
+      if(doeleerr)std::cout<<showpos<<result[nSysts-1].eleeffUp<<"(ELEEFF up) "<<result[nSysts-1].eleeffDown<<"(ELEEFF down) "<<noshowpos;
+      if(domuerr)std::cout<<showpos<<result[nSysts-1].mueffUp<<"(MUEFF up) "<<result[nSysts-1].mueffDown<<"(MUEFF down) "<<noshowpos;
+      std::cout<<showpos<<result[nSysts-1].puUp<<"(PU up) "<<result[nSysts-1].puDown<<"(PU down) "<<noshowpos;
+      std::cout<<std::endl;
+    
+    }
+    else{
+      //std::cout<<":"<<std::endl;
+    std::cout << "        \\hline" << std::endl 
+	      << "        CJV pass Errors & " 
 	      << result[nSysts-1].stat << " & " 
 	      << result[nSysts-1].syst << " & "
 	      << result[nSysts-1].tauidSyst << " & "
-	      << "$^{"<< result[nSysts-1].jesSyst.first << "}_{"<< result[nSysts-1].jesSyst.second << "}$ & "
-	      << "$^{"<< result[nSysts-1].jerSyst.first << "}_{"<< result[nSysts-1].jerSyst.second << "}$ & "
-	      << "$^{"<< result[nSysts-1].puSyst.first << "}_{"<< result[nSysts-1].puSyst.second << "}$ \\\\"
+	      << "$^{"<< result[nSysts-1].jesUp << "}_{"<< result[nSysts-1].jesDown << "}$ & "
+	      << "$^{"<< result[nSysts-1].jerBetter << "}_{"<< result[nSysts-1].jerWorse << "}$ & "
+	      << "$^{"<< result[nSysts-1].puUp << "}_{"<< result[nSysts-1].puDown << "}$ \\\\"
 	      << std::endl
-	      << "\\% unc. & " 
+	      << "        \\% unc. & " 
 	      << result[nSysts-1].stat/result[nSysts-1].number*100 << " & " 
 	      << result[nSysts-1].syst/result[nSysts-1].number*100 << " & "
 	      << result[nSysts-1].tauidSyst/result[nSysts-1].number*100 << " & "
-	      << "$^{"<< result[nSysts-1].jesSyst.first/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].jesSyst.second/result[nSysts-1].number*100 << "}$ & "
-	      << "$^{"<< result[nSysts-1].jerSyst.first/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].jerSyst.second/result[nSysts-1].number*100 << "}$ & "
-	      << "$^{"<< result[nSysts-1].puSyst.first/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].puSyst.second/result[nSysts-1].number*100 << "}$ \\\\ "
+	      << "$^{"<< result[nSysts-1].jesUp/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].jesDown/result[nSysts-1].number*100 << "}$ & "
+	      << "$^{"<< result[nSysts-1].jerBetter/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].jerWorse/result[nSysts-1].number*100 << "}$ & "
+	      << "$^{"<< result[nSysts-1].puUp/result[nSysts-1].number*100 << "}_{"<< result[nSysts-1].puDown/result[nSysts-1].number*100 << "}$ \\\\ "
 	      << std::endl
-	      << "Result = $" 
+	      << "        CJV pass Result = $" 
 	      << result[nSysts-1].number << " \\pm " 
 	      << result[nSysts-1].stat << " (stat) ^{" 
 	      << result[nSysts-1].totalSyst().first  << "}_{"
 	      << result[nSysts-1].totalSyst().second << "} (syst) $"
 	      << std::endl;
-
-
+    }
 
     
+   
   }//loop on MET values
-  
+    
   }//loop on weights
-  
+    
   return 0;
 }//main
   

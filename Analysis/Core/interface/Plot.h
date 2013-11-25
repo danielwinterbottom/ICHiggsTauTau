@@ -43,7 +43,7 @@ namespace ic {
         use_htt_style = false;
       }
       ~Plot();
-      int GeneratePlot();
+      int GeneratePlot(std::vector<std::string> types = std::vector<std::string>({"pdf","png"}));
       bool AddTH1PlotElement(ic::TH1PlotElement element);
       bool AddRatioPlotElement(ic::RatioPlotElement element);
       void AddTextElement(ic::TextElement element);

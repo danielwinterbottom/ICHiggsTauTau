@@ -352,6 +352,7 @@ int main(int argc, char* argv[]){
       //drawn_ele[i]->hist_ptr()->Scale(1.0, "width");
           ele.back().hist_ptr()->Scale(1.0, "width");
           ele.back().set_legend_text(labels[k]);
+          if (k > 0) ele.back().set_line_style(2);
           test_plot.AddTH1PlotElement(ele.back());
         } else {
           yields.push_back(0.0);

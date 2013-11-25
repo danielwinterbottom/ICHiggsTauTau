@@ -1,16 +1,41 @@
 {
+  //SCRIPT RUNS ON A HADD OF MC FILES
   //OPEN SIGNAL MC FILE
-  TFile *f = new TFile("../MCforresmeasurment5etabins.root");//../output/nunu/MET130/MC_VBF_HToZZTo4Nu_M-120.root");
+  TFile *f = new TFile("40binspuweightedMCforresmeasurment.root");//../output/nunu/MET130/MC_VBF_HToZZTo4Nu_M-120.root");
   
   
   //SET UP LOOP OVER PT AND ETA BINS
-  int nptbins=13;
+  int nptbins=40;
   int netabins=5;
   string etabins[netabins]={"0p0-0p5","0p5-1p1","1p1-1p7","1p7-2p3","2p3-5p0"};
   //   int netabins=10;
   //   std::string etabins[netabins]={"0p0-0p5","0p5-1p0","1p0-1p5","1p5-2p0","2p0-2p5","2p5-3p0","3p0-3p5","3p5-4p0","4p0-4p5","4p5-9p9"};
-  string ptbins[nptbins]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};  
-  
+  //TCanvas *recogencanvas[70][5];  
+  //Set ptbins
+  //string ptbins[nptbins]={"0-20","20-40","40-60","60-80","80-100","100-120","120-140","140-160","160-180","180-200","200-250","250-300","300-inf"};  
+  string ptbins[nptbins];
+  for(int i=0;i<30;i++){
+    ostringstream convert;
+    convert << 2*i;
+    string binlow=convert.str();
+    ostringstream convert2;
+    convert2 << 2*(i+1);
+    string binhigh=convert2.str();
+    ptbins[i]=(binlow+"-"+binhigh);
+  }
+  for(int i=30;i<37;i++){
+    ostringstream convert;
+    convert << ((i-30)*20)+60;
+    string binlow=convert.str();
+    ostringstream convert2;
+    convert2 << ((i-29)*20)+60;
+    string binhigh=convert2.str();
+    ptbins[i]=(binlow+"-"+binhigh);
+  }
+  ptbins[37]="200-250";
+  ptbins[38]="250-300";
+  ptbins[39]="300-inf";
+    
   TGraphErrors *res[netabins]; //MAKE OUTPUT TGRAPH
 
   for(int i=0;i<netabins;i++){//loop over eta bins
@@ -20,26 +45,37 @@
       f->GetObject(("ResMeasurement/recogenjetptratio_"+etabins[i]+"_"+ptbins[j]).c_str(),recogenptratio);
       //std::cout<<"opened histogram "<<("ResMeasurement/recogenjetptratio_"+etabins[i]+"_"+ptbins[j])<<" successfully"<<std::endl;
       
-      //FIT TO A GAUSSIAN
+      //FIT RESPONSE
       recogenptratio->Sumw2();
       if(recogenptratio->GetEntries()==0){
 	continue;
       }
-      recogenptratio->Fit("gaus");
-
-      //       TCanvas *c2 = new TCanvas();
-      //       recogenptratio->Draw();
-      //       c2->SaveAs(("recogenptratio"+etabins[i]+"_"+ptbins[j]+".pdf").c_str());
+      double rms=recogenptratio->GetRMS();
+      double mean=recogenptratio->GetMean();
+      TF1 *fitfunc1=new TF1("fitfunc1","gaus",mean-2*rms,mean+2*rms);
+      recogenptratio->Fit("fitfunc1","R");
+      double sigma1=fitfunc1->GetParameter(2);
+      double mean1=fitfunc1->GetParameter(1);
+      TF1 *fitfunc2=new TF1("fitfunc2","gaus",mean1-2*sigma1,mean1+2*sigma1);
+      recogenptratio->Fit("fitfunc2","R");
+      double sigma2=fitfunc2->GetParameter(2);
+      double mean2=fitfunc2->GetParameter(1);
+      TF1 *fitfunc=new TF1("fitfunc","gaus",mean2-2*sigma2,mean2+2*sigma2);
+      recogenptratio->Fit("fitfunc","R");
+	    
+//       recogencanvas[j][i]=new TCanvas();
+//       //recogenptratio->GetXaxis()->SetRangeUser(0.,3.);
+//        recogenptratio->Draw();
+//        recogencanvas[j][i]->SaveAs(("gausfits/recogenptratio"+etabins[i]+"_"+ptbins[j]+".pdf").c_str());
 
       //GET FIT RESULT
-      TF1 *fitfunc=recogenptratio->GetFunction("gaus");
       double norm=fitfunc->GetParameter(0);
       double normerr=fitfunc->GetParError(0);
       double mean=fitfunc->GetParameter(1);
       double meanerr=fitfunc->GetParError(1);
       double sigma=fitfunc->GetParameter(2);
       double sigmaerr=fitfunc->GetParError(2);
-      std::cout<<"For eta "<<etabins[i]<<" and pt "<<ptbins[j]<<" Sigma_MC is: "<<sigma<<"+/-"<<sigmaerr<<". Mean and norm are "<<mean<<"+/-"<<meanerr<<" "<<norm<<"+/-"<<normerr<<std::endl;
+      //std::cout<<"For eta "<<etabins[i]<<" and pt "<<ptbins[j]<<" Sigma_MC is: "<<sigma<<"+/-"<<sigmaerr<<". Mean and norm are "<<mean<<"+/-"<<meanerr<<" "<<norm<<"+/-"<<normerr<<std::endl;
 
       
       //GET PT BIN MIDPOINT AND BIN WIDTH
@@ -73,6 +109,7 @@
     }
   }
 
+
   //GET SPRING10 RESOLUTION
   //   TFile file("spring10ptresolutions10etabins.root","read");
   //   TF1 *tf[10];
@@ -94,6 +131,14 @@
   file->GetObject("fsigma_Spring10_PtResolution_AK5PF_JetEta1.4",tf[2]);
   file->GetObject("fsigma_Spring10_PtResolution_AK5PF_JetEta2",tf[3]);
   file->GetObject("fsigma_Spring10_PtResolution_AK5PF_JetEta3.65",tf[4]);
+
+//   TFile file("autumn13ptresolutions.root","read");
+//   TF1 *tf[5];
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta0.25",tf[0]);
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta0.8",tf[1]);
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta1.4",tf[2]);
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta2",tf[3]);
+//   file->GetObject("fsigma_Autumn13_PtResolution_AK5PF_JetEta3.65",tf[4]);
   
   //FIT RESOLUTION
   TF1 *resfunc[5];
@@ -108,10 +153,20 @@
     leg->AddEntry(res[i],"Resolution from our W MC","lp");
     leg->AddEntry(tf[i],"Resolution from Spring10","l");
     
-    resfunc[i] = new TF1("resfunc","sqrt((([0]<0)?-1:1)*[0]*[0]/(x*x)+[1]*[1]*pow(x,[2]-1)+[3]*[3])",0.,400.);
-    res[i]->Fit(resfunc[i]);
+    resfunc[i] = new TF1("resfunc","sqrt((([0]<0)?-1:1)*[0]*[0]/(x*x)+[1]*[1]*pow(x,[2]-1)+[3]*[3])",25.,400.);
+    res[i]->Fit(resfunc[i],"R");
     res[i]->GetFunction("resfunc")->SetLineColor(4);
-    
+
+    TF1 *resfuncfitted =res[i]->GetFunction("resfunc");
+    double chisquare=resfuncfitted->GetChisquare();
+    std::cout<<"Chi2 of fit is: "<<chisquare<<std::endl;
+    double pars[4];
+    for(int parnum=0;parnum<4;parnum++){
+      pars[parnum]=resfuncfitted->GetParameter(parnum);
+    }
+
+    std::cout<<"For eta of: "<<etabins[i]<<" parameters for res file are: "<<pars[0]<<" "<<pars[1]<<" "<<pars[2]<<" "<<pars[3]<<std::endl;
+
     tf[i]->SetRange(20,400);
     res[i]->GetXaxis()->SetRangeUser(20,400);
     res[i]->SetTitle(names[i].c_str());
@@ -133,3 +188,4 @@
   }
   outfile->Close();
 }
+

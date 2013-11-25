@@ -17,6 +17,7 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, ic::mc, mc)
   CLASS_MEMBER(HinvWeights, ic::era, era)
   CLASS_MEMBER(HinvWeights, bool, save_weights)
+  CLASS_MEMBER(HinvWeights, bool, save_lumixs_weights)
   CLASS_MEMBER(HinvWeights, bool, do_trg_weights)
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)
@@ -29,7 +30,9 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_idiso_err)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_errmuore)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_errupordown)
-
+  CLASS_MEMBER(HinvWeights, bool, do_lumixs_weights)
+  CLASS_MEMBER(HinvWeights, std::string, input_params)
+  CLASS_MEMBER(HinvWeights, std::string, sample_name)
 
   TFile *triggerSF_;
   TH1F *hist_trigSF_METL1;
@@ -41,6 +44,8 @@ class HinvWeights : public ModuleBase {
   TH1F *tightmuweight;
   TH1F *vetoeleweight;
   TH1F *vetomuweight;
+
+  double lumixsweight;
 
   std::vector<double> eTight_idisoSF_;
   std::vector<double> eVeto_idisoDataEff_;

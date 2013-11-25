@@ -333,22 +333,22 @@ echo "Applying 7TeV scale factors..."
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="tau_decay_mode==1" --var="m_2(20,0,2)" --extra_pad=1.5 \
+  --method=8 --cat="pt_2>30. && tau_decay_mode==1" --var="m_2(20,0,2)" --extra_pad=1.5 \
   --x_axis_label="Tau Mass [GeV]" --datacard="1prong" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="tau_decay_mode==1" --var="m_2(20,0,2)" --extra_pad=1.5\
+  --method=8 --cat="pt_2>30. && tau_decay_mode==1" --var="m_2(20,0,2)" --extra_pad=1.5\
   --x_axis_label="Tau Mass [GeV]" --datacard="1prong" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="tau_decay_mode==10" --var="m_2(20,0,2)" --extra_pad=1.5 \
+  --method=8 --cat="pt_2>30. && tau_decay_mode==10" --var="m_2(20,0,2)" --extra_pad=1.5 \
   --x_axis_label="Tau Mass [GeV]" --datacard="3prong" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="tau_decay_mode==10" --var="m_2(20,0,2)" --extra_pad=1.5 \
+  --method=8 --cat="pt_2>30. && tau_decay_mode==10" --var="m_2(20,0,2)" --extra_pad=1.5 \
   --x_axis_label="Tau Mass [GeV]" --datacard="3prong" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
@@ -589,17 +589,17 @@ fi
 #### bcsv
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
+  --method=8 --cat="pt_2>30. && n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
   --x_axis_label="CSV discriminator" --datacard="prebtag"  $ET_BTAG_SHIFT \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
+  --method=8 --cat="pt_2>30. && n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
   --x_axis_label="CSV discriminator" --datacard="prebtag"  $MT_BTAG_SHIFT \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
-  --method=8 --cat="n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
+  --method=8 --cat="pt_2>30. && n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
   --x_axis_label="CSV discriminator" --datacard="prebtag"  $EM_BTAG_SHIFT \
   --background_scheme="em_default"
 

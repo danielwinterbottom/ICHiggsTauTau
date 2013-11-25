@@ -32,19 +32,20 @@ int studyWembedding(){//main
   Wfiles.push_back("EWK-W2jplus_taunu");
 
   const unsigned nFS = 2;
-  std::string fsStr[nFS] = {"nunu","taunu"};
+  std::string fsStr[nFS] = {"nunu","munu"};
   std::string folder[nFS] = {
     "output_tauEmbed/nunu/MET130/",
-    "output/tauEmbed/taunu/MET130/"
+    "output_tauEmbed/munu/MET130/"
   };
 
-  std::string suffix = "";
+  std::string suffix = "_metNoMuons";
+  //std::string suffix = "";
   
   const unsigned nWFiles = Wfiles.size();
   
 
-  double lLumi = 19619.;
-  double lLumiEmbedded = 9964.8*0.648; //correct for tau BR to hadronic.
+  double lLumi = 19500.;
+  double lLumiEmbedded = 9964.8;//factor not so fair: veto of additional leptons...*0.648; //correct for tau BR to hadronic.
 
   double w_normalisation[nWFiles];
   for (unsigned iN(0); iN<6;++iN){
@@ -55,6 +56,8 @@ int studyWembedding(){//main
   
 
   //gStyle->SetOptStat("euoi");
+
+  gStyle->SetOptStat(0);
 
   std::ostringstream lPath;
 
@@ -74,20 +77,22 @@ int studyWembedding(){//main
   std::string yTitle[nHists] = {"Events","Events","Events","Events","Events","Events","Events"};
 
   double minX[nHists] = {0,0,0,0,0,0,-3};
-  double maxX[nHists] = {10,10,300,250,250,250,3};
-  int logy[nHists] = {1,1,1,1,1,1,0};
-  int rebin[nHists] = {1,1,10,5,5,5,2};
+  double maxX[nHists] = {10,10,500,400,400,250,3};
+  int logy[nHists] = {1,1,0,1,1,1,0};
+  int rebin[nHists] = {1,1,10,10,10,5,2};
 
-  std::vector<std::string> selections;
-  selections.push_back("JetPair");
-  selections.push_back("VBF");
+  std::vector<std::string> selections[nFS];
+  selections[0].push_back("JetPair");
+  selections[0].push_back("VBF");
+  selections[1].push_back("JetPair");
+  selections[1].push_back("DPhiSIGNAL_noCJV");
   //selections.push_back("tauID");
   
-  const unsigned nSel = selections.size();
+  const unsigned nSel = selections[0].size();
 
-  for (unsigned iFS(0); iFS<nFS-1; ++iFS){
+  //for (unsigned iFS(0); iFS<nFS; ++iFS){
 
-    std::cout << " -- Processing final state: " << fsStr[iFS] << std::endl;
+  //std::cout << " -- Processing final state: " << fsStr[iFS] << std::endl;
     
     TFile *fW[nWFiles];
     TFile *fData[2];
@@ -108,9 +113,9 @@ int studyWembedding(){//main
     
     for (unsigned iS(0); iS<nSel; ++iS){//loop on selections
       lPath.str("");
-      lPath << "../" << folder[iFS] << "/MC_";
+      lPath << "../" << folder[0] << "/MC_";
       
-      lOutfile << selections[iS] << " & $ " ;
+      lOutfile << selections[0][iS] << " & $ " ;
       
       for (unsigned iP(0); iP<nHists; ++iP){//loop on points
 	//get histograms
@@ -118,7 +123,7 @@ int studyWembedding(){//main
 	  fW[iW] = TFile::Open((lPath.str()+Wfiles[iW]+".root").c_str());
 	  //fW[iW]->cd((lSelection[iS]+"/weights/").c_str());
 	  //if (iP < 2) 
-	  fW[iW]->cd((selections[iS]+"/").c_str());
+	  fW[iW]->cd((selections[0][iS]+"/").c_str());
 	  //else fW[iW]->cd((selections[iS]+"/weights/").c_str());
 	  if (iW==0) {
 	    hist[iP][0] = (TH1F*)gDirectory->Get(lHistName[iP].c_str())->Clone();
@@ -139,14 +144,15 @@ int studyWembedding(){//main
 	  }
 	}//loop on w hists
       
-	fData[0] = TFile::Open(("../"+folder[iFS]+"/DataEmbedded_METembedded-9965pb.root").c_str());
-	fData[0]->cd((selections[iS]+"/").c_str());
+	fData[0] = TFile::Open(("../"+folder[0]+"/DataEmbedded_METembedded-all.root").c_str());
+	fData[0]->cd((selections[0][iS]+"/").c_str());
 	hist[iP][1] = (TH1F*)gDirectory->Get(lHistName[iP].c_str())->Clone();
 	hist[iP][1]->Scale(lLumi/lLumiEmbedded);
-	fData[1] = TFile::Open(("../"+folder[iFS]+"/Data_MET-2012-all.root").c_str());
-	fData[1]->cd((selections[iS]+"/").c_str());
+	fData[1] = TFile::Open(("../"+folder[1]+"/Data_MET-2012-all-metNoMuons.root").c_str());
+	//fData[1] = TFile::Open(("../"+folder[1]+"/Data_MET-2012-all.root").c_str());
+	fData[1]->cd((selections[1][iS]+"/").c_str());
 	hist[iP][2] = (TH1F*)gDirectory->Get(lHistName[iP].c_str())->Clone();
-	hist[iP][2]->Scale(1.);
+	hist[iP][2]->Scale(0.648);//this is data muons: remove tau->had BR. ttbar is also in embedded data
 
 
 	//std::cout << " -- total entries = " << hist[iP]->Integral()
@@ -160,13 +166,14 @@ int studyWembedding(){//main
 	for (unsigned iD(0); iD<nSamples; ++iD){//loop on samples
 	  error[iP][iD] = 0;
 	  integral[iP][iD] = hist[iP][iD]->IntegralAndError(0,hist[iP][iD]->GetNbinsX()+1,error[iP][iD]);
-	  std::cout << selections[iS] << " " << sampleStr[iD] << " " << lHistName[iP] << " : " << integral[iP][iD] << " +/- " << error[iP][iD] << std::endl; 
+	  std::cout << selections[0][iS] << " " << sampleStr[iD] << " " << lHistName[iP] << " : " << integral[iP][iD] << " +/- " << error[iP][iD] << std::endl; 
 	  
 	  
 	  hist[iP][iD]->Rebin(rebin[iP]);
+	  hist[iP][iD]->SetMinimum(0.1);
 	  hist[iP][iD]->GetXaxis()->SetTitle(xTitle[iP].c_str());
 	  hist[iP][iD]->GetYaxis()->SetTitle(yTitle[iP].c_str());
-	  hist[iP][iD]->SetTitle(selections[iS].c_str());
+	  hist[iP][iD]->SetTitle(selections[0][iS].c_str());
 	  hist[iP][iD]->SetLineColor(iD+1);
 	  hist[iP][iD]->SetMarkerColor(iD+1);
 	  hist[iP][iD]->SetMarkerStyle(21+iD);
@@ -182,16 +189,16 @@ int studyWembedding(){//main
 	  
 	}//loop on samples
 
-	leg = new TLegend(0.3,0.7,0.6,0.89);
+	leg = new TLegend(0.5,0.8,1.,1.);
 	leg->SetFillColor(10);
 	leg->AddEntry(hist[iP][0],"MC W#rightarrow #tau#nu QCD+EWK","P");
 	//leg->AddEntry(hist_ewk[iP],"W#rightarrow #tau#nu EWK","F");
-	leg->AddEntry(hist[iP][1],"Data embedded","P");
-	leg->AddEntry(hist[iP][2],"Data","P");
+	leg->AddEntry(hist[iP][1],"Data Embedded","P");
+	leg->AddEntry(hist[iP][2],"Data TightMu","P");
 	
 	leg->Draw("same");
 	myc[iP]->Update();
-	myc[iP]->Print(("PLOTS/WtauEmbedding_"+selections[iS]+"_"+histStr[iP]+".pdf").c_str());
+	myc[iP]->Print(("PLOTS/WtauEmbedding_"+selections[0][iS]+"_"+histStr[iP]+suffix+".pdf").c_str());
   
       }//loop on points
       
@@ -202,7 +209,7 @@ int studyWembedding(){//main
     
     lOutfile.close();
     
-  }//loop on final state
+    //}//loop on final state
   
   return 0;
       

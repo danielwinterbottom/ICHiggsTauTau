@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "TMath.h"
 #include "TSystem.h"
 #include "TFile.h"
@@ -28,6 +29,10 @@ namespace ic {//namespace
     do_idiso_err_       = false;
     do_idiso_errupordown_ = true;
     do_idiso_errmuore_ = true;
+    do_lumixs_weights_ = false;
+    save_lumixs_weights_ = true;
+    input_params_ = "filelists/Apr04/ParamsApr04.dat";
+    sample_name_= "test";
     input_met_ = "metNoMuons";
     hist_trigSF_METL1 = 0;
     hist_trigSF_METHLT = 0;
@@ -51,6 +56,10 @@ namespace ic {//namespace
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
     std::cout << "Do ID & iso weights for Tight leptons ?: \t\t" << do_idiso_tight_weights_ << std::endl;
     std::cout << "Do ID & iso weights for veto leptons ?: \t\t" << do_idiso_veto_weights_ << std::endl;
+    std::cout << "Do ID & iso weight errors ?: \t\t" << do_idiso_err_ <<std::endl;
+    std::cout << "Do ID & iso weight error for muore ?: \t\t" << do_idiso_errmuore_ <<std::endl;
+ std::cout << "Do ID & iso weight errors up or down?: \t\t" << do_idiso_errupordown_ <<std::endl;
+    
     std::cout << "Input MET for MET HLT:  \t\t" << input_met_ << std::endl;
     std::cout << "Note: Input MET for MET L1 is always metNoMuons." << std::endl;
 
@@ -60,6 +69,39 @@ namespace ic {//namespace
     tightmuweight  = dir.make<TH1F>("tightmuweight","tightmuweight",2000,0.,2.);
     vetoeleweight = dir.make<TH1F>("vetoeleweight","vetoeleweight",2000,0.,2.);
     vetomuweight  = dir.make<TH1F>("vetomuweight","vetomuweight",2000,0.,2.);
+
+    if(do_lumixs_weights_){
+      //Get Sample name file
+      std::string suffix=".root";
+      std::size_t found = sample_name_.find(suffix);
+      if(found==std::string::npos){
+	lumixsweight=1;
+	std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
+      }
+      else{
+	sample_name_.erase(found,5);
+	std::cout << "Sample Name: "<<sample_name_<<std::endl;
+
+	//Get lumi xs and events from params file
+	SimpleParamParser parser;
+	std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
+	parser.ParseFile(input_params_);
+	std::cout<<"parsed"<<std::endl;
+	double xs=parser.GetParam<double>("XS_"+sample_name_);
+	std::cout<<"got xs"<<std::endl;
+	double events=parser.GetParam<double>("EVT_"+sample_name_);
+	std::cout<<"got events"<<std::endl;
+	double lumi=parser.GetParam<double>("LUMI_DATA");
+	std::cout<<"got lumi"<<std::endl;
+
+	std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+	std::cout<<"EVT is: "<<events<<std::endl;
+	std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
+
+	lumixsweight=xs*lumi/events;
+	std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
+      }
+    }
 
     if (do_w_soup_) {
       std::cout << "Making W Soup:" << std::endl;
@@ -97,6 +139,8 @@ namespace ic {//namespace
 
     if (save_weights_){
     // do weights even if not applied, to fill histo with weight for comparison !
+    
+
     //get trigger scale factor histograms from file
     triggerSF_ = new TFile("data/scale_factors/DataMCWeight_53X_v1.root");
     hist_trigSF_METL1 = (TH1F*)gDirectory->Get("METL1");
@@ -154,8 +198,8 @@ namespace ic {//namespace
     }
 
     if(!do_idiso_err_){
-      fillVector("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_);
-      fillVector("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+      fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
+      fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
       fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
       
       fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
@@ -166,8 +210,8 @@ namespace ic {//namespace
       fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
     }
     else if(do_idiso_errmuore_){
-      fillVector("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_);
-      fillVector("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_);
+      fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
+      fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
       fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
       
       fillVectorError("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
@@ -178,8 +222,8 @@ namespace ic {//namespace
       fillVectorError("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
     }
     else{
-      fillVectorError("data/scale_factors/ele_tight_id.txt",eTight_idisoSF_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/ele_veto_id_data_eff.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_,do_idiso_errupordown_);
+      fillVectorError("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
       fillVectorError("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
       
       fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
@@ -231,9 +275,18 @@ namespace ic {//namespace
 
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
+    if(do_lumixs_weights_){
+      //std::cout<<"weight before lumixs: "<<eventInfo->total_weight()<<std::endl;
+      //std::cout<<"intended lumixsweight: "<<lumixsweight<<std::endl;
+      eventInfo->set_weight("lumixs",lumixsweight);
+      //std::cout<<"weight after lumixs: "<<eventInfo->total_weight()<<std::endl;
+      //std::cout<<"lumixsweight info "<<eventInfo->weight_is_enabled("lumixs") << " " << eventInfo->weight_defined("lumixs") << " " << eventInfo->weight("lumixs") << std::endl;
+    }
+    //else eventInfo->set_weight("!lumixs",lumixsweight);
+    
     if (save_weights_){
 
-    //double weight = 1.0;
+          //double weight = 1.0;
 
  //    if (do_btag_weight_) {
 //       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
@@ -409,6 +462,7 @@ namespace ic {//namespace
     if (do_idiso_veto_weights_) eventInfo->set_weight("idisoVeto",ele_veto_weight*mu_veto_weight);
     else eventInfo->set_weight("!idisoVeto",ele_veto_weight*mu_veto_weight);
 
+    
 
 
     }
@@ -491,7 +545,7 @@ namespace ic {//namespace
     }
 
     if (!save_weights_) event->Add("NoParton",zeroParton);
-
+    //std::cout<<"Final weight: "<<eventInfo->total_weight()<<std::endl;
     return 0;
   }
 
@@ -642,7 +696,7 @@ namespace ic {//namespace
       double SF = 0;
       double SFerrPlus = 0;
       double SFerrMinus = 0;
-      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrPlus>>SFerrMinus;
+      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
       //protect against blank line at the end of the file
       if (pTmin > 1) aVector.push_back(SF);
       if(lInput.eof()){
@@ -674,7 +728,7 @@ namespace ic {//namespace
       double SF = 0;
       double SFerrPlus = 0;
       double SFerrMinus = 0;
-      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrPlus>>SFerrMinus;
+      lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
       //protect against blank line at the end of the file
       if(upordown){
 	if (pTmin > 1) aVector.push_back(SF+SFerrPlus);

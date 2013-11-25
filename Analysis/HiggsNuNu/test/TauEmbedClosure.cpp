@@ -716,6 +716,7 @@ int main(int argc, char* argv[]){
   ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"selMuons",2,100);
   ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"selElectrons",1,100);
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,100);
+  //ModifyMet metNoTaus = ModifyMet("metNoTaus",mettype,"taus",3,100);
 
   MetSelection metNoMuonFilter = MetSelection("MetNoMuonFilter","metNoMuons",false,filtersVec,met_cut,met_cut_max);
   MetSelection metNoElectronFilter = MetSelection("MetNoElectronFilter","metNoElectrons",false,filtersVec,met_cut,met_cut_max);
@@ -818,7 +819,7 @@ int main(int argc, char* argv[]){
 
 
 
-  HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour,is_embedded ? true: false);
+  HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour,is_embedded);
 
   //if (wstream == "ee") lFlavour = 11;
   //else if (wstream == "mumu") lFlavour = 13;
@@ -960,15 +961,15 @@ int main(int argc, char* argv[]){
   analysis.AddModule(&jetPairFilter);
   
   //filter taus
-  analysis.AddModule(&tauPtEtaFilter);
-  analysis.AddModule(&tauMTFilter);
+  //analysis.AddModule(&tauMTFilter);
   analysis.AddModule(&zeroVetoElectronFilter);
   analysis.AddModule(&zeroVetoMuonFilter);
   
-  if (!is_data || is_embedded) analysis.AddModule(&oneGenTauPtEtaFilter);
-
   //record the number of jets in the gap
   analysis.AddModule(&FilterCJV);
+
+  //do gen level selection of a tau
+  if (!is_data || is_embedded) analysis.AddModule(&oneGenTauPtEtaFilter);
 
   //plot before cutting
   analysis.AddModule(&controlPlots_jetpair);
@@ -983,11 +984,13 @@ int main(int argc, char* argv[]){
   analysis.AddModule(&dphiJetPairFilter);
   
 
+
   analysis.AddModule(&controlPlots_vbf);
   analysis.AddModule(&wjetsPlots_vbf);
 
 
   //tauID  
+  analysis.AddModule(&tauPtEtaFilter);
   analysis.AddModule(&tauDzFilter);
   analysis.AddModule(&tauIsoFilter);
   analysis.AddModule(&tauElRejectFilter);

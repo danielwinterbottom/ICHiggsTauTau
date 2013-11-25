@@ -51,7 +51,6 @@ namespace po = boost::program_options;
 using std::string;
 using std::vector;
 using namespace ic;
-
 int main(int argc, char* argv[]){
   
   // Configurable parameters
@@ -103,6 +102,10 @@ int main(int argc, char* argv[]){
   bool doidisoerr;                // Do lepton ID-iso efficiency correction error
   bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
   bool doidisoerrmuore;           // Do lepton ID-iso efficiency correction error for muons or electrons
+  bool dolumixsweight;            // Do lumi*xs/evt weight online
+  string inputparams;               // Params file to use for info on lumi xs and evt
+
+  int randomseed;
 
   double mjj_cut;                 // mjjcut
 
@@ -160,6 +163,8 @@ int main(int argc, char* argv[]){
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
+    ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
+    ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Apr04/ParamsApr04.dat"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
@@ -171,7 +176,8 @@ int main(int argc, char* argv[]){
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false))
     ("doTopCR",             po::value<bool>(&doTopCR)->default_value(false))
-    ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false));
+    ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
+    ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -501,7 +507,7 @@ int main(int argc, char* argv[]){
     .set_max(999);
 
   //sel muons
-  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");   
+  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>
     ("SelMuonPtEtaFilter")
     .set_input_label("selMuons").set_predicate(bind(MinPtMaxEta, _1, muon_pt, muon_eta) &&
@@ -617,6 +623,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Jet Modules
   // ------------------------------------------------------------------------------------  
+
   JetMETModifier ModifyJetMET = JetMETModifier
     ("ModifyJetMET")
     .set_input_label("pfJetsPFlow")
@@ -634,6 +641,7 @@ int main(int argc, char* argv[]){
     .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
     .set_dojerdebug(dojerdebug)
+    .set_randomseed(randomseed)
     .set_fs(fs);
   
 
@@ -806,6 +814,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Selection Modules
   // ------------------------------------------------------------------------------------  
+
   
   HinvWeights hinvWeights = HinvWeights("HinvWeights")
     .set_era(era)
@@ -841,8 +850,11 @@ int main(int argc, char* argv[]){
     .set_do_trg_weights(false)
     .set_trg_applied_in_mc(false)
     .set_do_idiso_tight_weights(false)
-    .set_fs(fs)
-    .set_do_idiso_veto_weights(false);
+    .set_do_idiso_veto_weights(false)
+    .set_do_lumixs_weights(dolumixsweight)
+    .set_input_params(inputparams)
+    .set_sample_name(output_name)
+    .set_fs(fs);
   
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
@@ -1290,7 +1302,7 @@ int main(int argc, char* argv[]){
 
      ////analysis.AddModule(&runStats);
     
-     if (is_data) {
+     if (is_data && !is_embedded ) {
        //FIXME: do MetFilters also on MC, but not saved right now in MC...
        analysis.AddModule(&metFilters);
        analysis.AddModule(&metLaserFilters);
@@ -1450,13 +1462,7 @@ int main(int argc, char* argv[]){
        
      if (channel == channel::munu || channel == channel::mumu){
        analysis.AddModule(&metNoMuonFilter);
-     }
-     //else if (channel == channel::enu){
-     //analysis.AddModule(&metNoElectronFilter);
-     // }
-     //else if (channel == channel::emu){
-     //analysis.AddModule(&metNoENoMuFilter);
-     //}
+      }
      else {
        analysis.AddModule(&metCut);
      }
