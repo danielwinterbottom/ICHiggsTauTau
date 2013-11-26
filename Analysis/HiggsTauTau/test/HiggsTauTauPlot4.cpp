@@ -633,6 +633,7 @@ int main(int argc, char* argv[]){
     vector<string> bkgs = {"ZTT","ZL","ZJ","W","QCD","TT","VV"};
     if (channel_str == "em") bkgs = {"Ztt","Fakes","EWK","ttbar"}; 
     vector<string> sm_procs = {"ggH","qqH","VH"};
+    vector<string> hww_procs = {"ggH_hww","qqH_hww"};
     vector<string> mssm_procs = {"ggH","bbH"};
     TH1F const& data = hmap["data_obs"].first;
     for (int i = 1; i <= data.GetNbinsX(); ++i) {
@@ -646,6 +647,14 @@ int main(int argc, char* argv[]){
           for (auto proc : sm_procs) {
             if (hmap[proc+sm_mass].first.GetBinContent(i) > 0.) {
               std::cout << "\e[31mWarning: Template " << proc+sm_mass << " is populated in this bin\e[m" << std::endl;
+              has_signal = true;
+            }
+          }
+        }
+        for (auto hww_mass : hww_masses) {
+          for (auto proc : sm_procs) {
+            if (hmap[proc+hww_mass].first.GetBinContent(i) > 0.) {
+              std::cout << "\e[31mWarning: Template " << proc+hww_mass << " is populated in this bin\e[m" << std::endl;
               has_signal = true;
             }
           }

@@ -29,7 +29,6 @@ namespace ic {
     sample_names_ = {
       "Data",
       "Embedded",
-      "DYJetsToTauTau",
       "WWJetsTo2L2Nu",
       "WZJetsTo2L2Q",
       "WZJetsTo3LNu",
@@ -38,26 +37,21 @@ namespace ic {
       "ZZJetsTo4L",
       "T-tW",
       "Tbar-tW",
-      "TTJets",
     };
     if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
-        "RecHit",
-        "TT",
         "TTJetsFullLept",
         "TTJetsSemiLept",
         "TTJetsHadronicExt",
         "DYJetsToTauTauSoup"});
+    if (year_ == "2011") push_back(sample_names_, std::vector<std::string>{
+        "TTJets",
+        "DYJetsToTauTau"});
+
     if (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
         "Special_3_Data",
         "Special_4_Data",
         "Special_5_WJetsToLNuSoup",
-        "DYJetsToLL",
-        "DYJetsToLL-L",
-        "DYJetsToTauTau-L",
-        "DYJetsToTauTau-JJ",
-        "DYJetsToLL-J",
-        //"Special_18_DYJetsToLL-L",
         "WJetsToLNuSoup"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
@@ -66,17 +60,24 @@ namespace ic {
           "DYJetsToTauTau-LSoup",
           "DYJetsToTauTau-JJSoup",
           "DYJetsToLL-JSoup"});
+      if (year_ == "2011") push_back(sample_names_, std::vector<std::string>{
+          "DYJetsToLL",
+          "DYJetsToLL-L",
+          "DYJetsToTauTau-L",
+          "DYJetsToTauTau-JJ",
+          "DYJetsToLL-J"});
     } else {
       push_back(sample_names_, std::vector<std::string>{
         "Special_20_Data",
         "Special_21_Data",
         "Special_22_Data",
         "Special_23_Data",
-        "Special_24_Data",
-        "DYJetsToLL"
+        "Special_24_Data"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
           "DYJetsToLLSoup"});
+      if (year_ == "2011") push_back(sample_names_, std::vector<std::string>{
+          "DYJetsToLL"});
     }
 
     // Automatically set preference for DY Soup postfix
