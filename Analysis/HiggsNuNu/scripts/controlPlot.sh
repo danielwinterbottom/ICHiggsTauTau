@@ -4,7 +4,7 @@ PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 DOLUMIXSWEIGHT=false #True if controlplots should do lumixs weight, or false if it is already done in higgsnunu
 SAVEROOT=true
 
-for CHANNEL in mumu #enu munu 
+for CHANNEL in nunu enu munu taunu #mumu
   do
   
   for MET in 130 

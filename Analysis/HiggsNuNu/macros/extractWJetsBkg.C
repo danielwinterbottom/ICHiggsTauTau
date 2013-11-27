@@ -143,10 +143,10 @@ int extractWJetsBkg(){//main
   std::string TOPDIR = "../TABLES/";
   bool doTaus = true;
   bool docrosschecktau=false;
-  bool dojes = true;
-  bool dojer = true;
-  bool doeleerr = true;
-  bool domuerr = true;
+  bool dojes = false;
+  bool dojer = false;
+  bool doeleerr = false;
+  bool domuerr = false;
   bool doWeights = false;
   bool verbose = false;
   bool dolatex = false;

@@ -11,7 +11,7 @@ for CHANNEL in enu munu taunu
   for MET in 130 0
     do
 
-      FOLDER=./outputmumu/$CHANNEL/MET$MET/
+      FOLDER=./output/$CHANNEL/MET$MET/
       PLOTDIR=PLOTS/$CHANNEL/MET$MET/
       PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
 
