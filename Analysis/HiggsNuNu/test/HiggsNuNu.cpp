@@ -229,8 +229,15 @@ int main(int argc, char* argv[]){
   for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
   
   // Create ROOT output fileservice
+  std::ofstream checkfile;
+  checkfile.open((output_folder+"tmp.txt").c_str());
+  if(!(checkfile.good())){
+    std::cout<<"OUTPUT FOLDER DOESN'T EXIST: EXITING"<<std::endl;
+    return 1;
+  }
+  checkfile.close();
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
-  
+   
   double elec_dz, elec_dxy;
   double muon_dz, muon_dxy;
   double veto_elec_dz, veto_elec_dxy;
