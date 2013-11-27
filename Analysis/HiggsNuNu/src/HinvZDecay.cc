@@ -47,12 +47,12 @@ namespace ic {
       if (id == static_cast<int>(flavour_)) {
 	//std::cout << " -- Found status 3 id " << id << ". Keeping event." << std::endl;
 	countStatus3_++;
-	lepplus = parts[i];
+	lepminus = parts[i];
       }
       if (id == static_cast<int>(-flavour_)) {
 	//std::cout << " -- Found status 3 id " << id << ". Keeping event." << std::endl;
 	countStatus3_++;
-	lepminus = parts[i];
+	lepplus = parts[i];
       }
        
     }//loop on genparticles

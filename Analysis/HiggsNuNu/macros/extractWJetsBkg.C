@@ -143,13 +143,14 @@ int extractWJetsBkg(){//main
   std::string TOPDIR = "../TABLES/";
   bool doTaus = true;
   bool docrosschecktau=false;
-  bool dojes = false;
-  bool dojer = false;
-  bool doeleerr = false;
-  bool domuerr = false;
+  bool dojes = true;
+  bool dojer = true;
+  bool doeleerr = true;
+  bool domuerr = true;
   bool doWeights = false;
   bool verbose = false;
   bool dolatex = false;
+  bool dooldlatex = false;
   bool domcest = false;
   
   //SETUP
@@ -784,7 +785,7 @@ int extractWJetsBkg(){//main
 	    if(iSyst==nSysts-1){
 	      if(iCh==1)std::cout << "      enu result = ";
 	      if(iCh==2)std::cout << "      munu result = ";
-	      if(!dolatex){
+	      if(!dooldlatex&&!dolatex){
 		std::cout<<std::setprecision(3)<<lNSdata.number <<" \u00b1 " << lNSdata.stat <<"(stat.) \u00b1 "<<lNSdata.syst<<"(MC stat.) ";
 		if(dojes)std::cout<<showpos<<lNSdata.jesUp<<"(JES up) "<<lNSdata.jesDown<<"(JES down) "<<noshowpos;
 		if(dojer)std::cout<<showpos<<lNSdata.jerBetter<<"(JER better) "<<lNSdata.jerWorse<<"(JER worse) "<<noshowpos;
@@ -925,7 +926,7 @@ int extractWJetsBkg(){//main
       std::cout << "        "<< jesUp << " " << jesDown << " " << jerBetter << " " << jerWorse << std::endl;
     }
     
-    if(!dolatex){
+    if(!dooldlatex&&!dolatex){
       std::cout<<"      No CJV result";
       std::cout<<" = "<<std::setprecision(3)<<result_nocjv[nSysts-1].number <<" \u00b1 " << result_nocjv[nSysts-1].stat <<"(stat.) \u00b1 "<<result_nocjv[nSysts-1].syst<<"(MC stat.) ";
       if(dojes)std::cout<<showpos<<result_nocjv[nSysts-1].jesUp<<"(JES up) "<<result_nocjv[nSysts-1].jesDown<<"(JES down) "<<noshowpos;
@@ -997,7 +998,7 @@ int extractWJetsBkg(){//main
 
     
 
-    if(!dolatex){
+    if(!dooldlatex&&!dolatex){
       std::cout<<"      CJV Pass";
       std::cout<<" result = "<<std::setprecision(3)<<result[nSysts-1].number <<" \u00b1 " << result[nSysts-1].stat <<"(stat.) \u00b1 "<<result[nSysts-1].syst<<"(MC stat.) ";
       if(dojes)std::cout<<showpos<<result[nSysts-1].jesUp<<"(JES up) "<<result[nSysts-1].jesDown<<"(JES down) "<<noshowpos;

@@ -2,13 +2,14 @@
 PRODUCTION=Apr04
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 DOLUMIXSWEIGHT=false #True if controlplots should do lumixs weight, or false if it is already done in higgsnunu
+SAVEROOT=true
 
 for CHANNEL in mumu #enu munu 
   do
   
   for MET in 130 
     do
-    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE PUUP PUDOWN
+    for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #PUUP PUDOWN
       do
 
 	FOLDER=./output/$CHANNEL/MET$MET/
@@ -69,6 +70,7 @@ for CHANNEL in mumu #enu munu
     --norm_bins=false --verbose=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### n_vtx
@@ -89,6 +91,7 @@ fi
     --norm_bins=false --verbose=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### jpt_1
@@ -102,6 +105,7 @@ fi
     --norm_bins=false --verbose=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### jeta_1
@@ -115,6 +119,7 @@ fi
     --norm_bins=false --verbose=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### jpt_2
@@ -128,6 +133,7 @@ fi
     --norm_bins=false --verbose=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### jeta_2
@@ -141,6 +147,7 @@ fi
     --norm_bins=false --verbose=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### mjj
@@ -154,6 +161,7 @@ fi
     --norm_bins=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### detajj
@@ -167,6 +175,7 @@ fi
     --norm_bins=false \
     --log_y=false \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### dphijj
@@ -188,6 +197,7 @@ fi
     --norm_bins=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### drjj
@@ -201,6 +211,7 @@ fi
     --norm_bins=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### met
@@ -214,6 +225,7 @@ fi
     --norm_bins=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### metNoMuons
@@ -227,6 +239,7 @@ fi
     --norm_bins=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
 ###### n_taus
@@ -239,6 +252,7 @@ fi
     --rebin=1 \
     --norm_bins=false --verbose=false \
     --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT
     --plot_qcd=false --paramfile=$PARAMS
 
     done

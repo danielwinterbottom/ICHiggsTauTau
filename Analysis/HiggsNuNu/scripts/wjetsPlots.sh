@@ -2,6 +2,8 @@
 PRODUCTION=Apr04
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
+DOLUMIXSWEIGHT=false
+SAVEROOT=true
 
 for CHANNEL in enu munu taunu
   do
@@ -9,7 +11,7 @@ for CHANNEL in enu munu taunu
   for MET in 130 0
     do
 
-      FOLDER=./output_mjj1100/$CHANNEL/MET$MET/
+      FOLDER=./outputmumu/$CHANNEL/MET$MET/
       PLOTDIR=PLOTS/$CHANNEL/MET$MET/
       PLOTDIRQCD=PLOTS/$CHANNEL/MET$MET/QCD/
 
@@ -31,6 +33,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### n_muons
@@ -42,6 +46,9 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=2 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
+
     --paramfile=$PARAMS
 
 ###### n_taus
@@ -53,6 +60,9 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=2 \
     --rebin=1 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
+
     --paramfile=$PARAMS
 
 ###### mT
@@ -65,6 +75,8 @@ for CHANNEL in enu munu taunu
     --rebin=20 \
     --log_y=false \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -76,6 +88,8 @@ for CHANNEL in enu munu taunu
     --rebin=20 \
     --log_y=false \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -87,6 +101,8 @@ for CHANNEL in enu munu taunu
     --rebin=20 \
     --log_y=false \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -98,6 +114,8 @@ for CHANNEL in enu munu taunu
     --rebin=20 \
     --log_y=true \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -109,6 +127,8 @@ for CHANNEL in enu munu taunu
     --rebin=20 \
     --log_y=true \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -120,6 +140,8 @@ for CHANNEL in enu munu taunu
     --rebin=20 \
     --log_y=true \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### mupt_1
@@ -131,6 +153,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=40 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### mueta_1
@@ -142,6 +166,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=5 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### ept_1
@@ -153,6 +179,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=40 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### eeta_1
@@ -164,6 +192,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=5 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### taupt_1
@@ -175,6 +205,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=100 \
     --rebin=20 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### taupt_1
@@ -187,6 +219,8 @@ for CHANNEL in enu munu taunu
     --rebin=20 \
     --norm_bins=false --verbose=false \
     --log_y=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### taueta_1
@@ -198,6 +232,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=1000 \
     --rebin=5 \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### taueta_1
@@ -210,6 +246,8 @@ for CHANNEL in enu munu taunu
     --rebin=5 \
     --log_y=false \
     --norm_bins=false --verbose=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### met no mu
@@ -221,6 +259,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=20 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### met no elec
@@ -232,6 +272,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=20 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### met
@@ -243,6 +285,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=20 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 
@@ -257,6 +301,8 @@ for CHANNEL in enu munu taunu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -270,6 +316,8 @@ for CHANNEL in enu munu taunu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -283,6 +331,8 @@ for CHANNEL in enu munu taunu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -296,6 +346,8 @@ for CHANNEL in enu munu taunu
     --norm_bins=false \
     --plot_qcd=false \
     --log_y=true \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### mu dxy
@@ -307,6 +359,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### mu dz
@@ -318,6 +372,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 
@@ -330,6 +386,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### e dxy
@@ -341,6 +399,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### e dz
@@ -352,6 +412,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 ###### e iso
@@ -363,6 +425,8 @@ for CHANNEL in enu munu taunu
     --y_axis_min=0.01 --extra_pad=10000 \
     --rebin=2 \
     --norm_bins=false \
+    --dolumixsweight=$DOLUMIXSWEIGHT \
+    --saveroot=$SAVEROOT \
     --paramfile=$PARAMS
 
 

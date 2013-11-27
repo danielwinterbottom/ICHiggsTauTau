@@ -141,6 +141,8 @@ int main(int argc, char* argv[]){
   bool no_plot;			     // Don't actually generate image files if true
   bool verbose;			     // Verbose output, useful for diagnostic purposes
 
+  bool saveroot;                     // Save plots as a root file
+
   // Plotting options
   string x_axis_label;		     // Label for the X-axis
   string x_axis_bin_labels;          // of the form "a:b:c"
@@ -197,6 +199,7 @@ int main(int argc, char* argv[]){
     ("draw_ratio",          po::value<bool>(&draw_ratio)->default_value(false))
     ("no_plot",             po::value<bool>(&no_plot)->default_value(false))
     ("verbose",             po::value<bool>(&verbose)->default_value(false))
+    ("saveroot",            po::value<bool>(&saveroot)->default_value(false))
     ("x_axis_label",        po::value<string>(&x_axis_label)->required())
     ("x_axis_bin_labels",   po::value<string>(&x_axis_bin_labels)->default_value(""))
     ("rebin",               po::value<unsigned>(&rebin)->default_value(1))
@@ -755,7 +758,15 @@ int main(int argc, char* argv[]){
     plot.ratio_y_axis_min = y_ratio_min;
     plot.ratio_y_axis_max = y_ratio_max;
     
-    if (!no_plot) plot.GeneratePlot();
+    
+    if (!no_plot){
+      std::vector<string> types={"pdf","png"};
+      if(saveroot){
+	types.push_back("root");
+	types.push_back("C");
+      }
+      plot.GeneratePlot(types);
+    }
 
     if (lFillSummaryTable) {
 
