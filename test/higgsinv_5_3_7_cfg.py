@@ -215,7 +215,7 @@ else:
                       makePFMEtByMVA = False,
                       makeNoPileUpPFMEt = False,
                       doApplyType0corr = True,
-                      sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_mc,
+                      #sysShiftCorrParameter = process.pfMEtSysShiftCorrParameters_2012runAvsNvtx_mc,
                       doApplySysShiftCorr = False,
                       )
 
