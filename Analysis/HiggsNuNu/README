@@ -126,5 +126,17 @@ pdflatex MakeTexSummary.tex
 
 
 
+--------------------------------------------------
+## To run TMVA
+--------------------------------------------------
+## Prepare input tree with variables needed
+#### tree code is in class TmvaInputs
+#### run bin/HiggsNuNu enabling the options --dolumixsweight=true --doTmvaTree=true
 
+## Run training and testing
+#### Example code is in test/RunTmva.cpp
+#### To look at output file produced, use TMVAGui.C macro from root/tmva/test directory.
+#### This is what is producing the performance plots.
 
+## Apply to other samples, use in analysis
+#### Example code is in test/ApplyTmva.cpp
