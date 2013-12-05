@@ -41,6 +41,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TmvaInputs.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -117,6 +118,8 @@ int main(int argc, char* argv[]){
 
   bool doTopCR;
 
+  bool doTmvaTree; //write out a filewith a tree with TMVA variables
+
   std::string eventsToSkim; //name of input file containing run,lumi,evt of events to be skimmed
 
  // Load the config
@@ -176,8 +179,10 @@ int main(int argc, char* argv[]){
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false))
     ("doTopCR",             po::value<bool>(&doTopCR)->default_value(false))
+    ("doTmvaTree",          po::value<bool>(&doTmvaTree)->default_value(false))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
+
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -217,6 +222,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "dotrgeff" % dotrgeff;
   std::cout << boost::format(param_fmt) % "doidisoeff" % doidisoeff;
   std::cout << boost::format(param_fmt) % "doTopCR" % doTopCR;
+  std::cout << boost::format(param_fmt) % "doTmvaTree" % doTmvaTree;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -912,10 +918,20 @@ int main(int argc, char* argv[]){
   //do only muons for Znunu estimate...
   HinvZDecay ZmassFilter = HinvZDecay("ZmassFilter",13,60,120);
 
+
   // ------------------------------------------------------------------------------------
   // Plot Modules
   // ------------------------------------------------------------------------------------  
   
+  TmvaInputs tmvaInputs = TmvaInputs("TmvaInputs")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("JetPair")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+
  
   HinvControlPlots controlPlots_hlt = HinvControlPlots("HLTControlPlots")
     .set_fs(fs)
@@ -1317,9 +1333,10 @@ int main(int argc, char* argv[]){
      }
      
      //jet modules
+     analysis.AddModule(&jetIDFilter);
+     //don't want pile-up jets to calculate HT,MHT...
      analysis.AddModule(&alljetsCopyCollection);
 
-     analysis.AddModule(&jetIDFilter);
 
      //prepare collections of veto leptons
      analysis.AddModule(&vetoElectronCopyCollection);
@@ -1461,122 +1478,127 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&controlPlots_AN);
      analysis.AddModule(&wjetsPlots_AN);
 
-     analysis.AddModule(&detaJetPairFilter);
-     analysis.AddModule(&controlPlots_deta);
-     analysis.AddModule(&wjetsPlots_deta);
-     //if (printEventList) analysis.AddModule(&hinvPrintList);
-
-     //met modules
-       
-     if (channel == channel::munu || channel == channel::mumu){
-       analysis.AddModule(&metNoMuonFilter);
-      }
+     //write tree with TMVA input variables
+     if (doTmvaTree) analysis.AddModule(&tmvaInputs);
      else {
-       analysis.AddModule(&metCut);
-     }
-     
-     analysis.AddModule(&controlPlots_met);
-     analysis.AddModule(&wjetsPlots_met);
 
-     //if (printEventList) analysis.AddModule(&hinvPrintList);
-
-     //tight Mjj cut
-     analysis.AddModule(&tightMassJetPairFilter);
-     analysis.AddModule(&controlPlots_tightMjj);
-     analysis.AddModule(&wjetsPlots_tightMjj);
-
-     //save signal and QCD regions without CJV
-     analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
-     analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);
-     analysis.AddModule(&controlPlots_dphi_signal_nocjv);
-     analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
-
-     if(printEventList) analysis.AddModule(&hinvPrintList);
-     //if(printEventContent) analysis.AddModule(&hinvPrint);
-
-     //save all, signal and QCD regions with failed CJV
-     analysis.AddModule(&controlPlots_cjvfail);
-     analysis.AddModule(&wjetsPlots_cjvfail);
-     analysis.AddModule(&controlPlots_dphi_qcd_cjvfail);
-     analysis.AddModule(&wjetsPlots_dphi_qcd_cjvfail);
-     analysis.AddModule(&controlPlots_dphi_signal_cjvfail);
-     analysis.AddModule(&wjetsPlots_dphi_signal_cjvfail);
-
-     analysis.AddModule(&controlPlots_cjvpass);
-     analysis.AddModule(&wjetsPlots_cjvpass);
-     
-     //if (printEventList) analysis.AddModule(&hinvPrintList);
-
-     //dphi cut: don't filter events anymore !
-     //Just plot histograms for different regions
-     ////if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
-     ////else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
-
-     analysis.AddModule(&controlPlots_dphi_qcd_cjvpass);
-     analysis.AddModule(&wjetsPlots_dphi_qcd_cjvpass);
-     analysis.AddModule(&controlPlots_dphi_signal_cjvpass);
-     analysis.AddModule(&wjetsPlots_dphi_signal_cjvpass);
-     //debug
-     //analysis.AddModule(&dphiJetPairFilter);
-     //if (!is_data) analysis.AddModule(&hinvWeights);
-     //}
-     //else {
-     //Build Skimming Analysis
-     //analysis.AddModule(pointer to module defined above)
-     //analysis.AddModule(&dataMCTriggerPathFilter);
-
-     //SINGLE EVENT SKIMMING
-     // if (channel == channel::nunu){
-//        analysis.AddModule(&hinvFilter);
-//        analysis.AddModule(&jetIDFilter);
-
-//        //prepare collections of veto leptons
-//        analysis.AddModule(&vetoElectronCopyCollection);
-//        analysis.AddModule(&vetoElectronFilter);
-//        analysis.AddModule(&vetoElectronIso);
-//        analysis.AddModule(&vetoMuonCopyCollection);
-//        analysis.AddModule(&vetoMuonFilter);
-//        analysis.AddModule(&vetoMuonNoIsoCopyCollection);
-//        analysis.AddModule(&vetoMuonNoIsoFilter);
+       analysis.AddModule(&detaJetPairFilter);
+       analysis.AddModule(&controlPlots_deta);
+       analysis.AddModule(&wjetsPlots_deta);
+       //if (printEventList) analysis.AddModule(&hinvPrintList);
        
-//        //filter leptons before making jet pairs and changing MET...
-//        analysis.AddModule(&selElectronCopyCollection);
-//        analysis.AddModule(&selElectronFilter);
-//        analysis.AddModule(&selElectronIso);
-//        analysis.AddModule(&selMuonCopyCollection);
-//        analysis.AddModule(&selMuonFilter);
-//        analysis.AddModule(&elecMuonOverlapFilter);
+       //met modules
+       
+       if (channel == channel::munu || channel == channel::mumu){
+	 analysis.AddModule(&metNoMuonFilter);
+       }
+       else {
+	 analysis.AddModule(&metCut);
+       }
+       
+       analysis.AddModule(&controlPlots_met);
+       analysis.AddModule(&wjetsPlots_met);
+       
+       //if (printEventList) analysis.AddModule(&hinvPrintList);
+       
+       //tight Mjj cut
+       analysis.AddModule(&tightMassJetPairFilter);
+       analysis.AddModule(&controlPlots_tightMjj);
+       analysis.AddModule(&wjetsPlots_tightMjj);
+       
+       //save signal and QCD regions without CJV
+       analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
+       analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);
+       analysis.AddModule(&controlPlots_dphi_signal_nocjv);
+       analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
+       
+       if(printEventList) analysis.AddModule(&hinvPrintList);
+       //if(printEventContent) analysis.AddModule(&hinvPrint);
+       
+       //save all, signal and QCD regions with failed CJV
+       analysis.AddModule(&controlPlots_cjvfail);
+       analysis.AddModule(&wjetsPlots_cjvfail);
+       analysis.AddModule(&controlPlots_dphi_qcd_cjvfail);
+       analysis.AddModule(&wjetsPlots_dphi_qcd_cjvfail);
+       analysis.AddModule(&controlPlots_dphi_signal_cjvfail);
+       analysis.AddModule(&wjetsPlots_dphi_signal_cjvfail);
+       
+       analysis.AddModule(&controlPlots_cjvpass);
+       analysis.AddModule(&wjetsPlots_cjvpass);
+       
+       //if (printEventList) analysis.AddModule(&hinvPrintList);
+       
+       //dphi cut: don't filter events anymore !
+       //Just plot histograms for different regions
+       ////if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
+       ////else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
+       
+       analysis.AddModule(&controlPlots_dphi_qcd_cjvpass);
+       analysis.AddModule(&wjetsPlots_dphi_qcd_cjvpass);
+       analysis.AddModule(&controlPlots_dphi_signal_cjvpass);
+       analysis.AddModule(&wjetsPlots_dphi_signal_cjvpass);
+       //debug
+       //analysis.AddModule(&dphiJetPairFilter);
+       //if (!is_data) analysis.AddModule(&hinvWeights);
+       //}
+       //else {
+       //Build Skimming Analysis
+       //analysis.AddModule(pointer to module defined above)
+       //analysis.AddModule(&dataMCTriggerPathFilter);
+       
+       //SINGLE EVENT SKIMMING
+       // if (channel == channel::nunu){
+       //        analysis.AddModule(&hinvFilter);
+       //        analysis.AddModule(&jetIDFilter);
+       
+       //        //prepare collections of veto leptons
+       //        analysis.AddModule(&vetoElectronCopyCollection);
+       //        analysis.AddModule(&vetoElectronFilter);
+       //        analysis.AddModule(&vetoElectronIso);
+       //        analysis.AddModule(&vetoMuonCopyCollection);
+       //        analysis.AddModule(&vetoMuonFilter);
+       //        analysis.AddModule(&vetoMuonNoIsoCopyCollection);
+       //        analysis.AddModule(&vetoMuonNoIsoFilter);
+       
+       //        //filter leptons before making jet pairs and changing MET...
+       //        analysis.AddModule(&selElectronCopyCollection);
+       //        analysis.AddModule(&selElectronFilter);
+       //        analysis.AddModule(&selElectronIso);
+       //        analysis.AddModule(&selMuonCopyCollection);
+       //        analysis.AddModule(&selMuonFilter);
+       //        analysis.AddModule(&elecMuonOverlapFilter);
+       
+       //        //filter jets
+       //        analysis.AddModule(&jetPtEtaFilter);
+       
+       //        //deal with removing overlap with selected leptons
+       //        analysis.AddModule(&jetMuonOverlapFilter);
+       //        analysis.AddModule(&jetElecOverlapFilter);
+       
+       //        //two-leading jet pair production before plotting
+       //        analysis.AddModule(&jjLeadingPairProducer);
+       //        analysis.AddModule(&hinvPrint);
+       //        //analysis.AddModule(&jetPtEtaFilter);
+       //        //analysis.AddModule(&metCut);
+       //        //analysis.AddModule(&jjPairProducer);
+       //        //analysis.AddModule(&looseMassJetPairFilter);
+       //      }
+       //      else if (!is_data){
+       //        analysis.AddModule(&WtoLeptonFilter);
+       //      }
+       //}
+       
+     }//if not doTmvaTree
+  }//if not do MCFM
+  // Run analysis
    
-//        //filter jets
-//        analysis.AddModule(&jetPtEtaFilter);
-
-//        //deal with removing overlap with selected leptons
-//        analysis.AddModule(&jetMuonOverlapFilter);
-//        analysis.AddModule(&jetElecOverlapFilter);
-     
-//        //two-leading jet pair production before plotting
-//        analysis.AddModule(&jjLeadingPairProducer);
-//        analysis.AddModule(&hinvPrint);
-//        //analysis.AddModule(&jetPtEtaFilter);
-//        //analysis.AddModule(&metCut);
-//        //analysis.AddModule(&jjPairProducer);
-//        //analysis.AddModule(&looseMassJetPairFilter);
-//      }
-//      else if (!is_data){
-//        analysis.AddModule(&WtoLeptonFilter);
-//      }
-     //}
-
-  }
-   // Run analysis
-   
-   analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
-   analysis.StopOnFileFailure(true);
-   analysis.SetTTreeCaching(true); 
-
-   analysis.RunAnalysis();
-   delete fs;
-   return 0;
+  analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );
+  analysis.StopOnFileFailure(true);
+  analysis.SetTTreeCaching(true); 
+  
+  analysis.RunAnalysis();
+  delete fs;
+  return 0;
 }
 
 

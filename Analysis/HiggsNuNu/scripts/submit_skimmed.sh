@@ -7,7 +7,7 @@
 
 #JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
 
-OTHEROPTIONS="--doTopCR=false"
+OTHEROPTIONS="--doTopCR=false" # --dolumixsweight=true --doTmvaTree=true"
 DOCERN=0
 
 EXECUTABLE=HiggsNuNu
