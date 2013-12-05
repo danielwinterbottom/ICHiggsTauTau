@@ -51,7 +51,7 @@ for METCUT in 130 #0 130
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
-	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
@@ -99,7 +99,7 @@ for METCUT in 130 #0 130
 	    fi
 	fi
 	
-	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*MATCHNONE`
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
