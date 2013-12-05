@@ -26,7 +26,7 @@ for METCUT in 130 #0 130
       OUTPUTPREFIX=output/ #oldanalysisruns/220713_taunominaltightwithsysts/output/
       OUTPUTDIR=$OUTPUTPREFIX/skim/$CHANNEL/MET$METCUT/
       SKIMPREFIX=/vols/ssd00/cms/amagnan/trigskims/
-      SKIMDIR=$SKIMPREFIX/$CHANNEL/MET$METCUT/
+      SKIMDIR=$SKIMPREFIX/$CHANNEL/MET$METCUT/FromCern
  
       echo "Config file: $CONFIG"
       
@@ -51,7 +51,7 @@ for METCUT in 130 #0 130
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
-	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
@@ -99,7 +99,7 @@ for METCUT in 130 #0 130
 	    fi
 	fi
 	
-	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*`
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*MATCHNONE`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
