@@ -725,6 +725,53 @@ namespace ic {
       }
     }
   }
+  void HTTAnalysis::InterpolateSMSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& var_final,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double interpolate,
+                        double fixed_xs){
+    std::vector<std::string> procs = {"ggH", "qqH", "VH"};
+    std::vector<std::string> names = {"GluGluToHToTauTau_M-", "VBF_HToTauTau_M-", "WH_ZH_TTH_HToTauTau_M-"};
+    for (unsigned i = 0; i < masses.size()-1; ++i) {
+      double m_low = boost::lexical_cast<double>(masses[i]);
+      double m_high = boost::lexical_cast<double>(masses[i+1]);
+      std::vector<double> new_points;
+      double point = m_low;
+      while (m_low < m_high && (point+interpolate) < m_high*0.99999) {
+        point+=interpolate;
+        new_points.push_back(point);
+      }
+      std::cout << "[HTTAnalysis::InterpolateSMSignal] Running horizontal morphing for: ";
+      for (auto p : new_points) std::cout << p << " ";
+      std::cout << std::endl;
+      for (unsigned j = 0; j < procs.size(); ++j) {
+        TH1F h_low = this->GenerateSignal(names[j]+masses[i], var, sel, cat, wt, fixed_xs).first;
+        TH1F h_high = this->GenerateSignal(names[j]+masses[i+1], var, sel, cat, wt, fixed_xs).first;
+        for (unsigned k = 0; k < new_points.size(); ++k) {
+          double yield = 1.0;
+          double y1 = h_low.Integral();
+          double y2 = h_high.Integral();
+          if (m_high == m_low) {
+            yield =  0.5*(y1+y2);
+          } else {
+            yield = y1 + ((y2 - y1)/(m_high - m_low))*(new_points[k]-m_low);
+          }
+          TH1F result = *(th1fmorph("morphed","morphed", &h_low, &h_high, m_low, m_high, new_points[k], yield, 0));
+          TH1F h_ref = this->GenerateSignal(names[j]+masses[i], var_final, sel, cat, wt, fixed_xs).first;
+          result = * ( (TH1F*)result.Rebin(h_ref.GetNbinsX(),"",h_ref.GetXaxis()->GetXbins()->GetArray())  );
+          std::string m_str = boost::lexical_cast<std::string>(int(new_points[k]+0.5));
+          hmap[procs[j]+infix+m_str+postfix].first = result;
+          hmap[procs[j]+infix+m_str+postfix].second = std::make_pair(yield,0.0);
+        }
+      }
+    }
+  }
 
   void HTTAnalysis::FillMSSMSignal(HistValueMap & hmap, 
                     std::vector<std::string> const& masses,

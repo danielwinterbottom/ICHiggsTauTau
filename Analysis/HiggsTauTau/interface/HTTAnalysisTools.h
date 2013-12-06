@@ -186,6 +186,17 @@ namespace ic {
                         std::string const& infix,
                         std::string const& postfix,
                         double fixed_xs = -1.0);
+      void InterpolateSMSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& var_final,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double interpolate,
+                        double fixed_xs = -1.0);
       void FillHWWSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,

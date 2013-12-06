@@ -57,6 +57,7 @@ int main(int argc, char* argv[]){
 	unsigned scan_bins;
   double qcd_os_ss_factor;
   string w_binned;
+  bool interpolate;
 
 	// Program options
   po::options_description preconfig("Pre-Configuration");
@@ -76,6 +77,7 @@ int main(int argc, char* argv[]){
 	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
 	  ("is_paper",                po::value<bool>(&is_paper)->default_value(false))
 	  ("do_ss", 	                po::value<bool>(&do_ss)->default_value(false))
+	  ("interpolate", 	          po::value<bool>(&interpolate)->default_value(false))
 	  ("datacard",                po::value<string>(&datacard)->default_value(""))
 	  ("set_alias",               po::value<vector<string>>(&set_alias)->composing())
 	  ("sm_masses",               po::value<string>(&sm_masses_str)->default_value(""))
@@ -197,9 +199,13 @@ int main(int argc, char* argv[]){
 	}
 	cat = ana.ResolveAlias(cat);
 
+  double signal_xs = interpolate ? -1.0 : 1.0;
+
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
-	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "", 1.0);
-	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "", 1.0);
+	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "", signal_xs);
+  std::string morph_var = "m_sv(70,0,350)";
+	if (interpolate) ana.InterpolateSMSignal(hmap, sm_masses, morph_var, var, sel, cat, "wt", "", "", 1.0, signal_xs);
+	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "", signal_xs);
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 		ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "");
@@ -379,7 +385,8 @@ int main(int argc, char* argv[]){
 		ana_syst.ReadTrees(folder+syst.first, folder);
 		ana_syst.ParseParamFile(paramfile);
 		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
-		ana_syst.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		ana_syst.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst.second, signal_xs);
+	  if (interpolate) ana_syst.InterpolateSMSignal(hmap, sm_masses, morph_var, var, sel, cat, "wt", "","_"+syst.second, 1.0, signal_xs);
 		ana_syst.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
 		if (add_sm_background != "") {
 			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
