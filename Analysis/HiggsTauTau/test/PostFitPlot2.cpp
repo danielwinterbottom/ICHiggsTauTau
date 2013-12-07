@@ -57,6 +57,7 @@ int main(int argc, char* argv[]){
   po::notify(vm);
 
 
+
   vector<string> signal_procs = {"ggH", "qqH", "VH"};
   if (mssm) signal_procs = {"ggH","bbH"};
 
@@ -200,7 +201,7 @@ int main(int argc, char* argv[]){
 
   plot.AddTextElement(text);
   plot.AddTextElement(text2);
-  plot.set_title_right((boost::format("P(#chi^{2}): %.4f, P(#chi^{2}, M>60 GeV): %.4f")%chi2_prob%chi2_prob_cut).str());
+  //plot.set_title_right((boost::format("P(#chi^{2}): %.4f, P(#chi^{2}, M>60 GeV): %.4f")%chi2_prob%chi2_prob_cut).str());
 
   if (mssm) {
     ic::TextElement text_ma("m_{A}="+signal_mass+" GeV",0.035,0.41,0.86);

@@ -708,8 +708,8 @@ htt_em.inputs-sm-8TeV.root
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="pt_2>30." --var="m_2(30,0,2)" \
-  --x_axis_label="Tau Mass [GeV]" --datacard="tau_modes" \
-  --background_scheme="tau_modes" --draw_ratio=false --extra_pad=1.1 --use_htt_style=false \
+  --x_axis_label="m(#tau_{h}) [GeV]" --datacard="tau_modes" \
+  --background_scheme="tau_modes" --draw_ratio=false --extra_pad=1.4 --use_htt_style=true \
   --draw_error_band=true --set_alias="inclusive:pt_2>30" \
   --shift_backgrounds="ZTT-1P0PZ:0.969187,ZTT-1P1PZ:0.969187,ZTT-3P:0.969187,ZTT:0.969187,QCD:1.0294,W:1.02621,ZL:1.05848,ZJ:1.18723,VV:0.985107,TT:1.09626" --auto_error_band=0.0397582
 
@@ -717,7 +717,7 @@ htt_em.inputs-sm-8TeV.root
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --cat="pt_2>30." --var="m_2(30,0,2)" \
   --x_axis_label="Tau Mass [GeV]" --datacard="tau_modes" \
-  --background_scheme="tau_modes" --draw_ratio=false --extra_pad=1.1 --use_htt_style=false \
+  --background_scheme="tau_modes" --draw_ratio=true --extra_pad=1.1 --use_htt_style=true \
   --draw_error_band=true --set_alias="inclusive:pt_2>30" \
   --shift_backgrounds="ZTT-1P0PZ:1.00229,ZTT-1P1PZ:1.00229,ZTT-3P:1.00229,ZTT:1.00229,QCD:1.025,W:0.954,ZL:0.883037,ZJ:0.96123,VV:0.902555,TT:0.886183" --auto_error_band=0.040
 
@@ -734,9 +734,132 @@ htt_em.inputs-sm-8TeV.root
  --title_left="muTau W+jets comparison" \
  --outname="mt_W_mjj_comp.pdf"
 
+./bin/PlotCompare  \
+ -p "weighted:HRes-Weighted Powheg:hpt.root:/:weighted:-1:3:1" \
+ -p "topfin:Finite Top Mass:top_mass.root:/:top_finite:-1:3:2" \
+ -p "topinf:Infinite Top Mass:top_mass.root:/:top_infinite:-1:3:4" \
+ --x_axis_title="Gen. Higgs p_{T} [GeV]" --norm_mode=1  --big_label=" " \
+ --log_y=true --rebin=5 --norm_bins=false \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
+ --title_left="Higgs p_{T} Weighting (m_{H}=125 GeV)" \
+ --ratios="topfin/weighted/2:topinf/weighted/4:" --ratio_axis_label="Ratio/HRes-Weighted"  --ratio_y_min=0.8 --ratio_y_max=1.2 \
+ --outname="higgs_pt_top.pdf"
+
+  ./bin/PlotCompare  \
+ -p "nominal:Nominal Powheg:hpt.root:/:nominal:-1:3:9" \
+ -p "weighted:HRes Weighted:hpt.root:/:weighted:-1:3:1" \
+ --x_axis_title="Gen. Higgs p_{T} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=true --rebin=5 --norm_bins=false \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
+ --title_left="Higgs p_{T} Weighting (m_{H}=125 GeV)" \
+ --ratios="weighted/nominal/1" --ratio_axis_label="HRes/Nominal"  --ratio_y_min=0.8 --ratio_y_max=1.2 \
+ --outname="higgs_pt.pdf"
+
+   ./bin/PlotCompare  \
+ -p "nominal:Nominal Powheg:hpt.root:/:nominal:-1:3:9" \
+ -p "weighted:HRes Weighted:hpt.root:/:weighted:-1:3:1" \
+ --x_axis_title="Gen. Higgs p_{T} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=true --rebin=5 --norm_bins=false \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
+ --title_left="Higgs p_{T} Weighting (m_{H}=125 GeV)" \
+ --ratios="weighted/nominal/1" --ratio_axis_label="HRes/Nominal"  --ratio_y_min=0.8 --ratio_y_max=1.2 \
+ --outname="higgs_pt.pdf"
+
+
+  ./bin/PlotCompare  \
+ -p "weighted:HRes Weighted:hpt.root:/:weighted:-1:3:1" \
+ -p "up:Up Uncert.:hpt.root:/:up:-1:3:2" \
+ -p "down:Down Uncert.:hpt.root:/:down:-1:3:4" \
+ --x_axis_title="Gen. Higgs p_{T} [GeV]" --norm_mode=0  --big_label=" " \
+ --log_y=true --rebin=2 --norm_bins=false \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
+ --title_left="Higgs p_{T} Weighting (m_{H}=125 GeV)" \
+ --ratios="up/weighted/2:down/weighted/4" --ratio_axis_label="Ratio/HRes"  --ratio_y_min=0.8 --ratio_y_max=1.2 \
+ --outname="higgs_pt_hres.pdf"
+
+
+   ./bin/PlotCompare  \
+ -p "nominal:Nominal:hres/HRes_mh125.root:/:pt34l_distribution:-1:4:1" \
+ -p "F0p5_R0p5:#mu_{F}=0.5 #mu_{R}=0.5:hres/HRes_mh125_F0p5_R0p5.root:/:pt34l_distribution:-1:4:2" \
+ -p "F0p5_R1p0:#mu_{F}=0.5 #mu_{R}=1.0:hres/HRes_mh125_F0p5_R1p0.root:/:pt34l_distribution:-1:4:4" \
+ -p "F1p0_R0p5:#mu_{F}=1.0 #mu_{R}=0.5:hres/HRes_mh125_F1p0_R0p5.root:/:pt34l_distribution:-1:4:6" \
+ -p "F2p0_R1p0:#mu_{F}=2.0 #mu_{R}=1.0:hres/HRes_mh125_F2p0_R1p0.root:/:pt34l_distribution:-1:4:8" \
+ -p "F1p0_R2p0:#mu_{F}=1.0 #mu_{R}=2.0:hres/HRes_mh125_F1p0_R2p0.root:/:pt34l_distribution:-1:4:11" \
+ -p "F2p0_R2p0:#mu_{F}=2.0 #mu_{R}=2.0:hres/HRes_mh125_F2p0_R2p0.root:/:pt34l_distribution:-1:4:12" \
+ --x_axis_title="Higgs p_{T} [GeV]" --norm_mode=3  --big_label=" " \
+ --log_y=true --rebin=4 --norm_bins=false \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
+ --title_left="Higgs p_{T}: HRes" \
+ --ratios="F0p5_R0p5/nominal/2:F0p5_R1p0/nominal/4:F1p0_R0p5/nominal/6:F2p0_R1p0/nominal/8:F1p0_R2p0/nominal/11:F2p0_R2p0/nominal/12" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
+ --outname="higgs_pt_hres_norm.pdf"
+
+
+./bin/PlotCompare  \
+ -p "nominal:Nominal:htt_mt.inputs-sm-8TeV.root:/muTau_1jet_high_mediumhiggs:ggH125:-1:3:1" \
+ -p "up:Up Uncert.:htt_mt.inputs-sm-8TeV.root:/muTau_1jet_high_mediumhiggs:ggH125_QCDscale_ggH1inUp:-1:3:2" \
+ -p "down:Down Uncert.:htt_mt.inputs-sm-8TeV.root:/muTau_1jet_high_mediumhiggs:ggH125_QCDscale_ggH1inDown:-1:3:4" \
+ --x_axis_title="m_{#tau#tau} [GeV]" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=2 --norm_bins=false \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
+ --title_left="Higgs p_{T} in #mu#tau_{h}: 1jet_high_mediumhiggs" \
+ --ratios="up/nominal/2:down/nominal/4" --ratio_axis_label="Ratio"  --ratio_y_min=0.8 --ratio_y_max=1.2 \
+ --outname="m_sv_mt_1jet_high_mediumhiggs.pdf"
+
+./bin/PlotCompare  \
+ -p "nominal:Nominal:htt_tt.inputs-sm-8TeV.root:/tauTau_1jet_high_highhiggs:ggH125:-1:3:1" \
+ -p "up:Up Uncert.:htt_tt.inputs-sm-8TeV.root:/tauTau_1jet_high_highhiggs:ggH125_QCDscale_ggH1inUp:-1:3:2" \
+ -p "down:Down Uncert.:htt_tt.inputs-sm-8TeV.root:/tauTau_1jet_high_highhiggs:ggH125_QCDscale_ggH1inDown:-1:3:4" \
+ --x_axis_title="m_{#tau#tau} [GeV]" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false \
+ --custom_x_axis_range=true --x_axis_min=0 --x_axis_max=200 \
+ --ratios="up/nominal/2:down/nominal/4" --ratio_axis_label="Ratio"  --ratio_y_min=0.8 --ratio_y_max=1.2 \
+ --outname="m_sv_tt_1jet_high_highhiggs.pdf"
+
+
+
  --ratios="AntiIso/FullIso/1" --ratio_axis_label="Ratio"  --ratio_y_min=0.5 --ratio_y_max=1.5 \
 
  -p "W2j_jdeta1:W2j_jdeta1:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_jdeta1:-1:0:2" \
  -p "W2j_jdeta2:W2j_jdeta2:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_jdeta2:-1:0:3" \
  -p "W2j_jdeta3:W2j_jdeta3:datacard_m_sv_inclusive_mt_2012.root:/muTau_inclusive:W_2j_jdeta3:-1:0:4" \
+
+ ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_sm_2012.cfg --channel=mt --set_alias="sel:mt_1<30." \
+  --method=8 --cat="n_jets>=1 && pt_2>30." --var="met(20,0,100)" --x_axis_label="E_{T}^{miss} [GeV]" \
+  --norm_bins=true --datacard="1jet" --extra_pad=1.1 \
+  --background_scheme="mt_with_zmm"  --draw_error_band=true --shift_backgrounds=ZTT:0.9846,QCD:1.09908,W:0.986697,ZL:1.04161,ZJ:0.979328,VV:0.964264,TT:1.06787 --auto_error_band=0.0427276
+
+
+
+  ./bin/PostFitPlot2 --channel=mt --selection="VBF Combined:6+7" --eras="7TeV,8TeV" \
+   --datacard_path=tmp_limits/mt/125 \
+   --root_file_path=tmp_limits/mt/common \
+   --pulls_file=tmp_limits/mt/125/out/mlfit.txt \
+   --signal_mass=125 --postfit=true --cfg=scripts/new_plot_sm_2012.cfg \
+   --title_left="CMS Preliminary, 4.9 fb^{-1} at 7TeV, 19.7 fb^{-1} at 8TeV" \
+   --norm_bins=true --extra_pad=1.40 --draw_error_band=true \
+   --x_axis_label="M_{#tau#tau} [GeV]" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
+   --background_scheme="mt_with_zmm" --signal_scheme=sm_default --draw_ratio=false
+
+  ./bin/PostFitPlot2 --channel=mt --selection="Moriond VBF:5" --eras="7TeV,8TeV" \
+   --datacard_path=tmp_limits_moriond/mt/125 \
+   --root_file_path=tmp_limits_moriond/mt/common \
+   --pulls_file=tmp_limits_moriond/mt/125/out/mlfit.txt \
+   --signal_mass=125 --postfit=true --cfg=scripts/new_plot_sm_2012.cfg \
+   --title_left="CMS Preliminary, 4.9 fb^{-1} at 7TeV, 19.8 fb^{-1} at 8TeV" \
+   --norm_bins=true --extra_pad=1.40 --draw_error_band=true \
+   --x_axis_label="M_{#tau#tau} [GeV]" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
+   --background_scheme="mt_with_zmm" --signal_scheme=sm_default --draw_ratio=false
+
+
+
+ ./bin/PlotCompare  \
+ -p "ZTT:Z#rightarrow#tau#tau:htt_mt.inputs-sm-8TeV.root:/muTau_0jet_medium:ZTT:-1:0:1" \
+ -p "ggH90:ggH(90):htt_mt.inputs-sm-8TeV.root:/muTau_0jet_medium:ggH90:-1:0:4" \
+ -p "ggH100:ggH(100):htt_mt.inputs-sm-8TeV.root:/muTau_0jet_medium:ggH100:-1:0:8" \
+ -p "ggH110:ggH(110):htt_mt.inputs-sm-8TeV.root:/muTau_0jet_medium:ggH110:-1:0:2" \
+ --x_axis_title="M_{#tau#tau} [GeV]" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=true \
+ --ratios="ggH100/ZTT/8:ggH90/ZTT/4:ggH110/ZTT/2" --ratio_axis_label="Ratio/ZTT"  --ratio_y_min=0.0 --ratio_y_max=4.0 \
+ --title_left="muTau_0jet_high, 8 TeV" \
+ --outname="0jet_shapes.pdf"
 

@@ -341,7 +341,7 @@ int main(int argc, char* argv[]){
   err_hist.GetXaxis()->SetLabelSize(0.05);
   err_hist.SetNdivisions(405);
   err_hist.Draw("E2");
-  err_hist.GetXaxis()->SetRangeUser(40,199);
+  err_hist.GetXaxis()->SetRangeUser(0,360);
   err_hist.GetYaxis()->SetRangeUser(-inset_y_max,inset_y_max);
   signal_hist.Draw("HISTSAME");
   if (!poisson_errors){
