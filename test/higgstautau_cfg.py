@@ -168,10 +168,10 @@ process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
 ################################################################
 ### Configuration of Electron ID MVA
 ################################################################
-process.load("EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi")
+process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_cfi")
 process.mvaElectronIDSequence = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
 if release == '53X':
-  process.mvaTrigNoIPV0 = cms.EDFilter("NewElectronIdMVAProducer",
+  process.mvaTrigNoIPV0 = cms.EDFilter("ElectronIdMVAProducer",
       verbose = cms.untracked.bool(False),
       vertexTag = cms.InputTag('offlinePrimaryVertices'),
       electronTag = cms.InputTag('gsfElectrons'),
