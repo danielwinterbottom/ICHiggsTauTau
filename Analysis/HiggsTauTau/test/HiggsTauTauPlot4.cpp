@@ -58,6 +58,7 @@ int main(int argc, char* argv[]){
   double qcd_os_ss_factor;
   string w_binned;
   bool interpolate;
+  string signal_bins;
 
 	// Program options
   po::options_description preconfig("Pre-Configuration");
@@ -106,6 +107,7 @@ int main(int argc, char* argv[]){
 	  ("add_extra_binning",       po::value<string>(&add_extra_binning)->default_value(""))
 	  ("shift_backgrounds",       po::value<string>(&shift_backgrounds)->default_value(""))
 	  ("w_binned",                po::value<string>(&w_binned)->default_value(""))
+	  ("signal_bins",             po::value<string>(&signal_bins)->default_value(""))
 	  ("auto_titles",   			    po::value<bool>(&auto_titles)->default_value(true))
 	  ("check_ztt_top_frac",      po::value<bool>(&check_ztt_top_frac)->default_value(false))
 	  ("scan_bins",               po::value<unsigned>(&scan_bins)->default_value(0))
@@ -200,12 +202,14 @@ int main(int argc, char* argv[]){
 	cat = ana.ResolveAlias(cat);
 
   double signal_xs = interpolate ? -1.0 : 1.0;
+  std::string morph_var = "m_sv(70,0,350)";
+  std::string sig_var = var;
+  if (signal_bins != "") sig_var = reduced_var+signal_bins;
 
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
-	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "", signal_xs);
-  std::string morph_var = "m_sv(70,0,350)";
+	ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (interpolate) ana.InterpolateSMSignal(hmap, sm_masses, morph_var, var, sel, cat, "wt", "", "", 1.0, signal_xs);
-	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "", signal_xs);
+	ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt", "_hww", "", signal_xs);
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 		ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "");
@@ -227,8 +231,8 @@ int main(int argc, char* argv[]){
 	if (syst_ggh_pt != "") {
 		std::cout << "[HiggsTauTauPlot4] Adding ggH pT systematic..." << std::endl;
 		for (auto m : sm_masses) {
-			hmap["ggH"+m+"_"+syst_ggh_pt+"Up"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, var, sel, cat, "wt*wt_ggh_pt_up", 1.0);
-			hmap["ggH"+m+"_"+syst_ggh_pt+"Down"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, var, sel, cat, "wt*wt_ggh_pt_down", 1.0);
+			hmap["ggH"+m+"_"+syst_ggh_pt+"Up"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, sig_var, sel, cat, "wt*wt_ggh_pt_up", 1.0);
+			hmap["ggH"+m+"_"+syst_ggh_pt+"Down"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, sig_var, sel, cat, "wt*wt_ggh_pt_down", 1.0);
 		}
 	}
 	
@@ -312,15 +316,15 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (syst_eff_t != "") {
 		std::cout << "[HiggsTauTauPlot4] Adding high tau pT ID systematic..." << std::endl;
-    ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
-    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt*wt_tau_id_up", "_hww", "_"+syst_eff_t+"Up", 1.0);
+    ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
+    ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "_hww", "_"+syst_eff_t+"Up", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up");
 			ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_hww_SM", "_"+syst_eff_t+"Up");
     }
-    ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
-    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt*wt_tau_id_down", "_hww", "_"+syst_eff_t+"Down", 1.0);
+    ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
+    ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "_hww", "_"+syst_eff_t+"Down", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
@@ -385,9 +389,9 @@ int main(int argc, char* argv[]){
 		ana_syst.ReadTrees(folder+syst.first, folder);
 		ana_syst.ParseParamFile(paramfile);
 		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
-		ana_syst.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst.second, signal_xs);
+		ana_syst.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "_"+syst.second, signal_xs);
 	  if (interpolate) ana_syst.InterpolateSMSignal(hmap, sm_masses, morph_var, var, sel, cat, "wt", "","_"+syst.second, 1.0, signal_xs);
-		ana_syst.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
+		ana_syst.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
 		if (add_sm_background != "") {
 			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
 			ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
