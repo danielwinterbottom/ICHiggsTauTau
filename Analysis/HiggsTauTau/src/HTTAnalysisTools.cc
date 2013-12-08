@@ -324,6 +324,7 @@ namespace ic {
         std::cerr << "[HTTAnalysis::ReadTrees] Warning: Unable to extract TTree from file " << input_filename << std::endl;
         continue;        
       }
+      tmp_tree->SetEstimate(1000);
       tfiles_[label] = tmp_file;
       ttrees_[label] = tmp_tree;
     }
