@@ -13,6 +13,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
+#include "UserCode/ICHiggsTauTau/interface/Photon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
@@ -70,7 +71,8 @@ namespace { struct dictionary {
   std::vector<unsigned long> dummy44;
   edm::Wrapper<std::vector<unsigned long> > dummy45;
   mithep::TH2DAsymErr dummy46;
-
+  ic::Photon dummy47;
+  std::vector<ic::Photon> dummy48;
 };
 }
 

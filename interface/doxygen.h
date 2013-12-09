@@ -5,13 +5,11 @@ responsible for ntuple production. The main components are object definitions, c
 one C++ class for each physics object and then a corresponding CMSSW producer module. 
 
 
-Objects
-=========================
+\tableofcontents
 
+\section objects Objects
 
-
-Electrons
--------------------------
+\subsection electrons Electrons
 
 Definition: ic::Electron
 
@@ -43,8 +41,26 @@ gsfElectron if `False`.  Note that currently the use of PF Electrons is not wide
 in CMS, and this module will do nothing if the flag is set to `True`.  It is intended
 that support will be added when required.
 
-Muons
--------------------------
+\subsection photons Photons
+
+Definition: ic::Photon
+
+CMSSW Producer: ICPhotonProducer
+
+The producer currently support the `reco::Photon` class as input only.
+
+~~~~~~~~~~~~~{.py}
+process.icPhotonProducer = cms.EDProducer("ICPhotonProducer",
+  input = cms.InputTag("photons"),
+  branchName = cms.string("photons"),
+  minPt = cms.double(5.0),
+  maxEta = cms.double(3.0)
+)
+~~~~~~~~~~~~~
+
+This module will not compile out-of-the-box in the CMSSW 5_3_X series. A module providing 
+
+\subsection muons Muons
 
 Definition: ic::Muon
 
@@ -74,8 +90,6 @@ the module. See the section on particle-flow isolation for further details.
 The `isPF` flag determines the type of the input, PF if `True` and 
 gsfElectron if `False`. Important:  For a PF input the module expects that all
 PFCandidates will be PF Muons
-
-
 
 
 */

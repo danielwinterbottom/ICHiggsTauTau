@@ -28,6 +28,8 @@
   <class name="std::vector<ic::Vertex>"/>
   <class name="ic::Electron"/>
   <class name="std::vector<ic::Electron>"/>
+  <class name="ic::Photon"/>
+  <class name="std::vector<ic::Photon>"/>
   <class name="ic::Muon"/>
   <class name="std::vector<ic::Muon>"/>
   <class name="ic::EventInfo"/>
