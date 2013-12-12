@@ -18,7 +18,7 @@ PRODUCTION=V01-00
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in taunu nunu enu munu #taunu mumu
+  for CHANNEL in nunu # enu munu #taunu mumu
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
