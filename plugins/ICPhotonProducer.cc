@@ -41,7 +41,7 @@ void ICPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
   boost::hash<reco::Photon const*> photon_hasher;
 
-  // Get input PAT collection
+  // Get input collection
   edm::Handle<std::vector<reco::Photon> > photons_input;
 
   iEvent.getByLabel(input_, photons_input);

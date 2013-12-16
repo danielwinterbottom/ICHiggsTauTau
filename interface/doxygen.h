@@ -47,7 +47,7 @@ Definition: ic::Photon
 
 CMSSW Producer: ICPhotonProducer
 
-The producer currently support the `reco::Photon` class as input only.
+The producer currently support the `reco::Photon` class as input only. Example usage:
 
 ~~~~~~~~~~~~~{.py}
 process.icPhotonProducer = cms.EDProducer("ICPhotonProducer",
@@ -58,7 +58,10 @@ process.icPhotonProducer = cms.EDProducer("ICPhotonProducer",
 )
 ~~~~~~~~~~~~~
 
-This module will not compile out-of-the-box in the CMSSW 5_3_X series. A module providing 
+Details on the cut-based photon ID recommendation can be found here: https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonID2012.
+For technical information about the PF photon isolation see https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPFBasedIsolation#Example_for_photons.
+A rho-based pileup subtraction is used for the isolation sum.  The rho value can be retrieved from the ic::EventInfo class.
+
 
 \subsection muons Muons
 
