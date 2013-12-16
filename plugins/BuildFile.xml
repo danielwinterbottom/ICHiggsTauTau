@@ -8,7 +8,7 @@
   <use name="PhysicsTools/PatAlgos"/>
   <use name="PhysicsTools/PatUtils"/>
   <use name="PhysicsTools/CandUtils"/>
-  <use name="EGamma/EGammaAnalysisTools"/>
+  <use name="EgammaAnalysis/ElectronTools"/>
   <use name="RecoMET/METAlgorithms"/>
   <use name="DataFormats/METReco"/>
   <use name="JetMETCorrections/METPUSubtraction"/>
