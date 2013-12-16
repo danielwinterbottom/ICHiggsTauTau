@@ -729,7 +729,7 @@ if (release == '53X'):
       #fileNames = cms.untracked.vstring("/store/user/srimanob/invHiggs/22Jan13/0008F234-739C-E211-A836-002590832A48.root")
       fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/embedded_dataTestFile.root')       
      )
-    process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
+    process.GlobalTag.globaltag = cms.string('FT_53_V21A_AN6::All')
   else:
     process.source = cms.Source(
       "PoolSource",
@@ -742,7 +742,7 @@ if (release == '53X'):
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
     )
-    process.GlobalTag.globaltag = cms.string('START53_V15::All')
+    process.GlobalTag.globaltag = cms.string('START53_V27::All')
 
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
@@ -910,7 +910,7 @@ process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer')
 
 process.icSequence = cms.Sequence()
 
-if isData and release == '53X':
+if release == '53X':
   process.icEventInfoProducer.filters = cms.PSet(
       HBHENoiseFilter                     = cms.InputTag("HBHENoiseFilterResultProducer","HBHENoiseFilterResult"),
       EcalDeadCellTriggerPrimitiveFilter  = cms.InputTag("EcalDeadCellTriggerPrimitiveFilter"),
@@ -961,334 +961,7 @@ process.icSequence += process.icSoftLeptonSequence
 process.icTriggerSequence = cms.Sequence()
 notTp = not isTandP
 ################################################################
-## Define 2011 et,mt,em physics triggers for data
-################################################################
-if (release == '42X' and isData): 
-  process.icEle15LooseTau15ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle15LooseTau15"),
-      hltPath = cms.untracked.string("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau15_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle15TightTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle15TightTau20"),
-      hltPath = cms.untracked.string("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_TightIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle15LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle15LooseTau20"),
-      hltPath = cms.untracked.string("HLT_Ele15_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle18MediumTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle18MediumTau20"),
-      hltPath = cms.untracked.string("HLT_Ele18_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle20MediumTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle20MediumTau20"),
-      hltPath = cms.untracked.string("HLT_Ele20_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu12LooseTau10ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu12LooseTau10"),
-      hltPath = cms.untracked.string("HLT_IsoMu12_LooseIsoPFTau10_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu15LooseTau15ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu15LooseTau15"),
-      hltPath = cms.untracked.string("HLT_IsoMu15_LooseIsoPFTau15_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu15LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu15LooseTau20"),
-      hltPath = cms.untracked.string("HLT_IsoMu15_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
-      hltPath = cms.untracked.string("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu17Ele8"),
-      hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu8Ele17IdLObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8Ele17IdL"),
-      hltPath = cms.untracked.string("HLT_Mu8_Ele17_CaloIdL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu17Ele8IdLObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu17Ele8IdL"),
-      hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icTriggerSequence += (
-    process.icEle15LooseTau15ObjectProducer
-    +process.icEle15TightTau20ObjectProducer
-    +process.icEle15LooseTau20ObjectProducer
-    +process.icEle18MediumTau20ObjectProducer
-    +process.icEle20MediumTau20ObjectProducer
-    +process.icIsoMu12LooseTau10ObjectProducer
-    +process.icIsoMu15LooseTau15ObjectProducer
-    +process.icIsoMu15LooseTau20ObjectProducer
-    +process.icMu8Ele17IdLObjectProducer
-    +process.icMu17Ele8IdLObjectProducer
-    +process.icMu8Ele17ObjectProducer
-    +process.icMu17Ele8ObjectProducer
-    )
-
-################################################################
-## Define 2011 et,mt,em physics triggers for mc
-################################################################
-if (release == '42X' and not isData):
-  process.icIsoMu15LooseTau15ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu15LooseTau15"),
-      hltPath = cms.untracked.string("HLT_IsoMu15_LooseIsoPFTau15_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle18MediumTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle18MediumTau20"),
-      hltPath = cms.untracked.string("HLT_Ele18_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_MediumIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
-      hltPath = cms.untracked.string("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu17Ele8"),
-      hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icTriggerSequence += (
-    process.icIsoMu15LooseTau15ObjectProducer
-    +process.icEle18MediumTau20ObjectProducer 
-    +process.icMu8Ele17ObjectProducer
-    +process.icMu17Ele8ObjectProducer
-    )
-
-################################################################
-## Define 2012 et,mt,em,mtmet physics triggers for data
-################################################################
-if (release == '53X' and isData):
-  process.icEle20RhoLooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle20RhoLooseTau20"),
-      hltPath = cms.untracked.string("HLT_Ele20_CaloIdVT_CaloIsoRhoT_TrkIdT_TrkIsoT_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle22WP90RhoLooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle22WP90RhoLooseTau20"),
-      hltPath = cms.untracked.string("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu18LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu18LooseTau20"),
-      hltPath = cms.untracked.string("HLT_IsoMu18_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu17LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu17LooseTau20"),
-      hltPath = cms.untracked.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
-      hltPath = cms.untracked.string("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu17Ele8"),
-      hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu8LooseTau20L1ETM26ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu8LooseTau20L1ETM26"),
-      hltPath = cms.untracked.string("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_L1ETM26_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu8LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu8LooseTau20"),
-      hltPath = cms.untracked.string("HLT_IsoMu8_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle13LooseTau20L1ETM36ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle13LooseTau20L1ETM36"),
-      hltPath = cms.untracked.string("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_L1ETM36_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle13LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle13LooseTau20"),
-      hltPath = cms.untracked.string("HLT_Ele13_eta2p1_WP90Rho_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icTriggerSequence += (
-    process.icEle20RhoLooseTau20ObjectProducer
-    +process.icEle22WP90RhoLooseTau20ObjectProducer
-    +process.icIsoMu18LooseTau20ObjectProducer
-    +process.icIsoMu17LooseTau20ObjectProducer
-    +process.icMu8Ele17ObjectProducer
-    +process.icMu17Ele8ObjectProducer
-    +process.icIsoMu8LooseTau20L1ETM26ObjectProducer
-    +process.icIsoMu8LooseTau20ObjectProducer
-    +process.icEle13LooseTau20L1ETM36ObjectProducer
-    +process.icEle13LooseTau20ObjectProducer
-    )
-
-################################################################
-## Define 2012 et,mt,em,mtmet physics triggers for mc
-################################################################
-if ((release == '53X') and (not isData)):
-  process.icEle22WP90RhoLooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle22WP90RhoLooseTau20"),
-      hltPath = cms.untracked.string("HLT_Ele22_eta2p1_WP90Rho_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu17LooseTau20ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu17LooseTau20"),
-      hltPath = cms.untracked.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp) 
-      )    
-  process.icMu8Ele17ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8Ele17"),
-      hltPath = cms.untracked.string("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu17Ele8"),
-      hltPath = cms.untracked.string("HLT_Mu17_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu8"),
-      hltPath = cms.untracked.string("HLT_Mu8_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icEle8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle8"),
-      hltPath = cms.untracked.string("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icIsoMu24ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu24"),
-      hltPath = cms.untracked.string("HLT_IsoMu24_eta2p1_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )  
-  process.icTriggerSequence += (
-    process.icEle22WP90RhoLooseTau20ObjectProducer
-    +process.icIsoMu17LooseTau20ObjectProducer
-    +process.icMu8Ele17ObjectProducer
-    +process.icMu17Ele8ObjectProducer
-    +process.icMu8ObjectProducer
-    +process.icEle8ObjectProducer
-    +process.icIsoMu24ObjectProducer
-    )
-
-
-################################################################
-## Define 2011 t+p triggers for data
-################################################################
-if (release == '42X' and isData and isTandP): 
-  process.icIsoMu24ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu24"),
-      hltPath = cms.untracked.string("HLT_IsoMu24_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )    
-  process.icEle17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle17Ele8"),
-      hltPath = cms.untracked.string("HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_Ele8_Mass30_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )    
-  process.icEle17SC8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle17SC8"),
-      hltPath = cms.untracked.string("HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_SC8_Mass30_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )
-  process.icTriggerSequence += (
-    process.icIsoMu24ObjectProducer
-    +process.icEle17Ele8ObjectProducer
-    +process.icEle17SC8ObjectProducer
-    )
-
-################################################################
-## Define 2012 t+p triggers for data
-################################################################
-if (release == '53X' and isData and isTandP):
-  process.icIsoMu24ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsIsoMu24"),
-      hltPath = cms.untracked.string("HLT_IsoMu24_eta2p1_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )  
-  process.icMu17TkMu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu17TkMu8"),
-      hltPath = cms.untracked.string("HLT_Mu17_TkMu8_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )  
-  process.icEle27ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle27"),
-      hltPath = cms.untracked.string("HLT_Ele27_WP80_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )
-  process.icEle17Ele8Mass50ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle17Ele8Mass50"),
-      hltPath = cms.untracked.string("HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_Ele8_Mass50_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )
-  process.icEle20SC4Mass50ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle20SC4Mass50"),
-      hltPath = cms.untracked.string("HLT_Ele20_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_SC4_Mass50_v"),
-      StoreOnlyIfFired = cms.untracked.bool(True)
-      )
-  process.icTriggerSequence += (
-    process.icIsoMu24ObjectProducer
-    +process.icMu17TkMu8ObjectProducer
-    +process.icEle27ObjectProducer
-    +process.icEle17Ele8Mass50ObjectProducer
-    +process.icEle20SC4Mass50ObjectProducer
-    )
-
-################################################################
-## Define 2012 mm,ee physics triggers for data
-################################################################
-if (release == '53X' and isData and isZStudy):
-  process.icEle17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle17Ele8"),
-      hltPath = cms.untracked.string("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu17Mu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu17Mu8"),
-      hltPath = cms.untracked.string("HLT_Mu17_Mu8_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icTriggerSequence += (
-    process.icEle17Ele8ObjectProducer
-    +process.icMu17Mu8ObjectProducer
-    )
-
-################################################################
-## Define 2012 mm,ee physics triggers for mc
-################################################################
-if (release == '53X' and (not isData) and isZStudy):
-  process.icEle17Ele8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsEle17Ele8"),
-      hltPath = cms.untracked.string("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icMu17Mu8ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
-      branchName = cms.untracked.string("triggerObjectsMu17Mu8"),
-      hltPath = cms.untracked.string("HLT_Mu17_Mu8_v"),
-      StoreOnlyIfFired = cms.untracked.bool(notTp)
-      )
-  process.icTriggerSequence += (
-    process.icEle17Ele8ObjectProducer
-    +process.icMu17Mu8ObjectProducer
-    )
-
-################################################################
-## Define 2012 Hinv physics triggers for mc
+## Define 2012 Hinv prompt physics triggers for mc
 ################################################################
 if (release == '53X' and (not isData)):
   process.icDiPFJet40PFMETnoMu65MJJ600VBFLeadingJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
@@ -1324,6 +997,48 @@ if (release == '53X' and (not isData)):
     +process.icL1ETM40ObjectProducer 
     )
 
+################################################################
+## Define 2012 Hinv parked physics triggers for mc
+################################################################
+if (release == '53X' and (not isData)):
+  #Run B,C,D
+  process.icDiJet35MJJ650VBFAllJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiJet35MJJ650VBFAllJets"),
+      hltPath = cms.untracked.string("HLT_DiJet35_MJJ650_AllJets_DEta3p5_VBF_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )
+  process.icDiJet35MJJ700VBFAllJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiJet35MJJ700VBFAllJets"),
+      hltPath = cms.untracked.string("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )
+  process.icDiJet35MJJ750VBFAllJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiJet35MJJ750VBFAllJets"),
+      hltPath = cms.untracked.string("HLT_DiJet35_MJJ750_AllJets_DEta3p5_VBF_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )
+  
+  #Run D only, may not be present in MC AOD
+  process.icDiJet20MJJ650VBFAllJetsHT120ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiJet20MJJ650VBFAllJetsHT120"),
+      hltPath = cms.untracked.string("HLT_DiJet20_MJJ650_AllJets_DEta3p5_HT120_VBF_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )
+  process.icDiJet30MJJ700VBFAllJetsObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+      branchName = cms.untracked.string("triggerObjectsDiJet30MJJ700VBFAllJets"),
+      hltPath = cms.untracked.string("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF_v"),
+      StoreOnlyIfFired = cms.untracked.bool(True)
+      )
+  
+  process.icTriggerSequence += ( 
+    process.icDiJet35MJJ650VBFAllJetsObjectProducer
+    +process.icDiJet35MJJ700VBFAllJetsObjectProducer
+    +process.icDiJet35MJJ750VBFAllJetsObjectProducer
+    #RUN D ONLY
+    +process.icDiJet20MJJ650VBFAllJetsHT120ObjectProducer
+    +process.icDiJet30MJJ700VBFAllJetsObjectProducer
+  )
+  
 process.icSequence += process.icTriggerSequence
 
 if not isData:

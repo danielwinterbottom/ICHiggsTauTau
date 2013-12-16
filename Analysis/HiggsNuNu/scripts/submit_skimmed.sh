@@ -21,8 +21,8 @@ if (( "$DOCERN" == "1" )); then
 else 
     JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
     JOBQUEUE="hepshort.q"
-    PREFIX=/vols/ssd00/cms/amagnan/trigskims/nunu/MET130/FromCern
-    PREFIXEMBED=/vols/ssd00/cms/amagnan/trigskims/Oct21/nunu/MET130/FromCern
+    PREFIX=/vols/ssd00/cms/amagnan/trigskims/nunu/MET130/FromCern/
+    PREFIXEMBED=/vols/ssd00/cms/amagnan/trigskims/Oct21/nunu/MET130/FromCern/
 fi
 
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE

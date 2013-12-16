@@ -108,21 +108,19 @@ void ICEventInfoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
   info_->set_lepton_rho(*lepton_rho_handle);
     
   // MET filters
-  if (iEvent.isRealData()) {
-    for (unsigned i = 0; i < filters_.size(); ++i) {
-      edm::Handle<bool> filter;
-      iEvent.getByLabel(filters_[i].second, filter);
-      bool filter_result = (*filter);
-      if (invert_filter_logic_.find(filters_[i].first) != invert_filter_logic_.end()) filter_result = !filter_result;
-      // std::cout << filters_[i].first << "\t\t" << filter_result << std::endl;
-      info_->set_filter_result(filters_[i].first, filter_result);
-      observed_filters_[filters_[i].first] = CityHash64(filters_[i].first);
-    }
-    edm::Handle<reco::BeamHaloSummary> beamHaloSummary;
-    if (iEvent.getByLabel("BeamHaloSummary",beamHaloSummary)) {
-      info_->set_filter_result("CSCTightHaloFilter", beamHaloSummary->CSCTightHaloId());
-      observed_filters_["CSCTightHaloFilter"] = CityHash64("CSCTightHaloFilter");  
-    }
+  for (unsigned i = 0; i < filters_.size(); ++i) {
+    edm::Handle<bool> filter;
+    iEvent.getByLabel(filters_[i].second, filter);
+    bool filter_result = (*filter);
+    if (invert_filter_logic_.find(filters_[i].first) != invert_filter_logic_.end()) filter_result = !filter_result;
+    // std::cout << filters_[i].first << "\t\t" << filter_result << std::endl;
+    info_->set_filter_result(filters_[i].first, filter_result);
+    observed_filters_[filters_[i].first] = CityHash64(filters_[i].first);
+  }
+  edm::Handle<reco::BeamHaloSummary> beamHaloSummary;
+  if (iEvent.getByLabel("BeamHaloSummary",beamHaloSummary)) {
+    info_->set_filter_result("CSCTightHaloFilter", beamHaloSummary->CSCTightHaloId());
+    observed_filters_["CSCTightHaloFilter"] = CityHash64("CSCTightHaloFilter");  
   }
 
 }
