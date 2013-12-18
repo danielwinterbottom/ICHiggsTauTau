@@ -241,8 +241,8 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
   string extra_binning_postfix;
   string extra_binning_range = "";
+  std::vector<std::string> extra_binning;
 	if (add_extra_binning != "") {
-		std::vector<std::string> extra_binning;
 		boost::split(extra_binning, add_extra_binning, boost::is_any_of(":"));
 		if (extra_binning.size() == 2) {
 			std::cout << "-----------------------------------------------------------------------------------" << std::endl;
@@ -252,6 +252,7 @@ int main(int argc, char* argv[]){
       extra_binning_postfix = extra_binning[1];
 			ana.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", extra_binning[1]);
 			ana.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
+	    ana.FillHWWSignal(hmap, hww_masses, reduced_var+extra_binning[0], sel, cat, "wt", "_hww", extra_binning[1], 1.0);
 			ana.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", extra_binning[1], 1.0);
 		}
 	}
@@ -397,6 +398,12 @@ int main(int argc, char* argv[]){
 			ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		if (extra_binning.size() == 2) {
+			ana_syst.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", "_"+syst.second+extra_binning[1]);
+			ana_syst.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
+	    ana_syst.FillHWWSignal(hmap, hww_masses, reduced_var+extra_binning[0], sel, cat, "wt", "_hww", "_"+syst.second+extra_binning[1], 1.0);
+			ana_syst.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
+		}
 	  if (syst.second == syst_l1met+"Down" || syst.second == syst_l1met+"Up") {
       string backup_eff = ana_syst.ResolveAlias("ZTT_Eff_Sample");
       string backup_shape = ana_syst.ResolveAlias("ZTT_Shape_Sample");

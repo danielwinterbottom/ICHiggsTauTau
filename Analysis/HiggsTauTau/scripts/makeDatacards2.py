@@ -139,6 +139,7 @@ if options.scheme == 'new_sm':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   extra_global += ' --syst_ggh_pt="QCDscale_ggH1in" --scan_bins=2'
+  extra_global += ' --add_extra_binning="(70,0,350):_fine_binning"'
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.5"'
   extra_global += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
   extra_channel["et"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<30."'
