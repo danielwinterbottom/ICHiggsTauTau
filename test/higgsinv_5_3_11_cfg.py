@@ -371,7 +371,7 @@ process.selectedAndFilteredPatJets = process.selectedPatJets.clone(
 ################################################################
 ### Configuration of Electron ID MVA
 ################################################################
-process.load("EGamma.EGammaAnalysisTools.electronIdMVAProducer_cfi")
+process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_cfi")
 process.mvaElectronIDSequence = cms.Sequence(process.mvaTrigV0 + process.mvaNonTrigV0)
 
 
@@ -728,7 +728,7 @@ if (release == '53X'):
       #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/p/pdunne/private/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/pickevents.root')
       #fileNames = cms.untracked.vstring("/store/user/srimanob/invHiggs/22Jan13/0008F234-739C-E211-A836-002590832A48.root")
       #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/embedded_dataTestFile.root')
-      fileNames = cms.untracked.vstring('root://gfe02.grid.hep.ph.ic.ac.uk:1097')
+      fileNames = cms.untracked.vstring('root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/data/Run2012B/VBF1Parked/AOD/22Jan2013-v1/30001/8438FBA5-AB76-E211-8EC6-002618943831.root')
      )
     process.GlobalTag.globaltag = cms.string('FT53_V21A_AN6::All')
   else:
@@ -739,7 +739,7 @@ if (release == '53X'):
       #'file:/afs/cern.ch/work/p/pdunne/public/VBF_HToTauTau_M-125-53X.root'
       #'file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/testFile_W2j.root'       
       #'file:/afs/cern.ch/work/a/amagnan/CMSSW_5_3_11_patch6/src/UserCode/ICHiggsTauTau/python/embedded_mcW2jTestfile.root'
-      'root://gfe02.grid.hep.ph.ic.ac.uk:1097'
+      'root://gfe02.grid.hep.ph.ic.ac.uk:1097/store/mc/Summer12_DR53X/W3JetsToLNu_TuneZ2Star_8TeV-madgraph/AODSIM/PU_S10_START53_V7A-v1/0000/00514902-F205-E211-83F0-001E6739753A.root'
       )
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
