@@ -718,8 +718,8 @@ if not isData:
 ### General Config
 ################################################################
 process.MessageLogger.cerr.FwkReport.reportEvery = 50000
-process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger','HLTConfigData' )
-process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLTConfigData')
+process.MessageLogger.suppressError = cms.untracked.vstring( 'patTrigger','HLTConfigData',)
+process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLTConfigData','manystripclus53X','toomanystripclus53X' )
 
 if (release == '53X'):
   if isData:
@@ -752,6 +752,13 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 ################################################################
 ## Configure private modules
 ################################################################
+process.icPhotonProducer = cms.EDProducer("ICPhotonProducer",
+    input = cms.InputTag("photons"),
+    branchName = cms.string("photons"),
+    minPt = cms.double(5.0),
+    maxEta = cms.double(3.0)
+)
+
 process.icElectronProducer = cms.EDProducer('ICElectronProducer',
     input = cms.InputTag("gsfElectrons"),
     branchName = cms.string("electrons"),
@@ -926,6 +933,7 @@ if release == '53X':
 
 process.icSequence += cms.Sequence(
   process.icElectronProducer
+  +process.icPhotonProducer
   +process.icMuonProducer
   +process.icPFJetProducer
   +process.patMETsNoCorr
