@@ -19,7 +19,7 @@ USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau -lTauAnaly
 USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lFWCoreFWLite -lPhysicsToolsFWLite -lCommonToolsUtils
 
 #CXXFLAGS = -Wall -W -Wno-unused-function -Wno-parentheses -Wno-char-subscripts -Wno-unused-parameter -O2 
-CXXFLAGS = -Wall -W -O2 -std=c++0x -Wno-deprecated-declarations -Wno-unused-parameter
+CXXFLAGS = -Wall -W -O2 -std=c++0x
 LDFLAGS = -shared -Wall -W 
 
 # If possible we'll use the clang compiler, it's faster and gives more helpful error messages
@@ -54,23 +54,37 @@ TEST_EXT=cpp
 SRCS=$(wildcard $(BASEDIR)/src/*.cc)
 EXES=$(wildcard $(BASEDIR)/test/*.cpp)
 OBJS=$(subst $(SRCDIR), $(OBJDIR),$(subst cc,$(OBJ_EXT),$(SRCS)))
+EXE_OBJS=$(subst $(TESTDIR), $(EXEDIR),$(subst cpp,$(OBJ_EXT),$(EXES)))
 BINS=$(subst $(TESTDIR), $(EXEDIR),$(subst .$(TEST_EXT),,$(EXES)))
 
 all:  lib $(BINS)
 
+
+.SECONDARY: $(EXE_OBJS)
+
 docs: all
 	doxygen Doxyfile
 	
-$(EXEDIR)/%: $(TESTDIR)/%.cpp $(LIBDIR)/lib$(LIBNAME).so $(BASEDIR)/interface/*.h
-	$(CXX) -o $@ $(CXXFLAGS) $< $(LIBS) -L$(LIBDIR) -l$(LIBNAME)
+$(EXEDIR)/%: $(EXEDIR)/%.o $(LIBDIR)/lib$(LIBNAME).so 
+	$(CXX) -o $@  $< $(LIBS) -L$(LIBDIR) -l$(LIBNAME)
 
-$(OBJDIR)/%.$(OBJ_EXT): $(SRCDIR)/%.cc $(BASEDIR)/interface/%.h
+-include $(EXE_OBJS:.o=.d)
+
+-include $(OBJS:.o=.d)
+
+$(OBJDIR)/%.$(OBJ_EXT): $(SRCDIR)/%.cc
 	$(CXX) $(CXXFLAGS) -fPIC -c $<  -o $@
+	$(CXX) $(CXXFLAGS) -MM -MP -MT "$@" $< -o $(OBJDIR)/$*.d
+
+$(EXEDIR)/%.$(OBJ_EXT): $(TESTDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -fPIC -c $<  -o $@
+	$(CXX) $(CXXFLAGS) -MM -MP -MT "$@" $< -o $(EXEDIR)/$*.d
 
 $(LIBDIR)/lib$(LIBNAME).so: $(OBJS)
 	$(LD) $(LDFLAGS) -o $(LIBDIR)/lib$(LIBNAME).so $(OBJS) $(LIBS)
 	
 lib: $(LIBDIR)/lib$(LIBNAME).so
+
 
 # info:
 # 	@echo "LIBS: " $(LIBS)
@@ -80,6 +94,6 @@ lib: $(LIBDIR)/lib$(LIBNAME).so
 # 	@echo "Executables:  " $(TARGETS)
 
 clean:
-	rm -rf $(OBJS) $(LIBDIR)/lib$(LIBNAME).so $(BINS)
+	rm -rf $(EXEDIR)/*.o $(EXEDIR)/*.d $(OBJDIR)/*.o $(OBJDIR)/*.d $(LIBDIR)/lib$(LIBNAME).so $(BINS) 
 
 
