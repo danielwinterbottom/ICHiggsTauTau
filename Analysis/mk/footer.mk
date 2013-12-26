@@ -60,7 +60,7 @@ $(MY_LIB_$(d)) : $(MY_OBJS_$(d)) $(MY_LIB_DEPS_$(d))
 
 $(d)/obj/%.o: DIR=$(d)
 
-DOECHO=@
+DOECHO=
 
 $(d)/obj/%.o: $(d)/src/%.cc
 	@echo -e "$(COLOR_BL)Compiling object file $(subst $(TOP)/,,$@)$(NOCOLOR)"
