@@ -32,9 +32,15 @@ USERINCLUDES += -isystem $(ROOFITSYS)/include
 # in the near futures to figure out the right version for the CMSSW release
 USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0/include
 # CMSSW release area
-USERINCLUDES += -isystem $(CMSSW_RELEASE_BASE)/src/
+USERINCLUDES += -isystem $(CMSSW_RELEASE_BASE)/src
 # CMSSW user area
-USERINCLUDES += -I$(CMSSW_BASE)/src/
+USERINCLUDES += -I$(CMSSW_BASE)/src
+# Analysis area
+USERINCLUDES += -I$(CMSSW_BASE)/src/UserCode/ICHiggsTauTau/Analysis
+
+# Special includes for running the include-what-you-use tool on OS X
+# USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/gcc/4.6.2/include/c++/4.6.2
+# USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/gcc/4.6.2/include/c++/4.6.2/x86_64-apple-darwin11.2.0
 
 # Define libraries to link
 USERLIBS += $(shell root-config --glibs) -lGenVector -lTreePlayer -lTMVA
