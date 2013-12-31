@@ -1,8 +1,3 @@
-# When I'm using default shell on Cygwin $(shell pwd) does not give the
-# same result as $(shell echo $$PWD) or $(shell echo `pwd`).  It gives
-# me path with symbolic links resolved whereas the later two do not do
-# that.  I prefer unresolved version and since simple $(shell pwd) looks
-# nicer than other two I'm sticking with bash :).
 SHELL := /bin/bash
 RUNDIR := $(shell pwd)
 ifndef TOP
@@ -14,47 +9,50 @@ TOP := $(shell \
        echo $$top)
 endif
 
+# Define some useful colours
+COLOR_BL := \033[34m
+COLOR_CY := \033[36m
+COLOR_PU := \033[35m
+COLOR_GR := \033[32m
+NOCOLOR := \033[0m
 
+# Folder containing ancillary makefile inputs
 MK := $(TOP)/mk
 
+# Setup standard includes that will be used everywhere
+# -isystem is used instead of -I where we want to suppress
+# compiler warnings and dependency generation for stuff that
+# we can't actually touch
 
-
-USERINCLUDES += -isystem $(ROOTSYS)/include/
-USERINCLUDES += -isystem $(ROOFITSYS)/include/
-USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0/include/
-USERINCLUDES += -I$(CMSSW_BASE)/src/ 
+# ROOT
+USERINCLUDES += -isystem $(ROOTSYS)/include
+# ROOFIT
+USERINCLUDES += -isystem $(ROOFITSYS)/include
+# BOOST - currently fixed to version 1.47.0, we will need to do some magic
+# in the near futures to figure out the right version for the CMSSW release
+USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0/include
+# CMSSW release area
 USERINCLUDES += -isystem $(CMSSW_RELEASE_BASE)/src/
+# CMSSW user area
+USERINCLUDES += -I$(CMSSW_BASE)/src/
 
 # Define libraries to link
 USERLIBS += $(shell root-config --glibs) -lGenVector -lTreePlayer -lTMVA
 USERLIBS += -L$(ROOFITSYS)/lib/ -lRooFit -lRooFitCore
 USERLIBS += -L$(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0/lib/ -lboost_regex -lboost_program_options -lboost_filesystem
-USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau -lTauAnalysisCandidateTools
+USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau
 USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lFWCoreFWLite -lPhysicsToolsFWLite -lCommonToolsUtils
 
-#CXXFLAGS = -Wall -W -Wno-unused-function -Wno-parentheses -Wno-char-subscripts -Wno-unused-parameter -O2 
-CXXFLAGS = -Wall -Wextra -O2 -pedantic -std=c++0x
-LDFLAGS = -shared -Wall -Wextra
-
-# -Wall -Wextra -pedantic -Weffc++
-
-# If possible we'll use the clang compiler, it's faster and gives more helpful error messages
-# If it's not available, then fallback to gcc.
 CXX=g++
 LD=g++
-# Update 17/2/2013:  Remove support for compiling with clang as there are issues with
-# C++11
+CXXFLAGS= -Wall -Wextra -O2 -std=c++0x
+LDFLAGS= -shared -Wall -Wextra
 
-# CLANGPATH := $(shell type -p clang++)
-# ifeq ($(CLANGPATH),)
-# $(warning clang++ not found, reverting to g++!)
-# CXX=g++
-# LD=g++
-# endif
+# Extra gcc flags that will generate A LOT of warnings
+# -pedantic -Weffc++
 
 CXXFLAGS += $(USERINCLUDES)
 LIBS += $(USERLIBS)
-
 
 .PHONY: dir tree all clean clean_all clean_tree dist_clean
 
@@ -72,18 +70,17 @@ dir : dir_$(RUNDIR)
 tree : tree_$(RUNDIR)
 	@echo -e "==> $(COLOR_GR)Directory tree starting at '$(notdir $(RUNDIR))' updated$(NOCOLOR)"
 
-all_proxy : all
+all : all_proxy
 	@echo -e "==> $(COLOR_GR)Complete directory tree updated$(NOCOLOR)"
 
-
 clean : clean_$(RUNDIR)
+
 clean_tree : clean_tree_$(RUNDIR)
 
 # $(d) keeps the path of "current" directory during tree traversal and
 # $(dir_stack) is used for backtracking during traversal
 d := $(TOP)
 dir_stack :=
-
 
 include $(MK)/header.mk
 include $(MK)/footer.mk
@@ -96,6 +93,3 @@ $(eval $(value HEADER))
 include $(TOP)/Rules.top
 $(eval $(value FOOTER))
 
-
-print-%:
-	@echo '$*=$($*)'

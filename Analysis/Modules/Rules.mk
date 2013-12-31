@@ -1,2 +1,3 @@
-SUBDIRS := 
-LIB_DEPS = Core Utilities
+SUBDIRS 	:=
+LIB_DEPS 	:= Core Utilities
+LIB_EXTRA :=

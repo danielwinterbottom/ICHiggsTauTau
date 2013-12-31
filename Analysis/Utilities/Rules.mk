@@ -1,1 +1,3 @@
-SUBDIRS := 
+SUBDIRS   :=
+LIB_DEPS 	:=
+LIB_EXTRA := -lTauAnalysisCandidateTools
