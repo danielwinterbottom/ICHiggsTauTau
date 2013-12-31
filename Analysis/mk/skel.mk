@@ -16,6 +16,3 @@ $$(eval $$(value FOOTER))
 d := $$(firstword $$(dir_stack))
 dir_stack := $$(wordlist 2,$$(words $$(dir_stack)),$$(dir_stack))
 endef
-
-# Suck in the default rules
-include $(MK)/def_rules.mk
