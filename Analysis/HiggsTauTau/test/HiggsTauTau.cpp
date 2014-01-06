@@ -91,6 +91,7 @@ int main(int argc, char* argv[]){
   bool large_tscale_shift;        // Shift tau energy scale by +/- 6% instead of 3%
   bool do_tau_eff;                // Run the tau efficiency module
   unsigned pu_id_training;        // Pileup jet id training
+  unsigned vh_filter_mode;        // 0 = no filter, 1 = WH/ttH, 2 = ZH
   /* Skims/notes needed for em channel
   // Speical Mode 20 Fake Electron for emu
   // Speical Mode 21 Fake Muon for emu 
@@ -147,7 +148,8 @@ int main(int argc, char* argv[]){
       ("large_tscale_shift",  po::value<bool>(&large_tscale_shift)->default_value(false))
       ("do_tau_eff",          po::value<bool>(&do_tau_eff)->default_value(false))
       ("allowed_tau_modes",   po::value<string>(&allowed_tau_modes)->default_value(""))
-      ("pu_id_training",      po::value<unsigned>(&pu_id_training)->default_value(1));
+      ("pu_id_training",      po::value<unsigned>(&pu_id_training)->default_value(1))
+      ("vh_filter_mode",      po::value<unsigned>(&vh_filter_mode)->default_value(0));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -201,6 +203,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "mass_scale_mode" % mass_scale_mode;
   std::cout << boost::format(param_fmt) % "svfit_mode" % svfit_mode;
   std::cout << boost::format(param_fmt) % "new_svfit_mode" % new_svfit_mode;
+  std::cout << boost::format(param_fmt) % "vh_filter_mode" % vh_filter_mode;
   if (svfit_mode > 0) {
     std::cout << boost::format(param_fmt) % "svfit_folder" % svfit_folder;
     std::cout << boost::format(param_fmt) % "svfit_override" % svfit_override;
@@ -406,6 +409,30 @@ int main(int argc, char* argv[]){
       (bind(abs,(bind(&GenParticle::pdgid, _1))) == 15))
     .set_min(2);
   if (ztautau_mode == 2) zTauTauFilter.set_min(0).set_max(0);
+
+  auto zh_selector = [](GenParticle const* p) -> bool {
+    if (p->status() == 3 && std::abs(p->pdgid()) == 23) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  auto wh_selector = [](GenParticle const* p) -> bool {
+    if (p->status() == 3 && std::abs(p->pdgid()) == 24) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  SimpleCounter<GenParticle> vhFilter = SimpleCounter<GenParticle>("VHFilter")
+    .set_input_label("genParticles")
+    .set_predicate(wh_selector)
+    .set_min(0).set_max(0);
+  if (vh_filter_mode == 1) vhFilter.set_predicate(wh_selector).set_min(1).set_max(1); // Exactly one W boson => WH
+  if (vh_filter_mode == 2) vhFilter.set_predicate(wh_selector).set_min(2).set_max(999); // Two W bosons => ttH
+  if (vh_filter_mode == 3) vhFilter.set_predicate(zh_selector).set_min(1).set_max(999); // At least one Z boson => ZH
 
   double mssm_mass = 0.0;
   bool do_mass_filter = false;
@@ -632,11 +659,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Tau Modules
   // ------------------------------------------------------------------------------------
-  bool real_tau_sample = ( (output_name.find("GluGluToHToTauTau")     != output_name.npos)
-                        || (output_name.find("SUSYGluGluToHToTauTau") != output_name.npos)
-                        || (output_name.find("SUSYBBHToTauTau")       != output_name.npos)
-                        || (output_name.find("VBF_HToTauTau")         != output_name.npos)
-                        || (output_name.find("WH_ZH_TTH_HToTauTau")   != output_name.npos)
+  bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
                         || (output_name.find("Embedded")              != output_name.npos)
                         || (output_name.find("RecHit")                != output_name.npos) );
@@ -991,6 +1014,7 @@ int main(int argc, char* argv[]){
         && !is_data )             analysis.AddModule(&httL1MetCorrector); 
   if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
   if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
+  if (vh_filter_mode > 0)         analysis.AddModule(&vhFilter);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
   if (tau_scale_mode > 0 && channel != channel::em && !moriond_tau_scale && !do_skim)

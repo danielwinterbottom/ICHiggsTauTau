@@ -256,6 +256,7 @@ FILELIST='filelists/'+PRODUCTION+'_MC_53X'
 if options.do_2011: FILELIST='filelists/'+PRODUCTION+'_MC_42X'
 
 signal_mc = [ ]
+signal_vh = [ ] 
 signal_mc_ww = [ ]
 
 if options.proc_sm or options.proc_all:
@@ -267,6 +268,9 @@ if options.proc_sm or options.proc_all:
     signal_mc += [
       'GluGluToHToTauTau_M-'+mass,
       'VBF_HToTauTau_M-'+mass, 
+      'WH_ZH_TTH_HToTauTau_M-'+mass
+    ]
+    signal_vh += [
       'WH_ZH_TTH_HToTauTau_M-'+mass
     ]
   if  not options.do_2011:
@@ -435,6 +439,23 @@ if options.proc_sm or options.proc_mssm or options.proc_all:
           os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_%(sa)s_%(ch)s_skim.dat --channel=%(ch)s'
               ' --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
           os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+        for sa in signal_vh:
+          name_wh = sa.replace('WH_ZH_TTH','WH')
+          name_tth = sa.replace('WH_ZH_TTH','TTH')
+          name_zh = sa.replace('WH_ZH_TTH','ZH')
+          JOB='%s_%s_%s' % (name_wh,ch,YR)
+          os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --vh_filter_mode=1 --filelist=%(FILELIST)s_%(sa)s_%(ch)s_skim.dat'
+              ' --svfit_override=%(sa)s_%(ch)s_%(YR)s.root --channel=%(ch)s  --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+          os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+          JOB='%s_%s_%s' % (name_tth,ch,YR)
+          os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --vh_filter_mode=2 --filelist=%(FILELIST)s_%(sa)s_%(ch)s_skim.dat'
+              ' --svfit_override=%(sa)s_%(ch)s_%(YR)s.root --channel=%(ch)s  --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+          os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+          JOB='%s_%s_%s' % (name_zh,ch,YR)
+          os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --vh_filter_mode=3 --filelist=%(FILELIST)s_%(sa)s_%(ch)s_skim.dat'
+              ' --svfit_override=%(sa)s_%(ch)s_%(YR)s.root --channel=%(ch)s  --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
+          os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
+
 
 
 if options.proc_sm or options.proc_all:
@@ -446,9 +467,3 @@ if options.proc_sm or options.proc_all:
             os.system('%(JOBWRAPPER)s "./bin/HiggsTauTau --cfg=%(CONFIG)s %(PREFIXMC)s --tau_scale_mode=%(sc)s --filelist=%(FILELIST)s_%(sa)s_%(ch)s_skim.dat --channel=%(ch)s'
                 ' --output_name=%(JOB)s.root &> jobs/%(JOB)s-%(sc)s.log" jobs/%(JOB)s-%(sc)s.sh' % vars())
             os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(sc)s.sh' % vars())
-
-
-
-
-
-
