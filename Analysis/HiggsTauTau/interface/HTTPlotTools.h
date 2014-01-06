@@ -71,6 +71,7 @@ namespace ic {
     CLASS_MEMBER(HTTPlot,   unsigned,       signal_scale) // if "" then don't draw
     CLASS_MEMBER(HTTPlot,   double,         auto_error_band)
     CLASS_MEMBER(HTTPlot,   bool,           draw_error_band)
+    CLASS_MEMBER(HTTPlot,   bool,           add_stat_error)
 
     // CLASS_MEMBER(HTTPlot, bool, ztt_by_decay_mode)
     // CLASS_MEMBER(HTTPlot, bool, shift_backgrounds)

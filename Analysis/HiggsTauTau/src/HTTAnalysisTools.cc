@@ -89,7 +89,7 @@ namespace ic {
 
     if (ch_ != channel::em) {
       // SM Categories
-      alias_map_["inclusive"]         = "1";
+      alias_map_["inclusive"]         = "pt_2>30.";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>40. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=40. && n_bjets==0)";
@@ -123,9 +123,9 @@ namespace ic {
       alias_map_["vbf_loose"]         = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
       alias_map_["w_vbf_extrap_cat"]  = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
       alias_map_["vbf_loose_jets20"]  = "(pt_2>30. && n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
-      alias_map_["twojet"]            = "(n_jets>=2)";
-      alias_map_["zl_denominator"]    = "(n_jets>=2)";
-      alias_map_["1jet"]              = "(n_jets>=1)";
+      alias_map_["twojet"]            = "(n_jets>=2 && pt_2>30.)";
+      alias_map_["zl_denominator"]    = "(n_jets>=2 && pt_2>30.)";
+      alias_map_["1jet"]              = "(n_jets>=1 && pt_2>30.)";
 
     } else {
       // SM Categories

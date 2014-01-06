@@ -13,12 +13,86 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "TPad.h"
 #include "TROOT.h"
+#include "TColor.h"
 #include "TEfficiency.h"
 
 
 namespace ic {
 
   HTTPlot::HTTPlot() : config_("Config") {
+    bkg_schemes_["all"] = {
+      PlotBkgComponent("qcd","QCD"                  ,{"QCD","Fakes"}      , kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT","ttbar"}       , kBlue   - 8),
+      PlotBkgComponent("ewk","Electroweak"          ,{"W","VV","EWK"}     , kRed    + 2),
+      PlotBkgComponent("zll","Z#rightarrowll"       ,{"ZL","ZJ","ZLL"}    , kAzure  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT","Ztt"}        , kOrange - 4)
+    };
+    bkg_schemes_["et_default"] = {
+      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}      ,TColor::GetColor(250,202,255)),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       ,TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","Electroweak"          ,{"W","VV"}   ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZL","ZJ"}  ,TColor::GetColor(100,182,232)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      ,TColor::GetColor(248,206,104))
+    };
+    bkg_schemes_["et_zll"] = {
+      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}      , kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       , kBlue   - 8),
+      PlotBkgComponent("ewk","Electroweak"          ,{"W","VV"}   , kRed    + 2),
+      PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZLL"}      , kAzure  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange - 4)
+    };
+    bkg_schemes_["et_with_zj"] = {
+      PlotBkgComponent("qcd","QCD"                      ,{"QCD"}      , kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"                 ,{"TT"}       , kBlue   - 8),
+      PlotBkgComponent("ewk","Electroweak"              ,{"W","VV"}   , kRed    + 2),
+      PlotBkgComponent("zl","Z#rightarrowee (lepton)"   ,{"ZL"}       , kAzure  + 2),
+      PlotBkgComponent("zj","Z#rightarrowee (jet)"      ,{"ZJ"}       , kGreen  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau"     ,{"ZTT"}      , kOrange - 4)
+    };
+    bkg_schemes_["mt_default"] = {
+      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}              ,kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}               ,kBlue   - 8),
+      PlotBkgComponent("ewk","Electroweak"          ,{"W","VV","ZL","ZJ"} ,kRed    + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,kOrange - 4)
+    };
+    bkg_schemes_["em_default"] = {
+      PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"Fakes"}            ,TColor::GetColor(250,202,255)),
+      PlotBkgComponent("ewk","Electroweak"          ,{"EWK"}              ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,TColor::GetColor(248,206,104))
+    };
+    bkg_schemes_["mt_with_zmm"] = {
+      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
+      PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","Electroweak",           {"W","VV"},   TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("zll","Z#rightarrow#mu#mu",    {"ZL","ZJ"},  TColor::GetColor(100,182,232)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
+    };
+    bkg_schemes_["mt_with_zj"] = {
+      PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
+      PlotBkgComponent("ewk","Electroweak",{"W","VV"},kRed    + 2),
+      PlotBkgComponent("zl","Z#rightarrow#mu#mu (lepton)",{"ZL"},kAzure  + 2),
+      PlotBkgComponent("zj","Z#rightarrow#mu#mu (jet)",{"ZJ"},kGreen  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
+    };
+    bkg_schemes_["mt_with_zmm_zll"] = {
+      PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
+      PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
+      PlotBkgComponent("ewk","Electroweak",{"W","VV"},kRed    + 2),
+      PlotBkgComponent("zll","Z#rightarrow#mu#mu",{"ZLL"},kAzure  + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
+    };
+    bkg_schemes_["tau_modes"] = {
+      PlotBkgComponent("qcd","QCD"            ,{"QCD"}                ,TColor::GetColor(250,202,255)),
+      PlotBkgComponent("top","t#bar{t}"       ,{"TT"}                 ,TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","Electroweak"    ,{"W","VV"}             ,TColor::GetColor(222,90,106)),
+      PlotBkgComponent("zll", "Z#rightarrow#mu#mu", {"ZL","ZJ"}        ,TColor::GetColor(100,182,232)),
+      PlotBkgComponent("ztt1","Z#rightarrow#tau#tau   1 #pi^{#pm} no photons"   ,{"ZTT-1P0PZ"}  ,kOrange + 1),
+      PlotBkgComponent("ztt2","Z#rightarrow#tau#tau   1 #pi^{#pm} + photons"    ,{"ZTT-1P1PZ"}  ,kOrange - 0),
+      PlotBkgComponent("ztt3","Z#rightarrow#tau#tau   3 #pi^{#pm}"             ,{"ZTT-3P"}     ,17)
+    };
+    /*
     bkg_schemes_["all"] = {
       PlotBkgComponent("qcd","QCD"                  ,{"QCD","Fakes"}      , kMagenta-10),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT","ttbar"}       , kBlue   - 8),
@@ -61,11 +135,11 @@ namespace ic {
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,kOrange - 4)
     };
     bkg_schemes_["mt_with_zmm"] = {
-      PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak",{"W","VV"},kRed    + 2),
-      PlotBkgComponent("zll","Z#rightarrow#mu#mu",{"ZL","ZJ"},kAzure  + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
+      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
+      PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","electroweak",           {"W","VV"},   TColor::GetColor(222,90,106)),
+      PlotBkgComponent("zll","Z#rightarrow#mu#mu",    {"ZL","ZJ"},  TColor::GetColor(100,182,232)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
     };
     bkg_schemes_["mt_with_zj"] = {
       PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
@@ -86,11 +160,12 @@ namespace ic {
       PlotBkgComponent("qcd","QCD"            ,{"QCD"}                ,kMagenta-10),
       PlotBkgComponent("top","t#bar{t}"       ,{"TT"}                 ,kBlue   - 8),
       PlotBkgComponent("ewk","electroweak"    ,{"W","VV"}             ,kRed    + 2),
-      PlotBkgComponent("zll","Z#rightarrowee", {"ZL","ZJ"}            , kAzure  + 2),
-      PlotBkgComponent("ztt1","Z#rightarrow#tau#tau (1 Prong 0 #pi^{0})"   ,{"ZTT-1P0PZ"}  ,kOrange + 2),
-      PlotBkgComponent("ztt2","Z#rightarrow#tau#tau (1 Prong 1 #pi^{0})"   ,{"ZTT-1P1PZ"}  ,kOrange - 0),
-      PlotBkgComponent("ztt3","Z#rightarrow#tau#tau (3 Prong) "            ,{"ZTT-3P"}     ,17)
+      PlotBkgComponent("zll","Z#rightarrow#mu#mu", {"ZL","ZJ"}        , kAzure  + 2),
+      PlotBkgComponent("ztt1","Z#rightarrow#tau#tau (1 #pi^{#pm} no photons)"   ,{"ZTT-1P0PZ"}  ,kOrange + 2),
+      PlotBkgComponent("ztt2","Z#rightarrow#tau#tau (1 #pi^{#pm} + photons)"    ,{"ZTT-1P1PZ"}  ,kOrange - 0),
+      PlotBkgComponent("ztt3","Z#rightarrow#tau#tau (3 #pi^{#pm}) "             ,{"ZTT-3P"}     ,17)
     };
+*/
   }
 
   void HTTPlot::SetMCStackStyle(ic::TH1PlotElement & ele, unsigned color) {
@@ -172,7 +247,8 @@ namespace ic {
       ((prefix+"x_blind_min").c_str(),          po::value<double>(&x_blind_min_)->default_value(0))
       ((prefix+"x_blind_max").c_str(),          po::value<double>(&x_blind_max_)->default_value(0))
       ((prefix+"auto_error_band").c_str(),      po::value<double>(&auto_error_band_)->default_value(-1.0))
-      ((prefix+"draw_error_band").c_str(),      po::value<bool>(&draw_error_band_)->default_value(false));
+      ((prefix+"draw_error_band").c_str(),      po::value<bool>(&draw_error_band_)->default_value(false))
+      ((prefix+"add_stat_error").c_str(),       po::value<bool>(&add_stat_error_)->default_value(true));
 
     return config_;
     // ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(-10))
@@ -206,8 +282,18 @@ namespace ic {
     // Probably move this somewhere else
     sig_schemes_["sm_default"] = {
       PlotSigComponent("sig",
-        (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau"),
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times SM H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
         {"ggH","qqH","VH"}, kBlue+3, true)
+    };
+    sig_schemes_["sm_nomult"] = {
+      PlotSigComponent("sig",
+        ("SM H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
+        {"ggH","qqH","VH"}, kBlue+3, true)
+    };
+    sig_schemes_["sm_nostack"] = {
+      PlotSigComponent("sig",
+        ("SM H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
+        {"ggH","qqH","VH"}, kBlue+3, false)
     };
     sig_schemes_["mssm_default"] = {
       PlotSigComponent("sig",
@@ -284,7 +370,7 @@ namespace ic {
 
     // should check if data actually exists: we might want to make a plot
     // where it doesn't
-    TH1PlotElement data_plot("data", &hmap["data_obs"].first, "observed");
+    TH1PlotElement data_plot("data", &hmap["data_obs"].first, "Observed");
     if (norm_bins_) data_plot.hist_ptr()->Scale(1.0, "width");
     if (blind_) {
       TH1F *data_hist = &hmap["data_obs"].first;
@@ -356,18 +442,24 @@ namespace ic {
           error_band.Add(bkg_elements[i].hist_ptr());
         }
         for (unsigned i = 1; i <= unsigned(error_band.GetNbinsX()); ++i) {
-          error_band.SetBinError(i, error_band.GetBinContent(i)*auto_error_band_);
+          if (add_stat_error_) {
+            double from_frac = error_band.GetBinContent(i)*auto_error_band_;
+            double from_bin = error_band.GetBinError(i);
+            error_band.SetBinError(i, std::sqrt(from_frac*from_frac + from_bin*from_bin));
+          } else {
+            error_band.SetBinError(i, error_band.GetBinContent(i)*auto_error_band_);
+          }
         }
       }
       bkg_total = error_band;
       for (unsigned i = 1; i <= unsigned(bkg_total.GetNbinsX()); ++i) {
         bkg_total.SetBinError(i, 0.0);
       } 
-      err_element = TH1PlotElement("error_shape", &error_band,"bkg. uncertainty");
+      err_element = TH1PlotElement("error_shape", &error_band,"Bkg. uncertainty");
       bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
 
       err_element.set_marker_size(0);
-      err_element.set_fill_color(1);
+      err_element.set_fill_color(13);
       err_element.set_fill_style(3013);
       err_element.set_line_width(1);
       err_element.set_draw_stat_error_y(true);
@@ -411,7 +503,7 @@ namespace ic {
     ic::RatioPlotElement err_ratio("err_ratio","error_shape","bkg_shape");
     if (draw_error_band_) {
       err_ratio.set_marker_size(0);
-      err_ratio.set_fill_color(1);
+      err_ratio.set_fill_color(13);
       err_ratio.set_fill_style(3013);
       err_ratio.set_line_width(1);
       err_ratio.set_draw_stat_error_y(true);
@@ -423,14 +515,14 @@ namespace ic {
     }
     HTTPlot::SetRatioStyle(ratio,1);
     ratio.set_multi_mode(true);
-    plot.ratio_y_axis_title = "Data/Background";
+    plot.ratio_y_axis_title = "Obs/Bkg";
     plot.AddRatioPlotElement(ratio);
     plot.custom_ratio_y_axis_range = true;
-    plot.ratio_y_axis_min = 0.5;
-    plot.ratio_y_axis_max = 1.5;
+    plot.ratio_y_axis_min = 0.68;
+    plot.ratio_y_axis_max = 1.32;
     HTTPlot::SetDataStyle(data_plot);
     plot.AddTH1PlotElement(data_plot);
-    plot.legend_height = 0.045;
+    plot.legend_height = 0.05;
 
     for (auto & ele : text_) plot.AddTextElement(ele);
 
