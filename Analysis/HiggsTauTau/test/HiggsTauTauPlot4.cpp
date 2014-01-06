@@ -59,6 +59,7 @@ int main(int argc, char* argv[]){
   string w_binned;
   bool interpolate;
   string signal_bins;
+  bool add_ztt_modes;
 
 	// Program options
   po::options_description preconfig("Pre-Configuration");
@@ -110,6 +111,7 @@ int main(int argc, char* argv[]){
 	  ("signal_bins",             po::value<string>(&signal_bins)->default_value(""))
 	  ("auto_titles",   			    po::value<bool>(&auto_titles)->default_value(true))
 	  ("check_ztt_top_frac",      po::value<bool>(&check_ztt_top_frac)->default_value(false))
+	  ("add_ztt_modes",           po::value<bool>(&add_ztt_modes)->default_value(false))
 	  ("scan_bins",               po::value<unsigned>(&scan_bins)->default_value(0))
 	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
 
@@ -220,9 +222,11 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Split ZTT into decay modes
 	// ************************************************************************
-	// hmap["ZTT-1P0PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==0", "wt");
-	// hmap["ZTT-1P1PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==1", "wt");
-	// hmap["ZTT-3P"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==10", "wt");
+  if (add_ztt_modes) {
+	  hmap["ZTT-1P0PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==0", "wt");
+	  hmap["ZTT-1P1PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==1", "wt");
+	  hmap["ZTT-3P"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==10", "wt");
+  }
 
 
 	// ************************************************************************
@@ -912,11 +916,18 @@ int main(int argc, char* argv[]){
 	if (auto_titles) {
 		double fb_lumi = ana.GetLumi() / 1000.;
 		string com = is_2012 ? "8" : "7";
-		plot.set_title_left((boost::format("CMS Preliminary, #sqrt{s} = %s TeV, L = %.1f fb^{-1}") % com % fb_lumi).str());
-		if (channel_str == "et") 		plot.set_title_right("e#tau_{h}");
-		if (channel_str == "mt") 		plot.set_title_right("#mu#tau_{h}");
-		if (channel_str == "mtmet") plot.set_title_right("#mu_{soft}#tau_{h}");
-		if (channel_str == "em") 		plot.set_title_right("e#mu");
+		plot.set_title_left((boost::format("CMS, %.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
+    std::string channel_fmt = ""; 
+		//if (channel_str == "et") 		plot.set_title_right("e#tau_{h}");
+		//if (channel_str == "mt") 		plot.set_title_right("#mu#tau_{h}");
+		//if (channel_str == "mtmet") plot.set_title_right("#mu_{soft}#tau_{h}");
+		//if (channel_str == "em") 		plot.set_title_right("e#mu");
+		if (channel_str == "et") 		channel_fmt = "e#tau_{h}";
+		if (channel_str == "mt") 		channel_fmt = "#mu#tau_{h}";
+		if (channel_str == "mtmet") channel_fmt = "#mu_{soft}#tau_{h}";
+		if (channel_str == "em") 		channel_fmt = "e#mu";
+    ic::TextElement text(channel_fmt,0.08,0.21,0.82);
+    plot.AddTextElement(text);
 	}
 	plot.GeneratePlot(hmap);
 

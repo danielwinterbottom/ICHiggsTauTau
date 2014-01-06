@@ -42,32 +42,32 @@ echo "Applying 8TeV scale factors..."
 #ET_1JET_SHIFT=" --syst_tau_scale=CMS_scale_t_etau_8TeV --shift_tscale=-0.05 --draw_error_band=true --shift_backgrounds=ZTT:1.00365,QCD:1.137,W:0.879405,ZL:1.28914,ZJ:0.991755,VV:0.897549,TT:0.897514 --auto_error_band=0.0410004"
 #ET_2JET_SHIFT=" --syst_tau_scale=CMS_scale_t_etau_8TeV --shift_tscale=-0.05 --draw_error_band=true --shift_backgrounds=ZTT:0.979685,QCD:1.006,W:1.00505,ZL:1.06674,ZJ:1.02207,VV:0.54884,TT:0.938535 --auto_error_band=0.063913"
 
-ET_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.00229,QCD:1.025,W:0.954,ZL:0.883037,ZJ:0.96123,VV:0.902555,TT:0.886183 --auto_error_band=0.0403323"
-ET_1JET_SHIFT=" --draw_error_band=true --shift_backgrounds=ZTT:0.962367,QCD:1.26651,W:0.81482,ZL:0.89462,ZJ:1.06384,VV:0.899457,TT:0.880768 --auto_error_band=0.0420707"
-ET_2JET_SHIFT=" --draw_error_band=true --shift_backgrounds=ZTT:0.936355,QCD:1.27013,W:0.976141,ZL:0.943117,ZJ:1.02474,VV:0.845016,TT:0.764279 --auto_error_band=0.0741364 "
+ET_INC_SHIFT="  --draw_error_band=true --syst_tau_scale=CMS_scale_t_etau_8TeV --shift_tscale=0.32 --shift_backgrounds=ZTT:0.996753,QCD:1.018,W:0.962,ZL:0.911294,ZJ:0.959214,VV:0.967928,TT:0.88158 --auto_error_band=0.0404751"
+ET_1JET_SHIFT=" --draw_error_band=true --syst_tau_scale=CMS_scale_t_etau_8TeV --shift_tscale=0.32 --shift_backgrounds=ZTT:0.985596,QCD:1.08031,W:0.939856,ZL:0.823454,ZJ:1.16531,VV:0.979768,TT:0.883425 --auto_error_band=0.0476111"
+ET_2JET_SHIFT=" --draw_error_band=true --syst_tau_scale=CMS_scale_t_etau_8TeV --shift_tscale=0.32 --shift_backgrounds=ZTT:0.931618,QCD:1.01504,W:0.999488,ZL:0.9751,ZJ:1.00661,VV:0.995278,TT:0.68669 --auto_error_band=0.0761749"
 
 ET_BTAG_SHIFT=" --draw_error_band=true --shift_backgrounds=ZTT:1.01152,QCD:1.044,W:0.892,ZL:1.01274,ZJ:1.00913,VV:0.987908,TT:1.0186 --auto_error_band=0.0680558"
 #ET_BAND_ONLY="  --syst_tau_scale=CMS_scale_t_etau_8TeV --shift_tscale=-0.05 --draw_error_band=true --auto_error_band=0.0348036"
-ET_BAND_ONLY="  --draw_error_band=true --auto_error_band=0.0403323"
+ET_BAND_ONLY="  --draw_error_band=true --syst_tau_scale=CMS_scale_t_etau_8TeV --shift_tscale=0.32 --auto_error_band=0.0404751"
 
 #MT_INC_SHIFT="  --syst_tau_scale=CMS_scale_t_mutau_8TeV --shift_tscale=0.00 --draw_error_band=true --shift_backgrounds=ZTT:1.00828,QCD:1.054,W:0.973361,ZL:1.01038,ZJ:1.5733,VV:0.975726,TT:1.02835 --auto_error_band=0.0359505"
 #MT_1JET_SHIFT=" --syst_tau_scale=CMS_scale_t_mutau_8TeV --shift_tscale=0.00 --draw_error_band=true --shift_backgrounds=ZTT:1.01857,QCD:1.12609,W:0.98738,ZL:1.00482,ZJ:1.06436,VV:0.965521,TT:1.01509 --auto_error_band=0.0415041"
 #MT_2JET_SHIFT=" --syst_tau_scale=CMS_scale_t_mutau_8TeV --shift_tscale=0.00 --draw_error_band=true --shift_backgrounds=ZTT:0.974692,QCD:1.2451,W:1.02181,ZL:0.99925,ZJ:1.13157,VV:0.931733,TT:0.866722 --auto_error_band=0.0574947"
 
-MT_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.969187,QCD:1.0294,W:1.02621,ZL:1.05848,ZJ:1.18723,VV:0.985107,TT:1.09626 --auto_error_band=0.0397582"
-MT_1JET_SHIFT=" --draw_error_band=true --shift_backgrounds=ZTT:0.9846,QCD:1.09908,W:0.986697,ZL:1.04161,ZJ:0.979328,VV:0.964264,TT:1.06787 --auto_error_band=0.0427276"
-MT_2JET_SHIFT=" --draw_error_band=true --shift_backgrounds=ZTT:0.944061,QCD:1.23107,W:0.954563,ZL:1.00323,ZJ:0.956728,VV:0.919318,TT:0.95087 --auto_error_band=0.0676636"
+MT_INC_SHIFT="  --draw_error_band=true --syst_tau_scale=CMS_scale_t_mutau_8TeV --shift_tscale=-0.13 --shift_backgrounds=ZTT:0.966278,QCD:1.0258,W:1.03862,ZL:1.15101,ZJ:1.19543,VV:0.97629,TT:1.07285 --auto_error_band=0.0398268"
+MT_1JET_SHIFT=" --draw_error_band=true --syst_tau_scale=CMS_scale_t_mutau_8TeV --shift_tscale=-0.13 --shift_backgrounds=ZTT:0.975796,QCD:1.05606,W:1.0081,ZL:1.13501,ZJ:1.02113,VV:0.954604,TT:1.0407 --auto_error_band=0.0463671"
+MT_2JET_SHIFT=" --draw_error_band=true --syst_tau_scale=CMS_scale_t_mutau_8TeV --shift_tscale=-0.13 --shift_backgrounds=ZTT:0.962899,QCD:1.00001,W:0.97714,ZL:1.13431,ZJ:0.97044,VV:0.896924,TT:1.01001 --auto_error_band=0.0707328"
 
 MT_BTAG_SHIFT=" --draw_error_band=true --shift_backgrounds=ZTT:1.00899,QCD:1.032,W:0.988593,ZL:1.11027,ZJ:1.0071,VV:1.02051,TT:0.993992 --auto_error_band=0.0502441"
 #MT_BAND_ONLY="  --syst_tau_scale=CMS_scale_t_mutau_8TeV --shift_tscale=0.00 --draw_error_band=true --auto_error_band=0.0359505"
-MT_BAND_ONLY="  --draw_error_band=true --auto_error_band=0.0397582"
+MT_BAND_ONLY="  --draw_error_band=true --syst_tau_scale=CMS_scale_t_mutau_8TeV --shift_tscale=-0.13 --auto_error_band=0.0398268"
 
 
-EM_INC_SHIFT=" --draw_error_band=true --shift_backgrounds=Ztt:1.02932,Fakes:1.24846,EWK:0.839777,ttbar:0.953858 --auto_error_band=0.0279584"
-EM_1JET_SHIFT=" --draw_error_band=true --shift_backgrounds=Ztt:1.01789,Fakes:1.22099,EWK:0.830893,ttbar:0.878769 --auto_error_band=0.0304102"
-EM_2JET_SHIFT=" --draw_error_band=true --shift_backgrounds=Ztt:1.02724,Fakes:1.29028,EWK:0.764114,ttbar:0.878092 --auto_error_band=0.0435572"
-EM_BTAG_SHIFT=" --draw_error_band=true --shift_backgrounds=Ztt:1.02257,Fakes:1.14773,EWK:0.85753,ttbar:1.01484 --auto_error_band=0.0549386"
-EM_BAND_ONLY="  --draw_error_band=true --auto_error_band=0.0279584"
+EM_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=Ztt:1.03944,Fakes:1.04722,EWK:0.877523,ttbar:0.973903 --auto_error_band=0.0279987"
+EM_1JET_SHIFT=" --draw_error_band=true --shift_backgrounds=Ztt:1.01729,Fakes:1.00743,EWK:0.877523,ttbar:0.892491 --auto_error_band=0.0303276"
+EM_2JET_SHIFT=" --draw_error_band=true --shift_backgrounds=Ztt:1.00304,Fakes:1.04984,EWK:0.76028,ttbar:0.853779 --auto_error_band=0.0449435"
+EM_BTAG_SHIFT=" --draw_error_band=true --shift_backgrounds=Ztt:1.00304,Fakes:1.04984,EWK:0.76028,ttbar:0.853779 --auto_error_band=0.0449435"
+EM_BAND_ONLY="  --draw_error_band=true  --auto_error_band=0.0279987"
 
   else
 #### 7TeV
@@ -112,19 +112,19 @@ echo "Applying 7TeV scale factors..."
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --var="m_sv"["$SMBINS"] --cat="inclusive" \
-  --x_axis_label="M_{#tau#tau} [GeV]"\
+  --x_axis_label="M_{#tau#tau} [GeV]" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"\
   --norm_bins=true --datacard="inclusive" $ET_INC_SHIFT \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --var="m_sv"["$SMBINS"] --cat="inclusive" \
-  --x_axis_label="M_{#tau#tau} [GeV]" $MT_INC_SHIFT \
+  --x_axis_label="M_{#tau#tau} [GeV]" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" $MT_INC_SHIFT \
   --norm_bins=true --datacard="inclusive" \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --var="m_sv"["$SMBINS"] --cat="inclusive" \
-  --x_axis_label="M_{#tau#tau} [GeV]" $EM_INC_SHIFT \
+  --x_axis_label="M_{#tau#tau} [GeV]" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" $EM_INC_SHIFT \
   --norm_bins=true --datacard="inclusive" \
   --background_scheme="em_default"
 
@@ -160,19 +160,19 @@ echo "Applying 7TeV scale factors..."
   --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
   --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $ET_INC_SHIFT \
   --norm_bins=true --datacard="inclusive"\
-  --background_scheme="et_default"
+  --background_scheme="et_default" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
   --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $MT_INC_SHIFT \
   --norm_bins=true --datacard="inclusive"\
-  --background_scheme="mt_with_zmm"
+  --background_scheme="mt_with_zmm" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --var="m_vis"["$SMBINS"] --cat="inclusive" \
   --x_axis_label="M_{#tau#tau}^{vis} [GeV]" $EM_INC_SHIFT \
   --norm_bins=true --datacard="inclusive"\
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.2
 
 #### Visible Mass MSSM
 
@@ -238,13 +238,13 @@ echo "Applying 7TeV scale factors..."
 #### pt_2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="pt_2(20,0,100)" \
-  --x_axis_label="Tau p_{T} [GeV]" --datacard="inclusive" \
+  --method=8 --cat="inclusive" --var="pt_2(50,0,100)" \
+  --x_axis_label="p_{T}(#tau_{h}) [GeV]" --datacard="inclusive" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="pt_2(20,0,100)" \
-  --x_axis_label="Tau p_{T} [GeV]" --datacard="inclusive" \
+  --method=8 --cat="inclusive" --var="pt_2(50,0,100)" \
+  --x_axis_label="p_{T}(#tau_{h}) [GeV]" --datacard="inclusive" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
@@ -289,34 +289,34 @@ echo "Applying 7TeV scale factors..."
 #### eta_1
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="eta_1(30,-3,3)" --extra_pad=1.7 \
+  --method=8 --cat="inclusive" --var="eta_1(30,-3,3)" --extra_pad=1.9 \
   --x_axis_label="Electron #eta" --datacard="inclusive" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="eta_1(30,-3,3)" --extra_pad=1.6 \
+  --method=8 --cat="inclusive" --var="eta_1(30,-3,3)" --extra_pad=1.9 \
   --x_axis_label="Muon #eta" --datacard="inclusive" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5"\
-  --method=8 --cat="inclusive" --var="eta_1(30,-3,3)" --extra_pad=1.6 \
+  --method=8 --cat="inclusive" --var="eta_1(30,-3,3)" --extra_pad=1.9 \
   --x_axis_label="Electron #eta" --datacard="inclusive" \
   --background_scheme="em_default" $EM_INC_SHIFT
 
 #### eta_2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="eta_2(30,-3,3)" --extra_pad=1.7 \
+  --method=8 --cat="inclusive" --var="eta_2(30,-3,3)" --extra_pad=2.0 \
   --x_axis_label="Tau #eta" --datacard="inclusive" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="inclusive" --var="eta_2(30,-3,3)" --extra_pad=1.5 \
+  --method=8 --cat="inclusive" --var="eta_2(30,-3,3)" --extra_pad=1.8 \
   --x_axis_label="Tau #eta" --datacard="inclusive" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5"\
-  --method=8 --cat="inclusive" --var="eta_2(30,-3,3)" --extra_pad=1.5 \
+  --method=8 --cat="inclusive" --var="eta_2(30,-3,3)" --extra_pad=1.8 \
   --x_axis_label="Muon #eta" --datacard="inclusive" \
   --background_scheme="em_default" $EM_INC_SHIFT
 
@@ -407,17 +407,17 @@ echo "Applying 7TeV scale factors..."
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="pzeta(48,-100,100)" --extra_pad=1.5 $EM_BAND_ONLY \
   --x_axis_label="D_{#zeta} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.4
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
-  --method=8 --cat="inclusive" --var="pzetavis(25,0,50)" --extra_pad=1. $EM_BAND_ONLY \
+  --method=8 --cat="inclusive" --var="pzetavis(25,0,50)"  $EM_BAND_ONLY \
   --x_axis_label="P_{#zeta}^{vis} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.2
 
  ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
-  --method=8 --cat="inclusive" --var="pzetamiss(25,-100,100)" --extra_pad=1. $EM_BAND_ONLY \
+  --method=8 --cat="inclusive" --var="pzetamiss(25,-100,100)"  $EM_BAND_ONLY \
   --x_axis_label="#slash{P}_{#zeta} [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=2.0
 
  ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="em_gf_mva(40,-1,1)" --extra_pad=1. $EM_BAND_ONLY \
@@ -430,9 +430,9 @@ echo "Applying 7TeV scale factors..."
   --background_scheme="em_default"
  
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
-  --method=8 --cat="inclusive" --var="mt_ll(40,0,160)" --extra_pad=1. $EM_BAND_ONLY \
+  --method=8 --cat="inclusive" --var="mt_ll(40,0,160)" $EM_BAND_ONLY \
   --x_axis_label="m_{T}(ll) [GeV]" --datacard="inclusive" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.3
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
   --method=8 --cat="inclusive" --var="emu_dphi(40,0,3.15)" --extra_pad=1.5 $EM_BAND_ONLY \
@@ -440,7 +440,7 @@ echo "Applying 7TeV scale factors..."
   --background_scheme="em_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:1" \
-  --method=8 --cat="inclusive" --var="emu_dxy_1(40,-0.02,0.02)" --extra_pad=10 --log_y=true --draw_ratio=true \
+  --method=8 --cat="inclusive" --var="emu_dxy_1(40,-0.02,0.02)" --extra_pad=100 --log_y=true --draw_ratio=true \
   --x_axis_label="Electron d_{0}^{vtx} [cm]" --datacard="inclusive" $EM_BAND_ONLY \
   --background_scheme="em_default"
 
@@ -448,30 +448,30 @@ echo "Applying 7TeV scale factors..."
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --cat="inclusive" --var="n_vtx(30,0,30)" $ET_INC_SHIFT \
-  --x_axis_label="Number of Vertices" --datacard="inclusive" --extra_pad=1.5 \
+  --x_axis_label="Number of Vertices" --datacard="inclusive" --extra_pad=1.8 \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="inclusive" --var="n_vtx(30,0,30)" $MT_INC_SHIFT \
-  --x_axis_label="Number of Vertices" --datacard="inclusive" --extra_pad=1.5 \
+  --x_axis_label="Number of Vertices" --datacard="inclusive" --extra_pad=1.8 \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="inclusive" --var="n_vtx(30,0,30)" $EM_INC_SHIFT \
-  --x_axis_label="Number of Vertices" --datacard="inclusive" --extra_pad=1.5 \
+  --x_axis_label="Number of Vertices" --datacard="inclusive" --extra_pad=1.8 \
   --background_scheme="em_default"
 
 #### tau_decay_mode
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --cat="inclusive" --var="tau_decay_mode(3,-4,11)" $ET_INC_SHIFT \
-  --x_axis_label="Tau Decay Mode" --datacard="inclusive" --extra_pad=1.6 \
+  --x_axis_label="Tau Decay Mode" --datacard="inclusive" --extra_pad=2.0 \
   --background_scheme="et_default"\
   --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong" 
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="inclusive" --var="tau_decay_mode(3,-4,11)" $MT_INC_SHIFT \
-  --x_axis_label="Tau Decay Mode" --datacard="inclusive" --extra_pad=1.6 \
+  --x_axis_label="Tau Decay Mode" --datacard="inclusive" --extra_pad=2.0 \
   --background_scheme="mt_with_zmm"\
   --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong" 
 
@@ -485,32 +485,32 @@ echo "Applying 7TeV scale factors..."
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --cat="1jet" --var="jpt_1(20,0,200)" $ET_1JET_SHIFT \
   --x_axis_label="Leading Jet p_{T} [GeV]" --datacard="1jet" \
-  --background_scheme="et_default"
+  --background_scheme="et_default" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="1jet" --var="jpt_1(20,0,200)" $MT_1JET_SHIFT \
   --x_axis_label="Leading Jet p_{T} [GeV]" --datacard="1jet" \
-  --background_scheme="mt_with_zmm"
+  --background_scheme="mt_with_zmm" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="1jet" --var="jpt_1(20,0,200)" $EM_1JET_SHIFT \
   --x_axis_label="Leading Jet p_{T} [GeV]" --datacard="1jet" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.2
 
 #### jeta_1
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="1jet" --var="jeta_1(20,-5,5)" --extra_pad=1.7 $ET_1JET_SHIFT \
+  --method=8 --cat="1jet" --var="jeta_1(20,-5,5)" --extra_pad=2.0 $ET_1JET_SHIFT \
   --x_axis_label="Leading Jet #eta [GeV]" --datacard="1jet" \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="1jet" --var="jeta_1(20,-5,5)" --extra_pad=1.5 $MT_1JET_SHIFT \
+  --method=8 --cat="1jet" --var="jeta_1(20,-5,5)" --extra_pad=1.9 $MT_1JET_SHIFT \
   --x_axis_label="Leading Jet #eta [GeV]" --datacard="1jet" \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
-  --method=8 --cat="1jet" --var="jeta_1(20,-5,5)" --extra_pad=1.5 $EM_1JET_SHIFT \
+  --method=8 --cat="1jet" --var="jeta_1(20,-5,5)" --extra_pad=1.9 $EM_1JET_SHIFT \
   --x_axis_label="Leading Jet #eta [GeV]" --datacard="1jet" \
   --background_scheme="em_default"
 
@@ -519,32 +519,32 @@ echo "Applying 7TeV scale factors..."
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --cat="twojet" --var="jpt_2(20,0,200)" $ET_2JET_SHIFT \
   --x_axis_label="Subleading Jet p_{T} [GeV]" --datacard="twojet" \
-  --background_scheme="et_default"
+  --background_scheme="et_default" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="twojet" --var="jpt_2(20,0,200)" $MT_2JET_SHIFT \
   --x_axis_label="Subleading Jet p_{T} [GeV]" --datacard="twojet" \
-  --background_scheme="mt_with_zmm"
+  --background_scheme="mt_with_zmm" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="twojet" --var="jpt_2(20,0,200)" $EM_2JET_SHIFT \
   --x_axis_label="Subleading Jet p_{T} [GeV]" --datacard="twojet" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.2
 
 #### jeta_2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="twojet" --var="jeta_2(20,-5,5)" --extra_pad=1.6 $ET_2JET_SHIFT \
+  --method=8 --cat="twojet" --var="jeta_2(20,-5,5)" --extra_pad=1.9 $ET_2JET_SHIFT \
   --x_axis_label="Subleading Jet #eta [GeV]" --datacard="twojet" \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="twojet" --var="jeta_2(20,-5,5)" --extra_pad=1.6 $MT_2JET_SHIFT \
+  --method=8 --cat="twojet" --var="jeta_2(20,-5,5)" --extra_pad=1.9 $MT_2JET_SHIFT \
   --x_axis_label="Subleading Jet #eta [GeV]" --datacard="twojet" \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
-  --method=8 --cat="twojet" --var="jeta_2(20,-5,5)" --extra_pad=1.6 $EM_2JET_SHIFT \
+  --method=8 --cat="twojet" --var="jeta_2(20,-5,5)" --extra_pad=1.9 $EM_2JET_SHIFT \
   --x_axis_label="Subleading Jet #eta [GeV]" --datacard="twojet" \
   --background_scheme="em_default"
 
@@ -553,17 +553,17 @@ echo "Applying 7TeV scale factors..."
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --cat="btag" --var="bpt_1(20,0,200)" $ET_BTAG_SHIFT \
   --x_axis_label="Leading b-tagged jet p_{T} [GeV]" --datacard="btag" \
-  --background_scheme="et_default"
+  --background_scheme="et_default" --extra_pad=1.3
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="btag" --var="bpt_1(20,0,200)" \
   --x_axis_label="Leading b-tagged jet p_{T} [GeV]" --datacard="btag" $MT_BTAG_SHIFT \
-  --background_scheme="mt_with_zmm"
+  --background_scheme="mt_with_zmm" --extra_pad=1.3
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="btag" --var="bpt_1(20,0,200)" $EM_BTAG_SHIFT \
   --x_axis_label="Leading b-tagged jet p_{T} [GeV]" --datacard="btag" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.3
 
 #### beta_1
 BETA_BINS="beta_1(10,-3,3)"
@@ -572,17 +572,17 @@ then
   BETA_BINS="beta_1(15,-3,3)"
 fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --cat="btag" --var=$BETA_BINS --extra_pad=1.7 $ET_BTAG_SHIFT \
+  --method=8 --cat="btag" --var=$BETA_BINS --extra_pad=2.0 $ET_BTAG_SHIFT \
   --x_axis_label="Leading b-tagged jet #eta" --datacard="btag" \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --cat="btag" --var=$BETA_BINS --extra_pad=1.7 \
+  --method=8 --cat="btag" --var=$BETA_BINS --extra_pad=2.0 \
   --x_axis_label="Leading b-tagged jet #eta" --datacard="btag" $MT_BTAG_SHIFT \
   --background_scheme="mt_with_zmm"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
-  --method=8 --cat="btag" --var=$BETA_BINS --extra_pad=1.7 \
+  --method=8 --cat="btag" --var=$BETA_BINS --extra_pad=2.0 \
   --x_axis_label="Leading b-tagged jet #eta" --datacard="btag" $EM_BTAG_SHIFT \
   --background_scheme="em_default"
 
@@ -591,34 +591,34 @@ fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --cat="pt_2>30. && n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
   --x_axis_label="CSV discriminator" --datacard="prebtag"  $ET_BTAG_SHIFT \
-  --background_scheme="et_default"
+  --background_scheme="et_default" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="pt_2>30. && n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
   --x_axis_label="CSV discriminator" --datacard="prebtag"  $MT_BTAG_SHIFT \
-  --background_scheme="mt_with_zmm"
+  --background_scheme="mt_with_zmm" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="pt_2>30. && n_jets<=1 && n_prebjets>=1" --var="bcsv_1(25,0,1)" \
   --x_axis_label="CSV discriminator" --datacard="prebtag"  $EM_BTAG_SHIFT \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.2
 
 #### mjj
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=8 --cat="twojet" --var="mjj(20,0,1000)" $ET_2JET_SHIFT \
   --x_axis_label="M_{jj} [GeV]" --datacard="twojet" \
-  --background_scheme="et_default"
+  --background_scheme="et_default" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="twojet" --var="mjj(20,0,1000)" $MT_2JET_SHIFT \
   --x_axis_label="M_{jj} [GeV]" --datacard="twojet" \
-  --background_scheme="mt_with_zmm"
+  --background_scheme="mt_with_zmm" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="twojet" --var="mjj(20,0,1000)" $EM_2JET_SHIFT \
   --x_axis_label="M_{jj} [GeV]" --datacard="twojet" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.2
 
 #### jdeta
 
@@ -626,16 +626,16 @@ fi
   --method=8 --cat="twojet" --var="jdeta(20,0,10)" $ET_2JET_SHIFT \
   --x_axis_label="#Delta#eta_{jj}" \
   --datacard="twojet" \
-  --background_scheme="et_default"
+  --background_scheme="et_default" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=8 --cat="twojet" --var="jdeta(20,0,10)" $MT_2JET_SHIFT \
   --x_axis_label="#Delta#eta_{jj}" \
   --datacard="twojet" \
-  --background_scheme="mt_with_zmm"
+  --background_scheme="mt_with_zmm" --extra_pad=1.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=em --set_alias="sel:em_gf_mva>-0.5" \
   --method=8 --cat="twojet" --var="jdeta(20,0,10)" $EM_2JET_SHIFT \
   --x_axis_label="#Delta#eta_{jj}" \
   --datacard="twojet" \
-  --background_scheme="em_default"
+  --background_scheme="em_default" --extra_pad=1.2

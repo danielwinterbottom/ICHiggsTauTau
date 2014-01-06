@@ -308,8 +308,8 @@ if options.scheme == 'control_plots':
   extra_global += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
-  extra_channel["et"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<30."'
-  extra_channel["mt"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<30."'
+  extra_channel["et"] += ' --set_alias="inclusive:pt_2>30." --set_alias="1jet:(n_jets>=1 && pt_2>30.)" --set_alias="twojet:(n_jets>=2 && pt_2>30.)" --set_alias="sel:mt_1<30."'
+  extra_channel["mt"] += ' --set_alias="inclusive:pt_2>30." --set_alias="1jet:(n_jets>=1 && pt_2>30.)" --set_alias="twojet:(n_jets>=2 && pt_2>30.)" --set_alias="sel:mt_1<30."'
   extra_channel["mtmet"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_soft_'+COM+'TeV:1.02:0.98"'
   extra_channel["mtmet"] += ' --set_alias="inclusive:pt_2>30." --set_alias="sel:mt_1<45." --set_alias="w_sdb:mt_1>45." --set_alias="w_vbf_sdb:mt_1>45."'
   scheme_et = [

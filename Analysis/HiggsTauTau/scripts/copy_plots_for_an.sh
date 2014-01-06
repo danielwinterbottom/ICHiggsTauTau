@@ -59,6 +59,7 @@ do
     mv -v pt_1_inclusive_mt_$i.$j output/an_plots/pt_1_muTau_$i.$j
     mv -v pt_2_inclusive_et_$i.$j output/an_plots/pt_2_eTau_$i.$j
     mv -v pt_2_inclusive_mt_$i.$j output/an_plots/pt_2_muTau_$i.$j
+    mv -v pt_2_inclusive_mt_"$i"_log.$j output/an_plots/pt_2_muTau_"$i"_log.$j
     mv -v pt_tt_inclusive_et_$i.$j output/an_plots/pt_tt_eTau_$i.$j
     mv -v pt_tt_inclusive_mt_$i.$j output/an_plots/pt_tt_muTau_$i.$j
     mv -v pt_tt_inclusive_et_"$i"_log.$j output/an_plots/pt_tt_eTau_"$i"_log.$j
