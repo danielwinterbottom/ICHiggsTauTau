@@ -432,7 +432,7 @@ int main(int argc, char* argv[]){
     .set_min(0).set_max(0);
   if (vh_filter_mode == 1) vhFilter.set_predicate(wh_selector).set_min(1).set_max(1); // Exactly one W boson => WH
   if (vh_filter_mode == 2) vhFilter.set_predicate(wh_selector).set_min(2).set_max(999); // Two W bosons => ttH
-  if (vh_filter_mode == 3) vhFilter.set_predicate(zh_selector).set_min(1).set_max(999); // At least one Z boson => ZH
+  if (vh_filter_mode == 3) vhFilter.set_predicate(wh_selector).set_min(0).set_max(0); // At least one Z boson => ZH
 
   double mssm_mass = 0.0;
   bool do_mass_filter = false;
