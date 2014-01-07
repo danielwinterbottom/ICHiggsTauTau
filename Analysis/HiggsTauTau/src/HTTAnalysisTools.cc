@@ -265,6 +265,9 @@ namespace ic {
       sample_names_.push_back("GluGluToHToTauTau_M-"+m);
       sample_names_.push_back("VBF_HToTauTau_M-"+m);
       sample_names_.push_back("WH_ZH_TTH_HToTauTau_M-"+m);
+      sample_names_.push_back("WH_HToTauTau_M-"+m);
+      // sample_names_.push_back("TTH_HToTauTau_M-"+m);
+      sample_names_.push_back("ZH_HToTauTau_M-"+m);
     }
   }
   void HTTAnalysis::AddHWWSignalSamples(std::vector<std::string> masses) {
@@ -656,6 +659,9 @@ namespace ic {
       hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
       hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
       hmap["VH"+infix+m+postfix]  = this->GenerateSignal("WH_ZH_TTH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+      hmap["WH"+infix+m+postfix]  = this->GenerateSignal("WH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+      // hmap["ttH"+infix+m+postfix] = this->GenerateSignal("TTH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+      hmap["ZH"+infix+m+postfix]  = this->GenerateSignal("ZH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
     }
   }
   
@@ -738,7 +744,8 @@ namespace ic {
                         double interpolate,
                         double fixed_xs){
     std::vector<std::string> procs = {"ggH", "qqH", "VH"};
-    std::vector<std::string> names = {"GluGluToHToTauTau_M-", "VBF_HToTauTau_M-", "WH_ZH_TTH_HToTauTau_M-"};
+    std::vector<std::string> names = {"GluGluToHToTauTau_M-", "VBF_HToTauTau_M-", "WH_ZH_TTH_HToTauTau_M-", 
+      "WH_HToTauTau_M-", /*"TTH_HToTauTau_M-",*/ "ZH_HToTauTau_M-"};
     for (unsigned i = 0; i < masses.size()-1; ++i) {
       double m_low = boost::lexical_cast<double>(masses[i]);
       double m_high = boost::lexical_cast<double>(masses[i+1]);
