@@ -81,8 +81,13 @@ namespace ic {
     }
     if (draw_ratio_hist) {
       //gStyle->SetCanvasDefH(900); //Height of canvas
-      gStyle->SetLabelSize(0.035, "XYZ");
-      gStyle->SetTitleSize(0.045, "XYZ");
+      if (use_htt_style) {
+        gStyle->SetLabelSize(0.045, "XYZ");
+        gStyle->SetTitleSize(0.055, "XYZ");
+      } else {
+        gStyle->SetLabelSize(0.035, "XYZ");
+        gStyle->SetTitleSize(0.045, "XYZ");
+      }
     }
 
     unsigned n_elements = elements_.size();
@@ -108,9 +113,11 @@ namespace ic {
       double legend_y1 = y_pos_max - (n_legend * legend_height);
       //y_pos_current = legend_y1 - 0.03;
       double x1 = (legend_pos == 0) ? 0.60 : 0.16;
+      if (use_htt_style) x1 = (legend_pos == 0) ? 0.55 : 0.16;
       if (legend_left > 0) x1 = legend_left;
       double x2 = (legend_pos == 0) ? 0.92 : 0.48;
       legend = new TLegend(x1,legend_y1,x2,y_pos_max,"","brNDC");
+      if (use_htt_style) legend->SetTextFont(82);
     }
     //Set up canvas (and optionally pads)
     TCanvas* canv = new TCanvas("canv","canv");
@@ -120,9 +127,11 @@ namespace ic {
       canv->SetBorderSize     (10);
       // Set margins to reasonable defaults
       canv->SetLeftMargin     (0.18);
+      canv->SetLeftMargin     (0.17);
       canv->SetRightMargin    (0.05);
-      canv->SetTopMargin      (0.08);
-      canv->SetBottomMargin   (0.15);
+      canv->SetTopMargin      (0.12);
+      if (!draw_ratio_hist) canv->SetTopMargin      (0.08);
+      canv->SetBottomMargin   (0.18);
       // Setup a frame which makes sense
       canv->SetFrameFillStyle (0);
       canv->SetFrameLineStyle (0);
@@ -140,6 +149,7 @@ namespace ic {
       upper = new TPad("upper","pad",0, 0.26 ,1 ,1);
       lower = new TPad("lower","pad",0, 0   ,1 ,0.26);
       upper->SetBottomMargin(0.02);
+      if (use_htt_style) upper->SetTopMargin(0.09);
       upper->Draw();
       upper->cd();
     }
@@ -214,20 +224,21 @@ namespace ic {
         ele.hist_ptr()->GetXaxis()->SetTitle(x_axis_title.c_str());
         if (use_htt_style) {
           ele.hist_ptr()->SetTitleSize  (0.055,"Y");
-          ele.hist_ptr()->SetTitleOffset(1.600,"Y");
-          ele.hist_ptr()->SetLabelOffset(0.014,"Y");
+          ele.hist_ptr()->SetTitleOffset(1.400,"Y");
+          if (!draw_ratio_hist) ele.hist_ptr()->SetTitleOffset(1.500,"Y");
+          ele.hist_ptr()->SetLabelOffset(0.010,"Y");
           ele.hist_ptr()->SetLabelSize  (0.040,"Y");
           ele.hist_ptr()->SetLabelFont  (42   ,"Y");
           ele.hist_ptr()->SetTitleSize  (0.055,"X");
           ele.hist_ptr()->SetTitleOffset(1.100,"X");
-          ele.hist_ptr()->SetLabelOffset(0.014,"X");
+          ele.hist_ptr()->SetLabelOffset(0.010,"X");
           ele.hist_ptr()->SetLabelSize  (0.040,"X");
           ele.hist_ptr()->SetLabelFont  (42   ,"X");
           // ele.hist_ptr()->SetMarkerStyle(20);
           // ele.hist_ptr()->SetMarkerColor(color);
           // ele.hist_ptr()->SetMarkerSize (0.6);
-          ele.hist_ptr()->GetYaxis()->SetTitleFont(42);
-          ele.hist_ptr()->GetXaxis()->SetTitleFont(42);          
+          ele.hist_ptr()->GetYaxis()->SetTitleFont(62);
+          ele.hist_ptr()->GetXaxis()->SetTitleFont(62);
         }
         if (x_axis_min > -9999 && x_axis_max > 0){
           ele.hist_ptr()->GetXaxis()->SetRangeUser(x_axis_min,x_axis_max);
@@ -341,11 +352,13 @@ namespace ic {
     title_latex->SetNDC();
     if (use_htt_style) {
       title_latex->SetTextSize(0.04);
+      if (draw_ratio_hist) title_latex->SetTextSize(0.05);
       title_latex->SetTextFont(62);
       title_latex->SetTextAlign(31);
-      title_latex->DrawLatex(0.95,0.94,title_right.c_str());
+      double height = draw_ratio_hist ? 0.93 : 0.94;
+      title_latex->DrawLatex(0.95,height+0.01,title_right.c_str());
       title_latex->SetTextAlign(11);
-      title_latex->DrawLatex(0.18,0.94,title_left.c_str());
+      title_latex->DrawLatex(0.17,height,title_left.c_str());
     } else {
       title_latex->SetTextSize(0.03);
       title_latex->SetTextAlign(31);
@@ -384,12 +397,35 @@ namespace ic {
         if (thstack.GetHistogram()) thstack.SetMinimum(y_axis_min);
       }
     }
+
+    /*
+    TLine *line = new TLine(30., 0., 30., elements_[0].hist_ptr()->GetMaximum());
+    TLine *line2 = new TLine(70., 0., 70., elements_[0].hist_ptr()->GetMaximum());
+    TLatex *ex_latex = new TLatex();
+    ex_latex->SetTextSize(0.035);
+    ex_latex->SetTextFont(62);
+    ex_latex->SetTextAlign(31);
+    ex_latex->DrawLatex(27,15000,"#splitline{Baseline}{selection}");
+    ex_latex->SetTextAlign(11);
+    ex_latex->DrawLatex(100,6000,"#splitline{High-m_{T}}{control region}");
+    line->SetLineWidth(3);
+    line->SetLineStyle(3);
+    line->SetLineColor(1);
+    line2->SetLineWidth(3);
+    line2->SetLineStyle(7);
+    line2->SetLineColor(1);
+    canv->Update();
+    line->Draw();
+    line2->Draw();
+    */
+
     canv->Update();
 
     //Apply legend style options
     if (n_legend > 0) {
       legend->SetBorderSize(1);
       legend->SetTextFont(42);
+      if (use_htt_style) legend->SetTextFont(62);
       legend->SetLineColor(0);
       legend->SetLineStyle(1);
       legend->SetLineWidth(1);
@@ -403,6 +439,7 @@ namespace ic {
       canv->cd();
       lower->SetTopMargin(0.026);
       lower->SetBottomMargin(0.24);
+      if (use_htt_style) lower->SetBottomMargin(0.35);
       lower->Draw();
       lower->cd();
       std::vector<TH1F*> ratio_ele;
@@ -486,8 +523,6 @@ namespace ic {
             ratio_ele[k] = h3;
           }
 
-
-
           ratio_ele[k]->SetLineColor(ratios_[k].line_color());
           ratio_ele[k]->SetLineWidth(ratios_[k].line_width());
           ratio_ele[k]->SetLineStyle(ratios_[k].line_style());
@@ -504,10 +539,20 @@ namespace ic {
 
           if (k == 0)
           {
-            ratio_ele[k]->GetXaxis()->SetLabelSize(0.10);
-            ratio_ele[k]->GetXaxis()->SetTitleSize(0.12);
-            ratio_ele[k]->GetYaxis()->SetTitleSize(0.12);
-            ratio_ele[k]->GetYaxis()->SetTitleOffset(0.55);
+            if (use_htt_style) {
+              ratio_ele[k]->GetXaxis()->SetLabelSize(0.11);
+              ratio_ele[k]->GetXaxis()->SetTitleFont(62);
+              ratio_ele[k]->GetYaxis()->SetTitleFont(62);
+              ratio_ele[k]->GetXaxis()->SetTitleSize(0.16);
+              ratio_ele[k]->GetYaxis()->SetTitleSize(0.16);
+              ratio_ele[k]->GetYaxis()->SetTitleOffset(0.460);
+              ratio_ele[k]->GetXaxis()->SetTitleOffset(0.900);
+            } else {
+              ratio_ele[k]->GetXaxis()->SetLabelSize(0.10);
+              ratio_ele[k]->GetXaxis()->SetTitleSize(0.12);
+              ratio_ele[k]->GetYaxis()->SetTitleSize(0.12);
+              ratio_ele[k]->GetYaxis()->SetTitleOffset(0.55);
+            }
             if (draw_signif) ratio_ele[k]->GetYaxis()->SetTitleOffset(0.45);
             if (x_bin_labels_ != "") {
               std::vector<std::string> bin_labels;
@@ -520,6 +565,7 @@ namespace ic {
 
             }
             ratio_ele[k]->GetYaxis()->SetLabelSize(0.10);
+            if (use_htt_style) ratio_ele[k]->GetYaxis()->SetLabelSize(0.11);
             ratio_ele[k]->GetXaxis()->SetTitle(x_axis_title.c_str());
             ratio_ele[k]->GetYaxis()->SetNdivisions(505);
             if (custom_ratio_y_axis_range) {
@@ -743,7 +789,7 @@ namespace ic {
     HttStyle->SetPadBorderMode  (0);
     HttStyle->SetPadBottomMargin(0.13);
     HttStyle->SetPadTopMargin   (0.08);
-    HttStyle->SetPadLeftMargin  (0.15);
+    HttStyle->SetPadLeftMargin  (0.17);
     HttStyle->SetPadRightMargin (0.05);
     HttStyle->SetPadGridX       (0);
     HttStyle->SetPadGridY       (0);
