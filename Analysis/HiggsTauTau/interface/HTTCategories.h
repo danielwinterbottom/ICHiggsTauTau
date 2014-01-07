@@ -22,6 +22,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, ic::era, era)
   CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
+  CLASS_MEMBER(HTTCategories, bool, write_plots)
   CLASS_MEMBER(HTTCategories, bool, experimental)
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
 

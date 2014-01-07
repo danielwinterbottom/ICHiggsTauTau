@@ -1194,7 +1194,7 @@ namespace ic {
 
   HTTAnalysis::Value HTTAnalysis::ValueProduct(Value const& p1, Value const& p2) {
     if (p1.first == 0.0 || p2.first == 0.0) {
-      std::cout << "[HTTAnalysis::ValueProduct] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
+      //if (verbosity_ > 0) std::cout << "[HTTAnalysis::ValueProduct] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
       return std::make_pair(0.0, 0.0);
     }
     double f = p1.first * p2.first;
@@ -1204,8 +1204,16 @@ namespace ic {
     return std::make_pair(f, f_err);
   }
   HTTAnalysis::Value HTTAnalysis::ValueDivide(Value const& p1, Value const& p2) {
-    if (p1.first == 0.0 || p2.first == 0.0) {
-      std::cout << "[HTTAnalysis::ValueDivide] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
+    if (p1.first == 0.0 && p2.first == 0.0) {
+      std::cout << "[HTTAnalysis::ValueDivide] Numerator and denominator both zero, returning 0.0 +/- 0.0" << std::endl;
+      return std::make_pair(0.0, 0.0);
+    }
+    if (p1.first == 0.0) {
+      //if (verbosity_ > 0) std::cout << "[HTTAnalysis::ValueDivide] Numerator is zero, returning 0.0 +/- 0.0" << std::endl;
+      return std::make_pair(0.0, 0.0);
+    }
+    if (p2.first == 0.0) {
+      std::cout << "[HTTAnalysis::ValueDivide] Denominator is zero, returning 0.0 +/- 0.0" << std::endl;
       return std::make_pair(0.0, 0.0);
     }
     double f = p1.first / p2.first;
