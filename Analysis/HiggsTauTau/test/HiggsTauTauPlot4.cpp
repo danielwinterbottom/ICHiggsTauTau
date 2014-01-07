@@ -663,9 +663,9 @@ int main(int argc, char* argv[]){
       double data_bin = data.GetBinContent(i);
       bool has_signal = false;
       for (auto bkg : bkgs) bkg_tot += hmap[bkg].first.GetBinContent(i);
-      bool has_data_no_bkg = false;
+      bool has_data_zero_bkg = false;
       if (data_bin > 0. && bkg_tot <= 0.) {
-        has_data_no_bkg = true;
+        if (bkg_tot == 0.) has_data_zero_bkg = true;
         std::cout << "\e[31mWarning: Bin [" << data.GetBinLowEdge(i) << "," << data.GetBinLowEdge(i+1) << "] has data and total background: " <<  bkg_tot << "\e[m" << std::endl;
         for (auto sm_mass : sm_masses) {
           for (auto proc : sm_procs) {
@@ -691,7 +691,10 @@ int main(int argc, char* argv[]){
             }
           }
         }
-        if (has_data_no_bkg && scan_bins>1) {
+        // Two conditions to zero out a bin:
+        //  1) Bkg content is -ve or zero and there is signal and data
+        //  2) Bkg content is zero and there is data
+        if ((has_signal || has_data_zero_bkg) && scan_bins>1) {
           std::cout << "\e[32mWarning: This bin will be set to zero in all templates\e[m" << std::endl;
           for (auto & entry : hmap) {
             entry.second.first.SetBinContent(i, 0.);
