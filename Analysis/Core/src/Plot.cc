@@ -251,7 +251,7 @@ namespace ic {
           std::vector<std::string> bin_labels;
           boost::split(bin_labels, x_bin_labels_, boost::is_any_of(":"));
 
-          if (bin_labels.size() <= ele.hist_ptr()->GetNbinsX()) {
+          if (long(bin_labels.size()) <= long(ele.hist_ptr()->GetNbinsX())) {
             for (unsigned binl = 0; binl < bin_labels.size(); ++binl) {
               ele.hist_ptr()->GetXaxis()->SetBinLabel(binl+1, bin_labels[binl].c_str());
             }
@@ -557,7 +557,7 @@ namespace ic {
             if (x_bin_labels_ != "") {
               std::vector<std::string> bin_labels;
               boost::split(bin_labels, x_bin_labels_, boost::is_any_of(":"));
-              if (bin_labels.size() <= ratio_ele[k]->GetNbinsX()) {
+              if (long(bin_labels.size()) <= long(ratio_ele[k]->GetNbinsX())) {
                 for (unsigned binl = 0; binl < bin_labels.size(); ++binl) {
                   ratio_ele[k]->GetXaxis()->SetBinLabel(binl+1, bin_labels[binl].c_str());
                 }
@@ -602,9 +602,9 @@ namespace ic {
     for (auto const& type : types) {
       if (type == "pdf") {
         if (append > 0) {
-          if (append == 1) canv->Print((output_filename+"(").c_str(),"pdf");
-          if (append == 2) canv->Print((output_filename).c_str(),"pdf");
-          if (append == 3) canv->Print((output_filename+")").c_str(),"pdf");
+          if (append == 1) canv->Print((output_filename+".pdf"+"(").c_str(),"pdf");
+          if (append == 2) canv->Print((output_filename+".pdf").c_str(),"pdf");
+          if (append == 3) canv->Print((output_filename+".pdf"+")").c_str(),"pdf");
         } else {
           canv->SaveAs((output_filename+".pdf").c_str());
         }
