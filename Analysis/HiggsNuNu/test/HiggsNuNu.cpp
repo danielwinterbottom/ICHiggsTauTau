@@ -355,6 +355,9 @@ int main(int argc, char* argv[]){
     ignoreLeptons = true;
     //is_ewkZ = true;
   }
+  if (channel==channel::nunuiglep){
+    ignoreLeptons = true;
+  }
 
   string data_json;
   if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
