@@ -797,9 +797,9 @@ int main(int argc, char* argv[]){
                             return lhs.second < rhs.second; } );
       double removed = 0.;
       for (unsigned j = 0; j < results.size(); ++j) {
-        bool remove = false;
+        // bool remove = false;
         if ((removed+results[j].second) < remove_threshold) {
-          remove = true;
+          // remove = true;
           bbb_removed++;
           removed += results[j].second;
           hmap[results[j].first].first.SetBinError(i, 0.0);

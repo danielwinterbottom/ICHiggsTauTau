@@ -356,14 +356,14 @@ namespace ic {
   }
 
 
-  HTTAnalysis::HistValuePair HTTAnalysis::GenerateData(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateData(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     auto data_norm = this->GetRate("Data", sel, cat, wt);
     TH1F data_hist = this->GetShape(var, "Data", sel, cat, wt);
     SetNorm(&data_hist, data_norm.first);
     return std::make_pair(data_hist, data_norm);
   }
 
-  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT] --------------------------------------------------------\n";
     auto ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     if (this->AliasDefined("ztt_shape_cat")) cat = this->ResolveAlias("ztt_shape_cat");
@@ -500,7 +500,7 @@ namespace ic {
     return std::make_pair(vv_hist, vv_norm);
   }
 
-  HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     std::string w_extrap_cat = cat;

@@ -1,6 +1,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
+#include "boost/format.hpp"
 
 namespace ic {
 

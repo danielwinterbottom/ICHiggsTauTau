@@ -1,24 +1,22 @@
-//Class Header
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TH1PlotElement.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/RatioPlotElement.h"
-//Standard Library
+#include "Core/interface/Plot.h"
+
+#include "Core/interface/TH1PlotElement.h"
+#include "Core/interface/RatioPlotElement.h"
+#include "Core/interface/TextElement.h"
 #include <vector>
 #include <iostream>
 #include <cmath>
-//ROOT
+#include "TAxis.h"
+#include "TH1.h"
 #include "TROOT.h"
-#include "TH1F.h"
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "TLatex.h"
 #include "TLegend.h"
-#include "TPaveStats.h"
 #include "THStack.h"
 #include "TPad.h"
 #include "TGraphErrors.h"
-#include <boost/algorithm/string.hpp>
-
+#include "boost/algorithm/string.hpp"
 
 namespace ic {
 
@@ -143,8 +141,8 @@ namespace ic {
       canv->SetFrameBorderSize(10);      
     }
     canv->cd();
-    TPad* upper = NULL;
-    TPad* lower = NULL;
+    TPad* upper = nullptr;
+    TPad* lower = nullptr;
     if (draw_ratio_hist) {
       upper = new TPad("upper","pad",0, 0.26 ,1 ,1);
       lower = new TPad("lower","pad",0, 0   ,1 ,0.26);
@@ -491,7 +489,7 @@ namespace ic {
             ratio_ele[k]->GetXaxis()->SetRangeUser(x_axis_min,x_axis_max);
           }
 
-          TGraphErrors *grErr = NULL;
+          TGraphErrors *grErr = nullptr;
 
           if (!draw_signif) {
             ratio_ele[k]->Divide(den);

@@ -71,7 +71,7 @@ void SetStyle(ic::RatioPlotElement & ele, unsigned color) {
 
 
 
-int main(int argc, char* argv[]){
+int main(int /*argc*/, char* /*argv*/[]){
   using namespace ic;
   using namespace std;
 

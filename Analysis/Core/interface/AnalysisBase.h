@@ -4,10 +4,9 @@
 #include <vector>
 #include <string>
 #include <set>
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
-#include "boost/function.hpp"
-#include "boost/bind.hpp"
+#include <utility>
+#include "Core/interface/TreeEvent.h"
+namespace ic { class ModuleBase; }
 
 namespace ic {
 

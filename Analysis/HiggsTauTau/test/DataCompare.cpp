@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include "TH1.h"
+#include "TFile.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"

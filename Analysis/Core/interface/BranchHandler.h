@@ -1,12 +1,11 @@
 #ifndef ICHiggsTauTau_Analysis_BranchHandler_h
 #define ICHiggsTauTau_Analysis_BranchHandler_h
 
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/BranchHandlerBase.h"
-
+#include "Core/interface/BranchHandlerBase.h"
 #include <string>
 #include <iostream>
-
 #include "TTree.h"
+class TBranch;
 
 namespace ic {
 

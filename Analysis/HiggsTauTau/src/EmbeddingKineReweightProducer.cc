@@ -7,6 +7,9 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "TH2D.h"
 #include "TFile.h"
+#include "boost/format.hpp"
+#include "Core/interface/TreeEvent.h"
+
 namespace ic {
 
   EmbeddingKineReweightProducer::EmbeddingKineReweightProducer(std::string const& name) : ModuleBase(name),

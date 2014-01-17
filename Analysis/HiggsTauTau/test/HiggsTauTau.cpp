@@ -410,13 +410,13 @@ int main(int argc, char* argv[]){
     .set_min(2);
   if (ztautau_mode == 2) zTauTauFilter.set_min(0).set_max(0);
 
-  auto zh_selector = [](GenParticle const* p) -> bool {
-    if (p->status() == 3 && std::abs(p->pdgid()) == 23) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  // auto zh_selector = [](GenParticle const* p) -> bool {
+  //   if (p->status() == 3 && std::abs(p->pdgid()) == 23) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // };
 
   auto wh_selector = [](GenParticle const* p) -> bool {
     if (p->status() == 3 && std::abs(p->pdgid()) == 24) {

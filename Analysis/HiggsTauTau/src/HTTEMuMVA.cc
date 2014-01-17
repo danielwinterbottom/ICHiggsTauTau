@@ -8,6 +8,8 @@
 #include "TMVA/Reader.h"
 #include "Math/VectorUtil.h"
 #include "boost/bind.hpp"
+#include "boost/format.hpp"
+#include "Core/interface/TreeEvent.h"
 #include <vector>
 
 namespace ic {

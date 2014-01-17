@@ -32,7 +32,7 @@ using namespace std;
 using namespace ic;
 
 
-int main(int argc, char* argv[]){
+int main(int /*argc*/, char* /*argv*/[]){
 
 
 unsigned nsig = 50;

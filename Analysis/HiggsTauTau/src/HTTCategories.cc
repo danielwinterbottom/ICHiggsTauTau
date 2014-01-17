@@ -6,6 +6,7 @@
 
 #include "TMVA/Reader.h"
 #include "TVector3.h"
+#include "boost/format.hpp"
 
 namespace ic {
 

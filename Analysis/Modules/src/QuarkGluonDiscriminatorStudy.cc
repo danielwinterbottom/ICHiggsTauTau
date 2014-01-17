@@ -48,7 +48,7 @@ namespace ic {
 
   int QuarkGluonDiscriminatorStudy::Execute(TreeEvent *event) {
 
-    EventInfo *info = event->GetPtr<EventInfo>("eventInfo");
+    // EventInfo *info = event->GetPtr<EventInfo>("eventInfo");
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));

@@ -127,7 +127,7 @@ namespace ic {
     }
   }
 
-  double BTagWeight::BEff(BTagWeight::payload const& set, 
+  double BTagWeight::BEff(BTagWeight::payload const&,
               unsigned flavour, 
               BTagWeight::tagger const& algo, 
               double pt, 
