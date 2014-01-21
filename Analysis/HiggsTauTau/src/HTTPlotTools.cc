@@ -83,6 +83,14 @@ namespace ic {
       PlotBkgComponent("zll","Z#rightarrow#mu#mu",{"ZLL"},kAzure  + 2),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
     };
+    bkg_schemes_["mt_big_split"] = {
+      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
+      PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","W+jets",                {"W"},        TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("dib","Diboson",               {"VV"},       kGreen    +2),
+      PlotBkgComponent("zll","Z#rightarrow#mu#mu",    {"ZL","ZJ"},  TColor::GetColor(100,182,232)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
+    };
     bkg_schemes_["tau_modes"] = {
       PlotBkgComponent("qcd","QCD"            ,{"QCD"}                ,TColor::GetColor(250,202,255)),
       PlotBkgComponent("top","t#bar{t}"       ,{"TT"}                 ,TColor::GetColor(155,152,204)),
