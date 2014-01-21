@@ -82,7 +82,7 @@ int main(int argc, char* argv[]){
     TFile* output=new TFile("output.root", "RECREATE");
     output->cd();
 
-    TF1 *myfit;
+    TF1 *myfit=NULL;
     
     if(barrel=="B")
     {

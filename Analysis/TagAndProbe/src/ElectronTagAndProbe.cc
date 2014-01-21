@@ -265,8 +265,8 @@ namespace ic {
         w = eventInfo->weight("pileup");
     }
     bool trigger=false;
-    bool etau_trigger=false;
-    int prescalenum;
+    //bool etau_trigger=false;
+    //int prescalenum;
     
     //See if trigger has fired (if data).
 

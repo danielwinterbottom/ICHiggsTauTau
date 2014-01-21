@@ -195,7 +195,7 @@ int main(int argc, char* argv[]){
     for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
     
     // Create ROOT output fileservice
-    fwlite::TFileService *fsid, *fstrg, *fstrg2;
+    fwlite::TFileService *fsid=NULL, *fstrg=NULL, *fstrg2=NULL;
     if(!trg_only && !do_skim)
     {
         if (outfolder == "") {
