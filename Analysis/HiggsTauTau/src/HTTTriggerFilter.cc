@@ -10,6 +10,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "boost/bind.hpp"
+#include "boost/format.hpp"
 
 namespace ic {
 

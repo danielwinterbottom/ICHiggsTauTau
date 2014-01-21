@@ -6,6 +6,7 @@
 
 #include "TMVA/Reader.h"
 #include "TVector3.h"
+#include "boost/format.hpp"
 
 namespace ic {
 
@@ -17,7 +18,8 @@ namespace ic {
       met_label_ = "pfMVAMet";
       mass_shift_ = 1.0;
       fs_ = NULL;
-      write_tree_ = false;
+      write_tree_ = true;
+      write_plots_ = false;
       experimental_ = false;
   }
 
@@ -46,6 +48,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "met_label"       % met_label_;
       std::cout << boost::format(param_fmt()) % "mass_shift"      % mass_shift_;
       std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
+      std::cout << boost::format(param_fmt()) % "write_plots"     % write_plots_;
       std::cout << boost::format(param_fmt()) % "experimental"    % experimental_;
 
       if (write_tree_) {
@@ -125,106 +128,87 @@ namespace ic {
     misc_2dplots_->Create("orig_met_m_vis", 75, 0, 750, 75, 0, 1500);
     misc_plots_->Create("M",150,0,1500);
 
-    InitSelection("os");
-    InitSelection("os_sel");
-    InitSelection("os_con");
-    InitSelection("os_con_mt_60-120");
-    InitSelection("ss");
-    InitSelection("ss_sel");
-    InitSelection("ss_con");
-    InitSelection("ss_con_mt_60-120");
+    if (write_plots_) {
+      InitSelection("os");
+      InitSelection("os_sel");
+      InitSelection("os_con");
+      InitSelection("os_con_mt_60-120");
+      InitSelection("ss");
+      InitSelection("ss_sel");
+      InitSelection("ss_con");
+      InitSelection("ss_con_mt_60-120");
 
+      InitCategory("inclusive");
+      InitCoreControlPlots("inclusive");
 
-    InitCategory("inclusive");
-    InitCoreControlPlots("inclusive");
+      InitCategory("vbf");
+      InitCategory("vbf_no_cjv");
+      InitCategory("vbf_loose");
+      InitCategory("vbf_loose_jets20");
 
-    InitCategory("vbf");
-    // InitCoreControlPlots("vbf");
+      InitCategory("twojet");
+      InitCoreControlPlots("twojet");
 
-    // InitCategory("tautau_vbf");
+      InitCategory("1jet");
+      InitCoreControlPlots("1jet");
 
-    // InitCategory("vbf_tight");
+      InitCategory("1jet_high");
+      InitCategory("1jet_low");
+      InitCategory("1jet_low_nometcut");
+      InitCategory("0jet_high");
+      InitCategory("0jet_low");
 
-    InitCategory("vbf_no_cjv");
+      if (experimental_) {
+        InitCategory("jpt_30_1jet_high");
+        InitCategory("jpt_30_1jet_low");
+        InitCategory("jpt_30_0jet_high");
+        InitCategory("jpt_30_0jet_low");
+        InitCategory("jpt_40_1jet_high");
+        InitCategory("jpt_40_1jet_low");
+        InitCategory("jpt_40_0jet_high");
+        InitCategory("jpt_40_0jet_low");
+        InitCategory("jpt_60_1jet_high");
+        InitCategory("jpt_60_1jet_low");
+        InitCategory("jpt_60_0jet_high");
+        InitCategory("jpt_60_0jet_low");
+        InitCategory("jpt_80_1jet_high");
+        InitCategory("jpt_80_1jet_low");
+        InitCategory("jpt_80_0jet_high");
+        InitCategory("jpt_80_0jet_low");
 
-    InitCategory("vbf_loose");
+        InitCategory("hpt_30_1jet_high");
+        InitCategory("hpt_30_1jet_low");
+        InitCategory("hpt_30_0jet_high");
+        InitCategory("hpt_30_0jet_low");
+        InitCategory("hpt_40_1jet_high");
+        InitCategory("hpt_40_1jet_low");
+        InitCategory("hpt_40_0jet_high");
+        InitCategory("hpt_40_0jet_low");
+        InitCategory("hpt_60_1jet_high");
+        InitCategory("hpt_60_1jet_low");
+        InitCategory("hpt_60_0jet_high");
+        InitCategory("hpt_60_0jet_low");
+        InitCategory("hpt_80_1jet_high");
+        InitCategory("hpt_80_1jet_low");
+        InitCategory("hpt_80_0jet_high");
+        InitCategory("hpt_80_0jet_low");
+      }
+      InitCategory("prebtag");
+      InitCoreControlPlots("prebtag");
 
-    InitCategory("vbf_loose_jets20");
+      InitCategory("btag");
+      InitCoreControlPlots("btag");
 
-    InitCategory("twojet");
-    InitCoreControlPlots("twojet");
-    
-    InitCategory("1jet");
-    InitCoreControlPlots("1jet");
+      InitCategory("btag_low");
+      InitCategory("btag_low_loose");
 
-    InitCategory("1jet_high");
-    // InitCoreControlPlots("1jet_high");
+      InitCategory("btag_high");
+      InitCategory("btag_high_loose");
 
-    InitCategory("1jet_low");
-    // InitCoreControlPlots("1jet_low");
+      InitCategory("btag_loose");
 
-    InitCategory("1jet_low_nometcut");
-
-    InitCategory("0jet_high");
-    // InitCoreControlPlots("0jet_high");
-
-    InitCategory("0jet_low");
-    // InitCoreControlPlots("0jet_low");
-    
-    if (experimental_) {
-      InitCategory("jpt_30_1jet_high");
-      InitCategory("jpt_30_1jet_low");
-      InitCategory("jpt_30_0jet_high");
-      InitCategory("jpt_30_0jet_low");
-      InitCategory("jpt_40_1jet_high");
-      InitCategory("jpt_40_1jet_low");
-      InitCategory("jpt_40_0jet_high");
-      InitCategory("jpt_40_0jet_low");
-      InitCategory("jpt_60_1jet_high");
-      InitCategory("jpt_60_1jet_low");
-      InitCategory("jpt_60_0jet_high");
-      InitCategory("jpt_60_0jet_low");
-      InitCategory("jpt_80_1jet_high");
-      InitCategory("jpt_80_1jet_low");
-      InitCategory("jpt_80_0jet_high");
-      InitCategory("jpt_80_0jet_low");
-
-      InitCategory("hpt_30_1jet_high");
-      InitCategory("hpt_30_1jet_low");
-      InitCategory("hpt_30_0jet_high");
-      InitCategory("hpt_30_0jet_low");
-      InitCategory("hpt_40_1jet_high");
-      InitCategory("hpt_40_1jet_low");
-      InitCategory("hpt_40_0jet_high");
-      InitCategory("hpt_40_0jet_low");
-      InitCategory("hpt_60_1jet_high");
-      InitCategory("hpt_60_1jet_low");
-      InitCategory("hpt_60_0jet_high");
-      InitCategory("hpt_60_0jet_low");
-      InitCategory("hpt_80_1jet_high");
-      InitCategory("hpt_80_1jet_low");
-      InitCategory("hpt_80_0jet_high");
-      InitCategory("hpt_80_0jet_low");
+      InitCategory("nobtag");
     }
-
-    InitCategory("prebtag");
-    InitCoreControlPlots("prebtag");
-
-    InitCategory("btag");
-    InitCoreControlPlots("btag");
-
-    InitCategory("btag_low");
-    InitCategory("btag_low_loose");
-
-    InitCategory("btag_high");
-    InitCategory("btag_high_loose");
-    
-    // InitCategory("sasha");
-
-    InitCategory("btag_loose");
-
-    InitCategory("nobtag");
-
     return 0;
   }
 
@@ -498,8 +482,8 @@ namespace ic {
       }
     }
 
-
     if (write_tree_) outtree_->Fill();
+    if (!write_plots_) return 0;
 
     // Define which selections this event passes
     if (channel_ == channel::et || channel_ == channel::etmet || channel_ == channel::mt || channel_ == channel::mtmet) {
@@ -533,6 +517,7 @@ namespace ic {
     // Define the 1- and 0-jet split based on pt_2
     double pt2_split = 40.0; // Tau pT for et,mt and mtmet
     if (channel_ == channel::em) pt2_split = 35.0;  // Mu pT for em
+
 
     // Inclusive Category
     SetPassCategory("inclusive");

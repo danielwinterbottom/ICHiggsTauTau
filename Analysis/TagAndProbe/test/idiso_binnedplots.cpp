@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
     isdata=boost::lexical_cast<bool>(argv[2]);
     std::string type=boost::lexical_cast<std::string>(argv[3]);
     
-    TFile *f1;
+    TFile *f1=NULL;
     if(elec && isdata)
     {
         if(type=="idiso")

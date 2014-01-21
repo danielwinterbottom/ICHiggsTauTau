@@ -61,7 +61,7 @@ using namespace RooFit ;
             TF="h_TF_";
         }
 
-        TFile* f;
+        TFile* f=NULL;
 
         if(elec && (type=="id" || type=="iso" || type=="idiso"|| type=="idbins" || type=="isobins" || type=="idisobins") && isdata)
         {
@@ -370,7 +370,7 @@ using namespace RooFit ;
             TF="h_TF_";
         }
 
-        TFile* f;
+        TFile* f=NULL;
 
         if(elec && (type=="id" || type=="iso" || type=="idiso" || type=="idbins" || type=="isobins" || type=="idisobins") && isdata)
         {

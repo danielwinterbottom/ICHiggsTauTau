@@ -29,7 +29,7 @@ void SetTGraphStyle(TGraph * gr, int color) {
 }
 
 
-int main(int argc, char* argv[]){
+int main(int /*argc*/, char* /*argv*/[]){
 
   string ch = "cmb";
 

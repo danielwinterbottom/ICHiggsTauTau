@@ -218,7 +218,7 @@ namespace ic {
 
     //Step 5: Apply Lepton ID & ISO
     //---------------------------------------------------------------------------
-    bool lep_id_iso_yes = false;
+    // bool lep_id_iso_yes = false; // currently unused
     if (mode_ == 0) {//Electrons
       erase_if(reco_elecs, !bind(ElectronZbbID, _1));
       if (reco_elecs.size() > 1) counters_["rec_lep_id"] += weight;
@@ -227,7 +227,7 @@ namespace ic {
       erase_if(reco_elecs, !(bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.02));
       if (reco_elecs.size() > 1) counters_["rec_lep_db"] += weight;
       if (reco_elecs.size() > 1) {
-        lep_id_iso_yes = true;
+        // lep_id_iso_yes = true; // currently unused
         if (tp_rw_) weight *= (ElectronIdIsoSF(reco_elecs[0])*ElectronIdIsoSF(reco_elecs[1])*ElectronTriggerSF(reco_elecs[0], reco_elecs[1]));
         counters_["rec_lep_id_iso"] += weight;
         if (rec_Zb == 1) counters_["rec1B_lep_id_iso"] += weight;
@@ -240,7 +240,7 @@ namespace ic {
       erase_if(reco_muons, !bind(PF04Isolation<Muon>, _1, 0.5, 0.2));
       erase_if(reco_muons, !(bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.02));
       if (reco_muons.size() > 1) {
-        lep_id_iso_yes = true;
+        // lep_id_iso_yes = true; // currently unused
         if (tp_rw_) weight *= (MuonIdIsoSF(reco_muons[0]) * MuonIdIsoSF(reco_muons[1]) * MuonTriggerSF(reco_muons[0], reco_muons[1]));
         counters_["rec_lep_id_iso"] += weight;//Re-weight TP here
         if (rec_Zb == 1) counters_["rec1B_lep_id_iso"] += weight;//Re-weight TP here

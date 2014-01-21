@@ -7,6 +7,8 @@
 #include "boost/program_options.hpp"
 #include "TROOT.h"
 #include "TError.h"
+#include "TH1.h"
+#include "TFile.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"

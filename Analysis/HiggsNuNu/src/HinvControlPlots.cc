@@ -263,7 +263,7 @@ namespace ic {
       //allowing to have them in parallel to the main stream
         
       if (sel_label_.find("AN") != sel_label_.npos) {
-	if(channel_ == "munu" || channel_ == "mumu"){
+	if(channel_ == "munu" || channel_ == "mumu" || channel_ == "nunuiglep"){
 	  if (!(met_noMuons->pt() > 130 && dijet->M()>1000)) fillPlots=false;
 	}
 	else{

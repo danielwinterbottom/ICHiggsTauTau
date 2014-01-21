@@ -176,7 +176,7 @@ int main(int argc, char* argv[]){
     base4->SetStats(0);
   
 
-    double x1, y1, x2, y2, err_x1, err_y1, err_x2, err_y2;
+    double x1, y1, x2, y2, err_x1, err_y1, err_y2;
  
   //Code to plot scale factor as function of Nvtx
     double sf[10];
@@ -190,7 +190,7 @@ int main(int argc, char* argv[]){
         err_x1=grvtxdata->GetErrorX(i);
         err_y1=grvtxdata->GetErrorY(i);
         grvtxMC->GetPoint(i, x2, y2);
-        err_x2=grvtxMC->GetErrorX(i);
+        //err_x2=grvtxMC->GetErrorX(i);
         err_y2=grvtxMC->GetErrorY(i);
         std::cout << x1 << " " << x2 << " " << y1 << " " << y2 <<  " " << y1/y2 <<std::endl;
         x[i]=x1;

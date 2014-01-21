@@ -282,11 +282,11 @@ int main(int argc, char* argv[])
         }
     }
 
-    int i_final, i_initial;
+    int i_final;
     if(elec) i_final=2;
     else i_final=3;
-    if(elec) i_initial=0;
-    else i_initial=0;
+    //if(elec) i_initial=0;
+    //else i_initial=0;
 
     std::cout << "======================================================================" << std::endl;
     for(int i=0; i<i_final; i++)

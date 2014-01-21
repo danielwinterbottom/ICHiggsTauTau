@@ -62,7 +62,7 @@ int main(int argc, char* argv[]){
     const char* labelMC=argv[8];
     int Plot2or3 = boost::lexical_cast<int>(argv[9]);
 
-    TFile* output;
+    TFile* output=NULL;
     if(elec && barrel=="B")
     {
         output=new TFile("ElectronBarrelTriggerPlots.root", "RECREATE");

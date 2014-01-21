@@ -8,6 +8,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
+#include "TH1.h"
+#include "TFile.h"
 
 namespace po = boost::program_options;
 

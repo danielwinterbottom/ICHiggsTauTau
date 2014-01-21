@@ -134,7 +134,7 @@ pdflatex MakeTexSummary.tex
 #### run bin/HiggsNuNu enabling the options --dolumixsweight=true --doTmvaTree=true
 
 ## Run training and testing
-#### Example code is in test/RunTmva.cpp
+#### Example code is in test/RunTmva.cpp, this is independant of the rest of the analysis code
 #### To look at output file produced, use TMVAGui.C macro from root/tmva/test directory.
 #### This is what is producing the performance plots.
 

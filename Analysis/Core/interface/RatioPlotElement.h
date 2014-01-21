@@ -2,8 +2,6 @@
 #define ICHiggsTauTau_Core_RatioPlotElement_h
 
 #include <string>
-#include "TFile.h"
-#include "TH1F.h"
 
 namespace ic {
 

@@ -1,7 +1,8 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
+#include "Core/interface/TreeEvent.h"
+
+class TTree;
 
 namespace ic {
-
 
   TreeEvent::TreeEvent() {
     event_ = 0;
@@ -10,7 +11,6 @@ namespace ic {
   TreeEvent::~TreeEvent() {
     ;
   }
-
 
   void TreeEvent::SetEvent(unsigned event) {
     event_ = event;

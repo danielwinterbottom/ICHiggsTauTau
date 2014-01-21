@@ -1,12 +1,13 @@
 #ifndef ICHiggsTauTau_Core_ModuleBase_h
 #define ICHiggsTauTau_Core_ModuleBase_h
 
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include <string>
+#include <iostream>                     // for operator<<, cout, ostream, etc
+#include <vector>                       // for vector
+#include "boost/bind.hpp"               // for bind
 #include "boost/program_options.hpp"
 #include "boost/function.hpp"
-#include "boost/bind.hpp"
-#include "boost/format.hpp"
+namespace ic { class TreeEvent; }
 
 #define CLASS_MEMBER(classn,type,name)                                                \
     private:                                                                \

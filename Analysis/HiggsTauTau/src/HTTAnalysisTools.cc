@@ -265,6 +265,9 @@ namespace ic {
       sample_names_.push_back("GluGluToHToTauTau_M-"+m);
       sample_names_.push_back("VBF_HToTauTau_M-"+m);
       sample_names_.push_back("WH_ZH_TTH_HToTauTau_M-"+m);
+      sample_names_.push_back("WH_HToTauTau_M-"+m);
+      // sample_names_.push_back("TTH_HToTauTau_M-"+m);
+      sample_names_.push_back("ZH_HToTauTau_M-"+m);
     }
   }
   void HTTAnalysis::AddHWWSignalSamples(std::vector<std::string> masses) {
@@ -353,14 +356,14 @@ namespace ic {
   }
 
 
-  HTTAnalysis::HistValuePair HTTAnalysis::GenerateData(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateData(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     auto data_norm = this->GetRate("Data", sel, cat, wt);
     TH1F data_hist = this->GetShape(var, "Data", sel, cat, wt);
     SetNorm(&data_hist, data_norm.first);
     return std::make_pair(data_hist, data_norm);
   }
 
-  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT] --------------------------------------------------------\n";
     auto ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     if (this->AliasDefined("ztt_shape_cat")) cat = this->ResolveAlias("ztt_shape_cat");
@@ -497,7 +500,7 @@ namespace ic {
     return std::make_pair(vv_hist, vv_norm);
   }
 
-  HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     std::string w_extrap_cat = cat;
@@ -656,6 +659,9 @@ namespace ic {
       hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
       hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
       hmap["VH"+infix+m+postfix]  = this->GenerateSignal("WH_ZH_TTH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+      hmap["WH"+infix+m+postfix]  = this->GenerateSignal("WH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+      // hmap["ttH"+infix+m+postfix] = this->GenerateSignal("TTH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+      hmap["ZH"+infix+m+postfix]  = this->GenerateSignal("ZH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
     }
   }
   
@@ -738,7 +744,8 @@ namespace ic {
                         double interpolate,
                         double fixed_xs){
     std::vector<std::string> procs = {"ggH", "qqH", "VH"};
-    std::vector<std::string> names = {"GluGluToHToTauTau_M-", "VBF_HToTauTau_M-", "WH_ZH_TTH_HToTauTau_M-"};
+    std::vector<std::string> names = {"GluGluToHToTauTau_M-", "VBF_HToTauTau_M-", "WH_ZH_TTH_HToTauTau_M-", 
+      "WH_HToTauTau_M-", /*"TTH_HToTauTau_M-",*/ "ZH_HToTauTau_M-"};
     for (unsigned i = 0; i < masses.size()-1; ++i) {
       double m_low = boost::lexical_cast<double>(masses[i]);
       double m_high = boost::lexical_cast<double>(masses[i+1]);
@@ -1187,7 +1194,7 @@ namespace ic {
 
   HTTAnalysis::Value HTTAnalysis::ValueProduct(Value const& p1, Value const& p2) {
     if (p1.first == 0.0 || p2.first == 0.0) {
-      std::cout << "[HTTAnalysis::ValueProduct] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
+      //if (verbosity_ > 0) std::cout << "[HTTAnalysis::ValueProduct] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
       return std::make_pair(0.0, 0.0);
     }
     double f = p1.first * p2.first;
@@ -1197,8 +1204,16 @@ namespace ic {
     return std::make_pair(f, f_err);
   }
   HTTAnalysis::Value HTTAnalysis::ValueDivide(Value const& p1, Value const& p2) {
-    if (p1.first == 0.0 || p2.first == 0.0) {
-      std::cout << "[HTTAnalysis::ValueDivide] At least one value is zero, returning 0.0 +/- 0.0" << std::endl;
+    if (p1.first == 0.0 && p2.first == 0.0) {
+      std::cout << "[HTTAnalysis::ValueDivide] Numerator and denominator both zero, returning 0.0 +/- 0.0" << std::endl;
+      return std::make_pair(0.0, 0.0);
+    }
+    if (p1.first == 0.0) {
+      //if (verbosity_ > 0) std::cout << "[HTTAnalysis::ValueDivide] Numerator is zero, returning 0.0 +/- 0.0" << std::endl;
+      return std::make_pair(0.0, 0.0);
+    }
+    if (p2.first == 0.0) {
+      std::cout << "[HTTAnalysis::ValueDivide] Denominator is zero, returning 0.0 +/- 0.0" << std::endl;
       return std::make_pair(0.0, 0.0);
     }
     double f = p1.first / p2.first;

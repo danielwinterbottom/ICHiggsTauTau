@@ -28,7 +28,7 @@ using namespace std;
 using namespace ic;
 
 
-int main(int argc, char* argv[]){
+int main(int /*argc*/, char* /*argv*/[]){
 
   ic::Plot::SetTdrStyle();
   TH1F data = GetFromTFile<TH1F>("datacard_m_vis_inclusive_et_2011.root", "/eleTau_inclusive", "data_obs");

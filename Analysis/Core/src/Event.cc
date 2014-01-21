@@ -1,6 +1,8 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Event.h"
+#include "Core/interface/Event.h"
+
+#include <typeinfo>
+#include <utility>
 #include <string>
-#include <algorithm>
 #include <map>
 #include <cxxabi.h>
 #include "boost/format.hpp"

@@ -8,6 +8,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include <string>
 #include "boost/bind.hpp"
+#include "boost/format.hpp"
 
 namespace ic {
 

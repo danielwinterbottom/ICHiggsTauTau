@@ -1,4 +1,11 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TH1PlotElement.h"
+#include "Core/interface/TH1PlotElement.h"
+
+#include <stdio.h>
+#include <string.h>
+#include "TDirectory.h"
+#include "TFile.h"
+#include "TH1.h"
+#include "TObject.h"
 
 namespace ic {
 

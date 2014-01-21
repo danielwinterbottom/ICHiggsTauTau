@@ -1,13 +1,18 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/AnalysisBase.h"
-#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
-#include <boost/algorithm/string.hpp>
+#include "Core/interface/AnalysisBase.h"
 
-#include <stdio.h>
-#include <thread>
+#include <unistd.h>
+#include <iostream>
+#include <algorithm>
+#include "boost/format.hpp"
+#include "boost/algorithm/string.hpp"
+#include "boost/bind.hpp"
 #include "TFile.h"
 #include "TTree.h"
-#include "boost/format.hpp"
-#include "TTreeCache.h"
+#include "TObject.h"
+#include "TDirectory.h"
+#include "Core/interface/ModuleBase.h"
+#include "Core/interface/TreeEvent.h"
+#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 
 namespace ic {
 
@@ -55,8 +60,8 @@ namespace ic {
   }
 
   int AnalysisBase::RunAnalysis() {
-    TFile *file_ptr = NULL;
-    TTree *tree_ptr = NULL;
+    TFile *file_ptr = nullptr;
+    TTree *tree_ptr = nullptr;
     weighted_yields_.resize(modules_.size());
     bool do_skim = (skim_path_ != "");
     if (do_skim) {
@@ -130,8 +135,8 @@ namespace ic {
           }
         }
         std::cout << "-- " << input_file_paths_[file] << std::endl;
-        TFile *outf = NULL;
-        TTree *outtree = NULL;
+        TFile *outf = nullptr;
+        TTree *outtree = nullptr;
         if (do_skim) {
           outf  = new TFile((skim_path_+out_name).c_str(), "RECREATE");
           if (!outf->IsOpen()) {
@@ -180,7 +185,7 @@ namespace ic {
             if (status == 0) modules_[module]->IncreaseProcessedCount();
             if (status == 0) weighted_yields_[module] += eventInfo->total_weight();
 
-            if (do_skim && module == skim_after_module_) {
+            if (do_skim && int(module) == skim_after_module_) {
               tree_ptr->GetEntry(evt);
               outtree->Fill();
             }

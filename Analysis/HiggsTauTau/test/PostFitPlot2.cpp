@@ -182,7 +182,7 @@ int main(int argc, char* argv[]){
       }
     }
   }
-  double chi2_prob = data_chi2.Chi2Test(&(bkg_chi2),"UW");
+  // double chi2_prob = data_chi2.Chi2Test(&(bkg_chi2),"UW");
   for (int j = 0; j < data_chi2.GetNbinsX(); ++j) {
     double low_edge = data_chi2.GetBinLowEdge(j+1);
     double high_edge = data_chi2.GetBinWidth(j+1)+data_chi2.GetBinLowEdge(j+1);
@@ -193,7 +193,7 @@ int main(int argc, char* argv[]){
       bkg_chi2.SetBinError(j+1,0);
     }
   }
-  double chi2_prob_cut = data_chi2.Chi2Test(&(bkg_chi2),"UW");
+  // double chi2_prob_cut = data_chi2.Chi2Test(&(bkg_chi2),"UW");
 
 
   ic::TextElement text(channel_str,0.04,0.22,0.86);

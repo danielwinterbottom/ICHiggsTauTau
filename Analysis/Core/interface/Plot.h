@@ -4,12 +4,9 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "TFile.h"
-#include "TH1F.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TH1PlotElement.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/RatioPlotElement.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
-
+#include "Core/interface/TH1PlotElement.h"
+#include "Core/interface/RatioPlotElement.h"
+#include "Core/interface/TextElement.h"
 
 namespace ic {
 

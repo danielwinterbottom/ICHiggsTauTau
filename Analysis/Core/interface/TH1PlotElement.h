@@ -2,8 +2,8 @@
 #define AGilbert_Analysis_TH1PlotElement_h
 
 #include <string>
-#include "TFile.h"
-#include "TH1F.h"
+class TFile;
+class TH1F;
 
 namespace ic {
 

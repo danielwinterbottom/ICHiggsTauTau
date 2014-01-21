@@ -18,16 +18,16 @@ cd ../
 #echo "******** e-tau 7TeV MSSM"
 #./scripts/compare_mssm_datacards.sh eleTau 0 htt_et.inputs-mssm-7TeV-0.root shapes/Imperial/htt_et.inputs-mssm-7TeV-0.root mycheck_et_mssm_7TeV 1 New Old
 
-#echo "******** e-mu 8TeV SM"
-#./scripts/compare_new_em.sh emu 2 htt_em.inputs-sm-8TeV.root shapes/Imperial/htt_em.inputs-sm-8TeV.root mycheck_em_sm_8TeV 1 New Old
+echo "******** e-mu 8TeV SM"
+./scripts/compare_new_em.sh emu 2 htt_em.inputs-sm-8TeV.root shapes/Imperial/htt_em.inputs-sm-8TeV.root mycheck_em_sm_8TeV 1 New Old
 echo "******** mu-tau 8TeV SM"
-./scripts/compare_new_et_mt_2012.sh muTau 0 htt_mt.inputs-sm-8TeV-0p40.root shapes/Imperial/htt_mt.inputs-sm-8TeV.root mycheck_mt_sm_8TeV 1 New Old 
-#echo "******** e-tau 8TeV SM"
-#./scripts/compare_new_et_mt_2012.sh eleTau 0 htt_et.inputs-sm-8TeV-0p40.root shapes/Imperial/htt_et.inputs-sm-8TeV.root mycheck_et_sm_8TeV 1 New Old
+./scripts/compare_new_et_mt_2012.sh muTau 0 htt_mt.inputs-sm-8TeV.root shapes/Imperial/htt_mt.inputs-sm-8TeV.root mycheck_mt_sm_8TeV 1 New Old 
+echo "******** e-tau 8TeV SM"
+./scripts/compare_new_et_mt_2012.sh eleTau 0 htt_et.inputs-sm-8TeV.root shapes/Imperial/htt_et.inputs-sm-8TeV.root mycheck_et_sm_8TeV 1 New Old
 
-#echo "******** e-mu 7TeV SM"
-#./scripts/compare_new_em.sh emu 2 htt_em.inputs-sm-7TeV-syst.root shapes/Imperial/htt_em.inputs-sm-7TeV.root mycheck_em_sm_7TeV 1 New Old
-#echo "******** mu-tau 7TeV SM"
-#./scripts/compare_new_et_mt_2012.sh muTau 0 htt_mt.inputs-sm-7TeV-syst.root shapes/Imperial/htt_mt.inputs-sm-7TeV.root mycheck_mt_sm_7TeV 1 New Old
-#echo "******** e-tau 7TeV SM"
-#./scripts/compare_new_et_mt_2012.sh eleTau 0 htt_et.inputs-sm-7TeV-syst.root shapes/Imperial/htt_et.inputs-sm-7TeV.root mycheck_et_sm_7TeV 1 New Old
+echo "******** e-mu 7TeV SM"
+./scripts/compare_new_em.sh emu 2 htt_em.inputs-sm-7TeV.root shapes/Imperial/htt_em.inputs-sm-7TeV.root mycheck_em_sm_7TeV 1 New Old
+echo "******** mu-tau 7TeV SM"
+./scripts/compare_new_et_mt_2012.sh muTau 0 htt_mt.inputs-sm-7TeV.root shapes/Imperial/htt_mt.inputs-sm-7TeV.root mycheck_mt_sm_7TeV 1 New Old
+echo "******** e-tau 7TeV SM"
+./scripts/compare_new_et_mt_2012.sh eleTau 0 htt_et.inputs-sm-7TeV.root shapes/Imperial/htt_et.inputs-sm-7TeV.root mycheck_et_sm_7TeV 1 New Old

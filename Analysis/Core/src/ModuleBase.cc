@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
+#include "Core/interface/ModuleBase.h"
 
 namespace ic {
 	
@@ -24,7 +24,4 @@ namespace ic {
       print_params_[i]();
     }
   }
-
-  
-
 }

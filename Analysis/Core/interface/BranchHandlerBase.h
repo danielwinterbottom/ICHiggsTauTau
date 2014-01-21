@@ -3,7 +3,6 @@
 
 #include "TBranch.h"
 
-
 namespace ic {
 
   //! An abstract base class for the automatic handling of branches in a TTree

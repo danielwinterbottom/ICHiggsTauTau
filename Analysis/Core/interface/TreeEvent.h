@@ -4,14 +4,13 @@
 #include <map>
 #include <string>
 #include <iostream>
-
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Event.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/BranchHandler.h"
+#include <vector>
 #include "boost/function.hpp"
 #include "boost/bind.hpp"
-#include "TTree.h"
-
-
+#include "Core/interface/Event.h"
+#include "Core/interface/BranchHandler.h"
+#include "Core/interface/BranchHandlerBase.h"
+class TTree;
 
 namespace ic {
 
@@ -37,7 +36,7 @@ namespace ic {
     void CopyPtrVec(std::string const& branch_name, std::string const& prod_name, unsigned event) {
       handlers_[branch_name]->GetEntry(event);
       std::vector<T> *ptr = (dynamic_cast<BranchHandler<std::vector<T> >* >(handlers_[branch_name]))->GetPtr();
-      std::vector<T *> temp_vec(ptr->size(), NULL);
+      std::vector<T *> temp_vec(ptr->size(), nullptr);
       for (unsigned i = 0; i < ptr->size(); ++i) {
         temp_vec[i] = &((*ptr)[i]);
       }

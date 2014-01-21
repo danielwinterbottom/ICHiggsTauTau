@@ -71,14 +71,14 @@ YEAR = ('2012' if COM=='8' else '2011')
 ########## Set up schemes and options
 
 #### Always apply these options:
-extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,bbH.*"'
+extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,WH.*,ZH.*,ttH.*,bbH.*"'
 
 #### Apply these options for specific channels
 extra_channel = {
   "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
   "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
   "mtmet" : ' --extra_pad=1.2 --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD" --syst_tau_scale="CMS_scale_t_mutau_soft_'+COM+'TeV"',
-  "em" : ' --fix_empty_bins="Fakes"'
+  "em" : ' --fix_empty_bins="Fakes" --fix_negative_bins="Fakes,Fakes.*Up,Fakes.*Down"'
 }
 
 #################################################################

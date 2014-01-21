@@ -1,7 +1,5 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/BranchHandler.h"
+#include "Core/interface/BranchHandler.h"
 
 namespace ic {
-
-
 
 }

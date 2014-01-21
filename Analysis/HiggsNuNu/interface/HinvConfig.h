@@ -158,7 +158,8 @@ struct channel_def {
 		emu,
 		tautau,
 		etau,
-		mutau
+		mutau,
+		nunuiglep
 	};
 };
 
@@ -176,6 +177,7 @@ struct channel_def {
      (channel::tautau, "tautau")
      (channel::etau, "etau")
      (channel::mutau, "mutau")
+     (channel::nunuiglep, "nunuiglep")
      ;
 
    if (conv.find(in) != conv.end()) {
@@ -197,6 +199,7 @@ struct channel_def {
      ("tautau", channel::tautau)
      ("etau", channel::etau)
      ("mutau", channel::mutau)
+     ("nunuiglep", channel::nunuiglep)
      ;
    
    if (conv.find(in) != conv.end()) {
