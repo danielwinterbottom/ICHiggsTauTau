@@ -167,9 +167,9 @@ int main(int argc, char* argv[]){
   boost::split(filtersVec, filters, boost::is_any_of(","));
 
   // Some options must now be re-configured based on other options
-  ic::era era           = String2Era(era_str);
-  ic::mc mc             = String2MC(mc_str);
-  ic::channel channel   = String2Channel(channel_str);
+  //ic::era era           = String2Era(era_str); //could be used in future but commented out to remove compiler warnings
+  //ic::mc mc             = String2MC(mc_str); //could be used in future but commented out to remove compiler warnings
+  //ic::channel channel   = String2Channel(channel_str); //could be used in future but commented out to remove compiler warnings
 
   std::cout << "**** HiggsNuNu Analysis *****" << std::endl;
   string param_fmt = "%-25s %-40s\n";
@@ -213,15 +213,15 @@ int main(int argc, char* argv[]){
   
   double elec_dz, elec_dxy;
   double muon_dz, muon_dxy;
-  double veto_elec_dz, veto_elec_dxy;
+  //double veto_elec_dz, veto_elec_dxy; //could be used in future but commented out to remove compiler warnings
   //double veto_muon_dz, veto_muon_dxy;
   double elec_pt, elec_eta, muon_pt, muon_eta;
-  double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta;
+  //double veto_elec_pt, veto_elec_eta, veto_muon_pt, veto_muon_eta; //could be used in future but commented out to remove compiler warnings
   
   elec_dz = 0.1;
   elec_dxy = 0.02;
-  veto_elec_dz = 0.2;
-  veto_elec_dxy = 0.04;
+  //veto_elec_dz = 0.2; //could be used in future but commented out to remove compiler warnings
+  //veto_elec_dxy = 0.04; //could be used in future but commented out to remove compiler warnings
   muon_dz = 0.2;
   muon_dxy = 0.045;
   //veto_muon_dz = 0.2;

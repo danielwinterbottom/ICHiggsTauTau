@@ -168,7 +168,7 @@ namespace ic {
       //GET MET AND JET COLLECTIONS
       std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
       std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");//GenJet collection, note: could make this a parameter but we only have one collection at the moment in the ntuples
-      std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");//Tau Collection
+      //std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");//Tau Collection could be used in future but commented out to remove compiler warning
       Met *met = event->GetPtr<Met>(met_label_);//MET collection
       ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
       ROOT::Math::PxPyPzEVector  newmet = oldmet;
@@ -392,7 +392,7 @@ namespace ic {
  	      double gauscorr;
  	      //std::cout<<"Jet pt and eta are: "<<oldjet.pt()<<" "<<oldjet.eta()<<"Sigma MC is: "<<sigmamc<<" "<<spring10sigmamc<<" Gaus corr is: "<<gauscorr<<std::endl;
 	      if(!dospring10gaus_) gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*sigmamc));
-	      else gauscorr==randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
+	      else gauscorr=randomno->Gaus(0,(sqrt((JERcencorrfac*JERcencorrfac)-1)*spring10sigmamc));
 	      double ptcorrected=oldjet.pt()+gauscorr;
 	      JERscalefac=ptcorrected/oldjet.pt();
 	      

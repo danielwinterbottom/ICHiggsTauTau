@@ -44,8 +44,8 @@ namespace ic {
 
       TriggerPathPtrVec const& triggerPathPtrVec = 
 	event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
-      EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-      unsigned run = eventInfo->run();
+      //EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings
+      //unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings
  
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
 	std::string name = triggerPathPtrVec[i]->name();

@@ -384,12 +384,12 @@ namespace ic {
 	  //get generically the jets matched...
 	  for (unsigned iR(0); iR < jets.size(); ++iR){//loop on recojets
 	    double mindR = 10;
-	    GenJet *genmatch = 0;
+	    //GenJet *genmatch = 0; //Can be used in future but commented out to remove compiler warning
 	    for (unsigned iG(0); iG < genjets.size(); ++iG){//loop on genjets
 	      double dR = ROOT::Math::VectorUtil::DeltaR(jets[iR]->vector(),genjets[iG]->vector());
 	      if (dR < mindR){
 		mindR = dR;
-		genmatch = genjets[iG];
+		//genmatch = genjets[iG]; //Can be used in future but commented out to remove compiler warning
 	      }
 	    }//loop on genjets
 	    if (mindR < 0.5 && iR<5) genPlots_->recojet_isMatched[iR]->Fill(1.,wt_);
