@@ -6,7 +6,8 @@ then
   exit
 fi
 
-STRIPPED=`echo $1 | sed "s/\//_/g"`".dat"
+STRIPPED=`echo $1 | sed "s/\.\.\///g"`
+STRIPPED=`echo $STRIPPED | sed "s/\//_/g"`".dat"
 STRIPPED=`echo $STRIPPED | sed "s/_.dat/.dat/"`
 
 echo Writing filelist to $STRIPPED
