@@ -15,10 +15,10 @@ Definition: ic::Electron
 
 CMSSW Producer: ICElectronProducer
 
-The ic::Electron class can be used with either particle-flow or gsf electrons.  
+The ic::Electron class can be used with either particle-flow or gsf electrons.
 The producer is configured like this:
 
-~~~~~~~~~~~~~{.py}
+~~~~~~~~~~~~~py
 process.icElectronProducer = cms.EDProducer('ICElectronProducer',
     input = cms.InputTag("gsfElectrons"),
     branchName = cms.string("electrons"),
@@ -49,7 +49,7 @@ CMSSW Producer: ICPhotonProducer
 
 The producer currently support the `reco::Photon` class as input only. Example usage:
 
-~~~~~~~~~~~~~{.py}
+~~~~~~~~~~~~~py
 process.icPhotonProducer = cms.EDProducer("ICPhotonProducer",
   input = cms.InputTag("photons"),
   branchName = cms.string("photons"),
@@ -69,10 +69,10 @@ Definition: ic::Muon
 
 CMSSW Producer: ICMuonProducer
 
-The ic::Muon class can be used with either particle-flow or standard reco muons.  
+The ic::Muon class can be used with either particle-flow or standard reco muons.
 The producer is configured like this:
 
-~~~~~~~~~~~~~{.py}
+~~~~~~~~~~~~~py
 		process.icMuonProducer = cms.EDProducer('ICMuonProducer',
 		    input = cms.InputTag("pfAllMuons"),
 		    branchName = cms.string("electrons"),
