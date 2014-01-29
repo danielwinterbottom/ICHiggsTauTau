@@ -56,14 +56,14 @@ namespace ic {
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,kOrange - 4)
     };
     bkg_schemes_["em_default"] = {
+      PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"Fakes"}            ,TColor::GetColor(250,202,255)),
       PlotBkgComponent("ewk","Electroweak"          ,{"EWK"}              ,TColor::GetColor(222, 90,106)),
-      PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,TColor::GetColor(248,206,104))
     };
     bkg_schemes_["mt_with_zmm"] = {
-      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
       PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
+      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
       PlotBkgComponent("ewk","Electroweak",           {"W","VV"},   TColor::GetColor(222, 90,106)),
       PlotBkgComponent("zll","Z#rightarrow#mu#mu",    {"ZL","ZJ"},  TColor::GetColor(100,182,232)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))

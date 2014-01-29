@@ -19,7 +19,6 @@ namespace ic {
       mass_shift_ = 1.0;
       fs_ = NULL;
       write_tree_ = true;
-      //write_plots_ = false;
       write_plots_ = false;
       experimental_ = false;
   }
@@ -95,8 +94,19 @@ namespace ic {
         outtree_->Branch("bpt_1",             &bpt_1_);
         outtree_->Branch("beta_1",            &beta_1_);
         outtree_->Branch("bcsv_1",            &bcsv_1_);
+        outtree_->Branch("prebjetpt_1",             &prebjetpt_1_);
+        outtree_->Branch("prebjeteta_1",            &prebjeteta_1_);
+        outtree_->Branch("prebjetbcsv_1",            &prebjetbcsv_1_);
+        outtree_->Branch("prebjet1_dm",             &prebjet1_dm_);
+        outtree_->Branch("prebjetpt_2",             &prebjetpt_2_);
+        outtree_->Branch("prebjeteta_2",            &prebjeteta_2_);
+        outtree_->Branch("prebjetbcsv_2",            &prebjetbcsv_2_);
         outtree_->Branch("mjj",               &mjj_);
+        outtree_->Branch("mjj_h",               &mjj_h_);
+        outtree_->Branch("mjj_tt",               &mjj_tt_);
         outtree_->Branch("jdeta",             &jdeta_);
+        outtree_->Branch("prebjet_mjj",               &prebjet_mjj_);
+        outtree_->Branch("prebjet_deta",             &prebjet_deta_);
         outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
         outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
         outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
@@ -159,44 +169,12 @@ namespace ic {
       InitCategory("0jet_high");
       InitCategory("0jet_low");
 
-      if (experimental_) {
-        InitCategory("jpt_30_1jet_high");
-        InitCategory("jpt_30_1jet_low");
-        InitCategory("jpt_30_0jet_high");
-        InitCategory("jpt_30_0jet_low");
-        InitCategory("jpt_40_1jet_high");
-        InitCategory("jpt_40_1jet_low");
-        InitCategory("jpt_40_0jet_high");
-        InitCategory("jpt_40_0jet_low");
-        InitCategory("jpt_60_1jet_high");
-        InitCategory("jpt_60_1jet_low");
-        InitCategory("jpt_60_0jet_high");
-        InitCategory("jpt_60_0jet_low");
-        InitCategory("jpt_80_1jet_high");
-        InitCategory("jpt_80_1jet_low");
-        InitCategory("jpt_80_0jet_high");
-        InitCategory("jpt_80_0jet_low");
-
-        InitCategory("hpt_30_1jet_high");
-        InitCategory("hpt_30_1jet_low");
-        InitCategory("hpt_30_0jet_high");
-        InitCategory("hpt_30_0jet_low");
-        InitCategory("hpt_40_1jet_high");
-        InitCategory("hpt_40_1jet_low");
-        InitCategory("hpt_40_0jet_high");
-        InitCategory("hpt_40_0jet_low");
-        InitCategory("hpt_60_1jet_high");
-        InitCategory("hpt_60_1jet_low");
-        InitCategory("hpt_60_0jet_high");
-        InitCategory("hpt_60_0jet_low");
-        InitCategory("hpt_80_1jet_high");
-        InitCategory("hpt_80_1jet_low");
-        InitCategory("hpt_80_0jet_high");
-        InitCategory("hpt_80_0jet_low");
-      }
       InitCategory("prebtag");
       InitCoreControlPlots("prebtag");
 
+      InitCategory("sasha");
+      InitCategory("presasha");
+      
       InitCategory("btag");
       InitCoreControlPlots("btag");
 
@@ -247,13 +225,13 @@ namespace ic {
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> lowpt_jets = jets;
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
-    //ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
     ic::erase_if(lowpt_jets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
     std::vector<PFJet*> prebjets = lowpt_jets;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
+    std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
 
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not
@@ -316,7 +294,6 @@ namespace ic {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");
       m_vis_ = m_vis_ * event->Get<double>("mass_scale");
     }
-
 
 
     mt_1_ = MT(lep1, met);
@@ -388,7 +365,52 @@ namespace ic {
     n_bjets_ = bjets.size();
     n_prebjets_ = prebjets.size();
     n_loose_bjets_ = loose_bjets.size();
+ 
 
+    if (n_prebjets_ >= 1) {
+      prebjetpt_1_ = prebjets[0]->pt();
+      prebjeteta_1_ = prebjets[0]->eta();
+      std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
+      std::vector<ic::Jet *> leadjet = { prebjets[0] };
+      std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
+      if (matches.size() == 1) {
+        prebjet1_dm_ = matches[0].second->decay_mode();
+      } else {
+        prebjet1_dm_ = -1;
+      }
+    } else {
+      prebjetpt_1_ = -9999;
+      prebjeteta_1_ = -9999;
+    }
+
+    if (n_prebjets_ >= 2) {
+      prebjetpt_2_ = prebjets[1]->pt();
+      prebjeteta_2_ = prebjets[1]->eta();
+      prebjet_mjj_ = (prebjets[0]->vector() + prebjets[1]->vector()).M();
+      prebjet_deta_ = fabs(prebjets[0]->eta() - prebjets[1]->eta());
+      mjj_tt_= (prebjets[0]->vector() + prebjets[1]->vector() + ditau->vector() + met->vector()).M();
+      if (event->Exists("svfitHiggs")) {
+        mjj_h_= (prebjets[0]->vector() + prebjets[1]->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
+      } else {
+        mjj_h_ = -9999;
+      }
+      //double eta_high = (prebjets[0]->eta() > prebjets[1]->eta()) ? prebjets[0]->eta() : prebjets[1]->eta();
+      //double eta_low = (prebjets[0]->eta() > jets[1]->eta()) ? jets[1]->eta() : jets[0]->eta();
+      //n_jetsingap_ = 0;
+      //if (n_jets_ > 2) {
+      //  for (unsigned i = 2; i < jets.size(); ++i) {
+      //   if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
+      //  }
+      
+    } else {
+      prebjetpt_2_ = -9999;
+      prebjeteta_2_ = -9999;
+      prebjet_mjj_ = -9999;
+      prebjet_deta_ = -9999;
+      mjj_h_ = -9999;
+      mjj_tt_ = -9999;
+    }
+    
     if (n_jets_ >= 1) {
       jpt_1_ = jets[0]->pt();
       jeta_1_ = jets[0]->eta();
@@ -426,6 +448,7 @@ namespace ic {
       n_jetsingap_ = 9999;
     }
 
+
     if (n_lowpt_jets_ >= 2) {
       mjj_lowpt_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
       jdeta_lowpt_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
@@ -453,8 +476,17 @@ namespace ic {
 
     if (prebjets.size() >= 1) {
       bcsv_1_ = prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+      prebjetbcsv_1_ = prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+
     } else {
       bcsv_1_ = -9999;
+      prebjetbcsv_1_ = -9999;
+    }
+    if (prebjets.size() >= 2) {
+      prebjetbcsv_2_ = prebjets[1]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+
+    } else {
+      prebjetbcsv_2_ = -9999;
     }
     emu_csv_ = (bcsv_1_ > 0.244) ? bcsv_1_ : -1.0;
 
@@ -534,6 +566,7 @@ namespace ic {
       }
     }
 
+
     // VBF Selection
     // In the em channel, additionally apply b-jet veto
     // if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 800. && jdeta_ > 4.0) {
@@ -604,73 +637,6 @@ namespace ic {
     }
     
 
-    if (experimental_) {
-      if (!PassesCategory("vbf")  && pt_2_ > pt2_split && n_bjets_ == 0) {
-        if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) {
-          if (jpt_1_ > 30.) SetPassCategory("jpt_30_1jet_high");
-          if (jpt_1_ > 40.) SetPassCategory("jpt_40_1jet_high");
-          if (jpt_1_ > 60.) SetPassCategory("jpt_60_1jet_high");
-          if (jpt_1_ > 80.) SetPassCategory("jpt_80_1jet_high");
-          if (pt_h_ > 30.) SetPassCategory("hpt_30_1jet_high");
-          if (pt_h_ > 40.) SetPassCategory("hpt_40_1jet_high");
-          if (pt_h_ > 60.) SetPassCategory("hpt_60_1jet_high");
-          if (pt_h_ > 80.) SetPassCategory("hpt_80_1jet_high");
-        }
-        if (jpt_1_ <= 30.) SetPassCategory("jpt_30_0jet_high");
-        if (jpt_1_ <= 40.) SetPassCategory("jpt_40_0jet_high");
-        if (jpt_1_ <= 60.) SetPassCategory("jpt_60_0jet_high");
-        if (jpt_1_ <= 80.) SetPassCategory("jpt_80_0jet_high");
-        if (pt_h_ <= 30.) SetPassCategory("hpt_30_0jet_high");
-        if (pt_h_ <= 40.) SetPassCategory("hpt_40_0jet_high");
-        if (pt_h_ <= 60.) SetPassCategory("hpt_60_0jet_high");
-        if (pt_h_ <= 80.) SetPassCategory("hpt_80_0jet_high");
-      }
-      if (!PassesCategory("vbf")  && pt_2_ <= pt2_split && n_bjets_ == 0) {
-        if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) {
-          if (jpt_1_ > 30.) SetPassCategory("jpt_30_1jet_low");
-          if (jpt_1_ > 40.) SetPassCategory("jpt_40_1jet_low");
-          if (jpt_1_ > 60.) SetPassCategory("jpt_60_1jet_low");
-          if (jpt_1_ > 80.) SetPassCategory("jpt_80_1jet_low");
-          if (pt_h_ > 30.) SetPassCategory("hpt_30_1jet_low");
-          if (pt_h_ > 40.) SetPassCategory("hpt_40_1jet_low");
-          if (pt_h_ > 60.) SetPassCategory("hpt_60_1jet_low");
-          if (pt_h_ > 80.) SetPassCategory("hpt_80_1jet_low");
-        }
-        if (jpt_1_ <= 30.) SetPassCategory("jpt_30_0jet_low");
-        if (jpt_1_ <= 40.) SetPassCategory("jpt_40_0jet_low");
-        if (jpt_1_ <= 60.) SetPassCategory("jpt_60_0jet_low");
-        if (jpt_1_ <= 80.) SetPassCategory("jpt_80_0jet_low");
-        if (pt_h_ <= 30.) SetPassCategory("hpt_30_0jet_low");
-        if (pt_h_ <= 40.) SetPassCategory("hpt_40_0jet_low");
-        if (pt_h_ <= 60.) SetPassCategory("hpt_60_0jet_low");
-        if (pt_h_ <= 80.) SetPassCategory("hpt_80_0jet_low");
-      }
-    }
-    
-
-    // 1-jet Low Category
-    // In the et channel, no met cut
-    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
-      SetPassCategory("1jet_low_nometcut");
-    }
-
-    // Eta veto no longer needed
-    // bool em_0jet_high_muon_eta = true;
-    // if (channel_ == channel::em && (era_ == era::data_2012_hcp || era_ == era::data_2012_moriond || era_ == era::data_2012_donly) ) {
-    //   if (eta_2_ > -0.2 && eta_2_ < 1.0) em_0jet_high_muon_eta = false;
-    // }
-    // 0-jet High Category
-    if (n_jets_ == 0 && pt_2_ > pt2_split && n_bjets_ == 0) {
-      SetPassCategory("0jet_high");
-      FillCoreControlPlots("0jet_high");
-    }
-
-    // 0-jet Low Category
-    if (n_jets_ == 0 && pt_2_ <= pt2_split && n_bjets_ == 0) {
-      SetPassCategory("0jet_low");
-      FillCoreControlPlots("0jet_low");
-    }
-
     // auto lowpt_jets_copy = lowpt_jets;
     // ic::erase_if(lowpt_jets_copy,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     // if (lowpt_jets_copy.size() >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
@@ -682,6 +648,14 @@ namespace ic {
     if (n_jets_ <= 1 && n_bjets_ > 0) {
       SetPassCategory("btag");
       FillCoreControlPlots("btag");
+    }
+    if(n_prebjets_>1 && n_bjets_>0)
+    {
+        SetPassCategory("sasha");
+    }
+    if(n_prebjets_>1)
+    {
+        SetPassCategory("presasha");
     }
     
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low");
@@ -854,6 +828,8 @@ namespace ic {
     print_cats.push_back("0jet_low");
     print_cats.push_back("btag");
     print_cats.push_back("nobtag");
+    print_cats.push_back("sasha");
+    print_cats.push_back("presasha");
     std::cout << boost::format("%-20s") % "Selections:";
     for (unsigned i = 0; i < print_selections.size(); ++i) {
       std::cout << boost::format("%-12s") % print_selections[i];

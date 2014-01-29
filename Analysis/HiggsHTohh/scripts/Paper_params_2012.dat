@@ -194,7 +194,10 @@ XS_SUSYBBHToTauTau_M-800:1.0
 XS_SUSYBBHToTauTau_M-900:1.0
 XS_SUSYBBHToTauTau_M-1000:1.0
 XS_GluGluToHTohhTo2Tau2B_mH-260:1.0
-XS_GluGluToHTohhTo2Tau2B_mH-300:0.0644
+#for tanb=2
+#XS_GluGluToHTohhTo2Tau2B_mH-300:0.1288
+#for tanb=2.5
+XS_GluGluToHTohhTo2Tau2B_mH-300:0.08511
 XS_GluGluToHTohhTo2Tau2B_mH-350:1.0
 ## Processed Events
 EVT_Data:1.0

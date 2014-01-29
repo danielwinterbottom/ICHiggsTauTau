@@ -86,11 +86,23 @@ class HhhCategories : public ModuleBase {
   double bpt_1_;     // Defined if n_bjets >= 1
   double beta_1_;    // Defined if n_bjets >= 1
   double bcsv_1_; 
+  double prebjetpt_1_;     // Defined if n_jets >= 1
+  double prebjetpt_2_;     // Defined if n_jets >= 2
+  double prebjeteta_1_;    // Defined if n_jets >= 1
+  double prebjeteta_2_;    // Defined if n_jets >= 2
+  double prebjetbcsv_1_; 
+  double prebjetbcsv_2_; 
 
   int j1_dm_;
+  int prebjet1_dm_;
 
   double mjj_;       // Defined if n_jets >= 2
+  double mjj_h_;       // Defined if n_jets >= 2
+  double mjj_tt_;       // Defined if n_jets >= 2
   double jdeta_;     // Defined if n_jets >= 2
+  
+  double prebjet_mjj_;       // Defined if n_jets >= 2
+  double prebjet_deta_;     // Defined if n_jets >= 2
 
   double mjj_lowpt_;       // Defined if n_lowpt_jets >= 2
   double jdeta_lowpt_;     // Defined if n_lowpt_jets >= 2
