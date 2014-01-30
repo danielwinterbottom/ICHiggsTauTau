@@ -2,14 +2,16 @@
 #include "TCanvas.h"
 #include "TROOT.h"
 #include <iostream>
-//#include "RooFitResult.h"
 #include "TFile.h"
-//#include "RooRealVar.h"
 #include "TH2F.h"
 #include "TGraphAsymmErrors.h"
 #include "TStyle.h"
 #include "TBox.h"
 #include "TLine.h"
+#include "TLatex.h"
+//#include "RooFitResult.h"
+//#include "RooRealVar.h"
+
 
 void htt_style() {
   TStyle *HttStyle = new TStyle("Htt-Style","The Perfect Style for Plots ;-)");
@@ -189,9 +191,9 @@ TString betterName(TString name) {
  if (name == "_em_vbf_") return TString("e#mu, vbf");
  if (name == "_tt_1jet_") return TString("#tau_{h}#tau_{h}, 1-jet");
  if (name == "_tt_vbf_") return TString("#tau_{h}#tau_{h}, vbf");
- if (name == "vhtt_zh") return TString("ll+LL^{'}");
- if (name == "vhtt_wh_lep") return TString("l+l#tau_{h}");
- if (name == "vhtt_wh_had") return TString("l+#tau_{h}#tau_{h}");
+ if (name == "vhtt_zh") return TString("#it{ll}+#it{LL}^{'}");
+ if (name == "vhtt_wh_lep") return TString("#it{l}+#it{l}#tau_{h}");
+ if (name == "vhtt_wh_had") return TString("#it{l}+#tau_{h}#tau_{h}");
  return name;
 }
 void cccPlot(const char *poi = "r", double rMin = -4, double rMax=4, TString filename="ccc.pdf") {
@@ -216,7 +218,7 @@ void cccPlot(const char *poi = "r", double rMin = -4, double rMax=4, TString fil
         if (TString(a->GetName()).Index(prefix) == 0) nChann++;
     }
     TH2F frame("frame",";Best Fit #sigma/#sigma_{SM};",1,TMath::Max(rFit->getMin(), rMin),TMath::Min(rFit->getMax(),rMax),nChann,0,nChann);
-    frame->GetXaxis()->SetTitleFont(62);
+    frame.GetXaxis()->SetTitleFont(62);
 
     iter->Reset(); int iChann = 0; TGraphAsymmErrors points(nChann);
     for (RooAbsArg *a = (RooAbsArg *) iter->Next(); a != 0; a = (RooAbsArg *) iter->Next()) {
@@ -224,7 +226,7 @@ void cccPlot(const char *poi = "r", double rMin = -4, double rMax=4, TString fil
             RooRealVar *ri = (RooRealVar *) a;
             TString channel = a->GetName(); channel.ReplaceAll(prefix,"");
             channel = betterName(channel);
-            double symm = (ri->getAsymErrorHi()-ri->getAsymErrorLo())/2.0;
+            //double symm = (ri->getAsymErrorHi()-ri->getAsymErrorLo())/2.0;
             points.SetPoint(iChann,       ri->getVal(), iChann+0.5);
             points.SetPointError(iChann, -ri->getAsymErrorLo(), ri->getAsymErrorHi(), 0, 0);
             //points.SetPointError(iChann, symm, symm, 0, 0);
@@ -252,9 +254,9 @@ void cccPlot(const char *poi = "r", double rMin = -4, double rMax=4, TString fil
     globalFitLine.SetLineColor(214);
     globalFitLine.DrawClone();
     points.Draw("P SAME");
-    tex = new TLatex(0.20,0.94,"CMS, 4.9 fb^{-1} at 7 TeV, 19.7 fb^{-1} at 8 TeV");
+    TLatex *tex = new TLatex(0.20,0.94,"CMS (unpublished), 4.9 fb^{-1} at 7 TeV, 19.7 fb^{-1} at 8 TeV");
     tex->SetNDC();
-    tex->SetTextSize(0.04);
+    tex->SetTextSize(0.03);
     tex->SetTextFont(62);
     tex->SetLineWidth(2);
     tex->Draw();
