@@ -16,28 +16,31 @@ class Observation {
   Observation& operator=(Observation other);
 
   void bin(std::string const& bin) { bin_ = bin; }
-  std::string const& bin() { return bin_; }
+  std::string const& bin() const { return bin_; }
 
   void rate(double const& rate) { rate_ = rate; }
-  double rate() { return rate_; }
+  double rate() const { return rate_; }
 
   void analysis(std::string const& analysis) { analysis_ = analysis; }
-  std::string const& analysis() { return analysis_; } 
+  std::string const& analysis() const { return analysis_; } 
 
   void era(std::string const& era) { era_ = era; }
-  std::string const& era() { return era_; }
+  std::string const& era() const { return era_; }
 
   void channel(std::string const& channel) { channel_ = channel; }
-  std::string const& channel() { return channel_; }
+  std::string const& channel() const { return channel_; }
 
   void bin_id(int const& bin_id) { bin_id_ = bin_id; }
-  int bin_id() { return bin_id_; }
+  int bin_id() const { return bin_id_; }
 
   void mass(std::string const& mass) { mass_ = mass; }
-  std::string const& mass() { return mass_; }
+  std::string const& mass() const { return mass_; }
 
   void shape(std::unique_ptr<TH1> shape) { shape_ = std::move(shape); }
-  TH1 const* shape() { return shape_.get(); }
+  TH1 const* shape() const { return shape_.get(); }
+
+  friend std::ostream& operator<< (std::ostream &out, Observation &val);
+  static std::ostream& PrintHeader(std::ostream &out);
 
  private:
   std::string bin_;

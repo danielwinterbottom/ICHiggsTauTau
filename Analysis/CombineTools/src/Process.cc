@@ -1,5 +1,6 @@
 #include "CombineTools/interface/Process.h"
 #include <iostream>
+#include "boost/format.hpp"
 
 namespace ch {
 
@@ -64,5 +65,32 @@ Process::Process(Process&& other)
 Process& Process::operator=(Process other) {
   swap(*this, other);
   return (*this);
+}
+
+std::ostream& Process::PrintHeader(std::ostream &out) {
+  std::string line =
+   (boost::format("%-8s %-9s %-8s %-8s %-30s %-4i %-25s %-4i %-10.5g %-8i")
+   % "mass" % "analysis" % "era" % "channel" % "bin" % "id" % "process" %
+   "id" % "rate" % "shape").str();
+  std::string div(line.length(), '-');
+  out << div  << std::endl;
+  out << line << std::endl;
+  out << div  << std::endl;
+  return out;
+}
+
+std::ostream& operator<< (std::ostream &out, Process &val) {
+  out << boost::format("%-8s %-9s %-8s %-8s %-30s %-4i %-25s %-4i %-10.5g %-8i")
+  % val.mass()
+  % val.analysis()
+  % val.era()
+  % val.channel()
+  % val.bin()
+  % val.bin_id()
+  % val.process()
+  % val.process_id()
+  % val.rate()
+  % bool(val.shape());
+  return out;
 }
 }

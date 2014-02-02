@@ -5,8 +5,11 @@
 #include <vector>
 #include <memory>
 #include "TFile.h"
+#include "TH1.h"
 namespace ch { class Observation; }
 namespace ch { class Process; }
+namespace ch { class Nuisance; }
+
 /*
 
 A good interface is still:
@@ -94,12 +97,12 @@ class CombineHarvester {
       int bin_id,
       std::string const& mass);
 
+  CombineHarvester & PrintAll();
     // int ParseDatacard(std::string const& filename,  
     //   std::string mass, 
     //   std::string era,
     //   std::string const& channel, 
     //   int category_id);
-    // CombineHarvester & PrintAll();
     // int ParseROOTFile(std::string const& filename, std::string const& channel, std::string era);
     // int ParseDatacard(std::string const& filename);
     // int ParseDatacard(std::string const& filename, std::string mass);
@@ -128,28 +131,31 @@ class CombineHarvester {
     // bool HasProcess(std::string const& process) const;
     // void ScaleProcessByEra(std::string const& process, std::string const& era, double scale);
     // std::pair<double, int> GetPullsChi2(bool splusb) const;
-  private:
-
-    // CombineHarvester(CombineHarvester const& rhs);
-    // CombineHarvester& operator=(CombineHarvester rhs);
-    // std::vector<std::shared_ptr<Nuisance>> nuisances_;
-    std::vector<std::shared_ptr<Observation>> obs_;
-    std::vector<std::shared_ptr<Process>> procs_;
+ private:
+  std::vector<std::shared_ptr<Observation>> obs_;
+  std::vector<std::shared_ptr<Process>> procs_;
+  std::vector<std::shared_ptr<Nuisance>> nus_;
     // std::map<std::string, std::shared_ptr<Parameter>> params_; 
     // std::vector<Pull> pulls_;
     // bool ignore_nuisance_correlations_;
-    struct HistMapping {
-      std::string process;
-      std::string category;
-      std::unique_ptr<TFile> file;
-      std::string pattern;
-      std::string syst_pattern;
-    };
-    typedef std::vector<std::pair<std::string, std::string>> StrPairVec;
-    StrPairVec GenerateShapeMapAttempts(std::string process, std::string category);
-    friend void swap(CombineHarvester& first, CombineHarvester& second);
+  struct HistMapping {
+    std::string process;
+    std::string category;
+    std::unique_ptr<TFile> file;
+    std::string pattern;
+    std::string syst_pattern;
+  };
+  typedef std::vector<std::pair<std::string, std::string>> StrPairVec;
+  StrPairVec GenerateShapeMapAttempts(std::string process, 
+      std::string category);
+  TH1 * GetHistFromFile(std::vector<HistMapping> const& mappings,
+      std::string const& bin,
+      std::string const& process,
+      std::string const& mass,
+      std::string const& nuisance,
+      unsigned type);
+  friend void swap(CombineHarvester& first, CombineHarvester& second);
 };
-
 }
 
 //   struct Nuisance {

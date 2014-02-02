@@ -6,12 +6,16 @@
 #include <utility>
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
+#include "boost/range/adaptor/indirected.hpp"
+#include "boost/range/algorithm/find_if.hpp"
 #include "TDirectory.h"
 #include "TH1.h"
 #include "Utilities/interface/FnRootTools.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
+#include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/MakeUnique.h"
+#include "CombineTools/interface/HelperFunctions.h"
 
 // #include "TMath.h"
 // #include "boost/format.hpp"
@@ -22,22 +26,19 @@ namespace ch {
 
 CombineHarvester::CombineHarvester() { }
 
-CombineHarvester::~CombineHarvester() {
-  std::cout << "Instance will clean up: " << std::endl;
-  for (auto x : procs_) {
-    std::cout << x->process() << "\t" <<  x->shape() << std::endl;
-  }
-}
+CombineHarvester::~CombineHarvester() { }
 
 void swap(CombineHarvester& first, CombineHarvester& second) {
   using std::swap;
   swap(first.obs_, second.obs_);
   swap(first.procs_, second.procs_);
+  swap(first.nus_, second.nus_);
 }
 
 CombineHarvester::CombineHarvester(CombineHarvester const& other)
     : obs_(other.obs_.size(), nullptr),
-      procs_(other.procs_.size(), nullptr) {
+      procs_(other.procs_.size(), nullptr),
+      nus_(other.nus_.size(), nullptr) {
   for (std::size_t i = 0; i < obs_.size(); ++i) {
     if (other.obs_[i]) {
       obs_[i] = std::make_shared<Observation>(*(other.obs_[i]));
@@ -46,6 +47,11 @@ CombineHarvester::CombineHarvester(CombineHarvester const& other)
   for (std::size_t i = 0; i < procs_.size(); ++i) {
     if (other.procs_[i]) {
       procs_[i] = std::make_shared<Process>(*(other.procs_[i]));
+    }
+  }
+  for (std::size_t i = 0; i < nus_.size(); ++i) {
+    if (other.nus_[i]) {
+      nus_[i] = std::make_shared<Nuisance>(*(other.nus_[i]));
     }
   }
 }
@@ -69,6 +75,35 @@ CombineHarvester::StrPairVec CombineHarvester::GenerateShapeMapAttempts(
   return result;
 }
 
+TH1 * CombineHarvester::GetHistFromFile(
+    std::vector<HistMapping> const& mappings,
+    std::string const& bin,
+    std::string const& process,
+    std::string const& mass,
+    std::string const& nuisance,
+    unsigned type) {
+  StrPairVec attempts = this->GenerateShapeMapAttempts(process, bin);
+  for (unsigned a = 0; a < attempts.size(); ++a) {
+    for (unsigned m = 0; m < mappings.size(); ++m) {
+      if ((attempts[a].first == mappings[m].process) &&
+        (attempts[a].second == mappings[m].category)) {
+        std::string p = (type == 0 ?
+            mappings[m].pattern : mappings[m].syst_pattern);
+        boost::replace_all(p, "$CHANNEL", bin);
+        boost::replace_all(p, "$PROCESS", process);
+        boost::replace_all(p, "$MASS", mass);
+        if (type == 1) boost::replace_all(p, "$SYSTEMATIC", nuisance+"Down");
+        if (type == 2) boost::replace_all(p, "$SYSTEMATIC", nuisance+"Up");
+        mappings[m].file->cd();
+        TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
+        h->SetDirectory(0);
+        return h;
+      }
+    }
+  }
+  return nullptr;
+}
+
 int CombineHarvester::ParseDatacard(std::string const& filename,
     std::string const& analysis,
     std::string const& era,
@@ -85,7 +120,7 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
   for (unsigned i = 0; i < lines.size(); ++i) {
     boost::trim(lines[i]);
     if (lines[i].size() == 0) continue;
-    if (lines[0] == "#" || lines[0] == "-") continue;
+    if (lines[i].at(0) == '#' || lines[i].at(0) == '-') continue;
     words.push_back(std::vector<std::string>());
     boost::split(words.back(), lines[i], boost::is_any_of("\t "),
         boost::token_compress_on);
@@ -106,10 +141,8 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
       hist_mapping.push_back(HistMapping());
       hist_mapping.back().process = words[i][1];
       hist_mapping.back().category = words[i][2];
-      // The root file path given in the datacard
-      // is relative to the datacard path, so we
-      // join the path to the datacard with the
-      // path to the root file
+      // The root file path given in the datacard is relative to the datacard 
+      // path, so we join the path to the datacard with the path to the file
       std::string dc_path;
       std::size_t slash = filename.find_last_of('/');
       if (slash != filename.npos) {
@@ -139,31 +172,9 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           obs->channel(channel);
           obs->bin_id(bin_id);
           obs->mass(mass);
-
-          StrPairVec attempts =
-            this->GenerateShapeMapAttempts("data_obs", obs->bin());
-          for (unsigned a = 0; a < attempts.size(); ++a) {
-            bool success = false;
-            for (unsigned m = 0; m < hist_mapping.size(); ++m) {
-              if ((attempts[a].first == hist_mapping[m].process) &&
-                (attempts[a].second == hist_mapping[m].category)) {
-                std::string hist_path = hist_mapping[m].pattern;
-                boost::replace_all(hist_path, "$CHANNEL", obs->bin());
-                boost::replace_all(hist_path, "$PROCESS", "data_obs");
-                boost::replace_all(hist_path, "$MASS", obs->mass());
-                hist_mapping[m].file->cd();
-                TH1 *h = dynamic_cast<TH1*>(
-                  gDirectory->Get(hist_path.c_str()));
-                // vital to detatch TH1 object from the current directory list
-                // so that we become solely responsible for freeing its memory
-                h->SetDirectory(0);
-                obs->shape(std::unique_ptr<TH1>(h));
-                success = true;
-                break;
-              }
-            }
-            if (success) break;
-          }
+          TH1 *h = GetHistFromFile(hist_mapping,
+            obs->bin(), "data_obs", obs->mass(), "", 0);
+          if (h) obs->shape(std::unique_ptr<TH1>(h));
           obs_.push_back(obs);
         }
       }
@@ -193,31 +204,10 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           proc->channel(channel);
           proc->bin_id(bin_id);
           proc->mass(mass);
-
-          StrPairVec attempts =
-            this->GenerateShapeMapAttempts(proc->process(), proc->bin());
-          for (unsigned a = 0; a < attempts.size(); ++a) {
-            bool success = false;
-            for (unsigned m = 0; m < hist_mapping.size(); ++m) {
-              if ((attempts[a].first == hist_mapping[m].process) &&
-                (attempts[a].second == hist_mapping[m].category)) {
-                std::string hist_path = hist_mapping[m].pattern;
-                boost::replace_all(hist_path, "$CHANNEL", proc->bin());
-                boost::replace_all(hist_path, "$PROCESS", proc->process());
-                boost::replace_all(hist_path, "$MASS", proc->mass());
-                hist_mapping[m].file->cd();
-                TH1 *h = dynamic_cast<TH1*>(
-                  gDirectory->Get(hist_path.c_str()));
-                // vital to detatch TH1 object from the current directory list
-                // so that we become solely responsible for freeing its memory
-                h->SetDirectory(0);
-                proc->shape(std::unique_ptr<TH1>(h));
-                success = true;
-                break;
-              }
-            }
-            if (success) break;
-          }
+          TH1 *h = GetHistFromFile(hist_mapping,
+            proc->bin(), proc->process(), proc->mass(), "", 0);
+          h->Scale(1.0/h->Integral());
+          if (h) proc->shape(std::unique_ptr<TH1>(h));
           procs_.push_back(proc);
         }
         r = i;
@@ -225,78 +215,72 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
       }
     }
 
-    // if (start_nuisance_scan && words[i].size()-1 == words[r].size()) {
-    //   for (unsigned p = 2; p < words[i].size(); ++p) {
-    //     if (words[i][p] == "-") continue;
-    //     if (words[i][0].at(0) == '#') continue;
-    //     nuisances_.emplace_back(new Nuisance());
-    //     Nuisance &tmp = *(nuisances_.back());
-    //     tmp.category = Category(mass, era, channel, words[r-3][p-1], category_id);
-    //     tmp.process = words[r-1][p-1];
-    //     tmp.process_id = boost::lexical_cast<int>(words[r-2][p-1]);
-    //     tmp.nuisance = words[i][0];
-    //     tmp.type = words[i][1];
-    //     std::size_t slash_pos = words[i][p].find("/");
-    //     if (slash_pos != words[i][p].npos) {
-    //       // Assume asymmetric of form kDown/kUp
-    //       tmp.value_d = boost::lexical_cast<double>(words[i][p].substr(0,slash_pos));
-    //       tmp.value_u = boost::lexical_cast<double>(words[i][p].substr(slash_pos+1));
-    //       tmp.asymm = true;
-    //     } else {
-    //       tmp.value_u = boost::lexical_cast<double>(words[i][p]);
-    //       tmp.asymm = false;
-    //     }
-    //     if (tmp.type == "shape") {
-    //       StrPairVec attempts = this->GenerateShapeMapAttempts(tmp.process, tmp.category.category);
-    //       for (unsigned a = 0; a < attempts.size(); ++a) {
-    //         bool success = false;
-    //         for (unsigned m = 0; m < shape_map.size(); ++m) {
-    //           if ((attempts[a].first == shape_map[m].process) && 
-    //             (attempts[a].second == shape_map[m].category)) {
-    //             std::string hist_path = shape_map[m].pattern;
-    //             boost::replace_all(hist_path, "$CHANNEL", tmp.category.category);
-    //             boost::replace_all(hist_path, "$PROCESS", tmp.process);
-    //             boost::replace_all(hist_path, "$MASS", tmp.category.mass);
-    //             std::string hist_u = shape_map[m].syst_pattern;
-    //             boost::replace_all(hist_u, "$CHANNEL", tmp.category.category);
-    //             boost::replace_all(hist_u, "$PROCESS", tmp.process);
-    //             boost::replace_all(hist_u, "$MASS", tmp.category.mass);
-    //             std::string hist_d = hist_u;
-    //             boost::replace_all(hist_u, "$SYSTEMATIC", tmp.nuisance+"Up");
-    //             boost::replace_all(hist_d, "$SYSTEMATIC", tmp.nuisance+"Down");
-    //             std::cout << hist_u << std::endl;
-    //             shape_map[m].file->cd();
-    //             tmp.shape = (TH1*)(gDirectory->Get(hist_path.c_str())->Clone());
-    //             tmp.shape_u = (TH1*)(gDirectory->Get(hist_u.c_str())->Clone());
-    //             tmp.shape_d = (TH1*)(gDirectory->Get(hist_d.c_str())->Clone());
-    //             std::cout << tmp.shape->Integral() << std::endl;
-    //             std::cout << tmp.shape_u->Integral() << std::endl;
-    //             std::cout << tmp.shape_d->Integral() << std::endl;
-    //             success = true;
-    //             break;
-    //           }
-    //         }
-    //         if (success) break;
-    //       }
-    //       tmp.asymm = true;
-    //       tmp.value_d = tmp.shape_d->Integral() / tmp.shape->Integral();
-    //       tmp.value_u = tmp.shape_u->Integral() / tmp.shape->Integral();
-    //       tmp.shape->Scale(1.0/tmp.shape->Integral());
-    //       tmp.shape_d->Scale(1.0/tmp.shape_d->Integral());
-    //       tmp.shape_u->Scale(1.0/tmp.shape_u->Integral());
-    //     }
-    //     if (!params_.count(tmp.nuisance)) {
-    //       std::shared_ptr<Parameter> param = std::make_shared<Parameter>(Parameter());
-    //       (*param).name = tmp.nuisance;
-    //       (*param).value = 0.0;
-    //       (*param).error_u = 1.0;
-    //       (*param).error_d = -1.0;
-    //       params_.insert(std::make_pair(tmp.nuisance, param));
-    //     }
-    //   }
-    // }
+    if (start_nuisance_scan && words[i].size()-1 == words[r].size()) {
+      for (unsigned p = 2; p < words[i].size(); ++p) {
+        if (words[i][p] == "-") continue;
+        // if (words[i][0].at(0) == '#') continue;
+        auto nus = std::make_shared<Nuisance>();
+        nus->bin(words[r-3][p-1]);
+        nus->process(words[r-1][p-1]);
+        nus->process_id(boost::lexical_cast<int>(words[r-2][p-1]));
+        nus->name(words[i][0]);
+        nus->type(words[i][1]);
+        nus->analysis(analysis);
+        nus->era(era);
+        nus->channel(channel);
+        nus->bin_id(bin_id);
+        nus->mass(mass);
+        std::size_t slash_pos = words[i][p].find("/");
+        if (slash_pos != words[i][p].npos) {
+          // Assume asymmetric of form kDown/kUp
+          nus->value_d(
+            boost::lexical_cast<double>(words[i][p].substr(0,slash_pos)));
+          nus->value_u(
+            boost::lexical_cast<double>(words[i][p].substr(slash_pos+1)));
+          nus->asymm(true);
+        } else {
+          nus->value_u(boost::lexical_cast<double>(words[i][p]));
+          nus->asymm(false);
+        }
+        if (nus->type() == "shape") {
+          TH1 *h = GetHistFromFile(hist_mapping,
+            nus->bin(), nus->process(), nus->mass(), "", 0);
+          TH1 *h_d = GetHistFromFile(hist_mapping,
+            nus->bin(), nus->process(), nus->mass(), nus->name(), 1);
+          TH1 *h_u = GetHistFromFile(hist_mapping,
+            nus->bin(), nus->process(), nus->mass(), nus->name(), 2);
+          nus->value_u(h_u->Integral()/h->Integral());
+          nus->value_d(h_d->Integral()/h->Integral());
+          h_u->Scale(1.0/h_u->Integral());
+          if (h_u) nus->shape_u(std::unique_ptr<TH1>(h_u));
+          h_d->Scale(1.0/h_d->Integral());
+          if (h_d) nus->shape_d(std::unique_ptr<TH1>(h_d));
+          nus->asymm(true);
+          delete h;
+        }
+        nus_.push_back(nus);
+        // if (!params_.count(tmp.nuisance)) {
+        //   std::shared_ptr<Parameter> param = std::make_shared<Parameter>(Parameter());
+        //   (*param).name = tmp.nuisance;
+        //   (*param).value = 0.0;
+        //   (*param).error_u = 1.0;
+        //   (*param).error_d = -1.0;
+        //   params_.insert(std::make_pair(tmp.nuisance, param));
+        // }
+      }
+    }
   }
   return 0;
+}
+
+CombineHarvester & CombineHarvester::PrintAll() {
+  std::cout << Observation::PrintHeader;
+  for (unsigned i = 0; i < obs_.size(); ++i) std::cout << *(obs_[i]) << std::endl;
+  std::cout << Process::PrintHeader;
+  for (unsigned i = 0; i < procs_.size(); ++i) std::cout << *(procs_[i]) << std::endl;
+  std::cout << Nuisance::PrintHeader;
+  for (unsigned i = 0; i < nus_.size(); ++i) std::cout << *(nus_[i]) << std::endl;
+  return *this;
 }
 
 
@@ -358,79 +342,6 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
 //      }
 //    }
 //  }
-  // std::ostream& Nuisance::PrintHeader(std::ostream &out) {
-  //   out << "-------------------------------------------------------------------------------------------------------------------------------------------------------------------" << std::endl;
-  //   out << boost::format("%-8s %-8s %-8s %-30s %-4i %-10s %-40s %-8s %-9s %-10i %-10i %-10i\n")
-  //   % "mass" % "era" % "channel" % "category" % "id" % "process" % "nuisance" % "type" % "value" % "shape" % "shape_d" % "shape_u";
-  //   out << "-------------------------------------------------------------------------------------------------------------------------------------------------------------------";
-  //   return out;
-  // }
-
-  // std::ostream& operator<< (std::ostream &out, Nuisance &val) {
-  //   std::string value_fmt;
-  //   if (val.asymm) {
-  //     value_fmt = (boost::format("%-4.4g/%-4.4g") % val.value_d % val.value_u).str();
-  //   } else {
-  //     value_fmt = (boost::format("%-9.4g") % val.value_u).str();
-  //   }
-  //   out << boost::format("%-8s %-8s %-8s %-30s %-4i %-10s %-40s %-8s %-9s %-10i %-10i %-10i")
-  //   % val.category.mass
-  //   % val.category.era
-  //   % val.category.channel
-  //   % val.category.category
-  //   % val.category.category_id
-  //   % val.process
-  //   % val.nuisance
-  //   % val.type
-  //   % value_fmt
-  //   % bool(val.shape)
-  //   % bool(val.shape_d)
-  //   % bool(val.shape_u);
-  //   return out;
-  // }
-
-  // std::ostream& Process::PrintHeader(std::ostream &out) {
-  //   out << "------------------------------------------------------------------------------------------------------------------------" << std::endl;
-  //   out << boost::format("%-8s %-8s %-8s %-30s %-4i %-35s %-4i %-10.5g %-8i\n")
-  //   % "mass" % "era" % "channel" % "category" % "id" % "process" % "pid" % "rate" % "shape";
-  //   out << "------------------------------------------------------------------------------------------------------------------------";
-  //   return out;
-  // }
-
-  // std::ostream& operator<< (std::ostream &out, Process &val) {
-  //   out << boost::format("%-8s %-8s %-8s %-30s %-4i %-35s %-4i %-10.5g %-8i")
-  //   % val.category.mass
-  //   % val.category.era
-  //   % val.category.channel
-  //   % val.category.category
-  //   % val.category.category_id
-  //   % val.process
-  //   % val.process_id
-  //   % val.rate
-  //   % bool(val.shape);
-  //   return out;
-  // }
-
-
-  // std::ostream& Observation::PrintHeader(std::ostream &out) {
-  //   out << "------------------------------------------------------------------------------------------------------------------------" << std::endl;
-  //   out << boost::format("%-8s %-8s %-8s %-30s %-4i %-40s %-10.5g %-8i\n")
-  //   % "mass" % "era" % "channel" % "category" % "id" % "process" % "rate" % "shape";
-  //   out << "------------------------------------------------------------------------------------------------------------------------";
-  //   return out;
-  // }
-  // std::ostream& operator<< (std::ostream &out, Observation &val) {
-  //   out << boost::format("%-8s %-8s %-8s %-30s %-4i %-40s %-10.5g %-8i")
-  //   % val.category.mass
-  //   % val.category.era
-  //   % val.category.channel
-  //   % val.category.category
-  //   % val.category.category_id
-  //   % val.process
-  //   % val.rate
-  //   % bool(val.shape);
-  //   return out;
-  // }
 
 
 //  CategoryKey Nuisance::GetKey() const { return CategoryKey(mass, era, channel, category); }
@@ -441,15 +352,7 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
 //    ignore_nuisance_correlations_ = false;
 //  }
 
-  // CombineHarvester & CombineHarvester::PrintAll() {
-  //   std::cout << Observation::PrintHeader << std::endl;
-  //   for (unsigned i = 0; i < obs_.size(); ++i) std::cout << *(obs_[i]) << std::endl;
-  //   std::cout << Process::PrintHeader << std::endl;
-  //   for (unsigned i = 0; i < processes_.size(); ++i) std::cout << *(processes_[i]) << std::endl;
-  //   std::cout << Nuisance::PrintHeader << std::endl;
-  //   for (unsigned i = 0; i < nuisances_.size(); ++i) std::cout << *(nuisances_[i]) << std::endl;
-  //   return *this;
-  // }
+
 
 //  CombineHarvester CombineHarvester::process(std::vector<std::string> const& process) const {
 //    CombineHarvester result = *this;

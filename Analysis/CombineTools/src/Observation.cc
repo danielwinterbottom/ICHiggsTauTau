@@ -1,4 +1,6 @@
 #include "CombineTools/interface/Observation.h"
+#include <iostream>
+#include "boost/format.hpp"
 
 namespace ch {
 
@@ -55,5 +57,31 @@ Observation::Observation(Observation&& other)
 Observation& Observation::operator=(Observation other) {
   swap(*this, other);
   return (*this);
+}
+
+std::ostream& Observation::PrintHeader(std::ostream &out) {
+  std::string line =
+    (boost::format("%-8s %-9s %-8s %-8s %-30s %-4i %-30s %-10.5g %-8i")
+    % "mass" % "analysis" % "era" % "channel" % "bin" % "id" % "process" %
+    "rate" % "shape").str();
+  std::string div(line.length(), '-');
+  out << div << std::endl;
+  out << line << std::endl;
+  out << div << std::endl;
+  return out;
+}
+
+std::ostream& operator<< (std::ostream &out, Observation &val) {
+  out << boost::format("%-8s %-9s %-8s %-8s %-30s %-4i %-30s %-10.5g %-8i")
+  % val.mass()
+  % val.analysis()
+  % val.era()
+  % val.channel()
+  % val.bin()
+  % val.bin_id()
+  % "data_obs"
+  % val.rate()
+  % bool(val.shape());
+  return out;
 }
 }
