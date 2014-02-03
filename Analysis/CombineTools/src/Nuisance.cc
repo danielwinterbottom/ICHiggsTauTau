@@ -91,8 +91,8 @@ Nuisance& Nuisance::operator=(Nuisance other) {
 
 std::ostream& Nuisance::PrintHeader(std::ostream &out) {
   std::string line =
-   (boost::format("%-8s %-9s %-8s %-8s %-30s %-4i"
-    " %-25s %-4i %-40s %-8s %-9s %-10i %-10i")
+   (boost::format("%-6s %-9s %-6s %-8s %-28s %-3i"
+    " %-22s %-3i %-40s %-8s %-9s %-10i %-10i")
     % "mass" % "analysis" % "era" % "channel" % "bin" % "id" % "process" % "id" 
     % "nuisance" % "type" % "value" % "shape_d" % "shape_u").str();
   std::string div(line.length(), '-');
@@ -110,8 +110,8 @@ std::ostream& operator<< (std::ostream &out, Nuisance &val) {
   } else {
     value_fmt = (boost::format("%-9.4g") % val.value_u()).str();
   }
-  out << boost::format("%-8s %-9s %-8s %-8s %-30s %-4i"
-    " %-25s %-4i %-40s %-8s %-9s %-10i %-10i")
+  out << boost::format("%-6s %-9s %-6s %-8s %-28s %-3i"
+    " %-22s %-3i %-40s %-8s %-9s %-10i %-10i")
   % val.mass()
   % val.analysis()
   % val.era()

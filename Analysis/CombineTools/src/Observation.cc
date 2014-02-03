@@ -61,7 +61,7 @@ Observation& Observation::operator=(Observation other) {
 
 std::ostream& Observation::PrintHeader(std::ostream &out) {
   std::string line =
-    (boost::format("%-8s %-9s %-8s %-8s %-30s %-4i %-30s %-10.5g %-8i")
+    (boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-26s %-10.5g %-8i")
     % "mass" % "analysis" % "era" % "channel" % "bin" % "id" % "process" %
     "rate" % "shape").str();
   std::string div(line.length(), '-');
@@ -72,7 +72,7 @@ std::ostream& Observation::PrintHeader(std::ostream &out) {
 }
 
 std::ostream& operator<< (std::ostream &out, Observation &val) {
-  out << boost::format("%-8s %-9s %-8s %-8s %-30s %-4i %-30s %-10.5g %-8i")
+  out << boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-26s %-10.5g %-8i")
   % val.mass()
   % val.analysis()
   % val.era()
