@@ -135,6 +135,7 @@ namespace ic {
     TH1F *taupt;
     TH1F *taueta;
     TH2F *tauptvseta;
+    TH2F *lepptvseta;
     TH1F *mindR_gentau_tagjets;
     TH1F *dR_genjet_gentau;
     TH1F *dR_recotau_genjet;
