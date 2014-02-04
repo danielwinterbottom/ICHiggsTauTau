@@ -125,6 +125,7 @@ namespace ic {
     taupt = dir.make<TH1F>("taupt","taupt", 1000, 0, 1000); 
     taueta = dir.make<TH1F>("taueta","taueta", 100, -5, 5);
     tauptvseta = dir.make<TH2F>("tauptvseta","tauptvseta", 100, -5, 5, 500,0,500);
+    lepptvseta = dir.make<TH2F>("lepptvseta","lepptvseta", 100, -5, 5, 500,0,500);
     mindR_gentau_tagjets = dir.make<TH1F>("mindR_gentau_tagjets","mindR_gentau_tagjets", 100, 0, 6);
     dR_genjet_gentau = dir.make<TH1F>("dR_genjet_gentau","dR_genjet_gentau", 100, 0, 6);
     dR_recotau_genjet = dir.make<TH1F>("dR_recotau_genjet","dR_recotau_genjet", 100, 0, 6);
@@ -366,6 +367,17 @@ namespace ic {
       }
 
       if(!is_data_ || is_embedded_){
+
+	std::vector<GenParticle*> const& genparts = event->GetPtrVec<GenParticle>("genParticles");
+	GenParticle* theLep = 0;
+	for (unsigned iP(0); iP<genparts.size(); ++iP){
+	  if (genparts[iP]->status()==3 && 
+	      (fabs(genparts[iP]->pdgid())==11 ||
+	       fabs(genparts[iP]->pdgid())==13)) theLep = genparts[iP];
+	}
+	if (theLep) {
+	  genPlots_->lepptvseta->Fill(theLep->eta(),theLep->pt(),wt_);
+	}
 
 	std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>(genparticles_label_);
 	GenParticle* theTau = 0;
