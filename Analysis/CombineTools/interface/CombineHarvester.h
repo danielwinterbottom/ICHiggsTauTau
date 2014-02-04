@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <list>
+#include <cmath>
 #include <functional>
 #include "TFile.h"
 #include "TH1.h"
@@ -79,7 +81,7 @@ class CombineHarvester {
   double GetRate();
     // double GetObservedRate();
   double GetUncertainty();
-    // TH1F   GetShape();
+  TH1F GetShape();
     // TH1F   GetObservedShape();
     // TGraphAsymmErrors GetObservedShapeErrors();
     // std::set<std::string> GetNuisanceSet();
@@ -89,7 +91,7 @@ class CombineHarvester {
   std::vector<std::shared_ptr<Observation>> obs_;
   std::vector<std::shared_ptr<Process>> procs_;
   std::vector<std::shared_ptr<Nuisance>> nus_;
-  std::map<std::string, std::shared_ptr<Parameter>> params_; 
+  std::map<std::string, std::shared_ptr<Parameter>> params_;
 
   struct HistMapping {
     std::string process;
@@ -110,6 +112,22 @@ class CombineHarvester {
       std::string const& nuisance,
       unsigned type);
   friend void swap(CombineHarvester& first, CombineHarvester& second);
+  typedef std::vector<std::vector<Nuisance const*>> 
+    ProcNusMap;
+  ProcNusMap GenerateProcNusMap();
+
+  double GetRateInternal(ProcNusMap const& lookup,
+    std::string const& single_nus = "");
+
+  inline double smoothStepFunc(double x) const { 
+    if (std::fabs(x) >= 1.0/*_smoothRegion*/) return x > 0 ? +1 : -1;
+    double xnorm = x/1.0;/*_smoothRegion*/
+    double xnorm2 = xnorm*xnorm;
+    return 0.125 * xnorm * (xnorm2 * (3.*xnorm2 - 10.) + 15);
+  }
+
+  TH1F ShapeDiff(double x, TH1 const* nom, TH1 const* low, TH1 const* high);
+
 };
 }
 

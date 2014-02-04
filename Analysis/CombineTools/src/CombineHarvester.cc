@@ -326,34 +326,42 @@ CombineHarvester & CombineHarvester::PrintAll() {
   return *this;
 }
 
+CombineHarvester::ProcNusMap CombineHarvester::GenerateProcNusMap() {
+  ProcNusMap lookup(procs_.size());
+  for (unsigned i = 0; i < nus_.size(); ++i) {
+    for (unsigned j = 0; j < procs_.size(); ++j) {
+      if (MatchingProcess(*(nus_[i]), *(procs_[j]))) {
+        lookup[j].push_back(nus_[i].get());
+      }
+    }
+  }
+  return lookup;
+}
 
 double CombineHarvester::GetUncertainty() {
+  auto lookup = GenerateProcNusMap();
   double err_sq = 0.0;
   for (auto param_it : params_) {
-    Parameter backup = *(param_it.second);
+    double backup = param_it.second->val();
     param_it.second->set_val(param_it.second->err_d());
-    double rate_d = this->GetRate();
+    double rate_d = this->GetRateInternal(lookup, param_it.first);
     param_it.second->set_val(param_it.second->err_u());
-    double rate_u = this->GetRate();
+    double rate_u = this->GetRateInternal(lookup, param_it.first);
     double err = std::fabs(rate_u-rate_d) / 2.0;
     err_sq += err * err;
-    *(param_it.second) = backup;
+    param_it.second->set_val(backup);
   }
   return std::sqrt(err_sq);
 }
 
-
 double CombineHarvester::GetRate() {
+  auto lookup = GenerateProcNusMap();
+  return GetRateInternal(lookup);
+}
 
-  std::map<Process const*, std::list<Nuisance const*>> lookup;
-  for (unsigned i = 0; i < nus_.size(); ++i) {
-    for (unsigned j = 0; j < procs_.size(); ++j) {
-      if (MatchingProcess(*(nus_[i]), *(procs_[j]))) {
-        lookup[procs_[j].get()].push_back(nus_[i].get());
-      }
-    }
-  }
 
+double CombineHarvester::GetRateInternal(ProcNusMap const& lookup,
+    std::string const& single_nus) {
   // possible optimisation by restricting summed p_rates to
   // just those where a given nuisance appies
   // but would have to walk down the nus_it first to see if
@@ -361,10 +369,18 @@ double CombineHarvester::GetRate() {
   // Can we do the same for shapes? should be fine
   double rate = 0.0;
   // TH1F tot_shape
-  for (auto proc_it : lookup) {
-    double p_rate = proc_it.first->rate();
+  for (unsigned i = 0; i < procs_.size(); ++i) {
+    double p_rate = procs_[i]->rate();
     // TH1F proc_shape = ....
-    for (auto nus_it : proc_it.second) {
+    // If we are evaluating the effect of a single parameter
+    // check the list of associated nuisances and skip if
+    // this "single_nus" is not in the list
+    if (single_nus != "") {
+      if (!ch::any_of(lookup[i], [&](Nuisance const* nus) {
+        return nus->name() == single_nus;
+      })) continue;
+    }
+    for (auto nus_it : lookup[i]) {
       double x = params_[nus_it->name()]->val();
       if (nus_it->asymm()) {
         if (x >= 0) {
@@ -386,6 +402,58 @@ double CombineHarvester::GetRate() {
   return rate;
 }
 
+TH1F CombineHarvester::GetShape() {
+  auto lookup = GenerateProcNusMap();
+  TH1F shape = *((TH1F*)(procs_[0]->shape()));
+  shape.Reset();
+  for (unsigned i = 0; i < procs_.size(); ++i) {
+    double p_rate = procs_[i]->rate();
+    TH1F proc_shape = *((TH1F*)(procs_[i]->shape()));
+    // If we are evaluating the effect of a single parameter
+    // check the list of associated nuisances and skip if
+    // this "single_nus" is not in the list
+    // if (single_nus != "") {
+    //   if (!ch::any_of(lookup[i], [&](Nuisance const* nus) {
+    //     return nus->name() == single_nus;
+    //   })) continue;
+    // }
+    for (auto nus_it : lookup[i]) {
+      double x = params_[nus_it->name()]->val();
+      if (nus_it->asymm()) {
+        if (x >= 0) {
+          p_rate *= std::pow(nus_it->value_u(), x);
+        } else {
+          p_rate *= std::pow(nus_it->value_d(), -1.0*x);
+        }
+        if (nus_it->type() == "shape") {
+          TH1F diff = ShapeDiff(x, procs_[i]->shape(), 
+            nus_it->shape_d(), nus_it->shape_u());
+          proc_shape.Add(&diff);
+        }
+      } else {
+        p_rate *= std::pow(nus_it->value_u(), x);
+      }
+    }
+    proc_shape.Scale(p_rate);
+    shape.Add(&proc_shape);
+  }
+  return shape;
+}
+
+TH1F CombineHarvester::ShapeDiff(double x, 
+    TH1 const* nom, 
+    TH1 const* low, 
+    TH1 const* high) {
+  TH1F diff = *(TH1F*)(high);
+  diff.Add(low, -1.0);
+  TH1F sum = *(TH1F*)(high);
+  sum.Add(low, 1.0);
+  sum.Add(nom, -2.0);
+  sum.Scale(smoothStepFunc(x));
+  sum.Add(&diff);
+  sum.Scale(0.5*x);
+  return sum;
+}
 
 CombineHarvester & CombineHarvester::bin(bool cond, 
     std::vector<std::string> const& vec) {
