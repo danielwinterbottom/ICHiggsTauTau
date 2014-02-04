@@ -198,7 +198,8 @@ int main( int argc, char** argv )
   ewkfiles.push_back("MC_EWK-W2jplus_taunu");
   //signal
   std::vector<std::string> sigfiles;
-  sigfiles.push_back("MC_VBF_HToZZTo4Nu_M-120");
+  //sigfiles.push_back("MC_VBF_HToZZTo4Nu_M-120");
+  sigfiles.push_back("MC_Powheg-Htoinv-mH125");
 
   std::vector<std::string> datafiles;
   datafiles.push_back("Data_MET-2012A-13Jul2012-v1");
