@@ -49,6 +49,26 @@ int CheckTmvaOutputs() {//main
     hist[iF][3] = (TH1F*)gDirectory->Get("MVA_BDT_ewk");
   }//loop on files
 
+  int binx = hist[0][1]->FindBin(0.4);
+  double integral = hist[0][1]->Integral(binx,hist[0][1]->GetNbinsX()+1);
+  double total = hist[0][1]->Integral(0,hist[0][1]->GetNbinsX()+1);
+
+  std::cout << "Integrals between bin " << binx << " " << hist[0][1]->GetBinLowEdge(binx) << " and " << hist[0][1]->GetBinLowEdge(hist[0][1]->GetNbinsX()+1) << std::endl
+	    << " Signal = " << integral << " " << total << " " << integral/total << std::endl;
+
+  integral = hist[1][0]->Integral(binx,hist[0][1]->GetNbinsX()+1);
+  total = hist[1][0]->Integral();
+  std::cout << " Data = " << integral << " " << total << " " << integral/total << std::endl;
+
+  integral = hist[0][2]->Integral(binx,hist[0][1]->GetNbinsX()+1);
+  total = hist[0][2]->Integral();
+  hist[0][2]->GetXaxis()->SetRangeUser(0.6,1.0);
+  std::cout << " QCD = " << integral << " " << total << " " << integral/total << std::endl;
+  integral = hist[0][3]->Integral(binx,hist[0][1]->GetNbinsX()+1);
+  total = hist[0][3]->Integral();
+  std::cout << " EWK = " << integral << " " << total << " " << integral/total << std::endl;
+
+ 
   myc->cd();
   double max = std::max(hist[0][2]->GetMaximum(),hist[1][0]->GetMaximum())*1.2;
 
@@ -76,7 +96,7 @@ int CheckTmvaOutputs() {//main
   leg->AddEntry(hist[1][0],"Data L=19.5 fb^{-1}","P");
   leg->AddEntry(hist[0][2],"QCD","L");
   leg->AddEntry(hist[0][3],"V+Top+VV","L");
-  leg->AddEntry(hist[0][1],"Signal m_{H}=120 GeV","F");
+  leg->AddEntry(hist[0][1],"Signal m_{H}=125 GeV","F");
   leg->Draw("same");
 
   myc->Update();
@@ -97,8 +117,8 @@ int CheckTmvaOutputs() {//main
   leg2->AddEntry(hist[1][0],"Data L=19.5 fb^{-1}","P");
   leg2->AddEntry(hist[0][2],"QCD","L");
   leg2->AddEntry(hist[0][3],"V+Top+VV","L");
-  leg2->AddEntry(hist[0][1],"Signal m_{H}=120 GeV #times 100","L");
-  //leg2->AddEntry(hist[0][1],"Signal m_{H}=120 GeV","L");
+  leg2->AddEntry(hist[0][1],"Signal m_{H}=125 GeV #times 100","L");
+  //leg2->AddEntry(hist[0][1],"Signal m_{H}=125 GeV","L");
   leg2->Draw("same");
 
 
@@ -106,21 +126,5 @@ int CheckTmvaOutputs() {//main
   myc1->Print("TmvaPlots/QCDBDToutputData.pdf");
 
 
-  int binx = hist[0][1]->FindBin(0.6);
-  double integral = hist[0][1]->Integral(binx,hist[0][1]->GetNbinsX()+1);
-
-  std::cout << "Integrals between bin " << binx << " " << hist[0][1]->GetBinLowEdge(binx) << " and " << hist[0][1]->GetBinLowEdge(hist[0][1]->GetNbinsX()+1) << std::endl
-	    << " Signal = " << integral << std::endl;
-
-  integral = hist[1][0]->Integral(binx,hist[0][1]->GetNbinsX()+1);
-  std::cout << " Data = " << integral << std::endl;
-
-  integral = hist[0][2]->Integral(binx,hist[0][1]->GetNbinsX()+1);
-  hist[0][2]->GetXaxis()->SetRangeUser(0.6,1.0);
-  std::cout << " QCD = " << integral << " (entries " << hist[0][2]->GetEntries() << ")" << std::endl;
-  integral = hist[0][3]->Integral(binx,hist[0][1]->GetNbinsX()+1);
-  std::cout << " EWK = " << integral << std::endl;
-
- 
   return 0;
 }//main
