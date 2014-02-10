@@ -297,6 +297,7 @@ namespace ic {
   void HhhAnalysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
       sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m);
+      sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
      // sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
     }
   }
@@ -791,7 +792,9 @@ namespace ic {
                     double fixed_xs) {
     for (auto const& m : masses) {
       auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
+      auto signal_pair_AZh = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m, var, sel, cat, wt, fixed_xs);
       hmap["ggHTohh"+infix+m+postfix] = signal_pair;
+      hmap["ggAToZh"+infix+m+postfix] = signal_pair_AZh;
       //PrintValue("ggHTohh"+postfix, signal_pair.second);
       //hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
     }

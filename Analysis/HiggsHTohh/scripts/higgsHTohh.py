@@ -263,6 +263,7 @@ if options.proc_mssm or options.proc_all:
   for mass in masses :
     signal_mc += [
       'GluGluToHTohhTo2Tau2B_mH-'+mass,
+      'GluGluToAToZhToLLBB_mA-'+mass,
     ]
   #if  not options.do_2011:
   #  ww_masses = ['110','115','120','125','130','135','140','145','150','155','160']
