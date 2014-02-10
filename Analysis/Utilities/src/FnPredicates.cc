@@ -775,6 +775,16 @@ namespace ic {
     double mass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
     return (mass > mLow && mass < mHigh);
   }
+  
+  double PairMass(CompositeCandidate const* cand) {
+    double mass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
+    return (mass);
+  }
+  //Return abolute difference between mass of candidate pair and given mass (e.g. Higgs), for sorting by closest candidate pair
+  double PairMassDiff(CompositeCandidate const* cand, double const& mass) {
+    double pairmass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
+    return abs(pairmass-mass);
+  }
 
   bool PairEtaProdLessThan(CompositeCandidate const* cand, double const& max){
     if ((cand->At(0)->eta() * cand->At(1)->eta()) < max) return true;

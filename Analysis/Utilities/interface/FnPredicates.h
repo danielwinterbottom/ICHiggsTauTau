@@ -158,6 +158,8 @@ namespace ic {
   
   bool PairOppSign(CompositeCandidate const* cand);
   bool PairSameSign(CompositeCandidate const* cand);
+  double PairMass(CompositeCandidate const* cand);
+  double PairMassDiff(CompositeCandidate const* cand, double const &mass);
 
   bool MuonTight(Muon const* muon);
   bool MuonIso(Muon const* muon);
