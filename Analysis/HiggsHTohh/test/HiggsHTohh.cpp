@@ -20,6 +20,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPairSelector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/GenLevelStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTSync.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPrint.h"
@@ -86,6 +87,7 @@ int main(int argc, char* argv[]){
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool quark_gluon_study;         // Run study on quark-gluon jet discriminators
+  bool make_gen_plots;            // Make generator level plots at start of chain
   string allowed_tau_modes;       // "" means all, otherwise "1,10"=allow 1prong1pizero,3prong
   bool moriond_tau_scale;         // Use new central tau scale shifts
   bool large_tscale_shift;        // Shift tau energy scale by +/- 6% instead of 3%
@@ -143,6 +145,7 @@ int main(int argc, char* argv[]){
       ("hadronic_tau_selector",  po::value<unsigned>(&hadronic_tau_selector)->default_value(0))
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
       ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
+      ("make_gen_plots",      po::value<bool>(&make_gen_plots)->default_value(false))
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
       ("moriond_tau_scale",   po::value<bool>(&moriond_tau_scale)->default_value(false))
       ("large_tscale_shift",  po::value<bool>(&large_tscale_shift)->default_value(false))
@@ -217,6 +220,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
   std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
   std::cout << boost::format(param_fmt) % "pu_id_training" % pu_id_training;
+  std::cout << boost::format(param_fmt) % "make_gen_plots" % make_gen_plots;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -946,6 +950,16 @@ int main(int argc, char* argv[]){
     ("QuarkGluonDiscriminatorStudy")
   .set_fs(fs);  
   
+  GenLevelStudy genLevelStudy = GenLevelStudy
+    ("GenLevelStudy")
+  .set_fs(fs) 
+  .set_make_plots(true);
+  
+  GenLevelStudy genLevelStudyPostAna = GenLevelStudy
+    ("GenLevelStudyPostAna")
+  .set_fs(fs) 
+  .set_check_match(true);
+  
   // ------------------------------------------------------------------------------------
   // Category Modules
   // ------------------------------------------------------------------------------------  
@@ -1009,6 +1023,7 @@ int main(int argc, char* argv[]){
    httPrint.PrintEvent(ch);
   }
   httPrint.set_skip_events(false);
+  if(make_gen_plots) analysis.AddModule(&genLevelStudy);
   if ( (channel == channel::etmet || 
         channel == channel::mtmet)
         && !is_data )             analysis.AddModule(&httL1MetCorrector); 
@@ -1143,6 +1158,7 @@ int main(int argc, char* argv[]){
   if (do_skim) {
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
+  if(make_gen_plots) analysis.AddModule(&genLevelStudyPostAna);
 
 
   analysis.RunAnalysis();
