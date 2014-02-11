@@ -4,7 +4,7 @@ PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
 DOLUMIXSWEIGHT=false #should be true if controlplots is to take care of lumi*xs/events weight
 
-for CHANNEL in nunu taunu enu munu #mumu
+for CHANNEL in nunu taunu enu munu #mumu nunuiglep
   do
   for MET in 130 #0 #70
     do

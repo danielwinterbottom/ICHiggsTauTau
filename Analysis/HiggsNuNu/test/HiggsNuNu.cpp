@@ -62,6 +62,7 @@ int main(int argc, char* argv[]){
   string output_name;             // Name of the ouput ROOT File
   string output_folder;           // Folder to write the output in
   bool do_skim;                   // For making skimmed ntuples
+  bool do_gensteps;               // For getting numbers of events at gen level
   string skim_path = "";          // Local folder where skimmed ntuples should be written
 
   string era_str;                 // Analysis data-taking era
@@ -136,10 +137,11 @@ int main(int argc, char* argv[]){
     ("output_name",         po::value<string>(&output_name)->required())
     ("output_folder",       po::value<string>(&output_folder)->default_value(""))
     ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
+    ("do_gensteps",         po::value<bool>(&do_gensteps)->default_value(false))
     ("skim_path",           po::value<string>(&skim_path)->default_value(""))
     ("era",                 po::value<string>(&era_str)->required())
     ("mc",                  po::value<string>(&mc_str)->required())
-    ("prod",                 po::value<string>(&prod)->required())
+    ("prod",                po::value<string>(&prod)->required())
     ("channel",             po::value<string>(&channel_str)->default_value("nunu"))
     ("wstream",             po::value<string>(&wstream)->default_value("nunu"))
     ("ignoreLeptons",       po::value<bool>(&ignoreLeptons)->default_value(false))
@@ -572,6 +574,19 @@ int main(int argc, char* argv[]){
     .set_min(0)
     .set_max(0);
 
+  OneCollCompositeProducer<Muon> mumuLeadingPairProducer = OneCollCompositeProducer<Muon>
+    ("MuMuLeadingPairProducer")
+    .set_input_label("selMuons")
+    .set_candidate_name_first("muon1")
+    .set_candidate_name_second("muon2")
+    .set_select_leading_pair(true)
+    .set_output_label("mumuLeadingCandidates");                                                        
+
+  SimpleFilter<CompositeCandidate> MassMuonPairFilter = SimpleFilter<CompositeCandidate>("MassMuonPairFilter")
+    .set_input_label("mumuLeadingCandidates")
+    .set_predicate( bind(PairMassInRange, _1,60,120) )
+    .set_min(1)
+    .set_max(999);    
 
   // ------------------------------------------------------------------------------------
   // Tau modules
@@ -791,7 +806,13 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(999);    
 
-
+  OneCollCompositeProducer<PFJet> dummyjjPairProducer = OneCollCompositeProducer<PFJet>
+    ("DummyJetJetPairProducer")
+    .set_input_label("pfJetsPFlow")
+    .set_candidate_name_first("jet1")
+    .set_candidate_name_second("jet2")
+    .set_select_leading_pair(false)
+    .set_output_label("dummyjjCandidates");                                                        
  
   // ------------------------------------------------------------------------------------
   // Met Modules
@@ -817,6 +838,7 @@ int main(int argc, char* argv[]){
 
   //if (is_ewkZ)  mettype="metNoENoMu";
   if (ignoreLeptons) mettype="metNoMuons";
+  if (channel==channel::mumu) mettype="metNoMuons"; 
   MetSelection metCut = MetSelection("MetCutFilter",mettype,false,filtersVec,met_cut,met_cut_max);
 
   //------------------------------------------------------------------------------------
@@ -920,6 +942,7 @@ int main(int argc, char* argv[]){
   //else if (wstream == "tautau") lFlavour = 15;
   //do only muons for Znunu estimate...
   HinvZDecay ZmassFilter = HinvZDecay("ZmassFilter",13,60,120);
+  HinvZDecay ZmassPreFilter = HinvZDecay("ZmassFilter",13,0,9999999);
 
 
   // ------------------------------------------------------------------------------------
@@ -934,6 +957,23 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  HinvControlPlots controlPlots_gen = HinvControlPlots("GenControlPlots")
+    .set_fs(fs)
+    .set_met_label("pfMetType1")
+    .set_dijet_label("dummyjjCandidates")
+    .set_sel_label("GenNoFilters")
+    .set_is_data(is_data)
+    .set_genlevelskip(true)
+    .set_channel(channel_str);
+
+  HinvControlPlots controlPlots_genzmassfiltered = HinvControlPlots("GenZMassFilteredControlPlots")
+    .set_fs(fs)
+    .set_met_label("pfMetType1")
+    .set_dijet_label("dummyjjCandidates")
+    .set_sel_label("GenZMassFiltered")
+    .set_is_data(is_data)
+    .set_genlevelskip(true)
+    .set_channel(channel_str);
 
  
   HinvControlPlots controlPlots_hlt = HinvControlPlots("HLTControlPlots")
@@ -1085,6 +1125,22 @@ int main(int argc, char* argv[]){
     .set_met_label(mettype)
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("WSelection")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  HinvControlPlots controlPlots_zsel = HinvControlPlots("ZSelectionControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("ZSelection")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  HinvControlPlots controlPlots_iglep = HinvControlPlots("IgnoreLeptonsControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("IgnoreLeptons")
     .set_is_data(is_data)
     .set_channel(channel_str);
 
@@ -1307,7 +1363,22 @@ int main(int argc, char* argv[]){
 	  output_name.find("EWK-W2j") != output_name.npos) {
 	if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
       }
-      if (ignoreLeptons) analysis.AddModule(&ZmassFilter);
+      if(!do_skim){
+	if(do_gensteps){
+	  if (ignoreLeptons){
+	    analysis.AddModule(&dummyjjPairProducer);
+	    analysis.AddModule(&ZmassPreFilter);
+	    analysis.AddModule(&controlPlots_gen);
+	    analysis.AddModule(&ZmassFilter);
+	    analysis.AddModule(&controlPlots_genzmassfiltered);
+	  }
+	  else{
+	    analysis.AddModule(&dummyjjPairProducer);
+	    analysis.AddModule(&controlPlots_gen); //Add dummy steps so that controlplots.cpp finds these directories
+	    analysis.AddModule(&controlPlots_genzmassfiltered);
+	  }
+	}
+      }
       if (!do_skim)       {
 	analysis.AddModule(&pileupWeight);
 	analysis.AddModule(&pileupWeight_up);
@@ -1316,6 +1387,12 @@ int main(int argc, char* argv[]){
 	analysis.AddModule(&xsWeights);
       }
     }
+    else if(is_data && !do_skim  && do_gensteps){
+      analysis.AddModule(&dummyjjPairProducer);
+      analysis.AddModule(&controlPlots_gen);//Add dummy step so that ControlPlots.cpp finds these directories
+      analysis.AddModule(&controlPlots_genzmassfiltered);
+    }
+
    
    //if (!do_skim) {
 
@@ -1407,12 +1484,13 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&zeroVetoElectronFilter);
        //analysis.AddModule(&muonMTFilter);
      }
-     else if (channel == channel::mumu){
+     else if (channel == channel::mumu){//Require exactly 2 reco muons in the detector acceptance in the Z mass window
        analysis.AddModule(&twoMuonFilter);
        analysis.AddModule(&twoVetoMuonFilter);
        analysis.AddModule(&zeroVetoElectronFilter);
-       analysis.AddModule(&ZmassFilter);
-       //analysis.AddModule(&muonMTFilter);
+       analysis.AddModule(&mumuLeadingPairProducer);
+       analysis.AddModule(&MassMuonPairFilter);
+       //analysis.AddModule(&muonMTFilter); //Leave this commented out for now
      }
      else if (channel == channel::enu){
        analysis.AddModule(&oneElectronFilter);
@@ -1450,6 +1528,12 @@ int main(int argc, char* argv[]){
 
      if (channel == channel::nunu){
        analysis.AddModule(&controlPlots_lepveto);
+     }
+     else if(channel == channel::nunuiglep){
+       analysis.AddModule(&controlPlots_iglep);
+     }
+     else if(channel == channel::mumu){
+       analysis.AddModule(&controlPlots_zsel);
      }
      else {
        analysis.AddModule(&controlPlots_wsel);
@@ -1492,7 +1576,7 @@ int main(int argc, char* argv[]){
        
        //met modules
        
-       if (channel == channel::munu || channel == channel::mumu){
+       if (channel == channel::munu || channel == channel::mumu || channel ==channel::nunuiglep){
 	 analysis.AddModule(&metNoMuonFilter);
        }
        else {

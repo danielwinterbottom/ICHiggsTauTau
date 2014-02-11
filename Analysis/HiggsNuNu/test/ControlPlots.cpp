@@ -358,6 +358,8 @@ int main(int argc, char* argv[]){
   selections.push_back("HLTMetClean");
   selections.push_back("LeptonVeto");
   selections.push_back("WSelection");
+  selections.push_back("ZSelection");
+  selections.push_back("IgnoreLeptons");
   selections.push_back("JetPair");
   selections.push_back("AN");
   selections.push_back("DEta");
@@ -374,10 +376,15 @@ int main(int argc, char* argv[]){
   selections.push_back("DPhiQCD_CJVpass");
   selections.push_back("MtZepp");
   selections.push_back("VBF");
+  selections.push_back("GenNoFilters");
+  selections.push_back("GenZMassFiltered");
+  
   vector<string> latex;
   latex.push_back("HLTMetClean");
   latex.push_back("LeptonVeto");
   latex.push_back("WSelection");
+  latex.push_back("ZSelection");
+  latex.push_back("IgnoreLeptons");
   latex.push_back("JetPair");
   latex.push_back("AN");
   latex.push_back("DEta");
@@ -394,6 +401,9 @@ int main(int argc, char* argv[]){
   latex.push_back("QCD CJVpass");
   latex.push_back("MtZepp");
   latex.push_back("VBF");
+  latex.push_back("GenNoFilters");
+  latex.push_back("GenZMassFiltered");
+  
 
   vector<string> selectionsdir = selections;
 

@@ -163,7 +163,7 @@ namespace ic {
     CLASS_MEMBER(HinvControlPlots,std::string, channel);
     CLASS_MEMBER(HinvControlPlots,bool, is_data);
     CLASS_MEMBER(HinvControlPlots,bool, is_embedded);
-
+    CLASS_MEMBER(HinvControlPlots,bool, genlevelskip);
 
     double yields_;
     HinvCoreControlPlots *controlplots_;

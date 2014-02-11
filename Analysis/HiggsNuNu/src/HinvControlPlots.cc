@@ -151,6 +151,7 @@ namespace ic {
     channel_ = "nunu";
     is_data_ = false;
     is_embedded_ = false;
+    genlevelskip_ = false;
   }
 
   HinvControlPlots::~HinvControlPlots(){;}
@@ -197,12 +198,17 @@ namespace ic {
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
 
     Met const* met = event->GetPtr<Met>(met_label_);
-    Met const* met_noMuons = event->GetPtr<Met>("metNoMuons");
+    Met const* met_noMuons=0;
+    if(!genlevelskip_) met_noMuons = event->GetPtr<Met>("metNoMuons");
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     
-    std::vector<PFJet*> alljets = event->GetPtrVec<PFJet>("AllpfJetsPFlow");
-    std::sort(alljets.begin(), alljets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::vector<PFJet*> alljets;
+    if(!genlevelskip_){
+      alljets= event->GetPtrVec<PFJet>("AllpfJetsPFlow");
+      std::sort(alljets.begin(), alljets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    }
+    else alljets=event->GetPtrVec<PFJet>("pfJetsPFlow");//cludge to get control plots to work at gen level
     
 
     // Define event properties
@@ -336,9 +342,11 @@ namespace ic {
     // End: HinvHTPlots variables
 
     //Start: Calculating ht things
-    for(int i =0; unsigned(i)<alljets.size();++i){
-      ht+=alljets[i]->vector().Et();
+    if(!genlevelskip_){
+      for(int i =0; unsigned(i)<alljets.size();++i){
+	ht+=alljets[i]->vector().Et();
       mhtVec += alljets[i]->vector();
+      }
     }
     sqrtht=sqrt(ht);
     metet=met->vector().Et();
@@ -350,7 +358,7 @@ namespace ic {
     n_vtx_ = eventInfo->good_vertices();
     
     met_ = met->pt();
-    met_noMuons_ = met_noMuons->pt();
+    if(!genlevelskip_) met_noMuons_ = met_noMuons->pt();
     met_phi_ = met->phi();
     
     n_jets_ = jets.size();
@@ -362,7 +370,7 @@ namespace ic {
       //fill btagging
       for (unsigned iR(0); iR < jets.size(); ++iR){//loop on recojets
 	double lCSV = jets[iR]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-	controlplots_->jCSV_allJets->Fill(lCSV,wt_);
+	if(!genlevelskip_)controlplots_->jCSV_allJets->Fill(lCSV,wt_);
 	if (iR<4)controlplots_->jCSV[iR]->Fill(lCSV,wt_);
       }
 
@@ -463,6 +471,7 @@ namespace ic {
 	PFJet* recotau_status3 = 0;
 	double mindR_status3 = 10;
 	
+	if(!genlevelskip_){
 	for (unsigned iR(0); iR < alljets.size(); ++iR){//loop on reco jets
 	  //match to genjets
 	  if (gentau){
@@ -481,7 +490,7 @@ namespace ic {
 	    }
 	  }
 	}//end of loop on reco jets
-	    
+	}
 	genPlots_->dR_recotau_genjet->Fill(mindR,wt_);
 	genPlots_->dR_recotau_status3tau->Fill(mindR_status3,wt_);
 	
@@ -632,7 +641,7 @@ namespace ic {
   void HinvControlPlots::FillCoreControlPlots() {
     controlplots_->n_vtx->Fill(n_vtx_, wt_);
     controlplots_->met->Fill(met_, wt_);
-    controlplots_->met_noMuons->Fill(met_noMuons_, wt_);
+    if(!genlevelskip_)controlplots_->met_noMuons->Fill(met_noMuons_, wt_);
     controlplots_->met_phi->Fill(met_phi_, wt_);
     controlplots_->n_jets->Fill(n_jets_, wt_);
     controlplots_->n_jetsingap->Fill(n_jetsingap_, wt_);
