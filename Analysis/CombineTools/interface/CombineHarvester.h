@@ -73,6 +73,11 @@ class CombineHarvester {
   CombineHarvester& nus_name(bool cond, std::vector<std::string> const& vec);
   CombineHarvester& nus_type(bool cond, std::vector<std::string> const& vec);
 
+  CombineHarvester& signals();
+  CombineHarvester& backgrounds();
+
+  void Validate();
+
     // int ParsePulls(std::string const& filename);
     // void ApplyPulls(bool use_b_only = false);
     // void WeightSoverB();
@@ -82,7 +87,7 @@ class CombineHarvester {
     // double GetObservedRate();
   double GetUncertainty();
   TH1F GetShape();
-    // TH1F   GetObservedShape();
+  TH1F GetObservedShape();
     // TGraphAsymmErrors GetObservedShapeErrors();
     // std::set<std::string> GetNuisanceSet();
     // bool HasProcess(std::string const& process) const;

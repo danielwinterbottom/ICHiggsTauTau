@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <utility>
+#include <set>
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/range/algorithm_ext/erase.hpp"
@@ -11,6 +12,7 @@
 #include "TDirectory.h"
 #include "TH1.h"
 #include "Utilities/interface/FnRootTools.h"
+#include "Utilities/interface/FnPredicates.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
@@ -440,6 +442,18 @@ TH1F CombineHarvester::GetShape() {
   return shape;
 }
 
+TH1F CombineHarvester::GetObservedShape() {
+  TH1F shape = *((TH1F*)(obs_[0]->shape()));
+  shape.Reset();
+  for (unsigned i = 0; i < obs_.size(); ++i) {
+    TH1F proc_shape = *((TH1F*)(obs_[i]->shape()));
+    double p_rate = obs_[i]->rate();
+    proc_shape.Scale(p_rate);
+    shape.Add(&proc_shape);
+  }
+  return shape;
+}
+
 TH1F CombineHarvester::ShapeDiff(double x, 
     TH1 const* nom, 
     TH1 const* low, 
@@ -527,6 +541,38 @@ CombineHarvester & CombineHarvester::nus_type(bool cond,
     std::vector<std::string> const& vec) {
   FilterContaining(nus_, vec, std::mem_fn(&Nuisance::type), cond);
   return *this;
+}
+
+ CombineHarvester & CombineHarvester::signals() {
+   ic::erase_if(nus_, [&] (std::shared_ptr<Nuisance> val) { return val->process_id() > 0; });
+   ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) { return val->process_id() > 0; });
+   return *this;
+ }
+
+ CombineHarvester & CombineHarvester::backgrounds() {
+   ic::erase_if(nus_, [&] (std::shared_ptr<Nuisance> val) { return val->process_id() <= 0; });
+   ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) { return val->process_id() <= 0; });
+   return *this;
+ }
+
+void CombineHarvester::Validate() {
+  std::set<std::string> bins;
+  for (auto const p : procs_) {
+    bins.insert(p->bin());
+  }
+  for (auto b : bins) {
+    std::cout << "Checking bin: " << b << std::endl;
+    TH1F bkg =  this->shallow_copy().bin(true, {b}).backgrounds().GetShape();
+    TH1F sig =  this->shallow_copy().bin(true, {b}).signals().GetShape();
+    TH1F dat = this->shallow_copy().bin(true, {b}).GetObservedShape();
+    for (unsigned i = 1; i <= dat.GetNbinsX(); ++i) {
+      double y_dat = dat.GetBinContent(i);
+      double y_sig = sig.GetBinContent(i);
+      double y_bkg = bkg.GetBinContent(i);
+      if (y_sig > y_bkg) std::cout << "Histogram bin " << i << " has sig " << y_sig <<
+        ", bkg " << y_bkg << " and data " << y_dat << std::endl;
+    }
+  }
 }
 //  /*
 
@@ -637,19 +683,6 @@ CombineHarvester & CombineHarvester::nus_type(bool cond,
 //    return result;
 //  }
 
-//  CombineHarvester CombineHarvester::signals() const {
-//    CombineHarvester result = *this;
-//    ic::erase_if(result.nuisances_, [&] (Nuisance const& val) { return val.process_id > 0; });
-//    ic::erase_if(result.processes_, [&] (Process const& val) { return val.process_id > 0; });
-//    return result;
-//  }
-
-//  CombineHarvester CombineHarvester::backgrounds() const {
-//    CombineHarvester result = *this;
-//    ic::erase_if(result.nuisances_, [&] (Nuisance const& val) { return val.process_id <= 0; });
-//    ic::erase_if(result.processes_, [&] (Process const& val) { return val.process_id <= 0; });
-//    return result;
-//  }
 
 //  CombineHarvester CombineHarvester::key_match(CategoryKey const & keyval) const {
 //    CombineHarvester result = *this;
