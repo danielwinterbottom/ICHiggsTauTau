@@ -670,6 +670,7 @@ INPUT                 += Analysis/Utilities/interface Analysis/Utilities/src
 INPUT                 += Analysis/docs/Main.md
 INPUT                 += Analysis/docs/GitAndCMSSW.md
 INPUT                 += Analysis/docs/BuildSystem.md
+INPUT                 += Analysis/HiggsTauTau/docs/HiggsToTauTau.md
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
 # also the default input encoding. Doxygen uses libiconv (or the iconv built
