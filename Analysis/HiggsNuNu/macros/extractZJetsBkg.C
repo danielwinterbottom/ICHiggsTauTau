@@ -145,6 +145,7 @@ int extractZJetsBkg(){//main
   bool domuerr = false;
   bool doWeights = false;
   bool verbose = false;
+  bool dooldincorrecteff = false;
 
   double RQCD = 5.626;//Cross-section ratio
   double RQCDerr = 0.023;//Absolute error on cross-section ratio
@@ -234,7 +235,6 @@ int extractZJetsBkg(){//main
       
       //VARIABLES TO STORE EVENT NUMBERS
       events result[nSysts];
-      events resultSplit[nSysts];
       events resultQCD[nSysts];
       events resultEWK[nSysts];
 
@@ -364,37 +364,40 @@ int extractZJetsBkg(){//main
 
 
 	//Calculate result and error
-	result[iSyst].sample="$N_{Z\rightarrow\\mu\\mu}^{Data}$";
-	result[iSyst].number=(nCData.number-nCBkg.number)*nSMC.number/nCMC.number*nGenZMassFiltered.number/nGen.number*RQCD;
-	result[iSyst].stat=result[iSyst].number*(nCData.stat/nCData.number);
-	result[iSyst].syst=result[iSyst].number*sqrt(pow(nCBkg.stat,2)+pow(nSMC.stat/nSMC.number,2)+pow(nCMC.stat/nCMC.number,2));
-	//!!DO R ERROR AND SYSTS
-	std::cout<<result[iSyst].number<<" \pm "<<result[iSyst].stat<<" (stat.) \pm "<<result[iSyst].syst<<" (MC stat.)"<<std::endl;
+	if(dooldincorrecteff){
+	  result[iSyst].sample="$N_{Z\rightarrow\\mu\\mu}^{Data}$";
+	  result[iSyst].number=(nCData.number-nCBkg.number)*nSMC.number/nCMC.number*nGenZMassFiltered.number/nGen.number*RQCD;
+	  result[iSyst].stat=result[iSyst].number*(nCData.stat/nCData.number);
+	  result[iSyst].syst=result[iSyst].number*sqrt(pow(nCBkg.stat,2)+pow(nSMC.stat/nSMC.number,2)+pow(nCMC.stat/nCMC.number,2));
+	  //!!DO R ERROR AND SYSTS
+	  std::cout<<result[iSyst].number<<" \\pm "<<result[iSyst].stat<<" (stat.) \\pm "<<result[iSyst].syst<<" (MC stat.)"<<std::endl;
+	}
+	else{
+	  result[iSyst].sample="$N_{Z\rightarrow\\mu\\mu}^{Data}$";
+	  result[iSyst].number=(nCData.number-nCBkg.number)*(sigmaincmumuQCD*RQCD*nSMCQCD.number/nGenZMassFilteredQCD.number+sigmaincmumuEWK*REWK*nSMCEWK.number/nGenZMassFilteredEWK.number)/(sigmaincmumuQCD*nCMCQCD.number/nGenQCD.number+sigmaincmumuEWK*nCMCEWK.number/nGenQCD.number);
+	  result[iSyst].stat=result[iSyst].number*(nCData.stat/nCData.number);
+	  result[iSyst].syst=result[iSyst].number*sqrt(pow(nCBkg.stat,2)+pow(nSMCQCD.stat/nSMCQCD.number,2)+pow(nSMCEWK.stat/nSMCEWK.number,2)+pow(nCMCQCD.stat/nCMCQCD.number,2)+pow(nCMCEWK.stat/nCMCEWK.number,2)+pow(nGenQCD.stat/nGenQCD.number,2)+pow(nGenEWK.stat/nGenEWK.number,2)+pow(nGenZMassFilteredQCD.stat/nGenZMassFilteredQCD.number,2)+pow(nGenZMassFilteredEWK.stat/nGenZMassFilteredEWK.number,2));
+	  //!!DO R ERROR AND SYSTS
+	  std::cout<<result[iSyst].number<<" \\pm "<<result[iSyst].stat<<" (stat.) \\pm "<<result[iSyst].syst<<" (MC stat.)"<<std::endl;
+	}
 
-	/*resultQCD[iSyst].sample="$N_{Z\rightarrow\\mu\\mu}^{Data}$";
-	resultQCD[iSyst].number=(nCData.number-nCBkg.number)*nSMCQCD.number/nCMC.number*nGenZMassFilteredQCD.number/nGenQCD.number*RQCD;
-	resultQCD[iSyst].stat=resultQCD[iSyst].number*(nCData.stat/nCData.number);
-	resultQCD[iSyst].syst=resultQCD[iSyst].number*sqrt(pow(nCBkg.stat,2)+pow(nSMCQCD.stat/nSMCQCD.number,2)+pow(nCMC.stat/nCMC.number,2));
-	//!!DO R ERROR AND SYSTS
-	std::cout<<resultQCD[iSyst].number<<" \pm "<<resultQCD[iSyst].stat<<" (stat.) \pm "<<resultQCD[iSyst].syst<<" (MC stat.)"<<std::endl;
-
-	resultEWK[iSyst].sample="$N_{Z\rightarrow\\mu\\mu}^{Data}$";
-	resultEWK[iSyst].number=(nCData.number-nCBkg.number)*nSMCEWK.number/nCMC.number*nGenZMassFilteredEWK.number/nGenEWK.number*REWK;
-	resultEWK[iSyst].stat=resultEWK[iSyst].number*(nCData.stat/nCData.number);
-	resultEWK[iSyst].syst=resultEWK[iSyst].number*sqrt(pow(nCBkg.stat,2)+pow(nSMCEWK.stat/nSMCEWK.number,2)+pow(nCMC.stat/nCMC.number,2));
-	//!!DO R ERROR AND SYSTS
-	std::cout<<resultEWK[iSyst].number<<" \pm "<<resultEWK[iSyst].stat<<" (stat.) \pm "<<resultEWK[iSyst].syst<<" (MC stat.)"<<std::endl;*/
-
-
-
-	//Splitting QCD and EWK
-	resultSplit[iSyst].sample="$N_{Z\rightarrow\\mu\\mu}^{Data}$";
-	resultSplit[iSyst].number=(nCData.number-nCBkg.number)*(sigmaincmumuQCD*RQCD*nSMCQCD.number/nGenZMassFilteredQCD.number+sigmaincmumuEWK*REWK*nSMCEWK.number/nGenZMassFilteredEWK.number)/(sigmaincmumuQCD*nCMCQCD.number/nGenQCD.number+sigmaincmumuEWK*nCMCEWK.number/nGenQCD.number);
-	resultSplit[iSyst].stat=resultSplit[iSyst].number*(nCData.stat/nCData.number);
-	resultSplit[iSyst].syst=resultSplit[iSyst].number*sqrt(pow(nCBkg.stat,2)+pow(nSMCQCD.stat/nSMCQCD.number,2)+pow(nSMCEWK.stat/nSMCEWK.number,2)+pow(nCMCQCD.stat/nCMCQCD.number,2)+pow(nCMCEWK.stat/nCMCEWK.number,2)+pow(nGenQCD.stat/nGenQCD.number,2)+pow(nGenEWK.stat/nGenEWK.number,2)+pow(nGenZMassFilteredQCD.stat/nGenZMassFilteredQCD.number,2)+pow(nGenZMassFilteredEWK.stat/nGenZMassFilteredEWK.number,2));
-	//!!DO R ERROR AND SYSTS
-	std::cout<<resultSplit[iSyst].number<<" \pm "<<resultSplit[iSyst].stat<<" (stat.) \pm "<<resultSplit[iSyst].syst<<" (MC stat.)"<<std::endl;
-
+	if(verbose){
+	  double sigmaincnunuewk=sigmaincmumuEWK*REWK;
+	  double effsvbfewk=nSMCEWK.number/nGenZMassFilteredEWK.number;
+	  double numewk = sigmaincnunuewk*effsvbfewk;
+	  double sigmaincnunuqcd=sigmaincmumuQCD*RQCD;
+	  double effsvbfqcd=nSMCQCD.number/nGenZMassFilteredQCD.number;
+	  double numqcd = sigmaincnunuqcd*effsvbfqcd;
+	  std::cout<<"sigma(nunu)_ewk: "<<sigmaincnunuewk<<" eff^VBF_S(ewk): "<<effsvbfewk<<" sigma(nunu)_qcd: "<<sigmaincnunuqcd<<" eff^VBF_S(qcd): "<<effsvbfqcd<<std::endl; 
+	  std::cout<<"ewk numerator cont.: "<<numewk<<" qcd numerator cont.: "<<numqcd<<std::endl;
+	  
+	  double effcvbfewk=nCMCEWK.number/nGenEWK.number;
+	  double denewk = sigmaincmumuEWK*effcvbfewk;
+	  double effcvbfqcd=nCMCQCD.number/nGenQCD.number;
+	  double denqcd = sigmaincmumuQCD*effcvbfqcd;
+	  std::cout<<"sigma(mumu)_ewk: "<<sigmaincmumuEWK<<" eff^VBF_C(ewk): "<<effcvbfewk<<" sigma(mumu)_qcd: "<<sigmaincmumuQCD<<" eff^VBF_C(qcd): "<<effcvbfqcd<<std::endl; 
+	  std::cout<<"ewk denominator cont.: "<<denewk<<" qcd denominator cont.: "<<denqcd<<std::endl;
+	}
       }//end loop on systs
 
       if(dojes){
