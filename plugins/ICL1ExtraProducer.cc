@@ -145,10 +145,12 @@ void ICL1ExtraProducer<T>::fillDescriptions(edm::ConfigurationDescriptions& desc
 
 //define this as a plug-in
 typedef ICL1ExtraProducer<l1extra::L1MuonParticle> ICL1ExtraMuonProducer;
+typedef ICL1ExtraProducer<l1extra::L1JetParticle> ICL1ExtraJetProducer;
 typedef ICL1ExtraProducer<l1extra::L1EtMissParticle> ICL1ExtraEtMissProducer;
 typedef ICL1ExtraProducer<l1extra::L1EmParticle> ICL1ExtraEmParticleProducer;
 typedef ICL1ExtraProducer<pat::Jet> ICPatJetCandidateProducer;
 DEFINE_FWK_MODULE(ICL1ExtraMuonProducer);
 DEFINE_FWK_MODULE(ICL1ExtraEtMissProducer);
+DEFINE_FWK_MODULE(ICL1ExtraJetProducer);
 DEFINE_FWK_MODULE(ICL1ExtraEmParticleProducer);
 DEFINE_FWK_MODULE(ICPatJetCandidateProducer);

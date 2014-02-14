@@ -427,6 +427,28 @@ process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICL1ExtraEmParticleProduce
   maxEta = cms.double(2.2)
   )
 
+process.icL1ExtraCentralJetProducer = cms.EDProducer('ICL1ExtraJetProducer',
+  branchName = cms.untracked.string("l1extraCentralJets"),
+  inputLabel = cms.InputTag("l1extraParticles","Central","RECO"),
+  minPt = cms.double(0.0),
+  maxEta = cms.double(999.0)
+)
+
+process.icL1ExtraForwardJetProducer = cms.EDProducer('ICL1ExtraJetProducer',
+  branchName = cms.untracked.string("l1extraForwardJets"),
+  inputLabel = cms.InputTag("l1extraParticles","Forward","RECO"),
+  minPt = cms.double(0.0),
+  maxEta = cms.double(999.0),
+)
+
+process.icL1ExtraHTTProducer = cms.EDProducer('ICL1ExtraHTTProducerModule',
+  branchName = cms.untracked.string("l1extraHTT"),
+  inputLabel = cms.InputTag("l1extraParticles","MHT","RECO"),
+  minPt = cms.double(0.0),
+  maxEta = cms.double(999.0),
+)
+
+
 ## Only add HLT tau simulation in MC
 if not isData:
   process.icSoftLeptonSequence += cms.Sequence(
@@ -450,6 +472,9 @@ process.icSoftLeptonSequence += cms.Sequence(
     process.icL1ExtraMETProducer
     +process.icL1ExtraMuonsProducer
     +process.icL1ExtraEmIsolatedProducer
+    +process.icL1ExtraHTTProducer
+    +process.icL1ExtraCentralJetProducer
+    +process.icL1ExtraForwardJetProducer
     +process.patmetNoHF
     +process.icMetNoHFProducer
     )
