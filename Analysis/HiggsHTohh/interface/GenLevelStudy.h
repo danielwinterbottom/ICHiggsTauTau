@@ -28,7 +28,7 @@ class GenLevelStudy : public ModuleBase {
   //CLASS_MEMBER(GenLevelStudy, int, count_t1)
   //CLASS_MEMBER(GenLevelStudy, int, count_t2)
   CLASS_MEMBER(GenLevelStudy, int, count_3)
-  //CLASS_MEMBER(GenLevelStudy, int, count_4)
+  CLASS_MEMBER(GenLevelStudy, int, count_4)
   CLASS_MEMBER(GenLevelStudy, int, nev)
 
   bool os_;

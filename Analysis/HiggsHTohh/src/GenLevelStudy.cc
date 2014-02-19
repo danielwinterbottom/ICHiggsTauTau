@@ -8,6 +8,7 @@
 #include "Math/SMatrix.h"
 #include "Math/SVector.h"
 #include "TVector3.h"
+#include "Math/VectorUtil.h"
 
 namespace ic {
 
@@ -47,6 +48,8 @@ namespace ic {
         hset->Create("tt_deta", 60, 0, 6);
         hset->Create("mH", 400, 100, 500);
         hset->Create("mttbb", 400, 100, 500);
+        hset->Create("DR_btau",100 , 0, 10);
+
     }
     hset->Create("bcsv_1",25, 0,1);
     hset->Create("bcsv_2",25, 0,1);
@@ -54,15 +57,17 @@ namespace ic {
     hset->Create("gen_bcsv_2",25, 0,1);
     hset->Create("n_genjets", 10, 0, 10);
     hset->Create("n_prebjets", 10, 0, 10);
+    hset->Create("csv_real",25, 0,1);
+    hset->Create("csv_fake",25, 0,1);
 
-    int count_match_any_=0;
-    int count_b1_=0;
-    int count_b2_=0;
-    //int count_t1_=0;
-    //int count_t2_=0;
-    int count_3_=0;
-    //int count_4_=0;
-    int nev_=0;
+    count_match_any_=0;
+    count_b1_=0;
+    count_b2_=0;
+    //count_t1_=0;
+    //count_t2_=0;
+    count_3_=0;
+    count_4_=0;
+    nev_=0;
     
     return 0;
   }
@@ -95,8 +100,12 @@ namespace ic {
   std::vector<GenParticle const* > tau;
   std::vector<GenParticle const* > mu;
   std::vector<GenParticle const* > bjet;
+  std::vector<GenJet const* > genjet_bjet;
   std::map<GenParticle const*, std::vector<int> >::iterator it;
-  
+
+ 
+      
+  //std::cout << genjet_bjet.size() << std::endl;    
   for(it=higgses.begin(); it!=higgses.end(); ++it) {
       higgs.push_back((*it).first);
   }
@@ -128,26 +137,30 @@ for(it=bjets.begin(); it!=bjets.end(); ++it) {
   
   if(make_plots_) hset->Fill("mH", (higgs[1]->vector() + higgs[0]->vector()).M()); 
   if(make_plots_) hset->Fill("mttbb", (tau[1]->vector() + tau[0]->vector() + bjet[1]->vector() + bjet[0]->vector()).M()); 
+  if(make_plots_) hset->Fill("DR_btau", (DR(bjet[0], tau[0]))); 
+  if(make_plots_) hset->Fill("DR_btau", (DR(bjet[1], tau[0]))); 
+  if(make_plots_) hset->Fill("DR_btau", (DR(bjet[0], tau[1]))); 
+  if(make_plots_) hset->Fill("DR_btau", (DR(bjet[1], tau[1]))); 
 
   //End here if just using the module to make gen plots  
   if(!check_match_) return 0;
+  
 
   std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
   CompositeCandidate const* ditau = ditau_vec.at(0);
   Candidate const* lep1 = ditau->GetCandidate("lepton1");
-  Candidate const* lep2 = ditau->GetCandidate("lepton2");
+  //Candidate const* lep2 = ditau->GetCandidate("lepton2");
   std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
   std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
   std::vector<PFJet*> lowpt_jets = jets;
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
   std::vector<PFJet*> prebjets = lowpt_jets;
-  //ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-  ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 4.7));
+  ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+  //ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 10.0, 4.7));
   Met const* met = event->GetPtr<Met>(met_label_);
   std::vector<PFJet*> med_bjets = prebjets;
   ic::erase_if(med_bjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
   std::vector<PFJet*> loose_bjets = prebjets;
-  //ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
   std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
   //ic::erase_if(prebjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
   
@@ -223,6 +236,10 @@ for(it=bjets.begin(); it!=bjets.end(); ++it) {
     match_any_jet_1_=false; 
     match_any_jet_2_=false;
     std::vector<ic::PFJet*> matches;
+    PFJet* jet1_match=NULL;
+    PFJet* jet2_match=NULL;
+    int index1=-1, index2=-1;
+    //Event pre-selection
     //if(os_ && mt_1_<30 && prebjets.size()>1 && med_bjets.size()>1) {
     //if(os_ && mt_1_<30 && prebjets.size()>1 && med_bjets.size()>0) {
     if(os_ && mt_1_<30 && prebjets.size()>1 ) {
@@ -242,15 +259,26 @@ for(it=bjets.begin(); it!=bjets.end(); ++it) {
           hset->Fill("gen_bcsv_1",matches[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags") );
           hset->Fill("gen_bcsv_2",matches[1]->GetBDiscriminator("combinedSecondaryVertexBJetTags") );
         }
+      
+      //Find the gen jets corresponding to the h->bb
+      for(unsigned i=0; i<gen_jets.size(); i++) { 
+        if((DR(gen_jets[i], bjet[0])<0.5) ) {
+          genjet_bjet.push_back(gen_jets[i]);
+         }
+        else if((DR(gen_jets[i], bjet[1])<0.5) ) {
+          genjet_bjet.push_back(gen_jets[i]);
+        }
+      }
+      if(!(genjet_bjet.size()==2)) {std::cout << genjet_bjet.size() << std::endl;}
 
         nev_++;
         //Check matching of selected b jets
         match_b_1_ = ( DR(prebjets[0], bjet[0])<0.5 && DR(prebjets[1], bjet[1])<0.5);
         if(match_b_1_) count_b1_++;
-        match_b_2_ = ( (DR(prebjets[1], bjet[0])<0.55&& DR(prebjets[0], bjet[1])<0.5));
+        match_b_2_ = ( (DR(prebjets[1], bjet[0])<0.5 && DR(prebjets[0], bjet[1])<0.5));
         if(match_b_2_) count_b2_++;
         //Check matching of candidate ditau pair
-       /* match_t_1_ = ( DR(lep1, tau[0])<0.5 && DR(lep2, tau[1])<0.5);
+        /*match_t_1_ = ( DR(lep1, tau[0])<0.5 && DR(lep2, tau[1])<0.5);
         if(match_t_1_) count_t1_++;
         match_t_2_ = ( DR(lep1, tau[1])<0.5 && DR(lep2, tau[0])<0.5);
         if(match_t_2_) count_t2_++;
@@ -271,10 +299,14 @@ for(it=bjets.begin(); it!=bjets.end(); ++it) {
               if((DR(prebjets[i], bjet[0])<0.5) )
               {
                   match_any_jet_1_=true;
+                  jet1_match=prebjets[i];
+                  index1=i;
               }
               if((DR(prebjets[i], bjet[1])<0.5) )
               {
                   match_any_jet_2_=true;
+                  jet2_match=prebjets[i];
+                  index2=i;
               }
               for(unsigned j=0; j<tau.size(); j++) {
                  if(DR(prebjets[i], tau[j])<0.5)
@@ -286,9 +318,31 @@ for(it=bjets.begin(); it!=bjets.end(); ++it) {
             }
             if(!(match_any_jet_1_ && match_any_jet_2_)) {    
                count_match_any_++;
+               std::cout << "=================================" << std::endl;
+            } else { 
+              if(genjet_bjet.size()==2) {
+                count_4_++;
+                if(match_any_jet_1_ && index1>1) {
+                  hset->Fill("csv_real",jet1_match->GetBDiscriminator("combinedSecondaryVertexBJetTags")); 
+                  if(DR(jet1_match,prebjets[0])<0.1) {
+                    hset->Fill("csv_fake",prebjets[1]->GetBDiscriminator("combinedSecondaryVertexBJetTags"));   
+                  } else {
+                    hset->Fill("csv_fake",prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags"));  
+                  }
+                }
+                if(match_any_jet_2_ && index2>1) {
+                  hset->Fill("csv_real",jet2_match->GetBDiscriminator("combinedSecondaryVertexBJetTags")); 
+                  if(DR(jet2_match,prebjets[0])<0.1) {
+                    hset->Fill("csv_fake",prebjets[1]->GetBDiscriminator("combinedSecondaryVertexBJetTags"));   
+                  } else {
+                    hset->Fill("csv_fake",prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags"));  
+                  }
+                }                   
+                
+              }
             }
-            std::cout << "=================================" << std::endl;
-        }
+          }
+        
         //Print event info for unmatched taus
         /*if(!match_t_1_ && !match_t_2_) {
             std::cout << "=================================" << std::endl;
@@ -301,7 +355,8 @@ for(it=bjets.begin(); it!=bjets.end(); ++it) {
   }
   int GenLevelStudy::PostAnalysis() {
     if(check_match_) std::cout << "Number of events: "<< nev_ << ", count 1: " << count_b1_ << ", count 2: " << count_b2_ << ", successful fraction: "
-        << (double(count_b1_) + double(count_b2_))/double(nev_) << ", tau matches: " << count_3_ << ", tau matches in jet pair: " << /*count_4_ <<*/ ", nevents with b jet missing from collection: " << count_match_any_ << std::endl; 
+        << (double(count_b1_) + double(count_b2_))/double(nev_) << ", tau matches: " << count_3_ << ", tau matches in jet pair: " << /*count_4_ <<*/ ", nevents with b jet missing from collection: " << count_match_any_ 
+        << ", Number of events with h->bb in gen jets: " << count_4_<< std::endl; 
     //if(check_match_) std::cout << "Number of events: "<< nev_ << ", count 1: " << count_t1_ << ", count 2: " << count_t2_ << ", successful fraction: "
     //    << (double(count_t1_) + double(count_t2_))/double(nev_) <<std::endl ;
     return 0;
