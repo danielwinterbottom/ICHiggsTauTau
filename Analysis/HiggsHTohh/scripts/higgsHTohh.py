@@ -256,15 +256,21 @@ signal_mc = [ ]
 signal_mc_ww = [ ]
 
 if options.proc_mssm or options.proc_all:
-  masses = ['260','300','350']
-  if not options.do_2011: masses += ['260','300','350']
+  Hmasses = ['260','300','350']
+  Amasses = ['250','300','350']
   #if options.do_2011 and ERA=='Paper' : masses += ['90','95','100','105','150','155','160']
-  if options.short_signal: masses = ['300']
-  for mass in masses :
+  if options.short_signal: Hmasses = ['300']
+  if options.short_signal: Amasses = ['300']
+  for Hmass in Hmasses :
     signal_mc += [
-      'GluGluToHTohhTo2Tau2B_mH-'+mass,
-      'GluGluToAToZhToLLBB_mA-'+mass,
+      'GluGluToHTohhTo2Tau2B_mH-'+Hmass
     ]
+  print signal_mc  
+  for Amass in Amasses :
+    signal_mc += [
+      'GluGluToAToZhToLLBB_mA-'+Amass
+    ]
+  print signal_mc  
   #if  not options.do_2011:
   #  ww_masses = ['110','115','120','125','130','135','140','145','150','155','160']
   #  if options.short_signal: ww_masses = ['125']

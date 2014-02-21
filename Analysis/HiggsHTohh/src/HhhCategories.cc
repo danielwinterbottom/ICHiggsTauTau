@@ -231,6 +231,7 @@ namespace ic {
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
+    //Use prebjet collection for candidate jets for h->bb. Sort by CSV discriminator
     std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
 
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
@@ -557,90 +558,13 @@ namespace ic {
     SetPassCategory("inclusive");
     FillCoreControlPlots("inclusive");
 
-    // VBF Selection
-    // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 500. && jdeta_ > 3.5) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("vbf");
-        FillCoreControlPlots("vbf");
-      }
-    }
-
-
-    // VBF Selection
-    // In the em channel, additionally apply b-jet veto
-    // if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 800. && jdeta_ > 4.0) {
-    //   if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-    //     SetPassCategory("vbf_tight");
-    //   }
-    // }
-
-    // Tau-tau-like VBF Selection
-    // In the em channel, additionally apply b-jet veto
-    // if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 250. && jdeta_ > 2.5) {
-    //   bool lepton_pt = pt_1_ > 30.0 && pt_2_ > 45.0;
-    //   bool pt_50_jet = jets[0]->pt() > 50.0 && fabs(jets[0]->eta()) < 3.0;
-    //   bool hpt = ((ditau->vector() + met->vector()).pt()) > 110.0;
-    //   if (lepton_pt && pt_50_jet && hpt) SetPassCategory("tautau_vbf");
-    // }
-
-    // VBF Selection with no CJV, used for VBF category Fakes estimate in em
-    if (n_jets_ >= 2 && mjj_ > 500. && jdeta_ > 3.5) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_no_cjv");
-    }
-
-    // Loose VBF Selection
-    // Used for background shape estimation in VBF category
-    if (n_jets_ >= 2 && n_jetsingap_ == 0 && mjj_ > 200. && jdeta_ > 2.0) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose");
-    }
-    
-    // Loose VBF Selection with low pT Jet Requirement
-    // Used for background shape of QCD in VBF Category
-    if (n_lowpt_jets_ >= 2 && n_jetsingap_lowpt_ == 0 && mjj_lowpt_ > 200. && jdeta_lowpt_ > 2.0) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) SetPassCategory("vbf_loose_jets20");
-    }
-
-    // Twojet Selection
-    // In the em channel, additionally apply b-jet veto
-    if (n_jets_ >= 2) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("twojet");
-        FillCoreControlPlots("twojet");
-      }
-    }
-
-    // 1-jet (note no vbf veto: this is really for "inclusive" control plots)
-    if (n_jets_ >= 1) {
-      if ( (channel_ == channel::em) ? (n_bjets_ == 0) : true) {
-        SetPassCategory("1jet");
-        FillCoreControlPlots("1jet");
-      }
-    }
-
-    // 1-jet High Category
-    // In the et channel, apply a MET > 30 cut
-    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ > pt2_split && n_bjets_ == 0) {
-      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) {
-        SetPassCategory("1jet_high");
-        FillCoreControlPlots("1jet_high");
-      }
-    }
-
-    // 1-jet Low Category
-    // In the et channel, apply a MET > 30 cut
-    if (!PassesCategory("vbf") && n_jets_ >= 1 && pt_2_ <= pt2_split && n_bjets_ == 0) {
-      if ( (channel_ == channel::et || channel_ == channel::etmet) ? (met_ > 30.) : true) {
-        SetPassCategory("1jet_low");
-        FillCoreControlPlots("1jet_low");
-      }
-    }
-    
 
     // auto lowpt_jets_copy = lowpt_jets;
     // ic::erase_if(lowpt_jets_copy,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     // if (lowpt_jets_copy.size() >= 2 && n_bjets_ >= 1) SetPassCategory("sasha");
-    if (n_jets_ <= 1 && prebjets.size() > 0) {
+   
+   //Some categories for MSSM, leave in for now
+   if (n_jets_ <= 1 && prebjets.size() > 0) {
       SetPassCategory("prebtag");
       FillCoreControlPlots("prebtag");
     }

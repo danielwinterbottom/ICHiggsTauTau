@@ -862,13 +862,21 @@ int main(int argc, char* argv[]){
     
     for (auto m : mssm_masses) {
             HhhAnalysis::PrintValue("ggHTohh"+m, hmap["ggHTohh"+m].second);
+            HhhAnalysis::PrintValue("ggAToZh"+m, hmap["ggAToZh"+m].second);
             HhhAnalysis::Value total_bkr;
-            total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["TT"].second);
-            total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["VV"].second);
-            total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["ZLL"].second);
-            total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["ZTT"].second);
-            total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["W"].second);
-            total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["QCD"].second);
+            if(channel_str == "et" || channel_str == "mt") {
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["TT"].second);
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["VV"].second);
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["ZLL"].second);
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["ZTT"].second);
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["W"].second);
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["QCD"].second);
+            } else if(channel_str == "em") {
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["ttbar"].second);
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["EWK"].second);
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["Ztt"].second);
+                total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["Fakes"].second);
+            }
             double total=total_bkr.first;
             double signal=(hmap["ggHTohh"+m].second).first;
             std::cout << "s/sqrt(b): " << signal/sqrt(total) << std::endl;

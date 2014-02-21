@@ -298,7 +298,6 @@ namespace ic {
     for (auto m : masses) {
       sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m);
       sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
-     // sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
     }
   }
 
