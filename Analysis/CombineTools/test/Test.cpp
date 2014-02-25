@@ -3,6 +3,8 @@
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "TH1F.h"
+#include "boost/filesystem.hpp"
+#include "boost/regex.hpp"
 
 int main() {
   // ch::Observation obs;
@@ -13,6 +15,18 @@ int main() {
 
   ch::CombineHarvester h_7;
   ch::CombineHarvester h_8;
+
+  boost::filesystem::path datacard_folder("htt/125");
+  boost::filesystem::directory_iterator dir_it(datacard_folder);
+  boost::regex datacard_rgx_7TeV(".*_7TeV.txt");
+  boost::regex datacard_rgx_8TeV(".*_8TeV.txt");
+  for (; dir_it != boost::filesystem::directory_iterator(); ++dir_it) {
+    std::string path = dir_it->path().filename().string();
+    if (boost::regex_match(path, datacard_rgx_7TeV)) {
+      std::cout << "Parsing datacard: " << dir_it->path().string() << std::endl;
+      // h_7.ParseDatacard(dir_it->path().string());
+    }
+  }
 
   h_7.ParseDatacard("htt/125/htt_mt_1_7TeV.txt", "htt", "7TeV", "mt", 1, "125");
   h_7.ParseDatacard("htt/125/htt_mt_2_7TeV.txt", "htt", "7TeV", "mt", 2, "125");
@@ -94,6 +108,34 @@ int main() {
   h_8.ParseDatacard("htt/125/vhtt_6_8TeV.txt", "vhtt", "8TeV", "vhtt", 6, "125");
   h_8.ParseDatacard("htt/125/vhtt_7_8TeV.txt", "vhtt", "8TeV", "vhtt", 7, "125");
   h_8.ParseDatacard("htt/125/vhtt_8_8TeV.txt", "vhtt", "8TeV", "vhtt", 8, "125");
+
+  /*
+  SMHiggsXSTool xs_tool;
+  
+
+  // Scaling cross section
+  auto masses = h.get_set_from_procs<string>(&Process::mass);
+  auto signals = h.shallow_copy().signals().get_set_from_procs<string>(&Process::name);
+
+  for (auto m : masses) {
+    for (auto s : signals) {
+      h.shallow_copy().mass(true, m).process(true, {s})
+        .scale(xs_tool.get_xsec({s},m)*xs_tool.get_br({"tt"},m));  
+    }
+  }
+
+  // mergeing bbb
+  auto bins = h.get_set_from_procs<string>(&Process::bin);
+  for (auto b : bins) {
+    CombineHarvester tmp = h.shallow_copy().process("true",{"W","QCD","TT"});
+    // with direct acess of to elements
+
+  }
+
+
+
+
+  */
 
   std::cout << "---- 7 TeV ----" << std::endl;
   h_7.Validate();
