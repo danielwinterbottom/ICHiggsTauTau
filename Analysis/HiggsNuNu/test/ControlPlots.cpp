@@ -334,6 +334,7 @@ int main(int argc, char* argv[]){
   files.push_back("MC_DY2JetsToLL");
   files.push_back("MC_DY3JetsToLL");
   files.push_back("MC_DY4JetsToLL");
+  files.push_back("MC_DYJetsToLL_PtZ-100-madgraph");//High pt sample
   files.push_back("MC_ZJetsToNuNu_100_HT_200");
   files.push_back("MC_ZJetsToNuNu_200_HT_400");
   files.push_back("MC_ZJetsToNuNu_400_HT_inf");
@@ -342,7 +343,7 @@ int main(int argc, char* argv[]){
   files.push_back("MC_GJets-HT-400ToInf-madgraph");
   files.push_back("MC_VBF_HToZZTo4Nu_M-120");
   files.push_back("MC_EWK-Z2j");
-  files.push_back("MC_EWK-Z2jiglep");
+  //files.push_back("MC_EWK-Z2jiglep");
   files.push_back("MC_EWK-W2jminus_enu");
   files.push_back("MC_EWK-W2jplus_enu");
   files.push_back("MC_EWK-W2jminus_munu");
