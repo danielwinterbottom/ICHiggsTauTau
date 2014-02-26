@@ -16,10 +16,13 @@ class HinvZDecay : public ModuleBase {
     unsigned countStatus3_;
     double minMll_;
     double maxMll_;
+    bool doptinstead_;
 
  public:
+/*     HinvZDecay(std::string const& name, unsigned flavour, */
+/* 	       double minMll=60., double maxMll=120.); */
     HinvZDecay(std::string const& name, unsigned flavour,
-	       double minMll=60., double maxMll=120.);
+	       double minMll=60., double maxMll=120.,bool doptinstead=false);
     virtual ~HinvZDecay();
     
     virtual int PreAnalysis();

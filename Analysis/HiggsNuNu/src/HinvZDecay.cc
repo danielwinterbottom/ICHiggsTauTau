@@ -4,15 +4,26 @@
 
 namespace ic {
 
+//   HinvZDecay::HinvZDecay(std::string const& name,
+// 			 unsigned flavour,
+// 			 double minMll, 
+// 			 double maxMll) : ModuleBase(name) {
+//     flavour_ = flavour;
+//     minMll_ = minMll;
+//     maxMll_ = maxMll;
+//     countStatus3_ = 0;
+//     doptinstead_ = false;
+//   }
+
   HinvZDecay::HinvZDecay(std::string const& name,
 			 unsigned flavour,
 			 double minMll, 
-			 double maxMll) : ModuleBase(name) {
+			 double maxMll, bool doptinstead) : ModuleBase(name) {
     flavour_ = flavour;
     minMll_ = minMll;
     maxMll_ = maxMll;
     countStatus3_ = 0;
-    
+    doptinstead_ = doptinstead;
   }
 
   HinvZDecay::~HinvZDecay() {
@@ -59,9 +70,22 @@ namespace ic {
     
     if (lepplus && lepminus) {
       double mass = (lepplus->vector()+lepminus->vector()).M();
+      double pt = (lepplus->vector()+lepminus->vector()).pt();
       //std::cout << " -- Found two leptons with mass = " << mass << std::endl;
-      if (mass > minMll_ && mass < maxMll_){
-	return 0;
+      std::string modname=this->ModuleName();
+      //Diagnostic plots if you want them
+      //TFileDirectory const& dir = fs_->mkdir(("Zmass_"+modname).c_str());
+      //zmass = dir.make<TH1F>("zmass","zmass",1000,0.,1000.);
+
+      if(!doptinstead_){
+	if (mass > minMll_ && mass < maxMll_){
+	  return 0;
+	}
+      }
+      else{
+	if (pt > minMll_ && pt < maxMll_){
+	  return 0;
+	}
       }
     }
  

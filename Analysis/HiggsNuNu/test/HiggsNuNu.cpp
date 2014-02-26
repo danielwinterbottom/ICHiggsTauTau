@@ -63,6 +63,7 @@ int main(int argc, char* argv[]){
   string output_folder;           // Folder to write the output in
   bool do_skim;                   // For making skimmed ntuples
   bool do_gensteps;               // For getting numbers of events at gen level
+  bool doincludehighptz;          // For including high pt z sample
   string skim_path = "";          // Local folder where skimmed ntuples should be written
 
   string era_str;                 // Analysis data-taking era
@@ -138,6 +139,7 @@ int main(int argc, char* argv[]){
     ("output_folder",       po::value<string>(&output_folder)->default_value(""))
     ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
     ("do_gensteps",         po::value<bool>(&do_gensteps)->default_value(false))
+    ("doincludehighptz",    po::value<bool>(&doincludehighptz)->default_value(false))
     ("skim_path",           po::value<string>(&skim_path)->default_value(""))
     ("era",                 po::value<string>(&era_str)->required())
     ("mc",                  po::value<string>(&mc_str)->required())
@@ -942,8 +944,8 @@ int main(int argc, char* argv[]){
   //else if (wstream == "tautau") lFlavour = 15;
   //do only muons for Znunu estimate...
   HinvZDecay ZmassFilter = HinvZDecay("ZmassFilter",13,60,120);
-  HinvZDecay ZmassPreFilter = HinvZDecay("ZmassFilter",13,0,9999999);
-
+  HinvZDecay ZmassPreFilter = HinvZDecay("ZmasspreFilter",13,0,9999999);
+  HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,100,true);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
@@ -1363,6 +1365,20 @@ int main(int argc, char* argv[]){
 	  output_name.find("EWK-W2j") != output_name.npos) {
 	if (wstream != "nunu") analysis.AddModule(&WtoLeptonFilter);
       }
+      if (!do_skim)       {
+	//Put 100 GeV gen level cut on inclusive DY samples
+	analysis.AddModule(&pileupWeight);
+	analysis.AddModule(&pileupWeight_up);
+	analysis.AddModule(&pileupWeight_down);
+	//just apply W and Z weights
+	analysis.AddModule(&xsWeights);
+	//Z pt <100 GeV cut for inclusive DY samples
+	if(doincludehighptz && output_name.find("JetsToLL") != output_name.npos && output_name.find("PtZ-100-madgraph") == output_name.npos && output_name.find("DYJJ01") == output_name.npos){
+	  analysis.AddModule(&ZlowmassFilter);
+	}
+
+
+      }
       if(!do_skim){
 	if(do_gensteps){
 	  if (ignoreLeptons){
@@ -1378,13 +1394,9 @@ int main(int argc, char* argv[]){
 	    analysis.AddModule(&controlPlots_genzmassfiltered);
 	  }
 	}
-      }
-      if (!do_skim)       {
-	analysis.AddModule(&pileupWeight);
-	analysis.AddModule(&pileupWeight_up);
-	analysis.AddModule(&pileupWeight_down);
-	//just apply W and Z weights
-	analysis.AddModule(&xsWeights);
+	else if(channel == channel::nunuiglep){
+	  analysis.AddModule(&ZmassFilter);
+	}
       }
     }
     else if(is_data && !do_skim  && do_gensteps){
@@ -1456,6 +1468,8 @@ int main(int argc, char* argv[]){
 
     //jet pair production before plotting
      analysis.AddModule(&jjPairProducer);
+
+
 
      //plot before cutting
      analysis.AddModule(&controlPlots_hlt);
