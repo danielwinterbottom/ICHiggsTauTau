@@ -860,6 +860,12 @@ int main(int argc, char* argv[]){
 	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", ""); 
     
+    for (auto m : sm_masses) {
+            HhhAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
+            HhhAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
+            HhhAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
+    }
+
     for (auto m : mssm_masses) {
             HhhAnalysis::PrintValue("ggHTohh"+m, hmap["ggHTohh"+m].second);
             HhhAnalysis::PrintValue("ggAToZh"+m, hmap["ggAToZh"+m].second);

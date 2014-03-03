@@ -149,6 +149,23 @@ namespace ic {
     alias_map_["anyjet_jpt1_30_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && n_jets>=1 )";
     alias_map_["anyjet_jpt1_40_jpt2_30_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && n_jets>=2 && jpt_1>40)";
     alias_map_["anyjet_jpt1_40_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && jpt_1>40)";
+   
+    // Attempt at exclusive categories
+    alias_map_["excl_jpt1_20_jpt2_20_no-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679)";
+    alias_map_["excl_jpt1_20_jpt2_20_med-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679)";
+    alias_map_["excl_jpt1_20_jpt2_20_twomed-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
+    
+    alias_map_["excl_jpt1_30_jpt2_20_no-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
+    alias_map_["excl_jpt1_30_jpt2_20_med-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
+    alias_map_["excl_jpt1_30_jpt2_20_twomed-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
+ 
+    alias_map_["excl_jpt1_40_jpt2_30_no-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
+    alias_map_["excl_jpt1_40_jpt2_30_med-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
+    alias_map_["excl_jpt1_40_jpt2_30_twomed-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
+    
+    alias_map_["excl_jpt1_40_jpt2_20_no-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>40 || prebjetpt_2>40))";
+    alias_map_["excl_jpt1_40_jpt2_20_med-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>40 || prebjetpt_2>40))";
+    alias_map_["excl_jpt1_40_jpt2_20_twomed-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>40 || prebjetpt_2>40))";
     
     // Selection control regions
     // Sideband region for OS W+jets extrapolation
@@ -264,9 +281,9 @@ namespace ic {
       sample_names_.push_back("GluGluToHToTauTau_M-"+m);
       sample_names_.push_back("VBF_HToTauTau_M-"+m);
       sample_names_.push_back("WH_ZH_TTH_HToTauTau_M-"+m);
-      sample_names_.push_back("WH_HToTauTau_M-"+m);
+      //sample_names_.push_back("WH_HToTauTau_M-"+m);
       // sample_names_.push_back("TTH_HToTauTau_M-"+m);
-      sample_names_.push_back("ZH_HToTauTau_M-"+m);
+      //sample_names_.push_back("ZH_HToTauTau_M-"+m);
     }
   }
   void HhhAnalysis::AddHWWSignalSamples(std::vector<std::string> masses) {
@@ -658,9 +675,9 @@ namespace ic {
       hmap["ggH"+infix+m+postfix] = this->GenerateSignal("GluGluToHToTauTau_M-"+m,    var, sel, cat, wt, fixed_xs);
       hmap["qqH"+infix+m+postfix] = this->GenerateSignal("VBF_HToTauTau_M-"+m,        var, sel, cat, wt, fixed_xs);
       hmap["VH"+infix+m+postfix]  = this->GenerateSignal("WH_ZH_TTH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
-      hmap["WH"+infix+m+postfix]  = this->GenerateSignal("WH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+      //hmap["WH"+infix+m+postfix]  = this->GenerateSignal("WH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
       // hmap["ttH"+infix+m+postfix] = this->GenerateSignal("TTH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
-      hmap["ZH"+infix+m+postfix]  = this->GenerateSignal("ZH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
+      //hmap["ZH"+infix+m+postfix]  = this->GenerateSignal("ZH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
     }
   }
   

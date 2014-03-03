@@ -75,6 +75,9 @@ parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
 parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False,
                   help="Process signal MSSM mc samples")
 
+parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
+                  help="Process SM 125 samples")
+
 parser.add_option("--all", dest="proc_all", action='store_true', default=False,
                   help="Process all samples")
 
@@ -116,8 +119,8 @@ if options.do_2011:
 
 ### Do some validation of the input
 helpMsg = "Run 'higgsHTohh.py -h' for help."
-if not (options.proc_data or options.proc_bkg  or options.proc_mssm or options.proc_all):
-  print 'Error, must run script with a least one of --data, --bkg, --mssm, --all. ' + helpMsg
+if not (options.proc_data or options.proc_bkg  or options.proc_mssm or options.proc_all or options.proc_sm):
+  print 'Error, must run script with a least one of --data, --bkg, --mssm, --sm, --all. ' + helpMsg
   sys.exit(1)
 if not channels:
   print 'Error, no channels specified. ' + helpMsg
@@ -265,12 +268,19 @@ if options.proc_mssm or options.proc_all:
     signal_mc += [
       'GluGluToHTohhTo2Tau2B_mH-'+Hmass
     ]
-  print signal_mc  
   for Amass in Amasses :
     signal_mc += [
       'GluGluToAToZhToLLBB_mA-'+Amass
     ]
-  print signal_mc  
+if options.proc_sm : 
+  hmasses = ['125']
+  for hmass in hmasses : 
+    signal_mc += [
+      'GluGluToHToTauTau_M-'+hmass,
+      'VBF_HToTauTau_M-'+hmass, 
+      'WH_ZH_TTH_HToTauTau_M-'+hmass
+    ]
+
   #if  not options.do_2011:
   #  ww_masses = ['110','115','120','125','130','135','140','145','150','155','160']
   #  if options.short_signal: ww_masses = ['125']
@@ -417,7 +427,7 @@ if options.proc_bkg or options.proc_all:
             os.system('%(JOBSUBMIT)s jobs/Special_5_%(JOB)s.sh' % vars())
 
 
-if options.proc_mssm or options.proc_all:
+if options.proc_mssm or options.proc_all or options.proc_sm:
     for ch in channels:
       for sc in scales:
         for sa in signal_mc:
