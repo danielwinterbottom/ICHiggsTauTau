@@ -4,6 +4,8 @@
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include "boost/range/algorithm_ext/erase.hpp"
+#include "boost/algorithm/string.hpp"
+#include "TFile.h"
 
 // #include <memory>
 // #include <string>
@@ -43,6 +45,21 @@ bool MatchingProcess(T const& first, U const& second) {
   } else {
     return false;
   }
+}
+
+template<class T>
+void WriteToTFile(T const* ptr, TFile *file, std::string const& path) {
+  file->cd();
+  std::vector<std::string> as_vec;
+  boost::split(as_vec, path, boost::is_any_of("/"));
+  for (int i = 0; i < as_vec.size()-1; ++i) {
+    if (!gDirectory->GetDirectory(as_vec[i].c_str())) {
+      gDirectory->mkdir(as_vec[i].c_str());
+    }
+    gDirectory->cd(as_vec[i].c_str());
+  }
+  gDirectory->WriteTObject(ptr, as_vec.back().c_str());
+  gDirectory->cd("/");
 }
 }
 

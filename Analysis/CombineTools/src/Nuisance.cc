@@ -57,11 +57,17 @@ Nuisance::Nuisance(Nuisance const& other)
       channel_(other.channel_),
       bin_id_(other.bin_id_),
       mass_(other.mass_) {
-  TH1 *h_u = dynamic_cast<TH1*>(other.shape_u_->Clone());
-  h_u->SetDirectory(0);
+  TH1 *h_u = nullptr;
+  if (other.shape_u_) {
+    h_u = dynamic_cast<TH1*>(other.shape_u_->Clone());
+    h_u->SetDirectory(0);
+  }
   shape_u_ = std::unique_ptr<TH1>(h_u);
-  TH1 *h_d = dynamic_cast<TH1*>(other.shape_d_->Clone());
-  h_d->SetDirectory(0);
+  TH1 *h_d = nullptr;
+  if (other.shape_d_) {
+    h_d = dynamic_cast<TH1*>(other.shape_d_->Clone());
+    h_d->SetDirectory(0);
+  }
   shape_d_ = std::unique_ptr<TH1>(h_d);
 }
 

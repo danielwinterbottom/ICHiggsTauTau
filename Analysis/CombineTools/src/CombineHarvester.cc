@@ -5,10 +5,12 @@
 #include <iostream>
 #include <utility>
 #include <set>
+#include <fstream>
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/range/algorithm_ext/erase.hpp"
 #include "boost/range/algorithm/find.hpp"
+#include "boost/format.hpp"
 #include "TDirectory.h"
 #include "TH1.h"
 #include "Utilities/interface/FnRootTools.h"
@@ -123,6 +125,34 @@ TH1 * CombineHarvester::GetHistFromFile(
     }
   }
   return nullptr;
+}
+
+void CombineHarvester::WriteHistToFile(
+    TH1 const* hist,
+    TFile * file,
+    std::vector<HistMapping> const& mappings,
+    std::string const& bin,
+    std::string const& process,
+    std::string const& mass,
+    std::string const& nuisance,
+    unsigned type) {
+  StrPairVec attempts = this->GenerateShapeMapAttempts(process, bin);
+  for (unsigned a = 0; a < attempts.size(); ++a) {
+    for (unsigned m = 0; m < mappings.size(); ++m) {
+      if ((attempts[a].first == mappings[m].process) &&
+        (attempts[a].second == mappings[m].category)) {
+        std::string p = (type == 0 ?
+            mappings[m].pattern : mappings[m].syst_pattern);
+        boost::replace_all(p, "$CHANNEL", bin);
+        boost::replace_all(p, "$PROCESS", process);
+        boost::replace_all(p, "$MASS", mass);
+        if (type == 1) boost::replace_all(p, "$SYSTEMATIC", nuisance+"Down");
+        if (type == 2) boost::replace_all(p, "$SYSTEMATIC", nuisance+"Up");
+        WriteToTFile(hist, file, p);
+        return;
+      }
+    }
+  }
 }
 
 int CombineHarvester::ParseDatacard(std::string const& filename,
@@ -311,6 +341,151 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
     }
   }
   return 0;
+}
+
+void CombineHarvester::WriteDatacard(std::string const& name, std::string const& root_file) {
+  std::ofstream txt_file;
+  txt_file.open(name);
+
+  std::string dashes(80,'-');
+
+  auto bin_set = this->GenerateSetFromObs<std::string>(std::mem_fn(&ch::Observation::bin));
+  auto proc_set = this->GenerateSetFromProcs<std::string>(std::mem_fn(&ch::Process::process));
+  auto nus_set = this->GenerateSetFromNus<std::string>(std::mem_fn(&ch::Nuisance::name));
+  txt_file << "imax    " << bin_set.size() << " number of bins\n";
+  txt_file << "jmax    " << proc_set.size()-1 << " number of processes minus 1\n";
+  txt_file << "kmax    " << nus_set.size() << " number of nuisance parameters\n";
+  txt_file << dashes << "\n";
+
+  // Generate a sensible default for the mapping of process and
+  // systematic templates into a root file
+  std::vector<HistMapping> mappings;
+  mappings.push_back({
+    "*", "*", nullptr, "$CHANNEL/$PROCESS", "$CHANNEL/$PROCESS_$SYSTEMATIC"
+  });
+  CombineHarvester ch_signals = this->shallow_copy().signals();
+  auto sig_proc_set = ch_signals.GenerateSetFromProcs<std::string>(
+    std::mem_fn(&ch::Process::process));
+  for (auto sig_proc : sig_proc_set) {
+    mappings.push_back({
+      sig_proc, "*", nullptr, "$CHANNEL/$PROCESS$MASS", "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC"
+    });
+  }
+
+  for (auto const& mapping : mappings) {
+    txt_file << boost::format("shapes %s %s %s %s %s\n")
+      % mapping.process
+      % mapping.category
+      % root_file
+      % mapping.pattern
+      % mapping.syst_pattern;
+  }
+  txt_file << dashes << "\n";
+
+  TFile file(root_file.c_str(), "RECREATE");
+
+  // Writing observations
+  txt_file << "bin          ";
+  for (auto const& obs : obs_) {
+    txt_file << boost::format("%-15s ") % obs->bin();
+    std::unique_ptr<TH1> h((TH1*)(obs->shape()->Clone()));
+    h->Scale(obs->rate());
+    WriteHistToFile(h.get(), &file, mappings, obs->bin(), "data_obs", obs->mass(), "", 0);
+  }
+  txt_file << "\n";
+  txt_file << "observation  ";
+  for (auto const& obs : obs_) {
+    txt_file << boost::format("%-15.1f ") % obs->rate();
+  }
+  txt_file << "\n";
+  txt_file << dashes << "\n";
+
+  auto proc_nus_map = this->GenerateProcNusMap();
+  int nus_str_len = 14;
+  for (auto const& nus : nus_set) {
+    if (nus.length() > nus_str_len) nus_str_len = nus.length();
+  }
+
+  txt_file << boost::format("%-"+boost::lexical_cast<std::string>(nus_str_len+9)+"s") % "bin";
+  for (auto const& proc : procs_) {
+    std::unique_ptr<TH1> h((TH1*)(proc->shape()->Clone()));
+    h->Scale(proc->rate());
+    WriteHistToFile(h.get(), &file, mappings, proc->bin(), proc->process(), proc->mass(), "", 0);
+    txt_file << boost::format("%-15s ") % proc->bin();
+  }
+  txt_file << "\n";
+
+  txt_file << boost::format("%-"+boost::lexical_cast<std::string>(nus_str_len+9)+"s") % "process";
+
+  for (auto const& proc : procs_) {
+    txt_file << boost::format("%-15s ") % proc->process();
+  }
+  txt_file << "\n";
+
+  txt_file << boost::format("%-"+boost::lexical_cast<std::string>(nus_str_len+9)+"s") % "process";
+
+  for (auto const& proc : procs_) {
+    txt_file << boost::format("%-15s ") % proc->process_id();
+  }
+  txt_file << "\n";
+
+
+  txt_file << boost::format("%-"+boost::lexical_cast<std::string>(nus_str_len+9)+"s") % "rate";
+  for (auto const& proc : procs_) {
+    txt_file << boost::format("%-15.4f ") % proc->rate();
+  }
+  txt_file << "\n";
+  txt_file << dashes << "\n";
+
+
+  for (auto const& nus : nus_set) {
+    std::vector<std::string> line(procs_.size() + 2);
+    line[0] = nus;
+    bool seen_lnN = false;
+    bool seen_shape = false;
+    for (unsigned p = 0; p < procs_.size(); ++p) {
+      line[p+2] = "-";
+      for (unsigned n = 0; n < proc_nus_map[p].size(); ++n) {
+        ch::Nuisance const* nus_ptr = proc_nus_map[p][n];
+        if (nus_ptr->name() == nus) {
+          if (nus_ptr->type() == "lnN") {
+            seen_lnN = true;
+            line[p+2] = nus_ptr->asymm() ?
+              (boost::format("%g/%g") % nus_ptr->value_d() % nus_ptr->value_u()).str() :
+              (boost::format("%g") % nus_ptr->value_u()).str();
+            break;
+          }
+          if (nus_ptr->type() == "shape") {
+            std::unique_ptr<TH1> h_d((TH1*)(nus_ptr->shape_d()->Clone()));
+            h_d->Scale(procs_[p]->rate()*nus_ptr->value_d());
+            WriteHistToFile(h_d.get(), &file, mappings, nus_ptr->bin(), nus_ptr->process(), nus_ptr->mass(), nus_ptr->name(), 1);
+            std::unique_ptr<TH1> h_u((TH1*)(nus_ptr->shape_u()->Clone()));
+            h_u->Scale(procs_[p]->rate()*nus_ptr->value_u());
+            WriteHistToFile(h_u.get(), &file, mappings, nus_ptr->bin(), nus_ptr->process(), nus_ptr->mass(), nus_ptr->name(), 2);
+            seen_shape = true;
+            line[p+2] = "1.0";
+            break;
+          }
+        }
+      }
+    }
+    if (seen_lnN && !seen_shape) line[1] = "lnN";
+    if (!seen_lnN && seen_shape) line[1] = "shape";
+    if (seen_lnN && seen_shape) line[1] = "shape?";
+    txt_file << boost::format(
+      "%-"+boost::lexical_cast<std::string>(nus_str_len)+"s %-7s ")
+      % line[0] % line[1];
+    for (unsigned p = 0; p < procs_.size(); ++p) {
+      txt_file << boost::format("%-15s ") % line[p+2];
+    }
+    txt_file << "\n";
+  }
+
+
+
+
+  txt_file.close();
+  file.Close();
 }
 
 CombineHarvester & CombineHarvester::PrintAll() {

@@ -7,6 +7,7 @@
 #include <map>
 #include <list>
 #include <cmath>
+#include <set>
 #include <functional>
 #include "TFile.h"
 #include "TH1.h"
@@ -20,14 +21,6 @@
 h.GenerateSet<string>([](ch::Parameter p){ regex_match(p, ".*_bin_.*") });
 // - some people don't know/like lambdas/binding
 // + Gives complete flexibility 
-
-// A shape nuisance is split to an asymmetric lnN for the yield, and Vertica
-// morphing for the unit area shapes. 
-
-Shape algorithm:
-(Build map process -> shape nuisances)
-(Build map process -> all nuisances)
-(Build param name -> value map)
 
 * loop through processes
   * use (proc->shape nuis, pname->value) map to apply each shape morphing
@@ -60,6 +53,8 @@ class CombineHarvester {
       int bin_id,
       std::string const& mass);
 
+  void WriteDatacard(std::string const& name, std::string const& root_file);
+
   CombineHarvester& PrintAll();
 
   CombineHarvester& bin(bool cond, std::vector<std::string> const& vec);
@@ -75,6 +70,15 @@ class CombineHarvester {
 
   CombineHarvester& signals();
   CombineHarvester& backgrounds();
+
+  template<typename T>
+  std::set<T> GenerateSetFromProcs(std::function<T(ch::Process const*)> func);
+
+  template<typename T>
+  std::set<T> GenerateSetFromObs(std::function<T(ch::Observation const*)> func);
+
+  template<typename T>
+  std::set<T> GenerateSetFromNus(std::function<T(ch::Nuisance const*)> func);
 
   void Validate();
 
@@ -116,6 +120,17 @@ class CombineHarvester {
       std::string const& mass,
       std::string const& nuisance,
       unsigned type);
+
+  void WriteHistToFile(
+      TH1 const* hist,
+      TFile * file,
+      std::vector<HistMapping> const& mappings,
+      std::string const& bin,
+      std::string const& process,
+      std::string const& mass,
+      std::string const& nuisance,
+      unsigned type);
+
   friend void swap(CombineHarvester& first, CombineHarvester& second);
   typedef std::vector<std::vector<Nuisance const*>> 
     ProcNusMap;
@@ -134,6 +149,29 @@ class CombineHarvester {
   TH1F ShapeDiff(double x, TH1 const* nom, TH1 const* low, TH1 const* high);
 
 };
+
+template<typename T> 
+std::set<T> CombineHarvester::GenerateSetFromProcs(std::function<T (ch::Process const*)> func) {
+  std::set<T> ret;
+  for (auto const& item : procs_) ret.insert(func(item.get()));
+  return ret;
+} 
+
+template<typename T> 
+std::set<T> CombineHarvester::GenerateSetFromObs(std::function<T (ch::Observation const*)> func) {
+  std::set<T> ret;
+  for (auto const& item : obs_) ret.insert(func(item.get()));
+  return ret;
+} 
+
+template<typename T> 
+std::set<T> CombineHarvester::GenerateSetFromNus(std::function<T (ch::Nuisance const*)> func) {
+  std::set<T> ret;
+  for (auto const& item : nus_) ret.insert(func(item.get()));
+  return ret;
+} 
+
+
 }
 
 #endif
