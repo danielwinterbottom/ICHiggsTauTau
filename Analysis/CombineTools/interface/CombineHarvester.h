@@ -80,7 +80,7 @@ class CombineHarvester {
   template<typename T>
   std::set<T> GenerateSetFromNus(std::function<T(ch::Nuisance const*)> func);
 
-  void Validate();
+  // void Validate();
 
     // int ParsePulls(std::string const& filename);
     // void ApplyPulls(bool use_b_only = false);

@@ -401,7 +401,7 @@ void CombineHarvester::WriteDatacard(std::string const& name, std::string const&
   txt_file << dashes << "\n";
 
   auto proc_nus_map = this->GenerateProcNusMap();
-  int nus_str_len = 14;
+  unsigned nus_str_len = 14;
   for (auto const& nus : nus_set) {
     if (nus.length() > nus_str_len) nus_str_len = nus.length();
   }
@@ -730,25 +730,25 @@ CombineHarvester & CombineHarvester::nus_type(bool cond,
    return *this;
  }
 
-void CombineHarvester::Validate() {
-  std::set<std::string> bins;
-  for (auto const p : procs_) {
-    bins.insert(p->bin());
-  }
-  for (auto b : bins) {
-    std::cout << "Checking bin: " << b << std::endl;
-    TH1F bkg =  this->shallow_copy().bin(true, {b}).backgrounds().GetShape();
-    TH1F sig =  this->shallow_copy().bin(true, {b}).signals().GetShape();
-    TH1F dat = this->shallow_copy().bin(true, {b}).GetObservedShape();
-    for (unsigned i = 1; i <= dat.GetNbinsX(); ++i) {
-      double y_dat = dat.GetBinContent(i);
-      double y_sig = sig.GetBinContent(i);
-      double y_bkg = bkg.GetBinContent(i);
-      if (y_sig > y_bkg) std::cout << "Histogram bin " << i << " has sig " << y_sig <<
-        ", bkg " << y_bkg << " and data " << y_dat << std::endl;
-    }
-  }
-}
+// void CombineHarvester::Validate() {
+//   std::set<std::string> bins;
+//   for (auto const p : procs_) {
+//     bins.insert(p->bin());
+//   }
+//   for (auto b : bins) {
+//     std::cout << "Checking bin: " << b << std::endl;
+//     TH1F bkg =  this->shallow_copy().bin(true, {b}).backgrounds().GetShape();
+//     TH1F sig =  this->shallow_copy().bin(true, {b}).signals().GetShape();
+//     TH1F dat = this->shallow_copy().bin(true, {b}).GetObservedShape();
+//     for (unsigned i = 1; i <= dat.GetNbinsX(); ++i) {
+//       double y_dat = dat.GetBinContent(i);
+//       double y_sig = sig.GetBinContent(i);
+//       double y_bkg = bkg.GetBinContent(i);
+//       if (y_sig > y_bkg) std::cout << "Histogram bin " << i << " has sig " << y_sig <<
+//         ", bkg " << y_bkg << " and data " << y_dat << std::endl;
+//     }
+//   }
+// }
 //  /*
 
 //  TGraphAsymmErrors BuildPoissonErrors(TH1F const& hist) {
