@@ -123,7 +123,7 @@ int main(int argc, char* argv[]){
 	po::notify(vm);
 
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-	std::cout << "HiggsTauTauPlot4" << std::endl;
+	std::cout << "HiggsHTohhPlot" << std::endl;
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 	std::cout << boost::format(param_fmt()) % "paramfile" 	% paramfile;
 	std::cout << boost::format(param_fmt()) % "cfg" 				% cfg;
@@ -160,7 +160,7 @@ int main(int argc, char* argv[]){
 		std::vector<std::string> alias_part;
 		boost::split(alias_part, set_alias[i], boost::is_any_of(":"));
 		if (alias_part.size() == 2) alias_vec.push_back(std::make_pair(alias_part[0],alias_part[1]));
-		std::cout << "[HiggsTauTauPlot4] Setting alias: " << alias_part[0] << " --> \"" << alias_part[1] << "\"" << std::endl;
+		std::cout << "[HiggsHTohhPlot] Setting alias: " << alias_part[0] << " --> \"" << alias_part[1] << "\"" << std::endl;
 	}
 
 	// ************************************************************************
@@ -233,7 +233,7 @@ int main(int argc, char* argv[]){
 	// ggH pT Reweighting
 	// ************************************************************************
 	if (syst_ggh_pt != "") {
-		std::cout << "[HiggsTauTauPlot4] Adding ggH pT systematic..." << std::endl;
+		std::cout << "[HiggsHTohhPlot] Adding ggH pT systematic..." << std::endl;
 		for (auto m : sm_masses) {
 			hmap["ggH"+m+"_"+syst_ggh_pt+"Up"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, sig_var, sel, cat, "wt*wt_ggh_pt_up", 1.0);
 			hmap["ggH"+m+"_"+syst_ggh_pt+"Down"] = ana.GenerateSignal("GluGluToHToTauTau_M-"+m, sig_var, sel, cat, "wt*wt_ggh_pt_down", 1.0);
@@ -250,7 +250,7 @@ int main(int argc, char* argv[]){
 		boost::split(extra_binning, add_extra_binning, boost::is_any_of(":"));
 		if (extra_binning.size() == 2) {
 			std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-			std::cout << "[HiggsTauTauPlot4] Adding alternative binning \"" << extra_binning[0] 
+			std::cout << "[HiggsHTohhPlot] Adding alternative binning \"" << extra_binning[0] 
 				<< "\" with postfix \"" << extra_binning[1] << "\"" << std::endl;
       extra_binning_range = extra_binning[0];
       extra_binning_postfix = extra_binning[1];
@@ -298,7 +298,7 @@ int main(int argc, char* argv[]){
 	// top-quark pT Reweighting
 	// ************************************************************************
 	if (syst_tquark != "") {
-		std::cout << "[HiggsTauTauPlot4] Adding top-quark weight systematic..." << std::endl;
+		std::cout << "[HiggsHTohhPlot] Adding top-quark weight systematic..." << std::endl;
     for (unsigned j = 0; j < vars.size(); ++j) {
 		  hmap["ttbar"+vars_postfix[j]+"_"+syst_tquark+"Up"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_up");
 		  hmap["ttbar"+vars_postfix[j]+"_"+syst_tquark+"Down"] = ana.GenerateTOP(method, vars[j], sel, cat, "wt*wt_tquark_down");
@@ -309,7 +309,7 @@ int main(int argc, char* argv[]){
 	// W+jets fake-rate Reweighting
 	// ************************************************************************
 	if (syst_w_fake_rate != "") {
-		std::cout << "[HiggsTauTauPlot4] Adding W+jets fake-rate systematic..." << std::endl;
+		std::cout << "[HiggsHTohhPlot] Adding W+jets fake-rate systematic..." << std::endl;
     for (unsigned j = 0; j < vars.size(); ++j) {
 		  hmap["W_"+syst_w_fake_rate+"Up"+vars_postfix[j]] = ana.GenerateW(method, vars[j], sel, cat, "wt*wt_tau_fake_up");
 		  hmap["W_"+syst_w_fake_rate+"Down"+vars_postfix[j]] = ana.GenerateW(method, vars[j], sel, cat, "wt*wt_tau_fake_down");
@@ -320,7 +320,7 @@ int main(int argc, char* argv[]){
 	// Tau ID Weights
 	// ************************************************************************
 	if (syst_eff_t != "") {
-		std::cout << "[HiggsTauTauPlot4] Adding high tau pT ID systematic..." << std::endl;
+		std::cout << "[HiggsHTohhPlot] Adding high tau pT ID systematic..." << std::endl;
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "_hww", "_"+syst_eff_t+"Up", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
@@ -380,7 +380,7 @@ int main(int argc, char* argv[]){
 
 	for (auto const& syst : systematics) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-		std::cout << "[HiggsTauTauPlot4] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
+		std::cout << "[HiggsHTohhPlot] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
 		HhhAnalysis ana_syst(String2Channel(channel_str), is_2012 ? "2012" : "2011", verbosity);
     ana_syst.SetQCDRatio(qcd_os_ss_factor);
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
@@ -396,7 +396,7 @@ int main(int argc, char* argv[]){
 		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
 		ana_syst.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "_"+syst.second, signal_xs);
 	  if (interpolate) ana_syst.InterpolateSMSignal(hmap, sm_masses, morph_var, var, sel, cat, "wt", "","_"+syst.second, 1.0, signal_xs);
-		ana_syst.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
+		//ana_syst.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
 		if (add_sm_background != "") {
 			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
 			ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
@@ -439,7 +439,7 @@ int main(int argc, char* argv[]){
 	if (sub_ztt_top_frac > 0.) {
 		std::string top_label = (channel_str == "em") ? "ttbar" : "TT";
 		std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
-		std::cout << "[HiggsTauTauPlot4] Subtracting " << top_label 
+		std::cout << "[HiggsHTohhPlot] Subtracting " << top_label 
 			<< " contamination in " << ztt_label << ": " << sub_ztt_top_frac << std::endl;
 		HhhAnalysis::Value ztt_rate = hmap[ztt_label].second;
 		HhhAnalysis::Value & top_rate = hmap[top_label].second;
@@ -461,7 +461,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
   if (is_2012 && check_ztt_top_frac) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-		std::cout << "[HiggsTauTauPlot4] Checking TOP contamination in ZTT embedded..." << std::endl;
+		std::cout << "[HiggsHTohhPlot] Checking TOP contamination in ZTT embedded..." << std::endl;
     HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
     HhhAnalysis::Value embedded_ttbar_inc = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", "os", "", "wt");
     HhhAnalysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
@@ -487,7 +487,7 @@ int main(int argc, char* argv[]){
 	// Generate Fake-rate vs same-sign systematic histograms
 	// ************************************************************************
 	if (syst_fakes_shape != "") {
-		std::cout << "[HiggsTauTauPlot4] Adding fake shape systematic..." << std::endl;
+		std::cout << "[HiggsHTohhPlot] Adding fake shape systematic..." << std::endl;
 		HhhAnalysis::Value fakes_rate = hmap["Fakes"].second;
 		TH1F fr_hist = ana.GetShapeViaFakesMethod(var, sel, cat, "wt");
 		SetNorm(&fr_hist, fakes_rate.first);
@@ -510,7 +510,7 @@ int main(int argc, char* argv[]){
 			double syst_qcd_xmax 		= boost::lexical_cast<double>(sub_strings[1]);
 			double syst_qcd_central = boost::lexical_cast<double>(sub_strings[2]);
 			double syst_qcd_band 		= boost::lexical_cast<double>(sub_strings[3]);
-			std::cout << "[HiggsTauTauPlot4] Adding QCD low-mass shape systematic..." << std::endl;
+			std::cout << "[HiggsHTohhPlot] Adding QCD low-mass shape systematic..." << std::endl;
 			std::cout << boost::format(param_fmt()) % "name" % syst_qcd_name;
 			std::cout << boost::format(param_fmt()) % "xmax" % syst_qcd_xmax;
 			std::cout << boost::format(param_fmt()) % "central" % syst_qcd_central;
@@ -578,7 +578,7 @@ int main(int argc, char* argv[]){
 			string syst_zl_name 			= sub_strings[0];
 			string syst_zl_shift_up 	= sub_strings[1];
 			string syst_zl_shift_down = sub_strings[2];
-			std::cout << "[HiggsTauTauPlot4] Adding ZL mass shift shape systematic..." << std::endl;
+			std::cout << "[HiggsHTohhPlot] Adding ZL mass shift shape systematic..." << std::endl;
 			std::cout << boost::format(param_fmt()) % "name" % syst_zl_name;
 			std::cout << boost::format(param_fmt()) % "shift_up" % syst_zl_shift_up;
 			std::cout << boost::format(param_fmt()) % "shift_down" % syst_zl_shift_down;
@@ -593,7 +593,7 @@ int main(int argc, char* argv[]){
 	vector<string> emptybins_regex;
 	boost::split(emptybins_regex, fix_empty_bins, boost::is_any_of(","));
 	if (emptybins_regex.size() > 0) {
-		std::cout << "[HiggsTauTauPlot4] Running FixEmptyBins with patterns: " << fix_empty_bins << std::endl;
+		std::cout << "[HiggsHTohhPlot] Running FixEmptyBins with patterns: " << fix_empty_bins << std::endl;
 		vector<boost::regex> regex_vec;
 		for (auto str : emptybins_regex) regex_vec.push_back(boost::regex(str));
 		for (auto & entry : hmap) {
@@ -612,7 +612,7 @@ int main(int argc, char* argv[]){
 	vector<string> emptyhists_regex;
 	boost::split(emptyhists_regex, fix_empty_hists, boost::is_any_of(","));
 	if (emptyhists_regex.size() > 0) {
-		std::cout << "[HiggsTauTauPlot4] Running FixEmptyHist with patterns: " << fix_empty_hists << std::endl;
+		std::cout << "[HiggsHTohhPlot] Running FixEmptyHist with patterns: " << fix_empty_hists << std::endl;
 		vector<boost::regex> regex_vec;
 		for (auto str : emptyhists_regex) regex_vec.push_back(boost::regex(str));
 		for (auto & entry : hmap) {
@@ -714,7 +714,7 @@ int main(int argc, char* argv[]){
 	vector<string> negbins_regex;
 	boost::split(negbins_regex, fix_negative_bins, boost::is_any_of(","));
 	if (negbins_regex.size() > 0) {
-		std::cout << "[HiggsTauTauPlot4] Running FixNegativeBins with patterns: " << fix_negative_bins << std::endl;
+		std::cout << "[HiggsHTohhPlot] Running FixNegativeBins with patterns: " << fix_negative_bins << std::endl;
 		vector<boost::regex> regex_vec;
 		for (auto str : negbins_regex) regex_vec.push_back(boost::regex(str));
 		for (auto & entry : hmap) {
@@ -849,7 +849,7 @@ int main(int argc, char* argv[]){
 			iter.second.first.SetName(iter.first.c_str());
 			iter.second.first.Write();
 		}
-		std::cout << "[HiggsTauTauPlot4] Writing datacard input " << tfile_name << std::endl;
+		std::cout << "[HiggsHTohhPlot] Writing datacard input " << tfile_name << std::endl;
 		dc_file.Close();
 	}
 
@@ -910,7 +910,7 @@ int main(int argc, char* argv[]){
 	vector<string> shift_strs;
 	boost::split(shift_strs, shift_backgrounds, boost::is_any_of(","));
 	if (shift_strs.size() > 0) {
-		std::cout << "[HiggsTauTauPlot4] Shifting background yields... " << std::endl;
+		std::cout << "[HiggsHTohhPlot] Shifting background yields... " << std::endl;
 		for (auto shift : shift_strs) {
 			std::vector<std::string> shift_part;
 			boost::split(shift_part, shift, boost::is_any_of(":"));
@@ -934,7 +934,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (shift_tscale != 0.0) {
 		std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
-		std::cout << "[HiggsTauTauPlot4] Shifting energy scale by pull: " << shift_tscale << std::endl;
+		std::cout << "[HiggsHTohhPlot] Shifting energy scale by pull: " << shift_tscale << std::endl;
 		TH1F ztt_central = hmap[ztt_label].first;
 		TH1F ztt_down = hmap[ztt_label+"_"+syst_tau_scale+"Down"].first;
 		TH1F ztt_up = hmap[ztt_label+"_"+syst_tau_scale+"Up"].first;
