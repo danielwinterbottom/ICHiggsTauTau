@@ -389,24 +389,20 @@ int extractZJetsBkg(){//main
 	  result[iSyst].syst=result[iSyst].number*sqrt(pow(nCBkg.stat,2)+pow(nSMCQCD.stat/nSMCQCD.number,2)+pow(nSMCEWK.stat/nSMCEWK.number,2)+pow(nCMCQCD.stat/nCMCQCD.number,2)+pow(nCMCEWK.stat/nCMCEWK.number,2)+pow(nGenQCD.stat/nGenQCD.number,2)+pow(nGenEWK.stat/nGenEWK.number,2)+pow(nGenZMassFilteredQCD.stat/nGenZMassFilteredQCD.number,2)+pow(nGenZMassFilteredEWK.stat/nGenZMassFilteredEWK.number,2));
 	  //!!DO R ERROR AND SYSTS
 	  std::cout<<result[iSyst].number<<" \\pm "<<result[iSyst].stat<<" (stat.) \\pm "<<result[iSyst].syst<<" (MC stat.)"<<std::endl;
+
+	  if(verbose){
+	    double numewk = sigmaincnunuEWK*effsvbfewk;
+	    double numqcd = sigmaincnunuqcd*effsvbfqcd;	    
+	    std::cout<<"sigma(nunu)_ewk: "<<sigmaincnunuEWK<<" eff^VBF_S(ewk): "<<effsvbfewk<<" sigma(nunu)_qcd: "<<sigmaincnunuqcd<<" eff^VBF_S(qcd): "<<effsvbfqcd<<std::endl; 
+	    std::cout<<"ewk numerator cont.: "<<numewk<<" qcd numerator cont.: "<<numqcd<<std::endl;
+
+	    double denewk = sigmaincmumuEWK*effcvbfewk;  
+	    double denqcd = sigmaincmumuQCD*effcvbfqcd;
+	    std::cout<<"sigma(mumu)_ewk: "<<sigmaincmumuEWK<<" eff^VBF_C(ewk): "<<effcvbfewk<<" sigma(mumu)_qcd: "<<sigmaincmumuQCD<<" eff^VBF_C(qcd): "<<effcvbfqcd<<std::endl; 
+	    std::cout<<"ewk denominator cont.: "<<denewk<<" qcd denominator cont.: "<<denqcd<<std::endl;
+	  }
 	}
 
-	if(verbose){
-	  double effsvbfewk=nSMCEWK.number/nGenZMassFilteredEWK.number;
-	  double numewk = sigmaincnunuEWK*effsvbfewk;
-	  double sigmaincnunuqcd=sigmaincmumuQCD*RQCD;
-	  double effsvbfqcd=nSMCQCD.number/nGenZMassFilteredQCD.number;
-	  double numqcd = sigmaincnunuqcd*effsvbfqcd;
-	  std::cout<<"sigma(nunu)_ewk: "<<sigmaincnunuEWK<<" eff^VBF_S(ewk): "<<effsvbfewk<<" sigma(nunu)_qcd: "<<sigmaincnunuqcd<<" eff^VBF_S(qcd): "<<effsvbfqcd<<std::endl; 
-	  std::cout<<"ewk numerator cont.: "<<numewk<<" qcd numerator cont.: "<<numqcd<<std::endl;
-	  
-	  double effcvbfewk=nCMCEWK.number/nGenEWK.number;
-	  double denewk = sigmaincmumuEWK*effcvbfewk;
-	  double effcvbfqcd=nCMCQCD.number/nGenQCD.number;
-	  double denqcd = sigmaincmumuQCD*effcvbfqcd;
-	  std::cout<<"sigma(mumu)_ewk: "<<sigmaincmumuEWK<<" eff^VBF_C(ewk): "<<effcvbfewk<<" sigma(mumu)_qcd: "<<sigmaincmumuQCD<<" eff^VBF_C(qcd): "<<effcvbfqcd<<std::endl; 
-	  std::cout<<"ewk denominator cont.: "<<denewk<<" qcd denominator cont.: "<<denqcd<<std::endl;
-	}
       }//end loop on systs
 
       if(dojes){
