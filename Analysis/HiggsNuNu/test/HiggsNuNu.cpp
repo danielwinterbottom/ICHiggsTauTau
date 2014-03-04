@@ -228,6 +228,11 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "doTopCR" % doTopCR;
   std::cout << boost::format(param_fmt) % "doTmvaTree" % doTmvaTree;
 
+  if (channel==channel::nunulowmet || channel==channel::nunulowmetiglep){
+    met_cut_max=met_cut;
+    met_cut=0.;
+  }
+
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
   gSystem->Load("libUserCodeICHiggsTauTau.dylib");
@@ -359,7 +364,7 @@ int main(int argc, char* argv[]){
     ignoreLeptons = true;
     //is_ewkZ = true;
   }
-  if (channel==channel::nunuiglep){
+  if (channel==channel::nunuiglep||channel==channel::nunulowmetiglep){
     ignoreLeptons = true;
   }
 
@@ -873,7 +878,7 @@ int main(int argc, char* argv[]){
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_trg_applied_in_mc(true);
-    if (channel==channel::nunu || channel == channel::taunu){
+    if (channel==channel::nunu ||channel==channel::nunulowmet|| channel == channel::taunu){
       hinvWeights.set_do_idiso_veto_weights(doidisoeff);
     }
     else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
@@ -943,7 +948,7 @@ int main(int argc, char* argv[]){
   //else if (wstream == "mumu") lFlavour = 13;
   //else if (wstream == "tautau") lFlavour = 15;
   //do only muons for Znunu estimate...
-  HinvZDecay ZmassFilter = HinvZDecay("ZmassFilter",13,60,120);
+  HinvZDecay ZmassFilter = HinvZDecay("ZmassFilter",13,80,100);
   HinvZDecay ZmassPreFilter = HinvZDecay("ZmasspreFilter",13,0,9999999);
   HinvZDecay ZlowmassFilter = HinvZDecay("ZlowmassFilter",13,0,100,true);
 
@@ -1394,7 +1399,7 @@ int main(int argc, char* argv[]){
 	    analysis.AddModule(&controlPlots_genzmassfiltered);
 	  }
 	}
-	else if(channel == channel::nunuiglep){
+	else if(channel == channel::nunuiglep||channel == channel::nunulowmetiglep){
 	  analysis.AddModule(&ZmassFilter);
 	}
       }
@@ -1540,10 +1545,10 @@ int main(int argc, char* argv[]){
      if (!is_data && !do_skim) analysis.AddModule(&hinvWeights);
 
 
-     if (channel == channel::nunu){
+     if (channel == channel::nunu||channel==channel::nunulowmet){
        analysis.AddModule(&controlPlots_lepveto);
      }
-     else if(channel == channel::nunuiglep){
+     else if(channel == channel::nunuiglep||channel==channel::nunulowmetiglep){
        analysis.AddModule(&controlPlots_iglep);
      }
      else if(channel == channel::mumu){
@@ -1590,7 +1595,7 @@ int main(int argc, char* argv[]){
        
        //met modules
        
-       if (channel == channel::munu || channel == channel::mumu || channel ==channel::nunuiglep){
+       if (channel == channel::munu || channel == channel::mumu || channel ==channel::nunuiglep||channel==channel::nunulowmetiglep){
 	 analysis.AddModule(&metNoMuonFilter);
        }
        else {
