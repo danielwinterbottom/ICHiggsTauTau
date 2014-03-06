@@ -200,10 +200,10 @@ if options.scheme == 'HTohh':
     ("2",   "2tag",        "2tag",       BINS,  '') 
   ]
   scheme_em = [
-    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
-    ("0",   "0tag",      "0tag",     BINS_FINE,  ''),
-    ("1",   "1tag",      "1tag",     BINS_FINE,  ''),
-    ("2",   "2tag",        "2tag",       BINS,  '') 
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("0",   "0tag",      "0tag",     BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("1",   "1tag",      "1tag",     BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
+    ("2",   "2tag",        "2tag",       BINS,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"') 
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -211,7 +211,7 @@ if options.scheme == 'HTohh':
     'em' : 'em_default'
   }
   sig_scheme = 'mssm_nostack'
-  ANA = 'mssm'
+  ANA = 'Hhh'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'

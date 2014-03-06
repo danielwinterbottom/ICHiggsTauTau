@@ -60,6 +60,7 @@ int main(int argc, char* argv[]){
   bool interpolate;
   string signal_bins;
   bool add_ztt_modes;
+  bool scale_signal_datacard;
 
 	// Program options
   po::options_description preconfig("Pre-Configuration");
@@ -113,7 +114,8 @@ int main(int argc, char* argv[]){
 	  ("check_ztt_top_frac",      po::value<bool>(&check_ztt_top_frac)->default_value(false))
 	  ("add_ztt_modes",           po::value<bool>(&add_ztt_modes)->default_value(false))
 	  ("scan_bins",               po::value<unsigned>(&scan_bins)->default_value(0))
-	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(1.06));
+	  ("qcd_os_ss_factor",  	    po::value<double>(&qcd_os_ss_factor)->default_value(1.06))
+	  ("scale_signal_datacard",  	    po::value<bool>(&scale_signal_datacard)->default_value(false));
 
 
 	HhhPlot plot;
@@ -408,6 +410,14 @@ int main(int argc, char* argv[]){
 	    ana_syst.FillHWWSignal(hmap, hww_masses, reduced_var+extra_binning[0], sel, cat, "wt", "_hww", "_"+syst.second+extra_binning[1], 1.0);
 			ana_syst.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 		}
+
+      //Rescale the signal systematics for datacards if option is set
+      if(scale_signal_datacard) {
+        ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second); 
+	    ana_syst.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "_"+syst.second);
+	    ana_syst.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst.second);
+      }
+
 	  if (syst.second == syst_l1met+"Down" || syst.second == syst_l1met+"Up") {
       string backup_eff = ana_syst.ResolveAlias("ZTT_Eff_Sample");
       string backup_shape = ana_syst.ResolveAlias("ZTT_Shape_Sample");
@@ -830,6 +840,14 @@ int main(int argc, char* argv[]){
   }
 
 	// ************************************************************************
+	// If option is set, scale histograms in datacard to a given cross-section
+	// ************************************************************************
+	if(scale_signal_datacard) {
+        ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", ""); 
+	    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
+	    ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
+    }
+	// ************************************************************************
 	// Write datacard
 	// ************************************************************************
 	if (datacard != "") {
@@ -856,10 +874,11 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Replace signal histograms using the correct cross sections, for plotting
 	// ************************************************************************
-	ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
-	ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
-	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", ""); 
-    
+	if(!scale_signal_datacard) {
+        ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
+	    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
+	    ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", ""); 
+    }
     for (auto m : sm_masses) {
             HhhAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
             HhhAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
