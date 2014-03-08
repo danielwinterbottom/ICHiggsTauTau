@@ -532,7 +532,9 @@ namespace ic {
            std::string draw_options = "";
           if (ratios_[k].draw_fill()) draw_options += "HIST";
           if (ratios_[k].draw_marker()) draw_options += "P";
-          if (ratios_[k].draw_stat_error_y()) draw_options += "E1";
+          if (ratios_[k].draw_stat_error_y()) {
+            draw_options += use_htt_style ? "E0" : "E1";
+          }
           if (ratios_[k].draw_options() != "") draw_options = ratios_[k].draw_options();
 
           if (k == 0)
@@ -545,6 +547,7 @@ namespace ic {
               ratio_ele[k]->GetYaxis()->SetTitleSize(0.16);
               ratio_ele[k]->GetYaxis()->SetTitleOffset(0.460);
               ratio_ele[k]->GetXaxis()->SetTitleOffset(0.900);
+              if (x_bin_labels_ != "") ratio_ele[k]->GetXaxis()->SetLabelSize(0.20);
             } else {
               ratio_ele[k]->GetXaxis()->SetLabelSize(0.10);
               ratio_ele[k]->GetXaxis()->SetTitleSize(0.12);

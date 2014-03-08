@@ -102,7 +102,7 @@ namespace ic {
     unsigned centre_bin = hist->GetNbinsX() / 2;
     if (hist->Integral() == 0.0) {
       if (verbose) std::cout << "[FixEmptyHist] Histogram is empty, inserting small value in central bin" << std::endl;
-      hist->SetBinContent(centre_bin, 0.0000001);
+      hist->SetBinContent(centre_bin, 0.00001);
     }
   }
 

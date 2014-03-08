@@ -256,7 +256,9 @@ namespace ic {
       ((prefix+"x_blind_max").c_str(),          po::value<double>(&x_blind_max_)->default_value(0))
       ((prefix+"auto_error_band").c_str(),      po::value<double>(&auto_error_band_)->default_value(-1.0))
       ((prefix+"draw_error_band").c_str(),      po::value<bool>(&draw_error_band_)->default_value(false))
-      ((prefix+"add_stat_error").c_str(),       po::value<bool>(&add_stat_error_)->default_value(true));
+      ((prefix+"add_stat_error").c_str(),       po::value<bool>(&add_stat_error_)->default_value(true))
+      ((prefix+"ratio_min").c_str(),            po::value<double>(&ratio_min_)->default_value(0.68))
+      ((prefix+"ratio_max").c_str(),            po::value<double>(&ratio_max_)->default_value(1.32));
 
     return config_;
     // ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(-10))
@@ -526,8 +528,8 @@ namespace ic {
     plot.ratio_y_axis_title = "Obs/Bkg";
     plot.AddRatioPlotElement(ratio);
     plot.custom_ratio_y_axis_range = true;
-    plot.ratio_y_axis_min = 0.68;
-    plot.ratio_y_axis_max = 1.32;
+    plot.ratio_y_axis_min = ratio_min_;
+    plot.ratio_y_axis_max = ratio_max_;
     HTTPlot::SetDataStyle(data_plot);
     plot.AddTH1PlotElement(data_plot);
     plot.legend_height = 0.05;
