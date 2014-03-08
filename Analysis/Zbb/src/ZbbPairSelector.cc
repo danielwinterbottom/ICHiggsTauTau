@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Zbb/interface/ZbbPairSelector.h"
 #include "boost/bind.hpp"
 #include "boost/range/algorithm_ext/push_back.hpp"
@@ -10,6 +11,8 @@ namespace ic {
     elec_pairs_ = "electron_pairs";
     muon_pairs_ = "muon_pairs";
     output_label_ = "lepton_pair";
+    n_ee = 0;
+    n_mm = 0;
   }
 
   ZbbPairSelector::~ZbbPairSelector() { }
@@ -40,13 +43,20 @@ namespace ic {
     // and write both the vector and channel into the event
     std::string channel = "ee";
     if (std::find(muon_pair_vec.begin(), muon_pair_vec.end(), lepton_pair[0])
-      != muon_pair_vec.end()) channel = "mm";
+      != muon_pair_vec.end()) {
+      channel = "mm";
+      ++n_mm;
+    } else {
+      ++n_ee;
+    }
     event->Add(output_label_, lepton_pair);
     event->Add("channel", channel);
     return 0;
   }
 
   int ZbbPairSelector::PostAnalysis() {
+    std::cout << "ee pairs: " << n_ee << std::endl;
+    std::cout << "mm pairs: " << n_mm << std::endl;
     return 0;
   }
 

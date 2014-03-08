@@ -16,6 +16,9 @@ class ZbbPairSelector : public ModuleBase {
   CLASS_MEMBER(ZbbPairSelector, std::string, muon_pairs)
   CLASS_MEMBER(ZbbPairSelector, std::string, output_label)
 
+  unsigned n_ee;
+  unsigned n_mm;
+
  public:
   ZbbPairSelector(std::string const& name);
   virtual ~ZbbPairSelector();

@@ -199,6 +199,20 @@ int main(int argc, char* argv[]) {
     .set_reference_label("lepton_pair")
     .set_min_dr(0.5);
 
+  if (!is_data) analysis.AddModule(&pileup_weight);
+  analysis.AddModule(&copy_elecs);
+  analysis.AddModule(&copy_muons);
+  analysis.AddModule(&select_elecs);
+  analysis.AddModule(&select_muons);
+  analysis.AddModule(&elec_pairs);
+  analysis.AddModule(&muon_pairs);
+  analysis.AddModule(&elec_pair_filter);
+  analysis.AddModule(&muon_pair_filter);
+  analysis.AddModule(&pair_selector);
+  analysis.AddModule(&copy_jets);
+  analysis.AddModule(&select_jets);
+  analysis.AddModule(&jet_overlap);
+  
   analysis.RunAnalysis();
 //   delete fs;
   return 0;
