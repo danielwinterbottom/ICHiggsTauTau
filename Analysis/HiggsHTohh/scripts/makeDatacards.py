@@ -34,6 +34,8 @@ parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
                   help="Only make inputs for visible mass, no svfit.")
 parser.add_option("--svfit", dest="svfit", action='store_true', default=False,
                   help="Only make inputs for svfit mass.")
+parser.add_option("--dijet", dest="dijet", action='store_true', default=False,
+                  help="Only make inputs for dijet mass.")
 parser.add_option("-e", dest="energy", type='string', default='8',
                   help="The C.O.M. energy is written into the datacard name, default is 8")
 
@@ -188,16 +190,34 @@ if options.scheme == 'HTohh':
   BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
   BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
   scheme_et = [
-    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
-    ("0",   "0tag",      "0tag",     BINS_FINE,  ''),
-    ("1",   "1tag",      "1tag",     BINS_FINE,  ''),
-    ("2",   "2tag",        "2tag",       BINS,  '') 
+    ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_inclusive_'+COM+'TeV"')),
+    ("0",   "0tag",      "0tag",     BINS_FINE, ( 
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_0tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_0tag_'+COM+'TeV:50:1.0:0.10"')),
+    ("1",   "1tag",      "1tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_1tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_frac=0.015')),
+    ("2",   "2tag",        "2tag",       BINS,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_2tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_mt = [
-    ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
-    ("0",   "0tag",      "0tag",     BINS_FINE,  ''),
-    ("1",   "1tag",      "1tag",     BINS_FINE,  ''),
-    ("2",   "2tag",        "2tag",       BINS,  '') 
+    ("8",    "inclusive",   "inclusive",  BINS_FINE, (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_inclusive_'+COM+'TeV"')),
+    ("0",   "0tag",      "0tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_0tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_0tag_'+COM+'TeV:50:1.1:0.10"')),
+    ("1",   "1tag",      "1tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_1tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_frac=0.015')),
+    ("2",   "2tag",        "2tag",       BINS,  ( 
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_em = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'),
@@ -227,10 +247,15 @@ cat_schemes = {
 
 plots = [ 
   ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' ,   "100"    ,"150"),
-  ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"150")
+  ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"150"),
+  ('prebjet_mjj'   , 'M_{jj} [GeV]'        , ''      ,   "80"   ,"160")
  ]
-if options.mvis: del plots[1]
-if options.svfit: del plots[0]
+if options.mvis: 
+    plots = [plots[0]]
+if options.svfit:
+    plots = [plots[1]]
+if options.dijet: 
+    plots = [plots[2]]
 
 for pl in plots:
   var     = pl[0]
