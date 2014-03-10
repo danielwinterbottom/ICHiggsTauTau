@@ -12,5 +12,3 @@ mkdir -p -v $1/BFAKE_UP
 mkdir -p -v $1/BFAKE_DOWN
 mkdir -p -v $1/JES_UP
 mkdir -p -v $1/JES_DOWN
-mkdir -p -v $1/L1MET_UP
-mkdir -p -v $1/L1MET_DOWN

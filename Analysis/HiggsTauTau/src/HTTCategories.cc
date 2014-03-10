@@ -833,38 +833,39 @@ namespace ic {
 
 
   int HTTCategories::PostAnalysis() {
-    std::cout << "-------------------------------------" << std::endl;
-    std::cout << "HTTCategories" << std::endl;
-    std::cout << "-------------------------------------" << std::endl;      
-    std::vector<std::string> print_selections;
-    print_selections.push_back("os_sel");
-    print_selections.push_back("os_con");
-    print_selections.push_back("ss_sel");
-    print_selections.push_back("ss_con");
-    std::vector<std::string> print_cats;
-    print_cats.push_back("inclusive");
-    print_cats.push_back("vbf_loose");
-    print_cats.push_back("vbf");
-    // print_cats.push_back("vbf_tight");
-    print_cats.push_back("1jet_high");
-    print_cats.push_back("1jet_low");
-    print_cats.push_back("0jet_high");
-    print_cats.push_back("0jet_low");
-    print_cats.push_back("btag");
-    print_cats.push_back("nobtag");
-    std::cout << boost::format("%-20s") % "Selections:";
-    for (unsigned i = 0; i < print_selections.size(); ++i) {
-      std::cout << boost::format("%-12s") % print_selections[i];
-    }
-    std::cout << std::endl;
-    for (unsigned i = 0; i < print_cats.size(); ++i) {
-      std::cout << boost::format("%-20s") % print_cats[i];
-      for (unsigned j = 0; j < print_selections.size(); ++j) {
-        std::cout << boost::format("%-12s") % (yields_[print_cats[i]+"_"+print_selections[j]]);
+    if (write_plots_) {
+      std::cout << "-------------------------------------" << std::endl;
+      std::cout << "HTTCategories" << std::endl;
+      std::cout << "-------------------------------------" << std::endl;      
+      std::vector<std::string> print_selections;
+      print_selections.push_back("os_sel");
+      print_selections.push_back("os_con");
+      print_selections.push_back("ss_sel");
+      print_selections.push_back("ss_con");
+      std::vector<std::string> print_cats;
+      print_cats.push_back("inclusive");
+      print_cats.push_back("vbf_loose");
+      print_cats.push_back("vbf");
+      // print_cats.push_back("vbf_tight");
+      print_cats.push_back("1jet_high");
+      print_cats.push_back("1jet_low");
+      print_cats.push_back("0jet_high");
+      print_cats.push_back("0jet_low");
+      print_cats.push_back("btag");
+      print_cats.push_back("nobtag");
+      std::cout << boost::format("%-20s") % "Selections:";
+      for (unsigned i = 0; i < print_selections.size(); ++i) {
+        std::cout << boost::format("%-12s") % print_selections[i];
       }
       std::cout << std::endl;
+      for (unsigned i = 0; i < print_cats.size(); ++i) {
+        std::cout << boost::format("%-20s") % print_cats[i];
+        for (unsigned j = 0; j < print_selections.size(); ++j) {
+          std::cout << boost::format("%-12s") % (yields_[print_cats[i]+"_"+print_selections[j]]);
+        }
+        std::cout << std::endl;
+      }
     }
-
     return 0;
   }
 
