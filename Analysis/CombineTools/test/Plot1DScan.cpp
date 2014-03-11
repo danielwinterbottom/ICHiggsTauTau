@@ -105,7 +105,7 @@ int main() {
   scans[0].gr->SetMaximum(2);
   scans[0].gr->GetXaxis()->SetRangeUser(0.4, 1.2);
   scans[0].gr->GetXaxis()->SetTitle("#sigma/#sigma_{SM}");
-  scans[0].gr->GetYaxis()->SetTitle("-2 #Delta NLL");
+  scans[0].gr->GetYaxis()->SetTitle("-2 #Delta ln L");
   leg->SetBorderSize(1);
   leg->SetTextFont(42);
   leg->SetTextSize(0.03);

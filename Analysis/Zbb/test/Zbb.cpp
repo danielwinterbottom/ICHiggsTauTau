@@ -27,6 +27,7 @@
 #include "Modules/interface/OneCollCompositeProducer.h"
 #include "Modules/interface/PileupWeight.h"
 #include "Zbb/interface/ZbbPairSelector.h"
+#include "Zbb/interface/ZbbTriggerFilter.h"
 
 // using-directives & namespaces
 namespace po = boost::program_options;
@@ -178,6 +179,11 @@ int main(int argc, char* argv[]) {
     .set_input_label("muon_pairs")
     .set_predicate((bind(&ic::CompositeCandidate::charge, _1) == 0));
 
+  auto trigger_filter =
+    ic::ZbbTriggerFilter("TriggerFilter")
+    .set_elec_pairs("electron_pairs")
+    .set_muon_pairs("muon_pairs");
+
   auto pair_selector = ic::ZbbPairSelector("PairSelector")
     .set_elec_pairs("electron_pairs")
     .set_muon_pairs("muon_pairs")
@@ -208,11 +214,12 @@ int main(int argc, char* argv[]) {
   analysis.AddModule(&muon_pairs);
   analysis.AddModule(&elec_pair_filter);
   analysis.AddModule(&muon_pair_filter);
+  if (is_data) analysis.AddModule(&trigger_filter);
   analysis.AddModule(&pair_selector);
   analysis.AddModule(&copy_jets);
   analysis.AddModule(&select_jets);
   analysis.AddModule(&jet_overlap);
-  
+
   analysis.RunAnalysis();
 //   delete fs;
   return 0;
