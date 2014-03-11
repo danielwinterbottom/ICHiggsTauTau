@@ -214,8 +214,8 @@ int main(int argc, char* argv[]) {
   analysis.AddModule(&muon_pairs);
   analysis.AddModule(&elec_pair_filter);
   analysis.AddModule(&muon_pair_filter);
-  if (is_data) analysis.AddModule(&trigger_filter);
   analysis.AddModule(&pair_selector);
+  if (is_data) analysis.AddModule(&trigger_filter);
   analysis.AddModule(&copy_jets);
   analysis.AddModule(&select_jets);
   analysis.AddModule(&jet_overlap);
