@@ -62,6 +62,7 @@ int main(int argc, char* argv[]){
   string output_name;             // Name of the ouput ROOT File
   string output_folder;           // Folder to write the output in
   bool do_skim;                   // For making skimmed ntuples
+  bool do_trigeff;                // Apply trigger at end of selection to work out trigger efficiency and bin variables
   bool do_gensteps;               // For getting numbers of events at gen level
   bool doincludehighptz;          // For including high pt z sample
   string skim_path = "";          // Local folder where skimmed ntuples should be written
@@ -98,8 +99,6 @@ int main(int argc, char* argv[]){
   bool doMetFilters;              // apply cleaning MET filters.
   string filters;
   //unsigned signal_region;       // DeltaPhi cut > 2.7
-  double met_cut;                 // MET cut min to apply for signal, QCD or skim
-  double met_cut_max;                 // MET cut max to apply for signal, QCD or skim
   bool dotrgeff;                  // Do trigger efficiency corrections
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
   bool doidisoerr;                // Do lepton ID-iso efficiency correction error
@@ -108,9 +107,25 @@ int main(int argc, char* argv[]){
   bool dolumixsweight;            // Do lumi*xs/evt weight online
   string inputparams;               // Params file to use for info on lumi xs and evt
 
+  //CUTS
+  double jet1ptcut;               //jet1ptcut
+  double jet1ptcutmax;            //jet1ptcutmax
+  double jet2ptcut;               //jet2ptcut
+  double jet2ptcutmax;            //jet2ptcutmax
+  double jetptprecut;             //jetptprecut, should be the CJV threshold
+  double detajjcut;               //delta eta between jets cut
+  double detajjcut_max;           //delta eta between jets cut
+  double dphi_cut;                //delta phi cut FOR TRIGGER STUDY ONLY
+  double dphi_cut_max;            //delta phi cut max FOR TRIGGER STUDY ONLY
+  double met_cut;                 // MET cut min to apply for signal, QCD or skim
+  double met_cut_max;             // MET cut max to apply for signal, QCD or skim
+  double mjj_cut;                 // mjjcut
+  double mjj_cut_max;             // maxmjjcut
+
+
   int randomseed;
 
-  double mjj_cut;                 // mjjcut
+
 
   bool printEventList;  //print run,lumi,evt of events selected
   bool printEventContent; //print event content of events selected
@@ -138,6 +153,7 @@ int main(int argc, char* argv[]){
     ("output_name",         po::value<string>(&output_name)->required())
     ("output_folder",       po::value<string>(&output_folder)->default_value(""))
     ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
+    ("do_trigeff",          po::value<bool>(&do_trigeff)->default_value(false))
     ("do_gensteps",         po::value<bool>(&do_gensteps)->default_value(false))
     ("doincludehighptz",    po::value<bool>(&doincludehighptz)->default_value(false))
     ("skim_path",           po::value<string>(&skim_path)->default_value(""))
@@ -154,7 +170,17 @@ int main(int argc, char* argv[]){
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
     ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
     ("met_cut_max",         po::value<double>(&met_cut_max)->default_value(14000.))
+    ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(50.))
+    ("jet1ptcutmax",        po::value<double>(&jet1ptcutmax)->default_value(999999999.))
+    ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(50.))
+    ("jet2ptcutmax",        po::value<double>(&jet2ptcutmax)->default_value(999999999.))
+    ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(30.))
+    ("detajjcut",           po::value<double>(&detajjcut)->default_value(4.2))
+    ("detajjcut_max",       po::value<double>(&detajjcut_max)->default_value(20.))
+    ("dphi_cut",            po::value<double>(&dphi_cut)->default_value(0.))
+    ("dphi_cut_max",        po::value<double>(&dphi_cut_max)->default_value(6.3))
     ("mjj_cut",             po::value<double>(&mjj_cut)->default_value(1200.))
+    ("mjj_cut_max",         po::value<double>(&mjj_cut_max)->default_value(8000.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
@@ -278,6 +304,8 @@ int main(int argc, char* argv[]){
   veto_elec_eta = 2.4;
   veto_muon_pt = 10.0;
   veto_muon_eta = 2.1;
+
+  if(do_skim) jetptprecut = 30.0;
    
   std::cout << "----------PARAMETERS----------" << std::endl;
   std::cout << boost::format("%-15s %-10s\n") % "elec_pt:" % elec_pt;
@@ -702,12 +730,11 @@ int main(int argc, char* argv[]){
   // Jet pT eta filter
   //CopyCollection<PFJet> jetCopyCollection("CopyToJet","pfJetsPFlow","selJets");
 
-  double jetptcut=30.0;
-  if(do_skim) jetptcut = 30.0;
+
 
   SimpleFilter<PFJet> jetPtEtaFilter = SimpleFilter<PFJet>
     ("JetPtEtaFilter")
-    .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptcut, 4.7));
+    .set_input_label("pfJetsPFlow").set_predicate(bind(MinPtMaxEta, _1, jetptprecut, 4.7));
 
 
   CJVFilter FilterCJV = CJVFilter("FilterCJV")
@@ -765,9 +792,17 @@ int main(int argc, char* argv[]){
     .set_select_leading_pair(true)
     .set_output_label("jjLeadingCandidates");                                                        
 
+  bool cutaboveorbelow=true;
   SimpleFilter<CompositeCandidate> jetPairFilter = SimpleFilter<CompositeCandidate>("JetPairFilter")
     .set_input_label("jjLeadingCandidates")
-    .set_predicate( bind(PairPtSelection, _1, 50, 50) )
+    .set_predicate( bind(OrderedPairPtSelection, _1,jet1ptcut, jet2ptcut, cutaboveorbelow) )
+    .set_min(1)
+    .set_max(999);
+
+  cutaboveorbelow=false;
+  SimpleFilter<CompositeCandidate> jetPairMaxPtFilter = SimpleFilter<CompositeCandidate>("JetPairMaxPtFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( bind(OrderedPairPtSelection, _1, jet1ptcutmax, jet2ptcutmax, cutaboveorbelow) )
     .set_min(1)
     .set_max(999);
   
@@ -780,7 +815,13 @@ int main(int argc, char* argv[]){
 
   SimpleFilter<CompositeCandidate> detaJetPairFilter = SimpleFilter<CompositeCandidate>("DetaJetPairFilter")
     .set_input_label("jjLeadingCandidates")
-    .set_predicate( !bind(PairDEtaLessThan, _1, 4.2) )
+    .set_predicate( !bind(PairDEtaLessThan, _1, detajjcut) )
+    .set_min(1)
+    .set_max(999);    
+
+  SimpleFilter<CompositeCandidate> detaJetPairMaxFilter = SimpleFilter<CompositeCandidate>("DetaJetPairMaxFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( bind(PairDEtaLessThan, _1, detajjcut_max) )
     .set_min(1)
     .set_max(999);    
 
@@ -796,7 +837,7 @@ int main(int argc, char* argv[]){
     
   SimpleFilter<CompositeCandidate> tightMassJetPairFilter = SimpleFilter<CompositeCandidate>("TightMassJetPairFilter")
     .set_input_label("jjLeadingCandidates")
-    .set_predicate( bind(PairMassInRange, _1,mjj_cut,8000) )
+    .set_predicate( bind(PairMassInRange, _1,mjj_cut,mjj_cut_max) )
     .set_min(1)
     .set_max(999);    
 
@@ -810,6 +851,18 @@ int main(int argc, char* argv[]){
   SimpleFilter<CompositeCandidate> dphiQCDJetPairFilter = SimpleFilter<CompositeCandidate>("DphiQCDJetPairFilter")
     .set_input_label("jjLeadingCandidates")
     .set_predicate( !bind(PairAbsDPhiLessThan, _1,2.6) )
+    .set_min(1)
+    .set_max(999);    
+
+  SimpleFilter<CompositeCandidate> dphilowFilter = SimpleFilter<CompositeCandidate>("DphiLowFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( !bind(PairAbsDPhiLessThan, _1,dphi_cut) )
+    .set_min(1)
+    .set_max(999);    
+
+  SimpleFilter<CompositeCandidate> dphimaxFilter = SimpleFilter<CompositeCandidate>("DphiMaxFilter")
+    .set_input_label("jjLeadingCandidates")
+    .set_predicate( bind(PairAbsDPhiLessThan, _1,dphi_cut_max) )
     .set_min(1)
     .set_max(999);    
 
@@ -1348,6 +1401,55 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("CJVfail");
 
+  HinvControlPlots controlPlots_pretrig_cjvfail = HinvControlPlots("pretrigCJVFailControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("pretrig_CJVfail")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  HinvControlPlots controlPlots_pretrig_cjvpass = HinvControlPlots("pretrigCJVPassControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("pretrig_CJVpass")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  HinvControlPlots controlPlots_pretrig_nocjv = HinvControlPlots("pretrigControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("pretrig_nocjv")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  HinvControlPlots controlPlots_posttrig_cjvfail = HinvControlPlots("posttrigCJVFailControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("posttrig_CJVfail")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  HinvControlPlots controlPlots_posttrig_cjvpass = HinvControlPlots("posttrigCJVPassControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("posttrig_CJVpass")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+  HinvControlPlots controlPlots_posttrig_nocjv = HinvControlPlots("posttrigControlPlots")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("posttrig_nocjv")
+    .set_is_data(is_data)
+    .set_channel(channel_str);
+
+
   //if (channel==channel::enu)
   //wjetsPlots_tightMjj.set_met_nolep_label("metNoElectrons");
   //else if (channel==channel::emu)
@@ -1414,7 +1516,7 @@ int main(int argc, char* argv[]){
    //if (!do_skim) {
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
-     analysis.AddModule(&dataMCTriggerPathFilter);
+    if(!do_trigeff) analysis.AddModule(&dataMCTriggerPathFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
  
     //NEW: change skimming to write event at a specific moment in the chain of modules.
@@ -1544,7 +1646,6 @@ int main(int argc, char* argv[]){
      //need sel leptons to apply idiso weights
      if (!is_data && !do_skim) analysis.AddModule(&hinvWeights);
 
-
      if (channel == channel::nunu||channel==channel::nunulowmet){
        analysis.AddModule(&controlPlots_lepveto);
      }
@@ -1559,8 +1660,10 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&wjetsPlots_wsel);
      }
 
- 
      analysis.AddModule(&jetPairFilter);
+     if(do_trigeff) analysis.AddModule(&jetPairMaxPtFilter);//Allow max pt cut to enable binning in jet pt for trig studies
+       
+  
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      if (doTopCR) {
@@ -1573,7 +1676,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&FilterCJV);
 
      //jet pair selection
-     analysis.AddModule(&etaProdJetPairFilter);
+     analysis.AddModule(&etaProdJetPairFilter);//!!DECIDE WHETHER TO APPLY THIS IN TRG EFF STUDY
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      analysis.AddModule(&controlPlots_dijet);
@@ -1589,6 +1692,7 @@ int main(int argc, char* argv[]){
      else {
 
        analysis.AddModule(&detaJetPairFilter);
+       if(do_trigeff) analysis.AddModule(&detaJetPairMaxFilter);//Put max cut in to allow binning for trigger study
        analysis.AddModule(&controlPlots_deta);
        analysis.AddModule(&wjetsPlots_deta);
        //if (printEventList) analysis.AddModule(&hinvPrintList);
@@ -1643,6 +1747,19 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&wjetsPlots_dphi_qcd_cjvpass);
        analysis.AddModule(&controlPlots_dphi_signal_cjvpass);
        analysis.AddModule(&wjetsPlots_dphi_signal_cjvpass);
+     
+       if(do_trigeff){//Do trigger efficiency studies
+	 analysis.AddModule(&dphilowFilter);
+	 analysis.AddModule(&dphimaxFilter);
+	 analysis.AddModule(&controlPlots_pretrig_cjvpass);
+	 analysis.AddModule(&controlPlots_pretrig_cjvfail);
+	 analysis.AddModule(&controlPlots_pretrig_nocjv);
+	 analysis.AddModule(&dataMCTriggerPathFilter);
+	 analysis.AddModule(&controlPlots_posttrig_cjvpass);
+	 analysis.AddModule(&controlPlots_posttrig_cjvfail);
+	 analysis.AddModule(&controlPlots_posttrig_nocjv);
+       }
+     
        //debug
        //analysis.AddModule(&dphiJetPairFilter);
        //if (!is_data) analysis.AddModule(&hinvWeights);

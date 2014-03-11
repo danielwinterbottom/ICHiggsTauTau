@@ -146,6 +146,7 @@ namespace ic {
   }
 
   bool PairPtSelection(CompositeCandidate const* cand, double const& jetpt1, double const& jetpt2);
+  bool OrderedPairPtSelection(CompositeCandidate const* cand, double const& jetpt1, double const& jetpt2, bool const& aboveorbelow);
   bool PairMassInRange(CompositeCandidate const* cand, double const& mLow, double const& mHigh);
   bool PairEtaProdLessThan(CompositeCandidate const* cand, double const& max);
   bool PairDEtaLessThan(CompositeCandidate const* cand, double const& max);

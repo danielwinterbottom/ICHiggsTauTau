@@ -771,6 +771,29 @@ namespace ic {
     return false;
   }
 
+  bool OrderedPairPtSelection(CompositeCandidate const* cand, double const& jetpt1, double const& jetpt2, bool const& aboveorbelow){
+    double at0pt=cand->At(0)->pt();
+    double at1pt=cand->At(1)->pt();
+    if(at0pt>at1pt){
+      if(aboveorbelow){
+	if (at0pt>jetpt1 && at1pt>jetpt2) return true;
+      }
+      else{
+ 	if (at0pt<jetpt1 && at1pt<jetpt2) return true;
+      }
+      return false;
+    }
+    else{
+      if(aboveorbelow){
+	if (at1pt>jetpt1 && at0pt>jetpt2) return true;
+      }
+      else{
+	if (at1pt<jetpt1 && at0pt<jetpt2) return true;
+      }
+      return false;
+    }
+  }
+
   bool PairMassInRange(CompositeCandidate const* cand, double const& mLow, double const& mHigh) {
     double mass = (cand->At(0)->vector() + cand->At(1)->vector()).M();
     return (mass > mLow && mass < mHigh);
