@@ -28,6 +28,7 @@
 #include "Modules/interface/PileupWeight.h"
 #include "Zbb/interface/ZbbPairSelector.h"
 #include "Zbb/interface/ZbbTriggerFilter.h"
+#include "Zbb/interface/ZbbAnalyser.h"
 
 // using-directives & namespaces
 namespace po = boost::program_options;
@@ -51,6 +52,7 @@ int main(int argc, char* argv[]) {
   unsigned btag_mode;      // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned bfake_mode;     // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned jes_mode;       // 0 = no shift, 1 = shift down, 2 = shift up
+  bool set_z_flav;
 
   // Load the config
   po::options_description preconfig("pre-config");
@@ -68,6 +70,7 @@ int main(int argc, char* argv[]) {
       ("output_name",     po::value<string>(&output_name)->required())
       ("output_folder",   po::value<string>(&output_folder)->default_value(""))
       ("is_data",         po::value<bool>(&is_data)->required())
+      ("set_z_flav",      po::value<bool>(&set_z_flav)->default_value(false))
       ("btag_mode",       po::value<unsigned>(&btag_mode)->default_value(0))
       ("bfake_mode",      po::value<unsigned>(&bfake_mode)->default_value(0))
       ("jes_mode",        po::value<unsigned>(&jes_mode)->default_value(0));
@@ -102,8 +105,8 @@ int main(int argc, char* argv[]) {
   for (auto & f : files) f = input_prefix + f;
 
   // Create ROOT output fileservice
-  // fwlite::TFileService *fs =
-  //  new fwlite::TFileService((output_folder+output_name).c_str());
+  fwlite::TFileService *fs =
+   new fwlite::TFileService((output_folder+output_name).c_str());
 
   // Create analysis object
   ic::AnalysisBase analysis(
@@ -205,6 +208,10 @@ int main(int argc, char* argv[]) {
     .set_reference_label("lepton_pair")
     .set_min_dr(0.5);
 
+  auto analyser = ic::ZbbAnalyser("Analyser")
+    .set_fs(fs)
+    .set_set_z_flav(set_z_flav);
+
   if (!is_data) analysis.AddModule(&pileup_weight);
   analysis.AddModule(&copy_elecs);
   analysis.AddModule(&copy_muons);
@@ -219,6 +226,7 @@ int main(int argc, char* argv[]) {
   analysis.AddModule(&copy_jets);
   analysis.AddModule(&select_jets);
   analysis.AddModule(&jet_overlap);
+  analysis.AddModule(&analyser);
 
   analysis.RunAnalysis();
 //   delete fs;
