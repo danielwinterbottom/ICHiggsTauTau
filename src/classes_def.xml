@@ -26,6 +26,8 @@
   <class name="std::vector<ic::GenJet>"/>
   <class name="ic::Vertex"/>
   <class name="std::vector<ic::Vertex>"/>
+  <class name="ic::SecondaryVertex"/>
+  <class name="std::vector<ic::SecondaryVertex>"/>
   <class name="ic::Electron"/>
   <class name="std::vector<ic::Electron>"/>
   <class name="ic::Photon"/>
