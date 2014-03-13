@@ -147,17 +147,20 @@ namespace ic {
                         std::string postfix) {
     Value total_bkr;
     // Data
-    auto data_norm = this->GetRate("Data", sel, cat, wt);
-    TH1F data_hist = this->GetShape(var, "Data", sel, cat, wt);
-    SetNorm(&data_hist, data_norm.first);
-    auto data_pair = std::make_pair(data_hist, data_norm);
-    PrintValue("data_obs"+postfix, data_pair.second);
-    hmap["data_obs"+postfix] = data_pair;
+    if (postfix == "") {
+      auto data_norm = this->GetRate("Data", sel, cat, wt);
+      TH1F data_hist = this->GetShape(var, "Data", sel, cat, wt);
+      SetNorm(&data_hist, data_norm.first);
+      auto data_pair = std::make_pair(data_hist, data_norm);
+      PrintValue("data_obs"+postfix, data_pair.second);
+      hmap["data_obs"+postfix] = data_pair;
+    }
 
     // Z+l
     auto zl_norm = this->GetLumiScaledRate("DYJetsToLL", sel+" && zflav==0", cat, wt);
-    TH1F zl_hist = this->GetShape(var, "Data", sel+" && zflav==0", cat, wt);
+    TH1F zl_hist = this->GetShape(var, "DYJetsToLL", sel+" && zflav==0", cat, wt);
     SetNorm(&zl_hist, zl_norm.first);
+    TH1F total_hist = zl_hist;
     auto zl_pair = std::make_pair(zl_hist, zl_norm);
     PrintValue("Zl"+postfix, zl_pair.second);
     total_bkr = ValueAdd(total_bkr, zl_pair.second);
@@ -167,6 +170,7 @@ namespace ic {
     auto zc_norm = this->GetLumiScaledRate("DYJetsToLL", sel+" && zflav==1", cat, wt);
     TH1F zc_hist = this->GetShape(var, "DYJetsToLL", sel+" && zflav==1", cat, wt);
     SetNorm(&zc_hist, zc_norm.first);
+    total_hist.Add(&zc_hist);
     auto zc_pair = std::make_pair(zc_hist, zc_norm);
     PrintValue("Zc"+postfix, zc_pair.second);
     total_bkr = ValueAdd(total_bkr, zc_pair.second);
@@ -176,6 +180,7 @@ namespace ic {
     auto zb_norm = this->GetLumiScaledRate("DYJetsToLL", sel+" && zflav==2", cat, wt);
     TH1F zb_hist = this->GetShape(var, "DYJetsToLL", sel+" && zflav==2", cat, wt);
     SetNorm(&zb_hist, zb_norm.first);
+    total_hist.Add(&zb_hist);
     auto zb_pair = std::make_pair(zb_hist, zb_norm);
     PrintValue("Zb"+postfix, zb_pair.second);
     total_bkr = ValueAdd(total_bkr, zb_pair.second);
@@ -185,12 +190,15 @@ namespace ic {
     auto tt_norm = this->GetLumiScaledRate("TTJets", sel, cat, wt);
     TH1F tt_hist = this->GetShape(var, "TTJets", sel, cat, wt);
     SetNorm(&tt_hist, tt_norm.first);
+    total_hist.Add(&tt_hist);
     auto tt_pair = std::make_pair(tt_hist, tt_norm);
     PrintValue("TT"+postfix, tt_pair.second);
     total_bkr = ValueAdd(total_bkr, tt_pair.second);
     hmap["TT"+postfix] = tt_pair;
     // Print the total background yield
     PrintValue("Total"+postfix, total_bkr);
+    auto total_pair = std::make_pair(total_hist, total_bkr);
+    hmap["Bkg"+postfix] = total_pair;
     return;
   }
 

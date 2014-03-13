@@ -29,6 +29,7 @@ int main(int argc, char* argv[]){
 	string syst_scale_j;
 	string shift_backgrounds;
 	bool auto_titles;
+  std::string big_label;
 
 	// Program options
   po::options_description preconfig("Pre-Configuration");
@@ -49,6 +50,7 @@ int main(int argc, char* argv[]){
 	  ("set_alias",               po::value<vector<string>>(&set_alias)->composing())
 	  ("syst_scale_j",            po::value<string>(&syst_scale_j)->default_value(""))
 	  ("shift_backgrounds",       po::value<string>(&shift_backgrounds)->default_value(""))
+	  ("big_label",               po::value<string>(&big_label)->default_value(""))
 	  ("auto_titles",   			    po::value<bool>(&auto_titles)->default_value(true));
 
 
@@ -120,8 +122,18 @@ int main(int argc, char* argv[]){
 	boost::replace_all(wt_b_u, "wt_1b_exc", "wt_1b_exc_u");
 	boost::replace_all(wt_b_d, "wt_2b_inc", "wt_2b_inc_d");
 	boost::replace_all(wt_b_u, "wt_2b_inc", "wt_2b_inc_u");
-	ana.FillHistoMap(hmap, var, sel, cat, wt_b_d, "_btag_sfDown");
-	ana.FillHistoMap(hmap, var, sel, cat, wt_b_u, "_btag_sfUp");
+	ana.FillHistoMap(hmap, var, sel, cat, wt_b_d, "_btagDown");
+	ana.FillHistoMap(hmap, var, sel, cat, wt_b_u, "_btagUp");
+    
+  TH1F *btag_nom_bkg = &(hmap["Bkg"].first);
+  TH1F *btag_d_bkg = &(hmap["Bkg_btagDown"].first);
+  TH1F *btag_u_bkg = &(hmap["Bkg_btagUp"].first);
+  for (unsigned i = 1; i <= btag_nom_bkg->GetNbinsX(); ++i) {
+    double old_err = btag_nom_bkg->GetBinError(i);
+    double err = std::fabs(btag_u_bkg->GetBinContent(i) - btag_d_bkg->GetBinContent(i)) / 2.0;
+    double new_err = std::sqrt(old_err*old_err + err*err);
+    btag_nom_bkg->SetBinError(i, new_err);
+  }
 
 	if (syst_scale_j != "") {
 		systematics.push_back(make_pair("/JES_DOWN", syst_scale_j+"Down"));
@@ -136,6 +148,19 @@ int main(int argc, char* argv[]){
 		ana_syst.ReadTrees(folder+syst.first, folder);
 		ana_syst.ParseParamFile(paramfile);
 		ana_syst.FillHistoMap(hmap, var, sel, cat, wt, "_"+syst.second);
+  }
+
+  for (auto syst : {syst_scale_j}) {
+    TH1F *nom_bkg = &(hmap["Bkg"].first);
+    TH1F *d_bkg = &(hmap["Bkg_"+syst+"Down"].first);
+    TH1F *u_bkg = &(hmap["Bkg_"+syst+"Up"].first);
+    for (unsigned i = 1; i <= nom_bkg->GetNbinsX(); ++i) {
+      double old_err = nom_bkg->GetBinError(i);
+      double err = std::fabs(u_bkg->GetBinContent(i) - d_bkg->GetBinContent(i)) / 2.0;
+      std::cout << err << std::endl;
+      double new_err = std::sqrt(old_err*old_err + err*err);
+      nom_bkg->SetBinError(i, new_err);
+    }
   }
 
 	// ************************************************************************
@@ -188,7 +213,9 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (auto_titles) {
 		double fb_lumi = ana.GetLumi() / 1000.;
-		plot.set_title_left((boost::format("CMS, %.1f fb^{-1} at 7 TeV") % fb_lumi).str());
+		plot.set_title_left((boost::format("L = %.1f fb^{-1} at 7 TeV") % fb_lumi).str());
+    ic::TextElement text(big_label,0.08,0.21,0.82);
+    plot.AddTextElement(text);
 	}
 	plot.GeneratePlot(hmap);
 

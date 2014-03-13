@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
   auto jes_uncert = ic::JetEnergyUncertainty<ic::PFJet>("JetEnergyUncertainty")
     .set_input_label("pfJetsPFlow")
     .set_jes_shift_mode(jes_mode)
-    .set_uncert_file("data/jec/JEC11_V12_AK5PF_UncertaintySources.txt")
+    .set_uncert_file("data/JEC11_V12_AK5PF_UncertaintySources.txt")
     .set_uncert_set("SubTotalDataMC");
 
   auto copy_elecs = ic::CopyCollection<ic::Electron>("CopyElectrons",
