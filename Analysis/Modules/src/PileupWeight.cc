@@ -1,24 +1,26 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
+#include "Modules/interface/PileupWeight.h"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
 
 namespace ic {
 
   PileupWeight::PileupWeight(std::string const& name) : ModuleBase(name) {
-    is_valid_ = false;
-    data_ = NULL;
-    mc_ = NULL;
-    print_weights_ = false;
-    label_ = "pileup";
+    is_valid_       = false;
+    data_           = nullptr;
+    mc_             = nullptr;
+    print_weights_  = false;
+    label_          = "pileup";
+    use_sampled_interactions_ = false;
   }
 
   PileupWeight::PileupWeight(std::string const& name,
 			     std::string const& label) : ModuleBase(name) {
-    is_valid_ = false;
-    data_ = NULL;
-    mc_ = NULL;
-    print_weights_ = false;
-    label_ = label;
+    is_valid_       = false;
+    data_           = nullptr;
+    mc_             = nullptr;
+    print_weights_  = false;
+    label_          = label;
+    use_sampled_interactions_ = false;
   }
 
   PileupWeight::~PileupWeight() {
@@ -37,14 +39,13 @@ namespace ic {
     std::cout << "PreAnalysis Info for PileupReweight" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     if (data_ && mc_) {
-      std::cout << "- Input data histogram has " << nbins_data << " bins in the range [" << min_data << "," << max_data << "]" << std::endl;
-      std::cout << "- Input MC histogram has " << nbins_mc << " bins in the range [" << min_mc << "," << max_mc << "]" << std::endl;
-      std::cout << "- Weights calculated for " << nbins << " bins" << std::endl;
-      std::cout << "- Weight label in EventInfo is " << label_ << std::endl;
+      std::cout << "* Input data histogram has " << nbins_data << " bins in the range [" << min_data << "," << max_data << "]" << std::endl;
+      std::cout << "* Input MC histogram has " << nbins_mc << " bins in the range [" << min_mc << "," << max_mc << "]" << std::endl;
+      std::cout << "* Weights calculated for " << nbins << " bins" << std::endl;
+      std::cout << "* Weight label in EventInfo is " << label_ << std::endl;
     } else {
       std::cout << "Invalid histogram!" << std::endl;
     }
-    //weights_.resize(nbins);
     data_->Scale(1./data_->Integral());
     mc_->Scale(1./mc_->Integral());
     weights_ = (TH1*)data_->Clone();
@@ -60,7 +61,10 @@ namespace ic {
     std::vector<PileupInfo *> const& puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
     float true_int = -1;
     for (unsigned i = 0; i < puInfo.size(); ++i) {
-      if (puInfo[i]->bunch_crossing() == 0) true_int = puInfo[i]->true_num_interactions();
+      if (puInfo[i]->bunch_crossing() == 0) {
+        true_int = use_sampled_interactions_ ?
+            puInfo[i]->num_interactions() : puInfo[i]->true_num_interactions();
+      }
     }
     if (true_int < 0) {
       std::cout << "Warning: In-time true_num_interactions not found!" << std::endl;
