@@ -1,0 +1,1 @@
+./bin/ZbbPlot --cfg=scripts/plot.cfg --sel="met<50 && m_z>76 && m_z<106" --cat="n_b_jets>=2" --var="m_z(15,76,106)" --datacard="inclusive" --background_scheme="all" --draw_ratio=true --wt="wt*wt_2b_inc" --syst_scale_j="jes" --extra_pad=1.7 --big_label="Z+2b" --x_axis_label="m_{ll} [GeV]"

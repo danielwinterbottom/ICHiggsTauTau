@@ -211,7 +211,7 @@ namespace ic {
       for (unsigned i = 1; i <= unsigned(bkg_total.GetNbinsX()); ++i) {
         bkg_total.SetBinError(i, 0.0);
       } 
-      err_element = TH1PlotElement("error_shape", &error_band,"Bkg. uncertainty");
+      err_element = TH1PlotElement("error_shape", &error_band,"Stat. + Syst.");
       bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
 
       err_element.set_marker_size(0);
@@ -271,7 +271,7 @@ namespace ic {
     }
     ZbbPlot::SetRatioStyle(ratio,1);
     ratio.set_multi_mode(true);
-    plot.ratio_y_axis_title = "Obs/Bkg";
+    plot.ratio_y_axis_title = "Obs/Exp";
     plot.AddRatioPlotElement(ratio);
     plot.custom_ratio_y_axis_range = true;
     plot.ratio_y_axis_min = ratio_min_;
