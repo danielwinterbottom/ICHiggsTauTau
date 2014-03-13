@@ -26,6 +26,12 @@ namespace ic {
       outtree_->Branch("wt_1b_inc", &wt_1b_inc_);
       outtree_->Branch("wt_1b_exc", &wt_1b_exc_);
       outtree_->Branch("wt_2b_inc", &wt_2b_inc_);
+      outtree_->Branch("wt_1b_inc_d", &wt_1b_inc_d_);
+      outtree_->Branch("wt_1b_exc_d", &wt_1b_exc_d_);
+      outtree_->Branch("wt_2b_inc_d", &wt_2b_inc_d_);
+      outtree_->Branch("wt_1b_inc_u", &wt_1b_inc_u_);
+      outtree_->Branch("wt_1b_exc_u", &wt_1b_exc_u_);
+      outtree_->Branch("wt_2b_inc_u", &wt_2b_inc_u_);
       outtree_->Branch("met",       &met_);
       outtree_->Branch("m_z",       &m_z_);
       outtree_->Branch("pt_1",      &pt_1_);
@@ -94,6 +100,13 @@ namespace ic {
     is_ee_ = channel == "ee" ? true : false;
     wt_ = info->total_weight();
 
+    if (!info->is_data()) {
+      if (is_ee_) {
+        wt_ *= ZbbAnalyser::ElectronWeight(lep1, lep2);
+      } else {
+        wt_ *= ZbbAnalyser::MuonWeight(lep1, lep2);
+      }
+    }
 
     // global variables
     met_ = met->pt();
@@ -133,16 +146,34 @@ namespace ic {
     wt_1b_inc_ = 1.0;
     wt_1b_exc_ = 1.0;
     wt_2b_inc_ = 1.0;
+    wt_1b_inc_d_ = 1.0;
+    wt_1b_exc_d_ = 1.0;
+    wt_2b_inc_d_ = 1.0;
+    wt_1b_inc_u_ = 1.0;
+    wt_1b_exc_u_ = 1.0;
+    wt_2b_inc_u_ = 1.0;
     if (!info->is_data()) {
       if (jets.size() >= 1) {
         wt_1b_inc_ = btag_weight_.
           GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 100);
         wt_1b_exc_ = btag_weight_.
           GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 1);
+        wt_1b_inc_d_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 100, 1);
+        wt_1b_exc_d_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 1, 1);
+        wt_1b_inc_u_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 100, 2);
+        wt_1b_exc_u_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 1, 2);
       }
       if (jets.size() >= 2) {
         wt_2b_inc_ = btag_weight_.
           GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 2, 100);
+        wt_2b_inc_d_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 2, 100, 1);
+        wt_2b_inc_u_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 2, 100, 2);
       }
     }
 
@@ -179,6 +210,97 @@ namespace ic {
 
     outtree_->Fill();
     return 0;
+  }
+
+  double ZbbAnalyser::ElectronWeight(Candidate const* elec1, Candidate const* elec2) {
+    static std::vector<double> ele_id = {
+      1.0014,
+      1.0040,
+      1.0015,
+      0.9847,
+      1.0094,
+      0.9927,
+      1.0078,
+      0.9442,
+    };
+    static std::vector<double> ele_iso = {
+      1.0037,
+      0.9886,
+      1.0437,
+      1.0130  
+    };
+    static std::vector<double> ele_trg = {
+      0.9906,
+      0.98925,
+      0.9893,
+      0.9893
+    };
+    double wt = 1.0;
+    for (Candidate const* c : {elec1, elec2}) {
+      double pt = c->pt();
+      double a_eta = std::fabs(c->eta());
+      unsigned pt_bin = (pt < 50) ? 0 : 1;
+      unsigned eta_bin1 = 
+        (a_eta < 0.8)   ? 0 : 
+        ((a_eta < 1.44) ? 1 :
+        ((a_eta<2.0)    ? 2 : 3));
+      unsigned eta_bin2 = (a_eta < 1.6) ? 0 : 1;
+      unsigned eta_bin3 = 
+        (a_eta < 0.8) ? 0 : 
+        ((a_eta < 1.6) ? 1 : 2 );
+      
+      unsigned bin1 = 2*eta_bin1+pt_bin;
+      unsigned bin2 = 2*eta_bin2+pt_bin;
+      unsigned bin3 = eta_bin3;
+
+      double id = 1.0;
+      if (bin1 < ele_id.size()) id = ele_id[bin1];
+      double iso_trg = 1.0;
+      if (bin2 < ele_iso.size()) iso_trg = ele_iso[bin2] * ele_trg[bin3];
+      wt *= (id*iso_trg);
+    }
+    return wt;
+  }
+
+  double ZbbAnalyser::MuonWeight(Candidate const* muon1, Candidate const* muon2) {
+    static std::vector<double> mu_id = {
+      0.995,
+      0.987,
+      0.993,
+      0.996
+    };
+    static std::vector<double> mu_iso = {
+      1.022,
+      1.001,
+      1.017,
+      1.002
+    };
+    static std::vector<double> mu_7_trg = {
+      0.971, 0.957, 0.954
+    };
+    static std::vector<double> mu_8_trg = {
+      0.973, 0.964, 0.952
+    };
+    static std::vector<double> mu_13_trg = {
+      0.973, 0.962, 0.946
+    };
+    double wt = 1.0;
+    for (Candidate const* c : {muon1, muon2}) {
+      double pt = c->pt();
+      double a_eta = std::fabs(c->eta());
+      unsigned pt_bin = (pt < 50) ? 0 : 1;
+      unsigned eta_bin = (a_eta < 1.2) ? 0 : 1;
+      unsigned bin = 2*eta_bin+pt_bin;
+      if (bin < mu_id.size()) wt *= (mu_id[bin] * mu_iso[bin]);
+    }
+    unsigned eta_bin1 = (fabs(muon1->eta()) < 0.9) ? 0 : ((fabs(muon1->eta()) < 1.5) ? 1 : 2);
+    unsigned eta_bin2 = (fabs(muon2->eta()) < 0.9) ? 0 : ((fabs(muon2->eta()) < 1.5) ? 1 : 2);
+    double mu_7 = mu_7_trg[eta_bin1] * mu_7_trg[eta_bin2];
+    double mu_13_mu_8 = mu_13_trg[eta_bin1] * mu_8_trg[eta_bin2]
+        + mu_8_trg[eta_bin1] * mu_13_trg[eta_bin2]
+        - mu_13_trg[eta_bin1] * mu_13_trg[eta_bin2];
+    wt *= 0.10*mu_7 + 0.90*mu_13_mu_8;
+    return wt;
   }
 
   int ZbbAnalyser::PostAnalysis() {

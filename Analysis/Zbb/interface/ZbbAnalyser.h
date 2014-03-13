@@ -23,6 +23,14 @@ class ZbbAnalyser : public ModuleBase {
   double wt_1b_exc_;
   double wt_2b_inc_;
 
+  double wt_1b_inc_d_;
+  double wt_1b_exc_d_;
+  double wt_2b_inc_d_;
+
+  double wt_1b_inc_u_;
+  double wt_1b_exc_u_;
+  double wt_2b_inc_u_;
+
   // global variables
   double met_;
   double m_z_;
@@ -60,6 +68,9 @@ class ZbbAnalyser : public ModuleBase {
   double pt_bb_;
   double pt_z_;
 
+  double ElectronWeight(Candidate const* elec1, Candidate const* elec2);
+  double MuonWeight(Candidate const* muon1, Candidate const* muon2);
+
  public:
   ZbbAnalyser(std::string const& name);
   virtual ~ZbbAnalyser();
@@ -68,6 +79,7 @@ class ZbbAnalyser : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+
 };
 }
 

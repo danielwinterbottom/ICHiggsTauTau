@@ -26,8 +26,6 @@ int main(int argc, char* argv[]){
 	unsigned verbosity;														// Verbose output, useful for diagnostic purposes
 	string datacard;             									// Channel, e.g. et
 	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
-	string syst_eff_b;
-	string syst_fake_b;
 	string syst_scale_j;
 	string shift_backgrounds;
 	bool auto_titles;
@@ -49,8 +47,6 @@ int main(int argc, char* argv[]){
 	  ("verbosity",               po::value<unsigned>(&verbosity)->default_value(0))
 	  ("datacard",                po::value<string>(&datacard)->default_value(""))
 	  ("set_alias",               po::value<vector<string>>(&set_alias)->composing())
-	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
-	  ("syst_fake_b",      		    po::value<string>(&syst_fake_b)->default_value(""))
 	  ("syst_scale_j",            po::value<string>(&syst_scale_j)->default_value(""))
 	  ("shift_backgrounds",       po::value<string>(&shift_backgrounds)->default_value(""))
 	  ("auto_titles",   			    po::value<bool>(&auto_titles)->default_value(true));
@@ -116,14 +112,17 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Add tau/electron energy scale systematics
 	// ************************************************************************
-	if (syst_eff_b != "") {
-		systematics.push_back(make_pair("/BTAG_DOWN", syst_eff_b+"Down"));
-		systematics.push_back(make_pair("/BTAG_UP", syst_eff_b+"Up"));
-	}
-	if (syst_fake_b != "") {
-		systematics.push_back(make_pair("/BFAKE_DOWN", syst_fake_b+"Down"));
-		systematics.push_back(make_pair("/BFAKE_UP", syst_fake_b+"Up"));
-	}
+	std::string wt_b_d = wt;
+	std::string wt_b_u = wt;
+	boost::replace_all(wt_b_d, "wt_1b_inc", "wt_1b_inc_d");
+	boost::replace_all(wt_b_u, "wt_1b_inc", "wt_1b_inc_u");
+	boost::replace_all(wt_b_d, "wt_1b_exc", "wt_1b_exc_d");
+	boost::replace_all(wt_b_u, "wt_1b_exc", "wt_1b_exc_u");
+	boost::replace_all(wt_b_d, "wt_2b_inc", "wt_2b_inc_d");
+	boost::replace_all(wt_b_u, "wt_2b_inc", "wt_2b_inc_u");
+	ana.FillHistoMap(hmap, var, sel, cat, wt_b_d, "_btag_sfDown");
+	ana.FillHistoMap(hmap, var, sel, cat, wt_b_u, "_btag_sfUp");
+
 	if (syst_scale_j != "") {
 		systematics.push_back(make_pair("/JES_DOWN", syst_scale_j+"Down"));
 		systematics.push_back(make_pair("/JES_UP", syst_scale_j+"Up"));

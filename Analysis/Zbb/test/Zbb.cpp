@@ -30,6 +30,7 @@
 #include "Zbb/interface/ZbbPairSelector.h"
 #include "Zbb/interface/ZbbTriggerFilter.h"
 #include "Zbb/interface/ZbbAnalyser.h"
+#include "HiggsTauTau/interface/JetEnergyUncertainty.h"
 
 // using-directives & namespaces
 namespace po = boost::program_options;
@@ -50,8 +51,6 @@ int main(int argc, char* argv[]) {
   string output_folder;    // Folder to write the output in
 
   bool is_data;            // true = data, false = mc
-  unsigned btag_mode;      // 0 = no shift, 1 = shift down, 2 = shift up
-  unsigned bfake_mode;     // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned jes_mode;       // 0 = no shift, 1 = shift down, 2 = shift up
   bool set_z_flav;
 
@@ -72,8 +71,6 @@ int main(int argc, char* argv[]) {
       ("output_folder",   po::value<string>(&output_folder)->default_value(""))
       ("is_data",         po::value<bool>(&is_data)->required())
       ("set_z_flav",      po::value<bool>(&set_z_flav)->default_value(false))
-      ("btag_mode",       po::value<unsigned>(&btag_mode)->default_value(0))
-      ("bfake_mode",      po::value<unsigned>(&bfake_mode)->default_value(0))
       ("jes_mode",        po::value<unsigned>(&jes_mode)->default_value(0));
   po::store(po::command_line_parser(argc, argv)
     .options(config).allow_unregistered().run(), vm);
@@ -81,10 +78,6 @@ int main(int argc, char* argv[]) {
   po::notify(vm);
 
   // Some options must now be re-configured based on other options
-  if (btag_mode == 1) output_folder += "BTAG_DOWN/";
-  if (btag_mode == 2) output_folder += "BTAG_UP/";
-  if (bfake_mode == 1) output_folder += "BFAKE_DOWN/";
-  if (bfake_mode == 2) output_folder += "BFAKE_UP/";
   if (jes_mode == 1) output_folder += "JES_DOWN/";
   if (jes_mode == 2) output_folder += "JES_UP/";
 
@@ -130,12 +123,16 @@ int main(int argc, char* argv[]) {
     .set_mc(&mc_pu)
     .set_print_weights(false)
     .set_use_sampled_interactions(true);
-  
+
   auto lumi_mask = ic::LumiMask("LumiMask")
     .set_produce_output_jsons("")
     .set_input_file("data/json.txt");
 
-  // Jet energy scale uncertainty
+  auto jes_uncert = ic::JetEnergyUncertainty<ic::PFJet>("JetEnergyUncertainty")
+    .set_input_label("pfJetsPFlow")
+    .set_jes_shift_mode(jes_mode)
+    .set_uncert_file("data/jec/JEC11_V12_AK5PF_UncertaintySources.txt")
+    .set_uncert_set("SubTotalDataMC");
 
   auto copy_elecs = ic::CopyCollection<ic::Electron>("CopyElectrons",
     "electrons", "selected_electrons");
@@ -228,6 +225,7 @@ int main(int argc, char* argv[]) {
   analysis.AddModule(&muon_pair_filter);
   analysis.AddModule(&pair_selector);
   if (is_data) analysis.AddModule(&trigger_filter);
+  if (jes_mode > 0) analysis.AddModule(&jes_uncert);
   analysis.AddModule(&copy_jets);
   analysis.AddModule(&select_jets);
   analysis.AddModule(&jet_overlap);

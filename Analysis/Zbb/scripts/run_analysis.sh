@@ -32,3 +32,24 @@ $JOBSUBMIT jobs/DYJetsToLL.sh
 $JOBWRAPPER "bin/Zbb --cfg=scripts/default.cfg --filelist=filelists/5March2014_MC_42X_TTJets.dat \
 --input_prefix=$PREFIX --output_name=TTJets.root --is_data=false &> jobs/TTJets.log" jobs/TTJets.sh 
 $JOBSUBMIT jobs/TTJets.sh
+
+
+$JOBWRAPPER "bin/Zbb --cfg=scripts/default.cfg --filelist=filelists/5March2014_MC_42X_DYJetsToLL.dat \
+--input_prefix=$PREFIX --output_name=DYJetsToLL.root --is_data=false --set_z_flav=true \
+--jes_mode=1 &> jobs/DYJetsToLL_jes_down.log" jobs/DYJetsToLL_jes_down.sh 
+$JOBSUBMIT jobs/DYJetsToLL_jes_down.sh
+
+$JOBWRAPPER "bin/Zbb --cfg=scripts/default.cfg --filelist=filelists/5March2014_MC_42X_TTJets.dat \
+--input_prefix=$PREFIX --output_name=TTJets.root --is_data=false \
+&> jobs/TTJets_jes_down.log" jobs/TTJets_jes_down.sh 
+$JOBSUBMIT jobs/TTJets_jes_down.sh
+
+$JOBWRAPPER "bin/Zbb --cfg=scripts/default.cfg --filelist=filelists/5March2014_MC_42X_DYJetsToLL.dat \
+--input_prefix=$PREFIX --output_name=DYJetsToLL.root --is_data=false --set_z_flav=true \
+--jes_mode=1 &> jobs/DYJetsToLL_jes_up.log" jobs/DYJetsToLL_jes_up.sh 
+$JOBSUBMIT jobs/DYJetsToLL_jes_up.sh
+
+$JOBWRAPPER "bin/Zbb --cfg=scripts/default.cfg --filelist=filelists/5March2014_MC_42X_TTJets.dat \
+--input_prefix=$PREFIX --output_name=TTJets.root --is_data=false \
+&> jobs/TTJets_jes_up.log" jobs/TTJets_jes_up.sh 
+$JOBSUBMIT jobs/TTJets_jes_up.sh
