@@ -1,0 +1,11 @@
+## Cross Sections
+XS_Data:-1.0
+# DY is 3048 * 0.95
+XS_DYJetsToLL:3048.0
+XS_TTJets:156.18
+## Processed Events
+EVT_Data:1.0
+EVT_DYJetsToLL:36277961
+EVT_TTJets:3701947
+LUMI_DATA:2135
+LUMI_DATA_LABEL:2.1 fb^{-1}

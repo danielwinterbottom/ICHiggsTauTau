@@ -21,6 +21,7 @@ namespace ic {
     if (fs_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       outtree_->Branch("is_ee",     &is_ee_);
+      outtree_->Branch("zflav",     &zflav_);
       outtree_->Branch("wt",        &wt_);
       outtree_->Branch("wt_1b_inc", &wt_1b_inc_);
       outtree_->Branch("wt_1b_exc", &wt_1b_exc_);
@@ -67,7 +68,7 @@ namespace ic {
         bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     auto const* lep1    = leptons[0];
     auto const* lep2    = leptons[1];
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("selected_jets");
     std::sort(jets.begin(), jets.end(),
         bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> bjets = jets;
@@ -93,12 +94,6 @@ namespace ic {
     is_ee_ = channel == "ee" ? true : false;
     wt_ = info->total_weight();
 
-    wt_1b_inc_ = btag_weight_.
-        GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 100);
-    wt_1b_exc_ = btag_weight_.
-        GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 1);
-    wt_2b_inc_ = btag_weight_.
-        GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 2, 100);
 
     // global variables
     met_ = met->pt();
@@ -134,6 +129,21 @@ namespace ic {
       jeta_2_ = 0.0;
       jnsv_2_ = 0.0;
       jssv_2_ = 0.0;
+    }
+    wt_1b_inc_ = 1.0;
+    wt_1b_exc_ = 1.0;
+    wt_2b_inc_ = 1.0;
+    if (!info->is_data()) {
+      if (jets.size() >= 1) {
+        wt_1b_inc_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 100);
+        wt_1b_exc_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 1, 1);
+      }
+      if (jets.size() >= 2) {
+        wt_2b_inc_ = btag_weight_.
+          GetLouvainWeight(jets, BTagWeight::tagger::SSVHEM, 2, 100);
+      }
     }
 
     n_b_jets_ = bjets.size();

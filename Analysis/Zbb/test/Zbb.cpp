@@ -26,6 +26,7 @@
 #include "Modules/interface/OverlapFilter.h"
 #include "Modules/interface/OneCollCompositeProducer.h"
 #include "Modules/interface/PileupWeight.h"
+#include "Modules/interface/LumiMask.h"
 #include "Zbb/interface/ZbbPairSelector.h"
 #include "Zbb/interface/ZbbTriggerFilter.h"
 #include "Zbb/interface/ZbbAnalyser.h"
@@ -127,9 +128,12 @@ int main(int argc, char* argv[]) {
   auto pileup_weight = ic::PileupWeight("PileupWeight")
     .set_data(&data_pu)
     .set_mc(&mc_pu)
-    .set_print_weights(false);
-
-  // Trigger filter
+    .set_print_weights(false)
+    .set_use_sampled_interactions(true);
+  
+  auto lumi_mask = ic::LumiMask("LumiMask")
+    .set_produce_output_jsons("")
+    .set_input_file("data/json.txt");
 
   // Jet energy scale uncertainty
 
@@ -213,6 +217,7 @@ int main(int argc, char* argv[]) {
     .set_set_z_flav(set_z_flav);
 
   if (!is_data) analysis.AddModule(&pileup_weight);
+  if (is_data) analysis.AddModule(&lumi_mask);
   analysis.AddModule(&copy_elecs);
   analysis.AddModule(&copy_muons);
   analysis.AddModule(&select_elecs);
@@ -229,6 +234,6 @@ int main(int argc, char* argv[]) {
   analysis.AddModule(&analyser);
 
   analysis.RunAnalysis();
-//   delete fs;
+  delete fs;
   return 0;
 }
