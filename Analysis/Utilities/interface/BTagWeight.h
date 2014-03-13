@@ -29,7 +29,11 @@ enum class tagger { SSVHEM, SSVHPT, CSVM };
   ~BTagWeight();
 
   double LouvainBEff(int flavor, BTagWeight::tagger const& tag, double pt, double eta) const;
-  double GetLouvainWeight(std::vector<PFJet *> const& jets, BTagWeight::tagger const& algo, unsigned min, unsigned max) const;
+  double GetLouvainWeight(std::vector<PFJet *> const& jets, 
+      BTagWeight::tagger const& algo,
+      unsigned min,
+      unsigned max,
+      unsigned btag_syst = 0) const;
 
   double BEff(BTagWeight::payload const& set, 
               unsigned flavour, 

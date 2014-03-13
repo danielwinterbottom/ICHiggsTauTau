@@ -1,10 +1,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/BTagWeight.h"
 #include <cmath>
+#include <algorithm>
 
 namespace ic {
-
-
-
   BTagWeight::BTagWeight() {
     louvain_eff_ = new TF1("sigmoidTimesL","[0]+([3]+[4]*x)/(1+exp([1]-x*[2]))",20,1000);
     rand = new TRandom3(0);
@@ -176,7 +174,33 @@ namespace ic {
     if (flavour == 5 || flavour == 4) {
       if (set == payload::ALL2011) {
         double x = std::max(30., std::min(pt, 670.0));
-        if (algo == tagger::SSVHEM) sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x)));
+        if (algo == tagger::SSVHEM) {
+          sf = 0.896462*((1.+(0.00957275*x))/(1.+(0.00837582*x)));
+          if (Btag_mode > 0) {
+            double sf_err = 0.0;
+            static std::vector<double> unc_bins = {
+              40.0, 50.0, 60.0, 70.0, 80.0, 100.0, 120.0,
+              160.0, 210.0, 260.0, 320.0, 400.0, 500.0, 670.0
+            };
+            static std::vector<double> unc_vals = { 
+              0.0316234, 0.0310149, 0.02381, 0.0223228, 0.023461, 0.0202517, 0.0156249,
+              0.0214799, 0.0399369, 0.0416666, 0.0431031, 0.0663209, 0.0687731, 0.0793305
+            };
+            if (pt < 30.0) {
+              sf_err = 0.12;
+            } else if (pt >= 670.0) {
+              sf_err = 2.0 * unc_vals[13];
+            } else {
+              auto it = std::upper_bound(unc_bins.begin(), unc_bins.end(), pt);
+              if (it != unc_bins.end()) {
+                sf_err = unc_vals[unsigned(it - unc_bins.begin())];
+              }
+            }
+            if (flavour == 4) sf_err *= 2.0;
+            if (Btag_mode == 1) sf -= sf_err;
+            if (Btag_mode == 2) sf += sf_err;
+          }
+        }
         if (algo == tagger::SSVHPT) sf = 0.422556*((1.+(0.437396*x))/(1.+(0.193806*x)));
         if (algo == tagger::CSVM) {
           sf = 0.6981*((1.+(0.414063*x))/(1.+(0.300155*x)));
@@ -256,8 +280,6 @@ namespace ic {
         }
       }
     }
-    
-
     return sf;
   }
 
@@ -355,11 +377,11 @@ namespace ic {
   }
  
 
-  double BTagWeight::GetLouvainWeight(std::vector<PFJet *> const& jets, BTagWeight::tagger const& algo, unsigned min, unsigned max) const {
+  double BTagWeight::GetLouvainWeight(std::vector<PFJet *> const& jets, BTagWeight::tagger const& algo, unsigned min, unsigned max, unsigned btag_syst) const {
     std::vector<BTagWeight::JetInfo> infos;
     for (unsigned i = 0; i < jets.size(); ++i) {
       double eff = LouvainBEff(std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta());
-      double sf = SF(payload::ALL2011, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta(), 0, 0);
+      double sf = SF(payload::ALL2011, std::abs(jets[i]->parton_flavour()), algo, jets[i]->pt(), jets[i]->eta(), btag_syst, 0);
       infos.push_back(BTagWeight::JetInfo(eff, sf));
     }
     std::pair<float, float> result = weight(infos, min, max);
