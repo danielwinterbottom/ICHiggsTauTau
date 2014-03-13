@@ -213,7 +213,9 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
   std::vector<mvaMEtUtilities::JetInfo>    jetInfo         = computeJetInfo(*uncorrJets, *corrJets, *vertices, hardScatterVertex, *corrector,evt,es,leptonInfo[i],pfCandidateInfo);
 
   mvaMEtAlgo_.setInput(leptonInfo[i], jetInfo, pfCandidateInfo, vertexInfo);
+#ifndef CMSSW_4_2_8_patch7
   mvaMEtAlgo_.setHasPhotons(false);
+#endif
   mvaMEtAlgo_.evaluateMVA();
 
   if (verbosity_) {

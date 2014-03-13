@@ -18,7 +18,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Jet.hh"
 #include "DataFormats/Common/interface/ValueMap.h"
 
-
+#include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/JetCorrFactors.h"
@@ -34,9 +34,16 @@
 ICPFJetProducer::ICPFJetProducer(const edm::ParameterSet& iConfig) {
   produces<std::vector<unsigned> >("selectGenParticles");
   produces<std::vector<unsigned> >("selectTracks");
+  produces<std::vector<unsigned> >("selectSecondaryVertices");
   input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
   branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
   store_ids_ = iConfig.getParameter<bool>("StoreTrackIds");
+  store_secondary_vertex_ids_ = false;
+  if (iConfig.exists("RequestSecondaryVertices")) {
+    store_secondary_vertex_ids_ = true;
+    secondary_vertex_collection_ =
+      iConfig.getParameter<edm::InputTag>("RequestSecondaryVertices");
+  }
   pfjets_ = new std::vector<ic::PFJet>();
 }
 
@@ -48,6 +55,7 @@ ICPFJetProducer::~ICPFJetProducer() {
 // ------------ method called to produce the data  ------------
 void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   boost::hash<reco::GenParticle const*> hasher;
+  boost::hash<reco::Vertex const*> vertex_hasher;
 
 
   edm::Handle<std::vector<pat::Jet> > jetCollection;
@@ -71,6 +79,10 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("puJetMva","fullDiscriminant", puJetIdMVA);
   edm::Handle<edm::ValueMap<int> > puJetIdFlag;
   iEvent.getByLabel("puJetMva","fullId", puJetIdFlag);
+  edm::Handle<std::vector<reco::SecondaryVertexTagInfo> > tag_info_collection;
+  if (store_secondary_vertex_ids_) {
+    iEvent.getByLabel(secondary_vertex_collection_, tag_info_collection);
+  }
 
   // Build map to associate tracks->vertices
   std::vector<reco::TrackBaseRef>::const_iterator trk_it;
@@ -89,6 +101,7 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   std::auto_ptr<std::vector<unsigned> > jet_particles(new std::vector<unsigned>());
   std::auto_ptr<std::vector<unsigned> > jet_tracks(new std::vector<unsigned>());
+  std::auto_ptr<std::vector<unsigned> > jet_svs(new std::vector<unsigned>());
 
   unsigned iJ = 0;
   for (iter = jetCollection->begin(); iter != jetCollection->end(); ++iter, ++iJ) {
@@ -170,8 +183,23 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         beta = pt_at_vtx_vec[0];
         beta_max = *std::max_element(pt_at_vtx_vec.begin(), pt_at_vtx_vec.end());
       }
+
     }
 
+    if (store_secondary_vertex_ids_) {
+      for (unsigned iS = 0; iS < tag_info_collection->size(); ++iS) {
+        edm::Ptr<reco::Candidate> jet_ref(jetCollectionView->refAt(iJ)->originalObjectRef());
+        if (jet_ref.get() == (*tag_info_collection)[iS].jet().get()) {
+          jet_svs->push_back(iS);
+          std::vector<std::size_t> jet_sv_ids;
+          for (unsigned iV = 0; iV < (*tag_info_collection)[iS].nVertices(); ++iV) {
+            reco::Vertex const& sv = (*tag_info_collection)[iS].secondaryVertex(iV);
+            jet_sv_ids.push_back(vertex_hasher(&sv));
+          }
+          jet.set_secondary_vertices(jet_sv_ids);
+        }
+      }
+    }
     jet.set_beta(beta);
     jet.set_beta_max(beta_max);
     //int idflag = (*puJetIdFlag)[jetCollectionView->refAt(iJ)->originalObjectRef()];
@@ -199,6 +227,7 @@ void ICPFJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
   iEvent.put(jet_particles, "selectGenParticles");
   iEvent.put(jet_tracks, "selectTracks");
+  iEvent.put(jet_svs, "selectSecondaryVertices");
 }
 
 // ------------ method called once each job just before starting event loop  ------------

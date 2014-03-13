@@ -12,6 +12,7 @@
 #include "UserCode/ICHiggsTauTau/interface/LightTrack.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
+#include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/Photon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
@@ -73,6 +74,8 @@ namespace { struct dictionary {
   mithep::TH2DAsymErr dummy46;
   ic::Photon dummy47;
   std::vector<ic::Photon> dummy48;
+  ic::SecondaryVertex dummy49;
+  std::vector<ic::SecondaryVertex> dummy50;
 };
 }
 
