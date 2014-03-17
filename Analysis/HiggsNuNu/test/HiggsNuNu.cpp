@@ -42,6 +42,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TmvaInputs.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TrigeffInputs.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -63,6 +64,7 @@ int main(int argc, char* argv[]){
   string output_folder;           // Folder to write the output in
   bool do_skim;                   // For making skimmed ntuples
   bool do_trigeff;                // Apply trigger at end of selection to work out trigger efficiency and bin variables
+  bool do_trigeff_tree;           // Generate tree of variables used for trig study
   bool do_gensteps;               // For getting numbers of events at gen level
   bool doincludehighptz;          // For including high pt z sample
   string skim_path = "";          // Local folder where skimmed ntuples should be written
@@ -154,6 +156,7 @@ int main(int argc, char* argv[]){
     ("output_folder",       po::value<string>(&output_folder)->default_value(""))
     ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
     ("do_trigeff",          po::value<bool>(&do_trigeff)->default_value(false))
+    ("do_trigeff_tree",     po::value<bool>(&do_trigeff_tree)->default_value(false))
     ("do_gensteps",         po::value<bool>(&do_gensteps)->default_value(false))
     ("doincludehighptz",    po::value<bool>(&doincludehighptz)->default_value(false))
     ("skim_path",           po::value<string>(&skim_path)->default_value(""))
@@ -1017,6 +1020,16 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_channel(channel_str);
 
+  TrigeffInputs trigeffInputs = TrigeffInputs("TrigeffInputs")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("JetPair")
+    .set_is_data(is_data)
+    .set_channel(channel_str)
+    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
+    .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+
   HinvControlPlots controlPlots_gen = HinvControlPlots("GenControlPlots")
     .set_fs(fs)
     .set_met_label("pfMetType1")
@@ -1516,7 +1529,7 @@ int main(int argc, char* argv[]){
    //if (!do_skim) {
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
-    if(!do_trigeff) analysis.AddModule(&dataMCTriggerPathFilter);
+    if(!do_trigeff&&!do_trigeff_tree) analysis.AddModule(&dataMCTriggerPathFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
  
     //NEW: change skimming to write event at a specific moment in the chain of modules.
@@ -1635,7 +1648,7 @@ int main(int argc, char* argv[]){
      else {
        //lepton veto modules
        if (!ignoreLeptons){
-	 analysis.AddModule(&zeroVetoMuonFilter);
+	 if(!do_trigeff_tree&&!do_trigeff) analysis.AddModule(&zeroVetoMuonFilter);
 	 //if (printEventList) analysis.AddModule(&hinvPrintList);
 	 analysis.AddModule(&zeroVetoElectronFilter);
 	 //if (printEventList) analysis.AddModule(&hinvPrintList);
@@ -1689,6 +1702,7 @@ int main(int argc, char* argv[]){
 
      //write tree with TMVA input variables
      if (doTmvaTree) analysis.AddModule(&tmvaInputs);
+     else if(do_trigeff_tree) analysis.AddModule(&trigeffInputs);
      else {
 
        analysis.AddModule(&detaJetPairFilter);
@@ -1716,37 +1730,39 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&controlPlots_tightMjj);
        analysis.AddModule(&wjetsPlots_tightMjj);
        
-       //save signal and QCD regions without CJV
-       analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
-       analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);
-       analysis.AddModule(&controlPlots_dphi_signal_nocjv);
-       analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
-       
-       if(printEventList) analysis.AddModule(&hinvPrintList);
-       //if(printEventContent) analysis.AddModule(&hinvPrint);
-       
-       //save all, signal and QCD regions with failed CJV
-       analysis.AddModule(&controlPlots_cjvfail);
-       analysis.AddModule(&wjetsPlots_cjvfail);
-       analysis.AddModule(&controlPlots_dphi_qcd_cjvfail);
-       analysis.AddModule(&wjetsPlots_dphi_qcd_cjvfail);
-       analysis.AddModule(&controlPlots_dphi_signal_cjvfail);
-       analysis.AddModule(&wjetsPlots_dphi_signal_cjvfail);
-       
-       analysis.AddModule(&controlPlots_cjvpass);
-       analysis.AddModule(&wjetsPlots_cjvpass);
-       
-       //if (printEventList) analysis.AddModule(&hinvPrintList);
-       
-       //dphi cut: don't filter events anymore !
-       //Just plot histograms for different regions
-       ////if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
-       ////else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
-       
-       analysis.AddModule(&controlPlots_dphi_qcd_cjvpass);
-       analysis.AddModule(&wjetsPlots_dphi_qcd_cjvpass);
-       analysis.AddModule(&controlPlots_dphi_signal_cjvpass);
-       analysis.AddModule(&wjetsPlots_dphi_signal_cjvpass);
+       if(!do_trigeff&&!do_trigeff_tree){
+	 //save signal and QCD regions without CJV
+	 analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
+	 analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);
+	 analysis.AddModule(&controlPlots_dphi_signal_nocjv);
+	 analysis.AddModule(&wjetsPlots_dphi_signal_nocjv);
+	 
+	 if(printEventList) analysis.AddModule(&hinvPrintList);
+	 //if(printEventContent) analysis.AddModule(&hinvPrint);
+	 
+	 //save all, signal and QCD regions with failed CJV
+	 analysis.AddModule(&controlPlots_cjvfail);
+	 analysis.AddModule(&wjetsPlots_cjvfail);
+	 analysis.AddModule(&controlPlots_dphi_qcd_cjvfail);
+	 analysis.AddModule(&wjetsPlots_dphi_qcd_cjvfail);
+	 analysis.AddModule(&controlPlots_dphi_signal_cjvfail);
+	 analysis.AddModule(&wjetsPlots_dphi_signal_cjvfail);
+	 
+	 analysis.AddModule(&controlPlots_cjvpass);
+	 analysis.AddModule(&wjetsPlots_cjvpass);
+	 
+	 //if (printEventList) analysis.AddModule(&hinvPrintList);
+	 
+	 //dphi cut: don't filter events anymore !
+	 //Just plot histograms for different regions
+	 ////if (signal_region==0) analysis.AddModule(&dphiJetPairFilter);
+	 ////else if (signal_region==1) analysis.AddModule(&dphiQCDJetPairFilter);
+	 
+	 analysis.AddModule(&controlPlots_dphi_qcd_cjvpass);
+	 analysis.AddModule(&wjetsPlots_dphi_qcd_cjvpass);
+	 analysis.AddModule(&controlPlots_dphi_signal_cjvpass);
+	 analysis.AddModule(&wjetsPlots_dphi_signal_cjvpass);
+       }
      
        if(do_trigeff){//Do trigger efficiency studies
 	 analysis.AddModule(&dphilowFilter);
