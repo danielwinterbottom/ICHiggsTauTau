@@ -3,7 +3,11 @@
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
-
+#include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
+#include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
+#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
+#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
+#include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "TVector3.h"
 
 
@@ -59,7 +63,7 @@ namespace ic {
     jet2met_scalarprod_ = 0;
     n_jets_cjv_30_ = 0;
     n_jets_cjv_20EB_30EE_ = 0;
-    passtrigger_ = false;
+    passtrigger_ = -1;
   }
 
   TrigeffInputs::~TrigeffInputs(){
@@ -218,16 +222,17 @@ namespace ic {
 	  event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
 	//EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings      
 	//unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings                                         
+	passtrigger_=-1;
 	for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
 	  std::string name = triggerPathPtrVec[i]->name();
 	  triggerPathPtrVec[i]->prescale();
-	  if (name.find(trigger_path_) != name.npos) passtrigger_ = true;
+	  if (name.find(trigger_path_) != name.npos) passtrigger_ = 1;
 	}
       }
       //for MC                                                                                                                                       
       else {
 	std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
-	if (objs.size() > 0) passtrigger_=true;
+	if (objs.size() > 0) passtrigger_=1;
       } // do obj match                                                                            
 
 

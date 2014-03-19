@@ -64,7 +64,7 @@ namespace ic {
     double jet2met_scalarprod_;
     unsigned n_jets_cjv_30_;
     unsigned n_jets_cjv_20EB_30EE_;
-    bool passtrigger_;
+    double passtrigger_;
 
   public:
     TrigeffInputs(std::string const& name);
