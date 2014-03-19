@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include "boost/lexical_cast.hpp"
 
 double Integral(TH1F const* hist) {
   if (hist) {
@@ -44,10 +45,10 @@ double Integral(TH1F const* hist, int binmin, int binmax){
   else return 0;
 }
 
-double Error(TH1F const* hist) {
+double Error(TH1F const* hist,int binmin,int binmax) {
   double err = 0.0;
   if (hist) {
-    hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
+    hist->IntegralAndError(binmin, binmax, err);
     if (err<0 || err != err) {
       std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
       err=0;
@@ -56,14 +57,27 @@ double Error(TH1F const* hist) {
   return err;
 }
 
-std::vector<double> GetTrigEff(TH1F const* hist, TH1F const* histpasstrigger, std::vector<double> bins){
+std::string BuildCutString(std::string const& selection,
+					std::string const& category,
+					std::string const& weight) {
+  std::string full_selection;
+  if (weight != "" && (selection != "" || category != "")) full_selection += "( ";
+
+  if (selection != "")                    full_selection += ("(" + selection + ")");
+  if (selection != "" && category != "")  full_selection += " && ";
+  if (category != "")                     full_selection += ("(" + category + ")");
+  if (weight != "" && (selection != "" || category != "")) full_selection += " ) * ";
+  if (weight != "") full_selection += ("("+weight+")");
+  return full_selection;
+}
+
+std::vector<double> GetTrigEff(TH1F const* hist, TH1F const* histpasstrigger, std::vector<double> bins, std::vector<double>* error){
   std::vector<double> trigeff;
   //Get efficiency for all but last bin
-  double histtot=Integral(hist,0,hist->GetXaxis()->FindBin(bins[0])-1);
-  double histpasstriggertot=Integral(histpasstrigger,0,histpasstrigger->GetXaxis()->FindBin(bins[0])-1);;
 
   for(int iBin=0;iBin<(bins.size()-1);iBin++){
     double nevents[2];
+    double err[2];
     int histbmin=hist->GetXaxis()->FindBin(bins[iBin]);
     int histbmax=hist->GetXaxis()->FindBin(bins[iBin+1])-1;
 
@@ -72,14 +86,16 @@ std::vector<double> GetTrigEff(TH1F const* hist, TH1F const* histpasstrigger, st
 
     if((histbmin!=histpasstriggerbmin) && (histbmax !=histpasstriggerbmax)) std::cout<<"Warning binning of histograms with and without trigger is different!"<<std::endl;
 
-    nevents[0]=Integral(hist,histbmin,histbmax); std::cout<<nevents[0]<<std::endl;
-    nevents[1]=Integral(histpasstrigger,histpasstriggerbmin,histpasstriggerbmax); std::cout<<nevents[1]<<std::endl;
+    nevents[0]=Integral(hist,histbmin,histbmax);
+    nevents[1]=Integral(histpasstrigger,histpasstriggerbmin,histpasstriggerbmax);
+    err[0]=Error(hist,histbmin,histbmax);
+    err[1]=Error(histpasstrigger,histpasstriggerbmin,histpasstriggerbmax);
     trigeff.push_back(nevents[1]/nevents[0]);
-    histtot+=nevents[0];
-    histpasstriggertot+=nevents[1];
+    error->push_back(sqrt(pow(err[0]/nevents[0],2)+pow(err[1]/nevents[1],2)));
   }
   //For last bin do integral to infinity
   double nevents[2];
+  double err[2];
   int histbmin=hist->GetXaxis()->FindBin(bins[bins.size()-1]);
   int histpasstriggerbmin=hist->GetXaxis()->FindBin(bins[bins.size()-1]);
 
@@ -87,13 +103,10 @@ std::vector<double> GetTrigEff(TH1F const* hist, TH1F const* histpasstrigger, st
 
   nevents[0]=Integral(hist,histbmin,(hist->GetNbinsX()+1));
   nevents[1]=Integral(histpasstrigger,histpasstriggerbmin,(histpasstrigger->GetNbinsX()+1));
+  err[0]=Error(hist,histbmin,(hist->GetNbinsX()+1));
+  err[1]=Error(histpasstrigger,histpasstriggerbmin,(histpasstrigger->GetNbinsX()+1));
   trigeff.push_back(nevents[1]/nevents[0]);
-  histtot+=nevents[0];
-  histpasstriggertot+=nevents[1];
-
-  std::cout<<histtot<<" "<<histpasstriggertot<<std::endl;
-  std::cout<<Integral(hist)<<" "<<Integral(histpasstrigger)<<std::endl;
-
+  error->push_back(sqrt(pow(err[0]/nevents[0],2)+pow(err[1]/nevents[1],2)));
 
   return trigeff;
 }
@@ -106,7 +119,7 @@ int main(){//main
   double j2ptcut=50;
   double j1ptcut=50;
   double dijet_detacut=4.2;
-  double dijet_dphicut=1.0;
+  double dijet_dphicut=3.2;
   
   std::vector<std::string> files;
   files.push_back("SingleMu_SingleMu-2012A-22Jan2013-v1"); 
@@ -130,7 +143,7 @@ int main(){//main
   mets.push_back(190);
   mets.push_back(200);
   
-  std::vector<int> j2pts;
+  std::vector<double> j2pts;
   j2pts.push_back(10);
   j2pts.push_back(20);
   j2pts.push_back(30);
@@ -151,12 +164,6 @@ int main(){//main
     }
   }
 
-
-  double neventsmet[4][2][mets.size()][2];
-  double trigeffmet[4][mets.size()][2];
-
-  double neventsj2pt[4][2][mets.size()][2];
-  double trigeffj2pt[4][mets.size()][2];
 
   for (unsigned iFile = 0; iFile < files.size(); ++iFile) {
     
@@ -183,6 +190,7 @@ int main(){//main
     
 
     tree = (TTree *)tfiles[(files[iFile])]->Get("TrigeffInputTree");
+    tree->SetEstimate(1000);
     tree->SetBranchAddress("met",&met);
     tree->SetBranchAddress("jet1_pt",&j1pt);
     tree->SetBranchAddress("jet2_pt",&j2pt);
@@ -193,21 +201,28 @@ int main(){//main
     tree->SetBranchAddress("passtrigger",&passtrigger);
 
     
-    hmet = new TH1F("hmet","met in GeV",1000,0,1000);
+    hmet = new TH1F(Form("hmet%d",iFile),"met in GeV",1000,0,1000);
     hmet->Sumw2();
-    hj2pt =new TH1F("hj2pt","j2pt in GeV",200,0,200);
+    hj2pt =new TH1F(Form("hj2pt%d",iFile),"j2pt in GeV",200,0,200);
     hj2pt->Sumw2();
-    hmjj =new TH1F("hmjj","mjj in GeV",2000,0,2000);
+    hmjj =new TH1F(Form("hmjj%d",iFile),"mjj in GeV",2000,0,2000);
     hmjj->Sumw2();
-    hpasstrigger =new TH1F("hpasstrigger","Does the event pass the trigger",2,-2,2);
+    hpasstrigger =new TH1F(Form("hpasstrigger%d",iFile),"Does the event pass the trigger",2,-2,2);
     hpasstrigger->Sumw2();
-    hj2ptpasstrigger = new TH1F("hj2ptpasstrigger","jet 2pt passing trigger",200,0,200);
+    hj2ptpasstrigger = new TH1F(Form("hj2ptpasstrigger%d",iFile),"jet 2pt passing trigger",200,0,200);
     hj2ptpasstrigger->Sumw2();
-    hmetpasstrigger = new TH1F("hmetpasstrigger","met passing trigger",1000,0,1000);
+    hmetpasstrigger = new TH1F(Form("hmetpasstrigger%d",iFile),"met passing trigger",1000,0,1000);
     hmetpasstrigger->Sumw2();
-    hmjjpasstrigger = new TH1F("hmjjpasstrigger","mjj passing trigger",2000,0,2000);
+    hmjjpasstrigger = new TH1F(Form("hmjjpasstrigger%d",iFile),"mjj passing trigger",2000,0,2000);
     hmjjpasstrigger->Sumw2();
+    
+    std::string full_selection=BuildCutString("jet1_pt>"+boost::lexical_cast<std::string>(j1ptcut)+" && n_jets_cjv_30<1 && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut)+" && dijet_dphi<"+boost::lexical_cast<std::string>(dijet_dphicut),"","");
 
+    std::string full_variable="met:jet2_pt:dijet_M>>heff"+boost::lexical_cast<std::string>(iFile)+"(200,0.,1000.,20,0.,100.,400,0.,2000.)";
+
+    tree->Draw(full_variable.c_str(),full_selection.c_str(),"goff");
+    
+    
     int nentries = tree->GetEntries();
     for(int iEntry = 0;iEntry<nentries;iEntry++){
       tree->GetEntry(iEntry);
@@ -231,36 +246,18 @@ int main(){//main
     //    hpasstrigger->Draw("");
     hmjj->Draw("");
 
-    std::vector<double> mettrigeffs = GetTrigEff(hmet,hmetpasstrigger,mets);
+    std::vector<double>mettrigefferrs;
+    std::vector<double> mettrigeffs = GetTrigEff(hmet,hmetpasstrigger,mets,&mettrigefferrs);
     for(unsigned iEff=0;iEff<mettrigeffs.size();iEff++){
-      std::cout<<"trig eff for met: "<<mets[iEff]<<" is: "<<mettrigeffs[iEff]<<std::endl;
+      std::cout<<"trig eff for met: "<<mets[iEff]<<" is: "<<mettrigeffs[iEff]<<"+/-"<<mettrigeffs[iEff]*mettrigefferrs[iEff]<<std::endl;
     }
-    
-//     for(int iMet=0;iMet<mets.size();iMet++){
-//       if(iMet==(mets.size()-1)){
-// 	neventsmet[iFile][0][iMet][0]=IntegralWithError(hmet,mets[iMet],(hmet->GetNbinsX()+1));
-// 	neventsmet[iFile][1][iMet][0]=IntegralWithError(hmetpasstrigger,mets[iMet],(hmetpasstrigger->GetNbinsX()+1));
-//       }
-//       else{
-// 	neventsmet[iFile][0][iMet][0]=IntegralWithError(hmet,mets[iMet],mets[iMet+1]-1);
-// 	neventsmet[iFile][1][iMet][0]=IntegralWithError(hmetpasstrigger,mets[iMet],mets[iMet+1]-1);
-//       }
-//       trigeffmet[iFile][iMet][0]=neventsmet[iFile][1][iMet]/neventsmet[iFile][0][iMet];
-//       std::cout<<"trig eff for met: "<<mets[iMet]<<" is: "<<trigeffmet[iFile][iMet]<<std::endl;
-//     }
 
-    for(unsigned iJ2pt=0;iJ2pt<j2pts.size();iJ2pt++){
-      if(iJ2pt==(j2pts.size()-1)){
-	neventsj2pt[iFile][0][iJ2pt][0]=hj2pt->Integral(j2pts[iJ2pt],(hj2pt->GetNbinsX()+1));
-	neventsj2pt[iFile][1][iJ2pt][0]=hj2ptpasstrigger->Integral(j2pts[iJ2pt],(hj2ptpasstrigger->GetNbinsX()+1));
-      }
-      else{
-	neventsj2pt[iFile][0][iJ2pt][0]=hj2pt->Integral(j2pts[iJ2pt],j2pts[iJ2pt+1]-1);
-	neventsj2pt[iFile][1][iJ2pt][0]=hj2ptpasstrigger->Integral(j2pts[iJ2pt],j2pts[iJ2pt+1]-1);
-      }
-      trigeffj2pt[iFile][iJ2pt][0]=neventsj2pt[iFile][1][iJ2pt][0]/neventsj2pt[iFile][0][iJ2pt][0];
-      std::cout<<"trig eff for j2pt: "<<j2pts[iJ2pt]<<" is: "<<trigeffj2pt[iFile][iJ2pt][0]<<std::endl;
+    std::vector<double> j2pttrigefferrs;
+    std::vector<double> j2pttrigeffs = GetTrigEff(hj2pt,hj2ptpasstrigger,j2pts,&j2pttrigefferrs);
+    for(unsigned iEff=0;iEff<j2pttrigeffs.size();iEff++){
+      std::cout<<"trig eff for j2pt: "<<j2pts[iEff]<<" is: "<<j2pttrigeffs[iEff]<<"+/-"<<j2pttrigeffs[iEff]*j2pttrigefferrs[iEff]<<std::endl;
     }
+    //tfiles[(files[iFile])]->Close();
   }
  
 //   bool nostat[4][3][mets.size()];
