@@ -7,6 +7,7 @@
 #include "TTree.h"
 #include "TBranch.h"
 #include "TAxis.h"
+#include "TLegend.h"
 #include <iterator>
 #include <iostream>
 #include <vector>
@@ -94,6 +95,8 @@ int main(){//main
   double dijet_detacut=4.2;
   double dijet_dphicut=3.2;
   double cjvcut=100;
+
+  std::string outfolder="";
   
   std::vector<std::string> files;
   files.push_back("SingleMu_SingleMu-2012A-22Jan2013-v1"); 
@@ -125,6 +128,9 @@ int main(){//main
   j2pts.push_back(50);
   j2pts.push_back(60);
   j2pts.push_back(70);
+  j2pts.push_back(80);
+  j2pts.push_back(90);
+  j2pts.push_back(100);
 
   std::vector<double> mjjs;
   mjjs.push_back(100);
@@ -209,12 +215,45 @@ int main(){//main
     metprompteffgraph.SetLineColor(4);                                                                                                               
     metprompteffgraph.SetMarkerStyle(21);
     metprompteffgraph.Draw("AP");
-    c1->SaveAs("tmp.pdf");
 
+    TLegend* metleg=new TLegend(0.5,0.2,0.9,0.3);
+    metleg->AddEntry(&metprompteffgraph,"HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets","p");
+
+    metleg->Draw("same");
+    c1->SaveAs((outfolder+"metefficiency"+boost::lexical_cast<std::string>(iFile)+".pdf").c_str());
+
+    c1->Clear();
     TGraphAsymmErrors j2ptprompteffgraph =Make1DTrigEff(&hj2pt,&hj2ptpasstrigger,j2pts);
+    j2ptprompteffgraph.SetTitle("Trigger Efficiency");
+    j2ptprompteffgraph.GetXaxis()->SetTitle("jet_{2}^{p_T}/GeV");
+    j2ptprompteffgraph.GetYaxis()->SetTitle("Efficiency");
+    j2ptprompteffgraph.SetMarkerColor(4);                                                                                                   
+    j2ptprompteffgraph.SetLineColor(4);                                                                                                               
+    j2ptprompteffgraph.SetMarkerStyle(21);
+    j2ptprompteffgraph.Draw("AP");
 
+    TLegend* j2ptleg=new TLegend(0.5,0.2,0.9,0.3);
+    j2ptleg->AddEntry(&j2ptprompteffgraph,"HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets","p");
+
+    j2ptleg->Draw("same");
+    c1->SaveAs((outfolder+"j2ptefficiency"+boost::lexical_cast<std::string>(iFile)+".pdf").c_str());
+
+    c1->Clear();
     TGraphAsymmErrors mjjprompteffgraph =Make1DTrigEff(&hmjj,&hmjjpasstrigger,mjjs);
+    mjjprompteffgraph.SetTitle("Trigger Efficiency");
+    mjjprompteffgraph.GetXaxis()->SetTitle("mjj/GeV");
+    mjjprompteffgraph.GetYaxis()->SetRangeUser(0.,1.1);
+    mjjprompteffgraph.GetYaxis()->SetTitle("Efficiency");
+    mjjprompteffgraph.SetMarkerColor(4);                                                                                                   
+    mjjprompteffgraph.SetLineColor(4);                                                                                                               
+    mjjprompteffgraph.SetMarkerStyle(21);
+    mjjprompteffgraph.Draw("AP");
 
+    TLegend* mjjleg=new TLegend(0.5,0.2,0.9,0.3);
+    mjjleg->AddEntry(&mjjprompteffgraph,"HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets","p");
+    
+    mjjleg->Draw("same");
+    c1->SaveAs((outfolder+"mjjefficiency"+boost::lexical_cast<std::string>(iFile)+".pdf").c_str());
   }
  
   return 0;
