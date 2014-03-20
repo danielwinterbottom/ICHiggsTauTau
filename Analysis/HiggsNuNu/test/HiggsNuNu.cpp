@@ -1530,7 +1530,7 @@ int main(int argc, char* argv[]){
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
     if(!do_trigeff&&!do_trigeff_tree) analysis.AddModule(&dataMCTriggerPathFilter);
-     //if (printEventList) analysis.AddModule(&hinvPrintList);
+         //if (printEventList) analysis.AddModule(&hinvPrintList);
  
     //NEW: change skimming to write event at a specific moment in the chain of modules.
      if (do_skim) analysis.WriteSkimHere();

@@ -23,9 +23,9 @@ for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-      JOBDIRPREFIX=trigeffjobs
+      JOBDIRPREFIX=jobs_trigeff
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/
-      OUTPUTPREFIX=trigeffoutput
+      OUTPUTPREFIX=output_trigeff_alltrigs
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/
       
       if [ "$SYST" = "JESUP" ]
@@ -56,14 +56,13 @@ for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep
 	  OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/JERWORSE/
       fi  
 
+      TRIGEFFOPTIONS=" --jet1ptcut=0 --jet2ptcut=0 --detajjcut=0 --jetptprecut=0 --dphi-cut=0 --met_cut=0 mjj_cut=0 "
 
-      
-      
       echo "Config file: $CONFIG"
       mkdir -p $JOBDIR
       mkdir -p $OUTPUTDIR
       
-      for QUEUEDIR in short medium
+      for QUEUEDIR in singlemurun #medium #long
 	do
 	
 	if [ "$QUEUEDIR" = "medium" ]
@@ -72,7 +71,7 @@ for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep
 	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 	    echo "Using job-submission: " $JOBSUBMIT
 	else
-	    JOBQUEUE="hepshort.q"
+	    JOBQUEUE="hepmedium.q"
 	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 	    echo "Using job-submission: " $JOBSUBMIT
 	fi
@@ -82,46 +81,18 @@ for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep
 	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_SingleMu_*`
 	  do
 	  echo "Processing files in "$FILELIST
-	  
+
 	  echo $FILELIST > tmp.txt
 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_SingleMu_//" tmp.txt > tmp2.txt
 	  
-	  #!!PUT FOR LOOP ON EACH CUT
-	  nmets=14
-	  mets[1]=40
-	  mets[2]=60
-	  mets[3]=80
-	  mets[4]=100
-	  mets[5]=110
-	  mets[6]=120
-	  mets[7]=130
-	  mets[8]=140
-	  mets[9]=150
-	  mets[10]=160
-	  mets[11]=170
-	  mets[12]=180
-	  mets[13]=190
-	  mets[14]=200
-	  for imet in $(seq 1 $nmets)
-	    do
-	    JOB=SingleMu_`sed "s/\.dat//" tmp2.txt`_MET${mets[$imet]}
+	  JOB=SingleMu_`sed "s/\.dat//" tmp2.txt`
+	  
+	  echo "JOB name = $JOB"
+	  
+	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS $TRIGEFFOPTIONS --channel=$CHANNEL --do_trigeff_tree=true &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBSUBMIT $JOBDIR/$JOB.sh
 	    
-	    echo "JOB name = $JOB"
-
-	    if [ "$imet" = "$nmets" ]
-		then
-		trigeffoptions=" --met_cut=${mets[$imet]} "		
-	    else
-		metcutmax=${mets[$(($imet+1))]}
-		trigeffoptions=" --met_cut=${mets[$imet]} --met_cut_max=$metcutmax "		
-	    fi
-
-
-
-	    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS --channel=$CHANNEL --do_trigeff=true $trigeffoptions &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	    $JOBSUBMIT $JOBDIR/$JOB.sh
-	    
-	  done
+	  
 	  rm tmp.txt tmp2.txt
 
 	done

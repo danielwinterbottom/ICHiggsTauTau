@@ -64,6 +64,8 @@ namespace ic {
     n_jets_cjv_30_ = 0;
     n_jets_cjv_20EB_30EE_ = 0;
     passtrigger_ = -1;
+    passparkedtrigger1_ = -1;
+    passparkedtrigger2_ = -1;
   }
 
   TrigeffInputs::~TrigeffInputs(){
@@ -125,6 +127,8 @@ namespace ic {
     outputTree_->Branch("n_jets_cjv_30",&n_jets_cjv_30_);
     outputTree_->Branch("n_jets_cjv_20EB_30EE",&n_jets_cjv_20EB_30EE_);
     outputTree_->Branch("passtrigger",&passtrigger_);
+    outputTree_->Branch("passparkedtrigger1",&passparkedtrigger1_);
+    outputTree_->Branch("passparkedtrigger2",&passparkedtrigger2_);
 
     return 0;
   }
@@ -223,10 +227,14 @@ namespace ic {
 	//EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings      
 	//unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings                                         
 	passtrigger_=-1;
+	passparkedtrigger1_=-1;
+	passparkedtrigger2_=-1;
 	for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
 	  std::string name = triggerPathPtrVec[i]->name();
 	  triggerPathPtrVec[i]->prescale();
 	  if (name.find(trigger_path_) != name.npos) passtrigger_ = 1;
+	  if (name.find("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger1_ = 1;
+	  if (name.find("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger2_ = 1;
 	}
       }
       //for MC                                                                                                                                       

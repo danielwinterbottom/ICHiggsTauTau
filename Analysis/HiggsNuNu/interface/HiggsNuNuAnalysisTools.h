@@ -3,6 +3,8 @@
 #include <vector>
 #include <map>
 #include "TH1.h"
+#include "TH3.h"
+#include "TTree.h"
 #include "Utilities/interface/SimpleParamParser.h"
 #include "Utilities/interface/FnRootTools.h"
 
@@ -14,6 +16,10 @@ namespace ic {
   std::string BuildCutString(std::string const& selection,
 			     std::string const& category,
 			     std::string const& weight);
+  std::string BuildVarString(std::string const& variable);
+  TH1F GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree);
+  TH3F GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree);
+
 
   class HiggsNuNuAnalysis {
   public:

@@ -10,6 +10,7 @@
 #include "Utilities/interface/SimpleParamParser.h"
 #include "Utilities/interface/FnRootTools.h"
 #include "TEfficiency.h"
+#include "TH3F.h"
 
 namespace ic{
   
@@ -74,4 +75,40 @@ namespace ic{
     if (weight != "") full_selection += ("("+weight+")");
     return full_selection;
   }
+
+  std::string BuildVarString(std::string const& variable) {
+    std::string full_variable = variable;
+    if (full_variable.find_last_of("(") != full_variable.npos
+        && full_variable.find("[") == full_variable.npos
+        && full_variable.find("]") == full_variable.npos) {
+      full_variable.insert(full_variable.find_last_of("("),">>htemp");
+    }
+    return full_variable;
+  }
+
+  TH1F GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
+    std::string full_variable= BuildVarString(variable);
+    std::string full_selection = BuildCutString(selection, category, weight);
+    TH1::AddDirectory(true);
+    ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
+    TH1::AddDirectory(false);
+    TH1F* htemp = (TH1F*)gDirectory->Get("htemp");
+    TH1F hshape= (*htemp);
+    gDirectory->Delete("htemp;*");
+    return hshape;
+  }
+
+  TH3F GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, TTree* ttree){
+    std::string full_variable= BuildVarString(variable);
+    std::string full_selection = BuildCutString(selection, category, weight);
+    TH3::AddDirectory(true);
+    ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
+    TH3::AddDirectory(false);
+    TH3F* htemp = (TH3F*)gDirectory->Get("htemp");
+    TH3F hshape= (*htemp);
+    gDirectory->Delete("htemp;*");
+    return hshape;
+  }
+  
+  
 }

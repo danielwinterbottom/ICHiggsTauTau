@@ -65,6 +65,8 @@ namespace ic {
     unsigned n_jets_cjv_30_;
     unsigned n_jets_cjv_20EB_30EE_;
     double passtrigger_;
+    double passparkedtrigger1_;
+    double passparkedtrigger2_;
 
   public:
     TrigeffInputs(std::string const& name);
