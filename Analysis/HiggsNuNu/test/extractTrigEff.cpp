@@ -44,7 +44,11 @@ std::vector<double> GetTrigEff(TH1F const* hist, TH1F const* histpasstrigger, st
     nevents[1]=Integral(histpasstrigger,histpasstriggerbmin,histpasstriggerbmax);
     err[0]=Error(hist,histbmin,histbmax);
     err[1]=Error(histpasstrigger,histpasstriggerbmin,histpasstriggerbmax);
-    trigeff.push_back(nevents[1]/nevents[0]);
+    if(nevents[0]!=0) trigeff.push_back(nevents[1]/nevents[0]);
+    else{
+      trigeff.push_back(0.);
+      std::cout<<"0 events even without trigger setting efficiency to 0"<<std::endl;
+    }
     double errbase=sqrt(pow(err[0]/nevents[0],2)+pow(err[1]/nevents[1],2)) * trigeff[iBin];
     double errorup;
     double errordown;
@@ -66,8 +70,8 @@ TGraphAsymmErrors MakeTrigEffGraph(std::vector<double> effs, std::vector< std::p
   std::vector<double> bincentres,binerrors;
   for(unsigned iBin=0;iBin<bins.size(); iBin++){
     if(iBin==bins.size()-1){
-      bincentres.push_back(bins[iBin]+10);
-      binerrors.push_back(10);
+      bincentres.push_back(bins[iBin]+0.1);
+      binerrors.push_back(0.05);
     }
     else{
       bincentres.push_back((bins[iBin]+bins[iBin+1])/2);
@@ -86,17 +90,17 @@ TGraphAsymmErrors Make1DTrigEff(TH1F const* hist, TH1F const* histpasstrigger, s
 }
 
 int main(){//main
-  std::string folder = "output_trigeff/nunu/";
+  std::string folder = "output_trigeff_alltrigs/nunu/";
 
-  double mjjcut=1100;
+  double mjjcut=1000;
   double metcut=130;
-  double j2ptcut=50;
-  double j1ptcut=50;
+  double j2ptcut=55;
+  double j1ptcut=55;
   double dijet_detacut=4.2;
   double dijet_dphicut=3.2;
-  double cjvcut=100;
+  double cjvcut=1;
 
-  std::string outfolder="";
+  std::string outfolder="trigeffplotsnocuts/";
   
   std::vector<std::string> files;
   files.push_back("SingleMu_SingleMu-2012A-22Jan2013-v1"); 
@@ -104,51 +108,118 @@ int main(){//main
   files.push_back("SingleMu_SingleMu-2012C-22Jan2013-v1"); 
   files.push_back("SingleMu_SingleMu-2012D-22Jan2013-v1"); 
   
-  std::vector<double> mets;
-  mets.push_back(40);
-  mets.push_back(60);
-  mets.push_back(80);
-  mets.push_back(100);
-  mets.push_back(110);
-  mets.push_back(120);
-  mets.push_back(130);
-  mets.push_back(140);
-  mets.push_back(150);
-  mets.push_back(160);
-  mets.push_back(170);
-  mets.push_back(180);
-  mets.push_back(190);
-  mets.push_back(200);
-  
-  std::vector<double> j2pts;
-  j2pts.push_back(10);
-  j2pts.push_back(20);
-  j2pts.push_back(30);
-  j2pts.push_back(40);
-  j2pts.push_back(50);
-  j2pts.push_back(60);
-  j2pts.push_back(70);
-  j2pts.push_back(80);
-  j2pts.push_back(90);
-  j2pts.push_back(100);
+  std::vector<std::string> filename;
+  filename.push_back("Run A");
+  filename.push_back("Run B");
+  filename.push_back("Run C");
+  filename.push_back("Run D");
 
-  std::vector<double> mjjs;
-  mjjs.push_back(100);
-  mjjs.push_back(200);
-  mjjs.push_back(300);
-  mjjs.push_back(400);
-  mjjs.push_back(500);
-  mjjs.push_back(600);
-  mjjs.push_back(700);
-  mjjs.push_back(800);
-  mjjs.push_back(900);
-  mjjs.push_back(1000);
-  mjjs.push_back(1100);
-  mjjs.push_back(1200);
-  mjjs.push_back(1300);
-  mjjs.push_back(1400);
-  mjjs.push_back(1500);
-  mjjs.push_back(1600);
+  std::string baseselection="jet1_pt>"+boost::lexical_cast<std::string>(j1ptcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+" && dijet_dphi<"+boost::lexical_cast<std::string>(dijet_dphicut);
+  
+  std::string multidvariable="met:jet2_pt:dijet_M(200,0.,1000.,20,0.,100.,400,0.,2000.)";
+
+  std::vector<std::string> triggerselection;
+  triggerselection.push_back(" && passtrigger==1");
+  triggerselection.push_back(" && passparkedtrigger1==1");
+  triggerselection.push_back(" && passparkedtrigger2==1");
+
+  std::vector<std::string> triggernames;
+  triggernames.push_back("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets");
+  triggernames.push_back("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF");
+  triggernames.push_back("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF");
+
+  std::vector<std::string> varnames;
+  varnames.push_back("met");
+  varnames.push_back("mjj");
+  varnames.push_back("j2pt");
+  varnames.push_back("deta");
+
+  std::vector<std::string> varvariable;
+  varvariable.push_back("met(200,0.,1000.)");
+  varvariable.push_back("dijet_M(400,0.,2000.)");
+  varvariable.push_back("jet2_pt(20,0.,100.)");
+  varvariable.push_back("dijet_deta(100,0.,10.)");
+
+  std::vector<std::string> varextraselection;
+  varextraselection.push_back(" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_de\
+ta>"+boost::lexical_cast<std::string>(dijet_detacut));
+  varextraselection.push_back(" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_de\
+ta>"+boost::lexical_cast<std::string>(dijet_detacut));
+  varextraselection.push_back(" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_de\
+ta>"+boost::lexical_cast<std::string>(dijet_detacut));
+  varextraselection.push_back(" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut));
+  
+  
+  std::vector<std::string> varlatex;
+  varlatex.push_back("met");
+  varlatex.push_back("m_{jj}");
+  varlatex.push_back("jet_{2} p_{T}");
+  varlatex.push_back("#Delta#eta_{jj}");
+
+  std::vector<double> varbins[varnames.size()];
+  varbins[0].push_back(40);
+  varbins[0].push_back(60);
+  varbins[0].push_back(80);
+  varbins[0].push_back(100);
+  varbins[0].push_back(110);
+  varbins[0].push_back(120);
+  varbins[0].push_back(130);
+  varbins[0].push_back(140);
+  varbins[0].push_back(150);
+  varbins[0].push_back(160);
+  varbins[0].push_back(170);
+  varbins[0].push_back(180);
+  varbins[0].push_back(190);
+  varbins[0].push_back(200);
+
+  varbins[1].push_back(100);
+  varbins[1].push_back(200);
+  varbins[1].push_back(300);
+  varbins[1].push_back(400);
+  varbins[1].push_back(500);
+  varbins[1].push_back(600);
+  varbins[1].push_back(700);
+  varbins[1].push_back(800);
+  varbins[1].push_back(900);
+  varbins[1].push_back(1000);
+  varbins[1].push_back(1100);
+  varbins[1].push_back(1200);
+  varbins[1].push_back(1300);
+  varbins[1].push_back(1400);
+  varbins[1].push_back(1500);
+  varbins[1].push_back(1600);
+
+  varbins[2].push_back(10);
+  varbins[2].push_back(20);
+  varbins[2].push_back(30);
+  varbins[2].push_back(40);
+  varbins[2].push_back(50);
+  varbins[2].push_back(60);
+  varbins[2].push_back(70);
+  varbins[2].push_back(80);
+  varbins[2].push_back(90);
+  varbins[2].push_back(100);
+
+  varbins[3].push_back(3.1);
+  varbins[3].push_back(3.3);
+  varbins[3].push_back(3.5);
+  varbins[3].push_back(3.6);
+  varbins[3].push_back(3.7);
+  varbins[3].push_back(3.8);
+  varbins[3].push_back(3.9);
+  varbins[3].push_back(4.0);
+  varbins[3].push_back(4.1);
+  varbins[3].push_back(4.2);
+  varbins[3].push_back(4.3);
+  varbins[3].push_back(4.4);
+  varbins[3].push_back(4.5);
+  varbins[3].push_back(4.6);
+  varbins[3].push_back(4.7);
+  varbins[3].push_back(4.8);
+  varbins[3].push_back(4.9);
+  varbins[3].push_back(5.0);
+
+  std::cout<<"Opening TFiles";
 
   std::map<std::string, TFile *> tfiles;
   for (unsigned iFile = 0; iFile < files.size(); iFile++) {
@@ -160,101 +231,109 @@ int main(){//main
     else {
       tfiles[(files[iFile])] = tmp;
     }
+    std::cout<<".";
   }
+  std::cout<<std::endl;
 
+  TH3F heffnotrigger[4],hefftrigger[4],heffparked1trigger[4],heffparked2trigger[4];
+  TH1F hvar[varnames.size()][4], hvarpasstrigger[varnames.size()][triggernames.size()][4];
 
   for (unsigned iFile = 0; iFile < files.size(); ++iFile) {
-    
+    std::cout<<filename[iFile]<<std::endl;
     TTree *tree;
 
     tree = (TTree *)tfiles[(files[iFile])]->Get("TrigeffInputTree");
     tree->SetEstimate(1000);
 
-    //Get 3D histo of met,j2pt,mjj
-    std::string selection="jet1_pt>"+boost::lexical_cast<std::string>(j1ptcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut)+" && dijet_dphi<"+boost::lexical_cast<std::string>(dijet_dphicut);
-    std::string prompttriggerselection=" && passtrigger==1";
-    std::string parked1triggerselection=" && passparkedtrigger1==1";
-    std::string parked2triggerselection=" && passparkedtrigger2==1";
+    std::cout<<"Getting 3D Histograms";
 
-    std::string variable="met:jet2_pt:dijet_M(200,0.,1000.,20,0.,100.,400,0.,2000.)";
-    TH3F heffnotrigger=GetShape3D(variable,selection,"","",tree);
-    TH3F hefftrigger=GetShape3D(variable,selection+prompttriggerselection,"","",tree);
+    //Get 3D histo of met,j2pt,mjj
+
+    heffnotrigger[iFile]=GetShape3D(multidvariable,baseselection,"","",tree);
+    std::cout<<".";
+    hefftrigger[iFile]=GetShape3D(multidvariable,baseselection+triggerselection[0],"","",tree);
+    std::cout<<".";
+    heffparked1trigger[iFile]=GetShape3D(multidvariable,baseselection+triggerselection[1],"","",tree);
+    std::cout<<".";
+    heffparked2trigger[iFile]=GetShape3D(multidvariable,baseselection+triggerselection[2],"","",tree);
+    std::cout<<std::endl;
 
 
     //Get 1D histos of met,j2pt,mjj
-    std::string metvariable="met(200,0.,1000.)";
-    std::string extrametselection=" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut);
-    std::string mjjvariable="dijet_M(400,0.,2000.)";
-    std::string extramjjselection=" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && met>"+boost::lexical_cast<std::string>(metcut);
-    std::string j2ptvariable="jet2_pt(20,0.,100.)";
-    std::string extraj2ptselection=" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut);
-
-    TH1F hmet=GetShape(metvariable,selection+extrametselection,"","",tree);
-    hmet.Sumw2();
-    TH1F hmetpasstrigger=GetShape(metvariable,selection+prompttriggerselection+extrametselection,"","",tree);
-    hmetpasstrigger.Sumw2();
-
-    TH1F hj2pt=GetShape(j2ptvariable,selection+extraj2ptselection,"","",tree);
-    hj2pt.Sumw2();
-    TH1F hj2ptpasstrigger=GetShape(j2ptvariable,selection+prompttriggerselection+extraj2ptselection,"","",tree);
-    hj2ptpasstrigger.Sumw2();
-
-    TH1F hmjj=GetShape(mjjvariable,selection+extramjjselection,"","",tree);
-    hmjj.Sumw2();
-    TH1F hmjjpasstrigger=GetShape(mjjvariable,selection+prompttriggerselection+extramjjselection,"","",tree);
-    hmjjpasstrigger.Sumw2();
-    
-    TCanvas *c1 = new TCanvas("c1","c1");
-    
-
-    TGraphAsymmErrors metprompteffgraph=Make1DTrigEff(&hmet,&hmetpasstrigger,mets);
-    metprompteffgraph.SetTitle("Trigger Efficiency");
-    metprompteffgraph.GetXaxis()->SetTitle("met/GeV");
-    metprompteffgraph.GetYaxis()->SetTitle("Efficiency");
-    metprompteffgraph.SetMarkerColor(4);                                                                                                   
-    metprompteffgraph.SetLineColor(4);                                                                                                               
-    metprompteffgraph.SetMarkerStyle(21);
-    metprompteffgraph.Draw("AP");
-
-    TLegend* metleg=new TLegend(0.5,0.2,0.9,0.3);
-    metleg->AddEntry(&metprompteffgraph,"HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets","p");
-
-    metleg->Draw("same");
-    c1->SaveAs((outfolder+"metefficiency"+boost::lexical_cast<std::string>(iFile)+".pdf").c_str());
-
-    c1->Clear();
-    TGraphAsymmErrors j2ptprompteffgraph =Make1DTrigEff(&hj2pt,&hj2ptpasstrigger,j2pts);
-    j2ptprompteffgraph.SetTitle("Trigger Efficiency");
-    j2ptprompteffgraph.GetXaxis()->SetTitle("jet_{2}^{p_T}/GeV");
-    j2ptprompteffgraph.GetYaxis()->SetTitle("Efficiency");
-    j2ptprompteffgraph.SetMarkerColor(4);                                                                                                   
-    j2ptprompteffgraph.SetLineColor(4);                                                                                                               
-    j2ptprompteffgraph.SetMarkerStyle(21);
-    j2ptprompteffgraph.Draw("AP");
-
-    TLegend* j2ptleg=new TLegend(0.5,0.2,0.9,0.3);
-    j2ptleg->AddEntry(&j2ptprompteffgraph,"HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets","p");
-
-    j2ptleg->Draw("same");
-    c1->SaveAs((outfolder+"j2ptefficiency"+boost::lexical_cast<std::string>(iFile)+".pdf").c_str());
-
-    c1->Clear();
-    TGraphAsymmErrors mjjprompteffgraph =Make1DTrigEff(&hmjj,&hmjjpasstrigger,mjjs);
-    mjjprompteffgraph.SetTitle("Trigger Efficiency");
-    mjjprompteffgraph.GetXaxis()->SetTitle("mjj/GeV");
-    mjjprompteffgraph.GetYaxis()->SetRangeUser(0.,1.1);
-    mjjprompteffgraph.GetYaxis()->SetTitle("Efficiency");
-    mjjprompteffgraph.SetMarkerColor(4);                                                                                                   
-    mjjprompteffgraph.SetLineColor(4);                                                                                                               
-    mjjprompteffgraph.SetMarkerStyle(21);
-    mjjprompteffgraph.Draw("AP");
-
-    TLegend* mjjleg=new TLegend(0.5,0.2,0.9,0.3);
-    mjjleg->AddEntry(&mjjprompteffgraph,"HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets","p");
-    
-    mjjleg->Draw("same");
-    c1->SaveAs((outfolder+"mjjefficiency"+boost::lexical_cast<std::string>(iFile)+".pdf").c_str());
+    std::cout<<"Getting 1D Histograms:"<<std::endl;
+    for(unsigned iVar=0; iVar<varnames.size();iVar++){
+      std::cout<<"  "<<varnames[iVar]<<std::endl;
+      std::cout<<"    No trigger"<<std::endl;
+      hvar[iVar][iFile]=GetShape(varvariable[iVar],baseselection+varextraselection[iVar],"","",tree);
+      hvar[iVar][iFile].Sumw2();
+      for(unsigned iTrigger=0;iTrigger<triggernames.size();iTrigger++){
+	std::cout<<"    Trigger "<<iTrigger<<std::endl;
+	hvarpasstrigger[iVar][iTrigger][iFile]=GetShape(varvariable[iVar],baseselection+varextraselection[iVar]+triggerselection[iTrigger],"","",tree);
+	hvarpasstrigger[iVar][iTrigger][iFile].Sumw2();
+      }
+    }
   }
- 
+
+  std::cout<<"Calculating and drawing efficiencies"<<std::endl;
+  
+  TH1F hvarD[varnames.size()],hvarBCD[varnames.size()],hvarABCD[varnames.size()];
+  TH1F hvarpasstriggerABCD[varnames.size()],hvarpassparked1triggerBCD[varnames.size()],hvarpassparked2triggerD[varnames.size()];
+  TGraphAsymmErrors varprompteffgraph[varnames.size()],varparked1effgraph[varnames.size()],varparked2effgraph[varnames.size()];
+
+  TCanvas *c1 = new TCanvas("c1","c1");
+  for(unsigned iVar=0;iVar<varnames.size();iVar++){
+    c1->Clear();
+    hvarD[iVar]=hvar[iVar][3];
+    hvarBCD[iVar]=hvar[iVar][3];
+    hvarBCD[iVar].Add(&hvar[iVar][2]);
+    hvarBCD[iVar].Add(&hvar[iVar][1]);
+    hvarABCD[iVar]=hvarBCD[iVar];
+    hvarABCD[iVar].Add(&hvar[iVar][0]);
+
+    hvarpasstriggerABCD[iVar]=hvarpasstrigger[iVar][0][0];
+    hvarpasstriggerABCD[iVar].Add(&hvarpasstrigger[iVar][0][1]);
+    hvarpasstriggerABCD[iVar].Add(&hvarpasstrigger[iVar][0][2]);
+    hvarpasstriggerABCD[iVar].Add(&hvarpasstrigger[iVar][0][3]);
+    hvarpassparked1triggerBCD[iVar]=hvarpasstrigger[iVar][1][1];
+    hvarpassparked1triggerBCD[iVar].Add(&hvarpasstrigger[iVar][1][2]);
+    hvarpassparked1triggerBCD[iVar].Add(&hvarpasstrigger[iVar][1][3]);
+    hvarpassparked2triggerD[iVar]=hvarpasstrigger[iVar][2][3];
+
+    c1->SetGrid();
+    
+    varprompteffgraph[iVar]=Make1DTrigEff(&hvarABCD[iVar],&hvarpasstriggerABCD[iVar],varbins[iVar]);
+    varparked1effgraph[iVar]=Make1DTrigEff(&hvarBCD[iVar],&hvarpassparked1triggerBCD[iVar],varbins[iVar]);
+    varparked2effgraph[iVar]=Make1DTrigEff(&hvarD[iVar],&hvarpassparked2triggerD[iVar],varbins[iVar]);
+
+    varprompteffgraph[iVar].SetTitle("Trigger Efficiency");
+    varprompteffgraph[iVar].GetXaxis()->SetTitle((varlatex[iVar]+"/GeV").c_str());
+    varprompteffgraph[iVar].GetYaxis()->SetTitle("Efficiency");
+    varprompteffgraph[iVar].SetMarkerColor(4);                                                                                                   
+    varprompteffgraph[iVar].SetLineColor(4);
+    varprompteffgraph[iVar].SetMarkerStyle(20);
+    varprompteffgraph[iVar].SetMarkerSize(1);
+    varprompteffgraph[iVar].Draw("AP");
+    
+    varparked1effgraph[iVar].SetMarkerColor(6);
+    varparked1effgraph[iVar].SetLineColor(6);
+    varparked1effgraph[iVar].SetMarkerStyle(20);
+    varparked1effgraph[iVar].SetMarkerSize(0.9);
+    varparked1effgraph[iVar].Draw("P");
+    
+    varparked2effgraph[iVar].SetMarkerColor(2);
+    varparked2effgraph[iVar].SetLineColor(2);
+    varparked2effgraph[iVar].SetMarkerStyle(20);
+    varparked2effgraph[iVar].SetMarkerSize(0.8);
+    varparked2effgraph[iVar].Draw("P");
+    
+    TLegend* varleg=new TLegend(0.5,0.2,0.9,0.3);
+    varleg->AddEntry(&varprompteffgraph[iVar],triggernames[0].c_str(),"p");
+    varleg->AddEntry(&varparked1effgraph[iVar],triggernames[1].c_str(),"p");
+    varleg->AddEntry(&varparked2effgraph[iVar],triggernames[2].c_str(),"p");
+    
+    varleg->Draw("same");
+    c1->SaveAs((outfolder+varnames[iVar]+"efficiency.pdf").c_str());
+  }
+
   return 0;
 }
