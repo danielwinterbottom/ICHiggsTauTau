@@ -515,18 +515,18 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring( 'patTrigger','HLT
 if (release == '42X'):
   if isData:
     process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2011A-Run166512-42X.root')
+        fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2011A-Run166512-42X.root')
     )
     process.GlobalTag.globaltag = cms.string('GR_R_42_V25::All')
   else:
     process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/NEW_SYNC_2011.root')
+      fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Fall11-42X.root')
     )
     process.GlobalTag.globaltag = cms.string('START42_V17::All')
 if (release == '53X'):
   if isData:
     process.source = cms.Source("PoolSource",
-      fileNames = cms.untracked.vstring('file:/Volumes/Storage/samples/TauPlusX-2012D.root')
+      fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2012D.root')
     )
     process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
   else:
@@ -534,7 +534,7 @@ if (release == '53X'):
       "PoolSource",
       fileNames = cms.untracked.vstring(
         #'file:pickevents.root'
-        'file:/Volumes/Storage/samples/DYJetsToLL-Summer12-53X-Sample.root'
+        'root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Summer12-53X-Sample.root'
         )
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'

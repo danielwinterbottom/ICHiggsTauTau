@@ -20,6 +20,7 @@ namespace ic {
 
   ZbbPlot::ZbbPlot() : config_("Config") {
     bkg_schemes_["all"] = {
+      PlotBkgComponent("ZZ","ZZ"        ,{"ZZ"}      , TColor::GetColor(244, 65, 255)),
       PlotBkgComponent("TT","t#bar{t}"  ,{"TT"}      , TColor::GetColor(255, 255, 84)),
       PlotBkgComponent("Zb","Z+b"       ,{"Zb"}      , TColor::GetColor(245, 77,  84)),
       PlotBkgComponent("Zc","Z+c"       ,{"Zc"}      , TColor::GetColor(91,  255, 84)),
@@ -88,6 +89,8 @@ namespace ic {
       ((prefix+"x_axis_bin_labels").c_str(),    po::value<std::string>(&x_axis_bin_labels_)->default_value(""))
       ((prefix+"custom_y_axis_min").c_str(),    po::value<bool>(&custom_y_axis_min_)->default_value(false))
       ((prefix+"y_axis_min").c_str(),           po::value<double>(&y_axis_min_)->default_value(0.0))
+      ((prefix+"legend_left").c_str(),          po::value<double>(&legend_left_)->default_value(-1.0))
+      ((prefix+"legend_pos").c_str(),           po::value<unsigned>(&legend_pos_)->default_value(0))
       ((prefix+"custom_x_axis_range").c_str(),  po::value<bool>(&custom_x_axis_range_)->default_value(false))
       ((prefix+"x_axis_min").c_str(),           po::value<double>(&x_axis_min_)->default_value(0.0))
       ((prefix+"x_axis_max").c_str(),           po::value<double>(&x_axis_max_)->default_value(1.0))
@@ -121,6 +124,9 @@ namespace ic {
       plot.y_axis_log = true;
     }
     plot.x_bin_labels_ = x_axis_bin_labels_;
+
+    plot.legend_left = legend_left_;
+    plot.legend_pos = legend_pos_;
 
     plot.extra_pad = extra_pad_;
     plot.custom_x_axis_range = custom_x_axis_range_;

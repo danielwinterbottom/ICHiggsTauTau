@@ -88,7 +88,11 @@ void ICPhotonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup
 
     pho.set_pass_electron_veto(!ConversionTools::hasMatchedPromptElectron(iter->superCluster(), hElectrons, hConversions, beamspot->position()));
     pho.set_sigma_IetaIeta(iter->sigmaIetaIeta());
+#ifndef CMSSW_4_2_8_patch7
     pho.set_had_tower_over_em(iter->hadTowOverEm());
+#else
+    pho.set_had_tower_over_em(0.0);
+#endif
   }  
 }
 

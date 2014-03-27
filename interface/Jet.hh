@@ -29,6 +29,9 @@ namespace ic {
       inline std::vector<std::size_t> const& gen_particles() const { return gen_particles_; }
       inline void set_gen_particles(std::vector<std::size_t> const& gen_particles) { gen_particles_ = gen_particles; }
       
+      inline std::vector<std::size_t> const& secondary_vertices() const { return secondary_vertices_; }
+      inline void set_secondary_vertices(std::vector<std::size_t> const& secondary_vertices) { secondary_vertices_ = secondary_vertices; }
+
       inline double const& uncorrected_energy() const { return uncorrected_energy_; }
       inline void set_uncorrected_energy(double const& uncorrected_energy) { uncorrected_energy_ = uncorrected_energy; }
 
@@ -49,6 +52,7 @@ namespace ic {
       UFmap jec_factors_;
       UFmap b_discriminators_;
       std::vector<std::size_t> gen_particles_;
+      std::vector<std::size_t> secondary_vertices_;
       double uncorrected_energy_;
       float jet_area_;
 

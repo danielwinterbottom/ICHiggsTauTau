@@ -8,13 +8,13 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 
 
-class ICPFJetProducer : public edm::EDProducer {
+class ICSecondaryVertexProducer : public edm::EDProducer {
    public:
-      explicit ICPFJetProducer(const edm::ParameterSet&);
-      ~ICPFJetProducer();
+      explicit ICSecondaryVertexProducer(const edm::ParameterSet&);
+      ~ICSecondaryVertexProducer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -29,14 +29,10 @@ class ICPFJetProducer : public edm::EDProducer {
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
       // ----------member data ---------------------------
-      std::vector<ic::PFJet> *pfjets_;
       edm::InputTag input_label_;
-      edm::InputTag secondary_vertex_collection_;
-      bool store_secondary_vertex_ids_;
-      bool store_ids_;
-      
       std::string branch_name_;
-      std::map<std::string, std::size_t> observed_btag_;
-      std::map<std::string, std::size_t> observed_jec_;
-
+      double track_pt_threshold_;
+      bool store_ids_;
+      std::vector<std::string> merge_labels_;      
+      std::vector<ic::SecondaryVertex> *cand_vec;      
 };
