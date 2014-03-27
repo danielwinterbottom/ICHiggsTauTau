@@ -5,6 +5,9 @@
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
 #include "Utilities/interface/BTagWeight.h"
+namespace ic { class SecondaryVertex; }
+namespace ic { class Track; }
+
 
 namespace ic {
 
@@ -70,6 +73,9 @@ class ZbbAnalyser : public ModuleBase {
 
   double ElectronWeight(Candidate const* elec1, Candidate const* elec2);
   double MuonWeight(Candidate const* muon1, Candidate const* muon2);
+  double SVMass(Jet const* jet,
+      std::map<std::size_t, SecondaryVertex *> const& sv_map,
+      std::map<std::size_t, Track *> const& trk_map);
 
  public:
   ZbbAnalyser(std::string const& name);

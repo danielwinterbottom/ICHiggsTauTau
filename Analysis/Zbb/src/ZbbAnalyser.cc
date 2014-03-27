@@ -1,5 +1,9 @@
+#include <algorithm>
+#include <map>
 #include "Zbb/interface/ZbbAnalyser.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
+#include "UserCode/ICHiggsTauTau/interface/Track.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "Utilities/interface/FnPredicates.h"
@@ -124,7 +128,7 @@ namespace ic {
     if (jets.size() >= 1) {
       jpt_1_  = jets[0]->pt();
       jeta_1_ = jets[0]->eta();
-      jnsv_1_ = 0;
+      jnsv_1_ = jets[0]->secondary_vertices().size();
       jssv_1_ = jets[0]->GetBDiscriminator("simpleSecondaryVertexHighEffBJetTags");
     } else {
       jpt_1_  = 0.0;
@@ -135,7 +139,7 @@ namespace ic {
     if (jets.size() >= 2) {
       jpt_2_  = jets[1]->pt();
       jeta_2_ = jets[1]->eta();
-      jnsv_2_ = 0;
+      jnsv_2_ = jets[1]->secondary_vertices().size();
       jssv_2_ = jets[1]->GetBDiscriminator("simpleSecondaryVertexHighEffBJetTags");
     } else {
       jpt_2_  = 0.0;
@@ -177,12 +181,18 @@ namespace ic {
       }
     }
 
+    auto id_sv_map = event->GetIDMap<SecondaryVertex>("secondaryVerticesIDMap","secondaryVertices");
+    auto id_trk_map = event->GetIDMap<Track>("tracksIDMap","tracks");
+    
+    pt_z_ = pair->pt();
+
     n_b_jets_ = bjets.size();
     // Highest pT b-tagged jet
     if (n_b_jets_ >= 1) {
       bpt_1_  = bjets[0]->pt();
       beta_1_ = bjets[0]->eta();
-      m_sv_1_ = 0;
+      m_sv_1_ = SVMass(bjets[0], id_sv_map, id_trk_map);
+      if (m_sv_1_ < 0.) std::cout << "invalid svmass" << std::endl;
     } else {
       bpt_1_  = 0.0;
       beta_1_ = 0.0;
@@ -191,21 +201,20 @@ namespace ic {
     if (n_b_jets_ >= 2) {
       bpt_2_  = bjets[1]->pt();
       beta_2_ = bjets[1]->eta();
-      m_sv_2_ = 0;
+      m_sv_2_ = SVMass(bjets[1], id_sv_map, id_trk_map);
+      if (m_sv_2_ < 0.) std::cout << "invalid svmass" << std::endl;
       CompositeCandidate bb_pair;
       bb_pair.AddCandidate("jet1", bjets[0]);
       bb_pair.AddCandidate("jet2", bjets[1]);
       dphi_z_bb_ = std::fabs(
         ROOT::Math::VectorUtil::DeltaPhi(pair->vector(), bb_pair.vector()));
       pt_bb_ = bb_pair.pt();
-      pt_z_ = pair->pt();
     } else {
       bpt_2_  = 0.0;
       beta_2_ = 0.0;
       m_sv_2_ = 0.0;
       dphi_z_bb_ = 0.0;
       pt_bb_     = 0.0;
-      pt_z_      = 0.0;
     }
 
     outtree_->Fill();
@@ -302,6 +311,34 @@ namespace ic {
     wt *= 0.10*mu_7 + 0.90*mu_13_mu_8;
     return wt;
   }
+  
+  double ZbbAnalyser::SVMass(Jet const* jet,
+      std::map<std::size_t, SecondaryVertex *> const& sv_map,
+      std::map<std::size_t, Track *> const& trk_map) {
+    double mass = -1.0;
+    if (jet->secondary_vertices().size() == 0) return mass;
+    auto sv_it = sv_map.find(
+        jet->secondary_vertices().at(0));
+    if (sv_it == sv_map.end()) return mass;
+    SecondaryVertex const* sv = sv_it->second;
+    std::vector<Track const*> trks;
+    for (auto const& tk : sv->tracks()) {
+      auto tk_it = trk_map.find(
+          tk.first);
+      if (tk_it == trk_map.end()) return mass;
+      trks.push_back(tk_it->second);
+    }
+    ROOT::Math::PtEtaPhiMVector sv_p4;
+    for (auto const& tk: trks) {
+      sv_p4 += ROOT::Math::PtEtaPhiMVector(
+          tk->pt(),
+          tk->eta(),
+          tk->phi(),
+          0.13957);
+    }
+    return sv_p4.M();
+  }
+    
 
   int ZbbAnalyser::PostAnalysis() {
     return 0;

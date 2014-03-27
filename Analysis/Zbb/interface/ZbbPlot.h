@@ -39,6 +39,8 @@ namespace ic {
     CLASS_MEMBER(ZbbPlot,   double,         x_axis_max)
     CLASS_MEMBER(ZbbPlot,   bool,           custom_y_axis_min)
     CLASS_MEMBER(ZbbPlot,   double,         y_axis_min)
+    CLASS_MEMBER(ZbbPlot,   double,         legend_left)
+    CLASS_MEMBER(ZbbPlot,   unsigned,       legend_pos)
     CLASS_MEMBER(ZbbPlot,   double,         extra_pad)
     CLASS_MEMBER(ZbbPlot,   bool,           blind)
     CLASS_MEMBER(ZbbPlot,   double,         x_blind_min)

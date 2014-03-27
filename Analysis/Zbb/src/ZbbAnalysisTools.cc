@@ -51,7 +51,7 @@ namespace ic {
     sample_names_ = {
       "Data",
       "DYJetsToLL",
-      /*"ZZ",*/
+      "ZZ",
       "TTJets"
     };
       alias_map_["inclusive"]  = "";
@@ -195,6 +195,16 @@ namespace ic {
     PrintValue("TT"+postfix, tt_pair.second);
     total_bkr = ValueAdd(total_bkr, tt_pair.second);
     hmap["TT"+postfix] = tt_pair;
+    
+    auto zz_norm = this->GetLumiScaledRate("ZZ", sel, cat, wt);
+    TH1F zz_hist = this->GetShape(var, "ZZ", sel, cat, wt);
+    SetNorm(&zz_hist, zz_norm.first);
+    total_hist.Add(&zz_hist);
+    auto zz_pair = std::make_pair(zz_hist, zz_norm);
+    PrintValue("ZZ"+postfix, zz_pair.second);
+    total_bkr = ValueAdd(total_bkr, zz_pair.second);
+    hmap["ZZ"+postfix] = zz_pair;
+
     // Print the total background yield
     PrintValue("Total"+postfix, total_bkr);
     auto total_pair = std::make_pair(total_hist, total_bkr);
