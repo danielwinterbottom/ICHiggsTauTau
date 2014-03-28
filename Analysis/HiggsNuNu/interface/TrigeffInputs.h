@@ -67,6 +67,7 @@ namespace ic {
     double passtrigger_;
     double passparkedtrigger1_;
     double passparkedtrigger2_;
+    double l1met_;
 
   public:
     TrigeffInputs(std::string const& name);

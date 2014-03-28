@@ -28,7 +28,7 @@ double Error(TH1F const* hist) {
 }
 
 int extractTrigEff(){//main
-  std::string folder = "../trigeffoutput/nunu/";
+  std::string folder = "../output_trigeff/nunu/";
 
 
   std::vector<std::string> files;

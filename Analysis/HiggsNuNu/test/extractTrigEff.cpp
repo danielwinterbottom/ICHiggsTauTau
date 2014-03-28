@@ -13,10 +13,22 @@
 #include <vector>
 #include <utility>
 #include <map>
+#include <fstream>
+#include <sstream>
+#include "boost/bind.hpp"
+#include "boost/function.hpp"
+#include "boost/format.hpp"
+#include "boost/algorithm/string.hpp"
+#include "TSystem.h"
+#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "boost/lexical_cast.hpp"
+#include "boost/program_options.hpp"
 #include "HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
 
 using namespace ic;
+namespace po = boost::program_options;
+
 
 std::vector<double> GetTrigEff(TH1F const* hist, TH1F const* histpasstrigger, std::vector<double> bins, std::vector< std::pair<double,double> >* error){
   std::vector<double> trigeff;
@@ -89,18 +101,55 @@ TGraphAsymmErrors Make1DTrigEff(TH1F const* hist, TH1F const* histpasstrigger, s
   return effgraph;
 }
 
-int main(){//main
-  std::string folder = "output_trigeff_alltrigs/nunu/";
+int main(int argc, char* argv[]){//main
 
-  double mjjcut=1000;
-  double metcut=130;
-  double j2ptcut=55;
-  double j1ptcut=55;
-  double dijet_detacut=4.2;
-  double dijet_dphicut=3.2;
-  double cjvcut=1;
+  std::string cfg;
+  std::string infolder;
+  std::string outfolder;
 
-  std::string outfolder="trigeffplotsnocuts/";
+
+  double mjjcut;
+  double metcut;
+  double j2ptcut;
+  double j1ptcut;
+  double dijet_detacut;
+  double dijet_dphicut;
+  double cjvcut;
+  double l1metcut;
+
+  std::cout<<"debug 1"<<std::endl;
+
+  po::options_description preconfig("Pre-Configuration");
+  preconfig.add_options()("cfg", po::value<std::string>(&cfg)->default_value("scripts/DefaultConfigTrigEff.cfg"));
+  po::variables_map vm;
+  po::store(po::command_line_parser(argc, argv).options(preconfig).allow_unregistered().run(), vm);
+  po::notify(vm);
+  po::options_description config("Configuration");
+  config.add_options()
+    ("infolder",            po::value<std::string>(&infolder)-> default_value("output_trigeff"))
+    ("outfolder",           po::value<std::string>(&outfolder)-> default_value("trigeffplots"))
+    ("mjjcut",              po::value<double>(&mjjcut)-> default_value(1100))
+    ("metcut",              po::value<double>(&metcut)-> default_value(130))
+    ("j2ptcut",             po::value<double>(&j2ptcut)-> default_value(50))
+    ("j1ptcut",             po::value<double>(&j1ptcut)-> default_value(50))
+    ("dijet_detacut",       po::value<double>(&dijet_detacut)-> default_value(4.2))
+    ("dijet_dphicut",       po::value<double>(&dijet_dphicut)-> default_value(1))
+    ("cjvcut",              po::value<double>(&cjvcut)-> default_value(1))
+    ("l1metcut",            po::value<double>(&l1metcut)-> default_value(0));
+  //OPTION
+  std::cout<<"debug 2"<<std::endl;
+
+  po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
+  std::cout<<"debug 3"<<std::endl;
+  po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
+  std::cout<<"debug 4"<<std::endl;
+  po::notify(vm);
+
+  std::cout<<"debug 5"<<std::endl;
+  //Load necessary root libraries for custom class I/O
+  gSystem->Load("libFWCoreFWLite.dylib");
+  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  AutoLibraryLoader::enable();
   
   std::vector<std::string> files;
   files.push_back("SingleMu_SingleMu-2012A-22Jan2013-v1"); 
@@ -114,7 +163,7 @@ int main(){//main
   filename.push_back("Run C");
   filename.push_back("Run D");
 
-  std::string baseselection="jet1_pt>"+boost::lexical_cast<std::string>(j1ptcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+" && dijet_dphi<"+boost::lexical_cast<std::string>(dijet_dphicut);
+  std::string baseselection="l1met>"+boost::lexical_cast<std::string>(l1metcut)+"&& jet1_pt>"+boost::lexical_cast<std::string>(j1ptcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+" && dijet_dphi<"+boost::lexical_cast<std::string>(dijet_dphicut);
   
   std::string multidvariable="met:jet2_pt:dijet_M(200,0.,1000.,20,0.,100.,400,0.,2000.)";
 
@@ -200,31 +249,32 @@ ta>"+boost::lexical_cast<std::string>(dijet_detacut));
   varbins[2].push_back(90);
   varbins[2].push_back(100);
 
+  varbins[3].push_back(3.);
   varbins[3].push_back(3.1);
+  varbins[3].push_back(3.2);
   varbins[3].push_back(3.3);
+  varbins[3].push_back(3.4);
+  varbins[3].push_back(3.45);
   varbins[3].push_back(3.5);
+  varbins[3].push_back(3.55);
   varbins[3].push_back(3.6);
+  varbins[3].push_back(3.65);
   varbins[3].push_back(3.7);
   varbins[3].push_back(3.8);
   varbins[3].push_back(3.9);
   varbins[3].push_back(4.0);
-  varbins[3].push_back(4.1);
   varbins[3].push_back(4.2);
-  varbins[3].push_back(4.3);
   varbins[3].push_back(4.4);
-  varbins[3].push_back(4.5);
   varbins[3].push_back(4.6);
-  varbins[3].push_back(4.7);
   varbins[3].push_back(4.8);
-  varbins[3].push_back(4.9);
-  varbins[3].push_back(5.0);
+  varbins[3].push_back(5.);
 
   std::cout<<"Opening TFiles";
 
   std::map<std::string, TFile *> tfiles;
   for (unsigned iFile = 0; iFile < files.size(); iFile++) {
     std::string filename = (files[iFile]+".root");
-    TFile * tmp = new TFile((folder+"/"+filename).c_str());
+    TFile * tmp = new TFile((infolder+"/"+filename).c_str());
     if (!tmp) {
       std::cerr << "Warning, file " << filename << " could not be opened." << std::endl;
     }
