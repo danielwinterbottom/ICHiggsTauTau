@@ -49,11 +49,35 @@ namespace ic{
     }
     else return 0;
   }
+
+  double Integral(TH3F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax){
+    if (hist) {
+      double ltmp =hist->Integral(xbinmin, xbinmax,ybinmin, ybinmax,zbinmin, zbinmax);
+      if (ltmp<0 || ltmp != ltmp) {
+	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+	ltmp=0;
+      }
+      return ltmp;
+    }
+    else return 0;
+  }
   
   double Error(TH1F const* hist,int binmin,int binmax) {
     double err = 0.0;
     if (hist) {
       hist->IntegralAndError(binmin, binmax, err);
+      if (err<0 || err != err) {
+	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+	err=0;
+      }
+    }
+    return err;
+  }
+
+  double Error(TH3F const* hist,int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax) {
+    double err = 0.0;
+    if (hist) {
+      hist->IntegralAndError(xbinmin, xbinmax,ybinmin, ybinmax,zbinmin, zbinmax, err);
       if (err<0 || err != err) {
 	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
 	err=0;
