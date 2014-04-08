@@ -67,6 +67,7 @@ namespace ic {
     passparkedtrigger1_ = -1;
     passparkedtrigger2_ = -1;
     l1met_ = 0;
+    metnomuons_ =0;
   }
 
   TrigeffInputs::~TrigeffInputs(){
@@ -131,6 +132,7 @@ namespace ic {
     outputTree_->Branch("passparkedtrigger1",&passparkedtrigger1_);
     outputTree_->Branch("passparkedtrigger2",&passparkedtrigger2_);
     outputTree_->Branch("l1met",&l1met_);
+    outputTree_->Branch("metnomuons",&metnomuons_);
 
     return 0;
   }
@@ -142,6 +144,7 @@ namespace ic {
     //get collections
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
     Met const* met = event->GetPtr<Met>(met_label_);
+    Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
     if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
     std::vector<PFJet*> alljets = event->GetPtrVec<PFJet>("AllpfJetsPFlow");
@@ -177,6 +180,7 @@ namespace ic {
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
       l1met_ = l1met[0]->energy();
+      metnomuons_ = metnomuons->pt();
 
       double ht =0;
       ROOT::Math::PtEtaPhiEVector mhtVec(0,0,0,0);

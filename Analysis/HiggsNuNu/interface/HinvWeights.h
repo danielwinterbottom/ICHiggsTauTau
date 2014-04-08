@@ -19,6 +19,7 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, save_weights)
   CLASS_MEMBER(HinvWeights, bool, save_lumixs_weights)
   CLASS_MEMBER(HinvWeights, bool, do_trg_weights)
+  CLASS_MEMBER(HinvWeights, bool, do_3dtrg_weights)
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_veto_weights)

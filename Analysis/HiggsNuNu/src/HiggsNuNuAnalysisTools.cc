@@ -133,6 +133,5 @@ namespace ic{
     gDirectory->Delete("htemp;*");
     return hshape;
   }
-  
-  
+
 }

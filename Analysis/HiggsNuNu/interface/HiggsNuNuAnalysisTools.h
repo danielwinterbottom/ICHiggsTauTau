@@ -8,6 +8,14 @@
 #include "Utilities/interface/SimpleParamParser.h"
 #include "Utilities/interface/FnRootTools.h"
 
+#define CLASS_MEMBER(classn,type,name)                                              \
+  private:                                                                          \
+    type name##_;                                                                   \
+  public:                                                                           \
+    virtual classn & set_##name(type const& name) {name##_ = name; return *this; }  \
+    virtual type & name() {return name##_; }                                      
+
+  
 namespace ic {
   double Integral(TH1F const* hist);
   double Integral(TH1F const* hist, int binmin, int binmax);
