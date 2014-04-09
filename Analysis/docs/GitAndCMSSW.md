@@ -14,6 +14,7 @@ The following steps set up a new area, but note that only certain CMSSW releases
 
 Supported releases:
 
+    CMSSW_4_2_8_patch7
 		CMSSW_5_3_7
 		CMSSW_5_3_11
 

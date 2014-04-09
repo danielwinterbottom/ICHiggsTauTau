@@ -19,6 +19,7 @@ The following steps set up a new area, but note that only certain CMSSW releases
 
 Supported releases:
 
+    CMSSW_4_2_8_patch7
 		CMSSW_5_3_7
 		CMSSW_5_3_11
 
@@ -76,3 +77,4 @@ Next, add the IC analysis code package:
 		cd UserCode
 		git clone git@github.com:ajgilbert/ICHiggsTauTau.git
 		cd ICHiggsTauTau
+		./init_X_Y_Z.sh # This script performs a few final tasks in the new cmssw area
