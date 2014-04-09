@@ -29,15 +29,10 @@
 #include "boost/program_options.hpp"
 #include "HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
 #include "HiggsNuNu/interface/HinvVar.h"
+#include "HiggsNuNu/interface/TrigEffAnalysis.h"
 
 using namespace ic;
 namespace po = boost::program_options;
-
-class EffAndError1D {
-public:
-  std::vector<double> effs;
-  std::vector<std::pair<double,double> > errs;
-};
 
 EffAndError1D Get1DTrigEff(TH1F const* hist, TH1F const* histpasstrigger, std::vector<double> bins){
   EffAndError1D efftoreturn;
@@ -106,20 +101,15 @@ TGraphAsymmErrors Make1DTrigEffGraph(EffAndError1D trigeffs, std::vector<double>
   return outgraph;
 }
 
-TGraphAsymmErrors Make1DTrigEff(TH1F const* hist, TH1F const* histpasstrigger, Var* vars){
+TGraphAsymmErrors Make1DTrigEff(TH1F const* hist, TH1F const* histpasstrigger, Rebinned1DVar* vars){
   std::vector<double> bins=vars->bins();
   EffAndError1D trigeffs =Get1DTrigEff(hist, histpasstrigger, bins);
   TGraphAsymmErrors effgraph=Make1DTrigEffGraph(trigeffs,bins);
   return effgraph;
 }
 
-class EffAndError3D {
-public:
-  std::vector<std::vector<std::vector<double> > > effs;
-  std::vector<std::vector<std::vector<std::pair<double,double> > > > errs;
-};
-
-EffAndError3D Make3DTrigEff(TH3F const* hist, TH3F const* histpasstrigger, std::vector<std::vector<double> > Bins){
+EffAndError3D Make3DTrigEff(TH3F const* hist, TH3F const* histpasstrigger, RebinnedNDVar* var){
+  std::vector<std::vector<double> > Bins=var->bins();
   EffAndError3D effanderror;
   std::vector<std::vector<std::vector<double> > > trigeff;
   std::vector<std::vector<std::vector< std::pair<double,double> > > > error;
@@ -178,6 +168,7 @@ EffAndError3D Make3DTrigEff(TH3F const* hist, TH3F const* histpasstrigger, std::
 	  histpasstriggerbmax[2]=(histpasstrigger->GetNbinsZ()+1);
 	}
 	
+	std::cout<<Bins[0][iBin]<<" "<<Bins[1][jBin]<<" "<<Bins[2][kBin]<<std::endl;//!!
 	
 	//Check binning is the same
 	for(unsigned iCheck=0;iCheck<3;iCheck++){
@@ -270,58 +261,50 @@ int main(int argc, char* argv[]){//main
   gSystem->Load("libUserCodeICHiggsTauTau.dylib");
   AutoLibraryLoader::enable();
   
-
-  //Set up files to read
-  std::vector<std::string> files;
-  files.push_back("SingleMu_SingleMu-2012A-22Jan2013-v1");
-  files.push_back("SingleMu_SingleMu-2012B-22Jan2013-v1"); 
-  files.push_back("SingleMu_SingleMu-2012C-22Jan2013-v1"); 
-  files.push_back("SingleMu_SingleMu-2012D-22Jan2013-v1"); 
+  //Define object which keeps track of variable names and files
+  TrigEffAnalysis* trigeffana=new TrigEffAnalysis();
   
-  std::vector<std::string> filename;
-  filename.push_back("Run A");
-  filename.push_back("Run B");
-  filename.push_back("Run C");
-  filename.push_back("Run D");
-
+  //Set up files
+  trigeffana->addfile("Run A","SingleMu_SingleMu-2012A-22Jan2013-v1");
+  trigeffana->addfile("Run B","SingleMu_SingleMu-2012B-22Jan2013-v1");
+  trigeffana->addfile("Run C","SingleMu_SingleMu-2012C-22Jan2013-v1");
+  trigeffana->addfile("Run D","SingleMu_SingleMu-2012D-22Jan2013-v1");
 
   //Set up basic selection
-  std::string baseselection="jet1_pt>"+boost::lexical_cast<std::string>(j1ptcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+" && dijet_dphi<"+boost::lexical_cast<std::string>(dijet_dphicut);
-  std::string base3dselection="l1met>"+boost::lexical_cast<std::string>(l1metcut)+"&& jet1_pt>"+boost::lexical_cast<std::string>(j1ptcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+" && dijet_dphi<"+boost::lexical_cast<std::string>(dijet_dphicut);
-
+  trigeffana->set_baseselection("jet1_pt>"+boost::lexical_cast<std::string>(j1ptcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+" && dijet_dphi<"+boost::lexical_cast<std::string>(dijet_dphicut));
 
   //Set up trigger information
-  Var *notrig=new Var("No trigger","","","");
+  Rebinned1DVar *notrig=new Rebinned1DVar("No trigger","","","");
   notrig->binsPushBack(1);
   notrig->binsPushBack(1);
   notrig->binsPushBack(1);
   notrig->binsPushBack(1);
 
-  Var *prompttrig=new Var("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets","",""," && passtrigger==1");
+  Rebinned1DVar *prompttrig=new Rebinned1DVar("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets","",""," && passtrigger==1");
   prompttrig->binsPushBack(1);
   prompttrig->binsPushBack(1);
   prompttrig->binsPushBack(1);
   prompttrig->binsPushBack(1);
 
-  Var *parkedtrig1= new Var("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF","",""," && passparkedtrigger1==1");
+  Rebinned1DVar *parkedtrig1= new Rebinned1DVar("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF","",""," && passparkedtrigger1==1");
   parkedtrig1->binsPushBack(0);
   parkedtrig1->binsPushBack(1);
   parkedtrig1->binsPushBack(1);
   parkedtrig1->binsPushBack(1);
 
-  Var *parkedtrig2= new Var("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF","",""," && passparkedtrigger2==1");
+  Rebinned1DVar *parkedtrig2= new Rebinned1DVar("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF","",""," && passparkedtrigger2==1");
+  parkedtrig2->binsPushBack(0);
+  parkedtrig2->binsPushBack(0);
   parkedtrig2->binsPushBack(0);
   parkedtrig2->binsPushBack(1);
-  parkedtrig2->binsPushBack(1);
-  parkedtrig2->binsPushBack(1);
 
-  Var *l1trig=new Var("L1ETM40","",""," && l1met>"+boost::lexical_cast<std::string>(l1metcut));
+  Rebinned1DVar *l1trig=new Rebinned1DVar("L1ETM40","",""," && l1met>"+boost::lexical_cast<std::string>(l1metcut));
   l1trig->binsPushBack(1);
   l1trig->binsPushBack(1);
   l1trig->binsPushBack(1);
   l1trig->binsPushBack(1);
 
-  std::vector<Var*> triggers;
+  std::vector<Rebinned1DVar*> triggers;
   triggers.push_back(notrig);//No trigger must be first
   triggers.push_back(prompttrig);
   triggers.push_back(parkedtrig1);
@@ -331,45 +314,26 @@ int main(int argc, char* argv[]){//main
   TFile *f1[triggers.size()-1];
 
   //Set up 3D variable
-  std::string multidvariable="met:dijet_M:jet2_pt(200,0.,1000.,400,0.,2000.,20,0.,100.)";
-
-  std::string  extra3dselection = " && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut);
-
-  std::vector<std::vector<double> > varbins3d(3);
-//   double metstart=40;
-//   double metstep=40;
-//   double metmax=400;
-//   for(int i =0;metstart+i*metstep<metmax;i++){
-//     varbins3d[0].push_back(metstart+i*metstep);
-//   }  
-  varbins3d[0].push_back(0.);
-  varbins3d[0].push_back(40.);
-  varbins3d[0].push_back(80.);
-  varbins3d[0].push_back(120.);
-  varbins3d[0].push_back(160.);
-  varbins3d[0].push_back(200.);
-  varbins3d[0].push_back(400.);
-
-  double mjjstart=400;
-  double mjjstep=400;
-  double mjjmax=2400;
-  for(int i =0;mjjstart+i*mjjstep<mjjmax;i++){
-    varbins3d[1].push_back(mjjstart+i*mjjstep);
+  RebinnedNDVar *multidvariable=new RebinnedNDVar("3D Var","","met:dijet_M:jet2_pt(200,0.,1000.,400,0.,2000.,20,0.,100.)"," && l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut),3);
+  for(int iBin=0;iBin<6;iBin++){
+    multidvariable->binsPushBack(0,iBin*40+40);
   }
+  multidvariable->binsPushBack(0,400);
 
-  double j2ptstart=10;
-  double j2ptstep=20;
-  double j2ptmax=100;
-  for(int i =0;j2ptstart+i*j2ptstep<j2ptmax;i++){
-    varbins3d[2].push_back(j2ptstart+i*j2ptstep);
+  for(int jBin=0;400+jBin*400<=2400;jBin++){
+    std::cout<<400+jBin*400<<std::endl;
+    multidvariable->binsPushBack(1,400+jBin*400);
   }
-
+  
+  for(int kBin=0;10+kBin*20<=100;kBin++){
+    multidvariable->binsPushBack(2,10+kBin*20);
+  }
 
 
   //Set up 1D variables
 
   //METHLT
-  Var *methlt=new Var("METHLT","met","met(200,0.,1000.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
+  Rebinned1DVar *methlt=new Rebinned1DVar("METHLT","met","met(200,0.,1000.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
   for(int iBin=0;iBin<14;iBin++){
     double newbin;
     if(iBin<4)newbin=40+iBin*20;
@@ -378,7 +342,7 @@ int main(int argc, char* argv[]){//main
   }
 
   //MJJHLT
-  Var *mjjhlt=new Var("MjjHLT","m_{jj}","dijet_M(400,0.,2000.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
+  Rebinned1DVar *mjjhlt=new Rebinned1DVar("MjjHLT","m_{jj}","dijet_M(400,0.,2000.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
   for(int iBin=0;iBin<13;iBin++){
     double newbin;
     newbin=400+iBin*100;
@@ -386,7 +350,7 @@ int main(int argc, char* argv[]){//main
   }
 
   //JetHLT
-  Var *jethlt=new Var("JetHLT","jet_{2} p_{T}","jet2_pt(20,0.,100.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
+  Rebinned1DVar *jethlt=new Rebinned1DVar("JetHLT","jet_{2} p_{T}","jet2_pt(20,0.,100.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
   for(int iBin=0;iBin<10;iBin++){
     double newbin;
     newbin=10+iBin*10;
@@ -394,14 +358,14 @@ int main(int argc, char* argv[]){//main
   }
 
   //METL1
-  Var *metl1=new Var("METL1","met","met(200,0.,1000.)"," && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
+  Rebinned1DVar *metl1=new Rebinned1DVar("METL1","met","met(200,0.,1000.)"," && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
   for(int iBin=0;iBin<20;iBin++){
     double newbin=10+iBin*10;
     metl1->binsPushBack(newbin);
   }
 
   //deta
-  Var *deta=new Var("deta","#Delta#eta_{jj}","dijet_deta(100,0.,10.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut));
+  Rebinned1DVar *deta=new Rebinned1DVar("deta","#Delta#eta_{jj}","dijet_deta(100,0.,10.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut));
   for(int iBin=0;iBin<15;iBin++){
     double newbin;
     if(iBin<10)newbin=3.+iBin*0.1;
@@ -409,7 +373,7 @@ int main(int argc, char* argv[]){//main
     deta->binsPushBack(newbin);
   }
 
-  std::vector<Var*> vars;
+  std::vector<Rebinned1DVar*> vars;
   vars.push_back(methlt);
   vars.push_back(mjjhlt);
   vars.push_back(jethlt);
@@ -417,39 +381,24 @@ int main(int argc, char* argv[]){//main
   vars.push_back(deta);
 
 
-  //Get files
-  if(verbosity>=1) std::cout<<"Opening TFiles..."<<std::endl;
-  std::map<std::string, TFile *> tfiles;
-  for (unsigned iFile = 0; iFile < files.size(); iFile++) {
-    std::string filename = (files[iFile]+".root");
-    TFile * tmp = new TFile((infolder+"/"+filename).c_str());
-    if (!tmp) {
-      std::cerr << "Warning, file " << filename << " could not be opened." << std::endl;
-    }
-    else {
-      tfiles[(files[iFile])] = tmp;
-    }
-  }
- 
-  TH3F heff[triggers.size()][files.size()];
-  TH1F hvar[vars.size()][triggers.size()][files.size()];
+  //Open Files
+  trigeffana->OpenFiles(infolder);
+
+  TH3F heff[triggers.size()][trigeffana->nfiles()];
+  TH1F hvar[vars.size()][triggers.size()][trigeffana->nfiles()];
 
   gStyle->SetPaintTextFormat("3.2f");
   gStyle->SetOptStat("");
 
-  for (unsigned iFile = 0; iFile < files.size(); ++iFile) {
-    //Get tree
-    if(verbosity>=1)std::cout<<filename[iFile]<<std::endl;
-    TTree *tree;
-    tree = (TTree *)tfiles[(files[iFile])]->Get("TrigeffInputTree");
-    tree->SetEstimate(1000);
+  for(unsigned iFile=0;iFile<trigeffana->nfiles();iFile++){
+    TTree *tree=trigeffana->GetTree(trigeffana->filenames(iFile));     //Get tree
 
     //Get 3D histo of met,j2pt,mjj
     if(do3deffs){
       if(verbosity>=1)std::cout<<"Getting 3D Histograms:"<<std::endl;
       for(unsigned iTrigger=0;iTrigger<triggers.size();iTrigger++){
 	if(verbosity>=2)std::cout<<"  "<<triggers[iTrigger]->name()<<std::endl;
-	heff[iTrigger][iFile]=GetShape3D(multidvariable,base3dselection+extra3dselection+triggers[iTrigger]->extraselection(),"","",tree);
+	heff[iTrigger][iFile]=GetShape3D(multidvariable->variable(),trigeffana->baseselection()+multidvariable->selection()+triggers[iTrigger]->selection(),"","",tree);
 	heff[iTrigger][iFile].Sumw2();
       }
     }
@@ -461,7 +410,7 @@ int main(int argc, char* argv[]){//main
 	if(verbosity>=1)std::cout<<"  "<<vars[iVar]->name()<<std::endl;
 	for(unsigned iTrigger=0;iTrigger<triggers.size();iTrigger++){
 	  if(verbosity>=2)std::cout<<"    "<<triggers[iTrigger]->name()<<std::endl;
-	  hvar[iVar][iTrigger][iFile]=GetShape(vars[iVar]->variable(),baseselection+vars[iVar]->extraselection()+triggers[iTrigger]->extraselection(),"","",tree);
+	  hvar[iVar][iTrigger][iFile]=GetShape(vars[iVar]->variable(),trigeffana->baseselection()+vars[iVar]->selection()+triggers[iTrigger]->selection(),"","",tree);
 	  hvar[iVar][iTrigger][iFile].Sumw2();
 	}
       }
@@ -473,13 +422,13 @@ int main(int argc, char* argv[]){//main
   EffAndError3D trigeffs3d[triggers.size()-1];
   if(do3deffs){
     TCanvas *c2 = new TCanvas("c2","c2");
-    TH2F metbinnedtrigeffs[triggers.size()-1][varbins3d[0].size()];
-    TH2F metbinnedtrigeffstext[triggers.size()-1][varbins3d[0].size()];
+    TH2F metbinnedtrigeffs[triggers.size()-1][multidvariable->bins()[0].size()];
+    TH2F metbinnedtrigeffstext[triggers.size()-1][multidvariable->bins()[0].size()];
     for(unsigned iTrigger=0;iTrigger<triggers.size()-1;iTrigger++){
       bool empty=true;
-      for(unsigned iFile=0;iFile<files.size();iFile++){
+      for(unsigned iFile=0;iFile<trigeffana->nfiles();iFile++){
 	if(triggers[iTrigger+1]->bins()[iFile]==1){
-	  if(verbosity>=3)std::cout<<"Filling trigger "<<triggers[iTrigger+1]->name()<<" for run "<<filename[iFile]<<std::endl;
+	  if(verbosity>=3)std::cout<<"Filling trigger "<<triggers[iTrigger+1]->name()<<" for run "<<trigeffana->filenames(iFile)<<std::endl;
 	  if(empty==true){
 	    heffallruns[iTrigger][0]=heff[0][iFile];
 	    heffallruns[iTrigger][1]=heff[iTrigger+1][iFile];
@@ -491,16 +440,17 @@ int main(int argc, char* argv[]){//main
 	  }
 	}
       }
-      trigeffs3d[iTrigger] = Make3DTrigEff(&heffallruns[iTrigger][0],&heffallruns[iTrigger][1],varbins3d);
+      trigeffs3d[iTrigger] = Make3DTrigEff(&heffallruns[iTrigger][0],&heffallruns[iTrigger][1],multidvariable);
 
       //Make TH2s binned in met
       for(unsigned iBin=0; iBin<trigeffs3d[iTrigger].effs.size();iBin++){
-	std::string name = triggers[iTrigger+1]->name()+"met"+boost::lexical_cast<std::string>(varbins3d[0][iBin])+"trigeff";
-	metbinnedtrigeffs[iTrigger][iBin] = TH2F(name.c_str(),name.c_str(),(varbins3d[1].size()-1),&varbins3d[1][0],(varbins3d[2].size()-1),&varbins3d[2][0]);
-	metbinnedtrigeffstext[iTrigger][iBin] = TH2F(("text"+name).c_str(),("text"+name).c_str(),(varbins3d[1].size()-1),&varbins3d[1][0],(varbins3d[2].size()-1),&varbins3d[2][0]);
+	std::vector<std::vector<double> > bins3d=multidvariable->bins();
+	std::string name = triggers[iTrigger+1]->name()+"met"+boost::lexical_cast<std::string>(bins3d[0][iBin])+"trigeff";
+	metbinnedtrigeffs[iTrigger][iBin] = TH2F(name.c_str(),name.c_str(),(bins3d[1].size()-1),&bins3d[1][0],(bins3d[2].size()-1),&bins3d[2][0]);
+	metbinnedtrigeffstext[iTrigger][iBin] = TH2F(("text"+name).c_str(),("text"+name).c_str(),(bins3d[1].size()-1),&bins3d[1][0],(bins3d[2].size()-1),&bins3d[2][0]);
 	for(unsigned jBin=0; jBin<trigeffs3d[iTrigger].effs[0].size();jBin++){
 	  for(unsigned kBin=0; kBin<trigeffs3d[iTrigger].effs[0][0].size();kBin++){
-	    if(verbosity>=5)std::cout<<"Efficiency for met: "<<varbins3d[0][iBin]<<" jet 2 pt: "<<varbins3d[2][kBin]<<" mjj: "<<varbins3d[1][jBin]<<" is: "<<trigeffs3d[iTrigger].effs[iBin][jBin][kBin]<<"+/-"<<trigeffs3d[iTrigger].errs[iBin][jBin][kBin].first<<std::endl;
+	    if(verbosity>=5)std::cout<<"Efficiency for met: "<<bins3d[0][iBin]<<" jet 2 pt: "<<bins3d[2][kBin]<<" mjj: "<<bins3d[1][jBin]<<" is: "<<trigeffs3d[iTrigger].effs[iBin][jBin][kBin]<<"+/-"<<trigeffs3d[iTrigger].errs[iBin][jBin][kBin].first<<std::endl;
 	    metbinnedtrigeffs[iTrigger][iBin].SetBinContent(jBin+1,kBin+1,trigeffs3d[iTrigger].effs[iBin][jBin][kBin]);
 	    metbinnedtrigeffstext[iTrigger][iBin].SetBinContent(jBin+1,kBin+1,std::max(trigeffs3d[iTrigger].errs[iBin][jBin][kBin].first,trigeffs3d[iTrigger].errs[iBin][jBin][kBin].second));
 	  }
@@ -526,8 +476,8 @@ int main(int argc, char* argv[]){//main
       for(unsigned iTrigger=0;iTrigger<triggers.size()-1;iTrigger++){
 	bool empty=true;
 	if(verbosity>=3)std::cout<<"Trigger: "<<triggers[iTrigger+1]->name()<<std::endl;
-	for(unsigned iFile=0;iFile<files.size();iFile++){
-	  if(verbosity>=3)std::cout<<"examining file: "<<filename[iFile]<<std::endl;
+	for(unsigned iFile=0;iFile<trigeffana->nfiles();iFile++){
+	  if(verbosity>=3)std::cout<<"examining file: "<<trigeffana->filenames(iFile)<<std::endl;
 	  if(triggers[iTrigger+1]->bins()[iFile]==1){
 	    if(verbosity>=3)std::cout<<"File does have this trigger"<<std::endl;
 	    if(empty==true){
@@ -544,8 +494,6 @@ int main(int argc, char* argv[]){//main
 	    }
 	  }
 	}
-	std::cout<<hvarallruns[iVar][iTrigger][0].GetNbinsX()<<std::endl;
-	      
 	vareffgraph[iVar][iTrigger]=Make1DTrigEff(&hvarallruns[iVar][iTrigger][0],&hvarallruns[iVar][iTrigger][1],vars[iVar]);
       }
     }

@@ -4,23 +4,49 @@
 #include <vector>
 
 namespace ic{
-  Var::Var(std::string name, std::string latex, std::string variable, std::string extraselection,std::vector<double> bins){
+
+  Var::Var(){
+  };
+
+  Var::Var(std::string name, std::string latex, std::string variable, std::string selection){
     name_=name;
     latex_=latex;
     variable_=variable;
-    extraselection_=extraselection;
+    selection_=selection;
+  };
+
+  Rebinned1DVar::Rebinned1DVar(std::string name, std::string latex, std::string variable, std::string selection){
+    name_=name;
+    latex_=latex;
+    variable_=variable;
+    selection_=selection;
+  };
+
+  Rebinned1DVar::Rebinned1DVar(std::string name, std::string latex, std::string variable, std::string selection,std::vector<double> bins){
+    name_=name;
+    latex_=latex;
+    variable_=variable;
+    selection_=selection;
     bins_=bins;
   };
 
-  Var::Var(std::string name, std::string latex, std::string variable, std::string extraselection){
+
+  Rebinned1DVar & Rebinned1DVar::binsPushBack(double newbin){
+    this->bins_.push_back(newbin);
+    return *this;
+  };
+
+  RebinnedNDVar::RebinnedNDVar(std::string name, std::string latex, std::string variable, std::string selection,int D){
     name_=name;
     latex_=latex;
     variable_=variable;
-    extraselection_=extraselection;
+    selection_=selection;
+    std::vector<std::vector<double> > binstmp(D);
+    bins_=binstmp;
   };
 
-  Var & Var::binsPushBack(double newbin){
-    this->bins_.push_back(newbin);
+  RebinnedNDVar & RebinnedNDVar::binsPushBack(int D, double newbin){
+    this->bins_[D].push_back(newbin);
     return *this;
   };
 }

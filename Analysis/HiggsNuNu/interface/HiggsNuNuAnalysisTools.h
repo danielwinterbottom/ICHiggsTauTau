@@ -9,7 +9,7 @@
 #include "Utilities/interface/FnRootTools.h"
 
 #define CLASS_MEMBER(classn,type,name)                                              \
-  private:                                                                          \
+  protected:                                                                          \
     type name##_;                                                                   \
   public:                                                                           \
     virtual classn & set_##name(type const& name) {name##_ = name; return *this; }  \
@@ -34,11 +34,6 @@ namespace ic {
   class HiggsNuNuAnalysis {
   public:
     HiggsNuNuAnalysis(int verbosity);
-  };
-
-  class TrigEffAnalysis {
-  public:
-    TrigEffAnalysis(int verbosity);
   };
 
 }
