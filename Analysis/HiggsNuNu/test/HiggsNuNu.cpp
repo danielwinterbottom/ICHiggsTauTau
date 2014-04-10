@@ -107,7 +107,8 @@ int main(int argc, char* argv[]){
   bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
   bool doidisoerrmuore;           // Do lepton ID-iso efficiency correction error for muons or electrons
   bool dolumixsweight;            // Do lumi*xs/evt weight online
-  string inputparams;               // Params file to use for info on lumi xs and evt
+  string inputparams;             // Params file to use for info on lumi xs and evt
+  string trg_weight_file;         // Params file to use for info on lumi xs and evt
 
   //CUTS
   double jet1ptcut;               //jet1ptcut
@@ -201,6 +202,7 @@ int main(int argc, char* argv[]){
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
     ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Apr04/ParamsApr04.dat"))
+    ("trg_weight_fle",      po::value<string>(&trg_weight_file)->default_value("data/scale_factors/DataMCWeight_53X_v1.root"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
@@ -933,6 +935,7 @@ int main(int argc, char* argv[]){
   //  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)
+      .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
     if (channel==channel::nunu ||channel==channel::nunulowmet|| channel == channel::taunu){
       hinvWeights.set_do_idiso_veto_weights(doidisoeff);
@@ -1530,8 +1533,8 @@ int main(int argc, char* argv[]){
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
     if(!do_trigeff&&!do_trigeff_tree) analysis.AddModule(&dataMCTriggerPathFilter);
-         //if (printEventList) analysis.AddModule(&hinvPrintList);
- 
+    //if (printEventList) analysis.AddModule(&hinvPrintList);
+  
     //NEW: change skimming to write event at a specific moment in the chain of modules.
      if (do_skim) analysis.WriteSkimHere();
 

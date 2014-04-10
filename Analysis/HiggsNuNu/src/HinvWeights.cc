@@ -39,7 +39,7 @@ namespace ic {//namespace
     hist_trigSF_METHLT = 0;
     hist_trigSF_MjjHLT = 0;
     hist_trigSF_JetHLT = 0;
-
+    trg_weight_file_="data/scale_factors/DataMCWeight_53X_v1.root";
   }
 
   HinvWeights::~HinvWeights() {
@@ -143,7 +143,7 @@ namespace ic {//namespace
     
 
     //get trigger scale factor histograms from file
-    triggerSF_ = new TFile("data/scale_factors/DataMCWeight_53X_v1.root");
+      triggerSF_ = new TFile(trg_weight_file_.c_str());
     hist_trigSF_METL1 = (TH1F*)gDirectory->Get("METL1");
     hist_trigSF_METHLT = (TH1F*)gDirectory->Get("METHLT");
     hist_trigSF_MjjHLT = (TH1F*)gDirectory->Get("MjjHLT");

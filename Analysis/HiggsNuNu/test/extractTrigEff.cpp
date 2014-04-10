@@ -215,6 +215,10 @@ int main(int argc, char* argv[]){//main
   std::string infolder;
   std::string outfolder;
 
+  double Alumi;
+  double Blumi;
+  double Clumi;
+  double Dlumi;
 
   double mjjcut;
   double metcut;
@@ -238,6 +242,10 @@ int main(int argc, char* argv[]){//main
   config.add_options()
     ("infolder",            po::value<std::string>(&infolder)-> default_value("output_trigeff"))
     ("outfolder",           po::value<std::string>(&outfolder)-> default_value("trigeffplots"))
+    ("Alumi",               po::value<double>(&Alumi)-> default_value(889.362))
+    ("Blumi",               po::value<double>(&Blumi)-> default_value(4429.635))
+    ("Clumi",               po::value<double>(&Clumi)-> default_value(7152))
+    ("Dlumi",               po::value<double>(&Dlumi)-> default_value(7317))
     ("do1deffs",            po::value<bool>(&do1deffs)-> default_value(true))
     ("do3deffs",            po::value<bool>(&do3deffs)-> default_value(true))
     ("verbosity",           po::value<int>(&verbosity)-> default_value(2))
@@ -312,6 +320,7 @@ int main(int argc, char* argv[]){//main
   triggers.push_back(l1trig);
 
   TFile *f1[triggers.size()-1];
+  TFile *f2;
 
   //Set up 3D variable
   RebinnedNDVar *multidvariable=new RebinnedNDVar("3D Var","","met:dijet_M:jet2_pt(200,0.,1000.,400,0.,2000.,20,0.,100.)"," && l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut),3);
@@ -334,34 +343,33 @@ int main(int argc, char* argv[]){//main
 
   //METHLT
   Rebinned1DVar *methlt=new Rebinned1DVar("METHLT","met","met(200,0.,1000.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
-  for(int iBin=0;iBin<14;iBin++){
+  for(int iBin=0;iBin<20;iBin++){
     double newbin;
-    if(iBin<4)newbin=40+iBin*20;
-    else newbin=110+(iBin-4)*10;
+    newbin=iBin*20;
     methlt->binsPushBack(newbin);
   }
 
   //MJJHLT
   Rebinned1DVar *mjjhlt=new Rebinned1DVar("MjjHLT","m_{jj}","dijet_M(400,0.,2000.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
-  for(int iBin=0;iBin<13;iBin++){
+  for(int iBin=0;iBin<16;iBin++){
     double newbin;
-    newbin=400+iBin*100;
+    newbin=600+iBin*50;
     mjjhlt->binsPushBack(newbin);
   }
 
   //JetHLT
   Rebinned1DVar *jethlt=new Rebinned1DVar("JetHLT","jet_{2} p_{T}","jet2_pt(20,0.,100.)","&& l1met>"+boost::lexical_cast<std::string>(l1metcut)+" && met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
-  for(int iBin=0;iBin<10;iBin++){
+  for(int iBin=0;iBin<20;iBin++){
     double newbin;
-    newbin=10+iBin*10;
+    newbin=iBin*5;
     jethlt->binsPushBack(newbin);
   }
 
   //METL1
-  Rebinned1DVar *metl1=new Rebinned1DVar("METL1","met","met(200,0.,1000.)"," && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
+  Rebinned1DVar *metforl1=new Rebinned1DVar("METL1","metnomu","metnomuons(200,0.,1000.)"," && jet2_pt>"+boost::lexical_cast<std::string>(j2ptcut)+" && dijet_M>"+boost::lexical_cast<std::string>(mjjcut)+" && dijet_deta>"+boost::lexical_cast<std::string>(dijet_detacut));
   for(int iBin=0;iBin<20;iBin++){
-    double newbin=10+iBin*10;
-    metl1->binsPushBack(newbin);
+    double newbin=iBin*20;
+    metforl1->binsPushBack(newbin);
   }
 
   //deta
@@ -377,7 +385,7 @@ int main(int argc, char* argv[]){//main
   vars.push_back(methlt);
   vars.push_back(mjjhlt);
   vars.push_back(jethlt);
-  vars.push_back(metl1);
+  vars.push_back(metforl1);
   vars.push_back(deta);
 
 
@@ -497,7 +505,7 @@ int main(int argc, char* argv[]){//main
 	vareffgraph[iVar][iTrigger]=Make1DTrigEff(&hvarallruns[iVar][iTrigger][0],&hvarallruns[iVar][iTrigger][1],vars[iVar]);
       }
     }
-    
+  
     TH1F *vareffs[vars.size()][triggers.size()-1];
     for(unsigned iTrigger=0;iTrigger<triggers.size()-1;iTrigger++){
       f1[iTrigger]= new TFile((triggers[iTrigger+1]->name()+"DataMCWeight_53X_v2.root").c_str(),"RECREATE");  
@@ -513,6 +521,25 @@ int main(int argc, char* argv[]){//main
       }
       f1[iTrigger]->Write();
     }
+    f2=new TFile("DataMCWeight_53X_v2.root","RECREATE");
+    f2->cd();
+    double totlumi=Alumi+Blumi+Clumi+Dlumi;
+    for(unsigned iVar=0;iVar<vars.size()-1;iVar++){
+      TH1F *weightedvareff;
+      if(iVar!=vars.size()-2){
+	std::cout<<"Doing weighted eff for "<<vars[iVar]->name()<<std::endl;
+	weightedvareff=vareffs[iVar][0];
+	weightedvareff->Add(vareffs[iVar][0],vareffs[iVar][1],Alumi/totlumi,(Blumi+Clumi)/totlumi);
+	weightedvareff->Add(vareffs[iVar][2],Dlumi/totlumi);
+      }
+      else{
+	std::cout<<"Writing L1 eff for "<<vars[iVar]->name()<<std::endl;
+	weightedvareff=vareffs[iVar][triggers.size()-2];//MET for L1, and L1_ETM40
+      }
+      weightedvareff->Write();
+    }
+    f2->Write();
+    
         
     //Draw graphs
     int colours[4]={4,6,2,8};

@@ -34,6 +34,7 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_lumixs_weights)
   CLASS_MEMBER(HinvWeights, std::string, input_params)
   CLASS_MEMBER(HinvWeights, std::string, sample_name)
+  CLASS_MEMBER(HinvWeights, std::string, trg_weight_file)
 
   TFile *triggerSF_;
   TH1F *hist_trigSF_METL1;
