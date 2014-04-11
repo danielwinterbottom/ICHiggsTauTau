@@ -54,6 +54,8 @@ namespace ic {//namespace
     std::cout << "MC: " << MC2String(mc_) << std::endl;
     std::cout << "Save weights: " << save_weights_ << std::endl;
     std::cout << "Do Trg Weights?: \t\t" << do_trg_weights_ << std::endl;
+    if(trg_applied_in_mc_) std::cout << "Trg Sel Is Applied In MC make sure you use DataMC scale factors for trigger weightst" << std::endl;
+    else std::cout << "Trg Sel Not Applied In MC make sure you use raw Data efficiencies for trigger weightst" << std::endl;
     std::cout << "Trg Sel Applied?: \t\t" << trg_applied_in_mc_ << std::endl;
     std::cout << "Do ID & iso weights for Tight leptons ?: \t\t" << do_idiso_tight_weights_ << std::endl;
     std::cout << "Do ID & iso weights for veto leptons ?: \t\t" << do_idiso_veto_weights_ << std::endl;

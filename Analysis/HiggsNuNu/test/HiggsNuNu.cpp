@@ -65,6 +65,7 @@ int main(int argc, char* argv[]){
   bool do_skim;                   // For making skimmed ntuples
   bool do_trigeff;                // Apply trigger at end of selection to work out trigger efficiency and bin variables
   bool do_trigeff_tree;           // Generate tree of variables used for trig study
+  bool do_parked_trigs;           // Option to do parked triggers
   bool do_gensteps;               // For getting numbers of events at gen level
   bool doincludehighptz;          // For including high pt z sample
   string skim_path = "";          // Local folder where skimmed ntuples should be written
@@ -108,7 +109,8 @@ int main(int argc, char* argv[]){
   bool doidisoerrmuore;           // Do lepton ID-iso efficiency correction error for muons or electrons
   bool dolumixsweight;            // Do lumi*xs/evt weight online
   string inputparams;             // Params file to use for info on lumi xs and evt
-  string trg_weight_file;         // Params file to use for info on lumi xs and evt
+  string trg_weight_file;         // Trigger weights to use
+  string trg_to_use;              // Which trigger to use for data
 
   //CUTS
   double jet1ptcut;               //jet1ptcut
@@ -158,6 +160,7 @@ int main(int argc, char* argv[]){
     ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
     ("do_trigeff",          po::value<bool>(&do_trigeff)->default_value(false))
     ("do_trigeff_tree",     po::value<bool>(&do_trigeff_tree)->default_value(false))
+    ("do_parked_trigs",     po::value<bool>(&do_parked_trigs)->default_value(false))
     ("do_gensteps",         po::value<bool>(&do_gensteps)->default_value(false))
     ("doincludehighptz",    po::value<bool>(&doincludehighptz)->default_value(false))
     ("skim_path",           po::value<string>(&skim_path)->default_value(""))
@@ -203,6 +206,7 @@ int main(int argc, char* argv[]){
     ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
     ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Apr04/ParamsApr04.dat"))
     ("trg_weight_fle",      po::value<string>(&trg_weight_file)->default_value("data/scale_factors/DataMCWeight_53X_v1.root"))
+    ("trg_to_use",          po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
     ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
@@ -1532,7 +1536,12 @@ int main(int argc, char* argv[]){
    //if (!do_skim) {
 
      //if (printEventList) analysis.AddModule(&hinvPrintList);
-    if(!do_trigeff&&!do_trigeff_tree) analysis.AddModule(&dataMCTriggerPathFilter);
+
+    //Require trigger to fire unless doing trig eff studies, also do not require trigger for MC in parked analysis
+    if(!do_trigeff_tree&&!do_trigeff){
+      if(is_data||(!is_data&&!do_parked_trigs)) analysis.AddModule(&dataMCTriggerPathFilter);
+    }
+    
     //if (printEventList) analysis.AddModule(&hinvPrintList);
   
     //NEW: change skimming to write event at a specific moment in the chain of modules.

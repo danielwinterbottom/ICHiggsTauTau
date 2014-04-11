@@ -16,18 +16,18 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfig.cfg
-PRODUCTION=Sep06
+PRODUCTION=Apr04
 
 for METCUT in 130
   do
-  for CHANNEL in nunu enu munu taunu mumu
+  for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep mumu nunuiglep #nunu enu munu taunu #mumu nunuiglep
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-      JOBDIRPREFIX=jobs
+      JOBDIRPREFIX=jobs_tmva
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
-      OUTPUTPREFIX=output
+      OUTPUTPREFIX=output_tmva
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]
@@ -79,14 +79,14 @@ for METCUT in 130
 	    echo "Using job-submission: " $JOBSUBMIT
 	fi
 	
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pela/$PRODUCTION/
+	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MET/
 	
-	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}*`
+	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*`
 	  do
 	  echo "Processing files in "$FILELIST
 	  
 	  echo $FILELIST > tmp.txt
-	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}//" tmp.txt > tmp2.txt
+	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MET_//" tmp.txt > tmp2.txt
 	  
 	  JOB=Data_`sed "s/\.dat//" tmp2.txt`
 	  
@@ -94,7 +94,7 @@ for METCUT in 130
 	  
 	  echo "JOB name = $JOB"
 	  
-	  $JOBWRAPPER "./bin/HiggsNuNu_parked --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	  $JOBSUBMIT $JOBDIR/$JOB.sh
 	  
 	done
