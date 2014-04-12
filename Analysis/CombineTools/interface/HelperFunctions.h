@@ -6,13 +6,17 @@
 #include "boost/range/algorithm_ext/erase.hpp"
 #include "boost/algorithm/string.hpp"
 #include "TFile.h"
+#include "RooFitResult.h"
 
 // #include <memory>
 // #include <string>
 // #include "TH1.h"
-// #include "CombineTools/interface/Process.h"
+#include "CombineTools/interface/Parameter.h"
 
 namespace ch {
+
+std::vector<ch::Parameter> ExtractFitParameters(RooFitResult const& res) ;
+std::vector<ch::Parameter> ExtractSampledFitParameters(RooFitResult const& res) ;
 
 template<typename Range, typename Predicate> 
 bool any_of(const Range &r, Predicate p) {

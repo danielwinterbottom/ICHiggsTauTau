@@ -5,6 +5,7 @@
 #include "TH1F.h"
 #include "boost/filesystem.hpp"
 #include "boost/regex.hpp"
+#include "RooFitResult.h"
 
 int main() {
   // ch::Observation obs;
@@ -32,8 +33,8 @@ int main() {
   // h_7.ParseDatacard("htt/125/htt_mt_2_7TeV.txt", "htt", "7TeV", "mt", 2, "125");
   // h_7.ParseDatacard("htt/125/htt_mt_3_7TeV.txt", "htt", "7TeV", "mt", 3, "125");
   // h_7.ParseDatacard("htt/125/htt_mt_4_7TeV.txt", "htt", "7TeV", "mt", 4, "125");
-   h_7.ParseDatacard("htt/125/htt_mt_5_7TeV.txt", "htt", "7TeV", "mt", 5, "125");
-   h_7.ParseDatacard("htt/125/htt_mt_6_7TeV.txt", "htt", "7TeV", "mt", 6, "125");
+   h_7.ParseDatacard("cmb/125/htt_mt_5_7TeV.txt", "htt", "7TeV", "mt", 5, "125");
+   // h_7.ParseDatacard("htt/125/htt_mt_6_7TeV.txt", "htt", "7TeV", "mt", 6, "125");
   // h_8.ParseDatacard("htt/125/htt_mt_1_8TeV.txt", "htt", "8TeV", "mt", 1, "125");
   // h_8.ParseDatacard("htt/125/htt_mt_2_8TeV.txt", "htt", "8TeV", "mt", 2, "125");
   // h_8.ParseDatacard("htt/125/htt_mt_3_8TeV.txt", "htt", "8TeV", "mt", 3, "125");
@@ -109,9 +110,40 @@ int main() {
   // h_8.ParseDatacard("htt/125/vhtt_7_8TeV.txt", "vhtt", "8TeV", "vhtt", 7, "125");
   // h_8.ParseDatacard("htt/125/vhtt_8_8TeV.txt", "vhtt", "8TeV", "vhtt", 8, "125");
 
+  TFile fit("cmb/125/out/mlfit.root");
+  RooFitResult *s_plus_b_fit = dynamic_cast<RooFitResult *>(gDirectory->Get("fit_s"));
+
+  auto postfit_params = ch::ExtractFitParameters(*s_plus_b_fit);
+  // h_7.UpdateParameters(postfit_params);
+  h_7.PrintAll();
+
+
+  auto procs = h_7.GenerateSetFromProcs<std::string>(std::mem_fn(&ch::Process::process));
+
+  TFile f("output.root","RECREATE");
+
+  TH1F obs = h_7.GetObservedShape();
+  obs.SetName("data_obs");
+  obs.Write();
+
+  for (auto proc : procs) {
+    std::cout << proc
+      << "\t" << h_7.shallow_copy().process(true, {proc}).GetRate()
+      << "\t" << h_7.shallow_copy().process(true, {proc}).GetUncertainty()
+      << "\t" << h_7.shallow_copy().process(true, {proc}).GetUncertainty(s_plus_b_fit, 1000)
+      << std::endl;
+    TH1F p_hist = h_7.shallow_copy().process(true, {proc}).GetShape();
+    p_hist.SetName(proc.c_str());
+    p_hist.Write();
+  }
+
+  TH1F bkg = h_7.shallow_copy().backgrounds().GetShapeWithUncertainty(s_plus_b_fit, 1000);
+  bkg.SetName("Bkg");
+  bkg.Write();
+  f.Close();
   /*
   SMHiggsXSTool xs_tool;
-  
+
 
   // Scaling cross section
   auto masses = h.get_set_from_procs<string>(&Process::mass);
@@ -120,7 +152,7 @@ int main() {
   for (auto m : masses) {
     for (auto s : signals) {
       h.shallow_copy().mass(true, m).process(true, {s})
-        .scale(xs_tool.get_xsec({s},m)*xs_tool.get_br({"tt"},m));  
+        .scale(xs_tool.get_xsec({s},m)*xs_tool.get_br({"tt"},m));
     }
   }
 
@@ -139,8 +171,8 @@ int main() {
   // h_7.PrintAll();
 
   // ch::CombineHarvester tmp = h_7;
-  
-  h_7.WriteDatacard("test_card.txt", "test_file.root");
+
+  // h_7.WriteDatacard("test_card.txt", "test_file.root");
 
   /*
     vector<string> categories = {
@@ -154,7 +186,7 @@ int main() {
   ExtractSignalProccesses(file, categories, {"ggH"}, {"120","125","130"});
 
 
-  AddSystematic("lumi_7TeV","lnN", 1.03, 
+  AddSystematic("lumi_7TeV","lnN", 1.03,
     processes = {"ZTT", "signal")},
     era       = {"7TeV"}
   )
@@ -170,8 +202,8 @@ int main() {
   // h_7.Validate();
   // std::cout << "---- 8 TeV ----" << std::endl;
   // h_8.Validate();
-  // double rate = h.GetRate(); 
-  // double err = h.GetUncertainty(); 
+  // double rate = h.GetRate();
+  // double err = h.GetUncertainty();
 
 
   // // for (unsigned i = 0; i < 1000; ++i) double err = h.GetRate();

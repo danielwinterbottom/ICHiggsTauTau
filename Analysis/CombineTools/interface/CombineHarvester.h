@@ -17,35 +17,24 @@
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/HelperFunctions.h"
 
-/*
-h.GenerateSet<string>([](ch::Parameter p){ regex_match(p, ".*_bin_.*") });
-// - some people don't know/like lambdas/binding
-// + Gives complete flexibility 
-
-* loop through processes
-  * use (proc->shape nuis, pname->value) map to apply each shape morphing
-  * use (proc->all nuis) map to apply each norm morph
-  * this process histogram is then 'done', can be added to the total
-  * to be returned
-
-With "simple" error request
-(build map param name -> all nuisances)
-* loop through parameters
-  * evaluate param up and param down    
-*/
-
 namespace ch {
 
 class CombineHarvester {
  public:
+  // Low-level
   CombineHarvester();
   ~CombineHarvester();
   CombineHarvester(CombineHarvester const& other);
   CombineHarvester(CombineHarvester&& other);
   CombineHarvester& operator=(CombineHarvester other);
-
   CombineHarvester shallow_copy();
+  CombineHarvester& PrintAll();
 
+  void SetParameters(std::vector<ch::Parameter> params);
+  void UpdateParameters(std::vector<ch::Parameter> params);
+  std::vector<ch::Parameter> GetParameters() const;
+
+  // Datacard interaction
   int ParseDatacard(std::string const& filename,
       std::string const& analysis,
       std::string const& era,
@@ -55,8 +44,7 @@ class CombineHarvester {
 
   void WriteDatacard(std::string const& name, std::string const& root_file);
 
-  CombineHarvester& PrintAll();
-
+  // Filtering
   CombineHarvester& bin(bool cond, std::vector<std::string> const& vec);
   CombineHarvester& bin_id(bool cond, std::vector<int> const& vec);
   CombineHarvester& process(bool cond, std::vector<std::string> const& vec);
@@ -67,10 +55,10 @@ class CombineHarvester {
   CombineHarvester& mass(bool cond, std::vector<std::string> const& vec);
   CombineHarvester& nus_name(bool cond, std::vector<std::string> const& vec);
   CombineHarvester& nus_type(bool cond, std::vector<std::string> const& vec);
-
   CombineHarvester& signals();
   CombineHarvester& backgrounds();
 
+  // Set generation
   template<typename T>
   std::set<T> GenerateSetFromProcs(std::function<T(ch::Process const*)> func);
 
@@ -80,6 +68,16 @@ class CombineHarvester {
   template<typename T>
   std::set<T> GenerateSetFromNus(std::function<T(ch::Nuisance const*)> func);
 
+  // Yields & Shapes
+  double GetRate();
+  double GetObservedRate();
+  double GetUncertainty();
+  double GetUncertainty(RooFitResult const* fit, unsigned n_samples);
+  TH1F GetShape();
+  TH1F GetShapeWithUncertainty();
+  TH1F GetShapeWithUncertainty(RooFitResult const* fit, unsigned n_samples);
+  TH1F GetObservedShape();
+
   // void Validate();
 
     // int ParsePulls(std::string const& filename);
@@ -87,11 +85,8 @@ class CombineHarvester {
     // void WeightSoverB();
     // inline void AddProcess(Process proc) { processes_.push_back(proc); }
     // void VariableRebin(std::vector<double> bins);
-  double GetRate();
+
     // double GetObservedRate();
-  double GetUncertainty();
-  TH1F GetShape();
-  TH1F GetObservedShape();
     // TGraphAsymmErrors GetObservedShapeErrors();
     // std::set<std::string> GetNuisanceSet();
     // bool HasProcess(std::string const& process) const;
@@ -137,6 +132,9 @@ class CombineHarvester {
   ProcNusMap GenerateProcNusMap();
 
   double GetRateInternal(ProcNusMap const& lookup,
+    std::string const& single_nus = "");
+
+  TH1F GetShapeInternal(ProcNusMap const& lookup,
     std::string const& single_nus = "");
 
   inline double smoothStepFunc(double x) const { 

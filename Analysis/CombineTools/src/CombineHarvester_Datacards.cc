@@ -1,0 +1,429 @@
+#include "CombineTools/interface/CombineHarvester.h"
+#include <vector>
+#include <map>
+#include <string>
+#include <iostream>
+#include <utility>
+#include <set>
+#include <fstream>
+#include "boost/lexical_cast.hpp"
+#include "boost/algorithm/string.hpp"
+#include "boost/range/algorithm_ext/erase.hpp"
+#include "boost/range/algorithm/find.hpp"
+#include "boost/format.hpp"
+#include "TDirectory.h"
+#include "TH1.h"
+#include "Utilities/interface/FnRootTools.h"
+#include "Utilities/interface/FnPredicates.h"
+#include "CombineTools/interface/Observation.h"
+#include "CombineTools/interface/Process.h"
+#include "CombineTools/interface/Nuisance.h"
+#include "CombineTools/interface/Parameter.h"
+#include "CombineTools/interface/MakeUnique.h"
+#include "CombineTools/interface/HelperFunctions.h"
+
+// #include "TMath.h"
+// #include "boost/format.hpp"
+// #include "Utilities/interface/FnPredicates.h"
+// #include "Math/QuantFuncMathCore.h"
+
+namespace ch {
+
+int CombineHarvester::ParseDatacard(std::string const& filename,
+    std::string const& analysis,
+    std::string const& era,
+    std::string const& channel,
+    int bin_id,
+    std::string const& mass) {
+  // Load the entire datacard into memory as a vector of strings
+  std::vector<std::string> lines = ic::ParseFileLines(filename);
+  // Loop through lines, trimming whitespace at the beginning or end
+  // then splitting each line into a vector of words (using any amount
+  // of whitespace as the separator).  We skip any line of zero length
+  // or which starts with a "#" or "-" character.
+  std::vector<std::vector<std::string>> words;
+  for (unsigned i = 0; i < lines.size(); ++i) {
+    boost::trim(lines[i]);
+    if (lines[i].size() == 0) continue;
+    if (lines[i].at(0) == '#' || lines[i].at(0) == '-') continue;
+    words.push_back(std::vector<std::string>());
+    boost::split(words.back(), lines[i], boost::is_any_of("\t "),
+        boost::token_compress_on);
+  }
+
+  std::vector<HistMapping> hist_mapping;
+  bool start_nuisance_scan = false;
+  unsigned r = 0;
+
+  // Loop through the vector of word vectors
+  for (unsigned i = 0; i < words.size(); ++i) {
+    // Ignore line if it only has one word
+    if (words[i].size() <= 1) continue;
+
+    // If the line begins "shapes" then we've
+    // found process --> TH1F mapping information
+    if (words[i][0] == "shapes" && words[i].size() >= 5) {
+      hist_mapping.push_back(HistMapping());
+      hist_mapping.back().process = words[i][1];
+      hist_mapping.back().category = words[i][2];
+      // The root file path given in the datacard is relative to the datacard
+      // path, so we join the path to the datacard with the path to the file
+      std::string dc_path;
+      std::size_t slash = filename.find_last_of('/');
+      if (slash != filename.npos) {
+        dc_path = filename.substr(0, slash) + "/" + words[i][3];
+      } else {
+        dc_path = words[i][3];
+      }
+      hist_mapping.back().file = ic::make_unique<TFile>(dc_path.c_str());
+      hist_mapping.back().pattern = words[i][4];
+      if (words[i].size() > 5) hist_mapping.back().syst_pattern = words[i][5];
+    }
+
+    // Want to check this line and the previous one, so need i >= 1.
+    // If the first word on this line is "observation" and "bin" on
+    // the previous line then we've found the entries for data, and
+    // can add Observation objects
+    if (i >= 1) {
+      if (  words[i][0]     == "observation" &&
+            words[i-1][0]   == "bin" &&
+            words[i].size() == words[i-1].size()) {
+        for (unsigned p = 1; p < words[i].size(); ++p) {
+          auto obs = std::make_shared<Observation>();
+          obs->set_bin(words[i-1][p]);
+          obs->set_rate(boost::lexical_cast<double>(words[i][p]));
+          obs->set_analysis(analysis);
+          obs->set_era(era);
+          obs->set_channel(channel);
+          obs->set_bin_id(bin_id);
+          obs->set_mass(mass);
+          TH1 *h = GetHistFromFile(hist_mapping,
+            obs->bin(), "data_obs", obs->mass(), "", 0);
+          if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
+          if (h) obs->set_shape(std::unique_ptr<TH1>(h));
+          obs_.push_back(obs);
+        }
+      }
+    }
+
+    // Similarly look for the lines indicating the different signal
+    // and background processes
+    // Once these are found save in line index for the rate line as r
+    // to we can refer back to these later, then assume that every
+    // line that follows is a nuisance parameter
+    if (i >= 3) {
+      if (  words[i][0]   == "rate" &&
+            words[i-1][0] == "process" &&
+            words[i-2][0] == "process" &&
+            words[i-3][0] == "bin" &&
+            words[i].size() == words[i-1].size() &&
+            words[i].size() == words[i-2].size() &&
+            words[i].size() == words[i-3].size()) {
+        for (unsigned p = 1; p < words[i].size(); ++p) {
+          auto proc = std::make_shared<Process>();
+          proc->set_bin(words[i-3][p]);
+          proc->set_rate(boost::lexical_cast<double>(words[i][p]));
+          proc->set_process(words[i-1][p]);
+          proc->set_process_id(boost::lexical_cast<int>(words[i-2][p]));
+          proc->set_analysis(analysis);
+          proc->set_era(era);
+          proc->set_channel(channel);
+          proc->set_bin_id(bin_id);
+          proc->set_mass(mass);
+          TH1 *h = GetHistFromFile(hist_mapping,
+            proc->bin(), proc->process(), proc->mass(), "", 0);
+          if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
+          if (h) proc->set_shape(std::unique_ptr<TH1>(h));
+          procs_.push_back(proc);
+        }
+        r = i;
+        start_nuisance_scan = true;
+      }
+    }
+
+    if (start_nuisance_scan && words[i].size()-1 == words[r].size()) {
+      for (unsigned p = 2; p < words[i].size(); ++p) {
+        if (words[i][p] == "-") continue;
+        // if (words[i][0].at(0) == '#') continue;
+        auto nus = std::make_shared<Nuisance>();
+        nus->set_bin(words[r-3][p-1]);
+        nus->set_process(words[r-1][p-1]);
+        nus->set_process_id(boost::lexical_cast<int>(words[r-2][p-1]));
+        nus->set_name(words[i][0]);
+        nus->set_type(words[i][1]);
+        nus->set_analysis(analysis);
+        nus->set_era(era);
+        nus->set_channel(channel);
+        nus->set_bin_id(bin_id);
+        nus->set_mass(mass);
+        std::size_t slash_pos = words[i][p].find("/");
+        if (slash_pos != words[i][p].npos) {
+          // Assume asymmetric of form kDown/kUp
+          nus->set_value_d(
+            boost::lexical_cast<double>(words[i][p].substr(0, slash_pos)));
+          nus->set_value_u(
+            boost::lexical_cast<double>(words[i][p].substr(slash_pos+1)));
+          nus->set_asymm(true);
+        } else {
+          nus->set_value_u(boost::lexical_cast<double>(words[i][p]));
+          nus->set_asymm(false);
+        }
+        if (nus->type() == "shape") {
+          TH1 *h = GetHistFromFile(hist_mapping,
+            nus->bin(), nus->process(), nus->mass(), "", 0);
+          TH1 *h_d = GetHistFromFile(hist_mapping,
+            nus->bin(), nus->process(), nus->mass(), nus->name(), 1);
+          TH1 *h_u = GetHistFromFile(hist_mapping,
+            nus->bin(), nus->process(), nus->mass(), nus->name(), 2);
+          // Is the rate of the central process > 0?
+          if (h->Integral() > 0.0) {
+            // If the up and down templates also > 0 can proceed normally
+            if (h_u->Integral() > 0.0) {
+              nus->set_value_u(h_u->Integral()/h->Integral());
+              h_u->Scale(1.0/h_u->Integral());
+            } else { // otherwise we force the yield part to 1.0, i.e. no effect
+              nus->set_value_u(1.0);
+            }
+            if (h_d->Integral() > 0.0) {
+              nus->set_value_d(h_d->Integral()/h->Integral());
+              h_d->Scale(1.0/h_d->Integral());
+            } else { // otherwise we force the yield part to 1.0, i.e. no effect
+              nus->set_value_d(1.0);
+            }
+          } else {
+            nus->set_value_u(1.0);
+            if (h_u->Integral() > 0.0) {
+              h_u->Scale(1.0/h_u->Integral());
+            }
+            nus->set_value_d(1.0);
+            if (h_d->Integral() > 0.0) {
+              h_d->Scale(1.0/h_d->Integral());
+            }
+          }
+          if (h_u) nus->set_shape_u(std::unique_ptr<TH1>(h_u));
+          if (h_d) nus->set_shape_d(std::unique_ptr<TH1>(h_d));
+          nus->set_asymm(true);
+          delete h;
+        }
+        if (!params_.count(nus->name())) {
+          auto param = std::make_shared<Parameter>(Parameter());
+          param->set_name(nus->name());
+          params_.insert({nus->name(), param});
+        }
+        nus_.push_back(nus);
+      }
+    }
+  }
+  return 0;
+}
+
+void CombineHarvester::WriteDatacard(std::string const& name, std::string const& root_file) {
+  std::ofstream txt_file;
+  txt_file.open(name);
+
+  std::string dashes(80,'-');
+
+  auto bin_set = this->GenerateSetFromObs<std::string>(std::mem_fn(&ch::Observation::bin));
+  auto proc_set = this->GenerateSetFromProcs<std::string>(std::mem_fn(&ch::Process::process));
+  auto nus_set = this->GenerateSetFromNus<std::string>(std::mem_fn(&ch::Nuisance::name));
+  txt_file << "imax    " << bin_set.size() << " number of bins\n";
+  txt_file << "jmax    " << proc_set.size()-1 << " number of processes minus 1\n";
+  txt_file << "kmax    " << nus_set.size() << " number of nuisance parameters\n";
+  txt_file << dashes << "\n";
+
+  // Generate a sensible default for the mapping of process and
+  // systematic templates into a root file
+  std::vector<HistMapping> mappings;
+  mappings.push_back({
+    "*", "*", nullptr, "$CHANNEL/$PROCESS", "$CHANNEL/$PROCESS_$SYSTEMATIC"
+  });
+  CombineHarvester ch_signals = this->shallow_copy().signals();
+  auto sig_proc_set = ch_signals.GenerateSetFromProcs<std::string>(
+    std::mem_fn(&ch::Process::process));
+  for (auto sig_proc : sig_proc_set) {
+    mappings.push_back({
+      sig_proc, "*", nullptr, "$CHANNEL/$PROCESS$MASS", "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC"
+    });
+  }
+
+  for (auto const& mapping : mappings) {
+    txt_file << boost::format("shapes %s %s %s %s %s\n")
+      % mapping.process
+      % mapping.category
+      % root_file
+      % mapping.pattern
+      % mapping.syst_pattern;
+  }
+  txt_file << dashes << "\n";
+
+  TFile file(root_file.c_str(), "RECREATE");
+
+  // Writing observations
+  txt_file << "bin          ";
+  for (auto const& obs : obs_) {
+    txt_file << boost::format("%-15s ") % obs->bin();
+    std::unique_ptr<TH1> h((TH1*)(obs->shape()->Clone()));
+    h->Scale(obs->rate());
+    WriteHistToFile(h.get(), &file, mappings, obs->bin(), "data_obs", obs->mass(), "", 0);
+  }
+  txt_file << "\n";
+  txt_file << "observation  ";
+  for (auto const& obs : obs_) {
+    txt_file << boost::format("%-15.1f ") % obs->rate();
+  }
+  txt_file << "\n";
+  txt_file << dashes << "\n";
+
+  auto proc_nus_map = this->GenerateProcNusMap();
+  unsigned nus_str_len = 14;
+  for (auto const& nus : nus_set) {
+    if (nus.length() > nus_str_len) nus_str_len = nus.length();
+  }
+
+  txt_file << boost::format("%-"+boost::lexical_cast<std::string>(nus_str_len+9)+"s") % "bin";
+  for (auto const& proc : procs_) {
+    std::unique_ptr<TH1> h((TH1*)(proc->shape()->Clone()));
+    h->Scale(proc->rate());
+    WriteHistToFile(h.get(), &file, mappings, proc->bin(), proc->process(), proc->mass(), "", 0);
+    txt_file << boost::format("%-15s ") % proc->bin();
+  }
+  txt_file << "\n";
+
+  txt_file << boost::format("%-"+boost::lexical_cast<std::string>(nus_str_len+9)+"s") % "process";
+
+  for (auto const& proc : procs_) {
+    txt_file << boost::format("%-15s ") % proc->process();
+  }
+  txt_file << "\n";
+
+  txt_file << boost::format("%-"+boost::lexical_cast<std::string>(nus_str_len+9)+"s") % "process";
+
+  for (auto const& proc : procs_) {
+    txt_file << boost::format("%-15s ") % proc->process_id();
+  }
+  txt_file << "\n";
+
+
+  txt_file << boost::format("%-"+boost::lexical_cast<std::string>(nus_str_len+9)+"s") % "rate";
+  for (auto const& proc : procs_) {
+    txt_file << boost::format("%-15.4f ") % proc->rate();
+  }
+  txt_file << "\n";
+  txt_file << dashes << "\n";
+
+
+  for (auto const& nus : nus_set) {
+    std::vector<std::string> line(procs_.size() + 2);
+    line[0] = nus;
+    bool seen_lnN = false;
+    bool seen_shape = false;
+    for (unsigned p = 0; p < procs_.size(); ++p) {
+      line[p+2] = "-";
+      for (unsigned n = 0; n < proc_nus_map[p].size(); ++n) {
+        ch::Nuisance const* nus_ptr = proc_nus_map[p][n];
+        if (nus_ptr->name() == nus) {
+          if (nus_ptr->type() == "lnN") {
+            seen_lnN = true;
+            line[p+2] = nus_ptr->asymm() ?
+              (boost::format("%g/%g") % nus_ptr->value_d() % nus_ptr->value_u()).str() :
+              (boost::format("%g") % nus_ptr->value_u()).str();
+            break;
+          }
+          if (nus_ptr->type() == "shape") {
+            std::unique_ptr<TH1> h_d((TH1*)(nus_ptr->shape_d()->Clone()));
+            h_d->Scale(procs_[p]->rate()*nus_ptr->value_d());
+            WriteHistToFile(h_d.get(), &file, mappings, nus_ptr->bin(), nus_ptr->process(), nus_ptr->mass(), nus_ptr->name(), 1);
+            std::unique_ptr<TH1> h_u((TH1*)(nus_ptr->shape_u()->Clone()));
+            h_u->Scale(procs_[p]->rate()*nus_ptr->value_u());
+            WriteHistToFile(h_u.get(), &file, mappings, nus_ptr->bin(), nus_ptr->process(), nus_ptr->mass(), nus_ptr->name(), 2);
+            seen_shape = true;
+            line[p+2] = "1.0";
+            break;
+          }
+        }
+      }
+    }
+    if (seen_lnN && !seen_shape) line[1] = "lnN";
+    if (!seen_lnN && seen_shape) line[1] = "shape";
+    if (seen_lnN && seen_shape) line[1] = "shape?";
+    txt_file << boost::format(
+      "%-"+boost::lexical_cast<std::string>(nus_str_len)+"s %-7s ")
+      % line[0] % line[1];
+    for (unsigned p = 0; p < procs_.size(); ++p) {
+      txt_file << boost::format("%-15s ") % line[p+2];
+    }
+    txt_file << "\n";
+  }
+  txt_file.close();
+  file.Close();
+}
+
+CombineHarvester::StrPairVec CombineHarvester::GenerateShapeMapAttempts(
+    std::string process, std::string category) {
+  CombineHarvester::StrPairVec result;
+  result.push_back(std::make_pair(process   , category));
+  result.push_back(std::make_pair("*"       , category));
+  result.push_back(std::make_pair(process   , "*"));
+  result.push_back(std::make_pair("*"       , "*"));
+  return result;
+}
+
+TH1 * CombineHarvester::GetHistFromFile(
+    std::vector<HistMapping> const& mappings,
+    std::string const& bin,
+    std::string const& process,
+    std::string const& mass,
+    std::string const& nuisance,
+    unsigned type) {
+  StrPairVec attempts = this->GenerateShapeMapAttempts(process, bin);
+  for (unsigned a = 0; a < attempts.size(); ++a) {
+    for (unsigned m = 0; m < mappings.size(); ++m) {
+      if ((attempts[a].first == mappings[m].process) &&
+        (attempts[a].second == mappings[m].category)) {
+        std::string p = (type == 0 ?
+            mappings[m].pattern : mappings[m].syst_pattern);
+        boost::replace_all(p, "$CHANNEL", bin);
+        boost::replace_all(p, "$PROCESS", process);
+        boost::replace_all(p, "$MASS", mass);
+        if (type == 1) boost::replace_all(p, "$SYSTEMATIC", nuisance+"Down");
+        if (type == 2) boost::replace_all(p, "$SYSTEMATIC", nuisance+"Up");
+        mappings[m].file->cd();
+        TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
+        h->SetDirectory(0);
+        return h;
+      }
+    }
+  }
+  return nullptr;
+}
+
+void CombineHarvester::WriteHistToFile(
+    TH1 const* hist,
+    TFile * file,
+    std::vector<HistMapping> const& mappings,
+    std::string const& bin,
+    std::string const& process,
+    std::string const& mass,
+    std::string const& nuisance,
+    unsigned type) {
+  StrPairVec attempts = this->GenerateShapeMapAttempts(process, bin);
+  for (unsigned a = 0; a < attempts.size(); ++a) {
+    for (unsigned m = 0; m < mappings.size(); ++m) {
+      if ((attempts[a].first == mappings[m].process) &&
+        (attempts[a].second == mappings[m].category)) {
+        std::string p = (type == 0 ?
+            mappings[m].pattern : mappings[m].syst_pattern);
+        boost::replace_all(p, "$CHANNEL", bin);
+        boost::replace_all(p, "$PROCESS", process);
+        boost::replace_all(p, "$MASS", mass);
+        if (type == 1) boost::replace_all(p, "$SYSTEMATIC", nuisance+"Down");
+        if (type == 2) boost::replace_all(p, "$SYSTEMATIC", nuisance+"Up");
+        WriteToTFile(hist, file, p);
+        return;
+      }
+    }
+  }
+}
+
+
+}
