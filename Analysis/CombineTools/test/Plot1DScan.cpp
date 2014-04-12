@@ -60,9 +60,14 @@ int main() {
   ic::Plot::SetHTTStyle();
 
   std::vector<Scan> scans;
-  scans.push_back({"higgsCombinefullScan.MultiDimFit.mH125.root", "with syst.", 1, nullptr});
-  scans.push_back({"higgsCombinefastScan.MultiDimFit.mH125.root", "no syst.", 32, nullptr});
-  scans.push_back({"higgsCombinenoBBBScan.MultiDimFit.mH125.root", "no bbb syst.", 38, nullptr});
+  //scans.push_back({"higgsCombinefullScan.MultiDimFit.mH125.root", "with syst.", 1, nullptr});
+  //scans.push_back({"higgsCombinefastScan.MultiDimFit.mH125.root", "no syst.", 32, nullptr});
+  //scans.push_back({"higgsCombinenoBBBScan.MultiDimFit.mH125.root", "no bbb syst.", 38, nullptr});
+  
+  scans.push_back({"thesis/higgsCombineFullScan.MultiDimFit.mH125.root", "Stat+Syst+Theory", 1, nullptr});
+  scans.push_back({"thesis/higgsCombineStatAndExp.MultiDimFit.mH125.root", "Stat+Syst", 38, nullptr});
+  scans.push_back({"thesis/higgsCombineStatOnly.MultiDimFit.mH125.root", "Stat Only", 32, nullptr});
+  //scans.push_back({"thesis/higgsCombineStatAndTh.MultiDimFit.mH125.root", "Stat+Theory", 39, nullptr});
   TCanvas c1("canvas","canvas");
 
   std::vector<TLine *> lines;
@@ -103,7 +108,7 @@ int main() {
   // // g1.SetMarkerColor(7);
   // g1.Draw("AC");
   scans[0].gr->SetMaximum(2);
-  scans[0].gr->GetXaxis()->SetRangeUser(0.4, 1.2);
+  scans[0].gr->GetXaxis()->SetRangeUser(0.4, 1.4);
   scans[0].gr->GetXaxis()->SetTitle("#sigma/#sigma_{SM}");
   scans[0].gr->GetYaxis()->SetTitle("-2 #Delta ln L");
   leg->SetBorderSize(1);
@@ -115,7 +120,7 @@ int main() {
   leg->SetFillColor(0);
   leg->SetFillStyle(1001);
   leg->Draw();
-  lines.push_back(new TLine(0.4,1,1.2,1));
+  lines.push_back(new TLine(0.4,1,1.4,1));
   lines.back()->SetLineColor(2);
   for (auto l : lines) l->Draw();
   c1.Update();
