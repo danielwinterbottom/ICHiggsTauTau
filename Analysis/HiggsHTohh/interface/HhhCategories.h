@@ -63,6 +63,7 @@ class HhhCategories : public ModuleBase {
   double emu_dxy_2_;
   double pt_1_;
   double pt_2_;
+  //double bdt_;
   double eta_1_;
   double eta_2_;
   double iso_1_;
@@ -114,7 +115,9 @@ class HhhCategories : public ModuleBase {
   double calo_nohf_met_;
 
   double em_gf_mva_;
-  double em_vbf_mva_;
+  //double em_vbf_mva_;
+	double em_gf_mva_1_;
+	double em_gf_mva_2_;
 
     // Other VBF MVA variables?
 

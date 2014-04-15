@@ -37,7 +37,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauDzFixer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuMVA.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVA.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVATwoStage.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCut.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
@@ -517,7 +518,8 @@ int main(int argc, char* argv[]){
     .set_shift(elec_shift);
 
   HTTEMuExtras emuExtras("EMuExtras");
-  HTTEMuMVA emuMVA = HTTEMuMVA("EMuMVA");
+  HhhEMuMVA emuMVA = HhhEMuMVA("EMuMVA");
+	HhhEMuMVATwoStage emuMVATwoStage = HhhEMuMVATwoStage("EMuMVATwoStage");
 
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
@@ -1147,6 +1149,7 @@ int main(int argc, char* argv[]){
    }
     if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
+																	analysis.AddModule(&emuMVATwoStage);
     }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&httSync);
