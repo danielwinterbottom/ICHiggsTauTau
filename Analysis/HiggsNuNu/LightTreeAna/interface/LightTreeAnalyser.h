@@ -9,14 +9,18 @@ namespace ic{
   CLASS_MEMBER(LTAnalyser,int,verbosity)
     
   protected:
-    Files filemanager_;
-    std::vector<LTModule> modulelist_;
-      
+    LTFiles filemanager_;
+    std::vector<ic::LTModule *> modulelist_;
+    
+    bool print_module_list_;
   public:
     LTAnalyser();
     LTAnalyser(int);
 
-    LTAnalyser AddModule(LTModule);
+    LTAnalyser AddModule(ic::LTModule*);
+
+    bool PostModule(int);
+    int RunAnalysis();
   };
 
 }

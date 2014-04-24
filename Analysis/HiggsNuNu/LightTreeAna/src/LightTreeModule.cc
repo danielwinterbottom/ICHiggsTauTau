@@ -6,4 +6,7 @@ namespace ic{
   LTModule::LTModule(){
   };
 
+  std::string LTModule::module_name(){
+    return module_name_;
+  };
 }

@@ -8,48 +8,52 @@
 
 namespace ic{
 
-  class File{
-    CLASS_MEMBER(File,std::string,name)
-    CLASS_MEMBER(File,std::string,set)
-    CLASS_MEMBER(File,std::string,path)
+  class LTFile{
+    CLASS_MEMBER(LTFile,std::string,name)
+    CLASS_MEMBER(LTFile,std::string,set)
+    CLASS_MEMBER(LTFile,std::string,path)
     protected:
     TFile * tfile_;
     TTree * tree_;
     public:
-    File();
-    File(std::string,std::string);
-    File(std::string,std::string,std::string);
+    LTFile();
+    LTFile(std::string,std::string);
+    LTFile(std::string,std::string,std::string);
     int Open(std::string);
+    int AddFriend(TTree*);
   };
 
-  class Files{
-    CLASS_MEMBER(Files,std::string,infolder)
+  class LTFiles{
+    CLASS_MEMBER(LTFiles,std::string,infolder)
     protected:								
-    std::map<std::string,File> files_;					
+    std::map<std::string,LTFile> files_;					
     std::map<std::string,std::vector<std::string> > setlists_;
     public:
-    Files();
-    Files(std::string,std::string);
-    Files(std::string,std::string,std::string);
-    Files(std::vector<std::string>,std::vector<std::string>,std::vector<std::string>);
-    Files(File);
-    Files(std::vector<File>);
+    LTFiles();
+    LTFiles(std::string,std::string);
+    LTFiles(std::string,std::string,std::string);
+    LTFiles(std::vector<std::string>,std::vector<std::string>,std::vector<std::string>);
+    LTFiles(LTFile);
+    LTFiles(std::vector<LTFile>);
 
     void AddFile(std::string,std::string,std::string);
     void AddFile(std::string,std::string);
     void AddFiles(std::vector<std::string>,std::vector<std::string>,std::vector<std::string>);
     void AddFiles(std::vector<std::string>,std::vector<std::string>);
-    void AddFile(File);
-    void AddFiles(std::vector<File>);
+    void AddFile(LTFile);
+    void AddFiles(std::vector<LTFile>);
 
-    File GetFile(std::string);
+    LTFile GetFile(std::string);
     std::string GetPath(std::string);
-    std::vector<File> GetFileSet(std::string);    
+    std::vector<LTFile> GetFileSet(std::string);    
     std::vector<std::string> GetSetPaths(std::string);
     
     int OpenFile(std::string);
     int OpenSet(std::string);
     int OpenAll();
+
+    int AddFriend(std::string,TTree*);
+
   };
 
 }

@@ -4,22 +4,22 @@
 #include <vector>
 
 namespace ic{
-  File::File(){
+  LTFile::LTFile(){
   };
 
-  File::File(std::string name, std::string path){
+  LTFile::LTFile(std::string name, std::string path){
     name_=name;
     path_=path;
     set_="";
   };
   
-  File::File(std::string name, std::string set, std::string path){
+  LTFile::LTFile(std::string name, std::string set, std::string path){
     name_=name;
     set_=set;
     path_=path;
   };
 
-  int File::Open(std::string infolder){
+  int LTFile::Open(std::string infolder){
     //std::cout<<"Opening TFile..."<<std::endl;
     std::string filepath = (this->path());
     TFile * tmp = new TFile((infolder+"/"+this->path()).c_str());
@@ -35,36 +35,44 @@ namespace ic{
     }
   }
 
-  Files::Files(){
+  int LTFile::AddFriend(TTree* treeptr){
+    TFile* file = treeptr->GetCurrentFile();
+    tree_->AddFriend(treeptr->GetName(),file->GetName());
+    return 0;
   };
 
-  Files::Files(std::string name, std::string set, std::string path){
-    files_[name]=File(name,set,path);
+  //WRITE GETSHAPE ACCESS METHODS
+
+  LTFiles::LTFiles(){
+  };
+
+  LTFiles::LTFiles(std::string name, std::string set, std::string path){
+    files_[name]=LTFile(name,set,path);
     setlists_[set].push_back(name);
   };
 
-  Files::Files(std::string name, std::string path){
-    files_[name]=File(name,path);
+  LTFiles::LTFiles(std::string name, std::string path){
+    files_[name]=LTFile(name,path);
   };
   
-  Files::Files(std::vector<std::string> names,std::vector<std::string> sets, std::vector<std::string> paths){
+  LTFiles::LTFiles(std::vector<std::string> names,std::vector<std::string> sets, std::vector<std::string> paths){
     if(names.size()!=sets.size() || sets.size()!=paths.size()) std::cout<<"Error different numbers of names, sets and paths making empty Files object"<<std::endl;
     else{
       for(unsigned iname=0;iname<names.size();iname++){
-	files_[names[iname]]=File(names[iname],sets[iname],paths[iname]);
+	files_[names[iname]]=LTFile(names[iname],sets[iname],paths[iname]);
 	setlists_[sets[iname]].push_back(names[iname]);
       }
     }
   };
 
-  Files::Files(File file){
+  LTFiles::LTFiles(LTFile file){
     files_[file.name()]=file;
     if(file.set()!=""){
       setlists_[file.set()].push_back(file.name());
     }
   };
   
-  Files::Files(std::vector<File> files){
+  LTFiles::LTFiles(std::vector<LTFile> files){
     for(unsigned ifile=0;ifile<files.size();ifile++){
       files_[files[ifile].name()]=files[ifile];
       if(files[ifile].set()!=""){
@@ -73,42 +81,42 @@ namespace ic{
     }
   };
 
-  void Files::AddFile(std::string name, std::string set, std::string path){
+  void LTFiles::AddFile(std::string name, std::string set, std::string path){
     setlists_[set].push_back(name);
-    files_[name]=File(name,set,path);
+    files_[name]=LTFile(name,set,path);
   };
 
-  void Files::AddFile(std::string name, std::string path){
-    files_[name]=File(name,"",path);
+  void LTFiles::AddFile(std::string name, std::string path){
+    files_[name]=LTFile(name,"",path);
   };
 
-  void Files::AddFiles(std::vector<std::string> names, std::vector<std::string> sets, std::vector<std::string> paths){
+  void LTFiles::AddFiles(std::vector<std::string> names, std::vector<std::string> sets, std::vector<std::string> paths){
     if(names.size()!=sets.size() || sets.size()!=paths.size()) std::cout<<"Error different numbers of names, sets and paths not adding!"<<std::endl;
     else{
       for(unsigned iname=0;iname<names.size();iname++){
-        files_[names[iname]]=File(names[iname],sets[iname],paths[iname]);
+        files_[names[iname]]=LTFile(names[iname],sets[iname],paths[iname]);
         setlists_[sets[iname]].push_back(names[iname]);
       }
     }
   };
 
-  void Files::AddFiles(std::vector<std::string> names, std::vector<std::string> paths){
+  void LTFiles::AddFiles(std::vector<std::string> names, std::vector<std::string> paths){
     if(names.size()!=paths.size()) std::cout<<"Error different numbers of names, and paths not adding!"<<std::endl;
     else{
       for(unsigned iname=0;iname<names.size();iname++){
-        files_[names[iname]]=File(names[iname],"",paths[iname]);
+        files_[names[iname]]=LTFile(names[iname],"",paths[iname]);
       }
     }
   };
 
-  void Files::AddFile(File file){
+  void LTFiles::AddFile(LTFile file){
     files_[file.name()]=file;
     if(file.set()!=""){
       setlists_[file.set()].push_back(file.name());
     }
   }
 
-  void Files::AddFiles(std::vector<File> files){
+  void LTFiles::AddFiles(std::vector<LTFile> files){
     for(unsigned ifile=0;ifile<files.size();ifile++){
       files_[files[ifile].name()]=files[ifile];
       if(files[ifile].set()!=""){
@@ -117,20 +125,20 @@ namespace ic{
     }
   }
 
-  File Files::GetFile(std::string filename){
+  LTFile LTFiles::GetFile(std::string filename){
     if (files_.count(filename)>0){
-      File file=files_[filename];
+      LTFile file=files_[filename];
       return file;
     }
     else{
       std::cout<<"No file called "<<filename<<" returning empty File object expect errors"<<std::endl;
-      File file;
+      LTFile file;
       return file;
     }
   };
 
-  std::vector<File> Files::GetFileSet(std::string setname){
-    std::vector<File> filesinset;
+  std::vector<LTFile> LTFiles::GetFileSet(std::string setname){
+    std::vector<LTFile> filesinset;
     if(setlists_.count(setname)>0){
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
 	filesinset.push_back(files_[*iter]);
@@ -142,7 +150,7 @@ namespace ic{
     return filesinset;
   };
 
-  std::string Files::GetPath(std::string filename){
+  std::string LTFiles::GetPath(std::string filename){
     std::string path;
     if(files_.count(filename)>0){
       path=files_[filename].path();
@@ -153,7 +161,7 @@ namespace ic{
     return path;
   };
 
-  std::vector<std::string> Files::GetSetPaths(std::string setname){
+  std::vector<std::string> LTFiles::GetSetPaths(std::string setname){
     std::vector<std::string> pathsinset;
     if(setlists_.count(setname)>0){
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
@@ -166,7 +174,7 @@ namespace ic{
     return pathsinset;
   };
 
-  int Files::OpenFile(std::string filename){
+  int LTFiles::OpenFile(std::string filename){
     if(files_.count(filename)>0){
       files_[filename].Open(infolder_);
       return 0;
@@ -177,7 +185,7 @@ namespace ic{
     }
   };
 
-  int Files::OpenSet(std::string setname){
+  int LTFiles::OpenSet(std::string setname){
     if(setlists_.count(setname)>0){
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
 	files_[*iter].Open(infolder_);      
@@ -191,12 +199,20 @@ namespace ic{
     
   };
 
-  int Files::OpenAll(){
+  int LTFiles::OpenAll(){
     for(auto iter=files_.begin();iter!=files_.end();iter++){
       iter->second.Open(infolder_);
     }
     return 0;
   };
+
+  int LTFiles::AddFriend(std::string filename,TTree* treeptr){
+    files_[filename].AddFriend(treeptr);
+    return 0;
+  };
+
+
+  //WRITE GETSHAPE ACCESS METHODS
   
 }
 
