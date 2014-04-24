@@ -5,6 +5,7 @@
 #include <boost/range/end.hpp>
 #include "boost/range/algorithm_ext/erase.hpp"
 #include "boost/algorithm/string.hpp"
+#include "boost/lexical_cast.hpp"
 #include "TFile.h"
 #include "RooFitResult.h"
 
@@ -18,15 +19,15 @@ namespace ch {
 std::vector<ch::Parameter> ExtractFitParameters(RooFitResult const& res) ;
 std::vector<ch::Parameter> ExtractSampledFitParameters(RooFitResult const& res) ;
 
-template<typename Range, typename Predicate> 
+template<typename Range, typename Predicate>
 bool any_of(const Range &r, Predicate p) {
   return std::any_of(boost::begin(r), boost::end(r), p);
-} 
+}
 
-template<typename Range, typename T> 
+template<typename Range, typename T>
 bool contains(const Range &r, T p) {
   return std::find(boost::begin(r), boost::end(r), p) != boost::end(r);
-} 
+}
 
 template <typename Input, typename Filter, typename Converter>
 void FilterContaining(Input & in, Filter const& filter, Converter fn, bool cond) {
@@ -38,8 +39,8 @@ void FilterContaining(Input & in, Filter const& filter, Converter fn, bool cond)
 template<class T, class U>
 bool MatchingProcess(T const& first, U const& second) {
   if (first.bin()         == second.bin()         &&
-      first.process()     == second.process()     && 
-      first.process_id()  == second.process_id()  && 
+      first.process()     == second.process()     &&
+      first.process_id()  == second.process_id()  &&
       first.analysis()    == second.analysis()    &&
       first.era()         == second.era()         &&
       first.channel()     == second.channel()     &&
@@ -64,9 +65,54 @@ void WriteToTFile(T const* ptr, TFile *file, std::string const& path) {
       gDirectory->cd(as_vec[i].c_str());
     }
     gDirectory->WriteTObject(ptr, as_vec.back().c_str());
-    gDirectory->cd("/");    
+    gDirectory->cd("/");
   }
 }
+
+// Extracts objects from the form:
+// "path/to/a/file.root:path/to/object"
+template <class T>
+T OpenFromTFile(std::string const& fullpath) {
+  std::size_t pos = fullpath.find(':');
+  std::string filepath = "";
+  std::string objectpath = "";
+  if (pos == std::string::npos || pos == 0 || pos == (fullpath.size()-1)) {
+    std::cerr <<
+      "Error in ch::OpenFromTFile: input path "
+      "must of the format file.root:object" << std::endl;
+    throw;
+  } else {
+    filepath = fullpath.substr(0, pos);
+    objectpath = fullpath.substr(pos+1);
+  }
+  TFile file(filepath.c_str());
+  if (!file.IsOpen()) {
+    std::cerr << "Error in ch::OpenFromTFile: "
+    "file \"" << filepath << "\" cannot be opened" << std::endl;
+    throw;
+  }
+  file.cd();
+  T* obj_ptr = dynamic_cast<T*>(gDirectory->Get(objectpath.c_str()));
+  if (!obj_ptr) {
+    std::cerr << "Error in ch::OpenFromTFile: "
+    "Object " << objectpath << " in file " << filepath <<
+    " missing or not of specified type" << std::endl;
+    throw;
+  }
+  return *(dynamic_cast<T*>(gDirectory->Get(objectpath.c_str())));
+}
+
+template<class T>
+void SetStandardBinName(T *input) {
+  std::string newname;
+  newname = input->analysis() + "_"
+    + input->channel() + "_"
+    + boost::lexical_cast<std::string>(input->bin_id()) + "_"
+    + input->era();
+  input->set_bin(newname);
+}
+
+
 }
 
 #endif

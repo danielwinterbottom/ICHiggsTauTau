@@ -41,6 +41,8 @@ class CombineHarvester {
       std::string const& channel,
       int bin_id,
       std::string const& mass);
+  int ParseDatacard(std::string const& filename,
+      std::string parse_rule);
 
   void WriteDatacard(std::string const& name, std::string const& root_file);
 
@@ -68,6 +70,16 @@ class CombineHarvester {
   template<typename T>
   std::set<T> GenerateSetFromNus(std::function<T(ch::Nuisance const*)> func);
 
+  // ForEach
+  template<typename Function>
+  void ForEachProc(Function func);
+
+  template<typename Function>
+  void ForEachObs(Function func);
+
+  template<typename Function>
+  void ForEachNus(Function func);
+
   // Yields & Shapes
   double GetRate();
   double GetObservedRate();
@@ -79,18 +91,8 @@ class CombineHarvester {
   TH1F GetObservedShape();
 
   // void Validate();
+  // void VariableRebin(std::vector<double> bins);
 
-    // int ParsePulls(std::string const& filename);
-    // void ApplyPulls(bool use_b_only = false);
-    // void WeightSoverB();
-    // inline void AddProcess(Process proc) { processes_.push_back(proc); }
-    // void VariableRebin(std::vector<double> bins);
-
-    // double GetObservedRate();
-    // TGraphAsymmErrors GetObservedShapeErrors();
-    // std::set<std::string> GetNuisanceSet();
-    // bool HasProcess(std::string const& process) const;
-    // void ScaleProcessByEra(std::string const& process, std::string const& era, double scale);
  private:
   std::vector<std::shared_ptr<Observation>> obs_;
   std::vector<std::shared_ptr<Process>> procs_;
@@ -127,7 +129,7 @@ class CombineHarvester {
       unsigned type);
 
   friend void swap(CombineHarvester& first, CombineHarvester& second);
-  typedef std::vector<std::vector<Nuisance const*>> 
+  typedef std::vector<std::vector<Nuisance const*>>
     ProcNusMap;
   ProcNusMap GenerateProcNusMap();
 
@@ -137,7 +139,7 @@ class CombineHarvester {
   TH1F GetShapeInternal(ProcNusMap const& lookup,
     std::string const& single_nus = "");
 
-  inline double smoothStepFunc(double x) const { 
+  inline double smoothStepFunc(double x) const {
     if (std::fabs(x) >= 1.0/*_smoothRegion*/) return x > 0 ? +1 : -1;
     double xnorm = x/1.0;/*_smoothRegion*/
     double xnorm2 = xnorm*xnorm;
@@ -145,31 +147,46 @@ class CombineHarvester {
   }
 
   TH1F ShapeDiff(double x, TH1 const* nom, TH1 const* low, TH1 const* high);
-
 };
 
-template<typename T> 
-std::set<T> CombineHarvester::GenerateSetFromProcs(std::function<T (ch::Process const*)> func) {
+template<typename T>
+std::set<T> CombineHarvester::GenerateSetFromProcs(
+    std::function<T (ch::Process const*)> func) {
   std::set<T> ret;
   for (auto const& item : procs_) ret.insert(func(item.get()));
   return ret;
-} 
+}
 
-template<typename T> 
-std::set<T> CombineHarvester::GenerateSetFromObs(std::function<T (ch::Observation const*)> func) {
+template<typename T>
+std::set<T> CombineHarvester::GenerateSetFromObs(
+    std::function<T (ch::Observation const*)> func) {
   std::set<T> ret;
   for (auto const& item : obs_) ret.insert(func(item.get()));
   return ret;
-} 
+}
 
-template<typename T> 
-std::set<T> CombineHarvester::GenerateSetFromNus(std::function<T (ch::Nuisance const*)> func) {
+template<typename T>
+std::set<T> CombineHarvester::GenerateSetFromNus(
+    std::function<T (ch::Nuisance const*)> func) {
   std::set<T> ret;
   for (auto const& item : nus_) ret.insert(func(item.get()));
   return ret;
-} 
+}
 
+template<typename Function>
+void CombineHarvester::ForEachProc(Function func) {
+  for (auto & item: procs_) func(item.get());
+}
 
+template<typename Function>
+void CombineHarvester::ForEachObs(Function func) {
+  for (auto & item: obs_) func(item.get());
+}
+
+template<typename Function>
+void CombineHarvester::ForEachNus(Function func) {
+  for (auto & item: nus_) func(item.get());
+}
 }
 
 #endif

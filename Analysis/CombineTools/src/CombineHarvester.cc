@@ -1,31 +1,9 @@
 #include "CombineTools/interface/CombineHarvester.h"
-#include <vector>
-#include <map>
-#include <string>
 #include <iostream>
-#include <utility>
-#include <set>
-#include <fstream>
-#include "boost/lexical_cast.hpp"
-#include "boost/algorithm/string.hpp"
-#include "boost/range/algorithm_ext/erase.hpp"
-#include "boost/range/algorithm/find.hpp"
-#include "boost/format.hpp"
-#include "TDirectory.h"
-#include "TH1.h"
-#include "Utilities/interface/FnRootTools.h"
-#include "Utilities/interface/FnPredicates.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/Parameter.h"
-#include "CombineTools/interface/MakeUnique.h"
-#include "CombineTools/interface/HelperFunctions.h"
-
-// #include "TMath.h"
-// #include "boost/format.hpp"
-// #include "Utilities/interface/FnPredicates.h"
-// #include "Math/QuantFuncMathCore.h"
 
 namespace ch {
 

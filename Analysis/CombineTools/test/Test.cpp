@@ -6,14 +6,9 @@
 #include "boost/filesystem.hpp"
 #include "boost/regex.hpp"
 #include "RooFitResult.h"
+#include "boost/format.hpp"
 
 int main() {
-  // ch::Observation obs;
-  // TH1 const* test = obs.shape();
-  // ch::CombineHarvester h;
-  // h.ParseDatacard("paper_final/125/htt_mt_1_7TeV.txt", "125", "7TeV", "mt", 1);
-  // h.PrintAll();
-
   ch::CombineHarvester h_7;
   ch::CombineHarvester h_8;
 
@@ -29,11 +24,17 @@ int main() {
   //   }
   // }
 
-  // h_7.ParseDatacard("htt/125/htt_mt_1_7TeV.txt", "htt", "7TeV", "mt", 1, "125");
-  // h_7.ParseDatacard("htt/125/htt_mt_2_7TeV.txt", "htt", "7TeV", "mt", 2, "125");
-  // h_7.ParseDatacard("htt/125/htt_mt_3_7TeV.txt", "htt", "7TeV", "mt", 3, "125");
-  // h_7.ParseDatacard("htt/125/htt_mt_4_7TeV.txt", "htt", "7TeV", "mt", 4, "125");
-   h_7.ParseDatacard("cmb/125/htt_mt_5_7TeV.txt", "htt", "7TeV", "mt", 5, "125");
+
+/*
+h_7.SmartParse("cmb/125/{ANA}_{CHN}_{CHNID}_{ERA}.txt");
+
+*/
+
+  h_7.ParseDatacard("htt/125/htt_mt_1_7TeV.txt", "htt", "7TeV", "mt", 1, "125");
+  h_7.ParseDatacard("htt/125/htt_mt_2_7TeV.txt", "htt", "7TeV", "mt", 2, "125");
+  h_7.ParseDatacard("htt/125/htt_mt_3_7TeV.txt", "htt", "7TeV", "mt", 3, "125");
+  h_7.ParseDatacard("htt/125/htt_mt_4_7TeV.txt", "htt", "7TeV", "mt", 4, "125");
+  h_7.ParseDatacard("cmb/125/htt_mt_5_7TeV.txt", "htt", "7TeV", "mt", 5, "125");
    // h_7.ParseDatacard("htt/125/htt_mt_6_7TeV.txt", "htt", "7TeV", "mt", 6, "125");
   // h_8.ParseDatacard("htt/125/htt_mt_1_8TeV.txt", "htt", "8TeV", "mt", 1, "125");
   // h_8.ParseDatacard("htt/125/htt_mt_2_8TeV.txt", "htt", "8TeV", "mt", 2, "125");
@@ -114,33 +115,57 @@ int main() {
   RooFitResult *s_plus_b_fit = dynamic_cast<RooFitResult *>(gDirectory->Get("fit_s"));
 
   auto postfit_params = ch::ExtractFitParameters(*s_plus_b_fit);
-  // h_7.UpdateParameters(postfit_params);
+  h_7.UpdateParameters(postfit_params);
   h_7.PrintAll();
 
 
   auto procs = h_7.GenerateSetFromProcs<std::string>(std::mem_fn(&ch::Process::process));
 
-  TFile f("output.root","RECREATE");
+  // TFile f("output.root","RECREATE");
 
-  TH1F obs = h_7.GetObservedShape();
-  obs.SetName("data_obs");
-  obs.Write();
+  // TH1F obs = h_7.GetObservedShape();
+  // obs.SetName("data_obs");
+  // obs.Write();
 
-  for (auto proc : procs) {
-    std::cout << proc
-      << "\t" << h_7.shallow_copy().process(true, {proc}).GetRate()
-      << "\t" << h_7.shallow_copy().process(true, {proc}).GetUncertainty()
-      << "\t" << h_7.shallow_copy().process(true, {proc}).GetUncertainty(s_plus_b_fit, 1000)
-      << std::endl;
-    TH1F p_hist = h_7.shallow_copy().process(true, {proc}).GetShape();
-    p_hist.SetName(proc.c_str());
-    p_hist.Write();
+  // for (auto proc : procs) {
+  //   std::cout << proc
+  //     << "\t" << h_7.shallow_copy().process(true, {proc}).GetRate()
+  //     << "\t" << h_7.shallow_copy().process(true, {proc}).GetUncertainty()
+  //     << "\t" << h_7.shallow_copy().process(true, {proc}).GetUncertainty(s_plus_b_fit, 500)
+  //     << std::endl;
+  //   TH1F p_hist = h_7.shallow_copy().process(true, {proc}).GetShape();
+  //   p_hist.SetName(proc.c_str());
+  //   p_hist.Write();
+  // }
+
+  // TH1F bkg = h_7.shallow_copy().backgrounds().GetShapeWithUncertainty(s_plus_b_fit, 2000);
+  // bkg.SetName("Bkg");
+  // bkg.Write();
+  // f.Close();
+
+
+  auto systematics = h_7.GenerateSetFromNus<std::string>(std::mem_fn(&ch::Nuisance::name));
+
+  for (auto const& s : systematics) {
+    auto procs = h_7.shallow_copy()
+      .nus_name(true, {s})
+      .GenerateSetFromNus<std::string>(std::mem_fn(&ch::Nuisance::process));
+    auto rates = h_7.shallow_copy()
+      .nus_name(true, {s})
+      .GenerateSetFromNus<double>(std::mem_fn(&ch::Nuisance::value_u));
+    std::set<double> cleaned_rates;
+    for (auto r : rates) {
+      if (r < 1.0) {
+        cleaned_rates.insert(100. * (1.0 - r));
+      } else {
+        cleaned_rates.insert(100. * (r - 1.0));
+      }
+    }
+    std::cout << s << " has procs ";
+    for (auto const& p : procs) std::cout << p << " ";
+    std::cout << " in range " << (boost::format("%.0f") % *(cleaned_rates.begin()))
+      << "% - " << (boost::format("%.0f") % *(--cleaned_rates.end())) << "%" << std::endl;
   }
-
-  TH1F bkg = h_7.shallow_copy().backgrounds().GetShapeWithUncertainty(s_plus_b_fit, 1000);
-  bkg.SetName("Bkg");
-  bkg.Write();
-  f.Close();
   /*
   SMHiggsXSTool xs_tool;
 

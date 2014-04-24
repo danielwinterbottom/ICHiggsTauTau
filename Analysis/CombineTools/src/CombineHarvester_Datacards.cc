@@ -11,6 +11,7 @@
 #include "boost/range/algorithm_ext/erase.hpp"
 #include "boost/range/algorithm/find.hpp"
 #include "boost/format.hpp"
+#include "boost/regex.hpp"
 #include "TDirectory.h"
 #include "TH1.h"
 #include "Utilities/interface/FnRootTools.h"
@@ -28,6 +29,25 @@
 // #include "Math/QuantFuncMathCore.h"
 
 namespace ch {
+
+// Extract info from filename using parse rule like:
+// ".*{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt"
+int CombineHarvester::ParseDatacard(std::string const& filename,
+    std::string parse_rules) {
+  boost::replace_all(parse_rules, "{", "(?<");
+  boost::replace_all(parse_rules, "}", ">\\w+)");
+  boost::regex rgx(parse_rules);
+  boost::smatch matches;
+  boost::regex_search(filename, matches, rgx);
+  this->ParseDatacard(filename,
+    matches.str("ANALYSIS"),
+    matches.str("ERA"),
+    matches.str("CHANNEL"),
+    matches.str("BINID").length() ?
+      boost::lexical_cast<int>(matches.str("BINID")) : 0,
+    matches.str("MASS"));
+  return 0;
+}
 
 int CombineHarvester::ParseDatacard(std::string const& filename,
     std::string const& analysis,
