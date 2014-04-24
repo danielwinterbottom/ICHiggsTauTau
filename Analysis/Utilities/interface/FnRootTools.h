@@ -11,7 +11,7 @@ namespace ic {
 
   std::vector<std::vector<unsigned>> GenerateCombinations(std::vector<unsigned> vec);
 
-  template <class T> 
+  template <class T>
   T GetFromTFile(std::string const& filepath, std::string const& objectpath, std::string const& objectname) {
     TFile *file = new TFile(filepath.c_str());
     if (!file) {
@@ -20,12 +20,12 @@ namespace ic {
     }
     file->cd();
     gDirectory->cd(objectpath.c_str());
-    
+
     T result = *(dynamic_cast<T*>(gDirectory->Get(objectname.c_str())));
     return result;
   }
 
-  template <class T> 
+  template <class T>
   T GetFromTFile(TFile * file, std::string const& objectpath, std::string const& objectname) {
     if (!file) {
       std::cerr << "Error: TFile is not valid, an exception will be thrown" << std::endl;

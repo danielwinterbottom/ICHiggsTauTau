@@ -4,119 +4,137 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTStatTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPlotTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTAnalysisTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/mssm_xs_tools.h"
+#include "Core/interface/Plot.h"
+#include "Core/interface/TextElement.h"
+#include "Utilities/interface/FnRootTools.h"
+#include "HiggsTauTau/interface/HTTStatTools.h"
+#include "HiggsTauTau/interface/HTTPlotTools.h"
+#include "HiggsTauTau/interface/HTTAnalysisTools.h"
+#include "HiggsTauTau/interface/mssm_xs_tools.h"
+#include "CombineTools/interface/CombineHarvester.h"
 
 namespace po = boost::program_options;
 
 using namespace std;
 using namespace ic;
 
-HTTAnalysis::HistValuePair FillHistValuePair(HTTSetup setup) {
+HTTAnalysis::HistValuePair FillHistValuePair(ch::CombineHarvester & cmb) {
   return std::make_pair(
-      setup.GetShape(), 
-      std::make_pair(setup.GetRate(), setup.GetUncertainty()));
+      cmb.GetShape(),
+      std::make_pair(cmb.GetRate(), cmb.GetUncertainty()));
 }
-
 
 int main(int argc, char* argv[]){
   string cfg;                                   // The configuration file
   string channel        = "";
   string selection      = "";
   string eras           = "";
-  string pulls_file     = "";
+  string fitresult_file = "";
   string datacard_path  = "";
-  string root_file_path = "";
+  string third_line     = "";
+  // string root_file_path = "";
   bool postfit          = true;
   bool mssm             = false;
   po::options_description preconfig("Pre-Configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
   po::variables_map vm;
-  po::store(po::command_line_parser(argc, argv).options(preconfig).allow_unregistered().run(), vm);
+  po::store(po::command_line_parser(argc, argv)
+    .options(preconfig).allow_unregistered().run(), vm);
   po::notify(vm);
   po::options_description config("Configuration");
   config.add_options()
-    ("help,h",  "print the help message")
     ("channel",              po::value<string>(&channel)->required(),         "[REQUIRED] channel, choose one of [et,mt,em,tt]")
     ("selection",            po::value<string>(&selection)->required(),       "[REQUIRED] categories to combine with label, e.g. \"0-jet:0+1\" combines the 0-jet low and high categories")
     ("eras",                 po::value<string>(&eras)->required(),            "[REQUIRED] data-taking periods to combine, e.g. \"7TeV,8TeV\"")
+    ("thirdline",             po::value<string>(&third_line),                 "[REQUIRED] data-taking periods to combine, e.g. \"7TeV,8TeV\"")
     ("datacard_path",        po::value<string>(&datacard_path)->required(),   "[REQUIRED] path to the folder containing datacard *.txt files")
-    ("root_file_path",       po::value<string>(&root_file_path)->required(),  "[REQUIRED] path to the folder containing datacard *.root files")
-    ("pulls_file",           po::value<string>(&pulls_file)->required(),      "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
+    // ("root_file_path",       po::value<string>(&root_file_path)->required(),  "[REQUIRED] path to the folder containing datacard *.root files")
+    ("fitresult,f",          po::value<string>(&fitresult_file)->required(),  "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
     ("postfit",              po::value<bool>(&postfit)->required(),           "[REQUIRED] use the pulls file to make a post-fit plot")
-    ("mssm",                 po::value<bool>(&mssm)->default_value(false),                   "input is an MSSM datacard");
+    ("mssm",                 po::value<bool>(&mssm)->default_value(false),    "input is an MSSM datacard");
   HTTPlot plot;
-  config.add(plot.GenerateOptions("")); // The string here is a prefix for the options parameters
-  po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
+  config.add(plot.GenerateOptions(""));
+  po::store(po::command_line_parser(argc, argv)
+    .options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config, true), vm);
   po::notify(vm);
 
-
-
   vector<string> signal_procs = {"ggH", "qqH", "VH"};
-  if (mssm) signal_procs = {"ggH","bbH"};
-
+  if (mssm) signal_procs = {"ggH", "bbH"};
 
   vector<string> v_eras;
   boost::split(v_eras, eras, boost::is_any_of(","));
   std::string era_file_label;
   for (unsigned i = 0; i < v_eras.size(); ++i) era_file_label += v_eras[i];
 
-  pair<string,vector<string>> v_columns;
+  pair<string, vector<string>> v_columns;
   vector<string> tmp_split;
   boost::split(tmp_split, selection, boost::is_any_of(":"));
   if (tmp_split.size() == 2) {
     vector<string> tmp_cats;
     boost::split(tmp_cats, tmp_split[1], boost::is_any_of("+"));
-    v_columns = make_pair(tmp_split[0],tmp_cats);
+    v_columns = make_pair(tmp_split[0], tmp_cats);
   }
 
   string signal_mass = plot.draw_signal_mass();
   string tanb = plot.draw_signal_tanb();
-  HTTSetup setup;
+  // HTTSetup setup;
+  ch::CombineHarvester cmb;
   for (unsigned j = 0; j < v_eras.size(); ++j) {
     for (unsigned k = 0; k < v_columns.second.size(); ++k) {
       string cat = v_columns.second[k];
-      setup.ParseDatacard(datacard_path+"/"+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt", channel, boost::lexical_cast<int>(cat), v_eras[j], signal_mass);        
+      cmb.ParseDatacard(datacard_path+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt",
+        "{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt");
+      // setup.ParseDatacard(datacard_path+"/"+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt", channel, boost::lexical_cast<int>(cat), v_eras[j], signal_mass);        
     }
   }
-  for (unsigned i = 0; i < v_eras.size(); ++i) {
-    if (!mssm) {
-      setup.ParseROOTFile(root_file_path+"/"+"htt_"+channel+".input_"+v_eras[i]+".root", channel, v_eras[i]);
-    } else {
-      setup.ParseROOTFile(root_file_path+"/"+"htt_"+channel+".inputs-mssm-"+v_eras[i]+"-0.root", channel, v_eras[i]);
-    }
+  // for (unsigned i = 0; i < v_eras.size(); ++i) {
+  //   if (!mssm) {
+  //     setup.ParseROOTFile(root_file_path+"/"+"htt_"+channel+".input_"+v_eras[i]+".root", channel, v_eras[i]);
+  //   } else {
+  //     setup.ParseROOTFile(root_file_path+"/"+"htt_"+channel+".inputs-mssm-"+v_eras[i]+"-0.root", channel, v_eras[i]);
+  //   }
+  // }
+  // setup.ParsePulls(pulls_file);
+  // auto chi2_splusb = setup.GetPullsChi2(true);
+  // auto chi2_bonly = setup.GetPullsChi2(false);
+  // std::cout << "Chi2 s+b:    " << chi2_splusb.first << " " << chi2_splusb.second << std::endl;
+  // std::cout << "Chi2 b-only: " << chi2_bonly.first << " " << chi2_bonly.second << std::endl;
+  // if (postfit) setup.ApplyPulls();
+
+  RooFitResult *fitresult = nullptr;
+  if (fitresult_file.length() && postfit) {
+    fitresult = new RooFitResult(ch::OpenFromTFile<RooFitResult>(fitresult_file));
+    auto fitparams = ch::ExtractFitParameters(*fitresult);
+    cmb.UpdateParameters(fitparams);
   }
-  setup.ParsePulls(pulls_file);
-  auto chi2_splusb = setup.GetPullsChi2(true);
-  auto chi2_bonly = setup.GetPullsChi2(false);
-  std::cout << "Chi2 s+b:    " << chi2_splusb.first << " " << chi2_splusb.second << std::endl;
-  std::cout << "Chi2 b-only: " << chi2_bonly.first << " " << chi2_bonly.second << std::endl;
-  if (postfit) setup.ApplyPulls();
 
   HTTAnalysis::HistValueMap hmap;
 
-  hmap["data_obs"] = make_pair(setup.GetObservedShape(), 
-    make_pair(setup.GetObservedRate(), sqrt(setup.GetObservedRate())));
+  hmap["data_obs"] = make_pair(cmb.GetObservedShape(),
+    make_pair(cmb.GetObservedRate(), sqrt(cmb.GetObservedRate())));
   HTTAnalysis::PrintValue("data_obs", hmap["data_obs"].second);
 
   vector<string> samples;
   if (channel != "em") {
-    samples = {"ZTT","QCD","W","ZL","ZJ","ZLL","VV","TT"};
+    samples = {"ZTT","QCD","W","ZL","ZJ","VV","TT"};
   } else {
     samples = {"Ztt","Fakes","EWK","ttbar"};
+    if (!mssm) {
+      samples.push_back("ggH_hww125");
+      samples.push_back("qqH_hww125");
+    }
   }
   for (auto const& s : samples) {
-    hmap[s] = FillHistValuePair(setup.process({s}));
+    hmap[s] = FillHistValuePair(cmb.shallow_copy().process(true, {s}));
     HTTAnalysis::PrintValue(s, hmap[s].second);
   }
   for (auto const& s : signal_procs) {
-    hmap[s+signal_mass] = FillHistValuePair(setup.process({s}));
+    if (s == "VH") {
+      hmap[s+signal_mass] = FillHistValuePair(cmb.shallow_copy().process(true, {"WH","ZH"}));
+    } else {
+      hmap[s+signal_mass] = FillHistValuePair(cmb.shallow_copy().process(true, {s}));
+    }
     HTTAnalysis::PrintValue(s+signal_mass, hmap[s+signal_mass].second);
   }
 
@@ -146,8 +164,8 @@ int main(int argc, char* argv[]){
       double xs_ggh = xs_tool.Give_Xsec_ggFA(d_mass, d_tanb) / 1000.;
       double xs_bbh = xs_tool.Give_Xsec_bbA5f(d_mass, d_tanb) / 1000.;
       std::cout << "Era: " << v_eras[i] << " BR: " << br << " XS(ggH): " << xs_ggh << " XS(bbH): " << xs_bbh << std::endl; 
-      double ggh_era = setup.era({v_eras[i]}).process({"ggH"}).GetRate();
-      double bbh_era = setup.era({v_eras[i]}).process({"bbH"}).GetRate();
+      double ggh_era = cmb.shallow_copy().era(true, {v_eras[i]}).process(true, {"ggH"}).GetRate();
+      double bbh_era = cmb.shallow_copy().era(true, {v_eras[i]}).process(true, {"bbH"}).GetRate();
       double ggh_diff = ggh_era * (br*xs_ggh - 1.);
       double bbh_diff = bbh_era * (br*xs_bbh - 1.);
       std::cout << "Scaling ggH: " << ggh_era << " ---> " << ggh_era*br*xs_ggh << endl;
@@ -158,7 +176,7 @@ int main(int argc, char* argv[]){
       bbh_hist.Scale((bbh_diff+Integral(&bbh_hist))/Integral(&bbh_hist));
     }
   }
-  TH1F total_hist = setup.process({"ZTT","ZL","ZJ","ZLL","W","QCD","VV","TT","Ztt","Fakes","EWK","ttbar"}).GetShape();
+  TH1F total_hist = cmb.shallow_copy().backgrounds().GetShapeWithUncertainty(fitresult, 500);
   hmap["Bkg"] = make_pair(total_hist, make_pair(0.,0.));
 
   string channel_str;
@@ -195,12 +213,13 @@ int main(int argc, char* argv[]){
   }
   // double chi2_prob_cut = data_chi2.Chi2Test(&(bkg_chi2),"UW");
 
-
-  ic::TextElement text(channel_str,0.04,0.22,0.86);
-  ic::TextElement text2(v_columns.first,0.04,0.22,0.79);
+  ic::TextElement text(channel_str,0.05,0.57,0.46);
+  ic::TextElement text2(v_columns.first,0.05,0.57,0.38);
+  ic::TextElement text3(third_line,0.05,0.57,0.32);
 
   plot.AddTextElement(text);
   plot.AddTextElement(text2);
+  if (third_line != "") plot.AddTextElement(text3);
   //plot.set_title_right((boost::format("P(#chi^{2}): %.4f, P(#chi^{2}, M>60 GeV): %.4f")%chi2_prob%chi2_prob_cut).str());
 
   if (mssm) {
@@ -213,8 +232,6 @@ int main(int argc, char* argv[]){
   }
 
   plot.GeneratePlot(hmap);
-
-
 
   std::string tfile_name = channel + "_" + catstring + "_" + era_file_label+ (postfit ? "_postfit":"_prefit")+".root";
   TFile dc_file(tfile_name.c_str(),"RECREATE");
