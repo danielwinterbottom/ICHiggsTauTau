@@ -1,5 +1,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeFiles.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
+#include "boost/lexical_cast.hpp"
 #include <iostream>
 #include <vector>
 
@@ -41,7 +42,15 @@ namespace ic{
     return 0;
   };
 
-  //WRITE GETSHAPE ACCESS METHODS
+  TH1F LTFile::GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+    return ic::GetShape(variable,selection,category,weight,tree_);
+  };
+
+  TH3F LTFile::GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+    return ic::GetShape3D(variable,selection,category,weight,tree_);
+  };
+
+
 
   LTFiles::LTFiles(){
   };
@@ -211,8 +220,126 @@ namespace ic{
     return 0;
   };
 
+  TH1F LTFiles::GetShape(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+    return files_[filename].GetShape(variable,selection,category,weight);
+  };
 
-  //WRITE GETSHAPE ACCESS METHODS
+
+  TH1F LTFiles::GetSetShape(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
+    TH1F setshape;
+    if(setlists_.count(setname)>0){
+      bool first=true;
+      for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
+	//ADAPT LUMIXS BIT
+	std::string sample_name_=files_[*iter].name();
+	double lumixsweight=1;
+	if(do_lumixs_weights_){
+	  //Get Sample name file
+	  std::string suffix=".root";
+	  std::size_t found = sample_name_.find(suffix);
+	  if(found==std::string::npos){
+	    lumixsweight=1;
+	    std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
+	  }
+	  else{
+	    sample_name_.erase(found,5);
+	    std::cout << "Sample Name: "<<sample_name_<<std::endl;
+
+	    //Get lumi xs and events from params file
+	    SimpleParamParser parser;
+	    std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
+	    parser.ParseFile(input_params_);
+	    std::cout<<"parsed"<<std::endl;
+	    double xs=parser.GetParam<double>("XS_"+sample_name_);
+	    std::cout<<"got xs"<<std::endl;
+	    double events=parser.GetParam<double>("EVT_"+sample_name_);
+	    std::cout<<"got events"<<std::endl;
+	    double lumi=parser.GetParam<double>("LUMI_DATA");
+	    std::cout<<"got lumi"<<std::endl;
+
+	    std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+	    std::cout<<"EVT is: "<<events<<std::endl;
+	    std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
+
+	    lumixsweight=xs*lumi/events;
+	    std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
+	  }
+	}
+
+	TH1F temp=files_[*iter].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
+	if(first){
+	  setshape=temp;
+	  first=false;
+	}
+	else setshape.Add(&temp);
+      }
+    }
+    else{
+      std::cout<<"No set called "<<setname<<" returning empty TH1 object expect errors"<<std::endl;
+    }
+    return setshape;
+  };
+
+  TH3F LTFiles::GetShape3D(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+    return files_[filename].GetShape3D(variable,selection,category,weight);
+  };
+
+  TH3F LTFiles::GetSetShape3D(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
+    TH3F setshape;
+    if(setlists_.count(setname)>0){
+      bool first=true;
+      for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
+	//ADAPT LUMIXS BIT
+	std::string sample_name_=files_[*iter].name();
+	double lumixsweight=1;
+	if(do_lumixs_weights_){
+	  //Get Sample name file
+	  std::string suffix=".root";
+	  std::size_t found = sample_name_.find(suffix);
+	  if(found==std::string::npos){
+	    lumixsweight=1;
+	    std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
+	  }
+	  else{
+	    sample_name_.erase(found,5);
+	    std::cout << "Sample Name: "<<sample_name_<<std::endl;
+
+	    //Get lumi xs and events from params file
+	    SimpleParamParser parser;
+	    std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
+	    parser.ParseFile(input_params_);
+	    std::cout<<"parsed"<<std::endl;
+	    double xs=parser.GetParam<double>("XS_"+sample_name_);
+	    std::cout<<"got xs"<<std::endl;
+	    double events=parser.GetParam<double>("EVT_"+sample_name_);
+	    std::cout<<"got events"<<std::endl;
+	    double lumi=parser.GetParam<double>("LUMI_DATA");
+	    std::cout<<"got lumi"<<std::endl;
+
+	    std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+	    std::cout<<"EVT is: "<<events<<std::endl;
+	    std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
+
+	    lumixsweight=xs*lumi/events;
+	    std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
+	  }
+	}
+
+	TH3F temp=files_[*iter].GetShape3D(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
+	if(first){
+	  setshape=temp;
+	  first=false;
+	}
+	else setshape.Add(&temp);
+      }
+    }
+    else{
+      std::cout<<"No set called "<<setname<<" returning empty TH3 object expect errors"<<std::endl;
+    }
+    return setshape;
+  };
+
+
   
 }
 

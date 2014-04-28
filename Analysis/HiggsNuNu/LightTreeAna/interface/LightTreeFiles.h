@@ -5,6 +5,8 @@
 #include "HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
 #include "TTree.h"
 #include "TFile.h"
+#include "TH1F.h"
+#include "TH3F.h"
 
 namespace ic{
 
@@ -21,10 +23,13 @@ namespace ic{
     LTFile(std::string,std::string,std::string);
     int Open(std::string);
     int AddFriend(TTree*);
+    TH1F GetShape(std::string const&, std::string const&, std::string const&, std::string const&);
+    TH3F GetShape3D(std::string const&, std::string const&, std::string const&, std::string const&);
   };
 
   class LTFiles{
     CLASS_MEMBER(LTFiles,std::string,infolder)
+    CLASS_MEMBER(LTFiles,std::string,input_params)
     protected:								
     std::map<std::string,LTFile> files_;					
     std::map<std::string,std::vector<std::string> > setlists_;
@@ -53,7 +58,10 @@ namespace ic{
     int OpenAll();
 
     int AddFriend(std::string,TTree*);
-
+    TH1F GetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
+    TH1F GetSetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
+    TH3F GetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
+    TH3F GetSetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
   };
 
 }

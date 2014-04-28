@@ -8,7 +8,7 @@ namespace ic{
   protected:
     std::string module_name_;
   public:
-    LTModule();
+    LTModule(std::string);
     std::string module_name();
     virtual int Init() =0;
     virtual int Run(LTFiles*)=0;
