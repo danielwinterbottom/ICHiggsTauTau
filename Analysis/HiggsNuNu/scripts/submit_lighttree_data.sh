@@ -57,7 +57,7 @@ for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep
 
       LIGHTTREEOPTIONS="--input_params=filelists/Dec18/ParamsDec18.dat"
       
-      CONFIG=scripts/DefaultConfigMC.cfg
+      CONFIG=scripts/DefaultConfig.cfg
 
       echo "Config file: $CONFIG"
       mkdir -p $JOBDIR
@@ -77,30 +77,7 @@ for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep
 	    echo "Using job-submission: " $JOBSUBMIT
 	fi
 	
-	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
-	
-	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
-	  do
-	  echo "Processing files in "$FILELIST
-
-	  echo $FILELIST > tmp.txt
-	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MC_//" tmp.txt > tmp2.txt
-	  
-	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
-	  
-	  echo "JOB name = $JOB"
-	  
-	  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR  $SYSTOPTIONS $LIGHTTREEOPTIONS --channel=$CHANNEL --do_light_tree=true &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	  $JOBSUBMIT $JOBDIR/$JOB.sh
-	    
-	  
-	  rm tmp.txt tmp2.txt
-
-	done
-
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MET/
-
-	CONFIG=scripts/DefaultConfig.cfg
 
 	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MET_*`
 	  do
