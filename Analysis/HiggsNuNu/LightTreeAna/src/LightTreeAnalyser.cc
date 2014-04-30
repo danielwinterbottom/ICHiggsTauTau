@@ -6,15 +6,29 @@
 namespace ic{
 
   LTAnalyser::LTAnalyser(){
+    verbosity_=1;
   };
   
   LTAnalyser::LTAnalyser(int verbosity){
     verbosity_=verbosity;
   };
   
-  LTAnalyser LTAnalyser::AddModule(LTModule* module){
+  LTAnalyser LTAnalyser::AddModule(LTModule *module){
     modulelist_.push_back(module);
     return *this;
+  };
+
+  LTAnalyser LTAnalyser::AddFile(std::string name, std::string set, std::string path){
+    filemanager_.AddFile(name,set,path);
+    return *this;
+  };
+
+  void LTAnalyser::SetInFolder(std::string infolder){
+    filemanager_.set_infolder(infolder);
+  };
+
+  void LTAnalyser::SetInputParams(std::string inputparams){
+    filemanager_.set_input_params(inputparams);
   };
 
   bool LTAnalyser::PostModule(int status) {

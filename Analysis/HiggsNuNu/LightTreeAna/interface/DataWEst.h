@@ -8,13 +8,14 @@
 namespace ic {
 
   class DataWEst : public LTModule{
-    CLASS_MEMBER(DataWEst,std::string,sigset)
-    CLASS_MEMBER(DataWEst,std::string,contset)
+    CLASS_MEMBER(DataWEst,std::string,sigmcset)
+    CLASS_MEMBER(DataWEst,std::string,contmcset)
+    CLASS_MEMBER(DataWEst,std::string,contdataset)
     CLASS_MEMBER(DataWEst,std::string,sigcat)
     CLASS_MEMBER(DataWEst,std::string,contcat)
     CLASS_MEMBER(DataWEst,std::string,basesel)
   public:
-    DataWEst(std::string const& name);
+    DataWEst(std::string);
     virtual ~DataWEst();
     virtual int Init();
     virtual int Run(LTFiles*);

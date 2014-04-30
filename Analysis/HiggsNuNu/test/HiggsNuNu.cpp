@@ -43,6 +43,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TmvaInputs.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TrigeffInputs.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]){
   bool do_skim;                   // For making skimmed ntuples
   bool do_trigeff;                // Apply trigger at end of selection to work out trigger efficiency and bin variables
   bool do_trigeff_tree;           // Generate tree of variables used for trig study
+  bool do_light_tree;             // Generate tree for light tree steps
   bool do_parked_trigs;           // Option to do parked triggers
   bool do_gensteps;               // For getting numbers of events at gen level
   bool doincludehighptz;          // For including high pt z sample
@@ -160,6 +162,7 @@ int main(int argc, char* argv[]){
     ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
     ("do_trigeff",          po::value<bool>(&do_trigeff)->default_value(false))
     ("do_trigeff_tree",     po::value<bool>(&do_trigeff_tree)->default_value(false))
+    ("do_light_tree",       po::value<bool>(&do_light_tree)->default_value(false))
     ("do_parked_trigs",     po::value<bool>(&do_parked_trigs)->default_value(false))
     ("do_gensteps",         po::value<bool>(&do_gensteps)->default_value(false))
     ("doincludehighptz",    po::value<bool>(&doincludehighptz)->default_value(false))
@@ -1037,6 +1040,16 @@ int main(int argc, char* argv[]){
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
     .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
+  LightTree lightTree = LightTree("LightTree")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("JetPair")
+    .set_is_data(is_data)
+    .set_channel(channel_str)
+    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
+    .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+
   HinvControlPlots controlPlots_gen = HinvControlPlots("GenControlPlots")
     .set_fs(fs)
     .set_met_label("pfMetType1")
@@ -1538,7 +1551,7 @@ int main(int argc, char* argv[]){
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
     //Require trigger to fire unless doing trig eff studies, also do not require trigger for MC in parked analysis
-    if(!do_trigeff_tree&&!do_trigeff){
+    if(!do_trigeff_tree&&!do_trigeff&&!do_light_tree){
       if(is_data||(!is_data&&!do_parked_trigs)) analysis.AddModule(&dataMCTriggerPathFilter);
     }
     
@@ -1660,7 +1673,7 @@ int main(int argc, char* argv[]){
      else {
        //lepton veto modules
        if (!ignoreLeptons){
-	 if(!do_trigeff_tree&&!do_trigeff) analysis.AddModule(&zeroVetoMuonFilter);
+	 if(!do_trigeff_tree&&!do_trigeff&&!do_light_tree) analysis.AddModule(&zeroVetoMuonFilter);
 	 //if (printEventList) analysis.AddModule(&hinvPrintList);
 	 analysis.AddModule(&zeroVetoElectronFilter);
 	 //if (printEventList) analysis.AddModule(&hinvPrintList);
@@ -1715,6 +1728,7 @@ int main(int argc, char* argv[]){
      //write tree with TMVA input variables
      if (doTmvaTree) analysis.AddModule(&tmvaInputs);
      else if(do_trigeff_tree) analysis.AddModule(&trigeffInputs);
+     else if(do_light_tree) analysis.AddModule(&lightTree);
      else {
 
        analysis.AddModule(&detaJetPairFilter);
@@ -1742,7 +1756,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&controlPlots_tightMjj);
        analysis.AddModule(&wjetsPlots_tightMjj);
        
-       if(!do_trigeff&&!do_trigeff_tree){
+       if(!do_trigeff&&!do_trigeff_tree&&!do_light_tree){
 	 //save signal and QCD regions without CJV
 	 analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
 	 analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);

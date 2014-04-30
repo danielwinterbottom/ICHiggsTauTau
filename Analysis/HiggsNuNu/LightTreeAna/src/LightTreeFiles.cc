@@ -197,7 +197,7 @@ namespace ic{
   int LTFiles::OpenSet(std::string setname){
     if(setlists_.count(setname)>0){
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
-	files_[*iter].Open(infolder_);      
+	files_[*iter].Open(infolder_);
       }
       return 0;
     }
@@ -228,45 +228,47 @@ namespace ic{
   TH1F LTFiles::GetSetShape(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
     TH1F setshape;
     if(setlists_.count(setname)>0){
+      OpenSet(setname);
       bool first=true;
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
 	//ADAPT LUMIXS BIT
-	std::string sample_name_=files_[*iter].name();
+	std::string sample_path_=files_[*iter].path();
 	double lumixsweight=1;
 	if(do_lumixs_weights_){
 	  //Get Sample name file
 	  std::string suffix=".root";
-	  std::size_t found = sample_name_.find(suffix);
+	  std::size_t found = sample_path_.find(suffix);
 	  if(found==std::string::npos){
 	    lumixsweight=1;
 	    std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
 	  }
 	  else{
-	    sample_name_.erase(found,5);
-	    std::cout << "Sample Name: "<<sample_name_<<std::endl;
+	    sample_path_.erase(found,5);
+	    //std::cout << "Sample Path: "<<sample_path_<<std::endl;
 
 	    //Get lumi xs and events from params file
 	    SimpleParamParser parser;
-	    std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
+	    //std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
 	    parser.ParseFile(input_params_);
-	    std::cout<<"parsed"<<std::endl;
-	    double xs=parser.GetParam<double>("XS_"+sample_name_);
-	    std::cout<<"got xs"<<std::endl;
-	    double events=parser.GetParam<double>("EVT_"+sample_name_);
-	    std::cout<<"got events"<<std::endl;
+	    //std::cout<<"parsed"<<std::endl;
+	    double xs=parser.GetParam<double>("XS_"+sample_path_);
+	    //std::cout<<"got xs"<<std::endl;
+	    double events=parser.GetParam<double>("EVT_"+sample_path_);
+	    //std::cout<<"got events"<<std::endl;
 	    double lumi=parser.GetParam<double>("LUMI_DATA");
-	    std::cout<<"got lumi"<<std::endl;
+	    //std::cout<<"got lumi"<<std::endl;
 
-	    std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
-	    std::cout<<"EVT is: "<<events<<std::endl;
-	    std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
-
-	    lumixsweight=xs*lumi/events;
-	    std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
+	    //std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+	    //std::cout<<"EVT is: "<<events<<std::endl;
+	    //std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
+	    if(xs==-1) lumixsweight=1;
+	    else lumixsweight=xs*lumi/events;
+	    //std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
 	  }
 	}
 
 	TH1F temp=files_[*iter].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
+	temp.Sumw2();
 	if(first){
 	  setshape=temp;
 	  first=false;
@@ -289,39 +291,39 @@ namespace ic{
     if(setlists_.count(setname)>0){
       bool first=true;
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
-	//ADAPT LUMIXS BIT
-	std::string sample_name_=files_[*iter].name();
+	std::string sample_path_=files_[*iter].path();
 	double lumixsweight=1;
 	if(do_lumixs_weights_){
 	  //Get Sample name file
 	  std::string suffix=".root";
-	  std::size_t found = sample_name_.find(suffix);
+	  std::size_t found = sample_path_.find(suffix);
 	  if(found==std::string::npos){
 	    lumixsweight=1;
 	    std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
 	  }
 	  else{
-	    sample_name_.erase(found,5);
-	    std::cout << "Sample Name: "<<sample_name_<<std::endl;
+	    sample_path_.erase(found,5);
+	    //std::cout << "Sample Name: "<<sample_path_<<std::endl;
 
 	    //Get lumi xs and events from params file
 	    SimpleParamParser parser;
-	    std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
+	    //std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
 	    parser.ParseFile(input_params_);
-	    std::cout<<"parsed"<<std::endl;
-	    double xs=parser.GetParam<double>("XS_"+sample_name_);
-	    std::cout<<"got xs"<<std::endl;
-	    double events=parser.GetParam<double>("EVT_"+sample_name_);
-	    std::cout<<"got events"<<std::endl;
+	    //std::cout<<"parsed"<<std::endl;
+	    double xs=parser.GetParam<double>("XS_"+sample_path_);
+	    //std::cout<<"got xs"<<std::endl;
+	    double events=parser.GetParam<double>("EVT_"+sample_path_);
+	    //std::cout<<"got events"<<std::endl;
 	    double lumi=parser.GetParam<double>("LUMI_DATA");
-	    std::cout<<"got lumi"<<std::endl;
+	    //std::cout<<"got lumi"<<std::endl;
 
-	    std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
-	    std::cout<<"EVT is: "<<events<<std::endl;
-	    std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
+	    //std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+	    // std::cout<<"EVT is: "<<events<<std::endl;
+	    // std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
 
-	    lumixsweight=xs*lumi/events;
-	    std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
+	    if(xs==-1) lumixsweight=1;
+	    else lumixsweight=xs*lumi/events;
+	    //std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
 	  }
 	}
 
