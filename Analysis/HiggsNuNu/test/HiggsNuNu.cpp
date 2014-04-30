@@ -1673,9 +1673,11 @@ int main(int argc, char* argv[]){
      else {
        //lepton veto modules
        if (!ignoreLeptons){
-	 if(!do_trigeff_tree&&!do_trigeff&&!do_light_tree) analysis.AddModule(&zeroVetoMuonFilter);
-	 //if (printEventList) analysis.AddModule(&hinvPrintList);
-	 analysis.AddModule(&zeroVetoElectronFilter);
+	 if(!do_trigeff_tree&&!do_trigeff&&!do_light_tree){
+	   analysis.AddModule(&zeroVetoMuonFilter);
+	   //if (printEventList) analysis.AddModule(&hinvPrintList);
+	   analysis.AddModule(&zeroVetoElectronFilter);
+	 }
 	 //if (printEventList) analysis.AddModule(&hinvPrintList);
       }
      }
