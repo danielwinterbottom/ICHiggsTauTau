@@ -63,7 +63,7 @@ for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep
       mkdir -p $JOBDIR
       mkdir -p $OUTPUTDIR
       
-      for QUEUEDIR in medium #long
+      for QUEUEDIR in medium long
 	do
 	
 	if [ "$QUEUEDIR" = "medium" ]
