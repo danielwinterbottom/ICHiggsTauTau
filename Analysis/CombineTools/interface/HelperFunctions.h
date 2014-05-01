@@ -6,6 +6,7 @@
 #include "boost/range/algorithm_ext/erase.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/regex.hpp"
 #include "TFile.h"
 #include "RooFitResult.h"
 
@@ -16,8 +17,19 @@
 
 namespace ch {
 
-std::vector<ch::Parameter> ExtractFitParameters(RooFitResult const& res) ;
-std::vector<ch::Parameter> ExtractSampledFitParameters(RooFitResult const& res) ;
+struct SOverBInfo {
+  double s;
+  double b;
+  double x_lo;
+  double x_hi;
+  SOverBInfo() { ; }
+  SOverBInfo(TH1F const* sig, TH1F const* bkg, unsigned steps, double frac);
+};
+
+double IntegrateFloatRange(TH1F const* hist, double xmin, double xmax);
+
+std::vector<ch::Parameter> ExtractFitParameters(RooFitResult const& res);
+std::vector<ch::Parameter> ExtractSampledFitParameters(RooFitResult const& res);
 
 template<typename Range, typename Predicate>
 bool any_of(const Range &r, Predicate p) {
@@ -111,6 +123,26 @@ void SetStandardBinName(T *input) {
     + input->era();
   input->set_bin(newname);
 }
+
+template<class T>
+void SetFromBinName(T *input, std::string parse_rules) {
+  boost::replace_all(parse_rules, "{", "(?<");
+  boost::replace_all(parse_rules, "}", ">\\w+)");
+  boost::regex rgx(parse_rules);
+  boost::smatch matches;
+  boost::regex_search(input->bin(), matches, rgx);
+  if (matches.str("ANALYSIS").length())
+    input->set_analysis(matches.str("ANALYSIS"));
+  if (matches.str("ERA").length())
+    input->set_era(matches.str("ERA"));
+  if (matches.str("CHANNEL").length())
+    input->set_channel(matches.str("CHANNEL"));
+  if (matches.str("BINID").length())
+    input->set_bin_id( boost::lexical_cast<int>(matches.str("BINID")));
+  if (matches.str("MASS").length())
+    input->set_mass(matches.str("MASS"));
+}
+
 
 
 }

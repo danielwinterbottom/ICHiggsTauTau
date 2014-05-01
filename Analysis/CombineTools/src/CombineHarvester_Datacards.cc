@@ -142,9 +142,14 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
         for (unsigned p = 1; p < words[i].size(); ++p) {
           auto proc = std::make_shared<Process>();
           proc->set_bin(words[i-3][p]);
+          try {
+            proc->set_process_id(boost::lexical_cast<int>(words[i-2][p]));
+            proc->set_process(words[i-1][p]);
+          } catch(boost::bad_lexical_cast &) {
+            proc->set_process_id(boost::lexical_cast<int>(words[i-1][p]));
+            proc->set_process(words[i-2][p]);
+          }
           proc->set_rate(boost::lexical_cast<double>(words[i][p]));
-          proc->set_process(words[i-1][p]);
-          proc->set_process_id(boost::lexical_cast<int>(words[i-2][p]));
           proc->set_analysis(analysis);
           proc->set_era(era);
           proc->set_channel(channel);
@@ -167,8 +172,13 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
         // if (words[i][0].at(0) == '#') continue;
         auto nus = std::make_shared<Nuisance>();
         nus->set_bin(words[r-3][p-1]);
-        nus->set_process(words[r-1][p-1]);
-        nus->set_process_id(boost::lexical_cast<int>(words[r-2][p-1]));
+        try {
+          nus->set_process_id(boost::lexical_cast<int>(words[r-2][p-1]));
+          nus->set_process(words[r-1][p-1]);
+        } catch(boost::bad_lexical_cast &) {
+          nus->set_process_id(boost::lexical_cast<int>(words[r-1][p-1]));
+          nus->set_process(words[r-2][p-1]);
+        }
         nus->set_name(words[i][0]);
         nus->set_type(words[i][1]);
         nus->set_analysis(analysis);

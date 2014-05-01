@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
   string fitresult_file = "";
   string parse_rule = "";
 
-  po::options_description config("Configuration");
+  po::options_description config("configuration");
   po::variables_map vm;
   po::notify(vm);
   config.add_options()

@@ -91,7 +91,7 @@ class CombineHarvester {
   TH1F GetObservedShape();
 
   // void Validate();
-  // void VariableRebin(std::vector<double> bins);
+  void VariableRebin(std::vector<double> bins);
 
  private:
   std::vector<std::shared_ptr<Observation>> obs_;
