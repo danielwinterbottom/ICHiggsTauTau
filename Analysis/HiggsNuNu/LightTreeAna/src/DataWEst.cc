@@ -10,7 +10,8 @@ namespace ic{
 
   DataWEst::~DataWEst(){ ;};
 
-  int DataWEst::Init(){
+  int DataWEst::Init(fwlite::TFileService* fs){
+    fs_=fs;
     std::cout<<"Initialisation info for "<<module_name_<<":"<<std::endl;
     std::cout<<"Signal MC set is: "<<sigmcset_<<std::endl;
     std::cout<<"Control MC set is: "<<contmcset_<<std::endl;
@@ -22,17 +23,22 @@ namespace ic{
   };
 
   int DataWEst::Run(LTFiles* filemanager){
-    TH1F  sigmcshape = filemanager->GetSetShape(sigmcset_,"met(200,0.,1000.)",basesel_,sigcat_,"1",true);
-    TH1F  contmcshape = filemanager->GetSetShape(contmcset_,"met(200,0.,1000.)",basesel_,contcat_,"1",true);
-    TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"met(200,0.,1000.)",basesel_,contcat_,"1",true);
+    //Get Shapes for NSMC, NCMC, NCData and NCBkg
+    TH1F  sigmcshape = filemanager->GetSetShape(sigmcset_,"met(200,0.,1000.)",basesel_,sigcat_,"total_weight",false);
+    TH1F  contmcshape = filemanager->GetSetShape(contmcset_,"met(200,0.,1000.)",basesel_,contcat_,"total_weight",false);
+    TH1F  contbkgshape = filemanager->GetSetsShape(contbkgset_,"met(200,0.,1000.)",basesel_,contcat_,"total_weight",false);
+    TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"met(200,0.,1000.)",basesel_,contcat_,"total_weight",false);
     
+    //Integrate over shape to get number in each region
     double nsmc = Integral(&sigmcshape);
     double ncmc = Integral(&contmcshape);
     double ncdata = Integral(&contdatashape);
-    
-    std::cout<<"nsmc: "<<nsmc<<", ncmc: "<<ncmc<<", ncdata: "<<ncdata<<std::endl;
+    double ncbkg = Integral(&contbkgshape);
 
-    double nsdata=nsmc/ncmc*ncdata;
+    std::cout<<"nsmc: "<<nsmc<<", ncmc: "<<ncmc<<", ncdata: "<<ncdata<<", ncbkg: "<<ncbkg<<std::endl;
+
+    //Calculate background
+    double nsdata=nsmc/ncmc*(ncdata-ncbkg);
 
     std::cout<<module_name_<<" background in signal region is: "<<nsdata<<std::endl;
 

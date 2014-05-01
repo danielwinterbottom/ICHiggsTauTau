@@ -60,6 +60,7 @@ namespace ic{
     int AddFriend(std::string,TTree*);
     TH1F GetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH1F GetSetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
+    TH1F GetSetsShape(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,bool);
     TH3F GetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetSetShape3D(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
   };

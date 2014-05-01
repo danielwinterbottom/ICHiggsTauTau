@@ -10,6 +10,7 @@ namespace ic {
   class DataWEst : public LTModule{
     CLASS_MEMBER(DataWEst,std::string,sigmcset)
     CLASS_MEMBER(DataWEst,std::string,contmcset)
+    CLASS_MEMBER(DataWEst,std::vector<std::string>,contbkgset)
     CLASS_MEMBER(DataWEst,std::string,contdataset)
     CLASS_MEMBER(DataWEst,std::string,sigcat)
     CLASS_MEMBER(DataWEst,std::string,contcat)
@@ -17,7 +18,7 @@ namespace ic {
   public:
     DataWEst(std::string);
     virtual ~DataWEst();
-    virtual int Init();
+    virtual int Init(fwlite::TFileService*);
     virtual int Run(LTFiles*);
   };
 

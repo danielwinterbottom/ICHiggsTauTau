@@ -5,12 +5,15 @@
 
 namespace ic{
 
-  LTAnalyser::LTAnalyser(){
+  LTAnalyser::LTAnalyser(std::string outputname){
     verbosity_=1;
+    outputname_=outputname;
+
   };
   
-  LTAnalyser::LTAnalyser(int verbosity){
+  LTAnalyser::LTAnalyser(std::string outputname, int verbosity){
     verbosity_=verbosity;
+    outputname_=outputname;
   };
   
   LTAnalyser LTAnalyser::AddModule(LTModule *module){
@@ -42,6 +45,8 @@ namespace ic{
 
   int LTAnalyser::RunAnalysis(){
 
+    fs = new fwlite::TFileService((outputname_).c_str());
+
     if (print_module_list_) {
       std::cout << "-------------------------------------" << std::endl;
       std::cout << "Module List" << std::endl;
@@ -54,7 +59,9 @@ namespace ic{
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "Module Initialisation Output" << std::endl;
     std::cout << "-------------------------------------" << std::endl;
-    std::for_each(modulelist_.begin(), modulelist_.end(), boost::bind(&LTModule::Init,_1));
+    for(unsigned module = 0; module<modulelist_.size();++module) {
+      modulelist_[module]->Init(fs);
+    }
 
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "Beginning Main Analysis Sequence" << std::endl;
