@@ -412,9 +412,11 @@ if options.scheme == 'new_mssm' or options.scheme == 'new_mssm_fb':
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["et"] += ' --syst_eff_t="CMS_eff_t_mssmHigh_etau_'+COM+'TeV"'
+  extra_channel["et"] += ' --set_alias="inclusive:pt_2>20."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --syst_eff_t="CMS_eff_t_mssmHigh_mutau_'+COM+'TeV"'
+  extra_channel["mt"] += ' --set_alias="inclusive:pt_2>20."'
   extra_channel["mtmet"] += ' --set_alias="sel:mt_1<30."'
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  (

@@ -225,6 +225,10 @@ int main(int argc, char* argv[]){
 
   // Build a vector of input files
   vector<string> files = ParseFileLines(filelist);
+  if (files.size() == 0) {
+    std::cout << "Error, filelist is missing or empty" << std::endl;
+    exit(1);
+  }
   for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
   
   // Create ROOT output fileservice
