@@ -330,7 +330,7 @@ namespace ic {
     };
     sig_schemes_["mssm_nostack_nopars"] = {
       PlotSigComponent("sig",
-        (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau"),
+        ("MSSM h,H,A#rightarrow#tau#tau"),
         {"ggH","bbH"}, TColor::GetColor(0,18,255), false)
     };
     sig_schemes_["sm_split_vbf"] = {

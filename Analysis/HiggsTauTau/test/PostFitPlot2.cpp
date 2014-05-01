@@ -80,13 +80,24 @@ int main(int argc, char* argv[]){
   string tanb = plot.draw_signal_tanb();
   // HTTSetup setup;
   ch::CombineHarvester cmb;
-  for (unsigned j = 0; j < v_eras.size(); ++j) {
-    for (unsigned k = 0; k < v_columns.second.size(); ++k) {
-      string cat = v_columns.second[k];
-      cmb.ParseDatacard(datacard_path+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt",
-        "{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt");
-      // setup.ParseDatacard(datacard_path+"/"+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt", channel, boost::lexical_cast<int>(cat), v_eras[j], signal_mass);        
+  if (!mssm) {
+    for (unsigned j = 0; j < v_eras.size(); ++j) {
+      for (unsigned k = 0; k < v_columns.second.size(); ++k) {
+        string cat = v_columns.second[k];
+        cmb.ParseDatacard(datacard_path+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt",
+          "{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt");
+        // setup.ParseDatacard(datacard_path+"/"+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt", channel, boost::lexical_cast<int>(cat), v_eras[j], signal_mass);        
+      }
     }
+  } else {
+    vector<int> bin_ids;
+    for (auto id : v_columns.second) bin_ids.push_back(boost::lexical_cast<int>(id));
+    cmb.ParseDatacard(datacard_path+"datacard_"+tanb+".txt", "{MASS}/datacard_"+tanb+".txt");
+    string bin_pat = "{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}";
+    cmb.ForEachNus(boost::bind(ch::SetFromBinName<ch::Nuisance>, _1, bin_pat));
+    cmb.ForEachObs(boost::bind(ch::SetFromBinName<ch::Observation>, _1, bin_pat));
+    cmb.ForEachProc(boost::bind(ch::SetFromBinName<ch::Process>, _1, bin_pat));
+    cmb.channel(true, {channel}).era(true, v_eras).bin_id(true, bin_ids);
   }
   // for (unsigned i = 0; i < v_eras.size(); ++i) {
   //   if (!mssm) {
@@ -108,6 +119,8 @@ int main(int argc, char* argv[]){
     auto fitparams = ch::ExtractFitParameters(*fitresult);
     cmb.UpdateParameters(fitparams);
   }
+  // cmb.PrintAll();
+
 
   HTTAnalysis::HistValueMap hmap;
 
@@ -142,40 +155,6 @@ int main(int argc, char* argv[]){
   for (unsigned i = 0; i < v_columns.second.size(); ++i) catstring += v_columns.second.at(i);
   plot.set_plot_name(channel + "_" + catstring + "_" + era_file_label+ (postfit ? "_postfit":"_prefit"));
 
-  if (mssm) {
-    double d_mass = boost::lexical_cast<double>(signal_mass);
-    double d_tanb = boost::lexical_cast<double>(tanb);
-    std::cout << "*** Finding MSSM cross sections for mA = " << d_mass << " tan(beta) = " << d_tanb << std::endl;
-    std::cout << "*****************************************************************************" << std::endl;
-
-    for (unsigned i = 0; i < v_eras.size(); ++i) {
-      mssm_xs_tools xs_tool;
-      string file;
-      if (v_eras[i] == "7TeV") {
-        file = "data/scale_factors/out.mhmax_mu200_7_nnlo.tanBeta_gte1.root";
-      } else if (v_eras[i] == "8TeV") {
-        file = "data/scale_factors/out.mhmax_mu200_8_nnlo.tanBeta_gte1_FHv274.root";
-      } else {
-        continue;
-      }
-      xs_tool.SetInput(file.c_str());
-      std::cout << "*****************************************************************************" << std::endl;
-      double br =  xs_tool.Give_BR_A_tautau(d_mass, d_tanb);
-      double xs_ggh = xs_tool.Give_Xsec_ggFA(d_mass, d_tanb) / 1000.;
-      double xs_bbh = xs_tool.Give_Xsec_bbA5f(d_mass, d_tanb) / 1000.;
-      std::cout << "Era: " << v_eras[i] << " BR: " << br << " XS(ggH): " << xs_ggh << " XS(bbH): " << xs_bbh << std::endl; 
-      double ggh_era = cmb.shallow_copy().era(true, {v_eras[i]}).process(true, {"ggH"}).GetRate();
-      double bbh_era = cmb.shallow_copy().era(true, {v_eras[i]}).process(true, {"bbH"}).GetRate();
-      double ggh_diff = ggh_era * (br*xs_ggh - 1.);
-      double bbh_diff = bbh_era * (br*xs_bbh - 1.);
-      std::cout << "Scaling ggH: " << ggh_era << " ---> " << ggh_era*br*xs_ggh << endl;
-      std::cout << "Scaling bbH: " << bbh_era << " ---> " << bbh_era*br*xs_bbh << endl;
-      TH1F & ggh_hist = hmap["ggH"+signal_mass].first;
-      TH1F & bbh_hist = hmap["bbH"+signal_mass].first;
-      ggh_hist.Scale((ggh_diff+Integral(&ggh_hist))/Integral(&ggh_hist));
-      bbh_hist.Scale((bbh_diff+Integral(&bbh_hist))/Integral(&bbh_hist));
-    }
-  }
   TH1F total_hist = cmb.shallow_copy().backgrounds().GetShapeWithUncertainty(fitresult, 500);
   hmap["Bkg"] = make_pair(total_hist, make_pair(0.,0.));
 
@@ -214,7 +193,11 @@ int main(int argc, char* argv[]){
   // double chi2_prob_cut = data_chi2.Chi2Test(&(bkg_chi2),"UW");
 
   ic::TextElement text(channel_str,0.05,0.57,0.46);
+  if (mssm) text.set_x_pos(0.29);
+  if (mssm) text.set_y_pos(0.85);
   ic::TextElement text2(v_columns.first,0.05,0.57,0.38);
+  if (mssm) text2.set_x_pos(0.29);
+  if (mssm) text2.set_y_pos(0.77);
   ic::TextElement text3(third_line,0.05,0.57,0.32);
 
   plot.AddTextElement(text);
@@ -223,12 +206,15 @@ int main(int argc, char* argv[]){
   //plot.set_title_right((boost::format("P(#chi^{2}): %.4f, P(#chi^{2}, M>60 GeV): %.4f")%chi2_prob%chi2_prob_cut).str());
 
   if (mssm) {
-    ic::TextElement text_ma("m_{A}="+signal_mass+" GeV",0.035,0.41,0.86);
-    ic::TextElement text_tanb("tan#beta="+tanb,0.035,0.41,0.81);
-    ic::TextElement text_scen("m^{h}_{max}",0.035,0.41,0.76);
+    double dtanb = boost::lexical_cast<double>(tanb);
+    ic::TextElement text_ma(
+      (boost::format("m^{h}_{max} (m_{A}=%s GeV, tan#beta=%.0f)")
+        % signal_mass % dtanb).str(), 0.035, 0.555, 0.945);
+    // ic::TextElement text_tanb("tan#beta="+tanb,0.035,0.41,0.81);
+    // ic::TextElement text_scen("m^{h}_{max}",0.035,0.41,0.76);
     plot.AddTextElement(text_ma);
-    plot.AddTextElement(text_tanb);
-    plot.AddTextElement(text_scen);
+    // plot.AddTextElement(text_tanb);
+    // plot.AddTextElement(text_scen);
   }
 
   plot.GeneratePlot(hmap);
