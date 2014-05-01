@@ -129,7 +129,7 @@ namespace ic {
       canv->SetRightMargin    (0.05);
       canv->SetTopMargin      (0.12);
       if (!draw_ratio_hist) canv->SetTopMargin      (0.08);
-      canv->SetBottomMargin   (0.18);
+      canv->SetBottomMargin   (0.14);
       // Setup a frame which makes sense
       canv->SetFrameFillStyle (0);
       canv->SetFrameLineStyle (0);
@@ -138,7 +138,7 @@ namespace ic {
       canv->SetFrameFillStyle (0);
       canv->SetFrameLineStyle (0);
       canv->SetFrameBorderMode(0);
-      canv->SetFrameBorderSize(10);      
+      canv->SetFrameBorderSize(10);
     }
     canv->cd();
     TPad* upper = nullptr;
@@ -374,14 +374,23 @@ namespace ic {
 
     //Adjust the y-axis maximum to account for largest bin
     if (y_axis_log) {
-      elements_[0].hist_ptr()->SetMaximum(max_bin_content*1.5*extra_pad);
-      if (y_axis_min > 0) { 
+      double tgt_max = max_bin_content*1.5*extra_pad;
+      elements_[0].hist_ptr()->SetMaximum(tgt_max);
+      if (y_axis_min > 0) {
           elements_[0].hist_ptr()->SetMinimum(y_axis_min);
       }
       if (thstack.GetHistogram()) {
-        thstack.SetMaximum(thstack.GetMaximum()*1.5*extra_pad);
-        if (y_axis_min > 0) { 
-            thstack.SetMinimum(y_axis_min);
+        thstack.SetMaximum(tgt_max);
+        // This is absolutely crazy. Turns out ROOT ignores
+        // the min and max values to a THStack when drawing
+        // with a log scale, but rather adjusts them to some
+        // wider range for you.  This code ensures we get the
+        // actual range we want. See here for a better long-
+        // term fix: http://root.cern.ch/phpBB3/viewtopic.php?f=3&t=12702
+        // (basically figure out axis ranges first and draw with the pad)
+        if (y_axis_min > 0) {
+            thstack.SetMaximum(tgt_max/(1+0.2*std::log10(tgt_max/y_axis_min)));
+            thstack.SetMinimum(y_axis_min*(1+0.5*std::log10(tgt_max/y_axis_min)));
         }
       }
     } else {
@@ -416,8 +425,9 @@ namespace ic {
     line->Draw();
     line2->Draw();
     */
-
+    canv->RedrawAxis();
     canv->Update();
+
 
     //Apply legend style options
     if (n_legend > 0) {
@@ -494,9 +504,9 @@ namespace ic {
           if (!draw_signif) {
             ratio_ele[k]->Divide(den);
           } else {
-            TH1F *h1 = (TH1F*)ratio_ele[k]->Clone("data1"); 
-            TH1F *h2 = (TH1F*)ratio_ele[k]->Clone("data2"); 
-            TH1F *h3 = (TH1F*)ratio_ele[k]->Clone("data3"); 
+            TH1F *h1 = (TH1F*)ratio_ele[k]->Clone("data1");
+            TH1F *h2 = (TH1F*)ratio_ele[k]->Clone("data2");
+            TH1F *h3 = (TH1F*)ratio_ele[k]->Clone("data3");
             TH1F *h4 = (TH1F*)ratio_ele[k]->Clone("data4");
             h3->Add(den,-1);
             int nbins = num->GetNbinsX();
