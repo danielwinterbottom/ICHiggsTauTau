@@ -3,6 +3,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeModule.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeFiles.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataWEst.h"
+#include "boost/lexical_cast.hpp"
 
 using namespace ic;
 
@@ -74,7 +75,14 @@ int main(int argc, char* argv[]){
   analysis->AddFile("METD","MET","MET_METParked-2012D-22Jan2013-v1.root");
 
   //Set selection step common to all categories
-  analysis->set_baseselection("jet1_pt>50 && jet2_pt>50 && met>130 && dijet_M >1100 && jet1_eta*jet2_eta<=0 && n_jets_cjv_30<1 && dijet_dphi<1.0 && dijet_deta >4.2");
+  double jet1ptcut=50;
+  double jet2ptcut=50;
+  double metcut=130;
+  double mjjcut=0;//1100;
+  double cjvcut=1000;//1;
+  double dphicut=4;//1;
+  double detacut=4.2;
+  analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+"&& met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<=0 && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
 
   //Define Modules
 
@@ -91,10 +99,20 @@ int main(int argc, char* argv[]){
     .set_contdataset("MET")
     .set_contbkgset(contbkgsets)
     .set_basesel(analysis->baseselection())
+    .set_sigcat("")//nvetoelectrons==0 && nvetomuons==0")
+    .set_contcat("nvetoelectrons==0 && nselmuons==1");
+
+  DataWEst wenu("wenu");
+  wenu.set_sigmcset("WJets_enu")
+    .set_contmcset("WJets_enu")
+    .set_contdataset("MET")
+    .set_contbkgset(contbkgsets)
+    .set_basesel(analysis->baseselection())
     .set_sigcat("nvetoelectrons==0 && nvetomuons==0")
-    .set_contcat("nvetoelectrons==0 && nselmuons!=0");
+    .set_contcat("nselelectrons==1 && nvetomuons==0");
 
   analysis->AddModule(&wmunu);
+  analysis->AddModule(&wenu);
 
   analysis->RunAnalysis();
 

@@ -208,7 +208,9 @@ namespace ic {
       met_phi_ = met->phi();
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
-      l1met_ = l1met[0]->energy();
+      if(l1met.size()==1){
+	l1met_ = l1met[0]->energy();
+      }
       metnomuons_ = metnomuons->pt();
 
       double ht =0;

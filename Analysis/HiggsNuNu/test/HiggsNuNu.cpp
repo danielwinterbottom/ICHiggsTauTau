@@ -184,7 +184,7 @@ int main(int argc, char* argv[]){
     ("jet1ptcutmax",        po::value<double>(&jet1ptcutmax)->default_value(999999999.))
     ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(50.))
     ("jet2ptcutmax",        po::value<double>(&jet2ptcutmax)->default_value(999999999.))
-    ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(30.))
+    ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(20.))
     ("detajjcut",           po::value<double>(&detajjcut)->default_value(4.2))
     ("detajjcut_max",       po::value<double>(&detajjcut_max)->default_value(20.))
     ("dphi_cut",            po::value<double>(&dphi_cut)->default_value(0.))
@@ -1700,7 +1700,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&wjetsPlots_wsel);
      }
 
-     analysis.AddModule(&jetPairFilter);
+     if(!do_light_tree)analysis.AddModule(&jetPairFilter);
      if(do_trigeff) analysis.AddModule(&jetPairMaxPtFilter);//Allow max pt cut to enable binning in jet pt for trig studies
        
   
@@ -1713,10 +1713,10 @@ int main(int argc, char* argv[]){
      }
 
      //record the number of jets in the gap
-     analysis.AddModule(&FilterCJV);
+     if(!do_light_tree)analysis.AddModule(&FilterCJV);
 
      //jet pair selection
-     analysis.AddModule(&etaProdJetPairFilter);//!!DECIDE WHETHER TO APPLY THIS IN TRG EFF STUDY
+     if(!do_light_tree)analysis.AddModule(&etaProdJetPairFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      analysis.AddModule(&controlPlots_dijet);

@@ -22,6 +22,7 @@ namespace ic{
     LTFile(std::string,std::string);
     LTFile(std::string,std::string,std::string);
     int Open(std::string);
+    int Close();
     int AddFriend(TTree*);
     TH1F GetShape(std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetShape3D(std::string const&, std::string const&, std::string const&, std::string const&);
@@ -52,10 +53,15 @@ namespace ic{
     std::string GetPath(std::string);
     std::vector<LTFile> GetFileSet(std::string);    
     std::vector<std::string> GetSetPaths(std::string);
+    std::vector<std::string> GetSetNames(std::string);
     
     int OpenFile(std::string);
     int OpenSet(std::string);
     int OpenAll();
+
+    int CloseFile(std::string);
+    int CloseSet(std::string);
+    int CloseAll();
 
     int AddFriend(std::string,TTree*);
     TH1F GetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&);

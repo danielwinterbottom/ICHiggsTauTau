@@ -36,6 +36,12 @@ namespace ic{
     }
   }
 
+  //!!ADD CLOSE
+  int LTFile::Close(){
+    tfile_->Close();
+    return 0;
+  }
+
   int LTFile::AddFriend(TTree* treeptr){
     TFile* file = treeptr->GetCurrentFile();
     tree_->AddFriend(treeptr->GetName(),file->GetName());
@@ -183,6 +189,19 @@ namespace ic{
     return pathsinset;
   };
 
+  std::vector<std::string> LTFiles::GetSetNames(std::string setname){
+    std::vector<std::string> namesinset;
+    if(setlists_.count(setname)>0){
+      for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
+	namesinset.push_back(files_[*iter].name());
+      }
+    }
+    else{
+      std::cout<<"No set called "<<setname<<" returning empty string vector expect errors"<<std::endl;
+    }
+    return namesinset;
+  };
+
   int LTFiles::OpenFile(std::string filename){
     if(files_.count(filename)>0){
       files_[filename].Open(infolder_);
@@ -215,13 +234,48 @@ namespace ic{
     return 0;
   };
 
+
+
+  int LTFiles::CloseFile(std::string filename){
+    if(files_.count(filename)){
+      files_[filename].Close();
+      return 0;
+    }
+    else{
+      std::cout<<"No file called "<<filename<<" error! "<<std::endl;
+      return 1;
+    }
+  }
+
+  int LTFiles::CloseSet(std::string setname){
+    if(setlists_.count(setname)>0){
+      for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
+	files_[*iter].Close();
+      }
+      return 0;
+    }
+    else{
+      std::cout<<"No set called "<<setname<<" error!"<<std::endl;
+      return 1;
+    }
+  }
+
+  int LTFiles::CloseAll(){
+    for(auto iter=files_.begin();iter!=files_.end();iter++){
+      iter->second.Close();
+    }
+    return 0;
+  };
+
   int LTFiles::AddFriend(std::string filename,TTree* treeptr){
     files_[filename].AddFriend(treeptr);
     return 0;
   };
 
   TH1F LTFiles::GetShape(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
+    OpenFile(filename);
     return files_[filename].GetShape(variable,selection,category,weight);
+    CloseFile(filename);
   };
 
 
@@ -274,6 +328,7 @@ namespace ic{
 	}
 	else setshape.Add(&temp);
       }
+      CloseSet(setname);
     }
     else{
       std::cout<<"No set called "<<setname<<" returning empty TH1 object expect errors"<<std::endl;
@@ -333,6 +388,7 @@ namespace ic{
 	    }
 	    else setshape.Add(&temp);
 	  }
+	  CloseSet(setnames[iset]);
 	}
 	else{
 	  std::cout<<"No set called "<<setnames[iset]<<" returning empty TH1 object expect errors"<<std::endl;
