@@ -28,15 +28,12 @@ namespace ic{
       std::cerr << "Warning, file " << this->name() << " could not be opened." << std::endl;
       return 1;
     }
-    else {
-      tfile_ = tmp;
-      tree_=(TTree *)tfile_->Get("LightTree");
-      tree_->SetEstimate(1000);
-      return 0;
-    }
+    tfile_ = tmp;
+    tree_=(TTree *)tfile_->Get("LightTree");
+    tree_->SetEstimate(1000);
+    return 0;
   }
 
-  //!!ADD CLOSE
   int LTFile::Close(){
     tfile_->Close();
     return 0;
@@ -204,8 +201,11 @@ namespace ic{
 
   int LTFiles::OpenFile(std::string filename){
     if(files_.count(filename)>0){
-      if(files_[filename].Open(infolder_)) return 0;
-      else return 1;
+      if(files_[filename].Open(infolder_)==1){
+	std::cout<<"other stuff";
+	return 1;
+      }
+      return 0;
     }
     else{
       std::cout<<"No file called "<<filename<<" error! "<<std::endl;
@@ -216,7 +216,10 @@ namespace ic{
   int LTFiles::OpenSet(std::string setname){
     if(setlists_.count(setname)>0){
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
-	if(!(files_[*iter].Open(infolder_)))return 1;
+	if((files_[*iter].Open(infolder_))==1){
+	  std::cout<<"stuff";
+	  return 1;
+	}
       }
       return 0;
     }
@@ -229,7 +232,7 @@ namespace ic{
 
   int LTFiles::OpenAll(){
     for(auto iter=files_.begin();iter!=files_.end();iter++){
-      if(!(iter->second.Open(infolder_)))return 1;
+      if((iter->second.Open(infolder_))==1)return 1;
     }
     return 0;
   };
@@ -273,7 +276,7 @@ namespace ic{
   };
 
   TH1F LTFiles::GetShape(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
-    if(!OpenFile(filename)){
+    if(OpenFile(filename)==1){
       std::cout<<"Problem opening file "<<filename << " returning empty TH1"<<std::endl;
       TH1F temp;
       return temp;
@@ -286,7 +289,7 @@ namespace ic{
   TH1F LTFiles::GetSetShape(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
     TH1F setshape;
     if(setlists_.count(setname)>0){
-      if(!OpenSet(setname)){
+      if(OpenSet(setname)==1){
 	std::cout<<"Problem opening set "<<setname<<" returning empty TH1"<<std::endl;
 	TH1F temp;
 	return temp;
@@ -350,7 +353,7 @@ namespace ic{
     for(unsigned iset=0;iset<setnames.size();iset++){
       TH1F setshape;
 	if(setlists_.count(setnames[iset])>0){
-	  if(!OpenSet(setnames[iset])){
+	  if(OpenSet(setnames[iset])==1){
 	    std::cout<<"Problem opening set "<<setnames[iset]<<" returning empty TH1"<<std::endl;
 	    TH1F temp;
 	    return temp;
