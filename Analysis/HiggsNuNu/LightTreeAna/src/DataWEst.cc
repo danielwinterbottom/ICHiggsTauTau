@@ -34,26 +34,30 @@ namespace ic{
     std::vector<std::string> contdatanames=filemanager->GetSetNames(contdataset_);
     std::vector<std::string> contbkgnames=contbkgset_;
 
-    for(unsigned iname=0;iname<sigmcnames.size();iname++){
-      sigmcshapes[sigmcnames[iname]]=filemanager->GetShape(sigmcnames[iname],"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"");
-      std::cout<<sigmcnames[iname]<<": "<<Integral(&sigmcshapes[sigmcnames[iname]])<<std::endl;
-    }
+//     for(unsigned iname=0;iname<sigmcnames.size();iname++){
+//       sigmcshapes[sigmcnames[iname]]=filemanager->GetShape(sigmcnames[iname],"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"");
+//       std::cout<<sigmcnames[iname]<<": "<<Integral(&sigmcshapes[sigmcnames[iname]])<<std::endl;
+//     } 
+//     sigmcshapes["test"]=filemanager->GetSetShape(sigmcset_,"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"total_weight",false);
+//     std::cout<<sigmcset_<<": "<<Integral(&sigmcshapes["test"])<<std::endl;
 
-    for(unsigned iname=0;iname<contmcnames.size();iname++){
-      contmcshapes[contmcnames[iname]]=filemanager->GetShape(contmcnames[iname],"jet2_pt(200,0.,1000.)",basesel_,contcat_,"");
-      std::cout<<contmcnames[iname]<<": "<<Integral(&contmcshapes[contmcnames[iname]])<<std::endl;
-    }
+//     for(unsigned iname=0;iname<contmcnames.size();iname++){
+//       contmcshapes[contmcnames[iname]]=filemanager->GetShape(contmcnames[iname],"jet2_pt(200,0.,1000.)",basesel_,contcat_,"");
+//       std::cout<<contmcnames[iname]<<": "<<Integral(&contmcshapes[contmcnames[iname]])<<std::endl;
+//     }
+//     contmcshapes["test"]=filemanager->GetSetShape(contmcset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight",false);
+//     std::cout<<contmcset_<<": "<<Integral(&contmcshapes["test"])<<std::endl;
 
-    for(unsigned iname=0;iname<contdatanames.size();iname++){
-      contdatashapes[contdatanames[iname]]=filemanager->GetShape(contdatanames[iname],"jet2_pt(200,0.,1000.)",basesel_,contcat_,"");
-      std::cout<<contdatanames[iname]<<": "<<Integral(&contdatashapes[contdatanames[iname]])<<std::endl;
-    }
+//     for(unsigned iname=0;iname<contdatanames.size();iname++){
+//       contdatashapes[contdatanames[iname]]=filemanager->GetShape(contdatanames[iname],"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight");
+//       std::cout<<contdatanames[iname]<<": "<<Integral(&contdatashapes[contdatanames[iname]])<<std::endl;
+//     }
 
-    for(unsigned iname=0;iname<contbkgnames.size();iname++){
-      contbkgshapes[contbkgnames[iname]]=filemanager->GetSetShape(contbkgnames[iname],"jet2_pt(200,0.,1000.)",basesel_,contcat_,"1",false);
-      std::cout<<contbkgnames[iname]<<": "<<Integral(&contbkgshapes[contbkgnames[iname]])<<std::endl;
+//     for(unsigned iname=0;iname<contbkgnames.size();iname++){
+//       contbkgshapes[contbkgnames[iname]]=filemanager->GetSetShape(contbkgnames[iname],"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight",false);
+//       std::cout<<contbkgnames[iname]<<": "<<Integral(&contbkgshapes[contbkgnames[iname]])<<std::endl;
 
-    }
+//     }
     
     
 
