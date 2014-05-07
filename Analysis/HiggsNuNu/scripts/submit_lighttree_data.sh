@@ -11,10 +11,8 @@ DOCERN=0
 if [ "$DOCERN" = "0" ]
     then
     JOBSCRIPT="./scripts/submit_ic_batch_job.sh"
-    JOBQUEUE="hepshort.q"
 else
     JOBSCRIPT="./scripts/submit_cern_batch_job.sh"
-    JOBQUEUE="1nh"
 fi
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 

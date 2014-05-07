@@ -9,16 +9,11 @@ DOCERN=0
 if [ "$DOCERN" = "0" ]
     then
     JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
-    JOBQUEUE="hepshort.q"
 else
     JOBSCRIPT="./scripts/submit_cern_batch_job.sh"
-    JOBQUEUE="1nh"
 fi
 
 LIGHTTREEOPTIONS=" --do_light_tree=true --input_params=filelists/Dec18/ParamsDec18.dat"
-
-export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
-
 
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
