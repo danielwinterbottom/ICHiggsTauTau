@@ -1,4 +1,5 @@
 #!/bin/sh
+DOCERN=0
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
@@ -7,8 +8,14 @@
 
 #export JOBSUBMIT="./scripts/submit_ic_batch_job.sh hepmedium.q"
 
-JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
-JOBQUEUE="hepshort.q"
+if [ "$DOCERN" = "0" ]
+    then
+    JOBSCRIPT="./scripts/submit_ic_batch_job.sh"
+    JOBQUEUE="hepshort.q"
+else
+    JOBSCRIPT="./scripts/submit_cern_batch_job.sh"
+    JOBQUEUE="1nh"
+fi
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 
 
@@ -65,17 +72,31 @@ for CHANNEL in nunu #nunulowmet nunulowmetiglep #nunu nunulowmet nunulowmetiglep
       
       for QUEUEDIR in medium long
 	do
-	
-	if [ "$QUEUEDIR" = "medium" ]
-	    then
-	    JOBQUEUE="hepmedium.q"
-	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
-	    echo "Using job-submission: " $JOBSUBMIT
-	else
-	    JOBQUEUE="heplong.q"
-	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
-	    echo "Using job-submission: " $JOBSUBMIT
-	fi
+	if [ "$DOCERN" = "0" ]
+            then
+            if [ "$QUEUEDIR" = "medium" ]
+                then
+                JOBQUEUE="hepmedium.q"
+            elif [ "$QUEUEDIR" = "long" ]
+                then
+                JOBQUEUE="heplong.q"
+            else
+                JOBQUEUE="hepshort.q"
+            fi
+        else
+            if [ "$QUEUEDIR" = "medium" ]
+                then
+                JOBQUEUE="1nd"
+            elif [ "$QUEUEDIR" = "long" ]
+                then
+                JOBQUEUE="2nd"
+            else
+                JOBQUEUE="8nh"
+            fi
+            
+        fi
+	export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
+	echo "Using job-submission: " $JOBSUBMIT
 	
 	PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MET/
 

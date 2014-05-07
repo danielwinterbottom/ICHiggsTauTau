@@ -1,12 +1,19 @@
 #!/bin/sh
+DOCERN=0
 
 ## Try and take the JOBWRAPPER and JOBSUBMIT commands
 ## from the environment if set, otherwise use these defaults
 : ${JOBWRAPPER:="./scripts/generate_job.sh"}
 : ${JOBSUBMIT:="eval"}
 
-JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
-JOBQUEUE="hepshort.q"
+if [ "$DOCERN" = "0" ]
+    then
+    JOBSCRIPT="./scripts/submit_ic_batch_job.sh" 
+    JOBQUEUE="hepshort.q"
+else
+    JOBSCRIPT="./scripts/submit_cern_batch_job.sh"
+    JOBQUEUE="1nh"
+fi
 
 LIGHTTREEOPTIONS=" --do_light_tree=true --input_params=filelists/Dec18/ParamsDec18.dat"
 
@@ -67,22 +74,31 @@ for CHANNEL in nunu
       
       for QUEUEDIR in short medium long
 	do
-	
-	if [ "$QUEUEDIR" = "medium" ]
+	if [ "$DOCERN" = "0" ]
 	    then
-	    JOBQUEUE="hepmedium.q"
-	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
-	    echo "Using job-submission: " $JOBSUBMIT
-	elif [ "$QUEUEDIR" = "long" ]
-	    then
-	    JOBQUEUE="heplong.q"
-	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
-	    echo "Using job-submission: " $JOBSUBMIT
+	    if [ "$QUEUEDIR" = "medium" ]
+		then
+		JOBQUEUE="hepmedium.q"
+	    elif [ "$QUEUEDIR" = "long" ]
+		then
+		JOBQUEUE="heplong.q"
+	    else
+		JOBQUEUE="hepshort.q"
+	    fi
 	else
-	    JOBQUEUE="hepshort.q"
-	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
-	    echo "Using job-submission: " $JOBSUBMIT
+	    if [ "$QUEUEDIR" = "medium" ]
+		then
+		JOBQUEUE="1nd"
+	    elif [ "$QUEUEDIR" = "long" ]
+		then
+		JOBQUEUE="2nd"
+	    else
+		JOBQUEUE="8nh"
+	    fi
 	fi
+	export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
+	echo "Using job-submission: " $JOBSUBMIT
+
 	
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
