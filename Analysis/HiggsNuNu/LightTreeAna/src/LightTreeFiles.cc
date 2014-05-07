@@ -204,8 +204,8 @@ namespace ic{
 
   int LTFiles::OpenFile(std::string filename){
     if(files_.count(filename)>0){
-      files_[filename].Open(infolder_);
-      return 0;
+      if(files_[filename].Open(infolder_)) return 0;
+      else return 1;
     }
     else{
       std::cout<<"No file called "<<filename<<" error! "<<std::endl;
@@ -216,7 +216,7 @@ namespace ic{
   int LTFiles::OpenSet(std::string setname){
     if(setlists_.count(setname)>0){
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
-	files_[*iter].Open(infolder_);
+	if(!(files_[*iter].Open(infolder_)))return 1;
       }
       return 0;
     }
@@ -229,7 +229,7 @@ namespace ic{
 
   int LTFiles::OpenAll(){
     for(auto iter=files_.begin();iter!=files_.end();iter++){
-      iter->second.Open(infolder_);
+      if(!(iter->second.Open(infolder_)))return 1;
     }
     return 0;
   };
@@ -273,7 +273,11 @@ namespace ic{
   };
 
   TH1F LTFiles::GetShape(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
-    OpenFile(filename);
+    if(!OpenFile(filename)){
+      std::cout<<"Problem opening file "<<filename << " returning empty TH1"<<std::endl;
+      TH1F temp;
+      return temp;
+    }
     return files_[filename].GetShape(variable,selection,category,weight);
     CloseFile(filename);
   };
@@ -282,7 +286,11 @@ namespace ic{
   TH1F LTFiles::GetSetShape(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
     TH1F setshape;
     if(setlists_.count(setname)>0){
-      OpenSet(setname);
+      if(!OpenSet(setname)){
+	std::cout<<"Problem opening set "<<setname<<" returning empty TH1"<<std::endl;
+	TH1F temp;
+	return temp;
+      }
       bool first=true;
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
 	//ADAPT LUMIXS BIT
@@ -342,7 +350,11 @@ namespace ic{
     for(unsigned iset=0;iset<setnames.size();iset++){
       TH1F setshape;
 	if(setlists_.count(setnames[iset])>0){
-	  OpenSet(setnames[iset]);
+	  if(!OpenSet(setnames[iset])){
+	    std::cout<<"Problem opening set "<<setnames[iset]<<" returning empty TH1"<<std::endl;
+	    TH1F temp;
+	    return temp;
+	  }
 	  bool firstshape=true;
 	  for(auto iter=setlists_[setnames[iset]].begin(); iter!=setlists_[setnames[iset]].end();++iter){
 	    //ADAPT LUMIXS BIT
