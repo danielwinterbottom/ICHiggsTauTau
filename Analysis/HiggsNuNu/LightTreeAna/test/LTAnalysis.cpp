@@ -21,6 +21,8 @@ int main(int argc, char* argv[]){
   analysis->AddFile("W2Jets","WJets","MC_W2JetsToLNu.root");
   analysis->AddFile("W3Jets","WJets","MC_W3JetsToLNu.root");
   analysis->AddFile("W4Jets","WJets","MC_W4JetsToLNu.root");
+  analysis->AddFile("W4Jets","WJets","MC_EWK-W2jminus_enu.root");
+
 
   analysis->AddFile("WJetsv1_enu","WJets_enu","MC_WJetsToLNu-v1_enu.root");
   analysis->AddFile("WJetsv2_enu","WJets_enu","MC_WJetsToLNu-v2_enu.root");
@@ -28,6 +30,8 @@ int main(int argc, char* argv[]){
   analysis->AddFile("W2Jets_enu","WJets_enu","MC_W2JetsToLNu_enu.root");
   analysis->AddFile("W3Jets_enu","WJets_enu","MC_W3JetsToLNu_enu.root");
   analysis->AddFile("W4Jets_enu","WJets_enu","MC_W4JetsToLNu_enu.root");
+  analysis->AddFile("EWK-Wminus_enu","WJets_enu","MC_EWK-W2jminus_enu.root");
+  analysis->AddFile("EWK-Wplus_enu","WJets_enu","MC_EWK-W2jplus_enu.root");
 
   analysis->AddFile("WJetsv1_munu","WJets_munu","MC_WJetsToLNu-v1_munu.root");
   analysis->AddFile("WJetsv2_munu","WJets_munu","MC_WJetsToLNu-v2_munu.root");
@@ -35,6 +39,8 @@ int main(int argc, char* argv[]){
   analysis->AddFile("W2Jets_munu","WJets_munu","MC_W2JetsToLNu_munu.root");
   analysis->AddFile("W3Jets_munu","WJets_munu","MC_W3JetsToLNu_munu.root");
   analysis->AddFile("W4Jets_munu","WJets_munu","MC_W4JetsToLNu_munu.root");
+  analysis->AddFile("EWK-Wminus_munu","WJets_munu","MC_EWK-W2jminus_munu.root");
+  analysis->AddFile("EWK-Wplus_munu","WJets_munu","MC_EWK-W2jplus_munu.root");
 
   analysis->AddFile("WJetsv1_taunu","WJets_taunu","MC_WJetsToLNu-v1_taunu.root");
   analysis->AddFile("WJetsv2_taunu","WJets_taunu","MC_WJetsToLNu-v2_taunu.root");
@@ -42,9 +48,12 @@ int main(int argc, char* argv[]){
   analysis->AddFile("W2Jets_taunu","WJets_taunu","MC_W2JetsToLNu_taunu.root");
   analysis->AddFile("W3Jets_taunu","WJets_taunu","MC_W3JetsToLNu_taunu.root");
   analysis->AddFile("W4Jets_taunu","WJets_taunu","MC_W4JetsToLNu_taunu.root");
+  analysis->AddFile("EWK-Wminus_taunu","WJets_taunu","MC_EWK-W2jminus_taunu.root");
+  analysis->AddFile("EWK-Wplus_taunu","WJets_taunu","MC_EWK-W2jplus_taunu.root");
 
   analysis->AddFile("TTJets","Top","MC_TTJets.root");
   analysis->AddFile("T-tW","Top","MC_T-tW.root");
+  analysis->AddFile("Tbar-tW","Top","MC_Tbar-tW.root");
   analysis->AddFile("SingleT-s","Top","MC_SingleT-s-powheg-tauola.root");
   analysis->AddFile("SingleT-t","Top","MC_SingleT-t-powheg-tauola.root");
   analysis->AddFile("SingleTBar-s","Top","MC_SingleTBar-s-powheg-tauola.root");
@@ -78,11 +87,11 @@ int main(int argc, char* argv[]){
   double jet1ptcut=50;
   double jet2ptcut=50;
   double metcut=130;
-  double mjjcut=0;//1100;
-  double cjvcut=1000;//1;
-  double dphicut=4;//1;
+  double mjjcut=1100;
+  double cjvcut=1;
+  double dphicut=1;
   double detacut=4.2;
-  analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+"&& met>"+boost::lexical_cast<std::string>(metcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<=0 && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
+  analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<=0 && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
 
   //Define Modules
 
@@ -99,8 +108,8 @@ int main(int argc, char* argv[]){
     .set_contdataset("MET")
     .set_contbkgset(contbkgsets)
     .set_basesel(analysis->baseselection())
-    .set_sigcat("")//nvetoelectrons==0 && nvetomuons==0")
-    .set_contcat("nvetoelectrons==0 && nselmuons==1");
+    .set_sigcat("nvetoelectrons==0 && nvetomuons==0&& met>"+boost::lexical_cast<std::string>(metcut))
+    .set_contcat("nvetoelectrons==0 && nvetomuons==1 && nselmuons==1&& metnomuons>"+boost::lexical_cast<std::string>(metcut));
 
   DataWEst wenu("wenu");
   wenu.set_sigmcset("WJets_enu")
@@ -108,8 +117,9 @@ int main(int argc, char* argv[]){
     .set_contdataset("MET")
     .set_contbkgset(contbkgsets)
     .set_basesel(analysis->baseselection())
-    .set_sigcat("nvetoelectrons==0 && nvetomuons==0")
-    .set_contcat("nselelectrons==1 && nvetomuons==0");
+    .set_sigcat("nvetoelectrons==0 && nvetomuons==0&& met>"+boost::lexical_cast<std::string>(metcut))
+    .set_contcat("nselelectrons==1 && nvetoelectrons ==1 && nvetomuons==0&& met>"+boost::lexical_cast<std::string>(metcut));
+
 
   analysis->AddModule(&wmunu);
   analysis->AddModule(&wenu);
