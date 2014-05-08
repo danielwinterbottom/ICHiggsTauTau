@@ -184,7 +184,7 @@ int main(int argc, char* argv[]){
     ("jet1ptcutmax",        po::value<double>(&jet1ptcutmax)->default_value(999999999.))
     ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(50.))
     ("jet2ptcutmax",        po::value<double>(&jet2ptcutmax)->default_value(999999999.))
-    ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(20.))
+    ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(30.))
     ("detajjcut",           po::value<double>(&detajjcut)->default_value(4.2))
     ("detajjcut_max",       po::value<double>(&detajjcut_max)->default_value(20.))
     ("dphi_cut",            po::value<double>(&dphi_cut)->default_value(0.))
@@ -1558,53 +1558,53 @@ int main(int argc, char* argv[]){
     //if (printEventList) analysis.AddModule(&hinvPrintList);
   
     //NEW: change skimming to write event at a specific moment in the chain of modules.
-     if (do_skim) analysis.WriteSkimHere();
-
-     ////analysis.AddModule(&runStats);
+    if (do_skim) analysis.WriteSkimHere();
     
-     if (is_data && !is_embedded ) {
-       //FIXME: do MetFilters also on MC, but not saved right now in MC...
-       analysis.AddModule(&metFilters);
-       analysis.AddModule(&metLaserFilters);
-       //if (printEventList) analysis.AddModule(&hinvPrintList);
-     }
-     
-     //jet modules
-     analysis.AddModule(&jetIDFilter);
-     //don't want pile-up jets to calculate HT,MHT...
-     analysis.AddModule(&alljetsCopyCollection);
-
-
-     //prepare collections of veto leptons
-     analysis.AddModule(&vetoElectronCopyCollection);
-     analysis.AddModule(&vetoElectronFilter);
-     analysis.AddModule(&vetoElectronIso);
-     analysis.AddModule(&vetoMuonCopyCollection);
-     analysis.AddModule(&vetoMuonFilter);
-     // analysis.AddModule(&vetoMuonNoIsoCopyCollection);
-     //analysis.AddModule(&vetoMuonNoIsoFilter);
+    ////analysis.AddModule(&runStats);
+    
+    if (is_data && !is_embedded ) {
+      //FIXME: do MetFilters also on MC, but not saved right now in MC...
+      analysis.AddModule(&metFilters);
+      analysis.AddModule(&metLaserFilters);
+      //if (printEventList) analysis.AddModule(&hinvPrintList);
+    }
+    
+    //jet modules
+    analysis.AddModule(&jetIDFilter);
+    //don't want pile-up jets to calculate HT,MHT...
+    analysis.AddModule(&alljetsCopyCollection);
+    
+    
+    //prepare collections of veto leptons
+    analysis.AddModule(&vetoElectronCopyCollection);
+    analysis.AddModule(&vetoElectronFilter);
+    analysis.AddModule(&vetoElectronIso);
+    analysis.AddModule(&vetoMuonCopyCollection);
+    analysis.AddModule(&vetoMuonFilter);
+    // analysis.AddModule(&vetoMuonNoIsoCopyCollection);
+    //analysis.AddModule(&vetoMuonNoIsoFilter);
+    
+    //filter leptons before making jet pairs and changing MET...
+    analysis.AddModule(&selElectronCopyCollection);
+    analysis.AddModule(&selElectronFilter);
+    analysis.AddModule(&selElectronIso);
+    analysis.AddModule(&selMuonCopyCollection);
+    analysis.AddModule(&selMuonFilter);
+    analysis.AddModule(&elecMuonOverlapFilter);
+    
+    //filter taus for plots
+    analysis.AddModule(&tauPtEtaFilter);
    
-     //filter leptons before making jet pairs and changing MET...
-     analysis.AddModule(&selElectronCopyCollection);
-     analysis.AddModule(&selElectronFilter);
-     analysis.AddModule(&selElectronIso);
-     analysis.AddModule(&selMuonCopyCollection);
-     analysis.AddModule(&selMuonFilter);
-     analysis.AddModule(&elecMuonOverlapFilter);
-
-     //filter taus for plots
-     analysis.AddModule(&tauPtEtaFilter);
-   
-     //add met without leptons for plots
-     analysis.AddModule(&metNoMuons);
-     analysis.AddModule(&metNoElectrons);
-     analysis.AddModule(&metNoENoMu);
-     
-     //if (printEventList) analysis.AddModule(&hinvPrintList);
-
-     //deal with removing overlap with selected leptons
-     analysis.AddModule(&jetMuonOverlapFilter);
-     analysis.AddModule(&jetElecOverlapFilter);
+    //add met without leptons for plots
+    analysis.AddModule(&metNoMuons);
+    analysis.AddModule(&metNoElectrons);
+    analysis.AddModule(&metNoENoMu);
+    
+    //if (printEventList) analysis.AddModule(&hinvPrintList);
+    
+    //deal with removing overlap with selected leptons
+    analysis.AddModule(&jetMuonOverlapFilter);
+    analysis.AddModule(&jetElecOverlapFilter);
      //no need to clean taus, we don't do it in the signal selection.
      //if (channel == channel::taunu) analysis.AddModule(&jetTauOverlapFilter);
 
@@ -1713,7 +1713,7 @@ int main(int argc, char* argv[]){
      }
 
      //record the number of jets in the gap
-     if(!do_light_tree)analysis.AddModule(&FilterCJV);
+     analysis.AddModule(&FilterCJV);
 
      //jet pair selection
      if(!do_light_tree)analysis.AddModule(&etaProdJetPairFilter);

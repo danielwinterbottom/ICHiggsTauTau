@@ -24,15 +24,15 @@ namespace ic{
   };
 
   int DataWEst::Run(LTFiles* filemanager){
-    std::map<std::string,TH1F> sigmcshapes;
-    std::map<std::string,TH1F> contmcshapes;
-    std::map<std::string,TH1F> contdatashapes;
-    std::map<std::string,TH1F> contbkgshapes;
+//     std::map<std::string,TH1F> sigmcshapes;
+//     std::map<std::string,TH1F> contmcshapes;
+//     std::map<std::string,TH1F> contdatashapes;
+//     std::map<std::string,TH1F> contbkgshapes;
 
-    std::vector<std::string> sigmcnames=filemanager->GetSetNames(sigmcset_);
-    std::vector<std::string> contmcnames=filemanager->GetSetNames(contmcset_);
-    std::vector<std::string> contdatanames=filemanager->GetSetNames(contdataset_);
-    std::vector<std::string> contbkgnames=contbkgset_;
+//     std::vector<std::string> sigmcnames=filemanager->GetSetNames(sigmcset_);
+//     std::vector<std::string> contmcnames=filemanager->GetSetNames(contmcset_);
+//     std::vector<std::string> contdatanames=filemanager->GetSetNames(contdataset_);
+//     std::vector<std::string> contbkgnames=contbkgset_;
 
 //     for(unsigned iname=0;iname<sigmcnames.size();iname++){
 //       sigmcshapes[sigmcnames[iname]]=filemanager->GetShape(sigmcnames[iname],"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"");
@@ -53,6 +53,8 @@ namespace ic{
 //       std::cout<<contdatanames[iname]<<": "<<Integral(&contdatashapes[contdatanames[iname]])<<std::endl;
 //     }
 
+//     contbkgshapes["singlets"]=filemanager->GetShape("WJetsv1_munu","jet2_pt(200,0.,1000.)",basesel_,contcat_,"");
+//     std::cout<<"wjetsv1-munu"<<": "<<Integral(&contbkgshapes["singlets"])<<std::endl;
 //     for(unsigned iname=0;iname<contbkgnames.size();iname++){
 //       contbkgshapes[contbkgnames[iname]]=filemanager->GetSetShape(contbkgnames[iname],"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight",false);
 //       std::cout<<contbkgnames[iname]<<": "<<Integral(&contbkgshapes[contbkgnames[iname]])<<std::endl;

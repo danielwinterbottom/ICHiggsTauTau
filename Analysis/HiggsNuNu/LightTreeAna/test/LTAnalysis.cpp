@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
   std::string outputname="tmp.root";
   LTAnalyser* analysis = new LTAnalyser(outputname);
 
-  analysis->SetInFolder("../output_lighttree/nunu/");
+  analysis->SetInFolder("../output_lighttree_cjvcorrected/nunu/");
   analysis->SetInputParams("../filelists/Dec18/ParamsDec18test.dat");
 
   //Define Files
@@ -91,7 +91,8 @@ int main(int argc, char* argv[]){
   double cjvcut=1;
   double dphicut=1;
   double detacut=4.2;
-  analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<=0 && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
+  double etaprodcut=0;
+  analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<="+boost::lexical_cast<std::string>(etaprodcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
 
   //Define Modules
 

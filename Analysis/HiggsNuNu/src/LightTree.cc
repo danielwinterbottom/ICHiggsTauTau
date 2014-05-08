@@ -162,7 +162,9 @@ namespace ic {
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
     if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
     std::vector<PFJet*> alljets = event->GetPtrVec<PFJet>("AllpfJetsPFlow");
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::sort(alljets.begin(), alljets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<Muon*> vetomuons=event->GetPtrVec<Muon>("vetoMuons");
     std::vector<Muon*> selmuons=event->GetPtrVec<Muon>("selMuons");
     std::vector<Electron*> vetoelectrons=event->GetPtrVec<Electron>("vetoElectrons");
@@ -249,12 +251,12 @@ namespace ic {
       double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
       n_jets_cjv_30_ = 0;
       n_jets_cjv_20EB_30EE_ = 0;
-      if (alljets.size() > 2) {
-	for (unsigned i = 2; i < alljets.size(); ++i) {
-	  bool isInCentralGap = fabs(alljets[i]->eta())<4.7 && alljets[i]->eta() > eta_low && alljets[i]->eta() < eta_high;
-	  if (alljets[i]->pt() > 30.0 && isInCentralGap) ++n_jets_cjv_30_;
-	  if ( ((alljets[i]->eta()<2.4 && alljets[i]->pt() > 20.0) ||
-		(alljets[i]->eta()>=2.4 && alljets[i]->pt() > 30.0)) && 
+      if (jets.size() > 2) {
+	for (unsigned i = 0; i < jets.size(); ++i) {
+	  bool isInCentralGap = fabs(jets[i]->eta())<4.7 && jets[i]->eta() > eta_low && jets[i]->eta() < eta_high;
+	  if (jets[i]->pt() > 30.0 && isInCentralGap) ++n_jets_cjv_30_;
+	  if ( ((jets[i]->eta()<2.4 && jets[i]->pt() > 20.0) ||
+		(jets[i]->eta()>=2.4 && jets[i]->pt() > 30.0)) && 
 	       isInCentralGap)
 	    ++n_jets_cjv_20EB_30EE_;
 	}
@@ -279,6 +281,9 @@ namespace ic {
       }
       //for MC                                                                                                                                       
       else {
+	passtrigger_=-1;
+	passparkedtrigger1_=-1;
+	passparkedtrigger2_=-1;
 	std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
 	if (objs.size() > 0) passtrigger_=1;
       } // do obj match                                                                            
