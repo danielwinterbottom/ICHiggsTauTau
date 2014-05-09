@@ -944,10 +944,16 @@ int main(int argc, char* argv[]){
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
-    if (channel==channel::nunu ||channel==channel::nunulowmet|| channel == channel::taunu){
-      hinvWeights.set_do_idiso_veto_weights(doidisoeff);
+    if(!do_light_tree){
+      if (channel==channel::nunu ||channel==channel::nunulowmet|| channel == channel::taunu){
+	hinvWeights.set_do_idiso_veto_weights(doidisoeff);
+      }
+      else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
     }
-    else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
+    else{
+      hinvWeights.set_do_idiso_veto_weights(false);
+      hinvWeights.set_do_idiso_tight_weights(false);
+    }
     if (ignoreLeptons){ 
       hinvWeights.set_do_idiso_veto_weights(false);
       hinvWeights.set_do_idiso_tight_weights(false);

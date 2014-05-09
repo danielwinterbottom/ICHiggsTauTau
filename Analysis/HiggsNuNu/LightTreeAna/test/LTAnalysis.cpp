@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
   std::string outputname="tmp.root";
   LTAnalyser* analysis = new LTAnalyser(outputname);
 
-  analysis->SetInFolder("../output_lighttree_cjvcorrected/nunu/");
+  analysis->SetInFolder("../output_lighttree_lepweightscorrected/nunu/");
   analysis->SetInputParams("../filelists/Dec18/ParamsDec18test.dat");
 
   //Define Files

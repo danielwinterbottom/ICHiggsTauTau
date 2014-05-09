@@ -27,7 +27,9 @@ namespace ic {
 
     outputTree_ = 0;
 
-    total_weight_ = 1;
+    total_weight_nolep_=1;
+    total_weight_lepveto_ = 1;
+    total_weight_leptight_ = 1;
     jet1_pt_ = 0;
     jet2_pt_ = 0;
     jet1_eta_ = 0;
@@ -99,7 +101,9 @@ namespace ic {
 
     outputTree_ = fs_->make<TTree>("LightTree","Tree containing LightTreeAna input variables");
 
-    outputTree_->Branch("total_weight",&total_weight_);
+    outputTree_->Branch("total_weight_nolep",&total_weight_nolep_);
+    outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
+    outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("jet1_pt",&jet1_pt_);
     outputTree_->Branch("jet2_pt",&jet2_pt_);
     outputTree_->Branch("jet1_eta",&jet1_eta_);
@@ -154,6 +158,8 @@ namespace ic {
   int  LightTree::Execute(TreeEvent *event){
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     double wt = eventInfo->total_weight();
+    double vetowt = eventInfo->weight("!idisoVeto");
+    double tightwt = eventInfo->weight("!idisoTight");
 
     //get collections
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
@@ -191,7 +197,10 @@ namespace ic {
       ROOT::Math::PtEtaPhiEVector jet2vec = jet2->vector();
       ROOT::Math::PtEtaPhiEVector metvec = met->vector();
 
-      total_weight_ = wt;
+      total_weight_nolep_ = wt;
+      total_weight_lepveto_ =wt*vetowt;
+      total_weight_leptight_=wt*tightwt;
+      
       jet1_pt_ = jet1->pt();
       jet2_pt_ = jet2->pt();
       jet1_eta_ = jet1->eta();

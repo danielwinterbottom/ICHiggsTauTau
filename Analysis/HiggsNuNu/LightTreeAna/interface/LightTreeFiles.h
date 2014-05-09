@@ -26,6 +26,7 @@ namespace ic{
     int AddFriend(TTree*);
     TH1F GetShape(std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetShape3D(std::string const&, std::string const&, std::string const&, std::string const&);
+    TTree* GetTree();
   };
 
   class LTFiles{

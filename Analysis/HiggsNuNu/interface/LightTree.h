@@ -28,7 +28,9 @@ namespace ic {
     TTree *outputTree_;
     
 
-    double total_weight_;
+    double total_weight_nolep_;
+    double total_weight_lepveto_;
+    double total_weight_leptight_;
     double jet1_pt_;
     double jet2_pt_;
     double jet1_eta_;

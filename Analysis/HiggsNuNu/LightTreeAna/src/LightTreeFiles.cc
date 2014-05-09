@@ -53,6 +53,10 @@ namespace ic{
     return ic::GetShape3D(variable,selection,category,weight,tree_);
   };
 
+  TTree* LTFile::GetTree(){
+    return tree_;
+  }
+
 
 
   LTFiles::LTFiles(){
