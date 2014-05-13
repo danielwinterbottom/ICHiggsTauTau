@@ -21,7 +21,8 @@ int main(int argc, char* argv[]){
   analysis->AddFile("W2Jets","WJets","MC_W2JetsToLNu.root");
   analysis->AddFile("W3Jets","WJets","MC_W3JetsToLNu.root");
   analysis->AddFile("W4Jets","WJets","MC_W4JetsToLNu.root");
-  analysis->AddFile("W4Jets","WJets","MC_EWK-W2jminus_enu.root");
+  analysis->AddFile("EWK-Wminus","WJets","MC_EWK-W2jminus_enu.root");
+  analysis->AddFile("EWK-Wplus","WJets","MC_EWK-W2jplus_enu.root");
 
 
   analysis->AddFile("WJetsv1_enu","WJets_enu","MC_WJetsToLNu-v1_enu.root");
