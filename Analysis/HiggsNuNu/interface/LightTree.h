@@ -78,6 +78,7 @@ namespace ic {
     int nselelectrons_;
     int ntaus_;
     double m_mumu_;
+    double m_mumu_gen_;
 
   public:
     LightTree(std::string const& name);

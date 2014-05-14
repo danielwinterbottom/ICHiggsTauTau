@@ -77,6 +77,7 @@ namespace ic {
     nselelectrons_=0;
     ntaus_=0;
     m_mumu_=-1;
+    m_mumu_gen_=-1;
   }
 
   LightTree::~LightTree(){
@@ -151,6 +152,7 @@ namespace ic {
     outputTree_->Branch("nselelectrons",&nselelectrons_);
     outputTree_->Branch("ntaus",&ntaus_);
     outputTree_->Branch("m_mumu",&m_mumu_);
+    outputTree_->Branch("m_mumu_gen",&m_mumu_gen_);
 
     return 0;
   }
@@ -186,6 +188,33 @@ namespace ic {
     if(nselmuons_==2){
       m_mumu_=((selmuons.at(0)->vector())+(selmuons.at(1)->vector())).M();
     }
+
+    //Get gen z mass
+    int ngenmuplus=0;
+    int ngenmuminus=0;
+    std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+    GenParticle* lepplus = 0;
+    GenParticle* lepminus = 0;
+    
+    for (unsigned i = 0; i < parts.size(); ++i) {
+      if (parts[i]->status() != 3) continue;
+      
+      int id = parts[i]->pdgid();
+      
+      if (id == static_cast<int>(13)) {
+	lepminus = parts[i];
+	ngenmuminus++;
+      }
+      if (id == static_cast<int>(-13)) {
+	lepplus = parts[i];
+	ngenmuplus++;
+      }  
+    }//loop on genparticles                                                                                                                                  
+
+    if (ngenmuminus==1&&ngenmuplus==1) {
+      m_mumu_gen_ = (lepplus->vector()+lepminus->vector()).M();
+    }
+    
 
     if (dijet_vec.size() != 0) {
       
