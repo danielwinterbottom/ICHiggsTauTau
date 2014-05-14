@@ -2,6 +2,7 @@
 #define ICHiggsTauTau_HiggsNuNu_LightTreeModule_h
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeFiles.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
+#include "TFile.h"
 
 namespace ic{
 

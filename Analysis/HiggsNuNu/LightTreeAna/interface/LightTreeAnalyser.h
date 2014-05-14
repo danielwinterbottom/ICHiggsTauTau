@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeModule.h"
 #include <string>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
+#include "TFile.h"
 
 namespace ic{
 

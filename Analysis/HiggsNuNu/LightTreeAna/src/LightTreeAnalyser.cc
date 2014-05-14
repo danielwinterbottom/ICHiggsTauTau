@@ -8,12 +8,13 @@ namespace ic{
   LTAnalyser::LTAnalyser(std::string outputname){
     verbosity_=1;
     outputname_=outputname;
-
+    fs = new fwlite::TFileService((outputname_).c_str());
   };
   
   LTAnalyser::LTAnalyser(std::string outputname, int verbosity){
     verbosity_=verbosity;
     outputname_=outputname;
+    fs = new fwlite::TFileService((outputname_).c_str());
   };
   
   LTAnalyser LTAnalyser::AddModule(LTModule *module){
@@ -44,8 +45,6 @@ namespace ic{
   }
 
   int LTAnalyser::RunAnalysis(){
-
-    fs = new fwlite::TFileService((outputname_).c_str());
 
     if (print_module_list_) {
       std::cout << "-------------------------------------" << std::endl;
