@@ -391,9 +391,9 @@ namespace ic{
 		double lumi=parser.GetParam<double>("LUMI_DATA");
 		//std::cout<<"got lumi"<<std::endl;
 		
-		//std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
-		//std::cout<<"EVT is: "<<events<<std::endl;
-		//std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
+// 		std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+// 		std::cout<<"EVT is: "<<events<<std::endl;
+// 		std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
 		if(xs==-1) lumixsweight=1;
 		else lumixsweight=xs*lumi/events;
 		//std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;

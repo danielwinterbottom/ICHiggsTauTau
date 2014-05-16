@@ -23,6 +23,7 @@ namespace ic{
 
     LTAnalyser AddModule(ic::LTModule*);
     LTAnalyser AddFile(std::string,std::string,std::string);
+    LTAnalyser AddFiles(std::string);
     void SetInFolder(std::string);
     void SetInputParams(std::string);
 

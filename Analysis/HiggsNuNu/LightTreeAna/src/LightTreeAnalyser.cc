@@ -2,6 +2,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
 #include <algorithm>
 #include "boost/bind.hpp"
+#include <fstream>
+#include <boost/algorithm/string.hpp>
 
 namespace ic{
 
@@ -24,6 +26,25 @@ namespace ic{
 
   LTAnalyser LTAnalyser::AddFile(std::string name, std::string set, std::string path){
     filemanager_.AddFile(name,set,path);
+    return *this;
+  };
+
+  LTAnalyser LTAnalyser::AddFiles(std::string filelist){
+    std::ifstream infile(filelist.c_str());
+    std::string line;
+    while(std::getline(infile,line)){
+      if(line=="")continue;
+     std::vector<std::string> strs;
+      boost::split(strs, line, boost::is_any_of("\t "));
+      if(strs.size()!=3){
+	std::cout<<"ERROR: file input is not of correct form: name set path"<<std::endl;
+	break;
+      }
+      std::string name=strs[0];
+      std::string set=strs[1];
+      std::string path=strs[2];
+      filemanager_.AddFile(name,set,path);
+    }
     return *this;
   };
 

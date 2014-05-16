@@ -33,16 +33,11 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWDecay.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvZDecay.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MCFMStudy.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvControlPlots.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvWJetsPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/ModifyMet.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/JetMETModifier.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TmvaInputs.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TrigeffInputs.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
@@ -63,28 +58,15 @@ int main(int argc, char* argv[]){
   string input_prefix;            // A prefix that will be added to the path of each input file
   string output_name;             // Name of the ouput ROOT File
   string output_folder;           // Folder to write the output in
-  bool do_skim;                   // For making skimmed ntuples
-  bool do_trigeff;                // Apply trigger at end of selection to work out trigger efficiency and bin variables
-  bool do_trigeff_tree;           // Generate tree of variables used for trig study
-  bool do_light_tree;             // Generate tree for light tree steps
-  bool do_parked_trigs;           // Option to do parked triggers
-  bool do_gensteps;               // For getting numbers of events at gen level
   bool doincludehighptz;          // For including high pt z sample
-  string skim_path = "";          // Local folder where skimmed ntuples should be written
 
   string era_str;                 // Analysis data-taking era
   string mc_str;                  // Analysis MC production
   string prod;                    // Our prdocution string
 
-  string channel_str;             // Analysis channel
   string wstream;                 // W stream: enu, munu or taunu, or nunu for everything
 
-  bool ignoreLeptons;             // for Znunu estimates using DYJets samples
-
   bool is_data;                   // true = data, false = mc         
-  bool is_embedded;               // true = embedded, false = not an embedded sample
-  unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
-  bool make_sync_ntuple;          // Generate a sync ntuple
   bool dojessyst;                 // Do Jet Energy Scale Systematic Run
   bool dodatajessyst;             // Do Alternate Data Jet Energy Scale Method Systematic Run
   bool jesupordown;               // If doing Jet Energy Scale Systematic Run, run with up or down correction (true for up, false for down)
@@ -116,35 +98,15 @@ int main(int argc, char* argv[]){
 
   //CUTS
   double jet1ptcut;               //jet1ptcut
-  double jet1ptcutmax;            //jet1ptcutmax
   double jet2ptcut;               //jet2ptcut
-  double jet2ptcutmax;            //jet2ptcutmax
   double jetptprecut;             //jetptprecut, should be the CJV threshold
-  double detajjcut;               //delta eta between jets cut
-  double detajjcut_max;           //delta eta between jets cut
-  double dphi_cut;                //delta phi cut FOR TRIGGER STUDY ONLY
-  double dphi_cut_max;            //delta phi cut max FOR TRIGGER STUDY ONLY
-  double met_cut;                 // MET cut min to apply for signal, QCD or skim
-  double met_cut_max;             // MET cut max to apply for signal, QCD or skim
-  double mjj_cut;                 // mjjcut
-  double mjj_cut_max;             // maxmjjcut
-
 
   int randomseed;
-
-
 
   bool printEventList;  //print run,lumi,evt of events selected
   bool printEventContent; //print event content of events selected
 
-  bool doMCFMstudy;
   bool turnoffpuid;
-
-  bool doTopCR;
-
-  bool doTmvaTree; //write out a filewith a tree with TMVA variables
-
-  std::string eventsToSkim; //name of input file containing run,lumi,evt of events to be skimmed
 
  // Load the config
   po::options_description preconfig("Pre-Configuration");
@@ -159,38 +121,16 @@ int main(int argc, char* argv[]){
     ("input_prefix",        po::value<string>(&input_prefix)->default_value(""))
     ("output_name",         po::value<string>(&output_name)->required())
     ("output_folder",       po::value<string>(&output_folder)->default_value(""))
-    ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
-    ("do_trigeff",          po::value<bool>(&do_trigeff)->default_value(false))
-    ("do_trigeff_tree",     po::value<bool>(&do_trigeff_tree)->default_value(false))
-    ("do_light_tree",       po::value<bool>(&do_light_tree)->default_value(false))
-    ("do_parked_trigs",     po::value<bool>(&do_parked_trigs)->default_value(false))
-    ("do_gensteps",         po::value<bool>(&do_gensteps)->default_value(false))
     ("doincludehighptz",    po::value<bool>(&doincludehighptz)->default_value(false))
-    ("skim_path",           po::value<string>(&skim_path)->default_value(""))
     ("era",                 po::value<string>(&era_str)->required())
     ("mc",                  po::value<string>(&mc_str)->required())
     ("prod",                po::value<string>(&prod)->required())
-    ("channel",             po::value<string>(&channel_str)->default_value("nunu"))
     ("wstream",             po::value<string>(&wstream)->default_value("nunu"))
-    ("ignoreLeptons",       po::value<bool>(&ignoreLeptons)->default_value(false))
     ("is_data",             po::value<bool>(&is_data)->required())
-    ("is_embedded",         po::value<bool>(&is_embedded)->default_value(false))
-    ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
-    ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
-    ("met_cut",             po::value<double>(&met_cut)->default_value(130.))
-    ("met_cut_max",         po::value<double>(&met_cut_max)->default_value(14000.))
     ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(50.))
-    ("jet1ptcutmax",        po::value<double>(&jet1ptcutmax)->default_value(999999999.))
     ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(50.))
-    ("jet2ptcutmax",        po::value<double>(&jet2ptcutmax)->default_value(999999999.))
     ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(30.))
-    ("detajjcut",           po::value<double>(&detajjcut)->default_value(4.2))
-    ("detajjcut_max",       po::value<double>(&detajjcut_max)->default_value(20.))
-    ("dphi_cut",            po::value<double>(&dphi_cut)->default_value(0.))
-    ("dphi_cut_max",        po::value<double>(&dphi_cut_max)->default_value(6.3))
-    ("mjj_cut",             po::value<double>(&mjj_cut)->default_value(1200.))
-    ("mjj_cut_max",         po::value<double>(&mjj_cut_max)->default_value(8000.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))
@@ -212,16 +152,12 @@ int main(int argc, char* argv[]){
     ("trg_to_use",          po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
-    ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
     ("dosmear",             po::value<bool>(&dosmear)->default_value(false))
     ("doaltmatch",          po::value<bool>(&doaltmatch)->default_value(false))
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("dospring10gaus",      po::value<bool>(&dospring10gaus)->default_value(false))
     ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
-    ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false))
-    ("doTopCR",             po::value<bool>(&doTopCR)->default_value(false))
-    ("doTmvaTree",          po::value<bool>(&doTmvaTree)->default_value(false))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
@@ -235,14 +171,11 @@ int main(int argc, char* argv[]){
   // Some options must now be re-configured based on other options
   ic::era era           = String2Era(era_str);
   ic::mc mc             = String2MC(mc_str);
-  ic::channel channel   = String2Channel(channel_str);
 
   std::cout << "**** HiggsNuNu Analysis *****" << std::endl;
   string param_fmt = "%-25s %-40s\n";
   std::cout << boost::format(param_fmt) % "max_events" % max_events;
   std::cout << boost::format(param_fmt) % "output" % (output_folder+output_name);
-  std::cout << boost::format(param_fmt) % "do_skim" % do_skim;
-  if (do_skim) std::cout << boost::format(param_fmt) % "skim_path" % skim_path;
   std::cout << boost::format(param_fmt) % "dojessyst" % dojessyst;
   if (dojessyst) std::cout << boost::format(param_fmt) % "jesupordown" % jesupordown;
   std::cout << boost::format(param_fmt) % "dojersyst" % dojersyst;
@@ -250,26 +183,12 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "era" % era_str;
   std::cout << boost::format(param_fmt) % "mc" % mc_str;
   std::cout << boost::format(param_fmt) % "prod" % prod;
-  std::cout << boost::format(param_fmt) % "channel" % channel_str;
   std::cout << boost::format(param_fmt) % "wstream" % wstream;
   std::cout << boost::format(param_fmt) % "is_data" % is_data;
-  std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
-  std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
-  std::cout << boost::format(param_fmt) % "make_sync_ntuple" % make_sync_ntuple;
-  std::cout << boost::format(param_fmt) % "met_cut" % met_cut ;
-  std::cout << boost::format(param_fmt) % "met_cut_max" % met_cut_max ;
-  std::cout << boost::format(param_fmt) % "mjj_cut" % mjj_cut ;
   std::cout << boost::format(param_fmt) % "doMetFilters" % doMetFilters;
   std::cout << boost::format(param_fmt) % "filters" % filters;
   std::cout << boost::format(param_fmt) % "dotrgeff" % dotrgeff;
   std::cout << boost::format(param_fmt) % "doidisoeff" % doidisoeff;
-  std::cout << boost::format(param_fmt) % "doTopCR" % doTopCR;
-  std::cout << boost::format(param_fmt) % "doTmvaTree" % doTmvaTree;
-
-  if (channel==channel::nunulowmet || channel==channel::nunulowmetiglep){
-    met_cut_max=met_cut;
-    met_cut=0.;
-  }
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -317,8 +236,6 @@ int main(int argc, char* argv[]){
   veto_muon_pt = 10.0;
   veto_muon_eta = 2.1;
 
-  if(do_skim) jetptprecut = 30.0;
-   
   std::cout << "----------PARAMETERS----------" << std::endl;
   std::cout << boost::format("%-15s %-10s\n") % "elec_pt:" % elec_pt;
   std::cout << boost::format("%-15s %-10s\n") % "elec_eta:" % elec_eta;
@@ -358,12 +275,8 @@ int main(int argc, char* argv[]){
   HinvPrint hinvPrintList("HinvPrintList",is_data,false,true);
 
   //if (output_name.find("DYJJ01") != output_name.npos) {
-  if (output_name.find("EWK-Z2jiglep") != output_name.npos) {
-    ignoreLeptons = true;
-  }
-  if (channel==channel::nunuiglep||channel==channel::nunulowmetiglep){
-    ignoreLeptons = true;
-  }
+
+
 
   string data_json;
   if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
@@ -678,13 +591,6 @@ int main(int argc, char* argv[]){
     .set_min(1)
     .set_max(999);
 
-  cutaboveorbelow=false;
-  SimpleFilter<CompositeCandidate> jetPairMaxPtFilter = SimpleFilter<CompositeCandidate>("JetPairMaxPtFilter")
-    .set_input_label("jjLeadingCandidates")
-    .set_predicate( bind(OrderedPairPtSelection, _1, jet1ptcutmax, jet2ptcutmax, cutaboveorbelow) )
-    .set_min(1)
-    .set_max(999);
-  
   // ------------------------------------------------------------------------------------
   // Met Modules
   // ------------------------------------------------------------------------------------  
@@ -694,17 +600,11 @@ int main(int argc, char* argv[]){
   unsigned nLepToAdd = 100;
   //no need to be explicit in the number of leptons: will take the number 
   // that is asked in the selection (i.e. exactly one for the W->e,mu selections...)
-  //   if (channel == channel::munu || 
-  //       channel == channel::enu || 
-  //       channel == channel::emu
-  //       ) nLepToAdd = 1;
   
   ModifyMet metNoMuons = ModifyMet("metNoMuons",mettype,"selMuons",2,nLepToAdd);
   ModifyMet metNoElectrons = ModifyMet("metNoElectrons",mettype,"selElectrons",1,nLepToAdd);
   ModifyMet metNoENoMu = ModifyMet("metNoENoMu","metNoMuons","selElectrons",1,nLepToAdd);
 
-  if (ignoreLeptons) mettype="metNoMuons";
-  if (channel==channel::mumu) mettype="metNoMuons"; 
 
   // ------------------------------------------------------------------------------------
   // Weight Modules
@@ -723,25 +623,12 @@ int main(int argc, char* argv[]){
     .set_do_idiso_errmuore(doidisoerrmuore)
     .set_fs(fs)
     .set_input_met("metNoMuons");
-  //  if (channel == channel::enu || channel == channel::emu) hinvWeights.set_input_met("metNoENoMu");
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
-    if(!do_light_tree){
-      if (channel==channel::nunu ||channel==channel::nunulowmet|| channel == channel::taunu){
-	hinvWeights.set_do_idiso_veto_weights(doidisoeff);
-      }
-      else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
-    }
-    else{
-      hinvWeights.set_do_idiso_veto_weights(false);
-      hinvWeights.set_do_idiso_tight_weights(false);
-    }
-    if (ignoreLeptons){ 
-      hinvWeights.set_do_idiso_veto_weights(false);
-      hinvWeights.set_do_idiso_tight_weights(false);
-    }
+    hinvWeights.set_do_idiso_veto_weights(false);
+    hinvWeights.set_do_idiso_tight_weights(false);
   }
 
   HinvWeights xsWeights = HinvWeights("XSWeights")
@@ -789,9 +676,6 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
 
   int lFlavour = 1;
-  //if (channel == channel::enu) lFlavour = 11;
-  //else if (channel == channel::munu) lFlavour = 13;
-  //else if (channel == channel::taunu) lFlavour = 15;
   if (wstream == "enu") lFlavour = 11;
   else if (wstream == "munu") lFlavour = 13;
   else if (wstream == "taunu") lFlavour = 15;
@@ -810,7 +694,6 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("JetPair")
     .set_is_data(is_data)
-    .set_channel(channel_str)
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
     .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
@@ -879,7 +762,6 @@ int main(int argc, char* argv[]){
   analysis.AddModule(&jetMuonOverlapFilter);
   analysis.AddModule(&jetElecOverlapFilter);
   //no need to clean taus, we don't do it in the signal selection.
-  //if (channel == channel::taunu) analysis.AddModule(&jetTauOverlapFilter);
   
   //Module to do jet smearing and systematics
   analysis.AddModule(&ModifyJetMET);
@@ -907,6 +789,7 @@ int main(int argc, char* argv[]){
     //if (printEventList) analysis.AddModule(&hinvPrintList);
 
   //record the number of jets in the gap
+  analysis.AddModule(&jetPairFilter);
   analysis.AddModule(&FilterCJV);
   
   //jet pair selection

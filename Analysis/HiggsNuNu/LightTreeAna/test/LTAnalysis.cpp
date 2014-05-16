@@ -3,86 +3,41 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeModule.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeFiles.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataWEst.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/NormPlots.h"
 #include "boost/lexical_cast.hpp"
+#include "boost/program_options.hpp"
 
+namespace po=boost::program_options;
 using namespace ic;
 
 int main(int argc, char* argv[]){
-  std::string outputname="tmp.root";
+  std::string cfg;
+  std::string outputname;
+  std::string inputfolder;
+  std::string inputparams;
+  std::string filelist;
+
+  po::options_description preconfig("Configuration"); 
+  preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
+  po::variables_map vm;
+  po::store(po::command_line_parser(argc, argv).options(preconfig).allow_unregistered().run(), vm);
+  po::notify(vm);
+  po::options_description config("Configuration");
+  config.add_options()
+    ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
+    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_newcpptrial/"))
+    ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
+    ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelist.dat"));
+  po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
+  po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
+  po::notify(vm);
+
   LTAnalyser* analysis = new LTAnalyser(outputname);
 
-  analysis->SetInFolder("../output_lighttree_lepweightscorrected/nunu/");
-  analysis->SetInputParams("../filelists/Dec18/ParamsDec18test.dat");
+  analysis->AddFiles(filelist);
 
-  //Define Files
-  analysis->AddFile("WJetsv1","WJets","MC_WJetsToLNu-v1.root");
-  analysis->AddFile("WJetsv2","WJets","MC_WJetsToLNu-v2.root");
-  analysis->AddFile("W1Jets","WJets","MC_W1JetsToLNu.root");
-  analysis->AddFile("W2Jets","WJets","MC_W2JetsToLNu.root");
-  analysis->AddFile("W3Jets","WJets","MC_W3JetsToLNu.root");
-  analysis->AddFile("W4Jets","WJets","MC_W4JetsToLNu.root");
-  analysis->AddFile("EWK-Wminus","WJets","MC_EWK-W2jminus_enu.root");
-  analysis->AddFile("EWK-Wplus","WJets","MC_EWK-W2jplus_enu.root");
-
-
-  analysis->AddFile("WJetsv1_enu","WJets_enu","MC_WJetsToLNu-v1_enu.root");
-  analysis->AddFile("WJetsv2_enu","WJets_enu","MC_WJetsToLNu-v2_enu.root");
-  analysis->AddFile("W1Jets_enu","WJets_enu","MC_W1JetsToLNu_enu.root");
-  analysis->AddFile("W2Jets_enu","WJets_enu","MC_W2JetsToLNu_enu.root");
-  analysis->AddFile("W3Jets_enu","WJets_enu","MC_W3JetsToLNu_enu.root");
-  analysis->AddFile("W4Jets_enu","WJets_enu","MC_W4JetsToLNu_enu.root");
-  analysis->AddFile("EWK-Wminus_enu","WJets_enu","MC_EWK-W2jminus_enu.root");
-  analysis->AddFile("EWK-Wplus_enu","WJets_enu","MC_EWK-W2jplus_enu.root");
-
-  analysis->AddFile("WJetsv1_munu","WJets_munu","MC_WJetsToLNu-v1_munu.root");
-  analysis->AddFile("WJetsv2_munu","WJets_munu","MC_WJetsToLNu-v2_munu.root");
-  analysis->AddFile("W1Jets_munu","WJets_munu","MC_W1JetsToLNu_munu.root");
-  analysis->AddFile("W2Jets_munu","WJets_munu","MC_W2JetsToLNu_munu.root");
-  analysis->AddFile("W3Jets_munu","WJets_munu","MC_W3JetsToLNu_munu.root");
-  analysis->AddFile("W4Jets_munu","WJets_munu","MC_W4JetsToLNu_munu.root");
-  analysis->AddFile("EWK-Wminus_munu","WJets_munu","MC_EWK-W2jminus_munu.root");
-  analysis->AddFile("EWK-Wplus_munu","WJets_munu","MC_EWK-W2jplus_munu.root");
-
-  analysis->AddFile("WJetsv1_taunu","WJets_taunu","MC_WJetsToLNu-v1_taunu.root");
-  analysis->AddFile("WJetsv2_taunu","WJets_taunu","MC_WJetsToLNu-v2_taunu.root");
-  analysis->AddFile("W1Jets_taunu","WJets_taunu","MC_W1JetsToLNu_taunu.root");
-  analysis->AddFile("W2Jets_taunu","WJets_taunu","MC_W2JetsToLNu_taunu.root");
-  analysis->AddFile("W3Jets_taunu","WJets_taunu","MC_W3JetsToLNu_taunu.root");
-  analysis->AddFile("W4Jets_taunu","WJets_taunu","MC_W4JetsToLNu_taunu.root");
-  analysis->AddFile("EWK-Wminus_taunu","WJets_taunu","MC_EWK-W2jminus_taunu.root");
-  analysis->AddFile("EWK-Wplus_taunu","WJets_taunu","MC_EWK-W2jplus_taunu.root");
-
-  analysis->AddFile("TTJets","Top","MC_TTJets.root");
-  analysis->AddFile("T-tW","Top","MC_T-tW.root");
-  analysis->AddFile("Tbar-tW","Top","MC_Tbar-tW.root");
-  analysis->AddFile("SingleT-s","Top","MC_SingleT-s-powheg-tauola.root");
-  analysis->AddFile("SingleT-t","Top","MC_SingleT-t-powheg-tauola.root");
-  analysis->AddFile("SingleTBar-s","Top","MC_SingleTBar-s-powheg-tauola.root");
-  analysis->AddFile("SingleTBar-t","Top","MC_SingleTBar-t-powheg-tauola.root");
-
-  analysis->AddFile("WW","VV","MC_WW-pythia6-tauola.root");
-  analysis->AddFile("WZ","VV","MC_WZ-pythia6-tauola.root");
-  analysis->AddFile("ZZ","VV","MC_ZZ-pythia6-tauola.root");
-  analysis->AddFile("WGamma","VV","MC_WGamma.root");
-
-  analysis->AddFile("DYJetsToLLHighPt","ZJets_ll","MC_DYJetsToLL_PtZ-100-madgraph.root");
-  analysis->AddFile("DYJetsToLL","ZJets_ll","MC_DYJetsToLL.root");
-  analysis->AddFile("DY1JetsToLL","ZJets_ll","MC_DY1JetsToLL.root");
-  analysis->AddFile("DY2JetsToLL","ZJets_ll","MC_DY2JetsToLL.root");
-  analysis->AddFile("DY3JetsToLL","ZJets_ll","MC_DY3JetsToLL.root");
-  analysis->AddFile("DY4JetsToLL","ZJets_ll","MC_DY4JetsToLL.root");
-  
-  analysis->AddFile("EWK-Z2j","ZJets_ll_vbf","MC_EWK-Z2j.root");
-  
-  analysis->AddFile("ZJetsToNuNu50-100","ZJets_nunu","MC_ZJetsToNuNu_50_HT_100.root");
-  analysis->AddFile("ZJetsToNuNu100-200","ZJets_nunu","MC_ZJetsToNuNu_100_HT_200.root");
-  analysis->AddFile("ZJetsToNuNu200-400","ZJets_nunu","MC_ZJetsToNuNu_200_HT_400.root");
-  analysis->AddFile("ZJetsToNuNu400-inf","ZJets_nunu","MC_ZJetsToNuNu_400_HT_inf.root");
-
-  analysis->AddFile("META","MET","MET_MET-2012A-22Jan2013-v1.root");
-  analysis->AddFile("METB","MET","MET_MET-2012B-22Jan2013-v1.root");
-  analysis->AddFile("METC","MET","MET_MET-2012C-22Jan2013-v1.root");
-  analysis->AddFile("METD","MET","MET_METParked-2012D-22Jan2013-v1.root");
+  analysis->SetInFolder(inputfolder);
+  analysis->SetInputParams(inputparams);
 
   //Set selection step common to all categories
   double jet1ptcut=50;
@@ -97,6 +52,7 @@ int main(int argc, char* argv[]){
 
   //Define Modules
 
+  //WBKG
   std::vector<std::string> contbkgsets; //List of sets for ncbkg
   contbkgsets.push_back("VV");
   contbkgsets.push_back("Top");
@@ -122,7 +78,42 @@ int main(int argc, char* argv[]){
     .set_sigcat("nvetoelectrons==0 && nvetomuons==0&& met>"+boost::lexical_cast<std::string>(metcut))
     .set_contcat("nselelectrons==1 && nvetoelectrons ==1 && nvetomuons==0&& met>"+boost::lexical_cast<std::string>(metcut));
 
+  //NORMALISED PLOTS FOR REFEREE
+  std::vector<std::string> ewksets; //List of sets for ewk
+  ewksets.push_back("VV");
+  ewksets.push_back("Top");
+  ewksets.push_back("ZJets_ll");
+  ewksets.push_back("ZJets_ll_vbf");
+  ewksets.push_back("ZJets_nunu");
+  ewksets.push_back("WJets_enu");
+  ewksets.push_back("WJets_munu");
+  ewksets.push_back("WJets_taunu");
 
+  std::vector<std::string> shapes; //List of shapes to draw
+  shapes.push_back("dijet_M(370,150.,2000.)");
+  shapes.push_back("dijet_deta(160,0.,8.)");
+  shapes.push_back("dijet_dphi(310,0.,3.1)");
+  // shapes.push_back("jet1_eta(200,-5.,5.)");
+  //   shapes.push_back("jet1_pt(200,0.,1000.)");
+  //   shapes.push_back("jet2_eta(200,-5.,5.)");
+  //   shapes.push_back("jet2_pt(200,0.,1000.)");
+  shapes.push_back("met(80,0.,400.)");
+  shapes.push_back("cjv_30_jet3pt(100,0.,100.)");
+  // shapes.push_back("n_jets_cjv_30(15,0.,15.)");
+  //   shapes.push_back("n_jets_cjv_20EB_30EE(15,0.,15.)");
+  //   shapes.push_back("met_significance(400,0.,20.)");
+  //   shapes.push_back("dijet_sumeta(200,-5.,5.)");
+
+
+  NormPlots normplots("normplots");
+  normplots.set_qcdset("QCD")
+    .set_sigset("sig125")
+    .set_ewkset(ewksets)
+    .set_cat("")
+    .set_basesel("jet1_eta<4.7&&jet2_eta<4.7&&jet1_pt>30&&jet2_pt>30&&nvetoelectrons==0 && nvetomuons==0&&dijet_M>150&&met>40")
+    .set_shapes(shapes);
+
+  //analysis->AddModule(&normplots);
   analysis->AddModule(&wmunu);
   analysis->AddModule(&wenu);
 

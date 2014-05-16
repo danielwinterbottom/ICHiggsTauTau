@@ -19,7 +19,6 @@ namespace ic {
     CLASS_MEMBER(LightTree,std::string, met_label);
     CLASS_MEMBER(LightTree,std::string, dijet_label);
     CLASS_MEMBER(LightTree,std::string, sel_label);
-    CLASS_MEMBER(LightTree,std::string, channel);
     CLASS_MEMBER(LightTree,bool, is_data);
     CLASS_MEMBER(LightTree,bool, is_embedded);
     CLASS_MEMBER(LightTree,std::string, trig_obj_label);
@@ -64,8 +63,11 @@ namespace ic {
     double dijetmet_ptfraction_;
     double jet1met_scalarprod_;
     double jet2met_scalarprod_;
+    double cjvjetpt_;
     unsigned n_jets_cjv_30_;
+    double cjv_30_jet3pt_;
     unsigned n_jets_cjv_20EB_30EE_;
+    double cjv_20EB_30EE_jet3pt_;
     double passtrigger_;
     double passparkedtrigger1_;
     double passparkedtrigger2_;

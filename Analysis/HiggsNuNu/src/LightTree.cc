@@ -19,7 +19,6 @@ namespace ic {
     met_label_ = "pfMetType1";
     dijet_label_ = "jjCandidates";
     sel_label_ = "JetPair";
-    channel_ = "nunu";
     is_data_ = false;
     is_embedded_ = false;
     trig_obj_label_ = "triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets";
@@ -64,7 +63,10 @@ namespace ic {
     jet1met_scalarprod_ = 0;
     jet2met_scalarprod_ = 0;
     n_jets_cjv_30_ = 0;
+    cjv_30_jet3pt_ = -1;
     n_jets_cjv_20EB_30EE_ = 0;
+    cjv_20EB_30EE_jet3pt_ = -1;
+    cjvjetpt_=-1;
     passtrigger_ = -1;
     passparkedtrigger1_ = -1;
     passparkedtrigger2_ = -1;
@@ -93,7 +95,6 @@ namespace ic {
       std::cout << "MET Label: " << met_label_ << std::endl;
       std::cout << "dijet Label: " << dijet_label_ << std::endl;
       std::cout << "Selection Label: " << sel_label_ << std::endl;
-      std::cout << "Channel :" << channel_ << std::endl;
       if (is_embedded_ && is_data_) std::cout << "Processing set for embedded data !" << std::endl;
       else if (is_data_) std::cout << "Processing set for data !" << std::endl;
       else if (is_embedded_) std::cout << "Processing set for embedded MC !" << std::endl;
@@ -140,6 +141,9 @@ namespace ic {
     outputTree_->Branch("jet2met_scalarprod",&jet2met_scalarprod_);
     outputTree_->Branch("n_jets_cjv_30",&n_jets_cjv_30_);
     outputTree_->Branch("n_jets_cjv_20EB_30EE",&n_jets_cjv_20EB_30EE_);
+    outputTree_->Branch("cjvjetpt_",&cjvjetpt_);
+    outputTree_->Branch("cjv_30_jet3pt",&cjv_30_jet3pt_);
+    outputTree_->Branch("cjv_20EB_30EE_jet3pt",&cjv_20EB_30EE_jet3pt_);
     outputTree_->Branch("passtrigger",&passtrigger_);
     outputTree_->Branch("passparkedtrigger1",&passparkedtrigger1_);
     outputTree_->Branch("passparkedtrigger2",&passparkedtrigger2_);
@@ -160,9 +164,12 @@ namespace ic {
   int  LightTree::Execute(TreeEvent *event){
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     double wt = eventInfo->total_weight();
-    double vetowt = eventInfo->weight("!idisoVeto");
-    double tightwt = eventInfo->weight("!idisoTight");
-
+    double vetowt=1;
+    double tightwt=1;
+    if(!is_data_){
+      vetowt= eventInfo->weight("idisoVeto");
+      tightwt = eventInfo->weight("idisoTight");
+    }
     //get collections
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
     Met const* met = event->GetPtr<Met>(met_label_);
@@ -192,29 +199,30 @@ namespace ic {
     //Get gen z mass
     int ngenmuplus=0;
     int ngenmuminus=0;
-    std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
-    GenParticle* lepplus = 0;
-    GenParticle* lepminus = 0;
-    
-    for (unsigned i = 0; i < parts.size(); ++i) {
-      if (parts[i]->status() != 3) continue;
+    if(!is_data_){
+      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      GenParticle* lepplus = 0;
+      GenParticle* lepminus = 0;
       
-      int id = parts[i]->pdgid();
-      
-      if (id == static_cast<int>(13)) {
-	lepminus = parts[i];
-	ngenmuminus++;
-      }
-      if (id == static_cast<int>(-13)) {
+      for (unsigned i = 0; i < parts.size(); ++i) {
+	if (parts[i]->status() != 3) continue;
+	
+	int id = parts[i]->pdgid();
+	
+	if (id == static_cast<int>(13)) {
+	  lepminus = parts[i];
+	  ngenmuminus++;
+	}
+	if (id == static_cast<int>(-13)) {
 	lepplus = parts[i];
 	ngenmuplus++;
-      }  
-    }//loop on genparticles                                                                                                                                  
-
-    if (ngenmuminus==1&&ngenmuplus==1) {
-      m_mumu_gen_ = (lepplus->vector()+lepminus->vector()).M();
+	}  
+      }//loop on genparticles                                                                                                                                  
+      
+      if (ngenmuminus==1&&ngenmuplus==1) {
+	m_mumu_gen_ = (lepplus->vector()+lepminus->vector()).M();
+      }
     }
-    
 
     if (dijet_vec.size() != 0) {
       
@@ -292,11 +300,19 @@ namespace ic {
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
 	  bool isInCentralGap = fabs(jets[i]->eta())<4.7 && jets[i]->eta() > eta_low && jets[i]->eta() < eta_high;
-	  if (jets[i]->pt() > 30.0 && isInCentralGap) ++n_jets_cjv_30_;
+	  if(isInCentralGap){
+	    cjvjetpt_=jets[i]->pt();
+	  }
+	  if (jets[i]->pt() > 30.0 && isInCentralGap){
+	    ++n_jets_cjv_30_;
+	    if(jets[i]->pt()>cjv_30_jet3pt_)cjv_30_jet3pt_=jets[i]->pt();
+	  }
 	  if ( ((jets[i]->eta()<2.4 && jets[i]->pt() > 20.0) ||
 		(jets[i]->eta()>=2.4 && jets[i]->pt() > 30.0)) && 
-	       isInCentralGap)
+	       isInCentralGap){
 	    ++n_jets_cjv_20EB_30EE_;
+	    if(jets[i]->pt()>cjv_20EB_30EE_jet3pt_)cjv_20EB_30EE_jet3pt_=jets[i]->pt();
+	  }
 	}
       }
       

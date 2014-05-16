@@ -1,0 +1,82 @@
+WJetsv1 WJets MC_WJetsToLNu-v1.root
+WJetsv2 WJets MC_WJetsToLNu-v2.root
+W1Jets WJets MC_W1JetsToLNu.root
+W2Jets WJets MC_W2JetsToLNu.root
+W3Jets WJets MC_W3JetsToLNu.root
+W4Jets WJets MC_W4JetsToLNu.root
+EWK-Wminus WJets MC_EWK-W2jminus.root
+EWK-Wplus WJets MC_EWK-W2jplus.root
+
+WJetsv1_enu WJets_enu MC_WJetsToLNu-v1_enu.root
+WJetsv2_enu WJets_enu MC_WJetsToLNu-v2_enu.root
+W1Jets_enu WJets_enu MC_W1JetsToLNu_enu.root
+W2Jets_enu WJets_enu MC_W2JetsToLNu_enu.root
+W3Jets_enu WJets_enu MC_W3JetsToLNu_enu.root
+W4Jets_enu WJets_enu MC_W4JetsToLNu_enu.root
+EWK-Wminus_enu WJets_enu MC_EWK-W2jminus_enu.root
+EWK-Wplus_enu WJets_enu MC_EWK-W2jplus_enu.root
+
+WJetsv1_munu WJets_munu MC_WJetsToLNu-v1_munu.root
+WJetsv2_munu WJets_munu MC_WJetsToLNu-v2_munu.root
+W1Jets_munu WJets_munu MC_W1JetsToLNu_munu.root
+W2Jets_munu WJets_munu MC_W2JetsToLNu_munu.root
+W3Jets_munu WJets_munu MC_W3JetsToLNu_munu.root
+W4Jets_munu WJets_munu MC_W4JetsToLNu_munu.root
+EWK-Wminus_munu WJets_munu MC_EWK-W2jminus_munu.root
+EWK-Wplus_munu WJets_munu MC_EWK-W2jplus_munu.root
+
+WJetsv1_taunu WJets_taunu MC_WJetsToLNu-v1_taunu.root
+WJetsv2_taunu WJets_taunu MC_WJetsToLNu-v2_taunu.root
+W1Jets_taunu WJets_taunu MC_W1JetsToLNu_taunu.root
+W2Jets_taunu WJets_taunu MC_W2JetsToLNu_taunu.root
+W3Jets_taunu WJets_taunu MC_W3JetsToLNu_taunu.root
+W4Jets_taunu WJets_taunu MC_W4JetsToLNu_taunu.root
+EWK-Wminus_taunu WJets_taunu MC_EWK-W2jminus_taunu.root
+EWK-Wplus_taunu WJets_taunu MC_EWK-W2jplus_taunu.root
+
+TTJets Top MC_TTJets.root
+T-tW Top MC_T-tW.root
+Tbar-tW Top MC_Tbar-tW.root
+SingleT-s Top MC_SingleT-s-powheg-tauola.root
+SingleT-t Top MC_SingleT-t-powheg-tauola.root
+SingleTBar-s Top MC_SingleTBar-s-powheg-tauola.root
+SingleTBar-t Top MC_SingleTBar-t-powheg-tauola.root
+
+WW VV MC_WW-pythia6-tauola.root
+WZ VV MC_WZ-pythia6-tauola.root
+ZZ VV MC_ZZ-pythia6-tauola.root
+WGamma VV MC_WGamma.root
+
+DYJetsToLLHighPt ZJets_ll MC_DYJetsToLL_PtZ-100-madgraph.root
+DYJetsToLL ZJets_ll MC_DYJetsToLL.root
+DY1JetsToLL ZJets_ll MC_DY1JetsToLL.root
+DY2JetsToLL ZJets_ll MC_DY2JetsToLL.root
+DY3JetsToLL ZJets_ll MC_DY3JetsToLL.root
+DY4JetsToLL ZJets_ll MC_DY4JetsToLL.root
+
+EWK-Z2j ZJets_ll_vbf MC_EWK-Z2j.root
+
+ZJetsToNuNu50-100 ZJets_nunu MC_ZJetsToNuNu_50_HT_100.root
+ZJetsToNuNu100-200 ZJets_nunu MC_ZJetsToNuNu_100_HT_200.root
+ZJetsToNuNu200-400 ZJets_nunu MC_ZJetsToNuNu_200_HT_400.root
+ZJetsToNuNu400-inf ZJets_nunu MC_ZJetsToNuNu_400_HT_inf.root
+
+META MET MET_MET-2012A-22Jan2013-v1.root
+METB MET MET_MET-2012B-22Jan2013-v1.root
+METC MET MET_MET-2012C-22Jan2013-v1.root
+METD MET MET_METParked-2012D-22Jan2013-v1.root
+
+QCD-Pt-1000to1400 QCD MC_QCD-Pt-1000to1400-pythia6.root
+QCD-Pt-120to170 QCD MC_QCD-Pt-120to170-pythia6.root
+QCD-Pt-1400to1800 QCD MC_QCD-Pt-1400to1800-pythia6.root
+QCD-Pt-170to300 QCD MC_QCD-Pt-170to300-pythia6.root
+QCD-Pt-1800 QCD MC_QCD-Pt-1800-pythia6.root
+QCD-Pt-300to470 QCD MC_QCD-Pt-300to470-pythia6.root
+QCD-Pt-30to50 QCD MC_QCD-Pt-30to50-pythia6.root
+QCD-Pt-470to600 QCD MC_QCD-Pt-470to600-pythia6.root
+QCD-Pt-50to80 QCD MC_QCD-Pt-50to80-pythia6.root
+QCD-Pt-600to800 QCD MC_QCD-Pt-600to800-pythia6.root
+QCD-Pt-800to1000 QCD MC_QCD-Pt-800to1000-pythia6.root
+QCD-Pt-80to120 QCD MC_QCD-Pt-80to120-pythia6.root
+
+powheg125 sig125 MC_Powheg-Htoinv-mH125.root
