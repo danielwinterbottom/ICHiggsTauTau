@@ -141,7 +141,7 @@ namespace ic {
     outputTree_->Branch("jet2met_scalarprod",&jet2met_scalarprod_);
     outputTree_->Branch("n_jets_cjv_30",&n_jets_cjv_30_);
     outputTree_->Branch("n_jets_cjv_20EB_30EE",&n_jets_cjv_20EB_30EE_);
-    outputTree_->Branch("cjvjetpt_",&cjvjetpt_);
+    outputTree_->Branch("cjvjetpt",&cjvjetpt_);
     outputTree_->Branch("cjv_30_jet3pt",&cjv_30_jet3pt_);
     outputTree_->Branch("cjv_20EB_30EE_jet3pt",&cjv_20EB_30EE_jet3pt_);
     outputTree_->Branch("passtrigger",&passtrigger_);
