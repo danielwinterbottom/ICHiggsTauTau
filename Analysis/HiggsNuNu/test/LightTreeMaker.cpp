@@ -130,7 +130,7 @@ int main(int argc, char* argv[]){
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
     ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(50.))
     ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(50.))
-    ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(30.))
+    ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(15.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
     ("dojessyst",           po::value<bool>(&dojessyst)->default_value(false))

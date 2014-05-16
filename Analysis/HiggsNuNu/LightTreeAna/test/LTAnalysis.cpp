@@ -11,11 +11,23 @@ namespace po=boost::program_options;
 using namespace ic;
 
 int main(int argc, char* argv[]){
+  //Input output and config options
   std::string cfg;
   std::string outputname;
   std::string inputfolder;
   std::string inputparams;
   std::string filelist;
+  
+  //Base selection cuts
+  double jet1ptcut;
+  double jet2ptcut;
+  double metcut;
+  double mjjcut=1100;
+  double cjvcut=1;
+  double dphicut=1;
+  double detacut=4.2;
+  double etaprodcut=0;
+
 
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
@@ -24,10 +36,15 @@ int main(int argc, char* argv[]){
   po::notify(vm);
   po::options_description config("Configuration");
   config.add_options()
+    //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
-    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_newcpptrial/"))
+    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_cjvjetpt/"))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
-    ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelist.dat"));
+    ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
+    //Base selection cuts
+    ("jet1ptcut",                po::value<double>(&jet1ptcut)->default_value(50))
+    ("jet2ptcut",                po::value<double>(&jet2ptcut)->default_value(50))
+    ("metcut",                   po::value<double>(&metcut)->default_value(130));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
   po::notify(vm);
@@ -40,15 +57,7 @@ int main(int argc, char* argv[]){
   analysis->SetInputParams(inputparams);
 
   //Set selection step common to all categories
-  double jet1ptcut=50;
-  double jet2ptcut=50;
-  double metcut=130;
-  double mjjcut=1100;
-  double cjvcut=1;
-  double dphicut=1;
-  double detacut=4.2;
-  double etaprodcut=0;
-  analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<="+boost::lexical_cast<std::string>(etaprodcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
+    analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<="+boost::lexical_cast<std::string>(etaprodcut)+" && n_jets_cjv_30<"+boost::lexical_cast<std::string>(cjvcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
 
   //Define Modules
 
@@ -90,15 +99,15 @@ int main(int argc, char* argv[]){
   ewksets.push_back("WJets_taunu");
 
   std::vector<std::string> shapes; //List of shapes to draw
-  shapes.push_back("dijet_M(370,150.,2000.)");
-  shapes.push_back("dijet_deta(160,0.,8.)");
-  shapes.push_back("dijet_dphi(310,0.,3.1)");
+//   shapes.push_back("dijet_M(370,150.,2000.)");
+//   shapes.push_back("dijet_deta(160,0.,8.)");
+//   shapes.push_back("dijet_dphi(310,0.,3.1)");
   // shapes.push_back("jet1_eta(200,-5.,5.)");
   //   shapes.push_back("jet1_pt(200,0.,1000.)");
   //   shapes.push_back("jet2_eta(200,-5.,5.)");
   //   shapes.push_back("jet2_pt(200,0.,1000.)");
-  shapes.push_back("met(80,0.,400.)");
-  shapes.push_back("cjv_30_jet3pt(100,0.,100.)");
+  //shapes.push_back("met(80,0.,400.)");
+  shapes.push_back("cjvjetpt_(100,0.,100.)");
   // shapes.push_back("n_jets_cjv_30(15,0.,15.)");
   //   shapes.push_back("n_jets_cjv_20EB_30EE(15,0.,15.)");
   //   shapes.push_back("met_significance(400,0.,20.)");

@@ -26,17 +26,18 @@ namespace ic {
 
     outputTree_ = 0;
 
-    total_weight_nolep_=1;
+    weight_nolep_=1;
     total_weight_lepveto_ = 1;
     total_weight_leptight_ = 1;
     jet1_pt_ = 0;
     jet2_pt_ = 0;
-    jet1_eta_ = 0;
-    jet2_eta_ = 0;
-    jet1_phi_ = 0;
-    jet2_phi_ = 0;
     jet1_E_ = 0;
     jet2_E_ = 0;
+    jet1_eta_ = 0;
+    jet2_eta_ = 0;
+    jet1_csv_ = 0;
+    jet2_csv_ = 0;
+    jet3_csv_ = 0;
     dijet_M_ = 0;
     dijet_deta_ = 0;
     dijet_sumeta_ = 0;
@@ -44,14 +45,12 @@ namespace ic {
     met_ = 0;
     met_x_ = 0;
     met_y_ = 0;
-    met_phi_ = 0;
     met_significance_ = 0;
     sumet_ = 0;
     ht_ = 0;
     mht_ = 0;
     sqrt_ht_ = 0;
     unclustered_et_ = 0;
-    unclustered_phi_ = 0;
     jet1met_dphi_ = 0;
     jet2met_dphi_ = 0;
     jetmet_mindphi_ = 0;
@@ -80,6 +79,10 @@ namespace ic {
     ntaus_=0;
     m_mumu_=-1;
     m_mumu_gen_=-1;
+    mu1_pt_=-1;
+    mu1_eta_=-1;
+    ele1_pt_=-1;
+    ele1_eta_=-1;
   }
 
   LightTree::~LightTree(){
@@ -103,17 +106,18 @@ namespace ic {
 
     outputTree_ = fs_->make<TTree>("LightTree","Tree containing LightTreeAna input variables");
 
-    outputTree_->Branch("total_weight_nolep",&total_weight_nolep_);
+    outputTree_->Branch("weight_nolep",&weight_nolep_);
     outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("jet1_pt",&jet1_pt_);
     outputTree_->Branch("jet2_pt",&jet2_pt_);
-    outputTree_->Branch("jet1_eta",&jet1_eta_);
-    outputTree_->Branch("jet2_eta",&jet2_eta_);
-    outputTree_->Branch("jet1_phi",&jet1_phi_);
-    outputTree_->Branch("jet2_phi",&jet2_phi_);
     outputTree_->Branch("jet1_E",&jet1_E_);
     outputTree_->Branch("jet2_E",&jet2_E_);
+    outputTree_->Branch("jet1_eta",&jet1_eta_);
+    outputTree_->Branch("jet2_eta",&jet2_eta_);
+    outputTree_->Branch("jet1_csv",&jet1_csv_);
+    outputTree_->Branch("jet2_csv",&jet2_csv_);
+    outputTree_->Branch("jet3_csv",&jet3_csv_);
     outputTree_->Branch("dijet_M",&dijet_M_);
     outputTree_->Branch("dijet_deta",&dijet_deta_);
     outputTree_->Branch("dijet_sumeta",&dijet_sumeta_);
@@ -121,14 +125,12 @@ namespace ic {
     outputTree_->Branch("met",&met_);
     outputTree_->Branch("met_x",&met_x_);
     outputTree_->Branch("met_y",&met_y_);
-    outputTree_->Branch("met_phi",&met_phi_);
     outputTree_->Branch("met_significance",&met_significance_);
     outputTree_->Branch("sumet",&sumet_);
     outputTree_->Branch("ht",&ht_);
     outputTree_->Branch("mht",&mht_);
     outputTree_->Branch("sqrt_ht",&sqrt_ht_);
     outputTree_->Branch("unclustered_et",&unclustered_et_);
-    outputTree_->Branch("unclustered_phi",&unclustered_phi_);
     outputTree_->Branch("jet1met_dphi",&jet1met_dphi_);
     outputTree_->Branch("jet2met_dphi",&jet2met_dphi_);
     outputTree_->Branch("jetmet_mindphi",&jetmet_mindphi_);
@@ -157,6 +159,10 @@ namespace ic {
     outputTree_->Branch("ntaus",&ntaus_);
     outputTree_->Branch("m_mumu",&m_mumu_);
     outputTree_->Branch("m_mumu_gen",&m_mumu_gen_);
+    outputTree_->Branch("mu1_pt",&mu1_pt_);
+    outputTree_->Branch("mu1_eta",&mu1_eta_);
+    outputTree_->Branch("ele1_pt",&ele1_pt_);
+    outputTree_->Branch("ele1_eta",&ele1_eta_);
 
     return 0;
   }
@@ -191,6 +197,18 @@ namespace ic {
     nvetoelectrons_=vetoelectrons.size();
     nselelectrons_=selelectrons.size();
     ntaus_=taus.size();
+
+    std::sort(selmuons.begin(), selmuons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::sort(selelectrons.begin(), selelectrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    
+    if(nselmuons_>=1){
+      mu1_pt_=selmuons[0]->pt();
+      mu1_pt_=selmuons[0]->eta();
+    }
+    if(nselelectrons_>=1){
+      ele1_pt_=selelectrons[0]->pt();
+      ele1_eta_=selelectrons[0]->eta();
+    }
 
     if(nselmuons_==2){
       m_mumu_=((selmuons.at(0)->vector())+(selmuons.at(1)->vector())).M();
@@ -234,18 +252,16 @@ namespace ic {
       ROOT::Math::PtEtaPhiEVector jet2vec = jet2->vector();
       ROOT::Math::PtEtaPhiEVector metvec = met->vector();
 
-      total_weight_nolep_ = wt;
+      weight_nolep_ = wt;
       total_weight_lepveto_ =wt*vetowt;
       total_weight_leptight_=wt*tightwt;
       
       jet1_pt_ = jet1->pt();
       jet2_pt_ = jet2->pt();
+      jet1_pt_ = jet1vec.E();
+      jet2_pt_ = jet2vec.E();
       jet1_eta_ = jet1->eta();
       jet2_eta_ = jet2->eta();
-      jet1_phi_ = jet1->phi();
-      jet2_phi_ = jet2->phi();
-      jet1_E_ = jet1vec.E();
-      jet2_E_ = jet2vec.E();
       dijet_M_ = dijet->M();
       dijet_deta_ = fabs(jet1->eta() - jet2->eta());
       dijet_sumeta_ = jet1->eta() + jet2->eta();
@@ -253,7 +269,6 @@ namespace ic {
       met_ = met->pt();
       met_x_ = metvec.Px();
       met_y_ = metvec.Py();
-      met_phi_ = met->phi();
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
       if(l1met.size()==1){
@@ -273,7 +288,6 @@ namespace ic {
       mht_ = mhtVec.Et();
       sqrt_ht_ = sqrt(ht);
       unclustered_et_ = unclVec.Et();
-      unclustered_phi_ = unclVec.Phi();
 
       double dphi1 = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,metvec));
       double dphi2 = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet2vec,metvec));
@@ -297,11 +311,25 @@ namespace ic {
       double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
       n_jets_cjv_30_ = 0;
       n_jets_cjv_20EB_30EE_ = 0;
+      double jet3pt=0;
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
+	  if(jets[i]->id()==jet1->id()){
+	    jet1_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	  }
+	  if(jets[i]->id()==jet2->id()){
+	    jet2_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	  }
+
+
 	  bool isInCentralGap = fabs(jets[i]->eta())<4.7 && jets[i]->eta() > eta_low && jets[i]->eta() < eta_high;
-	  if(isInCentralGap){
+	  double tmppt=jets[i]->pt();
+	  if(isInCentralGap&&(tmppt>cjvjetpt_)){
 	    cjvjetpt_=jets[i]->pt();
+	  }
+	  if(tmppt>jet3pt){
+	    jet3_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	    jet3pt=0;
 	  }
 	  if (jets[i]->pt() > 30.0 && isInCentralGap){
 	    ++n_jets_cjv_30_;

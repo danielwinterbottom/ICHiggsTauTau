@@ -27,17 +27,18 @@ namespace ic {
     TTree *outputTree_;
     
 
-    double total_weight_nolep_;
+    double weight_nolep_;
     double total_weight_lepveto_;
     double total_weight_leptight_;
     double jet1_pt_;
     double jet2_pt_;
-    double jet1_eta_;
-    double jet2_eta_;
-    double jet1_phi_;
-    double jet2_phi_;
     double jet1_E_;
     double jet2_E_;
+    double jet1_eta_;
+    double jet2_eta_;
+    double jet1_csv_;
+    double jet2_csv_;
+    double jet3_csv_;
     double dijet_M_;
     double dijet_deta_;
     double dijet_sumeta_;
@@ -45,14 +46,12 @@ namespace ic {
     double met_;
     double met_x_;
     double met_y_;
-    double met_phi_;
     double met_significance_;
     double sumet_;
     double ht_;
     double mht_;
     double sqrt_ht_;
     double unclustered_et_;
-    double unclustered_phi_;
     double jet1met_dphi_;
     double jet2met_dphi_;
     double jetmet_mindphi_;
@@ -81,6 +80,10 @@ namespace ic {
     int ntaus_;
     double m_mumu_;
     double m_mumu_gen_;
+    double mu1_pt_;
+    double mu1_eta_;
+    double ele1_pt_;
+    double ele1_eta_;
 
   public:
     LightTree(std::string const& name);
