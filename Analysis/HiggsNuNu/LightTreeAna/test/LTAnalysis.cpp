@@ -38,7 +38,7 @@ int main(int argc, char* argv[]){
   config.add_options()
     //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
-    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_cjvjetpt/"))
+    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_newcpptrial/"))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     //Base selection cuts
@@ -107,7 +107,7 @@ int main(int argc, char* argv[]){
   //   shapes.push_back("jet2_eta(200,-5.,5.)");
   //   shapes.push_back("jet2_pt(200,0.,1000.)");
   //shapes.push_back("met(80,0.,400.)");
-  shapes.push_back("cjvjetpt_(100,0.,100.)");
+  shapes.push_back("cjvjetpt(100,0.,100.)");
   // shapes.push_back("n_jets_cjv_30(15,0.,15.)");
   //   shapes.push_back("n_jets_cjv_20EB_30EE(15,0.,15.)");
   //   shapes.push_back("met_significance(400,0.,20.)");
@@ -122,7 +122,7 @@ int main(int argc, char* argv[]){
     .set_basesel("jet1_eta<4.7&&jet2_eta<4.7&&jet1_pt>30&&jet2_pt>30&&nvetoelectrons==0 && nvetomuons==0&&dijet_M>150&&met>40")
     .set_shapes(shapes);
 
-  //analysis->AddModule(&normplots);
+  //  analysis->AddModule(&normplots);
   analysis->AddModule(&wmunu);
   analysis->AddModule(&wenu);
 

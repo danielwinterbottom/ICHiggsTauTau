@@ -34,7 +34,7 @@ namespace ic{
     std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
     TH1F  contbkgshape = filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
     std::cout<<"  Getting control Data shape"<<std::endl;
-    TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_nolep",false);
+    TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"weight_nolep",false);
     
     //Integrate over shape to get number in each region
     double nsmc = Integral(&sigmcshape);
