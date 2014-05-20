@@ -62,16 +62,14 @@ namespace ic {
     jet1met_scalarprod_ = 0;
     jet2met_scalarprod_ = 0;
     n_jets_cjv_30_ = 0;
-    cjv_30_jet3pt_ = -1;
     n_jets_cjv_20EB_30EE_ = 0;
-    cjv_20EB_30EE_jet3pt_ = -1;
     cjvjetpt_=-1;
+    jet3pt_=-1;
     passtrigger_ = -1;
     passparkedtrigger1_ = -1;
     passparkedtrigger2_ = -1;
     l1met_ = 0;
     metnomuons_ =0;
-
     nvetomuons_=0;
     nselmuons_=0;
     nvetoelectrons_=0;
@@ -144,8 +142,7 @@ namespace ic {
     outputTree_->Branch("n_jets_cjv_30",&n_jets_cjv_30_);
     outputTree_->Branch("n_jets_cjv_20EB_30EE",&n_jets_cjv_20EB_30EE_);
     outputTree_->Branch("cjvjetpt",&cjvjetpt_);
-    outputTree_->Branch("cjv_30_jet3pt",&cjv_30_jet3pt_);
-    outputTree_->Branch("cjv_20EB_30EE_jet3pt",&cjv_20EB_30EE_jet3pt_);
+    outputTree_->Branch("jet3pt",&jet3pt_);
     outputTree_->Branch("passtrigger",&passtrigger_);
     outputTree_->Branch("passparkedtrigger1",&passparkedtrigger1_);
     outputTree_->Branch("passparkedtrigger2",&passparkedtrigger2_);
@@ -311,7 +308,8 @@ namespace ic {
       double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
       n_jets_cjv_30_ = 0;
       n_jets_cjv_20EB_30EE_ = 0;
-      double jet3pt=0;
+      jet3pt_=-1;
+      cjvjetpt_=-1;
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
 	  if(jets[i]->id()==jet1->id()){
@@ -325,21 +323,19 @@ namespace ic {
 	  bool isInCentralGap = fabs(jets[i]->eta())<4.7 && jets[i]->eta() > eta_low && jets[i]->eta() < eta_high;
 	  double tmppt=jets[i]->pt();
 	  if(isInCentralGap&&(tmppt>cjvjetpt_)){
-	    cjvjetpt_=jets[i]->pt();
+	    cjvjetpt_=tmppt;
 	  }
-	  if(tmppt>jet3pt){
+	  if(tmppt>jet3pt_){
 	    jet3_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-	    jet3pt=0;
+	    jet3pt_=tmppt;
 	  }
 	  if (jets[i]->pt() > 30.0 && isInCentralGap){
 	    ++n_jets_cjv_30_;
-	    if(jets[i]->pt()>cjv_30_jet3pt_)cjv_30_jet3pt_=jets[i]->pt();
 	  }
 	  if ( ((jets[i]->eta()<2.4 && jets[i]->pt() > 20.0) ||
 		(jets[i]->eta()>=2.4 && jets[i]->pt() > 30.0)) && 
 	       isInCentralGap){
 	    ++n_jets_cjv_20EB_30EE_;
-	    if(jets[i]->pt()>cjv_20EB_30EE_jet3pt_)cjv_20EB_30EE_jet3pt_=jets[i]->pt();
 	  }
 	}
       }

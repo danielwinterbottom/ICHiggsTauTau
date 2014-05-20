@@ -23,7 +23,7 @@ namespace ic{
   int LTFile::Open(std::string infolder){
     //std::cout<<"Opening TFile..."<<std::endl;
     std::string filepath = (this->path());
-    TFile * tmp = new TFile((infolder+"/"+this->path()).c_str());
+    TFile * tmp = TFile::Open((infolder+"/"+this->path()).c_str());
     if (!tmp) {
       std::cerr << "Warning, file " << this->name() << " could not be opened." << std::endl;
       return 1;
