@@ -16,7 +16,7 @@ namespace ic{
 
   NormPlots::~NormPlots(){ ;};
 
-  int NormPlots::Init(fwlite::TFileService* fs){
+  int NormPlots::Init(TFile* fs){
     fs_=fs;
     std::cout<<"Initialisation info for "<<module_name_<<":"<<std::endl;
     std::cout<<"Signal MC set is: "<<sigset_<<std::endl;
@@ -28,7 +28,7 @@ namespace ic{
 
   int NormPlots::Run(LTFiles* filemanager){
     std::cout<<module_name_<<":"<<std::endl;
-    TFile* file=new TFile("tmp2.root","RECREATE");
+    TFile* file=fs_;
     for(unsigned ishape=0;ishape<shapes_.size();ishape++){
       std::vector<std::string> strs;
       boost::split(strs, shapes_[ishape], boost::is_any_of("("));

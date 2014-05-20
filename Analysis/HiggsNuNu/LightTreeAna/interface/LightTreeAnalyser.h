@@ -3,7 +3,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeFiles.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeModule.h"
 #include <string>
-#include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "TFile.h"
 
 namespace ic{
@@ -17,7 +16,7 @@ namespace ic{
     LTFiles filemanager_;    
     bool print_module_list_;
   public:
-    fwlite::TFileService *fs; 
+    TFile* fs;
     LTAnalyser(std::string);
     LTAnalyser(std::string,int);
 

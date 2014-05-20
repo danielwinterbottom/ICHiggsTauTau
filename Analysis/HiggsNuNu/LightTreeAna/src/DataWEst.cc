@@ -11,7 +11,7 @@ namespace ic{
 
   DataWEst::~DataWEst(){ ;};
 
-  int DataWEst::Init(fwlite::TFileService* fs){
+  int DataWEst::Init(TFile* fs){
     fs_=fs;
     std::cout<<"Initialisation info for "<<module_name_<<":"<<std::endl;
     std::cout<<"Signal MC set is: "<<sigmcset_<<std::endl;

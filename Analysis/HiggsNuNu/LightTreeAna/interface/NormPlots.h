@@ -17,7 +17,7 @@ namespace ic {
   public:
     NormPlots(std::string);
     virtual ~NormPlots();
-    virtual int Init(fwlite::TFileService*);
+    virtual int Init(TFile*);
     virtual int Run(LTFiles*);
   };
 

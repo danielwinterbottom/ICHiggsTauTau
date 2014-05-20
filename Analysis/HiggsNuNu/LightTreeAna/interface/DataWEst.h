@@ -18,7 +18,7 @@ namespace ic {
   public:
     DataWEst(std::string);
     virtual ~DataWEst();
-    virtual int Init(fwlite::TFileService*);
+    virtual int Init(TFile*);
     virtual int Run(LTFiles*);
   };
 
