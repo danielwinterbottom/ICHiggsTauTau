@@ -15,6 +15,7 @@
 #include "TLegend.h"
 #include "THStack.h"
 #include "TPad.h"
+#include "TLine.h"
 #include "TGraphErrors.h"
 #include "boost/algorithm/string.hpp"
 
@@ -405,16 +406,20 @@ namespace ic {
       }
     }
 
-    /*
-    TLine *line = new TLine(30., 0., 30., elements_[0].hist_ptr()->GetMaximum());
+    /* 
+    // TLine *line = new TLine(30., 0., 30., elements_[0].hist_ptr()->GetMaximum()); // mT
+    TLine *line = new TLine(-20., 0., -20., 12000);   // Dzeta
+    // TLine *line = new TLine(-0.5, 0., -0.5, 5000000);   // BDT
     TLine *line2 = new TLine(70., 0., 70., elements_[0].hist_ptr()->GetMaximum());
     TLatex *ex_latex = new TLatex();
     ex_latex->SetTextSize(0.035);
     ex_latex->SetTextFont(62);
     ex_latex->SetTextAlign(31);
-    ex_latex->DrawLatex(27,15000,"#splitline{Baseline}{selection}");
+    //ex_latex->DrawLatex(27,15000,"#splitline{Baseline}{selection}"); // mT
+    ex_latex->DrawLatex(51,9500,"#splitline{MSSM Baseline}{selection}"); // Dzeta
+    //ex_latex->DrawLatex(0.1,6000,"#splitline{SM Baseline}{selection}"); // BDT
     ex_latex->SetTextAlign(11);
-    ex_latex->DrawLatex(100,6000,"#splitline{High-m_{T}}{control region}");
+    //ex_latex->DrawLatex(100,6000,"#splitline{High-m_{T}}{control region}");
     line->SetLineWidth(3);
     line->SetLineStyle(3);
     line->SetLineColor(1);
@@ -423,8 +428,9 @@ namespace ic {
     line2->SetLineColor(1);
     canv->Update();
     line->Draw();
-    line2->Draw();
+    //line2->Draw();
     */
+    
     canv->RedrawAxis();
     canv->Update();
 

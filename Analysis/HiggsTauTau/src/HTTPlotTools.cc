@@ -50,10 +50,10 @@ namespace ic {
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau"     ,{"ZTT"}      , kOrange - 4)
     };
     bkg_schemes_["mt_default"] = {
-      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}              ,kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}               ,kBlue   - 8),
-      PlotBkgComponent("ewk","Electroweak"          ,{"W","VV","ZL","ZJ"} ,kRed    + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,kOrange - 4)
+      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
+      PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","Electroweak",           {"W","VV","ZL","ZJ"},   TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
     };
     bkg_schemes_["em_default"] = {
       PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"Fakes"}            ,TColor::GetColor(250,202,255)),
@@ -335,10 +335,10 @@ namespace ic {
     };
     sig_schemes_["sm_split_vbf"] = {
       PlotSigComponent("sig",
-        (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau (ggH+VH)"),
+        ("SM H("+draw_signal_mass_+")#rightarrow#tau#tau (ggH)"),
         {"ggH","VH"}, TColor::GetColor(0,18,255), false),
       PlotSigComponent("vbf",
-        (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau (qqH)"),
+        ("SM H("+draw_signal_mass_+")#rightarrow#tau#tau (VBF)"),
         {"qqH"}, 1, false)
     };
     sig_schemes_["sm_split_ww"] = {
@@ -541,6 +541,8 @@ namespace ic {
     HTTPlot::SetDataStyle(data_plot);
     plot.AddTH1PlotElement(data_plot);
     plot.legend_height = 0.045;
+    if (draw_ratio_) plot.legend_height = 0.05;
+    if (draw_ratio_ && signal_scheme_ == "sm_split_vbf") plot.legend_height = 0.045;
 
     for (auto & ele : text_) plot.AddTextElement(ele);
 
