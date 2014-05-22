@@ -213,7 +213,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if (auto_titles) {
 		double fb_lumi = ana.GetLumi() / 1000.;
-		plot.set_title_left((boost::format("L = %.1f fb^{-1} at 7 TeV") % fb_lumi).str());
+		plot.set_title_left((boost::format("%.1f fb^{-1} at 7 TeV") % fb_lumi).str());
     ic::TextElement text(big_label,0.08,0.21,0.82);
     plot.AddTextElement(text);
 	}

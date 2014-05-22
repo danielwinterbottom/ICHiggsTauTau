@@ -71,6 +71,8 @@ class ZbbAnalyser : public ModuleBase {
   double pt_bb_;
   double pt_z_;
 
+  double dphi_z_b_;
+
   double ElectronWeight(Candidate const* elec1, Candidate const* elec2);
   double MuonWeight(Candidate const* muon1, Candidate const* muon2);
   double SVMass(Jet const* jet,
