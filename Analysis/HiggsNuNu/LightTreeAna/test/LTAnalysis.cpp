@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataWEst.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/DataQCDEst.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/NormPlots.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/MVATrain.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/program_options.hpp"
 
@@ -145,20 +146,11 @@ int main(int argc, char* argv[]){
   ewksets.push_back("WJets_taunu");
 
   std::vector<std::string> shapes; //List of shapes to draw
-  //  shapes.push_back("dijet_M(370,150.,2000.)");
-//    shapes.push_back("dijet_deta(160,0.,8.)");
-//    shapes.push_back("dijet_dphi(310,0.,3.1)");
-  // shapes.push_back("jet1_eta(200,-5.,5.)");
-  //   shapes.push_back("jet1_pt(200,0.,1000.)");
-  //   shapes.push_back("jet2_eta(200,-5.,5.)");
-  //   shapes.push_back("jet2_pt(200,0.,1000.)");
-  // shapes.push_back("met(80,0.,400.)");
+   shapes.push_back("dijet_M(370,150.,2000.)");
+   shapes.push_back("dijet_deta(160,0.,8.)");
+   shapes.push_back("dijet_dphi(310,0.,3.1)");
+   shapes.push_back("met(80,0.,400.)");
    shapes.push_back("cjvjetpt(100,0.,100.)");
-  // shapes.push_back("n_jets_cjv_30(15,0.,15.)");
-  //   shapes.push_back("n_jets_cjv_20EB_30EE(15,0.,15.)");
-  //   shapes.push_back("met_significance(400,0.,20.)");
-  //   shapes.push_back("dijet_sumeta(200,-5.,5.)");
-
 
   NormPlots normplots("normplots");
   normplots.set_qcdset("QCD")
@@ -168,16 +160,50 @@ int main(int argc, char* argv[]){
     .set_basesel("jet1_eta<4.7&&jet2_eta<4.7&&jet1_pt>50&&jet2_pt>50&&nvetoelectrons==0 && nvetomuons==0&&dijet_M>150&&met>130")
     .set_shapes(shapes);
 
+
+  //MVA TRAIN
+  std::vector<std::string> sigsets;
+  sigsets.push_back("sig125");
+  std::vector<std::string> bkgsets;
+  bkgsets.push_back("QCD");
+  std::vector<std::string> variables;
+  variables.push_back("jet2_eta");
+  variables.push_back("met");
+  variables.push_back("met_significance");
+  variables.push_back("mht");
+  variables.push_back("jet2met_dphi");
+  variables.push_back("jetmet_mindphi");
+  variables.push_back("jetunclet_mindphi");
+  variables.push_back("metunclet_dphi");
+  variables.push_back("dijetmet_scalarSum_pt");
+  variables.push_back("dijetmet_vectorialSum_pt");
+  variables.push_back("dijetmet_ptfraction");
+  variables.push_back("jet1met_scalarprod");
+  variables.push_back("jet2met_scalarprod");
+  variables.push_back("jet1met_scalarprod_frac := jet1met_scalarprod/met");
+  variables.push_back("jet2met_scalarprod_frac := jet2met_scalarprod/met");
+  std::vector<std::string> specvariables;
+
+  MVATrain mvatrainer("mvatrainer");
+  mvatrainer.set_sigsets(sigsets)
+    .set_bkgsets(bkgsets)
+    .set_variables(variables)
+    .set_specvariables(specvariables)
+    .set_basesel("passtrigger==1&&nvetomuons==0&&nvetoelectrons==0&&jet1_pt>50&&jet2_pt>50&&jet1_eta<4.7&&jet2_eta<4.7")
+    .set_sigcat("")
+    .set_bkgcat("");
+
   /*##########################################
   #                                          #
   #   SET UP ANALYSIS SEQUENCE AND RUN       #
   #                                          #
   ##########################################*/
 
-  //  analysis->AddModule(&normplots);
-    analysis->AddModule(&wmunu);
-    analysis->AddModule(&wenu);
-//   analysis->AddModule(&QCD);
+  //analysis->AddModule(&mvatrainer);
+  //analysis->AddModule(&normplots);
+  analysis->AddModule(&wmunu);
+  analysis->AddModule(&wenu);
+  //analysis->AddModule(&QCD);
 
   analysis->RunAnalysis();
 
