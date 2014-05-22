@@ -86,7 +86,12 @@ int main(int argc, char* argv[]) {
     {"Muon->Tau Fake Rate"  , {"ZLeptonFakeTau_mutau"}},
     {"Tau Energy Scale"     , {"scale_t"}},
     {"Fakes Shape"          , {"FakeShape_em"}},
-    {"Z->tt Extrapolation"  , {"extrap_ztt"}}
+    {"Z->tt Extrapolation"  , {"extrap_ztt"}},
+    {"Mistagging Eff"   , {"fake_b"}},
+    {"TTBarShape"       , {"TTbarShape"}},
+    {"WFakeShape"       , {"WShape"}},
+    {"TTBarEmbedded"    , {"ttbar_emb"}},
+    {"Tail-fitting"     , {"CMS_shift"}}
   };
 
   std::map<string, vector<string>> group_map;
