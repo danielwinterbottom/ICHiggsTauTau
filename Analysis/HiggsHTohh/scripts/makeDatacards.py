@@ -36,6 +36,8 @@ parser.add_option("--svfit", dest="svfit", action='store_true', default=False,
                   help="Make inputs for svfit mass.")
 parser.add_option("--dijet", dest="dijet", action='store_true', default=False,
                   help="Make inputs for dijet mass.")
+parser.add_option("--fullH", dest="fullH", action='store_true', default=False,
+                  help="Make inputs for reconstructed H mass.")
 parser.add_option("-e", dest="energy", type='string', default='8',
                   help="The C.O.M. energy is written into the datacard name, default is 8")
 
@@ -60,7 +62,7 @@ if not channels:
 for channel in channels:
   validate_channel(channel)
 
-if not (options.mvis or options.svfit or options.dijet) :
+if not (options.mvis or options.svfit or options.dijet or options.fullH) :
   print 'Error, please specify distribution to plot.'
   sys.exit(1)
 
@@ -90,7 +92,8 @@ extra_channel = {
 plots = [ 
   ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' ,   "100"    ,"150"),
   ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"150"),
-  ('prebjet_mjj'   , 'M_{jj} [GeV]'        , ''      ,   "80"   ,"160")
+  ('prebjet_mjj'   , 'M_{jj} [GeV]'        , ''      ,   "80"   ,"160"),
+  ('mjj_tt'   , 'M_{#tau#tau+jj} [GeV]'        , ''      ,   "200"   ,"600")
  ]
 if options.mvis: 
     plots = [plots[0]]
@@ -98,6 +101,8 @@ if options.svfit:
     plots = [plots[1]]
 if options.dijet: 
     plots = [plots[2]]
+if options.fullH: 
+    plots = [plots[3]]
 
 #################################################################
 #### New HTohh scheme
@@ -110,6 +115,9 @@ if options.scheme == 'HTohh':
   elif options.dijet :
     BINS_FINE="(30,0,600)"
     BINS="(15,0,600)"
+  elif options.fullH:
+    BINS_FINE="(20,0,1000)"
+    BINS="(20,0,1000)"
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_inclusive_'+COM+'TeV"')),
