@@ -149,9 +149,20 @@ class HhhSync : public ModuleBase {
   bool  lJPass2;
   
   //B Tagged Jet : leading btagged jet (in pt) passing btag wp (pt > 20 + cvs medium)
-  float lBTagPt;
-  float lBTagEta;
-  float lBTagPhi;
+  float lBTagPt1;
+  float lBTagEta1;
+  float lBTagPhi1;
+  float lBTagCSV1;
+  
+  float lBTagPt2;
+  float lBTagEta2;
+  float lBTagPhi2;
+  float lBTagCSV2;
+  
+  float lBTagPt3;
+  float lBTagEta3;
+  float lBTagPhi3;
+  float lBTagCSV3;
   
   //Di Jet kinematic variables for VBF selection ==> Two leading pT Jets 
   float lMJJ;

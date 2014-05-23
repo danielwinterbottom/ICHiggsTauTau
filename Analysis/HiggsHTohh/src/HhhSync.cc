@@ -162,24 +162,23 @@ lOTree->Branch("jlrm_2"     ,&lLRM2          ,"lLRM2/F"    );//Jet MVA id value
 lOTree->Branch("jctm_2"     ,&lCTM2          ,"lCTM2/I"    );//Jet MVA id value
 lOTree->Branch("jpass_2"    ,&lJPass2        ,"lJPass2/B"   );//Whether jet passes PU Id Loose WP 
 
-    //B Tagged Jet : leading btagged jet (in pt) passing btag wp (pt > 20 + cvs medium)
-lOTree->Branch("bpt"        ,&lBTagPt        ,"lBTagPt/F"   );//Corrected BTag Pt
-lOTree->Branch("beta"       ,&lBTagEta       ,"lBTagEta/F"  );//Btag Eta
-lOTree->Branch("bphi"       ,&lBTagPhi       ,"lBTagPhi/F"  );//Btag Phi
-
-    //Di Jet kinematic variables for VBF selection ==> Two leading pT Jets 
-lOTree->Branch("mjj"        ,&lMJJ           ,"lMJJ/F"      );//Mass Di Jet system  
-lOTree->Branch("jdeta"      ,&lJDEta         ,"lJDEta/F"    );//|jeta_1-jeta_2| 
-lOTree->Branch("njetingap"  ,&lNJetInGap     ,"lNJetInGap/I");//# of Jets between two jets
-lOTree->Branch("mva"        ,&lMVA           ,"lMVA/F"      );//VBF MVA value
-
-    //Variables that go into the VBF MVA
-lOTree->Branch("jdphi"      ,&lJDPhi         ,"lJDPhi/F"    );//Delta Phi between two leading jets
-lOTree->Branch("dijetpt"    ,&lDiJetPt       ,"lDiJetPt/F"  );//Pt of the di jet system
-lOTree->Branch("dijetphi"   ,&lDiJetPhi      ,"lDiJetPhi/F" );//Phi of the di jet system
-lOTree->Branch("hdijetphi"  ,&lHDJetPhi      ,"lHDJetPhi/F" );//Phi of the di jet system - Higgs system phi
-lOTree->Branch("visjeteta"  ,&lVisJetEta     ,"lVisJetEta/F");//TMath::Min(eta_vis - jeta,eta_vis,jeta2);
-lOTree->Branch("ptvis"      ,&lPtVis         ,"lPtVis/F"    );//Pt Vis
+    //Candidate B Jets : leading jet (in CSV ordering) passing (pt > 20 + eta < 2.4)
+lOTree->Branch("bpt_1"        ,&lBTagPt1        ,"lBTagPt1/F"   );//Corrected BTag Pt
+lOTree->Branch("beta_1"       ,&lBTagEta1       ,"lBTagEta1/F"  );//Btag Eta
+lOTree->Branch("bphi_1"       ,&lBTagPhi1      ,"lBTagPhi1/F"  );//Btag Phi
+lOTree->Branch("bcsv_1"       ,&lBTagCSV1       ,"lBTagCSV1/F"  );//Btag CSV
+    
+    //Candidate B Jets : subleading jet (in CSV ordering) passing (pt > 20 + eta < 2.4)
+lOTree->Branch("bpt_2"        ,&lBTagPt2        ,"lBTagPt2/F"   );//Corrected BTag Pt
+lOTree->Branch("beta_2"       ,&lBTagEta2       ,"lBTagEta2/F"  );//Btag Eta
+lOTree->Branch("bphi_2"       ,&lBTagPhi2       ,"lBTagPhi2/F"  );//Btag Phi
+lOTree->Branch("bcsv_2"       ,&lBTagCSV2       ,"lBTagCSV2/F"  );//Btag CSV
+    
+    //Candidate B Jets : third jet (in CSV ordering) passing (pt > 20 + eta < 2.4)
+lOTree->Branch("bpt_3"        ,&lBTagPt3        ,"lBTagPt3/F"   );//Corrected BTag Pt
+lOTree->Branch("beta_3"       ,&lBTagEta3       ,"lBTagEta3/F"  );//Btag Eta
+lOTree->Branch("bphi_3"       ,&lBTagPhi3       ,"lBTagPhi3/F"  );//Btag Phi
+lOTree->Branch("bcsv_3"       ,&lBTagCSV3       ,"lBTagCSV3/F"  );//Btag CSV
 
     //number of btags passing btag id ( pt > 20 )
 lOTree->Branch("nbtag"      ,&lNBTag         ,"lNBTag/I");
@@ -190,6 +189,8 @@ lOTree->Branch("njetspt20"  ,&lNJetsPt20     ,"lNJetsPt20/I");
       
 lOTree->Branch("mva_gf"      ,&em_gf_mva_         ,"MVAGF/F");
 lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
+
+
 
 
     return 0;
@@ -213,12 +214,14 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
       if (int(sel_mode) != select_sel_mode_) return 0;
     }
 
-
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 0.0, jet_eta_));
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
+    std::vector<PFJet*> prebjets = jets;
+    ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+    std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
 
 
     std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
@@ -315,6 +318,7 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
     }
     lPtTT = (dilepton.at(0)->vector() + selectedMet->vector()).pt();
 
+    // Important: sync ntuple saves only OS events
     if (lepton->charge() == tau->charge()) return 0;
 
     if (channel_ == channel::et ) {
@@ -463,6 +467,43 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
       lCTM2 = -9999;
     }
     
+    if (prebjets.size() >= 1) {
+      lBTagPt1 = prebjets[0]->pt();
+      lBTagEta1 = prebjets[0]->eta();
+      lBTagPhi1 = prebjets[0]->phi();
+      lBTagCSV1 = prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+    } else {
+      lBTagPt1 = -9999;
+      lBTagEta1 = -9999;
+      lBTagPhi1 = -9999;
+      lBTagCSV1 = -9999;
+    }
+    
+    if (prebjets.size() >= 2) {
+      lBTagPt2 = prebjets[1]->pt();
+      lBTagEta2 = prebjets[1]->eta();
+      lBTagPhi2 = prebjets[1]->phi();
+      lBTagCSV2 = prebjets[1]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+    } else {
+      lBTagPt2 = -9999;
+      lBTagEta2 = -9999;
+      lBTagPhi2 = -9999;
+      lBTagCSV2 = -9999;
+    }
+    
+    if (prebjets.size() >= 3) {
+      lBTagPt3 = prebjets[2]->pt();
+      lBTagEta3 = prebjets[2]->eta();
+      lBTagPhi3 = prebjets[2]->phi();
+      lBTagCSV3 = prebjets[2]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+    } else {
+      lBTagPt3 = -9999;
+      lBTagEta3 = -9999;
+      lBTagPhi3 = -9999;
+      lBTagCSV3 = -9999;
+    }
+    
+    
     std::vector<PFJet *> btag_jets = jets;
     ic::erase_if(btag_jets, !boost::bind(MinPtMaxEta, _1, 20, 2.4));
     if (event->Exists("retag_result")) {
@@ -472,16 +513,6 @@ lOTree->Branch("mva_vbf"      ,&em_vbf_mva_         ,"MVAVBF/F");
       ic::erase_if(btag_jets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
     } 
 
-    if (btag_jets.size() >= 1) {
-    //B Tagged Jet : leading btagged jet (in pt) passing btag wp (pt > 20 + cvs medium)
-    lBTagPt = btag_jets[0]->pt();
-    lBTagEta = btag_jets[0]->eta();
-    lBTagPhi = btag_jets[0]->phi();
-    } else {
-      lBTagPt = 0;
-      lBTagEta = 0;
-      lBTagPhi = 0;
-    }
     
     //Di Jet kinematic variables for VBF selection ==> Two leading pT Jets 
     if (jets.size() >= 2 && jets[0]->pt() > 20.0 && jets[1]->pt() > 20.0) {
