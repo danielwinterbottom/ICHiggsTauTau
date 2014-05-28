@@ -164,6 +164,9 @@ class HhhSync : public ModuleBase {
   float lBTagPhi3;
   float lBTagCSV3;
   
+  float lMbb;
+  float lMttbb;
+  
   //Di Jet kinematic variables for VBF selection ==> Two leading pT Jets 
   float lMJJ;
   float lJDEta;
