@@ -313,8 +313,14 @@ namespace ic {
 
   void HhhAnalysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
-      sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m);
-      sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
+      std::string m1 = m;
+      std::string m2 = m;
+      if(m=="250" || m=="260"){
+          m1="260";
+          m2="250";
+      }
+      sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m1);
+      sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m2);
     }
   }
 
@@ -807,8 +813,14 @@ namespace ic {
                     std::string const& postfix,
                     double fixed_xs) {
     for (auto const& m : masses) {
-      auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
-      auto signal_pair_AZh = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m, var, sel, cat, wt, fixed_xs);
+      std::string m1 = m;
+      std::string m2 = m;
+      if(m=="250" || m=="260"){
+          m1="260";
+          m2="250";
+      }
+      auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m1, var, sel, cat, wt, fixed_xs);
+      auto signal_pair_AZh = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m2, var, sel, cat, wt, fixed_xs);
       hmap["ggHTohh"+infix+m+postfix] = signal_pair;
       hmap["ggAToZh"+infix+m+postfix] = signal_pair_AZh;
       //PrintValue("ggHTohh"+postfix, signal_pair.second);
