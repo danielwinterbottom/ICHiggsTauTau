@@ -26,6 +26,9 @@ namespace ic {
 
     outputTree_ = 0;
 
+    run_=-1;
+    lumi_=-1;
+    event_=-1;
     weight_nolep_=1;
     total_weight_lepveto_ = 1;
     total_weight_leptight_ = 1;
@@ -104,7 +107,9 @@ namespace ic {
 
     outputTree_ = fs_->make<TTree>("LightTree","Tree containing LightTreeAna input variables");
 
-    outputTree_->Branch("weight_nolep",&weight_nolep_);
+    outputTree_->Branch("run",&run_);
+    outputTree_->Branch("lumi",&lumi_);
+    outputTree_->Branch("event",&event_);
     outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("jet1_pt",&jet1_pt_);
@@ -166,6 +171,10 @@ namespace ic {
 
   int  LightTree::Execute(TreeEvent *event){
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    run_= eventInfo->run();
+    lumi_= eventInfo->lumi_block();
+    event_= eventInfo->event();
+
     double wt = eventInfo->total_weight();
     double vetowt=1;
     double tightwt=1;

@@ -26,7 +26,9 @@ namespace ic {
 
     TTree *outputTree_;
     
-
+    unsigned run_;
+    unsigned lumi_;
+    unsigned event_;
     double weight_nolep_;
     double total_weight_lepveto_;
     double total_weight_leptight_;
