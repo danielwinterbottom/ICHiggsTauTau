@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include "TH1.h"
+#include "RooAbsPdf.h"
 #include "CombineTools/interface/MakeUnique.h"
 
 namespace ch {
@@ -45,6 +46,9 @@ class Process {
   void set_shape(std::unique_ptr<TH1> shape) { shape_ = std::move(shape); }
   TH1 const* shape() const { return shape_.get(); }
 
+  void set_pdf(RooAbsPdf* pdf) { pdf_ = pdf; }
+  RooAbsPdf const* pdf() const { return pdf_; }
+
   friend std::ostream& operator<< (std::ostream &out, Process &val);
   static std::ostream& PrintHeader(std::ostream &out);
 
@@ -59,6 +63,7 @@ class Process {
   int bin_id_;
   std::string mass_;
   std::unique_ptr<TH1> shape_;
+  RooAbsPdf* pdf_;
 
   friend void swap(Process& first, Process& second);
 };

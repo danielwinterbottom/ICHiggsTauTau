@@ -11,6 +11,7 @@
 #include <functional>
 #include "TFile.h"
 #include "TH1.h"
+#include "RooWorkspace.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/Parameter.h"
@@ -45,6 +46,7 @@ class CombineHarvester {
       std::string parse_rule);
 
   void WriteDatacard(std::string const& name, std::string const& root_file);
+  void WriteDatacard(std::string const& name, TFile & root_file);
 
   // Filtering
   CombineHarvester& bin(bool cond, std::vector<std::string> const& vec);
@@ -59,6 +61,9 @@ class CombineHarvester {
   CombineHarvester& nus_type(bool cond, std::vector<std::string> const& vec);
   CombineHarvester& signals();
   CombineHarvester& backgrounds();
+  CombineHarvester& histograms();
+  CombineHarvester& pdfs();
+  CombineHarvester& data();
 
   // Set generation
   template<typename T>
@@ -90,6 +95,23 @@ class CombineHarvester {
   TH1F GetShapeWithUncertainty(RooFitResult const* fit, unsigned n_samples);
   TH1F GetObservedShape();
 
+  // Production
+  void AddObservations(std::vector<std::string> mass,
+                       std::vector<std::string> analysis,
+                       std::vector<std::string> era,
+                       std::vector<std::string> channel,
+                       std::vector<std::pair<int, std::string>> bin);
+
+  void AddProcesses(std::vector<std::string> mass,
+                    std::vector<std::string> analysis,
+                    std::vector<std::string> era,
+                    std::vector<std::string> channel,
+                    std::vector<std::string> procs,
+                    std::vector<std::pair<int, std::string>> bin,
+                    bool signal);
+  void ExtractShapes(std::string const& file, std::string const& rule);
+
+
   // void Validate();
   void VariableRebin(std::vector<double> bins);
 
@@ -98,25 +120,32 @@ class CombineHarvester {
   std::vector<std::shared_ptr<Process>> procs_;
   std::vector<std::shared_ptr<Nuisance>> nus_;
   std::map<std::string, std::shared_ptr<Parameter>> params_;
+  std::map<std::string, std::shared_ptr<RooWorkspace>> wspaces_;
 
   struct HistMapping {
     std::string process;
     std::string category;
-    std::unique_ptr<TFile> file;
+    std::shared_ptr<TFile> file;
     std::string pattern;
     std::string syst_pattern;
+    bool IsHist();
+    bool IsPdf();
+    bool IsData();
   };
 
   typedef std::vector<std::pair<std::string, std::string>> StrPairVec;
   typedef std::vector<std::string> StrVec;
   StrPairVec GenerateShapeMapAttempts(std::string process,
       std::string category);
-  TH1 * GetHistFromFile(std::vector<HistMapping> const& mappings,
+  HistMapping ResolveMapping(std::vector<HistMapping> const& mappings,
       std::string const& bin,
       std::string const& process,
       std::string const& mass,
-      std::string const& nuisance,
+      std::string const& nuisance);
+  TH1 * GetHistFromFile(HistMapping const& mapping,
       unsigned type);
+  RooAbsPdf * GetPdfFromFile(HistMapping const& mapping);
+  RooAbsData * GetDataFromFile(HistMapping const& mapping);
 
   void WriteHistToFile(
       TH1 const* hist,

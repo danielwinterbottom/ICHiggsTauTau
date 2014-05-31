@@ -17,12 +17,14 @@ void swap(CombineHarvester& first, CombineHarvester& second) {
   swap(first.procs_, second.procs_);
   swap(first.nus_, second.nus_);
   swap(first.params_, second.params_);
+  swap(first.wspaces_, second.wspaces_);
 }
 
 CombineHarvester::CombineHarvester(CombineHarvester const& other)
     : obs_(other.obs_.size(), nullptr),
       procs_(other.procs_.size(), nullptr),
       nus_(other.nus_.size(), nullptr) {
+  std::cout << "Doing full copy!\n";
   for (std::size_t i = 0; i < obs_.size(); ++i) {
     if (other.obs_[i]) {
       obs_[i] = std::make_shared<Observation>(*(other.obs_[i]));
@@ -45,6 +47,13 @@ CombineHarvester::CombineHarvester(CombineHarvester const& other)
       params_.insert({it.first, nullptr});
     }
   }
+  for (auto const& it : other.wspaces_) {
+    if (it.second) {
+      wspaces_.insert({it.first, std::make_shared<RooWorkspace>(*(it.second))});
+    } else {
+      wspaces_.insert({it.first, nullptr});
+    }
+  }
 }
 
 CombineHarvester::CombineHarvester(CombineHarvester&& other) {
@@ -58,10 +67,11 @@ CombineHarvester& CombineHarvester::operator=(CombineHarvester other) {
 
 CombineHarvester CombineHarvester::shallow_copy() {
   CombineHarvester cpy;
-  cpy.obs_    = obs_;
-  cpy.procs_  = procs_;
-  cpy.nus_    = nus_;
-  cpy.params_ = params_;
+  cpy.obs_      = obs_;
+  cpy.procs_    = procs_;
+  cpy.nus_      = nus_;
+  cpy.params_   = params_;
+  cpy.wspaces_  = wspaces_;
   return cpy;
 }
 

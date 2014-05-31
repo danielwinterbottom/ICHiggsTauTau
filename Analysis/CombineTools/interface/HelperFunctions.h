@@ -76,7 +76,9 @@ void WriteToTFile(T const* ptr, TFile *file, std::string const& path) {
       }
       gDirectory->cd(as_vec[i].c_str());
     }
-    gDirectory->WriteTObject(ptr, as_vec.back().c_str());
+    if (!gDirectory->Get(as_vec.back().c_str())) {
+      gDirectory->WriteTObject(ptr, as_vec.back().c_str());
+    }
     gDirectory->cd("/");
   }
 }

@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include "TH1.h"
+#include "RooAbsData.h"
 #include "CombineTools/interface/MakeUnique.h"
 
 namespace ch {
@@ -22,7 +23,7 @@ class Observation {
   double rate() const { return rate_; }
 
   void set_analysis(std::string const& analysis) { analysis_ = analysis; }
-  std::string const& analysis() const { return analysis_; } 
+  std::string const& analysis() const { return analysis_; }
 
   void set_era(std::string const& era) { era_ = era; }
   std::string const& era() const { return era_; }
@@ -39,6 +40,9 @@ class Observation {
   void set_shape(std::unique_ptr<TH1> shape) { shape_ = std::move(shape); }
   TH1 const* shape() const { return shape_.get(); }
 
+  void set_data(RooAbsData* data) { data_ = data; }
+  RooAbsData const* data() const { return data_; }
+
   friend std::ostream& operator<< (std::ostream &out, Observation &val);
   static std::ostream& PrintHeader(std::ostream &out);
 
@@ -51,6 +55,7 @@ class Observation {
   int bin_id_;
   std::string mass_;
   std::unique_ptr<TH1> shape_;
+  RooAbsData* data_;
 
   friend void swap(Observation& first, Observation& second);
 };
