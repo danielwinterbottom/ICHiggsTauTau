@@ -360,37 +360,37 @@ int main(int argc, char* argv[]){
   HinvPrint hinvFilter("HinvFilter",is_data,true,false);
 
   //COMMENTED OUT FOR OTHER SKIM
-  // if (do_skim && channel==channel::nunu){
+//   if (do_skim && channel==channel::nunu){
 //     //fill hinvFilter with events to be skimmed from inputfile
-//     std::ifstream levtlist;
-//     levtlist.open(eventsToSkim.c_str());
-//     if(!levtlist.is_open()){
-//       std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
-//       return 1; 
-//     }
-//     unsigned counter = 0;
-//     while(1){
-//       unsigned lEvt=0;
-//       unsigned lRun=0;
-//       unsigned lLumi=0;
-//       if (is_data) {
-// 	levtlist>>lRun;
-// 	levtlist>>lLumi;
-//       }
-//       levtlist>>lEvt;
-//       if (lEvt!=0 || lRun!=0 || lLumi!=0){
-// 	std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
-// 	hinvFilter.PrintEvent(lRun,lLumi,lEvt);
-// 	counter++;
-//       }
-//       if(levtlist.eof()){
-// 	break; 
-//       }
-//     }
+//      std::ifstream levtlist;
+//      levtlist.open(eventsToSkim.c_str());
+//      if(!levtlist.is_open()){
+//        std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
+//        return 1; 
+//      }
+//      unsigned counter = 0;
+//      while(1){
+//        unsigned lEvt=0;
+//        unsigned lRun=0;
+//        unsigned lLumi=0;
+//        if (is_data) {
+//  	levtlist>>lRun;
+//  	levtlist>>lLumi;
+//        }
+//        levtlist>>lEvt;
+//        if (lEvt!=0 || lRun!=0 || lLumi!=0){
+//  	std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
+//  	hinvFilter.PrintEvent(lRun,lLumi,lEvt);
+//  	counter++;
+//        }
+//        if(levtlist.eof()){
+//  	break; 
+//        }
+//      }
 
-//     std::cout << " - Total of " << counter << " events added to skim." << std::endl;
-//     levtlist.close();
-//   }
+//      std::cout << " - Total of " << counter << " events added to skim." << std::endl;
+//      levtlist.close();
+//    }
 
   //print the event content
   HinvPrint hinvPrint("HinvPrint",is_data);

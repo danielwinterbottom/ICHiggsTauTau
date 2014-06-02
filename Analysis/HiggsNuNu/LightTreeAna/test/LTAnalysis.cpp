@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
   config.add_options()
     //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
-    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree/"))
+    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_withrle2/"))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     //Base selection cuts
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]){
   analysis->SetInputParams(inputparams);
 
   //Set selection step common to all categories
-    analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<="+boost::lexical_cast<std::string>(etaprodcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
+  analysis->set_baseselection("passtrigger==1&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<="+boost::lexical_cast<std::string>(etaprodcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
 
   /*##########################################
   #                                          #
@@ -146,11 +146,11 @@ int main(int argc, char* argv[]){
   ewksets.push_back("WJets_taunu");
 
   std::vector<std::string> shapes; //List of shapes to draw
-   shapes.push_back("dijet_M(370,150.,2000.)");
-   shapes.push_back("dijet_deta(160,0.,8.)");
-   shapes.push_back("dijet_dphi(310,0.,3.1)");
-   shapes.push_back("met(80,0.,400.)");
-   shapes.push_back("cjvjetpt(100,0.,100.)");
+  shapes.push_back("dijet_M(370,150.,2000.)");
+  shapes.push_back("dijet_deta(160,0.,8.)");
+  shapes.push_back("dijet_dphi(310,0.,3.1)");
+  shapes.push_back("met(80,0.,400.)");
+  shapes.push_back("cjvjetpt(100,0.,100.)");
 
   NormPlots normplots("normplots");
   normplots.set_qcdset("QCD")
@@ -199,10 +199,10 @@ int main(int argc, char* argv[]){
   #                                          #
   ##########################################*/
 
-  //analysis->AddModule(&mvatrainer);
+  analysis->AddModule(&mvatrainer);
   //analysis->AddModule(&normplots);
-  analysis->AddModule(&wmunu);
-  analysis->AddModule(&wenu);
+  // analysis->AddModule(&wmunu);
+  // analysis->AddModule(&wenu);
   //analysis->AddModule(&QCD);
 
   analysis->RunAnalysis();

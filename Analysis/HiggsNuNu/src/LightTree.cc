@@ -20,6 +20,7 @@ namespace ic {
     dijet_label_ = "jjCandidates";
     sel_label_ = "JetPair";
     is_data_ = false;
+    dotrigskim_ = false;
     is_embedded_ = false;
     trig_obj_label_ = "triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets";
     trigger_path_ = "HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v";
@@ -110,6 +111,7 @@ namespace ic {
     outputTree_->Branch("run",&run_);
     outputTree_->Branch("lumi",&lumi_);
     outputTree_->Branch("event",&event_);
+    outputTree_->Branch("weight_nolep",&weight_nolep_);
     outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("jet1_pt",&jet1_pt_);
@@ -174,6 +176,38 @@ namespace ic {
     run_= eventInfo->run();
     lumi_= eventInfo->lumi_block();
     event_= eventInfo->event();
+
+      if (is_data_) {
+	
+	TriggerPathPtrVec const& triggerPathPtrVec =
+	  event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
+	//EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings      
+	//unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings                                         
+	passtrigger_=-1;
+	passparkedtrigger1_=-1;
+	passparkedtrigger2_=-1;
+	for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
+	  std::string name = triggerPathPtrVec[i]->name();
+	  triggerPathPtrVec[i]->prescale();
+	  if (name.find(trigger_path_) != name.npos) passtrigger_ = 1;
+	  if (name.find("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger1_ = 1;
+	  if (name.find("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger2_ = 1;
+	}
+	if(dotrigskim_){
+	  if(!(passtrigger_==1||passparkedtrigger1_==1||passparkedtrigger2_==1)){
+	    return 1;
+	  }
+	}
+      }
+      //for MC                                                                                                                                       
+      else {
+	passtrigger_=-1;
+	passparkedtrigger1_=-1;
+	passparkedtrigger2_=-1;
+	std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
+	if (objs.size() > 0) passtrigger_=1;
+      } // do obj match                                                                            
+
 
     double wt = eventInfo->total_weight();
     double vetowt=1;
@@ -349,33 +383,6 @@ namespace ic {
 	}
       }
       
-      if (is_data_) {
-
-	TriggerPathPtrVec const& triggerPathPtrVec =
-	  event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
-	//EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings      
-	//unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings                                         
-	passtrigger_=-1;
-	passparkedtrigger1_=-1;
-	passparkedtrigger2_=-1;
-	for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
-	  std::string name = triggerPathPtrVec[i]->name();
-	  triggerPathPtrVec[i]->prescale();
-	  if (name.find(trigger_path_) != name.npos) passtrigger_ = 1;
-	  if (name.find("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger1_ = 1;
-	  if (name.find("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger2_ = 1;
-	}
-      }
-      //for MC                                                                                                                                       
-      else {
-	passtrigger_=-1;
-	passparkedtrigger1_=-1;
-	passparkedtrigger2_=-1;
-	std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
-	if (objs.size() > 0) passtrigger_=1;
-      } // do obj match                                                                            
-
-
       outputTree_->Fill();
       static unsigned processed = 0;
       ++processed;
