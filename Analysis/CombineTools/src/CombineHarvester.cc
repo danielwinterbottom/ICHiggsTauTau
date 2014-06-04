@@ -75,6 +75,16 @@ CombineHarvester CombineHarvester::shallow_copy() {
   return cpy;
 }
 
+CombineHarvester CombineHarvester::cp() {
+  CombineHarvester cpy;
+  cpy.obs_      = obs_;
+  cpy.procs_    = procs_;
+  cpy.nus_      = nus_;
+  cpy.params_   = params_;
+  cpy.wspaces_  = wspaces_;
+  return cpy;
+}
+
 CombineHarvester & CombineHarvester::PrintAll() {
   std::cout << Observation::PrintHeader;
   for (unsigned i = 0; i < obs_.size(); ++i)

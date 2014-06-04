@@ -72,4 +72,5 @@ double IntegrateFloatRange(TH1F const* hist, double xmin, double xmax) {
               axis->GetBinWidth(bmax);
     return integral;
 }
+
 }

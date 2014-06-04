@@ -7,6 +7,7 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/lexical_cast.hpp"
 #include "boost/regex.hpp"
+#include "boost/bind.hpp"
 #include "TFile.h"
 #include "RooFitResult.h"
 
@@ -14,6 +15,8 @@
 // #include <string>
 // #include "TH1.h"
 #include "CombineTools/interface/Parameter.h"
+#include "CombineTools/interface/Nuisance.h"
+#include "CombineTools/interface/Process.h"
 
 namespace ch {
 
@@ -144,8 +147,6 @@ void SetFromBinName(T *input, std::string parse_rules) {
   if (matches.str("MASS").length())
     input->set_mass(matches.str("MASS"));
 }
-
-
 
 }
 

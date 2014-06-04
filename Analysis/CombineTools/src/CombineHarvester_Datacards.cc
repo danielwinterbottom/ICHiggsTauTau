@@ -460,7 +460,6 @@ void CombineHarvester::WriteDatacard(std::string const& name, TFile & root_file)
   txt_file << "\n";
   txt_file << dashes << "\n";
 
-
   for (auto const& nus : nus_set) {
     std::vector<std::string> line(procs_.size() + 2);
     line[0] = nus;
@@ -479,6 +478,8 @@ void CombineHarvester::WriteDatacard(std::string const& name, TFile & root_file)
             break;
           }
           if (nus_ptr->type() == "shape") {
+            bool add_dir = TH1::AddDirectoryStatus();
+            TH1::AddDirectory(false);
             std::unique_ptr<TH1> h_d((TH1*)(nus_ptr->shape_d()->Clone()));
             h_d->Scale(procs_[p]->rate()*nus_ptr->value_d());
             WriteHistToFile(h_d.get(), &root_file, mappings, nus_ptr->bin(), nus_ptr->process(), nus_ptr->mass(), nus_ptr->name(), 1);
@@ -487,6 +488,7 @@ void CombineHarvester::WriteDatacard(std::string const& name, TFile & root_file)
             WriteHistToFile(h_u.get(), &root_file, mappings, nus_ptr->bin(), nus_ptr->process(), nus_ptr->mass(), nus_ptr->name(), 2);
             seen_shape = true;
             line[p+2] = "1.0";
+            TH1::AddDirectory(add_dir);
             break;
           }
         }
