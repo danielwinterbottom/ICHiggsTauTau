@@ -131,6 +131,13 @@ if options.scheme == 'HTohh':
     ("2",   "2jet2tag",        "2jet2tag",       BINS,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_frac=0.015')),
+    ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE, ( 
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_1jet0tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet0tag_'+COM+'TeV:50:1.0:0.10"')),
+    ("4",   "1jet1tag",      "1jet1tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_1jet1tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_mt = [
@@ -146,6 +153,13 @@ if options.scheme == 'HTohh':
     ("2",   "2jet2tag",        "2jet2tag",       BINS,  ( 
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_frac=0.015')),
+    ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_1jet0tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet0tag_'+COM+'TeV:50:1.1:0.10"')),
+    ("4",   "1jet1tag",      "1jet1tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_1jet1tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
   ]
   scheme_em = [
@@ -164,6 +178,15 @@ if options.scheme == 'HTohh':
     ("2",   "2jet2tag",        "2jet2tag",       BINS, ( 
       ' --syst_tquark="CMS_htt_TTbarShape_em_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_FakeShape_em_2jet2tag_'+COM+'TeV:50:1.1:0.10"'
+      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
+      ' --sub_ztt_top_frac=0.015')),
+    ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE, (
+      ' --syst_tquark="CMS_htt_TTbarShape_em_1jet0tag_'+COM+'TeV"'
+      ' --syst_fakes_os_ss_shape="CMS_htt_FakeShape_em_1jet0tag_'+COM+'TeV"'
+      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
+    ("4",   "1jet1tag",      "1jet1tag",     BINS_FINE,  (
+      ' --syst_tquark="CMS_htt_TTbarShape_em_1jet1tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_FakeShape_em_1jet1tag_'+COM+'TeV:50:1.1:0.10"'
       ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
       ' --sub_ztt_top_frac=0.015'))
   ]
