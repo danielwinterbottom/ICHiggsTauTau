@@ -151,9 +151,10 @@ namespace ic {
     alias_map_["anyjet_jpt1_40_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && jpt_1>40)";
    
     // Attempt at exclusive categories
-    alias_map_["0tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679)";
-    alias_map_["1tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679)";
-    alias_map_["2tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
+    alias_map_["2jet0tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679)";
+    alias_map_["2jet1tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679)";
+    alias_map_["1jet1tag"]     = "(n_prebjets==1 && prebjetbcsv_1>0.679)";
+    alias_map_["2jet2tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
     
     alias_map_["excl_jpt1_30_jpt2_20_no-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
     alias_map_["excl_jpt1_30_jpt2_20_med-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
