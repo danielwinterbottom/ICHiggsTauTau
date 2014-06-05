@@ -199,6 +199,7 @@ if options.scheme == 'HTohh':
   ANA = 'Hhh'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["em"] += ' --set_alias="sel:pzeta>-30"'
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
 
