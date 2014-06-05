@@ -1149,7 +1149,7 @@ int main(int argc, char* argv[]){
    }
     if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
-																	analysis.AddModule(&emuMVATwoStage);
+								  analysis.AddModule(&emuMVATwoStage);
     }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&hhhSync);
