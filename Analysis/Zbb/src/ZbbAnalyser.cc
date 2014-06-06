@@ -59,6 +59,7 @@ namespace ic {
       outtree_->Branch("beta_2",    &beta_2_);
       outtree_->Branch("m_sv_2",    &m_sv_2_);
       outtree_->Branch("dphi_z_bb", &dphi_z_bb_);
+      outtree_->Branch("dphi_z_b",  &dphi_z_b_);
       outtree_->Branch("pt_bb",     &pt_bb_);
       outtree_->Branch("pt_z",      &pt_z_);
     }
@@ -193,10 +194,13 @@ namespace ic {
       beta_1_ = bjets[0]->eta();
       m_sv_1_ = SVMass(bjets[0], id_sv_map, id_trk_map);
       if (m_sv_1_ < 0.) std::cout << "invalid svmass" << std::endl;
+      dphi_z_b_ = std::fabs(
+        ROOT::Math::VectorUtil::DeltaPhi(pair->vector(), bjets[0]->vector()));
     } else {
       bpt_1_  = 0.0;
       beta_1_ = 0.0;
       m_sv_1_ = 0.0;
+      dphi_z_b_ = 0.0;
     }
     if (n_b_jets_ >= 2) {
       bpt_2_  = bjets[1]->pt();

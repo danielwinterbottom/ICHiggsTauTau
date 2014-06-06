@@ -115,4 +115,20 @@ CombineHarvester & CombineHarvester::nus_type(bool cond,
    return *this;
  }
 
+ CombineHarvester & CombineHarvester::histograms() {
+   ic::erase_if(obs_, [&] (std::shared_ptr<Observation> val) { return val->shape() == nullptr; });
+   ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) { return val->shape() == nullptr; });
+   return *this;
+ }
+
+ CombineHarvester & CombineHarvester::pdfs() {
+   ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) { return val->pdf() == nullptr; });
+   return *this;
+ }
+
+ CombineHarvester & CombineHarvester::data() {
+   ic::erase_if(obs_, [&] (std::shared_ptr<Observation> val) { return val->data() == nullptr; });
+   return *this;
+ }
+
 }

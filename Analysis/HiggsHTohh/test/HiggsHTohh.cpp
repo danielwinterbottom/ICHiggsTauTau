@@ -21,8 +21,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTWeights.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/GenLevelStudy.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTRecoilCorrector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTSync.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhRecoilCorrector.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhSync.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
@@ -868,7 +868,7 @@ int main(int argc, char* argv[]){
     .set_allowed_tau_modes(allowed_tau_modes);
   if (channel == channel::em) httPairSelector.set_tau_scale(elec_shift);
 
-  HTTRecoilCorrector httRecoilCorrector = HTTRecoilCorrector("HTTRecoilCorrector")
+  HhhRecoilCorrector hhhRecoilCorrector = HhhRecoilCorrector("HhhRecoilCorrector")
     .set_sample(output_name)
     .set_channel(channel)
     .set_mc(mc)
@@ -983,8 +983,8 @@ int main(int argc, char* argv[]){
   }
 
 
-  HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
-  httSync.set_is_embedded(is_embedded).set_met_label(met_label);
+  HhhSync hhhSync("HhhSync","SYNCFILE_" + output_name, channel);
+  hhhSync.set_is_embedded(is_embedded).set_met_label(met_label);
 
   SVFit svfit("SVFit");
   svfit
@@ -1129,7 +1129,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
-                                  analysis.AddModule(&httRecoilCorrector);
+                                  analysis.AddModule(&hhhRecoilCorrector);
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) {
                                   analysis.AddModule(&svfit);
@@ -1149,10 +1149,10 @@ int main(int argc, char* argv[]){
    }
     if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
-																	analysis.AddModule(&emuMVATwoStage);
+								  analysis.AddModule(&emuMVATwoStage);
     }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
-    if (make_sync_ntuple)         analysis.AddModule(&httSync);
+    if (make_sync_ntuple)         analysis.AddModule(&hhhSync);
     if (!quark_gluon_study)       analysis.AddModule(&hhhCategories);
                                   //analysis.AddModule(&btagCheck);
 

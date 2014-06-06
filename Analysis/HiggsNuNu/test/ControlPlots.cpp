@@ -169,6 +169,7 @@ int main(int argc, char* argv[]){
   bool plot_data_qcd;                // Include QCD from data in plots
   bool plot_wjets_comp;              // Separate Wjets components in plots
   bool use_embedded_data;            // use embedded data instead of data
+  bool use_rereco_data;            // use rereco data instead of prompt data
 
   bool addOverflows;                 //add two bins to histo for underflows and overflows.
   bool dolumixsweight;               //dolumixsweights in controlplots
@@ -223,6 +224,7 @@ int main(int argc, char* argv[]){
     ("plot_data_qcd",       po::value<bool>(&plot_data_qcd)->default_value(false))
     ("plot_wjets_comp",     po::value<bool>(&plot_wjets_comp)->default_value(true))
     ("use_embedded_data",   po::value<bool>(&use_embedded_data)->default_value(false))
+    ("use_rereco_data",   po::value<bool>(&use_rereco_data)->default_value(false))
     ("addOverflows",        po::value<bool>(&addOverflows)->default_value(false))
     ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
     ("shift_backgrounds",   po::value<bool>(&shift_backgrounds)->default_value(false))
@@ -273,7 +275,13 @@ int main(int argc, char* argv[]){
   if (use_embedded_data) {
     files.push_back("DataEmbedded_METembedded-all");
   }
-  else {
+  else if(use_rereco_data){
+    files.push_back("Data_MET-2012A-22Jan2013-v1");
+    files.push_back("Data_MET-2012B-22Jan2013-v1");
+    files.push_back("Data_MET-2012C-22Jan2013-v1");
+    files.push_back("Data_METParked-2012D-22Jan2013-v1");
+  }
+  else{
     files.push_back("Data_MET-2012A-13Jul2012-v1");
     files.push_back("Data_MET-2012A-06Aug2012-v1");
     files.push_back("Data_MET-2012B-13Jul2012-v1");

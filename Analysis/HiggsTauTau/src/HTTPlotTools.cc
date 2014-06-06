@@ -50,16 +50,23 @@ namespace ic {
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau"     ,{"ZTT"}      , kOrange - 4)
     };
     bkg_schemes_["mt_default"] = {
-      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}              ,kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}               ,kBlue   - 8),
-      PlotBkgComponent("ewk","Electroweak"          ,{"W","VV","ZL","ZJ"} ,kRed    + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,kOrange - 4)
+      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
+      PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","Electroweak",           {"W","VV","ZL","ZJ"},   TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
     };
     bkg_schemes_["em_default"] = {
       PlotBkgComponent("qcd","Misidentified e/#mu"           ,{"Fakes"}            ,TColor::GetColor(250,202,255)),
       PlotBkgComponent("ewk","Electroweak"          ,{"EWK"}              ,TColor::GetColor(222, 90,106)),
       PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,TColor::GetColor(248,206,104))
+    };
+    bkg_schemes_["em_with_hww"] = {
+      PlotBkgComponent("qcd","Misidentified e/#mu"  ,{"Fakes"}            ,TColor::GetColor(250,202,255)),
+      PlotBkgComponent("ewk","Electroweak"          ,{"EWK"}              ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,TColor::GetColor(248,206,104)),
+      PlotBkgComponent("hww","SM H(125 GeV)#rightarrow WW" ,{"ggH_hww125","qqH_hww125"}, TColor::GetColor(36,139,2))
     };
     bkg_schemes_["mt_with_zmm"] = {
       PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
@@ -191,9 +198,10 @@ namespace ic {
     ele.set_fill_style(1001);
     ele.set_draw_fill(true);
     ele.set_draw_marker(false);
-    ele.set_draw_line(false);
+    ele.set_draw_line(true);
     ele.set_draw_stat_error_y(false);
     ele.set_in_stack(true);
+    ele.set_draw_fill_in_legend(false);
     ele.set_line_style(11);
     ele.set_fill_color(0);
     ele.set_line_color(color);
@@ -293,61 +301,61 @@ namespace ic {
     sig_schemes_["sm_default"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times SM H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
-        {"ggH","qqH","VH"}, kBlue+3, true)
+        {"ggH","qqH","VH"}, TColor::GetColor(0,18,255), true)
     };
     sig_schemes_["sm_nomult"] = {
       PlotSigComponent("sig",
         ("SM H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
-        {"ggH","qqH","VH"}, kBlue+3, true)
+        {"ggH","qqH","VH"}, TColor::GetColor(0,18,255), true)
     };
     sig_schemes_["sm_nostack"] = {
       PlotSigComponent("sig",
         ("SM H("+draw_signal_mass_+" GeV)#rightarrow#tau#tau"),
-        {"ggH","qqH","VH"}, kBlue+3, false)
+        {"ggH","qqH","VH"}, TColor::GetColor(0,18,255), false)
     };
     sig_schemes_["mssm_default"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
-        {"ggH","bbH"}, kBlue+3, true)
+        {"ggH","bbH"}, TColor::GetColor(0,18,255), true)
     };
     sig_schemes_["mssm_nostack"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
-        {"ggH","bbH"}, kBlue+3, false)
+        {"ggH","bbH"}, TColor::GetColor(0,18,255), false)
     };
     sig_schemes_["mssm_nopars"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau"),
-        {"ggH","bbH"}, kBlue+3, true)
+        {"ggH","bbH"}, TColor::GetColor(0,18,255), true)
     };
     sig_schemes_["mssm_nostack_nopars"] = {
       PlotSigComponent("sig",
-        (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau"),
-        {"ggH","bbH"}, kBlue+3, false)
+        ("MSSM h,H,A#rightarrow#tau#tau"),
+        {"ggH","bbH"}, TColor::GetColor(0,18,255), false)
     };
     sig_schemes_["sm_split_vbf"] = {
       PlotSigComponent("sig",
-        (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau (ggH+VH)"),
-        {"ggH","VH"}, kBlue+3, false),
+        ("SM H("+draw_signal_mass_+")#rightarrow#tau#tau (ggH)"),
+        {"ggH","VH"}, TColor::GetColor(0,18,255), false),
       PlotSigComponent("vbf",
-        (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau (qqH)"),
+        ("SM H("+draw_signal_mass_+")#rightarrow#tau#tau (VBF)"),
         {"qqH"}, 1, false)
     };
     sig_schemes_["sm_split_ww"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau"),
-        {"ggH","VH","qqH"}, kBlue+3, true),
+        {"ggH","VH","qqH"}, TColor::GetColor(0,18,255), true),
       PlotSigComponent("ww",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrowWW"),
-        {"ggH_hww","qqH_hww"}, kGreen+3, true)
+        {"ggH_hww","qqH_hww"}, TColor::GetColor(0,18,255), true)
     };
     sig_schemes_["sm_split_ww_nostack"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrow#tau#tau"),
-        {"ggH","VH","qqH"}, kBlue+3, false),
+        {"ggH","VH","qqH"}, TColor::GetColor(0,18,255), false),
       PlotSigComponent("ww",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times H("+draw_signal_mass_+")#rightarrowWW"),
-        {"ggH_hww","qqH_hww"}, kGreen+3, false)
+        {"ggH_hww","qqH_hww"}, TColor::GetColor(0,18,255), false)
     };
 
     ic::Plot plot;
@@ -411,14 +419,14 @@ namespace ic {
             bkg_elements.push_back(TH1PlotElement(bkg_scheme[i].name, &(hmap[bkg_scheme[i].plots[j]].first), bkg_scheme[i].legend));            
             valid_element = true;
           } else {
-            bkg_elements.back().hist_ptr()->Add(&hmap[bkg_scheme[i].plots[j]].first);          
+            bkg_elements.back().hist_ptr()->Add(&hmap[bkg_scheme[i].plots[j]].first);
           }
         }
       }
       if (valid_element) {
         HTTPlot::SetMCStackStyle(bkg_elements.back(), bkg_scheme[i].color);
         if (norm_bins_) bkg_elements.back().hist_ptr()->Scale(1.0, "width");
-        plot.AddTH1PlotElement(bkg_elements.back());        
+        plot.AddTH1PlotElement(bkg_elements.back());
       }
     }
 
@@ -464,7 +472,7 @@ namespace ic {
       bkg_total = error_band;
       for (unsigned i = 1; i <= unsigned(bkg_total.GetNbinsX()); ++i) {
         bkg_total.SetBinError(i, 0.0);
-      } 
+      }
       err_element = TH1PlotElement("error_shape", &error_band,"Bkg. uncertainty");
       bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
 
@@ -532,7 +540,9 @@ namespace ic {
     plot.ratio_y_axis_max = ratio_max_;
     HTTPlot::SetDataStyle(data_plot);
     plot.AddTH1PlotElement(data_plot);
-    plot.legend_height = 0.05;
+    plot.legend_height = 0.045;
+    if (draw_ratio_) plot.legend_height = 0.05;
+    if (draw_ratio_ && signal_scheme_ == "sm_split_vbf") plot.legend_height = 0.045;
 
     for (auto & ele : text_) plot.AddTextElement(ele);
 

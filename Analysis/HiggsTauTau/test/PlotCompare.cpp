@@ -110,7 +110,7 @@ int main(int argc, char* argv[]){
   po::variables_map vm;
   po::notify(vm);
 
-  config.add_options()    
+  config.add_options()
     ("plot,p",              po::value<vector<string>>(&plots)->required())
     ("outname",             po::value<string>(&outname)->required())
     ("ratios",              po::value<string>(&ratios)->default_value(""))

@@ -15,6 +15,7 @@
 #include "TLegend.h"
 #include "THStack.h"
 #include "TPad.h"
+#include "TLine.h"
 #include "TGraphErrors.h"
 #include "boost/algorithm/string.hpp"
 
@@ -129,7 +130,7 @@ namespace ic {
       canv->SetRightMargin    (0.05);
       canv->SetTopMargin      (0.12);
       if (!draw_ratio_hist) canv->SetTopMargin      (0.08);
-      canv->SetBottomMargin   (0.18);
+      canv->SetBottomMargin   (0.14);
       // Setup a frame which makes sense
       canv->SetFrameFillStyle (0);
       canv->SetFrameLineStyle (0);
@@ -138,7 +139,7 @@ namespace ic {
       canv->SetFrameFillStyle (0);
       canv->SetFrameLineStyle (0);
       canv->SetFrameBorderMode(0);
-      canv->SetFrameBorderSize(10);      
+      canv->SetFrameBorderSize(10);
     }
     canv->cd();
     TPad* upper = nullptr;
@@ -374,14 +375,23 @@ namespace ic {
 
     //Adjust the y-axis maximum to account for largest bin
     if (y_axis_log) {
-      elements_[0].hist_ptr()->SetMaximum(max_bin_content*1.5*extra_pad);
-      if (y_axis_min > 0) { 
+      double tgt_max = max_bin_content*1.5*extra_pad;
+      elements_[0].hist_ptr()->SetMaximum(tgt_max);
+      if (y_axis_min > 0) {
           elements_[0].hist_ptr()->SetMinimum(y_axis_min);
       }
       if (thstack.GetHistogram()) {
-        thstack.SetMaximum(thstack.GetMaximum()*1.5*extra_pad);
-        if (y_axis_min > 0) { 
-            thstack.SetMinimum(y_axis_min);
+        thstack.SetMaximum(tgt_max);
+        // This is absolutely crazy. Turns out ROOT ignores
+        // the min and max values to a THStack when drawing
+        // with a log scale, but rather adjusts them to some
+        // wider range for you.  This code ensures we get the
+        // actual range we want. See here for a better long-
+        // term fix: http://root.cern.ch/phpBB3/viewtopic.php?f=3&t=12702
+        // (basically figure out axis ranges first and draw with the pad)
+        if (y_axis_min > 0) {
+            thstack.SetMaximum(tgt_max/(1+0.2*std::log10(tgt_max/y_axis_min)));
+            thstack.SetMinimum(y_axis_min*(1+0.5*std::log10(tgt_max/y_axis_min)));
         }
       }
     } else {
@@ -396,16 +406,20 @@ namespace ic {
       }
     }
 
-    /*
-    TLine *line = new TLine(30., 0., 30., elements_[0].hist_ptr()->GetMaximum());
+    /* 
+    // TLine *line = new TLine(30., 0., 30., elements_[0].hist_ptr()->GetMaximum()); // mT
+    TLine *line = new TLine(-20., 0., -20., 12000);   // Dzeta
+    // TLine *line = new TLine(-0.5, 0., -0.5, 5000000);   // BDT
     TLine *line2 = new TLine(70., 0., 70., elements_[0].hist_ptr()->GetMaximum());
     TLatex *ex_latex = new TLatex();
     ex_latex->SetTextSize(0.035);
     ex_latex->SetTextFont(62);
     ex_latex->SetTextAlign(31);
-    ex_latex->DrawLatex(27,15000,"#splitline{Baseline}{selection}");
+    //ex_latex->DrawLatex(27,15000,"#splitline{Baseline}{selection}"); // mT
+    ex_latex->DrawLatex(51,9500,"#splitline{MSSM Baseline}{selection}"); // Dzeta
+    //ex_latex->DrawLatex(0.1,6000,"#splitline{SM Baseline}{selection}"); // BDT
     ex_latex->SetTextAlign(11);
-    ex_latex->DrawLatex(100,6000,"#splitline{High-m_{T}}{control region}");
+    //ex_latex->DrawLatex(100,6000,"#splitline{High-m_{T}}{control region}");
     line->SetLineWidth(3);
     line->SetLineStyle(3);
     line->SetLineColor(1);
@@ -414,10 +428,12 @@ namespace ic {
     line2->SetLineColor(1);
     canv->Update();
     line->Draw();
-    line2->Draw();
+    //line2->Draw();
     */
-
+    
+    canv->RedrawAxis();
     canv->Update();
+
 
     //Apply legend style options
     if (n_legend > 0) {
@@ -494,9 +510,9 @@ namespace ic {
           if (!draw_signif) {
             ratio_ele[k]->Divide(den);
           } else {
-            TH1F *h1 = (TH1F*)ratio_ele[k]->Clone("data1"); 
-            TH1F *h2 = (TH1F*)ratio_ele[k]->Clone("data2"); 
-            TH1F *h3 = (TH1F*)ratio_ele[k]->Clone("data3"); 
+            TH1F *h1 = (TH1F*)ratio_ele[k]->Clone("data1");
+            TH1F *h2 = (TH1F*)ratio_ele[k]->Clone("data2");
+            TH1F *h3 = (TH1F*)ratio_ele[k]->Clone("data3");
             TH1F *h4 = (TH1F*)ratio_ele[k]->Clone("data4");
             h3->Add(den,-1);
             int nbins = num->GetNbinsX();

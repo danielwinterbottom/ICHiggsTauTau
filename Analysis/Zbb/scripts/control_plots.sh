@@ -17,6 +17,10 @@ Z1BSEL="m_z>76 && m_z<106"
 --var="pt_z(17,0,255)" --datacard="z2b" --background_scheme="all" --syst_scale_j="jes" \
 --extra_pad=1.1  --x_axis_label="p_{T}^{ll} [GeV]"
 
+./bin/ZbbPlot --cfg=scripts/plot.cfg --sel="$Z1BSEL" --cat="n_b_jets==1" --wt="wt*wt_1b_exc" \
+--var="pt_z(25,0,250)" --datacard="z1b" --background_scheme="all" --syst_scale_j="jes" \
+--extra_pad=1.1  --x_axis_label="p_{T}^{ll} [GeV]"
+
 ./bin/ZbbPlot --cfg=scripts/plot.cfg --sel="$Z2BSEL" --cat="n_b_jets>=2" --wt="wt*wt_2b_inc" \
 --var="pt_bb(17,0,255)" --datacard="z2b" --background_scheme="all" --syst_scale_j="jes" \
 --extra_pad=1.1  --x_axis_label="p_{T}^{bb} [GeV]"
@@ -25,13 +29,17 @@ Z1BSEL="m_z>76 && m_z<106"
 --var="dphi_z_bb(25,0,3.15)" --datacard="z2b" --background_scheme="all" --syst_scale_j="jes" \
 --extra_pad=1.3  --x_axis_label="#Delta#phi_{Z,bb}" --legend_pos=1 --legend_left=0.22
 
+./bin/ZbbPlot --cfg=scripts/plot.cfg --sel="$Z1BSEL" --cat="n_b_jets==1" --wt="wt*wt_1b_exc" \
+--var="dphi_z_b(25,0,3.15)" --datacard="z1b" --background_scheme="all" --syst_scale_j="jes" \
+--extra_pad=1.3  --x_axis_label="#Delta#phi_{Z,b}" --legend_pos=1 --legend_left=0.22
+
 ./bin/ZbbPlot --cfg=scripts/plot.cfg --sel="$Z2BSEL" --cat="n_b_jets>=2" --wt="wt*wt_2b_inc" \
 --var="bpt_1(20,25,265)" --datacard="z2b" --background_scheme="all" --syst_scale_j="jes" \
 --extra_pad=1.3  --x_axis_label="Leading b-tagged Jet p_{T} [GeV]"
 
 ./bin/ZbbPlot --cfg=scripts/plot.cfg --sel="$Z2BSEL" --cat="n_b_jets>=2" --wt="wt*wt_2b_inc" \
 --var="bpt_2(20,25,265)" --datacard="z2b" --background_scheme="all" --syst_scale_j="jes" \
---extra_pad=1.4  --x_axis_label="Subleading b-tagged Jet p_{T} [GeV]"
+--extra_pad=1.4  --x_axis_label="Sub-leading b-tagged Jet p_{T} [GeV]"
 
 ./bin/ZbbPlot --cfg=scripts/plot.cfg --sel="$Z1BSEL" --cat="n_b_jets>=2" --wt="wt*wt_2b_inc" \
 --var="met(20,0,200)" --datacard="z2b_nomet" --background_scheme="all" --syst_scale_j="jes" \

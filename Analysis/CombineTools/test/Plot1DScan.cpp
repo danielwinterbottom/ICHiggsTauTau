@@ -9,6 +9,7 @@
 #include "TLine.h"
 #include "TLegend.h"
 #include "TString.h"
+#include "TLatex.h"
 
 #include "Core/interface/Plot.h"
 
@@ -65,15 +66,15 @@ int main() {
   //scans.push_back({"higgsCombinenoBBBScan.MultiDimFit.mH125.root", "no bbb syst.", 38, nullptr});
   
   scans.push_back({"thesis/higgsCombineFullScan.MultiDimFit.mH125.root", "Stat+Syst+Theory", 1, nullptr});
-  scans.push_back({"thesis/higgsCombineStatAndExp.MultiDimFit.mH125.root", "Stat+Syst", 38, nullptr});
-  scans.push_back({"thesis/higgsCombineStatOnly.MultiDimFit.mH125.root", "Stat Only", 32, nullptr});
+  scans.push_back({"thesis/higgsCombineStatAndExp.MultiDimFit.mH125.root", "Stat+Syst", kAzure-9, nullptr});
+  scans.push_back({"thesis/higgsCombineStatOnly.MultiDimFit.mH125.root", "Stat Only", kBlue+1, nullptr});
   //scans.push_back({"thesis/higgsCombineStatAndTh.MultiDimFit.mH125.root", "Stat+Theory", 39, nullptr});
   TCanvas c1("canvas","canvas");
 
   std::vector<TLine *> lines;
 
 
-  TLegend *leg = new TLegend(0.4,0.65,0.7,0.9,"","brNDC");
+  TLegend *leg = new TLegend(0.37,0.65,0.73,0.9,"","brNDC");
 
   unsigned counter = 0;
   for (auto & sc : scans) {
@@ -92,7 +93,7 @@ int main() {
       lines.push_back(new TLine(x1[1],0,x1[1],1.0));
       lines.back()->SetLineColor(sc.color);
       lines.back()->SetLineWidth(2);
-      res = TString::Format("%.3f#pm%.3f",best1,err);
+      res = TString::Format("%.2f#pm%.2f",best1,err);
     }
     sc.gr->SetLineColor(sc.color);
     sc.gr->SetLineWidth(3);
@@ -107,10 +108,12 @@ int main() {
   // g1.SetLineWidth(2);
   // // g1.SetMarkerColor(7);
   // g1.Draw("AC");
-  scans[0].gr->SetMaximum(2);
+  scans[0].gr->SetMaximum(1.9);
   scans[0].gr->GetXaxis()->SetRangeUser(0.4, 1.4);
-  scans[0].gr->GetXaxis()->SetTitle("#sigma/#sigma_{SM}");
+  scans[0].gr->GetXaxis()->SetTitle("Signal Strength, #mu");
   scans[0].gr->GetYaxis()->SetTitle("-2 #Delta ln L");
+  scans[0].gr->GetXaxis()->SetTitleFont(62);
+  scans[0].gr->GetYaxis()->SetTitleFont(62);
   leg->SetBorderSize(1);
   leg->SetTextFont(42);
   leg->SetTextSize(0.03);
@@ -123,6 +126,15 @@ int main() {
   lines.push_back(new TLine(0.4,1,1.4,1));
   lines.back()->SetLineColor(2);
   for (auto l : lines) l->Draw();
+  TLatex *title_latex = new TLatex();
+  title_latex->SetNDC();
+  title_latex->SetTextSize(0.035);
+  title_latex->SetTextFont(62);
+  title_latex->SetTextAlign(11);
+  title_latex->DrawLatex(0.17,0.93,"4.9 fb^{-1} at 7 TeV, 19.7 fb^{-1} at 8 TeV");
+  title_latex->SetTextAlign(31);
+  title_latex->SetTextSize(0.035);
+  title_latex->DrawLatex(0.95,0.94,"#mu_{}#tau_{h}, e#tau_{h}, e#mu");
   c1.Update();
   c1.SaveAs("scan.pdf");
   return 0;

@@ -24,17 +24,6 @@ make -j 5
 make clean; cd ../; make clean; cd -
 
 --------------------------------------------
-## Before running: need symbolic links to data
-## that are in common with HiggsTauTau:
----------------------------------------------
-
-cd data
-ln -s ../../HiggsTauTau/data/jec/ .
-ln -s ../../HiggsTauTau/data/json/ .
-ln -s ../../HiggsTauTau/data/pileup/ .
-ln -s ../../HiggsTauTau/data/met_laser_filters/ .
-
---------------------------------------------
 ## Also we need a symbolic link to the correct params file
 --------------------------------------------
 cd scripts

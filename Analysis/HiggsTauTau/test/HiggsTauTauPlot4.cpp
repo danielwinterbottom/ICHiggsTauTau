@@ -921,7 +921,7 @@ int main(int argc, char* argv[]){
 	if (auto_titles) {
 		double fb_lumi = ana.GetLumi() / 1000.;
 		string com = is_2012 ? "8" : "7";
-		plot.set_title_left((boost::format("CMS, %.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
+		plot.set_title_left((boost::format("%.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
     std::string channel_fmt = ""; 
 		//if (channel_str == "et") 		plot.set_title_right("e#tau_{h}");
 		//if (channel_str == "mt") 		plot.set_title_right("#mu#tau_{h}");
@@ -932,7 +932,9 @@ int main(int argc, char* argv[]){
 		if (channel_str == "mtmet") channel_fmt = "#mu_{soft}#tau_{h}";
 		if (channel_str == "em") 		channel_fmt = "e#mu";
     ic::TextElement text(channel_fmt,0.08,0.21,0.82);
+    //ic::TextElement text2("#splitline{Same-sign}{region}",0.05,0.65,0.5);
     plot.AddTextElement(text);
+    //plot.AddTextElement(text2);
 	}
 	plot.GeneratePlot(hmap);
 

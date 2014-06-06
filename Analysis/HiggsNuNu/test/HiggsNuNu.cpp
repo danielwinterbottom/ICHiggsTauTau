@@ -43,6 +43,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TmvaInputs.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/TrigeffInputs.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]){
   bool do_skim;                   // For making skimmed ntuples
   bool do_trigeff;                // Apply trigger at end of selection to work out trigger efficiency and bin variables
   bool do_trigeff_tree;           // Generate tree of variables used for trig study
+  bool do_light_tree;             // Generate tree for light tree steps
   bool do_parked_trigs;           // Option to do parked triggers
   bool do_gensteps;               // For getting numbers of events at gen level
   bool doincludehighptz;          // For including high pt z sample
@@ -160,6 +162,7 @@ int main(int argc, char* argv[]){
     ("do_skim",             po::value<bool>(&do_skim)->default_value(false))
     ("do_trigeff",          po::value<bool>(&do_trigeff)->default_value(false))
     ("do_trigeff_tree",     po::value<bool>(&do_trigeff_tree)->default_value(false))
+    ("do_light_tree",       po::value<bool>(&do_light_tree)->default_value(false))
     ("do_parked_trigs",     po::value<bool>(&do_parked_trigs)->default_value(false))
     ("do_gensteps",         po::value<bool>(&do_gensteps)->default_value(false))
     ("doincludehighptz",    po::value<bool>(&doincludehighptz)->default_value(false))
@@ -357,37 +360,37 @@ int main(int argc, char* argv[]){
   HinvPrint hinvFilter("HinvFilter",is_data,true,false);
 
   //COMMENTED OUT FOR OTHER SKIM
-  // if (do_skim && channel==channel::nunu){
+//   if (do_skim && channel==channel::nunu){
 //     //fill hinvFilter with events to be skimmed from inputfile
-//     std::ifstream levtlist;
-//     levtlist.open(eventsToSkim.c_str());
-//     if(!levtlist.is_open()){
-//       std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
-//       return 1; 
-//     }
-//     unsigned counter = 0;
-//     while(1){
-//       unsigned lEvt=0;
-//       unsigned lRun=0;
-//       unsigned lLumi=0;
-//       if (is_data) {
-// 	levtlist>>lRun;
-// 	levtlist>>lLumi;
-//       }
-//       levtlist>>lEvt;
-//       if (lEvt!=0 || lRun!=0 || lLumi!=0){
-// 	std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
-// 	hinvFilter.PrintEvent(lRun,lLumi,lEvt);
-// 	counter++;
-//       }
-//       if(levtlist.eof()){
-// 	break; 
-//       }
-//     }
+//      std::ifstream levtlist;
+//      levtlist.open(eventsToSkim.c_str());
+//      if(!levtlist.is_open()){
+//        std::cerr<<"Unable to open file " << eventsToSkim << " for filtering events. "<<std::endl;
+//        return 1; 
+//      }
+//      unsigned counter = 0;
+//      while(1){
+//        unsigned lEvt=0;
+//        unsigned lRun=0;
+//        unsigned lLumi=0;
+//        if (is_data) {
+//  	levtlist>>lRun;
+//  	levtlist>>lLumi;
+//        }
+//        levtlist>>lEvt;
+//        if (lEvt!=0 || lRun!=0 || lLumi!=0){
+//  	std::cout << " -- Adding event: " << lRun << ":" << lLumi << ":" << lEvt << std::endl;
+//  	hinvFilter.PrintEvent(lRun,lLumi,lEvt);
+//  	counter++;
+//        }
+//        if(levtlist.eof()){
+//  	break; 
+//        }
+//      }
 
-//     std::cout << " - Total of " << counter << " events added to skim." << std::endl;
-//     levtlist.close();
-//   }
+//      std::cout << " - Total of " << counter << " events added to skim." << std::endl;
+//      levtlist.close();
+//    }
 
   //print the event content
   HinvPrint hinvPrint("HinvPrint",is_data);
@@ -941,10 +944,16 @@ int main(int argc, char* argv[]){
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
-    if (channel==channel::nunu ||channel==channel::nunulowmet|| channel == channel::taunu){
-      hinvWeights.set_do_idiso_veto_weights(doidisoeff);
+    if(!do_light_tree){
+      if (channel==channel::nunu ||channel==channel::nunulowmet|| channel == channel::taunu){
+	hinvWeights.set_do_idiso_veto_weights(doidisoeff);
+      }
+      else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
     }
-    else hinvWeights.set_do_idiso_tight_weights(doidisoeff);
+    else{
+      hinvWeights.set_do_idiso_veto_weights(false);
+      hinvWeights.set_do_idiso_tight_weights(false);
+    }
     if (ignoreLeptons){ 
       hinvWeights.set_do_idiso_veto_weights(false);
       hinvWeights.set_do_idiso_tight_weights(false);
@@ -1034,6 +1043,15 @@ int main(int argc, char* argv[]){
     .set_sel_label("JetPair")
     .set_is_data(is_data)
     .set_channel(channel_str)
+    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
+    .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+
+  LightTree lightTree = LightTree("LightTree")
+    .set_fs(fs)
+    .set_met_label(mettype)
+    .set_dijet_label("jjLeadingCandidates")
+    .set_sel_label("JetPair")
+    .set_is_data(is_data)
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
     .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
@@ -1538,60 +1556,60 @@ int main(int argc, char* argv[]){
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
     //Require trigger to fire unless doing trig eff studies, also do not require trigger for MC in parked analysis
-    if(!do_trigeff_tree&&!do_trigeff){
+    if(!do_trigeff_tree&&!do_trigeff&&!do_light_tree){
       if(is_data||(!is_data&&!do_parked_trigs)) analysis.AddModule(&dataMCTriggerPathFilter);
     }
     
     //if (printEventList) analysis.AddModule(&hinvPrintList);
   
     //NEW: change skimming to write event at a specific moment in the chain of modules.
-     if (do_skim) analysis.WriteSkimHere();
-
-     ////analysis.AddModule(&runStats);
+    if (do_skim) analysis.WriteSkimHere();
     
-     if (is_data && !is_embedded ) {
-       //FIXME: do MetFilters also on MC, but not saved right now in MC...
-       analysis.AddModule(&metFilters);
-       analysis.AddModule(&metLaserFilters);
-       //if (printEventList) analysis.AddModule(&hinvPrintList);
-     }
-     
-     //jet modules
-     analysis.AddModule(&jetIDFilter);
-     //don't want pile-up jets to calculate HT,MHT...
-     analysis.AddModule(&alljetsCopyCollection);
-
-
-     //prepare collections of veto leptons
-     analysis.AddModule(&vetoElectronCopyCollection);
-     analysis.AddModule(&vetoElectronFilter);
-     analysis.AddModule(&vetoElectronIso);
-     analysis.AddModule(&vetoMuonCopyCollection);
-     analysis.AddModule(&vetoMuonFilter);
-     // analysis.AddModule(&vetoMuonNoIsoCopyCollection);
-     //analysis.AddModule(&vetoMuonNoIsoFilter);
+    ////analysis.AddModule(&runStats);
+    
+    if (is_data && !is_embedded ) {
+      //FIXME: do MetFilters also on MC, but not saved right now in MC...
+      analysis.AddModule(&metFilters);
+      analysis.AddModule(&metLaserFilters);
+      //if (printEventList) analysis.AddModule(&hinvPrintList);
+    }
+    
+    //jet modules
+    analysis.AddModule(&jetIDFilter);
+    //don't want pile-up jets to calculate HT,MHT...
+    analysis.AddModule(&alljetsCopyCollection);
+    
+    
+    //prepare collections of veto leptons
+    analysis.AddModule(&vetoElectronCopyCollection);
+    analysis.AddModule(&vetoElectronFilter);
+    analysis.AddModule(&vetoElectronIso);
+    analysis.AddModule(&vetoMuonCopyCollection);
+    analysis.AddModule(&vetoMuonFilter);
+    // analysis.AddModule(&vetoMuonNoIsoCopyCollection);
+    //analysis.AddModule(&vetoMuonNoIsoFilter);
+    
+    //filter leptons before making jet pairs and changing MET...
+    analysis.AddModule(&selElectronCopyCollection);
+    analysis.AddModule(&selElectronFilter);
+    analysis.AddModule(&selElectronIso);
+    analysis.AddModule(&selMuonCopyCollection);
+    analysis.AddModule(&selMuonFilter);
+    analysis.AddModule(&elecMuonOverlapFilter);
+    
+    //filter taus for plots
+    analysis.AddModule(&tauPtEtaFilter);
    
-     //filter leptons before making jet pairs and changing MET...
-     analysis.AddModule(&selElectronCopyCollection);
-     analysis.AddModule(&selElectronFilter);
-     analysis.AddModule(&selElectronIso);
-     analysis.AddModule(&selMuonCopyCollection);
-     analysis.AddModule(&selMuonFilter);
-     analysis.AddModule(&elecMuonOverlapFilter);
-
-     //filter taus for plots
-     analysis.AddModule(&tauPtEtaFilter);
-   
-     //add met without leptons for plots
-     analysis.AddModule(&metNoMuons);
-     analysis.AddModule(&metNoElectrons);
-     analysis.AddModule(&metNoENoMu);
-     
-     //if (printEventList) analysis.AddModule(&hinvPrintList);
-
-     //deal with removing overlap with selected leptons
-     analysis.AddModule(&jetMuonOverlapFilter);
-     analysis.AddModule(&jetElecOverlapFilter);
+    //add met without leptons for plots
+    analysis.AddModule(&metNoMuons);
+    analysis.AddModule(&metNoElectrons);
+    analysis.AddModule(&metNoENoMu);
+    
+    //if (printEventList) analysis.AddModule(&hinvPrintList);
+    
+    //deal with removing overlap with selected leptons
+    analysis.AddModule(&jetMuonOverlapFilter);
+    analysis.AddModule(&jetElecOverlapFilter);
      //no need to clean taus, we don't do it in the signal selection.
      //if (channel == channel::taunu) analysis.AddModule(&jetTauOverlapFilter);
 
@@ -1660,9 +1678,11 @@ int main(int argc, char* argv[]){
      else {
        //lepton veto modules
        if (!ignoreLeptons){
-	 if(!do_trigeff_tree&&!do_trigeff) analysis.AddModule(&zeroVetoMuonFilter);
-	 //if (printEventList) analysis.AddModule(&hinvPrintList);
-	 analysis.AddModule(&zeroVetoElectronFilter);
+	 if(!do_trigeff_tree&&!do_trigeff&&!do_light_tree){
+	   analysis.AddModule(&zeroVetoMuonFilter);
+	   //if (printEventList) analysis.AddModule(&hinvPrintList);
+	   analysis.AddModule(&zeroVetoElectronFilter);
+	 }
 	 //if (printEventList) analysis.AddModule(&hinvPrintList);
       }
      }
@@ -1685,7 +1705,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&wjetsPlots_wsel);
      }
 
-     analysis.AddModule(&jetPairFilter);
+     if(!do_light_tree)analysis.AddModule(&jetPairFilter);
      if(do_trigeff) analysis.AddModule(&jetPairMaxPtFilter);//Allow max pt cut to enable binning in jet pt for trig studies
        
   
@@ -1701,7 +1721,7 @@ int main(int argc, char* argv[]){
      analysis.AddModule(&FilterCJV);
 
      //jet pair selection
-     analysis.AddModule(&etaProdJetPairFilter);//!!DECIDE WHETHER TO APPLY THIS IN TRG EFF STUDY
+     if(!do_light_tree)analysis.AddModule(&etaProdJetPairFilter);
      //if (printEventList) analysis.AddModule(&hinvPrintList);
 
      analysis.AddModule(&controlPlots_dijet);
@@ -1715,6 +1735,7 @@ int main(int argc, char* argv[]){
      //write tree with TMVA input variables
      if (doTmvaTree) analysis.AddModule(&tmvaInputs);
      else if(do_trigeff_tree) analysis.AddModule(&trigeffInputs);
+     else if(do_light_tree) analysis.AddModule(&lightTree);
      else {
 
        analysis.AddModule(&detaJetPairFilter);
@@ -1742,7 +1763,7 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&controlPlots_tightMjj);
        analysis.AddModule(&wjetsPlots_tightMjj);
        
-       if(!do_trigeff&&!do_trigeff_tree){
+       if(!do_trigeff&&!do_trigeff_tree&&!do_light_tree){
 	 //save signal and QCD regions without CJV
 	 analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
 	 analysis.AddModule(&wjetsPlots_dphi_qcd_nocjv);

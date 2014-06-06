@@ -15,9 +15,9 @@
 
 //! HTTAnalysisTools
 /*!
-  A set of classes and functions that can be used to analyse the output of 
+  A set of classes and functions that can be used to analyse the output of
   the HiggsTauTau program. This includes creating histograms from flat
-  TTrees and running the data-driven background techniques.  
+  TTrees and running the data-driven background techniques.
 */
 
 namespace ic {

@@ -14,7 +14,8 @@ Process::Process()
       channel_(""),
       bin_id_(0),
       mass_(""),
-      shape_() {
+      shape_(),
+      pdf_(nullptr) {
   }
 
 Process::~Process() { }
@@ -31,6 +32,7 @@ void swap(Process& first, Process& second) {
   swap(first.bin_id_, second.bin_id_);
   swap(first.mass_, second.mass_);
   swap(first.shape_, second.shape_);
+  swap(first.pdf_, second.pdf_);
 }
 
 Process::Process(Process const& other)
@@ -42,7 +44,8 @@ Process::Process(Process const& other)
       era_(other.era_),
       channel_(other.channel_),
       bin_id_(other.bin_id_),
-      mass_(other.mass_) {
+      mass_(other.mass_),
+      pdf_(other.pdf_) {
   TH1 *h = nullptr;
   if (other.shape_) {
     h = dynamic_cast<TH1*>(other.shape_->Clone());
@@ -61,7 +64,8 @@ Process::Process(Process&& other)
       channel_(""),
       bin_id_(0),
       mass_(""),
-      shape_() {
+      shape_(),
+      pdf_(nullptr) {
   swap(*this, other);
 }
 
@@ -72,9 +76,9 @@ Process& Process::operator=(Process other) {
 
 std::ostream& Process::PrintHeader(std::ostream &out) {
   std::string line =
-   (boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-22s %-3i %-10.5g %-8i")
+   (boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-22s %-3i %-10.5g %-10i")
    % "mass" % "analysis" % "era" % "channel" % "bin" % "id" % "process" %
-   "id" % "rate" % "shape").str();
+   "id" % "rate" % "shape/pdf").str();
   std::string div(line.length(), '-');
   out << div  << std::endl;
   out << line << std::endl;
@@ -83,7 +87,7 @@ std::ostream& Process::PrintHeader(std::ostream &out) {
 }
 
 std::ostream& operator<< (std::ostream &out, Process &val) {
-  out << boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-22s %-3i %-10.5g %-8i")
+  out << boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-22s %-3i %-10.5g %-10i")
   % val.mass()
   % val.analysis()
   % val.era()
@@ -93,7 +97,7 @@ std::ostream& operator<< (std::ostream &out, Process &val) {
   % val.process()
   % val.process_id()
   % val.rate()
-  % bool(val.shape());
+  % (bool(val.shape()) || bool(val.pdf()));
   return out;
 }
 }

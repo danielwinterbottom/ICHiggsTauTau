@@ -10,6 +10,7 @@
 #include "TStyle.h"
 #include "THStack.h"
 #include "TLine.h"
+#include "TColor.h"
 
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
@@ -18,13 +19,16 @@
 #include "boost/filesystem.hpp"
 #include "boost/regex.hpp"
 
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTStatTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPlotTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTAnalysisTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/mssm_xs_tools.h"
+#include "Core/interface/Plot.h"
+#include "Core/interface/TextElement.h"
+#include "Utilities/interface/FnRootTools.h"
+#include "HiggsTauTau/interface/HTTStatTools.h"
+#include "HiggsTauTau/interface/HTTPlotTools.h"
+#include "HiggsTauTau/interface/HTTAnalysisTools.h"
+#include "HiggsTauTau/interface/mssm_xs_tools.h"
+
+#include "CombineTools/interface/CombineHarvester.h"
+#include "CombineTools/interface/HelperFunctions.h"
 
 namespace po = boost::program_options;
 
@@ -35,16 +39,9 @@ void SetMCStackStyle(TH1F & ele, unsigned color) {
   ele.SetFillColor(color);
   ele.SetFillStyle(1001);
   ele.SetLineWidth(2);
-  return; 
-}
-void SetSignalStyle(TH1F & ele, unsigned color) {
-  ele.SetFillStyle(1001);
-  ele.SetLineStyle(11);
-  ele.SetFillColor(0);
-  ele.SetLineColor(color);
-  ele.SetLineWidth(2);
   return;
 }
+
 void SetDataStyle(TH1F & ele) {
   ele.SetMarkerColor(1);
   ele.SetLineColor(1);
@@ -55,6 +52,7 @@ void SetDataStyle(TH1F & ele) {
   ele.SetMarkerSize(1.1);
   return;
 }
+
 void SetDataStyle(TGraphAsymmErrors & ele) {
   ele.SetMarkerColor(1);
   ele.SetLineColor(1);
@@ -66,10 +64,9 @@ void SetDataStyle(TGraphAsymmErrors & ele) {
   return;
 }
 
-
 void LegendStyle(TLegend *legend) {
   legend->SetBorderSize(1);
-  legend->SetTextFont(42);
+  legend->SetTextFont(62);
   legend->SetLineColor(0);
   legend->SetLineStyle(1);
   legend->SetLineWidth(1);
@@ -77,14 +74,14 @@ void LegendStyle(TLegend *legend) {
   legend->SetFillStyle(1001);
 }
 
-
 int main(int argc, char* argv[]){
+  Plot::SetHTTStyle();
   string cfg;                                   // The configuration file
-  string datacard_regex   = "";
-  string root_file_regex  = "";
-  string pulls_file       = "";
-  string datacard_path    = "";
-  string root_file_path   = "";
+
+  vector<string> datacards;
+  string fitresult_file = "";
+  string parse_rule = "";
+
   string output           = "";
   string text1            = "";
   string text2            = "";
@@ -95,119 +92,164 @@ int main(int argc, char* argv[]){
   bool split_zll          = false;
   bool poisson_errors     = false;
 
-  po::options_description preconfig("Pre-Configuration");
+  po::options_description preconfig("pre-configuration");
   preconfig.add_options()("cfg", po::value<std::string>(&cfg)->required());
   po::variables_map vm;
   po::store(po::command_line_parser(argc, argv).options(preconfig).allow_unregistered().run(), vm);
   po::notify(vm);
-  po::options_description config("Configuration");
+  po::options_description config("configuration");
   config.add_options()
     ("help,h",  "print the help message")
-    ("datacard_regex",       po::value<string>(&datacard_regex)->required(),            "[REQUIRED] regular expression for datacards to parse")
-    ("root_file_regex",      po::value<string>(&root_file_regex)->required(),           "[REQUIRED] regular expression for root files to parse")
-    ("datacard_path",        po::value<string>(&datacard_path)->required(),             "[REQUIRED] path to the folder containing datacard *.txt files")
-    ("root_file_path",       po::value<string>(&root_file_path)->required(),            "[REQUIRED] path to the folder containing datacard *.root files")
-    ("pulls_file",           po::value<string>(&pulls_file)->required(),                "[REQUIRED] path to the file containing the pulls from a maximum-likelihood fit")
-    ("output",               po::value<string>(&output)->required(),                    "[REQUIRED] output name (no extension)")
-    ("text1",                po::value<string>(&text1)->default_value(""),              "[REQUIRED] output name (no extension)")
-    ("text2",                po::value<string>(&text2)->default_value(""),              "[REQUIRED] output name (no extension)")
-    ("postfit",              po::value<bool>(&postfit)->required(),                     "[REQUIRED] use the pulls file to make a post-fit plot")
-    ("ignore_corrs",         po::value<bool>(&ignore_corrs)->default_value(false),      "Ignore all nuisance parameter correlations when evaulating uncertainties")
-    ("rebin_to_vbf",         po::value<bool>(&rebin_to_vbf)->default_value(true),       "Use wider vbf binning for all categories")
-    ("split_zll",            po::value<bool>(&split_zll)->default_value(false),         "Draw Z->ll component separately from electroweak")
-    ("poisson_errors",       po::value<bool>(&poisson_errors)->default_value(false),    "Draw data with poisson error bars")
-    ("mssm",                 po::value<bool>(&mssm)->default_value(false),              "input is an MSSM datacard");
+    ("datacard,d",
+      po::value<vector<string>> (&datacards)->multitoken()->required())
+    ("fitresult,f",
+      po::value<string> (&fitresult_file))
+    ("parse_rule,p",
+      po::value<string> (&parse_rule)
+      ->default_value("{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt"))
+    ("output",
+      po::value<string>(&output)->required(),
+      "[REQUIRED] output name (no extension)")
+    ("text1",
+      po::value<string>(&text1)->default_value(""),
+      "[REQUIRED] output name (no extension)")
+    ("text2",
+      po::value<string>(&text2)->default_value(""),
+      "[REQUIRED] output name (no extension)")
+    ("postfit",
+      po::value<bool>(&postfit)->required(),
+      "[REQUIRED] use the pulls file to make a post-fit plot")
+    ("ignore_corrs",
+      po::value<bool>(&ignore_corrs)->default_value(false),
+      "Ignore all nuisance parameter correlations when evaulating uncertainties")
+    ("rebin_to_vbf",
+      po::value<bool>(&rebin_to_vbf)->default_value(true),
+      "Use wider vbf binning for all categories")
+    ("split_zll",
+      po::value<bool>(&split_zll)->default_value(false),
+      "Draw Z->ll component separately from electroweak")
+    ("poisson_errors",
+      po::value<bool>(&poisson_errors)->default_value(false),
+      "Draw data with poisson error bars")
+    ("mssm",
+      po::value<bool>(&mssm)->default_value(false),
+      "input is an MSSM datacard");
   HTTPlot plot;
-  config.add(plot.GenerateOptions("")); // The string here is a prefix for the options parameters
-  po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
+  config.add(plot.GenerateOptions(""));
+  po::store(po::command_line_parser(argc, argv)
+    .options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config, true), vm);
   po::notify(vm);
 
-  HTTSetup setup;
+  ch::CombineHarvester cmb;
+  for (auto const& d : datacards) {
+    cmb.ParseDatacard(d, parse_rule);
+  }
+  cmb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
+  cmb.ForEachObs(ch::SetStandardBinName<ch::Observation>);
+  cmb.ForEachProc(ch::SetStandardBinName<ch::Process>);
 
-  boost::filesystem::path datacard_folder(datacard_path);
-  boost::filesystem::directory_iterator dir_it(datacard_folder);
-  boost::regex datacard_rgx(datacard_regex);
-  for (; dir_it != boost::filesystem::directory_iterator(); ++dir_it) {
-    std::string path = dir_it->path().filename().string();
-    if (boost::regex_match(path, datacard_rgx)) {
-      std::cout << "Parsing datacard: " << dir_it->path().string() << std::endl;
-      setup.ParseDatacard(dir_it->path().string(), plot.draw_signal_mass());
-    }
+  RooFitResult *fitresult = nullptr;
+  if (fitresult_file.length() && postfit) {
+    fitresult = new RooFitResult(ch::OpenFromTFile<RooFitResult>(fitresult_file));
+    auto fitparams = ch::ExtractFitParameters(*fitresult);
+    cmb.UpdateParameters(fitparams);
   }
 
-  boost::filesystem::path file_folder(root_file_path);
-  dir_it = boost::filesystem::directory_iterator(file_folder);
-  boost::regex file_rgx(root_file_regex);
-  for (; dir_it != boost::filesystem::directory_iterator(); ++dir_it) {
-    std::string path = dir_it->path().filename().string();
-    if (boost::regex_match(path, file_rgx)) {
-      std::cout << "Parsing ROOT file: " << dir_it->path().string() << std::endl;
-      setup.ParseROOTFile(dir_it->path().string());
-    }
+  auto bins = cmb.GenerateSetFromObs<string>(std::mem_fn(&ch::Observation::bin));
+  map<string, ch::SOverBInfo> weights;
+  for (auto const& bin : bins) {
+    TH1F sig = cmb.shallow_copy().bin(true, {bin}).signals().GetShape();
+    TH1F bkg = cmb.shallow_copy().bin(true, {bin}).backgrounds().GetShape();
+    weights[bin] = ch::SOverBInfo(&sig, &bkg, 3500, 0.682);
+    std::cout << "Bin: " << bin << "  " << weights[bin].x_lo << "-" << weights[bin].x_hi << "\n";
+    std::cout << "  sig:   " << (weights[bin].x_hi-weights[bin].x_lo)/2. << "\n";
+    std::cout << "  s:     " << weights[bin].s << "\n";
+    std::cout << "  b:     " << weights[bin].b << "\n";
+    std::cout << "  s/s+b: " << weights[bin].s/(weights[bin].s + weights[bin].b) << "\n";
   }
 
-  if (postfit) {
-    setup.ParsePulls(pulls_file);
-    setup.ApplyPulls();
-  } 
+  if (rebin_to_vbf) cmb.VariableRebin(
+    {0., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
 
-  setup.SetIgnoreNuisanceCorrelations(ignore_corrs);
-  // setup = setup.no_shapes();
-  if (rebin_to_vbf) setup.VariableRebin({0., 20., 40., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
+  double sig_yield_before = cmb.shallow_copy().signals().GetRate();
 
-  double sig_yield_before = setup.signals().GetRate();
-  setup.WeightSoverB();
-  double sig_yield_after = setup.signals().GetRate();
+  for (auto const& bin : bins) {
+    // Has to be an explicit move here. Any function returning a ref to (*this) is an lvalue
+    ch::CombineHarvester subset = std::move(cmb.shallow_copy().bin(true, {bin}));
+    double ratio = weights[bin].s/(weights[bin].s + weights[bin].b);
+    std::cout << "Ratio: " << ratio << std::endl;
+    subset.ForEachObs([&ratio](ch::Observation * in){
+      in->set_rate(in->rate()*ratio); });
+    subset.ForEachProc([&ratio](ch::Process * in){
+      in->set_rate(in->rate()*ratio); });
+  }
+  double sig_yield_after = cmb.shallow_copy().signals().GetRate();
   double scale_all = sig_yield_before / sig_yield_after;
   std::cout << "Scale all distributions: " << scale_all << std::endl;
+  // cmb.ForEachObs([&scale_all](ch::Observation * in){
+  //   in->set_rate(in->rate()*scale_all); });
+  // cmb.ForEachProc([&scale_all](ch::Process * in){
+  //   in->set_rate(in->rate()*scale_all); });
 
+  // vector<string> samples = {"ZTT","QCD","W","ZL","ZJ","ZLL","VV","TT","Ztt","Fakes","EWK","ttbar"};
 
-  vector<string> samples = {"ZTT","QCD","W","ZL","ZJ","ZLL","VV","TT","Ztt","Fakes","EWK","ttbar"};
+  // vector<string> signal_procs = {"ggH", "qqH", "VH"};
+  // if (mssm) signal_procs = {"ggH","bbH"};
 
-  vector<string> signal_procs = {"ggH", "qqH", "VH"};
-  if (mssm) signal_procs = {"ggH","bbH"};
-
-  Plot::SetHTTStyle();
   TCanvas canv;
+  canv.SetFillColor      (0);
+  canv.SetBorderMode     (0);
+  canv.SetBorderSize     (10);
+  canv.SetLeftMargin     (0.17);
+  canv.SetRightMargin    (0.05);
+  canv.SetTopMargin      (0.08);
+  canv.SetBottomMargin   (0.14);
+  canv.SetFrameFillStyle (0);
+  canv.SetFrameLineStyle (0);
+  canv.SetFrameBorderMode(0);
+  canv.SetFrameBorderSize(10);
+  canv.SetFrameFillStyle (0);
+  canv.SetFrameLineStyle (0);
+  canv.SetFrameBorderMode(0);
+  canv.SetFrameBorderSize(10);
 
-  TH1F signal_hist = setup.process(signal_procs).GetShape();
+  TH1F signal_hist = cmb.shallow_copy().signals().GetShape();
   SetMCStackStyle(signal_hist, kRed);
   signal_hist.SetFillColor(kRed);
   signal_hist.SetFillStyle(3004);
   signal_hist.SetLineColor(kRed);
   signal_hist.SetLineWidth(2);
-  signal_hist.SetTitle(("H("+plot.draw_signal_mass()+")#rightarrow#tau#tau").c_str());
+  signal_hist.SetTitle(("SM H("+plot.draw_signal_mass()+")#rightarrow#tau#tau").c_str());
 
-  TH1F ztt_hist = setup.process({"ZTT","Ztt"}).GetShape();
-  SetMCStackStyle(ztt_hist, kOrange - 4);
+  TH1F ztt_hist = cmb.shallow_copy().process(true, {"ZTT","Ztt"}).GetShape();
+  SetMCStackStyle(ztt_hist, TColor::GetColor(248,206,104));
   ztt_hist.SetTitle("Z#rightarrow#tau#tau");
 
-  TH1F qcd_hist = setup.process({"QCD","Fakes"}).GetShape();
-  SetMCStackStyle(qcd_hist, kMagenta-10);
+  TH1F qcd_hist = cmb.shallow_copy().process(true, {"QCD","Fakes"}).GetShape();
+  SetMCStackStyle(qcd_hist, TColor::GetColor(250,202,255));
   qcd_hist.SetTitle("QCD");
 
-  TH1F ewk_hist = setup.process({"W","ZL","ZJ","ZLL","VV","EWK"}).GetShape();
-  if (split_zll) ewk_hist = setup.process({"W","VV","EWK"}).GetShape();
-  SetMCStackStyle(ewk_hist, kRed    + 2);
-  ewk_hist.SetTitle("electroweak");
+  TH1F ewk_hist = cmb.shallow_copy().process(true, {"W","ZL","ZJ","VV","EWK"}).GetShape();
+  if (split_zll) ewk_hist = cmb.shallow_copy().process(true, {"W","VV","EWK"}).GetShape();
+  SetMCStackStyle(ewk_hist, TColor::GetColor(222, 90,106));
+  ewk_hist.SetTitle("Electroweak");
 
-  TH1F zll_hist = setup.process({"ZL","ZJ","ZLL"}).GetShape();
-  SetMCStackStyle(zll_hist, kAzure  + 2);
+  TH1F zll_hist = cmb.shallow_copy().process(true, {"ZL","ZJ"}).GetShape();
+  SetMCStackStyle(zll_hist, TColor::GetColor(100,182,232));
   zll_hist.SetTitle("Z#rightarrowll");
 
-  TH1F top_hist = setup.process({"TT","ttbar"}).GetShape();
-  SetMCStackStyle(top_hist, kBlue   - 8);
+  TH1F top_hist = cmb.shallow_copy().process(true, {"TT","ttbar"}).GetShape();
+  SetMCStackStyle(top_hist, TColor::GetColor(155,152,204));
   top_hist.SetTitle("t#bar{t}");
 
   // total_hist will be used to draw the background error on the main plot
-  TH1F total_hist = setup.process({"ZTT","ZL","ZJ","ZLL","W","QCD","VV","TT","Ztt","Fakes","EWK","ttbar"}).GetShape();
+  TH1F total_hist = cmb.shallow_copy().backgrounds().GetShapeWithUncertainty(fitresult, 500);
   total_hist.SetMarkerSize(0);
-  total_hist.SetFillColor(1);
+  total_hist.SetFillColor(13);
   total_hist.SetFillStyle(3013);
   total_hist.SetLineWidth(1);
-  total_hist.SetTitle("bkg. uncertainty");
-
+  total_hist.SetTitle("Bkg. uncertainty");
 
   // copy_hist removes the bin errors from total_hist, and will be used
   // to determine the data-bkg histogram for the inset plot
@@ -219,22 +261,22 @@ int main(int argc, char* argv[]){
   TH1F err_hist = total_hist;
   for (int i = 1; i <= err_hist.GetNbinsX(); ++i) err_hist.SetBinContent(i, 0);
   err_hist.SetMarkerSize(0.0);
-  err_hist.SetFillColor(1);
+  err_hist.SetFillColor(13);
   err_hist.SetFillStyle(3013);
   err_hist.SetLineWidth(3);
-  err_hist.SetTitle("bkg. uncertainty");
+  err_hist.SetTitle("Bkg. uncertainty");
 
-  TH1F data_hist = setup.GetObservedShape();
-  TGraphAsymmErrors data_errors = setup.GetObservedShapeErrors();
+  TH1F data_hist = cmb.GetObservedShape();
+  // TGraphAsymmErrors data_errors = setup.GetObservedShapeErrors();
   SetDataStyle(data_hist);
-  SetDataStyle(data_errors);
-  data_hist.SetTitle("observed");
+  // SetDataStyle(data_errors);
+  data_hist.SetTitle("Observed");
   if (plot.blind()) BlindHistogram(&data_hist, plot.x_blind_min(), plot.x_blind_max());
 
   TH1F diff_hist = data_hist;
   diff_hist.Add(&copy_hist, -1.);
   SetDataStyle(diff_hist);
-  diff_hist.SetTitle("observed - bkg.");
+  diff_hist.SetTitle("Data - background");
 
   vector<TH1F *> drawn_hists;
   drawn_hists.push_back(&qcd_hist);
@@ -247,27 +289,13 @@ int main(int argc, char* argv[]){
   drawn_hists.push_back(&diff_hist);
   drawn_hists.push_back(&err_hist);
   drawn_hists.push_back(&total_hist);
- 
+
   for (unsigned i = 0; i < drawn_hists.size(); ++i) {
      drawn_hists[i]->SetLineWidth(2);
      drawn_hists[i]->Scale(scale_all);
      drawn_hists[i]->Scale(1.0, "width");
   }
-  TGraphAsymmErrors diff_errors = data_errors; 
-  for (int k = 0; k < data_errors.GetN(); ++k) {
-    double x;
-    double y;
-    double width = data_hist.GetBinWidth(k+1);
-    data_errors.GetPoint(k, x, y);
-    data_errors.SetPoint(k, x, scale_all * (y/width));
-    double err_y_up =  scale_all * (data_errors.GetErrorYhigh(k)/width);
-    double err_y_dn =  scale_all * (data_errors.GetErrorYlow(k)/width);
-    data_errors.SetPointEYhigh(k, err_y_up);
-    data_errors.SetPointEYlow(k, err_y_dn);
-    diff_errors.SetPoint(k, x, (scale_all * (y/width)) - total_hist.GetBinContent(k+1));
-    diff_errors.SetPointEYhigh(k, err_y_up);
-    diff_errors.SetPointEYlow(k, err_y_dn);
-  }
+
 
   THStack thstack("stack","stack");
   thstack.Add(&qcd_hist, "HIST");
@@ -281,26 +309,26 @@ int main(int argc, char* argv[]){
   thstack.Draw();
   thstack.GetXaxis()->SetTitle(plot.x_axis_label().c_str());
   thstack.GetYaxis()->SetTitle(plot.y_axis_label().c_str());
-  thstack.GetHistogram()->SetTitleSize  (0.055,"Y");
-  thstack.GetHistogram()->SetTitleOffset(1.200,"Y");
+  thstack.GetHistogram()->SetTitleSize  (0.05,"Y");
+  thstack.GetHistogram()->SetTitleOffset(1.600,"Y");
   thstack.GetHistogram()->SetLabelOffset(0.014,"Y");
   thstack.GetHistogram()->SetLabelSize  (0.040,"Y");
   thstack.GetHistogram()->SetLabelFont  (42   ,"Y");
-  thstack.GetHistogram()->SetTitleSize  (0.055,"X");
+  thstack.GetHistogram()->SetTitleFont  (62   ,"Y");
+  thstack.GetHistogram()->SetTitleSize  (0.05,"X");
   thstack.GetHistogram()->SetTitleOffset(1.100,"X");
   thstack.GetHistogram()->SetLabelOffset(0.014,"X");
   thstack.GetHistogram()->SetLabelSize  (0.040,"X");
   thstack.GetHistogram()->SetLabelFont  (42   ,"X");
+  thstack.GetHistogram()->SetTitleFont  (62   ,"X");
 
   // canv.Update();
   total_hist.Draw("SAMEE2");
-  if (!poisson_errors){
-    data_hist.Draw("SAME");
-  } else {
-    data_errors.Draw("SAMEP");
-  }
+  data_hist.Draw("SAME");
 
-  TLegend *legend = new TLegend(0.65,0.20,0.9,0.40,"","brNDC");
+
+  TLegend *legend = new TLegend(0.57,0.22,0.92,0.46,"","brNDC");
+  legend->SetTextFont(620);
   legend->AddEntry(&signal_hist, "", "F");
   legend->AddEntry(&data_hist, "", "LP");
   legend->AddEntry(&ztt_hist, "", "F");
@@ -312,12 +340,10 @@ int main(int argc, char* argv[]){
   legend->Draw();
 
 
-
-
-  TPad padBack("padBack","padBack",0.53,0.52,0.975,0.956);//TPad must be created after TCanvas otherwise ROOT crashes
+  TPad padBack("padBack","padBack",0.55,0.55,0.975,0.956);//TPad must be created after TCanvas otherwise ROOT crashes
   padBack.SetFillColor(0);
 
-  TPad pad("diff","diff",0.45,0.45,0.9765,0.961);//TPad must be created after TCanvas otherwise ROOT crashes
+  TPad pad("diff","diff",0.45,0.47,0.9763,0.959);//TPad must be created after TCanvas otherwise ROOT crashes
   pad.cd();
   pad.SetFillColor(0);
   pad.SetFillStyle(0);
@@ -325,12 +351,12 @@ int main(int argc, char* argv[]){
   double dif_max_val = 0;
   for (int i = 1; i < diff_hist.GetNbinsX(); ++i) {
     dif_max_val = std::max(diff_hist.GetBinContent(i) + diff_hist.GetBinError(i), dif_max_val);
-  }  
+  }
   double err_max_val = 0;
   for (int i = 1; i < err_hist.GetNbinsX(); ++i) {
     err_max_val = std::max(err_hist.GetBinContent(i) + err_hist.GetBinError(i), err_max_val);
   }
-  double inset_y_max = 1.3 * std::max({sig_max_val, dif_max_val, err_max_val});
+  double inset_y_max = 1.4 * std::max({sig_max_val, dif_max_val, err_max_val});
 
   err_hist.GetYaxis()->SetNdivisions(5);
   err_hist.GetYaxis()->SetLabelSize(0.05);
@@ -344,15 +370,14 @@ int main(int argc, char* argv[]){
   err_hist.GetXaxis()->SetRangeUser(0,360);
   err_hist.GetYaxis()->SetRangeUser(-inset_y_max,inset_y_max);
   signal_hist.Draw("HISTSAME");
-  if (!poisson_errors){
-    diff_hist.Draw("SAME");
-  } else {
-    diff_errors.Draw("SAMEP");
-  }
+  diff_hist.Draw("SAME");
+
   pad.RedrawAxis();
   TLine line;
-  line.DrawLine(40,0,200,0);
-  TLegend *inlegend = new TLegend(0.60,0.75,0.9,0.90,"","brNDC");
+  line.DrawLine(0,0,350,0);
+  line.DrawLine(1, -inset_y_max, 1, inset_y_max);
+  TLegend *inlegend = new TLegend(0.5,0.72,0.9,0.89,"","brNDC");
+  inlegend->SetTextFont(62);
   inlegend->AddEntry(&signal_hist, "", "F");
   inlegend->AddEntry(&diff_hist, "", "LP");
   inlegend->AddEntry(&err_hist, "", "F");
@@ -364,13 +389,13 @@ int main(int argc, char* argv[]){
   pad.Draw();
   TLatex *title_latex = new TLatex();
   title_latex->SetNDC();
-  title_latex->SetTextSize(0.03);
+  title_latex->SetTextSize(0.035);
   title_latex->SetTextFont(62);
   title_latex->SetTextAlign(31);
-  title_latex->DrawLatex(0.95,0.93,plot.title_right().c_str());
+  title_latex->DrawLatex(0.95,0.935,plot.title_right().c_str());
   title_latex->SetTextAlign(11);
-  title_latex->DrawLatex(0.15,0.93,plot.title_left().c_str());
-  title_latex->SetTextSize(0.04);
+  title_latex->DrawLatex(0.17,0.931,plot.title_left().c_str());
+  title_latex->SetTextSize(0.045);
   title_latex->DrawLatex(0.20,0.87,(text1 + (postfit? "" : " (prefit)")).c_str());
   title_latex->DrawLatex(0.20,0.82,text2.c_str());
   canv.SaveAs((output+".pdf").c_str());

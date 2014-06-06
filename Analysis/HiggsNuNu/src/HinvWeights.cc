@@ -404,8 +404,12 @@ namespace ic {//namespace
     eventInfo->set_weight("!muTight_idisoSF",mu_weight);
     tightmuweight->Fill(mu_weight);
 
-    if (do_idiso_tight_weights_) eventInfo->set_weight("idisoTight",ele_weight*mu_weight);
-    else eventInfo->set_weight("!idisoTight",ele_weight*mu_weight);
+    if(do_idiso_tight_weights_){
+      eventInfo->set_weight("idisoTight",ele_weight*mu_weight);
+    }
+    else{
+      eventInfo->set_weight("!idisoTight",ele_weight*mu_weight);
+    }
 
     //TO DO: id+iso veto leptons
     //first try: take leptons from W in pT,eta acceptance

@@ -262,4 +262,37 @@ std::vector<ch::Parameter> CombineHarvester::GetParameters() const {
   return params;
 }
 
+void CombineHarvester::VariableRebin(std::vector<double> bins) {
+  for (unsigned i = 0; i < procs_.size(); ++i) {
+    if (procs_[i]->shape()) {
+      TH1 *copy = static_cast<TH1*>(procs_[i]->shape()->Clone());
+      TH1 *copy2 = copy->Rebin(bins.size()-1, "", &(bins[0]));
+      procs_[i]->set_shape(std::unique_ptr<TH1>(copy2));
+      delete copy;
+    }
+  }
+  for (unsigned i = 0; i < obs_.size(); ++i) {
+    if (obs_[i]->shape()) {
+      TH1 *copy = static_cast<TH1*>(obs_[i]->shape()->Clone());
+      TH1 *copy2 = copy->Rebin(bins.size()-1, "", &(bins[0]));
+      obs_[i]->set_shape(std::unique_ptr<TH1>(copy2));
+      delete copy;
+
+    }
+  }
+  for (unsigned i = 0; i < nus_.size(); ++i) {
+    if (nus_[i]->shape_u()) {
+      TH1 *copy = static_cast<TH1*>(nus_[i]->shape_u()->Clone());
+      TH1 *copy2 = copy->Rebin(bins.size()-1, "", &(bins[0]));
+      nus_[i]->set_shape_u(std::unique_ptr<TH1>(copy2));
+      delete copy;
+    }
+    if (nus_[i]->shape_d()) {
+      TH1 *copy = static_cast<TH1*>(nus_[i]->shape_d()->Clone());
+      TH1 *copy2 = copy->Rebin(bins.size()-1, "", &(bins[0]));
+      nus_[i]->set_shape_d(std::unique_ptr<TH1>(copy2));
+      delete copy;
+    }
+  }
+}
 }

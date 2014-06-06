@@ -285,7 +285,7 @@ namespace ic {
 	      }
 	    }
 	  }
-	  if(ipt==-1)std::cout<<"problem with jet pt value"<<std::endl;
+	  if(ipt==-1)std::cout<<"problem with jet pt value "<<pt<<std::endl;
 	  
 // 	  if     (pt<20)           ipt=0;
 // 	  else if((20<=pt)&&(pt<40))   ipt=1;
@@ -308,7 +308,7 @@ namespace ic {
  	  else if((1.1<fabs(eta))&&(fabs(eta)<=1.7)) ieta=2;
  	  else if((0.5<fabs(eta))&&(fabs(eta)<=1.1)) ieta=1;
  	  else if((0.<fabs(eta))&&(fabs(eta)<=0.5))  ieta=0;
-	  else std::cout<<"problem with jet eta value"<<std::endl;
+	  else std::cout<<"problem with jet eta value "<<eta<<std::endl;
 
 // 	  if     ((4.5<fabs(eta))&&(fabs(eta)<=9.9)) ieta=9;
 // 	  else if((4.0<fabs(eta))&&(fabs(eta)<=4.5)) ieta=8;
