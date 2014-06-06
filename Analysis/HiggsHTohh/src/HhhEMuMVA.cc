@@ -17,7 +17,7 @@ namespace ic {
   HhhEMuMVA::HhhEMuMVA(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    gf_mva_file_ = "data/Hhh_mva/ClassTest_BDT.weights.xml";
+    gf_mva_file_ = "data/Hhh_mva/SingleBDT_BDTG.weights.xml";
     // vbf_mva_file_ = "data/vbf_mva/HttEmu_vbf_v1.weights.xml";
     gf_reader_ = nullptr;
     // vbf_reader_ = nullptr;
@@ -49,7 +49,7 @@ namespace ic {
       // r->AddVariable("d02", &mu_dxy_);
     }
     // vbf_reader_->BookMVA("BDTG", vbf_mva_file_);
-    gf_reader_->BookMVA("BDT", gf_mva_file_);
+    gf_reader_->BookMVA("BDTG", gf_mva_file_);
     return 0;
   }
   
@@ -70,7 +70,7 @@ namespace ic {
 		fpt_2_ = (float) lep2->pt();
     fmt_ll_ = (float) MT(ditau, met);
 		fmet_ = (float) met->pt();
-    event->Add("em_gf_mva", gf_reader_->EvaluateMVA("BDT"));
+    event->Add("em_gf_mva", gf_reader_->EvaluateMVA("BDTG"));
     // event->Add("em_vbf_mva", vbf_reader_->EvaluateMVA("BDTG"));
     return 0;
   }
