@@ -60,6 +60,18 @@ class CombineHarvester {
   CombineHarvester& mass(bool cond, std::vector<std::string> const& vec);
   CombineHarvester& nus_name(bool cond, std::vector<std::string> const& vec);
   CombineHarvester& nus_type(bool cond, std::vector<std::string> const& vec);
+
+  CombineHarvester& bin(std::vector<std::string> const& vec);
+  CombineHarvester& bin_id(std::vector<int> const& vec);
+  CombineHarvester& process(std::vector<std::string> const& vec);
+  CombineHarvester& process_id(std::vector<int> const& vec);
+  CombineHarvester& analysis(std::vector<std::string> const& vec);
+  CombineHarvester& era(std::vector<std::string> const& vec);
+  CombineHarvester& channel(std::vector<std::string> const& vec);
+  CombineHarvester& mass(std::vector<std::string> const& vec);
+  CombineHarvester& nus_name(std::vector<std::string> const& vec);
+  CombineHarvester& nus_type(std::vector<std::string> const& vec);
+
   CombineHarvester& signals();
   CombineHarvester& backgrounds();
   CombineHarvester& histograms();
@@ -119,6 +131,10 @@ class CombineHarvester {
   void AddSyst(CombineHarvester* other, std::string const& name,
                std::string const& type, std::function<Key(Process*)> keygen,
                std::map<Key, double> const& valmap);
+
+  template <class Map>
+  void AddSyst(CombineHarvester* other, std::string const& name,
+               std::string const& type, Map const& valmap);
 
   // void Validate();
   void VariableRebin(std::vector<double> bins);
@@ -266,6 +282,51 @@ void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
     }
   }
 }
+
+
+template <class Map>
+void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
+                               std::string const& type,
+                               Map const& valmap) {
+  for (unsigned i = 0; i < procs_.size(); ++i) {
+    if (!valmap.Contains(procs_[i].get())) continue;
+    std::string subbed_name = name;
+    boost::replace_all(subbed_name, "$BIN", procs_[i]->bin());
+    boost::replace_all(subbed_name, "$PROCESS", procs_[i]->process());
+    boost::replace_all(subbed_name, "$MASS", procs_[i]->mass());
+    boost::replace_all(subbed_name, "$ERA", procs_[i]->era());
+    boost::replace_all(subbed_name, "$CHANNEL", procs_[i]->channel());
+    boost::replace_all(subbed_name, "$ANALYSIS", procs_[i]->analysis());
+    auto nus = std::make_shared<Nuisance>();
+    nus->set_bin(procs_[i]->bin());
+    nus->set_process(procs_[i]->process());
+    nus->set_process_id(procs_[i]->process_id());
+    nus->set_analysis(procs_[i]->analysis());
+    nus->set_era(procs_[i]->era());
+    nus->set_channel(procs_[i]->channel());
+    nus->set_bin_id(procs_[i]->bin_id());
+    nus->set_mass(procs_[i]->mass());
+    nus->set_name(subbed_name);
+    nus->set_type(type);
+    if (type == "lnN") {
+      nus->set_asymm(false);
+      nus->set_value_u(valmap.Val(procs_[i].get()));
+    } else if (type == "shape") {
+      nus->set_asymm(true);
+      nus->set_value_u(1.0);
+      nus->set_value_d(1.0);
+    }
+    if (other) {
+      other->nus_.push_back(nus);
+    } else {
+      nus_.push_back(nus);
+    }
+  }
+}
+
+
+
+
 }
 
 #endif

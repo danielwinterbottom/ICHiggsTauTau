@@ -1,4 +1,5 @@
 #include "CombineTools/interface/HelperFunctions.h"
+#include "Utilities/interface/FnRootTools.h"
 #include <iostream>
 #include <vector>
 #include "RooFitResult.h"
@@ -73,4 +74,42 @@ double IntegrateFloatRange(TH1F const* hist, double xmin, double xmax) {
     return integral;
 }
 
+void ParseTable(std::map<std::string, TGraph>* graphs,
+                        std::string const& file,
+                        std::vector<std::string> const& fields) {
+  auto lines = ic::ParseFileLines(file);
+  for (auto const& f : fields) {
+    (*graphs)[f] = TGraph(lines.size());
+  }
+  for (unsigned i = 0; i < lines.size(); ++i) {
+    std::vector<std::string> words;
+    boost::split(words, lines[i], boost::is_any_of("\t "),
+        boost::token_compress_on);
+    // std::cout << "\"" << words.at(0) << "\"\n";
+    double m = boost::lexical_cast<double>(words.at(0));
+    for (unsigned f = 0; f < fields.size(); ++f) {
+    // std::cout << "\"" << words.at(f+1) << "\"\n";
+      (*graphs)[fields[f]]
+          .SetPoint(i, m, boost::lexical_cast<double>(words.at(f+1)));
+    }
+  }
+}
+
+void ScaleProcessRate(ch::Process* p,
+                      std::map<std::string, TGraph> const* graphs,
+                      std::string const& prod, std::string const& decay) {
+  double mass = boost::lexical_cast<double>(p->mass());
+  double scale = 1.0;
+  if (prod != "" && graphs->count(prod)) {
+    scale *= graphs->find(prod)->second.Eval(mass);
+  }
+  if (decay != "" && graphs->count(decay)) {
+    scale *= graphs->find(decay)->second.Eval(mass);
+  }
+  p->set_rate(p->rate() * scale);
+}
+
+std::vector<std::string> JoinStr(std::vector<vector<std::string>> const& in) {
+  return Join<std::string>(in);
+}
 }
