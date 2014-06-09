@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
   config.add_options()
     //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
-    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_withrle2"))//"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/lighttree/"))
+    ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/lighttree"))//"../output_lighttree"))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     //Base selection cuts
@@ -156,7 +156,7 @@ int main(int argc, char* argv[]){
 
   analysis->AddModule(&wmunu);
   analysis->AddModule(&wenu);
-  analysis->AddModule(&mvatrainer);
+  //analysis->AddModule(&mvatrainer);
   
   analysis->RunAnalysis();
 
