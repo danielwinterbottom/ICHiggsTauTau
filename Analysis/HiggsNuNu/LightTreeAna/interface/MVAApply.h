@@ -9,8 +9,7 @@
 namespace ic {
 
   class MVAApply : public LTModule{
-    CLASS_MEMBER(MVAApply,std::vector<std::string>,sigsets)
-    CLASS_MEMBER(MVAApply,std::vector<std::string>,bkgsets)
+    CLASS_MEMBER(MVAApply,std::vector<std::string>,sets)
     CLASS_MEMBER(MVAApply,std::vector<std::string>,variables)
     CLASS_MEMBER(MVAApply,std::vector<std::string>,methodNames)
     CLASS_MEMBER(MVAApply,std::vector<std::string>,weightFiles)
