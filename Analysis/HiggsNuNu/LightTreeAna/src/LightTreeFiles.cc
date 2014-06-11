@@ -31,6 +31,11 @@ namespace ic{
     tfile_ = tmp;
     tree_=(TTree *)tfile_->Get("LightTree");
     tree_->SetEstimate(1000);
+    if(friendTrees.size()!=0){
+      for(unsigned iFriend=0;iFriend<friendTrees.size();iFriend++){
+	tree_->AddFriend(friendTrees[iFriend].first.c_str(),friendTrees[iFriend].second.c_str());
+      }
+    }
     return 0;
   }
 
@@ -42,6 +47,13 @@ namespace ic{
   int LTFile::AddFriend(TTree* treeptr){
     TFile* file = treeptr->GetCurrentFile();
     tree_->AddFriend(treeptr->GetName(),file->GetName());
+    friendTrees.push_back(std::make_pair(treeptr->GetName(),file->GetName()));
+    return 0;
+  };
+
+  int LTFile::AddFriend(std::string treeName, std::string fileName){
+    tree_->AddFriend(treeName.c_str(),fileName.c_str());
+    friendTrees.push_back(std::make_pair(treeName,fileName));
     return 0;
   };
 

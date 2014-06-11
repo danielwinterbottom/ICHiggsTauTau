@@ -17,8 +17,8 @@ namespace ic {
   HhhEMuMVATwoStage::HhhEMuMVATwoStage(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    gf_mva_file_ = "data/Hhh_mva/StageOne_BDT.weights.xml";
-    gf_mva_file_2_ = "data/Hhh_mva/StageTwov3_BDT.weights.xml";
+    gf_mva_file_ = "data/Hhh_mva/StageOne_BDTG.weights.xml";
+    gf_mva_file_2_ = "data/Hhh_mva/StageTwo_90pc_BDTG.weights.xml";
     gf_reader_ = nullptr;
     gf_reader_2_ = nullptr;
   }
@@ -48,8 +48,8 @@ namespace ic {
       r->AddVariable("pzeta", &fpzeta_);
       // r->AddVariable("d02", &mu_dxy_);
     }
-    gf_reader_2_->BookMVA("BDT", gf_mva_file_2_);
-    gf_reader_->BookMVA("BDT", gf_mva_file_);
+    gf_reader_2_->BookMVA("BDTG", gf_mva_file_2_);
+    gf_reader_->BookMVA("BDTG", gf_mva_file_);
     return 0;
   }
   
@@ -70,8 +70,8 @@ namespace ic {
 		fpt_2_ = (float) lep2->pt();
     fmt_ll_ = (float) MT(ditau, met);
 		fmet_ = (float) met->pt();
-    event->Add("em_gf_mva_stage_one", gf_reader_->EvaluateMVA("BDT"));
-    event->Add("em_gf_mva_stage_two", gf_reader_2_->EvaluateMVA("BDT"));
+    event->Add("em_gf_mva_stage_one", gf_reader_->EvaluateMVA("BDTG"));
+    event->Add("em_gf_mva_stage_two", gf_reader_2_->EvaluateMVA("BDTG"));
     return 0;
   }
 

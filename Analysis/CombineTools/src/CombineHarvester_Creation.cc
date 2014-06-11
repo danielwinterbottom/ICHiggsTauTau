@@ -88,7 +88,8 @@ void CombineHarvester::AddProcesses(
 }
 
 void CombineHarvester::ExtractShapes(std::string const& file,
-                                     std::string const& rule) {
+                                     std::string const& rule,
+                                     std::string const& syst_rule) {
   TFile f(file.c_str());
   for (unsigned  i = 0; i < obs_.size(); ++i) {
     if (!obs_[i]->shape()) {
@@ -120,5 +121,93 @@ void CombineHarvester::ExtractShapes(std::string const& file,
       }
     }
   }
+  if (syst_rule == "") return;
+  for (unsigned  i = 0; i < nus_.size(); ++i) {
+    if (nus_[i]->shape_d() || nus_[i]->shape_u() || nus_[i]->type() != "shape")
+      continue;
+    std::string p = rule;
+    boost::replace_all(p, "$CHANNEL", nus_[i]->bin());
+    boost::replace_all(p, "$PROCESS", nus_[i]->process());
+    boost::replace_all(p, "$MASS", nus_[i]->mass());
+    std::string p_s = syst_rule;
+    boost::replace_all(p_s, "$CHANNEL", nus_[i]->bin());
+    boost::replace_all(p_s, "$PROCESS", nus_[i]->process());
+    boost::replace_all(p_s, "$MASS", nus_[i]->mass());
+    boost::replace_all(p_s, "$SYSTEMATIC", nus_[i]->name());
+    TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
+    TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get((p_s+"Up").c_str()));
+    TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get((p_s+"Down").c_str()));
+    if (!h || !h_u || !h_d) continue;
+    h->SetDirectory(0);
+    h_u->SetDirectory(0);
+    h_d->SetDirectory(0);
+    if (h->Integral() > 0.0) {
+      if (h_u->Integral() > 0.0) {
+        nus_[i]->set_value_u(h_u->Integral()/h->Integral());
+        h_u->Scale(1.0/h_u->Integral());
+      }
+      if (h_d->Integral() > 0.0) {
+        nus_[i]->set_value_d(h_d->Integral()/h->Integral());
+        h_d->Scale(1.0/h_d->Integral());
+      }
+    } else {
+      if (h_u->Integral() > 0.0)  h_u->Scale(1.0/h_u->Integral());
+      if (h_d->Integral() > 0.0)  h_d->Scale(1.0/h_d->Integral());
+    }
+    nus_[i]->set_shape_u(std::unique_ptr<TH1>(h_u));
+    nus_[i]->set_shape_d(std::unique_ptr<TH1>(h_d));
+  }
 }
+
+void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHarvester * other) {
+  for (unsigned i = 0; i < procs_.size(); ++i) {
+    if (!procs_[i]->shape()) continue;
+    TH1 const* h = procs_[i]->shape();
+    for (int j = 1; j <= h->GetNbinsX(); ++j) {
+      if (h->GetBinContent(j) <= 0.0) {
+        if (h->GetBinError(j) > 0.0) {
+          std::cout << "Bin with content <= 0 and error > 0 found, skipping\n";
+        }
+        continue;
+      }
+      if ((h->GetBinError(j)/h->GetBinContent(j)) > threshold) {
+        auto nus = std::make_shared<Nuisance>();
+        nus->set_bin(procs_[i]->bin());
+        nus->set_process(procs_[i]->process());
+        nus->set_process_id(procs_[i]->process_id());
+        nus->set_type("shape");
+        nus->set_analysis(procs_[i]->analysis());
+        nus->set_era(procs_[i]->era());
+        nus->set_channel(procs_[i]->channel());
+        nus->set_bin_id(procs_[i]->bin_id());
+        nus->set_mass(procs_[i]->mass());
+        nus->set_name("CMS_" + nus->bin() + "_" + nus->process() + "_bin_" +
+                      boost::lexical_cast<std::string>(j));
+        nus->set_asymm(true);
+        TH1 *h_d = (TH1*)h->Clone();
+        TH1 *h_u = (TH1*)h->Clone();
+        h_d->SetBinContent(j, h->GetBinContent(j)-h->GetBinError(j));
+        if (h_d->GetBinContent(j) < 0.0) h_d->SetBinContent(j, 0.0);
+        h_u->SetBinContent(j, h->GetBinContent(j)+h->GetBinError(j));
+        if (fixed_norm) {
+          nus->set_value_d(1.0);
+          nus->set_value_u(1.0);
+        } else {
+          nus->set_value_d(h_d->Integral()/h->Integral());
+          nus->set_value_u(h_u->Integral()/h->Integral());
+        }
+        if (h_d->Integral() > 0.0) h_d->Scale(1.0/h_d->Integral());
+        if (h_u->Integral() > 0.0) h_u->Scale(1.0/h_u->Integral());
+        if (h_d) nus->set_shape_d(std::unique_ptr<TH1>(h_d));
+        if (h_u) nus->set_shape_u(std::unique_ptr<TH1>(h_u));
+        if (other) {
+          other->nus_.push_back(nus);
+        } else {
+          nus_.push_back(nus);
+        }
+      }
+    }
+  }
+}
+
 }

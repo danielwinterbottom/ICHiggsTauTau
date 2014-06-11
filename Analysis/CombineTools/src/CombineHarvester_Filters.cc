@@ -103,6 +103,37 @@ CombineHarvester & CombineHarvester::nus_type(bool cond,
   return *this;
 }
 
+CombineHarvester& CombineHarvester::bin(std::vector<std::string> const& vec) {
+  return this->bin(true, vec);
+}
+CombineHarvester& CombineHarvester::bin_id(std::vector<int> const& vec) {
+  return this->bin_id(true, vec);
+}
+CombineHarvester& CombineHarvester::process(std::vector<std::string> const& vec) {
+  return this->process(true, vec);
+}
+CombineHarvester& CombineHarvester::process_id(std::vector<int> const& vec) {
+  return this->process_id(true, vec);
+}
+CombineHarvester& CombineHarvester::analysis(std::vector<std::string> const& vec) {
+  return this->analysis(true, vec);
+}
+CombineHarvester& CombineHarvester::era(std::vector<std::string> const& vec) {
+  return this->era(true, vec);
+}
+CombineHarvester& CombineHarvester::channel(std::vector<std::string> const& vec) {
+  return this->channel(true, vec);
+}
+CombineHarvester& CombineHarvester::mass(std::vector<std::string> const& vec) {
+  return this->mass(true, vec);
+}
+CombineHarvester& CombineHarvester::nus_name(std::vector<std::string> const& vec) {
+  return this->nus_name(true, vec);
+}
+CombineHarvester& CombineHarvester::nus_type(std::vector<std::string> const& vec) {
+  return this->nus_type(true, vec);
+}
+
  CombineHarvester & CombineHarvester::signals() {
    ic::erase_if(nus_, [&] (std::shared_ptr<Nuisance> val) { return val->process_id() > 0; });
    ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) { return val->process_id() > 0; });

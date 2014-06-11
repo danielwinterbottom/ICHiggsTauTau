@@ -7,13 +7,17 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/lexical_cast.hpp"
 #include "boost/regex.hpp"
+#include "boost/bind.hpp"
 #include "TFile.h"
+#include "TGraph.h"
 #include "RooFitResult.h"
 
 // #include <memory>
 // #include <string>
 // #include "TH1.h"
 #include "CombineTools/interface/Parameter.h"
+#include "CombineTools/interface/Nuisance.h"
+#include "CombineTools/interface/Process.h"
 
 namespace ch {
 
@@ -145,8 +149,34 @@ void SetFromBinName(T *input, std::string parse_rules) {
     input->set_mass(matches.str("MASS"));
 }
 
+void ParseTable(std::map<std::string, TGraph>* graphs, std::string const& file,
+                std::vector<std::string> const& fields);
 
+void ScaleProcessRate(ch::Process* p,
+                      std::map<std::string, TGraph> const* graphs,
+                      std::string const& prod, std::string const& decay);
 
+template<class T>
+std::vector<T> Join(std::vector<std::vector<T>> const& in) {
+  unsigned size = 0;
+  for (auto const& x : in) size += x.size();
+  std::vector<T> res(size);
+  unsigned i = 0;
+  for (auto const& x : in) {
+    for (auto const& y : x) {
+      res[i] = y;
+      ++i;
+    }
+  }
+  return res;
+}
+
+template<class T>
+std::vector<T> Set2Vec(std::set<T> const& in) {
+  return std::vector<T>(in.begin(), in.end());
+}
+
+std::vector<std::string> JoinStr(std::vector<vector<std::string>> const& in);
 }
 
 #endif

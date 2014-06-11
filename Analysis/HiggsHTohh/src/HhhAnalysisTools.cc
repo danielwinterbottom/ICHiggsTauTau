@@ -118,54 +118,18 @@ namespace ic {
     // New categories for optimisation of H->hh->tautaubb
     alias_map_["sasha"]                      = "(n_prebjets>=2 && n_bjets>=1)";
     
-    
-    alias_map_["jpt1_20_jpt2_20_no-tag"]     = "(n_prebjets>=2)";
-    alias_map_["jpt1_30_jpt2_20_no-tag"]     = "(n_prebjets>=2) && (prebjetpt_1>30 || prebjetpt_2>30)";
-    alias_map_["jpt1_40_jpt2_30_no-tag"]     = "(n_prebjets>=2 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
-    alias_map_["jpt1_40_jpt2_20_no-tag"]     = "(n_prebjets>=2 && (prebjetpt_1>40 || prebjetpt_2>40))";
-    
-    
-    alias_map_["jpt1_20_jpt2_20_med-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679)";
-    alias_map_["jpt1_30_jpt2_20_med-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
-    alias_map_["jpt1_40_jpt2_30_med-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
-    alias_map_["jpt1_40_jpt2_20_med-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && (prebjetpt_1>40 || prebjetpt_2>40))";
-
-    alias_map_["jpt1_20_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
-    alias_map_["jpt1_30_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
-    alias_map_["jpt1_40_jpt2_30_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
-    alias_map_["jpt1_40_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>40 || prebjetpt_2>40))";
-
-    alias_map_["anyjet_jpt1_20_jpt2_20_no-tag"]    = "(n_prebjets>=2)";
-    alias_map_["anyjet_jpt1_30_jpt2_20_no-tag"]    = "(n_prebjets>=2 && n_jets>=1)";
-    alias_map_["anyjet_jpt1_40_jpt2_30_no-tag"]    = "(n_prebjets>=2 && n_jets>=2 && jpt_1>40 )";
-    alias_map_["anyjet_jpt1_40_jpt2_20_no-tag"]    = "(n_prebjets>=2 && jpt_1>40)";
-    
-    alias_map_["anyjet_jpt1_20_jpt2_20_med-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679)";
-    alias_map_["anyjet_jpt1_30_jpt2_20_med-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && n_jets>=1)";
-    alias_map_["anyjet_jpt1_40_jpt2_30_med-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && n_jets>=2 && jpt_1>40 )";
-    alias_map_["anyjet_jpt1_40_jpt2_20_med-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && jpt_1>40)";
-    
-    alias_map_["anyjet_jpt1_20_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
-    alias_map_["anyjet_jpt1_30_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && n_jets>=1 )";
-    alias_map_["anyjet_jpt1_40_jpt2_30_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && n_jets>=2 && jpt_1>40)";
-    alias_map_["anyjet_jpt1_40_jpt2_20_twomed-tag"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && jpt_1>40)";
    
     // Attempt at exclusive categories
-    alias_map_["0tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679)";
-    alias_map_["1tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679)";
-    alias_map_["2tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
+    alias_map_["2jet0tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679)";
+    alias_map_["1jet0tag"]     = "(n_prebjets==1 && prebjetbcsv_1<0.679)";
+    alias_map_["2jet1tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679)";
+    alias_map_["1jet1tag"]     = "(n_prebjets==1 && prebjetbcsv_1>0.679)";
+    alias_map_["2jet2tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
     
-    alias_map_["excl_jpt1_30_jpt2_20_no-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
-    alias_map_["excl_jpt1_30_jpt2_20_med-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
-    alias_map_["excl_jpt1_30_jpt2_20_twomed-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>30 || prebjetpt_2>30))";
- 
-    alias_map_["excl_jpt1_40_jpt2_30_no-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
-    alias_map_["excl_jpt1_40_jpt2_30_med-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
-    alias_map_["excl_jpt1_40_jpt2_30_twomed-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>40 || prebjetpt_2>40) && prebjetpt_1>30 && prebjetpt_2>30)";
-    
-    alias_map_["excl_jpt1_40_jpt2_20_no-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>40 || prebjetpt_2>40))";
-    alias_map_["excl_jpt1_40_jpt2_20_med-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && (prebjetpt_1>40 || prebjetpt_2>40))";
-    alias_map_["excl_jpt1_40_jpt2_20_twomed-tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && (prebjetpt_1>40 || prebjetpt_2>40))";
+    //Extra categories for making control plots
+    alias_map_["2jetinclusive"] = "(n_prebjets>=2)";
+    alias_map_["2jetMoreThan1tag"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 )";
+    alias_map_["2jetMoreThan2tag"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
     
     // Selection control regions
     // Sideband region for OS W+jets extrapolation

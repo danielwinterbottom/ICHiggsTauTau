@@ -2,6 +2,7 @@
 #define ICHiggsTauTau_HiggsNuNu_LightTreeFiles_h
 #include <vector>
 #include <map>
+#include <utility>
 #include "HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
 #include "TTree.h"
 #include "TFile.h"
@@ -17,6 +18,7 @@ namespace ic{
     protected:
     TFile * tfile_;
     TTree * tree_;
+    std::vector<std::pair<std::string,std::string> > friendTrees;
     public:
     LTFile();
     LTFile(std::string,std::string);
@@ -24,6 +26,7 @@ namespace ic{
     int Open(std::string);
     int Close();
     int AddFriend(TTree*);
+    int AddFriend(std::string,std::string);
     TH1F GetShape(std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetShape3D(std::string const&, std::string const&, std::string const&, std::string const&);
     TTree* GetTree();
