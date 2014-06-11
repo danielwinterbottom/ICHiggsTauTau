@@ -666,6 +666,8 @@ int main(int argc, char* argv[]){
   // Tau Modules
   // ------------------------------------------------------------------------------------
   bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
+                        || (output_name.find("HTohh")                 != output_name.npos)
+                        || (output_name.find("AToZh")                 != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
                         || (output_name.find("Embedded")              != output_name.npos)
                         || (output_name.find("RecHit")                != output_name.npos) );
