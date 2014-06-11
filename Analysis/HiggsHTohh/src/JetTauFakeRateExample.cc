@@ -42,12 +42,13 @@ namespace ic {
       }
 
     }
+    return 0;
   }
 
   int JetTauFakeRateExample::Execute(TreeEvent *event) {
     
     // Get the objects we need from the event
-    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
+    //EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
 

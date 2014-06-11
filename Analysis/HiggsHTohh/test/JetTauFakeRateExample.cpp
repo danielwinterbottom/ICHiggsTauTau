@@ -16,6 +16,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CopyCollection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRateExample.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -102,10 +103,15 @@ int main(int argc, char* argv[]){
   .set_input_label("pfJetsPFlow")
   .set_predicate(bind(MinPtMaxEta, _1, jet_pt, jet_eta));
 
+  JetTauFakeRateExample jetTauFakeRate = JetTauFakeRateExample("jetTauFakeRate")
+  .set_write_plots(false)
+  .set_write_tree(true);
+
  //Add module here which reads in the filtered taus and jets and makes the plots/performs the fake rate study
  
   analysis.AddModule(&TauFilter); 
   analysis.AddModule(&JetFilter); 
+  analysis.AddModule(&jetTauFakeRate); 
 
 
   analysis.RunAnalysis();
