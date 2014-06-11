@@ -8,7 +8,8 @@ Process::Process()
     : bin_(""),
       rate_(0.0),
       process_(""),
-      process_id_(0),
+      // process_id_(0),
+      signal_(false),
       analysis_(""),
       era_(""),
       channel_(""),
@@ -25,7 +26,8 @@ void swap(Process& first, Process& second) {
   swap(first.bin_, second.bin_);
   swap(first.rate_, second.rate_);
   swap(first.process_, second.process_);
-  swap(first.process_id_, second.process_id_);
+  // swap(first.process_id_, second.process_id_);
+  swap(first.signal_, second.signal_);
   swap(first.analysis_, second.analysis_);
   swap(first.era_, second.era_);
   swap(first.channel_, second.channel_);
@@ -39,7 +41,8 @@ Process::Process(Process const& other)
     : bin_(other.bin_),
       rate_(other.rate_),
       process_(other.process_),
-      process_id_(other.process_id_),
+      // process_id_(other.process_id_),
+      signal_(other.signal_),
       analysis_(other.analysis_),
       era_(other.era_),
       channel_(other.channel_),
@@ -58,7 +61,8 @@ Process::Process(Process&& other)
     : bin_(""),
       rate_(0.0),
       process_(""),
-      process_id_(0),
+      // process_id_(0),
+      signal_(false),
       analysis_(""),
       era_(""),
       channel_(""),
@@ -76,9 +80,9 @@ Process& Process::operator=(Process other) {
 
 std::ostream& Process::PrintHeader(std::ostream &out) {
   std::string line =
-   (boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-22s %-3i %-10.5g %-10i")
+   (boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-22s %-4i %-10.5g %-10i")
    % "mass" % "analysis" % "era" % "channel" % "bin" % "id" % "process" %
-   "id" % "rate" % "shape/pdf").str();
+   "sig" % "rate" % "shape/pdf").str();
   std::string div(line.length(), '-');
   out << div  << std::endl;
   out << line << std::endl;
@@ -87,7 +91,7 @@ std::ostream& Process::PrintHeader(std::ostream &out) {
 }
 
 std::ostream& operator<< (std::ostream &out, Process &val) {
-  out << boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-22s %-3i %-10.5g %-10i")
+  out << boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-22s %-4i %-10.5g %-10i")
   % val.mass()
   % val.analysis()
   % val.era()
@@ -95,7 +99,7 @@ std::ostream& operator<< (std::ostream &out, Process &val) {
   % val.bin()
   % val.bin_id()
   % val.process()
-  % val.process_id()
+  % val.signal()
   % val.rate()
   % (bool(val.shape()) || bool(val.pdf()));
   return out;

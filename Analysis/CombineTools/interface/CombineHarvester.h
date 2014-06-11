@@ -28,15 +28,17 @@ class CombineHarvester {
   CombineHarvester(CombineHarvester const& other);
   CombineHarvester(CombineHarvester&& other);
   CombineHarvester& operator=(CombineHarvester other);
-  CombineHarvester shallow_copy();
   CombineHarvester cp();
   CombineHarvester& PrintAll();
 
-  void SetParameters(std::vector<ch::Parameter> params);
-  void UpdateParameters(std::vector<ch::Parameter> params);
-  std::vector<ch::Parameter> GetParameters() const;
-
-  // Datacard interaction
+  /**
+   * @name Datacards
+   * @brief Methods for the reading and writing of datacards.
+   * @details As well as reading or writing the plain-text datacard
+   * files these methods also handle the automatic loading and saving
+   * of any TH1 objects or RooWorkspaces.
+   */
+  /**@{*/
   int ParseDatacard(std::string const& filename,
       std::string const& analysis,
       std::string const& era,
@@ -48,35 +50,38 @@ class CombineHarvester {
 
   void WriteDatacard(std::string const& name, std::string const& root_file);
   void WriteDatacard(std::string const& name, TFile & root_file);
+  /**@}*/
 
-  // Filtering
-  CombineHarvester& bin(bool cond, std::vector<std::string> const& vec);
-  CombineHarvester& bin_id(bool cond, std::vector<int> const& vec);
-  CombineHarvester& process(bool cond, std::vector<std::string> const& vec);
-  CombineHarvester& process_id(bool cond, std::vector<int> const& vec);
-  CombineHarvester& analysis(bool cond, std::vector<std::string> const& vec);
-  CombineHarvester& era(bool cond, std::vector<std::string> const& vec);
-  CombineHarvester& channel(bool cond, std::vector<std::string> const& vec);
-  CombineHarvester& mass(bool cond, std::vector<std::string> const& vec);
-  CombineHarvester& nus_name(bool cond, std::vector<std::string> const& vec);
-  CombineHarvester& nus_type(bool cond, std::vector<std::string> const& vec);
-
-  CombineHarvester& bin(std::vector<std::string> const& vec);
-  CombineHarvester& bin_id(std::vector<int> const& vec);
-  CombineHarvester& process(std::vector<std::string> const& vec);
-  CombineHarvester& process_id(std::vector<int> const& vec);
-  CombineHarvester& analysis(std::vector<std::string> const& vec);
-  CombineHarvester& era(std::vector<std::string> const& vec);
-  CombineHarvester& channel(std::vector<std::string> const& vec);
-  CombineHarvester& mass(std::vector<std::string> const& vec);
-  CombineHarvester& nus_name(std::vector<std::string> const& vec);
-  CombineHarvester& nus_type(std::vector<std::string> const& vec);
+  /**
+   * @name Filters
+   * @brief A collection of methods to filter the Observation, Process and Nuisance objects
+   * @details Each method here will remove objects from the Observation, Process and Nuisance
+   * collections where the value of the relevant property is not equal to one of those specified
+   * in the list vec. Each methods returns a reference to the class instance, meaning
+   * it is simple to chain multiple filters. Note that filters only act on a set of objects
+   * where that property is defined. For example, the method nus_name will only filter the Nuisance
+   * collection, and process will only filter the Process and Nuisance collections.
+   *
+   * @param vec A vector containing the possible values of the given property.
+   */
+  /**@{*/
+  CombineHarvester& bin(std::vector<std::string> const& vec, bool cond = true);
+  CombineHarvester& bin_id(std::vector<int> const& vec, bool cond = true);
+  CombineHarvester& process(std::vector<std::string> const& vec, bool cond = true);
+  CombineHarvester& analysis(std::vector<std::string> const& vec, bool cond = true);
+  CombineHarvester& era(std::vector<std::string> const& vec, bool cond = true);
+  CombineHarvester& channel(std::vector<std::string> const& vec, bool cond = true);
+  CombineHarvester& mass(std::vector<std::string> const& vec, bool cond = true);
+  CombineHarvester& nus_name(std::vector<std::string> const& vec, bool cond = true);
+  CombineHarvester& nus_type(std::vector<std::string> const& vec, bool cond = true);
 
   CombineHarvester& signals();
   CombineHarvester& backgrounds();
   CombineHarvester& histograms();
   CombineHarvester& pdfs();
   CombineHarvester& data();
+  /**@}*/
+
 
   // Set generation
   template<typename T>
@@ -88,7 +93,16 @@ class CombineHarvester {
   template<typename T>
   std::set<T> GenerateSetFromNus(std::function<T(ch::Nuisance const*)> func);
 
-  // ForEach
+  /**
+   * @name Modification
+   * @brief Methods to modify existing objects.
+   * @details See the documentation of each method for details
+   */
+  /**@{*/
+  void SetParameters(std::vector<ch::Parameter> params);
+  void UpdateParameters(std::vector<ch::Parameter> params);
+  std::vector<ch::Parameter> GetParameters() const;
+
   template<typename Function>
   void ForEachProc(Function func);
 
@@ -98,7 +112,18 @@ class CombineHarvester {
   template<typename Function>
   void ForEachNus(Function func);
 
-  // Yields & Shapes
+  void VariableRebin(std::vector<double> bins);
+  /**@}*/
+
+  /**
+   * @name Rates and shapes
+   * @brief Methods to calculate total yields and shapes
+   * @details All of these methods are greedy, meaning they will sum
+   * over all available objects and evaluate the effect of all uncertainties.
+   * They should be used at the end of a chain of filter methods to give the
+   * desired yield, shape or uncertainty.
+   */
+  /**@{*/
   double GetRate();
   double GetObservedRate();
   double GetUncertainty();
@@ -107,8 +132,27 @@ class CombineHarvester {
   TH1F GetShapeWithUncertainty();
   TH1F GetShapeWithUncertainty(RooFitResult const* fit, unsigned n_samples);
   TH1F GetObservedShape();
+  /**@}*/
 
-  // Production
+  /**
+   * @name Creating new entries
+   * @brief Methods to create new Observation, Process, Nuisance and Parameter objects
+   * @details The general order in which these are run is given below.
+   *
+   *    1.  The CombineHarvester::AddObservations and CombineHarvester::AddProcesses methods
+   *        build the desired ch::Observation and ch::Process entries. The rate entries will
+   *        default to zero at this stage, and are determined automatically in step 3.
+   *    2.  The CombineHarvester::AddSyst method will iterate through each ch::Process and
+   *        add a matching ch::Nuisance entry, with the name, type and value specfied in the
+   *        method arguments. This method can be used at the end of a chain of filters to only
+   *        create ch::Nuisance objects for a subset of processes.
+   *    3.  The method CombineHarvester::ExtractShapes opens a specified ROOT file and uses the
+   *        provided pattern rules to load the TH1 objects for all entries. The TH1 integrals
+   *        are used to set the event rates at this stage.
+   *    4.  Optionally, methods such as  CombineHarvester::AddBinByBin may be used to prepare
+   *        additional entries.
+   */
+  /**@{*/
   void AddObservations(std::vector<std::string> mass,
                        std::vector<std::string> analysis,
                        std::vector<std::string> era,
@@ -120,24 +164,18 @@ class CombineHarvester {
                     std::vector<std::string> era,
                     std::vector<std::string> channel,
                     std::vector<std::string> procs,
-                    std::vector<std::pair<int, std::string>> bin,
-                    bool signal);
-  void ExtractShapes(std::string const& file, std::string const& rule,
-                     std::string const& syst_rule);
-
-  void AddBinByBin(double threshold, bool fixed_norm, CombineHarvester * other);
-
-  template <class Key>
-  void AddSyst(CombineHarvester* other, std::string const& name,
-               std::string const& type, std::function<Key(Process*)> keygen,
-               std::map<Key, double> const& valmap);
+                    std::vector<std::pair<int, std::string>> bin, bool signal);
 
   template <class Map>
   void AddSyst(CombineHarvester* other, std::string const& name,
                std::string const& type, Map const& valmap);
 
-  // void Validate();
-  void VariableRebin(std::vector<double> bins);
+  void ExtractShapes(std::string const& file, std::string const& rule,
+                     std::string const& syst_rule);
+
+  void AddBinByBin(double threshold, bool fixed_norm, CombineHarvester* other);
+  void MergeBinErrors(double bbb_threshold, double merge_threshold);
+  /**@}*/
 
  private:
   std::vector<std::shared_ptr<Observation>> obs_;
@@ -200,6 +238,8 @@ class CombineHarvester {
   }
 
   TH1F ShapeDiff(double x, TH1 const* nom, TH1 const* low, TH1 const* high);
+
+  void CreateParameterIfEmpty(CombineHarvester *cmb, std::string const& name);
 };
 
 template<typename T>
@@ -241,49 +281,6 @@ void CombineHarvester::ForEachNus(Function func) {
   for (auto & item: nus_) func(item.get());
 }
 
-template <class Key>
-void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
-                               std::string const& type,
-                               std::function<Key(Process*)> keygen,
-                               std::map<Key, double> const& valmap) {
-  for (unsigned i = 0; i < procs_.size(); ++i) {
-    Key key = keygen(procs_[i].get());
-    if (!valmap.count(key)) continue;
-    std::string subbed_name = name;
-    boost::replace_all(subbed_name, "$BIN", procs_[i]->bin());
-    boost::replace_all(subbed_name, "$PROCESS", procs_[i]->process());
-    boost::replace_all(subbed_name, "$MASS", procs_[i]->mass());
-    boost::replace_all(subbed_name, "$ERA", procs_[i]->era());
-    boost::replace_all(subbed_name, "$CHANNEL", procs_[i]->channel());
-    boost::replace_all(subbed_name, "$ANALYSIS", procs_[i]->analysis());
-    auto nus = std::make_shared<Nuisance>();
-    nus->set_bin(procs_[i]->bin());
-    nus->set_process(procs_[i]->process());
-    nus->set_process_id(procs_[i]->process_id());
-    nus->set_analysis(procs_[i]->analysis());
-    nus->set_era(procs_[i]->era());
-    nus->set_channel(procs_[i]->channel());
-    nus->set_bin_id(procs_[i]->bin_id());
-    nus->set_mass(procs_[i]->mass());
-    nus->set_name(subbed_name);
-    nus->set_type(type);
-    if (type == "lnN") {
-      nus->set_asymm(false);
-      nus->set_value_u(valmap.find(key)->second);
-    } else if (type == "shape") {
-      nus->set_asymm(true);
-      nus->set_value_u(1.0);
-      nus->set_value_d(1.0);
-    }
-    if (other) {
-      other->nus_.push_back(nus);
-    } else {
-      nus_.push_back(nus);
-    }
-  }
-}
-
-
 template <class Map>
 void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
                                std::string const& type,
@@ -298,14 +295,7 @@ void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
     boost::replace_all(subbed_name, "$CHANNEL", procs_[i]->channel());
     boost::replace_all(subbed_name, "$ANALYSIS", procs_[i]->analysis());
     auto nus = std::make_shared<Nuisance>();
-    nus->set_bin(procs_[i]->bin());
-    nus->set_process(procs_[i]->process());
-    nus->set_process_id(procs_[i]->process_id());
-    nus->set_analysis(procs_[i]->analysis());
-    nus->set_era(procs_[i]->era());
-    nus->set_channel(procs_[i]->channel());
-    nus->set_bin_id(procs_[i]->bin_id());
-    nus->set_mass(procs_[i]->mass());
+    ch::SetProperties(nus.get(), procs_[i].get());
     nus->set_name(subbed_name);
     nus->set_type(type);
     if (type == "lnN") {
@@ -316,6 +306,8 @@ void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
       nus->set_value_u(1.0);
       nus->set_value_d(1.0);
     }
+    CombineHarvester::CreateParameterIfEmpty(other ? other : this,
+                                             nus->name());
     if (other) {
       other->nus_.push_back(nus);
     } else {
@@ -323,10 +315,6 @@ void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
     }
   }
 }
-
-
-
-
 }
 
 #endif

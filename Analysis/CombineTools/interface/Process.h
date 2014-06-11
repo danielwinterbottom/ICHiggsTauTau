@@ -25,8 +25,11 @@ class Process {
   void set_process(std::string const& process) { process_ = process; }
   std::string const& process() const { return process_; }
 
-  void set_process_id(int const& process_id) { process_id_ = process_id; }
-  int process_id() const { return process_id_; }
+  // void set_process_id(int const& process_id) { process_id_ = process_id; }
+  // int process_id() const { return process_id_; }
+
+  void set_signal(bool const& signal) { signal_ = signal; }
+  bool signal() const { return signal_; }
 
   void set_analysis(std::string const& analysis) { analysis_ = analysis; }
   std::string const& analysis() const { return analysis_; }
@@ -56,7 +59,8 @@ class Process {
   std::string bin_;
   double rate_;
   std::string process_;
-  int process_id_;
+  // int process_id_;
+  bool signal_;
   std::string analysis_;
   std::string era_;
   std::string channel_;

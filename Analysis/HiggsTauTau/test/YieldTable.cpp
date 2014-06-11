@@ -78,34 +78,34 @@ int main(int argc, char* argv[]){
     cmb.UpdateParameters(fitparams);
   }
 
-  TH1F sig = cmb.shallow_copy().signals().GetShape();
-  TH1F bkg = cmb.shallow_copy().backgrounds().GetShape();
+  TH1F sig = cmb.cp().signals().GetShape();
+  TH1F bkg = cmb.cp().backgrounds().GetShape();
   ch::SOverBInfo info(ch::SOverBInfo(&sig, &bkg, 3500, 0.682));
   double s_over_sb = info.s/(info.s + info.b);
   double width = (info.x_hi-info.x_lo)/2.;
 
-  double tot_sig     = cmb.shallow_copy()
-      .process(true, {"ggH", "qqH", "WH", "ZH"}).GetRate();
+  double tot_sig     = cmb.cp()
+      .process({"ggH", "qqH", "WH", "ZH"}).GetRate();
   double tot_sig_err = 0.0;
   if (fitresult) {
-    tot_sig_err = cmb.shallow_copy()
-        .process(true, {"ggH", "qqH", "WH", "ZH"})
+    tot_sig_err = cmb.cp()
+        .process({"ggH", "qqH", "WH", "ZH"})
         .GetUncertainty(fitresult, 500);
   } else {
-    tot_sig_err = cmb.shallow_copy()
-        .process(true, {"ggH", "qqH", "WH", "ZH"})
+    tot_sig_err = cmb.cp()
+        .process({"ggH", "qqH", "WH", "ZH"})
         .GetUncertainty();
   }
 
-  double tot_bkg     = cmb.shallow_copy()
+  double tot_bkg     = cmb.cp()
       .backgrounds().GetRate();
   double tot_bkg_err = 0.0;
   if (fitresult) {
-    tot_bkg_err = cmb.shallow_copy()
+    tot_bkg_err = cmb.cp()
         .backgrounds()
         .GetUncertainty(fitresult, 500);
   } else {
-    tot_bkg_err = cmb.shallow_copy()
+    tot_bkg_err = cmb.cp()
         .backgrounds()
         .GetUncertainty();
   }
@@ -117,12 +117,12 @@ int main(int argc, char* argv[]){
 
   double tot_dat = cmb.GetObservedRate();
 
-  double frac_ggh = (cmb.shallow_copy()
-      .process(true, {"ggH"}).GetRate()) / tot_sig;
-  // double frac_qqh = (cmb.shallow_copy()
+  double frac_ggh = (cmb.cp()
+      .process({"ggH"}).GetRate()) / tot_sig;
+  // double frac_qqh = (cmb.cp()
   //     .process(true, {"qqH"}).GetRate()) / tot_sig;
-  double frac_vh = (cmb.shallow_copy()
-      .process(true, {"WH", "ZH"}).GetRate()) / tot_sig;
+  double frac_vh = (cmb.cp()
+      .process({"WH", "ZH"}).GetRate()) / tot_sig;
 
   // std::cout << frac_ggh << std::endl;
   // std::cout << frac_qqh << std::endl;

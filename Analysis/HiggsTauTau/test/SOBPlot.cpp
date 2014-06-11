@@ -159,8 +159,8 @@ int main(int argc, char* argv[]){
   auto bins = cmb.GenerateSetFromObs<string>(std::mem_fn(&ch::Observation::bin));
   map<string, ch::SOverBInfo> weights;
   for (auto const& bin : bins) {
-    TH1F sig = cmb.shallow_copy().bin(true, {bin}).signals().GetShape();
-    TH1F bkg = cmb.shallow_copy().bin(true, {bin}).backgrounds().GetShape();
+    TH1F sig = cmb.cp().bin({bin}).signals().GetShape();
+    TH1F bkg = cmb.cp().bin({bin}).backgrounds().GetShape();
     weights[bin] = ch::SOverBInfo(&sig, &bkg, 3500, 0.682);
     std::cout << "Bin: " << bin << "  " << weights[bin].x_lo << "-" << weights[bin].x_hi << "\n";
     std::cout << "  sig:   " << (weights[bin].x_hi-weights[bin].x_lo)/2. << "\n";
@@ -172,11 +172,11 @@ int main(int argc, char* argv[]){
   if (rebin_to_vbf) cmb.VariableRebin(
     {0., 60., 80., 100., 120., 140., 160., 180., 200., 250., 300., 350.});
 
-  double sig_yield_before = cmb.shallow_copy().signals().GetRate();
+  double sig_yield_before = cmb.cp().signals().GetRate();
 
   for (auto const& bin : bins) {
     // Has to be an explicit move here. Any function returning a ref to (*this) is an lvalue
-    ch::CombineHarvester subset = std::move(cmb.shallow_copy().bin(true, {bin}));
+    ch::CombineHarvester subset = std::move(cmb.cp().bin({bin}));
     double ratio = weights[bin].s/(weights[bin].s + weights[bin].b);
     std::cout << "Ratio: " << ratio << std::endl;
     subset.ForEachObs([&ratio](ch::Observation * in){
@@ -184,7 +184,7 @@ int main(int argc, char* argv[]){
     subset.ForEachProc([&ratio](ch::Process * in){
       in->set_rate(in->rate()*ratio); });
   }
-  double sig_yield_after = cmb.shallow_copy().signals().GetRate();
+  double sig_yield_after = cmb.cp().signals().GetRate();
   double scale_all = sig_yield_before / sig_yield_after;
   std::cout << "Scale all distributions: " << scale_all << std::endl;
   // cmb.ForEachObs([&scale_all](ch::Observation * in){
@@ -214,7 +214,7 @@ int main(int argc, char* argv[]){
   canv.SetFrameBorderMode(0);
   canv.SetFrameBorderSize(10);
 
-  TH1F signal_hist = cmb.shallow_copy().signals().GetShape();
+  TH1F signal_hist = cmb.cp().signals().GetShape();
   SetMCStackStyle(signal_hist, kRed);
   signal_hist.SetFillColor(kRed);
   signal_hist.SetFillStyle(3004);
@@ -222,29 +222,29 @@ int main(int argc, char* argv[]){
   signal_hist.SetLineWidth(2);
   signal_hist.SetTitle(("SM H("+plot.draw_signal_mass()+")#rightarrow#tau#tau").c_str());
 
-  TH1F ztt_hist = cmb.shallow_copy().process(true, {"ZTT","Ztt"}).GetShape();
+  TH1F ztt_hist = cmb.cp().process({"ZTT","Ztt"}).GetShape();
   SetMCStackStyle(ztt_hist, TColor::GetColor(248,206,104));
   ztt_hist.SetTitle("Z#rightarrow#tau#tau");
 
-  TH1F qcd_hist = cmb.shallow_copy().process(true, {"QCD","Fakes"}).GetShape();
+  TH1F qcd_hist = cmb.cp().process({"QCD","Fakes"}).GetShape();
   SetMCStackStyle(qcd_hist, TColor::GetColor(250,202,255));
   qcd_hist.SetTitle("QCD");
 
-  TH1F ewk_hist = cmb.shallow_copy().process(true, {"W","ZL","ZJ","VV","EWK"}).GetShape();
-  if (split_zll) ewk_hist = cmb.shallow_copy().process(true, {"W","VV","EWK"}).GetShape();
+  TH1F ewk_hist = cmb.cp().process({"W","ZL","ZJ","VV","EWK"}).GetShape();
+  if (split_zll) ewk_hist = cmb.cp().process({"W","VV","EWK"}).GetShape();
   SetMCStackStyle(ewk_hist, TColor::GetColor(222, 90,106));
   ewk_hist.SetTitle("Electroweak");
 
-  TH1F zll_hist = cmb.shallow_copy().process(true, {"ZL","ZJ"}).GetShape();
+  TH1F zll_hist = cmb.cp().process({"ZL","ZJ"}).GetShape();
   SetMCStackStyle(zll_hist, TColor::GetColor(100,182,232));
   zll_hist.SetTitle("Z#rightarrowll");
 
-  TH1F top_hist = cmb.shallow_copy().process(true, {"TT","ttbar"}).GetShape();
+  TH1F top_hist = cmb.cp().process({"TT","ttbar"}).GetShape();
   SetMCStackStyle(top_hist, TColor::GetColor(155,152,204));
   top_hist.SetTitle("t#bar{t}");
 
   // total_hist will be used to draw the background error on the main plot
-  TH1F total_hist = cmb.shallow_copy().backgrounds().GetShapeWithUncertainty(fitresult, 500);
+  TH1F total_hist = cmb.cp().backgrounds().GetShapeWithUncertainty(fitresult, 500);
   total_hist.SetMarkerSize(0);
   total_hist.SetFillColor(13);
   total_hist.SetFillStyle(3013);

@@ -128,8 +128,8 @@ int main(int argc, char* argv[]) {
     for (auto const& n : p.second) std::cout << "      " << n << "\n";
     std::cout << "  * Affecting channels:\n      ";
     std::set<double> cleaned_rates;
-    ch::CombineHarvester all_syst = cmb.shallow_copy()
-      .nus_name(true, p.second);
+    ch::CombineHarvester all_syst = cmb.cp()
+      .nus_name(p.second);
     auto chns = all_syst
       .GenerateSetFromNus<string>(std::mem_fn(&ch::Nuisance::channel));
     for (auto const& c : chns) std::cout << " " << c << " ";
@@ -138,14 +138,14 @@ int main(int argc, char* argv[]) {
     auto bins = all_syst
       .GenerateSetFromNus<string>(std::mem_fn(&ch::Nuisance::bin));
     for (auto const& bin : bins) {
-      ch::CombineHarvester syst_in_bin = all_syst.shallow_copy()
-        .bin(true, {bin});
+      ch::CombineHarvester syst_in_bin = all_syst.cp()
+        .bin({bin});
       auto procs = syst_in_bin
         .GenerateSetFromNus<string>(std::mem_fn(&ch::Nuisance::process));
       for (auto const& proc : procs) {
         all_procs.insert(proc);
-        ch::CombineHarvester syst_in_proc = syst_in_bin.shallow_copy()
-          .process(true, {proc});
+        ch::CombineHarvester syst_in_proc = syst_in_bin.cp()
+          .process({proc});
         // syst_in_proc.PrintAll();
         double uncert = syst_in_proc.GetUncertainty()/syst_in_proc.GetRate();
         if (uncert == uncert) cleaned_rates.insert(uncert*100.);
