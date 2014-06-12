@@ -27,15 +27,10 @@ namespace ic{
     std::cout<<module_name_<<":"<<std::endl;
 
     for(unsigned iSet=0;iSet<sets_.size();iSet++){
-      std::cout<<"Adding friends for set: "<<sets_[iSet]<<std::endl;
       std::vector<LTFile> files = filemanager->GetFileSet(sets_[iSet]);
       for(unsigned iFile=0;iFile<files.size();iFile++){
-	std::cout<<"  "<<files[iFile].name()<<std::endl;
-	std::cout<<"    opening"<<std::endl;
 	filemanager->OpenFile(files[iFile].name());
-	std::cout<<"    adding"<<std::endl;
 	filemanager->AddFriend(files[iFile].name(),friendtreename_.c_str(),(frienddir_+files[iFile].name()+"_"+friendtreename_+".root").c_str());
-	std::cout<<"    closing"<<std::endl;
 	filemanager->CloseFile(files[iFile].name());
       }
     }
