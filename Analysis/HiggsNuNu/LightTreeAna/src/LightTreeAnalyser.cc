@@ -92,6 +92,7 @@ namespace ic{
 	if (status == 1) break;
       }
     }
+    std::cout<<"All modules ran and exited with status 0."<<std::endl;
     return 0;
   };
 
