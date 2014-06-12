@@ -11,7 +11,11 @@ define include_subdir_rules
 dir_stack := $(d) $(dir_stack)
 d := $(d)/$(1)
 $$(eval $$(value HEADER))
+ifndef LOCAL_COMPIL
 include $(addsuffix /Rules.mk,$$(d))
+else
+include $(addsuffix /LocalRules.mk,$$(d))
+endif
 $$(eval $$(value FOOTER))
 d := $$(firstword $$(dir_stack))
 dir_stack := $$(wordlist 2,$$(words $$(dir_stack)),$$(dir_stack))
