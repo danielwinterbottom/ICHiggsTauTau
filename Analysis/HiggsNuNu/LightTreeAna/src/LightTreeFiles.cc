@@ -57,6 +57,7 @@ namespace ic{
     return 0;
   };
 
+
   TH1F LTFile::GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
     return ic::GetShape(variable,selection,category,weight,tree_);
   };
@@ -287,8 +288,8 @@ namespace ic{
     return 0;
   };
 
-  int LTFiles::AddFriend(std::string filename,TTree* treeptr){
-    files_[filename].AddFriend(treeptr);
+  int LTFiles::AddFriend(std::string filename, std::string treename, std::string treefilename){
+    files_[filename].AddFriend(treename,treefilename);
     return 0;
   };
 
