@@ -56,7 +56,7 @@ template<class T, class U>
 bool MatchingProcess(T const& first, U const& second) {
   if (first.bin()         == second.bin()         &&
       first.process()     == second.process()     &&
-      first.process_id()  == second.process_id()  &&
+      first.signal()      == second.signal()      &&
       first.analysis()    == second.analysis()    &&
       first.era()         == second.era()         &&
       first.channel()     == second.channel()     &&
@@ -66,6 +66,18 @@ bool MatchingProcess(T const& first, U const& second) {
   } else {
     return false;
   }
+}
+
+template<class T, class U>
+void SetProperties(T * first, U const* second) {
+  first->set_bin(second->bin());
+  first->set_process(second->process());
+  first->set_signal(second->signal());
+  first->set_analysis(second->analysis());
+  first->set_era(second->era());
+  first->set_channel(second->channel());
+  first->set_bin_id(second->bin_id());
+  first->set_mass(second->mass());
 }
 
 template<class T>

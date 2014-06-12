@@ -1,33 +1,25 @@
 #include <string>
+// #include "boost/filesystem.hpp"
+// #include "boost/regex.hpp"
+// #include "boost/format.hpp"
+#include "boost/bind.hpp"
+// #include "boost/assign/list_of.hpp"
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/HelperFunctions.h"
 #include "CombineTools/interface/HttSystematics.h"
-#include "TH1F.h"
-#include "boost/filesystem.hpp"
-#include "boost/regex.hpp"
-#include "RooFitResult.h"
-#include "boost/format.hpp"
-#include "boost/bind.hpp"
-#include "boost/assign/list_of.hpp"
+// #include "TH1F.h"
+// #include "RooFitResult.h"
 
-using boost::assign::map_list_of;
 using boost::bind;
 using std::string;
 using std::vector;
 using std::pair;
-using std::tuple;
-using std::make_tuple;
 using std::make_pair;
 
-using ch::Process;
-using ch::Observation;
-using ch::Nuisance;
-using ch::CombineHarvester;
-
 int main() {
-  CombineHarvester cb;
+  ch::CombineHarvester cb;
 
   vector<pair<int, string>> mt_cats_7 = {
       make_pair(1, "muTau_0jet_medium"),
@@ -68,21 +60,43 @@ int main() {
       {"ggH", "qqH", "WH", "ZH"}, mt_cats_8, true);
   std::cout << " done\n";
 
+  /*
+  (1) hww(mH) as signal:
+  cb.AddProcesses(masses, {"htt"}, {"7TeV"}, {"mt"},
+      {"ggH_hww", "qqH_hww"}, mt_cats_7, true);
+  cb.AddProcesses(masses, {"htt"}, {"8TeV"}, {"mt"},
+      {"ggH_hww", "qqH_hww"}, mt_cats_8, true);
+
+  (2) hww(125) as bkg:
+  cb.AddProcesses({"*"}, {"htt"}, {"7TeV"}, {"mt"},
+      {"ggH_hww125", "qqH_hww125"}, mt_cats_7, false);
+  cb.AddProcesses({"*"}, {"htt"}, {"8TeV"}, {"mt"},
+      {"ggH_hww125", "qqH_hww125"}, mt_cats_8, false);
+
+  (2) hww(mH) as bkg:
+  for (m : masses) {
+    cb.AddProcesses({m}, {"htt"}, {"7TeV"}, {"mt"},
+        {"ggH_hww"+m, "qqH_hww"+m}, mt_cats_7, false);
+    cb.AddProcesses({m}, {"htt"}, {"8TeV"}, {"mt"},
+        {"ggH_hww"+m, "qqH_hww"+m}, mt_cats_8, false);
+  }
+  */
+
   std::cout << "Adding systematic uncertainties...";
   ch::AddDefaultSystematics(&cb);
   std::cout << " done\n";
 
   std::cout << "Extracting histograms from input root files...";
-  cb.cp().era(true, {"7TeV"}).backgrounds().ExtractShapes(
+  cb.cp().era({"7TeV"}).backgrounds().ExtractShapes(
       "data/demo/htt_mt.inputs-sm-7TeV-hcg.root", "$CHANNEL/$PROCESS",
       "$CHANNEL/$PROCESS_$SYSTEMATIC");
-  cb.cp().era(true, {"8TeV"}).backgrounds().ExtractShapes(
+  cb.cp().era({"8TeV"}).backgrounds().ExtractShapes(
       "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS",
       "$CHANNEL/$PROCESS_$SYSTEMATIC");
-  cb.cp().era(true, {"7TeV"}).signals().ExtractShapes(
+  cb.cp().era({"7TeV"}).signals().ExtractShapes(
       "data/demo/htt_mt.inputs-sm-7TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
       "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
-  cb.cp().era(true, {"8TeV"}).signals().ExtractShapes(
+  cb.cp().era({"8TeV"}).signals().ExtractShapes(
       "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
       "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
   std::cout << " done\n";
@@ -100,7 +114,7 @@ int main() {
     for (std::string const& p : {"ggH", "qqH", "WH", "ZH"}) {
       std::cout << "Scaling for process " << p << " and era " << e << "\n";
 
-      cb.cp().process(true, {p}).era(true, {e}).ForEachProc(
+      cb.cp().process({p}).era({e}).ForEachProc(
           bind(ch::ScaleProcessRate, _1, &xs, p+"_"+e, "htt"));
     }
   }
@@ -111,19 +125,37 @@ int main() {
   cb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
   std::cout << " done\n";
 
-  // cb.cp().nus_type(true, {"shape"}).PrintAll();
-
-  std::cout << "Generating bbb uncertainties...\n";
-  cb.cp().process(true, {"ZTT", "W", "QCD"}).AddBinByBin(0.1, true, &cb);
+  // cb.cp().mass({"125", "*"}).PrintAll();
+  std::cout << "Merging bin errors...\n";
+  cb.cp().bin_id({0, 1, 2, 3, 4}).process({"W", "QCD"})
+      .MergeBinErrors(0.1, 0.4);
+  cb.cp().bin_id({5}).era({"7TeV"}).process({"W"})
+      .MergeBinErrors(0.1, 0.4);
+  cb.cp().bin_id({5, 6}).era({"8TeV"}).process({"W"})
+      .MergeBinErrors(0.1, 0.4);
+  cb.cp().bin_id({7}).era({"8TeV"}).process({"W", "ZTT"})
+      .MergeBinErrors(0.1, 0.4);
   std::cout << "...done\n";
 
-  set<string> bins = cb.GenerateSetFromObs<string>(mem_fn(&Observation::bin));
+  std::cout << "Generating bbb uncertainties...\n";
+  cb.cp().bin_id({0, 1, 2, 3, 4}).process({"W", "QCD"})
+      .AddBinByBin(0.1, true, &cb);
+  cb.cp().bin_id({5}).era({"7TeV"}).process({"W"})
+      .AddBinByBin(0.1, true, &cb);
+  cb.cp().bin_id({5, 6}).era({"8TeV"}).process({"W"})
+      .AddBinByBin(0.1, true, &cb);
+  cb.cp().bin_id({7}).era({"8TeV"}).process({"W", "ZTT"})
+      .AddBinByBin(0.1, true, &cb);
+  std::cout << "...done\n";
+
+  set<string> bins =
+      cb.GenerateSetFromObs<string>(mem_fn(&ch::Observation::bin));
   TFile output("htt_mt.input.root", "RECREATE");
   for (auto b : bins) {
     for (auto m : masses) {
       cout << "Writing datacard for bin: " << b << " and mass: " << m
                 << "\n";
-      cb.cp().bin(true, {b}).mass(true, {m, "*"}).WriteDatacard(
+      cb.cp().bin({b}).mass({m, "*"}).WriteDatacard(
           b + "_" + m + ".txt", output);
     }
   }
@@ -132,11 +164,9 @@ int main() {
      [x] adding systematics
      [ ] adding workspaces, data and pdfs
      [x] scaling signal processes
-     [ ] merging bin errors
+     [x] merging bin errors
      [x] adding bbb uncertainties
      [ ] interpolated signal points (with fb templates)
-     [ ] template function to assign common properties between objects
+     [x] template function to assign common properties between objects
   */
-
 }
-

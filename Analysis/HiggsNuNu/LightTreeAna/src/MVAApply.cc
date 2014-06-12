@@ -13,6 +13,7 @@ namespace ic{
   MVAApply::MVAApply(std::string name) : LTModule(name){
     weightDir_="weights";
     friendDir_="friends";
+    setorfile_=false;
   };
 
   MVAApply::~MVAApply(){ ;};
@@ -20,13 +21,9 @@ namespace ic{
   int MVAApply::Init(TFile* fs){
     fs_=fs;
     std::cout<<"Initialisation info for "<<module_name_<<":"<<std::endl;
-    std::cout<<"Signal samples are: ";
-    for(unsigned iVec=0;iVec<sigsets_.size();iVec++){
-      std::cout<<sigsets_[iVec]<<", "<<std::endl;
-    }
-    std::cout<<"Background samples are: ";
-    for(unsigned iVec=0;iVec<bkgsets_.size();iVec++){
-      std::cout<<bkgsets_[iVec]<<", "<<std::endl;
+    std::cout<<"Samples are: ";
+    for(unsigned iVec=0;iVec<sets_.size();iVec++){
+      std::cout<<sets_[iVec]<<", "<<std::endl;
     }
     std::cout<<"Variables used are: ";
     for(unsigned iVec=0;iVec<variables_.size();iVec++){
@@ -51,18 +48,16 @@ namespace ic{
       reader->BookMVA( methodNames_[iMethod].c_str(), (weightDir_+"/"+weightFiles_[iMethod]).c_str() );
     }
     //SET LOOP
-    for(unsigned iVec=0;iVec<(bkgsets_.size()+sigsets_.size());iVec++){
+    for(unsigned iVec=0;iVec<sets_.size();iVec++){
       std::vector<LTFile> files;
-      std::string setname;
-      if(iVec<bkgsets_.size()) setname=bkgsets_[iVec];
-      else setname=sigsets_[iVec-bkgsets_.size()];
-      files=filemanager->GetFileSet(setname);
-      std::cout<<"Processing "<<setname<<std::endl;
+      if(setorfile_)files=filemanager->GetFileSet(sets_[iVec]);
+      else files.push_back(filemanager->GetFile(sets_[iVec]));
+      std::cout<<"Processing "<<sets_[iVec]<<std::endl;
       //FILE LOOP
       for(unsigned iFile=0;iFile<files.size();iFile++){
 	//MAKE A TREE TO BE THE FRIEND TREE AND SET UP THE BRANCHES
 	std::cout<<"  "<<files[iFile].name()<<std::endl;
-	TFile* friendfile=new TFile((friendDir_+files[iFile].name()+"_mvafriend.root").c_str(),"RECREATE");
+	TFile* friendfile=new TFile((friendDir_+"/"+files[iFile].name()+"_mvafriend.root").c_str(),"RECREATE");
 	TTree* friendtree=new TTree("mvafriend","Friend to Light Trees to store MVA values");
 	double mvavalues[methodNames_.size()];
 	for(unsigned iMethod=0;iMethod<methodNames_.size();iMethod++){
@@ -106,7 +101,7 @@ namespace ic{
 	friendtree->Write();
 	friendfile->Write();
 	friendfile->Close();
-	files[iFile].AddFriend("mvafriend",(friendDir_+files[iFile].name()+"_mvafriend.root").c_str());
+	files[iFile].AddFriend("mvafriend",(friendDir_+"/"+files[iFile].name()+"_mvafriend.root").c_str());
 	files[iFile].Close();
       }
     }

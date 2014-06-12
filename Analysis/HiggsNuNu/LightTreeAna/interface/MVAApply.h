@@ -9,13 +9,13 @@
 namespace ic {
 
   class MVAApply : public LTModule{
-    CLASS_MEMBER(MVAApply,std::vector<std::string>,sigsets)
-    CLASS_MEMBER(MVAApply,std::vector<std::string>,bkgsets)
+    CLASS_MEMBER(MVAApply,std::vector<std::string>,sets)
     CLASS_MEMBER(MVAApply,std::vector<std::string>,variables)
     CLASS_MEMBER(MVAApply,std::vector<std::string>,methodNames)
     CLASS_MEMBER(MVAApply,std::vector<std::string>,weightFiles)
     CLASS_MEMBER(MVAApply,std::string,weightDir)
     CLASS_MEMBER(MVAApply,std::string,friendDir)
+    CLASS_MEMBER(MVAApply,bool,setorfile)
   public:
     MVAApply(std::string);
     virtual ~MVAApply();
