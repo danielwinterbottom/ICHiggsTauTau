@@ -1,12 +1,3 @@
-WJetsv1 WJets MC_WJetsToLNu-v1.root
-WJetsv2 WJets MC_WJetsToLNu-v2.root
-W1Jets WJets MC_W1JetsToLNu.root
-W2Jets WJets MC_W2JetsToLNu.root
-W3Jets WJets MC_W3JetsToLNu.root
-W4Jets WJets MC_W4JetsToLNu.root
-EWK-Wminus WJets MC_EWK-W2jminus.root
-EWK-Wplus WJets MC_EWK-W2jplus.root
-
 WJetsv1_enu WJets_enu MC_WJetsToLNu-v1_enu.root
 WJetsv2_enu WJets_enu MC_WJetsToLNu-v2_enu.root
 W1Jets_enu WJets_enu MC_W1JetsToLNu_enu.root
