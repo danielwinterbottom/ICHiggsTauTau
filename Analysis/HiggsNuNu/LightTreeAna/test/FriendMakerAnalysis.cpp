@@ -23,6 +23,7 @@ int main(int argc, char* argv[]){
   //Input output and config options
   std::string cfg;
   std::string outputname;
+  std::string outputfolder;
   std::string inputfolder;
   std::string inputparams;
   std::string filelist;
@@ -37,6 +38,7 @@ int main(int argc, char* argv[]){
   config.add_options()
     //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
+    ("output_folder",            po::value<std::string>(&outputfolder)->default_value("friends"))
     ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/lighttree"))//"../output_lighttree"))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
@@ -51,7 +53,7 @@ int main(int argc, char* argv[]){
   #                                          #
   ##########################################*/
 
-  LTAnalyser* analysis = new LTAnalyser(outputname);
+  LTAnalyser* analysis = new LTAnalyser(outputfolder+"/"+outputname);
 
   analysis->AddFiles(filelist);
 
@@ -93,6 +95,7 @@ int main(int argc, char* argv[]){
   
   MVAApply mvaapply("mvaapply");                                                                                                                         
   mvaapply.set_sets(sets)
+    .set_friendDir(outputfolder)
     .set_variables(variables)
     .set_methodNames(methodNames) 
     .set_weightFiles(weightFiles);

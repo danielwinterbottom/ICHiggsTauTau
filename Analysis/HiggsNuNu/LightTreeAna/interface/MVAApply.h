@@ -15,6 +15,7 @@ namespace ic {
     CLASS_MEMBER(MVAApply,std::vector<std::string>,weightFiles)
     CLASS_MEMBER(MVAApply,std::string,weightDir)
     CLASS_MEMBER(MVAApply,std::string,friendDir)
+    CLASS_MEMBER(MVAApply,bool,setorfile)
   public:
     MVAApply(std::string);
     virtual ~MVAApply();

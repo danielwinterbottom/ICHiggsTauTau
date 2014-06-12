@@ -62,13 +62,13 @@ fi
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-submission: " $JOBSUBMIT
 
-for sets in `cat filelists/filelist.dat | grep " " | awk '{print $2}' | uniq | tr '\n' ' '`
+for sets in `cat filelists/filelist.dat | grep " " | awk '{print $1}' | uniq | tr '\n' ' '`
   do
   JOB=${sets}friend
   
   echo "JOB name = $JOB"
   
-  $JOBWRAPPER "./bin/FriendMakerAnalysis --cfg=$CONFIG -o $OUTPUTDIR$OUTPUTNAME -p $INPUTPARAMS -f $FILELIST -r $sets &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBWRAPPER "./bin/FriendMakerAnalysis --cfg=$CONFIG -o $OUTPUTNAME --output_folder=$OUTPUTDIR -p $INPUTPARAMS -f $FILELIST -r $sets &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
   $JOBSUBMIT $JOBDIR/$JOB.sh
 done
 
