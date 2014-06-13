@@ -264,26 +264,12 @@ namespace ic {
     //iFluc 1, iScale 1
     //iFluc -1, iScale -1
     
-    EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-    int evt=eventInfo->event();
-    double uncorr_pfmet, uncorr_pfmetphi;
     if (mc_ == mc::summer12_53X) {
-        uncorr_pfmet=pfmet;
-        uncorr_pfmetphi=pfmetphi;
 
       if (strategy_ == strategy::hcp2012) corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
       if (strategy_ == strategy::moriond2013) corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
       if (strategy_ == strategy::paper2013)   corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
 
-        if(evt==573 || evt==935) {
-           std::cout << "Event number: " << evt 
-           << ", MET: " << uncorr_pfmet << ", MET phi: " << uncorr_pfmetphi
-           << "\nPt GEN: " << genpt << ", Phi GEN: " << genphi
-           << "\nPt RECO: " << lep_pt << ", Phi RECO: " << lep_phi
-           << "\njets: " << njets << ", Fluc: " << iFluc << ", Scale: " << iScale
-           << "\nCorrected MET: " << pfmet << ", Corrected MET phi: " << pfmetphi
-          << "\nU1: " << U1 << ", U2: " << U2 << std::endl;
-        }
       if (strategy_ == strategy::hcp2012) corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
     } else if (mc_ == mc::fall11_42X) {
       corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
