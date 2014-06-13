@@ -15,9 +15,14 @@ namespace ic {
   public:								
     virtual Plotter & set_sets(std::vector<std::vector<std::string> > const& sets) {sets_ = sets; return *this; } 
     virtual std::vector<std::vector<std::string> > & set() {return sets_; }
+    CLASS_MEMBER(Plotter,std::vector<int>,setscolours)
+    CLASS_MEMBER(Plotter,std::vector<std::string>,setsnames)
+    CLASS_MEMBER(Plotter,std::vector<std::string>,setsscales)
     CLASS_MEMBER(Plotter,std::string,cat)
     CLASS_MEMBER(Plotter,std::string,basesel)
     CLASS_MEMBER(Plotter,std::vector<std::string>,shapes)
+    CLASS_MEMBER(Plotter,std::vector<std::string>,axisnames)
+
   public:
     Plotter(std::string);
     virtual ~Plotter();
