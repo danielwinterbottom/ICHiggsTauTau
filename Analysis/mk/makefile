@@ -40,7 +40,7 @@ USERINCLUDES += -isystem $(ROOFITSYS)/include
 USERINCLUDES += -isystem $(BOOSTSYS)/include
 
 USERLIBS += $(shell $(ROOTSYS)/bin/root-config --glibs) -lGenVector -lTreePlayer -lTMVA
-USERLIBS += -L$(ROOFITSYS)/lib/ -lRooFit -lRooFitCore
+USERLIBS += -L$(ROOFITSYS)/lib -lRooFit -lRooFitCore
 USERLIBS += -L$(BOOSTSYS)/lib -lboost_regex -lboost_program_options -lboost_filesystem
 
 # Can set CMSSW=0 to disable include/linking to CMSSW
