@@ -97,7 +97,7 @@ $(foreach x,$(LIB_$(d)),$(eval LIB_DEP_$(x) := $(LIB_EXTRA)))
 SKIP := 0
 ifeq ($(CMSSW), 0)
   ifneq ($(REQUIRES_CMSSW), 0)
-    $(info Warning: directory '$(notdir $(d))' which requires CMSSW is skipped)
+    # $(info Warning: directory '$(notdir $(d))' which requires CMSSW is skipped)
     SKIP := 1
   endif
 endif

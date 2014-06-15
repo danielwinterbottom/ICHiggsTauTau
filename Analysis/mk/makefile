@@ -26,11 +26,20 @@ MK := $(TOP)/mk
 # compiler warnings and dependency generation for stuff thatW
 # we can't actually touch
 
-CMSSW = 1
+ifndef CMSSW
+	CMSSW := 1
+endif
+
+ifeq ($(CMSSW),0)
+$(info ==> Standalone mode enabled - CMSSW will not be linked)
+$(info ==> Directories that do not define REQUIRES_CMSSW=0 will be skipped!)
+endif
 
 # BOOST - currently fixed to version 1.47.0, we will need to do some magic
 # in the near futures to figure out the right version for the CMSSW release
-BOOSTSYS := $(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0
+ifndef BOOSTSYS
+	BOOSTSYS := $(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0
+endif
 
 USERINCLUDES += -I$(TOP)
 USERINCLUDES += -I$(TOP)/../../..
