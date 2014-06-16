@@ -3,6 +3,7 @@
 #include "boost/lexical_cast.hpp"
 #include <iostream>
 #include <vector>
+#include <cstring>
 
 namespace ic{
   LTFile::LTFile(){
@@ -299,7 +300,11 @@ namespace ic{
       TH1F temp;
       return temp;
     }
-    return files_[filename].GetShape(variable,selection,category,weight);
+    TH1F temp = files_[filename].GetShape(variable,selection,category,weight);
+    if(strcmp(temp.GetName(),"ERROR")!=0){
+    std::cout<<"File with problem is: "<<filename<<std::endl;
+    }
+    return(temp);
     CloseFile(filename);
   };
 
@@ -349,8 +354,11 @@ namespace ic{
 	    //std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
 	  }
 	}
-	std::cout<<"Getting shape for "<<files_[*iter].name()<<std::endl;//!!
 	TH1F temp=files_[*iter].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
+	if(strcmp(temp.GetName(),"ERROR")!=0){
+	  std::cout<<"File with problem is: "<<files_[*iter].name()<<std::endl;
+	}
+	return(temp);
 	temp.Sumw2();
 	if(first){
 	  setshape=temp;
@@ -415,6 +423,10 @@ namespace ic{
 	      }
 	    }
 	    TH1F temp=files_[*iter].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
+	    if(strcmp(temp.GetName(),"ERROR")!=0){
+	      std::cout<<"File with problem is: "<<files_[*iter].name()<<std::endl;
+	    }
+	    return(temp);
 	    temp.Sumw2();
 	    if(firstshape){
 	      setshape=temp;
@@ -437,7 +449,12 @@ namespace ic{
   };
 
   TH3F LTFiles::GetShape3D(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
-    return files_[filename].GetShape3D(variable,selection,category,weight);
+    TH3F temp= files_[filename].GetShape3D(variable,selection,category,weight);    
+    if(strcmp(temp.GetName(),"ERROR")!=0){
+      std::cout<<"File with problem is: "<<filename<<std::endl;
+    }
+    return(temp);
+    
   };
 
   TH3F LTFiles::GetSetShape3D(std::string setname, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight, bool do_lumixs_weights_=true){
@@ -482,6 +499,10 @@ namespace ic{
 	}
 
 	TH3F temp=files_[*iter].GetShape3D(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
+	if(strcmp(temp.GetName(),"ERROR")!=0){
+	  std::cout<<"File with problem is: "<<files_[*iter].name()<<std::endl;
+	}
+	return(temp);
 	if(first){
 	  setshape=temp;
 	  first=false;
