@@ -33,7 +33,13 @@ namespace ic{
     std::ifstream infile(filelist.c_str());
     std::string line;
     while(std::getline(infile,line)){
+      std::cout<<line<<std::endl;
+      if(line.find("#")!=std::string::npos){
+	line=line.substr(0,line.find("#"));
+      }
+      std::cout<<line<<std::endl;
       if(line=="")continue;
+      std::cout<<"passed check of whether to ignore"<<std::endl;
      std::vector<std::string> strs;
       boost::split(strs, line, boost::is_any_of("\t "));
       if(strs.size()!=3){
