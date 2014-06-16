@@ -382,10 +382,11 @@ namespace ic {
 	  }
 	}
       }
-      
-      outputTree_->Fill();
       static unsigned processed = 0;
-      ++processed;
+      if (jetmet_mindphi_>1.5 && met_significance_ > 3.0 &&  dijet_deta_>3.6){
+	outputTree_->Fill();
+	++processed;
+      }
       if (processed == 500) outputTree_->OptimizeBaskets();
     }
 
