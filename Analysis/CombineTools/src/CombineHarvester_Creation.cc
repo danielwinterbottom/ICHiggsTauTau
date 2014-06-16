@@ -54,24 +54,6 @@ void CombineHarvester::AddProcesses(
       unsigned(channel.size()), unsigned(bin.size())};
   auto comb = ic::GenerateCombinations(lengths);
   for (auto const& c : comb) {
-    std::set<int> existing_ids = this->shallow_copy()
-        .mass(true, {mass[c[0]]})
-        .analysis(true, {analysis[c[1]]})
-        .era(true, {era[c[2]]})
-        .channel(true, {channel[c[3]]})
-        .bin_id(true, {bin[c[4]].first})
-        .bin(true, {bin[c[4]].second})
-        .GenerateSetFromProcs<int>(std::mem_fn(&Process::process_id));
-    std::vector<int> ids;
-    int n = signal ? 0 : 1;
-    while (ids.size() != procs.size()) {
-      if (!existing_ids.count(n)) ids.push_back(n);
-      if (signal) {
-        --n;
-      } else {
-        ++n;
-      }
-    }
     for (unsigned i = 0; i < procs.size(); ++i) {
       auto proc = std::make_shared<Process>();
       proc->set_mass(mass[c[0]]);
@@ -81,7 +63,7 @@ void CombineHarvester::AddProcesses(
       proc->set_bin_id(bin[c[4]].first);
       proc->set_bin(bin[c[4]].second);
       proc->set_process(procs[i]);
-      proc->set_process_id(ids[i]);
+      proc->set_signal(signal);
       procs_.push_back(proc);
     }
   }
@@ -160,6 +142,7 @@ void CombineHarvester::ExtractShapes(std::string const& file,
 }
 
 void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHarvester * other) {
+  unsigned bbb_added = 0;
   for (unsigned i = 0; i < procs_.size(); ++i) {
     if (!procs_[i]->shape()) continue;
     TH1 const* h = procs_[i]->shape();
@@ -171,16 +154,10 @@ void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHar
         continue;
       }
       if ((h->GetBinError(j)/h->GetBinContent(j)) > threshold) {
+        ++bbb_added;
         auto nus = std::make_shared<Nuisance>();
-        nus->set_bin(procs_[i]->bin());
-        nus->set_process(procs_[i]->process());
-        nus->set_process_id(procs_[i]->process_id());
+        ch::SetProperties(nus.get(), procs_[i].get());
         nus->set_type("shape");
-        nus->set_analysis(procs_[i]->analysis());
-        nus->set_era(procs_[i]->era());
-        nus->set_channel(procs_[i]->channel());
-        nus->set_bin_id(procs_[i]->bin_id());
-        nus->set_mass(procs_[i]->mass());
         nus->set_name("CMS_" + nus->bin() + "_" + nus->process() + "_bin_" +
                       boost::lexical_cast<std::string>(j));
         nus->set_asymm(true);
@@ -200,6 +177,8 @@ void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHar
         if (h_u->Integral() > 0.0) h_u->Scale(1.0/h_u->Integral());
         if (h_d) nus->set_shape_d(std::unique_ptr<TH1>(h_d));
         if (h_u) nus->set_shape_u(std::unique_ptr<TH1>(h_u));
+        CombineHarvester::CreateParameterIfEmpty(other ? other : this,
+                                                 nus->name());
         if (other) {
           other->nus_.push_back(nus);
         } else {
@@ -208,6 +187,70 @@ void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHar
       }
     }
   }
+  std::cout << "bbb added: " << bbb_added << std::endl;
 }
 
+void CombineHarvester::CreateParameterIfEmpty(CombineHarvester *cmb,
+                                              std::string const &name) {
+  if (!params_.count(name)) {
+    auto param = std::make_shared<Parameter>(Parameter());
+    param->set_name(name);
+    (*cmb).params_.insert({name, param});
+  }
+}
+
+void CombineHarvester::MergeBinErrors(double bbb_threshold,
+                                      double merge_threshold) {
+  auto bins =
+      this->GenerateSetFromProcs<std::string>(std::mem_fn(&Process::bin));
+  for (auto const& bin : bins) {
+    unsigned bbb_added = 0;
+    unsigned bbb_removed = 0;
+    CombineHarvester tmp = std::move(this->cp().bin({bin}).histograms());
+    if (tmp.procs_.size() == 0) continue;
+
+    std::vector<TH1 *> h_copies(tmp.procs_.size(), nullptr);
+    for (unsigned i = 0; i < h_copies.size(); ++i) {
+      h_copies[i] = static_cast<TH1 *>(tmp.procs_[i]->shape()->Clone());
+    }
+
+    for (int i = 1; i <= tmp.procs_[0]->shape()->GetNbinsX(); ++i) {
+      double tot_bbb_added = 0.0;
+      std::vector<std::pair<double, TH1 *>> result;
+      for (unsigned j = 0; j < tmp.procs_.size(); ++j) {
+        double val = tmp.procs_[j]->shape()->GetBinContent(i);
+        double err = tmp.procs_[j]->shape()->GetBinError(i);
+        if (val == 0.0 &&  err == 0.0) continue;
+        if (val == 0 || (err/val) > bbb_threshold) {
+          bbb_added += 1;
+          tot_bbb_added += (err * err);
+          result.push_back(std::make_pair(err*err, h_copies[j]));
+        }
+      }
+      if (tot_bbb_added == 0.0) continue;
+      std::sort(result.begin(), result.end());
+      double removed = 0.0;
+      for (unsigned r = 0; r < result.size(); ++r) {
+        if ((result[r].first + removed) < (merge_threshold * tot_bbb_added) &&
+            r < (result.size() - 1)) {
+          bbb_removed += 1;
+          removed += result[r].first;
+          result[r].second->SetBinError(i, 0.0);
+        }
+      }
+      double expand = std::sqrt(1. / (1. - (removed * tot_bbb_added)));
+      for (unsigned r = 0; r < result.size(); ++r) {
+        result[r]
+            .second->SetBinError(i, result[r].second->GetBinError(i) * expand);
+      }
+    }
+    for (unsigned i = 0; i < h_copies.size(); ++i) {
+      tmp.procs_[i]->set_shape(std::unique_ptr<TH1>(h_copies[i]));
+    }
+    // std::cout << "BIN: " << bin << std::endl;
+    // std::cout << "Total bbb added:    " << bbb_added << "\n";
+    // std::cout << "Total bbb removed:  " << bbb_removed << "\n";
+    // std::cout << "Total bbb =======>: " << bbb_added-bbb_removed << "\n";
+  }
+}
 }

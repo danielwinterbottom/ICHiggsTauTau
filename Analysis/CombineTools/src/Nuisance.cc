@@ -7,7 +7,8 @@ namespace ch {
 Nuisance::Nuisance()
     : bin_(""),
       process_(""),
-      process_id_(0),
+      // process_id_(0),
+      signal_(false),
       name_(""),
       type_(""),
       value_u_(0.0),
@@ -28,7 +29,8 @@ void swap(Nuisance& first, Nuisance& second) {
   using std::swap;
   swap(first.bin_, second.bin_);
   swap(first.process_, second.process_);
-  swap(first.process_id_, second.process_id_);
+  // swap(first.process_id_, second.process_id_);
+  swap(first.signal_, second.signal_);
   swap(first.name_, second.name_);
   swap(first.type_, second.type_);
   swap(first.value_u_, second.value_u_);
@@ -46,7 +48,8 @@ void swap(Nuisance& first, Nuisance& second) {
 Nuisance::Nuisance(Nuisance const& other)
     : bin_(other.bin_),
       process_(other.process_),
-      process_id_(other.process_id_),
+      // process_id_(other.process_id_),
+      signal_(other.signal_),
       name_(other.name_),
       type_(other.type_),
       value_u_(other.value_u_),
@@ -74,7 +77,8 @@ Nuisance::Nuisance(Nuisance const& other)
 Nuisance::Nuisance(Nuisance&& other)
     : bin_(""),
       process_(""),
-      process_id_(0),
+      // process_id_(0),
+      signal_(false),
       name_(""),
       type_(""),
       value_u_(0.0),
@@ -98,8 +102,8 @@ Nuisance& Nuisance::operator=(Nuisance other) {
 std::ostream& Nuisance::PrintHeader(std::ostream &out) {
   std::string line =
    (boost::format("%-6s %-9s %-6s %-8s %-28s %-3i"
-    " %-22s %-3i %-40s %-8s %-9s %-10i %-10i")
-    % "mass" % "analysis" % "era" % "channel" % "bin" % "id" % "process" % "id" 
+    " %-22s %-4i %-40s %-8s %-9s %-10i %-10i")
+    % "mass" % "analysis" % "era" % "channel" % "bin" % "id" % "process" % "sig"
     % "nuisance" % "type" % "value" % "shape_d" % "shape_u").str();
   std::string div(line.length(), '-');
   out << div  << std::endl;
@@ -111,13 +115,13 @@ std::ostream& Nuisance::PrintHeader(std::ostream &out) {
 std::ostream& operator<< (std::ostream &out, Nuisance &val) {
   std::string value_fmt;
   if (val.asymm()) {
-    value_fmt = (boost::format("%-4.4g/%-4.4g") 
+    value_fmt = (boost::format("%-4.4g/%-4.4g")
       % val.value_d() % val.value_u()).str();
   } else {
     value_fmt = (boost::format("%-9.4g") % val.value_u()).str();
   }
   out << boost::format("%-6s %-9s %-6s %-8s %-28s %-3i"
-    " %-22s %-3i %-40s %-8s %-9s %-10i %-10i")
+    " %-22s %-4i %-40s %-8s %-9s %-10i %-10i")
   % val.mass()
   % val.analysis()
   % val.era()
@@ -125,7 +129,8 @@ std::ostream& operator<< (std::ostream &out, Nuisance &val) {
   % val.bin()
   % val.bin_id()
   % val.process()
-  % val.process_id()
+  // % val.process_id()
+  % val.signal()
   % val.name()
   % val.type()
   % value_fmt

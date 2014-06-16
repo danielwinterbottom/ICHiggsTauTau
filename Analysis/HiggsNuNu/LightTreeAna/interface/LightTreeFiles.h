@@ -68,6 +68,7 @@ namespace ic{
     int CloseAll();
 
     int AddFriend(std::string,TTree*);
+    int AddFriend(std::string,std::string,std::string);
     TH1F GetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH1F GetSetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
     TH1F GetSetsShape(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,bool);

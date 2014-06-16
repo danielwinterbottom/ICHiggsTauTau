@@ -18,10 +18,16 @@ namespace po = boost::program_options;
 using namespace std;
 using namespace ic;
 
-HTTAnalysis::HistValuePair FillHistValuePair(ch::CombineHarvester & cmb) {
-  return std::make_pair(
-      cmb.GetShape(),
-      std::make_pair(cmb.GetRate(), cmb.GetUncertainty()));
+HTTAnalysis::HistValuePair FillHistValuePair(ch::CombineHarvester & cmb, RooFitResult * res) {
+  if (res) {
+    return std::make_pair(
+        cmb.GetShape(),
+        std::make_pair(cmb.GetRate(), cmb.GetUncertainty(res, 500)));
+  } else {
+    return std::make_pair(
+        cmb.GetShape(),
+        std::make_pair(cmb.GetRate(), cmb.GetUncertainty()));
+    } 
 }
 
 int main(int argc, char* argv[]){
@@ -97,7 +103,7 @@ int main(int argc, char* argv[]){
     cmb.ForEachNus(boost::bind(ch::SetFromBinName<ch::Nuisance>, _1, bin_pat));
     cmb.ForEachObs(boost::bind(ch::SetFromBinName<ch::Observation>, _1, bin_pat));
     cmb.ForEachProc(boost::bind(ch::SetFromBinName<ch::Process>, _1, bin_pat));
-    cmb.channel(true, {channel}).era(true, v_eras).bin_id(true, bin_ids);
+    cmb.channel({channel}).era(v_eras).bin_id(bin_ids);
   }
   // for (unsigned i = 0; i < v_eras.size(); ++i) {
   //   if (!mssm) {
@@ -138,15 +144,16 @@ int main(int argc, char* argv[]){
       samples.push_back("qqH_hww125");
     }
   }
+  RooFitResult * send_res = nullptr;
   for (auto const& s : samples) {
-    hmap[s] = FillHistValuePair(cmb.shallow_copy().process(true, {s}));
+    hmap[s] = FillHistValuePair(cmb.cp().process({s}), send_res);
     HTTAnalysis::PrintValue(s, hmap[s].second);
   }
   for (auto const& s : signal_procs) {
     if (s == "VH") {
-      hmap[s+signal_mass] = FillHistValuePair(cmb.shallow_copy().process(true, {"WH","ZH"}));
+      hmap[s+signal_mass] = FillHistValuePair(cmb.cp().process({"WH","ZH"}), send_res);
     } else {
-      hmap[s+signal_mass] = FillHistValuePair(cmb.shallow_copy().process(true, {s}));
+      hmap[s+signal_mass] = FillHistValuePair(cmb.cp().process({s}), send_res);
     }
     HTTAnalysis::PrintValue(s+signal_mass, hmap[s+signal_mass].second);
   }
@@ -155,7 +162,7 @@ int main(int argc, char* argv[]){
   for (unsigned i = 0; i < v_columns.second.size(); ++i) catstring += v_columns.second.at(i);
   plot.set_plot_name(channel + "_" + catstring + "_" + era_file_label+ (postfit ? "_postfit":"_prefit"));
 
-  TH1F total_hist = cmb.shallow_copy().backgrounds().GetShapeWithUncertainty(fitresult, 500);
+  TH1F total_hist = cmb.cp().backgrounds().GetShapeWithUncertainty(fitresult, 500);
   hmap["Bkg"] = make_pair(total_hist, make_pair(0.,0.));
 
   string channel_str;

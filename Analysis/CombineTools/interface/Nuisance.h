@@ -21,8 +21,11 @@ class Nuisance {
   void set_process(std::string const& process) { process_ = process; }
   std::string const& process() const { return process_; }
 
-  void set_process_id(int const& process_id) { process_id_ = process_id; }
-  int process_id() const { return process_id_; }
+  // void set_process_id(int const& process_id) { process_id_ = process_id; }
+  // int process_id() const { return process_id_; }
+
+  void set_signal(bool const& signal) { signal_ = signal; }
+  bool signal() const { return signal_; }
 
   void set_name(std::string const& name) { name_ = name; }
   std::string const& name() const { return name_; }
@@ -66,7 +69,8 @@ class Nuisance {
  private:
   std::string bin_;
   std::string process_;
-  int process_id_;
+  // int process_id_;
+  bool signal_;
   std::string name_;
   std::string type_;
   double value_u_;

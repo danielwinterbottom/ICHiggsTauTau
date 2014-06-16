@@ -21,6 +21,17 @@ ifdef DEBUG
 $(info Target object files:)
 $(foreach x,$(OBJS_$(d)),$(info -- Target file: $(x)))
 endif
+
+# If DICTIONARY has been specified, define DHEADERS_$(d) and DOBJ_$(d)
+ifneq ($(DICTIONARY),)
+DHEADERS_$(d) := $(addprefix $(d)/,$(DICTIONARY))
+OBJS_$(d) += $(d)/obj/rootcint_dict.o
+endif
+ifdef DEBUG
+$(info Target dictionary header files:)
+$(foreach x,$(DHEADERS_$(d)),$(info -- Header file: $(x)))
+endif
+
 # Get list of exectutables to compile by looking for files matching test/*.cpp
 # "wildcard" gets the files in test, "notdir" removes the directory part, "basename"
 # removes the extension and "addprefix" adds the full path to the bin directory
@@ -52,7 +63,7 @@ LIBNAME_$(d) := $(subst /,_,$(patsubst /%,%,$(subst $(TOP),,$(d))))
 endif
 
 # Now define the full library target, but only in the case that we actually have
-# some object files to link. The full library target adds a libIC prefix to reduce 
+# some object files to link. The full library target adds a libIC prefix to reduce
 # the chance of a naming clash with other linked libraries (eg. libCore in ROOT)
 ifneq ($(OBJS_$(d)),)
  LIB_$(d) := $(addsuffix .so,$(addprefix $(d)/lib/libIC,$(LIBNAME_$(d))))
@@ -64,6 +75,7 @@ else
   $(info -- No source files, library will not be generated!)
  endif
 endif
+
 
 # Only if the directory we're scanning is the directory the user is running from
 # we define shortcut targets for compiling executables. This means the user can
@@ -81,12 +93,25 @@ LIB_DEPS_$(d) := $(foreach x,$(LIB_DEPS),$(TOP)/$(x)/lib/libIC$(x).so)
 $(foreach x,$(EXES_$(d)),$(eval EXE_DEP_$(x) := $(LIB_EXTRA)))
 $(foreach x,$(LIB_$(d)),$(eval LIB_DEP_$(x) := $(LIB_EXTRA)))
 
-# Targets for a directory are the shared library and the executables
-TARGETS_$(d) := $(LIB_$(d)) $(EXES_$(d))
+
+SKIP := 0
+ifeq ($(CMSSW), 0)
+  ifneq ($(REQUIRES_CMSSW), 0)
+    # $(info Warning: directory '$(notdir $(d))' which requires CMSSW is skipped)
+    SKIP := 1
+  endif
+endif
+
+#######################################################################
+# Only define rules for this folder is SKIP = 0 											#
+#######################################################################
+ifeq ($(SKIP), 0)
 
 ###################################
 # Define directory-specific Rules #
 ###################################
+# Targets for a directory are the shared library and the executables
+TARGETS_$(d) := $(LIB_$(d)) $(EXES_$(d))
 
 # Check if verbose mode is enabled, and if so we will echo commands
 ifdef V
@@ -98,6 +123,7 @@ endif
 # If they exist (-include instead of include), load automatic rules in the
 # .d files
 -include $(OBJS_$(d):.o=.d)
+-include $(d)/obj/rootcint_dict.d
 -include $(EXE_OBJS_$(d):.o=.d)
 
 # Rule for generating object files from source files
@@ -106,6 +132,17 @@ $(d)/obj/%.o: $(d)/src/%.cc
 	$(DOECHO)$(CXX) $(CXXFLAGS) -fPIC -c $< -o $@
 	@echo -e "$(COLOR_CY)Generating dependency file $(subst $(TOP)/,,$(@:.o=.d))$(NOCOLOR)"
 	@$(CXX) $(CXXFLAGS) -MM -MP -MT "$@" $< -o $(@:.o=.d)
+
+# Rule for generating dictionary object
+$(d)/obj/rootcint_dict.o: $(d)/obj/rootcint_dict.cc
+	@echo -e "$(COLOR_YE)Compiling dictionary object file $(subst $(TOP)/,,$@)$(NOCOLOR)"
+	$(DOECHO)$(CXX) $(CXXFLAGS) -fPIC -c $< -o $@
+	@echo -e "$(COLOR_CY)Generating dependency file $(subst $(TOP)/,,$(@:.o=.d))$(NOCOLOR)"
+	@$(CXX) $(CXXFLAGS) -MM -MP -MT "$@" $< -o $(@:.o=.d)
+
+$(d)/obj/rootcint_dict.cc: $(DHEADERS_$(d)) $(d)/interface/LinkDef.h
+	@echo -e "$(COLOR_YE)Generating dictionary $(subst $(TOP)/,,$@)$(NOCOLOR)"
+	$(DOECHO)$(ROOTSYS)/bin/rootcint -v4 -f $@ -c -p -I$(TOP) -I$(TOP)/../../.. $^
 
 # Rule for generating object files for executables from source files
 $(d)/bin/%.o: $(d)/test/%.cpp
@@ -132,6 +169,11 @@ $(d)/bin/%: $(d)/bin/%.o $(LIB_$(d)) $(LIB_DEPS_$(d))
 	@echo -e "$(COLOR_PU)Linking executable $(subst $(TOP)/,,$@)$(NOCOLOR)"
 	$(DOECHO)$(CXX) -o $@  $^ $(LIBS) $(EXE_DEP_$@)
 
+########################################################################
+# End of SKIP=0 section																								 #
+########################################################################
+endif
+
 dir_$(d) : $(TARGETS_$(d))
 
 # Defining the exe object files to .SECONDARY stops make from automatically
@@ -156,7 +198,7 @@ clean_all :: clean_$(d)
 ########################################################################
 
 clean_$(d) :
-	rm -f $(subst clean_,,$@)/bin/* $(subst clean_,,$@)/obj/* $(subst clean_,,$@)/lib/* 
+	rm -f $(subst clean_,,$@)/bin/* $(subst clean_,,$@)/obj/* $(subst clean_,,$@)/lib/*
 
 clean_tree_$(d) : clean_$(d) $(foreach sd,$(SUBDIRS_$(d)),clean_tree_$(sd))
 
