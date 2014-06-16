@@ -349,6 +349,7 @@ namespace ic{
 	    //std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
 	  }
 	}
+	std::cout<<"Getting shape for "<<files_[*iter].name()<<std::endl;//!!
 	TH1F temp=files_[*iter].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
 	temp.Sumw2();
 	if(first){
