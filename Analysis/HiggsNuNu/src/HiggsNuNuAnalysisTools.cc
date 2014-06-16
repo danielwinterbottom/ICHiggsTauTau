@@ -119,6 +119,7 @@ namespace ic{
     TH1F* htemp = (TH1F*)gDirectory->Get("htemp");
     if (!htemp) {
       std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
+      std::cout << "For TTree"<<ttree->GetName()<<std::endl;
       exit(1);
     }
     TH1F hshape= (*htemp);
@@ -135,6 +136,7 @@ namespace ic{
     TH3F* htemp = (TH3F*)gDirectory->Get("htemp");
     if (!htemp) {
       std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
+      std::cout << "For TTree"<<ttree->GetName()<<std::endl;
       exit(1);
     }
     TH3F hshape= (*htemp);
