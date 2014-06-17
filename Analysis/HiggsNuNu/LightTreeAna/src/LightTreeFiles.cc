@@ -60,11 +60,31 @@ namespace ic{
 
 
   TH1F LTFile::GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
-    return ic::GetShape(variable,selection,category,weight,tree_);
+    TH1F temp;
+    if(tree_->GetEntries()<1){
+      std::cout<<"WARNING: "<<name_<<" is empty."<<std::endl;
+      temp.SetName("EMPTY");
+      return temp;
+    }
+    temp=ic::GetShape(variable,selection,category,weight,tree_);
+    if(strcmp(temp.GetName(),"ERROR")==0){
+      std::cout<<"File with problem is: "<<name_<<std::endl;
+    }
+    return temp;
   };
 
   TH3F LTFile::GetShape3D(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
-    return ic::GetShape3D(variable,selection,category,weight,tree_);
+    TH3F temp;
+    if(tree_->GetEntries()<1){
+      std::cout<<"WARNING: "<<name_<<" is empty."<<std::endl;
+      temp.SetName("EMPTY");
+      return temp;
+    }
+    temp=ic::GetShape3D(variable,selection,category,weight,tree_);
+    if(strcmp(temp.GetName(),"ERROR")==0){
+      std::cout<<"File with problem is: "<<name_<<std::endl;
+    }
+    return temp;
   };
 
   TTree* LTFile::GetTree(){
@@ -301,11 +321,8 @@ namespace ic{
       return temp;
     }
     TH1F temp = files_[filename].GetShape(variable,selection,category,weight);
-    if(strcmp(temp.GetName(),"ERROR")!=0){
-    std::cout<<"File with problem is: "<<filename<<std::endl;
-    }
-    return(temp);
     CloseFile(filename);
+    return(temp);
   };
 
 
@@ -320,45 +337,16 @@ namespace ic{
       bool first=true;
       for(auto iter=setlists_[setname].begin(); iter!=setlists_[setname].end();++iter){
 	//ADAPT LUMIXS BIT
-	std::string sample_path_=files_[*iter].path();
+	//std::string sample_path_=files_[*iter].path();
 	double lumixsweight=1;
 	if(do_lumixs_weights_){
-	  //Get Sample name file
-	  std::string suffix=".root";
-	  std::size_t found = sample_path_.find(suffix);
-	  if(found==std::string::npos){
-	    lumixsweight=1;
-	    std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
-	  }
-	  else{
-	    sample_path_.erase(found,5);
-	    //std::cout << "Sample Path: "<<sample_path_<<std::endl;
-
-	    //Get lumi xs and events from params file
-	    SimpleParamParser parser;
-	    //std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
-	    parser.ParseFile(input_params_);
-	    //std::cout<<"parsed"<<std::endl;
-	    double xs=parser.GetParam<double>("XS_"+sample_path_);
-	    //std::cout<<"got xs"<<std::endl;
-	    double events=parser.GetParam<double>("EVT_"+sample_path_);
-	    //std::cout<<"got events"<<std::endl;
-	    double lumi=parser.GetParam<double>("LUMI_DATA");
-	    //std::cout<<"got lumi"<<std::endl;
-
-	    //std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
-	    //std::cout<<"EVT is: "<<events<<std::endl;
-	    //std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
-	    if(xs==-1) lumixsweight=1;
-	    else lumixsweight=xs*lumi/events;
-	    //std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
-	  }
+	  lumixsweight=this->GetLumiXSWeight(files_[*iter]);
 	}
+      
 	TH1F temp=files_[*iter].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
-	if(strcmp(temp.GetName(),"ERROR")!=0){
-	  std::cout<<"File with problem is: "<<files_[*iter].name()<<std::endl;
+	if(strcmp(temp.GetName(),"EMPTY")==0){
+	  continue;
 	}
-	return(temp);
 	temp.Sumw2();
 	if(first){
 	  setshape=temp;
@@ -388,45 +376,15 @@ namespace ic{
 	  bool firstshape=true;
 	  for(auto iter=setlists_[setnames[iset]].begin(); iter!=setlists_[setnames[iset]].end();++iter){
 	    //ADAPT LUMIXS BIT
-	    std::string sample_path_=files_[*iter].path();
+	    //std::string sample_path_=files_[*iter].path();
 	    double lumixsweight=1;
 	    if(do_lumixs_weights_){
-	      //Get Sample name file
-	      std::string suffix=".root";
-	      std::size_t found = sample_path_.find(suffix);
-	      if(found==std::string::npos){
-		lumixsweight=1;
-		std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
-	      }
-	      else{
-		sample_path_.erase(found,5);
-		//std::cout << "Sample Path: "<<sample_path_<<std::endl;
-		
-		//Get lumi xs and events from params file
-		SimpleParamParser parser;
-		//std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
-		parser.ParseFile(input_params_);
-		//std::cout<<"parsed"<<std::endl;
-		double xs=parser.GetParam<double>("XS_"+sample_path_);
-		//std::cout<<"got xs"<<std::endl;
-		double events=parser.GetParam<double>("EVT_"+sample_path_);
-		//std::cout<<"got events"<<std::endl;
-		double lumi=parser.GetParam<double>("LUMI_DATA");
-		//std::cout<<"got lumi"<<std::endl;
-		
-// 		std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
-// 		std::cout<<"EVT is: "<<events<<std::endl;
-// 		std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
-		if(xs==-1) lumixsweight=1;
-		else lumixsweight=xs*lumi/events;
-		//std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
-	      }
+	      lumixsweight=this->GetLumiXSWeight(files_[*iter]);
 	    }
 	    TH1F temp=files_[*iter].GetShape(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
-	    if(strcmp(temp.GetName(),"ERROR")!=0){
-	      std::cout<<"File with problem is: "<<files_[*iter].name()<<std::endl;
+	    if(strcmp(temp.GetName(),"EMPTY")==0){
+	      continue;
 	    }
-	    return(temp);
 	    temp.Sumw2();
 	    if(firstshape){
 	      setshape=temp;
@@ -450,9 +408,6 @@ namespace ic{
 
   TH3F LTFiles::GetShape3D(std::string filename, std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
     TH3F temp= files_[filename].GetShape3D(variable,selection,category,weight);    
-    if(strcmp(temp.GetName(),"ERROR")!=0){
-      std::cout<<"File with problem is: "<<filename<<std::endl;
-    }
     return(temp);
     
   };
@@ -465,44 +420,13 @@ namespace ic{
 	std::string sample_path_=files_[*iter].path();
 	double lumixsweight=1;
 	if(do_lumixs_weights_){
-	  //Get Sample name file
-	  std::string suffix=".root";
-	  std::size_t found = sample_path_.find(suffix);
-	  if(found==std::string::npos){
-	    lumixsweight=1;
-	    std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
-	  }
-	  else{
-	    sample_path_.erase(found,5);
-	    //std::cout << "Sample Name: "<<sample_path_<<std::endl;
-
-	    //Get lumi xs and events from params file
-	    SimpleParamParser parser;
-	    //std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;
-	    parser.ParseFile(input_params_);
-	    //std::cout<<"parsed"<<std::endl;
-	    double xs=parser.GetParam<double>("XS_"+sample_path_);
-	    //std::cout<<"got xs"<<std::endl;
-	    double events=parser.GetParam<double>("EVT_"+sample_path_);
-	    //std::cout<<"got events"<<std::endl;
-	    double lumi=parser.GetParam<double>("LUMI_DATA");
-	    //std::cout<<"got lumi"<<std::endl;
-
-	    //std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
-	    // std::cout<<"EVT is: "<<events<<std::endl;
-	    // std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
-
-	    if(xs==-1) lumixsweight=1;
-	    else lumixsweight=xs*lumi/events;
-	    //std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
-	  }
+	  lumixsweight=this->GetLumiXSWeight(files_[*iter]);
 	}
-
+	
 	TH3F temp=files_[*iter].GetShape3D(variable,selection,category,weight+"*"+boost::lexical_cast<std::string>(lumixsweight));
-	if(strcmp(temp.GetName(),"ERROR")!=0){
-	  std::cout<<"File with problem is: "<<files_[*iter].name()<<std::endl;
+	if(strcmp(temp.GetName(),"EMPTY")==0){
+	  continue;
 	}
-	return(temp);
 	if(first){
 	  setshape=temp;
 	  first=false;
@@ -516,7 +440,40 @@ namespace ic{
     return setshape;
   };
 
+  double LTFiles::GetLumiXSWeight(LTFile file){
+    std::string sample_path_=file.path();
+    std::string suffix=".root";
+    std::size_t found = sample_path_.find(suffix);
+    double lumixsweight=1;
+    if(found==std::string::npos){
+      lumixsweight=1;
+      std::cout<<"Non-standard sample name format not doing lumixs weight"<<std::endl;
+    }
+    else{
+      sample_path_.erase(found,5);
+      //std::cout << "Sample Path: "<<sample_path_<<std::endl;                                                                                         
+      
+      //Get lumi xs and events from params file                                                                                                        
+      SimpleParamParser parser;
+      //std::cout << "** Parsing parameter file... **" << input_params_ << std::endl;                                                                  
+      parser.ParseFile(input_params_);
+      //std::cout<<"parsed"<<std::endl;                                                                                                                
+      double xs=parser.GetParam<double>("XS_"+sample_path_);
+      //std::cout<<"got xs"<<std::endl;                                                                                                                
+      double events=parser.GetParam<double>("EVT_"+sample_path_);
+      //std::cout<<"got events"<<std::endl;                                                                                                            
+      double lumi=parser.GetParam<double>("LUMI_DATA");
+      //std::cout<<"got lumi"<<std::endl;
+      //std::cout<<"XS is: "<<xs<<"pb"<<std::endl;
+      // std::cout<<"EVT is: "<<events<<std::endl;
+      // std::cout<<"LUMI is: "<<lumi<<"pb^-1"<<std::endl;
 
+      if(xs==-1) lumixsweight=1;
+      else lumixsweight=xs*lumi/events;
+      //std::cout<<"LUMIXSWEIGHT is: "<<lumixsweight<<std::endl;
+    }
+    return lumixsweight;
+  }
   
 }
 

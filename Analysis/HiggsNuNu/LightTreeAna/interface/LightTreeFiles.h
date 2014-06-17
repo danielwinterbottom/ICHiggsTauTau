@@ -58,6 +58,8 @@ namespace ic{
     std::vector<LTFile> GetFileSet(std::string);    
     std::vector<std::string> GetSetPaths(std::string);
     std::vector<std::string> GetSetNames(std::string);
+
+    double GetLumiXSWeight(LTFile);
     
     int OpenFile(std::string);
     int OpenSet(std::string);
