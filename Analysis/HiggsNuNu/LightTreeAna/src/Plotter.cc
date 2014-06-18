@@ -93,13 +93,20 @@ namespace ic{
       
       TCanvas *c1=new TCanvas();
       bool first=true;
+      double ymax=0;
       for(unsigned iSet=0;iSet<sets_.size();iSet++){
 	if(first){
 	  histos[iSet].Draw();
+	  ymax=histos[iSet].GetMaximum();
 	  first=false;
 	  std::cout<<"DRAWING FIRST"<<std::endl;
 	}
 	else{
+	  if(histos[iSet].GetMaximum()>ymax){
+	    ymax=histos[iSet].GetMaximum();
+	    histos[0].GetYaxis()->SetRangeUser(0,ymax+1);
+	  }
+	  
 	  histos[iSet].Draw("same");
 	  std::cout<<"DRAWING SECOND"<<std::endl;  
 	}
