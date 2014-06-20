@@ -1,366 +1,271 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICElectronProducer.hh"
-#include <boost/functional/hash.hpp>
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-
+#include <string>
+#include <vector>
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/Run.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
-
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
+#include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
-
-#include "DataFormats/PatCandidates/interface/Electron.h"
-#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-#include "RecoEgamma/EgammaIsolationAlgos/interface/EgammaTowerIsolation.h"
-#include "DataFormats/CaloTowers/interface/CaloTowerFwd.h"
-#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
-
-#include "UserCode/ICHiggsTauTau/interface/PATConstruction.hh"
-#include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
+#include "UserCode/ICHiggsTauTau/interface/city.h"
+// #include "boost/format.hpp"
 
-#include "DataFormats/MuonReco/interface/Muon.h"
-#include "TrackingTools/Records/interface/TransientTrackRecord.h"
+ICElectronProducer::IsoTags::IsoTags()
+    : do_charged_all(false),
+      do_charged(false),
+      do_neutral(false),
+      do_gamma(false),
+      do_pu(false) {}
 
-#include "boost/format.hpp"
-
-
-ICElectronProducer::ICElectronProducer(const edm::ParameterSet& iConfig) {
-  produces<std::vector<unsigned> >("selectGenParticles");
-  input_ = iConfig.getParameter<edm::InputTag>("input");
-  branch_name_ = iConfig.getParameter<std::string>("branchName");
-  pfiso_postfix_ = iConfig.getParameter<std::string>("pfIsoPostfix");
-  vertex_input_ = iConfig.getParameter<edm::InputTag>("vertexCollection");
-  is_pf_ = iConfig.getParameter<bool>("isPF");
-  min_pt_ = iConfig.getParameter<double>("minPt");
-  max_eta_ = iConfig.getParameter<double>("maxEta");
-  electrons_ = new std::vector<ic::Electron>();
-  if (is_pf_) {
-    std::cout << "Warning, PF Electrons not currently supported by ICElectronProducer" << std::endl;
+void ICElectronProducer::IsoTags::Set(const edm::ParameterSet &pset) {
+  if (pset.exists("chargedAll")) {
+    charged_all = pset.getParameter<edm::InputTag>("chargedAll");
+    do_charged_all = true;
+  }
+  if (pset.exists("charged")) {
+    charged = pset.getParameter<edm::InputTag>("charged");
+    do_charged = true;
+  }
+  if (pset.exists("neutral")) {
+    neutral = pset.getParameter<edm::InputTag>("neutral");
+    do_neutral = true;
+  }
+  if (pset.exists("gamma")) {
+    gamma = pset.getParameter<edm::InputTag>("gamma");
+    do_gamma = true;
+  }
+  if (pset.exists("pu")) {
+    pu = pset.getParameter<edm::InputTag>("pu");
+    do_pu = true;
   }
 }
 
-    
+ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
+    : input_(config.getParameter<edm::InputTag>("input")),
+      branch_(config.getParameter<std::string>("branch")),
+      do_r9_(false),
+      do_hcal_sum_(false),
+      do_vertex_ip_(false),
+      do_beamspot_ip_(false),
+      do_conversion_matches_(false) {
+  electrons_ = new std::vector<ic::Electron>();
+
+  if (config.exists("pfIso03")) {
+    pf_iso_03_.Set(config.getParameterSet("pfIso03"));
+  }
+  if (config.exists("pfIso04")) {
+    pf_iso_04_.Set(config.getParameterSet("pfIso04"));
+  }
+
+  if (config.exists("includeR9")) {
+    input_r9_ = config.getParameter<edm::InputTag>("includeR9");
+    do_r9_ = true;
+  }
+
+  if (config.exists("includeHcalSum")) {
+    input_hcal_sum_ = config.getParameter<edm::InputTag>("includeHcalSum");
+    do_hcal_sum_ = true;
+  }
+
+  if (config.exists("includeConversionMatches")) {
+    input_conversion_matches_ =
+        config.getParameter<edm::InputTag>("includeConversionMatches");
+    do_conversion_matches_ = true;
+  }
+
+  if (config.exists("includeVertexIP")) {
+    input_vertices_ = config.getParameter<edm::InputTag>("includeVertexIP");
+    do_vertex_ip_ = true;
+  }
+
+  if (config.exists("includeBeamspotIP")) {
+    input_beamspot_ = config.getParameter<edm::InputTag>("includeBeamspotIP");
+    do_beamspot_ip_ = true;
+  }
+
+  if (config.exists("includeFloats")) {
+    edm::ParameterSet pset =
+        config.getParameter<edm::ParameterSet>("includeFloats");
+    std::vector<std::string> vec =
+        pset.getParameterNamesForType<edm::InputTag>();
+    for (unsigned i = 0; i < vec.size(); ++i) {
+      input_vmaps_.push_back(
+          std::make_pair(vec[i], pset.getParameter<edm::InputTag>(vec[i])));
+    }
+  }
+}
+
 ICElectronProducer::~ICElectronProducer() {
   delete electrons_;
 }
 
-// ------------ method called to produce the data  ------------
-void ICElectronProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-  // boost::hash<reco::GenParticle const*> particle_hasher;
+void ICElectronProducer::produce(edm::Event& event,
+                                 const edm::EventSetup& setup) {
+  edm::Handle<edm::View<reco::GsfElectron> > elecs_handle;
+  event.getByLabel(input_, elecs_handle);
 
-  if (is_pf_) return;
+  edm::Handle<edm::ValueMap<float> > r9_handle;
+  if (do_r9_) event.getByLabel(input_r9_, r9_handle);
 
-  boost::hash<reco::GsfElectron const*> gsf_electron_hasher;
+  edm::Handle<edm::ValueMap<float> > hcal_sum_handle;
+  if (do_hcal_sum_) event.getByLabel(input_hcal_sum_, hcal_sum_handle);
 
-  // Get input PAT collection
-  edm::Handle<std::vector<reco::GsfElectron> > eleCollection;
+  edm::Handle<edm::ValueMap<bool> > conversion_matches_handle;
+  if (do_conversion_matches_)
+    event.getByLabel(input_conversion_matches_, conversion_matches_handle);
 
-  iEvent.getByLabel(input_, eleCollection);
-  std::vector<reco::GsfElectron>::const_iterator iter;
+  edm::Handle<reco::VertexCollection> vertices_handle;
+  if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
 
-  // Get other inputs
-  edm::Handle<reco::BeamSpot> beamspot;
-  iEvent.getByLabel(edm::InputTag("offlineBeamSpot"), beamspot);
-  edm::Handle<reco::ConversionCollection> hConversions;
-  iEvent.getByLabel("allConversions", hConversions);
-  edm::Handle<reco::GenParticleCollection> partCollection;
-  iEvent.getByLabel("genParticles",partCollection);
-  edm::Handle<CaloTowerCollection> towerCollection;
-  iEvent.getByLabel("towerMaker",towerCollection);
-  edm::Handle<reco::VertexCollection> vertexCollection;
-  iEvent.getByLabel(vertex_input_, vertexCollection);
+  edm::Handle<reco::BeamSpot> beamspot_handle;
+  if (do_beamspot_ip_) event.getByLabel(input_beamspot_, beamspot_handle);
 
-  edm::Handle<edm::ValueMap<double> > charged_all_iso_03;
-  edm::Handle<edm::ValueMap<double> > charged_iso_03;
-  edm::Handle<edm::ValueMap<double> > neutral_iso_03;
-  edm::Handle<edm::ValueMap<double> > gamma_iso_03;
-  edm::Handle<edm::ValueMap<double> > pu_iso_03;
+  std::vector<edm::Handle<edm::ValueMap<float> > > float_handles(
+      input_vmaps_.size());
+  for (unsigned i = 0; i < float_handles.size(); ++i) {
+    event.getByLabel(input_vmaps_[i].second, float_handles[i]);
+  }
 
-  edm::Handle<edm::ValueMap<double> > charged_all_iso_04;
-  edm::Handle<edm::ValueMap<double> > charged_iso_04;
-  edm::Handle<edm::ValueMap<double> > neutral_iso_04;
-  edm::Handle<edm::ValueMap<double> > gamma_iso_04;
-  edm::Handle<edm::ValueMap<double> > pu_iso_04;
+  edm::Handle<edm::ValueMap<double> > charged_all_03;
+  edm::Handle<edm::ValueMap<double> > charged_03;
+  edm::Handle<edm::ValueMap<double> > neutral_03;
+  edm::Handle<edm::ValueMap<double> > gamma_03;
+  edm::Handle<edm::ValueMap<double> > pu_03;
+  if (pf_iso_03_.do_charged_all)
+    event.getByLabel(pf_iso_03_.charged_all, charged_all_03);
+  if (pf_iso_03_.do_charged)
+    event.getByLabel(pf_iso_03_.charged, charged_03);
+  if (pf_iso_03_.do_neutral)
+    event.getByLabel(pf_iso_03_.neutral, neutral_03);
+  if (pf_iso_03_.do_gamma)
+    event.getByLabel(pf_iso_03_.gamma, gamma_03);
+  if (pf_iso_03_.do_pu)
+    event.getByLabel(pf_iso_03_.pu, pu_03);
 
-  edm::Handle<edm::ValueMap<float> > mvaTrigV0;
-  edm::Handle<edm::ValueMap<float> > mvaNonTrigV0;
-  edm::Handle<edm::ValueMap<float> > mvaTrigNoIPV0;
-
-  iEvent.getByLabel(edm::InputTag("elPFIsoValueChargedAll03PFId"+pfiso_postfix_),charged_all_iso_03);
-  iEvent.getByLabel(edm::InputTag("elPFIsoValueCharged03PFId"+pfiso_postfix_),charged_iso_03);
-  iEvent.getByLabel(edm::InputTag("elPFIsoValueNeutral03PFId"+pfiso_postfix_),neutral_iso_03);
-  iEvent.getByLabel(edm::InputTag("elPFIsoValueGamma03PFId"+pfiso_postfix_),gamma_iso_03);
-  iEvent.getByLabel(edm::InputTag("elPFIsoValuePU03PFId"+pfiso_postfix_),pu_iso_03);
-
-  iEvent.getByLabel(edm::InputTag("elPFIsoValueChargedAll04PFId"+pfiso_postfix_),charged_all_iso_04);
-  iEvent.getByLabel(edm::InputTag("elPFIsoValueCharged04PFId"+pfiso_postfix_),charged_iso_04);
-  iEvent.getByLabel(edm::InputTag("elPFIsoValueNeutral04PFId"+pfiso_postfix_),neutral_iso_04);
-  iEvent.getByLabel(edm::InputTag("elPFIsoValueGamma04PFId"+pfiso_postfix_),gamma_iso_04);
-  iEvent.getByLabel(edm::InputTag("elPFIsoValuePU04PFId"+pfiso_postfix_),pu_iso_04);
-
-  iEvent.getByLabel(edm::InputTag("mvaTrigV0"),mvaTrigV0);
-  iEvent.getByLabel(edm::InputTag("mvaNonTrigV0"),mvaNonTrigV0);
-  iEvent.getByLabel(edm::InputTag("mvaTrigNoIPV0"),mvaTrigNoIPV0);
-
-  // Add a flag to the idiso set if we find a reco muon with pT > 3
-  // with deltaR < 0.3 of this electron
-  edm::Handle<std::vector<reco::Muon> > recomuonCollection;
-  iEvent.getByLabel("muons",recomuonCollection);
-
-  // Try and get the collection of pfChargedAll particles so we can
-  // figure out if the pf electron ends up in the isolation cone
-  edm::Handle<std::vector<reco::PFCandidate> > pfChargedAll;
-  iEvent.getByLabel("pfAllChargedParticles",pfChargedAll);
-
-
-  EcalClusterLazyTools lazyTool( iEvent, iSetup, edm::InputTag("reducedEcalRecHitsEB"),edm::InputTag("reducedEcalRecHitsEE"));
-  EgammaTowerIsolation hadDepth1Isolation03(0.3,0.0,0.0,1,towerCollection.product());
-  EgammaTowerIsolation hadDepth2Isolation03(0.3,0.0,0.0,2,towerCollection.product());
+  edm::Handle<edm::ValueMap<double> > charged_all_04;
+  edm::Handle<edm::ValueMap<double> > charged_04;
+  edm::Handle<edm::ValueMap<double> > neutral_04;
+  edm::Handle<edm::ValueMap<double> > gamma_04;
+  edm::Handle<edm::ValueMap<double> > pu_04;
+  if (pf_iso_04_.do_charged_all)
+    event.getByLabel(pf_iso_04_.charged_all, charged_all_04);
+  if (pf_iso_04_.do_charged)
+    event.getByLabel(pf_iso_04_.charged, charged_04);
+  if (pf_iso_04_.do_neutral)
+    event.getByLabel(pf_iso_04_.neutral, neutral_04);
+  if (pf_iso_04_.do_gamma)
+    event.getByLabel(pf_iso_04_.gamma, gamma_04);
+  if (pf_iso_04_.do_pu)
+    event.getByLabel(pf_iso_04_.pu, pu_04);
 
   // Prepare output collection
-  electrons_->resize(0);
-  electrons_->reserve(eleCollection->size());
+  electrons_->clear();
+  electrons_->resize(elecs_handle->size(), ic::Electron());
 
-  // Prepare ouput requests
-  std::auto_ptr<std::vector<unsigned> > ele_particles(new std::vector<unsigned>());
-  
-  unsigned idx = 0;
-  for (iter = eleCollection->begin(); iter != eleCollection->end(); ++iter, ++idx) {
+  for (unsigned i = 0; i < elecs_handle->size(); ++i) {
+    reco::GsfElectron const& src = elecs_handle->at(i);
+    edm::RefToBase<reco::GsfElectron> ref = elecs_handle->refAt(i);
+    ic::Electron & dest = electrons_->at(i);
+    dest.set_id(gsf_electron_hasher_(&src));
+    dest.set_pt(src.pt());
+    dest.set_eta(src.eta());
+    dest.set_phi(src.phi());
+    dest.set_energy(src.energy());
+    dest.set_charge(src.charge());
+    dest.set_dr03_tk_sum_pt(src.dr03TkSumPt());
+    dest.set_dr03_ecal_rechit_sum_et(src.dr03EcalRecHitSumEt());
+    dest.set_dr03_hcal_tower_sum_et(src.dr03HcalTowerSumEt());
 
-    if (! (iter->pt() > min_pt_ && fabs(iter->eta()) < max_eta_) ) continue;
+    dest.set_hadronic_over_em(src.hadronicOverEm());
+    dest.set_sigma_IetaIeta(src.sigmaIetaIeta());
+    dest.set_dphi_sc_tk_at_vtx(src.deltaPhiSuperClusterTrackAtVtx());
+    dest.set_deta_sc_tk_at_vtx(src.deltaEtaSuperClusterTrackAtVtx());
+    if (src.gsfTrack().isNonnull()) {
+      dest.set_gsf_tk_nhits(
+          src.gsfTrack()->trackerExpectedHitsInner().numberOfHits());
+    }
+    dest.set_conv_dist(src.convDist());
+    dest.set_conv_dcot(src.convDcot());
+    dest.set_f_brem(src.fbrem());
+    if (src.superCluster().isNonnull()) {
+      dest.set_sc_eta(src.superCluster()->eta());
+      dest.set_sc_theta(src.superCluster()->position().theta());
+      dest.set_sc_energy(src.superCluster()->energy());
+      dest.set_sc_e_over_p(src.eSuperClusterOverP());
+    }
+    dest.set_ecal_energy(src.ecalEnergy());
+    dest.set_vx(src.vx());
+    dest.set_vy(src.vy());
+    dest.set_vz(src.vz());
 
-    electrons_->push_back(ic::Electron());
-    ic::Electron & ele = electrons_->back();
+    if (do_r9_) dest.set_r9((*r9_handle)[ref]);
+    if (do_hcal_sum_)
+      dest.set_hcal_sum((*hcal_sum_handle)[ref]);
 
-    ele.set_id(gsf_electron_hasher(&(*iter)));
-    //std::cout << "Electron " << unsigned(iter - eleCollection->begin()) << ": " << pat_electron_hasher(&(*iter)) << std::endl;
-    ele.set_pt(iter->pt());
-    ele.set_eta(iter->eta());
-    ele.set_phi(iter->phi());
-    ele.set_energy(iter->energy());
-    ele.set_charge(iter->charge());
+    if (do_conversion_matches_)
+      dest.set_has_matched_conversion((*conversion_matches_handle)[ref]);
 
-    ele.set_dr03_tk_sum_pt(iter->dr03TkSumPt());
-    ele.set_dr03_ecal_rechit_sum_et(iter->dr03EcalRecHitSumEt());
-    ele.set_dr03_hcal_tower_sum_et(iter->dr03HcalTowerSumEt());
-    
-    reco::GsfElectronRef elec_ref(eleCollection, idx);
-    float dr03_pfiso_charged_all = charged_all_iso_03.isValid() ? (*charged_all_iso_03)[elec_ref] : -1.0;
-    float dr03_pfiso_charged  = charged_iso_03.isValid() ? (*charged_iso_03)[elec_ref] : -1.0;
-    float dr03_pfiso_neutral = neutral_iso_03.isValid() ? (*neutral_iso_03)[elec_ref] : -1.0;
-    float dr03_pfiso_gamma = gamma_iso_03.isValid() ? (*gamma_iso_03)[elec_ref] : -1.0;
-    float dr03_pfiso_pu = pu_iso_03.isValid() ? (*pu_iso_03)[elec_ref] : -1.0;
+    for (unsigned v = 0; v < float_handles.size(); ++v) {
+      dest.SetIdIso(input_vmaps_[v].first,
+                    (*(float_handles[v]))[ref]);
+    }
 
-    float dr04_pfiso_charged_all = charged_all_iso_04.isValid() ? (*charged_all_iso_04)[elec_ref] : -1.0;
-    float dr04_pfiso_charged  = charged_iso_04.isValid() ? (*charged_iso_04)[elec_ref] : -1.0;
-    float dr04_pfiso_neutral = neutral_iso_04.isValid() ? (*neutral_iso_04)[elec_ref] : -1.0;
-    float dr04_pfiso_gamma = gamma_iso_04.isValid() ? (*gamma_iso_04)[elec_ref] : -1.0;
-    float dr04_pfiso_pu = pu_iso_04.isValid() ? (*pu_iso_04)[elec_ref] : -1.0;
+    if (pf_iso_03_.do_charged_all)
+      dest.set_dr03_pfiso_charged_all((*charged_all_03)[ref]);
+    if (pf_iso_03_.do_charged)
+      dest.set_dr03_pfiso_charged((*charged_03)[ref]);
+    if (pf_iso_03_.do_neutral)
+      dest.set_dr03_pfiso_neutral((*neutral_03)[ref]);
+    if (pf_iso_03_.do_gamma)
+      dest.set_dr03_pfiso_gamma((*gamma_03)[ref]);
+    if (pf_iso_03_.do_pu)
+      dest.set_dr03_pfiso_pu((*pu_03)[ref]);
 
-    ele.set_dr03_pfiso_charged_all(dr03_pfiso_charged_all);
-    ele.set_dr03_pfiso_charged(dr03_pfiso_charged);
-    ele.set_dr03_pfiso_neutral(dr03_pfiso_neutral);
-    ele.set_dr03_pfiso_gamma(dr03_pfiso_gamma);
-    ele.set_dr03_pfiso_pu(dr03_pfiso_pu);
+    if (pf_iso_04_.do_charged_all)
+      dest.set_dr04_pfiso_charged_all((*charged_all_04)[ref]);
+    if (pf_iso_04_.do_charged)
+      dest.set_dr04_pfiso_charged((*charged_04)[ref]);
+    if (pf_iso_04_.do_neutral)
+      dest.set_dr04_pfiso_neutral((*neutral_04)[ref]);
+    if (pf_iso_04_.do_gamma)
+      dest.set_dr04_pfiso_gamma((*gamma_04)[ref]);
+    if (pf_iso_04_.do_pu)
+      dest.set_dr04_pfiso_pu((*pu_04)[ref]);
 
-    ele.set_dr04_pfiso_charged_all(dr04_pfiso_charged_all);
-    ele.set_dr04_pfiso_charged(dr04_pfiso_charged);
-    ele.set_dr04_pfiso_neutral(dr04_pfiso_neutral);
-    ele.set_dr04_pfiso_gamma(dr04_pfiso_gamma);
-    ele.set_dr04_pfiso_pu(dr04_pfiso_pu);
-
-    if (pfChargedAll.isValid()) {
-      // std::cout << "Electron has track id: " << iter->closestCtfTrackRef().index() << "\t" << iter->closestCtfTrackRef()->pt() << std::endl;
-      for (unsigned pf = 0; pf < pfChargedAll->size(); ++pf) {
-        reco::PFCandidate const& pfcand = pfChargedAll->at(pf);
-        bool barrel = fabs(iter->superCluster()->eta()) < 1.479;
-        double dr_veto = barrel ? 0.01 : 0.015;
-        if (reco::deltaR(*iter, pfcand) < dr_veto || reco::deltaR(*iter, pfcand) > 0.4) continue;
-        if (pfcand.trackRef().isNonnull()) { // PF candidate has a track
-          // std::cout << "Found pf cand with track id: " << pfcand.trackRef().index() << "\t" << pfcand.trackRef()->pt() << "\t" << pfcand.pt() << std::endl;
-          // std::cout << "Barrel?: " << barrel << " DeltaR is: " << reco::deltaR(*iter, pfcand) << std::endl; 
-          if (pfcand.trackRef().index() == iter->closestCtfTrackRef().index()) {
-            // std::cout << "Warning! Found electron track in isolation sum!" << std::endl;
-            ele.SetIdIso("trackInIsoSum", pfcand.pt());
-            observed_idiso_["trackInIsoSum"] = CityHash64("trackInIsoSum");
-          }
-        }
+    if (do_vertex_ip_) {
+      if (vertices_handle->size() > 0) {
+        reco::Vertex const& vtx = vertices_handle->at(0);
+        dest.set_dz_vertex(src.gsfTrack()->dz(vtx.position()));
+        dest.set_dxy_vertex(src.gsfTrack()->dxy(vtx.position()));
       }
     }
-
-    if (mvaTrigV0.isValid()) {
-      ele.SetIdIso("mvaTrigV0", (*mvaTrigV0)[elec_ref]);
-      observed_idiso_["mvaTrigV0"] = CityHash64("mvaTrigV0");
-
+    if (do_beamspot_ip_) {
+      dest.set_dxy_beamspot(src.gsfTrack()->dxy(*beamspot_handle));
     }
-    if (mvaNonTrigV0.isValid()) {
-      ele.SetIdIso("mvaNonTrigV0", (*mvaNonTrigV0)[elec_ref]);
-      observed_idiso_["mvaNonTrigV0"] = CityHash64("mvaNonTrigV0");
-    }
-    if (mvaTrigNoIPV0.isValid()) {
-      ele.SetIdIso("mvaTrigNoIPV0", (*mvaTrigNoIPV0)[elec_ref]);
-      observed_idiso_["mvaTrigNoIPV0"] = CityHash64("mvaTrigNoIPV0");
-    }
-
-    for (unsigned mu = 0; mu < recomuonCollection->size(); ++mu) {
-      if (recomuonCollection->at(mu).pt() > 3. && fabs(recomuonCollection->at(mu).eta())) {
-        if (reco::deltaR(recomuonCollection->at(mu), *iter) < 0.3) {
-          ele.SetIdIso("matchedRecoMuon", 1.0);
-          observed_idiso_["matchedRecoMuon"] = CityHash64("matchedRecoMuon");
-          break;
-        }
-      }
-    }
-
-    ele.set_hadronic_over_em(iter->hadronicOverEm());
-    ele.set_sigma_IetaIeta(iter->sigmaIetaIeta());
-    ele.set_dphi_sc_tk_at_vtx(iter->deltaPhiSuperClusterTrackAtVtx());
-    ele.set_deta_sc_tk_at_vtx(iter->deltaEtaSuperClusterTrackAtVtx());
-    ele.set_gsf_tk_nhits(iter->gsfTrack()->trackerExpectedHitsInner().numberOfHits());
-    ele.set_conv_dist(iter->convDist());
-    ele.set_conv_dcot(iter->convDcot());
-    bool has_match = ConversionTools::hasMatchedConversion((*iter), hConversions, beamspot->position(), true, 2.0, 1e-6, 0);
-    ele.set_has_matched_conversion(has_match);
- 
-    ele.set_f_brem(iter->fbrem());
-    ele.set_sc_eta(iter->superCluster()->eta());
-    ele.set_sc_theta(iter->superCluster()->position().theta());
-    ele.set_sc_energy(iter->superCluster()->energy());
-    ele.set_sc_e_over_p(iter->eSuperClusterOverP());
-
-    float e3x3 = lazyTool.e3x3(*(iter->superCluster()));
-    float sc_raw_energy = iter->superCluster()->rawEnergy();
-    ele.set_r9(e3x3 / sc_raw_energy);
-
-    float hcalDepth1TowerSumEt03 = hadDepth1Isolation03.getTowerEtSum(&(*iter));
-    float hcalDepth2TowerSumEt03 = hadDepth2Isolation03.getTowerEtSum(&(*iter));
-    ele.set_hcal_sum(hcalDepth1TowerSumEt03+hcalDepth2TowerSumEt03);
-    ele.set_ecal_energy(iter->ecalEnergy());
-
-    ele.set_vx(iter->vx());
-    ele.set_vy(iter->vy());
-    ele.set_vz(iter->vz());
-
-
-    if (vertexCollection->size() > 0) {
-      ele.set_dz_vertex(iter->gsfTrack()->dz(vertexCollection->at(0).position()));
-      ele.set_dxy_vertex(iter->gsfTrack()->dxy(vertexCollection->at(0).position()));
-    } else {
-      ele.set_dz_vertex(9999.);
-      ele.set_dxy_vertex(9999.);
-    }
-    ele.set_dxy_beamspot(iter->gsfTrack()->dxy(*beamspot));
-
-
-    std::vector<std::size_t> gen_index;
-    ele.set_gen_particles(gen_index); 
   }
-  
-  iEvent.put(ele_particles, "selectGenParticles");
 }
 
-// ------------ method called once each job just before starting event loop  ------------
 void ICElectronProducer::beginJob() {
-  std::cout << "-----------------------------------------------------------------" << std::endl;
-  std::cout << "Info in <ICElectronProducer>: BeginJob Summary for input: " << input_.label() << std::endl;
-  std::cout << "-----------------------------------------------------------------" << std::endl;
-
-  ic::StaticTree::tree_->Branch(branch_name_.c_str(), &electrons_);
+  // std::cout << "-----------------------------------------------------------------" << std::endl;
+  // std::cout << "Info in <ICElectronProducer>: BeginJob Summary for input: " << input_.label() << std::endl;
+  // std::cout << "-----------------------------------------------------------------" << std::endl;
+  ic::StaticTree::tree_->Branch(branch_.c_str(), &electrons_);
 }
 
-// ------------ method called once each job just after ending the event loop  ------------
 void ICElectronProducer::endJob() {
-  std::cout << "-----------------------------------------------------------------" << std::endl;
-  std::cout << "Info in <ICElectronProducer>: EndJob Summary for input: " << input_.label() << std::endl;
-  std::cout << "-----------------------------------------------------------------" << std::endl;
-  std::cout << "HLT Match Paths Hash Summary:" << std::endl;
-  std::map<std::string, std::size_t>::const_iterator iter;
-  std::cout << "ID and Iso Label Hash Summary:" << std::endl;
-  for (iter = observed_idiso_.begin(); iter != observed_idiso_.end(); ++iter) {
-    std::cout << boost::format("%-60s %-20s\n") % iter->first % iter->second;
-  }
+  // std::cout << "-----------------------------------------------------------------" << std::endl;
+  // std::cout << "Info in <ICElectronProducer>: EndJob Summary for input: " << input_.label() << std::endl;
+  // std::cout << "-----------------------------------------------------------------" << std::endl;
 }
 
-// ------------ method called when starting to processes a run  ------------
-void ICElectronProducer::beginRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a run  ------------
-void ICElectronProducer::endRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when starting to processes a luminosity block  ------------
-void ICElectronProducer::beginLuminosityBlock(edm::LuminosityBlock&, 
-                                             edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-void ICElectronProducer::endLuminosityBlock(edm::LuminosityBlock&, 
-                                           edm::EventSetup const&) {
-}
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-ICElectronProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
-}
-
-// bool ICElectronProducer::electronIDForMVA(reco::GsfElectron const& elec, reco::Vertex const& vtx) {
-
-//     double electronTrackZ = 0;
-//     if (elec.gsfTrack().isNonnull()) {
-//       electronTrackZ = elec.gsfTrack()->dz(vtx.position());
-//     } else if (elec.closestCtfTrackRef().isNonnull()) {
-//       electronTrackZ = elec.closestCtfTrackRef()->dz(vtx.position());
-//     }    
-//     if(fabs(electronTrackZ) > 0.2)  return false;
-
-//     if(fabs(elec.superCluster()->eta())<1.479) {     
-//       if(elec.pt() > 20) {
-//         if(elec.sigmaIetaIeta()       > 0.01)  return false;
-//         if(fabs(elec.deltaEtaSuperClusterTrackAtVtx()) > 0.007) return false;
-//         if(fabs(elec.deltaPhiSuperClusterTrackAtVtx()) > 0.8)  return false;
-//         if(elec.hadronicOverEm()       > 0.15)  return false;    
-//       } else {
-//         if(elec.sigmaIetaIeta()       > 0.012)  return false;
-//         if(fabs(elec.deltaEtaSuperClusterTrackAtVtx()) > 0.007) return false;
-//         if(fabs(elec.deltaPhiSuperClusterTrackAtVtx()) > 0.8)  return false;
-//         if(elec.hadronicOverEm()       > 0.15) return false;    
-//       } 
-//     } else {     
-//       if(elec.pt() > 20) {
-//         if(elec.sigmaIetaIeta()       > 0.03)  return false;
-//         if(fabs(elec.deltaEtaSuperClusterTrackAtVtx()) > 0.010) return false;
-//         if(fabs(elec.deltaPhiSuperClusterTrackAtVtx()) > 0.8)  return false;
-//       } else {
-//         if(elec.sigmaIetaIeta()       > 0.032)  return false;
-//         if(fabs(elec.deltaEtaSuperClusterTrackAtVtx()) > 0.010) return false;
-//         if(fabs(elec.deltaPhiSuperClusterTrackAtVtx()) > 0.8)  return false;
-//       }
-//     }
-//     return true;
-// }
-
-// bool ICElectronProducer::muonIDForMVA(reco::Muon const& muon) {
-//   if(!(muon.innerTrack().isNonnull())) {
-//     return false;
-//   } 
-//   if(!(muon.isGlobalMuon() || muon.isTrackerMuon())) return false;
-//   if(muon.innerTrack()->numberOfValidHits() < 11 ) return false;
-//   return true;
-// }
-
-//define this as a plug-in
+// define this as a plug-in
 DEFINE_FWK_MODULE(ICElectronProducer);
