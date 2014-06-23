@@ -243,20 +243,30 @@ namespace ic {
     
     if(nselmuons_>=1){
       mu1_pt_=selmuons[0]->pt();
-      mu1_pt_=selmuons[0]->eta();
+      mu1_eta_=selmuons[0]->eta();
+    }
+    else{
+      mu1_pt_=-1;
+      mu1_eta_=9999999;
     }
     if(nselelectrons_>=1){
       ele1_pt_=selelectrons[0]->pt();
       ele1_eta_=selelectrons[0]->eta();
     }
+    else{
+      ele1_pt_=-1;
+      ele1_eta_=9999999;
+    }
 
     if(nselmuons_==2){
       m_mumu_=((selmuons.at(0)->vector())+(selmuons.at(1)->vector())).M();
     }
+    else m_mumu_=-1;
 
     //Get gen z mass
     int ngenmuplus=0;
     int ngenmuminus=0;
+    m_mumu_gen_=-1;
     if(!is_data_){
       std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
       GenParticle* lepplus = 0;
@@ -266,7 +276,7 @@ namespace ic {
 	if (parts[i]->status() != 3) continue;
 	
 	int id = parts[i]->pdgid();
-	
+
 	if (id == static_cast<int>(13)) {
 	  lepminus = parts[i];
 	  ngenmuminus++;
@@ -298,8 +308,8 @@ namespace ic {
       
       jet1_pt_ = jet1->pt();
       jet2_pt_ = jet2->pt();
-      jet1_pt_ = jet1vec.E();
-      jet2_pt_ = jet2vec.E();
+      jet1_E_ = jet1vec.E();
+      jet2_E_ = jet2vec.E();
       jet1_eta_ = jet1->eta();
       jet2_eta_ = jet2->eta();
       dijet_M_ = dijet->M();
@@ -383,6 +393,7 @@ namespace ic {
 	}
       }
       static unsigned processed = 0;
+      //IF PASSES CUTS FILL TREE
       if (jetmet_mindphi_>1.5 && met_significance_ > 3.0 &&  dijet_deta_>3.6){
 	outputTree_->Fill();
 	++processed;
