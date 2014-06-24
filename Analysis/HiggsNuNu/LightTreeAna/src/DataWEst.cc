@@ -7,6 +7,9 @@
 namespace ic{
 
   DataWEst::DataWEst(std::string name) : LTModule(name){
+    sigmcweight_="total_weight_lepveto";
+    contmcweight_="total_weight_leptight";
+    contdataweight_="weight_nolep";
   };
 
   DataWEst::~DataWEst(){ ;};
@@ -20,6 +23,9 @@ namespace ic{
     std::cout<<"Base selection is: "<<basesel_<<std::endl;
     std::cout<<"Signal extra selection is: "<<sigcat_<<std::endl;
     std::cout<<"Control extra selection is: "<<contcat_<<std::endl;
+    std::cout<<"Signal MC weight is: "<<sigmcweight_<<std::endl;
+    std::cout<<"Control MC weight is: "<<contmcweight_<<std::endl;
+    std::cout<<"Control data weight is: "<<contdataweight_<<std::endl;
     return 0;
   };
 
@@ -28,13 +34,13 @@ namespace ic{
 
     //Get Shapes for NSMC, NCMC, NCData and NCBkg
     std::cout<<"  Getting signal MC shape"<<std::endl;
-    TH1F  sigmcshape = filemanager->GetSetShape(sigmcset_,"jet2_pt(200,0.,1000.)",basesel_,sigcat_,"total_weight_lepveto",false);
+    TH1F  sigmcshape = filemanager->GetSetShape(sigmcset_,"jet2_pt(200,0.,1000.)",basesel_,sigcat_,sigmcweight_,false);
     std::cout<<"  Getting control MC shape"<<std::endl;
-    TH1F  contmcshape = filemanager->GetSetShape(contmcset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
-    std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
-    TH1F  contbkgshape = filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
+    TH1F  contmcshape = filemanager->GetSetShape(contmcset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
+   std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
+    TH1F  contbkgshape = filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
     std::cout<<"  Getting control Data shape"<<std::endl;
-    TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"weight_nolep",false);
+    TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contdataweight_,false);
     
     //Integrate over shape to get number in each region
     double nsmc = Integral(&sigmcshape);
