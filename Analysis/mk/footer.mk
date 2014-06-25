@@ -142,7 +142,7 @@ $(d)/obj/rootcint_dict.o: $(d)/obj/rootcint_dict.cc
 
 $(d)/obj/rootcint_dict.cc: $(DHEADERS_$(d)) $(d)/interface/LinkDef.h
 	@echo -e "$(COLOR_YE)Generating dictionary $(subst $(TOP)/,,$@)$(NOCOLOR)"
-	$(DOECHO)$(ROOTSYS)/bin/rootcint -v4 -f $@ -c -p -I$(TOP) -I$(TOP)/../../.. $^
+	$(DOECHO)$(ROOTSYS)/bin/rootcint -v4 -f $@ -c -p -I$(TOP) -I$(TOP)/../../.. -I$(ROOFITSYS)/include $^
 
 # Rule for generating object files for executables from source files
 $(d)/bin/%.o: $(d)/test/%.cpp

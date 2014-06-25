@@ -96,7 +96,7 @@ void AddDefaultSystematics(CombineHarvester *cb) {
         ({6},        1.012)
         ({7},        1.015));
 
-  cb->cp().process(JoinStr({signal, {"ZTT"}}))
+  cb->cp().process(JoinStr({/*signal,*/ {"ZTT"}}))
       .AddSyst(cb, "CMS_scale_t_mutau_$ERA", "shape", syst_map<>(1.00));
 
   cb->cp()
