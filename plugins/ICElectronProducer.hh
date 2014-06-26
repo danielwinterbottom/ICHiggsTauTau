@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <vector>
-#include <set>
+#include <string>
 #include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -12,11 +12,6 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
-
-// #include "FWCore/Framework/interface/Frameworkfwd.h"
-// #include "FWCore/Framework/interface/MakerMacros.h"
-// #include "DataFormats/MuonReco/interface/Muon.h"
-// #include "DataFormats/VertexReco/interface/Vertex.h"
 
 class ICElectronProducer : public edm::EDProducer {
  public:
@@ -63,10 +58,8 @@ class ICElectronProducer : public edm::EDProducer {
   IsoTags pf_iso_03_;
   IsoTags pf_iso_04_;
 
-  std::set<std::string> observed_floats_;
-
   /*
-   [ ] remove reco muon overlap check
+   [x] remove reco muon overlap check
    [x] remove manual isolation check
    [x] option/config for dr03 pf isolation
    [x] option/config for dr04 pf isolation
@@ -80,4 +73,3 @@ class ICElectronProducer : public edm::EDProducer {
 };
 
 #endif
-

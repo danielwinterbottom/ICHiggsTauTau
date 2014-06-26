@@ -104,9 +104,7 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
   }
 }
 
-ICElectronProducer::~ICElectronProducer() {
-  delete electrons_;
-}
+ICElectronProducer::~ICElectronProducer() { delete electrons_; }
 
 void ICElectronProducer::produce(edm::Event& event,
                                  const edm::EventSetup& setup) {
@@ -207,12 +205,15 @@ void ICElectronProducer::produce(edm::Event& event,
     dest.set_vy(src.vy());
     dest.set_vz(src.vz());
 
-    if (do_r9_) dest.set_r9((*r9_handle)[ref]);
-    if (do_hcal_sum_)
+    if (do_r9_) {
+      dest.set_r9((*r9_handle)[ref]);
+    }
+    if (do_hcal_sum_) {
       dest.set_hcal_sum((*hcal_sum_handle)[ref]);
-
-    if (do_conversion_matches_)
+    }
+    if (do_conversion_matches_) {
       dest.set_has_matched_conversion((*conversion_matches_handle)[ref]);
+    }
 
     for (unsigned v = 0; v < float_handles.size(); ++v) {
       dest.SetIdIso(input_vmaps_[v].first,
@@ -255,16 +256,10 @@ void ICElectronProducer::produce(edm::Event& event,
 }
 
 void ICElectronProducer::beginJob() {
-  // std::cout << "-----------------------------------------------------------------" << std::endl;
-  // std::cout << "Info in <ICElectronProducer>: BeginJob Summary for input: " << input_.label() << std::endl;
-  // std::cout << "-----------------------------------------------------------------" << std::endl;
   ic::StaticTree::tree_->Branch(branch_.c_str(), &electrons_);
 }
 
 void ICElectronProducer::endJob() {
-  // std::cout << "-----------------------------------------------------------------" << std::endl;
-  // std::cout << "Info in <ICElectronProducer>: EndJob Summary for input: " << input_.label() << std::endl;
-  // std::cout << "-----------------------------------------------------------------" << std::endl;
 }
 
 // define this as a plug-in
