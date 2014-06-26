@@ -1,413 +1,281 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICMuonProducer.hh"
-#include <boost/functional/hash.hpp>
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-
+#include <string>
+#include <vector>
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/Run.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
-
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
-#include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
-
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "UserCode/ICHiggsTauTau/interface/city.h"
-#include "UserCode/ICHiggsTauTau/interface/Muon.hh"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
+#include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
+#include "UserCode/ICHiggsTauTau/interface/Muon.hh"
+#include "UserCode/ICHiggsTauTau/interface/city.h"
+// #include "boost/format.hpp"
 
+ICMuonProducer::IsoTags::IsoTags()
+    : do_charged_all(false),
+      do_charged(false),
+      do_neutral(false),
+      do_gamma(false),
+      do_pu(false) {}
 
-#include "boost/format.hpp"
+void ICMuonProducer::IsoTags::Set(const edm::ParameterSet& pset) {
+  if (pset.exists("chargedAll")) {
+    charged_all = pset.getParameter<edm::InputTag>("chargedAll");
+    do_charged_all = true;
+  }
+  if (pset.exists("charged")) {
+    charged = pset.getParameter<edm::InputTag>("charged");
+    do_charged = true;
+  }
+  if (pset.exists("neutral")) {
+    neutral = pset.getParameter<edm::InputTag>("neutral");
+    do_neutral = true;
+  }
+  if (pset.exists("gamma")) {
+    gamma = pset.getParameter<edm::InputTag>("gamma");
+    do_gamma = true;
+  }
+  if (pset.exists("pu")) {
+    pu = pset.getParameter<edm::InputTag>("pu");
+    do_pu = true;
+  }
+}
 
-
-ICMuonProducer::ICMuonProducer(const edm::ParameterSet& iConfig) {
-  produces<std::vector<unsigned> >("selectGenParticles");
-  input_ = iConfig.getParameter<edm::InputTag>("input");
-  branch_name_ = iConfig.getParameter<std::string>("branchName");
-  pfiso_postfix_ = iConfig.getParameter<std::string>("pfIsoPostfix");
-  vertex_input_ = iConfig.getParameter<edm::InputTag>("vertexCollection");
-  is_pf_ = iConfig.getParameter<bool>("isPF");
+ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
+    : input_(config.getParameter<edm::InputTag>("input")),
+      branch_(config.getParameter<std::string>("branch")),
+      is_pf_(config.getParameter<bool>("isPF")),
+      do_vertex_ip_(false),
+      do_beamspot_ip_(false) {
   muons_ = new std::vector<ic::Muon>();
-  min_pt_ = iConfig.getParameter<double>("minPt");
-  max_eta_ = iConfig.getParameter<double>("maxEta");
-}
 
-
-ICMuonProducer::~ICMuonProducer() {
-  delete muons_;
-}
-
-// ------------ method called to produce the data  ------------
-void ICMuonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-  // boost::hash<reco::GenParticle const*> particle_hasher;
-  boost::hash<reco::Muon const*> recomuon_hasher;
-  boost::hash<reco::PFCandidate const*> pfmuon_hasher;
-
-  // Get input PAT collection
-  edm::Handle<std::vector<reco::Muon> > recomuonCollection;
-
-  edm::Handle<std::vector<reco::PFCandidate> > pfmuonCollection;
-
-  unsigned nmuons = 0;
-
-  if (is_pf_) {
-    iEvent.getByLabel(input_,pfmuonCollection);
-    nmuons = pfmuonCollection->size();
-  } else {    
-    iEvent.getByLabel(input_,recomuonCollection);
-    nmuons = recomuonCollection->size();
+  if (config.exists("pfIso03")) {
+    pf_iso_03_.Set(config.getParameterSet("pfIso03"));
+  }
+  if (config.exists("pfIso04")) {
+    pf_iso_04_.Set(config.getParameterSet("pfIso04"));
   }
 
-  // Get other inputs
-  edm::Handle<reco::BeamSpot> beamspot;
-  iEvent.getByLabel(edm::InputTag("offlineBeamSpot"), beamspot);
-  edm::Handle<reco::GenParticleCollection> partCollection;
-  iEvent.getByLabel("genParticles",partCollection);
-  edm::Handle<reco::VertexCollection> vertexCollection;
-  iEvent.getByLabel(vertex_input_,vertexCollection);
+  if (config.exists("includeVertexIP")) {
+    input_vertices_ = config.getParameter<edm::InputTag>("includeVertexIP");
+    do_vertex_ip_ = true;
+  }
 
-  edm::Handle<edm::ValueMap<double> > charged_all_iso_03;
-  edm::Handle<edm::ValueMap<double> > charged_iso_03;
-  edm::Handle<edm::ValueMap<double> > neutral_iso_03;
-  edm::Handle<edm::ValueMap<double> > gamma_iso_03;
-  edm::Handle<edm::ValueMap<double> > pu_iso_03;
+  if (config.exists("includeBeamspotIP")) {
+    input_beamspot_ = config.getParameter<edm::InputTag>("includeBeamspotIP");
+    do_beamspot_ip_ = true;
+  }
 
-  edm::Handle<edm::ValueMap<double> > charged_all_iso_04;
-  edm::Handle<edm::ValueMap<double> > charged_iso_04;
-  edm::Handle<edm::ValueMap<double> > neutral_iso_04;
-  edm::Handle<edm::ValueMap<double> > gamma_iso_04;
-  edm::Handle<edm::ValueMap<double> > pu_iso_04;
+  if (config.exists("includeFloats")) {
+    edm::ParameterSet pset =
+        config.getParameter<edm::ParameterSet>("includeFloats");
+    std::vector<std::string> vec =
+        pset.getParameterNamesForType<edm::InputTag>();
+    for (unsigned i = 0; i < vec.size(); ++i) {
+      input_vmaps_.push_back(
+          std::make_pair(vec[i], pset.getParameter<edm::InputTag>(vec[i])));
+    }
+  }
+}
 
-  iEvent.getByLabel(edm::InputTag("muPFIsoValueChargedAll03"+pfiso_postfix_),charged_all_iso_03);
-  iEvent.getByLabel(edm::InputTag("muPFIsoValueCharged03"+pfiso_postfix_),charged_iso_03);
-  iEvent.getByLabel(edm::InputTag("muPFIsoValueNeutral03"+pfiso_postfix_),neutral_iso_03);
-  iEvent.getByLabel(edm::InputTag("muPFIsoValueGamma03"+pfiso_postfix_),gamma_iso_03);
-  iEvent.getByLabel(edm::InputTag("muPFIsoValuePU03"+pfiso_postfix_),pu_iso_03);
+ICMuonProducer::~ICMuonProducer() { delete muons_; }
 
-  iEvent.getByLabel(edm::InputTag("muPFIsoValueChargedAll04"+pfiso_postfix_),charged_all_iso_04);
-  iEvent.getByLabel(edm::InputTag("muPFIsoValueCharged04"+pfiso_postfix_),charged_iso_04);
-  iEvent.getByLabel(edm::InputTag("muPFIsoValueNeutral04"+pfiso_postfix_),neutral_iso_04);
-  iEvent.getByLabel(edm::InputTag("muPFIsoValueGamma04"+pfiso_postfix_),gamma_iso_04);
-  iEvent.getByLabel(edm::InputTag("muPFIsoValuePU04"+pfiso_postfix_),pu_iso_04);
+void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
+  edm::Handle<edm::View<reco::Muon> > muons_handle;
+  edm::Handle<edm::View<reco::PFCandidate> > pfs_handle;
+  unsigned n_muons = 0;
+  if (is_pf_) {
+    event.getByLabel(input_, pfs_handle);
+    n_muons = pfs_handle->size();
+  } else {
+    event.getByLabel(input_, muons_handle);
+    n_muons = muons_handle->size();
+  }
+
+  edm::Handle<reco::VertexCollection> vertices_handle;
+  if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
+
+  edm::Handle<reco::BeamSpot> beamspot_handle;
+  if (do_beamspot_ip_) event.getByLabel(input_beamspot_, beamspot_handle);
+
+  std::vector<edm::Handle<edm::ValueMap<float> > > float_handles(
+      input_vmaps_.size());
+  for (unsigned i = 0; i < float_handles.size(); ++i) {
+    event.getByLabel(input_vmaps_[i].second, float_handles[i]);
+  }
+
+  edm::Handle<edm::ValueMap<double> > charged_all_03;
+  edm::Handle<edm::ValueMap<double> > charged_03;
+  edm::Handle<edm::ValueMap<double> > neutral_03;
+  edm::Handle<edm::ValueMap<double> > gamma_03;
+  edm::Handle<edm::ValueMap<double> > pu_03;
+  if (pf_iso_03_.do_charged_all)
+    event.getByLabel(pf_iso_03_.charged_all, charged_all_03);
+  if (pf_iso_03_.do_charged)
+    event.getByLabel(pf_iso_03_.charged, charged_03);
+  if (pf_iso_03_.do_neutral)
+    event.getByLabel(pf_iso_03_.neutral, neutral_03);
+  if (pf_iso_03_.do_gamma)
+    event.getByLabel(pf_iso_03_.gamma, gamma_03);
+  if (pf_iso_03_.do_pu)
+    event.getByLabel(pf_iso_03_.pu, pu_03);
+
+  edm::Handle<edm::ValueMap<double> > charged_all_04;
+  edm::Handle<edm::ValueMap<double> > charged_04;
+  edm::Handle<edm::ValueMap<double> > neutral_04;
+  edm::Handle<edm::ValueMap<double> > gamma_04;
+  edm::Handle<edm::ValueMap<double> > pu_04;
+  if (pf_iso_04_.do_charged_all)
+    event.getByLabel(pf_iso_04_.charged_all, charged_all_04);
+  if (pf_iso_04_.do_charged)
+    event.getByLabel(pf_iso_04_.charged, charged_04);
+  if (pf_iso_04_.do_neutral)
+    event.getByLabel(pf_iso_04_.neutral, neutral_04);
+  if (pf_iso_04_.do_gamma)
+    event.getByLabel(pf_iso_04_.gamma, gamma_04);
+  if (pf_iso_04_.do_pu)
+    event.getByLabel(pf_iso_04_.pu, pu_04);
 
   // Prepare output collection
-  muons_->resize(0);
-  muons_->reserve(nmuons);
+  muons_->clear();
+  muons_->resize(n_muons, ic::Muon());
 
-  // Prepare ouput requests
-  std::auto_ptr<std::vector<unsigned> > muo_particles(new std::vector<unsigned>());
+  for (unsigned i = 0; i < n_muons; ++i) {
+    ic::Muon & dest = muons_->at(i);
 
-  for (unsigned idx = 0; idx < nmuons; ++idx) {
+    reco::MuonRef muon_ref;
+    edm::RefToBase<reco::Muon> muon_base_ref;
+    edm::RefToBase<reco::PFCandidate> pf_base_ref;
     if (is_pf_) {
-      if (! (pfmuonCollection->at(idx).pt() > min_pt_ && fabs(pfmuonCollection->at(idx).eta()) < max_eta_) ) continue;
+      reco::PFCandidate const& pf_src = pfs_handle->at(i);
+      dest.set_id(pf_hasher_(&pf_src));
+      dest.set_pt(pf_src.pt());
+      dest.set_eta(pf_src.eta());
+      dest.set_phi(pf_src.phi());
+      dest.set_energy(pf_src.energy());
+      dest.set_charge(pf_src.charge());
+      muon_ref = pf_src.muonRef();
+      pf_base_ref = pfs_handle->refAt(i);
     } else {
-      if (! (recomuonCollection->at(idx).pt() > min_pt_ && fabs(recomuonCollection->at(idx).eta()) < max_eta_) ) continue;
+      reco::Muon const& reco_src = muons_handle->at(i);
+      dest.set_id(muon_hasher_(&reco_src));
+      dest.set_pt(reco_src.pt());
+      dest.set_eta(reco_src.eta());
+      dest.set_phi(reco_src.phi());
+      dest.set_energy(reco_src.energy());
+      dest.set_charge(reco_src.charge());
+      muon_ref = muons_handle->refAt(i).castTo<reco::MuonRef>();
+      muon_base_ref = muons_handle->refAt(i);
     }
-    muons_->push_back(ic::Muon());
-    ic::Muon & muo = muons_->back();
 
-    reco::MuonRef reco_muon;
-    reco::PFCandidateRef pf_muon_ref;
+    reco::Muon const& src = *muon_ref;
+
+    dest.set_dr03_tk_sum_pt(src.isolationR03().sumPt);
+    dest.set_dr03_ecal_rechit_sum_et(src.isolationR03().emEt);
+    dest.set_dr03_hcal_tower_sum_et(src.isolationR03().hadEt);
+
+
+    dest.set_is_standalone(src.isStandAloneMuon());
+    dest.set_is_global(src.isGlobalMuon());
+    dest.set_is_tracker(src.isTrackerMuon());
+    dest.set_is_calo(src.isCaloMuon());
+    dest.set_matched_stations(src.numberOfMatchedStations());
+
+    if (src.isGlobalMuon() && src.globalTrack().isNonnull()) {
+      dest.set_gt_normalized_chi2(src.globalTrack()->normalizedChi2());
+      dest.set_gt_valid_muon_hits(
+          src.globalTrack()->hitPattern().numberOfValidMuonHits());
+    }
+
+    if (src.isTrackerMuon() && src.innerTrack().isNonnull()) {
+      dest.set_it_pixel_hits(
+          src.innerTrack()->hitPattern().numberOfValidPixelHits());
+      dest.set_it_tracker_hits(
+          src.innerTrack()->hitPattern().numberOfValidTrackerHits());
+      dest.set_it_layers_with_measurement(
+          src.innerTrack()->hitPattern().trackerLayersWithMeasurement());
+    }
+
+    dest.set_vx(src.vx());
+    dest.set_vy(src.vy());
+    dest.set_vz(src.vz());
+
+    for (unsigned v = 0; v < float_handles.size(); ++v) {
+      if (is_pf_) {
+        dest.SetIdIso(input_vmaps_[v].first,
+                    (*(float_handles[v]))[pf_base_ref]);
+      } else {
+        dest.SetIdIso(input_vmaps_[v].first,
+                    (*(float_handles[v]))[muon_base_ref]);
+      }
+    }
 
     if (is_pf_) {
-      muo.set_id(pfmuon_hasher(&(pfmuonCollection->at(idx))));
-      muo.set_pt(pfmuonCollection->at(idx).pt());
-      muo.set_eta(pfmuonCollection->at(idx).eta());
-      muo.set_phi(pfmuonCollection->at(idx).phi());
-      muo.set_energy(pfmuonCollection->at(idx).energy());
-      muo.set_charge(pfmuonCollection->at(idx).charge());
-      reco_muon = pfmuonCollection->at(idx).muonRef();
-      pf_muon_ref = reco::PFCandidateRef(pfmuonCollection, idx);
-
+      if (pf_iso_03_.do_charged_all)
+        dest.set_dr03_pfiso_charged_all((*charged_all_03)[pf_base_ref]);
+      if (pf_iso_03_.do_charged)
+        dest.set_dr03_pfiso_charged((*charged_03)[pf_base_ref]);
+      if (pf_iso_03_.do_neutral)
+        dest.set_dr03_pfiso_neutral((*neutral_03)[pf_base_ref]);
+      if (pf_iso_03_.do_gamma)
+        dest.set_dr03_pfiso_gamma((*gamma_03)[pf_base_ref]);
+      if (pf_iso_03_.do_pu)
+        dest.set_dr03_pfiso_pu((*pu_03)[pf_base_ref]);
+      if (pf_iso_04_.do_charged_all)
+        dest.set_dr04_pfiso_charged_all((*charged_all_04)[pf_base_ref]);
+      if (pf_iso_04_.do_charged)
+        dest.set_dr04_pfiso_charged((*charged_04)[pf_base_ref]);
+      if (pf_iso_04_.do_neutral)
+        dest.set_dr04_pfiso_neutral((*neutral_04)[pf_base_ref]);
+      if (pf_iso_04_.do_gamma)
+        dest.set_dr04_pfiso_gamma((*gamma_04)[pf_base_ref]);
+      if (pf_iso_04_.do_pu)
+        dest.set_dr04_pfiso_pu((*pu_04)[pf_base_ref]);
     } else {
-      muo.set_id(recomuon_hasher(&(recomuonCollection->at(idx))));
-      muo.set_pt(recomuonCollection->at(idx).pt());
-      muo.set_eta(recomuonCollection->at(idx).eta());
-      muo.set_phi(recomuonCollection->at(idx).phi());
-      muo.set_energy(recomuonCollection->at(idx).energy());
-      muo.set_charge(recomuonCollection->at(idx).charge());
-      reco_muon = reco::MuonRef(recomuonCollection, idx);
+      if (pf_iso_03_.do_charged_all)
+        dest.set_dr03_pfiso_charged_all((*charged_all_03)[muon_base_ref]);
+      if (pf_iso_03_.do_charged)
+        dest.set_dr03_pfiso_charged((*charged_03)[muon_base_ref]);
+      if (pf_iso_03_.do_neutral)
+        dest.set_dr03_pfiso_neutral((*neutral_03)[muon_base_ref]);
+      if (pf_iso_03_.do_gamma)
+        dest.set_dr03_pfiso_gamma((*gamma_03)[muon_base_ref]);
+      if (pf_iso_03_.do_pu)
+        dest.set_dr03_pfiso_pu((*pu_03)[muon_base_ref]);
+      if (pf_iso_04_.do_charged_all)
+        dest.set_dr04_pfiso_charged_all((*charged_all_04)[muon_base_ref]);
+      if (pf_iso_04_.do_charged)
+        dest.set_dr04_pfiso_charged((*charged_04)[muon_base_ref]);
+      if (pf_iso_04_.do_neutral)
+        dest.set_dr04_pfiso_neutral((*neutral_04)[muon_base_ref]);
+      if (pf_iso_04_.do_gamma)
+        dest.set_dr04_pfiso_gamma((*gamma_04)[muon_base_ref]);
+      if (pf_iso_04_.do_pu)
+        dest.set_dr04_pfiso_pu((*pu_04)[muon_base_ref]);
     }
 
-    muo.set_dr03_tk_sum_pt(reco_muon->isolationR03().sumPt);
-    muo.set_dr03_ecal_rechit_sum_et(reco_muon->isolationR03().emEt);
-    muo.set_dr03_hcal_tower_sum_et(reco_muon->isolationR03().hadEt);
-
-
-    float dr03_pfiso_charged_all  = -1.0;
-    float dr03_pfiso_charged      = -1.0;
-    float dr03_pfiso_neutral      = -1.0;
-    float dr03_pfiso_gamma        = -1.0;
-    float dr03_pfiso_pu           = -1.0;
-
-    float dr04_pfiso_charged_all  = -1.0;
-    float dr04_pfiso_charged      = -1.0;
-    float dr04_pfiso_neutral      = -1.0;
-    float dr04_pfiso_gamma        = -1.0;
-    float dr04_pfiso_pu           = -1.0;
-
-    if (is_pf_) {
-      dr03_pfiso_charged_all  = (*charged_all_iso_03)[pf_muon_ref];
-      dr03_pfiso_charged      = (*charged_iso_03)[pf_muon_ref];
-      dr03_pfiso_neutral      = (*neutral_iso_03)[pf_muon_ref];
-      dr03_pfiso_gamma        = (*gamma_iso_03)[pf_muon_ref];
-      dr03_pfiso_pu           = (*pu_iso_03)[pf_muon_ref];
-      dr04_pfiso_charged_all  = (*charged_all_iso_04)[pf_muon_ref];
-      dr04_pfiso_charged      = (*charged_iso_04)[pf_muon_ref];
-      dr04_pfiso_neutral      = (*neutral_iso_04)[pf_muon_ref];
-      dr04_pfiso_gamma        = (*gamma_iso_04)[pf_muon_ref];
-      dr04_pfiso_pu           = (*pu_iso_04)[pf_muon_ref];
-    } else {
-      dr03_pfiso_charged_all  = (*charged_all_iso_03)[reco_muon];
-      dr03_pfiso_charged      = (*charged_iso_03)[reco_muon];
-      dr03_pfiso_neutral      = (*neutral_iso_03)[reco_muon];
-      dr03_pfiso_gamma        = (*gamma_iso_03)[reco_muon];
-      dr03_pfiso_pu           = (*pu_iso_03)[reco_muon];
-      dr04_pfiso_charged_all  = (*charged_all_iso_04)[reco_muon];
-      dr04_pfiso_charged      = (*charged_iso_04)[reco_muon];
-      dr04_pfiso_neutral      = (*neutral_iso_04)[reco_muon];
-      dr04_pfiso_gamma        = (*gamma_iso_04)[reco_muon];
-      dr04_pfiso_pu           = (*pu_iso_04)[reco_muon];
+    if (do_vertex_ip_ && vertices_handle->size() > 0 &&
+        src.innerTrack().isNonnull()) {
+        reco::Vertex const& vtx = vertices_handle->at(0);
+        dest.set_dz_vertex(src.innerTrack()->dz(vtx.position()));
+        dest.set_dxy_vertex(src.innerTrack()->dxy(vtx.position()));
     }
-
-    muo.set_dr03_pfiso_charged_all(dr03_pfiso_charged_all);
-    muo.set_dr03_pfiso_charged(dr03_pfiso_charged);
-    muo.set_dr03_pfiso_neutral(dr03_pfiso_neutral);
-    muo.set_dr03_pfiso_gamma(dr03_pfiso_gamma);
-    muo.set_dr03_pfiso_pu(dr03_pfiso_pu);
-    muo.set_dr04_pfiso_charged_all(dr04_pfiso_charged_all);
-    muo.set_dr04_pfiso_charged(dr04_pfiso_charged);
-    muo.set_dr04_pfiso_neutral(dr04_pfiso_neutral);
-    muo.set_dr04_pfiso_gamma(dr04_pfiso_gamma);
-    muo.set_dr04_pfiso_pu(dr04_pfiso_pu);
-
-    muo.set_is_standalone(reco_muon->isStandAloneMuon());
-    muo.set_is_global(reco_muon->isGlobalMuon());
-    muo.set_is_tracker(reco_muon->isTrackerMuon());
-    muo.set_is_calo(reco_muon->isCaloMuon());
-    if (reco_muon->isGlobalMuon()) {
-        muo.set_gt_normalized_chi2(reco_muon->globalTrack()->normalizedChi2());
-        muo.set_gt_valid_muon_hits(reco_muon->globalTrack()->hitPattern().numberOfValidMuonHits());
-    } else {
-     muo.set_gt_normalized_chi2(0);
-     muo.set_gt_valid_muon_hits(0); 
+    if (do_beamspot_ip_&& src.innerTrack().isNonnull()) {
+      dest.set_dxy_beamspot(src.innerTrack()->dxy(*beamspot_handle));
     }
-    muo.set_matched_stations(reco_muon->numberOfMatchedStations());
-    if (reco_muon->isTrackerMuon()) {
-        muo.set_it_pixel_hits(reco_muon->innerTrack()->hitPattern().numberOfValidPixelHits());
-        muo.set_it_tracker_hits(reco_muon->innerTrack()->hitPattern().numberOfValidTrackerHits());
-        muo.set_it_layers_with_measurement(reco_muon->innerTrack()->hitPattern().trackerLayersWithMeasurement());
-        muo.set_dxy_beamspot(reco_muon->innerTrack()->dxy(*beamspot));
-    } else {
-      muo.set_it_pixel_hits(0);
-      muo.set_it_tracker_hits(0);
-      muo.set_it_layers_with_measurement(0);
-        muo.set_dxy_beamspot(9999.);
-    }
-
-    muo.set_vx(reco_muon->vx());
-    muo.set_vy(reco_muon->vy());
-    muo.set_vz(reco_muon->vz());
-
-    if (vertexCollection->size() > 0 && reco_muon->isGlobalMuon()) {
-      muo.set_dz_vertex(reco_muon->innerTrack()->dz(vertexCollection->at(0).position()));
-      muo.set_dxy_vertex(reco_muon->innerTrack()->dxy(vertexCollection->at(0).position()));
-    } else {
-      muo.set_dz_vertex(9999.);
-      muo.set_dxy_vertex(9999.);
-    }
-
-    std::vector<std::size_t> gen_index;
-    muo.set_gen_particles(gen_index); 
-
   }
-
-
-  iEvent.put(muo_particles, "selectGenParticles");
 }
 
-// ------------ method called once each job just before starting event loop  ------------
 void ICMuonProducer::beginJob() {
-  std::cout << "-----------------------------------------------------------------" << std::endl;
-  std::cout << "Info in <ICMuonProducer>: BeginJob Summary for input: " << input_.label() << std::endl;
-  std::cout << "-----------------------------------------------------------------" << std::endl;
-  
-  // Muon MVA isolation not currently needed
-  // fMuonIsoMVA = new MuonMVAEstimator();
-  // fMuonIDMVA = new MuonMVAEstimator();
-  // fMuonIsoRingsRadMVA = new MuonMVAEstimator();
-  // fMuonIDIsoCombinedMVA = new MuonMVAEstimator();
-
-  // std::vector<std::string> muoniso_weightfiles;
-  // muoniso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-BarrelPt5To10_V0_BDTG.weights.xml").fullPath());
-  // muoniso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-EndcapPt5To10_V0_BDTG.weights.xml").fullPath());
-  // muoniso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-BarrelPt10ToInf_V0_BDTG.weights.xml").fullPath());
-  // muoniso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-EndcapPt10ToInf_V0_BDTG.weights.xml").fullPath());
-  // muoniso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-Tracker_V0_BDTG.weights.xml").fullPath());
-  // muoniso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-Global_V0_BDTG.weights.xml").fullPath());
-
-  // std::vector<std::string> muonid_weightfiles;
-  // muonid_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDMVA_sixie-BarrelPt5To10_V0_BDTG.weights.xml").fullPath());
-  // muonid_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDMVA_sixie-EndcapPt5To10_V0_BDTG.weights.xml").fullPath());
-  // muonid_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDMVA_sixie-BarrelPt10ToInf_V0_BDTG.weights.xml").fullPath());
-  // muonid_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDMVA_sixie-EndcapPt10ToInf_V0_BDTG.weights.xml").fullPath());
-  // muonid_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDMVA_sixie-Tracker_V0_BDTG.weights.xml").fullPath());
-  // muonid_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDMVA_sixie-Global_V0_BDTG.weights.xml").fullPath());
-  
-  // std::vector<std::string> muonisoRingsRad_weightfiles;
-  // muonisoRingsRad_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-BarrelPt5To10_V1_BDTG.weights.xml").fullPath());
-  // muonisoRingsRad_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-EndcapPt5To10_V1_BDTG.weights.xml").fullPath());
-  // muonisoRingsRad_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-BarrelPt10ToInf_V1_BDTG.weights.xml").fullPath());
-  // muonisoRingsRad_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-EndcapPt10ToInf_V1_BDTG.weights.xml").fullPath());
-  // muonisoRingsRad_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-Tracker_V1_BDTG.weights.xml").fullPath());
-  // muonisoRingsRad_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIsoMVA_sixie-Global_V1_BDTG.weights.xml").fullPath());
-  
-  // std::vector<std::string> muonidiso_weightfiles;
-  // muonidiso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDIsoCombinedMVA_V0_barrel_lowpt.weights.xml").fullPath());
-  // muonidiso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDIsoCombinedMVA_V0_endcap_lowpt.weights.xml").fullPath());
-  // muonidiso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDIsoCombinedMVA_V0_barrel_highpt.weights.xml").fullPath());
-  // muonidiso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDIsoCombinedMVA_V0_endcap_highpt.weights.xml").fullPath());
-  // muonidiso_weightfiles.push_back(edm::FileInPath("Muon/MuonAnalysisTools/data/MuonIDIsoCombinedMVA_V0_tracker.weights.xml").fullPath());
-
-  // fMuonIsoMVA->initialize("MuonIso_BDTG_IsoRings",
-  //                  MuonMVAEstimator::kIsoRings,
-  //                  kTRUE,
-  //                  muoniso_weightfiles);
-  // fMuonIsoMVA->SetPrintMVADebug(false);
-
-  // fMuonIDMVA->initialize("MuonID_BDTG",
-  //                  MuonMVAEstimator::kID,
-  //                  kTRUE,
-  //                  muonid_weightfiles);
-  // fMuonIDMVA->SetPrintMVADebug(false);
-
-  // fMuonIsoRingsRadMVA->initialize("MuonIso_BDTG_IsoRingsRad",
-  //                  MuonMVAEstimator::kIsoRingsRadial,
-  //                  kTRUE,
-  //                  muonisoRingsRad_weightfiles);
-  // fMuonIsoRingsRadMVA->SetPrintMVADebug(false);
-
-  // fMuonIDIsoCombinedMVA->initialize("MuonIso_BDTG_IsoRings",
-  //                      MuonMVAEstimator::kIDIsoRingsCombined,
-  //                      kTRUE,
-  //                      muonidiso_weightfiles);
-  // fMuonIDIsoCombinedMVA->SetPrintMVADebug(false);
-
-
-
-  // if (eff_areas_ != "") {
-  //   if (eff_areas_ == "kMuEAData2011") {
-  //     eff_area_enum = MuonEffectiveArea::kMuEAData2011;
-  //     std::cout << "Using effective areas: " << eff_areas_ << std::endl;
-  //   } else if (eff_areas_ == "kMuEASummer11MC") {
-  //     eff_area_enum = MuonEffectiveArea::kMuEASummer11MC;
-  //     std::cout << "Using effective areas: " << eff_areas_ << std::endl;
-  //   } else if (eff_areas_ == "kMuEAFall11MC") {
-  //     eff_area_enum = MuonEffectiveArea::kMuEAFall11MC;
-  //     std::cout << "Using effective areas: " << eff_areas_ << std::endl;
-  //   } else if (eff_areas_ == "kMuEAData2012") {
-  //     eff_area_enum = MuonEffectiveArea::kMuEAData2012;
-  //     std::cout << "Using effective areas: " << eff_areas_ << std::endl;
-  //   } else {
-  //     std::cout << "Effective area payload not recognised!" << std::endl;
-  //   }
-  // } else {
-  //   std::cout << "No effective area payload specified!" << eff_area_enum << std::endl;
-  // }
-
-  ic::StaticTree::tree_->Branch(branch_name_.c_str(), &muons_);
+  ic::StaticTree::tree_->Branch(branch_.c_str(), &muons_);
 }
 
-// ------------ method called once each job just after ending the event loop  ------------
-void ICMuonProducer::endJob() {
-  std::cout << "-----------------------------------------------------------------" << std::endl;
-  std::cout << "Info in <ICMuonProducer>: EndJob Summary for input: " << input_.label() << std::endl;
-  std::cout << "-----------------------------------------------------------------" << std::endl;
-  std::cout << "HLT Match Paths Hash Summary:" << std::endl;
-  std::map<std::string, std::size_t>::const_iterator iter;
-  std::cout << "ID and Iso Label Hash Summary:" << std::endl;
-  for (iter = observed_idiso_.begin(); iter != observed_idiso_.end(); ++iter) {
-    std::cout << boost::format("%-60s %-20s\n") % iter->first % iter->second;
-  }
-}
+void ICMuonProducer::endJob() {}
 
-// ------------ method called when starting to processes a run  ------------
-void ICMuonProducer::beginRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a run  ------------
-void ICMuonProducer::endRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when starting to processes a luminosity block  ------------
-void ICMuonProducer::beginLuminosityBlock(edm::LuminosityBlock&, 
-                                             edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-void ICMuonProducer::endLuminosityBlock(edm::LuminosityBlock&, 
-                                           edm::EventSetup const&) {
-}
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-ICMuonProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
-}
-
-// bool ICMuonProducer::electronIDForMVA(reco::GsfElectron const& elec, reco::Vertex const& vtx) {
-
-//     double electronTrackZ = 0;
-//     if (elec.gsfTrack().isNonnull()) {
-//       electronTrackZ = elec.gsfTrack()->dz(vtx.position());
-//     } else if (elec.closestCtfTrackRef().isNonnull()) {
-//       electronTrackZ = elec.closestCtfTrackRef()->dz(vtx.position());
-//     }    
-//     if(fabs(electronTrackZ) > 0.2)  return false;
-
-//     if(fabs(elec.superCluster()->eta())<1.479) {     
-//       if(elec.pt() > 20) {
-//         if(elec.sigmaIetaIeta()       > 0.01)  return false;
-//         if(fabs(elec.deltaEtaSuperClusterTrackAtVtx()) > 0.007) return false;
-//         if(fabs(elec.deltaPhiSuperClusterTrackAtVtx()) > 0.8)  return false;
-//         if(elec.hadronicOverEm()       > 0.15)  return false;    
-//       } else {
-//         if(elec.sigmaIetaIeta()       > 0.012)  return false;
-//         if(fabs(elec.deltaEtaSuperClusterTrackAtVtx()) > 0.007) return false;
-//         if(fabs(elec.deltaPhiSuperClusterTrackAtVtx()) > 0.8)  return false;
-//         if(elec.hadronicOverEm()       > 0.15) return false;    
-//       } 
-//     } else {     
-//       if(elec.pt() > 20) {
-//         if(elec.sigmaIetaIeta()       > 0.03)  return false;
-//         if(fabs(elec.deltaEtaSuperClusterTrackAtVtx()) > 0.010) return false;
-//         if(fabs(elec.deltaPhiSuperClusterTrackAtVtx()) > 0.8)  return false;
-//       } else {
-//         if(elec.sigmaIetaIeta()       > 0.032)  return false;
-//         if(fabs(elec.deltaEtaSuperClusterTrackAtVtx()) > 0.010) return false;
-//         if(fabs(elec.deltaPhiSuperClusterTrackAtVtx()) > 0.8)  return false;
-//       }
-//     }
-//     return true;
-// }
-
-// bool ICMuonProducer::muonIDForMVA(reco::Muon const& muon) {
-//   if(!(muon.innerTrack().isNonnull())) {
-//     return false;
-//   } 
-//   if(!(muon.isGlobalMuon() || muon.isTrackerMuon())) return false;
-//   if(muon.innerTrack()->numberOfValidHits() < 11 ) return false;
-//   return true;
-// }
-
-//define this as a plug-in
 DEFINE_FWK_MODULE(ICMuonProducer);
