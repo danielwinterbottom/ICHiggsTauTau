@@ -22,7 +22,6 @@ class Electron : public Candidate {
   inline std::vector<std::size_t> const& gen_particles() const {
     return gen_particles_;
   }
-
   inline void set_gen_particles(std::vector<std::size_t> const& gen_particles) {
     gen_particles_ = gen_particles;
   }
