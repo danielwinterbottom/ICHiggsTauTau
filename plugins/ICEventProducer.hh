@@ -9,22 +9,17 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "TTree.h"
-
+#include "TFile.h"
 
 class ICEventProducer : public edm::EDProducer {
-   public:
-      explicit ICEventProducer(const edm::ParameterSet&);
-      ~ICEventProducer();
+ public:
+  explicit ICEventProducer(const edm::ParameterSet&);
+  ~ICEventProducer();
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
-   private:
-      virtual void beginJob() ;
-      virtual void produce(edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
-      
-      virtual void beginRun(edm::Run&, edm::EventSetup const&);
-      virtual void endRun(edm::Run&, edm::EventSetup const&);
-      virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-      virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
+ private:
+  TFile *file_;
+  unsigned processed_;
+  virtual void beginJob();
+  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void endJob();
 };

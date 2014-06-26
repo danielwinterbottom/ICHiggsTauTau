@@ -16,59 +16,34 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 
 #include "TTree.h"
-
+#include "Compression.h"
 
 ICEventProducer::ICEventProducer(const edm::ParameterSet& iConfig)
-{
-   edm::Service<TFileService> lFileService;
-   ic::StaticTree::tree_ = lFileService->make<TTree>("EventTree","EventTree");
+    : processed_(0) {
+  file_ = new TFile("EventTree.root", "RECREATE");
+  file_->SetCompressionSettings(ROOT::CompressionSettings(ROOT::kLZMA, 5));
+  ic::StaticTree::tree_ = new TTree("EventTree", "EventTree");
 }
-
 
 ICEventProducer::~ICEventProducer() {
+  // delete ic::StaticTree::tree_;
+  delete file_;
 }
 
-
-// ------------ method called to produce the data  ------------
-void ICEventProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-   ic::StaticTree::tree_->Fill();
-   static unsigned processed = 0;
-   ++processed;
-   if (processed == 500) ic::StaticTree::tree_->OptimizeBaskets();
+void ICEventProducer::produce(edm::Event& /*event*/,
+                              const edm::EventSetup& /*setup*/) {
+  ic::StaticTree::tree_->Fill();
+  ++processed_;
+  if (processed_ == 500) ic::StaticTree::tree_->OptimizeBaskets();
 }
 
-// ------------ method called once each job just before starting event loop  ------------
 void ICEventProducer::beginJob() {
 }
 
-// ------------ method called once each job just after ending the event loop  ------------
 void ICEventProducer::endJob() {
+  ic::StaticTree::tree_->Write();
+  file_->Close();
 }
 
-// ------------ method called when starting to processes a run  ------------
-void ICEventProducer::beginRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a run  ------------
-void ICEventProducer::endRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when starting to processes a luminosity block  ------------
-void ICEventProducer::beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-void ICEventProducer::endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&) {
-}
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void ICEventProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
-}
-
-//define this as a plug-in
+// define this as a plug-in
 DEFINE_FWK_MODULE(ICEventProducer);
