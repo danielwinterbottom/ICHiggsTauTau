@@ -64,6 +64,7 @@ class JetTauFakeRate : public ModuleBase {
 	TH1F* loose_taunvtx_;
 	TH1F* medium_taunvtx_;
 	TH1F* tight_taunvtx_;
+	TH1F* genjetpt_;
   
   double jpt_;     
   double jeta_;     

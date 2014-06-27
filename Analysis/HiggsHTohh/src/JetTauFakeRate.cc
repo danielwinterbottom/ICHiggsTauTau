@@ -40,38 +40,39 @@ namespace ic {
 			}
 			if(write_plots_) {
 				//Instead could initiate plots here which can be saved to the same file_
-				jetpt_ = fs_->make<TH1F>("jetpt",";p_{T};",100,0,500);
-				jeteta_ = fs_->make<TH1F>("jeteta",";#eta;",100,-2.5,2.5);
+				Float_t binrange[19]={0,20,30,40,50,60,70,80,90,100,120,140,160,180,200,250,300,400,500};
+				jetpt_ = fs_->make<TH1F>("jetpt",";p_{T};",18,binrange);
+				jeteta_ = fs_->make<TH1F>("jeteta",";#eta;",50,-2.5,2.5);
 				jetphi_ = fs_->make<TH1F>("jetphi",";#phi;",100,-3.15,3.15);
-				taupt_ = fs_->make<TH1F>("taupt",";p_{T};",100,0,500);
-				taueta_ = fs_->make<TH1F>("taueta",";#eta;",100,-2.5,2.5);
+				taupt_ = fs_->make<TH1F>("taupt",";p_{T};",18,binrange);
+				taueta_ = fs_->make<TH1F>("taueta",";#eta;",50,-2.5,2.5);
 				tauphi_ = fs_->make<TH1F>("tauphi",";#phi;",100,-3.15,3.15);
-				taupt_match_ = fs_->make<TH1F>("taupt_match",";p_{T};",100,0,500);
-				taueta_match_ = fs_->make<TH1F>("taueta_match",";#eta;",100,-2.5,2.5);
+				taupt_match_ = fs_->make<TH1F>("taupt_match",";p_{T};",18,binrange);
+				taueta_match_ = fs_->make<TH1F>("taueta_match",";#eta;",50,-2.5,2.5);
 				tauphi_match_ = fs_->make<TH1F>("tauphi_match",";#phi;",100,-3.15,3.15);
-				dm_taupt_ = fs_->make<TH1F>("dm_taupt",";p_{T};",100,0,500);
-				dm_taueta_ = fs_->make<TH1F>("dm_taueta",";#eta;",100,-2.5,2.5);
+				dm_taupt_ = fs_->make<TH1F>("dm_taupt",";p_{T};",18,binrange);
+				dm_taueta_ = fs_->make<TH1F>("dm_taueta",";#eta;",50,-2.5,2.5);
 				dm_tauphi_ = fs_->make<TH1F>("dm_tauphi",";#phi;",100,-3.15,3.15);
-				dm_taupt_match_ = fs_->make<TH1F>("dm_taupt_match",";p_{T};",100,0,500);
-				dm_taueta_match_ = fs_->make<TH1F>("dm_taueta_match",";#eta;",100,-2.5,2.5);
+				dm_taupt_match_ = fs_->make<TH1F>("dm_taupt_match",";p_{T};",18,binrange);
+				dm_taueta_match_ = fs_->make<TH1F>("dm_taueta_match",";#eta;",50,-2.5,2.5);
 				dm_tauphi_match_ = fs_->make<TH1F>("dm_tauphi_match",";#phi;",100,-3.15,3.15);
-				loose_taupt_ = fs_->make<TH1F>("loose_taupt",";p_{T};",100,0,500);
-				loose_taueta_ = fs_->make<TH1F>("loose_taueta",";#eta;",100,-2.5,2.5);
+				loose_taupt_ = fs_->make<TH1F>("loose_taupt",";p_{T};",18,binrange);
+				loose_taueta_ = fs_->make<TH1F>("loose_taueta",";#eta;",50,-2.5,2.5);
 				loose_tauphi_ = fs_->make<TH1F>("loose_tauphi",";#phi;",100,-3.15,3.15);
-				loose_taupt_match_ = fs_->make<TH1F>("loose_taupt_match",";p_{T};",100,0,500);
-				loose_taueta_match_ = fs_->make<TH1F>("loose_taueta_match",";#eta;",100,-2.5,2.5);
+				loose_taupt_match_ = fs_->make<TH1F>("loose_taupt_match",";p_{T};",18,binrange);
+				loose_taueta_match_ = fs_->make<TH1F>("loose_taueta_match",";#eta;",50,-2.5,2.5);
 				loose_tauphi_match_ = fs_->make<TH1F>("loose_tauphi_match",";#phi;",100,-3.15,3.15);
-				medium_taupt_ = fs_->make<TH1F>("medium_taupt",";p_{t};",100,0,500);
-				medium_taueta_ = fs_->make<TH1F>("medium_taueta",";#eta;",100,-2.5,2.5);
+				medium_taupt_ = fs_->make<TH1F>("medium_taupt",";p_{t};",18,binrange);
+				medium_taueta_ = fs_->make<TH1F>("medium_taueta",";#eta;",50,-2.5,2.5);
 				medium_tauphi_ = fs_->make<TH1F>("medium_tauphi",";#phi;",100,-3.15,3.15);
-				medium_taupt_match_ = fs_->make<TH1F>("medium_taupt_match",";p_{t};",100,0,500);
-				medium_taueta_match_ = fs_->make<TH1F>("medium_taueta_match",";#eta;",100,-2.5,2.5);
+				medium_taupt_match_ = fs_->make<TH1F>("medium_taupt_match",";p_{t};",18,binrange);
+				medium_taueta_match_ = fs_->make<TH1F>("medium_taueta_match",";#eta;",50,-2.5,2.5);
 				medium_tauphi_match_ = fs_->make<TH1F>("medium_tauphi_match",";#phi;",100,-3.15,3.15);
-				tight_taupt_ = fs_->make<TH1F>("tight_taupt",";p_{T};",100,0,500);
-				tight_taueta_ = fs_->make<TH1F>("tight_taueta",";#eta;",100,-2.5,2.5);
+				tight_taupt_ = fs_->make<TH1F>("tight_taupt",";p_{T};",18,binrange);
+				tight_taueta_ = fs_->make<TH1F>("tight_taueta",";#eta;",50,-2.5,2.5);
 				tight_tauphi_ = fs_->make<TH1F>("tight_tauphi",";#phi;",100,-3.15,3.15);
-				tight_taupt_match_ = fs_->make<TH1F>("tight_taupt_match",";p_{T};",100,0,500);
-				tight_taueta_match_ = fs_->make<TH1F>("tight_taueta_match",";#eta;",100,-2.5,2.5);
+				tight_taupt_match_ = fs_->make<TH1F>("tight_taupt_match",";p_{T};",18,binrange);
+				tight_taueta_match_ = fs_->make<TH1F>("tight_taueta_match",";#eta;",50,-2.5,2.5);
 				tight_tauphi_match_ = fs_->make<TH1F>("tight_tauphi_match",";#phi;",100,-3.15,3.15);
 				jetflavour_ = fs_->make<TH1F>("jetflavour",";flavour;",100,-30,30);
 				deltar_ = fs_->make<TH1F>("deltaR",";#Delta R;",100,0,0.2);
@@ -85,6 +86,7 @@ namespace ic {
 				loose_taunvtx_ = fs_->make<TH1F>("loose_taunvtx_",";N_{vtx};",100,0,40);
 				medium_taunvtx_ = fs_->make<TH1F>("medium_taunvtx_",";N_{vtx};",100,0,40);
 				tight_taunvtx_ = fs_->make<TH1F>("tight_taunvtx_",";N_{vtx};",100,0,40);
+				genjetpt_ = fs_->make<TH1F>("genjetpt","",18,binrange);
 
 			}
 
@@ -98,6 +100,7 @@ namespace ic {
 		EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 		std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
 		std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
+		std::vector<GenJet*> genjets = event->GetPtrVec<GenJet>("genJets");
 
 		if(write_plots_){
 			nvtx_ = eventInfo->good_vertices();
@@ -112,15 +115,19 @@ namespace ic {
 					ntaus_dm_+=1;
 					if(taus.at(tauit)->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_loose_+=1;
 					if(taus.at(tauit)->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_medium_+=1;
-					if(taus.at(tauit)->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_tight_+=1;
+					if(taus.at(tauit)->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_tight_+=1;
 				}
 			}
+			if(njets_>0){
 			jetnvtx_->Fill(nvtx_,njets_);
 			taunvtx_->Fill(nvtx_,ntaus_);
 			dm_taunvtx_->Fill(nvtx_,ntaus_dm_);
 			loose_taunvtx_->Fill(nvtx_,ntaus_loose_);
 			medium_taunvtx_->Fill(nvtx_,ntaus_medium_);
 			tight_taunvtx_->Fill(nvtx_,ntaus_tight_);
+			for(UInt_t genjetit=0;genjetit<genjets.size();genjetit++){
+				genjetpt_->Fill(genjets.at(genjetit)->pt());
+			}
 
 			for(UInt_t jetit=0;jetit<jets.size();jetit++){
 				//jpt_=jets.at(jetit)->pt();
@@ -138,48 +145,63 @@ namespace ic {
 					taupt_->Fill(taus.at(tauit)->pt());
 					taueta_->Fill(taus.at(tauit)->eta());
 					tauphi_->Fill(taus.at(tauit)->phi());
-					deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
-					taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
-					taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
-					tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+					if(GetDeltaR(taus.at(tauit),jets).first>-1){
+						deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
+						if(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt()>20.&&TMath::Abs(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta())<2.3){
+							//std::cout<<jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt()<<std::endl;
+							taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
+							taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
+							tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+						}
+					}
 					if(taus.at(tauit)->GetTauID("decayModeFinding")>0.5){
 						dm_taupt_->Fill(taus.at(tauit)->pt());
 						dm_taueta_->Fill(taus.at(tauit)->eta());
 						dm_tauphi_->Fill(taus.at(tauit)->phi());
-						dm_deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
-						dm_taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
-						dm_taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
-						dm_tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+						if(GetDeltaR(taus.at(tauit),jets).first>-1){
+							dm_deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
+							dm_taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
+							dm_taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
+							dm_tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+						}
 
 						if(taus.at(tauit)->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")>0.5){
 							loose_taupt_->Fill(taus.at(tauit)->pt());
 							loose_taueta_->Fill(taus.at(tauit)->eta());
 							loose_tauphi_->Fill(taus.at(tauit)->phi());
-							loose_deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
-							loose_taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
-							loose_taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
-							loose_tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+							if(GetDeltaR(taus.at(tauit),jets).first>-1){
 
+								loose_deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
+
+
+								loose_taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
+								loose_taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
+								loose_tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+							}
 						}
 						if(taus.at(tauit)->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")>0.5){
 							medium_taupt_->Fill(taus.at(tauit)->pt());
 							medium_taueta_->Fill(taus.at(tauit)->eta());
 							medium_tauphi_->Fill(taus.at(tauit)->phi());
-							medium_deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
-							medium_taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
-							medium_taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
-							medium_tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+							if(GetDeltaR(taus.at(tauit),jets).first>-1){
 
+								medium_deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
+								medium_taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
+								medium_taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
+								medium_tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+							}
 						}
 						if(taus.at(tauit)->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits")>0.5){
 							tight_taupt_->Fill(taus.at(tauit)->pt());
 							tight_taueta_->Fill(taus.at(tauit)->eta());
 							tight_tauphi_->Fill(taus.at(tauit)->phi());
-							tight_deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
-							tight_taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
-							tight_taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
-							tight_tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+							if(GetDeltaR(taus.at(tauit),jets).first>-1){
 
+								tight_deltar_->Fill(GetDeltaR(taus.at(tauit),jets).first);
+								tight_taupt_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->pt());
+								tight_taueta_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->eta());
+								tight_tauphi_match_->Fill(jets.at(GetDeltaR(taus.at(tauit),jets).second)->phi());
+							}
 						}
 					}
 				}
@@ -187,7 +209,7 @@ namespace ic {
 
 
 
-		}
+		}}
 
 		//Here goes the actual code to do the study. 
 
@@ -202,6 +224,7 @@ namespace ic {
 			deltaR_calc_ = TMath::Sqrt(TMath::Power(jet_vector.at(ijet)->eta()-tau_sig->eta(),2)+TMath::Power(jet_vector.at(ijet)->phi()-tau_sig->phi(),2));
 			deltaR_pair_ = (deltaR_calc_<deltaR_pair_.first) ? std::make_pair(deltaR_calc_,ijet) : deltaR_pair_;
 		}
+		deltaR_pair_ = deltaR_pair_.first>0.5 ? std::make_pair(-999.,(UInt_t) 999) : deltaR_pair_;
 		return deltaR_pair_;
 	}
 

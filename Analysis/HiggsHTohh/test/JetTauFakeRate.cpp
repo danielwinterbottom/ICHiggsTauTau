@@ -71,8 +71,8 @@ int main(int argc, char* argv[]){
   double jet_pt, jet_eta, tau_pt, tau_eta;
   jet_pt = 20.0;
   jet_eta = 2.3; 
-  tau_pt = 20.0;
-  tau_eta = 2.3; 
+  tau_pt = 0.0;
+  tau_eta = 5; 
    
   std::cout << "** Kinematics **" << std::endl;
   std::cout << boost::format(param_fmt) % "jet_pt" % jet_pt;
@@ -101,7 +101,8 @@ int main(int argc, char* argv[]){
   
   SimpleFilter<PFJet> JetFilter = SimpleFilter<PFJet>("JetFilter")
   .set_input_label("pfJetsPFlow")
-  .set_predicate(bind(MinPtMaxEta, _1, jet_pt, jet_eta));
+  //.set_predicate(bind(MinPtMaxEta, _1, jet_pt, jet_eta)&&(bind(&PFJet::pu_id_mva_loose,_1)));
+	.set_predicate(bind(MinPtMaxEta,_1,jet_pt,jet_eta)&&(bind(&PFJet::charged_multiplicity_nopu,_1)>0)&&(bind(&PFJet::charged_had_energy_frac,_1)>0)&&(bind(&PFJet::neutral_had_energy_frac,_1)<0.99)&&(bind(&PFJet::charged_em_energy_frac,_1)<0.99)&&(bind(&PFJet::neutral_em_energy_frac,_1)<0.99)&&((bind(&PFJet::charged_multiplicity_nopu,_1)>1)||(bind(&PFJet::neutral_multiplicity,_1)>0)));
 
   JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")
   .set_write_plots(true)
