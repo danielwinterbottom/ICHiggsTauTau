@@ -1633,8 +1633,8 @@ int main(int argc, char* argv[]){
 
      //filter jets
      analysis.AddModule(&jetPtEtaFilter);
-    
      //if (printEventContent) analysis.AddModule(&hinvPrint);
+    
      //two-leading jet pair production before plotting
      analysis.AddModule(&jjLeadingPairProducer);
      //if (printEventContent) analysis.AddModule(&hinvPrint);
@@ -1762,7 +1762,6 @@ int main(int argc, char* argv[]){
        analysis.AddModule(&tightMassJetPairFilter);
        analysis.AddModule(&controlPlots_tightMjj);
        analysis.AddModule(&wjetsPlots_tightMjj);
-       
        if(!do_trigeff&&!do_trigeff_tree&&!do_light_tree){
 	 //save signal and QCD regions without CJV
 	 analysis.AddModule(&controlPlots_dphi_qcd_nocjv);
