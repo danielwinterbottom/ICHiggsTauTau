@@ -40,6 +40,9 @@ namespace ic {//namespace
     hist_trigSF_MjjHLT = 0;
     hist_trigSF_JetHLT = 0;
     trg_weight_file_="data/scale_factors/DataMCWeight_53X_v1.root";
+    Alumi_=-1;
+    BClumi_=-1;
+    Dlumi_=-1;
   }
 
   HinvWeights::~HinvWeights() {
@@ -141,139 +144,147 @@ namespace ic {//namespace
 
 
     if (save_weights_){
-    // do weights even if not applied, to fill histo with weight for comparison !
-    
-
-    //get trigger scale factor histograms from file
+      // do weights even if not applied, to fill histo with weight for comparison !
+      
+      
+      //get trigger scale factor histograms from file
       triggerSF_ = new TFile(trg_weight_file_.c_str());
-    hist_trigSF_METL1 = (TH1F*)gDirectory->Get("METL1");
-    hist_trigSF_METHLT = (TH1F*)gDirectory->Get("METHLT");
-    hist_trigSF_MjjHLT = (TH1F*)gDirectory->Get("MjjHLT");
-    hist_trigSF_JetHLT = (TH1F*)gDirectory->Get("JetHLT");
-    
-    std::cout << " -- Content of histogram METL1 : " << std::endl;
-    for (int i(0); i< hist_trigSF_METL1->GetNbinsX()+2; ++i){
-      std::cout << " -- bin " << i << " [" 
-		<< hist_trigSF_METL1->GetXaxis()->GetBinLowEdge(i) << "-" 
-		<< hist_trigSF_METL1->GetXaxis()->GetBinUpEdge(i) << "] : "
-		<<  hist_trigSF_METL1->GetBinContent(i)
-		<< std::endl;
-    }
-    
-    std::cout << " -- Content of histogram METHLT : " << std::endl;
-    for (int i(0); i< hist_trigSF_METHLT->GetNbinsX()+2; ++i){
-      std::cout << " -- bin " << i << " [" 
-		<< hist_trigSF_METHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
-		<< hist_trigSF_METHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
-		<<  hist_trigSF_METHLT->GetBinContent(i);
-      
-      //change first bins to "1": no data/MC scale factor applied...
-      if (i>0 && hist_trigSF_METHLT->GetBinContent(i) == 0) {
-	hist_trigSF_METHLT->SetBinContent(i,1);
-	std::cout << " -> changed to " <<  hist_trigSF_METHLT->GetBinContent(i);
+      if(do_3dtrg_weights_){
+	//OPEN 3D HISTOGRAMS
+	hist_trigSF_3D.push_back((TH3F*)gDirectory->Get("h3DHLT_Dijet40_A"));
+	hist_trigSF_3D.push_back((TH3F*)gDirectory->Get("h3DHLT_Dijet35_BC"));
+	hist_trigSF_3D.push_back((TH3F*)gDirectory->Get("h3DHLT_Dijet30_D"));
       }
-      std::cout	<< std::endl;
+      else{
+	hist_trigSF_METL1 = (TH1F*)gDirectory->Get("METL1");
+	hist_trigSF_METHLT = (TH1F*)gDirectory->Get("METHLT");
+	hist_trigSF_MjjHLT = (TH1F*)gDirectory->Get("MjjHLT");
+	hist_trigSF_JetHLT = (TH1F*)gDirectory->Get("JetHLT");
+	
+	std::cout << " -- Content of histogram METL1 : " << std::endl;
+	for (int i(0); i< hist_trigSF_METL1->GetNbinsX()+2; ++i){
+	  std::cout << " -- bin " << i << " [" 
+		    << hist_trigSF_METL1->GetXaxis()->GetBinLowEdge(i) << "-" 
+		    << hist_trigSF_METL1->GetXaxis()->GetBinUpEdge(i) << "] : "
+		    <<  hist_trigSF_METL1->GetBinContent(i)
+		    << std::endl;
+	}
+	
+	std::cout << " -- Content of histogram METHLT : " << std::endl;
+	for (int i(0); i< hist_trigSF_METHLT->GetNbinsX()+2; ++i){
+	  std::cout << " -- bin " << i << " [" 
+		    << hist_trigSF_METHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
+		    << hist_trigSF_METHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
+		    <<  hist_trigSF_METHLT->GetBinContent(i);
       
-    }
-    
-    std::cout << " -- Content of histogram MjjHLT : " << std::endl;
-    for (int i(0); i< hist_trigSF_MjjHLT->GetNbinsX()+2; ++i){
-      std::cout << " -- bin " << i << " [" 
-		<< hist_trigSF_MjjHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
-		<< hist_trigSF_MjjHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
-		<<  hist_trigSF_MjjHLT->GetBinContent(i);
-      std::cout	<< std::endl;
-    }
-    
-    std::cout << " -- Content of histogram JetHLT : " << std::endl;
-    for (int i(0); i< hist_trigSF_JetHLT->GetNbinsX()+2; ++i){
-      std::cout << " -- bin " << i << " [" 
-		<< hist_trigSF_JetHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
-		<< hist_trigSF_JetHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
-		<<  hist_trigSF_JetHLT->GetBinContent(i);
+	  //change first bins to "1": no data/MC scale factor applied...
+	  if (i>0 && hist_trigSF_METHLT->GetBinContent(i) == 0) {
+	    hist_trigSF_METHLT->SetBinContent(i,1);
+	    std::cout << " -> changed to " <<  hist_trigSF_METHLT->GetBinContent(i);
+	  }
+	  std::cout	<< std::endl;
+	  
+	}
+	
+	std::cout << " -- Content of histogram MjjHLT : " << std::endl;
+	for (int i(0); i< hist_trigSF_MjjHLT->GetNbinsX()+2; ++i){
+	  std::cout << " -- bin " << i << " [" 
+		    << hist_trigSF_MjjHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
+		    << hist_trigSF_MjjHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
+		    <<  hist_trigSF_MjjHLT->GetBinContent(i);
+	  std::cout	<< std::endl;
+	}
+	
+	std::cout << " -- Content of histogram JetHLT : " << std::endl;
+	for (int i(0); i< hist_trigSF_JetHLT->GetNbinsX()+2; ++i){
+	  std::cout << " -- bin " << i << " [" 
+		    << hist_trigSF_JetHLT->GetXaxis()->GetBinLowEdge(i) << "-" 
+		    << hist_trigSF_JetHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
+		    <<  hist_trigSF_JetHLT->GetBinContent(i);
       
-      //change first bins to "1": no data/MC scale factor applied...
-      if (i>0 && hist_trigSF_JetHLT->GetBinContent(i) == 0) {
-	hist_trigSF_JetHLT->SetBinContent(i,1);
-	std::cout << " -> changed to " <<  hist_trigSF_JetHLT->GetBinContent(i);
+	  //change first bins to "1": no data/MC scale factor applied...
+	  if (i>0 && hist_trigSF_JetHLT->GetBinContent(i) == 0) {
+	    hist_trigSF_JetHLT->SetBinContent(i,1);
+	    std::cout << " -> changed to " <<  hist_trigSF_JetHLT->GetBinContent(i);
+	  }
+	  std::cout	<< std::endl;
+	}
       }
-      std::cout	<< std::endl;
-    }
-
-    if(!do_idiso_err_){
-      fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
-      fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
-      fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
-      
-      fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
-      fillVector("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
-      fillVector("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-      fillVector("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-      fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-      fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
-    }
-    else if(do_idiso_errmuore_){
-      fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
-      fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
-      fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
-      
-      fillVectorError("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
-    }
-    else{
-      fillVectorError("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
-      fillVectorError("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
-      
-      fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
-      fillVector("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
-      fillVector("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
-      fillVector("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
-      fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
-      fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);    
-    }
-
     
-    for (unsigned iBin(0); iBin<muTight_idSF_.size();++iBin){
-      muTight_idisoSF_.push_back(muTight_idSF_[iBin]*muTight_isoSF_[iBin]);
-      if(muVeto_idDataEff_[iBin]>1)muVeto_idDataEff_[iBin]=1;
-      if(muVeto_isoDataEff_[iBin]>1)muVeto_isoDataEff_[iBin]=1;
-      if(muVeto_idMCEff_[iBin]>1)muVeto_idMCEff_[iBin]=1;
-      if(muVeto_isoMCEff_[iBin]>1)muVeto_isoMCEff_[iBin]=1;
-      if(muVeto_idDataEff_[iBin]<0)muVeto_idDataEff_[iBin]=0;
-      if(muVeto_isoDataEff_[iBin]<0)muVeto_isoDataEff_[iBin]=0;
-      if(muVeto_idMCEff_[iBin]<0)muVeto_idMCEff_[iBin]=0;
-      if(muVeto_isoMCEff_[iBin]<0)muVeto_isoMCEff_[iBin]=0;
-      muVeto_idisoDataEff_.push_back(muVeto_idDataEff_[iBin]*muVeto_isoDataEff_[iBin]);
-      muVeto_idisoMCEff_.push_back(muVeto_idMCEff_[iBin]*muVeto_isoMCEff_[iBin]);
-    }
-
-    for (unsigned iBin(0); iBin<eVeto_idisoDataEff_.size();++iBin){
-      if(eVeto_idisoDataEff_[iBin]>1)eVeto_idisoDataEff_[iBin]=1;
-      if(eVeto_idisoMCEff_[iBin]>1)eVeto_idisoMCEff_[iBin]=1;
-      if(eVeto_idisoDataEff_[iBin]<0)eVeto_idisoDataEff_[iBin]=0;
-      if(eVeto_idisoMCEff_[iBin]<0)eVeto_idisoMCEff_[iBin]=0;
+      if(!do_idiso_err_){
+	fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
+	fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
+	fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+	
+	fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
+	fillVector("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
+	fillVector("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+	fillVector("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+	fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+	fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
+      }
+      else if(do_idiso_errmuore_){
+	fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
+	fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
+	fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
+	
+	fillVectorError("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_,do_idiso_errupordown_);
+	fillVectorError("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_,do_idiso_errupordown_);
+	fillVectorError("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_,do_idiso_errupordown_);
+	fillVectorError("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_,do_idiso_errupordown_);
+	fillVectorError("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
+	fillVectorError("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
+      }
+      else{
+	fillVectorError("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_,do_idiso_errupordown_);
+	fillVectorError("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
+	fillVectorError("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
+	
+	fillVector("data/scale_factors/mu_tight_id_SF.txt",muTight_idSF_);
+	fillVector("data/scale_factors/mu_tight_iso_SF.txt",muTight_isoSF_);
+	fillVector("data/scale_factors/mu_loose_id_data_eff.txt",muVeto_idDataEff_);
+	fillVector("data/scale_factors/mu_loose_iso_data_eff.txt",muVeto_isoDataEff_);
+	fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
+	fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);    
+      }
+      
+      
+      for (unsigned iBin(0); iBin<muTight_idSF_.size();++iBin){
+	muTight_idisoSF_.push_back(muTight_idSF_[iBin]*muTight_isoSF_[iBin]);
+	if(muVeto_idDataEff_[iBin]>1)muVeto_idDataEff_[iBin]=1;
+	if(muVeto_isoDataEff_[iBin]>1)muVeto_isoDataEff_[iBin]=1;
+	if(muVeto_idMCEff_[iBin]>1)muVeto_idMCEff_[iBin]=1;
+	if(muVeto_isoMCEff_[iBin]>1)muVeto_isoMCEff_[iBin]=1;
+	if(muVeto_idDataEff_[iBin]<0)muVeto_idDataEff_[iBin]=0;
+	if(muVeto_isoDataEff_[iBin]<0)muVeto_isoDataEff_[iBin]=0;
+	if(muVeto_idMCEff_[iBin]<0)muVeto_idMCEff_[iBin]=0;
+	if(muVeto_isoMCEff_[iBin]<0)muVeto_isoMCEff_[iBin]=0;
+	muVeto_idisoDataEff_.push_back(muVeto_idDataEff_[iBin]*muVeto_isoDataEff_[iBin]);
+	muVeto_idisoMCEff_.push_back(muVeto_idMCEff_[iBin]*muVeto_isoMCEff_[iBin]);
+      }
+      
+      for (unsigned iBin(0); iBin<eVeto_idisoDataEff_.size();++iBin){
+	if(eVeto_idisoDataEff_[iBin]>1)eVeto_idisoDataEff_[iBin]=1;
+	if(eVeto_idisoMCEff_[iBin]>1)eVeto_idisoMCEff_[iBin]=1;
+	if(eVeto_idisoDataEff_[iBin]<0)eVeto_idisoDataEff_[iBin]=0;
+	if(eVeto_idisoMCEff_[iBin]<0)eVeto_idisoMCEff_[iBin]=0;
+      }
+    
+      
+      eventsWithGenElectron_ = 0;
+      eventsWithGenElectronFromTau_ = 0;
+      eventsWithGenMuon_ = 0;
+      eventsWithGenMuonFromTau_ = 0;
+      eventsWithGenElectronInAcc_ = 0;
+      eventsWithGenElectronFromTauInAcc_ = 0;
+      eventsWithGenMuonInAcc_ = 0;
+      eventsWithGenMuonFromTauInAcc_ = 0;
+      eventsWithGenTau_ = 0;
     }
     
-
-    eventsWithGenElectron_ = 0;
-    eventsWithGenElectronFromTau_ = 0;
-    eventsWithGenMuon_ = 0;
-    eventsWithGenMuonFromTau_ = 0;
-    eventsWithGenElectronInAcc_ = 0;
-    eventsWithGenElectronFromTauInAcc_ = 0;
-    eventsWithGenMuonInAcc_ = 0;
-    eventsWithGenMuonFromTauInAcc_ = 0;
-    eventsWithGenTau_ = 0;
-    }
-
     return 0;
   }
-
+  
   int HinvWeights::Execute(TreeEvent *event) {
 
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -303,31 +314,38 @@ namespace ic {//namespace
 //       event->Add("inclusive_btag_weight", inclusive_btag_weight);
 //     }
 
-    //get METnoMuons:
+      //get METnoMuons:
     Met const* metHLT = event->GetPtr<Met>(input_met_);
     Met const* metL1 = event->GetPtr<Met>("metNoMuons");
-    
-    double l1met = metL1->pt();
-    double lMax = hist_trigSF_METL1->GetXaxis()->GetBinCenter(hist_trigSF_METL1->GetNbinsX());
-    double lMin = hist_trigSF_METL1->GetXaxis()->GetBinCenter(1);
-    if (l1met > lMax)  l1met = lMax;
-    if (l1met < lMin)  l1met = lMin;
-    int lBin = hist_trigSF_METL1->GetXaxis()->FindFixBin(l1met);
-    double metl1weight = hist_trigSF_METL1->GetBinContent(lBin);
-    if (do_trg_weights_) eventInfo->set_weight("trig_metL1",metl1weight);
-    else eventInfo->set_weight("!trig_metL1",metl1weight);
-    //std::cout << " -- MET L1 " << l1met << " " << metl1weight << std::endl;
 
+    double l1met = metL1->pt();
     double hltmet = metHLT->pt();
-    lMax = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(hist_trigSF_METHLT->GetNbinsX());
-    lMin = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(1);
-    if (hltmet > lMax)  hltmet = lMax;
-    if (hltmet < lMin)  hltmet = lMin;
-    lBin = hist_trigSF_METHLT->GetXaxis()->FindFixBin(hltmet);
-    double methltweight = hist_trigSF_METHLT->GetBinContent(lBin);
-    if (do_trg_weights_) eventInfo->set_weight("trig_metHLT",methltweight);
-    else eventInfo->set_weight("!trig_metHLT",methltweight);
-    //std::cout << " -- MET HLT " << hltmet << " " << methltweight << std::endl;
+    
+    double non3dtrgweight=1;
+
+    if(!do_3dtrg_weights_){
+      double lMax = hist_trigSF_METL1->GetXaxis()->GetBinCenter(hist_trigSF_METL1->GetNbinsX());
+      double lMin = hist_trigSF_METL1->GetXaxis()->GetBinCenter(1);
+      if (l1met > lMax)  l1met = lMax;
+      if (l1met < lMin)  l1met = lMin;
+      int lBin = hist_trigSF_METL1->GetXaxis()->FindFixBin(l1met);
+      double metl1weight = hist_trigSF_METL1->GetBinContent(lBin);
+      non3dtrgweight=non3dtrgweight*metl1weight;
+      if (do_trg_weights_) eventInfo->set_weight("trig_metL1",metl1weight);
+      else eventInfo->set_weight("!trig_metL1",metl1weight);
+      //std::cout << " -- MET L1 " << l1met << " " << metl1weight << std::endl;
+
+      lMax = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(hist_trigSF_METHLT->GetNbinsX());
+      lMin = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(1);
+      if (hltmet > lMax)  hltmet = lMax;
+      if (hltmet < lMin)  hltmet = lMin;
+      lBin = hist_trigSF_METHLT->GetXaxis()->FindFixBin(hltmet);
+      double methltweight = hist_trigSF_METHLT->GetBinContent(lBin);
+      non3dtrgweight=non3dtrgweight*methltweight;
+      if (do_trg_weights_) eventInfo->set_weight("trig_metHLT",methltweight);
+      else eventInfo->set_weight("!trig_metHLT",methltweight);
+      //std::cout << " -- MET HLT " << hltmet << " " << methltweight << std::endl;
+    }
 
     double mjjhltweight = 1.0;
     double jet1hltweight = 1.0;
@@ -347,39 +365,87 @@ namespace ic {//namespace
       Candidate const* jet2 = dijet->GetCandidate("jet2");
       
       mjj = dijet->M();
-      lMax = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(hist_trigSF_MjjHLT->GetNbinsX());
-      lMin = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(1);
-      if (mjj > lMax)  mjj = lMax;
-      if (mjj < lMin)  mjj = lMin;
-      lBin = hist_trigSF_MjjHLT->GetXaxis()->FindFixBin(mjj);
-      mjjhltweight = hist_trigSF_MjjHLT->GetBinContent(lBin);
-      if (do_trg_weights_) eventInfo->set_weight("trig_mjjHLT",mjjhltweight);
-      else eventInfo->set_weight("!trig_mjjHLT",mjjhltweight);
-      //std::cout << " -- Mjj HLT " << mjj << " " << mjjhltweight << std::endl;
-      
-      lMax = hist_trigSF_JetHLT->GetXaxis()->GetBinCenter(hist_trigSF_JetHLT->GetNbinsX());
-      lMin = hist_trigSF_JetHLT->GetXaxis()->GetBinCenter(1);
       jet1pt = jet1->pt();
-      if (jet1pt < lMin)  jet1pt = lMin;
-      if (jet1pt > lMax)  jet1pt = lMax;
-      lBin = hist_trigSF_JetHLT->GetXaxis()->FindFixBin(jet1pt);
-      jet1hltweight = hist_trigSF_JetHLT->GetBinContent(lBin);
-      if (do_trg_weights_) eventInfo->set_weight("trig_jet1HLT",jet1hltweight);
-      else eventInfo->set_weight("!trig_jet1HLT",jet1hltweight);
-      //std::cout << " -- Jet1 HLT " << jet1pt << " " << jet1hltweight << std::endl;
-      
       jet2pt = jet2->pt();
-      if (jet2pt > lMax)  jet2pt = lMax;
-      if (jet2pt < lMin)  jet2pt = lMin;
-      lBin = hist_trigSF_JetHLT->GetXaxis()->FindFixBin(jet2pt);
-      jet2hltweight = hist_trigSF_JetHLT->GetBinContent(lBin);
-      if (do_trg_weights_) eventInfo->set_weight("trig_jet2HLT",jet2hltweight);
-      else eventInfo->set_weight("!trig_jet2HLT",jet2hltweight);
-      //std::cout << " -- Jet2 HLT " << jet2pt << " " << jet2hlt << std::endl;
 
-      //weight *= (ele_trg * tau_trg);
-      //event->Add("trigweight_1", ele_trg);
-      //event->Add("trigweight_2", tau_trg);
+      if(do_3dtrg_weights_){
+	//GET THE 3 3D TRIG WEIGHTS
+	unsigned nruns=3;
+	double trgweights[nruns];
+	unsigned naxes=3;
+	unsigned bins[nruns][naxes];
+	
+	for(unsigned irun=0;irun<nruns;irun++){
+	  unsigned nbins[3];
+	  nbins[0]=hist_trigSF_3D[irun]->GetXaxis()->GetNbins();
+	  nbins[1]=hist_trigSF_3D[irun]->GetYaxis()->GetNbins();
+	  nbins[2]=hist_trigSF_3D[irun]->GetZaxis()->GetNbins();
+	  bins[irun][0]=hist_trigSF_3D[irun]->GetXaxis()->FindFixBin(jet2pt);
+	  bins[irun][1]=hist_trigSF_3D[irun]->GetYaxis()->FindFixBin(hltmet);
+	  bins[irun][2]=hist_trigSF_3D[irun]->GetZaxis()->FindFixBin(mjj);
+	  bool axesallinrange=true;
+	  for(unsigned iaxis=0;iaxis<naxes;iaxis++){
+	    if(bins[irun][iaxis]==0){
+	      std::cout<<"Warning: value of axis "<<iaxis<<" for run "<<irun<<" is below trig weight histogram range setting weight to 1."<<std::endl;
+	      trgweights[irun]=1;
+	      axesallinrange=false;
+	    }
+	    else if(bins[irun][iaxis]>nbins[iaxis]){
+	      std::cout<<"Warning: value of axis "<<iaxis<<" for run "<<irun<<" is above trig weight histogram range setting weight to 1."<<std::endl;
+	      trgweights[irun]=1;
+	      axesallinrange=false;
+	    }
+	  }
+	  if(axesallinrange){
+	    trgweights[irun]=hist_trigSF_3D[irun]->GetBinContent(bins[irun][0],bins[irun][1],bins[irun][2]);
+	    //std::cout<<"Weight for run: "<<irun<<" is "<<trgweights[irun]<<std::endl;
+	  }
+	}
+
+	//LUMI WEIGHTED AVERAGE OVER RUNS
+	double trgweight3d=(trgweights[0]*Alumi_+trgweights[1]*BClumi_+trgweights[2]*Dlumi_)/(Alumi_+BClumi_+Dlumi_);
+
+	//SET TRIGGER WEIGHT
+	if (do_trg_weights_) eventInfo->set_weight("trig_3d",trgweight3d);
+	else eventInfo->set_weight("!trig_3d",trgweight3d);
+	
+      }
+      else{
+	double lMax = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(hist_trigSF_MjjHLT->GetNbinsX());
+	double lMin = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(1);
+	if (mjj > lMax)  mjj = lMax;
+	if (mjj < lMin)  mjj = lMin;
+	int lBin = hist_trigSF_MjjHLT->GetXaxis()->FindFixBin(mjj);
+	mjjhltweight = hist_trigSF_MjjHLT->GetBinContent(lBin);
+	non3dtrgweight=non3dtrgweight*mjjhltweight;
+	if (do_trg_weights_) eventInfo->set_weight("trig_mjjHLT",mjjhltweight);
+	else eventInfo->set_weight("!trig_mjjHLT",mjjhltweight);
+	//std::cout << " -- Mjj HLT " << mjj << " " << mjjhltweight << std::endl;
+	
+	lMax = hist_trigSF_JetHLT->GetXaxis()->GetBinCenter(hist_trigSF_JetHLT->GetNbinsX());
+	lMin = hist_trigSF_JetHLT->GetXaxis()->GetBinCenter(1);
+	if (jet1pt < lMin)  jet1pt = lMin;
+	if (jet1pt > lMax)  jet1pt = lMax;
+	lBin = hist_trigSF_JetHLT->GetXaxis()->FindFixBin(jet1pt);
+	jet1hltweight = hist_trigSF_JetHLT->GetBinContent(lBin);
+	non3dtrgweight=non3dtrgweight*jet1hltweight;
+	if (do_trg_weights_) eventInfo->set_weight("trig_jet1HLT",jet1hltweight);
+	else eventInfo->set_weight("!trig_jet1HLT",jet1hltweight);
+	//std::cout << " -- Jet1 HLT " << jet1pt << " " << jet1hltweight << std::endl;
+	
+	if (jet2pt > lMax)  jet2pt = lMax;
+	if (jet2pt < lMin)  jet2pt = lMin;
+	lBin = hist_trigSF_JetHLT->GetXaxis()->FindFixBin(jet2pt);
+	jet2hltweight = hist_trigSF_JetHLT->GetBinContent(lBin);
+	non3dtrgweight=non3dtrgweight*jet2hltweight;
+	if (do_trg_weights_) eventInfo->set_weight("trig_jet2HLT",jet2hltweight);
+	else eventInfo->set_weight("!trig_jet2HLT",jet2hltweight);
+	//std::cout << " -- Jet2 HLT " << jet2pt << " " << jet2hlt << std::endl;
+	//std::cout<<"Weight for run: 0 is "<<non3dtrgweight<<std::endl;
+	//weight *= (ele_trg * tau_trg);
+	//event->Add("trigweight_1", ele_trg);
+	//event->Add("trigweight_2", tau_trg);
+      }
     }
 
     //eventInfo->set_weight("!trigger",metl1weight*methltweight*mjjhltweight*jet1hltweight*jet2hltweight);

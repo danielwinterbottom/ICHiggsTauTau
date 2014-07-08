@@ -76,7 +76,7 @@ namespace ic {
       lRLE.lumi = 0;
     }
     lRLE.evt = eventInfo->event();
-
+    std::cout<<"run: "<<lRLE.run<<", lumi: "<<lRLE.lumi<<", event: "<<lRLE.evt<<std::endl;
     if (events_.find(lRLE) != events_.end() || events_.size()==0) {
 
       if (filter_) return 0;
@@ -157,6 +157,15 @@ namespace ic {
         fout << "Elec " << i << ", Muon " << j << " DR: " <<
           ROOT::Math::VectorUtil::DeltaR(elecs[i]->vector(), muons[j]->vector()) << std::endl;
       }
+    }
+
+    std::vector<Tau*> const& taus = event->GetPtrVec<Tau>("taus");
+    fout << "-----------------------------------------" << std::endl;
+    fout << "   Printing collection taus" << std::endl;
+    fout << "-----------------------------------------" << std::endl;
+
+    for(unsigned itau=0;itau<taus.size();itau++){
+      fout << "Tau "<<itau<<" "<<taus[itau]->vector()<<std::endl;
     }
 
     std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
