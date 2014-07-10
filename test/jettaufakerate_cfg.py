@@ -278,18 +278,18 @@ else:
 from CommonTools.ParticleFlow.Tools.pfIsolation import setupPFElectronIso, setupPFMuonIso
 process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons')
 process.muIsoSequence = setupPFMuonIso(process, 'pfAllMuons')
-massSearchReplaceAnyInputTag(process.pfParticleSelectionSequence,
-                              "offlinePrimaryVertices",
-                              "goodOfflinePrimaryVertices",
-                              verbose=True)
-massSearchReplaceAnyInputTag(process.eleIsoSequence,
-                              "offlinePrimaryVertices",
-                              "goodOfflinePrimaryVertices",
-                              verbose=True)
-massSearchReplaceAnyInputTag(process.muIsoSequence,
-                              "offlinePrimaryVertices",
-                              "goodOfflinePrimaryVertices",
-                              verbose=True)
+#massSearchReplaceAnyInputTag(process.pfParticleSelectionSequence,
+#                              "offlinePrimaryVertices",
+#                              "goodOfflinePrimaryVertices",
+#                              verbose=True)
+#massSearchReplaceAnyInputTag(process.eleIsoSequence,
+#                              "offlinePrimaryVertices",
+#                              "goodOfflinePrimaryVertices",
+#                              verbose=True)
+#massSearchReplaceAnyInputTag(process.muIsoSequence,
+#                              "offlinePrimaryVertices",
+#                              "goodOfflinePrimaryVertices",
+#                              verbose=True)
 
 process.eleIsoSequence.remove(process.elPFIsoValueCharged03NoPFIdPFIso)
 process.eleIsoSequence.remove(process.elPFIsoValueChargedAll03NoPFIdPFIso)

@@ -71,8 +71,8 @@ int main(int argc, char* argv[]){
   double jet_pt, jet_eta, tau_pt, tau_eta;
   jet_pt = 20.0;
   jet_eta = 2.3; 
-  tau_pt = 0.0;
-  tau_eta = 5; 
+  tau_pt = 20.0;
+  tau_eta = 2.3; 
    
   std::cout << "** Kinematics **" << std::endl;
   std::cout << boost::format(param_fmt) % "jet_pt" % jet_pt;
