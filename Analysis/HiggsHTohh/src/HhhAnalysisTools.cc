@@ -121,9 +121,9 @@ namespace ic {
    
     // Attempt at exclusive categories
     alias_map_["2jet0tag"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679)";
-    alias_map_["1jet0tag"]     = "(n_prebjets==1 && prebjetbcsv_1<0.679)";
+    alias_map_["1jet0tag"]     = "(n_prebjets==1 && prebjetbcsv_1<0.898)";
     alias_map_["2jet1tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679)";
-    alias_map_["1jet1tag"]     = "(n_prebjets==1 && prebjetbcsv_1>0.679)";
+    alias_map_["1jet1tag"]     = "(n_prebjets==1 && prebjetbcsv_1>0.898)";
     alias_map_["2jet2tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
     
     //Extra categories for making control plots
@@ -161,6 +161,7 @@ namespace ic {
     alias_map_["ZTT_Shape_Sample"]  = "Embedded";
     alias_map_["QCD_Shape_Sample"]  = "Special_3_Data";
     alias_map_["W_Shape_Sample"]    = "WJetsToLNuSoup";
+   
 
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {

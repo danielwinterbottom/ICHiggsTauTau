@@ -196,6 +196,12 @@ namespace ic {
       InitCategory("btag_loose");
 
       InitCategory("nobtag");
+
+      InitCategory("1jet0tag");
+      InitCategory("1jet1tag");
+      InitCategory("2jet0tag");
+      InitCategory("2jet1tag");
+      InitCategory("2jet2tag");
     }
     return 0;
   }
@@ -593,7 +599,23 @@ namespace ic {
     if(n_prebjets_>1)
     {
         SetPassCategory("presasha");
+        if(prebjetbcsv_1_ < 0.679 && prebjetbcsv_2_ < 0.679 ) {
+            SetPassCategory("2jet0tag");
+        } else if(prebjetbcsv_1_ > 0.679 && prebjetbcsv_2_ < 0.679 ) {
+            SetPassCategory("2jet1tag");
+        } else if(prebjetbcsv_1_ > 0.679 && prebjetbcsv_2_ > 0.679 ) {
+            SetPassCategory("2jet2tag");
+        }
     }
+    if(n_prebjets_==1) {
+        if(prebjetbcsv_1_ < 0.898) {
+            SetPassCategory("1jet0tag");
+        } else {
+            SetPassCategory("1jet1tag");
+        }
+    }
+    
+    
     
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low");
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ > pt2_split)  SetPassCategory("btag_high");
@@ -767,6 +789,11 @@ namespace ic {
     print_cats.push_back("nobtag");
     print_cats.push_back("sasha");
     print_cats.push_back("presasha");
+    print_cats.push_back("1jet0tag");
+    print_cats.push_back("1jet1tag");
+    print_cats.push_back("2jet0tag");
+    print_cats.push_back("2jet1tag");
+    print_cats.push_back("2jet2tag");
     std::cout << boost::format("%-20s") % "Selections:";
     for (unsigned i = 0; i < print_selections.size(); ++i) {
       std::cout << boost::format("%-12s") % print_selections[i];
