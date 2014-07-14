@@ -1,40 +1,35 @@
 #ifndef ICHiggsTauTau_LightTrack_hh
 #define ICHiggsTauTau_LightTrack_hh
+#include <vector>
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "Math/Vector3D.h"
 #include "Math/Vector3Dfwd.h"
-#include <vector>
 
 namespace ic {
 
+class LightTrack {
+ public:
+  LightTrack();
+  virtual ~LightTrack();
 
-  class LightTrack {
+  inline std::size_t id() const { return id_; }
+  inline void set_id(std::size_t const& id) { id_ = id; }
 
-    private:
+  inline double pt() const { return pt_; }
+  inline void set_pt(double const& pt) { pt_ = pt; }
 
-    public:
-      LightTrack();
-      virtual ~LightTrack();
+  inline double vz() const { return vz_; }
+  inline void set_vz(double const& vz) { vz_ = vz; }
 
-      inline std::size_t id() const { return id_; }
-      inline void set_id(std::size_t const& id) { id_ = id; }
+  virtual void Print() const;
 
-      inline double pt() const { return pt_; }
-      inline void set_pt(double const& pt) { pt_ = pt; }
+ private:
+  float pt_;
+  float vz_;
+  std::size_t id_;
+};
 
-      inline double vz() const { return vz_; }
-      inline void set_vz(double const& vz) { vz_ = vz; }
-
-      virtual void Print() const;
-
-    private:
-      float pt_;
-      float vz_;
-      std::size_t id_;
-  };
-
-  typedef std::vector<ic::LightTrack> LightTrackCollection;
-
+typedef std::vector<ic::LightTrack> LightTrackCollection;
 }
 #endif

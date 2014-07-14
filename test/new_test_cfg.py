@@ -324,6 +324,15 @@ process.icPFJetProducer = cms.EDProducer('ICNewPFJetProducer',
     )
 )
 
+##############################################################################
+# Track Module
+##############################################################################
+
+process.icTrackProducer = cms.EDProducer('ICLightTrackProducer',
+  branch  = cms.string("pfJetTracks"),
+  input   = cms.InputTag("icPFJetProducer", "requestedTracks")
+)
+
 process.icEventProducer = cms.EDProducer('ICEventProducer')
 
 
@@ -355,6 +364,7 @@ process.p = cms.Path(
   process.icPFMuonProducer+
   process.icCaloJetProducer+
   process.icPFJetProducer+
+  process.icTrackProducer+
   process.icEventProducer
   )
 
