@@ -1,16 +1,3 @@
-/*! \mainpage
-
-This page documents the ICHiggsTauTau package, specificially the CMSSW-facing parts that's
-responsible for ntuple production. The main components are object definitions, consisting of
-one C++ class for each physics object and then a corresponding CMSSW producer module. 
-
-
-\tableofcontents
-
-\section objects Objects
-
-\subsection electrons Electrons
-
 Definition: ic::Electron
 
 CMSSW Producer: ICElectronProducer
@@ -29,17 +16,16 @@ process.icElectronProducer = cms.EDProducer('ICElectronProducer',
     isPF = cms.bool(False)
 )
 ~~~~~~~~~~~~~
+ The `vertexCollection` is used to to calculate impact parameters of the electron track with respect to the first vertex in the given collection.  In this example a pre-filtered vertex collection is used. The `pfIsoPostifx` is a string that helps the module locate the correct particle-flow isolation values in the event.  If these isolation values are not found in the event they will be silently ignored by the module. See the section on particle-flow isolation for further details. The `isPF` flag determines the type of the input, PF if `True` and gsfElectron if `False`.  Note that currently the use of PF Electrons is not widespread in CMS, and this module will do nothing if the flag is set to `True`.  It is intended that support will be added when required.
 
-The `vertexCollection` is used to to calculate impact parameters of the electron 
-track with respect to the first vertex in the given collection.  In this example
-a pre-filtered vertex collection is used. The `pfIsoPostifx` is a string that helps
-the module locate the correct particle-flow isolation values in the event.  If
-these isolation values are not found in the event they will be silently ignored by
-the module. See the section on particle-flow isolation for further details.
-The `isPF` flag determines the type of the input, PF if `True` and 
-gsfElectron if `False`.  Note that currently the use of PF Electrons is not widespread
-in CMS, and this module will do nothing if the flag is set to `True`.  It is intended
-that support will be added when required.
+Default information:
+
+Name          | Getter        | CMSSW Equivalent
+------------- | ------------- | -------------
+Four-momentum | ic::Candidate::vector() | reco::Candidate::p4()
+HCAL tower energy sum (\f$\Delta\mathrm{R} = 0.3\f$)  | ic::Electron::dr03_hcal_tower_sum_et() | reco::GsfElectron::dr03HcalTowerSumEt()
+ECAL rechit energy sum (\f$\Delta\mathrm{R} = 0.3\f$)  | ic::Electron::dr03_ecal_rechit_sum_et() | reco::GsfElectron::dr03EcalRecHitSumEt()
+Track \f$p_{\mathrm T}\f$ sum (\f$\Delta\mathrm{R} = 0.3\f$)  | ic::Electron::dr03_tk_sum_pt() | reco::GsfElectron::dr03TkSumPt()
 
 \subsection photons Photons
 
@@ -93,6 +79,3 @@ the module. See the section on particle-flow isolation for further details.
 The `isPF` flag determines the type of the input, PF if `True` and 
 gsfElectron if `False`. Important:  For a PF input the module expects that all
 PFCandidates will be PF Muons
-
-
-*/

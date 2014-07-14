@@ -16,11 +16,6 @@ process.GlobalTag.globaltag = cms.string('START53_V22::All')
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
-# process.TFileService = cms.Service("TFileService",
-#   fileName = cms.string("EventTree.root"),
-#   closeFileFast = cms.untracked.bool(True)
-# )
-
 ##############################################################################
 ## Selection
 ##############################################################################
@@ -46,7 +41,12 @@ process.selectedPFMuons = cms.EDFilter("GenericPFCandidateSelector",
 
 process.selectedCaloJets = cms.EDFilter("CaloJetRefSelector",
   src = cms.InputTag("ak5CaloJets"),
-  cut = cms.string("pt > 30 & abs(eta) < 4.7")
+  cut = cms.string("abs(eta) < 4.7")
+)
+
+process.selectedPFJets = cms.EDFilter("PFJetRefSelector",
+  src = cms.InputTag("ak5PFJets"),
+  cut = cms.string("abs(eta) < 4.7")
 )
 
 ##############################################################################
@@ -68,22 +68,101 @@ process.jetPartons = cms.EDProducer("PartonSelector",
     src = cms.InputTag("genParticles"),
     withLeptons = cms.bool(False)
 )
-process.jetPartonMatches = cms.EDProducer("JetPartonMatcher",
+
+process.caloJetPartonMatches = cms.EDProducer("JetPartonMatcher",
     jets = cms.InputTag("ak5CaloJets"),
     coneSizeToAssociate = cms.double(0.3),
     partons = cms.InputTag("jetPartons")
 )
-process.jetFlavourAssociation = cms.EDProducer("JetFlavourIdentifier",
-    srcByReference = cms.InputTag("jetPartonMatches"),
+process.caloJetFlavourAssociation = cms.EDProducer("JetFlavourIdentifier",
+    srcByReference = cms.InputTag("caloJetPartonMatches"),
+    physicsDefinition = cms.bool(False)
+)
+
+process.pfJetPartonMatches = cms.EDProducer("JetPartonMatcher",
+    jets = cms.InputTag("ak5PFJets"),
+    coneSizeToAssociate = cms.double(0.3),
+    partons = cms.InputTag("jetPartons")
+)
+process.pfJetFlavourAssociation = cms.EDProducer("JetFlavourIdentifier",
+    srcByReference = cms.InputTag("pfJetPartonMatches"),
     physicsDefinition = cms.bool(False)
 )
 ##############################################################################
 ## Jet Extras
 ##############################################################################
-process.icJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
+process.icCaloJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
     input       = cms.InputTag("ak5CaloJets"),
-    flavourMap  = cms.InputTag("jetFlavourAssociation")
+    flavourMap  = cms.InputTag("caloJetFlavourAssociation")
 )
+
+process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
+    input       = cms.InputTag("ak5PFJets"),
+    flavourMap  = cms.InputTag("pfJetFlavourAssociation")
+)
+
+
+process.ak5CaloL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
+    srcRho = cms.InputTag("kt6CaloJets","rho"),
+    algorithm = cms.string('AK5Calo'),
+    level = cms.string('L1FastJet')
+)
+process.ak5CaloL2Relative = cms.ESProducer("LXXXCorrectionESProducer",
+    algorithm = cms.string('AK5Calo'),
+    level = cms.string('L2Relative')
+)
+process.ak5CaloL3Absolute = cms.ESProducer("LXXXCorrectionESProducer",
+    algorithm = cms.string('AK5Calo'),
+    level = cms.string('L3Absolute')
+)
+
+process.ak5PFL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
+    srcRho = cms.InputTag("kt6PFJets","rho"),
+    algorithm = cms.string('AK5PF'),
+    level = cms.string('L1FastJet')
+)
+process.ak5PFL2Relative = cms.ESProducer("LXXXCorrectionESProducer",
+    algorithm = cms.string('AK5PF'),
+    level = cms.string('L2Relative')
+)
+process.ak5PFL3Absolute = cms.ESProducer("LXXXCorrectionESProducer",
+    algorithm = cms.string('AK5PF'),
+    level = cms.string('L3Absolute')
+)
+
+##############################################################################
+## Jet B-tagging
+##############################################################################
+process.load("RecoJets.JetAssociationProducers.ak5JTA_cff")
+from RecoJets.JetAssociationProducers.ak5JTA_cff import ak5JetTracksAssociatorAtVertex
+process.load("RecoBTag.Configuration.RecoBTag_cff")
+import RecoBTag.Configuration.RecoBTag_cff as btag
+process.ak5JetTracksAssociatorAtVertexAK5PF = ak5JetTracksAssociatorAtVertex.clone(
+  jets = cms.InputTag("ak5PFJets")
+  )
+process.impactParameterTagInfosAK5PF = btag.impactParameterTagInfos.clone(
+  jetTracks = cms.InputTag('ak5JetTracksAssociatorAtVertexAK5PF')
+  )
+process.secondaryVertexTagInfosAK5PF = btag.secondaryVertexTagInfos.clone(
+  trackIPTagInfos = cms.InputTag('impactParameterTagInfosAK5PF')
+  )
+process.simpleSecondaryVertexHighEffBJetTagsAK5PF = btag.simpleSecondaryVertexHighEffBJetTags.clone (
+  tagInfos = cms.VInputTag('secondaryVertexTagInfosAK5PF')
+  )
+process.simpleSecondaryVertexHighPurBJetTagsAK5PF = btag.simpleSecondaryVertexHighPurBJetTags.clone (
+  tagInfos = cms.VInputTag('secondaryVertexTagInfosAK5PF')
+  )
+process.combinedSecondaryVertexBJetTagsAK5PF = btag.combinedSecondaryVertexBJetTags.clone (
+  tagInfos = cms.VInputTag('impactParameterTagInfosAK5PF','secondaryVertexTagInfosAK5PF')
+  )
+process.btaggingSequenceAK5PF = cms.Sequence(
+  process.ak5JetTracksAssociatorAtVertexAK5PF
+  +process.impactParameterTagInfosAK5PF
+  +process.secondaryVertexTagInfosAK5PF
+  +process.simpleSecondaryVertexHighEffBJetTagsAK5PF
+  +process.simpleSecondaryVertexHighPurBJetTagsAK5PF
+  +process.combinedSecondaryVertexBJetTagsAK5PF
+  )
 
 ##############################################################################
 ## Electron Extras
@@ -191,9 +270,57 @@ process.icPFMuonProducer = cms.EDProducer('ICMuonProducer',
 process.icCaloJetProducer = cms.EDProducer('ICNewCaloJetProducer',
     branch                    = cms.string("caloJets"),
     input                     = cms.InputTag("selectedCaloJets"),
-    includeJetFlavour         = cms.InputTag("icJetFlavourCalculator"),
+    includeJetFlavour         = cms.bool(True),
+    inputJetFlavour           = cms.InputTag("icCaloJetFlavourCalculator"),
+    applyJECs                 = cms.bool(True),
+    includeJECs               = cms.bool(True),
+    JECs                      = cms.PSet(
+      L1FastJet  = cms.string("ak5CaloL1Fastjet"),
+      L2Relative = cms.string("ak5CaloL2Relative"),
+      L3Absolute = cms.string("ak5CaloL3Absolute")
+    ),
+    applyCutAfterJECs         = cms.bool(True),
+    cutAfterJECs              = cms.string("pt > 30"),
+    inputSVInfo               = cms.InputTag(""),
+    requestSVInfo             = cms.bool(False),
+    BTagDiscriminators        = cms.PSet(),
     specificConfig = cms.PSet(
-      includeJetID = cms.InputTag("ak5JetID")
+      includeJetID    = cms.bool(True),
+      inputJetID      = cms.InputTag("ak5JetID")
+    )
+)
+
+##############################################################################
+# PF Jet Module
+##############################################################################
+process.icPFJetProducer = cms.EDProducer('ICNewPFJetProducer',
+    branch                    = cms.string("pfJets"),
+    input                     = cms.InputTag("selectedPFJets"),
+    includeJetFlavour         = cms.bool(True),
+    inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
+    applyJECs                 = cms.bool(True),
+    includeJECs               = cms.bool(True),
+    JECs                      = cms.PSet(
+      L1FastJet  = cms.string("ak5PFL1Fastjet"),
+      L2Relative = cms.string("ak5PFL2Relative"),
+      L3Absolute = cms.string("ak5PFL3Absolute")
+    ),
+    applyCutAfterJECs         = cms.bool(True),
+    cutAfterJECs              = cms.string("pt > 30"),
+    inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAK5PF"),
+    requestSVInfo             = cms.bool(True),
+    BTagDiscriminators        = cms.PSet(
+      simpleSecondaryVertexHighEff = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"),
+      simpleSecondaryVertexHighPur = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"),
+      combinedSecondaryVertex      = cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF")
+    ),
+    specificConfig = cms.PSet(
+      includePileupID    = cms.bool(False),
+      inputPileupID      = cms.InputTag(""),
+      includeTrackBasedVars = cms.bool(True),
+      inputTracks           = cms.InputTag("generalTracks"),
+      inputVertices         = cms.InputTag("offlinePrimaryVertices"),
+      requestTracks         = cms.bool(True)
     )
 )
 
@@ -201,10 +328,12 @@ process.icEventProducer = cms.EDProducer('ICEventProducer')
 
 
 process.p = cms.Path(
+  process.btaggingSequenceAK5PF+
   process.selectedVertices+
   process.selectedElectrons+
   process.selectedMuons+
   process.selectedCaloJets+
+  process.selectedPFJets+
   process.selectedPFMuons+
   process.pfParticleSelectionSequence+
   process.eleIsoSequence+
@@ -215,13 +344,17 @@ process.p = cms.Path(
   process.icHttElecIsoCheck+
   process.icHttMuonOverlapCheck+
   process.jetPartons+
-  process.jetPartonMatches+
-  process.jetFlavourAssociation+
-  process.icJetFlavourCalculator+
+  process.caloJetPartonMatches+
+  process.caloJetFlavourAssociation+
+  process.icCaloJetFlavourCalculator+
+  process.pfJetPartonMatches+
+  process.pfJetFlavourAssociation+
+  process.icPFJetFlavourCalculator+
   process.icElectronProducer+
   process.icMuonProducer+
   process.icPFMuonProducer+
   process.icCaloJetProducer+
+  process.icPFJetProducer+
   process.icEventProducer
   )
 

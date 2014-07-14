@@ -48,4 +48,5 @@
   <class name="std::vector<unsigned long>"/>
   <class name="edm::Wrapper<std::vector<unsigned long> >"/>
   <class name="mithep::TH2DAsymErr"/>
+  <class name="edm::Wrapper<reco::SecondaryVertexTagInfoRefVector>"/>
 </lcgdict>
