@@ -49,10 +49,7 @@ namespace ic {
     met_ = 0;
     met_x_ = 0;
     met_y_ = 0;
-    metnomu_x_ = 0;
-    metnomu_y_ = 0;
     met_significance_ = 0;
-    metnomu_significance_ = 0;
     sumet_ = 0;
     ht_ = 0;
     mht_ = 0;
@@ -60,23 +57,14 @@ namespace ic {
     unclustered_et_ = 0;
     jet1met_dphi_ = 0;
     jet2met_dphi_ = 0;
-    jet1metnomu_dphi_ = 0;
-    jet2metnomu_dphi_ = 0;
     jetmet_mindphi_ = 0;
-    jetmetnomu_mindphi_ = 0;
     jetunclet_mindphi_ = 0;
     metunclet_dphi_ = 0;
-    metnomuunclet_dphi_ = 0;
     dijetmet_scalarSum_pt_ = 0;
     dijetmet_vectorialSum_pt_ = 0;
     dijetmet_ptfraction_ = 0;
     jet1met_scalarprod_ = 0;
     jet2met_scalarprod_ = 0;
-    dijetmetnomu_scalarSum_pt_ = 0;
-    dijetmetnomu_vectorialSum_pt_ = 0;
-    dijetmetnomu_ptfraction_ = 0;
-    jet1metnomu_scalarprod_ = 0;
-    jet2metnomu_scalarprod_ = 0;
     n_jets_cjv_30_ = 0;
     n_jets_cjv_20EB_30EE_ = 0;
     cjvjetpt_=-1;
@@ -142,10 +130,7 @@ namespace ic {
     outputTree_->Branch("met",&met_);
     outputTree_->Branch("met_x",&met_x_);
     outputTree_->Branch("met_y",&met_y_);
-    outputTree_->Branch("metnomu_x",&metnomu_x_);
-    outputTree_->Branch("metnomu_y",&metnomu_y_);
     outputTree_->Branch("met_significance",&met_significance_);
-    outputTree_->Branch("metnomu_significance",&metnomu_significance_);
     outputTree_->Branch("sumet",&sumet_);
     outputTree_->Branch("ht",&ht_);
     outputTree_->Branch("mht",&mht_);
@@ -153,23 +138,14 @@ namespace ic {
     outputTree_->Branch("unclustered_et",&unclustered_et_);
     outputTree_->Branch("jet1met_dphi",&jet1met_dphi_);
     outputTree_->Branch("jet2met_dphi",&jet2met_dphi_);
-    outputTree_->Branch("jet1metnomu_dphi",&jet1metnomu_dphi_);
-    outputTree_->Branch("jet2metnomu_dphi",&jet2metnomu_dphi_);
     outputTree_->Branch("jetmet_mindphi",&jetmet_mindphi_);
-    outputTree_->Branch("jetmetnomu_mindphi",&jetmetnomu_mindphi_);
     outputTree_->Branch("jetunclet_mindphi",&jetunclet_mindphi_);
     outputTree_->Branch("metunclet_dphi",&metunclet_dphi_);
-    outputTree_->Branch("metnomuunclet_dphi",&metnomuunclet_dphi_);
     outputTree_->Branch("dijetmet_scalarSum_pt",&dijetmet_scalarSum_pt_);
     outputTree_->Branch("dijetmet_vectorialSum_pt",&dijetmet_vectorialSum_pt_);
     outputTree_->Branch("dijetmet_ptfraction",&dijetmet_ptfraction_);
     outputTree_->Branch("jet1met_scalarprod",&jet1met_scalarprod_);
     outputTree_->Branch("jet2met_scalarprod",&jet2met_scalarprod_);
-    outputTree_->Branch("dijetmetnomu_scalarSum_pt",&dijetmetnomu_scalarSum_pt_);
-    outputTree_->Branch("dijetmetnomu_vectorialSum_pt",&dijetmetnomu_vectorialSum_pt_);
-    outputTree_->Branch("dijetmetnomu_ptfraction",&dijetmetnomu_ptfraction_);
-    outputTree_->Branch("jet1metnomu_scalarprod",&jet1metnomu_scalarprod_);
-    outputTree_->Branch("jet2metnomu_scalarprod",&jet2metnomu_scalarprod_);
     outputTree_->Branch("n_jets_cjv_30",&n_jets_cjv_30_);
     outputTree_->Branch("n_jets_cjv_20EB_30EE",&n_jets_cjv_20EB_30EE_);
     outputTree_->Branch("cjvjetpt",&cjvjetpt_);
@@ -325,7 +301,6 @@ namespace ic {
       ROOT::Math::PtEtaPhiEVector jet1vec = jet1->vector();
       ROOT::Math::PtEtaPhiEVector jet2vec = jet2->vector();
       ROOT::Math::PtEtaPhiEVector metvec = met->vector();
-      ROOT::Math::PtEtaPhiEVector metnomuvec = metnomuons->vector();
 
       weight_nolep_ = wt;
       total_weight_lepveto_ =wt*vetowt;
@@ -350,9 +325,6 @@ namespace ic {
 	l1met_ = l1met[0]->energy();
       }
       metnomuons_ = metnomuons->pt();
-      metnomu_x_ = metnomuvec.Px();
-      metnomu_y_ = metnomuvec.Py();
-      metnomu_significance_ = met_significance_/met_*metnomuons_;
 
       double ht =0;
       ROOT::Math::PtEtaPhiEVector mhtVec(0,0,0,0);
@@ -369,22 +341,14 @@ namespace ic {
 
       double dphi1 = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,metvec));
       double dphi2 = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet2vec,metvec));
-      double nomudphi1 = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,metnomuvec));
-      double nomudphi2 = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet2vec,metnomuvec));
       jet1met_dphi_ = dphi1;
       jet2met_dphi_ = dphi2;
-      jet1metnomu_dphi_ = nomudphi1;
-      jet2metnomu_dphi_ = nomudphi2;
       jetmet_mindphi_ = std::min(dphi1,dphi2);
-      jetmetnomu_mindphi_ = std::min(nomudphi1,nomudphi2);
-      
+
 
       dijetmet_scalarSum_pt_ = jet1->pt()+jet2->pt()+met->pt();
       dijetmet_vectorialSum_pt_ = (jet1vec+jet2vec+metvec).Pt();
       dijetmet_ptfraction_ = dijet->pt()/(dijet->pt()+met->pt());
-      dijetmetnomu_scalarSum_pt_ = jet1->pt()+jet2->pt()+metnomuons->pt();
-      dijetmetnomu_vectorialSum_pt_ = (jet1vec+jet2vec+metnomuvec).Pt();
-      dijetmetnomu_ptfraction_ = dijet->pt()/(dijet->pt()+metnomuons->pt());
 
       jet1met_scalarprod_ = (jet1vec.Px()*met_x_+jet1vec.Py()*met_y_)/met_;
       jet2met_scalarprod_ = (jet2vec.Px()*met_x_+jet2vec.Py()*met_y_)/met_;
@@ -392,7 +356,6 @@ namespace ic {
       jetunclet_mindphi_ = std::min(fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,unclVec)),
 				    fabs(ROOT::Math::VectorUtil::DeltaPhi(jet2vec,unclVec)));
       metunclet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(unclVec,metvec));
-      metnomuunclet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(unclVec,metnomuvec));
 
       double eta_high = (jet1->eta() > jet2->eta()) ? jet1->eta() : jet2->eta();
       double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
@@ -431,7 +394,7 @@ namespace ic {
       }
       static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
-      if (jetmetnomu_mindphi_>1.5 && metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
+      if (jetmet_mindphi_>1.5 && met_significance_ > 3.0 &&  dijet_deta_>3.6){
 	outputTree_->Fill();
 	++processed;
       }

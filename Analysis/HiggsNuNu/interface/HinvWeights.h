@@ -8,6 +8,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 #include <string>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
+#include "TH1F.h"
 #include "TH3F.h"
 
 namespace ic {
@@ -36,17 +37,15 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, std::string, input_params)
   CLASS_MEMBER(HinvWeights, std::string, sample_name)
   CLASS_MEMBER(HinvWeights, std::string, trg_weight_file)
-  CLASS_MEMBER(HinvWeights, double, Alumi)
-  CLASS_MEMBER(HinvWeights, double, BClumi)
-  CLASS_MEMBER(HinvWeights, double, Dlumi)
 
   TFile *triggerSF_;
   TH1F *hist_trigSF_METL1;
   TH1F *hist_trigSF_METHLT;
   TH1F *hist_trigSF_MjjHLT;
   TH1F *hist_trigSF_JetHLT;
-
-  std::vector<TH3F*> hist_trigSF_3D;
+  TH3F *hist_trigSF_h3DHLT_Dijet40_A;
+  TH3F *hist_trigSF_h3DHLT_Dijet35_BC;
+  TH3F *hist_trigSF_h3DHLT_Dijet30_D;
 
   TH1F *tighteleweight;
   TH1F *tightmuweight;
