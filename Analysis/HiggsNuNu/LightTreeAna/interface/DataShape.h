@@ -10,7 +10,7 @@ namespace ic {
   class DataShape : public LTModule{
     CLASS_MEMBER(DataShape,std::vector<std::string>,shape)
     CLASS_MEMBER(DataShape,std::vector<std::string>,shapename)
-    CLASS_MEMBER(DataShape,std::string,dataset)
+    CLASS_MEMBER(DataShape,std::vector<std::string>,dataset)
     CLASS_MEMBER(DataShape,std::string,cat)
     CLASS_MEMBER(DataShape,std::string,basesel)
     CLASS_MEMBER(DataShape,std::string,dataweight)
@@ -20,6 +20,12 @@ namespace ic {
       std::vector<std::string> shapes;
       shapes.push_back(shape);
       shape_ = shapes;
+      return *this;
+    }
+    virtual DataShape & set_dataset(std::string const& dataset) {
+      std::vector<std::string> datasets;
+      datasets.push_back(dataset);
+      dataset_ = datasets;
       return *this;
     }
     DataShape(std::string);

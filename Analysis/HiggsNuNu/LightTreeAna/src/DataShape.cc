@@ -20,12 +20,15 @@ namespace ic{
   int DataShape::Init(TFile* fs){
     fs_=fs;
     std::cout<<"Initialisation info for "<<module_name_<<":"<<std::endl;
-    std::cout<<"Data set is: "<<dataset_<<std::endl;
-    std::cout<<"Base selection is: "<<basesel_<<std::endl;
-    std::cout<<"Extra selection is: "<<cat_<<std::endl;
-    std::cout<<"Data weight is: "<<dataweight_<<std::endl;
+    std::cout<<"  Data sets are: "<<std::endl;
+      for(unsigned iset=0;iset<dataset_.size();iset++){
+	std::cout<<"    "<<dataset_[iset]<<std::endl;
+      }
+    std::cout<<"  Base selection is: "<<basesel_<<std::endl;
+    std::cout<<"  Extra selection is: "<<cat_<<std::endl;
+    std::cout<<"  Data weight is: "<<dataweight_<<std::endl;
     if((shapename_.size()!=shape_.size())&&shapename_.size()!=0){
-      std::cout<<"WARNING: different numbers of shape names and shapes expect errors!"<<std::endl;
+      std::cout<<"  WARNING: different numbers of shape names and shapes expect errors!"<<std::endl;
     }
     return 0;
   };
@@ -36,25 +39,20 @@ namespace ic{
     TFile *file=fs_;
     TDirectory* dir;
     if(dirname_==""){
-      std::cout<<"1"<<std::endl;
-      std::cout<<dataset_.c_str();
-      dir=file->mkdir(dataset_.c_str());
+      dir=file->mkdir(this->module_name().c_str());
     }
     else if(!fs_->GetDirectory(dirname_.c_str())){
-      std::cout<<"2"<<std::endl;
       dir=file->mkdir(dirname_.c_str());
     }
     else{
-      std::cout<<"3"<<std::endl;
-      dir=fs_->GetDirectory(dirname_.c_str());
+      dir=file->GetDirectory(dirname_.c_str());
     }
-    std::cout<<"4"<<std::endl;
     dir->cd();
     //Get Shapes for Data
-    std::cout<<"  Getting Data shape"<<std::endl;
+    std::cout<<"  Getting shape"<<std::endl;
 
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
-      TH1F  datashape = filemanager->GetSetShape(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
+      TH1F  datashape = filemanager->GetSetsShape(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
       dir->cd();
       std::string histname;
       if(shapename_.size()==0){

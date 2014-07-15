@@ -24,15 +24,15 @@ namespace ic{
   int DataNormShape::Init(TFile* fs){
     fs_=fs;
     std::cout<<"Initialisation info for "<<module_name_<<":"<<std::endl;
-    std::cout<<"Signal MC set is: "<<sigmcset_<<std::endl;
-    std::cout<<"Control MC set is: "<<contmcset_<<std::endl;
-    std::cout<<"Control data set is: "<<contdataset_<<std::endl;
-    std::cout<<"Base selection is: "<<basesel_<<std::endl;
-    std::cout<<"Signal extra selection is: "<<sigcat_<<std::endl;
-    std::cout<<"Control extra selection is: "<<contcat_<<std::endl;
-    std::cout<<"Signal MC weight is: "<<sigmcweight_<<std::endl;
-    std::cout<<"Control MC weight is: "<<contmcweight_<<std::endl;
-    std::cout<<"Control data weight is: "<<contdataweight_<<std::endl;
+    std::cout<<"  Signal MC set is: "<<sigmcset_<<std::endl;
+    std::cout<<"  Control MC set is: "<<contmcset_<<std::endl;
+    std::cout<<"  Control data set is: "<<contdataset_<<std::endl;
+    std::cout<<"  Base selection is: "<<basesel_<<std::endl;
+    std::cout<<"  Signal extra selection is: "<<sigcat_<<std::endl;
+    std::cout<<"  Control extra selection is: "<<contcat_<<std::endl;
+    std::cout<<"  Signal MC weight is: "<<sigmcweight_<<std::endl;
+    std::cout<<"  Control MC weight is: "<<contmcweight_<<std::endl;
+    std::cout<<"  Control data weight is: "<<contdataweight_<<std::endl;
     if((shapename_.size()!=shape_.size())&&shapename_.size()!=0){
       std::cout<<"WARNING: different numbers of shape names and shapes expect errors!"<<std::endl;
     }
@@ -68,7 +68,7 @@ namespace ic{
     double ncdata = Integral(&contdatashape);
     double ncbkg = Integral(&contbkgshape);
 
-    std::cout<<"ncmc: "<<ncmc<<", ncdata: "<<ncdata<<", ncbkg: "<<ncbkg<<std::endl;
+    std::cout<<"  ncmc: "<<ncmc<<", ncdata: "<<ncdata<<", ncbkg: "<<ncbkg<<std::endl;
 
     //Calculate weight
     double weight=(ncdata-ncbkg)/ncmc;

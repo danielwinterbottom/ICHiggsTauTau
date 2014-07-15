@@ -96,6 +96,7 @@ namespace ic{
       }
     }
     std::cout<<"All modules ran and exited with status 0."<<std::endl;
+    fs->Close();
     return 0;
   };
 
