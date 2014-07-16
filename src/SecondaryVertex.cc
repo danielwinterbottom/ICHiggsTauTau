@@ -1,14 +1,10 @@
 #include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 
 namespace ic {
-  //Constructors/Destructors
-  SecondaryVertex::SecondaryVertex() {
-  }
+// Constructors/Destructors
+SecondaryVertex::SecondaryVertex() : distance_3d_(0.), distance_err_3d_(0.) {}
 
-  SecondaryVertex::~SecondaryVertex() {
-  }
+SecondaryVertex::~SecondaryVertex() {}
 
-  void SecondaryVertex::Print() const {
-    Vertex::Print(); 
-  }
+void SecondaryVertex::Print() const { Vertex::Print(); }
 }

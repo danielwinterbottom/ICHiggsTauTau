@@ -325,12 +325,31 @@ process.icPFJetProducer = cms.EDProducer('ICNewPFJetProducer',
 )
 
 ##############################################################################
+# Vertex Module
+##############################################################################
+process.icVertexProducer = cms.EDProducer('ICVertexProducer',
+  branch  = cms.string("vertices"),
+  input   = cms.InputTag("offlinePrimaryVertices"),
+  firstVertexOnly = cms.bool(True),
+  trackPtThreshold = cms.double(0.0),
+  requestTracks = cms.bool(True)
+)
+
+process.icMergedTracks = cms.EDProducer('ICTrackMerger',
+  merge = cms.VInputTag(
+    cms.InputTag("icPFJetProducer", "requestedTracks"),
+    cms.InputTag("icVertexProducer", "requestedTracks")
+  )
+)
+
+
+##############################################################################
 # Track Module
 ##############################################################################
 
 process.icTrackProducer = cms.EDProducer('ICLightTrackProducer',
-  branch  = cms.string("pfJetTracks"),
-  input   = cms.InputTag("icPFJetProducer", "requestedTracks")
+  branch  = cms.string("tracks"),
+  input   = cms.InputTag("icMergedTracks")
 )
 
 process.icEventProducer = cms.EDProducer('ICEventProducer')
@@ -364,6 +383,8 @@ process.p = cms.Path(
   process.icPFMuonProducer+
   process.icCaloJetProducer+
   process.icPFJetProducer+
+  process.icVertexProducer+
+  process.icMergedTracks+
   process.icTrackProducer+
   process.icEventProducer
   )
