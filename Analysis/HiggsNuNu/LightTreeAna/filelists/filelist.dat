@@ -36,7 +36,8 @@ SingleTBar-t Top MC_SingleTBar-t-powheg-tauola.root
 WW VV MC_WW-pythia6-tauola.root
 WZ VV MC_WZ-pythia6-tauola.root
 ZZ VV MC_ZZ-pythia6-tauola.root
-WGamma VV MC_WGamma.root
+
+WGamma WGamma MC_WGamma.root
 
 DYJetsToLLHighPt ZJets_ll MC_DYJetsToLL_PtZ-100-madgraph.root
 DYJetsToLL ZJets_ll MC_DYJetsToLL.root

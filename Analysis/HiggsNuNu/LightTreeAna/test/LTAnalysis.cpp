@@ -130,24 +130,35 @@ int main(int argc, char* argv[]){
   //DATA SHAPE GENERATION
   DataShape data("data");
   data.set_dataset(dataset)
+    .set_dirname("data_obs")
     .set_shape(shape)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+"&&(passtrigger==1||passparkedtrigger1==1||passparkedtrigger2==1)");
 
   DataShape signal("signal");
   signal.set_dataset("sig125")
+    .set_dirname("qqH")
     .set_shape(shape)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
   
   DataShape vv("vv");
   vv.set_dataset("VV")
+    .set_dirname("vv")
     .set_shape(shape)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
 
   DataShape top("top");
   top.set_dataset("Top")
+    .set_dirname("top")
+    .set_shape(shape)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat);
+
+  DataShape wgamma("wgamma");
+  wgamma.set_dataset("WGamma")
+    .set_dirname("wg")
     .set_shape(shape)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
@@ -164,6 +175,7 @@ int main(int argc, char* argv[]){
   DataNormShape wmunu("wmunu");
   wmunu.set_sigmcset("WJets_munu")
     .set_shape(shape)
+    .set_dirname("wmu")
     .set_contmcset("WJets_munu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
@@ -175,6 +187,7 @@ int main(int argc, char* argv[]){
   DataNormShape wenu("wenu");
   wenu.set_sigmcset("WJets_enu")
     .set_shape(shape)
+    .set_dirname("wel")
     .set_contmcset("WJets_enu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
@@ -186,6 +199,7 @@ int main(int argc, char* argv[]){
   DataNormShape wtaunu("wtaunu");
   wtaunu.set_sigmcset("WJets_taunu")
     .set_shape(shape)
+    .set_dirname("wtau")
     .set_contmcset("WJets_taunu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
@@ -211,9 +225,13 @@ int main(int argc, char* argv[]){
   DataNormShape QCD("QCD");
   QCD.set_sigmcset("VBF-QCD")
     .set_shape(shape)
+    .set_dirname("qcd")
     .set_contmcset("VBF-QCD")
     .set_contdataset(dataset)
     .set_contbkgset(QCDcontbkgsets)
+    .set_sigmcweight("total_weight_lepveto")
+    .set_contmcweight("total_weight_lepveto")
+    .set_contdataweight("weight_nolep")
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel("&&(passtrigger==1||passparkedtrigger1==1||passparkedtrigger2==1)")
     .set_sigcat(sigcat)
@@ -230,6 +248,7 @@ int main(int argc, char* argv[]){
   DataZNormShape zmumu("zmumu");
   zmumu.set_sigmcewkset("ZJets_ll_vbf")
     .set_shape(shape)
+    .set_dirname("zvv")
     .set_sigmcqcdset("ZJets_ll")
     .set_contmcewkset("ZJets_ll_vbf")
     .set_contmcqcdset("ZJets_ll")
@@ -341,7 +360,7 @@ int main(int argc, char* argv[]){
   dataele.set_is_data(true)
     .set_scale(1)
     .set_legname("Data")
-    .set_sample("data");
+    .set_sample("data_obs");
 
   LTPlotElement wmunuele;
   wmunuele.set_is_data(false)
@@ -349,7 +368,7 @@ int main(int argc, char* argv[]){
     .set_color(kOrange-4)
     .set_in_stack(true)
     .set_legname("W#rightarrow#mu#nu")
-    .set_sample("WJets_munu");
+    .set_sample("wmu");
 
   LTPlotElement wenuele;
   wenuele.set_is_data(false)
@@ -357,7 +376,7 @@ int main(int argc, char* argv[]){
     .set_color(kOrange  + 2)
     .set_in_stack(true)
     .set_legname("W#rightarrow e#nu")
-    .set_sample("WJets_enu");
+    .set_sample("wel");
 
   LTPlotElement wtaunuele;
   wtaunuele.set_is_data(false)
@@ -365,7 +384,7 @@ int main(int argc, char* argv[]){
     .set_color(kOrange + 4)
     .set_in_stack(true)
     .set_legname("W#rightarrow#tau#nu")
-    .set_sample("WJets_taunu");
+    .set_sample("wtau");
 
   LTPlotElement zmumuele;
   zmumuele.set_is_data(false)
@@ -373,7 +392,7 @@ int main(int argc, char* argv[]){
     .set_color(kAzure  + 2)
     .set_in_stack(true)
     .set_legname("Z#rightarrow#nu#nu")
-    .set_sample("zmumu");
+    .set_sample("zvv");
 
   LTPlotElement qcdele;
   qcdele.set_is_data(false)
@@ -381,7 +400,7 @@ int main(int argc, char* argv[]){
     .set_color(kMagenta-10)
     .set_in_stack(true)
     .set_legname("QCD")
-    .set_sample("VBF-QCD");
+    .set_sample("qcd");
 
   LTPlotElement vvele;
   vvele.set_is_data(false)
@@ -390,6 +409,14 @@ int main(int argc, char* argv[]){
     .set_in_stack(true)
     .set_legname("VV")
     .set_sample("vv");
+
+  LTPlotElement wgele;
+  wgele.set_is_data(false)
+    .set_scale(1)
+    .set_color(kGreen-3)
+    .set_in_stack(true)
+    .set_legname("WGamma")
+    .set_sample("wg");
 
   LTPlotElement topele;
   topele.set_is_data(false)
@@ -405,7 +432,7 @@ int main(int argc, char* argv[]){
     .set_color(kRed)
     .set_in_stack(false)
     .set_legname("Signalx20")
-    .set_sample("signal");
+    .set_sample("qqH");
 
   elementvec.push_back(dataele);
   elementvec.push_back(wmunuele);
@@ -414,6 +441,7 @@ int main(int argc, char* argv[]){
   elementvec.push_back(zmumuele);
   elementvec.push_back(qcdele);
   elementvec.push_back(vvele);
+  elementvec.push_back(wgele);
   elementvec.push_back(topele);
   elementvec.push_back(sigele);
 
@@ -439,6 +467,7 @@ int main(int argc, char* argv[]){
   analysis->AddModule(&QCD);
   analysis->AddModule(&zmumu);
   analysis->AddModule(&vv);
+  analysis->AddModule(&wgamma);
   analysis->AddModule(&top);
   analysis->AddModule(&data);
   analysis->AddModule(&signal);
