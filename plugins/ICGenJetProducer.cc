@@ -1,163 +1,86 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICGenJetProducer.hh"
-#include <boost/functional/hash.hpp>
 #include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-
+#include <string>
+#include <vector>
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/Run.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
-
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
-#include "UserCode/ICHiggsTauTau/interface/Jet.hh"
-
-
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/PatCandidates/interface/JetCorrFactors.h"
-
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 
-#include "boost/format.hpp"
-
-
-ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& iConfig) {
-  produces<std::vector<unsigned> >("selectGenParticles");
-  input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
-  branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
-  add_all_ = iConfig.getUntrackedParameter<bool>("addAll");
-  store_gen_particles_ = iConfig.getUntrackedParameter<bool>("storeGenParticles");
-  add_all_pt_cut_ = iConfig.getUntrackedParameter<double>("addAllPtCut");
-  add_all_eta_cut_ = iConfig.getUntrackedParameter<double>("addAllEtaCut");
-  cand_vec = new std::vector<ic::GenJet>();
-  merge_labels_ = iConfig.getUntrackedParameter<std::vector<std::string> >("mergeLabels");
-  std::cout << "Info in <ICGenJetProducer>: Picking up GenJet requests from the following modules:" << std::endl;
-  for (unsigned i = 0; i < merge_labels_.size(); ++i) {
-    std::cout << "-- " << merge_labels_[i] << std::endl;
-  }
-  if (add_all_) {
-    std::cout << "-- Additionally adding all GenJets with pT > " << add_all_pt_cut_
-        << " GeV and |eta| < " << add_all_eta_cut_ << std::endl;
-  } else {
-    std::cout << "-- Addition of other GenJets is switched off" << std::endl;
+ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
+    : input_(config.getParameter<edm::InputTag>("input")),
+      branch_(config.getParameter<std::string>("branch")),
+      input_particles_(config.getParameter<edm::InputTag>("inputGenParticles")),
+      request_gen_particles_(config.getParameter<bool>("requestGenParticles")) {
+  gen_jets_ = new std::vector<ic::GenJet>();
+  if (request_gen_particles_) {
+    produces<reco::GenParticleRefVector>("requestedGenParticles");
   }
 }
 
+ICGenJetProducer::~ICGenJetProducer() { delete gen_jets_; }
 
-ICGenJetProducer::~ICGenJetProducer() {
- // do anything here that needs to be done at desctruction time
- // (e.g. close files, deallocate resources etc.)
- delete cand_vec;
-}
+void ICGenJetProducer::produce(edm::Event& event,
+                               const edm::EventSetup& setup) {
+  edm::Handle<edm::View<reco::GenJet> > jets_handle;
+  event.getByLabel(input_, jets_handle);
 
+  edm::Handle<reco::GenParticleCollection> parts_handle;
+  std::map<reco::GenParticle const*, std::size_t> part_map;
+  if (request_gen_particles_) {
+    event.getByLabel(input_particles_, parts_handle);
+    for (unsigned i = 0; i < parts_handle->size(); ++i) {
+      part_map[&parts_handle->at(i)] = i;
+    }
+  }
 
+  std::auto_ptr<reco::GenParticleRefVector> part_requests(
+      new reco::GenParticleRefVector());
 
-// ------------ method called to produce the data  ------------
-void ICGenJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-  boost::hash<reco::GenJet const*> hasher;
-  boost::hash<reco::GenParticle const*> part_hasher;
+  gen_jets_->clear();
+  gen_jets_->resize(jets_handle->size());
 
-  edm::Handle<reco::GenJetCollection> genjetCollection;
-  iEvent.getByLabel(input_label_,genjetCollection);
-  //const reco::GenJet *ptr_to_first  = &((genjetCollection->at(0)));
-
-  edm::Handle<reco::GenParticleCollection> partCollection;
-  iEvent.getByLabel("genParticles",partCollection);
-  std::auto_ptr<std::vector<unsigned> > jet_particles(new std::vector<unsigned>());
-  
-  std::set<reco::GenJet const*> ptr_set;
-  std::vector<edm::Handle<std::vector<unsigned> > > merge_handles;
-  merge_handles.resize(merge_labels_.size());
-
-  if (!add_all_) {
-    for (unsigned i = 0; i < merge_handles.size(); ++i) {
-      iEvent.getByLabel(merge_labels_[i],"selectGenJets", merge_handles[i]);
-      for (unsigned j = 0; j < merge_handles[i]->size(); ++j) {
-        const reco::GenJet *ptr = &(genjetCollection->at(merge_handles[i]->at(j)));
-        ptr_set.insert(ptr);
+  for (unsigned i = 0; i < jets_handle->size(); ++i) {
+    reco::GenJet const& src = jets_handle->at(i);
+    ic::GenJet& dest = gen_jets_->at(i);
+    dest.set_id(gen_jet_hasher_(&src));
+    dest.set_pt(src.pt());
+    dest.set_eta(src.eta());
+    dest.set_phi(src.phi());
+    dest.set_energy(src.energy());
+    dest.set_charge(src.charge());
+    dest.set_flavour(0);
+    dest.set_n_constituents(src.getGenConstituents().size());
+    if (request_gen_particles_) {
+      std::vector<std::size_t> constituents;
+      for (unsigned i = 0; i < src.getGenConstituents().size(); ++i) {
+        reco::GenParticle const* ptr = src.getGenConstituent(i);
+        std::map<reco::GenParticle const*, std::size_t>::const_iterator it =
+            part_map.find(ptr);
+        if (it != part_map.end()) {
+          constituents.push_back(particle_hasher_(ptr));
+          part_requests->push_back(
+              reco::GenParticleRef(parts_handle, it->second));
+        }
       }
-    }
-  } else {
-    for (unsigned i = 0; i < genjetCollection->size(); ++i)
-      if (genjetCollection->at(i).pt() >= add_all_pt_cut_ && 
-        fabs(genjetCollection->at(i).eta()) <= fabs(add_all_eta_cut_)) {
-        ptr_set.insert(&(genjetCollection->at(i)));
+      dest.set_constituents(constituents);
     }
   }
-
-
-  //reco::GenJetCollection::const_iterator iter;
-  std::set<reco::GenJet const*>::const_iterator iter;
-  cand_vec->resize(0);
-  cand_vec->reserve(genjetCollection->size());
-
-  for (iter = ptr_set.begin(); iter != ptr_set.end(); ++iter) {
-    cand_vec->push_back(ic::GenJet());
-    ic::GenJet & cand = cand_vec->back();
-    //Set candidate data
-    cand.set_id(hasher(*iter));
-    cand.set_pt((*iter)->pt());
-    cand.set_eta((*iter)->eta());
-    cand.set_phi((*iter)->phi());
-    cand.set_energy((*iter)->energy());
-    cand.set_charge((*iter)->charge());
-    cand.set_flavour(0);
-    cand.set_n_constituents((*iter)->getGenConstituents().size());
-    
-    std::vector<std::size_t> constituents;
-    for (unsigned i = 0; i < (*iter)->getGenConstituents().size(); ++i) {
-      reco::GenParticle const *part = (*iter)->getGenConstituent(i);
-      unsigned idx = unsigned(part - &(partCollection->at(0)));
-      jet_particles->push_back(idx);
-      if (store_gen_particles_) constituents.push_back(part_hasher(part));
-    }
-    cand.set_constituents(constituents); 
-
-  }
-  iEvent.put(jet_particles, "selectGenParticles");
+  if (request_gen_particles_) event.put(part_requests, "requestedGenParticles");
 }
 
-// ------------ method called once each job just before starting event loop  ------------
 void ICGenJetProducer::beginJob() {
- ic::StaticTree::tree_->Branch(branch_name_.c_str(),&cand_vec);
+  ic::StaticTree::tree_->Branch(branch_.c_str(), &gen_jets_);
 }
 
-// ------------ method called once each job just after ending the event loop  ------------
-void ICGenJetProducer::endJob() {
-}
+void ICGenJetProducer::endJob() {}
 
-// ------------ method called when starting to processes a run  ------------
-void ICGenJetProducer::beginRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a run  ------------
-void ICGenJetProducer::endRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when starting to processes a luminosity block  ------------
-void ICGenJetProducer::beginLuminosityBlock(edm::LuminosityBlock&, 
-                                             edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-void ICGenJetProducer::endLuminosityBlock(edm::LuminosityBlock&, 
-                                           edm::EventSetup const&) {
-}
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-ICGenJetProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
-}
-
-//define this as a plug-in
+// define this as a plug-in
 DEFINE_FWK_MODULE(ICGenJetProducer);

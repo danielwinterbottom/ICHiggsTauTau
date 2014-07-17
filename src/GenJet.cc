@@ -1,14 +1,9 @@
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 
 namespace ic {
-  //Constructors/Destructors
-  GenJet::GenJet() {
-  }
+GenJet::GenJet() : flavour_(0), n_constituents_(0) {}
 
-  GenJet::~GenJet() {
-  }
+GenJet::~GenJet() {}
 
-  void GenJet::Print() const {
-    Candidate::Print();
-  }
+void GenJet::Print() const { Candidate::Print(); }
 }
