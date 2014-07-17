@@ -109,6 +109,25 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     tau.set_vy(iter->vy());
     tau.set_vz(iter->vz());
 
+    #ifdef CMSSW_5_3_13
+    
+    if (trackCollection->size() > 0) {
+      reco::Track const* ptr_first = &(trackCollection->at(0));
+      static boost::hash<reco::Track const*> track_hasher;
+
+      std::vector<edm::Ptr<reco::PFCandidate> > const& charged_pf = iter->signalPFChargedHadrCands();
+      std::vector<std::size_t> trk_ids;
+      for (unsigned i = 0; i <charged_pf.size(); ++i) {
+        if (charged_pf[i]->trackRef().isNonnull()) {
+          unsigned idx = unsigned(&(*(charged_pf[i]->trackRef())) - ptr_first);
+          jet_tracks->push_back(idx);
+          trk_ids.push_back(track_hasher(&(*(charged_pf[i]->trackRef()))));
+        }
+      }
+      if (store_ids_) tau.set_constituent_tracks(trk_ids);
+    }
+    
+    #else
     if (trackCollection->size() > 0) {
       reco::Track const* ptr_first = &(trackCollection->at(0));
       static boost::hash<reco::Track const*> track_hasher;
@@ -124,6 +143,8 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
       }
       if (store_ids_) tau.set_constituent_tracks(trk_ids);
     }
+    
+    #endif
 
     // if (iter->triggerObjectMatches().size() > 0) {
     //   std::vector<std::size_t> hlt_paths;
