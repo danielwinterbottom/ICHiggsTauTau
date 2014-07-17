@@ -1,16 +1,10 @@
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 
 namespace ic {
-  //Constructors/Destructors
-  TriggerPath::TriggerPath() {
+TriggerPath::TriggerPath()
+    : name_(""), accept_(false), prescale_(0), id_(0), version_(0) {}
 
+TriggerPath::~TriggerPath() {}
 
-  }
-
-  TriggerPath::~TriggerPath() {
-  }
-
-  void TriggerPath::Print() const {
-  }
+void TriggerPath::Print() const {}
 }
-    

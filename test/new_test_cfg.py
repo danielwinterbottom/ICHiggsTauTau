@@ -416,8 +416,47 @@ process.icGenParticlesFromJetsProducer = cms.EDProducer('ICGenParticleProducer',
   includeDaughters = cms.bool(False)
 )
 
-process.icEventProducer = cms.EDProducer('ICEventProducer')
+##############################################################################
+# Supercluster Module
+##############################################################################
+process.icSuperClusterProducer = cms.EDProducer('ICSuperClusterProducer',
+  branch  = cms.string("superClusters"),
+  inputBarrel   = cms.InputTag("correctedHybridSuperClusters"),
+  inputEndcap   = cms.InputTag("correctedMulti5x5SuperClustersWithPreshower")
+)
 
+##############################################################################
+# L1Extra Modules
+##############################################################################
+process.icL1EmIsolatedProducer = cms.EDProducer('ICCandidateProducer',
+  branch  = cms.string("l1EmIsolated"),
+  input   = cms.InputTag("l1extraParticles", "Isolated", "RECO")
+)
+
+process.icL1MHTProducer = cms.EDProducer('ICL1EtMissProducer',
+  branch  = cms.string("l1MHT"),
+  input   = cms.InputTag("l1extraParticles", "MHT", "RECO")
+)
+
+
+##############################################################################
+# TriggerPath Modules
+##############################################################################
+from PhysicsTools.PatAlgos.tools.trigTools import *
+process.patTriggerSequence = cms.Sequence()
+switchOnTrigger(process, sequence = 'patTriggerSequence', outputModule = '')
+
+process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
+  branch  = cms.string("triggerPaths"),
+  input   = cms.InputTag("patTriggerEvent"),
+  includeAcceptedOnly = cms.bool(True),
+  saveStrings = cms.bool(False),
+  splitVersion = cms.bool(True)
+)
+
+
+
+process.icEventProducer = cms.EDProducer('ICEventProducer')
 
 process.p = cms.Path(
   process.btaggingSequenceAK5PF+
@@ -456,6 +495,11 @@ process.p = cms.Path(
   process.icGenParticleProducer+
   process.icGenJetProducer+
   process.icGenParticlesFromJetsProducer+
+  process.icSuperClusterProducer+
+  process.icL1EmIsolatedProducer+
+  process.icL1MHTProducer+
+  process.patTriggerSequence+
+  process.icTriggerPathProducer+
   process.icEventProducer
   )
 
