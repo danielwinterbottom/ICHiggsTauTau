@@ -85,6 +85,12 @@ XS_MC_Powheg-Htoinv-mH150:1.280
 XS_MC_Powheg-Htoinv-mH200:0.8685
 XS_MC_Powheg-Htoinv-mH300:0.4408
 XS_MC_Powheg-Htoinv-mH400:0.2543
+XS_MC_Powheg-ggHtoinv-mH110:24.70
+XS_MC_Powheg-ggHtoinv-mH125:19.27
+XS_MC_Powheg-ggHtoinv-mH150:13.55
+XS_MC_Powheg-ggHtoinv-mH200:7.081
+XS_MC_Powheg-ggHtoinv-mH300:3.594
+XS_MC_Powheg-ggHtoinv-mH400:2.921
 XS_MC_EWK-W2jminus:4.09
 XS_MC_EWK-W2jplus:6.48
 XS_MC_EWK-W2jminus_enu:4.09
@@ -183,7 +189,12 @@ EVT_MC_Powheg-Htoinv-mH150:99874.0
 EVT_MC_Powheg-Htoinv-mH200:49922.0
 EVT_MC_Powheg-Htoinv-mH300:49945.0
 EVT_MC_Powheg-Htoinv-mH400:49964.0
-#OK TO HERE
+EVT_MC_Powheg-ggHtoinv-mH110:199981
+EVT_MC_Powheg-ggHtoinv-mH125:199981
+EVT_MC_Powheg-ggHtoinv-mH150:199976
+EVT_MC_Powheg-ggHtoinv-mH200:199984
+EVT_MC_Powheg-ggHtoinv-mH300:199988
+EVT_MC_Powheg-ggHtoinv-mH400:199984
 EVT_MC_EWK-W2jminus:8996164.0
 EVT_MC_EWK-W2jplus:8996164.0
 EVT_MC_EWK-W2jminus_enu:8996164.0
