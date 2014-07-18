@@ -302,7 +302,7 @@ process.icPFMuonProducer = cms.EDProducer('ICMuonProducer',
 ##############################################################################
 # CaloJet Module
 ##############################################################################
-process.icCaloJetProducer = cms.EDProducer('ICNewCaloJetProducer',
+process.icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
     branch                    = cms.string("caloJets"),
     input                     = cms.InputTag("selectedCaloJets"),
     includeJetFlavour         = cms.bool(True),
@@ -328,7 +328,7 @@ process.icCaloJetProducer = cms.EDProducer('ICNewCaloJetProducer',
 ##############################################################################
 # PF Jet Module
 ##############################################################################
-process.icPFJetProducer = cms.EDProducer('ICNewPFJetProducer',
+process.icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     branch                    = cms.string("pfJets"),
     input                     = cms.InputTag("selectedPFJets"),
     includeJetFlavour         = cms.bool(True),
@@ -362,7 +362,7 @@ process.icPFJetProducer = cms.EDProducer('ICNewPFJetProducer',
 ##############################################################################
 # JPT Jet Module
 ##############################################################################
-process.icJPTJetProducer = cms.EDProducer('ICNewJPTJetProducer',
+process.icJPTJetProducer = cms.EDProducer('ICJPTJetProducer',
     branch                    = cms.string("jptJets"),
     input                     = cms.InputTag("selectedJPTJets"),
     includeJetFlavour         = cms.bool(False),
@@ -575,6 +575,28 @@ process.icPhotonProducer = cms.EDProducer('ICPhotonProducer',
     )
 )
 
+##############################################################################
+# EventInfo Module
+##############################################################################
+process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
+  branch              = cms.string("eventInfo"),
+  includeJetRho       = cms.bool(True),
+  inputJetRho         = cms.InputTag("kt6PFJets", "rho"),
+  includeLeptonRho    = cms.bool(True),
+  inputLeptonRho      = cms.InputTag("kt6PFJets", "rho"),
+  includeVertexCount  = cms.bool(True),
+  inputVertices       = cms.InputTag("offlinePrimaryVertices"),
+  includeCSCFilter    = cms.bool(True),
+  inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+  filters             = cms.PSet(),
+  weights             = cms.PSet(
+    # embed_weight = cms.InputTag("generator", "weight", "EmbeddedRECO")
+  ),
+  genFilterWeights    = cms.PSet(
+    # embed_weight = cms.InputTag("generator", "minVisPtFilter", "EmbeddedRECO")
+  )
+)
+
 
 process.icEventProducer = cms.EDProducer('ICEventProducer')
 
@@ -628,6 +650,7 @@ process.p = cms.Path(
   process.icPhotonHadTowerOverEmCalculator+
   process.icPhotonElectronVetoCalculator+
   process.icPhotonProducer+
+  process.icEventInfoProducer+
   process.icEventProducer
   )
 

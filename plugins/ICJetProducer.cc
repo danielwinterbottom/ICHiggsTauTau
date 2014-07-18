@@ -22,16 +22,16 @@ typedef SingleObjectSelector<reco::JPTJetCollection,
 DEFINE_FWK_MODULE(PFJetRefSelector);
 DEFINE_FWK_MODULE(JPTJetRefSelector);
 
-typedef ICJetProducer<ic::CaloJet, reco::CaloJet> ICNewCaloJetProducer;
-typedef ICJetProducer<ic::JPTJet, reco::JPTJet> ICNewJPTJetProducer;
-typedef ICJetProducer<ic::PFJet, reco::PFJet> ICNewPFJetProducer;
+typedef ICJetProducer<ic::CaloJet, reco::CaloJet> ICCaloJetProducer;
+typedef ICJetProducer<ic::JPTJet, reco::JPTJet> ICJPTJetProducer;
+typedef ICJetProducer<ic::PFJet, reco::PFJet> ICPFJetProducer;
 
-typedef ICJetProducer<ic::Jet, reco::CaloJet> ICNewJetFromCaloProducer;
-typedef ICJetProducer<ic::Jet, reco::JPTJet> ICNewJetFromJPTProducer;
-typedef ICJetProducer<ic::Jet, reco::PFJet> ICNewJetFromPFProducer;
+typedef ICJetProducer<ic::Jet, reco::CaloJet> ICJetFromCaloProducer;
+typedef ICJetProducer<ic::Jet, reco::JPTJet> ICJetFromJPTProducer;
+typedef ICJetProducer<ic::Jet, reco::PFJet> ICJetFromPFProducer;
 
-DEFINE_FWK_MODULE(ICNewCaloJetProducer);
-DEFINE_FWK_MODULE(ICNewPFJetProducer);
-DEFINE_FWK_MODULE(ICNewJPTJetProducer);
-DEFINE_FWK_MODULE(ICNewJetFromCaloProducer);
-DEFINE_FWK_MODULE(ICNewJetFromPFProducer);
+DEFINE_FWK_MODULE(ICCaloJetProducer);
+DEFINE_FWK_MODULE(ICPFJetProducer);
+DEFINE_FWK_MODULE(ICJPTJetProducer);
+DEFINE_FWK_MODULE(ICJetFromCaloProducer);
+DEFINE_FWK_MODULE(ICJetFromPFProducer);
