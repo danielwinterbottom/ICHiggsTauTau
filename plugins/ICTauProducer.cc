@@ -66,7 +66,7 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   
   for (iter = tauCollection->begin(); iter != tauCollection->end(); ++iter) {
     
-   // if (iter->decayMode() < -0.5) continue;
+    if (iter->decayMode() < -0.5) continue;
 
     taus_->push_back(ic::Tau());
     ic::Tau & tau = taus_->back();
