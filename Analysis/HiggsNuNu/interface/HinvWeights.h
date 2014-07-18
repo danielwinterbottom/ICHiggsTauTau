@@ -20,6 +20,7 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, save_weights)
   CLASS_MEMBER(HinvWeights, bool, save_lumixs_weights)
   CLASS_MEMBER(HinvWeights, bool, do_trg_weights)
+  CLASS_MEMBER(HinvWeights, bool, do_1dparkedtrg_weights)
   CLASS_MEMBER(HinvWeights, bool, do_3dtrg_weights)
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)
@@ -41,6 +42,11 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, double, Dlumi)
 
   TFile *triggerSF_;
+  std::vector<TH1F*> hist_trigSF_METL1vec;
+  std::vector<TH1F*> hist_trigSF_METHLTvec;
+  std::vector<TH1F*> hist_trigSF_MjjHLTvec;
+  std::vector<TH1F*> hist_trigSF_JetHLTvec;
+
   TH1F *hist_trigSF_METL1;
   TH1F *hist_trigSF_METHLT;
   TH1F *hist_trigSF_MjjHLT;
