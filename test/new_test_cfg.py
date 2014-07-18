@@ -483,6 +483,60 @@ process.icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
   splitVersion = cms.bool(True)
 )
 
+##############################################################################
+# MET Modules
+##############################################################################
+process.icPfMetProducer = cms.EDProducer('ICMetProducer',
+  branch  = cms.string("pfMet"),
+  input   = cms.InputTag("pfMet"),
+  includeCustomID = cms.bool(False),
+  inputCustomID = cms.InputTag("")
+)
+
+process.icGenMetProducer = cms.EDProducer('ICSingleMetProducer',
+  branch  = cms.string("genMet"),
+  input   = cms.InputTag("genMetTrue")
+)
+
+
+##############################################################################
+# TriggerObject Modules
+##############################################################################
+process.icIsoMu24ObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
+  branch = cms.string("triggerObjectsIsoMu24"),
+  input   = cms.InputTag("patTriggerEvent"),
+  hltPath = cms.string("HLT_IsoMu24_eta2p1_v"),
+  storeOnlyIfFired = cms.bool(False)
+)
+
+##############################################################################
+# Photon Modules
+##############################################################################
+process.icPhotonHadTowerOverEmCalculator = cms.EDProducer('ICPhotonHadTowerOverEmCalculator',
+    input = cms.InputTag("photons")
+)
+
+process.icPhotonElectronVetoCalculator = cms.EDProducer('ICPhotonElectronVetoCalculator',
+    input       = cms.InputTag("photons"),
+    electrons   = cms.InputTag("gsfElectrons"),
+    beamspot    = cms.InputTag("offlineBeamSpot"),
+    conversions = cms.InputTag("allConversions")
+)
+
+process.icPhotonProducer = cms.EDProducer('ICPhotonProducer',
+    branch                  = cms.string("photons"),
+    input                   = cms.InputTag("photons"),
+    includeElectronVeto     = cms.bool(True),
+    inputElectronVeto       = cms.InputTag("icPhotonElectronVetoCalculator"),
+    includeHadTowOverEm     = cms.bool(True),
+    inputHadTowOverEm       = cms.InputTag("icPhotonHadTowerOverEmCalculator"),
+    includePFIso            = cms.bool(False),
+    pfIso = cms.PSet(
+      charged     = cms.InputTag(""),
+      neutral     = cms.InputTag(""),
+      gamma       = cms.InputTag("")
+    )
+)
 
 
 process.icEventProducer = cms.EDProducer('ICEventProducer')
@@ -529,6 +583,12 @@ process.p = cms.Path(
   process.icL1MHTProducer+
   process.patTriggerSequence+
   process.icTriggerPathProducer+
+  process.icPfMetProducer+
+  process.icGenMetProducer+
+  process.icIsoMu24ObjectProducer+
+  process.icPhotonHadTowerOverEmCalculator+
+  process.icPhotonElectronVetoCalculator+
+  process.icPhotonProducer+
   process.icEventProducer
   )
 
