@@ -44,7 +44,6 @@ void ICTriggerPathProducer::produce(edm::Event& event,
   for (unsigned i = 0; i < paths->size(); ++i) {
     pat::TriggerPath const& src = paths->at(i);
     if (!src.wasAccept() && include_if_fired_) continue;
-    // std::cout << paths->at(i).name() << std::endl;
     paths_->push_back(ic::TriggerPath());
     ic::TriggerPath & dest = paths_->back();
     dest.set_accept(src.wasAccept());

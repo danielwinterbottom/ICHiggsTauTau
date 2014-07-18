@@ -14,10 +14,6 @@
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 
-// #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
-// #include "DataFormats/VertexReco/interface/Vertex.h"
-// #include "Muon/MuonAnalysisTools/interface/MuonMVAEstimator.h"
-
 class ICMuonProducer : public edm::EDProducer {
  public:
   explicit ICMuonProducer(const edm::ParameterSet&);
@@ -49,16 +45,12 @@ class ICMuonProducer : public edm::EDProducer {
     edm::InputTag neutral;
     edm::InputTag gamma;
     edm::InputTag pu;
-    bool do_charged_all;
-    bool do_charged;
-    bool do_neutral;
-    bool do_gamma;
-    bool do_pu;
-    IsoTags();
-    void Set(edm::ParameterSet const& pset);
+    explicit IsoTags(edm::ParameterSet const& pset);
   };
 
   IsoTags pf_iso_03_;
   IsoTags pf_iso_04_;
+  bool do_pf_iso_03_;
+  bool do_pf_iso_04_;
 };
 #endif

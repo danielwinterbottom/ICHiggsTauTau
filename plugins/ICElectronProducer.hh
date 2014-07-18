@@ -46,30 +46,13 @@ class ICElectronProducer : public edm::EDProducer {
     edm::InputTag neutral;
     edm::InputTag gamma;
     edm::InputTag pu;
-    bool do_charged_all;
-    bool do_charged;
-    bool do_neutral;
-    bool do_gamma;
-    bool do_pu;
-    IsoTags();
-    void Set(edm::ParameterSet const& pset);
+    explicit IsoTags(edm::ParameterSet const& pset);
   };
 
   IsoTags pf_iso_03_;
   IsoTags pf_iso_04_;
-
-  /*
-   [x] remove reco muon overlap check
-   [x] remove manual isolation check
-   [x] option/config for dr03 pf isolation
-   [x] option/config for dr04 pf isolation
-   [x] option/config for mva id output
-   [x] option/config for conversion
-   [x] option/config for vertex/beamspot IPs
-   [x] option/config for lazyTool usage (for r9)
-   [x] option/config for hcal_sum
-   [x] drop gen particles
-  */
+  bool do_pf_iso_03_;
+  bool do_pf_iso_04_;
 };
 
 #endif

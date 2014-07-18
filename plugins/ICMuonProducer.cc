@@ -17,70 +17,34 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 // #include "boost/format.hpp"
 
-ICMuonProducer::IsoTags::IsoTags()
-    : do_charged_all(false),
-      do_charged(false),
-      do_neutral(false),
-      do_gamma(false),
-      do_pu(false) {}
-
-void ICMuonProducer::IsoTags::Set(const edm::ParameterSet& pset) {
-  if (pset.exists("chargedAll")) {
-    charged_all = pset.getParameter<edm::InputTag>("chargedAll");
-    do_charged_all = true;
-  }
-  if (pset.exists("charged")) {
-    charged = pset.getParameter<edm::InputTag>("charged");
-    do_charged = true;
-  }
-  if (pset.exists("neutral")) {
-    neutral = pset.getParameter<edm::InputTag>("neutral");
-    do_neutral = true;
-  }
-  if (pset.exists("gamma")) {
-    gamma = pset.getParameter<edm::InputTag>("gamma");
-    do_gamma = true;
-  }
-  if (pset.exists("pu")) {
-    pu = pset.getParameter<edm::InputTag>("pu");
-    do_pu = true;
-  }
-}
+ICMuonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
+    : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
+      charged(pset.getParameter<edm::InputTag>("charged")),
+      neutral(pset.getParameter<edm::InputTag>("neutral")),
+      gamma(pset.getParameter<edm::InputTag>("gamma")),
+      pu(pset.getParameter<edm::InputTag>("pu")) {}
 
 ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
       is_pf_(config.getParameter<bool>("isPF")),
-      do_vertex_ip_(false),
-      do_beamspot_ip_(false) {
+      input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
+      do_vertex_ip_(config.getParameter<bool>("includeVertexIP")),
+      input_beamspot_(config.getParameter<edm::InputTag>("inputBeamspot")),
+      do_beamspot_ip_(config.getParameter<bool>("includeBeamspotIP")),
+      pf_iso_03_(config.getParameterSet("pfIso03")),
+      pf_iso_04_(config.getParameterSet("pfIso04")),
+      do_pf_iso_03_(config.getParameter<bool>("includePFIso03")),
+      do_pf_iso_04_(config.getParameter<bool>("includePFIso04"))  {
   muons_ = new std::vector<ic::Muon>();
 
-  if (config.exists("pfIso03")) {
-    pf_iso_03_.Set(config.getParameterSet("pfIso03"));
-  }
-  if (config.exists("pfIso04")) {
-    pf_iso_04_.Set(config.getParameterSet("pfIso04"));
-  }
-
-  if (config.exists("includeVertexIP")) {
-    input_vertices_ = config.getParameter<edm::InputTag>("includeVertexIP");
-    do_vertex_ip_ = true;
-  }
-
-  if (config.exists("includeBeamspotIP")) {
-    input_beamspot_ = config.getParameter<edm::InputTag>("includeBeamspotIP");
-    do_beamspot_ip_ = true;
-  }
-
-  if (config.exists("includeFloats")) {
-    edm::ParameterSet pset =
-        config.getParameter<edm::ParameterSet>("includeFloats");
-    std::vector<std::string> vec =
-        pset.getParameterNamesForType<edm::InputTag>();
-    for (unsigned i = 0; i < vec.size(); ++i) {
-      input_vmaps_.push_back(
-          std::make_pair(vec[i], pset.getParameter<edm::InputTag>(vec[i])));
-    }
+  edm::ParameterSet pset_floats =
+      config.getParameter<edm::ParameterSet>("includeFloats");
+  std::vector<std::string> vec =
+      pset_floats.getParameterNamesForType<edm::InputTag>();
+  for (unsigned i = 0; i < vec.size(); ++i) {
+    input_vmaps_.push_back(std::make_pair(
+        vec[i], pset_floats.getParameter<edm::InputTag>(vec[i])));
   }
 }
 
@@ -115,32 +79,26 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   edm::Handle<edm::ValueMap<double> > neutral_03;
   edm::Handle<edm::ValueMap<double> > gamma_03;
   edm::Handle<edm::ValueMap<double> > pu_03;
-  if (pf_iso_03_.do_charged_all)
+  if (do_pf_iso_03_) {
     event.getByLabel(pf_iso_03_.charged_all, charged_all_03);
-  if (pf_iso_03_.do_charged)
     event.getByLabel(pf_iso_03_.charged, charged_03);
-  if (pf_iso_03_.do_neutral)
     event.getByLabel(pf_iso_03_.neutral, neutral_03);
-  if (pf_iso_03_.do_gamma)
     event.getByLabel(pf_iso_03_.gamma, gamma_03);
-  if (pf_iso_03_.do_pu)
     event.getByLabel(pf_iso_03_.pu, pu_03);
+  }
 
   edm::Handle<edm::ValueMap<double> > charged_all_04;
   edm::Handle<edm::ValueMap<double> > charged_04;
   edm::Handle<edm::ValueMap<double> > neutral_04;
   edm::Handle<edm::ValueMap<double> > gamma_04;
   edm::Handle<edm::ValueMap<double> > pu_04;
-  if (pf_iso_04_.do_charged_all)
+  if (do_pf_iso_04_) {
     event.getByLabel(pf_iso_04_.charged_all, charged_all_04);
-  if (pf_iso_04_.do_charged)
     event.getByLabel(pf_iso_04_.charged, charged_04);
-  if (pf_iso_04_.do_neutral)
     event.getByLabel(pf_iso_04_.neutral, neutral_04);
-  if (pf_iso_04_.do_gamma)
     event.getByLabel(pf_iso_04_.gamma, gamma_04);
-  if (pf_iso_04_.do_pu)
     event.getByLabel(pf_iso_04_.pu, pu_04);
+  }
 
   // Prepare output collection
   muons_->clear();
@@ -217,47 +175,35 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     }
 
     if (is_pf_) {
-      if (pf_iso_03_.do_charged_all)
+      if (do_pf_iso_03_) {
         dest.set_dr03_pfiso_charged_all((*charged_all_03)[pf_base_ref]);
-      if (pf_iso_03_.do_charged)
         dest.set_dr03_pfiso_charged((*charged_03)[pf_base_ref]);
-      if (pf_iso_03_.do_neutral)
         dest.set_dr03_pfiso_neutral((*neutral_03)[pf_base_ref]);
-      if (pf_iso_03_.do_gamma)
         dest.set_dr03_pfiso_gamma((*gamma_03)[pf_base_ref]);
-      if (pf_iso_03_.do_pu)
         dest.set_dr03_pfiso_pu((*pu_03)[pf_base_ref]);
-      if (pf_iso_04_.do_charged_all)
+      }
+      if (do_pf_iso_04_) {
         dest.set_dr04_pfiso_charged_all((*charged_all_04)[pf_base_ref]);
-      if (pf_iso_04_.do_charged)
         dest.set_dr04_pfiso_charged((*charged_04)[pf_base_ref]);
-      if (pf_iso_04_.do_neutral)
         dest.set_dr04_pfiso_neutral((*neutral_04)[pf_base_ref]);
-      if (pf_iso_04_.do_gamma)
         dest.set_dr04_pfiso_gamma((*gamma_04)[pf_base_ref]);
-      if (pf_iso_04_.do_pu)
         dest.set_dr04_pfiso_pu((*pu_04)[pf_base_ref]);
+      }
     } else {
-      if (pf_iso_03_.do_charged_all)
+      if (do_pf_iso_03_) {
         dest.set_dr03_pfiso_charged_all((*charged_all_03)[muon_base_ref]);
-      if (pf_iso_03_.do_charged)
         dest.set_dr03_pfiso_charged((*charged_03)[muon_base_ref]);
-      if (pf_iso_03_.do_neutral)
         dest.set_dr03_pfiso_neutral((*neutral_03)[muon_base_ref]);
-      if (pf_iso_03_.do_gamma)
         dest.set_dr03_pfiso_gamma((*gamma_03)[muon_base_ref]);
-      if (pf_iso_03_.do_pu)
         dest.set_dr03_pfiso_pu((*pu_03)[muon_base_ref]);
-      if (pf_iso_04_.do_charged_all)
+      }
+      if (do_pf_iso_04_) {
         dest.set_dr04_pfiso_charged_all((*charged_all_04)[muon_base_ref]);
-      if (pf_iso_04_.do_charged)
         dest.set_dr04_pfiso_charged((*charged_04)[muon_base_ref]);
-      if (pf_iso_04_.do_neutral)
         dest.set_dr04_pfiso_neutral((*neutral_04)[muon_base_ref]);
-      if (pf_iso_04_.do_gamma)
         dest.set_dr04_pfiso_gamma((*gamma_04)[muon_base_ref]);
-      if (pf_iso_04_.do_pu)
         dest.set_dr04_pfiso_pu((*pu_04)[muon_base_ref]);
+      }
     }
 
     if (do_vertex_ip_ && vertices_handle->size() > 0 &&
