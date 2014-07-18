@@ -66,7 +66,7 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   
   for (iter = tauCollection->begin(); iter != tauCollection->end(); ++iter) {
     
-    if (iter->decayMode() < -0.5) continue;
+   // if (iter->decayMode() < -0.5) continue;
 
     taus_->push_back(ic::Tau());
     ic::Tau & tau = taus_->back();
@@ -91,19 +91,28 @@ void ICTauProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // tau.set_elec_preid_output(iter->electronPreIDOutput());
     // tau.set_elec_preid_decision(iter->electronPreIDDecision());
 
-    tau.set_lead_ecal_energy(iter->leadPFChargedHadrCand()->ecalEnergy());
-    tau.set_lead_hcal_energy(iter->leadPFChargedHadrCand()->hcalEnergy());
-    tau.set_lead_p(iter->leadPFChargedHadrCand()->p());
-    if(iter->leadPFChargedHadrCand()->trackRef().isNonnull() && vertexCollection->size() > 0) {
-      tau.set_lead_dxy_vertex(iter->leadPFChargedHadrCand()->trackRef()->dxy(vertexCollection->at(0).position()));
-      tau.set_lead_dz_vertex(iter->leadPFChargedHadrCand()->trackRef()->dz(vertexCollection->at(0).position()));
-    } else if (iter->leadPFChargedHadrCand()->gsfTrackRef().isNonnull() && vertexCollection->size() > 0) {
-      tau.set_lead_dxy_vertex(iter->leadPFChargedHadrCand()->gsfTrackRef()->dxy(vertexCollection->at(0).position()));
-      tau.set_lead_dz_vertex(iter->leadPFChargedHadrCand()->gsfTrackRef()->dz(vertexCollection->at(0).position()));      
-    } else {
-      tau.set_lead_dxy_vertex(9999.0);
-      tau.set_lead_dz_vertex(9999.0);
+    if(iter->leadPFChargedHadrCand().isNonnull() ){
+        tau.set_lead_ecal_energy(iter->leadPFChargedHadrCand()->ecalEnergy());
+        tau.set_lead_hcal_energy(iter->leadPFChargedHadrCand()->hcalEnergy());
+        tau.set_lead_p(iter->leadPFChargedHadrCand()->p());
+        if(iter->leadPFChargedHadrCand()->trackRef().isNonnull() && vertexCollection->size() > 0) {
+          tau.set_lead_dxy_vertex(iter->leadPFChargedHadrCand()->trackRef()->dxy(vertexCollection->at(0).position()));
+          tau.set_lead_dz_vertex(iter->leadPFChargedHadrCand()->trackRef()->dz(vertexCollection->at(0).position()));
+        } else if (iter->leadPFChargedHadrCand()->gsfTrackRef().isNonnull() && vertexCollection->size() > 0) {
+          tau.set_lead_dxy_vertex(iter->leadPFChargedHadrCand()->gsfTrackRef()->dxy(vertexCollection->at(0).position()));
+          tau.set_lead_dz_vertex(iter->leadPFChargedHadrCand()->gsfTrackRef()->dz(vertexCollection->at(0).position()));      
+        } else {
+          tau.set_lead_dxy_vertex(9999.0);
+          tau.set_lead_dz_vertex(9999.0);
+        }
+    } else { 
+        tau.set_lead_ecal_energy(0.0);
+        tau.set_lead_hcal_energy(0.0);
+        tau.set_lead_dxy_vertex(0.0);
+        tau.set_lead_dz_vertex(0.0);
     }
+
+
 
     tau.set_vx(iter->vx());
     tau.set_vy(iter->vy());
