@@ -44,6 +44,12 @@ process.selectedCaloJets = cms.EDFilter("CaloJetRefSelector",
   cut = cms.string("abs(eta) < 4.7")
 )
 
+process.selectedJPTJets = cms.EDFilter("JPTJetRefSelector",
+  src = cms.InputTag("JetPlusTrackZSPCorJetAntiKt5"),
+  cut = cms.string("pt > 30 & abs(eta) < 4.7")
+)
+
+
 process.selectedPFJets = cms.EDFilter("PFJetRefSelector",
   src = cms.InputTag("ak5PFJets"),
   cut = cms.string("abs(eta) < 4.7")
@@ -354,6 +360,36 @@ process.icPFJetProducer = cms.EDProducer('ICNewPFJetProducer',
 )
 
 ##############################################################################
+# JPT Jet Module
+##############################################################################
+process.icJPTJetProducer = cms.EDProducer('ICNewJPTJetProducer',
+    branch                    = cms.string("jptJets"),
+    input                     = cms.InputTag("selectedJPTJets"),
+    includeJetFlavour         = cms.bool(False),
+    inputJetFlavour           = cms.InputTag(""),
+    applyJECs                 = cms.bool(False),
+    includeJECs               = cms.bool(False),
+    JECs                      = cms.PSet(
+    ),
+    applyCutAfterJECs         = cms.bool(False),
+    cutAfterJECs              = cms.string(""),
+    inputSVInfo               = cms.InputTag(""),
+    requestSVInfo             = cms.bool(False),
+    BTagDiscriminators        = cms.PSet(
+    ),
+    specificConfig = cms.PSet(
+      includeTrackBasedVars = cms.bool(True),
+      inputTracks           = cms.InputTag("generalTracks"),
+      inputVertices         = cms.InputTag("offlinePrimaryVertices"),
+      requestTracks         = cms.bool(True),
+      includeJetID          = cms.bool(True),
+      inputJetID            = cms.InputTag("ak5JetID")
+    )
+)
+
+
+
+##############################################################################
 # Vertex Module
 ##############################################################################
 process.icVertexProducer = cms.EDProducer('ICVertexProducer',
@@ -381,7 +417,8 @@ process.icMergedTracks = cms.EDProducer('ICTrackMerger',
   merge = cms.VInputTag(
     cms.InputTag("icPFJetProducer", "requestedTracks"),
     cms.InputTag("icVertexProducer", "requestedTracks"),
-    cms.InputTag("icSecondaryVertexProducer", "requestedTracks")
+    cms.InputTag("icSecondaryVertexProducer", "requestedTracks"),
+    cms.InputTag("icJPTJetProducer", "requestedTracks")
   )
 )
 
@@ -548,6 +585,7 @@ process.p = cms.Path(
   process.selectedMuons+
   process.selectedCaloJets+
   process.selectedPFJets+
+  process.selectedJPTJets+
   process.selectedPFMuons+
   process.pfParticleSelectionSequence+
   process.eleIsoSequence+
@@ -569,6 +607,7 @@ process.p = cms.Path(
   process.icPFMuonProducer+
   process.icCaloJetProducer+
   process.icPFJetProducer+
+  process.icJPTJetProducer+
   process.icVertexProducer+
   process.icSecondaryVertexProducer+
   process.icMergedTracks+

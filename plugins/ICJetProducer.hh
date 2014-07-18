@@ -12,6 +12,7 @@
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/JetReco/interface/PFJet.h"
+#include "DataFormats/JetReco/interface/JPTJet.h"
 #include "DataFormats/JetReco/interface/JetID.h"
 #include "DataFormats/BTauReco/interface/JetTag.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
@@ -20,6 +21,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICJetProducerConfig.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/CaloJet.hh"
+#include "UserCode/ICHiggsTauTau/interface/JPTJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 
@@ -293,6 +295,148 @@ void ICJetProducer<ic::CaloJet, reco::CaloJet>::constructSpecific(
       dest.set_id_tight((*(cfg_.tight_id))(src, jet_id));
     }
   }
+}
+
+template <>
+void ICJetProducer<ic::JPTJet, reco::JPTJet>::constructSpecific(
+    edm::Handle<edm::View<reco::JPTJet> > const& jets_handle,
+    edm::Event& event, const edm::EventSetup& setup) {
+  edm::Handle<reco::JetIDValueMap> jet_id_handle;
+  if (cfg_.do_jet_id) event.getByLabel(cfg_.input_jet_id, jet_id_handle);
+
+  edm::Handle<reco::TrackCollection> trk_handle;
+  edm::Handle<reco::VertexCollection> vtx_handle;
+  std::map<unsigned, unsigned> trk_vtx_map;
+
+  std::auto_ptr<reco::TrackRefVector> track_requests(
+      new reco::TrackRefVector());
+
+  if (cfg_.do_trk_vars) {
+    event.getByLabel(cfg_.input_trks, trk_handle);
+    event.getByLabel(cfg_.input_vtxs, vtx_handle);
+    if (trk_handle->size() > 0) {
+      reco::Track const* ptr_to_first = &(trk_handle->at(0));
+      for (unsigned i = 0; i < vtx_handle->size(); ++i) {
+        std::vector<reco::TrackBaseRef>::const_iterator trk_it;
+        for (trk_it = vtx_handle->at(i).tracks_begin();
+             trk_it != vtx_handle->at(i).tracks_end(); ++trk_it) {
+          reco::Track const* ptr_to_trk =
+              dynamic_cast<reco::Track const*>(&(**trk_it));
+          unsigned trk_idx = (unsigned(ptr_to_trk - ptr_to_first));
+          trk_vtx_map[trk_idx] = i;
+        }
+      }
+    }
+  }
+
+  for (unsigned i = 0; i < passed_.size(); ++i) {
+    reco::JPTJet const& src = jets_handle->at(passed_[i]);
+
+    reco::CaloJetRef calo(src.getCaloJetRef().castTo<reco::CaloJetRef>());
+    ic::JPTJet & dest = jets_->at(i);
+    dest.set_max_em_tower_energy(calo->maxEInEmTowers());
+    dest.set_max_had_tower_energy(calo->maxEInHadTowers());
+    dest.set_energy_frac_had(calo->energyFractionHadronic());
+    dest.set_energy_frac_em(calo->emEnergyFraction());
+    dest.set_had_energy_HB(calo->hadEnergyInHB());
+    dest.set_had_energy_HO(calo->hadEnergyInHO());
+    dest.set_had_energy_HE(calo->hadEnergyInHE());
+    dest.set_had_energy_HF(calo->hadEnergyInHF());
+    dest.set_em_energy_EB(calo->emEnergyInEB());
+    dest.set_em_energy_EE(calo->emEnergyInEE());
+    dest.set_em_energy_HF(calo->emEnergyInHF());
+    dest.set_towers_area(calo->towersArea());
+    dest.set_n90(calo->n90());
+    dest.set_n60(calo->n60());
+    dest.set_muon_multiplicity(src.muonMultiplicity());
+    dest.set_charged_multiplicity(src.chargedMultiplicity());
+    dest.set_charged_em_energy(src.chargedEmEnergy());
+    dest.set_neutral_em_energy(src.neutralEmEnergy());
+    dest.set_charged_had_energy(src.chargedHadronEnergy());
+    dest.set_neutral_had_energy(src.neutralHadronEnergy());
+    //  Assume input jet is uncorrected
+    dest.set_uncorrected_energy(src.energy());
+    if (cfg_.do_jet_id) {
+      reco::JetID const& jet_id = (*jet_id_handle)[calo];
+      dest.set_id_loose((*(cfg_.loose_id))(*calo, jet_id));
+      dest.set_id_tight((*(cfg_.tight_id))(*calo, jet_id));
+    }
+
+    if (cfg_.request_trks) {
+      dest.set_pions_in_vtx_in_calo(cfg_.DoTrackCollection(
+          src.getPionsInVertexInCalo(), track_requests.get()));
+      dest.set_pions_in_vtx_out_calo(cfg_.DoTrackCollection(
+          src.getPionsInVertexOutCalo(), track_requests.get()));
+      dest.set_pions_out_vtx_in_calo(cfg_.DoTrackCollection(
+          src.getPionsOutVertexInCalo(), track_requests.get()));
+      dest.set_muons_in_vtx_in_calo(cfg_.DoTrackCollection(
+          src.getMuonsInVertexInCalo(), track_requests.get()));
+      dest.set_muons_in_vtx_out_calo(cfg_.DoTrackCollection(
+          src.getMuonsInVertexOutCalo(), track_requests.get()));
+      dest.set_muons_out_vtx_in_calo(cfg_.DoTrackCollection(
+          src.getMuonsOutVertexInCalo(), track_requests.get()));
+      dest.set_elecs_in_vtx_in_calo(cfg_.DoTrackCollection(
+          src.getElecsInVertexInCalo(), track_requests.get()));
+      dest.set_elecs_in_vtx_out_calo(cfg_.DoTrackCollection(
+          src.getElecsInVertexOutCalo(), track_requests.get()));
+      dest.set_elecs_out_vtx_in_calo(cfg_.DoTrackCollection(
+          src.getElecsOutVertexInCalo(), track_requests.get()));
+    }
+
+    double beta = -1.0;
+    double beta_max = -1.0;
+    double trk_pt_total = 0.0;
+
+    if (cfg_.do_trk_vars && trk_handle->size() > 0) {
+      std::vector<reco::Track const*> all_tracks;
+      cfg_.AddTrackCollection(src.getPionsInVertexInCalo(), &all_tracks);
+      cfg_.AddTrackCollection(src.getPionsInVertexOutCalo(), &all_tracks);
+      cfg_.AddTrackCollection(src.getPionsOutVertexInCalo(), &all_tracks);
+      cfg_.AddTrackCollection(src.getMuonsInVertexInCalo(), &all_tracks);
+      cfg_.AddTrackCollection(src.getMuonsInVertexOutCalo(), &all_tracks);
+      cfg_.AddTrackCollection(src.getMuonsOutVertexInCalo(), &all_tracks);
+      cfg_.AddTrackCollection(src.getElecsInVertexInCalo(), &all_tracks);
+      cfg_.AddTrackCollection(src.getElecsInVertexOutCalo(), &all_tracks);
+      cfg_.AddTrackCollection(src.getElecsOutVertexInCalo(), &all_tracks);
+      std::vector<double> pt_at_vtx_vec(vtx_handle->size(), 0.0);
+      reco::Track const* ptr_first = &(trk_handle->at(0));
+      for (unsigned j = 0; j < all_tracks.size(); ++j) {
+          unsigned idx = unsigned(all_tracks[j] - ptr_first);
+          trk_pt_total += all_tracks[j]->pt();
+          // Is track associated to a vertex?
+          if (trk_vtx_map.count(idx) > 0) {
+            pt_at_vtx_vec[trk_vtx_map.find(idx)->second] += all_tracks[j]->pt();
+          } else {  // No, so is it within 0.2 cm wrt the closest vertex in z
+            std::vector<double> dz_with_vtx(vtx_handle->size(), 0.0);
+            for (unsigned k = 0; k < vtx_handle->size(); ++k) {
+              dz_with_vtx[k] =
+                  fabs(vtx_handle->at(k).z() - all_tracks[j]->vz());
+            }
+            std::vector<double>::const_iterator min =
+                std::min_element(dz_with_vtx.begin(), dz_with_vtx.end());
+            if (min != dz_with_vtx.end()) {
+              if (*min < 0.2) {
+                pt_at_vtx_vec[unsigned(min - dz_with_vtx.begin())] +=
+                    all_tracks[j]->pt();
+              }
+            }
+          }
+      }
+      if (vtx_handle->size() > 0 && trk_pt_total > 0.0) {
+        for (unsigned j = 0; j < pt_at_vtx_vec.size(); ++j) {
+          pt_at_vtx_vec[j] = pt_at_vtx_vec[j] / trk_pt_total;
+        }
+        beta = pt_at_vtx_vec[0];
+        beta_max =
+            *std::max_element(pt_at_vtx_vec.begin(), pt_at_vtx_vec.end());
+      }
+    }
+
+    dest.set_beta(beta);
+    dest.set_beta_max(beta_max);
+    dest.set_track_pt_total(trk_pt_total);
+  }
+  event.put(track_requests, "requestedTracks");
 }
 
 template <>
