@@ -1,14 +1,16 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 
 namespace ic {
-  //Constructors/Destructors
-  Met::Met() {
-  }
+Met::Met()
+    : ic::Candidate(),
+      sum_et_(0.),
+      et_sig_(0.),
+      xx_sig_(0.),
+      xy_sig_(0.),
+      yx_sig_(0.),
+      yy_sig_(0.) {}
 
-  Met::~Met() {
-  }
+Met::~Met() {}
 
-  void Met::Print() const {
-    Candidate::Print();
-  }
+void Met::Print() const { Candidate::Print(); }
 }

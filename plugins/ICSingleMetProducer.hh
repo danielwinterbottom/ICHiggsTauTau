@@ -1,5 +1,5 @@
-#ifndef UserCode_ICHiggsTauTau_ICMetProducer_h
-#define UserCode_ICHiggsTauTau_ICMetProducer_h
+#ifndef UserCode_ICHiggsTauTau_ICSingleMetProducer_h
+#define UserCode_ICHiggsTauTau_ICSingleMetProducer_h
 
 #include <memory>
 #include <vector>
@@ -13,22 +13,20 @@
 #include "DataFormats/METReco/interface/MET.h"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 
-class ICMetProducer : public edm::EDProducer {
+class ICSingleMetProducer : public edm::EDProducer {
  public:
-  explicit ICMetProducer(const edm::ParameterSet&);
-  ~ICMetProducer();
+  explicit ICSingleMetProducer(const edm::ParameterSet&);
+  ~ICSingleMetProducer();
 
  private:
   virtual void beginJob();
   virtual void produce(edm::Event&, const edm::EventSetup&);
   virtual void endJob();
 
-  std::vector<ic::Met>* met_;
+  ic::Met* met_;
   edm::InputTag input_;
   std::string branch_;
   boost::hash<reco::MET const*> met_hasher_;
-  bool do_custom_id_;
-  edm::InputTag inputID_;
 };
 
 #endif
