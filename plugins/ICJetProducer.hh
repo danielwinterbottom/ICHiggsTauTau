@@ -282,8 +282,10 @@ void ICJetProducer<ic::CaloJet, reco::CaloJet>::constructSpecific(
     dest.set_em_energy_EE(src.emEnergyInEE());
     dest.set_em_energy_HF(src.emEnergyInHF());
     dest.set_towers_area(src.towersArea());
-    dest.set_n90(src.n90());
-    dest.set_n60(src.n60());
+    if (cfg_.do_n_carrying) {
+      dest.set_n90(src.n90());
+      dest.set_n60(src.n60());
+    }
     //  Assume input jet is uncorrected
     dest.set_uncorrected_energy(src.energy());
     if (cfg_.do_jet_id) {
@@ -346,8 +348,10 @@ void ICJetProducer<ic::JPTJet, reco::JPTJet>::constructSpecific(
     dest.set_em_energy_EE(calo->emEnergyInEE());
     dest.set_em_energy_HF(calo->emEnergyInHF());
     dest.set_towers_area(calo->towersArea());
-    dest.set_n90(calo->n90());
-    dest.set_n60(calo->n60());
+    if (cfg_.do_n_carrying) {
+      dest.set_n90(calo->n90());
+      dest.set_n60(calo->n60());
+    }
     dest.set_muon_multiplicity(src.muonMultiplicity());
     dest.set_charged_multiplicity(src.chargedMultiplicity());
     dest.set_charged_em_energy(src.chargedEmEnergy());

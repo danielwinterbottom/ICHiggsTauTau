@@ -28,12 +28,14 @@ struct SpecificConfig<reco::CaloJet> {
   edm::InputTag input_jet_id;
   JetIDSelectionFunctor *loose_id;
   JetIDSelectionFunctor *tight_id;
+  bool do_n_carrying;
 
   explicit SpecificConfig(const edm::ParameterSet &pset)
       : do_jet_id(pset.getParameter<bool>("includeJetID")),
         input_jet_id(pset.getParameter<edm::InputTag>("inputJetID")),
         loose_id(NULL),
-        tight_id(NULL) {
+        tight_id(NULL),
+        do_n_carrying(pset.getParameter<bool>("includeTowerCounts")) {
     loose_id = new JetIDSelectionFunctor(JetIDSelectionFunctor::PURE09,
                                          JetIDSelectionFunctor::LOOSE);
     tight_id = new JetIDSelectionFunctor(JetIDSelectionFunctor::PURE09,
@@ -59,6 +61,7 @@ struct SpecificConfig<reco::JPTJet> {
   bool do_trk_vars;
   edm::InputTag input_trks;
   edm::InputTag input_vtxs;
+  bool do_n_carrying;
 
   explicit SpecificConfig(const edm::ParameterSet &pset)
       : do_jet_id(pset.getParameter<bool>("includeJetID")),
@@ -68,7 +71,8 @@ struct SpecificConfig<reco::JPTJet> {
         request_trks(pset.getParameter<bool>("requestTracks")),
         do_trk_vars(pset.getParameter<bool>("includeTrackBasedVars")),
         input_trks(pset.getParameter<edm::InputTag>("inputTracks")),
-        input_vtxs(pset.getParameter<edm::InputTag>("inputVertices")) {
+        input_vtxs(pset.getParameter<edm::InputTag>("inputVertices")),
+        do_n_carrying(pset.getParameter<bool>("includeTowerCounts")) {
     loose_id = new JetIDSelectionFunctor(JetIDSelectionFunctor::PURE09,
                                          JetIDSelectionFunctor::LOOSE);
     tight_id = new JetIDSelectionFunctor(JetIDSelectionFunctor::PURE09,
