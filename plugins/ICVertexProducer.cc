@@ -55,17 +55,19 @@ void ICVertexProducer::produce(edm::Event& event,
     dest.set_vz(src.z());
     dest.set_chi2(src.chi2());
     dest.set_ndof(src.ndof());
-    for (reco::Vertex::trackRef_iterator trk_iter = src.tracks_begin();
-         trk_iter != src.tracks_end(); ++trk_iter) {
-      float weight = src.trackWeight(*trk_iter);
-      reco::TrackRef trk_ref = trk_iter->castTo<reco::TrackRef>();
-      if (trk_ref->pt() < track_pt_threshold_) continue;
-      dest.AddTrack(track_hasher_(&(*trk_ref)), weight);
-      trk_requests->push_back(trk_ref);
+    if (request_trks_) {
+      for (reco::Vertex::trackRef_iterator trk_iter = src.tracks_begin();
+           trk_iter != src.tracks_end(); ++trk_iter) {
+        float weight = src.trackWeight(*trk_iter);
+        reco::TrackRef trk_ref = trk_iter->castTo<reco::TrackRef>();
+        if (trk_ref->pt() < track_pt_threshold_) continue;
+        dest.AddTrack(track_hasher_(&(*trk_ref)), weight);
+        trk_requests->push_back(trk_ref);
+      }
     }
     if (first_only_) break;
   }
-  event.put(trk_requests, "requestedTracks");
+  if (request_trks_) event.put(trk_requests, "requestedTracks");
 }
 
 void ICVertexProducer::beginJob() {

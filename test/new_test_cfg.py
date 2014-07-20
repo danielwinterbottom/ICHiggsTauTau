@@ -576,6 +576,33 @@ process.icPhotonProducer = cms.EDProducer('ICPhotonProducer',
 )
 
 ##############################################################################
+# Tau Module
+##############################################################################
+# process.selectedTaus = cms.EDFilter("PFTauRefSelector",
+#   src = cms.InputTag("fixedConePFTauProducer"),
+#   discriminators = cms.VPSet(
+#     cms.PSet( discriminator=cms.InputTag("fixedConePFTauDiscriminationByIsolation"),selectionCut=cms.double(0.5))
+#   ),
+#   cut = cms.string("pt > 0"),
+# )
+process.selectedPFTaus = cms.EDFilter("PFTauRefSelector",
+  src = cms.InputTag("hpsPFTauProducer"),
+  cut = cms.string("pt > 18 & decayMode > 0.5")
+)
+
+process.icTauProducer = cms.EDProducer("ICPFTauProducer",
+  branch                  = cms.string("taus"),
+  input                   = cms.InputTag("selectedPFTaus"),
+  inputVertices           = cms.InputTag("offlinePrimaryVertices"),
+  includeVertexIP         = cms.bool(True),
+  requestTracks           = cms.bool(True),
+  tauIDs = cms.PSet(
+    decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding")
+  )
+)
+
+
+##############################################################################
 # EventInfo Module
 ##############################################################################
 process.icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
@@ -650,6 +677,8 @@ process.p = cms.Path(
   process.icPhotonHadTowerOverEmCalculator+
   process.icPhotonElectronVetoCalculator+
   process.icPhotonProducer+
+  process.selectedPFTaus+
+  process.icTauProducer+
   process.icEventInfoProducer+
   process.icEventProducer
   )
