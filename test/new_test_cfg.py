@@ -173,9 +173,9 @@ process.btaggingSequenceAK5PF = cms.Sequence(
 ##############################################################################
 ## Electron Extras
 ##############################################################################
-process.icElectronR9Calculator = cms.EDProducer('ICElectronR9Calculator',
-    input = cms.InputTag("selectedElectrons")
-)
+# process.icElectronR9Calculator = cms.EDProducer('ICElectronR9Calculator',
+#     input = cms.InputTag("selectedElectrons")
+# )
 
 process.icElectronHcalDepthCalculator = cms.EDProducer('ICElectronHcalDepthCalculator',
     input = cms.InputTag("selectedElectrons")
@@ -203,7 +203,7 @@ process.icHttMuonOverlapCheck = cms.EDProducer('ICHttMuonOverlapCheck',
 process.icElectronProducer = cms.EDProducer('ICElectronProducer',
     branch                    = cms.string("electrons"),
     input                     = cms.InputTag("selectedElectrons"),
-    includeR9                 = cms.bool(True),
+    includeR9                 = cms.bool(False),
     inputR9                   = cms.InputTag("icElectronR9Calculator"),
     includeHcalSum            = cms.bool(True),
     inputHcalSum              = cms.InputTag("icElectronHcalDepthCalculator"),
@@ -320,8 +320,9 @@ process.icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
     requestSVInfo             = cms.bool(False),
     BTagDiscriminators        = cms.PSet(),
     specificConfig = cms.PSet(
-      includeJetID    = cms.bool(True),
-      inputJetID      = cms.InputTag("ak5JetID")
+      includeJetID        = cms.bool(True),
+      inputJetID          = cms.InputTag("ak5JetID"),
+      includeTowerCounts  = cms.bool(False)
     )
 )
 
@@ -383,7 +384,8 @@ process.icJPTJetProducer = cms.EDProducer('ICJPTJetProducer',
       inputVertices         = cms.InputTag("offlinePrimaryVertices"),
       requestTracks         = cms.bool(True),
       includeJetID          = cms.bool(True),
-      inputJetID            = cms.InputTag("ak5JetID")
+      inputJetID            = cms.InputTag("ak5JetID"),
+      includeTowerCounts    = cms.bool(False)
     )
 )
 
@@ -639,7 +641,7 @@ process.p = cms.Path(
   process.pfParticleSelectionSequence+
   process.eleIsoSequence+
   process.muoIsoSequence+
-  process.icElectronR9Calculator+
+  #process.icElectronR9Calculator+
   process.icElectronHcalDepthCalculator+
   process.icElectronConversionCalculator+
   process.icHttElecIsoCheck+
