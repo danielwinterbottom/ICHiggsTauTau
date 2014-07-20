@@ -118,7 +118,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
       }
     }
 
-    if (request_trks_ && src.signalPFChargedHadrCands().isNonnull()) {
+    if (request_trks_) {
       std::vector<std::size_t> trk_ids;
       for (unsigned j = 0; j < src.signalPFChargedHadrCands().size(); ++j) {
         reco::TrackRef const& trk =
