@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
   TH1F bkg = cmb.cp().backgrounds().GetShape();
   ch::SOverBInfo info(ch::SOverBInfo(&sig, &bkg, 3500, 0.682));
   double s_over_sb = info.s/(info.s + info.b);
+  double s_over_root_sb = info.s/std::sqrt(info.s + info.b);
   double width = (info.x_hi-info.x_lo)/2.;
 
   double tot_sig     = cmb.cp()
@@ -130,11 +131,13 @@ int main(int argc, char* argv[]){
 
   string def_sb = "%.3f";
   if (s_over_sb >= 0.1) def_sb = "%.2f";
+  string def_rsb = "%.3f";
+  if (s_over_root_sb >= 0.1) def_rsb = "%.2f";
 
   std::cout << boost::format("%s & "
     "\\multicolumn{3}{c}{\\includegraphics[height=3mm]{figs/htt-boxes/%s.pdf}} &"
-    " %.1f,%.1f & %.0f,%.0f & %.0f & "+def_sb+" & %.1f \\\\ \n")
-    % texname % shortname % tot_sig % tot_sig_err % tot_bkg % tot_bkg_err % tot_dat % s_over_sb % width;
+    " %.1f,%.1f & %.0f,%.0f & %.0f & "+def_sb+" & "+def_rsb+" & %.1f \\\\ \n")
+    % texname % shortname % tot_sig % tot_sig_err % tot_bkg % tot_bkg_err % tot_dat % s_over_sb % s_over_root_sb % width;
 
     TCanvas canv("canv","canv",350,70);
     TBox x;
@@ -144,7 +147,7 @@ int main(int argc, char* argv[]){
     x.DrawBox(0.,0,frac_ggh,1);
     x.SetFillColor(kTeal+5); // qqH
     x.DrawBox(frac_ggh,0,1.-frac_vh,1);
-    canv.SaveAs((shortname+".pdf").c_str());
+    // canv.SaveAs((shortname+".pdf").c_str());
 
   return 0;
 }
