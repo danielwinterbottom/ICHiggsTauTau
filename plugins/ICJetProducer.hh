@@ -113,13 +113,15 @@ ICJetProducer<T, U>::ICJetProducer(const edm::ParameterSet& config)
   //     % (apply_post_jec_cut_ ? 'x' : ' ') % " "
   //     % cut_string_;
 
-  edm::ParameterSet pset = config.getParameter<edm::ParameterSet>("JECs");
-  std::vector<std::string> vec = pset.getParameterNamesForType<std::string>();
-  for (unsigned i = 0; i < vec.size(); ++i) {
-    jecs_.push_back(
-        std::make_pair(vec[i], pset.getParameter<std::string>(vec[i])));
-    // std::cout << boost::format("%-20s %-15s %-7.7s\n") % vec[i] % " " %
-    //                  CityHash64(vec[i]);
+  if (apply_jec_factors_ || include_jec_factors_) {
+    edm::ParameterSet pset = config.getParameter<edm::ParameterSet>("JECs");
+    std::vector<std::string> vec = pset.getParameterNamesForType<std::string>();
+    for (unsigned i = 0; i < vec.size(); ++i) {
+      jecs_.push_back(
+          std::make_pair(vec[i], pset.getParameter<std::string>(vec[i])));
+      // std::cout << boost::format("%-20s %-15s %-7.7s\n") % vec[i] % " " %
+      //                  CityHash64(vec[i]);
+    }
   }
 
   edm::ParameterSet btag_pset =
