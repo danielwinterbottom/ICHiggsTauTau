@@ -14,10 +14,16 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/th1fmorph.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "TPad.h"
+#include "TCanvas.h"
 #include "TROOT.h"
 #include "TEfficiency.h"
 #include "TEntryList.h"
 #include "TMath.h"
+#include "RooDataHist.h"
+#include "RooHistPdf.h"
+#include "RooRealVar.h"
+#include "RooAddPdf.h"
+#include "RooPlot.h"
 
 namespace ic {
 
@@ -504,8 +510,14 @@ namespace ic {
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
     
-    auto w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+    Value w_norm;
+    if(method == 20){
+      w_norm = this->GetRateViaWFitMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+    } else {
+      w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+        "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+    }
     std::string w_shape_cat = cat;
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
     if (method == 5)  w_shape_cat = cat;
@@ -1112,6 +1124,67 @@ namespace ic {
     Value w_signal = ValueProduct(w_control, ratio);
     return w_signal;
   }
+  
+  HhhAnalysis::Value HhhAnalysis::GetRateViaWFitMethod(std::string const& w_sample,
+                          std::string const& ratio_cat,
+                          std::string const& ratio_control_sel,
+                          std::string const& ratio_signal_sel,
+                          std::string const& data_sample,
+                          std::string const& cat,
+                          std::string const& control_sel,
+                          std::vector<std::string> const& sub_samples,
+                          std::string const& wt,
+                          std::map<std::string, std::function<Value()>> dict
+                          ) {
+    if (verbosity_) {
+      std::cout << "[HhhAnalysis::GetRateViaWFitMethod]\n";
+      std::cout << "ExtrapFactor:   " << boost::format("%s,'%s'/'%s','%s','%s'\n") % w_sample % ratio_signal_sel 
+                % ratio_control_sel % ratio_cat % wt;
+      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_sel % cat % wt;
+    }
+    
+    TH1F data_control = GetLumiScaledShape("mt_1(40,0,160)", data_sample, control_sel, cat, wt); 
+    Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
+    Value data_control_norm = GetRate(data_sample, control_sel, cat, wt);
+    if (verbosity_) PrintValue(data_sample, data_control_norm);
+    Value total_bkg;
+    std::vector<TH1F*> fit_bkgs;
+    //Subtract all backgrounds except ttbar
+    for (unsigned i = 0; i < sub_samples.size(); ++i) {
+      Value bkr;
+      if(sub_samples[i].find("TTJets") != sub_samples[i].npos) {
+        continue;   
+      }
+      if (dict.count(sub_samples[i])) {
+        bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
+        TH1F tmp = GetShape("mt_1(40,0,160)", sub_samples.at(i), control_sel, cat, wt);
+        SetNorm(&tmp, bkr.first);
+        data_control.Add(&tmp, -1.);
+      } else {
+        bkr = GetLumiScaledRate(sub_samples[i], control_sel, cat, wt);
+        TH1F tmp = GetLumiScaledShape("mt_1(40,0,160)", sub_samples[i], control_sel, cat, wt);
+        data_control.Add(&tmp, -1.);
+      }
+
+      if (verbosity_) PrintValue("-"+sub_samples[i], bkr);
+      double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
+      total_bkg.first += bkr.first;
+      total_bkg.second = new_err;
+
+    }
+
+    TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, cat, wt).first;
+    TH1F w_control = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
+    
+    if (verbosity_) PrintValue("TotalBkgExclTT", total_bkg);
+    double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control_norm.second * data_control_norm.second));
+    Value w_control_norm(WTTTemplateFit(&data_control, &w_control, &top_control), w_control_err);
+    if (verbosity_) PrintValue("WSideband", w_control_norm);
+    if (verbosity_) PrintValue("ExtrapFactor", ratio);
+    Value w_signal = ValueProduct(w_control_norm, ratio);
+    return w_signal;
+  }
+
 
   HhhAnalysis::Value HhhAnalysis::GetRateViaQCDMethod(HhhAnalysis::Value const& ratio,
                           std::string const& data_sample,
@@ -1365,7 +1438,41 @@ namespace ic {
     std::cout << " Kolmogorov Probability = " << prob << ", rmax=" << rdmax << std::endl;
     return prob;
   }
+  
+  double HhhAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT) {
+    if(!verbosity_) RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING); 
+    
+    RooRealVar* mt_1_ = new RooRealVar("mt_1","mt_1",70.0, 300.0, "GeV");
+    RooRealVar mt_1 = *mt_1_;
+    double data_norm = data->Integral();
+    RooDataHist* obsData = new RooDataHist("data", "data", RooArgList(mt_1), data);
+    RooDataHist* Wbkg = new RooDataHist("W", "W", RooArgList(mt_1), W);
+    RooDataHist* TTbkg = new RooDataHist("TT", "TT", RooArgList(mt_1), TT);
+    RooHistPdf* WPdf = new RooHistPdf("W", "W", RooArgSet(mt_1), *Wbkg);
+    RooHistPdf* TTPdf = new RooHistPdf("TT", "TT", RooArgSet(mt_1), *TTbkg);
 
+    RooRealVar coeff("coeff","coeff",0.50,-0.5,1.5) ;
+
+    RooAddPdf bkgModel("bkgModel","coeff*WPdf + (1-coeff)*TTPdf", *WPdf, *TTPdf, coeff) ; 
+    int print_level=-1;
+    if(verbosity_) print_level=1;
+
+    bkgModel.fitTo(*obsData, RooFit::Save(true), RooFit::PrintLevel(print_level), RooFit::SumW2Error(kFALSE) );
+    if(verbosity_) std::cout << "Relative fraction of W from fit: " << coeff.getVal() << std::endl;
+
+    RooPlot* frame1 = mt_1.frame();
+    obsData->plotOn(frame1);
+    bkgModel.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed));
+    bkgModel.plotOn(frame1,RooFit::Components(*TTPdf),RooFit::LineColor(kBlue));
+    bkgModel.plotOn(frame1,RooFit::LineColor(kRed));
+    TCanvas* c1 = new TCanvas("c1","c1",600,600);
+    frame1->Draw("e0");
+    if(verbosity_) c1->SaveAs("PostFit.pdf");
+    delete frame1;
+
+    return (coeff.getVal())*data_norm;
+
+  }
 
 
 

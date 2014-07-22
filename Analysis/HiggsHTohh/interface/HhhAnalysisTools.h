@@ -12,6 +12,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "RooWorkspace.h"
 
 //! HhhAnalysisTools
 /*!
@@ -320,6 +321,17 @@ namespace ic {
                               std::string const& wt,
                               std::map<std::string, std::function<Value()>> dict
                               );
+      Value GetRateViaWFitMethod(std::string const& w_sample,
+                              std::string const& ratio_cat,
+                              std::string const& ratio_control_sel,
+                              std::string const& ratio_signal_sel,
+                              std::string const& data_sample,
+                              std::string const& cat,
+                              std::string const& control_sel,
+                              std::vector<std::string> const& sub_samples,
+                              std::string const& wt,
+                              std::map<std::string, std::function<Value()>> dict
+                              );
       Value GetRateViaQCDMethod(Value const& ratio,
                               std::string const& data_sample,
                               std::string const& control_selection,
@@ -337,6 +349,7 @@ namespace ic {
                               std::string const& sample1, std::string const& selection1, std::string const& category1,
                               std::string const& sample2, std::string const& selection2, std::string const& category2,
                               std::string const& weight);
+      double WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT);
 
       void SetQCDRatio(double const& ratio);
       inline void SetVerbosity(unsigned const& verbosity) { verbosity_ = verbosity; }
