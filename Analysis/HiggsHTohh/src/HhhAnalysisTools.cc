@@ -1459,6 +1459,8 @@ namespace ic {
 
     bkgModel.fitTo(*obsData, RooFit::Save(true), RooFit::PrintLevel(print_level), RooFit::SumW2Error(kFALSE) );
     if(verbosity_) std::cout << "Relative fraction of W from fit: " << coeff.getVal() << std::endl;
+    if(verbosity_) std::cout << "Ratio of post-fit W norm to pre-fit: " << (data_norm*(coeff.getVal()))/W->Integral() << std::endl;
+    if(verbosity_) std::cout << "Ratio of post-fit TT norm to pre-fit: " << (data_norm*(1-coeff.getVal()))/TT->Integral() << std::endl;
 
     RooPlot* frame1 = mt_1.frame();
     obsData->plotOn(frame1);
