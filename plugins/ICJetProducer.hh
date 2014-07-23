@@ -442,7 +442,9 @@ void ICJetProducer<ic::JPTJet, reco::JPTJet>::constructSpecific(
     dest.set_beta_max(beta_max);
     dest.set_track_pt_total(trk_pt_total);
   }
-  event.put(track_requests, "requestedTracks");
+  if (cfg_.request_trks) {
+    event.put(track_requests, "requestedTracks");
+  }
 }
 
 template <>
@@ -598,7 +600,9 @@ void ICJetProducer<ic::PFJet, reco::PFJet>::constructSpecific(
       }
     }
   }
-  event.put(track_requests, "requestedTracks");
+  if (cfg_.request_trks) {
+    event.put(track_requests, "requestedTracks");
+  }
 }
 
 template <class T, class U>

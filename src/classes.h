@@ -26,6 +26,7 @@
 #include "UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h"
 #include "DataFormats/Common/interface/Wrapper.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;
@@ -78,6 +79,7 @@ namespace { struct dictionary {
   ic::SecondaryVertex dummy49;
   std::vector<ic::SecondaryVertex> dummy50;
   edm::Wrapper<reco::SecondaryVertexTagInfoRefVector> dummy51;
+  edm::Wrapper<reco::VertexRefVector> dummy52;
 };
 }
 

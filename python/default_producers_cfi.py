@@ -62,7 +62,7 @@ icElectronProducer = cms.EDProducer('ICElectronProducer',
 )
 
 ##############################################################################
-# PF Muon Module
+# Muon Module
 ##############################################################################
 icMuonProducer = cms.EDProducer('ICMuonProducer',
     branch                    = cms.string("muons"),

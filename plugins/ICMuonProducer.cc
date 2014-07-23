@@ -62,7 +62,7 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     n_muons = muons_handle->size();
   }
 
-  edm::Handle<reco::VertexCollection> vertices_handle;
+  edm::Handle<edm::View<reco::Vertex> > vertices_handle;
   if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
 
   edm::Handle<reco::BeamSpot> beamspot_handle;

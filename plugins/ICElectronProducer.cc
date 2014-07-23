@@ -74,7 +74,7 @@ void ICElectronProducer::produce(edm::Event& event,
   if (do_conversion_matches_)
     event.getByLabel(input_conversion_matches_, conversion_matches_handle);
 
-  edm::Handle<reco::VertexCollection> vertices_handle;
+  edm::Handle<edm::View<reco::Vertex> > vertices_handle;
   if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
 
   edm::Handle<reco::BeamSpot> beamspot_handle;
