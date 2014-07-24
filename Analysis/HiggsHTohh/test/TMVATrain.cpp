@@ -34,11 +34,11 @@ std::map<std::string, std::pair<double, double>> sample_info_;
 void ParseParamFile(std::string const& file) {
 	SimpleParamParser parser;
 	parser.ParseFile(file);
-//	std::cout << "[HhhAnalysis::ParseParamFile] Extracting sample info from file " << file << std::endl;
-//	lumi_ = parser.GetParam<double>("LUMI_DATA_"+Channel2String(ch_));
-//	std::cout << "[HhhAnalysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
-//	if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
-//	if (verbosity_ > 1) std::cout << "-----------------------------------------------------------------------------------------\n";
+	//	std::cout << "[HhhAnalysis::ParseParamFile] Extracting sample info from file " << file << std::endl;
+	//	lumi_ = parser.GetParam<double>("LUMI_DATA_"+Channel2String(ch_));
+	//	std::cout << "[HhhAnalysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
+	//	if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
+	//	if (verbosity_ > 1) std::cout << "-----------------------------------------------------------------------------------------\n";
 	for (auto sample : sample_names_) {
 		std::string lookup = sample;
 		if (sample.find("Special") != sample.npos) {
@@ -51,7 +51,7 @@ void ParseParamFile(std::string const& file) {
 			double xs = parser.GetParam<double>("XS_"+sample);
 			if (xs <= 0) continue;
 			sample_info_[sample] = std::make_pair(evt, xs);
-	//		if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % sample % unsigned(evt+0.5) % xs % (evt/xs) % (evt/(xs*lumi_));
+			//		if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % sample % unsigned(evt+0.5) % xs % (evt/xs) % (evt/(xs*lumi_));
 		}
 	}
 }
@@ -66,6 +66,7 @@ int main(int argc, char* argv[]){
 	string output_name;             // Name of the ouput ROOT File
 	string output_folder;           // Folder to write the output in
 	string paramfile;
+	string paramfile2;
 
 	po::options_description config("Configuration");
 	po::variables_map vm;
@@ -77,6 +78,7 @@ int main(int argc, char* argv[]){
 		("output_name",         po::value<string>(&output_name)->default_value("test_tmva.root"))
 		("output_folder",       po::value<string>(&output_folder)->default_value(""))
 		("paramfile",						po::value<string>(&paramfile)->default_value("./scripts/Paper_params_2012.dat"))
+		("paramfile2", 					po::value<string>(&paramfile2)->default_value("./scripts/TMVAinputs.dat"))
 		;
 	po::store(po::command_line_parser(argc, argv).
 			options(config).allow_unregistered().run(), vm);
@@ -106,37 +108,29 @@ int main(int argc, char* argv[]){
 	std::vector<string> signallist;
 	signallist.push_back("GluGluToHTohhTo2Tau2B_mH-300");
 
-//	std::vector<string> sample_names_;
 	sample_names_.reserve(bckglist.size()+signallist.size());
 	sample_names_.insert(sample_names_.end(),bckglist.begin(),bckglist.end());
 	sample_names_.insert(sample_names_.end(),signallist.begin(),signallist.end());
 
 
-	ParseParamFile(paramfile);
-	auto it = sample_info_.find("TTJetsFullLept");
-	if(it!=sample_info_.end()){
-	double evt = it->second.first;
-	double xs = it->second.second;
-	std::cout<<evt<<std::endl;
-	}
 
 	std::vector<TFile*> BackgroundSamples;
-	for(int iter=0;iter<bckglist.size();++iter){
+	for(unsigned int iter=0;iter<bckglist.size();++iter){
 		BackgroundSamples.push_back(TFile::Open((folder+bckglist.at(iter)+"_em_2012.root").c_str()));
 	}
 
 	std::vector<TFile*> SignalSamples;
-	for(int sigIter=0;sigIter<signallist.size();++sigIter){
+	for(unsigned int sigIter=0;sigIter<signallist.size();++sigIter){
 		SignalSamples.push_back(TFile::Open((folder+signallist.at(sigIter)+"_em_2012.root").c_str()));
 	}
 
 	std::vector<TTree*> backgroundTrees;
-	for(int iter2=0;iter2<BackgroundSamples.size();++iter2){
+	for(unsigned int iter2=0;iter2<BackgroundSamples.size();++iter2){
 		backgroundTrees.push_back(dynamic_cast<TTree*>(BackgroundSamples.at(iter2)->Get("ntuple")));
 	}
 
 	std::vector<TTree*> signalTrees;
-	for(int sigIter2=0;sigIter2<SignalSamples.size();++sigIter2){
+	for(unsigned int sigIter2=0;sigIter2<SignalSamples.size();++sigIter2){
 		signalTrees.push_back(dynamic_cast<TTree*>(SignalSamples.at(sigIter2)->Get("ntuple")));
 	}
 
@@ -144,34 +138,50 @@ int main(int argc, char* argv[]){
 
 	TMVA::Factory *factory = new TMVA::Factory("HTohhMVA",outfile,"!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification");
 
-	factory->AddVariable( "pt_1","","units", 'F' );
-	factory->AddVariable( "met", "met", "", 'F' );
-	factory->AddVariable( "mt_ll","mt_ll", "", 'F' );
-	factory->AddVariable( "pzetamiss","pzetamiss", "", 'F' );
-	factory->AddVariable("pt_2","pt_2","",'F');
-	factory->AddVariable("emu_dphi","emu_dphi","",'F');
-	factory->AddVariable("pzeta","pzeta","",'F');
+
+	std::vector<std::string> vars;
+	ifstream parafile(paramfile2.c_str());
+	std::cout<<paramfile2.c_str()<<std::endl;
+	string line;
+	while(getline(parafile,line)){
+		vars.push_back(line);
+	}
+	parafile.close();
+
+	std::cout<<(vars.at(0)).c_str()<<std::endl;
+
+	std::vector<float> var2;
+	for(unsigned int variter=0;variter<vars.size();++variter){
+		var2.push_back(::atof((vars.at(variter)).c_str()));
+	}
+
+
+	for(unsigned int variter=0;variter<vars.size();++variter){
+		factory->AddVariable((vars.at(variter)).c_str(),(vars.at(variter)).c_str(),"",'F');
+	}
+
 	factory->AddSpectator("n_prebjets","n_prebjets","",'I');
 
-	double weightval_;
+	double weightval_=0;
 
-	for(int bckgit=0;bckgit<backgroundTrees.size();++bckgit){
-  auto it = sample_info_.find(bckglist.at(bckgit).c_str());
-	if(it!=sample_info_.end()){
-	double evt = it->second.first;
-	double xs = it->second.second;
-	weightval_=(Double_t) xs/evt;
+ ParseParamFile(paramfile);	
+
+	for(unsigned int bckgit=0;bckgit<backgroundTrees.size();++bckgit){
+		auto it = sample_info_.find(bckglist.at(bckgit).c_str());
+		if(it!=sample_info_.end()){
+			double evt = it->second.first;
+			double xs = it->second.second;
+			weightval_=(double) xs/evt;
+		}
+		factory->AddBackgroundTree(backgroundTrees.at(bckgit),weightval_);
 	}
-	factory->AddBackgroundTree(backgroundTrees.at(bckgit),weightval_);
-	std::cout<<weightval_<<std::endl;
-	}
-	for(int sgit=0;sgit<signalTrees.size();++sgit){
-	auto it = sample_info_.find(signallist.at(sgit).c_str());
-	if(it!=sample_info_.end()){
-	double evt = it->second.first;
-	double xs=it->second.second;
-	weightval_=(Double_t) xs/evt;
-	}
+	for(unsigned int sgit=0;sgit<signalTrees.size();++sgit){
+		auto it = sample_info_.find(signallist.at(sgit).c_str());
+		if(it!=sample_info_.end()){
+			double evt = it->second.first;
+			double xs=it->second.second;
+			weightval_=(Double_t) xs/evt;
+		}
 		factory->AddSignalTree(backgroundTrees.at(sgit),weightval_);
 	}
 	factory->SetBackgroundWeightExpression("wt");
@@ -189,66 +199,6 @@ int main(int argc, char* argv[]){
 
 	outfile->Close();
 	delete factory;
-
-	// Load necessary libraries for ROOT I/O of custom classes
-	//gSystem->Load("libFWCoreFWLite.dylib");
-	//gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-	//AutoLibraryLoader::enable();
-
-	// Build a vector of input files
-	//vector<string> files = ParseFileLines(filelist);
-	//for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
-
-	// Create ROOT output fileservice
-	//fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
-
-	//Optional configurable parameters with which you can filter the collection you are interested in.
-	//double jet_pt, jet_eta, tau_pt, tau_eta;
-	//jet_pt = 20.0;
-	// jet_eta = 2.3; 
-	// tau_pt = 20.0;
-	// tau_eta = 2.3; 
-
-	//std::cout << "** Kinematics **" << std::endl;
-	/*std::cout << boost::format(param_fmt) % "jet_pt" % jet_pt;
-		std::cout << boost::format(param_fmt) % "jet_eta" % jet_eta;
-		std::cout << boost::format(param_fmt) % "tau_pt" % tau_pt;
-		std::cout << boost::format(param_fmt) % "tau_eta" % tau_eta;
-
-	//Defining an analysis using this class removes all the need for any for loops through the events. An "analysis" loops through all the events up to max_events and runs the modules which you define at the end of this script using analysis.AddModule
-
-	ic::AnalysisBase analysis(
-	"JetTauFakeRateStudy",// Analysis name
-	files,                // Input files
-	"icEventProducer",    // TTree path
-	"EventTree",          // TTree name
-	max_events);          // Max. events to process (-1 = all)
-	analysis.SetTTreeCaching(true);
-	analysis.StopOnFileFailure(true);
-	analysis.RetryFileAfterFailure(7, 3);
-	 */
-
-	//For now, read in all the jets and taus within the pt and eta range of interest. Using Andrew's modules makes it much easier to 
-	//add other things later, if we need a certain type of ID (or flavour selection) applied to the jets/taus
-
-	/* SimpleFilter<Tau> TauFilter = SimpleFilter<Tau>("TauFilter")
-		 .set_input_label("taus")
-		 .set_predicate(bind(MinPtMaxEta, _1, tau_pt, tau_eta));
-
-		 SimpleFilter<PFJet> JetFilter = SimpleFilter<PFJet>("JetFilter")
-		 .set_input_label("pfJetsPFlow")
-	//.set_predicate(bind(MinPtMaxEta, _1, jet_pt, jet_eta)&&(bind(&PFJet::pu_id_mva_loose,_1)));
-	.set_predicate(bind(MinPtMaxEta,_1,jet_pt,jet_eta)&&(bind(&PFJet::charged_multiplicity_nopu,_1)>0)&&(bind(&PFJet::charged_had_energy_frac,_1)>0)&&(bind(&PFJet::neutral_had_energy_frac,_1)<0.99)&&(bind(&PFJet::charged_em_energy_frac,_1)<0.99)&&(bind(&PFJet::neutral_em_energy_frac,_1)<0.99)&&((bind(&PFJet::charged_multiplicity_nopu,_1)>1)||(bind(&PFJet::neutral_multiplicity,_1)>0)));
-
-	JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")
-	.set_write_plots(true)
-	.set_write_tree(false)
-	.set_fs(fs);
-	 */
-
-	//Add module here which reads in the filtered taus and jets and makes the plots/performs the fake rate study
-
-
 
 	return 0;
 }
