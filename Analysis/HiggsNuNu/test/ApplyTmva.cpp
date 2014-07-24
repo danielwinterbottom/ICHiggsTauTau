@@ -41,6 +41,8 @@ int main( int argc, char** argv )
   std::istringstream(argv[1])>>signalFactor;
   std::istringstream(argv[2])>>useData;
 
+  double qcdfactor = 1;
+
   // --- Create the Reader object
 
    TMVA::Reader *reader = new TMVA::Reader( "Color:!Silent" );    
@@ -49,50 +51,67 @@ int main( int argc, char** argv )
    // - the variable names MUST corresponds in name and type to those given in the weight file(s) used
 
    const unsigned nVars=13;
-   const unsigned nSpecs=20;
+   const unsigned nSpecs=0;
 
    Float_t var[nVars];
    Float_t spec[nSpecs];
 
-   for (unsigned iV(0); iV<nSpecs;++iV){
-     if (iV<nVars) var[iV] = 0;
-     spec[iV] = 0;
+   for (unsigned iV(0); iV<nVars;++iV){
+     if (iV<nSpecs) spec[iV] = 0;
+     var[iV] = 0;
    }
 
-   reader->AddVariable("jet2_eta",&var[0]);
-   reader->AddVariable("met_significance",&var[1]);
-   reader->AddVariable("mht",&var[2]);
-   reader->AddVariable("jet2met_dphi",&var[3]);
-   reader->AddVariable("jetmet_mindphi",&var[4]);
-   reader->AddVariable("jetunclet_mindphi",&var[5]);
-   reader->AddVariable("metunclet_dphi",&var[6]);
-   reader->AddVariable("dijetmet_scalarSum_pt",&var[7]);
-   reader->AddVariable("dijetmet_ptfraction",&var[8]);
-   reader->AddVariable("jet1met_scalarprod",&var[9]);
-   reader->AddVariable("jet2met_scalarprod",&var[10]);
-   reader->AddVariable("jet1met_scalarprod_frac := jet1met_scalarprod/met",&var[11]);
-   reader->AddVariable("jet2met_scalarprod_frac := jet2met_scalarprod/met",&var[12]);
 
-   reader->AddSpectator("jet1_pt",&spec[0]);
-   reader->AddSpectator("jet2_pt",&spec[1]);
-   reader->AddSpectator("jet1_eta",&spec[2]);
-   reader->AddSpectator("jet1_phi",&spec[3]);
-   reader->AddSpectator("jet2_phi",&spec[4]);
-   reader->AddSpectator("dijet_M",&spec[5]);
-   reader->AddSpectator("dijet_deta",&spec[6]);
-   reader->AddSpectator("dijet_sumeta",&spec[7]);
-   reader->AddSpectator("dijet_dphi",&spec[8]);
-   reader->AddSpectator("met",&spec[9]);
-   reader->AddSpectator("met_phi",&spec[10]);
-   reader->AddSpectator("sumet",&spec[11]);
-   reader->AddSpectator("ht",&spec[12]);
-   reader->AddSpectator("sqrt_ht",&spec[13]);
-   reader->AddSpectator("unclustered_et",&spec[14]);
-   reader->AddSpectator("unclustered_phi",&spec[15]);
-   reader->AddSpectator("jet1met_dphi",&spec[16]);
-   reader->AddSpectator("dijetmet_vectorialSum_pt",&spec[17]);
-   reader->AddSpectator("n_jets_cjv_30",&spec[18]);
-   reader->AddSpectator("n_jets_cjv_20EB_30EE",&spec[19]);
+   reader->AddVariable("jet2_pt",&var[0]);
+   reader->AddVariable("dijet_M",&var[1]);
+   reader->AddVariable("dijet_deta",&var[2]);
+   reader->AddVariable("dijet_dphi",&var[3]);
+   reader->AddVariable("met",&var[4]);
+   reader->AddVariable("met_significance",&var[5]);
+   reader->AddVariable("sqrt_ht",&var[6]);
+   reader->AddVariable("jetmet_mindphi",&var[7]);
+   reader->AddVariable("dijetmet_ptfraction",&var[8]);
+   reader->AddVariable("dijetmet_vectorialSum_pt",&var[9]);
+   reader->AddVariable("jet1met_scalarprod_frac := jet1met_scalarprod/met",&var[10]);
+   reader->AddVariable("jet2met_scalarprod_frac := jet2met_scalarprod/met",&var[11]);
+   reader->AddVariable("n_jets_cjv_30",&var[12]);
+
+
+
+//    reader->AddVariable("jet2_eta",&var[0]);
+//    reader->AddVariable("met_significance",&var[1]);
+//    reader->AddVariable("mht",&var[2]);
+//    reader->AddVariable("jet2met_dphi",&var[3]);
+//    reader->AddVariable("jetmet_mindphi",&var[4]);
+//    reader->AddVariable("jetunclet_mindphi",&var[5]);
+//    reader->AddVariable("metunclet_dphi",&var[6]);
+//    reader->AddVariable("dijetmet_scalarSum_pt",&var[7]);
+//    reader->AddVariable("dijetmet_ptfraction",&var[8]);
+//    reader->AddVariable("jet1met_scalarprod",&var[9]);
+//    reader->AddVariable("jet2met_scalarprod",&var[10]);
+//    reader->AddVariable("jet1met_scalarprod_frac := jet1met_scalarprod/met",&var[11]);
+//    reader->AddVariable("jet2met_scalarprod_frac := jet2met_scalarprod/met",&var[12]);
+
+//    reader->AddSpectator("jet1_pt",&spec[0]);
+//    reader->AddSpectator("jet2_pt",&spec[1]);
+//    reader->AddSpectator("jet1_eta",&spec[2]);
+//    reader->AddSpectator("jet1_phi",&spec[3]);
+//    reader->AddSpectator("jet2_phi",&spec[4]);
+//    reader->AddSpectator("dijet_M",&spec[5]);
+//    reader->AddSpectator("dijet_deta",&spec[6]);
+//    reader->AddSpectator("dijet_sumeta",&spec[7]);
+//    reader->AddSpectator("dijet_dphi",&spec[8]);
+//    reader->AddSpectator("met",&spec[9]);
+//    reader->AddSpectator("met_phi",&spec[10]);
+//    reader->AddSpectator("sumet",&spec[11]);
+//    reader->AddSpectator("ht",&spec[12]);
+//    reader->AddSpectator("sqrt_ht",&spec[13]);
+//    reader->AddSpectator("unclustered_et",&spec[14]);
+//    reader->AddSpectator("unclustered_phi",&spec[15]);
+//    reader->AddSpectator("jet1met_dphi",&spec[16]);
+//    reader->AddSpectator("dijetmet_vectorialSum_pt",&spec[17]);
+//    reader->AddSpectator("n_jets_cjv_30",&spec[18]);
+//    reader->AddSpectator("n_jets_cjv_20EB_30EE",&spec[19]);
 
    // Book method(s)
    TString methodName = "BDT method";
@@ -129,14 +148,24 @@ int main( int argc, char** argv )
    // Prepare input tree (this must be replaced by your data source)
  
   //List of input files
+  bool useJoaosFiles = true;
   std::vector<std::string> qcdfiles;
-  qcdfiles.push_back("MC_QCD-Pt-30to50-pythia6");
-  qcdfiles.push_back("MC_QCD-Pt-50to80-pythia6");
-  qcdfiles.push_back("MC_QCD-Pt-80to120-pythia6");
-  qcdfiles.push_back("MC_QCD-Pt-120to170-pythia6");
-  qcdfiles.push_back("MC_QCD-Pt-170to300-pythia6");
-  qcdfiles.push_back("MC_QCD-Pt-300to470-pythia6");
-  qcdfiles.push_back("MC_QCD-Pt-470to600-pythia6");
+  if (useJoaosFiles){
+    qcdfiles.push_back("MC_QCD-Pt-80to120_VBF-MET40");
+    qcdfiles.push_back("MC_QCD-Pt-120to170_VBF-MET40");
+    qcdfiles.push_back("MC_QCD-Pt-170to300_VBF-MET40");
+    qcdfiles.push_back("MC_QCD-Pt-300to470_VBF-MET40");
+    qcdfiles.push_back("MC_QCD-Pt-470to600_VBF-MET40");
+  }
+  else {
+    qcdfiles.push_back("MC_QCD-Pt-30to50-pythia6");
+    qcdfiles.push_back("MC_QCD-Pt-50to80-pythia6");
+    qcdfiles.push_back("MC_QCD-Pt-80to120-pythia6");
+    qcdfiles.push_back("MC_QCD-Pt-120to170-pythia6");
+    qcdfiles.push_back("MC_QCD-Pt-170to300-pythia6");
+    qcdfiles.push_back("MC_QCD-Pt-300to470-pythia6");
+    qcdfiles.push_back("MC_QCD-Pt-470to600-pythia6");
+  }
   qcdfiles.push_back("MC_QCD-Pt-600to800-pythia6");
   qcdfiles.push_back("MC_QCD-Pt-800to1000-pythia6");
   qcdfiles.push_back("MC_QCD-Pt-1000to1400-pythia6");
@@ -222,7 +251,10 @@ int main( int argc, char** argv )
     if (useData) fData[iD] = TFile::Open((folder+datafiles[iD]+".root").c_str());
     else {
       if (iD<ewkfiles.size()) fData[iD] = TFile::Open((folder+ewkfiles[iD]+".root").c_str());
-      else if (iD<ewkfiles.size()+qcdfiles.size()) fData[iD] = TFile::Open((folder+qcdfiles[iD-ewkfiles.size()]+".root").c_str());
+      else if (iD<ewkfiles.size()+qcdfiles.size()) {
+	fData[iD] = TFile::Open((folder+qcdfiles[iD-ewkfiles.size()]+".root").c_str());
+	qcdfactor = 1.44;
+      }
       else fData[iD] = TFile::Open((folder+sigfiles[iD-ewkfiles.size()-qcdfiles.size()]+".root").c_str());
     }
     if (!fData[iD]) {
@@ -244,49 +276,63 @@ int main( int argc, char** argv )
 
     double weight = 1;
     double jet1_E=0,jet2_E=0,metx=0,mety=0;
-
-    Double_t treeSpec[nSpecs-2];
+    double jet1met=0,jet2met=0;
+    //Double_t treeSpec[nSpecs-2];
     Double_t treeVar[nVars];
     UInt_t nCJV = 0;
     UInt_t nCJV20 = 0;
 
     TTree *t = (TTree*)fData[iD]->Get("TmvaInputTree");
+//     t->SetBranchAddress("total_weight", &weight);
+//     t->SetBranchAddress("jet1_pt",                 &treeSpec[0]);
+//     t->SetBranchAddress("jet2_pt",                 &treeSpec[1]);
+//     t->SetBranchAddress("jet1_eta",                &treeSpec[2]);
+//     t->SetBranchAddress("jet2_eta",                &treeVar[0]);
+//     t->SetBranchAddress("jet1_phi",                &treeSpec[3]);
+//     t->SetBranchAddress("jet2_phi",                &treeSpec[4]);
+//     t->SetBranchAddress("jet1_E",                  &jet1_E);
+//     t->SetBranchAddress("jet2_E",                  &jet2_E);
+//     t->SetBranchAddress("dijet_M",                 &treeSpec[5]);
+//     t->SetBranchAddress("dijet_deta",              &treeSpec[6]);
+//     t->SetBranchAddress("dijet_sumeta",            &treeSpec[7]);
+//     t->SetBranchAddress("dijet_dphi",              &treeSpec[8]);
+//     t->SetBranchAddress("met",                     &treeSpec[9]);
+//     t->SetBranchAddress("met_x",                   &metx);
+//     t->SetBranchAddress("met_y",                   &mety);
+//     t->SetBranchAddress("met_phi",                 &treeSpec[10]);
+//     t->SetBranchAddress("met_significance",        &treeVar[1]);
+//     t->SetBranchAddress("sumet",                   &treeSpec[11]);
+//     t->SetBranchAddress("ht",                      &treeSpec[12]);
+//     t->SetBranchAddress("mht",                     &treeVar[2]);
+//     t->SetBranchAddress("sqrt_ht",                 &treeSpec[13]);
+//     t->SetBranchAddress("unclustered_et",          &treeSpec[14]);
+//     t->SetBranchAddress("unclustered_phi",         &treeSpec[15]);
+//     t->SetBranchAddress("jet1met_dphi",            &treeSpec[16]);
+//     t->SetBranchAddress("jet2met_dphi",            &treeVar[3]);
+//     t->SetBranchAddress("jetmet_mindphi",          &treeVar[4]);
+//     t->SetBranchAddress("jetunclet_mindphi",       &treeVar[5]);
+//     t->SetBranchAddress("metunclet_dphi",          &treeVar[6]);
+//     t->SetBranchAddress("dijetmet_scalarSum_pt",   &treeVar[7]);
+//     t->SetBranchAddress("dijetmet_vectorialSum_pt",&treeSpec[17]);
+//     t->SetBranchAddress("dijetmet_ptfraction",     &treeVar[8]);
+//     t->SetBranchAddress("jet1met_scalarprod",      &treeVar[9]);
+//     t->SetBranchAddress("jet2met_scalarprod",      &treeVar[10]);
+//     t->SetBranchAddress("n_jets_cjv_30",           &nCJV);
+//     t->SetBranchAddress("n_jets_cjv_20EB_30EE",    &nCJV20);
     t->SetBranchAddress("total_weight", &weight);
-    t->SetBranchAddress("jet1_pt",                 &treeSpec[0]);
-    t->SetBranchAddress("jet2_pt",                 &treeSpec[1]);
-    t->SetBranchAddress("jet1_eta",                &treeSpec[2]);
-    t->SetBranchAddress("jet2_eta",                &treeVar[0]);
-    t->SetBranchAddress("jet1_phi",                &treeSpec[3]);
-    t->SetBranchAddress("jet2_phi",                &treeSpec[4]);
-    t->SetBranchAddress("jet1_E",                  &jet1_E);
-    t->SetBranchAddress("jet2_E",                  &jet2_E);
-    t->SetBranchAddress("dijet_M",                 &treeSpec[5]);
-    t->SetBranchAddress("dijet_deta",              &treeSpec[6]);
-    t->SetBranchAddress("dijet_sumeta",            &treeSpec[7]);
-    t->SetBranchAddress("dijet_dphi",              &treeSpec[8]);
-    t->SetBranchAddress("met",                     &treeSpec[9]);
-    t->SetBranchAddress("met_x",                   &metx);
-    t->SetBranchAddress("met_y",                   &mety);
-    t->SetBranchAddress("met_phi",                 &treeSpec[10]);
-    t->SetBranchAddress("met_significance",        &treeVar[1]);
-    t->SetBranchAddress("sumet",                   &treeSpec[11]);
-    t->SetBranchAddress("ht",                      &treeSpec[12]);
-    t->SetBranchAddress("mht",                     &treeVar[2]);
-    t->SetBranchAddress("sqrt_ht",                 &treeSpec[13]);
-    t->SetBranchAddress("unclustered_et",          &treeSpec[14]);
-    t->SetBranchAddress("unclustered_phi",         &treeSpec[15]);
-    t->SetBranchAddress("jet1met_dphi",            &treeSpec[16]);
-    t->SetBranchAddress("jet2met_dphi",            &treeVar[3]);
-    t->SetBranchAddress("jetmet_mindphi",          &treeVar[4]);
-    t->SetBranchAddress("jetunclet_mindphi",       &treeVar[5]);
-    t->SetBranchAddress("metunclet_dphi",          &treeVar[6]);
-    t->SetBranchAddress("dijetmet_scalarSum_pt",   &treeVar[7]);
-    t->SetBranchAddress("dijetmet_vectorialSum_pt",&treeSpec[17]);
+    t->SetBranchAddress("jet2_pt",                 &treeVar[0]);
+    t->SetBranchAddress("dijet_M",                 &treeVar[1]);
+    t->SetBranchAddress("dijet_deta",              &treeVar[2]);
+    t->SetBranchAddress("dijet_dphi",              &treeVar[3]);
+    t->SetBranchAddress("met",                     &treeVar[4]);
+    t->SetBranchAddress("met_significance",        &treeVar[5]);
+    t->SetBranchAddress("sqrt_ht",                 &treeVar[6]);
+    t->SetBranchAddress("jetmet_mindphi",          &treeVar[7]);
     t->SetBranchAddress("dijetmet_ptfraction",     &treeVar[8]);
-    t->SetBranchAddress("jet1met_scalarprod",      &treeVar[9]);
-    t->SetBranchAddress("jet2met_scalarprod",      &treeVar[10]);
+    t->SetBranchAddress("dijetmet_vectorialSum_pt",&treeVar[9]);
+    t->SetBranchAddress("jet1met_scalarprod",      &jet1met);
+    t->SetBranchAddress("jet2met_scalarprod",      &jet2met);
     t->SetBranchAddress("n_jets_cjv_30",           &nCJV);
-    t->SetBranchAddress("n_jets_cjv_20EB_30EE",    &nCJV20);
 
 
     std::cout << "--- Processing: " << t->GetEntries() << " events" << std::endl;
@@ -298,26 +344,26 @@ int main( int argc, char** argv )
       
       t->GetEntry(ievt);
       
-      treeVar[11] = treeVar[9]/treeSpec[9];
-      treeVar[12] = treeVar[10]/treeSpec[9];
+      treeVar[10] = jet1met/treeVar[4];
+      treeVar[11] = jet2met/treeVar[4];
       
-      for (unsigned iV(0); iV<nSpecs-2;++iV){
-	if (iV<nVars) var[iV] = (Float_t)treeVar[iV];
-	spec[iV] = (Float_t)treeSpec[iV];
+      for (unsigned iV(0); iV<nVars;++iV){
+	var[iV] = (Float_t)treeVar[iV];
+	//spec[iV] = (Float_t)treeSpec[iV];
       }
-      spec[18] = (Float_t)nCJV;
-      spec[19] = (Float_t)nCJV20;
+      var[12] = (Float_t)nCJV;
+      //spec[19] = (Float_t)nCJV20;
 
-      bool pass = true;
-      //treeVar[2]>3.8 //deta cut
-      //&& treeSpec[4] > 1100 //Mjj cut
-      //&& treeSpec[7] > 100 //MET cut
-      //&& treeVar[3] > 5 //MET significance cut
-      //;
-    if (!pass) continue;
+      bool pass = //true;
+	treeVar[2]>3.6 //deta cut
+	&& treeVar[5] > 3
+	&& treeVar[7] > 1.5
+	;
+      if (!pass) continue;
 
       //enhance signal
       if (!useData && iD==nData-1) weight = weight*signalFactor;
+      weight = weight*qcdfactor;
 
       // --- Return the MVA outputs and fill into histograms
       if (useData) {
