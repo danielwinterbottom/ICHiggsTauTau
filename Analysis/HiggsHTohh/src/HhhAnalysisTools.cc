@@ -19,6 +19,7 @@
 #include "TEfficiency.h"
 #include "TEntryList.h"
 #include "TMath.h"
+#include "TLegend.h"
 #include "RooDataHist.h"
 #include "RooHistPdf.h"
 #include "RooRealVar.h"
@@ -567,7 +568,7 @@ namespace ic {
           << qcd_norm.first << "), setting to " << default_rate << " and maintaining error" << std::endl;
         qcd_norm.first = default_rate;
       }
-      if (method == 0 || method == 8 || method == 11) {
+      if (method == 0 || method == 8 || method == 11 || method == 20) {
         qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
           {"WJetsToLNuSoup", [&]()->HhhAnalysis::Value {
             return w_ss_norm;} 
@@ -1172,13 +1173,12 @@ namespace ic {
       total_bkg.second = new_err;
 
     }
-
     TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, cat, wt).first;
     TH1F w_control = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
-    
+    double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
     if (verbosity_) PrintValue("TotalBkgExclTT", total_bkg);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control_norm.second * data_control_norm.second));
-    Value w_control_norm(WTTTemplateFit(&data_control, &w_control, &top_control), w_control_err);
+    Value w_control_norm(WTTTemplateFit(&data_control, &w_control, &top_control, mt_min), w_control_err);
     if (verbosity_) PrintValue("WSideband", w_control_norm);
     if (verbosity_) PrintValue("ExtrapFactor", ratio);
     Value w_signal = ValueProduct(w_control_norm, ratio);
@@ -1439,10 +1439,10 @@ namespace ic {
     return prob;
   }
   
-  double HhhAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT) {
+  double HhhAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min) {
     if(!verbosity_) RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING); 
     
-    RooRealVar* mt_1_ = new RooRealVar("mt_1","mt_1",70.0, 300.0, "GeV");
+    RooRealVar* mt_1_ = new RooRealVar("mt_1","mt_1",mt_min, 300.0, "GeV");
     RooRealVar mt_1 = *mt_1_;
     double data_norm = data->Integral();
     RooDataHist* obsData = new RooDataHist("data", "data", RooArgList(mt_1), data);
@@ -1463,12 +1463,24 @@ namespace ic {
     if(verbosity_) std::cout << "Ratio of post-fit TT norm to pre-fit: " << (data_norm*(1-coeff.getVal()))/TT->Integral() << std::endl;
 
     RooPlot* frame1 = mt_1.frame();
-    obsData->plotOn(frame1);
-    bkgModel.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed));
-    bkgModel.plotOn(frame1,RooFit::Components(*TTPdf),RooFit::LineColor(kBlue));
-    bkgModel.plotOn(frame1,RooFit::LineColor(kRed));
+    frame1->SetTitle("");
+    frame1->GetXaxis()->SetTitle("m_{T} (GeV)");
+    frame1->GetYaxis()->SetTitle("Events");
+    frame1->GetYaxis()->SetTitleOffset(1.4);
+    obsData->plotOn(frame1,RooFit::Name("data"));
+    bkgModel.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed),RooFit::Name("W"));
+    bkgModel.plotOn(frame1,RooFit::Components(*TTPdf),RooFit::LineColor(kBlue),RooFit::Name("TT"));
+    bkgModel.plotOn(frame1,RooFit::LineColor(kRed),RooFit::Name("W+TT"));
     TCanvas* c1 = new TCanvas("c1","c1",600,600);
     frame1->Draw("e0");
+    TLegend *leg1 = new TLegend(0.65,0.73,0.86,0.87);
+    leg1->SetFillColor(kWhite);
+    leg1->SetLineColor(kWhite);
+    leg1->AddEntry("data","Data","LP");
+    leg1->AddEntry("W","W","LP");
+    leg1->AddEntry("TT","TT","LP");
+    leg1->AddEntry("W+TT","W+TT","LP");
+    leg1->Draw();
     if(verbosity_) c1->SaveAs("PostFit.pdf");
     delete frame1;
 
