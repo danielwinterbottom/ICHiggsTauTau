@@ -1118,9 +1118,13 @@ namespace ic {
       total_bkg.second = new_err;
     }
     if (verbosity_) PrintValue("TotalBkg", total_bkg);
+   // TH1F w_control_hist = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
+    //TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, cat, wt).first;
     Value w_control(data_control.first - total_bkg.first, w_control_err);
     if (verbosity_) PrintValue("WSideband", w_control);
+    //std::cout << w_control.first/w_control_hist.Integral() << std::endl;
+    //std::cout << w_control.first/(w_control.first+top_control.Integral()) << std::endl;
     if (verbosity_) PrintValue("ExtrapFactor", ratio);
     Value w_signal = ValueProduct(w_control, ratio);
     return w_signal;
@@ -1175,12 +1179,17 @@ namespace ic {
     }
     TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, cat, wt).first;
     TH1F w_control = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
-    double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
     if (verbosity_) PrintValue("TotalBkgExclTT", total_bkg);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control_norm.second * data_control_norm.second));
-    Value w_control_norm(WTTTemplateFit(&data_control, &w_control, &top_control, mt_min), w_control_err);
+    double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
+    //Template fit returns the W norm and the uncertainty on it:
+    Value w_control_postfit = WTTTemplateFit(&data_control, &w_control, &top_control, mt_min);
+    //Combine uncertainty from fit in quadrature with already existing uncertainty:
+    w_control_err = std::sqrt(w_control_err*w_control_err + w_control_postfit.second*w_control_postfit.second); 
+    Value w_control_norm(w_control_postfit.first, w_control_err);
     if (verbosity_) PrintValue("WSideband", w_control_norm);
     if (verbosity_) PrintValue("ExtrapFactor", ratio);
+    //Scale by extrapolation factor:
     Value w_signal = ValueProduct(w_control_norm, ratio);
     return w_signal;
   }
@@ -1439,7 +1448,7 @@ namespace ic {
     return prob;
   }
   
-  double HhhAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min) {
+  HhhAnalysis::Value HhhAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min) {
     if(!verbosity_) RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING); 
     
     RooRealVar* mt_1_ = new RooRealVar("mt_1","mt_1",mt_min, 300.0, "GeV");
@@ -1484,7 +1493,9 @@ namespace ic {
     if(verbosity_) c1->SaveAs("PostFit.pdf");
     delete frame1;
 
-    return (coeff.getVal())*data_norm;
+    Value w_norm_plus_uncert(coeff.getVal()*data_norm, coeff.getError()*data_norm);
+
+    return w_norm_plus_uncert;
 
   }
 
