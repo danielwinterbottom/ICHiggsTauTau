@@ -7,6 +7,7 @@
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
+#include "TH2.h"
 
 #include <string>
 
@@ -98,6 +99,181 @@ namespace ic {
 			TH1F* medium_taunvtx_;
 			TH1F* tight_taunvtx_;
 			TH1F* genjetpt_;
+			TH1F* genjeteta_;
+	TH2F* genjetpt_recojetpt_;
+		TH2F* genjetpt_recotaupt_;
+			TH1F* jets_dz_;
+			TH1F* jets_pu_;
+			TH1F* jets_overlap_;
+
+			TH1F *loose_taueta_match_OneProng0PiZero_;
+			TH1F *loose_taueta_match_OneProng1PiZero_;
+			TH1F *loose_taueta_match_OneProng2PiZero_;
+			TH1F *loose_taueta_match_OneProng3PiZero_;
+			TH1F *loose_taueta_match_OneProngNPiZero_;
+			TH1F *loose_taueta_match_TwoProng0PiZero_;
+			TH1F *loose_taueta_match_TwoProng1PiZero_;
+			TH1F *loose_taueta_match_TwoProng2PiZero_;
+			TH1F *loose_taueta_match_TwoProng3PiZero_;
+			TH1F *loose_taueta_match_TwoProngNPiZero_;
+			TH1F *loose_taueta_match_ThreeProng0PiZero_;
+			TH1F *loose_taueta_match_ThreeProng1PiZero_;
+			TH1F *loose_taueta_match_ThreeProng2PiZero_;
+			TH1F *loose_taueta_match_ThreeProng3PiZero_;
+			TH1F *loose_taueta_match_ThreeProngNPiZero_;
+			TH1F *loose_taueta_match_RDM_;
+			TH1F *loose_taupt_match_OneProng0PiZero_;
+			TH1F *loose_taupt_match_OneProng1PiZero_;
+			TH1F *loose_taupt_match_OneProng2PiZero_;
+			TH1F *loose_taupt_match_OneProng3PiZero_;
+			TH1F *loose_taupt_match_OneProngNPiZero_;
+			TH1F *loose_taupt_match_TwoProng0PiZero_;
+			TH1F *loose_taupt_match_TwoProng1PiZero_;
+			TH1F *loose_taupt_match_TwoProng2PiZero_;
+			TH1F *loose_taupt_match_TwoProng3PiZero_;
+			TH1F *loose_taupt_match_TwoProngNPiZero_;
+			TH1F *loose_taupt_match_ThreeProng0PiZero_;
+			TH1F *loose_taupt_match_ThreeProng1PiZero_;
+			TH1F *loose_taupt_match_ThreeProng2PiZero_;
+			TH1F *loose_taupt_match_ThreeProng3PiZero_;
+			TH1F *loose_taupt_match_ThreeProngNPiZero_;
+			TH1F *loose_taupt_match_RDM_;
+
+      TH1F *loose_taueta_match_OneProng0PiZero_g_;
+			TH1F *loose_taueta_match_OneProng1PiZero_g_;
+			TH1F *loose_taueta_match_OneProng2PiZero_g_;
+			TH1F *loose_taueta_match_OneProng3PiZero_g_;
+			TH1F *loose_taueta_match_OneProngNPiZero_g_;
+			TH1F *loose_taueta_match_TwoProng0PiZero_g_;
+			TH1F *loose_taueta_match_TwoProng1PiZero_g_;
+			TH1F *loose_taueta_match_TwoProng2PiZero_g_;
+			TH1F *loose_taueta_match_TwoProng3PiZero_g_;
+			TH1F *loose_taueta_match_TwoProngNPiZero_g_;
+			TH1F *loose_taueta_match_ThreeProng0PiZero_g_;
+			TH1F *loose_taueta_match_ThreeProng1PiZero_g_;
+			TH1F *loose_taueta_match_ThreeProng2PiZero_g_;
+			TH1F *loose_taueta_match_ThreeProng3PiZero_g_;
+			TH1F *loose_taueta_match_ThreeProngNPiZero_g_;
+			TH1F *loose_taueta_match_RDM_g_;
+			TH1F *loose_taupt_match_OneProng0PiZero_g_;
+			TH1F *loose_taupt_match_OneProng1PiZero_g_;
+			TH1F *loose_taupt_match_OneProng2PiZero_g_;
+			TH1F *loose_taupt_match_OneProng3PiZero_g_;
+			TH1F *loose_taupt_match_OneProngNPiZero_g_;
+			TH1F *loose_taupt_match_TwoProng0PiZero_g_;
+			TH1F *loose_taupt_match_TwoProng1PiZero_g_;
+			TH1F *loose_taupt_match_TwoProng2PiZero_g_;
+			TH1F *loose_taupt_match_TwoProng3PiZero_g_;
+			TH1F *loose_taupt_match_TwoProngNPiZero_g_;
+			TH1F *loose_taupt_match_ThreeProng0PiZero_g_;
+			TH1F *loose_taupt_match_ThreeProng1PiZero_g_;
+			TH1F *loose_taupt_match_ThreeProng2PiZero_g_;
+			TH1F *loose_taupt_match_ThreeProng3PiZero_g_;
+			TH1F *loose_taupt_match_ThreeProngNPiZero_g_;
+			TH1F *loose_taupt_match_RDM_g_;
+
+      TH1F *loose_taueta_match_OneProng0PiZero_b_;
+			TH1F *loose_taueta_match_OneProng1PiZero_b_;
+			TH1F *loose_taueta_match_OneProng2PiZero_b_;
+			TH1F *loose_taueta_match_OneProng3PiZero_b_;
+			TH1F *loose_taueta_match_OneProngNPiZero_b_;
+			TH1F *loose_taueta_match_TwoProng0PiZero_b_;
+			TH1F *loose_taueta_match_TwoProng1PiZero_b_;
+			TH1F *loose_taueta_match_TwoProng2PiZero_b_;
+			TH1F *loose_taueta_match_TwoProng3PiZero_b_;
+			TH1F *loose_taueta_match_TwoProngNPiZero_b_;
+			TH1F *loose_taueta_match_ThreeProng0PiZero_b_;
+			TH1F *loose_taueta_match_ThreeProng1PiZero_b_;
+			TH1F *loose_taueta_match_ThreeProng2PiZero_b_;
+			TH1F *loose_taueta_match_ThreeProng3PiZero_b_;
+			TH1F *loose_taueta_match_ThreeProngNPiZero_b_;
+			TH1F *loose_taueta_match_RDM_b_;
+			TH1F *loose_taupt_match_OneProng0PiZero_b_;
+			TH1F *loose_taupt_match_OneProng1PiZero_b_;
+			TH1F *loose_taupt_match_OneProng2PiZero_b_;
+			TH1F *loose_taupt_match_OneProng3PiZero_b_;
+			TH1F *loose_taupt_match_OneProngNPiZero_b_;
+			TH1F *loose_taupt_match_TwoProng0PiZero_b_;
+			TH1F *loose_taupt_match_TwoProng1PiZero_b_;
+			TH1F *loose_taupt_match_TwoProng2PiZero_b_;
+			TH1F *loose_taupt_match_TwoProng3PiZero_b_;
+			TH1F *loose_taupt_match_TwoProngNPiZero_b_;
+			TH1F *loose_taupt_match_ThreeProng0PiZero_b_;
+			TH1F *loose_taupt_match_ThreeProng1PiZero_b_;
+			TH1F *loose_taupt_match_ThreeProng2PiZero_b_;
+			TH1F *loose_taupt_match_ThreeProng3PiZero_b_;
+			TH1F *loose_taupt_match_ThreeProngNPiZero_b_;
+			TH1F *loose_taupt_match_RDM_b_;
+
+      TH1F *loose_taueta_match_OneProng0PiZero_c_;
+			TH1F *loose_taueta_match_OneProng1PiZero_c_;
+			TH1F *loose_taueta_match_OneProng2PiZero_c_;
+			TH1F *loose_taueta_match_OneProng3PiZero_c_;
+			TH1F *loose_taueta_match_OneProngNPiZero_c_;
+			TH1F *loose_taueta_match_TwoProng0PiZero_c_;
+			TH1F *loose_taueta_match_TwoProng1PiZero_c_;
+			TH1F *loose_taueta_match_TwoProng2PiZero_c_;
+			TH1F *loose_taueta_match_TwoProng3PiZero_c_;
+			TH1F *loose_taueta_match_TwoProngNPiZero_c_;
+			TH1F *loose_taueta_match_ThreeProng0PiZero_c_;
+			TH1F *loose_taueta_match_ThreeProng1PiZero_c_;
+			TH1F *loose_taueta_match_ThreeProng2PiZero_c_;
+			TH1F *loose_taueta_match_ThreeProng3PiZero_c_;
+			TH1F *loose_taueta_match_ThreeProngNPiZero_c_;
+			TH1F *loose_taueta_match_RDM_c_;
+			TH1F *loose_taupt_match_OneProng0PiZero_c_;
+			TH1F *loose_taupt_match_OneProng1PiZero_c_;
+			TH1F *loose_taupt_match_OneProng2PiZero_c_;
+			TH1F *loose_taupt_match_OneProng3PiZero_c_;
+			TH1F *loose_taupt_match_OneProngNPiZero_c_;
+			TH1F *loose_taupt_match_TwoProng0PiZero_c_;
+			TH1F *loose_taupt_match_TwoProng1PiZero_c_;
+			TH1F *loose_taupt_match_TwoProng2PiZero_c_;
+			TH1F *loose_taupt_match_TwoProng3PiZero_c_;
+			TH1F *loose_taupt_match_TwoProngNPiZero_c_;
+			TH1F *loose_taupt_match_ThreeProng0PiZero_c_;
+			TH1F *loose_taupt_match_ThreeProng1PiZero_c_;
+			TH1F *loose_taupt_match_ThreeProng2PiZero_c_;
+			TH1F *loose_taupt_match_ThreeProng3PiZero_c_;
+			TH1F *loose_taupt_match_ThreeProngNPiZero_c_;
+			TH1F *loose_taupt_match_RDM_c_;
+
+
+
+      TH1F *loose_taueta_match_OneProng0PiZero_light_;
+			TH1F *loose_taueta_match_OneProng1PiZero_light_;
+			TH1F *loose_taueta_match_OneProng2PiZero_light_;
+			TH1F *loose_taueta_match_OneProng3PiZero_light_;
+			TH1F *loose_taueta_match_OneProngNPiZero_light_;
+			TH1F *loose_taueta_match_TwoProng0PiZero_light_;
+			TH1F *loose_taueta_match_TwoProng1PiZero_light_;
+			TH1F *loose_taueta_match_TwoProng2PiZero_light_;
+			TH1F *loose_taueta_match_TwoProng3PiZero_light_;
+			TH1F *loose_taueta_match_TwoProngNPiZero_light_;
+			TH1F *loose_taueta_match_ThreeProng0PiZero_light_;
+			TH1F *loose_taueta_match_ThreeProng1PiZero_light_;
+			TH1F *loose_taueta_match_ThreeProng2PiZero_light_;
+			TH1F *loose_taueta_match_ThreeProng3PiZero_light_;
+			TH1F *loose_taueta_match_ThreeProngNPiZero_light_;
+			TH1F *loose_taueta_match_RDM_light_;
+			TH1F *loose_taupt_match_OneProng0PiZero_light_;
+			TH1F *loose_taupt_match_OneProng1PiZero_light_;
+			TH1F *loose_taupt_match_OneProng2PiZero_light_;
+			TH1F *loose_taupt_match_OneProng3PiZero_light_;
+			TH1F *loose_taupt_match_OneProngNPiZero_light_;
+			TH1F *loose_taupt_match_TwoProng0PiZero_light_;
+			TH1F *loose_taupt_match_TwoProng1PiZero_light_;
+			TH1F *loose_taupt_match_TwoProng2PiZero_light_;
+			TH1F *loose_taupt_match_TwoProng3PiZero_light_;
+			TH1F *loose_taupt_match_TwoProngNPiZero_light_;
+			TH1F *loose_taupt_match_ThreeProng0PiZero_light_;
+			TH1F *loose_taupt_match_ThreeProng1PiZero_light_;
+			TH1F *loose_taupt_match_ThreeProng2PiZero_light_;
+			TH1F *loose_taupt_match_ThreeProng3PiZero_light_;
+			TH1F *loose_taupt_match_ThreeProngNPiZero_light_;
+			TH1F *loose_taupt_match_RDM_light_;
+
+
 
 			double jpt_;     
 			double jeta_;     
@@ -112,7 +288,10 @@ namespace ic {
 			int ntaus_medium_;
 			int ntaus_tight_;
 			int thetaun;
+			int thetrackid;
 			double theDR;
+			double theDRgj;
+			int thegenjetn;
 
 		public:
 			JetTauFakeRate(std::string const& name);

@@ -64,7 +64,7 @@ if isZStudy:
 ### Load some standard sequences and services
 ################################################################
 process.TFileService = cms.Service("TFileService", 
-  fileName = cms.string("EventTree.root"),
+  fileName = cms.string("EventTree_diff.root"),
   closeFileFast = cms.untracked.bool(True)
 )
 
