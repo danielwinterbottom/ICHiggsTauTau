@@ -48,8 +48,3 @@ void ICCandidateProducer::beginJob() {
 void ICCandidateProducer::endJob() {}
 
 DEFINE_FWK_MODULE(ICCandidateProducer);
-// DEFINE_FWK_MODULE(ICCandidateMuonProducer);
-// DEFINE_FWK_MODULE(ICCandidateEtMissProducer);
-// DEFINE_FWK_MODULE(ICCandidateJetProducer);
-// DEFINE_FWK_MODULE(ICCandidateEmParticleProducer);
-// DEFINE_FWK_MODULE(ICPatJetCandidateProducer);

@@ -179,7 +179,7 @@ namespace ic {
 
       if (is_data_) {
 	
-	TriggerPathPtrVec const& triggerPathPtrVec =
+	auto const& triggerPathPtrVec =
 	  event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
 	//EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings      
 	//unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings                                         

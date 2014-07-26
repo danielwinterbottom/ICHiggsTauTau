@@ -22,6 +22,8 @@ ICEventProducer::ICEventProducer(const edm::ParameterSet& iConfig)
     : processed_(0) {
   file_ = new TFile("EventTree.root", "RECREATE");
   file_->SetCompressionSettings(ROOT::CompressionSettings(ROOT::kLZMA, 5));
+  gDirectory->mkdir("icEventProducer");
+  gDirectory->cd("icEventProducer");
   ic::StaticTree::tree_ = new TTree("EventTree", "EventTree");
 }
 

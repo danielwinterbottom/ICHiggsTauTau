@@ -255,4 +255,9 @@ class PFJet : public Jet {
 typedef std::vector<ic::PFJet> PFJetCollection;
 }
 
+/** \example plugins/ICJetProducer.hh
+ * This is an example of how to use the Test class.
+ * More details about this example.
+ */
+
 #endif

@@ -65,7 +65,7 @@ process.maxEvents = cms.untracked.PSet(
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
 
 process.options   = cms.untracked.PSet(
-  wantSummary = cms.untracked.bool(True)
+  wantSummary = cms.untracked.bool(False)
 )
 
 ################################################################
@@ -92,7 +92,7 @@ if (release == '53X' and isData):
 if (release == '53X' and not isData):
   process.source = cms.Source("PoolSource",
     # fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Summer12-53X-Sample.root')
-    fileNames = cms.untracked.vstring('file:/Volumes/HDD/DYJetsToLL.root')
+    fileNames = cms.untracked.vstring('file:/Volumes/MediaRAID/samples/VBF_HToTauTau_M-125-53X.root')
   )
   process.GlobalTag.globaltag = cms.string('START53_V22::All')
 
@@ -166,8 +166,16 @@ process.icVertexSequence = cms.Sequence(
 # Electrons
 ################################################################
 process.icElectronConversionCalculator = producers.icElectronConversionCalculator.clone()
-process.icHttElecIsoCheck = producers.icHttElecIsoCheck.clone()
-process.icHttMuonOverlapCheck = producers.icHttMuonOverlapCheck.clone()
+
+process.icHttElecIsoCheck = cms.EDProducer('ICHttElecIsoCheck',
+    input         = cms.InputTag("gsfElectrons"),
+    pfChargedAll  = cms.InputTag("pfAllChargedParticles")
+)
+
+process.icHttMuonOverlapCheck = cms.EDProducer('ICHttMuonOverlapCheck',
+    input = cms.InputTag("gsfElectrons"),
+    muons = cms.InputTag("muons")
+)
 
 process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_cfi")
 process.electronIdMVASequence = cms.Sequence(
@@ -225,6 +233,7 @@ from CommonTools.ParticleFlow.Tools.pfIsolation import setupPFMuonIso
 process.muIsoSequence = setupPFMuonIso(process, 'selectedPFMuons')
 
 process.icMuonProducer = producers.icMuonProducer.clone(
+  branch                    = cms.string("muonsPFlow"),
   input                     = cms.InputTag("selectedPFMuons"),
   isPF                      = cms.bool(True),
   includeVertexIP           = cms.bool(True),
@@ -305,11 +314,15 @@ process.load("RecoJets.JetAssociationProducers.ak5JTA_cff")
 from RecoJets.JetAssociationProducers.ak5JTA_cff import ak5JetTracksAssociatorAtVertex
 process.load("RecoBTag.Configuration.RecoBTag_cff")
 import RecoBTag.Configuration.RecoBTag_cff as btag
-process.ak5JetTracksAssociatorAtVertexAK5PF = ak5JetTracksAssociatorAtVertex.clone(
+process.jetTracksAssociatorAtVertexAK5PF = ak5JetTracksAssociatorAtVertex.clone(
   jets = cms.InputTag("ak5PFJets")
 )
+
+if isEmbedded:
+  process.jetTracksAssociatorAtVertexAK5PF.tracks = cms.InputTag("tmfTracks")
+
 process.impactParameterTagInfosAK5PF = btag.impactParameterTagInfos.clone(
-  jetTracks = cms.InputTag('ak5JetTracksAssociatorAtVertexAK5PF')
+  jetTracks = cms.InputTag('jetTracksAssociatorAtVertexAK5PF')
 )
 process.secondaryVertexTagInfosAK5PF = btag.secondaryVertexTagInfos.clone(
   trackIPTagInfos = cms.InputTag('impactParameterTagInfosAK5PF')
@@ -325,7 +338,7 @@ process.combinedSecondaryVertexBJetTagsAK5PF = btag.combinedSecondaryVertexBJetT
 )
 
 process.btaggingSequenceAK5PF = cms.Sequence(
-  process.ak5JetTracksAssociatorAtVertexAK5PF
+  process.jetTracksAssociatorAtVertexAK5PF
   +process.impactParameterTagInfosAK5PF
   +process.secondaryVertexTagInfosAK5PF
   +process.simpleSecondaryVertexHighEffBJetTagsAK5PF
@@ -365,6 +378,7 @@ if isData: pfJECS.append(
 )
 
 process.icPFJetProducer = producers.icPFJetProducer.clone(
+    branch                    = cms.string("pfJetsPFlow"),
     input                     = cms.InputTag("ak5PFJets"),
     includeJetFlavour         = cms.bool(True),
     inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
@@ -374,9 +388,9 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
     applyCutAfterJECs         = cms.bool(True),
     cutAfterJECs              = cms.string("pt > 15.0"),
     BTagDiscriminators        = cms.PSet(
-      simpleSecondaryVertexHighEff = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"),
-      simpleSecondaryVertexHighPur = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"),
-      combinedSecondaryVertex      = cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF")
+      simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"),
+      simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"),
+      combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF")
     ),
     specificConfig = cms.PSet(
       includePileupID    = cms.bool(True),
@@ -403,7 +417,6 @@ process.icPFJetSequence = cms.Sequence(
 ################################################################
 if (release == '53X'):
   process.load("ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_53X_Dec2012")
-  from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_53X_Dec2012 import mvaMetPairs
 else:
   process.load("JetMETCorrections.METPUSubtraction.mvaPFMET_leptons_42X_cff")
   from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_42X_Dec2012 import mvaMetPairs
@@ -472,25 +485,18 @@ process.icMvaMetProducer = producers.icMetProducer.clone(
   inputCustomID = cms.InputTag("icMvaMetIDConcatenate")
 )
 
-# process.icMvaMetETProducer = producers.icMetProducer.clone(
-#   branch  = cms.string("pfMVAMetVectorET"),
-#   input   = cms.InputTag("mvaMetPairsET"),
-#   includeCustomID = cms.bool(True),
-#   inputCustomID = cms.InputTag("mvaMetPairsET", "MVAMetId")
-# )
+process.icPfMetProducer = producers.icSingleMetProducer.clone(
+  branch  = cms.string("pfMet"),
+  input   = cms.InputTag("pfMet")
+)
 
-# process.icMvaMetEMProducer = producers.icMetProducer.clone(
-#   branch  = cms.string("pfMVAMetVectorEM"),
-#   input   = cms.InputTag("mvaMetPairsEM"),
-#   includeCustomID = cms.bool(True),
-#   inputCustomID = cms.InputTag("mvaMetPairsEM", "MVAMetId")
-# )
 
 process.icMvaMetSequence = cms.Sequence(
   process.pfMEtMVAsequence+
   process.icMvaMetConcatenate+
   process.icMvaMetIDConcatenate+
-  process.icMvaMetProducer
+  process.icMvaMetProducer+
+  process.icPfMetProducer
 )
 
 ################################################################
@@ -499,24 +505,38 @@ process.icMvaMetSequence = cms.Sequence(
 process.icGenSequence = cms.Sequence()
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.prunedGenParticles = cms.EDProducer(
-    "ICGenParticlePruner",
-    src = cms.InputTag("genParticles", "", "SIM"),
-    select = cms.vstring(
-      "drop  *",
-      "keep status == 3 || status == 22 || status == 23",  # all status 3
-      "keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15",  # all charged leptons
-      "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",  # all neutrinos
-      "keep++ abs(pdgId) == 15",  # keep full tau decay chain
-      "keep (4 <= abs(pdgId) <= 5)", # keep heavy flavour quarks
-      "keep (400 <= abs(pdgId) < 600) || (4000 <= abs(pdgId) < 6000)", # keep b and c hadrons
-      "keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", # additional c hadrons for jet fragmentation studies
-      "keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543" # additional b hadrons for jet fragmentation studies
-    )
+process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
+  src = cms.InputTag("genParticles", "", "SIM"),
+  select = cms.vstring(
+    "drop  *",
+    "keep status == 3 || status == 22 || status == 23",  # all status 3
+    "keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15",  # all charged leptons
+    "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",  # all neutrinos
+    # "keep++ abs(pdgId) == 15",  # keep full tau decay chain
+    "keep (4 <= abs(pdgId) <= 5)", # keep heavy flavour quarks
+    "keep (400 <= abs(pdgId) < 600) || (4000 <= abs(pdgId) < 6000)", # keep b and c hadrons
+    "keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", # additional c hadrons for jet fragmentation studies
+    "keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543" # additional b hadrons for jet fragmentation studies
+  )
 )
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   input   = cms.InputTag("prunedGenParticles"),
+  includeMothers = cms.bool(True),
+  includeDaughters = cms.bool(True)
+)
+
+process.tauGenParticles = cms.EDProducer("ICGenParticlePruner",
+  src = cms.InputTag("genParticles", "", "SIM"),
+  select = cms.vstring(
+    "drop  *",
+    "keep++ abs(pdgId) == 15"  # keep full tau decay chain
+  )
+)
+
+process.icTauGenParticleProducer = producers.icGenParticleProducer.clone(
+  branch  = cms.string("genParticlesTaus"),
+  input   = cms.InputTag("tauGenParticles"),
   includeMothers = cms.bool(True),
   includeDaughters = cms.bool(True)
 )
@@ -549,12 +569,29 @@ if not isData:
   process.icGenSequence += (
     process.prunedGenParticles+
     process.icGenParticleProducer+
+    process.tauGenParticles+
+    process.icTauGenParticleProducer+
     process.genParticlesForJets+
     process.ak5GenJetsNoNuBSM+
     process.selectedGenJets+
     process.icGenJetProducer+
     process.icPileupInfoProducer
   )
+
+################################################################
+# Embedding
+################################################################
+process.icEmbeddingSequence = cms.Sequence()
+
+process.icEmbeddedGenParticleProducer = producers.icGenParticleProducer.clone(
+  branch  = cms.string("genParticlesEmbedded"),
+  input   = cms.InputTag("genParticles", "", "EmbeddedRECO"),
+  includeMothers = cms.bool(True),
+  includeDaughters = cms.bool(True)
+)
+
+if isEmbedded:
+  process.icEmbeddingSequence += process.icEmbeddedGenParticleProducer
 
 ################################################################
 # Trigger
@@ -571,9 +608,10 @@ process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
   splitVersion = cms.bool(False)
 )
 
-process.icTriggerSequence += (
-  process.icTriggerPathProducer
-)
+if isData:
+  process.icTriggerSequence += (
+    process.icTriggerPathProducer
+  )
 
 notTp = not isTandP
 # Define 2011 et,mt,em physics triggers for data
@@ -909,6 +947,7 @@ process.p = cms.Path(
   process.icPFJetSequence+
   process.icGenSequence+
   process.icTriggerSequence+
+  process.icEmbeddingSequence+
   process.icEventInfoSequence+
   process.icEventProducer
 )

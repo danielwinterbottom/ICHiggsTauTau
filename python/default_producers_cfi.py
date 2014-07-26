@@ -1,8 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-##############################################################################
-# Electron
-##############################################################################
+## [Electron]
 icElectronProducer = cms.EDProducer('ICElectronProducer',
     branch                    = cms.string("electrons"),
     input                     = cms.InputTag("gsfElectrons"),
@@ -17,6 +15,10 @@ icElectronProducer = cms.EDProducer('ICElectronProducer',
     includeBeamspotIP         = cms.bool(False),
     inputBeamspot             = cms.InputTag("offlineBeamSpot"),
     includeFloats = cms.PSet(
+      # A named list of InputTags identifying edm::ValueMap<float>
+      # objects keyed on the input GsfElectron collection. The hash
+      # of the name and the float value will be stored. For example:
+      #   mvaNonTrigV0    = cms.InputTag("mvaNonTrigV0")
     ),
     includePFIso03           = cms.bool(False),
     pfIso03 = cms.PSet(
@@ -35,10 +37,23 @@ icElectronProducer = cms.EDProducer('ICElectronProducer',
       pu          = cms.InputTag("elPFIsoValuePU04PFIdPFIso")
     )
 )
+## [Electron]
 
-##############################################################################
-# Muon
-##############################################################################
+## [ElectronHcalDepth]
+icElectronHcalDepthCalculator = cms.EDProducer('ICElectronHcalDepthCalculator',
+    input = cms.InputTag("gsfElectrons")
+)
+## [ElectronHcalDepth]
+
+## [ElectronConversion]
+icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
+    input       = cms.InputTag("gsfElectrons"),
+    beamspot    = cms.InputTag("offlineBeamSpot"),
+    conversions = cms.InputTag("allConversions")
+)
+## [ElectronConversion]
+
+## [Muon]
 icMuonProducer = cms.EDProducer('ICMuonProducer',
     branch                    = cms.string("muons"),
     input                     = cms.InputTag("muons"),
@@ -66,10 +81,9 @@ icMuonProducer = cms.EDProducer('ICMuonProducer',
       pu          = cms.InputTag("muPFIsoValuePU04PFIso")
     )
 )
+## [Muon]
 
-##############################################################################
-# Photon
-##############################################################################
+
 icPhotonHadTowerOverEmCalculator = cms.EDProducer('ICPhotonHadTowerOverEmCalculator',
     input = cms.InputTag("photons")
 )
@@ -81,6 +95,7 @@ icPhotonElectronVetoCalculator = cms.EDProducer('ICPhotonElectronVetoCalculator'
     conversions = cms.InputTag("allConversions")
 )
 
+## [Photon]
 icPhotonProducer = cms.EDProducer('ICPhotonProducer',
     branch                  = cms.string("photons"),
     input                   = cms.InputTag("photons"),
@@ -95,6 +110,7 @@ icPhotonProducer = cms.EDProducer('ICPhotonProducer',
       gamma       = cms.InputTag("")
     )
 )
+## [Photon]
 
 ##############################################################################
 # Tau
@@ -120,7 +136,7 @@ icMetProducer = cms.EDProducer('ICMetProducer',
   inputCustomID = cms.InputTag("")
 )
 
-icGenMetProducer = cms.EDProducer('ICSingleMetProducer',
+icSingleMetProducer = cms.EDProducer('ICSingleMetProducer',
   branch  = cms.string("genMet"),
   input   = cms.InputTag("genMetTrue")
 )

@@ -1,30 +1,22 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICEventInfoProducer.hh"
-#include <boost/functional/hash.hpp>
 #include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-
+#include <string>
+#include <vector>
+#include "boost/format.hpp"
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/Run.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
-
-#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
-#include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
-
-#include "UserCode/ICHiggsTauTau/interface/city.h"
-
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
-
 #include "DataFormats/METReco/interface/BeamHaloSummary.h"
-
-#include "boost/format.hpp"
+#include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
+#include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
+#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
+#include "UserCode/ICHiggsTauTau/interface/city.h"
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),

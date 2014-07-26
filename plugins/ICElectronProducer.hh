@@ -13,6 +13,12 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 
+/**
+ * @brief Produce an ic::Electron collection from a reco::GsfElectron collection
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py Electron
+ */
 class ICElectronProducer : public edm::EDProducer {
  public:
   explicit ICElectronProducer(const edm::ParameterSet &);
