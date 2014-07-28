@@ -134,6 +134,7 @@ namespace ic {
     alias_map_["2jet2tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
     
     //Extra categories for making control plots
+    alias_map_["1jetinclusive"] = "(n_prebjets>=1)";
     alias_map_["2jetinclusive"] = "(n_prebjets>=2)";
     alias_map_["2jetMoreThan1tag"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 )";
     alias_map_["2jetMoreThan2tag"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
@@ -1178,12 +1179,14 @@ namespace ic {
 
     }
     TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, cat, wt).first;
+    //TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, this->ResolveAlias("2jetinclusive"), wt).first;
     TH1F w_control = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
+    //TH1F w_control = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, this->ResolveAlias("2jetinclusive"), wt);
     if (verbosity_) PrintValue("TotalBkgExclTT", total_bkg);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control_norm.second * data_control_norm.second));
     double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
     //Template fit returns the W norm and the uncertainty on it:
-    Value w_control_postfit = WTTTemplateFit(&data_control, &w_control, &top_control, mt_min);
+    Value w_control_postfit = WTTTemplateFit(&data_control, &w_control, &top_control, mt_min, 0);
     //Combine uncertainty from fit in quadrature with already existing uncertainty:
     w_control_err = std::sqrt(w_control_err*w_control_err + w_control_postfit.second*w_control_postfit.second); 
     Value w_control_norm(w_control_postfit.first, w_control_err);
@@ -1448,9 +1451,36 @@ namespace ic {
     return prob;
   }
   
-  HhhAnalysis::Value HhhAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min) {
-    if(!verbosity_) RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING); 
+  HhhAnalysis::Value HhhAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min, int mode) {
+    if(!verbosity_) RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+
+    if(verbosity_) std::cout << "Running WTTTemplate fit with mode: " << mode << std::endl;
     
+    //Generate a prefit plot of the templates and the data, can be useful
+    TCanvas* c3 = new TCanvas("c3","c3",600,600);
+    data->SetTitle(0);
+    data->SetStats(0);
+    data->SetLineColor(1);
+    data->SetMarkerColor(1);
+    data->SetMarkerStyle(20);
+    data->GetXaxis()->SetTitle("m_{T} (GeV)");
+    data->GetYaxis()->SetTitle("Events");
+    data->GetYaxis()->SetTitleOffset(1.4);
+    data->Draw("P");
+    W->SetLineColor(kRed);
+    W->Draw("same");
+    TT->SetLineColor(kBlue);
+    TT->Draw("same");
+    TLegend *leg2 = new TLegend(0.65,0.73,0.86,0.87);
+    leg2->SetFillColor(kWhite);
+    leg2->SetLineColor(kWhite);
+    leg2->AddEntry(data,"Data","L");
+    leg2->AddEntry(W,"W","L");
+    leg2->AddEntry(TT,"TT","L");
+    leg2->Draw("same");
+    if(verbosity_) c3->SaveAs("PreFit.pdf");
+    
+    //Converting TH1Fs to the relevent RooFit objects for the fit
     RooRealVar* mt_1_ = new RooRealVar("mt_1","mt_1",mt_min, 300.0, "GeV");
     RooRealVar mt_1 = *mt_1_;
     double data_norm = data->Integral();
@@ -1460,16 +1490,33 @@ namespace ic {
     RooHistPdf* WPdf = new RooHistPdf("W", "W", RooArgSet(mt_1), *Wbkg);
     RooHistPdf* TTPdf = new RooHistPdf("TT", "TT", RooArgSet(mt_1), *TTbkg);
 
-    RooRealVar coeff("coeff","coeff",0.50,-0.5,1.5) ;
-
+    double coeff_min, coeff_max;
+    if(mode==0) { coeff_min = -0.5; coeff_max=1.5;}
+    if(mode==1) { coeff_min = -100000; coeff_max=100000;}
+    RooRealVar coeff("coeff","coeff",0.50,coeff_min,coeff_max) ;
     RooAddPdf bkgModel("bkgModel","coeff*WPdf + (1-coeff)*TTPdf", *WPdf, *TTPdf, coeff) ; 
+    RooRealVar coeff2("coeff2","coeff2",0.50,-100000,100000) ;
+    RooAddPdf bkgModel2("bkgModel","coeff*WPdf + coeff2*TTPdf", RooArgList(*WPdf, *TTPdf), RooArgList(coeff, coeff2)) ; 
     int print_level=-1;
     if(verbosity_) print_level=1;
-
-    bkgModel.fitTo(*obsData, RooFit::Save(true), RooFit::PrintLevel(print_level), RooFit::SumW2Error(kFALSE) );
-    if(verbosity_) std::cout << "Relative fraction of W from fit: " << coeff.getVal() << std::endl;
-    if(verbosity_) std::cout << "Ratio of post-fit W norm to pre-fit: " << (data_norm*(coeff.getVal()))/W->Integral() << std::endl;
-    if(verbosity_) std::cout << "Ratio of post-fit TT norm to pre-fit: " << (data_norm*(1-coeff.getVal()))/TT->Integral() << std::endl;
+    //In mode 0, allow relative normalisation to float 
+    if(mode==0) { 
+        bkgModel.fitTo(*obsData, RooFit::Save(true), RooFit::PrintLevel(print_level), RooFit::SumW2Error(kFALSE) );
+        if(verbosity_) std::cout << "Relative fraction of W from fit: " << coeff.getVal() << " +/- " << coeff.getError() << std::endl;
+        if(verbosity_) std::cout << "Ratio of post-fit W norm to pre-fit: " << (data_norm*(coeff.getVal()))/W->Integral() << std::endl;
+        if(verbosity_) std::cout << "Ratio of post-fit TT norm to pre-fit: " << (data_norm*(1-coeff.getVal()))/TT->Integral() << std::endl;
+    }
+    //In mode 1, allow two separate normalisations to float 
+    else if(mode==1) { 
+        bkgModel2.fitTo(*obsData, RooFit::Save(true), RooFit::PrintLevel(print_level), RooFit::SumW2Error(kFALSE) );
+        if(verbosity_) std::cout << "Scaling of W " << coeff.getVal()/W->Integral() << " +/- " << coeff.getError()/W->Integral() << std::endl;
+        if(verbosity_) std::cout << "Scaling of TT " << coeff2.getVal()/TT->Integral() << " +/- " << coeff2.getError()/TT->Integral() << std::endl;
+        if(verbosity_) std::cout << "Relative fraction of W from fit: " << coeff.getVal()/(coeff.getVal() + coeff2.getVal()) << " +/- " << 
+            (coeff.getVal()/(coeff.getVal()+coeff2.getVal()))*std::sqrt((coeff.getError()*coeff.getError()/(coeff.getVal()*coeff.getVal())) 
+            + (((coeff.getError()*coeff.getError() + coeff2.getError()*coeff2.getError()))/((coeff.getVal()+coeff2.getVal())*(coeff.getVal()+coeff2.getVal())))) << std::endl;
+        if(verbosity_) std::cout << "Total data/MC: " << data_norm /(coeff.getVal() + coeff2.getVal())  << std::endl;
+    }
+    else std::cerr << "ERROR: Invalid choice of fit mode" << std::endl;
 
     RooPlot* frame1 = mt_1.frame();
     frame1->SetTitle("");
@@ -1477,9 +1524,15 @@ namespace ic {
     frame1->GetYaxis()->SetTitle("Events");
     frame1->GetYaxis()->SetTitleOffset(1.4);
     obsData->plotOn(frame1,RooFit::Name("data"));
-    bkgModel.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed),RooFit::Name("W"));
-    bkgModel.plotOn(frame1,RooFit::Components(*TTPdf),RooFit::LineColor(kBlue),RooFit::Name("TT"));
-    bkgModel.plotOn(frame1,RooFit::LineColor(kRed),RooFit::Name("W+TT"));
+    if(mode==0){
+        bkgModel.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed),RooFit::Name("W"));
+        bkgModel.plotOn(frame1,RooFit::Components(*TTPdf),RooFit::LineColor(kBlue),RooFit::Name("TT"));
+        bkgModel.plotOn(frame1,RooFit::LineColor(kRed),RooFit::Name("W+TT"));
+    } else if(mode==1) { 
+        bkgModel2.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed),RooFit::Name("W"));
+        bkgModel2.plotOn(frame1,RooFit::Components(*TTPdf),RooFit::LineColor(kBlue),RooFit::Name("TT"));
+        bkgModel2.plotOn(frame1,RooFit::LineColor(kRed),RooFit::Name("W+TT"));
+    }
     TCanvas* c1 = new TCanvas("c1","c1",600,600);
     frame1->Draw("e0");
     TLegend *leg1 = new TLegend(0.65,0.73,0.86,0.87);
@@ -1490,12 +1543,20 @@ namespace ic {
     leg1->AddEntry("TT","TT","LP");
     leg1->AddEntry("W+TT","W+TT","LP");
     leg1->Draw();
+    
+    /*TH1* postfit_model = bkgModel.createHistogram("postfit_model", mt_1, RooFit::Binning(2000) );
+    TH1* postfit_data = obsData->createHistogram("postfit_data", mt_1, RooFit::Binning(2000) );
+    std::cout << postfit_data->Chi2Test(postfit_model,"") << std::endl;
+*/
+    if(verbosity_) std::cout << "Chi2 of fit: " << frame1->chiSquare() << std::endl;
+    //std::cout << TMath::Prob(frame1->chiSquare()) << std::endl;
     if(verbosity_) c1->SaveAs("PostFit.pdf");
     delete frame1;
 
-    Value w_norm_plus_uncert(coeff.getVal()*data_norm, coeff.getError()*data_norm);
+    if(mode==0) return std::make_pair(coeff.getVal()*data_norm, coeff.getError()*data_norm);
+    if(mode==1) return std::make_pair(coeff.getVal(), coeff.getError());
+    else return std::make_pair(0,0);
 
-    return w_norm_plus_uncert;
 
   }
 

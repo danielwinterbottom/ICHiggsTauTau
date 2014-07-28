@@ -349,7 +349,7 @@ namespace ic {
                               std::string const& sample1, std::string const& selection1, std::string const& category1,
                               std::string const& sample2, std::string const& selection2, std::string const& category2,
                               std::string const& weight);
-      Value WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min);
+      Value WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min, int mode);
 
       void SetQCDRatio(double const& ratio);
       inline void SetVerbosity(unsigned const& verbosity) { verbosity_ = verbosity; }
