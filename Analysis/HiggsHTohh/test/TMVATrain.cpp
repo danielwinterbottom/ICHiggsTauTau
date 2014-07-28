@@ -67,6 +67,7 @@ int main(int argc, char* argv[]){
 	string output_folder;           // Folder to write the output in
 	string paramfile;
 	string paramfile2;
+	string classname;
 
 	po::options_description config("Configuration");
 	po::variables_map vm;
@@ -79,6 +80,7 @@ int main(int argc, char* argv[]){
 		("output_folder",       po::value<string>(&output_folder)->default_value(""))
 		("paramfile",						po::value<string>(&paramfile)->default_value("./scripts/Paper_params_2012.dat"))
 		("paramfile2", 					po::value<string>(&paramfile2)->default_value("./scripts/TMVAinputs.dat"))
+		("classname",						po::value<string>(&classname)->default_value("HhhMVA"))
 		;
 	po::store(po::command_line_parser(argc, argv).
 			options(config).allow_unregistered().run(), vm);
@@ -92,18 +94,18 @@ int main(int argc, char* argv[]){
 	bckglist.push_back("TTJetsFullLept");
 	bckglist.push_back("TTJetsSemiLept");
 	bckglist.push_back("TTJetsHadronicExt");
-	bckglist.push_back("WWJetsTo2L2Nu");
-	bckglist.push_back("WZJetsTo2L2Q");
-	bckglist.push_back("WZJetsTo3LNu");
-	bckglist.push_back("ZZJetsTo2L2Nu");
-	bckglist.push_back("ZZJetsTo2L2Q");
-	bckglist.push_back("ZZJetsTo4L");
-	bckglist.push_back("DYJetsToTauTauSoup");
-	bckglist.push_back("DYJetsToLLSoup");
-	bckglist.push_back("DYJetsToTauTau");
-	bckglist.push_back("DYJetsToLL");
-	bckglist.push_back("T-tW");
-	bckglist.push_back("Tbar-tW");
+//	bckglist.push_back("WWJetsTo2L2Nu");
+//	bckglist.push_back("WZJetsTo2L2Q");
+//	bckglist.push_back("WZJetsTo3LNu");
+//	bckglist.push_back("ZZJetsTo2L2Nu");
+//	bckglist.push_back("ZZJetsTo2L2Q");
+//	bckglist.push_back("ZZJetsTo4L");
+//	bckglist.push_back("DYJetsToTauTauSoup");
+//	bckglist.push_back("DYJetsToLLSoup");
+//	bckglist.push_back("DYJetsToTauTau");
+//	bckglist.push_back("DYJetsToLL");
+//	bckglist.push_back("T-tW");
+//	bckglist.push_back("Tbar-tW");
 
 	std::vector<string> signallist;
 	signallist.push_back("GluGluToHTohhTo2Tau2B_mH-300");
@@ -136,7 +138,7 @@ int main(int argc, char* argv[]){
 
 	TFile *outfile = new TFile((output_folder+output_name).c_str(),"RECREATE");
 
-	TMVA::Factory *factory = new TMVA::Factory("HTohhMVA",outfile,"!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification");
+	TMVA::Factory *factory = new TMVA::Factory(classname,outfile,"!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification");
 
 
 	std::vector<std::string> vars;
@@ -172,6 +174,7 @@ int main(int argc, char* argv[]){
 			double evt = it->second.first;
 			double xs = it->second.second;
 			weightval_=(double) xs/evt;
+			std::cout<<weightval_<<std::endl;
 		}
 		factory->AddBackgroundTree(backgroundTrees.at(bckgit),weightval_);
 	}
@@ -182,12 +185,15 @@ int main(int argc, char* argv[]){
 			double xs=it->second.second;
 			weightval_=(Double_t) xs/evt;
 		}
-		factory->AddSignalTree(backgroundTrees.at(sgit),weightval_);
+		std::cout<<weightval_<<std::endl;
+		factory->AddSignalTree(signalTrees.at(sgit),weightval_);
 	}
 	factory->SetBackgroundWeightExpression("wt");
 	factory->SetSignalWeightExpression("wt");
 	TCut mycutb="n_prebjets>2";
 	TCut mycuts="n_prebjets>2";
+//TCut mycutb="";
+//TCut mycuts="";
 	factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:!V");
 	factory->BookMethod( TMVA::Types::kBDT, "BDTG","!H:!V:NTrees=1000:BoostType=Grad:Shrinkage=0.10:UseBaggedGrad:GradBaggingFraction=0.5:nCuts=20:NNodesMax=5" );
 

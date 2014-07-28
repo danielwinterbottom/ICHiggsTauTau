@@ -126,8 +126,8 @@ namespace ic {
           //outtree_->Branch("emu_dxy_fromref",&emu_dxy_fromref_);
           //outtree_->Branch("emu_dxy", &emu_dxy_);
           //outtree_->Branch("em_gf_mva",&em_gf_mva_);
-          outtree_->Branch("em_gf_mva_1",&em_gf_mva_1_);
-          outtree_->Branch("em_gf_mva_2",&em_gf_mva_2_);
+          outtree_->Branch("em_gf_mva_bdtg",&em_gf_mva_bdtg_);
+          outtree_->Branch("em_gf_mva_bdt",&em_gf_mva_bdt_);
           //outtree_->Branch("bdt",&bdt_);
           //outtree_->Branch("emu_dca_1",&emu_dca_1_);
           //outtree_->Branch("emu_dca_2",&emu_dca_2_);
@@ -304,8 +304,8 @@ namespace ic {
       m_sv_ = m_sv_ * mass_shift_;
       m_vis_ = m_vis_ * mass_shift_;
       em_gf_mva_ = event->Exists("em_gf_mva") ? event->Get<double>("em_gf_mva") : 0.;
-			em_gf_mva_1_ = event->Exists("em_gf_mva_stage_one") ? event->Get<double>("em_gf_mva_stage_one") :0.;
-			em_gf_mva_2_ = event->Exists("em_gf_mva_stage_two") ? event->Get<double>("em_gf_mva_stage_two") : 0.;
+			em_gf_mva_bdtg_ = event->Exists("em_gf_mva_bdtg") ? event->Get<double>("em_gf_mva_bdtg") :0.;
+			em_gf_mva_bdt_ = event->Exists("em_gf_mva_bdt") ? event->Get<double>("em_gf_mva_bdt") : 0.;
       // em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
     if (event->Exists("mass_scale")) {

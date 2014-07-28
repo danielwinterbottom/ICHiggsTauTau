@@ -116,8 +116,8 @@ class HhhCategories : public ModuleBase {
 
   double em_gf_mva_;
   //double em_vbf_mva_;
-	double em_gf_mva_1_;
-	double em_gf_mva_2_;
+	double em_gf_mva_bdtg_;
+	double em_gf_mva_bdt_;
 
     // Other VBF MVA variables?
 
