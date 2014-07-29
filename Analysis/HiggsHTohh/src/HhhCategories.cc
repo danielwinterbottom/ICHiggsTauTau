@@ -20,7 +20,7 @@ namespace ic {
       mass_shift_ = 1.0;
       fs_ = NULL;
       write_tree_ = true;
-      write_plots_ = false;
+      write_plots_ = true;
       experimental_ = false;
   }
 
@@ -198,10 +198,15 @@ namespace ic {
       InitCategory("nobtag");
 
       InitCategory("1jet0tag");
+      InitCoreControlPlots("1jet0tag");
       InitCategory("1jet1tag");
+      InitCoreControlPlots("1jet1tag");
       InitCategory("2jet0tag");
+      InitCoreControlPlots("2jet0tag");
       InitCategory("2jet1tag");
+      InitCoreControlPlots("2jet1tag");
       InitCategory("2jet2tag");
+      InitCoreControlPlots("2jet2tag");
     }
     return 0;
   }
@@ -601,17 +606,22 @@ namespace ic {
         SetPassCategory("presasha");
         if(prebjetbcsv_1_ < 0.679 && prebjetbcsv_2_ < 0.679 ) {
             SetPassCategory("2jet0tag");
+            FillCoreControlPlots("2jet0tag");
         } else if(prebjetbcsv_1_ > 0.679 && prebjetbcsv_2_ < 0.679 ) {
             SetPassCategory("2jet1tag");
+            FillCoreControlPlots("2jet1tag");
         } else if(prebjetbcsv_1_ > 0.679 && prebjetbcsv_2_ > 0.679 ) {
             SetPassCategory("2jet2tag");
+            FillCoreControlPlots("2jet2tag");
         }
     }
     if(n_prebjets_==1) {
         if(prebjetbcsv_1_ < 0.898) {
             SetPassCategory("1jet0tag");
+            FillCoreControlPlots("1jet0tag");
         } else {
             SetPassCategory("1jet1tag");
+            FillCoreControlPlots("1jet1tag");
         }
     }
     
