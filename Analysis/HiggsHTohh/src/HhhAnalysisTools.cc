@@ -59,7 +59,8 @@ namespace ic {
         "Special_3_Data",
         "Special_4_Data",
         "Special_5_WJetsToLNuSoup",
-        "WJetsToLNuSoup"
+        "WJetsToLNuSoup",
+        "WbbJetsToLNu"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
           "DYJetsToLLSoup",
@@ -498,6 +499,7 @@ namespace ic {
   HhhAnalysis::HistValuePair HhhAnalysis::GenerateW(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HhhAnalysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+    std::string fit_var;
     std::string w_extrap_cat = cat;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
@@ -514,8 +516,16 @@ namespace ic {
     
     Value w_norm;
     if(method == 20){
+      fit_var="mt_1(40,0,160)";  
+      //fit_var="met(20,0,100)";  
+      //fit_var="pt_1(25,0,100)";  
+      //fit_var="pt_tt(30,0,300)";  
+      //fit_var="eta_1(30,-3,3)";  
+      //fit_var="pt_2(25,0,100)";  
+      //fit_var="eta_2(30,-3,3)";  
+      //fit_var="n_prebjets(9,-0.5,8.5)";  
       w_norm = this->GetRateViaWFitMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
-        "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+        "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap(), fit_var);
     } else {
       w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
@@ -1140,7 +1150,8 @@ namespace ic {
                           std::string const& control_sel,
                           std::vector<std::string> const& sub_samples,
                           std::string const& wt,
-                          std::map<std::string, std::function<Value()>> dict
+                          std::map<std::string, std::function<Value()>> dict,
+                          std::string const& fit_var
                           ) {
     if (verbosity_) {
       std::cout << "[HhhAnalysis::GetRateViaWFitMethod]\n";
@@ -1149,12 +1160,11 @@ namespace ic {
       std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_sel % cat % wt;
     }
     
-    TH1F data_control = GetLumiScaledShape("mt_1(40,0,160)", data_sample, control_sel, cat, wt); 
+    TH1F data_control = GetLumiScaledShape(fit_var, data_sample, control_sel, cat, wt); 
     Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
     Value data_control_norm = GetRate(data_sample, control_sel, cat, wt);
     if (verbosity_) PrintValue(data_sample, data_control_norm);
     Value total_bkg;
-    std::vector<TH1F*> fit_bkgs;
     //Subtract all backgrounds except ttbar
     for (unsigned i = 0; i < sub_samples.size(); ++i) {
       Value bkr;
@@ -1163,12 +1173,12 @@ namespace ic {
       }
       if (dict.count(sub_samples[i])) {
         bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
-        TH1F tmp = GetShape("mt_1(40,0,160)", sub_samples.at(i), control_sel, cat, wt);
+        TH1F tmp = GetShape(fit_var, sub_samples.at(i), control_sel, cat, wt);
         SetNorm(&tmp, bkr.first);
         data_control.Add(&tmp, -1.);
       } else {
         bkr = GetLumiScaledRate(sub_samples[i], control_sel, cat, wt);
-        TH1F tmp = GetLumiScaledShape("mt_1(40,0,160)", sub_samples[i], control_sel, cat, wt);
+        TH1F tmp = GetLumiScaledShape(fit_var, sub_samples[i], control_sel, cat, wt);
         data_control.Add(&tmp, -1.);
       }
 
@@ -1178,15 +1188,15 @@ namespace ic {
       total_bkg.second = new_err;
 
     }
-    TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, cat, wt).first;
-    //TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, this->ResolveAlias("2jetinclusive"), wt).first;
-    TH1F w_control = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
-    //TH1F w_control = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, this->ResolveAlias("2jetinclusive"), wt);
+    TH1F top_control = GenerateTOP(8, fit_var, control_sel, cat, wt).first;
+    //TH1F top_control = GenerateTOP(8, fit_var, control_sel, this->ResolveAlias("2jetinclusive"), wt).first;
+    TH1F w_control = GetShape(fit_var, "WJetsToLNuSoup", control_sel, cat, wt);
+    //TH1F w_control = GetShape(fit_var, "WJetsToLNuSoup", control_sel, this->ResolveAlias("2jetinclusive"), wt);
     if (verbosity_) PrintValue("TotalBkgExclTT", total_bkg);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control_norm.second * data_control_norm.second));
     double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
     //Template fit returns the W norm and the uncertainty on it:
-    Value w_control_postfit = WTTTemplateFit(&data_control, &w_control, &top_control, mt_min, 0);
+    Value w_control_postfit = WTTTemplateFit(&data_control, &w_control, &top_control, 0, 1);
     //Combine uncertainty from fit in quadrature with already existing uncertainty:
     w_control_err = std::sqrt(w_control_err*w_control_err + w_control_postfit.second*w_control_postfit.second); 
     Value w_control_norm(w_control_postfit.first, w_control_err);
@@ -1481,7 +1491,7 @@ namespace ic {
     if(verbosity_) c3->SaveAs("PreFit.pdf");
     
     //Converting TH1Fs to the relevent RooFit objects for the fit
-    RooRealVar* mt_1_ = new RooRealVar("mt_1","mt_1",mt_min, 300.0, "GeV");
+    RooRealVar* mt_1_ = new RooRealVar("mt_1","mt_1",data->GetXaxis()->GetXmin(), data->GetXaxis()->GetXmax(), "GeV");
     RooRealVar mt_1 = *mt_1_;
     double data_norm = data->Integral();
     RooDataHist* obsData = new RooDataHist("data", "data", RooArgList(mt_1), data);

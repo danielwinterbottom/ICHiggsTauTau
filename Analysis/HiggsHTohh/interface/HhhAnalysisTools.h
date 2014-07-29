@@ -330,7 +330,8 @@ namespace ic {
                               std::string const& control_sel,
                               std::vector<std::string> const& sub_samples,
                               std::string const& wt,
-                              std::map<std::string, std::function<Value()>> dict
+                              std::map<std::string, std::function<Value()>> dict,
+                              std::string const& fit_var
                               );
       Value GetRateViaQCDMethod(Value const& ratio,
                               std::string const& data_sample,
