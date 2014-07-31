@@ -17,7 +17,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-// #include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICElectronProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
     : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
@@ -55,6 +55,14 @@ ICElectronProducer::ICElectronProducer(const edm::ParameterSet& config)
     input_vmaps_.push_back(std::make_pair(
         vec[i], pset_floats.getParameter<edm::InputTag>(vec[i])));
   }
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, do_r9_, "includeR9");
+  PrintOptional(1, do_hcal_sum_, "includeHcalSum");
+  PrintOptional(1, do_vertex_ip_, "includeVertexIP");
+  PrintOptional(1, do_beamspot_ip_, "includeBeamspotIP");
+  PrintOptional(1, do_conversion_matches_, "includeConversionMatches");
+  PrintOptional(1, do_pf_iso_03_, "includePFIso03");
+  PrintOptional(1, do_pf_iso_04_, "includePFIso04");
 }
 
 ICElectronProducer::~ICElectronProducer() { delete electrons_; }

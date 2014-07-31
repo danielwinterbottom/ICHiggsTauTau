@@ -16,7 +16,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-// #include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICVertexProducer::ICVertexProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -28,6 +28,9 @@ ICVertexProducer::ICVertexProducer(const edm::ParameterSet& config)
   if (request_trks_) {
     produces<reco::TrackRefVector>("requestedTracks");
   }
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, first_only_, "firstVertexOnly");
+  PrintOptional(1, request_trks_, "requestTracks");
 }
 
 ICVertexProducer::~ICVertexProducer() { delete vertices_; }

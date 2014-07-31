@@ -17,6 +17,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
@@ -66,6 +67,12 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
   }
 
   info_ = new ic::EventInfo();
+
+  PrintHeaderWithBranch(config, branch_);
+  PrintOptional(1, do_jets_rho_, "includeJetRho");
+  PrintOptional(1, do_leptons_rho_, "includeLeptonRho");
+  PrintOptional(1, do_vertex_count_, "includeVertexCount");
+  PrintOptional(1, do_csc_filter_, "includeCSCFilter");
 }
 
 ICEventInfoProducer::~ICEventInfoProducer() {
@@ -137,11 +144,16 @@ void ICEventInfoProducer::beginJob() {
 }
 
 void ICEventInfoProducer::endJob() {
-  std::map<std::string, std::size_t>::const_iterator iter;
-  std::cout << "Filter Hash Summary:" << std::endl;
-  for (iter = observed_filters_.begin(); iter != observed_filters_.end();
-       ++iter) {
-    std::cout << boost::format("%-30s %-30s\n") % iter->first % iter->second;
+  if (!observed_filters_.empty()) {
+    std::cout << std::string(78, '-') << "\n";
+    std::cout << boost::format("%-56s  %20s\n") %
+                     std::string("EventInfo Filters") %
+                     std::string("Hash Summmary");
+    std::map<std::string, std::size_t>::const_iterator iter;
+    for (iter = observed_filters_.begin(); iter != observed_filters_.end();
+         ++iter) {
+      std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
+    }
   }
 }
 

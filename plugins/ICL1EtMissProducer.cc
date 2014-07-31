@@ -12,11 +12,13 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "DataFormats/L1Trigger/interface/L1EtMissParticle.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICL1EtMissProducer::ICL1EtMissProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
   candidates_ = new std::vector<ic::Candidate>();
+  PrintHeaderWithProduces(config, input_, branch_);
 }
 
 ICL1EtMissProducer::~ICL1EtMissProducer() { delete candidates_; }

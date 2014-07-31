@@ -13,6 +13,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -23,6 +24,9 @@ ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
   if (request_gen_particles_) {
     produces<reco::GenParticleRefVector>("requestedGenParticles");
   }
+
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, request_gen_particles_, "requestGenParticles");
 }
 
 ICGenJetProducer::~ICGenJetProducer() { delete gen_jets_; }

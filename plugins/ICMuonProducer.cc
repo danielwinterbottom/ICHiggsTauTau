@@ -15,7 +15,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-// #include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICMuonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
     : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
@@ -46,6 +46,12 @@ ICMuonProducer::ICMuonProducer(const edm::ParameterSet& config)
     input_vmaps_.push_back(std::make_pair(
         vec[i], pset_floats.getParameter<edm::InputTag>(vec[i])));
   }
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, is_pf_, "isPF");
+  PrintOptional(1, do_vertex_ip_, "includeVertexIP");
+  PrintOptional(1, do_beamspot_ip_, "includeBeamspotIP");
+  PrintOptional(1, do_pf_iso_03_, "includePFIso03");
+  PrintOptional(1, do_pf_iso_04_, "includePFIso04");
 }
 
 ICMuonProducer::~ICMuonProducer() { delete muons_; }
@@ -128,11 +134,11 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
       dest.set_phi(reco_src.phi());
       dest.set_energy(reco_src.energy());
       dest.set_charge(reco_src.charge());
-      muon_ref = muons_handle->refAt(i).castTo<reco::MuonRef>();
       muon_base_ref = muons_handle->refAt(i);
     }
 
-    reco::Muon const& src = *muon_ref;
+    reco::Muon const& src =
+        is_pf_ ? *(pfs_handle->at(i).muonRef()) : *muons_handle->refAt(i);
 
     dest.set_dr03_tk_sum_pt(src.isolationR03().sumPt);
     dest.set_dr03_ecal_rechit_sum_et(src.isolationR03().emEt);

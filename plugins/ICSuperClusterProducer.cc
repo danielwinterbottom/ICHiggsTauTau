@@ -13,13 +13,14 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-// #include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICSuperClusterProducer::ICSuperClusterProducer(const edm::ParameterSet& config)
     : input_barrel_(config.getParameter<edm::InputTag>("inputBarrel")),
       input_endcap_(config.getParameter<edm::InputTag>("inputEndcap")),
       branch_(config.getParameter<std::string>("branch")) {
   scs_ = new std::vector<ic::SuperCluster>();
+  PrintHeaderWithBranch(config, branch_);
 }
 
 ICSuperClusterProducer::~ICSuperClusterProducer() { delete scs_; }

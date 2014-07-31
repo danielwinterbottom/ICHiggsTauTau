@@ -18,6 +18,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 template <class T>
 class ICTauProducer : public edm::EDProducer {
@@ -67,6 +68,10 @@ ICTauProducer<T>::ICTauProducer(const edm::ParameterSet& config)
   if (request_trks_) {
     produces<reco::TrackRefVector>("requestedTracks");
   }
+
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, do_vertex_ip_, "includeVertexIP");
+  PrintOptional(1, request_trks_, "requestTracks");
 }
 
 template <class T>
@@ -191,10 +196,12 @@ void ICTauProducer<T>::beginJob() {
 
 template <class T>
 void ICTauProducer<T>::endJob() {
+  std::cout << std::string(78, '-') << "\n";
+  std::cout << boost::format("%-56s  %20s\n")
+      % std::string("Tau Discriminators") % std::string("Hash Summmary");
   std::map<std::string, std::size_t>::const_iterator iter;
-  std::cout << "Tau ID Hash Summary:" << std::endl;
   for (iter = observed_id_.begin(); iter != observed_id_.end(); ++iter) {
-    std::cout << boost::format("%-40s %-30s\n") % iter->first % iter->second;
+    std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
   }
 }
 

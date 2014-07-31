@@ -13,6 +13,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICMetProducer::ICMetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -20,6 +21,8 @@ ICMetProducer::ICMetProducer(const edm::ParameterSet& config)
       do_custom_id_(config.getParameter<bool>("includeCustomID")),
       inputID_(config.getParameter<edm::InputTag>("inputCustomID")) {
   met_ = new std::vector<ic::Met>();
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, do_custom_id_, "includeCustomID");
 }
 
 ICMetProducer::~ICMetProducer() {

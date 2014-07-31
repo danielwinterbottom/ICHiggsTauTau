@@ -13,8 +13,7 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
-
-#include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICPhotonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
     : charged(pset.getParameter<edm::InputTag>("charged")),
@@ -36,6 +35,11 @@ ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
   // isolator_->initializePhotonIsolation(true);
   // isolator_->setConeSize(0.3);
   photons_ = new std::vector<ic::Photon>();
+
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, do_electron_veto_, "includeElectronVeto");
+  PrintOptional(1, do_had_tow_over_em_, "includeHadTowOverEm");
+  PrintOptional(1, do_pf_iso_, "includePFIso");
 }
 
 ICPhotonProducer::~ICPhotonProducer() {

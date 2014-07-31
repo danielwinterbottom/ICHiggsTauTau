@@ -11,7 +11,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -19,6 +19,10 @@ ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& config)
       store_mothers_(config.getParameter<bool>("includeMothers")),
       store_daughters_(config.getParameter<bool>("includeDaughters")) {
   particles_ = new std::vector<ic::GenParticle>();
+
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, store_mothers_, "includeMothers");
+  PrintOptional(1, store_daughters_, "includeDaughters");
 }
 
 ICGenParticleProducer::~ICGenParticleProducer() { delete particles_; }

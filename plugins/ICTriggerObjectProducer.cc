@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "boost/format.hpp"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -13,7 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-#include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICTriggerObjectProducer::ICTriggerObjectProducer(
     const edm::ParameterSet& config)
@@ -21,8 +22,10 @@ ICTriggerObjectProducer::ICTriggerObjectProducer(
       branch_(config.getParameter<std::string>("branch")),
       hlt_path_(config.getParameter<std::string>("hltPath")),
       store_only_if_fired_(config.getParameter<bool>("storeOnlyIfFired")) {
-  ;
   objects_ = new std::vector<ic::TriggerObject>();
+  PrintHeaderWithProduces(config, input_, branch_);
+  std::cout << boost::format("%-15s : %-60s\n") % "Path" % hlt_path_;
+  PrintOptional(1, store_only_if_fired_, "storeOnlyIfFired");
 }
 
 ICTriggerObjectProducer::~ICTriggerObjectProducer() { delete objects_; }
@@ -83,11 +86,13 @@ void ICTriggerObjectProducer::beginJob() {
 }
 
 void ICTriggerObjectProducer::endJob() {
-  std::cout << "HLT Filters Hash Summary:" << hlt_path_ << std::endl;
+  std::cout << std::string(78, '-') << "\n";
+  std::cout << boost::format("Path: %-50s  %20s\n")
+      % hlt_path_ % std::string("Hash Summmary");
   std::map<std::string, std::size_t>::const_iterator iter;
   for (iter = observed_filters_.begin(); iter != observed_filters_.end();
        ++iter) {
-    std::cout << boost::format("%-70s %-20s\n") % iter->first % iter->second;
+    std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
   }
 }
 

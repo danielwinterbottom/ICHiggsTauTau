@@ -197,33 +197,63 @@ icJPTJetProducer = cms.EDProducer('ICJPTJetProducer',
     )
 )
 
-##############################################################################
-# PFJet
-##############################################################################
+## [Jet]
+## This example given for the reco::PFJet --> ic::PFJet version
+## of the producer. The srcConfig and destConfig options for the
+## other input and output choices are also given below but are
+## commented out
 icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     branch                    = cms.string("pfJets"),
     input                     = cms.InputTag("ak5PFJets"),
-    includeJetFlavour         = cms.bool(False),
-    inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
-    applyJECs                 = cms.bool(False),
-    includeJECs               = cms.bool(False),
-    JECs                      = cms.PSet(
+    #### The srcConfig PSet when the input is a reco::Jet collection
+    srcConfig = cms.PSet(
+      includeJetFlavour         = cms.bool(False),
+      inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
+      applyJECs                 = cms.bool(False),
+      includeJECs               = cms.bool(False),
+      JECs                      = cms.PSet(),
+      applyCutAfterJECs         = cms.bool(False),
+      cutAfterJECs              = cms.string(""),
+      inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAK5PF"),
+      requestSVInfo             = cms.bool(False),
+      BTagDiscriminators        = cms.PSet(),
     ),
-    applyCutAfterJECs         = cms.bool(False),
-    cutAfterJECs              = cms.string(""),
-    inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAK5PF"),
-    requestSVInfo             = cms.bool(False),
-    BTagDiscriminators        = cms.PSet(
-    ),
-    specificConfig = cms.PSet(
-      includePileupID    = cms.bool(False),
-      inputPileupID      = cms.InputTag(""),
+    #### The srcConfig PSet when the input is a pat::Jet collection
+    # srcConfig = cms.PSet(
+    #   includeJetFlavour         = cms.bool(False),
+    #   includeJECs               = cms.bool(False),
+    #   inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAOD"),
+    #   requestSVInfo             = cms.bool(False)
+    # ),
+    #### The destConfig PSet when the output is an ic::PFJet collection
+    destConfig = cms.PSet(
+      includePileupID       = cms.bool(False),
+      inputPileupID         = cms.InputTag("puJetMva", "fullDiscriminant"),
       includeTrackBasedVars = cms.bool(False),
       inputTracks           = cms.InputTag("generalTracks"),
       inputVertices         = cms.InputTag("offlinePrimaryVertices"),
       requestTracks         = cms.bool(False)
     )
+    #### The destConfig PSet when the output is an ic::CaloJet collection
+    # destConfig = cms.PSet(
+    #   includeJetID        = cms.bool(False),
+    #   inputJetID          = cms.InputTag("ak5JetID"),
+    #   includeTowerCounts  = cms.bool(False)
+    # )
+    #### The destConfig PSet when the output is an ic::JPTJet collection
+    # destConfig = cms.PSet(
+    #   includeTrackBasedVars = cms.bool(False),
+    #   inputTracks           = cms.InputTag("generalTracks"),
+    #   inputVertices         = cms.InputTag("offlinePrimaryVertices"),
+    #   requestTracks         = cms.bool(False),
+    #   includeJetID          = cms.bool(False),
+    #   inputJetID            = cms.InputTag("ak5JetID"),
+    #   includeTowerCounts    = cms.bool(False)
+    # )
+    #### The destConfig PSet when the output is an ic::Jet collection (empty!)
+    # destConfig = cms.PSet()
 )
+## [Jet]
 
 ##############################################################################
 # Vertex

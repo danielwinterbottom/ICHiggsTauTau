@@ -55,11 +55,16 @@ else:
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
+process.TFileService = cms.Service("TFileService",
+  fileName = cms.string("EventTree.root"),
+  closeFileFast = cms.untracked.bool(True)
+)
+
 ################################################################
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(500)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -92,7 +97,7 @@ if (release == '53X' and isData):
 if (release == '53X' and not isData):
   process.source = cms.Source("PoolSource",
     # fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Summer12-53X-Sample.root')
-    fileNames = cms.untracked.vstring('file:/Volumes/MediaRAID/samples/VBF_HToTauTau_M-125-53X.root')
+    fileNames = cms.untracked.vstring('file:/Volumes/HDD/DYJetsToLL.root')
   )
   process.GlobalTag.globaltag = cms.string('START53_V22::All')
 
@@ -203,6 +208,7 @@ process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalE
 
 process.icElectronProducer = producers.icElectronProducer.clone(
   input                     = cms.InputTag("selectedElectrons"),
+  includeConversionMatches  = cms.bool(True),
   inputConversionMatches    = cms.InputTag("icElectronConversionCalculator"),
   includeVertexIP           = cms.bool(True),
   inputVertices             = cms.InputTag("selectedVertices"),
@@ -270,8 +276,9 @@ process.icTauSequence = cms.Sequence(
 ################################################################
 # Jets
 ################################################################
-import UserCode.ICHiggsTauTau.tau_discriminators_cfi as tauIDs
 
+# Parton flavour
+# --------------
 process.jetPartons = cms.EDProducer("PartonSelector",
     src = cms.InputTag("genParticles"),
     withLeptons = cms.bool(False)
@@ -292,6 +299,8 @@ process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
     flavourMap  = cms.InputTag("pfJetFlavourAssociation")
 )
 
+# Jet energy corrections
+# ----------------------
 process.ak5PFL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
     srcRho = cms.InputTag("kt6PFJets", "rho"),
     algorithm = cms.string('AK5PF'),
@@ -310,6 +319,17 @@ process.ak5PFResidual = cms.ESProducer("LXXXCorrectionESProducer",
     level = cms.string('L2L3Residual')
 )
 
+pfJECS = cms.PSet(
+  L1FastJet  = cms.string("ak5PFL1Fastjet"),
+  L2Relative = cms.string("ak5PFL2Relative"),
+  L3Absolute = cms.string("ak5PFL3Absolute")
+)
+if isData: pfJECS.append(
+  L2L3Residual = cms.string("ak5PFResidual")
+)
+
+# b-tagging
+# ---------
 process.load("RecoJets.JetAssociationProducers.ak5JTA_cff")
 from RecoJets.JetAssociationProducers.ak5JTA_cff import ak5JetTracksAssociatorAtVertex
 process.load("RecoBTag.Configuration.RecoBTag_cff")
@@ -334,7 +354,7 @@ process.simpleSecondaryVertexHighPurBJetTagsAK5PF = btag.simpleSecondaryVertexHi
   tagInfos = cms.VInputTag('secondaryVertexTagInfosAK5PF')
 )
 process.combinedSecondaryVertexBJetTagsAK5PF = btag.combinedSecondaryVertexBJetTags.clone (
-  tagInfos = cms.VInputTag('impactParameterTagInfosAK5PF','secondaryVertexTagInfosAK5PF')
+  tagInfos = cms.VInputTag('impactParameterTagInfosAK5PF', 'secondaryVertexTagInfosAK5PF')
 )
 
 process.btaggingSequenceAK5PF = cms.Sequence(
@@ -346,6 +366,8 @@ process.btaggingSequenceAK5PF = cms.Sequence(
   +process.combinedSecondaryVertexBJetTagsAK5PF
  )
 
+# Pileup ID
+# ---------
 from RecoJets.JetProducers.PileupJetID_cfi import *
 stdalgos = cms.VPSet()
 if release == '53X':
@@ -368,33 +390,30 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
     residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
 )
 
-pfJECS = cms.PSet(
-  L1FastJet  = cms.string("ak5PFL1Fastjet"),
-  L2Relative = cms.string("ak5PFL2Relative"),
-  L3Absolute = cms.string("ak5PFL3Absolute")
-)
-if isData: pfJECS.append(
-  L2L3Residual = cms.string("ak5PFResidual")
-)
-
+# Producer
+# --------
 process.icPFJetProducer = producers.icPFJetProducer.clone(
     branch                    = cms.string("pfJetsPFlow"),
     input                     = cms.InputTag("ak5PFJets"),
-    includeJetFlavour         = cms.bool(True),
-    inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
-    applyJECs                 = cms.bool(True),
-    includeJECs               = cms.bool(False),
-    JECs                      = pfJECS,
-    applyCutAfterJECs         = cms.bool(True),
-    cutAfterJECs              = cms.string("pt > 15.0"),
-    BTagDiscriminators        = cms.PSet(
-      simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"),
-      simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"),
-      combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF")
+    srcConfig = cms.PSet(
+      includeJetFlavour         = cms.bool(True),
+      inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
+      applyJECs                 = cms.bool(True),
+      includeJECs               = cms.bool(False),
+      JECs                      = pfJECS,
+      applyCutAfterJECs         = cms.bool(True),
+      cutAfterJECs              = cms.string("pt > 15.0"),
+      inputSVInfo               = cms.InputTag(""),
+      requestSVInfo             = cms.bool(False),
+      BTagDiscriminators        = cms.PSet(
+        simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"),
+        simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"),
+        combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF")
+      )
     ),
-    specificConfig = cms.PSet(
-      includePileupID    = cms.bool(True),
-      inputPileupID      = cms.InputTag("puJetMva", "fullDiscriminant"),
+    destConfig = cms.PSet(
+      includePileupID       = cms.bool(True),
+      inputPileupID         = cms.InputTag("puJetMva", "fullDiscriminant"),
       includeTrackBasedVars = cms.bool(True),
       inputTracks           = cms.InputTag("generalTracks"),
       inputVertices         = cms.InputTag("offlinePrimaryVertices"),
@@ -413,7 +432,7 @@ process.icPFJetSequence = cms.Sequence(
 )
 
 ################################################################
-# MVA MET
+# MVA MET and PF MET
 ################################################################
 if (release == '53X'):
   process.load("ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_53X_Dec2012")
@@ -429,32 +448,32 @@ else:
   process.calibratedAK5PFJetsForPFMEtMVA.correctors = cms.vstring("ak5PFL1FastL2L3")
 
 process.mvaMetPairsMT = process.mvaMetPairs.clone(
-  srcLeg1 = cms.InputTag('selectedPFMuons'),
-  srcLeg2 = cms.InputTag('selectedPFTaus'),
-  leg1Pt = cms.double(7.0),
-  leg1Eta = cms.double(2.6),
-  leg2Pt = cms.double(18.0),
-  leg2Eta = cms.double(2.6),
+  srcLeg1   = cms.InputTag('selectedPFMuons'),
+  srcLeg2   = cms.InputTag('selectedPFTaus'),
+  leg1Pt    = cms.double(7.0),
+  leg1Eta   = cms.double(2.6),
+  leg2Pt    = cms.double(18.0),
+  leg2Eta   = cms.double(2.6),
   minDeltaR = cms.double(0.49)
 )
 
 process.mvaMetPairsET = process.mvaMetPairs.clone(
-  srcLeg1 = cms.InputTag('selectedElectrons'),
-  srcLeg2 = cms.InputTag('selectedPFTaus'),
-  leg1Pt = cms.double(10.0),
-  leg1Eta = cms.double(2.6),
-  leg2Pt = cms.double(18.0),
-  leg2Eta = cms.double(2.6),
+  srcLeg1   = cms.InputTag('selectedElectrons'),
+  srcLeg2   = cms.InputTag('selectedPFTaus'),
+  leg1Pt    = cms.double(10.0),
+  leg1Eta   = cms.double(2.6),
+  leg2Pt    = cms.double(18.0),
+  leg2Eta   = cms.double(2.6),
   minDeltaR = cms.double(0.49)
 )
 
 process.mvaMetPairsEM = process.mvaMetPairs.clone(
-  srcLeg1 = cms.InputTag('selectedElectrons'),
-  srcLeg2 = cms.InputTag('selectedPFMuons'),
-  leg1Pt = cms.double(9.5),
-  leg1Eta = cms.double(2.6),
-  leg2Pt = cms.double(9.5),
-  leg2Eta = cms.double(2.6),
+  srcLeg1   = cms.InputTag('selectedElectrons'),
+  srcLeg2   = cms.InputTag('selectedPFMuons'),
+  leg1Pt    = cms.double(9.5),
+  leg1Eta   = cms.double(2.6),
+  leg2Pt    = cms.double(9.5),
+  leg2Eta   = cms.double(2.6),
   minDeltaR = cms.double(0.29)
 )
 
@@ -489,7 +508,6 @@ process.icPfMetProducer = producers.icSingleMetProducer.clone(
   branch  = cms.string("pfMet"),
   input   = cms.InputTag("pfMet")
 )
-
 
 process.icMvaMetSequence = cms.Sequence(
   process.pfMEtMVAsequence+

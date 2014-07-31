@@ -13,12 +13,13 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/Track.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-#include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICLightTrackProducer::ICLightTrackProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
   tracks_ = new std::vector<ic::LightTrack>();
+  PrintHeaderWithProduces(config, input_, branch_);
 }
 
 ICLightTrackProducer::~ICLightTrackProducer() { delete tracks_; }

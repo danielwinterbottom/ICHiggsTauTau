@@ -12,12 +12,13 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
-// #include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICPileupInfoProducer::ICPileupInfoProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
   info_ = new std::vector<ic::PileupInfo>();
+  PrintHeaderWithProduces(config, input_, branch_);
 }
 
 ICPileupInfoProducer::~ICPileupInfoProducer() { delete info_; }

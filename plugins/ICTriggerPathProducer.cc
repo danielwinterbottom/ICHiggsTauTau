@@ -1,27 +1,22 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICTriggerPathProducer.hh"
-#include <boost/functional/hash.hpp>
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/Run.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "DataFormats/PatCandidates/interface/TriggerEvent.h"
-#include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
-
-#include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
-#include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
-
-#include "UserCode/ICHiggsTauTau/interface/city.h"
-
+#include <string>
+#include <vector>
 #include "boost/format.hpp"
 #include "boost/lexical_cast.hpp"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/PatCandidates/interface/TriggerEvent.h"
+#include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
+#include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
+#include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
+#include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICTriggerPathProducer::ICTriggerPathProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -30,6 +25,10 @@ ICTriggerPathProducer::ICTriggerPathProducer(const edm::ParameterSet& config)
       save_strings_(config.getParameter<bool>("saveStrings")),
       split_version_(config.getParameter<bool>("splitVersion")) {
   paths_ = new std::vector<ic::TriggerPath>();
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, include_if_fired_, "includeAcceptedOnly");
+  PrintOptional(1, save_strings_, "saveStrings");
+  PrintOptional(1, split_version_, "splitVersion");
 }
 
 ICTriggerPathProducer::~ICTriggerPathProducer() { delete paths_; }

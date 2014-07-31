@@ -15,7 +15,7 @@
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
-// #include "boost/format.hpp"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICSecondaryVertexProducer::ICSecondaryVertexProducer(
     const edm::ParameterSet& config)
@@ -27,6 +27,8 @@ ICSecondaryVertexProducer::ICSecondaryVertexProducer(
   if (request_trks_) {
     produces<reco::TrackRefVector>("requestedTracks");
   }
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, request_trks_, "requestTracks");
 }
 
 ICSecondaryVertexProducer::~ICSecondaryVertexProducer() { delete vertices_; }

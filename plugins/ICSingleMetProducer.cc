@@ -13,11 +13,13 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICSingleMetProducer::ICSingleMetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")) {
   met_ = new ic::Met();
+  PrintHeaderWithProduces(config, input_, branch_);
 }
 
 ICSingleMetProducer::~ICSingleMetProducer() {
