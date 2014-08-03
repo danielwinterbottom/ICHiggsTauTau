@@ -21,14 +21,14 @@ Because not all object properties are available in all releases (or at least not
 
 [TOC]
 
-Candidate {#obs-candidate}
+Candidate {#objs-candidate}
 =========
  - **Definition**: ic::Candidate
  - **CMSSW Producer**: ICCandidateProducer
 
 The ICCandidateProducer can take any collection as input, as long as the objects in that collection inherit from reco::Candidate.
 
-Electron {#obs-electron}
+Electron {#objs-electron}
 =========
  - **Definition**: ic::Electron
  - **CMSSW Producer**: ICElectronProducer
@@ -41,3 +41,113 @@ There are several ic::Electron properties which are not calculated by default in
  - ic::Electron::dxy_vertex and ic::Electron::dz_vertex \n These must be calculated with respect to a user-specified reco::Vertex. The first vertex in the collection specified by the `inputVertices` option will be used when the option `includeVertexIP` is set to *True*.
  - ic::Electron::dxy_beamspot \n This must be calculated with respect to a user-specified reco::BeamSpot. The beamspot set by the `inputBeamspot` option will be used when the option `includeBeamspotIP` is set to *True*.
  - **All particle-flow isolation values** \n These must be calculated on-the-fly in a CMSSW job, and may not be relevant for all analyses. The recipes by which these are calculated are strongly CMSSW-version dependent, and often require an update to the release version of various packages. Furthermore, it is common for individual analyses to modify the isolation definition, for example changing veto cones. Please see this page for some example recipes. Two sets of isolation values may be stored, nominally for isolation cones of sizes \f$\Delta R = 0.3\f$ and \f$\Delta R = 0.4\f$. These are enabled via the options `includePFIso03` and `includePFIso04` respectively. The InputTag for each isolation sum must be specified in the `pfIso03` and/or `pfIso04` PSets as relevant.
+
+Muon {#objs-muon}
+=========
+ - **Definition**: ic::Muon
+ - **CMSSW Producer**: ICMuonProducer
+
+Tau {#objs-tau}
+=========
+ - **Definition**: ic::Tau
+ - **CMSSW Producer**: ICTauProducer
+
+Missing Tranvserse Energy {#objs-met}
+=========
+ - **Definition**: ic::Met
+ - **CMSSW Producers**: ICMetProducer, ICSingleMetProducer
+
+Photon {#objs-photon}
+=========
+ - **Definition**: ic::Photon
+ - **CMSSW Producer**: ICPhotonProducer
+
+Track {#objs-track}
+=========
+ - **Definitions**: ic::Track, ic::LightTrack
+ - **CMSSW Producers**: ICTrackProducer, ICLightTrackProducer
+
+Vertex {#objs-vertex}
+=========
+ - **Definition**: ic::Vertex
+ - **CMSSW Producers**: ICVertexProducer
+
+Secondary Vertex {#objs-sec-vertex}
+=========
+ - **Definition**: ic::SecondaryVertex
+ - **CMSSW Producers**: ICSecondaryVertexProducer
+
+CompositeCandidate {#objs-composite}
+=========
+ - **Definition**: ic::CompositeCandidate
+
+GenParticle {#objs-particle}
+=========
+ - **Definition**: ic::GenParticle
+ - **CMSSW Producers**: ICGenParticleProducer
+
+GenJet {#objs-genjet}
+=========
+ - **Definition**: ic::GenJet
+ - **CMSSW Producers**: ICGenJetProducer
+
+PileupInfo {#objs-pu-info}
+=========
+ - **Definition**: ic::PileupInfo
+ - **CMSSW Producers**: ICPileupInfoProducer
+
+SuperCluster {#objs-supercluster}
+=========
+ - **Definition**: ic::SuperCluster
+ - **CMSSW Producers**: ICSuperClusterProducer
+
+TriggerPath {#objs-trig-path}
+=========
+ - **Definition**: ic::TriggerPath
+ - **CMSSW Producers**: ICTriggerPathProducer
+
+Jet {#objs-jet}
+=========
+ - **Definition**: ic::Jet, ic::CaloJet, ic::JPTJet, ic::PFJet
+ - **CMSSW Producers**: ICJetProducer
+
+EventInfo {#objs-event-info}
+=========
+ - **Definition**: ic::EventInfo
+ - **CMSSW Producers**: ICEventInfoProducer
+
+MVA MET {#objs-mva-met}
+=======
+
+~~~~~~~~~~~~~{.sh}
+# this is complicated
+scramv1 project CMSSW_5_3_8; cd CMSSW_5_3_8/src
+git-cms-addpkg FWCore/Version
+git remote add -f ic-cmssw git@github.com:ajgilbert/cmssw.git
+git checkout --no-track -b rebase-attempt ic-cmssw/MVAMET-PileupJetID-from-CMSSW_5_3_7
+git rebase --onto from-CMSSW_5_3_8 CMSSW_5_3_7 rebase-attempt
+git checkout from-CMSSW_5_3_8
+git merge rebase-attempt
+git branch -d rebase-attempt
+git-cms-sparse-checkout CMSSW_X_Y_Z HEAD
+git read-tree -u --reset HEAD
+###### CHECK PATCHES!
+git clone git@github.com:ajgilbert/ICAnalysis-MVAMETPairProducer.git ICAnalysis/MVAMETPairProducer
+git clone git@github.com:ajgilbert/ICHiggsTauTau.git UserCode/ICHiggsTauTau
+~~~~~~~~~~~~~
+
+Tau ID
+======
+
+~~~~~~~~~~~~~{.sh}
+git log --oneline HEAD..cms-tau-pog/CMSSW_5_3_X -- RecoTauTag
+git cherry-pick ........
+git checkout HEAD if unstaged deleted files
+~~~~~~~~~~~~~
+
+PF Isolation
+============
+check the tag we checked out in from-CMSSW_5_3_7
+
+
+

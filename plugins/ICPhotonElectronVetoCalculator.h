@@ -7,6 +7,13 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+/**
+ * @brief Produces an edm::ValueMap<bool> for the photon electron-veto
+ *flag
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py PhotonVetoCalculator
+ */
 class ICPhotonElectronVetoCalculator : public edm::EDProducer {
  public:
   explicit ICPhotonElectronVetoCalculator(const edm::ParameterSet &);

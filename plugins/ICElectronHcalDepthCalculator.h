@@ -7,6 +7,13 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+/**
+ * @brief Produces an edm::ValueMap<float> for the electron HCAL energy depth
+ *sum
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py ElectronHcalDepth
+ */
 class ICElectronHcalDepthCalculator : public edm::EDProducer {
  public:
   explicit ICElectronHcalDepthCalculator(const edm::ParameterSet &);

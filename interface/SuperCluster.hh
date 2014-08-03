@@ -10,6 +10,11 @@
 
 namespace ic {
 
+/**
+ * @brief Stores the properties of a supercluster. Note: does not inherit from
+ * ic::Candidate but is instead specified by the supercluster position and
+ * direction with respect to the detector origin.
+ */
 class SuperCluster {
  private:
   typedef ROOT::Math::XYZPoint Point;
@@ -18,42 +23,77 @@ class SuperCluster {
  public:
   SuperCluster();
   virtual ~SuperCluster();
-
   virtual void Print() const;
 
+  /// @name Properties
+  /**@{*/
+  /// The supercluster 3D co-ordinates
   inline Point const& point() const { return point_; }
-  inline void set_point(Point const& point) { point_ = point; }
 
+  /// The supercluster x-coordinate
   inline double vx() const { return point_.x(); }
-  inline void set_vx(double const& x) { point_.SetX(x); }
 
+  /// The supercluster y-coordinate
   inline double vy() const { return point_.y(); }
-  inline void set_vy(double const& y) { point_.SetY(y); }
 
+  /// The supercluster z-coordinate
   inline double vz() const { return point_.z(); }
-  inline void set_vz(double const& z) { point_.SetZ(z); }
 
+  /// Defined as \f$ \mathrm{energy}\times\sin(\theta) \f$
   inline double pt() const { return (energy_ * sin(point_.theta())); }
 
+  /// The \f$\eta\f$ direction of the supercluster
   inline double eta() const { return (point_.eta()); }
 
+  /// The \f$\phi\f$ direction of the supercluster
   inline double phi() const { return (point_.phi()); }
 
+  /// Corrected supercluster energy
+  inline double const& energy() const { return energy_; }
+
+  /// Raw supercluster energy
+  inline double const& raw_energy() const { return raw_energy_; }
+
+  /// A four-momentum constructed from the pt(), eta(), phi() and energy()
+  /// values
   inline Vector vector() const { return Vector(pt(), eta(), phi(), energy_); }
 
+  /// True if the supercluster is in the EB, false otherwise
+  inline bool const& is_barrel() const { return is_barrel_; }
+
+  /// Unique identifier
   inline std::size_t id() const { return id_; }
+  /**@}*/
+
+  /// @name Setters
+  /**@{*/
+
+  /// @copybrief point()
+  inline void set_point(Point const& point) { point_ = point; }
+
+  /// @copybrief vx()
+  inline void set_vx(double const& x) { point_.SetX(x); }
+
+  /// @copybrief vy()
+  inline void set_vy(double const& y) { point_.SetY(y); }
+
+  /// @copybrief vz()
+  inline void set_vz(double const& z) { point_.SetZ(z); }
+
+  /// @copybrief id()
   inline void set_id(std::size_t const& id) { id_ = id; }
 
-  inline double const& energy() const { return energy_; }
+  /// @copybrief energy()
   inline void set_energy(double const& energy) { energy_ = energy; }
 
-  inline double const& raw_energy() const { return raw_energy_; }
+  /// @copybrief raw_energy()
   inline void set_raw_energy(double const& raw_energy) {
     raw_energy_ = raw_energy;
   }
 
-  inline bool const& is_barrel() const { return is_barrel_; }
+  /// @copybrief is_barrel()
   inline void set_is_barrel(bool const& is_barrel) { is_barrel_ = is_barrel; }
+  /**@}*/
 
  private:
   Point point_;
@@ -65,4 +105,5 @@ class SuperCluster {
 
 typedef std::vector<ic::SuperCluster> SuperClusterCollection;
 }
+/** \example plugins/ICSuperClusterProducer.cc */
 #endif

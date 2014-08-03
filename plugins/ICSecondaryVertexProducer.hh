@@ -14,6 +14,13 @@
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 
+/**
+ * @brief Produces an ic::SecondaryVertex collection from any input compatible
+ *with an edm::View<reco::SecondaryVertexTagInfo>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py SecondaryVertex
+ */
 class ICSecondaryVertexProducer : public edm::EDProducer {
  public:
   explicit ICSecondaryVertexProducer(const edm::ParameterSet &);

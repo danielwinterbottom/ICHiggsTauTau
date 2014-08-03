@@ -13,6 +13,13 @@
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "UserCode/ICHiggsTauTau/interface/LightTrack.hh"
 
+/**
+ * @brief Produces an ic::LightTrack collection from any input compatible with
+ *an edm::View<reco::Track>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py LightTrack
+ */
 class ICLightTrackProducer : public edm::EDProducer {
  public:
   explicit ICLightTrackProducer(const edm::ParameterSet &);

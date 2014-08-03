@@ -14,6 +14,13 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 
+/**
+ * @brief Produces an ic::GenJet collection from any input compatible with an
+ *edm::View<reco::GenJet>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py GenJet
+ */
 class ICGenJetProducer : public edm::EDProducer {
  public:
   explicit ICGenJetProducer(const edm::ParameterSet&);

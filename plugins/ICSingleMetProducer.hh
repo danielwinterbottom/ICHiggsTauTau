@@ -13,6 +13,13 @@
 #include "DataFormats/METReco/interface/MET.h"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 
+/**
+ * @brief Produces a single ic::Met object from the first entry in any input
+ *collection compatible with an edm::View<reco::MET>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py SingleMet
+ */
 class ICSingleMetProducer : public edm::EDProducer {
  public:
   explicit ICSingleMetProducer(const edm::ParameterSet&);

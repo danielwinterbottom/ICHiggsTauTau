@@ -13,6 +13,13 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 
+/**
+ * @brief Produces an ic::Vertex collection from any input compatible with
+ *an edm::View<reco::Vertex>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py Vertex
+ */
 class ICVertexProducer : public edm::EDProducer {
  public:
   explicit ICVertexProducer(const edm::ParameterSet&);

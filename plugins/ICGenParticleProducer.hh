@@ -13,6 +13,13 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 
+/**
+ * @brief Produces an ic::GenParticle collection from any input compatible with
+ *an edm::View<reco::GenParticle>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py GenParticle
+ */
 class ICGenParticleProducer : public edm::EDProducer {
  public:
   explicit ICGenParticleProducer(const edm::ParameterSet &);

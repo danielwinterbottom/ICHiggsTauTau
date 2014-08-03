@@ -83,17 +83,20 @@ icMuonProducer = cms.EDProducer('ICMuonProducer',
 )
 ## [Muon]
 
-
+## [PhotonHadTowerOverEm]
 icPhotonHadTowerOverEmCalculator = cms.EDProducer('ICPhotonHadTowerOverEmCalculator',
     input = cms.InputTag("photons")
 )
+## [PhotonHadTowerOverEm]
 
+## [PhotonVetoCalculator]
 icPhotonElectronVetoCalculator = cms.EDProducer('ICPhotonElectronVetoCalculator',
     input       = cms.InputTag("photons"),
     electrons   = cms.InputTag("gsfElectrons"),
     beamspot    = cms.InputTag("offlineBeamSpot"),
     conversions = cms.InputTag("allConversions")
 )
+## [PhotonVetoCalculator]
 
 ## [Photon]
 icPhotonProducer = cms.EDProducer('ICPhotonProducer',
@@ -112,9 +115,7 @@ icPhotonProducer = cms.EDProducer('ICPhotonProducer',
 )
 ## [Photon]
 
-##############################################################################
-# Tau
-##############################################################################
+## [Tau]
 icTauProducer = cms.EDProducer("ICPFTauProducer",
   branch                  = cms.string("taus"),
   input                   = cms.InputTag("hpsPFTauProducer"),
@@ -125,25 +126,25 @@ icTauProducer = cms.EDProducer("ICPFTauProducer",
     decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding")
   )
 )
+## [Tau]
 
-##############################################################################
-# MET
-##############################################################################
+## [Met]
 icMetProducer = cms.EDProducer('ICMetProducer',
   branch  = cms.string("pfMet"),
   input   = cms.InputTag("pfMet"),
   includeCustomID = cms.bool(False),
   inputCustomID = cms.InputTag("")
 )
+## [Met]
 
+## [SingleMet]
 icSingleMetProducer = cms.EDProducer('ICSingleMetProducer',
   branch  = cms.string("genMet"),
   input   = cms.InputTag("genMetTrue")
 )
+## [SingleMet]
 
-##############################################################################
-# CaloJet
-##############################################################################
+## [CaloJet]
 icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
     branch                    = cms.string("caloJets"),
     input                     = cms.InputTag("ak5CaloJets"),
@@ -167,10 +168,9 @@ icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
       includeTowerCounts  = cms.bool(False)
     )
 )
+## [CaloJet]
 
-##############################################################################
-# JPTJet
-##############################################################################
+## [JPTJet]
 icJPTJetProducer = cms.EDProducer('ICJPTJetProducer',
     branch                    = cms.string("jptJets"),
     input                     = cms.InputTag("JetPlusTrackZSPCorJetAntiKt5"),
@@ -196,6 +196,7 @@ icJPTJetProducer = cms.EDProducer('ICJPTJetProducer',
       includeTowerCounts    = cms.bool(False)
     )
 )
+## [JPTJet]
 
 ## [Jet]
 ## This example given for the reco::PFJet --> ic::PFJet version
@@ -255,9 +256,7 @@ icPFJetProducer = cms.EDProducer('ICPFJetProducer',
 )
 ## [Jet]
 
-##############################################################################
-# Vertex
-##############################################################################
+## [Vertex]
 icVertexProducer = cms.EDProducer('ICVertexProducer',
   branch  = cms.string("vertices"),
   input   = cms.InputTag("offlinePrimaryVertices"),
@@ -265,84 +264,79 @@ icVertexProducer = cms.EDProducer('ICVertexProducer',
   trackPtThreshold = cms.double(0.0),
   requestTracks = cms.bool(False)
 )
+## [Vertex]
 
-##############################################################################
-# SecondaryVertex
-##############################################################################
+## [SecondaryVertex]
 icSecondaryVertexProducer = cms.EDProducer('ICSecondaryVertexProducer',
   branch  = cms.string("secondaryVertices"),
   input   = cms.InputTag(""),
   trackPtThreshold = cms.double(0.0),
   requestTracks = cms.bool(False)
 )
+## [SecondaryVertex]
 
-##############################################################################
-# Track
-##############################################################################
+## [Track]
 icTrackProducer = cms.EDProducer('ICTrackProducer',
   branch  = cms.string("tracks"),
   input   = cms.InputTag("generalTracks")
 )
+## [Track]
 
+## [LightTrack]
 icLightTrackProducer = cms.EDProducer('ICLightTrackProducer',
   branch  = cms.string("tracks"),
   input   = cms.InputTag("generalTracks")
 )
+## [LightTrack]
 
-##############################################################################
-# PileupInfo
-##############################################################################
+## [PileupInfo]
 icPileupInfoProducer = cms.EDProducer('ICPileupInfoProducer',
   branch  = cms.string("pileupInfo"),
   input   = cms.InputTag("addPileupInfo")
 )
+## [PileupInfo]
 
-
-##############################################################################
-# GenParticle
-##############################################################################
+## [GenParticle]
 icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
   branch  = cms.string("genParticles"),
   input   = cms.InputTag("genParticles"),
   includeMothers = cms.bool(True),
   includeDaughters = cms.bool(True)
 )
+## [GenParticle]
 
-##############################################################################
-# GenJet
-##############################################################################
+## [GenJet]
 icGenJetProducer = cms.EDProducer('ICGenJetProducer',
   branch  = cms.string("genJets"),
   input   = cms.InputTag("ak5GenJets"),
   inputGenParticles = cms.InputTag("genParticles"),
   requestGenParticles = cms.bool(False)
 )
+## [GenJet]
 
-##############################################################################
-# Supercluster
-##############################################################################
+## [SuperCluster]
 icSuperClusterProducer = cms.EDProducer('ICSuperClusterProducer',
   branch  = cms.string("superClusters"),
   inputBarrel   = cms.InputTag("correctedHybridSuperClusters"),
   inputEndcap   = cms.InputTag("correctedMulti5x5SuperClustersWithPreshower")
 )
+## [SuperCluster]
 
-##############################################################################
-# L1Extra Modules
-##############################################################################
+## [Candidate]
 icL1EmIsolatedProducer = cms.EDProducer('ICCandidateProducer',
   branch  = cms.string("l1EmIsolated"),
   input   = cms.InputTag("l1extraParticles", "Isolated", "RECO")
 )
+## [Candidate]
 
+## [L1EtMiss]
 icL1MHTProducer = cms.EDProducer('ICL1EtMissProducer',
   branch  = cms.string("l1MHT"),
   input   = cms.InputTag("l1extraParticles", "MHT", "RECO")
 )
+## [L1EtMiss]
 
-##############################################################################
-# TriggerPath
-##############################################################################
+## [TriggerPath]
 icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
   branch  = cms.string("triggerPaths"),
   input   = cms.InputTag("patTriggerEvent"),
@@ -350,21 +344,18 @@ icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
   saveStrings = cms.bool(True),
   splitVersion = cms.bool(False)
 )
+## [TriggerPath]
 
-
-##############################################################################
-# TriggerObject
-##############################################################################
+## [TriggerObject]
 icTriggerObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
   branch = cms.string("triggerObjects"),
   input   = cms.InputTag("patTriggerEvent"),
   hltPath = cms.string(""),
   storeOnlyIfFired = cms.bool(False)
 )
+## [TriggerObject]
 
-##############################################################################
-# EventInfo
-##############################################################################
+## [EventInfo]
 icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   branch              = cms.string("eventInfo"),
   includeJetRho       = cms.bool(False),
@@ -381,8 +372,9 @@ icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   genFilterWeights    = cms.PSet(
   )
 )
+## [EventInfo]
 
-##############################################################################
-# EventProducer
-##############################################################################
+## [Event]
 icEventProducer = cms.EDProducer('ICEventProducer')
+## [Event]
+

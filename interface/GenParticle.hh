@@ -7,6 +7,10 @@
 
 namespace ic {
 
+/**
+ * @brief Stores the basic properties of generator-level particles as well as
+ * mother-daughter relations with other particles
+ */
 class GenParticle : public Candidate {
 
  private:
@@ -15,27 +19,50 @@ class GenParticle : public Candidate {
  public:
   GenParticle();
   virtual ~GenParticle();
+  virtual void Print() const;
 
+  /// @name Properties
+  /**@{*/
+  /// The index position of the particle in the original list
   inline int index() const { return index_; }
+
+  /// PDG number to identify the particle type, see
+  /// [this link] (http://pdg.lbl.gov/2002/montecarlorpp.pdf)
+  inline int pdgid() const { return pdgid_; }
+
+  /// The generator-dependent particle status
+  inline int status() const { return status_; }
+
+  /// A vector of ic::GenParticle::index() values that identify the mother
+  /// particles
+  inline std::vector<int> const& mothers() const { return mothers_; }
+
+  /// A vector of ic::GenParticle::index() values that identify the daughter
+  /// particles
+  inline std::vector<int> const& daughters() const { return daughters_; }
+  /**@}*/
+
+  /// @name Setters
+  /**@{*/
+  /// @copybrief index()
   inline void set_index(int const& index) { index_ = index; }
 
-  inline int pdgid() const { return pdgid_; }
+  /// @copybrief pdgid()
   inline void set_pdgid(int const& pdgid) { pdgid_ = pdgid; }
 
-  inline int status() const { return status_; }
+  /// @copybrief status()
   inline void set_status(int const& status) { status_ = status; }
 
-  inline std::vector<int> const& mothers() const { return mothers_; }
+  /// @copybrief mothers()
   inline void set_mothers(std::vector<int> const& mothers) {
     mothers_ = mothers;
   }
 
-  inline std::vector<int> const& daughters() const { return daughters_; }
+  /// @copybrief daughters()
   inline void set_daughters(std::vector<int> const& daughters) {
     daughters_ = daughters;
   }
-
-  virtual void Print() const;
+  /**@}*/
 
  private:
   int index_;
@@ -47,4 +74,5 @@ class GenParticle : public Candidate {
 
 typedef std::vector<ic::GenParticle> GenParticleCollection;
 }
+/** \example plugins/ICGenParticleProducer.cc */
 #endif

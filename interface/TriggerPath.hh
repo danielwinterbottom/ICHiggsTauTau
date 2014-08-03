@@ -5,27 +5,51 @@
 
 namespace ic {
 
+/**
+ * @brief Information on a trigger path, including accept, prescale and version
+ * information.
+ */
 class TriggerPath {
  public:
   TriggerPath();
   virtual ~TriggerPath();
+  virtual void Print() const;
 
+  /// @name Properties
+  /**@{*/
+  /// The trigger path name
   inline std::string const& name() const { return name_; }
+
+  /// True if the trigger fired, false otherwise
+  inline bool accept() const { return accept_; }
+
+  /// The trigger prescale
+  inline unsigned prescale() const { return prescale_; }
+
+  /// Unique identifier, usually a hash of the trigger name
+  inline std::size_t id() const { return id_; }
+
+  /// The trigger version number
+  inline unsigned version() const { return version_; }
+  /**@}*/
+
+  /// @name Setters
+  /**@{*/
+  /// @copybrief name()
   inline void set_name(std::string const& name) { name_ = name; }
 
-  inline bool accept() const { return accept_; }
+  /// @copybrief accept()
   inline void set_accept(bool const& accept) { accept_ = accept; }
 
-  inline unsigned prescale() const { return prescale_; }
+  /// @copybrief prescale()
   inline void set_prescale(unsigned const& prescale) { prescale_ = prescale; }
 
-  inline std::size_t id() const { return id_; }
+  /// @copybrief id()
   inline void set_id(std::size_t const& id) { id_ = id; }
 
-  inline unsigned version() const { return version_; }
+  /// @copybrief version()
   inline void set_version(unsigned const& version) { version_ = version; }
-
-  virtual void Print() const;
+  /**@}*/
 
  private:
   std::string name_;
@@ -37,4 +61,5 @@ class TriggerPath {
 
 typedef std::vector<ic::TriggerPath> TriggerPathCollection;
 }
+/** \example plugins/ICTriggerPathProducer.cc */
 #endif

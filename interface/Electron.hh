@@ -30,6 +30,7 @@ class Electron : public Candidate {
  public:
   Electron();
   virtual ~Electron();
+  virtual void Print() const;
 
   /// @name Properties
   /**@{*/
@@ -160,13 +161,13 @@ class Electron : public Candidate {
   /// The z-coordinate of the ref_point()
   inline double vz() const { return ref_point_.z(); }
 
-  /// Transverse impact parameter of the GSF track with primary vertex
+  /// Transverse impact parameter of the GSF track with the primary vertex
   inline double dxy_vertex() const { return dxy_vertex_; }
 
-  /// Longitudinal impact parameter of the GSF track with primary vertex
+  /// Longitudinal impact parameter of the GSF track with the primary vertex
   inline double dz_vertex() const { return dz_vertex_; }
 
-  /// Transverse impact parameter of the GSF track with beamspot
+  /// Transverse impact parameter of the GSF track with the beamspot
   inline double dxy_beamspot() const { return dxy_beamspot_; }
   /**@}*/
 
@@ -359,8 +360,6 @@ class Electron : public Candidate {
    */
   float GetIdIso(std::string const& name) const;
   /**@}*/
-
-  virtual void Print() const;
 
  private:
   // SimpleCutBasedEleID Variable:

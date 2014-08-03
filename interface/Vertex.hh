@@ -7,6 +7,10 @@
 
 namespace ic {
 
+/**
+ * @brief Stores information about the position of an event vertex and the
+ * quality of the track fit
+ */
 class Vertex {
  private:
   typedef ROOT::Math::XYZPoint Point;
@@ -15,38 +19,73 @@ class Vertex {
  public:
   Vertex();
   virtual ~Vertex();
+  virtual void Print() const;
 
+  /// @name Properties
+  /**@{*/
+  /// The vertex position co-ordinates
   inline Point const& point() const { return point_; }
+
+  /// Unique identifier
+  inline std::size_t id() const { return id_; }
+
+  /// Vertex x-coordinate
+  inline float vx() const { return point_.x(); }
+
+  /// Vertex y-coordinate
+  inline float vy() const { return point_.y(); }
+
+  /// Vertex z-coordinate
+  inline float vz() const { return point_.z(); }
+
+  /// The \f$\chi^{2}\f$ of the vertex fit
+  inline float chi2() const { return chi2_; }
+
+  /// The number-of-degrees-of-freedom in the vertex fit
+  inline float ndof() const { return ndof_; }
+
+  /// A vector of track information pairs, where each contains an
+  /// ic::Track::id() and the weight of that track in the vertex fit
+  inline std::vector<std::pair<std::size_t, float> > const& tracks() const {
+    return tracks_;
+  }
+  /**@}*/
+
+  /// @name Setters
+  /**@{*/
+
+  /// @copybrief point()
   inline void set_point(Point const& point) { point_ = point; }
 
-  inline std::size_t id() const { return id_; }
+  /// @copybrief id()
   inline void set_id(std::size_t const& id) { id_ = id; }
 
-  inline float vx() const { return point_.x(); }
+  /// @copybrief vx()
   inline void set_vx(float const& x) { point_.SetX(x); }
 
-  inline float vy() const { return point_.y(); }
+  /// @copybrief vy()
   inline void set_vy(float const& y) { point_.SetY(y); }
 
-  inline float vz() const { return point_.z(); }
+  /// @copybrief vz()
   inline void set_vz(float const& z) { point_.SetZ(z); }
 
-  inline float chi2() const { return chi2_; }
+  /// @copybrief chi2()
   inline void set_chi2(float const& chi2) { chi2_ = chi2; }
 
-  inline float ndof() const { return ndof_; }
+  /// @copybrief ndof()
   inline void set_ndof(float const& ndof) { ndof_ = ndof; }
 
-  inline std::vector<TrkPair> const& tracks() const { return tracks_; }
-  inline void set_tracks(std::vector<TrkPair> const& tracks) {
+  /// @copybrief tracks()
+  inline void set_tracks(
+      std::vector<std::pair<std::size_t, float> > const& tracks) {
     tracks_ = tracks;
   }
 
+  /// Add an ic::Track::id with a vertex fit weight
   inline void AddTrack(std::size_t id, float weight) {
     tracks_.push_back(std::make_pair(id, weight));
   }
-
-  virtual void Print() const;
+  /**@}*/
 
  private:
   Point point_;
@@ -58,4 +97,5 @@ class Vertex {
 
 typedef std::vector<ic::Vertex> VertexCollection;
 }
+/** \example plugins/ICVertexProducer.cc */
 #endif

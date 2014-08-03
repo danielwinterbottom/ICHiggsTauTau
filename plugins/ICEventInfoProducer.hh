@@ -12,6 +12,12 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 
+/**
+ * @brief Produces an ic::EventInfo object
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py EventInfo
+ */
 class ICEventInfoProducer : public edm::EDProducer {
  public:
   explicit ICEventInfoProducer(const edm::ParameterSet &);

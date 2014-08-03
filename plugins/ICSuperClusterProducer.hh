@@ -13,6 +13,13 @@
 #include "DataFormats/EgammaReco/interface/SuperCluster.h"
 #include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
 
+/**
+ * @brief Produces an ic::SuperCluster collection from the separate barrel and endcap collections, which must be compatible with
+ *an edm::View<reco::SuperCluster>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py SuperCluster
+ */
 class ICSuperClusterProducer : public edm::EDProducer {
  public:
   explicit ICSuperClusterProducer(const edm::ParameterSet&);

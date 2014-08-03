@@ -7,6 +7,13 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+/**
+ * @brief Produces an edm::ValueMap<float> for the photon hadronic-tower over EM
+ *energy value
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py PhotonHadTowerOverEm
+ */
 class ICPhotonHadTowerOverEmCalculator : public edm::EDProducer {
  public:
   explicit ICPhotonHadTowerOverEmCalculator(const edm::ParameterSet &);

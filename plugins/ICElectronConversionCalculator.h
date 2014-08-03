@@ -7,6 +7,13 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+/**
+ * @brief Produces an edm::ValueMap<bool> for the electron conversion-rejection
+ *flag
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py ElectronConversion
+ */
 class ICElectronConversionCalculator : public edm::EDProducer {
  public:
   explicit ICElectronConversionCalculator(const edm::ParameterSet &);

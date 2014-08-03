@@ -9,6 +9,12 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 
+/**
+ * @brief Produces an ic::TriggerPath collection from a pat::Trigger input
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py TriggerPath
+ */
 class ICTriggerPathProducer : public edm::EDProducer {
  public:
   explicit ICTriggerPathProducer(const edm::ParameterSet &);

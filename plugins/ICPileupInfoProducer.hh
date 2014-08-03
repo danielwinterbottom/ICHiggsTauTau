@@ -10,6 +10,12 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
 
+/**
+ * @brief Produces an ic::PileupInfo collection
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py PileupInfo
+ */
 class ICPileupInfoProducer : public edm::EDProducer {
  public:
   explicit ICPileupInfoProducer(const edm::ParameterSet&);

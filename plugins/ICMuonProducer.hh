@@ -14,6 +14,13 @@
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 
+/**
+ * @brief Produces an ic::Muon collection from any input compatible with
+ *an edm::View<reco::Muon>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py Muon
+ */
 class ICMuonProducer : public edm::EDProducer {
  public:
   explicit ICMuonProducer(const edm::ParameterSet&);

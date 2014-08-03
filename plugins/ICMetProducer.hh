@@ -13,6 +13,13 @@
 #include "DataFormats/METReco/interface/MET.h"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 
+/**
+ * @brief Produces an ic::Met collection from any input compatible with
+ *an edm::View<reco::MET>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py Met
+ */
 class ICMetProducer : public edm::EDProducer {
  public:
   explicit ICMetProducer(const edm::ParameterSet&);

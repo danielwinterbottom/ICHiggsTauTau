@@ -18,7 +18,6 @@ class Candidate {
   virtual ~Candidate();
   virtual void Print() const;
 
-  /// @anchor ElectronProperties
   /// @name Properties
   /**@{*/
   /// Four-momentum
@@ -89,5 +88,5 @@ class Candidate {
 
 typedef std::vector<ic::Candidate> CandidateCollection;
 }
-
+/** \example plugins/ICCandidateProducer.hh */
 #endif

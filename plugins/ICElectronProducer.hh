@@ -14,7 +14,8 @@
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 
 /**
- * @brief Produce an ic::Electron collection from a reco::GsfElectron collection
+ * @brief Produce an ic::Electron collection from any input compatible with an
+ *edm::View<reco::GsfElectron>
  *
  * **Example usage**
  * @snippet python/default_producers_cfi.py Electron

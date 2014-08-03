@@ -14,6 +14,13 @@
 #include "UserCode/ICHiggsTauTau/interface/Photon.hh"
 // #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
 
+/**
+ * @brief Produces an ic::Photon collection from any input compatible with
+ *an edm::View<reco::Photon>
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py Photon
+ */
 class ICPhotonProducer : public edm::EDProducer {
  public:
   explicit ICPhotonProducer(const edm::ParameterSet &);

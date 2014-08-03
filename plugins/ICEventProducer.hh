@@ -8,6 +8,13 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+/**
+ * @brief Handles the creation of the ntuple output, and must always be included
+ *after the other IC object producers.
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py Event
+ */
 class ICEventProducer : public edm::EDProducer {
  public:
   explicit ICEventProducer(const edm::ParameterSet&);
