@@ -123,7 +123,7 @@ icTauProducer = cms.EDProducer("ICPFTauProducer",
   includeVertexIP         = cms.bool(False),
   requestTracks           = cms.bool(False),
   tauIDs = cms.PSet(
-    decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding")
+    # decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding")
   )
 )
 ## [Tau]
@@ -148,21 +148,19 @@ icSingleMetProducer = cms.EDProducer('ICSingleMetProducer',
 icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
     branch                    = cms.string("caloJets"),
     input                     = cms.InputTag("ak5CaloJets"),
-    includeJetFlavour         = cms.bool(False),
-    inputJetFlavour           = cms.InputTag("icCaloJetFlavourCalculator"),
-    applyJECs                 = cms.bool(False),
-    includeJECs               = cms.bool(False),
-    JECs                      = cms.PSet(
-      L1FastJet  = cms.string("ak5CaloL1Fastjet"),
-      L2Relative = cms.string("ak5CaloL2Relative"),
-      L3Absolute = cms.string("ak5CaloL3Absolute")
+    srcConfig = cms.PSet(
+      includeJetFlavour         = cms.bool(False),
+      inputJetFlavour           = cms.InputTag("icCaloJetFlavourCalculator"),
+      applyJECs                 = cms.bool(False),
+      includeJECs               = cms.bool(False),
+      JECs                      = cms.PSet(),
+      applyCutAfterJECs         = cms.bool(False),
+      cutAfterJECs              = cms.string(""),
+      inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAK5Calo"),
+      requestSVInfo             = cms.bool(False),
+      BTagDiscriminators        = cms.PSet(),
     ),
-    applyCutAfterJECs         = cms.bool(False),
-    cutAfterJECs              = cms.string(""),
-    inputSVInfo               = cms.InputTag(""),
-    requestSVInfo             = cms.bool(False),
-    BTagDiscriminators        = cms.PSet(),
-    specificConfig = cms.PSet(
+    destConfig = cms.PSet(
       includeJetID        = cms.bool(False),
       inputJetID          = cms.InputTag("ak5JetID"),
       includeTowerCounts  = cms.bool(False)
@@ -174,19 +172,19 @@ icCaloJetProducer = cms.EDProducer('ICCaloJetProducer',
 icJPTJetProducer = cms.EDProducer('ICJPTJetProducer',
     branch                    = cms.string("jptJets"),
     input                     = cms.InputTag("JetPlusTrackZSPCorJetAntiKt5"),
-    includeJetFlavour         = cms.bool(False),
-    inputJetFlavour           = cms.InputTag(""),
-    applyJECs                 = cms.bool(False),
-    includeJECs               = cms.bool(False),
-    JECs                      = cms.PSet(
+    srcConfig = cms.PSet(
+      includeJetFlavour         = cms.bool(False),
+      inputJetFlavour           = cms.InputTag("icJPTJetFlavourCalculator"),
+      applyJECs                 = cms.bool(False),
+      includeJECs               = cms.bool(False),
+      JECs                      = cms.PSet(),
+      applyCutAfterJECs         = cms.bool(False),
+      cutAfterJECs              = cms.string(""),
+      inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAK5JPT"),
+      requestSVInfo             = cms.bool(False),
+      BTagDiscriminators        = cms.PSet(),
     ),
-    applyCutAfterJECs         = cms.bool(False),
-    cutAfterJECs              = cms.string(""),
-    inputSVInfo               = cms.InputTag(""),
-    requestSVInfo             = cms.bool(False),
-    BTagDiscriminators        = cms.PSet(
-    ),
-    specificConfig = cms.PSet(
+    destConfig = cms.PSet(
       includeTrackBasedVars = cms.bool(False),
       inputTracks           = cms.InputTag("generalTracks"),
       inputVertices         = cms.InputTag("offlinePrimaryVertices"),
@@ -323,7 +321,7 @@ icSuperClusterProducer = cms.EDProducer('ICSuperClusterProducer',
 ## [SuperCluster]
 
 ## [Candidate]
-icL1EmIsolatedProducer = cms.EDProducer('ICCandidateProducer',
+icCandidateProducer = cms.EDProducer('ICCandidateProducer',
   branch  = cms.string("l1EmIsolated"),
   input   = cms.InputTag("l1extraParticles", "Isolated", "RECO")
 )

@@ -38,7 +38,7 @@ selectedPFJets = cms.EDFilter("PFJetRefSelector",
 
 selectedPFTaus = cms.EDFilter("PFTauRefSelector",
   src = cms.InputTag("hpsPFTauProducer"),
-  cut = cms.string("pt > 18 & decayMode > 0.5")
+  cut = cms.string("pt > 18 & decayMode > -0.5")
 )
 
 #process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
