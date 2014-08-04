@@ -83,12 +83,6 @@ icMuonProducer = cms.EDProducer('ICMuonProducer',
 )
 ## [Muon]
 
-## [PhotonHadTowerOverEm]
-icPhotonHadTowerOverEmCalculator = cms.EDProducer('ICPhotonHadTowerOverEmCalculator',
-    input = cms.InputTag("photons")
-)
-## [PhotonHadTowerOverEm]
-
 ## [PhotonVetoCalculator]
 icPhotonElectronVetoCalculator = cms.EDProducer('ICPhotonElectronVetoCalculator',
     input       = cms.InputTag("photons"),

@@ -120,8 +120,12 @@ struct JetSrcHelper {
         U jet_cpy = jets_handle->at(i);
         // Loop through each correction and apply
         for (unsigned j = 0; j < correctors.size(); ++j) {
+          #ifndef CMSSW_4_2_8_patch7
+          double factor = correctors[j]->correction(jet_cpy, event, setup);
+          #else
           double factor = correctors[j]->correction(jet_cpy,
               edm::RefToBase<reco::Jet>(jets_handle->refAt(i)), event, setup);
+          #endif
           if (apply_jec_factors) full_jec_factor *= factor;
           factors[j] = factor;
           jet_cpy.scaleEnergy(factor);
