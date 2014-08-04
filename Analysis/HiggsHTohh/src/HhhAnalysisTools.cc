@@ -519,11 +519,33 @@ namespace ic {
       fit_var="mt_1(40,0,160)";  
       //fit_var="met(20,0,100)";  
       //fit_var="pt_1(25,0,100)";  
+      //fit_var="E_1(25,0,100)";  
       //fit_var="pt_tt(30,0,300)";  
       //fit_var="eta_1(30,-3,3)";  
       //fit_var="pt_2(25,0,100)";  
       //fit_var="eta_2(30,-3,3)";  
       //fit_var="n_prebjets(9,-0.5,8.5)";  
+      //fit_var="prebjetpt_1(40,0,200)";   // Best so far
+      //fit_var="prebjetbcsv_1(50,0,1)";  //also very good 
+      //fit_var="prebjetEt_1(40,0,200)";   
+      //fit_var="prebjetpt_2(40,0,200)";
+      //fit_var="prebjetbcsv_2(50,0,1)";
+      //fit_var="bpt_1(20,0,200)";  
+      //fit_var="jpt_1(20,0,200)";  
+      //fit_var="prebjetpt_2(20,0,200)";  
+      //fit_var="prebjeteta_1(15,-3,3)";  
+      //fit_var="prebjeteta_2(15,-3,3)";  
+      //fit_var="prebjet_deta(20,0,10)";  
+      //fit_var="prebjet_dphi(40,0,4)";  
+      //fit_var="prebjet_dtheta(40,0,4)";  
+      //fit_var="prebjet_mjj(30,0,600)";  
+      //fit_var="prebjet_1_met_dphi(40,0,4)";  
+      //fit_var="prebjet_1_met_dtheta(40,0,4)";  
+      //fit_var="prebjet_1_lep1_dphi(40,0,4)";  
+      //fit_var="prebjet_1_lep1_dtheta(40,0,4)";  
+      //fit_var="prebjet_1_lep1_m(30,0,600)";  
+      //fit_var="jet_1_met_dphi(40,0,4)";  
+      //fit_var="jet_1_met_dtheta(40,0,4)";  
       w_norm = this->GetRateViaWFitMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap(), fit_var);
     } else {
