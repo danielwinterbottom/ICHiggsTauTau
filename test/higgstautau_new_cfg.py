@@ -24,33 +24,22 @@ isEmbedded  = opts.isEmbedded
 isTandP     = opts.isTandP
 isZStudy    = opts.isZStudy
 
-if isData:
-    print 'Setting up for data processing...'
-else:
-    print 'Setting up for MC processing...'
-
-if isEmbedded:
-    print 'Setting up for embedded processing...'
-
-if not(release == '42X' or release == '53X'):
-    print 'Release not recognised, exiting!'
-    sys.exit(1)
-else:
-    print 'Setting up for ' + release + ' release...'
-
-if isTandP:
-    print 'Setting up for tag and probe ntuples...'
-
-if isZStudy:
-    print 'Setting up for Z->ee or Z->mumu processing...'
+if not release in ["42X", "53X"]:
+  print 'Release not recognised, exiting!'
+  sys.exit(1)
+print 'release     : '+release
+print 'isData      : '+str(isData)
+print 'isEmbedded  : '+str(isEmbedded)
+print 'isTandP     : '+str(isTandP)
+print 'isZStudy    : '+str(isZStudy)
 
 ################################################################
 # Standard setup
 ################################################################
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-if not (release == '53X'):
+if release in ['42X']:
   process.load("Configuration.StandardSequences.Geometry_cff")
-else:
+if release in ['53X']:
   process.load("Configuration.Geometry.GeometryIdeal_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
@@ -64,13 +53,13 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(500)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
 
 process.options   = cms.untracked.PSet(
-  wantSummary = cms.untracked.bool(False)
+  wantSummary = cms.untracked.bool(True)
 )
 
 ################################################################
@@ -109,20 +98,23 @@ import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 # Re-do PFTau reconstruction
 ################################################################
 process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
-if (release == '42X'): #check this goes after?
-  switchToPFTauHPS(process)
+#if release in ['42X']: #check this goes after?
+#  switchToPFTauHPS(process)
 
 ################################################################
 # Need to create kt6PFJets in 42X for L1FastJet correction
 ################################################################
 process.ic42XSequence = cms.Sequence()
-if (release == '42X'):
+if release in ['42X']:
   from RecoJets.JetProducers.kt4PFJets_cfi import kt4PFJets
   process.kt6PFJets = kt4PFJets.clone(
     rParam = cms.double(0.6),
     doAreaFastjet = cms.bool(True),
     doRhoFastjet = cms.bool(True)
   )
+  process.load("RecoJets.JetProducers.ak5PFJets_cfi")
+  process.ak5PFJets.doAreaFastjet = cms.bool(True)
+  process.ic42XSequence += process.ak5PFJets
   process.ic42XSequence += process.kt6PFJets
 
 ################################################################
@@ -370,9 +362,9 @@ process.btaggingSequenceAK5PF = cms.Sequence(
 # ---------
 from RecoJets.JetProducers.PileupJetID_cfi import *
 stdalgos = cms.VPSet()
-if release == '53X':
+if release in ['53X']:
   stdalgos = cms.VPSet(full_53x,cutbased,PhilV1)
-else:
+if release in ['42X']:
   stdalgos = cms.VPSet(full,cutbased,PhilV1)
 
 process.puJetMva = cms.EDProducer('PileupJetIdProducer',
@@ -437,9 +429,8 @@ process.icPFJetSequence = cms.Sequence(
 if (release == '53X'):
   process.load("ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_53X_Dec2012")
 else:
-  process.load("JetMETCorrections.METPUSubtraction.mvaPFMET_leptons_42X_cff")
-  from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_42X_Dec2012 import mvaMetPairs
-  process.pfMEtMVA.srcLeptons = cms.VInputTag("isomuons","isoelectrons","isotaus")
+  process.load("ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_42X_Dec2012")
+  process.pfMEtMVA.srcLeptons = cms.VInputTag("isomuons", "isoelectrons", "isotaus")
   process.pfMEtMVA.useOld42  = cms.bool(False)
 
 if isData:
@@ -537,6 +528,8 @@ process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
     "keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543" # additional b hadrons for jet fragmentation studies
   )
 )
+if release in ['42X']:
+  process.prunedGenParticles.src = cms.InputTag("genParticles","","HLT")
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   input   = cms.InputTag("prunedGenParticles"),
@@ -551,6 +544,8 @@ process.tauGenParticles = cms.EDProducer("ICGenParticlePruner",
     "keep++ abs(pdgId) == 15"  # keep full tau decay chain
   )
 )
+if release in ['42X']:
+  process.tauGenParticles.src = cms.InputTag("genParticles","","HLT")
 
 process.icTauGenParticleProducer = producers.icGenParticleProducer.clone(
   branch  = cms.string("genParticlesTaus"),
@@ -937,7 +932,7 @@ if isEmbedded and release == '53X':
   process.icEventInfoProducer.genFilterWeights.append(
     embed_weight = cms.InputTag("generator", "minVisPtFilter", "EmbeddedRECO")
   )
-if isEmbedded and release == '53X':
+if isEmbedded and release == '42X':
   process.icEventInfoProducer.weights.append(
     embed_weight = cms.InputTag("generator", "weight", "EmbeddedRECO")
 )
@@ -954,6 +949,7 @@ process.icEventProducer = producers.icEventProducer.clone()
 
 
 process.p = cms.Path(
+  process.ic42XSequence+
   process.recoTauClassicHPSSequence+
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
@@ -970,4 +966,4 @@ process.p = cms.Path(
   process.icEventProducer
 )
 
-# print process.dumpPython()
+#print process.dumpPython()

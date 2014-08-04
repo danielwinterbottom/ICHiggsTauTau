@@ -188,7 +188,8 @@ process.icJPTJetProducer = producers.icJPTJetProducer.clone(
 # PF Jet Module
 ##############################################################################
 # re-run ak5PFJets because the jetArea() not available in 42X inputs
-if release in ['42X']:   process.load("RecoJets.JetProducers.ak5PFJets_cfi")
+if release in ['42X']:
+  process.load("RecoJets.JetProducers.ak5PFJets_cfi")
   process.ak5PFJets.doAreaFastjet = cms.bool(True)
   process.ic42XExtraSequence += process.ak5PFJets
 
@@ -208,11 +209,6 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
 process.icPfMetProducer = producers.icMetProducer.clone(
   branch  = cms.string("pfMet"),
   input   = cms.InputTag("pfMet"),
-)
-
-process.icGenMetProducer = producers.icSingleMetProducer.clone(
-  branch = cms.string("genMet"),
-  input  = cms.InputTag("genMetTrue")
 )
 
 ##############################################################################
@@ -315,6 +311,14 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
   input   = cms.InputTag("selectedGenJets")
 )
 
+##############################################################################
+# GenMet Module
+##############################################################################
+process.icGenMetProducer = producers.icSingleMetProducer.clone(
+  branch = cms.string("genMet"),
+  input  = cms.InputTag("genMetTrue")
+)
+
 process.icMCSequence = cms.Sequence()
 if not isData:
   process.icMCSequence += (
@@ -322,7 +326,8 @@ if not isData:
     process.selectedGenParticles+
     process.icGenParticleProducer+
     process.selectedGenJets+
-    process.icGenJetProducer
+    process.icGenJetProducer+
+    process.icGenMetProducer
   )
 
 ##############################################################################
@@ -386,7 +391,6 @@ process.p = cms.Path(
   process.selectedPFJets+
   process.icPFJetProducer+
   process.icPfMetProducer+
-  process.icGenMetProducer+
   process.selectedTracks+
   process.icTrackProducer+
   process.selectedVertices+
