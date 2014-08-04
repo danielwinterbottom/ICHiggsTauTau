@@ -1,7 +1,9 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICEventProducer.hh"
 #include <memory>
 #include "TTree.h"
-#include "Compression.h"
+#ifndef CMSSW_4_2_8_patch7
+ #include "Compression.h"
+#endif
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -14,7 +16,9 @@ ICEventProducer::ICEventProducer(const edm::ParameterSet& config)
     : processed_(0) {
   edm::Service<TFileService> fs;
   ic::StaticTree::tree_ = fs->make<TTree>("EventTree", "EventTree");
-  fs->file().SetCompressionSettings(ROOT::CompressionSettings(ROOT::kLZMA, 5));
+  #ifndef CMSSW_4_2_8_patch7
+   fs->file().SetCompressionSettings(ROOT::CompressionSettings(ROOT::kLZMA, 5));
+  #endif
 }
 
 ICEventProducer::~ICEventProducer() {}

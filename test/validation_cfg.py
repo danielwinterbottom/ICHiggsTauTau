@@ -32,7 +32,10 @@ print 'file        : '+infile
 # Standard setup
 ################################################################
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.load("Configuration.Geometry.GeometryIdeal_cff")
+if release in ['42X']:
+  process.load("Configuration.StandardSequences.Geometry_cff")
+if release in ['53X', '70X']:
+  process.load("Configuration.Geometry.GeometryIdeal_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
@@ -49,6 +52,9 @@ process.TFileService = cms.Service("TFileService",
   closeFileFast = cms.untracked.bool(True)
 )
 
+process.ic42XExtraSequence = cms.Sequence()
+process.ic53XExtraSequence = cms.Sequence()
+process.ic70XExtraSequence = cms.Sequence()
 # ##############################################################################
 # ## Jet Parton Flavour
 # ##############################################################################
@@ -181,6 +187,11 @@ process.icJPTJetProducer = producers.icJPTJetProducer.clone(
 ##############################################################################
 # PF Jet Module
 ##############################################################################
+# re-run ak5PFJets because the jetArea() not available in 42X inputs
+if release in ['42X']:   process.load("RecoJets.JetProducers.ak5PFJets_cfi")
+  process.ak5PFJets.doAreaFastjet = cms.bool(True)
+  process.ic42XExtraSequence += process.ak5PFJets
+
 process.selectedPFJets = cms.EDFilter("PFJetRefSelector",
   src = cms.InputTag("ak5PFJets"),
   cut = cms.string("pt > 20 & abs(eta) < 5.0")
@@ -353,6 +364,9 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventProducer = cms.EDProducer('ICEventProducer')
 
 process.p = cms.Path(
+  process.ic42XExtraSequence+
+  process.ic53XExtraSequence+
+  process.ic70XExtraSequence+
   process.selectedPFCandidates+
   process.icCandidateProducer+
   process.selectedElectrons+
