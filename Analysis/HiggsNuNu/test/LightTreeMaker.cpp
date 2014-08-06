@@ -151,7 +151,7 @@ int main(int argc, char* argv[]){
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
-    ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Apr04/ParamsApr04.dat"))
+    ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Dec18/ParamsDec18.dat"))
     ("trg_weight_file",     po::value<string>(&trg_weight_file)->default_value("data/scale_factors/DataMCWeight_53X_v1.root"))
     ("trg_to_use",          po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
