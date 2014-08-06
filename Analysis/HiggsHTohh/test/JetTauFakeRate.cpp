@@ -33,6 +33,8 @@ int main(int argc, char* argv[]){
   string input_prefix;            // A prefix that will be added to the path of each input file
   string output_name;             // Name of the ouput ROOT File
   string output_folder;           // Folder to write the output in
+	bool by_decay_mode;
+	bool by_jet_type;
   
   po::options_description config("Configuration");
   po::variables_map vm;
@@ -44,6 +46,9 @@ int main(int argc, char* argv[]){
       ("input_prefix",        po::value<string>(&input_prefix)->default_value(""))
       ("output_name",         po::value<string>(&output_name)->required())
       ("output_folder",       po::value<string>(&output_folder)->default_value(""))
+			("by_decay_mode",				po::value<bool>(&by_decay_mode)->default_value(true))
+			("by_jet_type",					po::value<bool>(&by_jet_type)->default_value(true))
+			
     ;
     po::store(po::command_line_parser(argc, argv).
               options(config).allow_unregistered().run(), vm);
@@ -107,6 +112,8 @@ int main(int argc, char* argv[]){
   JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")
   .set_write_plots(true)
   .set_write_tree(false)
+	.set_by_decay_mode(by_decay_mode)
+	.set_by_jet_type(by_jet_type)
 	.set_fs(fs);
 
  //Add module here which reads in the filtered taus and jets and makes the plots/performs the fake rate study
