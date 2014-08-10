@@ -14,45 +14,16 @@
 #include "Core/interface/BranchHandlerBase.h"
 class TTree;
 
-
-/*
-
-storage:
-
-[         ]   [   TTree          ]
-[         ]   [  BranchHandler   ]
-[  Event  ]
-[         ]   [  Products  ]
-[         ]   [            ]
-
-Lifecycle of a TreeEvent:
-
-1) Call SetTree(TTree *): clear the event, clear the branch handlers, clear the products
-
-GetPtrVecFromTree
-GetPtrVec(name):
-  if name in event: return Get
-  if name in
-
-  AddWithPtrVec(vector<T> const& in, "ditau_store", "ditau");
-
-  vector<Jet*> const& jets = event->GetPtrVec<Jet>("jets");
-  event->Add("jetsCopy", event->GetPtrVec<Jet>("jets"));
-
-  event->Add("deepCopy", event->DeepCopyPtrVec<Jet>("jets", "copiedjets", "pfJets"));
-
-*/
-
 namespace ic {
 
 class TreeEvent : public Event {
  private:
   std::map<std::string, BranchHandlerBase*> handlers_;
-  std::map<std::string, std::function<void(unsigned)> > cached_funcs_;
+  std::map<std::string, std::function<void(int64_t)> > cached_funcs_;
 
-  std::vector<std::function<void(unsigned)> > auto_add_funcs_;
+  std::vector<std::function<void(int64_t)> > auto_add_funcs_;
   TTree* tree_;
-  unsigned event_;
+  int64_t event_;
 
   std::set<std::string> branch_names_;
 
@@ -74,40 +45,19 @@ class TreeEvent : public Event {
   }
 
   template <class T>
-  void CopyPtr(std::string const& branch_name, std::string const& prod_name,
-            unsigned event) {
-    handlers_[branch_name]->GetEntry(event);
-    T* ptr =
-        (dynamic_cast<BranchHandler<T>*>(handlers_[branch_name]))->GetPtr();
-    Add(prod_name, ptr);
-  }
-
-  template <class T>
-  void TestCopyPtr(std::string const& prod_name, BranchHandler<T>* bh,
-                   unsigned event) {
+  void CopyPtr(std::string const& prod_name, BranchHandler<T>* bh,
+                   int64_t event) {
     bh->GetEntry(event);
+    bh->SetNoOverwrite(true);
     Add(prod_name, bh->GetPtr());
   }
 
   template <class T>
-  void CopyPtrVec(std::string const& branch_name, std::string const& prod_name,
-                  unsigned event) {
-    handlers_[branch_name]->GetEntry(event);
-    std::vector<T>* ptr =
-        (dynamic_cast<BranchHandler<std::vector<T> >*>(handlers_[branch_name]))
-            ->GetPtr();
-    std::vector<T*> temp_vec(ptr->size(), nullptr);
-    for (unsigned i = 0; i < ptr->size(); ++i) {
-      temp_vec[i] = &((*ptr)[i]);
-    }
-    Add(prod_name, temp_vec);
-  }
-
-  template <class T>
-  void TestCopyPtrVec(std::string const& prod_name,
+  void CopyPtrVec(std::string const& prod_name,
                       BranchHandler<std::vector<T> >* bh,
-                      unsigned event) {
+                      int64_t event) {
     bh->GetEntry(event);
+    bh->SetNoOverwrite(true);
     std::vector<T>* ptr = bh->GetPtr();
     std::vector<T*> temp_vec(ptr->size(), nullptr);
     for (unsigned i = 0; i < ptr->size(); ++i) {
@@ -117,23 +67,10 @@ class TreeEvent : public Event {
   }
 
   template <class T>
-  void CopyIDMap(std::string const& branch_name, std::string const& prod_name,
-                 unsigned event) {
-    handlers_[branch_name]->GetEntry(event);
-    std::vector<T>* ptr =
-        (dynamic_cast<BranchHandler<std::vector<T> >*>(handlers_[branch_name]))
-            ->GetPtr();
-    std::map<std::size_t, T*> temp_map;
-    for (unsigned i = 0; i < ptr->size(); ++i) {
-      temp_map[(*ptr)[i].id()] = &((*ptr)[i]);
-    }
-    Add(prod_name, temp_map);
-  }
-
-  template <class T>
-  void TestCopyIDMap(std::string const& prod_name,
-                     BranchHandler<std::vector<T> >* bh, unsigned event) {
+  void CopyIDMap(std::string const& prod_name,
+                     BranchHandler<std::vector<T> >* bh, int64_t event) {
     bh->GetEntry(event);
+    bh->SetNoOverwrite(true);
     std::vector<T>* ptr = bh->GetPtr();
     std::map<std::size_t, T*> temp_map;
     for (unsigned i = 0; i < ptr->size(); ++i) {
@@ -150,46 +87,49 @@ class TreeEvent : public Event {
   bool ExistsInEvent(std::string const& name);
 
   template <class T>
-  void AutoAddPtr(std::string const& branch_name, std::string prod_name = "") {
+  void AutoAddPtr(std::string const& name, std::string branch_name = "") {
     // Check if a branch handler already exists with this branch_name
-    if (handlers_.count(branch_name) == 0) {
-      BranchHandler<T>* handler = new BranchHandler<T>(tree_, branch_name);
-      handler->SetAddress();
-      handlers_[branch_name] = handler;
+    if (branch_name == "") branch_name = name;
+    if (ExistsInTree(branch_name)) {
+      // Return the BranchHandler for this branch, creating it if
+      // necessary (will fail if SetupHandler dynamic_cast fails)
+      BranchHandler<T>* bh = SetupHandler<T>(branch_name);
+      // Create and store a function to extract the product from the tree
+      auto_add_funcs_.push_back(std::bind(&TreeEvent::CopyPtr<T>, this,
+                                          name, bh, std::placeholders::_1));
     }
-    if (prod_name == "") prod_name = branch_name;
-    auto_add_funcs_.push_back(
-        std::bind(&TreeEvent::CopyPtr<T>, this, branch_name, prod_name, std::placeholders::_1));
   }
 
   template <class T>
-  void AutoAddPtrVec(std::string const& branch_name,
-                     std::string prod_name = "") {
+  void AutoAddPtrVec(std::string const& name,
+                     std::string branch_name = "") {
+    typedef std::vector<T> Vector_T;
     // Check if a branch handler already exists with this branch_name
-    if (handlers_.count(branch_name) == 0) {
-      BranchHandler<std::vector<T> >* handler =
-          new BranchHandler<std::vector<T> >(tree_, branch_name);
-      handler->SetAddress();
-      handlers_[branch_name] = handler;
+    if (branch_name == "") branch_name = name;
+    if (ExistsInTree(branch_name)) {
+      // Return the BranchHandler for this branch, creating it if
+      // necessary (will fail if SetupHandler dynamic_cast fails)
+      BranchHandler<Vector_T>* bh = SetupHandler<Vector_T>(branch_name);
+      // Creat and store a function to extract the product from the tree
+      auto_add_funcs_.push_back(std::bind(&TreeEvent::CopyPtrVec<T>, this,
+                                          name, bh, std::placeholders::_1));
     }
-    if (prod_name == "") prod_name = branch_name;
-    auto_add_funcs_.push_back(std::bind(&TreeEvent::CopyPtrVec<T>, this,
-                                          branch_name, prod_name, std::placeholders::_1));
   }
 
   template <class T>
-  void AutoAddIDMap(std::string const& branch_name,
-                    std::string prod_name = "") {
+  void AutoAddIDMap(std::string const& name,
+                    std::string branch_name = "") {
+    typedef std::vector<T> Vector_T;
     // Check if a branch handler already exists with this branch_name
-    if (handlers_.count(branch_name) == 0) {
-      BranchHandler<std::vector<T> >* handler =
-          new BranchHandler<std::vector<T> >(tree_, branch_name);
-      handler->SetAddress();
-      handlers_[branch_name] = handler;
+    if (branch_name == "") branch_name = name;
+    if (ExistsInTree(branch_name)) {
+      // Return the BranchHandler for this branch, creating it if
+      // necessary (will fail if SetupHandler dynamic_cast fails)
+      BranchHandler<Vector_T>* bh = SetupHandler<Vector_T>(branch_name);
+      // Creat and store a function to extract the product from the tree
+      auto_add_funcs_.push_back(std::bind(&TreeEvent::CopyIDMap<T>, this,
+                                          name, bh, std::placeholders::_1));
     }
-    if (prod_name == "") prod_name = branch_name;
-    auto_add_funcs_.push_back(std::bind(&TreeEvent::CopyIDMap<T>, this,
-                                          branch_name, prod_name, std::placeholders::_1));
   }
 
   template <class T>
@@ -210,7 +150,7 @@ class TreeEvent : public Event {
       // necessary (will fail if SetupHandler dynamic_cast fails)
       BranchHandler<T>* bh = SetupHandler<T>(branch_name);
       // Create and store a function to extract the product from the tree
-      cached_funcs_[name] = std::bind(&TreeEvent::TestCopyPtr<T>, this, name,
+      cached_funcs_[name] = std::bind(&TreeEvent::CopyPtr<T>, this, name,
                                       bh, std::placeholders::_1);
       // Call this new function for the current event
       cached_funcs_[name](event_);
@@ -242,7 +182,7 @@ class TreeEvent : public Event {
       // necessary (will fail if SetupHandler dynamic_cast fails)
       BranchHandler<Vector_T>* bh = SetupHandler<Vector_T>(branch_name);
       // Creat and store a function to extract the product from the tree
-      cached_funcs_[name] = std::bind(&TreeEvent::TestCopyPtrVec<T>, this, name,
+      cached_funcs_[name] = std::bind(&TreeEvent::CopyPtrVec<T>, this, name,
                                       bh, std::placeholders::_1);
       // Call this new function for the current event
       cached_funcs_[name](event_);
@@ -274,7 +214,7 @@ class TreeEvent : public Event {
       // necessary (will fail if SetupHandler dynamic_cast fails)
       BranchHandler<Vector_T>* bh = SetupHandler<Vector_T>(branch_name);
       // Creat and store a function to extract the product from the tree
-      cached_funcs_[name] = std::bind(&TreeEvent::TestCopyIDMap<T>, this, name,
+      cached_funcs_[name] = std::bind(&TreeEvent::CopyIDMap<T>, this, name,
                                       bh, std::placeholders::_1);
       // Call this new function for the current event
       cached_funcs_[name](event_);
@@ -285,7 +225,7 @@ class TreeEvent : public Event {
     }
   }
 
-  void SetEvent(unsigned event);
+  void SetEvent(int64_t event);
 
   void SetTree(TTree* tree);
 

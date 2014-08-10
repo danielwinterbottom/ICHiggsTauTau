@@ -1,6 +1,7 @@
 #ifndef ICHiggsTauTau_Core_Event_h
 #define ICHiggsTauTau_Core_Event_h
 
+#include <stdexcept>
 #include <map>
 #include <string>
 #include <iostream>
@@ -14,15 +15,12 @@ class Event {
   virtual ~Event();
 
   template <class T>
-  unsigned int Add(std::string name, T const& product) {
-    if (Exists(name)) {
-      std::cerr << "Warning: Attempt to add product with name \"" << name
-                << "\" failed, a product with this name already exist."
-                << std::endl;
-      return 1;
-    } else {
+  void Add(std::string name, T const& product) {
+    if (!Exists(name)) {
       products_[name] = product;
-      return 0;
+    } else {
+      throw std::runtime_error(
+          "[ic::Event::Add] Product with name " + name + " already exists");
     }
   }
 
@@ -37,10 +35,8 @@ class Event {
     if (Exists(name)) {
       return boost::any_cast<T&>(products_[name]);
     } else {
-      std::cerr << "Error: Attempt to get product with name \"" << name
-                << "\" failed, no product with this name  exists." << std::endl;
-      std::cerr << "An exception will be thrown." << std::endl;
-      throw;
+      throw std::runtime_error(
+          "[ic::Event::Get] No product with name " + name + " exists");
     }
   }
 

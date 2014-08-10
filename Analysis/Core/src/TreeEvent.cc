@@ -4,16 +4,17 @@ class TTree;
 
 namespace ic {
 
-TreeEvent::TreeEvent() { event_ = 0; }
+TreeEvent::TreeEvent() : Event(), tree_(nullptr), event_(0) {}
 
 TreeEvent::~TreeEvent() { ; }
 
-void TreeEvent::SetEvent(unsigned event) {
+void TreeEvent::SetEvent(int64_t event) {
   event_ = event;
   Clear();
   for (unsigned i = 0; i < auto_add_funcs_.size(); ++i) {
     auto_add_funcs_[i](event);
   }
+  for (auto bh : handlers_) bh.second->SetNoOverwrite(false);
 }
 
 void TreeEvent::SetTree(TTree* tree) {
@@ -41,10 +42,11 @@ bool TreeEvent::ExistsInEvent(std::string const& name) {
 
 std::string TreeEvent::FormMissingMessage(std::string const& name,
                                           std::string const& branch_name) {
-  std::string msg = (boost::format(
-                         "No product with name %s in the ic::Event, "
-                         "and no branch with name %s in the TTree\n") %
-                     name % branch_name).str();
+  std::string msg =
+      (boost::format(
+           "[ic::TreeEvent] No product with name %s in the ic::Event, "
+           "and no branch with name %s in the TTree\n") %
+       name % branch_name).str();
   return msg;
 }
 }
