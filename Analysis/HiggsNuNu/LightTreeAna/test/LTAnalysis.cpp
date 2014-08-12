@@ -84,7 +84,7 @@ int main(int argc, char* argv[]){
   //Set selection step common to all categories
   //analysis->set_baseselection("passtrigger==1&&jet1_eta<4.7&&jet2_eta<4.7&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<"+boost::lexical_cast<std::string>(etaprodcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
   //analysis->set_baseselection("jet1_pt>50&&jet2_pt>50&&dijet_deta>3.6&&metnomu_significance>3&&jetmetnomu_mindphi>1.5");
-  analysis->set_baseselection("jet1_pt>50&&jet2_pt>50&&dijet_deta>3.6&&metnomu_significance>3&&jetmetnomu_mindphi>1.5");
+  analysis->set_baseselection("jet1_pt>50&&jet2_pt>50&&dijet_deta>3.6&&metnomu_significance>3&&jetmetnomu_mindphi>1.5&&metnomuons>60&&!(metnomuons<130&&dijet_M<1100)");
   /*##########################################
   #                                          #
   #            DEFINE MODULES                #
@@ -116,17 +116,27 @@ int main(int argc, char* argv[]){
   //shape.push_back("BDT(12,-1.,0.2)");
   shape.push_back("jet2_pt(27,30.,300.)");
   shape.push_back("jet1_pt(27,30.,300.)");
-  shape.push_back("metnomuons(30,50.,200.)");
-  shape.push_back("dijet_M(35,600.,2000.)");
+  shape.push_back("metnomuons(15,50.,200.)");
+  shape.push_back("dijet_M(17,600.,2000.)");
   shape.push_back("jetmetnomu_mindphi(18,1.4,3.2)");
   shape.push_back("metnomu_significance(25,3.,8.)");
   shape.push_back("dijet_dphi(30,0.,3.)");
   shape.push_back("dijet_deta(17,3.6,7.)");
   shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");
   std::string dataset="PARKEDPLUSA";
-  std::string sigcat="nvetomuons==0&&nvetoelectrons==0";
-  std::string zextrasigcat="";//"&&nvetomuons==3";
-
+  std::string sigcat="nvetomuons==0&&nvetoelectrons==0";//sig
+    //"nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120";//zmumu
+    //"nselmuons==1&&nvetomuons==1&&nvetoelectrons==0";//wmu
+    //"nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1";//wel
+    //"ntaus==1&&nvetomuons==0&&nvetoelectrons==0";//wtau
+    //"nvetoelectrons==0&&nvetomuons==0&&dijetmet_ptfraction>0.6";//QCD
+  std::string zextrasigcat="";//sig
+    //"&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120";//zmumu
+  //"&&nselmuons==1&&nvetomuons==3&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120";//wmu
+    //"&&nselelectrons==1&&nvetoelectrons==1";//wel
+    //"&&ntaus==1&&nvetoelectrons==0";//wtau
+    //" && dijetmet_ptfraction>0.6";//QCD
+    
   //DATA SHAPE GENERATION
   DataShape data("data");
   data.set_dataset(dataset)
@@ -138,6 +148,13 @@ int main(int argc, char* argv[]){
   DataShape signal("signal");
   signal.set_dataset("sig125")
     .set_dirname("qqH")
+    .set_shape(shape)
+    .set_basesel(analysis->baseselection())
+    .set_cat(sigcat);
+
+  DataShape zmumuraw("zmumuraw");
+  zmumuraw.set_dataset("ZJets_ll_all")
+    .set_dirname("zvv")
     .set_shape(shape)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
@@ -267,7 +284,18 @@ int main(int argc, char* argv[]){
     .set_ngenmassfilteredewk(4226.53)
     .set_ngenmassfilteredqcd(20334900);
     
-    
+  DataNormShape zmumuinzcont("zmumuinzcont");
+  zmumuinzcont.set_sigmcset("ZJets_ll_all")
+    .set_shape(shape)
+    .set_dirname("zvv")
+    .set_contmcset("ZJets_ll_all")
+   .set_contbkgset(Zcontbkgsets)
+    .set_contdataset(dataset)
+    .set_basesel(analysis->baseselection())
+    .set_contdataextrasel("&&(passtrigger==1||passparkedtrigger1==1||passparkedtrigger2==1)")
+    .set_sigcat("m_mumu_gen>80&&m_mumu_gen<100"+zextrasigcat)//!!MAKE GEN WINDOW CONFIGURABLE WITH WARNING ABOUT GEN MASS FILTERED NUMBER BELOW NOT CHANGING
+    .set_contcat("nvetoelectrons==0 && nvetomuons==2 && nselmuons==2&&m_mumu>60&&m_mumu<120");//!!MAKE GEN WINDOW CONFIGURABLE
+
 
 
   //NORMALISED PLOTS FOR REFEREE
@@ -466,6 +494,8 @@ int main(int argc, char* argv[]){
   analysis->AddModule(&wtaunu);  
   analysis->AddModule(&QCD);
   analysis->AddModule(&zmumu);
+  //analysis->AddModule(&zmumuraw);
+  //analysis->AddModule(&zmumuinzcont);
   analysis->AddModule(&vv);
   analysis->AddModule(&wgamma);
   analysis->AddModule(&top);

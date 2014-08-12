@@ -21,6 +21,7 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, save_lumixs_weights)
   CLASS_MEMBER(HinvWeights, bool, do_trg_weights)
   CLASS_MEMBER(HinvWeights, bool, do_1dparkedtrg_weights)
+  CLASS_MEMBER(HinvWeights, bool, do_fitted1dparkedtrg_weights)
   CLASS_MEMBER(HinvWeights, bool, do_3dtrg_weights)
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)
@@ -46,6 +47,10 @@ class HinvWeights : public ModuleBase {
   std::vector<TH1F*> hist_trigSF_METHLTvec;
   std::vector<TH1F*> hist_trigSF_MjjHLTvec;
   std::vector<TH1F*> hist_trigSF_JetHLTvec;
+  std::vector<TF1*> func_trigSF_METL1vec;
+  std::vector<TF1*> func_trigSF_METHLTvec;
+  std::vector<TF1*> func_trigSF_MjjHLTvec;
+  std::vector<TF1*> func_trigSF_JetHLTvec;
 
   TH1F *hist_trigSF_METL1;
   TH1F *hist_trigSF_METHLT;

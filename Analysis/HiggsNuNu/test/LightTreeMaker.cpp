@@ -89,6 +89,7 @@ int main(int argc, char* argv[]){
   bool dotrgeff;                  // Do trigger efficiency corrections
   bool do3dtrgeff;                // Do 3d trigger efficiency corrections
   bool do1dparkedtrgeff;          // Do 3d trigger efficiency corrections
+  bool dofitted1dparkedtrgeff;          // Do 3d trigger efficiency corrections
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
   bool doidisoerr;                // Do lepton ID-iso efficiency correction error
   bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
@@ -146,6 +147,7 @@ int main(int argc, char* argv[]){
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
     ("do3dtrgeff",          po::value<bool>(&do3dtrgeff)->default_value(false))
     ("do1dparkedtrgeff",    po::value<bool>(&do1dparkedtrgeff)->default_value(false))
+    ("dofitted1dparkedtrgeff",po::value<bool>(&dofitted1dparkedtrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
@@ -631,6 +633,7 @@ int main(int argc, char* argv[]){
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_do_3dtrg_weights(do3dtrgeff)
       .set_do_1dparkedtrg_weights(do1dparkedtrgeff)
+      .set_do_fitted1dparkedtrg_weights(dofitted1dparkedtrgeff)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
     if(do3dtrgeff){
