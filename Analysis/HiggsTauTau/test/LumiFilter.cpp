@@ -55,8 +55,7 @@ int main(int argc, char* argv[]){
 ic::AnalysisBase analysis(
     "LumiFilter",        // Analysis name
     files,                // Input files
-    "icEventProducer",    // TTree path
-    "EventTree",
+    "icEventProducer/EventTree",
     max_events);          // TTree name
         
 

@@ -13,20 +13,26 @@ class ModuleBase;
 namespace ic {
 
 class AnalysisBase {
- protected:
+  struct ModuleSequence {
+    std::string name;
+    std::vector<ic::ModuleBase*> modules;
+    std::vector<uint64_t> counters;
+    int skim_point;
+
+    ModuleSequence() : name("default"), skim_point(-1) {}
+    explicit ModuleSequence(std::string const& n) : name(n), skim_point(-1) {}
+  };
+
+ private:
+  typedef std::vector<ic::ModuleBase*> V_Modules;
+  typedef std::pair<std::string, V_Modules> SV_Modules;
+  std::vector<ModuleSequence> seqs_;
   std::string analysis_name_;
-  std::vector<std::string> input_file_paths_;
+  std::vector<std::string> input_files_;
   std::string tree_path_;
-  std::string tree_name_;
-  unsigned events_to_process_;
+  int64_t events_to_process_;
   unsigned events_processed_;
-  std::vector<ic::ModuleBase*> modules_;
-  std::vector<double> weighted_yields_;
   ic::TreeEvent event_;
-  bool notify_on_fail_;
-  bool notify_evt_on_fail_;
-  std::set<std::pair<int, int> > notify_run_event_;
-  std::set<int> notify_event_;
   std::string skim_path_;
   bool print_module_list_;
   bool ttree_caching_;
@@ -34,26 +40,30 @@ class AnalysisBase {
   bool retry_on_fail_;
   unsigned retry_pause_;
   unsigned retry_attempts_;
-  int skim_after_module_;
 
  public:
   AnalysisBase(std::string const& analysis_name,
                std::vector<std::string> const& input,
-               std::string const& tree_path, std::string const& tree_name,
-               unsigned const& events);
+               std::string const& tree_path,
+               int64_t const& events);
 
+  /// Add module to the "default" sequence
   void AddModule(ic::ModuleBase* module_ptr);
+  /// Add module to the named sequence (creating it if it doesn't exist)
+  void AddModule(std::string const& seq_name, ic::ModuleBase* module_ptr);
+
+  /// Returns the analysis name
   inline std::string analysis_name() { return analysis_name_; }
   inline std::string tree_path() { return tree_path_; }
-  inline std::string tree_name() { return tree_name_; }
+  // inline std::string tree_name() { return tree_name_; }
   virtual ~AnalysisBase();
   virtual int RunAnalysis();
   virtual void DoEventSetup();
   virtual bool PostModule(int status);
-  virtual void NotifyRunEvent(int const& run, int const& event);
-  virtual void NotifyEvent(int const& event);
+
   void DoSkimming(std::string const& skim_path) { skim_path_ = skim_path; }
   void WriteSkimHere();
+  void WriteSkimHere(std::string const& seq_name);
   void SetTTreeCaching(bool const& value);
   void StopOnFileFailure(bool const& value);
   void RetryFileAfterFailure(unsigned pause_in_seconds,
