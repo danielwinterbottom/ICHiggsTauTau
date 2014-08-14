@@ -60,11 +60,13 @@ namespace ic{
       std::vector<LTFile> files=filemanager->GetFileSet(sigsets_[iSig]);
       double signalWeight=1.;
       for(unsigned iFile=0;iFile<files.size();iFile++){
-	std::cout<<"ping 5"<<std::endl;
-	factory->AddSignalTree(files[iFile].GetTree(),signalWeight);
-        std::cout<<"ping 6"<<std::endl;
-	factory->SetSignalWeightExpression("total_weight_lepveto");
-        std::cout<<"ping 7"<<std::endl;
+	if(files[iFile].GetTree()->GetEntries()!=0){
+	  factory->AddSignalTree(files[iFile].GetTree(),signalWeight);
+	  factory->SetSignalWeightExpression("total_weight_lepveto");
+	}
+	else{
+	  std::cout<<"WARNING FILE "<<files[iFile].name()<<"is empty!"<<std::endl;
+	}
       }
     }
     for(unsigned iBkg=0;iBkg<bkgsets_.size();iBkg++){
@@ -72,8 +74,13 @@ namespace ic{
       std::vector<LTFile> files=filemanager->GetFileSet(bkgsets_[iBkg]);
       double backgroundWeight=1.;
       for(unsigned iFile=0;iFile<files.size();iFile++){
-	factory->AddBackgroundTree(files[iFile].GetTree(),backgroundWeight);
-	factory->SetBackgroundWeightExpression("total_weight_lepveto");
+	if(files[iFile].GetTree()->GetEntries()!=0){
+	  factory->AddBackgroundTree(files[iFile].GetTree(),backgroundWeight);
+	  factory->SetBackgroundWeightExpression("total_weight_lepveto");
+	}
+	else{
+	  std::cout<<"WARNING FILE "<<files[iFile].name()<<"is empty!"<<std::endl;
+	}
       }
     }
 

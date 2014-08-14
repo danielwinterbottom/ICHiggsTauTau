@@ -88,6 +88,7 @@ class HhhCategories : public ModuleBase {
   double beta_1_;    // Defined if n_bjets >= 1
   double bcsv_1_; 
   double prebjetpt_1_;     // Defined if n_jets >= 1
+  double prebjetEt_1_;     // Defined if n_jets >= 1
   double prebjetpt_2_;     // Defined if n_jets >= 2
   double prebjeteta_1_;    // Defined if n_jets >= 1
   double prebjeteta_2_;    // Defined if n_jets >= 2
@@ -104,6 +105,17 @@ class HhhCategories : public ModuleBase {
   
   double prebjet_mjj_;       // Defined if n_jets >= 2
   double prebjet_deta_;     // Defined if n_jets >= 2
+  double prebjet_dphi_;     // Defined if n_jets >= 2
+  double prebjet_dtheta_;     // Defined if n_jets >= 2
+  double prebjet_1_met_dphi_;     // Defined if n_jets >= 2
+  double prebjet_1_met_dtheta_;     // Defined if n_jets >= 2
+  double prebjet_1_lep1_dphi_;     // Defined if n_jets >= 2
+  double prebjet_1_lep1_dtheta_;     // Defined if n_jets >= 2
+  double prebjet_1_lep1_m_;     // Defined if n_jets >= 2
+  double jet_1_met_m_;     // Defined if n_jets >= 2
+  double jet_1_met_dphi_;     // Defined if n_jets >= 2
+  double jet_1_met_dtheta_;     // Defined if n_jets >= 2
+  double E_1_;     // Defined if n_jets >= 1
 
   double mjj_lowpt_;       // Defined if n_lowpt_jets >= 2
   double jdeta_lowpt_;     // Defined if n_lowpt_jets >= 2
@@ -116,8 +128,8 @@ class HhhCategories : public ModuleBase {
 
   double em_gf_mva_;
   //double em_vbf_mva_;
-	double em_gf_mva_1_;
-	double em_gf_mva_2_;
+	double em_gf_mva_bdtg_;
+	double em_gf_mva_bdt_;
 
     // Other VBF MVA variables?
 

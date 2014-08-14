@@ -24,9 +24,9 @@ INPUTPARAMS="filelists/Dec18/ParamsDec18.dat"
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_withrle2
+  JOBDIRPREFIX=jobs_lighttree
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_withrle2
+  OUTPUTPREFIX=output_lighttree
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]

@@ -87,6 +87,8 @@ int main(int argc, char* argv[]){
   string filters;
   //unsigned signal_region;       // DeltaPhi cut > 2.7
   bool dotrgeff;                  // Do trigger efficiency corrections
+  bool do3dtrgeff;                // Do 3d trigger efficiency corrections
+  bool do1dparkedtrgeff;          // Do 3d trigger efficiency corrections
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
   bool doidisoerr;                // Do lepton ID-iso efficiency correction error
   bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
@@ -128,8 +130,8 @@ int main(int argc, char* argv[]){
     ("wstream",             po::value<string>(&wstream)->default_value("nunu"))
     ("is_data",             po::value<bool>(&is_data)->required())
     ("mettype",             po::value<string>(&mettype)->default_value("pfMetType1"))
-    ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(50.))
-    ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(50.))
+    ("jet1ptcut",           po::value<double>(&jet1ptcut)->default_value(30.))
+    ("jet2ptcut",           po::value<double>(&jet2ptcut)->default_value(30.))
     ("jetptprecut",         po::value<double>(&jetptprecut)->default_value(15.))
     ("doMetFilters",        po::value<bool>(&doMetFilters)->default_value(false))
     ("filters",             po::value<string> (&filters)->default_value("HBHENoiseFilter,EcalDeadCellTriggerPrimitiveFilter,eeBadScFilter,trackingFailureFilter,manystripclus53X,toomanystripclus53X,logErrorTooManyClusters,CSCTightHaloFilter"))
@@ -142,13 +144,15 @@ int main(int argc, char* argv[]){
     ("taulepdiscrtight",    po::value<bool>(&taulepdiscrtight)->default_value(false))
     ("dojerdebug",          po::value<bool>(&dojerdebug)->default_value(false))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
+    ("do3dtrgeff",          po::value<bool>(&do3dtrgeff)->default_value(false))
+    ("do1dparkedtrgeff",    po::value<bool>(&do1dparkedtrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
-    ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Apr04/ParamsApr04.dat"))
-    ("trg_weight_fle",      po::value<string>(&trg_weight_file)->default_value("data/scale_factors/DataMCWeight_53X_v1.root"))
+    ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Dec18/ParamsDec18.dat"))
+    ("trg_weight_file",     po::value<string>(&trg_weight_file)->default_value("data/scale_factors/DataMCWeight_53X_v1.root"))
     ("trg_to_use",          po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
@@ -625,8 +629,15 @@ int main(int argc, char* argv[]){
     .set_input_met("metNoMuons");
   if (!is_data) {
     hinvWeights.set_do_trg_weights(dotrgeff)
+      .set_do_3dtrg_weights(do3dtrgeff)
+      .set_do_1dparkedtrg_weights(do1dparkedtrgeff)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
+    if(do3dtrgeff){
+      hinvWeights.set_Alumi(0.889)
+	.set_BClumi(11.581)
+	.set_Dlumi(7.315);
+    }
     hinvWeights.set_do_idiso_veto_weights(false);
     hinvWeights.set_do_idiso_tight_weights(false);
   }

@@ -20,7 +20,7 @@ namespace ic {
       mass_shift_ = 1.0;
       fs_ = NULL;
       write_tree_ = true;
-      write_plots_ = false;
+      write_plots_ = true;
       experimental_ = false;
   }
 
@@ -96,18 +96,29 @@ namespace ic {
         outtree_->Branch("beta_1",            &beta_1_);
         outtree_->Branch("bcsv_1",            &bcsv_1_);
         outtree_->Branch("prebjetpt_1",             &prebjetpt_1_);
+        outtree_->Branch("prebjetEt_1",             &prebjetEt_1_);
         outtree_->Branch("prebjeteta_1",            &prebjeteta_1_);
         outtree_->Branch("prebjetbcsv_1",            &prebjetbcsv_1_);
         outtree_->Branch("prebjet1_dm",             &prebjet1_dm_);
         outtree_->Branch("prebjetpt_2",             &prebjetpt_2_);
         outtree_->Branch("prebjeteta_2",            &prebjeteta_2_);
         outtree_->Branch("prebjetbcsv_2",            &prebjetbcsv_2_);
+        outtree_->Branch("E_1",             &E_1_);
         outtree_->Branch("mjj",               &mjj_);
         outtree_->Branch("mjj_h",               &mjj_h_);
         outtree_->Branch("mjj_tt",               &mjj_tt_);
         outtree_->Branch("jdeta",             &jdeta_);
         outtree_->Branch("prebjet_mjj",               &prebjet_mjj_);
+        outtree_->Branch("prebjet_dphi",               &prebjet_dphi_);
         outtree_->Branch("prebjet_deta",             &prebjet_deta_);
+        outtree_->Branch("prebjet_dtheta",             &prebjet_dtheta_);
+        outtree_->Branch("prebjet_1_met_dphi",             &prebjet_1_met_dphi_);
+        outtree_->Branch("prebjet_1_met_dtheta",             &prebjet_1_met_dtheta_);
+        outtree_->Branch("prebjet_1_lep1_dphi",             &prebjet_1_lep1_dphi_);
+        outtree_->Branch("prebjet_1_lep1_dtheta",             &prebjet_1_lep1_dtheta_);
+        outtree_->Branch("prebjet_1_lep1_m",             &prebjet_1_lep1_m_);
+        outtree_->Branch("jet_1_met_dphi",             &jet_1_met_dphi_);
+        outtree_->Branch("jet_1_met_dtheta",             &jet_1_met_dtheta_);
         outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
         outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
         outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
@@ -126,8 +137,8 @@ namespace ic {
           //outtree_->Branch("emu_dxy_fromref",&emu_dxy_fromref_);
           //outtree_->Branch("emu_dxy", &emu_dxy_);
           //outtree_->Branch("em_gf_mva",&em_gf_mva_);
-          outtree_->Branch("em_gf_mva_1",&em_gf_mva_1_);
-          outtree_->Branch("em_gf_mva_2",&em_gf_mva_2_);
+          outtree_->Branch("em_gf_mva_bdtg",&em_gf_mva_bdtg_);
+          outtree_->Branch("em_gf_mva_bdt",&em_gf_mva_bdt_);
           //outtree_->Branch("bdt",&bdt_);
           //outtree_->Branch("emu_dca_1",&emu_dca_1_);
           //outtree_->Branch("emu_dca_2",&emu_dca_2_);
@@ -196,6 +207,17 @@ namespace ic {
       InitCategory("btag_loose");
 
       InitCategory("nobtag");
+
+      InitCategory("1jet0tag");
+      InitCoreControlPlots("1jet0tag");
+      InitCategory("1jet1tag");
+      InitCoreControlPlots("1jet1tag");
+      InitCategory("2jet0tag");
+      InitCoreControlPlots("2jet0tag");
+      InitCategory("2jet1tag");
+      InitCoreControlPlots("2jet1tag");
+      InitCategory("2jet2tag");
+      InitCoreControlPlots("2jet2tag");
     }
     return 0;
   }
@@ -298,8 +320,8 @@ namespace ic {
       m_sv_ = m_sv_ * mass_shift_;
       m_vis_ = m_vis_ * mass_shift_;
       em_gf_mva_ = event->Exists("em_gf_mva") ? event->Get<double>("em_gf_mva") : 0.;
-			em_gf_mva_1_ = event->Exists("em_gf_mva_stage_one") ? event->Get<double>("em_gf_mva_stage_one") :0.;
-			em_gf_mva_2_ = event->Exists("em_gf_mva_stage_two") ? event->Get<double>("em_gf_mva_stage_two") : 0.;
+			em_gf_mva_bdtg_ = event->Exists("em_gf_mva_bdtg") ? event->Get<double>("em_gf_mva_bdtg") :0.;
+			em_gf_mva_bdt_ = event->Exists("em_gf_mva_bdt") ? event->Get<double>("em_gf_mva_bdt") : 0.;
       // em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
     if (event->Exists("mass_scale")) {
@@ -316,6 +338,7 @@ namespace ic {
     emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
 
     pt_1_ = lep1->pt();
+    E_1_ = lep1->energy();
     pt_2_ = lep2->pt();
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
@@ -383,7 +406,13 @@ namespace ic {
 
     if (n_prebjets_ >= 1) {
       prebjetpt_1_ = prebjets[0]->pt();
+      prebjetEt_1_ = std::sqrt(prebjets[0]->pt()*prebjets[0]->pt() + prebjets[0]->M()*prebjets[0]->M());
       prebjeteta_1_ = prebjets[0]->eta();
+      prebjet_1_met_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(prebjets[0]->vector(), met->vector()));
+      prebjet_1_met_dtheta_ = std::fabs(prebjets[0]->vector().theta() - met->vector().theta());
+      prebjet_1_lep1_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(prebjets[0]->vector(), lep1->vector()));
+      prebjet_1_lep1_dtheta_ = std::fabs(prebjets[0]->vector().theta() -  lep1->vector().theta());
+      prebjet_1_lep1_m_ = (prebjets[0]->vector() + lep1->vector()).M();
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { prebjets[0] };
       std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
@@ -394,7 +423,13 @@ namespace ic {
       }
     } else {
       prebjetpt_1_ = -9999;
+      prebjetEt_1_ = -9999;
       prebjeteta_1_ = -9999;
+      prebjet_1_met_dphi_ = -9999;
+      prebjet_1_met_dtheta_ = -9999;
+      prebjet_1_lep1_dphi_ = -9999;
+      prebjet_1_lep1_dtheta_ = -9999;
+      prebjet_1_lep1_m_ = -9999;
     }
 
     if (n_prebjets_ >= 2) {
@@ -402,6 +437,8 @@ namespace ic {
       prebjeteta_2_ = prebjets[1]->eta();
       prebjet_mjj_ = (prebjets[0]->vector() + prebjets[1]->vector()).M();
       prebjet_deta_ = fabs(prebjets[0]->eta() - prebjets[1]->eta());
+      prebjet_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(prebjets[0]->vector(), prebjets[1]->vector()));
+      prebjet_dtheta_ = std::fabs((prebjets[0]->vector().theta() -  prebjets[1]->vector().theta()));
       mjj_tt_= (prebjets[0]->vector() + prebjets[1]->vector() + ditau->vector() + met->vector()).M();
       if (event->Exists("svfitHiggs")) {
         mjj_h_= (prebjets[0]->vector() + prebjets[1]->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
@@ -421,6 +458,8 @@ namespace ic {
       prebjeteta_2_ = -9999;
       prebjet_mjj_ = -9999;
       prebjet_deta_ = -9999;
+      prebjet_dphi_ = -9999;
+      prebjet_dtheta_ = -9999;
       mjj_h_ = -9999;
       mjj_tt_ = -9999;
     }
@@ -428,6 +467,7 @@ namespace ic {
     if (n_jets_ >= 1) {
       jpt_1_ = jets[0]->pt();
       jeta_1_ = jets[0]->eta();
+      jet_1_met_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(jets[0]->vector(), met->vector()));
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets[0] };
       std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
@@ -439,6 +479,7 @@ namespace ic {
     } else {
       jpt_1_ = -9999;
       jeta_1_ = -9999;
+      jet_1_met_dphi_ = -9999;
     }
 
     if (n_jets_ >= 2) {
@@ -593,7 +634,28 @@ namespace ic {
     if(n_prebjets_>1)
     {
         SetPassCategory("presasha");
+        if(prebjetbcsv_1_ < 0.679 && prebjetbcsv_2_ < 0.679 ) {
+            SetPassCategory("2jet0tag");
+            FillCoreControlPlots("2jet0tag");
+        } else if(prebjetbcsv_1_ > 0.679 && prebjetbcsv_2_ < 0.679 ) {
+            SetPassCategory("2jet1tag");
+            FillCoreControlPlots("2jet1tag");
+        } else if(prebjetbcsv_1_ > 0.679 && prebjetbcsv_2_ > 0.679 ) {
+            SetPassCategory("2jet2tag");
+            FillCoreControlPlots("2jet2tag");
+        }
     }
+    if(n_prebjets_==1) {
+        if(prebjetbcsv_1_ < 0.898) {
+            SetPassCategory("1jet0tag");
+            FillCoreControlPlots("1jet0tag");
+        } else {
+            SetPassCategory("1jet1tag");
+            FillCoreControlPlots("1jet1tag");
+        }
+    }
+    
+    
     
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low");
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ > pt2_split)  SetPassCategory("btag_high");
@@ -767,6 +829,11 @@ namespace ic {
     print_cats.push_back("nobtag");
     print_cats.push_back("sasha");
     print_cats.push_back("presasha");
+    print_cats.push_back("1jet0tag");
+    print_cats.push_back("1jet1tag");
+    print_cats.push_back("2jet0tag");
+    print_cats.push_back("2jet1tag");
+    print_cats.push_back("2jet2tag");
     std::cout << boost::format("%-20s") % "Selections:";
     for (unsigned i = 0; i < print_selections.size(); ++i) {
       std::cout << boost::format("%-12s") % print_selections[i];

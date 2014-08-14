@@ -15,6 +15,9 @@ namespace ic {
     CLASS_MEMBER(DataWEst,std::string,sigcat)
     CLASS_MEMBER(DataWEst,std::string,contcat)
     CLASS_MEMBER(DataWEst,std::string,basesel)
+    CLASS_MEMBER(DataWEst,std::string,sigmcweight)
+    CLASS_MEMBER(DataWEst,std::string,contmcweight)
+    CLASS_MEMBER(DataWEst,std::string,contdataweight)
   public:
     DataWEst(std::string);
     virtual ~DataWEst();

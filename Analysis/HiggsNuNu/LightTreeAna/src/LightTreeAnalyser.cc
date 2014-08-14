@@ -33,8 +33,11 @@ namespace ic{
     std::ifstream infile(filelist.c_str());
     std::string line;
     while(std::getline(infile,line)){
+      if(line.find("#")!=std::string::npos){
+	line=line.substr(0,line.find("#"));
+      }
       if(line=="")continue;
-     std::vector<std::string> strs;
+      std::vector<std::string> strs;
       boost::split(strs, line, boost::is_any_of("\t "));
       if(strs.size()!=3){
 	std::cout<<"ERROR: file input is not of correct form: name set path"<<std::endl;
@@ -92,6 +95,8 @@ namespace ic{
 	if (status == 1) break;
       }
     }
+    std::cout<<"All modules ran and exited with status 0."<<std::endl;
+    fs->Close();
     return 0;
   };
 

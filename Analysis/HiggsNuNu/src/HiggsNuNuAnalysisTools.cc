@@ -117,6 +117,13 @@ namespace ic{
     ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
     TH1F* htemp = (TH1F*)gDirectory->Get("htemp");
+    if (!htemp) {
+      std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
+      std::cout<<"Returning empty histogram!"<<std::endl;
+      TH1F hshape;
+      hshape.SetName("ERROR");
+      return hshape;
+    }
     TH1F hshape= (*htemp);
     gDirectory->Delete("htemp;*");
     return hshape;
@@ -129,6 +136,13 @@ namespace ic{
     ttree->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
     TH3::AddDirectory(false);
     TH3F* htemp = (TH3F*)gDirectory->Get("htemp");
+    if (!htemp) {
+      std::cout << " ERROR! Histogram " << full_variable.c_str() << " not found for selection " << full_selection.c_str() << std::endl;
+      std::cout<<"Returning empty histogram!"<<std::endl;
+      TH3F hshape;
+      hshape.SetName("ERROR");
+      return hshape;
+    }
     TH3F hshape= (*htemp);
     gDirectory->Delete("htemp;*");
     return hshape;

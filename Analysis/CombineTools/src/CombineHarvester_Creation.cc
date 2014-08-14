@@ -141,6 +141,38 @@ void CombineHarvester::ExtractShapes(std::string const& file,
   }
 }
 
+void CombineHarvester::AddWorkspace(RooWorkspace const *ws) {
+  if (wspaces_.count(ws->GetName())) return;
+  wspaces_[ws->GetName()] =
+      std::shared_ptr<RooWorkspace>((RooWorkspace *)ws->Clone());
+}
+
+void CombineHarvester::ExtractPdfs(std::string const& ws_name, std::string const& rule) {
+  if (!wspaces_.count(ws_name)) return;
+  for (unsigned  i = 0; i < procs_.size(); ++i) {
+    if (!procs_[i]->pdf()) {
+      std::string p = rule;
+      boost::replace_all(p, "$CHANNEL", procs_[i]->bin());
+      boost::replace_all(p, "$PROCESS", procs_[i]->process());
+      boost::replace_all(p, "$MASS", procs_[i]->mass());
+      procs_[i]->set_pdf(wspaces_[ws_name]->pdf(p.c_str()));
+    }
+  }
+}
+
+void CombineHarvester::ExtractData(std::string const& ws_name, std::string const& rule) {
+  if (!wspaces_.count(ws_name)) return;
+  for (unsigned  i = 0; i < obs_.size(); ++i) {
+    if (!obs_[i]->data()) {
+      std::string p = rule;
+      boost::replace_all(p, "$CHANNEL", obs_[i]->bin());
+      boost::replace_all(p, "$PROCESS", "data_obs");
+      boost::replace_all(p, "$MASS", obs_[i]->mass());
+      obs_[i]->set_data(wspaces_[ws_name]->data(p.c_str()));
+    }
+  }
+}
+
 void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHarvester * other) {
   unsigned bbb_added = 0;
   for (unsigned i = 0; i < procs_.size(); ++i) {

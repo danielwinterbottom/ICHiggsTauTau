@@ -49,7 +49,7 @@ int CheckTmvaOutputs() {//main
     hist[iF][3] = (TH1F*)gDirectory->Get("MVA_BDT_ewk");
   }//loop on files
 
-  int binx = hist[0][1]->FindBin(0.4);
+  int binx = hist[0][1]->FindBin(-0.35);
   double integral = hist[0][1]->Integral(binx,hist[0][1]->GetNbinsX()+1);
   double total = hist[0][1]->Integral(0,hist[0][1]->GetNbinsX()+1);
 
@@ -75,7 +75,7 @@ int CheckTmvaOutputs() {//main
   hist[0][2]->SetLineColor(3);
   hist[0][2]->GetXaxis()->SetTitle("QCD BDT");
   hist[0][2]->GetYaxis()->SetTitle("Events");
-  hist[0][2]->GetXaxis()->SetRangeUser(-0.4,1.);
+  hist[0][2]->GetXaxis()->SetRangeUser(-1.,0.2);
   hist[0][2]->SetMaximum(max);
   hist[0][2]->SetTitle("");
   hist[0][2]->Draw();
@@ -104,9 +104,9 @@ int CheckTmvaOutputs() {//main
 
   myc1->SetLogy(0);
   myc1->cd();
-  hist[0][1]->Scale(100);
-  hist[0][2]->GetXaxis()->SetRangeUser(0.2,1.);
-  hist[0][2]->SetMaximum(25000);
+  hist[0][1]->Scale(10);
+  hist[0][2]->GetXaxis()->SetRangeUser(-1.,0.2);
+  hist[0][2]->SetMaximum(6000);
   hist[0][2]->Draw();
   hist[0][3]->Draw("same");
   hist[0][1]->Draw("same");
@@ -117,7 +117,7 @@ int CheckTmvaOutputs() {//main
   leg2->AddEntry(hist[1][0],"Data L=19.5 fb^{-1}","P");
   leg2->AddEntry(hist[0][2],"QCD","L");
   leg2->AddEntry(hist[0][3],"V+Top+VV","L");
-  leg2->AddEntry(hist[0][1],"Signal m_{H}=125 GeV #times 100","L");
+  leg2->AddEntry(hist[0][1],"Signal m_{H}=125 GeV #times 10","L");
   //leg2->AddEntry(hist[0][1],"Signal m_{H}=125 GeV","L");
   leg2->Draw("same");
 

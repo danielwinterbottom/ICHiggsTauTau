@@ -102,7 +102,7 @@ namespace ic {
     }
     */
 
-    if (sample_.find("HToTauTau") != sample_.npos || sample_.find("HTohh") != sample_.npos || sample_.find("AToZh") != sample_.npos) {
+    if (sample_.find("HToTauTau") != sample_.npos) {
       disable = false;
       if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
       if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
@@ -115,6 +115,31 @@ namespace ic {
       boson_id_.push_back(35);
       boson_id_.push_back(36);
     }
+    //Some special treatment is needed for the H->hh signal. The gen object should be the h->tautau.
+    if (sample_.find("HTohh") != sample_.npos) {
+      disable = false;
+      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
+      std::cout << boost::format(param_fmt()) % "enabled"       % true;
+      std::cout << boost::format(param_fmt()) % "type"          % "signal";
+      std::cout << boost::format(param_fmt()) % "process_file"  % process_file; 
+      boson_id_.push_back(25);
+    }
+    //For A->Zh, we should pick up the h instead of the A.
+    if (sample_.find("AToZh") != sample_.npos) {
+      disable = false;
+      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
+      std::cout << boost::format(param_fmt()) % "enabled"       % true;
+      std::cout << boost::format(param_fmt()) % "type"          % "signal";
+      std::cout << boost::format(param_fmt()) % "process_file"  % process_file;      
+      boson_id_.push_back(25);
+    }
+    //Some special treatment is needed for the H->hh signal. The gen object should be the h->tautau.
 
     if ( sample_.find("DYJetsToLL") != sample_.npos 
       || sample_.find("DYJetsToTauTau") != sample_.npos ) {
@@ -127,7 +152,7 @@ namespace ic {
       if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
       std::cout << boost::format(param_fmt()) % "enabled"       % true;
       std::cout << boost::format(param_fmt()) % "type"          % "Z+jets";
-      std::cout << boost::format(param_fmt()) % "process_file"  % process_file;        
+      std::cout << boost::format(param_fmt()) % "process_file"  % process_file; 
       boson_id_.push_back(23);
     }
 
@@ -145,6 +170,7 @@ namespace ic {
     return 0;
   }
 
+
   int HhhRecoilCorrector::Execute(TreeEvent *event) {
 
     if (disable) return 0;
@@ -155,14 +181,34 @@ namespace ic {
     std::vector<GenParticle *> parts = event->GetPtrVec<GenParticle>("genParticles");
     GenParticle const* boson = NULL;
     GenParticle const* boson2 = NULL;
+    GenParticle const* tau1 = NULL;
+    GenParticle const* tau2 = NULL;
+    //loop once to find the daughter taus needed for the H->hh signal
+    if (sample_.find("HTohh") != sample_.npos) {
+      for (unsigned i = 0; i < parts.size(); ++i) {
+        int sign_id = parts[i]->pdgid();
+        if (sign_id == 15 ) tau1 = parts[i];
+        if (sign_id == -15 ) tau2 = parts[i];
+      }
+    }
     for (unsigned i = 0; i < parts.size(); ++i) {
       unsigned id = abs(parts[i]->pdgid());
       if (parts[i]->status() == 3) {
         for (unsigned j = 0; j < boson_id_.size(); ++j) {
           if (id == boson_id_[j]) {
-            if (!is_ttbar_) {
+            //For the H->hh signal, select the h with the smallest difference between its pt and that of the tau pair (not exact due to double precision)
+            double min = 0.1;
+            if (!is_ttbar_ && !(sample_.find("HTohh") != sample_.npos) ) {
               boson = parts[i];
-            } else {
+            }
+            else if(sample_.find("HTohh") != sample_.npos) {
+              double pt_diff = fabs((tau1->vector()+tau2->vector()).pt() - parts[i]->pt());
+              if (pt_diff < min ) {
+                min = pt_diff;
+                boson = parts[i];
+              } 
+            }
+            else {
               if (!boson) boson = parts[i];
               if (boson && !boson2) boson2 = parts[i];
             }
@@ -170,6 +216,8 @@ namespace ic {
         }
       }
     }
+ 
+    
     if (!boson) {
       std::cerr << "Error in <HhhRecoilCorrector>: Boson GenParticle not found, an exception will be thrown" << std::endl;
       throw;
@@ -215,10 +263,14 @@ namespace ic {
     double iScale = 0;
     //iFluc 1, iScale 1
     //iFluc -1, iScale -1
+    
     if (mc_ == mc::summer12_53X) {
+
       if (strategy_ == strategy::hcp2012) corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
       if (strategy_ == strategy::moriond2013) corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
       if (strategy_ == strategy::paper2013)   corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
+
+      if (strategy_ == strategy::hcp2012) corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
     } else if (mc_ == mc::fall11_42X) {
       corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
     }

@@ -38,7 +38,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauDzFixer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVA.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVATwoStage.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVABoth.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCut.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
@@ -519,7 +519,7 @@ int main(int argc, char* argv[]){
 
   HTTEMuExtras emuExtras("EMuExtras");
   HhhEMuMVA emuMVA = HhhEMuMVA("EMuMVA");
-	HhhEMuMVATwoStage emuMVATwoStage = HhhEMuMVATwoStage("EMuMVATwoStage");
+	HhhEMuMVABoth emuMVABoth = HhhEMuMVABoth("EMuMVABoth");
 
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
@@ -1151,7 +1151,7 @@ int main(int argc, char* argv[]){
    }
     if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
-								  analysis.AddModule(&emuMVATwoStage);
+								  analysis.AddModule(&emuMVABoth);
     }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&hhhSync);

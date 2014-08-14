@@ -58,6 +58,8 @@ namespace ic{
     std::vector<LTFile> GetFileSet(std::string);    
     std::vector<std::string> GetSetPaths(std::string);
     std::vector<std::string> GetSetNames(std::string);
+
+    double GetLumiXSWeight(LTFile);
     
     int OpenFile(std::string);
     int OpenSet(std::string);
@@ -68,6 +70,7 @@ namespace ic{
     int CloseAll();
 
     int AddFriend(std::string,TTree*);
+    int AddFriend(std::string,std::string,std::string);
     TH1F GetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&);
     TH1F GetSetShape(std::string,std::string const&, std::string const&, std::string const&, std::string const&,bool);
     TH1F GetSetsShape(std::vector<std::string>,std::string const&, std::string const&, std::string const&, std::string const&,bool);

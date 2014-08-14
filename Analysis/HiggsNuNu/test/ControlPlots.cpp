@@ -276,10 +276,10 @@ int main(int argc, char* argv[]){
     files.push_back("DataEmbedded_METembedded-all");
   }
   else if(use_rereco_data){
-    files.push_back("Data_MET-2012A-22Jan2013-v1");
-    files.push_back("Data_MET-2012B-22Jan2013-v1");
-    files.push_back("Data_MET-2012C-22Jan2013-v1");
-    files.push_back("Data_METParked-2012D-22Jan2013-v1");
+    files.push_back("MET_MET-2012A-22Jan2013-v1");
+    files.push_back("MET_MET-2012B-22Jan2013-v1");
+    files.push_back("MET_MET-2012C-22Jan2013-v1");
+    files.push_back("MET_METParked-2012D-22Jan2013-v1");
   }
   else{
     files.push_back("Data_MET-2012A-13Jul2012-v1");
@@ -568,8 +568,14 @@ int main(int argc, char* argv[]){
 
       std::string nm = Token(f, s);
 
-      if (f.find("0to120") == f.npos) 
-	SumHistograms(f,plots[nm],"Data",data_hist);
+      if (f.find("0to120") == f.npos){
+	if(use_rereco_data){
+	  SumHistograms(f,plots[nm],"MET",data_hist);
+	}
+	else{
+	  SumHistograms(f,plots[nm],"Data",data_hist);
+	}
+      }
       SumHistograms(f,plots[nm],"Data_MET0to120",data_qcd_hist);
       SumHistograms(f,plots[nm],"VBF_H",signal_hist);
       //qcd

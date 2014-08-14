@@ -9,8 +9,13 @@
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/HelperFunctions.h"
 #include "CombineTools/interface/HttSystematics.h"
+#include "CombineTools/interface/RooHttSMPdf.h"
+#include "CombineTools/interface/RooHttYield.h"
 // #include "TH1F.h"
-// #include "RooFitResult.h"
+#include "RooWorkspace.h"
+#include "RooRealVar.h"
+#include "RooDataHist.h"
+#include "RooHistPdf.h"
 
 using boost::bind;
 using std::string;
@@ -19,6 +24,7 @@ using std::pair;
 using std::make_pair;
 
 int main() {
+  TH1::AddDirectory(false);
   ch::CombineHarvester cb;
 
   vector<pair<int, string>> mt_cats_7 = {
@@ -40,6 +46,7 @@ int main() {
 
   vector<string> masses = {"90",  "95",  "100", "105", "110", "115",
                            "120", "125", "130", "135", "140", "145"};
+  // vector<string> masses = {"125"};
 
   std::cout << "Adding observations...";
   cb.AddObservations({"*"}, {"htt"}, {"7TeV"}, {"mt"}, mt_cats_7);
@@ -94,11 +101,11 @@ int main() {
       "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS",
       "$CHANNEL/$PROCESS_$SYSTEMATIC");
   cb.cp().era({"7TeV"}).signals().ExtractShapes(
-      "data/demo/htt_mt.inputs-sm-7TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
-      "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
+      "data/demo/htt_mt.inputs-sm-7TeV-hcg.root", "$CHANNEL/$PROCESS$MASS_fine_binning",
+      "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC_fine_binning");
   cb.cp().era({"8TeV"}).signals().ExtractShapes(
-      "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
-      "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
+      "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS$MASS_fine_binning",
+      "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC_fine_binning");
   std::cout << " done\n";
 
   std::cout << "Scaling signal process rates...\n";
@@ -125,6 +132,50 @@ int main() {
   cb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
   std::cout << " done\n";
 
+
+  // cb.bin({"htt_mt_5_8TeV", "htt_mt_6_8TeV"});
+  // cb.nus_type({"shape"}, false);
+  set<string> bins =
+      cb.GenerateSetFromObs<string>(mem_fn(&ch::Observation::bin));
+  RooWorkspace ws("htt", "htt");
+  RooRealVar mtt("CMS_th1x", "CMS_th1x", 0, 350);
+  RooRealVar mh("MH", "MH", 125, 90, 145);
+  for (auto b : bins) {
+    ch::CombineHarvester tmp = std::move(cb.cp().bin({b}).signals());
+    set<string> sigs =
+        tmp.GenerateSetFromProcs<string>(mem_fn(&ch::Process::process));
+    for (auto s : sigs) {
+      ch::CombineHarvester tmp2 = std::move(tmp.cp().process({s}));
+      TH1F data_hist = tmp2.GetObservedShape();
+      TH1F shape("tmp", "tmp", data_hist.GetNbinsX(), 0.,
+                 static_cast<float>(data_hist.GetNbinsX()));
+      RooDataHist dh((b + "_" + s + "_hist").c_str(),
+                     (b + "_" + s + "_hist").c_str(), RooArgList(mtt),
+                     RooFit::Import(shape, false));
+      RooHttSMPdf pdf((b + "_" + s + "_pdf").c_str(),
+                      (b + "_" + s + "_pdf").c_str(), RooArgList(mtt), dh, mh);
+      RooHttYield yield((b + "_" + s + "_pdf_norm").c_str(),
+                        (b + "_" + s + "_pdf_norm").c_str(), mh);
+      tmp2.ForEachProc([&](ch::Process* p) {
+        double m = boost::lexical_cast<double>(p->mass());
+        pdf.AddPoint(m, *((TH1F*)p->shape()));
+        yield.AddPoint(m, p->rate());
+        p->set_shape(nullptr);
+        p->set_rate(1.0);
+      });
+      unsigned nbins = data_hist.GetXaxis()->GetXbins()->GetSize();
+      double const* arr = data_hist.GetXaxis()->GetXbins()->GetArray();
+      std::vector<double> binning(nbins);
+      binning.assign(arr, arr+nbins);
+      pdf.SetBinning(binning);
+      ws.import(pdf);
+      ws.import(yield);
+    }
+  }
+  cb.AddWorkspace(&ws);
+  ws.Print();
+  cb.cp().signals().ExtractPdfs("htt", "$CHANNEL_$PROCESS_pdf");
+
   // cb.cp().mass({"125", "*"}).PrintAll();
   std::cout << "Merging bin errors...\n";
   cb.cp().bin_id({0, 1, 2, 3, 4}).process({"W", "QCD"})
@@ -148,17 +199,16 @@ int main() {
       .AddBinByBin(0.1, true, &cb);
   std::cout << "...done\n";
 
-  set<string> bins =
-      cb.GenerateSetFromObs<string>(mem_fn(&ch::Observation::bin));
   TFile output("htt_mt.input.root", "RECREATE");
-  for (auto b : bins) {
-    for (auto m : masses) {
-      cout << "Writing datacard for bin: " << b << " and mass: " << m
-                << "\n";
-      cb.cp().bin({b}).mass({m, "*"}).WriteDatacard(
-          b + "_" + m + ".txt", output);
-    }
-  }
+  cb.cp().mass({"125", "*"}).WriteDatacard("htt_mt_all.txt", output);
+  // for (auto b : bins) {
+  //   for (auto m : /*masses*/ {"125"}) {
+  //     cout << "Writing datacard for bin: " << b << " and mass: " << m
+  //               << "\n";
+  //     cb.cp().bin({b}).mass({m, "*"}).WriteDatacard(
+  //         b + "_" + m + ".txt", output);
+  //   }
+  // }
 
   /* Still to do:
      [x] adding systematics

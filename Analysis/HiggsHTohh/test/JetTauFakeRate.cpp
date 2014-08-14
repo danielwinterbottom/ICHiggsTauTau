@@ -7,7 +7,8 @@
 #include "boost/function.hpp"
 #include "boost/format.hpp"
 #include "TSystem.h"
-#include "TMath.h"
+#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
@@ -15,180 +16,115 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CopyCollection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPairSelector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTWeights.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTRecoilCorrector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTSync.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPrint.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/SVFitTest.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/JetEnergyUncertainty.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauDzFixer.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuMVA.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCut.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/BTagCheck.h"
-#include "UserCode/ICHiggsTauTau/interface/Tau.hh"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRate.h"
 
+using boost::lexical_cast;
+using boost::bind;
+namespace po = boost::program_options;
+using std::string;
+using std::vector;
 using namespace ic;
 
-int main(int argc, char * argv[]){
-	gSystem->Load("libFWCoreFWLite.dylib");
-	gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-	AutoLibraryLoader::enable();
+int main(int argc, char* argv[]){
 
-	if(argc<2){
-		std::cout<<"NEED TO PROVIDE OUTPUT FILENAME"<<std::endl;
-		std::exit(1);
-	}
+  // Configurable parameters
+  int max_events;                 // Maximum number of events to process
+  string filelist;                // The file containing a list of files to use as input
+  string input_prefix;            // A prefix that will be added to the path of each input file
+  string output_name;             // Name of the ouput ROOT File
+  string output_folder;           // Folder to write the output in
+	bool by_decay_mode;
+	bool by_jet_type;
+  
+  po::options_description config("Configuration");
+  po::variables_map vm;
+  po::notify(vm);
 
-	std::string inputfile;
-	inputfile="../HiggsTauTau/";
-	inputfile+=argv[1];
-	std::string outputfile;
-	outputfile = "SELECTION_Out_";
-	outputfile += argv[1];
+  config.add_options()    
+      ("max_events",          po::value<int>(&max_events)-> default_value(-1))
+      ("filelist",            po::value<string>(&filelist)->required())
+      ("input_prefix",        po::value<string>(&input_prefix)->default_value(""))
+      ("output_name",         po::value<string>(&output_name)->required())
+      ("output_folder",       po::value<string>(&output_folder)->default_value(""))
+			("by_decay_mode",				po::value<bool>(&by_decay_mode)->default_value(true))
+			("by_jet_type",					po::value<bool>(&by_jet_type)->default_value(true))
+			
+    ;
+    po::store(po::command_line_parser(argc, argv).
+              options(config).allow_unregistered().run(), vm);
+    po::notify(vm);
+  
+  
+  std::cout << "-------------------------------------" << std::endl;
+  std::cout << "JetTauFakeRateStudy" << std::endl;
+  std::cout << "-------------------------------------" << std::endl;      string param_fmt = "%-25s %-40s\n";
+  
+ 
+  // Load necessary libraries for ROOT I/O of custom classes
+  gSystem->Load("libFWCoreFWLite.dylib");
+  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  AutoLibraryLoader::enable();
 
+  // Build a vector of input files
+  vector<string> files = ParseFileLines(filelist);
+  for (unsigned i = 0; i < files.size(); ++i) files[i] = input_prefix + files[i];
+  
+  // Create ROOT output fileservice
+  fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
+  
+  //Optional configurable parameters with which you can filter the collection you are interested in.
+  double jet_pt, jet_eta, tau_pt, tau_eta;
+  jet_pt = 20.0;
+  jet_eta = 2.3; 
+  tau_pt = 20.0;
+  tau_eta = 2.3; 
+   
+  std::cout << "** Kinematics **" << std::endl;
+  std::cout << boost::format(param_fmt) % "jet_pt" % jet_pt;
+  std::cout << boost::format(param_fmt) % "jet_eta" % jet_eta;
+  std::cout << boost::format(param_fmt) % "tau_pt" % tau_pt;
+  std::cout << boost::format(param_fmt) % "tau_eta" % tau_eta;
+ 
+ //Defining an analysis using this class removes all the need for any for loops through the events. An "analysis" loops through all the events up to max_events and runs the modules which you define at the end of this script using analysis.AddModule
+  
+  ic::AnalysisBase analysis(
+    "JetTauFakeRateStudy",// Analysis name
+    files,                // Input files
+    "icEventProducer",    // TTree path
+    "EventTree",          // TTree name
+    max_events);          // Max. events to process (-1 = all)
+  analysis.SetTTreeCaching(true);
+  analysis.StopOnFileFailure(true);
+  analysis.RetryFileAfterFailure(7, 3);
 
+  //For now, read in all the jets and taus within the pt and eta range of interest. Using Andrew's modules makes it much easier to 
+  //add other things later, if we need a certain type of ID (or flavour selection) applied to the jets/taus
+  
+  SimpleFilter<Tau> TauFilter = SimpleFilter<Tau>("TauFilter")
+  .set_input_label("taus")
+  .set_predicate(bind(MinPtMaxEta, _1, tau_pt, tau_eta));
+  
+  SimpleFilter<PFJet> JetFilter = SimpleFilter<PFJet>("JetFilter")
+  .set_input_label("pfJetsPFlow")
+  //.set_predicate(bind(MinPtMaxEta, _1, jet_pt, jet_eta)&&(bind(&PFJet::pu_id_mva_loose,_1)));
+	.set_predicate(bind(MinPtMaxEta,_1,jet_pt,jet_eta)&&(bind(&PFJet::charged_had_energy_frac,_1)>0)&&(bind(&PFJet::neutral_had_energy_frac,_1)<0.99)&&(bind(&PFJet::charged_em_energy_frac,_1)<0.99)&&(bind(&PFJet::neutral_em_energy_frac,_1)<0.99)&&((bind(&PFJet::charged_multiplicity,_1)>1)||((bind(&PFJet::charged_multiplicity,_1)>0)&&(bind(&PFJet::neutral_multiplicity,_1)>0))));
 
-	TFile *file1 = TFile::Open(inputfile.c_str());
-	std::cout<<"File opened"<<std::endl;
-	TTree *tree = dynamic_cast<TTree*>(file1->Get("EventTree"));
-	std::vector<ic::Tau> *tau_vector = new std::vector<ic::Tau>();
-	std::vector<ic::PFJet> * jet_vector = new std::vector<ic::PFJet>();
-	std::vector<ic::Tau> *tau_vector2 = new std::vector<ic::Tau>();
-	std::vector<ic::PFJet> *jet_vector2 = new std::vector<ic::PFJet>();
-	ic::EventInfo * evt = new ic::EventInfo();
-	std::vector<Double_t> *jet_pt_vec = new std::vector<Double_t>();
-	std::vector<Double_t> *tau_pt_vec = new std::vector<Double_t>();
-	std::vector<Double_t> *jet_eta_vec = new std::vector<Double_t>();
-	std::vector<Double_t> *tau_eta_vec = new std::vector<Double_t>();
-	std::vector<Double_t> *jet_phi_vec = new std::vector<Double_t>();
-	std::vector<Double_t> *tau_phi_vec = new std::vector<Double_t>();
-	std::vector<Double_t> *tau_id_loose = new std::vector<Double_t>();
-	std::vector<Double_t> *tau_id_med = new std::vector<Double_t>();
-	std::vector<Double_t> *tau_id_tight = new std::vector<Double_t>();
-	std::vector<Double_t> *tau_dm_find = new std::vector<Double_t>();
-	std::vector<Int_t> *jet_flavour_vec = new std::vector<Int_t>();
-	Int_t njets=0;
-	Int_t ntaus=0;
-	Int_t jvecsize=0;
-	Int_t tvecsize=0;
-	Int_t nvtx=0;
+  JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")
+  .set_write_plots(true)
+  .set_write_tree(false)
+	.set_by_decay_mode(by_decay_mode)
+	.set_by_jet_type(by_jet_type)
+	.set_fs(fs);
 
-	TBranch *tau_branch=tree->GetBranch("taus");
-	TBranch *jet_branch=tree->GetBranch("pfJetsPFlow");
-	tau_branch->SetAddress(&tau_vector);
-	jet_branch->SetAddress(&jet_vector);
-	TBranch* nvtx_branch=tree->GetBranch("eventInfo");
-	nvtx_branch->SetAddress(&evt);
-	Int_t nEntries = tree->GetEntries();
-
-	TFile *foutput = new TFile(outputfile.c_str(),"RECREATE");
-	TTree *outtree = new TTree("EventTree2","EventTree2");
-	outtree->Branch("njets",&njets,"njets/I");
-	outtree->Branch("ntaus",&ntaus,"ntaus/I");
-	outtree->Branch("nvtx",&nvtx,"nvtx/I");
-	outtree->Branch("tau_sel_pt",&tau_pt_vec);
-	outtree->Branch("tau_sel_eta",&tau_eta_vec);
-	outtree->Branch("tau_sel_phi",&tau_phi_vec);
-	outtree->Branch("jet_sel_pt",&jet_pt_vec);
-	outtree->Branch("jet_sel_eta",&jet_eta_vec);
-	outtree->Branch("jet_sel_phi",&jet_phi_vec);
-	outtree->Branch("jet_sel_flavour",&jet_flavour_vec);
-	outtree->Branch("tau_id_loose",&tau_id_loose);
-	outtree->Branch("tau_id_med",&tau_id_med);
-	outtree->Branch("tau_id_tight",&tau_id_tight);
-	outtree->Branch("tau_dm_find",&tau_dm_find);
-
-
-
-
-	for(Int_t i=0;i<nEntries;i++){
-		if(i%10000==0) std::cout<<"PROCESSING EVENT "<<i<<std::endl;
-		tree->GetEntry(i);
-		jvecsize=jet_vector->size();
-		nvtx=evt->good_vertices();
-		if(jvecsize!=0){
-			for(Int_t jetit=0;jetit<jvecsize;jetit++){
-				if(jet_vector->at(jetit).pt()>20&&TMath::Abs(jet_vector->at(jetit).eta())<2.3){
-					jet_pt_vec->push_back(jet_vector->at(jetit).pt());
-					jet_eta_vec->push_back(jet_vector->at(jetit).eta());
-					jet_phi_vec->push_back(jet_vector->at(jetit).phi());
-					jet_flavour_vec->push_back(jet_vector->at(jetit).parton_flavour());
-				}
-			}
-		}
-
-		if(jvecsize==0) njets=0;
-		else njets = jet_pt_vec->size();
-
-		tvecsize = tau_vector->size();
-		if(tvecsize!=0){
-			for(Int_t tauit=0;tauit<tvecsize;tauit++){
-				if(tau_vector->at(tauit).pt()>20&&TMath::Abs(tau_vector->at(tauit).eta())<2.3){
-					tau_pt_vec->push_back(tau_vector->at(tauit).pt());
-					tau_eta_vec->push_back(tau_vector->at(tauit).eta());
-					tau_phi_vec->push_back(tau_vector->at(tauit).phi());
-					tau_id_loose->push_back(tau_vector->at(tauit).GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits"));
-					tau_id_med->push_back(tau_vector->at(tauit).GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits"));
-					tau_id_tight->push_back(tau_vector->at(tauit).GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits"));
-					tau_dm_find->push_back(tau_vector->at(tauit).GetTauID("decayModeFinding"));
-				}
-			}
-		}
-		if(tvecsize==0) ntaus=0;
-		else ntaus = tau_pt_vec->size();
-
-		outtree->Fill();
-		jet_vector2->clear();
-		tau_vector2->clear();
-		jet_pt_vec->clear();
-		jet_eta_vec->clear();
-		jet_phi_vec->clear();
-		jet_flavour_vec->clear();
-		tau_pt_vec->clear();
-		tau_eta_vec->clear();
-		tau_phi_vec->clear();
-		tau_id_loose->clear();
-		tau_id_med->clear();
-		tau_id_tight->clear();
-		tau_dm_find->clear();
+ //Add module here which reads in the filtered taus and jets and makes the plots/performs the fake rate study
+ 
+  analysis.AddModule(&TauFilter); 
+  analysis.AddModule(&JetFilter); 
+  analysis.AddModule(&jetTauFakeRate); 
 
 
-	}
-	foutput->Close();
-	delete tau_vector;
-	delete jet_vector;
-	delete tau_vector2;
-	delete jet_vector2;
-	delete jet_pt_vec;
-	delete jet_eta_vec;
-	delete jet_phi_vec;
-	delete jet_flavour_vec;
-	delete tau_pt_vec;
-	delete tau_eta_vec;
-	delete tau_phi_vec;
-	delete tau_id_loose;
-	delete tau_id_med;
-	delete tau_id_tight;
-	delete tau_dm_find;
-
-
-
+  analysis.RunAnalysis();
+  delete fs;
+  return 0;
 }
+

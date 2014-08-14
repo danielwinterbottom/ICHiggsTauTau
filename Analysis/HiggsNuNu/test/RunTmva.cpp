@@ -28,8 +28,10 @@ int main( int argc, char** argv )
   }
 
   bool useQCD = true;
-  bool useOthers = false;
-  bool useOthersAsSignal = true;
+  bool useJoaosFiles = true;
+  bool useOthers = true;
+  bool useOthersAsSignal = false;
+  bool applyPreSelection = true;
 
   //List of input signal files
   std::vector<std::string> sigfiles;
@@ -92,20 +94,32 @@ int main( int argc, char** argv )
   }
 
   //List of input files
+  //all files
   std::vector<std::string> bkgfiles;
   if (useQCD){
-    bkgfiles.push_back("MC_QCD-Pt-30to50-pythia6");
-    bkgfiles.push_back("MC_QCD-Pt-50to80-pythia6");
-    bkgfiles.push_back("MC_QCD-Pt-80to120-pythia6");
-    bkgfiles.push_back("MC_QCD-Pt-120to170-pythia6");
-    bkgfiles.push_back("MC_QCD-Pt-170to300-pythia6");
-    bkgfiles.push_back("MC_QCD-Pt-300to470-pythia6");
-    bkgfiles.push_back("MC_QCD-Pt-470to600-pythia6");
+    if (useJoaosFiles){
+      bkgfiles.push_back("MC_QCD-Pt-80to120_VBF-MET40");
+      bkgfiles.push_back("MC_QCD-Pt-120to170_VBF-MET40");
+      bkgfiles.push_back("MC_QCD-Pt-170to300_VBF-MET40");
+      bkgfiles.push_back("MC_QCD-Pt-300to470_VBF-MET40");
+      bkgfiles.push_back("MC_QCD-Pt-470to600_VBF-MET40");
+    }
+    else {
+      bkgfiles.push_back("MC_QCD-Pt-30to50-pythia6");
+      bkgfiles.push_back("MC_QCD-Pt-50to80-pythia6");
+      bkgfiles.push_back("MC_QCD-Pt-80to120-pythia6");
+      bkgfiles.push_back("MC_QCD-Pt-120to170-pythia6");
+      bkgfiles.push_back("MC_QCD-Pt-170to300-pythia6");
+      bkgfiles.push_back("MC_QCD-Pt-300to470-pythia6");
+      bkgfiles.push_back("MC_QCD-Pt-470to600-pythia6");
+    }
     bkgfiles.push_back("MC_QCD-Pt-600to800-pythia6");
     bkgfiles.push_back("MC_QCD-Pt-800to1000-pythia6");
     bkgfiles.push_back("MC_QCD-Pt-1000to1400-pythia6");
     bkgfiles.push_back("MC_QCD-Pt-1400to1800-pythia6");
     bkgfiles.push_back("MC_QCD-Pt-1800-pythia6");
+    bkgfiles.push_back("MC_GJets-HT-200To400-madgraph");
+    bkgfiles.push_back("MC_GJets-HT-400ToInf-madgraph");
   }
   if (useOthers) {
     bkgfiles.push_back("MC_TTJets");
@@ -149,8 +163,6 @@ int main( int argc, char** argv )
     bkgfiles.push_back("MC_ZJetsToNuNu_200_HT_400");
     bkgfiles.push_back("MC_ZJetsToNuNu_400_HT_inf");
     bkgfiles.push_back("MC_ZJetsToNuNu_50_HT_100");
-    bkgfiles.push_back("MC_GJets-HT-200To400-madgraph");
-    bkgfiles.push_back("MC_GJets-HT-400ToInf-madgraph");
     bkgfiles.push_back("MC_WGamma");
     bkgfiles.push_back("MC_EWK-Z2j");
     bkgfiles.push_back("MC_EWK-Z2jiglep");
@@ -163,7 +175,7 @@ int main( int argc, char** argv )
   }
 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-  TFile *output_tmva = TFile::Open((folder+"/TMVA_QCDrej.root").c_str(),"RECREATE");
+  TFile *output_tmva = TFile::Open((folder+"/TMVA_signalSel.root").c_str(),"RECREATE");
 
   // Create the factory object. Later you can choose the methods
   // whose performance you'd like to investigate. The factory is 
@@ -182,14 +194,13 @@ int main( int argc, char** argv )
   //fill the variables with event weight from the trees
   //const unsigned nVars = 4;
 
-   
+   /*
    factory->AddSpectator("jet1_pt","Jet 1 p_{T}", "GeV", 'F');
    factory->AddSpectator("jet2_pt","Jet 2 p_{T}", "GeV", 'F');
    factory->AddSpectator("jet1_eta","Jet 1 #eta", "", 'F');
    factory->AddVariable("jet2_eta","Jet 2 #eta", "", 'F');// **
    factory->AddSpectator("jet1_phi","Jet 1 #phi", "", 'F');
    factory->AddSpectator("jet2_phi","Jet 2 #phi", "", 'F');
-   factory->AddSpectator("dijet_M","M_{jj}", " GeV", 'F');
    factory->AddSpectator("dijet_deta","#Delta#eta_{jj}", "", 'F');
    factory->AddSpectator("dijet_sumeta","#eta_{j1}+#eta_{j2}", "", 'F');
    factory->AddSpectator("dijet_dphi","#Delta#phi_{jj}", "", 'F');
@@ -204,21 +215,39 @@ int main( int argc, char** argv )
    factory->AddSpectator("unclustered_phi","Unclustered #phi", "GeV", 'F');
    factory->AddSpectator("jet1met_dphi","#Delta#phi(MET,jet1)", "", 'F');
    factory->AddVariable("jet2met_dphi","#Delta#phi(MET,jet2)", "", 'F');// **
-   factory->AddVariable("jetmet_mindphi","minimum #Delta#phi(MET,jet)", "", 'F');// **
    factory->AddVariable("jetunclet_mindphi","minimum #Delta#phi(unclustered,jet)", "",  'F');// **
    factory->AddVariable("metunclet_dphi","#Delta#phi(MET,unclustered)", "",  'F');// **
    factory->AddVariable("dijetmet_scalarSum_pt", "p_{T}^{jet1}+p_{T}^{jet2}+MET", "GeV", 'F');// **
    factory->AddSpectator("dijetmet_vectorialSum_pt","p_{T}(#vec{j1}+#vec{j2}+#vec{MET})", "GeV", 'F');
-   factory->AddVariable("dijetmet_ptfraction","p_{T}^{dijet}/(p_{T}^{dijet}+MET)", "", 'F');// **
    //factory->AddVariable("jet1met_scalarprod := (jet1_pt*cos(jet1_phi)*met_x+jet1_pt*sin(jet1_phi)*met_y)/met", "#vec{p_{T}^{jet1}}.#vec{MET}/MET", "GeV" , 'F');
    //factory->AddVariable("jet2met_scalarprod := (jet2_pt*cos(jet2_phi)*met_x+jet2_pt*sin(jet2_phi)*met_y)/met", "#vec{p_{T}^{jet2}}.#vec{MET}/MET", "GeV" , 'F');
    factory->AddVariable("jet1met_scalarprod", "#vec{p_{T}^{jet1}}.#vec{MET}/MET", "GeV" , 'F');// **
    factory->AddVariable("jet2met_scalarprod", "#vec{p_{T}^{jet2}}.#vec{MET}/MET", "GeV" , 'F');// **
    factory->AddVariable("jet1met_scalarprod_frac := jet1met_scalarprod/met", "#vec{p_{T}^{jet1}}.#vec{MET}/MET^{2}", "" , 'F');// **
    factory->AddVariable("jet2met_scalarprod_frac := jet2met_scalarprod/met", "#vec{p_{T}^{jet2}}.#vec{MET}/MET^{2}", "" , 'F');// **
-   factory->AddSpectator("n_jets_cjv_30","CJV jets (30 GeV)", "" , 'I');
    factory->AddSpectator("n_jets_cjv_20EB_30EE","CJV jets (|#eta|<2.4 and 20 GeV, or 30 GeV)", "" , 'I');
-   
+   */
+
+
+
+   //factory->AddVariable("jet1_pt","Jet 1 p_{T}", "GeV", 'F');
+   factory->AddVariable("jet2_pt","Jet 2 p_{T}", "GeV", 'F');
+   factory->AddVariable("dijet_M","M_{jj}", " GeV", 'F');
+   factory->AddVariable("dijet_deta","#Delta#eta_{jj}", "", 'F');
+   factory->AddVariable("dijet_dphi","#Delta#phi_{jj}", "", 'F');
+   factory->AddVariable("met","MET", "GeV", 'F');// **
+   factory->AddVariable("met_significance","MET significance", "", 'F');// **
+   //factory->AddVariable("mht","MH_{T}", "GeV", 'F');// **
+   factory->AddVariable("sqrt_ht","#sqrt{H_{T}}", "GeV^{0.5}", 'F');
+   factory->AddVariable("jetmet_mindphi","minimum #Delta#phi(MET,jet)", "", 'F');// **
+   factory->AddVariable("dijetmet_ptfraction","p_{T}^{dijet}/(p_{T}^{dijet}+MET)", "", 'F');// **
+   //factory->AddVariable("dijetmet_scalarSum_pt", "p_{T}^{jet1}+p_{T}^{jet2}+MET", "GeV", 'F');// **
+   factory->AddVariable("dijetmet_vectorialSum_pt","p_{T}(#vec{j1}+#vec{j2}+#vec{MET})", "GeV", 'F');
+   //factory->AddVariable("jet1met_scalarprod", "#vec{p_{T}^{jet1}}.#vec{MET}/MET", "GeV" , 'F');// **
+   //factory->AddVariable("jet2met_scalarprod", "#vec{p_{T}^{jet2}}.#vec{MET}/MET", "GeV" , 'F');// **
+   factory->AddVariable("jet1met_scalarprod_frac := jet1met_scalarprod/met", "#vec{p_{T}^{jet1}}.#vec{MET}/MET^{2}", "" , 'F');// **
+   factory->AddVariable("jet2met_scalarprod_frac := jet2met_scalarprod/met", "#vec{p_{T}^{jet2}}.#vec{MET}/MET^{2}", "" , 'F');// **
+   factory->AddVariable("n_jets_cjv_30","CJV jets (30 GeV)", "" , 'I');
 
    //test with only VBF variables used in cut-based analysis
    //factory->AddVariable("dijet_M","M_{jj}", " GeV", 'F');
@@ -271,6 +300,7 @@ int main( int argc, char** argv )
       //if (f.find("QCD-Pt")!=f.npos){
       //}
       Double_t backgroundWeight = 1.0;
+      if (f.find("MC_QCD")!=f.npos || f.find("MC_GJets")!=f.npos) backgroundWeight = 1.44;
       factory->AddBackgroundTree(background[i],backgroundWeight);
       factory->SetBackgroundWeightExpression("total_weight");
 
@@ -299,8 +329,12 @@ int main( int argc, char** argv )
 
 
    // Apply additional cuts on the signal and background samples (can be different)
-  TCut mycuts = "";//dijet_deta>3.8 && dijet_M > 1100 && met > 100 && met_significance>5";
-  TCut mycutb = "";//dijet_deta>3.8 && dijet_M > 1100 && met > 100 && met_significance>5";
+  TCut mycuts = "";
+  TCut mycutb = "";
+  if (applyPreSelection) {
+    mycuts = "dijet_deta>3.6 && met_significance>3 && jetmet_mindphi>1.5";
+    mycutb = mycuts;
+  }
 
   factory->PrepareTrainingAndTestTree( mycuts, mycutb,
 				       "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
@@ -333,7 +367,7 @@ int main( int argc, char** argv )
   //	       "!H:!V:NTrees=1000:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=20" );
 
   factory->BookMethod( TMVA::Types::kBDT, "BDT",
-		       "!H:!V:NTrees=1000:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.2:SeparationType=GiniIndex:nCuts=20" );
+		       "!H:!V:NTrees=100:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.2:SeparationType=GiniIndex:nCuts=20" );
 
   // Bagging
   //factory->BookMethod( TMVA::Types::kBDT, "BDTB",

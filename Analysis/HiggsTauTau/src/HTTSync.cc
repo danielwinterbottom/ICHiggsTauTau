@@ -490,7 +490,7 @@ int HTTSync::Execute(TreeEvent *event) {
     lPassIso2 = true;
     lMt2 = MT(htau, selectedMet);
   } else if (channel_ == channel::em) {
-    if (lepton->charge() == tau->charge()) return 0;
+    //if (lepton->charge() == tau->charge()) return 0;
     Electron* elec = dynamic_cast<Electron*>(lepton);
     double iso =  elec->dr04_pfiso_charged_all()
                   + std::max(elec->dr04_pfiso_neutral() + elec->dr04_pfiso_gamma() - 0.5 * elec->dr04_pfiso_pu(), 0.0);

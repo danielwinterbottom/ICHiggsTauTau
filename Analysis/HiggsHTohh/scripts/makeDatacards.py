@@ -135,7 +135,7 @@ if options.scheme == 'HTohh':
     ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE, ( 
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_1jet0tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet0tag_'+COM+'TeV:50:1.0:0.10"')),
-    ("4",   "1jet1tag",      "1jet1tag",     BINS_FINE,  (
+    ("4",   "1jet1tag",      "1jet1tag",     BINS,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_1jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
@@ -157,7 +157,7 @@ if options.scheme == 'HTohh':
     ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_1jet0tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet0tag_'+COM+'TeV:50:1.1:0.10"')),
-    ("4",   "1jet1tag",      "1jet1tag",     BINS_FINE,  (
+    ("4",   "1jet1tag",      "1jet1tag",     BINS,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_1jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
@@ -184,7 +184,7 @@ if options.scheme == 'HTohh':
       ' --syst_tquark="CMS_htt_TTbarShape_em_1jet0tag_'+COM+'TeV"'
       ' --syst_fakes_os_ss_shape="CMS_htt_FakeShape_em_1jet0tag_'+COM+'TeV"'
       ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
-    ("4",   "1jet1tag",      "1jet1tag",     BINS_FINE,  (
+    ("4",   "1jet1tag",      "1jet1tag",     BINS,  (
       ' --syst_tquark="CMS_htt_TTbarShape_em_1jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_FakeShape_em_1jet1tag_'+COM+'TeV:50:1.1:0.10"'
       ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
@@ -200,6 +200,7 @@ if options.scheme == 'HTohh':
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["em"] += ' --set_alias="sel:pzeta>-30"'
+  #extra_channel["em"] += ' --set_alias="sel:em_gf_mva_bdt>-0.25"'
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
 

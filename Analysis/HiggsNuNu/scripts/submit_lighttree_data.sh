@@ -28,9 +28,9 @@ CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree_trigskim
+  JOBDIRPREFIX=jobs_lighttree
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_trigskim
+  OUTPUTPREFIX=output_lighttree
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]

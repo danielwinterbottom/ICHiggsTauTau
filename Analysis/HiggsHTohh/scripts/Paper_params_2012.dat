@@ -197,7 +197,8 @@ XS_GluGluToHTohhTo2Tau2B_mH-260:1.0
 #for tanb=2
 #XS_GluGluToHTohhTo2Tau2B_mH-300:0.1288
 #for tanb=2.5
-XS_GluGluToHTohhTo2Tau2B_mH-300:0.08511
+#XS_GluGluToHTohhTo2Tau2B_mH-300:0.08511
+XS_GluGluToHTohhTo2Tau2B_mH-300:0.0145023895
 XS_GluGluToHTohhTo2Tau2B_mH-350:1.0
 XS_GluGluToAToZhToLLBB_mA-300:0.019
 ## Processed Events

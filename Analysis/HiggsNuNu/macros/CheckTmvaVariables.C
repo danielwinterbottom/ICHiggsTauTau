@@ -1,3 +1,4 @@
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -66,9 +67,9 @@ void fillReader(TMVA::Reader *reader, std::vector<Float_t> & var, std::vector<Fl
 
    // Book method(s)
    TString methodName = "BDT method";
-   TString dir    = "../weights_qcdrej/";
+   TString dir    = "../data/TmvaWeights/";
    TString prefix = "TMVAClassification";
-   TString weightfile = dir + prefix + TString("_BDT") + TString(".weights.xml");
+   TString weightfile = dir + prefix + TString("_BDT_QCDrej") + TString(".weights.xml");
    reader->BookMVA( methodName, weightfile ); 
    //methodName = "Likelihood method";
    //weightfile = dir + prefix + TString("_Likelihood") + TString(".weights.xml");
@@ -127,7 +128,8 @@ void MakeAllHistograms(TH1F * hist[], const std::string aLabel){
 void FillVariables(TFile *inputFile, const unsigned nVars,
 		   TMVA::Reader *reader,
 		   std::vector<Float_t> & var, std::vector<Float_t> & spec,
-		   TH1F * hist[], double & n_tot){
+		   TH1F * hist[], double & n_tot,
+		   bool reversePass=false){
 
   double variable[nVars];
   for (unsigned iV(0); iV<nVars; ++iV){//loop on variables
@@ -211,12 +213,12 @@ void FillVariables(TFile *inputFile, const unsigned nVars,
 
     n_tot += weight;
 
-
     variable[31] = reader->EvaluateMVA( "BDT method" );
 
     //cuts
-    bool pass = true; 
-      //variable[31] > 0.4;
+    bool presel = variable[19]>1.5 && variable[5]>3.6;
+    bool pass =  presel && variable[10] > 3.0;//variable[31] > 0.3;
+    if (reversePass) pass = presel && variable[10] > 2.0 && variable[10]<2.6;
     //variable[5]>3.8 //deta cut
     //  && variable[4] > 1100 //Mjj cut
     //  && variable[8] > 100 //MET cut
@@ -230,7 +232,10 @@ void FillVariables(TFile *inputFile, const unsigned nVars,
     }
     else {
       //fill BDT also for failed events
-      hist[31]->Fill(variable[31],weight);
+      //hist[31]->Fill(variable[31],weight);
+      if (variable[19]>1.5 && variable[10] > 3.0) hist[5]->Fill(variable[5],weight);
+      if (presel) hist[10]->Fill(variable[10],weight);
+      if (variable[10] > 3.0) hist[19]->Fill(variable[19],weight);
     }
   }//loop on events
 }
@@ -258,10 +263,8 @@ int CheckTmvaVariables() {//main
   datafiles.push_back("Data_MET-2012D-PromptReco-v1");
 
   //all files
-  bool useJoaosFiles = true;
+  bool useJoaosFiles = false;
   std::vector<std::string> qcdfiles;
-  qcdfiles.push_back("MC_QCD-Pt-30to50-pythia6");
-  qcdfiles.push_back("MC_QCD-Pt-50to80-pythia6");
   if (useJoaosFiles){
     qcdfiles.push_back("MC_QCD-Pt-80to120_VBF-MET40");
     qcdfiles.push_back("MC_QCD-Pt-120to170_VBF-MET40");
@@ -270,6 +273,8 @@ int CheckTmvaVariables() {//main
     qcdfiles.push_back("MC_QCD-Pt-470to600_VBF-MET40");
   }
   else {
+    qcdfiles.push_back("MC_QCD-Pt-30to50-pythia6");
+    qcdfiles.push_back("MC_QCD-Pt-50to80-pythia6");
     qcdfiles.push_back("MC_QCD-Pt-80to120-pythia6");
     qcdfiles.push_back("MC_QCD-Pt-120to170-pythia6");
     qcdfiles.push_back("MC_QCD-Pt-170to300-pythia6");
@@ -368,11 +373,15 @@ int CheckTmvaVariables() {//main
   };
 
   double n_dijet_data = 0;
+  double n_dijet_dataqcd = 0;
   double n_dijet_bkg = 0;
+  double n_dijet_bkgqcd = 0;
   double n_dijet_qcd = 0;
   double n_dijet_signal = 0;
   double n_sel_data = 0;
+  double n_sel_dataqcd = 0;
   double n_sel_bkg = 0;
+  double n_sel_bkgqcd = 0;
   double n_sel_qcd = 0;
   double n_sel_signal = 0;
 
@@ -383,8 +392,10 @@ int CheckTmvaVariables() {//main
     myc[iV]->SetLogy(logy[iV]);
   }
 
-  TH1F *hVar[nVars];
-  MakeAllHistograms(hVar,"Bkg");
+  TH1F *hVarEWK[nVars];
+  MakeAllHistograms(hVarEWK,"Bkg");
+  TH1F *hVarEWKQCD[nVars];
+  MakeAllHistograms(hVarEWKQCD,"BkgQCD");
 
   TH1F *hVarSignal120[nVars];
   MakeAllHistograms(hVarSignal120,"Signal120");
@@ -403,6 +414,9 @@ int CheckTmvaVariables() {//main
   TH1F *hVarData[nVars];
   MakeAllHistograms(hVarData,"Data");
 
+  TH1F *hVarDataQCD[nVars];
+  MakeAllHistograms(hVarDataQCD,"DataQCD");
+
   TH1F *hVarQCD[nVars];
   MakeAllHistograms(hVarQCD,"QCD");
   
@@ -416,7 +430,8 @@ int CheckTmvaVariables() {//main
 
     std::cout << " Processing tree " <<  files[iBkg] << std::endl;
     
-    FillVariables(fMC[iBkg],nVars,reader,var,spec,hVar,n_dijet_bkg);
+    FillVariables(fMC[iBkg],nVars,reader,var,spec,hVarEWK,n_dijet_bkg);
+    FillVariables(fMC[iBkg],nVars,reader,var,spec,hVarEWKQCD,n_dijet_bkgqcd,true);
 
   }//loop on bkg files
 
@@ -429,7 +444,8 @@ int CheckTmvaVariables() {//main
     std::cout << " Processing tree " <<  datafiles[iD] << std::endl;
  
     FillVariables(fData[iD],nVars,reader,var,spec,hVarData,n_dijet_data);
-  }//loop on data files
+    FillVariables(fData[iD],nVars,reader,var,spec,hVarDataQCD,n_dijet_dataqcd,true);
+   }//loop on data files
 
   for (unsigned iQ(0); iQ<nQCD;++iQ){//loop on qcd files
     fQCD[iQ] = TFile::Open((folder+"/"+qcdfiles[iQ]+".root").c_str());
@@ -442,43 +458,64 @@ int CheckTmvaVariables() {//main
     FillVariables(fQCD[iQ],nVars,reader,var,spec,hVarQCD,n_dijet_qcd);
   }//loop on qcd files
 
+  for (unsigned iV(0); iV<nVars; ++iV){//loop on variables
+    hVarDataQCD[iV]->Add(hVarEWKQCD[iV],-1);
+  }
+
   n_sel_qcd = hVarQCD[0]->Integral();
-  n_sel_bkg = hVar[0]->Integral();
+  n_sel_bkg = hVarEWK[0]->Integral();
+  n_sel_bkgqcd = hVarEWKQCD[0]->Integral();
   n_sel_data = hVarData[0]->Integral();
+  n_sel_dataqcd = hVarDataQCD[0]->Integral();
   n_sel_signal = hVarSignal125[0]->Integral();
+  
+  double reweight = (n_sel_data-n_sel_bkg)/n_sel_qcd;
+  double reweight_data = (n_sel_data-n_sel_bkg)/n_sel_dataqcd;
+
+  std::cout << " --INFO: Scaling QCD by factor " <<  reweight << std::endl;
+  std::cout << " --INFO: Scaling Data QCD by factor " <<  reweight_data << std::endl;
+
 
   for (unsigned iV(0); iV<nVars; ++iV){//loop on variables
     myc[iV]->cd();
   
-
-    hVar[iV]->Add(hVarQCD[iV]);
+    //manual reweight to fit data-bkg integral...
+    hVarQCD[iV]->Scale(reweight);
+    hVarDataQCD[iV]->Scale(reweight_data);
+    hVarDataQCD[iV]->Add(hVarEWK[iV]);
+    hVarQCD[iV]->Add(hVarEWK[iV]);
     hVarSignal120[iV]->Scale(hVarData[iV]->Integral()/hVarSignal120[iV]->Integral());
     hVarSignal125[iV]->Scale(hVarData[iV]->Integral()/hVarSignal125[iV]->Integral());
     //hVarSignal400[iV]->Scale(hVarQCD[iV]->Integral()/hVarSignal400[iV]->Integral());
-    //hVar[iV]->Scale(hVarData[iV]->Integral()/hVar[iV]->Integral());
+    //hVarEWK[iV]->Scale(hVarData[iV]->Integral()/hVarEWK[iV]->Integral());
     //hVarQCD[iV]->Scale(hVarData[iV]->Integral()/hVarQCD[iV]->Integral());
 
     hVarData[iV]->SetMarkerColor(1);
     hVarData[iV]->SetMarkerStyle(2);
     hVarData[iV]->GetYaxis()->SetTitle("Events");
     if (hVarData[iV]->GetMinimum() > hVarQCD[iV]->GetMinimum()) hVarData[iV]->SetMinimum(hVarQCD[iV]->GetMinimum());
-    if (hVarData[iV]->GetMaximum() < hVar[iV]->GetMaximum()) hVarData[iV]->SetMaximum(hVar[iV]->GetMaximum());
+    if (hVarData[iV]->GetMaximum() < hVarEWK[iV]->GetMaximum()) hVarData[iV]->SetMaximum(hVarEWK[iV]->GetMaximum());
     if (hVarData[iV]->GetMaximum() < hVarSignal125[iV]->GetMaximum()) hVarData[iV]->SetMaximum(hVarSignal125[iV]->GetMaximum());
     //if (hVarData[iV]->GetMinimum() > hVarSignal120[iV]->GetMinimum()) hVarData[iV]->SetMinimum(hVarSignal120[iV]->GetMinimum());
     if (logy[iV]==true && hVarData[iV]->GetMinimum()==0) hVarData[iV]->SetMinimum(0.1);
     hVarData[iV]->Draw("PE");
-    //plot others+QCD
-    hVar[iV]->SetFillColor(6);
-    hVar[iV]->SetLineColor(6);
-    hVar[iV]->SetFillStyle(3005);
-    hVar[iV]->GetYaxis()->SetTitle("Events");
-    hVar[iV]->Draw("same");
-    hVar[iV]->Draw("Psame");
-    //plot QCD
+    //plot QCD+others
     hVarQCD[iV]->SetFillColor(5);
     hVarQCD[iV]->SetLineColor(5);
     hVarQCD[iV]->GetYaxis()->SetTitle("Events");
     hVarQCD[iV]->Draw("same");
+    hVarDataQCD[iV]->SetFillColor(7);
+    hVarDataQCD[iV]->SetLineColor(7);
+    hVarDataQCD[iV]->SetFillStyle(3004);
+    hVarDataQCD[iV]->GetYaxis()->SetTitle("Events");
+    hVarDataQCD[iV]->Draw("same");
+    //plot others
+    hVarEWK[iV]->SetFillColor(6);
+    hVarEWK[iV]->SetLineColor(6);
+    hVarEWK[iV]->SetFillStyle(3005);
+    hVarEWK[iV]->GetYaxis()->SetTitle("Events");
+    hVarEWK[iV]->Draw("same");
+    hVarEWK[iV]->Draw("Psame");
 
     //draw signal120
     hVarSignal120[iV]->SetFillColor(9);
@@ -511,7 +548,7 @@ int CheckTmvaVariables() {//main
     hVarData[iV]->Draw("axissame");
 
     //double proba = hVarData[iV]->KolmogorovTest(hVarQCD[iV],"UON");
-    //std::cout << hVar[iV]->GetName() << " = " << proba << std::endl;
+    //std::cout << hVarEWK[iV]->GetName() << " = " << proba << std::endl;
 
     TLegend *leg = new TLegend(0.75,0.8,1.0,1.0);
     leg->SetFillColor(10);
@@ -519,13 +556,14 @@ int CheckTmvaVariables() {//main
     //leg->AddEntry(hVarSignal120[iV],"VBF m_{H}=120 GeV","PF");
     leg->AddEntry(hVarSignal125[iV],"VBF m_{H}=125 GeV","PF");
     //leg->AddEntry(hVarSignal400[iV],"VBF m_{H}=400 GeV","L");
-    leg->AddEntry(hVar[iV],"V+top+VV","F");
     leg->AddEntry(hVarQCD[iV],"QCD","F");
+    leg->AddEntry(hVarDataQCD[iV],"Data-driven QCD","F");
+    leg->AddEntry(hVarEWK[iV],"V+top+VV","F");
     leg->Draw("same");
 
     std::ostringstream output;
-    //output << "TmvaPlots_deta3p8_Mjj1100_met100_metsig5/" << hVar[iV]->GetName() << ".pdf";
-    output << "TmvaPlots_qcdrej/" << hVar[iV]->GetName() << ".pdf";
+    //output << "TmvaPlots_deta3p8_Mjj1100_met100_metsig5/" << hVarEWK[iV]->GetName() << ".pdf";
+    output << "TmvaPlots_qcdrej/" << hVarEWK[iV]->GetName() << ".pdf";
     myc[iV]->Print(output.str().c_str() );
 
 
@@ -533,8 +571,8 @@ int CheckTmvaVariables() {//main
 
   std::cout << "----------------------------------------------" << std::endl
 	    << "---- Summary of number of events selected ----" << std::endl
-	    << " - N_dijet = " << n_dijet_data << " qcd = " << n_dijet_qcd << " bkg = " << n_dijet_bkg << " signal = " << n_dijet_signal << std::endl
-	    <<" - N_sel = " << n_sel_data << " qcd = " << n_sel_qcd << " bkg = " << n_sel_bkg << " signal = " << n_sel_signal 
+	    << " - N_dijet = " << n_dijet_data << " dataqcd = " << n_dijet_dataqcd<< " MCqcd = " << n_dijet_qcd << " bkg = " << n_dijet_bkg << " signal = " << n_dijet_signal << std::endl
+	    <<" - N_sel = " << n_sel_data << " dataqcd = " << n_sel_dataqcd*reweight_data << " MCqcd = " << n_sel_qcd*reweight << " bkg = " << n_sel_bkg << " signal = " << n_sel_signal 
 	    << std::endl;
 
   return 0;

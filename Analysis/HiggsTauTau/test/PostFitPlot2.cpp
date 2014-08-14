@@ -18,10 +18,16 @@ namespace po = boost::program_options;
 using namespace std;
 using namespace ic;
 
-HTTAnalysis::HistValuePair FillHistValuePair(ch::CombineHarvester & cmb) {
-  return std::make_pair(
-      cmb.GetShape(),
-      std::make_pair(cmb.GetRate(), cmb.GetUncertainty()));
+HTTAnalysis::HistValuePair FillHistValuePair(ch::CombineHarvester & cmb, RooFitResult * res) {
+  if (res) {
+    return std::make_pair(
+        cmb.GetShape(),
+        std::make_pair(cmb.GetRate(), cmb.GetUncertainty(res, 500)));
+  } else {
+    return std::make_pair(
+        cmb.GetShape(),
+        std::make_pair(cmb.GetRate(), cmb.GetUncertainty()));
+    } 
 }
 
 int main(int argc, char* argv[]){
@@ -138,15 +144,16 @@ int main(int argc, char* argv[]){
       samples.push_back("qqH_hww125");
     }
   }
+  RooFitResult * send_res = nullptr;
   for (auto const& s : samples) {
-    hmap[s] = FillHistValuePair(cmb.cp().process({s}));
+    hmap[s] = FillHistValuePair(cmb.cp().process({s}), send_res);
     HTTAnalysis::PrintValue(s, hmap[s].second);
   }
   for (auto const& s : signal_procs) {
     if (s == "VH") {
-      hmap[s+signal_mass] = FillHistValuePair(cmb.cp().process({"WH","ZH"}));
+      hmap[s+signal_mass] = FillHistValuePair(cmb.cp().process({"WH","ZH"}), send_res);
     } else {
-      hmap[s+signal_mass] = FillHistValuePair(cmb.cp().process({s}));
+      hmap[s+signal_mass] = FillHistValuePair(cmb.cp().process({s}), send_res);
     }
     HTTAnalysis::PrintValue(s+signal_mass, hmap[s+signal_mass].second);
   }

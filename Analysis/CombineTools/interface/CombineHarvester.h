@@ -173,6 +173,9 @@ class CombineHarvester {
   void ExtractShapes(std::string const& file, std::string const& rule,
                      std::string const& syst_rule);
 
+  void AddWorkspace(RooWorkspace const* ws);
+  void ExtractPdfs(std::string const& ws_name, std::string const& rule);
+  void ExtractData(std::string const& ws_name, std::string const& rule);
   void AddBinByBin(double threshold, bool fixed_norm, CombineHarvester* other);
   void MergeBinErrors(double bbb_threshold, double merge_threshold);
   /**@}*/

@@ -10,10 +10,12 @@ TOP := $(shell \
 endif
 
 # Define some useful colours
-COLOR_BL := \033[34m
-COLOR_CY := \033[36m
-COLOR_PU := \033[35m
+COLOR_RE := \033[31m
 COLOR_GR := \033[32m
+COLOR_YE := \033[33m
+COLOR_BL := \033[34m
+COLOR_PU := \033[35m
+COLOR_CY := \033[36m
 NOCOLOR := \033[0m
 
 # Folder containing ancillary makefile inputs
@@ -21,33 +23,48 @@ MK := $(TOP)/mk
 
 # Setup standard includes that will be used everywhere
 # -isystem is used instead of -I where we want to suppress
-# compiler warnings and dependency generation for stuff that
+# compiler warnings and dependency generation for stuff thatW
 # we can't actually touch
 
-# ROOT
-USERINCLUDES += -isystem $(ROOTSYS)/include
-# ROOFIT
-USERINCLUDES += -isystem $(ROOFITSYS)/include
+ifndef CMSSW
+	CMSSW := 1
+endif
+
+ifeq ($(CMSSW),0)
+$(info ==> Standalone mode enabled - CMSSW will not be linked)
+$(info ==> Directories that do not define REQUIRES_CMSSW=0 will be skipped!)
+endif
+
 # BOOST - currently fixed to version 1.47.0, we will need to do some magic
 # in the near futures to figure out the right version for the CMSSW release
-USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0/include
-# CMSSW release area
-USERINCLUDES += -isystem $(CMSSW_RELEASE_BASE)/src
-# CMSSW user area
-USERINCLUDES += -I$(CMSSW_BASE)/src
+ifndef BOOSTSYS
+	BOOSTSYS := $(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0
+endif
+
+USERINCLUDES += -I$(TOP)
+USERINCLUDES += -I$(TOP)/../../..
+
+USERINCLUDES += -isystem $(ROOTSYS)/include
+USERINCLUDES += -isystem $(ROOFITSYS)/include
+USERINCLUDES += -isystem $(BOOSTSYS)/include
+
+USERLIBS += $(shell $(ROOTSYS)/bin/root-config --glibs) -lGenVector -lTreePlayer -lTMVA
+USERLIBS += -L$(ROOFITSYS)/lib -lRooFit -lRooFitCore
+USERLIBS += -L$(BOOSTSYS)/lib -lboost_regex -lboost_program_options -lboost_filesystem
+
+# Can set CMSSW=0 to disable include/linking to CMSSW
+ifneq ($(CMSSW), 0)
+	# USERINCLUDES += -I$(CMSSW_BASE)/src
+	USERINCLUDES += -isystem $(CMSSW_RELEASE_BASE)/src
+	# CMSSW user area
+	USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau
+	USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lFWCoreFWLite -lPhysicsToolsFWLite -lCommonToolsUtils
+endif
 # Analysis area
-USERINCLUDES += -I$(CMSSW_BASE)/src/UserCode/ICHiggsTauTau/Analysis
 
 # Special includes for running the include-what-you-use tool on OS X
 # USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/gcc/4.6.2/include/c++/4.6.2
 # USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/gcc/4.6.2/include/c++/4.6.2/x86_64-apple-darwin11.2.0
-
-# Define libraries to link
-USERLIBS += $(shell root-config --glibs) -lGenVector -lTreePlayer -lTMVA
-USERLIBS += -L$(ROOFITSYS)/lib/ -lRooFit -lRooFitCore
-USERLIBS += -L$(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0/lib/ -lboost_regex -lboost_program_options -lboost_filesystem
-USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau
-USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lFWCoreFWLite -lPhysicsToolsFWLite -lCommonToolsUtils
 
 CXX=g++
 LD=g++
