@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
+#include "../interface/PileupInfo.hh"
 
 namespace ic {
 // Constructors/Destructors

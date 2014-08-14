@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
+#include "../interface/PFJet.hh"
 
 namespace ic {
 

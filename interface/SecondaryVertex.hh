@@ -4,6 +4,7 @@
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -42,6 +43,9 @@ class SecondaryVertex : public Vertex {
  private:
   double distance_3d_;
   double distance_err_3d_;
+
+ public:
+  ClassDef(SecondaryVertex, 2);
 };
 
 typedef std::vector<ic::SecondaryVertex> SecondaryVertexCollection;

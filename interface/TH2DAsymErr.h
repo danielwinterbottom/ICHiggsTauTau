@@ -14,6 +14,7 @@
 #define HIST2DASYMERROR_H
 
 #include <TH2D.h>
+#include "Rtypes.h"
 
 namespace mithep {
 class TH2DAsymErr : public TH2D {

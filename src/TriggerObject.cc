@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
+#include "../interface/TriggerObject.hh"
 
 namespace ic {
 TriggerObject::TriggerObject() {}

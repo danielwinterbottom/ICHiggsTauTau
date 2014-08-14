@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/Track.hh"
+#include "../interface/Track.hh"
 
 namespace ic {
 // Constructors/Destructors

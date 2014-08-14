@@ -7,6 +7,7 @@
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -408,6 +409,9 @@ class Electron : public Candidate {
   std::vector<std::size_t> gen_particles_;
 
   UFmap elec_idiso_;
+
+ public:
+  ClassDef(Electron, 2);
 };
 
 typedef std::vector<ic::Electron> ElectronCollection;

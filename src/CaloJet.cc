@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/CaloJet.hh"
+#include "../interface/CaloJet.hh"
 
 namespace ic {
 CaloJet::CaloJet()

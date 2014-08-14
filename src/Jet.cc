@@ -1,8 +1,8 @@
-#include "UserCode/ICHiggsTauTau/interface/Jet.hh"
+#include "../interface/Jet.hh"
 #include <map>
 #include <string>
 #include <vector>
-#include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "../interface/city.h"
 #include "boost/format.hpp"
 
 namespace ic {

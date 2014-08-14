@@ -2,6 +2,7 @@
 #define ICHiggsTauTau_TriggerPath_hh
 #include <string>
 #include <vector>
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -57,6 +58,9 @@ class TriggerPath {
   unsigned prescale_;
   std::size_t id_;
   unsigned version_;
+
+ public:
+  ClassDef(TriggerPath, 2);
 };
 
 typedef std::vector<ic::TriggerPath> TriggerPathCollection;

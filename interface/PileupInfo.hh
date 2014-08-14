@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -50,6 +51,9 @@ class PileupInfo {
   int num_interactions_;
   int bunch_crossing_;
   float true_num_interactions_;
+
+ public:
+  ClassDef(PileupInfo, 2);
 };
 
 typedef std::vector<ic::PileupInfo> PileupInfoCollection;

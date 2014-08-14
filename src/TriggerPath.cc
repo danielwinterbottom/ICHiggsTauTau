@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
+#include "../interface/TriggerPath.hh"
 
 namespace ic {
 TriggerPath::TriggerPath()

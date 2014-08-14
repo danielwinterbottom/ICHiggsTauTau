@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Jet.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -178,6 +179,9 @@ class CaloJet : public Jet {
   float fRBX_;
   bool id_loose_;
   bool id_tight_;
+
+ public:
+  ClassDef(CaloJet, 2);
 };
 
 typedef std::vector<ic::CaloJet> CaloJetCollection;

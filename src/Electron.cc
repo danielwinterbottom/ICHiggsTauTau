@@ -1,5 +1,5 @@
-#include "UserCode/ICHiggsTauTau/interface/Electron.hh"
-#include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "../interface/Electron.hh"
+#include "../interface/city.h"
 #include "boost/format.hpp"
 
 namespace ic {

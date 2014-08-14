@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include "UserCode/ICHiggsTauTau/interface/Jet.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -387,6 +388,9 @@ class PFJet : public Jet {
 
   float linear_radial_moment_;
   int charged_multiplicity_nopu_;
+
+ public:
+  ClassDef(PFJet, 2);
 };
 
 typedef std::vector<ic::PFJet> PFJetCollection;

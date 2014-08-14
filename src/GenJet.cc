@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
+#include "../interface/GenJet.hh"
 
 namespace ic {
 GenJet::GenJet() : flavour_(0), n_constituents_(0) {}

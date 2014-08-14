@@ -4,6 +4,7 @@
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -52,6 +53,9 @@ class GenJet : public Candidate {
   int flavour_;
   unsigned n_constituents_;
   std::vector<std::size_t> constituents_;
+
+ public:
+  ClassDef(GenJet, 2);
 };
 
 typedef std::vector<ic::GenJet> GenJetCollection;

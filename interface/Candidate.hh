@@ -3,6 +3,7 @@
 #include <vector>
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -84,6 +85,9 @@ class Candidate {
   Vector vector_;
   std::size_t id_;
   int charge_;
+
+ public:
+  ClassDef(Candidate, 2);
 };
 
 typedef std::vector<ic::Candidate> CandidateCollection;

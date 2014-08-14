@@ -2,6 +2,7 @@
 #define ICHiggsTauTau_Photon_hh
 #include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -79,6 +80,9 @@ class Photon : public Candidate {
   float sigma_IetaIeta_;
 
   bool pass_electron_veto_;
+
+ public:
+  ClassDef(Photon, 2);
 };
 
 typedef std::vector<ic::Photon> PhotonCollection;

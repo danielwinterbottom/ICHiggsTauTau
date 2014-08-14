@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/SuperCluster.hh"
+#include "../interface/SuperCluster.hh"
 
 namespace ic {
 // Constructors/Destructors

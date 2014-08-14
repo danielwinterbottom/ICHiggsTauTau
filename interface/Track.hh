@@ -5,6 +5,7 @@
 #include "Math/Point3Dfwd.h"
 #include "Math/Vector3D.h"
 #include "Math/Vector3Dfwd.h"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -98,6 +99,9 @@ class Track {
   Point ref_point_;
   std::size_t id_;
   int charge_;
+
+ public:
+  ClassDef(Track, 2);
 };
 
 typedef std::vector<ic::Track> TrackCollection;

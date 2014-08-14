@@ -5,6 +5,7 @@
 #include "Math/Point3Dfwd.h"
 #include "Math/Vector3D.h"
 #include "Math/Vector3Dfwd.h"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -46,6 +47,9 @@ class LightTrack {
   float pt_;
   float vz_;
   std::size_t id_;
+
+ public:
+  ClassDef(LightTrack, 2);
 };
 
 typedef std::vector<ic::LightTrack> LightTrackCollection;

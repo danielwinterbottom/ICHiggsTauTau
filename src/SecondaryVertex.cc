@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
+#include "../interface/SecondaryVertex.hh"
 
 namespace ic {
 // Constructors/Destructors

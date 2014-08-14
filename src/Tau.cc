@@ -1,5 +1,5 @@
-#include "UserCode/ICHiggsTauTau/interface/Tau.hh"
-#include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "../interface/Tau.hh"
+#include "../interface/city.h"
 // #include "boost/format.hpp"
 
 namespace ic {

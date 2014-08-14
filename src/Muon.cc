@@ -1,5 +1,5 @@
-#include "UserCode/ICHiggsTauTau/interface/Muon.hh"
-#include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "../interface/Muon.hh"
+#include "../interface/city.h"
 
 namespace ic {
 

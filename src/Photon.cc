@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/Photon.hh"
+#include "../interface/Photon.hh"
 
 namespace ic {
 Photon::Photon()

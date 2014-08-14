@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "../interface/Candidate.hh"
 
 namespace ic {
 // Constructors/Destructors

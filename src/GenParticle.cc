@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
+#include "../interface/GenParticle.hh"
 #include "boost/format.hpp"
 namespace ic {
 // Constructors/Destructors

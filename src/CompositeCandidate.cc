@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+#include "../interface/CompositeCandidate.hh"
 #include <set>
 #include <map>
 #include <string>

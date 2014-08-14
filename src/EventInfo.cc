@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
+#include "../interface/EventInfo.hh"
 
 namespace ic {
 EventInfo::EventInfo()

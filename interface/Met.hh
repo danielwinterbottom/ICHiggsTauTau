@@ -2,6 +2,7 @@
 #define ICHiggsTauTau_Met_hh
 #include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -64,6 +65,9 @@ class Met : public Candidate {
   double xy_sig_;
   double yx_sig_;
   double yy_sig_;
+
+ public:
+  ClassDef(Met, 2);
 };
 
 typedef std::vector<ic::Met> MetCollection;

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -141,6 +142,9 @@ class Jet : public Candidate {
 
   std::string UnHashJecFactor(std::size_t jec) const;
   std::string UnHashDiscr(std::size_t dis) const;
+
+ public:
+  ClassDef(Jet, 2);
 };
 
 typedef std::vector<ic::Jet> JetCollection;

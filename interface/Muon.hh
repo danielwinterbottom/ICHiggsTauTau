@@ -7,6 +7,7 @@
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -354,6 +355,9 @@ class Muon : public Candidate {
   std::vector<std::size_t> gen_particles_;
 
   UFmap muon_idiso_;
+
+ public:
+  ClassDef(Muon, 2);
 };
 
 typedef std::vector<ic::Muon> MuonCollection;

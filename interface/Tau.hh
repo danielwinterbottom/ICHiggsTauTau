@@ -6,6 +6,7 @@
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -158,6 +159,9 @@ class Tau : public Candidate {
   Point ref_point_;
 
   std::vector<std::size_t> constituent_tracks_;
+
+ public:
+  ClassDef(Tau, 2);
 };
 
 typedef std::vector<ic::Tau> TauCollection;

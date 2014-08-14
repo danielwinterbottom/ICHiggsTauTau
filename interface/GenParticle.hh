@@ -4,6 +4,7 @@
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -70,6 +71,9 @@ class GenParticle : public Candidate {
   int status_;
   std::vector<int> mothers_;
   std::vector<int> daughters_;
+
+ public:
+  ClassDef(GenParticle, 2);
 };
 
 typedef std::vector<ic::GenParticle> GenParticleCollection;

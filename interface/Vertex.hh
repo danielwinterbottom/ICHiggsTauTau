@@ -4,6 +4,7 @@
 #include <vector>
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -93,6 +94,9 @@ class Vertex {
   float ndof_;
   std::vector<TrkPair> tracks_;
   std::size_t id_;
+
+ public:
+  ClassDef(Vertex, 2);
 };
 
 typedef std::vector<ic::Vertex> VertexCollection;

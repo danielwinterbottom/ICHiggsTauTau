@@ -2,6 +2,7 @@
 #define ICHiggsTauTau_TriggerObject_hh
 #include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -33,6 +34,9 @@ class TriggerObject : public Candidate {
 
  private:
   std::vector<std::size_t> filters_;
+
+ public:
+  ClassDef(TriggerObject, 2);
 };
 
 typedef std::vector<ic::TriggerObject> TriggerObjectCollection;

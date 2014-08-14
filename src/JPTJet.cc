@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/interface/JPTJet.hh"
+#include "../interface/JPTJet.hh"
 
 namespace ic {
 // Constructors/Destructors

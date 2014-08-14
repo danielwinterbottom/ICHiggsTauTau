@@ -7,6 +7,7 @@
 #include "Math/Point3Dfwd.h"
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -101,6 +102,9 @@ class SuperCluster {
   double energy_;
   double raw_energy_;
   bool is_barrel_;
+
+ public:
+  ClassDef(SuperCluster, 2);
 };
 
 typedef std::vector<ic::SuperCluster> SuperClusterCollection;

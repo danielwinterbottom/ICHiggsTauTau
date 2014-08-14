@@ -1,9 +1,16 @@
 #ifndef ICHiggsTauTau_EventInfo_hh
 #define ICHiggsTauTau_EventInfo_hh
+
+#ifdef __CINT__
+typedef char __signed;
+typedef char int8_t;
+#endif
+
 #include <string>
 #include <map>
 #include <iostream>
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -244,6 +251,9 @@ class EventInfo {
   SBMap weight_status_;
   unsigned good_vertices_;
   TBMap filters_;
+
+ public:
+  ClassDef(EventInfo, 2);
 };
 }
 /** \example plugins/ICEventInfoProducer.cc */

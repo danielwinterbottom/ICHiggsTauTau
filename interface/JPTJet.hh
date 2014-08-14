@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "UserCode/ICHiggsTauTau/interface/CaloJet.hh"
+#include "Rtypes.h"
 
 namespace ic {
 
@@ -262,6 +263,9 @@ class JPTJet : public CaloJet {
   std::vector<std::size_t> elecs_in_vtx_in_calo_;
   std::vector<std::size_t> elecs_in_vtx_out_calo_;
   std::vector<std::size_t> elecs_out_vtx_in_calo_;
+
+ public:
+  ClassDef(JPTJet, 2);
 };
 
 typedef std::vector<ic::JPTJet> JPTJetCollection;
