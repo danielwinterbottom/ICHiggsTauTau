@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <algorithm>
+#include <string>
 #include "boost/format.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/bind.hpp"
@@ -235,7 +236,8 @@ int AnalysisBase::RunAnalysis() {
     }
   }
 
-  std::cout << ">> Complete: " << events_processed_ << " events processed\n";
+  std::cout << ">> Processing Complete: " << events_processed_
+            << " events processed\n";
   for (auto & seq : seqs_) {
     std::cout << std::string(78, '-') << "\n";
     std::cout << boost::format("%-15s : %-60s\n") % "Post-analysis" % seq.name;
