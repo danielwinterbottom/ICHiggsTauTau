@@ -16,9 +16,11 @@ namespace ic {
     is_data_ = true;
     input_label_ = "pfJetsPFlow";
     jesupordown_ = true; //true is up false is down
+    uesupordown_ = true;
     dosmear_=false;
     dojessyst_ = false;
     dojersyst_ = false;
+    douessyst_ = false;
     dodatajessyst_= false;
     dogaus_=false;
     dospring10gaus_=false;
@@ -76,8 +78,13 @@ namespace ic {
       else if(dojersyst_&&(!jerbetterorworse_)){
 	std::cout << "Doing JERWORSE"<<std::endl;
       }
+      else if(douessyst_&&uesupordown_){
+	std::cout << "Doing UESUP"<<std::endl;
+      }
+      else if(douessyst_&&(!uesupordown_)){
+	std::cout << "Doing UESDOWN"<<std::endl;
+      }
     }
-    std::cout<<"Getting JES uncertainty parameters from file: "<<jesuncfile_<<std::endl;
     total = new JetCorrectionUncertainty(*(new JetCorrectorParameters(jesuncfile_)));
     
     std::cout<<"Got parameters successfully"<<std::endl;
@@ -465,7 +472,13 @@ namespace ic {
 	else if(!is_data_){
 	  //Get JES uncertainty
 	  total->setJetPt(newjet.pt());
-	  total->setJetEta(newjet.eta());
+	  // Catch the few events with |Eta| > 5.4 and apply the extremal uncertainty
+	  if (newjet.eta() > 5.4 || newjet.eta() < -5.4) {
+	    newjet.eta() > 0 ? total->setJetEta(5.4) : total->setJetEta(-5.4);
+	  }
+	  else {
+	    total->setJetEta(newjet.eta());
+	  }
 	  double uncert = total->getUncertainty(jesupordown_);
 	  JEScorrfac->Fill(newjet.pt(),uncert); //Fill histogram of uncertainty against pt	
 	  float jesupordownmult;
@@ -499,10 +512,21 @@ namespace ic {
 	//Set jet in event to corrected jet
 	vec[i]->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newjet));
       }//end of loop over jets
-      
-      //Set met in event to corrected met
+      //Get Unclustered MET for UES Systematic
+      if (!is_data_ && douessyst_){
+	std::string ues_label_;
+	uesupordown_ ? ues_label_ = "pfMetUnclusteredEnUp" : ues_label_ = "pfMetUnclusteredEnDown";
+	ic::Candidate* uesCorrected = event->GetPtr<ic::Candidate>(ues_label_);
+	newmet.SetPx(uesCorrected->pt() * cos(uesCorrected->phi()));
+	newmet.SetPy(uesCorrected->pt() * sin(uesCorrected->phi()));
+	newmet.SetE(uesCorrected->pt());
+	// !! Scale met significance using Ues Up/Down met
+	double met_sig = met->et_sig();
+	double new_met_sig = met_sig / met->pt() * newmet.Pt();
+	met->set_et_sig(new_met_sig);
+      }
       met->set_vector(ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<double> >(newmet));
-      
+      //Set met in event to corrected met
       JESmetdiff->Fill(newmet.energy()-oldmet.energy());
       
       //Check if first two jets have changed

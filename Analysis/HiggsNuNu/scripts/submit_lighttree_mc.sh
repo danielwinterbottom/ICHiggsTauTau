@@ -21,7 +21,7 @@ PRODUCTION=Dec18
 INPUTPARAMS="filelists/Dec18/ParamsDec18.dat"
 
 
-for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central #JERBETTER JERWORSE UESUP UESDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
   JOBDIRPREFIX=jobs_lighttree
@@ -56,8 +56,21 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR M
       JOBDIR=$JOBDIRPREFIX/JERWORSE/
       OUTPUTDIR=$OUTPUTPREFIX/JERWORSE/
   fi
-  
-  
+
+  if [ "$SYST" = "UESUP" ]
+	then
+	SYSTOPTIONS="--douessyst=true --uesupordown=true"
+	JOBDIR=$JOBDIRPREFIX/UESUP/  
+  	OUTPUTDIR=$OUTPUTPREFIX/UESUP/
+  fi
+
+  if [ "$SYST" = "UESDOWN" ]
+	then
+	SYSTOPTIONS="--douessyst=true --uesupordown=false"
+	JOBDIR=$JOBDIRPREFIX/UESDOWN/
+	OUTPUTDIR=$OUTPUTPREFIX/UESDOWN/
+  fi
+	
   echo "Config file: $CONFIG"
   
   mkdir -p $JOBDIR

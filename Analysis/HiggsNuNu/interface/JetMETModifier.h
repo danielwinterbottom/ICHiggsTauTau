@@ -33,6 +33,8 @@ namespace ic {
     CLASS_MEMBER(JetMETModifier, bool, dojersyst)
     CLASS_MEMBER(JetMETModifier, bool, dojerworsegauss)
     CLASS_MEMBER(JetMETModifier, bool, jerbetterorworse)
+    CLASS_MEMBER(JetMETModifier, bool, douessyst)
+    CLASS_MEMBER(JetMETModifier, bool, uesupordown)
     CLASS_MEMBER(JetMETModifier, std::string, input_label)
     CLASS_MEMBER(JetMETModifier, std::string, met_label)
     CLASS_MEMBER(JetMETModifier, bool, dosmear)

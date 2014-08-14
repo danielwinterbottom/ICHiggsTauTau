@@ -120,6 +120,9 @@ int main(int argc, char* argv[]){
   shape.push_back("dijet_M(17,600.,2000.)");
   shape.push_back("jetmetnomu_mindphi(18,1.4,3.2)");
   shape.push_back("metnomu_significance(25,3.,8.)");
+  shape.push_back("met(50,0.,500.)");
+  shape.push_back("met_x(50,0.,500.)");
+  shape.push_back("met_y(50,0.,500.)");
   shape.push_back("dijet_dphi(30,0.,3.)");
   shape.push_back("dijet_deta(17,3.6,7.)");
   shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");
@@ -315,6 +318,9 @@ int main(int argc, char* argv[]){
   shapes.push_back("dijet_dphi(310,0.,3.1)");
   shapes.push_back("met(80,0.,400.)");
   shapes.push_back("cjvjetpt(100,0.,100.)");
+  shapes.push_back("met(50,0.,500.)");
+  shapes.push_back("met_x(50,0.,500.)");
+  shapes.push_back("met_y(50,0.,500.)");
 
   NormPlots normplots("normplots");
   normplots.set_qcdset("QCD")
