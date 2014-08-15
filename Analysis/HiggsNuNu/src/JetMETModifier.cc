@@ -474,7 +474,7 @@ namespace ic {
 	  total->setJetPt(newjet.pt());
 	  // Catch the few events with |Eta| > 5.4 and apply the extremal uncertainty
 	  if (newjet.eta() > 5.4 || newjet.eta() < -5.4) {
-	    newjet.eta() > 0 ? total->setJetEta(5.4) : total->setJetEta(-5.4);
+	    newjet.eta() > 0 ? total->setJetEta(5.39) : total->setJetEta(-5.4);
 	  }
 	  else {
 	    total->setJetEta(newjet.eta());
