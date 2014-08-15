@@ -104,11 +104,10 @@ int main(int argc, char* argv[]) {
 
   // Create analysis object
   ic::AnalysisBase analysis(
-    "Zbb",        // Analysis name
-    files,                // Input files
-    "icEventProducer",    // TTree path
-    "EventTree",          // TTree name
-    max_events);          // Max. events to process (-1 = all)
+    "Zbb",                        // Analysis name
+    files,                        // Input files
+    "icEventProducer/EventTree",  // TTree name
+    max_events);                  // Max. events to process (-1 = all)
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);

@@ -337,8 +337,7 @@ int main(int argc, char* argv[]){
   ic::AnalysisBase analysis(
     "HiggsTauTau",        // Analysis name
     files,                // Input files
-    "icEventProducer",    // TTree path
-    "EventTree",          // TTree name
+    "icEventProducer/EventTree",  // TTree name
     max_events);          // Max. events to process (-1 = all)
   if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);
   analysis.SetTTreeCaching(true);
@@ -1023,7 +1022,7 @@ int main(int argc, char* argv[]){
   {
   };
   for (auto ch : to_check) {
-    analysis.NotifyEvent(ch);
+    // analysis.NotifyEvent(ch);
    httPrint.PrintEvent(ch);
   }
   httPrint.set_skip_events(false);

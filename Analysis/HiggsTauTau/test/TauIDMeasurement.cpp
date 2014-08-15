@@ -180,8 +180,7 @@ int main(int argc, char* argv[]){
   ic::AnalysisBase analysis(
     "TauID",              // Analysis name
     files,                // Input files
-    "icEventProducer",    // TTree path
-    "EventTree",          // TTree name
+    "icEventProducer/EventTree", // TTree name
     max_events);          // Max. events to process (-1 = all)
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
