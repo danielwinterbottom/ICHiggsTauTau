@@ -3,6 +3,7 @@
 #include "TH1F.h"
 #include "TCanvas.h"
 #include <map>
+#include "TVectorD.h"
 
 namespace ic{
 
@@ -78,6 +79,11 @@ namespace ic{
     double effcvbfewk=ncmcewk/ngenincewk_;
     double effcvbfqcd=ncmcqcd/ngenincqcd_;
     double baseweight=(ncdata-ncbkg)/(sigmainccontewk_*effcvbfewk+sigmainccontqcd_*effcvbfqcd);
+
+    double ewkweight=baseweight*sigmaincsigewk_/ngenmassfilteredewk_;
+    double qcdweight=baseweight*sigmaincsigqcd_/ngenmassfilteredqcd_;
+    TVectorD weightvec(2);
+
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
       std::string histname;
       if(shapename_.size()==0){
@@ -91,8 +97,10 @@ namespace ic{
       TH1F  sigmcewkshape = filemanager->GetSetShape(sigmcewkset_,shape_[iShape],basesel_,sigcat_,"weight_nolep",false);
       TH1F  sigmcqcdshape = filemanager->GetSetShape(sigmcqcdset_,shape_[iShape],basesel_,sigcat_,"weight_nolep",false);
       dir->cd();
-      sigmcewkshape.Scale(sigcontextrafactor_*baseweight*sigmaincsigewk_/ngenmassfilteredewk_);
-      sigmcqcdshape.Scale(sigcontextrafactor_*baseweight*sigmaincsigqcd_/ngenmassfilteredqcd_);
+      weightvec[0]=sigcontextrafactor_*ewkweight;
+      weightvec[1]=sigcontextrafactor_*qcdweight;
+      sigmcewkshape.Scale(sigcontextrafactor_*ewkweight);//baseweight*sigmaincsigewk_/ngenmassfilteredewk_);
+      sigmcqcdshape.Scale(sigcontextrafactor_*qcdweight);//baseweight*sigmaincsigqcd_/ngenmassfilteredqcd_);
      
       //!!MAKE OVERALL SIGMCSHAPE HISTO
       //Get binning info from shape
@@ -103,6 +111,8 @@ namespace ic{
       sigmcshape->SetName(histname.c_str());
       sigmcshape->Write();
     }
+    dir->cd();
+    weightvec.Write("ddweight");
 
 
     return 0;

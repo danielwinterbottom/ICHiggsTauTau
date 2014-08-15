@@ -3,6 +3,7 @@
 #include "TH1F.h"
 #include "TCanvas.h"
 #include "TDirectory.h"
+#include "TVectorD.h"
 #include <map>
 
 namespace ic{
@@ -72,6 +73,8 @@ namespace ic{
 
     //Calculate weight
     double weight=(ncdata-ncbkg)/ncmc;
+    TVectorD weightvec(1);
+    weightvec[0]=weight*sigcontextrafactor_;
     std::cout<<"  Getting signal MC shapes"<<std::endl;
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
       TH1F  sigmcshape = filemanager->GetSetShape(sigmcset_,shape_[iShape],basesel_,sigcat_,sigmcweight_,false);
@@ -89,6 +92,9 @@ namespace ic{
       sigmcshape.Scale(weight*sigcontextrafactor_);
       sigmcshape.Write();
     }
+    dir->cd();
+    weightvec.Write("ddweight");
+  
     return 0;
   };
 

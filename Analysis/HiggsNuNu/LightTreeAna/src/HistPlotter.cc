@@ -9,12 +9,18 @@
 #include <boost/algorithm/string.hpp>
 #include "TDirectory.h"
 #include "TFile.h"
+#include "TPad.h"
+#include "TLatex.h"
+#include "TLine.h"
+#include "TBox.h"
+#include "TASImage.h"
 
 namespace ic{
-
   LTPlotElement::LTPlotElement(){
     unit_="GeV";
     in_stack_=false;
+    is_inrationum_=false;
+    is_inratioden_=false;
   };
 
   LTPlotElement::~LTPlotElement(){ ;};
@@ -88,6 +94,7 @@ namespace ic{
   }
 
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
+    do_ratio_=false;
   };
 
   HistPlotter::~HistPlotter(){ ;};
@@ -169,6 +176,15 @@ namespace ic{
       //SETUP THE CANVAS
       TCanvas *c1=new TCanvas(shapes_[iShape].c_str(),shapes_[iShape].c_str());
       c1->cd();
+	TPad* upper = nullptr;
+	TPad* lower = nullptr;
+      if(do_ratio_){
+	  upper = new TPad("upper","pad",0, 0.26 ,1 ,1);
+	  lower = new TPad("lower","pad",0, 0   ,1 ,0.26);
+	  //upper->SetBottomMargin(0.02);
+	  upper->Draw();
+	  upper->cd();
+      }
       bool first=true;
       double ymax=0;
       if(!stackempty) ymax=stack->GetMaximum();
