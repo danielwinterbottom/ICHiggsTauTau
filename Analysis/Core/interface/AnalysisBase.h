@@ -5,7 +5,9 @@
 #include <string>
 #include <set>
 #include <utility>
+#include <chrono>
 #include "Core/interface/TreeEvent.h"
+
 namespace ic {
 class ModuleBase;
 }
@@ -16,7 +18,9 @@ class AnalysisBase {
   struct ModuleSequence {
     std::string name;
     std::vector<ic::ModuleBase*> modules;
+    std::vector<uint64_t> proc_counters;
     std::vector<uint64_t> counters;
+    std::vector<double> timers;
     int skim_point;
 
     ModuleSequence() : name("default"), skim_point(-1) {}
@@ -40,6 +44,7 @@ class AnalysisBase {
   bool retry_on_fail_;
   unsigned retry_pause_;
   unsigned retry_attempts_;
+  bool timings_;
 
  public:
   AnalysisBase(std::string const& analysis_name,
@@ -68,6 +73,7 @@ class AnalysisBase {
   void StopOnFileFailure(bool const& value);
   void RetryFileAfterFailure(unsigned pause_in_seconds,
                              unsigned retry_attempts);
+  void CalculateTimings(bool const& value);
 };
 }
 

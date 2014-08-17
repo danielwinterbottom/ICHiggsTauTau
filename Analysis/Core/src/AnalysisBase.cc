@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <vector>
 #include "boost/format.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/bind.hpp"
@@ -29,7 +30,8 @@ AnalysisBase::AnalysisBase(std::string const& analysis_name,
       stop_on_failed_file_(true),
       retry_on_fail_(false),
       retry_pause_(5),
-      retry_attempts_(1) {}
+      retry_attempts_(1),
+      timings_(false) {}
 
 AnalysisBase::~AnalysisBase() { ; }
 
@@ -98,6 +100,8 @@ int AnalysisBase::RunAnalysis() {
 
   for (auto & seq : seqs_) {
     seq.counters.resize(seq.modules.size());
+    seq.proc_counters.resize(seq.modules.size());
+    seq.timers.resize(seq.modules.size());
     std::cout << std::string(78, '-') << "\n";
     std::cout << boost::format("%-15s : %-60s\n") % "Pre-analysis" % seq.name;
     std::cout << std::string(78, '-') << "\n";
@@ -108,6 +112,10 @@ int AnalysisBase::RunAnalysis() {
   std::cout << std::string(78, '-') << "\n";
   std::cout << "Beginning Analysis Sequence" << std::endl;
   std::cout << std::string(78, '-') << "\n";
+
+  // Timers if we want them
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+
   for (unsigned file = 0; file < input_files_.size(); ++file) {
     // Stop looping through files if user-specified events have
     // been processed
@@ -197,7 +205,14 @@ int AnalysisBase::RunAnalysis() {
         event_.SetEvent(evt);
         bool track_event = false;
         for (unsigned m = 0; m < seq.modules.size(); ++m) {
+          if (timings_) start = std::chrono::system_clock::now();
+          ++(seq.proc_counters[m]);
           int status = (seq.modules)[m]->Execute(&event_);
+          if (timings_) {
+            end = std::chrono::system_clock::now();
+            std::chrono::duration<double> elapsed = end-start;
+            seq.timers[m] += elapsed.count();
+          }
           if (!PostModule(status)) {
             if (status == 1) {
               if (track_event)
@@ -215,10 +230,10 @@ int AnalysisBase::RunAnalysis() {
           if (do_skim && static_cast<int>(m) == seq.skim_point)
             skim_event = true;
         }
-        if (skim_event) {
-          tree_ptr->GetEntry(evt);
-          outtree->Fill();
-        }
+      }
+      if (skim_event) {
+        tree_ptr->GetEntry(evt);
+        outtree->Fill();
       }
       ++events_processed_;
       if (events_processed_ % 10000 == 0) {
@@ -240,12 +255,26 @@ int AnalysisBase::RunAnalysis() {
             << " events processed\n";
   for (auto & seq : seqs_) {
     std::cout << std::string(78, '-') << "\n";
-    std::cout << boost::format("%-15s : %-60s\n") % "Post-analysis" % seq.name;
+    if (!timings_) {
+      std::cout << boost::format("%-13s : %-22s %14s\n") % "Post-analysis" %
+                       seq.name % "Events Passed";
+    } else {
+      std::cout << boost::format("%-13s : %-22s %14s %10s %13s\n") %
+                       "Post-analysis" % seq.name % "Evts Passed" %
+                       "Time [s]" % "Time/Evt [ms]";
+    }
     std::cout << std::string(78, '-') << "\n";
     for (unsigned i = 0; i < (seq.modules).size(); ++i) {
-      std::cout << boost::format("%-40s %20s\n") %
-                       (seq.modules)[i]->ModuleName() %
-                       (seq.counters)[i];
+      if (!timings_) {
+        std::cout << boost::format("%-38s %14s\n") %
+                         seq.modules[i]->ModuleName() % seq.counters[i];
+      } else {
+        std::cout << boost::format("%-38s %14s %10.3f %13.4f\n") %
+                         seq.modules[i]->ModuleName() % seq.counters[i] %
+                         seq.timers[i] %
+                         (1000. * seq.timers[i] /
+                          static_cast<double>((seq.proc_counters[i])));
+      }
     }
     std::for_each(seq.modules.begin(), seq.modules.end(),
                   boost::bind(&ModuleBase::PostAnalysis, _1));
@@ -284,5 +313,9 @@ void AnalysisBase::WriteSkimHere(std::string const& seq_name) {
   } else {
     seq_it->skim_point = seq_it->modules.size() - 1;
   }
+}
+
+void AnalysisBase::CalculateTimings(bool const& value) {
+  timings_ = value;
 }
 }

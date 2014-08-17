@@ -207,7 +207,7 @@ pre.fragment {
         background-color: rgba(102,128,153,0.05);
         border-left: 10px solid rgba(102,128,153,0.075);
         padding: 4px 20px;
-        margin: 4px 8px 4px 2px;
+        margin: 4px 24px 4px 4px;
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
         overflow: auto;
@@ -801,21 +801,28 @@ address {
 
 table.doxtable {
 	border-collapse:collapse;
-        margin-top: 4px;
-        margin-bottom: 4px;
+  margin: 20px;
+  width: 400px;
+  font-size: 14px;
 }
 
-table.doxtable td, table.doxtable th {
-	border: 1px solid #2D4068;
-	padding: 3px 7px 2px;
+table.doxtable td {
+	border: 0px solid #FFFFFF;
+  border-bottom: 1px solid #FFFFFF;
+  border-top: 1px solid transparent;
+	padding: 4px;
+  color: #000000;
 }
 
 table.doxtable th {
-	background-color: #374F7F;
-	color: #FFFFFF;
-	font-size: 110%;
-	padding-bottom: 4px;
-	padding-top: 5px;
+	background-color: #FFFFFF;
+  border: 0px solid #000000;
+  border-bottom: 2px solid #606860;
+	font-size: 100%;
+  padding: 4px;
+  color: #000000;
+/*	padding-bottom: 4px;
+	padding-top: 5px;*/
 }
 
 table.fieldtable {
@@ -1007,7 +1014,8 @@ dl.note
         background-color: rgba(102,128,153,0.05);
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
-        margin-left: 2px;
+        margin-left: 4px;
+        margin-right: 24px;
         padding: 4px 20px;
         border-left: 10px solid rgb(0,128,64);
 /*        margin-left:-7px;
@@ -1021,7 +1029,8 @@ dl.warning, dl.attention
         background-color: rgba(102,128,153,0.05);
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
-        margin-left: 2px;
+        margin-left: 4px;
+        margin-right: 24px;
         padding: 4px 20px;
         border-left: 10px solid rgb(255, 102, 102);
 /*        margin-left:-7px;
