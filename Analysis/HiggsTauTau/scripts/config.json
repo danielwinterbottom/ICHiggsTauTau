@@ -1,0 +1,57 @@
+{
+  "job": {
+    "filelist":     "June6_MC_53X_VBF_HToTauTau_M-125.dat",
+    "file_prefix":  "/Volumes/HDD/June6/MC_53X/",
+    "max_events":   -1,
+    "timings":      false,
+    "channels":     ["et", "mt", "em"],
+    "era":          "data_2012_rereco",
+    "strategy":     "paper2013",
+    "mc":           "summer12_53X",
+    "sequences": {
+      "all":  ["default"],
+      "et":   ["scale_t_lo", "scale_t_hi"],
+      "mt":   ["scale_t_lo", "scale_t_hi"],
+      "em":   ["scale_e_lo", "scale_e_hi"]
+    }
+  },
+  "sequence": {
+    "electrons"     : "electrons",
+    "muons"         : "muonsPFlow",
+    "taus"          : "taus",
+    "tau_es_shift"  : 1.0,
+    "elec_es_shift" : 1.0,
+    "data_pu_file"  : "data/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root",
+    "mc_pu_file"    : "data/pileup/MC_Summer12_PU_S10-600bins.root"
+  },
+  "channels": {
+    "et": {
+      "pair_dr": 0.5,
+      "max_extra_elecs": 1,
+      "max_extra_muons": 0
+    },
+    "mt": {
+      "pair_dr": 0.5,
+      "max_extra_elecs": 0,
+      "max_extra_muons": 1
+    },
+    "em": {
+      "pair_dr": 0.3,
+      "max_extra_elecs": 1,
+      "max_extra_muons": 1
+    },
+    "scale_t_lo": {
+      "tau_es_shift": 0.97
+    },
+    "scale_t_hi": {
+      "tau_es_shift": 1.03
+    },
+    "scale_e_lo": {
+      "elec_es_shift": 0.99
+    },
+    "scale_e_hi": {
+      "elec_es_shift": 1.01
+    },
+    "default": {}
+  }
+}
