@@ -81,8 +81,10 @@ class Photon : public Candidate {
 
   bool pass_electron_veto_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(Photon, 2);
+ #endif
 };
 
 typedef std::vector<ic::Photon> PhotonCollection;

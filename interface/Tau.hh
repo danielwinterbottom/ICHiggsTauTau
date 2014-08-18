@@ -160,8 +160,10 @@ class Tau : public Candidate {
 
   std::vector<std::size_t> constituent_tracks_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(Tau, 2);
+ #endif
 };
 
 typedef std::vector<ic::Tau> TauCollection;

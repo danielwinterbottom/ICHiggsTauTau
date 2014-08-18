@@ -59,8 +59,10 @@ class TriggerPath {
   std::size_t id_;
   unsigned version_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(TriggerPath, 2);
+ #endif
 };
 
 typedef std::vector<ic::TriggerPath> TriggerPathCollection;

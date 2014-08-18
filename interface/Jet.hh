@@ -143,8 +143,10 @@ class Jet : public Candidate {
   std::string UnHashJecFactor(std::size_t jec) const;
   std::string UnHashDiscr(std::size_t dis) const;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(Jet, 2);
+ #endif
 };
 
 typedef std::vector<ic::Jet> JetCollection;

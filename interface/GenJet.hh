@@ -54,8 +54,10 @@ class GenJet : public Candidate {
   unsigned n_constituents_;
   std::vector<std::size_t> constituents_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(GenJet, 2);
+ #endif
 };
 
 typedef std::vector<ic::GenJet> GenJetCollection;

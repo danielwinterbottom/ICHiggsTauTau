@@ -35,8 +35,10 @@ class TriggerObject : public Candidate {
  private:
   std::vector<std::size_t> filters_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(TriggerObject, 2);
+ #endif
 };
 
 typedef std::vector<ic::TriggerObject> TriggerObjectCollection;

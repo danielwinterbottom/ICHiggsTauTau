@@ -66,8 +66,10 @@ class Met : public Candidate {
   double yx_sig_;
   double yy_sig_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(Met, 2);
+ #endif
 };
 
 typedef std::vector<ic::Met> MetCollection;

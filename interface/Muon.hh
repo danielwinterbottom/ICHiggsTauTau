@@ -356,8 +356,10 @@ class Muon : public Candidate {
 
   UFmap muon_idiso_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(Muon, 2);
+ #endif
 };
 
 typedef std::vector<ic::Muon> MuonCollection;

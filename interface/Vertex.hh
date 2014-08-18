@@ -95,8 +95,10 @@ class Vertex {
   std::vector<TrkPair> tracks_;
   std::size_t id_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(Vertex, 2);
+ #endif
 };
 
 typedef std::vector<ic::Vertex> VertexCollection;

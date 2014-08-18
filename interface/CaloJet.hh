@@ -180,8 +180,10 @@ class CaloJet : public Jet {
   bool id_loose_;
   bool id_tight_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(CaloJet, 2);
+ #endif
 };
 
 typedef std::vector<ic::CaloJet> CaloJetCollection;

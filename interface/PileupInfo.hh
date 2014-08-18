@@ -52,8 +52,10 @@ class PileupInfo {
   int bunch_crossing_;
   float true_num_interactions_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(PileupInfo, 2);
+ #endif
 };
 
 typedef std::vector<ic::PileupInfo> PileupInfoCollection;

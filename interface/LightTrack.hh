@@ -48,8 +48,10 @@ class LightTrack {
   float vz_;
   std::size_t id_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(LightTrack, 2);
+ #endif
 };
 
 typedef std::vector<ic::LightTrack> LightTrackCollection;

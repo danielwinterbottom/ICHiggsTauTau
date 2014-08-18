@@ -100,8 +100,10 @@ class Track {
   std::size_t id_;
   int charge_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(Track, 2);
+ #endif
 };
 
 typedef std::vector<ic::Track> TrackCollection;

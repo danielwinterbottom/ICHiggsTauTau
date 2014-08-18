@@ -389,8 +389,10 @@ class PFJet : public Jet {
   float linear_radial_moment_;
   int charged_multiplicity_nopu_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(PFJet, 2);
+ #endif
 };
 
 typedef std::vector<ic::PFJet> PFJetCollection;

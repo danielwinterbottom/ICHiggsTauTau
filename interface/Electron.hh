@@ -410,8 +410,10 @@ class Electron : public Candidate {
 
   UFmap elec_idiso_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(Electron, 2);
+ #endif
 };
 
 typedef std::vector<ic::Electron> ElectronCollection;

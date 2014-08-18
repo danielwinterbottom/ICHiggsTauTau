@@ -72,8 +72,10 @@ class GenParticle : public Candidate {
   std::vector<int> mothers_;
   std::vector<int> daughters_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(GenParticle, 2);
+ #endif
 };
 
 typedef std::vector<ic::GenParticle> GenParticleCollection;

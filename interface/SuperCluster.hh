@@ -103,8 +103,10 @@ class SuperCluster {
   double raw_energy_;
   bool is_barrel_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(SuperCluster, 2);
+ #endif
 };
 
 typedef std::vector<ic::SuperCluster> SuperClusterCollection;

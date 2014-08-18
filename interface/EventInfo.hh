@@ -252,8 +252,10 @@ class EventInfo {
   unsigned good_vertices_;
   TBMap filters_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(EventInfo, 2);
+ #endif
 };
 }
 /** \example plugins/ICEventInfoProducer.cc */

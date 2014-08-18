@@ -44,8 +44,10 @@ class SecondaryVertex : public Vertex {
   double distance_3d_;
   double distance_err_3d_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(SecondaryVertex, 2);
+ #endif
 };
 
 typedef std::vector<ic::SecondaryVertex> SecondaryVertexCollection;

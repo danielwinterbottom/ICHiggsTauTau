@@ -264,8 +264,10 @@ class JPTJet : public CaloJet {
   std::vector<std::size_t> elecs_in_vtx_out_calo_;
   std::vector<std::size_t> elecs_out_vtx_in_calo_;
 
+ #ifndef SKIP_CINT_DICT
  public:
   ClassDef(JPTJet, 2);
+ #endif
 };
 
 typedef std::vector<ic::JPTJet> JPTJetCollection;
