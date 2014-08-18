@@ -7,6 +7,10 @@ import sys
 ################################################################
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
+opts.register('file', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.string, "input file")
+opts.register('globalTag', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('isEmbedded', 0, parser.VarParsing.multiplicity.singleton,
@@ -18,13 +22,15 @@ opts.register('isTandP', 0, parser.VarParsing.multiplicity.singleton,
 opts.register('isZStudy', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process for Z->ee or Z->mumu?")
 opts.parseArguments()
+infile      = opts.file
+tag         = opts.globalTag
 isData      = opts.isData
 release     = opts.release
 isEmbedded  = opts.isEmbedded
 isTandP     = opts.isTandP
 isZStudy    = opts.isZStudy
 
-if not release in ["42X", "53X"]:
+if not release in ["42X", "53X", "70X", "70XMINIAOD"]:
   print 'Release not recognised, exiting!'
   sys.exit(1)
 print 'release     : '+release
@@ -39,7 +45,7 @@ print 'isZStudy    : '+str(isZStudy)
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 if release in ['42X']:
   process.load("Configuration.StandardSequences.Geometry_cff")
-if release in ['53X']:
+if release in ['53X', "70X", "70XMINIAOD"]:
   process.load("Configuration.Geometry.GeometryIdeal_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
@@ -65,31 +71,14 @@ process.options   = cms.untracked.PSet(
 ################################################################
 # Input files and global tags
 ################################################################
-if (release == '42X' and isData):
-  process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2011A-Run166512-42X.root')
-  )
-  process.GlobalTag.globaltag = cms.string('GR_R_42_V25::All')
+process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(infile))
+process.GlobalTag.globaltag = cms.string(tag)
 
-if (release == '42X' and not isData):
-  process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Fall11-42X.root')
-  )
-  process.GlobalTag.globaltag = cms.string('START42_V17::All')
-
-if (release == '53X' and isData):
-  process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2012D.root')
-  )
-  process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
-
-if (release == '53X' and not isData):
-  process.source = cms.Source("PoolSource",
-    # fileNames = cms.untracked.vstring('root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Summer12-53X-Sample.root')
-    fileNames = cms.untracked.vstring('file:/Volumes/HDD/DYJetsToLL.root')
-  )
-  process.GlobalTag.globaltag = cms.string('START53_V22::All')
-
+# 42X Data: root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2011A-Run166512-42X.root, GR_R_42_V25::All
+# 42X MC: root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Fall11-42X.root, START42_V17::All
+# 53X Data: root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2012D.root, FT_53_V21_AN4::All
+# 53X MC: root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Summer12-53X-Sample.root, START53_V22::All
+# 70X MC: root://cms-xrd-global.cern.ch//store/mc/Spring14dr/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/AODSIM/PU_S14_POSTLS170_V6-v1/00000/008D295A-49ED-E311-9F6D-7845C4F92ECD.root, PLS170_V7AN1::All
 
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
@@ -98,8 +87,6 @@ import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 # Re-do PFTau reconstruction
 ################################################################
 process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
-#if release in ['42X']: #check this goes after?
-#  switchToPFTauHPS(process)
 
 ################################################################
 # Need to create kt6PFJets in 42X for L1FastJet correction
@@ -120,17 +107,24 @@ if release in ['42X']:
 ################################################################
 # Object Selection
 ################################################################
-process.selectedVertices = selectors.selectedVertices.clone()
-
-process.selectedElectrons = selectors.selectedElectrons.clone(
-  cut = cms.string("pt > 9.5 & abs(eta) < 2.6")
+process.selectedVertices = cms.EDFilter("VertexRefSelector",
+  src = cms.InputTag("offlinePrimaryVertices"),
+  cut = cms.string("ndof >= 4 & abs(z) <= 24 & abs(position.Rho) <= 2")
 )
 
-process.selectedPFMuons = selectors.selectedPFMuons.clone(
+process.selectedElectrons = cms.EDFilter("GsfElectronRefSelector",
+  src = cms.InputTag("gsfElectrons"),
+  cut = cms.string("pt > 9.5 & abs(eta) < 2.6")
+)
+if release in ['70X']:
+  process.selectedElectrons.src = cms.InputTag("gedGsfElectrons")
+
+process.selectedPFMuons = cms.EDFilter("GenericPFCandidateSelector",
+  src = cms.InputTag("particleFlow"),
   cut = cms.string("pt > 3.0 & abs(eta) < 2.6 & abs(pdgId) == 13")
 )
 
-process.selectedPFTaus = selectors.selectedPFTaus.clone(
+process.selectedPFTaus = cms.EDFilter("PFTauRefSelector",
   src = cms.InputTag("hpsPFTauProducer", "", "MAIN"),
   cut = cms.string("pt > 18.0 & abs(eta) < 2.6 & decayMode > -0.5")
 )
@@ -151,6 +145,7 @@ process.load("CommonTools.ParticleFlow.pfParticleSelection_cff")
 # Vertices
 ################################################################
 process.icVertexProducer = producers.icVertexProducer.clone(
+  branch  = cms.string("vertices"),
   input = cms.InputTag("selectedVertices"),
   firstVertexOnly = cms.bool(True)
 )
@@ -174,6 +169,10 @@ process.icHttMuonOverlapCheck = cms.EDProducer('ICHttMuonOverlapCheck',
     muons = cms.InputTag("muons")
 )
 
+if release in ['70X']:
+  process.icHttElecIsoCheck.input = cms.InputTag("gedGsfElectrons")
+  process.icHttMuonOverlapCheck.input = cms.InputTag("gedGsfElectrons")
+
 process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_cfi")
 process.electronIdMVASequence = cms.Sequence(
   process.mvaTrigV0+
@@ -181,7 +180,10 @@ process.electronIdMVASequence = cms.Sequence(
 )
 
 from CommonTools.ParticleFlow.Tools.pfIsolation import setupPFElectronIso
-process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons')
+if release in ['42X', '53X']:
+  process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons')
+if release in ['70X']:
+  process.eleIsoSequence = setupPFElectronIso(process, 'gedGsfElectrons')
 process.eleIsoSequence.remove(process.elPFIsoValueCharged03NoPFIdPFIso)
 process.eleIsoSequence.remove(process.elPFIsoValueChargedAll03NoPFIdPFIso)
 process.eleIsoSequence.remove(process.elPFIsoValueGamma03NoPFIdPFIso)
@@ -199,6 +201,7 @@ process.elPFIsoValueCharged04PFIdPFIso.deposits[0].vetos    = cms.vstring('EcalE
 process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)')
 
 process.icElectronProducer = producers.icElectronProducer.clone(
+  branch                    = cms.string("electrons"),
   input                     = cms.InputTag("selectedElectrons"),
   includeConversionMatches  = cms.bool(True),
   inputConversionMatches    = cms.InputTag("icElectronConversionCalculator"),
@@ -426,7 +429,7 @@ process.icPFJetSequence = cms.Sequence(
 ################################################################
 # MVA MET and PF MET
 ################################################################
-if (release == '53X'):
+if release in ['53X', '70X']:
   process.load("ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_53X_Dec2012")
 else:
   process.load("ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_42X_Dec2012")
