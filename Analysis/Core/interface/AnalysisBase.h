@@ -5,64 +5,76 @@
 #include <string>
 #include <set>
 #include <utility>
+#include <chrono>
 #include "Core/interface/TreeEvent.h"
-namespace ic { class ModuleBase; }
+
+namespace ic {
+class ModuleBase;
+}
 
 namespace ic {
 
-	class AnalysisBase {
+class AnalysisBase {
+  struct ModuleSequence {
+    std::string name;
+    std::vector<ic::ModuleBase*> modules;
+    std::vector<uint64_t> proc_counters;
+    std::vector<uint64_t> counters;
+    std::vector<double> timers;
+    int skim_point;
 
-  protected:
-    std::string analysis_name_;
-    std::vector<std::string> input_file_paths_;
-    std::string tree_path_;
-    std::string tree_name_;
-    unsigned events_to_process_;
-    unsigned events_processed_;
-    std::vector<ic::ModuleBase *> modules_;
-    std::vector<double> weighted_yields_;
-    ic::TreeEvent event_;
-    bool notify_on_fail_;
-    bool notify_evt_on_fail_;
-    std::set< std::pair<int,int> > notify_run_event_;
-    std::set< int > notify_event_;
-    std::string skim_path_;
-    bool print_module_list_;
-    bool ttree_caching_;
-    bool stop_on_failed_file_;
-    bool retry_on_fail_;
-    unsigned retry_pause_;
-    unsigned retry_attempts_;
-    int skim_after_module_;
+    ModuleSequence() : name("default"), skim_point(-1) {}
+    explicit ModuleSequence(std::string const& n) : name(n), skim_point(-1) {}
+  };
 
-  public:
-    //! The standard AnalysisBase constructor constructor 
-    /*! 
-     */
-    AnalysisBase(   std::string const& analysis_name,       /**< [in] a name for the analysis object, purely decorative. */
-                    std::vector<std::string> const& input,  /**< [in] a vector of TFile paths  */
-                    std::string const& tree_path,           /**< [in] path to the directory containing the TTree in the TFile */   
-                    std::string const& tree_name,           /**< [in] the TTree name */  
-                    unsigned const& events                  /**< [in] the number of events to process, -1 means process all events. */
-                );             
+ private:
+  typedef std::vector<ic::ModuleBase*> V_Modules;
+  typedef std::pair<std::string, V_Modules> SV_Modules;
+  std::vector<ModuleSequence> seqs_;
+  std::string analysis_name_;
+  std::vector<std::string> input_files_;
+  std::string tree_path_;
+  int64_t events_to_process_;
+  unsigned events_processed_;
+  ic::TreeEvent event_;
+  std::string skim_path_;
+  bool print_module_list_;
+  bool ttree_caching_;
+  bool stop_on_failed_file_;
+  bool retry_on_fail_;
+  unsigned retry_pause_;
+  unsigned retry_attempts_;
+  bool timings_;
 
+ public:
+  AnalysisBase(std::string const& analysis_name,
+               std::vector<std::string> const& input,
+               std::string const& tree_path,
+               int64_t const& events);
 
-    void AddModule(ic::ModuleBase *module_ptr);
-    inline std::string analysis_name() { return analysis_name_; }
-    inline std::string tree_path() { return tree_path_; }
-    inline std::string tree_name() { return tree_name_; }
-    virtual ~AnalysisBase();
-    virtual int RunAnalysis();    
-    virtual void DoEventSetup();  
-    virtual bool PostModule(int status);
-    virtual void NotifyRunEvent(int const& run, int const& event);
-    virtual void NotifyEvent(int const& event);
-    void DoSkimming(std::string const& skim_path) { skim_path_ = skim_path; }
-    void WriteSkimHere();
-    void SetTTreeCaching(bool const& value);
-    void StopOnFileFailure(bool const& value);
-    void RetryFileAfterFailure(unsigned pause_in_seconds, unsigned retry_attempts);
- };
+  /// Add module to the "default" sequence
+  void AddModule(ic::ModuleBase* module_ptr);
+  /// Add module to the named sequence (creating it if it doesn't exist)
+  void AddModule(std::string const& seq_name, ic::ModuleBase* module_ptr);
+
+  /// Returns the analysis name
+  inline std::string analysis_name() { return analysis_name_; }
+  inline std::string tree_path() { return tree_path_; }
+  // inline std::string tree_name() { return tree_name_; }
+  virtual ~AnalysisBase();
+  virtual int RunAnalysis();
+  virtual void DoEventSetup();
+  virtual bool PostModule(int status);
+
+  void DoSkimming(std::string const& skim_path) { skim_path_ = skim_path; }
+  void WriteSkimHere();
+  void WriteSkimHere(std::string const& seq_name);
+  void SetTTreeCaching(bool const& value);
+  void StopOnFileFailure(bool const& value);
+  void RetryFileAfterFailure(unsigned pause_in_seconds,
+                             unsigned retry_attempts);
+  void CalculateTimings(bool const& value);
+};
 }
 
 #endif

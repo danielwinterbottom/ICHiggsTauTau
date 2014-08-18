@@ -20,6 +20,7 @@ namespace ic {//namespace
     save_weights_ = true;
     do_trg_weights_     = false;
     do_1dparkedtrg_weights_ = false;
+    do_fitted1dparkedtrg_weights_ = false;
     do_3dtrg_weights_   = false;
     trg_applied_in_mc_  = false;
     do_idiso_tight_weights_   = false;
@@ -154,21 +155,40 @@ namespace ic {//namespace
       }
       else if(do_1dparkedtrg_weights_){
 	//OPEN 1D PARKED HISTOGRAMS
-	hist_trigSF_METL1vec.push_back((TH1F*)gDirectory->Get("hData_MET_L1_A"));
-	hist_trigSF_METL1vec.push_back((TH1F*)gDirectory->Get("hData_MET_L1_BC"));
-	hist_trigSF_METL1vec.push_back((TH1F*)gDirectory->Get("hData_MET_L1_D"));
+	if(!do_fitted1dparkedtrg_weights_){
+	  hist_trigSF_METL1vec.push_back((TH1F*)gDirectory->Get("hData_MET_L1_A"));
+	  hist_trigSF_METL1vec.push_back((TH1F*)gDirectory->Get("hData_MET_L1_BC"));
+	  hist_trigSF_METL1vec.push_back((TH1F*)gDirectory->Get("hData_MET_L1_D"));
+	  
+	  hist_trigSF_METHLTvec.push_back((TH1F*)gDirectory->Get("hData_MET_1D_A"));
+	  hist_trigSF_METHLTvec.push_back((TH1F*)gDirectory->Get("hData_MET_1D_BC"));
+	  hist_trigSF_METHLTvec.push_back((TH1F*)gDirectory->Get("hData_MET_1D_D"));
 
-	hist_trigSF_METHLTvec.push_back((TH1F*)gDirectory->Get("hData_MET_1D_A"));
-	hist_trigSF_METHLTvec.push_back((TH1F*)gDirectory->Get("hData_MET_1D_BC"));
-	hist_trigSF_METHLTvec.push_back((TH1F*)gDirectory->Get("hData_MET_1D_D"));
+	  hist_trigSF_MjjHLTvec.push_back((TH1F*)gDirectory->Get("hData_MJJ_1D_A"));
+	  hist_trigSF_MjjHLTvec.push_back((TH1F*)gDirectory->Get("hData_MJJ_1D_BC"));
+	  hist_trigSF_MjjHLTvec.push_back((TH1F*)gDirectory->Get("hData_MJJ_1D_D"));
+	  
+	  hist_trigSF_JetHLTvec.push_back((TH1F*)gDirectory->Get("hData_JET2_1D_A"));
+	  hist_trigSF_JetHLTvec.push_back((TH1F*)gDirectory->Get("hData_JET2_1D_BC"));
+	  hist_trigSF_JetHLTvec.push_back((TH1F*)gDirectory->Get("hData_JET2_1D_D"));
+	}
+	else{
+	  //SET UP FITTED 1D FUNCTIONS
+	  func_trigSF_METL1vec.push_back((TF1*)gDirectory->Get("fData_MET_L1_A"));
+	  func_trigSF_METHLTvec.push_back((TF1*)gDirectory->Get("fData_MET_1D_A"));
+	  func_trigSF_MjjHLTvec.push_back((TF1*)gDirectory->Get("fData_MJJ_1D_A"));
+	  func_trigSF_JetHLTvec.push_back((TF1*)gDirectory->Get("fData_JET2_1D_A"));
 
-	hist_trigSF_MjjHLTvec.push_back((TH1F*)gDirectory->Get("hData_MJJ_1D_A"));
-	hist_trigSF_MjjHLTvec.push_back((TH1F*)gDirectory->Get("hData_MJJ_1D_BC"));
-	hist_trigSF_MjjHLTvec.push_back((TH1F*)gDirectory->Get("hData_MJJ_1D_D"));
+	  func_trigSF_METL1vec.push_back((TF1*)gDirectory->Get("fData_MET_L1_BC"));
+	  func_trigSF_METHLTvec.push_back((TF1*)gDirectory->Get("fData_MET_1D_BC"));
+	  func_trigSF_MjjHLTvec.push_back((TF1*)gDirectory->Get("fData_MJJ_1D_BC"));
+	  func_trigSF_JetHLTvec.push_back((TF1*)gDirectory->Get("fData_JET2_1D_BC"));
 
-	hist_trigSF_JetHLTvec.push_back((TH1F*)gDirectory->Get("hData_JET2_1D_A"));
-	hist_trigSF_JetHLTvec.push_back((TH1F*)gDirectory->Get("hData_JET2_1D_BC"));
-	hist_trigSF_JetHLTvec.push_back((TH1F*)gDirectory->Get("hData_JET2_1D_D"));
+	  func_trigSF_METL1vec.push_back((TF1*)gDirectory->Get("fData_MET_L1_D"));
+	  func_trigSF_METHLTvec.push_back((TF1*)gDirectory->Get("fData_MET_1D_D"));
+	  func_trigSF_MjjHLTvec.push_back((TF1*)gDirectory->Get("fData_MJJ_1D_D"));
+	  func_trigSF_JetHLTvec.push_back((TF1*)gDirectory->Get("fData_JET2_1D_D"));
+	}
       }
       else{
 	hist_trigSF_METL1 = (TH1F*)gDirectory->Get("METL1");
@@ -433,6 +453,7 @@ namespace ic {//namespace
 	unsigned nruns=3;
 	double trgweights[nruns];
 	unsigned nvars=4;
+	if(!do_fitted1dparkedtrg_weights_){
 	unsigned bins[nruns][nvars];
 	for(unsigned irun=0;irun<nruns;irun++){
 	  unsigned nbins[nvars];
@@ -466,6 +487,40 @@ namespace ic {//namespace
 	    //std::cout<<"Weight for run: "<<irun<<" is "<<trgweights[irun]<<std::endl;
 	  
 	  //std::cout << " Bin Jet2pt"<<irun<<" " << bins[irun][0] << " Bin metHLT"<<irun<<" " << bins[irun][1] << " BinMjj"<<irun<<" " << bins[irun][2] << std::endl;
+	}
+	}
+	else{
+	  //!!GET FITTED 1D WEIGHTS AND PUT IN TRGWEIGHTS[nruns]
+	  for(unsigned irun=0;irun<nruns;irun++){
+	    double xmins[4],xmaxes[4];
+	    double varweights[4];
+	    double vars[4];
+	    TF1* funcs[4];
+	    vars[0]=l1met;
+	    vars[1]=hltmet;
+	    vars[2]=mjj;
+	    vars[3]=jet2pt;
+	    funcs[0]=func_trigSF_METL1vec[irun];
+	    funcs[1]=func_trigSF_METHLTvec[irun];
+	    funcs[2]=func_trigSF_MjjHLTvec[irun];
+	    funcs[3]=func_trigSF_JetHLTvec[irun];
+	    func_trigSF_METL1vec[irun]->GetRange(xmins[0],xmaxes[0]);
+	    func_trigSF_METHLTvec[irun]->GetRange(xmins[1],xmaxes[1]);
+	    func_trigSF_MjjHLTvec[irun]->GetRange(xmins[2],xmaxes[2]);
+	    func_trigSF_JetHLTvec[irun]->GetRange(xmins[3],xmaxes[3]);
+	    
+	    //Get l1weight
+	    for(unsigned ivar=0;ivar<4;ivar++){
+	      if(vars[ivar]<=xmaxes[ivar]){
+		if(vars[ivar]>=xmins[ivar]){
+		  varweights[ivar]=funcs[ivar]->Eval(vars[ivar]);
+		}
+		else varweights[ivar]=0;
+	      }
+	      else varweights[ivar]=1;
+	    }
+	  trgweights[irun]=varweights[0]*varweights[1]*varweights[2]*varweights[3];
+	  }
 	}
 	//LUMI WEIGHTED AVERAGE OVER RUNS
 	double trgweight=(trgweights[0]*Alumi_+trgweights[1]*BClumi_+trgweights[2]*Dlumi_)/(Alumi_+BClumi_+Dlumi_);

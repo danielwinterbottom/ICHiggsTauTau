@@ -77,6 +77,8 @@ int main(int argc, char* argv[]){
   bool dospring10gaus;                    // Do gaussian smearing for jets with no gen jet match
   bool dojersyst;                 // Do Jet Energy Resolution Systematic Run
   bool jerbetterorworse;          // If doing Jet Energy Resolution Systematic Run, run with with better or worse (true for better, false for worse)
+  bool douessyst;                 // Do Unclustered MET Systematic Run
+  bool uesupordown;               // If doing Unclustered MET Systematic Run, run with up or down correction (true for up, false for down) 
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
   bool taulepdiscrtight;          // Use tight electron and muon discriminants
   bool dojerdebug;                // Access runmetunc collections for debugging
@@ -89,6 +91,7 @@ int main(int argc, char* argv[]){
   bool dotrgeff;                  // Do trigger efficiency corrections
   bool do3dtrgeff;                // Do 3d trigger efficiency corrections
   bool do1dparkedtrgeff;          // Do 3d trigger efficiency corrections
+  bool dofitted1dparkedtrgeff;          // Do 3d trigger efficiency corrections
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
   bool doidisoerr;                // Do lepton ID-iso efficiency correction error
   bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
@@ -140,12 +143,15 @@ int main(int argc, char* argv[]){
     ("jesupordown",         po::value<bool>(&jesupordown)->default_value(true))
     ("dojersyst",           po::value<bool>(&dojersyst)->default_value(false))
     ("jerbetterorworse",    po::value<bool>(&jerbetterorworse)->default_value(true))
+    ("douessyst",           po::value<bool>(&douessyst)->default_value(false))
+    ("uesupordown",         po::value<bool>(&uesupordown)->default_value(true))
     ("docrosschecktau",     po::value<bool>(&docrosschecktau)->default_value(false))
     ("taulepdiscrtight",    po::value<bool>(&taulepdiscrtight)->default_value(false))
     ("dojerdebug",          po::value<bool>(&dojerdebug)->default_value(false))
     ("dotrgeff",            po::value<bool>(&dotrgeff)->default_value(false))
     ("do3dtrgeff",          po::value<bool>(&do3dtrgeff)->default_value(false))
     ("do1dparkedtrgeff",    po::value<bool>(&do1dparkedtrgeff)->default_value(false))
+    ("dofitted1dparkedtrgeff",po::value<bool>(&dofitted1dparkedtrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
@@ -262,8 +268,7 @@ int main(int argc, char* argv[]){
   ic::AnalysisBase analysis(
     "HiggsNuNu",        // Analysis name
     files,                // Input files
-    "icEventProducer",    // TTree path
-    "EventTree",          // TTree name
+    "icEventProducer/EventTree", // TTree name
     max_events);          // Max. events to process (-1 = all)
 
   // ------------------------------------------------------------------------------------
@@ -530,6 +535,8 @@ int main(int argc, char* argv[]){
     .set_jerbetterorworse(jerbetterorworse)
     .set_jesuncfile(jesuncfile)
     .set_dojerdebug(dojerdebug)
+    .set_douessyst(douessyst)
+    .set_uesupordown(uesupordown)
     .set_randomseed(randomseed)
     .set_fs(fs);
   
@@ -631,6 +638,7 @@ int main(int argc, char* argv[]){
     hinvWeights.set_do_trg_weights(dotrgeff)
       .set_do_3dtrg_weights(do3dtrgeff)
       .set_do_1dparkedtrg_weights(do1dparkedtrgeff)
+      .set_do_fitted1dparkedtrg_weights(dofitted1dparkedtrgeff)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
     if(do3dtrgeff){
@@ -763,11 +771,6 @@ int main(int argc, char* argv[]){
   //filter taus for plots
   analysis.AddModule(&tauPtEtaFilter);
   
-  //add met without leptons for plots
-  analysis.AddModule(&metNoMuons);
-  analysis.AddModule(&metNoElectrons);
-  analysis.AddModule(&metNoENoMu);
-  
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   
   //deal with removing overlap with selected leptons
@@ -777,6 +780,11 @@ int main(int argc, char* argv[]){
   
   //Module to do jet smearing and systematics
   analysis.AddModule(&ModifyJetMET);
+  
+  //add met without leptons for plots
+  analysis.AddModule(&metNoMuons);
+  analysis.AddModule(&metNoElectrons);
+  analysis.AddModule(&metNoENoMu);
   
   //filter taus
   analysis.AddModule(&tauDzFilter);

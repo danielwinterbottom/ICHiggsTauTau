@@ -9,39 +9,40 @@
 #include "TSystem.h"
 #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/AnalysisBase.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CopyCollection.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CompositeProducer.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OneCollCompositeProducer.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/PileupWeight.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPairSelector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTWeights.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTRecoilCorrector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTSync.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPrint.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/SVFitTest.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/JetEnergyUncertainty.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/LumiMask.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEnergyScale.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTCategories.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTTriggerFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauDzFixer.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuMVA.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCut.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/BTagCheck.h"
+#include "Utilities/interface/FnRootTools.h"
+#include "Core/interface/AnalysisBase.h"
+#include "Modules/interface/CopyCollection.h"
+#include "Modules/interface/SimpleFilter.h"
+#include "Modules/interface/OverlapFilter.h"
+#include "Modules/interface/CheckEvents.h"
+#include "Modules/interface/CompositeProducer.h"
+#include "Modules/interface/OneCollCompositeProducer.h"
+#include "Modules/interface/PileupWeight.h"
+#include "HiggsTauTau/interface/HTTPairSelector.h"
+#include "HiggsTauTau/interface/HTTWeights.h"
+#include "Modules/interface/QuarkGluonDiscriminatorStudy.h"
+#include "HiggsTauTau/interface/HTTRecoilCorrector.h"
+#include "HiggsTauTau/interface/HTTSync.h"
+#include "HiggsTauTau/interface/HTTPrint.h"
+#include "Modules/interface/MakeRunStats.h"
+#include "Modules/interface/EnergyShifter.h"
+#include "Modules/interface/SVFit.h"
+#include "HiggsTauTau/interface/SVFitTest.h"
+#include "Modules/interface/JetEnergyCorrections.h"
+#include "HiggsTauTau/interface/JetEnergyUncertainty.h"
+#include "Modules/interface/LumiMask.h"
+#include "HiggsTauTau/interface/HTTConfig.h"
+#include "HiggsTauTau/interface/HTTEnergyScale.h"
+#include "HiggsTauTau/interface/HTTCategories.h"
+#include "HiggsTauTau/interface/HTTTriggerFilter.h"
+#include "HiggsTauTau/interface/TauDzFixer.h"
+#include "HiggsTauTau/interface/HTTEMuExtras.h"
+#include "HiggsTauTau/interface/HTTEMuMVA.h"
+#include "HiggsTauTau/interface/HTTL1MetCorrector.h"
+#include "HiggsTauTau/interface/HTTL1MetCut.h"
+#include "HiggsTauTau/interface/TauEfficiency.h"
+#include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
+#include "HiggsTauTau/interface/BTagCheck.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -336,8 +337,7 @@ int main(int argc, char* argv[]){
   ic::AnalysisBase analysis(
     "HiggsTauTau",        // Analysis name
     files,                // Input files
-    "icEventProducer",    // TTree path
-    "EventTree",          // TTree name
+    "icEventProducer/EventTree", // TTree name
     max_events);          // Max. events to process (-1 = all)
   if (do_skim && skim_path != "") analysis.DoSkimming(skim_path);
   analysis.SetTTreeCaching(true);
@@ -1005,14 +1005,17 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------ 
+  auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
   std::vector<int> to_check =
   {
   };
   for (auto ch : to_check) {
-    analysis.NotifyEvent(ch);
+   eventChecker.CheckEvent(ch);
    httPrint.PrintEvent(ch);
   }
   httPrint.set_skip_events(false);
+  if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
+
   if ( (channel == channel::etmet || 
         channel == channel::mtmet)
         && !is_data )             analysis.AddModule(&httL1MetCorrector); 
