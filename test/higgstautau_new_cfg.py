@@ -159,7 +159,7 @@ if release in ['70X']:
     cut = cms.double(0.5),
     filter = cms.bool(False)
   )
-  
+
 if release in ['70XMINIAOD']:
   process.selectedVertices.src = cms.InputTag("offlineSlimmedPrimaryVertices")
   process.selectedElectrons = cms.EDFilter("PATElectronRefSelector",
@@ -199,41 +199,41 @@ if release in ['70X']:
 
 if release in ['70XMINIAOD']:
   process.pfPileUp = cms.EDFilter("CandPtrSelector",
-      src = cms.InputTag("packedPFCandidates"), 
+      src = cms.InputTag("packedPFCandidates"),
       cut = cms.string("fromPV <= 1")
       )
   process.pfNoPileUp = cms.EDFilter("CandPtrSelector",
-      src = cms.InputTag("packedPFCandidates"), 
+      src = cms.InputTag("packedPFCandidates"),
       cut = cms.string("fromPV > 1")
       )
   process.pfAllNeutralHadrons = cms.EDFilter("CandPtrSelector",
-      src = cms.InputTag("pfNoPileUp"), 
+      src = cms.InputTag("pfNoPileUp"),
       cut = cms.string("abs(pdgId) = 111 | abs(pdgId) = 130 | " \
           "abs(pdgId) = 310 | abs(pdgId) = 2112")
       )
   process.pfAllChargedHadrons= cms.EDFilter("CandPtrSelector",
-      src = cms.InputTag("pfNoPileUp"), 
+      src = cms.InputTag("pfNoPileUp"),
       cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
           "abs(pdgId) = 999211 | abs(pdgId) = 2212")
       )
   process.pfAllPhotons= cms.EDFilter("CandPtrSelector",
-      src = cms.InputTag("pfNoPileUp"), 
+      src = cms.InputTag("pfNoPileUp"),
       cut = cms.string("abs(pdgId) = 22")
       )
   process.pfAllChargedParticles= cms.EDFilter("CandPtrSelector",
-      src = cms.InputTag("pfNoPileUp"), 
+      src = cms.InputTag("pfNoPileUp"),
       cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
           "abs(pdgId) = 999211 | abs(pdgId) = 2212 | " \
           "abs(pdgId) = 11 | abs(pdgId) = 13")
       )
   process.pfPileUpAllChargedParticles= cms.EDFilter("CandPtrSelector",
-      src = cms.InputTag("pfPileUp"), 
+      src = cms.InputTag("pfPileUp"),
       cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
           "abs(pdgId) = 999211 | abs(pdgId) = 2212 | " \
           "abs(pdgId) = 11 | abs(pdgId) = 13")
       )
   process.pfAllNeutralHadronsAndPhotons = cms.EDFilter("CandPtrSelector",
-      src = cms.InputTag("pfNoPileUp"), 
+      src = cms.InputTag("pfNoPileUp"),
       cut = cms.string("abs(pdgId) = 111 | abs(pdgId) = 130 | " \
           "abs(pdgId) = 310 | abs(pdgId) = 2112 | abs(pdgId) = 22")
       )
@@ -272,7 +272,7 @@ if release in ['70XMINIAOD']: electronLabel = cms.InputTag("slimmedElectrons")
 process.icElectronSequence = cms.Sequence()
 
 process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
-    input       = electronLabel, 
+    input       = electronLabel,
     beamspot    = cms.InputTag("offlineBeamSpot"),
     conversions = cms.InputTag("allConversions")
 )
@@ -307,8 +307,8 @@ if release in ['42X', '53X', '70X']:
     process.mvaTrigV0+
     process.mvaNonTrigV0
   )
-  process.mvaTrigV0.electronTag = electronLabel 
-  process.mvaNonTrigV0.electronTag = electronLabel 
+  process.mvaTrigV0.electronTag = electronLabel
+  process.mvaNonTrigV0.electronTag = electronLabel
 
 if release in ['42X', '53X']:
   from CommonTools.ParticleFlow.Tools.pfIsolation import setupPFElectronIso
@@ -346,14 +346,14 @@ if release in ['70X', '70XMINIAOD']:
   process.elPFIsoDepositNeutral.src     = electronLabel
   process.elPFIsoDepositGamma.src       = electronLabel
   process.elPFIsoDepositPU.src          = electronLabel
-  if release in ['70XMINIAOD']: 
+  if release in ['70XMINIAOD']:
     process.elPFIsoDepositGamma.ExtractorPSet.ComponentName = cms.string("CandViewExtractor")
   process.icElectronSequence += cms.Sequence(
       process.electronPFIsolationDepositsSequence+
       process.electronPFIsolationValuesSequence
       )
 
-process.elPFIsoValueGamma04PFIdPFIso.deposits[0].vetos = ( 
+process.elPFIsoValueGamma04PFIdPFIso.deposits[0].vetos = (
     cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)'))
 process.elPFIsoValueNeutral04PFIdPFIso.deposits[0].vetos = (
     cms.vstring())
@@ -448,9 +448,9 @@ process.icMuonProducer = producers.icMuonProducer.clone(
   ),
   includePFIso04           = cms.bool(True)
 )
-if release in ['70XMINIAOD']: process.icMuonProducer.isPF = cms.bool(False) 
+if release in ['70XMINIAOD']: process.icMuonProducer.isPF = cms.bool(False)
 
-process.icMuonSequence += cms.Sequence( 
+process.icMuonSequence += cms.Sequence(
   process.icMuonProducer
 )
 
@@ -611,18 +611,18 @@ if release in ['70X', '70XMINIAOD']:
       version = cms.int32(-1),
       tmvaVariables = cms.vstring(
         "nvtx"     ,
-        "dZ"       , 
-        "beta"     , 
-        "betaStar" , 
-        "nCharged" , 
-        "nNeutrals", 
-        "dR2Mean"  , 
-        "ptD"      , 
-        "frac01"   , 
-        "frac02"   , 
-        "frac03"   , 
-        "frac04"   , 
-        "frac05"   , 
+        "dZ"       ,
+        "beta"     ,
+        "betaStar" ,
+        "nCharged" ,
+        "nNeutrals",
+        "dR2Mean"  ,
+        "ptD"      ,
+        "frac01"   ,
+        "frac02"   ,
+        "frac03"   ,
+        "frac04"   ,
+        "frac05"   ,
         ),
       tmvaSpectators = cms.vstring(
         "jetPt",
@@ -784,7 +784,7 @@ if release in ['42X', '53X']:
     process.icMvaMetConcatenate+
     process.icMvaMetIDConcatenate+
     process.icMvaMetProducer
-  ) 
+  )
 
 process.icPfMetProducer = producers.icSingleMetProducer.clone(
   branch  = cms.string("pfMet"),
@@ -796,17 +796,28 @@ process.icPfMetType1Producer = producers.icSingleMetProducer.clone(
   input   = cms.InputTag("pfMetType1")
 )
 
-if release in ['42X', '53X']:
+if release in ['42X']:
   #process.load("JetMETCorrections.Type1MET.correctedMet_cff")
   #process.pfMetType1 = process.pfMetT1.clone()
   process.icMvaMetSequence += cms.Sequence(
     process.icPfMetProducer
   )
 
+if release in ['53X']:
+  process.load("JetMETCorrections.Type1MET.pfMETCorrections_cff")
+  process.pfJetMETcorr.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual") if isData else cms.string("ak5PFL1FastL2L3")
+  process.pfMetType1 = process.pfType1CorrectedMet.clone()
+  process.icMvaMetSequence += cms.Sequence(
+    process.pfJetMETcorr+
+    process.pfMetType1+
+    process.icPfMetType1Producer+
+    process.icPfMetProducer
+  )
+
 if release in ['70X']:
   process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff")
   process.load("JetMETCorrections.Type1MET.correctedMet_cff")
-  process.corrPfMetType1.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual") if isData else cms.string("ak5PFL1FastL2L3") 
+  process.corrPfMetType1.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual") if isData else cms.string("ak5PFL1FastL2L3")
   process.pfMetType1 = process.pfMetT1.clone()
   process.icMvaMetSequence += cms.Sequence(
     process.corrPfMetType1+
