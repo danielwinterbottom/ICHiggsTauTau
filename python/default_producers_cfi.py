@@ -45,14 +45,6 @@ icElectronHcalDepthCalculator = cms.EDProducer('ICElectronHcalDepthCalculator',
 )
 ## [ElectronHcalDepth]
 
-## [ElectronConversion]
-icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
-    input       = cms.InputTag("gsfElectrons"),
-    beamspot    = cms.InputTag("offlineBeamSpot"),
-    conversions = cms.InputTag("allConversions")
-)
-## [ElectronConversion]
-
 ## [Muon]
 icMuonProducer = cms.EDProducer('ICMuonProducer',
     branch                    = cms.string("muons"),
