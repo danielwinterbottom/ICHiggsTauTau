@@ -23,6 +23,7 @@ opts.register('isZStudy', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process for Z->ee or Z->mumu?")
 opts.parseArguments()
 infile      = opts.file
+if not infile: infile = "file:/tmp/file.root"
 tag         = opts.globalTag
 isData      = opts.isData
 release     = opts.release
