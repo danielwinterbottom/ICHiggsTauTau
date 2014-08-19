@@ -466,6 +466,8 @@ process.icTauProducer = producers.icTauProducer.clone(
   requestTracks           = cms.bool(False),
   tauIDs = tauIDs.minimalHttIds
 )
+
+if release in ['53X']: process.icTauProducer.tauIDs = tauIDs.fullNewIds
 if release in ['70X']: process.icTauProducer.tauIDs = tauIDs.fullNewIds
 
 if release in ['70XMINIAOD']:
@@ -729,6 +731,10 @@ if release in ['42X', '53X']:
     process.calibratedAK5PFJetsForPFMEtMVA.correctors = cms.vstring("ak5PFL1FastL2L3Residual")
   else:
     process.calibratedAK5PFJetsForPFMEtMVA.correctors = cms.vstring("ak5PFL1FastL2L3")
+  ## don't run the standard MVA MET (crases endJob in 5_3_15, prob. new tau ID)
+  process.pfMEtMVAsequence = cms.Sequence(
+    process.calibratedAK5PFJetsForPFMEtMVA
+  )
   process.mvaMetPairsMT = process.mvaMetPairs.clone(
     srcLeg1   = cms.InputTag('selectedPFMuons'),
     srcLeg2   = cms.InputTag('selectedPFTaus'),
