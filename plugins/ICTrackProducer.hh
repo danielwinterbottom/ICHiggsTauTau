@@ -29,6 +29,7 @@ class ICTrackProducer : public edm::EDProducer {
       virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
 
       // ----------member data ---------------------------
-      std::vector<ic::Track> *cand_vec;
-      std::vector<std::string> merge_labels_;      
+      std::string               branch_name_;
+      std::vector<ic::Track>   *cand_vec;
+      std::vector<std::string>  merge_labels_;      
 };

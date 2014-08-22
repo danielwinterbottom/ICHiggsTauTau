@@ -26,6 +26,7 @@
 
 ICTrackProducer::ICTrackProducer(const edm::ParameterSet& iConfig) {
  cand_vec = new std::vector<ic::Track>();
+ branch_name_  = iConfig.getUntrackedParameter<std::string>("branchName","tracks");
  merge_labels_ = iConfig.getUntrackedParameter<std::vector<std::string> >("mergeLabels");
  std::cout << "Info in <ICTrackProducer>: Picking up Track requests from the following modules:" << std::endl;
  for (unsigned i = 0; i < merge_labels_.size(); ++i) {
@@ -90,7 +91,7 @@ void ICTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 // ------------ method called once each job just before starting event loop  ------------
 void ICTrackProducer::beginJob() {
- ic::StaticTree::tree_->Branch("tracks",&cand_vec);
+  ic::StaticTree::tree_->Branch(branch_name_.c_str(),&cand_vec);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
