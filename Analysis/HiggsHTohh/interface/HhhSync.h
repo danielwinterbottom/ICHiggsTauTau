@@ -6,7 +6,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TMVA/Reader.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SVFitService.h"
+#include "HiggsTauTau/interface/SVFitService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 
 #include <string>

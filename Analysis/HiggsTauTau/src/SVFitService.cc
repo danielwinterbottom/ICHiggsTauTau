@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SVFitService.h"
+#include "HiggsTauTau/interface/SVFitService.h"
 
 namespace ic {
 
@@ -22,12 +22,8 @@ namespace ic {
     measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kHadDecay, LorentzVector(had->vector())));
     NSVfitStandaloneAlgorithm algo(measuredTauLeptons, met_vec, covMET, 0);
     algo.addLogM(false);
-    #if defined(__CMSSW_5_3_7__)
-      algo.integrateVEGAS();
-      // algo.integrateMarkovChain();
-    #else
-      algo.integrate();
-    #endif
+    algo.integrateVEGAS();
+    // algo.integrateMarkovChain();
     return algo.getMass();
   }
 
@@ -43,12 +39,8 @@ namespace ic {
     measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kLepDecay, LorentzVector(lep2->vector())));
     NSVfitStandaloneAlgorithm algo(measuredTauLeptons, met_vec, covMET, 0);
     algo.addLogM(false);
-    #if defined(__CMSSW_5_3_7__)
-      algo.integrateVEGAS();
-      // algo.integrateMarkovChain();
-    #else
-      algo.integrate();
-    #endif
+    algo.integrateVEGAS();
+    // algo.integrateMarkovChain();
     return algo.getMass();
   }
 
@@ -66,13 +58,9 @@ namespace ic {
     algo.addLogM(false);
     Candidate fitresult;
 
-    #if defined(__CMSSW_5_3_7__)
-      algo.integrateVEGAS();
-      // algo.integrateMarkovChain();
-      fitresult.set_vector(ROOT::Math::PtEtaPhiEVector(algo.fittedDiTauSystem()));
-    #else
-      algo.integrate();
-    #endif
+    algo.integrateVEGAS();
+    // algo.integrateMarkovChain();
+    fitresult.set_vector(ROOT::Math::PtEtaPhiEVector(algo.fittedDiTauSystem()));
 
     return std::make_pair(fitresult, algo.getMass());
   }
@@ -91,13 +79,9 @@ namespace ic {
     algo.addLogM(false);
     Candidate fitresult;
 
-    #if defined(__CMSSW_5_3_7__)
-      algo.integrateVEGAS();
-      // algo.integrateMarkovChain();
-      fitresult.set_vector(ROOT::Math::PtEtaPhiEVector(algo.fittedDiTauSystem()));
-    #else
-      algo.integrate();
-    #endif
+    algo.integrateVEGAS();
+    // algo.integrateMarkovChain();
+    fitresult.set_vector(ROOT::Math::PtEtaPhiEVector(algo.fittedDiTauSystem()));
 
     return std::make_pair(fitresult, algo.getMass());
   }

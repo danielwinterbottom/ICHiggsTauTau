@@ -27,6 +27,9 @@
 #include "UserCode/ICHiggsTauTau/Analysis/TagAndProbe/interface/FittingFunction.h"
 
 using namespace RooFit ;
+using std::ios;
+using std::cerr;
+using std::endl;
 
     int fit(std::string filename, std::string type, bool elec, bool isdata){
 

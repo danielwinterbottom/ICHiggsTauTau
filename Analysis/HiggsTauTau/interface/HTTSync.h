@@ -7,7 +7,7 @@
 #include "TMVA/Reader.h"
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
-#include "Utilities/interface/SVFitService.h"
+#include "HiggsTauTau/interface/SVFitService.h"
 #include "HiggsTauTau/interface/HTTConfig.h"
 
 namespace ic {

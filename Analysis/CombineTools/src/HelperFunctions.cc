@@ -109,7 +109,7 @@ void ScaleProcessRate(ch::Process* p,
   p->set_rate(p->rate() * scale);
 }
 
-std::vector<std::string> JoinStr(std::vector<vector<std::string>> const& in) {
+std::vector<std::string> JoinStr(std::vector<std::vector<std::string>> const& in) {
   return Join<std::string>(in);
 }
 }

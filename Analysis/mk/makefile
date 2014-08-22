@@ -38,7 +38,7 @@ endif
 # BOOST - currently fixed to version 1.47.0, we will need to do some magic
 # in the near futures to figure out the right version for the CMSSW release
 ifndef BOOSTSYS
-	BOOSTSYS := $(CMS_PATH)/$(SCRAM_ARCH)/external/boost/1.47.0
+	BOOSTSYS := $(shell scram tool tag boost BOOST_BASE)
 endif
 
 USERINCLUDES += -I$(TOP)
