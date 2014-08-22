@@ -807,7 +807,7 @@ process.icMuonProducer = cms.EDProducer('ICMuonProducer',
 process.icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     inputLabel = cms.InputTag("selectedAndFilteredPatJets"),
     branchName = cms.untracked.string("pfJetsPFlow"),
-    StoreTrackIds = cms.bool(False)
+    StoreTrackIds = cms.bool(True)
     )
 
 
@@ -856,10 +856,14 @@ process.icVertexProducer = cms.EDProducer('ICVertexProducer',
     FirstVertexOnly = cms.bool(True)
 )
 
-process.icTrackProducer = cms.EDProducer('ICTrackProducer',
-    mergeLabels = cms.untracked.vstring(
-        'icVertexProducer'
-    )
+process.icTrackProducerVertex = cms.EDProducer('ICTrackProducer',
+    branchName  = cms.untracked.string ("tracksPrimaryVertex"),
+    mergeLabels = cms.untracked.vstring('icVertexProducer')
+)
+
+process.icTrackProducerPFJets = cms.EDProducer('ICTrackProducer',
+    branchName  = cms.untracked.string ("tracksPFJets"),
+    mergeLabels = cms.untracked.vstring('icPFJetProducer')
 )
 
 process.icGenJetProducer = cms.EDProducer('ICGenJetProducer',
@@ -975,6 +979,8 @@ process.icSequence += cms.Sequence(
   +process.icPfMetType1Producer
   +process.icTauProducer
   +process.icVertexProducer
+  +process.icTrackProducerVertex 
+  +process.icTrackProducerPFJets
   +process.icEventInfoProducer
   )
 
