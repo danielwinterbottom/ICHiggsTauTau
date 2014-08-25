@@ -6,6 +6,12 @@
 #include <string>
 #include <vector>
 #include "TH1F.h"
+#include "TPad.h"
+#include "TLatex.h"
+#include "TLine.h"
+#include "TBox.h"
+#include "TASImage.h"
+
 
 namespace ic {
 
@@ -34,6 +40,8 @@ namespace ic {
     CLASS_MEMBER(LTPlotElement,double,scale)
     CLASS_MEMBER(LTPlotElement,bool,in_stack)//NOTE DATA CANNOT BE STACKED AT THE MOMENT
     CLASS_MEMBER(LTPlotElement,bool,is_data)
+    CLASS_MEMBER(LTPlotElement,bool,is_inrationum)
+    CLASS_MEMBER(LTPlotElement,bool,is_inratioden)
     CLASS_MEMBER(LTPlotElement,std::string,drawopts)
     CLASS_MEMBER(LTPlotElement,std::string,legopts)
     CLASS_MEMBER(LTPlotElement,std::string,sample)
@@ -44,6 +52,7 @@ namespace ic {
     CLASS_MEMBER(HistPlotter,std::string,dirname)
     CLASS_MEMBER(HistPlotter,std::vector<LTPlotElement>,elements)   
     CLASS_MEMBER(HistPlotter,std::vector<std::string>,shapes)   
+    CLASS_MEMBER(HistPlotter,bool,do_ratio)
   public:	
     HistPlotter(std::string);
     virtual ~HistPlotter();

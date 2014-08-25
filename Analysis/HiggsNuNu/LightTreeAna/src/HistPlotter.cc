@@ -4,17 +4,24 @@
 #include "THStack.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TStyle.h"
 #include <map>
 //#include "CommonTools/Utils/interface/TFileDirectory.h"
 #include <boost/algorithm/string.hpp>
 #include "TDirectory.h"
 #include "TFile.h"
+#include "TPad.h"
+#include "TLatex.h"
+#include "TLine.h"
+#include "TBox.h"
+#include "TASImage.h"
 
 namespace ic{
-
   LTPlotElement::LTPlotElement(){
     unit_="GeV";
     in_stack_=false;
+    is_inrationum_=false;
+    is_inratioden_=false;
   };
 
   LTPlotElement::~LTPlotElement(){ ;};
@@ -88,6 +95,7 @@ namespace ic{
   }
 
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
+    do_ratio_=false;
   };
 
   HistPlotter::~HistPlotter(){ ;};
@@ -169,6 +177,15 @@ namespace ic{
       //SETUP THE CANVAS
       TCanvas *c1=new TCanvas(shapes_[iShape].c_str(),shapes_[iShape].c_str());
       c1->cd();
+	TPad* upper = nullptr;
+	TPad* lower = nullptr;
+      if(do_ratio_){
+	  upper = new TPad("upper","pad",0, 0.26 ,1 ,1);
+	  lower = new TPad("lower","pad",0, 0   ,1 ,0.26);
+	  //upper->SetBottomMargin(0.02);
+	  upper->Draw();
+	  upper->cd();
+      }
       bool first=true;
       double ymax=0;
       if(!stackempty) ymax=stack->GetMaximum();
@@ -208,7 +225,53 @@ namespace ic{
       }
       leg->Draw("same");
       c1->Update();
-      
+
+      //DRAW RATIO PLOT
+      if(do_ratio_){
+	c1->cd();
+	lower->SetTopMargin(0.026);
+	lower->Draw();
+	lower->cd();
+	lower->SetGridy();
+
+		
+	bool firstnum=true;
+	bool firstden=true;
+	TH1F* num;
+	TH1F* den;
+	for(unsigned iElement=0;iElement<elements_.size();iElement++){
+	  if(elements_[iElement].is_inrationum()){
+	    //ADD TO num HIST
+	    if(firstnum){
+	      num=(TH1F*)(elements_[iElement].hist_ptr()->Clone("num"));
+	      firstnum=false;
+	    }
+	    else num->Add(elements_[iElement].hist_ptr());
+	  }
+	  if(elements_[iElement].is_inratioden()){
+	    //ADD TO den HIST
+	    if(firstden){
+	      den=(TH1F*)(elements_[iElement].hist_ptr()->Clone("den"));
+	      firstden=false;
+	    }
+	    else den->Add(elements_[iElement].hist_ptr());
+	  }
+	}
+	if(firstnum||firstden)std::cout<<"To draw ratio plot you must specify elements to be numerator and denominator! Ratio plot will be missing."<<std::endl;
+	else{
+	  //DIVIDE NUM BY DEN and put in ratio
+	  TH1F* ratio;
+	  ratio=(TH1F*)(num->Clone("ratio"));
+	  ratio->GetYaxis()->SetLabelSize(0.08);
+	  ratio->GetYaxis()->SetRangeUser(0,2.0);
+	  ratio->SetTitle("");
+	  ratio->Divide(den);
+	  gStyle->SetOptStat(0);
+	  ratio->SetStats(0);
+	  ratio->Draw("E1");
+	}
+      }
+
       //WRITE TO FILE
       writedir->cd();
       c1->Write();

@@ -3,7 +3,9 @@
 #include "TH1F.h"
 #include "TCanvas.h"
 #include "TDirectory.h"
+#include "TVectorD.h"
 #include <map>
+#include "boost/lexical_cast.hpp"
 
 namespace ic{
 
@@ -57,8 +59,68 @@ namespace ic{
     //Get Shapes for NSMC, NCMC, NCData and NCBkg
     std::cout<<"  Getting control MC shape"<<std::endl;
     TH1F  contmcshape = filemanager->GetSetShape(contmcset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
-   std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
-    TH1F  contbkgshape = filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
+    std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
+    TH1F contbkgshape;
+    bool firstbkg=true;
+    //IF NO DIRS TO GET DATA DRIVEN WEIGHTS, GET SETS SHAPE
+    if(contbkgextrafactordir_.size()==0){
+      contbkgshape= filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
+    }
+    //WEIGHT INDIVIDUAL SHAPES BY DATA DRIVEN WEIGHTS
+    else{
+      if(contbkgextrafactordir_.size()==contbkgset_.size()){
+	for(unsigned iBkg=0;iBkg<contbkgset_.size();iBkg++){
+	  double extrafactor=1;
+	  TDirectory* extrafactordir;
+	  TVectorD *ddweight;
+	  if(contbkgextrafactordir_[iBkg]==""){
+	    extrafactor=1;
+	  }
+	  else if(!fs_->GetDirectory(contbkgextrafactordir_[iBkg].c_str())){
+	    std::cout<<"Directory "<<contbkgextrafactordir_[iBkg]<<" does not exist, exiting"<<std::endl;
+	    return 1;
+	  }
+	  else{
+	    extrafactordir=fs_->GetDirectory(contbkgextrafactordir_[iBkg].c_str());
+	    ddweight = (TVectorD*)extrafactordir->Get("ddweight");
+	    if(contbkgisz_.size()==contbkgset_.size()){
+	      if(contbkgisz_[iBkg]==0){
+		extrafactor=(*ddweight)[0];
+	      }
+	      if(contbkgisz_[iBkg]==1){
+		extrafactor=(*ddweight)[0];//EWK WEIGHT
+	      }
+	      if(contbkgisz_[iBkg]==2){
+		extrafactor=(*ddweight)[1];//QCD WEIGHT
+	      }
+	    }
+	  }
+	  TH1F nextbkg;
+	  //SPECIAL CASE FOR Z BKG
+	  if(contbkgisz_.size()==contbkgset_.size()){
+	    if(contbkgisz_[iBkg]!=0){
+	      //GET Z SHAPE AND WEIGHT IT
+	      nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,zcontcat_,contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	    }
+	    else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	  }
+	  else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	  
+	  //ADD HISTOGRAMS TOGETHER
+	  if(firstbkg){
+	    contbkgshape=nextbkg;
+	    firstbkg=false;
+	  }
+	  else{
+	    contbkgshape.Add(&nextbkg);
+	  }
+	}
+      }
+      else{
+	std::cout<<"Extra factor dir vector must be same size as bkg set vector expect errors!"<<std::endl;
+	return 1;
+      }
+    }
     std::cout<<"  Getting control Data shape"<<std::endl;
     TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_+contdataextrasel_,contdataweight_,false);
 
@@ -72,6 +134,8 @@ namespace ic{
 
     //Calculate weight
     double weight=(ncdata-ncbkg)/ncmc;
+    TVectorD weightvec(1);
+    weightvec[0]=weight*sigcontextrafactor_;
     std::cout<<"  Getting signal MC shapes"<<std::endl;
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
       TH1F  sigmcshape = filemanager->GetSetShape(sigmcset_,shape_[iShape],basesel_,sigcat_,sigmcweight_,false);
@@ -89,6 +153,9 @@ namespace ic{
       sigmcshape.Scale(weight*sigcontextrafactor_);
       sigmcshape.Write();
     }
+    dir->cd();
+    weightvec.Write("ddweight");
+  
     return 0;
   };
 
