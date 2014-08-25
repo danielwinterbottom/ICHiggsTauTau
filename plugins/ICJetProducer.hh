@@ -29,37 +29,11 @@
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 /**
- * @brief Produce an ic::Jet (or derived class) collection from the
- *corresponding reco::Jet or pat::Jet input
- *
- * @details The ic::JetProducer class is probably the most complex producer in
- *the framework. Most of this complexity is due to the fact that it is templated
- *both on the input and output jet types. At first glance it may seem easier to
- *simply write a separate producer for each input-output pairing. However, the
- *number of possible combinations is high enough that this would involve a large
- *amount code duplication - which is difficult to maintain.
- *
- *Each choice of input and output type brings with it the need for a specific
- *set of options. This is addressed through two helper structs, the
- *JetSrcHelper which is templated only on the input type, and the
- *JetDestHelper which is templated only on the output type. Please see the
- *documentation pages of these structs for further details.
- *
- *An important distinction to make between using a reco::Jet and a pat::Jet as
- *input is the treatment of the jet energy corrections. This module assumes a
- *reco::Jet collection as input is uncorrected. The JetSrcHelper in this case
- *provides extra options to specify the list of corrections to apply and an
- *optional cut string that may be applied after the input jet is corrected and
- *before a corresponding ic::Jet is produced.
+ * @brief See documentation [here](\ref objs-jet)
  *
  * @tparam T The ic::Jet type to produce, e.g. ic::Jet, ic::PFJet, ic::CaloJet
  *or ic::JPTJet
  * @tparam U The input jet type, e.g. reco::CaloJet, reco::PFJet or pat::Jet
- *
- * The pairs of template specialisations defined as modules are listed here: @ref JetProducers
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py Jet
  */
 template <class T, class U>
 class ICJetProducer : public edm::EDProducer {

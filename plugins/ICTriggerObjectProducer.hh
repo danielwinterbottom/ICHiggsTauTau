@@ -14,11 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 
 /**
- * @brief Produces an ic::TriggerObject collection for a specific trigger path
- *using the pat::Trigger input
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py TriggerObject
+ * @brief See documentation [here](\ref objs-trig-obj)
  */
 class ICTriggerObjectProducer : public edm::EDProducer {
  public:

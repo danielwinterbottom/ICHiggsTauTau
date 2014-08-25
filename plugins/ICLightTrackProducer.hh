@@ -14,11 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/LightTrack.hh"
 
 /**
- * @brief Produces an ic::LightTrack collection from any input compatible with
- *an edm::View<reco::Track>
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py LightTrack
+ * @brief See documentation [here](\ref objs-track)
  */
 class ICLightTrackProducer : public edm::EDProducer {
  public:

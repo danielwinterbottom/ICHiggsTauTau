@@ -11,10 +11,7 @@
 #include "UserCode/ICHiggsTauTau/interface/PileupInfo.hh"
 
 /**
- * @brief Produces an ic::PileupInfo collection
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py PileupInfo
+ * @brief See documentation [here](\ref objs-pu-info)
  */
 class ICPileupInfoProducer : public edm::EDProducer {
  public:

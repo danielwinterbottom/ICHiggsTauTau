@@ -14,11 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Track.hh"
 
 /**
- * @brief Produces an ic::Track collection from any input compatible with
- *an edm::View<reco::Track>
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py Track
+ * @brief See documentation [here](\ref objs-track)
  */
 class ICTrackProducer : public edm::EDProducer {
  public:

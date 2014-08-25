@@ -15,11 +15,7 @@
 #include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 
 /**
- * @brief Produces an ic::SecondaryVertex collection from any input compatible
- *with an edm::View<reco::SecondaryVertexTagInfo>
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py SecondaryVertex
+ * @brief See documentation [here](\ref objs-sec-vertex)
  */
 class ICSecondaryVertexProducer : public edm::EDProducer {
  public:

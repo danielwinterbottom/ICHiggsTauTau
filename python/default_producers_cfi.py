@@ -1,5 +1,12 @@
 import FWCore.ParameterSet.Config as cms
 
+## [Candidate]
+icCandidateProducer = cms.EDProducer('ICCandidateProducer',
+  branch  = cms.string("l1EmIsolated"),
+  input   = cms.InputTag("l1extraParticles", "Isolated", "RECO")
+)
+## [Candidate]
+
 ## [Electron]
 icElectronProducer = cms.EDProducer('ICElectronProducer',
     branch                    = cms.string("electrons"),
@@ -55,6 +62,9 @@ icMuonProducer = cms.EDProducer('ICMuonProducer',
     includeBeamspotIP         = cms.bool(False),
     inputBeamspot             = cms.InputTag("offlineBeamSpot"),
     includeFloats = cms.PSet(
+      # A named list of InputTags identifying edm::ValueMap<float>
+      # objects keyed on the input collection objects. The hash
+      # of the name and the float value will be stored.
     ),
     includePFIso03           = cms.bool(False),
     pfIso03 = cms.PSet(
@@ -102,14 +112,22 @@ icPhotonProducer = cms.EDProducer('ICPhotonProducer',
 ## [Photon]
 
 ## [Tau]
-icTauProducer = cms.EDProducer("ICPFTauProducer",
+icTauProducer = cms.EDProducer("ICPFTauProducer", # or "ICPFTauFromPatProducer"
   branch                  = cms.string("taus"),
   input                   = cms.InputTag("hpsPFTauProducer"),
   inputVertices           = cms.InputTag("offlinePrimaryVertices"),
   includeVertexIP         = cms.bool(False),
   requestTracks           = cms.bool(False),
   tauIDs = cms.PSet(
-    # decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding")
+    # Add a list of discriminators that should be loaded from the edm::Event.
+    # Each discriminator will be stored as a float and associated to the hash
+    # of the label string given here (e.g. "decayModeFinding" below). Some TauID
+    # PSets have been defined in python/tau_discriminators_cfi.py, and these follow
+    # the labelling convention used in the default PAT sequences.
+    # Note that if the ICPFTauFromPatProducer is used this list will be ignored.
+    #
+    # decayModeFinding = cms.InputTag("hpsPFTauDiscriminationByDecayModeFinding"),
+    # etc...
   )
 )
 ## [Tau]
@@ -194,14 +212,30 @@ icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     srcConfig = cms.PSet(
       includeJetFlavour         = cms.bool(False),
       inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
+      ### If True corrects the input jets using the list of correctors
+      ### given by JECs below
       applyJECs                 = cms.bool(False),
+      ### If True saves the value of each correction factor along witht he
+      ### hash of the label given in the option JECs below
       includeJECs               = cms.bool(False),
-      JECs                      = cms.PSet(),
+      JECs                      = cms.PSet(
+        ### E.g.
+        #  L1FastJet  = cms.string("ak5PFL1Fastjet"),
+        #  L2Relative = cms.string("ak5PFL2Relative"),
+        #  L3Absolute = cms.string("ak5PFL3Absolute")
+      ),
+      ### If true will apply the cut specfied by 'cutAfterJECS' to the corrected
+      ### input jets
       applyCutAfterJECs         = cms.bool(False),
       cutAfterJECs              = cms.string(""),
       inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAK5PF"),
       requestSVInfo             = cms.bool(False),
-      BTagDiscriminators        = cms.PSet(),
+      BTagDiscriminators        = cms.PSet(
+        ### E.g.
+        #  simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"),
+        #  simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"),
+        #  combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF")
+      ),
     ),
     #### The srcConfig PSet when the input is a pat::Jet collection
     # srcConfig = cms.PSet(
@@ -305,13 +339,6 @@ icSuperClusterProducer = cms.EDProducer('ICSuperClusterProducer',
   inputEndcap   = cms.InputTag("correctedMulti5x5SuperClustersWithPreshower")
 )
 ## [SuperCluster]
-
-## [Candidate]
-icCandidateProducer = cms.EDProducer('ICCandidateProducer',
-  branch  = cms.string("l1EmIsolated"),
-  input   = cms.InputTag("l1extraParticles", "Isolated", "RECO")
-)
-## [Candidate]
 
 ## [L1EtMiss]
 icL1MHTProducer = cms.EDProducer('ICL1EtMissProducer',

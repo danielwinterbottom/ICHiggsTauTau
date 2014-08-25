@@ -10,10 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 
 /**
- * @brief Produces an ic::TriggerPath collection from a pat::Trigger input
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py TriggerPath
+ * @brief See documentation [here](\ref objs-trig-path)
  */
 class ICTriggerPathProducer : public edm::EDProducer {
  public:

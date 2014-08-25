@@ -14,11 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 
 /**
- * @brief Produces an ic::Candidate collection from any input compatible
- *with an edm::View<reco::Candidate>
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py Candidate
+ * @brief See documentation [here](\ref objs-candidate)
  */
 class ICCandidateProducer : public edm::EDProducer {
  public:

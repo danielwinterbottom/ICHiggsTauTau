@@ -12,9 +12,7 @@
 namespace ic {
 
 /**
- * @brief Stores the properties of a supercluster. Note: does not inherit from
- * ic::Candidate but is instead specified by the supercluster position and
- * direction with respect to the detector origin.
+ * @brief See documentation [here](\ref objs-supercluster)
  */
 class SuperCluster {
  private:

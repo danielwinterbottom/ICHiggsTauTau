@@ -14,11 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 
 /**
- * @brief Produces an ic::Vertex collection from any input compatible with
- *an edm::View<reco::Vertex>
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py Vertex
+ * @brief See documentation [here](\ref objs-vertex)
  */
 class ICVertexProducer : public edm::EDProducer {
  public:

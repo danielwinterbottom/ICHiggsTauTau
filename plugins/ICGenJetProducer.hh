@@ -15,11 +15,7 @@
 #include "UserCode/ICHiggsTauTau/interface/GenJet.hh"
 
 /**
- * @brief Produces an ic::GenJet collection from any input compatible with an
- *edm::View<reco::GenJet>
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py GenJet
+ * @brief See documentation [here](\ref objs-genjet)
  */
 class ICGenJetProducer : public edm::EDProducer {
  public:

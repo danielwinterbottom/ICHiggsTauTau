@@ -15,11 +15,7 @@
 // #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
 
 /**
- * @brief Produces an ic::Photon collection from any input compatible with
- *an edm::View<reco::Photon>
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py Photon
+ * @brief See documentation [here](\ref objs-photon)
  */
 class ICPhotonProducer : public edm::EDProducer {
  public:

@@ -21,24 +21,7 @@
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 /**
- * @brief Produces an ic::Tau collection from either an edm::View<reco::PFTau>
- *or edm::View<pat::Tau> compatible collection.
- *
- * @details This templated producer is used to define two specific producers,
- *one for reco::PFTau input (ICPFTauProducer) and the other for pat::Tau input
- *(ICPFTauFromPatProducer). The only difference between the two implementations
- *is that the user must specify the list of discriminators to save in the
- *reco::PFTau case, which will be retrieved from the edm::Event, whereas this
- *list is extracted directly from the input object in the pat::Tau case.
- *
- * @tparam T The input tau type, e.g. reco::PFTau or pat::Tau
- *
- * In both cases the same configuration is used, but for the
- *ICPFTauFromPatProducer the entries in `tauIDs` are ignored in favour of the
- *discriminators already associated to the pat::Tau
- *
- * **Example usage**
- * @snippet python/default_producers_cfi.py Tau
+ * @brief See documentation [here](\ref objs-tau)
  */
 template <class T>
 class ICTauProducer : public edm::EDProducer {

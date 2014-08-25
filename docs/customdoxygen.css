@@ -802,7 +802,7 @@ address {
 table.doxtable {
 	border-collapse:collapse;
   margin: 20px;
-  width: 400px;
+  width: 85%;
   font-size: 14px;
 }
 
@@ -1049,17 +1049,19 @@ dl.pre, dl.post, dl.invariant
 
 dl.deprecated
 {
-        margin-left:-7px;
-        padding-left: 3px;
-        border-left:4px solid;
+        margin-left:4px;
+        margin-right: 24px;
+        padding: 4px 20px;
+        border-left:10px solid;
         border-color: #505050;
 }
 
 dl.todo
 {
-        margin-left:-7px;
-        padding-left: 3px;
-        border-left:4px solid;
+        margin-left:4px;
+        margin-right: 24px;
+        padding: 4px 20px;
+        border-left:10px solid;
         border-color: #00C0E0;
 }
 
