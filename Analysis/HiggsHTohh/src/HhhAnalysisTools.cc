@@ -287,14 +287,14 @@ namespace ic {
 
   void HhhAnalysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
-      std::string m1 = m;
-      std::string m2 = m;
-      if(m=="250" || m=="260"){
-          m1="260";
-          m2="250";
-      }
-      sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m1);
-      sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m2);
+      sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m);
+      sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
+      sample_names_.push_back("GluGluToAToZhToLLTauTau_mA-"+m);
+    }
+  }
+  void HhhAnalysis::AddMSSMbbHSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
     }
   }
 
@@ -609,6 +609,7 @@ namespace ic {
         });
       } else {
         if (method == 4)  qcd_cat = cat;
+        if (method == 21)  qcd_cat = cat;
         if (method == 5)  qcd_cat = this->ResolveAlias("vbf_loose_jets20");
         if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
@@ -824,18 +825,30 @@ namespace ic {
                     std::string const& postfix,
                     double fixed_xs) {
     for (auto const& m : masses) {
-      std::string m1 = m;
-      std::string m2 = m;
-      if(m=="250" || m=="260"){
-          m1="260";
-          m2="250";
-      }
-      auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m1, var, sel, cat, wt, fixed_xs);
-      auto signal_pair_AZh = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m2, var, sel, cat, wt, fixed_xs);
-      hmap["ggHTohh"+infix+m+postfix] = signal_pair;
-      hmap["ggAToZh"+infix+m+postfix] = signal_pair_AZh;
+      //Add H->hh and A->Zh for the requested masses
+      auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
+      auto signal_pair_AZhttbb = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m, var, sel, cat, wt, fixed_xs);
+      auto signal_pair_AZhbbtt = this->GenerateSignal("GluGluToAToZhToLLTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+      hmap["ggHTohhTo2Tau2B"+infix+m+postfix] = signal_pair;
+      hmap["ggAToZhToLLTauTau"+infix+m+postfix] = signal_pair_AZhbbtt;
+      hmap["ggAToZhToLLBB"+infix+m+postfix] = signal_pair_AZhttbb;
       //PrintValue("ggHTohh"+postfix, signal_pair.second);
-      //hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
+    }
+  }
+  
+  void HhhAnalysis::FillMSSMbbHSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+
+    //Add bbH for a selected set of interesting masses
+    for (auto const& m : masses) {
+      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
 
