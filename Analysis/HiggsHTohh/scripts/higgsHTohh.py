@@ -259,24 +259,28 @@ signal_mc = [ ]
 signal_mc_ww = [ ]
 
 if options.proc_mssm or options.proc_all:
-  #Hmasses = ['260','300','350']
-  #Amasses = ['250','300','350']
   Hmasses = ['260','270','280','290','300','310','320','330','340','350']
-  Amasses = ['260','270','280','290','300','310','320','330','340','350']
+  Amasses = ['250','260','270','280','290','300','310','320','330','340','350']
+  ATauTaumasses = ['260','270','280','290','300','310','320','330','340','350']
+  bbHmasses = ['90','100','110','120','130','140','160','180','200','250','300','350','400']
   #if options.do_2011 and ERA=='Paper' : masses += ['90','95','100','105','150','155','160']
   if options.short_signal: Hmasses = ['300']
   if options.short_signal: Amasses = ['300']
-  for Hmass in Hmasses :
+ # for Hmass in Hmasses : 
+ #   signal_mc += [
+ #     'GluGluToHTohhTo2Tau2B_mH-'+Hmass
+ #   ]
+ # for Amass in Amasses :
+ #   signal_mc += [
+ #     'GluGluToAToZhToLLBB_mA-'+Amass
+ #   ]
+ # for Amass in ATauTaumasses :
+ #   signal_mc += [
+ #     'GluGluToAToZhToLLTauTau_mA-'+Amass
+ #   ]
+  for Hmass in bbHmasses : 
     signal_mc += [
-      'GluGluToHTohhTo2Tau2B_mH-'+Hmass
-#      'SUSYBBHToTauTau_M-'+Hmass,
-#      'SUSYBBHToTauTau_M-100',
-#      'SUSYBBHToTauTau_M-120'
-    ]
-  for Amass in Amasses :
-    signal_mc += [
-      'GluGluToAToZhToLLBB_mA-'+Amass,
-      'GluGluToAToZhToLLTauTau_mA-'+Amass
+      'SUSYBBHToTauTau_M-'+Hmass
     ]
 if options.proc_sm : 
   hmasses = ['125']
