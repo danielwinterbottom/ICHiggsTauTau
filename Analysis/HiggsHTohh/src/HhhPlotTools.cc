@@ -298,25 +298,25 @@ namespace ic {
     sig_schemes_["mssm_default"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
-        {"ggHTohh"}, kBlue+3, true)
+        {"ggHTohhTo2Tau2B"}, kBlue+3, true)
     };
     sig_schemes_["mssm_nostack"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times hh#rightarrow#tau#taubb(m_{H}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
-        {"ggHTohh"}, kBlue+3, false),
+        {"ggHTohhTo2Tau2B"}, kBlue+3, false),
       PlotSigComponent("sig_AZh",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times Zh#rightarrow#tau#taubb(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
-        {"ggAToZh"}, kGreen+3, false)
+        {"ggAToZhToLLBB"}, kGreen+3, false)
     };
     sig_schemes_["mssm_nopars"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau"),
-        {"ggHTohh"}, kBlue+3, true)
+        {"ggHTohhTo2Tau2B"}, kBlue+3, true)
     };
     sig_schemes_["mssm_nostack_nopars"] = {
       PlotSigComponent("sig",
         (boost::lexical_cast<std::string>(signal_scale_)+"#times #Phi#rightarrow#tau#tau"),
-        {"ggHTohh"}, kBlue+3, false)
+        {"ggHTohhTo2Tau2B"}, kBlue+3, false)
     };
     sig_schemes_["sm_split_vbf"] = {
       PlotSigComponent("sig",
