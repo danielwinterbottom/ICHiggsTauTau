@@ -1,124 +1,51 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICLightTrackProducer.hh"
-#include <boost/functional/hash.hpp>
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-
+#include <string>
+#include <vector>
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/Run.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
-
-#include "UserCode/ICHiggsTauTau/interface/LightTrack.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
-
-
+#include "UserCode/ICHiggsTauTau/interface/Track.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
-#include "boost/format.hpp"
-
-
-ICLightTrackProducer::ICLightTrackProducer(const edm::ParameterSet& iConfig) {
- cand_vec = new std::vector<ic::LightTrack>();
- merge_labels_ = iConfig.getUntrackedParameter<std::vector<std::string> >("mergeLabels");
- std::cout << "Info in <ICLightTrackProducer>: Picking up Track requests from the following modules:" << std::endl;
- for (unsigned i = 0; i < merge_labels_.size(); ++i) {
-   std::cout << "-- " << merge_labels_[i] << std::endl;
- }
+ICLightTrackProducer::ICLightTrackProducer(const edm::ParameterSet& config)
+    : input_(config.getParameter<edm::InputTag>("input")),
+      branch_(config.getParameter<std::string>("branch")) {
+  tracks_ = new std::vector<ic::LightTrack>();
+  PrintHeaderWithProduces(config, input_, branch_);
 }
 
+ICLightTrackProducer::~ICLightTrackProducer() { delete tracks_; }
 
-ICLightTrackProducer::~ICLightTrackProducer() {
- // do anything here that needs to be done at desctruction time
- // (e.g. close files, deallocate resources etc.)
- delete cand_vec;
-}
+void ICLightTrackProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
+  edm::Handle<edm::View<reco::Track> > track_handle;
+  event.getByLabel(input_, track_handle);
 
+  // Prepare output collection
+  tracks_->clear();
+  tracks_->resize(track_handle->size(), ic::LightTrack());
 
-
-// ------------ method called to produce the data  ------------
-void ICLightTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-  boost::hash<reco::Track const*> hasher;
-
-  edm::Handle<reco::TrackCollection> trackCollection;
-  iEvent.getByLabel("generalTracks",trackCollection);
-  if (trackCollection->size() == 0) return;
-  const reco::Track *ptr_to_first  = &((trackCollection->at(0)));
-  const reco::Track *ptr_to_last  = &((trackCollection->at(trackCollection->size() -1)));
-
-  std::set<reco::Track const*> ptr_set;
-  std::vector<edm::Handle<std::vector<unsigned> > > merge_handles;
-  merge_handles.resize(merge_labels_.size());
-  for (unsigned i = 0; i < merge_handles.size(); ++i) {
-    iEvent.getByLabel(merge_labels_[i],"selectTracks", merge_handles[i]);
-    for (unsigned j = 0; j < merge_handles[i]->size(); ++j) {
-      const reco::Track *ptr = &(trackCollection->at(merge_handles[i]->at(j)));
-      ptr_set.insert(ptr);
-    }
-  }
-
-
-  //reco::GenParticleCollection::const_iterator iter;
-  std::set<reco::Track const*>::const_iterator iter;
-  cand_vec->resize(0);
-  cand_vec->reserve(trackCollection->size());
-
-  for (iter = ptr_set.begin(); iter != ptr_set.end(); ++iter) {
-    if (!(*iter >= ptr_to_first && *iter <= ptr_to_last)) {
-      std::cerr << "Warning: Track pointer outside generalTracks vector!" << std::endl;
-      continue;
-    }
-    cand_vec->push_back(ic::LightTrack());
-    ic::LightTrack & cand = cand_vec->back();
-    //Set candidate data
-    cand.set_id(hasher(*iter));
-    cand.set_pt((*iter)->pt());
-    cand.set_vz((*iter)->vz());
+  for (unsigned i = 0; i < track_handle->size(); ++i) {
+    reco::Track const& src = track_handle->at(i);
+    ic::LightTrack& dest = tracks_->at(i);
+    dest.set_id(track_hasher_(&src));
+    dest.set_pt(src.pt());
+    dest.set_vz(src.vz());
   }
 }
 
-// ------------ method called once each job just before starting event loop  ------------
 void ICLightTrackProducer::beginJob() {
- ic::StaticTree::tree_->Branch("lightTracks",&cand_vec);
+  ic::StaticTree::tree_->Branch(branch_.c_str(), &tracks_);
 }
 
-// ------------ method called once each job just after ending the event loop  ------------
-void ICLightTrackProducer::endJob() {
-}
+void ICLightTrackProducer::endJob() {}
 
-// ------------ method called when starting to processes a run  ------------
-void ICLightTrackProducer::beginRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a run  ------------
-void ICLightTrackProducer::endRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when starting to processes a luminosity block  ------------
-void ICLightTrackProducer::beginLuminosityBlock(edm::LuminosityBlock&, 
-                                             edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-void ICLightTrackProducer::endLuminosityBlock(edm::LuminosityBlock&, 
-                                           edm::EventSetup const&) {
-}
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-ICLightTrackProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
-}
-
-//define this as a plug-in
 DEFINE_FWK_MODULE(ICLightTrackProducer);
+

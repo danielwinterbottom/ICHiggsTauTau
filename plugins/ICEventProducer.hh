@@ -1,30 +1,30 @@
-#include <memory>
+#ifndef UserCode_ICHiggsTauTau_ICElectronProducer_h
+#define UserCode_ICHiggsTauTau_ICElectronProducer_h
 
+#include <memory>
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
-
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "TTree.h"
-
-
+/**
+ * @brief Handles the creation of the ntuple output, and must always be included
+ *after the other IC object producers.
+ *
+ * **Example usage**
+ * @snippet python/default_producers_cfi.py Event
+ */
 class ICEventProducer : public edm::EDProducer {
-   public:
-      explicit ICEventProducer(const edm::ParameterSet&);
-      ~ICEventProducer();
+ public:
+  explicit ICEventProducer(const edm::ParameterSet&);
+  ~ICEventProducer();
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
-   private:
-      virtual void beginJob() ;
-      virtual void produce(edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
-      
-      virtual void beginRun(edm::Run&, edm::EventSetup const&);
-      virtual void endRun(edm::Run&, edm::EventSetup const&);
-      virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-      virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
+ private:
+  unsigned processed_;
+  virtual void beginJob();
+  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void endJob();
 };
+
+#endif

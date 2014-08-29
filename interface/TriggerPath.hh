@@ -2,41 +2,70 @@
 #define ICHiggsTauTau_TriggerPath_hh
 #include <string>
 #include <vector>
-#include <iostream>
+#include "Rtypes.h"
 
 namespace ic {
 
-  class TriggerPath {
+/**
+ * @brief Information on a trigger path, including accept, prescale and version
+ * information.
+ */
+class TriggerPath {
+ public:
+  TriggerPath();
+  virtual ~TriggerPath();
+  virtual void Print() const;
 
-  public:
-    TriggerPath();
-    virtual ~TriggerPath();
+  /// @name Properties
+  /**@{*/
+  /// The trigger path name
+  inline std::string const& name() const { return name_; }
 
-    inline std::string const& name() const { return name_; }
-    inline void set_name(std::string const& name) { name_ = name; }
+  /// True if the trigger fired, false otherwise
+  inline bool accept() const { return accept_; }
 
-    inline bool accept() const { return accept_; }
-    inline void set_accept(bool const& accept) { accept_ = accept; }
+  /// The trigger prescale
+  inline unsigned prescale() const { return prescale_; }
 
-    inline unsigned prescale() const { return prescale_; }
-    inline void set_prescale(unsigned const& prescale) { prescale_ = prescale; }
+  /// Unique identifier, usually a hash of the trigger name
+  inline std::size_t id() const { return id_; }
 
-    inline std::size_t id() const { return id_; }
-    inline void set_id(std::size_t const& id) { id_ = id; }
+  /// The trigger version number
+  inline unsigned version() const { return version_; }
+  /**@}*/
 
-    virtual void Print() const;
+  /// @name Setters
+  /**@{*/
+  /// @copybrief name()
+  inline void set_name(std::string const& name) { name_ = name; }
 
+  /// @copybrief accept()
+  inline void set_accept(bool const& accept) { accept_ = accept; }
 
-private:
-      std::string name_;
-      bool accept_;
-      unsigned prescale_;
-      std::size_t id_;
+  /// @copybrief prescale()
+  inline void set_prescale(unsigned const& prescale) { prescale_ = prescale; }
 
+  /// @copybrief id()
+  inline void set_id(std::size_t const& id) { id_ = id; }
+
+  /// @copybrief version()
+  inline void set_version(unsigned const& version) { version_ = version; }
+  /**@}*/
+
+ private:
+  std::string name_;
+  bool accept_;
+  unsigned prescale_;
+  std::size_t id_;
+  unsigned version_;
+
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(TriggerPath, 2);
+ #endif
 };
 
-  typedef std::vector<ic::TriggerPath> TriggerPathCollection;
-  typedef std::vector<ic::TriggerPath *> TriggerPathPtrVec;
-
+typedef std::vector<ic::TriggerPath> TriggerPathCollection;
 }
+/** \example plugins/ICTriggerPathProducer.cc */
 #endif

@@ -12,6 +12,7 @@
 <use name="root"/>
 <use name="clhep"/>
 <use name="rootrflx"/>
+<flags CPPDEFINES="SKIP_CINT_DICT"/>
 <export>
  <lib name="1"/>
 </export>

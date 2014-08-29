@@ -183,7 +183,7 @@ namespace ic {
       }
     }
     if (eventInfo->is_data()) {
-      TriggerPathPtrVec const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPaths");
+      auto const& triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPaths");
       for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
         std::cout << "Trigger path: " << triggerPathPtrVec[i]->name() << "  Prescale: " << triggerPathPtrVec[i]->prescale() << std::endl;
       }

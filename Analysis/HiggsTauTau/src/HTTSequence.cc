@@ -18,6 +18,7 @@
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
+#include "HiggsTauTau/interface/HTTGenEvent.h"
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
 #include "Modules/interface/CompositeProducer.h"
@@ -35,6 +36,9 @@ void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,
   if (channel == channel::mt) BuildMTPairs(seq, js);
   if (channel == channel::em) BuildEMPairs(seq, js);
 
+  BuildModule(seq, HTTGenEvent("HTTGenEvent")
+                       .set_genparticle_label("genParticles")
+                       .set_genjet_label("genJets"));
 
   BuildModule(seq, SimpleFilter<CompositeCandidate>("PairFilter")
       .set_input_label("ditau").set_min(1)
@@ -42,12 +46,14 @@ void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,
         return ROOT::Math::VectorUtil::DeltaR(c->At(0)->vector(), c->At(1)->vector()) > js["pair_dr"].asDouble();
       }));
 
-  BuildModule(seq, HTTTriggerFilter("HTTTriggerFilter")
-      .set_channel(channel)
-      .set_mc(mc::summer12_53X)
-      .set_is_data(false)
-      .set_is_embedded(false)
-      .set_pair_label("ditau"));
+  if (js["do_trg_filter"].asBool()) {
+    BuildModule(seq, HTTTriggerFilter("HTTTriggerFilter")
+        .set_channel(channel)
+        .set_mc(mc::summer12_53X)
+        .set_is_data(false)
+        .set_is_embedded(false)
+        .set_pair_label("ditau"));
+  }
 
   if (channel == channel::et) BuildDiElecVeto(seq, js);
   if (channel == channel::mt) BuildDiMuonVeto(seq, js);
@@ -56,8 +62,10 @@ void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,
 
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
   TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
-  BuildModule(seq, PileupWeight("PileupWeight")
-      .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
+  if (js["do_pu_wt"].asBool()) {
+    BuildModule(seq, PileupWeight("PileupWeight")
+        .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
+  }
 }
 
 void HTTSequence::BuildETPairs(ModuleSequence* seq, Json::Value const& js) {
@@ -71,7 +79,8 @@ void HTTSequence::BuildETPairs(ModuleSequence* seq, Json::Value const& js) {
                 fabs(e->eta())          < 2.1     &&
                 fabs(e->dxy_vertex())   < 0.045   &&
                 fabs(e->dz_vertex())    < 0.2     &&
-                ElectronHTTId(e, false)           &&
+                /*ElectronHTTId(e, false)           &&*/
+                ElectronZbbID(e)                  &&
                 PF04IsolationVal(e, 0.5) < 0.1;
       }));
 
@@ -87,10 +96,10 @@ void HTTSequence::BuildETPairs(ModuleSequence* seq, Json::Value const& js) {
         return  t->pt()                     > 20.0      &&
                 fabs(t->eta())              <  2.3      &&
                 fabs(t->lead_dz_vertex())   <  0.2      &&
-                t->GetTauID("decayModeFinding") > 0.5   &&
+                t->GetTauID("decayModeFinding") > 0.5/*   &&
                 t->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < 1.5 &&
                 passAntiEMVA(t, 0) &&
-                t->GetTauID("againstMuonLoose") > 0.5;
+                t->GetTauID("againstMuonLoose") > 0.5*/;
       }));
 
   BuildModule(seq, CompositeProducer<Electron, Tau>("ETPairProducer")
@@ -128,11 +137,11 @@ void HTTSequence::BuildMTPairs(ModuleSequence* seq, Json::Value const& js) {
         return  t->pt()                     > 20.0      &&
                 fabs(t->eta())              <  2.3      &&
                 fabs(t->lead_dz_vertex())   <  0.2      &&
-                t->GetTauID("decayModeFinding") > 0.5   &&
+                t->GetTauID("decayModeFinding") > 0.5/*   &&
                 t->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < 1.5 &&
                 t->GetTauID("againstElectronLoose") > 0.5 &&
                 t->GetTauID("againstMuonTight")     > 0.5 &&
-                TauEoverP(t, 0.2);
+                TauEoverP(t, 0.2)*/;
       }));
 
   BuildModule(seq, CompositeProducer<Muon, Tau>("MTPairProducer")
@@ -148,7 +157,9 @@ void HTTSequence::BuildEMPairs(ModuleSequence* seq, Json::Value const& js) {
       .set_input_label(js["electrons"].asString())
       .set_shift(js["elec_es_shift"].asDouble()));
 
-  BuildModule(seq, HTTEMuExtras("EMExtras"));
+  if (js["do_em_extras"].asBool()) {
+    BuildModule(seq, HTTEMuExtras("EMExtras"));
+  }
 
   BuildModule(seq, CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
@@ -163,7 +174,7 @@ void HTTSequence::BuildEMPairs(ModuleSequence* seq, Json::Value const& js) {
                 fabs(e->eta())          < 2.3     &&
                 fabs(e->dxy_vertex())   < 0.02    &&
                 fabs(e->dz_vertex())    < 0.1     &&
-                ElectronHTTId(e, true)            &&
+                /*ElectronHTTId(e, true)            &&*/
                 PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
       }));
 
@@ -265,7 +276,7 @@ void HTTSequence::BuildExtraElecVeto(ModuleSequence* seq,
                 fabs(e->eta())          < 2.5     &&
                 fabs(e->dxy_vertex())   < 0.045   &&
                 fabs(e->dz_vertex())    < 0.2     &&
-                ElectronHTTId(e, true)            &&
+                /*ElectronHTTId(e, true)            &&*/
                 PF04IsolationVal(e, 0.5) < 0.3;
       }));
 }

@@ -1,56 +1,84 @@
 #ifndef ICHiggsTauTau_GenParticle_hh
 #define ICHiggsTauTau_GenParticle_hh
+#include <vector>
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
-#include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
-
+#include "Rtypes.h"
 
 namespace ic {
 
+/**
+ * @brief Stores the basic properties of generator-level particles as well as
+ * mother-daughter relations with other particles
+ */
+class GenParticle : public Candidate {
 
-  class GenParticle : public Candidate {
+ private:
+  typedef ROOT::Math::XYZPoint Point;
 
-    private:
-      typedef ROOT::Math::XYZPoint Point;
+ public:
+  GenParticle();
+  virtual ~GenParticle();
+  virtual void Print() const;
 
-    public:
-      GenParticle();
-      virtual ~GenParticle();
+  /// @name Properties
+  /**@{*/
+  /// The index position of the particle in the original list
+  inline int index() const { return index_; }
 
-      // inline Point const& vertex() const { return vertex_; }
-      // inline void set_vertex(Point const& vertex) { vertex_ = vertex; }
-            
-      inline int index() const { return index_; }
-      inline void set_index(int const& index) { index_ = index; }
+  /// PDG number to identify the particle type, see
+  /// [this link] (http://pdg.lbl.gov/2002/montecarlorpp.pdf)
+  inline int pdgid() const { return pdgid_; }
 
-      inline int pdgid() const { return pdgid_; }
-      inline void set_pdgid(int const& pdgid) { pdgid_ = pdgid; }
-      
-      inline int status() const { return status_; }
-      inline void set_status(int const& status) { status_ = status; }
-      
-      inline std::vector<int> const& mothers() const { return mothers_; }
-      inline void set_mothers(std::vector<int> const& mothers) { mothers_ = mothers; }
+  /// The generator-dependent particle status
+  inline int status() const { return status_; }
 
-      inline std::vector<int> const& daughters() const { return daughters_; }
-      inline void set_daughters(std::vector<int> const& daughters) { daughters_ = daughters; }
- 
-      
-      
-      virtual void Print() const;
+  /// A vector of ic::GenParticle::index() values that identify the mother
+  /// particles
+  inline std::vector<int> const& mothers() const { return mothers_; }
 
+  /// A vector of ic::GenParticle::index() values that identify the daughter
+  /// particles
+  inline std::vector<int> const& daughters() const { return daughters_; }
+  /**@}*/
 
-    private:
-      int index_;
-      int pdgid_;
-      int status_;
-      std::vector<int> mothers_;
-      std::vector<int> daughters_;
+  /// @name Setters
+  /**@{*/
+  /// @copybrief index()
+  inline void set_index(int const& index) { index_ = index; }
 
-  };
+  /// @copybrief pdgid()
+  inline void set_pdgid(int const& pdgid) { pdgid_ = pdgid; }
 
-  typedef std::vector<ic::GenParticle> GenParticleCollection;
+  /// @copybrief status()
+  inline void set_status(int const& status) { status_ = status; }
 
+  /// @copybrief mothers()
+  inline void set_mothers(std::vector<int> const& mothers) {
+    mothers_ = mothers;
+  }
+
+  /// @copybrief daughters()
+  inline void set_daughters(std::vector<int> const& daughters) {
+    daughters_ = daughters;
+  }
+  /**@}*/
+
+ private:
+  int index_;
+  int pdgid_;
+  int status_;
+  std::vector<int> mothers_;
+  std::vector<int> daughters_;
+
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(GenParticle, 2);
+ #endif
+};
+
+typedef std::vector<ic::GenParticle> GenParticleCollection;
 }
+/** \example plugins/ICGenParticleProducer.cc */
 #endif

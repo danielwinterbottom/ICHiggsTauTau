@@ -12,6 +12,8 @@
   <use name="RecoMET/METAlgorithms"/>
   <use name="DataFormats/METReco"/>
   <use name="JetMETCorrections/METPUSubtraction"/>
+  <use name="JetMETCorrections/Objects"/>
+  <use name="PhysicsTools/HepMCCandAlgos"/>
   <use name="clhep"/>
   <flags EDM_PLUGIN="1"/>
   <flags CPPDEFINES="$(CMSSW_VERSION)"/>

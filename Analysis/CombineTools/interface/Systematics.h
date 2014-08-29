@@ -91,13 +91,18 @@ namespace syst {
         return 0.0;
       }
     }
+
+    static SystMap<T...> init(std::vector<typename T::type>... input, double val) {
+      SystMap<T...> x;
+      return x(input..., val);
+    }
   };
 
-  template<class... T>
-  SystMap<T...> syst_map(std::vector<typename T::type>... input, double val) {
-    SystMap<T...> x;
-    return x(input..., val);
-  }
+  // template<class... T>
+  // auto syst_map(std::vector<typename T::type>... input, double val) -> SystMap<T...> {
+  //   SystMap<T...> x;
+  //   return x(input..., val);
+  // }
 
 }
 }

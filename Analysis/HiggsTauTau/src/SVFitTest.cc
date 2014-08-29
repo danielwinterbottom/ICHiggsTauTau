@@ -5,7 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
 #include "boost/lexical_cast.hpp"
 #include <boost/algorithm/string.hpp>
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SVFitService.h"
+#include "HiggsTauTau/interface/SVFitService.h"
 #include <stdlib.h>
 #include "boost/format.hpp"
 #include "boost/filesystem.hpp"

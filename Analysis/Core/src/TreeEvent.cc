@@ -26,7 +26,12 @@ void TreeEvent::SetTree(TTree* tree) {
     TObjArray const* branches = tree_->GetListOfBranches();
     for (int i = 0; i < branches->GetSize(); ++i) {
       TBranch const* b = dynamic_cast<TBranch const*>(branches->At(i));
-      branch_names_.insert(std::string(b->GetName()));
+      if (b) {
+        branch_names_.insert(std::string(b->GetName()));
+      } else {
+        std::cout << "[ic::TreeEvent::SetTree] Encountered some non-TBranch "
+                      "object in the list of branches\n";
+      }
     }
   }
 }

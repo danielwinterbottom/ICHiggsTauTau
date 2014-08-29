@@ -5,7 +5,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SVFitService.h"
+#include "HiggsTauTau/interface/SVFitService.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 
@@ -15,7 +15,7 @@
 
 
 int main(int argc, char* argv[]){
-  typedef ROOT::Math::PtEtaPhiEVector Vector;
+  // typedef ROOT::Math::PtEtaPhiEVector Vector;
 
   if (argc != 2){
     std::cerr << "Need 1 arg: <input>" << std::endl;

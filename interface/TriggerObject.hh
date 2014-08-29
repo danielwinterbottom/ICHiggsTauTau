@@ -1,36 +1,47 @@
 #ifndef ICHiggsTauTau_TriggerObject_hh
 #define ICHiggsTauTau_TriggerObject_hh
-#include "Math/Vector4D.h"
-#include "Math/Vector4Dfwd.h"
-#include "Math/Point3D.h"
-#include "Math/Point3Dfwd.h"
-#include <map>
-#include <string>
+#include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
-
+#include "Rtypes.h"
 
 namespace ic {
 
+/**
+ * @brief Stores the four-momentum of a trigger object as well as a list of the
+ * (hashed) filter labels the object was accepted by
+ */
+class TriggerObject : public Candidate {
+ private:
+ public:
+  TriggerObject();
+  virtual ~TriggerObject();
+  virtual void Print() const;
 
-  class TriggerObject : public Candidate {
+  /// @name Properties
+  /**@{*/
+  /// The list of filter label hashes this object was accepted by, typically
+  /// restricted to the modules in some particular HLT path
+  inline std::vector<std::size_t> const& filters() const { return filters_; }
+  /**@}*/
 
-    private:
+  /// @name Setters
+  /**@{*/
+  /// @copybrief filters()
+  inline void set_filters(std::vector<std::size_t> const& filters) {
+    filters_ = filters;
+  }
+  /**@}*/
 
-    public:
-      TriggerObject();
-      virtual ~TriggerObject();
+ private:
+  std::vector<std::size_t> filters_;
 
-      inline std::vector<std::size_t>  const& filters() const { return filters_; }
-      inline void set_filters(std::vector<std::size_t>  const& filters) { filters_ = filters; }
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(TriggerObject, 2);
+ #endif
+};
 
-      virtual void Print() const;
-
-    private:
-      std::vector<std::size_t> filters_;
-
-  };
-
-  typedef std::vector<ic::TriggerObject> TriggerObjectCollection;
-
+typedef std::vector<ic::TriggerObject> TriggerObjectCollection;
 }
+/** \example plugins/ICTriggerObjectProducer.cc */
 #endif

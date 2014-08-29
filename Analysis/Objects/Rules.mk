@@ -1,0 +1,11 @@
+SUBDIRS 	:=
+LIB_DEPS 	:=
+LIB_EXTRA :=
+DICTIONARY := interface/Candidate.hh
+DICTIONARY += interface/Electron.hh interface/Muon.hh interface/Tau.hh
+DICTIONARY += interface/Photon.hh interface/Jet.hh interface/CaloJet.hh
+DICTIONARY += interface/JPTJet.hh interface/PFJet.hh interface/Met.hh
+DICTIONARY += interface/Track.hh interface/LightTrack.hh interface/Vertex.hh
+DICTIONARY += interface/SecondaryVertex.hh interface/TriggerObject.hh interface/TriggerPath.hh
+DICTIONARY += interface/PileupInfo.hh interface/GenParticle.hh interface/GenJet.hh
+DICTIONARY += interface/SuperCluster.hh interface/EventInfo.hh interface/TH2DAsymErr.h

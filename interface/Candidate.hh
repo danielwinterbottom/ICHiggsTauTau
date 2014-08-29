@@ -1,74 +1,98 @@
 #ifndef ICHiggsTauTau_Candidate_hh
 #define ICHiggsTauTau_Candidate_hh
+#include <vector>
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
-#include <vector>
+#include "Rtypes.h"
 
 namespace ic {
 
+/**
+ * @brief Stores a four-momentum, charge and identifier, and is the base class
+ * for most other physics objects. */
+class Candidate {
+ private:
+  typedef ROOT::Math::PtEtaPhiEVector Vector;
 
-  //! A Candidate class
-  /*!
-    A basic class containing a four-momentum vector, a charge and an ID. 
-  */
+ public:
+  Candidate();
+  virtual ~Candidate();
+  virtual void Print() const;
 
+  /// @name Properties
+  /**@{*/
+  /// Four-momentum
+  /** Returns the underlying ROOT
+   * [PtEtaPhiEVector](http://project-mathlibs.web.cern.ch/project-mathlibs/sw/html/classROOT_1_1Math_1_1LorentzVector.html),
+   * from which a large number of kinematic variables can be calculated.
+   * Please note, specific getter functions are provided by the Candidate
+   * class for the most commonly used variables: pt, eta, phi, energy and
+   * mass. */
+  inline Vector const& vector() const { return vector_; }
 
-  class Candidate {
+  /// Unique identifier
+  /** Each Candidate object (and any object deriving from it) typically has
+   * a unique id assigned by its Producer. This provides a lightweight
+   * mechanism for objects to refer to each other. For example, A GenJet may
+   * store the id of each GenParticle constituents. As another example, a
+   * PFJet may store the id of its constituent tracks. */
+  inline std::size_t id() const { return id_; }
 
-    private:
-      typedef ROOT::Math::PtEtaPhiEVector Vector;
+  /// Direct access to the \f$ p_{\text{T}} \f$
+  inline double pt() const { return vector_.Pt(); }
 
-    public:
-      Candidate();
-      virtual ~Candidate();
+  /// Direct access to \f$ \eta \f$
+  inline double eta() const { return vector_.Eta(); }
 
-      //! The Candidate four-momentum
-      /*! Returns a ROOT PtEtaPhiEVector, from which a large number of kinematic
-      variables can be calculated. Please note, specific getter functions are provided 
-      by the Candidate class for the most commonly used variables(pt, eta, phi, energy and mass).
-      */
-      inline Vector const& vector() const { return vector_; }
-      inline void set_vector(Vector const& vector) { vector_ = vector; }
-      
-      //! The object ID
-      /*! Each Candidate object (and any object deriving from it) can have a unique
-          ID assigned.  This makes it possible for one object to refer to any number
-          of other objects in a given event.  For example, A GenJet may contain the 
-          IDs of its GenParticle constituents. In another case, a PFJet contain the
-          IDs of its constituent tracks.  
-      */
-      inline std::size_t id() const { return id_; }
-      inline void set_id(std::size_t const& id) { id_ = id; }
+  /// Direct access to \f$ \phi \f$
+  inline double phi() const { return vector_.Phi(); }
 
-      inline double pt() const { return vector_.Pt(); }
-      inline void set_pt(double const& pt) { vector_.SetPt(pt); }
+  /// Direct access to the energy
+  inline double energy() const { return vector_.E(); }
 
-      inline double eta() const { return vector_.Eta(); }
-      inline void set_eta(double const& eta) { vector_.SetEta(eta); }
+  /// Electric charge
+  inline int charge() const { return charge_; }
 
-      inline double phi() const { return vector_.Phi(); }
-      inline void set_phi(double const& phi) { vector_.SetPhi(phi); }
+  /// Calculates the candidate mass
+  inline double M() const { return vector_.M(); }
+  /**@}*/
 
-      inline double energy() const { return vector_.E(); }
-      inline void set_energy(double const& energy) { vector_.SetE(energy); }
+  /// @name Setters
+  /**@{*/
+  /// @copybrief vector()
+  inline void set_vector(Vector const& vector) { vector_ = vector; }
 
-      inline int charge() const { return charge_; }
-      inline void set_charge(int const& charge) { charge_ = charge; }
+  /// @copybrief id()
+  inline void set_id(std::size_t const& id) { id_ = id; }
 
-      inline double M() const { return vector_.M(); }
+  /// @copybrief pt()
+  inline void set_pt(double const& pt) { vector_.SetPt(pt); }
 
-      virtual void Print() const;
+  /// @copybrief eta()
+  inline void set_eta(double const& eta) { vector_.SetEta(eta); }
 
+  /// @copybrief phi()
+  inline void set_phi(double const& phi) { vector_.SetPhi(phi); }
 
-    private:
+  /// @copybrief energy()
+  inline void set_energy(double const& energy) { vector_.SetE(energy); }
 
+  /// @copybrief charge()
+  inline void set_charge(int const& charge) { charge_ = charge; }
+  /**@}*/
 
-      Vector vector_;   
-      std::size_t id_;
-      int charge_;
-  };
+ private:
+  Vector vector_;
+  std::size_t id_;
+  int charge_;
 
-  typedef std::vector<ic::Candidate> CandidateCollection;
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(Candidate, 2);
+ #endif
+};
 
+typedef std::vector<ic::Candidate> CandidateCollection;
 }
+/** \example plugins/ICCandidateProducer.hh */
 #endif
