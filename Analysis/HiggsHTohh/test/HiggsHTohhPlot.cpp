@@ -188,9 +188,11 @@ int main(int argc, char* argv[]){
   if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
+	ana.AddSMHbbSignalSamples(sm_masses);
 	ana.AddHWWSignalSamples(hww_masses);
 	if (add_sm_background != "") {
 		ana.AddSMSignalSamples({add_sm_background});
+		ana.AddSMHbbSignalSamples({add_sm_background});
 		ana.AddHWWSignalSamples({add_sm_background});
 	}
 	ana.AddMSSMSignalSamples(mssm_masses);
@@ -218,10 +220,12 @@ int main(int argc, char* argv[]){
 
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
 	ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
+	ana.FillSMHbbSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (interpolate) ana.InterpolateSMSignal(hmap, sm_masses, morph_var, var, sel, cat, "wt", "", "", 1.0, signal_xs);
 	ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt", "_hww", "", signal_xs);
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
+		ana.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 		ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "");
 	}
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
@@ -898,6 +902,8 @@ int main(int argc, char* argv[]){
             HhhAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
             HhhAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
             HhhAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
+            HhhAnalysis::PrintValue("WHToBB"+m, hmap["WHToBB"+m].second);
+            HhhAnalysis::PrintValue("ZHToBB"+m, hmap["ZHToBB"+m].second);
     }
 
     for (auto m : mssm_masses) {

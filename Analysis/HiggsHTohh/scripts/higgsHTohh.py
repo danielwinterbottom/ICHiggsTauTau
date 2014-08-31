@@ -288,7 +288,9 @@ if options.proc_sm :
     signal_mc += [
       'GluGluToHToTauTau_M-'+hmass,
       'VBF_HToTauTau_M-'+hmass, 
-      'WH_ZH_TTH_HToTauTau_M-'+hmass
+      'WH_ZH_TTH_HToTauTau_M-'+hmass,
+      'WH_WToLNu_HToBB_M-'+hmass,
+      'ZH_ZToLL_HToBB_M-'+hmass
     ]
 
   #if  not options.do_2011:
