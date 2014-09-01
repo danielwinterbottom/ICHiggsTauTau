@@ -894,6 +894,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if(!scale_signal_datacard) {
         ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
+        ana.FillSMHbbSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
 	    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
 	    ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", ""); 
 	    ana.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", ""); 
