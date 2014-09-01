@@ -1,50 +1,59 @@
+#ifndef UserCode_ICHiggsTauTau_ICMuonProducer_h
+#define UserCode_ICHiggsTauTau_ICMuonProducer_h
+
 #include <memory>
-
-#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include <vector>
+#include <string>
+#include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/MuonReco/interface/Muon.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 
-// #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
-#include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
-
-//#include "Muon/MuonAnalysisTools/interface/MuonMVAEstimator.h"
-
-
+/**
+ * @brief See documentation [here](\ref objs-muon)
+ */
 class ICMuonProducer : public edm::EDProducer {
-   public:
-      explicit ICMuonProducer(const edm::ParameterSet&);
-      ~ICMuonProducer();
+ public:
+  explicit ICMuonProducer(const edm::ParameterSet&);
+  ~ICMuonProducer();
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+ private:
+  virtual void beginJob();
+  virtual void produce(edm::Event&, const edm::EventSetup&);
+  virtual void endJob();
 
-   private:
-      virtual void beginJob() ;
-      virtual void produce(edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
-      
-      virtual void beginRun(edm::Run&, edm::EventSetup const&);
-      virtual void endRun(edm::Run&, edm::EventSetup const&);
-      virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-      virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
+  std::vector<ic::Muon>* muons_;
+  edm::InputTag input_;
+  std::string branch_;
+  boost::hash<reco::Muon const*> muon_hasher_;
+  boost::hash<reco::PFCandidate const*> pf_hasher_;
 
-      // virtual bool electronIDForMVA(reco::GsfElectron const& elec, reco::Vertex const& vtx);
-      // virtual bool muonIDForMVA(reco::Muon const& muon);
 
-      // ----------member data ---------------------------
-      std::vector<ic::Muon> *muons_;
-      edm::InputTag input_;
-      std::string branch_name_;
-      std::string pfiso_postfix_;
-      edm::InputTag vertex_input_;
-      bool is_pf_;
-      std::map<std::string, std::size_t> observed_idiso_;
-      double min_pt_;
-      double max_eta_;
+  bool is_pf_;
+
+  std::vector<std::pair<std::string, edm::InputTag> > input_vmaps_;
+  edm::InputTag input_vertices_;
+  bool do_vertex_ip_;
+  edm::InputTag input_beamspot_;
+  bool do_beamspot_ip_;
+
+  struct IsoTags {
+    edm::InputTag charged_all;
+    edm::InputTag charged;
+    edm::InputTag neutral;
+    edm::InputTag gamma;
+    edm::InputTag pu;
+    explicit IsoTags(edm::ParameterSet const& pset);
+  };
+
+  IsoTags pf_iso_03_;
+  IsoTags pf_iso_04_;
+  bool do_pf_iso_03_;
+  bool do_pf_iso_04_;
 };
+#endif

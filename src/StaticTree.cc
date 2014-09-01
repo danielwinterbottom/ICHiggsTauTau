@@ -1,7 +1,7 @@
-#include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
+#include "../interface/StaticTree.hh"
 #include "TTree.h"
 
 namespace ic {
-  
-  TTree *ic::StaticTree::tree_ = NULL;
+
+TTree *ic::StaticTree::tree_ = NULL;
 }

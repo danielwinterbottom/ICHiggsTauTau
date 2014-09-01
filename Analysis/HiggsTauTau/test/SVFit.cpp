@@ -8,7 +8,7 @@
 #include "TMatrixD.h"
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
-#include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SVFitService.h"
+#include "HiggsTauTau/interface/SVFitService.h"
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 

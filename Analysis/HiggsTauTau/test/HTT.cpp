@@ -4,7 +4,7 @@
 #include <fstream>
 #include <map>
 // #include "boost/lexical_cast.hpp"
-// #include "boost/program_options.hpp"
+#include "boost/program_options.hpp"
 // #include "boost/bind.hpp"
 // #include "boost/function.hpp"
 // #include "boost/format.hpp"
@@ -28,10 +28,9 @@
 
 // using boost::lexical_cast;
 // using boost::bind;
-// namespace po = boost::program_options;
-// using std::string;
-// using std::vector;
-using namespace ic;
+namespace po = boost::program_options;
+using std::string;
+using std::vector;
 
 using ic::AnalysisBase;
 using std::vector;
@@ -50,7 +49,7 @@ Json::Value ExtractJson(std::string const& file) {
 void UpdateJson(Json::Value& a, Json::Value const& b) {
   if (!a.isObject() || !b.isObject()) return;
 
-  for (const auto& key : b.getMemberNames()) {
+  for (auto const& key : b.getMemberNames()) {
     if (a[key].isObject()) {
       UpdateJson(a[key], b[key]);
     } else {
@@ -65,23 +64,42 @@ int main(int argc, char* argv[]) {
   gSystem->Load("libUserCodeICHiggsTauTau.dylib");
   AutoLibraryLoader::enable();
 
+  vector<string> cfgs;
+  vector<string> jsons;
+
+  po::options_description config("config");
+  config.add_options()(
+      "cfg", po::value<vector<string>>(&cfgs)->multitoken()->required(),
+      "json config files")(
+      "json", po::value<vector<string>>(&jsons)->multitoken(),
+      "json fragments");
+  po::variables_map vm;
+  po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
+  po::notify(vm);
+
   // In the end will recursively merge json here
-  if (argc < 2) return 1;
-  Json::Value js_init = ExtractJson(argv[1]);
-  if (argc > 2) {
-    for (int i = 2; i < argc; ++i) {
-      Json::Value extra;
-      Json::Reader reader(Json::Features::all());
-      reader.parse(argv[i], extra);
-      std::cout << extra;
-      UpdateJson(js_init, extra);
-    }
+  // if (argc < 2) return 1;
+  Json::Value js_init = ExtractJson(cfgs[0]);
+  for (unsigned i = 1; i < cfgs.size(); ++i) {
+    std::cout << ">> Updating config with file " << cfgs[i] << ":\n";
+    Json::Value extra = ExtractJson(cfgs[i]);
+    std::cout << extra;
+    UpdateJson(js_init, extra);
+  }
+  for (unsigned i = 0; i < jsons.size(); ++i) {
+    Json::Value extra;
+    Json::Reader reader(Json::Features::all());
+    reader.parse(jsons[i], extra);
+    std::cout << ">> Updating config with fragment:\n";
+    std::cout << extra;
+    UpdateJson(js_init, extra);
   }
 
   Json::Value const js = js_init;
 
   /*
-    This should really be shortened into one inline function in the AnalysisBase declaration. GetPrefixedFilelist(prefix, filelist)
+    This should really be shortened into one inline function in the AnalysisBase
+    declaration. GetPrefixedFilelist(prefix, filelist)
   */
   vector<string> files = ic::ParseFileLines(js["job"]["filelist"].asString());
   for (auto & f : files) f = js["job"]["file_prefix"].asString() + f;
@@ -94,8 +112,8 @@ int main(int argc, char* argv[]) {
   // analysis.DoSkimming("./skim/");
   analysis.CalculateTimings(js["job"]["timings"].asBool());
 
-  HTTSequence sequence_builder;
-  std::map<std::string, HTTSequence::ModuleSequence> seqs;
+  ic::HTTSequence sequence_builder;
+  std::map<std::string, ic::HTTSequence::ModuleSequence> seqs;
 
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
     std::string channel_str = js["job"]["channels"][i].asString();
@@ -109,12 +127,12 @@ int main(int argc, char* argv[]) {
 
     for (unsigned j = 0; j < vars.size(); ++j) {
       std::string seq_str = channel_str+"_"+vars[j];
-      HTTSequence::ModuleSequence& seq = seqs[seq_str];
-      ic::channel channel = String2Channel(channel_str);
+      ic::HTTSequence::ModuleSequence& seq = seqs[seq_str];
+      ic::channel channel = ic::String2Channel(channel_str);
       Json::Value js_merged = js["sequence"];
       UpdateJson(js_merged, js["channels"][channel_str]);
       UpdateJson(js_merged, js["channels"][vars[j]]);
-      std::cout << js_merged;
+      // std::cout << js_merged;
       sequence_builder.BuildSequence(&seq, channel, js_merged);
       for (auto m : seq) analysis.AddModule(seq_str, m.get());
     }

@@ -1,214 +1,75 @@
 #include "UserCode/ICHiggsTauTau/plugins/ICGenParticleProducer.hh"
-#include <boost/functional/hash.hpp>
-#include <memory>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
-
+#include <string>
+#include <vector>
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/Framework/interface/Run.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
-
-#include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
-#include "UserCode/ICHiggsTauTau/interface/Jet.hh"
-
-
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/PatCandidates/interface/JetCorrFactors.h"
-
+#include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
+#include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
-#include "boost/format.hpp"
-#include "boost/regex.hpp"
-#include "boost/lexical_cast.hpp"
+ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& config)
+    : input_(config.getParameter<edm::InputTag>("input")),
+      branch_(config.getParameter<std::string>("branch")),
+      store_mothers_(config.getParameter<bool>("includeMothers")),
+      store_daughters_(config.getParameter<bool>("includeDaughters")) {
+  particles_ = new std::vector<ic::GenParticle>();
 
-ICGenParticleProducer::ICGenParticleProducer(const edm::ParameterSet& iConfig) {
-  cand_vec = new std::vector<ic::GenParticle>();
-  merge_labels_ = iConfig.getUntrackedParameter<std::vector<std::string> >("mergeLabels");
-  store_mothers_ = iConfig.getUntrackedParameter<bool>("storeMothers");
-  store_daughters_ = iConfig.getUntrackedParameter<bool>("storeDaughters");
-  add_status_1_ = iConfig.getUntrackedParameter<bool>("addAllStatus1");
-  add_status_2_ = iConfig.getUntrackedParameter<bool>("addAllStatus2");
-  add_status_3_ = iConfig.getUntrackedParameter<bool>("addAllStatus3");
-  status_1_str_ = iConfig.getUntrackedParameter<std::vector<std::string> >("addAllStatus1Regex");
-  status_2_str_ = iConfig.getUntrackedParameter<std::vector<std::string> >("addAllStatus2Regex");
-  status_3_str_ = iConfig.getUntrackedParameter<std::vector<std::string> >("addAllStatus3Regex");
-  status_1_pt_ = iConfig.getUntrackedParameter<double>("addAllStatus1PtThreshold");
-  status_2_pt_ = iConfig.getUntrackedParameter<double>("addAllStatus2PtThreshold");
-  status_3_pt_ = iConfig.getUntrackedParameter<double>("addAllStatus3PtThreshold");
-  branch_name_ = iConfig.getUntrackedParameter<std::string>("branchName");
-  input_label_ = iConfig.getParameter<edm::InputTag>("inputLabel");
-
-  for (unsigned i = 0; i < status_1_str_.size(); ++i){
-    status_1_regex_.push_back(boost::regex(status_1_str_[i]));
-  }
-  for (unsigned i = 0; i < status_2_str_.size(); ++i){
-    status_2_regex_.push_back(boost::regex(status_2_str_[i]));
-  }
-  for (unsigned i = 0; i < status_3_str_.size(); ++i){
-    status_3_regex_.push_back(boost::regex(status_3_str_[i]));
-  }
-
-  std::cout << "Info in <ICGenParticleProducer>: Picking up GenParticle requests from the following modules:" << std::endl;
-  for (unsigned i = 0; i < merge_labels_.size(); ++i) {
-    std::cout << "-- " << merge_labels_[i] << std::endl;
-  }
-  if (add_status_1_) {
-    std::cout << "-- Additionally adding all status 1 GenParticles with pT > " << status_1_pt_
-    << " GeV and PDG ID matching one of: " << std::endl;
-    for (unsigned i = 0; i < status_1_str_.size(); ++i) std::cout << "---- '" << status_1_str_[i] << "'" << std::endl;
-  } else {
-    std::cout << "-- Addition of other status 1 GenParticles is switched off" << std::endl;
-  }
-  if (add_status_2_) {
-    std::cout << "-- Additionally adding all status 2 GenParticles with pT > " << status_2_pt_
-    << " GeV and PDG ID matching one of: " << std::endl;
-    for (unsigned i = 0; i < status_2_str_.size(); ++i) std::cout << "---- '" << status_2_str_[i] << "'" << std::endl;
-  } else {
-    std::cout << "-- Addition of other status 2 GenParticles is switched off" << std::endl;
-  }
-  if (add_status_3_) {
-    std::cout << "-- Additionally adding all status 3 GenParticles with pT > " << status_3_pt_
-    << " GeV and PDG ID matching one of: " << std::endl;
-    for (unsigned i = 0; i < status_3_str_.size(); ++i) std::cout << "---- '" << status_3_str_[i] << "'" << std::endl;
-  } else {
-    std::cout << "-- Addition of other status 3 GenParticles is switched off" << std::endl;
-  }
-
-  //if (override_collection_ != "") std::cout << "Override label is " << override_collection_ << std::endl;
+  PrintHeaderWithProduces(config, input_, branch_);
+  PrintOptional(1, store_mothers_, "includeMothers");
+  PrintOptional(1, store_daughters_, "includeDaughters");
 }
 
+ICGenParticleProducer::~ICGenParticleProducer() { delete particles_; }
 
-ICGenParticleProducer::~ICGenParticleProducer() {
- // do anything here that needs to be done at desctruction time
- // (e.g. close files, deallocate resources etc.)
- delete cand_vec;
-}
+void ICGenParticleProducer::produce(edm::Event& event,
+                                    const edm::EventSetup& setup) {
+  edm::Handle<edm::View<reco::GenParticle> > parts_handle;
+  event.getByLabel(input_, parts_handle);
 
+  particles_->clear();
+  particles_->resize(parts_handle->size(), ic::GenParticle());
 
-
-// ------------ method called to produce the data  ------------
-void ICGenParticleProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
-  boost::hash<reco::GenParticle const*> hasher;
-
-  edm::Handle<reco::GenParticleCollection> partCollection;
-  //std::string collection = "SIM";
-  //if (override_collection_ != "") collection = override_collection_;
-  iEvent.getByLabel(input_label_,partCollection);
-  if (partCollection->size() == 0) return;
-  const reco::GenParticle *ptr_to_first  = &((partCollection->at(0)));
-  
-  std::set<reco::GenParticle const*> ptr_set;
-  std::vector<edm::Handle<std::vector<unsigned> > > merge_handles;
-  merge_handles.resize(merge_labels_.size());
-  for (unsigned i = 0; i < merge_handles.size(); ++i) {
-    iEvent.getByLabel(merge_labels_[i],"selectGenParticles", merge_handles[i]);
-    for (unsigned j = 0; j < merge_handles[i]->size(); ++j) {
-      const reco::GenParticle *ptr = &(partCollection->at(merge_handles[i]->at(j)));
-      ptr_set.insert(ptr);
-    }
-  }
-
-  //Pick up any other requested particles
-  for (unsigned i = 0; i < partCollection->size(); ++i) {
-    reco::GenParticle const& p = (*partCollection)[i];
-    bool keep = false;
-    std::string pdgid = boost::lexical_cast<std::string>(p.pdgId());
-    if (p.status() == 1 && add_status_1_){
-      for (unsigned j = 0; j < status_1_regex_.size(); ++j){
-        if (boost::regex_match(pdgid,status_1_regex_[j]) && p.pt() > status_1_pt_) keep = true;
-      }
-    }
-    if (p.status() == 2 && add_status_2_){
-      for (unsigned j = 0; j < status_2_regex_.size(); ++j){
-        if (boost::regex_match(pdgid,status_2_regex_[j]) && p.pt() > status_2_pt_) keep = true;
-      }
-    }
-    if (p.status() == 3 && add_status_3_){
-      for (unsigned j = 0; j < status_3_regex_.size(); ++j){
-        if (boost::regex_match(pdgid,status_3_regex_[j]) && p.pt() > status_3_pt_) keep = true;
-      }
-    }
-    if (keep) ptr_set.insert(&p);
-  }
-
-
-  //reco::GenParticleCollection::const_iterator iter;
-  std::set<reco::GenParticle const*>::const_iterator iter;
-  cand_vec->resize(0);
-  cand_vec->reserve(partCollection->size());
-
-  for (iter = ptr_set.begin(); iter != ptr_set.end(); ++iter) {
-    cand_vec->push_back(ic::GenParticle());
-    ic::GenParticle & cand = cand_vec->back();
-    //Set candidate data
-    cand.set_id(hasher(*iter));
-    cand.set_pt((*iter)->pt());
-    cand.set_eta((*iter)->eta());
-    cand.set_phi((*iter)->phi());
-    cand.set_energy((*iter)->energy());
-    cand.set_charge((*iter)->charge());
-    cand.set_index(int(*iter - ptr_to_first));
-    cand.set_pdgid((*iter)->pdgId());
-    cand.set_status((*iter)->status());
+  for (unsigned i = 0; i < parts_handle->size(); ++i) {
+    reco::GenParticle const& src = parts_handle->at(i);
+    // edm::RefToBase<reco::GenParticle> ref = parts_handle->refAt(i);
+    ic::GenParticle& dest = particles_->at(i);
+    dest.set_id(particle_hasher_(&src));
+    dest.set_pt(src.pt());
+    dest.set_eta(src.eta());
+    dest.set_phi(src.phi());
+    dest.set_energy(src.energy());
+    dest.set_charge(src.charge());
+    dest.set_index(static_cast<int>((parts_handle->refAt(i).key())));
+    dest.set_pdgid(src.pdgId());
+    dest.set_status(src.status());
     if (store_mothers_) {
-      std::vector<int> mothers((*iter)->numberOfMothers(), 0);
-      for (unsigned i = 0; i < (*iter)->numberOfMothers(); ++i) {
-        mothers[i] = ((reco::GenParticle*)(*iter)->mother(i) - ptr_to_first);
+      std::vector<int> mothers(src.motherRefVector().size(), 0);
+      for (unsigned j = 0; j < src.motherRefVector().size(); ++j) {
+        mothers[j] = static_cast<int>(src.motherRefVector().at(j).key());
       }
-      cand.set_mothers(mothers);
+      dest.set_mothers(mothers);
     }
     if (store_daughters_) {
-      std::vector<int> daughters((*iter)->numberOfDaughters(), 0);
-      for (unsigned i = 0; i < (*iter)->numberOfDaughters(); ++i) {
-        daughters[i] = ((reco::GenParticle*)(*iter)->daughter(i) - ptr_to_first);
+      std::vector<int> daughters(src.daughterRefVector().size(), 0);
+      for (unsigned j = 0; j < src.daughterRefVector().size(); ++j) {
+        daughters[j] = static_cast<int>(src.daughterRefVector().at(j).key());
       }
-      cand.set_daughters(daughters); 
+      dest.set_daughters(daughters);
     }
   }
 }
 
-// ------------ method called once each job just before starting event loop  ------------
 void ICGenParticleProducer::beginJob() {
- ic::StaticTree::tree_->Branch(branch_name_.c_str() ,&cand_vec);
+  ic::StaticTree::tree_->Branch(branch_.c_str(), &particles_);
 }
 
-// ------------ method called once each job just after ending the event loop  ------------
-void ICGenParticleProducer::endJob() {
-}
+void ICGenParticleProducer::endJob() {}
 
-// ------------ method called when starting to processes a run  ------------
-void ICGenParticleProducer::beginRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a run  ------------
-void ICGenParticleProducer::endRun(edm::Run&, edm::EventSetup const&) {
-}
-
-// ------------ method called when starting to processes a luminosity block  ------------
-void ICGenParticleProducer::beginLuminosityBlock(edm::LuminosityBlock&, 
-                                             edm::EventSetup const&) {
-}
-
-// ------------ method called when ending the processing of a luminosity block  ------------
-void ICGenParticleProducer::endLuminosityBlock(edm::LuminosityBlock&, 
-                                           edm::EventSetup const&) {
-}
-
-// ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void
-ICGenParticleProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
-}
-
-//define this as a plug-in
+// define this as a plug-in
 DEFINE_FWK_MODULE(ICGenParticleProducer);

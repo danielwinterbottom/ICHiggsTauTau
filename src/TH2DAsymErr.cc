@@ -1,6 +1,6 @@
 // $Id: TH2DAsymErr.cc,v 1.1 2012/09/14 08:16:14 ic Exp $
 
-#include "UserCode/ICHiggsTauTau/interface/TH2DAsymErr.h"
+#include "../interface/TH2DAsymErr.h"
 #include <TList.h>
 #include <iostream>
 

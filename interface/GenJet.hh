@@ -1,40 +1,66 @@
 #ifndef ICHiggsTauTau_GenJet_hh
 #define ICHiggsTauTau_GenJet_hh
+#include <vector>
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
-#include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
-
+#include "Rtypes.h"
 
 namespace ic {
 
+/**
+ * @brief Stores the basic properties of a generator-level jet, in particular
+ * can save the IDs of the  GenParticle constituents
+ */
+class GenJet : public Candidate {
+ public:
+  GenJet();
+  virtual ~GenJet();
+  virtual void Print() const;
 
-  class GenJet : public Candidate {
+  /// @name Properties
+  /**@{*/
+  /// The true flavour of the jet
+  inline int flavour() const { return flavour_; }
 
-    public:
-      GenJet();
-      virtual ~GenJet();
+  /// The number of GenParticle constituents
+  inline unsigned n_constituents() const { return n_constituents_; }
 
-      inline int flavour() const { return flavour_; }
-      inline void set_flavour(int const& flavour) { flavour_ = flavour; }
+  /// A vector of ic::GenParticle::id() values corresponding to the constituent
+  /// particles
+  inline std::vector<std::size_t> const& constituents() const {
+    return constituents_;
+  }
+  /**@}*/
 
-      inline unsigned n_constituents() const { return n_constituents_; }
-      inline void set_n_constituents(unsigned const& n_constituents) { n_constituents_ = n_constituents; }
-      
-      inline std::vector<std::size_t> const& constituents() const { return constituents_; }
-      inline void set_constituents(std::vector<std::size_t> const& constituents) { constituents_ = constituents; }
-      
-      virtual void Print() const;
+  /// @name Setters
+  /**@{*/
+  /// @copybrief flavour()
+  inline void set_flavour(int const& flavour) { flavour_ = flavour; }
 
+  /// @copybrief n_constituents()
+  inline void set_n_constituents(unsigned const& n_constituents) {
+    n_constituents_ = n_constituents;
+  }
 
-    private:
-      int flavour_;
-      unsigned n_constituents_;
-      std::vector<std::size_t> constituents_;
+  /// @copybrief constituents()
+  inline void set_constituents(std::vector<std::size_t> const& constituents) {
+    constituents_ = constituents;
+  }
+  /**@}*/
 
-  };
+ private:
+  int flavour_;
+  unsigned n_constituents_;
+  std::vector<std::size_t> constituents_;
 
-  typedef std::vector<ic::GenJet> GenJetCollection;
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(GenJet, 2);
+ #endif
+};
 
+typedef std::vector<ic::GenJet> GenJetCollection;
 }
+/** \example plugins/ICGenJetProducer.cc */
 #endif

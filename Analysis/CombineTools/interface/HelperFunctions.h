@@ -1,6 +1,7 @@
 #ifndef ICHiggsTauTau_CombineTools_HelperFunctions_h
 #define ICHiggsTauTau_CombineTools_HelperFunctions_h
 #include <algorithm>
+#include <vector>
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include "boost/range/algorithm_ext/erase.hpp"
@@ -188,7 +189,7 @@ std::vector<T> Set2Vec(std::set<T> const& in) {
   return std::vector<T>(in.begin(), in.end());
 }
 
-std::vector<std::string> JoinStr(std::vector<vector<std::string>> const& in);
+std::vector<std::string> JoinStr(std::vector<std::vector<std::string>> const& in);
 }
 
 #endif

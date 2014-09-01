@@ -1,40 +1,60 @@
 #ifndef ICHiggsTauTau_LightTrack_hh
 #define ICHiggsTauTau_LightTrack_hh
+#include <vector>
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "Math/Vector3D.h"
 #include "Math/Vector3Dfwd.h"
-#include <vector>
+#include "Rtypes.h"
 
 namespace ic {
 
+/**
+ * @brief Stores a minimal amount of track information. May be used instead of
+ * the ic::Track class to save file space.
+ */
+class LightTrack {
+ public:
+  LightTrack();
+  virtual ~LightTrack();
+  virtual void Print() const;
 
-  class LightTrack {
+  /// @name Properties
+  /**@{*/
+  /// The unique identifier
+  inline std::size_t id() const { return id_; }
 
-    private:
+  /// The track transverse momentum
+  inline double pt() const { return pt_; }
 
-    public:
-      LightTrack();
-      virtual ~LightTrack();
+  /// The z-coordinate of the point-of-closest-approach to the beamspot
+  inline double vz() const { return vz_; }
+  /**@}*/
 
-      inline std::size_t id() const { return id_; }
-      inline void set_id(std::size_t const& id) { id_ = id; }
+  /// @name Setters
+  /**@{*/
+  /// @copybrief id()
+  inline void set_id(std::size_t const& id) { id_ = id; }
 
-      inline double pt() const { return pt_; }
-      inline void set_pt(double const& pt) { pt_ = pt; }
+  /// @copybrief pt()
+  inline void set_pt(double const& pt) { pt_ = pt; }
 
-      inline double vz() const { return vz_; }
-      inline void set_vz(double const& vz) { vz_ = vz; }
+  /// @copybrief vz()
+  inline void set_vz(double const& vz) { vz_ = vz; }
+  /**@}*/
 
-      virtual void Print() const;
+ private:
+  float pt_;
+  float vz_;
+  std::size_t id_;
 
-    private:
-      float pt_;
-      float vz_;
-      std::size_t id_;
-  };
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(LightTrack, 2);
+ #endif
+};
 
-  typedef std::vector<ic::LightTrack> LightTrackCollection;
-
+typedef std::vector<ic::LightTrack> LightTrackCollection;
 }
+/** \example plugins/ICLightTrackProducer.cc */
 #endif

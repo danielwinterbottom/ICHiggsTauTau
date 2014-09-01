@@ -362,15 +362,8 @@ namespace ic {
       iso_2_ = 0.0;
     }
 
-    if (strategy_ == strategy::paper2013 && era_ != era::data_2011) {
-      auto l1_met = event->GetPtrVec<Candidate>("l1extraMET");
-      l1_met_ = l1_met.at(0)->pt();
-      auto calo_nohf_met = event->GetPtr<Met>("metNoHF");
-      calo_nohf_met_ = calo_nohf_met->pt();
-    } else {
-      l1_met_ = 0.0;
-      calo_nohf_met_ = 0.0;
-    }
+    l1_met_ = 0.0;
+    calo_nohf_met_ = 0.0;
 
     Tau const* tau = dynamic_cast<Tau const*>(lep2);
     if (tau) {

@@ -22,6 +22,8 @@ using std::string;
 using std::vector;
 using std::pair;
 using std::make_pair;
+using std::map;
+using std::set;
 
 int main() {
   TH1::AddDirectory(false);

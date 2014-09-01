@@ -1,56 +1,93 @@
 #ifndef ICHiggsTauTau_Photon_hh
 #define ICHiggsTauTau_Photon_hh
-#include "Math/Vector4D.h"
-#include "Math/Vector4Dfwd.h"
+#include <vector>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
-
+#include "Rtypes.h"
 
 namespace ic {
 
+/**
+ * @brief This class stores a subset of the reco::Photon
+ * properties which are most commonly used in analysis.
+ */
+class Photon : public Candidate {
+ public:
+  Photon();
+  virtual ~Photon();
+  virtual void Print() const;
 
-  class Photon : public Candidate {
+  /// @name Properties
+  /**@{*/
+  /// PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_pfiso_charged() const { return dr03_pfiso_charged_; }
 
-    public:
-      Photon();
-      virtual ~Photon();
+  /// PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_pfiso_neutral() const { return dr03_pfiso_neutral_; }
 
-      //! PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.3 \f$
-      inline float dr03_pfiso_charged() const { return dr03_pfiso_charged_; }
-      inline void set_dr03_pfiso_charged(float const& dr03_pfiso_charged) { dr03_pfiso_charged_ = dr03_pfiso_charged; }
+  /// PF isolation, using photons in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_pfiso_gamma() const { return dr03_pfiso_gamma_; }
 
-      //! PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.3 \f$
-      inline float dr03_pfiso_neutral() const { return dr03_pfiso_neutral_; }
-      inline void set_dr03_pfiso_neutral(float const& dr03_pfiso_neutral) { dr03_pfiso_neutral_ = dr03_pfiso_neutral; }
+  /// Hadronic over electromagnetic energy fraction
+  inline float had_tower_over_em() const { return had_tower_over_em_; }
 
-      //! PF isolation, using photons in a cone with \f$ \Delta R = 0.3 \f$
-      inline float dr03_pfiso_gamma() const { return dr03_pfiso_gamma_; }
-      inline void set_dr03_pfiso_gamma(float const& dr03_pfiso_gamma) { dr03_pfiso_gamma_ = dr03_pfiso_gamma; }
+  /// Weighted cluster RMS in the \f$\eta\f$-direction, measured in units
+  /// of crystals in a 5x5 block centred on the seed crystal
+  inline float sigma_IetaIeta() const { return sigma_IetaIeta_; }
 
-      inline float had_tower_over_em() const { return had_tower_over_em_; }
-      inline void set_had_tower_over_em(float const& had_tower_over_em) { had_tower_over_em_ = had_tower_over_em; }
+  /// True if photon passes the electron veto
+  inline bool pass_electron_veto() const { return pass_electron_veto_; }
+  /**@}*/
 
-      inline float sigma_IetaIeta() const { return sigma_IetaIeta_; }
-      inline void set_sigma_IetaIeta(float const& sigma_IetaIeta) { sigma_IetaIeta_ = sigma_IetaIeta; }
+  /// @name Setters
+  /**@{*/
+  /// @copybrief dr03_pfiso_charged()
+  inline void set_dr03_pfiso_charged(float const& dr03_pfiso_charged) {
+    dr03_pfiso_charged_ = dr03_pfiso_charged;
+  }
 
-      inline bool pass_electron_veto() const { return pass_electron_veto_; }
-      inline void set_pass_electron_veto(bool const& pass_electron_veto) { pass_electron_veto_ = pass_electron_veto; }
+  /// @copybrief dr03_pfiso_neutral()
+  inline void set_dr03_pfiso_neutral(float const& dr03_pfiso_neutral) {
+    dr03_pfiso_neutral_ = dr03_pfiso_neutral;
+  }
 
-      virtual void Print() const;
+  /// @copybrief dr03_pfiso_gamma()
+  inline void set_dr03_pfiso_gamma(float const& dr03_pfiso_gamma) {
+    dr03_pfiso_gamma_ = dr03_pfiso_gamma;
+  }
 
-    private:
-      // PF-based isolation variables
-      float dr03_pfiso_charged_;
-      float dr03_pfiso_neutral_;
-      float dr03_pfiso_gamma_;
+  /// @copybrief had_tower_over_em()
+  inline void set_had_tower_over_em(float const& had_tower_over_em) {
+    had_tower_over_em_ = had_tower_over_em;
+  }
 
-      float had_tower_over_em_;
-      float sigma_IetaIeta_;
+  /// @copybrief sigma_IetaIeta()
+  inline void set_sigma_IetaIeta(float const& sigma_IetaIeta) {
+    sigma_IetaIeta_ = sigma_IetaIeta;
+  }
 
-      bool  pass_electron_veto_;
+  /// @copybrief pass_electron_veto()
+  inline void set_pass_electron_veto(bool const& pass_electron_veto) {
+    pass_electron_veto_ = pass_electron_veto;
+  }
+  /**@}*/
 
-  };
+ private:
+  float dr03_pfiso_charged_;
+  float dr03_pfiso_neutral_;
+  float dr03_pfiso_gamma_;
 
-  typedef std::vector<ic::Photon> PhotonCollection;
+  float had_tower_over_em_;
+  float sigma_IetaIeta_;
 
+  bool pass_electron_veto_;
+
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(Photon, 2);
+ #endif
+};
+
+typedef std::vector<ic::Photon> PhotonCollection;
 }
+/** \example plugins/ICPhotonProducer.cc */
 #endif
