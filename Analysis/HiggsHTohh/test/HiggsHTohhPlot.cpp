@@ -904,6 +904,9 @@ int main(int argc, char* argv[]){
             HhhAnalysis::PrintValue("ggHTohhTo2Tau2B"+m, hmap["ggHTohhTo2Tau2B"+m].second);
             HhhAnalysis::PrintValue("ggAToZhToLLBB"+m, hmap["ggAToZhToLLBB"+m].second);
             HhhAnalysis::PrintValue("ggAToZhToLLTauTau"+m, hmap["ggAToZhToLLTauTau"+m].second);
+            HhhAnalysis::PrintValue("bbH"+m, hmap["bbH"+m].second);
+            HhhAnalysis::PrintValue("bbH100", hmap["bbH100"].second);
+            HhhAnalysis::PrintValue("bbH120", hmap["bbH120"].second);
             HhhAnalysis::Value total_bkr;
             if(channel_str == "et" || channel_str == "mt") {
                 total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["TT"].second);
