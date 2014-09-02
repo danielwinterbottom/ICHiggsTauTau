@@ -78,7 +78,7 @@ namespace ic {
 
     if (eta < 2.4) {
       result = neutralFrac   < 0.99
-	    && jet->neutral_em_energy_frac()    < 0.99
+      && jet->neutral_em_energy_frac()    < 0.99
             && n_pu                             > 0
             && jet->charged_had_energy_frac()   > 0.0
             && jet->charged_multiplicity()      > 0
@@ -100,7 +100,7 @@ namespace ic {
 
     if (eta < 2.4) {
       result = neutralFrac   < 0.99
-	    && jet->neutral_em_energy_frac()    < 0.99
+      && jet->neutral_em_energy_frac()    < 0.99
             && n_pu                             > 0
             && jet->charged_had_energy_frac()   > 0.0
             && jet->charged_multiplicity()      > 0
@@ -510,23 +510,23 @@ namespace ic {
     double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
 
     return ( elec->gsf_tk_nhits()            <= 0
-	     && !elec->has_matched_conversion()
-	     && ( (in_barrel 
-		   && elec->sigma_IetaIeta()           < 0.01
-		   && fabs(elec->dphi_sc_tk_at_vtx())  < 0.03
-		   && fabs(elec->deta_sc_tk_at_vtx())  < 0.004
-		   && elec->hadronic_over_em() < 0.120
-		   && ooemoop < 0.050
-		   ) || 
-		  (!in_barrel 
-		   && elec->sigma_IetaIeta()           < 0.03
-		   && fabs(elec->dphi_sc_tk_at_vtx())  < 0.02
-		   && fabs(elec->deta_sc_tk_at_vtx())  < 0.005
-		   && elec->hadronic_over_em() < 0.100
-		   && ooemoop < 0.050
-		   )
-		  )
-	     );
+       && !elec->has_matched_conversion()
+       && ( (in_barrel 
+       && elec->sigma_IetaIeta()           < 0.01
+       && fabs(elec->dphi_sc_tk_at_vtx())  < 0.03
+       && fabs(elec->deta_sc_tk_at_vtx())  < 0.004
+       && elec->hadronic_over_em() < 0.120
+       && ooemoop < 0.050
+       ) || 
+      (!in_barrel 
+       && elec->sigma_IetaIeta()           < 0.03
+       && fabs(elec->dphi_sc_tk_at_vtx())  < 0.02
+       && fabs(elec->deta_sc_tk_at_vtx())  < 0.005
+       && elec->hadronic_over_em() < 0.100
+       && ooemoop < 0.050
+       )
+      )
+       );
   }
 
   bool VetoElectronID(Electron const* elec) {
@@ -536,23 +536,23 @@ namespace ic {
     double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
 
     return ( elec->gsf_tk_nhits()            <= 999
-	     //&& !elec->has_matched_conversion()
-	     && ( (in_barrel 
-		   && elec->sigma_IetaIeta()           < 0.01
-		   && fabs(elec->dphi_sc_tk_at_vtx())  < 0.800
-		   && fabs(elec->deta_sc_tk_at_vtx())  < 0.007
-		   && elec->hadronic_over_em() < 0.150
-		   && ooemoop < 999.9
-		   ) || 
-		  (!in_barrel 
-		   && elec->sigma_IetaIeta()           < 0.03
-		   && fabs(elec->dphi_sc_tk_at_vtx())  < 0.700
-		   && fabs(elec->deta_sc_tk_at_vtx())  < 0.010
-		   && elec->hadronic_over_em() < 999.9
-		   && ooemoop < 999.9
-		   )
-		  )
-	     );
+       //&& !elec->has_matched_conversion()
+       && ( (in_barrel 
+       && elec->sigma_IetaIeta()           < 0.01
+       && fabs(elec->dphi_sc_tk_at_vtx())  < 0.800
+       && fabs(elec->deta_sc_tk_at_vtx())  < 0.007
+       && elec->hadronic_over_em() < 0.150
+       && ooemoop < 999.9
+       ) || 
+      (!in_barrel 
+       && elec->sigma_IetaIeta()           < 0.03
+       && fabs(elec->dphi_sc_tk_at_vtx())  < 0.700
+       && fabs(elec->deta_sc_tk_at_vtx())  < 0.010
+       && elec->hadronic_over_em() < 999.9
+       && ooemoop < 999.9
+       )
+      )
+       );
   }
 
   bool Electron2011WP95ID(Electron const* elec) {
@@ -776,19 +776,19 @@ namespace ic {
     double at1pt=cand->At(1)->pt();
     if(at0pt>at1pt){
       if(aboveorbelow){
-	if (at0pt>jetpt1 && at1pt>jetpt2) return true;
+  if (at0pt>jetpt1 && at1pt>jetpt2) return true;
       }
       else{
- 	if (at0pt<jetpt1 && at1pt<jetpt2) return true;
+  if (at0pt<jetpt1 && at1pt<jetpt2) return true;
       }
       return false;
     }
     else{
       if(aboveorbelow){
-	if (at1pt>jetpt1 && at0pt>jetpt2) return true;
+  if (at1pt>jetpt1 && at0pt>jetpt2) return true;
       }
       else{
-	if (at1pt<jetpt1 && at0pt<jetpt2) return true;
+  if (at1pt<jetpt1 && at0pt<jetpt2) return true;
       }
       return false;
     }
@@ -963,14 +963,42 @@ namespace ic {
     return result;
   }
 
-  std::vector<GenParticle *> ExtractDaughters(GenParticle * part, std::vector<GenParticle *> const& input) {
-    std::vector<GenParticle *> result;
+  std::vector<GenParticle*> ExtractDaughters(
+      GenParticle* part, std::vector<GenParticle*> const& input) {
+    std::vector<GenParticle*> result;
     std::vector<int> daughters = part->daughters();
     for (unsigned i = 0; i < input.size(); ++i) {
-      if (std::find(daughters.begin(), daughters.end(), input[i]->index()) != daughters.end()) {
+      if (std::find(daughters.begin(), daughters.end(), input[i]->index()) !=
+          daughters.end()) {
         result.push_back(input[i]);
       }
     }
+    return result;
+  }
+
+  std::vector<GenParticle*> ExtractDaughtersRecursive(
+      GenParticle* part, std::vector<GenParticle*> const& input) {
+    std::vector<GenParticle*> tmp = ExtractDaughters(part, input);
+    std::set<GenParticle*> result_set;
+    bool all_found = false;
+    while (!all_found) {
+      std::vector<GenParticle*> tmp_other;
+      for (unsigned i = 0; i < tmp.size(); ++i) {
+        result_set.insert(tmp[i]);
+        std::vector<GenParticle*> tmp_daughters =
+            ExtractDaughters(tmp[i], input);
+        for (unsigned j = 0; j < tmp_daughters.size(); ++j)
+          tmp_other.push_back(tmp_daughters[j]);
+      }
+      tmp = tmp_other;
+      if (tmp.size() == 0) all_found = true;
+    }
+    std::vector<GenParticle*> result;
+    for (auto it : result_set) result.push_back(it);
+    std::sort(result.begin(), result.end(),
+              [](GenParticle const* p1,
+                 GenParticle const* p2) { return p1->index() < p2->index();
+              });
     return result;
   }
 
