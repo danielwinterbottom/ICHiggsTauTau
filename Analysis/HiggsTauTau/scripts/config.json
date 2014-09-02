@@ -19,6 +19,7 @@
     "electrons"     : "electrons",
     "muons"         : "muonsPFlow",
     "taus"          : "taus",
+    "genTaus"       : "genParticles",
     "tau_es_shift"  : 1.0,
     "elec_es_shift" : 1.0,
     "do_pu_wt"      : true,

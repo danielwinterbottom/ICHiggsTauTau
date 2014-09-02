@@ -32,13 +32,14 @@ namespace ic {
 
 void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,
                                 Json::Value const& js) {
+  BuildModule(seq, HTTGenEvent("HTTGenEvent")
+                       .set_genparticle_label(js["genTaus"].asString())
+                       .set_genjet_label("genJets"));
+
   if (channel == channel::et) BuildETPairs(seq, js);
   if (channel == channel::mt) BuildMTPairs(seq, js);
   if (channel == channel::em) BuildEMPairs(seq, js);
 
-  BuildModule(seq, HTTGenEvent("HTTGenEvent")
-                       .set_genparticle_label("genParticles")
-                       .set_genjet_label("genJets"));
 
   BuildModule(seq, SimpleFilter<CompositeCandidate>("PairFilter")
       .set_input_label("ditau").set_min(1)
