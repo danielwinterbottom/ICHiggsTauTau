@@ -97,7 +97,8 @@ namespace ic {
 
     if (ch_ != channel::em) {
       // SM Categories
-      alias_map_["inclusive"]         = "pt_2>30.";
+      //alias_map_["inclusive"]         = "pt_2>30";
+      alias_map_["inclusive"]         = "1";
 
       // Categories for background estimates and control plots
       alias_map_["vbf_loose"]         = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
@@ -123,6 +124,8 @@ namespace ic {
     alias_map_["nobtag"]                    = "n_bjets==0";
     // Categories for background estimates and control plots
     alias_map_["btag_loose"]                = "(n_jets<=1 && n_loose_bjets>=1)";
+    alias_map_["1jet1tag_loose"]            = "(n_prebjets==1 && prebjetbcsv_1>0.244)";
+    alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
     // New categories for optimisation of H->hh->tautaubb
     alias_map_["sasha"]                      = "(n_prebjets>=2 && n_bjets>=1)";
     
@@ -584,7 +587,7 @@ namespace ic {
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
-      if (method == 5 || method == 4) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 5 || method == 4 || method == 25) qcd_cat = this->ResolveAlias("inclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
       qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
@@ -592,7 +595,7 @@ namespace ic {
           return w_ss_norm;}
         }
       });
-      if (method == 5 || method == 4) {
+      if (method == 5 || method == 4 || method == 25) {
         Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         if (verbosity_) {
           std::cout << "CategoryEff:   " << boost::format("%s,'%s','%s'/'%s','%s'\n") % this->ResolveAlias("QCD_Eff_Sample")  % qcd_sdb_sel 
@@ -612,6 +615,13 @@ namespace ic {
           {"WJetsToLNuSoup", [&]()->HhhAnalysis::Value {
             return w_ss_norm;} 
           }
+        });}
+      else if (method == 25) {
+        qcd_cat=cat;
+        qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+          {"WJetsToLNuSoup", [&]()->HhhAnalysis::Value {
+            return w_ss_norm;} 
+          }
         });
       } else {
         if (method == 4)  qcd_cat = cat;
@@ -620,6 +630,9 @@ namespace ic {
         if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
         if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
+        if (method == 23) qcd_cat = this->ResolveAlias("1jet1tag_loose");        
+        //if (method == 24 || method == 25 ) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
+        if (method == 24) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
         qcd_hist = this->GetShape(var, this->ResolveAlias("QCD_Shape_Sample"), qcd_sdb_sel, qcd_cat, wt);
         if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
           % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
@@ -1252,7 +1265,7 @@ namespace ic {
     //TH1F w_control = GetShape(fit_var, "WJetsToLNuSoup", control_sel, this->ResolveAlias("2jetinclusive"), wt);
     if (verbosity_) PrintValue("TotalBkgExclTT", total_bkg);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control_norm.second * data_control_norm.second));
-    double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
+    //double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
     //Template fit returns the W norm and the uncertainty on it:
     Value w_control_postfit = WTTTemplateFit(&data_control, &w_control, &top_control, 0, 1);
     //Combine uncertainty from fit in quadrature with already existing uncertainty:
