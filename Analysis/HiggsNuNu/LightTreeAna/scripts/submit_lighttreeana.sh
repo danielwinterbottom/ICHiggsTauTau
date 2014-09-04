@@ -20,10 +20,8 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-INPUTPARAMS="../filelists/Dec18/ParamsDec18test.dat"
 CONFIG=scripts/DefaultConfig.cfg
 QUEUEDIR=medium #medium long
-FILELIST="filelists/filelist.dat"
 
 JOBDIRPREFIX=jobs
 JOBDIR=$JOBDIRPREFIX/
@@ -62,12 +60,15 @@ fi
 export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-submission: " $JOBSUBMIT
 
-JOB=test
 
 echo "JOB name = $JOB"
-
-$JOBWRAPPER "./bin/LTAnalysis --cfg=$CONFIG -o $OUTPUTDIR$OUTPUTNAME -p $INPUTPARAMS -f $FILELIST &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-$JOBSUBMIT $JOBDIR/$JOB.sh
+for channels in nunu munu enu taunu mumu
+  do
+  JOB=$channels
+  OUTPUTNAME="$channels.root"
+  $JOBWRAPPER "./bin/LTAnalysis --cfg=$CONFIG --channel=$channels -o $OUTPUTDIR$OUTPUTNAME &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+  $JOBSUBMIT $JOBDIR/$JOB.sh
+done
 
 
 
