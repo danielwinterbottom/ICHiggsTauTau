@@ -35,10 +35,16 @@ namespace ic {
     double total_weight_leptight_;
     double jet1_pt_;
     double jet2_pt_;
+    double jet3_pt_;
     double jet1_E_;
     double jet2_E_;
+    double jet3_E_;
     double jet1_eta_;
     double jet2_eta_;
+    double jet3_eta_;
+    double jet1_phi_;
+    double jet2_phi_;
+    double jet3_phi_;
     double jet1_csv_;
     double jet2_csv_;
     double jet3_csv_;
@@ -78,7 +84,6 @@ namespace ic {
     double jet1metnomu_scalarprod_;
     double jet2metnomu_scalarprod_;
     double cjvjetpt_;
-    double jet3pt_;
     unsigned n_jets_cjv_30_;
     unsigned n_jets_cjv_20EB_30EE_;
     double passtrigger_;
@@ -96,8 +101,13 @@ namespace ic {
     double m_mumu_gen_;
     double mu1_pt_;
     double mu1_eta_;
+    double mu1_phi_;
+    double mu2_pt_;
+    double mu2_eta_;
+    double mu2_phi_;
     double ele1_pt_;
     double ele1_eta_;
+    double ele1_phi_;
 
   public:
     LightTree(std::string const& name);

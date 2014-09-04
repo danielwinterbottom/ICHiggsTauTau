@@ -35,10 +35,16 @@ namespace ic {
     total_weight_leptight_ = 1;
     jet1_pt_ = 0;
     jet2_pt_ = 0;
+    jet3_pt_=-1;
     jet1_E_ = 0;
     jet2_E_ = 0;
+    jet3_E_ = 0;
     jet1_eta_ = 0;
     jet2_eta_ = 0;
+    jet3_eta_ = 0;
+    jet1_phi_ = 0;
+    jet2_phi_ = 0;
+    jet3_phi_ = 0;
     jet1_csv_ = 0;
     jet2_csv_ = 0;
     jet3_csv_ = 0;
@@ -80,7 +86,6 @@ namespace ic {
     n_jets_cjv_30_ = 0;
     n_jets_cjv_20EB_30EE_ = 0;
     cjvjetpt_=-1;
-    jet3pt_=-1;
     passtrigger_ = -1;
     passparkedtrigger1_ = -1;
     passparkedtrigger2_ = -1;
@@ -94,9 +99,14 @@ namespace ic {
     m_mumu_=-1;
     m_mumu_gen_=-1;
     mu1_pt_=-1;
-    mu1_eta_=-1;
+    mu1_eta_=-10000;
+    mu1_phi_=-1;
+    mu2_pt_=-1;
+    mu2_eta_=-10000;
+    mu2_phi_=-1;
     ele1_pt_=-1;
-    ele1_eta_=-1;
+    ele1_eta_=-10000;
+    ele1_phi_=-1;
   }
 
   LightTree::~LightTree(){
@@ -128,10 +138,16 @@ namespace ic {
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("jet1_pt",&jet1_pt_);
     outputTree_->Branch("jet2_pt",&jet2_pt_);
+    outputTree_->Branch("jet3_pt",&jet3_pt_);
     outputTree_->Branch("jet1_E",&jet1_E_);
     outputTree_->Branch("jet2_E",&jet2_E_);
+    outputTree_->Branch("jet3_E",&jet3_E_);
     outputTree_->Branch("jet1_eta",&jet1_eta_);
     outputTree_->Branch("jet2_eta",&jet2_eta_);
+    outputTree_->Branch("jet3_eta",&jet3_eta_);
+    outputTree_->Branch("jet1_phi",&jet1_phi_);
+    outputTree_->Branch("jet2_phi",&jet2_phi_);
+    outputTree_->Branch("jet3_phi",&jet3_phi_);
     outputTree_->Branch("jet1_csv",&jet1_csv_);
     outputTree_->Branch("jet2_csv",&jet2_csv_);
     outputTree_->Branch("jet3_csv",&jet3_csv_);
@@ -173,7 +189,6 @@ namespace ic {
     outputTree_->Branch("n_jets_cjv_30",&n_jets_cjv_30_);
     outputTree_->Branch("n_jets_cjv_20EB_30EE",&n_jets_cjv_20EB_30EE_);
     outputTree_->Branch("cjvjetpt",&cjvjetpt_);
-    outputTree_->Branch("jet3pt",&jet3pt_);
     outputTree_->Branch("passtrigger",&passtrigger_);
     outputTree_->Branch("passparkedtrigger1",&passparkedtrigger1_);
     outputTree_->Branch("passparkedtrigger2",&passparkedtrigger2_);
@@ -189,8 +204,13 @@ namespace ic {
     outputTree_->Branch("m_mumu_gen",&m_mumu_gen_);
     outputTree_->Branch("mu1_pt",&mu1_pt_);
     outputTree_->Branch("mu1_eta",&mu1_eta_);
+    outputTree_->Branch("mu1_phi",&mu1_phi_);
+    outputTree_->Branch("mu2_pt",&mu2_pt_);
+    outputTree_->Branch("mu2_eta",&mu2_eta_);
+    outputTree_->Branch("mu2_phi",&mu2_phi_);
     outputTree_->Branch("ele1_pt",&ele1_pt_);
     outputTree_->Branch("ele1_eta",&ele1_eta_);
+    outputTree_->Branch("ele1_phi",&ele1_phi_);
 
     return 0;
   }
@@ -268,18 +288,32 @@ namespace ic {
     if(nselmuons_>=1){
       mu1_pt_=selmuons[0]->pt();
       mu1_eta_=selmuons[0]->eta();
+      mu1_phi_=selmuons[0]->phi();
+      if(nselmuons_>=2){
+	mu2_pt_=selmuons[1]->pt();
+	mu2_eta_=selmuons[1]->eta();
+	mu2_phi_=selmuons[1]->phi();
+      }
+      else{
+	mu2_pt_=-1;
+	mu2_eta_=9999999;
+	mu2_phi_=9999999;
+      }
     }
     else{
       mu1_pt_=-1;
       mu1_eta_=9999999;
+      mu1_phi_=9999999;
     }
     if(nselelectrons_>=1){
       ele1_pt_=selelectrons[0]->pt();
       ele1_eta_=selelectrons[0]->eta();
+      ele1_phi_=selelectrons[0]->phi();
     }
     else{
       ele1_pt_=-1;
       ele1_eta_=9999999;
+      ele1_phi_=9999999;
     }
 
     if(nselmuons_==2){
@@ -337,6 +371,8 @@ namespace ic {
       jet2_E_ = jet2vec.E();
       jet1_eta_ = jet1->eta();
       jet2_eta_ = jet2->eta();
+      jet1_phi_ = jet1->phi();
+      jet2_phi_ = jet2->phi();
       dijet_M_ = dijet->M();
       dijet_deta_ = fabs(jet1->eta() - jet2->eta());
       dijet_sumeta_ = jet1->eta() + jet2->eta();
@@ -398,7 +434,9 @@ namespace ic {
       double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
       n_jets_cjv_30_ = 0;
       n_jets_cjv_20EB_30EE_ = 0;
-      jet3pt_=-1;
+      jet3_pt_=-1;
+      jet3_eta_=-10000;
+      jet3_phi_=-10000;
       cjvjetpt_=-1;
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
@@ -415,9 +453,11 @@ namespace ic {
 	  if(isInCentralGap&&(tmppt>cjvjetpt_)){
 	    cjvjetpt_=tmppt;
 	  }
-	  if(tmppt>jet3pt_){
+	  if(tmppt>jet3_pt_&&(jets[i]->id()!=jet1->id())&&(jets[i]->id()!=jet2->id())){
 	    jet3_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-	    jet3pt_=tmppt;
+	    jet3_pt_=tmppt;
+	    jet3_eta_=jets[i]->eta();
+	    jet3_phi_=jets[i]->phi();
 	  }
 	  if (jets[i]->pt() > 30.0 && isInCentralGap){
 	    ++n_jets_cjv_30_;
@@ -432,7 +472,7 @@ namespace ic {
       static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
       if (jetmetnomu_mindphi_>1.5 && metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
-	outputTree_->Fill();
+      outputTree_->Fill();
 	++processed;
       }
       if (processed == 500) outputTree_->OptimizeBaskets();
