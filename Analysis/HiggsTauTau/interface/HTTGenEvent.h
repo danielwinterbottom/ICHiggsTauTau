@@ -13,16 +13,27 @@ namespace ic {
 
 
 struct GenEvent_Tau {
-  GenParticle *tau_st3            = nullptr;
-  GenParticle *tau_st2_pre_fsr    = nullptr;
-  GenParticle *tau_st2_post_fsr   = nullptr;
-  GenParticle *tau_nu             = nullptr;
-  GenParticle *lep                = nullptr;
-  GenParticle *lep_nu             = nullptr;
-  GenJet *vis_jet                 = nullptr;
-  GenParticle *had                = nullptr;
-  int hadronic_mode               = -1;
-  int leptonic_mode               = -1;
+  GenParticle *tau_st3;
+  GenParticle *tau_st2_pre_fsr;
+  GenParticle *tau_st2_post_fsr;
+  GenParticle *tau_nu;
+  GenParticle *lep;
+  GenParticle *lep_nu;
+  GenJet *vis_jet;
+  GenParticle *had;
+  int hadronic_mode;
+  int leptonic_mode;
+  GenEvent_Tau()
+      : tau_st3(nullptr),
+        tau_st2_pre_fsr(nullptr),
+        tau_st2_post_fsr(nullptr),
+        tau_nu(nullptr),
+        lep(nullptr),
+        lep_nu(nullptr),
+        vis_jet(nullptr),
+        had(nullptr),
+        hadronic_mode(-1),
+        leptonic_mode(-1) {}
   std::vector<GenParticle *> fsr;
   std::vector<GenParticle *> pi_charged;
   std::vector<GenParticle *> pi_neutral;
@@ -30,9 +41,10 @@ struct GenEvent_Tau {
 };
 
 struct GenEvent_XToTauTau {
-  GenParticle *boson              = nullptr;
+  GenParticle *boson;
   GenEvent_Tau tau_0;
   GenEvent_Tau tau_1;
+  GenEvent_XToTauTau() : boson(nullptr) {}
 };
 
 // struct GenEvent_XToFF {
