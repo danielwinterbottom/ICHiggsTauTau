@@ -15,6 +15,7 @@
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 // #include "PhysicsTools/FWLite/interface/TFileService.h"
+#include "Utilities/interface/JsonTools.h"
 #include "Utilities/interface/FnRootTools.h"
 #include "Utilities/interface/FnPredicates.h"
 #include "Core/interface/AnalysisBase.h"
@@ -37,26 +38,6 @@ using std::vector;
 using std::string;
 using ic::Electron;
 
-Json::Value ExtractJson(std::string const& file) {
-  Json::Value js;
-  Json::Reader json_reader;
-  std::fstream input;
-  input.open(file);
-  json_reader.parse(input, js);
-  return js;
-}
-
-void UpdateJson(Json::Value& a, Json::Value const& b) {
-  if (!a.isObject() || !b.isObject()) return;
-
-  for (auto const& key : b.getMemberNames()) {
-    if (a[key].isObject()) {
-      UpdateJson(a[key], b[key]);
-    } else {
-      a[key] = b[key];
-    }
-  }
-}
 
 int main(int argc, char* argv[]) {
   // Shorten: write a function that does this, or move the classes into Analysis
@@ -77,14 +58,12 @@ int main(int argc, char* argv[]) {
   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
   po::notify(vm);
 
-  // In the end will recursively merge json here
-  // if (argc < 2) return 1;
-  Json::Value js_init = ExtractJson(cfgs[0]);
+  Json::Value js_init = ic::ExtractJsonFromFile(cfgs[0]);
   for (unsigned i = 1; i < cfgs.size(); ++i) {
     std::cout << ">> Updating config with file " << cfgs[i] << ":\n";
-    Json::Value extra = ExtractJson(cfgs[i]);
+    Json::Value extra = ic::ExtractJsonFromFile(cfgs[i]);
     std::cout << extra;
-    UpdateJson(js_init, extra);
+    ic::UpdateJson(js_init, extra);
   }
   for (unsigned i = 0; i < jsons.size(); ++i) {
     Json::Value extra;
@@ -92,7 +71,7 @@ int main(int argc, char* argv[]) {
     reader.parse(jsons[i], extra);
     std::cout << ">> Updating config with fragment:\n";
     std::cout << extra;
-    UpdateJson(js_init, extra);
+    ic::UpdateJson(js_init, extra);
   }
 
   Json::Value const js = js_init;
@@ -130,15 +109,13 @@ int main(int argc, char* argv[]) {
       ic::HTTSequence::ModuleSequence& seq = seqs[seq_str];
       ic::channel channel = ic::String2Channel(channel_str);
       Json::Value js_merged = js["sequence"];
-      UpdateJson(js_merged, js["channels"][channel_str]);
-      UpdateJson(js_merged, js["channels"][vars[j]]);
+      ic::UpdateJson(js_merged, js["channels"][channel_str]);
+      ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
       // std::cout << js_merged;
       sequence_builder.BuildSequence(&seq, channel, js_merged);
       for (auto m : seq) analysis.AddModule(seq_str, m.get());
     }
-
   }
-
 
   analysis.RunAnalysis();
 

@@ -21,6 +21,8 @@ class HTTSequence {
   void BuildMTPairs(ModuleSequence* seq, Json::Value const& js);
   void BuildEMPairs(ModuleSequence* seq, Json::Value const& js);
 
+  void BuildTauSelection(ModuleSequence* seq, Json::Value const& js);
+
   void BuildDiElecVeto(ModuleSequence* seq, Json::Value const& js);
   void BuildDiMuonVeto(ModuleSequence* seq, Json::Value const& js);
 

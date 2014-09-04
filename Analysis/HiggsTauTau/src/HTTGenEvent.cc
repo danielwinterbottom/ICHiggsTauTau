@@ -51,8 +51,19 @@ int HTTGenEvent::Execute(TreeEvent *event) {
         gen_event.tau_1 = BuildTauInfo(daughters[1], parts);
       }
     }
+  } else {
+    auto list = parts;
+    ic::erase_if(list, [&](GenParticle * p) {
+      return !(
+        p->status() == 3 && std::abs(p->pdgid()) == 15);
+    });
+    if (list.size() == 2) {
+      gen_event.tau_0 = BuildTauInfo(list[0], parts);
+      gen_event.tau_1 = BuildTauInfo(list[1], parts);
+    }
   }
 
+  event->Add("genEvent_XToTauTau", gen_event);
   return 0;
 }
 
@@ -193,6 +204,7 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
       info.hadronic_mode = 15;
     }
   }
+
   return info;
 }
 }
