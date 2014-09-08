@@ -571,6 +571,9 @@ namespace ic {
     if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
+    if (method == 23) w_shape_cat = this->ResolveAlias("1jet1tag_loose");
+    if (method == 24) w_shape_cat = this->ResolveAlias("2jet1tag_loose");
+    if (method == 27) w_shape_cat = this->ResolveAlias("2jet2tag_loose");
     TH1F w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, w_shape_cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("W_Shape_Sample") % w_shape_sel % w_shape_cat % wt;
