@@ -59,8 +59,8 @@ namespace ic {
         "Special_3_Data",
         "Special_4_Data",
         "Special_5_WJetsToLNuSoup",
-        "WJetsToLNuSoup",
-        "WbbJetsToLNu"
+        "WJetsToLNuSoup"
+        //"WbbJetsToLNu"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
           "DYJetsToLLSoup",
@@ -300,11 +300,13 @@ namespace ic {
       sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m);
       sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
       sample_names_.push_back("GluGluToAToZhToLLTauTau_mA-"+m);
+     // sample_names_.push_back("GluGluToAToZhToBBTauTau_mA-"+m);
     }
   }
   void HhhAnalysis::AddMSSMbbHSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
       sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
+      //sample_names_.push_back("SUSYBBHTohhTo2Tau2B_mH-"+m);
     }
   }
 
@@ -866,10 +868,12 @@ namespace ic {
       //Add H->hh and A->Zh for the requested masses
       auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
       auto signal_pair_AZhttbb = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m, var, sel, cat, wt, fixed_xs);
-      auto signal_pair_AZhbbtt = this->GenerateSignal("GluGluToAToZhToLLTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+      auto signal_pair_AZhLLtt = this->GenerateSignal("GluGluToAToZhToLLTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+      //auto signal_pair_AZhbbtt = this->GenerateSignal("GluGluToAToZhToBBTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
       hmap["ggHTohhTo2Tau2B"+infix+m+postfix] = signal_pair;
-      hmap["ggAToZhToLLTauTau"+infix+m+postfix] = signal_pair_AZhbbtt;
+      hmap["ggAToZhToLLTauTau"+infix+m+postfix] = signal_pair_AZhLLtt;
       hmap["ggAToZhToLLBB"+infix+m+postfix] = signal_pair_AZhttbb;
+      //hmap["ggAToZhToBBTauTau"+infix+m+postfix] = signal_pair_AZhbbtt;
       //PrintValue("ggHTohh"+postfix, signal_pair.second);
     }
   }
@@ -887,6 +891,7 @@ namespace ic {
     //Add bbH for a selected set of interesting masses
     for (auto const& m : masses) {
       hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+      //hmap["bbHTohhTo2Tau2B"+infix+m+postfix] = this->GenerateSignal("SUSYBBHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
       //hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
