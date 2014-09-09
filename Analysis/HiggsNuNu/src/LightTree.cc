@@ -1,5 +1,4 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
-
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
@@ -107,6 +106,7 @@ namespace ic {
     ele1_pt_=-1;
     ele1_eta_=-10000;
     ele1_phi_=-1;
+    lep_mt_=-1;
   }
 
   LightTree::~LightTree(){
@@ -127,9 +127,7 @@ namespace ic {
       else if (is_embedded_) std::cout << "Processing set for embedded MC !" << std::endl;
       else  std::cout << "Processing set for MC !" << std::endl;
     }
-
-    outputTree_ = fs_->make<TTree>("LightTree","Tree containing LightTreeAna input variables");
-
+    outputTree_=fs_->make<TTree>("LightTree","Tree containing LightTreeAna input variables");//    outputTree_ = new TTree("LightTree","Tree containing LightTreeAna input variables"); 
     outputTree_->Branch("run",&run_);
     outputTree_->Branch("lumi",&lumi_);
     outputTree_->Branch("event",&event_);
@@ -194,7 +192,6 @@ namespace ic {
     outputTree_->Branch("passparkedtrigger2",&passparkedtrigger2_);
     outputTree_->Branch("l1met",&l1met_);
     outputTree_->Branch("metnomuons",&metnomuons_);
-
     outputTree_->Branch("nvetomuons",&nvetomuons_);
     outputTree_->Branch("nselmuons",&nselmuons_);
     outputTree_->Branch("nvetoelectrons",&nvetoelectrons_);
@@ -211,6 +208,7 @@ namespace ic {
     outputTree_->Branch("ele1_pt",&ele1_pt_);
     outputTree_->Branch("ele1_eta",&ele1_eta_);
     outputTree_->Branch("ele1_phi",&ele1_phi_);
+    outputTree_->Branch("lep_mt",&lep_mt_);
 
     return 0;
   }
@@ -284,7 +282,21 @@ namespace ic {
 
     std::sort(selmuons.begin(), selmuons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::sort(selelectrons.begin(), selelectrons.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
-    
+
+    //Get MT
+    if(nselmuons_==1&&nselelectrons_==0&&ntaus_==0){//If 1 muon and no electrons use muon to make mt
+      lep_mt_=sqrt(2*selmuons[0]->pt()*met->pt()*(1-cos(selmuons[0]->phi()-met->phi())));
+    }
+    else if(nselelectrons_==1&&nselmuons_==0&&ntaus_==0){//If 1 electron and no muons use electron to make mt
+      lep_mt_=sqrt(2*selelectrons[0]->pt()*met->pt()*(1-cos(selelectrons[0]->phi()-met->phi())));      
+    }
+    else if(ntaus_==1&&nselelectrons_==0&&nselmuons_==0){//If 1 electron and no muons use electron to make mt
+      lep_mt_=sqrt(2*taus[0]->pt()*met->pt()*(1-cos(taus[0]->phi()-met->phi())));      
+    }
+    else{//If otherwise set mt to dummy value
+      lep_mt_=-2;
+    }
+
     if(nselmuons_>=1){
       mu1_pt_=selmuons[0]->pt();
       mu1_eta_=selmuons[0]->eta();
@@ -472,7 +484,7 @@ namespace ic {
       static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
       if (jetmetnomu_mindphi_>1.5 && metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
-      outputTree_->Fill();
+	outputTree_->Fill();
 	++processed;
       }
       if (processed == 500) outputTree_->OptimizeBaskets();
@@ -482,6 +494,7 @@ namespace ic {
   }
 
   int  LightTree::PostAnalysis(){
+    
     return 0;
   }
 

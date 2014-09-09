@@ -63,6 +63,7 @@ namespace ic{
       else{
 	histname=shapename_[iShape];
       }
+      if(iShape==0)std::cout<<"  nevents: "<<Integral(&datashape)<<std::endl;
       datashape.SetName(histname.c_str());
       datashape.Write();
     }

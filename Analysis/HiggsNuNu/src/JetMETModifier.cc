@@ -18,6 +18,7 @@ namespace ic {
     jesupordown_ = true; //true is up false is down
     uesupordown_ = true;
     dosmear_=false;
+    dojetresmeasurement_ = false;
     dojessyst_ = false;
     dojersyst_ = false;
     douessyst_ = false;
@@ -119,7 +120,9 @@ namespace ic {
     matchedrunmetjetpt = dir3.make<TH1F>("matchedrunmetjetpt","matchedrunmetjetpt",10000,0.,1000.);
     matchednojerjetpt = dir3.make<TH1F>("matchednojerjetpt","matchednojerjetpt",10000,0.,1000.);
 
+    
     //Jet resolution measurements
+    if(dojetresmeasurement_){
     int npts = 40;
     int netas = 5;
     std::string etas[5]={"0p0-0p5","0p5-1p1","1p1-1p7","1p7-2p3","2p3-5p0"};
@@ -160,6 +163,7 @@ namespace ic {
       resin->GetObject(("resforeta"+etas[i]).c_str(),res[i]);
       resin->GetObject(("resfuncforeta"+etas[i]).c_str(),resfunc[i]);
       resin->GetObject(("spring10resforeta"+etas[i]).c_str(),spring10resfunc[i]);
+    }
     }
     return 0;
   }
@@ -259,6 +263,7 @@ namespace ic {
 
 	
 	//MAKE PLOTS FOR RESOLUTION MEASUREMENT
+	if(dojetresmeasurement_){
 	if(index!=-1){
 	  int ipt=-1;
 	  int ieta=-1;
@@ -330,8 +335,10 @@ namespace ic {
 	  if(ieta!=-1&&ipt!=-1){
 	    recogenjetptratio[ieta][ipt]->Fill(pt/jet_genjet_pairs[index].second->pt(),wt_);
 	  }
+	
 	}
-
+	}
+      
 	//SMEARING
 	if(dosmear_){
 	  double JERscalefac=1.;//if no match leave jet alone

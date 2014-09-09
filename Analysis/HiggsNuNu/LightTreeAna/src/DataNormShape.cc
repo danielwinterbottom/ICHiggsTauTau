@@ -151,6 +151,7 @@ namespace ic{
       }
       sigmcshape.SetName(histname.c_str());
       sigmcshape.Scale(weight*sigcontextrafactor_);
+      if(iShape==0)std::cout<<"  Normalised NSMC: "<<Integral(&sigmcshape)<<std::endl;
       sigmcshape.Write();
     }
     dir->cd();

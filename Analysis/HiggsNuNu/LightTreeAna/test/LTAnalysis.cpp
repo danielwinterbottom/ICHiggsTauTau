@@ -108,8 +108,8 @@ int main(int argc, char* argv[]){
   shape.push_back("metnomuons(25,50.,300.)");
   shape.push_back("l1met(20,00.,200.)");
   shape.push_back("dijet_M(14,600.,2000.)");
-  shape.push_back("jetmetnomu_mindphi(32,0.,3.2)");
-  shape.push_back("metnomu_significance(40,0.,8.)");
+  shape.push_back("jetmetnomu_mindphi(17,1.5,3.2)");
+  shape.push_back("metnomu_significance(25,3.,8.)");
   shape.push_back("dijet_sumeta(50,-10,10)");
   shape.push_back("ht(50,0,1000)");
   shape.push_back("jetunclet_mindphi(32,0,3.2)");
@@ -120,6 +120,7 @@ int main(int argc, char* argv[]){
   shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");
   shape.push_back("dijet_dphi(30,0.,3.)");
   shape.push_back("dijet_deta(18,3.4,7.)");
+  shape.push_back("lep_pt(20,0.,100.)");
   shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");
   std::string dataset="PARKEDPLUSA";
   std::string dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=196531))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>40";
@@ -136,7 +137,6 @@ int main(int argc, char* argv[]){
   else if(channel=="munu"){//wmu
     sigcat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0";
     zextrasigcat="&&nselmuons==1&&nvetomuons==3&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120";//wmu
-
   }
   else if(channel=="enu"){//wel
     sigcat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1";
@@ -259,6 +259,7 @@ int main(int argc, char* argv[]){
     .set_contdataextrasel(dataextrasel)
     .set_sigcat("m_mumu_gen>80&&m_mumu_gen<100"+zextrasigcat)
     .set_contcat("nvetoelectrons==0 && nvetomuons==2 && nselmuons==2&&m_mumu>60&&m_mumu<120")
+
     .set_sigmainccontewk(303)
     .set_sigmainccontqcd(3503700./3)
     .set_sigmaincsigewk(460*3)
@@ -595,8 +596,11 @@ int main(int argc, char* argv[]){
   //analysis->AddModule(&normplots);
   analysis->AddModule(&wmunu);
   analysis->AddModule(&wenu);
-  analysis->AddModule(&wtaunu);  
-  analysis->AddModule(&zmumu);
+  analysis->AddModule(&wtaunu);
+  if(channel!="mumu"){
+    analysis->AddModule(&zmumu);
+  }
+  else analysis->AddModule(&zmumuinzcont);
   analysis->AddModule(&QCD);
   //analysis->AddModule(&wmunuraw);
   //analysis->AddModule(&wenuraw);
@@ -604,7 +608,6 @@ int main(int argc, char* argv[]){
   //analysis->AddModule(&QCDraw);
    //analysis->AddModule(&zmumuraw);
    //analysis->AddModule(&znunuraw);
-  //analysis->AddModule(&zmumuinzcont);
   analysis->AddModule(&vv);
   analysis->AddModule(&wgamma);
   analysis->AddModule(&top);

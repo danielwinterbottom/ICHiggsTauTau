@@ -16,7 +16,7 @@ namespace ic {
   private:
 
     CLASS_MEMBER(LightTree,fwlite::TFileService*, fs);
-    CLASS_MEMBER(LightTree,std::string, met_label);
+        CLASS_MEMBER(LightTree,std::string, met_label);
     CLASS_MEMBER(LightTree,std::string, dijet_label);
     CLASS_MEMBER(LightTree,std::string, sel_label);
     CLASS_MEMBER(LightTree,bool, is_data);
@@ -108,6 +108,7 @@ namespace ic {
     double ele1_pt_;
     double ele1_eta_;
     double ele1_phi_;
+    double lep_mt_;
 
   public:
     LightTree(std::string const& name);
