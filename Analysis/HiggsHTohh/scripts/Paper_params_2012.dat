@@ -153,8 +153,10 @@ XS_GluGluToAToZhToBBTauTau_mA-260:1.0
 XS_GluGluToAToZhToBBTauTau_mA-270:1.0
 XS_GluGluToAToZhToBBTauTau_mA-280:1.0
 XS_GluGluToAToZhToBBTauTau_mA-290:1.0
-XS_GluGluToAToZhToBBTauTau_mA-300:1.0
-XS_GluGluToAToZhToBBTauTau_mA-310:0.0008037623773
+#for tanb=2 mhmodp
+XS_GluGluToAToZhToBBTauTau_mA-300:0.000845107858532
+#XS_GluGluToAToZhToBBTauTau_mA-300:1.0
+XS_GluGluToAToZhToBBTauTau_mA-310:1.0
 XS_GluGluToAToZhToBBTauTau_mA-320:1.0
 XS_GluGluToAToZhToBBTauTau_mA-330:1.0
 XS_GluGluToAToZhToBBTauTau_mA-340:1.0
@@ -288,7 +290,7 @@ EVT_GluGluToAToZhToBBTauTau_mA-260:
 EVT_GluGluToAToZhToBBTauTau_mA-270:
 EVT_GluGluToAToZhToBBTauTau_mA-280:
 EVT_GluGluToAToZhToBBTauTau_mA-290:
-EVT_GluGluToAToZhToBBTauTau_mA-300:
+EVT_GluGluToAToZhToBBTauTau_mA-300:499600
 EVT_GluGluToAToZhToBBTauTau_mA-310:160800
 EVT_GluGluToAToZhToBBTauTau_mA-320:
 EVT_GluGluToAToZhToBBTauTau_mA-330:
