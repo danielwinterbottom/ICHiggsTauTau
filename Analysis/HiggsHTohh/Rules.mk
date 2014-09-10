@@ -1,3 +1,3 @@
 SUBDIRS 	:= 
 LIB_DEPS 	:= Core Utilities Modules HiggsTauTau 
-LIB_EXTRA := -lCondFormatsJetMETObjects
+LIB_EXTRA := -lCondFormatsJetMETObjects -L HHKinFit -lHHKinFit 

@@ -6,6 +6,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HTTPlots.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/HistoSet.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/HHKinFit/include/HHKinFitMaster.h"
 
 #include <string>
 
@@ -24,6 +25,7 @@ class HhhCategories : public ModuleBase {
   CLASS_MEMBER(HhhCategories, bool, write_tree)
   CLASS_MEMBER(HhhCategories, bool, write_plots)
   CLASS_MEMBER(HhhCategories, bool, experimental)
+  CLASS_MEMBER(HhhCategories, bool, kinfit_mode )
   CLASS_MEMBER(HhhCategories, fwlite::TFileService*, fs)
 
   std::map<std::string, bool> categories_;
@@ -101,6 +103,7 @@ class HhhCategories : public ModuleBase {
   double mjj_;       // Defined if n_jets >= 2
   double mjj_h_;       // Defined if n_jets >= 2
   double mjj_tt_;       // Defined if n_jets >= 2
+  double m_H_;       // Defined if n_jets >= 2
   double jdeta_;     // Defined if n_jets >= 2
   
   double prebjet_mjj_;       // Defined if n_jets >= 2

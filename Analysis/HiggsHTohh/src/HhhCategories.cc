@@ -3,11 +3,13 @@
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/HHKinFit/include/HHKinFitMaster.h"
 
 #include "TMVA/Reader.h"
 #include "TVector3.h"
 #include "boost/format.hpp"
 #include "TMath.h"
+#include "TLorentzVector.h"
 
 namespace ic {
 
@@ -22,6 +24,7 @@ namespace ic {
       write_tree_ = true;
       write_plots_ = true;
       experimental_ = false;
+      kinfit_mode_ = false;
   }
 
   HhhCategories::~HhhCategories() {
@@ -51,6 +54,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
       std::cout << boost::format(param_fmt()) % "write_plots"     % write_plots_;
       std::cout << boost::format(param_fmt()) % "experimental"    % experimental_;
+      std::cout << boost::format(param_fmt()) % "kinfit_mode"     % kinfit_mode_;
 
       if (write_tree_) {
         outtree_ = fs_->make<TTree>("ntuple","ntuple");
@@ -107,6 +111,7 @@ namespace ic {
         outtree_->Branch("mjj",               &mjj_);
         outtree_->Branch("mjj_h",               &mjj_h_);
         outtree_->Branch("mjj_tt",               &mjj_tt_);
+        outtree_->Branch("m_H",               &m_H_);
         outtree_->Branch("jdeta",             &jdeta_);
         outtree_->Branch("prebjet_mjj",               &prebjet_mjj_);
         outtree_->Branch("prebjet_dphi",               &prebjet_dphi_);
@@ -431,6 +436,7 @@ namespace ic {
       prebjet_1_lep1_dtheta_ = -9999;
       prebjet_1_lep1_m_ = -9999;
     }
+    
 
     if (n_prebjets_ >= 2) {
       prebjetpt_2_ = prebjets[1]->pt();
@@ -445,14 +451,32 @@ namespace ic {
       } else {
         mjj_h_ = -9999;
       }
-      //double eta_high = (prebjets[0]->eta() > prebjets[1]->eta()) ? prebjets[0]->eta() : prebjets[1]->eta();
-      //double eta_low = (prebjets[0]->eta() > jets[1]->eta()) ? jets[1]->eta() : jets[0]->eta();
-      //n_jetsingap_ = 0;
-      //if (n_jets_ > 2) {
-      //  for (unsigned i = 2; i < jets.size(); ++i) {
-      //   if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
-      //  }
-      
+      if(kinfit_mode_) {
+        std::vector<Int_t> hypo_mh1;
+        hypo_mh1.push_back(125);
+        std::vector<Int_t> hypo_mh2;
+        hypo_mh2.push_back(125);
+
+        TLorentzVector b1      = TLorentzVector(prebjets[0]->vector().px(),prebjets[0]->vector().py(),prebjets[0]->vector().pz(), prebjets[0]->vector().E());
+        TLorentzVector b2      = TLorentzVector(prebjets[1]->vector().px(),prebjets[1]->vector().py(),prebjets[1]->vector().pz(), prebjets[1]->vector().E());
+        TLorentzVector tau1vis      = TLorentzVector(lep1->vector().px(),lep1->vector().py(),lep1->vector().pz(), lep1->vector().E());
+        TLorentzVector tau2vis      = TLorentzVector(lep2->vector().px(),lep2->vector().py(),lep2->vector().pz(), lep2->vector().E());
+        TLorentzVector ptmiss  = TLorentzVector(met->vector().px(),met->vector().py(),0,met->vector().pt());
+        TMatrixD metcov(2,2);
+        metcov(0,0)=met->xx_sig();
+        metcov(1,0)=met->yx_sig();
+        metcov(0,1)=met->xy_sig();
+        metcov(1,1)=met->yy_sig();
+            
+        HHKinFitMaster kinFits = HHKinFitMaster(&b1,&b2,&tau1vis,&tau2vis);
+        kinFits.setAdvancedBalance(&ptmiss,metcov);
+        kinFits.addMh1Hypothesis(hypo_mh1);
+        kinFits.addMh2Hypothesis(hypo_mh2);
+        kinFits.doFullFit();
+        m_H_ = kinFits.getBestMHFullFit();
+      } else {
+        m_H_ = -9999;
+      }      
     } else {
       prebjetpt_2_ = -9999;
       prebjeteta_2_ = -9999;
@@ -462,6 +486,7 @@ namespace ic {
       prebjet_dtheta_ = -9999;
       mjj_h_ = -9999;
       mjj_tt_ = -9999;
+      m_H_ = -9999;
     }
     
     if (n_jets_ >= 1) {
