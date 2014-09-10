@@ -36,8 +36,10 @@ parser.add_option("--svfit", dest="svfit", action='store_true', default=False,
                   help="Make inputs for svfit mass.")
 parser.add_option("--dijet", dest="dijet", action='store_true', default=False,
                   help="Make inputs for dijet mass.")
-parser.add_option("--fullH", dest="fullH", action='store_true', default=False,
-                  help="Make inputs for reconstructed H mass.")
+parser.add_option("--mttbb", dest="mttbb", action='store_true', default=False,
+                  help="Make inputs for mttbb.")
+parser.add_option("--mH", dest="mH", action='store_true', default=False,
+                  help="Make inputs for mH using kinematic fitting.")
 parser.add_option("-e", dest="energy", type='string', default='8',
                   help="The C.O.M. energy is written into the datacard name, default is 8")
 
@@ -62,7 +64,7 @@ if not channels:
 for channel in channels:
   validate_channel(channel)
 
-if not (options.mvis or options.svfit or options.dijet or options.fullH) :
+if not (options.mvis or options.svfit or options.dijet or options.mttbb or options.mH) :
   print 'Error, please specify distribution to plot.'
   sys.exit(1)
 
@@ -93,7 +95,8 @@ plots = [
   ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' ,   "100"    ,"150"),
   ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"150"),
   ('prebjet_mjj'   , 'M_{jj} [GeV]'        , ''      ,   "80"   ,"160"),
-  ('mjj_tt'   , 'M_{#tau#tau+jj} [GeV]'        , ''      ,   "200"   ,"600")
+  ('mjj_tt'   , 'M_{#tau#tau+jj} [GeV]'        , ''      ,   "200"   ,"600"),
+  ('m_H'   , 'M_{H} [GeV]'        , ''      ,   "200"   ,"600")
  ]
 if options.mvis: 
     plots = [plots[0]]
@@ -101,8 +104,10 @@ if options.svfit:
     plots = [plots[1]]
 if options.dijet: 
     plots = [plots[2]]
-if options.fullH: 
+if options.mttbb: 
     plots = [plots[3]]
+if options.mH: 
+    plots = [plots[4]]
 
 #################################################################
 #### New HTohh scheme
@@ -115,7 +120,7 @@ if options.scheme == 'HTohh':
   elif options.dijet :
     BINS_FINE="(30,0,600)"
     BINS="(15,0,600)"
-  elif options.fullH:
+  elif options.mttbb or options.mH:
     BINS_FINE="(20,0,1000)"
     BINS="(20,0,1000)"
   scheme_et = [
