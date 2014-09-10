@@ -104,6 +104,7 @@ class HhhCategories : public ModuleBase {
   double mjj_h_;       // Defined if n_jets >= 2
   double mjj_tt_;       // Defined if n_jets >= 2
   double m_H_;       // Defined if n_jets >= 2
+  double m_H_chi2_;       // Defined if n_jets >= 2
   double jdeta_;     // Defined if n_jets >= 2
   
   double prebjet_mjj_;       // Defined if n_jets >= 2

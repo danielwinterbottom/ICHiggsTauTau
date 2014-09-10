@@ -22,7 +22,7 @@ namespace ic {
       mass_shift_ = 1.0;
       fs_ = NULL;
       write_tree_ = true;
-      write_plots_ = true;
+      write_plots_ = false;
       experimental_ = false;
       kinfit_mode_ = false;
   }
@@ -112,6 +112,7 @@ namespace ic {
         outtree_->Branch("mjj_h",               &mjj_h_);
         outtree_->Branch("mjj_tt",               &mjj_tt_);
         outtree_->Branch("m_H",               &m_H_);
+        outtree_->Branch("m_H_chi2",               &m_H_chi2_);
         outtree_->Branch("jdeta",             &jdeta_);
         outtree_->Branch("prebjet_mjj",               &prebjet_mjj_);
         outtree_->Branch("prebjet_dphi",               &prebjet_dphi_);
@@ -474,8 +475,12 @@ namespace ic {
         kinFits.addMh2Hypothesis(hypo_mh2);
         kinFits.doFullFit();
         m_H_ = kinFits.getBestMHFullFit();
+        m_H_chi2_ = kinFits.getBestChi2FullFit();
+
+
       } else {
         m_H_ = -9999;
+        m_H_chi2_=-999;
       }      
     } else {
       prebjetpt_2_ = -9999;
@@ -487,6 +492,7 @@ namespace ic {
       mjj_h_ = -9999;
       mjj_tt_ = -9999;
       m_H_ = -9999;
+      m_H_chi2_=-999;
     }
     
     if (n_jets_ >= 1) {
