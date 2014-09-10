@@ -266,6 +266,8 @@ if options.proc_mssm or options.proc_all:
   #if options.do_2011 and ERA=='Paper' : masses += ['90','95','100','105','150','155','160']
   if options.short_signal: Hmasses = ['300']
   if options.short_signal: Amasses = ['300']
+  if options.short_signal: ATauTaumasses = ['300']
+  if options.short_signal: bbHmasses = ['120','300']
   for Hmass in Hmasses : 
     signal_mc += [
       'GluGluToHTohhTo2Tau2B_mH-'+Hmass
