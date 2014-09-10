@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
   unsigned new_svfit_mode;        // 0 = not run, 1 = generate jobs, 2 = read-in job output
   string svfit_folder;            // Folder containing svfit jobs & output
   string svfit_override;          // Override the svfit results to use
+  bool kinfit_mode;               // Run the kinematic fitting if true
   unsigned ztautau_mode;          // 0 = not run, 1 = select Z->tautau, 2 = select Z->ee and Z->mumu
   unsigned faked_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
   unsigned hadronic_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
@@ -141,6 +142,7 @@ int main(int argc, char* argv[]){
       ("new_svfit_mode",      po::value<unsigned>(&new_svfit_mode)->default_value(0))
       ("svfit_folder",        po::value<string>(&svfit_folder)->default_value(""))
       ("svfit_override",      po::value<string>(&svfit_override)->default_value(""))
+      ("kinfit_mode",      po::value<bool>(&kinfit_mode)->default_value(false))
       ("ztautau_mode",        po::value<unsigned>(&ztautau_mode)->default_value(0))
       ("faked_tau_selector",  po::value<unsigned>(&faked_tau_selector)->default_value(0))
       ("hadronic_tau_selector",  po::value<unsigned>(&hadronic_tau_selector)->default_value(0))
@@ -212,6 +214,7 @@ int main(int argc, char* argv[]){
     std::cout << boost::format(param_fmt) % "svfit_folder" % svfit_folder;
     std::cout << boost::format(param_fmt) % "svfit_override" % svfit_override;
   }
+  std::cout << boost::format(param_fmt) % "kinfit_mode" % kinfit_mode;
   std::cout << boost::format(param_fmt) % "ztautau_mode" % ztautau_mode;
   std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector;
   std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector;
@@ -973,6 +976,7 @@ int main(int argc, char* argv[]){
     .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label)
+    .set_kinfit_mode(kinfit_mode)
     .set_write_tree(true);
   if (mass_scale_mode == 1) hhhCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) hhhCategories.set_mass_shift(1.01);
