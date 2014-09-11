@@ -96,6 +96,7 @@ namespace ic{
 
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
     do_ratio_=false;
+    do_ratio_line_=false;
   };
 
   HistPlotter::~HistPlotter(){ ;};
@@ -128,6 +129,10 @@ namespace ic{
     for(unsigned iElement=0;iElement<elements_.size();iElement++){
     }
 
+    if(histTitles_.size()!=shapes_.size()){
+      std::cout<<"histTitles must be of the same size as shapes. Exiting with status 1"<<std::endl;
+      return 1;
+    }
 
     //LOOP OVER ALL THE VARIABLES TO PLOT
     for(unsigned iShape=0;iShape<shapes_.size();iShape++){
@@ -135,7 +140,7 @@ namespace ic{
       THStack *stack=new THStack("stack","stacked plots");
       bool stackempty=true;
 
-      stack->SetTitle(histTitles_[iShape].c_str());
+      if(!do_ratio_) stack->SetTitle(histTitles_[iShape].c_str());
       //stack->GetXaxis()->SetTitle(shapes_[iShape].c_str());
 
       //EXTRACT ALL THE HISTOS AND PUT THEM IN STACKED OR UNSTACKED GROUPS
@@ -183,7 +188,7 @@ namespace ic{
       if(do_ratio_){
 	  upper = new TPad("upper","pad",0, 0.26 ,1 ,1);
 	  lower = new TPad("lower","pad",0, 0   ,1 ,0.26);
-	  //upper->SetBottomMargin(0.02);
+	  upper->SetBottomMargin(0.02);
 	  upper->Draw();
 	  upper->cd();
       }
@@ -203,6 +208,15 @@ namespace ic{
 	  stack->Draw("hist");
 	  c1->Update();
 	  first=false;
+	  if(do_ratio_){
+	    stack->GetXaxis()->SetLabelOffset(999);
+	    stack->GetXaxis()->SetLabelSize(0);
+	    std::string ytitle;
+	    ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
+	    ytitle=ytitle.substr(ytitle.find(";")+1);
+	    ytitle=ytitle.substr(0,ytitle.find(";"));
+	    stack->SetTitle((";;"+ytitle).c_str());
+	  }
 	}
 	else stack->Draw("histsame");
       }
@@ -215,13 +229,22 @@ namespace ic{
 	    elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
 	    c1->Update();
 	    first=false;
+	    if(do_ratio_){
+	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelOffset(999);
+	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0);
+	      std::string ytitle;
+	      ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
+	      ytitle=ytitle.substr(ytitle.find(";")+1);
+	      ytitle=ytitle.substr(0,ytitle.find(";"));
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitle(ytitle.c_str());
+	    }
 	  }
 	  else elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
 	}
       }
 
       //SETUP AND DRAW THE LEGEND
-      TLegend* leg =new TLegend(0.75,0.3,0.9,0.9);
+      TLegend* leg =new TLegend(0.75,0.3,0.89,0.89);
       leg->SetFillStyle(0);
       leg->SetLineColor(10);
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
@@ -233,7 +256,8 @@ namespace ic{
       //DRAW RATIO PLOT
       if(do_ratio_){
 	c1->cd();
-	lower->SetTopMargin(0.026);
+	lower->SetTopMargin(0.03);
+	lower->SetBottomMargin(0.2);
 	lower->Draw();
 	lower->cd();
 	lower->SetGridy();
@@ -268,6 +292,16 @@ namespace ic{
 	  ratio=(TH1F*)(num->Clone("ratio"));
 	  ratio->GetXaxis()->SetLabelSize(0.1);
 	  ratio->GetYaxis()->SetLabelSize(0.1);
+
+	  std::string xtitle;
+	  std::cout<<histTitles_[iShape]<<std::endl;
+	  xtitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
+	  std::cout<<xtitle<<std::endl;
+	  xtitle=xtitle.substr(0,xtitle.find(";"));
+	  std::cout<<xtitle<<std::endl;
+	  ratio->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
+	  ratio->GetXaxis()->SetTitleSize(0.1);
+	  ratio->GetXaxis()->SetTitleOffset(0.8);
 	  ratio->GetYaxis()->SetRangeUser(0,2.0);
 	  ratio->SetTitle("");
 	  ratio->GetYaxis()->SetTitle("data/MC");
@@ -277,14 +311,16 @@ namespace ic{
 	  gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
 	  ratio->Draw("E1");
-	  TLine *lowerLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),0.9,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),0.9);
-	  TLine *upperLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),1.1,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),1.1);
-	  lowerLine->SetLineWidth(2);
-	  upperLine->SetLineWidth(2);
-	  lowerLine->SetLineColor(7);
-	  upperLine->SetLineColor(7);
-	  lowerLine->Draw();
-	  upperLine->Draw();
+	  if(do_ratio_line_){
+	    TLine *lowerLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),0.9,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),0.9);
+	    TLine *upperLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),1.1,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),1.1);
+	    lowerLine->SetLineWidth(2);
+	    upperLine->SetLineWidth(2);
+	    lowerLine->SetLineColor(7);
+	    upperLine->SetLineColor(7);
+	    lowerLine->Draw();
+	    upperLine->Draw();
+	  }
 	}
       }
       //save as PDF
@@ -300,7 +336,7 @@ namespace ic{
 
       lsave.str("");
       lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
-      c1->Print(lsave.str().c_str());
+      c1->Print((lsave.str()).c_str());
 
       //WRITE TO FILE
       writedir->cd();
