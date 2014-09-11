@@ -52,6 +52,7 @@ namespace ic {
     CLASS_MEMBER(HistPlotter,std::string,dirname)
     CLASS_MEMBER(HistPlotter,std::vector<LTPlotElement>,elements)   
     CLASS_MEMBER(HistPlotter,std::vector<std::string>,shapes)   
+    CLASS_MEMBER(HistPlotter,std::vector<std::string>,histTitles)   
     CLASS_MEMBER(HistPlotter,bool,do_ratio)
   public:	
     HistPlotter(std::string);

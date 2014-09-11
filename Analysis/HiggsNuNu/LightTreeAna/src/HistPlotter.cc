@@ -107,7 +107,7 @@ namespace ic{
     return 0;
   };
 
-  int HistPlotter::Run(LTFiles* filemanager){
+  int HistPlotter::Run(LTFiles* ){
     std::cout<<module_name_<<":"<<std::endl;
     TFile* file=fs_;
 
@@ -134,7 +134,8 @@ namespace ic{
       std::cout<<"  Drawing plot for "<<shapes_[iShape]<<std::endl;
       THStack *stack=new THStack("stack","stacked plots");
       bool stackempty=true;
-      stack->SetTitle(shapes_[iShape].c_str());
+
+      stack->SetTitle(histTitles_[iShape].c_str());
       //stack->GetXaxis()->SetTitle(shapes_[iShape].c_str());
 
       //EXTRACT ALL THE HISTOS AND PUT THEM IN STACKED OR UNSTACKED GROUPS
@@ -198,6 +199,7 @@ namespace ic{
 	std::cout<<"    Drawing Stack.."<<std::endl;
 	if(first){
 	  stack->SetMaximum(ymax);
+	  //stack->GetXaxis()->SetTitle("");
 	  stack->Draw("hist");
 	  c1->Update();
 	  first=false;
@@ -219,7 +221,9 @@ namespace ic{
       }
 
       //SETUP AND DRAW THE LEGEND
-      TLegend* leg =new TLegend(0.6,0.6,0.9,0.9);
+      TLegend* leg =new TLegend(0.75,0.3,0.9,0.9);
+      leg->SetFillStyle(0);
+      leg->SetLineColor(10);
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	leg->AddEntry(elements_[iElement].hist_ptr(),elements_[iElement].hist_ptr()->GetName(),elements_[iElement].legopts().c_str());
       }
@@ -237,8 +241,8 @@ namespace ic{
 		
 	bool firstnum=true;
 	bool firstden=true;
-	TH1F* num;
-	TH1F* den;
+	TH1F* num = 0;
+	TH1F* den = 0;
 	for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	  if(elements_[iElement].is_inrationum()){
 	    //ADD TO num HIST
@@ -262,15 +266,41 @@ namespace ic{
 	  //DIVIDE NUM BY DEN and put in ratio
 	  TH1F* ratio;
 	  ratio=(TH1F*)(num->Clone("ratio"));
-	  ratio->GetYaxis()->SetLabelSize(0.08);
+	  ratio->GetXaxis()->SetLabelSize(0.1);
+	  ratio->GetYaxis()->SetLabelSize(0.1);
 	  ratio->GetYaxis()->SetRangeUser(0,2.0);
 	  ratio->SetTitle("");
+	  ratio->GetYaxis()->SetTitle("data/MC");
+	  ratio->GetYaxis()->SetTitleSize(0.1);
+	  ratio->GetYaxis()->SetTitleOffset(0.3);
 	  ratio->Divide(den);
 	  gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
 	  ratio->Draw("E1");
+	  TLine *lowerLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),0.9,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),0.9);
+	  TLine *upperLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),1.1,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),1.1);
+	  lowerLine->SetLineWidth(2);
+	  upperLine->SetLineWidth(2);
+	  lowerLine->SetLineColor(7);
+	  upperLine->SetLineColor(7);
+	  lowerLine->Draw();
+	  upperLine->Draw();
 	}
       }
+      //save as PDF
+      c1->Update();
+      std::ostringstream lsave;
+      std::string tmpstr = file->GetName();
+      tmpstr.erase(std::string(file->GetName()).find(".root"),5);
+      lsave << tmpstr ;
+      lsave << ".pdf" ;
+      if (iShape==0) lsave << "[";
+      if (iShape==shapes_.size()-1) lsave << "]";
+      c1->Print(lsave.str().c_str());
+
+      lsave.str("");
+      lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
+      c1->Print(lsave.str().c_str());
 
       //WRITE TO FILE
       writedir->cd();
