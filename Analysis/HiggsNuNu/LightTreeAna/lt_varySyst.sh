@@ -24,3 +24,6 @@ done
 sed "-i.bak" "s/output_lighttree\/$suffix_last/output_lighttree\//" scripts/DefaultConfig.cfg
 sed "-i.bak" "s/$output_old.root/central.root/" scripts/DefaultConfig.cfg
 rm scripts/*.bak
+g++ -g -std=c++0x -isystem $ROOTSYS/include `root-config --glibs` -I$CMS_PATH/$SCRAM_ARCH/external/boost/1.47.0/include -L$CMS_PATH/$SCRAM_ARCH/external/boost/1.47.0/lib -lboost_regex -lboost_program_options doDatacard.cpp 
+./a.out
+rm a.out
