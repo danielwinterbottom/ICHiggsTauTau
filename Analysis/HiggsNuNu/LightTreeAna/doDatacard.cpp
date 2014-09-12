@@ -17,10 +17,11 @@
 // namespace fs = boost::filesystem;
 namespace po = boost::program_options;
 std::vector<std::string> samples ({"qqH", "wel", "wmu", "wtau", "qcd", "zvv", "vv", "wg", "top"});
-std::vector<std::string> effects ({"lnN", "gmN", "lnU", "shape"});
 std::string var = "metnomuons";
 
 //Config Struct - POD-Type that stores information read from the configuration file
+double Integral(TH1F* hist);
+
 struct systematic{
     std::string datacard_name;
     std::string syst_effect;
@@ -30,6 +31,14 @@ struct systematic{
     std::vector<TFile*> files;
     std::vector<TH1F*> hists;
     systematic() = default;
+    double get_stat_effect(){
+        for (auto i = 0; i < samples.size(); i++){
+            if (target_samples[i]==true){
+                return Integral((TH1F*) (files[0]->GetDirectory(TString(samples[i])))->Get(TString(var)));
+            }
+        }
+        return 0.;
+    }
     systematic(std::string dcname, std::string fprefix, std::string effect_, std::string samples_) : datacard_name(dcname){
         gmN_value = 0;
         effect_value =0.;
@@ -41,20 +50,11 @@ struct systematic{
         else {
             std::vector<std::string> strs;
             boost::split(strs, samples_, boost::is_any_of("\t "), boost::token_compress_on);
-            std::cout << "samples are" << samples_ << std::endl;
             for (auto i = samples.begin(); i != samples.end(); i++){
                 if (std::find(strs.begin(), strs.end(), *i) != strs.end()) target_samples.push_back(true);
                 else target_samples.push_back(false);
             }
         }
-        std::vector<std::string> effects_data;
-        boost::split(effects_data, effect_, boost::is_any_of("-"), boost::token_compress_on);
-        if (effects_data.size() > 2) {
-            gmN_value = stoi(effects_data[1]);
-            effect_value = stod(effects_data[2]);
-        }
-        else if (effects_data.size() > 1) effect_value = stod(effects_data[1]);
-        syst_effect = effects_data[0];
         files.push_back(TFile::Open("central.root"));
         if (fprefix != "central"){
             if (fprefix == "JER") {
@@ -66,8 +66,20 @@ struct systematic{
                 files.push_back(TFile::Open((fprefix+"DOWN.root").c_str()));
             }
         }
+        std::vector<std::string> effects_data;
+        boost::split(effects_data, effect_, boost::is_any_of("-"), boost::token_compress_on);
+        if (effects_data.size() > 2) {
+            gmN_value = stoi(effects_data[1]);
+            effect_value = stod(effects_data[2]);
+        }
+        else if(effects_data[1]=="stat"){
+            effect_value = get_stat_effect();
+        }
+        else if (effects_data.size() > 1) effect_value = stod(effects_data[1]);
+        syst_effect = effects_data[0];
     }
 } ;
+
 
 void get_histograms(systematic& syst, std::string sample){
     TDirectory *dir;
@@ -115,11 +127,15 @@ std::string get_yield(systematic& syst, std::string sample){
         return std::to_string(central);
     }
     up = Integral(syst.hists[1]);
+    if (syst.datacard_name == "shape"){
+        return std::to_string(up);
+    }
     down = Integral(syst.hists[2]);
     return std::to_string(down/central) + "/" + std::to_string(up/central);
 }
 
 void process(fstream& output, TFile* outfile, systematic& syst){
+    output << syst.datacard_name;
     if (syst.datacard_name != "rate") output << "\t" << syst.syst_effect;
     if (syst.gmN_value != 0) output << " " << syst.gmN_value;
     output << "\t";
@@ -200,7 +216,7 @@ int main(int argc, char* argv[]){
     }
     //Build the datacard
     datacard << "nmax \t1 \n";
-    datacard << "jmax \t" << samples.size() << "\nkmax \t" << systematics.size() << "\n";
+    datacard << "jmax \t" << samples.size() -1 << "\nkmax \t" << systematics.size() -1 << "\n";
     datacard << seperator << std::endl;
     datacard << "shapes \t * \t * \t" << shape_output_name << "\t $PROCESS \t $PROCESS_$SYSTEMATIC" << std::endl;
     datacard << seperator << std::endl;
