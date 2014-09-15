@@ -14,7 +14,7 @@ namespace ic{
     contmcweight_="total_weight_leptight";
     contdataweight_="weight_nolep";
     contdataextrasel_="";
-    sigcontextrafactor_=1;
+    sigcontextrafactor_=1.;
     std::vector<std::string> shapes;
     shapes.push_back("jet2_pt(200,0.,1000.)");
     shape_=shapes;
@@ -134,6 +134,7 @@ namespace ic{
 
     //Calculate weight
     double weight=(ncdata-ncbkg)/ncmc;
+    std::cout<<"  weight: "<<weight<<std::endl;
     TVectorD weightvec(1);
     weightvec[0]=weight*sigcontextrafactor_;
     std::cout<<"  Getting signal MC shapes"<<std::endl;

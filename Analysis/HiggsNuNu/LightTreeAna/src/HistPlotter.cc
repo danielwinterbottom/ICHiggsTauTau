@@ -294,11 +294,8 @@ namespace ic{
 	  ratio->GetYaxis()->SetLabelSize(0.1);
 
 	  std::string xtitle;
-	  std::cout<<histTitles_[iShape]<<std::endl;
 	  xtitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
-	  std::cout<<xtitle<<std::endl;
 	  xtitle=xtitle.substr(0,xtitle.find(";"));
-	  std::cout<<xtitle<<std::endl;
 	  ratio->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
 	  ratio->GetXaxis()->SetTitleSize(0.1);
 	  ratio->GetXaxis()->SetTitleOffset(0.8);
