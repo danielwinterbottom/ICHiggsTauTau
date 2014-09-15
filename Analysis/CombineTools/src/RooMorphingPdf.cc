@@ -1,4 +1,5 @@
 #include "../interface/RooMorphingPdf.h"
+#include <stdexcept>
 #include "RooHistPdf.h"
 #include "RooDataHist.h"
 #include "RooRealProxy.h"

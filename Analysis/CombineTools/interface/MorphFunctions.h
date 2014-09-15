@@ -15,9 +15,14 @@
 #include "RooHistPdf.h"
 
 #include "CombineTools/interface/CombineHarvester.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wuninitialized"
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include "CombineTools/interface/RooMorphingPdf.h"
 #include "CombineTools/interface/RooHttYield.h"
 #include "CombineTools/interface/VerticalInterpHistPdf.h"
+#pragma GCC diagnostic pop
 
 namespace ch {
 
