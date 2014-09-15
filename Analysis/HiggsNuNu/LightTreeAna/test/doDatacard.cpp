@@ -18,23 +18,26 @@
 namespace po = boost::program_options;
 std::vector<std::string> samples ({"qqH", "wel", "wmu", "wtau", "qcd", "zvv", "vv", "wg", "top"});
 std::string var = "metnomuons";
+std::string data = "data_obs";
 
 //Config Struct - POD-Type that stores information read from the configuration file
 double Integral(TH1F* hist);
+double IntegralError(TH1F* hist);
 
 struct systematic{
-    std::string datacard_name;
-    std::string syst_effect;
-    int gmN_value;
-    double effect_value;
-    std::vector<bool> target_samples;
-    std::vector<TFile*> files;
-    std::vector<TH1F*> hists;
-    systematic() = default;
+    std::string datacard_name; //e.g CMS_scale_j
+    std::string syst_effect; //e.g shape, lnN
+    int gmN_value; //N for the gmN distribution
+    double effect_value; //Effect value if it's constant e.g lumi, stat
+    std::vector<bool> target_samples; //Vector of booleans mapped to the sample vector
+    std::vector<TFile*> files; //Vector to store the relevant files, central, SYSUP/DOWN
+    std::vector<TH1F*> hists; //Vector to store histograms for each sample
+    systematic() = default; //Default constructor because this is a POD type
     double get_stat_effect(){
-        for (auto i = 0; i < samples.size(); i++){
+        for (unsigned int i = 0; i < samples.size(); i++){
+            //Get the stat effect
             if (target_samples[i]==true){
-                return Integral((TH1F*) (files[0]->GetDirectory(TString(samples[i])))->Get(TString(var)));
+                return IntegralError((TH1F*) (files[0]->GetDirectory(TString(samples[i])))->Get(TString(var)));
             }
         }
         return 0.;
@@ -100,15 +103,14 @@ void get_histograms(systematic& syst, std::string sample){
 }
 
 void write_shapes(std::string sample, TFile* f_out, systematic& syst, bool is_central = false){ //Grab the hist and write it out
-    TDirectory *dir;
-    dir = f_out->GetDirectory(sample.c_str());
-    dir->cd();
+    f_out->cd();
     if (is_central) {
+        (syst.hists[0])->SetName(TString(sample));
         (syst.hists[0])->Write();
     }
     else{
-        (syst.hists[1])->SetName(TString(var+"_"+syst.datacard_name+"Up"));
-        (syst.hists[2])->SetName(TString(var+"_"+syst.datacard_name+"Down"));
+        (syst.hists[1])->SetName(TString(sample+"_"+syst.datacard_name+"Up"));
+        (syst.hists[2])->SetName(TString(sample+"_"+syst.datacard_name+"Down"));
         (syst.hists[1])->Write();
         (syst.hists[2])->Write();
     }
@@ -116,20 +118,26 @@ void write_shapes(std::string sample, TFile* f_out, systematic& syst, bool is_ce
 } 
 
 double Integral (TH1F* hist){
-    double integ = hist->Integral(0, hist->GetNbinsX()+1);
+    double integ = hist->Integral(); //Integral(0, hist->GetNbinsX()+1);
     return integ;
 }
 
-std::string get_yield(systematic& syst, std::string sample){
+double IntegralError(TH1F* hist){
+    double integ, err;
+    integ = hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
+    return 1+(err/integ);
+}
+
+std::string get_yield(systematic& syst){
     double central, up, down;
     central = Integral(syst.hists[0]);
     if (syst.datacard_name == "rate"){
         return std::to_string(central);
     }
-    up = Integral(syst.hists[1]);
-    if (syst.datacard_name == "shape"){
-        return std::to_string(up);
+    if (syst.syst_effect == "shape"){
+        return std::to_string(1.);
     }
+    up = Integral(syst.hists[1]);
     down = Integral(syst.hists[2]);
     return std::to_string(down/central) + "/" + std::to_string(up/central);
 }
@@ -153,7 +161,7 @@ void process(fstream& output, TFile* outfile, systematic& syst){
             output << syst.effect_value << "\t";
             continue;
         }
-        output << get_yield(syst, samples[i]) << "\t";
+        output << get_yield(syst) << "\t";
         syst.hists.erase(syst.hists.begin(), syst.hists.end());
     }
     output << std::endl;
@@ -162,8 +170,14 @@ void process(fstream& output, TFile* outfile, systematic& syst){
     }
 }
 
-double get_observation(systematic& syst){
-    return Integral((TH1F*) (syst.files[0]->GetDirectory(samples[0].c_str()))->Get(var.c_str()));
+double get_observation(systematic& syst, TFile* outfile){
+    TDirectory *dir;
+    dir = syst.files[0]->GetDirectory(TString("data_obs"));
+    TH1F* data = (TH1F*) dir->Get(var.c_str());
+    data->SetName(TString("data_obs"));
+    outfile->cd();
+    data->Write();
+    return Integral(data);
 }
 
 int main(int argc, char* argv[]){
@@ -176,7 +190,7 @@ int main(int argc, char* argv[]){
         ("help", "produce help message")
         ("bin", po::value(&bin)->default_value("vbf"), "Datacard Bin")
         ("var", po::value(&var), "Discriminant Variable")
-        ("input-dir", po::value(&files_dir)->default_value("./"), "Directory of Analysed Light Trees")
+        ("input-dir", po::value(&files_dir)->default_value("../"), "Directory of Analysed Light Trees")
         ("shapes-output", po::value(&shape_output_name)->default_value("combine_shapes.root"), "Shapes file for combine")
         ("systematics-list", po::value(&syst_list_name)->default_value("systematics.txt"), "List of systematics")
         ("datacard-output", po::value(&dc_output_name)->default_value("datacard.txt"), "DataCard")
@@ -191,8 +205,7 @@ int main(int argc, char* argv[]){
     // std::cout << "Reading Files from " << files_dir << std::endl;
     std::cout << "Writing Shapes to " << shape_output_name << std::endl;
     std::cout << "Reading systematics from " << files_dir << syst_list_name << std::endl;
-    TFile *shapes_out = TFile::Open(shape_output_name.c_str(), "RECREATE");     //Create File to hold the shape plot
-    for (auto i = samples.begin(); i != samples.end(); i++) shapes_out->mkdir((*i).c_str()); // Create a directory for each sample
+    TFile *shapes_out = TFile::Open(shape_output_name.c_str(), "RECREATE");     //Create File to hold the shape and data plots
     //Check for syst list
     //Open Syst List and Datacard output
     fstream systematic_list(syst_list_name.c_str(), std::ios::in);
@@ -220,7 +233,7 @@ int main(int argc, char* argv[]){
     datacard << seperator << std::endl;
     datacard << "shapes \t * \t * \t" << shape_output_name << "\t $PROCESS \t $PROCESS_$SYSTEMATIC" << std::endl;
     datacard << seperator << std::endl;
-    datacard << "bin \t" << bin << " \nobservation \t" << get_observation(systematics[0]) << std::endl;
+    datacard << "bin \t" << bin << " \nobservation \t" << get_observation(systematics[0], shapes_out) << std::endl;
     datacard << seperator << std::endl;
     datacard << "bin \t";
     for (unsigned int i = 0; i < samples.size(); i++) {
