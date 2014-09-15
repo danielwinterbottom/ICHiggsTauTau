@@ -80,6 +80,13 @@ class CombineHarvester {
   CombineHarvester& histograms();
   CombineHarvester& pdfs();
   CombineHarvester& data();
+
+  template<typename Function>
+  CombineHarvester& FilterObs(Function func);
+  template<typename Function>
+  CombineHarvester& FilterProcs(Function func);
+  template<typename Function>
+  CombineHarvester& FilterNus(Function func);
   /**@}*/
 
 
@@ -282,6 +289,29 @@ void CombineHarvester::ForEachObs(Function func) {
 template<typename Function>
 void CombineHarvester::ForEachNus(Function func) {
   for (auto & item: nus_) func(item.get());
+}
+
+template<typename Function>
+CombineHarvester& CombineHarvester::FilterObs(Function func) {
+  boost::remove_erase_if(
+      obs_, [&](std::shared_ptr<Observation> ptr) { return func(ptr.get());
+  });
+  return *this;
+}
+
+template<typename Function>
+CombineHarvester& CombineHarvester::FilterProcs(Function func) {
+  boost::remove_erase_if(
+      procs_, [&](std::shared_ptr<Process> ptr) { return func(ptr.get());
+  });
+  return *this;
+}
+template<typename Function>
+CombineHarvester& CombineHarvester::FilterNus(Function func) {
+  boost::remove_erase_if(
+      nus_, [&](std::shared_ptr<Nuisance> ptr) { return func(ptr.get());
+  });
+  return *this;
 }
 
 template <class Map>

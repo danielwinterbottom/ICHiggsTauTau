@@ -115,10 +115,13 @@ void CombineHarvester::ExtractShapes(std::string const& file,
     boost::replace_all(p_s, "$CHANNEL", nus_[i]->bin());
     boost::replace_all(p_s, "$PROCESS", nus_[i]->process());
     boost::replace_all(p_s, "$MASS", nus_[i]->mass());
-    boost::replace_all(p_s, "$SYSTEMATIC", nus_[i]->name());
+    std::string p_s_hi = p_s;
+    std::string p_s_lo = p_s;
+    boost::replace_all(p_s_hi, "$SYSTEMATIC", nus_[i]->name() + "Up");
+    boost::replace_all(p_s_lo, "$SYSTEMATIC", nus_[i]->name() + "Down");
     TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
-    TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get((p_s+"Up").c_str()));
-    TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get((p_s+"Down").c_str()));
+    TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get(p_s_hi.c_str()));
+    TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get(p_s_lo.c_str()));
     if (!h || !h_u || !h_d) continue;
     h->SetDirectory(0);
     h_u->SetDirectory(0);

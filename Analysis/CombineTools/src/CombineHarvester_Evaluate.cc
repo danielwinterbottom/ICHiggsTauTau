@@ -263,34 +263,59 @@ std::vector<ch::Parameter> CombineHarvester::GetParameters() const {
 }
 
 void CombineHarvester::VariableRebin(std::vector<double> bins) {
+  std::vector<double> proc_scaling(procs_.size(), 0.0);
   for (unsigned i = 0; i < procs_.size(); ++i) {
     if (procs_[i]->shape()) {
       TH1 *copy = static_cast<TH1*>(procs_[i]->shape()->Clone());
+      double rate_before = copy->Integral();
       TH1 *copy2 = copy->Rebin(bins.size()-1, "", &(bins[0]));
+      double rate_after = copy2->Integral();
+      if (rate_after > 0.) copy2->Scale(1.0/rate_after);
       procs_[i]->set_shape(std::unique_ptr<TH1>(copy2));
+      procs_[i]->set_rate(procs_[i]->rate() * (rate_after/rate_before));
+      proc_scaling[i] = rate_after/rate_before;
       delete copy;
     }
   }
   for (unsigned i = 0; i < obs_.size(); ++i) {
     if (obs_[i]->shape()) {
       TH1 *copy = static_cast<TH1*>(obs_[i]->shape()->Clone());
+      double rate_before = copy->Integral();
       TH1 *copy2 = copy->Rebin(bins.size()-1, "", &(bins[0]));
+      double rate_after = copy2->Integral();
+      if (rate_after > 0.) copy2->Scale(1.0/rate_after);
       obs_[i]->set_shape(std::unique_ptr<TH1>(copy2));
+      obs_[i]->set_rate(obs_[i]->rate() * (rate_after/rate_before));
       delete copy;
-
     }
   }
   for (unsigned i = 0; i < nus_.size(); ++i) {
+    double proc_scale = 1.0;
+    for (unsigned j = 0; j < procs_.size(); ++j) {
+      if (MatchingProcess(*(procs_[j]), *(nus_[i].get()))) {
+        proc_scale = proc_scaling[j];
+      }
+    }
     if (nus_[i]->shape_u()) {
       TH1 *copy = static_cast<TH1*>(nus_[i]->shape_u()->Clone());
+      double rate_before = copy->Integral();
       TH1 *copy2 = copy->Rebin(bins.size()-1, "", &(bins[0]));
+      double rate_after = copy2->Integral();
+      if (rate_after > 0.) copy2->Scale(1.0/rate_after);
       nus_[i]->set_shape_u(std::unique_ptr<TH1>(copy2));
+      nus_[i]->set_value_u((rate_after / rate_before) * nus_[i]->value_u() /
+                           proc_scale);
       delete copy;
     }
     if (nus_[i]->shape_d()) {
       TH1 *copy = static_cast<TH1*>(nus_[i]->shape_d()->Clone());
+      double rate_before = copy->Integral();
       TH1 *copy2 = copy->Rebin(bins.size()-1, "", &(bins[0]));
+      double rate_after = copy2->Integral();
+      if (rate_after > 0.) copy2->Scale(1.0/rate_after);
       nus_[i]->set_shape_d(std::unique_ptr<TH1>(copy2));
+      nus_[i]->set_value_d((rate_after / rate_before) * nus_[i]->value_d() /
+                           proc_scale);
       delete copy;
     }
   }

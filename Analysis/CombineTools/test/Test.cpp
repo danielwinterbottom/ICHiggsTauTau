@@ -8,9 +8,10 @@
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/MorphFunctions.h"
 #include "CombineTools/interface/HttSystematics.h"
 #include "CombineTools/interface/RooHttSMPdf.h"
-#include "CombineTools/interface/RooHttYield.h"
+// #include "CombineTools/interface/RooHttYield.h"s
 // #include "TH1F.h"
 #include "RooWorkspace.h"
 #include "RooRealVar.h"
@@ -108,6 +109,12 @@ int main() {
   cb.cp().era({"8TeV"}).signals().ExtractShapes(
       "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS$MASS_fine_binning",
       "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC_fine_binning");
+  // cb.cp().era({"7TeV"}).signals().ExtractShapes(
+  //     "data/demo/htt_mt.inputs-sm-7TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
+  //     "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
+  // cb.cp().era({"8TeV"}).signals().ExtractShapes(
+  //     "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
+  //     "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
   std::cout << " done\n";
 
   std::cout << "Scaling signal process rates...\n";
@@ -137,46 +144,66 @@ int main() {
 
   // cb.bin({"htt_mt_5_8TeV", "htt_mt_6_8TeV"});
   // cb.nus_type({"shape"}, false);
-  set<string> bins =
-      cb.GenerateSetFromObs<string>(mem_fn(&ch::Observation::bin));
   RooWorkspace ws("htt", "htt");
-  RooRealVar mtt("CMS_th1x", "CMS_th1x", 0, 350);
-  RooRealVar mh("MH", "MH", 125, 90, 145);
-  for (auto b : bins) {
-    ch::CombineHarvester tmp = std::move(cb.cp().bin({b}).signals());
-    set<string> sigs =
-        tmp.GenerateSetFromProcs<string>(mem_fn(&ch::Process::process));
-    for (auto s : sigs) {
-      ch::CombineHarvester tmp2 = std::move(tmp.cp().process({s}));
-      TH1F data_hist = tmp2.GetObservedShape();
-      TH1F shape("tmp", "tmp", data_hist.GetNbinsX(), 0.,
-                 static_cast<float>(data_hist.GetNbinsX()));
-      RooDataHist dh((b + "_" + s + "_hist").c_str(),
-                     (b + "_" + s + "_hist").c_str(), RooArgList(mtt),
-                     RooFit::Import(shape, false));
-      RooHttSMPdf pdf((b + "_" + s + "_pdf").c_str(),
-                      (b + "_" + s + "_pdf").c_str(), RooArgList(mtt), dh, mh);
-      RooHttYield yield((b + "_" + s + "_pdf_norm").c_str(),
-                        (b + "_" + s + "_pdf_norm").c_str(), mh);
-      tmp2.ForEachProc([&](ch::Process* p) {
-        double m = boost::lexical_cast<double>(p->mass());
-        pdf.AddPoint(m, *((TH1F*)p->shape()));
-        yield.AddPoint(m, p->rate());
-        p->set_shape(nullptr);
-        p->set_rate(1.0);
-      });
-      unsigned nbins = data_hist.GetXaxis()->GetXbins()->GetSize();
-      double const* arr = data_hist.GetXaxis()->GetXbins()->GetArray();
-      std::vector<double> binning(nbins);
-      binning.assign(arr, arr+nbins);
-      pdf.SetBinning(binning);
-      ws.import(pdf);
-      ws.import(yield);
-    }
+
+  bool do_morphing = true;
+  if (do_morphing) {
+    set<string> bins =
+        cb.GenerateSetFromObs<string>(mem_fn(&ch::Observation::bin));
+    ch::CombineHarvester cb_sig = std::move(cb.cp().signals());
+    RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+    ch::BuildRooMorphing(ws, cb_sig, "MH", true);
+    cb.FilterNus([&](ch::Nuisance const* p) {
+      return p->type() == "shape" && p->signal();
+    });
+    cb.mass({"125", "*"});
+    cb.cp().signals().ForEachProc([&](ch::Process* p) {
+      p->set_shape(nullptr);
+      p->set_rate(1.0);
+    });
+
+    cb.AddWorkspace(&ws);
+    cb.cp().signals().ExtractPdfs("htt", "$CHANNEL_$PROCESS_mpdf");
   }
-  cb.AddWorkspace(&ws);
-  ws.Print();
-  cb.cp().signals().ExtractPdfs("htt", "$CHANNEL_$PROCESS_pdf");
+  // cb.PrintAll();
+
+  // RooRealVar mtt("CMS_th1x", "CMS_th1x", 0, 350);
+  // RooRealVar mh("MH", "MH", 125, 90, 145);
+  // for (auto b : bins) {
+  //   ch::CombineHarvester tmp = std::move(cb.cp().bin({b}).signals());
+  //   set<string> sigs =
+  //       tmp.GenerateSetFromProcs<string>(mem_fn(&ch::Process::process));
+  //   for (auto s : sigs) {
+  //     ch::CombineHarvester tmp2 = std::move(tmp.cp().process({s}));
+  //     TH1F data_hist = tmp2.GetObservedShape();
+  //     TH1F shape("tmp", "tmp", data_hist.GetNbinsX(), 0.,
+  //                static_cast<float>(data_hist.GetNbinsX()));
+  //     RooDataHist dh((b + "_" + s + "_hist").c_str(),
+  //                    (b + "_" + s + "_hist").c_str(), RooArgList(mtt),
+  //                    RooFit::Import(shape, false));
+  //     RooHttSMPdf pdf((b + "_" + s + "_pdf").c_str(),
+  //                     (b + "_" + s + "_pdf").c_str(), RooArgList(mtt), dh, mh);
+  //     RooHttYield yield((b + "_" + s + "_pdf_norm").c_str(),
+  //                       (b + "_" + s + "_pdf_norm").c_str(), mh);
+  //     tmp2.ForEachProc([&](ch::Process* p) {
+  //       double m = boost::lexical_cast<double>(p->mass());
+  //       pdf.AddPoint(m, *((TH1F*)p->shape()));
+  //       yield.AddPoint(m, p->rate());
+  //       p->set_shape(nullptr);
+  //       p->set_rate(1.0);
+  //     });
+  //     unsigned nbins = data_hist.GetXaxis()->GetXbins()->GetSize();
+  //     double const* arr = data_hist.GetXaxis()->GetXbins()->GetArray();
+  //     std::vector<double> binning(nbins);
+  //     binning.assign(arr, arr+nbins);
+  //     pdf.SetBinning(binning);
+  //     ws.import(pdf);
+  //     ws.import(yield);
+  //   }
+  // }
+  // cb.AddWorkspace(&ws);
+  // ws.Print();
+  // cb.cp().signals().ExtractPdfs("htt", "$CHANNEL_$PROCESS_pdf");
 
   // cb.cp().mass({"125", "*"}).PrintAll();
   std::cout << "Merging bin errors...\n";
@@ -202,10 +229,11 @@ int main() {
   std::cout << "...done\n";
 
   TFile output("htt_mt.input.root", "RECREATE");
-  cb.cp().mass({"125", "*"}).WriteDatacard("htt_mt_all.txt", output);
+  cb.cp().mass({"125", "*"}).WriteDatacard(
+      do_morphing ? "htt_mt_fb.txt" : "htt_mt_normal.txt", output);
   // for (auto b : bins) {
-  //   for (auto m : /*masses*/ {"125"}) {
-  //     cout << "Writing datacard for bin: " << b << " and mass: " << m
+  //   for (auto m : masses /*{"125"}*/) {
+  //     std::cout << "Writing datacard for bin: " << b << " and mass: " << m
   //               << "\n";
   //     cb.cp().bin({b}).mass({m, "*"}).WriteDatacard(
   //         b + "_" + m + ".txt", output);

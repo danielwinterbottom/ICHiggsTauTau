@@ -1,6 +1,4 @@
-#include "../interface/RooHttSMPdf.h"
-// #include <iostream>
-// #include "boost/format.hpp"
+#include "../interface/RooMorphingPdf.h"
 #include "RooHistPdf.h"
 #include "RooDataHist.h"
 #include "RooRealProxy.h"
@@ -8,121 +6,161 @@
 #include "RooAbsReal.h"
 #include "TH1F.h"
 
-RooHttSMPdf::RooHttSMPdf() : RooHistPdf(), current_mh_(0.), can_morph_(false) {
-  TH1::AddDirectory(false);
-}
-
-RooHttSMPdf::RooHttSMPdf(const char* name, const char* title,
-                         const RooArgSet& vars, const RooDataHist& dhist,
-                         RooAbsReal& mh)
-    : RooHistPdf(name, title, vars, dhist),
-      mh_("MH", "MH", this, mh),
+RooMorphingPdf::RooMorphingPdf()
+    : x_(RooRealProxy()),
+      mh_(RooRealProxy()),
       current_mh_(0.),
-      can_morph_(true) {
-  // evaluate();
+      can_morph_(false),
+      rebin_(TArrayI()),
+      target_axis_(TAxis()),
+      morph_axis_(TAxis()),
+      init_(false),
+      cache_(FastHisto()) {}
+
+RooMorphingPdf::RooMorphingPdf(const char* name, const char* title,
+                               RooRealVar & x, RooAbsReal & mh,
+                               bool const& can_morph, TAxis const& target_axis,
+                               TAxis const& morph_axis)
+    : RooAbsPdf(name, title),
+      x_(x.GetName(), x.GetTitle(), this, x),
+      mh_(mh.GetName(), mh.GetTitle(), this, mh),
+      current_mh_(-1.),
+      can_morph_(can_morph),
+      rebin_(TArrayI()),
+      target_axis_(target_axis),
+      morph_axis_(morph_axis),
+      init_(false),
+      cache_(FastHisto()) {
+  SetAxisInfo();
 }
 
-RooHttSMPdf::RooHttSMPdf(const RooHttSMPdf& other, const char* name)
-    : RooHistPdf(other, name),
-      hmap_(other.hmap_),
-      mh_("MH", this, other.mh_),
+RooMorphingPdf::RooMorphingPdf(const RooMorphingPdf& other, const char* name)
+    : RooAbsPdf(other, name),
+      x_(other.x_.GetName(), this, other.x_),
+      mh_(other.mh_.GetName(), this, other.mh_),
       current_mh_(other.current_mh_),
       can_morph_(other.can_morph_),
-      binning_(other.binning_) {
-}
-
-void RooHttSMPdf::AddPoint(double point, TH1F hist) {
-  hmap_[point] = hist;
-  hmap_[point].Scale(1.0 / hmap_[point].Integral());
-}
-
-void RooHttSMPdf::SetBinning(std::vector<double> const& binning) {
-  binning_ = binning;
-}
-
-void RooHttSMPdf::UpdateDataHist(TH1F const& hist) const {
-  TH1F const* ptr = &hist;
-  if (binning_.size()) {
-    TH1F tmp = hist;
-    ptr = (TH1F*)tmp.Rebin(binning_.size()-1, "", &(binning_[0]));
+      rebin_(other.rebin_),
+      target_axis_(other.target_axis_),
+      morph_axis_(other.morph_axis_),
+      init_(other.init_),
+      cache_(other.cache_) {
+  for (auto const& x : other.hmap_) {
+    // Important that the RooRealProxy objects stored in the map are constructed
+    // in-place. The constructor registers the address of the proxy in our pdf
+    // (via this this pointer we pass), so clearly we can't construct a
+    // temporary
+    hmap_.emplace(std::piecewise_construct, std::forward_as_tuple(x.first),
+                  std::forward_as_tuple(x.second.GetName(), this, x.second));
   }
-  if (_dataHist->numEntries() != ptr->GetNbinsX()) {
-    std::cout << "Bin mismatch!\n";
-  } else {
-    _dataHist->reset();
-    for (int i = 0; i < _dataHist->numEntries(); ++i) {
-      RooArgSet idx = *(_dataHist->get(i));
-      _dataHist->set(idx, ptr->GetBinContent(i+1));
+}
+
+void RooMorphingPdf::SetAxisInfo() {
+  if (!morph_axis_.IsVariableBinSize()) {
+    TArrayD new_bins(morph_axis_.GetNbins() + 1);
+    new_bins[0] = morph_axis_.GetBinLowEdge(1);
+    for (int i = 1; i <= morph_axis_.GetNbins(); ++i) {
+      new_bins[i] = morph_axis_.GetBinUpEdge(i);
     }
+    morph_axis_.Set(morph_axis_.GetNbins(), &(new_bins[0]));
   }
-  if (binning_.size()) delete ptr;
+
+  rebin_ = TArrayI(morph_axis_.GetNbins());
+  for (int i = 0; i < rebin_.GetSize(); ++i) {
+    rebin_[i] = target_axis_.FindFixBin(morph_axis_.GetBinCenter(i+1)) - 1;
+    // std::cout << "Morph bin " << i << " goes to target bin " << rebin_[i]
+    //           << "\n";
+  }
 }
 
-Double_t RooHttSMPdf::evaluate() const {
+void RooMorphingPdf::Init() const {
+  cache_ = FastHisto(TH1F("tmp", "tmp", target_axis_.GetNbins(), 0,
+                          static_cast<float>(target_axis_.GetNbins())));
+  init_ = true;
+}
+
+void RooMorphingPdf::AddPoint(double point,
+                              FastVerticalInterpHistPdf & hist) {
+  hmap_.emplace(std::piecewise_construct, std::forward_as_tuple(point),
+                std::forward_as_tuple(hist.GetName(), "", this, hist));
+}
+
+
+Double_t RooMorphingPdf::evaluate() const {
+  if (!init_) Init();
+
   double mh = mh_;
-  // Is the previous result still valid? Or is the cache empty?
-  // If so, just evaluate and return.
-  if (current_mh_ == mh || hmap_.empty()) return RooHistPdf::evaluate();
-  current_mh_ = mh;
-  // Is there only one entry in the cache? If so we have to return it.
-  if (hmap_.size() == 1) {
-    UpdateDataHist(hmap_.begin()->second);
-    return RooHistPdf::evaluate();
-  }
-  // Previous result not valid, so see if it's in the cache...
-  if (hmap_.count(mh)) {
-    // Found mh in the cache, so update and return
-    // std::cout << "Hit found for MH = " << mh << std::endl;
-    UpdateDataHist(hmap_.find(mh)->second);
-    return RooHistPdf::evaluate();
-  }
-  MapIter upper = hmap_.lower_bound(mh);
+  // cache is empty: throw exception
+  if (hmap_.empty())
+    throw std::runtime_error("RooMorphingPdf: Cache is empty!");
+
+  bool single_point = false;
+  FastVerticalInterpHistPdf const* p1 = nullptr;
+  FastVerticalInterpHistPdf const* p2 = nullptr;
+  double mh_lo = 0.;
+  double mh_hi = 0.;
+
+  MassMapIter upper = hmap_.lower_bound(mh);
   if (upper == hmap_.begin()) {
-    // std::cout << "MH is below range, will set to first template\n";
-    UpdateDataHist(upper->second);
+    single_point = true;
+    p1 = &(static_cast<FastVerticalInterpHistPdf const&>(upper->second.arg()));
   } else if (upper == hmap_.end()) {
-    // std::cout << "MH is beyond range, will set to last template\n";
+    single_point = true;
     --upper;
-    UpdateDataHist(upper->second);
+    p1 = &(static_cast<FastVerticalInterpHistPdf const&>(upper->second.arg()));
   } else {
-    MapIter lower = upper;
+    MassMapIter lower = upper;
     --lower;
-    if (can_morph_) {
-      // std::cout << "No hit for MH = " << mh << ", but can morph "
-      //           << lower->first << "-" << upper->first << std::endl;
-      TH1F result = morph(lower->second, upper->second, lower->first,
-                          upper->first, mh);
-      // std::cout << lower->second.Integral() << " " << result.Integral()
-      //           << " " << upper->second.Integral() << "\n";
-      // lower->second.Print("range");
-      // result.Print("range");
-      // upper->second.Print("range");
-      UpdateDataHist(result);
-    } else {
+    p1 = &(static_cast<FastVerticalInterpHistPdf const&>(lower->second.arg()));
+    p2 = &(static_cast<FastVerticalInterpHistPdf const&>(upper->second.arg()));
+    mh_lo = lower->first;
+    mh_hi = upper->first;
+    if (!can_morph_) {
+      single_point = true;
       if (fabs(upper->first - mh) <= fabs(mh - lower->first)) {
-        // std::cout << "Closer to MH = " << upper->first << "\n";
-        UpdateDataHist(upper->second);
+        p1 = &(static_cast<FastVerticalInterpHistPdf const&>(
+                  upper->second.arg()));
       } else {
-        // std::cout << "Closer to MH = " << lower->first << "\n";
-        UpdateDataHist(lower->second);
+        p1 = &(static_cast<FastVerticalInterpHistPdf const&>(
+                  lower->second.arg()));
       }
     }
   }
-  return RooHistPdf::evaluate();
+  if (single_point) {
+    if (!(p1->cacheIsGood() && mh == current_mh_)) {
+      p1->evaluate();
+      cache_.Clear();
+      for (unsigned i = 0; i < p1->getCache().size(); ++i) {
+        cache_[rebin_[i]] += p1->getCache()[i];
+      }
+      cache_.CropUnderflows();
+      cache_.Normalize();
+    }
+  } else {
+    if (!(p1->cacheIsGood() && p2->cacheIsGood() && mh == current_mh_)) {
+      std::cout << "Need to morph!\n";
+
+      p1->evaluate();
+      p2->evaluate();
+
+      FastTemplate result =
+          morph(p1->getCache(), p2->getCache(), mh_lo, mh_hi, mh);
+      cache_.Clear();
+      for (unsigned i = 0; i < result.size(); ++i) {
+        cache_[rebin_[i]] += result[i];
+      }
+      cache_.CropUnderflows();
+      cache_.Normalize();
+    }
+  }
+  current_mh_ = mh;
+  return cache_.GetAt(x_);
 }
 
-/*
-Save time here and pass:
- CDF of hist1 as an array/vector
- CDF of hist2 an an array/vector
- TAxis of the target binning
- par1, par2 and parinterp as normal
- can return an array instead of building a TH1F
-*/
-
-TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
-                        double par2, double parinterp) const {
-  unsigned idebug = 0;
+FastTemplate RooMorphingPdf::morph(FastTemplate const& hist1,
+                                   FastTemplate const& hist2, double par1,
+                                   double par2, double parinterp) const {
+ unsigned idebug = 0;
 
   // Extract bin parameters of input histograms 1 and 2.
   // Supports the cases of non-equidistant as well as equidistant binning
@@ -131,30 +169,14 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
   // AG: We can enforce that these will never change during the lifetime of the
   // PDF, could store as class data members instead
   // Also, axis1 == axis2 and nb1 == nb2
-  TAxis* axis1 = hist1.GetXaxis();
-  Int_t nb1 = axis1->GetNbins();
-  TAxis* axis2 = hist2.GetXaxis();
-  Int_t nb2 = axis2->GetNbins();
+  Int_t nb1 = morph_axis_.GetNbins();
+  Int_t nb2 = morph_axis_.GetNbins();
+  Int_t nbn = morph_axis_.GetNbins();
 
-  std::set<Double_t> bedgesn_tmp;
-  for (Int_t i = 1; i <= nb1; ++i) {
-    bedgesn_tmp.insert(axis1->GetBinLowEdge(i));
-    bedgesn_tmp.insert(axis1->GetBinUpEdge(i));
-  }
-  for (Int_t i = 1; i <= nb2; ++i) {
-    bedgesn_tmp.insert(axis2->GetBinLowEdge(i));
-    bedgesn_tmp.insert(axis2->GetBinUpEdge(i));
-  }
-  Int_t nbn = bedgesn_tmp.size() - 1;
-  TArrayD bedgesn(nbn+1);
-  Int_t idx = 0;
-  for (std::set<Double_t>::const_iterator bedge = bedgesn_tmp.begin();
-       bedge != bedgesn_tmp.end(); ++bedge) {
-    bedgesn[idx] = (*bedge);
-    ++idx;
-  }
-  Double_t xminn = bedgesn[0];
-  Double_t xmaxn = bedgesn[nbn];
+  TArrayD const* bedgesn = morph_axis_.GetXbins();
+
+  Double_t xminn = (*bedgesn)[0];
+  Double_t xmaxn = (*bedgesn)[nbn];
 
   // ......The weights (wt1,wt2) are the complements of the "distances" between
   //       the values of the parameters at the histograms and the desired
@@ -190,14 +212,14 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
   // Treatment for empty histograms: Return an empty histogram
   // with interpolated bins.
 
-  if (hist1.GetSum() <= 0 || hist2.GetSum() <= 0) {
+  if (hist1.Integral() <= 0 || hist2.Integral() <= 0) {
     std::cout << "Warning! th1morph detects an empty input histogram. Empty "
             "interpolated histogram returned: " << std::endl;
     return (TH1F("morphed", "morphed", nbn, xminn, xmaxn));
   }
   if (idebug >= 1)
-    std::cout << "Input histogram content sums: " << hist1.GetSum() << " "
-         << hist2.GetSum() << std::endl;
+    std::cout << "Input histogram content sums: " << hist1.Integral() << " "
+         << hist2.Integral() << std::endl;
   // *
   // *......Extract the single precision histograms into double precision arrays
   // *      for the interpolation computation. The offset is because sigdis(i)
@@ -210,9 +232,8 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
   // *      interpolated cdf described by xdisn[i] (position of edge i) and
   // *      sigdisn[i] (cummulative probability up this edge) before we project
   // *      into the final binning.
-
-  Float_t const* dist1 = hist1.GetArray();
-  Float_t const* dist2 = hist2.GetArray();
+  // Float_t const* dist1 = hist1.GetArray();
+  // Float_t const* dist2 = hist2.GetArray();
 
   // AG: can re-use these too if nb1 and nb2 are fixed
   Double_t *sigdis1 = new Double_t[1+nb1];
@@ -226,19 +247,19 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
   sigdis1[0] = 0;
   sigdis2[0] = 0;  // Start with cdf=0 at left edge
 
-  for (Int_t i = 1; i < nb1 + 1; i++) {  // Remember, bin i has edges at i-1 and
-    sigdis1[i] = dist1[i];               // i and i runs from 1 to nb.
+  for (Int_t i = 0; i < nb1; i++) {  // Remember, bin i has edges at i-1 and
+    sigdis1[i+1] = hist1[i];               // i and i runs from 1 to nb.
   }
-  for (Int_t i = 1; i < nb2 + 1; i++) {
-    sigdis2[i] = dist2[i];
+  for (Int_t i = 0; i < nb2; i++) {
+    sigdis2[i+1] = hist2[i];
   }
 
   if (idebug >= 3) {
-    for (Int_t i = 0; i < nb1 + 1; i++) {
-      std::cout << i << " dist1" << dist1[i] << std::endl;
+    for (Int_t i = 0; i < nb1; i++) {
+      std::cout << i << " dist1" << hist1[i] << std::endl;
     }
-    for (Int_t i = 0; i < nb2 + 1; i++) {
-      std::cout << i << " dist2" << dist2[i] << std::endl;
+    for (Int_t i = 0; i < nb2; i++) {
+      std::cout << i << " dist2" << hist2[i] << std::endl;
     }
   }
 
@@ -309,8 +330,8 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
 
   Int_t nx3 = 0;
   Double_t x1, x2, x;
-  x1 = axis1->GetBinLowEdge(ix1 + 1);
-  x2 = axis2->GetBinLowEdge(ix2 + 1);
+  x1 = morph_axis_.GetBinLowEdge(ix1 + 1);
+  x2 = morph_axis_.GetBinLowEdge(ix2 + 1);
   x = wt1 * x1 + wt2 * x2;
   xdisn[nx3] = x;
   sigdisn[nx3] = 0;
@@ -362,10 +383,10 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
         std::cout << "Pair for i12type=1: " << sigdis2[ix2] << " "
                   << sigdis1[ix1] << " " << sigdis2[ix2 + 1] << std::endl;
       }
-      x1 = axis1->GetBinLowEdge(ix1 + 1);
+      x1 = morph_axis_.GetBinLowEdge(ix1 + 1);
       y = sigdis1[ix1];
-      Double_t x20 = axis2->GetBinLowEdge(ix2 + 1);
-      Double_t x21 = axis2->GetBinUpEdge(ix2 + 1);
+      Double_t x20 = morph_axis_.GetBinLowEdge(ix2 + 1);
+      Double_t x21 = morph_axis_.GetBinUpEdge(ix2 + 1);
       Double_t y20 = sigdis2[ix2];
       Double_t y21 = sigdis2[ix2 + 1];
 
@@ -383,10 +404,10 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
         std::cout << "Pair for i12type=2: " << sigdis1[ix1] << " "
                   << sigdis2[ix2] << " " << sigdis1[ix1 + 1] << std::endl;
       }
-      x2 = axis2->GetBinLowEdge(ix2 + 1);
+      x2 = morph_axis_.GetBinLowEdge(ix2 + 1);
       y = sigdis2[ix2];
-      Double_t x10 = axis1->GetBinLowEdge(ix1 + 1);
-      Double_t x11 = axis1->GetBinUpEdge(ix1 + 1);
+      Double_t x10 = morph_axis_.GetBinLowEdge(ix1 + 1);
+      Double_t x11 = morph_axis_.GetBinUpEdge(ix1 + 1);
       Double_t y10 = sigdis1[ix1];
       Double_t y11 = sigdis1[ix1 + 1];
 
@@ -454,7 +475,7 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
       std::cout << "   Setting final bins" << ix << " " << x << " "
                 << sigdisf[ix] << std::endl;
     ix = ix - 1;
-    x = bedgesn[ix];
+    x = (*bedgesn)[ix];
   }
   Int_t ixl = ix + 1;
   if (idebug >= 1) std::cout << " Now ixl=" << ixl << " ix=" << ix << std::endl;
@@ -468,7 +489,7 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
   // *
 
   ix = 0;
-  x = bedgesn[ix + 1];
+  x = (*bedgesn)[ix + 1];
   if (idebug >= 1)
     std::cout << "Start setting initial bins at x=" << x << std::endl;
   while (x <= xdisn[0]) {
@@ -477,7 +498,7 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
       std::cout << "   Setting initial bins " << ix << " " << x << " "
                 << xdisn[1] << " " << sigdisf[ix] << std::endl;
     ix = ix + 1;
-    x = bedgesn[ix + 1];
+    x = (*bedgesn)[ix + 1];
   }
   Int_t ixf = ix;
 
@@ -489,7 +510,7 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
 
   Int_t ix3 = 0;  // Problems with initial edge!!!
   for (ix = ixf; ix < ixl; ix++) {
-    x = bedgesn[ix];
+    x = (*bedgesn)[ix];
     if (x < xdisn[0]) {
       y = 0;
     } else if (x > xdisn[nx3]) {
@@ -498,7 +519,7 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
       while (xdisn[ix3 + 1] <= x && ix3 < 2 * nbn) {
         ix3 = ix3 + 1;
       }
-      Double_t dx2 = axis2->GetBinWidth(axis2->FindBin(x));
+      Double_t dx2 = morph_axis_.GetBinWidth(morph_axis_.FindFixBin(x));
       if (xdisn[ix3 + 1] - x > 1.1 * dx2) {  // Empty bin treatment
         y = sigdisn[ix3 + 1];
       } else if (xdisn[ix3 + 1] > xdisn[ix3]) {  // Normal bins
@@ -525,22 +546,24 @@ TH1F RooHttSMPdf::morph(TH1F const &hist1, TH1F const &hist2, double par1,
   // .....Differentiate interpolated cdf and return renormalized result in
   //      new histogram.
 
-  TH1F morphedhist("morphed", "morphed", nbn, bedgesn.GetArray());
+  // TH1F morphedhist("morphed", "morphed", nbn, 0, static_cast<float>(nbn));
+
+  FastTemplate morphedhist(nbn);
 
   for (ix = nbn - 1; ix > -1; ix--) {
     y = sigdisf[ix + 1] - sigdisf[ix];
-    morphedhist.SetBinContent(ix + 1, y);
+    morphedhist[ix] = y;
   }
 
   // ......Clean up the temporary arrays we allocated.
 
-  delete sigdis1;
-  delete sigdis2;
-  delete sigdisn;
-  delete xdisn;
-  delete sigdisf;
+  delete[] sigdis1;
+  delete[] sigdis2;
+  delete[] sigdisn;
+  delete[] xdisn;
+  delete[] sigdisf;
 
   // ......All done, return the result.
 
-  return(morphedhist);
+  return morphedhist;
 }
