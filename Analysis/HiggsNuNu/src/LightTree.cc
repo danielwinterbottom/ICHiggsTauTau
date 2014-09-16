@@ -69,6 +69,7 @@ namespace ic {
     jet2metnomu_dphi_ = 0;
     jetmet_mindphi_ = 0;
     jetmetnomu_mindphi_ = 0;
+    alljetsmetnomu_mindphi_ = 0;
     jetunclet_mindphi_ = 0;
     metunclet_dphi_ = 0;
     metnomuunclet_dphi_ = 0;
@@ -171,6 +172,7 @@ namespace ic {
     outputTree_->Branch("jet2metnomu_dphi",&jet2metnomu_dphi_);
     outputTree_->Branch("jetmet_mindphi",&jetmet_mindphi_);
     outputTree_->Branch("jetmetnomu_mindphi",&jetmetnomu_mindphi_);
+    outputTree_->Branch("alljetsmetnomu_mindphi",&alljetsmetnomu_mindphi_);
     outputTree_->Branch("jetunclet_mindphi",&jetunclet_mindphi_);
     outputTree_->Branch("metunclet_dphi",&metunclet_dphi_);
     outputTree_->Branch("metnomuunclet_dphi",&metnomuunclet_dphi_);
@@ -450,6 +452,7 @@ namespace ic {
       jet3_eta_=-10000;
       jet3_phi_=-10000;
       cjvjetpt_=-1;
+      alljetsmetnomu_mindphi_=jetmetnomu_mindphi_;
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
 	  if(jets[i]->id()==jet1->id()){
@@ -479,11 +482,15 @@ namespace ic {
 	       isInCentralGap){
 	    ++n_jets_cjv_20EB_30EE_;
 	  }
+	  if(jets[i]->pt()>30.0){
+	    double thisjetmetnomudphi = fabs(ROOT::Math::VectorUtil::DeltaPhi(jets[i]->vector(),metnomuvec));
+	    if(thisjetmetnomudphi<alljetsmetnomu_mindphi_)alljetsmetnomu_mindphi_=thisjetmetnomudphi;
+	  }
 	}
       }
       static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
-      if (jetmetnomu_mindphi_>1.5 && metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
+      if (alljetsmetnomu_mindphi_>1 && metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
 	outputTree_->Fill();
 	++processed;
       }

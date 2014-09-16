@@ -70,6 +70,7 @@ namespace ic {
     double jet2metnomu_dphi_;
     double jetmet_mindphi_;
     double jetmetnomu_mindphi_;
+    double alljetsmetnomu_mindphi_;
     double jetunclet_mindphi_;
     double metunclet_dphi_;
     double metnomuunclet_dphi_;
