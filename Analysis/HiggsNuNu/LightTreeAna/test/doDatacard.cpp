@@ -18,6 +18,7 @@
 namespace po = boost::program_options;
 std::vector<std::string> samples ({"qqH", "wel", "wmu", "wtau", "qcd", "zvv", "vv", "wg", "top"});
 std::string var = "metnomuons";
+//std::string var = "dijetmetnomu_ptfraction";
 std::string data = "data_obs";
 
 //Config Struct - POD-Type that stores information read from the configuration file
