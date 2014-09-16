@@ -453,16 +453,10 @@ namespace ic {
       jet3_phi_=-10000;
       cjvjetpt_=-1;
       alljetsmetnomu_mindphi_=jetmetnomu_mindphi_;
+      jet1_csv_=jet1->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+      jet2_csv_=jet2->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
-	  if(jets[i]->id()==jet1->id()){
-	    jet1_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-	  }
-	  if(jets[i]->id()==jet2->id()){
-	    jet2_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-	  }
-
-
 	  bool isInCentralGap = fabs(jets[i]->eta())<4.7 && jets[i]->eta() > eta_low && jets[i]->eta() < eta_high;
 	  double tmppt=jets[i]->pt();
 	  if(isInCentralGap&&(tmppt>cjvjetpt_)){
