@@ -453,10 +453,15 @@ namespace ic {
       jet3_phi_=-10000;
       cjvjetpt_=-1;
       alljetsmetnomu_mindphi_=jetmetnomu_mindphi_;
-      jet1_csv_=jet1->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-      jet2_csv_=jet2->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
+	  if(jets[i]->id()==jet1->id()){
+	    jet1_csv_=jet1->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	  }
+	  if(jets[i]->id()==jet2->id()){
+	    jet2_csv_=jet2->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
+	  }
+
 	  bool isInCentralGap = fabs(jets[i]->eta())<4.7 && jets[i]->eta() > eta_low && jets[i]->eta() < eta_high;
 	  double tmppt=jets[i]->pt();
 	  if(isInCentralGap&&(tmppt>cjvjetpt_)){
@@ -479,6 +484,16 @@ namespace ic {
 	  if(jets[i]->pt()>30.0){
 	    double thisjetmetnomudphi = fabs(ROOT::Math::VectorUtil::DeltaPhi(jets[i]->vector(),metnomuvec));
 	    if(thisjetmetnomudphi<alljetsmetnomu_mindphi_)alljetsmetnomu_mindphi_=thisjetmetnomudphi;
+	  }
+	}
+      }
+      else{
+	for (unsigned i = 0; i < jets.size(); ++i) {
+	  if(jets[i]->id()==jet1->id()){
+	    jet1_csv_=jet1->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	  }
+	  if(jets[i]->id()==jet2->id()){
+	    jet2_csv_=jet2->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
 	  }
 	}
       }
