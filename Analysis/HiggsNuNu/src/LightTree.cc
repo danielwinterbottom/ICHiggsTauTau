@@ -456,10 +456,10 @@ namespace ic {
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
 	  if(jets[i]->id()==jet1->id()){
-	    jet1_csv_=jet1->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	    jet1_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
 	  }
 	  if(jets[i]->id()==jet2->id()){
-	    jet2_csv_=jet2->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
+	    jet2_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
 	  }
 
 	  bool isInCentralGap = fabs(jets[i]->eta())<4.7 && jets[i]->eta() > eta_low && jets[i]->eta() < eta_high;
@@ -490,10 +490,10 @@ namespace ic {
       else{
 	for (unsigned i = 0; i < jets.size(); ++i) {
 	  if(jets[i]->id()==jet1->id()){
-	    jet1_csv_=jet1->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	    jet1_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
 	  }
 	  if(jets[i]->id()==jet2->id()){
-	    jet2_csv_=jet2->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
+	    jet2_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
 	  }
 	}
       }
