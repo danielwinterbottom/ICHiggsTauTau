@@ -122,8 +122,8 @@ if options.do_2011:
 
 ### Do some validation of the input
 helpMsg = "Run 'higgsHTohh.py -h' for help."
-if not (options.proc_data or options.proc_bkg  or options.proc_mssm or options.proc_all or options.proc_sm):
-  print 'Error, must run script with a least one of --data, --bkg, --mssm, --sm, --all. ' + helpMsg
+if not (options.proc_data or options.proc_bkg  or options.proc_mssm or options.proc_all or options.proc_sm or options.proc_highmass):
+  print 'Error, must run script with a least one of --data, --bkg, --mssm, --highmass, --sm, --all. ' + helpMsg
   sys.exit(1)
 if not channels:
   print 'Error, no channels specified. ' + helpMsg
@@ -266,7 +266,6 @@ if options.proc_mssm or options.proc_all:
   Amasses = ['250','260','270','280','290','300','310','320','330','340','350']
   ATauTaumasses = ['260','270','280','290','300','310','320','330','340','350']
   bbHmasses = ['90','100','110','120','130','140','160','180','200','250','300','350','400']
-  HmassesHigh = ['500','700','1000']
   #if options.do_2011 and ERA=='Paper' : masses += ['90','95','100','105','150','155','160']
   if options.short_signal: Hmasses = ['300']
   if options.short_signal: Amasses = ['300']
@@ -301,10 +300,11 @@ if options.proc_sm :
       'ZH_ZToLL_HToBB_M-'+hmass
     ]
 if options.proc_highmass :
-  for Hmass in HmassesHigh : 
+  HmassesHigh = ['500','700','1000']
+  for mass in HmassesHigh :
     signal_mc += [
-      'RadionToHH_2Tau_2b_M-'+Hmass,
-      'GravitonToHH_2Tau_2b_M-'+Hmass
+      'RadionToHH_2Tau_2b_M-'+mass,
+      'GravitonToHH_2Tau_2b_M-'+mass
     ]
   #if  not options.do_2011:
   #  ww_masses = ['110','115','120','125','130','135','140','145','150','155','160']
@@ -453,7 +453,7 @@ if options.proc_bkg or options.proc_all:
             os.system('%(JOBSUBMIT)s jobs/Special_5_%(JOB)s.sh' % vars())
 
 
-if options.proc_mssm or options.proc_all or options.proc_sm:
+if options.proc_mssm or options.proc_all or options.proc_sm or options.proc_highmass:
     for ch in channels:
       for sc in scales:
         for sa in signal_mc:
