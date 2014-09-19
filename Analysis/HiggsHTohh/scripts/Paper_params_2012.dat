@@ -161,6 +161,12 @@ XS_GluGluToAToZhToBBTauTau_mA-320:1.0
 XS_GluGluToAToZhToBBTauTau_mA-330:1.0
 XS_GluGluToAToZhToBBTauTau_mA-340:1.0
 XS_GluGluToAToZhToBBTauTau_mA-350:1.0
+XS_RadionToHH_2Tau_2b_M-500:1.0
+XS_RadionToHH_2Tau_2b_M-700:1.0
+XS_RadionToHH_2Tau_2b_M-1000:1.0
+XS_GravitonToHH_2Tau_2b_M-500:1.0
+XS_GravitonToHH_2Tau_2b_M-700:1.0
+XS_GravitonToHH_2Tau_2b_M-1000:1.0
 ## Processed Events
 EVT_Data:1.0
 EVT_DYJetsToTauTau:30459503
@@ -296,6 +302,12 @@ EVT_GluGluToAToZhToBBTauTau_mA-320:
 EVT_GluGluToAToZhToBBTauTau_mA-330:
 EVT_GluGluToAToZhToBBTauTau_mA-340:
 EVT_GluGluToAToZhToBBTauTau_mA-350:
+EVT_RadionToHH_2Tau_2b_M-500:99947
+EVT_RadionToHH_2Tau_2b_M-700:
+EVT_RadionToHH_2Tau_2b_M-1000:
+EVT_GravitonToHH_2Tau_2b_M-500:99959
+EVT_GravitonToHH_2Tau_2b_M-700:96381
+EVT_GravitonToHH_2Tau_2b_M-1000:
 ## Lumi
 LUMI_DATA:19712
 LUMI_DATA_et:19712
