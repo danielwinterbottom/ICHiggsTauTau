@@ -309,6 +309,14 @@ namespace ic {
       //sample_names_.push_back("SUSYBBHTohhTo2Tau2B_mH-"+m);
     }
   }
+  
+  void HhhAnalysis::AddHighMassSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("RadionToHH_2Tau_2b_M-"+m);
+      sample_names_.push_back("GravitonToHH_2Tau_2b_M-"+m);
+    }
+  }
+
 
   void HhhAnalysis::ReadTrees(std::string const& folder, std::string const& fallback_folder) {
     std::cout << "[HhhAnalysis::ReadTrees] Reading input files..." << std::endl;
@@ -898,6 +906,23 @@ namespace ic {
       //hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
+  
+  void HhhAnalysis::FillHighMassSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+
+    for (auto const& m : masses) {
+      hmap["RadionToHH"+infix+m+postfix] = this->GenerateSignal("RadionToHH_2Tau_2b_M-"+m, var, sel, cat, wt, fixed_xs);
+      hmap["GravitonToHH"+infix+m+postfix] = this->GenerateSignal("GravitonToHH_2Tau_2b_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
 
   void HhhAnalysis::FillHistoMap(HistValueMap & hmap, unsigned method,
                         std::string var,
