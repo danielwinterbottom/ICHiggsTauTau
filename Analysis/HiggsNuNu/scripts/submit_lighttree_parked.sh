@@ -28,9 +28,9 @@ CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE UESUP UESDOWN SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree
+  JOBDIRPREFIX=jobs_lighttree_2dbinnedtrigweightsv2
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree
+  OUTPUTPREFIX=output_lighttree_2dbinnedtrigweightsv2
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -109,12 +109,12 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE UESUP UESDOWN SYSTEM
     
     PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/PARKED/
     
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_PARKED_*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_PARKEDsplit_*`
       do
       echo "Processing files in "$FILELIST
       
       echo $FILELIST > tmp.txt
-      sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_PARKED_//" tmp.txt > tmp2.txt
+      sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_PARKEDsplit_//" tmp.txt > tmp2.txt
       
       JOB=PARKED_`sed "s/\.dat//" tmp2.txt`
       
