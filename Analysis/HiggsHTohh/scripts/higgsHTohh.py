@@ -75,6 +75,9 @@ parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
 parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False,
                   help="Process signal MSSM mc samples")
 
+parser.add_option("--highmass", dest="proc_highmass", action='store_true', default=False,
+                  help="Process model independent high mass signal samples")
+
 parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
                   help="Process SM 125 samples")
 
@@ -263,6 +266,7 @@ if options.proc_mssm or options.proc_all:
   Amasses = ['250','260','270','280','290','300','310','320','330','340','350']
   ATauTaumasses = ['260','270','280','290','300','310','320','330','340','350']
   bbHmasses = ['90','100','110','120','130','140','160','180','200','250','300','350','400']
+  HmassesHigh = ['500','700','1000']
   #if options.do_2011 and ERA=='Paper' : masses += ['90','95','100','105','150','155','160']
   if options.short_signal: Hmasses = ['300']
   if options.short_signal: Amasses = ['300']
@@ -296,7 +300,12 @@ if options.proc_sm :
       'WH_WToLNu_HToBB_M-'+hmass,
       'ZH_ZToLL_HToBB_M-'+hmass
     ]
-
+if options.proc_highmass :
+  for Hmass in HmassesHigh : 
+    signal_mc += [
+      'RadionToHH_2Tau_2b_M-'+Hmass,
+      'GravitonToHH_2Tau_2b_M-'+Hmass
+    ]
   #if  not options.do_2011:
   #  ww_masses = ['110','115','120','125','130','135','140','145','150','155','160']
   #  if options.short_signal: ww_masses = ['125']
