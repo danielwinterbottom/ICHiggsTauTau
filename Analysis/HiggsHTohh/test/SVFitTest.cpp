@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
   // typedef ROOT::Math::PtEtaPhiEVector Vector;
 
   if (argc != 2){
-    std::cerr << "Need 1 arg: <input>" << std::endl;
+    std::cerr << "Need 1 args: <input>" << std::endl;
     exit(1);
   }
 
@@ -29,6 +29,7 @@ int main(int argc, char* argv[]){
 
   std::string input_file = argv[1];
   std::string output_file = input_file;
+  bool MC=false; // Set to true to use Markov-Chain integration
   if (output_file.find("input.root") != input_file.npos) {
     std::size_t pos = output_file.find("input.root");
     output_file.replace(pos, std::string("input.root").length(), "output.root");
@@ -84,9 +85,9 @@ int main(int argc, char* argv[]){
     itree->GetEntry(i);
     std::pair<ic::Candidate, double> result;
     if (mode == 0) {
-      result = svfit_service.SVFitCandidateLepHad(c1, c2, met);
+      result = svfit_service.SVFitCandidateLepHad(c1, c2, met, MC);
     } else {
-      result = svfit_service.SVFitCandidateLepLep(c1, c2, met);
+      result = svfit_service.SVFitCandidateLepLep(c1, c2, met, MC);
     }
     svfit_mass = result.second;
     svfit_vector = &(result.first);
