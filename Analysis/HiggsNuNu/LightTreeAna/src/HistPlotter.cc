@@ -26,6 +26,12 @@ namespace ic{
 
   LTPlotElement::~LTPlotElement(){ ;};
 
+  LTShapeElement::LTShapeElement(){
+    dology_=false;
+  };
+
+  LTShapeElement::~LTShapeElement(){ ;};
+
   void LTPlotElement::ApplyStyle(){
     hist_ptr_->SetName(legname_.c_str());
     hist_ptr_->Scale(scale_);
@@ -129,18 +135,19 @@ namespace ic{
     for(unsigned iElement=0;iElement<elements_.size();iElement++){
     }
 
-    if(histTitles_.size()!=shapes_.size()){
-      std::cout<<"histTitles must be of the same size as shapes. Exiting with status 1"<<std::endl;
-      return 1;
-    }
+//     if(histTitles_.size()!=shapes_.size()){
+//       std::cout<<"histTitles must be of the same size as shapes. Exiting with status 1"<<std::endl;
+//       return 1;
+//     }
 
     //LOOP OVER ALL THE VARIABLES TO PLOT
     for(unsigned iShape=0;iShape<shapes_.size();iShape++){
-      std::cout<<"  Drawing plot for "<<shapes_[iShape]<<std::endl;
+      std::cout<<"  Drawing plot for "<<shapes_[iShape].name()<<std::endl;
       THStack *stack=new THStack("stack","stacked plots");
       bool stackempty=true;
 
-      if(!do_ratio_) stack->SetTitle(histTitles_[iShape].c_str());
+      //      if(!do_ratio_) stack->SetTitle(histTitles_[iShape].name().c_str());
+      if(!do_ratio_) stack->SetTitle(shapes_[iShape].histtitle().c_str());
       //stack->GetXaxis()->SetTitle(shapes_[iShape].c_str());
 
       //EXTRACT ALL THE HISTOS AND PUT THEM IN STACKED OR UNSTACKED GROUPS
@@ -157,7 +164,7 @@ namespace ic{
 	  return 1;
 	}
 	writedir->cd();
-	TH1F* histo =dynamic_cast<TH1F*>(file->Get((elements_[iElement].sample()+"/"+shapes_[iShape]).c_str()));
+	TH1F* histo =dynamic_cast<TH1F*>(file->Get((elements_[iElement].sample()+"/"+shapes_[iShape].name()).c_str()));
 	writedir->cd();
 	elements_[iElement].set_hist_ptr(histo);
 	
@@ -181,7 +188,7 @@ namespace ic{
       }
 
       //SETUP THE CANVAS
-      TCanvas *c1=new TCanvas(shapes_[iShape].c_str(),shapes_[iShape].c_str());
+      TCanvas *c1=new TCanvas(shapes_[iShape].name().c_str(),shapes_[iShape].name().c_str());
       c1->cd();
 	TPad* upper = nullptr;
 	TPad* lower = nullptr;
@@ -191,7 +198,9 @@ namespace ic{
 	  upper->SetBottomMargin(0.02);
 	  upper->Draw();
 	  upper->cd();
+	  upper->SetLogy(shapes_[iShape].dology());
       }
+      else c1->SetLogy(shapes_[iShape].dology());
       bool first=true;
       double ymax=0;
       if(!stackempty) ymax=stack->GetMaximum();
@@ -212,7 +221,8 @@ namespace ic{
 	    stack->GetXaxis()->SetLabelOffset(999);
 	    stack->GetXaxis()->SetLabelSize(0);
 	    std::string ytitle;
-	    ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
+	    //	    ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
+	    ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	    ytitle=ytitle.substr(ytitle.find(";")+1);
 	    ytitle=ytitle.substr(0,ytitle.find(";"));
 	    stack->SetTitle((";;"+ytitle).c_str());
@@ -233,7 +243,7 @@ namespace ic{
 	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelOffset(999);
 	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0);
 	      std::string ytitle;
-	      ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
+	      ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	      ytitle=ytitle.substr(ytitle.find(";")+1);
 	      ytitle=ytitle.substr(0,ytitle.find(";"));
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitle(ytitle.c_str());
@@ -294,7 +304,7 @@ namespace ic{
 	  ratio->GetYaxis()->SetLabelSize(0.1);
 
 	  std::string xtitle;
-	  xtitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
+	  xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	  xtitle=xtitle.substr(0,xtitle.find(";"));
 	  ratio->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
 	  ratio->GetXaxis()->SetTitleSize(0.1);
@@ -308,6 +318,10 @@ namespace ic{
 	  gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
 	  ratio->Draw("E1");
+	  TLine *centerLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),1.0,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),1.0);
+	  centerLine->SetLineWidth(1);
+	  centerLine->SetLineColor(2);
+	  centerLine->Draw("same");
 	  if(do_ratio_line_){
 	    TLine *lowerLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),0.9,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),0.9);
 	    TLine *upperLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),1.1,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),1.1);
