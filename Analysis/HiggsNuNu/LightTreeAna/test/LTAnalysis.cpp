@@ -110,6 +110,7 @@ int main(int argc, char* argv[]){
     shape.push_back("jet2_pt(27,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
     shape.push_back("jet1_pt(27,30.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
     shape.push_back("metnomuons(25,50.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
+    shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
     shape.push_back("l1met(20,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
     shape.push_back("dijet_M(14,600.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
     shape.push_back("jetmetnomu_mindphi(32,0.,3.2)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
@@ -127,11 +128,15 @@ int main(int argc, char* argv[]){
     shape.push_back("dijet_deta(18,3.4,7.)");histTitle.push_back(";#Delta#eta_{jj};entries");
     shape.push_back("lep_mt(20,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
     shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
+    shape.push_back("lep_mt(20,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
+    shape.push_back("ele1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(electron) (GeV);entries");
+    shape.push_back("mu1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(muon) (GeV);entries");
   }
   else{
-shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
+    shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
     shape.push_back("jet1_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
     shape.push_back("metnomuons(12,50.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
+    shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
     shape.push_back("l1met(10,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
     shape.push_back("dijet_M(7,600.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
     shape.push_back("jetmetnomu_mindphi(16,0.,3.2)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
@@ -150,7 +155,7 @@ shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);e
     shape.push_back("lep_mt(10,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
     shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
   }
-  std::string dataset="PARKEDPLUSA";
+  std::string dataset="SPLITPARKEDPLUSA";
   std::string dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=196531))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>40";
   std::string sigcat;
   std::string zextrasigcat;
@@ -161,7 +166,7 @@ shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);e
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120";
   std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120";//zmumu
 
-  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0";
+  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0";//&&lep_mt>10";
   std::string munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120";//wmu
 
   std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1";
@@ -333,6 +338,7 @@ shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);e
   Wcontbkgsets.push_back("VV");
   Wcontbkgsets.push_back("Top");
   Wcontbkgsets.push_back("WGamma");
+  //Wcontbkgsets.push_back("VBF-QCD");
 //   Wcontbkgsets.push_back("ZJets_ll");
 //   Wcontbkgsets.push_back("ZJets_ll_vbf");
 //   Wcontbkgsets.push_back("ZJets_nunu");
@@ -446,33 +452,33 @@ shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);e
   }
 
   //NORMALISED PLOTS FOR REFEREE
-  std::vector<std::string> ewksets; //List of sets for ewk
-  ewksets.push_back("VV");
-  ewksets.push_back("Top");
-  ewksets.push_back("ZJets_ll");
-  ewksets.push_back("ZJets_ll_vbf");
-  ewksets.push_back("ZJets_nunu");
-  ewksets.push_back("WJets_enu");
-  ewksets.push_back("WJets_munu");
-  ewksets.push_back("WJets_taunu");
+//   std::vector<std::string> ewksets; //List of sets for ewk
+//   ewksets.push_back("VV");
+//   ewksets.push_back("Top");
+//   ewksets.push_back("ZJets_ll");
+//   ewksets.push_back("ZJets_ll_vbf");
+//   ewksets.push_back("ZJets_nunu");
+//   ewksets.push_back("WJets_enu");
+//   ewksets.push_back("WJets_munu");
+//   ewksets.push_back("WJets_taunu");
 
-  std::vector<std::string> shapes; //List of shapes to draw
-  shapes.push_back("dijet_M(370,150.,2000.)");
-  shapes.push_back("dijet_deta(160,0.,8.)");
-  shapes.push_back("dijet_dphi(310,0.,3.1)");
-  shapes.push_back("met(80,0.,400.)");
-  shapes.push_back("cjvjetpt(100,0.,100.)");
-  shapes.push_back("met(50,0.,500.)");
-  shapes.push_back("met_x(50,0.,500.)");
-  shapes.push_back("met_y(50,0.,500.)");
+//   std::vector<std::string> shapes; //List of shapes to draw
+//   shapes.push_back("dijet_M(370,150.,2000.)");
+//   shapes.push_back("dijet_deta(160,0.,8.)");
+//   shapes.push_back("dijet_dphi(310,0.,3.1)");
+//   shapes.push_back("met(80,0.,400.)");
+//   shapes.push_back("cjvjetpt(100,0.,100.)");
+//   shapes.push_back("met(50,0.,500.)");
+//   shapes.push_back("met_x(50,0.,500.)");
+//   shapes.push_back("met_y(50,0.,500.)");
 
-  NormPlots normplots("normplots");
-  normplots.set_qcdset("QCD")
-    .set_sigset("sig125")
-    .set_ewkset(ewksets)
-    .set_cat("")
-    .set_basesel("jet1_eta<4.7&&jet2_eta<4.7&&jet1_pt>50&&jet2_pt>50&&nvetoelectrons==0 && nvetomuons==0&&dijet_M>150&&met>130")
-    .set_shapes(shapes);
+//   NormPlots normplots("normplots");
+//   normplots.set_qcdset("QCD")
+//     .set_sigset("sig125")
+//     .set_ewkset(ewksets)
+//     .set_cat("")
+//     .set_basesel("jet1_eta<4.7&&jet2_eta<4.7&&jet1_pt>50&&jet2_pt>50&&nvetoelectrons==0 && nvetomuons==0&&dijet_M>150&&met>130")
+//     .set_shapes(shapes);
 
 
   //MVA TRAIN
@@ -526,11 +532,16 @@ shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);e
 //     .set_cat("");
   
   //HISTPLOTTER
-  std::vector<std::string> shapevec;
+  //std::vector<std::string> shapevec;
+  std::vector<LTShapeElement> shapevec;
   for(unsigned ishape=0;ishape<shape.size();ishape++){
     std::vector<std::string> strs;
     boost::split(strs, shape[ishape], boost::is_any_of("("));
-    shapevec.push_back(strs[0]);
+    LTShapeElement thisshape;
+    thisshape.set_name(strs[0]);
+    thisshape.set_histtitle(histTitle[ishape]);
+    //    shapevec.push_back(strs[0]);
+    shapevec.push_back(thisshape);
   }
 
   std::vector<LTPlotElement> elementvec;
@@ -636,7 +647,7 @@ shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);e
   elementvec.push_back(wtaunuele);
   //  elementvec.push_back(zmumuele);
   elementvec.push_back(znunuele);
-  //elementvec.push_back(qcdele);
+  elementvec.push_back(qcdele);
   elementvec.push_back(vvele);
   elementvec.push_back(wgele);
   elementvec.push_back(topele);
@@ -646,7 +657,7 @@ shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);e
   plotter.set_dirname("ControlPlots")
     .set_do_ratio(true)
     .set_elements(elementvec)
-    .set_histTitles(histTitle)
+    //.set_histTitles(histTitle)
     .set_shapes(shapevec);
   
   std::vector<std::string> dirvec;
@@ -686,7 +697,7 @@ shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);e
   //analysis->AddModule(&wmunuraw);
   //analysis->AddModule(&wenuraw);
   //analysis->AddModule(&wtaunuraw);  
-  //analysis->AddModule(&QCDraw);
+  analysis->AddModule(&QCDraw);
    //analysis->AddModule(&zmumuraw);
    //analysis->AddModule(&znunuraw);
   analysis->AddModule(&vv);

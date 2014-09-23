@@ -48,11 +48,22 @@ namespace ic {
     CLASS_MEMBER(LTPlotElement,TH1F*,hist_ptr)
   };
 
+  class LTShapeElement{
+  public:
+    LTShapeElement();
+    ~LTShapeElement();
+  private:
+    CLASS_MEMBER(LTShapeElement,std::string,name)
+    CLASS_MEMBER(LTShapeElement,std::string,histtitle)
+    CLASS_MEMBER(LTShapeElement,bool,dology)
+  };
+
   class HistPlotter : public LTModule{ 
     CLASS_MEMBER(HistPlotter,std::string,dirname)
     CLASS_MEMBER(HistPlotter,std::vector<LTPlotElement>,elements)   
-    CLASS_MEMBER(HistPlotter,std::vector<std::string>,shapes)   
-    CLASS_MEMBER(HistPlotter,std::vector<std::string>,histTitles)   
+    CLASS_MEMBER(HistPlotter,std::vector<LTShapeElement>,shapes)
+      //CLASS_MEMBER(HistPlotter,std::vector<std::string>,shapes)   
+      //CLASS_MEMBER(HistPlotter,std::vector<std::string>,histTitles)   
     CLASS_MEMBER(HistPlotter,bool,do_ratio)
     CLASS_MEMBER(HistPlotter,bool,do_ratio_line)
   public:	

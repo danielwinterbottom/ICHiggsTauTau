@@ -10,7 +10,7 @@
 #include "TFile.h"
 #include "iostream"
 #include "fstream"
-
+#include "sstream"
 
 namespace ic {//namespace
 
@@ -18,10 +18,31 @@ namespace ic {//namespace
     mc_(mc::summer12_53X),
     era_(era::data_2012_moriond) {
     save_weights_ = true;
-    do_trg_weights_     = false;
-    do_1dparkedtrg_weights_ = false;
-    do_fitted1dparkedtrg_weights_ = false;
-    do_3dtrg_weights_   = false;
+    do_trg_weights_     = false;    //Store as part of total weight
+    do_1dparkedtrg_weights_ = false;//Parked analysis weights treating mjj,j2pt,l1 and hlt met separately from histogram
+    do_fitted1dparkedtrg_weights_ = false;//Parked analysis weights treating mjj,j2pt,l1 and hlt met separately from fitted function
+    do_3dtrg_weights_   = false;//old parked analysis from 3D histograms from chayanit
+    do_binnedin2d1dfittedtrg_weights_=false;//Bin in two of 3 variables and fit in the other
+    std::vector<std::string> thisvarorder;
+    thisvarorder.push_back("Jet");
+    thisvarorder.push_back("Mjj");
+    thisvarorder.push_back("MET");
+    binnedin2d1dfitweightvarorder_=thisvarorder;
+    std::vector<double> thisvar1binning;
+    thisvar1binning.push_back(30);
+    thisvar1binning.push_back(40);
+    thisvar1binning.push_back(50);
+    thisvar1binning.push_back(60);
+    thisvar1binning.push_back(1000);
+    binnedin2d1dfitweightvar1binning_=thisvar1binning;
+    std::vector<double> thisvar2binning;
+    thisvar2binning.push_back(0);
+    thisvar2binning.push_back(600);
+    thisvar2binning.push_back(800);
+    thisvar2binning.push_back(900);
+    thisvar2binning.push_back(1000);
+    thisvar2binning.push_back(5000);
+    binnedin2d1dfitweightvar2binning_=thisvar2binning;
     trg_applied_in_mc_  = false;
     do_idiso_tight_weights_   = false;
     do_idiso_veto_weights_   = false;
@@ -66,6 +87,7 @@ namespace ic {//namespace
     
     std::cout << "Input MET for MET HLT:  \t\t" << input_met_ << std::endl;
     std::cout << "Note: Input MET for MET L1 is always metNoMuons." << std::endl;
+    std::cout << "A lumi: "<<Alumi_<<", BC lumi: "<<BClumi_<<", D lumi: "<<Dlumi_<<std::endl;
 
     //Making output histograms
     TFileDirectory const& dir = fs_->mkdir("leptoneffweights");
@@ -190,6 +212,24 @@ namespace ic {//namespace
 	  func_trigSF_JetHLTvec.push_back((TF1*)gDirectory->Get("fData_JET2_1D_D"));
 	}
       }
+      else if(do_binnedin2d1dfittedtrg_weights_){
+	std::cout<<"Getting trigger efficiency functions"<<std::endl;
+	for(unsigned iVar1=0;iVar1<(binnedin2d1dfitweightvar1binning_.size()-1);iVar1++){
+	  std::vector<std::vector<TF1*> > thisfuncvectorvector;
+	  for(unsigned iVar2=0;iVar2<(binnedin2d1dfitweightvar2binning_.size()-1);iVar2++){
+	    std::vector<TF1*> thisfuncvector;
+	    std::ostringstream convert;
+	    convert<<iVar1+1<<iVar2+1;
+	    std::string histnumber=convert.str();
+	    thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"A").c_str()));
+	    thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"BC").c_str()));
+	    thisfuncvector.push_back((TF1*)gDirectory->Get(("fData_"+binnedin2d1dfitweightvarorder_[2]+"_1D_"+histnumber+"D").c_str()));
+	    thisfuncvectorvector.push_back(thisfuncvector);
+	  }
+	  func_trigSF_binnedin2d.push_back(thisfuncvectorvector);
+	}
+	std::cout<<"  done."<<std::endl;
+      }
       else{
 	hist_trigSF_METL1 = (TH1F*)gDirectory->Get("METL1");
 	hist_trigSF_METHLT = (TH1F*)gDirectory->Get("METHLT");
@@ -246,7 +286,7 @@ namespace ic {//namespace
 	}
       }
     
-      if(!do_idiso_err_){
+      if(!do_idiso_err_){//Central value
 	fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
 	fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
 	fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
@@ -258,7 +298,7 @@ namespace ic {//namespace
 	fillVector("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_);
 	fillVector("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_);
       }
-      else if(do_idiso_errmuore_){
+      else if(do_idiso_errmuore_){//Muon eff varied
 	fillVector("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_);
 	fillVector("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_);
 	fillVector("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_);
@@ -270,7 +310,7 @@ namespace ic {//namespace
 	fillVectorError("data/scale_factors/mu_loose_id_mc_eff.txt",muVeto_idMCEff_,do_idiso_errupordown_);
 	fillVectorError("data/scale_factors/mu_loose_iso_mc_eff.txt",muVeto_isoMCEff_,do_idiso_errupordown_);    
       }
-      else{
+      else{//Electron eff varied
 	fillVectorError("data/scale_factors/ele_tight_id_with_syst.txt",eTight_idisoSF_,do_idiso_errupordown_);
 	fillVectorError("data/scale_factors/ele_veto_id_data_eff_with_syst.txt",eVeto_idisoDataEff_,do_idiso_errupordown_);
 	fillVectorError("data/scale_factors/ele_veto_id_mc_eff.txt",eVeto_idisoMCEff_,do_idiso_errupordown_);
@@ -357,30 +397,28 @@ namespace ic {//namespace
     
     double non3dtrgweight=1;
 
-    if(!do_3dtrg_weights_){
-      if(!do_1dparkedtrg_weights_){
-	double lMax = hist_trigSF_METL1->GetXaxis()->GetBinCenter(hist_trigSF_METL1->GetNbinsX());
-	double lMin = hist_trigSF_METL1->GetXaxis()->GetBinCenter(1);
-	if (l1met > lMax)  l1met = lMax;
-	if (l1met < lMin)  l1met = lMin;
-	int lBin = hist_trigSF_METL1->GetXaxis()->FindFixBin(l1met);
-	double metl1weight = hist_trigSF_METL1->GetBinContent(lBin);
-	non3dtrgweight=non3dtrgweight*metl1weight;
-	if (do_trg_weights_) eventInfo->set_weight("trig_metL1",metl1weight);
-	else eventInfo->set_weight("!trig_metL1",metl1weight);
-	//std::cout << " -- MET L1 " << l1met << " " << metl1weight << std::endl;
-	
-	lMax = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(hist_trigSF_METHLT->GetNbinsX());
-	lMin = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(1);
-	if (hltmet > lMax)  hltmet = lMax;
-	if (hltmet < lMin)  hltmet = lMin;
-	lBin = hist_trigSF_METHLT->GetXaxis()->FindFixBin(hltmet);
-	double methltweight = hist_trigSF_METHLT->GetBinContent(lBin);
-	non3dtrgweight=non3dtrgweight*methltweight;
-	if (do_trg_weights_) eventInfo->set_weight("trig_metHLT",methltweight);
-	else eventInfo->set_weight("!trig_metHLT",methltweight);
-	//std::cout << " -- MET HLT " << hltmet << " " << methltweight << std::endl;
-      }
+    if(!do_3dtrg_weights_&&!do_1dparkedtrg_weights_&&!do_binnedin2d1dfittedtrg_weights_){
+      double lMax = hist_trigSF_METL1->GetXaxis()->GetBinCenter(hist_trigSF_METL1->GetNbinsX());
+      double lMin = hist_trigSF_METL1->GetXaxis()->GetBinCenter(1);
+      if (l1met > lMax)  l1met = lMax;
+      if (l1met < lMin)  l1met = lMin;
+      int lBin = hist_trigSF_METL1->GetXaxis()->FindFixBin(l1met);
+      double metl1weight = hist_trigSF_METL1->GetBinContent(lBin);
+      non3dtrgweight=non3dtrgweight*metl1weight;
+      if (do_trg_weights_) eventInfo->set_weight("trig_metL1",metl1weight);
+      else eventInfo->set_weight("!trig_metL1",metl1weight);
+      //std::cout << " -- MET L1 " << l1met << " " << metl1weight << std::endl;
+      
+      lMax = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(hist_trigSF_METHLT->GetNbinsX());
+      lMin = hist_trigSF_METHLT->GetXaxis()->GetBinCenter(1);
+      if (hltmet > lMax)  hltmet = lMax;
+      if (hltmet < lMin)  hltmet = lMin;
+      lBin = hist_trigSF_METHLT->GetXaxis()->FindFixBin(hltmet);
+      double methltweight = hist_trigSF_METHLT->GetBinContent(lBin);
+      non3dtrgweight=non3dtrgweight*methltweight;
+      if (do_trg_weights_) eventInfo->set_weight("trig_metHLT",methltweight);
+      else eventInfo->set_weight("!trig_metHLT",methltweight);
+      //std::cout << " -- MET HLT " << hltmet << " " << methltweight << std::endl;
     }
 
     double mjjhltweight = 1.0;
@@ -454,40 +492,40 @@ namespace ic {//namespace
 	double trgweights[nruns];
 	unsigned nvars=4;
 	if(!do_fitted1dparkedtrg_weights_){
-	unsigned bins[nruns][nvars];
-	for(unsigned irun=0;irun<nruns;irun++){
-	  unsigned nbins[nvars];
-	  nbins[0]=hist_trigSF_METL1vec[irun]->GetXaxis()->GetNbins();
-	  nbins[1]=hist_trigSF_METHLTvec[irun]->GetXaxis()->GetNbins();
-	  nbins[2]=hist_trigSF_MjjHLTvec[irun]->GetXaxis()->GetNbins();
-	  nbins[3]=hist_trigSF_JetHLTvec[irun]->GetXaxis()->GetNbins();
-	  bins[irun][0]=hist_trigSF_METL1vec[irun]->GetXaxis()->FindFixBin(l1met);
-	  bins[irun][1]=hist_trigSF_METHLTvec[irun]->GetXaxis()->FindFixBin(hltmet);
-	  bins[irun][2]=hist_trigSF_MjjHLTvec[irun]->GetXaxis()->FindFixBin(mjj);
-	  bins[irun][3]=hist_trigSF_JetHLTvec[irun]->GetXaxis()->FindFixBin(jet2pt);
-	  bool axisinrange[4]={true,true,true,true};
-	  double varweights[nvars];
-	  for(unsigned iaxis=0;iaxis<nvars;iaxis++){
-	    if(bins[irun][iaxis]==0){
-	      //std::cout<<"Warning: value of axis "<<iaxis<<" for run "<<irun<<" is below trig weight histogram range setting weight to 0."<<std::endl;
-	      varweights[iaxis]=0;
-	      axisinrange[iaxis]=false;
+	  unsigned bins[nruns][nvars];
+	  for(unsigned irun=0;irun<nruns;irun++){
+	    unsigned nbins[nvars];
+	    nbins[0]=hist_trigSF_METL1vec[irun]->GetXaxis()->GetNbins();
+	    nbins[1]=hist_trigSF_METHLTvec[irun]->GetXaxis()->GetNbins();
+	    nbins[2]=hist_trigSF_MjjHLTvec[irun]->GetXaxis()->GetNbins();
+	    nbins[3]=hist_trigSF_JetHLTvec[irun]->GetXaxis()->GetNbins();
+	    bins[irun][0]=hist_trigSF_METL1vec[irun]->GetXaxis()->FindFixBin(l1met);
+	    bins[irun][1]=hist_trigSF_METHLTvec[irun]->GetXaxis()->FindFixBin(hltmet);
+	    bins[irun][2]=hist_trigSF_MjjHLTvec[irun]->GetXaxis()->FindFixBin(mjj);
+	    bins[irun][3]=hist_trigSF_JetHLTvec[irun]->GetXaxis()->FindFixBin(jet2pt);
+	    bool axisinrange[4]={true,true,true,true};
+	    double varweights[nvars];
+	    for(unsigned iaxis=0;iaxis<nvars;iaxis++){
+	      if(bins[irun][iaxis]==0){
+		//std::cout<<"Warning: value of axis "<<iaxis<<" for run "<<irun<<" is below trig weight histogram range setting weight to 0."<<std::endl;
+		varweights[iaxis]=0;
+		axisinrange[iaxis]=false;
+	      }
+	      else if(bins[irun][iaxis]>nbins[iaxis]){
+		//std::cout<<"Warning: value of axis "<<iaxis<<" for run "<<irun<<" is above trig weight histogram range setting weight to 1."<<std::endl;
+		varweights[iaxis]=1;
+		axisinrange[iaxis]=false;
+	      }
 	    }
-	    else if(bins[irun][iaxis]>nbins[iaxis]){
-	      //std::cout<<"Warning: value of axis "<<iaxis<<" for run "<<irun<<" is above trig weight histogram range setting weight to 1."<<std::endl;
-	      varweights[iaxis]=1;
-	      axisinrange[iaxis]=false;
-	    }
-	  }
-	  if(axisinrange[0]==true)varweights[0]=hist_trigSF_METL1vec[irun]->GetBinContent(bins[irun][0]);
-	  if(axisinrange[1]==true)varweights[1]=hist_trigSF_METHLTvec[irun]->GetBinContent(bins[irun][1]);
-	  if(axisinrange[2]==true)varweights[2]=hist_trigSF_MjjHLTvec[irun]->GetBinContent(bins[irun][2]);
-	  if(axisinrange[3]==true)varweights[3]=hist_trigSF_JetHLTvec[irun]->GetBinContent(bins[irun][3]);
-	  trgweights[irun]=varweights[0]*varweights[1]*varweights[2]*varweights[3];
+	    if(axisinrange[0]==true)varweights[0]=hist_trigSF_METL1vec[irun]->GetBinContent(bins[irun][0]);
+	    if(axisinrange[1]==true)varweights[1]=hist_trigSF_METHLTvec[irun]->GetBinContent(bins[irun][1]);
+	    if(axisinrange[2]==true)varweights[2]=hist_trigSF_MjjHLTvec[irun]->GetBinContent(bins[irun][2]);
+	    if(axisinrange[3]==true)varweights[3]=hist_trigSF_JetHLTvec[irun]->GetBinContent(bins[irun][3]);
+	    trgweights[irun]=varweights[0]*varweights[1]*varweights[2]*varweights[3];
 	    //std::cout<<"Weight for run: "<<irun<<" is "<<trgweights[irun]<<std::endl;
-	  
-	  //std::cout << " Bin Jet2pt"<<irun<<" " << bins[irun][0] << " Bin metHLT"<<irun<<" " << bins[irun][1] << " BinMjj"<<irun<<" " << bins[irun][2] << std::endl;
-	}
+	    
+	    //std::cout << " Bin Jet2pt"<<irun<<" " << bins[irun][0] << " Bin metHLT"<<irun<<" " << bins[irun][1] << " BinMjj"<<irun<<" " << bins[irun][2] << std::endl;
+	  }
 	}
 	else{
 	  //!!GET FITTED 1D WEIGHTS AND PUT IN TRGWEIGHTS[nruns]
@@ -509,7 +547,7 @@ namespace ic {//namespace
 	    func_trigSF_MjjHLTvec[irun]->GetRange(xmins[2],xmaxes[2]);
 	    func_trigSF_JetHLTvec[irun]->GetRange(xmins[3],xmaxes[3]);
 	    
-	    //Get l1weight
+	    //Get weight
 	    for(unsigned ivar=0;ivar<4;ivar++){
 	      if(vars[ivar]<=xmaxes[ivar]){
 		if(vars[ivar]>=xmins[ivar]){
@@ -528,6 +566,89 @@ namespace ic {//namespace
 	//SET TRIGGER WEIGHT
 	if (do_trg_weights_) eventInfo->set_weight("trig_1d",trgweight);
 	else eventInfo->set_weight("!trig_1d",trgweight);
+      }
+      else if(do_binnedin2d1dfittedtrg_weights_){
+	if(l1met!=hltmet){
+	  std::cout<<"Error: you must use metnomuons for both l1met and hltmet"<<std::endl;
+	  return 1;
+	}
+	double vars[3];
+	bool found[3]={false};
+	//Get the 3 variables
+	for(unsigned iVar=0;iVar<binnedin2d1dfitweightvarorder_.size();iVar++){
+	  if(binnedin2d1dfitweightvarorder_[iVar]=="MET"){
+	    vars[iVar]=hltmet;
+	    found[0]=true;
+	  }
+	  if(binnedin2d1dfitweightvarorder_[iVar]=="Mjj"){
+	    vars[iVar]=mjj;
+	    found[1]=true;
+	  }
+	  if(binnedin2d1dfitweightvarorder_[iVar]=="Jet"){
+	    vars[iVar]=jet2pt;
+	    found[2]=true;
+	  }
+	}
+	if(!((found[0]==true)&&(found[1]==true)&&(found[2]==true))){
+	  std::cout<<"You must specify MET,Mjj and Jet as the variables used for 2d binned 1d trigger weights"<<std::endl;
+	  return 1;
+	}
+	//FIND WHICH BIN YOU'RE IN
+	int var1bin=-10;
+	int var2bin=-10;
+	if(vars[0]<binnedin2d1dfitweightvar1binning_[0])var1bin=-1;
+	else{
+	  for(unsigned iBin=0;iBin<(binnedin2d1dfitweightvar1binning_.size()-1);iBin++){
+	    if(vars[0]<binnedin2d1dfitweightvar1binning_[iBin+1]){
+	      var1bin=iBin+1;
+	      break;
+	    }
+	  }	
+	  if(var1bin==-10)var1bin=binnedin2d1dfitweightvar1binning_.size()-1;
+	}
+	if(vars[1]<binnedin2d1dfitweightvar1binning_[0])var2bin=-1;
+	else{
+	  for(unsigned iBin=0;iBin<(binnedin2d1dfitweightvar2binning_.size()-1);iBin++){
+	    if(vars[1]<binnedin2d1dfitweightvar2binning_[iBin+1]){
+	      var2bin=iBin+1;
+	      break;
+	    }
+	  }
+	  if(var2bin==-10)var2bin=binnedin2d1dfitweightvar2binning_.size()-1;
+	}
+	double trgweights[3];
+	if((var1bin!=-1)&&(var2bin!=-1)){
+	  //!!READ OUT WEIGHT FOR EACH RUN
+	  double xmin,xmax;
+	  TF1* funcs[3];
+	  for(unsigned iRun=0;iRun<3;iRun++){
+	    funcs[iRun]=func_trigSF_binnedin2d[var1bin-1][var2bin-1][iRun];
+	  }
+	  funcs[0]->GetRange(xmin,xmax);
+	  
+	  //Get weight                                                                                                                                     
+	  for(unsigned iRun=0;iRun<3;iRun++){
+	    
+	    if(vars[2]<=xmax){
+	      if(vars[2]>=xmin){
+		trgweights[iRun]=funcs[iRun]->Eval(vars[2]);
+	      }
+	      else trgweights[iRun]=0;
+	    }
+	    else trgweights[iRun]=funcs[iRun]->Eval(xmax);
+	  }
+	}
+	else{
+	  for(unsigned iRun=0;iRun<3;iRun++){
+	    trgweights[iRun]=0;
+	  }
+	}
+	//LUMI WEIGHTED AVERAGE OVER RUNS                                                                                                      
+	double trgweight=(trgweights[0]*Alumi_+trgweights[1]*BClumi_+trgweights[2]*Dlumi_)/(Alumi_+BClumi_+Dlumi_);
+	//std::cout<<" Total Weight "<<trgweight<<std::endl;                                                                                            
+	//SET TRIGGER WEIGHT                                                                                                                             
+	if (do_trg_weights_) eventInfo->set_weight("trig_2dbinned1d",trgweight);
+	else eventInfo->set_weight("!trig_2dbinned1d",trgweight);
       }
       else{
 	double lMax = hist_trigSF_MjjHLT->GetXaxis()->GetBinCenter(hist_trigSF_MjjHLT->GetNbinsX());

@@ -23,6 +23,10 @@ class HinvWeights : public ModuleBase {
   CLASS_MEMBER(HinvWeights, bool, do_1dparkedtrg_weights)
   CLASS_MEMBER(HinvWeights, bool, do_fitted1dparkedtrg_weights)
   CLASS_MEMBER(HinvWeights, bool, do_3dtrg_weights)
+  CLASS_MEMBER(HinvWeights, bool, do_binnedin2d1dfittedtrg_weights)
+  CLASS_MEMBER(HinvWeights, std::vector<std::string>, binnedin2d1dfitweightvarorder)//bin in first two fit in 3rd
+  CLASS_MEMBER(HinvWeights, std::vector<double>, binnedin2d1dfitweightvar1binning)//binning of first var
+  CLASS_MEMBER(HinvWeights, std::vector<double>, binnedin2d1dfitweightvar2binning)//binning of second var
   CLASS_MEMBER(HinvWeights, bool, trg_applied_in_mc)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_tight_weights)
   CLASS_MEMBER(HinvWeights, bool, do_idiso_veto_weights)
@@ -51,6 +55,8 @@ class HinvWeights : public ModuleBase {
   std::vector<TF1*> func_trigSF_METHLTvec;
   std::vector<TF1*> func_trigSF_MjjHLTvec;
   std::vector<TF1*> func_trigSF_JetHLTvec;
+
+  std::vector<std::vector<std::vector<TF1*> > > func_trigSF_binnedin2d;
 
   TH1F *hist_trigSF_METL1;
   TH1F *hist_trigSF_METHLT;

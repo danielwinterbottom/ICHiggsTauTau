@@ -1045,14 +1045,14 @@ int main(int argc, char* argv[]){
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
     .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
-  LightTree lightTree = LightTree("LightTree")
-    .set_fs(fs)
-    .set_met_label(mettype)
-    .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("JetPair")
-    .set_is_data(is_data)
-    .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
-    .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+//   LightTree lightTree = LightTree("LightTree")
+//     .set_fs(fs)
+//     .set_met_label(mettype)
+//     .set_dijet_label("jjLeadingCandidates")
+//     .set_sel_label("JetPair")
+//     .set_is_data(is_data)
+//     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
+//     .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
   HinvControlPlots controlPlots_gen = HinvControlPlots("GenControlPlots")
     .set_fs(fs)
@@ -1734,7 +1734,7 @@ int main(int argc, char* argv[]){
      //write tree with TMVA input variables
      if (doTmvaTree) analysis.AddModule(&tmvaInputs);
      else if(do_trigeff_tree) analysis.AddModule(&trigeffInputs);
-     else if(do_light_tree) analysis.AddModule(&lightTree);
+     //else if(do_light_tree) analysis.AddModule(&lightTree);
      else {
 
        analysis.AddModule(&detaJetPairFilter);

@@ -3,14 +3,12 @@
 #include "TH1F.h"
 #include "TCanvas.h"
 #include "TDirectory.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/HistPlotter.h"
 #include <map>
 
 namespace ic{
 
   SummaryTable::SummaryTable(std::string name) : LTModule(name){
-    std::vector<std::string> shapes;
-    shapes.push_back("jet2_pt(200,0.,1000.)");
-    shape_=shapes;
   };
 
   SummaryTable::~SummaryTable(){ ;};
@@ -43,7 +41,7 @@ namespace ic{
 	dir=file->GetDirectory(dirs_[idir].c_str());
       }
       dir->cd();
-      TH1F* histo = (TH1F*)dir->Get(shape_[0].c_str());
+      TH1F* histo = (TH1F*)dir->Get(shape_[0].name().c_str());
       std::cout<<dirs_[idir]<<": "<<Integral(histo)<<std::endl;
     }
     return 0;
