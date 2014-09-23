@@ -35,6 +35,8 @@ namespace ic {
     split_ = 5000;
     outname_ = "svfit_test";
     fullpath_ = "SVFIT_2012/";
+
+    MC_ = false;
   }
 
   SVFitTest::~SVFitTest() {
@@ -107,8 +109,8 @@ namespace ic {
           otree->SetBranchAddress("svfit_vector"  , &svfit_vector);
           for (unsigned evt = 0; evt < otree->GetEntries(); ++evt) {
             otree->GetEntry(evt);
-            mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
-            // p4_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, *svfit_vector);
+            if(!MC_) mass_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, svfit_mass);
+            else p4_map[tri_unsigned(run, lumi, event)] = std::make_pair(objects_hash, *svfit_vector);
           }
           ofile->Close();
           delete ofile;
@@ -165,24 +167,42 @@ int SVFitTest::Execute(TreeEvent *event) {
   }
 
   if (run_mode_ == 2) {
-    // auto it = p4_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
-    auto it = mass_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
     bool fail_state = false;
-    if (it != mass_map.end()) {
-      ;
-      if (require_inputs_match_ && it->second.first != objects_hash) {
-        fail_state = true;
-      } else {
-        if (it->second.second < 1.) {
-          std::cout << "Warning, SVFit mass is invalid: " << it->second.second << std::endl;
+    //Different actions for Markov-Chain or Vegas integration
+     if(!MC_){
+        auto it = mass_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
+        if (it != mass_map.end()) {
+          ;
+          if (require_inputs_match_ && it->second.first != objects_hash) {
+            fail_state = true;
+          } else {
+            if (it->second.second < 1.) {
+              std::cout << "Warning, SVFit mass is invalid: " << it->second.second << std::endl;
+            } else {
+              event->Add("svfitMass", it->second.second);
+            }
+          }
         } else {
-          event->Add("svfitMass", it->second.second);
-          //event->Add("svfitHiggs", it->second.second);
+          fail_state = true;
         }
-      }
-    } else {
-      fail_state = true;
-    }
+     } else {  
+        auto it = p4_map.find(tri_unsigned(eventInfo->run(),eventInfo->lumi_block(), eventInfo->event()));
+        if (it != p4_map.end()) {
+          ;
+          if (require_inputs_match_ && it->second.first != objects_hash) {
+            fail_state = true;
+          } else {
+            if (it->second.second.M() < 1.) {
+              std::cout << "Warning, SVFit mass is invalid: " << it->second.second.M() << std::endl;
+            } else {
+              event->Add("svfitMass", it->second.second.M());
+              event->Add("svfitHiggs", it->second.second);
+            }
+          }
+        } else {
+          fail_state = true;
+        }
+     }
     if (fail_state) {
       if (fail_mode_ == 0) {
         std::cout << "Warning, SVFitTest mass not found!" << std::endl;
@@ -193,9 +213,9 @@ int SVFitTest::Execute(TreeEvent *event) {
       } else {
         std::cout << "Calculating mass on-the-fly" << std::endl;
         if (decay_mode_ == 0) {
-          event->Add("svfitMass", SVFitService::SVFitMassLepHad(&c1, &c2, &met));
+          event->Add("svfitMass", SVFitService::SVFitMassLepHad(&c1, &c2, &met, MC_));
         } else {
-          event->Add("svfitMass", SVFitService::SVFitMassLepLep(&c1, &c2, &met));
+          event->Add("svfitMass", SVFitService::SVFitMassLepLep(&c1, &c2, &met, MC_));
         }
       }
     }
