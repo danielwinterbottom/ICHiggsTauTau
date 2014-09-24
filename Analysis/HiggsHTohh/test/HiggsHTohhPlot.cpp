@@ -431,6 +431,7 @@ int main(int argc, char* argv[]){
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		ana_syst.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		if(do_highmass) ana_syst.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		if (extra_binning.size() == 2) {
 			ana_syst.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", "_"+syst.second+extra_binning[1]);
 			ana_syst.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
@@ -876,6 +877,7 @@ int main(int argc, char* argv[]){
 	if(scale_signal_datacard) {
         ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", ""); 
         ana.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", ""); 
+        if(do_highmass) ana.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt", "", ""); 
 	    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
 	    ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
     }
