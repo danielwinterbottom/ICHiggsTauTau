@@ -34,7 +34,10 @@ int main(int argc, char* argv[]){
   std::string inputparams;
   std::string filelist;
   std::string basesel;
+  std::string jetmetdphicut;
   std::string channel;
+
+  bool runblind;
 
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
@@ -49,7 +52,9 @@ int main(int argc, char* argv[]){
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=600&&jet1_pt>50&&dijet_deta>3.6&& jet2_pt>60&&metnomuons>60&&metnomu_significance>3&&jetmetnomu_mindphi>1.5"))
-    ("channel",                  po::value<std::string>(&channel)->default_value("nunu"));
+    ("jetmetdphicut",            po::value<std::string>(&jetmetdphicut)->default_value("alljetsmetnomu_mindphi>1.0"))
+    ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
+    ("runblind",                  po::value<bool>(&runblind)->default_value(true));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -106,7 +111,7 @@ int main(int argc, char* argv[]){
   std::vector<std::string> shape;
   //shape.push_back("BDT(12,-1.,0.2)");
 
-  if(channel!="taunu"){
+  if(!(channel=="taunu"||channel=="top")){
     shape.push_back("jet2_pt(27,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
     shape.push_back("jet1_pt(27,30.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
     shape.push_back("metnomuons(25,50.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
@@ -131,6 +136,9 @@ int main(int argc, char* argv[]){
     shape.push_back("lep_mt(20,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
     shape.push_back("ele1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(electron) (GeV);entries");
     shape.push_back("mu1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(muon) (GeV);entries");
+    shape.push_back("jet1_csv(21,0.,1.05)");histTitle.push_back(";Jet 1 CSV;entries");
+    shape.push_back("jet2_csv(21,0.,1.05)");histTitle.push_back(";Jet 2 CSV;entries");
+    shape.push_back("jet3_csv(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;entries");
   }
   else{
     shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
@@ -139,8 +147,12 @@ int main(int argc, char* argv[]){
     shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
     shape.push_back("l1met(10,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
     shape.push_back("dijet_M(7,600.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
+    shape.push_back("sqrt(2*ele1_pt*mu1_pt*(cosh(ele1_eta-mu1_eta)-cos(ele1_phi-mu1_phi)))(40,0.,1000.)");histTitle.push_back(";M_{e#mu} (GeV);entries");
+    shape.push_back("jet1_csv(21,0.,1.05)");histTitle.push_back(";Jet 1 CSV;entries");
+    shape.push_back("jet2_csv(21,0.,1.05)");histTitle.push_back(";Jet 2 CSV;entries");
+    shape.push_back("jet3_csv(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;entries");
     shape.push_back("jetmetnomu_mindphi(16,0.,3.2)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
-    shape.push_back("alljetsmetnomu_mindphi(16,0.,3.2)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
+    shape.push_back("alljetsmetnomu_mindphi(7,0.,3.5)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
     shape.push_back("metnomu_significance(12,3.,8.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
     shape.push_back("dijet_sumeta(25,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};entries");
     shape.push_back("ht(25,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
@@ -155,28 +167,32 @@ int main(int argc, char* argv[]){
     shape.push_back("lep_mt(10,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
     shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
   }
-  std::string dataset="SPLITPARKEDPLUSA";
+  //  std::string dataset="SPLITPARKEDPLUSA";
+  std::string dataset="PARKEDPLUSA";
   std::string dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=196531))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>40";
   std::string sigcat;
   std::string zextrasigcat;
 
-  std::string nunucat="nvetomuons==0&&nvetoelectrons==0";
-  std::string nunuzcat="";
+  std::string nunucat=("nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut);
+  std::string nunuzcat="&&"+jetmetdphicut;
   
-  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120";
-  std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120";//zmumu
+  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
+  std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;//zmumu
 
-  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0";//&&lep_mt>10";
-  std::string munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120";//wmu
+  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut;//&&lep_mt>10";
+  std::string munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;//wmu
 
-  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1";
-  std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1";//wel
+  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
+  std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+jetmetdphicut;//wel
 
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20";
-  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0";//wtau
+  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&"+jetmetdphicut;
+  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&"+jetmetdphicut;//wtau
 
-  std::string qcdcat="nvetoelectrons==0&&nvetomuons==0&&dijetmetnomu_ptfraction>0.6";
-    std::string qcdzcat="&&dijetmetnomu_ptfraction>0.6";//QCD
+  std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons";
+  std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons";//wtau
+
+  std::string qcdcat="nvetoelectrons==0&&nvetomuons==0&&alljetsmetnomu_mindphi>1.0";
+    std::string qcdzcat="";//QCD
 
   if(channel=="nunu"){//nunu
     sigcat=nunucat;
@@ -201,6 +217,10 @@ int main(int argc, char* argv[]){
   else if(channel=="qcd"){//QCD
     sigcat=qcdcat;
     zextrasigcat=qcdzcat;
+  }
+  else if(channel=="top"){//top
+    sigcat=topcat;
+    zextrasigcat=topzcat;
   }
   else{
     std::cout<<"Error: Channel "<<channel<<" not recognised, exiting"<<std::endl;
@@ -233,8 +253,8 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
 
-  DataShape top("top");
-  top.set_dataset("Top")
+  DataShape topraw("topraw");
+  topraw.set_dataset("Top")
     .set_dirname("top")
     .set_shape(shape)
     .set_basesel(analysis->baseselection())
@@ -343,6 +363,16 @@ int main(int argc, char* argv[]){
 //   Wcontbkgsets.push_back("ZJets_ll_vbf");
 //   Wcontbkgsets.push_back("ZJets_nunu");
 
+  std::vector<std::string> Wcontbkgextrafactordir;//list of dirs with data driven weights for above backgrounds
+  Wcontbkgextrafactordir.push_back("");
+  Wcontbkgextrafactordir.push_back("top");
+  Wcontbkgextrafactordir.push_back("");
+
+  std::vector<int> Wcontbkgisz;
+  Wcontbkgisz.push_back(0);
+  Wcontbkgisz.push_back(0);
+  Wcontbkgisz.push_back(0);
+
   DataNormShape wmunu("wmunu");
   wmunu.set_sigmcset("WJets_munu")
     .set_shape(shape)
@@ -350,11 +380,13 @@ int main(int argc, char* argv[]){
     .set_contmcset("WJets_munu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
+    .set_contbkgextrafactordir(Wcontbkgextrafactordir)
+    .set_contbkgisz(Wcontbkgisz)
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
     .set_contcat(munucat);//"nvetoelectrons==0 && nvetomuons==1 && nselmuons==1");
-  if((channel=="enu")||(channel=="munu")){
+  if((channel=="enu")||(channel=="munu")||(channel=="top")){
     wmunu.set_sigmcweight("total_weight_leptight");
   }
   
@@ -366,11 +398,13 @@ int main(int argc, char* argv[]){
     .set_contmcset("WJets_enu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
+    .set_contbkgextrafactordir(Wcontbkgextrafactordir)
+    .set_contbkgisz(Wcontbkgisz)
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
     .set_contcat(enucat);//"nselelectrons==1 && nvetoelectrons ==1 && nvetomuons==0");
-  if((channel=="enu")||(channel=="munu")){
+  if((channel=="enu")||(channel=="munu")||(channel=="top")){
     wenu.set_sigmcweight("total_weight_leptight");
   }
 
@@ -381,6 +415,8 @@ int main(int argc, char* argv[]){
     .set_contmcset("WJets_taunu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
+    .set_contbkgextrafactordir(Wcontbkgextrafactordir)
+    .set_contbkgisz(Wcontbkgisz)
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
@@ -388,8 +424,34 @@ int main(int argc, char* argv[]){
      .set_sigmcweight("total_weight_lepveto")
      .set_contmcweight("total_weight_lepveto")
      .set_contdataweight("weight_nolep");
-  if((channel=="enu")||(channel=="munu")){
+  if((channel=="enu")||(channel=="munu")||(channel=="top")){
     wtaunu.set_sigmcweight("total_weight_leptight");
+  }
+  
+  //TOP
+  std::vector<std::string> Topcontbkgsets;
+  Topcontbkgsets.push_back("VV");
+  Topcontbkgsets.push_back("WGamma");
+  Topcontbkgsets.push_back("WJets_enu");
+  Topcontbkgsets.push_back("WJets_munu");
+  Topcontbkgsets.push_back("WJets_taunu");
+
+  DataNormShape top("top");
+  top.set_sigmcset("Top")
+    .set_shape(shape)
+    .set_dirname("top")
+    .set_contmcset("Top")
+    .set_contdataset(dataset)
+    .set_contbkgset(Topcontbkgsets)
+    .set_basesel(analysis->baseselection())
+    .set_contdataextrasel(dataextrasel)
+    .set_sigcat(sigcat)
+    .set_contcat(topcat)
+     .set_sigmcweight("total_weight_lepveto")
+     .set_contmcweight("total_weight_leptight")
+     .set_contdataweight("weight_nolep");
+  if((channel=="enu")||(channel=="munu")||(channel=="top")){
+    top.set_sigmcweight("total_weight_leptight");
   }
 
   //QCDBKG
@@ -405,7 +467,7 @@ int main(int argc, char* argv[]){
 
   std::vector<std::string> QCDcontbkgextrafactordir;//list of dirs with data driven weights for above backgrounds
   QCDcontbkgextrafactordir.push_back("");
-  QCDcontbkgextrafactordir.push_back("");
+  QCDcontbkgextrafactordir.push_back("top");
   QCDcontbkgextrafactordir.push_back("");
   QCDcontbkgextrafactordir.push_back("zvv");
   QCDcontbkgextrafactordir.push_back("zvv");
@@ -445,9 +507,9 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
-    .set_zcontcat("m_mumu_gen>80&&m_mumu_gen<100")
-    .set_contcat("nvetoelectrons==0&&nvetomuons==0");
-  if(channel=="enu"||channel=="munu"){
+    .set_zcontcat("m_mumu_gen>80&&m_mumu_gen<100"+qcdzcat)
+    .set_contcat(qcdcat);
+  if(channel=="enu"||channel=="munu"||channel=="top"){
     QCD.set_sigmcweight("total_weight_leptight");
   }
 
@@ -641,7 +703,7 @@ int main(int argc, char* argv[]){
     .set_legname("Signalx20")
     .set_sample("qqH");
 
-  elementvec.push_back(dataele);
+  if(!(channel=="nunu"&&runblind))elementvec.push_back(dataele);
   elementvec.push_back(wmunuele);
   elementvec.push_back(wenuele);
   elementvec.push_back(wtaunuele);
@@ -659,7 +721,8 @@ int main(int argc, char* argv[]){
     .set_elements(elementvec)
     //.set_histTitles(histTitle)
     .set_shapes(shapevec);
-  
+  if(channel=="nunu"&&runblind)plotter.set_do_ratio(false);
+
   std::vector<std::string> dirvec;
   dirvec.push_back("wel");
   dirvec.push_back("wmu");
@@ -670,7 +733,7 @@ int main(int argc, char* argv[]){
   dirvec.push_back("wg");  
   dirvec.push_back("top");
   dirvec.push_back("qqH");
-  dirvec.push_back("data_obs");
+  if(!(channel=="nunu"&&runblind))dirvec.push_back("data_obs");
 
   SummaryTable summary("summary");
   summary.set_shape(shapevec)
@@ -686,6 +749,7 @@ int main(int argc, char* argv[]){
   //analysis->AddModule(&addfriends);
   //analysis->AddModule(&mvatrainer);
   //analysis->AddModule(&normplots);
+  analysis->AddModule(&top);
   analysis->AddModule(&wmunu);
   analysis->AddModule(&wenu);
   analysis->AddModule(&wtaunu);
@@ -702,8 +766,8 @@ int main(int argc, char* argv[]){
    //analysis->AddModule(&znunuraw);
   analysis->AddModule(&vv);
   analysis->AddModule(&wgamma);
-  analysis->AddModule(&top);
-  analysis->AddModule(&data);
+  //analysis->AddModule(&topraw);
+  if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
   analysis->AddModule(&signal);
   analysis->AddModule(&plotter);
   analysis->AddModule(&summary);

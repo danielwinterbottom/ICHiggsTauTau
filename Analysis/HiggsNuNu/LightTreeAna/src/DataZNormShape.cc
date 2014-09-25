@@ -107,7 +107,8 @@ namespace ic{
       //!!MAKE OVERALL SIGMCSHAPE HISTO
       //Get binning info from shape
       std::vector<std::string> strs;
-      boost::split(strs, shape_[iShape], boost::is_any_of("(,)"));
+      std::string binstr=shape_[iShape].substr(shape_[iShape].find_last_of("("));
+      boost::split(strs, binstr, boost::is_any_of("(,)"));
       TH1F* sigmcshape=new TH1F(histname.c_str(),histname.c_str(),boost::lexical_cast<int>(strs[1]),boost::lexical_cast<double>(strs[2]),boost::lexical_cast<double>(strs[3]));
       sigmcshape->Add(&sigmcewkshape,&sigmcqcdshape);
       sigmcshape->SetName(histname.c_str());
