@@ -47,6 +47,7 @@ namespace ic {
 			if(write_plots_) {
 				//Instead could initiate plots here which can be saved to the same file_
 				Float_t binrange[19]={0,20,30,40,50,60,70,80,90,100,120,140,160,180,200,250,300,400,500};
+			
 
 				jets_dz_ = fs_->make<TH1F>("jets_dz",";#Delta Z;",100,0,1);
 				jets_pu_ = fs_->make<TH1F>("jets_pu",";Pileup jet ID;",100,-1,2);
@@ -60,6 +61,7 @@ namespace ic {
 				genjetpt_jetpt_200_300_ = fs_->make<TH1F>("genjetpt_jetpt_200_300_","",18,binrange);
 				genjetpt_jetpt_300_400_ = fs_->make<TH1F>("genjetpt_jetpt_300_400_","",18,binrange);
 				genjetpt_jetpt_400_ = fs_->make<TH1F>("genjetpt_jetpt_400_","",18,binrange);
+				taupt_test_hist_ = fs_->make<TH1F>("taupt_test_hist","",50,0,100);
 
 
 				taupt_dm_iso_nomatch_ = fs_->make<TH1F>("taupt_dm_iso_nomatch",";p_{T};",18,binrange);
@@ -262,7 +264,7 @@ namespace ic {
 					jetpt_dz_and_puid_rej_->Fill(jets.at(jetit)->pt());
 				}
 
-				if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
+				//if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
 
 					theDRgj=100;
 					thegenjetn=100;
@@ -329,7 +331,7 @@ namespace ic {
 
 
 
-					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5&&taus.at(thetaun)->GetTauID("decayModeFindingOldDMs")>0.5){
+					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<1.47&&theDR<0.5&&taus.at(thetaun)->GetTauID("decayModeFindingOldDMs")>0.5){
 						standard_tau_histos_["dm_taupt_match"]->Fill(jets.at(jetit)->pt());
 						standard_tau_histos_["dm_taueta_match"]->Fill(jets.at(jetit)->eta());
 						standard_tau_histos_["dm_tauphi_match"]->Fill(jets.at(jetit)->phi());
@@ -338,6 +340,9 @@ namespace ic {
 							standard_tau_histos_["loose_taupt_match"]->Fill(jets.at(jetit)->pt());
 							standard_tau_histos_["loose_taueta_match"]->Fill(jets.at(jetit)->eta());
 							standard_tau_histos_["loose_tauphi_match"]->Fill(jets.at(jetit)->phi());
+							if(jets.at(jetit)->pt()<50.){
+							taupt_test_hist_->Fill(taus.at(thetaun)->pt());
+							}
 
 							if(theDRgj<0.5){
 								if(jets.at(jetit)->pt()>400){
@@ -418,7 +423,7 @@ namespace ic {
 
 
 					}
-				}
+				//}
 			}
 		}
 		//Here goes the actual code to do the study. 

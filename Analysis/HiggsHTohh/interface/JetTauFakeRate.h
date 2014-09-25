@@ -48,6 +48,7 @@ namespace ic {
 			TH1F* genjetpt_jetpt_200_300_;
 			TH1F* genjetpt_jetpt_300_400_;
 			TH1F* genjetpt_jetpt_400_;
+			TH1F* taupt_test_hist_;
 			TH1F* jets_dz_;
 			TH1F* jets_pu_;
 			TH1F* jets_overlap_;
