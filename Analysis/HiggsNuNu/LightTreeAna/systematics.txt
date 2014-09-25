@@ -1,0 +1,25 @@
+######################################################################################################################
+# Format:											   	             #
+# datacard_name, file_prefix, effect, target samples (tab or space separated)			  		     #	
+# to specify an additional e,g N for gmN or a constant shift, it must be given with a dash after the effect name     #
+# rate line is obligatory, designated as 'shape' so that the central plots are saved for combine   		     #
+# e.g 												   		     #
+# rate	central	shape	all									   		     #
+# lumi_8TeV	central	lnN-2.3	qqH	top							   		     #
+# some_syts 	central gmN-10-1.5 all										     #
+# CMS_scale_j JES shape all									   	  	     #
+######################################################################################################################
+rate	central	shape	all
+#CMS_vbfhinv_lumi_8TeV	central	lnN-1	qqH	top	
+CMS_scale_j	JES	shape	all
+CMS_res_j	JER	shape	all
+CMS_scale_met	UES	shape	all
+CMS_vbfhinv_qqHstat central lnN-stat qqH
+CMS_vbfhinv_welstat central lnN-stat wel
+CMS_vbfhinv_wmustat central lnN-stat wmu
+CMS_vbfhinv_wtaustat central lnN-stat wtau
+CMS_vbfhin_qcdstat central lnN-stat qcd
+CMS_vbfhinv_zvvstat central lnN-stat zvv
+CMS_vbfhinv_vvstat central lnN-stat vv
+CMS_vbfhinv_wgstat central lnN-stat wg
+CMS_vbfhinv_topstat central lnN-stat top
