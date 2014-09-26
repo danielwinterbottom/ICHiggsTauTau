@@ -14,6 +14,8 @@ namespace ic{
     contmcweight_="total_weight_leptight";
     contdataweight_="weight_nolep";
     contdataextrasel_="";
+    contmcextrasel_="";
+    contbkgextrasel_="";
     sigcontextrafactor_=1.;
     std::vector<std::string> shapes;
     shapes.push_back("jet2_pt(200,0.,1000.)");
@@ -58,13 +60,13 @@ namespace ic{
     dir->cd();
     //Get Shapes for NSMC, NCMC, NCData and NCBkg
     std::cout<<"  Getting control MC shape"<<std::endl;
-    TH1F  contmcshape = filemanager->GetSetShape(contmcset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
+    TH1F  contmcshape = filemanager->GetSetShape(contmcset_,"jet2_pt(200,0.,1000.)",basesel_,(contcat_+contmcextrasel_),contmcweight_,false);
     std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
     TH1F contbkgshape;
     bool firstbkg=true;
     //IF NO DIRS TO GET DATA DRIVEN WEIGHTS, GET SETS SHAPE
     if(contbkgextrafactordir_.size()==0){
-      contbkgshape= filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
+      contbkgshape= filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,(contmcweight_+contbkgextrasel_),false);
     }
     //WEIGHT INDIVIDUAL SHAPES BY DATA DRIVEN WEIGHTS
     else{

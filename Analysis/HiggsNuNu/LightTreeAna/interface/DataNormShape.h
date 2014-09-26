@@ -20,6 +20,8 @@ namespace ic {
     CLASS_MEMBER(DataNormShape,std::string,zcontcat)
     CLASS_MEMBER(DataNormShape,std::string,contcat)
     CLASS_MEMBER(DataNormShape,std::string,contdataextrasel)
+    CLASS_MEMBER(DataNormShape,std::string,contmcextrasel)
+    CLASS_MEMBER(DataNormShape,std::string,contbkgextrasel)
     CLASS_MEMBER(DataNormShape,std::string,basesel)
     CLASS_MEMBER(DataNormShape,std::string,sigmcweight)
     CLASS_MEMBER(DataNormShape,std::string,contmcweight)
