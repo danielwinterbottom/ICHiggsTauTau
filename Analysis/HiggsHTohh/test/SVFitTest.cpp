@@ -29,7 +29,7 @@ int main(int argc, char* argv[]){
 
   std::string input_file = argv[1];
   std::string output_file = input_file;
-  bool MC=false; // Set to true to use Markov-Chain integration
+  bool MC=true; // Set to true to use Markov-Chain integration
   if (output_file.find("input.root") != input_file.npos) {
     std::size_t pos = output_file.find("input.root");
     output_file.replace(pos, std::string("input.root").length(), "output.root");
