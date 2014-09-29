@@ -395,11 +395,17 @@ void CombineHarvester::WriteDatacard(std::string const& name,
     }
   }
 
+  std::string file_name = root_file.GetName();
+  std::size_t file_slash_pos = file_name.find_last_of('/');
+  if (file_slash_pos != file_name.npos) {
+    file_name = file_name.substr(file_slash_pos+1);
+  }
+
   for (auto const& mapping : mappings) {
     txt_file << boost::format("shapes %s %s %s %s %s\n")
       % mapping.process
       % mapping.category
-      % root_file.GetName()
+      % file_name
       % mapping.pattern
       % mapping.syst_pattern;
   }

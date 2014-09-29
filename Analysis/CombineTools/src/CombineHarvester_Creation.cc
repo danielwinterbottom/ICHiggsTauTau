@@ -181,6 +181,16 @@ void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHar
   for (unsigned i = 0; i < procs_.size(); ++i) {
     if (!procs_[i]->shape()) continue;
     TH1 const* h = procs_[i]->shape();
+    unsigned n_pop_bins = 0;
+    for (int j = 1; j <= h->GetNbinsX(); ++j) {
+      if (h->GetBinContent(j) > 0.0) ++n_pop_bins;
+    }
+    if (n_pop_bins <= 1 && fixed_norm) {
+      std::cout << "Requested fixed_norm but template has <= 1 populated bins, "
+                   "skipping\n";
+      std::cout << *(procs_[i]) << "\n";
+      continue;
+    }
     for (int j = 1; j <= h->GetNbinsX(); ++j) {
       if (h->GetBinContent(j) <= 0.0) {
         if (h->GetBinError(j) > 0.0) {
@@ -222,7 +232,7 @@ void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHar
       }
     }
   }
-  std::cout << "bbb added: " << bbb_added << std::endl;
+  // std::cout << "bbb added: " << bbb_added << std::endl;
 }
 
 void CombineHarvester::CreateParameterIfEmpty(CombineHarvester *cmb,
