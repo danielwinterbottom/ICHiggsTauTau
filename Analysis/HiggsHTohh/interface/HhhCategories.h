@@ -103,8 +103,23 @@ class HhhCategories : public ModuleBase {
   double mjj_;       // Defined if n_jets >= 2
   double mjj_h_;       // Defined if n_jets >= 2
   double mjj_tt_;       // Defined if n_jets >= 2
-  double m_H_;       // Defined if n_jets >= 2
+	double m_H_;       // Defined if n_jets >= 2
   double m_H_chi2_;       // Defined if n_jets >= 2
+	double pull_balance_H_; //Defined if n_jets >= 2
+	int convergence_H_; //Defined if n_jets >= 2
+	double m_H_hZ_;     //Defined if n_jets >= 2
+	double m_H_hZ_chi2_;  //Defined if n_jets >= 2
+	double pull_balance_hZ_; //Defined if n_jets >= 2
+	int convergence_hZ_; //Defined if n_jets >= 2
+	double m_H_Zh_;      //Defined if n_jets >= 2
+	double m_H_Zh_chi2_;   //Defined if n_jets >= 2
+	double pull_balance_Zh_; //Defined if n_jets >= 2
+	int convergence_Zh_; //Defined if n_jets >= 2
+	double m_H_hh_;	     //Defined if n_jets >= 2
+	double m_H_hh_chi2_;   //Defined if n_jets >= 2
+	double pull_balance_hh_; //Defined if n_jets >= 2
+	int convergence_hh_; //Defined if n_jets >= 2
+
   double jdeta_;     // Defined if n_jets >= 2
   
   double prebjet_mjj_;       // Defined if n_jets >= 2
