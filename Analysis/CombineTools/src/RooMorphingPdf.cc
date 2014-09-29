@@ -139,7 +139,7 @@ Double_t RooMorphingPdf::evaluate() const {
     }
   } else {
     if (!(p1->cacheIsGood() && p2->cacheIsGood() && mh == current_mh_)) {
-      std::cout << "Need to morph!\n";
+      //std::cout << "Need to morph!\n";
 
       p1->evaluate();
       p2->evaluate();

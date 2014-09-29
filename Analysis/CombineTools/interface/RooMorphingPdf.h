@@ -9,7 +9,12 @@
 #include "RooAbsReal.h"
 #include "TH1F.h"
 #include "Rtypes.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wuninitialized"
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include "../interface/VerticalInterpHistPdf.h"
+#pragma GCC diagnostic pop
 
 class RooMorphingPdf : public RooAbsPdf {
  protected:
