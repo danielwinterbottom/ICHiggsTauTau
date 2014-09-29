@@ -1,4 +1,4 @@
-#include "CombineTools/interface/MorphFunctions.h"
+#include "CombinePdfs/interface/MorphFunctions.h"
 #include "Utilities/interface/FnRootTools.h"
 #include <iostream>
 #include <set>
@@ -8,7 +8,6 @@
 #include "RooFitResult.h"
 #include "RooRealVar.h"
 #include "RooDataHist.h"
-// #include "CombineTools/interface/RooHttYield.h"
 
 namespace ch {
 

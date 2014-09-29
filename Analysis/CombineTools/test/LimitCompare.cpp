@@ -48,7 +48,7 @@ struct Info {
   int color;
 };
 
-int main(int argc, char* argv[]) {
+int main(int /*argc*/, char* argv[]) {
 
   std::string ch = argv[1];
   vector<Info> input;
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
     graphs.push_back(ExtractExpected(tree));
   }
 
-  for (int i = 0; i < input.size(); ++i) {
+  for (unsigned i = 0; i < input.size(); ++i) {
     SetTGraphStyle(&graphs[i], input[i].color);
   }
 
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 
   double min = 9999.;
   double max = 0.;
-  for (unsigned i = 0; i < exp1.GetN(); ++i) {
+  for (int i = 0; i < exp1.GetN(); ++i) {
     double x, y;
     exp1.GetPoint(i, x, y);
     if (y < min) min = y;

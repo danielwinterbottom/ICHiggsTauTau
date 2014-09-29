@@ -8,9 +8,9 @@
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/HelperFunctions.h"
-#include "CombineTools/interface/MorphFunctions.h"
+#include "CombinePdfs/interface/MorphFunctions.h"
 #include "CombineTools/interface/HttSystematics.h"
-#include "CombineTools/interface/RooHttSMPdf.h"
+#include "CombinePdfs/interface/RooHttSMPdf.h"
 #include "CombineTools/interface/Systematics.h"
 // #include "CombineTools/interface/RooHttYield.h"s
 // #include "TH1F.h"

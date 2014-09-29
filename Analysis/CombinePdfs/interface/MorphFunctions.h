@@ -19,9 +19,9 @@
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-#include "CombineTools/interface/RooMorphingPdf.h"
-#include "CombineTools/interface/RooHttYield.h"
-#include "CombineTools/interface/VerticalInterpHistPdf.h"
+#include "CombinePdfs/interface/RooMorphingPdf.h"
+#include "CombinePdfs/interface/RooHttYield.h"
+#include "CombinePdfs/interface/VerticalInterpHistPdf.h"
 #pragma GCC diagnostic pop
 
 namespace ch {

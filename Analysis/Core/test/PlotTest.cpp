@@ -83,8 +83,8 @@ TCanvas* example_plot(int iPos, bool do_ratio) {
   TColor* adapt = gROOT->GetColor(12);
   int new_idx = gROOT->GetListOfColors()->GetSize() + 1;
   TColor* trans = new TColor(new_idx, adapt->GetRed(), adapt->GetGreen(),
-                             adapt->GetBlue());
-  trans->SetAlpha(0.3);
+                             adapt->GetBlue(), "", 0.3);
+  trans->SetName("userColor");
 
   err->SetFillColor(new_idx);
   // err->SetMarkerSize(0);
