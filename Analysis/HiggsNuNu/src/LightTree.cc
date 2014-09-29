@@ -504,7 +504,7 @@ namespace ic {
       }
       static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
-      if ((alljetsmetnomu_mindphi_>1||alljetsmet_mindphi_>1) && (metnomu_significance_ > 3.0||met_significance_>3.0) &&  dijet_deta_>3.6){
+      if (metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
 	outputTree_->Fill();
 	++processed;
       }

@@ -167,8 +167,8 @@ int main(int argc, char* argv[]){
     shape.push_back("lep_mt(10,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
     shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
   }
-  //  std::string dataset="SPLITPARKEDPLUSA";
-  std::string dataset="PARKEDPLUSA";
+  std::string dataset="SPLITPARKEDPLUSA";
+  //std::string dataset="PARKEDPLUSA";
   std::string dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=196531))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>40";
   std::string sigcat;
   std::string zextrasigcat;
@@ -189,10 +189,10 @@ int main(int argc, char* argv[]){
   std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&"+jetmetdphicut;//wtau
 
   std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons";
-  std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons";//wtau
+  std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons";//top
 
-  std::string qcdcat="nvetoelectrons==0&&nvetomuons==0&&alljetsmetnomu_mindphi>1.0";
-    std::string qcdzcat="";//QCD
+  std::string qcdcat="nvetoelectrons==0&&nvetomuons==0&&"+jetmetdphicut;
+  std::string qcdzcat=""+jetmetdphicut;//QCD
 
   if(channel=="nunu"){//nunu
     sigcat=nunucat;
