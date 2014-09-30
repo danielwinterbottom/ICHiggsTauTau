@@ -12,6 +12,7 @@
 #include "TFile.h"
 #include "TGraph.h"
 #include "RooFitResult.h"
+#include "RooHistPdf.h"
 
 // #include <memory>
 // #include <string>
@@ -190,6 +191,8 @@ std::vector<T> Set2Vec(std::set<T> const& in) {
 }
 
 std::vector<std::string> JoinStr(std::vector<std::vector<std::string>> const& in);
+
+RooDataHist TH1F2Data(TH1F const& hist, RooRealVar const& x, std::string const& name);
 }
 
 #endif

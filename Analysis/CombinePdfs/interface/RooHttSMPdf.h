@@ -23,6 +23,25 @@ class RooHttSMPdf : public RooHistPdf {
   bool can_morph_;
   std::vector<double> binning_;
 
+
+  /*
+  Things we need to store look like this:
+  TAxis final_binning
+  TAxis morph_binning
+
+  at each masspoint {
+
+    array: nominal
+    v_array: +shapes
+    v_array: -shapes
+
+    array:
+
+  }
+
+
+  */
+
  public:
   RooHttSMPdf();
   RooHttSMPdf(const char* name, const char* title, const RooArgSet& vars,

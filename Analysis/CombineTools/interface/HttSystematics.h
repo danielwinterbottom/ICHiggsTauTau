@@ -4,6 +4,7 @@
 
 namespace ch {
   void AddDefaultSystematics(CombineHarvester *cb);
+  void AddMSSMSystematics(CombineHarvester *cb);
 }
 
 #endif

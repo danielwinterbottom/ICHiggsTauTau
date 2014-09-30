@@ -1,7 +1,6 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <cmath>
 #include "TFile.h"
 #include "TTree.h"
 #include "TGraph.h"
@@ -21,18 +20,12 @@ TGraph ExtractGraph(TTree *t, double & bestFit) {
   float deltaNLL = 0;
   t->SetBranchAddress("MH", &r);
   t->SetBranchAddress("deltaNLL", &deltaNLL);
-  double offset = 0;
-  for (unsigned i = 0; i < t->GetEntries(); ++i) {
-    t->GetEntry(i);
-    if (deltaNLL < 0. && fabs(deltaNLL) > offset) offset = fabs(deltaNLL);
-  }
   for (unsigned i = 0; i < t->GetEntries(); ++i) {
     t->GetEntry(i);
     if (deltaNLL == 0) bestFit = r;
-    g.SetPoint(i, r, 2.0*(deltaNLL+offset));
+    g.SetPoint(i, r, 2.0*deltaNLL);
   }
   g.Sort();
-  g.Print();
   return g;
 }
 
@@ -72,9 +65,9 @@ int main() {
   //scans.push_back({"higgsCombinefastScan.MultiDimFit.mH125.root", "no syst.", 32, nullptr});
   //scans.push_back({"higgsCombinenoBBBScan.MultiDimFit.mH125.root", "no bbb syst.", 38, nullptr});
   
-  scans.push_back({"morphed/higgsCombineMassScan.MultiDimFit.mH120.root", "Mass Scan", kBlue+1, nullptr});
-  // scans.push_back({"thesis/higgsCombineStatAndExp.MultiDimFit.mH125.root", "Stat+Syst", kAzure-9, nullptr});
-  // scans.push_back({"thesis/higgsCombineStatOnly.MultiDimFit.mH125.root", "Stat Only", kBlue+1, nullptr});
+  // scans.push_back({"thesis/higgsCombineFullScan.MultiDimFit.mH125.root", "Stat+Syst+Theory", 1, nullptr});
+  scans.push_back({"higgsCombineFullScan.MultiDimFit.mH125.root", "Stat+Syst", kAzure-4, nullptr});
+  scans.push_back({"higgsCombineStatOnly.MultiDimFit.mH125.root", "Stat Only", kBlue+1, nullptr});
   //scans.push_back({"thesis/higgsCombineStatAndTh.MultiDimFit.mH125.root", "Stat+Theory", 39, nullptr});
   TCanvas c1("canvas","canvas");
 
@@ -100,7 +93,7 @@ int main() {
       lines.push_back(new TLine(x1[1],0,x1[1],1.0));
       lines.back()->SetLineColor(sc.color);
       lines.back()->SetLineWidth(2);
-      res = TString::Format("%.2f#pm%.2f",best1,err);
+      res = TString::Format("%.1f#pm%.1f",best1,err);
     }
     sc.gr->SetLineColor(sc.color);
     sc.gr->SetLineWidth(3);
@@ -115,8 +108,9 @@ int main() {
   // g1.SetLineWidth(2);
   // // g1.SetMarkerColor(7);
   // g1.Draw("AC");
-  scans[0].gr->SetMaximum(10);
-  scans[0].gr->GetXaxis()->SetRangeUser(90, 145);
+  scans[0].gr->SetMaximum(4);
+  scans[0].gr->GetXaxis()->SetRangeUser(100, 140);
+  // scans[0].gr->GetXaxis()->SetTitle("Signal Strength, #mu");
   scans[0].gr->GetXaxis()->SetTitle("m_{H} [GeV]");
   scans[0].gr->GetYaxis()->SetTitle("-2 #Delta ln L");
   scans[0].gr->GetXaxis()->SetTitleFont(62);
@@ -130,18 +124,20 @@ int main() {
   leg->SetFillColor(0);
   leg->SetFillStyle(1001);
   leg->Draw();
-  lines.push_back(new TLine(90,1,145,1));
+  lines.push_back(new TLine(100,1,140,1));
   lines.back()->SetLineColor(2);
   for (auto l : lines) l->Draw();
   TLatex *title_latex = new TLatex();
   title_latex->SetNDC();
   title_latex->SetTextSize(0.035);
   title_latex->SetTextFont(62);
-  title_latex->SetTextAlign(11);
-  title_latex->DrawLatex(0.17,0.93,"4.9 fb^{-1} at 7 TeV, 19.7 fb^{-1} at 8 TeV");
   title_latex->SetTextAlign(31);
-  title_latex->SetTextSize(0.035);
-  title_latex->DrawLatex(0.95,0.94,"#mu_{}#tau_{h}");
+  double height = 0.94;
+  title_latex->DrawLatex(0.95,height,"19.7 fb^{-1} (8 TeV) + 4.9 fb^{-1} (7 TeV)");
+  title_latex->SetTextAlign(11);
+  title_latex->DrawLatex(0.17,height,"H#rightarrow#tau#tau");
+  title_latex->SetTextSize(0.08);
+  title_latex->DrawLatex(0.21, 0.25, "#mu#tau_{h}");
   c1.Update();
   c1.SaveAs("scan.pdf");
   return 0;

@@ -115,10 +115,13 @@ void CombineHarvester::ExtractShapes(std::string const& file,
     boost::replace_all(p_s, "$CHANNEL", nus_[i]->bin());
     boost::replace_all(p_s, "$PROCESS", nus_[i]->process());
     boost::replace_all(p_s, "$MASS", nus_[i]->mass());
-    boost::replace_all(p_s, "$SYSTEMATIC", nus_[i]->name());
+    std::string p_s_hi = p_s;
+    std::string p_s_lo = p_s;
+    boost::replace_all(p_s_hi, "$SYSTEMATIC", nus_[i]->name() + "Up");
+    boost::replace_all(p_s_lo, "$SYSTEMATIC", nus_[i]->name() + "Down");
     TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
-    TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get((p_s+"Up").c_str()));
-    TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get((p_s+"Down").c_str()));
+    TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get(p_s_hi.c_str()));
+    TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get(p_s_lo.c_str()));
     if (!h || !h_u || !h_d) continue;
     h->SetDirectory(0);
     h_u->SetDirectory(0);
@@ -178,6 +181,16 @@ void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHar
   for (unsigned i = 0; i < procs_.size(); ++i) {
     if (!procs_[i]->shape()) continue;
     TH1 const* h = procs_[i]->shape();
+    unsigned n_pop_bins = 0;
+    for (int j = 1; j <= h->GetNbinsX(); ++j) {
+      if (h->GetBinContent(j) > 0.0) ++n_pop_bins;
+    }
+    if (n_pop_bins <= 1 && fixed_norm) {
+      std::cout << "Requested fixed_norm but template has <= 1 populated bins, "
+                   "skipping\n";
+      std::cout << *(procs_[i]) << "\n";
+      continue;
+    }
     for (int j = 1; j <= h->GetNbinsX(); ++j) {
       if (h->GetBinContent(j) <= 0.0) {
         if (h->GetBinError(j) > 0.0) {
@@ -219,7 +232,7 @@ void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHar
       }
     }
   }
-  std::cout << "bbb added: " << bbb_added << std::endl;
+  // std::cout << "bbb added: " << bbb_added << std::endl;
 }
 
 void CombineHarvester::CreateParameterIfEmpty(CombineHarvester *cmb,

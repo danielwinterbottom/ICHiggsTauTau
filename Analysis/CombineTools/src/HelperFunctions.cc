@@ -4,6 +4,7 @@
 #include <vector>
 #include "RooFitResult.h"
 #include "RooRealVar.h"
+#include "RooDataHist.h"
 
 namespace ch {
 
@@ -112,4 +113,32 @@ void ScaleProcessRate(ch::Process* p,
 std::vector<std::string> JoinStr(std::vector<std::vector<std::string>> const& in) {
   return Join<std::string>(in);
 }
+
+RooDataHist TH1F2Data(TH1F const& hist, RooRealVar const& x,
+                      std::string const& name) {
+  TH1F shape("tmp", "tmp", hist.GetNbinsX(), 0.,
+             static_cast<float>(hist.GetNbinsX()));
+  for (int i = 1; i <= hist.GetNbinsX(); ++i) {
+    shape.SetBinContent(i, hist.GetBinContent(i));
+  }
+  // shape.Scale(1.0 / shape.Integral());
+  // shape.Print("range");
+  RooDataHist dh(name.c_str(), name.c_str(),
+                 RooArgList(x), RooFit::Import(shape, false));
+  return dh;
+}
+
+// RooHistPdf Hist2Pdf(TH1F const& hist, RooRealVar const& x,
+//                     std::string const& name) {
+//   TH1F shape("tmp", "tmp", hist.GetNbinsX(), 0.,
+//              static_cast<float>(hist.GetNbinsX()));
+//   for (unsigned i = 1; i <= hist.GetNbinsX(); ++i) {
+//     shape.SetBinContent(i, hist.GetBinContent(i));
+//   }
+//   RooDataHist dh((name + "_hist").c_str(),
+//                  (name + "_hist").c_str(), RooArgList(x),
+//                  RooFit::Import(shape, false));
+//   RooHistPdf((name+"_pdf").c_str(), (name+"_pdf").c_str(), x, dh);
+// }
+
 }
