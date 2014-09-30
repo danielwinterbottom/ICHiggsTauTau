@@ -32,6 +32,8 @@ namespace ic {
     weight_nolep_=1;
     total_weight_lepveto_ = 1;
     total_weight_leptight_ = 1;
+    puweight_up_scale_=1;
+    puweight_down_scale_=1;
     jet1_pt_ = 0;
     jet2_pt_ = 0;
     jet3_pt_=-1;
@@ -136,6 +138,8 @@ namespace ic {
     outputTree_->Branch("weight_nolep",&weight_nolep_);
     outputTree_->Branch("total_weight_lepveto",&total_weight_lepveto_);
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
+    outputTree_->Branch("puweight_up_scale",&puweight_up_scale_);
+    outputTree_->Branch("puweight_down_scale",&puweight_down_scale_);
     outputTree_->Branch("jet1_pt",&jet1_pt_);
     outputTree_->Branch("jet2_pt",&jet2_pt_);
     outputTree_->Branch("jet3_pt",&jet3_pt_);
@@ -258,10 +262,19 @@ namespace ic {
     double wt = eventInfo->total_weight();
     double vetowt=1;
     double tightwt=1;
+    double pileupwt=1;
+    double pileupwtup=1;
+    double pileupwtdown=1;
     if(!is_data_){
       vetowt= eventInfo->weight("idisoVeto");
       tightwt = eventInfo->weight("idisoTight");
+      pileupwt=eventInfo->weight("pileup");
+      pileupwtup=eventInfo->weight("pileup_up");
+      pileupwtdown=eventInfo->weight("pileup_down");
     }
+    puweight_up_scale_=pileupwtup/pileupwt;
+    puweight_down_scale_=pileupwtdown/pileupwt;
+
     //get collections
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
     Met const* met = event->GetPtr<Met>(met_label_);

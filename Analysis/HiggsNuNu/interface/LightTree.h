@@ -33,6 +33,8 @@ namespace ic {
     double weight_nolep_;
     double total_weight_lepveto_;
     double total_weight_leptight_;
+    double puweight_up_scale_;
+    double puweight_down_scale_;
     double jet1_pt_;
     double jet2_pt_;
     double jet3_pt_;

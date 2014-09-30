@@ -125,3 +125,5 @@ VBF-QCD-Pt-1400to1800 VBF-QCD MC_QCD-Pt-1400to1800-pythia6.root
 VBF-QCD-Pt-1800 VBF-QCD MC_QCD-Pt-1800-pythia6.root
 
 powheg125 sig125 MC_Powheg-Htoinv-mH125.root
+
+powhegggH125 ggH125 MC_Powheg-ggHtoinv-mH125.root

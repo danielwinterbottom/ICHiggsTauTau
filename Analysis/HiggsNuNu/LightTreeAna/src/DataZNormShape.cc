@@ -72,8 +72,12 @@ namespace ic{
     double ncmcqcd = Integral(&contmcqcdshape);
     double ncdata = Integral(&contdatashape);
     double ncbkg = Integral(&contbkgshape);
+    double ncmcewkerr = Error(&contmcewkshape);
+    double ncmcqcderr = Error(&contmcqcdshape);
+    double ncdataerr = Error(&contdatashape);
+    double ncbkgerr = Error(&contbkgshape);
 
-    std::cout<<"  ncmcewk: "<<ncmcewk<<", ncmcqcd: "<<ncmcqcd<<", ncdata: "<<ncdata<<", ncbkg: "<<ncbkg<<std::endl;
+    std::cout<<"  ncmcewk: "<<ncmcewk<<"+-"<<ncmcewkerr<<", ncmcqcd: "<<ncmcqcd<<"+-"<<ncmcqcderr<<", ncdata: "<<ncdata<<"+-"<<ncdataerr<<", ncbkg: "<<ncbkg<<"+-"<<ncbkgerr<<std::endl;
 
     //Do Weighting
     double effcvbfewk=ncmcewk/ngenincewk_;
@@ -81,10 +85,17 @@ namespace ic{
     double baseweight=(ncdata-ncbkg)/(sigmainccontewk_*effcvbfewk+sigmainccontqcd_*effcvbfqcd);
     double ewkweight=baseweight*sigmaincsigewk_/ngenmassfilteredewk_;
     double qcdweight=baseweight*sigmaincsigqcd_/ngenmassfilteredqcd_;
+    double weightdatafracerr=(ncdataerr/(ncdata-ncbkg));
+    
+double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+sigmainccontqcd_*effcvbfqcd*(ncmcqcderr/ncmcqcd))/(sigmainccontewk_*effcvbfewk+sigmainccontqcd_*effcvbfqcd);
+ double weightmcfracerr=sqrt((ncbkgerr/(ncdata-ncbkg))*(ncbkgerr/(ncdata-ncbkg))+baseweightdenmcfracerr*baseweightdenmcfracerr);
+
     std::cout<<"(NCData-NCBkg)/(NCMCEWK+NCMCQCD): "<<(ncdata-ncbkg)/(ncmcewk+ncmcqcd)<<" n.b. this is not directly used in calculation due to mumu nunu cross-section reweighting procedure"<<std::endl;
 
     TVectorD weightvec(2);
+    TVectorD errvec(3);
 
+    
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
       std::string histname;
       if(shapename_.size()==0){
@@ -102,7 +113,20 @@ namespace ic{
       weightvec[1]=sigcontextrafactor_*qcdweight;
       sigmcewkshape.Scale(sigcontextrafactor_*ewkweight);//baseweight*sigmaincsigewk_/ngenmassfilteredewk_);
       sigmcqcdshape.Scale(sigcontextrafactor_*qcdweight);//baseweight*sigmaincsigqcd_/ngenmassfilteredqcd_);
-      if(iShape==0)std::cout<<"NSMC EWK: "<<Integral(&sigmcewkshape) <<" NSMC QCD: "<<Integral(&sigmcqcdshape)<<std::endl;
+      if(iShape==0){
+	double nsmcewk=Integral(&sigmcewkshape);
+	double nsmcqcd=Integral(&sigmcqcdshape);
+ 	double nsmcewkerr=Error(&sigmcewkshape);
+ 	double nsmcqcderr=Error(&sigmcqcdshape);
+
+	double ewkweightnsmcfracerr=sqrt(weightmcfracerr*weightmcfracerr+(nsmcewkerr/nsmcewk)*(nsmcewkerr/nsmcewk));
+	double qcdweightnsmcfracerr=sqrt(weightmcfracerr*weightmcfracerr+(nsmcqcderr/nsmcqcd)*(nsmcqcderr/nsmcqcd));
+
+	errvec[0]=weightdatafracerr;
+	errvec[1]=ewkweightnsmcfracerr;
+	errvec[2]=qcdweightnsmcfracerr;
+	std::cout<<"NSMC EWK: "<<nsmcewk <<" NSMC QCD: "<<nsmcqcd<<std::endl;
+      }
      
       //!!MAKE OVERALL SIGMCSHAPE HISTO
       //Get binning info from shape
@@ -116,7 +140,7 @@ namespace ic{
     }
     dir->cd();
     weightvec.Write("ddweight");
-
+    errvec.Write("normerrors");
 
     return 0;
   };

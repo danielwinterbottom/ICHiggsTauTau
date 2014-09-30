@@ -25,10 +25,34 @@ namespace ic{
     }
   else return 0;
   }
+
+  double Error(TH1F const* hist) {
+    double err = 0.0;
+    if (hist) {
+      hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
+      if (err<0 || err != err) {
+	std::cout << " -- Warning: error on integral is " << err << ". Setting to 0." << std::endl;
+	err=0;
+      }
+    }
+    return err;
+  }
   
-  double IntegralWithError(TH1F const* hist, int binmin, int binmax, double err){
+  double IntegralWithError(TH1F const* hist, int binmin, int binmax, double &err){
     if (hist) {
       double ltmp =hist->IntegralAndError(binmin, binmax, err);
+      if (ltmp<0 || ltmp != ltmp) {
+	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
+	ltmp=0;
+      }
+      return ltmp;
+    }
+    else return 0;
+  }
+
+  double IntegralWithError(TH1F const* hist, double err){
+    if (hist) {
+      double ltmp =hist->IntegralAndError(0, hist->GetNbinsX()+1, err);
       if (ltmp<0 || ltmp != ltmp) {
 	std::cout << " -- Warning: integral is " << ltmp << ". Setting to 0." << std::endl;
 	ltmp=0;

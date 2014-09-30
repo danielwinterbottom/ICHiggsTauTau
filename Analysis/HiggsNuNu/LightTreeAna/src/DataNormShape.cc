@@ -102,7 +102,7 @@ namespace ic{
 	  if(contbkgisz_.size()==contbkgset_.size()){
 	    if(contbkgisz_[iBkg]!=0){
 	      //GET Z SHAPE AND WEIGHT IT
-	      nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,zcontcat_,contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	      nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,zcontcat_,"weight_nolep*"+boost::lexical_cast<std::string>(extrafactor),false);
 	    }
 	    else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
 	  }
@@ -131,13 +131,19 @@ namespace ic{
     double ncmc = Integral(&contmcshape);
     double ncdata = Integral(&contdatashape);
     double ncbkg = Integral(&contbkgshape);
+    double ncmcerr = Error(&contmcshape);
+    double ncdataerr = Error(&contdatashape);
+    double ncbkgerr = Error(&contbkgshape);
 
-    std::cout<<"  ncmc: "<<ncmc<<", ncdata: "<<ncdata<<", ncbkg: "<<ncbkg<<std::endl;
+    std::cout<<"  ncmc: "<<ncmc<<"+-"<<ncmcerr<<", ncdata: "<<ncdata<<"+-"<<ncdataerr<<", ncbkg: "<<ncbkg<<"+-"<<ncbkgerr<<std::endl;
 
     //Calculate weight
     double weight=(ncdata-ncbkg)/ncmc;
-    std::cout<<"  weight: "<<weight<<std::endl;
+    double weighterrdatastatfrac=ncdataerr/(ncdata-ncbkg);
+    double weighterrmcstatfrac=sqrt(((ncbkgerr/(ncdata-ncbkg))*(ncbkgerr/(ncdata-ncbkg)))+((ncmcerr/ncmc)*(ncmcerr/ncmc)));
+    std::cout<<"  weight: "<<weight<<"+-"<<weight*weighterrdatastatfrac<<"(data stat.)+-"<<weight*weighterrmcstatfrac<<"(MC stat.)"<<std::endl;
     TVectorD weightvec(1);
+    TVectorD errvec(2);
     weightvec[0]=weight*sigcontextrafactor_;
     std::cout<<"  Getting signal MC shapes"<<std::endl;
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
@@ -154,10 +160,19 @@ namespace ic{
       }
       sigmcshape.SetName(histname.c_str());
       sigmcshape.Scale(weight*sigcontextrafactor_);
-      if(iShape==0)std::cout<<"  Normalised NSMC: "<<Integral(&sigmcshape)<<std::endl;
+      double nsmc=Integral(&sigmcshape);
+      double nsmcerr=Error(&sigmcshape);
+      double weightednsmcstatfrac=sqrt(((nsmcerr/nsmc)*(nsmcerr/nsmc))+(weighterrmcstatfrac*weighterrmcstatfrac));
+      //!!MAKE SURE  TO TAKE NSMC ERROR OUT OF NORMALISATION ERROR AS SHOULD BE DONE BIN BY BIN
+      if(iShape==0){
+	std::cout<<"  Normalised NSMC: "<<nsmc<<"+-"<<nsmc*weighterrdatastatfrac<<"(data stat.)+-"<<nsmc*weightednsmcstatfrac<<"(MC stat.)"<<std::endl;
+	errvec[0]=weighterrdatastatfrac;
+	errvec[1]=weightednsmcstatfrac;
+      }
       sigmcshape.Write();
     }
     dir->cd();
+    errvec.Write("normerrs");
     weightvec.Write("ddweight");
   
     return 0;
