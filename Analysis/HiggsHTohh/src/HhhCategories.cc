@@ -144,6 +144,7 @@ namespace ic {
         outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
         outtree_->Branch("l1_met",            &l1_met_);
         outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
+				outtree_->Branch("em_gf_mva_bdt",					&em_gf_mva_bdt_);
         if (channel_ == channel::em) {
           outtree_->Branch("em_gf_mva",         &em_gf_mva_);
           // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
@@ -344,6 +345,7 @@ namespace ic {
 			em_gf_mva_bdt_ = event->Exists("em_gf_mva_bdt") ? event->Get<double>("em_gf_mva_bdt") : 0.;
       // em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
+    em_gf_mva_bdt_ = event->Exists("em_gf_mva_bdt")? event->Get<double>("em_gf_mva_bdt") : 0.;
     if (event->Exists("mass_scale")) {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");
       m_vis_ = m_vis_ * event->Get<double>("mass_scale");
