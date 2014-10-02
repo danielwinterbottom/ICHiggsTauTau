@@ -103,6 +103,8 @@ namespace ic{
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
     do_ratio_=false;
     do_ratio_line_=false;
+    add_underflows_=false;
+    add_overflows_=false;
   };
 
   HistPlotter::~HistPlotter(){ ;};
@@ -166,7 +168,47 @@ namespace ic{
 	writedir->cd();
 	TH1F* histo =dynamic_cast<TH1F*>(file->Get((elements_[iElement].sample()+"/"+shapes_[iShape].name()).c_str()));
 	writedir->cd();
-	elements_[iElement].set_hist_ptr(histo);
+
+	if (add_underflows_ || add_overflows_){
+	  int tmpbins = histo->GetNbinsX();
+	  double tmpmin = histo->GetXaxis()->GetBinLowEdge(1);
+	  double tmpmax = histo->GetXaxis()->GetBinLowEdge(tmpbins+1);
+	  double tmpsize = (tmpmax-tmpmin)/tmpbins;
+	  if (add_underflows_) {
+	    tmpbins+=1;
+	    tmpmin = tmpmin-tmpsize;
+	  }
+	  if (add_overflows_){
+	    tmpbins+=1;
+	    tmpmax = tmpmax+tmpsize;
+	  }
+	  std::ostringstream tmpname;
+	  tmpname << histo->GetName() << "_mod";
+	  TH1F *histTmp = new TH1F(tmpname.str().c_str(),histo->GetTitle(),tmpbins,tmpmin,tmpmax);
+	  histTmp->Sumw2();
+	  if (add_underflows_) {
+	    histTmp->SetBinContent(1,histo->GetBinContent(0));
+	    histTmp->SetBinError(1,histo->GetBinError(0));
+	    for (int ibin(1); ibin<histo->GetNbinsX()+1;++ibin){
+	      histTmp->SetBinContent(ibin+1,histo->GetBinContent(ibin));
+	      histTmp->SetBinError(ibin+1,histo->GetBinError(ibin));
+	    }
+	  }
+	  else {
+	    for (int ibin(1); ibin<histo->GetNbinsX()+1;++ibin){
+	      histTmp->SetBinContent(ibin,histo->GetBinContent(ibin));
+	      histTmp->SetBinError(ibin,histo->GetBinError(ibin));
+	    }
+	  }
+	  if (add_overflows_) {
+	    histTmp->SetBinContent(tmpbins,histo->GetBinContent(histo->GetNbinsX()+1));
+	    histTmp->SetBinError(tmpbins,histo->GetBinError(histo->GetNbinsX()+1));
+	  }
+
+	  elements_[iElement].set_hist_ptr(histTmp);
+	}
+	else 
+	  elements_[iElement].set_hist_ptr(histo);
 	
 	//SETUP STYLE
 	if(elements_[iElement].is_data()){
@@ -341,9 +383,18 @@ namespace ic{
       tmpstr.erase(std::string(file->GetName()).find(".root"),5);
       lsave << tmpstr ;
       lsave << ".pdf" ;
-      if (iShape==0) lsave << "[";
-      if (iShape==shapes_.size()-1) lsave << "]";
+      if (iShape==0) {
+	lsave << "[";
+	c1->Print(lsave.str().c_str());//open the file
+	lsave.str("");//reset for adding the first plot
+	lsave << tmpstr ;
+	lsave << ".pdf" ;
+      }
       c1->Print(lsave.str().c_str());
+      if (iShape==shapes_.size()-1) {
+	lsave << "]";
+	c1->Print(lsave.str().c_str());//close the file
+      }
 
       lsave.str("");
       lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;

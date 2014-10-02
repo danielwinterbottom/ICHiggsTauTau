@@ -66,6 +66,9 @@ namespace ic {
       //CLASS_MEMBER(HistPlotter,std::vector<std::string>,histTitles)   
     CLASS_MEMBER(HistPlotter,bool,do_ratio)
     CLASS_MEMBER(HistPlotter,bool,do_ratio_line)
+    CLASS_MEMBER(HistPlotter,bool,add_underflows)
+    CLASS_MEMBER(HistPlotter,bool,add_overflows)
+
   public:	
     HistPlotter(std::string);
     virtual ~HistPlotter();
