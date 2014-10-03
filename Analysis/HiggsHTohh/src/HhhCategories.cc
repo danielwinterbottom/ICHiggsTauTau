@@ -24,7 +24,7 @@ namespace ic {
       write_tree_ = true;
       write_plots_ = false;
       experimental_ = false;
-      kinfit_mode_ = false;
+      kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
   }
 
   HhhCategories::~HhhCategories() {
@@ -112,22 +112,22 @@ namespace ic {
         outtree_->Branch("mjj",               &mjj_);
         outtree_->Branch("mjj_h",               &mjj_h_);
         outtree_->Branch("mjj_tt",               &mjj_tt_);
-        outtree_->Branch("m_H",               &m_H_);
-        outtree_->Branch("m_H_chi2",               &m_H_chi2_);
-				outtree_->Branch("pull_balance_H", &pull_balance_H_);
-				outtree_->Branch("convergence_H", &convergence_H_);
-				outtree_->Branch("m_H_hZ",          &m_H_hZ_);
-				outtree_->Branch("m_H_hZ_chi2",     &m_H_hZ_chi2_);
+        outtree_->Branch("m_H_best",               &m_H_best_);
+        outtree_->Branch("m_H_chi2_best",               &m_H_chi2_best_);
+        outtree_->Branch("pull_balance_H_best", &pull_balance_H_best_);
+        outtree_->Branch("convergence_H_best", &convergence_H_best_); 
+        outtree_->Branch("m_H_hZ",          &m_H_hZ_);
+        outtree_->Branch("m_H_hZ_chi2",     &m_H_hZ_chi2_);
         outtree_->Branch("pull_balance_hZ", &pull_balance_hZ_);
-				outtree_->Branch("convergence_hZ", &convergence_hZ_);
-				outtree_->Branch("m_H_Zh",          &m_H_Zh_);
-				outtree_->Branch("m_H_Zh_chi2",     &m_H_Zh_chi2_);
-				outtree_->Branch("pull_balance_Zh",  &pull_balance_Zh_);
-				outtree_->Branch("convergence_Zh",  &convergence_Zh_);
-				outtree_->Branch("m_H_hh",     &m_H_hh_);
-				outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
-				outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
-				outtree_->Branch("convergence_hh", &convergence_hh_);
+        outtree_->Branch("convergence_hZ", &convergence_hZ_);
+        outtree_->Branch("m_H_Zh",          &m_H_Zh_);
+        outtree_->Branch("m_H_Zh_chi2",     &m_H_Zh_chi2_);
+        outtree_->Branch("pull_balance_Zh",  &pull_balance_Zh_);
+        outtree_->Branch("convergence_Zh",  &convergence_Zh_);
+        outtree_->Branch("m_H_hh",     &m_H_hh_);
+        outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
+        outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
+        outtree_->Branch("convergence_hh", &convergence_hh_);
         outtree_->Branch("jdeta",             &jdeta_);
         outtree_->Branch("prebjet_mjj",               &prebjet_mjj_);
         outtree_->Branch("prebjet_dphi",               &prebjet_dphi_);
@@ -145,10 +145,10 @@ namespace ic {
         outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
         outtree_->Branch("l1_met",            &l1_met_);
         outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
-				outtree_->Branch("mt_bdt_2jet1tag",   &mt_bdt_2jet1tag_);
-				outtree_->Branch("mt_bdt_2jet2tag",   &mt_bdt_2jet2tag_);
-				outtree_->Branch("em_gf_mva_bdt",					&em_gf_mva_bdt_);
-				outtree_->Branch("emu_dphi", 					&emu_dphi_);
+		outtree_->Branch("mt_bdt_2jet1tag",   &mt_bdt_2jet1tag_);
+		outtree_->Branch("mt_bdt_2jet2tag",   &mt_bdt_2jet2tag_);
+		outtree_->Branch("em_gf_mva_bdt",					&em_gf_mva_bdt_);
+		outtree_->Branch("emu_dphi", 					&emu_dphi_);
         if (channel_ == channel::em) {
           outtree_->Branch("em_gf_mva",         &em_gf_mva_);
           // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
@@ -474,13 +474,14 @@ namespace ic {
       } else {
         mjj_h_ = -9999;
       }
-      if(kinfit_mode_) {
+      if(kinfit_mode_>0) {
         std::vector<Int_t> hypo_mh1;
         hypo_mh1.push_back(125);
-				hypo_mh1.push_back(90);
+        //Option to additionally run results from Zh and hZ hypotheses
+        if(kinfit_mode_ == 2) hypo_mh1.push_back(90);
         std::vector<Int_t> hypo_mh2;
         hypo_mh2.push_back(125);
-				hypo_mh2.push_back(90);
+        if(kinfit_mode_ == 2) hypo_mh2.push_back(90);
 
         TLorentzVector b1      = TLorentzVector(prebjets[0]->vector().px(),prebjets[0]->vector().py(),prebjets[0]->vector().pz(), prebjets[0]->vector().E());
         TLorentzVector b2      = TLorentzVector(prebjets[1]->vector().px(),prebjets[1]->vector().py(),prebjets[1]->vector().pz(), prebjets[1]->vector().E());
@@ -498,61 +499,68 @@ namespace ic {
         kinFits.addMh1Hypothesis(hypo_mh1);
         kinFits.addMh2Hypothesis(hypo_mh2);
         kinFits.doFullFit();
-        m_H_ = kinFits.getBestMHFullFit();
-        m_H_chi2_ = kinFits.getBestChi2FullFit();
+        //Best hypothesis saved. For kinfit_mode_==1 this is identical to m_H_hh since only that hypothesis is run
+        m_H_best_ = kinFits.getBestMHFullFit();
+        m_H_chi2_best_ = kinFits.getBestChi2FullFit();
         std::pair<Int_t,Int_t> bestHypo = kinFits.getBestHypoFullFit();
-				std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_chi2 = kinFits.getChi2FullFit();
-				std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_mH = kinFits.getMHFullFit();
-				std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_pull_balance = kinFits.getPullBalanceFullFit();
-				std::map<std::pair<Int_t,Int_t>,Int_t> fit_convergence = kinFits.getConvergenceFullFit();
-				std::pair<Int_t,Int_t> hypoZh(90,125);
-				std::pair<Int_t,Int_t> hypohZ(125,90);
-				std::pair<Int_t,Int_t> hypohh(125,125);
-
-				if(bestHypo.first>0){
-				pull_balance_H_ = fit_results_pull_balance.at(bestHypo);
-				convergence_H_ = fit_convergence.at(bestHypo);
-				}
-				else{
-				pull_balance_H_ = -9999;
-				convergence_H_ = -9999;
-				}
-
-				m_H_Zh_ = fit_results_mH.at(hypoZh);
-				m_H_Zh_chi2_ = fit_results_chi2.at(hypoZh);
-				pull_balance_Zh_ = fit_results_pull_balance.at(hypoZh);
-				convergence_Zh_ = fit_convergence.at(hypoZh);
-
-				m_H_hZ_ = fit_results_mH.at(hypohZ);
-				m_H_hZ_chi2_ = fit_results_chi2.at(hypohZ);
-				pull_balance_hZ_ = fit_results_pull_balance.at(hypohZ);
-				convergence_hZ_ = fit_convergence.at(hypohZ);
-
-				m_H_hh_ = fit_results_mH.at(hypohh);
-				m_H_hh_chi2_ = fit_results_chi2.at(hypohh);
-				pull_balance_hh_ = fit_results_pull_balance.at(hypohh);
-				convergence_hh_ = fit_convergence.at(hypohh);
-
-
-
+        std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_chi2 = kinFits.getChi2FullFit();
+        std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_mH = kinFits.getMHFullFit();
+        std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_pull_balance = kinFits.getPullBalanceFullFit();
+        std::map<std::pair<Int_t,Int_t>,Int_t> fit_convergence = kinFits.getConvergenceFullFit();
+        std::pair<Int_t,Int_t> hypoZh(90,125);
+        std::pair<Int_t,Int_t> hypohZ(125,90);
+        std::pair<Int_t,Int_t> hypohh(125,125);
+        //Save results for 125,125 hypothesis
+        m_H_hh_ = fit_results_mH.at(hypohh);
+        m_H_hh_chi2_ = fit_results_chi2.at(hypohh);
+        pull_balance_hh_ = fit_results_pull_balance.at(hypohh);
+        convergence_hh_ = fit_convergence.at(hypohh);
+        
+        if(bestHypo.first>0){
+          pull_balance_H_best_ = fit_results_pull_balance.at(bestHypo);
+          convergence_H_best_ = fit_convergence.at(bestHypo);
+        } else {
+          pull_balance_H_best_ = -9999;
+          convergence_H_best_ = -9999;
+        } 
+        
+        //Option to additionally save results from Zh and hZ hypotheses if they have been run
+        if(kinfit_mode_ == 2) {
+          m_H_Zh_ = fit_results_mH.at(hypoZh);
+          m_H_Zh_chi2_ = fit_results_chi2.at(hypoZh);
+          pull_balance_Zh_ = fit_results_pull_balance.at(hypoZh);
+          convergence_Zh_ = fit_convergence.at(hypoZh);
+          m_H_hZ_ = fit_results_mH.at(hypohZ);
+          m_H_hZ_chi2_ = fit_results_chi2.at(hypohZ);
+          pull_balance_hZ_ = fit_results_pull_balance.at(hypohZ);
+          convergence_hZ_ = fit_convergence.at(hypohZ);
+        } else {
+          m_H_Zh_ = -9999;
+          m_H_Zh_chi2_ = -9999;
+          pull_balance_Zh_ = -9999;
+          convergence_Zh_ = -9999;
+          m_H_hZ_ = -9999;
+          m_H_hZ_chi2_ = -9999;
+          pull_balance_hZ_ = -9999;
+          convergence_hZ_ = -9999;
+        }
       } else {
-        pull_balance_H_=-9999;
-				convergence_H_=-9999;
-        m_H_ = -9999;
-        m_H_chi2_=-9999;
+        pull_balance_H_best_=-9999;
+        convergence_H_best_=-9999;
+        m_H_best_ = -9999;
+        m_H_chi2_best_=-9999;
         pull_balance_Zh_=-9999;
-				convergence_Zh_=-9999;
-				m_H_Zh_ = -9999;
-				m_H_Zh_chi2_=-9999;
-				pull_balance_hZ_=-9999;
-				convergence_hZ_=-9999;
-				m_H_hZ_ = -9999;
-				m_H_hZ_chi2_ = -9999;
-				pull_balance_hh_=-9999;
-				convergence_hh_=-9999;
-				m_H_hh_ = -9999;
-				m_H_hh_chi2_ = -9999;
-
+        convergence_Zh_=-9999;
+        m_H_Zh_ = -9999;
+        m_H_Zh_chi2_=-9999;
+        pull_balance_hZ_=-9999;
+        convergence_hZ_=-9999;
+        m_H_hZ_ = -9999;
+        m_H_hZ_chi2_ = -9999;
+        pull_balance_hh_=-9999;
+        convergence_hh_=-9999;
+        m_H_hh_ = -9999;
+        m_H_hh_chi2_ = -9999;
       }      
     } else {
       prebjetpt_2_ = -9999;
@@ -563,23 +571,22 @@ namespace ic {
       prebjet_dtheta_ = -9999;
       mjj_h_ = -9999;
       mjj_tt_ = -9999;
-      m_H_ = -9999;
-      m_H_chi2_=-9999;
-			pull_balance_H_ = -9999;
-			convergence_H_ = -9999;
-			m_H_Zh_=-9999;
-			m_H_Zh_chi2_=-9999;
-			pull_balance_Zh_=-9999;
-			convergence_Zh_=-9999;
-			m_H_hZ_ = -9999;
-			m_H_hZ_chi2_ = -9999;
-			pull_balance_hZ_=-9999;
-			convergence_hZ_=-9999;
-			m_H_hh_ = -9999;
-			m_H_hh_chi2_ = -9999;
-			pull_balance_hh_=-9999;
-			convergence_hh_=-9999;
-
+      m_H_best_ = -9999;
+      m_H_chi2_best_=-9999;
+      pull_balance_H_best_ = -9999;
+      convergence_H_best_ = -9999;
+      m_H_Zh_=-9999;
+      m_H_Zh_chi2_=-9999;
+      pull_balance_Zh_=-9999;
+      convergence_Zh_=-9999;
+      m_H_hZ_ = -9999;
+      m_H_hZ_chi2_ = -9999;
+      pull_balance_hZ_=-9999;
+      convergence_hZ_=-9999;
+      m_H_hh_ = -9999;
+      m_H_hh_chi2_ = -9999;
+      pull_balance_hh_=-9999;
+      convergence_hh_=-9999;
     }
     
     if (n_jets_ >= 1) {

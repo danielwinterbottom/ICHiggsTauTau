@@ -25,7 +25,7 @@ class HhhCategories : public ModuleBase {
   CLASS_MEMBER(HhhCategories, bool, write_tree)
   CLASS_MEMBER(HhhCategories, bool, write_plots)
   CLASS_MEMBER(HhhCategories, bool, experimental)
-  CLASS_MEMBER(HhhCategories, bool, kinfit_mode )
+  CLASS_MEMBER(HhhCategories, int, kinfit_mode )
   CLASS_MEMBER(HhhCategories, fwlite::TFileService*, fs)
 
   std::map<std::string, bool> categories_;
@@ -104,22 +104,22 @@ class HhhCategories : public ModuleBase {
   double mjj_;       // Defined if n_jets >= 2
   double mjj_h_;       // Defined if n_jets >= 2
   double mjj_tt_;       // Defined if n_jets >= 2
-	double m_H_;       // Defined if n_jets >= 2
-  double m_H_chi2_;       // Defined if n_jets >= 2
-	double pull_balance_H_; //Defined if n_jets >= 2
-	int convergence_H_; //Defined if n_jets >= 2
-	double m_H_hZ_;     //Defined if n_jets >= 2
-	double m_H_hZ_chi2_;  //Defined if n_jets >= 2
-	double pull_balance_hZ_; //Defined if n_jets >= 2
-	int convergence_hZ_; //Defined if n_jets >= 2
-	double m_H_Zh_;      //Defined if n_jets >= 2
-	double m_H_Zh_chi2_;   //Defined if n_jets >= 2
-	double pull_balance_Zh_; //Defined if n_jets >= 2
-	int convergence_Zh_; //Defined if n_jets >= 2
-	double m_H_hh_;	     //Defined if n_jets >= 2
-	double m_H_hh_chi2_;   //Defined if n_jets >= 2
-	double pull_balance_hh_; //Defined if n_jets >= 2
-	int convergence_hh_; //Defined if n_jets >= 2
+  double m_H_best_;       // Defined if n_jets >= 2
+  double m_H_chi2_best_;       // Defined if n_jets >= 2
+  double pull_balance_H_best_; //Defined if n_jets >= 2
+  int convergence_H_best_; //Defined if n_jets >= 2
+  double m_H_hZ_;     //Defined if n_jets >= 2
+  double m_H_hZ_chi2_;  //Defined if n_jets >= 2
+  double pull_balance_hZ_; //Defined if n_jets >= 2
+  int convergence_hZ_; //Defined if n_jets >= 2
+  double m_H_Zh_;      //Defined if n_jets >= 2
+  double m_H_Zh_chi2_;   //Defined if n_jets >= 2 
+  double pull_balance_Zh_; //Defined if n_jets >= 2
+  int convergence_Zh_; //Defined if n_jets >= 2
+  double m_H_hh_;	     //Defined if n_jets >= 2
+  double m_H_hh_chi2_;   //Defined if n_jets >= 2
+  double pull_balance_hh_; //Defined if n_jets >= 2
+  int convergence_hh_; //Defined if n_jets >= 2
 
   double jdeta_;     // Defined if n_jets >= 2
   
@@ -148,10 +148,10 @@ class HhhCategories : public ModuleBase {
 
   double em_gf_mva_;
   //double em_vbf_mva_;
-	double em_gf_mva_bdtg_;
-	double em_gf_mva_bdt_;
-	double mt_bdt_2jet1tag_;
-	double mt_bdt_2jet2tag_;
+  double em_gf_mva_bdtg_;
+  double em_gf_mva_bdt_;
+  double mt_bdt_2jet1tag_;
+  double mt_bdt_2jet2tag_;
 
     // Other VBF MVA variables?
 
