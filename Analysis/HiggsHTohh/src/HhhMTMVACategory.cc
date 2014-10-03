@@ -95,8 +95,19 @@ namespace ic {
 		}
 
 
+		if(nprebjets_>1&&fprebjetbcsv_1_>0.679&&fprebjetbcsv_2_<=0.679){
     event->Add("mt_bdt_2jet1tag", gf_reader_->EvaluateMVA("BDT"));
+		}
+		else{
+		event->Add("mt_bdt_2jet1tag",-999.);
+		}
+		
+		if(nprebjets_>1&&fprebjetbcsv_1_>0.679&&fprebjetbcsv_2_>0.679){
     event->Add("mt_bdt_2jet2tag", gf_reader_2_->EvaluateMVA("BDT"));
+		}
+		else{
+		event->Add("mt_bdt_2jet2tag",-999.);
+		}
     return 0;
   }
 
