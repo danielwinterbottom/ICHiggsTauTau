@@ -145,6 +145,8 @@ namespace ic {
         outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
         outtree_->Branch("l1_met",            &l1_met_);
         outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
+				outtree_->Branch("mt_bdt_2jet1tag",   &mt_bdt_2jet1tag_);
+				outtree_->Branch("mt_bdt_2jet2tag",   &mt_bdt_2jet2tag_);
 				outtree_->Branch("em_gf_mva_bdt",					&em_gf_mva_bdt_);
 				outtree_->Branch("emu_dphi", 					&emu_dphi_);
         if (channel_ == channel::em) {
@@ -348,6 +350,8 @@ namespace ic {
       // em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
     em_gf_mva_bdt_ = event->Exists("em_gf_mva_bdt")? event->Get<double>("em_gf_mva_bdt") : 0.;
+		mt_bdt_2jet1tag_ = event->Exists("mt_bdt_2jet1tag")? event->Get<double>("mt_bdt_2jet1tag") : 0.;
+		mt_bdt_2jet2tag_ = event->Exists("mt_bdt_2jet2tag")? event->Get<double>("mt_bdt_2jet2tag") : 0.;
     if (event->Exists("mass_scale")) {
       m_sv_ = m_sv_ * event->Get<double>("mass_scale");
       m_vis_ = m_vis_ * event->Get<double>("mass_scale");

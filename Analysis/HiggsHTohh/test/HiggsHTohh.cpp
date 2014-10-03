@@ -40,6 +40,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVA.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVABoth.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhMTMVABoth.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhMTMVACategory.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCut.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
@@ -525,6 +526,7 @@ int main(int argc, char* argv[]){
 	HhhEMuMVABoth emuMVABoth = HhhEMuMVABoth("EMuMVABoth");
 
   HhhMTMVABoth mtMVABoth = HhhMTMVABoth("MTMVABoth"); 
+	HhhMTMVACategory mtMVACategory = HhhMTMVACategory("MTMVACategory");
 
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
@@ -1162,6 +1164,7 @@ int main(int argc, char* argv[]){
     }
 		if (strategy == strategy::paper2013 &&channel ==channel::mt){
 		analysis.AddModule(&mtMVABoth);
+		analysis.AddModule(&mtMVACategory);
 		}
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&hhhSync);

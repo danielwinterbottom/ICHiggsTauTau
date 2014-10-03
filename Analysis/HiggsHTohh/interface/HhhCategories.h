@@ -150,6 +150,8 @@ class HhhCategories : public ModuleBase {
   //double em_vbf_mva_;
 	double em_gf_mva_bdtg_;
 	double em_gf_mva_bdt_;
+	double mt_bdt_2jet1tag_;
+	double mt_bdt_2jet2tag_;
 
     // Other VBF MVA variables?
 

@@ -30,8 +30,8 @@ class HhhMTMVABoth : public ModuleBase {
  	float fpt_2_;
 	float femu_dphi_;
 	float fpzeta_;
-	float fprebjetpt_1_;
-	float fprebjetpt_2_;
+	float fprebjetbcsv_1_;
+	float fprebjetbcsv_2_;
 	
 	int		nprebjets_;
 
