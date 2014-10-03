@@ -39,6 +39,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTEMuExtras.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVA.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhEMuMVABoth.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhMTMVABoth.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCorrector.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTL1MetCut.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
@@ -522,6 +523,8 @@ int main(int argc, char* argv[]){
   HTTEMuExtras emuExtras("EMuExtras");
   HhhEMuMVA emuMVA = HhhEMuMVA("EMuMVA");
 	HhhEMuMVABoth emuMVABoth = HhhEMuMVABoth("EMuMVABoth");
+
+  HhhMTMVABoth mtMVABoth = HhhMTMVABoth("MTMVABoth"); 
 
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
@@ -1015,7 +1018,7 @@ int main(int argc, char* argv[]){
     .set_dilepton_label("emtauCandidates")
     .set_met_label(met_label)
     .set_fullpath(svfit_folder)
-    .set_MC(true);
+    .set_MC(false);
 
   BTagCheck btagCheck("BTagCheck");
   btagCheck.set_fs(fs);
@@ -1157,6 +1160,9 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&emuMVA);
 								  analysis.AddModule(&emuMVABoth);
     }
+		if (strategy == strategy::paper2013 &&channel ==channel::mt){
+		analysis.AddModule(&mtMVABoth);
+		}
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&hhhSync);
     if (!quark_gluon_study)       analysis.AddModule(&hhhCategories);

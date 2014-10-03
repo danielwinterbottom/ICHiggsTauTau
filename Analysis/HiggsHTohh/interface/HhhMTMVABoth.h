@@ -19,11 +19,9 @@ class HhhMTMVABoth : public ModuleBase {
  	CLASS_MEMBER(HhhMTMVABoth, std::string, ditau_label)
  	CLASS_MEMBER(HhhMTMVABoth, std::string, met_label)
  	CLASS_MEMBER(HhhMTMVABoth, std::string, gf_mva_file_bdt)
-  CLASS_MEMBER(HhhMTMVABoth, std::string, gf_mva_file_bdtg)
 	CLASS_MEMBER(HhhMTMVABoth, std::string, mva_input_data)
 
  	TMVA::Reader *gf_reader_bdt_;
-	TMVA::Reader *gf_reader_bdtg_;
   // TMVA::Reader *vbf_reader_;
 
  	float fmet_;

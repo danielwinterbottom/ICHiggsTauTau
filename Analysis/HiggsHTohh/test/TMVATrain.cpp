@@ -68,19 +68,21 @@ int main(int argc, char* argv[]){
 	string paramfile;
 	string paramfile2;
 	string classname;
+	bool twotag;
 
 	po::options_description config("Configuration");
 	po::variables_map vm;
 	po::notify(vm);
 
 	config.add_options()    
-		("folder",              po::value<string>(&folder)->default_value("output/EMu/"))
+		("folder",              po::value<string>(&folder)->default_value("output/Paper_2012/"))
 		//   ("input_prefix",        po::value<string>(&input_prefix)->default_value(""))
 		("output_name",         po::value<string>(&output_name)->default_value("test_tmva.root"))
 		("output_folder",       po::value<string>(&output_folder)->default_value(""))
 		("paramfile",						po::value<string>(&paramfile)->default_value("./scripts/Paper_params_2012.dat"))
-		("paramfile2", 					po::value<string>(&paramfile2)->default_value("./scripts/TMVAinputs.dat"))
+		("paramfile2", 					po::value<string>(&paramfile2)->default_value("./scripts/TMVAinputshad.dat"))
 		("classname",						po::value<string>(&classname)->default_value("HhhMVA"))
+		("twotag",								po::value<bool>(&twotag)->default_value(true))
 		;
 	po::store(po::command_line_parser(argc, argv).
 			options(config).allow_unregistered().run(), vm);
@@ -118,12 +120,12 @@ int main(int argc, char* argv[]){
 
 	std::vector<TFile*> BackgroundSamples;
 	for(unsigned int iter=0;iter<bckglist.size();++iter){
-		BackgroundSamples.push_back(TFile::Open((folder+bckglist.at(iter)+"_em_2012.root").c_str()));
+		BackgroundSamples.push_back(TFile::Open((folder+bckglist.at(iter)+"_mt_2012.root").c_str()));
 	}
 
 	std::vector<TFile*> SignalSamples;
 	for(unsigned int sigIter=0;sigIter<signallist.size();++sigIter){
-		SignalSamples.push_back(TFile::Open((folder+signallist.at(sigIter)+"_em_2012.root").c_str()));
+		SignalSamples.push_back(TFile::Open((folder+signallist.at(sigIter)+"_mt_2012.root").c_str()));
 	}
 
 	std::vector<TTree*> backgroundTrees;
@@ -163,6 +165,8 @@ int main(int argc, char* argv[]){
 	}
 
 	factory->AddSpectator("n_prebjets","n_prebjets","",'I');
+	factory->AddSpectator("prebjetbcsv_1","prebjetbcsv_1","",'F');
+	factory->AddSpectator("prebjetbcsv_2","prebjetbcsv_2","",'F');
 
 	double weightval_=0;
 
@@ -190,12 +194,19 @@ int main(int argc, char* argv[]){
 	}
 	factory->SetBackgroundWeightExpression("wt");
 	factory->SetSignalWeightExpression("wt");
-	TCut mycutb="n_prebjets>2";
-	TCut mycuts="n_prebjets>2";
+	TCut mycutb="n_prebjets>1";
+	TCut mycuts="n_prebjets>1";
+	if(twotag){
+	TCut mycutb="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
+	TCut mycuts="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
+	}
+	else{
+	TCut mycutb="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
+	TCut mycuts="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
+	}
 //TCut mycutb="";
 //TCut mycuts="";
 	factory->PrepareTrainingAndTestTree( mycuts, mycutb,"SplitMode=Random:!V");
-	factory->BookMethod( TMVA::Types::kBDT, "BDTG","!H:!V:NTrees=1000:BoostType=Grad:Shrinkage=0.10:UseBaggedGrad:GradBaggingFraction=0.5:nCuts=20:NNodesMax=5" );
 
 	factory->BookMethod( TMVA::Types::kBDT, "BDT","!H:!V:NTrees=850:nEventsMin=150:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning" );
 
