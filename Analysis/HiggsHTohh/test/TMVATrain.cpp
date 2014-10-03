@@ -69,6 +69,7 @@ int main(int argc, char* argv[]){
 	string paramfile2;
 	string classname;
 	bool twotag;
+	bool onetag;
 
 	po::options_description config("Configuration");
 	po::variables_map vm;
@@ -83,6 +84,7 @@ int main(int argc, char* argv[]){
 		("paramfile2", 					po::value<string>(&paramfile2)->default_value("./scripts/TMVAinputshad.dat"))
 		("classname",						po::value<string>(&classname)->default_value("HhhMVA"))
 		("twotag",								po::value<bool>(&twotag)->default_value(true))
+		("onetag",              po::value<bool>(&onetag)->default_value(false))
 		;
 	po::store(po::command_line_parser(argc, argv).
 			options(config).allow_unregistered().run(), vm);
@@ -194,15 +196,18 @@ int main(int argc, char* argv[]){
 	}
 	factory->SetBackgroundWeightExpression("wt");
 	factory->SetSignalWeightExpression("wt");
-	TCut mycutb="n_prebjets>1";
-	TCut mycuts="n_prebjets>1";
+	TCut mycutb, mycuts;
 	if(twotag){
-	TCut mycutb="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
-	TCut mycuts="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
+	mycutb="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
+	mycuts="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
+	}
+	else if(onetag){
+	mycutb="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
+	mycuts="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
 	}
 	else{
-	TCut mycutb="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
-	TCut mycuts="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
+	mycutb="n_prebjets>1";
+	mycuts="n_prebjets>1";
 	}
 //TCut mycutb="";
 //TCut mycuts="";
