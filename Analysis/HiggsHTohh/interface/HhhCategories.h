@@ -73,6 +73,7 @@ class HhhCategories : public ModuleBase {
   double z_2_;
   double m_2_;
   double met_;
+  double met_sig_;
   double met_phi_;
 
   int    tau_decay_mode_;

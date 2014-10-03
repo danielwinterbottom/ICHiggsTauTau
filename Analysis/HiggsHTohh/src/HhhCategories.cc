@@ -83,6 +83,7 @@ namespace ic {
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("m_2",               &m_2_);
         outtree_->Branch("met",               &met_);
+        outtree_->Branch("met_sig",               &met_sig_);
         outtree_->Branch("met_phi",           &met_phi_);
         outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
         outtree_->Branch("n_jets",            &n_jets_);
@@ -273,6 +274,7 @@ namespace ic {
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
     Met const* met = event->GetPtr<Met>(met_label_);
+    met_sig_ = met->et_sig();
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> lowpt_jets = jets;
