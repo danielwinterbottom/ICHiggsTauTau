@@ -84,7 +84,7 @@ int main(int argc, char* argv[]){
   unsigned new_svfit_mode;        // 0 = not run, 1 = generate jobs, 2 = read-in job output
   string svfit_folder;            // Folder containing svfit jobs & output
   string svfit_override;          // Override the svfit results to use
-  bool kinfit_mode;               // Run the kinematic fitting if true
+  unsigned kinfit_mode;           // 0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
   unsigned ztautau_mode;          // 0 = not run, 1 = select Z->tautau, 2 = select Z->ee and Z->mumu
   unsigned faked_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
   unsigned hadronic_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
@@ -144,7 +144,7 @@ int main(int argc, char* argv[]){
       ("new_svfit_mode",      po::value<unsigned>(&new_svfit_mode)->default_value(0))
       ("svfit_folder",        po::value<string>(&svfit_folder)->default_value(""))
       ("svfit_override",      po::value<string>(&svfit_override)->default_value(""))
-      ("kinfit_mode",      po::value<bool>(&kinfit_mode)->default_value(false))
+      ("kinfit_mode",         po::value<unsigned>(&kinfit_mode)->default_value(0))
       ("ztautau_mode",        po::value<unsigned>(&ztautau_mode)->default_value(0))
       ("faked_tau_selector",  po::value<unsigned>(&faked_tau_selector)->default_value(0))
       ("hadronic_tau_selector",  po::value<unsigned>(&hadronic_tau_selector)->default_value(0))
