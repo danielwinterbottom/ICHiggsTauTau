@@ -40,6 +40,8 @@ parser.add_option("--mttbb", dest="mttbb", action='store_true', default=False,
                   help="Make inputs for mttbb.")
 parser.add_option("--mH", dest="mH", action='store_true', default=False,
                   help="Make inputs for mH using kinematic fitting.")
+parser.add_option("--chi2", dest="chi2", action='store_true', default=False,
+                  help="Make inputs for chi2 from kinematic fitting.")
 parser.add_option("-e", dest="energy", type='string', default='8',
                   help="The C.O.M. energy is written into the datacard name, default is 8")
 
@@ -64,7 +66,7 @@ if not channels:
 for channel in channels:
   validate_channel(channel)
 
-if not (options.mvis or options.svfit or options.dijet or options.mttbb or options.mH) :
+if not (options.mvis or options.svfit or options.dijet or options.mttbb or options.mH or options.chi2) :
   print 'Error, please specify distribution to plot.'
   sys.exit(1)
 
@@ -96,7 +98,8 @@ plots = [
   ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"150"),
   ('prebjet_mjj'   , 'M_{jj} [GeV]'        , ''      ,   "80"   ,"160"),
   ('mjj_tt'   , 'M_{#tau#tau+jj} [GeV]'        , ''      ,   "200"   ,"600"),
-  ('m_H'   , 'M_{H} [GeV]'        , ''      ,   "200"   ,"600")
+  ('m_H_hh'   , 'M_{H} [GeV]'        , ''      ,   "200"   ,"600"),
+  ('m_H_hh_chi2'   , '#chi^{2} from kin fit'        , ''      ,   "0"   ,"10")
  ]
 if options.mvis: 
     plots = [plots[0]]
@@ -108,6 +111,8 @@ if options.mttbb:
     plots = [plots[3]]
 if options.mH: 
     plots = [plots[4]]
+if options.chi2: 
+    plots = [plots[5]]
 
 #################################################################
 #### New HTohh scheme
@@ -123,6 +128,9 @@ if options.scheme == 'HTohh':
   elif options.mttbb or options.mH:
     BINS_FINE="(20,0,1000)"
     BINS="(20,0,1000)"
+  elif options.chi2:
+    BINS_FINE="(25,0,50)"
+    BINS="(25,0,50)"
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_inclusive_'+COM+'TeV"')),
@@ -204,6 +212,8 @@ if options.scheme == 'HTohh':
   ANA = 'Hhh'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
   extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  #extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && prebjet_mjj>70 && prebjet_mjj<150. && m_sv>90 && m_sv<150"'
+  #extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && prebjet_mjj>70 && prebjet_mjj<150. && m_H_chi2<25"'
   extra_channel["em"] += ' --set_alias="sel:pzeta>-30"'
   #extra_channel["em"] += ' --set_alias="sel:em_gf_mva_bdt>-0.25"'
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
