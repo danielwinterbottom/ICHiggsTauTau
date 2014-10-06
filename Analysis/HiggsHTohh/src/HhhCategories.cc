@@ -74,6 +74,7 @@ namespace ic {
         outtree_->Branch("pt_h",              &pt_h_);
         outtree_->Branch("pt_tt",             &pt_tt_);
         outtree_->Branch("mt_1",              &mt_1_);
+				outtree_->Branch("mt_2",							&mt_2_);
         outtree_->Branch("pzeta",             &pzeta_);
         outtree_->Branch("pt_1",              &pt_1_);
         outtree_->Branch("pt_2",              &pt_2_);
@@ -106,6 +107,8 @@ namespace ic {
         outtree_->Branch("prebjetbcsv_1",            &prebjetbcsv_1_);
         outtree_->Branch("prebjet1_dm",             &prebjet1_dm_);
         outtree_->Branch("prebjetpt_2",             &prebjetpt_2_);
+				outtree_->Branch("prebjetpt_bb",						&prebjetpt_bb_);
+				outtree_->Branch("prebjet_dR",						&prebjet_dR_);
         outtree_->Branch("prebjeteta_2",            &prebjeteta_2_);
         outtree_->Branch("prebjetbcsv_2",            &prebjetbcsv_2_);
         outtree_->Branch("E_1",             &E_1_);
@@ -149,6 +152,7 @@ namespace ic {
 		outtree_->Branch("mt_bdt_2jet2tag",   &mt_bdt_2jet2tag_);
 		outtree_->Branch("em_gf_mva_bdt",					&em_gf_mva_bdt_);
 		outtree_->Branch("emu_dphi", 					&emu_dphi_);
+		outtree_->Branch("mutau_dR",					&mutau_dR_);
         if (channel_ == channel::em) {
           outtree_->Branch("em_gf_mva",         &em_gf_mva_);
           // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
@@ -359,11 +363,13 @@ namespace ic {
 
 
     mt_1_ = MT(lep1, met);
+		mt_2_ = MT(lep2, met);
     mt_ll_ = MT(ditau, met);
     pzeta_ = PZeta(ditau, met, 0.85);
     pzetavis_ = PZetaVis(ditau);
     pzetamiss_ = PZeta(ditau, met, 0.0);
     emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
+		mutau_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
 
     pt_1_ = lep1->pt();
     E_1_ = lep1->energy();
@@ -463,6 +469,8 @@ namespace ic {
 
     if (n_prebjets_ >= 2) {
       prebjetpt_2_ = prebjets[1]->pt();
+			prebjetpt_bb_ = (prebjets[0]->vector()+prebjets[1]->vector()).pt();
+			prebjet_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(prebjets[0]->vector(),prebjets[1]->vector()));
       prebjeteta_2_ = prebjets[1]->eta();
       prebjet_mjj_ = (prebjets[0]->vector() + prebjets[1]->vector()).M();
       prebjet_deta_ = fabs(prebjets[0]->eta() - prebjets[1]->eta());
@@ -564,6 +572,8 @@ namespace ic {
       }      
     } else {
       prebjetpt_2_ = -9999;
+			prebjetpt_bb_ = -9999;
+			prebjet_dR_ = -9999;
       prebjeteta_2_ = -9999;
       prebjet_mjj_ = -9999;
       prebjet_deta_ = -9999;

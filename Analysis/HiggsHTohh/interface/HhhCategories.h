@@ -55,11 +55,13 @@ class HhhCategories : public ModuleBase {
   double pt_h_;
   double pt_tt_;
   double mt_1_;
+	double mt_2_;
   double mt_ll_;
   double pzeta_;
   double pzetavis_;
   double pzetamiss_;
   double emu_dphi_;
+	double mutau_dR_;
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
@@ -93,6 +95,8 @@ class HhhCategories : public ModuleBase {
   double prebjetpt_1_;     // Defined if n_jets >= 1
   double prebjetEt_1_;     // Defined if n_jets >= 1
   double prebjetpt_2_;     // Defined if n_jets >= 2
+	double prebjetpt_bb_;
+	double prebjet_dR_;
   double prebjeteta_1_;    // Defined if n_jets >= 1
   double prebjeteta_2_;    // Defined if n_jets >= 2
   double prebjetbcsv_1_; 
