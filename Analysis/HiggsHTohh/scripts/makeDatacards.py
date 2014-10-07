@@ -40,6 +40,8 @@ parser.add_option("--mttbb", dest="mttbb", action='store_true', default=False,
                   help="Make inputs for mttbb.")
 parser.add_option("--mH", dest="mH", action='store_true', default=False,
                   help="Make inputs for mH using kinematic fitting.")
+parser.add_option("--mbbh", dest="mbbh", action='store_true', default=False,
+                  help="Make inputs for mttbb using kinematic fit on jets")
 parser.add_option("--chi2", dest="chi2", action='store_true', default=False,
                   help="Make inputs for chi2 from kinematic fitting.")
 parser.add_option("-e", dest="energy", type='string', default='8',
@@ -66,7 +68,7 @@ if not channels:
 for channel in channels:
   validate_channel(channel)
 
-if not (options.mvis or options.svfit or options.dijet or options.mttbb or options.mH or options.chi2) :
+if not (options.mvis or options.svfit or options.dijet or options.mttbb or options.mH or options.chi2 or options.mbbh) :
   print 'Error, please specify distribution to plot.'
   sys.exit(1)
 
@@ -97,9 +99,10 @@ plots = [
   ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' ,   "100"    ,"150"),
   ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"150"),
   ('prebjet_mjj'   , 'M_{jj} [GeV]'        , ''      ,   "80"   ,"160"),
-  ('mjj_tt'   , 'M_{#tau#tau+jj} [GeV]'        , ''      ,   "200"   ,"600"),
-  ('m_H_hh'   , 'M_{H} [GeV]'        , ''      ,   "200"   ,"600"),
-  ('m_H_hh_chi2'   , '#chi^{2} from kin fit'        , ''      ,   "0"   ,"10")
+  ('mjj_tt'   , 'M_{#tau#tau+jj} [GeV]'        , ''      ,   "200"   ,"400"),
+  ('m_H_hh'   , 'M_{H}^{kinfit} [GeV]'        , ''      ,   "200"   ,"400"),
+  ('m_H_hh_chi2'   , '#chi^{2} from kin fit'        , ''      ,   "0"   ,"10"),
+  ('mbb_h'   , 'M_{#tau#tau+jj}^{jet kinfit} [GeV]'        , ''      ,   "200"   ,"400"),
  ]
 if options.mvis: 
     plots = [plots[0]]
@@ -113,6 +116,8 @@ if options.mH:
     plots = [plots[4]]
 if options.chi2: 
     plots = [plots[5]]
+if options.mbbh: 
+    plots = [plots[6]]
 
 #################################################################
 #### New HTohh scheme
@@ -125,9 +130,11 @@ if options.scheme == 'HTohh':
   elif options.dijet :
     BINS_FINE="(30,0,600)"
     BINS="(15,0,600)"
-  elif options.mttbb or options.mH:
-    BINS_FINE="(20,0,1000)"
-    BINS="(20,0,1000)"
+  elif options.mttbb or options.mH or options.mbbh:
+    BINS_FINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600,650,700,750,800,850,900,950,1000]"
+    BINS="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600,650,700,750,800,850,900,950,1000]"
+    #BINS="(20,0,1000)"
+    #BINS_FINE="(20,0,1000)"
   elif options.chi2:
     BINS_FINE="(25,0,50)"
     BINS="(25,0,50)"
