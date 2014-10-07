@@ -4,6 +4,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/HHKinFit/include/HHKinFitMaster.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/HHKinFit/include/HHDiJetKinFitMaster.h"
 
 #include "TMVA/Reader.h"
 #include "TVector3.h"
@@ -74,7 +75,7 @@ namespace ic {
         outtree_->Branch("pt_h",              &pt_h_);
         outtree_->Branch("pt_tt",             &pt_tt_);
         outtree_->Branch("mt_1",              &mt_1_);
-				outtree_->Branch("mt_2",							&mt_2_);
+        outtree_->Branch("mt_2",							&mt_2_);
         outtree_->Branch("pzeta",             &pzeta_);
         outtree_->Branch("pt_1",              &pt_1_);
         outtree_->Branch("pt_2",              &pt_2_);
@@ -107,13 +108,14 @@ namespace ic {
         outtree_->Branch("prebjetbcsv_1",            &prebjetbcsv_1_);
         outtree_->Branch("prebjet1_dm",             &prebjet1_dm_);
         outtree_->Branch("prebjetpt_2",             &prebjetpt_2_);
-				outtree_->Branch("prebjetpt_bb",						&prebjetpt_bb_);
-				outtree_->Branch("prebjet_dR",						&prebjet_dR_);
+        outtree_->Branch("prebjetpt_bb",						&prebjetpt_bb_);
+        outtree_->Branch("prebjet_dR",						&prebjet_dR_);
         outtree_->Branch("prebjeteta_2",            &prebjeteta_2_);
         outtree_->Branch("prebjetbcsv_2",            &prebjetbcsv_2_);
         outtree_->Branch("E_1",             &E_1_);
         outtree_->Branch("mjj",               &mjj_);
         outtree_->Branch("mjj_h",               &mjj_h_);
+        outtree_->Branch("mbb_h",               &mbb_h_);
         outtree_->Branch("mjj_tt",               &mjj_tt_);
         outtree_->Branch("m_H_best",               &m_H_best_);
         outtree_->Branch("m_H_chi2_best",               &m_H_chi2_best_);
@@ -131,6 +133,10 @@ namespace ic {
         outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
         outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
         outtree_->Branch("convergence_hh", &convergence_hh_);
+        outtree_->Branch("m_bb",     &m_bb_);
+        outtree_->Branch("m_bb_chi2",     &m_bb_chi2_);
+        outtree_->Branch("pull_balance_bb", &pull_balance_bb_);
+        outtree_->Branch("convergence_bb", &convergence_bb_);
         outtree_->Branch("jdeta",             &jdeta_);
         outtree_->Branch("prebjet_mjj",               &prebjet_mjj_);
         outtree_->Branch("prebjet_dphi",               &prebjet_dphi_);
@@ -469,8 +475,8 @@ namespace ic {
 
     if (n_prebjets_ >= 2) {
       prebjetpt_2_ = prebjets[1]->pt();
-			prebjetpt_bb_ = (prebjets[0]->vector()+prebjets[1]->vector()).pt();
-			prebjet_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(prebjets[0]->vector(),prebjets[1]->vector()));
+      prebjetpt_bb_ = (prebjets[0]->vector()+prebjets[1]->vector()).pt();
+      prebjet_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(prebjets[0]->vector(),prebjets[1]->vector()));
       prebjeteta_2_ = prebjets[1]->eta();
       prebjet_mjj_ = (prebjets[0]->vector() + prebjets[1]->vector()).M();
       prebjet_deta_ = fabs(prebjets[0]->eta() - prebjets[1]->eta());
@@ -496,18 +502,24 @@ namespace ic {
         TLorentzVector tau1vis      = TLorentzVector(lep1->vector().px(),lep1->vector().py(),lep1->vector().pz(), lep1->vector().E());
         TLorentzVector tau2vis      = TLorentzVector(lep2->vector().px(),lep2->vector().py(),lep2->vector().pz(), lep2->vector().E());
         TLorentzVector ptmiss  = TLorentzVector(met->vector().px(),met->vector().py(),0,met->vector().pt());
+        TLorentzVector higgs;
+        if (event->Exists("svfitHiggs")) {
+          higgs = TLorentzVector(event->Get<Candidate>("svfitHiggs").vector().px(),event->Get<Candidate>("svfitHiggs").vector().py(),event->Get<Candidate>("svfitHiggs").vector().pz(),event->Get<Candidate>("svfitHiggs").vector().E());
+        }
         TMatrixD metcov(2,2);
         metcov(0,0)=met->xx_sig();
         metcov(1,0)=met->yx_sig();
         metcov(0,1)=met->xy_sig();
         metcov(1,1)=met->yy_sig();
             
+        //Default version of fitting using visible products plus met
         HHKinFitMaster kinFits = HHKinFitMaster(&b1,&b2,&tau1vis,&tau2vis);
         kinFits.setAdvancedBalance(&ptmiss,metcov);
         kinFits.addMh1Hypothesis(hypo_mh1);
         kinFits.addMh2Hypothesis(hypo_mh2);
         kinFits.doFullFit();
-        //Best hypothesis saved. For kinfit_mode_==1 this is identical to m_H_hh since only that hypothesis is run
+        //Best hypothesis saved. For kinfit_mode_==1 this is identical to m_H_hh (provided the cuts pull_balance_hh > 0 && convergence_hh>0 are applied)
+        //since only that hypothesis is run
         m_H_best_ = kinFits.getBestMHFullFit();
         m_H_chi2_best_ = kinFits.getBestChi2FullFit();
         std::pair<Int_t,Int_t> bestHypo = kinFits.getBestHypoFullFit();
@@ -530,7 +542,28 @@ namespace ic {
         } else {
           pull_balance_H_best_ = -9999;
           convergence_H_best_ = -9999;
-        } 
+        }
+
+        if(kinfit_mode_==3) {
+          HHDiJetKinFitMaster DiJetKinFits = HHDiJetKinFitMaster(&b1,&b2);
+          DiJetKinFits.addMhHypothesis(125.0);
+          DiJetKinFits.doFullFit();
+          m_bb_ = (DiJetKinFits.getFitJet1() + DiJetKinFits.getFitJet2()).M();
+          //m_bb_chi2_ = DiJetKinFits.GetChi2();
+          //pull_balance_bb_ = fit_results_pull_balance.at(125.0);
+          //convergence_bb_ = DiJetKinFits.GetConvergence();
+          if (event->Exists("svfitHiggs")) {
+            mbb_h_= (DiJetKinFits.getFitJet1() + DiJetKinFits.getFitJet2() + higgs ).M();
+          } else {
+            mbb_h_ = -9999;  
+          }
+        } else { 
+          m_bb_ = -9999;  
+          m_bb_chi2_ = -9999;  
+          pull_balance_bb_ = -9999;  
+          convergence_bb_ = -9999; 
+          mbb_h_ = -9999;
+        }
         
         //Option to additionally save results from Zh and hZ hypotheses if they have been run
         if(kinfit_mode_ == 2) {
@@ -569,11 +602,16 @@ namespace ic {
         convergence_hh_=-9999;
         m_H_hh_ = -9999;
         m_H_hh_chi2_ = -9999;
+        m_bb_ = -9999;  
+        m_bb_chi2_ = -9999;  
+        pull_balance_bb_ = -9999;  
+        convergence_bb_ = -9999; 
+        mbb_h_ = -9999;
       }      
     } else {
       prebjetpt_2_ = -9999;
-			prebjetpt_bb_ = -9999;
-			prebjet_dR_ = -9999;
+      prebjetpt_bb_ = -9999;
+      prebjet_dR_ = -9999;
       prebjeteta_2_ = -9999;
       prebjet_mjj_ = -9999;
       prebjet_deta_ = -9999;
@@ -597,6 +635,11 @@ namespace ic {
       m_H_hh_chi2_ = -9999;
       pull_balance_hh_=-9999;
       convergence_hh_=-9999;
+      m_bb_ = -9999;  
+      m_bb_chi2_ = -9999;  
+      pull_balance_bb_ = -9999;  
+      convergence_bb_ = -9999; 
+      mbb_h_ = -9999;
     }
     
     if (n_jets_ >= 1) {
