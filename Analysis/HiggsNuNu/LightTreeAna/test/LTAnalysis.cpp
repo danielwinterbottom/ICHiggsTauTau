@@ -35,7 +35,9 @@ int main(int argc, char* argv[]){
   std::string filelist;
   std::string basesel;
   std::string jetmetdphicut;
+  std::string cjvcut;
   std::string channel;
+  std::string syst;
 
   bool runblind;
 
@@ -49,10 +51,12 @@ int main(int argc, char* argv[]){
     //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
     ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_withrle2/"))
+    ("syst,s",           po::value<std::string>(&syst)->default_value(""))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=600&&jet1_pt>50&&dijet_deta>3.6&& jet2_pt>60&&metnomuons>60&&metnomu_significance>3&&jetmetnomu_mindphi>1.5"))
     ("jetmetdphicut",            po::value<std::string>(&jetmetdphicut)->default_value("alljetsmetnomu_mindphi>1.0"))
+    ("cjvcut",            po::value<std::string>(&cjvcut)->default_value("n_jets_cjv_30<1"))
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
     ("runblind",                  po::value<bool>(&runblind)->default_value(true));
 
@@ -69,8 +73,14 @@ int main(int argc, char* argv[]){
   LTAnalyser* analysis = new LTAnalyser(outputname);
 
   analysis->AddFiles(filelist);
-  std::cout<<"Taking input from: "<<inputfolder<<std::endl;
-  analysis->SetInFolder(inputfolder);
+  if(syst!="PUUP"&&syst!="PUDOWN"){
+    std::cout<<"Taking input from: "<<inputfolder<<"/"<<syst<<std::endl;
+    analysis->SetInFolder(inputfolder+"/"+syst);
+  }
+  else{
+    std::cout<<"Taking input from: "<<inputfolder<<std::endl;
+    analysis->SetInFolder(inputfolder);
+  }
   analysis->SetInputParams(inputparams);
 
   //Set selection step common to all categories
@@ -187,9 +197,13 @@ int main(int argc, char* argv[]){
 
   std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&"+jetmetdphicut;
   std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&"+jetmetdphicut;//wtau
+//  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
+//  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&"+jetmetdphicut;//wtau
 
-  std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons";
-  std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons";//top
+  std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";
+  std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";//top
+//   std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";
+//   std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";//top
 
   std::string qcdcat="nvetoelectrons==0&&nvetomuons==0&&"+jetmetdphicut;
   std::string qcdzcat="&&"+jetmetdphicut;//QCD
@@ -240,8 +254,12 @@ int main(int argc, char* argv[]){
     .set_cat(sigcat+dataextrasel);
 
   std::string sigmcweight;
-  if(channel=="nunu"||channel=="qcd") sigmcweight="total_weight_lepveto";
-  else sigmcweight="total_weight_leptight";
+  std::string mcweightpufactor="";
+  if(syst=="PUUP") mcweightpufactor="*puweight_up_scale";
+  if(syst=="PUDOWN") mcweightpufactor="*puweight_down_scale";
+  
+  if(channel=="nunu"||channel=="taunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor;
+  else sigmcweight="total_weight_leptight"+mcweightpufactor;
 
   DataShape signal("signal");
   signal.set_dataset("sig125")
@@ -333,6 +351,7 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
 
+  //!!PU WEIGHT OK TO HERE
   //ZBKG SHAPE GENERATION
   std::vector<std::string> Zcontbkgsets;
   Zcontbkgsets.push_back("VV");
@@ -349,12 +368,15 @@ int main(int argc, char* argv[]){
     .set_sigmcqcdset("ZJets_ll")
     .set_contmcewkset("ZJets_ll_vbf")
     .set_contmcqcdset("ZJets_ll")
-   .set_contbkgset(Zcontbkgsets)
+    .set_contbkgset(Zcontbkgsets)
     .set_contdataset(dataset)
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat("m_mumu_gen>80&&m_mumu_gen<100"+zextrasigcat)
     .set_contcat(mumucat)//"nvetoelectrons==0 && nvetomuons==2 && nselmuons==2&&m_mumu>60&&m_mumu<120")
+    .set_sigmcweight("weight_nolep"+mcweightpufactor)
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor)
+    .set_contdataweight("weight_nolep")
     .set_sigmainccontewk(303)
     .set_sigmainccontqcd(3503700./3)
     .set_sigmaincsigewk(460*3)
@@ -373,7 +395,8 @@ int main(int argc, char* argv[]){
     .set_contdataset(dataset)
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
-    .set_sigmcweight("total_weight_leptight")
+    .set_sigmcweight(sigmcweight)
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor)
     .set_sigcat("m_mumu_gen>80&&m_mumu_gen<100"+zextrasigcat)
     .set_contcat(mumucat);//"nvetoelectrons==0 && nvetomuons==2 && nselmuons==2&&m_mumu>60&&m_mumu<120");
 
@@ -406,13 +429,13 @@ int main(int argc, char* argv[]){
     .set_contbkgset(Wcontbkgsets)
     .set_contbkgextrafactordir(Wcontbkgextrafactordir)
     .set_contbkgisz(Wcontbkgisz)
+    .set_sigmcweight(sigmcweight)
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor)
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
     .set_contcat(munucat);//"nvetoelectrons==0 && nvetomuons==1 && nselmuons==1");
-  if((channel=="enu")||(channel=="munu")||(channel=="top")){
-    wmunu.set_sigmcweight("total_weight_leptight");
-  }
+
   
 
   DataNormShape wenu("wenu");
@@ -427,10 +450,9 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
-    .set_contcat(enucat);//"nselelectrons==1 && nvetoelectrons ==1 && nvetomuons==0");
-  if((channel=="enu")||(channel=="munu")||(channel=="top")){
-    wenu.set_sigmcweight("total_weight_leptight");
-  }
+    .set_contcat(enucat)//"nselelectrons==1 && nvetoelectrons ==1 && nvetomuons==0");
+    .set_sigmcweight(sigmcweight)
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor);
 
   DataNormShape wtaunu("wtaunu");
   wtaunu.set_sigmcset("WJets_taunu")
@@ -445,12 +467,9 @@ int main(int argc, char* argv[]){
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
     .set_contcat(taunucat)//"ntaus>=1&&nvetoelectrons ==0 && nvetomuons==0&&lep_mt>20")
-     .set_sigmcweight("total_weight_lepveto")
-     .set_contmcweight("total_weight_lepveto")
-     .set_contdataweight("weight_nolep");
-  if((channel=="enu")||(channel=="munu")||(channel=="top")){
-    wtaunu.set_sigmcweight("total_weight_leptight");
-  }
+    .set_sigmcweight(sigmcweight)
+    .set_contmcweight("total_weight_lepveto"+mcweightpufactor);
+
   
   //TOP
   std::vector<std::string> Topcontbkgsets;
@@ -471,12 +490,9 @@ int main(int argc, char* argv[]){
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
     .set_contcat(topcat)
-     .set_sigmcweight("total_weight_lepveto")
-     .set_contmcweight("total_weight_leptight")
-     .set_contdataweight("weight_nolep");
-  if((channel=="enu")||(channel=="munu")||(channel=="top")){
-    top.set_sigmcweight("total_weight_leptight");
-  }
+    .set_sigmcweight(sigmcweight)
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor);
+
 
   //QCDBKG
   std::vector<std::string> QCDcontbkgsets; //list of sets for ncbkg
@@ -525,17 +541,14 @@ int main(int argc, char* argv[]){
     .set_contbkgset(QCDcontbkgsets)
     .set_contbkgextrafactordir(QCDcontbkgextrafactordir)
     .set_contbkgisz(QCDcontbkgisz)
-    .set_sigmcweight("total_weight_lepveto")
-    .set_contmcweight("total_weight_lepveto")
-    .set_contdataweight("weight_nolep")
+    .set_sigmcweight(sigmcweight)
+    .set_contmcweight("total_weight_lepveto"+mcweightpufactor)
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
     .set_zcontcat("m_mumu_gen>80&&m_mumu_gen<100"+qcdzcat)
     .set_contcat(qcdcat);
-  if(channel=="enu"||channel=="munu"||channel=="top"){
-    QCD.set_sigmcweight("total_weight_leptight");
-  }
+
 
   //NORMALISED PLOTS FOR REFEREE
 //   std::vector<std::string> ewksets; //List of sets for ewk

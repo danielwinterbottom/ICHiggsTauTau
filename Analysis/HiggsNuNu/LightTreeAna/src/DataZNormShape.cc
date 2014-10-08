@@ -8,7 +8,7 @@
 namespace ic{
 
   DataZNormShape::DataZNormShape(std::string name) : LTModule(name){
-    sigmcweight_="total_weight_lepveto";
+    sigmcweight_="weight_nolep";
     contmcweight_="total_weight_leptight";
     contdataweight_="weight_nolep";
     contdataextrasel_="";
@@ -60,10 +60,10 @@ namespace ic{
     dir->cd();
     //Get Shapes for NSMC, NCMC, NCData and NCBkg
     std::cout<<"  Getting control MC shape"<<std::endl;
-    TH1F  contmcewkshape = filemanager->GetSetShape(contmcewkset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
-    TH1F  contmcqcdshape = filemanager->GetSetShape(contmcqcdset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
+    TH1F  contmcewkshape = filemanager->GetSetShape(contmcewkset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
+    TH1F  contmcqcdshape = filemanager->GetSetShape(contmcqcdset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
     std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
-    TH1F  contbkgshape = filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,"total_weight_leptight",false);
+    TH1F  contbkgshape = filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
     std::cout<<"  Getting control Data shape"<<std::endl;
     TH1F  contdatashape = filemanager->GetSetShape(contdataset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_+contdataextrasel_,contdataweight_,false);
     
@@ -93,7 +93,7 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
     std::cout<<"(NCData-NCBkg)/(NCMCEWK+NCMCQCD): "<<(ncdata-ncbkg)/(ncmcewk+ncmcqcd)<<" n.b. this is not directly used in calculation due to mumu nunu cross-section reweighting procedure"<<std::endl;
 
     TVectorD weightvec(2);
-    TVectorD errvec(3);
+    TVectorD errvec(4);
 
     
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
@@ -106,8 +106,8 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
       else{
         histname=shapename_[iShape];
       }     
-      TH1F  sigmcewkshape = filemanager->GetSetShape(sigmcewkset_,shape_[iShape],basesel_,sigcat_,"weight_nolep",false);
-      TH1F  sigmcqcdshape = filemanager->GetSetShape(sigmcqcdset_,shape_[iShape],basesel_,sigcat_,"weight_nolep",false);
+      TH1F  sigmcewkshape = filemanager->GetSetShape(sigmcewkset_,shape_[iShape],basesel_,sigcat_,sigmcweight_,false);
+      TH1F  sigmcqcdshape = filemanager->GetSetShape(sigmcqcdset_,shape_[iShape],basesel_,sigcat_,sigmcweight_,false);
       dir->cd();
       weightvec[0]=sigcontextrafactor_*ewkweight;
       weightvec[1]=sigcontextrafactor_*qcdweight;
@@ -123,8 +123,9 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
 	double qcdweightnsmcfracerr=sqrt(weightmcfracerr*weightmcfracerr+(nsmcqcderr/nsmcqcd)*(nsmcqcderr/nsmcqcd));
 
 	errvec[0]=weightdatafracerr;
-	errvec[1]=ewkweightnsmcfracerr;
-	errvec[2]=qcdweightnsmcfracerr;
+	errvec[1]=sqrt(pow(ewkweightnsmcfracerr*nsmcewk,2)+pow(qcdweightnsmcfracerr*nsmcqcd,2))/(nsmcewk+nsmcqcd);
+	errvec[2]=ewkweightnsmcfracerr;
+	errvec[3]=qcdweightnsmcfracerr;
 	std::cout<<"NSMC EWK: "<<nsmcewk <<" NSMC QCD: "<<nsmcqcd<<std::endl;
       }
      
@@ -140,7 +141,7 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
     }
     dir->cd();
     weightvec.Write("ddweight");
-    errvec.Write("normerrors");
+    errvec.Write("normerrs");
 
     return 0;
   };

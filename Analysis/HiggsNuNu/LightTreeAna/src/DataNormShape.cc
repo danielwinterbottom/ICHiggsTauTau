@@ -12,6 +12,7 @@ namespace ic{
   DataNormShape::DataNormShape(std::string name) : LTModule(name){
     sigmcweight_="total_weight_lepveto";
     contmcweight_="total_weight_leptight";
+    contmczweight_="weight_nolep";
     contdataweight_="weight_nolep";
     contdataextrasel_="";
     contmcextrasel_="";
@@ -45,7 +46,7 @@ namespace ic{
 
   int DataNormShape::Run(LTFiles* filemanager){
     std::cout<<module_name_<<":"<<std::endl;
-
+    //sort out puweighting
     TFile *file=fs_;
     TDirectory* dir;
     if(dirname_==""){
@@ -66,7 +67,7 @@ namespace ic{
     bool firstbkg=true;
     //IF NO DIRS TO GET DATA DRIVEN WEIGHTS, GET SETS SHAPE
     if(contbkgextrafactordir_.size()==0){
-      contbkgshape= filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,(contmcweight_+contbkgextrasel_),false);
+      contbkgshape= filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,(contcat_+contbkgextrasel_),contmcweight_,false);
     }
     //WEIGHT INDIVIDUAL SHAPES BY DATA DRIVEN WEIGHTS
     else{
@@ -102,11 +103,11 @@ namespace ic{
 	  if(contbkgisz_.size()==contbkgset_.size()){
 	    if(contbkgisz_[iBkg]!=0){
 	      //GET Z SHAPE AND WEIGHT IT
-	      nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,zcontcat_,"weight_nolep*"+boost::lexical_cast<std::string>(extrafactor),false);
+	      nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,(zcontcat_+contbkgextrasel_),contmczweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
 	    }
-	    else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	    else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
 	  }
-	  else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	  else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
 	  
 	  //ADD HISTOGRAMS TOGETHER
 	  if(firstbkg){
@@ -159,12 +160,14 @@ namespace ic{
 	histname=shapename_[iShape];
       }
       sigmcshape.SetName(histname.c_str());
+      double unnormnsmc=Integral(&sigmcshape);
       sigmcshape.Scale(weight*sigcontextrafactor_);
       double nsmc=Integral(&sigmcshape);
       double nsmcerr=Error(&sigmcshape);
       double weightednsmcstatfrac=sqrt(((nsmcerr/nsmc)*(nsmcerr/nsmc))+(weighterrmcstatfrac*weighterrmcstatfrac));
       //!!MAKE SURE  TO TAKE NSMC ERROR OUT OF NORMALISATION ERROR AS SHOULD BE DONE BIN BY BIN
       if(iShape==0){
+	std::cout<<"  Unnormalised NSMC: "<<unnormnsmc<<std::endl;
 	std::cout<<"  Normalised NSMC: "<<nsmc<<"+-"<<nsmc*weighterrdatastatfrac<<"(data stat.)+-"<<nsmc*weightednsmcstatfrac<<"(MC stat.)"<<std::endl;
 	errvec[0]=weighterrdatastatfrac;
 	errvec[1]=weightednsmcstatfrac;

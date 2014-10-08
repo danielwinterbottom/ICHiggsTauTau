@@ -25,6 +25,7 @@ namespace ic {
     CLASS_MEMBER(DataNormShape,std::string,basesel)
     CLASS_MEMBER(DataNormShape,std::string,sigmcweight)
     CLASS_MEMBER(DataNormShape,std::string,contmcweight)
+    CLASS_MEMBER(DataNormShape,std::string,contmczweight)
     CLASS_MEMBER(DataNormShape,std::string,contdataweight)
     CLASS_MEMBER(DataNormShape,double,sigcontextrafactor)
     CLASS_MEMBER(DataNormShape,std::string,dirname)
