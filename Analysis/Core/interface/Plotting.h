@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #include "TStyle.h"
 #include "TPad.h"
@@ -12,6 +13,9 @@
 #include "TAxis.h"
 #include "TList.h"
 #include "TH1F.h"
+#include "TLegend.h"
+#include "TColor.h"
+#include "TROOT.h"
 
 // tdrGrid: Turns the grid lines on (true) or off (false)
 
@@ -26,6 +30,31 @@ TH1 *GetAxisHisto(TPad *);
 
 */
 
+std::vector<TH1*> CreateAxisHists(unsigned n, TH1* src, double xmin = 0,
+                                  double xmax = -1) {
+  std::vector<TH1*> result;
+  for (unsigned i = 0; i < n; ++i) {
+    result.push_back(reinterpret_cast<TH1F*>(src->Clone()));
+    result.back()->Reset();
+    if (xmax > xmin) {
+      result.back()->SetAxisRange(xmin, xmax);
+    }
+  }
+  return result;
+}
+
+int CreateTransparentColor(int color, float alpha) {
+  TColor* adapt = gROOT->GetColor(color);
+  int new_idx = gROOT->GetListOfColors()->GetSize() + 1;
+  TColor* trans = new TColor(new_idx, adapt->GetRed(), adapt->GetGreen(),
+                             adapt->GetBlue(), "", alpha);
+  trans->SetName(Form("userColor%i", new_idx));
+  return new_idx;
+}
+
+
+double GetPadYMax(TPad* pad, double x_min, double x_max);
+
 void tdrGrid(bool gridOn) {
   gStyle->SetPadGridX(gridOn);
   gStyle->SetPadGridY(gridOn);
@@ -33,7 +62,148 @@ void tdrGrid(bool gridOn) {
 
 // fixOverlay: Redraws the axis
 
+TH1* GetAxisHist(TPad *pad) {
+  TList* pad_obs = pad->GetListOfPrimitives();
+  if (!pad_obs) return NULL;
+  TIter next(pad_obs);
+  TObject* obj;
+  TH1 *hobj = 0;
+  while ((obj = next())) {
+    if (obj->InheritsFrom(TH1::Class())) {
+      hobj = reinterpret_cast<TH1*>(obj);
+      break;
+    }
+  }
+  return hobj;
+}
+
+void FixTopRange(TPad *pad, double fix_y, double fraction) {
+  TH1* hobj = GetAxisHist(pad);
+  double ymin = hobj->GetMinimum();
+  hobj->SetMaximum((fix_y - fraction * ymin) / (1. - fraction));
+  if (gPad->GetLogy()) {
+    double max =
+        (std::log10(fix_y) - fraction * std::log10(ymin)) / (1 - fraction);
+    max = std::pow(10, max);
+    hobj->SetMaximum(max);
+  }
+
+}
+
 void fixOverlay() { gPad->RedrawAxis(); }
+
+TLegend * PositionedLegend(double width, double height, int pos, double offset) {
+  double o = offset;
+  double w = width;
+  double h = height;
+  double l = gPad->GetLeftMargin();
+  double t = gPad->GetTopMargin();
+  // double b = gPad->GetBottomMargin();
+  double r = gPad->GetRightMargin();
+  TLegend* leg = 0;
+  if (pos == 1) {
+    leg = new TLegend(l + o, 1 - t - o - h, l + o + w, 1 - t - o, "", "NBNDC");
+  }
+  if (pos == 2) {
+    double c = l + 0.5 * (1 - l - r);
+    leg = new TLegend(c - 0.5 * w, 1 - t - o - h, c + 0.5 * w, 1 - t - o, "",
+                      "NBNDC");
+  }
+  if (pos == 3) {
+    leg = new TLegend(1 - r - o - w, 1 - t - o - h, 1 - r - o, 1 - t - o, "",
+                      "NBNDC");
+  }
+  return leg;
+}
+
+void SetupTwoPadSplit(std::vector<TPad*> const& pads, TH1* upper, TH1* lower,
+                      TString y_title, bool y_centered, float y_min,
+                      float y_max) {
+  upper->GetXaxis()->SetTitle("");
+  upper->GetXaxis()->SetLabelSize(0);
+  double upper_h = pads[0]->GetHNDC();
+  double lower_h = pads[1]->GetHNDC();
+  lower->GetXaxis()->SetTickLength(gStyle->GetTickLength() * upper_h / lower_h);
+  lower->GetYaxis()->SetTickLength(gStyle->GetTickLength() *
+                                   (1. + lower_h / upper_h));
+  lower->GetYaxis()->SetTitle(y_title);
+  lower->GetYaxis()->CenterTitle(y_centered);
+  lower->SetMinimum(y_min);
+  lower->SetMaximum(y_max);
+
+}
+
+
+/*
+Need to convert NDC co-ords to axis.
+*/
+void ModifyTopPadding(TPad *pad, TBox *box, double frac) {
+  // Get the bounds of the box - these are in the normalised
+  // Pad co-ordinates.
+  double p_x1 = box->GetX1();
+  double p_x2 = box->GetX2();
+  double p_y1 = box->GetY1();
+  // double p_y2 = box->GetY2();
+
+  // Convert to normalised co-ordinates in the frame
+  double f_x1 = (p_x1 - pad->GetLeftMargin()) /
+                (1. - pad->GetLeftMargin() - pad->GetRightMargin());
+  double f_x2 = (p_x2 - pad->GetLeftMargin()) /
+                (1. - pad->GetLeftMargin() - pad->GetRightMargin());
+  double f_y1 = (p_y1 - pad->GetBottomMargin()) /
+                (1. - pad->GetTopMargin() - pad->GetBottomMargin());
+  // double f_y2 = (p_y2 - pad->GetBottomMargin()) /
+  //               (1. - pad->GetTopMargin() - pad->GetBottomMargin());
+
+  // Extract histogram providing the frame and axes
+  TH1 *hobj = GetAxisHist(pad);
+
+  double xmin = hobj->GetBinLowEdge(hobj->GetXaxis()->GetFirst());
+  double xmax = hobj->GetBinLowEdge(hobj->GetXaxis()->GetLast()+1);
+  double ymin = hobj->GetMinimum();
+  double ymax = hobj->GetMaximum();
+
+  // Convert box bounds to x-axis values
+  double a_x1 = xmin + (xmax - xmin) * f_x1;
+  double a_x2 = xmin + (xmax - xmin) * f_x2;
+
+  // Get the histogram maximum in this range, given as y-axis value
+  double a_max_h = GetPadYMax(pad, a_x1, a_x2);
+
+  // Convert this to a normalised frame value
+  double f_max_h = (a_max_h - ymin) / (ymax - ymin);
+  if (gPad->GetLogy()) {
+    f_max_h = (log10(a_max_h) - log10(ymin)) / (log10(ymax) - log10(ymin));
+  }
+
+  if (f_y1 - f_max_h < frac) {
+    double f_target = 1. - (f_y1 - frac);
+    FixTopRange(pad, a_max_h, f_target);
+  }
+}
+
+
+double GetPadYMax(TPad* pad, double x_min, double x_max) {
+  TList *pad_obs = pad->GetListOfPrimitives();
+  if (!pad_obs) return 0.;
+  TIter next(pad_obs);
+  double h_max = -99999;
+  TObject *obj;
+  while ((obj = next())) {
+    if (obj->InheritsFrom(TH1::Class())) {
+      TH1 *hobj = reinterpret_cast<TH1*>(obj);
+      for (int j = 1; j < hobj->GetNbinsX(); ++j) {
+        if (hobj->GetBinLowEdge(j) + hobj->GetBinWidth(j) < x_min ||
+            hobj->GetBinLowEdge(j) > x_max)
+          continue;
+        if (hobj->GetBinContent(j) + hobj->GetBinError(j) > h_max) {
+          h_max = hobj->GetBinContent(j) + hobj->GetBinError(j);
+        }
+      }
+    }
+  }
+  return h_max;
+}
 
 
 
@@ -432,9 +602,11 @@ void modTDRStyle() {
   gStyle->SetPadTickY(0);
 
   gStyle->SetLegendBorderSize(0);
-  gStyle->SetLegendFont(43);
+  gStyle->SetLegendFont(42);
   gStyle->SetLegendFillColor(0);
   gStyle->SetFillColor(0);
+
+  gROOT->ForceStyle();
 }
 
 #endif
