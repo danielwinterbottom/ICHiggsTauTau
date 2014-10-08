@@ -64,7 +64,7 @@ if isZStudy:
 ### Load some standard sequences and services
 ################################################################
 process.TFileService = cms.Service("TFileService", 
-  fileName = cms.string("EventTree_diff.root"),
+  fileName = cms.string("EventTree.root"),
   closeFileFast = cms.untracked.bool(True)
 )
 
@@ -166,9 +166,10 @@ process.kt6PFJetsForLeptons.Rho_EtaMax = cms.double(2.5)
 ################################################################
 ### PAT Selections
 ################################################################
-process.selectedPatTaus.cut = 'pt > 18. & abs(eta) < 2.6 & tauID("decayModeFinding") > 0.5'
+#process.selectedPatTaus.cut = 'pt > 18. & abs(eta) < 2.6 & tauID("decayModeFindingOldDMs") > 0.5'
+#process.selectedPatTaus.cut = 'abs(eta)<2.6 & tauID("decayModeFindingOldDMs")>0.5'
 #process.selectedPatTaus.cut = 'pt>18.&abs(eta)<2.6'
-process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
+#process.selectedPatJetsAK5PF.cut = 'pt > 15. & abs(eta) < 100.'
 
 
 ################################################################
@@ -461,6 +462,8 @@ process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = cms.vstring('EcalE
 ### Final PAT config
 ################################################################
 process.load("RecoTauTag/Configuration/RecoPFTauTag_cff")
+switchToPFTauHPS(process)
+
 
 if isData:
   runOnData(process)
@@ -527,22 +530,27 @@ if (release == '42X'):
     process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
 				#'root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2011A-Run166512-42X.root')
-				'file:/vols/cms04/amd12/testinput.root')
+				'file:/vols/cms04/amd12/ntuples/CMSSW_5_3_13/testinput2.root')
     )
     process.GlobalTag.globaltag = cms.string('GR_R_42_V25::All')
   else:
     process.source = cms.Source("PoolSource",
       fileNames = cms.untracked.vstring(
 			#'root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Fall11-42X.root')
-			'file:/vols/cms04/amd12/testinput.root')
+			'file:/vols/cms04/amd12/ntuples/CMSSW_5_3_13/testinput2.root')
     )
     process.GlobalTag.globaltag = cms.string('START42_V17::All')
 if (release == '53X'):
   if isData:
     process.source = cms.Source("PoolSource",
       fileNames = cms.untracked.vstring(
-			#'root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2012D.root')
-			'file:/vols/cms04/amd12/testinput.root')
+			'root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2012D.root'),
+			#'file:/vols/cms04/amd12/testinput.root')
+      dropDescendantsOfDroppedBranches = cms.untracked.bool(False),
+      inputCommands = cms.untracked.vstring(
+        'keep *',
+        'drop recoPFTaus_*_*_*'                      
+      )
     )
     process.GlobalTag.globaltag = cms.string('FT_53_V21_AN4::All')
   else:
@@ -551,17 +559,16 @@ if (release == '53X'):
       fileNames = cms.untracked.vstring(
         #'file:pickevents.root'
         #'root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Summer12-53X-Sample.root'
-				'file:/vols/cms04/amd12/testinput.root'
+				'file:/vols/cms04/amd12/ntuples/CMSSW_5_3_13/004CB136-A1D3-E111-B958-0030487E4B8D.root'
         )
         #'file:/Volumes/Storage/samples/VBF_HToTauTau_M-125-53X.root'
         #'file:/Volumes/Storage/samples/embed_mutau_v1_DYJetsToLL.root'
     )
     process.GlobalTag.globaltag = cms.string('START53_V7A::All')
 
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
-################################################################
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 ## Configure private modules
 ################################################################
 
@@ -649,7 +656,7 @@ process.icGenJetProducer = cms.EDProducer('ICGenJetProducer',
     addAllEtaCut = cms.untracked.double(100.0),
     storeGenParticles = cms.untracked.bool(False)
 )
-'''
+
 process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     branchName = cms.untracked.string("genParticles"),
     inputLabel = cms.InputTag("genParticles","","SIM"),
@@ -671,7 +678,7 @@ process.icGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
 if release == '42X':
   process.icGenParticleProducer.inputLabel = cms.InputTag("genParticles","","HLT")
 
-
+'''
 process.icEmbeddedGenParticleProducer = cms.EDProducer('ICGenParticleProducer',
     branchName = cms.untracked.string("genParticlesEmbedded"),
     inputLabel = cms.InputTag("genParticles","","EmbeddedRECO"),
@@ -732,8 +739,8 @@ process.icSequence = cms.Sequence()
 
 process.icSequence += cms.Sequence(
   #process.icElectronProducer
-  #+process.icMuonProducer
-  process.icPFJetProducer
+  process.icMuonProducer
+  +process.icPFJetProducer
 	+process.icTrackProducer
  # +process.icPfMetProducer
  # +process.icPfMVAMetProducer
@@ -751,7 +758,7 @@ if isData: process.icSequence += process.icDataSequence
 process.icMCSequence = cms.Sequence(
   process.icPileupInfoProducer
   +process.icGenJetProducer
-  #+process.icGenParticleProducer
+  +process.icGenParticleProducer
 #  +process.icGenTauProductProducer
 #  +process.icTauGenParticleProducer
   )
@@ -1111,10 +1118,12 @@ if release == '42X':
 
 process.extra53XSequence = cms.Sequence()
 if release == '53X':
-  process.extra53XSequence += (process.recoTauCommonSequence
-                              +process.ak5PFJetsLegacyHPSPiZeros
+  process.extra53XSequence += (process.PFTau
+                            	#+process.recoTauCommonSequence
+                              #+process.ak5PFJetsLegacyHPSPiZeros
                               +process.combinatoricRecoTaus
-                              +process.produceHPSPFTaus)
+                              #+process.produceHPSPFTaus)
+															)
 
 process.mcSequence = cms.Sequence()
 if not isData: process.mcSequence += (process.genParticlesForJets+process.ak5GenJetsNoNuBSM)

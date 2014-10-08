@@ -22,6 +22,7 @@ namespace ic {
 			CLASS_MEMBER(JetTauFakeRate, bool, by_jet_type)
 			CLASS_MEMBER(JetTauFakeRate, bool, sync_mode)
 			CLASS_MEMBER(JetTauFakeRate, bool, debug_mode)
+			CLASS_MEMBER(JetTauFakeRate, bool, wjets_mode)
 			CLASS_MEMBER(JetTauFakeRate, fwlite::TFileService*, fs)
 
       std::map<std::string,TH1F*> jettype_histos_;
@@ -64,6 +65,7 @@ namespace ic {
 			double deltaR_calc_;
 			int nvtx_;
 			int ntaus_;
+			int nmuons_;
 			int njets_;
 			int ntaus_dm_;
 			int ntaus_loose_;
@@ -71,6 +73,7 @@ namespace ic {
 			int ntaus_tight_;
 			int thetaun;
 			int thetrackid;
+			std::vector<int> mothers_;
 			double theDR;
 			double theDRgj;
 			int thegenjetn;

@@ -20,6 +20,7 @@ namespace ic {
 		write_tree_ = false;
 		by_decay_mode_ = false; //make plots for fake rate by decay mode
 		by_jet_type_ = false; //make plots for fake rate by jet type
+		wjets_mode_ = false;
 		fs_ = NULL;
 	}
 
@@ -47,7 +48,7 @@ namespace ic {
 			if(write_plots_) {
 				//Instead could initiate plots here which can be saved to the same file_
 				Float_t binrange[19]={0,20,30,40,50,60,70,80,90,100,120,140,160,180,200,250,300,400,500};
-			
+
 
 				jets_dz_ = fs_->make<TH1F>("jets_dz",";#Delta Z;",100,0,1);
 				jets_pu_ = fs_->make<TH1F>("jets_pu",";Pileup jet ID;",100,-1,2);
@@ -184,87 +185,108 @@ namespace ic {
 		EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 		std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
 		std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
+		std::vector<GenParticle*> genparticles;
+		if(wjets_mode_){
+		 genparticles = event->GetPtrVec<GenParticle>("genParticles");
+		}
 		std::vector<GenJet*> genjets = event->GetPtrVec<GenJet>("genJets");
 		std::vector<Track*> tracks = event->GetPtrVec<Track>("tracks");
 		std::vector<Vertex*> vertex = event->GetPtrVec<Vertex>("vertices");
 
+
+
 		if(write_plots_){
 			nvtx_ = eventInfo->good_vertices();
-			njets_ = jets.size();
-			ntaus_ = taus.size();
 			ntaus_dm_ = 0;
 			ntaus_loose_=0;
 			ntaus_medium_=0;
 			ntaus_tight_=0;
 
-			std::map<int,std::string> dmlist;
-			dmlist[0]="OneProng0PiZero";
-			dmlist[1]="OneProng1PiZero";
-			dmlist[2]="OneProng2PiZero";
-			dmlist[3]="OneProng3PiZero";
-			dmlist[4]="OneProngNPiZero";
-			dmlist[5]="TwoProng0PiZero";
-			dmlist[6]="TwoProng1PiZero";
-			dmlist[7]="TwoProng2PiZero";
-			dmlist[8]="TwoProng3PiZero";
-			dmlist[9]="TwoProngNPiZero";
-			dmlist[10]="ThreeProng0PiZero";
-			dmlist[11]="ThreeProng1PiZero";
-			dmlist[12]="ThreeProng2PiZero";
-			dmlist[13]="ThreeProng3PiZero";
-			dmlist[14]="ThreeProngNPiZero";
-			for(UInt_t tauit=0;tauit<taus.size();tauit++){
-				if(taus.at(tauit)->GetTauID("decayModeFindingOldDMs")>0.5){
-					ntaus_dm_+=1;
-					if(taus.at(tauit)->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")>0.5){
-						ntaus_loose_+=1;
-						taupt_dm_iso_nomatch_->Fill(taus.at(tauit)->pt());
-						taueta_dm_iso_nomatch_->Fill(taus.at(tauit)->eta());
-						tauphi_dm_iso_nomatch_->Fill(taus.at(tauit)->phi());
-					}
-					if(taus.at(tauit)->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_medium_+=1;
-					if(taus.at(tauit)->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_tight_+=1;
 
 
-
-				}
-			}
-
-			for(UInt_t jetit=0;jetit<jets.size();jetit++){
-				//std::cout<<jets.at(jetit)->pu_id_mva_loose()<<std::endl;
-
-				thetrackid=-1;
-				for(UInt_t trackit=0;trackit<tracks.size();trackit++){
-					if(tracks.at(trackit)->id()==jets.at(jetit)->constituent_tracks().at(0)){
-						thetrackid=trackit;
+				if(wjets_mode_){
+				for(UInt_t jit =0;jit<jets.size();jit++){
+					if(ROOT::Math::VectorUtil::DeltaR(jets.at(jit)->vector(),genparticles.at(0)->vector())<5){
+						std::cout<<"FAILED!!"<<std::endl;
 					}
 				}
-				if(thetrackid==-1){
-					std::cout<<"ERROR!"<<std::endl;
-					continue;
 				}
 
 
-				if(vertex.size()==0){
-					std::cout<<"Vertex error!"<<std::endl;
-					continue;
-				}
-				jets_dz_->Fill(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz()));
-				if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2){
-					jetpt_dz_rej_->Fill(jets.at(jetit)->pt());
-				}
-				if(!PileupJetID(jets.at(jetit),2)){
-					jetpt_puid_rej_->Fill(jets.at(jetit)->pt());
+
+
+
+
+
+				std::map<int,std::string> dmlist;
+				dmlist[0]="OneProng0PiZero";
+				dmlist[1]="OneProng1PiZero";
+				dmlist[2]="OneProng2PiZero";
+				dmlist[3]="OneProng3PiZero";
+				dmlist[4]="OneProngNPiZero";
+				dmlist[5]="TwoProng0PiZero";
+				dmlist[6]="TwoProng1PiZero";
+				dmlist[7]="TwoProng2PiZero";
+				dmlist[8]="TwoProng3PiZero";
+				dmlist[9]="TwoProngNPiZero";
+				dmlist[10]="ThreeProng0PiZero";
+				dmlist[11]="ThreeProng1PiZero";
+				dmlist[12]="ThreeProng2PiZero";
+				dmlist[13]="ThreeProng3PiZero";
+				dmlist[14]="ThreeProngNPiZero";
+				for(UInt_t tauit=0;tauit<taus.size();tauit++){
+					if(taus.at(tauit)->GetTauID("decayModeFindingOldDMs")>0.5){
+						ntaus_dm_+=1;
+						if(taus.at(tauit)->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")>0.5){
+							ntaus_loose_+=1;
+							taupt_dm_iso_nomatch_->Fill(taus.at(tauit)->pt());
+							taueta_dm_iso_nomatch_->Fill(taus.at(tauit)->eta());
+							tauphi_dm_iso_nomatch_->Fill(taus.at(tauit)->phi());
+						}
+						if(taus.at(tauit)->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_medium_+=1;
+						if(taus.at(tauit)->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_tight_+=1;
+
+
+
+					}
 				}
 
-				jets_pu_->Fill(PileupJetID(jets.at(jetit),2));
+				for(UInt_t jetit=0;jetit<jets.size();jetit++){
 
-				if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2&&!PileupJetID(jets.at(jetit),2)){
-					jets_overlap_->Fill(1);
-					jetpt_dz_and_puid_rej_->Fill(jets.at(jetit)->pt());
-				}
+					//std::cout<<jets.at(jetit)->pu_id_mva_loose()<<std::endl;
 
-				//if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
+					thetrackid=-1;
+					for(UInt_t trackit=0;trackit<tracks.size();trackit++){
+						if(tracks.at(trackit)->id()==jets.at(jetit)->constituent_tracks().at(0)){
+							thetrackid=trackit;
+						}
+					}
+					if(thetrackid==-1){
+						std::cout<<"ERROR!"<<std::endl;
+						continue;
+					}
+
+
+					if(vertex.size()==0){
+						std::cout<<"Vertex error!"<<std::endl;
+						continue;
+					}
+					jets_dz_->Fill(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz()));
+					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2){
+						jetpt_dz_rej_->Fill(jets.at(jetit)->pt());
+					}
+					if(!PileupJetID(jets.at(jetit),2)){
+						jetpt_puid_rej_->Fill(jets.at(jetit)->pt());
+					}
+
+					jets_pu_->Fill(PileupJetID(jets.at(jetit),2));
+
+					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2&&!PileupJetID(jets.at(jetit),2)){
+						jets_overlap_->Fill(1);
+						jetpt_dz_and_puid_rej_->Fill(jets.at(jetit)->pt());
+					}
+
+					//if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
 
 					theDRgj=100;
 					thegenjetn=100;
@@ -341,7 +363,7 @@ namespace ic {
 							standard_tau_histos_["loose_taueta_match"]->Fill(jets.at(jetit)->eta());
 							standard_tau_histos_["loose_tauphi_match"]->Fill(jets.at(jetit)->phi());
 							if(jets.at(jetit)->pt()<50.){
-							taupt_test_hist_->Fill(taus.at(thetaun)->pt());
+								taupt_test_hist_->Fill(taus.at(thetaun)->pt());
 							}
 
 							if(theDRgj<0.5){
@@ -423,11 +445,12 @@ namespace ic {
 
 
 					}
-				//}
-			}
-		}
-		//Here goes the actual code to do the study. 
+					//}
+				}
 
+				//Here goes the actual code to do the study. 
+			
+		}
 		return 0;
 	}
 

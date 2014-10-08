@@ -35,6 +35,7 @@ int main(int argc, char* argv[]){
   string output_folder;           // Folder to write the output in
 	bool by_decay_mode;
 	bool by_jet_type;
+	bool wjets_mode;
   
   po::options_description config("Configuration");
   po::variables_map vm;
@@ -48,6 +49,7 @@ int main(int argc, char* argv[]){
       ("output_folder",       po::value<string>(&output_folder)->default_value(""))
 			("by_decay_mode",				po::value<bool>(&by_decay_mode)->default_value(true))
 			("by_jet_type",					po::value<bool>(&by_jet_type)->default_value(true))
+			("wjets_mode",					po::value<bool>(&wjets_mode)->default_value(false))
 			
     ;
     po::store(po::command_line_parser(argc, argv).
@@ -73,12 +75,15 @@ int main(int argc, char* argv[]){
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
   
   //Optional configurable parameters with which you can filter the collection you are interested in.
-  double jet_pt, jet_eta, tau_pt, tau_eta;
+  double jet_pt, jet_eta, tau_pt, tau_eta, muon_pt, muon_eta;
   jet_pt = 20.0;
   jet_eta = 2.3; 
 	//jet_eta=1.47;
   tau_pt = 20.0;
   tau_eta = 2.3; 
+	muon_pt = 24.0;
+	muon_eta =2.1;
+	
    
   std::cout << "** Kinematics **" << std::endl;
   std::cout << boost::format(param_fmt) % "jet_pt" % jet_pt;
@@ -103,11 +108,28 @@ int main(int argc, char* argv[]){
   SimpleFilter<Tau> TauFilter = SimpleFilter<Tau>("TauFilter")
   .set_input_label("taus")
   .set_predicate(bind(MinPtMaxEta, _1, tau_pt, tau_eta));
+
+
+	SimpleFilter<GenParticle> GenFilter  = SimpleFilter<GenParticle>("GenFilter");
+	if(wjets_mode){
+	GenFilter
+	.set_input_label("genParticles")
+	.set_predicate(bind(MinPtMaxEta,_1,muon_pt,muon_eta)&&((bind(&GenParticle::pdgid,_1)==13)||bind(&GenParticle::pdgid,_1)==-13))
+	.set_min(2)
+	.set_max(2);
+	}
+	
   
   SimpleFilter<PFJet> JetFilter = SimpleFilter<PFJet>("JetFilter")
   .set_input_label("pfJetsPFlow")
   //.set_predicate(bind(MinPtMaxEta, _1, jet_pt, jet_eta)&&(bind(&PFJet::pu_id_mva_loose,_1)));
 	.set_predicate(bind(MinPtMaxEta,_1,jet_pt,jet_eta)&&(bind(&PFJet::charged_had_energy_frac,_1)>0)&&(bind(&PFJet::neutral_had_energy_frac,_1)<0.99)&&(bind(&PFJet::charged_em_energy_frac,_1)<0.99)&&(bind(&PFJet::neutral_em_energy_frac,_1)<0.99)&&((bind(&PFJet::charged_multiplicity,_1)>1)||((bind(&PFJet::charged_multiplicity,_1)>0)&&(bind(&PFJet::neutral_multiplicity,_1)>0))));
+
+	OverlapFilter<GenParticle,PFJet> GenMuonJetOverlapFilter = OverlapFilter<GenParticle,PFJet>("GenMuonJetOverlapFilter")
+	.set_input_label("genParticles")
+	.set_reference_label("pfJetsPFlow")
+	.set_min_dr(0.5);
+
 
   JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")
   .set_write_plots(true)
@@ -118,8 +140,12 @@ int main(int argc, char* argv[]){
 
  //Add module here which reads in the filtered taus and jets and makes the plots/performs the fake rate study
  
-  analysis.AddModule(&TauFilter); 
   analysis.AddModule(&JetFilter); 
+	if(wjets_mode){
+	analysis.AddModule(&GenFilter);
+	analysis.AddModule(&GenMuonJetOverlapFilter);
+	}
+  analysis.AddModule(&TauFilter); 
   analysis.AddModule(&jetTauFakeRate); 
 
 
