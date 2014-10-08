@@ -17,6 +17,26 @@
 #include "CombineTools/interface/Parameter.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/HistMapping.h"
+
+/*
+To-do list
+[ ] Look for areas where interface can be simplified
+  [ ] Set generation
+[!] Add extra "scale" property to Nuisance for shapes
+[ ] Rename nuisance to Systematic
+[ ] Support unbinned
+[!] Support histogramming for pdfs
+ [x] Process will need to link to RooAbsPdf for yield
+ [x] Parameter will need to link to RooRealVar
+ [x] Update parameter method,i.e. change value of a single paramter
+ [ ] Need way to specify: chosen binning, binning remapping
+[ ] Support TF1 extraction for pdfs
+[ ] better handling of param constraint terms
+[ ] Rename our channel as "CHN" to avoid confusion with "CHANNEL"?
+[ ] migration to offical package
+[!] Any RooAbsPdf, RooAbsData pointers in a copied CombineHarvester point to the previous instance
+*/
 
 namespace ch {
 
@@ -30,6 +50,7 @@ class CombineHarvester {
   CombineHarvester& operator=(CombineHarvester other);
   CombineHarvester cp();
   CombineHarvester& PrintAll();
+  void SetVerbosity(unsigned verbosity) { verbosity_ = verbosity; }
 
   /**
    * @name Datacards
@@ -179,46 +200,67 @@ class CombineHarvester {
 
   void ExtractShapes(std::string const& file, std::string const& rule,
                      std::string const& syst_rule);
-
-  void AddWorkspace(RooWorkspace const* ws);
   void ExtractPdfs(std::string const& ws_name, std::string const& rule);
   void ExtractData(std::string const& ws_name, std::string const& rule);
+
+  void AddWorkspace(RooWorkspace const* ws);
   void AddBinByBin(double threshold, bool fixed_norm, CombineHarvester* other);
   void MergeBinErrors(double bbb_threshold, double merge_threshold);
   /**@}*/
 
  private:
+  friend void swap(CombineHarvester& first, CombineHarvester& second);
+
+  // ---------------------------------------------------------------
+  // Main data members
+  // ---------------------------------------------------------------
   std::vector<std::shared_ptr<Observation>> obs_;
   std::vector<std::shared_ptr<Process>> procs_;
   std::vector<std::shared_ptr<Nuisance>> nus_;
   std::map<std::string, std::shared_ptr<Parameter>> params_;
   std::map<std::string, std::shared_ptr<RooWorkspace>> wspaces_;
 
-  struct HistMapping {
-    std::string process;
-    std::string category;
-    std::shared_ptr<TFile> file;
-    std::string pattern;
-    std::string syst_pattern;
-    bool IsHist();
-    bool IsPdf();
-    bool IsData();
-  };
-
-  typedef std::vector<std::pair<std::string, std::string>> StrPairVec;
+  // ---------------------------------------------------------------
+  // typedefs
+  // ---------------------------------------------------------------
+  typedef std::pair<std::string, std::string> StrPair;
+  typedef std::vector<StrPair> StrPairVec;
   typedef std::vector<std::string> StrVec;
+
+
+  // ---------------------------------------------------------------
+  // Logging
+  // ---------------------------------------------------------------
+  unsigned verbosity_;
+  std::ostream * log_;
+  std::ostream& log() { return *log_; }
+
+  // ---------------------------------------------------------------
+  // Private methods for the shape extraction routines
+  // --> implementation in src/CombineHarvester.cc
+  // ---------------------------------------------------------------
+  void LoadShapes(Observation* entry,
+                     std::vector<HistMapping> const& mappings);
+  void LoadShapes(Process* entry,
+                     std::vector<HistMapping> const& mappings);
+  void LoadShapes(Nuisance* entry,
+                     std::vector<HistMapping> const& mappings);
+
+  HistMapping const& ResolveMapping(std::string const& process,
+                                    std::string const& bin,
+                                    std::vector<HistMapping> const& mappings);  
+
   StrPairVec GenerateShapeMapAttempts(std::string process,
       std::string category);
-  HistMapping ResolveMapping(std::vector<HistMapping> const& mappings,
-      std::string const& bin,
-      std::string const& process,
-      std::string const& mass,
-      std::string const& nuisance);
-  TH1 * GetHistFromFile(HistMapping const& mapping,
-      unsigned type);
-  RooAbsPdf * GetPdfFromFile(HistMapping const& mapping);
-  RooAbsData * GetDataFromFile(HistMapping const& mapping);
 
+  StrPair SetupWorkspace(HistMapping const& mapping);
+
+  void ImportParameters(RooArgSet *vars);
+
+
+  // ---------------------------------------------------------------
+  // Private methods for the shape writing routines
+  // ---------------------------------------------------------------
   void WriteHistToFile(
       TH1 const* hist,
       TFile * file,
@@ -229,9 +271,11 @@ class CombineHarvester {
       std::string const& nuisance,
       unsigned type);
 
-  friend void swap(CombineHarvester& first, CombineHarvester& second);
-  typedef std::vector<std::vector<Nuisance const*>>
-    ProcNusMap;
+  // ---------------------------------------------------------------
+  // Private methods for shape/yield evaluation
+  // --> implementation in src/CombineHarvester_Evaluate.cc
+  // ---------------------------------------------------------------
+  typedef std::vector<std::vector<Nuisance const*>> ProcNusMap;
   ProcNusMap GenerateProcNusMap();
 
   double GetRateInternal(ProcNusMap const& lookup,
@@ -252,6 +296,10 @@ class CombineHarvester {
   void CreateParameterIfEmpty(CombineHarvester *cmb, std::string const& name);
 };
 
+
+// ---------------------------------------------------------------
+// Template method implementation
+// ---------------------------------------------------------------
 template<typename T>
 std::set<T> CombineHarvester::GenerateSetFromProcs(
     std::function<T (ch::Process const*)> func) {

@@ -4,33 +4,30 @@
 #include <string>
 #include <iostream>
 #include <utility>
-#include <set>
-#include <fstream>
-// #include "boost/lexical_cast.hpp"
-// #include "boost/algorithm/string.hpp"
-// #include "boost/range/algorithm_ext/erase.hpp"
-// #include "boost/range/algorithm/find.hpp"
-#include "boost/format.hpp"
+#include <algorithm>
 #include "TDirectory.h"
 #include "TH1.h"
 #include "Utilities/interface/FnRootTools.h"
-// #include "Utilities/interface/FnPredicates.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/Parameter.h"
-// #include "CombineTools/interface/MakeUnique.h"
-// #include "CombineTools/interface/HelperFunctions.h"
+
 
 
 namespace ch {
 void CombineHarvester::AddObservations(
-    std::vector<std::string> mass, std::vector<std::string> analysis,
-    std::vector<std::string> era, std::vector<std::string> channel,
+    std::vector<std::string> mass,
+    std::vector<std::string> analysis,
+    std::vector<std::string> era,
+    std::vector<std::string> channel,
     std::vector<std::pair<int, std::string>> bin) {
   std::vector<unsigned> lengths = {
-      unsigned(mass.size()),    unsigned(analysis.size()), unsigned(era.size()),
-      unsigned(channel.size()), unsigned(bin.size())};
+      unsigned(mass.size()),
+      unsigned(analysis.size()),
+      unsigned(era.size()),
+      unsigned(channel.size()),
+      unsigned(bin.size())};
   auto comb = ic::GenerateCombinations(lengths);
   for (auto const& c : comb) {
     auto obs = std::make_shared<Observation>();
@@ -45,13 +42,19 @@ void CombineHarvester::AddObservations(
 }
 
 void CombineHarvester::AddProcesses(
-    std::vector<std::string> mass, std::vector<std::string> analysis,
-    std::vector<std::string> era, std::vector<std::string> channel,
+    std::vector<std::string> mass,
+    std::vector<std::string> analysis,
+    std::vector<std::string> era,
+    std::vector<std::string> channel,
     std::vector<std::string> procs,
-    std::vector<std::pair<int, std::string>> bin, bool signal) {
+    std::vector<std::pair<int, std::string>> bin,
+    bool signal) {
   std::vector<unsigned> lengths = {
-      unsigned(mass.size()),    unsigned(analysis.size()), unsigned(era.size()),
-      unsigned(channel.size()), unsigned(bin.size())};
+      unsigned(mass.size()),
+      unsigned(analysis.size()),
+      unsigned(era.size()),
+      unsigned(channel.size()),
+      unsigned(bin.size())};
   auto comb = ic::GenerateCombinations(lengths);
   for (auto const& c : comb) {
     for (unsigned i = 0; i < procs.size(); ++i) {
@@ -72,111 +75,103 @@ void CombineHarvester::AddProcesses(
 void CombineHarvester::ExtractShapes(std::string const& file,
                                      std::string const& rule,
                                      std::string const& syst_rule) {
-  TFile f(file.c_str());
+  std::vector<HistMapping> mapping(1);
+  mapping[0].process = "*";
+  mapping[0].category = "*";
+  mapping[0].file = std::make_shared<TFile>(file.c_str());
+  mapping[0].pattern = rule;
+  mapping[0].syst_pattern = syst_rule;
+
   for (unsigned  i = 0; i < obs_.size(); ++i) {
     if (!obs_[i]->shape()) {
-      std::string p = rule;
-      boost::replace_all(p, "$CHANNEL", obs_[i]->bin());
-      boost::replace_all(p, "$PROCESS", "data_obs");
-      boost::replace_all(p, "$MASS", obs_[i]->mass());
-      TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
-      if (h) {
-        h->SetDirectory(0);
-        obs_[i]->set_rate(h->Integral());
-        if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
-        obs_[i]->set_shape(std::unique_ptr<TH1>(h));
-      }
+      LoadShapes(obs_[i].get(), mapping);
     }
   }
   for (unsigned  i = 0; i < procs_.size(); ++i) {
     if (!procs_[i]->shape()) {
-      std::string p = rule;
-      boost::replace_all(p, "$CHANNEL", procs_[i]->bin());
-      boost::replace_all(p, "$PROCESS", procs_[i]->process());
-      boost::replace_all(p, "$MASS", procs_[i]->mass());
-      TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
-      if (h) {
-        h->SetDirectory(0);
-        procs_[i]->set_rate(h->Integral());
-        if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
-        procs_[i]->set_shape(std::unique_ptr<TH1>(h));
-      }
+      LoadShapes(procs_[i].get(), mapping);
     }
   }
   if (syst_rule == "") return;
   for (unsigned  i = 0; i < nus_.size(); ++i) {
     if (nus_[i]->shape_d() || nus_[i]->shape_u() || nus_[i]->type() != "shape")
       continue;
-    std::string p = rule;
-    boost::replace_all(p, "$CHANNEL", nus_[i]->bin());
-    boost::replace_all(p, "$PROCESS", nus_[i]->process());
-    boost::replace_all(p, "$MASS", nus_[i]->mass());
-    std::string p_s = syst_rule;
-    boost::replace_all(p_s, "$CHANNEL", nus_[i]->bin());
-    boost::replace_all(p_s, "$PROCESS", nus_[i]->process());
-    boost::replace_all(p_s, "$MASS", nus_[i]->mass());
-    std::string p_s_hi = p_s;
-    std::string p_s_lo = p_s;
-    boost::replace_all(p_s_hi, "$SYSTEMATIC", nus_[i]->name() + "Up");
-    boost::replace_all(p_s_lo, "$SYSTEMATIC", nus_[i]->name() + "Down");
-    TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
-    TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get(p_s_hi.c_str()));
-    TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get(p_s_lo.c_str()));
-    if (!h || !h_u || !h_d) continue;
-    h->SetDirectory(0);
-    h_u->SetDirectory(0);
-    h_d->SetDirectory(0);
-    if (h->Integral() > 0.0) {
-      if (h_u->Integral() > 0.0) {
-        nus_[i]->set_value_u(h_u->Integral()/h->Integral());
-        h_u->Scale(1.0/h_u->Integral());
-      }
-      if (h_d->Integral() > 0.0) {
-        nus_[i]->set_value_d(h_d->Integral()/h->Integral());
-        h_d->Scale(1.0/h_d->Integral());
-      }
-    } else {
-      if (h_u->Integral() > 0.0)  h_u->Scale(1.0/h_u->Integral());
-      if (h_d->Integral() > 0.0)  h_d->Scale(1.0/h_d->Integral());
-    }
-    nus_[i]->set_shape_u(std::unique_ptr<TH1>(h_u));
-    nus_[i]->set_shape_d(std::unique_ptr<TH1>(h_d));
+
+    LoadShapes(nus_[i].get(), mapping);
+    // std::string p = rule;
+    // boost::replace_all(p, "$CHANNEL", nus_[i]->bin());
+    // boost::replace_all(p, "$PROCESS", nus_[i]->process());
+    // boost::replace_all(p, "$MASS", nus_[i]->mass());
+    // std::string p_s = syst_rule;
+    // boost::replace_all(p_s, "$CHANNEL", nus_[i]->bin());
+    // boost::replace_all(p_s, "$PROCESS", nus_[i]->process());
+    // boost::replace_all(p_s, "$MASS", nus_[i]->mass());
+    // std::string p_s_hi = p_s;
+    // std::string p_s_lo = p_s;
+    // boost::replace_all(p_s_hi, "$SYSTEMATIC", nus_[i]->name() + "Up");
+    // boost::replace_all(p_s_lo, "$SYSTEMATIC", nus_[i]->name() + "Down");
+    // TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
+    // TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get(p_s_hi.c_str()));
+    // TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get(p_s_lo.c_str()));
+    // if (!h || !h_u || !h_d) continue;
+    // h->SetDirectory(0);
+    // h_u->SetDirectory(0);
+    // h_d->SetDirectory(0);
+    // if (h->Integral() > 0.0) {
+    //   if (h_u->Integral() > 0.0) {
+    //     nus_[i]->set_value_u(h_u->Integral()/h->Integral());
+    //     h_u->Scale(1.0/h_u->Integral());
+    //   }
+    //   if (h_d->Integral() > 0.0) {
+    //     nus_[i]->set_value_d(h_d->Integral()/h->Integral());
+    //     h_d->Scale(1.0/h_d->Integral());
+    //   }
+    // } else {
+    //   if (h_u->Integral() > 0.0)  h_u->Scale(1.0/h_u->Integral());
+    //   if (h_d->Integral() > 0.0)  h_d->Scale(1.0/h_d->Integral());
+    // }
+    // nus_[i]->set_shape_u(std::unique_ptr<TH1>(h_u));
+    // nus_[i]->set_shape_d(std::unique_ptr<TH1>(h_d));
   }
 }
 
 void CombineHarvester::AddWorkspace(RooWorkspace const *ws) {
   if (wspaces_.count(ws->GetName())) return;
-  wspaces_[ws->GetName()] =
-      std::shared_ptr<RooWorkspace>((RooWorkspace *)ws->Clone());
+  if (verbosity_ >= 1) log() << "[AddWorkspace] Cloning workspace \"" << ws->GetName() << "\"\n";
+  wspaces_[ws->GetName()] = std::shared_ptr<RooWorkspace>(
+      reinterpret_cast<RooWorkspace *>(ws->Clone()));
 }
 
-void CombineHarvester::ExtractPdfs(std::string const& ws_name, std::string const& rule) {
+void CombineHarvester::ExtractPdfs(std::string const &ws_name,
+                                   std::string const &rule) {
+  std::vector<HistMapping> mapping(1);
+  mapping[0].process = "*";
+  mapping[0].category = "*";
+  mapping[0].pattern = ws_name+":"+rule;
   if (!wspaces_.count(ws_name)) return;
   for (unsigned  i = 0; i < procs_.size(); ++i) {
     if (!procs_[i]->pdf()) {
-      std::string p = rule;
-      boost::replace_all(p, "$CHANNEL", procs_[i]->bin());
-      boost::replace_all(p, "$PROCESS", procs_[i]->process());
-      boost::replace_all(p, "$MASS", procs_[i]->mass());
-      procs_[i]->set_pdf(wspaces_[ws_name]->pdf(p.c_str()));
+      LoadShapes(procs_[i].get(), mapping);
     }
   }
 }
 
-void CombineHarvester::ExtractData(std::string const& ws_name, std::string const& rule) {
+void CombineHarvester::ExtractData(std::string const &ws_name,
+                                   std::string const &rule) {
+  std::vector<HistMapping> mapping(1);
+  mapping[0].process = "*";
+  mapping[0].category = "*";
+  mapping[0].pattern = ws_name+":"+rule;
   if (!wspaces_.count(ws_name)) return;
   for (unsigned  i = 0; i < obs_.size(); ++i) {
     if (!obs_[i]->data()) {
-      std::string p = rule;
-      boost::replace_all(p, "$CHANNEL", obs_[i]->bin());
-      boost::replace_all(p, "$PROCESS", "data_obs");
-      boost::replace_all(p, "$MASS", obs_[i]->mass());
-      obs_[i]->set_data(wspaces_[ws_name]->data(p.c_str()));
+      LoadShapes(obs_[i].get(), mapping);
     }
   }
 }
 
-void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm, CombineHarvester * other) {
+void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm,
+                                   CombineHarvester *other) {
   unsigned bbb_added = 0;
   for (unsigned i = 0; i < procs_.size(); ++i) {
     if (!procs_[i]->shape()) continue;

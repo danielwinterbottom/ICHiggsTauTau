@@ -23,6 +23,8 @@ int main() {
   // Create an empty CombineHarvester instance that will hold all of the
   // datacard configuration and histograms etc.
   ch::CombineHarvester cb;
+  // Uncomment this next line to see a *lot* of debug information
+  // cb.SetVerbosity(3);
 
   // We will define two analysis categories (i.e. two distributions that we want
   // to fit simultaneously). In combine parlance, each is called a "bin". Each

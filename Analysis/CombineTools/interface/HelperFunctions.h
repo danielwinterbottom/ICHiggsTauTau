@@ -109,30 +109,40 @@ T OpenFromTFile(std::string const& fullpath) {
   std::string filepath = "";
   std::string objectpath = "";
   if (pos == std::string::npos || pos == 0 || pos == (fullpath.size()-1)) {
-    std::cerr <<
-      "Error in ch::OpenFromTFile: input path "
-      "must of the format file.root:object" << std::endl;
-    throw;
+    throw std::runtime_error(
+        "OpenFromTFile: input path must of the format file.root:object");
   } else {
     filepath = fullpath.substr(0, pos);
     objectpath = fullpath.substr(pos+1);
   }
   TFile file(filepath.c_str());
   if (!file.IsOpen()) {
-    std::cerr << "Error in ch::OpenFromTFile: "
-    "file \"" << filepath << "\" cannot be opened" << std::endl;
-    throw;
+    throw std::runtime_error("OpenFromTFile: file is invalid");
   }
   file.cd();
   T* obj_ptr = dynamic_cast<T*>(gDirectory->Get(objectpath.c_str()));
   if (!obj_ptr) {
-    std::cerr << "Error in ch::OpenFromTFile: "
-    "Object " << objectpath << " in file " << filepath <<
-    " missing or not of specified type" << std::endl;
-    throw;
+    throw std::runtime_error("OpenFromTFile: object " + objectpath +
+                             " is missing or of wrong type");
   }
-  return *(dynamic_cast<T*>(gDirectory->Get(objectpath.c_str())));
+  return *obj_ptr;
 }
+
+template <class T>
+T OpenFromTFile(TFile *file, std::string const& path) {
+  if (!file || !file->IsOpen()) {
+    throw std::runtime_error("OpenFromTFile: file is null or invalid");
+  }
+  file->cd();
+  T* obj_ptr = dynamic_cast<T*>(gDirectory->Get(path.c_str()));
+  if (!obj_ptr) {
+    throw std::runtime_error("OpenFromTFile: object " + path +
+                             " is missing or of wrong type");
+  }
+  return *obj_ptr;
+}
+
+
 
 template<class T>
 void SetStandardBinName(T *input) {

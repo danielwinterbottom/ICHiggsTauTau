@@ -4,6 +4,7 @@
 #include <string>
 #include "TH1.h"
 #include "RooAbsPdf.h"
+#include "RooAbsReal.h"
 #include "CombineTools/interface/MakeUnique.h"
 
 namespace ch {
@@ -20,13 +21,11 @@ class Process {
   std::string const& bin() const { return bin_; }
 
   void set_rate(double const& rate) { rate_ = rate; }
-  double rate() const { return rate_; }
+  double rate() const { return norm_ ? norm_->getVal() * rate_ : rate_; }
+  double no_norm_rate() const { return rate_; }
 
   void set_process(std::string const& process) { process_ = process; }
   std::string const& process() const { return process_; }
-
-  // void set_process_id(int const& process_id) { process_id_ = process_id; }
-  // int process_id() const { return process_id_; }
 
   void set_signal(bool const& signal) { signal_ = signal; }
   bool signal() const { return signal_; }
@@ -52,6 +51,9 @@ class Process {
   void set_pdf(RooAbsPdf* pdf) { pdf_ = pdf; }
   RooAbsPdf const* pdf() const { return pdf_; }
 
+  void set_norm(RooAbsReal* norm) { norm_ = norm; }
+  RooAbsReal const* norm() const { return norm_; }
+
   friend std::ostream& operator<< (std::ostream &out, Process &val);
   static std::ostream& PrintHeader(std::ostream &out);
 
@@ -59,7 +61,6 @@ class Process {
   std::string bin_;
   double rate_;
   std::string process_;
-  // int process_id_;
   bool signal_;
   std::string analysis_;
   std::string era_;
@@ -68,6 +69,7 @@ class Process {
   std::string mass_;
   std::unique_ptr<TH1> shape_;
   RooAbsPdf* pdf_;
+  RooAbsReal* norm_;
 
   friend void swap(Process& first, Process& second);
 };

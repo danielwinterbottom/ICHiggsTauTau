@@ -37,6 +37,11 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
     std::string parse_rules) {
   boost::replace_all(parse_rules, "{", "(?<");
   boost::replace_all(parse_rules, "}", ">\\w+)");
+  boost::replace_all(parse_rules, "$ANALYSIS",  "(?<ANALYSIS>\\w+)");
+  boost::replace_all(parse_rules, "$ERA",       "(?<ERA>\\w+)");
+  boost::replace_all(parse_rules, "$CHANNEL",   "(?<CHANNEL>\\w+)");
+  boost::replace_all(parse_rules, "$BINID",     "(?<BINID>\\w+)");
+  boost::replace_all(parse_rules, "$MASS",      "(?<MASS>\\w+)");
   boost::regex rgx(parse_rules);
   boost::smatch matches;
   boost::regex_search(filename, matches, rgx);
@@ -83,7 +88,7 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
     if (words[i].size() <= 1) continue;
 
     // If the line begins "shapes" then we've
-    // found process --> TH1F mapping information
+    // found process --> TH1 mapping information
     if (words[i][0] == "shapes" && words[i].size() >= 5) {
       hist_mapping.push_back(HistMapping());
       hist_mapping.back().process = words[i][1];
@@ -119,18 +124,9 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           obs->set_channel(channel);
           obs->set_bin_id(bin_id);
           obs->set_mass(mass);
-          HistMapping mapping = ResolveMapping(hist_mapping,
-            obs->bin(), "data_obs", obs->mass(), "");
-          if (mapping.IsHist()) {
-            TH1 *h = GetHistFromFile(mapping, 0);
-            if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
-            if (h) obs->set_shape(std::unique_ptr<TH1>(h));
-          } else if (mapping.IsData()) {
-            RooAbsData* d = GetDataFromFile(mapping);
-            obs->set_data(d);
-            obs->set_rate(d->sumEntries());
-            data_map[obs->bin()] = d;
-          }
+
+          LoadShapes(obs.get(), hist_mapping);
+
           obs_.push_back(obs);
         }
       }
@@ -167,36 +163,9 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           proc->set_channel(channel);
           proc->set_bin_id(bin_id);
           proc->set_mass(mass);
-          HistMapping mapping = ResolveMapping(hist_mapping,
-            proc->bin(), proc->process(), proc->mass(), "");
-          if (mapping.IsHist()) {
-            TH1 *h = GetHistFromFile(mapping, 0);
-            if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
-            if (h) proc->set_shape(std::unique_ptr<TH1>(h));
-          } else if (mapping.IsPdf()) {
-            RooAbsPdf* p = GetPdfFromFile(mapping);
-            RooArgSet* vars = p->getParameters(data_map[proc->bin()]);
-            auto x = vars->createIterator();
-            do {
-              RooRealVar *y = dynamic_cast<RooRealVar*>(**x);
-              if (y) {
-                if (!params_.count(y->GetName())) {
-                  Parameter p;
-                  p.set_name(y->GetName());
-                  p.set_val(y->getVal());
-                  // if (y->hasError()) {
-                  //   p.set_err_d(y->getErrorLo());
-                  //   p.set_err_u(y->getErrorHi());
-                  // } else {
-                    p.set_err_d(0.0);
-                    p.set_err_u(0.0);
-                  // }
-                  params_[y->GetName()] = std::make_shared<Parameter>(p);
-                }
-              }
-            } while (x->Next());
-            proc->set_pdf(p);
-          }
+
+          LoadShapes(proc.get(), hist_mapping);
+
           procs_.push_back(proc);
         }
         r = i;
@@ -259,40 +228,7 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           nus->set_asymm(false);
         }
         if (nus->type() == "shape") {
-          HistMapping mapping = ResolveMapping(hist_mapping,
-            nus->bin(), nus->process(), nus->mass(), nus->name());
-          TH1 *h = GetHistFromFile(mapping, 0);
-          TH1 *h_d = GetHistFromFile(mapping, 1);
-          TH1 *h_u = GetHistFromFile(mapping, 2);
-          // Is the rate of the central process > 0?
-          if (h->Integral() > 0.0) {
-            // If the up and down templates also > 0 can proceed normally
-            if (h_u->Integral() > 0.0) {
-              nus->set_value_u(h_u->Integral()/h->Integral());
-              h_u->Scale(1.0/h_u->Integral());
-            } else {  // otherwise we force the yield part to 1.0, i.e. no effect
-              nus->set_value_u(1.0);
-            }
-            if (h_d->Integral() > 0.0) {
-              nus->set_value_d(h_d->Integral()/h->Integral());
-              h_d->Scale(1.0/h_d->Integral());
-            } else {  // otherwise we force the yield part to 1.0, i.e. no effect
-              nus->set_value_d(1.0);
-            }
-          } else {
-            nus->set_value_u(1.0);
-            if (h_u->Integral() > 0.0) {
-              h_u->Scale(1.0/h_u->Integral());
-            }
-            nus->set_value_d(1.0);
-            if (h_d->Integral() > 0.0) {
-              h_d->Scale(1.0/h_d->Integral());
-            }
-          }
-          if (h_u) nus->set_shape_u(std::unique_ptr<TH1>(h_u));
-          if (h_d) nus->set_shape_d(std::unique_ptr<TH1>(h_d));
-          nus->set_asymm(true);
-          delete h;
+          LoadShapes(nus.get(), hist_mapping);
         }
         CombineHarvester::CreateParameterIfEmpty(this, nus->name());
         nus_.push_back(nus);
@@ -328,6 +264,7 @@ void CombineHarvester::WriteDatacard(std::string const& name,
            << " number of processes minus 1\n";
   txt_file << "kmax    " << "*" << " number of nuisance parameters\n";
   txt_file << dashes << "\n";
+
 
   std::vector<HistMapping> mappings;
   std::map<RooAbsData const*, RooWorkspace*> data_ws_map;
@@ -486,7 +423,7 @@ void CombineHarvester::WriteDatacard(std::string const& name,
 
   txt_file << boost::format("%-"+nus_str_long+"s") % "rate";
   for (auto const& proc : procs_) {
-    txt_file << boost::format("%-15.4f ") % proc->rate();
+    txt_file << boost::format("%-15.4f ") % proc->no_norm_rate();
   }
   txt_file << "\n";
   txt_file << dashes << "\n";
@@ -571,126 +508,6 @@ void CombineHarvester::WriteDatacard(std::string const& name,
     }
   }
   txt_file.close();
-}
-
-CombineHarvester::StrPairVec CombineHarvester::GenerateShapeMapAttempts(
-    std::string process, std::string category) {
-  CombineHarvester::StrPairVec result;
-  result.push_back(std::make_pair(process   , category));
-  result.push_back(std::make_pair("*"       , category));
-  result.push_back(std::make_pair(process   , "*"));
-  result.push_back(std::make_pair("*"       , "*"));
-  return result;
-}
-
-bool CombineHarvester::HistMapping::IsHist() {
-  if (pattern.find(':') == pattern.npos) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-bool CombineHarvester::HistMapping::IsPdf() {
-  if (pattern.find(':') != pattern.npos) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-bool CombineHarvester::HistMapping::IsData() {
-  if (pattern.find(':') != pattern.npos) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-CombineHarvester::HistMapping CombineHarvester::ResolveMapping(
-    std::vector<HistMapping> const& mappings, std::string const& bin,
-    std::string const& process, std::string const& mass,
-    std::string const& nuisance) {
-  HistMapping ret;
-  StrPairVec attempts = this->GenerateShapeMapAttempts(process, bin);
-  for (unsigned a = 0; a < attempts.size(); ++a) {
-    for (unsigned m = 0; m < mappings.size(); ++m) {
-      if ((attempts[a].first == mappings[m].process) &&
-        (attempts[a].second == mappings[m].category)) {
-        ret = mappings[m];
-        ret.process = process;
-        ret.category = bin;
-        boost::replace_all(ret.pattern, "$CHANNEL", bin);
-        boost::replace_all(ret.pattern, "$PROCESS", process);
-        boost::replace_all(ret.pattern, "$MASS", mass);
-        boost::replace_all(ret.syst_pattern, "$CHANNEL", bin);
-        boost::replace_all(ret.syst_pattern, "$PROCESS", process);
-        boost::replace_all(ret.syst_pattern, "$MASS", mass);
-        boost::replace_all(ret.syst_pattern, "$SYSTEMATIC", nuisance);
-        return ret;
-      }
-    }
-  }
-  return ret;
-}
-
-TH1 * CombineHarvester::GetHistFromFile(
-    HistMapping const& mapping,
-    unsigned type) {
-  mapping.file->cd();
-  std::string p = (type == 0) ? mapping.pattern : mapping.syst_pattern;
-  if (type == 1) p += "Down";
-  if (type == 2) p += "Up";
-  TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
-  h->SetDirectory(0);
-  return h;
-}
-
-RooAbsPdf * CombineHarvester::GetPdfFromFile(
-    HistMapping const& mapping) {
-  mapping.file->cd();
-  std::string p = mapping.pattern;
-  std::string ws_name;
-  std::string pdf_name;
-  std::size_t colon = p.find_last_of(':');
-  if (colon != p.npos) {
-    ws_name = p.substr(0, colon);
-    pdf_name = p.substr(colon+1);
-  } else {
-    std::cout << "Something went wrong here\n";
-    return nullptr;
-  }
-  if (!wspaces_.count(ws_name)) {
-    RooWorkspace* w =
-        dynamic_cast<RooWorkspace*>(gDirectory->Get(ws_name.c_str()));
-    wspaces_[ws_name] =
-        std::shared_ptr<RooWorkspace>((RooWorkspace*)w->Clone());
-  }
-  RooAbsPdf* pdf = wspaces_[ws_name]->pdf(pdf_name.c_str());
-  return pdf;
-}
-
-RooAbsData * CombineHarvester::GetDataFromFile(
-    HistMapping const& mapping) {
-  mapping.file->cd();
-  std::string p = mapping.pattern;
-  std::string ws_name;
-  std::string dat_name;
-  std::size_t colon = p.find_last_of(':');
-  if (colon != p.npos) {
-    ws_name = p.substr(0, colon);
-    dat_name = p.substr(colon+1);
-  } else {
-    return nullptr;
-  }
-  if (!wspaces_.count(ws_name)) {
-    RooWorkspace* w =
-        dynamic_cast<RooWorkspace*>(gDirectory->Get(ws_name.c_str()));
-    wspaces_[ws_name] =
-        std::shared_ptr<RooWorkspace>((RooWorkspace*)w->Clone());
-  }
-  RooAbsData* dat = wspaces_[ws_name]->data(dat_name.c_str());
-  return dat;
 }
 
 void CombineHarvester::WriteHistToFile(

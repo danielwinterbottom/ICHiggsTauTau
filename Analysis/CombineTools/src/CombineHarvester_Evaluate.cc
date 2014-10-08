@@ -210,10 +210,23 @@ double CombineHarvester::GetObservedRate() {
 }
 
 TH1F CombineHarvester::GetObservedShape() {
-  TH1F shape = *((TH1F*)(obs_[0]->shape()));
+  TH1::AddDirectory(false);
+  TH1F shape;
+  if (obs_[0]->shape()) {
+    shape = *((TH1F*)(obs_[0]->shape()));
+  } else if (obs_[0]->data()) {
+    shape = *((TH1F*)obs_[0]->data()->createHistogram("h", *(RooAbsRealLValue*)obs_[0]->data()->get()->first()));
+    shape.Scale(1. / shape.Integral());
+  }
   shape.Reset();
   for (unsigned i = 0; i < obs_.size(); ++i) {
-    TH1F proc_shape = *((TH1F*)(obs_[i]->shape()));
+    TH1F proc_shape;
+    if (obs_[i]->shape()) {
+      proc_shape = *((TH1F*)(obs_[i]->shape()));
+    } else if (obs_[i]->data()) {
+      proc_shape = *((TH1F*)obs_[0]->data()->createHistogram("h", *(RooAbsRealLValue*)obs_[0]->data()->get()->first()));
+      proc_shape.Scale(1. / proc_shape.Integral());
+    }
     double p_rate = obs_[i]->rate();
     proc_shape.Scale(p_rate);
     shape.Add(&proc_shape);

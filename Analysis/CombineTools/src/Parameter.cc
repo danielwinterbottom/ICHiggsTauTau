@@ -1,5 +1,6 @@
 #include "CombineTools/interface/Parameter.h"
 #include <iostream>
+#include <string>
 #include "boost/format.hpp"
 
 namespace ch {
@@ -19,14 +20,15 @@ void swap(Parameter& first, Parameter& second) {
   swap(first.val_, second.val_);
   swap(first.err_u_, second.err_u_);
   swap(first.err_d_, second.err_d_);
-
+  swap(first.vars_, second.vars_);
 }
 
 Parameter::Parameter(Parameter const& other)
     : name_(other.name_),
       val_(other.val_),
       err_u_(other.err_u_),
-      err_d_(other.err_d_) {
+      err_d_(other.err_d_),
+      vars_(other.vars_) {
 }
 
 Parameter::Parameter(Parameter&& other)

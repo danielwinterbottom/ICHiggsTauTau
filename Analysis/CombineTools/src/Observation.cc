@@ -40,8 +40,11 @@ Observation::Observation(Observation const& other)
       bin_id_(other.bin_id_),
       mass_(other.mass_),
       data_(other.data_) {
-  TH1 *h = dynamic_cast<TH1*>(other.shape_->Clone());
-  h->SetDirectory(0);
+  TH1* h = nullptr;
+  if (other.shape_) {
+    h = dynamic_cast<TH1*>(other.shape_->Clone());
+    h->SetDirectory(0);
+  }
   shape_ = std::unique_ptr<TH1>(h);
 }
 

@@ -43,6 +43,8 @@ class Observation {
   void set_data(RooAbsData* data) { data_ = data; }
   RooAbsData const* data() const { return data_; }
 
+  std::string process() const { return "data_obs"; }
+
   friend std::ostream& operator<< (std::ostream &out, Observation &val);
   static std::ostream& PrintHeader(std::ostream &out);
 
