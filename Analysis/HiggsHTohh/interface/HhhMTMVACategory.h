@@ -33,6 +33,13 @@ class HhhMTMVACategory : public ModuleBase {
  	float femu_dphi_;
 	float fprebjetbcsv_1_;
 	float fprebjetbcsv_2_;
+	float fmt_2_;
+	float fprebjetpt_1_;
+	float fprebjetpt_2_;
+	float fprebjetpt_bb_;
+	float fprebjet_dR_;
+	float fmutau_dR_;
+	float fpt_tt_;
 	int nprebjets_;
 
  public:

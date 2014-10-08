@@ -166,6 +166,7 @@ int main(int argc, char* argv[]){
 		factory->AddVariable((vars.at(variter)).c_str(),(vars.at(variter)).c_str(),"",'F');
 	}
 
+	factory->AddSpectator("mt_1","mt_1","",'F');
 	factory->AddSpectator("n_prebjets","n_prebjets","",'I');
 	factory->AddSpectator("prebjetbcsv_1","prebjetbcsv_1","",'F');
 	factory->AddSpectator("prebjetbcsv_2","prebjetbcsv_2","",'F');
@@ -198,16 +199,16 @@ int main(int argc, char* argv[]){
 	factory->SetSignalWeightExpression("wt");
 	TCut mycutb, mycuts;
 	if(twotag){
-	mycutb="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
-	mycuts="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
+	mycutb="n_prebjets>1&&mt_1<30&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
+	mycuts="n_prebjets>1&&mt_1<30&&prebjetbcsv_1>0.679&&prebjetbcsv_2>0.679";
 	}
 	else if(onetag){
-	mycutb="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
-	mycuts="n_prebjets>1&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
+	mycutb="n_prebjets>1&&mt_1<30&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
+	mycuts="n_prebjets>1&&mt_1<30&&prebjetbcsv_1>0.679&&prebjetbcsv_2<0.679";
 	}
 	else{
-	mycutb="n_prebjets>1";
-	mycuts="n_prebjets>1";
+	mycutb="n_prebjets>1&&mt_1<30";
+	mycuts="n_prebjets>1&&mt_1<30";
 	}
 //TCut mycutb="";
 //TCut mycuts="";

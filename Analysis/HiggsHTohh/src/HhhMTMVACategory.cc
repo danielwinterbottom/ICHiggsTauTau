@@ -17,8 +17,10 @@ namespace ic {
   HhhMTMVACategory::HhhMTMVACategory(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    gf_mva_file_ = "data/Hhh_mva/2jet1tag_leppt_BDT.weights.xml";
-    gf_mva_file_2_ = "data/Hhh_mva/2jet2tag_leppt_BDT.weights.xml";
+    //gf_mva_file_ = "data/Hhh_mva/2jet1tag_leppt_BDT.weights.xml";
+    //gf_mva_file_2_ = "data/Hhh_mva/2jet2tag_leppt_BDT.weights.xml";
+		gf_mva_file_ = "data/Hhh_mva/2jet1tag_leppt_BDT.weights.xml";
+		gf_mva_file_2_ = "data/Hhh_mva/2jet2tag_leppt_BDT.weights.xml";
     gf_reader_ = nullptr;
     gf_reader_2_ = nullptr;
   }
@@ -48,6 +50,22 @@ namespace ic {
 			r->AddSpectator("n_prebjets",&nprebjets_);
 			r->AddSpectator("prebjetbcsv_1",&fprebjetbcsv_1_);
 			r->AddSpectator("prebjetbcsv_2",&fprebjetbcsv_2_);
+			
+		/*	r->AddVariable("mt_2",&fmt_2_);
+			r->AddVariable("pt_1",&fpt_1_);
+			r->AddVariable("pt_2",&fpt_2_);
+			r->AddVariable("mutau_dR",&fmutau_dR_);
+			r->AddVariable("prebjetpt_bb",&fprebjetpt_bb_);
+			r->AddVariable("prebjet_dR",&fprebjet_dR_);
+			r->AddVariable("prebjetpt_1",&fprebjetpt_1_);
+			r->AddVariable("prebjetpt_2",&fprebjetpt_2_);
+			r->AddVariable("pt_tt",&fpt_tt_);
+			r->AddSpectator("mt_1",&fmt_1_);
+			r->AddSpectator("n_prebjets",&nprebjets_);
+			r->AddSpectator("prebjetbcsv_1",&fprebjetbcsv_1_);
+			r->AddSpectator("prebjetbcsv_2",&fprebjetbcsv_2_);
+			*/
+
 			
       // r->AddVariable("d02", &mu_dxy_);
     }
@@ -82,16 +100,22 @@ namespace ic {
 		femu_dphi_ = (float) std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
 		fpt_1_ = (float) lep1->pt();
 		fpt_2_ = (float) lep2->pt();
+		fmutau_dR_ = (float) std::fabs(ROOT::Math::VectorUtil::DeltaR(lep1->vector(),lep2->vector()));
+		fpt_tt_ = (float) (ditau->vector()+met->vector()).pt();
 		fmt_1_ = (float) MT(lep1, met);
+		fmt_2_ = (float) MT(lep2, met);
 		fmet_ = (float) met->pt();
 		fpzeta_ = (float) PZeta(ditau,met,0.85);
 		if(nprebjets_>1){
-		fprebjetbcsv_1_ = prebjets.at(0)->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-		fprebjetbcsv_2_ = prebjets.at(1)->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+		fprebjetbcsv_1_ = (float) prebjets.at(0)->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+		fprebjetbcsv_2_ = (float) prebjets.at(1)->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+		fprebjetpt_1_ = (float) prebjets.at(0)->pt();
+		fprebjetpt_2_ = (float) prebjets.at(1)->pt();
+		fprebjet_dR_ = (float) std::fabs(ROOT::Math::VectorUtil::DeltaR(prebjets.at(0)->vector(),prebjets.at(1)->vector()));
 		}
 		else{
-		fprebjetbcsv_1_=0;
-		fprebjetbcsv_2_=0;
+		fprebjetbcsv_1_=0.;
+		fprebjetbcsv_2_=0.;
 		}
 
 
