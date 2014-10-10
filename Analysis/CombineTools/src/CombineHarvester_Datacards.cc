@@ -175,8 +175,11 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
 
     if (start_nuisance_scan && words[i].size() >= 4) {
       if (words[i][1] == "param") {
-        auto param = std::make_shared<Parameter>(Parameter());
-        param->set_name(words[i][0]);
+        std::string param_name = words[i][0];
+        if (!params_.count(param_name))
+          params_[param_name] = std::make_shared<Parameter>(Parameter());
+        Parameter * param = params_.at(param_name).get();
+        param->set_name(param_name);
         param->set_val(boost::lexical_cast<double>(words[i][2]));
         std::size_t slash_pos = words[i][3].find("/");
         if (slash_pos != words[i][3].npos) {
@@ -188,7 +191,6 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           param->set_err_u(+1.0 * boost::lexical_cast<double>(words[i][3]));
           param->set_err_d(-1.0 * boost::lexical_cast<double>(words[i][3]));
         }
-        params_[param->name()] = param;
         continue;  // skip the rest of this now
       }
     }

@@ -21,6 +21,8 @@
 
 /*
 To-do list
+[x] pdf norm terms that are (or derive) from RooRealVar should
+    be added to the list of Parameters (and hooked up)
 [ ] Look for areas where interface can be simplified
   [ ] Set generation
 [!] Add extra "scale" property to Nuisance for shapes
@@ -36,6 +38,7 @@ To-do list
 [ ] Rename our channel as "CHN" to avoid confusion with "CHANNEL"?
 [ ] migration to offical package
 [!] Any RooAbsPdf, RooAbsData pointers in a copied CombineHarvester point to the previous instance
+[x] Provide a method to redefine binning for Pdfs
 */
 
 namespace ch {
@@ -130,6 +133,7 @@ class CombineHarvester {
   void SetParameters(std::vector<ch::Parameter> params);
   void UpdateParameters(std::vector<ch::Parameter> params);
   std::vector<ch::Parameter> GetParameters() const;
+  void RenameParameter(std::string const& oldname, std::string const& newname);
 
   template<typename Function>
   void ForEachProc(Function func);
@@ -141,6 +145,7 @@ class CombineHarvester {
   void ForEachNus(Function func);
 
   void VariableRebin(std::vector<double> bins);
+  void SetPdfBins(unsigned nbins);
   /**@}*/
 
   /**
@@ -248,7 +253,7 @@ class CombineHarvester {
 
   HistMapping const& ResolveMapping(std::string const& process,
                                     std::string const& bin,
-                                    std::vector<HistMapping> const& mappings);  
+                                    std::vector<HistMapping> const& mappings);
 
   StrPairVec GenerateShapeMapAttempts(std::string process,
       std::string category);
@@ -256,6 +261,8 @@ class CombineHarvester {
   StrPair SetupWorkspace(HistMapping const& mapping);
 
   void ImportParameters(RooArgSet *vars);
+
+  RooAbsData const* FindMatchingData(Process const* proc);
 
 
   // ---------------------------------------------------------------
@@ -291,7 +298,8 @@ class CombineHarvester {
     return 0.125 * xnorm * (xnorm2 * (3.*xnorm2 - 10.) + 15);
   }
 
-  TH1F ShapeDiff(double x, TH1 const* nom, TH1 const* low, TH1 const* high);
+  void ShapeDiff(double x, TH1F* target, TH1 const* nom, TH1 const* low,
+                 TH1 const* high);
 
   void CreateParameterIfEmpty(CombineHarvester *cmb, std::string const& name);
 };

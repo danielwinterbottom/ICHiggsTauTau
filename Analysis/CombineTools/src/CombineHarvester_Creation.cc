@@ -98,40 +98,6 @@ void CombineHarvester::ExtractShapes(std::string const& file,
       continue;
 
     LoadShapes(nus_[i].get(), mapping);
-    // std::string p = rule;
-    // boost::replace_all(p, "$CHANNEL", nus_[i]->bin());
-    // boost::replace_all(p, "$PROCESS", nus_[i]->process());
-    // boost::replace_all(p, "$MASS", nus_[i]->mass());
-    // std::string p_s = syst_rule;
-    // boost::replace_all(p_s, "$CHANNEL", nus_[i]->bin());
-    // boost::replace_all(p_s, "$PROCESS", nus_[i]->process());
-    // boost::replace_all(p_s, "$MASS", nus_[i]->mass());
-    // std::string p_s_hi = p_s;
-    // std::string p_s_lo = p_s;
-    // boost::replace_all(p_s_hi, "$SYSTEMATIC", nus_[i]->name() + "Up");
-    // boost::replace_all(p_s_lo, "$SYSTEMATIC", nus_[i]->name() + "Down");
-    // TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
-    // TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get(p_s_hi.c_str()));
-    // TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get(p_s_lo.c_str()));
-    // if (!h || !h_u || !h_d) continue;
-    // h->SetDirectory(0);
-    // h_u->SetDirectory(0);
-    // h_d->SetDirectory(0);
-    // if (h->Integral() > 0.0) {
-    //   if (h_u->Integral() > 0.0) {
-    //     nus_[i]->set_value_u(h_u->Integral()/h->Integral());
-    //     h_u->Scale(1.0/h_u->Integral());
-    //   }
-    //   if (h_d->Integral() > 0.0) {
-    //     nus_[i]->set_value_d(h_d->Integral()/h->Integral());
-    //     h_d->Scale(1.0/h_d->Integral());
-    //   }
-    // } else {
-    //   if (h_u->Integral() > 0.0)  h_u->Scale(1.0/h_u->Integral());
-    //   if (h_d->Integral() > 0.0)  h_d->Scale(1.0/h_d->Integral());
-    // }
-    // nus_[i]->set_shape_u(std::unique_ptr<TH1>(h_u));
-    // nus_[i]->set_shape_d(std::unique_ptr<TH1>(h_d));
   }
 }
 

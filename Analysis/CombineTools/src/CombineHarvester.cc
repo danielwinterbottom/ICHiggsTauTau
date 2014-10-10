@@ -269,15 +269,16 @@ void CombineHarvester::LoadShapes(Process* entry,
         norm->printStream(log(), norm->defaultPrintContents(0),
                          norm->defaultPrintStyle(0), "[LoadShapes] ");
       }
-    }
-
-    RooAbsData const* data_obj = nullptr;
-    for (unsigned i = 0; i < obs_.size(); ++i) {
-      if (entry->bin() == obs_[i]->bin() &&
-          entry->bin_id() == obs_[i]->bin_id()) {
-        data_obj = obs_[i]->data();
+      // If we can upcast norm to a RooRealVar then we can interpret
+      // it as a free parameter that should be added to the list
+      RooRealVar* norm_var = dynamic_cast<RooRealVar*>(norm);
+      if (norm_var) {
+        RooArgSet tmp_set(*norm_var);
+        ImportParameters(&tmp_set);
       }
     }
+
+    RooAbsData const* data_obj = FindMatchingData(entry);
 
     if (data_obj) {
       if (verbosity_ >= 1)
@@ -374,11 +375,14 @@ std::pair<std::string, std::string> CombineHarvester::SetupWorkspace(
     std::cout << "Something went wrong here\n";
     return res;
   }
-  if (mapping.file) {
-    mapping.file->cd();
-    RooWorkspace* w =
-        dynamic_cast<RooWorkspace*>(gDirectory->Get(res.first.c_str()));
-    AddWorkspace(w);
+  if (!wspaces_.count(res.first)) {
+    if (mapping.file) {
+      mapping.file->cd();
+      RooWorkspace* w =
+          dynamic_cast<RooWorkspace*>(gDirectory->Get(res.first.c_str()));
+      AddWorkspace(w);
+      delete w;
+    }
   }
   return res;
 }
@@ -421,5 +425,14 @@ void CombineHarvester::ImportParameters(RooArgSet *vars) {
   } while (x->Next());
 }
 
-
+RooAbsData const* CombineHarvester::FindMatchingData(Process const* proc) {
+  RooAbsData const* data_obj = nullptr;
+  for (unsigned i = 0; i < obs_.size(); ++i) {
+    if (proc->bin() == obs_[i]->bin() &&
+        proc->bin_id() == obs_[i]->bin_id()) {
+      data_obj = obs_[i]->data();
+    }
+  }
+  return data_obj;
+}
 }

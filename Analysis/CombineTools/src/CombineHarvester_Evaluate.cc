@@ -140,7 +140,9 @@ double CombineHarvester::GetRateInternal(ProcNusMap const& lookup,
     // If we are evaluating the effect of a single parameter
     // check the list of associated nuisances and skip if
     // this "single_nus" is not in the list
-    if (single_nus != "") {
+    // However - we can't skip if the process has a pdf, as
+    // we haven't checked what the parameters are
+    if (single_nus != "" && !procs_[i]->pdf()) {
       if (!ch::any_of(lookup[i], [&](Nuisance const* nus) {
         return nus->name() == single_nus;
       })) continue;
@@ -164,39 +166,86 @@ double CombineHarvester::GetRateInternal(ProcNusMap const& lookup,
 
 TH1F CombineHarvester::GetShapeInternal(ProcNusMap const& lookup,
     std::string const& single_nus) {
-  TH1F shape = *((TH1F*)(procs_[0]->shape()));
-  shape.Reset();
+  TH1F shape;
+  bool shape_init = false;
 
   for (unsigned i = 0; i < procs_.size(); ++i) {
     // Might be able to skip if only interested in one nuisance
-    if (single_nus != "") {
+    // However - we can't skip if the process has a pdf, as
+    // we haven't checked what the parameters are
+    if (single_nus != "" && !procs_[i]->pdf()) {
       if (!ch::any_of(lookup[i], [&](Nuisance const* nus) {
         return nus->name() == single_nus;
       })) continue;
     }
 
     double p_rate = procs_[i]->rate();
-    TH1F proc_shape = *((TH1F*)(procs_[i]->shape()));
-
-    for (auto nus_it : lookup[i]) {
-      double x = params_[nus_it->name()]->val();
-      if (nus_it->asymm()) {
-        if (x >= 0) {
-          p_rate *= std::pow(nus_it->value_u(), x);
-        } else {
-          p_rate *= std::pow(nus_it->value_d(), -1.0*x);
-        }
-        if (nus_it->type() == "shape") {
-          TH1F diff = ShapeDiff(x, procs_[i]->shape(),
-            nus_it->shape_d(), nus_it->shape_u());
-          proc_shape.Add(&diff);
-        }
+    if (procs_[i]->shape()) {
+      TH1F proc_shape;
+      TH1F const* test_f = dynamic_cast<TH1F const*>(procs_[i]->shape());
+      TH1D const* test_d = dynamic_cast<TH1D const*>(procs_[i]->shape());
+      if (test_f) {
+        test_f->Copy(proc_shape);
+      } else if (test_d) {
+        test_d->Copy(proc_shape);
       } else {
-        p_rate *= std::pow(nus_it->value_u(), x);
+        throw std::runtime_error(
+            "[CombineHarvester] TH1 is not a TH1F or a TH1D");
       }
+
+      for (auto nus_it : lookup[i]) {
+        double x = params_[nus_it->name()]->val();
+        if (nus_it->asymm()) {
+          if (x >= 0) {
+            p_rate *= std::pow(nus_it->value_u(), x);
+          } else {
+            p_rate *= std::pow(nus_it->value_d(), -1.0*x);
+          }
+          if (nus_it->type() == "shape") {
+            ShapeDiff(x, &proc_shape, procs_[i]->shape(), nus_it->shape_d(),
+                      nus_it->shape_u());
+          }
+        } else {
+          p_rate *= std::pow(nus_it->value_u(), x);
+        }
+      }
+      for (int b = 1; b <= proc_shape.GetNbinsX(); ++b) {
+        if (proc_shape.GetBinContent(b) < 0.) proc_shape.SetBinContent(b, 0.);
+      }
+      proc_shape.Scale(p_rate);
+      if (!shape_init) {
+        proc_shape.Copy(shape);
+        shape.Reset();
+        shape_init = true;
+      }
+      shape.Add(&proc_shape);
+    } else if (procs_[i]->pdf()) {
+      RooAbsData const* data_obj = FindMatchingData(procs_[i].get());
+      std::string var_name = "CMS_th1x";
+      if (data_obj) var_name = data_obj->get()->first()->GetName();
+      TH1::AddDirectory(false);
+      TH1F proc_shape = *(dynamic_cast<TH1F*>(procs_[i]->pdf()->createHistogram(
+                             var_name.c_str())));
+      for (auto nus_it : lookup[i]) {
+        double x = params_[nus_it->name()]->val();
+        if (nus_it->asymm()) {
+          if (x >= 0) {
+            p_rate *= std::pow(nus_it->value_u(), x);
+          } else {
+            p_rate *= std::pow(nus_it->value_d(), -1.0*x);
+          }
+        } else {
+          p_rate *= std::pow(nus_it->value_u(), x);
+        }
+      }
+      proc_shape.Scale(p_rate);
+      if (!shape_init) {
+        proc_shape.Copy(shape);
+        shape.Reset();
+        shape_init = true;
+      }
+      shape.Add(&proc_shape);
     }
-    proc_shape.Scale(p_rate);
-    shape.Add(&proc_shape);
   }
   return shape;
 }
@@ -210,49 +259,69 @@ double CombineHarvester::GetObservedRate() {
 }
 
 TH1F CombineHarvester::GetObservedShape() {
-  TH1::AddDirectory(false);
   TH1F shape;
-  if (obs_[0]->shape()) {
-    shape = *((TH1F*)(obs_[0]->shape()));
-  } else if (obs_[0]->data()) {
-    shape = *((TH1F*)obs_[0]->data()->createHistogram("h", *(RooAbsRealLValue*)obs_[0]->data()->get()->first()));
-    shape.Scale(1. / shape.Integral());
-  }
-  shape.Reset();
+  bool shape_init = false;
+
   for (unsigned i = 0; i < obs_.size(); ++i) {
     TH1F proc_shape;
+    double p_rate = obs_[i]->rate();
     if (obs_[i]->shape()) {
-      proc_shape = *((TH1F*)(obs_[i]->shape()));
+      TH1F const* test_f = dynamic_cast<TH1F const*>(procs_[i]->shape());
+      TH1D const* test_d = dynamic_cast<TH1D const*>(procs_[i]->shape());
+      if (test_f) {
+        test_f->Copy(proc_shape);
+      } else if (test_d) {
+        test_d->Copy(proc_shape);
+      } else {
+        throw std::runtime_error(
+            "[CombineHarvester] TH1 is not a TH1F or a TH1D");
+      }
     } else if (obs_[i]->data()) {
-      proc_shape = *((TH1F*)obs_[0]->data()->createHistogram("h", *(RooAbsRealLValue*)obs_[0]->data()->get()->first()));
+      std::string var_name = obs_[i]->data()->get()->first()->GetName();
+      proc_shape = *(dynamic_cast<TH1F*>(obs_[i]->data()->createHistogram(
+                             var_name.c_str())));
       proc_shape.Scale(1. / proc_shape.Integral());
     }
-    double p_rate = obs_[i]->rate();
     proc_shape.Scale(p_rate);
+    if (!shape_init) {
+      proc_shape.Copy(shape);
+      shape.Reset();
+      shape_init = true;
+    }
     shape.Add(&proc_shape);
   }
   return shape;
 }
 
-TH1F CombineHarvester::ShapeDiff(double x,
+void CombineHarvester::ShapeDiff(double x,
+    TH1F * target,
     TH1 const* nom,
     TH1 const* low,
     TH1 const* high) {
-  TH1F diff = *(TH1F*)(high);
-  diff.Add(low, -1.0);
-  TH1F sum = *(TH1F*)(high);
-  sum.Add(low, 1.0);
-  sum.Add(nom, -2.0);
-  sum.Scale(smoothStepFunc(x));
-  sum.Add(&diff);
-  sum.Scale(0.5*x);
-  return sum;
+  double fx = smoothStepFunc(x);
+  for (int i = 1; i <= target->GetNbinsX(); ++i) {
+    float h = high->GetBinContent(i);
+    float l = low->GetBinContent(i);
+    float n = nom->GetBinContent(i);
+    target->SetBinContent(
+        i, target->GetBinContent(i) + 0.5 * ((h - l) + (h + l - 2. * n) * fx));
+  }
 }
 
 void CombineHarvester::SetParameters(std::vector<ch::Parameter> params) {
   params_.clear();
   for (unsigned i = 0; i < params.size(); ++i) {
     params_[params[i].name()] = std::make_shared<ch::Parameter>(params[i]);
+  }
+}
+
+void CombineHarvester::RenameParameter(std::string const& oldname,
+                                       std::string const& newname) {
+  auto it = params_.find(oldname);
+  if (it != params_.end()) {
+    params_[newname] = it->second;
+    params_[newname]->set_name(newname);
+    params_.erase(it);
   }
 }
 
@@ -263,6 +332,11 @@ void CombineHarvester::UpdateParameters(std::vector<ch::Parameter> params) {
       it->second->set_val(params[i].val());
       it->second->set_err_d(params[i].err_d());
       it->second->set_err_u(params[i].err_u());
+    } else {
+      if (verbosity_ >= 1) {
+        log() << "[UpdateParameters] Parameter \"" << params[i].name()
+              << "\" is not defined\n";
+      }
     }
   }
 }
@@ -333,4 +407,25 @@ void CombineHarvester::VariableRebin(std::vector<double> bins) {
     }
   }
 }
+
+void CombineHarvester::SetPdfBins(unsigned nbins) {
+  for (unsigned i = 0; i < procs_.size(); ++i) {
+    std::set<std::string> binning_vars;
+    if (procs_[i]->pdf()) {
+      RooAbsData const* data_obj = FindMatchingData(procs_[i].get());
+      std::string var_name = "CMS_th1x";
+      if (data_obj) var_name = data_obj->get()->first()->GetName();
+      binning_vars.insert(var_name);
+    }
+    for (auto & it : wspaces_) {
+      for (auto & var : binning_vars) {
+        RooRealVar* avar =
+            dynamic_cast<RooRealVar*>(it.second->var(var.c_str()));
+        if (avar) avar->setBins(nbins);
+      }
+    }
+  }
+
+}
+
 }
