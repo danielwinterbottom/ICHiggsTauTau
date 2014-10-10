@@ -22,6 +22,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/QuarkGluonDiscriminatorStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/GenLevelStudy.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhRecoilCorrector.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhBJetRegression.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhSync.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
@@ -92,6 +93,7 @@ int main(int argc, char* argv[]){
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool quark_gluon_study;         // Run study on quark-gluon jet discriminators
   bool make_gen_plots;            // Make generator level plots at start of chain
+  bool bjet_regr_correction;      // Apply b jet regression corrections
   string allowed_tau_modes;       // "" means all, otherwise "1,10"=allow 1prong1pizero,3prong
   bool moriond_tau_scale;         // Use new central tau scale shifts
   bool large_tscale_shift;        // Shift tau energy scale by +/- 6% instead of 3%
@@ -150,6 +152,7 @@ int main(int argc, char* argv[]){
       ("hadronic_tau_selector",  po::value<unsigned>(&hadronic_tau_selector)->default_value(0))
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
       ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
+      ("bjet_regr_correction",po::value<bool>(&bjet_regr_correction)->default_value(false))
       ("make_gen_plots",      po::value<bool>(&make_gen_plots)->default_value(false))
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
       ("moriond_tau_scale",   po::value<bool>(&moriond_tau_scale)->default_value(false))
@@ -227,6 +230,7 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
   std::cout << boost::format(param_fmt) % "pu_id_training" % pu_id_training;
   std::cout << boost::format(param_fmt) % "make_gen_plots" % make_gen_plots;
+  std::cout << boost::format(param_fmt) % "bjet_regr_correction" % bjet_regr_correction;
 
   // Load necessary libraries for ROOT I/O of custom classes
   gSystem->Load("libFWCoreFWLite.dylib");
@@ -861,6 +865,10 @@ int main(int argc, char* argv[]){
   CopyCollection<PFJet>
     filteredJetCopyCollection("CopyFilteredJets","pfJetsPFlow","pfJetsPFlowFiltered");
    
+  HhhBJetRegression hhhBJetRegression = HhhBJetRegression
+  ("hhhBJetRegression")
+  .set_jets_label("pfJetsPFlow");
+   
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
   // ------------------------------------------------------------------------------------ 
@@ -1162,10 +1170,13 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&emuMVA);
 								  analysis.AddModule(&emuMVABoth);
     }
-		if (strategy == strategy::paper2013 &&channel ==channel::mt){
-		analysis.AddModule(&mtMVABoth);
-		analysis.AddModule(&mtMVACategory);
-		}
+   if (strategy == strategy::paper2013 &&channel ==channel::mt){
+     analysis.AddModule(&mtMVABoth);
+     analysis.AddModule(&mtMVACategory);
+   }
+   if(bjet_regr_correction) {
+                                  analysis.AddModule(&hhhBJetRegression);
+   }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&hhhSync);
     if (!quark_gluon_study)       analysis.AddModule(&hhhCategories);

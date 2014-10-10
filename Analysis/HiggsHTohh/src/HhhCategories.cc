@@ -289,6 +289,7 @@ namespace ic {
     Met const* met = event->GetPtr<Met>(met_label_);
     met_sig_ = met->et_sig();
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+    //std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlowCorrected");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> lowpt_jets = jets;
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
@@ -304,7 +305,7 @@ namespace ic {
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not
     if (event->Exists("retag_result")) {
-      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
+      auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
     } else {
       ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
