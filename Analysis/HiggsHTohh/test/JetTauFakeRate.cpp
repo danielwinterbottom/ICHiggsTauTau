@@ -125,10 +125,10 @@ int main(int argc, char* argv[]){
   //.set_predicate(bind(MinPtMaxEta, _1, jet_pt, jet_eta)&&(bind(&PFJet::pu_id_mva_loose,_1)));
 	.set_predicate(bind(MinPtMaxEta,_1,jet_pt,jet_eta)&&(bind(&PFJet::charged_had_energy_frac,_1)>0)&&(bind(&PFJet::neutral_had_energy_frac,_1)<0.99)&&(bind(&PFJet::charged_em_energy_frac,_1)<0.99)&&(bind(&PFJet::neutral_em_energy_frac,_1)<0.99)&&((bind(&PFJet::charged_multiplicity,_1)>1)||((bind(&PFJet::charged_multiplicity,_1)>0)&&(bind(&PFJet::neutral_multiplicity,_1)>0))));
 
-	OverlapFilter<GenParticle,PFJet> GenMuonJetOverlapFilter = OverlapFilter<GenParticle,PFJet>("GenMuonJetOverlapFilter")
-	.set_input_label("genParticles")
-	.set_reference_label("pfJetsPFlow")
-	.set_min_dr(0.5);
+	OverlapFilter<PFJet,GenParticle> GenMuonJetOverlapFilter = OverlapFilter<PFJet,GenParticle>("GenMuonJetOverlapFilter")
+	.set_input_label("pfJetsPFlow")
+	.set_reference_label("genParticles")
+	.set_min_dr(0.7);
 
 
   JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")

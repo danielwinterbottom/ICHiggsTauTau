@@ -209,7 +209,14 @@ namespace ic {
 					if(ROOT::Math::VectorUtil::DeltaR(jets.at(jit)->vector(),genparticles.at(0)->vector())<5){
 						std::cout<<"FAILED!!"<<std::endl;
 					}
-				}
+					}
+					for(UInt_t k=0; k<genparticles.size();k++){
+					if(genparticles.at(k)->pdgid()==15||genparticles.at(k)->pdgid()==-15){
+					std::cout<<"THIS IS A TAU"<<std::endl;
+					}
+					}
+
+				
 				}
 
 
@@ -286,7 +293,7 @@ namespace ic {
 						jetpt_dz_and_puid_rej_->Fill(jets.at(jetit)->pt());
 					}
 
-					//if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
+					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
 
 					theDRgj=100;
 					thegenjetn=100;
@@ -353,7 +360,7 @@ namespace ic {
 
 
 
-					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<1.47&&theDR<0.5&&taus.at(thetaun)->GetTauID("decayModeFindingOldDMs")>0.5){
+					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5&&taus.at(thetaun)->GetTauID("decayModeFindingOldDMs")>0.5){
 						standard_tau_histos_["dm_taupt_match"]->Fill(jets.at(jetit)->pt());
 						standard_tau_histos_["dm_taueta_match"]->Fill(jets.at(jetit)->eta());
 						standard_tau_histos_["dm_tauphi_match"]->Fill(jets.at(jetit)->phi());
@@ -445,7 +452,7 @@ namespace ic {
 
 
 					}
-					//}
+					}
 				}
 
 				//Here goes the actual code to do the study. 
