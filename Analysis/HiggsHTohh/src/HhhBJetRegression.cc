@@ -80,13 +80,15 @@ namespace ic {
       prebjet_muf    = (*it).muon_energy_frac();
       prebjet_nhf    = (*it).neutral_had_energy_frac();
       prebjet_phf    = (*it).photon_energy_frac();
-      
-      double pt_corr = prebjet_pt*regression_reader_->EvaluateMVA("BDT");
-      double E_corr = (*it).energy()*regression_reader_->EvaluateMVA("BDT");
+          
+      double SF = regression_reader_->EvaluateMVA("BDT");
+      double pt_corr = prebjet_pt*SF;
+      double E_corr = (*it).energy()*SF;
       (*it).set_pt(pt_corr);
       (*it).set_energy(E_corr);
-      vec_out.push_back(*it);  
+      vec_out.push_back(*it); 
     }
+    //Set of corrected jets saved as a new collection. Each jet will exist even though the correction is only valid for pt>20.
     event->Add(jets_label_+"CorrectedProduct", vec_out);
     std::vector<PFJet> &vec_in = event->Get<std::vector<PFJet> >(jets_label_+"CorrectedProduct");
     ptr_vec_out.resize(vec_in.size());
