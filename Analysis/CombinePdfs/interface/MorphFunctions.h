@@ -2,15 +2,6 @@
 #define ICHiggsTauTau_CombineTools_MorphFunctions_h
 #include <algorithm>
 #include <vector>
-// #include <boost/range/begin.hpp>
-// #include <boost/range/end.hpp>
-// #include "boost/range/algorithm_ext/erase.hpp"
-// #include "boost/algorithm/string.hpp"
-// #include "boost/lexical_cast.hpp"
-// #include "boost/regex.hpp"
-// #include "boost/bind.hpp"
-// #include "TFile.h"
-// #include "TGraph.h"
 #include "RooWorkspace.h"
 #include "RooHistPdf.h"
 
