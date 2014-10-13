@@ -8,30 +8,41 @@
 #include "RooFitResult.h"
 #include "RooRealVar.h"
 #include "RooDataHist.h"
+#include "RooProduct.h"
 
 namespace ch {
 
-void BuildRooMorphing(RooWorkspace & ws, CombineHarvester & cb,
-                      std::string const& mass_var, bool verbose) {
+void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
+                      bool verbose, std::string norm_postfix) {
   using std::set;
   using std::string;
   using std::vector;
   using boost::lexical_cast;
 
-  set<string> s_masses =
+  set<string> mass_set =
       cb.GenerateSetFromProcs<string>(std::mem_fn(&Process::mass));
 
-  set<double> d_masses;
-  for (auto const& m : s_masses) d_masses.insert(lexical_cast<double>(m));
+  vector<double> mass_vec;
+  vector<string> mass_str_vec;
+  for (auto const& m : mass_set) {
+    mass_str_vec.push_back(m);
+    // mass_vec.push_back(lexical_cast<double>(m));
+  }
+  std::sort(mass_str_vec.begin(), mass_str_vec.end(),
+    [](string const& s1, string const& s2) {
+      return lexical_cast<double>(s1) < lexical_cast<double>(s2);
+    });
+  for (auto const& s : mass_str_vec) {
+    if (verbose) std::cout << ">> Mass point: " << s << "\n";
+    mass_vec.push_back(lexical_cast<double>(s));
+  }
+  unsigned n = mass_vec.size();
 
-  double mass_min = *(d_masses.begin());
-  double mass_max = *(--d_masses.end());
-
-  RooRealVar mh(mass_var.c_str(), mass_var.c_str(), (mass_max + mass_min) / 2.,
-                mass_min, mass_max);
+  double mass_min = mass_vec.front();
+  double mass_max = mass_vec.back();
 
   if (verbose) {
-    std::cout << ">> Found " << d_masses.size() << " mass points with min "
+    std::cout << ">> Found " << mass_vec.size() << " mass points with min "
               << mass_min << " and max " << mass_max << "\n";
     mh.Print();
   }
@@ -45,10 +56,10 @@ void BuildRooMorphing(RooWorkspace & ws, CombineHarvester & cb,
     set<string> sigs =
       tmp.GenerateSetFromProcs<string>(std::mem_fn(&Process::process));
     for (auto s : sigs) {
-      std::cout << ">> bin: " << b << " process: " << s << "\n";
+      if (verbose) std::cout << ">> bin: " << b << " process: " << s << "\n";
       ch::CombineHarvester tmp2 = std::move(tmp.cp().process({s}));
       TH1F data_hist = tmp2.GetObservedShape();
-      tmp2.PrintAll();
+      // tmp2.PrintAll();
       RooRealVar mtt("CMS_th1x", "CMS_th1x", 0,
                      static_cast<float>(data_hist.GetNbinsX()));
       mtt.setBins(data_hist.GetNbinsX());
@@ -56,80 +67,89 @@ void BuildRooMorphing(RooWorkspace & ws, CombineHarvester & cb,
                      static_cast<float>(tmp2.GetShape().GetNbinsX()));
       morph_mtt.setConstant();
       morph_mtt.setBins(tmp2.GetShape().GetNbinsX());
-      // mtt.Print();
-      // morph_mtt.Print();
+      if (verbose) {
+        mtt.Print();
+        morph_mtt.Print();
+      }
       vector<string> systs = ch::Set2Vec(
           tmp2.GenerateSetFromNus<string>(std::mem_fn(&Nuisance::name)));
-      std::cout << ">> Found shape systematics:\n";
+      if (verbose) std::cout << ">> Found shape systematics:\n";
       RooArgList syst_list;
       for (auto const& syst: systs) {
         if (verbose) std::cout << ">>>> " << syst << "\n";
         syst_list.addClone(RooRealVar(syst.c_str(), syst.c_str(), 0));
       }
-      auto v_masses = Set2Vec(s_masses);
-      vector<vector<RooDataHist>> dh_vec(v_masses.size());
-      vector<double> yield_vec(v_masses.size());
-      vector<vector<RooHistPdf>> pdf_vec(v_masses.size());
-      vector<RooArgList> v_arglist(v_masses.size());
-      vector<FastVerticalInterpHistPdf> v_pdfs;
+      vector<vector<TH1F>> h_vec(n);
+      vector<TList> list_vec(n);
+      vector<double> yield_vec(n);
+      vector<FastVerticalInterpHistPdf2> v_pdfs;
 
-      for (unsigned m = 0; m < v_masses.size(); ++m) {
-        ch::CombineHarvester tmp3 = std::move(tmp2.cp().mass({v_masses[m]}));
-        TH1F shape = tmp3.GetShape();
+      vector<vector<double>> k_vals_hi(systs.size(), vector<double>(n));
+      vector<vector<double>> k_vals_lo(systs.size(), vector<double>(n));
+      vector<RooSpline1D> k_splines_hi;
+      vector<RooSpline1D> k_splines_lo;
+      vector<AsymPow> k_asym;
+      RooArgList k_list;
+
+      for (unsigned m = 0; m < n; ++m) {
+        ch::CombineHarvester tmp3 =
+            std::move(tmp2.cp().mass({mass_str_vec[m]}));
         yield_vec[m] = tmp3.GetRate();
-        string name = b + "_" + s + "_" + v_masses[m];
-        dh_vec[m].push_back(ch::TH1F2Data(tmp3.GetShape(), morph_mtt,
-                                              name + "_hist"));
+        h_vec[m].push_back(RebinHist(tmp3.GetShape()));
         for (unsigned s = 0; s < systs.size(); ++s) {
           tmp3.cp().nus_name({systs[s]}).ForEachNus([&](Nuisance const* n) {
-            dh_vec[m]
-                .push_back(ch::TH1F2Data(*(TH1F*)(n->shape_u()), morph_mtt,
-                                         name + "_" + systs[s] + "Up_hist"));
-            dh_vec[m]
-                .push_back(ch::TH1F2Data(*(TH1F*)(n->shape_d()), morph_mtt,
-                                         name + "_" + systs[s] + "Down_hist"));
+            h_vec[m].push_back(RebinHist(*(TH1F*)(n->shape_u())));
+            h_vec[m].push_back(RebinHist(*(TH1F*)(n->shape_d())));
+            k_vals_hi[s][m] = n->value_u();
+            k_vals_lo[s][m] = n->value_d();
           });
         }
       }
-      for (unsigned m = 0; m < v_masses.size(); ++m) {
-        string name = b + "_" + s + "_" + v_masses[m];
-        pdf_vec[m].push_back(
-            RooHistPdf((name + "_pdf").c_str(), "", morph_mtt, dh_vec[m][0]));
-        for (unsigned s = 0; s < systs.size(); ++s) {
-          pdf_vec[m].push_back(RooHistPdf((name + "_" + systs[s] + "Up_pdf").c_str(),
-                                          "", morph_mtt, dh_vec[m][2 * s + 1]));
-          pdf_vec[m].push_back(RooHistPdf((name + "_" + systs[s] + "Down_pdf").c_str(),
-                                          "", morph_mtt, dh_vec[m][2 * s + 2]));
+
+      std::string key = b + "_" + s;
+      RooSpline1D yield((key + "_yield").c_str(), "", mh,
+                        n, &(mass_vec[0]), &(yield_vec[0]), "LINEAR");
+      k_list.add(yield);
+      for (unsigned s = 0; s < systs.size(); ++s) {
+        k_splines_hi.push_back(RooSpline1D((key + "_" + systs[s] + "_hi").c_str(), "", mh, n,
+                        &(mass_vec[0]), &(k_vals_hi[s][0]), "LINEAR"));
+        k_splines_lo.push_back(RooSpline1D((key + "_" + systs[s] + "_lo").c_str(), "", mh, n,
+                        &(mass_vec[0]), &(k_vals_lo[s][0]), "LINEAR"));
+      }
+      for (unsigned s = 0; s < systs.size(); ++s) {
+        k_asym.push_back(
+            AsymPow((key + "_" + systs[s] + "_lnN").c_str(), "",
+                    k_splines_lo[s], k_splines_hi[s],
+                    *(reinterpret_cast<RooRealVar*>(syst_list.at(s)))));
+      }
+      for (unsigned s = 0; s < systs.size(); ++s) k_list.add(k_asym[s]);
+
+      for (unsigned m = 0; m < n; ++m) {
+        for (unsigned h = 0; h < h_vec[m].size(); ++h) {
+          list_vec[m].Add(&h_vec[m][h]);
         }
       }
 
-      for (unsigned m = 0; m < pdf_vec.size(); ++m) {
-        for (unsigned s = 0; s < pdf_vec[m].size(); ++s) {
-          v_arglist[m].add(pdf_vec[m][s]);
-        }
+      for (unsigned m = 0; m < n; ++m) {
+        v_pdfs.push_back(FastVerticalInterpHistPdf2(
+            (b + "_" + s + mass_str_vec[m] + "_vpdf").c_str(), "", morph_mtt,
+            list_vec[m], syst_list, 1, 0));
+        // v_pdfs.back().Print();
       }
+      RooArgList v_pdf_list;
+      for (unsigned m = 0; m < n; ++m) v_pdf_list.add(v_pdfs[m]);
 
-      for (unsigned m = 0; m < v_arglist.size(); ++m) {
-        v_pdfs.push_back(FastVerticalInterpHistPdf(
-            (b + "_" + s + v_masses[m] + "_vpdf").c_str(), "", morph_mtt,
-            v_arglist[m], syst_list, 1, 0));
-      }
-
-      RooMorphingPdf morph((b + "_" + s + "_mpdf").c_str(), "", mtt, mh, true, *(data_hist.GetXaxis()),
+      RooMorphingPdf morph((b + "_" + s + "_mpdf").c_str(), "", mtt, mh,
+                           v_pdf_list, mass_vec, true, *(data_hist.GetXaxis()),
                            *(tmp2.GetShape().GetXaxis()));
-      RooHttYield yield((b + "_" + s + "_mpdf_norm").c_str(), "", mh);
-      for (unsigned m = 0; m < v_masses.size(); ++m) {
-        morph.AddPoint(lexical_cast<double>(v_masses[m]), v_pdfs[m]);
-        yield.AddPoint(lexical_cast<double>(v_masses[m]), yield_vec[m]);
-      }
 
-      ws.import(morph, RooFit::Silence());
-      ws.import(yield, RooFit::Silence());
+      RooProduct full_yield((b + "_" + s + "_mpdf" + norm_postfix).c_str(), "",
+                            k_list);
+
+      ws.import(morph, RooFit::RecycleConflictNodes());
+      ws.import(full_yield, RooFit::RecycleConflictNodes());
     }
   }
   // ws.Print();
 }
-
-
-
 }

@@ -128,6 +128,17 @@ RooDataHist TH1F2Data(TH1F const& hist, RooRealVar const& x,
   return dh;
 }
 
+TH1F RebinHist(TH1F const& hist) {
+  TH1::AddDirectory(0);
+  TH1F shape("tmp", "tmp", hist.GetNbinsX(), 0.,
+             static_cast<float>(hist.GetNbinsX()));
+  for (int i = 1; i <= hist.GetNbinsX(); ++i) {
+    shape.SetBinContent(i, hist.GetBinContent(i));
+  }
+  return shape;
+}
+
+
 // RooHistPdf Hist2Pdf(TH1F const& hist, RooRealVar const& x,
 //                     std::string const& name) {
 //   TH1F shape("tmp", "tmp", hist.GetNbinsX(), 0.,
@@ -140,5 +151,6 @@ RooDataHist TH1F2Data(TH1F const& hist, RooRealVar const& x,
 //                  RooFit::Import(shape, false));
 //   RooHistPdf((name+"_pdf").c_str(), (name+"_pdf").c_str(), x, dh);
 // }
+
 
 }

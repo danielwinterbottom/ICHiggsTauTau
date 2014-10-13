@@ -19,14 +19,16 @@
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #pragma GCC diagnostic ignored "-Wignored-qualifiers"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-#include "CombinePdfs/interface/RooMorphingPdf.h"
-#include "CombinePdfs/interface/RooHttYield.h"
-#include "CombinePdfs/interface/VerticalInterpHistPdf.h"
+#include "HiggsAnalysis/CombinedLimit/interface/RooMorphingPdf.h"
+#include "HiggsAnalysis/CombinedLimit/interface/RooSpline1D.h"
+#include "HiggsAnalysis/CombinedLimit/interface/VerticalInterpHistPdf.h"
+#include "HiggsAnalysis/CombinedLimit/interface/AsymPow.h"
 #pragma GCC diagnostic pop
 
 namespace ch {
 
 void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb,
-                      std::string const& mass_var, bool verbose);
+                      RooAbsReal& mass_var, bool verbose,
+                      std::string norm_postfix = "_norm");
 }
 #endif

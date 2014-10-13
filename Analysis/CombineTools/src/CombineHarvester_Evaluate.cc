@@ -266,8 +266,8 @@ TH1F CombineHarvester::GetObservedShape() {
     TH1F proc_shape;
     double p_rate = obs_[i]->rate();
     if (obs_[i]->shape()) {
-      TH1F const* test_f = dynamic_cast<TH1F const*>(procs_[i]->shape());
-      TH1D const* test_d = dynamic_cast<TH1D const*>(procs_[i]->shape());
+      TH1F const* test_f = dynamic_cast<TH1F const*>(obs_[i]->shape());
+      TH1D const* test_d = dynamic_cast<TH1D const*>(obs_[i]->shape());
       if (test_f) {
         test_f->Copy(proc_shape);
       } else if (test_d) {

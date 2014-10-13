@@ -109,7 +109,9 @@ void CombineHarvester::AddWorkspace(RooWorkspace const *ws) {
 }
 
 void CombineHarvester::ExtractPdfs(std::string const &ws_name,
-                                   std::string const &rule) {
+                                   std::string const &rule,
+                                   CombineHarvester *other) {
+  CombineHarvester *target = other ? other : this;
   std::vector<HistMapping> mapping(1);
   mapping[0].process = "*";
   mapping[0].category = "*";
@@ -117,7 +119,7 @@ void CombineHarvester::ExtractPdfs(std::string const &ws_name,
   if (!wspaces_.count(ws_name)) return;
   for (unsigned  i = 0; i < procs_.size(); ++i) {
     if (!procs_[i]->pdf()) {
-      LoadShapes(procs_[i].get(), mapping);
+      target->LoadShapes(procs_[i].get(), mapping);
     }
   }
 }

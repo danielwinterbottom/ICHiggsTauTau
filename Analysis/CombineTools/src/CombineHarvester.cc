@@ -238,7 +238,8 @@ void CombineHarvester::LoadShapes(Process* entry,
       throw std::runtime_error(
           "[CombineHarvester::LoadShapes] Error in extracting TH1");
     }
-    TH1* h = dynamic_cast<TH1*>(gDirectory->Get(mapping.pattern.c_str())->Clone());
+    TH1* h =
+        dynamic_cast<TH1*>(gDirectory->Get(mapping.pattern.c_str())->Clone());
     h->SetDirectory(0);
     entry->set_rate(h->Integral());
     if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
@@ -286,8 +287,9 @@ void CombineHarvester::LoadShapes(Process* entry,
       ImportParameters(pdf->getParameters(data_obj));
       if (norm) ImportParameters(norm->getParameters(data_obj));
     } else {
-      log() << "[LoadShapes] No matching RooAbsData found, assume observable "
-               "\"CMS_th1x\"\n";
+      if (verbosity_ >= 1)
+        log() << "[LoadShapes] No matching RooAbsData found, assume observable "
+                 "\"CMS_th1x\"\n";
       RooRealVar mx("CMS_th1x" , "CMS_th1x", 0, 1);
       RooArgSet tmp_set(mx);
       ImportParameters(pdf->getParameters(&tmp_set));

@@ -205,7 +205,8 @@ class CombineHarvester {
 
   void ExtractShapes(std::string const& file, std::string const& rule,
                      std::string const& syst_rule);
-  void ExtractPdfs(std::string const& ws_name, std::string const& rule);
+  void ExtractPdfs(std::string const& ws_name, std::string const& rule,
+                   CombineHarvester* other = nullptr);
   void ExtractData(std::string const& ws_name, std::string const& rule);
 
   void AddWorkspace(RooWorkspace const* ws);
