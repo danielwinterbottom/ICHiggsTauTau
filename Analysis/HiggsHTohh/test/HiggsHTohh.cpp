@@ -990,6 +990,7 @@ int main(int argc, char* argv[]){
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label)
     .set_kinfit_mode(kinfit_mode)
+    .set_bjet_regression(bjet_regr_correction)
     .set_write_tree(true);
   if (mass_scale_mode == 1) hhhCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) hhhCategories.set_mass_shift(1.01);
