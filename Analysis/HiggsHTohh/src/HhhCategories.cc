@@ -25,6 +25,7 @@ namespace ic {
       write_tree_ = true;
       write_plots_ = false;
       experimental_ = false;
+      bjet_regression_ = false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
   }
 
@@ -56,6 +57,7 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "write_plots"     % write_plots_;
       std::cout << boost::format(param_fmt()) % "experimental"    % experimental_;
       std::cout << boost::format(param_fmt()) % "kinfit_mode"     % kinfit_mode_;
+      std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
       if (write_tree_) {
         outtree_ = fs_->make<TTree>("ntuple","ntuple");
@@ -289,7 +291,8 @@ namespace ic {
     Met const* met = event->GetPtr<Met>(met_label_);
     met_sig_ = met->et_sig();
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
-    //std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlowCorrected");
+    std::vector<PFJet*> corrected_jets;
+    if(bjet_regression_) corrected_jets = event->GetPtrVec<PFJet>("pfJetsPFlowCorrected");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> lowpt_jets = jets;
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
@@ -301,6 +304,8 @@ namespace ic {
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
     //Use prebjet collection for candidate jets for h->bb. Sort by CSV discriminator
     std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
+    std::vector<std::pair<PFJet*,PFJet*> > prebjet_pairs;
+    if(bjet_regression_) prebjet_pairs = MatchByDR(prebjets, corrected_jets, 0.5, true, true);
 
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not
@@ -370,7 +375,7 @@ namespace ic {
 
 
     mt_1_ = MT(lep1, met);
-		mt_2_ = MT(lep2, met);
+    mt_2_ = MT(lep2, met);
     mt_ll_ = MT(ditau, met);
     pzeta_ = PZeta(ditau, met, 0.85);
     pzetavis_ = PZetaVis(ditau);
@@ -447,7 +452,9 @@ namespace ic {
 
     if (n_prebjets_ >= 1) {
       prebjetpt_1_ = prebjets[0]->pt();
+      if(bjet_regression_) prebjetpt_1_ = prebjet_pairs[0].second->pt();
       prebjetEt_1_ = std::sqrt(prebjets[0]->pt()*prebjets[0]->pt() + prebjets[0]->M()*prebjets[0]->M());
+      if(bjet_regression_) prebjetEt_1_ = std::sqrt(prebjetpt_1_*prebjetpt_1_ + prebjet_pairs[0].second->M()*prebjet_pairs[0].second->M());
       prebjeteta_1_ = prebjets[0]->eta();
       prebjet_1_met_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(prebjets[0]->vector(), met->vector()));
       prebjet_1_met_dtheta_ = std::fabs(prebjets[0]->vector().theta() - met->vector().theta());
@@ -476,16 +483,20 @@ namespace ic {
 
     if (n_prebjets_ >= 2) {
       prebjetpt_2_ = prebjets[1]->pt();
+      if(bjet_regression_) prebjetpt_2_ = prebjet_pairs[1].second->pt();
       prebjetpt_bb_ = (prebjets[0]->vector()+prebjets[1]->vector()).pt();
       prebjet_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(prebjets[0]->vector(),prebjets[1]->vector()));
       prebjeteta_2_ = prebjets[1]->eta();
       prebjet_mjj_ = (prebjets[0]->vector() + prebjets[1]->vector()).M();
+      if(bjet_regression_) prebjet_mjj_ = (prebjet_pairs[0].second->vector() + prebjet_pairs[1].second->vector()).M();
       prebjet_deta_ = fabs(prebjets[0]->eta() - prebjets[1]->eta());
       prebjet_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(prebjets[0]->vector(), prebjets[1]->vector()));
       prebjet_dtheta_ = std::fabs((prebjets[0]->vector().theta() -  prebjets[1]->vector().theta()));
       mjj_tt_= (prebjets[0]->vector() + prebjets[1]->vector() + ditau->vector() + met->vector()).M();
+      if(bjet_regression_) mjj_tt_= (prebjet_pairs[0].second->vector() + prebjet_pairs[1].second->vector() + ditau->vector() + met->vector()).M();
       if (event->Exists("svfitHiggs")) {
         mjj_h_= (prebjets[0]->vector() + prebjets[1]->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
+        if(bjet_regression_) mjj_h_= (prebjet_pairs[0].second->vector() + prebjet_pairs[1].second->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
       } else {
         mjj_h_ = -9999;
       }
@@ -499,7 +510,9 @@ namespace ic {
         if(kinfit_mode_ == 2) hypo_mh2.push_back(90);
 
         TLorentzVector b1      = TLorentzVector(prebjets[0]->vector().px(),prebjets[0]->vector().py(),prebjets[0]->vector().pz(), prebjets[0]->vector().E());
+        if(bjet_regression_) b1 = TLorentzVector(prebjet_pairs[0].second->vector().px(),prebjet_pairs[0].second->vector().py(),prebjet_pairs[0].second->vector().pz(),prebjet_pairs[0].second->vector().E());
         TLorentzVector b2      = TLorentzVector(prebjets[1]->vector().px(),prebjets[1]->vector().py(),prebjets[1]->vector().pz(), prebjets[1]->vector().E());
+        if(bjet_regression_) b2 = TLorentzVector(prebjet_pairs[1].second->vector().px(),prebjet_pairs[1].second->vector().py(),prebjet_pairs[1].second->vector().pz(),prebjet_pairs[1].second->vector().E());
         TLorentzVector tau1vis      = TLorentzVector(lep1->vector().px(),lep1->vector().py(),lep1->vector().pz(), lep1->vector().E());
         TLorentzVector tau2vis      = TLorentzVector(lep2->vector().px(),lep2->vector().py(),lep2->vector().pz(), lep2->vector().E());
         TLorentzVector ptmiss  = TLorentzVector(met->vector().px(),met->vector().py(),0,met->vector().pt());

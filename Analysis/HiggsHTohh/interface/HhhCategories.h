@@ -25,6 +25,7 @@ class HhhCategories : public ModuleBase {
   CLASS_MEMBER(HhhCategories, bool, write_tree)
   CLASS_MEMBER(HhhCategories, bool, write_plots)
   CLASS_MEMBER(HhhCategories, bool, experimental)
+  CLASS_MEMBER(HhhCategories, bool, bjet_regression)
   CLASS_MEMBER(HhhCategories, int, kinfit_mode )
   CLASS_MEMBER(HhhCategories, fwlite::TFileService*, fs)
 
