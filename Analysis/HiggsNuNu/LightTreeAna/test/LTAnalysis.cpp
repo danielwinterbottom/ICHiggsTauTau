@@ -39,6 +39,7 @@ int main(int argc, char* argv[]){
   std::string channel;
   std::string syst;
 
+  bool do_datatop;
   bool runblind;
 
   po::options_description preconfig("Configuration"); 
@@ -58,6 +59,7 @@ int main(int argc, char* argv[]){
     ("jetmetdphicut",            po::value<std::string>(&jetmetdphicut)->default_value("alljetsmetnomu_mindphi>1.0"))
     ("cjvcut",            po::value<std::string>(&cjvcut)->default_value("n_jets_cjv_30<1"))
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
+    ("do_datatop",                  po::value<bool>(&do_datatop)->default_value(true))
     ("runblind",                  po::value<bool>(&runblind)->default_value(true));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -195,13 +197,17 @@ int main(int argc, char* argv[]){
   std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
   std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+jetmetdphicut;//wel
 
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&"+jetmetdphicut;
-  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&"+jetmetdphicut;//wtau
-//  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut;
-//  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&"+jetmetdphicut;//wtau
+  //  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&alljetsmetnomu_mindphi>1.0";
+  //  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1.0";//wtau
+  //std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;
+  //std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;//wtau
+  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
+  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
 
-  std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";
-  std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";//top
+  std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";//&&jetmetnomu_mindphi>1.0";
+  std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";//&&jetmetnomu_mindphi>1.0";//top
+  //std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1&&jetmetnomu_mindphi>1.0";
+  //std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1&&jetmetnomu_mindphi>1.0";//top
 //   std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";
 //   std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";//top
 
@@ -351,7 +357,6 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat);
 
-  //!!PU WEIGHT OK TO HERE
   //ZBKG SHAPE GENERATION
   std::vector<std::string> Zcontbkgsets;
   Zcontbkgsets.push_back("VV");
@@ -405,6 +410,7 @@ int main(int argc, char* argv[]){
   Wcontbkgsets.push_back("VV");
   Wcontbkgsets.push_back("Top");
   Wcontbkgsets.push_back("WGamma");
+
   //Wcontbkgsets.push_back("VBF-QCD");
 //   Wcontbkgsets.push_back("ZJets_ll");
 //   Wcontbkgsets.push_back("ZJets_ll_vbf");
@@ -412,7 +418,8 @@ int main(int argc, char* argv[]){
 
   std::vector<std::string> Wcontbkgextrafactordir;//list of dirs with data driven weights for above backgrounds
   Wcontbkgextrafactordir.push_back("");
-  Wcontbkgextrafactordir.push_back("top");
+  if(do_datatop) Wcontbkgextrafactordir.push_back("top");
+  else Wcontbkgextrafactordir.push_back("");
   Wcontbkgextrafactordir.push_back("");
 
   std::vector<int> Wcontbkgisz;
@@ -508,7 +515,7 @@ int main(int argc, char* argv[]){
   std::vector<std::string> QCDcontbkgextrafactordir;//list of dirs with data driven weights for above backgrounds
     QCDcontbkgextrafactordir.push_back("");
     QCDcontbkgextrafactordir.push_back("top");
-    QCDcontbkgextrafactordir.push_back("");
+     QCDcontbkgextrafactordir.push_back("");
    QCDcontbkgextrafactordir.push_back("zvv");
    QCDcontbkgextrafactordir.push_back("zvv");
     QCDcontbkgextrafactordir.push_back("wel");
@@ -756,7 +763,7 @@ int main(int argc, char* argv[]){
   elementvec.push_back(znunuele);
   elementvec.push_back(qcdele);
   elementvec.push_back(vvele);
-  elementvec.push_back(wgele);
+   elementvec.push_back(wgele);
   elementvec.push_back(topele);
   elementvec.push_back(sigele);
   elementvec.push_back(ggHele);
@@ -795,7 +802,9 @@ int main(int argc, char* argv[]){
   //analysis->AddModule(&addfriends);
   //analysis->AddModule(&mvatrainer);
   //analysis->AddModule(&normplots);
-  analysis->AddModule(&top);
+  if(do_datatop)analysis->AddModule(&top);
+  else analysis->AddModule(&topraw);
+
   analysis->AddModule(&wmunu);
   analysis->AddModule(&wenu);
   analysis->AddModule(&wtaunu);
@@ -811,8 +820,7 @@ int main(int argc, char* argv[]){
    //analysis->AddModule(&zmumuraw);
    //analysis->AddModule(&znunuraw);
   analysis->AddModule(&vv);
-  analysis->AddModule(&wgamma);
-  //analysis->AddModule(&topraw);
+   analysis->AddModule(&wgamma);
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
   analysis->AddModule(&signal);
   analysis->AddModule(&ggHsignal);
