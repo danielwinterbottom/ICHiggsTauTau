@@ -18,6 +18,7 @@ namespace ic {//namespace
     mc_(mc::summer12_53X),
     era_(era::data_2012_moriond) {
     save_weights_ = true;
+    do_top_reweighting_     = false;    
     do_trg_weights_     = false;    //Store as part of total weight
     do_1dparkedtrg_weights_ = false;//Parked analysis weights treating mjj,j2pt,l1 and hlt met separately from histogram
     do_fitted1dparkedtrg_weights_ = false;//Parked analysis weights treating mjj,j2pt,l1 and hlt met separately from fitted function
@@ -691,6 +692,25 @@ namespace ic {//namespace
     //eventInfo->set_weight("!trigger",metl1weight*methltweight*mjjhltweight*jet1hltweight*jet2hltweight);
 
     //eventInfo->set_weight("lepton", weight);
+    if (do_top_reweighting_) {
+      double top_wt = 1.0;
+      double top_wt_up = 1.0;
+      double top_wt_down = 1.0;
+      std::vector<GenParticle *> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      for (unsigned i = 0; i < parts.size(); ++i) {
+        if (parts[i]->status() == 3 && abs(parts[i]->pdgid()) == 6) {
+          double pt = parts[i]->pt();
+          pt = std::min(pt, 400.);
+          top_wt *= std::exp(0.156-0.00137*pt);
+        }
+      }
+      top_wt = std::sqrt(top_wt);
+      top_wt_up = top_wt * top_wt;
+      top_wt_down = 1.0;
+      eventInfo->set_weight("!tquark_weight_up", top_wt_up);
+      eventInfo->set_weight("!tquark_weight_down", top_wt_down);
+      eventInfo->set_weight("tquark_weight", top_wt);
+    }
 
     //ID+iso tight leptons
     std::vector<Electron*> const& elecs = event->GetPtrVec<Electron>("selElectrons");

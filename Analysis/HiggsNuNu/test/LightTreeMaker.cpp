@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
   bool taulepdiscrtight;          // Use tight electron and muon discriminants
   bool dojerdebug;                // Access runmetunc collections for debugging
+  bool dotopreweighting;          // Do Top reweighting
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -155,6 +156,7 @@ int main(int argc, char* argv[]){
     ("dofitted1dparkedtrgeff",po::value<bool>(&dofitted1dparkedtrgeff)->default_value(false))
     ("dobinnedin2d1dtrgeff",po::value<bool>(&dobinnedin2d1dtrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
+    ("dotopreweighting",    po::value<bool>(&dotopreweighting)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
@@ -629,6 +631,7 @@ int main(int argc, char* argv[]){
     .set_era(era)
     .set_mc(mc)
     .set_save_weights(true)
+    .set_do_top_reweighting(dotopreweighting)
     .set_do_trg_weights(false)
     .set_trg_applied_in_mc(true)
     .set_do_idiso_tight_weights(false)
@@ -707,6 +710,7 @@ int main(int argc, char* argv[]){
 
 
   HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
+  WtoLeptonFilter.set_do_wgammafilter(true);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules

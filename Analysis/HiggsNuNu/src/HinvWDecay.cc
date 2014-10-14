@@ -25,7 +25,7 @@ namespace ic {
     countDecay_e_ = 0;
     countDecay_mu_ = 0;
     countRest_ = 0;
-
+    do_wgammafilter_=false;
     return 0;
   }
 
@@ -40,11 +40,16 @@ namespace ic {
 
       if (debug) std::cout << i << " " << parts[i]->status() << " " << parts[i]->pdgid() << std::endl;
 
+
       if ((!isEmbedded_ && parts[i]->status() != 3) || 
-	  (isEmbedded_ && parts[i]->status() != 2)
+	  (isEmbedded_ && parts[i]->status() != 2) ||(do_wgammafilter_&&parts[i]->status()!=2)
 	  ) continue;
 
       unsigned id = abs(parts[i]->pdgid());
+      
+      if(do_wgammafilter_&&id==22){
+	if(parts[i]->pt()>10) return 1;
+      }
 
       ////if e or mu found and e or mu channel asked, just pass
       if (id == flavour_ && flavour_ != 15) {

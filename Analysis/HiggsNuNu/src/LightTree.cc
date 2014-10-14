@@ -110,6 +110,9 @@ namespace ic {
     ele1_pt_=-1;
     ele1_eta_=-10000;
     ele1_phi_=-1;
+    tau1_pt_=-1;
+    tau1_eta_=-10000;
+    tau1_phi_=-1;
     lep_mt_=-1;
   }
 
@@ -216,6 +219,9 @@ namespace ic {
     outputTree_->Branch("ele1_pt",&ele1_pt_);
     outputTree_->Branch("ele1_eta",&ele1_eta_);
     outputTree_->Branch("ele1_phi",&ele1_phi_);
+    outputTree_->Branch("tau1_pt",&tau1_pt_);
+    outputTree_->Branch("tau1_eta",&tau1_eta_);
+    outputTree_->Branch("tau1_phi",&tau1_phi_);
     outputTree_->Branch("lep_mt",&lep_mt_);
 
     return 0;
@@ -343,6 +349,17 @@ namespace ic {
       ele1_pt_=-1;
       ele1_eta_=9999999;
       ele1_phi_=9999999;
+    }
+
+    if(ntaus_>=1){
+      tau1_pt_=taus[0]->pt();
+      tau1_eta_=taus[0]->eta();
+      tau1_phi_=taus[0]->phi();
+    }
+    else{
+      tau1_pt_=-1;
+      tau1_eta_=9999999;
+      tau1_phi_=9999999;
     }
 
     if(nselmuons_==2){
@@ -518,6 +535,7 @@ namespace ic {
       static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
       if (metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
+	//if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
 	outputTree_->Fill();
 	++processed;
       }

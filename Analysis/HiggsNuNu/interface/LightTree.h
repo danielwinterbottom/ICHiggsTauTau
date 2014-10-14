@@ -112,6 +112,9 @@ namespace ic {
     double ele1_pt_;
     double ele1_eta_;
     double ele1_phi_;
+    double tau1_pt_;
+    double tau1_eta_;
+    double tau1_phi_;
     double lep_mt_;
 
   public:
