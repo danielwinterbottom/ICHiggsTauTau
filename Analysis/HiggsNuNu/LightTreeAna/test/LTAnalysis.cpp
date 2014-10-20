@@ -361,7 +361,7 @@ int main(int argc, char* argv[]){
   std::vector<std::string> Zcontbkgsets;
   Zcontbkgsets.push_back("VV");
   Zcontbkgsets.push_back("Top");
-  Zcontbkgsets.push_back("WGamma");
+  //Zcontbkgsets.push_back("WGamma");
   Zcontbkgsets.push_back("WJets_enu");
   Zcontbkgsets.push_back("WJets_munu");
   Zcontbkgsets.push_back("WJets_taunu");
@@ -409,7 +409,7 @@ int main(int argc, char* argv[]){
   std::vector<std::string> Wcontbkgsets; //List of sets for ncbkg
   Wcontbkgsets.push_back("VV");
   Wcontbkgsets.push_back("Top");
-  Wcontbkgsets.push_back("WGamma");
+  //Wcontbkgsets.push_back("WGamma");
 
   //Wcontbkgsets.push_back("VBF-QCD");
 //   Wcontbkgsets.push_back("ZJets_ll");
@@ -420,12 +420,12 @@ int main(int argc, char* argv[]){
   Wcontbkgextrafactordir.push_back("");
   if(do_datatop) Wcontbkgextrafactordir.push_back("top");
   else Wcontbkgextrafactordir.push_back("");
-  Wcontbkgextrafactordir.push_back("");
+  //Wcontbkgextrafactordir.push_back("");
 
   std::vector<int> Wcontbkgisz;
   Wcontbkgisz.push_back(0);
   Wcontbkgisz.push_back(0);
-  Wcontbkgisz.push_back(0);
+  //Wcontbkgisz.push_back(0);
 
   DataNormShape wmunu("wmunu");
   wmunu.set_sigmcset("WJets_munu")
@@ -481,7 +481,7 @@ int main(int argc, char* argv[]){
   //TOP
   std::vector<std::string> Topcontbkgsets;
   Topcontbkgsets.push_back("VV");
-  Topcontbkgsets.push_back("WGamma");
+  //Topcontbkgsets.push_back("WGamma");
   Topcontbkgsets.push_back("WJets_enu");
   Topcontbkgsets.push_back("WJets_munu");
   Topcontbkgsets.push_back("WJets_taunu");
@@ -505,7 +505,7 @@ int main(int argc, char* argv[]){
   std::vector<std::string> QCDcontbkgsets; //list of sets for ncbkg
   QCDcontbkgsets.push_back("VV");
   QCDcontbkgsets.push_back("Top");
-  QCDcontbkgsets.push_back("WGamma");
+  //QCDcontbkgsets.push_back("WGamma");
    QCDcontbkgsets.push_back("ZJets_ll");
    QCDcontbkgsets.push_back("ZJets_ll_vbf");
   QCDcontbkgsets.push_back("WJets_enu");
@@ -515,7 +515,7 @@ int main(int argc, char* argv[]){
   std::vector<std::string> QCDcontbkgextrafactordir;//list of dirs with data driven weights for above backgrounds
     QCDcontbkgextrafactordir.push_back("");
     QCDcontbkgextrafactordir.push_back("top");
-     QCDcontbkgextrafactordir.push_back("");
+    //QCDcontbkgextrafactordir.push_back("");
    QCDcontbkgextrafactordir.push_back("zvv");
    QCDcontbkgextrafactordir.push_back("zvv");
     QCDcontbkgextrafactordir.push_back("wel");
@@ -763,7 +763,7 @@ int main(int argc, char* argv[]){
   elementvec.push_back(znunuele);
   elementvec.push_back(qcdele);
   elementvec.push_back(vvele);
-   elementvec.push_back(wgele);
+  //   elementvec.push_back(wgele);
   elementvec.push_back(topele);
   elementvec.push_back(sigele);
   elementvec.push_back(ggHele);
@@ -783,7 +783,7 @@ int main(int argc, char* argv[]){
   dirvec.push_back("zvv");
   //dirvec.push_back("qcd");
   dirvec.push_back("vv");
-  dirvec.push_back("wg");  
+  //dirvec.push_back("wg");  
   dirvec.push_back("top");
   dirvec.push_back("qqH");
   if(!(channel=="nunu"&&runblind))dirvec.push_back("data_obs");
@@ -820,7 +820,7 @@ int main(int argc, char* argv[]){
    //analysis->AddModule(&zmumuraw);
    //analysis->AddModule(&znunuraw);
   analysis->AddModule(&vv);
-   analysis->AddModule(&wgamma);
+  //analysis->AddModule(&wgamma);
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
   analysis->AddModule(&signal);
   analysis->AddModule(&ggHsignal);

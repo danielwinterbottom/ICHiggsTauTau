@@ -66,6 +66,7 @@ namespace ic{
     TH1F contbkgshape;
     bool firstbkg=true;
     //IF NO DIRS TO GET DATA DRIVEN WEIGHTS, GET SETS SHAPE
+    double extrancbkgerr=0;
     if(contbkgextrafactordir_.size()==0){
       contbkgshape= filemanager->GetSetsShape(contbkgset_,"jet2_pt(200,0.,1000.)",basesel_,(contcat_+contbkgextrasel_),contmcweight_,false);
     }
@@ -74,8 +75,10 @@ namespace ic{
       if(contbkgextrafactordir_.size()==contbkgset_.size()){
 	for(unsigned iBkg=0;iBkg<contbkgset_.size();iBkg++){
 	  double extrafactor=1;
+	  double extrafactorfracerr=0;
 	  TDirectory* extrafactordir;
 	  TVectorD *ddweight;
+	  TVectorD *normerrs;
 	  if(contbkgextrafactordir_[iBkg]==""){
 	    extrafactor=1;
 	  }
@@ -86,15 +89,19 @@ namespace ic{
 	  else{
 	    extrafactordir=fs_->GetDirectory(contbkgextrafactordir_[iBkg].c_str());
 	    ddweight = (TVectorD*)extrafactordir->Get("ddweight");
+	    normerrs = (TVectorD*)extrafactordir->Get("normerrs");
 	    if(contbkgisz_.size()==contbkgset_.size()){
 	      if(contbkgisz_[iBkg]==0){
 		extrafactor=(*ddweight)[0];
+		extrafactorfracerr=sqrt(pow((*normerrs)[0],2)+pow((*normerrs)[1],2));
 	      }
 	      if(contbkgisz_[iBkg]==1){
 		extrafactor=(*ddweight)[0];//EWK WEIGHT
+		extrafactorfracerr=sqrt(pow((*normerrs)[0],2)+pow((*normerrs)[2],2));
 	      }
 	      if(contbkgisz_[iBkg]==2){
 		extrafactor=(*ddweight)[1];//QCD WEIGHT
+		extrafactorfracerr=sqrt(pow((*normerrs)[0],2)+pow((*normerrs)[3],2));
 	      }
 	    }
 	  }
@@ -108,7 +115,10 @@ namespace ic{
 	    else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
 	  }
 	  else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
-	  
+	  //std::cout<<contbkgset_[iBkg]<<" "<<Integral(&nextbkg)<<" "<<extrafactorfracerr<<std::endl;
+	  double thisbkgextrancbkgerr=Integral(&nextbkg)*extrafactorfracerr;
+	  extrancbkgerr=sqrt(pow(extrancbkgerr,2)+pow(thisbkgextrancbkgerr,2));
+
 	  //ADD HISTOGRAMS TOGETHER
 	  if(firstbkg){
 	    contbkgshape=nextbkg;
@@ -135,6 +145,8 @@ namespace ic{
     double ncmcerr = Error(&contmcshape);
     double ncdataerr = Error(&contdatashape);
     double ncbkgerr = Error(&contbkgshape);
+
+    ncbkgerr=sqrt(pow(ncbkgerr,2)+pow(extrancbkgerr,2));//Add error from other data driven weight extrapolation factors
 
     std::cout<<"  ncmc: "<<ncmc<<"+-"<<ncmcerr<<", ncdata: "<<ncdata<<"+-"<<ncdataerr<<", ncbkg: "<<ncbkg<<"+-"<<ncbkgerr<<std::endl;
 
