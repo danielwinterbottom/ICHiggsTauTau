@@ -36,6 +36,8 @@ int main(int argc, char* argv[]){
 	bool by_decay_mode;
 	bool by_jet_type;
 	bool wjets_mode;
+	bool do_skim;
+	string skim_path="";
   
   po::options_description config("Configuration");
   po::variables_map vm;
@@ -48,6 +50,8 @@ int main(int argc, char* argv[]){
       ("output_name",         po::value<string>(&output_name)->required())
       ("output_folder",       po::value<string>(&output_folder)->default_value(""))
 			("by_decay_mode",				po::value<bool>(&by_decay_mode)->default_value(true))
+			("do_skim",							po::value<bool>(&do_skim)->default_value(false))
+			("skim_path",						po::value<string>(&skim_path)->default_value(""))
 			("by_jet_type",					po::value<bool>(&by_jet_type)->default_value(true))
 			("wjets_mode",					po::value<bool>(&wjets_mode)->default_value(false))
 			
@@ -98,6 +102,7 @@ int main(int argc, char* argv[]){
     files,                // Input files
     "icEventProducer/EventTree", // TTree name
     max_events);          // Max. events to process (-1 = all)
+	if(wjets_mode && do_skim && skim_path != "") analysis.DoSkimming(skim_path);
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);
@@ -114,7 +119,7 @@ int main(int argc, char* argv[]){
 	if(wjets_mode){
 	GenFilter
 	.set_input_label("genParticles")
-	.set_predicate(bind(MinPtMaxEta,_1,muon_pt,muon_eta)&&((bind(&GenParticle::pdgid,_1)==13)||bind(&GenParticle::pdgid,_1)==-13))
+	.set_predicate(bind(MinPtMaxEta,_1,muon_pt,muon_eta)&&(((bind(&GenParticle::pdgid,_1)==13)||(bind(&GenParticle::pdgid,_1)==-13))))
 	.set_min(2)
 	.set_max(2);
 	}
@@ -146,7 +151,7 @@ int main(int argc, char* argv[]){
 	analysis.AddModule(&GenMuonJetOverlapFilter);
 	}
   analysis.AddModule(&TauFilter); 
-  analysis.AddModule(&jetTauFakeRate); 
+	if(!do_skim) analysis.AddModule(&jetTauFakeRate);
 
 
   analysis.RunAnalysis();
