@@ -200,7 +200,7 @@ int main(int argc, char* argv[]){
 	if (add_sm_background != "") {
 		ana.AddSMSignalSamples({add_sm_background});
 		ana.AddSMHbbSignalSamples({add_sm_background});
-		ana.AddHWWSignalSamples({add_sm_background});
+		//ana.AddHWWSignalSamples({add_sm_background});
 	}
 	ana.AddMSSMSignalSamples(mssm_masses);
 	ana.AddMSSMbbHSignalSamples(bbH_masses);
@@ -234,7 +234,7 @@ int main(int argc, char* argv[]){
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 		ana.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
-		ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "");
+		//ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "");
 	}
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 	ana.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", "", 1.0);
@@ -350,7 +350,8 @@ int main(int argc, char* argv[]){
     if(do_highmass) ana.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up");
-			ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_hww_SM", "_"+syst_eff_t+"Up");
+			ana.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up");
+			//ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_hww_SM", "_"+syst_eff_t+"Up");
     }
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "_hww", "_"+syst_eff_t+"Down", 1.0);
@@ -359,7 +360,8 @@ int main(int argc, char* argv[]){
     if(do_highmass) ana.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
-			ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_hww_SM", "_"+syst_eff_t+"Down");
+			ana.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
+			//ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_hww_SM", "_"+syst_eff_t+"Down");
     }
  		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, sel, cat, "wt*wt_tau_id_up");
  		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, sel, cat, "wt*wt_tau_id_down");
@@ -414,7 +416,8 @@ int main(int argc, char* argv[]){
 		ana_syst.AddHWWSignalSamples(hww_masses);
 		if (add_sm_background != "") {
 			ana_syst.AddSMSignalSamples({add_sm_background});
-			ana_syst.AddHWWSignalSamples({add_sm_background});
+			ana_syst.AddSMHbbSignalSamples({add_sm_background});
+		//	ana_syst.AddHWWSignalSamples({add_sm_background});
 		}
 		ana_syst.AddMSSMSignalSamples(mssm_masses);
 		ana_syst.AddMSSMbbHSignalSamples(bbH_masses);
@@ -427,7 +430,8 @@ int main(int argc, char* argv[]){
 		//ana_syst.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
 		if (add_sm_background != "") {
 			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
-			ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
+			ana_syst.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
+			//ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		ana_syst.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
