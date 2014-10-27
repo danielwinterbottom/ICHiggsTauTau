@@ -126,7 +126,7 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
 	errvec[1]=sqrt(pow(ewkweightnsmcfracerr*nsmcewk,2)+pow(qcdweightnsmcfracerr*nsmcqcd,2))/(nsmcewk+nsmcqcd);
 	errvec[2]=ewkweightnsmcfracerr;
 	errvec[3]=qcdweightnsmcfracerr;
-	std::cout<<"NSMC EWK: "<<nsmcewk <<" NSMC QCD: "<<nsmcqcd<<std::endl;
+	std::cout<<"NSMC EWK: "<<nsmcewk<<"+-"<<nsmcewkerr <<" NSMC QCD: "<<nsmcqcd<<"+-"<<nsmcqcderr<<std::endl;
       }
      
       //!!MAKE OVERALL SIGMCSHAPE HISTO
@@ -138,6 +138,12 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
       sigmcshape->Add(&sigmcewkshape,&sigmcqcdshape);
       sigmcshape->SetName(histname.c_str());
       sigmcshape->Write();
+      if(iShape==0){
+	double ns=Integral(sigmcshape);
+	double nserr=Integral(sigmcshape);
+	std::cout<<"Final estimate: "<<ns<<"+-"<<ns*errvec[0]<<" (data stat.) +-"<<ns*errvec[1]<<"(MC stat.)"<<std::endl;
+      }
+
     }
     dir->cd();
     weightvec.Write("ddweight");

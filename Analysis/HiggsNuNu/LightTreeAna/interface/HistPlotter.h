@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
 #include <string>
 #include <vector>
+#include <utility>
 #include "TH1F.h"
 #include "TPad.h"
 #include "TLatex.h"
@@ -46,6 +47,11 @@ namespace ic {
     CLASS_MEMBER(LTPlotElement,std::string,legopts)
     CLASS_MEMBER(LTPlotElement,std::string,sample)
     CLASS_MEMBER(LTPlotElement,TH1F*,hist_ptr)
+    CLASS_MEMBER(LTPlotElement,std::vector<std::string>,blindvar)
+    std::vector<std::pair<double,double> > blindrange_;
+    LTPlotElement set_blindrange(std::vector<std::pair<double,double> > const& blindrange) {blindrange_ = blindrange; return *this; }
+    std::vector<std::pair<double,double> > blindrange() {return blindrange_; }
+    
   };
 
   class LTShapeElement{

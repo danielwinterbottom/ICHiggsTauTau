@@ -173,13 +173,14 @@ namespace ic{
       }
       sigmcshape.SetName(histname.c_str());
       double unnormnsmc=Integral(&sigmcshape);
+      double unnormnsmcerr=Error(&sigmcshape);
       sigmcshape.Scale(weight*sigcontextrafactor_);
       double nsmc=Integral(&sigmcshape);
       double nsmcerr=Error(&sigmcshape);
       double weightednsmcstatfrac=sqrt(((nsmcerr/nsmc)*(nsmcerr/nsmc))+(weighterrmcstatfrac*weighterrmcstatfrac));
       //!!MAKE SURE  TO TAKE NSMC ERROR OUT OF NORMALISATION ERROR AS SHOULD BE DONE BIN BY BIN
       if(iShape==0){
-	std::cout<<"  Unnormalised NSMC: "<<unnormnsmc<<std::endl;
+	std::cout<<"  Unnormalised NSMC: "<<unnormnsmc<<"+-"<<unnormnsmcerr<<" (MC stat.)"<<std::endl;
 	std::cout<<"  Normalised NSMC: "<<nsmc<<"+-"<<nsmc*weighterrdatastatfrac<<"(data stat.)+-"<<nsmc*weightednsmcstatfrac<<"(MC stat.)"<<std::endl;
 	errvec[0]=weighterrdatastatfrac;
 	errvec[1]=weightednsmcstatfrac;

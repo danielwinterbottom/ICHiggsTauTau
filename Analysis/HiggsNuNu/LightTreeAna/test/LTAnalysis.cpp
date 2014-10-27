@@ -41,6 +41,7 @@ int main(int argc, char* argv[]){
 
   bool do_datatop;
   bool runblind;
+  bool runblindreg;
 
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
@@ -60,7 +61,8 @@ int main(int argc, char* argv[]){
     ("cjvcut",            po::value<std::string>(&cjvcut)->default_value("n_jets_cjv_30<1"))
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
     ("do_datatop",                  po::value<bool>(&do_datatop)->default_value(true))
-    ("runblind",                  po::value<bool>(&runblind)->default_value(true));
+    ("runblind",                  po::value<bool>(&runblind)->default_value(true))
+    ("runblindreg",                  po::value<bool>(&runblindreg)->default_value(true));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -124,15 +126,16 @@ int main(int argc, char* argv[]){
   //shape.push_back("BDT(12,-1.,0.2)");
 
   if(!(channel=="taunu"||channel=="top")){
-    shape.push_back("jet2_pt(27,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
-    shape.push_back("jet1_pt(27,30.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
-    shape.push_back("metnomuons(25,50.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
+    shape.push_back("jet2_pt(26,40.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
+    shape.push_back("jet1_pt(25,50.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
+    shape.push_back("metnomuons(21,90.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
     shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
     shape.push_back("l1met(20,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
-    shape.push_back("dijet_M(14,600.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
+    shape.push_back("dijet_M(10,1000.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
     shape.push_back("jetmetnomu_mindphi(32,0.,3.2)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
-    shape.push_back("alljetsmetnomu_mindphi(32,0.,3.2)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
+    shape.push_back("alljetsmetnomu_mindphi(7,2.5,3.2)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
     shape.push_back("metnomu_significance(25,3.,8.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
+    //shape.push_back("metnomu_significance(35,1.,8.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
     shape.push_back("dijet_sumeta(50,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};entries");
     shape.push_back("ht(50,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
     shape.push_back("jetunclet_mindphi(32,0,3.2)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});entries");
@@ -153,19 +156,20 @@ int main(int argc, char* argv[]){
     shape.push_back("jet3_csv(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;entries");
   }
   else{
-    shape.push_back("jet2_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
-    shape.push_back("jet1_pt(14,30.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
-    shape.push_back("metnomuons(12,50.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
+    shape.push_back("jet2_pt(13,40.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
+    shape.push_back("jet1_pt(12,50.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
+    shape.push_back("metnomuons(11,90.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
     shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
     shape.push_back("l1met(10,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
-    shape.push_back("dijet_M(7,600.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
+    shape.push_back("dijet_M(5,1000.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
     shape.push_back("sqrt(2*ele1_pt*mu1_pt*(cosh(ele1_eta-mu1_eta)-cos(ele1_phi-mu1_phi)))(40,0.,1000.)");histTitle.push_back(";M_{e#mu} (GeV);entries");
     shape.push_back("jet1_csv(21,0.,1.05)");histTitle.push_back(";Jet 1 CSV;entries");
     shape.push_back("jet2_csv(21,0.,1.05)");histTitle.push_back(";Jet 2 CSV;entries");
     shape.push_back("jet3_csv(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;entries");
     shape.push_back("jetmetnomu_mindphi(16,0.,3.2)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
-    shape.push_back("alljetsmetnomu_mindphi(7,0.,3.5)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
+    shape.push_back("alljetsmetnomu_mindphi(14,0.,3.5)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
     shape.push_back("metnomu_significance(12,3.,8.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
+    //shape.push_back("metnomu_significance(17,1.,8.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
     shape.push_back("dijet_sumeta(25,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};entries");
     shape.push_back("ht(25,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
     shape.push_back("jetunclet_mindphi(16,0,3.2)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});entries");
@@ -651,12 +655,25 @@ int main(int argc, char* argv[]){
   }
 
   std::vector<LTPlotElement> elementvec;
+
   LTPlotElement dataele;
   dataele.set_is_data(true)
     .set_scale(1)
     .set_legname("Data")
     .set_is_inrationum(true)
     .set_sample("data_obs");
+  if(runblindreg){
+    std::vector<std::string> blindvars;
+    std::vector<std::pair<double,double> > blindrange;
+    blindvars.push_back("alljetsmetnomu_mindphi");
+    blindvars.push_back("metnomu_significance");
+    std::pair<double,double>mindphirange(2.,6.);
+    std::pair<double,double>metsigrange(4.,20.);
+    blindrange.push_back(mindphirange);
+    blindrange.push_back(metsigrange);
+    dataele.set_blindvar(blindvars)
+      .set_blindrange(blindrange);
+  }
 
   LTPlotElement wmunuele;
   wmunuele.set_is_data(false)
@@ -741,18 +758,18 @@ int main(int argc, char* argv[]){
 
   LTPlotElement sigele;
   sigele.set_is_data(false)
-    .set_scale(20)
+    .set_scale(1)
     .set_color(kRed)
     .set_in_stack(false)
-    .set_legname("Signalx20")
+    .set_legname("Signalx1")
     .set_sample("qqH");
 
   LTPlotElement ggHele;
   ggHele.set_is_data(false)
-    .set_scale(20)
+    .set_scale(1)
     .set_color(kBlue)
     .set_in_stack(false)
-    .set_legname("ggHx20")
+    .set_legname("ggHx1")
     .set_sample("ggH");
 
   if(!(channel=="nunu"&&runblind))elementvec.push_back(dataele);
@@ -761,7 +778,7 @@ int main(int argc, char* argv[]){
   elementvec.push_back(wtaunuele);
   //  elementvec.push_back(zmumuele);
   elementvec.push_back(znunuele);
-  elementvec.push_back(qcdele);
+  //!!elementvec.push_back(qcdele);
   elementvec.push_back(vvele);
   //   elementvec.push_back(wgele);
   elementvec.push_back(topele);
@@ -816,7 +833,7 @@ int main(int argc, char* argv[]){
   //analysis->AddModule(&wmunuraw);
   //analysis->AddModule(&wenuraw);
   //analysis->AddModule(&wtaunuraw);  
-  analysis->AddModule(&QCDraw);
+  //!!analysis->AddModule(&QCDraw);
    //analysis->AddModule(&zmumuraw);
    //analysis->AddModule(&znunuraw);
   analysis->AddModule(&vv);

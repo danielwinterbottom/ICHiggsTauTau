@@ -9,6 +9,7 @@ namespace ic {
 			 bool isEmbedded) : ModuleBase(name) {
     flavour_ = flavour;
     isEmbedded_ = isEmbedded;
+    do_wgammafilter_=false;
   }
 
   HinvWDecay::~HinvWDecay() {
@@ -25,7 +26,6 @@ namespace ic {
     countDecay_e_ = 0;
     countDecay_mu_ = 0;
     countRest_ = 0;
-    do_wgammafilter_=false;
     return 0;
   }
 
@@ -40,16 +40,20 @@ namespace ic {
 
       if (debug) std::cout << i << " " << parts[i]->status() << " " << parts[i]->pdgid() << std::endl;
 
+      if(do_wgammafilter_&&parts[i]->status()==2){
+	unsigned id = abs(parts[i]->pdgid());
+	if(id==22){
+	  std::cout<<parts[i]->pt()<<std::endl;
+	  if(parts[i]->pt()>10) return 1;
+	}
+      }
 
       if ((!isEmbedded_ && parts[i]->status() != 3) || 
-	  (isEmbedded_ && parts[i]->status() != 2) ||(do_wgammafilter_&&parts[i]->status()!=2)
+	  (isEmbedded_ && parts[i]->status() != 2)
 	  ) continue;
 
       unsigned id = abs(parts[i]->pdgid());
       
-      if(do_wgammafilter_&&id==22){
-	if(parts[i]->pt()>10) return 1;
-      }
 
       ////if e or mu found and e or mu channel asked, just pass
       if (id == flavour_ && flavour_ != 15) {

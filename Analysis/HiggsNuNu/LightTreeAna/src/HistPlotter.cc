@@ -169,6 +169,21 @@ namespace ic{
 	TH1F* histo =dynamic_cast<TH1F*>(file->Get((elements_[iElement].sample()+"/"+shapes_[iShape].name()).c_str()));
 	writedir->cd();
 
+	for(unsigned iblindshape=0;iblindshape<elements_[iElement].blindvar().size();iblindshape++){
+	  if(shapes_[iShape].name()==elements_[iElement].blindvar()[iblindshape]){
+	    for (int j = 0; j < histo->GetNbinsX(); ++j) {
+	      double low_edge = histo->GetBinLowEdge(j+1);
+	      double high_edge = histo->GetBinWidth(j+1)+histo->GetBinLowEdge(j+1);
+	      double x_blind_min_=elements_[iElement].blindrange()[iblindshape].first;
+	      double x_blind_max_=elements_[iElement].blindrange()[iblindshape].second;
+	      if ((low_edge > x_blind_min_ && low_edge < x_blind_max_) || (high_edge > x_blind_min_ && high_edge < x_blind_max_)) {
+		histo->SetBinContent(j+1,0);
+		histo->SetBinError(j+1,0);
+	      }
+	    }
+	  }
+	}
+
 	if (add_underflows_ || add_overflows_){
 	  int tmpbins = histo->GetNbinsX();
 	  double tmpmin = histo->GetXaxis()->GetBinLowEdge(1);
@@ -303,6 +318,24 @@ namespace ic{
 	leg->AddEntry(elements_[iElement].hist_ptr(),elements_[iElement].hist_ptr()->GetName(),elements_[iElement].legopts().c_str());
       }
       leg->Draw("same");
+      c1->Update();
+
+      TLatex* lat=new TLatex();
+      lat->SetNDC();
+	//lat->SetTextSize(0.06);
+      lat->SetTextFont(42);
+
+      TLatex* lat2 = new TLatex();
+      lat2->SetNDC();
+      lat2->SetTextSize(0.04);
+      lat2->SetTextFont(42);
+
+      lat->DrawLatex(0.14,0.85,"CMS Preliminary");
+      lat->DrawLatex(0.14,0.78,"VBF H #rightarrow invisible");
+
+
+      lat2->DrawLatex(0.14,0.665,"#sqrt{s} = 8 TeV, L = 19.8 fb^{-1}");
+
       c1->Update();
 
       //DRAW RATIO PLOT
