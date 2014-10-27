@@ -126,8 +126,8 @@ int main(int argc, char* argv[]){
   //shape.push_back("BDT(12,-1.,0.2)");
 
   if(!(channel=="taunu"||channel=="top")){
-    shape.push_back("jet2_pt(26,40.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
-    shape.push_back("jet1_pt(25,50.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
+    shape.push_back("jet2_pt(26,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
+    shape.push_back("jet1_pt(25,50.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
     shape.push_back("metnomuons(21,90.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
     shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
     shape.push_back("l1met(20,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
@@ -156,8 +156,8 @@ int main(int argc, char* argv[]){
     shape.push_back("jet3_csv(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;entries");
   }
   else{
-    shape.push_back("jet2_pt(13,40.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
-    shape.push_back("jet1_pt(12,50.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
+    shape.push_back("jet2_pt(13,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
+    shape.push_back("jet1_pt(12,50.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
     shape.push_back("metnomuons(11,90.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
     shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
     shape.push_back("l1met(10,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
