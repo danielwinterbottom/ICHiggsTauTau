@@ -137,6 +137,22 @@ namespace ic {
     alias_map_["2jet1tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679)";
     alias_map_["1jet1tag"]     = "(n_prebjets==1 && prebjetbcsv_1>0.898)";
     alias_map_["2jet2tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
+		alias_map_["2jet0tag_slice0"]= "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>0 && prebjet_mjj<60)";
+		alias_map_["2jet0tag_slice1"]="(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=60 && prebjet_mjj<100)";
+		alias_map_["2jet0tag_slice2"]="(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=100 && prebjet_mjj<140)";
+		alias_map_["2jet0tag_slice3"]="(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=140 && prebjet_mjj<200)";
+		alias_map_["2jet0tag_slice4"]="(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=200 && prebjet_mjj<600)";
+		alias_map_["2jet1tag_slice0"]= "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>0 && prebjet_mjj<60)";
+		alias_map_["2jet1tag_slice1"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=60 && prebjet_mjj<100)";
+		alias_map_["2jet1tag_slice2"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=100 && prebjet_mjj<140)";
+		alias_map_["2jet1tag_slice3"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=140 && prebjet_mjj<200)";
+		alias_map_["2jet1tag_slice4"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=200 && prebjet_mjj<600)";
+		alias_map_["2jet2tag_slice0"]= "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>0 && prebjet_mjj<60)";
+		alias_map_["2jet2tag_slice1"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>=60 && prebjet_mjj<100)";
+		alias_map_["2jet2tag_slice2"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>=100 && prebjet_mjj<140)";
+		alias_map_["2jet2tag_slice3"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>=140 && prebjet_mjj<200)";
+		alias_map_["2jet2tag_slice4"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>=200 && prebjet_mjj<600)";
+
     
     //Extra categories for making control plots
     alias_map_["1jetinclusive"] = "(n_prebjets>=1)";
