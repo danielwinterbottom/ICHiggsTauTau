@@ -48,6 +48,7 @@ int main(int argc, char* argv[]){
   string syst_fakes_os_ss_shape;
 	string add_sm_background;
 	double sub_ztt_top_frac;
+	bool sub_ztt_top_shape;
 	double shift_tscale;
 	string fix_empty_bins;
 	string fix_negative_bins;
@@ -107,6 +108,7 @@ int main(int argc, char* argv[]){
 	  ("syst_zl_shift",    		    po::value<string>(&syst_zl_shift)->default_value(""))
 	  ("add_sm_background",       po::value<string>(&add_sm_background)->default_value(""))
 	  ("sub_ztt_top_frac",        po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
+	  ("sub_ztt_top_shape",        po::value<bool>(&sub_ztt_top_shape)->default_value(false))
 	  ("shift_tscale",    		    po::value<double>(&shift_tscale)->default_value(0.0))
 	  ("fix_empty_bins",   		    po::value<string>(&fix_empty_bins)->default_value(""))
 	  ("fix_empty_hists",   	    po::value<string>(&fix_empty_hists)->default_value(""))
@@ -205,7 +207,7 @@ int main(int argc, char* argv[]){
 	ana.AddMSSMSignalSamples(mssm_masses);
 	ana.AddMSSMbbHSignalSamples(bbH_masses);
 	if(do_highmass) ana.AddHighMassSignalSamples(high_masses);
-	if (is_2012 && check_ztt_top_frac) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
+    if (is_2012 && (check_ztt_top_frac || sub_ztt_top_shape)) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
 	ana.ReadTrees(folder);
 	ana.ParseParamFile(paramfile);
 
@@ -527,6 +529,33 @@ int main(int argc, char* argv[]){
     TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
     SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
     hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, 0.));
+  }
+  
+  // ************************************************************************
+	// Subtract ttbar MC embedded from ZTT
+	// ************************************************************************
+  if (is_2012 && sub_ztt_top_shape) {
+	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+	std::cout << "[HiggsHTohhPlot] Subtracting TOP contamination from ZTT embedded using TT embedded shape..." << std::endl;	
+    std::string top_label = (channel_str == "em") ? "ttbar" : "TT";
+	std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
+    
+    HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    TH1F ztt_hist = hmap[ztt_label].first;
+    HhhAnalysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
+    HhhAnalysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
+    HhhAnalysis::Value scaled_embedded = hmap[ztt_label].second;
+    double norm_sf = scaled_embedded.first / embedded_data.first;
+    double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
+    SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
+    hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, 0.));
+    ztt_hist.Add(&hmap[top_label+"Embedded"].first, -1);
+    HhhAnalysis::Value ztt_norm = HhhAnalysis::ValueSubtract(hmap[ztt_label].second, make_pair(embedded_ttbar_norm, 0.));
+    hmap[ztt_label].first = ztt_hist;
+    hmap[ztt_label] = make_pair(ztt_hist, ztt_norm);
+    HhhAnalysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
+	
   }
 
 	// ************************************************************************
