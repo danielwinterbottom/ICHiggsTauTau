@@ -548,10 +548,11 @@ int main(int argc, char* argv[]){
     HhhAnalysis::Value scaled_embedded = hmap[ztt_label].second;
     double norm_sf = scaled_embedded.first / embedded_data.first;
     double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
+    double embedded_ttbar_uncert = embedded_ttbar.second * norm_sf;
     SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
-    hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, 0.));
+    hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
     ztt_hist.Add(&hmap[top_label+"Embedded"].first, -1);
-    HhhAnalysis::Value ztt_norm = HhhAnalysis::ValueSubtract(hmap[ztt_label].second, make_pair(embedded_ttbar_norm, 0.));
+    HhhAnalysis::Value ztt_norm = HhhAnalysis::ValueSubtract(hmap[ztt_label].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
     hmap[ztt_label].first = ztt_hist;
     hmap[ztt_label] = make_pair(ztt_hist, ztt_norm);
     HhhAnalysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
