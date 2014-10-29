@@ -119,7 +119,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
         if (trk.isNonnull()) {
           dest.set_lead_dxy_vertex(trk->dxy(vtx.position()));
           dest.set_lead_dz_vertex(trk->dz(vtx.position()));
-        } else if (trk.isNonnull()) {
+        } else if (gsf.isNonnull()) {
           dest.set_lead_dxy_vertex(gsf->dxy(vtx.position()));
           dest.set_lead_dz_vertex(gsf->dz(vtx.position()));
         }
