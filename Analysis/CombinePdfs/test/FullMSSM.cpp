@@ -32,7 +32,7 @@ TH2F SantanderMatching(TH2F const& h4f, TH2F const& h5f, TH2F const* mass) {
   return res;
 }
 
-TH1F FixBinning(TH1F const& src, TH1F const& ref) {
+TH1F RestoreBinning(TH1F const& src, TH1F const& ref) {
   TH1F res = ref;
   res.Reset();
   for (int x = 1; x <= res.GetNbinsX(); ++x) {
@@ -120,17 +120,17 @@ int main() {
   RooHistFunc brtautau_A("brtautau_A", "brtautau_A", RooArgList(mA, tanb),
                          dh_brtautau_A);
 
-  RooFormulaVar ggF_xsec_br_h("ggF_xsec_br_h", "@0*@1",
+  RooProduct ggF_xsec_br_h("ggF_xsec_br_h", "",
                            RooArgList(ggF_xsec_h, brtautau_h));
-  RooFormulaVar ggF_xsec_br_H("ggF_xsec_br_H", "@0*@1",
+  RooProduct ggF_xsec_br_H("ggF_xsec_br_H", "",
                            RooArgList(ggF_xsec_H, brtautau_H));
-  RooFormulaVar ggF_xsec_br_A("ggF_xsec_br_A", "@0*@1",
+  RooProduct ggF_xsec_br_A("ggF_xsec_br_A", "",
                            RooArgList(ggF_xsec_A, brtautau_A));
-  RooFormulaVar bbH_xsec_br_h("bbH_xsec_br_h", "@0*@1",
+  RooProduct bbH_xsec_br_h("bbH_xsec_br_h", "",
                            RooArgList(bbH_xsec_h, brtautau_h));
-  RooFormulaVar bbH_xsec_br_H("bbH_xsec_br_H", "@0*@1",
+  RooProduct bbH_xsec_br_H("bbH_xsec_br_H", "",
                            RooArgList(bbH_xsec_H, brtautau_H));
-  RooFormulaVar bbH_xsec_br_A("bbH_xsec_br_A", "@0*@1",
+  RooProduct bbH_xsec_br_A("bbH_xsec_br_A", "",
                            RooArgList(bbH_xsec_A, brtautau_A));
   cout << "mA: " << mA.getVal() << "\n";
   cout << "tanb: " << tanb.getVal() << "\n\n";
@@ -184,6 +184,7 @@ int main() {
   cout << " done\n";
 
   cout << "Adding signal processes...";
+  // Here we will declare each Higgs contribution separately
   cb.AddProcesses(masses, {"htt"}, {"7TeV", "8TeV"}, {"mt"},
                   {"ggh", "ggH", "ggA"}, {mt_cats[0]}, true);
   cb.AddProcesses(masses, {"htt"}, {"7TeV", "8TeV"}, {"mt"},
@@ -201,6 +202,9 @@ int main() {
   cb.cp().era({"8TeV"}).backgrounds().ExtractShapes(
       "data/demo/htt_mt.inputs-mssm-8TeV-0.root", "$CHANNEL/$PROCESS",
       "$CHANNEL/$PROCESS_$SYSTEMATIC");
+  // We have to map each Higgs signal process to the same histogram, i.e:
+  // {ggh, ggH, ggA} --> ggH
+  // {bbh, bbH, bbA} --> bbH
   cb.cp().era({"7TeV"}).process({"ggh", "ggH", "ggA"}).ExtractShapes(
       "data/demo/htt_mt.inputs-mssm-7TeV-0.root", "$CHANNEL/ggH$MASS",
       "$CHANNEL/ggH$MASS_$SYSTEMATIC");
@@ -285,25 +289,25 @@ int main() {
   }
 
 
-  cout << "Doing bbb for the low mass...\n";
-  cb.cp().process({"W", "QCD", "ZTT", "ZL", "ZJ", "TT", "VV"})
-      .MergeBinErrors(0.05, 0.4);
-  cb.cp().process({"W", "QCD", "ZTT", "ZL", "ZJ", "TT", "VV"})
-      .AddBinByBin(0.05, true, &cb);
-  cout << "...done\n";
+  // cout << "Adding bbb...\n";
+  // cb.cp().process({"W", "QCD", "ZTT", "ZL", "ZJ", "TT", "VV"})
+  //     .MergeBinErrors(0.05, 0.4);
+  // cb.cp().process({"W", "QCD", "ZTT", "ZL", "ZJ", "TT", "VV"})
+  //     .AddBinByBin(0.05, true, &cb);
+  // cout << "...done\n";
 
   ch::CombineHarvester gg_plot = std::move(cb.cp().era({"8TeV"}).bin_id({8}));
   ch::CombineHarvester bb_plot = std::move(cb.cp().era({"8TeV"}).bin_id({9}));
   TH1F gg_dat = gg_plot.GetObservedShape();
   TH1F bb_dat = bb_plot.GetObservedShape();
-  TH1F ggh = FixBinning(gg_plot.cp().process({"ggh"}).GetShape(), gg_dat);
-  TH1F ggH = FixBinning(gg_plot.cp().process({"ggH"}).GetShape(), gg_dat);
-  TH1F ggA = FixBinning(gg_plot.cp().process({"ggA"}).GetShape(), gg_dat);
-  TH1F ggX = FixBinning(gg_plot.cp().process({"ggh", "ggH", "ggA"}).GetShape(), gg_dat);
-  TH1F bbh = FixBinning(bb_plot.cp().process({"bbh"}).GetShape(), bb_dat);
-  TH1F bbH = FixBinning(bb_plot.cp().process({"bbH"}).GetShape(), bb_dat);
-  TH1F bbA = FixBinning(bb_plot.cp().process({"bbA"}).GetShape(), bb_dat);
-  TH1F bbX = FixBinning(bb_plot.cp().process({"bbh", "bbH", "bbA"}).GetShape(), bb_dat);
+  TH1F ggh = RestoreBinning(gg_plot.cp().process({"ggh"}).GetShape(), gg_dat);
+  TH1F ggH = RestoreBinning(gg_plot.cp().process({"ggH"}).GetShape(), gg_dat);
+  TH1F ggA = RestoreBinning(gg_plot.cp().process({"ggA"}).GetShape(), gg_dat);
+  TH1F ggX = RestoreBinning(gg_plot.cp().process({"ggh", "ggH", "ggA"}).GetShape(), gg_dat);
+  TH1F bbh = RestoreBinning(bb_plot.cp().process({"bbh"}).GetShape(), bb_dat);
+  TH1F bbH = RestoreBinning(bb_plot.cp().process({"bbH"}).GetShape(), bb_dat);
+  TH1F bbA = RestoreBinning(bb_plot.cp().process({"bbA"}).GetShape(), bb_dat);
+  TH1F bbX = RestoreBinning(bb_plot.cp().process({"bbh", "bbH", "bbA"}).GetShape(), bb_dat);
 
   // cb.PrintAll();
   TFile output("htt_mt.input.mssm.root", "RECREATE");
