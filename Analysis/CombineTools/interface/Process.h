@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_CombineTools_Process_h
-#define ICHiggsTauTau_CombineTools_Process_h
+#ifndef CombineTools_Process_h
+#define CombineTools_Process_h
 #include <memory>
 #include <string>
 #include "TH1.h"

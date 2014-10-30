@@ -1,6 +1,7 @@
-#ifndef ICHiggsTauTau_CombineTools_Systematics_h
-#define ICHiggsTauTau_CombineTools_Systematics_h
-#include<string>
+#ifndef CombineTools_Systematics_h
+#define CombineTools_Systematics_h
+#include <vector>
+#include <string>
 #include "CombineTools/interface/Process.h"
 
 namespace ch {
@@ -84,7 +85,7 @@ namespace syst {
       }
     }
 
-    double Val(ch::Process *p) const {
+    double ValU(ch::Process *p) const {
       if (p) {
         return tmap_.find(std::make_tuple(T::get(p)...))->second;
       } else {
@@ -92,18 +93,61 @@ namespace syst {
       }
     }
 
+    double ValD(ch::Process * /*p*/) const {
+      return 0.0;
+    }
+
     static SystMap<T...> init(std::vector<typename T::type>... input, double val) {
       SystMap<T...> x;
       return x(input..., val);
     }
+
+    bool IsAsymm() const { return false; }
   };
 
-  // template<class... T>
-  // auto syst_map(std::vector<typename T::type>... input, double val) -> SystMap<T...> {
-  //   SystMap<T...> x;
-  //   return x(input..., val);
-  // }
+  template<class... T>
+  class SystMapAsymm {
+   private:
+    std::map<std::tuple<typename T::type...>, std::pair<double, double>> tmap_;
 
+   public:
+    SystMapAsymm& operator()(std::vector<typename T::type>... input, double val_d, double val_u) {
+      auto res = ch::syst::detail::cross(input...);
+      for (auto const& a : res)
+        tmap_.insert(std::make_pair(a, std::make_pair(val_d, val_u)));
+      return *this;
+    }
+
+    bool Contains(ch::Process *p) const {
+      if (p) {
+        return tmap_.count(std::make_tuple(T::get(p)...));
+      } else {
+        return false;
+      }
+    }
+
+    double ValD(ch::Process *p) const {
+      if (p) {
+        return tmap_.find(std::make_tuple(T::get(p)...))->second.first;
+      } else {
+        return 0.0;
+      }
+    }
+    double ValU(ch::Process *p) const {
+      if (p) {
+        return tmap_.find(std::make_tuple(T::get(p)...))->second.second;
+      } else {
+        return 0.0;
+      }
+    }
+
+    static SystMapAsymm<T...> init(std::vector<typename T::type>... input, double val_d, double val_u) {
+      SystMapAsymm<T...> x;
+      return x(input..., val_d, val_u);
+    }
+
+    bool IsAsymm() const { return true; }
+  };
 }
 }
 

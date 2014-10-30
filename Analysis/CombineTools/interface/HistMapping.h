@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_CombineTools_HistMapping_h
-#define ICHiggsTauTau_CombineTools_HistMapping_h
+#ifndef CombineTools_HistMapping_h
+#define CombineTools_HistMapping_h
 #include <string>
 #include <memory>
 #include "TFile.h"

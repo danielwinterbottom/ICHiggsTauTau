@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_CombineTools_MakeUnique_h
-#define ICHiggsTauTau_CombineTools_MakeUnique_h
+#ifndef CombineTools_MakeUnique_h
+#define CombineTools_MakeUnique_h
 #include <memory>
 
 namespace ic {

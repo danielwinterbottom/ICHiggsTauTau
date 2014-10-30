@@ -4,15 +4,12 @@
 #include <iostream>
 #include <utility>
 #include <vector>
-#include "boost/bind.hpp"
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/HelperFunctions.h"
 #include "CombineTools/interface/Systematics.h"
-
-using boost::bind;
-using std::string;
+#include "CombineTools/interface/HighLevelFunctions.h"
 
 using namespace std;
 
@@ -37,12 +34,13 @@ int main() {
   // Here we will just define two categories for an 8TeV analysis. Each entry in
   // the vector below specifies a bin name and corresponding bin_id.
   vector<pair<int, string>> cats = {
-      make_pair(1, "muTau_1jet_medium"),
-      make_pair(2, "muTau_vbf_loose")};
+      {1, "muTau_1jet_medium"},
+      {2, "muTau_vbf_loose"}
+    };
 
   // Now we define the signal mass points we will build datacards for, but note
   // these are specified as strings, not floats.
-  vector<string> masses = {"120", "125", "130"};
+  vector<string> masses = ch::MassesFromRange("110,115-140:5,145");
 
   // The next step is to add some new entries to the CombineHarvester instance.
   // First we will specifiy the observations (i.e. the actual data). The
@@ -60,9 +58,7 @@ int main() {
   // analysis channel ("mt") and the categories we defined above. If the
   // analysis, era and channel properties aren't relevant for your analysis, you
   // can always leave them as a single emtpy string.
-  cout << ">> Adding observations...";
   cb.AddObservations({"*"}, {"htt"}, {"8TeV"}, {"mt"}, cats);
-  cout << " done\n";
 
   // Next we add the background processes. The arguments are similar to the
   // AddObservations method. An extra argument is added after the channels for
@@ -70,17 +66,13 @@ int main() {
   // whether these are signal or background processes.
   // Note that each process name here should correspond to the histogram name
   // in your input file.
-  cout << ">> Adding background processes...";
   vector<string> bkg_procs = {"ZTT", "W", "QCD", "TT"};
   cb.AddProcesses({"*"}, {"htt"}, {"8TeV"}, {"mt"}, bkg_procs, cats, false);
-  cout << " done\n";
 
   // Similarly we add the signal processes. Here the list of masses hypotheses
   // is given instead of the single "*" entry.
-  cout << ">> Adding signal processes...";
   vector<string> sig_procs = {"ggH", "qqH"};
   cb.AddProcesses(masses, {"htt"}, {"8TeV"}, {"mt"}, sig_procs, cats, true);
-  cout << " done\n";
 
   // The next step is to add details of the systematic uncertainties. The
   // details of an uncertainty on a single process in a single bin is called a
@@ -92,7 +84,6 @@ int main() {
   using ch::syst::process;
   using ch::JoinStr;
 
-  std::cout << ">> Adding systematic uncertainties...";
   // First, let's just go ahead and add a luminosity uncertainty for the signal
   // samples:
   cb.cp().signals()
@@ -153,7 +144,6 @@ int main() {
 
   cb.cp().process(JoinStr({sig_procs, {"ZTT"}}))
       .AddSyst(&cb, "CMS_scale_t_mutau_$ERA", "shape", SystMap<>::init(1.00));
-  std::cout << " done\n";
 
   // Next we populate these Observation, Process and Nuisance entries with the
   // actual histograms (and also yields). The last two arguments are the
@@ -167,14 +157,19 @@ int main() {
   //   $SYSTEMATIC --> nus.name()
   // Also note that data histogram must be named data_obs to be extracted
   // by this command.
-  std::cout << ">> Extracting histograms from input root files...";
   cb.cp().backgrounds().ExtractShapes(
-      "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS",
-      "$CHANNEL/$PROCESS_$SYSTEMATIC");
+      "data/demo/htt_mt.inputs-sm-8TeV-hcg.root",
+      "$BIN/$PROCESS",
+      "$BIN/$PROCESS_$SYSTEMATIC");
   cb.cp().signals().ExtractShapes(
-      "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
-      "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
-  std::cout << " done\n";
+      "data/demo/htt_mt.inputs-sm-8TeV-hcg.root",
+      "$BIN/$PROCESS$MASS",
+      "$BIN/$PROCESS$MASS_$SYSTEMATIC");
+
+  // This function modifies every entry to have a standardised bin name of
+  // the form: {analysis}_{channel}_{bin_id}_{era}
+  // which is commonly used in the htt analyses
+  ch::SetStandardBinNames(&cb);
 
   // The next step is optional. This will generate additional shape
   // uncertainties to account for limited template statistics, so-called
@@ -185,14 +180,11 @@ int main() {
   // fixed to nominal rate. If false, the normalisation is allowed to vary.
   // Finally a pointer to the CombineHarvester instance where the Nuisance
   // entries should be created is supplied.
-  std::cout << ">> Generating bbb uncertainties...";
   cb.cp().backgrounds().AddBinByBin(0.1, true, &cb);
-  std::cout << " done\n";
 
   // Now we will iterate through the set of bins and masspoints and write
   // a txt datacard file for each. First we generate a set of bin names:
-  set<string> bins =
-      cb.GenerateSetFromObs<string>(mem_fn(&ch::Observation::bin));
+  set<string> bins = cb.bin_set();
   // This GenerateSetFromObs method will fill a set by applying the supplied
   // function to each Observation entry. The function must be of the form:
   // string Function(Observation *obs)
@@ -200,7 +192,7 @@ int main() {
   // Observation::bin class method.
 
   // Uncomment this line to print all the entries
-  cb.PrintAll();
+  // cb.PrintAll();
 
   // We create the output root file that will contain all the shapes.
   TFile output("htt_mt.input.root", "RECREATE");

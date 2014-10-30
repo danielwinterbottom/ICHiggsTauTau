@@ -91,7 +91,7 @@ int main(int argc, char* argv[]){
       for (unsigned k = 0; k < v_columns.second.size(); ++k) {
         string cat = v_columns.second[k];
         cmb.ParseDatacard(datacard_path+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt",
-          "{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt");
+          "$MASS/$ANALYSIS_$CHANNEL_$BINID_$ERA.txt");
         // setup.ParseDatacard(datacard_path+"/"+"htt_"+channel+"_"+cat+"_"+v_eras[j]+".txt", channel, boost::lexical_cast<int>(cat), v_eras[j], signal_mass);        
       }
     }
@@ -99,7 +99,7 @@ int main(int argc, char* argv[]){
     vector<int> bin_ids;
     for (auto id : v_columns.second) bin_ids.push_back(boost::lexical_cast<int>(id));
     cmb.ParseDatacard(datacard_path+"datacard_"+tanb+".txt", "{MASS}/datacard_"+tanb+".txt");
-    string bin_pat = "{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}";
+    string bin_pat = "$ANALYSIS_$CHANNEL_$BINID_$ERA";
     cmb.ForEachNus(boost::bind(ch::SetFromBinName<ch::Nuisance>, _1, bin_pat));
     cmb.ForEachObs(boost::bind(ch::SetFromBinName<ch::Observation>, _1, bin_pat));
     cmb.ForEachProc(boost::bind(ch::SetFromBinName<ch::Process>, _1, bin_pat));

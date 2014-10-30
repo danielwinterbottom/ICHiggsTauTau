@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_CombineTools_Parameter_h
-#define ICHiggsTauTau_CombineTools_Parameter_h
+#ifndef CombineTools_Parameter_h
+#define CombineTools_Parameter_h
 #include <memory>
 #include <string>
 #include <vector>

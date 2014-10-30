@@ -163,11 +163,11 @@ int main(int argc, char* argv[]) {
   }
 
   cmb.ForEachNus(boost::bind(ch::SetFromBinName<ch::Nuisance>, _1,
-                             "{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}"));
+                             "$ANALYSIS_$CHANNEL_$BINID_$ERA"));
   cmb.ForEachObs(boost::bind(ch::SetFromBinName<ch::Observation>, _1,
-                             "{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}"));
+                             "$ANALYSIS_$CHANNEL_$BINID_$ERA"));
   cmb.ForEachProc(boost::bind(ch::SetFromBinName<ch::Process>, _1,
-                              "{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}"));
+                              "$ANALYSIS_$CHANNEL_$BINID_$ERA"));
 
   cmb.cp().signals().ForEachProc([&](ch::Process *p) {
     p->set_rate(p->rate() * d_tanb);
@@ -175,7 +175,7 @@ int main(int argc, char* argv[]) {
 
   ch::CombineHarvester sig_cmb;
   for (auto const& d : sig_datacards) {
-    sig_cmb.ParseDatacard(d, "{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt");
+    sig_cmb.ParseDatacard(d, "$MASS/$ANALYSIS_$CHANNEL_$BINID_$ERA.txt");
   }
 
   RooFitResult *fitresult = nullptr;

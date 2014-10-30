@@ -8,13 +8,13 @@ namespace ch {
 
 void AddDefaultSystematics(CombineHarvester *cb) {
   using ch::syst::SystMap;
+  using ch::syst::SystMapAsymm;
   using ch::syst::era;
   using ch::syst::bin_id;
   using ch::syst::process;
   using ch::JoinStr;
 
-  auto signal = Set2Vec(cb->cp().signals().GenerateSetFromProcs<std::string>(
-      std::mem_fn(&Process::process)));
+  auto signal = Set2Vec(cb->cp().signals().process_set());
 
   cb->cp().signals()
       .AddSyst(cb, "lumi_$ERA", "lnN", SystMap<era>::init

@@ -13,8 +13,6 @@
 #include "boost/format.hpp"
 #include "TDirectory.h"
 #include "TH1.h"
-#include "Utilities/interface/FnRootTools.h"
-#include "Utilities/interface/FnPredicates.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
@@ -151,12 +149,12 @@ double CombineHarvester::GetRateInternal(ProcNusMap const& lookup,
       double x = params_[nus_it->name()]->val();
       if (nus_it->asymm()) {
         if (x >= 0) {
-          p_rate *= std::pow(nus_it->value_u(), x);
+          p_rate *= std::pow(nus_it->value_u(), x * nus_it->scale());
         } else {
-          p_rate *= std::pow(nus_it->value_d(), -1.0*x);
+          p_rate *= std::pow(nus_it->value_d(), -1.0 * x * nus_it->scale());
         }
       } else {
-        p_rate *= std::pow(nus_it->value_u(), x);
+        p_rate *= std::pow(nus_it->value_u(), x * nus_it->scale());
       }
     }
     rate += p_rate;
@@ -197,16 +195,16 @@ TH1F CombineHarvester::GetShapeInternal(ProcNusMap const& lookup,
         double x = params_[nus_it->name()]->val();
         if (nus_it->asymm()) {
           if (x >= 0) {
-            p_rate *= std::pow(nus_it->value_u(), x);
+            p_rate *= std::pow(nus_it->value_u(), x * nus_it->scale());
           } else {
-            p_rate *= std::pow(nus_it->value_d(), -1.0*x);
+            p_rate *= std::pow(nus_it->value_d(), -1.0 * x * nus_it->scale());
           }
           if (nus_it->type() == "shape") {
-            ShapeDiff(x, &proc_shape, procs_[i]->shape(), nus_it->shape_d(),
-                      nus_it->shape_u());
+            ShapeDiff(x * nus_it->scale(), &proc_shape, procs_[i]->shape(),
+                      nus_it->shape_d(), nus_it->shape_u());
           }
         } else {
-          p_rate *= std::pow(nus_it->value_u(), x);
+          p_rate *= std::pow(nus_it->value_u(), x * nus_it->scale());
         }
       }
       for (int b = 1; b <= proc_shape.GetNbinsX(); ++b) {
@@ -230,12 +228,12 @@ TH1F CombineHarvester::GetShapeInternal(ProcNusMap const& lookup,
         double x = params_[nus_it->name()]->val();
         if (nus_it->asymm()) {
           if (x >= 0) {
-            p_rate *= std::pow(nus_it->value_u(), x);
+            p_rate *= std::pow(nus_it->value_u(), x * nus_it->scale());
           } else {
-            p_rate *= std::pow(nus_it->value_d(), -1.0*x);
+            p_rate *= std::pow(nus_it->value_d(), -1.0 * x * nus_it->scale());
           }
         } else {
-          p_rate *= std::pow(nus_it->value_u(), x);
+          p_rate *= std::pow(nus_it->value_u(), x * nus_it->scale());
         }
       }
       proc_shape.Scale(p_rate);

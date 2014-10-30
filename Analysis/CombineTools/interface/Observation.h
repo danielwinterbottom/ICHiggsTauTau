@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_CombineTools_Observation_h
-#define ICHiggsTauTau_CombineTools_Observation_h
+#ifndef CombineTools_Observation_h
+#define CombineTools_Observation_h
 #include <memory>
 #include <string>
 #include "TH1.h"

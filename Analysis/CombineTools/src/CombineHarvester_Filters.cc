@@ -2,8 +2,7 @@
 #include <vector>
 #include <string>
 #include <utility>
-#include "Utilities/interface/FnRootTools.h"
-#include "Utilities/interface/FnPredicates.h"
+#include <set>
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
@@ -79,46 +78,139 @@ CombineHarvester& CombineHarvester::nus_type(
 }
 
 CombineHarvester & CombineHarvester::signals() {
-  ic::erase_if(nus_, [&] (std::shared_ptr<Nuisance> val) {
+  ch::erase_if(nus_, [&] (std::shared_ptr<Nuisance> val) {
     return !val->signal();
   });
-  ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) {
+  ch::erase_if(procs_, [&] (std::shared_ptr<Process> val) {
     return !val->signal();
   });
   return *this;
 }
 
 CombineHarvester & CombineHarvester::backgrounds() {
-  ic::erase_if(nus_, [&] (std::shared_ptr<Nuisance> val) {
+  ch::erase_if(nus_, [&] (std::shared_ptr<Nuisance> val) {
     return val->signal();
   });
-  ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) {
+  ch::erase_if(procs_, [&] (std::shared_ptr<Process> val) {
     return val->signal();
   });
   return *this;
 }
 
 CombineHarvester & CombineHarvester::histograms() {
-  ic::erase_if(obs_, [&] (std::shared_ptr<Observation> val) {
+  ch::erase_if(obs_, [&] (std::shared_ptr<Observation> val) {
     return val->shape() == nullptr;
   });
-  ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) {
+  ch::erase_if(procs_, [&] (std::shared_ptr<Process> val) {
     return val->shape() == nullptr;
   });
   return *this;
 }
 
 CombineHarvester & CombineHarvester::pdfs() {
-  ic::erase_if(procs_, [&] (std::shared_ptr<Process> val) {
+  ch::erase_if(procs_, [&] (std::shared_ptr<Process> val) {
     return val->pdf() == nullptr;
   });
   return *this;
 }
 
 CombineHarvester & CombineHarvester::data() {
-  ic::erase_if(obs_, [&] (std::shared_ptr<Observation> val) {
+  ch::erase_if(obs_, [&] (std::shared_ptr<Observation> val) {
     return val->data() == nullptr;
   });
   return *this;
+}
+
+std::set<std::string> CombineHarvester::bin_set() {
+  std::set<std::string> result =
+      this->GenerateSetFromObs<std::string>(std::mem_fn(&ch::Observation::bin));
+  std::set<std::string> result2 =
+      this->GenerateSetFromProcs<std::string>(std::mem_fn(&ch::Process::bin));
+  std::set<std::string> result3 =
+      this->GenerateSetFromNus<std::string>(std::mem_fn(&ch::Nuisance::bin));
+  result.insert(result2.begin(), result2.end());
+  result.insert(result3.begin(), result3.end());
+  return result;
+}
+
+std::set<int> CombineHarvester::bin_id_set() {
+  std::set<int> result =
+      this->GenerateSetFromObs<int>(std::mem_fn(&ch::Observation::bin_id));
+  std::set<int> result2 =
+      this->GenerateSetFromProcs<int>(std::mem_fn(&ch::Process::bin_id));
+  std::set<int> result3 =
+      this->GenerateSetFromNus<int>(std::mem_fn(&ch::Nuisance::bin_id));
+  result.insert(result2.begin(), result2.end());
+  result.insert(result3.begin(), result3.end());
+  return result;
+}
+
+std::set<std::string> CombineHarvester::process_set() {
+  std::set<std::string> result = this->GenerateSetFromProcs<std::string>(
+      std::mem_fn(&ch::Process::process));
+  std::set<std::string> result2 = this->GenerateSetFromNus<std::string>(
+      std::mem_fn(&ch::Nuisance::process));
+  result.insert(result2.begin(), result2.end());
+  return result;
+}
+
+std::set<std::string> CombineHarvester::analysis_set() {
+  std::set<std::string> result = this->GenerateSetFromObs<std::string>(
+      std::mem_fn(&ch::Observation::analysis));
+  std::set<std::string> result2 = this->GenerateSetFromProcs<std::string>(
+      std::mem_fn(&ch::Process::analysis));
+  std::set<std::string> result3 = this->GenerateSetFromNus<std::string>(
+      std::mem_fn(&ch::Nuisance::analysis));
+  result.insert(result2.begin(), result2.end());
+  result.insert(result3.begin(), result3.end());
+  return result;
+}
+
+std::set<std::string> CombineHarvester::era_set() {
+  std::set<std::string> result =
+      this->GenerateSetFromObs<std::string>(std::mem_fn(&ch::Observation::era));
+  std::set<std::string> result2 =
+      this->GenerateSetFromProcs<std::string>(std::mem_fn(&ch::Process::era));
+  std::set<std::string> result3 =
+      this->GenerateSetFromNus<std::string>(std::mem_fn(&ch::Nuisance::era));
+  result.insert(result2.begin(), result2.end());
+  result.insert(result3.begin(), result3.end());
+  return result;
+}
+
+std::set<std::string> CombineHarvester::channel_set() {
+  std::set<std::string> result = this->GenerateSetFromObs<std::string>(
+      std::mem_fn(&ch::Observation::channel));
+  std::set<std::string> result2 = this->GenerateSetFromProcs<std::string>(
+      std::mem_fn(&ch::Process::channel));
+  std::set<std::string> result3 = this->GenerateSetFromNus<std::string>(
+      std::mem_fn(&ch::Nuisance::channel));
+  result.insert(result2.begin(), result2.end());
+  result.insert(result3.begin(), result3.end());
+  return result;
+}
+
+std::set<std::string> CombineHarvester::mass_set() {
+  std::set<std::string> result = this->GenerateSetFromObs<std::string>(
+      std::mem_fn(&ch::Observation::mass));
+  std::set<std::string> result2 = this->GenerateSetFromProcs<std::string>(
+      std::mem_fn(&ch::Process::mass));
+  std::set<std::string> result3 = this->GenerateSetFromNus<std::string>(
+      std::mem_fn(&ch::Nuisance::mass));
+  result.insert(result2.begin(), result2.end());
+  result.insert(result3.begin(), result3.end());
+  return result;
+}
+
+std::set<std::string> CombineHarvester::nus_name_set() {
+  std::set<std::string> result = this->GenerateSetFromNus<std::string>(
+      std::mem_fn(&ch::Nuisance::name));
+  return result;
+}
+
+std::set<std::string> CombineHarvester::nus_type_set() {
+  std::set<std::string> result = this->GenerateSetFromNus<std::string>(
+      std::mem_fn(&ch::Nuisance::type));
+  return result;
 }
 }

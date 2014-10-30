@@ -15,8 +15,6 @@
 #include "TDirectory.h"
 #include "TH1.h"
 #include "RooRealVar.h"
-#include "Utilities/interface/FnRootTools.h"
-#include "Utilities/interface/FnPredicates.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
@@ -35,8 +33,6 @@ namespace ch {
 // ".*{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt"
 int CombineHarvester::ParseDatacard(std::string const& filename,
     std::string parse_rules) {
-  boost::replace_all(parse_rules, "{", "(?<");
-  boost::replace_all(parse_rules, "}", ">\\w+)");
   boost::replace_all(parse_rules, "$ANALYSIS",  "(?<ANALYSIS>\\w+)");
   boost::replace_all(parse_rules, "$ERA",       "(?<ERA>\\w+)");
   boost::replace_all(parse_rules, "$CHANNEL",   "(?<CHANNEL>\\w+)");
@@ -62,7 +58,7 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
     int bin_id,
     std::string const& mass) {
   // Load the entire datacard into memory as a vector of strings
-  std::vector<std::string> lines = ic::ParseFileLines(filename);
+  std::vector<std::string> lines = ch::ParseFileLines(filename);
   // Loop through lines, trimming whitespace at the beginning or end
   // then splitting each line into a vector of words (using any amount
   // of whitespace as the separator).  We skip any line of zero length
@@ -198,7 +194,6 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
     if (start_nuisance_scan && words[i].size()-1 == words[r].size()) {
       for (unsigned p = 2; p < words[i].size(); ++p) {
         if (words[i][p] == "-") continue;
-        // if (words[i][0].at(0) == '#') continue;
         auto nus = std::make_shared<Nuisance>();
         nus->set_bin(words[r-3][p-1]);
         try {
@@ -211,12 +206,20 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           nus->set_process(words[r-2][p-1]);
         }
         nus->set_name(words[i][0]);
+        std::string type = words[i][1];
+        if (!contains(std::vector<std::string>{"shape", "shape?", "lnN"},
+                      type)) {
+          throw std::runtime_error(
+              "[CombineHarvester::ParseDatacard] Systematic type " + type +
+              " not supported");
+        }
         nus->set_type(words[i][1]);
         nus->set_analysis(analysis);
         nus->set_era(era);
         nus->set_channel(channel);
         nus->set_bin_id(bin_id);
         nus->set_mass(mass);
+        nus->set_scale(1.0);
         std::size_t slash_pos = words[i][p].find("/");
         if (slash_pos != words[i][p].npos) {
           // Assume asymmetric of form kDown/kUp
@@ -230,8 +233,18 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           nus->set_asymm(false);
         }
         if (nus->type() == "shape") {
+          nus->set_scale(boost::lexical_cast<double>(words[i][p]));
           LoadShapes(nus.get(), hist_mapping);
+        } else if (nus->type() == "shape?") {
+          LoadShapes(nus.get(), hist_mapping);
+          if (!nus->shape_u() || !nus->shape_d()) {
+            nus->set_type("lnN");
+          } else {
+            nus->set_type("shape");
+            nus->set_scale(boost::lexical_cast<double>(words[i][p]));
+          }
         }
+
         CombineHarvester::CreateParameterIfEmpty(this, nus->name());
         nus_.push_back(nus);
       }
@@ -463,7 +476,7 @@ void CombineHarvester::WriteDatacard(std::string const& name,
                             nus_ptr->process(), nus_ptr->mass(),
                             nus_ptr->name(), 2);
             seen_shape = true;
-            line[p+2] = "1.0";
+            line[p+2] = (boost::format("%g") % nus_ptr->scale()).str();
             TH1::AddDirectory(add_dir);
             break;
           }

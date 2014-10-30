@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_CombineTools_CombineHarvester_h
-#define ICHiggsTauTau_CombineTools_CombineHarvester_h
+#ifndef CombineTools_CombineHarvester_h
+#define CombineTools_CombineHarvester_h
 #include <string>
 #include <utility>
 #include <vector>
@@ -26,18 +26,16 @@ To-do list
 [ ] Look for areas where interface can be simplified
   [ ] Set generation
 [!] Add extra "scale" property to Nuisance for shapes
-[ ] Rename nuisance to Systematic
-[ ] Support unbinned
-[!] Support histogramming for pdfs
+[x] Support unbinned
+[x] Support histogramming for pdfs
  [x] Process will need to link to RooAbsPdf for yield
  [x] Parameter will need to link to RooRealVar
  [x] Update parameter method,i.e. change value of a single paramter
- [ ] Need way to specify: chosen binning, binning remapping
 [ ] Support TF1 extraction for pdfs
 [ ] better handling of param constraint terms
 [ ] Rename our channel as "CHN" to avoid confusion with "CHANNEL"?
 [ ] migration to offical package
-[!] Any RooAbsPdf, RooAbsData pointers in a copied CombineHarvester point to the previous instance
+[x] Any RooAbsPdf, RooAbsData pointers in a copied CombineHarvester point to the previous instance
 [x] Provide a method to redefine binning for Pdfs
 */
 
@@ -70,7 +68,7 @@ class CombineHarvester {
       int bin_id,
       std::string const& mass);
   int ParseDatacard(std::string const& filename,
-      std::string parse_rule);
+      std::string parse_rule = "");
 
   void WriteDatacard(std::string const& name, std::string const& root_file);
   void WriteDatacard(std::string const& name, TFile & root_file);
@@ -123,6 +121,16 @@ class CombineHarvester {
 
   template<typename T>
   std::set<T> GenerateSetFromNus(std::function<T(ch::Nuisance const*)> func);
+
+  std::set<std::string> bin_set();
+  std::set<int> bin_id_set();
+  std::set<std::string> process_set();
+  std::set<std::string> analysis_set();
+  std::set<std::string> era_set();
+  std::set<std::string> channel_set();
+  std::set<std::string> mass_set();
+  std::set<std::string> nus_name_set();
+  std::set<std::string> nus_type_set();
 
   /**
    * @name Modification
@@ -389,12 +397,14 @@ void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
     nus->set_name(subbed_name);
     nus->set_type(type);
     if (type == "lnN") {
-      nus->set_asymm(false);
-      nus->set_value_u(valmap.Val(procs_[i].get()));
+      nus->set_asymm(valmap.IsAsymm());
+      nus->set_value_u(valmap.ValU(procs_[i].get()));
+      nus->set_value_d(valmap.ValD(procs_[i].get()));
     } else if (type == "shape") {
       nus->set_asymm(true);
       nus->set_value_u(1.0);
       nus->set_value_d(1.0);
+      nus->set_scale(valmap.ValU(procs_[i].get()));
     }
     CombineHarvester::CreateParameterIfEmpty(other ? other : this,
                                              nus->name());

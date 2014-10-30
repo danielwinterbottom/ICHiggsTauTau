@@ -1,7 +1,8 @@
 #include "CombineTools/interface/HelperFunctions.h"
-#include "Utilities/interface/FnRootTools.h"
 #include <iostream>
 #include <vector>
+#include <string>
+#include <fstream>
 #include "RooFitResult.h"
 #include "RooRealVar.h"
 #include "RooDataHist.h"
@@ -78,7 +79,7 @@ double IntegrateFloatRange(TH1F const* hist, double xmin, double xmax) {
 void ParseTable(std::map<std::string, TGraph>* graphs,
                         std::string const& file,
                         std::vector<std::string> const& fields) {
-  auto lines = ic::ParseFileLines(file);
+  auto lines = ch::ParseFileLines(file);
   for (auto const& f : fields) {
     (*graphs)[f] = TGraph(lines.size());
   }
@@ -138,19 +139,49 @@ TH1F RebinHist(TH1F const& hist) {
   return shape;
 }
 
+std::vector<std::vector<unsigned>> GenerateCombinations(
+    std::vector<unsigned> vec) {
+  unsigned n = vec.size();
+  std::vector<unsigned> idx(n, 0);
+  std::vector<std::vector<unsigned>> result;
+  result.push_back(idx);
+  bool exit_loop = false;
+  while (exit_loop == false) {
+    // Find the first index we can increment (if possible)
+    for (unsigned i = 0; i < n; ++i) {
+      if ((idx[i] + 1) == vec[i]) {
+        if (i != n - 1) {
+          idx[i] = 0;
+        } else {
+          // we're done
+          exit_loop = true;
+          break;
+        }
+      } else {
+        ++(idx[i]);
+        result.push_back(idx);
+        break;
+      }
+    }
+  }
+  return result;
+}
 
-// RooHistPdf Hist2Pdf(TH1F const& hist, RooRealVar const& x,
-//                     std::string const& name) {
-//   TH1F shape("tmp", "tmp", hist.GetNbinsX(), 0.,
-//              static_cast<float>(hist.GetNbinsX()));
-//   for (unsigned i = 1; i <= hist.GetNbinsX(); ++i) {
-//     shape.SetBinContent(i, hist.GetBinContent(i));
-//   }
-//   RooDataHist dh((name + "_hist").c_str(),
-//                  (name + "_hist").c_str(), RooArgList(x),
-//                  RooFit::Import(shape, false));
-//   RooHistPdf((name+"_pdf").c_str(), (name+"_pdf").c_str(), x, dh);
-// }
-
-
+std::vector<std::string> ParseFileLines(std::string const& file_name) {
+  // Build a vector of input files
+  std::vector<std::string> files;
+  std::ifstream file;
+  file.open(file_name.c_str());
+  if (!file.is_open()) {
+    std::cerr << "Warning: File " << file_name << " cannot be opened."
+              << std::endl;
+    return files;
+  }
+  std::string line = "";
+  while (std::getline(file, line)) {  // while loop through lines
+    files.push_back(line);
+  }
+  file.close();
+  return files;
+}
 }

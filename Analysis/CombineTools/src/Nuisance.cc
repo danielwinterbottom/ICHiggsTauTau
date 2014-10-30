@@ -7,12 +7,12 @@ namespace ch {
 Nuisance::Nuisance()
     : bin_(""),
       process_(""),
-      // process_id_(0),
       signal_(false),
       name_(""),
       type_(""),
       value_u_(0.0),
       value_d_(0.0),
+      scale_(1.0),
       asymm_(false),
       analysis_(""),
       era_(""),
@@ -29,12 +29,12 @@ void swap(Nuisance& first, Nuisance& second) {
   using std::swap;
   swap(first.bin_, second.bin_);
   swap(first.process_, second.process_);
-  // swap(first.process_id_, second.process_id_);
   swap(first.signal_, second.signal_);
   swap(first.name_, second.name_);
   swap(first.type_, second.type_);
   swap(first.value_u_, second.value_u_);
   swap(first.value_d_, second.value_d_);
+  swap(first.scale_, second.scale_);
   swap(first.asymm_, second.asymm_);
   swap(first.analysis_, second.analysis_);
   swap(first.era_, second.era_);
@@ -48,12 +48,12 @@ void swap(Nuisance& first, Nuisance& second) {
 Nuisance::Nuisance(Nuisance const& other)
     : bin_(other.bin_),
       process_(other.process_),
-      // process_id_(other.process_id_),
       signal_(other.signal_),
       name_(other.name_),
       type_(other.type_),
       value_u_(other.value_u_),
       value_d_(other.value_d_),
+      scale_(other.scale_),
       asymm_(other.asymm_),
       analysis_(other.analysis_),
       era_(other.era_),
@@ -77,12 +77,12 @@ Nuisance::Nuisance(Nuisance const& other)
 Nuisance::Nuisance(Nuisance&& other)
     : bin_(""),
       process_(""),
-      // process_id_(0),
       signal_(false),
       name_(""),
       type_(""),
       value_u_(0.0),
       value_d_(0.0),
+      scale_(1.0),
       asymm_(false),
       analysis_(""),
       era_(""),
@@ -129,7 +129,6 @@ std::ostream& operator<< (std::ostream &out, Nuisance &val) {
   % val.bin()
   % val.bin_id()
   % val.process()
-  // % val.process_id()
   % val.signal()
   % val.name()
   % val.type()

@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
       po::value<string> (&fitresult_file))
     ("parse_rule,p",
       po::value<string> (&parse_rule)
-      ->default_value("{MASS}/{ANALYSIS}_{CHANNEL}_{BINID}_{ERA}.txt"))
+      ->default_value("$MASS/$ANALYSIS_$CHANNEL_$BINID_$ERA.txt"))
     ("texname",
       po::value<string>(&texname)->required(),
       "[REQUIRED] output name (no extension)")

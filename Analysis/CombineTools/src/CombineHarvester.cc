@@ -170,7 +170,9 @@ void CombineHarvester::LoadShapes(Observation* entry,
                                      std::vector<HistMapping> const& mappings) {
   HistMapping mapping =
       ResolveMapping(entry->process(), entry->bin(), mappings);
+  // Allow $CHANNEL or $BIN here
   boost::replace_all(mapping.pattern, "$CHANNEL", entry->bin());
+  boost::replace_all(mapping.pattern, "$BIN", entry->bin());
   boost::replace_all(mapping.pattern, "$PROCESS", entry->process());
   boost::replace_all(mapping.pattern, "$MASS", entry->mass());
   if (verbosity_ >= 1) {
@@ -217,6 +219,7 @@ void CombineHarvester::LoadShapes(Process* entry,
   HistMapping mapping =
       ResolveMapping(entry->process(), entry->bin(), mappings);
   boost::replace_all(mapping.pattern, "$CHANNEL", entry->bin());
+  boost::replace_all(mapping.pattern, "$BIN", entry->bin());
   boost::replace_all(mapping.pattern, "$PROCESS", entry->process());
   boost::replace_all(mapping.pattern, "$MASS", entry->mass());
   if (verbosity_ >= 1) {
@@ -305,10 +308,12 @@ void CombineHarvester::LoadShapes(Nuisance* entry,
   if (mapping.IsHist()) {
     std::string p = mapping.pattern;
     boost::replace_all(p, "$CHANNEL", entry->bin());
+    boost::replace_all(p, "$BIN", entry->bin());
     boost::replace_all(p, "$PROCESS", entry->process());
     boost::replace_all(p, "$MASS", entry->mass());
     std::string p_s = mapping.syst_pattern;
     boost::replace_all(p_s, "$CHANNEL", entry->bin());
+    boost::replace_all(p_s, "$BIN", entry->bin());
     boost::replace_all(p_s, "$PROCESS", entry->process());
     boost::replace_all(p_s, "$MASS", entry->mass());
     std::string p_s_hi = p_s;
@@ -316,6 +321,10 @@ void CombineHarvester::LoadShapes(Nuisance* entry,
     boost::replace_all(p_s_hi, "$SYSTEMATIC", entry->name() + "Up");
     boost::replace_all(p_s_lo, "$SYSTEMATIC", entry->name() + "Down");
     TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
+    // Allow for the possibility that the shapes don't exist (i.e. if this
+    // is a "shape?" entry in the datacard)
+    if (!gDirectory->Get(p_s_hi.c_str())
+        || !gDirectory->Get(p_s_lo.c_str())) return;
     TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get(p_s_hi.c_str())->Clone());
     TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get(p_s_lo.c_str())->Clone());
     h_u->SetDirectory(0);

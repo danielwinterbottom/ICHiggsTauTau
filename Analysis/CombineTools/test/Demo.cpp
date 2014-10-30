@@ -2,126 +2,93 @@
 #include <map>
 #include <set>
 #include <iostream>
-#include <utility>
 #include <vector>
-#include "boost/bind.hpp"
 #include "CombineTools/interface/CombineHarvester.h"
-#include "CombineTools/interface/Observation.h"
-#include "CombineTools/interface/Process.h"
+#include "CombineTools/interface/HighLevelFunctions.h"
 #include "CombineTools/interface/HelperFunctions.h"
 #include "CombineTools/interface/HttSystematics.h"
 
-using boost::bind;
-using std::string;
-using std::vector;
-using std::pair;
-using std::make_pair;
-using std::map;
-using std::set;
+using namespace std;
 
 int main() {
   ch::CombineHarvester cb;
 
-  vector<pair<int, string>> mt_cats_7 = {
-      make_pair(1, "muTau_0jet_medium"),
-      make_pair(2, "muTau_0jet_high"),
-      make_pair(3, "muTau_1jet_medium"),
-      make_pair(4, "muTau_1jet_high_lowhiggs"),
-      make_pair(5, "muTau_1jet_high_mediumhiggs"),
-      make_pair(6, "muTau_vbf")};
+  // cb.SetVerbosity(1);
 
-  vector<pair<int, string>> mt_cats_8 = {
-      make_pair(1, "muTau_0jet_medium"),
-      make_pair(2, "muTau_0jet_high"),
-      make_pair(3, "muTau_1jet_medium"),
-      make_pair(4, "muTau_1jet_high_lowhiggs"),
-      make_pair(5, "muTau_1jet_high_mediumhiggs"),
-      make_pair(6, "muTau_vbf_loose"),
-      make_pair(7, "muTau_vbf_tight")};
+  typedef vector<pair<int, string>> Categories;
+  map<string, Categories> cats;
 
-  vector<string> masses = {/*"90",  "95",  "100", "105", */"110", "115",
-                           "120", "125", "130", "135", "140", "145"};
+  cats["7TeV"] = {
+      {1, "muTau_0jet_medium"},
+      {2, "muTau_0jet_high"},
+      {3, "muTau_1jet_medium"},
+      {4, "muTau_1jet_high_lowhiggs"},
+      {5, "muTau_1jet_high_mediumhiggs"},
+      {6, "muTau_vbf"}};
 
-  std::cout << ">> Adding observations...";
-  cb.AddObservations({"*"}, {"htt"}, {"7TeV"}, {"mt"}, mt_cats_7);
-  cb.AddObservations({"*"}, {"htt"}, {"8TeV"}, {"mt"}, mt_cats_8);
-  std::cout << " done\n";
+  cats["8TeV"] = {
+      {1, "muTau_0jet_medium"},
+      {2, "muTau_0jet_high"},
+      {3, "muTau_1jet_medium"},
+      {4, "muTau_1jet_high_lowhiggs"},
+      {5, "muTau_1jet_high_mediumhiggs"},
+      {6, "muTau_vbf_loose"},
+      {7, "muTau_vbf_tight"}};
 
-  std::cout << ">> Adding background processes...";
-  cb.AddProcesses({"*"}, {"htt"}, {"7TeV"}, {"mt"},
-      {"ZTT", "W", "QCD", "ZL", "ZJ", "TT", "VV"}, mt_cats_7, false);
-  cb.AddProcesses({"*"}, {"htt"}, {"8TeV"}, {"mt"},
-      {"ZTT", "W", "QCD", "ZL", "ZJ", "TT", "VV"}, mt_cats_8, false);
-  std::cout << " done\n";
+  vector<string> masses = ch::MassesFromRange("110-145:5");
 
-  std::cout << ">> Adding signal processes...";
-  cb.AddProcesses(masses, {"htt"}, {"7TeV"}, {"mt"},
-      {"ggH", "qqH", "WH", "ZH"}, mt_cats_7, true);
-  cb.AddProcesses(masses, {"htt"}, {"8TeV"}, {"mt"},
-      {"ggH", "qqH", "WH", "ZH"}, mt_cats_8, true);
-  std::cout << " done\n";
+  for (string era : {"7TeV", "8TeV"}) {
+    cout << "------ " << era << " ------\n";
+    cout << ">> Adding observations...";
+    cb.AddObservations({"*"}, {"htt"}, {era}, {"mt"}, cats[era]);
+    cout << " done\n";
 
-  // (1) hww(mH) as signal:
-  // cb.AddProcesses(masses, {"htt"}, {"7TeV"}, {"mt"},
-  //     {"ggH_hww", "qqH_hww"}, mt_cats_7, true);
-  // cb.AddProcesses(masses, {"htt"}, {"8TeV"}, {"mt"},
-  //     {"ggH_hww", "qqH_hww"}, mt_cats_8, true);
+    cout << ">> Adding background processes...";
+    cb.AddProcesses({"*"}, {"htt"}, {era}, {"mt"},
+        {"ZTT", "W", "QCD", "ZL", "ZJ", "TT", "VV"}, cats[era], false);
+    cout << " done\n";
 
-  // (2) hww(125) as bkg:
-  // cb.AddProcesses({"*"}, {"htt"}, {"7TeV"}, {"mt"},
-  //     {"ggH_hww125", "qqH_hww125"}, mt_cats_7, false);
-  // cb.AddProcesses({"*"}, {"htt"}, {"8TeV"}, {"mt"},
-  //     {"ggH_hww125", "qqH_hww125"}, mt_cats_8, false);
+    cout << ">> Adding signal processes...";
+    cb.AddProcesses(masses, {"htt"}, {era}, {"mt"},
+        {"ggH", "qqH", "WH", "ZH"}, cats[era], true);
+    cout << " done\n";
+    cout << "------------------\n";
+  }
 
-  // (2) hww(mH) as bkg:
-  // for (m : masses) {
-  //   cb.AddProcesses({m}, {"htt"}, {"7TeV"}, {"mt"},
-  //       {"ggH_hww"+m, "qqH_hww"+m}, mt_cats_7, false);
-  //   cb.AddProcesses({m}, {"htt"}, {"8TeV"}, {"mt"},
-  //       {"ggH_hww"+m, "qqH_hww"+m}, mt_cats_8, false);
-  // }
-
-  std::cout << ">> Adding systematic uncertainties...";
+  cout << ">> Adding systematic uncertainties...";
   ch::AddDefaultSystematics(&cb);
-  std::cout << " done\n";
+  cout << " done\n";
 
-  std::cout << ">> Extracting histograms from input root files...";
+  cout << ">> Extracting histograms from input root files...";
   for (string era : {"7TeV", "8TeV"}) {
     cb.cp().era({era}).backgrounds().ExtractShapes(
-        "data/demo/htt_mt.inputs-sm-"+era+"-hcg.root", "$CHANNEL/$PROCESS",
-        "$CHANNEL/$PROCESS_$SYSTEMATIC");
+        "data/demo/htt_mt.inputs-sm-"+era+"-hcg.root",
+        "$BIN/$PROCESS",
+        "$BIN/$PROCESS_$SYSTEMATIC");
     cb.cp().era({era}).signals().ExtractShapes(
-        "data/demo/htt_mt.inputs-sm-"+era+"-hcg.root", "$CHANNEL/$PROCESS$MASS",
-        "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
+        "data/demo/htt_mt.inputs-sm-"+era+"-hcg.root",
+        "$BIN/$PROCESS$MASS",
+        "$BIN/$PROCESS$MASS_$SYSTEMATIC");
   }
-  std::cout << " done\n";
+  cout << " done\n";
 
-  std::cout << ">> Scaling signal process rates...\n";
-  map<string, TGraph> xs;
-  for (std::string const& e : {"7TeV", "8TeV"}) {
-    for (std::string const& p : {"ggH", "qqH", "WH", "ZH"}) {
+  cout << ">> Scaling signal process rates...\n";
+  for (string const& e : {"7TeV", "8TeV"}) {
+    for (string const& p : {"ggH", "qqH", "WH", "ZH"}) {
+      map<string, TGraph> xs;
       ch::ParseTable(&xs, "data/xsecs_brs/"+p+"_"+e+"_YR3.txt", {p+"_"+e});
-    }
-  }
-  ch::ParseTable(&xs, "data/xsecs_brs/htt_YR3.txt", {"htt"});
-
-  for (std::string const& e : {"7TeV", "8TeV"}) {
-    for (std::string const& p : {"ggH", "qqH", "WH", "ZH"}) {
-      std::cout << ">>>> Scaling for process " << p << " and era " << e << "\n";
-
+      ch::ParseTable(&xs, "data/xsecs_brs/htt_YR3.txt", {"htt"});
+      cout << ">>>> Scaling for process " << p << " and era " << e << "\n";
       cb.cp().process({p}).era({e}).ForEachProc(
           bind(ch::ScaleProcessRate, _1, &xs, p+"_"+e, "htt"));
     }
   }
 
-  std::cout << ">> Setting standardised bin names...";
-  cb.ForEachObs(ch::SetStandardBinName<ch::Observation>);
-  cb.ForEachProc(ch::SetStandardBinName<ch::Process>);
-  cb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
-  std::cout << " done\n";
+  cout << ">> Setting standardised bin names...";
+  ch::SetStandardBinNames(&cb);
+  cout << " done\n";
 
-  // cb.cp().mass({"125", "*"}).PrintAll();
-  std::cout << ">> Merging bin errors...";
+  cout << ">> Merging bin errors...";
   cb.cp().bin_id({0, 1, 2, 3, 4}).process({"W", "QCD"})
       .MergeBinErrors(0.1, 0.4);
   cb.cp().bin_id({5}).era({"7TeV"}).process({"W"})
@@ -130,9 +97,9 @@ int main() {
       .MergeBinErrors(0.1, 0.4);
   cb.cp().bin_id({7}).era({"8TeV"}).process({"W", "ZTT"})
       .MergeBinErrors(0.1, 0.4);
-  std::cout << "done\n";
+  cout << "done\n";
 
-  std::cout << ">> Generating bbb uncertainties...";
+  cout << ">> Generating bbb uncertainties...";
   cb.cp().bin_id({0, 1, 2, 3, 4}).process({"W", "QCD"})
       .AddBinByBin(0.1, true, &cb);
   cb.cp().bin_id({5}).era({"7TeV"}).process({"W"})
@@ -141,20 +108,21 @@ int main() {
       .AddBinByBin(0.1, true, &cb);
   cb.cp().bin_id({7}).era({"8TeV"}).process({"W", "ZTT"})
       .AddBinByBin(0.1, true, &cb);
-  std::cout << "done\n";
+  cout << "done\n";
 
-  set<string> bins =
-      cb.GenerateSetFromObs<string>(mem_fn(&ch::Observation::bin));
+  set<string> bins = cb.bin_set();
   TFile output("htt_mt.input.root", "RECREATE");
   for (auto b : bins) {
     for (auto m : masses) {
-      std::cout << ">> Writing datacard for bin: " << b << " and mass: " << m
-                << "\r" << std::flush;
+      cout << ">> Writing datacard for bin: " << b << " and mass: " << m
+                << "\r" << flush;
       cb.cp().bin({b}).mass({m, "*"}).WriteDatacard(
           b + "_" + m + ".txt", output);
     }
   }
-  std::cout << "\n>> Writing combined datacard\n";
+  cout << "\n>> Writing combined datacard\n";
   cb.cp().mass({"*", "125"}).WriteDatacard("htt_mt_125_combined.txt", output);
-  std::cout << ">> Done!\n";
+  cout << ">> Done!\n";
+
+  output.Close();
 }

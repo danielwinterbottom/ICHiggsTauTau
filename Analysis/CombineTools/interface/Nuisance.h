@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_CombineTools_Nuisance_h
-#define ICHiggsTauTau_CombineTools_Nuisance_h
+#ifndef CombineTools_Nuisance_h
+#define CombineTools_Nuisance_h
 #include <memory>
 #include <string>
 #include "TH1.h"
@@ -21,9 +21,6 @@ class Nuisance {
   void set_process(std::string const& process) { process_ = process; }
   std::string const& process() const { return process_; }
 
-  // void set_process_id(int const& process_id) { process_id_ = process_id; }
-  // int process_id() const { return process_id_; }
-
   void set_signal(bool const& signal) { signal_ = signal; }
   bool signal() const { return signal_; }
 
@@ -38,6 +35,9 @@ class Nuisance {
 
   void set_value_d(double const& value_d) { value_d_ = value_d; }
   double value_d() const { return value_d_; }
+
+  void set_scale(double const& scale) { scale_ = scale; }
+  double scale() const { return scale_; }
 
   void set_asymm(bool const& asymm) { asymm_ = asymm; }
   bool asymm() const { return asymm_; }
@@ -69,12 +69,12 @@ class Nuisance {
  private:
   std::string bin_;
   std::string process_;
-  // int process_id_;
   bool signal_;
   std::string name_;
   std::string type_;
   double value_u_;
   double value_d_;
+  double scale_;
   bool asymm_;
   std::string analysis_;
   std::string era_;

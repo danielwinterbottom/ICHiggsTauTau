@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_CombineTools_HttSystematics_h
-#define ICHiggsTauTau_CombineTools_HttSystematics_h
+#ifndef CombineTools_HttSystematics_h
+#define CombineTools_HttSystematics_h
 #include "CombineTools/interface/CombineHarvester.h"
 
 namespace ch {

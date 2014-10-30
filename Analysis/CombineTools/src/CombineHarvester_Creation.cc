@@ -7,13 +7,11 @@
 #include <algorithm>
 #include "TDirectory.h"
 #include "TH1.h"
-#include "Utilities/interface/FnRootTools.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/Parameter.h"
-
-
+#include "CombineTools/interface/HelperFunctions.h"
 
 namespace ch {
 void CombineHarvester::AddObservations(
@@ -28,7 +26,7 @@ void CombineHarvester::AddObservations(
       unsigned(era.size()),
       unsigned(channel.size()),
       unsigned(bin.size())};
-  auto comb = ic::GenerateCombinations(lengths);
+  auto comb = ch::GenerateCombinations(lengths);
   for (auto const& c : comb) {
     auto obs = std::make_shared<Observation>();
     obs->set_mass(mass[c[0]]);
@@ -55,7 +53,7 @@ void CombineHarvester::AddProcesses(
       unsigned(era.size()),
       unsigned(channel.size()),
       unsigned(bin.size())};
-  auto comb = ic::GenerateCombinations(lengths);
+  auto comb = ch::GenerateCombinations(lengths);
   for (auto const& c : comb) {
     for (unsigned i = 0; i < procs.size(); ++i) {
       auto proc = std::make_shared<Process>();
