@@ -149,7 +149,7 @@ if options.scheme == 'HTohh':
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("2",   "2jet1tag_slice2",        "2jet1tag_slice2",       BINS,  (
+    ("2",   "2jet1tag_slice2",        "2jet1tag_slice2",   BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
@@ -157,7 +157,7 @@ if options.scheme == 'HTohh':
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("4",   "2jet1tag_slice4",        "2jet1tag_slice4",       BINS,  (
+    ("4",   "2jet1tag_slice4",        "2jet1tag_slice4",    BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
@@ -169,7 +169,7 @@ if options.scheme == 'HTohh':
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("12",   "2jet2tag_slice2",        "2jet2tag_slice2",       BINS,  (
+    ("12",   "2jet2tag_slice2",        "2jet2tag_slice2",  BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
@@ -177,7 +177,7 @@ if options.scheme == 'HTohh':
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("14",   "2jet2tag_slice4",        "2jet2tag_slice4",       BINS,  (
+    ("14",   "2jet2tag_slice4",        "2jet2tag_slice4",  BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
@@ -194,7 +194,7 @@ if options.scheme == 'HTohh':
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("2",   "2jet1tag_slice2",        "2jet1tag_slice2",       BINS,  (
+    ("2",   "2jet1tag_slice2",        "2jet1tag_slice2",    BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
@@ -202,7 +202,7 @@ if options.scheme == 'HTohh':
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("4",   "2jet1tag_slice4",        "2jet1tag_slice4",       BINS,  (
+    ("4",   "2jet1tag_slice4",        "2jet1tag_slice4",   BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
@@ -214,7 +214,7 @@ if options.scheme == 'HTohh':
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("12",   "2jet2tag_slice2",        "2jet2tag_slice2",       BINS,  (
+    ("12",   "2jet2tag_slice2",        "2jet2tag_slice2",  BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
@@ -222,7 +222,7 @@ if options.scheme == 'HTohh':
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("14",   "2jet2tag_slice4",        "2jet2tag_slice4",       BINS,  (
+    ("14",   "2jet2tag_slice4",        "2jet2tag_slice4",   BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015'))
@@ -264,8 +264,8 @@ if options.scheme == 'HTohh':
   sig_scheme = 'mssm_nostack'
   ANA = 'Hhh'
   #extra_channel["et"] += ' --set_alias="sel:mt_1<30.&&prebjet_mjj>70&&prebjet_mjj<150&&m_sv>90&&m_sv<150"'
-  extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
-  extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  extra_channel["et"] += ' --set_alias="sel:mt_1<30.&&pt_2>30"'
+  extra_channel["mt"] += ' --set_alias="sel:mt_1<30.&&pt_2>30"'
   #extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && prebjet_mjj>70 && prebjet_mjj<150. && m_sv>90 && m_sv<150"'
   #extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && prebjet_mjj>70 && prebjet_mjj<150. && m_H_chi2<25"'
   extra_channel["em"] += ' --set_alias="sel:pzeta>-30"'
