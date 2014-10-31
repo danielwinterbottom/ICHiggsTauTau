@@ -17,6 +17,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRate.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRateExtras.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -115,6 +116,9 @@ int main(int argc, char* argv[]){
   .set_predicate(bind(MinPtMaxEta, _1, tau_pt, tau_eta));
 
 
+	CopyCollection<GenParticle>
+    genParticleCopyCollection("CopyGenParticles","genParticles","copiedgenParticles");
+
 	SimpleFilter<GenParticle> GenFilter  = SimpleFilter<GenParticle>("GenFilter");
 	if(wjets_mode){
 	GenFilter
@@ -136,18 +140,23 @@ int main(int argc, char* argv[]){
 	.set_min_dr(0.7);
 
 
-  JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")
+/*  JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")
   .set_write_plots(true)
   .set_write_tree(false)
 	.set_by_decay_mode(by_decay_mode)
 	.set_by_jet_type(by_jet_type)
 	.set_fs(fs);
+	*/
 
+JetTauFakeRateExtras jetTauFakeRate = JetTauFakeRateExtras("jetTauFakeRate")
+  .set_write_plots(true)
+	.set_write_tree(false)
+	.set_fs(fs);
  //Add module here which reads in the filtered taus and jets and makes the plots/performs the fake rate study
  
   analysis.AddModule(&JetFilter); 
 	if(wjets_mode){
-	analysis.AddModule(&GenFilter);
+	if(do_skim) analysis.AddModule(&GenFilter);
 	analysis.AddModule(&GenMuonJetOverlapFilter);
 	}
   analysis.AddModule(&TauFilter); 
