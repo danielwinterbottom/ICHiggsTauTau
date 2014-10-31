@@ -30,6 +30,7 @@ XS_TTJetsFullLept:25.75214
 XS_TTJetsSemiLept:107.423222
 XS_TTJetsHadronicExt:112.08313
 XS_RecHit-TTJets_FullLeptMGDecays:25.75214
+XS_Embedded-TTJets_FullLeptMGDecays:25.75214
 # SM XS for H->tautau and H->WW
 XS_GluGluToHToTauTau_M-125:1.2179
 XS_VBF_HToTauTau_M-125:0.0997
@@ -197,6 +198,7 @@ EVT_TTJetsFullLept:12011428
 EVT_TTJetsSemiLept:24953451
 EVT_TTJetsHadronicExt:31123821
 EVT_RecHit-TTJets_FullLeptMGDecays:4243699
+EVT_Embedded-TTJets_FullLeptMGDecays:4243699
 EVT_VBF_HToWWTo2LAndTau2Nu_M-125:299687
 EVT_GluGluToHToWWTo2LAndTau2Nu_M-125:299975
 EVT_GluGluToHToTauTau_M-125:968134

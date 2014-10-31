@@ -207,7 +207,8 @@ int main(int argc, char* argv[]){
 	ana.AddMSSMSignalSamples(mssm_masses);
 	ana.AddMSSMbbHSignalSamples(bbH_masses);
 	if(do_highmass) ana.AddHighMassSignalSamples(high_masses);
-    if (is_2012 && (check_ztt_top_frac || sub_ztt_top_shape)) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
+    //if (is_2012 && (check_ztt_top_frac || sub_ztt_top_shape)) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
+    if (is_2012 && (check_ztt_top_frac || sub_ztt_top_shape)) ana.AddSample("Embedded-TTJets_FullLeptMGDecays");
 	ana.ReadTrees(folder);
 	ana.ParseParamFile(paramfile);
 
@@ -510,8 +511,8 @@ int main(int argc, char* argv[]){
   if (is_2012 && check_ztt_top_frac) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 		std::cout << "[HiggsHTohhPlot] Checking TOP contamination in ZTT embedded..." << std::endl;
-    HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
-    HhhAnalysis::Value embedded_ttbar_inc = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", "os", "", "wt");
+    HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    HhhAnalysis::Value embedded_ttbar_inc = ana.GetLumiScaledRate("Embedded-TTJets_FullLeptMGDecays", "os", "", "wt");
     HhhAnalysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
     HhhAnalysis::Value embedded_data_inc = ana.GetRate("Embedded", "os", "", "wt");
     HhhAnalysis::PrintValue("EmbeddedTop", embedded_ttbar);
@@ -526,7 +527,7 @@ int main(int argc, char* argv[]){
     HhhAnalysis::Value scaled_embedded = hmap[ztt_label].second;
     double norm_sf = scaled_embedded.first / embedded_data.first;
     double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
-    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
     SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
     hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, 0.));
   }
@@ -540,8 +541,8 @@ int main(int argc, char* argv[]){
     std::string top_label = (channel_str == "em") ? "ttbar" : "TT";
 	std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
     
-    HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
-    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
     TH1F ztt_hist = hmap[ztt_label].first;
     HhhAnalysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
     HhhAnalysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
