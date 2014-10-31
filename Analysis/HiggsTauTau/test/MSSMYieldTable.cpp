@@ -5,7 +5,6 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
-#include "Utilities/interface/SimpleParamParser.h"
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/HelperFunctions.h"
 

@@ -170,6 +170,7 @@ void CombineHarvester::LoadShapes(Observation* entry,
                                      std::vector<HistMapping> const& mappings) {
   HistMapping mapping =
       ResolveMapping(entry->process(), entry->bin(), mappings);
+  mapping.file->cd();
   // Allow $CHANNEL or $BIN here
   boost::replace_all(mapping.pattern, "$CHANNEL", entry->bin());
   boost::replace_all(mapping.pattern, "$BIN", entry->bin());
@@ -218,6 +219,7 @@ void CombineHarvester::LoadShapes(Process* entry,
                                      std::vector<HistMapping> const& mappings) {
   HistMapping mapping =
       ResolveMapping(entry->process(), entry->bin(), mappings);
+  mapping.file->cd();
   boost::replace_all(mapping.pattern, "$CHANNEL", entry->bin());
   boost::replace_all(mapping.pattern, "$BIN", entry->bin());
   boost::replace_all(mapping.pattern, "$PROCESS", entry->process());
@@ -305,6 +307,7 @@ void CombineHarvester::LoadShapes(Nuisance* entry,
                                      std::vector<HistMapping> const& mappings) {
   HistMapping const& mapping =
       ResolveMapping(entry->process(), entry->bin(), mappings);
+  mapping.file->cd();
   if (mapping.IsHist()) {
     std::string p = mapping.pattern;
     boost::replace_all(p, "$CHANNEL", entry->bin());
