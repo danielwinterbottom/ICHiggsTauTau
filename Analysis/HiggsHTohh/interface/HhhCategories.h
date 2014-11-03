@@ -123,6 +123,7 @@ class HhhCategories : public ModuleBase {
   double pull_balance_Zh_; //Defined if n_jets >= 2
   int convergence_Zh_; //Defined if n_jets >= 2
   double m_H_hh_;	     //Defined if n_jets >= 2
+  double m_H_hh_all_;	     //Defined if n_jets >= 2
   double m_H_hh_chi2_;   //Defined if n_jets >= 2
   double pull_balance_hh_; //Defined if n_jets >= 2
   int convergence_hh_; //Defined if n_jets >= 2

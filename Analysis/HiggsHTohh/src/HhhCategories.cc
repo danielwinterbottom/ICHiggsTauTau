@@ -132,6 +132,7 @@ namespace ic {
         outtree_->Branch("pull_balance_Zh",  &pull_balance_Zh_);
         outtree_->Branch("convergence_Zh",  &convergence_Zh_);
         outtree_->Branch("m_H_hh",     &m_H_hh_);
+        outtree_->Branch("m_H_hh_all",     &m_H_hh_all_);
         outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
         outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
         outtree_->Branch("convergence_hh", &convergence_hh_);
@@ -550,6 +551,10 @@ namespace ic {
         pull_balance_hh_ = fit_results_pull_balance.at(hypohh);
         convergence_hh_ = fit_convergence.at(hypohh);
         
+        //This variable is filled with mttbb if the event fails convergence
+        m_H_hh_all_ = m_H_hh_;
+        if(convergence_hh_ == -2) m_H_hh_all_ = mjj_tt_;
+        
         if(bestHypo.first>0){
           pull_balance_H_best_ = fit_results_pull_balance.at(bestHypo);
           convergence_H_best_ = fit_convergence.at(bestHypo);
@@ -615,6 +620,7 @@ namespace ic {
         pull_balance_hh_=-9999;
         convergence_hh_=-9999;
         m_H_hh_ = -9999;
+        m_H_hh_all_ = -9999;
         m_H_hh_chi2_ = -9999;
         m_bb_ = -9999;  
         m_bb_chi2_ = -9999;  
@@ -646,6 +652,7 @@ namespace ic {
       pull_balance_hZ_=-9999;
       convergence_hZ_=-9999;
       m_H_hh_ = -9999;
+      m_H_hh_all_ = -9999;
       m_H_hh_chi2_ = -9999;
       pull_balance_hh_=-9999;
       convergence_hh_=-9999;
