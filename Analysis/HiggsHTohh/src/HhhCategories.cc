@@ -94,7 +94,7 @@ namespace ic {
         outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
         outtree_->Branch("n_bjets",           &n_bjets_);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
-        outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
+        outtree_->Branch("n_prebjets_SF",        &n_prebjets_SF_);
         outtree_->Branch("n_jetsingap",       &n_jetsingap_);
         outtree_->Branch("jpt_1",             &jpt_1_);
         outtree_->Branch("j1_dm",             &j1_dm_);
@@ -301,8 +301,8 @@ namespace ic {
     std::vector<PFJet*> prebjets = lowpt_jets;
     ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     std::vector<PFJet*> bjets = prebjets;
-    std::vector<PFJet*> loose_bjets = prebjets;
-    ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
+    //new collection to be filtered for the purpose of the b-tag scale factor
+    std::vector<PFJet*> prebjets_SF = prebjets;
     //Use prebjet collection for candidate jets for h->bb. Sort by CSV discriminator
     std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
     std::vector<std::pair<PFJet*,PFJet*> > prebjet_pairs;
@@ -313,8 +313,10 @@ namespace ic {
     if (event->Exists("retag_result")) {
       auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      ic::erase_if(prebjets_SF, !boost::bind(IsReBTagged, _1, retag_result));
     } else {
       ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
+      ic::erase_if(prebjets_SF, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
     } 
     
     // Define event properties
@@ -448,7 +450,7 @@ namespace ic {
     n_lowpt_jets_ = lowpt_jets.size();
     n_bjets_ = bjets.size();
     n_prebjets_ = prebjets.size();
-    n_loose_bjets_ = loose_bjets.size();
+    n_prebjets_SF_ = prebjets_SF.size();
  
 
     if (n_prebjets_ >= 1) {
@@ -858,11 +860,6 @@ namespace ic {
     
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low");
     if (n_jets_ <= 1 && n_bjets_ > 0 && pt_2_ > pt2_split)  SetPassCategory("btag_high");
-
-    if (n_jets_ <= 1 && n_loose_bjets_ > 0)                       SetPassCategory("btag_loose");
-    if (n_jets_ <= 1 && n_loose_bjets_ > 0 && pt_2_ <= pt2_split) SetPassCategory("btag_low_loose");
-    if (n_jets_ <= 1 && n_loose_bjets_ > 0 && pt_2_ > pt2_split)  SetPassCategory("btag_high_loose");
-
 
     if (!PassesCategory("vbf") && n_bjets_ == 0) SetPassCategory("nobtag");
 

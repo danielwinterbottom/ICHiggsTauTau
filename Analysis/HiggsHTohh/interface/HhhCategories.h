@@ -84,7 +84,6 @@ class HhhCategories : public ModuleBase {
   unsigned n_jets_;
   unsigned n_lowpt_jets_;
   unsigned n_bjets_;
-  unsigned n_loose_bjets_;
   unsigned n_jetsingap_; // Defined if n_jets >= 2
   double jpt_1_;     // Defined if n_jets >= 1
   double jpt_2_;     // Defined if n_jets >= 2
@@ -153,6 +152,7 @@ class HhhCategories : public ModuleBase {
   unsigned n_jetsingap_lowpt_; // Defined if n_lowpt_jets >= 2
 
   unsigned n_prebjets_;
+  unsigned n_prebjets_SF_;
 
   double l1_met_;
   double calo_nohf_met_;
