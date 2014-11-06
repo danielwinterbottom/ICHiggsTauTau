@@ -28,6 +28,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/MakeRunStats.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/EnergyShifter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SVFit.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CheckEvents.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/SVFitTest.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/JetEnergyCorrections.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/JetEnergyUncertainty.h"
@@ -1037,14 +1038,17 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------ 
+  auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
   std::vector<int> to_check =
   {
   };
   for (auto ch : to_check) {
-    // analysis.NotifyEvent(ch);
+   eventChecker.CheckEvent(ch);
    httPrint.PrintEvent(ch);
   }
   httPrint.set_skip_events(false);
+  if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
+  
   if(make_gen_plots) analysis.AddModule(&genLevelStudy);
   if ( (channel == channel::etmet || 
         channel == channel::mtmet)
