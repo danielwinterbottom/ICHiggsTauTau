@@ -56,6 +56,23 @@ DY3JetsToLL ZJets_ll_all MC_DY3JetsToLL.root
 DY4JetsToLL ZJets_ll_all MC_DY4JetsToLL.root
 EWK-Z2j ZJets_ll_all MC_EWK-Z2j.root
 
+DYJetsToLLHighPt_iglep ZJets_ll_all_iglep MC_DYJetsToLL_PtZ-100-madgraph_iglep.root
+DYJetsToLL_iglep ZJets_ll_all_iglep MC_DYJetsToLL_iglep.root
+DY1JetsToLL_iglep ZJets_ll_all_iglep MC_DY1JetsToLL_iglep.root
+DY2JetsToLL_iglep ZJets_ll_all_iglep MC_DY2JetsToLL_iglep.root
+DY3JetsToLL_iglep ZJets_ll_all_iglep MC_DY3JetsToLL_iglep.root
+DY4JetsToLL_iglep ZJets_ll_all_iglep MC_DY4JetsToLL_iglep.root
+EWK-Z2j_iglep ZJets_ll_all_iglep MC_EWK-Z2j_iglep.root
+
+DYJetsToLLHighPt_iglep ZJets_ll_iglep MC_DYJetsToLL_PtZ-100-madgraph_iglep.root
+DYJetsToLL_iglep ZJets_ll_iglep MC_DYJetsToLL_iglep.root
+DY1JetsToLL_iglep ZJets_ll_iglep MC_DY1JetsToLL_iglep.root
+DY2JetsToLL_iglep ZJets_ll_iglep MC_DY2JetsToLL_iglep.root
+DY3JetsToLL_iglep ZJets_ll_iglep MC_DY3JetsToLL_iglep.root
+DY4JetsToLL_iglep ZJets_ll_iglep MC_DY4JetsToLL_iglep.root
+
+EWK-Z2j_iglep ZJets_ll_vbf_iglep MC_EWK-Z2j_iglep.root
+
 ZJetsToNuNu50-100 ZJets_nunu MC_ZJetsToNuNu_50_HT_100.root
 ZJetsToNuNu100-200 ZJets_nunu MC_ZJetsToNuNu_100_HT_200.root
 ZJetsToNuNu200-400 ZJets_nunu MC_ZJetsToNuNu_200_HT_400.root
@@ -124,6 +141,16 @@ VBF-QCD-Pt-1000to1400 VBF-QCD MC_QCD-Pt-1000to1400-pythia6.root
 VBF-QCD-Pt-1400to1800 VBF-QCD MC_QCD-Pt-1400to1800-pythia6.root
 VBF-QCD-Pt-1800 VBF-QCD MC_QCD-Pt-1800-pythia6.root
 
+powheg110 sig110 MC_Powheg-Htoinv-mH110.root
 powheg125 sig125 MC_Powheg-Htoinv-mH125.root
+powheg150 sig150 MC_Powheg-Htoinv-mH150.root
+powheg200 sig200 MC_Powheg-Htoinv-mH200.root
+powheg300 sig300 MC_Powheg-Htoinv-mH300.root
+powheg400 sig400 MC_Powheg-Htoinv-mH400.root
 
+powhegggH110 ggH110 MC_Powheg-ggHtoinv-mH110.root
 powhegggH125 ggH125 MC_Powheg-ggHtoinv-mH125.root
+powhegggH150 ggH150 MC_Powheg-ggHtoinv-mH150.root
+powhegggH200 ggH200 MC_Powheg-ggHtoinv-mH200.root
+powhegggH300 ggH300 MC_Powheg-ggHtoinv-mH300.root
+powhegggH400 ggH400 MC_Powheg-ggHtoinv-mH400.root
