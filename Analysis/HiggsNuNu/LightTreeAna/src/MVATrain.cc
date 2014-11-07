@@ -23,8 +23,32 @@ namespace ic{
       std::cout<<sigsets_[ivec]<<", "<<std::endl;
     }
     std::cout<<"Background samples are: ";
-    for(unsigned ivec=0;ivec<bkgsets_.size();ivec++){
-      std::cout<<bkgsets_[ivec]<<", "<<std::endl;
+    if(bkgweightdir_.size()==0){
+      for(unsigned ivec=0;ivec<bkgsets_.size();ivec++){
+	std::cout<<"  "<<bkgsets_[ivec]<<std::endl;
+      }
+    }
+    else{
+      if(datadrivenweightsfile_==""){
+	std::cout<<"Error: You must specify a file to get the data driven weights from"<<std::endl;
+	return 1;
+      }
+      else if(bkgweightdir_.size()!=bkgsets_.size()){
+	std::cout<<"Error: Weight dir vector must be the same size as background sets vector quitting"<<std::endl;
+	return 1;
+      }
+      else if(bkgisz_.size()!=bkgsets_.size()){
+	std::cout<<"Error: Background is Z vector must be the same size as background sets vector quitting"<<std::endl;
+	return 1;
+      }
+      else{
+	std::cout<<"Getting data driven weights from: "<<datadrivenweightsfile_<<std::endl;
+	for(unsigned ivec=0;ivec<bkgsets_.size();ivec++){
+	  std::cout<<"  "<<bkgsets_[ivec];
+	  if(bkgweightdir_[ivec]!="")std::cout<<", getting extra weight from "<<bkgweightdir_[ivec]<<" folder"<<std::endl;
+	  else std::cout<<std::endl;
+	}
+      }
     }
     std::cout<<"Variables used are: ";
     for(unsigned ivec=0;ivec<variables_.size();ivec++){
@@ -41,6 +65,7 @@ namespace ic{
     std::cout<<"Booking TMVA Factory..."<<std::endl;
     TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification", output_tmva,
 						"!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
+    //"!V:!Silent:Color:DrawProgressBar:AnalysisType=Classification" );
     //ADD VARIABLES
     //!!DO SOMETHING ABOUT WHETHER IT'S A FLOAT OR AN INT
     for(unsigned iVar=0;iVar<variables_.size();iVar++){
@@ -62,29 +87,72 @@ namespace ic{
       for(unsigned iFile=0;iFile<files.size();iFile++){
 	if(files[iFile].GetTree()->GetEntries()!=0){
 	  factory->AddSignalTree(files[iFile].GetTree(),signalWeight);
-	  factory->SetSignalWeightExpression("total_weight_lepveto");
 	}
 	else{
 	  std::cout<<"WARNING FILE "<<files[iFile].name()<<"is empty!"<<std::endl;
 	}
       }
     }
+    factory->SetSignalWeightExpression("total_weight_lepveto");
+
     for(unsigned iBkg=0;iBkg<bkgsets_.size();iBkg++){
       filemanager->OpenSet(bkgsets_[iBkg]);
       std::vector<LTFile> files=filemanager->GetFileSet(bkgsets_[iBkg]);
-      double backgroundWeight=1.;
+
+      //GET THE DATA DRIVEN WEIGHT
+      double ddweight=1.;
+      if(bkgweightdir_.size()!=0){
+	if(bkgweightdir_[iBkg]!=""){
+	  TFile* ddweightsfile;
+	  if(datadrivenweightsfile_!=""){
+	    if(!(ddweightsfile = new TFile(datadrivenweightsfile_.c_str()))){
+	      std::cout<<"Error: file "<<datadrivenweightsfile_<<" does not exist exiting"<<std::endl;
+	      return 1;
+	    }
+	  }
+	  else{
+	    std::cout<<"Error: you must specify a data driven weights file to read from to use data driven weights, exiting. Should have been picked up by here concerning that you see this message!"<<std::endl;
+	    return 1;
+	  }
+	  TDirectory* weightdir;
+	  if(!ddweightsfile->GetDirectory(bkgweightdir_[iBkg].c_str())){
+	    std::cout<<"Directory "<<bkgweightdir_[iBkg]<<" does not exist, exiting"<<std::endl;
+	    return 1;
+	  }
+	  else{
+	    weightdir=ddweightsfile->GetDirectory(bkgweightdir_[iBkg].c_str());
+	    TVectorD* weightvec = (TVectorD*)weightdir->Get("ddweight");
+	    if(bkgisz_[iBkg]==0){
+	      ddweight=(*weightvec)[0];
+	    }
+	    if(bkgisz_[iBkg]==1){
+	    ddweight=(*weightvec)[0];//EWK WEIGHT                                                                                                      
+	    }
+	    if(bkgisz_[iBkg]==2){
+	      ddweight=(*weightvec)[1];//QCD WEIGHT                                                                                                      
+	    }
+	  }
+	}
+      }
+      std::cout<<bkgsets_[iBkg]<<" "<<ddweight<<std::endl;
+      //      double backgroundextraWeight=1.;//Additional factor to apply to background weight
       for(unsigned iFile=0;iFile<files.size();iFile++){
 	if(files[iFile].GetTree()->GetEntries()!=0){
-	  factory->AddBackgroundTree(files[iFile].GetTree(),backgroundWeight);
-	  factory->SetBackgroundWeightExpression("total_weight_lepveto");
+	  //std::cout<<"weight applied:"<<backgroundextraWeight*ddweight;
+	  factory->AddBackgroundTree(files[iFile].GetTree(),ddweight);//backgroundextraWeight*ddweight);
 	}
 	else{
 	  std::cout<<"WARNING FILE "<<files[iFile].name()<<"is empty!"<<std::endl;
 	}
       }
     }
+    factory->SetBackgroundWeightExpression("total_weight_lepveto");//!!MAKE CONFIGURABLE
+
+      
+    
 
     //PREPARE TRAINING AND TEST TREE
+    //!!GET BETTER CUTS ESPECIALLY FOR ZMUMU
     TCut mycuts = (basesel_+sigcat_).c_str();//dijet_deta>3.8 && dijet_M > 1100 && met > 100 && met_significance>5";
     TCut mycutb = (basesel_+bkgcat_).c_str();//dijet_deta>3.8 && dijet_M > 1100 && met > 100 && met_significance>5";
     factory->PrepareTrainingAndTestTree( mycuts, mycutb,
@@ -94,6 +162,7 @@ namespace ic{
     factory->BookMethod( TMVA::Types::kFisher, "Fisher", "H:!V:Fisher:CreateMVAPdfs:PDFInterpolMVAPdf=Spline2:NbinsMVAPdf=50:NsmoothMVAPdf=10" );
     factory->BookMethod( TMVA::Types::kBDT, "BDT",
 			 "!H:!V:NTrees=1000:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.2:SeparationType=GiniIndex:nCuts=20" );
+    //    factory->BookMethod( TMVA::Types::kCuts, "Cut","");
 
     //TRAIN, TEST AND EVALUATE ALL METHODS
     factory->TrainAllMethods();

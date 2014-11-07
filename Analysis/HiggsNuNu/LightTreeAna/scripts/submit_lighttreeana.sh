@@ -21,7 +21,7 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfig.cfg
-QUEUEDIR=medium #medium long
+QUEUEDIR=short #medium #medium long
 
 JOBDIRPREFIX=jobs
 JOBDIR=$JOBDIRPREFIX/
@@ -62,14 +62,32 @@ echo "Using job-submission: " $JOBSUBMIT
 
 
 echo "JOB name = $JOB"
-for channels in nunu munu enu taunu mumu
+for syst in "" JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN PUUP PUDOWN
   do
-  JOB=$channels
-  OUTPUTNAME="$channels.root"
-  $JOBWRAPPER "./bin/LTAnalysis --cfg=$CONFIG --channel=$channels -o $OUTPUTDIR$OUTPUTNAME &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-  $JOBSUBMIT $JOBDIR/$JOB.sh
+  mkdir -p $JOBDIR$syst
+  mkdir -p $OUTPUTDIR$syst
+  for channels in nunu munu enu taunu mumu top #qcd
+    do
+    JOB=$channels
+    OUTPUTNAME="$channels.root"
+    if [ "$syst" = "" ]
+	then
+	$JOBWRAPPER "./bin/LTAnalysis --cfg=$CONFIG --channel=$channels -o $OUTPUTDIR$syst/$OUTPUTNAME &> $JOBDIR$syst/$JOB.log" $JOBDIR$syst/$JOB.sh
+    else
+	if [ "$channels" = "nunu" ]
+	    then
+	    #for other systs only run nunu
+	    $JOBWRAPPER "./bin/LTAnalysis --cfg=$CONFIG --channel=$channels --syst=$syst -o $OUTPUTDIR$syst/$OUTPUTNAME &> $JOBDIR$syst/$JOB.log" $JOBDIR$syst/$JOB.sh
+	fi
+    fi
+    if [ "$syst" = "" ]
+	then
+	$JOBSUBMIT $JOBDIR$syst/$JOB.sh
+    else
+	if [ "$channels" = "nunu" ]
+	    then
+	    $JOBSUBMIT $JOBDIR$syst/$JOB.sh
+	fi
+    fi
+  done
 done
-
-
-
-

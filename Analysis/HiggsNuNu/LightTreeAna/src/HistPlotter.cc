@@ -334,7 +334,7 @@ namespace ic{
       lat->DrawLatex(0.14,0.78,"VBF H #rightarrow invisible");
 
 
-      lat2->DrawLatex(0.14,0.665,"#sqrt{s} = 8 TeV, L = 19.8 fb^{-1}");
+      lat2->DrawLatex(0.14,0.665,"#sqrt{s} = 8 TeV, L = 19.2 fb^{-1}");
 
       c1->Update();
 
