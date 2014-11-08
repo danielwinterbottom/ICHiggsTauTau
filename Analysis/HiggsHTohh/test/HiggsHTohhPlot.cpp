@@ -198,7 +198,7 @@ int main(int argc, char* argv[]){
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
 	ana.AddSMHbbSignalSamples(sm_masses);
-	ana.AddHWWSignalSamples(hww_masses);
+	//ana.AddHWWSignalSamples(hww_masses);
 	if (add_sm_background != "") {
 		ana.AddSMSignalSamples({add_sm_background});
 		ana.AddSMHbbSignalSamples({add_sm_background});
@@ -416,7 +416,8 @@ int main(int argc, char* argv[]){
     ana_syst.SetQCDRatio(qcd_os_ss_factor);
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
-		ana_syst.AddHWWSignalSamples(hww_masses);
+		ana_syst.AddSMHbbSignalSamples(sm_masses);
+		//ana_syst.AddHWWSignalSamples(hww_masses);
 		if (add_sm_background != "") {
 			ana_syst.AddSMSignalSamples({add_sm_background});
 			ana_syst.AddSMHbbSignalSamples({add_sm_background});
