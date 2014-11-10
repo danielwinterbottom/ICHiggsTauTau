@@ -18,7 +18,8 @@
 #include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/Parameter.h"
 #include "CombineTools/interface/MakeUnique.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
+#include "CombineTools/interface/Algorithm.h"
 
 // #include "TMath.h"
 // #include "boost/format.hpp"

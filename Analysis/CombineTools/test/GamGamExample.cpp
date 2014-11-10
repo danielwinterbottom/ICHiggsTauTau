@@ -2,6 +2,7 @@
 #include <vector>
 #include <TFile.h>
 #include "CombineTools/interface/CombineHarvester.h"
+#include "CombineTools/interface/TFileIO.h"
 #include "Core/interface/Plotting.h"
 #include "TCanvas.h"
 #include "TFrame.h"

@@ -9,6 +9,7 @@
 #include <cmath>
 #include <set>
 #include <functional>
+#include "boost/range/algorithm_ext/erase.hpp"
 #include "TFile.h"
 #include "TH1.h"
 #include "RooWorkspace.h"
@@ -16,7 +17,7 @@
 #include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/Parameter.h"
 #include "CombineTools/interface/Observation.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
 #include "CombineTools/interface/HistMapping.h"
 
 /*
@@ -33,7 +34,6 @@ To-do list
  [x] Update parameter method,i.e. change value of a single paramter
 [ ] Support TF1 extraction for pdfs
 [ ] better handling of param constraint terms
-[ ] Rename our channel as "CHN" to avoid confusion with "CHANNEL"?
 [ ] migration to offical package
 [x] Any RooAbsPdf, RooAbsData pointers in a copied CombineHarvester point to the previous instance
 [x] Provide a method to redefine binning for Pdfs
@@ -96,6 +96,8 @@ class CombineHarvester {
   CombineHarvester& mass(std::vector<std::string> const& vec, bool cond = true);
   CombineHarvester& nus_name(std::vector<std::string> const& vec, bool cond = true);
   CombineHarvester& nus_type(std::vector<std::string> const& vec, bool cond = true);
+
+  CombineHarvester& process_rgx(std::vector<std::string> const& vec, bool cond = true);
 
   CombineHarvester& signals();
   CombineHarvester& backgrounds();
@@ -208,7 +210,7 @@ class CombineHarvester {
                     std::vector<std::pair<int, std::string>> bin, bool signal);
 
   template <class Map>
-  void AddSyst(CombineHarvester* other, std::string const& name,
+  void AddSyst(CombineHarvester & target, std::string const& name,
                std::string const& type, Map const& valmap);
 
   void ExtractShapes(std::string const& file, std::string const& rule,
@@ -380,8 +382,8 @@ CombineHarvester& CombineHarvester::FilterNus(Function func) {
 }
 
 template <class Map>
-void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
-                               std::string const& type,
+void CombineHarvester::AddSyst(CombineHarvester& target,
+                               std::string const& name, std::string const& type,
                                Map const& valmap) {
   for (unsigned i = 0; i < procs_.size(); ++i) {
     if (!valmap.Contains(procs_[i].get())) continue;
@@ -406,13 +408,8 @@ void CombineHarvester::AddSyst(CombineHarvester* other, std::string const& name,
       nus->set_value_d(1.0);
       nus->set_scale(valmap.ValU(procs_[i].get()));
     }
-    CombineHarvester::CreateParameterIfEmpty(other ? other : this,
-                                             nus->name());
-    if (other) {
-      other->nus_.push_back(nus);
-    } else {
-      nus_.push_back(nus);
-    }
+    CombineHarvester::CreateParameterIfEmpty(&target, nus->name());
+      target.nus_.push_back(nus);
   }
 }
 }

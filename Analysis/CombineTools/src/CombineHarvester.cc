@@ -8,6 +8,8 @@
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/Parameter.h"
+#include "CombineTools/interface/Logging.h"
+#include "CombineTools/interface/TFileIO.h"
 
 namespace ch {
 
@@ -166,101 +168,157 @@ CombineHarvester & CombineHarvester::PrintAll() {
   return *this;
 }
 
+/**
+ * \brief Resolve a HistMapping object for the given Observation and load the
+ *TH1 or RooAbsData from the TFile and naming pattern this HistMapping provides
+ *
+ * \pre
+ *  1. Input Observation must not already store a shape (TH1 or RooAbsData)
+ *  2. It must be possible to resolve this input to a single HistMapping
+ *     object. See the documentation of CombineHarvester::ResolveMapping for
+ *     further details.
+ *  3. The resolved HistMapping object must provide a valid TFile. This file
+ *     must contain the TH1 or RooAbsData object as directed by the pattern in
+ *     the HistMapping after the substitution of the Observation properties.
+ *
+ * **If any of these conditions is unmet an exception will be thrown
+ *and the calling CombineHarvester instance will remain unmodified.**
+ *
+ * \post
+ *  1. The Observation object will contain either a TH1 or a pointer to a
+ *     RooAbsData object.
+ *  2. If a TH1 is loaded, the Observation rate will be set to the Integral of
+ *     the histogram, discarding any existing value.
+ */
 void CombineHarvester::LoadShapes(Observation* entry,
                                      std::vector<HistMapping> const& mappings) {
+  // Pre-condition #1
+  if (entry->shape() || entry->data()) {
+    throw std::runtime_error(FNERROR("Observation already contains a shape"));
+  }
+
+  if (verbosity_ >= 1) {
+    LOGLINE(log(), "Extracting shapes for Observation:");
+    log() << Observation::PrintHeader << *entry << "\n";
+    LOGLINE(log(), "Mappings:");
+    for (HistMapping const& m : mappings) log() << m << "\n";
+  }
+
+  // Pre-condition #2
+  // ResolveMapping will throw if this fails
   HistMapping mapping =
       ResolveMapping(entry->process(), entry->bin(), mappings);
-  mapping.file->cd();
-  // Allow $CHANNEL or $BIN here
   boost::replace_all(mapping.pattern, "$CHANNEL", entry->bin());
   boost::replace_all(mapping.pattern, "$BIN", entry->bin());
   boost::replace_all(mapping.pattern, "$PROCESS", entry->process());
   boost::replace_all(mapping.pattern, "$MASS", entry->mass());
+
   if (verbosity_ >= 1) {
-    log() << "[LoadShapes] Extracting shapes for observation:\n";
-    Observation::PrintHeader(log());
-    log() << *entry << "\n";
-    log() << "[LoadShapes] Resolved mapping pattern \"" << mapping.pattern
-          << "\"\n";
+    LOGLINE(log(), "Resolved Mapping:");
+    log() << mapping << "\n";
   }
+
   if (mapping.IsHist()) {
-    if (verbosity_ >= 1) log() << "[LoadShapes] Mapping type is TH1\n";
-    if (!mapping.file) {
-      throw std::runtime_error(
-          "[CombineHarvester::LoadShapes] Selected HistMapping does not "
-          "provide a ROOT file");
-    }
-    mapping.file->cd();
-    if (!gDirectory->Get(mapping.pattern.c_str())) {
-      throw std::runtime_error(
-          "[CombineHarvester::LoadShapes] Error in extracting TH1");
-    }
-    TH1* h =
-        dynamic_cast<TH1*>(gDirectory->Get(mapping.pattern.c_str())->Clone());
-    h->SetDirectory(0);
-    entry->set_rate(h->Integral());
-    if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
-    entry->set_shape(std::unique_ptr<TH1>(h));
+    if (verbosity_ >= 1) LOGLINE(log(), "Mapping type in TH1");
+    // Pre-condition #3
+    // GetClonedTH1 will throw if this fails
+    std::unique_ptr<TH1> h = GetClonedTH1(mapping.file.get(), mapping.pattern);
+    // Post-conditions #1 and #2
+    entry->SetNormShapeAndRate(std::move(h));
   } else if (mapping.IsData()) {
-    if (verbosity_ >= 1)
-      log() << "[LoadShapes] Mapping type is RooAbsData\n";
+    if (verbosity_ >= 1) LOGLINE(log(), "Mapping type is RooAbsData");
+    // Pre-condition #3
+    // SetupWorkspace will throw if workspace not found
     StrPair res = SetupWorkspace(mapping);
     RooAbsData* dat = wspaces_[res.first]->data(res.second.c_str());
     if (!dat) {
-      throw std::runtime_error(
-          "[CombineHarvester::LoadShapes] RooAbsData not found in workspace");
+      throw std::runtime_error(FNERROR("RooAbsData not found in workspace"));
     }
+    // Post-condition #1
     entry->set_data(dat);
     entry->set_rate(dat->sumEntries());
   }
 }
 
+/**
+ * \brief Resolve a HistMapping object for the given Process and load the TH1 or
+ *RooAbsPdf from the TFile and naming pattern this HistMapping provides
+ *
+ * \pre
+ *  1. Input Process must not already store a shape (TH1 or RooAbsPdf) or
+ *     normalisation (RooAbsReal) object
+ *  2. It must be possible to resolve this input to a single HistMapping
+ *     object. See the documentation of CombineHarvester::ResolveMapping for
+ *     further details.
+ *  3. The resolved HistMapping object must provide a valid TFile. This file
+ *     must contain the TH1 or RooAbsPdf object as directed by the pattern in
+ *     the HistMapping after the substitution of the Process properties.
+ *
+ * **If any of these conditions is unmet an exception will be thrown
+ *and the calling CombineHarvester instance will remain unmodified.**
+ *
+ * \post
+ *  1. The Process object will contain either a TH1 or a pointer to a RooAbsPdf
+ *     object.
+ *  2. If a TH1 is loaded, the Process rate will be set to the Integral of the
+ *     histogram, discarding any existing value.
+ *  3. It will also contain a pointer to a RooAbsReal object for the
+ *     normalisation, but only when the mapping resolved to a RooAbsPdf and a
+ *     RooAbsReal object can be found by appending the  suffix "_norm" to the
+ *     same pattern.
+ *  4. If a RooAbsPdf is loaded, any dependent parameters will be added to the
+ *     CombineHarvester instance.
+ */
 void CombineHarvester::LoadShapes(Process* entry,
                                      std::vector<HistMapping> const& mappings) {
+  // Pre-condition #1
+  if (entry->shape() || entry->pdf()) {
+    throw std::runtime_error(FNERROR("Process already contains a shape"));
+  }
+
+  if (verbosity_ >= 1) {
+    LOGLINE(log(), "Extracting shapes for Process:");
+    log() << Process::PrintHeader << *entry << "\n";
+    LOGLINE(log(), "Mappings:");
+    for (HistMapping const& m : mappings) log() << m << "\n";
+  }
+
+  // Pre-condition #2
+  // ResolveMapping will throw if this fails
   HistMapping mapping =
       ResolveMapping(entry->process(), entry->bin(), mappings);
-  mapping.file->cd();
   boost::replace_all(mapping.pattern, "$CHANNEL", entry->bin());
   boost::replace_all(mapping.pattern, "$BIN", entry->bin());
   boost::replace_all(mapping.pattern, "$PROCESS", entry->process());
   boost::replace_all(mapping.pattern, "$MASS", entry->mass());
+
   if (verbosity_ >= 1) {
-    log() << "[LoadShapes] Extracting shapes for process:\n";
-    Process::PrintHeader(log());
-    log() << *entry << "\n";
-    log() << "[LoadShapes] Resolved mapping pattern \"" << mapping.pattern
-          << "\"\n";
+    LOGLINE(log(), "Resolved Mapping:");
+    log() << mapping << "\n";
   }
+
   if (mapping.IsHist()) {
-    if (verbosity_ >= 1) log() << "[LoadShapes] Mapping type in TH1\n";
-    if (!mapping.file) {
-      throw std::runtime_error(
-          "[CombineHarvester::LoadShapes] Selected HistMapping does not "
-          "provide a ROOT file");
-    }
-    mapping.file->cd();
-    if (!gDirectory->Get(mapping.pattern.c_str())) {
-      throw std::runtime_error(
-          "[CombineHarvester::LoadShapes] Error in extracting TH1");
-    }
-    TH1* h =
-        dynamic_cast<TH1*>(gDirectory->Get(mapping.pattern.c_str())->Clone());
-    h->SetDirectory(0);
-    entry->set_rate(h->Integral());
-    if (h->Integral() > 0.0) h->Scale(1.0/h->Integral());
-    entry->set_shape(std::unique_ptr<TH1>(h));
+    if (verbosity_ >= 1) LOGLINE(log(), "Mapping type in TH1");
+    // Pre-condition #3
+    // GetClonedTH1 will throw if this fails
+    std::unique_ptr<TH1> h = GetClonedTH1(mapping.file.get(), mapping.pattern);
+    // Post-conditions #1 and #2
+    entry->SetNormShapeAndRate(std::move(h));
   } else if (mapping.IsPdf()) {
-    if (verbosity_ >= 1) log() << "[LoadShapes] Mapping type is RooAbsPdf\n";
+    if (verbosity_ >= 1) LOGLINE(log(), "Mapping type is RooAbsPdf");
+    // Pre-condition #3
+    // SetupWorkspace will throw if workspace not found
     StrPair res = SetupWorkspace(mapping);
     RooAbsPdf* pdf = wspaces_[res.first]->pdf(res.second.c_str());
+    // Pre-condition #3
     if (!pdf) {
-      throw std::runtime_error(
-          "[CombineHarvester::LoadShapes] RooAbsPdf not found in workspace");
+      throw std::runtime_error(FNERROR("RooAbsPdf not found in workspace"));
     }
     if (verbosity_ >= 1) {
       pdf->printStream(log(), pdf->defaultPrintContents(0),
-                       pdf->defaultPrintStyle(0), "[LoadShapes] ");
+                     pdf->defaultPrintStyle(0), "[LoadShapes] ");
     }
+    // Post-condition #1
     entry->set_pdf(pdf);
 
     HistMapping norm_mapping = mapping;
@@ -269,11 +327,12 @@ void CombineHarvester::LoadShapes(Process* entry,
     RooAbsReal* norm =
         wspaces_[norm_res.first]->function(norm_res.second.c_str());
     if (norm) {
+      // Post-condition #3
       entry->set_norm(norm);
       if (verbosity_ >= 1) {
-        log() << "[LoadShapes] Normalisation RooAbsReal found\n";
+        LOGLINE(log(), "Normalisation RooAbsReal found");
         norm->printStream(log(), norm->defaultPrintContents(0),
-                         norm->defaultPrintStyle(0), "[LoadShapes] ");
+                          norm->defaultPrintStyle(0), "[LoadShapes] ");
       }
       // If we can upcast norm to a RooRealVar then we can interpret
       // it as a free parameter that should be added to the list
@@ -284,71 +343,67 @@ void CombineHarvester::LoadShapes(Process* entry,
       }
     }
 
+    // Post-condition #4
+    // Import any paramters of the RooAbsPdf and the RooRealVar
     RooAbsData const* data_obj = FindMatchingData(entry);
-
     if (data_obj) {
-      if (verbosity_ >= 1)
-        log() << "[LoadShapes] Matching RooAbsData has been found\n";
+      if (verbosity_ >= 1) LOGLINE(log(), "Matching RooAbsData has been found");
       ImportParameters(pdf->getParameters(data_obj));
       if (norm) ImportParameters(norm->getParameters(data_obj));
     } else {
       if (verbosity_ >= 1)
-        log() << "[LoadShapes] No matching RooAbsData found, assume observable "
-                 "\"CMS_th1x\"\n";
+        LOGLINE(log(), "No RooAbsData found, assume observable CMS_th1x");
       RooRealVar mx("CMS_th1x" , "CMS_th1x", 0, 1);
       RooArgSet tmp_set(mx);
       ImportParameters(pdf->getParameters(&tmp_set));
       if (norm) ImportParameters(norm->getParameters(&tmp_set));
     }
-  };
+  }
 }
 
 void CombineHarvester::LoadShapes(Nuisance* entry,
                                      std::vector<HistMapping> const& mappings) {
+  if (entry->shape_u() || entry->shape_d()) {
+    throw std::runtime_error(FNERROR("Nuisance already contains a shape"));
+  }
+
+  if (verbosity_ >= 1) {
+    LOGLINE(log(), "Extracting shapes for Nuisance:");
+    log() << Nuisance::PrintHeader << *entry << "\n";
+    LOGLINE(log(), "Mappings:");
+    for (HistMapping const& m : mappings) log() << m << "\n";
+  }
+
+  // Pre-condition #2
+  // ResolveMapping will throw if this fails
   HistMapping const& mapping =
       ResolveMapping(entry->process(), entry->bin(), mappings);
-  mapping.file->cd();
-  if (mapping.IsHist()) {
-    std::string p = mapping.pattern;
-    boost::replace_all(p, "$CHANNEL", entry->bin());
-    boost::replace_all(p, "$BIN", entry->bin());
-    boost::replace_all(p, "$PROCESS", entry->process());
-    boost::replace_all(p, "$MASS", entry->mass());
-    std::string p_s = mapping.syst_pattern;
-    boost::replace_all(p_s, "$CHANNEL", entry->bin());
-    boost::replace_all(p_s, "$BIN", entry->bin());
-    boost::replace_all(p_s, "$PROCESS", entry->process());
-    boost::replace_all(p_s, "$MASS", entry->mass());
-    std::string p_s_hi = p_s;
-    std::string p_s_lo = p_s;
-    boost::replace_all(p_s_hi, "$SYSTEMATIC", entry->name() + "Up");
-    boost::replace_all(p_s_lo, "$SYSTEMATIC", entry->name() + "Down");
-    TH1 *h = dynamic_cast<TH1*>(gDirectory->Get(p.c_str()));
-    // Allow for the possibility that the shapes don't exist (i.e. if this
-    // is a "shape?" entry in the datacard)
-    if (!gDirectory->Get(p_s_hi.c_str())
-        || !gDirectory->Get(p_s_lo.c_str())) return;
-    TH1 *h_u = dynamic_cast<TH1*>(gDirectory->Get(p_s_hi.c_str())->Clone());
-    TH1 *h_d = dynamic_cast<TH1*>(gDirectory->Get(p_s_lo.c_str())->Clone());
-    h_u->SetDirectory(0);
-    h_d->SetDirectory(0);
-    if (h->Integral() > 0.0) {
-      if (h_u->Integral() > 0.0) {
-        entry->set_value_u(h_u->Integral()/h->Integral());
-        h_u->Scale(1.0/h_u->Integral());
-      }
-      if (h_d->Integral() > 0.0) {
-        entry->set_value_d(h_d->Integral()/h->Integral());
-        h_d->Scale(1.0/h_d->Integral());
-      }
-    } else {
-      if (h_u->Integral() > 0.0)  h_u->Scale(1.0/h_u->Integral());
-      if (h_d->Integral() > 0.0)  h_d->Scale(1.0/h_d->Integral());
-    }
-    entry->set_shape_u(std::unique_ptr<TH1>(h_u));
-    entry->set_shape_d(std::unique_ptr<TH1>(h_d));
-    entry->set_asymm(true);
+
+  if (!mapping.IsHist()) {
+    throw std::runtime_error(
+        FNERROR("Resolved mapping is not of histogram type"));
   }
+
+  std::string p = mapping.pattern;
+  boost::replace_all(p, "$CHANNEL", entry->bin());
+  boost::replace_all(p, "$BIN", entry->bin());
+  boost::replace_all(p, "$PROCESS", entry->process());
+  boost::replace_all(p, "$MASS", entry->mass());
+  std::string p_s = mapping.syst_pattern;
+  boost::replace_all(p_s, "$CHANNEL", entry->bin());
+  boost::replace_all(p_s, "$BIN", entry->bin());
+  boost::replace_all(p_s, "$PROCESS", entry->process());
+  boost::replace_all(p_s, "$MASS", entry->mass());
+  std::string p_s_hi = p_s;
+  std::string p_s_lo = p_s;
+  boost::replace_all(p_s_hi, "$SYSTEMATIC", entry->name() + "Up");
+  boost::replace_all(p_s_lo, "$SYSTEMATIC", entry->name() + "Down");
+
+  std::unique_ptr<TH1> h = GetClonedTH1(mapping.file.get(), p);
+  std::unique_ptr<TH1> h_u = GetClonedTH1(mapping.file.get(), p_s_hi);
+  std::unique_ptr<TH1> h_d = GetClonedTH1(mapping.file.get(), p_s_lo);
+
+  entry->SetShapesAndVals(std::move(h_u), std::move(h_d), h.get());
 }
 
 HistMapping const& CombineHarvester::ResolveMapping(

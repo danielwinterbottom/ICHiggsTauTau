@@ -79,6 +79,18 @@ Process& Process::operator=(Process other) {
   return (*this);
 }
 
+void Process::SetNormShape(std::unique_ptr<TH1> shape) {
+  if (!shape) return;
+  if (shape->Integral() > 0.0) shape->Scale(1.0 / shape->Integral());
+  this->set_shape(std::move(shape));
+}
+
+void Process::SetNormShapeAndRate(std::unique_ptr<TH1> shape) {
+  if (!shape) return;
+  this->set_rate(shape->Integral());
+  SetNormShape(std::move(shape));
+}
+
 std::ostream& Process::PrintHeader(std::ostream& out) {
   std::string line =
       (boost::format(

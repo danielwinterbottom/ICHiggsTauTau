@@ -7,7 +7,7 @@
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
 #include "CombinePdfs/interface/MorphFunctions.h"
 #include "CombineTools/interface/HttSystematics.h"
 // #include "CombinePdfs/interface/RooHttSMPdf.h"
@@ -63,7 +63,7 @@ int main() {
   std::cout << " done\n";
 
   std::cout << "Adding systematic uncertainties...";
-  ch::AddMSSMSystematics(&cb);
+  ch::AddMSSMSystematics(cb);
   std::cout << " done\n";
 
   std::cout << "Extracting histograms from input root files...";
@@ -216,7 +216,7 @@ int main() {
       // RooRealVar bkg_norm((b + "_bkgpdf_norm").c_str(), "", bkg_rate, 0., bkg_rate*10.);
       RooRealVar bkg_norm((b + "_bkgpdf_norm").c_str(), "", bkg_rate);
       tmp.cp().process({"bkg"})
-          .AddSyst(&cb_hm, "CMS_htt_norm_$BIN", "lnN", ch::syst::SystMap<>::init
+          .AddSyst(cb_hm, "CMS_htt_norm_$BIN", "lnN", ch::syst::SystMap<>::init
           (1.0 + (bkg_uncert/bkg_rate)));
       bkg_norm.setConstant();
       ws.import(bkg_pdf);

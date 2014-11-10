@@ -45,6 +45,10 @@ class Observation {
 
   std::string process() const { return "data_obs"; }
 
+  void SetNormShape(std::unique_ptr<TH1> shape);
+
+  void SetNormShapeAndRate(std::unique_ptr<TH1> shape);
+
   friend std::ostream& operator<< (std::ostream &out, Observation &val);
   static std::ostream& PrintHeader(std::ostream &out);
 

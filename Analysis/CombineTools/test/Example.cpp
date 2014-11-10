@@ -7,9 +7,8 @@
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
 #include "CombineTools/interface/Systematics.h"
-#include "CombineTools/interface/HighLevelFunctions.h"
 
 using namespace std;
 
@@ -87,7 +86,7 @@ int main() {
   // First, let's just go ahead and add a luminosity uncertainty for the signal
   // samples:
   cb.cp().signals()
-      .AddSyst(&cb, "lumi_$ERA", "lnN", SystMap<era>::init
+      .AddSyst(cb, "lumi_$ERA", "lnN", SystMap<era>::init
       ({"7TeV"}, 1.022)
       ({"8TeV"}, 1.026));
   // We can break this line down into several parts. cb.cp() returns a shallow
@@ -128,13 +127,13 @@ int main() {
   // era "7TeV" a value of 1.022, and any "8TeV" process a value of 1.026. More
   // examples are given below:
   cb.cp().process({"ggH"})
-      .AddSyst(&cb, "pdf_gg", "lnN", SystMap<>::init(1.097));
+      .AddSyst(cb, "pdf_gg", "lnN", SystMap<>::init(1.097));
 
   cb.cp().process(JoinStr({sig_procs, {"ZTT", "TT"}}))
-      .AddSyst(&cb, "CMS_eff_m", "lnN", SystMap<>::init(1.02));
+      .AddSyst(cb, "CMS_eff_m", "lnN", SystMap<>::init(1.02));
 
   cb.cp()
-      .AddSyst(&cb,
+      .AddSyst(cb,
         "CMS_scale_j_$ERA", "lnN", SystMap<era, bin_id, process>::init
         ({"8TeV"}, {1},     {"ggH"},        1.04)
         ({"8TeV"}, {1},     {"qqH"},        0.99)
@@ -143,7 +142,7 @@ int main() {
         ({"8TeV"}, {2},     {"TT"},         1.05));
 
   cb.cp().process(JoinStr({sig_procs, {"ZTT"}}))
-      .AddSyst(&cb, "CMS_scale_t_mutau_$ERA", "shape", SystMap<>::init(1.00));
+      .AddSyst(cb, "CMS_scale_t_mutau_$ERA", "shape", SystMap<>::init(1.00));
 
   // Next we populate these Observation, Process and Nuisance entries with the
   // actual histograms (and also yields). The last two arguments are the
@@ -169,7 +168,7 @@ int main() {
   // This function modifies every entry to have a standardised bin name of
   // the form: {analysis}_{channel}_{bin_id}_{era}
   // which is commonly used in the htt analyses
-  ch::SetStandardBinNames(&cb);
+  ch::SetStandardBinNames(cb);
 
   // The next step is optional. This will generate additional shape
   // uncertainties to account for limited template statistics, so-called

@@ -1,19 +1,26 @@
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
 #include <iostream>
 #include <vector>
+#include <set>
 #include <string>
 #include <fstream>
+#include <map>
+#include "boost/format.hpp"
 #include "RooFitResult.h"
 #include "RooRealVar.h"
 #include "RooDataHist.h"
+#include "CombineTools/interface/CombineHarvester.h"
 
 namespace ch {
-
+// ---------------------------------------------------------------------------
+// Paramter extraction/manipulation
+// ---------------------------------------------------------------------------
 std::vector<ch::Parameter> ExtractFitParameters(RooFitResult const& res) {
   std::vector<ch::Parameter> params;
   params.resize(res.floatParsFinal().getSize());
   for (int i = 0; i < res.floatParsFinal().getSize(); ++i) {
-    RooRealVar const* var = dynamic_cast<RooRealVar const*>(res.floatParsFinal().at(i));
+    RooRealVar const* var =
+        dynamic_cast<RooRealVar const*>(res.floatParsFinal().at(i));
     params[i].set_name(std::string(var->GetName()));
     params[i].set_val(var->getVal());
     params[i].set_err_d(var->getErrorLo());
@@ -22,7 +29,8 @@ std::vector<ch::Parameter> ExtractFitParameters(RooFitResult const& res) {
   return params;
 }
 
-std::vector<ch::Parameter> ExtractSampledFitParameters(RooFitResult const& res) {
+std::vector<ch::Parameter> ExtractSampledFitParameters(
+    RooFitResult const& res) {
   std::vector<ch::Parameter> params;
   params.resize(res.floatParsFinal().getSize());
   RooArgList const& rands = res.randomizePars();
@@ -36,49 +44,20 @@ std::vector<ch::Parameter> ExtractSampledFitParameters(RooFitResult const& res) 
   return params;
 }
 
-SOverBInfo::SOverBInfo(TH1F const* sig, TH1F const* bkg, unsigned steps, double frac) {
-  double xmin = sig->GetXaxis()->GetXmin();
-  double xmax = sig->GetXaxis()->GetXmax();
-  double step_size = (xmax-xmin)/double(steps);
-  double sig_tot = sig->Integral();
-  double lower_limit = 0;
-  double upper_limit = 0;
-  double ofrac = (1.-frac)/2.;
-  for (unsigned j = 0; j < steps; ++j) {
-    double integral = ch::IntegrateFloatRange(sig, xmin, xmin+(step_size*double(j)));
-    if (integral/sig_tot > ofrac) {
-      lower_limit = xmin+(step_size*double(j));
-      break;
-    }
-  }
-  for (unsigned j = 0; j < steps; ++j) {
-    double integral = ch::IntegrateFloatRange(sig, xmax - (step_size*double(j)), xmax);
-    if (integral/sig_tot > ofrac) {
-      upper_limit = xmax - (step_size*double(j));
-      break;
-    }
-  }
-  x_lo = lower_limit;
-  x_hi = upper_limit;
-  s = ch::IntegrateFloatRange(sig, lower_limit, upper_limit);
-  b = ch::IntegrateFloatRange(bkg, lower_limit, upper_limit);
+// ---------------------------------------------------------------------------
+// Property matching & editing
+// ---------------------------------------------------------------------------
+void SetStandardBinNames(CombineHarvester & cb) {
+  cb.ForEachObs(ch::SetStandardBinName<ch::Observation>);
+  cb.ForEachProc(ch::SetStandardBinName<ch::Process>);
+  cb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
 }
 
-double IntegrateFloatRange(TH1F const* hist, double xmin, double xmax) {
-    TAxis *axis = hist->GetXaxis();
-    int bmin = axis->FindBin(xmin);
-    int bmax = axis->FindBin(xmax);
-    double integral = hist->Integral(bmin, bmax);
-    integral -= hist->GetBinContent(bmin)*(xmin-axis->GetBinLowEdge(bmin))/
-              axis->GetBinWidth(bmin);
-    integral -= hist->GetBinContent(bmax)*(axis->GetBinUpEdge(bmax)-xmax)/
-              axis->GetBinWidth(bmax);
-    return integral;
-}
-
-void ParseTable(std::map<std::string, TGraph>* graphs,
-                        std::string const& file,
-                        std::vector<std::string> const& fields) {
+// ---------------------------------------------------------------------------
+// Rate scaling
+// ---------------------------------------------------------------------------
+void ParseTable(std::map<std::string, TGraph>* graphs, std::string const& file,
+                std::vector<std::string> const& fields) {
   auto lines = ch::ParseFileLines(file);
   for (auto const& f : fields) {
     (*graphs)[f] = TGraph(lines.size());
@@ -86,13 +65,11 @@ void ParseTable(std::map<std::string, TGraph>* graphs,
   for (unsigned i = 0; i < lines.size(); ++i) {
     std::vector<std::string> words;
     boost::split(words, lines[i], boost::is_any_of("\t "),
-        boost::token_compress_on);
-    // std::cout << "\"" << words.at(0) << "\"\n";
+                 boost::token_compress_on);
     double m = boost::lexical_cast<double>(words.at(0));
     for (unsigned f = 0; f < fields.size(); ++f) {
-    // std::cout << "\"" << words.at(f+1) << "\"\n";
       (*graphs)[fields[f]]
-          .SetPoint(i, m, boost::lexical_cast<double>(words.at(f+1)));
+          .SetPoint(i, m, boost::lexical_cast<double>(words.at(f + 1)));
     }
   }
 }
@@ -111,7 +88,11 @@ void ScaleProcessRate(ch::Process* p,
   p->set_rate(p->rate() * scale);
 }
 
-std::vector<std::string> JoinStr(std::vector<std::vector<std::string>> const& in) {
+// ---------------------------------------------------------------------------
+// Misc
+// ---------------------------------------------------------------------------
+std::vector<std::string> JoinStr(
+    std::vector<std::vector<std::string>> const& in) {
   return Join<std::string>(in);
 }
 
@@ -122,8 +103,6 @@ RooDataHist TH1F2Data(TH1F const& hist, RooRealVar const& x,
   for (int i = 1; i <= hist.GetNbinsX(); ++i) {
     shape.SetBinContent(i, hist.GetBinContent(i));
   }
-  // shape.Scale(1.0 / shape.Integral());
-  // shape.Print("range");
   RooDataHist dh(name.c_str(), name.c_str(),
                  RooArgList(x), RooFit::Import(shape, false));
   return dh;
@@ -144,6 +123,11 @@ std::vector<std::vector<unsigned>> GenerateCombinations(
   unsigned n = vec.size();
   std::vector<unsigned> idx(n, 0);
   std::vector<std::vector<unsigned>> result;
+  // if any one of the elements is zero there are no
+  // combinations to build
+  if (std::find(vec.begin(), vec.end(), 0) != vec.end()) {
+    return result;
+  }
   result.push_back(idx);
   bool exit_loop = false;
   while (exit_loop == false) {
@@ -183,5 +167,37 @@ std::vector<std::string> ParseFileLines(std::string const& file_name) {
   }
   file.close();
   return files;
+}
+
+std::vector<std::string> MassesFromRange(std::string const& input,
+                                         std::string const& fmt) {
+  std::set<double> mass_set;
+  std::vector<std::string> tokens;
+  boost::split(tokens, input, boost::is_any_of(","));
+  for (auto const& t : tokens) {
+    std::vector<std::string> sub_tokens;
+    boost::split(sub_tokens, t, boost::is_any_of("-:"));
+    if (sub_tokens.size() == 1) {
+      double mass_val = boost::lexical_cast<double>(sub_tokens[0]);
+      mass_set.insert(mass_val);
+    } else if (sub_tokens.size() == 3) {
+      double lo = boost::lexical_cast<double>(sub_tokens[0]);
+      double hi = boost::lexical_cast<double>(sub_tokens[1]);
+      double step = boost::lexical_cast<double>(sub_tokens[2]);
+      if (hi <= lo)
+        throw std::runtime_error(
+            "[MassesFromRange] High mass is smaller than low mass!");
+      double start = lo;
+      while (start < hi + 0.001) {
+        mass_set.insert(start);
+        start += step;
+      }
+    }
+  }
+  std::vector<std::string> result;
+  for (auto const& m : mass_set) {
+    result.push_back((boost::format(fmt) % m).str());
+  }
+  return result;
 }
 }

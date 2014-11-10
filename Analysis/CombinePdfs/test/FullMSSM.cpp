@@ -2,7 +2,8 @@
 #include <map>
 #include <vector>
 #include "CombineTools/interface/CombineHarvester.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
+#include "CombineTools/interface/TFileIO.h"
 #include "CombineTools/interface/HttSystematics.h"
 #include "CombinePdfs/interface/MorphFunctions.h"
 
@@ -15,6 +16,7 @@
 #include "RooProduct.h"
 
 using namespace std;
+using namespace std::placeholders;
 
 TH2F SantanderMatching(TH2F const& h4f, TH2F const& h5f, TH2F const* mass) {
   TH2F res = h4f;
@@ -192,7 +194,7 @@ int main() {
   cout << " done\n";
 
   cout << "Adding systematic uncertainties...";
-  ch::AddMSSMSystematics(&cb);
+  ch::AddMSSMSystematics(cb);
   cout << " done\n";
 
   cout << "Extracting histograms from input root files...";

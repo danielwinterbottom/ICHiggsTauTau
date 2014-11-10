@@ -66,6 +66,18 @@ Observation& Observation::operator=(Observation other) {
   return (*this);
 }
 
+void Observation::SetNormShape(std::unique_ptr<TH1> shape) {
+  if (!shape) return;
+  if (shape->Integral() > 0.0) shape->Scale(1.0 / shape->Integral());
+  this->set_shape(std::move(shape));
+}
+
+void Observation::SetNormShapeAndRate(std::unique_ptr<TH1> shape) {
+  if (!shape) return;
+  this->set_rate(shape->Integral());
+  SetNormShape(std::move(shape));
+}
+
 std::ostream& Observation::PrintHeader(std::ostream &out) {
   std::string line =
     (boost::format("%-6s %-9s %-6s %-8s %-28s %-3i %-26s %-10.5g %-10i")

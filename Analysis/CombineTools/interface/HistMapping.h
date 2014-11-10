@@ -15,6 +15,8 @@ namespace ch {
     bool IsHist() const;
     bool IsPdf() const;
     bool IsData() const;
+
+    friend std::ostream& operator<< (std::ostream &out, HistMapping const& val);
   };
 }
 

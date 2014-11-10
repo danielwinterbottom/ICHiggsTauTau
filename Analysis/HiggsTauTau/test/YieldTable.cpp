@@ -20,7 +20,9 @@
 #include "Utilities/interface/FnRootTools.h"
 
 #include "CombineTools/interface/CombineHarvester.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
+#include "CombineTools/interface/TFileIO.h"
+#include "CombineTools/interface/SOverBTools.h"
 
 namespace po = boost::program_options;
 

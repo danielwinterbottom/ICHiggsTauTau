@@ -6,7 +6,7 @@
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
 #include "CombineTools/interface/Nuisance.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Algorithm.h"
 
 namespace ch {
 
@@ -30,6 +30,13 @@ CombineHarvester& CombineHarvester::process(
     std::vector<std::string> const& vec, bool cond) {
   FilterContaining(procs_, vec, std::mem_fn(&Process::process), cond);
   FilterContaining(nus_, vec, std::mem_fn(&Nuisance::process), cond);
+  return *this;
+}
+
+CombineHarvester& CombineHarvester::process_rgx(
+    std::vector<std::string> const& vec, bool cond) {
+  FilterContainingRgx(procs_, vec, std::mem_fn(&Process::process), cond);
+  FilterContainingRgx(nus_, vec, std::mem_fn(&Nuisance::process), cond);
   return *this;
 }
 

@@ -7,7 +7,7 @@
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
 #include "CombinePdfs/interface/MorphFunctions.h"
 #include "CombineTools/interface/HttSystematics.h"
 // #include "CombinePdfs/interface/RooHttSMPdf.h"
@@ -93,7 +93,7 @@ int main() {
   */
 
   std::cout << "Adding systematic uncertainties...";
-  ch::AddDefaultSystematics(&cb);
+  ch::AddSystematics_et_mt(cb);
   std::cout << " done\n";
 
   std::cout << "Extracting histograms from input root files...";

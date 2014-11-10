@@ -20,12 +20,9 @@
 #include "CombineTools/interface/Nuisance.h"
 #include "CombineTools/interface/Parameter.h"
 #include "CombineTools/interface/MakeUnique.h"
-#include "CombineTools/interface/HelperFunctions.h"
-
-// #include "TMath.h"
-// #include "boost/format.hpp"
-// #include "Utilities/interface/FnPredicates.h"
-// #include "Math/QuantFuncMathCore.h"
+#include "CombineTools/interface/Utilities.h"
+#include "CombineTools/interface/TFileIO.h"
+#include "CombineTools/interface/algorithm.h"
 
 namespace ch {
 
@@ -236,7 +233,13 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
           nus->set_scale(boost::lexical_cast<double>(words[i][p]));
           LoadShapes(nus.get(), hist_mapping);
         } else if (nus->type() == "shape?") {
-          LoadShapes(nus.get(), hist_mapping);
+          // This might fail, so we have to "try"
+          try {
+            LoadShapes(nus.get(), hist_mapping);
+          } catch (std::exception & e) {
+            LOGLINE(log(), "Nuisance with shape? did not resolve to a shape");
+            if (verbosity_ > 0) log() << e.what();
+          }
           if (!nus->shape_u() || !nus->shape_d()) {
             nus->set_type("lnN");
           } else {
@@ -463,14 +466,22 @@ void CombineHarvester::WriteDatacard(std::string const& name,
             break;
           }
           if (nus_ptr->type() == "shape") {
+            if (!nus_ptr->shape_u() || !nus_ptr->shape_d()) {
+              std::stringstream err;
+              err << "Trying to write shape uncertainty with missing shapes:\n";
+              err << Nuisance::PrintHeader << *nus_ptr;
+              throw std::runtime_error(FNERROR(err.str()));
+            }
             bool add_dir = TH1::AddDirectoryStatus();
             TH1::AddDirectory(false);
-            std::unique_ptr<TH1> h_d((TH1*)(nus_ptr->shape_d()->Clone()));
+            std::unique_ptr<TH1> h_d(
+                static_cast<TH1*>(nus_ptr->shape_d()->Clone()));
             h_d->Scale(procs_[p]->rate()*nus_ptr->value_d());
             WriteHistToFile(h_d.get(), &root_file, mappings, nus_ptr->bin(),
                             nus_ptr->process(), nus_ptr->mass(),
                             nus_ptr->name(), 1);
-            std::unique_ptr<TH1> h_u((TH1*)(nus_ptr->shape_u()->Clone()));
+            std::unique_ptr<TH1> h_u(
+                static_cast<TH1*>(nus_ptr->shape_u()->Clone()));
             h_u->Scale(procs_[p]->rate()*nus_ptr->value_u());
             WriteHistToFile(h_u.get(), &root_file, mappings, nus_ptr->bin(),
                             nus_ptr->process(), nus_ptr->mass(),

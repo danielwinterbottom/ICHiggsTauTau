@@ -54,8 +54,13 @@ class Process {
   void set_norm(RooAbsReal* norm) { norm_ = norm; }
   RooAbsReal const* norm() const { return norm_; }
 
+  void SetNormShape(std::unique_ptr<TH1> shape);
+
+  void SetNormShapeAndRate(std::unique_ptr<TH1> shape);
+
   friend std::ostream& operator<< (std::ostream &out, Process &val);
   static std::ostream& PrintHeader(std::ostream &out);
+
 
  private:
   std::string bin_;
@@ -70,6 +75,8 @@ class Process {
   std::unique_ptr<TH1> shape_;
   RooAbsPdf* pdf_;
   RooAbsReal* norm_;
+
+
 
   friend void swap(Process& first, Process& second);
 };

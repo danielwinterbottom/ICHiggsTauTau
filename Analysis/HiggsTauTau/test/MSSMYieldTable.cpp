@@ -4,31 +4,34 @@
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"
+#include "boost/bind.hpp"
 #include "boost/program_options.hpp"
 #include "CombineTools/interface/CombineHarvester.h"
-#include "CombineTools/interface/HelperFunctions.h"
+#include "CombineTools/interface/Utilities.h"
+#include "CombineTools/interface/TFileIO.h"
 
 namespace po = boost::program_options;
 
 using namespace std;
-using namespace ic;
 
+// Struct holds info on each column in the table
 struct ColInfo {
-  string                label;
-  vector<string>        cats_str;
-  vector<int>           cats_int;
-  string                era;
-  double                lumi;
+  string label;             // Latex title, e.g. "No B-Tag"
+  vector<string> cats_str;  // Category bin ids as strings
+  vector<int> cats_int;     // Category bin ids as ints
+  string era;               // e.g. "8TeV"
+  double lumi;              // pb-1
 };
 
+// Struct holds info on each background row in the table
 struct BkgInfo {
-  string label;
-  vector<string> procs;
+  string label;          // Latex title, e.g. "$\\PW$+jets"
+  vector<string> procs;  // Datacard processes to combine for this entry
   BkgInfo(string const& l, vector<string> const& p) : label(l), procs(p) {}
 };
 
 int main(int argc, char* argv[]) {
-  string channel          = "";
+  string channel = "";
   vector<string> columns;
   vector<string> eras;
   vector<string> datacards;
@@ -195,6 +198,9 @@ int main(int argc, char* argv[]) {
   double sig_errors[n_cols];
   double data_yields[n_cols];
 
+  // Number of times to sample from the fit covariance matrix
+  unsigned samples = 500;
+
   for (unsigned i = 0; i < n_cols; ++i) {
     ch::CombineHarvester tmp_cmb =
         std::move(cmb.cp().era({col_info[i].era}).bin_id(col_info[i].cats_int));
@@ -202,16 +208,16 @@ int main(int argc, char* argv[]) {
     data_yields[i] = tmp_cmb.cp().GetObservedRate();
     sig_yields[i] = tmp_cmb.cp().process(signal_procs).GetRate();
     sig_errors[i] = postfit ?
-        tmp_cmb.cp().process(signal_procs).GetUncertainty(fitresult, 500) :
+        tmp_cmb.cp().process(signal_procs).GetUncertainty(fitresult, samples) :
         tmp_cmb.cp().process(signal_procs).GetUncertainty();
     tot_yields[i] = tmp_cmb.cp().process(total_bkg).GetRate();
     tot_errors[i] = postfit ?
-        tmp_cmb.cp().process(total_bkg).GetUncertainty(fitresult, 500) :
+        tmp_cmb.cp().process(total_bkg).GetUncertainty(fitresult, samples) :
         tmp_cmb.cp().process(total_bkg).GetUncertainty();
     for (unsigned j = 0; j < n_bkg; ++j) {
       bkg_yields[i][j] = tmp_cmb.cp().process(bkgs[j].procs).GetRate();
       bkg_errors[i][j] = postfit ?
-          tmp_cmb.cp().process(bkgs[j].procs).GetUncertainty(fitresult, 500) :
+          tmp_cmb.cp().process(bkgs[j].procs).GetUncertainty(fitresult, samples) :
           tmp_cmb.cp().process(bkgs[j].procs).GetUncertainty();
     }
     for (unsigned k = 0; k < n_sig; ++k) {
