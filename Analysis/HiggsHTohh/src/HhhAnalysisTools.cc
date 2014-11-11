@@ -125,8 +125,9 @@ namespace ic {
     // Categories for background estimates and control plots
     alias_map_["btag_loose"]                = "(n_jets<=1 && n_loose_bjets>=1)";
     alias_map_["1jet1tag_loose"]            = "(n_prebjets==1 && prebjetbcsv_1>0.244)";
-    alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
-    alias_map_["2jet2tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244)";
+    //alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
+    alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     // New categories for optimisation of H->hh->tautaubb
     alias_map_["sasha"]                      = "(n_prebjets>=2 && n_bjets>=1)";
     
@@ -144,6 +145,20 @@ namespace ic {
     alias_map_["2jet1tagSF"]     = "(n_prebjets>=2 && n_prebjets_SF==1)";
     //alias_map_["1jet1tagSF"]     = "(n_prebjets==1 && n_prebjets_SF==1)";
     alias_map_["2jet2tagSF"]     = "(n_prebjets>=2 && n_prebjets_SF>=2)";
+    
+    // Attempt at exclusive categories including mass cuts
+    alias_map_["2jet0tagMassCuts"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["1jet0tagMassCuts"]     = "(n_prebjets==1 && prebjetbcsv_1<0.898 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tagMassCuts"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["1jet1tagMassCuts"]     = "(n_prebjets==1 && prebjetbcsv_1>0.898 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tagMassCuts"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    
+    // Categories including the effect of the b-tag SF and mass cuts
+    alias_map_["2jet0tagSFMassCuts"]     = "(n_prebjets>=2 && n_prebjets_SF==0 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    //alias_map_["1jet0tagSFMassCuts"]     = "(n_prebjets==1 && n_prebjets_SF==0 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tagSFMassCuts"]     = "(n_prebjets>=2 && n_prebjets_SF==1 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    //alias_map_["1jet1tagSFMassCuts"]     = "(n_prebjets==1 && n_prebjets_SF==1 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tagSFMassCuts"]     = "(n_prebjets>=2 && n_prebjets_SF>=2 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
 		
     //categories related to unfolded 2D distribution of mtt and mbb
     alias_map_["2jet0tag_slice0"]= "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>0 && prebjet_mjj<60)";
@@ -558,6 +573,7 @@ namespace ic {
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
+    if (method == 28) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
     
     Value w_norm;
     if(method == 20){
@@ -1261,7 +1277,7 @@ namespace ic {
       total_bkg.second = new_err;
     }
     if (verbosity_) PrintValue("TotalBkg", total_bkg);
-   // TH1F w_control_hist = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
+    //TH1F w_control_hist = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
     //TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, cat, wt).first;
     Value w_control(data_control.first - total_bkg.first, w_control_err);

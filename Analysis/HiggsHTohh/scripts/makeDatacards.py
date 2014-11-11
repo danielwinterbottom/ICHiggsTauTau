@@ -42,6 +42,8 @@ parser.add_option("--mH", dest="mH", action='store_true', default=False,
                   help="Make inputs for mH using kinematic fitting.")
 parser.add_option("--masscuts", dest="masscuts", action='store_true', default=False,
                   help="Apply mass cuts to final discriminant.")
+parser.add_option("--btag_SF", dest="btag_SF", action='store_true', default=False,
+                  help="Apply b-tag scale factor.")
 parser.add_option("--mbbh", dest="mbbh", action='store_true', default=False,
                   help="Make inputs for mttbb using kinematic fit on jets")
 parser.add_option("--chi2", dest="chi2", action='store_true', default=False,
@@ -91,10 +93,10 @@ extra_global = ' --fix_empty_hists="ggHTohh.*,ggAToZh.*"'
 
 #### Apply these options for specific channels
 extra_channel = {
-  #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_etau_'+COM+'TeV"',
-  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV"',
-  #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_mutau_'+COM+'TeV"',
-  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV"',
+  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
+  #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
+  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
+  #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes" --fix_negative_bins="Fakes,Fakes.*Up,Fakes.*Down"'
 }
 
@@ -127,6 +129,14 @@ if options.mbbh:
 #### New HTohh scheme
 #################################################################
 
+masscut_str=""
+SF_str=""
+if options.masscuts:
+  masscut_str="MassCuts"
+if options.btag_SF: 
+  SF_str="SF"
+
+
 if options.scheme == 'HTohh':
   if options.mvis or options.svfit:  
     BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350]"
@@ -145,14 +155,14 @@ if options.scheme == 'HTohh':
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_inclusive_'+COM+'TeV"')),
-    ("0",   "2jet0tag",      "2jet0tag",     BINS_FINE, ( 
+    ("0",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE, ( 
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet0tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet0tag_'+COM+'TeV:50:1.0:0.10"')),
-    ("1",   "2jet1tag",      "2jet1tag",     BINS_FINE,  (
+    ("1",   "2jet1tag"+SF_str+masscut_str,      "2jet1tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("2",   "2jet2tag",        "2jet2tag",       BINS,  (
+    ("2",   "2jet2tag"+SF_str+masscut_str,        "2jet2tag",       BINS,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
@@ -167,14 +177,14 @@ if options.scheme == 'HTohh':
   scheme_mt = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE, (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_inclusive_'+COM+'TeV"')),
-    ("0",   "2jet0tag",      "2jet0tag",     BINS_FINE,  (
+    ("0",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet0tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet0tag_'+COM+'TeV:50:1.1:0.10"')),
-    ("1",   "2jet1tag",      "2jet1tag",     BINS_FINE,  (
+    ("1",   "2jet1tag"+SF_str+masscut_str,      "2jet1tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
-    ("2",   "2jet2tag",        "2jet2tag",       BINS,  ( 
+    ("2",   "2jet2tag"+SF_str+masscut_str,        "2jet2tag",       BINS,  ( 
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
       ' --sub_ztt_top_frac=0.015')),
@@ -226,13 +236,13 @@ if options.scheme == 'HTohh':
     extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
     extra_channel["em"] += ' --set_alias="sel:pzeta>-30"'
   elif options.mH :
-    if options.masscuts: 
-      extra_channel["et"] += ' --set_alias="sel:mt_1<30. && prebjet_mjj>70 && prebjet_mjj<150. && m_sv>90 && m_sv<150 && m_H_hh>0"'
-      extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && prebjet_mjj>70 && prebjet_mjj<150. && m_sv>90 && m_sv<150 && m_H_hh>0"'
-    else:
-      extra_channel["et"] += ' --set_alias="sel:mt_1<30. && m_H_hh>0"'
-      extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && m_H_hh>0"'
-  
+#    if options.masscuts:
+#      extra_channel["et"] += ' --set_alias="sel:mt_1<30. && prebjet_mjj>70 && prebjet_mjj<150. && m_sv>90 && m_sv<150 && m_H_hh>0"'
+#      extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && prebjet_mjj>70 && prebjet_mjj<150. && m_sv>90 && m_sv<150 && m_H_hh>0"'
+#    else:
+    extra_channel["et"] += ' --set_alias="sel:mt_1<30. && m_H_hh>0"'
+    extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && m_H_hh>0"'
+      
   extra_channel["et"] += ' --syst_zl_shift="CMS_htt_ZLScale_etau_'+COM+'TeV:1.02:0.98"'
   extra_channel["mt"] += ' --syst_zl_shift="CMS_htt_ZLScale_mutau_'+COM+'TeV:1.02:0.98"'
 
