@@ -1136,16 +1136,4 @@ void AddMSSMSystematics(CombineHarvester & cb) {
       .AddSyst(cb,
       "CMS_htt_ZLScale_mutau_$ERA", "shape", SystMap<>::init(1.00));
 }
-
-
-
-
-
-
-
-
-
-
-
-
 }

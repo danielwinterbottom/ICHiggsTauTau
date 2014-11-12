@@ -144,10 +144,12 @@ int main() {
 
   cout << ">> Merging bin errors...\n";
   ch::CombineHarvester cb_et = std::move(cb.cp().channel({"et"}));
-  cb_et.cp().bin_id({1, 2}).process({"ZL", "ZJ", "QCD", "W"})
-      .MergeBinErrors(0.1, 0.4);
-  cb_et.cp().bin_id({3, 5}).process({"W"})
-      .MergeBinErrors(0.1, 0.4);
+  for (string era : {"7TeV", "8TeV"}) {
+    cb_et.cp().era({era}).bin_id({1, 2}).process({"ZL", "ZJ", "QCD", "W"})
+        .MergeBinErrors(0.1, 0.4);
+    cb_et.cp().era({era}).bin_id({3, 5}).process({"W"})
+        .MergeBinErrors(0.1, 0.4);
+  }
   cb_et.cp().era({"7TeV"}).bin_id({6}).process({"ZL", "ZJ", "W", "ZTT"})
       .MergeBinErrors(0.1, 0.4);
   cb_et.cp().era({"8TeV"}).bin_id({7}).process({"ZL", "ZJ", "W", "ZTT"})
@@ -158,11 +160,11 @@ int main() {
   ch::CombineHarvester cb_mt = std::move(cb.cp().channel({"mt"}));
   cb_mt.cp().bin_id({1, 2, 3, 4}).process({"W", "QCD"})
       .MergeBinErrors(0.1, 0.4);
-  cb_mt.cp().bin_id({5}).era({"7TeV"}).process({"W"})
+  cb_mt.cp().era({"7TeV"}).bin_id({5}).process({"W"})
       .MergeBinErrors(0.1, 0.4);
-  cb_mt.cp().bin_id({5, 6}).era({"8TeV"}).process({"W"})
+  cb_mt.cp().era({"8TeV"}).bin_id({5, 6}).process({"W"})
       .MergeBinErrors(0.1, 0.4);
-  cb_mt.cp().bin_id({7}).era({"8TeV"}).process({"W", "ZTT"})
+  cb_mt.cp().era({"8TeV"}).bin_id({7}).process({"W", "ZTT"})
       .MergeBinErrors(0.1, 0.4);
 
   ch::CombineHarvester cb_em = std::move(cb.cp().channel({"em"}));
@@ -218,6 +220,16 @@ int main() {
 
   cb_tt.cp().bin_id({0, 1, 2}).era({"8TeV"}).process({"QCD", "ZTT"})
       .AddBinByBin(0.1, true, &cb);
+
+  VString droplist = ch::ParseFileLines(
+    "data/pruning/uncertainty-pruning-drop-131128-sm.txt");
+  std::cout << ">> Droplist contains " << droplist.size() << " entries\n";
+
+  auto pre_drop = cb.nus_name_set();
+  cb.nus_name(droplist, false);
+  auto post_drop = cb.nus_name_set();
+  std::cout << ">> Systematics dropped: " << pre_drop.size() - post_drop.size()
+            << "\n";
 
   for (string chn : chns) {
     TFile output(("output/sm_cards/htt_" + chn + ".input.root").c_str(),

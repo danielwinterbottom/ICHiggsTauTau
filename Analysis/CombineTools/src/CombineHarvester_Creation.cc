@@ -169,7 +169,10 @@ void CombineHarvester::AddBinByBin(double threshold, bool fixed_norm,
         auto nus = std::make_shared<Nuisance>();
         ch::SetProperties(nus.get(), procs_[i].get());
         nus->set_type("shape");
-        nus->set_name("CMS_" + nus->bin() + "_" + nus->process() + "_bin_" +
+        // nus->set_name("CMS_" + nus->bin() + "_" + nus->process() + "_bin_" +
+        //               boost::lexical_cast<std::string>(j));
+        nus->set_name("CMS_" + nus->channel() + "_" + nus->bin() + "_" +
+                      nus->era() + "_" + nus->process() + "_bin_" +
                       boost::lexical_cast<std::string>(j));
         nus->set_asymm(true);
         TH1 *h_d = static_cast<TH1 *>(h->Clone());
@@ -212,8 +215,7 @@ void CombineHarvester::CreateParameterIfEmpty(CombineHarvester *cmb,
 
 void CombineHarvester::MergeBinErrors(double bbb_threshold,
                                       double merge_threshold) {
-  auto bins =
-      this->GenerateSetFromProcs<std::string>(std::mem_fn(&Process::bin));
+  auto bins = this->bin_set();
   for (auto const& bin : bins) {
     unsigned bbb_added = 0;
     unsigned bbb_removed = 0;
