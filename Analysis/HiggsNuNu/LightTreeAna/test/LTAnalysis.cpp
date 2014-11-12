@@ -40,6 +40,7 @@ int main(int argc, char* argv[]){
   std::string syst;
 
   bool do_promptsel;
+  bool use_promptdata;
   bool do_datatop;
   bool runblind;
   bool runblindreg;
@@ -73,6 +74,7 @@ int main(int argc, char* argv[]){
     ("do_preselranges",                  po::value<bool>(&do_preselranges)->default_value(false))
     ("do_prepreselranges",                  po::value<bool>(&do_prepreselranges)->default_value(false))
     ("do_promptsel",                  po::value<bool>(&do_promptsel)->default_value(false))
+    ("use_promptdata",                  po::value<bool>(&use_promptdata)->default_value(false))
     ("do_plotmcqcd",                  po::value<bool>(&do_plotmcqcd)->default_value(false))
     ("runblindreg",                  po::value<bool>(&runblindreg)->default_value(true));
 
@@ -222,10 +224,13 @@ int main(int argc, char* argv[]){
     shape.push_back("lep_mt(10,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
     shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
   }
-  std::string dataset="SPLITPARKEDPLUSA";
+  std::string dataset;
+  if(!use_promptdata)dataset="SPLITPARKEDPLUSA";
+  else dataset="PROMPT";
   //std::string dataset="PARKEDPLUSA";
-  //std::string dataset="MET";
-  std::string dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=203742))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>40";
+  std::string dataextrasel;
+  if(!use_promptdata)dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=203742))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>40";
+  else dataextrasel="&&passtrigger==1&&l1met>40";
   //std::string dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=196531))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))";
   //std::string dataextrasel="&&(((run>=190456)&&(run<=193621)&&passtrigger==1)||(passparkedtrigger1==1)||(passparkedtrigger2==1))&&l1met>40";
   //std::string dataextrasel="&&passtrigger==1&&l1met>40";
