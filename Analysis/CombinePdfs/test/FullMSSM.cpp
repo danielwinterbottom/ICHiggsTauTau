@@ -235,8 +235,9 @@ int main() {
       vector<string> p_chain;
       if (p == "ggH") p_chain = {"ggh", "ggH", "ggA"};
       if (p == "bbH") p_chain = {"bbh", "bbH", "bbA"};
-      cb.cp().process({p_chain}).era({e}).ForEachProc(
-          bind(ch::ScaleProcessRate, _1, &xs, p+"_"+e, ""));
+      cb.cp().process({p_chain}).era({e}).ForEachProc([&](ch::Process *proc) {
+        ch::ScaleProcessRate(proc, &xs, p+"_"+e, "");
+      });
     }
   }
 

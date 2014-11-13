@@ -92,9 +92,9 @@ int main() {
   for (std::string const& e : {"7TeV", "8TeV"}) {
     for (std::string const& p : {"ggH", "bbH"}) {
       std::cout << "Scaling for process " << p << " and era " << e << "\n";
-
-      cb.cp().process({p}).era({e}).ForEachProc(
-          bind(ch::ScaleProcessRate, _1, &xs, p+"_"+e, ""));
+      cb.cp().process({p}).era({e}).ForEachProc([&](ch::Process *proc) {
+        ch::ScaleProcessRate(proc, &xs, p+"_"+e, "");
+      });
     }
   }
 

@@ -2,7 +2,6 @@
 // #include "boost/filesystem.hpp"
 // #include "boost/regex.hpp"
 // #include "boost/format.hpp"
-#include "boost/bind.hpp"
 // #include "boost/assign/list_of.hpp"
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/Observation.h"
@@ -18,13 +17,8 @@
 #include "RooDataHist.h"
 #include "RooHistPdf.h"
 
-using boost::bind;
-using std::string;
-using std::vector;
-using std::pair;
-using std::make_pair;
-using std::map;
-using std::set;
+using namespace std;
+using namespace std::placeholders;
 
 int main() {
   TH1::AddDirectory(false);
@@ -129,9 +123,9 @@ int main() {
   for (std::string const& e : {"7TeV", "8TeV"}) {
     for (std::string const& p : {"ggH", "qqH", "WH", "ZH"}) {
       std::cout << "Scaling for process " << p << " and era " << e << "\n";
-
-      cb.cp().process({p}).era({e}).ForEachProc(
-          bind(ch::ScaleProcessRate, _1, &xs, p+"_"+e, "htt"));
+      cb.cp().process({p}).era({e}).ForEachProc([&](ch::Process *proc) {
+        ch::ScaleProcessRate(proc, &xs, p+"_"+e, "htt");
+      });
     }
   }
 
