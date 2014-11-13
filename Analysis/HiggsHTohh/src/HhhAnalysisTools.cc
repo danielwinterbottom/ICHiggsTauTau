@@ -19,6 +19,7 @@
 #include "TEfficiency.h"
 #include "TEntryList.h"
 #include "TMath.h"
+#include "TH1.h"
 #include "TLegend.h"
 #include "RooDataHist.h"
 #include "RooHistPdf.h"
@@ -464,10 +465,21 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
+      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
       zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, cat, wt);
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
         % ("DYJetsToLL-L"+dy_soup_) % sel % zll_shape_cat % wt;
+      if(verbosity_ && !(method==8)) {
+          std::string bin_delim="";
+        if(var.find("[")!=string::npos) bin_delim = "[";     
+        if(var.find("(")!=string::npos) bin_delim = "(";
+        this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),"DYJetsToLL-L"+dy_soup_,sel,cat,
+        "DYJetsToLL-L"+dy_soup_, sel ,zll_shape_cat,wt);
+        TH1F default_zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, cat, wt);
+        std::cout << "Kolmogorov test from root: " << default_zl_hist.KolmogorovTest(&zl_hist) << std::endl; 
+      }
     }
     SetNorm(&zl_hist, zl_norm.first);
     return std::make_pair(zl_hist, zl_norm);
@@ -497,10 +509,21 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
+      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
       zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt);
       zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
         % "zj_samples" % sel % zll_shape_cat % wt;
+      if(verbosity_ && !(method==8)) {
+      /*    std::string bin_delim="";
+        if(var.find("[")!=string::npos) bin_delim = "[";     
+        if(var.find("(")!=string::npos) bin_delim = "(";
+        this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),"DYJetsToLL-J"+dy_soup_,sel,cat,
+        "DYJetsToLL-J"+dy_soup_, sel ,zll_shape_cat,wt);*/
+        TH1F default_zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, cat, wt);
+        std::cout << "Kolmogorov test from root: " << default_zj_hist.KolmogorovTest(&zj_hist) << std::endl; 
+      }
     }
     SetNorm(&zj_hist, zj_norm.first);
     return std::make_pair(zj_hist, zj_norm);
@@ -564,7 +587,7 @@ namespace ic {
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
     std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
-    if (method == 5) {
+    if (method == 5 || method == 16) {
       w_extrap_cat    = this->ResolveAlias("w_vbf_extrap_cat");
       w_extrp_sdb_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("w_vbf_sdb");
       w_extrp_sig_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("sel");
@@ -573,7 +596,7 @@ namespace ic {
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
-    if (method == 28) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 28 || method == 29 || method == 16) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
     
     Value w_norm;
     if(method == 20){
@@ -621,11 +644,21 @@ namespace ic {
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
     if (method == 23) w_shape_cat = this->ResolveAlias("1jet1tag_loose");
-    if (method == 24) w_shape_cat = this->ResolveAlias("2jet1tag_loose");
-    if (method == 27) w_shape_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 24 || method == 15) w_shape_cat = this->ResolveAlias("2jet1tag_loose");
+    if (method == 27 || method == 16) w_shape_cat = this->ResolveAlias("2jet2tag_loose");
     TH1F w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, w_shape_cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("W_Shape_Sample") % w_shape_sel % w_shape_cat % wt;
+    //Print Kolmogorov result of shape comparison if chosen method isnt method 8 and verbosity is on
+    if(verbosity_ && !(method==8)) {
+        std::string bin_delim="";
+      if(var.find("[")!=string::npos) bin_delim = "[";     
+      if(var.find("(")!=string::npos) bin_delim = "(";
+      this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),this->ResolveAlias("W_Shape_Sample"),w_shape_sel,cat,
+      this->ResolveAlias("W_Shape_Sample"),  w_shape_sel,w_shape_cat,wt);
+      TH1F default_w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, cat, wt);
+      std::cout << "Kolmogorov test from root: " << default_w_hist.KolmogorovTest(&w_hist) << std::endl; 
+    }
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
   }
@@ -642,7 +675,8 @@ namespace ic {
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
-      if (method == 5 || method == 4 || method == 25 || method == 26) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 5 || method == 4 || method == 25 || method == 26 || method == 16) qcd_cat = this->ResolveAlias("inclusive");
+      //if (method == 5 || method == 4 || method == 25 || method == 26) qcd_cat = this->ResolveAlias("2jetinclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
       qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
@@ -650,7 +684,7 @@ namespace ic {
           return w_ss_norm;}
         }
       });
-      if (method == 5 || method == 4 || method == 25 || method == 26) {
+      if (method == 5 || method == 4 || method == 25 || method == 26 || method == 16) {
         Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         if (verbosity_) {
           std::cout << "CategoryEff:   " << boost::format("%s,'%s','%s'/'%s','%s'\n") % this->ResolveAlias("QCD_Eff_Sample")  % qcd_sdb_sel 
@@ -681,19 +715,31 @@ namespace ic {
       } else {
         if (method == 4)  qcd_cat = cat;
         if (method == 21)  qcd_cat = cat;
-        if (method == 26)  qcd_cat = cat;
+        if (method == 26 || method == 14)  qcd_cat = cat;
         if (method == 5)  qcd_cat = this->ResolveAlias("vbf_loose_jets20");
         if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
         if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
         if (method == 23) qcd_cat = this->ResolveAlias("1jet1tag_loose");        
         //if (method == 24 || method == 25 ) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
-        if (method == 24) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
-        if (method == 27) qcd_cat = this->ResolveAlias("2jet2tag_loose");        
+        if (method == 24 || method == 15) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
+        if (method == 27 || method == 16) qcd_cat = this->ResolveAlias("2jet2tag_loose");        
         qcd_hist = this->GetShape(var, this->ResolveAlias("QCD_Shape_Sample"), qcd_sdb_sel, qcd_cat, wt);
         if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
           % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
-
+        if(verbosity_ && method!=8) {
+          std::string bin_delim="";
+          if(var.find("[")!=string::npos) bin_delim = "[";     
+          if(var.find("(")!=string::npos) bin_delim = "(";
+          this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),this->ResolveAlias("QCD_Shape_Sample"),qcd_sdb_sel,cat,
+          this->ResolveAlias("QCD_Shape_Sample"),  qcd_sdb_sel,qcd_cat,wt);
+          TH1F default_qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+            {"WJetsToLNuSoup", [&]()->HhhAnalysis::Value {
+              return w_ss_norm;} 
+            }
+          });
+          std::cout << "Kolmogorov Test from root, comparing to default: " << default_qcd_hist.KolmogorovTest(&qcd_hist) << std::endl; 
+        }
       }
     } else {
       Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
