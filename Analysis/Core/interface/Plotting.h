@@ -283,9 +283,8 @@ std::vector<TPad*> OnePad() {
 // Functions for axis labelling
 //----------------------------------------------------------------------------
 void StandardAxes(TAxis* xaxis, TAxis* yaxis, TString var, TString units) {
-  double width = xaxis->GetBinWidth(10);
+  double width = xaxis->GetBinWidth(1);
   TString w_label = TString::Format("%.1f", width);
-  std::cout << width << "\n";
   if (units == "") {
     xaxis->SetTitle(var);
     yaxis->SetTitle("Events / " + w_label);
@@ -293,6 +292,11 @@ void StandardAxes(TAxis* xaxis, TAxis* yaxis, TString var, TString units) {
     xaxis->SetTitle(var + " (" + units + ")");
     yaxis->SetTitle("Events / " + w_label + " " + units);
   }
+}
+
+void UnitAxes(TAxis* xaxis, TAxis* yaxis, TString var, TString units) {
+  xaxis->SetTitle(var + " (" + units + ")");
+  yaxis->SetTitle("dN/d"+ var + " (1/" + units + ")");
 }
 
 //----------------------------------------------------------------------------
