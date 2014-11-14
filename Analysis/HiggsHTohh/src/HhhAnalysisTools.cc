@@ -182,8 +182,11 @@ namespace ic {
     //Extra categories for making control plots
     alias_map_["1jetinclusive"] = "(n_prebjets>=1)";
     alias_map_["2jetinclusive"] = "(n_prebjets>=2)";
+    alias_map_["2jetinclusiveMassCuts"] = "(n_prebjets>=2 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     alias_map_["2jetMoreThan1tag"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 )";
+    alias_map_["2jetMoreThan1tagMassCuts"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150 )";
     alias_map_["2jetMoreThan2tag"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
+    alias_map_["2jetMoreThan2tagMassCuts"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     
     // Selection control regions
     // Sideband region for OS W+jets extrapolation
