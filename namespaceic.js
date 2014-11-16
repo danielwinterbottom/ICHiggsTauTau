@@ -1,0 +1,28 @@
+var namespaceic =
+[
+    [ "CaloJet", "classic_1_1_calo_jet.html", "classic_1_1_calo_jet" ],
+    [ "Candidate", "classic_1_1_candidate.html", "classic_1_1_candidate" ],
+    [ "CompositeCandidate", "classic_1_1_composite_candidate.html", "classic_1_1_composite_candidate" ],
+    [ "Electron", "classic_1_1_electron.html", "classic_1_1_electron" ],
+    [ "EventInfo", "classic_1_1_event_info.html", "classic_1_1_event_info" ],
+    [ "GenJet", "classic_1_1_gen_jet.html", "classic_1_1_gen_jet" ],
+    [ "GenParticle", "classic_1_1_gen_particle.html", "classic_1_1_gen_particle" ],
+    [ "Jet", "classic_1_1_jet.html", "classic_1_1_jet" ],
+    [ "JPTJet", "classic_1_1_j_p_t_jet.html", "classic_1_1_j_p_t_jet" ],
+    [ "LightTrack", "classic_1_1_light_track.html", "classic_1_1_light_track" ],
+    [ "Met", "classic_1_1_met.html", "classic_1_1_met" ],
+    [ "Muon", "classic_1_1_muon.html", "classic_1_1_muon" ],
+    [ "PFJet", "classic_1_1_p_f_jet.html", "classic_1_1_p_f_jet" ],
+    [ "Photon", "classic_1_1_photon.html", "classic_1_1_photon" ],
+    [ "PileupInfo", "classic_1_1_pileup_info.html", "classic_1_1_pileup_info" ],
+    [ "SecondaryVertex", "classic_1_1_secondary_vertex.html", "classic_1_1_secondary_vertex" ],
+    [ "StaticTree", "structic_1_1_static_tree.html", null ],
+    [ "SuperCluster", "classic_1_1_super_cluster.html", "classic_1_1_super_cluster" ],
+    [ "Tau", "classic_1_1_tau.html", "classic_1_1_tau" ],
+    [ "Track", "classic_1_1_track.html", "classic_1_1_track" ],
+    [ "TriggerObject", "classic_1_1_trigger_object.html", "classic_1_1_trigger_object" ],
+    [ "TriggerPath", "classic_1_1_trigger_path.html", "classic_1_1_trigger_path" ],
+    [ "Vertex", "classic_1_1_vertex.html", "classic_1_1_vertex" ],
+    [ "Concatenate", "classic_1_1_concatenate.html", "classic_1_1_concatenate" ],
+    [ "Merge", "classic_1_1_merge.html", "classic_1_1_merge" ]
+];

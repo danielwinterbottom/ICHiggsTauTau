@@ -1,0 +1,27 @@
+var classic_1_1_super_cluster =
+[
+    [ "SuperCluster", "classic_1_1_super_cluster.html#a3007fd9f8b0ed11a888865ef5dd3cddb", null ],
+    [ "~SuperCluster", "classic_1_1_super_cluster.html#a8b4d058f4e811baa6a0bc1ee6f892a78", null ],
+    [ "Print", "classic_1_1_super_cluster.html#a862d1a2530a78af28a926c09f2446b66", null ],
+    [ "point", "classic_1_1_super_cluster.html#aa3936023ce6d7ec107e68261ccffc0b6", null ],
+    [ "vx", "classic_1_1_super_cluster.html#aa43d4c86c4b62cf690e63c172be89f4b", null ],
+    [ "vy", "classic_1_1_super_cluster.html#a0dd6c323d9993acbe5cc9a9ceb787c86", null ],
+    [ "vz", "classic_1_1_super_cluster.html#aef84f2066d1d3b800c688c9c7d41a5ae", null ],
+    [ "pt", "classic_1_1_super_cluster.html#a09eaff1b4aec013d2e8938f08718adac", null ],
+    [ "eta", "classic_1_1_super_cluster.html#a27d1d1682d1b827fab641938b8be0a6d", null ],
+    [ "phi", "classic_1_1_super_cluster.html#a6175dc98d61134e852941e729ea888e9", null ],
+    [ "energy", "classic_1_1_super_cluster.html#a85586768b38104c2253621bbbcd5ac5b", null ],
+    [ "raw_energy", "classic_1_1_super_cluster.html#aca4e1992c70dd93316ee082c09fb54cb", null ],
+    [ "vector", "classic_1_1_super_cluster.html#a6deb478e4f694ad1195106dba5620813", null ],
+    [ "is_barrel", "classic_1_1_super_cluster.html#a12a1ca479a31d9e069dd64a574ce1439", null ],
+    [ "id", "classic_1_1_super_cluster.html#add2546e73de4e954ad9f7ebe621994e5", null ],
+    [ "set_point", "classic_1_1_super_cluster.html#a99a3ac860a97c0f7bf280d459de5d1fe", null ],
+    [ "set_vx", "classic_1_1_super_cluster.html#a057304ff3a41eaa744605ff8d1a8810a", null ],
+    [ "set_vy", "classic_1_1_super_cluster.html#ab29cc5484f9b75a76c089074dc58500c", null ],
+    [ "set_vz", "classic_1_1_super_cluster.html#a750abbf07237922f73e6f5c53eaaab47", null ],
+    [ "set_id", "classic_1_1_super_cluster.html#a7f61083a0cf0e302a69c2870b6db5b16", null ],
+    [ "set_energy", "classic_1_1_super_cluster.html#af184820f91cc632038bd8b9cd8d71332", null ],
+    [ "set_raw_energy", "classic_1_1_super_cluster.html#a4acf16156a72dd994eabafba8d29acd8", null ],
+    [ "set_is_barrel", "classic_1_1_super_cluster.html#a9bd1e8f737450f8221f5e04bf8947fcd", null ],
+    [ "ClassDef", "classic_1_1_super_cluster.html#a8ddc10036ee7cfb78b5a80d0b39a8eb7", null ]
+];
