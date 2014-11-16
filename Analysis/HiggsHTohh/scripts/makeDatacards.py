@@ -94,8 +94,10 @@ extra_global = ' --fix_empty_hists="ggHTohh.*,ggAToZh.*"'
 #### Apply these options for specific channels
 extra_channel = {
   "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
+  #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down"',
   #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
   "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
+  #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down"',
   #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes" --fix_negative_bins="Fakes,Fakes.*Up,Fakes.*Down"'
 }
@@ -155,46 +157,48 @@ if options.scheme == 'HTohh':
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_inclusive_'+COM+'TeV"')),
-    ("0",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE, ( 
+    ("8",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE, ( 
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet0tag_'+COM+'TeV"'
-      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet0tag_'+COM+'TeV:50:1.0:0.10"')),
-    ("1",   "2jet1tag"+SF_str+masscut_str,      "2jet1tag",     BINS_FINE,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet0tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_shape=true')),
+    ("15",   "2jet1tag"+SF_str+masscut_str,      "2jet1tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
-      ' --sub_ztt_top_frac=0.015')),
-    ("2",   "2jet2tag"+SF_str+masscut_str,        "2jet2tag",       BINS,  (
+      ' --sub_ztt_top_shape=true')),
+    ("16",   "2jet2tag"+SF_str+masscut_str,        "2jet2tag",       BINS,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
-      ' --sub_ztt_top_frac=0.015')),
+      ' --sub_ztt_top_shape=true')),
   #  ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE, ( 
  #     ' --syst_w_fake_rate="CMS_htt_WShape_etau_1jet0tag_'+COM+'TeV"'
   #    ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet0tag_'+COM+'TeV:50:1.0:0.10"')),
   #  ("4",   "1jet1tag",      "1jet1tag",     BINS,  (
   #    ' --syst_w_fake_rate="CMS_htt_WShape_etau_1jet1tag_'+COM+'TeV"'
    #   ' --syst_qcd_shape="CMS_htt_QCDShape_etau_1jet1tag_'+COM+'TeV:50:1.0:0.10"'
-    #  ' --sub_ztt_top_frac=0.015'))
+    #  ' --sub_ztt_top_shape=true'))
   ]
   scheme_mt = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE, (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_inclusive_'+COM+'TeV"')),
-    ("0",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE,  (
+    ("8",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet0tag_'+COM+'TeV"'
-      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet0tag_'+COM+'TeV:50:1.1:0.10"')),
-    ("1",   "2jet1tag"+SF_str+masscut_str,      "2jet1tag",     BINS_FINE,  (
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet0tag_'+COM+'TeV:50:1.1:0.10"'
+      ' --sub_ztt_top_shape=true')),
+    ("15",   "2jet1tag"+SF_str+masscut_str,      "2jet1tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
-      ' --sub_ztt_top_frac=0.015')),
-    ("2",   "2jet2tag"+SF_str+masscut_str,        "2jet2tag",       BINS,  ( 
+      ' --sub_ztt_top_shape=true')),
+    ("16",   "2jet2tag"+SF_str+masscut_str,        "2jet2tag",       BINS,  ( 
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
-      ' --sub_ztt_top_frac=0.015')),
+      ' --sub_ztt_top_shape=true')),
 #    ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE,  (
  #     ' --syst_w_fake_rate="CMS_htt_WShape_mutau_1jet0tag_'+COM+'TeV"'
 #      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet0tag_'+COM+'TeV:50:1.1:0.10"')),
  #   ("4",   "1jet1tag",      "1jet1tag",     BINS,  (
 #      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_1jet1tag_'+COM+'TeV"'
 #      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_1jet1tag_'+COM+'TeV:50:1.0:0.10"'
-#      ' --sub_ztt_top_frac=0.015'))
+#      ' --sub_ztt_top_shape=true'))
   ]
   scheme_em = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
@@ -203,17 +207,18 @@ if options.scheme == 'HTohh':
     ("0",   "2jet0tag",      "2jet0tag",     BINS_FINE, (
       ' --syst_tquark="CMS_htt_TTbarShape_em_2jet0tag_'+COM+'TeV"'
       ' --syst_fakes_os_ss_shape="CMS_htt_FakeShape_em_2jet0tag_'+COM+'TeV"'
-      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"')),
+      ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
+      ' --sub_ztt_top_shape=true')),
     ("1",   "2jet1tag",      "2jet1tag",     BINS_FINE,  (
       ' --syst_tquark="CMS_htt_TTbarShape_em_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_FakeShape_em_2jet1tag_'+COM+'TeV:50:1.1:0.10"'
       ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
-      ' --sub_ztt_top_frac=0.015')),
+      ' --sub_ztt_top_shape=true')),
     ("2",   "2jet2tag",        "2jet2tag",       BINS, ( 
       ' --syst_tquark="CMS_htt_TTbarShape_em_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_FakeShape_em_2jet2tag_'+COM+'TeV:50:1.1:0.10"'
       ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
-      ' --sub_ztt_top_frac=0.015')),
+      ' --sub_ztt_top_shape=true')),
     ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE, (
       ' --syst_tquark="CMS_htt_TTbarShape_em_1jet0tag_'+COM+'TeV"'
       ' --syst_fakes_os_ss_shape="CMS_htt_FakeShape_em_1jet0tag_'+COM+'TeV"'
@@ -222,7 +227,7 @@ if options.scheme == 'HTohh':
       ' --syst_tquark="CMS_htt_TTbarShape_em_1jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_FakeShape_em_1jet1tag_'+COM+'TeV:50:1.1:0.10"'
       ' --syst_tau_scale="CMS_scale_e_'+COM+'TeV"'
-      ' --sub_ztt_top_frac=0.015'))
+      ' --sub_ztt_top_shape=true'))
   ]
   bkg_schemes = {
     'et' : 'et_default',
@@ -275,8 +280,8 @@ for pl in plots:
       extra = options.extra + extra_global + extra_channel[ch] + opts
 
       os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/bin/HiggsHTohhPlot --cfg=%(CFG)s --channel=%(ch)s'
-        #' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
-        ' --method=8 --cat=%(cat_str)s --datacard=%(dc)s'
+        ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
+        #' --method=8 --cat=%(cat_str)s --datacard=%(dc)s'
         ' --var="%(var)s%(bin)s" --norm_bins=true '
         ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
         ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
