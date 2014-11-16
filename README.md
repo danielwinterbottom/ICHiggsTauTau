@@ -17,7 +17,7 @@ The second part is an offline analysis framework, organised into a series of pac
 
 
 Documentation can be produced by running `doxygen` from within the **ICHiggsTauTau** directory. A recent copy of the html output can be found here (this updates automatically several times a day):
-<http://agilbert.web.cern.ch/agilbert/analysis/index.html>
+<http://ajgilbert.github.io/ICHiggsTauTau/index.html>
 
 The instructions for setting a CMSSW area with the **ICHiggsTauTau** package are reproduced below.
 
