@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # Settings
-REPO_PATH=git@github.com:ajgilbert/ICHiggsTauTau.git
+REPO_PATH=https://github.com/ajgilbert/ICHiggsTauTau
 HTML_PATH=docs/html
 COMMIT_USER="Documentation Builder"
 COMMIT_EMAIL="andrew.gilbert@cern.ch"
@@ -25,6 +25,6 @@ cd ${HTML_PATH}
 git add .
 git config user.name "${COMMIT_USER}"
 git config user.email "${COMMIT_EMAIL}"
-git commit --dry-run -m "Automated documentation build for changeset ${CHANGESET}."
-#git push origin gh-pages
+git commit -m "Automated documentation build for changeset ${CHANGESET}."
+git push https://${GH_TOKEN}@github.com/ajgilbert/ICHiggsTauTau gh-pages
 cd -
