@@ -38,7 +38,6 @@ var classch_1_1_nuisance =
     [ "set_shape_d", "classch_1_1_nuisance.html#aa1c7312f8540382b8c0f017cccd6d191", null ],
     [ "shape_d", "classch_1_1_nuisance.html#a03145de3bc25a035073ebab3d7b6d06a", null ],
     [ "SetShapesAndVals", "classch_1_1_nuisance.html#af8d32a091fd948a2805afb79260963ef", null ],
-    [ "PrintHeader", "classch_1_1_nuisance.html#ac20a2c1583e2eefb9c908cfdf5dbcbb9", null ],
     [ "operator<<", "classch_1_1_nuisance.html#abac9444f85d0e2325db1355883f7ac68", null ],
     [ "swap", "classch_1_1_nuisance.html#a4c388738815545f89e2a990c052c1ded", null ]
 ];

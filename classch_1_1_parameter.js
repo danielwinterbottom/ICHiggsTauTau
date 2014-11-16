@@ -14,7 +14,6 @@ var classch_1_1_parameter =
     [ "set_err_d", "classch_1_1_parameter.html#a2c1b75c9deb9a66a5065c6e67bb7eecf", null ],
     [ "err_d", "classch_1_1_parameter.html#abb14d062556c9445bdfa7c11293bfb50", null ],
     [ "vars", "classch_1_1_parameter.html#a51f57bf4e727f2024da96a2ae2e5cf76", null ],
-    [ "PrintHeader", "classch_1_1_parameter.html#a62b6307c0675a81c420b9d6807928227", null ],
     [ "operator<<", "classch_1_1_parameter.html#a4b23aafe9b144c9d6affc3a86d1efeb5", null ],
     [ "swap", "classch_1_1_parameter.html#ab9f57f473beb19a385c769a104aee7cc", null ]
 ];
