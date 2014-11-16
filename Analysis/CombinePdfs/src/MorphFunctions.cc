@@ -5,10 +5,12 @@
 #include <vector>
 #include <string>
 #include "boost/lexical_cast.hpp"
+#include "boost/format.hpp"
 #include "RooFitResult.h"
 #include "RooRealVar.h"
 #include "RooDataHist.h"
 #include "RooProduct.h"
+#include "RooConstVar.h"
 
 namespace ch {
 
@@ -19,19 +21,15 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
   using std::vector;
   using boost::lexical_cast;
 
-  set<string> mass_set =
-      cb.GenerateSetFromProcs<string>(std::mem_fn(&Process::mass));
-
-  vector<double> mass_vec;
-  vector<string> mass_str_vec;
-  for (auto const& m : mass_set) {
-    mass_str_vec.push_back(m);
-    // mass_vec.push_back(lexical_cast<double>(m));
-  }
+  // Get a vector of mass points and sort the string numerically
+  vector<string> mass_str_vec = Set2Vec(cb.mass_set());
   std::sort(mass_str_vec.begin(), mass_str_vec.end(),
     [](string const& s1, string const& s2) {
       return lexical_cast<double>(s1) < lexical_cast<double>(s2);
     });
+
+  // Fill a vector of mass points as doubles, aligned with the string version
+  vector<double> mass_vec;
   for (auto const& s : mass_str_vec) {
     if (verbose) std::cout << ">> Mass point: " << s << "\n";
     mass_vec.push_back(lexical_cast<double>(s));
@@ -47,32 +45,28 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
     mh.Print();
   }
 
-  set<string> bins =
-      cb.GenerateSetFromProcs<string>(std::mem_fn(&Process::bin));
+  auto bins = cb.bin_set();
 
   for (auto const& b : bins) {
-    ch::CombineHarvester tmp =
-        std::move(cb.cp().bin({b}).nus_type({"shape"}));
-    set<string> sigs =
-      tmp.GenerateSetFromProcs<string>(std::mem_fn(&Process::process));
+    auto sigs = cb.process_set();
     for (auto s : sigs) {
       if (verbose) std::cout << ">> bin: " << b << " process: " << s << "\n";
-      ch::CombineHarvester tmp2 = std::move(tmp.cp().process({s}));
-      TH1F data_hist = tmp2.GetObservedShape();
+      ch::CombineHarvester tmp =
+          std::move(cb.cp().bin({b}).process({s}).nus_type({"shape"}));
+      TH1F data_hist = tmp.GetObservedShape();
       // tmp2.PrintAll();
       RooRealVar mtt("CMS_th1x", "CMS_th1x", 0,
                      static_cast<float>(data_hist.GetNbinsX()));
       mtt.setBins(data_hist.GetNbinsX());
       RooRealVar morph_mtt(("CMS_th1x_"+b).c_str(), "", 0,
-                     static_cast<float>(tmp2.GetShape().GetNbinsX()));
+                     static_cast<float>(tmp.GetShape().GetNbinsX()));
       morph_mtt.setConstant();
-      morph_mtt.setBins(tmp2.GetShape().GetNbinsX());
+      morph_mtt.setBins(tmp.GetShape().GetNbinsX());
       if (verbose) {
         mtt.Print();
         morph_mtt.Print();
       }
-      vector<string> systs = ch::Set2Vec(
-          tmp2.GenerateSetFromNus<string>(std::mem_fn(&Nuisance::name)));
+      auto systs = ch::Set2Vec(tmp.nus_name_set());
       if (verbose) std::cout << ">> Found shape systematics:\n";
       RooArgList syst_list;
       for (auto const& syst: systs) {
@@ -91,9 +85,10 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
       vector<AsymPow> k_asym;
       RooArgList k_list;
 
+      std::string key = b + "_" + s;
       for (unsigned m = 0; m < n; ++m) {
         ch::CombineHarvester tmp3 =
-            std::move(tmp2.cp().mass({mass_str_vec[m]}));
+            std::move(tmp.cp().mass({mass_str_vec[m]}));
         yield_vec[m] = tmp3.GetRate();
         h_vec[m].push_back(RebinHist(tmp3.GetShape()));
         for (unsigned s = 0; s < systs.size(); ++s) {
@@ -102,11 +97,15 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
             h_vec[m].push_back(RebinHist(*(TH1F*)(n->shape_d())));
             k_vals_hi[s][m] = n->value_u();
             k_vals_lo[s][m] = n->value_d();
+            // if (std::fabs(n->scale() - 1.) >= 1E-6) {
+            //   string scale_str = (boost::format("%g") % n->scale()).str();
+            //   RooConstVar scale(scale_str.c_str(), "", n->scale());
+            //   syst_list.addClone(RooProduct( (systs[s] + "_scaled_" + key).c_str(), "", RooArgList  ))
+            // }
           });
         }
       }
 
-      std::string key = b + "_" + s;
       RooSpline1D yield((key + "_yield").c_str(), "", mh,
                         n, &(mass_vec[0]), &(yield_vec[0]), "LINEAR");
       k_list.add(yield);
@@ -141,7 +140,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
 
       RooMorphingPdf morph((b + "_" + s + "_mpdf").c_str(), "", mtt, mh,
                            v_pdf_list, mass_vec, true, *(data_hist.GetXaxis()),
-                           *(tmp2.GetShape().GetXaxis()));
+                           *(tmp.GetShape().GetXaxis()));
 
       RooProduct full_yield((b + "_" + s + "_mpdf" + norm_postfix).c_str(), "",
                             k_list);

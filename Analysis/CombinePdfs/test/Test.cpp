@@ -1,153 +1,295 @@
 #include <string>
-// #include "boost/filesystem.hpp"
-// #include "boost/regex.hpp"
-// #include "boost/format.hpp"
-// #include "boost/assign/list_of.hpp"
-#include "CombineTools/interface/CombineHarvester.h"
-#include "CombineTools/interface/Observation.h"
-#include "CombineTools/interface/Process.h"
-#include "CombineTools/interface/Utilities.h"
-#include "CombinePdfs/interface/MorphFunctions.h"
-#include "CombineTools/interface/HttSystematics.h"
-// #include "CombinePdfs/interface/RooHttSMPdf.h"
-// #include "CombineTools/interface/RooHttYield.h"s
-// #include "TH1F.h"
 #include "RooWorkspace.h"
 #include "RooRealVar.h"
 #include "RooDataHist.h"
 #include "RooHistPdf.h"
+#include "CombineTools/interface/CombineHarvester.h"
+#include "CombinePdfs/interface/MorphFunctions.h"
+#include "CombineTools/interface/HttSystematics.h"
+
 
 using namespace std;
 using namespace std::placeholders;
 
 int main() {
-  TH1::AddDirectory(false);
   ch::CombineHarvester cb;
 
-  vector<pair<int, string>> mt_cats_7 = {
-      make_pair(1, "muTau_0jet_medium"),
-      make_pair(2, "muTau_0jet_high"),
-      make_pair(3, "muTau_1jet_medium"),
-      make_pair(4, "muTau_1jet_high_lowhiggs"),
-      make_pair(5, "muTau_1jet_high_mediumhiggs"),
-      make_pair(6, "muTau_vbf")};
+  // cb.SetVerbosity(1);
 
-  vector<pair<int, string>> mt_cats_8 = {
-      make_pair(1, "muTau_0jet_medium"),
-      make_pair(2, "muTau_0jet_high"),
-      make_pair(3, "muTau_1jet_medium"),
-      make_pair(4, "muTau_1jet_high_lowhiggs"),
-      make_pair(5, "muTau_1jet_high_mediumhiggs"),
-      make_pair(6, "muTau_vbf_loose"),
-      make_pair(7, "muTau_vbf_tight")};
+  typedef vector<pair<int, string>> Categories;
+  typedef vector<string> VString;
 
-  vector<string> masses = {"90",  "95",  "100", "105", "110", "115",
-                           "120", "125", "130", "135", "140", "145"};
-  // vector<string> masses = {"125"};
+  string auxiliaries  = string(getenv("CMSSW_BASE")) + "/src/auxiliaries/";
+  string aux_shapes   = auxiliaries +"shapes/";
+  string aux_pruning  = auxiliaries +"pruning/";
 
-  std::cout << "Adding observations...";
-  cb.AddObservations({"*"}, {"htt"}, {"7TeV"}, {"mt"}, mt_cats_7);
-  cb.AddObservations({"*"}, {"htt"}, {"8TeV"}, {"mt"}, mt_cats_8);
-  std::cout << " done\n";
+  VString chns =
+      {"et", "mt", "em", "ee", "mm", "tt"};
 
-  std::cout << "Adding background processes...";
-  cb.AddProcesses({"*"}, {"htt"}, {"7TeV"}, {"mt"},
-      {"ZTT", "W", "QCD", "ZL", "ZJ", "TT", "VV"}, mt_cats_7, false);
-  cb.AddProcesses({"*"}, {"htt"}, {"8TeV"}, {"mt"},
-      {"ZTT", "W", "QCD", "ZL", "ZJ", "TT", "VV"}, mt_cats_8, false);
-  std::cout << " done\n";
+  map<string, string> input_folders = {
+      {"et", "Imperial"},
+      {"mt", "Imperial"},
+      {"em", "MIT"},
+      {"ee", "DESY-KIT"},
+      {"mm", "DESY-KIT"},
+      {"tt", "CERN"}
+  };
 
-  std::cout << "Adding signal processes...";
-  cb.AddProcesses(masses, {"htt"}, {"7TeV"}, {"mt"},
-      {"ggH", "qqH", "WH", "ZH"}, mt_cats_7, true);
-  cb.AddProcesses(masses, {"htt"}, {"8TeV"}, {"mt"},
-      {"ggH", "qqH", "WH", "ZH"}, mt_cats_8, true);
-  std::cout << " done\n";
+  map<string, string> sig_shape_map = {
+      {"et", "_fine_binning"},
+      {"mt", "_fine_binning"},
+      {"em", "_fine_binning"},
+      {"ee", ""},
+      {"mm", ""},
+      {"tt", "_fine_binning"}
+  };
 
-  /*
-  (1) hww(mH) as signal:
-  cb.AddProcesses(masses, {"htt"}, {"7TeV"}, {"mt"},
-      {"ggH_hww", "qqH_hww"}, mt_cats_7, true);
-  cb.AddProcesses(masses, {"htt"}, {"8TeV"}, {"mt"},
-      {"ggH_hww", "qqH_hww"}, mt_cats_8, true);
+  map<string, VString> bkg_procs;
+  bkg_procs["et"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TT", "VV"};
+  bkg_procs["mt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TT", "VV"};
+  bkg_procs["em"] = {"Ztt", "EWK", "Fakes", "ttbar", "ggH_hww125", "qqH_hww125"};
+  bkg_procs["ee"] = {"ZTT", "WJets", "QCD", "ZEE", "TTJ", "Dibosons", "ggH_hww125", "qqH_hww125"};
+  bkg_procs["mm"] = {"ZTT", "WJets", "QCD", "ZMM", "TTJ", "Dibosons", "ggH_hww125", "qqH_hww125"};
+  bkg_procs["tt"] = {"ZTT", "W", "QCD", "ZL", "ZJ", "TT", "VV"};
 
-  (2) hww(125) as bkg:
-  cb.AddProcesses({"*"}, {"htt"}, {"7TeV"}, {"mt"},
-      {"ggH_hww125", "qqH_hww125"}, mt_cats_7, false);
-  cb.AddProcesses({"*"}, {"htt"}, {"8TeV"}, {"mt"},
-      {"ggH_hww125", "qqH_hww125"}, mt_cats_8, false);
+  VString sig_procs = {"ggH", "qqH", "WH", "ZH"};
 
-  (2) hww(mH) as bkg:
-  for (m : masses) {
-    cb.AddProcesses({m}, {"htt"}, {"7TeV"}, {"mt"},
-        {"ggH_hww"+m, "qqH_hww"+m}, mt_cats_7, false);
-    cb.AddProcesses({m}, {"htt"}, {"8TeV"}, {"mt"},
-        {"ggH_hww"+m, "qqH_hww"+m}, mt_cats_8, false);
-  }
-  */
+  map<string, Categories> cats;
+  cats["et_7TeV"] = {
+      {1, "eleTau_0jet_medium"}, {2, "eleTau_0jet_high"},
+      {3, "eleTau_1jet_medium"}, {5, "eleTau_1jet_high_mediumhiggs"},
+      {6, "eleTau_vbf"}};
 
-  std::cout << "Adding systematic uncertainties...";
-  ch::AddSystematics_et_mt(cb);
-  std::cout << " done\n";
+  cats["et_8TeV"] = {
+      {1, "eleTau_0jet_medium"}, {2, "eleTau_0jet_high"},
+      {3, "eleTau_1jet_medium"}, {5, "eleTau_1jet_high_mediumhiggs"},
+      {6, "eleTau_vbf_loose"}, {7, "eleTau_vbf_tight"}};
 
-  std::cout << "Extracting histograms from input root files...";
-  cb.cp().era({"7TeV"}).backgrounds().ExtractShapes(
-      "data/demo/htt_mt.inputs-sm-7TeV-hcg.root", "$CHANNEL/$PROCESS",
-      "$CHANNEL/$PROCESS_$SYSTEMATIC");
-  cb.cp().era({"8TeV"}).backgrounds().ExtractShapes(
-      "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS",
-      "$CHANNEL/$PROCESS_$SYSTEMATIC");
-  cb.cp().era({"7TeV"}).signals().ExtractShapes(
-      "data/demo/htt_mt.inputs-sm-7TeV-hcg.root", "$CHANNEL/$PROCESS$MASS_fine_binning",
-      "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC_fine_binning");
-  cb.cp().era({"8TeV"}).signals().ExtractShapes(
-      "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS$MASS_fine_binning",
-      "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC_fine_binning");
-  // cb.cp().era({"7TeV"}).signals().ExtractShapes(
-  //     "data/demo/htt_mt.inputs-sm-7TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
-  //     "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
-  // cb.cp().era({"8TeV"}).signals().ExtractShapes(
-  //     "data/demo/htt_mt.inputs-sm-8TeV-hcg.root", "$CHANNEL/$PROCESS$MASS",
-  //     "$CHANNEL/$PROCESS$MASS_$SYSTEMATIC");
-  std::cout << " done\n";
+  cats["mt_7TeV"] = {
+      {1, "muTau_0jet_medium"}, {2, "muTau_0jet_high"},
+      {3, "muTau_1jet_medium"}, {4, "muTau_1jet_high_lowhiggs"}, {5, "muTau_1jet_high_mediumhiggs"},
+      {6, "muTau_vbf"}};
 
-  std::cout << "Scaling signal process rates...\n";
-  map<string, TGraph> xs;
-  for (std::string const& e : {"7TeV", "8TeV"}) {
-    for (std::string const& p : {"ggH", "qqH", "WH", "ZH"}) {
-      ch::ParseTable(&xs, "data/xsecs_brs/"+p+"_"+e+"_YR3.txt", {p+"_"+e});
+  cats["mt_8TeV"] = {
+      {1, "muTau_0jet_medium"}, {2, "muTau_0jet_high"},
+      {3, "muTau_1jet_medium"}, {4, "muTau_1jet_high_lowhiggs"}, {5, "muTau_1jet_high_mediumhiggs"},
+      {6, "muTau_vbf_loose"}, {7, "muTau_vbf_tight"}};
+
+  cats["em_7TeV"] = {
+      {0, "emu_0jet_low"}, {1, "emu_0jet_high"},
+      {2, "emu_1jet_low"}, {3, "emu_1jet_high"},
+      {4, "emu_vbf_loose"}};
+
+  cats["em_8TeV"] = {
+      {0, "emu_0jet_low"}, {1, "emu_0jet_high"},
+      {2, "emu_1jet_low"}, {3, "emu_1jet_high"},
+      {4, "emu_vbf_loose"}, {5, "emu_vbf_tight"}};
+
+  cats["ee_7TeV"] = {
+      {0, "ee_0jet_low"}, {1, "ee_0jet_high"},
+      {2, "ee_1jet_low"}, {3, "ee_1jet_high"},
+      {4, "ee_vbf"}};
+  cats["ee_8TeV"] = cats["ee_7TeV"];
+
+  cats["mm_7TeV"] = {
+      {0, "mumu_0jet_low"}, {1, "mumu_0jet_high"},
+      {2, "mumu_1jet_low"}, {3, "mumu_1jet_high"},
+      {4, "mumu_vbf"}};
+  cats["mm_8TeV"] = cats["mm_7TeV"];
+
+  cats["tt_8TeV"] = {
+      {0, "tauTau_1jet_high_mediumhiggs"}, {1, "tauTau_1jet_high_highhiggs"},
+      {2, "tauTau_vbf"}};
+
+  vector<string> masses = ch::MassesFromRange("110-145:5");
+
+  cout << ">> Creating processes and observations...\n";
+  for (string era : {"7TeV", "8TeV"}) {
+    for (auto chn : chns) {
+      cb.AddObservations(
+        {"*"}, {"htt"}, {era}, {chn}, cats[chn+"_"+era]);
+      cb.AddProcesses(
+        {"*"}, {"htt"}, {era}, {chn}, bkg_procs[chn], cats[chn+"_"+era], false);
+      cb.AddProcesses(
+        masses, {"htt"}, {era}, {chn}, sig_procs, cats[chn+"_"+era], true);
     }
   }
-  ch::ParseTable(&xs, "data/xsecs_brs/htt_YR3.txt", {"htt"});
+  // Have to drop ZL from tautau_vbf category
+  cb.FilterProcs([](ch::Process const* p) {
+    return p->bin() == "tauTau_vbf" && p->process() == "ZL";
+  });
 
-  for (std::string const& e : {"7TeV", "8TeV"}) {
-    for (std::string const& p : {"ggH", "qqH", "WH", "ZH"}) {
-      std::cout << "Scaling for process " << p << " and era " << e << "\n";
+  cout << ">> Adding systematic uncertainties...\n";
+  ch::AddSystematics_et_mt(cb);
+  ch::AddSystematics_em(cb);
+  ch::AddSystematics_ee_mm(cb);
+  ch::AddSystematics_tt(cb);
+
+  cout << ">> Extracting histograms from input root files...\n";
+  for (string era : {"7TeV", "8TeV"}) {
+    for (string chn : chns) {
+      // Skip 7TeV tt:
+      if (chn == "tt" && era == "7TeV") continue;
+      string file = aux_shapes + input_folders[chn] + "/htt_" + chn +
+                    ".inputs-sm-" + era + "-hcg.root";
+      string ext = sig_shape_map[chn];
+      cb.cp().channel({chn}).era({era}).backgrounds().ExtractShapes(
+          file, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC");
+      cb.cp().channel({chn}).era({era}).signals().ExtractShapes(
+          file, "$BIN/$PROCESS$MASS"+ext, "$BIN/$PROCESS$MASS_$SYSTEMATIC"+ext);
+    }
+  }
+
+  cout << ">> Scaling signal process rates...\n";
+  map<string, TGraph> xs;
+  // Get the table of H->tau tau BRs vs mass
+  ch::ParseTable(&xs, "data/xsecs_brs/htt_YR3.txt", {"htt"});
+  for (string const& e : {"7TeV", "8TeV"}) {
+    for (string const& p : sig_procs) {
+      // Get the table of xsecs vs mass for process "p" and era "e":
+      ch::ParseTable(&xs, "data/xsecs_brs/"+p+"_"+e+"_YR3.txt", {p+"_"+e});
+      cout << ">>>> Scaling for process " << p << " and era " << e << "\n";
       cb.cp().process({p}).era({e}).ForEachProc([&](ch::Process *proc) {
         ch::ScaleProcessRate(proc, &xs, p+"_"+e, "htt");
       });
     }
   }
+  ch::ParseTable(&xs, "data/xsecs_brs/hww_over_htt.txt", {"hww_over_htt"});
+  for (string const& e : {"7TeV", "8TeV"}) {
+    for (string const& p : {"ggH", "qqH"}) {
+     cb.cp().channel({"em"}).process({p+"_hww125"}).era({e})
+       .ForEachProc([&](ch::Process *proc) {
+         ch::ScaleProcessRate(proc, &xs, p+"_"+e, "htt", "125");
+         ch::ScaleProcessRate(proc, &xs, "hww_over_htt", "", "125");
+      });
+    }
+  }
 
-  std::cout << "Setting standardised bin names...";
-  cb.ForEachObs(ch::SetStandardBinName<ch::Observation>);
-  cb.ForEachProc(ch::SetStandardBinName<ch::Process>);
-  cb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
-  std::cout << " done\n";
+  cout << ">> Merging bin errors...\n";
+  ch::CombineHarvester cb_et = move(cb.cp().channel({"et"}));
+  for (string era : {"7TeV", "8TeV"}) {
+    cb_et.cp().era({era}).bin_id({1, 2}).process({"ZL", "ZJ", "QCD", "W"})
+        .MergeBinErrors(0.1, 0.5);
+    cb_et.cp().era({era}).bin_id({3, 5}).process({"W"})
+        .MergeBinErrors(0.1, 0.5);
+  }
+  cb_et.cp().era({"7TeV"}).bin_id({6}).process({"ZL", "ZJ", "W", "ZTT"})
+      .MergeBinErrors(0.1, 0.5);
+  cb_et.cp().era({"8TeV"}).bin_id({7}).process({"ZL", "ZJ", "W", "ZTT"})
+      .MergeBinErrors(0.1, 0.5);
+  cb_et.cp().era({"8TeV"}).bin_id({6}).process({"ZL", "ZJ", "W"})
+      .MergeBinErrors(0.1, 0.5);
+
+  ch::CombineHarvester cb_mt = move(cb.cp().channel({"mt"}));
+  for (string era : {"7TeV", "8TeV"}) {
+    cb_mt.cp().era({era}).bin_id({1, 2, 3, 4}).process({"W", "QCD"})
+        .MergeBinErrors(0.1, 0.5);
+  }
+  cb_mt.cp().era({"7TeV"}).bin_id({5}).process({"W"})
+      .MergeBinErrors(0.1, 0.5);
+  cb_mt.cp().era({"7TeV"}).bin_id({6}).process({"W", "ZTT"})
+      .MergeBinErrors(0.1, 0.5);
+  cb_mt.cp().era({"8TeV"}).bin_id({5, 6}).process({"W"})
+      .MergeBinErrors(0.1, 0.5);
+  cb_mt.cp().era({"8TeV"}).bin_id({7}).process({"W", "ZTT"})
+      .MergeBinErrors(0.1, 0.5);
+
+  ch::CombineHarvester cb_em = move(cb.cp().channel({"em"}));
+  for (string era : {"7TeV", "8TeV"}) {
+    cb_em.cp().era({era}).bin_id({1, 3}).process({"Fakes"})
+        .MergeBinErrors(0.1, 0.5);
+  }
+  cb_em.cp().era({"7TeV"}).bin_id({4}).process({"Fakes", "EWK", "Ztt"})
+      .MergeBinErrors(0.1, 0.5);
+  cb_em.cp().era({"8TeV"}).bin_id({5}).process({"Fakes", "EWK", "Ztt"})
+      .MergeBinErrors(0.1, 0.5);
+  cb_em.cp().era({"8TeV"}).bin_id({4}).process({"Fakes", "EWK"})
+      .MergeBinErrors(0.1, 0.5);
+
+  ch::CombineHarvester cb_ee_mm = move(cb.cp().channel({"ee", "mm"}));
+  for (string era : {"7TeV", "8TeV"}) {
+    cb_ee_mm.cp().era({era}).bin_id({1, 3, 4})
+        .process({"ZTT", "ZEE", "ZMM", "TTJ"})
+        .MergeBinErrors(0.0, 0.5);
+  }
+
+  ch::CombineHarvester cb_tt = move(cb.cp().channel({"tt"}));
+  cb_tt.cp().bin_id({0, 1, 2}).era({"8TeV"}).process({"ZTT", "QCD"})
+      .MergeBinErrors(0.1, 0.5);
+
+  cout << ">> Generating bbb uncertainties...\n";
+  cb_mt.cp().bin_id({0, 1, 2, 3, 4}).process({"W", "QCD"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_mt.cp().era({"7TeV"}).bin_id({5}).process({"W"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_mt.cp().era({"7TeV"}).bin_id({6}).process({"W", "ZTT"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_mt.cp().era({"8TeV"}).bin_id({5, 6}).process({"W"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_mt.cp().era({"8TeV"}).bin_id({7}).process({"W", "ZTT"})
+      .AddBinByBin(0.1, true, &cb);
+
+  cb_et.cp().bin_id({1, 2}).process({"ZL", "ZJ", "QCD", "W"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_et.cp().bin_id({3, 5}).process({"W"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_et.cp().era({"7TeV"}).bin_id({6}).process({"ZL", "ZJ", "W", "ZTT"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_et.cp().era({"8TeV"}).bin_id({7}).process({"ZL", "ZJ", "W", "ZTT"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_et.cp().era({"8TeV"}).bin_id({6}).process({"ZL", "ZJ", "W"})
+      .AddBinByBin(0.1, true, &cb);
+
+  cb_em.cp().bin_id({1, 3}).process({"Fakes"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_em.cp().era({"7TeV"}).bin_id({4}).process({"Fakes", "EWK", "Ztt"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_em.cp().era({"8TeV"}).bin_id({5}).process({"Fakes", "EWK", "Ztt"})
+      .AddBinByBin(0.1, true, &cb);
+  cb_em.cp().era({"8TeV"}).bin_id({4}).process({"Fakes", "EWK"})
+      .AddBinByBin(0.1, true, &cb);
+
+  cb_ee_mm.cp().bin_id({1, 3, 4}).process({"ZTT", "ZEE", "ZMM", "TTJ"})
+      .AddBinByBin(0.0, true, &cb);
+
+  cb_tt.cp().bin_id({0, 1, 2}).era({"8TeV"}).process({"QCD", "ZTT"})
+      .AddBinByBin(0.1, true, &cb);
+
+  cout << ">> Setting standardised bin names...\n";
+  ch::SetStandardBinNames(cb);
+  VString droplist = ch::ParseFileLines(
+    aux_pruning + "uncertainty-pruning-drop-131128-sm.txt");
+  cout << ">> Droplist contains " << droplist.size() << " entries\n";
+
+  set<string> to_drop;
+  for (auto x : droplist) to_drop.insert(x);
+
+  auto pre_drop = cb.nus_name_set();
+  cb.nus_name(droplist, false);
+  auto post_drop = cb.nus_name_set();
+  cout << ">> Systematics dropped: " << pre_drop.size() - post_drop.size()
+            << "\n";
 
 
-  // cb.bin({"htt_mt_5_8TeV", "htt_mt_6_8TeV"});
-  // cb.nus_type({"shape"}, false);
+  map<string, bool> can_morph = {
+      {"et", true},
+      {"mt", true},
+      {"em", true},
+      {"ee", false},
+      {"mm", false},
+      {"tt", true}
+  };
+
   RooWorkspace ws("htt", "htt");
 
   bool do_morphing = true;
   if (do_morphing) {
-    set<string> bins =
-        cb.GenerateSetFromObs<string>(mem_fn(&ch::Observation::bin));
-    ch::CombineHarvester cb_sig = std::move(cb.cp().signals());
     // RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
     RooRealVar mh("MH", "", 125, 90, 145);
-    ch::BuildRooMorphing(ws, cb_sig, mh, true);
+    for (auto chn: chns) {
+      ch::CombineHarvester cb_sig = std::move(cb.cp().channel({chn}).signals());
+      ch::BuildRooMorphing(ws, cb_sig, mh, can_morph[chn]);
+    }
     cb.FilterNus([&](ch::Nuisance const* p) {
       return p->type() == "shape" && p->signal();
     });
@@ -161,33 +303,6 @@ int main() {
     cb.cp().signals().ExtractPdfs("htt", "$CHANNEL_$PROCESS_mpdf", &cb);
   }
 
-  // cb.cp().mass({"125", "*"}).PrintAll();
-  std::cout << "Merging bin errors...\n";
-  cb.cp().bin_id({0, 1, 2, 3, 4}).process({"W", "QCD"})
-      .MergeBinErrors(0.1, 0.4);
-  cb.cp().bin_id({5}).era({"7TeV"}).process({"W"})
-      .MergeBinErrors(0.1, 0.4);
-  cb.cp().bin_id({5, 6}).era({"8TeV"}).process({"W"})
-      .MergeBinErrors(0.1, 0.4);
-  cb.cp().bin_id({7}).era({"8TeV"}).process({"W", "ZTT"})
-      .MergeBinErrors(0.1, 0.4);
-  std::cout << "...done\n";
 
-  std::cout << "Generating bbb uncertainties...\n";
-  cb.cp().bin_id({0, 1, 2, 3, 4}).process({"W", "QCD"})
-      .AddBinByBin(0.1, true, &cb);
-  cb.cp().bin_id({5}).era({"7TeV"}).process({"W"})
-      .AddBinByBin(0.1, true, &cb);
-  cb.cp().bin_id({5, 6}).era({"8TeV"}).process({"W"})
-      .AddBinByBin(0.1, true, &cb);
-  cb.cp().bin_id({7}).era({"8TeV"}).process({"W", "ZTT"})
-      .AddBinByBin(0.1, true, &cb);
-  std::cout << "...done\n";
-
-  cb.PrintAll();
-
-  TFile output("htt_mt.input.root", "RECREATE");
-  cb.cp().mass({"125", "*"}).WriteDatacard(
-      do_morphing ? "htt_mt_fb.txt" : "htt_mt_normal.txt", output);
 
 }
