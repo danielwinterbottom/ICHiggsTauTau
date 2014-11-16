@@ -22,6 +22,9 @@ cd -
 
 # Create and commit the documentation repo.
 cd ${HTML_PATH}
+# create a .nojekyll file to allow html files starting with
+# an underscore to be displayed
+touch .nojekyll
 git add .
 git config user.name "${COMMIT_USER}"
 git config user.email "${COMMIT_EMAIL}"
