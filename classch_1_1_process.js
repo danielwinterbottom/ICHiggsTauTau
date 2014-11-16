@@ -32,6 +32,7 @@ var classch_1_1_process =
     [ "norm", "classch_1_1_process.html#ab41c6e3bf638dbb480404166185ed0a1", null ],
     [ "SetNormShape", "classch_1_1_process.html#aea302c0b0b870b2e8fe0fee31fbee27a", null ],
     [ "SetNormShapeAndRate", "classch_1_1_process.html#ab30a3685a5b95bd93046e058107c2cb9", null ],
+    [ "PrintHeader", "classch_1_1_process.html#ab2cc280e1babe330441de6791e06c2c1", null ],
     [ "operator<<", "classch_1_1_process.html#ae3d2ec9cc05d5e849bc0271cf46f45b5", null ],
     [ "swap", "classch_1_1_process.html#acdd8a9af1254395822e5c250053397aa", null ]
 ];

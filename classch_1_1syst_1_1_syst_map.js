@@ -4,5 +4,6 @@ var classch_1_1syst_1_1_syst_map =
     [ "Contains", "classch_1_1syst_1_1_syst_map.html#ac2e80564cadaae7a32b80c14fd1181dd", null ],
     [ "ValU", "classch_1_1syst_1_1_syst_map.html#a13cc5ac78628dac053f52060d9fe7c0d", null ],
     [ "ValD", "classch_1_1syst_1_1_syst_map.html#a02ae9fcc37d82f83f890676f214a2136", null ],
+    [ "init", "classch_1_1syst_1_1_syst_map.html#a74987ebdc8e361f327c9522705e6bd4d", null ],
     [ "IsAsymm", "classch_1_1syst_1_1_syst_map.html#aa67ee1ed213e536a0525e28b22ef725b", null ]
 ];

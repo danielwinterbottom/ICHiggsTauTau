@@ -26,6 +26,7 @@ var classch_1_1_observation =
     [ "process", "classch_1_1_observation.html#addca8b1ca4c83c3ae8a51130f962a5b8", null ],
     [ "SetNormShape", "classch_1_1_observation.html#ad52c4cb59410f1fa17c588f6b040e99e", null ],
     [ "SetNormShapeAndRate", "classch_1_1_observation.html#ae8c815fac83e2dd5a03698b42463f1c6", null ],
+    [ "PrintHeader", "classch_1_1_observation.html#a4f8f4cc0a612fc88effb03189daa3b13", null ],
     [ "operator<<", "classch_1_1_observation.html#a6c4ab371fa22f5dcffb05ab258b5da4f", null ],
     [ "swap", "classch_1_1_observation.html#a89be1a9e99b14efd3d528195c3f8eb88", null ]
 ];

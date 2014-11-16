@@ -17,7 +17,6 @@ var searchData=
   ['hf_5fhad_5fenergy',['HF_had_energy',['../classic_1_1_p_f_jet.html#a81e892fdab259444871ea789ff40e1f9',1,'ic::PFJet']]],
   ['hf_5fhad_5fenergy_5ffrac',['HF_had_energy_frac',['../classic_1_1_p_f_jet.html#a3867dce5a5769bcfe487428a0c9ecce7',1,'ic::PFJet']]],
   ['hf_5fhad_5fmultiplicity',['HF_had_multiplicity',['../classic_1_1_p_f_jet.html#a44bf96f061d8a5ad529c9e0ce5c46a90',1,'ic::PFJet']]],
-  ['higgstotautau',['HiggsToTauTau',['../higgs-to-tau-tau.html',1,'']]],
   ['higgstotautau_2emd',['HiggsToTauTau.md',['../_higgs_to_tau_tau_8md.html',1,'']]],
   ['histmapping',['HistMapping',['../structch_1_1_hist_mapping.html',1,'ch']]],
   ['histmapping_2ecc',['HistMapping.cc',['../_hist_mapping_8cc.html',1,'']]],
