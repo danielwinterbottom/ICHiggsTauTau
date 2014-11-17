@@ -1,15 +1,17 @@
 #include <string>
-#include "RooWorkspace.h"
-#include "RooRealVar.h"
-#include "RooDataHist.h"
-#include "RooHistPdf.h"
+#include <map>
+#include <set>
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <cstdlib>
+#include "boost/filesystem.hpp"
 #include "CombineTools/interface/CombineHarvester.h"
-#include "CombinePdfs/interface/MorphFunctions.h"
+#include "CombineTools/interface/Utilities.h"
 #include "CombineTools/interface/HttSystematics.h"
-
+#include "CombinePdfs/interface/MorphFunctions.h"
 
 using namespace std;
-using namespace std::placeholders;
 
 int main() {
   ch::CombineHarvester cb;
@@ -38,7 +40,7 @@ int main() {
   map<string, string> sig_shape_map = {
       {"et", "_fine_binning"},
       {"mt", "_fine_binning"},
-      {"em", "_fine_binning"},
+      {"em", ""},
       {"ee", ""},
       {"mm", ""},
       {"tt", "_fine_binning"}
@@ -281,26 +283,48 @@ int main() {
   };
 
   RooWorkspace ws("htt", "htt");
+  RooRealVar mh("MH", "", 125, 90, 145);
 
   bool do_morphing = true;
   if (do_morphing) {
     // RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-    RooRealVar mh("MH", "", 125, 90, 145);
-    for (auto chn: chns) {
-      ch::CombineHarvester cb_sig = std::move(cb.cp().channel({chn}).signals());
-      ch::BuildRooMorphing(ws, cb_sig, mh, can_morph[chn]);
+    for (auto chn : chns) {
+      auto bins = cb.cp().channel({chn}).bin_set();
+      for (auto bin : bins) {
+        for (auto p : sig_procs) {
+          ch::BuildRooMorphing(ws, cb, bin, p, mh, "110", "145", can_morph[chn],
+                               false);
+        }
+      }
     }
-    cb.FilterNus([&](ch::Nuisance const* p) {
-      return p->type() == "shape" && p->signal();
-    });
-    cb.mass({"125", "*"});
-    cb.cp().signals().ForEachProc([&](ch::Process* p) {
-      p->set_shape(nullptr);
-      p->set_rate(1.0);
-    });
-
     cb.AddWorkspace(&ws);
-    cb.cp().signals().ExtractPdfs("htt", "$CHANNEL_$PROCESS_mpdf", &cb);
+    cb.cp().signals().ExtractPdfs("htt", "$BIN_$PROCESS_morph", &cb);
+
+    string folder = "output/sm_cards_morphed";
+    boost::filesystem::create_directories(folder);
+
+    for (string chn : chns) {
+      TFile output((folder + "/htt_" + chn + ".input.root").c_str(),
+                   "RECREATE");
+      // auto bins = cb.cp().channel({chn}).bin_set();
+      // for (auto b : bins) {
+      //   for (auto m : masses) {
+      //     cout << ">> Writing datacard for bin: " << b << " and mass: " << m
+      //               << "\r" << flush;
+      //     cb.cp().channel({chn}).bin({b}).mass({m, "*"}).WriteDatacard(
+      //         folder+"/"+b + "_" + m + ".txt", output);
+      //   }
+      // }
+      cb.cp().channel({chn}).mass({"125", "*"}).WriteDatacard(
+          folder+"/htt_" + chn + "_125.txt", output);
+      output.Close();
+    }
+    TFile output((folder + "/htt_combined.input.root").c_str(),
+                 "RECREATE");
+    cb.cp().mass({"125", "*"}).WriteDatacard(
+        folder+"/htt_combined_125.txt", output);
+    output.Close();
+    cout << "\n>> Done!\n";
   }
 
 

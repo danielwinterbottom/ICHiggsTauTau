@@ -20,10 +20,16 @@ TGraph ExtractGraph(TTree *t, double & bestFit) {
   float deltaNLL = 0;
   t->SetBranchAddress("MH", &r);
   t->SetBranchAddress("deltaNLL", &deltaNLL);
+  double min = 0;
+  for (unsigned i = 0; i < t->GetEntries(); ++i) {
+    t->GetEntry(i);
+    if (deltaNLL < min) min = deltaNLL;
+  }
+
   for (unsigned i = 0; i < t->GetEntries(); ++i) {
     t->GetEntry(i);
     if (deltaNLL == 0) bestFit = r;
-    g.SetPoint(i, r, 2.0*deltaNLL);
+    g.SetPoint(i, r, 2.0*(deltaNLL-min));
   }
   g.Sort();
   return g;
@@ -66,8 +72,8 @@ int main() {
   //scans.push_back({"higgsCombinenoBBBScan.MultiDimFit.mH125.root", "no bbb syst.", 38, nullptr});
   
   // scans.push_back({"thesis/higgsCombineFullScan.MultiDimFit.mH125.root", "Stat+Syst+Theory", 1, nullptr});
-  scans.push_back({"higgsCombineFullScan.MultiDimFit.mH125.root", "Stat+Syst", kAzure-4, nullptr});
-  scans.push_back({"higgsCombineStatOnly.MultiDimFit.mH125.root", "Stat Only", kBlue+1, nullptr});
+  scans.push_back({"higgsCombineFullScan.MultiDimFit.mH125.root", "Mass Scan", kAzure-4, nullptr});
+  // scans.push_back({"higgsCombineStatOnly.MultiDimFit.mH125.root", "Stat Only", kBlue+1, nullptr});
   //scans.push_back({"thesis/higgsCombineStatAndTh.MultiDimFit.mH125.root", "Stat+Theory", 39, nullptr});
   TCanvas c1("canvas","canvas");
 
@@ -109,7 +115,7 @@ int main() {
   // // g1.SetMarkerColor(7);
   // g1.Draw("AC");
   scans[0].gr->SetMaximum(4);
-  scans[0].gr->GetXaxis()->SetRangeUser(100, 140);
+  scans[0].gr->GetXaxis()->SetRangeUser(110, 130);
   // scans[0].gr->GetXaxis()->SetTitle("Signal Strength, #mu");
   scans[0].gr->GetXaxis()->SetTitle("m_{H} [GeV]");
   scans[0].gr->GetYaxis()->SetTitle("-2 #Delta ln L");
@@ -124,7 +130,7 @@ int main() {
   leg->SetFillColor(0);
   leg->SetFillStyle(1001);
   leg->Draw();
-  lines.push_back(new TLine(100,1,140,1));
+  lines.push_back(new TLine(110,1,130,1));
   lines.back()->SetLineColor(2);
   for (auto l : lines) l->Draw();
   TLatex *title_latex = new TLatex();
