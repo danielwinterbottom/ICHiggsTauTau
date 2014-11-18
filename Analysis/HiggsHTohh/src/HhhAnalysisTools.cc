@@ -678,7 +678,8 @@ namespace ic {
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
-      if (method == 5 || method == 4 || method == 25 || method == 26 || method == 16) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 5 || method == 4 || method == 25 || method == 26 ) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 16) qcd_cat = this->ResolveAlias("2jetinclusive");
       //if (method == 5 || method == 4 || method == 25 || method == 26) qcd_cat = this->ResolveAlias("2jetinclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
