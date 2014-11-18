@@ -160,6 +160,14 @@ namespace ic {
     alias_map_["2jet1tagSFMassCuts"]     = "(n_prebjets>=2 && n_prebjets_SF==1 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     //alias_map_["1jet1tagSFMassCuts"]     = "(n_prebjets==1 && n_prebjets_SF==1 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     alias_map_["2jet2tagSFMassCuts"]     = "(n_prebjets>=2 && n_prebjets_SF>=2 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    
+    // Categories including the effect of the b-tag SF and one mass cut (for control plots)
+    alias_map_["2jet0tagSFMassCutMbb"]     = "(n_prebjets>=2 && n_prebjets_SF==0 && prebjet_mjj>70 && prebjet_mjj<150)";
+    alias_map_["2jet1tagSFMassCutMbb"]     = "(n_prebjets>=2 && n_prebjets_SF==1 && prebjet_mjj>70 && prebjet_mjj<150)";
+    alias_map_["2jet2tagSFMassCutMbb"]     = "(n_prebjets>=2 && n_prebjets_SF>=2 && prebjet_mjj>70 && prebjet_mjj<150)";
+    alias_map_["2jet0tagSFMassCutMtt"]     = "(n_prebjets>=2 && n_prebjets_SF==0 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tagSFMassCutMtt"]     = "(n_prebjets>=2 && n_prebjets_SF==1 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tagSFMassCutMtt"]     = "(n_prebjets>=2 && n_prebjets_SF>=2 && m_sv>90 && m_sv<150)";
 		
     //categories related to unfolded 2D distribution of mtt and mbb
     alias_map_["2jet0tag_slice0"]= "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>0 && prebjet_mjj<60)";
