@@ -35,6 +35,7 @@ int main(int argc, char* argv[]){
   std::string filelist;
   std::string basesel;
   std::string jetmetdphicut;
+  std::string contonlycontplotjetmetdphi;
   std::string cjvcut;
   std::string channel;
   std::string syst;
@@ -60,23 +61,24 @@ int main(int argc, char* argv[]){
     //Input output and config options
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
     ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_withrle2/"))
-    ("syst,s",           po::value<std::string>(&syst)->default_value(""))
+    ("syst,s",                   po::value<std::string>(&syst)->default_value(""))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=600&&jet1_pt>50&&dijet_deta>3.6&& jet2_pt>60&&metnomuons>60&&metnomu_significance>3&&jetmetnomu_mindphi>1.5"))
     ("jetmetdphicut",            po::value<std::string>(&jetmetdphicut)->default_value("alljetsmetnomu_mindphi>1.0"))
-    ("cjvcut",            po::value<std::string>(&cjvcut)->default_value("n_jets_cjv_30<1"))
+    ("contonlycontplotjetmetdphi",po::value<std::string>(&contonlycontplotjetmetdphi)->default_value(""))
+    ("cjvcut",                   po::value<std::string>(&cjvcut)->default_value("n_jets_cjv_30<1"))
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
-    ("do_datatop",                  po::value<bool>(&do_datatop)->default_value(true))
-    ("runblind",                  po::value<bool>(&runblind)->default_value(true))
-    ("do_bdt",                  po::value<bool>(&do_bdt)->default_value(false))
-    ("bdtcut",                  po::value<std::string>(&bdtcut)->default_value("BDT>-0.26"))
-    ("do_preselranges",                  po::value<bool>(&do_preselranges)->default_value(false))
-    ("do_prepreselranges",                  po::value<bool>(&do_prepreselranges)->default_value(false))
-    ("do_promptsel",                  po::value<bool>(&do_promptsel)->default_value(false))
-    ("use_promptdata",                  po::value<bool>(&use_promptdata)->default_value(false))
-    ("do_plotmcqcd",                  po::value<bool>(&do_plotmcqcd)->default_value(false))
-    ("runblindreg",                  po::value<bool>(&runblindreg)->default_value(true));
+    ("do_datatop",               po::value<bool>(&do_datatop)->default_value(true))
+    ("runblind",                 po::value<bool>(&runblind)->default_value(true))
+    ("do_bdt",                   po::value<bool>(&do_bdt)->default_value(false))
+    ("bdtcut",                   po::value<std::string>(&bdtcut)->default_value("BDT>-0.26"))
+    ("do_preselranges",          po::value<bool>(&do_preselranges)->default_value(false))
+    ("do_prepreselranges",       po::value<bool>(&do_prepreselranges)->default_value(false))
+    ("do_promptsel",             po::value<bool>(&do_promptsel)->default_value(false))
+    ("use_promptdata",           po::value<bool>(&use_promptdata)->default_value(false))
+    ("do_plotmcqcd",             po::value<bool>(&do_plotmcqcd)->default_value(false))
+    ("runblindreg",              po::value<bool>(&runblindreg)->default_value(true));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config), vm);
@@ -229,8 +231,8 @@ int main(int argc, char* argv[]){
   else dataset="PROMPT";
   //std::string dataset="PARKEDPLUSA";
   std::string dataextrasel;
-  if(!use_promptdata)dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=203742))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>40";
-  else dataextrasel="&&passtrigger==1&&l1met>40";
+  if(!use_promptdata)dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=203742))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>=40";
+  else dataextrasel="&&passtrigger==1&&l1met>=40";
   //std::string dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=196531))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))";
   //std::string dataextrasel="&&(((run>=190456)&&(run<=193621)&&passtrigger==1)||(passparkedtrigger1==1)||(passparkedtrigger2==1))&&l1met>40";
   //std::string dataextrasel="&&passtrigger==1&&l1met>40";
@@ -251,14 +253,14 @@ int main(int argc, char* argv[]){
     nunuzcat="&&"+jetmetdphicut;
   }
   
-  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
-  std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;//zmumu
+  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;
+  std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//zmumu
 
-  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut;//&&lep_mt>10";
-  std::string munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;//wmu
+  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut+contonlycontplotjetmetdphi;//&&lep_mt>10";
+  std::string munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wmu
 
-  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
-  std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+jetmetdphicut;//wel
+  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut+contonlycontplotjetmetdphi;
+  std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wel
 
   //  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&alljetsmetnomu_mindphi>1.0";
   //  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1.0";//wtau
@@ -276,8 +278,8 @@ int main(int argc, char* argv[]){
 //   std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";
 //   std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";//top
 
-  std::string qcdcat="nvetoelectrons==0&&nvetomuons==0&&"+jetmetdphicut;
-  std::string qcdzcat="&&"+jetmetdphicut;//QCD
+  std::string qcdcat="nvetoelectrons==0&&nvetomuons==0&&"+jetmetdphicut+contonlycontplotjetmetdphi;
+  std::string qcdzcat="&&"+jetmetdphicut+contonlycontplotjetmetdphi;//QCD
 
   if(do_promptsel){
     nunucat=nunucat+"&&n_jets_cjv_30<1";
