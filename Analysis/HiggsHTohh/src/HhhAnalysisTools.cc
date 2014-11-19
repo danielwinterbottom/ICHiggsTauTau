@@ -484,8 +484,8 @@ namespace ic {
         % ("DYJetsToLL-L"+dy_soup_) % sel % zll_shape_cat % wt;
       if(verbosity_ && !(method==8)) {
           std::string bin_delim="";
-        if(var.find("[")!=string::npos) bin_delim = "[";     
-        if(var.find("(")!=string::npos) bin_delim = "(";
+        if(var.find("[")!=std::string::npos) bin_delim = "[";     
+        if(var.find("(")!=std::string::npos) bin_delim = "(";
         this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),"DYJetsToLL-L"+dy_soup_,sel,cat,
         "DYJetsToLL-L"+dy_soup_, sel ,zll_shape_cat,wt);
         TH1F default_zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, cat, wt);
@@ -528,8 +528,8 @@ namespace ic {
         % "zj_samples" % sel % zll_shape_cat % wt;
       if(verbosity_ && !(method==8)) {
       /*    std::string bin_delim="";
-        if(var.find("[")!=string::npos) bin_delim = "[";     
-        if(var.find("(")!=string::npos) bin_delim = "(";
+        if(var.find("[")!=std::string::npos) bin_delim = "[";     
+        if(var.find("(")!=std::string::npos) bin_delim = "(";
         this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),"DYJetsToLL-J"+dy_soup_,sel,cat,
         "DYJetsToLL-J"+dy_soup_, sel ,zll_shape_cat,wt);*/
         TH1F default_zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, cat, wt);
@@ -663,8 +663,8 @@ namespace ic {
     //Print Kolmogorov result of shape comparison if chosen method isnt method 8 and verbosity is on
     if(verbosity_ && !(method==8)) {
         std::string bin_delim="";
-      if(var.find("[")!=string::npos) bin_delim = "[";     
-      if(var.find("(")!=string::npos) bin_delim = "(";
+      if(var.find("[")!=std::string::npos) bin_delim = "[";     
+      if(var.find("(")!=std::string::npos) bin_delim = "(";
       this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),this->ResolveAlias("W_Shape_Sample"),w_shape_sel,cat,
       this->ResolveAlias("W_Shape_Sample"),  w_shape_sel,w_shape_cat,wt);
       TH1F default_w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, cat, wt);
@@ -741,8 +741,8 @@ namespace ic {
           % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
         if(verbosity_ && method!=8) {
           std::string bin_delim="";
-          if(var.find("[")!=string::npos) bin_delim = "[";     
-          if(var.find("(")!=string::npos) bin_delim = "(";
+          if(var.find("[")!=std::string::npos) bin_delim = "[";     
+          if(var.find("(")!=std::string::npos) bin_delim = "(";
           this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),this->ResolveAlias("QCD_Shape_Sample"),qcd_sdb_sel,cat,
           this->ResolveAlias("QCD_Shape_Sample"),  qcd_sdb_sel,qcd_cat,wt);
           TH1F default_qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
