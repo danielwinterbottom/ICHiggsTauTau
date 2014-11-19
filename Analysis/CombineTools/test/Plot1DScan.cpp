@@ -12,6 +12,7 @@
 #include "TLatex.h"
 
 #include "Core/interface/Plotting.h"
+#include "Core/interface/Plotting_Style.h"
 
 
 TGraph ExtractGraph(TTree *t, double & bestFit) {
@@ -58,7 +59,7 @@ struct Scan {
 };
 
 int main() {
-  modTDRStyle();
+  ModTDRStyle();
 
   std::vector<Scan> scans;
   //scans.push_back({"higgsCombinefullScan.MultiDimFit.mH125.root", "with syst.", 1, nullptr});

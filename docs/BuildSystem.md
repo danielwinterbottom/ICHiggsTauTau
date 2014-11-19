@@ -64,10 +64,10 @@ External libraries {#build-system-external}
 
 A number of header file search paths are defined in the makefile, and several external libraries will be linked by default:
 
- * ROOT: The version of ROOT that ships with the CMSSW version you are using will be searched for header files and the common libraries linked. ROOT header files can be included directly in Analysis code, e.g. `#include "TFile.h"`
- * ROOFIT: As for ROOT, ROOFIT headers can be included directly, e.g. `#include "RooRealVar.h"`
+ * ROOT: The version of ROOT that ships with the CMSSW version you are using will be searched for header files and the common libraries linked. ROOT header files can be included directly in Analysis code, e.g. \verbatim #include "TFile.h" \endverbatim
+ * ROOFIT: As for ROOT, ROOFIT headers can be included directly, e.g.  \verbatim #include "RooRealVar.h" \endverbatim
  * boost: The C++ [boost](http://www.boost.org) libraries may also be used. These provide a large range of useful extensions to the core C++ libraries. Most boost libraries are header-only, meaning there is no shared library to link against. A few commonly used exceptions to this are the `filesystem`, `regex` and `program_options` libraries, and these will be linked by default. If your package requires linking to additional boost shared libraries these can be added to the LIB_EXTRA variable in the `Rules.mk` file
- * CMSSW: Files can be included relative to the CMSSW `src` directory, e.g. `#include "PhysicsTools/FWLite/interface/TFileService.h"`. Both the local CMSSW area and the base release will be searched. CMSSW libraries `libFWCoreFWLite` and `libPhysicsToolsFWLite` are linked by default as these are needed to load custom object classes stored in TTrees. The library `libUserCodeICHiggsTauTau` is also linked which contains the class definitions defined in the `Usercode/ICHiggsTauTau` package.
+ * CMSSW: Files can be included relative to the CMSSW `src` directory, e.g. \verbatim #include "PhysicsTools/FWLite/interface/TFileService.h" \endverbatim Both the local CMSSW area and the base release will be searched. CMSSW libraries `libFWCoreFWLite` and `libPhysicsToolsFWLite` are linked by default as these are needed to load custom object classes stored in TTrees. The library `libUserCodeICHiggsTauTau` is also linked which contains the class definitions defined in the `Usercode/ICHiggsTauTau` package.
 
 Compile without CMSSW {#build-system-no-cmssw}
 ==============================================

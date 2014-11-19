@@ -4,13 +4,14 @@
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/TFileIO.h"
 #include "Core/interface/Plotting.h"
+#include "Core/interface/Plotting_Style.h"
 #include "TCanvas.h"
 #include "TFrame.h"
 
 using namespace std;
 
 int main() {
-  modTDRStyle();
+  ModTDRStyle();
 
   ch::CombineHarvester cb;
   cb.SetVerbosity(0);
@@ -94,12 +95,12 @@ int main() {
   data.Draw("esamex0");
 
   FixTopRange(pads[0], GetPadYMax(pads[0]), 0.15);
-  drawCMSLogo(pads[0], "CMS", "Preliminary", 11, 0.045, 0.035, 1.2);
-  drawTitle(pads[0], "19.7 fb^{-1} (8 TeV)", 3);
-  drawTitle(pads[0], "H#rightarrow#gamma#gamma", 1);
+  DrawCMSLogo(pads[0], "CMS", "Preliminary", 11, 0.045, 0.035, 1.2);
+  DrawTitle(pads[0], "19.7 fb^{-1} (8 TeV)", 3);
+  DrawTitle(pads[0], "H#rightarrow#gamma#gamma", 1);
   TLegend *legend = PositionedLegend(0.35, 0.23, 3, 0.03);
   legend->SetTextFont(42);
-  ModifyTopPadding(pads[0], legend, 0.05);
+  FixBoxPadding(pads[0], legend, 0.05);
   legend->AddEntry(&data, "Observed", "pe");
   legend->AddEntry(&bkg_shape, "Background", "l");
   legend->AddEntry(&err_shape, "Uncertainty", "f");

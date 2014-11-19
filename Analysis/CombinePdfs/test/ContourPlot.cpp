@@ -1,11 +1,12 @@
 #include "../../Core/interface/Plotting.h"
+#include "../../Core/interface/Plotting_Style.h"
 #include "../../Core/interface/Plotting_Contours.h"
 #include <vector>
 #include <TFrame.h>
 
 int main() {
   TH1::AddDirectory(0);
-  modTDRStyle();
+  ModTDRStyle();
   TCanvas* canv = new TCanvas("ma-tanb", "ma-tanb");
   std::vector<TPad*> pads = OnePad();
   contour2D("higgsCombinemhmax.MultiDimFit.mH120.root", "ma-tanb-contours.root",
@@ -15,8 +16,8 @@ int main() {
   legend->Draw();
   GetAxisHist(pads[0])->GetXaxis()->SetTitleOffset(1.);
 
-  drawCMSLogo(pads[0], "CMS", "Preliminary", 0, 0.045, 0.035, 1.2);
-  drawTitle(pads[0], "19.7 fb^{-1} (8 TeV) + 4.9 fb^{-1} (7 TeV)", 3);
+  DrawCMSLogo(pads[0], "CMS", "Preliminary", 0, 0.045, 0.035, 1.2);
+  DrawTitle(pads[0], "19.7 fb^{-1} (8 TeV) + 4.9 fb^{-1} (7 TeV)", 3);
   // drawTitle(pads[0], "H#rightarrow#tau#tau", 1);
   // pads[0]->SetLogx(1);
   // pads[0]->SetLogy(1);

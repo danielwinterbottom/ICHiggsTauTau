@@ -757,6 +757,8 @@ WARN_LOGFILE           =
 INPUT                  = interface \
                          src \
                          plugins \
+                         Analysis/Core/interface/Plotting_Style.h \
+                         Analysis/Core/interface/Plotting.h \
                          Analysis/CombineTools/interface \
                          Analysis/CombineTools/src \
                          docs/Main.md \

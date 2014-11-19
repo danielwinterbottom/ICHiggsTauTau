@@ -11,22 +11,23 @@
 #include "TLegend.h"
 
 #include "../interface/Plotting.h"
+#include "../interface/Plotting_Style.h"
 
 // Function prototypes
 
 int main() {
-  bool do_ratio = false;
+  bool do_ratio = true;
   bool do_logy = true;
 
   TH1::AddDirectory(0);
-  modTDRStyle();
+  ModTDRStyle();
 
   TString canvName = "FigExample";
   TCanvas* canv = new TCanvas(canvName, canvName);
   canv->cd();
 
   std::vector<TPad*> pads =
-      do_ratio ? TwoPadSplit(0.29, 0.008, 0.025) : OnePad();
+      do_ratio ? TwoPadSplit(0.29, 0.00, 0.00) : OnePad();
 
   pads[0]->SetLogy(do_logy);
 
@@ -45,16 +46,20 @@ int main() {
 
   // Axis histogram
   std::vector<TH1*> h = CreateAxisHists(2, data, 70, 119.9);
+  h[0]->Draw("axis");
+
   if (do_ratio) {
-    SetupTwoPadSplit(pads, h[0], h[1], "Obs/Exp", true, 0.65, 1.35);
+    pads[1]->cd();
+    h[1]->Draw("axis");
+    SetupTwoPadSplitAsRatio(pads, "Obs/Exp", true, 0.65, 1.35);
     StandardAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), "m_{e^{+}e^{-}}", "GeV");
   } else {
     h[0]->GetXaxis()->SetTitleOffset(1.0);
     StandardAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), "m_{e^{+}e^{-}}", "GeV");
   }
+  pads[0]->cd();
 
   // Can draw main axis now
-  h[0]->Draw("axis");
 
   int new_idx = CreateTransparentColor(12, 0.2);
   err->SetFillColor(new_idx);
@@ -72,9 +77,9 @@ int main() {
   if (pads[0]->GetLogy()) h[0]->SetMinimum(0.09);
 
   FixTopRange(pads[0], GetPadYMax(pads[0]), 0.15);
-  drawCMSLogo(pads[0], "CMS", "Preliminary", 11, 0.045, 0.035, 1.2);
-  drawTitle(pads[0], "19.7 fb^{-1} (8 TeV) + 4.9 fb^{-1} (7 TeV)", 3);
-  drawTitle(pads[0], "H#rightarrow#tau#tau", 1);
+  DrawCMSLogo(pads[0], "CMS", "Preliminary", 11, 0.045, 0.035, 1.2);
+  DrawTitle(pads[0], "19.7 fb^{-1} (8 TeV) + 4.9 fb^{-1} (7 TeV)", 3);
+  DrawTitle(pads[0], "Z#rightarrowee", 1);
 
   if (do_ratio) {
     pads[1]->cd();
@@ -87,7 +92,7 @@ int main() {
   // pos = 1, 2, 3
   TLegend *legend = PositionedLegend(0.25, 0.18, 3, 0.03);
   legend->SetTextFont(42);
-  ModifyTopPadding(pads[0], legend, 0.05);
+  FixBoxPadding(pads[0], legend, 0.05);
   legend->AddEntry(data, "Observed", "pe");
   legend->AddEntry(MC, "Background", "f");
   legend->AddEntry(err, "Uncertainty", "f");

@@ -15,6 +15,7 @@
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
 #include "Core/interface/Plotting.h"
+#include "Core/interface/Plotting_Style.h"
 // #include "Core/interface/TextElement.h"
 // #include "Utilities/interface/SimpleParamParser.h"
 // #include "Utilities/interface/FnRootTools.h"
@@ -70,7 +71,7 @@ int main(int /*argc*/, char* argv[]) {
   }
 
 
-  modTDRStyle();
+  ModTDRStyle();
   TCanvas canv("canv","canv",600,600);
   canv.SetLogy(true);
   gStyle->SetNdivisions(505);
