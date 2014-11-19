@@ -103,7 +103,7 @@ int main() {
   // Axis histogram
   std::vector<TH1*> h = CreateAxisHists(2, &data);
   if (do_ratio) {
-    SetupTwoPadSplitAsRatio(pads, "Obs/Exp", true, 0.65, 1.35);
+    SetupTwoPadSplitAsRatio(pads, h[0], h[1], "Obs/Exp", true, 0.65, 1.35);
     UnitAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), "m_{#tau#tau}", "GeV");
   } else {
     // h[0]->GetXaxis()->SetTitleOffset(1.0);
