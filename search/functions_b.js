@@ -2,6 +2,7 @@ var searchData=
 [
   ['m',['M',['../classic_1_1_candidate.html#a4ac349941247c3a33c2ce78d89689c5b',1,'ic::Candidate']]],
   ['make_5funique',['make_unique',['../namespaceic.html#af88b60eea48a5cd883e2f56ed18f7ccb',1,'ic']]],
+  ['makeratiohist',['MakeRatioHist',['../_plotting_8h.html#a526842799b4de3a542d8114989dba48d',1,'Plotting.h']]],
   ['mass',['mass',['../classch_1_1_combine_harvester.html#a25c231ed8b1614c5d50f192210374474',1,'ch::CombineHarvester::mass()'],['../classch_1_1_nuisance.html#a1d7701e0662edaed26eb9668967fc3a8',1,'ch::Nuisance::mass()'],['../classch_1_1_observation.html#a8a3c59b54cc2de4e4e44bced77767fe3',1,'ch::Observation::mass()'],['../classch_1_1_process.html#a44109680b2b2e15b4ffa3c5f1802136c',1,'ch::Process::mass()']]],
   ['mass_5fset',['mass_set',['../classch_1_1_combine_harvester.html#a86674bf95164c39facfd5f9583aae613',1,'ch::CombineHarvester']]],
   ['massesfromrange',['MassesFromRange',['../namespacech.html#a9aa7fae276e9a3482b0e2e0b7adf779b',1,'ch']]],
@@ -12,6 +13,7 @@ var searchData=
   ['merge',['Merge',['../classic_1_1_merge.html#a8d74fa3bdc4bfc07f856116007d9438f',1,'ic::Merge']]],
   ['mergebinerrors',['MergeBinErrors',['../classch_1_1_combine_harvester.html#a37e613f8c2c67871b4b3bc89c78a1f68',1,'ch::CombineHarvester']]],
   ['met',['Met',['../classic_1_1_met.html#a7242fb15c092e770367f36ab04f3d2c4',1,'ic::Met']]],
+  ['modtdrstyle',['ModTDRStyle',['../_plotting___style_8h.html#a25f3f929fadd38fd9423aaa6ef6ddd51',1,'Plotting_Style.h']]],
   ['momentum',['momentum',['../classic_1_1_track.html#aba658f6a41d5773ee5073f8c4aeffbba',1,'ic::Track']]],
   ['mothers',['mothers',['../classic_1_1_gen_particle.html#aa9be74e052d3aa8da70e6cdc481fff2f',1,'ic::GenParticle']]],
   ['muon',['Muon',['../classic_1_1_muon.html#a484600fe9da00b0c0bae7cd86de9356a',1,'ic::Muon']]],

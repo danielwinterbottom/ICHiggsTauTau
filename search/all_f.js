@@ -7,5 +7,6 @@ var searchData=
   ['ref_5fpoint',['ref_point',['../classic_1_1_electron.html#af7272a8d6450d11002ec284833bd6f41',1,'ic::Electron::ref_point()'],['../classic_1_1_muon.html#aa25a38b2685058005c5feba2b9d52194',1,'ic::Muon::ref_point()'],['../classic_1_1_track.html#a8f9da6d73e351095b0fc9527fc5724fc',1,'ic::Track::ref_point()']]],
   ['renameparameter',['RenameParameter',['../classch_1_1_combine_harvester.html#a2825b9eeec47f7b23f93520bf615b581',1,'ch::CombineHarvester']]],
   ['request_5ftrks',['request_trks',['../struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4.html#a4e6044bf8d633acf14fa1b2230916f46',1,'JetDestHelper&lt; ic::JPTJet &gt;::request_trks()'],['../struct_jet_dest_helper_3_01ic_1_1_p_f_jet_01_4.html#a8dd89fbd485ffa5e931252b8cf5ab9d0',1,'JetDestHelper&lt; ic::PFJet &gt;::request_trks()']]],
+  ['rezerotgraph',['ReZeroTGraph',['../_plotting_8h.html#af2524f9f02ac66a16164c87bfc149628',1,'Plotting.h']]],
   ['run',['run',['../classic_1_1_event_info.html#a5831995093d9c379276cf351e4da1c27',1,'ic::EventInfo']]]
 ];

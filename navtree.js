@@ -89,11 +89,11 @@ var NAVTREEINDEX =
 [
 "_algorithm_8h.html",
 "_jet_8cc_source.html",
-"class_i_c_jet_flavour_calculator.html#a92c70fed1689a3b4a73b8251b2e5bbeb",
-"classch_1_1syst_1_1_syst_map_asymm.html#a64f746498bd4a753ade8936b4dd10d5e",
-"classic_1_1_j_p_t_jet.html#a6ebfdcad306361d08d1cee95ec0fa625",
-"classic_1_1_secondary_vertex.html#a89d72a2aa15f55626081f86dfa1e6e05",
-"plugins_2_i_c_jet_dest_helper_8hh-example.html"
+"city_8h_source.html",
+"classch_1_1_process.html#a3b52ca0cf0b51515b4cef41339f74c76",
+"classic_1_1_gen_particle.html#a2f8d80dd2f3659472842c08b5158b040",
+"classic_1_1_photon.html#a0c134e24ce8c9f081e883f56d6134e56",
+"namespacemembers_type.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -150,10 +150,10 @@ Invoking make </h1>
 External libraries </h1>
 <p>A number of header file search paths are defined in the makefile, and several external libraries will be linked by default:</p>
 <ul>
-<li>ROOT: The version of ROOT that ships with the CMSSW version you are using will be searched for header files and the common libraries linked. ROOT header files can be included directly in Analysis code, e.g. <code>#include "TFile.h"</code></li>
-<li>ROOFIT: As for ROOT, ROOFIT headers can be included directly, e.g. <code>#include "RooRealVar.h"</code></li>
+<li>ROOT: The version of ROOT that ships with the CMSSW version you are using will be searched for header files and the common libraries linked. ROOT header files can be included directly in Analysis code, e.g.<pre class="fragment">#include "TFile.h" </pre></li>
+<li>ROOFIT: As for ROOT, ROOFIT headers can be included directly, e.g.<pre class="fragment">#include "RooRealVar.h" </pre></li>
 <li>boost: The C++ <a href="http://www.boost.org">boost</a> libraries may also be used. These provide a large range of useful extensions to the core C++ libraries. Most boost libraries are header-only, meaning there is no shared library to link against. A few commonly used exceptions to this are the <code>filesystem</code>, <code>regex</code> and <code>program_options</code> libraries, and these will be linked by default. If your package requires linking to additional boost shared libraries these can be added to the LIB_EXTRA variable in the <code>Rules.mk</code> file</li>
-<li>CMSSW: Files can be included relative to the CMSSW <code>src</code> directory, e.g. <code>#include "PhysicsTools/FWLite/interface/TFileService.h"</code>. Both the local CMSSW area and the base release will be searched. CMSSW libraries <code>libFWCoreFWLite</code> and <code>libPhysicsToolsFWLite</code> are linked by default as these are needed to load custom object classes stored in TTrees. The library <code>libUserCodeICHiggsTauTau</code> is also linked which contains the class definitions defined in the <code>Usercode/ICHiggsTauTau</code> package.</li>
+<li>CMSSW: Files can be included relative to the CMSSW <code>src</code> directory, e.g.<pre class="fragment">#include "PhysicsTools/FWLite/interface/TFileService.h" </pre> Both the local CMSSW area and the base release will be searched. CMSSW libraries <code>libFWCoreFWLite</code> and <code>libPhysicsToolsFWLite</code> are linked by default as these are needed to load custom object classes stored in TTrees. The library <code>libUserCodeICHiggsTauTau</code> is also linked which contains the class definitions defined in the <code>Usercode/ICHiggsTauTau</code> package.</li>
 </ul>
 <h1><a class="anchor" id="build-system-no-cmssw"></a>
 Compile without CMSSW </h1>

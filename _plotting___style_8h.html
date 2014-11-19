@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>Imperial Analysis: Analysis/CombineTools/interface/HttSystematics.h File Reference</title>
+<title>Imperial Analysis: Analysis/Core/interface/Plotting_Style.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -77,7 +77,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('_htt_systematics_8h.html','');});
+$(document).ready(function(){initNavTree('_plotting___style_8h.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -96,34 +96,89 @@ $(document).ready(function(){initNavTree('_htt_systematics_8h.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">HttSystematics.h File Reference</div>  </div>
+<div class="title">Plotting_Style.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="_combine_harvester_8h_source.html">CombineTools/interface/CombineHarvester.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;TStyle.h&quot;</code><br />
+<code>#include &quot;TROOT.h&quot;</code><br />
 </div>
-<p><a href="_htt_systematics_8h_source.html">Go to the source code of this file.</a></p>
+<p><a href="_plotting___style_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:namespacech"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html">ch</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aac947603f4cc50f70e7a8765da3e13d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#aac947603f4cc50f70e7a8765da3e13d1">ch::AddSystematics_et_mt</a> (CombineHarvester &amp;cb)</td></tr>
-<tr class="separator:aac947603f4cc50f70e7a8765da3e13d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe8f3907b055d2d6c0bc8b2bb7f74a02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#afe8f3907b055d2d6c0bc8b2bb7f74a02">ch::AddSystematics_em</a> (CombineHarvester &amp;cb)</td></tr>
-<tr class="separator:afe8f3907b055d2d6c0bc8b2bb7f74a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d79c4fca0a76cc62c91d580644c051c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a4d79c4fca0a76cc62c91d580644c051c">ch::AddSystematics_ee_mm</a> (CombineHarvester &amp;cb)</td></tr>
-<tr class="separator:a4d79c4fca0a76cc62c91d580644c051c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1578f3e0a1da427e6750ba4cefd94b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#ac1578f3e0a1da427e6750ba4cefd94b8">ch::AddSystematics_tt</a> (CombineHarvester &amp;cb)</td></tr>
-<tr class="separator:ac1578f3e0a1da427e6750ba4cefd94b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a597c0a29e463a96eb05f9df8cb9dfe90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a597c0a29e463a96eb05f9df8cb9dfe90">ch::AddMSSMSystematics</a> (CombineHarvester &amp;cb)</td></tr>
-<tr class="separator:a597c0a29e463a96eb05f9df8cb9dfe90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34d58d5193fe385ca42185433c16b69a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a">SetTDRStyle</a> ()</td></tr>
+<tr class="memdesc:a34d58d5193fe385ca42185433c16b69a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the semi-official CMS plotting global style.  <a href="#a34d58d5193fe385ca42185433c16b69a">More...</a><br /></td></tr>
+<tr class="separator:a34d58d5193fe385ca42185433c16b69a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25f3f929fadd38fd9423aaa6ef6ddd51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_plotting___style_8h.html#a25f3f929fadd38fd9423aaa6ef6ddd51">ModTDRStyle</a> ()</td></tr>
+<tr class="memdesc:a25f3f929fadd38fd9423aaa6ef6ddd51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets an improved plotting style, using the CMS default as a base.  <a href="#a25f3f929fadd38fd9423aaa6ef6ddd51">More...</a><br /></td></tr>
+<tr class="separator:a25f3f929fadd38fd9423aaa6ef6ddd51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0164a79c56b52dcd1963f0c015067238"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_plotting___style_8h.html#a0164a79c56b52dcd1963f0c015067238">TdrGrid</a> (bool grid_on)</td></tr>
+<tr class="memdesc:a0164a79c56b52dcd1963f0c015067238"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modify the global style to enable/disable the drawing of axis gridlines.  <a href="#a0164a79c56b52dcd1963f0c015067238">More...</a><br /></td></tr>
+<tr class="separator:a0164a79c56b52dcd1963f0c015067238"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a34d58d5193fe385ca42185433c16b69a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SetTDRStyle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the semi-official CMS plotting global style. </p>
+<p>This is copied verbatim from the latest guidlines <a href="https://ghm.web.cern.ch/ghm/plots/">here</a>. You should call this function at the start of your macro/program. But note, the function <a class="el" href="_plotting___style_8h.html#a25f3f929fadd38fd9423aaa6ef6ddd51" title="Sets an improved plotting style, using the CMS default as a base. ">ModTDRStyle()</a> might be more useful - this will call <a class="el" href="_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a" title="Sets the semi-official CMS plotting global style. ">SetTDRStyle()</a> first then adjust a few more settings to give a better plotting style. </p>
+
+<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00033">33</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a25f3f929fadd38fd9423aaa6ef6ddd51"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ModTDRStyle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets an improved plotting style, using the CMS default as a base. </p>
+<p>Main changes are to be more consistent with margin sizes when stretching the TCanvas horizontally or vertically, and to fix some style options omitted from <a class="el" href="_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a" title="Sets the semi-official CMS plotting global style. ">SetTDRStyle()</a> </p>
+
+<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00173">173</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0164a79c56b52dcd1963f0c015067238"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TdrGrid </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>grid_on</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modify the global style to enable/disable the drawing of axis gridlines. </p>
+
+<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00249">249</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

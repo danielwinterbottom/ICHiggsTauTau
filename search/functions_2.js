@@ -31,6 +31,9 @@ var searchData=
   ['conv_5fdcot',['conv_dcot',['../classic_1_1_electron.html#a6ed720ac3ae78eca92580e44becd151b',1,'ic::Electron']]],
   ['conv_5fdist',['conv_dist',['../classic_1_1_electron.html#a04933129fc21da5b01b42776a1b06abb',1,'ic::Electron']]],
   ['cp',['cp',['../classch_1_1_combine_harvester.html#ade0f7c161d078a189404a274b93336d2',1,'ch::CombineHarvester']]],
+  ['createaxishist',['CreateAxisHist',['../_plotting_8h.html#ad137f606f878b7d25aeb2dde1b970ce9',1,'CreateAxisHist(TH1 *src, double xmin=0, double xmax=-1):&#160;Plotting.h'],['../_plotting_8h.html#ac4830bcc5449ac3275bf66ac389fe4ee',1,'CreateAxisHist(TGraph *src, bool at_limits):&#160;Plotting.h']]],
+  ['createaxishists',['CreateAxisHists',['../_plotting_8h.html#aaeb0dadc50435965db936e967dde2799',1,'CreateAxisHists(unsigned n, TH1 *src, double xmin=0, double xmax=-1):&#160;Plotting.h'],['../_plotting_8h.html#a6c102d23f1264e7b30aed6f76ce6c740',1,'CreateAxisHists(unsigned n, TGraph *src, bool at_limits):&#160;Plotting.h']]],
+  ['createtransparentcolor',['CreateTransparentColor',['../_plotting_8h.html#addb5de4f8e6a8a5fa83d7d824d3d9934',1,'Plotting.h']]],
   ['cross',['cross',['../namespacech_1_1syst_1_1detail.html#a6ff1b8f8a66a58de42201c42ce5ba238',1,'ch::syst::detail']]],
   ['cross_5fimp',['cross_imp',['../namespacech_1_1syst_1_1detail.html#a54c49b65dbe6b3a81b35285e8bf6e301',1,'ch::syst::detail::cross_imp(F f)'],['../namespacech_1_1syst_1_1detail.html#ac32c733037a3b246dd1a9d9071284c1e',1,'ch::syst::detail::cross_imp(F f, std::vector&lt; H &gt; const &amp;h, std::vector&lt; Ts &gt; const &amp;...t)']]]
 ];

@@ -9,6 +9,7 @@ var searchData=
   ['uint64_5fin_5fexpected_5forder',['uint64_in_expected_order',['../city_8cc.html#aebeacf3a6a1c4e278fa1b74f18c08d4a',1,'city.cc']]],
   ['uint8',['uint8',['../city_8h.html#a33a5e996e7a90acefb8b1c0bea47e365',1,'city.h']]],
   ['uncorrected_5fenergy',['uncorrected_energy',['../classic_1_1_jet.html#a4e318628849f02e08d7a84a2a8ed1f14',1,'ic::Jet']]],
+  ['unitaxes',['UnitAxes',['../_plotting_8h.html#a434781fa740199ba94f267d8263cc1a2',1,'Plotting.h']]],
   ['updateparameters',['UpdateParameters',['../classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731',1,'ch::CombineHarvester']]],
   ['utilities_2ecc',['Utilities.cc',['../_utilities_8cc.html',1,'']]],
   ['utilities_2eh',['Utilities.h',['../_utilities_8h.html',1,'']]]
