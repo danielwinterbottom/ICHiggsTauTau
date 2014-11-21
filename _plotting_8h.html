@@ -220,9 +220,10 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Just creates a single pad filling the entire canvas. </p>
-<p>Exists just to provide a similar output interface to <a class="el" href="_plotting_8h.html#aec780e8b3dd08b4a37dd94abc30f42c0" title="Create two pads, split horizontally, on the current canvas split. ">TwoPadSplit()</a> </p><dl class="section return"><dt>Returns</dt><dd>A vector containing a single pointer to the newly created TPad </dd></dl>
+<p>Exists just to provide a similar output interface to <a class="el" href="_plotting_8h.html#aec780e8b3dd08b4a37dd94abc30f42c0" title="Create two pads, split horizontally, on the current canvas split. ">TwoPadSplit()</a></p>
+<dl class="section return"><dt>Returns</dt><dd>A vector containing a single pointer to the newly created TPad </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00407">407</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00438">438</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -262,13 +263,13 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">split_point</td><td>Fraction of the canvas that should be occuplied by the lower pad. </td></tr>
     <tr><td class="paramname">gap_low</td><td>The top margin of the lower pad (with respect to the split point), given as a fraction of the input canvas height </td></tr>
-    <tr><td class="paramname">gap_high</td><td>The bottom margin of the upper pad (with respect to the split point), given as a fraction of the input canvas height </td></tr>
+    <tr><td class="paramname">gap_high</td><td>The bottom margin of the upper pad (with respect to the split point), given as a fraction of the input canvas height</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A vector of pointers to the new pads: [0] = upper, [1] = lower. The current pad (<code>gPad</code>) will be set to the upper one. </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00416">416</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00447">447</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -314,7 +315,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An empty TH1 with axes built from the input TH1 </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00433">433</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00464">464</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -366,7 +367,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00442">442</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00473">473</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -405,7 +406,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An empty TH1 with axes built from the input TGraph </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00451">451</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00482">482</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -450,7 +451,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00476">476</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00507">507</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -472,13 +473,13 @@ Functions</h2></td></tr>
 <p>Should be able to find a TH1 regardless of whether a TH1, THStack or TGraph was used to define the axes.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pad</td><td>The TPad to search </td></tr>
+    <tr><td class="paramname">pad</td><td>The TPad to search</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the axis TH1 if it exists, a NULL pointer otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00484">484</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00515">515</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -525,13 +526,13 @@ Functions</h2></td></tr>
     <tr><td class="paramname">num</td><td>Numerator histogram </td></tr>
     <tr><td class="paramname">den</td><td>Denominator histogram </td></tr>
     <tr><td class="paramname">num_err</td><td>Propagate errors on the numerator </td></tr>
-    <tr><td class="paramname">den_err</td><td>Propagate errors on the denominator </td></tr>
+    <tr><td class="paramname">den_err</td><td>Propagate errors on the denominator</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to the newly created TH1 </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00515">515</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00546">546</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -583,7 +584,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00529">529</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00560">560</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -604,7 +605,7 @@ Functions</h2></td></tr>
 <p>Shift all the graph y-values upwards such that there are no negative values and the minimum point is at zero. </p>
 <p>Useful for fixing graphs of log-likelihood scans extracted from <code>combine</code> where the true minimum was not found correctly in the initial fit. </p>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00536">536</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00567">567</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -642,7 +643,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The code for the new TColor </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00555">555</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00586">586</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -701,7 +702,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Set a few style options for a two-pad setup used to show a data-MC comparison and ratio plot. </p>
-<p>Use this version of the function if the axis histograms haven't been drawn yet. This function will:</p><ul>
+<p>Use this version of the function if the axis histograms haven't been drawn yet. This function will:</p>
+<ul>
 <li>remove the x-axis title and labels on the main plot</li>
 <li>fix the axis tick-lengths to be consistent between both plots</li>
 <li>enable x- and y-axis ticks on the ratio plot</li>
@@ -720,7 +722,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00572">572</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00604">604</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -767,7 +769,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Set a few style options for a two-pad setup used to show a data-MC comparison and ratio plot. </p>
-<p>This function should be called after the axis histograms have been created in both pads (e.g. after some TH1, TGraph etc. has been drawn). It will:</p><ul>
+<p>This function should be called after the axis histograms have been created in both pads (e.g. after some TH1, TGraph etc. has been drawn). It will:</p>
+<ul>
 <li>remove the x-axis title and labels on the main plot</li>
 <li>fix the axis tick-lengths to be consistent between both plots</li>
 <li>enable x- and y-axis ticks on the ratio plot</li>
@@ -784,7 +787,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00564">564</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00595">595</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -836,7 +839,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00591">591</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00623">623</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -888,7 +891,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00604">604</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00636">636</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -929,7 +932,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Create a legend with fixed height, width and positioning. </p>
-<p>Legend will be created in one three fixed positions:</p><ol type="1">
+<p>Legend will be created in one three fixed positions:</p>
+<ol type="1">
 <li>Top-left corner</li>
 <li>Top centered</li>
 <li>Top-right corner</li>
@@ -939,13 +943,13 @@ Functions</h2></td></tr>
     <tr><td class="paramname">width</td><td>Legend width as a fraction of the pad </td></tr>
     <tr><td class="paramname">height</td><td>Legend height as a fraction of the pad </td></tr>
     <tr><td class="paramname">pos</td><td>Position index (see above) </td></tr>
-    <tr><td class="paramname">offset</td><td>Position offset from edges of frame </td></tr>
+    <tr><td class="paramname">offset</td><td>Position offset from edges of frame</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to newly created TLegend </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00609">609</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00641">641</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -985,13 +989,13 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">pad</td><td>TPad where the line should be drawn </td></tr>
     <tr><td class="paramname">line</td><td>Existing TLine already customised with the desired colour, width and style </td></tr>
-    <tr><td class="paramname">yval</td><td>The y-value (given in the axis units) where the line should be drawn </td></tr>
+    <tr><td class="paramname">yval</td><td>The y-value (given in the axis units) where the line should be drawn</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created TLine </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00632">632</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00664">664</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -1026,11 +1030,13 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Draw text in the top-margin region of a TPad. </p>
-<p>Specified text will be latex-rendered in one of three positions:</p><ol type="1">
+<p>Specified text will be latex-rendered in one of three positions:</p>
+<ol type="1">
 <li>Left aligned with left side of frame</li>
 <li>Centre aligned along top of frame</li>
-<li>Right aligned with right side of fram Note also that the text size will be set automatically to fill the top margin areas.</li>
+<li>Right aligned with right side of fram</li>
 </ol>
+<p>Note also that the text size will be set automatically to fill the top margin areas.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pad</td><td>Input Tpad </td></tr>
@@ -1040,7 +1046,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00640">640</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00672">672</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -1118,7 +1124,7 @@ iPos=22 : center, centered
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00671">671</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00703">703</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -1169,7 +1175,7 @@ iPos=22 : center, centered
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00764">764</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00796">796</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -1209,13 +1215,13 @@ iPos=22 : center, centered
   <table class="params">
     <tr><td class="paramname">pad</td><td>TPad to examine </td></tr>
     <tr><td class="paramname">x_min</td><td>Minimum x-axis value to start the scan </td></tr>
-    <tr><td class="paramname">x_max</td><td>Maximum x-axis alue to conclude the scan </td></tr>
+    <tr><td class="paramname">x_max</td><td>Maximum x-axis alue to conclude the scan</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value on y-axis where the maximum is found </dd></dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00771">771</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00803">803</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -1235,7 +1241,7 @@ iPos=22 : center, centered
 
 <p>Call <a class="el" href="_plotting_8h.html#a94fa210a8324e72a82327860972746eb" title="Find the maximum value of all drawn objects in a given x-axis range. ">GetPadYMax(TPad*, double, double)</a> with the full range of the given TPad. </p>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00804">804</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00836">836</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -1280,7 +1286,7 @@ iPos=22 : center, centered
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00812">812</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00844">844</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -1325,7 +1331,7 @@ iPos=22 : center, centered
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00824">824</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00856">856</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>
@@ -1344,7 +1350,7 @@ iPos=22 : center, centered
 
 <p>Just re-draws the axes on the current TPad. </p>
 
-<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00867">867</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting_8h_source.html#l00899">899</a> of file <a class="el" href="_plotting_8h_source.html">Plotting.h</a>.</p>
 
 </div>
 </div>

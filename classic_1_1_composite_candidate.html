@@ -103,7 +103,7 @@ $(document).ready(function(){initNavTree('classic_1_1_composite_candidate.html',
 </div><!--header-->
 <div class="contents">
 
-<p>A candidate built by adding the four-momenta of other candidates. Pointers to each consituent candidate are stored, and may be retrieved either by label or by index.  
+<p>A candidate built by adding the four-momenta of other candidates.  
  <a href="classic_1_1_composite_candidate.html#details">More...</a></p>
 
 <p><code>#include &quot;<a class="el" href="_composite_candidate_8hh_source.html">UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh</a>&quot;</code></p>
@@ -217,9 +217,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1ad59abd60b24bed580b2537e5628b4c inherit pub_methods_classic_1_1_candidate"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A candidate built by adding the four-momenta of other candidates. Pointers to each consituent candidate are stored, and may be retrieved either by label or by index. </p>
-<p>Due to the non-persistent nature of the pointers stored in this class it is not possible to write a <a class="el" href="classic_1_1_composite_candidate.html" title="A candidate built by adding the four-momenta of other candidates. Pointers to each consituent candida...">CompositeCandidate</a> into an ntuple. Instead it should be used as an "on-the-fly" tool to combine multiple candidates during an offline analysis sequence.</p>
-<dl class="section warning"><dt>Warning</dt><dd>The internal four-momentum is updated as soon as a <a class="el" href="classic_1_1_candidate.html" title="Stores a four-momentum, charge and identifier, and is the base class for most other physics objects...">Candidate</a> is added. If the four-momentum of this <a class="el" href="classic_1_1_candidate.html" title="Stores a four-momentum, charge and identifier, and is the base class for most other physics objects...">Candidate</a> changes later, it will not be reflected in the four-momentum of the <a class="el" href="classic_1_1_composite_candidate.html" title="A candidate built by adding the four-momenta of other candidates. Pointers to each consituent candida...">CompositeCandidate</a>. </dd></dl>
+<div class="textblock"><p>A candidate built by adding the four-momenta of other candidates. </p>
+<p>Pointers to each consituent candidate are stored, and may be retrieved either by label or by index.</p>
+<p>Due to the non-persistent nature of the pointers stored in this class it is not possible to write a <a class="el" href="classic_1_1_composite_candidate.html" title="A candidate built by adding the four-momenta of other candidates. ">CompositeCandidate</a> into an ntuple. Instead it should be used as an "on-the-fly" tool to combine multiple candidates during an offline analysis sequence.</p>
+<dl class="section warning"><dt>Warning</dt><dd>The internal four-momentum is updated as soon as a <a class="el" href="classic_1_1_candidate.html" title="Stores a four-momentum, charge and identifier, and is the base class for most other physics objects...">Candidate</a> is added. If the four-momentum of this <a class="el" href="classic_1_1_candidate.html" title="Stores a four-momentum, charge and identifier, and is the base class for most other physics objects...">Candidate</a> changes later, it will not be reflected in the four-momentum of the <a class="el" href="classic_1_1_composite_candidate.html" title="A candidate built by adding the four-momenta of other candidates. ">CompositeCandidate</a>. </dd></dl>
 
 <p>Definition at line <a class="el" href="_composite_candidate_8hh_source.html#l00028">28</a> of file <a class="el" href="_composite_candidate_8hh_source.html">CompositeCandidate.hh</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
