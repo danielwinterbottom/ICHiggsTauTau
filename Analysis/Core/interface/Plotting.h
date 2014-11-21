@@ -27,143 +27,155 @@
 
 
 /**
- * \name Pad and axis histogram creation
+ * @name Pad and axis histogram creation
  */
 /**@{*/
 
 /**
- * \brief Just creates a single pad filling the entire canvas
- * \details Exists just to provide a similar output interface to TwoPadSplit()
- * \return A vector containing a single pointer to the newly created TPad
+ * Just creates a single pad filling the entire canvas
+ *
+ * Exists just to provide a similar output interface to TwoPadSplit()
+ *
+ * @return A vector containing a single pointer to the newly created TPad
  */
 std::vector<TPad*> OnePad();
 
 /**
- * \brief Create two pads, split horizontally, on the current canvas split
- * \details Note that both pads will actually cover the full area of the canvas.
- *We create the appearance of two separated pads by adjusting the top and bottom
- *margins, and then making the background of each pad transparent.
+ * Create two pads, split horizontally, on the current canvas split
  *
- * \param split_point Fraction of the canvas that should be occuplied by the
- *lower pad.
- * \param gap_low The top margin of the lower pad (with respect to the split
- *point), given as a fraction of the input canvas height
- * \param gap_high The bottom margin of the upper pad (with respect to the split
- *point), given as a fraction of the input canvas height
- * \return A vector of pointers to the new pads: [0] = upper, [1] = lower. The
- *current pad (`gPad`) will be set to the upper one.
+ * Note that both pads will actually cover the full area of the canvas. We
+ * create the appearance of two separated pads by adjusting the top and bottom
+ * margins, and then making the background of each pad transparent.
+ *
+ * @param split_point Fraction of the canvas that should be occuplied by the
+ * lower pad.
+ * @param gap_low The top margin of the lower pad (with respect to the split
+ * point), given as a fraction of the input canvas height
+ * @param gap_high The bottom margin of the upper pad (with respect to the
+ * split point), given as a fraction of the input canvas height
+ *
+ * @return A vector of pointers to the new pads: [0] = upper, [1] = lower. The
+ * current pad (`gPad`) will be set to the upper one.
  */
 std::vector<TPad*> TwoPadSplit(double split_point, double gap_low,
                                double gap_high);
 
 /**
- * \brief Create an empty TH1 from another TH1 for drawing the axes
- * \details A copy of the input TH1 is made, and all bin contents and errors are
- *removed.
+ * Create an empty TH1 from another TH1 for drawing the axes
  *
- * \param src TH1 input
- * \param xmin adjust the minimum of the drawn range of the x-axis
- * \param xmax adjust the maximum of the drawn range of the x-axis (only if
- *`xmax > xmin`)
+ * A copy of the input TH1 is made, and all bin contents and errors are
+ * removed.
  *
- * \return An empty TH1 with axes built from the input TH1
+ * @param src TH1 input
+ * @param xmin adjust the minimum of the drawn range of the x-axis
+ * @param xmax adjust the maximum of the drawn range of the x-axis (only if
+ * `xmax > xmin`)
+ *
+ * @return An empty TH1 with axes built from the input TH1
  */
 TH1* CreateAxisHist(TH1* src, double xmin = 0, double xmax = -1);
 
 /**
- * \brief Create multiple axis TH1s from another TH1
- * \details Just calls CreateAxisHist(TH1*, double, double) multiple times.
+ * Create multiple axis TH1s from another TH1
  *
- * \param n Number of histograms to make
- * \param src TH1 input
- * \param xmin adjust the minimum of the drawn range of the x-axis
- * \param xmax adjust the maximum of the drawn range of the x-axis (only if
+ * Just calls CreateAxisHist(TH1*, double, double) multiple times.
+ *
+ * @param n Number of histograms to make
+ * @param src TH1 input
+ * @param xmin adjust the minimum of the drawn range of the x-axis
+ * @param xmax adjust the maximum of the drawn range of the x-axis (only if
  * `xmax > xmin`)
  */
 std::vector<TH1*> CreateAxisHists(unsigned n, TH1* src, double xmin = 0,
                                   double xmax = -1);
 
 /**
- * \brief Create an empty TH1 from a TGraph for drawing the axes
+ * Create an empty TH1 from a TGraph for drawing the axes
  *
- * \details This function just draws the input TGraph on a temporary TCanvas and
- *extracts the internal TH1 that ROOT creates to do this. In this process the x-
- *and y-axis ranges are computing automatically.
+ * This function just draws the input TGraph on a temporary TCanvas and
+ * extracts the internal TH1 that ROOT creates to do this. In this process the
+ * x- and y-axis ranges are computing automatically.
  *
- * \param src TGraph input
- * \param at_limits By default the x-axis range will go beyond the min and
- *max x-values found in the TGraph. Set this option to true to fix the range
- *to these min/max values.
+ * @param src TGraph input
+ * @param at_limits By default the x-axis range will go beyond the min and max
+ * x-values found in the TGraph. Set this option to true to fix the range to
+ * these min/max values.
  *
- * \return An empty TH1 with axes built from the input TGraph
+ * @return An empty TH1 with axes built from the input TGraph
  */
 TH1* CreateAxisHist(TGraph* src, bool at_limits);
 
 /**
- * \brief Create multiple axis TH1s from a TGraph
- * \details Just calls CreateAxisHist(TGraph*, bool) multiple times.
+ * Create multiple axis TH1s from a TGraph
  *
- * \param n Number of histograms to make
- * \param src TGraph input
- * \param at_limits By default the x-axis range will go beyond the min and
- *max x-values found in the TGraph. Set this option to true to fix the range
- *to these min/max values.
+ * Just calls CreateAxisHist(TGraph*, bool) multiple times.
+ *
+ * @param n Number of histograms to make
+ * @param src TGraph input
+ * @param at_limits By default the x-axis range will go beyond the min and max
+ * x-values found in the TGraph. Set this option to true to fix the range to
+ * these min/max values.
  */
 std::vector<TH1*> CreateAxisHists(unsigned n, TGraph* src,  bool at_limits);
 
 
 /**
- * \brief Finds the TH1 used to draw the axes on a given TPad
+ * Finds the TH1 used to draw the axes on a given TPad
  *
- * \details Should be able to find a TH1 regardless of whether a TH1, THStack or
- *TGraph was used to define the axes.
+ * Should be able to find a TH1 regardless of whether a TH1, THStack or TGraph
+ * was used to define the axes.
  *
- * \param pad The TPad to search
- * \return A pointer to the axis TH1 if it exists, a NULL pointer otherwise
+ * @param pad The TPad to search
+ *
+ * @return A pointer to the axis TH1 if it exists, a NULL pointer otherwise
  */
 TH1* GetAxisHist(TPad *pad);
 /**@}*/
 
 
 /**
- * \name Object extraction and manipulation
+ * @name Object extraction and manipulation
  */
 /**@{*/
 
 /**
- * \brief Create a new histogram by dividing one by the other
- * \details The errors on the two inputs are optionally propagated. Note that
- *these are just combined in quadrature, thus assuming the inputs are
- *uncorrelated. This does not hold for efficiency calculations.
+ * Create a new histogram by dividing one by the other
  *
- * \param num Numerator histogram
- * \param den Denominator histogram
- * \param num_err Propagate errors on the numerator
- * \param den_err Propagate errors on the denominator
- * \return Pointer to the newly created TH1
+ * The errors on the two inputs are optionally propagated. Note that these are
+ * just combined in quadrature, thus assuming the inputs are uncorrelated.
+ * This does not hold for efficiency calculations.
+ *
+ * @param num Numerator histogram
+ * @param den Denominator histogram
+ * @param num_err Propagate errors on the numerator
+ * @param den_err Propagate errors on the denominator
+ *
+ * @return Pointer to the newly created TH1
  */
 TH1* MakeRatioHist(TH1* num, TH1* den, bool num_err, bool den_err);
 
 
 /**
- * \brief Create a TGraph from entries in a TTree
- * \details Note that the graph entries will be filled in whichever order they
- *are found in the TTree. It may be desirable to call `TGraph::Sort` on the
- *resulting object.
+ * Create a TGraph from entries in a TTree
  *
- * \param tree Input TTree
- * \param xvar Branch or expression for the x-values
- * \param yvar Branch or expression for the y-values
- * \param selection Optional cut string to apply to each entry
+ * Note that the graph entries will be filled in whichever order they are
+ * found in the TTree. It may be desirable to call `TGraph::Sort` on the
+ * resulting object.
+ *
+ * @param tree Input TTree
+ * @param xvar Branch or expression for the x-values
+ * @param yvar Branch or expression for the y-values
+ * @param selection Optional cut string to apply to each entry
  */
 TGraph TGraphFromTree(TTree* tree, TString const& xvar, TString const& yvar,
                       TString const& selection = "");
 
 /**
- * \brief Shift all the graph y-values upwards such that there are no negative
- *values and the minimum point is at zero.
- * \details Useful for fixing graphs of log-likelihood scans extracted from
- *`combine` where the true minimum was not found correctly in the initial fit.
+ * Shift all the graph y-values upwards such that there are no negative values
+ * and the minimum point is at zero.
+ *
+ * Useful for fixing graphs of log-likelihood scans extracted from `combine`
+ * where the true minimum was not found correctly in the initial fit.
  */
 void ReZeroTGraph(TGraph *gr);
 /**@}*/
@@ -171,134 +183,150 @@ void ReZeroTGraph(TGraph *gr);
 
 
 /**
- * \name Plot decoration (colours, styles, text and legends)
+ * @name Plot decoration (colours, styles, text and legends)
  */
 /**@{*/
 
 /**
- * \brief Create a transparent version of a colour
+ * Create a transparent version of a colour
  *
- * \param color ROOT colour code
- * \param alpha Transparency (0 = fully transparent, 1 = opaque)
+ * @param color ROOT colour code
+ * @param alpha Transparency (0 = fully transparent, 1 = opaque)
  *
- * \return The code for the new TColor
+ * @return The code for the new TColor
  */
 int CreateTransparentColor(int color, float alpha);
 
 /**
- * \brief Set a few style options for a two-pad setup used to show a data-MC
- *comparison and ratio plot.
- * \details Use this version of the function if the axis histograms haven't 
- * been drawn yet. This function will:
- *  - remove the x-axis title and labels on the main plot
- *  - fix the axis tick-lengths to be consistent between both plots
- *  - enable x- and y-axis ticks on the ratio plot
- *  - Set the range and title options for the ratio plot y-axis
+ * Set a few style options for a two-pad setup used to show a data-MC
+ * comparison and ratio plot.
  *
- * \param pads Vector of TPad pointers where [0] = upper pad, [1] = lower pad
- * \param upper Pointer to the upper pad axis TH1
- * \param lower Pointer to the lower pad axis TH1
- * \param y_title Title for the y-axis of the ratio plot
- * \param y_centered Centre (vertically) the y-axis title on the ratio plot.
- * \param y_min Set the y-axis minimum in the ratio plot
- * \param y_max Set the y-axis maximum in the ratio plot
+ * Use this version of the function if the axis histograms haven't been drawn
+ * yet. This function will:
+ *
+ *    - remove the x-axis title and labels on the main plot
+ *    - fix the axis tick-lengths to be consistent between both plots
+ *    - enable x- and y-axis ticks on the ratio plot
+ *    - Set the range and title options for the ratio plot y-axis
+ *
+ * @param pads Vector of TPad pointers where [0] = upper pad, [1] = lower pad
+ * @param upper Pointer to the upper pad axis TH1
+ * @param lower Pointer to the lower pad axis TH1
+ * @param y_title Title for the y-axis of the ratio plot
+ * @param y_centered Centre (vertically) the y-axis title on the ratio plot.
+ * @param y_min Set the y-axis minimum in the ratio plot
+ * @param y_max Set the y-axis maximum in the ratio plot
  */
 void SetupTwoPadSplitAsRatio(std::vector<TPad*> const& pads, TH1* upper,
                              TH1* lower, TString y_title, bool y_centered,
                              float y_min, float y_max);
 
 /**
- * \brief Set a few style options for a two-pad setup used to show a data-MC
- *comparison and ratio plot.
- * \details This function should be called after the axis histograms have been
- *created in both pads (e.g. after some TH1, TGraph etc. has been drawn). It will:
+ * Set a few style options for a two-pad setup used to show a data-MC
+ * comparison and ratio plot.
+ *
+ * This function should be called after the axis histograms have been created
+ * in both pads (e.g. after some TH1, TGraph etc. has been drawn). It will:
+ *
  *  - remove the x-axis title and labels on the main plot
  *  - fix the axis tick-lengths to be consistent between both plots
  *  - enable x- and y-axis ticks on the ratio plot
  *  - Set the range and title options for the ratio plot y-axis
  *
- * \param pads Vector of TPad pointers where [0] = upper pad, [1] = lower pad
- * \param y_title Title for the y-axis of the ratio plot
- * \param y_centered Centre (vertically) the y-axis title on the ratio plot.
- * \param y_min Set the y-axis minimum in the ratio plot
- * \param y_max Set the y-axis maximum in the ratio plot
+ * @param pads Vector of TPad pointers where [0] = upper pad, [1] = lower pad
+ * @param y_title Title for the y-axis of the ratio plot
+ * @param y_centered Centre (vertically) the y-axis title on the ratio plot.
+ * @param y_min Set the y-axis minimum in the ratio plot
+ * @param y_max Set the y-axis maximum in the ratio plot
  */
 void SetupTwoPadSplitAsRatio(std::vector<TPad*> const& pads, TString y_title,
                              bool y_centered, float y_min, float y_max);
 
 /**
- * \brief Sets standard x- and y-axis titles with given units
- * \details Will create an x-axis title of the form `<variable> (<units>)` and a
- *y-axis title of the form `Events / <bin_width> <units>`.
+ * Sets standard x- and y-axis titles with given units
  *
- * \param xaxis Target x-axis
- * \param yaxis Target y-axis
- * \param var String of the variable name
- * \param units String of the units, e.g. `GeV`. Leave empty if the variable is dimensionless
+ * Will create an x-axis title of the form `<variable> (<units>)` and a y-axis
+ * title of the form `Events / <bin_width> <units>`.
+ *
+ * @param xaxis Target x-axis
+ * @param yaxis Target y-axis
+ * @param var String of the variable name
+ * @param units String of the units, e.g. `GeV`. Leave empty if the variable
+ * is dimensionless
  */
 void StandardAxes(TAxis* xaxis, TAxis* yaxis, TString var, TString units);
+
 /**
- * \brief Sets standard x- and y-axis titles when histograms are drawn divided
- *by bin width
- * \details Will create an x-axis title of the form `<variable> (<units>)` and a
- *y-axis title of the form `dN/d<var> (1/<units>)`.
+ * Sets standard x- and y-axis titles when histograms are drawn divided by bin
+ * width
  *
- * \param xaxis Target x-axis
- * \param yaxis Target y-axis
- * \param var String of the variable name
- * \param units String of the units, e.g. `GeV`
+ * Will create an x-axis title of the form `<variable> (<units>)` and a y-axis
+ * title of the form `dN/d<var> (1/<units>)`.
+ *
+ * @param xaxis Target x-axis
+ * @param yaxis Target y-axis
+ * @param var String of the variable name
+ * @param units String of the units, e.g. `GeV`
  */
 void UnitAxes(TAxis* xaxis, TAxis* yaxis, TString var, TString units);
 
 /**
- * \brief Create a legend with fixed height, width and positioning
- * \details Legend will be created in one three fixed positions:
+ * Create a legend with fixed height, width and positioning
+ *
+ * Legend will be created in one three fixed positions:
+ *
  *    1. Top-left corner
  *    2. Top centered
  *    3. Top-right corner
  *
- * \param width Legend width as a fraction of the pad
- * \param height Legend height as a fraction of the pad
- * \param pos Position index (see above)
- * \param offset Position offset from edges of frame
- * \return Pointer to newly created TLegend
+ * @param width Legend width as a fraction of the pad
+ * @param height Legend height as a fraction of the pad
+ * @param pos Position index (see above)
+ * @param offset Position offset from edges of frame
+ *
+ * @return Pointer to newly created TLegend
  */
 TLegend* PositionedLegend(double width, double height, int pos, double offset);
 
 /**
- * \brief Use an existing TLine to draw a new horizontal line across the current
- *frame
+ * Use an existing TLine to draw a new horizontal line across the current
+ * frame
  *
- * \details Will find the TH1 used to draw the axes on the pad, get the min/max
- *x-values and then draw a TLine at the specified y-value
+ * Will find the TH1 used to draw the axes on the pad, get the min/max
+ * x-values and then draw a TLine at the specified y-value
  *
- * \param pad TPad where the line should be drawn
- * \param line Existing TLine already customised with the desired colour, width
- *and style
- * \param yval The y-value (given in the axis units) where the line should be
- *drawn
- * \return A pointer to the newly created TLine
+ * @param pad TPad where the line should be drawn
+ * @param line Existing TLine already customised with the desired colour,
+ * width and style
+ * @param yval The y-value (given in the axis units) where the line should be
+ * drawn
+ *
+ * @return A pointer to the newly created TLine
  */
 TLine* DrawHorizontalLine(TPad *pad, TLine* line, double yval);
 
 /**
- * \brief Draw text in the top-margin region of a TPad
- * \details Specified text will be latex-rendered in one of three positions:
+ * Draw text in the top-margin region of a TPad
+ *
+ * Specified text will be latex-rendered in one of three positions:
+ *
  *    1. Left aligned with left side of frame
  *    2. Centre aligned along top of frame
  *    3. Right aligned with right side of fram
- *  Note also that the text size will be set automatically to fill the top
- *margin areas.
  *
- * \param pad Input Tpad
- * \param text Text to draw
- * \param align Alignment option (see above)
+ * Note also that the text size will be set automatically to fill the top
+ * margin areas.
+ *
+ * @param pad Input Tpad
+ * @param text Text to draw
+ * @param align Alignment option (see above)
  */
 void DrawTitle(TPad* pad, TString text, int align);
 
 /**
- * \brief Draw the CMS logo and subtitle in the new style
- * \details Adapted from the example [here](https://ghm.web.cern.ch/ghm/plots/).
+ * Draw the CMS logo and subtitle in the new style
+ *
+ * Adapted from the example [here](https://ghm.web.cern.ch/ghm/plots/).
  *
  * Position setting:
  *
@@ -311,25 +339,25 @@ void DrawTitle(TPad* pad, TString text, int align);
  *
  *     iPos = 10*(alignement 1/2/3) + position (1/2/3 = left/center/right)
  *
- * \param pad The target TPad
- * \param cmsText Usually just "CMS"
- * \param extraText The subtitle, e.g. "Preliminary"
- * \param iPosX Sets the position and alignment of the text (see above)
- * \param relPosX Sets the x-position of the text relative to the frame
- * \param relPosY Sets the y-position of the text relative to the frame
- * \param relExtraDY Sets the position of the *extraText* relative to the
+ * @param pad The target TPad
+ * @param cmsText Usually just "CMS"
+ * @param extraText The subtitle, e.g. "Preliminary"
+ * @param iPosX Sets the position and alignment of the text (see above)
+ * @param relPosX Sets the x-position of the text relative to the frame
+ * @param relPosY Sets the y-position of the text relative to the frame
+ * @param relExtraDY Sets the position of the *extraText* relative to the
  * *cmsText*
  */
 void DrawCMSLogo(TPad* pad, TString cmsText, TString extraText, int iPosX,
                  float relPosX, float relPosY, float relExtraDY);
 
 /**
- * \brief Call DrawCMSLogo with some sensible defaults for the positioning parameters
+ * Call DrawCMSLogo with some sensible defaults for the positioning parameters
  *
- * \param pad The target TPad
- * \param cmsText Usually just "CMS"
- * \param extraText The subtitle, e.g. "Preliminary"
- * \param iPosX Sets the position and alignment of the text
+ * @param pad The target TPad
+ * @param cmsText Usually just "CMS"
+ * @param extraText The subtitle, e.g. "Preliminary"
+ * @param iPosX Sets the position and alignment of the text
  */
 void DrawCMSLogo(TPad* pad, TString cmsText, TString extraText, int iPosX);
 /**@}*/
@@ -337,64 +365,67 @@ void DrawCMSLogo(TPad* pad, TString cmsText, TString extraText, int iPosX);
 
 
 /**
- * \name Axis adjustment and overlap checks
+ * @name Axis adjustment and overlap checks
  */
 /**@{*/
 
 
 /**
- * \brief Find the maximum value of all drawn objects in a given x-axis range
- * \details Currently only objects derived from TH1 and TGraph are examined.
+ * Find the maximum value of all drawn objects in a given x-axis range
  *
- * \param pad TPad to examine
- * \param x_min Minimum x-axis value to start the scan
- * \param x_max Maximum x-axis alue to conclude the scan
- * \return Value on y-axis where the maximum is found
+ * Currently only objects derived from TH1 and TGraph are examined.
+ *
+ * @param pad TPad to examine
+ * @param x_min Minimum x-axis value to start the scan
+ * @param x_max Maximum x-axis alue to conclude the scan
+ *
+ * @return Value on y-axis where the maximum is found
  */
 double GetPadYMax(TPad* pad, double x_min, double x_max);
 
 /**
- * \brief Call GetPadYMax(TPad*, double, double) with the full range of the
+ * Call GetPadYMax(TPad*, double, double) with the full range of the
  * given TPad
  */
 double GetPadYMax(TPad* pad);
 
 /**
- * \brief Adjusts the y-axis maximum on the pad such that the specified y-value
- *is positioned a fixed fraction from this new maximum.
+ * Adjusts the y-axis maximum on the pad such that the specified y-value is
+ * positioned a fixed fraction from this new maximum.
  *
- * \details Should work for both linear and log-scale y-axes. This function is
- *most useful in conjunction with GetPadYMax() to supply the y-axis value to
- *fix, thus ensuring that a fixed fraction at the top of the frame is free of
- *any histogram or graph.
+ * Should work for both linear and log-scale y-axes. This function is most
+ * useful in conjunction with GetPadYMax() to supply the y-axis value to fix,
+ * thus ensuring that a fixed fraction at the top of the frame is free of any
+ * histogram or graph.
  *
- * \param pad TPad to adjust
- * \param fix_y The position on the y-axis that will be fixed
- * \param fraction The fraction of the y-axis that *fix_y* should be positioned
- *(measured from the top of the frame)
+ * @param pad TPad to adjust
+ * @param fix_y The position on the y-axis that will be fixed
+ * @param fraction The fraction of the y-axis that *fix_y* should be
+ * positioned (measured from the top of the frame)
  */
 void FixTopRange(TPad *pad, double fix_y, double fraction);
 
 
 /**
- * \brief Modify the pad y-axis range to ensure there is at least a given gap
- *between a particular TBox and the highest drawn element in the x-axis range of
- *this box.
- * \details Most useful after drawing a legend somewhere near the top of the
- *frame, which may have overlapped with some of the histograms or graphs that
- *had already been drawn. This function will check for the overlap, then adjust
- *the y-axis range to ensure there is a gap. Note that if a sufficient (or
- *larger) gap already exists, the y-axis range will not be adujusted.
+ * Modify the pad y-axis range to ensure there is at least a given gap between
+ * a particular TBox and the highest drawn element in the x-axis range of this
+ * box.
  *
- * \param pad TPad to modify
- * \param box Pointer to the reference TBox (e.g. could be a TLegend)
- * \param frac Desired fraction of the frame height between the bottom of the
- *TBox and the top of the drawn objects.
+ * Most useful after drawing a legend somewhere near the top of the frame,
+ * which may have overlapped with some of the histograms or graphs that had
+ * already been drawn. This function will check for the overlap, then adjust
+ * the y-axis range to ensure there is a gap. Note that if a sufficient (or
+ * larger) gap already exists, the y-axis range will not be adujusted.
+ *
+ * @param pad TPad to modify
+ * @param box Pointer to the reference TBox (e.g. could be a TLegend)
+ * @param frac Desired fraction of the frame height between the bottom of the
+ * TBox and the top of the drawn objects.
  */
 void FixBoxPadding(TPad *pad, TBox *box, double frac);
 
 /**
- * \brief Just re-draws the axes on the current TPad
+ * Just re-draws the axes on the current TPad
  */
 void FixOverlay();
 /**@}*/
@@ -566,12 +597,13 @@ void SetupTwoPadSplitAsRatio(std::vector<TPad*> const& pads,
                       float y_max) {
   TH1 *upper = GetAxisHist(pads[0]);
   TH1 *lower = GetAxisHist(pads[1]);
-  SetupTwoPadSplitAsRatio(pads, upper, lower, y_title, y_centered, y_min, y_max);
+  SetupTwoPadSplitAsRatio(pads, upper, lower, y_title, y_centered, y_min,
+                          y_max);
 }
 
-void SetupTwoPadSplitAsRatio(std::vector<TPad*> const& pads, TH1 *upper, TH1 *lower,
-                      TString y_title, bool y_centered, float y_min,
-                      float y_max) {
+void SetupTwoPadSplitAsRatio(std::vector<TPad*> const& pads, TH1* upper,
+                             TH1* lower, TString y_title, bool y_centered,
+                             float y_min, float y_max) {
   upper->GetXaxis()->SetTitle("");
   upper->GetXaxis()->SetLabelSize(0);
   double upper_h = 1. - pads[0]->GetTopMargin() - pads[0]->GetBottomMargin();
