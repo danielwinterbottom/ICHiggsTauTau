@@ -55,11 +55,10 @@ void ICMetProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     dest.set_energy(src.energy());
     dest.set_sum_et(src.sumEt());
     dest.set_et_sig(src.mEtSig());
-    TMatrixD const& sig_matrix = src.getSignificanceMatrix();
-    dest.set_xx_sig(sig_matrix(0, 0));
-    dest.set_xy_sig(sig_matrix(0, 1));
-    dest.set_yx_sig(sig_matrix(1, 0));
-    dest.set_yy_sig(sig_matrix(1, 1));
+    dest.set_xx_sig(src.getSignificanceMatrix()(0, 0));
+    dest.set_xy_sig(src.getSignificanceMatrix()(0, 1));
+    dest.set_yx_sig(src.getSignificanceMatrix()(1, 0));
+    dest.set_yy_sig(src.getSignificanceMatrix()(1, 1));
   }
 }
 

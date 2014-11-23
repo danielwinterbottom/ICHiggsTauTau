@@ -20,7 +20,7 @@ infile      = opts.file
 tag         = opts.globalTag
 isData      = opts.isData
 release     = opts.release
-if not release in ["42X", "53X", "70X"]:
+if not release in ["42X", "53X", "70X", "72X"]:
     print 'Release not recognised, exiting!'
     sys.exit(1)
 print 'release     : '+release
@@ -34,7 +34,7 @@ print 'file        : '+infile
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 if release in ['42X']:
   process.load("Configuration.StandardSequences.Geometry_cff")
-if release in ['53X', '70X']:
+if release in ['53X', '70X', '72X']:
   process.load("Configuration.Geometry.GeometryIdeal_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
@@ -43,6 +43,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 50
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(infile))
 # 53X: START53_V22::All (MC)
 # 70X: PLS170_V7AN1::All (MC)
+# 72X: globalTag=START72_V1::All file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/AODSIM/PU40bx25_PHYS14_25_V1-v1/00000/00E63918-3A70-E411-A246-7845C4FC35F3.root
 process.GlobalTag.globaltag = cms.string(tag)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
@@ -55,6 +56,7 @@ process.TFileService = cms.Service("TFileService",
 process.ic42XExtraSequence = cms.Sequence()
 process.ic53XExtraSequence = cms.Sequence()
 process.ic70XExtraSequence = cms.Sequence()
+process.ic72XExtraSequence = cms.Sequence()
 # ##############################################################################
 # ## Jet Parton Flavour
 # ##############################################################################
@@ -87,7 +89,8 @@ process.selectedElectrons = cms.EDFilter("GsfElectronRefSelector",
   cut = cms.string("pt > 10 & abs(eta) < 2.5")
 )
 
-if release == '70X': process.selectedElectrons.src = cms.InputTag("gedGsfElectrons")
+if release in ['70X', '72X']:
+  process.selectedElectrons.src = cms.InputTag("gedGsfElectrons")
 
 process.icElectronProducer = producers.icElectronProducer.clone(
     branch                    = cms.string("electrons"),
@@ -338,7 +341,7 @@ if release in ['42X', '53X']:
   process.patTriggerSequence = cms.Sequence()
   switchOnTrigger(process, sequence = 'patTriggerSequence', outputModule = '')
   process.patTriggerPath = cms.Path(process.patTriggerSequence)
-if release in ['70X']:
+if release in ['70X', '72X']:
   process.patTriggerPath = cms.Path()
   switchOnTrigger(process, path = 'patTriggerPath', outputModule = '')
 
@@ -372,6 +375,7 @@ process.p = cms.Path(
   process.ic42XExtraSequence+
   process.ic53XExtraSequence+
   process.ic70XExtraSequence+
+  process.ic72XExtraSequence+
   process.selectedPFCandidates+
   process.icCandidateProducer+
   process.selectedElectrons+
@@ -404,6 +408,11 @@ process.p = cms.Path(
   process.icEventInfoProducer+
   process.icEventProducer
   )
+
+# JPT jets no longer in AOD from 7_2_X
+if release in ['72X']:
+  process.p.remove(process.selectedJPTJets)
+  process.p.remove(process.icJPTJetProducer)
 
 process.schedule = cms.Schedule(process.patTriggerPath, process.p)
 
