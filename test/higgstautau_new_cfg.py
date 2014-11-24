@@ -79,8 +79,8 @@ process.GlobalTag.globaltag = cms.string(tag)
 # 42X MC: root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Fall11-42X.root, START42_V17::All
 # 53X Data: root://eoscms//eos/cms/store/user/agilbert/samples/TauPlusX-2012D.root, FT_53_V21_AN4::All
 # 53X MC: root://eoscms//eos/cms/store/user/agilbert/samples/DYJetsToLL-Summer12-53X-Sample.root, START53_V22::All
-# 70X MC: root://eoscms//eos/cms/store/user/agilbert/samples/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6-PU_S14_POSTLS170_V6-v1.root, PLS170_V7AN1::All
-# 70XMINIAOD MC: root://eoscms//eos/cms/store/user/agilbert/samples/VBF_HToTauTau_M-125_13TeV-powheg-pythia6-PU20bx25_POSTLS170_V5-v2-MINIAODSIM.root, PLS170_V7AN1::All
+# 70X MC: file=root://eoscms//eos/cms/store/user/agilbert/samples/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6-PU_S14_POSTLS170_V6-v1.root globalTag=PLS170_V7AN1::All
+# 70XMINIAOD MC: file=root://eoscms//eos/cms/store/user/agilbert/samples/VBF_HToTauTau_M-125_13TeV-powheg-pythia6-PU20bx25_POSTLS170_V5-v2-MINIAODSIM.root globalTag=PLS170_V7AN1::All
 # 72X MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/AODSIM/PU40bx25_PHYS14_25_V1-v1/00000/00E63918-3A70-E411-A246-7845C4FC35F3.root globalTag=START72_V1::All 
 
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
