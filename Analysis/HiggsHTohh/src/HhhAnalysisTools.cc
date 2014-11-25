@@ -129,8 +129,9 @@ namespace ic {
     //alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
     alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     alias_map_["2jet2tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
-    // New categories for optimisation of H->hh->tautaubb
-    alias_map_["sasha"]                      = "(n_prebjets>=2 && n_bjets>=1)";
+    // Useful category for control plots
+    alias_map_["2jetGT1tag"]                      = "(n_prebjets>=2 && prebjetbcsv_1>=0.679)";
+    alias_map_["2jetGT1tagSF"]                      = "(n_prebjets>=2 && n_prebjets_SF>=1)";
     
    
     // Attempt at exclusive categories
