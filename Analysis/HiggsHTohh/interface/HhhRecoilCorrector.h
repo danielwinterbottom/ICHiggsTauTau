@@ -25,6 +25,7 @@ class HhhRecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HhhRecoilCorrector, ic::mc, mc)
   CLASS_MEMBER(HhhRecoilCorrector, ic::era, era)
   CLASS_MEMBER(HhhRecoilCorrector, bool, w_hack)
+  CLASS_MEMBER(HhhRecoilCorrector, int, met_scale_mode)
 
 
 

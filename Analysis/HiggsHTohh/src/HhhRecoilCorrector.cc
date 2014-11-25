@@ -20,6 +20,7 @@ namespace ic {
     disable = true;
     is_wjets_ = false;
     is_ttbar_ = false;
+    met_scale_mode_ = 0;
     w_hack_ = false;
   }
 
@@ -261,8 +262,14 @@ namespace ic {
     double U2 = 0;
     double iFluc = 0;
     double iScale = 0;
-    //iFluc 1, iScale 1
-    //iFluc -1, iScale -1
+    if(met_scale_mode_ == 1) { 
+        iFluc=-1; 
+        iScale=-1;
+    }
+    if(met_scale_mode_ == 2) { 
+        iFluc=1; 
+        iScale=1;
+    }
     
     if (mc_ == mc::summer12_53X) {
 

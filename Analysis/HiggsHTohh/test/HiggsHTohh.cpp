@@ -81,6 +81,7 @@ int main(int argc, char* argv[]){
   unsigned bfake_mode;            // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned jes_mode;              // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned l1met_mode;              // 0 = no shift, 1 = shift down, 2 = shift up
+  unsigned metscale_mode;          // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned mass_scale_mode;       // 0 = no shift, 1 = nominal, but in TSCALE_DOWN, 2 = shift up, 3 = shift up again, in TSCALE_UP
   unsigned svfit_mode;            // 0 = not run, 1 = generate jobs, 2 = read-in job output
   unsigned new_svfit_mode;        // 0 = not run, 1 = generate jobs, 2 = read-in job output
@@ -142,6 +143,7 @@ int main(int argc, char* argv[]){
       ("bfake_mode",          po::value<unsigned>(&bfake_mode)->default_value(0))
       ("jes_mode",            po::value<unsigned>(&jes_mode)->default_value(0))
       ("l1met_mode",          po::value<unsigned>(&l1met_mode)->default_value(0))
+      ("metscale_mode",          po::value<unsigned>(&metscale_mode)->default_value(0))
       ("mass_scale_mode",     po::value<unsigned>(&mass_scale_mode)->default_value(0))
       ("svfit_mode",          po::value<unsigned>(&svfit_mode)->default_value(0))
       ("new_svfit_mode",      po::value<unsigned>(&new_svfit_mode)->default_value(0))
@@ -190,6 +192,14 @@ int main(int argc, char* argv[]){
   if (jes_mode == 2) output_folder += "JES_UP/";
   if (l1met_mode == 1) output_folder += "L1MET_DOWN/";
   if (l1met_mode == 2) output_folder += "L1MET_UP/";
+  if (metscale_mode == 1) { 
+      output_folder += "MET_DOWN/";
+      svfit_folder += "MET_DOWN/";
+  }
+  if (metscale_mode == 2) {
+      output_folder += "MET_UP/";
+      svfit_folder += "MET_UP/";
+  }
   
 
 //  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
@@ -892,6 +902,7 @@ int main(int argc, char* argv[]){
     .set_mc(mc)
     .set_met_label(met_label)
     .set_strategy(strategy)
+    .set_met_scale_mode(metscale_mode)
     .set_w_hack(true);
 
   HTTWeights httWeights = HTTWeights("HTTWeights")
