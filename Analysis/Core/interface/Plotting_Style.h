@@ -5,25 +5,34 @@
 #include "TROOT.h"
 
 /**
- * \brief Sets the semi-official CMS plotting global style
- * \details This is copied verbatim from the latest guidlines
- * [here](https://ghm.web.cern.ch/ghm/plots/). You should call this function at
- * the start of your macro/program. But note, the function ModTDRStyle() might
- * be more useful - this will call SetTDRStyle() first then adjust a few more
- * settings to give a better plotting style.
+ * Sets the semi-official CMS plotting global style
+ *
+ * This is copied verbatim from the latest guidlines
+ * [here](https://ghm.web.cern.ch/ghm/plots/). You should call this function
+ * at the start of your macro/program. But note, the function ModTDRStyle()
+ * might be more useful - this will call SetTDRStyle() first then adjust a few
+ * more settings to give a better plotting style.
  */
 void SetTDRStyle();
 
 /**
- * \brief Sets an improved plotting style, using the CMS default as a base
- * \details Main changes are to be more consistent with margin sizes when
- * stretching the TCanvas horizontally or vertically, and to fix some style
- * options omitted from SetTDRStyle()
+ * Sets an improved plotting style, using the CMS default as a base
+ *
+ * Main changes are to be more consistent with margin sizes when stretching
+ * the TCanvas horizontally or vertically, and to fix some style options
+ * omitted from SetTDRStyle(). The canvas width and height, and the pad
+ * margins are passed as parameters.
+ */
+void ModTDRStyle(int width, int height, double t, double b, double l, double r);
+
+/**
+ * Apply the modified plotting style using some sensible defaults for the
+ * canvas size and pad margins.
  */
 void ModTDRStyle();
 
 /**
- * \brief Modify the global style to enable/disable the drawing of axis gridlines
+ * Modify the global style to enable/disable the drawing of axis gridlines
  */
 void TdrGrid(bool grid_on);
 
@@ -170,12 +179,13 @@ void SetTDRStyle() {
   gStyle->SetHatchesSpacing(0.05);
 }
 
-void ModTDRStyle() {
+void ModTDRStyle(int width, int height, double t, double b, double l,
+                 double r) {
   SetTDRStyle();
 
   // Set the default canvas width and height in pixels
-  gStyle->SetCanvasDefW(600);
-  gStyle->SetCanvasDefH(600);
+  gStyle->SetCanvasDefW(width);
+  gStyle->SetCanvasDefH(height);
 
   // Set the default margins.
   // These are given as fractions of the pad height for `Top` and `Bottom` and
@@ -189,10 +199,6 @@ void ModTDRStyle() {
 
   double def_min = def_h < def_w ? def_h : def_w;
 
-  double t = 0.06;
-  double b = 0.12;
-  double l = 0.16;
-  double r = 0.04;
   gStyle->SetPadTopMargin(t * scale_h);      // default 0.05
   gStyle->SetPadBottomMargin(b * scale_h);   // default 0.13
   gStyle->SetPadLeftMargin(l * scale_w);     // default 0.16
@@ -232,7 +238,6 @@ void ModTDRStyle() {
                           (1.2 * (def_w * l * scale_w - 0.6 * title_px)) /
                           title_px);
 
-
   // Only draw ticks where we have an axis
   gStyle->SetPadTickX(0);
   gStyle->SetPadTickY(0);
@@ -245,6 +250,8 @@ void ModTDRStyle() {
 
   gROOT->ForceStyle();
 }
+
+void ModTDRStyle() { ModTDRStyle(600, 600, 0.06, 0.12, 0.16, 0.04); }
 
 void TdrGrid(bool grid_on) {
   gStyle->SetPadGridX(grid_on);

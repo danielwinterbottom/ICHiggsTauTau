@@ -18,6 +18,7 @@
 #include "TLegend.h"
 #include "TColor.h"
 #include "TROOT.h"
+#include "TFrame.h"
 #include "TTree.h"
 #include "TFile.h"
 #include "TLine.h"
@@ -896,6 +897,6 @@ void FixBoxPadding(TPad *pad, TBox *box, double frac) {
   }
 }
 
-void FixOverlay() { gPad->RedrawAxis(); }
+void FixOverlay() { gPad->GetFrame()->Draw(); gPad->RedrawAxis(); }
 
 #endif
