@@ -77,7 +77,6 @@ namespace ic {
 				std::vector<std::string> iso;
 				std::vector<std::string> dm;
 				std::vector<std::string> jettype;
-				std::cout<<"type vectors created"<<std::endl;
 
 				iso.push_back("dm");
 				iso.push_back("loose");
@@ -104,13 +103,11 @@ namespace ic {
 				jettype.push_back("b");
 				jettype.push_back("undef");
 
-				std::cout<<"type vectors filled"<<std::endl;
 
 				jetpt_ = fs_->make<TH1F>("jetpt",";p_{T};",18,binrange);
 				jeteta_ = fs_->make<TH1F>("jeteta",";#eta;",50,-2.5,2.5);
 				jetphi_ = fs_->make<TH1F>("jetphi",";#phi;",100,-3.15,3.15);
 				jetnvtx_ = fs_->make<TH1F>("jetnvtx",";N_{vtx};",50,-0.5,49.5);
-				std::cout<<"created stuff"<<std::endl;
 				//std::map<std::string,TH1F*> standard_tau_histos_;
 				for(UInt_t isoit=0;isoit<iso.size();isoit++){
 					standard_tau_histos_[(iso.at(isoit)+"_taupt_match").c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taupt_match").c_str(),";p_{T} [GeV];",18,binrange);
@@ -118,7 +115,6 @@ namespace ic {
 					standard_tau_histos_[(iso.at(isoit)+"_tauphi_match").c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_tauphi_match").c_str(),";#phi;",100,-3.15,3.15);
 					standard_tau_histos_[(iso.at(isoit)+"_taunvtx_match").c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taunvtx_match").c_str(),";N_{vtx};",50,-0.5,49.5);
 				}
-				std::cout<<"standard_tau_histos_ initialised"<<std::endl;
 
 
 
@@ -204,20 +200,6 @@ namespace ic {
 
 
 
-				if(wjets_mode_){
-				for(UInt_t jit =0;jit<jets.size();jit++){
-					if(ROOT::Math::VectorUtil::DeltaR(jets.at(jit)->vector(),genparticles.at(0)->vector())<5){
-						std::cout<<"FAILED!!"<<std::endl;
-					}
-					}
-					for(UInt_t k=0; k<genparticles.size();k++){
-					if(genparticles.at(k)->pdgid()==15||genparticles.at(k)->pdgid()==-15){
-					std::cout<<"THIS IS A TAU"<<std::endl;
-					}
-					}
-
-				
-				}
 
 
 

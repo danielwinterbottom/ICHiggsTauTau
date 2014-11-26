@@ -31,12 +31,15 @@ namespace ic {
 			std::map<std::string,TH1F*> dm_tau_histos_;
 			std::string sumet_string;
 			std::string sumpt_string;
+			std::string nvtx_string;
+			std::string ntracks_string;
 
 
 			TTree *outtree_;
 			TH1F* sum_et_;
 			TH1F* sum_pt_;
 			TH1F* jetpt_;
+			TH1F* histntracks_;
 			TH1F* jeteta_;
 			TH1F* jetflavour_;
 			TH1F* jetphi_;
@@ -61,12 +64,14 @@ namespace ic {
 			TH1F* jetpt_dz_rej_;
 			TH1F* jetpt_puid_rej_;
 			TH1F* jetpt_dz_and_puid_rej_;
+			TH1F* loose_taupt_match_;
 
 			
 
 			double jpt_;     
 			double sumet_;
 			double sumpt_;
+			int ntracks_;
 			double jeta_;     
 			double deltaR_;
 			double deltaR_calc_;
