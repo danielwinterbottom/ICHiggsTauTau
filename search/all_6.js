@@ -2,9 +2,9 @@ var searchData=
 [
   ['gen_5fparticles',['gen_particles',['../classic_1_1_electron.html#ab95a72e2e57e2686c7b57a6540033e98',1,'ic::Electron::gen_particles()'],['../classic_1_1_jet.html#a24e63650381cde3de472d83f41d31525',1,'ic::Jet::gen_particles()'],['../classic_1_1_muon.html#aad79bba88c92089f87a4dfd79cd09065',1,'ic::Muon::gen_particles()']]],
   ['generatecombinations',['GenerateCombinations',['../namespacech.html#a98ec286981dda179332f736f113ab8a5',1,'ch']]],
-  ['generatesetfromnus',['GenerateSetFromNus',['../classch_1_1_combine_harvester.html#afacaee2b01abd37c9956c09f62500188',1,'ch::CombineHarvester']]],
   ['generatesetfromobs',['GenerateSetFromObs',['../classch_1_1_combine_harvester.html#a01e59627c04498ff02ff2d8a9eccc1d4',1,'ch::CombineHarvester']]],
   ['generatesetfromprocs',['GenerateSetFromProcs',['../classch_1_1_combine_harvester.html#a224525ed617dae2b4b1e410a12cc129d',1,'ch::CombineHarvester']]],
+  ['generatesetfromsysts',['GenerateSetFromSysts',['../classch_1_1_combine_harvester.html#a3a324d0e617b9519bc30099c57d4f7be',1,'ch::CombineHarvester']]],
   ['genjet',['GenJet',['../classic_1_1_gen_jet.html',1,'ic']]],
   ['genjet',['GenJet',['../classic_1_1_gen_jet.html#a777295055ab9114e2d8ddabf59eed9d5',1,'ic::GenJet']]],
   ['genjet_2ecc',['GenJet.cc',['../_gen_jet_8cc.html',1,'']]],

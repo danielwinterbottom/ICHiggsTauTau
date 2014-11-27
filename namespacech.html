@@ -115,8 +115,6 @@ Data Structures</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structch_1_1_hist_mapping.html">HistMapping</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_nuisance.html">Nuisance</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html">Observation</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_parameter.html">Parameter</a></td></tr>
@@ -124,6 +122,8 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_process.html">Process</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structch_1_1_s_over_b_info.html">SOverBInfo</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_systematic.html">Systematic</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -162,6 +162,9 @@ Functions</h2></td></tr>
 <tr class="memitem:afdabce9fcf0e565dcd93d273e771ef68"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#afdabce9fcf0e565dcd93d273e771ef68">FnError</a> (std::string const &amp;message, std::string const &amp;file, unsigned line, std::string const &amp;fn)</td></tr>
 <tr class="memdesc:afdabce9fcf0e565dcd93d273e771ef68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an error message which includes the name of the calling function and the filename and line number where the error occured.  <a href="#afdabce9fcf0e565dcd93d273e771ef68">More...</a><br /></td></tr>
 <tr class="separator:afdabce9fcf0e565dcd93d273e771ef68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34936b9e16919f93ca72d0f164d83347"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... Args&gt; </td></tr>
+<tr class="memitem:a34936b9e16919f93ca72d0f164d83347"><td class="memTemplItemLeft" align="right" valign="top">std::unique_ptr&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacech.html#a34936b9e16919f93ca72d0f164d83347">make_unique</a> (Args &amp;&amp;...args)</td></tr>
+<tr class="separator:a34936b9e16919f93ca72d0f164d83347"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35c9af4e2f53f4686e4c4bbba535eb35"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a35c9af4e2f53f4686e4c4bbba535eb35">IntegrateFloatRange</a> (TH1F const *hist, double xmin, double xmax)</td></tr>
 <tr class="separator:a35c9af4e2f53f4686e4c4bbba535eb35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9db822b84dd7cf9f1d3bc76a6a741498"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; TH1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a9db822b84dd7cf9f1d3bc76a6a741498">GetClonedTH1</a> (TFile *file, std::string const &amp;path)</td></tr>
@@ -209,6 +212,8 @@ Functions</h2></td></tr>
 <tr class="separator:a1347e48be022e182e17dfc421bf12680"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2cbcfd049543bfe9f63958bc671deeae"><td class="memItemLeft" align="right" valign="top">TH1F&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a2cbcfd049543bfe9f63958bc671deeae">RebinHist</a> (TH1F const &amp;hist)</td></tr>
 <tr class="separator:a2cbcfd049543bfe9f63958bc671deeae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23cd9444931a49de080638458f722501"><td class="memItemLeft" align="right" valign="top">TH1F&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a23cd9444931a49de080638458f722501">RestoreBinning</a> (TH1F const &amp;src, TH1F const &amp;ref)</td></tr>
+<tr class="separator:a23cd9444931a49de080638458f722501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98ec286981dda179332f736f113ab8a5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector<br class="typebreak" />
 &lt; unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a98ec286981dda179332f736f113ab8a5">GenerateCombinations</a> (std::vector&lt; unsigned &gt; vec)</td></tr>
 <tr class="separator:a98ec286981dda179332f736f113ab8a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -223,10 +228,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a082a87dbfd5b9d61198f7fd4b68e70f9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a082a87dbfd5b9d61198f7fd4b68e70f9">GetQualififedName</a> (std::string const &amp;str)</td></tr>
 <tr class="memdesc:a082a87dbfd5b9d61198f7fd4b68e70f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts the fully-qualified function name from a complete function signature.  <a href="#a082a87dbfd5b9d61198f7fd4b68e70f9">More...</a><br /></td></tr>
 <tr class="separator:a082a87dbfd5b9d61198f7fd4b68e70f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1d74e9202cc38c74baafce485a198cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#ae1d74e9202cc38c74baafce485a198cb">swap</a> (<a class="el" href="classch_1_1_nuisance.html">Nuisance</a> &amp;first, <a class="el" href="classch_1_1_nuisance.html">Nuisance</a> &amp;second)</td></tr>
-<tr class="separator:ae1d74e9202cc38c74baafce485a198cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a26d63bbcfa353898686c912b2c572b"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a8a26d63bbcfa353898686c912b2c572b">operator&lt;&lt;</a> (std::ostream &amp;out, <a class="el" href="classch_1_1_nuisance.html">Nuisance</a> const &amp;val)</td></tr>
-<tr class="separator:a8a26d63bbcfa353898686c912b2c572b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53918f33e1cc50065abd25be2b64539a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a53918f33e1cc50065abd25be2b64539a">swap</a> (<a class="el" href="classch_1_1_observation.html">Observation</a> &amp;first, <a class="el" href="classch_1_1_observation.html">Observation</a> &amp;second)</td></tr>
 <tr class="separator:a53918f33e1cc50065abd25be2b64539a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace59b24fea12a903f9a441c7dede0cd9"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#ace59b24fea12a903f9a441c7dede0cd9">operator&lt;&lt;</a> (std::ostream &amp;out, <a class="el" href="classch_1_1_observation.html">Observation</a> &amp;val)</td></tr>
@@ -239,6 +240,10 @@ Functions</h2></td></tr>
 <tr class="separator:a8b80f6510601d33e773f90b1160d5463"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a678152df986e65f5905b132fc464a3cc"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a678152df986e65f5905b132fc464a3cc">operator&lt;&lt;</a> (std::ostream &amp;out, <a class="el" href="classch_1_1_process.html">Process</a> &amp;val)</td></tr>
 <tr class="separator:a678152df986e65f5905b132fc464a3cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a675f0b80d66b8a9b3948231c94a20fba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a675f0b80d66b8a9b3948231c94a20fba">swap</a> (<a class="el" href="classch_1_1_systematic.html">Systematic</a> &amp;first, <a class="el" href="classch_1_1_systematic.html">Systematic</a> &amp;second)</td></tr>
+<tr class="separator:a675f0b80d66b8a9b3948231c94a20fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5874d67ae782c76e78e6b9afcadbe784"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a5874d67ae782c76e78e6b9afcadbe784">operator&lt;&lt;</a> (std::ostream &amp;out, <a class="el" href="classch_1_1_systematic.html">Systematic</a> const &amp;val)</td></tr>
+<tr class="separator:a5874d67ae782c76e78e6b9afcadbe784"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="a9e0d877cb39147fa1de5cdcb8eff2110"></a>
@@ -614,6 +619,26 @@ template&lt;typename Input , typename Filter , typename Converter &gt; </div>
 <p>Should be used via the macro FNERROR which calls this function and inserts the file, line and fn arguments automatically. </p>
 
 <p>Definition at line <a class="el" href="_logging_8cc_source.html#l00032">32</a> of file <a class="el" href="_logging_8cc_source.html">Logging.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a34936b9e16919f93ca72d0f164d83347"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename... Args&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;T&gt; ch::make_unique </td>
+          <td>(</td>
+          <td class="paramtype">Args &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_make_unique_8h_source.html#l00008">8</a> of file <a class="el" href="_make_unique_8h_source.html">MakeUnique.h</a>.</p>
 
 </div>
 </div>
@@ -1119,6 +1144,34 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a23cd9444931a49de080638458f722501"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TH1F ch::RestoreBinning </td>
+          <td>(</td>
+          <td class="paramtype">TH1F const &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TH1F const &amp;&#160;</td>
+          <td class="paramname"><em>ref</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00129">129</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a98ec286981dda179332f736f113ab8a5"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1133,7 +1186,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00129">129</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00139">139</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
 
 </div>
 </div>
@@ -1151,7 +1204,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00162">162</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00172">172</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
 
 </div>
 </div>
@@ -1179,7 +1232,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00179">179</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00189">189</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
 
 </div>
 </div>
@@ -1257,62 +1310,6 @@ template&lt;class T &gt; </div>
 <p>The input str will typically be the compiler variable <code>__PRETTY_FUNCTION__</code>. The return type and arguments are then removed, e.g.: </p><pre class="fragment"> std::string ch::GetQualififedName(std::string const&amp; str)
 </pre><p>would be converted to </p><pre class="fragment"> ch::GetQualififedName</pre> 
 <p>Definition at line <a class="el" href="_logging_8cc_source.html#l00008">8</a> of file <a class="el" href="_logging_8cc_source.html">Logging.cc</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ae1d74e9202cc38c74baafce485a198cb"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ch::swap </td>
-          <td>(</td>
-          <td class="paramtype">Nuisance &amp;&#160;</td>
-          <td class="paramname"><em>first</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Nuisance &amp;&#160;</td>
-          <td class="paramname"><em>second</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="_nuisance_8cc_source.html#l00028">28</a> of file <a class="el" href="_nuisance_8cc_source.html">Nuisance.cc</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a8a26d63bbcfa353898686c912b2c572b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::ostream&amp; ch::operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>out</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Nuisance const &amp;&#160;</td>
-          <td class="paramname"><em>val</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="_nuisance_8cc_source.html#l00136">136</a> of file <a class="el" href="_nuisance_8cc_source.html">Nuisance.cc</a>.</p>
 
 </div>
 </div>
@@ -1481,6 +1478,62 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="_process_8cc_source.html#l00107">107</a> of file <a class="el" href="_process_8cc_source.html">Process.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a675f0b80d66b8a9b3948231c94a20fba"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ch::swap </td>
+          <td>(</td>
+          <td class="paramtype">Systematic &amp;&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Systematic &amp;&#160;</td>
+          <td class="paramname"><em>second</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_systematic_8cc_source.html#l00028">28</a> of file <a class="el" href="_systematic_8cc_source.html">Systematic.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a5874d67ae782c76e78e6b9afcadbe784"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; ch::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>out</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Systematic const &amp;&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_systematic_8cc_source.html#l00136">136</a> of file <a class="el" href="_systematic_8cc_source.html">Systematic.cc</a>.</p>
 
 </div>
 </div>

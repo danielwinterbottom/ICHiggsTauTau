@@ -111,8 +111,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a34d58d5193fe385ca42185433c16b69a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a">SetTDRStyle</a> ()</td></tr>
 <tr class="memdesc:a34d58d5193fe385ca42185433c16b69a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the semi-official CMS plotting global style.  <a href="#a34d58d5193fe385ca42185433c16b69a">More...</a><br /></td></tr>
 <tr class="separator:a34d58d5193fe385ca42185433c16b69a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f6399c7470d5331ac4c464cb14c86e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_plotting___style_8h.html#a7f6399c7470d5331ac4c464cb14c86e1">ModTDRStyle</a> (int width, int height, double t, double b, double l, double r)</td></tr>
+<tr class="memdesc:a7f6399c7470d5331ac4c464cb14c86e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets an improved plotting style, using the CMS default as a base.  <a href="#a7f6399c7470d5331ac4c464cb14c86e1">More...</a><br /></td></tr>
+<tr class="separator:a7f6399c7470d5331ac4c464cb14c86e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25f3f929fadd38fd9423aaa6ef6ddd51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_plotting___style_8h.html#a25f3f929fadd38fd9423aaa6ef6ddd51">ModTDRStyle</a> ()</td></tr>
-<tr class="memdesc:a25f3f929fadd38fd9423aaa6ef6ddd51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets an improved plotting style, using the CMS default as a base.  <a href="#a25f3f929fadd38fd9423aaa6ef6ddd51">More...</a><br /></td></tr>
+<tr class="memdesc:a25f3f929fadd38fd9423aaa6ef6ddd51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply the modified plotting style using some sensible defaults for the canvas size and pad margins.  <a href="#a25f3f929fadd38fd9423aaa6ef6ddd51">More...</a><br /></td></tr>
 <tr class="separator:a25f3f929fadd38fd9423aaa6ef6ddd51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0164a79c56b52dcd1963f0c015067238"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_plotting___style_8h.html#a0164a79c56b52dcd1963f0c015067238">TdrGrid</a> (bool grid_on)</td></tr>
 <tr class="memdesc:a0164a79c56b52dcd1963f0c015067238"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modify the global style to enable/disable the drawing of axis gridlines.  <a href="#a0164a79c56b52dcd1963f0c015067238">More...</a><br /></td></tr>
@@ -133,9 +136,64 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets the semi-official CMS plotting global style. </p>
-<p>This is copied verbatim from the latest guidlines <a href="https://ghm.web.cern.ch/ghm/plots/">here</a>. You should call this function at the start of your macro/program. But note, the function <a class="el" href="_plotting___style_8h.html#a25f3f929fadd38fd9423aaa6ef6ddd51" title="Sets an improved plotting style, using the CMS default as a base. ">ModTDRStyle()</a> might be more useful - this will call <a class="el" href="_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a" title="Sets the semi-official CMS plotting global style. ">SetTDRStyle()</a> first then adjust a few more settings to give a better plotting style. </p>
+<p>This is copied verbatim from the latest guidlines <a href="https://ghm.web.cern.ch/ghm/plots/">here</a>. You should call this function at the start of your macro/program. But note, the function <a class="el" href="_plotting___style_8h.html#a7f6399c7470d5331ac4c464cb14c86e1" title="Sets an improved plotting style, using the CMS default as a base. ">ModTDRStyle()</a> might be more useful - this will call <a class="el" href="_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a" title="Sets the semi-official CMS plotting global style. ">SetTDRStyle()</a> first then adjust a few more settings to give a better plotting style. </p>
 
-<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00033">33</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00042">42</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7f6399c7470d5331ac4c464cb14c86e1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ModTDRStyle </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets an improved plotting style, using the CMS default as a base. </p>
+<p>Main changes are to be more consistent with margin sizes when stretching the TCanvas horizontally or vertically, and to fix some style options omitted from <a class="el" href="_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a" title="Sets the semi-official CMS plotting global style. ">SetTDRStyle()</a>. The canvas width and height, and the pad margins are passed as parameters. </p>
+
+<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00182">182</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
 
 </div>
 </div>
@@ -152,10 +210,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets an improved plotting style, using the CMS default as a base. </p>
-<p>Main changes are to be more consistent with margin sizes when stretching the TCanvas horizontally or vertically, and to fix some style options omitted from <a class="el" href="_plotting___style_8h.html#a34d58d5193fe385ca42185433c16b69a" title="Sets the semi-official CMS plotting global style. ">SetTDRStyle()</a> </p>
+<p>Apply the modified plotting style using some sensible defaults for the canvas size and pad margins. </p>
 
-<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00173">173</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00254">254</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
 
 </div>
 </div>
@@ -175,7 +232,7 @@ Functions</h2></td></tr>
 
 <p>Modify the global style to enable/disable the drawing of axis gridlines. </p>
 
-<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00249">249</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
+<p>Definition at line <a class="el" href="_plotting___style_8h_source.html#l00256">256</a> of file <a class="el" href="_plotting___style_8h_source.html">Plotting_Style.h</a>.</p>
 
 </div>
 </div>

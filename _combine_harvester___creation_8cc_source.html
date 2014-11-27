@@ -111,7 +111,7 @@ $(document).ready(function(){initNavTree('_combine_harvester___creation_8cc_sour
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;TH1.h&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_observation_8h.html">CombineTools/interface/Observation.h</a>&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_process_8h.html">CombineTools/interface/Process.h</a>&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_nuisance_8h.html">CombineTools/interface/Nuisance.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_systematic_8h.html">CombineTools/interface/Systematic.h</a>&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_parameter_8h.html">CombineTools/interface/Parameter.h</a>&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_utilities_8h.html">CombineTools/interface/Utilities.h</a>&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
@@ -193,9 +193,9 @@ $(document).ready(function(){initNavTree('_combine_harvester___creation_8cc_sour
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    LoadShapes(procs_[i].<span class="keyword">get</span>(), mapping);</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  }</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keywordflow">if</span> (syst_rule == <span class="stringliteral">&quot;&quot;</span>) <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span>  i = 0; i &lt; nus_.size(); ++i) {</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">if</span> (nus_[i]-&gt;type() != <span class="stringliteral">&quot;shape&quot;</span>) <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    LoadShapes(nus_[i].<span class="keyword">get</span>(), mapping);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span>  i = 0; i &lt; systs_.size(); ++i) {</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">if</span> (systs_[i]-&gt;type() != <span class="stringliteral">&quot;shape&quot;</span>) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    LoadShapes(systs_[i].<span class="keyword">get</span>(), mapping);</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  }</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;}</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
@@ -270,37 +270,37 @@ $(document).ready(function(){initNavTree('_combine_harvester___creation_8cc_sour
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;      <span class="comment">// }</span></div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;      <span class="keywordflow">if</span> (do_bbb) {</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        ++bbb_added;</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <span class="keyword">auto</span> nus = std::make_shared&lt;Nuisance&gt;();</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <a class="code" href="namespacech.html#a0ea5d53cb275e53807f576a4020cf15e">ch::SetProperties</a>(nus.get(), procs_[i].get());</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        nus-&gt;set_type(<span class="stringliteral">&quot;shape&quot;</span>);</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="comment">// nus-&gt;set_name(&quot;CMS_&quot; + nus-&gt;bin() + &quot;_&quot; + nus-&gt;process() + &quot;_bin_&quot; +</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        <span class="keyword">auto</span> sys = std::make_shared&lt;Systematic&gt;();</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <a class="code" href="namespacech.html#a0ea5d53cb275e53807f576a4020cf15e">ch::SetProperties</a>(sys.get(), procs_[i].get());</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        sys-&gt;set_type(<span class="stringliteral">&quot;shape&quot;</span>);</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="comment">// sys-&gt;set_name(&quot;CMS_&quot; + sys-&gt;bin() + &quot;_&quot; + sys-&gt;process() + &quot;_bin_&quot; +</span></div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="comment">//               boost::lexical_cast&lt;std::string&gt;(j));</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        nus-&gt;set_name(<span class="stringliteral">&quot;CMS_&quot;</span> + nus-&gt;analysis() + <span class="stringliteral">&quot;_&quot;</span> + nus-&gt;channel() + <span class="stringliteral">&quot;_&quot;</span> +</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                      nus-&gt;bin() + <span class="stringliteral">&quot;_&quot;</span> + nus-&gt;era() + <span class="stringliteral">&quot;_&quot;</span> + nus-&gt;process() +</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        sys-&gt;set_name(<span class="stringliteral">&quot;CMS_&quot;</span> + sys-&gt;analysis() + <span class="stringliteral">&quot;_&quot;</span> + sys-&gt;channel() + <span class="stringliteral">&quot;_&quot;</span> +</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                      sys-&gt;bin() + <span class="stringliteral">&quot;_&quot;</span> + sys-&gt;era() + <span class="stringliteral">&quot;_&quot;</span> + sys-&gt;process() +</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                      <span class="stringliteral">&quot;_bin_&quot;</span> + boost::lexical_cast&lt;std::string&gt;(j));</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        nus-&gt;set_asymm(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        sys-&gt;set_asymm(<span class="keyword">true</span>);</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        TH1 *h_d = <span class="keyword">static_cast&lt;</span>TH1 *<span class="keyword">&gt;</span>(h-&gt;Clone());</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        TH1 *h_u = <span class="keyword">static_cast&lt;</span>TH1 *<span class="keyword">&gt;</span>(h-&gt;Clone());</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        h_d-&gt;SetBinContent(j, val - err);</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="keywordflow">if</span> (h_d-&gt;GetBinContent(j) &lt; 0.) h_d-&gt;SetBinContent(j, 0.);</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        h_u-&gt;SetBinContent(j, val + err);</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <span class="keywordflow">if</span> (fixed_norm) {</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;          nus-&gt;set_value_d(1.0);</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;          nus-&gt;set_value_u(1.0);</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;          sys-&gt;set_value_d(1.0);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;          sys-&gt;set_value_u(1.0);</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;          nus-&gt;set_value_d(h_d-&gt;Integral()/h-&gt;Integral());</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;          nus-&gt;set_value_u(h_u-&gt;Integral()/h-&gt;Integral());</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;          sys-&gt;set_value_d(h_d-&gt;Integral()/h-&gt;Integral());</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;          sys-&gt;set_value_u(h_u-&gt;Integral()/h-&gt;Integral());</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        }</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <span class="keywordflow">if</span> (h_d-&gt;Integral() &gt; 0.0) h_d-&gt;Scale(1.0/h_d-&gt;Integral());</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        <span class="keywordflow">if</span> (h_u-&gt;Integral() &gt; 0.0) h_u-&gt;Scale(1.0/h_u-&gt;Integral());</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        <span class="keywordflow">if</span> (h_d) nus-&gt;set_shape_d(std::unique_ptr&lt;TH1&gt;(h_d));</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keywordflow">if</span> (h_u) nus-&gt;set_shape_u(std::unique_ptr&lt;TH1&gt;(h_u));</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        <span class="keywordflow">if</span> (h_d) sys-&gt;set_shape_d(std::unique_ptr&lt;TH1&gt;(h_d));</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        <span class="keywordflow">if</span> (h_u) sys-&gt;set_shape_u(std::unique_ptr&lt;TH1&gt;(h_u));</div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        CombineHarvester::CreateParameterIfEmpty(other ? other : <span class="keyword">this</span>,</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                                                 nus-&gt;name());</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                                                 sys-&gt;name());</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        <span class="keywordflow">if</span> (other) {</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;          other-&gt;nus_.push_back(nus);</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;          other-&gt;systs_.push_back(sys);</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;          nus_.push_back(nus);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;          systs_.push_back(sys);</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        }</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;      }</div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    }</div>
@@ -380,7 +380,7 @@ $(document).ready(function(){initNavTree('_combine_harvester___creation_8cc_sour
 <div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;  }</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;}</div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;}</div>
-<div class="ttc" id="namespacech_html_a98ec286981dda179332f736f113ab8a5"><div class="ttname"><a href="namespacech.html#a98ec286981dda179332f736f113ab8a5">ch::GenerateCombinations</a></div><div class="ttdeci">std::vector&lt; std::vector&lt; unsigned &gt; &gt; GenerateCombinations(std::vector&lt; unsigned &gt; vec)</div><div class="ttdef"><b>Definition:</b> <a href="_utilities_8cc_source.html#l00129">Utilities.cc:129</a></div></div>
+<div class="ttc" id="namespacech_html_a98ec286981dda179332f736f113ab8a5"><div class="ttname"><a href="namespacech.html#a98ec286981dda179332f736f113ab8a5">ch::GenerateCombinations</a></div><div class="ttdeci">std::vector&lt; std::vector&lt; unsigned &gt; &gt; GenerateCombinations(std::vector&lt; unsigned &gt; vec)</div><div class="ttdef"><b>Definition:</b> <a href="_utilities_8cc_source.html#l00139">Utilities.cc:139</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a3d846dd6f5f88b912780e31ef58e17ff"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a3d846dd6f5f88b912780e31ef58e17ff">ch::CombineHarvester::AddWorkspace</a></div><div class="ttdeci">void AddWorkspace(RooWorkspace const *ws)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___creation_8cc_source.html#l00101">CombineHarvester_Creation.cc:101</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a463bab1fa1cc7098f35d82c78a10fb9d"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a463bab1fa1cc7098f35d82c78a10fb9d">ch::CombineHarvester::data</a></div><div class="ttdeci">CombineHarvester &amp; data()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___filters_8cc_source.html#l00124">CombineHarvester_Filters.cc:124</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_ac40e961ea428fa6411ec8e3b6ddeadef"><div class="ttname"><a href="classch_1_1_combine_harvester.html#ac40e961ea428fa6411ec8e3b6ddeadef">ch::CombineHarvester::ExtractData</a></div><div class="ttdeci">void ExtractData(std::string const &amp;ws_name, std::string const &amp;rule)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___creation_8cc_source.html#l00125">CombineHarvester_Creation.cc:125</a></div></div>
@@ -391,6 +391,7 @@ $(document).ready(function(){initNavTree('_combine_harvester___creation_8cc_sour
 <div class="ttc" id="_process_8h_html"><div class="ttname"><a href="_process_8h.html">Process.h</a></div></div>
 <div class="ttc" id="_combine_harvester_8h_html"><div class="ttname"><a href="_combine_harvester_8h.html">CombineHarvester.h</a></div></div>
 <div class="ttc" id="namespacech_html_a0ea5d53cb275e53807f576a4020cf15e"><div class="ttname"><a href="namespacech.html#a0ea5d53cb275e53807f576a4020cf15e">ch::SetProperties</a></div><div class="ttdeci">void SetProperties(T *first, U const *second)</div><div class="ttdef"><b>Definition:</b> <a href="_utilities_8h_source.html#l00060">Utilities.h:60</a></div></div>
+<div class="ttc" id="_systematic_8h_html"><div class="ttname"><a href="_systematic_8h.html">Systematic.h</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a20c5575a1983fbd8ff1b4232128610ff"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a20c5575a1983fbd8ff1b4232128610ff">ch::CombineHarvester::AddBinByBin</a></div><div class="ttdeci">void AddBinByBin(double threshold, bool fixed_norm, CombineHarvester *other)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___creation_8cc_source.html#l00139">CombineHarvester_Creation.cc:139</a></div></div>
 <div class="ttc" id="namespacech_html"><div class="ttname"><a href="namespacech.html">ch</a></div><div class="ttdef"><b>Definition:</b> <a href="_algorithm_8h_source.html#l00010">Algorithm.h:10</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_ab06e3c82b65f34051cea4b4c8e4f3710"><div class="ttname"><a href="classch_1_1_combine_harvester.html#ab06e3c82b65f34051cea4b4c8e4f3710">ch::CombineHarvester::AddObservations</a></div><div class="ttdeci">void AddObservations(std::vector&lt; std::string &gt; mass, std::vector&lt; std::string &gt; analysis, std::vector&lt; std::string &gt; era, std::vector&lt; std::string &gt; channel, std::vector&lt; std::pair&lt; int, std::string &gt;&gt; bin)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___creation_8cc_source.html#l00018">CombineHarvester_Creation.cc:18</a></div></div>
@@ -404,7 +405,6 @@ $(document).ready(function(){initNavTree('_combine_harvester___creation_8cc_sour
 <div class="ttc" id="_observation_8h_html"><div class="ttname"><a href="_observation_8h.html">Observation.h</a></div></div>
 <div class="ttc" id="classch_1_1_parameter_html"><div class="ttname"><a href="classch_1_1_parameter.html">ch::Parameter</a></div><div class="ttdef"><b>Definition:</b> <a href="_parameter_8h_source.html#l00012">Parameter.h:12</a></div></div>
 <div class="ttc" id="structch_1_1syst_1_1channel_html"><div class="ttname"><a href="structch_1_1syst_1_1channel.html">ch::syst::channel</a></div><div class="ttdef"><b>Definition:</b> <a href="_systematics_8h_source.html#l00025">Systematics.h:25</a></div></div>
-<div class="ttc" id="_nuisance_8h_html"><div class="ttname"><a href="_nuisance_8h.html">Nuisance.h</a></div></div>
 <div class="ttc" id="structch_1_1syst_1_1era_html"><div class="ttname"><a href="structch_1_1syst_1_1era.html">ch::syst::era</a></div><div class="ttdef"><b>Definition:</b> <a href="_systematics_8h_source.html#l00020">Systematics.h:20</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_ad4bd2bb5458d8435efd8fff49624b7b0"><div class="ttname"><a href="classch_1_1_combine_harvester.html#ad4bd2bb5458d8435efd8fff49624b7b0">ch::CombineHarvester::ExtractShapes</a></div><div class="ttdeci">void ExtractShapes(std::string const &amp;file, std::string const &amp;rule, std::string const &amp;syst_rule)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___creation_8cc_source.html#l00074">CombineHarvester_Creation.cc:74</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

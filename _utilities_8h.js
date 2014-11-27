@@ -14,6 +14,7 @@ var _utilities_8h =
     [ "Set2Vec", "_utilities_8h.html#a5e23234ab65cfa48c99b83d94e291125", null ],
     [ "TH1F2Data", "_utilities_8h.html#a1347e48be022e182e17dfc421bf12680", null ],
     [ "RebinHist", "_utilities_8h.html#a2cbcfd049543bfe9f63958bc671deeae", null ],
+    [ "RestoreBinning", "_utilities_8h.html#a23cd9444931a49de080638458f722501", null ],
     [ "GenerateCombinations", "_utilities_8h.html#a98ec286981dda179332f736f113ab8a5", null ],
     [ "ParseFileLines", "_utilities_8h.html#a23a4079d5c68e21d9697570255e08224", null ],
     [ "MassesFromRange", "_utilities_8h.html#a9aa7fae276e9a3482b0e2e0b7adf779b", null ]

@@ -16,7 +16,7 @@ var searchData=
   ['energy',['energy',['../classic_1_1_candidate.html#a7d1e96967ca06abbc3a5474f07c8e1c5',1,'ic::Candidate::energy()'],['../classic_1_1_super_cluster.html#a85586768b38104c2253621bbbcd5ac5b',1,'ic::SuperCluster::energy()'],['../classic_1_1_track.html#a7ac87feb8ff03959eafb3e244e584da7',1,'ic::Track::energy()']]],
   ['energy_5ffrac_5fem',['energy_frac_em',['../classic_1_1_calo_jet.html#a074bbab32a84f9d77e694ab8f4107c1c',1,'ic::CaloJet']]],
   ['energy_5ffrac_5fhad',['energy_frac_had',['../classic_1_1_calo_jet.html#a59589728f6671ec0c301f23aae1e8788',1,'ic::CaloJet']]],
-  ['era',['era',['../classch_1_1_combine_harvester.html#a4bb3afda2ccc54a1c259be6b715ae8e5',1,'ch::CombineHarvester::era()'],['../classch_1_1_nuisance.html#aebb863924a99b90676fa7fcf2a0e05b6',1,'ch::Nuisance::era()'],['../classch_1_1_observation.html#a1b54f515cbf55043339602323ba9592b',1,'ch::Observation::era()'],['../classch_1_1_process.html#a3b52ca0cf0b51515b4cef41339f74c76',1,'ch::Process::era()']]],
+  ['era',['era',['../classch_1_1_combine_harvester.html#a4bb3afda2ccc54a1c259be6b715ae8e5',1,'ch::CombineHarvester::era()'],['../classch_1_1_observation.html#a1b54f515cbf55043339602323ba9592b',1,'ch::Observation::era()'],['../classch_1_1_process.html#a3b52ca0cf0b51515b4cef41339f74c76',1,'ch::Process::era()'],['../classch_1_1_systematic.html#acb9511d339c5d8b2598af9ae6818f4f9',1,'ch::Systematic::era()']]],
   ['era_5fset',['era_set',['../classch_1_1_combine_harvester.html#a9f1ada299ed6d20f749cf10f589c25df',1,'ch::CombineHarvester']]],
   ['erase_5fif',['erase_if',['../namespacech.html#a9e0d877cb39147fa1de5cdcb8eff2110',1,'ch']]],
   ['err_5fd',['err_d',['../classch_1_1_parameter.html#abb14d062556c9445bdfa7c11293bfb50',1,'ch::Parameter']]],

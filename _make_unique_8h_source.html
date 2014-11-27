@@ -103,17 +103,17 @@ $(document).ready(function(){initNavTree('_make_unique_8h_source.html','');});
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define CombineTools_MakeUnique_h</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceic.html">ic</a> {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacech.html">ch</a> {</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="namespaceic.html#af88b60eea48a5cd883e2f56ed18f7ccb">    8</a></span>&#160;std::unique_ptr&lt;T&gt; <a class="code" href="namespaceic.html#af88b60eea48a5cd883e2f56ed18f7ccb">make_unique</a>(Args&amp;&amp;... args) {</div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="namespacech.html#a34936b9e16919f93ca72d0f164d83347">    8</a></span>&#160;std::unique_ptr&lt;T&gt; <a class="code" href="namespacech.html#a34936b9e16919f93ca72d0f164d83347">make_unique</a>(Args&amp;&amp;... args) {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  <span class="keywordflow">return</span> std::unique_ptr&lt;T&gt;(<span class="keyword">new</span> T(std::forward&lt;Args&gt;(args)...));</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;}</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;}</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="namespaceic_html"><div class="ttname"><a href="namespaceic.html">ic</a></div><div class="ttdef"><b>Definition:</b> <a href="_calo_jet_8hh_source.html#l00009">CaloJet.hh:9</a></div></div>
-<div class="ttc" id="namespaceic_html_af88b60eea48a5cd883e2f56ed18f7ccb"><div class="ttname"><a href="namespaceic.html#af88b60eea48a5cd883e2f56ed18f7ccb">ic::make_unique</a></div><div class="ttdeci">std::unique_ptr&lt; T &gt; make_unique(Args &amp;&amp;...args)</div><div class="ttdef"><b>Definition:</b> <a href="_make_unique_8h_source.html#l00008">MakeUnique.h:8</a></div></div>
+<div class="ttc" id="namespacech_html_a34936b9e16919f93ca72d0f164d83347"><div class="ttname"><a href="namespacech.html#a34936b9e16919f93ca72d0f164d83347">ch::make_unique</a></div><div class="ttdeci">std::unique_ptr&lt; T &gt; make_unique(Args &amp;&amp;...args)</div><div class="ttdef"><b>Definition:</b> <a href="_make_unique_8h_source.html#l00008">MakeUnique.h:8</a></div></div>
+<div class="ttc" id="namespacech_html"><div class="ttname"><a href="namespacech.html">ch</a></div><div class="ttdef"><b>Definition:</b> <a href="_algorithm_8h_source.html#l00010">Algorithm.h:10</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

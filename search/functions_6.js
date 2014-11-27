@@ -2,9 +2,9 @@ var searchData=
 [
   ['gen_5fparticles',['gen_particles',['../classic_1_1_electron.html#ab95a72e2e57e2686c7b57a6540033e98',1,'ic::Electron::gen_particles()'],['../classic_1_1_jet.html#a24e63650381cde3de472d83f41d31525',1,'ic::Jet::gen_particles()'],['../classic_1_1_muon.html#aad79bba88c92089f87a4dfd79cd09065',1,'ic::Muon::gen_particles()']]],
   ['generatecombinations',['GenerateCombinations',['../namespacech.html#a98ec286981dda179332f736f113ab8a5',1,'ch']]],
-  ['generatesetfromnus',['GenerateSetFromNus',['../classch_1_1_combine_harvester.html#afacaee2b01abd37c9956c09f62500188',1,'ch::CombineHarvester']]],
   ['generatesetfromobs',['GenerateSetFromObs',['../classch_1_1_combine_harvester.html#a01e59627c04498ff02ff2d8a9eccc1d4',1,'ch::CombineHarvester']]],
   ['generatesetfromprocs',['GenerateSetFromProcs',['../classch_1_1_combine_harvester.html#a224525ed617dae2b4b1e410a12cc129d',1,'ch::CombineHarvester']]],
+  ['generatesetfromsysts',['GenerateSetFromSysts',['../classch_1_1_combine_harvester.html#a3a324d0e617b9519bc30099c57d4f7be',1,'ch::CombineHarvester']]],
   ['genjet',['GenJet',['../classic_1_1_gen_jet.html#a777295055ab9114e2d8ddabf59eed9d5',1,'ic::GenJet']]],
   ['genparticle',['GenParticle',['../classic_1_1_gen_particle.html#a0d84457500ac1c1c7927274ce32b97dc',1,'ic::GenParticle']]],
   ['get',['get',['../structch_1_1syst_1_1bin.html#ae566871b3c3496a373d94804fe078026',1,'ch::syst::bin::get()'],['../structch_1_1syst_1_1analysis.html#aef7aa22862630508c22b57ecd436e31c',1,'ch::syst::analysis::get()'],['../structch_1_1syst_1_1era.html#a0608c96c7f833d6375c16881c3aeaaf4',1,'ch::syst::era::get()'],['../structch_1_1syst_1_1channel.html#a72ea9574f99f03f955df62612a43c088',1,'ch::syst::channel::get()'],['../structch_1_1syst_1_1mass.html#a2f9dad5f252ac95b1628924fb7ad2b62',1,'ch::syst::mass::get()'],['../structch_1_1syst_1_1process.html#a02b9e1d72b3e3b9160f56859d6563227',1,'ch::syst::process::get()'],['../classch_1_1syst_1_1bin__id.html#a16e43240ce229d97f80b2e6728c3f1d9',1,'ch::syst::bin_id::get()']]],

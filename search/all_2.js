@@ -13,7 +13,7 @@ var searchData=
   ['category',['category',['../structch_1_1_hist_mapping.html#a3f5bb3146facf941b757e6af4c0ac857',1,'ch::HistMapping']]],
   ['ch',['ch',['../namespacech.html',1,'']]],
   ['channel',['channel',['../structch_1_1syst_1_1channel.html',1,'ch::syst']]],
-  ['channel',['channel',['../classch_1_1_combine_harvester.html#af0aa39911df61ce140c97b13ffde77e9',1,'ch::CombineHarvester::channel()'],['../classch_1_1_nuisance.html#a4df9beb737fa193918e355b68f241d0a',1,'ch::Nuisance::channel()'],['../classch_1_1_observation.html#aac2f97ba6e90192433da4f30b4f2dc5a',1,'ch::Observation::channel()'],['../classch_1_1_process.html#a5f969b0a85a5d992bd9bc8a7df6956b3',1,'ch::Process::channel()']]],
+  ['channel',['channel',['../classch_1_1_combine_harvester.html#af0aa39911df61ce140c97b13ffde77e9',1,'ch::CombineHarvester::channel()'],['../classch_1_1_observation.html#aac2f97ba6e90192433da4f30b4f2dc5a',1,'ch::Observation::channel()'],['../classch_1_1_process.html#a5f969b0a85a5d992bd9bc8a7df6956b3',1,'ch::Process::channel()'],['../classch_1_1_systematic.html#a5c8db86b119a7fc1875286544589b16c',1,'ch::Systematic::channel()']]],
   ['channel_5fset',['channel_set',['../classch_1_1_combine_harvester.html#aa8d68c05c6be27db6568098a15f07e5c',1,'ch::CombineHarvester']]],
   ['charge',['charge',['../classic_1_1_candidate.html#af50b71d80976f6529d64abde0e06368a',1,'ic::Candidate::charge()'],['../classic_1_1_track.html#ac1d1fd2c50b2b39adfe1bf6204447dd3',1,'ic::Track::charge()']]],
   ['charged_5fem_5fenergy',['charged_em_energy',['../classic_1_1_j_p_t_jet.html#aa0c58b56f1d48e4a84e798ee13b3a218',1,'ic::JPTJet::charged_em_energy()'],['../classic_1_1_p_f_jet.html#af815aafb80985744deb8ecadf65a9045',1,'ic::PFJet::charged_em_energy()']]],

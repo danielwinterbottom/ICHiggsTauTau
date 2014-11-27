@@ -1,5 +1,8 @@
 var NAVTREEINDEX5 =
 {
+"classic_1_1_p_f_jet.html#af815aafb80985744deb8ecadf65a9045":[9,0,1,14,12],
+"classic_1_1_p_f_jet.html#afc5148c5bcad67981e8b96c4ce10e2da":[9,0,1,14,48],
+"classic_1_1_photon.html":[9,0,1,15],
 "classic_1_1_photon.html#a0c134e24ce8c9f081e883f56d6134e56":[9,0,1,15,15],
 "classic_1_1_photon.html#a22611eac9f3389c005e45cf8afe2b8c2":[9,0,1,15,3],
 "classic_1_1_photon.html#a30eb93d12e66581b6521d8f6a82f3b04":[9,0,1,15,12],
@@ -176,8 +179,8 @@ var NAVTREEINDEX5 =
 "dir_ec684a3916cb29abaa074ee2c650fd24.html":[10,0,0,0,1],
 "examples.html":[11],
 "files.html":[10,0],
-"functions.html":[9,2,0],
 "functions.html":[9,2,0,0],
+"functions.html":[9,2,0],
 "functions_b.html":[9,2,0,1],
 "functions_c.html":[9,2,0,2],
 "functions_d.html":[9,2,0,3],
@@ -243,11 +246,8 @@ var NAVTREEINDEX5 =
 "index.html#overview":[0,0],
 "namespacech.html":[9,0,0],
 "namespacech.html":[8,0,0],
-"namespacech_1_1syst.html":[9,0,0,0],
 "namespacech_1_1syst.html":[8,0,0,0],
+"namespacech_1_1syst.html":[9,0,0,0],
 "namespacech_1_1syst_1_1detail.html":[8,0,0,0,0],
-"namespaceic.html":[9,0,1],
-"namespaceic.html":[8,0,1],
-"namespacemembers.html":[8,1,0],
-"namespacemembers_func.html":[8,1,1]
+"namespaceic.html":[8,0,1]
 };

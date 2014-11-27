@@ -3,7 +3,7 @@ var searchData=
   ['n60',['n60',['../classic_1_1_calo_jet.html#a6f9c1c84f0833cdff6e15311fb9330f8',1,'ic::CaloJet']]],
   ['n90',['n90',['../classic_1_1_calo_jet.html#a8a3f0133451b47c70584e68c098e51f8',1,'ic::CaloJet']]],
   ['n_5fconstituents',['n_constituents',['../classic_1_1_gen_jet.html#a631fcc043a5a56fb511395ee9d1cb29a',1,'ic::GenJet']]],
-  ['name',['name',['../classic_1_1_trigger_path.html#a8d1332435c41d38cc5b092178ee189ae',1,'ic::TriggerPath::name()'],['../classch_1_1_nuisance.html#a2d7796bba99a292ee615bdf8756e3bba',1,'ch::Nuisance::name()'],['../classch_1_1_parameter.html#af57376e4f0eb43b4aa62fd18759f4a17',1,'ch::Parameter::name()']]],
+  ['name',['name',['../classic_1_1_trigger_path.html#a8d1332435c41d38cc5b092178ee189ae',1,'ic::TriggerPath::name()'],['../classch_1_1_parameter.html#af57376e4f0eb43b4aa62fd18759f4a17',1,'ch::Parameter::name()'],['../classch_1_1_systematic.html#a003ef543320b8966fd66d85cc5a8cd87',1,'ch::Systematic::name()']]],
   ['ndof',['ndof',['../classic_1_1_vertex.html#a020e4681554f79d1ff7989818c25ba73',1,'ic::Vertex']]],
   ['neutral_5fem_5fenergy',['neutral_em_energy',['../classic_1_1_j_p_t_jet.html#a16016c9915f45346e99467439920a8e1',1,'ic::JPTJet::neutral_em_energy()'],['../classic_1_1_p_f_jet.html#ad3e504e72734ac2682fc51b8a392cab6',1,'ic::PFJet::neutral_em_energy()']]],
   ['neutral_5fem_5fenergy_5ffrac',['neutral_em_energy_frac',['../classic_1_1_j_p_t_jet.html#a83a7e4043ec5a60835c12240112c49dd',1,'ic::JPTJet::neutral_em_energy_frac()'],['../classic_1_1_p_f_jet.html#a6a2a314d12f578d033937dcf138c4697',1,'ic::PFJet::neutral_em_energy_frac()']]],
@@ -15,13 +15,5 @@ var searchData=
   ['norm',['norm',['../classch_1_1_process.html#ab41c6e3bf638dbb480404166185ed0a1',1,'ch::Process']]],
   ['ntuple_20configuration',['NTuple Configuration',['../ntuple-config.html',1,'']]],
   ['ntupleconfig_2emd',['NTupleConfig.md',['../_n_tuple_config_8md.html',1,'']]],
-  ['nuisance',['Nuisance',['../classch_1_1_nuisance.html',1,'ch']]],
-  ['nuisance',['Nuisance',['../classch_1_1_nuisance.html#a920b1b31c2c7bcba92ff24f3d203d37d',1,'ch::Nuisance::Nuisance()'],['../classch_1_1_nuisance.html#a304bbb0b18f7aef7be7b17ffda4f9aa4',1,'ch::Nuisance::Nuisance(Nuisance const &amp;other)'],['../classch_1_1_nuisance.html#a971da1840559f072174923e365202b45',1,'ch::Nuisance::Nuisance(Nuisance &amp;&amp;other)']]],
-  ['nuisance_2ecc',['Nuisance.cc',['../_nuisance_8cc.html',1,'']]],
-  ['nuisance_2eh',['Nuisance.h',['../_nuisance_8h.html',1,'']]],
-  ['num_5finteractions',['num_interactions',['../classic_1_1_pileup_info.html#a32eaca345418e49fc34a82b709949f91',1,'ic::PileupInfo']]],
-  ['nus_5fname',['nus_name',['../classch_1_1_combine_harvester.html#a0d2b534f57b6c5399c91a163157a84be',1,'ch::CombineHarvester']]],
-  ['nus_5fname_5fset',['nus_name_set',['../classch_1_1_combine_harvester.html#a569793e70f4fbbd89e82adcafeed4bc6',1,'ch::CombineHarvester']]],
-  ['nus_5ftype',['nus_type',['../classch_1_1_combine_harvester.html#a5999ebbbcd9f6f0994ac0bebf7b36800',1,'ch::CombineHarvester']]],
-  ['nus_5ftype_5fset',['nus_type_set',['../classch_1_1_combine_harvester.html#a2cace9061605c63e8c7d05d1cb45ac7d',1,'ch::CombineHarvester']]]
+  ['num_5finteractions',['num_interactions',['../classic_1_1_pileup_info.html#a32eaca345418e49fc34a82b709949f91',1,'ic::PileupInfo']]]
 ];
