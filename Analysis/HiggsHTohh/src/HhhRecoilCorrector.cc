@@ -103,7 +103,8 @@ namespace ic {
     }
     */
 
-    if (sample_.find("HToTauTau") != sample_.npos) {
+    if (sample_.find("HToTauTau") != sample_.npos
+        || sample_.find("HToBB") != sample_.npos) {
       disable = false;
       if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
       if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
