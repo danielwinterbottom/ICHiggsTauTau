@@ -29,7 +29,7 @@ using std::map;
 using std::set;
 
 int main() {
-  bool create_asimov = false;
+  bool create_asimov = true;
   bool do_parametric = true;
   bool inject_signal = false;
   string inject_mass = "900";
@@ -148,9 +148,9 @@ int main() {
 
   cb.cp().bin_id({8}).VariableRebin(
     {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120,
-      130, 140, 150, 160, 170, 180, 190, 200});
+      130, 140, 150, 160, 170, 180, 190, 200,225,250,275,300});
   cb.cp().bin_id({9}).VariableRebin(
-      {0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200});
+      {0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 250, 300});
 
   // Drop shape uncerts on signal in the hm for now,
   // the fb versions aren't in the datacards and
@@ -174,7 +174,7 @@ int main() {
     });
 
     std::vector<double> bins_hm;
-    double x = 200.;
+    double x = 300.;
     while (x < 1501.) {
       bins_hm.push_back(x);
       x += 5.;
@@ -229,9 +229,9 @@ int main() {
     // cb_hm.PrintAll();
   } else {
     cb_hm.cp().bin_id({8}).VariableRebin(
-        {200, 225, 250, 275, 300, 325, 350, 400, 500, 700, 1000, 1500});
+        {300, 325, 350, 400, 500, 700, 1000, 1500});
     cb_hm.cp().bin_id({9}).VariableRebin(
-        {200, 250, 300, 350, 400, 500, 700, 1000, 1500});
+        {300, 350, 400, 500, 700, 1000, 1500});
     std::cout << "Doing bbb for the high mass...\n";
     cb_hm.cp().process({"W", "QCD", "ZTT", "ZL", "ZJ", "TT", "VV"})
         .MergeBinErrors(0.05, 0.4);

@@ -43,13 +43,13 @@ using namespace std;
 
 int main() {
   bool do_ratio = true;
-  bool do_logy = true;
+  bool do_logy = false;
 
   TH1::AddDirectory(0);
   ModTDRStyle();
 
   string file = "bus.root";
-  string base = "htt_em_3_8TeV";
+  string base = "htt_em_0_8TeV";
   string bin_pre = base+"_prefit";
   string bin_post = base+"_postfit";
   TCanvas* canv = new TCanvas(base.c_str(), base.c_str());
@@ -143,12 +143,12 @@ int main() {
   std::cout << "here2\n";
   pads[0]->cd();
   // pos = 1, 2, 3
-  TLegend *legend = PositionedLegend(0.35, 0.20, 3, 0.03);
+  TLegend *legend = PositionedLegend(0.35, 0.15, 3, 0.03);
   legend->SetTextFont(42);
   FixBoxPadding(pads[0], legend, 0.05);
   legend->AddEntry(&data, "Observed", "pe");
-  legend->AddEntry(&err_pre, "Bkg. Pre-fit", "lf");
-  legend->AddEntry(&err_post, "Bkg. Post-fit", "lf");
+  legend->AddEntry(&err_pre, "Background Prefit", "lf");
+  legend->AddEntry(&err_post, "Background Postfit", "lf");
   legend->Draw();
 
   pads[0]->RedrawAxis();
