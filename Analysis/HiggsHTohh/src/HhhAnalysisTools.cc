@@ -126,9 +126,10 @@ namespace ic {
     // Categories for background estimates and control plots
     alias_map_["btag_loose"]                = "(n_jets<=1 && n_loose_bjets>=1)";
     alias_map_["1jet1tag_loose"]            = "(n_prebjets==1 && prebjetbcsv_1>0.244)";
-    //alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
-    alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet2tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
+    alias_map_["2jet1tagMassCuts_loose"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
+    alias_map_["2jet2tagMassCuts_loose"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     // Useful category for control plots
     alias_map_["2jetGT1tag"]                      = "(n_prebjets>=2 && prebjetbcsv_1>=0.679)";
     alias_map_["2jetGT1tagSF"]                      = "(n_prebjets>=2 && n_prebjets_SF>=1)";
@@ -477,8 +478,8 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
-      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
-      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
+      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
       zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, cat, wt);
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
@@ -521,8 +522,8 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
-      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
-      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
+      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
       zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt);
       zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
@@ -608,7 +609,8 @@ namespace ic {
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
-    if (method == 28 || method == 29 || method == 16) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 28 || method == 29) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 28 || method == 29 || method == 16) w_extrap_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     
     Value w_norm;
     if(method == 20){
@@ -656,8 +658,10 @@ namespace ic {
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
     if (method == 23) w_shape_cat = this->ResolveAlias("1jet1tag_loose");
-    if (method == 24 || method == 15) w_shape_cat = this->ResolveAlias("2jet1tag_loose");
-    if (method == 27 || method == 16) w_shape_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 24) w_shape_cat = this->ResolveAlias("2jet1tag_loose");
+    if (method == 15) w_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+    if (method == 27) w_shape_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 16) w_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     TH1F w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, w_shape_cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("W_Shape_Sample") % w_shape_sel % w_shape_cat % wt;
@@ -735,8 +739,10 @@ namespace ic {
         if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
         if (method == 23) qcd_cat = this->ResolveAlias("1jet1tag_loose");        
         //if (method == 24 || method == 25 ) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
-        if (method == 24 || method == 15) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
-        if (method == 27 || method == 16) qcd_cat = this->ResolveAlias("2jet2tag_loose");        
+        if (method == 24) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
+        if (method == 15) qcd_cat = this->ResolveAlias("2jet1tagMassCuts_loose");        
+        if (method == 27) qcd_cat = this->ResolveAlias("2jet2tag_loose");        
+        if (method == 16) qcd_cat = this->ResolveAlias("2jet2tagMassCuts_loose");        
         qcd_hist = this->GetShape(var, this->ResolveAlias("QCD_Shape_Sample"), qcd_sdb_sel, qcd_cat, wt);
         if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
           % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
