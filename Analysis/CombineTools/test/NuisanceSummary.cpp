@@ -3,7 +3,7 @@
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/Observation.h"
 #include "CombineTools/interface/Process.h"
-#include "CombineTools/interface/Nuisance.h"
+#include "CombineTools/interface/Systematic.h"
 #include "CombineTools/interface/Utilities.h"
 #include "CombineTools/interface/TFileIO.h"
 #include "RooFitResult.h"
@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
     cmb.ParseDatacard(d, parse_rule);
   }
 
-  cmb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
+  cmb.ForEachSyst(ch::SetStandardBinName<ch::Systematic>);
   cmb.ForEachObs(ch::SetStandardBinName<ch::Observation>);
   cmb.ForEachProc(ch::SetStandardBinName<ch::Process>);
   // cmb.PrintAll();
@@ -54,8 +54,8 @@ int main(int argc, char* argv[]) {
     delete fitresult;
   }
 
-  auto systematics = cmb.GenerateSetFromNus<std::string>(
-      std::mem_fn(&ch::Nuisance::name));
+  auto systematics = cmb.GenerateSetFromSysts<std::string>(
+      std::mem_fn(&ch::Systematic::name));
   std::set<string> ungrouped;
 
 
@@ -130,19 +130,19 @@ int main(int argc, char* argv[]) {
     std::cout << "  * Affecting channels:\n      ";
     std::set<double> cleaned_rates;
     ch::CombineHarvester all_syst = cmb.cp()
-      .nus_name(p.second);
+      .syst_name(p.second);
     auto chns = all_syst
-      .GenerateSetFromNus<string>(std::mem_fn(&ch::Nuisance::channel));
+      .GenerateSetFromSysts<string>(std::mem_fn(&ch::Systematic::channel));
     for (auto const& c : chns) std::cout << " " << c << " ";
     std::cout << "\n";
     std::set<string> all_procs;
     auto bins = all_syst
-      .GenerateSetFromNus<string>(std::mem_fn(&ch::Nuisance::bin));
+      .GenerateSetFromSysts<string>(std::mem_fn(&ch::Systematic::bin));
     for (auto const& bin : bins) {
       ch::CombineHarvester syst_in_bin = all_syst.cp()
         .bin({bin});
       auto procs = syst_in_bin
-        .GenerateSetFromNus<string>(std::mem_fn(&ch::Nuisance::process));
+        .GenerateSetFromSysts<string>(std::mem_fn(&ch::Systematic::process));
       for (auto const& proc : procs) {
         all_procs.insert(proc);
         ch::CombineHarvester syst_in_proc = syst_in_bin.cp()

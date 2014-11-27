@@ -244,7 +244,7 @@ int main() {
   cout << "Setting standardised bin names...";
   cb.ForEachObs(ch::SetStandardBinName<ch::Observation>);
   cb.ForEachProc(ch::SetStandardBinName<ch::Process>);
-  cb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
+  cb.ForEachSyst(ch::SetStandardBinName<ch::Systematic>);
   cout << " done\n";
 
   RooWorkspace ws("htt", "htt");
@@ -266,7 +266,7 @@ int main() {
     }
 
 
-    cb.FilterNus([&](ch::Nuisance const* p) {
+    cb.FilterSysts([&](ch::Systematic const* p) {
       return p->type() == "shape" && p->signal();
     });
     cb.mass({"120", "*"});
@@ -275,7 +275,7 @@ int main() {
       p->set_rate(1.0);
       p->set_mass("*");
     });
-    cb.cp().signals().ForEachNus([&](ch::Nuisance* n) {
+    cb.cp().signals().ForEachSyst([&](ch::Systematic* n) {
       n->set_mass("*");
     });
     cb.cp().signals().ForEachProc([&](ch::Process* p) {

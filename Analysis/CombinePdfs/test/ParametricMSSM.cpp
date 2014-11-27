@@ -103,7 +103,7 @@ int main() {
   std::cout << "Setting standardised bin names...";
   cb.ForEachObs(ch::SetStandardBinName<ch::Observation>);
   cb.ForEachProc(ch::SetStandardBinName<ch::Process>);
-  cb.ForEachNus(ch::SetStandardBinName<ch::Nuisance>);
+  cb.ForEachSyst(ch::SetStandardBinName<ch::Systematic>);
   std::cout << " done\n";
 
   // cb.era({"8TeV"}).bin_id({8});
@@ -113,7 +113,7 @@ int main() {
   if (create_asimov) {
     for (auto const& b : lm_bins) {
       ch::CombineHarvester tmp = std::move(
-          cb.cp().bin({b}).backgrounds().nus_type({"shape"}, false));
+          cb.cp().bin({b}).backgrounds().syst_type({"shape"}, false));
       TH1F tot_bkg = tmp.GetShape();
       double bkg_rate = tot_bkg.Integral();
       tot_bkg.Scale(tmp.GetObservedRate()/tot_bkg.Integral());
@@ -123,7 +123,7 @@ int main() {
       // }
       tot_bkg.Scale(1.0/tot_bkg.Integral());
       tmp.ForEachObs([&](ch::Observation * obs) {
-        obs->set_shape(ic::make_unique<TH1F>(tot_bkg));
+        obs->set_shape(ch::make_unique<TH1F>(tot_bkg));
       });
     }
   }
@@ -136,7 +136,7 @@ int main() {
   cb_hm.ForEachProc([&](ch::Process* in) {
     in->set_bin(in->bin() + "_hm");
   });
-  cb_hm.ForEachNus([&](ch::Nuisance* in) {
+  cb_hm.ForEachSyst([&](ch::Systematic* in) {
     in->set_bin(in->bin() + "_hm");
   });
 
@@ -155,7 +155,7 @@ int main() {
   // Drop shape uncerts on signal in the hm for now,
   // the fb versions aren't in the datacards and
   // we want to keep the comparison fair
-  cb_hm.FilterNus([&](ch::Nuisance const* p) {
+  cb_hm.FilterSysts([&](ch::Systematic const* p) {
     return p->type() == "shape" && p->signal();
   });
 
@@ -169,7 +169,7 @@ int main() {
 
 
   if (do_parametric) {
-    cb_hm.FilterNus([&](ch::Nuisance const* p) {
+    cb_hm.FilterSysts([&](ch::Systematic const* p) {
       return p->type() == "shape";
     });
 

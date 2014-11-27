@@ -69,19 +69,19 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb,
 
   // ss = "shape systematic"
   vector<string> ss_vec =
-      Set2Vec(cb_bp.cp().nus_type({"shape"}).nus_name_set());
+      Set2Vec(cb_bp.cp().syst_type({"shape"}).syst_name_set());
   unsigned ss = ss_vec.size();
 
   // ls = "lnN systematic"
   vector<string> ls_vec =
-      Set2Vec(cb_bp.cp().nus_type({"lnN"}).nus_name_set());
+      Set2Vec(cb_bp.cp().syst_type({"lnN"}).syst_name_set());
   unsigned ls = ls_vec.size();
 
   multi_array<ch::Process *,  1> pr_arr(extents[m]);
-  multi_array<ch::Nuisance *, 2> ss_arr(extents[ss][m]);
+  multi_array<ch::Systematic *, 2> ss_arr(extents[ss][m]);
   multi_array<double, 1> ss_scale_arr(extents[ss]);
   multi_array<bool, 1> ss_must_scale_arr(extents[ss]);
-  multi_array<ch::Nuisance *, 2> ls_arr(extents[ls][m]);
+  multi_array<ch::Systematic *, 2> ls_arr(extents[ls][m]);
 
   multi_array<std::shared_ptr<RooRealVar>, 1> ss_scale_var_arr(extents[ss]);
   multi_array<std::shared_ptr<RooConstVar>, 1> ss_scale_fac_arr(extents[ss]);
@@ -93,14 +93,14 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb,
       pr_arr[mi] = p;
     });
     for (unsigned ssi = 0; ssi < ss; ++ssi) {
-      cb_bp.cp().mass({m_str_vec[mi]}).nus_name({ss_vec[ssi]})
-        .ForEachNus([&](ch::Nuisance *n) {
+      cb_bp.cp().mass({m_str_vec[mi]}).syst_name({ss_vec[ssi]})
+        .ForEachSyst([&](ch::Systematic *n) {
             ss_arr[ssi][mi] = n;
         });
     }
     for (unsigned lsi = 0; lsi < ls; ++lsi) {
-      cb_bp.cp().mass({m_str_vec[mi]}).nus_name({ls_vec[lsi]})
-        .ForEachNus([&](ch::Nuisance *n) {
+      cb_bp.cp().mass({m_str_vec[mi]}).syst_name({ls_vec[lsi]})
+        .ForEachSyst([&](ch::Systematic *n) {
             ls_arr[lsi][mi] = n;
         });
     }
@@ -152,7 +152,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb,
     set<double> k_hi;
     set<double> k_lo;
     for (unsigned mi = 0; mi < m; ++mi) {
-      Nuisance *n = ls_arr[lsi][mi];
+      Systematic *n = ls_arr[lsi][mi];
       k_hi.insert(n->value_u());
       if (n->asymm()) {
         k_lo.insert(n->value_d());
@@ -165,7 +165,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb,
     }
   }
   unsigned lms = lms_vec.size();
-  multi_array<ch::Nuisance *, 2> lms_arr(extents[lms][m]);
+  multi_array<ch::Systematic *, 2> lms_arr(extents[lms][m]);
   multi_array<std::shared_ptr<RooRealVar>, 1> lms_var_arr(extents[lms]);
 
   for (unsigned lmsi = 0; lmsi < lms; ++lmsi) {
@@ -321,7 +321,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb,
   cb.FilterProcs([&](ch::Process const* p) {
     return p->bin() == bin && p->process() == process && p->mass() != mass_min;
   });
-  cb.FilterNus([&](ch::Nuisance const* n) {
+  cb.FilterSysts([&](ch::Systematic const* n) {
     return (n->bin() == bin && n->process() == process) &&
            ((n->mass() != mass_min) || (n->type() == "shape") ||
             (lms_set.count(n->name())));
@@ -333,7 +333,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb,
       p->set_rate(1.0);
     }
   });
-  cb.ForEachNus([&](ch::Nuisance * n) {
+  cb.ForEachSyst([&](ch::Systematic * n) {
     if (n->bin() == bin && n->process() == process) {
       n->set_mass("*");
     }
@@ -398,7 +398,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
     for (auto s : sigs) {
       if (verbose) std::cout << ">> bin: " << b << " process: " << s << "\n";
       ch::CombineHarvester tmp =
-          std::move(cb.cp().bin({b}).process({s}).nus_type({"shape"}));
+          std::move(cb.cp().bin({b}).process({s}).syst_type({"shape"}));
       TH1F data_hist = tmp.GetObservedShape();
       // tmp2.PrintAll();
       RooRealVar mtt("CMS_th1x", "CMS_th1x", 0,
@@ -412,7 +412,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
         mtt.Print();
         morph_mtt.Print();
       }
-      auto systs = ch::Set2Vec(tmp.nus_name_set());
+      auto systs = ch::Set2Vec(tmp.syst_name_set());
       if (verbose) std::cout << ">> Found shape systematics:\n";
       RooArgList syst_list;
       for (auto const& syst: systs) {
@@ -438,7 +438,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb, RooAbsReal& mh,
         yield_vec[m] = tmp3.GetRate();
         h_vec[m].push_back(RebinHist(tmp3.GetShape()));
         for (unsigned s = 0; s < systs.size(); ++s) {
-          tmp3.cp().nus_name({systs[s]}).ForEachNus([&](Nuisance const* n) {
+          tmp3.cp().syst_name({systs[s]}).ForEachSyst([&](Systematic const* n) {
             h_vec[m].push_back(RebinHist(*(TH1F*)(n->shape_u())));
             h_vec[m].push_back(RebinHist(*(TH1F*)(n->shape_d())));
             k_vals_hi[s][m] = n->value_u();

@@ -101,7 +101,7 @@ int main(int argc, char* argv[]){
     for (auto id : v_columns.second) bin_ids.push_back(boost::lexical_cast<int>(id));
     cmb.ParseDatacard(datacard_path+"datacard_"+tanb+".txt", "{MASS}/datacard_"+tanb+".txt");
     string bin_pat = "$ANALYSIS_$CHANNEL_$BINID_$ERA";
-    cmb.ForEachNus(boost::bind(ch::SetFromBinName<ch::Nuisance>, _1, bin_pat));
+    cmb.ForEachSyst(boost::bind(ch::SetFromBinName<ch::Systematic>, _1, bin_pat));
     cmb.ForEachObs(boost::bind(ch::SetFromBinName<ch::Observation>, _1, bin_pat));
     cmb.ForEachProc(boost::bind(ch::SetFromBinName<ch::Process>, _1, bin_pat));
     cmb.channel({channel}).era(v_eras).bin_id(bin_ids);
