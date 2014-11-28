@@ -128,7 +128,7 @@ namespace ic {
     alias_map_["1jet1tag_loose"]            = "(n_prebjets==1 && prebjetbcsv_1>0.244)";
     alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
     alias_map_["2jet1tagMassCuts_loose"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet2tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
+    alias_map_["2jet2tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244)";
     alias_map_["2jet2tagMassCuts_loose"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     // Useful category for control plots
     alias_map_["2jetGT1tag"]                      = "(n_prebjets>=2 && prebjetbcsv_1>=0.679)";
@@ -610,7 +610,7 @@ namespace ic {
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
     if (method == 28 || method == 29) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
-    if (method == 28 || method == 29 || method == 16) w_extrap_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
+    if (method == 16) w_extrap_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     
     Value w_norm;
     if(method == 20){
