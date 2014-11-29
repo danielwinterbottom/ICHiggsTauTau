@@ -82,7 +82,7 @@ then
   --background_scheme="et_default" 
   
 ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --var="m_sv"["$MSSMBINS"] --cat="2jet1tagSFMassCutMbb" \
+  --method=24 --var="m_sv"["$MSSMBINS"] --cat="2jet1tagSFMassCutMbb" \
   --x_axis_label="M_{#tau#tau} [GeV]" $MT_2JET1TAG_SHIFT \
   --norm_bins=true --datacard="2jet1tagSFMassCutMbb" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
@@ -90,7 +90,7 @@ then
   --background_scheme="mt_with_zmm" 
 
 ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --var="m_sv"["$MSSMBINS"] --cat="2jet1tagSFMassCutMbb" \
+  --method=24 --var="m_sv"["$MSSMBINS"] --cat="2jet1tagSFMassCutMbb" \
   --x_axis_label="M_{#tau#tau} [GeV]" $ET_2JET1TAG_SHIFT \
   --norm_bins=true --datacard="2jet1tagSFMassCutMbb" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
@@ -98,7 +98,7 @@ then
   --background_scheme="et_default" 
 
 ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=8 --var="m_sv"["$MSSMBINS2JETS2TAG"] --cat="2jet2tagSFMassCutMbb" \
+  --method=27 --var="m_sv"["$MSSMBINS2JETS2TAG"] --cat="2jet2tagSFMassCutMbb" \
   --x_axis_label="M_{#tau#tau} [GeV]" $MT_2JET2TAG_SHIFT \
   --norm_bins=true --datacard="2jet2tagSFMassCutMbb" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
@@ -106,7 +106,7 @@ then
   --background_scheme="mt_with_zmm" 
 
 ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=8 --var="m_sv"["$MSSMBINS2JET2TAG"] --cat="2jet2tagSFMassCutMbb" \
+  --method=27 --var="m_sv"["$MSSMBINS2JET2TAG"] --cat="2jet2tagSFMassCutMbb" \
   --x_axis_label="M_{#tau#tau} [GeV]" $ET_2JET2TAG_SHIFT \
   --norm_bins=true --datacard="2jet2tagSFMassCutMbb" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
   --custom_y_axis_min=true --y_axis_min=0.0099 \
@@ -132,7 +132,7 @@ else
     --background_scheme="et_default" 
       
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-    --method=8 --var="m_sv"["$MSSMBINS"] --cat="2jet1tagSF" \
+    --method=24 --var="m_sv"["$MSSMBINS"] --cat="2jet1tagSF" \
     --x_axis_label="M_{#tau#tau} [GeV]" $MT_2JET1TAG_SHIFT \
     --norm_bins=true --datacard="2jet1tagSF" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
     --custom_y_axis_min=true --y_axis_min=0.0099 \
@@ -140,7 +140,7 @@ else
     --background_scheme="mt_with_zmm" 
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-    --method=8 --var="m_sv"["$MSSMBINS"] --cat="2jet1tagSF" \
+    --method=24 --var="m_sv"["$MSSMBINS"] --cat="2jet1tagSF" \
     --x_axis_label="M_{#tau#tau} [GeV]" $ET_2JET1TAG_SHIFT \
     --norm_bins=true --datacard="2jet1tagSF" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
     --custom_y_axis_min=true --y_axis_min=0.0099 \
@@ -148,16 +148,16 @@ else
     --background_scheme="et_default" 
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-    --method=8 --var="m_sv"["$MSSMBINS2JET2TAG"] --cat="2jet2tagSF" \
-    --x_axis_label="M_{#tau#tau} [GeV]" $MT_2JET1TAG_SHIFT \
+    --method=27 --var="m_sv"["$MSSMBINS2JET2TAG"] --cat="2jet2tagSF" \
+    --x_axis_label="M_{#tau#tau} [GeV]" $MT_2JET2TAG_SHIFT \
     --norm_bins=true --datacard="2jet2tagSF" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
     --custom_y_axis_min=true --y_axis_min=0.0099 \
     --blind=true --x_blind_min=100 --x_blind_max=150 \
     --background_scheme="mt_with_zmm" --fix_negative_bins="QCD"
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-    --method=8 --var="m_sv"["$MSSMBINS2JET2TAG"] --cat="2jet2tagSF" \
-    --x_axis_label="M_{#tau#tau} [GeV]" $ET_2JET1TAG_SHIFT \
+    --method=27 --var="m_sv"["$MSSMBINS2JET2TAG"] --cat="2jet2tagSF" \
+    --x_axis_label="M_{#tau#tau} [GeV]" $ET_2JET2TAG_SHIFT \
     --norm_bins=true --datacard="2jet2tagSF" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]" \
     --custom_y_axis_min=true --y_axis_min=0.0099 \
     --blind=true --x_blind_min=100 --x_blind_max=150 \
@@ -181,25 +181,25 @@ then
     --background_scheme="mt_with_zmm" --extra_pad=1.2
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-    --method=8 --cat="2jet1tagSFMassCutMtt" --var="prebjet_mjj(30,0,600)" $ET_2JET1TAG_SHIFT \
+    --method=24 --cat="2jet1tagSFMassCutMtt" --var="prebjet_mjj(30,0,600)" $ET_2JET1TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet1tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=true --x_blind_min=80 --x_blind_max=160 \
     --background_scheme="et_default" --extra_pad=1.2
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-    --method=8 --cat="2jet1tagSFMassCutMtt" --var="prebjet_mjj(30,0,600)" $MT_2JET1TAG_SHIFT \
+    --method=24 --cat="2jet1tagSFMassCutMtt" --var="prebjet_mjj(30,0,600)" $MT_2JET1TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet1tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=true --x_blind_min=80 --x_blind_max=160 \
     --background_scheme="mt_with_zmm" --extra_pad=1.2
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-    --method=8 --cat="2jet2tagSFMassCutMtt" --var="prebjet_mjj(15,0,600)" $ET_2JET2TAG_SHIFT \
+    --method=27 --cat="2jet2tagSFMassCutMtt" --var="prebjet_mjj(15,0,600)" $ET_2JET2TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet2tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=true --x_blind_min=80 --x_blind_max=160 \
     --background_scheme="et_default" --extra_pad=1.2 --fix_negative_bins="QCD"
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-    --method=8 --cat="2jet2tagSFMassCutMtt" --var="prebjet_mjj(15,0,600)" $MT_2JET2TAG_SHIFT \
+    --method=27 --cat="2jet2tagSFMassCutMtt" --var="prebjet_mjj(15,0,600)" $MT_2JET2TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet2tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=true --x_blind_min=80 --x_blind_max=160 \
     --background_scheme="mt_with_zmm" --extra_pad=1.2 --fix_negative_bins="QCD"
@@ -219,25 +219,25 @@ else
     --background_scheme="mt_with_zmm" --extra_pad=1.2
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-    --method=8 --cat="2jet1tagSF" --var="prebjet_mjj(30,0,600)" $ET_2JET1TAG_SHIFT \
+    --method=24 --cat="2jet1tagSF" --var="prebjet_mjj(30,0,600)" $ET_2JET1TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet1tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=true --x_blind_min=80 --x_blind_max=160 \
     --background_scheme="et_default" --extra_pad=1.2
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-    --method=8 --cat="2jet1tagSF" --var="prebjet_mjj(30,0,600)" $MT_2JET1TAG_SHIFT \
+    --method=24 --cat="2jet1tagSF" --var="prebjet_mjj(30,0,600)" $MT_2JET1TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet1tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=true --x_blind_min=80 --x_blind_max=160 \
     --background_scheme="mt_with_zmm" --extra_pad=1.2
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-    --method=8 --cat="2jet2tagSF" --var="prebjet_mjj(15,0,600)" $ET_2JET2TAG_SHIFT \
+    --method=27 --cat="2jet2tagSF" --var="prebjet_mjj(15,0,600)" $ET_2JET2TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet2tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=true --x_blind_min=80 --x_blind_max=160 \
     --background_scheme="et_default" --extra_pad=1.2 --fix_negative_bins="QCD"
 
   ./bin/HiggsHTohhPlot --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-    --method=8 --cat="2jet2tagSF" --var="prebjet_mjj(15,0,600)" $MT_2JET2TAG_SHIFT \
+    --method=27 --cat="2jet2tagSF" --var="prebjet_mjj(15,0,600)" $MT_2JET2TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet2tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=true --x_blind_min=80 --x_blind_max=160 \
     --background_scheme="mt_with_zmm" --extra_pad=1.2 --fix_negative_bins="QCD"

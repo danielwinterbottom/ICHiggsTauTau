@@ -95,7 +95,7 @@ extra_global = ' --fix_empty_hists="ggHTohh.*,ggAToZh.*"'
 extra_channel = {
   "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
   #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down"',
-  #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
+ #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
   "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
   #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down"',
   #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
@@ -146,32 +146,32 @@ if options.scheme == 'HTohh':
   elif options.dijet :
     BINS_FINE="(30,0,600)"
     BINS="(15,0,600)"
-  elif options.mttbb or options.mH or options.mbbh:
-    #BINS_FINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600,650,700,750,800,850,900,950,1000]"
-    #BINS="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600,650,700,750,800,850,900,950,1000]"
-    #BINS_FINE="[240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600]"
-    #BINS="[240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600]"
+  elif options.mttbb or options.mbbh:
+    BINS_FINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600,650,700,750,800,850,900,950,1000]"
+    BINS="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600,650,700,750,800,850,900,950,1000]"
+  elif options.mH :  
     BINS_FINE="[200,250,270,290,310,330,350,370,390,410,430,450,500,550,600,650,700]"
     BINS="[200,250,270,290,310,330,350,370,390,410,430,450,500,550,600,650,700]"
-    #BINS="(20,0,1000)"
-    #BINS_FINE="(20,0,1000)"
   elif options.chi2:
     BINS_FINE="(25,0,50)"
     BINS="(25,0,50)"
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_inclusive_'+COM+'TeV"')),
-    ("8",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE, ( 
+    ("14",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE, ( 
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet0tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet0tag_'+COM+'TeV:50:1.0:0.10"'
+#      ' --syst_tquark="CMS_htt_TTbarShape_etau_2jet0tag_'+COM+'TeV"'
       ' --sub_ztt_top_shape=true')),
     ("15",   "2jet1tag"+SF_str+masscut_str,      "2jet1tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
+#      ' --syst_tquark="CMS_htt_TTbarShape_etau_2jet1tag_'+COM+'TeV"'
       ' --sub_ztt_top_shape=true')),
     ("16",   "2jet2tag"+SF_str+masscut_str,        "2jet2tag",       BINS,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
+#      ' --syst_tquark="CMS_htt_TTbarShape_etau_2jet2tag_'+COM+'TeV"'
       ' --sub_ztt_top_shape=true')),
   #  ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE, ( 
  #     ' --syst_w_fake_rate="CMS_htt_WShape_etau_1jet0tag_'+COM+'TeV"'
@@ -184,17 +184,20 @@ if options.scheme == 'HTohh':
   scheme_mt = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE, (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_inclusive_'+COM+'TeV"')),
-    ("8",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE,  (
+    ("14",   "2jet0tag"+SF_str+masscut_str,      "2jet0tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet0tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet0tag_'+COM+'TeV:50:1.1:0.10"'
+#      ' --syst_tquark="CMS_htt_TTbarShape_mutau_2jet0tag_'+COM+'TeV"'
       ' --sub_ztt_top_shape=true')),
     ("15",   "2jet1tag"+SF_str+masscut_str,      "2jet1tag",     BINS_FINE,  (
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet1tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
+#      ' --syst_tquark="CMS_htt_TTbarShape_mutau_2jet1tag_'+COM+'TeV"'
       ' --sub_ztt_top_shape=true')),
     ("16",   "2jet2tag"+SF_str+masscut_str,        "2jet2tag",       BINS,  ( 
       ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
+#      ' --syst_tquark="CMS_htt_TTbarShape_mutau_2jet2tag_'+COM+'TeV"'
       ' --sub_ztt_top_shape=true')),
 #    ("3",   "1jet0tag",      "1jet0tag",     BINS_FINE,  (
  #     ' --syst_w_fake_rate="CMS_htt_WShape_mutau_1jet0tag_'+COM+'TeV"'
