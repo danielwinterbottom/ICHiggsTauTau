@@ -100,6 +100,7 @@ namespace ic {
       // SM Categories
       //alias_map_["inclusive"]         = "pt_2>30";
       alias_map_["inclusive"]         = "1";
+      alias_map_["inclusiveMassCuts"] = "prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150";
 
       // Categories for background estimates and control plots
       alias_map_["vbf_loose"]         = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
@@ -478,6 +479,8 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      if (method == 24) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
+      if (method == 27) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
       if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
       if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
       zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, cat, wt);
@@ -524,6 +527,8 @@ namespace ic {
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
       if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
       if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
+      if (method == 24) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
+      if (method == 27) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
       zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt);
       zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
@@ -609,7 +614,7 @@ namespace ic {
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
-    if (method == 28 || method == 29) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 28 || method == 29 || method==27) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
     if (method == 16) w_extrap_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     
     Value w_norm;
