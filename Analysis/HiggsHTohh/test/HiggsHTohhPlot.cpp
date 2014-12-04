@@ -34,6 +34,7 @@ int main(int argc, char* argv[]){
 	string high_masses_str;												
 	bool do_highmass;
 	string syst_tau_scale;
+	string syst_met_scale;
 	string syst_eff_b;
 	string syst_fake_b;
 	string syst_scale_j;
@@ -94,6 +95,7 @@ int main(int argc, char* argv[]){
 	  ("high_masses",             po::value<string>(&high_masses_str)->default_value(""))
 	  ("do_highmass", 	          po::value<bool>(&do_highmass)->default_value(false))
 	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
+	  ("syst_met_scale",          po::value<string>(&syst_met_scale)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_eff_t",      		    po::value<string>(&syst_eff_t)->default_value(""))
 	  ("syst_fake_b",      		    po::value<string>(&syst_fake_b)->default_value(""))
@@ -408,6 +410,10 @@ int main(int argc, char* argv[]){
 		systematics.push_back(make_pair("/L1MET_DOWN", syst_l1met+"Down"));
 		systematics.push_back(make_pair("/L1MET_UP", syst_l1met+"Up"));
 	}
+	if (syst_met_scale != "") {
+		systematics.push_back(make_pair("/MET_DOWN", syst_met_scale+"Down"));
+		systematics.push_back(make_pair("/MET_UP", syst_met_scale+"Up"));
+	}
 
 	for (auto const& syst : systematics) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
@@ -552,13 +558,74 @@ int main(int argc, char* argv[]){
     double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
     double embedded_ttbar_uncert = embedded_ttbar.second * norm_sf;
     SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
-    hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
-    ztt_hist.Add(&hmap[top_label+"Embedded"].first, -1);
+    hmap[top_label+"_emb"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+    ztt_hist.Add(&hmap[top_label+"_emb"].first, -1);
     HhhAnalysis::Value ztt_norm = HhhAnalysis::ValueSubtract(hmap[ztt_label].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
     hmap[ztt_label].first = ztt_hist;
     hmap[ztt_label] = make_pair(ztt_hist, ztt_norm);
     HhhAnalysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
-	
+    
+    //If systematics are included, make the same subtraction from the ZTT ones
+    if(syst_tau_scale!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_tau_scale+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_tau_scale+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_tau_scale+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_tau_scale+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_tau_scale+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_tau_scale+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_tau_scale+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_tau_scale+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }
+    if(syst_scale_j!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_scale_j+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_scale_j+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_scale_j+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_scale_j+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_scale_j+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_scale_j+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_scale_j+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_scale_j+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }
+    if(syst_met_scale!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_met_scale+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_met_scale+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_met_scale+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_met_scale+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_met_scale+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_met_scale+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_met_scale+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_met_scale+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }
+    if(syst_eff_b!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_eff_b+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_eff_b+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_eff_b+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_eff_b+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_eff_b+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_eff_b+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_eff_b+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_eff_b+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }
+    if(syst_fake_b!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_fake_b+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_fake_b+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_fake_b+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_fake_b+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_fake_b+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_fake_b+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_fake_b+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_fake_b+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }   
   }
 
 	// ************************************************************************

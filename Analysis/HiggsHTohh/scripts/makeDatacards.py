@@ -95,9 +95,11 @@ extra_global = ' --fix_empty_hists="ggHTohh.*,ggAToZh.*"'
 extra_channel = {
   "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
   #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down"',
+  #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_met_scale="CMS_scale_met_'+COM+'TeV"',
  #"et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
   "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
   #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down"',
+  #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_met_scale="CMS_scale_met_'+COM+'TeV"',
   #"mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_eff_b="CMS_eff_b_'+COM+'TeV" --syst_fake_b="CMS_fake_b_'+COM+'TeV"',
   "em" : ' --fix_empty_bins="Fakes" --fix_negative_bins="Fakes,Fakes.*Up,Fakes.*Down"'
 }
