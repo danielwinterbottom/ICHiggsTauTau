@@ -38,6 +38,7 @@ struct GenEvent_Tau {
   std::vector<GenParticle *> pi_charged;
   std::vector<GenParticle *> pi_neutral;
   std::vector<GenParticle *> other_neutral;
+  std::vector<GenParticle *> all_vis;
 };
 
 struct GenEvent_XToTauTau {

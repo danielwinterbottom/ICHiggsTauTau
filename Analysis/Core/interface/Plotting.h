@@ -279,6 +279,9 @@ void UnitAxes(TAxis* xaxis, TAxis* yaxis, TString var, TString units);
  *    1. Top-left corner
  *    2. Top centered
  *    3. Top-right corner
+ *    4. Bottom-left corner
+ *    5. Bottom centered
+ *    6. Bottom-right corner
  *
  * @param width Legend width as a fraction of the pad
  * @param height Legend height as a fraction of the pad
@@ -645,6 +648,7 @@ TLegend* PositionedLegend(double width, double height, int pos, double offset) {
   double h = height;
   double l = gPad->GetLeftMargin();
   double t = gPad->GetTopMargin();
+  double b = gPad->GetBottomMargin();
   double r = gPad->GetRightMargin();
   TLegend* leg = 0;
   if (pos == 1) {
@@ -657,6 +661,18 @@ TLegend* PositionedLegend(double width, double height, int pos, double offset) {
   }
   if (pos == 3) {
     leg = new TLegend(1 - r - o - w, 1 - t - o - h, 1 - r - o, 1 - t - o, "",
+                      "NBNDC");
+  }
+  if (pos == 4) {
+    leg = new TLegend(l + o, b + o, l + o + w, b + o + h, "", "NBNDC");
+  }
+  if (pos == 5) {
+    double c = l + 0.5 * (1 - l - r);
+    leg = new TLegend(c - 0.5 * w, b + o, c + 0.5 * w, b + o + h, "",
+                      "NBNDC");
+  }
+  if (pos == 6) {
+    leg = new TLegend(1 - r - o - w, b + o, 1 - r - o, b + o + h, "",
                       "NBNDC");
   }
   return leg;
@@ -735,7 +751,7 @@ void DrawCMSLogo(TPad* pad, TString cmsText, TString extraText, int iPosX,
   if (iPosX / 10 == 1) alignX_ = 1;
   if (iPosX / 10 == 2) alignX_ = 2;
   if (iPosX / 10 == 3) alignX_ = 3;
-  if (iPosX == 0) relPosX = 0.12;
+  if (iPosX == 0) relPosX = 0.14;
   int align_ = 10 * alignX_ + alignY_;
 
   float l = pad->GetLeftMargin();
