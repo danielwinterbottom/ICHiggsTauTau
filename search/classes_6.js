@@ -26,8 +26,5 @@ var searchData=
   ['ictrackproducer',['ICTrackProducer',['../class_i_c_track_producer.html',1,'']]],
   ['ictriggerobjectproducer',['ICTriggerObjectProducer',['../class_i_c_trigger_object_producer.html',1,'']]],
   ['ictriggerpathproducer',['ICTriggerPathProducer',['../class_i_c_trigger_path_producer.html',1,'']]],
-  ['icvertexproducer',['ICVertexProducer',['../class_i_c_vertex_producer.html',1,'']]],
-  ['isotags',['IsoTags',['../struct_i_c_photon_producer_1_1_iso_tags.html',1,'ICPhotonProducer']]],
-  ['isotags',['IsoTags',['../struct_i_c_muon_producer_1_1_iso_tags.html',1,'ICMuonProducer']]],
-  ['isotags',['IsoTags',['../struct_i_c_electron_producer_1_1_iso_tags.html',1,'ICElectronProducer']]]
+  ['icvertexproducer',['ICVertexProducer',['../class_i_c_vertex_producer.html',1,'']]]
 ];

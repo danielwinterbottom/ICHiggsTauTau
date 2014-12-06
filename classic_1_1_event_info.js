@@ -1,8 +1,5 @@
 var classic_1_1_event_info =
 [
-    [ "SDMap", "classic_1_1_event_info.html#ad8f7edf2a77b14a0173209796c30bd51", null ],
-    [ "SBMap", "classic_1_1_event_info.html#a7cfbfd6c71b7d8742a640b99033457d8", null ],
-    [ "TBMap", "classic_1_1_event_info.html#a0464f1bd01d153695ac3b0005ece5b12", null ],
     [ "EventInfo", "classic_1_1_event_info.html#a25bc3b8e93f5736f9c09514b358b4baf", null ],
     [ "~EventInfo", "classic_1_1_event_info.html#a0dc1c842c318b6af9dc698478d22487d", null ],
     [ "Print", "classic_1_1_event_info.html#a128bb7c789654f798c2de966514cf738", null ],
@@ -35,16 +32,5 @@ var classic_1_1_event_info =
     [ "set_filter_result", "classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40", null ],
     [ "filter_result", "classic_1_1_event_info.html#ae3e73bf521c31067e064151818218d10", null ],
     [ "total_filter_result", "classic_1_1_event_info.html#a09f0004aabaf1f44cb52b3f95833bff9", null ],
-    [ "ClassDef", "classic_1_1_event_info.html#a593e084a1df48a4bde443484eb62d08c", null ],
-    [ "is_data_", "classic_1_1_event_info.html#a2fc18111aa3adcb2c1f311486f4ce5ef", null ],
-    [ "event_", "classic_1_1_event_info.html#a037e256c01c1f3627bef260d50a14510", null ],
-    [ "run_", "classic_1_1_event_info.html#a3ccd23f23b5a1cea834c432a416a17c0", null ],
-    [ "lumi_block_", "classic_1_1_event_info.html#a5cb244d8e0a836df42ce79af1e7195d8", null ],
-    [ "bunch_crossing_", "classic_1_1_event_info.html#a4b3e118e0df3e401731056a673dd1657", null ],
-    [ "jet_rho_", "classic_1_1_event_info.html#a9a17eefa901e6a3f5188b519fe0f2bc8", null ],
-    [ "lepton_rho_", "classic_1_1_event_info.html#a2444fa2ce220948fb01d2bb5730ffeff", null ],
-    [ "weights_", "classic_1_1_event_info.html#af0ce166765726738cefa2c2e6c69cd84", null ],
-    [ "weight_status_", "classic_1_1_event_info.html#ac46d569a002802ee29b3f41c9f0cc51e", null ],
-    [ "good_vertices_", "classic_1_1_event_info.html#a5a294ba21d2b03d84c54d6f8b4188018", null ],
-    [ "filters_", "classic_1_1_event_info.html#ab2a2ba6faa867aa78cb272e38fa5c8a0", null ]
+    [ "ClassDef", "classic_1_1_event_info.html#a593e084a1df48a4bde443484eb62d08c", null ]
 ];

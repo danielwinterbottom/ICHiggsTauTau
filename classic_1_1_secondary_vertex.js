@@ -7,7 +7,5 @@ var classic_1_1_secondary_vertex =
     [ "distance_err_3d", "classic_1_1_secondary_vertex.html#a02dd169414380e6ffd973dfb7c014155", null ],
     [ "set_distance_3d", "classic_1_1_secondary_vertex.html#abe80be67737302f8694b388836971814", null ],
     [ "set_distance_err_3d", "classic_1_1_secondary_vertex.html#ad7bdfe34b4df3e99e630df69d9cd129b", null ],
-    [ "ClassDef", "classic_1_1_secondary_vertex.html#a24fc32c0938578c5f6b56a80953f1ae8", null ],
-    [ "distance_3d_", "classic_1_1_secondary_vertex.html#a5e14d4e2e31eee8d6e9ac21dfde0255c", null ],
-    [ "distance_err_3d_", "classic_1_1_secondary_vertex.html#a321d2431ba4ff14246f94bd5f173c1d6", null ]
+    [ "ClassDef", "classic_1_1_secondary_vertex.html#a24fc32c0938578c5f6b56a80953f1ae8", null ]
 ];

@@ -9,8 +9,5 @@ var classic_1_1_pileup_info =
     [ "set_num_interactions", "classic_1_1_pileup_info.html#a08df6d41da07eb4cfcc4af98e679790e", null ],
     [ "set_bunch_crossing", "classic_1_1_pileup_info.html#aef8eeee00c665c6dd468bf2c8ab062ef", null ],
     [ "set_true_num_interactions", "classic_1_1_pileup_info.html#a49ba832328d73e46957d6969d937f552", null ],
-    [ "ClassDef", "classic_1_1_pileup_info.html#a0aa1d6871729adca1f0251212ee351d5", null ],
-    [ "num_interactions_", "classic_1_1_pileup_info.html#a2f460c409c4cb8ec10270c2338b54a8f", null ],
-    [ "bunch_crossing_", "classic_1_1_pileup_info.html#a1987eace3787fa4f5b0af8970c20dc2c", null ],
-    [ "true_num_interactions_", "classic_1_1_pileup_info.html#a6568418627917972d005d9f18c2de4c9", null ]
+    [ "ClassDef", "classic_1_1_pileup_info.html#a0aa1d6871729adca1f0251212ee351d5", null ]
 ];

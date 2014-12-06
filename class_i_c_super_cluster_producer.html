@@ -96,9 +96,7 @@ $(document).ready(function(){initNavTree('class_i_c_super_cluster_producer.html'
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
-<a href="#pri-attribs">Private Attributes</a>  </div>
+<a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ICSuperClusterProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -125,29 +123,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a217e9d2ac1cd9caf4944f527eb6d8cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfbcb9f36dfc20750eae632b265c3923"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#acfbcb9f36dfc20750eae632b265c3923">~ICSuperClusterProducer</a> ()</td></tr>
 <tr class="separator:acfbcb9f36dfc20750eae632b265c3923"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:af45f02a3fb306b0bc199014bca9c0e0c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#af45f02a3fb306b0bc199014bca9c0e0c">beginJob</a> ()</td></tr>
-<tr class="separator:af45f02a3fb306b0bc199014bca9c0e0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7683c5074fa18cec38f0522f5cba49e2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#a7683c5074fa18cec38f0522f5cba49e2">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
-<tr class="separator:a7683c5074fa18cec38f0522f5cba49e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f632a8268312730d00a7e11f8f91a17"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#a1f632a8268312730d00a7e11f8f91a17">endJob</a> ()</td></tr>
-<tr class="separator:a1f632a8268312730d00a7e11f8f91a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
-Private Attributes</h2></td></tr>
-<tr class="memitem:a509ee385760e25d8e8b7773faa77d180"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_super_cluster.html">ic::SuperCluster</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#a509ee385760e25d8e8b7773faa77d180">scs_</a></td></tr>
-<tr class="separator:a509ee385760e25d8e8b7773faa77d180"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40a567d4ed94e00aabb6b60b79c06855"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#a40a567d4ed94e00aabb6b60b79c06855">input_barrel_</a></td></tr>
-<tr class="separator:a40a567d4ed94e00aabb6b60b79c06855"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab841d6e8c933ab888920db5389a69585"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#ab841d6e8c933ab888920db5389a69585">input_endcap_</a></td></tr>
-<tr class="separator:ab841d6e8c933ab888920db5389a69585"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a936a6e72cc6ed2c56d9168e19df039ad"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#a936a6e72cc6ed2c56d9168e19df039ad">branch_</a></td></tr>
-<tr class="separator:a936a6e72cc6ed2c56d9168e19df039ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac17b2295225d4f0bdfe4160e7986f28b"><td class="memItemLeft" align="right" valign="top">boost::hash<br class="typebreak" />
-&lt; reco::SuperCluster const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_super_cluster_producer.html#ac17b2295225d4f0bdfe4160e7986f28b">sc_hasher_</a></td></tr>
-<tr class="separator:ac17b2295225d4f0bdfe4160e7986f28b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Produces an <a class="el" href="classic_1_1_super_cluster.html" title="See documentation here. ">ic::SuperCluster</a> collection from the separate barrel and endcap collections, which must be compatible with an edm::View&lt;reco::SuperCluster&gt; </p>
@@ -156,7 +131,7 @@ Private Attributes</h2></td></tr>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  inputBarrel   = cms.InputTag(<span class="stringliteral">&quot;correctedHybridSuperClusters&quot;</span>),</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;  inputEndcap   = cms.InputTag(<span class="stringliteral">&quot;correctedMulti5x5SuperClustersWithPreshower&quot;</span>)</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;)</div>
-</div><!-- fragment --><dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#_a21">plugins/ICSuperClusterProducer.cc</a>.</dd>
+</div><!-- fragment --><dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#_a13">plugins/ICSuperClusterProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8hh_source.html#l00023">23</a> of file <a class="el" href="_i_c_super_cluster_producer_8hh_source.html">ICSuperClusterProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -202,212 +177,6 @@ Private Attributes</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a2">plugins/ICSuperClusterProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8cc_source.html#l00026">26</a> of file <a class="el" href="_i_c_super_cluster_producer_8cc_source.html">ICSuperClusterProducer.cc</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="af45f02a3fb306b0bc199014bca9c0e0c"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ICSuperClusterProducer::beginJob </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a16">plugins/ICSuperClusterProducer.cc</a>.</dd>
-</dl>
-<p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8cc_source.html#l00064">64</a> of file <a class="el" href="_i_c_super_cluster_producer_8cc_source.html">ICSuperClusterProducer.cc</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a7683c5074fa18cec38f0522f5cba49e2"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ICSuperClusterProducer::produce </td>
-          <td>(</td>
-          <td class="paramtype">edm::Event &amp;&#160;</td>
-          <td class="paramname"><em>event</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
-          <td class="paramname"><em>setup</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a4">plugins/ICSuperClusterProducer.cc</a>.</dd>
-</dl>
-<p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8cc_source.html#l00028">28</a> of file <a class="el" href="_i_c_super_cluster_producer_8cc_source.html">ICSuperClusterProducer.cc</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a1f632a8268312730d00a7e11f8f91a17"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ICSuperClusterProducer::endJob </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a19">plugins/ICSuperClusterProducer.cc</a>.</dd>
-</dl>
-<p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8cc_source.html#l00068">68</a> of file <a class="el" href="_i_c_super_cluster_producer_8cc_source.html">ICSuperClusterProducer.cc</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="a509ee385760e25d8e8b7773faa77d180"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_super_cluster.html">ic::SuperCluster</a>&gt;* ICSuperClusterProducer::scs_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a3">plugins/ICSuperClusterProducer.cc</a>.</dd>
-</dl>
-<p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8hh_source.html#l00033">33</a> of file <a class="el" href="_i_c_super_cluster_producer_8hh_source.html">ICSuperClusterProducer.hh</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a40a567d4ed94e00aabb6b60b79c06855"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">edm::InputTag ICSuperClusterProducer::input_barrel_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a5">plugins/ICSuperClusterProducer.cc</a>.</dd>
-</dl>
-<p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_super_cluster_producer_8hh_source.html">ICSuperClusterProducer.hh</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ab841d6e8c933ab888920db5389a69585"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">edm::InputTag ICSuperClusterProducer::input_endcap_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a6">plugins/ICSuperClusterProducer.cc</a>.</dd>
-</dl>
-<p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8hh_source.html#l00035">35</a> of file <a class="el" href="_i_c_super_cluster_producer_8hh_source.html">ICSuperClusterProducer.hh</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a936a6e72cc6ed2c56d9168e19df039ad"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string ICSuperClusterProducer::branch_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a18">plugins/ICSuperClusterProducer.cc</a>.</dd>
-</dl>
-<p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8hh_source.html#l00036">36</a> of file <a class="el" href="_i_c_super_cluster_producer_8hh_source.html">ICSuperClusterProducer.hh</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ac17b2295225d4f0bdfe4160e7986f28b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">boost::hash&lt;reco::SuperCluster const*&gt; ICSuperClusterProducer::sc_hasher_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_super_cluster_producer_8cc-example.html#a15">plugins/ICSuperClusterProducer.cc</a>.</dd>
-</dl>
-<p>Definition at line <a class="el" href="_i_c_super_cluster_producer_8hh_source.html#l00038">38</a> of file <a class="el" href="_i_c_super_cluster_producer_8hh_source.html">ICSuperClusterProducer.hh</a>.</p>
 
 </div>
 </div>

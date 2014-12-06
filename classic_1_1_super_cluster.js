@@ -1,7 +1,5 @@
 var classic_1_1_super_cluster =
 [
-    [ "Point", "classic_1_1_super_cluster.html#a097505b96a7bb28e34dc7410e576612f", null ],
-    [ "Vector", "classic_1_1_super_cluster.html#a60016acf5418535ff4d476d3d1e55537", null ],
     [ "SuperCluster", "classic_1_1_super_cluster.html#a3007fd9f8b0ed11a888865ef5dd3cddb", null ],
     [ "~SuperCluster", "classic_1_1_super_cluster.html#a8b4d058f4e811baa6a0bc1ee6f892a78", null ],
     [ "Print", "classic_1_1_super_cluster.html#a862d1a2530a78af28a926c09f2446b66", null ],
@@ -25,10 +23,5 @@ var classic_1_1_super_cluster =
     [ "set_energy", "classic_1_1_super_cluster.html#af184820f91cc632038bd8b9cd8d71332", null ],
     [ "set_raw_energy", "classic_1_1_super_cluster.html#a4acf16156a72dd994eabafba8d29acd8", null ],
     [ "set_is_barrel", "classic_1_1_super_cluster.html#a9bd1e8f737450f8221f5e04bf8947fcd", null ],
-    [ "ClassDef", "classic_1_1_super_cluster.html#a8ddc10036ee7cfb78b5a80d0b39a8eb7", null ],
-    [ "point_", "classic_1_1_super_cluster.html#a2895f8a7e4d085a4760b55b1286620c3", null ],
-    [ "id_", "classic_1_1_super_cluster.html#aec657f8ff3642c19af2de9e6b8df7d60", null ],
-    [ "energy_", "classic_1_1_super_cluster.html#a334881d3be21e97017ce1ecec8f26396", null ],
-    [ "raw_energy_", "classic_1_1_super_cluster.html#a11eb7e4e047984522aef89ca1d06034b", null ],
-    [ "is_barrel_", "classic_1_1_super_cluster.html#a044b740bf89d6d92207c56c5a341a8d7", null ]
+    [ "ClassDef", "classic_1_1_super_cluster.html#a8ddc10036ee7cfb78b5a80d0b39a8eb7", null ]
 ];

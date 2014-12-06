@@ -136,20 +136,20 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line">  <a name="a2"></a><a class="code" href="class_i_c_jet_producer.html#ab1eb00adce6cd9424ae8a5e8677f1ffc">~ICJetProducer</a>();</div>
 <div class="line"></div>
 <div class="line"> <span class="keyword">private</span>:</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a name="a3"></a><a class="code" href="class_i_c_jet_producer.html#a5d887a99480770eed29ed2cb70488331">beginJob</a>();</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a name="a4"></a><a class="code" href="class_i_c_jet_producer.html#a27e1658d4bd44c86c0e30502fa25255a">produce</a>(edm::Event &amp;, <span class="keyword">const</span> edm::EventSetup &amp;);</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a name="a5"></a><a class="code" href="class_i_c_jet_producer.html#a42949d3a6e2cd6ac6548da724387bb11">endJob</a>();</div>
-<div class="line">  <span class="keywordtype">void</span> <a name="a6"></a><a class="code" href="class_i_c_jet_producer.html#a7b00d99e28873e9fb3c76c053d114a11">constructSpecific</a>(edm::Handle&lt;edm::View&lt;U&gt; &gt; <span class="keyword">const</span>&amp; jets_handle,</div>
+<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> beginJob();</div>
+<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> produce(edm::Event &amp;, <span class="keyword">const</span> edm::EventSetup &amp;);</div>
+<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> endJob();</div>
+<div class="line">  <span class="keywordtype">void</span> constructSpecific(edm::Handle&lt;edm::View&lt;U&gt; &gt; <span class="keyword">const</span>&amp; jets_handle,</div>
 <div class="line">                         edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup);</div>
 <div class="line"></div>
-<div class="line">  std::vector&lt;T&gt; *<a name="a7"></a><a class="code" href="class_i_c_jet_producer.html#aad968c2dc505598be1a23d48b577c16e">jets_</a>;</div>
-<div class="line">  edm::InputTag <a name="a8"></a><a class="code" href="class_i_c_jet_producer.html#a801007046c436e3758fdd1c430df4931">input_</a>;</div>
-<div class="line">  std::string <a name="a9"></a><a class="code" href="class_i_c_jet_producer.html#aaaa3e0d5279e1066a5115ff3f64fba41">branch_</a>;</div>
+<div class="line">  std::vector&lt;T&gt; *jets_;</div>
+<div class="line">  edm::InputTag input_;</div>
+<div class="line">  std::string branch_;</div>
 <div class="line"></div>
-<div class="line">  std::vector&lt;unsigned&gt; <a name="a10"></a><a class="code" href="class_i_c_jet_producer.html#a25b705c3aca07a551f848eb6f2634e2a">passed_</a>;</div>
+<div class="line">  std::vector&lt;unsigned&gt; passed_;</div>
 <div class="line"></div>
-<div class="line">  <a name="_a11"></a><a class="code" href="struct_jet_src_helper.html">JetSrcHelper&lt;U&gt;</a> <a name="a12"></a><a class="code" href="class_i_c_jet_producer.html#a02e74fed375fa6deaf88bf996c5ed270">src_</a>;</div>
-<div class="line">  <a name="_a13"></a><a class="code" href="struct_jet_dest_helper.html">JetDestHelper&lt;T&gt;</a> <a name="a14"></a><a class="code" href="class_i_c_jet_producer.html#a861ee7a22c34ac7201dd9351a8c9ba73">dest_</a>;</div>
+<div class="line">  <a name="_a3"></a><a class="code" href="struct_jet_src_helper.html">JetSrcHelper&lt;U&gt;</a> src_;</div>
+<div class="line">  <a name="_a4"></a><a class="code" href="struct_jet_dest_helper.html">JetDestHelper&lt;T&gt;</a> dest_;</div>
 <div class="line">};</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// =============================</span></div>
@@ -163,7 +163,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line">      dest_(config.getParameterSet(<span class="stringliteral">&quot;destConfig&quot;</span>)) {</div>
 <div class="line">  jets_ = <span class="keyword">new</span> std::vector&lt;T&gt;();</div>
 <div class="line"></div>
-<div class="line">  <a name="a15"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
+<div class="line">  <a name="a5"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
 <div class="line"></div>
 <div class="line">  src_.DoSetup(<span class="keyword">this</span>);</div>
 <div class="line">  dest_.DoSetup(<span class="keyword">this</span>);</div>
@@ -176,7 +176,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"><span class="comment">// Main producer</span></div>
 <div class="line"><span class="comment">// =============</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a27e1658d4bd44c86c0e30502fa25255a">ICJetProducer&lt;T, U&gt;::produce</a>(edm::Event&amp; event,</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;T, U&gt;::produce</a>(edm::Event&amp; event,</div>
 <div class="line">                                 <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;edm::View&lt;U&gt; &gt; jets_handle;</div>
 <div class="line">  <span class="keyword">event</span>.getByLabel(input_, jets_handle);</div>
@@ -196,7 +196,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"><span class="comment">// Specific producers</span></div>
 <div class="line"><span class="comment">// =============================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a7b00d99e28873e9fb3c76c053d114a11">ICJetProducer&lt;T, U&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;T, U&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;U&gt; &gt; <span class="keyword">const</span>&amp; jets_handle, edm::Event&amp; event,</div>
 <div class="line">    <span class="keyword">const</span> edm::EventSetup&amp; setup) {}</div>
 <div class="line"></div>
@@ -205,28 +205,28 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"><span class="comment">// reco::CaloJet --&gt; ic::CaloJet</span></div>
 <div class="line"><span class="comment">// =============================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a7b00d99e28873e9fb3c76c053d114a11">ICJetProducer&lt;ic::CaloJet, reco::CaloJet&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;ic::CaloJet, reco::CaloJet&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;reco::CaloJet&gt; &gt; <span class="keyword">const</span>&amp; jets_handle,</div>
 <div class="line">    edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;reco::JetIDValueMap&gt; jet_id_handle;</div>
 <div class="line">  <span class="keywordflow">if</span> (dest_.do_jet_id) <span class="keyword">event</span>.getByLabel(dest_.input_jet_id, jet_id_handle);</div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; passed_.size(); ++i) {</div>
 <div class="line">    reco::CaloJet <span class="keyword">const</span>&amp; src = jets_handle-&gt;at(passed_[i]);</div>
-<div class="line">    <a name="_a16"></a><a class="code" href="classic_1_1_calo_jet.html">ic::CaloJet</a> &amp; dest = jets_-&gt;at(i);</div>
-<div class="line">    <a name="a17"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#ae09776fe0ad6e64ad0105611a8057036">FillCommonCaloJet</a>(&amp;dest, src);</div>
+<div class="line">    <a name="_a6"></a><a class="code" href="classic_1_1_calo_jet.html">ic::CaloJet</a> &amp; dest = jets_-&gt;at(i);</div>
+<div class="line">    <a name="a7"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#ae09776fe0ad6e64ad0105611a8057036">FillCommonCaloJet</a>(&amp;dest, src);</div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.do_n_carrying) {</div>
-<div class="line">      dest.<a name="a18"></a><a class="code" href="classic_1_1_calo_jet.html#a9c7410f49e15dbde26a3cd26a3556858">set_n90</a>(src.n90());</div>
-<div class="line">      dest.<a name="a19"></a><a class="code" href="classic_1_1_calo_jet.html#afc17c5223b58aab329ea65343209fa2c">set_n60</a>(src.n60());</div>
+<div class="line">      dest.<a name="a8"></a><a class="code" href="classic_1_1_calo_jet.html#a9c7410f49e15dbde26a3cd26a3556858">set_n90</a>(src.n90());</div>
+<div class="line">      dest.<a name="a9"></a><a class="code" href="classic_1_1_calo_jet.html#afc17c5223b58aab329ea65343209fa2c">set_n60</a>(src.n60());</div>
 <div class="line">    }</div>
 <div class="line">    <span class="comment">//  Assume input jet is uncorrected</span></div>
-<div class="line">    dest.<a name="a20"></a><a class="code" href="classic_1_1_jet.html#ac41c56020d5cac0e375d052ff2f417ce">set_uncorrected_energy</a>(src.energy());</div>
+<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_jet.html#ac41c56020d5cac0e375d052ff2f417ce">set_uncorrected_energy</a>(src.energy());</div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.do_jet_id) {</div>
 <div class="line">      reco::JetID <span class="keyword">const</span>&amp; jet_id =</div>
 <div class="line">          (*jet_id_handle)[jets_handle-&gt;refAt(passed_[i])];</div>
-<div class="line">      dest.<a name="a21"></a><a class="code" href="classic_1_1_calo_jet.html#a73d3edafacfdfc15fc4fa03ea95006ca">set_fHPD</a>(jet_id.fHPD);</div>
-<div class="line">      dest.<a name="a22"></a><a class="code" href="classic_1_1_calo_jet.html#a447a983c06b78273cf71a545eef40e4f">set_fRBX</a>(jet_id.fRBX);</div>
-<div class="line">      dest.<a name="a23"></a><a class="code" href="classic_1_1_calo_jet.html#a1cff7c85fcc57712baf080e38811f595">set_id_loose</a>((*(dest_.loose_id))(src, jet_id));</div>
-<div class="line">      dest.<a name="a24"></a><a class="code" href="classic_1_1_calo_jet.html#a0005fcb2879b14297b3923979221498a">set_id_tight</a>((*(dest_.tight_id))(src, jet_id));</div>
+<div class="line">      dest.<a name="a11"></a><a class="code" href="classic_1_1_calo_jet.html#a73d3edafacfdfc15fc4fa03ea95006ca">set_fHPD</a>(jet_id.fHPD);</div>
+<div class="line">      dest.<a name="a12"></a><a class="code" href="classic_1_1_calo_jet.html#a447a983c06b78273cf71a545eef40e4f">set_fRBX</a>(jet_id.fRBX);</div>
+<div class="line">      dest.<a name="a13"></a><a class="code" href="classic_1_1_calo_jet.html#a1cff7c85fcc57712baf080e38811f595">set_id_loose</a>((*(dest_.loose_id))(src, jet_id));</div>
+<div class="line">      dest.<a name="a14"></a><a class="code" href="classic_1_1_calo_jet.html#a0005fcb2879b14297b3923979221498a">set_id_tight</a>((*(dest_.tight_id))(src, jet_id));</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
@@ -235,7 +235,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"><span class="comment">// pat::Jet --&gt; ic::CaloJet</span></div>
 <div class="line"><span class="comment">// =============================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a7b00d99e28873e9fb3c76c053d114a11">ICJetProducer&lt;ic::CaloJet, pat::Jet&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;ic::CaloJet, pat::Jet&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;pat::Jet&gt; &gt; <span class="keyword">const</span>&amp; jets_handle,</div>
 <div class="line">    edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; passed_.size(); ++i) {</div>
@@ -262,7 +262,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"><span class="comment">// reco::JPTJet --&gt; ic::JPTJet</span></div>
 <div class="line"><span class="comment">// =============================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a7b00d99e28873e9fb3c76c053d114a11">ICJetProducer&lt;ic::JPTJet, reco::JPTJet&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;ic::JPTJet, reco::JPTJet&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;reco::JPTJet&gt; &gt; <span class="keyword">const</span>&amp; jets_handle,</div>
 <div class="line">    edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;reco::JetIDValueMap&gt; jet_id_handle;</div>
@@ -278,20 +278,20 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line">  <span class="keywordflow">if</span> (dest_.do_trk_vars) {</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(dest_.input_trks, trk_handle);</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(dest_.input_vtxs, vtx_handle);</div>
-<div class="line">    trk_vtx_map = <a name="a25"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#acca43eada309143017b94c219d14cee8">BuildTrkVtxMap</a>(trk_handle, vtx_handle);</div>
+<div class="line">    trk_vtx_map = <a name="a15"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#acca43eada309143017b94c219d14cee8">BuildTrkVtxMap</a>(trk_handle, vtx_handle);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; passed_.size(); ++i) {</div>
 <div class="line">    reco::JPTJet <span class="keyword">const</span>&amp; src = jets_handle-&gt;at(passed_[i]);</div>
 <div class="line"></div>
 <div class="line">    reco::CaloJetRef calo(src.getCaloJetRef().castTo&lt;reco::CaloJetRef&gt;());</div>
-<div class="line">    <a name="_a26"></a><a class="code" href="classic_1_1_j_p_t_jet.html">ic::JPTJet</a> &amp; dest = jets_-&gt;at(i);</div>
+<div class="line">    <a name="_a16"></a><a class="code" href="classic_1_1_j_p_t_jet.html">ic::JPTJet</a> &amp; dest = jets_-&gt;at(i);</div>
 <div class="line">    <a class="code" href="_i_c_jet_dest_helper_8hh.html#ae09776fe0ad6e64ad0105611a8057036">FillCommonCaloJet</a>(&amp;dest, *calo);</div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.do_n_carrying) {</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_calo_jet.html#a9c7410f49e15dbde26a3cd26a3556858">set_n90</a>(calo-&gt;n90());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_calo_jet.html#afc17c5223b58aab329ea65343209fa2c">set_n60</a>(calo-&gt;n60());</div>
 <div class="line">    }</div>
-<div class="line">    <a name="a27"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#a8cac3c1accfb2c2a1fbac43e40986043">FillCommonJPTJet</a>(&amp;dest, src);</div>
+<div class="line">    <a name="a17"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#a8cac3c1accfb2c2a1fbac43e40986043">FillCommonJPTJet</a>(&amp;dest, src);</div>
 <div class="line">    <span class="comment">//  Assume input jet is uncorrected</span></div>
 <div class="line">    dest.<a class="code" href="classic_1_1_jet.html#ac41c56020d5cac0e375d052ff2f417ce">set_uncorrected_energy</a>(src.energy());</div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.do_jet_id) {</div>
@@ -301,23 +301,23 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.request_trks) {</div>
-<div class="line">      dest.<a name="a28"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a0f474285d3345e338165e25ac456e882">set_pions_in_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a18"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a0f474285d3345e338165e25ac456e882">set_pions_in_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getPionsInVertexInCalo(), track_requests.get()));</div>
-<div class="line">      dest.<a name="a29"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a3b6e128e42eeb2a39251817e3fbcec96">set_pions_in_vtx_out_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a19"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a3b6e128e42eeb2a39251817e3fbcec96">set_pions_in_vtx_out_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getPionsInVertexOutCalo(), track_requests.get()));</div>
-<div class="line">      dest.<a name="a30"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a5a4783e352cb985835f4089ca20a34e4">set_pions_out_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a20"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a5a4783e352cb985835f4089ca20a34e4">set_pions_out_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getPionsOutVertexInCalo(), track_requests.get()));</div>
-<div class="line">      dest.<a name="a31"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a1adcf8e6763eca75682c4e6502f743ae">set_muons_in_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a21"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a1adcf8e6763eca75682c4e6502f743ae">set_muons_in_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getMuonsInVertexInCalo(), track_requests.get()));</div>
-<div class="line">      dest.<a name="a32"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a1d18cf992f73388ab0638a958e569e96">set_muons_in_vtx_out_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a22"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a1d18cf992f73388ab0638a958e569e96">set_muons_in_vtx_out_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getMuonsInVertexOutCalo(), track_requests.get()));</div>
-<div class="line">      dest.<a name="a33"></a><a class="code" href="classic_1_1_j_p_t_jet.html#aaca0322d030a1022825355cb055bfb8f">set_muons_out_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a23"></a><a class="code" href="classic_1_1_j_p_t_jet.html#aaca0322d030a1022825355cb055bfb8f">set_muons_out_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getMuonsOutVertexInCalo(), track_requests.get()));</div>
-<div class="line">      dest.<a name="a34"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a6a49c3aee95c78f4efdcb33fd3d72324">set_elecs_in_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a24"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a6a49c3aee95c78f4efdcb33fd3d72324">set_elecs_in_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getElecsInVertexInCalo(), track_requests.get()));</div>
-<div class="line">      dest.<a name="a35"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a6f37d1bc47064def97f17d7f81cf8347">set_elecs_in_vtx_out_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a25"></a><a class="code" href="classic_1_1_j_p_t_jet.html#a6f37d1bc47064def97f17d7f81cf8347">set_elecs_in_vtx_out_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getElecsInVertexOutCalo(), track_requests.get()));</div>
-<div class="line">      dest.<a name="a36"></a><a class="code" href="classic_1_1_j_p_t_jet.html#acb19ea03de852bb6a25317ef8e55e9b3">set_elecs_out_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
+<div class="line">      dest.<a name="a26"></a><a class="code" href="classic_1_1_j_p_t_jet.html#acb19ea03de852bb6a25317ef8e55e9b3">set_elecs_out_vtx_in_calo</a>(dest_.DoTrackCollection(</div>
 <div class="line">          src.getElecsOutVertexInCalo(), track_requests.get()));</div>
 <div class="line">    }</div>
 <div class="line"></div>
@@ -332,7 +332,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line">      dest_.AddTrackCollection(src.getElecsInVertexInCalo(), &amp;all_tracks);</div>
 <div class="line">      dest_.AddTrackCollection(src.getElecsInVertexOutCalo(), &amp;all_tracks);</div>
 <div class="line">      dest_.AddTrackCollection(src.getElecsOutVertexInCalo(), &amp;all_tracks);</div>
-<div class="line">      <a name="a37"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#a02c2e07b8cf921aecb5a5dd67270ef2b">FillJPTTrackVars</a>(&amp;dest, all_tracks, trk_handle, vtx_handle, trk_vtx_map);</div>
+<div class="line">      <a name="a27"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#a02c2e07b8cf921aecb5a5dd67270ef2b">FillJPTTrackVars</a>(&amp;dest, all_tracks, trk_handle, vtx_handle, trk_vtx_map);</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">  <span class="keywordflow">if</span> (dest_.request_trks) {</div>
@@ -344,7 +344,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"><span class="comment">// pat::Jet --&gt; ic::JPTJet</span></div>
 <div class="line"><span class="comment">// =============================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a7b00d99e28873e9fb3c76c053d114a11">ICJetProducer&lt;ic::JPTJet, pat::Jet&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;ic::JPTJet, pat::Jet&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;pat::Jet&gt; &gt; <span class="keyword">const</span>&amp; jets_handle,</div>
 <div class="line">    edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;reco::TrackCollection&gt; trk_handle;</div>
@@ -422,7 +422,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"><span class="comment">// reco::PFJet --&gt; ic::PFJet</span></div>
 <div class="line"><span class="comment">// =============================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a7b00d99e28873e9fb3c76c053d114a11">ICJetProducer&lt;ic::PFJet, reco::PFJet&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;ic::PFJet, reco::PFJet&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;reco::PFJet&gt; &gt; <span class="keyword">const</span>&amp; jets_handle,</div>
 <div class="line">    edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;float&gt; &gt; pu_id_handle;</div>
@@ -443,22 +443,22 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; passed_.size(); ++i) {</div>
 <div class="line">    reco::PFJet <span class="keyword">const</span>&amp; src = jets_handle-&gt;at(passed_[i]);</div>
-<div class="line">    <a name="_a38"></a><a class="code" href="classic_1_1_p_f_jet.html">ic::PFJet</a> &amp; dest = jets_-&gt;at(i);</div>
-<div class="line">    <a name="a39"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#a5afdbe81deb9199c57c770cef34ba3ae">FillCommonPFJet</a>(&amp;dest, src);</div>
+<div class="line">    <a name="_a28"></a><a class="code" href="classic_1_1_p_f_jet.html">ic::PFJet</a> &amp; dest = jets_-&gt;at(i);</div>
+<div class="line">    <a name="a29"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#a5afdbe81deb9199c57c770cef34ba3ae">FillCommonPFJet</a>(&amp;dest, src);</div>
 <div class="line">    <span class="comment">//  Assume input jet is uncorrected</span></div>
 <div class="line">    dest.<a class="code" href="classic_1_1_jet.html#ac41c56020d5cac0e375d052ff2f417ce">set_uncorrected_energy</a>(src.energy());</div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.do_pu_id) {</div>
-<div class="line">      dest.<a name="a40"></a><a class="code" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">set_pu_id_mva_value</a>((*pu_id_handle)[jets_handle-&gt;refAt(passed_[i])]);</div>
+<div class="line">      dest.<a name="a30"></a><a class="code" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">set_pu_id_mva_value</a>((*pu_id_handle)[jets_handle-&gt;refAt(passed_[i])]);</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.request_trks) {</div>
-<div class="line">      <a name="a41"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#a980e8e55f381968aacecc4a75a1d9aa4">FillPFTracksAndRequest</a>(&amp;dest, src.getPFConstituents(),</div>
+<div class="line">      <a name="a31"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#a980e8e55f381968aacecc4a75a1d9aa4">FillPFTracksAndRequest</a>(&amp;dest, src.getPFConstituents(),</div>
 <div class="line">                             track_requests.get(), &amp;(dest_.track_hasher));</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (dest_.do_trk_vars &amp;&amp; trk_handle-&gt;size() &gt; 0) {</div>
 <div class="line">      <span class="keywordflow">if</span> (dest_.do_trk_vars &amp;&amp; trk_handle-&gt;size() &gt; 0) {</div>
-<div class="line">        <a name="a42"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#aef85ed523f50d9c15f6b9646260fb3d8">FillPFTrackVars</a>(&amp;dest, src.getPFConstituents(), trk_handle, vtx_handle,</div>
+<div class="line">        <a name="a32"></a><a class="code" href="_i_c_jet_dest_helper_8hh.html#aef85ed523f50d9c15f6b9646260fb3d8">FillPFTrackVars</a>(&amp;dest, src.getPFConstituents(), trk_handle, vtx_handle,</div>
 <div class="line">                        trk_vtx_map);</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
@@ -472,7 +472,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line"><span class="comment">// pat::Jet --&gt; ic::PFJet</span></div>
 <div class="line"><span class="comment">// =============================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a7b00d99e28873e9fb3c76c053d114a11">ICJetProducer&lt;ic::PFJet, pat::Jet&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;ic::PFJet, pat::Jet&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;pat::Jet&gt; &gt; <span class="keyword">const</span>&amp; jets_handle,</div>
 <div class="line">    edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;float&gt; &gt; pu_id_handle;</div>
@@ -518,12 +518,12 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_jet_producer_8hh-example
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a5d887a99480770eed29ed2cb70488331">ICJetProducer&lt;T, U&gt;::beginJob</a>() {</div>
-<div class="line">  <a name="a43"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;jets_);</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;T, U&gt;::beginJob</a>() {</div>
+<div class="line">  <a name="a33"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;jets_);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T, <span class="keyword">class</span> U&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html#a42949d3a6e2cd6ac6548da724387bb11">ICJetProducer&lt;T, U&gt;::endJob</a>() {</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_jet_producer.html">ICJetProducer&lt;T, U&gt;::endJob</a>() {</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"></div>

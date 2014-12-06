@@ -118,14 +118,14 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
 <div class="line"></div>
-<div class="line"><a name="a0"></a><a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#ad61155135a809d825e2a628551dedd82">ICMuonProducer::IsoTags::IsoTags</a>(edm::ParameterSet <span class="keyword">const</span>&amp; pset)</div>
+<div class="line">ICMuonProducer::IsoTags::IsoTags(edm::ParameterSet <span class="keyword">const</span>&amp; pset)</div>
 <div class="line">    : charged_all(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;chargedAll&quot;</span>)),</div>
 <div class="line">      charged(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;charged&quot;</span>)),</div>
 <div class="line">      neutral(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;neutral&quot;</span>)),</div>
 <div class="line">      gamma(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;gamma&quot;</span>)),</div>
 <div class="line">      pu(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;pu&quot;</span>)) {}</div>
 <div class="line"></div>
-<div class="line"><a name="a1"></a><a class="code" href="class_i_c_muon_producer.html#a616948504cb2a9e5fa1c05d5efc4d694">ICMuonProducer::ICMuonProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="a0"></a><a class="code" href="class_i_c_muon_producer.html#a616948504cb2a9e5fa1c05d5efc4d694">ICMuonProducer::ICMuonProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
 <div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
 <div class="line">      is_pf_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;isPF&quot;</span>)),</div>
@@ -147,38 +147,38 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">    input_vmaps_.push_back(std::make_pair(</div>
 <div class="line">        vec[i], pset_floats.getParameter&lt;edm::InputTag&gt;(vec[i])));</div>
 <div class="line">  }</div>
-<div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
-<div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, is_pf_, <span class="stringliteral">&quot;isPF&quot;</span>);</div>
+<div class="line">  <a name="a1"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
+<div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, is_pf_, <span class="stringliteral">&quot;isPF&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_ip_, <span class="stringliteral">&quot;includeVertexIP&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_beamspot_ip_, <span class="stringliteral">&quot;includeBeamspotIP&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_pf_iso_03_, <span class="stringliteral">&quot;includePFIso03&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_pf_iso_04_, <span class="stringliteral">&quot;includePFIso04&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><a name="a4"></a><a class="code" href="class_i_c_muon_producer.html#a739aaa640a503935e2c563c22e803adc">ICMuonProducer::~ICMuonProducer</a>() { <span class="keyword">delete</span> <a name="a5"></a><a class="code" href="class_i_c_muon_producer.html#a366c93eab5c1621d2a5e92e38b07fabe">muons_</a>; }</div>
+<div class="line"><a name="a3"></a><a class="code" href="class_i_c_muon_producer.html#a739aaa640a503935e2c563c22e803adc">ICMuonProducer::~ICMuonProducer</a>() { <span class="keyword">delete</span> muons_; }</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> <a name="a6"></a><a class="code" href="class_i_c_muon_producer.html#a8d942b9d1d3b559acd75dd64801a3609">ICMuonProducer::produce</a>(edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><span class="keywordtype">void</span> ICMuonProducer::produce(edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;edm::View&lt;reco::Muon&gt; &gt; muons_handle;</div>
 <div class="line">  edm::Handle&lt;edm::View&lt;reco::PFCandidate&gt; &gt; pfs_handle;</div>
 <div class="line">  <span class="keywordtype">unsigned</span> n_muons = 0;</div>
-<div class="line">  <span class="keywordflow">if</span> (<a name="a7"></a><a class="code" href="class_i_c_muon_producer.html#ac4d0e13feb910ac3cbf916fc154dd5a9">is_pf_</a>) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a name="a8"></a><a class="code" href="class_i_c_muon_producer.html#a99b1efec60205a8db988e0a5e4d52393">input_</a>, pfs_handle);</div>
+<div class="line">  <span class="keywordflow">if</span> (is_pf_) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(input_, pfs_handle);</div>
 <div class="line">    n_muons = pfs_handle-&gt;size();</div>
 <div class="line">  } <span class="keywordflow">else</span> {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a99b1efec60205a8db988e0a5e4d52393">input_</a>, muons_handle);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(input_, muons_handle);</div>
 <div class="line">    n_muons = muons_handle-&gt;size();</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;edm::View&lt;reco::Vertex&gt; &gt; vertices_handle;</div>
-<div class="line">  <span class="keywordflow">if</span> (<a name="a9"></a><a class="code" href="class_i_c_muon_producer.html#ac20319b18b47d2db87e9b060be0cd404">do_vertex_ip_</a>) <span class="keyword">event</span>.getByLabel(<a name="a10"></a><a class="code" href="class_i_c_muon_producer.html#a54dfd20645910b9519935a78c9a4c31f">input_vertices_</a>, vertices_handle);</div>
+<div class="line">  <span class="keywordflow">if</span> (do_vertex_ip_) <span class="keyword">event</span>.getByLabel(input_vertices_, vertices_handle);</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;reco::BeamSpot&gt; beamspot_handle;</div>
-<div class="line">  <span class="keywordflow">if</span> (<a name="a11"></a><a class="code" href="class_i_c_muon_producer.html#a422add8243ca77423e0cb1b9b3540732">do_beamspot_ip_</a>) <span class="keyword">event</span>.getByLabel(<a name="a12"></a><a class="code" href="class_i_c_muon_producer.html#ae82bf04371e1ec4d7dd77d55d29dfe6c">input_beamspot_</a>, beamspot_handle);</div>
+<div class="line">  <span class="keywordflow">if</span> (do_beamspot_ip_) <span class="keyword">event</span>.getByLabel(input_beamspot_, beamspot_handle);</div>
 <div class="line"></div>
 <div class="line">  std::vector&lt;edm::Handle&lt;edm::ValueMap&lt;float&gt; &gt; &gt; float_handles(</div>
-<div class="line">      <a name="a13"></a><a class="code" href="class_i_c_muon_producer.html#a3672a463a58db86f878166fbbfedfa70">input_vmaps_</a>.size());</div>
+<div class="line">      input_vmaps_.size());</div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; float_handles.size(); ++i) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a3672a463a58db86f878166fbbfedfa70">input_vmaps_</a>[i].second, float_handles[i]);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(input_vmaps_[i].second, float_handles[i]);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; charged_all_03;</div>
@@ -186,12 +186,12 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; neutral_03;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; gamma_03;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; pu_03;</div>
-<div class="line">  <span class="keywordflow">if</span> (<a name="a14"></a><a class="code" href="class_i_c_muon_producer.html#a9529a56b9206cb89d55fb7c40fe6e11b">do_pf_iso_03_</a>) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a name="a15"></a><a class="code" href="class_i_c_muon_producer.html#a9c7c0bfd4febb5403dde00c28f32b4c8">pf_iso_03_</a>.<a name="a16"></a><a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a7be109355c4dd3c9495bd8c66dd0f0df">charged_all</a>, charged_all_03);</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a9c7c0bfd4febb5403dde00c28f32b4c8">pf_iso_03_</a>.<a name="a17"></a><a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a3ac0f922ea9e444963c287d977863f2b">charged</a>, charged_03);</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a9c7c0bfd4febb5403dde00c28f32b4c8">pf_iso_03_</a>.<a name="a18"></a><a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a2a770390eb9ee43b8471ad2dcf105da2">neutral</a>, neutral_03);</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a9c7c0bfd4febb5403dde00c28f32b4c8">pf_iso_03_</a>.<a name="a19"></a><a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a8eaf095c12f68dce209b93dd6df663e8">gamma</a>, gamma_03);</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a9c7c0bfd4febb5403dde00c28f32b4c8">pf_iso_03_</a>.<a name="a20"></a><a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a78d84b3facaccc5cd1500a9dd59dcbd6">pu</a>, pu_03);</div>
+<div class="line">  <span class="keywordflow">if</span> (do_pf_iso_03_) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_03_.charged_all, charged_all_03);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_03_.charged, charged_03);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_03_.neutral, neutral_03);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_03_.gamma, gamma_03);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_03_.pu, pu_03);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; charged_all_04;</div>
@@ -199,37 +199,37 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; neutral_04;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; gamma_04;</div>
 <div class="line">  edm::Handle&lt;edm::ValueMap&lt;double&gt; &gt; pu_04;</div>
-<div class="line">  <span class="keywordflow">if</span> (<a name="a21"></a><a class="code" href="class_i_c_muon_producer.html#a795dc6195f565de6285c6ad4eac708b9">do_pf_iso_04_</a>) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a name="a22"></a><a class="code" href="class_i_c_muon_producer.html#a98193d094a6793a0f33011887cdfcc77">pf_iso_04_</a>.<a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a7be109355c4dd3c9495bd8c66dd0f0df">charged_all</a>, charged_all_04);</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a98193d094a6793a0f33011887cdfcc77">pf_iso_04_</a>.<a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a3ac0f922ea9e444963c287d977863f2b">charged</a>, charged_04);</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a98193d094a6793a0f33011887cdfcc77">pf_iso_04_</a>.<a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a2a770390eb9ee43b8471ad2dcf105da2">neutral</a>, neutral_04);</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a98193d094a6793a0f33011887cdfcc77">pf_iso_04_</a>.<a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a8eaf095c12f68dce209b93dd6df663e8">gamma</a>, gamma_04);</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_muon_producer.html#a98193d094a6793a0f33011887cdfcc77">pf_iso_04_</a>.<a class="code" href="struct_i_c_muon_producer_1_1_iso_tags.html#a78d84b3facaccc5cd1500a9dd59dcbd6">pu</a>, pu_04);</div>
+<div class="line">  <span class="keywordflow">if</span> (do_pf_iso_04_) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_04_.charged_all, charged_all_04);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_04_.charged, charged_04);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_04_.neutral, neutral_04);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_04_.gamma, gamma_04);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(pf_iso_04_.pu, pu_04);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  <span class="comment">// Prepare output collection</span></div>
-<div class="line">  <a class="code" href="class_i_c_muon_producer.html#a366c93eab5c1621d2a5e92e38b07fabe">muons_</a>-&gt;clear();</div>
-<div class="line">  <a class="code" href="class_i_c_muon_producer.html#a366c93eab5c1621d2a5e92e38b07fabe">muons_</a>-&gt;resize(n_muons, <a name="_a23"></a><a class="code" href="classic_1_1_muon.html">ic::Muon</a>());</div>
+<div class="line">  muons_-&gt;clear();</div>
+<div class="line">  muons_-&gt;resize(n_muons, <a name="_a4"></a><a class="code" href="classic_1_1_muon.html">ic::Muon</a>());</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_muons; ++i) {</div>
-<div class="line">    <a class="code" href="classic_1_1_muon.html">ic::Muon</a> &amp; dest = <a class="code" href="class_i_c_muon_producer.html#a366c93eab5c1621d2a5e92e38b07fabe">muons_</a>-&gt;at(i);</div>
+<div class="line">    <a class="code" href="classic_1_1_muon.html">ic::Muon</a> &amp; dest = muons_-&gt;at(i);</div>
 <div class="line"></div>
 <div class="line">    reco::MuonRef muon_ref;</div>
 <div class="line">    edm::RefToBase&lt;reco::Muon&gt; muon_base_ref;</div>
 <div class="line">    edm::RefToBase&lt;reco::PFCandidate&gt; pf_base_ref;</div>
-<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#ac4d0e13feb910ac3cbf916fc154dd5a9">is_pf_</a>) {</div>
+<div class="line">    <span class="keywordflow">if</span> (is_pf_) {</div>
 <div class="line">      reco::PFCandidate <span class="keyword">const</span>&amp; pf_src = pfs_handle-&gt;at(i);</div>
-<div class="line">      dest.<a name="a24"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(<a name="a25"></a><a class="code" href="class_i_c_muon_producer.html#a2a9efa8eaf3780c6df3dac388969cd19">pf_hasher_</a>(&amp;pf_src));</div>
-<div class="line">      dest.<a name="a26"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(pf_src.pt());</div>
-<div class="line">      dest.<a name="a27"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(pf_src.eta());</div>
-<div class="line">      dest.<a name="a28"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(pf_src.phi());</div>
-<div class="line">      dest.<a name="a29"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(pf_src.energy());</div>
-<div class="line">      dest.<a name="a30"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(pf_src.charge());</div>
+<div class="line">      dest.<a name="a5"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(pf_hasher_(&amp;pf_src));</div>
+<div class="line">      dest.<a name="a6"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(pf_src.pt());</div>
+<div class="line">      dest.<a name="a7"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(pf_src.eta());</div>
+<div class="line">      dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(pf_src.phi());</div>
+<div class="line">      dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(pf_src.energy());</div>
+<div class="line">      dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(pf_src.charge());</div>
 <div class="line">      muon_ref = pf_src.muonRef();</div>
 <div class="line">      pf_base_ref = pfs_handle-&gt;refAt(i);</div>
 <div class="line">    } <span class="keywordflow">else</span> {</div>
 <div class="line">      reco::Muon <span class="keyword">const</span>&amp; reco_src = muons_handle-&gt;at(i);</div>
-<div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(<a name="a31"></a><a class="code" href="class_i_c_muon_producer.html#a621cca593497518053953e5ae8d4edb0">muon_hasher_</a>(&amp;reco_src));</div>
+<div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(muon_hasher_(&amp;reco_src));</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(reco_src.pt());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(reco_src.eta());</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(reco_src.phi());</div>
@@ -239,72 +239,72 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    reco::Muon <span class="keyword">const</span>&amp; src =</div>
-<div class="line">        <a class="code" href="class_i_c_muon_producer.html#ac4d0e13feb910ac3cbf916fc154dd5a9">is_pf_</a> ? *(pfs_handle-&gt;at(i).muonRef()) : *muons_handle-&gt;refAt(i);</div>
+<div class="line">        is_pf_ ? *(pfs_handle-&gt;at(i).muonRef()) : *muons_handle-&gt;refAt(i);</div>
 <div class="line"></div>
-<div class="line">    dest.<a name="a32"></a><a class="code" href="classic_1_1_muon.html#a2a18cd3925f1fa3c4591c38e72c11401">set_dr03_tk_sum_pt</a>(src.isolationR03().sumPt);</div>
-<div class="line">    dest.<a name="a33"></a><a class="code" href="classic_1_1_muon.html#a4e6c4c8091ea9127b7cc00a34b2ea5e4">set_dr03_ecal_rechit_sum_et</a>(src.isolationR03().emEt);</div>
-<div class="line">    dest.<a name="a34"></a><a class="code" href="classic_1_1_muon.html#a37e896d4dd45103550d79bd0f2ba80bf">set_dr03_hcal_tower_sum_et</a>(src.isolationR03().hadEt);</div>
+<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_muon.html#a2a18cd3925f1fa3c4591c38e72c11401">set_dr03_tk_sum_pt</a>(src.isolationR03().sumPt);</div>
+<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_muon.html#a4e6c4c8091ea9127b7cc00a34b2ea5e4">set_dr03_ecal_rechit_sum_et</a>(src.isolationR03().emEt);</div>
+<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_muon.html#a37e896d4dd45103550d79bd0f2ba80bf">set_dr03_hcal_tower_sum_et</a>(src.isolationR03().hadEt);</div>
 <div class="line"></div>
 <div class="line"></div>
-<div class="line">    dest.<a name="a35"></a><a class="code" href="classic_1_1_muon.html#aad3adf154e368cc9061c91a941f195b8">set_is_standalone</a>(src.isStandAloneMuon());</div>
-<div class="line">    dest.<a name="a36"></a><a class="code" href="classic_1_1_muon.html#a5d724c9b73299ac32fa3387b6c3807bc">set_is_global</a>(src.isGlobalMuon());</div>
-<div class="line">    dest.<a name="a37"></a><a class="code" href="classic_1_1_muon.html#a0c3ffa87576892924a1dccf894f90781">set_is_tracker</a>(src.isTrackerMuon());</div>
-<div class="line">    dest.<a name="a38"></a><a class="code" href="classic_1_1_muon.html#a47956b0df87f9dce24e0f53b228d6010">set_is_calo</a>(src.isCaloMuon());</div>
-<div class="line">    dest.<a name="a39"></a><a class="code" href="classic_1_1_muon.html#a0dc5271438f210bfb1311d92803df5a2">set_matched_stations</a>(src.numberOfMatchedStations());</div>
+<div class="line">    dest.<a name="a14"></a><a class="code" href="classic_1_1_muon.html#aad3adf154e368cc9061c91a941f195b8">set_is_standalone</a>(src.isStandAloneMuon());</div>
+<div class="line">    dest.<a name="a15"></a><a class="code" href="classic_1_1_muon.html#a5d724c9b73299ac32fa3387b6c3807bc">set_is_global</a>(src.isGlobalMuon());</div>
+<div class="line">    dest.<a name="a16"></a><a class="code" href="classic_1_1_muon.html#a0c3ffa87576892924a1dccf894f90781">set_is_tracker</a>(src.isTrackerMuon());</div>
+<div class="line">    dest.<a name="a17"></a><a class="code" href="classic_1_1_muon.html#a47956b0df87f9dce24e0f53b228d6010">set_is_calo</a>(src.isCaloMuon());</div>
+<div class="line">    dest.<a name="a18"></a><a class="code" href="classic_1_1_muon.html#a0dc5271438f210bfb1311d92803df5a2">set_matched_stations</a>(src.numberOfMatchedStations());</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (src.isGlobalMuon() &amp;&amp; src.globalTrack().isNonnull()) {</div>
-<div class="line">      dest.<a name="a40"></a><a class="code" href="classic_1_1_muon.html#a21064b74cde465830256693f70fcb605">set_gt_normalized_chi2</a>(src.globalTrack()-&gt;normalizedChi2());</div>
-<div class="line">      dest.<a name="a41"></a><a class="code" href="classic_1_1_muon.html#a104a93abc4315eaa6240c9debbca0606">set_gt_valid_muon_hits</a>(</div>
+<div class="line">      dest.<a name="a19"></a><a class="code" href="classic_1_1_muon.html#a21064b74cde465830256693f70fcb605">set_gt_normalized_chi2</a>(src.globalTrack()-&gt;normalizedChi2());</div>
+<div class="line">      dest.<a name="a20"></a><a class="code" href="classic_1_1_muon.html#a104a93abc4315eaa6240c9debbca0606">set_gt_valid_muon_hits</a>(</div>
 <div class="line">          src.globalTrack()-&gt;hitPattern().numberOfValidMuonHits());</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (src.isTrackerMuon() &amp;&amp; src.innerTrack().isNonnull()) {</div>
-<div class="line">      dest.<a name="a42"></a><a class="code" href="classic_1_1_muon.html#a78d6e4a75b38d2736bb1d4121f8cd4e8">set_it_pixel_hits</a>(</div>
+<div class="line">      dest.<a name="a21"></a><a class="code" href="classic_1_1_muon.html#a78d6e4a75b38d2736bb1d4121f8cd4e8">set_it_pixel_hits</a>(</div>
 <div class="line">          src.innerTrack()-&gt;hitPattern().numberOfValidPixelHits());</div>
-<div class="line">      dest.<a name="a43"></a><a class="code" href="classic_1_1_muon.html#a9d7b66004cc129c9c70bb39a0771ec20">set_it_tracker_hits</a>(</div>
+<div class="line">      dest.<a name="a22"></a><a class="code" href="classic_1_1_muon.html#a9d7b66004cc129c9c70bb39a0771ec20">set_it_tracker_hits</a>(</div>
 <div class="line">          src.innerTrack()-&gt;hitPattern().numberOfValidTrackerHits());</div>
-<div class="line">      dest.<a name="a44"></a><a class="code" href="classic_1_1_muon.html#a8c95118b6d43e316af2d837d373e261e">set_it_layers_with_measurement</a>(</div>
+<div class="line">      dest.<a name="a23"></a><a class="code" href="classic_1_1_muon.html#a8c95118b6d43e316af2d837d373e261e">set_it_layers_with_measurement</a>(</div>
 <div class="line">          src.innerTrack()-&gt;hitPattern().trackerLayersWithMeasurement());</div>
 <div class="line">    }</div>
 <div class="line"></div>
-<div class="line">    dest.<a name="a45"></a><a class="code" href="classic_1_1_muon.html#ac8d4b00f027a710feac58eda75be1d1d">set_vx</a>(src.vx());</div>
-<div class="line">    dest.<a name="a46"></a><a class="code" href="classic_1_1_muon.html#a702adcf17fc3a9903aac7b3920f3b9bb">set_vy</a>(src.vy());</div>
-<div class="line">    dest.<a name="a47"></a><a class="code" href="classic_1_1_muon.html#a241f1f9ce54356ced3cf081a79586fbb">set_vz</a>(src.vz());</div>
+<div class="line">    dest.<a name="a24"></a><a class="code" href="classic_1_1_muon.html#ac8d4b00f027a710feac58eda75be1d1d">set_vx</a>(src.vx());</div>
+<div class="line">    dest.<a name="a25"></a><a class="code" href="classic_1_1_muon.html#a702adcf17fc3a9903aac7b3920f3b9bb">set_vy</a>(src.vy());</div>
+<div class="line">    dest.<a name="a26"></a><a class="code" href="classic_1_1_muon.html#a241f1f9ce54356ced3cf081a79586fbb">set_vz</a>(src.vz());</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> v = 0; v &lt; float_handles.size(); ++v) {</div>
-<div class="line">      <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#ac4d0e13feb910ac3cbf916fc154dd5a9">is_pf_</a>) {</div>
-<div class="line">        dest.<a name="a48"></a><a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">SetIdIso</a>(<a class="code" href="class_i_c_muon_producer.html#a3672a463a58db86f878166fbbfedfa70">input_vmaps_</a>[v].first,</div>
+<div class="line">      <span class="keywordflow">if</span> (is_pf_) {</div>
+<div class="line">        dest.<a name="a27"></a><a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">SetIdIso</a>(input_vmaps_[v].first,</div>
 <div class="line">                    (*(float_handles[v]))[pf_base_ref]);</div>
 <div class="line">      } <span class="keywordflow">else</span> {</div>
-<div class="line">        dest.<a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">SetIdIso</a>(<a class="code" href="class_i_c_muon_producer.html#a3672a463a58db86f878166fbbfedfa70">input_vmaps_</a>[v].first,</div>
+<div class="line">        dest.<a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">SetIdIso</a>(input_vmaps_[v].first,</div>
 <div class="line">                    (*(float_handles[v]))[muon_base_ref]);</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line"></div>
-<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#ac4d0e13feb910ac3cbf916fc154dd5a9">is_pf_</a>) {</div>
-<div class="line">      <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#a9529a56b9206cb89d55fb7c40fe6e11b">do_pf_iso_03_</a>) {</div>
-<div class="line">        dest.<a name="a49"></a><a class="code" href="classic_1_1_muon.html#a9a1227808d7a2e737578765c0dc05038">set_dr03_pfiso_charged_all</a>((*charged_all_03)[pf_base_ref]);</div>
-<div class="line">        dest.<a name="a50"></a><a class="code" href="classic_1_1_muon.html#a25af582d5c2e7cd7db62f73a37dcb4fb">set_dr03_pfiso_charged</a>((*charged_03)[pf_base_ref]);</div>
-<div class="line">        dest.<a name="a51"></a><a class="code" href="classic_1_1_muon.html#a10fdd787d51429cea1a4b894a3a7e327">set_dr03_pfiso_neutral</a>((*neutral_03)[pf_base_ref]);</div>
-<div class="line">        dest.<a name="a52"></a><a class="code" href="classic_1_1_muon.html#acc4c2ef6151a94ec28754e95a2acf68f">set_dr03_pfiso_gamma</a>((*gamma_03)[pf_base_ref]);</div>
-<div class="line">        dest.<a name="a53"></a><a class="code" href="classic_1_1_muon.html#a05a597a983760b8bbc3030e9e207af56">set_dr03_pfiso_pu</a>((*pu_03)[pf_base_ref]);</div>
+<div class="line">    <span class="keywordflow">if</span> (is_pf_) {</div>
+<div class="line">      <span class="keywordflow">if</span> (do_pf_iso_03_) {</div>
+<div class="line">        dest.<a name="a28"></a><a class="code" href="classic_1_1_muon.html#a9a1227808d7a2e737578765c0dc05038">set_dr03_pfiso_charged_all</a>((*charged_all_03)[pf_base_ref]);</div>
+<div class="line">        dest.<a name="a29"></a><a class="code" href="classic_1_1_muon.html#a25af582d5c2e7cd7db62f73a37dcb4fb">set_dr03_pfiso_charged</a>((*charged_03)[pf_base_ref]);</div>
+<div class="line">        dest.<a name="a30"></a><a class="code" href="classic_1_1_muon.html#a10fdd787d51429cea1a4b894a3a7e327">set_dr03_pfiso_neutral</a>((*neutral_03)[pf_base_ref]);</div>
+<div class="line">        dest.<a name="a31"></a><a class="code" href="classic_1_1_muon.html#acc4c2ef6151a94ec28754e95a2acf68f">set_dr03_pfiso_gamma</a>((*gamma_03)[pf_base_ref]);</div>
+<div class="line">        dest.<a name="a32"></a><a class="code" href="classic_1_1_muon.html#a05a597a983760b8bbc3030e9e207af56">set_dr03_pfiso_pu</a>((*pu_03)[pf_base_ref]);</div>
 <div class="line">      }</div>
-<div class="line">      <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#a795dc6195f565de6285c6ad4eac708b9">do_pf_iso_04_</a>) {</div>
-<div class="line">        dest.<a name="a54"></a><a class="code" href="classic_1_1_muon.html#a018b7db537d3fb4b15127cf09c56fb44">set_dr04_pfiso_charged_all</a>((*charged_all_04)[pf_base_ref]);</div>
-<div class="line">        dest.<a name="a55"></a><a class="code" href="classic_1_1_muon.html#ada1f2ef26e17da60da7de4e0bdc7676c">set_dr04_pfiso_charged</a>((*charged_04)[pf_base_ref]);</div>
-<div class="line">        dest.<a name="a56"></a><a class="code" href="classic_1_1_muon.html#adfd5f399dd49976b41d0915e2dbf05a5">set_dr04_pfiso_neutral</a>((*neutral_04)[pf_base_ref]);</div>
-<div class="line">        dest.<a name="a57"></a><a class="code" href="classic_1_1_muon.html#a10891380512ef6349e9dfce89462aeb6">set_dr04_pfiso_gamma</a>((*gamma_04)[pf_base_ref]);</div>
-<div class="line">        dest.<a name="a58"></a><a class="code" href="classic_1_1_muon.html#af278cbcd2abb64ada2db70d05225f920">set_dr04_pfiso_pu</a>((*pu_04)[pf_base_ref]);</div>
+<div class="line">      <span class="keywordflow">if</span> (do_pf_iso_04_) {</div>
+<div class="line">        dest.<a name="a33"></a><a class="code" href="classic_1_1_muon.html#a018b7db537d3fb4b15127cf09c56fb44">set_dr04_pfiso_charged_all</a>((*charged_all_04)[pf_base_ref]);</div>
+<div class="line">        dest.<a name="a34"></a><a class="code" href="classic_1_1_muon.html#ada1f2ef26e17da60da7de4e0bdc7676c">set_dr04_pfiso_charged</a>((*charged_04)[pf_base_ref]);</div>
+<div class="line">        dest.<a name="a35"></a><a class="code" href="classic_1_1_muon.html#adfd5f399dd49976b41d0915e2dbf05a5">set_dr04_pfiso_neutral</a>((*neutral_04)[pf_base_ref]);</div>
+<div class="line">        dest.<a name="a36"></a><a class="code" href="classic_1_1_muon.html#a10891380512ef6349e9dfce89462aeb6">set_dr04_pfiso_gamma</a>((*gamma_04)[pf_base_ref]);</div>
+<div class="line">        dest.<a name="a37"></a><a class="code" href="classic_1_1_muon.html#af278cbcd2abb64ada2db70d05225f920">set_dr04_pfiso_pu</a>((*pu_04)[pf_base_ref]);</div>
 <div class="line">      }</div>
 <div class="line">    } <span class="keywordflow">else</span> {</div>
-<div class="line">      <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#a9529a56b9206cb89d55fb7c40fe6e11b">do_pf_iso_03_</a>) {</div>
+<div class="line">      <span class="keywordflow">if</span> (do_pf_iso_03_) {</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#a9a1227808d7a2e737578765c0dc05038">set_dr03_pfiso_charged_all</a>((*charged_all_03)[muon_base_ref]);</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#a25af582d5c2e7cd7db62f73a37dcb4fb">set_dr03_pfiso_charged</a>((*charged_03)[muon_base_ref]);</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#a10fdd787d51429cea1a4b894a3a7e327">set_dr03_pfiso_neutral</a>((*neutral_03)[muon_base_ref]);</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#acc4c2ef6151a94ec28754e95a2acf68f">set_dr03_pfiso_gamma</a>((*gamma_03)[muon_base_ref]);</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#a05a597a983760b8bbc3030e9e207af56">set_dr03_pfiso_pu</a>((*pu_03)[muon_base_ref]);</div>
 <div class="line">      }</div>
-<div class="line">      <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#a795dc6195f565de6285c6ad4eac708b9">do_pf_iso_04_</a>) {</div>
+<div class="line">      <span class="keywordflow">if</span> (do_pf_iso_04_) {</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#a018b7db537d3fb4b15127cf09c56fb44">set_dr04_pfiso_charged_all</a>((*charged_all_04)[muon_base_ref]);</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#ada1f2ef26e17da60da7de4e0bdc7676c">set_dr04_pfiso_charged</a>((*charged_04)[muon_base_ref]);</div>
 <div class="line">        dest.<a class="code" href="classic_1_1_muon.html#adfd5f399dd49976b41d0915e2dbf05a5">set_dr04_pfiso_neutral</a>((*neutral_04)[muon_base_ref]);</div>
@@ -313,25 +313,25 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line"></div>
-<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#ac20319b18b47d2db87e9b060be0cd404">do_vertex_ip_</a> &amp;&amp; vertices_handle-&gt;size() &gt; 0 &amp;&amp;</div>
+<div class="line">    <span class="keywordflow">if</span> (do_vertex_ip_ &amp;&amp; vertices_handle-&gt;size() &gt; 0 &amp;&amp;</div>
 <div class="line">        src.innerTrack().isNonnull()) {</div>
 <div class="line">        reco::Vertex <span class="keyword">const</span>&amp; vtx = vertices_handle-&gt;at(0);</div>
-<div class="line">        dest.<a name="a59"></a><a class="code" href="classic_1_1_muon.html#ae797dbda99198d80922ff798b2cb8bc1">set_dz_vertex</a>(src.innerTrack()-&gt;dz(vtx.position()));</div>
-<div class="line">        dest.<a name="a60"></a><a class="code" href="classic_1_1_muon.html#abf873e4655542b69f1ce9106c8f65335">set_dxy_vertex</a>(src.innerTrack()-&gt;dxy(vtx.position()));</div>
+<div class="line">        dest.<a name="a38"></a><a class="code" href="classic_1_1_muon.html#ae797dbda99198d80922ff798b2cb8bc1">set_dz_vertex</a>(src.innerTrack()-&gt;dz(vtx.position()));</div>
+<div class="line">        dest.<a name="a39"></a><a class="code" href="classic_1_1_muon.html#abf873e4655542b69f1ce9106c8f65335">set_dxy_vertex</a>(src.innerTrack()-&gt;dxy(vtx.position()));</div>
 <div class="line">    }</div>
-<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="class_i_c_muon_producer.html#a422add8243ca77423e0cb1b9b3540732">do_beamspot_ip_</a>&amp;&amp; src.innerTrack().isNonnull()) {</div>
-<div class="line">      dest.<a name="a61"></a><a class="code" href="classic_1_1_muon.html#abef85ced2c8f011e09409459663e97e7">set_dxy_beamspot</a>(src.innerTrack()-&gt;dxy(*beamspot_handle));</div>
+<div class="line">    <span class="keywordflow">if</span> (do_beamspot_ip_&amp;&amp; src.innerTrack().isNonnull()) {</div>
+<div class="line">      dest.<a name="a40"></a><a class="code" href="classic_1_1_muon.html#abef85ced2c8f011e09409459663e97e7">set_dxy_beamspot</a>(src.innerTrack()-&gt;dxy(*beamspot_handle));</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> <a name="a62"></a><a class="code" href="class_i_c_muon_producer.html#accae1533178e5a2dc4dec8100159c241">ICMuonProducer::beginJob</a>() {</div>
-<div class="line">  <a name="a63"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(<a name="a64"></a><a class="code" href="class_i_c_muon_producer.html#a4b5db97800288084ac4cd58bb13bda11">branch_</a>.c_str(), &amp;<a class="code" href="class_i_c_muon_producer.html#a366c93eab5c1621d2a5e92e38b07fabe">muons_</a>);</div>
+<div class="line"><span class="keywordtype">void</span> ICMuonProducer::beginJob() {</div>
+<div class="line">  <a name="a41"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;muons_);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> <a name="a65"></a><a class="code" href="class_i_c_muon_producer.html#aaf3d28abd252e2ba3d076babf8bf9551">ICMuonProducer::endJob</a>() {}</div>
+<div class="line"><span class="keywordtype">void</span> ICMuonProducer::endJob() {}</div>
 <div class="line"></div>
-<div class="line"><a name="a66"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a67"></a><a class="code" href="class_i_c_muon_producer.html">ICMuonProducer</a>);</div>
+<div class="line"><a name="a42"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a43"></a><a class="code" href="class_i_c_muon_producer.html">ICMuonProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

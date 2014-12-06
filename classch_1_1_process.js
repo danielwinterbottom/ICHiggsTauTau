@@ -33,17 +33,5 @@ var classch_1_1_process =
     [ "SetNormShape", "classch_1_1_process.html#aea302c0b0b870b2e8fe0fee31fbee27a", null ],
     [ "SetNormShapeAndRate", "classch_1_1_process.html#ab30a3685a5b95bd93046e058107c2cb9", null ],
     [ "operator<<", "classch_1_1_process.html#ae3d2ec9cc05d5e849bc0271cf46f45b5", null ],
-    [ "swap", "classch_1_1_process.html#acdd8a9af1254395822e5c250053397aa", null ],
-    [ "bin_", "classch_1_1_process.html#a2566c4b35c03b7853248e1db066ff516", null ],
-    [ "rate_", "classch_1_1_process.html#a66fb90bc5f0ba2cf02df71fe843fa372", null ],
-    [ "process_", "classch_1_1_process.html#a939f593036b503f66160c61a56c231e9", null ],
-    [ "signal_", "classch_1_1_process.html#a81387952b737cc990d84bc7fbaedcaab", null ],
-    [ "analysis_", "classch_1_1_process.html#ac2294256866ad610184abb0f62905085", null ],
-    [ "era_", "classch_1_1_process.html#a7f398db6745ba99e651700c474731a2c", null ],
-    [ "channel_", "classch_1_1_process.html#a3d52737ccb07166361192313581d5001", null ],
-    [ "bin_id_", "classch_1_1_process.html#ad86685178d579c95be8b4259fbe178f9", null ],
-    [ "mass_", "classch_1_1_process.html#a45340bd6d2f9df733846556420d8a97c", null ],
-    [ "shape_", "classch_1_1_process.html#ad9eb7d6c93299595044970ce5eb44073", null ],
-    [ "pdf_", "classch_1_1_process.html#a96e679d1097b925b1058e47b7f40f5eb", null ],
-    [ "norm_", "classch_1_1_process.html#aa91cd05d73d2c49941ee9491f94eb7eb", null ]
+    [ "swap", "classch_1_1_process.html#acdd8a9af1254395822e5c250053397aa", null ]
 ];

@@ -1,6 +1,5 @@
 var classic_1_1_gen_particle =
 [
-    [ "Point", "classic_1_1_gen_particle.html#ad7b3248f7481ba6e784a508653c92fc4", null ],
     [ "GenParticle", "classic_1_1_gen_particle.html#a0d84457500ac1c1c7927274ce32b97dc", null ],
     [ "~GenParticle", "classic_1_1_gen_particle.html#a7a7d988cbdaa049a335d3460d829c363", null ],
     [ "Print", "classic_1_1_gen_particle.html#a3b46e6da5221867cba43cab48b210a68", null ],
@@ -14,10 +13,5 @@ var classic_1_1_gen_particle =
     [ "set_status", "classic_1_1_gen_particle.html#a2f8d80dd2f3659472842c08b5158b040", null ],
     [ "set_mothers", "classic_1_1_gen_particle.html#ab30d5ec16baa5fa282ed5c5a16f7fef8", null ],
     [ "set_daughters", "classic_1_1_gen_particle.html#a8212c5e45f1f1590fd781cc34eb64cfb", null ],
-    [ "ClassDef", "classic_1_1_gen_particle.html#a70431f6abbe2ccce390c5e3129c289de", null ],
-    [ "index_", "classic_1_1_gen_particle.html#affbf55758ce63e06fabdded93b6c8ab5", null ],
-    [ "pdgid_", "classic_1_1_gen_particle.html#a7754390f77127a6538af273fa5d3d723", null ],
-    [ "status_", "classic_1_1_gen_particle.html#ad2a4ebaa247bb0fbbb5157bb489311c7", null ],
-    [ "mothers_", "classic_1_1_gen_particle.html#a9daabc9e248c4986b89516ac20221563", null ],
-    [ "daughters_", "classic_1_1_gen_particle.html#a746ea4c2fadda83e9f2a0c3057992018", null ]
+    [ "ClassDef", "classic_1_1_gen_particle.html#a70431f6abbe2ccce390c5e3129c289de", null ]
 ];

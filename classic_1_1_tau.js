@@ -1,7 +1,5 @@
 var classic_1_1_tau =
 [
-    [ "UFmap", "classic_1_1_tau.html#ad53e342a897e054c8e005a5ba48f1c63", null ],
-    [ "Point", "classic_1_1_tau.html#ac21d7bf8b96f81214bf58e755b688123", null ],
     [ "Tau", "classic_1_1_tau.html#a369ecb31f0e977466e3a4cdcab8b58e0", null ],
     [ "~Tau", "classic_1_1_tau.html#a1bf81e17b76be4ac71c78c6a6632c980", null ],
     [ "Print", "classic_1_1_tau.html#ad9257915f0e7b868cb2aa434739b938a", null ],
@@ -30,14 +28,5 @@ var classic_1_1_tau =
     [ "SetTauID", "classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2", null ],
     [ "HasTauID", "classic_1_1_tau.html#ab3f94de0cf0f218aa49861c6d9248861", null ],
     [ "GetTauID", "classic_1_1_tau.html#a48b2b3b2b7d2951941c92d3e8f5a4f0d", null ],
-    [ "ClassDef", "classic_1_1_tau.html#ae5db2c12d765d231532bac651373bfac", null ],
-    [ "tau_ids_", "classic_1_1_tau.html#a0ae8056d7c33452e138a2f774d79a1e1", null ],
-    [ "decay_mode_", "classic_1_1_tau.html#a34a9da592295480a5619ebb6b732b412", null ],
-    [ "lead_ecal_energy_", "classic_1_1_tau.html#aeb86de0d213d1e6c6157ab00f9c53a99", null ],
-    [ "lead_hcal_energy_", "classic_1_1_tau.html#a28adc918ab6e1f062c1bbbba14b6f150", null ],
-    [ "lead_p_", "classic_1_1_tau.html#a78622718c2c7f37467681563aae3776d", null ],
-    [ "lead_dxy_vertex_", "classic_1_1_tau.html#a2f064bb48839af33a2e3e93ceca74d5d", null ],
-    [ "lead_dz_vertex_", "classic_1_1_tau.html#ad4b6b5a1072d1ef0cde54f80d818af54", null ],
-    [ "ref_point_", "classic_1_1_tau.html#a56c97b190bdb8523aec70f17cf993bf8", null ],
-    [ "constituent_tracks_", "classic_1_1_tau.html#a5977dde7dcf636f891c20888771c1113", null ]
+    [ "ClassDef", "classic_1_1_tau.html#ae5db2c12d765d231532bac651373bfac", null ]
 ];

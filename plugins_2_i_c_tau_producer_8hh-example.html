@@ -128,23 +128,23 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">  <a name="a2"></a><a class="code" href="class_i_c_tau_producer.html#a0a53adf9e24a707ddef44d6f3a79c989">~ICTauProducer</a>();</div>
 <div class="line"></div>
 <div class="line"> <span class="keyword">private</span>:</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a name="a3"></a><a class="code" href="class_i_c_tau_producer.html#a61ddb99c2009fc7be397e3b2b70aed64">beginJob</a>();</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a name="a4"></a><a class="code" href="class_i_c_tau_producer.html#a4841a6083306b64ac202b4b0982d68f5">produce</a>(edm::Event &amp;, <span class="keyword">const</span> edm::EventSetup &amp;);</div>
-<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a name="a5"></a><a class="code" href="class_i_c_tau_producer.html#a93cd1b1145f791a213df0963e2e9e112">endJob</a>();</div>
-<div class="line">  <span class="keywordtype">void</span> <a name="a6"></a><a class="code" href="class_i_c_tau_producer.html#a57e346baefa9ef0a36be49c285078ec4">constructSpecific</a>(edm::Handle&lt;edm::View&lt;T&gt; &gt; <span class="keyword">const</span>&amp; taus_handle,</div>
+<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> beginJob();</div>
+<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> produce(edm::Event &amp;, <span class="keyword">const</span> edm::EventSetup &amp;);</div>
+<div class="line">  <span class="keyword">virtual</span> <span class="keywordtype">void</span> endJob();</div>
+<div class="line">  <span class="keywordtype">void</span> constructSpecific(edm::Handle&lt;edm::View&lt;T&gt; &gt; <span class="keyword">const</span>&amp; taus_handle,</div>
 <div class="line">                         edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup);</div>
 <div class="line"></div>
-<div class="line">  std::vector&lt;ic::Tau&gt; *<a name="a7"></a><a class="code" href="class_i_c_tau_producer.html#a54121597110d0c6c8ab4b76d016f96c8">taus_</a>;</div>
-<div class="line">  edm::InputTag <a name="a8"></a><a class="code" href="class_i_c_tau_producer.html#a2b7dd1c6634784aef5eb2027a28b7124">input_</a>;</div>
-<div class="line">  std::string <a name="a9"></a><a class="code" href="class_i_c_tau_producer.html#abf000b47cd0d6e79aba396c7659a1d9d">branch_</a>;</div>
-<div class="line">  boost::hash&lt;T const*&gt; <a name="a10"></a><a class="code" href="class_i_c_tau_producer.html#ad218dc6cb1ea9b6ee1c534d2f6fd1c20">tau_hasher_</a>;</div>
-<div class="line">  boost::hash&lt;reco::Track const*&gt; <a name="a11"></a><a class="code" href="class_i_c_tau_producer.html#ab5e0773b3e8822bbad3294b33f481fe1">track_hasher_</a>;</div>
-<div class="line">  edm::InputTag <a name="a12"></a><a class="code" href="class_i_c_tau_producer.html#a84b8eece1f186cd5eabea4813debbb94">track_input_</a>;</div>
-<div class="line">  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; <a name="a13"></a><a class="code" href="class_i_c_tau_producer.html#a1bd9927941074827f940e2ec83d24f95">tau_ids_</a>;</div>
-<div class="line">  edm::InputTag <a name="a14"></a><a class="code" href="class_i_c_tau_producer.html#a788c70527ae5520fc8a4029fe0e6f7c4">input_vertices_</a>;</div>
-<div class="line">  <span class="keywordtype">bool</span> <a name="a15"></a><a class="code" href="class_i_c_tau_producer.html#acb7459b27bf2f7d3f8c11c63556d978b">do_vertex_ip_</a>;</div>
-<div class="line">  <span class="keywordtype">bool</span> <a name="a16"></a><a class="code" href="class_i_c_tau_producer.html#a6c33aeded684f3d88a42e788481e2dae">request_trks_</a>;</div>
-<div class="line">  std::map&lt;std::string, std::size_t&gt; <a name="a17"></a><a class="code" href="class_i_c_tau_producer.html#a364de7291de336bf0cb69d8dbe5de3d2">observed_id_</a>;</div>
+<div class="line">  std::vector&lt;ic::Tau&gt; *taus_;</div>
+<div class="line">  edm::InputTag input_;</div>
+<div class="line">  std::string branch_;</div>
+<div class="line">  boost::hash&lt;T const*&gt; tau_hasher_;</div>
+<div class="line">  boost::hash&lt;reco::Track const*&gt; track_hasher_;</div>
+<div class="line">  edm::InputTag track_input_;</div>
+<div class="line">  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; tau_ids_;</div>
+<div class="line">  edm::InputTag input_vertices_;</div>
+<div class="line">  <span class="keywordtype">bool</span> do_vertex_ip_;</div>
+<div class="line">  <span class="keywordtype">bool</span> request_trks_;</div>
+<div class="line">  std::map&lt;std::string, std::size_t&gt; observed_id_;</div>
 <div class="line">};</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// =============================</span></div>
@@ -170,8 +170,8 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">    produces&lt;reco::TrackRefVector&gt;(<span class="stringliteral">&quot;requestedTracks&quot;</span>);</div>
 <div class="line">  }</div>
 <div class="line"></div>
-<div class="line">  <a name="a18"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
-<div class="line">  <a name="a19"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_ip_, <span class="stringliteral">&quot;includeVertexIP&quot;</span>);</div>
+<div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
+<div class="line">  <a name="a4"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_ip_, <span class="stringliteral">&quot;includeVertexIP&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, request_trks_, <span class="stringliteral">&quot;requestTracks&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"></div>
@@ -182,7 +182,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line"><span class="comment">// Main producer</span></div>
 <div class="line"><span class="comment">// =============</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html#a4841a6083306b64ac202b4b0982d68f5">ICTauProducer&lt;T&gt;::produce</a>(edm::Event&amp; event,</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html">ICTauProducer&lt;T&gt;::produce</a>(edm::Event&amp; event,</div>
 <div class="line">                                 <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;edm::View&lt;T&gt; &gt; taus_handle;</div>
 <div class="line">  <span class="keyword">event</span>.getByLabel(input_, taus_handle);</div>
@@ -193,30 +193,30 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">  std::auto_ptr&lt;reco::TrackRefVector&gt; trk_requests(<span class="keyword">new</span> reco::TrackRefVector());</div>
 <div class="line"></div>
 <div class="line">  taus_-&gt;clear();</div>
-<div class="line">  taus_-&gt;resize(taus_handle-&gt;size(), <a name="_a20"></a><a class="code" href="classic_1_1_tau.html">ic::Tau</a>());</div>
+<div class="line">  taus_-&gt;resize(taus_handle-&gt;size(), <a name="_a5"></a><a class="code" href="classic_1_1_tau.html">ic::Tau</a>());</div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; taus_handle-&gt;size(); ++i) {</div>
 <div class="line">    T <span class="keyword">const</span>&amp; src = taus_handle-&gt;at(i);</div>
 <div class="line">    <a class="code" href="classic_1_1_tau.html">ic::Tau</a>&amp; dest = taus_-&gt;at(i);</div>
 <div class="line"></div>
-<div class="line">    dest.<a name="a21"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(tau_hasher_(&amp;src));</div>
-<div class="line">    dest.<a name="a22"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
-<div class="line">    dest.<a name="a23"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
-<div class="line">    dest.<a name="a24"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
-<div class="line">    dest.<a name="a25"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
-<div class="line">    dest.<a name="a26"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
-<div class="line">    dest.<a name="a27"></a><a class="code" href="classic_1_1_tau.html#aad2955cabb5f9c73c53726e2579c8b91">set_decay_mode</a>(src.decayMode());</div>
+<div class="line">    dest.<a name="a6"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(tau_hasher_(&amp;src));</div>
+<div class="line">    dest.<a name="a7"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
+<div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
+<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
+<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
+<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
+<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_tau.html#aad2955cabb5f9c73c53726e2579c8b91">set_decay_mode</a>(src.decayMode());</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (src.leadPFChargedHadrCand().isNonnull()) {</div>
-<div class="line">      dest.<a name="a28"></a><a class="code" href="classic_1_1_tau.html#afb5378312d0c74392640d6bf69de10de">set_lead_ecal_energy</a>(src.leadPFChargedHadrCand()-&gt;ecalEnergy());</div>
-<div class="line">      dest.<a name="a29"></a><a class="code" href="classic_1_1_tau.html#a238f1840b67a94cee3915800a7d74dfc">set_lead_hcal_energy</a>(src.leadPFChargedHadrCand()-&gt;hcalEnergy());</div>
-<div class="line">      dest.<a name="a30"></a><a class="code" href="classic_1_1_tau.html#a4807508a0de13dae887662dcb9e81067">set_lead_p</a>(src.leadPFChargedHadrCand()-&gt;p());</div>
+<div class="line">      dest.<a name="a13"></a><a class="code" href="classic_1_1_tau.html#afb5378312d0c74392640d6bf69de10de">set_lead_ecal_energy</a>(src.leadPFChargedHadrCand()-&gt;ecalEnergy());</div>
+<div class="line">      dest.<a name="a14"></a><a class="code" href="classic_1_1_tau.html#a238f1840b67a94cee3915800a7d74dfc">set_lead_hcal_energy</a>(src.leadPFChargedHadrCand()-&gt;hcalEnergy());</div>
+<div class="line">      dest.<a name="a15"></a><a class="code" href="classic_1_1_tau.html#a4807508a0de13dae887662dcb9e81067">set_lead_p</a>(src.leadPFChargedHadrCand()-&gt;p());</div>
 <div class="line">      reco::TrackRef <span class="keyword">const</span>&amp; trk = src.leadPFChargedHadrCand()-&gt;trackRef();</div>
 <div class="line">      reco::GsfTrackRef <span class="keyword">const</span>&amp; gsf = src.leadPFChargedHadrCand()-&gt;gsfTrackRef();</div>
 <div class="line">      <span class="keywordflow">if</span> (do_vertex_ip_ &amp;&amp; vertices_handle-&gt;size() &gt; 0) {</div>
 <div class="line">        reco::Vertex <span class="keyword">const</span>&amp; vtx = vertices_handle-&gt;at(0);</div>
 <div class="line">        <span class="keywordflow">if</span> (trk.isNonnull()) {</div>
-<div class="line">          dest.<a name="a31"></a><a class="code" href="classic_1_1_tau.html#a341fe7709cc7bb7cc4941b4a5ee19c68">set_lead_dxy_vertex</a>(trk-&gt;dxy(vtx.position()));</div>
-<div class="line">          dest.<a name="a32"></a><a class="code" href="classic_1_1_tau.html#a643249296205bc8a24a1f033e001b5b2">set_lead_dz_vertex</a>(trk-&gt;dz(vtx.position()));</div>
+<div class="line">          dest.<a name="a16"></a><a class="code" href="classic_1_1_tau.html#a341fe7709cc7bb7cc4941b4a5ee19c68">set_lead_dxy_vertex</a>(trk-&gt;dxy(vtx.position()));</div>
+<div class="line">          dest.<a name="a17"></a><a class="code" href="classic_1_1_tau.html#a643249296205bc8a24a1f033e001b5b2">set_lead_dz_vertex</a>(trk-&gt;dz(vtx.position()));</div>
 <div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (gsf.isNonnull()) {</div>
 <div class="line">          dest.<a class="code" href="classic_1_1_tau.html#a341fe7709cc7bb7cc4941b4a5ee19c68">set_lead_dxy_vertex</a>(gsf-&gt;dxy(vtx.position()));</div>
 <div class="line">          dest.<a class="code" href="classic_1_1_tau.html#a643249296205bc8a24a1f033e001b5b2">set_lead_dz_vertex</a>(gsf-&gt;dz(vtx.position()));</div>
@@ -234,12 +234,12 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">          trk_ids.push_back(track_hasher_(&amp;(*trk)));</div>
 <div class="line">        }</div>
 <div class="line">      }</div>
-<div class="line">      dest.<a name="a33"></a><a class="code" href="classic_1_1_tau.html#a34f1ea3d62b8fca3bf1438f4aa0a4653">set_constituent_tracks</a>(trk_ids);</div>
+<div class="line">      dest.<a name="a18"></a><a class="code" href="classic_1_1_tau.html#a34f1ea3d62b8fca3bf1438f4aa0a4653">set_constituent_tracks</a>(trk_ids);</div>
 <div class="line">    }</div>
 <div class="line"></div>
-<div class="line">    dest.<a name="a34"></a><a class="code" href="classic_1_1_tau.html#a31e9ba066d6af422d817d071c9e07268">set_vx</a>(src.vx());</div>
-<div class="line">    dest.<a name="a35"></a><a class="code" href="classic_1_1_tau.html#afcf180ad7c1f091638c99952a4339468">set_vy</a>(src.vy());</div>
-<div class="line">    dest.<a name="a36"></a><a class="code" href="classic_1_1_tau.html#a8156b2c5b98700713b386d6941c700af">set_vz</a>(src.vz());</div>
+<div class="line">    dest.<a name="a19"></a><a class="code" href="classic_1_1_tau.html#a31e9ba066d6af422d817d071c9e07268">set_vx</a>(src.vx());</div>
+<div class="line">    dest.<a name="a20"></a><a class="code" href="classic_1_1_tau.html#afcf180ad7c1f091638c99952a4339468">set_vy</a>(src.vy());</div>
+<div class="line">    dest.<a name="a21"></a><a class="code" href="classic_1_1_tau.html#a8156b2c5b98700713b386d6941c700af">set_vz</a>(src.vz());</div>
 <div class="line">  }</div>
 <div class="line">  constructSpecific(taus_handle, event, setup);</div>
 <div class="line">  <span class="keywordflow">if</span> (request_trks_) <span class="keyword">event</span>.put(trk_requests, <span class="stringliteral">&quot;requestedTracks&quot;</span>);</div>
@@ -249,12 +249,12 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line"><span class="comment">// Specific producers</span></div>
 <div class="line"><span class="comment">// ==================</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html#a57e346baefa9ef0a36be49c285078ec4">ICTauProducer&lt;T&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html">ICTauProducer&lt;T&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;T&gt; &gt; <span class="keyword">const</span>&amp; taus_handle, edm::Event&amp; event,</div>
 <div class="line">    <span class="keyword">const</span> edm::EventSetup&amp; setup) {}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html#a57e346baefa9ef0a36be49c285078ec4">ICTauProducer&lt;reco::PFTau&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html">ICTauProducer&lt;reco::PFTau&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;reco::PFTau&gt; &gt; <span class="keyword">const</span>&amp; taus_handle, edm::Event&amp; event,</div>
 <div class="line">    <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line"></div>
@@ -269,14 +269,14 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">    <a class="code" href="classic_1_1_tau.html">ic::Tau</a>&amp; dest = taus_-&gt;at(i);</div>
 <div class="line">    reco::PFTauRef <span class="keyword">const</span>&amp; ref = taus_handle-&gt;refAt(i).castTo&lt;reco::PFTauRef&gt;();</div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; tau_ids_.size(); ++j) {</div>
-<div class="line">      dest.<a name="a37"></a><a class="code" href="classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2">SetTauID</a>(tau_ids_[j].first, (*(id_handles[j]))[ref]);</div>
-<div class="line">      observed_id_[tau_ids_[j].first] = <a name="a38"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(tau_ids_[j].first);</div>
+<div class="line">      dest.<a name="a22"></a><a class="code" href="classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2">SetTauID</a>(tau_ids_[j].first, (*(id_handles[j]))[ref]);</div>
+<div class="line">      observed_id_[tau_ids_[j].first] = <a name="a23"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(tau_ids_[j].first);</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html#a57e346baefa9ef0a36be49c285078ec4">ICTauProducer&lt;pat::Tau&gt;::constructSpecific</a>(</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html">ICTauProducer&lt;pat::Tau&gt;::constructSpecific</a>(</div>
 <div class="line">    edm::Handle&lt;edm::View&lt;pat::Tau&gt; &gt; <span class="keyword">const</span>&amp; taus_handle, edm::Event&amp; event,</div>
 <div class="line">    <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; taus_handle-&gt;size(); ++i) {</div>
@@ -291,12 +291,12 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html#a61ddb99c2009fc7be397e3b2b70aed64">ICTauProducer&lt;T&gt;::beginJob</a>() {</div>
-<div class="line">  <a name="a39"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;taus_);</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html">ICTauProducer&lt;T&gt;::beginJob</a>() {</div>
+<div class="line">  <a name="a24"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;taus_);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html#a93cd1b1145f791a213df0963e2e9e112">ICTauProducer&lt;T&gt;::endJob</a>() {</div>
+<div class="line"><span class="keywordtype">void</span> <a class="code" href="class_i_c_tau_producer.html">ICTauProducer&lt;T&gt;::endJob</a>() {</div>
 <div class="line">  std::cout &lt;&lt; std::string(78, <span class="charliteral">&#39;-&#39;</span>) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
 <div class="line">  std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s  %20s\n&quot;</span>)</div>
 <div class="line">      % std::string(<span class="stringliteral">&quot;Tau Discriminators&quot;</span>) % std::string(<span class="stringliteral">&quot;Hash Summmary&quot;</span>);</div>

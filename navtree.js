@@ -67,7 +67,7 @@ var NAVTREE =
       [ "Data Fields", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
-        [ "Variables", "functions_vars.html", "functions_vars" ],
+        [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
         [ "Related Functions", "functions_rela.html", null ]
       ] ]
@@ -90,13 +90,10 @@ var NAVTREEINDEX =
 "_algorithm_8h.html",
 "_jet_8cc_source.html",
 "city_8cc.html#ad487ffee003419a5c1394dc4117e6847",
-"class_i_c_pileup_info_producer.html",
-"classch_1_1_parameter.html#a28b9683373c2f7c7cf7ac61bb2b8827a",
-"classic_1_1_concatenate.html#a4e7f3da0c858ad7c87f0c3afabb4f32a",
-"classic_1_1_j_p_t_jet.html#aaca0322d030a1022825355cb055bfb8f",
-"classic_1_1_p_f_jet.html#a84fd922adb6b5be4d3448153836efb5b",
-"classic_1_1_vertex.html#ab5e0e4279854d34fa07c58285d76e0d8",
-"struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a0e680bf029951d9b515a18c8336fed4a"
+"classch_1_1_process.html#af236cc53e81dcc6b965b13c704d2969e",
+"classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8",
+"classic_1_1_p_f_jet.html#aa9d46ac19e753800d36cd155a44d4052",
+"functions_v.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

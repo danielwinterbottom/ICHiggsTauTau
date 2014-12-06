@@ -1,7 +1,5 @@
 var classic_1_1_track =
 [
-    [ "ThreeVector", "classic_1_1_track.html#aed8dc96f3fdc628f9fe7afdd918fc74e", null ],
-    [ "Point", "classic_1_1_track.html#a22efc54fb098a5d3731404f55196f9c9", null ],
     [ "Track", "classic_1_1_track.html#ac071903b7a78c980bc328fceeb9dde1f", null ],
     [ "~Track", "classic_1_1_track.html#a576eba959afc1ec8400781335b68cf40", null ],
     [ "Print", "classic_1_1_track.html#ae968b41a25ba3fa12b15101d171fccc8", null ],
@@ -26,9 +24,5 @@ var classic_1_1_track =
     [ "set_vy", "classic_1_1_track.html#a40c2271cc3966266606d9cce327c1339", null ],
     [ "set_vz", "classic_1_1_track.html#a15da5d84ceef95a0d2ea57c2f7aa46e5", null ],
     [ "set_charge", "classic_1_1_track.html#a2fbef5a8291fe9c484fbbb2411e17eab", null ],
-    [ "ClassDef", "classic_1_1_track.html#a1fc7dde72985ecee95521d57b62c82a2", null ],
-    [ "momentum_", "classic_1_1_track.html#af872700e3d24c5a50c8b98e953c7719d", null ],
-    [ "ref_point_", "classic_1_1_track.html#a380f7abc46ef2aaaa7cbe3a8799b3354", null ],
-    [ "id_", "classic_1_1_track.html#a2acc34e825ce216c9269ffa1d780141f", null ],
-    [ "charge_", "classic_1_1_track.html#ab4c869dc252c164f160305928c3f366e", null ]
+    [ "ClassDef", "classic_1_1_track.html#a1fc7dde72985ecee95521d57b62c82a2", null ]
 ];

@@ -15,11 +15,5 @@ var classic_1_1_met =
     [ "set_xy_sig", "classic_1_1_met.html#adb270ac2d82799b2b905bbaa1fe72d24", null ],
     [ "set_yx_sig", "classic_1_1_met.html#a67d253183767d237d4121f6bc18b5e36", null ],
     [ "set_yy_sig", "classic_1_1_met.html#ac3c1219ee653f1d5654fbe23dc803939", null ],
-    [ "ClassDef", "classic_1_1_met.html#a6c21e9dc7b1323f169622d3a26cd260d", null ],
-    [ "sum_et_", "classic_1_1_met.html#aefc9dc7be67defe7cf70ae4875997560", null ],
-    [ "et_sig_", "classic_1_1_met.html#afefdb43517567d3deff5fb663019fbff", null ],
-    [ "xx_sig_", "classic_1_1_met.html#acdd7dcd6aad9100a6734795d0e9850f5", null ],
-    [ "xy_sig_", "classic_1_1_met.html#ac451f19da7a1be4ae788cd5cb5986a12", null ],
-    [ "yx_sig_", "classic_1_1_met.html#a13b8664f3ffa7d8d4d6b96b471e3ed16", null ],
-    [ "yy_sig_", "classic_1_1_met.html#ab4485d843018b61be9adf39546a34303", null ]
+    [ "ClassDef", "classic_1_1_met.html#a6c21e9dc7b1323f169622d3a26cd260d", null ]
 ];

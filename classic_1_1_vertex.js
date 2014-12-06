@@ -1,7 +1,5 @@
 var classic_1_1_vertex =
 [
-    [ "Point", "classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37", null ],
-    [ "TrkPair", "classic_1_1_vertex.html#a48e9a8cc74e61a2c50214a1f3de628e0", null ],
     [ "Vertex", "classic_1_1_vertex.html#a125094978a1e107b2897516729446496", null ],
     [ "~Vertex", "classic_1_1_vertex.html#a6f541cf722e28886a6362f6e69f7c5b2", null ],
     [ "Print", "classic_1_1_vertex.html#a389dcd171359dbca3cd3db0512e13e51", null ],
@@ -22,10 +20,5 @@ var classic_1_1_vertex =
     [ "set_ndof", "classic_1_1_vertex.html#a8dbaffe452137613f84cca7682a257ae", null ],
     [ "set_tracks", "classic_1_1_vertex.html#a9ddd6ae30c5d9bfcf299db5f88200eb8", null ],
     [ "AddTrack", "classic_1_1_vertex.html#a13abf08edad7afb491375f3b83daf6c9", null ],
-    [ "ClassDef", "classic_1_1_vertex.html#a25003adfc07c9ee4492e3cd7d32d1be3", null ],
-    [ "point_", "classic_1_1_vertex.html#ae8b418ac0a9809605d8e0755d6e528ce", null ],
-    [ "chi2_", "classic_1_1_vertex.html#a8350519e607fb8373a79166858e10340", null ],
-    [ "ndof_", "classic_1_1_vertex.html#a668a4464cb86adb94fdcc55c6c3e478e", null ],
-    [ "tracks_", "classic_1_1_vertex.html#a92ac1a5451b5fd1bd1c2602a271b332d", null ],
-    [ "id_", "classic_1_1_vertex.html#a16eba947c8b633db62d48034df69f02e", null ]
+    [ "ClassDef", "classic_1_1_vertex.html#a25003adfc07c9ee4492e3cd7d32d1be3", null ]
 ];

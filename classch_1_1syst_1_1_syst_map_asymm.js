@@ -6,6 +6,5 @@ var classch_1_1syst_1_1_syst_map_asymm =
     [ "ValU", "classch_1_1syst_1_1_syst_map_asymm.html#a61b36bad058c2b58284e98cac12f2cf9", null ],
     [ "IsAsymm", "classch_1_1syst_1_1_syst_map_asymm.html#a64f746498bd4a753ade8936b4dd10d5e", null ],
     [ "GetTupleSet", "classch_1_1syst_1_1_syst_map_asymm.html#a43e04ec9efeff0239a428e517340c570", null ],
-    [ "GetTuple", "classch_1_1syst_1_1_syst_map_asymm.html#aff8fca8dc6bf5387dafb11c075677f34", null ],
-    [ "tmap_", "classch_1_1syst_1_1_syst_map_asymm.html#a472bbd41368333e838e4f12eee296cac", null ]
+    [ "GetTuple", "classch_1_1syst_1_1_syst_map_asymm.html#aff8fca8dc6bf5387dafb11c075677f34", null ]
 ];

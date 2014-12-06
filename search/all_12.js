@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['ufmap',['UFmap',['../classic_1_1_electron.html#ab06d370fe0866a662f2c755c7c1a4a58',1,'ic::Electron::UFmap()'],['../classic_1_1_jet.html#a9a79ca1b8d9e088808d96af59f21f5ea',1,'ic::Jet::UFmap()'],['../classic_1_1_muon.html#a029dacddefd1b012eb6a1f0575578e23',1,'ic::Muon::UFmap()'],['../classic_1_1_tau.html#ad53e342a897e054c8e005a5ba48f1c63',1,'ic::Tau::UFmap()']]],
   ['uint128',['uint128',['../city_8h.html#a82bf1aedb7323172408d1c2dff88de95',1,'city.h']]],
   ['uint128high64',['Uint128High64',['../city_8h.html#a03b35c3945be337d19fce80361c04d6a',1,'city.h']]],
   ['uint128low64',['Uint128Low64',['../city_8h.html#a148ccb4a96b24833dbe4a6fc1165b3b8',1,'city.h']]],
@@ -10,9 +9,6 @@ var searchData=
   ['uint64_5fin_5fexpected_5forder',['uint64_in_expected_order',['../city_8cc.html#aebeacf3a6a1c4e278fa1b74f18c08d4a',1,'city.cc']]],
   ['uint8',['uint8',['../city_8h.html#a33a5e996e7a90acefb8b1c0bea47e365',1,'city.h']]],
   ['uncorrected_5fenergy',['uncorrected_energy',['../classic_1_1_jet.html#a4e318628849f02e08d7a84a2a8ed1f14',1,'ic::Jet']]],
-  ['uncorrected_5fenergy_5f',['uncorrected_energy_',['../classic_1_1_jet.html#ab08f8a066d2f7631ae8d4601308a471b',1,'ic::Jet']]],
-  ['unhashdiscr',['UnHashDiscr',['../classic_1_1_jet.html#a10dd88660b629cb13d3725c3ca54996e',1,'ic::Jet']]],
-  ['unhashjecfactor',['UnHashJecFactor',['../classic_1_1_jet.html#a8b8e9e57f3fec5729cd6311cf4b4d824',1,'ic::Jet']]],
   ['unitaxes',['UnitAxes',['../_plotting_8h.html#a434781fa740199ba94f267d8263cc1a2',1,'Plotting.h']]],
   ['updatejson',['UpdateJson',['../namespaceic.html#a74e462022652b4c16644058a0ecaf6f5',1,'ic']]],
   ['updateparameters',['UpdateParameters',['../classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731',1,'ch::CombineHarvester']]],

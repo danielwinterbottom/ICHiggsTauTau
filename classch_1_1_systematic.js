@@ -39,21 +39,5 @@ var classch_1_1_systematic =
     [ "shape_d", "classch_1_1_systematic.html#a39ef082b25f09b1080c21d15a8a92187", null ],
     [ "SetShapesAndVals", "classch_1_1_systematic.html#a425d2274c6b608d9e1dac4a41647a633", null ],
     [ "operator<<", "classch_1_1_systematic.html#a02ece8cccb0b41cb2cb28145822875d8", null ],
-    [ "swap", "classch_1_1_systematic.html#ae72c57591746155a32cd36adc350e92a", null ],
-    [ "bin_", "classch_1_1_systematic.html#a6ce64bb4a120c6f126daf64f92490db6", null ],
-    [ "process_", "classch_1_1_systematic.html#a6f85aca9e6aa59f47d90644f90ade209", null ],
-    [ "signal_", "classch_1_1_systematic.html#a7fd5c71681fc651de7aa2a505e5b5fca", null ],
-    [ "name_", "classch_1_1_systematic.html#aa553345da2285f4d2417be776f7a76e9", null ],
-    [ "type_", "classch_1_1_systematic.html#adbe936e1340c6f2b43eb2bccb07e779a", null ],
-    [ "value_u_", "classch_1_1_systematic.html#ae20efbcedba26c61a862b8b163116cad", null ],
-    [ "value_d_", "classch_1_1_systematic.html#a122403a18b22af75f131a0958ba3a4f1", null ],
-    [ "scale_", "classch_1_1_systematic.html#a00f19c3dc55b24d19481e5bcd929b9d5", null ],
-    [ "asymm_", "classch_1_1_systematic.html#a1fe3398cacb1e5ab19bb74a8fc24abcc", null ],
-    [ "analysis_", "classch_1_1_systematic.html#afa1827b7fbebbdc6bc98d5cbf2e14bac", null ],
-    [ "era_", "classch_1_1_systematic.html#a79eeafc341394b861f180989d6f6f331", null ],
-    [ "channel_", "classch_1_1_systematic.html#ac306b8785bbec7ca1d2104eab787b47e", null ],
-    [ "bin_id_", "classch_1_1_systematic.html#ada5dd63ee52344c2ec9271d9fb9c0079", null ],
-    [ "mass_", "classch_1_1_systematic.html#a82a0def5140691ae4b85efd56f75cd60", null ],
-    [ "shape_u_", "classch_1_1_systematic.html#a6ba57b5bae13550fb6db139e642fc736", null ],
-    [ "shape_d_", "classch_1_1_systematic.html#abbc6afe233616b1ccb9f26fd5d734db2", null ]
+    [ "swap", "classch_1_1_systematic.html#ae72c57591746155a32cd36adc350e92a", null ]
 ];

@@ -1,25 +1,6 @@
 var searchData=
 [
-  ['cand_5fhasher_5f',['cand_hasher_',['../class_i_c_candidate_producer.html#a7f385c1e945e98f472682efb63f177a0',1,'ICCandidateProducer']]],
-  ['cand_5fmap_5f',['cand_map_',['../classic_1_1_composite_candidate.html#a160e6793a08690ccdad53a0b0a640e5f',1,'ic::CompositeCandidate']]],
-  ['cand_5fvec_5f',['cand_vec_',['../classic_1_1_composite_candidate.html#a6e471a0e49ed8cf574e47628c3049cc1',1,'ic::CompositeCandidate']]],
-  ['candidates_5f',['candidates_',['../class_i_c_candidate_producer.html#aad5e245fa5b06775123834a1f163363a',1,'ICCandidateProducer::candidates_()'],['../class_i_c_l1_et_miss_producer.html#a362f8fe9e83ee2b7d8adc62b4c2b9a49',1,'ICL1EtMissProducer::candidates_()']]],
   ['category',['category',['../structch_1_1_hist_mapping.html#a3f5bb3146facf941b757e6af4c0ac857',1,'ch::HistMapping']]],
-  ['channel_5f',['channel_',['../classch_1_1_observation.html#a7aee091514534f3f35b6e407b478dfe9',1,'ch::Observation::channel_()'],['../classch_1_1_process.html#a3d52737ccb07166361192313581d5001',1,'ch::Process::channel_()'],['../classch_1_1_systematic.html#ac306b8785bbec7ca1d2104eab787b47e',1,'ch::Systematic::channel_()']]],
-  ['charge_5f',['charge_',['../classic_1_1_candidate.html#ae7f4666c022a5a51c48ec0b6c637b6ac',1,'ic::Candidate::charge_()'],['../classic_1_1_track.html#ab4c869dc252c164f160305928c3f366e',1,'ic::Track::charge_()']]],
-  ['charged',['charged',['../struct_i_c_electron_producer_1_1_iso_tags.html#ac9adc52f9754b228289bfc0610332ccc',1,'ICElectronProducer::IsoTags::charged()'],['../struct_i_c_muon_producer_1_1_iso_tags.html#a3ac0f922ea9e444963c287d977863f2b',1,'ICMuonProducer::IsoTags::charged()'],['../struct_i_c_photon_producer_1_1_iso_tags.html#aa043d86d6020dc527dc8c16e1bfaa369',1,'ICPhotonProducer::IsoTags::charged()']]],
-  ['charged_5fall',['charged_all',['../struct_i_c_electron_producer_1_1_iso_tags.html#a53ff4ecddf33c51f389ec6ade5c88fd2',1,'ICElectronProducer::IsoTags::charged_all()'],['../struct_i_c_muon_producer_1_1_iso_tags.html#a7be109355c4dd3c9495bd8c66dd0f0df',1,'ICMuonProducer::IsoTags::charged_all()']]],
-  ['charged_5fem_5fenergy_5f',['charged_em_energy_',['../classic_1_1_j_p_t_jet.html#acad63ca822d9577973ec09dfedcab069',1,'ic::JPTJet::charged_em_energy_()'],['../classic_1_1_p_f_jet.html#a390297f9b05d5de508c93cd8994b4a6a',1,'ic::PFJet::charged_em_energy_()']]],
-  ['charged_5fhad_5fenergy_5f',['charged_had_energy_',['../classic_1_1_j_p_t_jet.html#aab10c7ed83849ddb386f61b89a2b156d',1,'ic::JPTJet::charged_had_energy_()'],['../classic_1_1_p_f_jet.html#a8ba02da463781d9864ec01cc63813179',1,'ic::PFJet::charged_had_energy_()']]],
-  ['charged_5fhad_5fmultiplicity_5f',['charged_had_multiplicity_',['../classic_1_1_p_f_jet.html#a0bd75e231ae6afd987b13bcea97886d4',1,'ic::PFJet']]],
-  ['charged_5fmu_5fenergy_5f',['charged_mu_energy_',['../classic_1_1_p_f_jet.html#a7188ba341b71cf91107433a47bcdf9ef',1,'ic::PFJet']]],
-  ['charged_5fmultiplicity_5f',['charged_multiplicity_',['../classic_1_1_j_p_t_jet.html#aa7d17d679612926948c7c8b74670c600',1,'ic::JPTJet::charged_multiplicity_()'],['../classic_1_1_p_f_jet.html#a73c7dcd2d8d12d3210697fe6fa19dbcf',1,'ic::PFJet::charged_multiplicity_()']]],
-  ['charged_5fmultiplicity_5fnopu_5f',['charged_multiplicity_nopu_',['../classic_1_1_p_f_jet.html#abcfb1f31b465e2d536963417b14881dd',1,'ic::PFJet']]],
-  ['chi2_5f',['chi2_',['../classic_1_1_vertex.html#a8350519e607fb8373a79166858e10340',1,'ic::Vertex']]],
-  ['constituent_5ftracks_5f',['constituent_tracks_',['../classic_1_1_p_f_jet.html#ae736ace9fe4522c3b9d2b597cbb2ac07',1,'ic::PFJet::constituent_tracks_()'],['../classic_1_1_tau.html#a5977dde7dcf636f891c20888771c1113',1,'ic::Tau::constituent_tracks_()']]],
-  ['constituents_5f',['constituents_',['../classic_1_1_gen_jet.html#a5636627ad203f566f818fa1778ff8980',1,'ic::GenJet']]],
-  ['conv_5fdcot_5f',['conv_dcot_',['../classic_1_1_electron.html#a8831b592f0c824ab35950cf337e6f2e6',1,'ic::Electron']]],
-  ['conv_5fdist_5f',['conv_dist_',['../classic_1_1_electron.html#a1f2e2b29fdc74e6b0616840046b7415d',1,'ic::Electron']]],
   ['cut',['cut',['../struct_jet_src_helper.html#ac621aee8898a367aa30ec5d0ebb7e842',1,'JetSrcHelper']]],
   ['cut_5fstring',['cut_string',['../struct_jet_src_helper.html#ac7c7753672366e08d8844bd96e06ecfc',1,'JetSrcHelper']]]
 ];

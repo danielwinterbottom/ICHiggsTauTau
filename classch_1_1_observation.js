@@ -27,14 +27,5 @@ var classch_1_1_observation =
     [ "SetNormShape", "classch_1_1_observation.html#ad52c4cb59410f1fa17c588f6b040e99e", null ],
     [ "SetNormShapeAndRate", "classch_1_1_observation.html#ae8c815fac83e2dd5a03698b42463f1c6", null ],
     [ "operator<<", "classch_1_1_observation.html#a6c4ab371fa22f5dcffb05ab258b5da4f", null ],
-    [ "swap", "classch_1_1_observation.html#a89be1a9e99b14efd3d528195c3f8eb88", null ],
-    [ "bin_", "classch_1_1_observation.html#a8a2dcda0fae2a8043d4f13135e640189", null ],
-    [ "rate_", "classch_1_1_observation.html#a30dd5b3f4649b4854ccad510abf4e9ab", null ],
-    [ "analysis_", "classch_1_1_observation.html#aee89840b2e06b54f97798c6af4a469fb", null ],
-    [ "era_", "classch_1_1_observation.html#ab14f532bdd17f574a1b5ecb31ba90106", null ],
-    [ "channel_", "classch_1_1_observation.html#a7aee091514534f3f35b6e407b478dfe9", null ],
-    [ "bin_id_", "classch_1_1_observation.html#a81eef95c7ece90f6ab3d2b5feac0d61a", null ],
-    [ "mass_", "classch_1_1_observation.html#ad9accf71610bf4c3265b57081cb9da9f", null ],
-    [ "shape_", "classch_1_1_observation.html#a86cca8b69cdb1bfa3e9b4b23c9415b8f", null ],
-    [ "data_", "classch_1_1_observation.html#a74cd86fc0d99ce2dbdcbb51d3615e541", null ]
+    [ "swap", "classch_1_1_observation.html#a89be1a9e99b14efd3d528195c3f8eb88", null ]
 ];

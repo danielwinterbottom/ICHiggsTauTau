@@ -1,28 +1,5 @@
 var class_i_c_electron_producer =
 [
-    [ "IsoTags", "struct_i_c_electron_producer_1_1_iso_tags.html", "struct_i_c_electron_producer_1_1_iso_tags" ],
     [ "ICElectronProducer", "class_i_c_electron_producer.html#a05669e445d792f302b66e1620963273c", null ],
-    [ "~ICElectronProducer", "class_i_c_electron_producer.html#a587d29ed5d0de77a8e35f50dc7ee07c7", null ],
-    [ "beginJob", "class_i_c_electron_producer.html#a24b1b393e5abfa1d84ad0d7fbb5966a9", null ],
-    [ "produce", "class_i_c_electron_producer.html#a70cc3397ebc0f5ceb4109542e3d5990e", null ],
-    [ "endJob", "class_i_c_electron_producer.html#a924a41ec75c15e66733099164b1ee164", null ],
-    [ "electrons_", "class_i_c_electron_producer.html#ac751ead22bb97bfbc16a6cd96500930b", null ],
-    [ "input_", "class_i_c_electron_producer.html#afd89152cefe74aa855ca1fe536da5d21", null ],
-    [ "branch_", "class_i_c_electron_producer.html#a778afce44f2ff7138d2da01cde96cafc", null ],
-    [ "gsf_electron_hasher_", "class_i_c_electron_producer.html#a6ec7c8980a490f4a53b154abaf476bd0", null ],
-    [ "input_vmaps_", "class_i_c_electron_producer.html#a4dd93263899f0f690972af18761ad447", null ],
-    [ "input_r9_", "class_i_c_electron_producer.html#aaf719056a0bd99d265cd628a048eab68", null ],
-    [ "do_r9_", "class_i_c_electron_producer.html#ae9c12b7246941cf83c9ff1e10de70044", null ],
-    [ "input_hcal_sum_", "class_i_c_electron_producer.html#ad5cc7f183cea23dc6fec05571581680c", null ],
-    [ "do_hcal_sum_", "class_i_c_electron_producer.html#a0becd894da9381619e1f4f0759e11865", null ],
-    [ "input_vertices_", "class_i_c_electron_producer.html#af06233be5ac2ebe03ac63873eb5c175e", null ],
-    [ "do_vertex_ip_", "class_i_c_electron_producer.html#a26b833095e730bb694948d76e9345dc9", null ],
-    [ "input_beamspot_", "class_i_c_electron_producer.html#a030271ff4e1f7f9c62d8fe1003551209", null ],
-    [ "do_beamspot_ip_", "class_i_c_electron_producer.html#a0bf05768b5cd80c1fbf95ef2c410ab12", null ],
-    [ "input_conversion_matches_", "class_i_c_electron_producer.html#a23e7e9eda07a4bbf1ebfa396670da711", null ],
-    [ "do_conversion_matches_", "class_i_c_electron_producer.html#a298ff1c14cc72cea58724fcf2664fdc6", null ],
-    [ "pf_iso_03_", "class_i_c_electron_producer.html#a19451e7fb0ab1f5b8a511bd9e1a6a48e", null ],
-    [ "pf_iso_04_", "class_i_c_electron_producer.html#a77079195141bf66117d0698fa8e46dfe", null ],
-    [ "do_pf_iso_03_", "class_i_c_electron_producer.html#a3f98299c17d1d6d6715077b7315b659b", null ],
-    [ "do_pf_iso_04_", "class_i_c_electron_producer.html#ae31a0cd16f288462d8e3550b95762a6b", null ]
+    [ "~ICElectronProducer", "class_i_c_electron_producer.html#a587d29ed5d0de77a8e35f50dc7ee07c7", null ]
 ];
