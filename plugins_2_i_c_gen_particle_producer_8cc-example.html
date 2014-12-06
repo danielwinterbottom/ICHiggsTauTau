@@ -126,54 +126,54 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_gen_particle_producer_8c
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, store_daughters_, <span class="stringliteral">&quot;includeDaughters&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><a name="a3"></a><a class="code" href="class_i_c_gen_particle_producer.html#a8030b597e48d39ce4a35cf53621725ee">ICGenParticleProducer::~ICGenParticleProducer</a>() { <span class="keyword">delete</span> particles_; }</div>
+<div class="line"><a name="a3"></a><a class="code" href="class_i_c_gen_particle_producer.html#a8030b597e48d39ce4a35cf53621725ee">ICGenParticleProducer::~ICGenParticleProducer</a>() { <span class="keyword">delete</span> <a name="a4"></a><a class="code" href="class_i_c_gen_particle_producer.html#a969e307750d6f53547402aa161d01ccd">particles_</a>; }</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICGenParticleProducer::produce(edm::Event&amp; event,</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a5"></a><a class="code" href="class_i_c_gen_particle_producer.html#a4ac88e96b7537ee55802480c9feb4326">ICGenParticleProducer::produce</a>(edm::Event&amp; event,</div>
 <div class="line">                                    <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;edm::View&lt;reco::GenParticle&gt; &gt; parts_handle;</div>
-<div class="line">  <span class="keyword">event</span>.getByLabel(input_, parts_handle);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(<a name="a6"></a><a class="code" href="class_i_c_gen_particle_producer.html#ae7eb3f431f05312bda0589b7f3ca1bdb">input_</a>, parts_handle);</div>
 <div class="line"></div>
-<div class="line">  particles_-&gt;clear();</div>
-<div class="line">  particles_-&gt;resize(parts_handle-&gt;size(), <a name="_a4"></a><a class="code" href="classic_1_1_gen_particle.html">ic::GenParticle</a>());</div>
+<div class="line">  <a class="code" href="class_i_c_gen_particle_producer.html#a969e307750d6f53547402aa161d01ccd">particles_</a>-&gt;clear();</div>
+<div class="line">  <a class="code" href="class_i_c_gen_particle_producer.html#a969e307750d6f53547402aa161d01ccd">particles_</a>-&gt;resize(parts_handle-&gt;size(), <a name="_a7"></a><a class="code" href="classic_1_1_gen_particle.html">ic::GenParticle</a>());</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; parts_handle-&gt;size(); ++i) {</div>
 <div class="line">    reco::GenParticle <span class="keyword">const</span>&amp; src = parts_handle-&gt;at(i);</div>
 <div class="line">    <span class="comment">// edm::RefToBase&lt;reco::GenParticle&gt; ref = parts_handle-&gt;refAt(i);</span></div>
-<div class="line">    <a class="code" href="classic_1_1_gen_particle.html">ic::GenParticle</a>&amp; dest = particles_-&gt;at(i);</div>
-<div class="line">    dest.<a name="a5"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(particle_hasher_(&amp;src));</div>
-<div class="line">    dest.<a name="a6"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
-<div class="line">    dest.<a name="a7"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
-<div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
-<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
-<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
-<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_gen_particle.html#a310cb395760d03fd9b548f5ce864f277">set_index</a>(static_cast&lt;int&gt;((parts_handle-&gt;refAt(i).key())));</div>
-<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_gen_particle.html#a63bf6644a9f55e0e862cb89b115d898e">set_pdgid</a>(src.pdgId());</div>
-<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_gen_particle.html#a2f8d80dd2f3659472842c08b5158b040">set_status</a>(src.status());</div>
-<div class="line">    <span class="keywordflow">if</span> (store_mothers_) {</div>
+<div class="line">    <a class="code" href="classic_1_1_gen_particle.html">ic::GenParticle</a>&amp; dest = <a class="code" href="class_i_c_gen_particle_producer.html#a969e307750d6f53547402aa161d01ccd">particles_</a>-&gt;at(i);</div>
+<div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(<a name="a9"></a><a class="code" href="class_i_c_gen_particle_producer.html#a7d8b86017f8a3cd961bee1f65568c8eb">particle_hasher_</a>(&amp;src));</div>
+<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
+<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
+<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
+<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
+<div class="line">    dest.<a name="a14"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
+<div class="line">    dest.<a name="a15"></a><a class="code" href="classic_1_1_gen_particle.html#a310cb395760d03fd9b548f5ce864f277">set_index</a>(static_cast&lt;int&gt;((parts_handle-&gt;refAt(i).key())));</div>
+<div class="line">    dest.<a name="a16"></a><a class="code" href="classic_1_1_gen_particle.html#a63bf6644a9f55e0e862cb89b115d898e">set_pdgid</a>(src.pdgId());</div>
+<div class="line">    dest.<a name="a17"></a><a class="code" href="classic_1_1_gen_particle.html#a2f8d80dd2f3659472842c08b5158b040">set_status</a>(src.status());</div>
+<div class="line">    <span class="keywordflow">if</span> (<a name="a18"></a><a class="code" href="class_i_c_gen_particle_producer.html#a4680ecdb2c33822ab591b7c29f02c5ee">store_mothers_</a>) {</div>
 <div class="line">      std::vector&lt;int&gt; mothers(src.motherRefVector().size(), 0);</div>
 <div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; src.motherRefVector().size(); ++j) {</div>
 <div class="line">        mothers[j] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(src.motherRefVector().at(j).key());</div>
 <div class="line">      }</div>
-<div class="line">      dest.<a name="a14"></a><a class="code" href="classic_1_1_gen_particle.html#ab30d5ec16baa5fa282ed5c5a16f7fef8">set_mothers</a>(mothers);</div>
+<div class="line">      dest.<a name="a19"></a><a class="code" href="classic_1_1_gen_particle.html#ab30d5ec16baa5fa282ed5c5a16f7fef8">set_mothers</a>(mothers);</div>
 <div class="line">    }</div>
-<div class="line">    <span class="keywordflow">if</span> (store_daughters_) {</div>
+<div class="line">    <span class="keywordflow">if</span> (<a name="a20"></a><a class="code" href="class_i_c_gen_particle_producer.html#a8ed7d39aa5240230a6ffdeb8de84151d">store_daughters_</a>) {</div>
 <div class="line">      std::vector&lt;int&gt; daughters(src.daughterRefVector().size(), 0);</div>
 <div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; src.daughterRefVector().size(); ++j) {</div>
 <div class="line">        daughters[j] = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(src.daughterRefVector().at(j).key());</div>
 <div class="line">      }</div>
-<div class="line">      dest.<a name="a15"></a><a class="code" href="classic_1_1_gen_particle.html#a8212c5e45f1f1590fd781cc34eb64cfb">set_daughters</a>(daughters);</div>
+<div class="line">      dest.<a name="a21"></a><a class="code" href="classic_1_1_gen_particle.html#a8212c5e45f1f1590fd781cc34eb64cfb">set_daughters</a>(daughters);</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICGenParticleProducer::beginJob() {</div>
-<div class="line">  <a name="a16"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;particles_);</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a22"></a><a class="code" href="class_i_c_gen_particle_producer.html#a4bfc5f6990fa3b91347e0eb768a5f2a0">ICGenParticleProducer::beginJob</a>() {</div>
+<div class="line">  <a name="a23"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(<a name="a24"></a><a class="code" href="class_i_c_gen_particle_producer.html#a10b79398b3fdac210dac6491aec4d1b2">branch_</a>.c_str(), &amp;<a class="code" href="class_i_c_gen_particle_producer.html#a969e307750d6f53547402aa161d01ccd">particles_</a>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICGenParticleProducer::endJob() {}</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a25"></a><a class="code" href="class_i_c_gen_particle_producer.html#aedc5eaebd9c7dfb4526c272634f27c39">ICGenParticleProducer::endJob</a>() {}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="a17"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a18"></a><a class="code" href="class_i_c_gen_particle_producer.html">ICGenParticleProducer</a>);</div>
+<div class="line"><a name="a26"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a27"></a><a class="code" href="class_i_c_gen_particle_producer.html">ICGenParticleProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

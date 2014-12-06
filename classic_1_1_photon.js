@@ -15,5 +15,11 @@ var classic_1_1_photon =
     [ "set_had_tower_over_em", "classic_1_1_photon.html#a30eb93d12e66581b6521d8f6a82f3b04", null ],
     [ "set_sigma_IetaIeta", "classic_1_1_photon.html#a694eef18a9163cf5c19261fb601e116f", null ],
     [ "set_pass_electron_veto", "classic_1_1_photon.html#a3b62e8c8a96580f7d1bf173cd9925d18", null ],
-    [ "ClassDef", "classic_1_1_photon.html#a0c134e24ce8c9f081e883f56d6134e56", null ]
+    [ "ClassDef", "classic_1_1_photon.html#a0c134e24ce8c9f081e883f56d6134e56", null ],
+    [ "dr03_pfiso_charged_", "classic_1_1_photon.html#afb60ceda839aaebaab98f7de075404fd", null ],
+    [ "dr03_pfiso_neutral_", "classic_1_1_photon.html#af9a43883baeddb4a3ecd1a7c47784702", null ],
+    [ "dr03_pfiso_gamma_", "classic_1_1_photon.html#af51e0af63a1999dad46c939c8d84a29d", null ],
+    [ "had_tower_over_em_", "classic_1_1_photon.html#a9111c0b01b51672a7284bd3a763a1eb8", null ],
+    [ "sigma_IetaIeta_", "classic_1_1_photon.html#ad88f98976a3e3e58a7b43c54c0b58f09", null ],
+    [ "pass_electron_veto_", "classic_1_1_photon.html#a49a1cad6b3550a67546575736aea9dcf", null ]
 ];

@@ -132,24 +132,24 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_path_producer_8c
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, split_version_, <span class="stringliteral">&quot;splitVersion&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><a name="a3"></a><a class="code" href="class_i_c_trigger_path_producer.html#a51c1f95f36c1c0796bae6a97d95d2eb9">ICTriggerPathProducer::~ICTriggerPathProducer</a>() { <span class="keyword">delete</span> paths_; }</div>
+<div class="line"><a name="a3"></a><a class="code" href="class_i_c_trigger_path_producer.html#a51c1f95f36c1c0796bae6a97d95d2eb9">ICTriggerPathProducer::~ICTriggerPathProducer</a>() { <span class="keyword">delete</span> <a name="a4"></a><a class="code" href="class_i_c_trigger_path_producer.html#a6bd2cdba044580ad8da71dcfe2db7c7e">paths_</a>; }</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICTriggerPathProducer::produce(edm::Event&amp; event,</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a5"></a><a class="code" href="class_i_c_trigger_path_producer.html#aae7401940dca0f6fffb6ba44e03e607f">ICTriggerPathProducer::produce</a>(edm::Event&amp; event,</div>
 <div class="line">                                    <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;pat::TriggerEvent&gt; trig_handle;</div>
-<div class="line">  <span class="keyword">event</span>.getByLabel(input_, trig_handle);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(<a name="a6"></a><a class="code" href="class_i_c_trigger_path_producer.html#a1e9f627059baf3baf32faa59155bc1c7">input_</a>, trig_handle);</div>
 <div class="line">  std::vector&lt;pat::TriggerPath&gt; <span class="keyword">const</span>* paths = trig_handle-&gt;paths();</div>
-<div class="line">  paths_-&gt;clear();</div>
-<div class="line">  paths_-&gt;reserve(paths-&gt;size());</div>
+<div class="line">  <a class="code" href="class_i_c_trigger_path_producer.html#a6bd2cdba044580ad8da71dcfe2db7c7e">paths_</a>-&gt;clear();</div>
+<div class="line">  <a class="code" href="class_i_c_trigger_path_producer.html#a6bd2cdba044580ad8da71dcfe2db7c7e">paths_</a>-&gt;reserve(paths-&gt;size());</div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; paths-&gt;size(); ++i) {</div>
 <div class="line">    pat::TriggerPath <span class="keyword">const</span>&amp; src = paths-&gt;at(i);</div>
-<div class="line">    <span class="keywordflow">if</span> (!src.wasAccept() &amp;&amp; include_if_fired_) <span class="keywordflow">continue</span>;</div>
-<div class="line">    paths_-&gt;push_back(<a name="_a4"></a><a class="code" href="classic_1_1_trigger_path.html">ic::TriggerPath</a>());</div>
-<div class="line">    <a class="code" href="classic_1_1_trigger_path.html">ic::TriggerPath</a> &amp; dest = paths_-&gt;back();</div>
-<div class="line">    dest.<a name="a5"></a><a class="code" href="classic_1_1_trigger_path.html#ace64c7e48f9e4ea3c29d3a05e6d286d1">set_accept</a>(src.wasAccept());</div>
-<div class="line">    dest.<a name="a6"></a><a class="code" href="classic_1_1_trigger_path.html#ac54a32ab54525b85aa4fad1f4e393e9e">set_prescale</a>(src.prescale());</div>
+<div class="line">    <span class="keywordflow">if</span> (!src.wasAccept() &amp;&amp; <a name="a7"></a><a class="code" href="class_i_c_trigger_path_producer.html#a3e2b716d2541094d63a14f967cc50c22">include_if_fired_</a>) <span class="keywordflow">continue</span>;</div>
+<div class="line">    <a class="code" href="class_i_c_trigger_path_producer.html#a6bd2cdba044580ad8da71dcfe2db7c7e">paths_</a>-&gt;push_back(<a name="_a8"></a><a class="code" href="classic_1_1_trigger_path.html">ic::TriggerPath</a>());</div>
+<div class="line">    <a class="code" href="classic_1_1_trigger_path.html">ic::TriggerPath</a> &amp; dest = <a class="code" href="class_i_c_trigger_path_producer.html#a6bd2cdba044580ad8da71dcfe2db7c7e">paths_</a>-&gt;back();</div>
+<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_trigger_path.html#ace64c7e48f9e4ea3c29d3a05e6d286d1">set_accept</a>(src.wasAccept());</div>
+<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_trigger_path.html#ac54a32ab54525b85aa4fad1f4e393e9e">set_prescale</a>(src.prescale());</div>
 <div class="line">    std::string name = src.name();</div>
-<div class="line">    <span class="keywordflow">if</span> (split_version_) {</div>
+<div class="line">    <span class="keywordflow">if</span> (<a name="a11"></a><a class="code" href="class_i_c_trigger_path_producer.html#afd692a32796ea3b9f73c026e779900c0">split_version_</a>) {</div>
 <div class="line">      std::size_t v_pos = name.find_last_of(<span class="charliteral">&#39;v&#39;</span>);</div>
 <div class="line">      <span class="keywordflow">if</span> (v_pos != std::string::npos) {</div>
 <div class="line">        std::string post_v = name.substr(v_pos+1);</div>
@@ -157,26 +157,26 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_path_producer_8c
 <div class="line">        <span class="keywordflow">try</span> {</div>
 <div class="line">          <span class="keywordtype">unsigned</span> v = boost::lexical_cast&lt;<span class="keywordtype">unsigned</span>&gt;(post_v);</div>
 <div class="line">          name = pre_v;</div>
-<div class="line">          dest.<a name="a7"></a><a class="code" href="classic_1_1_trigger_path.html#a885a9e5956b652b055ebe9b0ad436a02">set_version</a>(v);</div>
+<div class="line">          dest.<a name="a12"></a><a class="code" href="classic_1_1_trigger_path.html#a885a9e5956b652b055ebe9b0ad436a02">set_version</a>(v);</div>
 <div class="line">        }</div>
 <div class="line">        <span class="keywordflow">catch</span>(boost::bad_lexical_cast <span class="keyword">const</span>&amp; e) {</div>
 <div class="line">        }</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
-<div class="line">    <span class="keywordflow">if</span> (save_strings_) dest.<a name="a8"></a><a class="code" href="classic_1_1_trigger_path.html#a6a478173e132d8d18cc842033bb51bb0">set_name</a>(name);</div>
-<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_trigger_path.html#a4b028ecda9d27aee914911b377fd0ad1">set_id</a>(<a name="a10"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name));</div>
+<div class="line">    <span class="keywordflow">if</span> (<a name="a13"></a><a class="code" href="class_i_c_trigger_path_producer.html#a723280b20c188beb13a50b5df910bd10">save_strings_</a>) dest.<a name="a14"></a><a class="code" href="classic_1_1_trigger_path.html#a6a478173e132d8d18cc842033bb51bb0">set_name</a>(name);</div>
+<div class="line">    dest.<a name="a15"></a><a class="code" href="classic_1_1_trigger_path.html#a4b028ecda9d27aee914911b377fd0ad1">set_id</a>(<a name="a16"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name));</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICTriggerPathProducer::beginJob() {</div>
-<div class="line">  <a name="a11"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;paths_);</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a17"></a><a class="code" href="class_i_c_trigger_path_producer.html#ad6d2a1da9a3cfbeb0e4f9500da473560">ICTriggerPathProducer::beginJob</a>() {</div>
+<div class="line">  <a name="a18"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(<a name="a19"></a><a class="code" href="class_i_c_trigger_path_producer.html#a163075a650287bbaefb7d7f52734a79d">branch_</a>.c_str(), &amp;<a class="code" href="class_i_c_trigger_path_producer.html#a6bd2cdba044580ad8da71dcfe2db7c7e">paths_</a>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICTriggerPathProducer::endJob() {</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a20"></a><a class="code" href="class_i_c_trigger_path_producer.html#a0d5447393efd14103eda288b7363b305">ICTriggerPathProducer::endJob</a>() {</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="a12"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a13"></a><a class="code" href="class_i_c_trigger_path_producer.html">ICTriggerPathProducer</a>);</div>
+<div class="line"><a name="a21"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a22"></a><a class="code" href="class_i_c_trigger_path_producer.html">ICTriggerPathProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

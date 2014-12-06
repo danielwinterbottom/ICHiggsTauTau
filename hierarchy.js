@@ -56,6 +56,9 @@ var hierarchy =
     [ "ch::syst::era", "structch_1_1syst_1_1era.html", null ],
     [ "ic::EventInfo", "classic_1_1_event_info.html", null ],
     [ "ch::HistMapping", "structch_1_1_hist_mapping.html", null ],
+    [ "ICElectronProducer::IsoTags", "struct_i_c_electron_producer_1_1_iso_tags.html", null ],
+    [ "ICMuonProducer::IsoTags", "struct_i_c_muon_producer_1_1_iso_tags.html", null ],
+    [ "ICPhotonProducer::IsoTags", "struct_i_c_photon_producer_1_1_iso_tags.html", null ],
     [ "JetDestHelper< U >", "struct_jet_dest_helper.html", null ],
     [ "JetDestHelper< ic::CaloJet >", "struct_jet_dest_helper_3_01ic_1_1_calo_jet_01_4.html", null ],
     [ "JetDestHelper< ic::JPTJet >", "struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4.html", null ],
@@ -68,8 +71,8 @@ var hierarchy =
     [ "ch::Observation", "classch_1_1_observation.html", null ],
     [ "ch::Parameter", "classch_1_1_parameter.html", null ],
     [ "ic::PileupInfo", "classic_1_1_pileup_info.html", null ],
-    [ "ch::syst::process", "structch_1_1syst_1_1process.html", null ],
     [ "ch::Process", "classch_1_1_process.html", null ],
+    [ "ch::syst::process", "structch_1_1syst_1_1process.html", null ],
     [ "ch::SOverBInfo", "structch_1_1_s_over_b_info.html", null ],
     [ "ic::StaticTree", "structic_1_1_static_tree.html", null ],
     [ "ic::SuperCluster", "classic_1_1_super_cluster.html", null ],
@@ -78,6 +81,9 @@ var hierarchy =
     [ "ch::syst::SystMapAsymm< T >", "classch_1_1syst_1_1_syst_map_asymm.html", null ],
     [ "ic::Track", "classic_1_1_track.html", null ],
     [ "ic::TriggerPath", "classic_1_1_trigger_path.html", null ],
+    [ "ch::tupleprint::TuplePrinter< Tuple, N >", "structch_1_1tupleprint_1_1_tuple_printer.html", null ],
+    [ "ch::tupleprint::TuplePrinter< Tuple, 0 >", "structch_1_1tupleprint_1_1_tuple_printer_3_01_tuple_00_010_01_4.html", null ],
+    [ "ch::tupleprint::TuplePrinter< Tuple, 1 >", "structch_1_1tupleprint_1_1_tuple_printer_3_01_tuple_00_011_01_4.html", null ],
     [ "ic::Vertex", "classic_1_1_vertex.html", [
       [ "ic::SecondaryVertex", "classic_1_1_secondary_vertex.html", null ]
     ] ]

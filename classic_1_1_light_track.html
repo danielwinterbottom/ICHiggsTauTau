@@ -96,7 +96,8 @@ $(document).ready(function(){initNavTree('classic_1_1_light_track.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ic::LightTrack Class Reference</div>  </div>
 </div><!--header-->
@@ -137,11 +138,20 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5a9e98926848d8085d659d2862c300b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_light_track.html#a5a9e98926848d8085d659d2862c300b7">set_vz</a> (double const &amp;<a class="el" href="classic_1_1_light_track.html#a366c38b990173cfecced696f9edb8776">vz</a>)</td></tr>
 <tr class="memdesc:a5a9e98926848d8085d659d2862c300b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The z-coordinate of the point-of-closest-approach to the beamspot.  <a href="#a5a9e98926848d8085d659d2862c300b7">More...</a><br /></td></tr>
 <tr class="separator:a5a9e98926848d8085d659d2862c300b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a5a42fa2bf47e213ad3570a51876a6f1e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_light_track.html#a5a42fa2bf47e213ad3570a51876a6f1e">pt_</a></td></tr>
+<tr class="separator:a5a42fa2bf47e213ad3570a51876a6f1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1c3d65d2489e88f90333e7ac78988d3"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_light_track.html#ac1c3d65d2489e88f90333e7ac78988d3">vz_</a></td></tr>
+<tr class="separator:ac1c3d65d2489e88f90333e7ac78988d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c27c0c75d8abe2ce450230484b98ac7"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_light_track.html#a8c27c0c75d8abe2ce450230484b98ac7">id_</a></td></tr>
+<tr class="separator:a8c27c0c75d8abe2ce450230484b98ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Stores a minimal amount of track information. </p>
 <p>May be used instead of the <a class="el" href="classic_1_1_track.html" title="Stores limited information about the track kinematics and trajectory. ">ic::Track</a> class to save file space. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_light_track_producer_8cc-example.html#_a3">plugins/ICLightTrackProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_light_track_producer_8cc-example.html#_a6">plugins/ICLightTrackProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_light_track_8hh_source.html#l00016">16</a> of file <a class="el" href="_light_track_8hh_source.html">LightTrack.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -317,7 +327,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The unique identifier. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_light_track_producer_8cc-example.html#a4">plugins/ICLightTrackProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_light_track_producer_8cc-example.html#a7">plugins/ICLightTrackProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_light_track_8hh_source.html#l00037">37</a> of file <a class="el" href="_light_track_8hh_source.html">LightTrack.hh</a>.</p>
 
@@ -346,7 +356,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The track transverse momentum. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_light_track_producer_8cc-example.html#a5">plugins/ICLightTrackProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_light_track_producer_8cc-example.html#a9">plugins/ICLightTrackProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_light_track_8hh_source.html#l00040">40</a> of file <a class="el" href="_light_track_8hh_source.html">LightTrack.hh</a>.</p>
 
@@ -375,7 +385,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The z-coordinate of the point-of-closest-approach to the beamspot. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_light_track_producer_8cc-example.html#a6">plugins/ICLightTrackProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_light_track_producer_8cc-example.html#a10">plugins/ICLightTrackProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_light_track_8hh_source.html#l00043">43</a> of file <a class="el" href="_light_track_8hh_source.html">LightTrack.hh</a>.</p>
 
@@ -404,6 +414,73 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a5a42fa2bf47e213ad3570a51876a6f1e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ic::LightTrack::pt_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_light_track_8hh_source.html#l00047">47</a> of file <a class="el" href="_light_track_8hh_source.html">LightTrack.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac1c3d65d2489e88f90333e7ac78988d3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ic::LightTrack::vz_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_light_track_8hh_source.html#l00048">48</a> of file <a class="el" href="_light_track_8hh_source.html">LightTrack.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8c27c0c75d8abe2ce450230484b98ac7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t ic::LightTrack::id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_light_track_8hh_source.html#l00049">49</a> of file <a class="el" href="_light_track_8hh_source.html">LightTrack.hh</a>.</p>
 
 </div>
 </div>

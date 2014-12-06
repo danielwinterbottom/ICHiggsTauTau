@@ -15,5 +15,10 @@ var classch_1_1_parameter =
     [ "err_d", "classch_1_1_parameter.html#abb14d062556c9445bdfa7c11293bfb50", null ],
     [ "vars", "classch_1_1_parameter.html#a51f57bf4e727f2024da96a2ae2e5cf76", null ],
     [ "operator<<", "classch_1_1_parameter.html#a4b23aafe9b144c9d6affc3a86d1efeb5", null ],
-    [ "swap", "classch_1_1_parameter.html#ab9f57f473beb19a385c769a104aee7cc", null ]
+    [ "swap", "classch_1_1_parameter.html#ab9f57f473beb19a385c769a104aee7cc", null ],
+    [ "name_", "classch_1_1_parameter.html#a670c314846219573d29691e37b05242b", null ],
+    [ "val_", "classch_1_1_parameter.html#ad01f8c6bbf3aa7a58c8b467acb78fcfd", null ],
+    [ "err_u_", "classch_1_1_parameter.html#abc902f98081dcfd436fa0690d7ba9d88", null ],
+    [ "err_d_", "classch_1_1_parameter.html#a1c2d7c4e77f2fbe231b9e2b119307682", null ],
+    [ "vars_", "classch_1_1_parameter.html#a28b9683373c2f7c7cf7ac61bb2b8827a", null ]
 ];

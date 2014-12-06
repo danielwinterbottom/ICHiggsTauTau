@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('class_i_c_trigger_object_producer.html
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICTriggerObjectProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -123,10 +125,35 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a81fd360891b054635b35dc0d3bb44cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bd76cc1d60127382e6ab6ab03510d80"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">~ICTriggerObjectProducer</a> ()</td></tr>
 <tr class="separator:a0bd76cc1d60127382e6ab6ab03510d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a80d1c084298b51f2f3860c8f7596b920"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#a80d1c084298b51f2f3860c8f7596b920">beginJob</a> ()</td></tr>
+<tr class="separator:a80d1c084298b51f2f3860c8f7596b920"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05f65472f7772fccf10b89bb2b2cf75c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#a05f65472f7772fccf10b89bb2b2cf75c">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:a05f65472f7772fccf10b89bb2b2cf75c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b7ae847db6d91d62db7715c58a41544"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#a6b7ae847db6d91d62db7715c58a41544">endJob</a> ()</td></tr>
+<tr class="separator:a6b7ae847db6d91d62db7715c58a41544"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a83331cfbe47b35e37ba444e540d1a490"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_trigger_object.html">ic::TriggerObject</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#a83331cfbe47b35e37ba444e540d1a490">objects_</a></td></tr>
+<tr class="separator:a83331cfbe47b35e37ba444e540d1a490"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1247dd3b977ae8871fa7d68a0fe2f957"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#a1247dd3b977ae8871fa7d68a0fe2f957">input_</a></td></tr>
+<tr class="separator:a1247dd3b977ae8871fa7d68a0fe2f957"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05204e454d533b52bb1a3e9a37ea4b2b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#a05204e454d533b52bb1a3e9a37ea4b2b">branch_</a></td></tr>
+<tr class="separator:a05204e454d533b52bb1a3e9a37ea4b2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabef94a479b95b758abf2a27fcd2330b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#aabef94a479b95b758abf2a27fcd2330b">hlt_path_</a></td></tr>
+<tr class="separator:aabef94a479b95b758abf2a27fcd2330b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b7685cddecff9ab5cf5a3b650c0229e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#a3b7685cddecff9ab5cf5a3b650c0229e">store_only_if_fired_</a></td></tr>
+<tr class="separator:a3b7685cddecff9ab5cf5a3b650c0229e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa2e31f94ecd049cd521a736386a1cbf"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <br class="typebreak" />
+std::size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_object_producer.html#aaa2e31f94ecd049cd521a736386a1cbf">observed_filters_</a></td></tr>
+<tr class="separator:aaa2e31f94ecd049cd521a736386a1cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-trig-obj">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#_a15">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#_a24">plugins/ICTriggerObjectProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8hh_source.html#l00019">19</a> of file <a class="el" href="_i_c_trigger_object_producer_8hh_source.html">ICTriggerObjectProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -172,6 +199,235 @@ Public Member Functions</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a3">plugins/ICTriggerObjectProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8cc_source.html#l00031">31</a> of file <a class="el" href="_i_c_trigger_object_producer_8cc_source.html">ICTriggerObjectProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a80d1c084298b51f2f3860c8f7596b920"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICTriggerObjectProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a19">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8cc_source.html#l00084">84</a> of file <a class="el" href="_i_c_trigger_object_producer_8cc_source.html">ICTriggerObjectProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a05f65472f7772fccf10b89bb2b2cf75c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICTriggerObjectProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a5">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8cc_source.html#l00033">33</a> of file <a class="el" href="_i_c_trigger_object_producer_8cc_source.html">ICTriggerObjectProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6b7ae847db6d91d62db7715c58a41544"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICTriggerObjectProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a22">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8cc_source.html#l00088">88</a> of file <a class="el" href="_i_c_trigger_object_producer_8cc_source.html">ICTriggerObjectProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a83331cfbe47b35e37ba444e540d1a490"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_trigger_object.html">ic::TriggerObject</a>&gt;* ICTriggerObjectProducer::objects_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a4">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8hh_source.html#l00029">29</a> of file <a class="el" href="_i_c_trigger_object_producer_8hh_source.html">ICTriggerObjectProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1247dd3b977ae8871fa7d68a0fe2f957"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICTriggerObjectProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a6">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_trigger_object_producer_8hh_source.html">ICTriggerObjectProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a05204e454d533b52bb1a3e9a37ea4b2b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICTriggerObjectProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a21">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_trigger_object_producer_8hh_source.html">ICTriggerObjectProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aabef94a479b95b758abf2a27fcd2330b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICTriggerObjectProducer::hlt_path_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a7">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_trigger_object_producer_8hh_source.html">ICTriggerObjectProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3b7685cddecff9ab5cf5a3b650c0229e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICTriggerObjectProducer::store_only_if_fired_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a8">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8hh_source.html#l00033">33</a> of file <a class="el" href="_i_c_trigger_object_producer_8hh_source.html">ICTriggerObjectProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aaa2e31f94ecd049cd521a736386a1cbf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;std::string, std::size_t&gt; ICTriggerObjectProducer::observed_filters_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_object_producer_8cc-example.html#a17">plugins/ICTriggerObjectProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_object_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_trigger_object_producer_8hh_source.html">ICTriggerObjectProducer.hh</a>.</p>
 
 </div>
 </div>

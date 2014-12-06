@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('class_i_c_gen_jet_producer.html','');}
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICGenJetProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -123,10 +125,37 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a79df2612341cfb059d6eaf3af78c99a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bb0a2d4bcc19581431475a6efa8caac"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a5bb0a2d4bcc19581431475a6efa8caac">~ICGenJetProducer</a> ()</td></tr>
 <tr class="separator:a5bb0a2d4bcc19581431475a6efa8caac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a42531b8e74f85d3bcf253b058074be48"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a42531b8e74f85d3bcf253b058074be48">beginJob</a> ()</td></tr>
+<tr class="separator:a42531b8e74f85d3bcf253b058074be48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfe6c21d44f97fae4cdd6036c82449c3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#adfe6c21d44f97fae4cdd6036c82449c3">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:adfe6c21d44f97fae4cdd6036c82449c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e11a4393244e496486e7eb7a4d91147"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a7e11a4393244e496486e7eb7a4d91147">endJob</a> ()</td></tr>
+<tr class="separator:a7e11a4393244e496486e7eb7a4d91147"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a0cf9709325e2087112dfdc57986fdb92"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_gen_jet.html">ic::GenJet</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a0cf9709325e2087112dfdc57986fdb92">gen_jets_</a></td></tr>
+<tr class="separator:a0cf9709325e2087112dfdc57986fdb92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28bd232b21ae981f4158c55c51f9952c"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a28bd232b21ae981f4158c55c51f9952c">input_</a></td></tr>
+<tr class="separator:a28bd232b21ae981f4158c55c51f9952c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39c767096f4d7ff636726977b7cd345a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a39c767096f4d7ff636726977b7cd345a">branch_</a></td></tr>
+<tr class="separator:a39c767096f4d7ff636726977b7cd345a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a869eb77d2a18e4eeb96208a0576978ad"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a869eb77d2a18e4eeb96208a0576978ad">input_particles_</a></td></tr>
+<tr class="separator:a869eb77d2a18e4eeb96208a0576978ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaccae9b7e54c38cca5ba22f7809b65bc"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::GenJet const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#aaccae9b7e54c38cca5ba22f7809b65bc">gen_jet_hasher_</a></td></tr>
+<tr class="separator:aaccae9b7e54c38cca5ba22f7809b65bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96d446d78325cb1c7011cd66d91048b0"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::GenParticle <br class="typebreak" />
+const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a96d446d78325cb1c7011cd66d91048b0">particle_hasher_</a></td></tr>
+<tr class="separator:a96d446d78325cb1c7011cd66d91048b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a962998830d1fdd4e6177df6b24d6da14"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_jet_producer.html#a962998830d1fdd4e6177df6b24d6da14">request_gen_particles_</a></td></tr>
+<tr class="separator:a962998830d1fdd4e6177df6b24d6da14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-genjet">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#_a16">plugins/ICGenJetProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#_a26">plugins/ICGenJetProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8hh_source.html#l00020">20</a> of file <a class="el" href="_i_c_gen_jet_producer_8hh_source.html">ICGenJetProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -172,6 +201,258 @@ Public Member Functions</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a3">plugins/ICGenJetProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8cc_source.html#l00032">32</a> of file <a class="el" href="_i_c_gen_jet_producer_8cc_source.html">ICGenJetProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a42531b8e74f85d3bcf253b058074be48"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICGenJetProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a21">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8cc_source.html#l00083">83</a> of file <a class="el" href="_i_c_gen_jet_producer_8cc_source.html">ICGenJetProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adfe6c21d44f97fae4cdd6036c82449c3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICGenJetProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a5">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8cc_source.html#l00034">34</a> of file <a class="el" href="_i_c_gen_jet_producer_8cc_source.html">ICGenJetProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7e11a4393244e496486e7eb7a4d91147"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICGenJetProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a24">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8cc_source.html#l00087">87</a> of file <a class="el" href="_i_c_gen_jet_producer_8cc_source.html">ICGenJetProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a0cf9709325e2087112dfdc57986fdb92"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_gen_jet.html">ic::GenJet</a>&gt;* ICGenJetProducer::gen_jets_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a4">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_gen_jet_producer_8hh_source.html">ICGenJetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a28bd232b21ae981f4158c55c51f9952c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICGenJetProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a6">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_gen_jet_producer_8hh_source.html">ICGenJetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a39c767096f4d7ff636726977b7cd345a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICGenJetProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a23">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_gen_jet_producer_8hh_source.html">ICGenJetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a869eb77d2a18e4eeb96208a0576978ad"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICGenJetProducer::input_particles_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a8">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8hh_source.html#l00033">33</a> of file <a class="el" href="_i_c_gen_jet_producer_8hh_source.html">ICGenJetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aaccae9b7e54c38cca5ba22f7809b65bc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::GenJet const*&gt; ICGenJetProducer::gen_jet_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a11">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_gen_jet_producer_8hh_source.html">ICGenJetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a96d446d78325cb1c7011cd66d91048b0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::GenParticle const *&gt; ICGenJetProducer::particle_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a19">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8hh_source.html#l00035">35</a> of file <a class="el" href="_i_c_gen_jet_producer_8hh_source.html">ICGenJetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a962998830d1fdd4e6177df6b24d6da14"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICGenJetProducer::request_gen_particles_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_jet_producer_8cc-example.html#a7">plugins/ICGenJetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_jet_producer_8hh_source.html#l00038">38</a> of file <a class="el" href="_i_c_gen_jet_producer_8hh_source.html">ICGenJetProducer.hh</a>.</p>
 
 </div>
 </div>

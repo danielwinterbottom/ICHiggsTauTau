@@ -97,7 +97,9 @@ $(document).ready(function(){initNavTree('class_i_c_electron_producer.html','');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICElectronProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -118,16 +120,73 @@ $(document).ready(function(){initNavTree('class_i_c_electron_producer.html','');
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_i_c_electron_producer_1_1_iso_tags.html">IsoTags</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a05669e445d792f302b66e1620963273c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a05669e445d792f302b66e1620963273c">ICElectronProducer</a> (const edm::ParameterSet &amp;)</td></tr>
 <tr class="separator:a05669e445d792f302b66e1620963273c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a587d29ed5d0de77a8e35f50dc7ee07c7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a587d29ed5d0de77a8e35f50dc7ee07c7">~ICElectronProducer</a> ()</td></tr>
 <tr class="separator:a587d29ed5d0de77a8e35f50dc7ee07c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a24b1b393e5abfa1d84ad0d7fbb5966a9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a24b1b393e5abfa1d84ad0d7fbb5966a9">beginJob</a> ()</td></tr>
+<tr class="separator:a24b1b393e5abfa1d84ad0d7fbb5966a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70cc3397ebc0f5ceb4109542e3d5990e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a70cc3397ebc0f5ceb4109542e3d5990e">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:a70cc3397ebc0f5ceb4109542e3d5990e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a924a41ec75c15e66733099164b1ee164"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a924a41ec75c15e66733099164b1ee164">endJob</a> ()</td></tr>
+<tr class="separator:a924a41ec75c15e66733099164b1ee164"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ac751ead22bb97bfbc16a6cd96500930b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_electron.html">ic::Electron</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#ac751ead22bb97bfbc16a6cd96500930b">electrons_</a></td></tr>
+<tr class="separator:ac751ead22bb97bfbc16a6cd96500930b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd89152cefe74aa855ca1fe536da5d21"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#afd89152cefe74aa855ca1fe536da5d21">input_</a></td></tr>
+<tr class="separator:afd89152cefe74aa855ca1fe536da5d21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a778afce44f2ff7138d2da01cde96cafc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a778afce44f2ff7138d2da01cde96cafc">branch_</a></td></tr>
+<tr class="separator:a778afce44f2ff7138d2da01cde96cafc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ec7c8980a490f4a53b154abaf476bd0"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::GsfElectron <br class="typebreak" />
+const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a6ec7c8980a490f4a53b154abaf476bd0">gsf_electron_hasher_</a></td></tr>
+<tr class="separator:a6ec7c8980a490f4a53b154abaf476bd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4dd93263899f0f690972af18761ad447"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair<br class="typebreak" />
+&lt; std::string, edm::InputTag &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a4dd93263899f0f690972af18761ad447">input_vmaps_</a></td></tr>
+<tr class="separator:a4dd93263899f0f690972af18761ad447"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf719056a0bd99d265cd628a048eab68"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#aaf719056a0bd99d265cd628a048eab68">input_r9_</a></td></tr>
+<tr class="separator:aaf719056a0bd99d265cd628a048eab68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9c12b7246941cf83c9ff1e10de70044"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#ae9c12b7246941cf83c9ff1e10de70044">do_r9_</a></td></tr>
+<tr class="separator:ae9c12b7246941cf83c9ff1e10de70044"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5cc7f183cea23dc6fec05571581680c"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#ad5cc7f183cea23dc6fec05571581680c">input_hcal_sum_</a></td></tr>
+<tr class="separator:ad5cc7f183cea23dc6fec05571581680c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0becd894da9381619e1f4f0759e11865"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a0becd894da9381619e1f4f0759e11865">do_hcal_sum_</a></td></tr>
+<tr class="separator:a0becd894da9381619e1f4f0759e11865"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af06233be5ac2ebe03ac63873eb5c175e"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#af06233be5ac2ebe03ac63873eb5c175e">input_vertices_</a></td></tr>
+<tr class="separator:af06233be5ac2ebe03ac63873eb5c175e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26b833095e730bb694948d76e9345dc9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a26b833095e730bb694948d76e9345dc9">do_vertex_ip_</a></td></tr>
+<tr class="separator:a26b833095e730bb694948d76e9345dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a030271ff4e1f7f9c62d8fe1003551209"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a030271ff4e1f7f9c62d8fe1003551209">input_beamspot_</a></td></tr>
+<tr class="separator:a030271ff4e1f7f9c62d8fe1003551209"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bf05768b5cd80c1fbf95ef2c410ab12"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a0bf05768b5cd80c1fbf95ef2c410ab12">do_beamspot_ip_</a></td></tr>
+<tr class="separator:a0bf05768b5cd80c1fbf95ef2c410ab12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23e7e9eda07a4bbf1ebfa396670da711"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a23e7e9eda07a4bbf1ebfa396670da711">input_conversion_matches_</a></td></tr>
+<tr class="separator:a23e7e9eda07a4bbf1ebfa396670da711"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a298ff1c14cc72cea58724fcf2664fdc6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a298ff1c14cc72cea58724fcf2664fdc6">do_conversion_matches_</a></td></tr>
+<tr class="separator:a298ff1c14cc72cea58724fcf2664fdc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19451e7fb0ab1f5b8a511bd9e1a6a48e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_i_c_electron_producer_1_1_iso_tags.html">IsoTags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a19451e7fb0ab1f5b8a511bd9e1a6a48e">pf_iso_03_</a></td></tr>
+<tr class="separator:a19451e7fb0ab1f5b8a511bd9e1a6a48e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77079195141bf66117d0698fa8e46dfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_i_c_electron_producer_1_1_iso_tags.html">IsoTags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a77079195141bf66117d0698fa8e46dfe">pf_iso_04_</a></td></tr>
+<tr class="separator:a77079195141bf66117d0698fa8e46dfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f98299c17d1d6d6715077b7315b659b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#a3f98299c17d1d6d6715077b7315b659b">do_pf_iso_03_</a></td></tr>
+<tr class="separator:a3f98299c17d1d6d6715077b7315b659b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae31a0cd16f288462d8e3550b95762a6b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_electron_producer.html#ae31a0cd16f288462d8e3550b95762a6b">do_pf_iso_04_</a></td></tr>
+<tr class="separator:ae31a0cd16f288462d8e3550b95762a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-electron">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#_a49">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#_a77">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00019">19</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -152,7 +211,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a0">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a1">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_electron_producer_8cc_source.html#l00029">29</a> of file <a class="el" href="_i_c_electron_producer_8cc_source.html">ICElectronProducer.cc</a>.</p>
 
@@ -170,9 +229,537 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a3">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a4">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_electron_producer_8cc_source.html#l00068">68</a> of file <a class="el" href="_i_c_electron_producer_8cc_source.html">ICElectronProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a24b1b393e5abfa1d84ad0d7fbb5966a9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICElectronProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a72">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8cc_source.html#l00212">212</a> of file <a class="el" href="_i_c_electron_producer_8cc_source.html">ICElectronProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a70cc3397ebc0f5ceb4109542e3d5990e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICElectronProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a6">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8cc_source.html#l00070">70</a> of file <a class="el" href="_i_c_electron_producer_8cc_source.html">ICElectronProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a924a41ec75c15e66733099164b1ee164"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICElectronProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a75">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8cc_source.html#l00216">216</a> of file <a class="el" href="_i_c_electron_producer_8cc_source.html">ICElectronProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="ac751ead22bb97bfbc16a6cd96500930b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_electron.html">ic::Electron</a>&gt;* ICElectronProducer::electrons_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a5">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00029">29</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afd89152cefe74aa855ca1fe536da5d21"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICElectronProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a7">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a778afce44f2ff7138d2da01cde96cafc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICElectronProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a74">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6ec7c8980a490f4a53b154abaf476bd0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::GsfElectron const*&gt; ICElectronProducer::gsf_electron_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a30">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4dd93263899f0f690972af18761ad447"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; ICElectronProducer::input_vmaps_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a18">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aaf719056a0bd99d265cd628a048eab68"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICElectronProducer::input_r9_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a9">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00035">35</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae9c12b7246941cf83c9ff1e10de70044"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICElectronProducer::do_r9_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a8">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00036">36</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad5cc7f183cea23dc6fec05571581680c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICElectronProducer::input_hcal_sum_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a11">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00037">37</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0becd894da9381619e1f4f0759e11865"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICElectronProducer::do_hcal_sum_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a10">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00038">38</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af06233be5ac2ebe03ac63873eb5c175e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICElectronProducer::input_vertices_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a15">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00039">39</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a26b833095e730bb694948d76e9345dc9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICElectronProducer::do_vertex_ip_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a14">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00040">40</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a030271ff4e1f7f9c62d8fe1003551209"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICElectronProducer::input_beamspot_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a17">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00041">41</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0bf05768b5cd80c1fbf95ef2c410ab12"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICElectronProducer::do_beamspot_ip_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a16">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00042">42</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a23e7e9eda07a4bbf1ebfa396670da711"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICElectronProducer::input_conversion_matches_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a13">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00043">43</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a298ff1c14cc72cea58724fcf2664fdc6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICElectronProducer::do_conversion_matches_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a12">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00044">44</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a19451e7fb0ab1f5b8a511bd9e1a6a48e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_i_c_electron_producer_1_1_iso_tags.html">IsoTags</a> ICElectronProducer::pf_iso_03_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a20">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00055">55</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a77079195141bf66117d0698fa8e46dfe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_i_c_electron_producer_1_1_iso_tags.html">IsoTags</a> ICElectronProducer::pf_iso_04_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a27">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00056">56</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3f98299c17d1d6d6715077b7315b659b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICElectronProducer::do_pf_iso_03_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a19">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00057">57</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae31a0cd16f288462d8e3550b95762a6b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICElectronProducer::do_pf_iso_04_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a26">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_electron_producer_8hh_source.html#l00058">58</a> of file <a class="el" href="_i_c_electron_producer_8hh_source.html">ICElectronProducer.hh</a>.</p>
 
 </div>
 </div>

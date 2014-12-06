@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('class_i_c_event_info_producer.html',''
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICEventInfoProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -123,6 +125,52 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a050085b4c5956de5432c03b488fc6900"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c1d384e67bb996fb120664d300f91c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">~ICEventInfoProducer</a> ()</td></tr>
 <tr class="separator:a4c1d384e67bb996fb120664d300f91c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aa0203b9dec34dadf13c6bfe4f40f0aec"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#aa0203b9dec34dadf13c6bfe4f40f0aec">beginJob</a> ()</td></tr>
+<tr class="separator:aa0203b9dec34dadf13c6bfe4f40f0aec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd11328660a0c0fe83fb93ecbcf6d32f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#acd11328660a0c0fe83fb93ecbcf6d32f">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:acd11328660a0c0fe83fb93ecbcf6d32f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a170a8f0fffde2543dda7bb1cf6561af8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a170a8f0fffde2543dda7bb1cf6561af8">endJob</a> ()</td></tr>
+<tr class="separator:a170a8f0fffde2543dda7bb1cf6561af8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a1b6c1ee4e7d6d267cbd29b4ff3e8662f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classic_1_1_event_info.html">ic::EventInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a></td></tr>
+<tr class="separator:a1b6c1ee4e7d6d267cbd29b4ff3e8662f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ff144d671d45514e0a44398624f983a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a2ff144d671d45514e0a44398624f983a">branch_</a></td></tr>
+<tr class="separator:a2ff144d671d45514e0a44398624f983a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9f020c6a2945cf41484b296cfdf79b7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#ae9f020c6a2945cf41484b296cfdf79b7">do_jets_rho_</a></td></tr>
+<tr class="separator:ae9f020c6a2945cf41484b296cfdf79b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a919ec14d936c320d3fea403e59090b33"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a919ec14d936c320d3fea403e59090b33">input_jets_rho_</a></td></tr>
+<tr class="separator:a919ec14d936c320d3fea403e59090b33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e64cd4edc1c00b3cb0503a7afeec27c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a6e64cd4edc1c00b3cb0503a7afeec27c">do_leptons_rho_</a></td></tr>
+<tr class="separator:a6e64cd4edc1c00b3cb0503a7afeec27c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bd98cd8e2c4c5eaac7442a29f14dc62"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a2bd98cd8e2c4c5eaac7442a29f14dc62">input_leptons_rho_</a></td></tr>
+<tr class="separator:a2bd98cd8e2c4c5eaac7442a29f14dc62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58bfe78f7d2bc35f1cda427119ca863b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a58bfe78f7d2bc35f1cda427119ca863b">do_vertex_count_</a></td></tr>
+<tr class="separator:a58bfe78f7d2bc35f1cda427119ca863b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a813c50b132daa6a35d1c78f88cf99b5c"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a813c50b132daa6a35d1c78f88cf99b5c">input_vertices_</a></td></tr>
+<tr class="separator:a813c50b132daa6a35d1c78f88cf99b5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff56848bb93d26752c079f5513b35e59"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#aff56848bb93d26752c079f5513b35e59">do_csc_filter_</a></td></tr>
+<tr class="separator:aff56848bb93d26752c079f5513b35e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4f8d5d327d930fffe6d922b4991d07b"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#aa4f8d5d327d930fffe6d922b4991d07b">input_csc_filter_</a></td></tr>
+<tr class="separator:aa4f8d5d327d930fffe6d922b4991d07b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a773765aa301dff7efea820dd23bc2d7b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair<br class="typebreak" />
+&lt; std::string, edm::InputTag &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a773765aa301dff7efea820dd23bc2d7b">filters_</a></td></tr>
+<tr class="separator:a773765aa301dff7efea820dd23bc2d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7b5df7afb7e9498ba678ac7a19a8f06"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair<br class="typebreak" />
+&lt; std::string, edm::InputTag &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#aa7b5df7afb7e9498ba678ac7a19a8f06">weights_</a></td></tr>
+<tr class="separator:aa7b5df7afb7e9498ba678ac7a19a8f06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa232a17bca40b126a62972289f552207"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair<br class="typebreak" />
+&lt; std::string, edm::InputTag &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#aa232a17bca40b126a62972289f552207">gen_weights_</a></td></tr>
+<tr class="separator:aa232a17bca40b126a62972289f552207"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57bb239c45e2d186786390fc023e7c4b"><td class="memItemLeft" align="right" valign="top">std::set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a57bb239c45e2d186786390fc023e7c4b">invert_filter_logic_</a></td></tr>
+<tr class="separator:a57bb239c45e2d186786390fc023e7c4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07bffc3cccf322bba48caeb654e3fe21"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::string, <br class="typebreak" />
+std::size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_event_info_producer.html#a07bffc3cccf322bba48caeb654e3fe21">observed_filters_</a></td></tr>
+<tr class="separator:a07bffc3cccf322bba48caeb654e3fe21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Produces an <a class="el" href="classic_1_1_event_info.html" title="Stores core event information such as run, lumi and event number, as well as event weights and filter...">ic::EventInfo</a> object. </p>
@@ -142,7 +190,7 @@ Public Member Functions</h2></td></tr>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  genFilterWeights    = cms.PSet(</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  )</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;)</div>
-</div><!-- fragment --><dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#_a18">plugins/ICEventInfoProducer.cc</a>.</dd>
+</div><!-- fragment --><dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#_a36">plugins/ICEventInfoProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00021">21</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -188,6 +236,442 @@ Public Member Functions</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a4">plugins/ICEventInfoProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_event_info_producer_8cc_source.html#l00078">78</a> of file <a class="el" href="_i_c_event_info_producer_8cc_source.html">ICEventInfoProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="aa0203b9dec34dadf13c6bfe4f40f0aec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICEventInfoProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a31">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8cc_source.html#l00142">142</a> of file <a class="el" href="_i_c_event_info_producer_8cc_source.html">ICEventInfoProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acd11328660a0c0fe83fb93ecbcf6d32f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICEventInfoProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a6">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8cc_source.html#l00082">82</a> of file <a class="el" href="_i_c_event_info_producer_8cc_source.html">ICEventInfoProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a170a8f0fffde2543dda7bb1cf6561af8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICEventInfoProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a34">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8cc_source.html#l00146">146</a> of file <a class="el" href="_i_c_event_info_producer_8cc_source.html">ICEventInfoProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a1b6c1ee4e7d6d267cbd29b4ff3e8662f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classic_1_1_event_info.html">ic::EventInfo</a>* ICEventInfoProducer::info_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a5">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2ff144d671d45514e0a44398624f983a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICEventInfoProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a33">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae9f020c6a2945cf41484b296cfdf79b7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICEventInfoProducer::do_jets_rho_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a12">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00033">33</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a919ec14d936c320d3fea403e59090b33"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICEventInfoProducer::input_jets_rho_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a13">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6e64cd4edc1c00b3cb0503a7afeec27c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICEventInfoProducer::do_leptons_rho_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a15">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00035">35</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2bd98cd8e2c4c5eaac7442a29f14dc62"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICEventInfoProducer::input_leptons_rho_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a16">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00036">36</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a58bfe78f7d2bc35f1cda427119ca863b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICEventInfoProducer::do_vertex_count_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a21">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00037">37</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a813c50b132daa6a35d1c78f88cf99b5c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICEventInfoProducer::input_vertices_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a22">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00038">38</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aff56848bb93d26752c079f5513b35e59"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICEventInfoProducer::do_csc_filter_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a29">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00039">39</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa4f8d5d327d930fffe6d922b4991d07b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICEventInfoProducer::input_csc_filter_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a30">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00040">40</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a773765aa301dff7efea820dd23bc2d7b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; ICEventInfoProducer::filters_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a24">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00041">41</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa7b5df7afb7e9498ba678ac7a19a8f06"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; ICEventInfoProducer::weights_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a18">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00042">42</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa232a17bca40b126a62972289f552207"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; ICEventInfoProducer::gen_weights_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a20">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00043">43</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a57bb239c45e2d186786390fc023e7c4b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::set&lt;std::string&gt; ICEventInfoProducer::invert_filter_logic_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a25">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00044">44</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a07bffc3cccf322bba48caeb654e3fe21"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;std::string, std::size_t&gt; ICEventInfoProducer::observed_filters_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a27">plugins/ICEventInfoProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00045">45</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
 
 </div>
 </div>

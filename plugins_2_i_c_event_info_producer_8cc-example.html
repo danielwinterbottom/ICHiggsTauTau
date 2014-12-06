@@ -177,81 +177,81 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><a name="a4"></a><a class="code" href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">ICEventInfoProducer::~ICEventInfoProducer</a>() {</div>
-<div class="line">  <span class="keyword">delete</span> info_;</div>
+<div class="line">  <span class="keyword">delete</span> <a name="a5"></a><a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>;</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICEventInfoProducer::produce(edm::Event&amp; event,</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a6"></a><a class="code" href="class_i_c_event_info_producer.html#acd11328660a0c0fe83fb93ecbcf6d32f">ICEventInfoProducer::produce</a>(edm::Event&amp; event,</div>
 <div class="line">                                  <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line">  *info_ = <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
-<div class="line">  info_-&gt;<a name="a5"></a><a class="code" href="classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8">set_is_data</a>(event.isRealData());</div>
-<div class="line">  info_-&gt;<a name="a6"></a><a class="code" href="classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a">set_run</a>(event.run());</div>
-<div class="line">  info_-&gt;<a name="a7"></a><a class="code" href="classic_1_1_event_info.html#aa82c0f7eb37ffb8ff934d2b5ae4b53b0">set_event</a>(event.id().event());</div>
-<div class="line">  info_-&gt;<a name="a8"></a><a class="code" href="classic_1_1_event_info.html#a39efdfa3c2300219a9479ea36cb5ea40">set_lumi_block</a>(event.luminosityBlock());</div>
-<div class="line">  info_-&gt;<a name="a9"></a><a class="code" href="classic_1_1_event_info.html#a929e87985219af3f7ac625c43dee3148">set_bunch_crossing</a>(event.bunchCrossing());</div>
+<div class="line">  *<a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a> = <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
+<div class="line">  <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a7"></a><a class="code" href="classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8">set_is_data</a>(event.isRealData());</div>
+<div class="line">  <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a8"></a><a class="code" href="classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a">set_run</a>(event.run());</div>
+<div class="line">  <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a9"></a><a class="code" href="classic_1_1_event_info.html#aa82c0f7eb37ffb8ff934d2b5ae4b53b0">set_event</a>(event.id().event());</div>
+<div class="line">  <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a10"></a><a class="code" href="classic_1_1_event_info.html#a39efdfa3c2300219a9479ea36cb5ea40">set_lumi_block</a>(event.luminosityBlock());</div>
+<div class="line">  <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a11"></a><a class="code" href="classic_1_1_event_info.html#a929e87985219af3f7ac625c43dee3148">set_bunch_crossing</a>(event.bunchCrossing());</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;double&gt; jets_rho_handle;</div>
-<div class="line">  <span class="keywordflow">if</span> (do_jets_rho_) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(input_jets_rho_, jets_rho_handle);</div>
-<div class="line">    info_-&gt;<a name="a10"></a><a class="code" href="classic_1_1_event_info.html#a42e344f79e53c3487399d18e0937c8f8">set_jet_rho</a>(*jets_rho_handle);</div>
+<div class="line">  <span class="keywordflow">if</span> (<a name="a12"></a><a class="code" href="class_i_c_event_info_producer.html#ae9f020c6a2945cf41484b296cfdf79b7">do_jets_rho_</a>) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<a name="a13"></a><a class="code" href="class_i_c_event_info_producer.html#a919ec14d936c320d3fea403e59090b33">input_jets_rho_</a>, jets_rho_handle);</div>
+<div class="line">    <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a14"></a><a class="code" href="classic_1_1_event_info.html#a42e344f79e53c3487399d18e0937c8f8">set_jet_rho</a>(*jets_rho_handle);</div>
 <div class="line">  }</div>
 <div class="line">  edm::Handle&lt;double&gt; lepton_rho_handle;</div>
-<div class="line">  <span class="keywordflow">if</span> (do_leptons_rho_) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(input_leptons_rho_, lepton_rho_handle);</div>
-<div class="line">    info_-&gt;<a name="a11"></a><a class="code" href="classic_1_1_event_info.html#a76acf01d2a32cd6cec54807da1d5d582">set_lepton_rho</a>(*lepton_rho_handle);</div>
+<div class="line">  <span class="keywordflow">if</span> (<a name="a15"></a><a class="code" href="class_i_c_event_info_producer.html#a6e64cd4edc1c00b3cb0503a7afeec27c">do_leptons_rho_</a>) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<a name="a16"></a><a class="code" href="class_i_c_event_info_producer.html#a2bd98cd8e2c4c5eaac7442a29f14dc62">input_leptons_rho_</a>, lepton_rho_handle);</div>
+<div class="line">    <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a17"></a><a class="code" href="classic_1_1_event_info.html#a76acf01d2a32cd6cec54807da1d5d582">set_lepton_rho</a>(*lepton_rho_handle);</div>
 <div class="line">  }</div>
 <div class="line"></div>
-<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; weights_.size(); ++i) {</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; <a name="a18"></a><a class="code" href="class_i_c_event_info_producer.html#aa7b5df7afb7e9498ba678ac7a19a8f06">weights_</a>.size(); ++i) {</div>
 <div class="line">    edm::Handle&lt;double&gt; weight;</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(weights_[i].second, weight);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_event_info_producer.html#aa7b5df7afb7e9498ba678ac7a19a8f06">weights_</a>[i].second, weight);</div>
 <div class="line">    <span class="keywordtype">double</span> weights_result = (*weight);</div>
-<div class="line">    info_-&gt;<a name="a12"></a><a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(weights_[i].first, weights_result);</div>
+<div class="line">    <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a19"></a><a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<a class="code" href="class_i_c_event_info_producer.html#aa7b5df7afb7e9498ba678ac7a19a8f06">weights_</a>[i].first, weights_result);</div>
 <div class="line">  }</div>
 <div class="line"></div>
-<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; gen_weights_.size(); ++i) {</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; <a name="a20"></a><a class="code" href="class_i_c_event_info_producer.html#aa232a17bca40b126a62972289f552207">gen_weights_</a>.size(); ++i) {</div>
 <div class="line">    edm::Handle&lt;GenFilterInfo&gt; weight;</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(gen_weights_[i].second, weight);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_event_info_producer.html#aa232a17bca40b126a62972289f552207">gen_weights_</a>[i].second, weight);</div>
 <div class="line">    <span class="keywordtype">double</span> weights_result = weight-&gt;filterEfficiency();</div>
-<div class="line">    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(gen_weights_[i].first, weights_result);</div>
+<div class="line">    <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<a class="code" href="class_i_c_event_info_producer.html#aa232a17bca40b126a62972289f552207">gen_weights_</a>[i].first, weights_result);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;edm::View&lt;reco::Vertex&gt; &gt; vtxs_handle;</div>
-<div class="line">  <span class="keywordflow">if</span> (do_vertex_count_) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(input_vertices_, vtxs_handle);</div>
-<div class="line">    info_-&gt;<a name="a13"></a><a class="code" href="classic_1_1_event_info.html#a2b6830f55112bd17730f34a6e2a2ab9b">set_good_vertices</a>(vtxs_handle-&gt;size());</div>
+<div class="line">  <span class="keywordflow">if</span> (<a name="a21"></a><a class="code" href="class_i_c_event_info_producer.html#a58bfe78f7d2bc35f1cda427119ca863b">do_vertex_count_</a>) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<a name="a22"></a><a class="code" href="class_i_c_event_info_producer.html#a813c50b132daa6a35d1c78f88cf99b5c">input_vertices_</a>, vtxs_handle);</div>
+<div class="line">    <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a23"></a><a class="code" href="classic_1_1_event_info.html#a2b6830f55112bd17730f34a6e2a2ab9b">set_good_vertices</a>(vtxs_handle-&gt;size());</div>
 <div class="line">  }</div>
 <div class="line"></div>
-<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; filters_.size(); ++i) {</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; <a name="a24"></a><a class="code" href="class_i_c_event_info_producer.html#a773765aa301dff7efea820dd23bc2d7b">filters_</a>.size(); ++i) {</div>
 <div class="line">    edm::Handle&lt;bool&gt; filter;</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(filters_[i].second, filter);</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<a class="code" href="class_i_c_event_info_producer.html#a773765aa301dff7efea820dd23bc2d7b">filters_</a>[i].second, filter);</div>
 <div class="line">    <span class="keywordtype">bool</span> filter_result = (*filter);</div>
-<div class="line">    <span class="keywordflow">if</span> (invert_filter_logic_.find(filters_[i].first) !=</div>
-<div class="line">        invert_filter_logic_.end())</div>
+<div class="line">    <span class="keywordflow">if</span> (<a name="a25"></a><a class="code" href="class_i_c_event_info_producer.html#a57bb239c45e2d186786390fc023e7c4b">invert_filter_logic_</a>.find(<a class="code" href="class_i_c_event_info_producer.html#a773765aa301dff7efea820dd23bc2d7b">filters_</a>[i].first) !=</div>
+<div class="line">        <a class="code" href="class_i_c_event_info_producer.html#a57bb239c45e2d186786390fc023e7c4b">invert_filter_logic_</a>.end())</div>
 <div class="line">      filter_result = !filter_result;</div>
-<div class="line">    info_-&gt;<a name="a14"></a><a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(filters_[i].first, filter_result);</div>
-<div class="line">    observed_filters_[filters_[i].first] = <a name="a15"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters_[i].first);</div>
+<div class="line">    <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a name="a26"></a><a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(<a class="code" href="class_i_c_event_info_producer.html#a773765aa301dff7efea820dd23bc2d7b">filters_</a>[i].first, filter_result);</div>
+<div class="line">    <a name="a27"></a><a class="code" href="class_i_c_event_info_producer.html#a07bffc3cccf322bba48caeb654e3fe21">observed_filters_</a>[<a class="code" href="class_i_c_event_info_producer.html#a773765aa301dff7efea820dd23bc2d7b">filters_</a>[i].first] = <a name="a28"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters_[i].first);</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;reco::BeamHaloSummary&gt; beam_halo_handle;</div>
-<div class="line">  <span class="keywordflow">if</span> (do_csc_filter_) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(input_csc_filter_, beam_halo_handle);</div>
-<div class="line">    info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>,</div>
+<div class="line">  <span class="keywordflow">if</span> (<a name="a29"></a><a class="code" href="class_i_c_event_info_producer.html#aff56848bb93d26752c079f5513b35e59">do_csc_filter_</a>) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<a name="a30"></a><a class="code" href="class_i_c_event_info_producer.html#aa4f8d5d327d930fffe6d922b4991d07b">input_csc_filter_</a>, beam_halo_handle);</div>
+<div class="line">    <a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>,</div>
 <div class="line">                             beam_halo_handle-&gt;CSCTightHaloId());</div>
-<div class="line">    observed_filters_[<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>);</div>
+<div class="line">    <a class="code" href="class_i_c_event_info_producer.html#a07bffc3cccf322bba48caeb654e3fe21">observed_filters_</a>[<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>);</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICEventInfoProducer::beginJob() {</div>
-<div class="line">  <a name="a16"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;info_);</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a31"></a><a class="code" href="class_i_c_event_info_producer.html#aa0203b9dec34dadf13c6bfe4f40f0aec">ICEventInfoProducer::beginJob</a>() {</div>
+<div class="line">  <a name="a32"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(<a name="a33"></a><a class="code" href="class_i_c_event_info_producer.html#a2ff144d671d45514e0a44398624f983a">branch_</a>.c_str(), &amp;<a class="code" href="class_i_c_event_info_producer.html#a1b6c1ee4e7d6d267cbd29b4ff3e8662f">info_</a>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICEventInfoProducer::endJob() {</div>
-<div class="line">  <span class="keywordflow">if</span> (!observed_filters_.empty()) {</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a34"></a><a class="code" href="class_i_c_event_info_producer.html#a170a8f0fffde2543dda7bb1cf6561af8">ICEventInfoProducer::endJob</a>() {</div>
+<div class="line">  <span class="keywordflow">if</span> (!<a class="code" href="class_i_c_event_info_producer.html#a07bffc3cccf322bba48caeb654e3fe21">observed_filters_</a>.empty()) {</div>
 <div class="line">    std::cout &lt;&lt; std::string(78, <span class="charliteral">&#39;-&#39;</span>) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
 <div class="line">    std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s  %20s\n&quot;</span>) %</div>
 <div class="line">                     std::string(<span class="stringliteral">&quot;EventInfo Filters&quot;</span>) %</div>
 <div class="line">                     std::string(<span class="stringliteral">&quot;Hash Summmary&quot;</span>);</div>
 <div class="line">    std::map&lt;std::string, std::size_t&gt;::const_iterator iter;</div>
-<div class="line">    <span class="keywordflow">for</span> (iter = observed_filters_.begin(); iter != observed_filters_.end();</div>
+<div class="line">    <span class="keywordflow">for</span> (iter = <a class="code" href="class_i_c_event_info_producer.html#a07bffc3cccf322bba48caeb654e3fe21">observed_filters_</a>.begin(); iter != <a class="code" href="class_i_c_event_info_producer.html#a07bffc3cccf322bba48caeb654e3fe21">observed_filters_</a>.end();</div>
 <div class="line">         ++iter) {</div>
 <div class="line">      std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s| %020i\n&quot;</span>) % iter-&gt;first % iter-&gt;second;</div>
 <div class="line">    }</div>
@@ -259,7 +259,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="a17"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a18"></a><a class="code" href="class_i_c_event_info_producer.html">ICEventInfoProducer</a>);</div>
+<div class="line"><a name="a35"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a36"></a><a class="code" href="class_i_c_event_info_producer.html">ICEventInfoProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

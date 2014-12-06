@@ -14,7 +14,8 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
     ] ],
     [ "ICElectronProducer.cc", "_i_c_electron_producer_8cc.html", "_i_c_electron_producer_8cc" ],
     [ "ICElectronProducer.hh", "_i_c_electron_producer_8hh.html", [
-      [ "ICElectronProducer", "class_i_c_electron_producer.html", "class_i_c_electron_producer" ]
+      [ "ICElectronProducer", "class_i_c_electron_producer.html", "class_i_c_electron_producer" ],
+      [ "IsoTags", "struct_i_c_electron_producer_1_1_iso_tags.html", "struct_i_c_electron_producer_1_1_iso_tags" ]
     ] ],
     [ "ICEventInfoProducer.cc", "_i_c_event_info_producer_8cc.html", "_i_c_event_info_producer_8cc" ],
     [ "ICEventInfoProducer.hh", "_i_c_event_info_producer_8hh.html", [
@@ -71,7 +72,8 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
     ] ],
     [ "ICMuonProducer.cc", "_i_c_muon_producer_8cc.html", "_i_c_muon_producer_8cc" ],
     [ "ICMuonProducer.hh", "_i_c_muon_producer_8hh.html", [
-      [ "ICMuonProducer", "class_i_c_muon_producer.html", "class_i_c_muon_producer" ]
+      [ "ICMuonProducer", "class_i_c_muon_producer.html", "class_i_c_muon_producer" ],
+      [ "IsoTags", "struct_i_c_muon_producer_1_1_iso_tags.html", "struct_i_c_muon_producer_1_1_iso_tags" ]
     ] ],
     [ "ICPhotonElectronVetoCalculator.cc", "_i_c_photon_electron_veto_calculator_8cc.html", "_i_c_photon_electron_veto_calculator_8cc" ],
     [ "ICPhotonElectronVetoCalculator.h", "_i_c_photon_electron_veto_calculator_8h.html", [
@@ -79,7 +81,8 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
     ] ],
     [ "ICPhotonProducer.cc", "_i_c_photon_producer_8cc.html", "_i_c_photon_producer_8cc" ],
     [ "ICPhotonProducer.hh", "_i_c_photon_producer_8hh.html", [
-      [ "ICPhotonProducer", "class_i_c_photon_producer.html", "class_i_c_photon_producer" ]
+      [ "ICPhotonProducer", "class_i_c_photon_producer.html", "class_i_c_photon_producer" ],
+      [ "IsoTags", "struct_i_c_photon_producer_1_1_iso_tags.html", "struct_i_c_photon_producer_1_1_iso_tags" ]
     ] ],
     [ "ICPileupInfoProducer.cc", "_i_c_pileup_info_producer_8cc.html", "_i_c_pileup_info_producer_8cc" ],
     [ "ICPileupInfoProducer.hh", "_i_c_pileup_info_producer_8hh.html", [

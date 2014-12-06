@@ -1,5 +1,7 @@
 var classic_1_1_jet =
 [
+    [ "UFmap", "classic_1_1_jet.html#a9a79ca1b8d9e088808d96af59f21f5ea", null ],
+    [ "TSmap", "classic_1_1_jet.html#a1f41ad42695fff3891f3e336bc691ec9", null ],
     [ "Jet", "classic_1_1_jet.html#af4df44754d457bd75bcabe081f5e03b4", null ],
     [ "~Jet", "classic_1_1_jet.html#aa18304c43da6a1c5dfabd21f9e12539e", null ],
     [ "Print", "classic_1_1_jet.html#a561803400c101f1f6f31e3e20031442a", null ],
@@ -21,5 +23,14 @@ var classic_1_1_jet =
     [ "set_parton_flavour", "classic_1_1_jet.html#a2d293ca81b9154970b78f252c20156ce", null ],
     [ "SetJecFactor", "classic_1_1_jet.html#a34bccbc602d25fef1801c14234d51734", null ],
     [ "SetBDiscriminator", "classic_1_1_jet.html#a571a1d3d1c800d7400f2f30dae1f6b5c", null ],
-    [ "ClassDef", "classic_1_1_jet.html#a4e686fd202e78036a2485eca26c4cf8d", null ]
+    [ "UnHashJecFactor", "classic_1_1_jet.html#a8b8e9e57f3fec5729cd6311cf4b4d824", null ],
+    [ "UnHashDiscr", "classic_1_1_jet.html#a10dd88660b629cb13d3725c3ca54996e", null ],
+    [ "ClassDef", "classic_1_1_jet.html#a4e686fd202e78036a2485eca26c4cf8d", null ],
+    [ "jec_factors_", "classic_1_1_jet.html#a6cd7c0f27b988c88a93d1ee0bcaa8de2", null ],
+    [ "b_discriminators_", "classic_1_1_jet.html#a64e5c1e48d1560d53716db4afedb35fa", null ],
+    [ "gen_particles_", "classic_1_1_jet.html#a71f900dcd936ef91aa9cd9aa22536673", null ],
+    [ "secondary_vertices_", "classic_1_1_jet.html#a7580c70b5015cdfc17c9f2c493dbffc1", null ],
+    [ "uncorrected_energy_", "classic_1_1_jet.html#ab08f8a066d2f7631ae8d4601308a471b", null ],
+    [ "jet_area_", "classic_1_1_jet.html#a040dabb6254b6410c40dfa8660a28db4", null ],
+    [ "parton_flavour_", "classic_1_1_jet.html#a973705541c849d53d9e3f119b9ac5448", null ]
 ];

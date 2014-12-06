@@ -9,5 +9,8 @@ var classic_1_1_light_track =
     [ "set_id", "classic_1_1_light_track.html#a19add132dadf1775668cb73425ee22b3", null ],
     [ "set_pt", "classic_1_1_light_track.html#a6e2badd4ac75b7bd259781897471da46", null ],
     [ "set_vz", "classic_1_1_light_track.html#a5a9e98926848d8085d659d2862c300b7", null ],
-    [ "ClassDef", "classic_1_1_light_track.html#a351c24d99e4d6c8b8c7f62258e44dfa2", null ]
+    [ "ClassDef", "classic_1_1_light_track.html#a351c24d99e4d6c8b8c7f62258e44dfa2", null ],
+    [ "pt_", "classic_1_1_light_track.html#a5a42fa2bf47e213ad3570a51876a6f1e", null ],
+    [ "vz_", "classic_1_1_light_track.html#ac1c3d65d2489e88f90333e7ac78988d3", null ],
+    [ "id_", "classic_1_1_light_track.html#a8c27c0c75d8abe2ce450230484b98ac7", null ]
 ];

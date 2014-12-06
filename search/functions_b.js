@@ -1,6 +1,7 @@
 var searchData=
 [
   ['m',['M',['../classic_1_1_candidate.html#a4ac349941247c3a33c2ce78d89689c5b',1,'ic::Candidate']]],
+  ['make_5frelative',['make_relative',['../namespacech.html#a2f4db67e7b9039935a58ea60b650041a',1,'ch']]],
   ['make_5funique',['make_unique',['../namespacech.html#a34936b9e16919f93ca72d0f164d83347',1,'ch']]],
   ['makeratiohist',['MakeRatioHist',['../_plotting_8h.html#a526842799b4de3a542d8114989dba48d',1,'Plotting.h']]],
   ['mass',['mass',['../classch_1_1_combine_harvester.html#a25c231ed8b1614c5d50f192210374474',1,'ch::CombineHarvester::mass()'],['../classch_1_1_observation.html#a8a3c59b54cc2de4e4e44bced77767fe3',1,'ch::Observation::mass()'],['../classch_1_1_process.html#a44109680b2b2e15b4ffa3c5f1802136c',1,'ch::Process::mass()'],['../classch_1_1_systematic.html#af3ba8364bdd0f6e5d6c667e30eb2dc1b',1,'ch::Systematic::mass()']]],
@@ -12,6 +13,7 @@ var searchData=
   ['max_5fhad_5ftower_5fenergy',['max_had_tower_energy',['../classic_1_1_calo_jet.html#ac84d88adc19de98b0a9c49c92cf5aaf5',1,'ic::CaloJet']]],
   ['merge',['Merge',['../classic_1_1_merge.html#a8d74fa3bdc4bfc07f856116007d9438f',1,'ic::Merge']]],
   ['mergebinerrors',['MergeBinErrors',['../classch_1_1_combine_harvester.html#a37e613f8c2c67871b4b3bc89c78a1f68',1,'ch::CombineHarvester']]],
+  ['mergedjson',['MergedJson',['../namespaceic.html#af377072c6804cca84c2c77687a294753',1,'ic::MergedJson(int argc, char *argv[])'],['../namespaceic.html#a4ed355b1a4daaf430874dfed8a38727e',1,'ic::MergedJson(std::vector&lt; std::string &gt; const &amp;vec)']]],
   ['met',['Met',['../classic_1_1_met.html#a7242fb15c092e770367f36ab04f3d2c4',1,'ic::Met']]],
   ['modtdrstyle',['ModTDRStyle',['../_plotting___style_8h.html#a7f6399c7470d5331ac4c464cb14c86e1',1,'ModTDRStyle(int width, int height, double t, double b, double l, double r):&#160;Plotting_Style.h'],['../_plotting___style_8h.html#a25f3f929fadd38fd9423aaa6ef6ddd51',1,'ModTDRStyle():&#160;Plotting_Style.h']]],
   ['momentum',['momentum',['../classic_1_1_track.html#aba658f6a41d5773ee5073f8c4aeffbba',1,'ic::Track']]],

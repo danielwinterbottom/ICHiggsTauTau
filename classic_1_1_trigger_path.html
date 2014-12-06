@@ -96,7 +96,8 @@ $(document).ready(function(){initNavTree('classic_1_1_trigger_path.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ic::TriggerPath Class Reference</div>  </div>
 </div><!--header-->
@@ -149,10 +150,23 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a885a9e5956b652b055ebe9b0ad436a02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_trigger_path.html#a885a9e5956b652b055ebe9b0ad436a02">set_version</a> (unsigned const &amp;<a class="el" href="classic_1_1_trigger_path.html#a33d4ff9f41d5b12095c7fa5f7267d73a">version</a>)</td></tr>
 <tr class="memdesc:a885a9e5956b652b055ebe9b0ad436a02"><td class="mdescLeft">&#160;</td><td class="mdescRight">The trigger version number.  <a href="#a885a9e5956b652b055ebe9b0ad436a02">More...</a><br /></td></tr>
 <tr class="separator:a885a9e5956b652b055ebe9b0ad436a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a7d51fc2c47a07ba78a0cf69d55e4627a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_trigger_path.html#a7d51fc2c47a07ba78a0cf69d55e4627a">name_</a></td></tr>
+<tr class="separator:a7d51fc2c47a07ba78a0cf69d55e4627a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81fafa3adb84dc32df3b9eb26b9e6f70"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_trigger_path.html#a81fafa3adb84dc32df3b9eb26b9e6f70">accept_</a></td></tr>
+<tr class="separator:a81fafa3adb84dc32df3b9eb26b9e6f70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3dfa50983d2a4baac83395a0716bfe9"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_trigger_path.html#ab3dfa50983d2a4baac83395a0716bfe9">prescale_</a></td></tr>
+<tr class="separator:ab3dfa50983d2a4baac83395a0716bfe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f5154cf47b0eec805385d9ad2f77688"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_trigger_path.html#a8f5154cf47b0eec805385d9ad2f77688">id_</a></td></tr>
+<tr class="separator:a8f5154cf47b0eec805385d9ad2f77688"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a037ee7ceeae42ee0f481d9d81a637300"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_trigger_path.html#a037ee7ceeae42ee0f481d9d81a637300">version_</a></td></tr>
+<tr class="separator:a037ee7ceeae42ee0f481d9d81a637300"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Information on a trigger path, including accept, prescale and version information. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#_a4">plugins/ICTriggerPathProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#_a8">plugins/ICTriggerPathProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00013">13</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -382,7 +396,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The trigger path name. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a8">plugins/ICTriggerPathProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a14">plugins/ICTriggerPathProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00040">40</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
 
@@ -411,7 +425,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>True if the trigger fired, false otherwise. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a5">plugins/ICTriggerPathProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a9">plugins/ICTriggerPathProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00043">43</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
 
@@ -440,7 +454,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The trigger prescale. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a6">plugins/ICTriggerPathProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a10">plugins/ICTriggerPathProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00046">46</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
 
@@ -469,7 +483,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Unique identifier, usually a hash of the trigger name. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a9">plugins/ICTriggerPathProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a15">plugins/ICTriggerPathProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00049">49</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
 
@@ -498,7 +512,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The trigger version number. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a7">plugins/ICTriggerPathProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a12">plugins/ICTriggerPathProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00052">52</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
 
@@ -527,6 +541,117 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a7d51fc2c47a07ba78a0cf69d55e4627a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ic::TriggerPath::name_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00056">56</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a81fafa3adb84dc32df3b9eb26b9e6f70"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ic::TriggerPath::accept_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00057">57</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab3dfa50983d2a4baac83395a0716bfe9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned ic::TriggerPath::prescale_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00058">58</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8f5154cf47b0eec805385d9ad2f77688"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t ic::TriggerPath::id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00059">59</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a037ee7ceeae42ee0f481d9d81a637300"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned ic::TriggerPath::version_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_trigger_path_8hh_source.html#l00060">60</a> of file <a class="el" href="_trigger_path_8hh_source.html">TriggerPath.hh</a>.</p>
 
 </div>
 </div>

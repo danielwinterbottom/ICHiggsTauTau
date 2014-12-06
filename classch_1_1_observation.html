@@ -98,6 +98,7 @@ $(document).ready(function(){initNavTree('classch_1_1_observation.html','');});
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a>  </div>
   <div class="headertitle">
 <div class="title">ch::Observation Class Reference</div>  </div>
@@ -165,6 +166,27 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a4f8f4cc0a612fc88effb03189daa3b13"><td class="memItemLeft" align="right" valign="top">static std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#a4f8f4cc0a612fc88effb03189daa3b13">PrintHeader</a> (std::ostream &amp;out)</td></tr>
 <tr class="separator:a4f8f4cc0a612fc88effb03189daa3b13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a8a2dcda0fae2a8043d4f13135e640189"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#a8a2dcda0fae2a8043d4f13135e640189">bin_</a></td></tr>
+<tr class="separator:a8a2dcda0fae2a8043d4f13135e640189"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30dd5b3f4649b4854ccad510abf4e9ab"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#a30dd5b3f4649b4854ccad510abf4e9ab">rate_</a></td></tr>
+<tr class="separator:a30dd5b3f4649b4854ccad510abf4e9ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee89840b2e06b54f97798c6af4a469fb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#aee89840b2e06b54f97798c6af4a469fb">analysis_</a></td></tr>
+<tr class="separator:aee89840b2e06b54f97798c6af4a469fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab14f532bdd17f574a1b5ecb31ba90106"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#ab14f532bdd17f574a1b5ecb31ba90106">era_</a></td></tr>
+<tr class="separator:ab14f532bdd17f574a1b5ecb31ba90106"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7aee091514534f3f35b6e407b478dfe9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#a7aee091514534f3f35b6e407b478dfe9">channel_</a></td></tr>
+<tr class="separator:a7aee091514534f3f35b6e407b478dfe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81eef95c7ece90f6ab3d2b5feac0d61a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#a81eef95c7ece90f6ab3d2b5feac0d61a">bin_id_</a></td></tr>
+<tr class="separator:a81eef95c7ece90f6ab3d2b5feac0d61a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9accf71610bf4c3265b57081cb9da9f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#ad9accf71610bf4c3265b57081cb9da9f">mass_</a></td></tr>
+<tr class="separator:ad9accf71610bf4c3265b57081cb9da9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86cca8b69cdb1bfa3e9b4b23c9415b8f"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; TH1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#a86cca8b69cdb1bfa3e9b4b23c9415b8f">shape_</a></td></tr>
+<tr class="separator:a86cca8b69cdb1bfa3e9b4b23c9415b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74cd86fc0d99ce2dbdcbb51d3615e541"><td class="memItemLeft" align="right" valign="top">RooAbsData *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1_observation.html#a74cd86fc0d99ce2dbdcbb51d3615e541">data_</a></td></tr>
+<tr class="separator:a74cd86fc0d99ce2dbdcbb51d3615e541"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -882,6 +904,205 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="_observation_8cc_source.html#l00021">21</a> of file <a class="el" href="_observation_8cc_source.html">Observation.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a8a2dcda0fae2a8043d4f13135e640189"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ch::Observation::bin_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00056">56</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a30dd5b3f4649b4854ccad510abf4e9ab"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double ch::Observation::rate_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00057">57</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aee89840b2e06b54f97798c6af4a469fb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ch::Observation::analysis_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00058">58</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab14f532bdd17f574a1b5ecb31ba90106"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ch::Observation::era_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00059">59</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7aee091514534f3f35b6e407b478dfe9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ch::Observation::channel_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00060">60</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a81eef95c7ece90f6ab3d2b5feac0d61a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ch::Observation::bin_id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00061">61</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad9accf71610bf4c3265b57081cb9da9f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ch::Observation::mass_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00062">62</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a86cca8b69cdb1bfa3e9b4b23c9415b8f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;TH1&gt; ch::Observation::shape_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00063">63</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a74cd86fc0d99ce2dbdcbb51d3615e541"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">RooAbsData* ch::Observation::data_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_observation_8h_source.html#l00064">64</a> of file <a class="el" href="_observation_8h_source.html">Observation.h</a>.</p>
 
 </div>
 </div>

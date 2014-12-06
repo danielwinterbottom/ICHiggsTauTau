@@ -97,7 +97,8 @@ $(document).ready(function(){initNavTree('namespaceic.html','');});
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ic Namespace Reference</div>  </div>
 </div><!--header-->
@@ -230,6 +231,24 @@ Typedefs</h2></td></tr>
 <tr class="separator:afc8cd0b97940a66434bdef1f85d7c973"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae2366d73e5b573ab6931ee0d237fdf6"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classic_1_1_vertex.html">ic::Vertex</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#aae2366d73e5b573ab6931ee0d237fdf6">VertexCollection</a></td></tr>
 <tr class="separator:aae2366d73e5b573ab6931ee0d237fdf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a5d428d1ad2fb32f49e946023b458290c"><td class="memItemLeft" align="right" valign="top">Json::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a5d428d1ad2fb32f49e946023b458290c">ExtractJsonFromFile</a> (std::string const &amp;file)</td></tr>
+<tr class="memdesc:a5d428d1ad2fb32f49e946023b458290c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts a Json::Value from the specified input file.  <a href="#a5d428d1ad2fb32f49e946023b458290c">More...</a><br /></td></tr>
+<tr class="separator:a5d428d1ad2fb32f49e946023b458290c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f235a75dc69f9bcdca29bce82813364"><td class="memItemLeft" align="right" valign="top">Json::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a6f235a75dc69f9bcdca29bce82813364">ExtractJsonFromString</a> (std::string const &amp;str)</td></tr>
+<tr class="memdesc:a6f235a75dc69f9bcdca29bce82813364"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts a Json::Value from the given input string.  <a href="#a6f235a75dc69f9bcdca29bce82813364">More...</a><br /></td></tr>
+<tr class="separator:a6f235a75dc69f9bcdca29bce82813364"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74e462022652b4c16644058a0ecaf6f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a74e462022652b4c16644058a0ecaf6f5">UpdateJson</a> (Json::Value &amp;a, Json::Value const &amp;b)</td></tr>
+<tr class="memdesc:a74e462022652b4c16644058a0ecaf6f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the values in one json from the values in another.  <a href="#a74e462022652b4c16644058a0ecaf6f5">More...</a><br /></td></tr>
+<tr class="separator:a74e462022652b4c16644058a0ecaf6f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af377072c6804cca84c2c77687a294753"><td class="memItemLeft" align="right" valign="top">Json::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#af377072c6804cca84c2c77687a294753">MergedJson</a> (int argc, char *argv[])</td></tr>
+<tr class="memdesc:af377072c6804cca84c2c77687a294753"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a single merged Json::Value from a mixture of json files and json-formatted strings.  <a href="#af377072c6804cca84c2c77687a294753">More...</a><br /></td></tr>
+<tr class="separator:af377072c6804cca84c2c77687a294753"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ed355b1a4daaf430874dfed8a38727e"><td class="memItemLeft" align="right" valign="top">Json::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a4ed355b1a4daaf430874dfed8a38727e">MergedJson</a> (std::vector&lt; std::string &gt; const &amp;vec)</td></tr>
+<tr class="memdesc:a4ed355b1a4daaf430874dfed8a38727e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a single merged Json::Value from a mixture of json files and json-formatted strings.  <a href="#a4ed355b1a4daaf430874dfed8a38727e">More...</a><br /></td></tr>
+<tr class="separator:a4ed355b1a4daaf430874dfed8a38727e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a class="anchor" id="aa6491b74ceaf0dad87d0a50cb4ba576d"></a>
@@ -509,6 +528,163 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00104">104</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a5d428d1ad2fb32f49e946023b458290c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::Value ic::ExtractJsonFromFile </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
+          <td class="paramname"><em>file</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Extracts a Json::Value from the specified input file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>The full path to the input json file </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00008">8</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6f235a75dc69f9bcdca29bce82813364"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::Value ic::ExtractJsonFromString </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
+          <td class="paramname"><em>str</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Extracts a Json::Value from the given input string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>Must be a valid JSON object, including the enclosing curly braces, e.g: <code>{ key : "value" }</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00017">17</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a74e462022652b4c16644058a0ecaf6f5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::UpdateJson </td>
+          <td>(</td>
+          <td class="paramtype">Json::Value &amp;&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Json::Value const &amp;&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Updates the values in one json from the values in another. </p>
+<p>All the values in <em>b</em> are entered into <em>a</em>, overwritting any already defined in <em>a</em>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>The Json::Value to be updated </td></tr>
+    <tr><td class="paramname">b</td><td>The Json::Value containing the updates </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00024">24</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="af377072c6804cca84c2c77687a294753"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::Value ic::MergedJson </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>argc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>argv</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create a single merged Json::Value from a mixture of json files and json-formatted strings. </p>
+<p>Each string contained in <code>argv</code> must either be the name of a file containing json data or a string of json-formatted text. A string will only be assumed to indicate a file when it ends with the file extension <code>.json</code>.</p>
+<dl class="section note"><dt>Note</dt><dd>It is assumed that the arguments of this function are those passed to a main function, and accordingly the first element of <code>argv</code> will be ignored.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">argc</td><td>Number of arguments contained in argv </td></tr>
+    <tr><td class="paramname">argv</td><td>An array of strings </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00035">35</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4ed355b1a4daaf430874dfed8a38727e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::Value ic::MergedJson </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::string &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>vec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create a single merged Json::Value from a mixture of json files and json-formatted strings. </p>
+<p>Each string contained in <code>vec</code> must either be the name of a file containing json data or a string of json-formatted text. A string will only be assumed to indicate a file when it ends with the file extension <code>.json</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vec</td><td>Vector of input strings </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00051">51</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
 
 </div>
 </div>

@@ -1,5 +1,6 @@
 var classic_1_1_candidate =
 [
+    [ "Vector", "classic_1_1_candidate.html#a4308a242cd02b5924d05cbe1cd8d42ac", null ],
     [ "Candidate", "classic_1_1_candidate.html#a14eeb5331ec064bbb6d84554af167e94", null ],
     [ "~Candidate", "classic_1_1_candidate.html#a348703b63bae68ff598317c575214d0e", null ],
     [ "Print", "classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6", null ],
@@ -18,5 +19,8 @@ var classic_1_1_candidate =
     [ "set_phi", "classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2", null ],
     [ "set_energy", "classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d", null ],
     [ "set_charge", "classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c", null ],
-    [ "ClassDef", "classic_1_1_candidate.html#aefe95c558731cdfcef68ebb2f6d0b857", null ]
+    [ "ClassDef", "classic_1_1_candidate.html#aefe95c558731cdfcef68ebb2f6d0b857", null ],
+    [ "vector_", "classic_1_1_candidate.html#a433ae6ebbb4892241ca94c4278c5de74", null ],
+    [ "id_", "classic_1_1_candidate.html#a0792b41a14e071b5e4a7c8c12bd99f31", null ],
+    [ "charge_", "classic_1_1_candidate.html#ae7f4666c022a5a51c48ec0b6c637b6ac", null ]
 ];

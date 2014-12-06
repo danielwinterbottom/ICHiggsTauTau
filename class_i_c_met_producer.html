@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('class_i_c_met_producer.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICMetProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -123,10 +125,34 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a67ea107ef80adaa9454ee7a317ff5689"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2185ffd67d57300f2d161d8df4d2d2f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#ab2185ffd67d57300f2d161d8df4d2d2f">~ICMetProducer</a> ()</td></tr>
 <tr class="separator:ab2185ffd67d57300f2d161d8df4d2d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:afde63d3d298fe2035a5dcdd75c96c271"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#afde63d3d298fe2035a5dcdd75c96c271">beginJob</a> ()</td></tr>
+<tr class="separator:afde63d3d298fe2035a5dcdd75c96c271"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a785836941104f55465e1a763fb21cc48"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#a785836941104f55465e1a763fb21cc48">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:a785836941104f55465e1a763fb21cc48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae551ea3f34e329cd8137dd5a0561b836"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#ae551ea3f34e329cd8137dd5a0561b836">endJob</a> ()</td></tr>
+<tr class="separator:ae551ea3f34e329cd8137dd5a0561b836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a1235a210e5297e087d53001a7002641f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_met.html">ic::Met</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#a1235a210e5297e087d53001a7002641f">met_</a></td></tr>
+<tr class="separator:a1235a210e5297e087d53001a7002641f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a433548172d6ec45aacc64fb3b4b1d63c"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#a433548172d6ec45aacc64fb3b4b1d63c">input_</a></td></tr>
+<tr class="separator:a433548172d6ec45aacc64fb3b4b1d63c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a301890109b6279ea17c4911a5b318476"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#a301890109b6279ea17c4911a5b318476">branch_</a></td></tr>
+<tr class="separator:a301890109b6279ea17c4911a5b318476"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc797d5625628f5b44b609349bc9fb7b"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::MET const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#adc797d5625628f5b44b609349bc9fb7b">met_hasher_</a></td></tr>
+<tr class="separator:adc797d5625628f5b44b609349bc9fb7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7d0fc7f200c9ccb4c6ce2f43a87e8ab"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#ad7d0fc7f200c9ccb4c6ce2f43a87e8ab">do_custom_id_</a></td></tr>
+<tr class="separator:ad7d0fc7f200c9ccb4c6ce2f43a87e8ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b4b373f300366a93f77c4fb5a0654e8"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_met_producer.html#a0b4b373f300366a93f77c4fb5a0654e8">inputID_</a></td></tr>
+<tr class="separator:a0b4b373f300366a93f77c4fb5a0654e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-met">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#_a18">plugins/ICMetProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#_a27">plugins/ICMetProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_met_producer_8hh_source.html#l00019">19</a> of file <a class="el" href="_i_c_met_producer_8hh_source.html">ICMetProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -172,6 +198,235 @@ Public Member Functions</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a3">plugins/ICMetProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_met_producer_8cc_source.html#l00028">28</a> of file <a class="el" href="_i_c_met_producer_8cc_source.html">ICMetProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="afde63d3d298fe2035a5dcdd75c96c271"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICMetProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a22">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8cc_source.html#l00065">65</a> of file <a class="el" href="_i_c_met_producer_8cc_source.html">ICMetProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a785836941104f55465e1a763fb21cc48"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICMetProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a5">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8cc_source.html#l00032">32</a> of file <a class="el" href="_i_c_met_producer_8cc_source.html">ICMetProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae551ea3f34e329cd8137dd5a0561b836"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICMetProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a25">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8cc_source.html#l00069">69</a> of file <a class="el" href="_i_c_met_producer_8cc_source.html">ICMetProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a1235a210e5297e087d53001a7002641f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_met.html">ic::Met</a>&gt;* ICMetProducer::met_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a4">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8hh_source.html#l00029">29</a> of file <a class="el" href="_i_c_met_producer_8hh_source.html">ICMetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a433548172d6ec45aacc64fb3b4b1d63c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICMetProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a6">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_met_producer_8hh_source.html">ICMetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a301890109b6279ea17c4911a5b318476"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICMetProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a24">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_met_producer_8hh_source.html">ICMetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="adc797d5625628f5b44b609349bc9fb7b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::MET const*&gt; ICMetProducer::met_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a11">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_met_producer_8hh_source.html">ICMetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad7d0fc7f200c9ccb4c6ce2f43a87e8ab"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICMetProducer::do_custom_id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a7">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8hh_source.html#l00033">33</a> of file <a class="el" href="_i_c_met_producer_8hh_source.html">ICMetProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0b4b373f300366a93f77c4fb5a0654e8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICMetProducer::inputID_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_met_producer_8cc-example.html#a8">plugins/ICMetProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_met_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_met_producer_8hh_source.html">ICMetProducer.hh</a>.</p>
 
 </div>
 </div>

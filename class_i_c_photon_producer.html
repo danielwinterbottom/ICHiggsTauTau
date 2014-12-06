@@ -97,7 +97,9 @@ $(document).ready(function(){initNavTree('class_i_c_photon_producer.html','');})
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICPhotonProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -118,16 +120,53 @@ $(document).ready(function(){initNavTree('class_i_c_photon_producer.html','');})
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_i_c_photon_producer_1_1_iso_tags.html">IsoTags</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab863b239599ba5bd11449f9c42720d26"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#ab863b239599ba5bd11449f9c42720d26">ICPhotonProducer</a> (const edm::ParameterSet &amp;)</td></tr>
 <tr class="separator:ab863b239599ba5bd11449f9c42720d26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3b86ba45e3ec0f9921c073cebb840d3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#aa3b86ba45e3ec0f9921c073cebb840d3">~ICPhotonProducer</a> ()</td></tr>
 <tr class="separator:aa3b86ba45e3ec0f9921c073cebb840d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a7f0310f6c76aea26615b37a9afe7be35"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a7f0310f6c76aea26615b37a9afe7be35">beginJob</a> ()</td></tr>
+<tr class="separator:a7f0310f6c76aea26615b37a9afe7be35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20b9eb16b1c6b7097d7cbf9aec379ce3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a20b9eb16b1c6b7097d7cbf9aec379ce3">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:a20b9eb16b1c6b7097d7cbf9aec379ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02a58df2b8d95d45f53b55ca575264db"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a02a58df2b8d95d45f53b55ca575264db">endJob</a> ()</td></tr>
+<tr class="separator:a02a58df2b8d95d45f53b55ca575264db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a437d16f2d0cbfc67e27431a4f13106d2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_photon.html">ic::Photon</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a437d16f2d0cbfc67e27431a4f13106d2">photons_</a></td></tr>
+<tr class="separator:a437d16f2d0cbfc67e27431a4f13106d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a97f0e9611146a2f7437c23130ee524"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a6a97f0e9611146a2f7437c23130ee524">input_</a></td></tr>
+<tr class="separator:a6a97f0e9611146a2f7437c23130ee524"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7c260306fd1c47c45dd440b80c6053f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#ad7c260306fd1c47c45dd440b80c6053f">branch_</a></td></tr>
+<tr class="separator:ad7c260306fd1c47c45dd440b80c6053f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0b3c4ee193fe74ed413c68bb606b4e9"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::Photon const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#ab0b3c4ee193fe74ed413c68bb606b4e9">photon_hasher_</a></td></tr>
+<tr class="separator:ab0b3c4ee193fe74ed413c68bb606b4e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4628ea7737a45718182f432154e9f2e1"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a4628ea7737a45718182f432154e9f2e1">input_electron_veto_</a></td></tr>
+<tr class="separator:a4628ea7737a45718182f432154e9f2e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a37560f684391c22392a8726deea5a4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a4a37560f684391c22392a8726deea5a4">do_electron_veto_</a></td></tr>
+<tr class="separator:a4a37560f684391c22392a8726deea5a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a440c2573ece7606ad17a7198352f5b59"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a440c2573ece7606ad17a7198352f5b59">input_had_tow_over_em_</a></td></tr>
+<tr class="separator:a440c2573ece7606ad17a7198352f5b59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e0f3f6be3112a33c81d2a888369dc2a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a0e0f3f6be3112a33c81d2a888369dc2a">do_had_tow_over_em_</a></td></tr>
+<tr class="separator:a0e0f3f6be3112a33c81d2a888369dc2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba678538e4b0eb4cb81e605615b313bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_i_c_photon_producer_1_1_iso_tags.html">IsoTags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#aba678538e4b0eb4cb81e605615b313bc">pf_iso_</a></td></tr>
+<tr class="separator:aba678538e4b0eb4cb81e605615b313bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47a8812f06d032f7b81d475b9a5e6cf8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_photon_producer.html#a47a8812f06d032f7b81d475b9a5e6cf8">do_pf_iso_</a></td></tr>
+<tr class="separator:a47a8812f06d032f7b81d475b9a5e6cf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-photon">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#_a19">plugins/ICPhotonProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#_a36">plugins/ICPhotonProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00020">20</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -152,7 +191,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a0">plugins/ICPhotonProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a1">plugins/ICPhotonProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_photon_producer_8cc_source.html#l00023">23</a> of file <a class="el" href="_i_c_photon_producer_8cc_source.html">ICPhotonProducer.cc</a>.</p>
 
@@ -170,9 +209,330 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a3">plugins/ICPhotonProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a4">plugins/ICPhotonProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_photon_producer_8cc_source.html#l00045">45</a> of file <a class="el" href="_i_c_photon_producer_8cc_source.html">ICPhotonProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a7f0310f6c76aea26615b37a9afe7be35"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICPhotonProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a31">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8cc_source.html#l00123">123</a> of file <a class="el" href="_i_c_photon_producer_8cc_source.html">ICPhotonProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a20b9eb16b1c6b7097d7cbf9aec379ce3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICPhotonProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a6">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8cc_source.html#l00050">50</a> of file <a class="el" href="_i_c_photon_producer_8cc_source.html">ICPhotonProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a02a58df2b8d95d45f53b55ca575264db"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICPhotonProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a34">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8cc_source.html#l00127">127</a> of file <a class="el" href="_i_c_photon_producer_8cc_source.html">ICPhotonProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a437d16f2d0cbfc67e27431a4f13106d2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_photon.html">ic::Photon</a>&gt;* ICPhotonProducer::photons_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a5">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6a97f0e9611146a2f7437c23130ee524"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICPhotonProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a7">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad7c260306fd1c47c45dd440b80c6053f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICPhotonProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a33">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab0b3c4ee193fe74ed413c68bb606b4e9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::Photon const*&gt; ICPhotonProducer::photon_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a19">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00033">33</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4628ea7737a45718182f432154e9f2e1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICPhotonProducer::input_electron_veto_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a9">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00038">38</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4a37560f684391c22392a8726deea5a4"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICPhotonProducer::do_electron_veto_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a8">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00039">39</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a440c2573ece7606ad17a7198352f5b59"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICPhotonProducer::input_had_tow_over_em_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a11">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00040">40</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0e0f3f6be3112a33c81d2a888369dc2a"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICPhotonProducer::do_had_tow_over_em_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a10">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00041">41</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aba678538e4b0eb4cb81e605615b313bc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_i_c_photon_producer_1_1_iso_tags.html">IsoTags</a> ICPhotonProducer::pf_iso_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a13">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00050">50</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a47a8812f06d032f7b81d475b9a5e6cf8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICPhotonProducer::do_pf_iso_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_photon_producer_8cc-example.html#a12">plugins/ICPhotonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_photon_producer_8hh_source.html#l00051">51</a> of file <a class="el" href="_i_c_photon_producer_8hh_source.html">ICPhotonProducer.hh</a>.</p>
 
 </div>
 </div>

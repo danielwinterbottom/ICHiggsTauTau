@@ -8,6 +8,7 @@ var searchData=
   ['variablerebin',['VariableRebin',['../classch_1_1_combine_harvester.html#a9ec4406a5a327d11af6257be20865b2a',1,'ch::CombineHarvester']]],
   ['vars',['vars',['../classch_1_1_parameter.html#a51f57bf4e727f2024da96a2ae2e5cf76',1,'ch::Parameter']]],
   ['vector',['vector',['../classic_1_1_candidate.html#a416c4cf0462ad4cbe8f2e053c72e1ed0',1,'ic::Candidate::vector()'],['../classic_1_1_super_cluster.html#a6deb478e4f694ad1195106dba5620813',1,'ic::SuperCluster::vector()']]],
+  ['verify',['Verify',['../classic_1_1_composite_candidate.html#ac872bfafac366ee14c0cc8ebfdeebd24',1,'ic::CompositeCandidate']]],
   ['version',['version',['../classic_1_1_trigger_path.html#a33d4ff9f41d5b12095c7fa5f7267d73a',1,'ic::TriggerPath']]],
   ['vertex',['Vertex',['../classic_1_1_vertex.html#a125094978a1e107b2897516729446496',1,'ic::Vertex']]],
   ['vx',['vx',['../classic_1_1_electron.html#a372e859083a97bf9316b8aec190104ae',1,'ic::Electron::vx()'],['../classic_1_1_muon.html#a83c62a3b0543586193999c7853985744',1,'ic::Muon::vx()'],['../classic_1_1_super_cluster.html#aa43d4c86c4b62cf690e63c172be89f4b',1,'ic::SuperCluster::vx()'],['../classic_1_1_tau.html#ab3ee9aa0f0560c70e47d0e8afea16be4',1,'ic::Tau::vx()'],['../classic_1_1_track.html#a6b4a2dddd5713386ad9ec091cee8c74a',1,'ic::Track::vx()'],['../classic_1_1_vertex.html#aa800d56750c2d0e5e9e96c924cf74d12',1,'ic::Vertex::vx()']]],

@@ -1,6 +1,7 @@
 var namespacech =
 [
     [ "syst", "namespacech_1_1syst.html", "namespacech_1_1syst" ],
+    [ "tupleprint", "namespacech_1_1tupleprint.html", "namespacech_1_1tupleprint" ],
     [ "CombineHarvester", "classch_1_1_combine_harvester.html", "classch_1_1_combine_harvester" ],
     [ "HistMapping", "structch_1_1_hist_mapping.html", "structch_1_1_hist_mapping" ],
     [ "Observation", "classch_1_1_observation.html", "classch_1_1_observation" ],

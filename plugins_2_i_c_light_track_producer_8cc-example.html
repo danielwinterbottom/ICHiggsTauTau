@@ -123,32 +123,32 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_light_track_producer_8cc
 <div class="line">  <a name="a1"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><a name="a2"></a><a class="code" href="class_i_c_light_track_producer.html#afebfb7eafb9f89aacbe2d58678647c3f">ICLightTrackProducer::~ICLightTrackProducer</a>() { <span class="keyword">delete</span> tracks_; }</div>
+<div class="line"><a name="a2"></a><a class="code" href="class_i_c_light_track_producer.html#afebfb7eafb9f89aacbe2d58678647c3f">ICLightTrackProducer::~ICLightTrackProducer</a>() { <span class="keyword">delete</span> <a name="a3"></a><a class="code" href="class_i_c_light_track_producer.html#a2965abffc3efb62436ae236e00d66275">tracks_</a>; }</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICLightTrackProducer::produce(edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a4"></a><a class="code" href="class_i_c_light_track_producer.html#a30418063620419ffb7c11062b497c267">ICLightTrackProducer::produce</a>(edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;edm::View&lt;reco::Track&gt; &gt; track_handle;</div>
-<div class="line">  <span class="keyword">event</span>.getByLabel(input_, track_handle);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(<a name="a5"></a><a class="code" href="class_i_c_light_track_producer.html#affa548f72f7bf5541b727d8f6fd68d2b">input_</a>, track_handle);</div>
 <div class="line"></div>
 <div class="line">  <span class="comment">// Prepare output collection</span></div>
-<div class="line">  tracks_-&gt;clear();</div>
-<div class="line">  tracks_-&gt;resize(track_handle-&gt;size(), <a name="_a3"></a><a class="code" href="classic_1_1_light_track.html">ic::LightTrack</a>());</div>
+<div class="line">  <a class="code" href="class_i_c_light_track_producer.html#a2965abffc3efb62436ae236e00d66275">tracks_</a>-&gt;clear();</div>
+<div class="line">  <a class="code" href="class_i_c_light_track_producer.html#a2965abffc3efb62436ae236e00d66275">tracks_</a>-&gt;resize(track_handle-&gt;size(), <a name="_a6"></a><a class="code" href="classic_1_1_light_track.html">ic::LightTrack</a>());</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; track_handle-&gt;size(); ++i) {</div>
 <div class="line">    reco::Track <span class="keyword">const</span>&amp; src = track_handle-&gt;at(i);</div>
-<div class="line">    <a class="code" href="classic_1_1_light_track.html">ic::LightTrack</a>&amp; dest = tracks_-&gt;at(i);</div>
-<div class="line">    dest.<a name="a4"></a><a class="code" href="classic_1_1_light_track.html#a19add132dadf1775668cb73425ee22b3">set_id</a>(track_hasher_(&amp;src));</div>
-<div class="line">    dest.<a name="a5"></a><a class="code" href="classic_1_1_light_track.html#a6e2badd4ac75b7bd259781897471da46">set_pt</a>(src.pt());</div>
-<div class="line">    dest.<a name="a6"></a><a class="code" href="classic_1_1_light_track.html#a5a9e98926848d8085d659d2862c300b7">set_vz</a>(src.vz());</div>
+<div class="line">    <a class="code" href="classic_1_1_light_track.html">ic::LightTrack</a>&amp; dest = <a class="code" href="class_i_c_light_track_producer.html#a2965abffc3efb62436ae236e00d66275">tracks_</a>-&gt;at(i);</div>
+<div class="line">    dest.<a name="a7"></a><a class="code" href="classic_1_1_light_track.html#a19add132dadf1775668cb73425ee22b3">set_id</a>(<a name="a8"></a><a class="code" href="class_i_c_light_track_producer.html#aeaf4b9fdf6124f19ef0c6c0fc65046f7">track_hasher_</a>(&amp;src));</div>
+<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_light_track.html#a6e2badd4ac75b7bd259781897471da46">set_pt</a>(src.pt());</div>
+<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_light_track.html#a5a9e98926848d8085d659d2862c300b7">set_vz</a>(src.vz());</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICLightTrackProducer::beginJob() {</div>
-<div class="line">  <a name="a7"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;tracks_);</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a11"></a><a class="code" href="class_i_c_light_track_producer.html#a3af5ebbc28dc8ae68d2f4e2f13563a23">ICLightTrackProducer::beginJob</a>() {</div>
+<div class="line">  <a name="a12"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(<a name="a13"></a><a class="code" href="class_i_c_light_track_producer.html#aa3dd3de3c392b262288509b4d90726b1">branch_</a>.c_str(), &amp;<a class="code" href="class_i_c_light_track_producer.html#a2965abffc3efb62436ae236e00d66275">tracks_</a>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICLightTrackProducer::endJob() {}</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a14"></a><a class="code" href="class_i_c_light_track_producer.html#a515e16647e4478c6f2c76222da13645f">ICLightTrackProducer::endJob</a>() {}</div>
 <div class="line"></div>
-<div class="line"><a name="a8"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a9"></a><a class="code" href="class_i_c_light_track_producer.html">ICLightTrackProducer</a>);</div>
+<div class="line"><a name="a15"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a16"></a><a class="code" href="class_i_c_light_track_producer.html">ICLightTrackProducer</a>);</div>
 <div class="line"></div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->

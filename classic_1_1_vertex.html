@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('classic_1_1_vertex.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ic::Vertex Class Reference</div>  </div>
 </div><!--header-->
@@ -129,7 +131,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a25003adfc07c9ee4492e3cd7d32d1be3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a25003adfc07c9ee4492e3cd7d32d1be3">ClassDef</a> (<a class="el" href="classic_1_1_vertex.html">Vertex</a>, 2)</td></tr>
 <tr class="separator:a25003adfc07c9ee4492e3cd7d32d1be3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Properties</div></td></tr>
-<tr class="memitem:a96f251af9d7b76d7f2bb47ec8dad96a1"><td class="memItemLeft" align="right" valign="top">Point const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a96f251af9d7b76d7f2bb47ec8dad96a1">point</a> () const </td></tr>
+<tr class="memitem:a96f251af9d7b76d7f2bb47ec8dad96a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37">Point</a> const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a96f251af9d7b76d7f2bb47ec8dad96a1">point</a> () const </td></tr>
 <tr class="memdesc:a96f251af9d7b76d7f2bb47ec8dad96a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vertex position co-ordinates.  <a href="#a96f251af9d7b76d7f2bb47ec8dad96a1">More...</a><br /></td></tr>
 <tr class="separator:a96f251af9d7b76d7f2bb47ec8dad96a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3dfde38b6ed5ed319bf5215612ab374"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#ab3dfde38b6ed5ed319bf5215612ab374">id</a> () const </td></tr>
@@ -155,7 +157,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae494752e9cd768da1396089bc9b93fa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">A vector of track information pairs, where each contains an <a class="el" href="classic_1_1_track.html#a69213c649220ee023448b8cc27d87457" title="The unique identifier. ">ic::Track::id()</a> and the weight of that track in the vertex fit.  <a href="#ae494752e9cd768da1396089bc9b93fa1">More...</a><br /></td></tr>
 <tr class="separator:ae494752e9cd768da1396089bc9b93fa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Setters</div></td></tr>
-<tr class="memitem:a9f5981bab3fa9ea0861302a674250ddd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a9f5981bab3fa9ea0861302a674250ddd">set_point</a> (Point const &amp;<a class="el" href="classic_1_1_vertex.html#a96f251af9d7b76d7f2bb47ec8dad96a1">point</a>)</td></tr>
+<tr class="memitem:a9f5981bab3fa9ea0861302a674250ddd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a9f5981bab3fa9ea0861302a674250ddd">set_point</a> (<a class="el" href="classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37">Point</a> const &amp;<a class="el" href="classic_1_1_vertex.html#a96f251af9d7b76d7f2bb47ec8dad96a1">point</a>)</td></tr>
 <tr class="memdesc:a9f5981bab3fa9ea0861302a674250ddd"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vertex position co-ordinates.  <a href="#a9f5981bab3fa9ea0861302a674250ddd">More...</a><br /></td></tr>
 <tr class="separator:a9f5981bab3fa9ea0861302a674250ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cd7ddf69925430db71a0871d024e301"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a8cd7ddf69925430db71a0871d024e301">set_id</a> (std::size_t const &amp;<a class="el" href="classic_1_1_vertex.html#ab3dfde38b6ed5ed319bf5215612ab374">id</a>)</td></tr>
@@ -182,13 +184,79 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a13abf08edad7afb491375f3b83daf6c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a13abf08edad7afb491375f3b83daf6c9">AddTrack</a> (std::size_t <a class="el" href="classic_1_1_vertex.html#ab3dfde38b6ed5ed319bf5215612ab374">id</a>, float weight)</td></tr>
 <tr class="memdesc:a13abf08edad7afb491375f3b83daf6c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an <a class="el" href="classic_1_1_track.html#a69213c649220ee023448b8cc27d87457" title="The unique identifier. ">ic::Track::id</a> with a vertex fit weight.  <a href="#a13abf08edad7afb491375f3b83daf6c9">More...</a><br /></td></tr>
 <tr class="separator:a13abf08edad7afb491375f3b83daf6c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:ab64a94504ae6089dbe2045a45680ea37"><td class="memItemLeft" align="right" valign="top">typedef ROOT::Math::XYZPoint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37">Point</a></td></tr>
+<tr class="separator:ab64a94504ae6089dbe2045a45680ea37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48e9a8cc74e61a2c50214a1f3de628e0"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; std::size_t, <br class="typebreak" />
+float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a48e9a8cc74e61a2c50214a1f3de628e0">TrkPair</a></td></tr>
+<tr class="separator:a48e9a8cc74e61a2c50214a1f3de628e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:ae8b418ac0a9809605d8e0755d6e528ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37">Point</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#ae8b418ac0a9809605d8e0755d6e528ce">point_</a></td></tr>
+<tr class="separator:ae8b418ac0a9809605d8e0755d6e528ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8350519e607fb8373a79166858e10340"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a8350519e607fb8373a79166858e10340">chi2_</a></td></tr>
+<tr class="separator:a8350519e607fb8373a79166858e10340"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a668a4464cb86adb94fdcc55c6c3e478e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a668a4464cb86adb94fdcc55c6c3e478e">ndof_</a></td></tr>
+<tr class="separator:a668a4464cb86adb94fdcc55c6c3e478e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92ac1a5451b5fd1bd1c2602a271b332d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_vertex.html#a48e9a8cc74e61a2c50214a1f3de628e0">TrkPair</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a92ac1a5451b5fd1bd1c2602a271b332d">tracks_</a></td></tr>
+<tr class="separator:a92ac1a5451b5fd1bd1c2602a271b332d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16eba947c8b633db62d48034df69f02e"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_vertex.html#a16eba947c8b633db62d48034df69f02e">id_</a></td></tr>
+<tr class="separator:a16eba947c8b633db62d48034df69f02e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Stores information about the position of an event vertex and the quality of the track fit. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#_a4">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#_a8">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00015">15</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="ab64a94504ae6089dbe2045a45680ea37"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef ROOT::Math::XYZPoint <a class="el" href="classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37">ic::Vertex::Point</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00017">17</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a48e9a8cc74e61a2c50214a1f3de628e0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::pair&lt;std::size_t, float&gt; <a class="el" href="classic_1_1_vertex.html#a48e9a8cc74e61a2c50214a1f3de628e0">ic::Vertex::TrkPair</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00018">18</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a125094978a1e107b2897516729446496"></a>
 <div class="memitem">
 <div class="memproto">
@@ -267,7 +335,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Point const&amp; ic::Vertex::point </td>
+          <td class="memname"><a class="el" href="classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37">Point</a> const&amp; ic::Vertex::point </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -485,7 +553,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void ic::Vertex::set_point </td>
           <td>(</td>
-          <td class="paramtype">Point const &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37">Point</a> const &amp;&#160;</td>
           <td class="paramname"><em>point</em></td><td>)</td>
           <td></td>
         </tr>
@@ -526,7 +594,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Unique identifier. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a5">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a5">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a8">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a9">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00062">62</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
 
@@ -555,7 +623,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p><a class="el" href="classic_1_1_vertex.html" title="Stores information about the position of an event vertex and the quality of the track fit...">Vertex</a> x-coordinate. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a6">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a6">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a10">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a11">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00065">65</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
 
@@ -584,7 +652,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p><a class="el" href="classic_1_1_vertex.html" title="Stores information about the position of an event vertex and the quality of the track fit...">Vertex</a> y-coordinate. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a7">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a7">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a11">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a12">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00068">68</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
 
@@ -613,7 +681,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p><a class="el" href="classic_1_1_vertex.html" title="Stores information about the position of an event vertex and the quality of the track fit...">Vertex</a> z-coordinate. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a8">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a8">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a12">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a13">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00071">71</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
 
@@ -642,7 +710,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The \(\chi^{2}\) of the vertex fit. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a9">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a9">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a13">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a14">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00074">74</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
 
@@ -671,7 +739,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The number-of-degrees-of-freedom in the vertex fit. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a10">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a10">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a14">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a15">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00077">77</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
 
@@ -738,7 +806,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Add an <a class="el" href="classic_1_1_track.html#a69213c649220ee023448b8cc27d87457" title="The unique identifier. ">ic::Track::id</a> with a vertex fit weight. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a13">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a11">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_secondary_vertex_producer_8cc-example.html#a18">plugins/ICSecondaryVertexProducer.cc</a>, and <a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a18">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00086">86</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
 
@@ -767,6 +835,117 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="ae8b418ac0a9809605d8e0755d6e528ce"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classic_1_1_vertex.html#ab64a94504ae6089dbe2045a45680ea37">Point</a> ic::Vertex::point_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00092">92</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8350519e607fb8373a79166858e10340"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ic::Vertex::chi2_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00093">93</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a668a4464cb86adb94fdcc55c6c3e478e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ic::Vertex::ndof_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00094">94</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a92ac1a5451b5fd1bd1c2602a271b332d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_vertex.html#a48e9a8cc74e61a2c50214a1f3de628e0">TrkPair</a>&gt; ic::Vertex::tracks_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00095">95</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a16eba947c8b633db62d48034df69f02e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t ic::Vertex::id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00096">96</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
 
 </div>
 </div>

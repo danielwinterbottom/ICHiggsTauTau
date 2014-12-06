@@ -108,6 +108,8 @@ $(document).ready(function(){initNavTree('namespacech.html','');});
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacech_1_1syst"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech_1_1syst.html">syst</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacech_1_1tupleprint"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech_1_1tupleprint.html">tupleprint</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
@@ -221,6 +223,13 @@ Functions</h2></td></tr>
 <tr class="separator:a23a4079d5c68e21d9697570255e08224"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9aa7fae276e9a3482b0e2e0b7adf779b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a9aa7fae276e9a3482b0e2e0b7adf779b">MassesFromRange</a> (std::string const &amp;input, std::string const &amp;fmt=&quot;%.0f&quot;)</td></tr>
 <tr class="separator:a9aa7fae276e9a3482b0e2e0b7adf779b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae779412e6479bbc7bdc933fcb00f0fe2"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:ae779412e6479bbc7bdc933fcb00f0fe2"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacech.html#ae779412e6479bbc7bdc933fcb00f0fe2">Tuple2String</a> (const std::tuple&lt; Args...&gt; &amp;t)</td></tr>
+<tr class="memdesc:ae779412e6479bbc7bdc933fcb00f0fe2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format any std::tuple as a string.  <a href="#ae779412e6479bbc7bdc933fcb00f0fe2">More...</a><br /></td></tr>
+<tr class="separator:ae779412e6479bbc7bdc933fcb00f0fe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f4db67e7b9039935a58ea60b650041a"><td class="memItemLeft" align="right" valign="top">boost::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a2f4db67e7b9039935a58ea60b650041a">make_relative</a> (boost::filesystem::path p_from, boost::filesystem::path p_to)</td></tr>
+<tr class="memdesc:a2f4db67e7b9039935a58ea60b650041a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the relative path from one file to another.  <a href="#a2f4db67e7b9039935a58ea60b650041a">More...</a><br /></td></tr>
+<tr class="separator:a2f4db67e7b9039935a58ea60b650041a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98935d065d3339aebddc63328e2233ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a98935d065d3339aebddc63328e2233ba">swap</a> (<a class="el" href="classch_1_1_combine_harvester.html">CombineHarvester</a> &amp;first, <a class="el" href="classch_1_1_combine_harvester.html">CombineHarvester</a> &amp;second)</td></tr>
 <tr class="separator:a98935d065d3339aebddc63328e2233ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40560251a7c7ee58a41bd890f1963175"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a40560251a7c7ee58a41bd890f1963175">operator&lt;&lt;</a> (std::ostream &amp;out, <a class="el" href="structch_1_1_hist_mapping.html">HistMapping</a> const &amp;val)</td></tr>
@@ -860,7 +869,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00034">34</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00035">35</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
 
 </div>
 </div>
@@ -890,7 +899,7 @@ template&lt;class T , class U &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00044">44</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00045">45</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
 
 </div>
 </div>
@@ -920,7 +929,7 @@ template&lt;class T , class U &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00060">60</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00061">61</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
 
 </div>
 </div>
@@ -950,7 +959,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00073">73</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00074">74</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
 
 </div>
 </div>
@@ -1050,7 +1059,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00110">110</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00111">111</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
 
 </div>
 </div>
@@ -1088,7 +1097,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00128">128</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00129">129</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
 
 </div>
 </div>
@@ -1233,6 +1242,76 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00189">189</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae779412e6479bbc7bdc933fcb00f0fe2"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ch::Tuple2String </td>
+          <td>(</td>
+          <td class="paramtype">const std::tuple&lt; Args...&gt; &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Format any std::tuple as a string. </p>
+<p>For a tuple containing objects <code>X0,X1,...,Xn</code> creates a string of the form <code>(x0,x1,...,xn)</code> where <code>xi</code> is the result of the output stream (<code>&lt;&lt;</code>) operator for <code>Xi</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>The input std::tuple</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A formatted string of the tuple elements </dd></dl>
+
+<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00193">193</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2f4db67e7b9039935a58ea60b650041a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::filesystem::path ch::make_relative </td>
+          <td>(</td>
+          <td class="paramtype">boost::filesystem::path&#160;</td>
+          <td class="paramname"><em>p_from</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">boost::filesystem::path&#160;</td>
+          <td class="paramname"><em>p_to</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine the relative path from one file to another. </p>
+<p>Based on the example given here: <a href="https://svn.boost.org/trac/boost/ticket/6249">https://svn.boost.org/trac/boost/ticket/6249</a></p>
+<p>The main use of this function is to determine the relative path from a text datacard file to its associated ROOT file that must be written in the histogram mapping lines.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p_from</td><td>The start point of the relative path </td></tr>
+    <tr><td class="paramname">p_to</td><td>The end point of the relative path</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Relative path from <code>p_from</code> to <code>p_to</code> </dd></dl>
+
+<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00221">221</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
 
 </div>
 </div>

@@ -97,7 +97,9 @@ $(document).ready(function(){initNavTree('class_i_c_muon_producer.html','');});
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICMuonProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -118,16 +120,65 @@ $(document).ready(function(){initNavTree('class_i_c_muon_producer.html','');});
 </map>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_i_c_muon_producer_1_1_iso_tags.html">IsoTags</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a616948504cb2a9e5fa1c05d5efc4d694"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a616948504cb2a9e5fa1c05d5efc4d694">ICMuonProducer</a> (const edm::ParameterSet &amp;)</td></tr>
 <tr class="separator:a616948504cb2a9e5fa1c05d5efc4d694"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a739aaa640a503935e2c563c22e803adc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a739aaa640a503935e2c563c22e803adc">~ICMuonProducer</a> ()</td></tr>
 <tr class="separator:a739aaa640a503935e2c563c22e803adc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:accae1533178e5a2dc4dec8100159c241"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#accae1533178e5a2dc4dec8100159c241">beginJob</a> ()</td></tr>
+<tr class="separator:accae1533178e5a2dc4dec8100159c241"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d942b9d1d3b559acd75dd64801a3609"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a8d942b9d1d3b559acd75dd64801a3609">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:a8d942b9d1d3b559acd75dd64801a3609"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf3d28abd252e2ba3d076babf8bf9551"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#aaf3d28abd252e2ba3d076babf8bf9551">endJob</a> ()</td></tr>
+<tr class="separator:aaf3d28abd252e2ba3d076babf8bf9551"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a366c93eab5c1621d2a5e92e38b07fabe"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_muon.html">ic::Muon</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a366c93eab5c1621d2a5e92e38b07fabe">muons_</a></td></tr>
+<tr class="separator:a366c93eab5c1621d2a5e92e38b07fabe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99b1efec60205a8db988e0a5e4d52393"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a99b1efec60205a8db988e0a5e4d52393">input_</a></td></tr>
+<tr class="separator:a99b1efec60205a8db988e0a5e4d52393"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b5db97800288084ac4cd58bb13bda11"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a4b5db97800288084ac4cd58bb13bda11">branch_</a></td></tr>
+<tr class="separator:a4b5db97800288084ac4cd58bb13bda11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a621cca593497518053953e5ae8d4edb0"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::Muon const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a621cca593497518053953e5ae8d4edb0">muon_hasher_</a></td></tr>
+<tr class="separator:a621cca593497518053953e5ae8d4edb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a9efa8eaf3780c6df3dac388969cd19"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::PFCandidate <br class="typebreak" />
+const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a2a9efa8eaf3780c6df3dac388969cd19">pf_hasher_</a></td></tr>
+<tr class="separator:a2a9efa8eaf3780c6df3dac388969cd19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4d0e13feb910ac3cbf916fc154dd5a9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#ac4d0e13feb910ac3cbf916fc154dd5a9">is_pf_</a></td></tr>
+<tr class="separator:ac4d0e13feb910ac3cbf916fc154dd5a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3672a463a58db86f878166fbbfedfa70"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair<br class="typebreak" />
+&lt; std::string, edm::InputTag &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a3672a463a58db86f878166fbbfedfa70">input_vmaps_</a></td></tr>
+<tr class="separator:a3672a463a58db86f878166fbbfedfa70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54dfd20645910b9519935a78c9a4c31f"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a54dfd20645910b9519935a78c9a4c31f">input_vertices_</a></td></tr>
+<tr class="separator:a54dfd20645910b9519935a78c9a4c31f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac20319b18b47d2db87e9b060be0cd404"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#ac20319b18b47d2db87e9b060be0cd404">do_vertex_ip_</a></td></tr>
+<tr class="separator:ac20319b18b47d2db87e9b060be0cd404"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae82bf04371e1ec4d7dd77d55d29dfe6c"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#ae82bf04371e1ec4d7dd77d55d29dfe6c">input_beamspot_</a></td></tr>
+<tr class="separator:ae82bf04371e1ec4d7dd77d55d29dfe6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a422add8243ca77423e0cb1b9b3540732"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a422add8243ca77423e0cb1b9b3540732">do_beamspot_ip_</a></td></tr>
+<tr class="separator:a422add8243ca77423e0cb1b9b3540732"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c7c0bfd4febb5403dde00c28f32b4c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_i_c_muon_producer_1_1_iso_tags.html">IsoTags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a9c7c0bfd4febb5403dde00c28f32b4c8">pf_iso_03_</a></td></tr>
+<tr class="separator:a9c7c0bfd4febb5403dde00c28f32b4c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98193d094a6793a0f33011887cdfcc77"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_i_c_muon_producer_1_1_iso_tags.html">IsoTags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a98193d094a6793a0f33011887cdfcc77">pf_iso_04_</a></td></tr>
+<tr class="separator:a98193d094a6793a0f33011887cdfcc77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9529a56b9206cb89d55fb7c40fe6e11b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a9529a56b9206cb89d55fb7c40fe6e11b">do_pf_iso_03_</a></td></tr>
+<tr class="separator:a9529a56b9206cb89d55fb7c40fe6e11b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a795dc6195f565de6285c6ad4eac708b9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_muon_producer.html#a795dc6195f565de6285c6ad4eac708b9">do_pf_iso_04_</a></td></tr>
+<tr class="separator:a795dc6195f565de6285c6ad4eac708b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-muon">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#_a43">plugins/ICMuonProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#_a67">plugins/ICMuonProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00020">20</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -152,7 +203,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a0">plugins/ICMuonProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a1">plugins/ICMuonProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_muon_producer_8cc_source.html#l00027">27</a> of file <a class="el" href="_i_c_muon_producer_8cc_source.html">ICMuonProducer.cc</a>.</p>
 
@@ -170,9 +221,445 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a3">plugins/ICMuonProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a4">plugins/ICMuonProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_muon_producer_8cc_source.html#l00057">57</a> of file <a class="el" href="_i_c_muon_producer_8cc_source.html">ICMuonProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="accae1533178e5a2dc4dec8100159c241"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICMuonProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a62">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8cc_source.html#l00227">227</a> of file <a class="el" href="_i_c_muon_producer_8cc_source.html">ICMuonProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8d942b9d1d3b559acd75dd64801a3609"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICMuonProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a6">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8cc_source.html#l00059">59</a> of file <a class="el" href="_i_c_muon_producer_8cc_source.html">ICMuonProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aaf3d28abd252e2ba3d076babf8bf9551"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICMuonProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a65">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8cc_source.html#l00231">231</a> of file <a class="el" href="_i_c_muon_producer_8cc_source.html">ICMuonProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a366c93eab5c1621d2a5e92e38b07fabe"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_muon.html">ic::Muon</a>&gt;* ICMuonProducer::muons_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a5">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a99b1efec60205a8db988e0a5e4d52393"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICMuonProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a8">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4b5db97800288084ac4cd58bb13bda11"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICMuonProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a64">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a621cca593497518053953e5ae8d4edb0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::Muon const*&gt; ICMuonProducer::muon_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a31">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00033">33</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2a9efa8eaf3780c6df3dac388969cd19"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::PFCandidate const*&gt; ICMuonProducer::pf_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a25">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac4d0e13feb910ac3cbf916fc154dd5a9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICMuonProducer::is_pf_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a7">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00037">37</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3672a463a58db86f878166fbbfedfa70"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; ICMuonProducer::input_vmaps_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a13">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00039">39</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a54dfd20645910b9519935a78c9a4c31f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICMuonProducer::input_vertices_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a10">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00040">40</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac20319b18b47d2db87e9b060be0cd404"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICMuonProducer::do_vertex_ip_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a9">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00041">41</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae82bf04371e1ec4d7dd77d55d29dfe6c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICMuonProducer::input_beamspot_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a12">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00042">42</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a422add8243ca77423e0cb1b9b3540732"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICMuonProducer::do_beamspot_ip_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a11">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00043">43</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9c7c0bfd4febb5403dde00c28f32b4c8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_i_c_muon_producer_1_1_iso_tags.html">IsoTags</a> ICMuonProducer::pf_iso_03_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a15">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00054">54</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a98193d094a6793a0f33011887cdfcc77"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_i_c_muon_producer_1_1_iso_tags.html">IsoTags</a> ICMuonProducer::pf_iso_04_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a22">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00055">55</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9529a56b9206cb89d55fb7c40fe6e11b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICMuonProducer::do_pf_iso_03_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a14">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00056">56</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a795dc6195f565de6285c6ad4eac708b9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICMuonProducer::do_pf_iso_04_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_muon_producer_8cc-example.html#a21">plugins/ICMuonProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_muon_producer_8hh_source.html#l00057">57</a> of file <a class="el" href="_i_c_muon_producer_8hh_source.html">ICMuonProducer.hh</a>.</p>
 
 </div>
 </div>

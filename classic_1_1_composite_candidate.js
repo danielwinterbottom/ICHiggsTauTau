@@ -15,5 +15,8 @@ var classic_1_1_composite_candidate =
     [ "PtOf", "classic_1_1_composite_candidate.html#a325a52d7f70258950769004d5e81c856", null ],
     [ "ScalarPtSum", "classic_1_1_composite_candidate.html#a65c1a7beb2a5d3b495d3538022311fda", null ],
     [ "DeltaR", "classic_1_1_composite_candidate.html#a0c52a409c691aa2afbfcab0ee872ccf7", null ],
-    [ "DeltaPhi", "classic_1_1_composite_candidate.html#ae416b06712977e20978af65dcbcbda9a", null ]
+    [ "DeltaPhi", "classic_1_1_composite_candidate.html#ae416b06712977e20978af65dcbcbda9a", null ],
+    [ "Verify", "classic_1_1_composite_candidate.html#ac872bfafac366ee14c0cc8ebfdeebd24", null ],
+    [ "cand_map_", "classic_1_1_composite_candidate.html#a160e6793a08690ccdad53a0b0a640e5f", null ],
+    [ "cand_vec_", "classic_1_1_composite_candidate.html#a6e471a0e49ed8cf574e47628c3049cc1", null ]
 ];

@@ -11,5 +11,6 @@ var _utilities_8cc =
     [ "RestoreBinning", "_utilities_8cc.html#a23cd9444931a49de080638458f722501", null ],
     [ "GenerateCombinations", "_utilities_8cc.html#a98ec286981dda179332f736f113ab8a5", null ],
     [ "ParseFileLines", "_utilities_8cc.html#a23a4079d5c68e21d9697570255e08224", null ],
-    [ "MassesFromRange", "_utilities_8cc.html#a9aa7fae276e9a3482b0e2e0b7adf779b", null ]
+    [ "MassesFromRange", "_utilities_8cc.html#a9aa7fae276e9a3482b0e2e0b7adf779b", null ],
+    [ "make_relative", "_utilities_8cc.html#a2f4db67e7b9039935a58ea60b650041a", null ]
 ];

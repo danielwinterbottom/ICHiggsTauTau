@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('class_i_c_vertex_producer.html','');})
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICVertexProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -123,10 +125,38 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3b8f2eaf2c9e14aaf11191e889fb8f7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee19a2eec759070b3e5b113ee4684e2a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#aee19a2eec759070b3e5b113ee4684e2a">~ICVertexProducer</a> ()</td></tr>
 <tr class="separator:aee19a2eec759070b3e5b113ee4684e2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ae8e53bc4e736a380cf1b6c6b8cabd18f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#ae8e53bc4e736a380cf1b6c6b8cabd18f">beginJob</a> ()</td></tr>
+<tr class="separator:ae8e53bc4e736a380cf1b6c6b8cabd18f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba965b3a85df505fe60818fa9e090df0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#aba965b3a85df505fe60818fa9e090df0">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:aba965b3a85df505fe60818fa9e090df0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41eecc4b1f94b4cb1bc9a1c178358dbc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#a41eecc4b1f94b4cb1bc9a1c178358dbc">endJob</a> ()</td></tr>
+<tr class="separator:a41eecc4b1f94b4cb1bc9a1c178358dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a04fcfa8e561ecc944cdbc263058ef590"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_vertex.html">ic::Vertex</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#a04fcfa8e561ecc944cdbc263058ef590">vertices_</a></td></tr>
+<tr class="separator:a04fcfa8e561ecc944cdbc263058ef590"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b4260a11d1c7b06fd236c92a651577b"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#a4b4260a11d1c7b06fd236c92a651577b">input_</a></td></tr>
+<tr class="separator:a4b4260a11d1c7b06fd236c92a651577b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3932dac05c7a4e932eb5090971348cb2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#a3932dac05c7a4e932eb5090971348cb2">branch_</a></td></tr>
+<tr class="separator:a3932dac05c7a4e932eb5090971348cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a233fe025ca183d934d37b508cfe8be80"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#a233fe025ca183d934d37b508cfe8be80">first_only_</a></td></tr>
+<tr class="separator:a233fe025ca183d934d37b508cfe8be80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeddacd737ce98dff0f471947612925a1"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#aeddacd737ce98dff0f471947612925a1">track_pt_threshold_</a></td></tr>
+<tr class="separator:aeddacd737ce98dff0f471947612925a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacdfd5ae839e5fabbeefa3f7ff3777a9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#aacdfd5ae839e5fabbeefa3f7ff3777a9">request_trks_</a></td></tr>
+<tr class="separator:aacdfd5ae839e5fabbeefa3f7ff3777a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc85a37b1d34d92a5e33a4d5718eb749"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::Vertex const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#acc85a37b1d34d92a5e33a4d5718eb749">vertex_hasher_</a></td></tr>
+<tr class="separator:acc85a37b1d34d92a5e33a4d5718eb749"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab276c46146791c7f95ed6a0b2d249d26"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::Track const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_vertex_producer.html#ab276c46146791c7f95ed6a0b2d249d26">track_hasher_</a></td></tr>
+<tr class="separator:ab276c46146791c7f95ed6a0b2d249d26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-vertex">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#_a14">plugins/ICVertexProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#_a25">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00019">19</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -172,6 +202,281 @@ Public Member Functions</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a3">plugins/ICVertexProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_vertex_producer_8cc_source.html#l00036">36</a> of file <a class="el" href="_i_c_vertex_producer_8cc_source.html">ICVertexProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ae8e53bc4e736a380cf1b6c6b8cabd18f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICVertexProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a20">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8cc_source.html#l00076">76</a> of file <a class="el" href="_i_c_vertex_producer_8cc_source.html">ICVertexProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aba965b3a85df505fe60818fa9e090df0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICVertexProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a5">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8cc_source.html#l00038">38</a> of file <a class="el" href="_i_c_vertex_producer_8cc_source.html">ICVertexProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a41eecc4b1f94b4cb1bc9a1c178358dbc"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICVertexProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a23">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8cc_source.html#l00080">80</a> of file <a class="el" href="_i_c_vertex_producer_8cc_source.html">ICVertexProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a04fcfa8e561ecc944cdbc263058ef590"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_vertex.html">ic::Vertex</a>&gt;* ICVertexProducer::vertices_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a4">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00029">29</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4b4260a11d1c7b06fd236c92a651577b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICVertexProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a6">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3932dac05c7a4e932eb5090971348cb2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICVertexProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a22">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a233fe025ca183d934d37b508cfe8be80"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICVertexProducer::first_only_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a7">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aeddacd737ce98dff0f471947612925a1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double ICVertexProducer::track_pt_threshold_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a17">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00033">33</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aacdfd5ae839e5fabbeefa3f7ff3777a9"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICVertexProducer::request_trks_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a16">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acc85a37b1d34d92a5e33a4d5718eb749"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::Vertex const*&gt; ICVertexProducer::vertex_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a10">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00035">35</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab276c46146791c7f95ed6a0b2d249d26"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::Track const*&gt; ICVertexProducer::track_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_vertex_producer_8cc-example.html#a19">plugins/ICVertexProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_vertex_producer_8hh_source.html#l00036">36</a> of file <a class="el" href="_i_c_vertex_producer_8hh_source.html">ICVertexProducer.hh</a>.</p>
 
 </div>
 </div>

@@ -96,7 +96,10 @@ $(document).ready(function(){initNavTree('classic_1_1_merge.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ic::Merge&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
@@ -123,6 +126,32 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8d74fa3bdc4bfc07f856116007d9438f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96cb206fcbc80c3f3e384567206266ce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#a96cb206fcbc80c3f3e384567206266ce">~Merge</a> ()</td></tr>
 <tr class="separator:a96cb206fcbc80c3f3e384567206266ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:a674e172957f338f56ec38c5c91d6d07f"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#a674e172957f338f56ec38c5c91d6d07f">Vec</a></td></tr>
+<tr class="separator:a674e172957f338f56ec38c5c91d6d07f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae326a3425e34370ce10749d447cea1d7"><td class="memItemLeft" align="right" valign="top">typedef edm::RefVector&lt; <a class="el" href="classic_1_1_merge.html#a674e172957f338f56ec38c5c91d6d07f">Vec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#ae326a3425e34370ce10749d447cea1d7">RefVectorVec</a></td></tr>
+<tr class="separator:ae326a3425e34370ce10749d447cea1d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99146bf250945e1df08dcc516efa5323"><td class="memItemLeft" align="right" valign="top">typedef edm::Ref&lt; <a class="el" href="classic_1_1_merge.html#a674e172957f338f56ec38c5c91d6d07f">Vec</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#a99146bf250945e1df08dcc516efa5323">RefVec</a></td></tr>
+<tr class="separator:a99146bf250945e1df08dcc516efa5323"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafc384ab03f03c414020789d7b5ef26b"><td class="memItemLeft" align="right" valign="top">typedef std::vector<br class="typebreak" />
+&lt; edm::InputTag &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#aafc384ab03f03c414020789d7b5ef26b">VInputTag</a></td></tr>
+<tr class="separator:aafc384ab03f03c414020789d7b5ef26b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a6a086cf8808fcd007307fb5ff2b57edf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#a6a086cf8808fcd007307fb5ff2b57edf">beginJob</a> ()</td></tr>
+<tr class="separator:a6a086cf8808fcd007307fb5ff2b57edf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78f008dad8cb90152d5c65fcd161407b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#a78f008dad8cb90152d5c65fcd161407b">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:a78f008dad8cb90152d5c65fcd161407b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a241acb0cd337566295394fac895ca193"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#a241acb0cd337566295394fac895ca193">endJob</a> ()</td></tr>
+<tr class="separator:a241acb0cd337566295394fac895ca193"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a17eb0ac02be89e86e2f57a2cca727df7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; edm::InputTag &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_merge.html#a17eb0ac02be89e86e2f57a2cca727df7">merge_inputs_</a></td></tr>
+<tr class="separator:a17eb0ac02be89e86e2f57a2cca727df7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;class T&gt;<br />
@@ -141,7 +170,104 @@ class ic::Merge&lt; T &gt;</h3>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;)</div>
 </div><!-- fragment --> 
 <p>Definition at line <a class="el" href="_merge_8h_source.html#l00044">44</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="a674e172957f338f56ec38c5c91d6d07f"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;T&gt; <a class="el" href="classic_1_1_merge.html">ic::Merge</a>&lt; T &gt;::<a class="el" href="classic_1_1_merge.html#a674e172957f338f56ec38c5c91d6d07f">Vec</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_merge_8h_source.html#l00054">54</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae326a3425e34370ce10749d447cea1d7"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef edm::RefVector&lt;<a class="el" href="classic_1_1_merge.html#a674e172957f338f56ec38c5c91d6d07f">Vec</a>&gt; <a class="el" href="classic_1_1_merge.html">ic::Merge</a>&lt; T &gt;::<a class="el" href="classic_1_1_merge.html#ae326a3425e34370ce10749d447cea1d7">RefVectorVec</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_merge_8h_source.html#l00055">55</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a99146bf250945e1df08dcc516efa5323"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef edm::Ref&lt;<a class="el" href="classic_1_1_merge.html#a674e172957f338f56ec38c5c91d6d07f">Vec</a>&gt; <a class="el" href="classic_1_1_merge.html">ic::Merge</a>&lt; T &gt;::<a class="el" href="classic_1_1_merge.html#a99146bf250945e1df08dcc516efa5323">RefVec</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_merge_8h_source.html#l00056">56</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aafc384ab03f03c414020789d7b5ef26b"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;edm::InputTag&gt; <a class="el" href="classic_1_1_merge.html">ic::Merge</a>&lt; T &gt;::<a class="el" href="classic_1_1_merge.html#aafc384ab03f03c414020789d7b5ef26b">VInputTag</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_merge_8h_source.html#l00057">57</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a8d74fa3bdc4bfc07f856116007d9438f"></a>
 <div class="memitem">
 <div class="memproto">
@@ -186,6 +312,124 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="_merge_8h_source.html#l00072">72</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a6a086cf8808fcd007307fb5ff2b57edf"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classic_1_1_merge.html">ic::Merge</a>&lt; T &gt;::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_merge_8h_source.html#l00075">75</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a78f008dad8cb90152d5c65fcd161407b"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classic_1_1_merge.html">ic::Merge</a>&lt; T &gt;::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_merge_8h_source.html#l00081">81</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a241acb0cd337566295394fac895ca193"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classic_1_1_merge.html">ic::Merge</a>&lt; T &gt;::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_merge_8h_source.html#l00078">78</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a17eb0ac02be89e86e2f57a2cca727df7"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;edm::InputTag&gt; <a class="el" href="classic_1_1_merge.html">ic::Merge</a>&lt; T &gt;::merge_inputs_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_merge_8h_source.html#l00059">59</a> of file <a class="el" href="_merge_8h_source.html">Merge.h</a>.</p>
 
 </div>
 </div>

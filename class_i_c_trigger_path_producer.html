@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('class_i_c_trigger_path_producer.html',
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICTriggerPathProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -123,10 +125,34 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa9a684a1b4803d2b3cf17777c81f4b02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51c1f95f36c1c0796bae6a97d95d2eb9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#a51c1f95f36c1c0796bae6a97d95d2eb9">~ICTriggerPathProducer</a> ()</td></tr>
 <tr class="separator:a51c1f95f36c1c0796bae6a97d95d2eb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:ad6d2a1da9a3cfbeb0e4f9500da473560"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#ad6d2a1da9a3cfbeb0e4f9500da473560">beginJob</a> ()</td></tr>
+<tr class="separator:ad6d2a1da9a3cfbeb0e4f9500da473560"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae7401940dca0f6fffb6ba44e03e607f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#aae7401940dca0f6fffb6ba44e03e607f">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:aae7401940dca0f6fffb6ba44e03e607f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d5447393efd14103eda288b7363b305"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#a0d5447393efd14103eda288b7363b305">endJob</a> ()</td></tr>
+<tr class="separator:a0d5447393efd14103eda288b7363b305"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a6bd2cdba044580ad8da71dcfe2db7c7e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_trigger_path.html">ic::TriggerPath</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#a6bd2cdba044580ad8da71dcfe2db7c7e">paths_</a></td></tr>
+<tr class="separator:a6bd2cdba044580ad8da71dcfe2db7c7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e9f627059baf3baf32faa59155bc1c7"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#a1e9f627059baf3baf32faa59155bc1c7">input_</a></td></tr>
+<tr class="separator:a1e9f627059baf3baf32faa59155bc1c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a163075a650287bbaefb7d7f52734a79d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#a163075a650287bbaefb7d7f52734a79d">branch_</a></td></tr>
+<tr class="separator:a163075a650287bbaefb7d7f52734a79d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e2b716d2541094d63a14f967cc50c22"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#a3e2b716d2541094d63a14f967cc50c22">include_if_fired_</a></td></tr>
+<tr class="separator:a3e2b716d2541094d63a14f967cc50c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a723280b20c188beb13a50b5df910bd10"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#a723280b20c188beb13a50b5df910bd10">save_strings_</a></td></tr>
+<tr class="separator:a723280b20c188beb13a50b5df910bd10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd692a32796ea3b9f73c026e779900c0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_trigger_path_producer.html#afd692a32796ea3b9f73c026e779900c0">split_version_</a></td></tr>
+<tr class="separator:afd692a32796ea3b9f73c026e779900c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-trig-path">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#_a13">plugins/ICTriggerPathProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#_a22">plugins/ICTriggerPathProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8hh_source.html#l00015">15</a> of file <a class="el" href="_i_c_trigger_path_producer_8hh_source.html">ICTriggerPathProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -172,6 +198,235 @@ Public Member Functions</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a3">plugins/ICTriggerPathProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8cc_source.html#l00034">34</a> of file <a class="el" href="_i_c_trigger_path_producer_8cc_source.html">ICTriggerPathProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="ad6d2a1da9a3cfbeb0e4f9500da473560"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICTriggerPathProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a17">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8cc_source.html#l00070">70</a> of file <a class="el" href="_i_c_trigger_path_producer_8cc_source.html">ICTriggerPathProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aae7401940dca0f6fffb6ba44e03e607f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICTriggerPathProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a5">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8cc_source.html#l00036">36</a> of file <a class="el" href="_i_c_trigger_path_producer_8cc_source.html">ICTriggerPathProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0d5447393efd14103eda288b7363b305"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICTriggerPathProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a20">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8cc_source.html#l00074">74</a> of file <a class="el" href="_i_c_trigger_path_producer_8cc_source.html">ICTriggerPathProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a6bd2cdba044580ad8da71dcfe2db7c7e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_trigger_path.html">ic::TriggerPath</a>&gt;* ICTriggerPathProducer::paths_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a4">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8hh_source.html#l00025">25</a> of file <a class="el" href="_i_c_trigger_path_producer_8hh_source.html">ICTriggerPathProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1e9f627059baf3baf32faa59155bc1c7"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICTriggerPathProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a6">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8hh_source.html#l00026">26</a> of file <a class="el" href="_i_c_trigger_path_producer_8hh_source.html">ICTriggerPathProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a163075a650287bbaefb7d7f52734a79d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICTriggerPathProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a19">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8hh_source.html#l00027">27</a> of file <a class="el" href="_i_c_trigger_path_producer_8hh_source.html">ICTriggerPathProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3e2b716d2541094d63a14f967cc50c22"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICTriggerPathProducer::include_if_fired_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a7">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8hh_source.html#l00028">28</a> of file <a class="el" href="_i_c_trigger_path_producer_8hh_source.html">ICTriggerPathProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a723280b20c188beb13a50b5df910bd10"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICTriggerPathProducer::save_strings_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a13">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8hh_source.html#l00029">29</a> of file <a class="el" href="_i_c_trigger_path_producer_8hh_source.html">ICTriggerPathProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afd692a32796ea3b9f73c026e779900c0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICTriggerPathProducer::split_version_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_trigger_path_producer_8cc-example.html#a11">plugins/ICTriggerPathProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_trigger_path_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_trigger_path_producer_8hh_source.html">ICTriggerPathProducer.hh</a>.</p>
 
 </div>
 </div>

@@ -13,5 +13,10 @@ var classic_1_1_trigger_path =
     [ "set_prescale", "classic_1_1_trigger_path.html#ac54a32ab54525b85aa4fad1f4e393e9e", null ],
     [ "set_id", "classic_1_1_trigger_path.html#a4b028ecda9d27aee914911b377fd0ad1", null ],
     [ "set_version", "classic_1_1_trigger_path.html#a885a9e5956b652b055ebe9b0ad436a02", null ],
-    [ "ClassDef", "classic_1_1_trigger_path.html#a8ccdb7ce909c71dd59867994f0439d4f", null ]
+    [ "ClassDef", "classic_1_1_trigger_path.html#a8ccdb7ce909c71dd59867994f0439d4f", null ],
+    [ "name_", "classic_1_1_trigger_path.html#a7d51fc2c47a07ba78a0cf69d55e4627a", null ],
+    [ "accept_", "classic_1_1_trigger_path.html#a81fafa3adb84dc32df3b9eb26b9e6f70", null ],
+    [ "prescale_", "classic_1_1_trigger_path.html#ab3dfa50983d2a4baac83395a0716bfe9", null ],
+    [ "id_", "classic_1_1_trigger_path.html#a8f5154cf47b0eec805385d9ad2f77688", null ],
+    [ "version_", "classic_1_1_trigger_path.html#a037ee7ceeae42ee0f481d9d81a637300", null ]
 ];

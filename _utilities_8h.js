@@ -1,5 +1,8 @@
 var _utilities_8h =
 [
+    [ "TuplePrinter", "structch_1_1tupleprint_1_1_tuple_printer.html", null ],
+    [ "TuplePrinter< Tuple, 1 >", "structch_1_1tupleprint_1_1_tuple_printer_3_01_tuple_00_011_01_4.html", null ],
+    [ "TuplePrinter< Tuple, 0 >", "structch_1_1tupleprint_1_1_tuple_printer_3_01_tuple_00_010_01_4.html", null ],
     [ "ExtractFitParameters", "_utilities_8h.html#a49fb1eb0d277893e0f6a9cc099d4cf28", null ],
     [ "ExtractSampledFitParameters", "_utilities_8h.html#a9ba092c0c88fd0a122b927b83d91a4de", null ],
     [ "SetStandardBinNames", "_utilities_8h.html#a0d6f2f4820fe827fbbe3082c693a95f3", null ],
@@ -17,5 +20,7 @@ var _utilities_8h =
     [ "RestoreBinning", "_utilities_8h.html#a23cd9444931a49de080638458f722501", null ],
     [ "GenerateCombinations", "_utilities_8h.html#a98ec286981dda179332f736f113ab8a5", null ],
     [ "ParseFileLines", "_utilities_8h.html#a23a4079d5c68e21d9697570255e08224", null ],
-    [ "MassesFromRange", "_utilities_8h.html#a9aa7fae276e9a3482b0e2e0b7adf779b", null ]
+    [ "MassesFromRange", "_utilities_8h.html#a9aa7fae276e9a3482b0e2e0b7adf779b", null ],
+    [ "Tuple2String", "_utilities_8h.html#ae779412e6479bbc7bdc933fcb00f0fe2", null ],
+    [ "make_relative", "_utilities_8h.html#a2f4db67e7b9039935a58ea60b650041a", null ]
 ];

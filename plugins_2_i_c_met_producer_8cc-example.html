@@ -127,51 +127,50 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_met_producer_8cc-example
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><a name="a3"></a><a class="code" href="class_i_c_met_producer.html#ab2185ffd67d57300f2d161d8df4d2d2f">ICMetProducer::~ICMetProducer</a>() {</div>
-<div class="line">  <span class="keyword">delete</span> met_;</div>
+<div class="line">  <span class="keyword">delete</span> <a name="a4"></a><a class="code" href="class_i_c_met_producer.html#a1235a210e5297e087d53001a7002641f">met_</a>;</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICMetProducer::produce(edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a5"></a><a class="code" href="class_i_c_met_producer.html#a785836941104f55465e1a763fb21cc48">ICMetProducer::produce</a>(edm::Event&amp; event, <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
 <div class="line">  edm::Handle&lt;edm::View&lt;reco::MET&gt; &gt; mets_handle;</div>
-<div class="line">  <span class="keyword">event</span>.getByLabel(input_, mets_handle);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(<a name="a6"></a><a class="code" href="class_i_c_met_producer.html#a433548172d6ec45aacc64fb3b4b1d63c">input_</a>, mets_handle);</div>
 <div class="line">  edm::Handle&lt;std::vector&lt;std::size_t&gt; &gt; id_handle;</div>
-<div class="line">  <span class="keywordflow">if</span> (do_custom_id_) {</div>
-<div class="line">    <span class="keyword">event</span>.getByLabel(inputID_, id_handle);</div>
+<div class="line">  <span class="keywordflow">if</span> (<a name="a7"></a><a class="code" href="class_i_c_met_producer.html#ad7d0fc7f200c9ccb4c6ce2f43a87e8ab">do_custom_id_</a>) {</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(<a name="a8"></a><a class="code" href="class_i_c_met_producer.html#a0b4b373f300366a93f77c4fb5a0654e8">inputID_</a>, id_handle);</div>
 <div class="line">  }</div>
 <div class="line">  <span class="comment">// event.getByLabel(merge_labels_[i], &quot;MVAMetId&quot;, id_handle);</span></div>
 <div class="line"></div>
-<div class="line">  met_-&gt;clear();</div>
-<div class="line">  met_-&gt;resize(mets_handle-&gt;size(), <a name="_a4"></a><a class="code" href="classic_1_1_met.html">ic::Met</a>());</div>
+<div class="line">  <a class="code" href="class_i_c_met_producer.html#a1235a210e5297e087d53001a7002641f">met_</a>-&gt;clear();</div>
+<div class="line">  <a class="code" href="class_i_c_met_producer.html#a1235a210e5297e087d53001a7002641f">met_</a>-&gt;resize(mets_handle-&gt;size(), <a name="_a9"></a><a class="code" href="classic_1_1_met.html">ic::Met</a>());</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; mets_handle-&gt;size(); ++i) {</div>
 <div class="line">    reco::MET <span class="keyword">const</span>&amp; src = mets_handle-&gt;at(i);</div>
-<div class="line">    <a class="code" href="classic_1_1_met.html">ic::Met</a>&amp; dest = met_-&gt;at(i);</div>
-<div class="line">    <span class="keywordflow">if</span> (do_custom_id_) {</div>
-<div class="line">      dest.<a name="a5"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(id_handle-&gt;at(i));</div>
+<div class="line">    <a class="code" href="classic_1_1_met.html">ic::Met</a>&amp; dest = <a class="code" href="class_i_c_met_producer.html#a1235a210e5297e087d53001a7002641f">met_</a>-&gt;at(i);</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="class_i_c_met_producer.html#ad7d0fc7f200c9ccb4c6ce2f43a87e8ab">do_custom_id_</a>) {</div>
+<div class="line">      dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(id_handle-&gt;at(i));</div>
 <div class="line">    } <span class="keywordflow">else</span> {</div>
-<div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(met_hasher_(&amp;src));</div>
+<div class="line">      dest.<a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(<a name="a11"></a><a class="code" href="class_i_c_met_producer.html#adc797d5625628f5b44b609349bc9fb7b">met_hasher_</a>(&amp;src));</div>
 <div class="line">    }</div>
-<div class="line">    dest.<a name="a6"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
-<div class="line">    dest.<a name="a7"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
-<div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
-<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
-<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_met.html#a835dc84df57a5147b4480d67abb8520d">set_sum_et</a>(src.sumEt());</div>
-<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_met.html#ad8715d8f1e73f70fbb2396a236792e51">set_et_sig</a>(src.mEtSig());</div>
-<div class="line">    TMatrixD <span class="keyword">const</span>&amp; sig_matrix = src.getSignificanceMatrix();</div>
-<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_met.html#ac8d60a85418b39a077bcfe3c73791664">set_xx_sig</a>(sig_matrix(0, 0));</div>
-<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_met.html#adb270ac2d82799b2b905bbaa1fe72d24">set_xy_sig</a>(sig_matrix(0, 1));</div>
-<div class="line">    dest.<a name="a14"></a><a class="code" href="classic_1_1_met.html#a67d253183767d237d4121f6bc18b5e36">set_yx_sig</a>(sig_matrix(1, 0));</div>
-<div class="line">    dest.<a name="a15"></a><a class="code" href="classic_1_1_met.html#ac3c1219ee653f1d5654fbe23dc803939">set_yy_sig</a>(sig_matrix(1, 1));</div>
+<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
+<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
+<div class="line">    dest.<a name="a14"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
+<div class="line">    dest.<a name="a15"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
+<div class="line">    dest.<a name="a16"></a><a class="code" href="classic_1_1_met.html#a835dc84df57a5147b4480d67abb8520d">set_sum_et</a>(src.sumEt());</div>
+<div class="line">    dest.<a name="a17"></a><a class="code" href="classic_1_1_met.html#ad8715d8f1e73f70fbb2396a236792e51">set_et_sig</a>(src.mEtSig());</div>
+<div class="line">    dest.<a name="a18"></a><a class="code" href="classic_1_1_met.html#ac8d60a85418b39a077bcfe3c73791664">set_xx_sig</a>(src.getSignificanceMatrix()(0, 0));</div>
+<div class="line">    dest.<a name="a19"></a><a class="code" href="classic_1_1_met.html#adb270ac2d82799b2b905bbaa1fe72d24">set_xy_sig</a>(src.getSignificanceMatrix()(0, 1));</div>
+<div class="line">    dest.<a name="a20"></a><a class="code" href="classic_1_1_met.html#a67d253183767d237d4121f6bc18b5e36">set_yx_sig</a>(src.getSignificanceMatrix()(1, 0));</div>
+<div class="line">    dest.<a name="a21"></a><a class="code" href="classic_1_1_met.html#ac3c1219ee653f1d5654fbe23dc803939">set_yy_sig</a>(src.getSignificanceMatrix()(1, 1));</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICMetProducer::beginJob() {</div>
-<div class="line">  <a name="a16"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;met_);</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a22"></a><a class="code" href="class_i_c_met_producer.html#afde63d3d298fe2035a5dcdd75c96c271">ICMetProducer::beginJob</a>() {</div>
+<div class="line">  <a name="a23"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(<a name="a24"></a><a class="code" href="class_i_c_met_producer.html#a301890109b6279ea17c4911a5b318476">branch_</a>.c_str(), &amp;<a class="code" href="class_i_c_met_producer.html#a1235a210e5297e087d53001a7002641f">met_</a>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><span class="keywordtype">void</span> ICMetProducer::endJob() {}</div>
+<div class="line"><span class="keywordtype">void</span> <a name="a25"></a><a class="code" href="class_i_c_met_producer.html#ae551ea3f34e329cd8137dd5a0561b836">ICMetProducer::endJob</a>() {}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="a17"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a18"></a><a class="code" href="class_i_c_met_producer.html">ICMetProducer</a>);</div>
+<div class="line"><a name="a26"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a27"></a><a class="code" href="class_i_c_met_producer.html">ICMetProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

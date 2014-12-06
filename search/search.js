@@ -12,8 +12,8 @@ var indexSectionsWithContent =
   2: "ci",
   3: "abceghijlmnopstuv",
   4: "abcdefghijlmnoprstuvwxy~",
-  5: "abcdfijlprstvx",
-  6: "cegijlmpstuv",
+  5: "abcdefghijlmnoprstuvwxy",
+  6: "cegijlmprstuv",
   7: "os",
   8: "flu",
   9: "acdhinpt"

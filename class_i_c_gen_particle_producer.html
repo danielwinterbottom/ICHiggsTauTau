@@ -96,7 +96,9 @@ $(document).ready(function(){initNavTree('class_i_c_gen_particle_producer.html',
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a>  </div>
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a>  </div>
   <div class="headertitle">
 <div class="title">ICGenParticleProducer Class Reference</div>  </div>
 </div><!--header-->
@@ -123,10 +125,35 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a99f84e0aa71d764073ad2cf8ff15e859"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8030b597e48d39ce4a35cf53621725ee"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#a8030b597e48d39ce4a35cf53621725ee">~ICGenParticleProducer</a> ()</td></tr>
 <tr class="separator:a8030b597e48d39ce4a35cf53621725ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a4bfc5f6990fa3b91347e0eb768a5f2a0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#a4bfc5f6990fa3b91347e0eb768a5f2a0">beginJob</a> ()</td></tr>
+<tr class="separator:a4bfc5f6990fa3b91347e0eb768a5f2a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ac88e96b7537ee55802480c9feb4326"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#a4ac88e96b7537ee55802480c9feb4326">produce</a> (edm::Event &amp;, const edm::EventSetup &amp;)</td></tr>
+<tr class="separator:a4ac88e96b7537ee55802480c9feb4326"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedc5eaebd9c7dfb4526c272634f27c39"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#aedc5eaebd9c7dfb4526c272634f27c39">endJob</a> ()</td></tr>
+<tr class="separator:aedc5eaebd9c7dfb4526c272634f27c39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a969e307750d6f53547402aa161d01ccd"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classic_1_1_gen_particle.html">ic::GenParticle</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#a969e307750d6f53547402aa161d01ccd">particles_</a></td></tr>
+<tr class="separator:a969e307750d6f53547402aa161d01ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7eb3f431f05312bda0589b7f3ca1bdb"><td class="memItemLeft" align="right" valign="top">edm::InputTag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#ae7eb3f431f05312bda0589b7f3ca1bdb">input_</a></td></tr>
+<tr class="separator:ae7eb3f431f05312bda0589b7f3ca1bdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10b79398b3fdac210dac6491aec4d1b2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#a10b79398b3fdac210dac6491aec4d1b2">branch_</a></td></tr>
+<tr class="separator:a10b79398b3fdac210dac6491aec4d1b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d8b86017f8a3cd961bee1f65568c8eb"><td class="memItemLeft" align="right" valign="top">boost::hash&lt; reco::GenParticle <br class="typebreak" />
+const * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#a7d8b86017f8a3cd961bee1f65568c8eb">particle_hasher_</a></td></tr>
+<tr class="separator:a7d8b86017f8a3cd961bee1f65568c8eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4680ecdb2c33822ab591b7c29f02c5ee"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#a4680ecdb2c33822ab591b7c29f02c5ee">store_mothers_</a></td></tr>
+<tr class="separator:a4680ecdb2c33822ab591b7c29f02c5ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ed7d39aa5240230a6ffdeb8de84151d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_i_c_gen_particle_producer.html#a8ed7d39aa5240230a6ffdeb8de84151d">store_daughters_</a></td></tr>
+<tr class="separator:a8ed7d39aa5240230a6ffdeb8de84151d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>See documentation <a class="el" href="physics-objects.html#objs-genparticle">here</a>. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#_a18">plugins/ICGenParticleProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#_a27">plugins/ICGenParticleProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8hh_source.html#l00019">19</a> of file <a class="el" href="_i_c_gen_particle_producer_8hh_source.html">ICGenParticleProducer.hh</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -172,6 +199,235 @@ Public Member Functions</h2></td></tr>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a3">plugins/ICGenParticleProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8cc_source.html#l00028">28</a> of file <a class="el" href="_i_c_gen_particle_producer_8cc_source.html">ICGenParticleProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a4bfc5f6990fa3b91347e0eb768a5f2a0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICGenParticleProducer::beginJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a22">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8cc_source.html#l00068">68</a> of file <a class="el" href="_i_c_gen_particle_producer_8cc_source.html">ICGenParticleProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4ac88e96b7537ee55802480c9feb4326"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICGenParticleProducer::produce </td>
+          <td>(</td>
+          <td class="paramtype">edm::Event &amp;&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const edm::EventSetup &amp;&#160;</td>
+          <td class="paramname"><em>setup</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a5">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8cc_source.html#l00030">30</a> of file <a class="el" href="_i_c_gen_particle_producer_8cc_source.html">ICGenParticleProducer.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aedc5eaebd9c7dfb4526c272634f27c39"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ICGenParticleProducer::endJob </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a25">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8cc_source.html#l00072">72</a> of file <a class="el" href="_i_c_gen_particle_producer_8cc_source.html">ICGenParticleProducer.cc</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Field Documentation</h2>
+<a class="anchor" id="a969e307750d6f53547402aa161d01ccd"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classic_1_1_gen_particle.html">ic::GenParticle</a>&gt;* ICGenParticleProducer::particles_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a4">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8hh_source.html#l00029">29</a> of file <a class="el" href="_i_c_gen_particle_producer_8hh_source.html">ICGenParticleProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae7eb3f431f05312bda0589b7f3ca1bdb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">edm::InputTag ICGenParticleProducer::input_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a6">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8hh_source.html#l00030">30</a> of file <a class="el" href="_i_c_gen_particle_producer_8hh_source.html">ICGenParticleProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a10b79398b3fdac210dac6491aec4d1b2"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ICGenParticleProducer::branch_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a24">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8hh_source.html#l00031">31</a> of file <a class="el" href="_i_c_gen_particle_producer_8hh_source.html">ICGenParticleProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7d8b86017f8a3cd961bee1f65568c8eb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">boost::hash&lt;reco::GenParticle const *&gt; ICGenParticleProducer::particle_hasher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a9">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8hh_source.html#l00032">32</a> of file <a class="el" href="_i_c_gen_particle_producer_8hh_source.html">ICGenParticleProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4680ecdb2c33822ab591b7c29f02c5ee"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICGenParticleProducer::store_mothers_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a18">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8hh_source.html#l00034">34</a> of file <a class="el" href="_i_c_gen_particle_producer_8hh_source.html">ICGenParticleProducer.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a8ed7d39aa5240230a6ffdeb8de84151d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ICGenParticleProducer::store_daughters_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_gen_particle_producer_8cc-example.html#a20">plugins/ICGenParticleProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_i_c_gen_particle_producer_8hh_source.html#l00035">35</a> of file <a class="el" href="_i_c_gen_particle_producer_8hh_source.html">ICGenParticleProducer.hh</a>.</p>
 
 </div>
 </div>
