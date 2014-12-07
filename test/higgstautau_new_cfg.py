@@ -21,6 +21,8 @@ opts.register('isTandP', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Tag and probe ntuples?")
 opts.register('isZStudy', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process for Z->ee or Z->mumu?")
+opts.register('isPhys14', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Process for Phys14 study?")
 opts.parseArguments()
 infile      = opts.file
 if not infile: infile = "file:/tmp/file.root"
@@ -30,6 +32,7 @@ release     = opts.release
 isEmbedded  = opts.isEmbedded
 isTandP     = opts.isTandP
 isZStudy    = opts.isZStudy
+isPhys14    = opts.isPhys14
 
 if not release in ["42X", "53X", "70X", "70XMINIAOD", "72X", "72XMINIAOD"]:
   print 'Release not recognised, exiting!'
@@ -105,6 +108,12 @@ if release in ['42X']:
 if release in ['53X']:
   process.ic53XSequence += process.recoTauClassicHPSSequence
 
+if release in ['70X']:
+  process.ic70XSequence += process.PFTau
+
+if release in ['72X']:
+  process.ic72XSequence += process.PFTau
+
 if release in ['70XMINIAOD', '72XMINIAOD']:
   process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
   process.icMiniAODSequence += process.unpackedTracksAndVertices
@@ -152,8 +161,10 @@ process.selectedPFTaus = cms.EDFilter("PFTauRefSelector",
   src = cms.InputTag("hpsPFTauProducer"),
   cut = cms.string("pt > 18.0 & abs(eta) < 2.6 & decayMode > -0.5")
 )
+if isPhys14:
+  process.selectedPFTaus.cut = cms.string("pt > 10.0 & abs(eta) < 3.0")
 
-if release in ['70X', '72X']:
+if release in ['70X', '72X'] and not isPhys14:
   process.selectedPFTausPre = cms.EDFilter("PFTauRefSelector",
     src = cms.InputTag("hpsPFTauProducer"),
     cut = cms.string("pt > 18.0 & abs(eta) < 2.6")
@@ -186,7 +197,7 @@ process.icSelectionSequence = cms.Sequence(
   process.selectedPFMuons
 )
 
-if release in ['70X', '72X']:
+if release in ['70X', '72X'] and not isPhys14:
   process.icSelectionSequence += process.selectedPFTausPre
 
 process.icSelectionSequence += process.selectedPFTaus
@@ -445,7 +456,7 @@ if release in ['70X', '70XMINIAOD', '72X', '72XMINIAOD']:
       process.muonPFIsolationDepositsSequence+
       process.muonPFIsolationValuesSequence
       )
-  
+
 
 process.icMuonProducer = producers.icMuonProducer.clone(
   branch                    = cms.string("muonsPFlow"),
