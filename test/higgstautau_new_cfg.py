@@ -42,6 +42,8 @@ print 'isData      : '+str(isData)
 print 'isEmbedded  : '+str(isEmbedded)
 print 'isTandP     : '+str(isTandP)
 print 'isZStudy    : '+str(isZStudy)
+print 'isPhys14    : '+str(isPhys14)
+print 'globalTag   : '+tag
 
 ################################################################
 # Standard setup
@@ -49,7 +51,7 @@ print 'isZStudy    : '+str(isZStudy)
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 if release in ['42X']:
   process.load("Configuration.StandardSequences.Geometry_cff")
-if release in ['53X', "70X", "70XMINIAOD"]:
+if release in ['53X', "70X", "70XMINIAOD", "72X", "72XMINIAOD"]:
   process.load("Configuration.Geometry.GeometryIdeal_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
