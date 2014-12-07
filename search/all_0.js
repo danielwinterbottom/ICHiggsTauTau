@@ -10,6 +10,8 @@ var searchData=
   ['addsystematics_5fee_5fmm',['AddSystematics_ee_mm',['../namespacech.html#a4d79c4fca0a76cc62c91d580644c051c',1,'ch']]],
   ['addsystematics_5fem',['AddSystematics_em',['../namespacech.html#afe8f3907b055d2d6c0bc8b2bb7f74a02',1,'ch']]],
   ['addsystematics_5fet_5fmt',['AddSystematics_et_mt',['../namespacech.html#aac947603f4cc50f70e7a8765da3e13d1',1,'ch']]],
+  ['addsystematics_5fhhh_5fet_5fmt',['AddSystematics_hhh_et_mt',['../namespacech.html#adab895bcbcec0006d4def02d2e909206',1,'ch']]],
+  ['addsystematics_5fhhh_5ftt',['AddSystematics_hhh_tt',['../namespacech.html#add9281b32e8ff7ec2d8fd6de545b3b4f',1,'ch']]],
   ['addsystematics_5ftt',['AddSystematics_tt',['../namespacech.html#ac1578f3e0a1da427e6750ba4cefd94b8',1,'ch']]],
   ['addtrack',['AddTrack',['../classic_1_1_vertex.html#a13abf08edad7afb491375f3b83daf6c9',1,'ic::Vertex']]],
   ['addtrackcollection',['AddTrackCollection',['../struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4.html#aa85dccbce90f3e8b487c1d06a64eb863',1,'JetDestHelper&lt; ic::JPTJet &gt;']]],
