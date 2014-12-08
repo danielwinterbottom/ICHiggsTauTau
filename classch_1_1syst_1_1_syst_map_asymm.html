@@ -120,8 +120,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a43e04ec9efeff0239a428e517340c570"><td class="memItemLeft" align="right" valign="top">std::set&lt; std::tuple&lt; typename <br class="typebreak" />
 T::type...&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1syst_1_1_syst_map_asymm.html#a43e04ec9efeff0239a428e517340c570">GetTupleSet</a> () const </td></tr>
 <tr class="separator:a43e04ec9efeff0239a428e517340c570"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff8fca8dc6bf5387dafb11c075677f34"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; typename T::type...&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1syst_1_1_syst_map_asymm.html#aff8fca8dc6bf5387dafb11c075677f34">GetTuple</a> (<a class="el" href="classch_1_1_process.html">ch::Process</a> *p) const </td></tr>
-<tr class="separator:aff8fca8dc6bf5387dafb11c075677f34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5ff5e296f946fa96f4b206fc64bae95"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classch_1_1syst_1_1_syst_map_asymm.html#ad5ff5e296f946fa96f4b206fc64bae95">GetTuple</a> (<a class="el" href="classch_1_1_process.html">ch::Process</a> *p) const -&gt; decltype(std::make_tuple(T::get(p)...))</td></tr>
+<tr class="separator:ad5ff5e296f946fa96f4b206fc64bae95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -361,7 +361,7 @@ template&lt;class... T&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="aff8fca8dc6bf5387dafb11c075677f34"></a>
+<a class="anchor" id="ad5ff5e296f946fa96f4b206fc64bae95"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -371,11 +371,11 @@ template&lt;class... T&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::tuple&lt;typename T::type...&gt; <a class="el" href="classch_1_1syst_1_1_syst_map_asymm.html">ch::syst::SystMapAsymm</a>&lt; T &gt;::GetTuple </td>
+          <td class="memname">auto <a class="el" href="classch_1_1syst_1_1_syst_map_asymm.html">ch::syst::SystMapAsymm</a>&lt; T &gt;::GetTuple </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classch_1_1_process.html">ch::Process</a> *&#160;</td>
           <td class="paramname"><em>p</em></td><td>)</td>
-          <td> const</td>
+          <td> const -&gt; decltype( std::make_tuple(T::get(p)...) ) </td>
         </tr>
       </table>
   </td>
