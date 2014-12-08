@@ -420,7 +420,7 @@ $(document).ready(function(){initNavTree('_combine_harvester_8h_source.html','')
 <div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;  <span class="comment">// Also track which tuples in the map did not get used. Do this by getting the</span></div>
 <div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;  <span class="comment">// full map here and then removing elements as they are used to create a</span></div>
 <div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;  <span class="comment">// Systematic.</span></div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;  <span class="keyword">auto</span> tuples = valmap.GetTupleSet();</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;  <span class="comment">// auto tuples = valmap.GetTupleSet();</span></div>
 <div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;  <span class="keywordflow">if</span> (verbosity_ &gt;= 1) {</div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    <a class="code" href="_logging_8h.html#a7c001e91758abea6ce1e5609a873c852">LOGLINE</a>(log(), name + <span class="stringliteral">&quot;:&quot;</span> + type);</div>
 <div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;  }</div>
@@ -429,7 +429,7 @@ $(document).ready(function(){initNavTree('_combine_harvester_8h_source.html','')
 <div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;      not_added_procs.push_back(procs_[i].<span class="keyword">get</span>());</div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;      <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    }</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    tuples.erase(valmap.GetTuple(procs_[i].get()));</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    <span class="comment">//tuples.erase(valmap.GetTuple(procs_[i].get()));</span></div>
 <div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    added_procs.push_back(procs_[i].<span class="keyword">get</span>());</div>
 <div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    std::string subbed_name = name;</div>
 <div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    boost::replace_all(subbed_name, <span class="stringliteral">&quot;$BIN&quot;</span>, procs_[i]-&gt;<a class="code" href="classch_1_1_combine_harvester.html#a83dd50569a1f1a4b5a46f2ad2b5c1cdb">bin</a>());</div>
@@ -455,27 +455,29 @@ $(document).ready(function(){initNavTree('_combine_harvester_8h_source.html','')
 <div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;    CombineHarvester::CreateParameterIfEmpty(&amp;target, sys-&gt;name());</div>
 <div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;      target.systs_.push_back(sys);</div>
 <div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;  }</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;  <span class="keywordflow">if</span> (tuples.size() &amp;&amp; verbosity_ &gt;= 1) {</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;    log() &lt;&lt; <span class="stringliteral">&quot;&gt;&gt; Map keys that were not used to create a Systematic:\n&quot;</span>;</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> s : tuples) {</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;      log() &lt;&lt; <a class="code" href="namespacech.html#ae779412e6479bbc7bdc933fcb00f0fe2">ch::Tuple2String</a>(s) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;    }</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;  }</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;  <span class="keywordflow">if</span> (verbosity_ &gt;= 2) {</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;    <a class="code" href="classch_1_1_process.html#ab2cc280e1babe330441de6791e06c2c1">Process::PrintHeader</a>(log());</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;    log() &lt;&lt; <span class="stringliteral">&quot;&gt;&gt; Process entries that did not get a Systematic:\n&quot;</span>;</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> p : not_added_procs) {</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;      log() &lt;&lt; *p &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;    }</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;    log() &lt;&lt; <span class="stringliteral">&quot;&gt;&gt; Process entries that did get a Systematic:\n&quot;</span>;</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> p : added_procs) {</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;      log() &lt;&lt; *p &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;    }</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;  }</div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;}</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;}</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;<span class="comment">  if (tuples.size() &amp;&amp; verbosity_ &gt;= 1) {</span></div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;<span class="comment">    log() &lt;&lt; &quot;&gt;&gt; Map keys that were not used to create a Systematic:\n&quot;;</span></div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;<span class="comment">    for (auto s : tuples) {</span></div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;<span class="comment">      log() &lt;&lt; ch::Tuple2String(s) &lt;&lt; &quot;\n&quot;;</span></div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;<span class="comment">  }</span></div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;<span class="comment">  */</span></div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;  <span class="keywordflow">if</span> (verbosity_ &gt;= 2) {</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;    <a class="code" href="classch_1_1_process.html#ab2cc280e1babe330441de6791e06c2c1">Process::PrintHeader</a>(log());</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;    log() &lt;&lt; <span class="stringliteral">&quot;&gt;&gt; Process entries that did not get a Systematic:\n&quot;</span>;</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> p : not_added_procs) {</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;      log() &lt;&lt; *p &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;    }</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    log() &lt;&lt; <span class="stringliteral">&quot;&gt;&gt; Process entries that did get a Systematic:\n&quot;</span>;</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> p : added_procs) {</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;      log() &lt;&lt; *p &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;    }</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;  }</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;}</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;}</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a6b7c11550052d3edd98cd0971280ff79"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a6b7c11550052d3edd98cd0971280ff79">ch::CombineHarvester::swap</a></div><div class="ttdeci">friend void swap(CombineHarvester &amp;first, CombineHarvester &amp;second)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester_8cc_source.html#l00020">CombineHarvester.cc:20</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a89583394f683d9d1bef377b9a906ccc0"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a89583394f683d9d1bef377b9a906ccc0">ch::CombineHarvester::SetParameters</a></div><div class="ttdeci">void SetParameters(std::vector&lt; ch::Parameter &gt; params)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00313">CombineHarvester_Evaluate.cc:313</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a1e21af204aec55aa9f26e907fdc99731"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731">ch::CombineHarvester::UpdateParameters</a></div><div class="ttdeci">void UpdateParameters(std::vector&lt; ch::Parameter &gt; params)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00330">CombineHarvester_Evaluate.cc:330</a></div></div>
@@ -528,7 +530,6 @@ $(document).ready(function(){initNavTree('_combine_harvester_8h_source.html','')
 <div class="ttc" id="_parameter_8h_html"><div class="ttname"><a href="_parameter_8h.html">Parameter.h</a></div></div>
 <div class="ttc" id="classch_1_1_observation_html"><div class="ttname"><a href="classch_1_1_observation.html">ch::Observation</a></div><div class="ttdef"><b>Definition:</b> <a href="_observation_8h_source.html#l00011">Observation.h:11</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a25c231ed8b1614c5d50f192210374474"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a25c231ed8b1614c5d50f192210374474">ch::CombineHarvester::mass</a></div><div class="ttdeci">CombineHarvester &amp; mass(std::vector&lt; std::string &gt; const &amp;vec, bool cond=true)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___filters_8cc_source.html#l00067">CombineHarvester_Filters.cc:67</a></div></div>
-<div class="ttc" id="namespacech_html_ae779412e6479bbc7bdc933fcb00f0fe2"><div class="ttname"><a href="namespacech.html#ae779412e6479bbc7bdc933fcb00f0fe2">ch::Tuple2String</a></div><div class="ttdeci">std::string Tuple2String(const std::tuple&lt; Args...&gt; &amp;t)</div><div class="ttdoc">Format any std::tuple as a string. </div><div class="ttdef"><b>Definition:</b> <a href="_utilities_8h_source.html#l00193">Utilities.h:193</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a35f86a79305555fec0a89b825d1fab71"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a35f86a79305555fec0a89b825d1fab71">ch::CombineHarvester::FilterObs</a></div><div class="ttdeci">CombineHarvester &amp; FilterObs(Function func)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester_8h_source.html#l00398">CombineHarvester.h:398</a></div></div>
 <div class="ttc" id="classch_1_1_process_html_ab2cc280e1babe330441de6791e06c2c1"><div class="ttname"><a href="classch_1_1_process.html#ab2cc280e1babe330441de6791e06c2c1">ch::Process::PrintHeader</a></div><div class="ttdeci">static std::ostream &amp; PrintHeader(std::ostream &amp;out)</div><div class="ttdef"><b>Definition:</b> <a href="_process_8cc_source.html#l00094">Process.cc:94</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a224525ed617dae2b4b1e410a12cc129d"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a224525ed617dae2b4b1e410a12cc129d">ch::CombineHarvester::GenerateSetFromProcs</a></div><div class="ttdeci">std::set&lt; T &gt; GenerateSetFromProcs(std::function&lt; T(ch::Process const *)&gt; func)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester_8h_source.html#l00359">CombineHarvester.h:359</a></div></div>
