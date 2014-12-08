@@ -5,7 +5,10 @@
 
 namespace ic {
 
-Phys14Plots::Phys14Plots(std::string const& name) : ModuleBase(name) {}
+Phys14Plots::Phys14Plots(std::string const& name) : ModuleBase(name) {
+  th_pt_acc   = 20.;
+  th_eta_acc  = 2.3;
+}
 
 Phys14Plots::~Phys14Plots() { ; }
 

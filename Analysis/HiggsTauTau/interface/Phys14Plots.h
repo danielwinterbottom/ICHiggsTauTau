@@ -35,8 +35,8 @@ struct EfficiencyPlot1D {
 class Phys14Plots : public ModuleBase {
  private:
 
-  double th_pt_acc = 20.;
-  double th_eta_acc = 2.3;
+  double th_pt_acc;
+  double th_eta_acc;
 
   std::string jets_label_;
   TFileDirectory * dir_;
