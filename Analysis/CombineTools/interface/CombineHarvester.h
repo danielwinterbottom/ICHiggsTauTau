@@ -428,7 +428,7 @@ void CombineHarvester::AddSyst(CombineHarvester& target,
   // Also track which tuples in the map did not get used. Do this by getting the
   // full map here and then removing elements as they are used to create a
   // Systematic.
-  auto tuples = valmap.GetTupleSet();
+  // auto tuples = valmap.GetTupleSet();
   if (verbosity_ >= 1) {
     LOGLINE(log(), name + ":" + type);
   }
@@ -437,7 +437,7 @@ void CombineHarvester::AddSyst(CombineHarvester& target,
       not_added_procs.push_back(procs_[i].get());
       continue;
     }
-    tuples.erase(valmap.GetTuple(procs_[i].get()));
+    //tuples.erase(valmap.GetTuple(procs_[i].get()));
     added_procs.push_back(procs_[i].get());
     std::string subbed_name = name;
     boost::replace_all(subbed_name, "$BIN", procs_[i]->bin());
@@ -463,12 +463,14 @@ void CombineHarvester::AddSyst(CombineHarvester& target,
     CombineHarvester::CreateParameterIfEmpty(&target, sys->name());
       target.systs_.push_back(sys);
   }
+  /*
   if (tuples.size() && verbosity_ >= 1) {
     log() << ">> Map keys that were not used to create a Systematic:\n";
     for (auto s : tuples) {
       log() << ch::Tuple2String(s) << "\n";
     }
   }
+  */
   if (verbosity_ >= 2) {
     Process::PrintHeader(log());
     log() << ">> Process entries that did not get a Systematic:\n";
