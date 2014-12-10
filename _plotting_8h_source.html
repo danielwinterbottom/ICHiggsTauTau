@@ -611,59 +611,64 @@ $(document).ready(function(){initNavTree('_plotting_8h_source.html','');});
 <div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;  <span class="keywordtype">double</span> ymin = hobj-&gt;GetMinimum();</div>
 <div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;  hobj-&gt;SetMaximum((fix_y - fraction * ymin) / (1. - fraction));</div>
 <div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;  <span class="keywordflow">if</span> (gPad-&gt;GetLogy()) {</div>
-<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;    <span class="keywordtype">double</span> max =</div>
-<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;        (std::log10(fix_y) - fraction * std::log10(ymin)) / (1 - fraction);</div>
-<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;    max = std::pow(10, max);</div>
-<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;    hobj-&gt;SetMaximum(max);</div>
-<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;  }</div>
-<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;}</div>
-<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;</div>
-<div class="line"><a name="l00873"></a><span class="lineno"><a class="line" href="_plotting_8h.html#a0d9c9cc36ba7c24dcdca74b6173a0335">  873</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_plotting_8h.html#a0d9c9cc36ba7c24dcdca74b6173a0335">FixBoxPadding</a>(TPad *pad, TBox *box, <span class="keywordtype">double</span> frac) {</div>
-<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;  <span class="comment">// Get the bounds of the box - these are in the normalised</span></div>
-<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;  <span class="comment">// Pad co-ordinates.</span></div>
-<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;  <span class="keywordtype">double</span> p_x1 = box-&gt;GetX1();</div>
-<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;  <span class="keywordtype">double</span> p_x2 = box-&gt;GetX2();</div>
-<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;  <span class="keywordtype">double</span> p_y1 = box-&gt;GetY1();</div>
-<div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;  <span class="comment">// double p_y2 = box-&gt;GetY2();</span></div>
-<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;</div>
-<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;  <span class="comment">// Convert to normalised co-ordinates in the frame</span></div>
-<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;  <span class="keywordtype">double</span> f_x1 = (p_x1 - pad-&gt;GetLeftMargin()) /</div>
-<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;                (1. - pad-&gt;GetLeftMargin() - pad-&gt;GetRightMargin());</div>
-<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;  <span class="keywordtype">double</span> f_x2 = (p_x2 - pad-&gt;GetLeftMargin()) /</div>
-<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;                (1. - pad-&gt;GetLeftMargin() - pad-&gt;GetRightMargin());</div>
-<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;  <span class="keywordtype">double</span> f_y1 = (p_y1 - pad-&gt;GetBottomMargin()) /</div>
-<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;                (1. - pad-&gt;GetTopMargin() - pad-&gt;GetBottomMargin());</div>
-<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;</div>
-<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;  <span class="comment">// Extract histogram providing the frame and axes</span></div>
-<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;  TH1 *hobj = <a class="code" href="_plotting_8h.html#aafd63f976dd4c5ae271062e0f91c2681">GetAxisHist</a>(pad);</div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;</div>
-<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;  <span class="keywordtype">double</span> xmin = hobj-&gt;GetBinLowEdge(hobj-&gt;GetXaxis()-&gt;GetFirst());</div>
-<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;  <span class="keywordtype">double</span> xmax = hobj-&gt;GetBinLowEdge(hobj-&gt;GetXaxis()-&gt;GetLast()+1);</div>
-<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;  <span class="keywordtype">double</span> ymin = hobj-&gt;GetMinimum();</div>
-<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;  <span class="keywordtype">double</span> ymax = hobj-&gt;GetMaximum();</div>
+<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;    <span class="keywordflow">if</span> (ymin == 0.) {</div>
+<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;      std::cout</div>
+<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;          &lt;&lt; <span class="stringliteral">&quot;Can&#39;t adjust log-scale y-axis range if the minimum is zero!\n&quot;</span>;</div>
+<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;      <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;    }</div>
+<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;    <span class="keywordtype">double</span> max =</div>
+<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;        (std::log10(fix_y) - fraction * std::log10(ymin)) / (1 - fraction);</div>
+<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;    max = std::pow(10, max);</div>
+<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;    hobj-&gt;SetMaximum(max);</div>
+<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;  }</div>
+<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;}</div>
+<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;</div>
+<div class="line"><a name="l00878"></a><span class="lineno"><a class="line" href="_plotting_8h.html#a0d9c9cc36ba7c24dcdca74b6173a0335">  878</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_plotting_8h.html#a0d9c9cc36ba7c24dcdca74b6173a0335">FixBoxPadding</a>(TPad *pad, TBox *box, <span class="keywordtype">double</span> frac) {</div>
+<div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;  <span class="comment">// Get the bounds of the box - these are in the normalised</span></div>
+<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;  <span class="comment">// Pad co-ordinates.</span></div>
+<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;  <span class="keywordtype">double</span> p_x1 = box-&gt;GetX1();</div>
+<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;  <span class="keywordtype">double</span> p_x2 = box-&gt;GetX2();</div>
+<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;  <span class="keywordtype">double</span> p_y1 = box-&gt;GetY1();</div>
+<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;  <span class="comment">// double p_y2 = box-&gt;GetY2();</span></div>
+<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;</div>
+<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;  <span class="comment">// Convert to normalised co-ordinates in the frame</span></div>
+<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;  <span class="keywordtype">double</span> f_x1 = (p_x1 - pad-&gt;GetLeftMargin()) /</div>
+<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;                (1. - pad-&gt;GetLeftMargin() - pad-&gt;GetRightMargin());</div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;  <span class="keywordtype">double</span> f_x2 = (p_x2 - pad-&gt;GetLeftMargin()) /</div>
+<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;                (1. - pad-&gt;GetLeftMargin() - pad-&gt;GetRightMargin());</div>
+<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;  <span class="keywordtype">double</span> f_y1 = (p_y1 - pad-&gt;GetBottomMargin()) /</div>
+<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;                (1. - pad-&gt;GetTopMargin() - pad-&gt;GetBottomMargin());</div>
+<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;</div>
+<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;  <span class="comment">// Extract histogram providing the frame and axes</span></div>
+<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;  TH1 *hobj = <a class="code" href="_plotting_8h.html#aafd63f976dd4c5ae271062e0f91c2681">GetAxisHist</a>(pad);</div>
 <div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;</div>
-<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;  <span class="comment">// Convert box bounds to x-axis values</span></div>
-<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;  <span class="keywordtype">double</span> a_x1 = xmin + (xmax - xmin) * f_x1;</div>
-<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;  <span class="keywordtype">double</span> a_x2 = xmin + (xmax - xmin) * f_x2;</div>
-<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;</div>
-<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;  <span class="comment">// Get the histogram maximum in this range, given as y-axis value</span></div>
-<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;  <span class="keywordtype">double</span> a_max_h = <a class="code" href="_plotting_8h.html#a94fa210a8324e72a82327860972746eb">GetPadYMax</a>(pad, a_x1, a_x2);</div>
-<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;</div>
-<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;  <span class="comment">// Convert this to a normalised frame value</span></div>
-<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;  <span class="keywordtype">double</span> f_max_h = (a_max_h - ymin) / (ymax - ymin);</div>
-<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;  <span class="keywordflow">if</span> (gPad-&gt;GetLogy()) {</div>
-<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;    f_max_h = (log10(a_max_h) - log10(ymin)) / (log10(ymax) - log10(ymin));</div>
-<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;  }</div>
-<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160;</div>
-<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;  <span class="keywordflow">if</span> (f_y1 - f_max_h &lt; frac) {</div>
-<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;    <span class="keywordtype">double</span> f_target = 1. - (f_y1 - frac);</div>
-<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;    <a class="code" href="_plotting_8h.html#a5f529c55b51440415c95a200a9e0708f">FixTopRange</a>(pad, a_max_h, f_target);</div>
+<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;  <span class="keywordtype">double</span> xmin = hobj-&gt;GetBinLowEdge(hobj-&gt;GetXaxis()-&gt;GetFirst());</div>
+<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;  <span class="keywordtype">double</span> xmax = hobj-&gt;GetBinLowEdge(hobj-&gt;GetXaxis()-&gt;GetLast()+1);</div>
+<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;  <span class="keywordtype">double</span> ymin = hobj-&gt;GetMinimum();</div>
+<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;  <span class="keywordtype">double</span> ymax = hobj-&gt;GetMaximum();</div>
+<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;</div>
+<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;  <span class="comment">// Convert box bounds to x-axis values</span></div>
+<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;  <span class="keywordtype">double</span> a_x1 = xmin + (xmax - xmin) * f_x1;</div>
+<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;  <span class="keywordtype">double</span> a_x2 = xmin + (xmax - xmin) * f_x2;</div>
+<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;</div>
+<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;  <span class="comment">// Get the histogram maximum in this range, given as y-axis value</span></div>
+<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;  <span class="keywordtype">double</span> a_max_h = <a class="code" href="_plotting_8h.html#a94fa210a8324e72a82327860972746eb">GetPadYMax</a>(pad, a_x1, a_x2);</div>
+<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;</div>
+<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160;  <span class="comment">// Convert this to a normalised frame value</span></div>
+<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;  <span class="keywordtype">double</span> f_max_h = (a_max_h - ymin) / (ymax - ymin);</div>
+<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;  <span class="keywordflow">if</span> (gPad-&gt;GetLogy()) {</div>
+<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;    f_max_h = (log10(a_max_h) - log10(ymin)) / (log10(ymax) - log10(ymin));</div>
 <div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;  }</div>
-<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;}</div>
-<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;</div>
-<div class="line"><a name="l00916"></a><span class="lineno"><a class="line" href="_plotting_8h.html#a3ab873b129878269a347a387a5f6ff4b">  916</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_plotting_8h.html#a3ab873b129878269a347a387a5f6ff4b">FixOverlay</a>() { gPad-&gt;GetFrame()-&gt;Draw(); gPad-&gt;RedrawAxis(); }</div>
-<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;</div>
-<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;</div>
+<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;  <span class="keywordflow">if</span> (f_y1 - f_max_h &lt; frac) {</div>
+<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;    <span class="keywordtype">double</span> f_target = 1. - (f_y1 - frac);</div>
+<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;    <a class="code" href="_plotting_8h.html#a5f529c55b51440415c95a200a9e0708f">FixTopRange</a>(pad, a_max_h, f_target);</div>
+<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;  }</div>
+<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;}</div>
+<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;</div>
+<div class="line"><a name="l00921"></a><span class="lineno"><a class="line" href="_plotting_8h.html#a3ab873b129878269a347a387a5f6ff4b">  921</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="_plotting_8h.html#a3ab873b129878269a347a387a5f6ff4b">FixOverlay</a>() { gPad-&gt;GetFrame()-&gt;Draw(); gPad-&gt;RedrawAxis(); }</div>
+<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;</div>
+<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="_plotting_8h_html_a39767958a52b4be5820816be7b1bb9bf"><div class="ttname"><a href="_plotting_8h.html#a39767958a52b4be5820816be7b1bb9bf">DrawTitle</a></div><div class="ttdeci">void DrawTitle(TPad *pad, TString text, int align)</div><div class="ttdoc">Draw text in the top-margin region of a TPad. </div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00689">Plotting.h:689</a></div></div>
 <div class="ttc" id="_plotting_8h_html_ac9a2d10dbb78251b4757aba40f73fa68"><div class="ttname"><a href="_plotting_8h.html#ac9a2d10dbb78251b4757aba40f73fa68">DrawCMSLogo</a></div><div class="ttdeci">void DrawCMSLogo(TPad *pad, TString cmsText, TString extraText, int iPosX, float relPosX, float relPosY, float relExtraDY)</div><div class="ttdoc">Draw the CMS logo and subtitle in the new style. </div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00720">Plotting.h:720</a></div></div>
 <div class="ttc" id="_plotting_8h_html_a5f529c55b51440415c95a200a9e0708f"><div class="ttname"><a href="_plotting_8h.html#a5f529c55b51440415c95a200a9e0708f">FixTopRange</a></div><div class="ttdeci">void FixTopRange(TPad *pad, double fix_y, double fraction)</div><div class="ttdoc">Adjusts the y-axis maximum on the pad such that the specified y-value is positioned a fixed fraction ...</div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00861">Plotting.h:861</a></div></div>
@@ -680,10 +685,10 @@ $(document).ready(function(){initNavTree('_plotting_8h_source.html','');});
 <div class="ttc" id="_plotting_8h_html_a658a1da4505b61eb5a0f0db01c01e161"><div class="ttname"><a href="_plotting_8h.html#a658a1da4505b61eb5a0f0db01c01e161">PositionedLegend</a></div><div class="ttdeci">TLegend * PositionedLegend(double width, double height, int pos, double offset)</div><div class="ttdoc">Create a legend with fixed height, width and positioning. </div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00645">Plotting.h:645</a></div></div>
 <div class="ttc" id="_plotting_8h_html_ad137f606f878b7d25aeb2dde1b970ce9"><div class="ttname"><a href="_plotting_8h.html#ad137f606f878b7d25aeb2dde1b970ce9">CreateAxisHist</a></div><div class="ttdeci">TH1 * CreateAxisHist(TH1 *src, double xmin=0, double xmax=-1)</div><div class="ttdoc">Create an empty TH1 from another TH1 for drawing the axes. </div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00468">Plotting.h:468</a></div></div>
 <div class="ttc" id="_plotting_8h_html_a94fa210a8324e72a82327860972746eb"><div class="ttname"><a href="_plotting_8h.html#a94fa210a8324e72a82327860972746eb">GetPadYMax</a></div><div class="ttdeci">double GetPadYMax(TPad *pad, double x_min, double x_max)</div><div class="ttdoc">Find the maximum value of all drawn objects in a given x-axis range. </div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00820">Plotting.h:820</a></div></div>
-<div class="ttc" id="_plotting_8h_html_a3ab873b129878269a347a387a5f6ff4b"><div class="ttname"><a href="_plotting_8h.html#a3ab873b129878269a347a387a5f6ff4b">FixOverlay</a></div><div class="ttdeci">void FixOverlay()</div><div class="ttdoc">Just re-draws the axes on the current TPad. </div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00916">Plotting.h:916</a></div></div>
+<div class="ttc" id="_plotting_8h_html_a3ab873b129878269a347a387a5f6ff4b"><div class="ttname"><a href="_plotting_8h.html#a3ab873b129878269a347a387a5f6ff4b">FixOverlay</a></div><div class="ttdeci">void FixOverlay()</div><div class="ttdoc">Just re-draws the axes on the current TPad. </div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00921">Plotting.h:921</a></div></div>
 <div class="ttc" id="_plotting_8h_html_af2524f9f02ac66a16164c87bfc149628"><div class="ttname"><a href="_plotting_8h.html#af2524f9f02ac66a16164c87bfc149628">ReZeroTGraph</a></div><div class="ttdeci">void ReZeroTGraph(TGraph *gr)</div><div class="ttdoc">Shift all the graph y-values upwards such that there are no negative values and the minimum point is ...</div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00571">Plotting.h:571</a></div></div>
 <div class="ttc" id="_plotting_8h_html_aa098641a0337d718d1074531133b884f"><div class="ttname"><a href="_plotting_8h.html#aa098641a0337d718d1074531133b884f">OnePad</a></div><div class="ttdeci">std::vector&lt; TPad * &gt; OnePad()</div><div class="ttdoc">Just creates a single pad filling the entire canvas. </div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00442">Plotting.h:442</a></div></div>
-<div class="ttc" id="_plotting_8h_html_a0d9c9cc36ba7c24dcdca74b6173a0335"><div class="ttname"><a href="_plotting_8h.html#a0d9c9cc36ba7c24dcdca74b6173a0335">FixBoxPadding</a></div><div class="ttdeci">void FixBoxPadding(TPad *pad, TBox *box, double frac)</div><div class="ttdoc">Modify the pad y-axis range to ensure there is at least a given gap between a particular TBox and the...</div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00873">Plotting.h:873</a></div></div>
+<div class="ttc" id="_plotting_8h_html_a0d9c9cc36ba7c24dcdca74b6173a0335"><div class="ttname"><a href="_plotting_8h.html#a0d9c9cc36ba7c24dcdca74b6173a0335">FixBoxPadding</a></div><div class="ttdeci">void FixBoxPadding(TPad *pad, TBox *box, double frac)</div><div class="ttdoc">Modify the pad y-axis range to ensure there is at least a given gap between a particular TBox and the...</div><div class="ttdef"><b>Definition:</b> <a href="_plotting_8h_source.html#l00878">Plotting.h:878</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
