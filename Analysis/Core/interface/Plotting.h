@@ -863,6 +863,11 @@ void FixTopRange(TPad *pad, double fix_y, double fraction) {
   double ymin = hobj->GetMinimum();
   hobj->SetMaximum((fix_y - fraction * ymin) / (1. - fraction));
   if (gPad->GetLogy()) {
+    if (ymin == 0.) {
+      std::cout
+          << "Can't adjust log-scale y-axis range if the minimum is zero!\n";
+      return;
+    }
     double max =
         (std::log10(fix_y) - fraction * std::log10(ymin)) / (1 - fraction);
     max = std::pow(10, max);
