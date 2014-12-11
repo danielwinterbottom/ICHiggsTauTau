@@ -103,15 +103,15 @@ int main(int argc, char* argv[]) {
   axis->GetXaxis()->SetTitle(js["x_axis_title"].asCString());
   axis->GetYaxis()->SetTitle(js["y_axis_title"].asCString());
 
-  TLegend *legend = PositionedLegend(0.60, 0.14, 6, 0.03);
+  TLegend *legend = PositionedLegend(0.45, 0.18, 6, 0.03);
   for (unsigned g = 0; g < graphs.size(); ++g) {
     graphs[g].Draw("PSAME");
     legend->AddEntry(&(graphs[g]), js["elements"][g]["legend"].asCString());
   }
   pads[0]->SetGridx(true);
   pads[0]->SetGridy(true);
-  DrawCMSLogo(pads[0], "CMS", "Preliminary", 0);
-  DrawTitle(pads[0], "VBF_HToTauTau_M-125", 3);
+  DrawCMSLogo(pads[0], "CMS", "Simulation", 0);
+  DrawTitle(pads[0], js["title_right"].asString(), 3);
 
 
   legend->Draw();
