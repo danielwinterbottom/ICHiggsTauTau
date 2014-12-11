@@ -312,249 +312,250 @@ $(document).ready(function(){initNavTree('_combine_harvester___evaluate_8cc_sour
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">int</span> b = 1; b &lt;= proc_shape.GetNbinsX(); ++b) {</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="keywordflow">if</span> (proc_shape.GetBinContent(b) &lt; 0.) proc_shape.SetBinContent(b, 0.);</div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;      }</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;      proc_shape.Scale(p_rate / proc_shape.Integral());</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;      <span class="keywordflow">if</span> (!shape_init) {</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        proc_shape.Copy(shape);</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        shape.Reset();</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        shape_init = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;      }</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;      shape.Add(&amp;proc_shape);</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (procs_[i]-&gt;pdf()) {</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;      RooAbsData <span class="keyword">const</span>* data_obj = FindMatchingData(procs_[i].<span class="keyword">get</span>());</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;      std::string var_name = <span class="stringliteral">&quot;CMS_th1x&quot;</span>;</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;      <span class="keywordflow">if</span> (data_obj) var_name = data_obj-&gt;get()-&gt;first()-&gt;GetName();</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;      TH1::AddDirectory(<span class="keyword">false</span>);</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;      TH1F proc_shape = *(<span class="keyword">dynamic_cast&lt;</span>TH1F*<span class="keyword">&gt;</span>(procs_[i]-&gt;pdf()-&gt;createHistogram(</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                             var_name.c_str())));</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> sys_it : lookup[i]) {</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        <span class="keywordtype">double</span> x = params_[sys_it-&gt;name()]-&gt;val();</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        <span class="keywordflow">if</span> (sys_it-&gt;asymm()) {</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;          <span class="keywordflow">if</span> (x &gt;= 0) {</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;            p_rate *= std::pow(sys_it-&gt;value_u(), x * sys_it-&gt;scale());</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;          } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;            p_rate *= std::pow(sys_it-&gt;value_d(), -1.0 * x * sys_it-&gt;scale());</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;          }</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;          p_rate *= std::pow(sys_it-&gt;value_u(), x * sys_it-&gt;scale());</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        }</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;      }</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;      proc_shape.Scale(p_rate);</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;      <span class="keywordflow">if</span> (!shape_init) {</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        proc_shape.Copy(shape);</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        shape.Reset();</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        shape_init = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;      }</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;      shape.Add(&amp;proc_shape);</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    }</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  }</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  <span class="keywordflow">return</span> shape;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;}</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;</div>
-<div class="line"><a name="l00252"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a0b5444f9dcfa6fdace5fa2d8dc2ca11f">  252</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="classch_1_1_combine_harvester.html#a0b5444f9dcfa6fdace5fa2d8dc2ca11f">CombineHarvester::GetObservedRate</a>() {</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;  <span class="keywordtype">double</span> rate = 0.0;</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; obs_.size(); ++i) {</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    rate += obs_[i]-&gt;rate();</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;  }</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  <span class="keywordflow">return</span> rate;</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;}</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;</div>
-<div class="line"><a name="l00260"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a0d3eca727963c0c14a3c04bbdce2ca5e">  260</a></span>&#160;TH1F <a class="code" href="classch_1_1_combine_harvester.html#a0d3eca727963c0c14a3c04bbdce2ca5e">CombineHarvester::GetObservedShape</a>() {</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  TH1F shape;</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  <span class="keywordtype">bool</span> shape_init = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; obs_.size(); ++i) {</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    TH1F proc_shape;</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="keywordtype">double</span> p_rate = obs_[i]-&gt;rate();</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    <span class="keywordflow">if</span> (obs_[i]-&gt;shape()) {</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;      TH1F <span class="keyword">const</span>* test_f = <span class="keyword">dynamic_cast&lt;</span>TH1F const*<span class="keyword">&gt;</span>(obs_[i]-&gt;shape());</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;      TH1D <span class="keyword">const</span>* test_d = <span class="keyword">dynamic_cast&lt;</span>TH1D const*<span class="keyword">&gt;</span>(obs_[i]-&gt;shape());</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;      <span class="keywordflow">if</span> (test_f) {</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;        test_f-&gt;Copy(proc_shape);</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;      } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (test_d) {</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        test_d-&gt;Copy(proc_shape);</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        <span class="keywordflow">throw</span> std::runtime_error(</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            <span class="stringliteral">&quot;[CombineHarvester] TH1 is not a TH1F or a TH1D&quot;</span>);</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;      }</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (obs_[i]-&gt;<a class="code" href="classch_1_1_combine_harvester.html#a463bab1fa1cc7098f35d82c78a10fb9d">data</a>()) {</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;      std::string var_name = obs_[i]-&gt;data()-&gt;get()-&gt;first()-&gt;GetName();</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;      proc_shape = *(<span class="keyword">dynamic_cast&lt;</span>TH1F*<span class="keyword">&gt;</span>(obs_[i]-&gt;data()-&gt;createHistogram(</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                             var_name.c_str())));</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;      proc_shape.Scale(1. / proc_shape.Integral());</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    }</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    proc_shape.Scale(p_rate);</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    <span class="keywordflow">if</span> (!shape_init) {</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;      proc_shape.Copy(shape);</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;      shape.Reset();</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;      shape_init = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    }</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    shape.Add(&amp;proc_shape);</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  }</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  <span class="keywordflow">return</span> shape;</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;}</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;<span class="keywordtype">void</span> CombineHarvester::ShapeDiff(<span class="keywordtype">double</span> x,</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    TH1F * target,</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    TH1 <span class="keyword">const</span>* nom,</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    TH1 <span class="keyword">const</span>* low,</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    TH1 <span class="keyword">const</span>* high) {</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;  <span class="comment">//      * we already have computed the histogram for diff=(dhi-dlo) and sum=(dhi+dlo)</span></div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  <span class="comment">//      * so we just do template += (0.5 * x) * (diff + smoothStepFunc(x) * sum)</span></div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;  <span class="comment">//</span></div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;  <span class="keywordtype">double</span> fx = smoothStepFunc(x);</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt;= target-&gt;GetNbinsX(); ++i) {</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keywordtype">float</span> h = high-&gt;GetBinContent(i);</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordtype">float</span> l = low-&gt;GetBinContent(i);</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="keywordtype">float</span> n = nom-&gt;GetBinContent(i);</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    target-&gt;SetBinContent(i, target-&gt;GetBinContent(i) +</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                                 0.5 * x * ((h - l) + (h + l - 2. * n) * fx));</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;  }</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;}</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;</div>
-<div class="line"><a name="l00313"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a89583394f683d9d1bef377b9a906ccc0">  313</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#a89583394f683d9d1bef377b9a906ccc0">CombineHarvester::SetParameters</a>(std::vector&lt;ch::Parameter&gt; params) {</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;  params_.clear();</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; params.size(); ++i) {</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    params_[params[i].name()] = std::make_shared&lt;ch::Parameter&gt;(params[i]);</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;  }</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;}</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;</div>
-<div class="line"><a name="l00320"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a2825b9eeec47f7b23f93520bf615b581">  320</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#a2825b9eeec47f7b23f93520bf615b581">CombineHarvester::RenameParameter</a>(std::string <span class="keyword">const</span>&amp; oldname,</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                                       std::string <span class="keyword">const</span>&amp; newname) {</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;  <span class="keyword">auto</span> it = params_.find(oldname);</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;  <span class="keywordflow">if</span> (it != params_.end()) {</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    params_[newname] = it-&gt;second;</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    params_[newname]-&gt;set_name(newname);</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    params_.erase(it);</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;  }</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;}</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
-<div class="line"><a name="l00330"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731">  330</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731">CombineHarvester::UpdateParameters</a>(std::vector&lt;ch::Parameter&gt; params) {</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; params.size(); ++i) {</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    <span class="keyword">auto</span> it = params_.find(params[i].name());</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <span class="keywordflow">if</span> (it != params_.end()) {</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;      it-&gt;second-&gt;set_val(params[i].val());</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;      it-&gt;second-&gt;set_err_d(params[i].err_d());</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;      it-&gt;second-&gt;set_err_u(params[i].err_u());</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;      <span class="keywordflow">if</span> (verbosity_ &gt;= 1) {</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        log() &lt;&lt; <span class="stringliteral">&quot;[UpdateParameters] Parameter \&quot;&quot;</span> &lt;&lt; params[i].name()</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;              &lt;&lt; <span class="stringliteral">&quot;\&quot; is not defined\n&quot;</span>;</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;      }</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    }</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  }</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;}</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;</div>
-<div class="line"><a name="l00346"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#abc51018136713ef4bec670b85eda7584">  346</a></span>&#160;std::vector&lt;ch::Parameter&gt; <a class="code" href="classch_1_1_combine_harvester.html#abc51018136713ef4bec670b85eda7584">CombineHarvester::GetParameters</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;  std::vector&lt;ch::Parameter&gt; params;</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; it : params_) {</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    params.push_back(*(it.second));</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;  }</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;  <span class="keywordflow">return</span> params;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;}</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;</div>
-<div class="line"><a name="l00354"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a9ec4406a5a327d11af6257be20865b2a">  354</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#a9ec4406a5a327d11af6257be20865b2a">CombineHarvester::VariableRebin</a>(std::vector&lt;double&gt; bins) {</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;  std::vector&lt;double&gt; proc_scaling(procs_.size(), 0.0);</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; procs_.size(); ++i) {</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <span class="keywordflow">if</span> (procs_[i]-&gt;shape()) {</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;      TH1 *copy = <span class="keyword">static_cast&lt;</span>TH1*<span class="keyword">&gt;</span>(procs_[i]-&gt;shape()-&gt;Clone());</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;      <span class="keywordtype">double</span> rate_before = copy-&gt;Integral();</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;      TH1 *copy2 = copy-&gt;Rebin(bins.size()-1, <span class="stringliteral">&quot;&quot;</span>, &amp;(bins[0]));</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;      <span class="keywordtype">double</span> rate_after = copy2-&gt;Integral();</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;      <span class="keywordflow">if</span> (rate_after &gt; 0.) copy2-&gt;Scale(1.0/rate_after);</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;      procs_[i]-&gt;set_shape(std::unique_ptr&lt;TH1&gt;(copy2));</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;      procs_[i]-&gt;set_rate(procs_[i]-&gt;rate() * (rate_after/rate_before));</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;      proc_scaling[i] = rate_after/rate_before;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;      <span class="keyword">delete</span> copy;</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    }</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  }</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; obs_.size(); ++i) {</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keywordflow">if</span> (obs_[i]-&gt;shape()) {</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;      TH1 *copy = <span class="keyword">static_cast&lt;</span>TH1*<span class="keyword">&gt;</span>(obs_[i]-&gt;shape()-&gt;Clone());</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      <span class="keywordtype">double</span> rate_before = copy-&gt;Integral();</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;      TH1 *copy2 = copy-&gt;Rebin(bins.size()-1, <span class="stringliteral">&quot;&quot;</span>, &amp;(bins[0]));</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;      <span class="keywordtype">double</span> rate_after = copy2-&gt;Integral();</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;      <span class="keywordflow">if</span> (rate_after &gt; 0.) copy2-&gt;Scale(1.0/rate_after);</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;      obs_[i]-&gt;set_shape(std::unique_ptr&lt;TH1&gt;(copy2));</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;      obs_[i]-&gt;set_rate(obs_[i]-&gt;rate() * (rate_after/rate_before));</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;      <span class="keyword">delete</span> copy;</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    }</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;  }</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; systs_.size(); ++i) {</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    <span class="keywordtype">double</span> proc_scale = 1.0;</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; procs_.size(); ++j) {</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;      <span class="keywordflow">if</span> (<a class="code" href="namespacech.html#a9c09b4e5a6dbbd49dfebd9235a2f60b5">MatchingProcess</a>(*(procs_[j]), *(systs_[i].<span class="keyword">get</span>()))) {</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        proc_scale = proc_scaling[j];</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;      }</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    }</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="keywordflow">if</span> (systs_[i]-&gt;shape_u()) {</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;      TH1 *copy = <span class="keyword">static_cast&lt;</span>TH1*<span class="keyword">&gt;</span>(systs_[i]-&gt;shape_u()-&gt;Clone());</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;      <span class="keywordtype">double</span> rate_before = copy-&gt;Integral();</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;      TH1 *copy2 = copy-&gt;Rebin(bins.size()-1, <span class="stringliteral">&quot;&quot;</span>, &amp;(bins[0]));</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;      <span class="keywordtype">double</span> rate_after = copy2-&gt;Integral();</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;      <span class="keywordflow">if</span> (rate_after &gt; 0.) copy2-&gt;Scale(1.0/rate_after);</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;      systs_[i]-&gt;set_shape_u(std::unique_ptr&lt;TH1&gt;(copy2));</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;      systs_[i]-&gt;set_value_u((rate_after / rate_before) * systs_[i]-&gt;value_u() /</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;                           proc_scale);</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;      <span class="keyword">delete</span> copy;</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    }</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    <span class="keywordflow">if</span> (systs_[i]-&gt;shape_d()) {</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;      TH1 *copy = <span class="keyword">static_cast&lt;</span>TH1*<span class="keyword">&gt;</span>(systs_[i]-&gt;shape_d()-&gt;Clone());</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;      <span class="keywordtype">double</span> rate_before = copy-&gt;Integral();</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;      TH1 *copy2 = copy-&gt;Rebin(bins.size()-1, <span class="stringliteral">&quot;&quot;</span>, &amp;(bins[0]));</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;      <span class="keywordtype">double</span> rate_after = copy2-&gt;Integral();</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;      <span class="keywordflow">if</span> (rate_after &gt; 0.) copy2-&gt;Scale(1.0/rate_after);</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;      systs_[i]-&gt;set_shape_d(std::unique_ptr&lt;TH1&gt;(copy2));</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;      systs_[i]-&gt;set_value_d((rate_after / rate_before) * systs_[i]-&gt;value_d() /</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                           proc_scale);</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;      <span class="keyword">delete</span> copy;</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    }</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;  }</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;}</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;</div>
-<div class="line"><a name="l00413"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#ad61cdbfaea0ed88c09651c2a92c934e2">  413</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#ad61cdbfaea0ed88c09651c2a92c934e2">CombineHarvester::SetPdfBins</a>(<span class="keywordtype">unsigned</span> nbins) {</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; procs_.size(); ++i) {</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    std::set&lt;std::string&gt; binning_vars;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    <span class="keywordflow">if</span> (procs_[i]-&gt;pdf()) {</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;      RooAbsData <span class="keyword">const</span>* data_obj = FindMatchingData(procs_[i].<span class="keyword">get</span>());</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;      std::string var_name = <span class="stringliteral">&quot;CMS_th1x&quot;</span>;</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;      <span class="keywordflow">if</span> (data_obj) var_name = data_obj-&gt;get()-&gt;first()-&gt;GetName();</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;      binning_vars.insert(var_name);</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;    }</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp; it : wspaces_) {</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp; var : binning_vars) {</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        RooRealVar* avar =</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;            <span class="keyword">dynamic_cast&lt;</span>RooRealVar*<span class="keyword">&gt;</span>(it.second-&gt;var(var.c_str()));</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        <span class="keywordflow">if</span> (avar) avar-&gt;setBins(nbins);</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;      }</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    }</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;  }</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;}</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;}</div>
-<div class="ttc" id="classch_1_1_combine_harvester_html_a89583394f683d9d1bef377b9a906ccc0"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a89583394f683d9d1bef377b9a906ccc0">ch::CombineHarvester::SetParameters</a></div><div class="ttdeci">void SetParameters(std::vector&lt; ch::Parameter &gt; params)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00313">CombineHarvester_Evaluate.cc:313</a></div></div>
-<div class="ttc" id="classch_1_1_combine_harvester_html_a1e21af204aec55aa9f26e907fdc99731"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731">ch::CombineHarvester::UpdateParameters</a></div><div class="ttdeci">void UpdateParameters(std::vector&lt; ch::Parameter &gt; params)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00330">CombineHarvester_Evaluate.cc:330</a></div></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;      <span class="keywordflow">if</span> (proc_shape.Integral() &gt; 0.)</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        proc_shape.Scale(p_rate / proc_shape.Integral());</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;      <span class="keywordflow">if</span> (!shape_init) {</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        proc_shape.Copy(shape);</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        shape.Reset();</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        shape_init = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;      }</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;      shape.Add(&amp;proc_shape);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (procs_[i]-&gt;pdf()) {</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;      RooAbsData <span class="keyword">const</span>* data_obj = FindMatchingData(procs_[i].<span class="keyword">get</span>());</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;      std::string var_name = <span class="stringliteral">&quot;CMS_th1x&quot;</span>;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;      <span class="keywordflow">if</span> (data_obj) var_name = data_obj-&gt;get()-&gt;first()-&gt;GetName();</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;      TH1::AddDirectory(<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;      TH1F proc_shape = *(<span class="keyword">dynamic_cast&lt;</span>TH1F*<span class="keyword">&gt;</span>(procs_[i]-&gt;pdf()-&gt;createHistogram(</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                             var_name.c_str())));</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> sys_it : lookup[i]) {</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        <span class="keywordtype">double</span> x = params_[sys_it-&gt;name()]-&gt;val();</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        <span class="keywordflow">if</span> (sys_it-&gt;asymm()) {</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;          <span class="keywordflow">if</span> (x &gt;= 0) {</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;            p_rate *= std::pow(sys_it-&gt;value_u(), x * sys_it-&gt;scale());</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;          } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;            p_rate *= std::pow(sys_it-&gt;value_d(), -1.0 * x * sys_it-&gt;scale());</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;          }</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;          p_rate *= std::pow(sys_it-&gt;value_u(), x * sys_it-&gt;scale());</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        }</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;      }</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;      proc_shape.Scale(p_rate);</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;      <span class="keywordflow">if</span> (!shape_init) {</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        proc_shape.Copy(shape);</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        shape.Reset();</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        shape_init = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;      }</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;      shape.Add(&amp;proc_shape);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    }</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  }</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  <span class="keywordflow">return</span> shape;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;}</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;</div>
+<div class="line"><a name="l00253"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a0b5444f9dcfa6fdace5fa2d8dc2ca11f">  253</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="classch_1_1_combine_harvester.html#a0b5444f9dcfa6fdace5fa2d8dc2ca11f">CombineHarvester::GetObservedRate</a>() {</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  <span class="keywordtype">double</span> rate = 0.0;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; obs_.size(); ++i) {</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    rate += obs_[i]-&gt;rate();</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  }</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  <span class="keywordflow">return</span> rate;</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;}</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;</div>
+<div class="line"><a name="l00261"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a0d3eca727963c0c14a3c04bbdce2ca5e">  261</a></span>&#160;TH1F <a class="code" href="classch_1_1_combine_harvester.html#a0d3eca727963c0c14a3c04bbdce2ca5e">CombineHarvester::GetObservedShape</a>() {</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  TH1F shape;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  <span class="keywordtype">bool</span> shape_init = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; obs_.size(); ++i) {</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    TH1F proc_shape;</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    <span class="keywordtype">double</span> p_rate = obs_[i]-&gt;rate();</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keywordflow">if</span> (obs_[i]-&gt;shape()) {</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;      TH1F <span class="keyword">const</span>* test_f = <span class="keyword">dynamic_cast&lt;</span>TH1F const*<span class="keyword">&gt;</span>(obs_[i]-&gt;shape());</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;      TH1D <span class="keyword">const</span>* test_d = <span class="keyword">dynamic_cast&lt;</span>TH1D const*<span class="keyword">&gt;</span>(obs_[i]-&gt;shape());</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;      <span class="keywordflow">if</span> (test_f) {</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        test_f-&gt;Copy(proc_shape);</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;      } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (test_d) {</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        test_d-&gt;Copy(proc_shape);</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;      } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        <span class="keywordflow">throw</span> std::runtime_error(</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="stringliteral">&quot;[CombineHarvester] TH1 is not a TH1F or a TH1D&quot;</span>);</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;      }</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (obs_[i]-&gt;<a class="code" href="classch_1_1_combine_harvester.html#a463bab1fa1cc7098f35d82c78a10fb9d">data</a>()) {</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;      std::string var_name = obs_[i]-&gt;data()-&gt;get()-&gt;first()-&gt;GetName();</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;      proc_shape = *(<span class="keyword">dynamic_cast&lt;</span>TH1F*<span class="keyword">&gt;</span>(obs_[i]-&gt;data()-&gt;createHistogram(</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;                             var_name.c_str())));</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;      proc_shape.Scale(1. / proc_shape.Integral());</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    }</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    proc_shape.Scale(p_rate);</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    <span class="keywordflow">if</span> (!shape_init) {</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;      proc_shape.Copy(shape);</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;      shape.Reset();</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;      shape_init = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    }</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    shape.Add(&amp;proc_shape);</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  }</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <span class="keywordflow">return</span> shape;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;}</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;<span class="keywordtype">void</span> CombineHarvester::ShapeDiff(<span class="keywordtype">double</span> x,</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    TH1F * target,</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    TH1 <span class="keyword">const</span>* nom,</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    TH1 <span class="keyword">const</span>* low,</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    TH1 <span class="keyword">const</span>* high) {</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  <span class="comment">//      * we already have computed the histogram for diff=(dhi-dlo) and sum=(dhi+dlo)</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;  <span class="comment">//      * so we just do template += (0.5 * x) * (diff + smoothStepFunc(x) * sum)</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;  <span class="keywordtype">double</span> fx = smoothStepFunc(x);</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt;= target-&gt;GetNbinsX(); ++i) {</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordtype">float</span> h = high-&gt;GetBinContent(i);</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="keywordtype">float</span> l = low-&gt;GetBinContent(i);</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="keywordtype">float</span> n = nom-&gt;GetBinContent(i);</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    target-&gt;SetBinContent(i, target-&gt;GetBinContent(i) +</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                                 0.5 * x * ((h - l) + (h + l - 2. * n) * fx));</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  }</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;}</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;</div>
+<div class="line"><a name="l00314"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a89583394f683d9d1bef377b9a906ccc0">  314</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#a89583394f683d9d1bef377b9a906ccc0">CombineHarvester::SetParameters</a>(std::vector&lt;ch::Parameter&gt; params) {</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;  params_.clear();</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; params.size(); ++i) {</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    params_[params[i].name()] = std::make_shared&lt;ch::Parameter&gt;(params[i]);</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;  }</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;}</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;</div>
+<div class="line"><a name="l00321"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a2825b9eeec47f7b23f93520bf615b581">  321</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#a2825b9eeec47f7b23f93520bf615b581">CombineHarvester::RenameParameter</a>(std::string <span class="keyword">const</span>&amp; oldname,</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                                       std::string <span class="keyword">const</span>&amp; newname) {</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;  <span class="keyword">auto</span> it = params_.find(oldname);</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;  <span class="keywordflow">if</span> (it != params_.end()) {</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    params_[newname] = it-&gt;second;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    params_[newname]-&gt;set_name(newname);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    params_.erase(it);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;  }</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;}</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;</div>
+<div class="line"><a name="l00331"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731">  331</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731">CombineHarvester::UpdateParameters</a>(std::vector&lt;ch::Parameter&gt; params) {</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; params.size(); ++i) {</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    <span class="keyword">auto</span> it = params_.find(params[i].name());</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    <span class="keywordflow">if</span> (it != params_.end()) {</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;      it-&gt;second-&gt;set_val(params[i].val());</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;      it-&gt;second-&gt;set_err_d(params[i].err_d());</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;      it-&gt;second-&gt;set_err_u(params[i].err_u());</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;      <span class="keywordflow">if</span> (verbosity_ &gt;= 1) {</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;        log() &lt;&lt; <span class="stringliteral">&quot;[UpdateParameters] Parameter \&quot;&quot;</span> &lt;&lt; params[i].name()</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;              &lt;&lt; <span class="stringliteral">&quot;\&quot; is not defined\n&quot;</span>;</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;      }</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    }</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;  }</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;}</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;</div>
+<div class="line"><a name="l00347"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#abc51018136713ef4bec670b85eda7584">  347</a></span>&#160;std::vector&lt;ch::Parameter&gt; <a class="code" href="classch_1_1_combine_harvester.html#abc51018136713ef4bec670b85eda7584">CombineHarvester::GetParameters</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;  std::vector&lt;ch::Parameter&gt; params;</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; it : params_) {</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    params.push_back(*(it.second));</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;  }</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;  <span class="keywordflow">return</span> params;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;}</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;</div>
+<div class="line"><a name="l00355"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#a9ec4406a5a327d11af6257be20865b2a">  355</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#a9ec4406a5a327d11af6257be20865b2a">CombineHarvester::VariableRebin</a>(std::vector&lt;double&gt; bins) {</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;  std::vector&lt;double&gt; proc_scaling(procs_.size(), 0.0);</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; procs_.size(); ++i) {</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <span class="keywordflow">if</span> (procs_[i]-&gt;shape()) {</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;      TH1 *copy = <span class="keyword">static_cast&lt;</span>TH1*<span class="keyword">&gt;</span>(procs_[i]-&gt;shape()-&gt;Clone());</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;      <span class="keywordtype">double</span> rate_before = copy-&gt;Integral();</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;      TH1 *copy2 = copy-&gt;Rebin(bins.size()-1, <span class="stringliteral">&quot;&quot;</span>, &amp;(bins[0]));</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;      <span class="keywordtype">double</span> rate_after = copy2-&gt;Integral();</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;      <span class="keywordflow">if</span> (rate_after &gt; 0.) copy2-&gt;Scale(1.0/rate_after);</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;      procs_[i]-&gt;set_shape(std::unique_ptr&lt;TH1&gt;(copy2));</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;      procs_[i]-&gt;set_rate(procs_[i]-&gt;rate() * (rate_after/rate_before));</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;      proc_scaling[i] = rate_after/rate_before;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;      <span class="keyword">delete</span> copy;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    }</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  }</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; obs_.size(); ++i) {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="keywordflow">if</span> (obs_[i]-&gt;shape()) {</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      TH1 *copy = <span class="keyword">static_cast&lt;</span>TH1*<span class="keyword">&gt;</span>(obs_[i]-&gt;shape()-&gt;Clone());</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;      <span class="keywordtype">double</span> rate_before = copy-&gt;Integral();</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;      TH1 *copy2 = copy-&gt;Rebin(bins.size()-1, <span class="stringliteral">&quot;&quot;</span>, &amp;(bins[0]));</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;      <span class="keywordtype">double</span> rate_after = copy2-&gt;Integral();</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;      <span class="keywordflow">if</span> (rate_after &gt; 0.) copy2-&gt;Scale(1.0/rate_after);</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;      obs_[i]-&gt;set_shape(std::unique_ptr&lt;TH1&gt;(copy2));</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;      obs_[i]-&gt;set_rate(obs_[i]-&gt;rate() * (rate_after/rate_before));</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;      <span class="keyword">delete</span> copy;</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    }</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;  }</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; systs_.size(); ++i) {</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordtype">double</span> proc_scale = 1.0;</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; procs_.size(); ++j) {</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;      <span class="keywordflow">if</span> (<a class="code" href="namespacech.html#a9c09b4e5a6dbbd49dfebd9235a2f60b5">MatchingProcess</a>(*(procs_[j]), *(systs_[i].<span class="keyword">get</span>()))) {</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        proc_scale = proc_scaling[j];</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;      }</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    }</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    <span class="keywordflow">if</span> (systs_[i]-&gt;shape_u()) {</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;      TH1 *copy = <span class="keyword">static_cast&lt;</span>TH1*<span class="keyword">&gt;</span>(systs_[i]-&gt;shape_u()-&gt;Clone());</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;      <span class="keywordtype">double</span> rate_before = copy-&gt;Integral();</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;      TH1 *copy2 = copy-&gt;Rebin(bins.size()-1, <span class="stringliteral">&quot;&quot;</span>, &amp;(bins[0]));</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;      <span class="keywordtype">double</span> rate_after = copy2-&gt;Integral();</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;      <span class="keywordflow">if</span> (rate_after &gt; 0.) copy2-&gt;Scale(1.0/rate_after);</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;      systs_[i]-&gt;set_shape_u(std::unique_ptr&lt;TH1&gt;(copy2));</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;      systs_[i]-&gt;set_value_u((rate_after / rate_before) * systs_[i]-&gt;value_u() /</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;                           proc_scale);</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;      <span class="keyword">delete</span> copy;</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    }</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    <span class="keywordflow">if</span> (systs_[i]-&gt;shape_d()) {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;      TH1 *copy = <span class="keyword">static_cast&lt;</span>TH1*<span class="keyword">&gt;</span>(systs_[i]-&gt;shape_d()-&gt;Clone());</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;      <span class="keywordtype">double</span> rate_before = copy-&gt;Integral();</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;      TH1 *copy2 = copy-&gt;Rebin(bins.size()-1, <span class="stringliteral">&quot;&quot;</span>, &amp;(bins[0]));</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;      <span class="keywordtype">double</span> rate_after = copy2-&gt;Integral();</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;      <span class="keywordflow">if</span> (rate_after &gt; 0.) copy2-&gt;Scale(1.0/rate_after);</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;      systs_[i]-&gt;set_shape_d(std::unique_ptr&lt;TH1&gt;(copy2));</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;      systs_[i]-&gt;set_value_d((rate_after / rate_before) * systs_[i]-&gt;value_d() /</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                           proc_scale);</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;      <span class="keyword">delete</span> copy;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;    }</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;  }</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;}</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;</div>
+<div class="line"><a name="l00414"></a><span class="lineno"><a class="line" href="classch_1_1_combine_harvester.html#ad61cdbfaea0ed88c09651c2a92c934e2">  414</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classch_1_1_combine_harvester.html#ad61cdbfaea0ed88c09651c2a92c934e2">CombineHarvester::SetPdfBins</a>(<span class="keywordtype">unsigned</span> nbins) {</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; procs_.size(); ++i) {</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    std::set&lt;std::string&gt; binning_vars;</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    <span class="keywordflow">if</span> (procs_[i]-&gt;pdf()) {</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;      RooAbsData <span class="keyword">const</span>* data_obj = FindMatchingData(procs_[i].<span class="keyword">get</span>());</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;      std::string var_name = <span class="stringliteral">&quot;CMS_th1x&quot;</span>;</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;      <span class="keywordflow">if</span> (data_obj) var_name = data_obj-&gt;get()-&gt;first()-&gt;GetName();</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;      binning_vars.insert(var_name);</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;    }</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp; it : wspaces_) {</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp; var : binning_vars) {</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        RooRealVar* avar =</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;            <span class="keyword">dynamic_cast&lt;</span>RooRealVar*<span class="keyword">&gt;</span>(it.second-&gt;var(var.c_str()));</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        <span class="keywordflow">if</span> (avar) avar-&gt;setBins(nbins);</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;      }</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    }</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;  }</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;}</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;}</div>
+<div class="ttc" id="classch_1_1_combine_harvester_html_a89583394f683d9d1bef377b9a906ccc0"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a89583394f683d9d1bef377b9a906ccc0">ch::CombineHarvester::SetParameters</a></div><div class="ttdeci">void SetParameters(std::vector&lt; ch::Parameter &gt; params)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00314">CombineHarvester_Evaluate.cc:314</a></div></div>
+<div class="ttc" id="classch_1_1_combine_harvester_html_a1e21af204aec55aa9f26e907fdc99731"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a1e21af204aec55aa9f26e907fdc99731">ch::CombineHarvester::UpdateParameters</a></div><div class="ttdeci">void UpdateParameters(std::vector&lt; ch::Parameter &gt; params)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00331">CombineHarvester_Evaluate.cc:331</a></div></div>
 <div class="ttc" id="namespacech_html_a9ba092c0c88fd0a122b927b83d91a4de"><div class="ttname"><a href="namespacech.html#a9ba092c0c88fd0a122b927b83d91a4de">ch::ExtractSampledFitParameters</a></div><div class="ttdeci">std::vector&lt; ch::Parameter &gt; ExtractSampledFitParameters(RooFitResult const &amp;res)</div><div class="ttdef"><b>Definition:</b> <a href="_utilities_8cc_source.html#l00032">Utilities.cc:32</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a463bab1fa1cc7098f35d82c78a10fb9d"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a463bab1fa1cc7098f35d82c78a10fb9d">ch::CombineHarvester::data</a></div><div class="ttdeci">CombineHarvester &amp; data()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___filters_8cc_source.html#l00124">CombineHarvester_Filters.cc:124</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a3d265eb50ea8ec70192788d985733d9d"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a3d265eb50ea8ec70192788d985733d9d">ch::CombineHarvester::GetShape</a></div><div class="ttdeci">TH1F GetShape()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00127">CombineHarvester_Evaluate.cc:127</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_aff4165661f9f137607d6c3c881172689"><div class="ttname"><a href="classch_1_1_combine_harvester.html#aff4165661f9f137607d6c3c881172689">ch::CombineHarvester::GetRate</a></div><div class="ttdeci">double GetRate()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00122">CombineHarvester_Evaluate.cc:122</a></div></div>
 <div class="ttc" id="_process_8h_html"><div class="ttname"><a href="_process_8h.html">Process.h</a></div></div>
-<div class="ttc" id="classch_1_1_combine_harvester_html_a0d3eca727963c0c14a3c04bbdce2ca5e"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a0d3eca727963c0c14a3c04bbdce2ca5e">ch::CombineHarvester::GetObservedShape</a></div><div class="ttdeci">TH1F GetObservedShape()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00260">CombineHarvester_Evaluate.cc:260</a></div></div>
+<div class="ttc" id="classch_1_1_combine_harvester_html_a0d3eca727963c0c14a3c04bbdce2ca5e"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a0d3eca727963c0c14a3c04bbdce2ca5e">ch::CombineHarvester::GetObservedShape</a></div><div class="ttdeci">TH1F GetObservedShape()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00261">CombineHarvester_Evaluate.cc:261</a></div></div>
 <div class="ttc" id="_combine_harvester_8h_html"><div class="ttname"><a href="_combine_harvester_8h.html">CombineHarvester.h</a></div></div>
 <div class="ttc" id="_systematic_8h_html"><div class="ttname"><a href="_systematic_8h.html">Systematic.h</a></div></div>
 <div class="ttc" id="namespacech_html_a9c09b4e5a6dbbd49dfebd9235a2f60b5"><div class="ttname"><a href="namespacech.html#a9c09b4e5a6dbbd49dfebd9235a2f60b5">ch::MatchingProcess</a></div><div class="ttdeci">bool MatchingProcess(T const &amp;first, U const &amp;second)</div><div class="ttdef"><b>Definition:</b> <a href="_utilities_8h_source.html#l00045">Utilities.h:45</a></div></div>
 <div class="ttc" id="namespacech_html"><div class="ttname"><a href="namespacech.html">ch</a></div><div class="ttdef"><b>Definition:</b> <a href="_algorithm_8h_source.html#l00010">Algorithm.h:10</a></div></div>
 <div class="ttc" id="_algorithm_8h_html"><div class="ttname"><a href="_algorithm_8h.html">Algorithm.h</a></div></div>
-<div class="ttc" id="classch_1_1_combine_harvester_html_a0b5444f9dcfa6fdace5fa2d8dc2ca11f"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a0b5444f9dcfa6fdace5fa2d8dc2ca11f">ch::CombineHarvester::GetObservedRate</a></div><div class="ttdeci">double GetObservedRate()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00252">CombineHarvester_Evaluate.cc:252</a></div></div>
+<div class="ttc" id="classch_1_1_combine_harvester_html_a0b5444f9dcfa6fdace5fa2d8dc2ca11f"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a0b5444f9dcfa6fdace5fa2d8dc2ca11f">ch::CombineHarvester::GetObservedRate</a></div><div class="ttdeci">double GetObservedRate()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00253">CombineHarvester_Evaluate.cc:253</a></div></div>
 <div class="ttc" id="classch_1_1_combine_harvester_html_a749af47fa05e1e11b1488bfdb49efce5"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a749af47fa05e1e11b1488bfdb49efce5">ch::CombineHarvester::GetShapeWithUncertainty</a></div><div class="ttdeci">TH1F GetShapeWithUncertainty()</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00075">CombineHarvester_Evaluate.cc:75</a></div></div>
 <div class="ttc" id="_utilities_8h_html"><div class="ttname"><a href="_utilities_8h.html">Utilities.h</a></div></div>
-<div class="ttc" id="classch_1_1_combine_harvester_html_a2825b9eeec47f7b23f93520bf615b581"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a2825b9eeec47f7b23f93520bf615b581">ch::CombineHarvester::RenameParameter</a></div><div class="ttdeci">void RenameParameter(std::string const &amp;oldname, std::string const &amp;newname)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00320">CombineHarvester_Evaluate.cc:320</a></div></div>
+<div class="ttc" id="classch_1_1_combine_harvester_html_a2825b9eeec47f7b23f93520bf615b581"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a2825b9eeec47f7b23f93520bf615b581">ch::CombineHarvester::RenameParameter</a></div><div class="ttdeci">void RenameParameter(std::string const &amp;oldname, std::string const &amp;newname)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00321">CombineHarvester_Evaluate.cc:321</a></div></div>
 <div class="ttc" id="_parameter_8h_html"><div class="ttname"><a href="_parameter_8h.html">Parameter.h</a></div></div>
-<div class="ttc" id="classch_1_1_combine_harvester_html_a9ec4406a5a327d11af6257be20865b2a"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a9ec4406a5a327d11af6257be20865b2a">ch::CombineHarvester::VariableRebin</a></div><div class="ttdeci">void VariableRebin(std::vector&lt; double &gt; bins)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00354">CombineHarvester_Evaluate.cc:354</a></div></div>
+<div class="ttc" id="classch_1_1_combine_harvester_html_a9ec4406a5a327d11af6257be20865b2a"><div class="ttname"><a href="classch_1_1_combine_harvester.html#a9ec4406a5a327d11af6257be20865b2a">ch::CombineHarvester::VariableRebin</a></div><div class="ttdeci">void VariableRebin(std::vector&lt; double &gt; bins)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00355">CombineHarvester_Evaluate.cc:355</a></div></div>
 <div class="ttc" id="_observation_8h_html"><div class="ttname"><a href="_observation_8h.html">Observation.h</a></div></div>
 <div class="ttc" id="_make_unique_8h_html"><div class="ttname"><a href="_make_unique_8h.html">MakeUnique.h</a></div></div>
-<div class="ttc" id="classch_1_1_combine_harvester_html_ad61cdbfaea0ed88c09651c2a92c934e2"><div class="ttname"><a href="classch_1_1_combine_harvester.html#ad61cdbfaea0ed88c09651c2a92c934e2">ch::CombineHarvester::SetPdfBins</a></div><div class="ttdeci">void SetPdfBins(unsigned nbins)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00413">CombineHarvester_Evaluate.cc:413</a></div></div>
-<div class="ttc" id="classch_1_1_combine_harvester_html_abc51018136713ef4bec670b85eda7584"><div class="ttname"><a href="classch_1_1_combine_harvester.html#abc51018136713ef4bec670b85eda7584">ch::CombineHarvester::GetParameters</a></div><div class="ttdeci">std::vector&lt; ch::Parameter &gt; GetParameters() const </div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00346">CombineHarvester_Evaluate.cc:346</a></div></div>
+<div class="ttc" id="classch_1_1_combine_harvester_html_ad61cdbfaea0ed88c09651c2a92c934e2"><div class="ttname"><a href="classch_1_1_combine_harvester.html#ad61cdbfaea0ed88c09651c2a92c934e2">ch::CombineHarvester::SetPdfBins</a></div><div class="ttdeci">void SetPdfBins(unsigned nbins)</div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00414">CombineHarvester_Evaluate.cc:414</a></div></div>
+<div class="ttc" id="classch_1_1_combine_harvester_html_abc51018136713ef4bec670b85eda7584"><div class="ttname"><a href="classch_1_1_combine_harvester.html#abc51018136713ef4bec670b85eda7584">ch::CombineHarvester::GetParameters</a></div><div class="ttdeci">std::vector&lt; ch::Parameter &gt; GetParameters() const </div><div class="ttdef"><b>Definition:</b> <a href="_combine_harvester___evaluate_8cc_source.html#l00347">CombineHarvester_Evaluate.cc:347</a></div></div>
 <div class="ttc" id="namespacech_html_a9ae81b01c3e51356f05c2734d4e7fd8d"><div class="ttname"><a href="namespacech.html#a9ae81b01c3e51356f05c2734d4e7fd8d">ch::any_of</a></div><div class="ttdeci">bool any_of(const Range &amp;r, Predicate p)</div><div class="ttdef"><b>Definition:</b> <a href="_algorithm_8h_source.html#l00017">Algorithm.h:17</a></div></div>
 <div class="ttc" id="classch_1_1_systematic_html_a003ef543320b8966fd66d85cc5a8cd87"><div class="ttname"><a href="classch_1_1_systematic.html#a003ef543320b8966fd66d85cc5a8cd87">ch::Systematic::name</a></div><div class="ttdeci">std::string const &amp; name() const </div><div class="ttdef"><b>Definition:</b> <a href="_systematic_8h_source.html#l00028">Systematic.h:28</a></div></div>
 <div class="ttc" id="classch_1_1_systematic_html"><div class="ttname"><a href="classch_1_1_systematic.html">ch::Systematic</a></div><div class="ttdef"><b>Definition:</b> <a href="_systematic_8h_source.html#l00010">Systematic.h:10</a></div></div>
