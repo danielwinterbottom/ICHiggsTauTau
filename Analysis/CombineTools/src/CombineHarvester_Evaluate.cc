@@ -211,7 +211,8 @@ TH1F CombineHarvester::GetShapeInternal(ProcSystMap const& lookup,
       for (int b = 1; b <= proc_shape.GetNbinsX(); ++b) {
         if (proc_shape.GetBinContent(b) < 0.) proc_shape.SetBinContent(b, 0.);
       }
-      proc_shape.Scale(p_rate / proc_shape.Integral());
+      if (proc_shape.Integral() > 0.)
+        proc_shape.Scale(p_rate / proc_shape.Integral());
       if (!shape_init) {
         proc_shape.Copy(shape);
         shape.Reset();

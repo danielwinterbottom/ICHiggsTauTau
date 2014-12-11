@@ -22,6 +22,17 @@ class Process {
 
   void set_rate(double const& rate) { rate_ = rate; }
   double rate() const { return norm_ ? norm_->getVal() * rate_ : rate_; }
+
+  /**
+   * Get the process normalisation **without** multiplying by the RooAbsReal
+   * value (in the case that it's present)
+   *
+   * Generally this isn't a very useful method, it just returns the value of
+   * the `rate` class member without multipling by the RooAbsReal term. If the
+   * process has a RooAbsReal attached then this is often an (or the)
+   * important part of determining the total process normalisation. One place
+   * this is useful is writing the rate into the text datacard.
+   */
   double no_norm_rate() const { return rate_; }
 
   void set_process(std::string const& process) { process_ = process; }
