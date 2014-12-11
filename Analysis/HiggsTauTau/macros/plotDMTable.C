@@ -1,14 +1,16 @@
-#include "../Core/interface/Plotting.h"
-#include "../Core/interface/Plotting_Style.h"
+#include "../../Core/interface/Plotting.h"
+#include "../../Core/interface/Plotting_Style.h"
 #include "TH2F.h"
 #include "TGraphAsymmErrors.h"
 
-void plotDMTable() {
+void plotDMTable(TString file, TString hist, TString output, TString title) {
   ModTDRStyle();
   gStyle->SetPaintTextFormat(".2f");
-  TFile f("output/phys14/MC_53X_VBF_HToTauTau_M-125.root");
+  // TFile f("output/phys14/Dec7/MC_53X_VBF_HToTauTau_M-125.root");
+  TFile f(file);
 
-  TH2F *dm_hist = (TH2F*)gDirectory->Get("phys14/th_mode_table");
+  // TH2F *dm_hist = (TH2F*)gDirectory->Get("phys14/th_mode_table");
+  TH2F *dm_hist = (TH2F*)gDirectory->Get(hist);
 
   TH2F dm_full(*(TH2F *)dm_hist->Clone());
 
@@ -41,6 +43,9 @@ void plotDMTable() {
   TCanvas * canv = new TCanvas("th_mode_table", "th_mode_table");
   canv->cd();
   std::vector<TPad*> pads = OnePad();
+
+  pads[0]->SetBottomMargin(0.17);
+  pads[0]->SetLeftMargin(0.17);
 
   dm_full.SetMarkerSize(1.1);
   dm_full.GetXaxis()->SetLabelSize(0.04);
@@ -84,6 +89,11 @@ void plotDMTable() {
   dm_full.GetYaxis()->SetBinLabel(16, "3#pi + 4#pi^{0}");
   dm_full.GetYaxis()->SetBinLabel(17, "other");
 
+  dm_full.GetXaxis()->SetTitle("Generated #tau_{h} mode");
+  dm_full.GetYaxis()->SetTitle("Reconstructed #tau_{h} mode");
+  dm_full.GetXaxis()->SetTitleOffset(gStyle->GetTitleXOffset() * 1.6);
+  dm_full.GetYaxis()->SetTitleOffset(gStyle->GetTitleYOffset() * 1.15);
+
   dm_full.GetXaxis()->LabelsOption("v");
   dm_full.GetYaxis()->LabelsOption("h");
 
@@ -97,7 +107,9 @@ void plotDMTable() {
 
 
   dm_full.Draw("TEXT");
-  canv->Print(".pdf");
+  DrawCMSLogo(pads[0], "CMS", "Simulation", 0);
+  DrawTitle(pads[0], title, 3);
+  canv->Print(output+".pdf");
 
 
   // ----------------------------------------------------------------
@@ -145,5 +157,7 @@ void plotDMTable() {
   dm_simple.GetYaxis()->SetBinLabel(2, "#pi#pi^{0}s");
   dm_simple.GetYaxis()->SetBinLabel(3, "#pi#pi#pi");
   dm_simple.Draw("TEXT");
-  canv_simple->Print(".pdf");
+  DrawCMSLogo(pads_simple[0], "CMS", "Simulation", 0);
+  DrawTitle(pads_simple[0], title, 3);
+  canv_simple->Print(output+"_simple.pdf");
 }

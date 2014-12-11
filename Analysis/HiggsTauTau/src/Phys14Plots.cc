@@ -13,10 +13,13 @@ Phys14Plots::Phys14Plots(std::string const& name) : ModuleBase(name) {
 Phys14Plots::~Phys14Plots() { ; }
 
 int Phys14Plots::PreAnalysis() {
+  TH1::SetDefaultSumw2(true);
   using ROOT::Math::Pi;
   if (!fs_) return 0;
   dir_ = new TFileDirectory(fs_->mkdir("phys14"));
   h_n_vtx = dir_->make<TH1F>("n_vtx", "",71, -0.5, 70.5);
+  h_n_it_pu = dir_->make<TH1F>("n_it_pu", "",50, -0.5, 99.5);
+  h_n_ot_pu = dir_->make<TH1F>("n_ot_pu", "",75, -0.5, 149.5);
 
   h_gen_h_pt = dir_->make<TH1F>("gen_h_pt", "",     250, 0, 500);
   h_gen_h_eta = dir_->make<TH1F>("gen_h_eta", "",   50, -5, 5);
@@ -27,25 +30,62 @@ int Phys14Plots::PreAnalysis() {
   h_gen_th_eta = dir_->make<TH1F>("gen_th_eta", "", 50, -5, 5);
   h_gen_th_mode = dir_->make<TH1F>("gen_th_mode", "", 20, -0.5, 19.5);
 
+  th_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th_mt_eff_vs_pt", 100, 0, 200);
+  th_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th_rf_mt_eff_vs_pt", 100, 0, 200);
+  th_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th_dm_rf_eff_vs_pt", 100, 0, 200);
 
   th_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th_dm_eff_vs_pt", 100, 0, 200);
   th_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th_dm_eff_vs_eta", 50, -5, 5);
   th_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th_dm_eff_vs_nvtx", 51, -0.5, 50.5);
+  th_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th_dm_eff_vs_it_pu", 50, -0.5, 99.5);
+  th_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
+
+  th0_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_mt_eff_vs_pt", 100, 0, 200);
+  th0_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_rf_mt_eff_vs_pt", 100, 0, 200);
+  th0_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_dm_rf_eff_vs_pt", 100, 0, 200);
 
   th0_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_pt", 100, 0, 200);
   th0_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_eta", 50, -5, 5);
   th0_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_nvtx", 51, -0.5, 50.5);
+  th0_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_it_pu", 50, -0.5, 99.5);
+  th0_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
+
+  th1_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_vs_pt", 100, 0, 200);
+  th1_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_rf_mt_eff_vs_pt", 100, 0, 200);
+  th1_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_dm_rf_eff_vs_pt", 100, 0, 200);
 
   th1_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_pt", 100, 0, 200);
   th1_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_eta", 50, -5, 5);
   th1_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_nvtx", 51, -0.5, 50.5);
+  th1_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_it_pu", 50, -0.5, 99.5);
+  th1_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
+
+  th10_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_mt_eff_vs_pt", 100, 0, 200);
+  th10_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_rf_mt_eff_vs_pt", 100, 0, 200);
+  th10_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_dm_rf_eff_vs_pt", 100, 0, 200);
 
   th10_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_pt", 100, 0, 200);
   th10_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_eta", 50, -5, 5);
   th10_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_nvtx", 51, -0.5, 50.5);
+  th10_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_it_pu", 50, -0.5, 99.5);
+  th10_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
 
   h_th_mode_table =
       dir_->make<TH2F>("th_mode_table", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
+
+  h_th_mode_table_gen_den =
+      dir_->make<TH2F>("th_mode_table_gen_den", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
+
+  h_th_mode_table_gen_den_rec_fid =
+      dir_->make<TH2F>("th_mode_table_gen_den_rec_fid", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
+
+
+
+  h_th_pt_resp = dir_->make<TH1F>("th_pt_resp", "", 50, -2, 2);
+  h_th0_pt_resp = dir_->make<TH1F>("th0_pt_resp", "", 50, -2, 2);
+  h_th1_pt_resp = dir_->make<TH1F>("th1_pt_resp", "", 50, -2, 2);
+  h_th10_pt_resp = dir_->make<TH1F>("th10_pt_resp", "", 50, -2, 2);
+
 
   // Want to plot:
   // Probability to pass decay mode reco vs: gen vis pT, gen vis eta, nvtx
@@ -56,6 +96,16 @@ int Phys14Plots::Execute(TreeEvent* event) {
   auto const* event_info = event->GetPtr<EventInfo>("eventInfo");
   unsigned n_vtx = event_info->good_vertices();
   h_n_vtx->Fill(n_vtx);
+
+  auto const& pu_info = event->GetPtrVec<PileupInfo>("pileupInfo");
+  unsigned n_it = 0;
+  unsigned n_ot = 0;
+  for (auto info : pu_info) {
+    if (info->bunch_crossing() == 0) n_it += info->num_interactions();
+    if (abs(info->bunch_crossing()) == 1) n_ot += info->num_interactions();
+  }
+  h_n_it_pu->Fill(n_it);
+  h_n_ot_pu->Fill(n_ot);
 
   auto const& gevt = event->Get<GenEvent_XToTauTau>("genEvent_XToTauTau");
   if (gevt.boson) {
@@ -109,10 +159,21 @@ int Phys14Plots::Execute(TreeEvent* event) {
     // The mode table definitely seems to require the reco acceptance cuts be
     // applied. Not clear if they should also be applied at the gen level. For
     // now let's just apply it at the reco level
-    if (rec_th && MinPtMaxEta(rec_th, th_pt_acc, th_eta_acc)) {
+    if (MinPtMaxEta(gen_th_vis, th_pt_acc, th_eta_acc) && rec_th &&
+        MinPtMaxEta(rec_th, th_pt_acc, th_eta_acc)) {
       h_th_mode_table->Fill(gen_th->hadronic_mode, reco_mode);
     }
 
+    if (MinPtMaxEta(gen_th_vis, th_pt_acc, th_eta_acc)) {
+      int local_reco_mode = reco_mode;
+      h_th_mode_table_gen_den->Fill(gen_th->hadronic_mode, local_reco_mode);
+    }
+
+    if (MinPtMaxEta(gen_th_vis, th_pt_acc, th_eta_acc)) {
+      int local_reco_mode = reco_mode;
+      if (rec_th && !MinPtMaxEta(rec_th, th_pt_acc, th_eta_acc)) local_reco_mode = -1;
+      h_th_mode_table_gen_den_rec_fid->Fill(gen_th->hadronic_mode, local_reco_mode);
+    }
 
 
     // Now we'll do the efficiencies. Here the definition is clearer: gen
@@ -120,26 +181,68 @@ int Phys14Plots::Execute(TreeEvent* event) {
     if (MinPtMaxEta(gen_th_vis, th_pt_acc, th_eta_acc)) {
       // We're in the denominator
       bool pass_dm = false;
-      if (rec_th && rec_th->GetTauID("decayModeFinding") > 0.5 &&
+      // if (rec_th && rec_th->GetTauID("decayModeFindingNewDMs") > 0.5 &&
+      if (rec_th && rec_th->decay_mode() >= 0. &&
           MinPtMaxEta(rec_th, th_pt_acc, th_eta_acc))
         pass_dm = true;
+
+      bool pass_rf = rec_th && MinPtMaxEta(rec_th, th_pt_acc, th_eta_acc);
+
+      th_mt_eff_vs_pt.Fill(gen_th_vis->pt(), bool(rec_th));
+      if (rec_th) th_rf_mt_eff_vs_pt.Fill(gen_th_vis->pt(), pass_rf);
+      if (pass_rf) th_dm_rf_eff_vs_pt.Fill(gen_th_vis->pt(), pass_dm);
+
       th_dm_eff_vs_pt.Fill(gen_th_vis->pt(), pass_dm);
       th_dm_eff_vs_eta.Fill(gen_th_vis->eta(), pass_dm);
       th_dm_eff_vs_nvtx.Fill(n_vtx, pass_dm);
+      th_dm_eff_vs_it_pu.Fill(n_it, pass_dm);
+      th_dm_eff_vs_ot_pu.Fill(n_ot, pass_dm);
+      float pt_res = 0;
+      if (pass_dm) {
+        pt_res = (rec_th->pt() - gen_th_vis->pt()) / gen_th_vis->pt();
+        h_th_pt_resp->Fill(pt_res);
+      }
       if (gen_th->hadronic_mode == 0) {
+        th0_mt_eff_vs_pt.Fill(gen_th_vis->pt(), bool(rec_th));
+        if (rec_th) th0_rf_mt_eff_vs_pt.Fill(gen_th_vis->pt(), pass_rf);
+        if (pass_rf) th0_dm_rf_eff_vs_pt.Fill(gen_th_vis->pt(), pass_dm);
+
         th0_dm_eff_vs_pt.Fill(gen_th_vis->pt(), pass_dm);
         th0_dm_eff_vs_eta.Fill(gen_th_vis->eta(), pass_dm);
         th0_dm_eff_vs_nvtx.Fill(n_vtx, pass_dm);
+        th0_dm_eff_vs_it_pu.Fill(n_it, pass_dm);
+        th0_dm_eff_vs_ot_pu.Fill(n_ot, pass_dm);
+        if (pass_dm) {
+          h_th0_pt_resp->Fill(pt_res);
+        }
       }
       if (gen_th->hadronic_mode >= 1 && gen_th->hadronic_mode <= 4) {
+        th1_mt_eff_vs_pt.Fill(gen_th_vis->pt(), bool(rec_th));
+        if (rec_th) th1_rf_mt_eff_vs_pt.Fill(gen_th_vis->pt(), pass_rf);
+        if (pass_rf) th1_dm_rf_eff_vs_pt.Fill(gen_th_vis->pt(), pass_dm);
+
         th1_dm_eff_vs_pt.Fill(gen_th_vis->pt(), pass_dm);
         th1_dm_eff_vs_eta.Fill(gen_th_vis->eta(), pass_dm);
         th1_dm_eff_vs_nvtx.Fill(n_vtx, pass_dm);
+        th1_dm_eff_vs_it_pu.Fill(n_it, pass_dm);
+        th1_dm_eff_vs_ot_pu.Fill(n_ot, pass_dm);
+        if (pass_dm) {
+          h_th1_pt_resp->Fill(pt_res);
+        }
       }
       if (gen_th->hadronic_mode == 10) {
+        th10_mt_eff_vs_pt.Fill(gen_th_vis->pt(), bool(rec_th));
+        if (rec_th) th10_rf_mt_eff_vs_pt.Fill(gen_th_vis->pt(), pass_rf);
+        if (pass_rf) th10_dm_rf_eff_vs_pt.Fill(gen_th_vis->pt(), pass_dm);
+
         th10_dm_eff_vs_pt.Fill(gen_th_vis->pt(), pass_dm);
         th10_dm_eff_vs_eta.Fill(gen_th_vis->eta(), pass_dm);
         th10_dm_eff_vs_nvtx.Fill(n_vtx, pass_dm);
+        th10_dm_eff_vs_it_pu.Fill(n_it, pass_dm);
+        th10_dm_eff_vs_ot_pu.Fill(n_ot, pass_dm);
+        if (pass_dm) {
+          h_th10_pt_resp->Fill(pt_res);
+        }
       }
     }
   }
