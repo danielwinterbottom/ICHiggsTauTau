@@ -329,7 +329,7 @@ void BuildRooMorphing(RooWorkspace& ws, CombineHarvester& cb,
   cb.ForEachProc([&](ch::Process * p) {
     if (p->bin() == bin && p->process() == process) {
       p->set_mass("*");
-      p->set_shape(nullptr);
+      p->set_shape(nullptr, false);
       p->set_rate(1.0);
     }
   });

@@ -271,7 +271,7 @@ int main() {
     });
     cb.mass({"120", "*"});
     cb.cp().signals().ForEachProc([&](ch::Process* p) {
-      p->set_shape(nullptr);
+      p->set_shape(nullptr, false);
       p->set_rate(1.0);
       p->set_mass("*");
     });

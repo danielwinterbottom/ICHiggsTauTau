@@ -92,14 +92,14 @@ void Observation::set_shape(std::unique_ptr<TH1> shape, bool set_rate) {
 }
 
 std::unique_ptr<TH1> Observation::ClonedShape() const {
-  if (!shape_) return std::unique_ptr<TH1>(nullptr);
+  if (!shape_) return std::unique_ptr<TH1>();
   std::unique_ptr<TH1> res(static_cast<TH1 *>(shape_->Clone()));
   res->SetDirectory(0);
   return res;
 }
 
 std::unique_ptr<TH1> Observation::ClonedScaledShape() const {
-  if (!shape_) return std::unique_ptr<TH1>(nullptr);
+  if (!shape_) return std::unique_ptr<TH1>();
   std::unique_ptr<TH1> res(ClonedShape());
   res->Scale(this->rate());
   return res;

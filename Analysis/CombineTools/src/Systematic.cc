@@ -150,14 +150,14 @@ void Systematic::set_shapes(std::unique_ptr<TH1> shape_u,
 }
 
 std::unique_ptr<TH1> Systematic::ClonedShapeU() const {
-  if (!shape_u_) return std::unique_ptr<TH1>(nullptr);
+  if (!shape_u_) return std::unique_ptr<TH1>();
   std::unique_ptr<TH1> res(static_cast<TH1 *>(shape_u_->Clone()));
   res->SetDirectory(0);
   return res;
 }
 
 std::unique_ptr<TH1> Systematic::ClonedShapeD() const {
-  if (!shape_d_) return std::unique_ptr<TH1>(nullptr);
+  if (!shape_d_) return std::unique_ptr<TH1>();
   std::unique_ptr<TH1> res(static_cast<TH1 *>(shape_d_->Clone()));
   res->SetDirectory(0);
   return res;
