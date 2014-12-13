@@ -208,8 +208,7 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
         if (!contains(std::vector<std::string>{"shape", "shape?", "lnN"},
                       type)) {
           throw std::runtime_error(
-              "[CombineHarvester::ParseDatacard] Systematic type " + type +
-              " not supported");
+              FNERROR("Systematic type " + type + " not supported"));
         }
         sys->set_type(words[i][1]);
         sys->set_analysis(analysis);
@@ -248,6 +247,7 @@ int CombineHarvester::ParseDatacard(std::string const& filename,
             sys->set_scale(boost::lexical_cast<double>(words[i][p]));
           }
         }
+        if (sys->type() == "shape") sys->set_asymm(true);
 
         CombineHarvester::CreateParameterIfEmpty(this, sys->name());
         systs_.push_back(sys);

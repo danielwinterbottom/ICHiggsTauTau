@@ -31,7 +31,7 @@ using std::set;
 int main() {
   bool create_asimov = true;
   bool do_parametric = true;
-  bool inject_signal = false;
+  // bool inject_signal = false;
   string inject_mass = "900";
 
 
@@ -115,7 +115,7 @@ int main() {
       ch::CombineHarvester tmp = std::move(
           cb.cp().bin({b}).backgrounds().syst_type({"shape"}, false));
       TH1F tot_bkg = tmp.GetShape();
-      double bkg_rate = tot_bkg.Integral();
+      // double bkg_rate = tot_bkg.Integral();
       tot_bkg.Scale(tmp.GetObservedRate()/tot_bkg.Integral());
       // tot_bkg.Add(&sig, 0.0);
       // for (int i = 1; i <= tot_bkg.GetNbinsX(); ++i) {
@@ -123,7 +123,7 @@ int main() {
       // }
       tot_bkg.Scale(1.0/tot_bkg.Integral());
       tmp.ForEachObs([&](ch::Observation * obs) {
-        obs->set_shape(ch::make_unique<TH1F>(tot_bkg));
+        obs->set_shape(ch::make_unique<TH1F>(tot_bkg), false);
       });
     }
   }
@@ -197,7 +197,7 @@ int main() {
       tmp.ForEachProc([&](ch::Process *proc) {
         proc->set_process("bkg");
         proc->set_rate(1.0);
-        proc->set_shape(nullptr);
+        proc->set_shape(nullptr, false);
       });
 
 
