@@ -19,13 +19,14 @@ var classch_1_1_observation =
     [ "bin_id", "classch_1_1_observation.html#af64ed3b39fc09c59564f8d1c66b2c434", null ],
     [ "set_mass", "classch_1_1_observation.html#a7253b167eae7117432228c9e80c462a8", null ],
     [ "mass", "classch_1_1_observation.html#a8a3c59b54cc2de4e4e44bced77767fe3", null ],
-    [ "set_shape", "classch_1_1_observation.html#a2edf637ca2ba9c9f17d4a6a0e5f50cb6", null ],
+    [ "set_shape", "classch_1_1_observation.html#a69698abc2c0a53c737e3e595d37f2b58", null ],
     [ "shape", "classch_1_1_observation.html#a95d19e58b38c6dd6313eab955309eeda", null ],
+    [ "ClonedShape", "classch_1_1_observation.html#adb67421c69ab33c4d4f5c343f93e7b2e", null ],
+    [ "ClonedScaledShape", "classch_1_1_observation.html#a6ecbfa5be95fb8fb644982c76f7e62f8", null ],
+    [ "ShapeAsTH1F", "classch_1_1_observation.html#a202167d5fed87ee27c287f1a7dd46e50", null ],
     [ "set_data", "classch_1_1_observation.html#a8069a2cfb78c84325ba023064930bd43", null ],
     [ "data", "classch_1_1_observation.html#ad49842c7287e9746b332068e2915c6e7", null ],
     [ "process", "classch_1_1_observation.html#addca8b1ca4c83c3ae8a51130f962a5b8", null ],
-    [ "SetNormShape", "classch_1_1_observation.html#ad52c4cb59410f1fa17c588f6b040e99e", null ],
-    [ "SetNormShapeAndRate", "classch_1_1_observation.html#ae8c815fac83e2dd5a03698b42463f1c6", null ],
     [ "operator<<", "classch_1_1_observation.html#a6c4ab371fa22f5dcffb05ab258b5da4f", null ],
     [ "swap", "classch_1_1_observation.html#a89be1a9e99b14efd3d528195c3f8eb88", null ]
 ];

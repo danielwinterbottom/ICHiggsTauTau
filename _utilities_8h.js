@@ -21,6 +21,8 @@ var _utilities_8h =
     [ "GenerateCombinations", "_utilities_8h.html#a98ec286981dda179332f736f113ab8a5", null ],
     [ "ParseFileLines", "_utilities_8h.html#a23a4079d5c68e21d9697570255e08224", null ],
     [ "MassesFromRange", "_utilities_8h.html#a9aa7fae276e9a3482b0e2e0b7adf779b", null ],
+    [ "HasNegativeBins", "_utilities_8h.html#a7825c01633c16c8c5d7c46f78acf6d4c", null ],
+    [ "ZeroNegativeBins", "_utilities_8h.html#ad95e5447b9cb0676428f86b1fd018a97", null ],
     [ "Tuple2String", "_utilities_8h.html#ae779412e6479bbc7bdc933fcb00f0fe2", null ],
     [ "make_relative", "_utilities_8h.html#a2f4db67e7b9039935a58ea60b650041a", null ]
 ];

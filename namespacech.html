@@ -227,6 +227,10 @@ Functions</h2></td></tr>
 <tr class="separator:a23a4079d5c68e21d9697570255e08224"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9aa7fae276e9a3482b0e2e0b7adf779b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a9aa7fae276e9a3482b0e2e0b7adf779b">MassesFromRange</a> (std::string const &amp;input, std::string const &amp;fmt=&quot;%.0f&quot;)</td></tr>
 <tr class="separator:a9aa7fae276e9a3482b0e2e0b7adf779b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7825c01633c16c8c5d7c46f78acf6d4c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#a7825c01633c16c8c5d7c46f78acf6d4c">HasNegativeBins</a> (TH1 const *h)</td></tr>
+<tr class="separator:a7825c01633c16c8c5d7c46f78acf6d4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad95e5447b9cb0676428f86b1fd018a97"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacech.html#ad95e5447b9cb0676428f86b1fd018a97">ZeroNegativeBins</a> (TH1 *h)</td></tr>
+<tr class="separator:ad95e5447b9cb0676428f86b1fd018a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae779412e6479bbc7bdc933fcb00f0fe2"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
 <tr class="memitem:ae779412e6479bbc7bdc933fcb00f0fe2"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacech.html#ae779412e6479bbc7bdc933fcb00f0fe2">Tuple2String</a> (const std::tuple&lt; Args...&gt; &amp;t)</td></tr>
 <tr class="memdesc:ae779412e6479bbc7bdc933fcb00f0fe2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format any std::tuple as a string.  <a href="#ae779412e6479bbc7bdc933fcb00f0fe2">More...</a><br /></td></tr>
@@ -1285,6 +1289,42 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a7825c01633c16c8c5d7c46f78acf6d4c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ch::HasNegativeBins </td>
+          <td>(</td>
+          <td class="paramtype">TH1 const *&#160;</td>
+          <td class="paramname"><em>h</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00247">247</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad95e5447b9cb0676428f86b1fd018a97"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ch::ZeroNegativeBins </td>
+          <td>(</td>
+          <td class="paramtype">TH1 *&#160;</td>
+          <td class="paramname"><em>h</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="_utilities_8cc_source.html#l00257">257</a> of file <a class="el" href="_utilities_8cc_source.html">Utilities.cc</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ae779412e6479bbc7bdc933fcb00f0fe2"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1311,7 +1351,7 @@ template&lt;class... Args&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A formatted string of the tuple elements </dd></dl>
 
-<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00193">193</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
+<p>Definition at line <a class="el" href="_utilities_8h_source.html#l00196">196</a> of file <a class="el" href="_utilities_8h_source.html">Utilities.h</a>.</p>
 
 </div>
 </div>
@@ -1379,7 +1419,7 @@ template&lt;class... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_combine_harvester_8cc_source.html#l00020">20</a> of file <a class="el" href="_combine_harvester_8cc_source.html">CombineHarvester.cc</a>.</p>
+<p>Definition at line <a class="el" href="_combine_harvester_8cc_source.html#l00022">22</a> of file <a class="el" href="_combine_harvester_8cc_source.html">CombineHarvester.cc</a>.</p>
 
 </div>
 </div>
@@ -1456,7 +1496,7 @@ template&lt;class... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_observation_8cc_source.html#l00021">21</a> of file <a class="el" href="_observation_8cc_source.html">Observation.cc</a>.</p>
+<p>Definition at line <a class="el" href="_observation_8cc_source.html#l00022">22</a> of file <a class="el" href="_observation_8cc_source.html">Observation.cc</a>.</p>
 
 </div>
 </div>
@@ -1484,7 +1524,7 @@ template&lt;class... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_observation_8cc_source.html#l00093">93</a> of file <a class="el" href="_observation_8cc_source.html">Observation.cc</a>.</p>
+<p>Definition at line <a class="el" href="_observation_8cc_source.html#l00140">140</a> of file <a class="el" href="_observation_8cc_source.html">Observation.cc</a>.</p>
 
 </div>
 </div>
@@ -1568,7 +1608,7 @@ template&lt;class... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_process_8cc_source.html#l00025">25</a> of file <a class="el" href="_process_8cc_source.html">Process.cc</a>.</p>
+<p>Definition at line <a class="el" href="_process_8cc_source.html#l00026">26</a> of file <a class="el" href="_process_8cc_source.html">Process.cc</a>.</p>
 
 </div>
 </div>
@@ -1596,7 +1636,7 @@ template&lt;class... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_process_8cc_source.html#l00107">107</a> of file <a class="el" href="_process_8cc_source.html">Process.cc</a>.</p>
+<p>Definition at line <a class="el" href="_process_8cc_source.html#l00155">155</a> of file <a class="el" href="_process_8cc_source.html">Process.cc</a>.</p>
 
 </div>
 </div>
@@ -1624,7 +1664,7 @@ template&lt;class... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_systematic_8cc_source.html#l00028">28</a> of file <a class="el" href="_systematic_8cc_source.html">Systematic.cc</a>.</p>
+<p>Definition at line <a class="el" href="_systematic_8cc_source.html#l00029">29</a> of file <a class="el" href="_systematic_8cc_source.html">Systematic.cc</a>.</p>
 
 </div>
 </div>
@@ -1652,7 +1692,7 @@ template&lt;class... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_systematic_8cc_source.html#l00136">136</a> of file <a class="el" href="_systematic_8cc_source.html">Systematic.cc</a>.</p>
+<p>Definition at line <a class="el" href="_systematic_8cc_source.html#l00179">179</a> of file <a class="el" href="_systematic_8cc_source.html">Systematic.cc</a>.</p>
 
 </div>
 </div>
