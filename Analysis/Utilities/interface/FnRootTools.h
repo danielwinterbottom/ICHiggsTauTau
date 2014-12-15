@@ -37,6 +37,29 @@ namespace ic {
     return result;
   }
 
+  template <class T>
+  T OpenFromTFile(std::string const& fullpath) {
+    std::size_t pos = fullpath.find(':');
+    std::string filepath = "";
+    std::string objectpath = "";
+    if (pos == std::string::npos || pos == 0 || pos == (fullpath.size() - 1)) {
+      throw std::runtime_error("Input path must of the format file.root:object");
+    } else {
+      filepath = fullpath.substr(0, pos);
+      objectpath = fullpath.substr(pos + 1);
+    }
+    TFile file(filepath.c_str());
+    if (!file.IsOpen()) {
+      throw std::runtime_error("File is invalid");
+    }
+    file.cd();
+    T* obj_ptr = dynamic_cast<T*>(gDirectory->Get(objectpath.c_str()));
+    if (!obj_ptr) {
+      throw std::runtime_error("Object " + objectpath + " is missing or of wrong type");
+    }
+    return *obj_ptr;
+  }
+
   std::vector<std::string> ParseFileLines(std::string const& file_name);
 
   template<class T>

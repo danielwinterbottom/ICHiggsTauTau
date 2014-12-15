@@ -1,4 +1,4 @@
 SUBDIRS 	:=
-LIB_DEPS 	:= Core Utilities CombineTools
+LIB_DEPS 	:= CombineTools
 LIB_EXTRA := -lHiggsAnalysisCombinedLimit
 DICTIONARY :=

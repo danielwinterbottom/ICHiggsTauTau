@@ -4,34 +4,35 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
-#include "Core/interface/Plot.h"
-#include "Core/interface/TextElement.h"
-#include "Utilities/interface/FnRootTools.h"
-#include "HiggsTauTau/interface/HTTStatTools.h"
-#include "HiggsTauTau/interface/HTTPlotTools.h"
-#include "HiggsTauTau/interface/HTTAnalysisTools.h"
-#include "HiggsTauTau/interface/mssm_xs_tools.h"
+// #include "Core/interface/Plot.h"
+// #include "Core/interface/TextElement.h"
+// #include "Utilities/interface/FnRootTools.h"
+// #include "HiggsTauTau/interface/HTTStatTools.h"
+// #include "HiggsTauTau/interface/HTTPlotTools.h"
+// #include "HiggsTauTau/interface/HTTAnalysisTools.h"
+// #include "HiggsTauTau/interface/mssm_xs_tools.h"
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/TFileIO.h"
 
 namespace po = boost::program_options;
 
 using namespace std;
-using namespace ic;
+// using namespace ic;
 
-HTTAnalysis::HistValuePair FillHistValuePair(ch::CombineHarvester & cmb, RooFitResult * res) {
-  if (res) {
-    return std::make_pair(
-        cmb.GetShape(),
-        std::make_pair(cmb.GetRate(), cmb.GetUncertainty(res, 500)));
-  } else {
-    return std::make_pair(
-        cmb.GetShape(),
-        std::make_pair(cmb.GetRate(), cmb.GetUncertainty()));
-    } 
-}
+// HTTAnalysis::HistValuePair FillHistValuePair(ch::CombineHarvester & cmb, RooFitResult * res) {
+//   if (res) {
+//     return std::make_pair(
+//         cmb.GetShape(),
+//         std::make_pair(cmb.GetRate(), cmb.GetUncertainty(res, 500)));
+//   } else {
+//     return std::make_pair(
+//         cmb.GetShape(),
+//         std::make_pair(cmb.GetRate(), cmb.GetUncertainty()));
+//     } 
+// }
 
 int main(int argc, char* argv[]){
+  /*
   string cfg;                                   // The configuration file
   string channel        = "";
   string selection      = "";
@@ -237,6 +238,7 @@ int main(int argc, char* argv[]){
   }
   std::cout << "[HiggsTauTauPlot4] Writing datacard input " << tfile_name << std::endl;
   dc_file.Close();
+  */
 
   return 0;
 }

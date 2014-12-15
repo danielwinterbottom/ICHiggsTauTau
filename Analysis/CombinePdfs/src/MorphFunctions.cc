@@ -12,7 +12,6 @@
 #include "RooProduct.h"
 #include "RooConstVar.h"
 #include "CombineTools/interface/Logging.h"
-#include "Utilities/interface/FnRootTools.h"
 
 namespace ch {
 

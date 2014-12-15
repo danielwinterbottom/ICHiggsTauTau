@@ -13,8 +13,8 @@
 
 #include "boost/range/adaptor/reversed.hpp"
 
-#include "Core/interface/Plotting.h"
-#include "Core/interface/Plotting_Style.h"
+#include "CombineTools/interface/Plotting.h"
+#include "CombineTools/interface/Plotting_Style.h"
 #include "CombineTools/interface/TFileIO.h"
 
 // Function prototypes

@@ -11,8 +11,8 @@
 #include "TString.h"
 #include "TLatex.h"
 
-#include "Core/interface/Plotting.h"
-#include "Core/interface/Plotting_Style.h"
+#include "CombineTools/interface/Plotting.h"
+#include "CombineTools/interface/Plotting_Style.h"
 
 
 TGraph ExtractGraph(TTree *t, double & bestFit) {

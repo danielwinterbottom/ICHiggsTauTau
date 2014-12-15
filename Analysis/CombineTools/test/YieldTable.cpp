@@ -17,7 +17,7 @@
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
 
-#include "Utilities/interface/FnRootTools.h"
+// #include "Utilities/interface/FnRootTools.h"
 
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/Utilities.h"
@@ -27,7 +27,7 @@
 namespace po = boost::program_options;
 
 using namespace std;
-using namespace ic;
+// using namespace ic;
 
 
 int main(int argc, char* argv[]){

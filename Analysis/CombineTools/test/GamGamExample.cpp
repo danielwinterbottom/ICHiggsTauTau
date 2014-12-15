@@ -3,8 +3,8 @@
 #include <TFile.h>
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/TFileIO.h"
-#include "Core/interface/Plotting.h"
-#include "Core/interface/Plotting_Style.h"
+#include "CombineTools/interface/Plotting.h"
+#include "CombineTools/interface/Plotting_Style.h"
 #include "TCanvas.h"
 #include "TFrame.h"
 

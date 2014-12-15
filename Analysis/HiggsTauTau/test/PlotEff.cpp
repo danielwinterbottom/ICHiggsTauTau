@@ -15,11 +15,13 @@
 #include "THStack.h"
 #include "TGraphAsymmErrors.h"
 #include "boost/range/adaptor/reversed.hpp"
+#include "boost/algorithm/string.hpp"
 
 #include "Core/interface/Plotting.h"
 #include "Core/interface/Plotting_Style.h"
 #include "Utilities/interface/JsonTools.h"
-#include "CombineTools/interface/TFileIO.h"
+#include "Utilities/interface/FnRootTools.h"
+// #include "CombineTools/interface/TFileIO.h"
 
 
 namespace po = boost::program_options;
@@ -75,8 +77,8 @@ int main(int argc, char* argv[]) {
 
   for (unsigned g = 0; g < js["elements"].size(); ++g) {
     Json::Value const ele = js["elements"][g];
-    TH1F h_num = ch::OpenFromTFile<TH1F>(ele["h_num"].asString() + js["output"].asString() + "_pass");
-    TH1F h_den = ch::OpenFromTFile<TH1F>(ele["h_den"].asString() + js["output"].asString() + "_all");
+    TH1F h_num = ic::OpenFromTFile<TH1F>(ele["h_num"].asString() + js["output"].asString() + "_pass");
+    TH1F h_den = ic::OpenFromTFile<TH1F>(ele["h_den"].asString() + js["output"].asString() + "_all");
     std::string rebin = ele.get("rebin", def["rebin"]).asString();
     std::cout << rebin << "\n";
     if (rebin != "") {

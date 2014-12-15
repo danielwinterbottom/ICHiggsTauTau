@@ -11,6 +11,7 @@
 #include "THStack.h"
 #include "TLine.h"
 #include "TColor.h"
+#include "TGraphAsymmErrors.h"
 
 #include "boost/lexical_cast.hpp"
 #include "boost/algorithm/string.hpp"
@@ -19,13 +20,13 @@
 #include "boost/filesystem.hpp"
 #include "boost/regex.hpp"
 
-#include "Core/interface/Plot.h"
-#include "Core/interface/TextElement.h"
-#include "Utilities/interface/FnRootTools.h"
-#include "HiggsTauTau/interface/HTTStatTools.h"
-#include "HiggsTauTau/interface/HTTPlotTools.h"
-#include "HiggsTauTau/interface/HTTAnalysisTools.h"
-#include "HiggsTauTau/interface/mssm_xs_tools.h"
+// #include "Core/interface/Plot.h"
+// #include "Core/interface/TextElement.h"
+// #include "Utilities/interface/FnRootTools.h"
+// #include "HiggsTauTau/interface/HTTStatTools.h"
+// #include "HiggsTauTau/interface/HTTPlotTools.h"
+// #include "HiggsTauTau/interface/HTTAnalysisTools.h"
+// #include "HiggsTauTau/interface/mssm_xs_tools.h"
 
 #include "CombineTools/interface/CombineHarvester.h"
 #include "CombineTools/interface/SOverBTools.h"
@@ -34,7 +35,7 @@
 namespace po = boost::program_options;
 
 using namespace std;
-using namespace ic;
+// using namespace ic;
 
 void SetMCStackStyle(TH1F & ele, unsigned color) {
   ele.SetFillColor(color);
@@ -76,7 +77,7 @@ void LegendStyle(TLegend *legend) {
 }
 
 int main(int argc, char* argv[]){
-  Plot::SetHTTStyle();
+  // Plot::SetHTTStyle();
   string cfg;                                   // The configuration file
 
   vector<string> datacards;
@@ -135,8 +136,8 @@ int main(int argc, char* argv[]){
     ("mssm",
       po::value<bool>(&mssm)->default_value(false),
       "input is an MSSM datacard");
-  HTTPlot plot;
-  config.add(plot.GenerateOptions(""));
+  // HTTPlot plot;
+  // config.add(plot.GenerateOptions(""));
   po::store(po::command_line_parser(argc, argv)
     .options(config).allow_unregistered().run(), vm);
   po::store(po::parse_config_file<char>(cfg.c_str(), config, true), vm);
@@ -221,7 +222,8 @@ int main(int argc, char* argv[]){
   signal_hist.SetFillStyle(3004);
   signal_hist.SetLineColor(kRed);
   signal_hist.SetLineWidth(2);
-  signal_hist.SetTitle(("SM H("+plot.draw_signal_mass()+")#rightarrow#tau#tau").c_str());
+  // signal_hist.SetTitle(("SM H("+plot.draw_signal_mass()+")#rightarrow#tau#tau").c_str());
+  signal_hist.SetTitle("SM H(125#rightarrow#tau#tau");
 
   TH1F ztt_hist = cmb.cp().process({"ZTT","Ztt"}).GetShape();
   SetMCStackStyle(ztt_hist, TColor::GetColor(248,206,104));
@@ -272,7 +274,7 @@ int main(int argc, char* argv[]){
   SetDataStyle(data_hist);
   // SetDataStyle(data_errors);
   data_hist.SetTitle("Observed");
-  if (plot.blind()) BlindHistogram(&data_hist, plot.x_blind_min(), plot.x_blind_max());
+  // if (plot.blind()) BlindHistogram(&data_hist, plot.x_blind_min(), plot.x_blind_max());
 
   TH1F diff_hist = data_hist;
   diff_hist.Add(&copy_hist, -1.);
@@ -306,10 +308,10 @@ int main(int argc, char* argv[]){
   thstack.Add(&ztt_hist, "HIST");
   thstack.Add(&signal_hist, "HIST");
 
-  thstack.SetMaximum(thstack.GetMaximum()*1.1*plot.extra_pad());
+  // thstack.SetMaximum(thstack.GetMaximum()*1.1*plot.extra_pad());
   thstack.Draw();
-  thstack.GetXaxis()->SetTitle(plot.x_axis_label().c_str());
-  thstack.GetYaxis()->SetTitle(plot.y_axis_label().c_str());
+  // thstack.GetXaxis()->SetTitle(plot.x_axis_label().c_str());
+  // thstack.GetYaxis()->SetTitle(plot.y_axis_label().c_str());
   thstack.GetHistogram()->SetTitleSize  (0.05,"Y");
   thstack.GetHistogram()->SetTitleOffset(1.600,"Y");
   thstack.GetHistogram()->SetLabelOffset(0.014,"Y");
@@ -393,9 +395,9 @@ int main(int argc, char* argv[]){
   title_latex->SetTextSize(0.035);
   title_latex->SetTextFont(62);
   title_latex->SetTextAlign(31);
-  title_latex->DrawLatex(0.95,0.935,plot.title_right().c_str());
+  // title_latex->DrawLatex(0.95,0.935,plot.title_right().c_str());
   title_latex->SetTextAlign(11);
-  title_latex->DrawLatex(0.17,0.931,plot.title_left().c_str());
+  // title_latex->DrawLatex(0.17,0.931,plot.title_left().c_str());
   title_latex->SetTextSize(0.045);
   title_latex->DrawLatex(0.20,0.87,(text1 + (postfit? "" : " (prefit)")).c_str());
   title_latex->DrawLatex(0.20,0.82,text2.c_str());

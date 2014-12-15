@@ -12,8 +12,8 @@
 #include "CombineTools/interface/SOverBTools.h"
 #include "CombineTools/interface/TFileIO.h"
 #include "CombineTools/interface/Utilities.h"
-#include "Core/interface/Plotting.h"
-#include "Core/interface/Plotting_Style.h"
+#include "CombineTools/interface/Plotting.h"
+#include "CombineTools/interface/Plotting_Style.h"
 
 namespace po = boost::program_options;
 
