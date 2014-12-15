@@ -79,6 +79,19 @@ class Phys14Plots : public ModuleBase {
   EfficiencyPlot1D th1_rf_mt_eff_vs_pt;
   EfficiencyPlot1D th1_dm_rf_eff_vs_pt;
 
+  EfficiencyPlot1D th1_mt_eff_vs_pt_pi;
+  EfficiencyPlot1D th1_jet_eff_vs_pt;
+  EfficiencyPlot1D th1_mt_eff_after_jet_vs_pt;
+  EfficiencyPlot1D th1_mt_eff_after_jet_pi15_vs_pt;
+  EfficiencyPlot1D th1_mt_eff_after_jet_pi20_vs_pt;
+
+  TH1F *th1_jet_ch_had_frac;
+  TH1F *th1_jet_nt_had_frac;
+  TH1F *th1_jet_photon_frac;
+  TH1F *th1_jet_elec_frac;
+  TH1F *th1_jet_muon_frac;
+  TH1F *th1_jet_tot_frac;
+
   EfficiencyPlot1D th1_dm_eff_vs_pt;
   EfficiencyPlot1D th1_dm_eff_vs_eta;
   EfficiencyPlot1D th1_dm_eff_vs_nvtx;

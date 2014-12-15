@@ -54,6 +54,21 @@ int Phys14Plots::PreAnalysis() {
   th1_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_rf_mt_eff_vs_pt", 100, 0, 200);
   th1_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_dm_rf_eff_vs_pt", 100, 0, 200);
 
+  // Special plot of th1 matching efficiency vs pt of the charged pion instead
+  // of the entire visible part
+  th1_mt_eff_vs_pt_pi = EfficiencyPlot1D(dir_, "th1_mt_eff_vs_pt_pi", 100, 0, 200);
+  th1_jet_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_jet_eff_vs_pt", 100, 0, 200);
+  th1_mt_eff_after_jet_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_vs_pt", 100, 0, 200);
+  th1_mt_eff_after_jet_pi15_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_pi15_vs_pt", 100, 0, 200);
+  th1_mt_eff_after_jet_pi20_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_pi20_vs_pt", 100, 0, 200);
+
+  th1_jet_ch_had_frac = dir_->make<TH1F>("th1_jet_ch_had_frac", "", 21, 0, 1.05);
+  th1_jet_nt_had_frac = dir_->make<TH1F>("th1_jet_nt_had_frac", "", 21, 0, 1.05);
+  th1_jet_photon_frac = dir_->make<TH1F>("th1_jet_photon_frac", "", 21, 0, 1.05);
+  th1_jet_elec_frac = dir_->make<TH1F>("th1_jet_elec_frac", "", 21, 0, 1.05);
+  th1_jet_muon_frac = dir_->make<TH1F>("th1_jet_muon_frac", "", 21, 0, 1.05);
+  th1_jet_tot_frac = dir_->make<TH1F>("th1_jet_tot_frac", "", 21, 0, 1.05);
+
   th1_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_pt", 100, 0, 200);
   th1_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_eta", 50, -5, 5);
   th1_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_nvtx", 51, -0.5, 50.5);
@@ -127,10 +142,16 @@ int Phys14Plots::Execute(TreeEvent* event) {
   // Get the reco tau collection
   auto reco_th_vec = event->GetPtrVec<Tau>("taus");
 
-  // Do the matching on the unbiased gen. and reco. taus
+  // Get the reco jet collection
+  auto reco_jet_vec = event->GetPtrVec<PFJet>("pfJetsPFlow");
 
+  // Do the matching on the unbiased gen. and reco. taus
   auto gen_rec_th_matches =
       MatchByDR(gen_th_vis_vec, reco_th_vec, 0.3, true, true);
+
+  // Do the matching on the unbiased gen. and reco. jets
+  auto gen_rec_jet_matches =
+      MatchByDR(gen_th_vis_vec, reco_jet_vec, 0.5, true, true);
 
 
   // We have a vector of pairs from MatchByDR, but a more useful
@@ -138,6 +159,11 @@ int Phys14Plots::Execute(TreeEvent* event) {
   std::map<GenJet const*, Tau const*> gen_rec_th_map;
   for (auto const& x : gen_rec_th_matches) {
     gen_rec_th_map[x.first] = x.second;
+  }
+  // Make a similar map for the gen tau -> reco jet
+  std::map<GenJet const*, PFJet const*> gen_rec_jet_map;
+  for (auto const& x : gen_rec_jet_matches) {
+    gen_rec_jet_map[x.first] = x.second;
   }
 
   // Now loop through the hadronic taus
@@ -151,9 +177,13 @@ int Phys14Plots::Execute(TreeEvent* event) {
     // Use decay mode -1 to mean not reconstructed
     int reco_mode = -1;
     Tau const* rec_th = nullptr;
+    PFJet const* rec_jet = nullptr;
     if (gen_rec_th_map.count(gen_th_vis)) {
       rec_th = gen_rec_th_map[gen_th_vis];
       if (rec_th->decay_mode() >= 0) reco_mode = rec_th->decay_mode();
+    }
+    if (gen_rec_jet_map.count(gen_th_vis)) {
+      rec_jet = gen_rec_jet_map[gen_th_vis];
     }
 
     // The mode table definitely seems to require the reco acceptance cuts be
@@ -181,11 +211,11 @@ int Phys14Plots::Execute(TreeEvent* event) {
     if (MinPtMaxEta(gen_th_vis, th_pt_acc, th_eta_acc)) {
       // We're in the denominator
       bool pass_dm = false;
-      // if (rec_th && rec_th->GetTauID("decayModeFindingNewDMs") > 0.5 &&
+      // Full matching + acceptance + DM flag
       if (rec_th && rec_th->decay_mode() >= 0. &&
           MinPtMaxEta(rec_th, th_pt_acc, th_eta_acc))
         pass_dm = true;
-
+      // matching + acceptance flag
       bool pass_rf = rec_th && MinPtMaxEta(rec_th, th_pt_acc, th_eta_acc);
 
       th_mt_eff_vs_pt.Fill(gen_th_vis->pt(), bool(rec_th));
@@ -202,6 +232,8 @@ int Phys14Plots::Execute(TreeEvent* event) {
         pt_res = (rec_th->pt() - gen_th_vis->pt()) / gen_th_vis->pt();
         h_th_pt_resp->Fill(pt_res);
       }
+
+
       if (gen_th->hadronic_mode == 0) {
         th0_mt_eff_vs_pt.Fill(gen_th_vis->pt(), bool(rec_th));
         if (rec_th) th0_rf_mt_eff_vs_pt.Fill(gen_th_vis->pt(), pass_rf);
@@ -228,6 +260,39 @@ int Phys14Plots::Execute(TreeEvent* event) {
         th1_dm_eff_vs_ot_pu.Fill(n_ot, pass_dm);
         if (pass_dm) {
           h_th1_pt_resp->Fill(pt_res);
+        }
+        // Filling some special plots
+        th1_mt_eff_vs_pt_pi.Fill(gen_th->pi_charged.at(0)->pt(), bool(rec_th));
+        if (rec_jet) {
+          th1_jet_ch_had_frac->Fill(rec_jet->charged_had_energy_frac());
+          th1_jet_nt_had_frac->Fill(rec_jet->neutral_had_energy_frac());
+          th1_jet_photon_frac->Fill(rec_jet->photon_energy_frac());
+          th1_jet_elec_frac->Fill(rec_jet->electron_energy_frac());
+          th1_jet_muon_frac->Fill(rec_jet->muon_energy_frac());
+          th1_jet_tot_frac->Fill(rec_jet->charged_had_energy_frac() +
+                                 rec_jet->neutral_had_energy_frac() +
+                                 rec_jet->photon_energy_frac() +
+                                 rec_jet->electron_energy_frac() +
+                                 rec_jet->muon_energy_frac());
+        }
+        double rec_jet_uncorr_pt = rec_jet
+                                       ? rec_jet->pt() *
+                                             rec_jet->uncorrected_energy() /
+                                             rec_jet->energy()
+                                       : 0.;
+        bool rec_jet_acc = rec_jet && MinPtMaxEta(rec_jet, 0., 2.5) &&
+            rec_jet_uncorr_pt > 14.5;
+        th1_jet_eff_vs_pt.Fill(gen_th_vis->pt(), bool(rec_jet_acc));
+        if (rec_jet_acc) {
+          th1_mt_eff_after_jet_vs_pt.Fill(gen_th_vis->pt(), bool(rec_th));
+          if (gen_th->pi_charged.at(0)->pt() > 15.) {
+            th1_mt_eff_after_jet_pi15_vs_pt.Fill(gen_th_vis->pt(),
+                                                 bool(rec_th));
+          }
+          if (gen_th->pi_charged.at(0)->pt() > 20.) {
+            th1_mt_eff_after_jet_pi20_vs_pt.Fill(gen_th_vis->pt(),
+                                                 bool(rec_th));
+          }
         }
       }
       if (gen_th->hadronic_mode == 10) {
