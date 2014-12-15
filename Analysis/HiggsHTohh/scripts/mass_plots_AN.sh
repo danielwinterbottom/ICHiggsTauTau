@@ -35,25 +35,21 @@ then
     then
       #### Fit with mass cuts. Currently using inclusive is 2jet0tag instead of 2jetinclusive
       echo "Applying 8TeV scale factors from fit with mass cuts..."
-      ET_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.06262,QCD:0.93680,W:1.00077,ZL:1.06344,ZJ:1.02953,VV:1.03175,TT:1.01239 --auto_error_band=0.02852"
-      ET_BAND_ONLY="  --draw_error_band=true  --auto_error_band=0.02852"
-      MT_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.00527,QCD:0.96815,W:0.92797,ZL:1.05419,ZJ:1.04077,VV:0.98635,TT:0.94947 --auto_error_band=0.02292"
-      MT_BAND_ONLY="  --draw_error_band=true  --auto_error_band=0.02292"
-      ET_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.05585,QCD:0.94913,W:1.07497,ZL:1.05302,ZJ:1.02125,VV:1.01510,TT:0.92967 --auto_error_band=0.04717"
-      MT_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.00871,QCD:0.91516,W:0.98349,ZL:1.06099,ZJ:1.01715,VV:0.99253,TT:0.93628 --auto_error_band=0.03822"
-      ET_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.03365,QCD:0.88208,W:1.0,ZL:1.05302,ZJ:1.00923,VV:1.01510,TT:0.92967 --auto_error_band=0.07460"
-      MT_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.99419,QCD:0.94554,W:1.0,ZL:1.06099,ZJ:1.00678,VV:0.99253,TT:0.93628 --auto_error_band=0.05843"
+      ET_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.01970,QCD:1.17660,W:0.99940,ZL:0.96756,ZJ:0.95566,VV:1.01669,TT:0.99316 --auto_error_band=0.06727"
+      MT_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.92984,QCD:1.12305,W:1.00935,ZL:1.03194,ZJ:1.04850,VV:1.00393,TT:0.98038 --auto_error_band=0.07119"
+      ET_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.01320,QCD:1.03198,W:1.17044,ZL:0.91733,ZJ:0.90368,VV:0.96910,TT:0.98011 --auto_error_band=0.07346"
+      MT_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.94978,QCD:0.89195,W:1.17516,ZL:0.92646,ZJ:1.07546,VV:0.96415,TT:1.00571 --auto_error_band=0.06622"
+      ET_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.99650,QCD:1.02488,W:0.79428,ZL:0.84512,ZJ:0.99514,VV:1.01535,TT:0.97939 --auto_error_band=0.08461"
+      MT_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.00320,QCD:0.99097,W:0.71665,ZL:1.50946,ZJ:1.63310,VV:1.00079,TT:1.01360 --auto_error_band=0.06697"
     else 
       #### Fit without mass cuts. Currently using inclusive is 2jet0tag instead of 2jetinclusive
       echo "Applying 8TeV scale factors from fit without mass cuts..."
-      ET_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.03797,QCD:0.90932,W:0.99442,ZL:1.03668,ZJ:1.03099,VV:1.01245,TT:0.98581 --auto_error_band=0.01629"
-      ET_BAND_ONLY="  --draw_error_band=true  --auto_error_band=0.02852"
-      MT_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.05551,QCD:0.93496,W:0.96594,ZL:1.02465,ZJ:1.02279,VV:1.05501,TT:0.99297 --auto_error_band=0.01253"
-      MT_BAND_ONLY="  --draw_error_band=true  --auto_error_band=0.02292"
-      ET_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.04572,QCD:0.90898,W:1.04110,ZL:1.01646,ZJ:1.03378,VV:0.98023,TT:0.85394 --auto_error_band=0.03197"
-      MT_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.05989,QCD:0.89754,W:1.07921,ZL:1.02365,ZJ:0.99739,VV:1.05510,TT:0.90401 --auto_error_band=0.02318"
-      ET_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.02991,QCD:0.90704,W:0.94865,ZL:1.01646,ZJ:1.02002,VV:0.98023,TT:0.85394 --auto_error_band=0.04985"
-      MT_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.04566,QCD:0.99538,W:1.0,ZL:1.02365,ZJ:1.00331,VV:1.05510,TT:0.90401 --auto_error_band=0.03746"
+      ET_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.01366,QCD:0.97748,W:1.00108,ZL:0.95615,ZJ:0.98109,VV:1.01176,TT:0.98128 --auto_error_band=0.05771"
+      MT_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.01768,QCD:1.08211,W:1.00280,ZL:1.00015,ZJ:1.01735,VV:1.00626,TT:1.00226 --auto_error_band=0.05778"
+      ET_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.02383,QCD:1.01152,W:1.01323,ZL:0.94096,ZJ:0.98001,VV:1.01558,TT:0.96018 --auto_error_band=0.06507"
+      MT_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.01831,QCD:0.94604,W:1.08328,ZL:1.00462,ZJ:1.00413,VV:1.01385,TT:1.01881 --auto_error_band=0.05808"
+      ET_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.04447,QCD:1.04843,W:0.86100,ZL:0.88403,ZJ:1.00093,VV:1.01007,TT:0.95473 --auto_error_band=0.07434"
+      MT_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.04089,QCD:1.02251,W:0.61596,ZL:1.13150,ZJ:1.17439,VV:1.01572,TT:1.03848 --auto_error_band=0.05866"
       fi
     fi
   fi  
