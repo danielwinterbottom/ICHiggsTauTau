@@ -88,7 +88,7 @@ FRAGMENTS=(
   '{"output":"th1_jet_eff_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Jet (p_{T} > 15) Match Eff.", "default":{"rebin":"0-200:10"}}'
   '{"output":"th1_mt_eff_after_jet_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match", "default":{"rebin":"0-200:10"}}'
   '{"output":"th1_mt_eff_after_jet_pi15_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match & p_{T}^{#pi}>15", "default":{"rebin":"0-200:10"}}'
-  '{"output":"th1_mt_eff_after_jet_pi20_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match & p_{T}^{#pi}>15", "default":{"rebin":"0-200:10"}}'
+  '{"output":"th1_mt_eff_after_jet_pi20_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match & p_{T}^{#pi}>20", "default":{"rebin":"0-200:10"}}'
   )
 
 for i in "${FRAGMENTS[@]}"
