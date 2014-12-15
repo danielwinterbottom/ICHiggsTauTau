@@ -759,8 +759,6 @@ INPUT                  = interface \
                          plugins \
                          Analysis/Core/interface/Plotting_Style.h \
                          Analysis/Core/interface/Plotting.h \
-                         Analysis/CombineTools/interface \
-                         Analysis/CombineTools/src \
                          Analysis/Utilities/interface/JsonTools.h \
                          Analysis/Utilities/src/JsonTools.cc \
                          docs/Main.md \
