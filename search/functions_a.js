@@ -8,6 +8,5 @@ var searchData=
   ['lepton_5frho',['lepton_rho',['../classic_1_1_event_info.html#ac3dd24dd1b1bda60f956c6f07d5930ad',1,'ic::EventInfo']]],
   ['lighttrack',['LightTrack',['../classic_1_1_light_track.html#af1a1f2256df30d45d44da52f5a356f15',1,'ic::LightTrack']]],
   ['linear_5fradial_5fmoment',['linear_radial_moment',['../classic_1_1_p_f_jet.html#a5d1be78660b74dff6c8919c9c0c88456',1,'ic::PFJet']]],
-  ['logline',['LogLine',['../namespacech.html#a5903f0de2f0d18871f4dab7430d04830',1,'ch']]],
   ['lumi_5fblock',['lumi_block',['../classic_1_1_event_info.html#aec8c649be2b1070dfadf21a01ee7a8a0',1,'ic::EventInfo']]]
 ];

@@ -1,8 +1,5 @@
 var hierarchy =
 [
-    [ "ch::syst::analysis", "structch_1_1syst_1_1analysis.html", null ],
-    [ "ch::syst::bin", "structch_1_1syst_1_1bin.html", null ],
-    [ "ch::syst::bin_id", "classch_1_1syst_1_1bin__id.html", null ],
     [ "ic::Candidate", "classic_1_1_candidate.html", [
       [ "ic::CompositeCandidate", "classic_1_1_composite_candidate.html", null ],
       [ "ic::Electron", "classic_1_1_electron.html", null ],
@@ -20,8 +17,6 @@ var hierarchy =
       [ "ic::Tau", "classic_1_1_tau.html", null ],
       [ "ic::TriggerObject", "classic_1_1_trigger_object.html", null ]
     ] ],
-    [ "ch::syst::channel", "structch_1_1syst_1_1channel.html", null ],
-    [ "ch::CombineHarvester", "classch_1_1_combine_harvester.html", null ],
     [ "EDProducer", null, [
       [ "ic::Concatenate< T >", "classic_1_1_concatenate.html", null ],
       [ "ic::Merge< T >", "classic_1_1_merge.html", null ],
@@ -53,9 +48,7 @@ var hierarchy =
       [ "ICTriggerPathProducer", "class_i_c_trigger_path_producer.html", null ],
       [ "ICVertexProducer", "class_i_c_vertex_producer.html", null ]
     ] ],
-    [ "ch::syst::era", "structch_1_1syst_1_1era.html", null ],
     [ "ic::EventInfo", "classic_1_1_event_info.html", null ],
-    [ "ch::HistMapping", "structch_1_1_hist_mapping.html", null ],
     [ "JetDestHelper< U >", "struct_jet_dest_helper.html", null ],
     [ "JetDestHelper< ic::CaloJet >", "struct_jet_dest_helper_3_01ic_1_1_calo_jet_01_4.html", null ],
     [ "JetDestHelper< ic::JPTJet >", "struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4.html", null ],
@@ -64,23 +57,11 @@ var hierarchy =
     [ "JetSrcHelper< U >", "struct_jet_src_helper.html", null ],
     [ "JetSrcHelper< pat::Jet >", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html", null ],
     [ "ic::LightTrack", "classic_1_1_light_track.html", null ],
-    [ "ch::syst::mass", "structch_1_1syst_1_1mass.html", null ],
-    [ "ch::Observation", "classch_1_1_observation.html", null ],
-    [ "ch::Parameter", "classch_1_1_parameter.html", null ],
     [ "ic::PileupInfo", "classic_1_1_pileup_info.html", null ],
-    [ "ch::Process", "classch_1_1_process.html", null ],
-    [ "ch::syst::process", "structch_1_1syst_1_1process.html", null ],
-    [ "ch::SOverBInfo", "structch_1_1_s_over_b_info.html", null ],
     [ "ic::StaticTree", "structic_1_1_static_tree.html", null ],
     [ "ic::SuperCluster", "classic_1_1_super_cluster.html", null ],
-    [ "ch::Systematic", "classch_1_1_systematic.html", null ],
-    [ "ch::syst::SystMap< T >", "classch_1_1syst_1_1_syst_map.html", null ],
-    [ "ch::syst::SystMapAsymm< T >", "classch_1_1syst_1_1_syst_map_asymm.html", null ],
     [ "ic::Track", "classic_1_1_track.html", null ],
     [ "ic::TriggerPath", "classic_1_1_trigger_path.html", null ],
-    [ "ch::tupleprint::TuplePrinter< Tuple, N >", "structch_1_1tupleprint_1_1_tuple_printer.html", null ],
-    [ "ch::tupleprint::TuplePrinter< Tuple, 0 >", "structch_1_1tupleprint_1_1_tuple_printer_3_01_tuple_00_010_01_4.html", null ],
-    [ "ch::tupleprint::TuplePrinter< Tuple, 1 >", "structch_1_1tupleprint_1_1_tuple_printer_3_01_tuple_00_011_01_4.html", null ],
     [ "ic::Vertex", "classic_1_1_vertex.html", [
       [ "ic::SecondaryVertex", "classic_1_1_secondary_vertex.html", null ]
     ] ]

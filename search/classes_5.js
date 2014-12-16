@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['histmapping',['HistMapping',['../structch_1_1_hist_mapping.html',1,'ch']]]
+  ['lighttrack',['LightTrack',['../classic_1_1_light_track.html',1,'ic']]]
 ];

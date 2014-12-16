@@ -1,20 +1,7 @@
 var searchData=
 [
-  ['calojet_2ecc',['CaloJet.cc',['../_calo_jet_8cc.html',1,'']]],
-  ['calojet_2ehh',['CaloJet.hh',['../_calo_jet_8hh.html',1,'']]],
-  ['candidate_2ecc',['Candidate.cc',['../_candidate_8cc.html',1,'']]],
-  ['candidate_2ehh',['Candidate.hh',['../_candidate_8hh.html',1,'']]],
-  ['city_2ecc',['city.cc',['../city_8cc.html',1,'']]],
-  ['city_2eh',['city.h',['../city_8h.html',1,'']]],
-  ['classes_2eh',['classes.h',['../classes_8h.html',1,'']]],
-  ['combineharvester_2ecc',['CombineHarvester.cc',['../_combine_harvester_8cc.html',1,'']]],
-  ['combineharvester_2eh',['CombineHarvester.h',['../_combine_harvester_8h.html',1,'']]],
-  ['combineharvester_5fcreation_2ecc',['CombineHarvester_Creation.cc',['../_combine_harvester___creation_8cc.html',1,'']]],
-  ['combineharvester_5fdatacards_2ecc',['CombineHarvester_Datacards.cc',['../_combine_harvester___datacards_8cc.html',1,'']]],
-  ['combineharvester_5fevaluate_2ecc',['CombineHarvester_Evaluate.cc',['../_combine_harvester___evaluate_8cc.html',1,'']]],
-  ['combineharvester_5ffilters_2ecc',['CombineHarvester_Filters.cc',['../_combine_harvester___filters_8cc.html',1,'']]],
-  ['compositecandidate_2ecc',['CompositeCandidate.cc',['../_composite_candidate_8cc.html',1,'']]],
-  ['compositecandidate_2ehh',['CompositeCandidate.hh',['../_composite_candidate_8hh.html',1,'']]],
-  ['concatenate_2ecc',['Concatenate.cc',['../_concatenate_8cc.html',1,'']]],
-  ['concatenate_2eh',['Concatenate.h',['../_concatenate_8h.html',1,'']]]
+  ['electron_2ecc',['Electron.cc',['../_electron_8cc.html',1,'']]],
+  ['electron_2ehh',['Electron.hh',['../_electron_8hh.html',1,'']]],
+  ['eventinfo_2ecc',['EventInfo.cc',['../_event_info_8cc.html',1,'']]],
+  ['eventinfo_2ehh',['EventInfo.hh',['../_event_info_8hh.html',1,'']]]
 ];

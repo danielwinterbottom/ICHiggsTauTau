@@ -1,30 +1,6 @@
 var searchData=
 [
-  ['iccandidateproducer',['ICCandidateProducer',['../class_i_c_candidate_producer.html',1,'']]],
-  ['icelectronhcaldepthcalculator',['ICElectronHcalDepthCalculator',['../class_i_c_electron_hcal_depth_calculator.html',1,'']]],
-  ['icelectronproducer',['ICElectronProducer',['../class_i_c_electron_producer.html',1,'']]],
-  ['iceventinfoproducer',['ICEventInfoProducer',['../class_i_c_event_info_producer.html',1,'']]],
-  ['iceventproducer',['ICEventProducer',['../class_i_c_event_producer.html',1,'']]],
-  ['icgenjetproducer',['ICGenJetProducer',['../class_i_c_gen_jet_producer.html',1,'']]],
-  ['icgenparticleproducer',['ICGenParticleProducer',['../class_i_c_gen_particle_producer.html',1,'']]],
-  ['icgentauproductproducer',['ICGenTauProductProducer',['../class_i_c_gen_tau_product_producer.html',1,'']]],
-  ['ichttelecisocheck',['ICHttElecIsoCheck',['../class_i_c_htt_elec_iso_check.html',1,'']]],
-  ['ichttmuonoverlapcheck',['ICHttMuonOverlapCheck',['../class_i_c_htt_muon_overlap_check.html',1,'']]],
-  ['icjetflavourcalculator',['ICJetFlavourCalculator',['../class_i_c_jet_flavour_calculator.html',1,'']]],
-  ['icjetproducer',['ICJetProducer',['../class_i_c_jet_producer.html',1,'']]],
-  ['icl1etmissproducer',['ICL1EtMissProducer',['../class_i_c_l1_et_miss_producer.html',1,'']]],
-  ['iclighttrackproducer',['ICLightTrackProducer',['../class_i_c_light_track_producer.html',1,'']]],
-  ['icmetproducer',['ICMetProducer',['../class_i_c_met_producer.html',1,'']]],
-  ['icmuonproducer',['ICMuonProducer',['../class_i_c_muon_producer.html',1,'']]],
-  ['icphotonelectronvetocalculator',['ICPhotonElectronVetoCalculator',['../class_i_c_photon_electron_veto_calculator.html',1,'']]],
-  ['icphotonproducer',['ICPhotonProducer',['../class_i_c_photon_producer.html',1,'']]],
-  ['icpileupinfoproducer',['ICPileupInfoProducer',['../class_i_c_pileup_info_producer.html',1,'']]],
-  ['icsecondaryvertexproducer',['ICSecondaryVertexProducer',['../class_i_c_secondary_vertex_producer.html',1,'']]],
-  ['icsinglemetproducer',['ICSingleMetProducer',['../class_i_c_single_met_producer.html',1,'']]],
-  ['icsuperclusterproducer',['ICSuperClusterProducer',['../class_i_c_super_cluster_producer.html',1,'']]],
-  ['ictauproducer',['ICTauProducer',['../class_i_c_tau_producer.html',1,'']]],
-  ['ictrackproducer',['ICTrackProducer',['../class_i_c_track_producer.html',1,'']]],
-  ['ictriggerobjectproducer',['ICTriggerObjectProducer',['../class_i_c_trigger_object_producer.html',1,'']]],
-  ['ictriggerpathproducer',['ICTriggerPathProducer',['../class_i_c_trigger_path_producer.html',1,'']]],
-  ['icvertexproducer',['ICVertexProducer',['../class_i_c_vertex_producer.html',1,'']]]
+  ['merge',['Merge',['../classic_1_1_merge.html',1,'ic']]],
+  ['met',['Met',['../classic_1_1_met.html',1,'ic']]],
+  ['muon',['Muon',['../classic_1_1_muon.html',1,'ic']]]
 ];

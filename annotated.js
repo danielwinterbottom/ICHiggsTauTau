@@ -1,6 +1,5 @@
 var annotated =
 [
-    [ "ch", "namespacech.html", "namespacech" ],
     [ "ic", "namespaceic.html", "namespaceic" ],
     [ "ICCandidateProducer", "class_i_c_candidate_producer.html", "class_i_c_candidate_producer" ],
     [ "ICElectronHcalDepthCalculator", "class_i_c_electron_hcal_depth_calculator.html", "class_i_c_electron_hcal_depth_calculator" ],
