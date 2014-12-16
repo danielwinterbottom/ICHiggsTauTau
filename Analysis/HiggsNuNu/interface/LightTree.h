@@ -20,7 +20,9 @@ namespace ic {
     CLASS_MEMBER(LightTree,std::string, dijet_label);
     CLASS_MEMBER(LightTree,std::string, sel_label);
     CLASS_MEMBER(LightTree,bool, is_data);
+    CLASS_MEMBER(LightTree,bool, ignoreLeptons);
     CLASS_MEMBER(LightTree,bool, dotrigskim);
+    CLASS_MEMBER(LightTree,bool, do_promptskim);
     CLASS_MEMBER(LightTree,bool, is_embedded);
     CLASS_MEMBER(LightTree,std::string, trig_obj_label);
     CLASS_MEMBER(LightTree,std::string, trigger_path);
@@ -63,6 +65,7 @@ namespace ic {
     double metnomu_significance_;
     double sumet_;
     double ht_;
+    double ht30_;
     double mht_;
     double sqrt_ht_;
     double unclustered_et_;
@@ -116,6 +119,7 @@ namespace ic {
     double tau1_eta_;
     double tau1_phi_;
     double lep_mt_;
+    int n_vertices_;
 
   public:
     LightTree(std::string const& name);

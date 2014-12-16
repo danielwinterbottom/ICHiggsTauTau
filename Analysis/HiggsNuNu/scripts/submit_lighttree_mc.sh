@@ -21,12 +21,12 @@ PRODUCTION=Dec18
 INPUTPARAMS="filelists/Dec18/ParamsDec18.dat"
 
 
-for SYST in central #JERBETTER JERWORSE UESUP UESDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree
+  JOBDIRPREFIX=jobs_lighttree_noskimsig
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree
+  OUTPUTPREFIX=output_lighttree_noskimsig
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -70,6 +70,34 @@ for SYST in central #JERBETTER JERWORSE UESUP UESDOWN #NOTE TO RUN JER DOSMEAR M
 	JOBDIR=$JOBDIRPREFIX/UESDOWN/
 	OUTPUTDIR=$OUTPUTPREFIX/UESDOWN/
   fi
+
+  if [ "$SYST" = "ELEEFFUP" ]
+	then
+	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=true"
+	JOBDIR=$JOBDIRPREFIX/ELEEFFUP/
+	OUTPUTDIR=$OUTPUTPREFIX/ELEEFFUP/
+  fi
+
+  if [ "$SYST" = "ELEEFFDOWN" ]
+	then
+	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=false"
+	JOBDIR=$JOBDIRPREFIX/ELEEFFDOWN/
+	OUTPUTDIR=$OUTPUTPREFIX/ELEEFFDOWN/
+  fi
+
+  if [ "$SYST" = "MUEFFUP" ]
+	then
+	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=true"
+	JOBDIR=$JOBDIRPREFIX/MUEFFUP/
+	OUTPUTDIR=$OUTPUTPREFIX/MUEFFUP/
+  fi
+
+  if [ "$SYST" = "MUEFFDOWN" ]
+	then
+	SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
+	JOBDIR=$JOBDIRPREFIX/MUEFFDOWN/
+	OUTPUTDIR=$OUTPUTPREFIX/MUEFFDOWN/
+  fi
 	
   echo "Config file: $CONFIG"
   
@@ -108,6 +136,7 @@ for SYST in central #JERBETTER JERWORSE UESUP UESDOWN #NOTE TO RUN JER DOSMEAR M
 #Signal files and DYtoNuNu
     PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
     for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
+#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
 	  do
       echo "Processing files in "$FILELIST
       

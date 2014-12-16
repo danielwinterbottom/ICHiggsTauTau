@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 #include "UserCode/ICHiggsTauTau/interface/TriggerObject.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
+#include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "TVector3.h"
@@ -20,7 +21,9 @@ namespace ic {
     sel_label_ = "JetPair";
     is_data_ = false;
     dotrigskim_ = false;
+    do_promptskim_ = false;
     is_embedded_ = false;
+    ignoreLeptons_=false;
     trig_obj_label_ = "triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets";
     trigger_path_ = "HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v";
 
@@ -62,6 +65,7 @@ namespace ic {
     metnomu_significance_ = 0;
     sumet_ = 0;
     ht_ = 0;
+    ht30_ = 0;
     mht_ = 0;
     sqrt_ht_ = 0;
     unclustered_et_ = 0;
@@ -114,6 +118,7 @@ namespace ic {
     tau1_eta_=-10000;
     tau1_phi_=-1;
     lep_mt_=-1;
+    n_vertices_=-1;
   }
 
   LightTree::~LightTree(){
@@ -171,6 +176,7 @@ namespace ic {
     outputTree_->Branch("metnomu_significance",&metnomu_significance_);
     outputTree_->Branch("sumet",&sumet_);
     outputTree_->Branch("ht",&ht_);
+    outputTree_->Branch("ht30",&ht30_);
     outputTree_->Branch("mht",&mht_);
     outputTree_->Branch("sqrt_ht",&sqrt_ht_);
     outputTree_->Branch("unclustered_et",&unclustered_et_);
@@ -223,6 +229,7 @@ namespace ic {
     outputTree_->Branch("tau1_eta",&tau1_eta_);
     outputTree_->Branch("tau1_phi",&tau1_phi_);
     outputTree_->Branch("lep_mt",&lep_mt_);
+    outputTree_->Branch("n_vertices",&n_vertices_);
 
     return 0;
   }
@@ -232,6 +239,7 @@ namespace ic {
     run_= eventInfo->run();
     lumi_= eventInfo->lumi_block();
     event_= eventInfo->event();
+    n_vertices_=eventInfo->good_vertices();
 
       if (is_data_) {
 	
@@ -296,8 +304,11 @@ namespace ic {
     std::vector<Electron*> vetoelectrons=event->GetPtrVec<Electron>("vetoElectrons");
     std::vector<Electron*> selelectrons=event->GetPtrVec<Electron>("selElectrons");
     std::vector<Tau*> taus=event->GetPtrVec<Tau>("taus");
+    //std::vector<Vertex*> & vertices = event->GetPtrVec<Vertex>("vertices");
 
-    nvetomuons_=vetomuons.size();
+
+    if(!ignoreLeptons_) nvetomuons_=vetomuons.size();
+    else nvetomuons_=0;
     nselmuons_=selmuons.size();
     nvetoelectrons_=vetoelectrons.size();
     nselelectrons_=selelectrons.size();
@@ -437,14 +448,17 @@ namespace ic {
       metnomu_significance_ = met_significance_/met_*metnomuons_;
 
       double ht =0;
+      double ht30 =0;
       ROOT::Math::PtEtaPhiEVector mhtVec(0,0,0,0);
-      for(unsigned i =0; i<alljets.size();++i){
-	ht+=alljets[i]->vector().Et();
-	mhtVec += alljets[i]->vector();
+      for(unsigned i =0; i<jets.size();++i){
+	ht+=jets[i]->vector().Et();
+	if(jets[i]->pt()>30)	ht30+=jets[i]->vector().Et();
+	mhtVec += jets[i]->vector();
       }
       ROOT::Math::PtEtaPhiEVector unclVec = mhtVec + metvec;
 
       ht_ = ht;
+      ht30_=ht30;
       mht_ = mhtVec.Et();
       sqrt_ht_ = sqrt(ht);
       unclustered_et_ = unclVec.Et();
@@ -470,6 +484,9 @@ namespace ic {
 
       jet1met_scalarprod_ = (jet1vec.Px()*met_x_+jet1vec.Py()*met_y_)/met_;
       jet2met_scalarprod_ = (jet2vec.Px()*met_x_+jet2vec.Py()*met_y_)/met_;
+
+      jet1metnomu_scalarprod_ = (jet1vec.Px()*metnomu_x_+jet1vec.Py()*metnomu_y_)/met_;
+      jet2metnomu_scalarprod_ = (jet2vec.Px()*metnomu_x_+jet2vec.Py()*metnomu_y_)/met_;
 
       jetunclet_mindphi_ = std::min(fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,unclVec)),
 				    fabs(ROOT::Math::VectorUtil::DeltaPhi(jet2vec,unclVec)));
@@ -534,10 +551,38 @@ namespace ic {
       }
       static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
-      if (metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
-	//if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
-	outputTree_->Fill();
-	++processed;
+      if(!ignoreLeptons_){
+	if(!do_promptskim_){
+	  if (metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
+	    //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
+	    outputTree_->Fill();
+	    ++processed;
+	  }
+	}
+	else{
+	  if (passtrigger_==1&&dijet_deta_>3.6&&metnomuons_>90&&jet1_pt_>50){
+	    //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
+	    outputTree_->Fill();
+	    ++processed;
+	  }
+	}
+      }
+      else{
+	if(!do_promptskim_){
+	  if (metnomu_significance_ > 3.0 &&  dijet_deta_>3.6 &&m_mumu_gen_>80&&m_mumu_gen_<100){
+	    //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
+	    outputTree_->Fill();
+	    ++processed;
+	  }
+	}
+	else{
+	  if (passtrigger_==1&&dijet_deta_>3.6&&metnomuons_>90&&jet1_pt_>50){
+	    //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
+	    outputTree_->Fill();
+	    ++processed;
+	  }
+	}
+	
       }
       if (processed == 500) outputTree_->OptimizeBaskets();
     }

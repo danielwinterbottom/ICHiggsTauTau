@@ -83,6 +83,7 @@ int main(int argc, char* argv[]){
   bool taulepdiscrtight;          // Use tight electron and muon discriminants
   bool dojerdebug;                // Access runmetunc collections for debugging
   bool dotopreweighting;          // Do Top reweighting
+  bool dopromptskim;              // Use prompt compatible light tree skimming
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -157,6 +158,7 @@ int main(int argc, char* argv[]){
     ("dobinnedin2d1dtrgeff",po::value<bool>(&dobinnedin2d1dtrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("dotopreweighting",    po::value<bool>(&dotopreweighting)->default_value(false))
+    ("dopromptskim",    po::value<bool>(&dopromptskim)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
@@ -223,6 +225,11 @@ int main(int argc, char* argv[]){
   }
   checkfile.close();
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
+  
+  bool ignoreLeptons=false;
+  if (output_name.find("iglep") != output_name.npos) {
+    ignoreLeptons = true;
+  }
    
   double elec_dz, elec_dxy;
   double muon_dz, muon_dxy;
@@ -343,10 +350,10 @@ int main(int argc, char* argv[]){
 
   //MAKE ele and mu eff weights like this
 
-//   HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
-//   dataMCTriggerPathFilter.set_is_data(is_data);
-//   dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
-//   dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+//    HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
+//    dataMCTriggerPathFilter.set_is_data(is_data);
+//    dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
+//    dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
   // JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
 //   ("JetEnergyCorrections")
@@ -363,6 +370,11 @@ int main(int argc, char* argv[]){
 						    doMetFilters);
 
 
+  SimpleFilter<Vertex> goodVertexFilter = SimpleFilter<Vertex>("goodVertexFilter")
+    .set_input_label("vertices")
+    .set_predicate(bind(DummyFunction<Vertex>, _1))
+    .set_min(1)
+    .set_max(999);
 
   // ------------------------------------------------------------------------------------
   // Electron Modules
@@ -633,7 +645,7 @@ int main(int argc, char* argv[]){
     .set_save_weights(true)
     .set_do_top_reweighting(dotopreweighting)
     .set_do_trg_weights(false)
-    .set_trg_applied_in_mc(true)
+    .set_trg_applied_in_mc(false)
     .set_do_idiso_tight_weights(false)
     .set_do_idiso_veto_weights(false)
     .set_do_idiso_err(doidisoerr)
@@ -651,7 +663,7 @@ int main(int argc, char* argv[]){
       .set_trg_applied_in_mc(true);
     if(do3dtrgeff){
       hinvWeights.set_Alumi(0.889)
-	.set_BClumi(11.581)
+	.set_BClumi(11.023)
 	.set_Dlumi(7.315);
     }
     hinvWeights.set_do_idiso_veto_weights(false);
@@ -723,6 +735,8 @@ int main(int argc, char* argv[]){
     .set_sel_label("JetPair")
     .set_is_data(is_data)
     .set_dotrigskim(true)
+    .set_do_promptskim(dopromptskim)
+    .set_ignoreLeptons(ignoreLeptons)
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
     .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
@@ -749,13 +763,13 @@ int main(int argc, char* argv[]){
   }
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);
-  
   if (is_data) {
     //FIXME: do MetFilters also on MC, but not saved right now in MC...
     analysis.AddModule(&metFilters);
     analysis.AddModule(&metLaserFilters);
   }
-  
+
+  analysis.AddModule(&goodVertexFilter);
   //jet modules
   analysis.AddModule(&jetIDFilter);
   //don't want pile-up jets to calculate HT,MHT...
