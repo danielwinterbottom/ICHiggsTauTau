@@ -3,12 +3,14 @@
 #include <iomanip>
 #include <map>
 #include <cmath>
+#include <cstdio>
 #include "TVectorD.h"
 #include "boost/program_options.hpp"
 namespace po=boost::program_options;
 using namespace ic;
 class Syst{
   CLASS_MEMBER(Syst,std::string,name)
+  CLASS_MEMBER(Syst,std::string,latexname)
   CLASS_MEMBER(Syst,std::string,type)
   CLASS_MEMBER(Syst,TFile*,uptfile)
   CLASS_MEMBER(Syst,TFile*,downtfile)
@@ -26,8 +28,12 @@ int main(int argc, char* argv[]){
   bool do_datatop;
   bool do_qcdfromshape;
   bool do_qcdfromnumber;
+  bool do_ggh;
+  bool do_ues;
   bool verbose;
+  bool do_individualsystsummary;
   bool do_latex;
+  double qcdrate;
   std::string mass;
   std::string indir;
   std::string outname;
@@ -38,27 +44,32 @@ int main(int argc, char* argv[]){
   config.add_options()
     //Input output and config options                                                                                                                   
     ("input_folder,i",           po::value<std::string>(&indir)->default_value("output_contplots_alljets15metsig4cjvmjj1100"))
-    ("outname,o",           po::value<std::string>(&outname)->default_value("vbfhinv.txt"))
-    ("do_qcdfromshape,s",           po::value<bool>(&do_qcdfromshape)->default_value(false))
-    ("do_qcdfromnumber,q",           po::value<bool>(&do_qcdfromnumber)->default_value(true))
-    ("verbose,v",           po::value<bool>(&verbose)->default_value(false))
-    ("do_latex,l",           po::value<bool>(&do_latex)->default_value(false))
-    ("mass,m",           po::value<std::string>(&mass)->default_value("125"))
-    ("do_datatop,t",           po::value<bool>(&do_datatop)->default_value(true));
+    ("outname,o",                po::value<std::string>(&outname)->default_value("vbfhinv.txt"))
+    ("do_qcdfromshape,s",        po::value<bool>(&do_qcdfromshape)->default_value(false))
+    ("do_qcdfromnumber,q",       po::value<bool>(&do_qcdfromnumber)->default_value(true))
+    ("do_ggh,g",                 po::value<bool>(&do_ggh)->default_value(true))
+    ("do_ues,u",                 po::value<bool>(&do_ues)->default_value(true))
+    ("verbose,v",                po::value<bool>(&verbose)->default_value(false))
+    ("do_individualsystsummary", po::value<bool>(&do_individualsystsummary)->default_value(false))
+    ("do_latex,l",               po::value<bool>(&do_latex)->default_value(false))
+    ("qcdrate",                  po::value<double>(&qcdrate)->default_value(17))
+    ("mass,m",                   po::value<std::string>(&mass)->default_value("125"))
+    ("do_datatop,t",             po::value<bool>(&do_datatop)->default_value(true));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::notify(vm);
 
   std::map<std::string,double > procsysttotal;
   std::map<std::string,double > procstattotal;
+  std::map<std::string,double > systbkgtotal;
+  std::map<std::string,double > systsigtotal;
   double totalbkgstat=0;
   double totalbkgsyst=0;
   double totalsigstat=0;
   double totalsigsyst=0;
 
   //Rate to use if qcd not taken from a shape
-  double qcdrate=14;
-  double qcdabserr=10;
+  double qcdabserr=14;
 
   if((mass!="110")&&(mass!="125")&&(mass!="150")&&(mass!="200")&&(mass!="300")&&(mass!="400")){
     std::cout<<"Mass "<<mass<<" not currently supported, please use 110, 125, 200, 300 or 400. Exiting!"<<std::endl;
@@ -67,13 +78,13 @@ int main(int argc, char* argv[]){
   
   std::vector<std::string> sigprocesses;
   sigprocesses.push_back("qqH"+mass);
-  sigprocesses.push_back("ggH"+mass);
+  if(do_ggh)sigprocesses.push_back("ggH"+mass);
   std::vector<std::string> sigprocessesnames;
   sigprocessesnames.push_back("qqH");
-  sigprocessesnames.push_back("ggH");
+  if(do_ggh)sigprocessesnames.push_back("ggH");
   std::vector<std::string> sigprocesslatex;
   sigprocesslatex.push_back("Signal(VBF)");
-  sigprocesslatex.push_back("Signal(ggH)");
+  if(do_ggh)sigprocesslatex.push_back("Signal(ggH)");
   std::vector<std::string> bkgprocesses;
   bkgprocesses.push_back("zvv");
   bkgprocesses.push_back("wmu");
@@ -116,6 +127,7 @@ int main(int argc, char* argv[]){
   std::vector<std::string> lumi8tevprocsaffected={"ggH,qqH,ggH110","ggH125","ggH150","ggH200","ggH300","ggH400","qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","wg","vv","qcd"};
   Syst lumi8tev;
   lumi8tev.set_name("lumi_8TeV")
+    .set_latexname("Luminosity")
     .set_type("constlnN")
     .set_procsaffected(lumi8tevprocsaffected)
     .set_constvalue(1.026);
@@ -126,6 +138,7 @@ int main(int argc, char* argv[]){
   std::vector<std::string> qqHprocs={"qqH110","qqH125","qqH150","qqH200","qqH300","qqH400","qqH"};
   Syst eleeff;
   eleeff.set_name("CMS_eff_e")
+    .set_latexname("Electron efficiency")
     .set_type("fromfilelnN")
     .set_procsaffected(allprocsnotqcd)
     .set_uptfile(eleup)
@@ -133,6 +146,7 @@ int main(int argc, char* argv[]){
 
   Syst mueff;
   mueff.set_name("CMS_eff_m")
+    .set_latexname("Muon efficiency")
     .set_type("fromfilelnN")
     .set_procsaffected(allprocsnotqcd)
     .set_uptfile(muup)
@@ -140,6 +154,7 @@ int main(int argc, char* argv[]){
 
   Syst jes;
   jes.set_name("CMS_scale_j")
+    .set_latexname("Jet energy scale")
     .set_type("fromfilelnN")
     .set_procsaffected(allprocsnotqcd)
     .set_uptfile(jesup)
@@ -147,6 +162,7 @@ int main(int argc, char* argv[]){
 
   Syst jer;
   jer.set_name("CMS_res_j")
+    .set_latexname("Jet energy resolution")
     .set_type("fromfilelnN")
     .set_procsaffected(allprocsnotqcd)
     .set_uptfile(jerbetter)
@@ -154,6 +170,7 @@ int main(int argc, char* argv[]){
 
   Syst ues;
   ues.set_name("CMS_scale_met")
+    .set_latexname("Unclustered energy scale")
     .set_type("fromfilelnN")
     .set_procsaffected(allprocsnotqcd)
     .set_uptfile(uesup)
@@ -161,6 +178,7 @@ int main(int argc, char* argv[]){
 
   Syst pu;
   pu.set_name("CMS_VBFHinv_puweight")
+    .set_latexname("Pileup weight")
     .set_type("fromfilelnN")
     .set_procsaffected(allprocsnotqcd)
     .set_uptfile(puup)
@@ -168,83 +186,104 @@ int main(int argc, char* argv[]){
 
   Syst zvvmcstat;
   zvvmcstat.set_name("CMS_VBFHinv_zvv_norm")
+    .set_latexname("$Z\\rightarrow\\nu\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"zvv"});
 
   Syst zvvdatastat;
   zvvdatastat.set_name("CMS_VBFHinv_zvv_stat")
+    .set_latexname("$Z\\rightarrow\\nu\\nu$ data stat.")
+    .set_is_datastat(true)
     .set_type("datadrivendatastatlnN")
     .set_procsaffected({"zvv"});
 
   Syst welmcstat;
   welmcstat.set_name("CMS_VBFHinv_wel_norm")
+    .set_latexname("$W\\rightarrow e\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"wel"});
 
   Syst weldatastat;
   weldatastat.set_name("CMS_VBFHinv_wel_stat")
+    .set_latexname("$W\\rightarrow e\\nu$ data stat.")
+    .set_is_datastat(true)
     .set_type("datadrivendatastatlnN")
     .set_procsaffected({"wel"});
 
   Syst wmumcstat;
   wmumcstat.set_name("CMS_VBFHinv_wmu_norm")
+    .set_latexname("$W\\rightarrow \\mu\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"wmu"});
 
   Syst wmudatastat;
   wmudatastat.set_name("CMS_VBFHinv_wmu_stat")
+    .set_latexname("$W\\rightarrow \\mu\\nu$ data stat.")
+    .set_is_datastat(true)
     .set_type("datadrivendatastatlnN")
     .set_procsaffected({"wmu"});
 
   Syst wtauideff;
   wtauideff.set_name("CMS_VBFHinv_tau_eff")
+    .set_latexname("Tau efficiency")
     .set_procsaffected({"wtau"})
     .set_type("constlnN")
     .set_constvalue(1.08);
 
   Syst wtaujetmetextrap;
   wtaujetmetextrap.set_name("CMS_VBFHinv_tau_extrapfacunc")
+    .set_latexname("$W\\rightarrow\\tau\\nu$ control region extrapolation")
     .set_procsaffected({"wtau"})
     .set_type("constlnN")
     .set_constvalue(1.2);
 
   Syst wtaumcstat;
   wtaumcstat.set_name("CMS_VBFHinv_wtau_norm")
+    .set_latexname("$W\\rightarrow\\tau\\nu$ MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"wtau"});
 
   Syst wtaudatastat;
   wtaudatastat.set_name("CMS_VBFHinv_wtau_stat")
+    .set_latexname("$W\\rightarrow\\tau\\nu$ data stat.")
+    .set_is_datastat(true)
     .set_type("datadrivendatastatlnN")
     .set_procsaffected({"wtau"});
 
   Syst topmcstat;
   topmcstat.set_name("CMS_VBFHinv_top_norm")
+    .set_latexname("Top MC stat.")
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"top"});
 
   Syst topdatastat;
   topdatastat.set_name("CMS_VBFHinv_top_stat")
+    .set_latexname("Top data stat.")
+    .set_is_datastat(true)
     .set_type("datadrivendatastatlnN")
     .set_procsaffected({"top"});
 
   Syst mctopmcstat;
   mctopmcstat.set_name("CMS_VBFHinv_top_norm")
+    .set_latexname("TOP FROM MC SHOULD NOT APPEAR IN FINAL RESULT")
     .set_type("fromMCstatlnN")
     .set_procsaffected({"top"});  
 
   Syst qqHmcstat;
   qqHmcstat.set_name("CMS_VBFHinv_qqH_norm")
+    .set_latexname("VBF MC stat.")
     .set_type("fromMCstatlnN")
     .set_procsaffected(qqHprocs);
 
   Syst ggHmcstat;
   ggHmcstat.set_name("CMS_VBFHinv_ggH_norm")
+    .set_latexname("ggH MC stat.")
     .set_type("fromMCstatlnN")
     .set_procsaffected(ggHprocs);
 
   Syst ggHqcdscale;
   ggHqcdscale.set_name("QCDscale_ggH2in")
+    .set_latexname("ggH QCD scale")
     .set_type("constlnN")
     .set_procsaffected(ggHprocs)
     .set_constvalue(1.553);
@@ -252,28 +291,33 @@ int main(int argc, char* argv[]){
   //UPDATE TO BE MASS DEPENDENT
   Syst ggHpdf;
   ggHpdf.set_name("pdf_gg")
+    .set_latexname("ggH pdf")
     .set_type("constlnN")
     .set_procsaffected(ggHprocs)
     .set_constvalue(1.113);
 
   Syst ggHUEPS;
   ggHUEPS.set_name("UEPS")
+    .set_latexname("UEPS")
     .set_type("constlnN")
     .set_procsaffected(ggHprocs)
     .set_constvalue(1.168);
 
   Syst qcdmcstat;
   qcdmcstat.set_name("CMS_VBFHinv_qcd_norm")
+    .set_latexname("QCD FROM MC SHOULD NOT APPEAR IN FINAL RESULT")
     .set_type("fromMCstatlnN")
     .set_procsaffected({"qcd"});  
 
   Syst qcdfromnumerr;
   qcdfromnumerr.set_name("CMS_VBFHinv_qcd_norm")
+    .set_latexname("QCD normalisation")
     .set_type("qcdfromnumberlnN")
     .set_procsaffected({"qcd"});  
 
   Syst qqHqcdscale;
   qqHqcdscale.set_name("QCDscale_qqH")
+    .set_latexname("VBF QCD scale")
     .set_type("constlnN")
     .set_procsaffected(qqHprocs);
   if(mass=="110")qqHqcdscale.set_constvalue(1.002);
@@ -285,6 +329,7 @@ int main(int argc, char* argv[]){
 
   Syst qqHpdf;
   qqHpdf.set_name("pdf_qqbar")
+    .set_latexname("VBF pdf")
     .set_type("constlnN")
     .set_procsaffected(qqHprocs);
   if(mass=="110")qqHpdf.set_constvalue(1.0265);
@@ -296,11 +341,13 @@ int main(int argc, char* argv[]){
 
   Syst vvmcstat;
   vvmcstat.set_name("CMS_VBFHinv_vv_norm")
+    .set_latexname("VV MC stat.")
     .set_type("fromMCstatlnN")
     .set_procsaffected({"vv"});  
 
   Syst vvxsunc;
   vvxsunc.set_name("CMS_VBFHinv_vv_xsunc")
+    .set_latexname("VV cross-section")
     .set_type("constlnN")
     .set_procsaffected({"vv"})
     .set_constvalue(1.007);
@@ -309,11 +356,13 @@ int main(int argc, char* argv[]){
 
   Syst wgmcstat;
   wgmcstat.set_name("CMS_VBFHinv_wg_norm")
+    .set_latexname("WGAMMA UNCERTAINTY SHOULDN'T APPEAR IN FINAL RESULT")
     .set_type("fromMCstatlnN")
     .set_procsaffected({"wg"});  
 
   Syst mcfmzvv;
   mcfmzvv.set_name("CMS_VBFHinv_zvv_extrapfacunc")
+    .set_latexname("$Z/\\gamma^{*}\\rightarrow\\mu\\mu$ to $Z\\rightarrow\\nu\\nu$ extrapolation")
     .set_type("constlnN")
     .set_procsaffected({"zvv"})
     .set_constvalue(1.2);
@@ -323,7 +372,7 @@ int main(int argc, char* argv[]){
   systematics.push_back(mueff);
   systematics.push_back(jes);
   systematics.push_back(jer);
-  systematics.push_back(ues);
+  if(do_ues)systematics.push_back(ues);
   systematics.push_back(pu);
   systematics.push_back(zvvmcstat);
   systematics.push_back(zvvdatastat);
@@ -351,10 +400,12 @@ int main(int argc, char* argv[]){
   systematics.push_back(qqHmcstat);
   systematics.push_back(qqHqcdscale);
   systematics.push_back(qqHpdf);
-  systematics.push_back(ggHmcstat);
-  systematics.push_back(ggHqcdscale);
-  systematics.push_back(ggHpdf);
- systematics.push_back(ggHUEPS);
+  if(do_ggh){
+    systematics.push_back(ggHmcstat);
+    systematics.push_back(ggHqcdscale);
+    systematics.push_back(ggHpdf);
+    systematics.push_back(ggHUEPS);
+  }
   
 
   std::cout<<"Setting up datacard header.."<<std::endl;
@@ -578,7 +629,6 @@ int main(int argc, char* argv[]){
 	    else procsysttotal[dirname]=sqrt(pow(procsysttotal[dirname],2)+pow(error,2));
 	  }
 	  if(verbose)std::cout<<"    "<<dirname<<" "<<procsysttotal[dirname]<<" "<<procstattotal[dirname]<<std::endl;
-	  
 	}
 	
 	//from mc stat lnn
@@ -679,8 +729,12 @@ int main(int argc, char* argv[]){
     totalbkgstat=sqrt(pow(totalbkgstat,2)+pow(thissystbkgstat,2));
     totalsigsyst=sqrt(pow(totalsigsyst,2)+pow(thissystsigsyst,2));
     totalsigstat=sqrt(pow(totalsigstat,2)+pow(thissystsigstat,2));
+    systsigtotal[systematics[iSyst].name()]=thissystsigsyst;
+    if(systematics[iSyst].is_datastat()) systbkgtotal[systematics[iSyst].name()]=thissystbkgstat;
+    else systbkgtotal[systematics[iSyst].name()]=thissystbkgsyst;
+    
   }
-  //!!LOOP OVER PROCESSES AND OUTPUT TOTAL STAT AND SYST
+  //LOOP OVER PROCESSES AND OUTPUT TOTAL STAT AND SYST
   std::cout<<"Totals are:"<<std::endl;
   double bkgtotal=0;
   for(unsigned ibkg=0;ibkg<bkgcentralrates.size();ibkg++){
@@ -695,15 +749,22 @@ int main(int argc, char* argv[]){
     totalbkgsyst=sqrt(pow(totalbkgsyst,2)+pow(qcdabserr,2));
   }
 
+  if(do_individualsystsummary){
+    for(unsigned iSyst=0;iSyst<systematics.size();iSyst++){
+      printf("%s & %.2f & %.2f \\\\ \n",systematics[iSyst].latexname().c_str(),systbkgtotal[systematics[iSyst].name()]/bkgtotal*100,systsigtotal[systematics[iSyst].name()]/sigtotal*100 );
+            
+    }
+  }
   if(!do_latex){
-    std::cout<<"  Background: "<<bkgtotal<<" +- "<<totalbkgstat<<"(stat.) +- "<<totalbkgsyst<<"(syst.)"<<std::endl;
-    std::cout<<"  Signal: "<<sigtotal<<" +- "<<totalsigstat<<"(stat.) +- "<<totalsigsyst<<"(syst.)"<<std::endl;
+    printf("Background: %.1f +- %.1f (stat.) +- %.1f (syst.)\n",bkgtotal,totalbkgstat,totalbkgsyst);
+    printf("Signal: %.1f +- %.1f (stat.) +- %.1f (syst.)\n",sigtotal,totalsigstat,totalsigsyst);
+
     std::cout<<"Error on following processes is:"<<std::endl;
     for(unsigned iProc=0;iProc<(sigprocesses.size());iProc++){
-      std::cout<<"  "<<sigprocesses[iProc]<<": "<<sigcentralrates[iProc]<<" +- "<<procstattotal[sigprocesses[iProc]]*sigcentralrates[iProc]<<"(stat.) +- "<<procsysttotal[sigprocesses[iProc]]*sigcentralrates[iProc]<<"(syst.)"<<std::endl;
+      printf("  %s: %.1f +- %.1f (stat.) +- %.1f (syst.)\n",sigprocesses[iProc].c_str(),sigcentralrates[iProc],procstattotal[sigprocesses[iProc]]*sigcentralrates[iProc],procsysttotal[sigprocesses[iProc]]*sigcentralrates[iProc]);
     }  
     for(unsigned iProc=0;iProc<(bkgprocesses.size());iProc++){
-      std::cout<<"  "<<bkgprocesses[iProc]<<": "<<bkgcentralrates[iProc]<<" +- "<<procstattotal[bkgprocesses[iProc]]*bkgcentralrates[iProc]<<"(stat.) +- "<<procsysttotal[bkgprocesses[iProc]]*bkgcentralrates[iProc]<<"(syst.)"<<std::endl;
+      printf("  %s: %.1f +- %.1f (stat.) +- %.1f (syst.)\n",bkgprocesses[iProc].c_str(),bkgcentralrates[iProc],procstattotal[bkgprocesses[iProc]]*bkgcentralrates[iProc],procsysttotal[bkgprocesses[iProc]]*bkgcentralrates[iProc]);
     }  
   }
   else{
@@ -712,16 +773,16 @@ int main(int argc, char* argv[]){
     std::cout<<"Background       & $N_{est} \\pm (stat) \\pm (syst)$ \\\\"<<std::endl;
     std::cout<<"\\hline"<<std::endl;
     for(unsigned iProc=0;iProc<(bkgprocesses.size());iProc++){
-      std::cout<<bkgprocesslatex[iProc]<<"&$"<<bkgcentralrates[iProc]<<" \\pm "<<procstattotal[bkgprocesses[iProc]]*bkgcentralrates[iProc]<<"\\pm "<<procsysttotal[bkgprocesses[iProc]]*bkgcentralrates[iProc]<<"$\\\\"<<std::endl;
+      printf("%s&$%.1f \\pm %.1f \\pm %.1f$\\\\\n",bkgprocesslatex[iProc].c_str(),bkgcentralrates[iProc],procstattotal[bkgprocesses[iProc]]*bkgcentralrates[iProc],procsysttotal[bkgprocesses[iProc]]*bkgcentralrates[iProc]);
     }  
     if(do_qcdfromnumber){
       std::cout<<"QCD multijet &$"<<qcdrate<<"\\pm 0 \\pm"<<qcdabserr<<"$\\\\"<<std::endl;
     }
     std::cout<<"\\hline"<<std::endl;
-    std::cout<<"Total Background &$"<<bkgtotal<<" \\pm "<<totalbkgstat<<" \\pm "<<totalbkgsyst<<"$\\\\"<<std::endl;
+    printf("Total Background &$%.1f \\pm %.1f \\pm %.1f $\\\\\n",bkgtotal,totalbkgstat,totalbkgsyst);
     std::cout<<"\\hline"<<std::endl;
     for(unsigned iProc=0;iProc<(sigprocesses.size());iProc++){
-      std::cout<<sigprocesslatex[iProc]<<"&$ "<<sigcentralrates[iProc]<<" \\pm "<<procstattotal[sigprocesses[iProc]]*sigcentralrates[iProc]<<" \\pm "<<procsysttotal[sigprocesses[iProc]]*sigcentralrates[iProc]<<"$\\\\"<<std::endl;
+      printf("%s &$%.1f \\pm %.1f \\pm %.1f $\\\\\n",sigprocesslatex[iProc].c_str(),sigcentralrates[iProc],procstattotal[sigprocesses[iProc]]*sigcentralrates[iProc],procsysttotal[sigprocesses[iProc]]*sigcentralrates[iProc]);
     }  
     std::cout<<"\\hline"<<std::endl;
     std::cout<<"\\end{tabular}"<<std::endl;
@@ -729,4 +790,4 @@ int main(int argc, char* argv[]){
 
   datacard.close();  
 
-}
+  }

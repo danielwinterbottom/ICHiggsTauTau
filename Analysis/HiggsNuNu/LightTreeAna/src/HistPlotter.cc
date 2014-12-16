@@ -1,11 +1,13 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/HistPlotter.h"
 #include <iostream>
 #include "TH1F.h"
+#include "TF1.h"
 #include "THStack.h"
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TStyle.h"
 #include <map>
+#include "TVectorD.h"
 //#include "CommonTools/Utils/interface/TFileDirectory.h"
 #include <boost/algorithm/string.hpp>
 #include "TDirectory.h"
@@ -22,6 +24,7 @@ namespace ic{
     in_stack_=false;
     is_inrationum_=false;
     is_inratioden_=false;
+    has_dderrors_=0;
   };
 
   LTPlotElement::~LTPlotElement(){ ;};
@@ -103,6 +106,7 @@ namespace ic{
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
     do_ratio_=false;
     do_ratio_line_=false;
+    do_ratio_fitline_=false;
     add_underflows_=false;
     add_overflows_=false;
   };
@@ -352,6 +356,7 @@ namespace ic{
 	bool firstden=true;
 	TH1F* num = 0;
 	TH1F* den = 0;
+	double dentoterr=0;
 	for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	  if(elements_[iElement].is_inrationum()){
 	    //ADD TO num HIST
@@ -368,10 +373,38 @@ namespace ic{
 	      firstden=false;
 	    }
 	    else den->Add(elements_[iElement].hist_ptr());
+
+	    //get error on this contribution
+	    double thiselementfracerr;
+	    double thiselementintegral=Integral(elements_[iElement].hist_ptr());
+	    if(elements_[iElement].has_dderrors()==1){
+	      TVectorD* dennormerr =(TVectorD*)file->Get((elements_[iElement].sample()+"/normerrs").c_str());//!!
+	      thiselementfracerr=sqrt(pow((*dennormerr)[0],2)+pow((*dennormerr)[1],2));
+	    }
+	    else{
+	      thiselementfracerr=Error(elements_[iElement].hist_ptr())/thiselementintegral;
+	    }
+	    if(thiselementintegral!=0){
+	      dentoterr=sqrt(pow(dentoterr,2)+pow(thiselementfracerr*thiselementintegral,2));
+	    }
+	    std::cout<<dentoterr<<std::endl;
 	  }
 	}
 	if(firstnum||firstden)std::cout<<"To draw ratio plot you must specify elements to be numerator and denominator! Ratio plot will be missing."<<std::endl;
 	else{
+	  //Set den error to zero will take den error into account in error band!!
+	  double denfracerr=dentoterr/Integral(den);
+	  double numfracerr=1/sqrt(Integral(num));
+	  std::cout<<Integral(den);
+	  std::cout<<denfracerr<<std::endl;
+	  TH1F* errorband=(TH1F*)(den->Clone("errorband"));
+	  for(int bin=0;bin<=den->GetNbinsX()+1;bin++){
+	    den->SetBinError(bin,0);
+	    errorband->SetBinContent(bin,Integral(num)/Integral(den));
+	    errorband->SetBinError(bin,sqrt(pow(denfracerr,2)+pow(numfracerr,2)));
+	  }
+
+	  
 	  //DIVIDE NUM BY DEN and put in ratio
 	  TH1F* ratio;
 	  ratio=(TH1F*)(num->Clone("ratio"));
@@ -392,10 +425,64 @@ namespace ic{
 	  ratio->Divide(den);
 	  gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
-	  ratio->Draw("E1");
+
+	  errorband->SetMarkerSize(0);
+	  errorband->SetFillColor(16);
+	  errorband->SetFillStyle(1000);//3013);
+	  errorband->SetLineWidth(1);
+	  errorband->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
+	  errorband->GetXaxis()->SetTitleSize(0.1);
+	  errorband->GetXaxis()->SetTitleOffset(0.8);
+	  errorband->GetYaxis()->SetRangeUser(0,2.0);
+	  errorband->SetTitle("");
+	  errorband->GetYaxis()->SetTitle("data/MC");
+	  errorband->GetYaxis()->SetTitleSize(0.1);
+	  errorband->GetYaxis()->SetTitleOffset(0.3);
+	  errorband->GetXaxis()->SetLabelSize(0.1);
+	  errorband->GetYaxis()->SetLabelSize(0.1);
+	  errorband->SetStats(0);
+
+	  TF1* fiterrup;
+	  TF1* fiterrdown;
+	  TLine *averageLine;
+	  TLine *averageupLine;
+	  TLine *averagedownLine;
+	  if(do_ratio_fitline_){
+	    //ratio->Fit("pol0","E");
+	    averageLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),Integral(num)/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),Integral(num)/Integral(den));
+	    averageupLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),(Integral(num)+sqrt(Integral(num)))/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),(Integral(num)+sqrt(Integral(num)))/Integral(den));
+	    averagedownLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),(Integral(num)-sqrt(Integral(num)))/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),(Integral(num)-sqrt(Integral(num)))/Integral(den));
+	    averageLine->SetLineColor(2);
+	    averageupLine->SetLineColor(3);
+	    averagedownLine->SetLineColor(3);
+	    averageupLine->SetLineStyle(3);
+	    averagedownLine->SetLineStyle(3);
+	    // fiterrup=new TF1("pol0up","pol0");
+// 	    TF1 *fitresult=ratio->GetFunction("pol0");
+// 	    //fiterrup->SetParameters(fitresult->GetParameter(0)+fitresult->GetParError(0),fitresult->GetParameter(1)+fitresult->GetParError(1));
+// 	    fiterrup->SetParameter(0,fitresult->GetParameter(0)+fitresult->GetParError(0));                                                             
+// 	    fiterrdown=new TF1("pol0up","pol0");
+// 	    //fiterrdown->SetParameters(fitresult->GetParameter(0)-fitresult->GetParError(0),fitresult->GetParameter(1)-fitresult->GetParError(1));
+// 	    fiterrdown->SetParameter(0,fitresult->GetParameter(0)-fitresult->GetParError(0));                                                            
+// 	    fiterrup->SetLineStyle(2);
+// 	    fiterrdown->SetLineStyle(2);
+// 	    fiterrup->SetLineColor(2);
+// 	    fiterrdown->SetLineColor(2);
+	  }
+	  if(do_ratio_fitline_){
+	    //fiterrup->Draw("same");
+	    //fiterrdown->Draw("same");
+	    errorband->Draw("E2");
+	    averageLine->Draw("same");
+	    ratio->Draw("E1same");
+	    //averageupLine->Draw("same");
+	    //averagedownLine->Draw("same");
+	  }
+	  else 	  ratio->Draw("E1");
 	  TLine *centerLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),1.0,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),1.0);
 	  centerLine->SetLineWidth(1);
-	  centerLine->SetLineColor(2);
+	  if(!do_ratio_fitline_)centerLine->SetLineColor(2);
+	  else centerLine->SetLineColor(1);
 	  centerLine->Draw("same");
 	  if(do_ratio_line_){
 	    TLine *lowerLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),0.9,ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),0.9);

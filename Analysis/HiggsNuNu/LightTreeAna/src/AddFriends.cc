@@ -29,6 +29,7 @@ namespace ic{
     for(unsigned iSet=0;iSet<sets_.size();iSet++){
       std::vector<LTFile> files = filemanager->GetFileSet(sets_[iSet]);
       for(unsigned iFile=0;iFile<files.size();iFile++){
+	std::cout<<"adding friend to "<<files[iFile].name()<<std::endl;
 	filemanager->OpenFile(files[iFile].name());
 	filemanager->AddFriend(files[iFile].name(),friendtreename_.c_str(),(frienddir_+files[iFile].name()+"_"+friendtreename_+".root").c_str());
 	filemanager->CloseFile(files[iFile].name());

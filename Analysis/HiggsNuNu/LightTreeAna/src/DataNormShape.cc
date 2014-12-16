@@ -4,6 +4,7 @@
 #include "TCanvas.h"
 #include "TDirectory.h"
 #include "TVectorD.h"
+#include <cstdio>
 #include <map>
 #include "boost/lexical_cast.hpp"
 
@@ -22,6 +23,7 @@ namespace ic{
     shapes.push_back("jet2_pt(200,0.,1000.)");
     shape_=shapes;
     dirname_="";
+    do_latex_=false;
   };
 
   DataNormShape::~DataNormShape(){ ;};
@@ -182,6 +184,12 @@ namespace ic{
       if(iShape==0){
 	std::cout<<"  Unnormalised NSMC: "<<unnormnsmc<<"+-"<<unnormnsmcerr<<" (MC stat.)"<<std::endl;
 	std::cout<<"  Normalised NSMC: "<<nsmc<<"+-"<<nsmc*weighterrdatastatfrac<<"(data stat.)+-"<<nsmc*weightednsmcstatfrac<<"(MC stat.)"<<std::endl;
+	if(do_latex_){
+	  printf("N$^{data}$&XXX&$%.0f\\pm %.1f$(stat.)\\\\ \n",ncdata,ncdataerr);
+	  printf("N$^{bkg}$&N/A&$%.1f\\pm %.1f$(stat.)\\\\ \n",ncbkg,ncbkgerr);
+	  printf("N$^{MC}$&$%.1f\\pm%.1f$(stat.)&$%.1f\\pm %.1f$(stat.)\\\\ \n",unnormnsmc,unnormnsmcerr,ncmc,ncmcerr);
+	  printf("Final estimate&\\textcolor{red}{$%.1f\\pm%.1f$(stat.)$\\pm%.1f$(MC stat.)}&N/A \\\\ \n",nsmc,nsmc*weighterrdatastatfrac,nsmc*weightednsmcstatfrac);
+	}
 	errvec[0]=weighterrdatastatfrac;
 	errvec[1]=weightednsmcstatfrac;
       }

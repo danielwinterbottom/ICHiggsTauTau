@@ -3,6 +3,7 @@
 #include "TH1F.h"
 #include "TCanvas.h"
 #include <map>
+#include <cstdio>
 #include "TVectorD.h"
 
 namespace ic{
@@ -17,6 +18,7 @@ namespace ic{
     shapes.push_back("jet2_pt(200,0.,1000.)");
     shape_=shapes;
     dirname_="";
+    do_latex_=false;
   };
 
   DataZNormShape::~DataZNormShape(){ ;};
@@ -111,6 +113,10 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
       dir->cd();
       weightvec[0]=sigcontextrafactor_*ewkweight;
       weightvec[1]=sigcontextrafactor_*qcdweight;
+      double unnormnsmcewk=Integral(&sigmcewkshape);
+      double unnormnsmcqcd=Integral(&sigmcqcdshape);
+      double unnormnsmcewkerr=Error(&sigmcewkshape);
+      double unnormnsmcqcderr=Error(&sigmcqcdshape);
       sigmcewkshape.Scale(sigcontextrafactor_*ewkweight);//baseweight*sigmaincsigewk_/ngenmassfilteredewk_);
       sigmcqcdshape.Scale(sigcontextrafactor_*qcdweight);//baseweight*sigmaincsigqcd_/ngenmassfilteredqcd_);
       if(iShape==0){
@@ -118,9 +124,13 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
 	double nsmcqcd=Integral(&sigmcqcdshape);
  	double nsmcewkerr=Error(&sigmcewkshape);
  	double nsmcqcderr=Error(&sigmcqcdshape);
-
-	double ewkweightnsmcfracerr=sqrt(weightmcfracerr*weightmcfracerr+(nsmcewkerr/nsmcewk)*(nsmcewkerr/nsmcewk));
-	double qcdweightnsmcfracerr=sqrt(weightmcfracerr*weightmcfracerr+(nsmcqcderr/nsmcqcd)*(nsmcqcderr/nsmcqcd));
+	
+	double ewkweightnsmcfracerr;
+	double qcdweightnsmcfracerr;
+	if(nsmcewk!=0)	ewkweightnsmcfracerr=sqrt(weightmcfracerr*weightmcfracerr+(nsmcewkerr/nsmcewk)*(nsmcewkerr/nsmcewk));
+	else ewkweightnsmcfracerr=0;
+	if(nsmcqcd!=0)  qcdweightnsmcfracerr=sqrt(weightmcfracerr*weightmcfracerr+(nsmcqcderr/nsmcqcd)*(nsmcqcderr/nsmcqcd));
+	else qcdweightnsmcfracerr=0;
 
 	errvec[0]=weightdatafracerr;
 	errvec[1]=sqrt(pow(ewkweightnsmcfracerr*nsmcewk,2)+pow(qcdweightnsmcfracerr*nsmcqcd,2))/(nsmcewk+nsmcqcd);
@@ -142,6 +152,18 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
 	double ns=Integral(sigmcshape);
 	double nserr=Integral(sigmcshape);
 	std::cout<<"Final estimate: "<<ns<<"+-"<<ns*errvec[0]<<" (data stat.) +-"<<ns*errvec[1]<<"(MC stat.)"<<std::endl;
+	if(do_latex_){
+	  printf("N$_{Gen}$(EWK)&\\multicolumn{2}{c|}{$%.1f$}   \\\\ \n",ngenincewk_);
+	  printf("N$_{Gen}$(Z mass, EWK)&\\multicolumn{2}{c|}{$%.1f$}   \\\\ \n",ngenmassfilteredewk_);
+	  printf("N$_{Gen}$(QCD)&\\multicolumn{2}{c|}{$%.1f$}   \\\\ \n",ngenincqcd_);
+	  printf("N$_{Gen}$(Z mass, QCD)&\\multicolumn{2}{c|}{$%.1f$}   \\\\ \n",ngenmassfilteredqcd_);
+	  printf("\\hline \n & Signal region & Control region \\\\ \n \\hline \n");
+	  printf("$N^{data}$ & XXX & $%.0f \\pm %.1f (stat.)$\\\\ \n",ncdata,ncdataerr);
+	  printf("$N^{bkg}$ & N/A  & $%.1f \\pm %.1f (stat.)$  \\\\ \n",ncbkg,ncbkgerr);
+	  printf("$N^{MC}(EWK)$ & $%.1f \\pm %.1f (stat.)$  & $%.1f \\pm %.1f (stat.) $   \\\\ \n",unnormnsmcewk,unnormnsmcewkerr,ncmcewk,ncmcewkerr);
+	  printf("$N^{MC}(QCD)$ & $%.1f \\pm %.1f (stat.)$  & $%.1f \\pm %.1f (stat.) $   \\\\ \n",unnormnsmcqcd,unnormnsmcqcderr,ncmcqcd,ncmcqcderr);
+	  printf("$Final N^{Z\\rightarrow\\nu\\nu} estimate$ & \\textcolor{red}{$%.1f \\pm %.1f (data stat.) \\pm %.1f (MC stat.)$}  & N/A  \\\\ \n",ns,ns*errvec[0],ns*errvec[1]);
+	}
       }
 
     }

@@ -39,6 +39,7 @@ int main(int argc, char* argv[]){
   std::string cjvcut;
   std::string channel;
   std::string syst;
+  std::string dataset;
 
   bool do_promptsel;
   bool use_promptdata;
@@ -50,6 +51,10 @@ int main(int argc, char* argv[]){
   bool do_preselranges;
   bool do_prepreselranges;
   bool do_plotmcqcd;
+  bool dataonly;
+  bool do_latex;
+  bool do_closure;
+  std::string closurebase;
 
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
@@ -64,6 +69,8 @@ int main(int argc, char* argv[]){
     ("syst,s",                   po::value<std::string>(&syst)->default_value(""))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
+    ("dataset,d",                po::value<std::string>(&dataset)->default_value("SPLITPARKEDPLUSA"))
+    ("dataonly",                 po::value<bool>(&dataonly)->default_value(false))
     ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=600&&jet1_pt>50&&dijet_deta>3.6&& jet2_pt>60&&metnomuons>60&&metnomu_significance>3&&jetmetnomu_mindphi>1.5"))
     ("jetmetdphicut",            po::value<std::string>(&jetmetdphicut)->default_value("alljetsmetnomu_mindphi>1.0"))
     ("contonlycontplotjetmetdphi",po::value<std::string>(&contonlycontplotjetmetdphi)->default_value(""))
@@ -73,6 +80,9 @@ int main(int argc, char* argv[]){
     ("runblind",                 po::value<bool>(&runblind)->default_value(true))
     ("do_bdt",                   po::value<bool>(&do_bdt)->default_value(false))
     ("bdtcut",                   po::value<std::string>(&bdtcut)->default_value("BDT>-0.26"))
+    ("do_latex",                 po::value<bool>(&do_latex)->default_value(false))
+    ("do_closure",               po::value<bool>(&do_closure)->default_value(false))
+    ("closurebase",               po::value<std::string>(&closurebase)->default_value("munu"))
     ("do_preselranges",          po::value<bool>(&do_preselranges)->default_value(false))
     ("do_prepreselranges",       po::value<bool>(&do_prepreselranges)->default_value(false))
     ("do_promptsel",             po::value<bool>(&do_promptsel)->default_value(false))
@@ -176,7 +186,7 @@ int main(int argc, char* argv[]){
     }
     shape.push_back("dijet_sumeta(50,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};entries");
     shape.push_back("ht(50,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
-    shape.push_back("ht30(50,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
+    //shape.push_back("ht30(50,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
     shape.push_back("jetunclet_mindphi(32,0,3.142)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});entries");
     shape.push_back("metnomuunclet_dphi(32,0,3.142)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl};entries");
     shape.push_back("dijetmetnomu_scalarSum_pt(70,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;entries");
@@ -214,7 +224,7 @@ int main(int argc, char* argv[]){
     else{ shape.push_back("metnomu_significance(22,1.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");}
     shape.push_back("dijet_sumeta(25,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};entries");
     shape.push_back("ht(25,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
-    shape.push_back("ht30(25,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
+    //shape.push_back("ht30(25,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
     shape.push_back("jetunclet_mindphi(16,0,3.142)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});entries");
     shape.push_back("metnomuunclet_dphi(16,0,3.142)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl};entries");
     shape.push_back("dijetmetnomu_scalarSum_pt(35,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;entries");
@@ -226,10 +236,7 @@ int main(int argc, char* argv[]){
     shape.push_back("lep_mt(10,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
     shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
   }
-  std::string dataset;
-  if(!use_promptdata)dataset="SPLITPARKEDPLUSA";
-  else dataset="PROMPT";
-  //std::string dataset="PARKEDPLUSA";
+  
   std::string dataextrasel;
   if(!use_promptdata)dataextrasel="&&((((run>=190456)&&(run<=193621))&&passtrigger==1)||(((run>=193833)&&(run<=203742))&&passparkedtrigger1==1)||(((run>=203777)&&(run<=208686))&&passparkedtrigger2==1))&&l1met>=40";
   else dataextrasel="&&passtrigger==1&&l1met>=40";
@@ -251,6 +258,8 @@ int main(int argc, char* argv[]){
   else{
     nunucat=("nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut);
     nunuzcat="&&"+jetmetdphicut;
+    //nunucat=("nvetomuons==0&&nvetoelectrons==0&&"+jetmetdphicut+"&&ntaus==0");
+    //nunuzcat="&&"+jetmetdphicut+"&&ntaus==0";
   }
   
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;
@@ -268,6 +277,8 @@ int main(int argc, char* argv[]){
   //std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;//wtau
   std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
   std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
+  //std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;
+  //std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;//wtau
   //std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
   //std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
 
@@ -326,7 +337,44 @@ int main(int argc, char* argv[]){
   }
 
 
+  std::string sigmcweight;
+  std::string mcweightpufactor="";
+  if(syst=="PUUP") mcweightpufactor="*puweight_up_scale";
+  if(syst=="PUDOWN") mcweightpufactor="*puweight_down_scale";
+  
+  if(channel=="nunu"||channel=="taunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor;
+  else sigmcweight="total_weight_leptight"+mcweightpufactor;
 
+  std::string closurecat;
+  std::string zextraclosurecat;
+  std::string closurecontmcset;
+  std::string closuremcweight;
+  if(do_closure){
+    if(closurebase=="enu"){
+      closurecat=enucat;
+      zextraclosurecat=enuzcat;
+      closurecontmcset="WJets_enu";
+      closuremcweight="total_weight_leptight"+mcweightpufactor;
+    }
+    else if(closurebase=="munu"){
+      closurecat=munucat;
+      zextraclosurecat=munuzcat;
+      closurecontmcset="WJets_munu";
+      closuremcweight="total_weight_leptight"+mcweightpufactor;
+
+    }
+    else if(closurebase=="taunu"){
+      closurecat=taunucat;
+      zextraclosurecat=taunuzcat;
+      closurecontmcset="WJets_taunu";
+      closuremcweight="total_weight_lepveto"+mcweightpufactor;
+    }
+    else{
+      std::cout<<"Error: closurebase "<<closurebase<<" not supported, exiting"<<std::endl;
+      return 1;
+    }
+  }
+      
 
     
   //DATA SHAPE GENERATION
@@ -336,14 +384,6 @@ int main(int argc, char* argv[]){
     .set_shape(shape)
     .set_basesel(analysis->baseselection())
     .set_cat(sigcat+dataextrasel);
-
-  std::string sigmcweight;
-  std::string mcweightpufactor="";
-  if(syst=="PUUP") mcweightpufactor="*puweight_up_scale";
-  if(syst=="PUDOWN") mcweightpufactor="*puweight_down_scale";
-  
-  if(channel=="nunu"||channel=="taunu"||channel=="qcd") sigmcweight="total_weight_lepveto"+mcweightpufactor;
-  else sigmcweight="total_weight_leptight"+mcweightpufactor;
 
   DataShape signal110("signal110");
   signal110.set_dataset("sig110")
@@ -526,6 +566,7 @@ int main(int argc, char* argv[]){
   
   DataZNormShape zmumu("zmumu");
   zmumu.set_sigmcewkset("ZJets_ll_vbf")
+    .set_do_latex(do_latex)
     .set_shape(shape)
     .set_dirname("zvv")
     .set_sigmcqcdset("ZJets_ll")
@@ -587,27 +628,34 @@ int main(int argc, char* argv[]){
 
   DataNormShape wmunu("wmunu");
   wmunu.set_sigmcset("WJets_munu")
+    .set_do_latex(do_latex)
     .set_shape(shape)
     .set_dirname("wmu")
-    .set_contmcset("WJets_munu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
     .set_contbkgextrafactordir(Wcontbkgextrafactordir)
     .set_contbkgisz(Wcontbkgisz)
     .set_sigmcweight(sigmcweight)
-    .set_contmcweight("total_weight_leptight"+mcweightpufactor)
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
-    .set_sigcat(sigcat)
-    .set_contcat(munucat);//"nvetoelectrons==0 && nvetomuons==1 && nselmuons==1");
-
+    .set_sigcat(sigcat);
+  if(!do_closure){
+    wmunu.set_contmcset("WJets_munu")
+    .set_contcat(munucat)//"nvetoelectrons==0 && nvetomuons==1 && nselmuons==1");
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor);
+  }
+  else{
+    wmunu.set_contmcset(closurecontmcset)
+    .set_contcat(closurecat)
+    .set_contmcweight(closuremcweight);
+  }   
   
 
   DataNormShape wenu("wenu");
   wenu.set_sigmcset("WJets_enu")
+    .set_do_latex(do_latex)
     .set_shape(shape)
     .set_dirname("wel")
-    .set_contmcset("WJets_enu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
     .set_contbkgextrafactordir(Wcontbkgextrafactordir)
@@ -615,15 +663,24 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
+    .set_sigmcweight(sigmcweight);
+  if(!do_closure){
+    wenu.set_contmcset("WJets_enu")
     .set_contcat(enucat)//"nselelectrons==1 && nvetoelectrons ==1 && nvetomuons==0");
-    .set_sigmcweight(sigmcweight)
     .set_contmcweight("total_weight_leptight"+mcweightpufactor);
+  }
+  else{
+    wenu.set_contmcset(closurecontmcset)
+    .set_contcat(closurecat)
+    .set_contmcweight(closuremcweight);
+  }   
+  
 
   DataNormShape wtaunu("wtaunu");
   wtaunu.set_sigmcset("WJets_taunu")
+    .set_do_latex(do_latex)
     .set_shape(shape)
     .set_dirname("wtau")
-    .set_contmcset("WJets_taunu")
     .set_contdataset(dataset)
     .set_contbkgset(Wcontbkgsets)
     .set_contbkgextrafactordir(Wcontbkgextrafactordir)
@@ -631,9 +688,17 @@ int main(int argc, char* argv[]){
     .set_basesel(analysis->baseselection())
     .set_contdataextrasel(dataextrasel)
     .set_sigcat(sigcat)
+    .set_sigmcweight(sigmcweight);
+  if(!do_closure){
+    wtaunu.set_contmcset("WJets_taunu")
     .set_contcat(taunucat)//"ntaus>=1&&nvetoelectrons ==0 && nvetomuons==0&&lep_mt>20")
-    .set_sigmcweight(sigmcweight)
     .set_contmcweight("total_weight_lepveto"+mcweightpufactor);
+  }
+  else{
+    wtaunu.set_contmcset(closurecontmcset)
+    .set_contcat(closurecat)
+    .set_contmcweight(closuremcweight);
+  }   
 
   
   //TOP
@@ -646,6 +711,7 @@ int main(int argc, char* argv[]){
 
   DataNormShape top("top");
   top.set_sigmcset("Top")
+    .set_do_latex(do_latex)
     .set_shape(shape)
     .set_dirname("top")
     .set_contmcset("Top")
@@ -835,6 +901,7 @@ int main(int argc, char* argv[]){
     .set_color(kOrange-4)
     .set_in_stack(true)
     .set_is_inratioden(true)
+    .set_has_dderrors(1)
     .set_legname("W#rightarrow#mu#nu")
     .set_sample("wmu");
 
@@ -844,6 +911,7 @@ int main(int argc, char* argv[]){
     .set_color(kOrange  + 2)
     .set_in_stack(true)
     .set_is_inratioden(true)
+    .set_has_dderrors(1)
     .set_legname("W#rightarrow e#nu")
     .set_sample("wel");
 
@@ -853,6 +921,7 @@ int main(int argc, char* argv[]){
     .set_color(kOrange + 4)
     .set_in_stack(true)
     .set_is_inratioden(true)
+    .set_has_dderrors(1)
     .set_legname("W#rightarrow#tau#nu")
     .set_sample("wtau");
 
@@ -862,6 +931,7 @@ int main(int argc, char* argv[]){
     .set_color(kAzure  + 2)
     .set_in_stack(true)
     .set_is_inratioden(true)
+    .set_has_dderrors(1)
     .set_legname("Z#rightarrow#nu#nu")
     .set_sample("zvv");
 
@@ -871,6 +941,7 @@ int main(int argc, char* argv[]){
     .set_color(kAzure  + 2)
     .set_in_stack(true)
     .set_is_inratioden(true)
+    .set_has_dderrors(1)
     .set_legname("Z#rightarrow#mu#mu")
     .set_sample("zmumu");
 
@@ -907,6 +978,7 @@ int main(int argc, char* argv[]){
     .set_color(kBlue-8)
     .set_in_stack(true)
     .set_is_inratioden(true)
+    .set_has_dderrors(1)
     .set_legname("Top")
     .set_sample("top");
 
@@ -948,6 +1020,7 @@ int main(int argc, char* argv[]){
     //.set_histTitles(histTitle)
     .set_shapes(shapevec);
   if(channel=="nunu"&&runblind)plotter.set_do_ratio(false);
+  if(do_closure)plotter.set_do_ratio_fitline(true);
 
   std::vector<std::string> dirvec;
   dirvec.push_back("wel");
@@ -971,45 +1044,48 @@ int main(int argc, char* argv[]){
   #   SET UP ANALYSIS SEQUENCE AND RUN       #
   #                                          #
   ##########################################*/
-  
-  if(do_bdt)analysis->AddModule(&addfriends);
-  //analysis->AddModule(&mvatrainer);
-  //analysis->AddModule(&normplots);
-  if(do_datatop)analysis->AddModule(&top);
-  else analysis->AddModule(&topraw);
 
-  analysis->AddModule(&wmunu);
-  analysis->AddModule(&wenu);
-  analysis->AddModule(&wtaunu);
-  if(channel!="mumu"){
-    analysis->AddModule(&zmumu);
+  if(!dataonly){
+    if(do_bdt)analysis->AddModule(&addfriends);
+    //analysis->AddModule(&mvatrainer);
+    //analysis->AddModule(&normplots);
+    if(do_datatop)analysis->AddModule(&top);
+    else analysis->AddModule(&topraw);
+    
+    analysis->AddModule(&wmunu);
+    analysis->AddModule(&wenu);
+    analysis->AddModule(&wtaunu);
+    if(channel!="mumu"){
+      analysis->AddModule(&zmumu);
+    }
+    else analysis->AddModule(&zmumuinzcont);
+    //analysis->AddModule(&QCD);
+    //analysis->AddModule(&wmunuraw);
+    //analysis->AddModule(&wenuraw);
+    //analysis->AddModule(&wtaunuraw);  
+    if(do_plotmcqcd)analysis->AddModule(&QCDraw);
+    //analysis->AddModule(&zmumuraw);
+    //analysis->AddModule(&znunuraw);
+    analysis->AddModule(&vv);
+    //analysis->AddModule(&wgamma);
   }
-  else analysis->AddModule(&zmumuinzcont);
-  //analysis->AddModule(&QCD);
-  //analysis->AddModule(&wmunuraw);
-  //analysis->AddModule(&wenuraw);
-  //analysis->AddModule(&wtaunuraw);  
-  if(do_plotmcqcd)analysis->AddModule(&QCDraw);
-   //analysis->AddModule(&zmumuraw);
-   //analysis->AddModule(&znunuraw);
-  analysis->AddModule(&vv);
-  //analysis->AddModule(&wgamma);
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
-  analysis->AddModule(&signal110);
-  analysis->AddModule(&signal125);
-  analysis->AddModule(&signal150);
-  analysis->AddModule(&signal200);
-  analysis->AddModule(&signal300);
-  analysis->AddModule(&signal400);
-  analysis->AddModule(&ggHsignal110);
-  analysis->AddModule(&ggHsignal125);
-  analysis->AddModule(&ggHsignal150);
-  analysis->AddModule(&ggHsignal200);
-  analysis->AddModule(&ggHsignal300);
-  analysis->AddModule(&ggHsignal400);
-  analysis->AddModule(&plotter);
-  analysis->AddModule(&summary);
-
+  if(!dataonly){
+    analysis->AddModule(&signal110);
+    analysis->AddModule(&signal125);
+    analysis->AddModule(&signal150);
+    analysis->AddModule(&signal200);
+    analysis->AddModule(&signal300);
+    analysis->AddModule(&signal400);
+    analysis->AddModule(&ggHsignal110);
+    analysis->AddModule(&ggHsignal125);
+    analysis->AddModule(&ggHsignal150);
+    analysis->AddModule(&ggHsignal200);
+    analysis->AddModule(&ggHsignal300);
+    analysis->AddModule(&ggHsignal400);
+    analysis->AddModule(&plotter);
+    analysis->AddModule(&summary);
+  }
   analysis->RunAnalysis();
 
   return 0;
