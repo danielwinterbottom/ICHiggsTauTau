@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsHTohh_JetTauFakeRateExtras_h
-#define ICHiggsTauTau_HiggsHTohh_JetTauFakeRateExtras_h
+#ifndef ICHiggsTauTau_HiggsHTohh_JetTauFakeRateNew_h
+#define ICHiggsTauTau_HiggsHTohh_JetTauFakeRateNew_h
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TreeEvent.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
@@ -13,34 +13,25 @@
 
 namespace ic {
 
-	class JetTauFakeRateExtras : public ModuleBase {
+	class JetTauFakeRateNew : public ModuleBase {
 		private:
 
-			CLASS_MEMBER(JetTauFakeRateExtras, bool, write_tree)
-			CLASS_MEMBER(JetTauFakeRateExtras, bool, write_plots)
-			CLASS_MEMBER(JetTauFakeRateExtras, bool, by_decay_mode)
-			CLASS_MEMBER(JetTauFakeRateExtras, bool, by_jet_type)
-			CLASS_MEMBER(JetTauFakeRateExtras, bool, sync_mode)
-			CLASS_MEMBER(JetTauFakeRateExtras, bool, debug_mode)
-			CLASS_MEMBER(JetTauFakeRateExtras, bool, wjets_mode)
-			CLASS_MEMBER(JetTauFakeRateExtras, fwlite::TFileService*, fs)
+			CLASS_MEMBER(JetTauFakeRateNew, bool, write_tree)
+			CLASS_MEMBER(JetTauFakeRateNew, bool, write_plots)
+			CLASS_MEMBER(JetTauFakeRateNew, bool, by_decay_mode)
+			CLASS_MEMBER(JetTauFakeRateNew, bool, by_jet_type)
+			CLASS_MEMBER(JetTauFakeRateNew, bool, sync_mode)
+			CLASS_MEMBER(JetTauFakeRateNew, bool, debug_mode)
+			CLASS_MEMBER(JetTauFakeRateNew, bool, wjets_mode)
+			CLASS_MEMBER(JetTauFakeRateNew, fwlite::TFileService*, fs)
 
       std::map<std::string,TH1F*> jettype_histos_;
 			std::map<std::string,TH1F*> standard_tau_histos_;
-			std::map<std::string,TH1F*> tau_jettype_histos_;
-			std::map<std::string,TH1F*> dm_tau_histos_;
-			std::string leadtrpt_string;
-			std::string sumpt_string;
-			std::string nvtx_string;
-			std::string ntracks_string;
-			std::string njets_string;
+				std::map<std::string,TH1F*> tau_jettype_histos_;
+				std::map<std::string,TH1F*> dm_tau_histos_;
 
-
-			TTree *outtree_;
-			TH1F* sum_et_;
-			TH1F* sum_pt_;
-			TH1F* jetpt_;
-			TH1F* histntracks_;
+				TTree *outtree_;
+/*			TH1F* jetpt_;
 			TH1F* jeteta_;
 			TH1F* jetflavour_;
 			TH1F* jetphi_;
@@ -50,7 +41,7 @@ namespace ic {
 			TH1F* taueta_dm_iso_nomatch_;
 			TH1F* tauphi_dm_iso_nomatch_;
 		
-		  TH1F* genjetpt_;
+		TH1F* genjetpt_;
 			TH1F* genjeteta_;
 			TH1F* genjetpt_taupt_200_300_;
 			TH1F* genjetpt_taupt_300_400_;
@@ -63,21 +54,36 @@ namespace ic {
 			TH1F* jets_pu_;
 			TH1F* jets_overlap_;
 			TH1F* jetpt_dz_rej_;
+			TH1F* leading_trackpt_;
 			TH1F* jetpt_puid_rej_;
 			TH1F* jetpt_dz_and_puid_rej_;
-			TH1F* loose_taupt_match_;
+			*/
 
 			
 
-			double jpt_;     
-			double sumet_;
-			double sumpt_;
-			double leadtrpt_;
-			int ntracks_;
-			double jeta_;     
+			double jetpt_;     
+			double jeteta_;     
+			double jetphi_;
+			double jetlinradmom_;
+			double genjetpt_;
+			double genjetphi_;
+			double genjeteta_;
+			double taupt_;
+			double taueta_;
+			double tauphi_;
+			int jettype_;
 			double deltaR_;
 			double deltaR_calc_;
+			double taudmpass_;
+			double tauloose_;
+			double taumedium_;
+			double tautight_;
+			double jetdz_;
+			int taudm_;
+			int ntracks_;
 			int nvtx_;
+			double sumpt_;
+			double sumet_;
 			int ntaus_;
 			int nmuons_;
 			int njets_;
@@ -93,8 +99,8 @@ namespace ic {
 			int thegenjetn;
 
 		public:
-			JetTauFakeRateExtras(std::string const& name);
-			virtual ~JetTauFakeRateExtras();
+			JetTauFakeRateNew(std::string const& name);
+			virtual ~JetTauFakeRateNew();
 
 			virtual int PreAnalysis();
 			virtual int Execute(TreeEvent *event);

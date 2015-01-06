@@ -60,6 +60,7 @@ namespace ic {
 				std::vector<std::string> iso;
 				std::vector<std::string> nVtx;
 				std::vector<std::string> nTracks;
+				std::vector<std::string> nJets;
 
 				iso.push_back("dm");
 				iso.push_back("loose");
@@ -70,19 +71,19 @@ namespace ic {
 				jettype.push_back("c");
 				jettype.push_back("b");
 				jettype.push_back("undef");
-				sumEt.push_back("50");
+				sumEt.push_back("20");
+				sumEt.push_back("40");
+				sumEt.push_back("60");
+				sumEt.push_back("80");
 				sumEt.push_back("100");
-				sumEt.push_back("150");
 				sumEt.push_back("200");
-				sumEt.push_back("300");
-				sumEt.push_back("400");
 				sumEt.push_back("high");
-				sumPt.push_back("50");
+				sumPt.push_back("20");
+				sumPt.push_back("40");
+				sumPt.push_back("60");
+				sumPt.push_back("80");
 				sumPt.push_back("100");
 				sumPt.push_back("150");
-				sumPt.push_back("200");
-				sumPt.push_back("300");
-				sumPt.push_back("400");
 				sumPt.push_back("high");
 				nVtx.push_back("5");
 				nVtx.push_back("10");
@@ -96,14 +97,23 @@ namespace ic {
 				nTracks.push_back("60");
 				nTracks.push_back("80");
 				nTracks.push_back("high");
+				nJets.push_back("2");
+				nJets.push_back("4");
+				nJets.push_back("6");
+				nJets.push_back("8");
+				nJets.push_back("10");
+				nJets.push_back("15");
+				nJets.push_back("high");
+
+				
 
 
 
 				for(UInt_t jettypeit=0;jettypeit<jettype.size();jettypeit++){
 					for(UInt_t etit=0;etit<sumEt.size();etit++){
-						jettype_histos_[("jetpt_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>(("jetpt_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str(),";p_{T} [GeV];",18,binrange);
-						jettype_histos_[("jeteta_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>(("jeteta_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str(),";#eta;",50,-2.5,2.5);
-						jettype_histos_[("jetphi_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>(("jetphi_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str(),";#phi;",100,-3.15,3.15);
+						jettype_histos_[("jetpt_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>(("jetpt_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str(),";p_{T} [GeV];",18,binrange);
+						jettype_histos_[("jeteta_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>(("jeteta_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str(),";#eta;",50,-2.5,2.5);
+						jettype_histos_[("jetphi_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>(("jetphi_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str(),";#phi;",100,-3.15,3.15);
 
 					}
 					for(UInt_t ptit=0;ptit<sumPt.size();ptit++){
@@ -121,6 +131,11 @@ namespace ic {
 						jettype_histos_[("jeteta_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str()]=fs_->make<TH1F>(("jeteta_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str(),";#eta;",50,-2.5,2.5);
 						jettype_histos_[("jetphi_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str()]=fs_->make<TH1F>(("jetphi_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str(),";#phi;",100,-3.15,3.15);
 					}
+					for(UInt_t numjetit=0;numjetit<nJets.size();numjetit++){
+						jettype_histos_[("jetpt_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str()]=fs_->make<TH1F>(("jetpt_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str(),";p_{T} [GeV];",18,binrange);
+						jettype_histos_[("jeteta_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str()]=fs_->make<TH1F>(("jeteta_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str(),";#eta;",50,-2.5,2.5);
+						jettype_histos_[("jetphi_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str()]=fs_->make<TH1F>(("jetphi_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str(),";#phi;",100,-3.15,3.15);
+					}
 
 
 				}
@@ -128,9 +143,9 @@ namespace ic {
 				for(UInt_t isoit=0;isoit<iso.size();isoit++){
 					for(UInt_t jettypeit=0;jettypeit<jettype.size();jettypeit++){
 						for(UInt_t etit=0;etit<sumEt.size();etit++){
-							tau_jettype_histos_[(iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str(),";p_{T} [GeV];",18,binrange);
-							tau_jettype_histos_[(iso.at(isoit)+"_taueta_match_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taueta_match_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str(),";#eta;",50,-2.5,2.5);
-							tau_jettype_histos_[(iso.at(isoit)+"_tauphi_match_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_tauphi_match_"+jettype.at(jettypeit)+"_sumet_"+sumEt.at(etit)).c_str(),";#phi;",100,-3.15,3.15);
+							tau_jettype_histos_[(iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str(),";p_{T} [GeV];",18,binrange);
+							tau_jettype_histos_[(iso.at(isoit)+"_taueta_match_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taueta_match_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str(),";#eta;",50,-2.5,2.5);
+							tau_jettype_histos_[(iso.at(isoit)+"_tauphi_match_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_tauphi_match_"+jettype.at(jettypeit)+"_leadtrpt_"+sumEt.at(etit)).c_str(),";#phi;",100,-3.15,3.15);
 						}
 						for(UInt_t ptit=0;ptit<sumPt.size();ptit++){
 							tau_jettype_histos_[(iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_sumpt_"+sumPt.at(ptit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_sumpt_"+sumPt.at(ptit)).c_str(),";p_{T} [GeV];",18,binrange);
@@ -146,6 +161,11 @@ namespace ic {
 							tau_jettype_histos_[(iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str(),";p_{T} [GeV];",18,binrange);
 							tau_jettype_histos_[(iso.at(isoit)+"_taueta_match_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taueta_match_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str(),";#eta;",50,-2.5,2.5);
 							tau_jettype_histos_[(iso.at(isoit)+"_tauphi_match_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_tauphi_match_"+jettype.at(jettypeit)+"_ntracks_"+nTracks.at(ntrackit)).c_str(),";#phi;",100,-3.15,3.15);
+						}
+						for(UInt_t numjetit=0;numjetit<nJets.size();numjetit++){
+							tau_jettype_histos_[(iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taupt_match_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str(),";p_{T} [GeV];",18,binrange);
+							tau_jettype_histos_[(iso.at(isoit)+"_taueta_match_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taueta_match_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str(),";#eta;",50,-2.5,2.5);
+							tau_jettype_histos_[(iso.at(isoit)+"_tauphi_match_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_tauphi_match_"+jettype.at(jettypeit)+"_numjets_"+nJets.at(numjetit)).c_str(),";#phi;",100,-3.15,3.15);
 						}
 
 					}
@@ -193,17 +213,44 @@ namespace ic {
 			}
 
 
+
+
+			std::map<int,std::string> jettypelist;
+			jettypelist[-5]="b";
+			jettypelist[5]="b";
+			jettypelist[-4]="c";
+			jettypelist[4]="c";
+			jettypelist[-3]="light";
+			jettypelist[-2]="light";
+			jettypelist[-1]="light";
+			jettypelist[1]="light";
+			jettypelist[2]="light";
+			jettypelist[3]="light";
+			jettypelist[21]="g";
+			jettypelist[0]="undef";
+
+
+
+			for(UInt_t jetit=0;jetit<jets.size();jetit++){
 			sumpt_=0;
 			ntracks_=0;
+			leadtrpt_=0;
+			njets_=jets.size();
 
 				if(vertex.size()!=0){
-			for(UInt_t trackit=0;trackit<tracks.size();trackit++){
-					if(TMath::Abs(tracks.at(trackit)->vz()-vertex.at(0)->vz())<0.2){
+//			for(UInt_t constrackit=0;constrackit<(jets.at(jetit)->constituent_tracks()).size();constrackit++){
+			 for(UInt_t trackit=0;trackit<tracks.size();trackit++){
+					//if(tracks.at(trackit)->id()==jets.at(jetit)->constituent_tracks().at(constrackit)){
+					if((TMath::Abs(tracks.at(trackit)->vz()-vertex.at(0)->vz())<0.2)&&TMath::Abs(tracks.at(trackit)->eta())<2.3){
+					//if(constrackit==0) leadtrpt_ = tracks.at(trackit)->pt();
 					  ntracks_+=1;
 						sumpt_+=tracks.at(trackit)->pt();
-					}
+						}
+				//}
+//				}
 				}
 			}
+
 
 			histntracks_->Fill(ntracks_);
 			if(ntracks_<20){
@@ -231,8 +278,17 @@ namespace ic {
 
 
 
-			if(sumpt_<50){
-				sumpt_string="50";
+			if(sumpt_<20){
+				sumpt_string="20";
+			}
+			else if(sumpt_<40){
+				sumpt_string="40";
+			}
+			else if(sumpt_<60){
+				sumpt_string="60";
+			}
+			else if(sumpt_<80){
+				sumpt_string="80";
 			}
 			else if(sumpt_<100){
 				sumpt_string="100";
@@ -240,36 +296,27 @@ namespace ic {
 			else if(sumpt_<150){
 				sumpt_string="150";
 			}
-			else if(sumpt_<200){
-				sumpt_string="200";
-			}
-			else if(sumpt_<300){
-				sumpt_string="300";
-			}
-			else if(sumpt_<400){
-				sumpt_string="400";
-			}
 			else sumpt_string="high";
 
-			if(sumet_<50){
-				sumet_string="50";
+			if(leadtrpt_<20){
+				leadtrpt_string="20";
 			}
-			else if(sumet_<100){
-				sumet_string="100";
+			else if(leadtrpt_<40){
+				leadtrpt_string="40";
 			}
-			else if(sumet_<150){
-				sumet_string="150";
+			else if(leadtrpt_<60){
+				leadtrpt_string="60";
 			}
-			else if(sumet_<200){
-				sumet_string="200";
+			else if(leadtrpt_<80){
+				leadtrpt_string="80";
 			}
-			else if(sumet_<300){
-				sumet_string="300";
+			else if(leadtrpt_<100){
+				leadtrpt_string="100";
 			}
-			else if(sumet_<400){
-				sumet_string="400";
+			else if(leadtrpt_<200){
+				leadtrpt_string="200";
 			}
-			else sumet_string="high";
+			else leadtrpt_string="high";
 
 			if(nvtx_<=5){
 				nvtx_string="5";
@@ -285,25 +332,24 @@ namespace ic {
 			}
 			else nvtx_string="high";
 
+			if(njets_<=2){;
+			njets_string="2";
+			}
+			else if(njets_<=4){
+			njets_string="4";
+			}
+			else if(njets_<=6){
+			njets_string="6";
+			}
+			else if(njets_<=8){
+			njets_string="8";
+			}
+			else if(njets_<=10){
+			njets_string="10";
+			}
+			else njets_string="high";
 
 
-			std::map<int,std::string> jettypelist;
-			jettypelist[-5]="b";
-			jettypelist[5]="b";
-			jettypelist[-4]="c";
-			jettypelist[4]="c";
-			jettypelist[-3]="light";
-			jettypelist[-2]="light";
-			jettypelist[-1]="light";
-			jettypelist[1]="light";
-			jettypelist[2]="light";
-			jettypelist[3]="light";
-			jettypelist[21]="g";
-			jettypelist[0]="undef";
-
-
-
-			for(UInt_t jetit=0;jetit<jets.size();jetit++){
 
 				thetrackid=-1;
 				for(UInt_t trackit=0;trackit<tracks.size();trackit++){
@@ -328,9 +374,9 @@ namespace ic {
 
 					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3){
 					jetpt_->Fill(jets.at(jetit)->pt());
-						jettype_histos_[("jetpt_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->pt());
-						jettype_histos_[("jeteta_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->eta());
-						jettype_histos_[("jetphi_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->phi());
+						jettype_histos_[("jetpt_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->pt());
+						jettype_histos_[("jeteta_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->eta());
+						jettype_histos_[("jetphi_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->phi());
 						jettype_histos_[("jetpt_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->pt());
 						jettype_histos_[("jeteta_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->eta());
 						jettype_histos_[("jetphi_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->phi());
@@ -340,6 +386,10 @@ namespace ic {
 						jettype_histos_[("jetpt_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->pt());
 						jettype_histos_[("jeteta_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->eta());
 						jettype_histos_[("jetphi_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->phi());
+						jettype_histos_[("jetpt_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->pt());
+						jettype_histos_[("jeteta_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->eta());
+						jettype_histos_[("jetphi_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->phi());
+
 					}
 
 
@@ -354,16 +404,25 @@ namespace ic {
 
 
 
-					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5&&taus.at(thetaun)->GetTauID("decayModeFindingOldDMs")>0.5){
+//					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5&&taus.at(thetaun)->GetTauID("decayModeFindingOldDMs")>0.5){
+					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5){
+
 						tau_jettype_histos_[("dm_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->pt());
 						tau_jettype_histos_[("dm_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->eta());
 						tau_jettype_histos_[("dm_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->phi());
-						tau_jettype_histos_[("dm_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->pt());
-						tau_jettype_histos_[("dm_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->eta());
-						tau_jettype_histos_[("dm_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->phi());
+						tau_jettype_histos_[("dm_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->pt());
+						tau_jettype_histos_[("dm_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->eta());
+						tau_jettype_histos_[("dm_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->phi());
 						tau_jettype_histos_[("dm_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->pt());
 						tau_jettype_histos_[("dm_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->eta());
 						tau_jettype_histos_[("dm_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->phi());
+            tau_jettype_histos_[("dm_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->pt());
+						tau_jettype_histos_[("dm_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->eta());
+						tau_jettype_histos_[("dm_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->phi());
+            tau_jettype_histos_[("dm_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->pt());
+						tau_jettype_histos_[("dm_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->eta());
+						tau_jettype_histos_[("dm_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->phi());
+
 
 
 
@@ -372,24 +431,27 @@ namespace ic {
 							tau_jettype_histos_[("loose_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->pt());
 							tau_jettype_histos_[("loose_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->eta());
 							tau_jettype_histos_[("loose_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->phi());
-							tau_jettype_histos_[("loose_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->pt());
-							tau_jettype_histos_[("loose_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->eta());
-							tau_jettype_histos_[("loose_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->phi());
+							tau_jettype_histos_[("loose_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->pt());
+							tau_jettype_histos_[("loose_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->eta());
+							tau_jettype_histos_[("loose_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->phi());
 							tau_jettype_histos_[("loose_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->pt());
 							tau_jettype_histos_[("loose_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->eta());
 							tau_jettype_histos_[("loose_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->phi());
             	tau_jettype_histos_[("loose_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->pt());
 							tau_jettype_histos_[("loose_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->eta());
 							tau_jettype_histos_[("loose_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_ntracks_"+ntracks_string).c_str()]->Fill(jets.at(jetit)->phi());
+            	tau_jettype_histos_[("loose_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->pt());
+							tau_jettype_histos_[("loose_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->eta());
+							tau_jettype_histos_[("loose_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_numjets_"+njets_string).c_str()]->Fill(jets.at(jetit)->phi());
 
 
 							if(taus.at(thetaun)->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")>0.5){
 								tau_jettype_histos_[("medium_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->pt());
 								tau_jettype_histos_[("medium_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->eta());
 								tau_jettype_histos_[("medium_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->phi());
-								tau_jettype_histos_[("medium_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->pt());
-								tau_jettype_histos_[("medium_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->eta());
-								tau_jettype_histos_[("medium_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->phi());
+								tau_jettype_histos_[("medium_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->pt());
+								tau_jettype_histos_[("medium_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->eta());
+								tau_jettype_histos_[("medium_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->phi());
 								tau_jettype_histos_[("medium_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->pt());
 								tau_jettype_histos_[("medium_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->eta());
 								tau_jettype_histos_[("medium_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->phi());
@@ -401,9 +463,9 @@ namespace ic {
 									tau_jettype_histos_[("tight_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->pt());
 									tau_jettype_histos_[("tight_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->eta());
 									tau_jettype_histos_[("tight_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumpt_"+sumpt_string).c_str()]->Fill(jets.at(jetit)->phi());
-									tau_jettype_histos_[("tight_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->pt());
-									tau_jettype_histos_[("tight_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->eta());
-									tau_jettype_histos_[("tight_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_sumet_"+sumet_string).c_str()]->Fill(jets.at(jetit)->phi());
+									tau_jettype_histos_[("tight_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->pt());
+									tau_jettype_histos_[("tight_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->eta());
+									tau_jettype_histos_[("tight_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_leadtrpt_"+leadtrpt_string).c_str()]->Fill(jets.at(jetit)->phi());
 									tau_jettype_histos_[("tight_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->pt());
 									tau_jettype_histos_[("tight_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->eta());
 									tau_jettype_histos_[("tight_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]+"_nvtx_"+nvtx_string).c_str()]->Fill(jets.at(jetit)->phi());

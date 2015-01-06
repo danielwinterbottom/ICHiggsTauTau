@@ -54,6 +54,7 @@ namespace ic {
 			TH1F* jets_pu_;
 			TH1F* jets_overlap_;
 			TH1F* jetpt_dz_rej_;
+			TH1F* leading_trackpt_;
 			TH1F* jetpt_puid_rej_;
 			TH1F* jetpt_dz_and_puid_rej_;
 

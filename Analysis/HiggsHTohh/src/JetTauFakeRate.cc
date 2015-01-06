@@ -54,6 +54,7 @@ namespace ic {
 				jets_pu_ = fs_->make<TH1F>("jets_pu",";Pileup jet ID;",100,-1,2);
 				jets_overlap_=fs_->make<TH1F>("jets_overlap","",1,0,2);
 				jetpt_dz_rej_ = fs_->make<TH1F>("jetpt_dz_rej_","",18,binrange);
+				leading_trackpt_ = fs_->make<TH1F>("leading_trackpt","",18,binrange);
 				jetpt_puid_rej_ = fs_->make<TH1F>("jetpt_puid_rej_","",18,binrange);
 				jetpt_dz_and_puid_rej_=fs_->make<TH1F>("jetpt_dz_and_puid_rej_","",18,binrange);
 				genjetpt_taupt_200_300_ = fs_->make<TH1F>("genjetpt_taupt_200_300_","",18,binrange);
@@ -261,6 +262,9 @@ namespace ic {
 						continue;
 					}
 					jets_dz_->Fill(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz()));
+					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
+					  leading_trackpt_->Fill(tracks.at(thetrackid)->pt());
+					}
 					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2){
 						jetpt_dz_rej_->Fill(jets.at(jetit)->pt());
 					}
@@ -343,9 +347,19 @@ namespace ic {
 
 
 					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5&&taus.at(thetaun)->GetTauID("decayModeFindingOldDMs")>0.5){
-						standard_tau_histos_["dm_taupt_match"]->Fill(jets.at(jetit)->pt());
+				//	if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5){
+				//	std::cout<<"CAUTION:NOT REQUIRING DM finding here!"<<std::endl;
+/*						standard_tau_histos_["dm_taupt_match"]->Fill(jets.at(jetit)->pt());
 						standard_tau_histos_["dm_taueta_match"]->Fill(jets.at(jetit)->eta());
 						standard_tau_histos_["dm_tauphi_match"]->Fill(jets.at(jetit)->phi());
+
+							if(by_jet_type_){
+								tau_jettype_histos_[("dm_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]).c_str()]->Fill(jets.at(jetit)->pt());
+								tau_jettype_histos_[("dm_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]).c_str()]->Fill(jets.at(jetit)->eta());
+								tau_jettype_histos_[("dm_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]).c_str()]->Fill(jets.at(jetit)->phi());
+							}
+							*/
+
 
 						if(taus.at(thetaun)->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")>0.5){
 							standard_tau_histos_["loose_taupt_match"]->Fill(jets.at(jetit)->pt());

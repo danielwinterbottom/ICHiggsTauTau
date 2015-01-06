@@ -17,6 +17,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRate.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRateNew.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRateExtras.h"
 
 using boost::lexical_cast;
@@ -156,12 +157,31 @@ int main(int argc, char* argv[]){
 	
 	
 
-JetTauFakeRateExtras jetTauFakeRateExtraPlots = JetTauFakeRateExtras("jetTauFakeRateExtraPlots")
+/*JetTauFakeRateExtras jetTauFakeRateExtraPlots = JetTauFakeRateExtras("jetTauFakeRateExtraPlots")
   .set_write_plots(true)
 	.set_write_tree(false)
 	.set_wjets_mode(wjets_mode)
 	.set_fs(fs2);
+	*/
 	
+/* JetTauFakeRateOtherIsos jetTauFakeRateOtherIsos = JetTauFakeRateOtherIsos("jetTauFakeRateOtherIsos")
+  .set_write_plots(true)
+  .set_write_tree(false)
+	.set_by_decay_mode(by_decay_mode)
+	.set_by_jet_type(by_jet_type)
+	.set_wjets_mode(wjets_mode)
+	.set_fs(fs);
+	*/
+	
+	
+
+/*JetTauFakeRateExtrasOtherIsos jetTauFakeRateExtraPlotsOtherIsos = JetTauFakeRateExtrasOtherIsos("jetTauFakeRateExtraPlotsOtherIsos")
+  .set_write_plots(true)
+	.set_write_tree(false)
+	.set_wjets_mode(wjets_mode)
+	.set_fs(fs2);
+	*/
+
 
  //Add module here which reads in the filtered taus and jets and makes the plots/performs the fake rate study
  
@@ -172,8 +192,14 @@ JetTauFakeRateExtras jetTauFakeRateExtraPlots = JetTauFakeRateExtras("jetTauFake
 	}
   analysis.AddModule(&TauFilter); 
 	if(!do_skim){
-	  if(!extra_only) analysis.AddModule(&jetTauFakeRate);
-	  if(!standard_only) analysis.AddModule(&jetTauFakeRateExtraPlots);
+	  if(!extra_only){
+		analysis.AddModule(&jetTauFakeRate);
+//		analysis.AddModule(&jetTauFakeRateOtherIsos);
+		}
+	 // if(!standard_only){
+		//analysis.AddModule(&jetTauFakeRateExtraPlots);
+//		analysis.AddModule(&jetTauFakeRateExtraPlotsOtherIsos);
+//		}
 	}
 
 
