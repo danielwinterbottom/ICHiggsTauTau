@@ -48,6 +48,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/TauEfficiency.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/BTagCheck.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhMetScale.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -902,8 +903,15 @@ int main(int argc, char* argv[]){
     .set_mc(mc)
     .set_met_label(met_label)
     .set_strategy(strategy)
-    .set_met_scale_mode(metscale_mode)
+    //option to take met scale uncertainty from recoil corrector files - off for now as files have over-inflated uncertainties
+    //.set_met_scale_mode(metscale_mode)
     .set_w_hack(true);
+
+  //Met scale by hand for now
+  HhhMetScale hhhMetScale = HhhMetScale("HhhMetScale")
+    .set_met_scale_mode(metscale_mode)
+    .set_met_label(met_label)
+    .set_scale_shift(0.04);
 
   HTTWeights httWeights = HTTWeights("HTTWeights")
     .set_channel(channel)
@@ -1165,6 +1173,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
                                   analysis.AddModule(&hhhRecoilCorrector);
+    if(metscale_mode > 0)         analysis.AddModule(&hhhMetScale);  
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) {
                                   analysis.AddModule(&svfit);
