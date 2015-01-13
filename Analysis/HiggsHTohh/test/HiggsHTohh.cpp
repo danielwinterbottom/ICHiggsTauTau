@@ -1173,7 +1173,8 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
                                   analysis.AddModule(&hhhRecoilCorrector);
-    if(metscale_mode > 0)         analysis.AddModule(&hhhMetScale);  
+    if(metscale_mode > 0 
+      && !is_data )               analysis.AddModule(&hhhMetScale);  
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) {
                                   analysis.AddModule(&svfit);
