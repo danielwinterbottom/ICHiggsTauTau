@@ -125,6 +125,10 @@ namespace ic{
     TFile* file=fs_;
 
     //GET DIRECTORY TO WRITE TO
+    TDirectory* stacksdir=file->mkdir("stacksdir");
+    TDirectory* numsdir=file->mkdir("numsdir");
+    TDirectory* densdir=file->mkdir("densdir");
+
     TDirectory* writedir;
     if(dirname_==""){
       writedir=file->mkdir("controlplots");
@@ -149,7 +153,7 @@ namespace ic{
     //LOOP OVER ALL THE VARIABLES TO PLOT
     for(unsigned iShape=0;iShape<shapes_.size();iShape++){
       std::cout<<"  Drawing plot for "<<shapes_[iShape].name()<<std::endl;
-      THStack *stack=new THStack("stack","stacked plots");
+      THStack *stack=new THStack(("stack"+shapes_[iShape].name()).c_str(),("stacked "+shapes_[iShape].name()+" plots").c_str());
       bool stackempty=true;
 
       //      if(!do_ratio_) stack->SetTitle(histTitles_[iShape].name().c_str());
@@ -247,7 +251,9 @@ namespace ic{
 	  stack->Add(elements_[iElement].hist_ptr());
 	}
       }
-
+      stacksdir->cd();
+      stack->Write();
+    
       //SETUP THE CANVAS
       TCanvas *c1=new TCanvas(shapes_[iShape].name().c_str(),shapes_[iShape].name().c_str());
       c1->cd();
@@ -316,6 +322,7 @@ namespace ic{
 
       //SETUP AND DRAW THE LEGEND
       TLegend* leg =new TLegend(0.75,0.3,0.89,0.89);
+      leg->SetName("thelegend");
       leg->SetFillStyle(0);
       leg->SetLineColor(10);
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
@@ -361,7 +368,7 @@ namespace ic{
 	  if(elements_[iElement].is_inrationum()){
 	    //ADD TO num HIST
 	    if(firstnum){
-	      num=(TH1F*)(elements_[iElement].hist_ptr()->Clone("num"));
+	      num=(TH1F*)(elements_[iElement].hist_ptr()->Clone(("num"+shapes_[iShape].name()).c_str()));
 	      firstnum=false;
 	    }
 	    else num->Add(elements_[iElement].hist_ptr());
@@ -369,7 +376,7 @@ namespace ic{
 	  if(elements_[iElement].is_inratioden()){
 	    //ADD TO den HIST
 	    if(firstden){
-	      den=(TH1F*)(elements_[iElement].hist_ptr()->Clone("den"));
+	      den=(TH1F*)(elements_[iElement].hist_ptr()->Clone(("den"+shapes_[iShape].name()).c_str()));
 	      firstden=false;
 	    }
 	    else den->Add(elements_[iElement].hist_ptr());
@@ -387,16 +394,22 @@ namespace ic{
 	    if(thiselementintegral!=0){
 	      dentoterr=sqrt(pow(dentoterr,2)+pow(thiselementfracerr*thiselementintegral,2));
 	    }
-	    std::cout<<dentoterr<<std::endl;
+	    //std::cout<<dentoterr<<std::endl;
 	  }
 	}
+	numsdir->cd();
+	num->Write();
+	densdir->cd();
+	den->Write();
+	lower->cd();
+
 	if(firstnum||firstden)std::cout<<"To draw ratio plot you must specify elements to be numerator and denominator! Ratio plot will be missing."<<std::endl;
 	else{
 	  //Set den error to zero will take den error into account in error band!!
 	  double denfracerr=dentoterr/Integral(den);
 	  double numfracerr=1/sqrt(Integral(num));
-	  std::cout<<Integral(den);
-	  std::cout<<denfracerr<<std::endl;
+	  //std::cout<<Integral(den);
+	  //std::cout<<denfracerr<<std::endl;
 	  TH1F* errorband=(TH1F*)(den->Clone("errorband"));
 	  for(int bin=0;bin<=den->GetNbinsX()+1;bin++){
 	    den->SetBinError(bin,0);

@@ -26,6 +26,8 @@ int main(int argc, char* argv[]){
   std::string inputfolder;
   std::string inputparams;
   std::string filelist;
+  std::string basesel;
+  std::string jetmetdphicut;
   
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
@@ -38,6 +40,8 @@ int main(int argc, char* argv[]){
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
     ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("../output_lighttree_topreweighted"))//"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/lighttree/"))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18.dat"))
+    ("basesel,b",                po::value<std::string>(&basesel)->default_value(""))
+    ("jetmetdphicut,j",                po::value<std::string>(&jetmetdphicut)->default_value(""))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"));
     //Base selection cuts
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -124,12 +128,12 @@ int main(int argc, char* argv[]){
   MVATrain mvatrainer("mvatrainer");
   mvatrainer.set_sigsets(sigsets)
     .set_bkgsets(bkgsets)
-    .set_datadrivenweightsfile("output_runcbugfixed/nunu.root")
+    .set_datadrivenweightsfile("output_sigreg_greq/nunu.root")
     .set_bkgweightdir(bkgweightdir)
     .set_bkgisz(bkgisz)
     .set_variables(variables)
     .set_specvariables(specvariables)
-    .set_basesel("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=1000&&jet1_pt>50&&dijet_deta>3.6&& jet2_pt>40&&metnomuons>90&&metnomu_significance>4.0&&alljetsmetnomu_mindphi>2.5&&nvetomuons==0&&nvetoelectrons==0")
+    .set_basesel(basesel+"&&"+jetmetdphicut)//"jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=1000&&jet1_pt>50&&dijet_deta>3.6&& jet2_pt>40&&metnomuons>90&&metnomu_significance>4.0&&alljetsmetnomu_mindphi>2.5&&nvetomuons==0&&nvetoelectrons==0"+jetmetdphicut)
        //("nvetomuons==0&&nvetoelectrons==0&&jet1_pt>50&&jet2_pt>50&&jet1_eta<4.7&&jet2_eta<4.7&&metnomu_significance>3&&dijet_deta>3.6&&jetmetnomu_mindphi>1.5")
     .set_sigcat("")
     .set_bkgcat("");

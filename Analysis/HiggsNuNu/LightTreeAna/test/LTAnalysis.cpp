@@ -41,6 +41,7 @@ int main(int argc, char* argv[]){
   std::string syst;
   std::string dataset;
 
+  bool do_singlemu;
   bool do_promptsel;
   bool use_promptdata;
   bool do_datatop;
@@ -86,6 +87,7 @@ int main(int argc, char* argv[]){
     ("do_preselranges",          po::value<bool>(&do_preselranges)->default_value(false))
     ("do_prepreselranges",       po::value<bool>(&do_prepreselranges)->default_value(false))
     ("do_promptsel",             po::value<bool>(&do_promptsel)->default_value(false))
+    ("do_singlemu",             po::value<bool>(&do_singlemu)->default_value(false))
     ("use_promptdata",           po::value<bool>(&use_promptdata)->default_value(false))
     ("do_plotmcqcd",             po::value<bool>(&do_plotmcqcd)->default_value(false))
     ("runblindreg",              po::value<bool>(&runblindreg)->default_value(true));
@@ -165,15 +167,17 @@ int main(int argc, char* argv[]){
 
   if(!(channel=="taunu"||channel=="top")){
     shape.push_back("jet2_pt(26,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
-    shape.push_back("jet1_pt(25,50.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
-    shape.push_back("metnomuons(21,90.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
+    shape.push_back("jet1_pt(30,50.,350.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
+    shape.push_back("metnomuons(18,90.,450.)");histTitle.push_back(";METnoMu (GeV);entries");
     shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
     shape.push_back("l1met(20,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
-    shape.push_back("dijet_M(10,1000.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
+    shape.push_back("dijet_M(14,1000.,2400.)");histTitle.push_back(";M_{jj} (GeV);entries");
+    //shape.push_back("dijet_M(17,300.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
     shape.push_back("jetmetnomu_mindphi(12,2.0,3.142)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
     if(!do_preselranges&&!do_prepreselranges){
       shape.push_back("alljetsmetnomu_mindphi(12,2.0,3.142)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-      shape.push_back("metnomu_significance(35,3.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
+      //shape.push_back("alljetsmetnomu_mindphi(22,1.0,3.142)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
+      shape.push_back("metnomu_significance(30,3.,15.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
     }
     else if(do_prepreselranges){
       shape.push_back("alljetsmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
@@ -189,11 +193,11 @@ int main(int argc, char* argv[]){
     //shape.push_back("ht30(50,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
     shape.push_back("jetunclet_mindphi(32,0,3.142)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});entries");
     shape.push_back("metnomuunclet_dphi(32,0,3.142)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl};entries");
-    shape.push_back("dijetmetnomu_scalarSum_pt(70,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;entries");
+    shape.push_back("dijetmetnomu_scalarSum_pt(35,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;entries");
     shape.push_back("dijetmetnomu_vectorialSum_pt(20,0,400)");histTitle.push_back(";p_{T}(#vec{ja}+#vec{jb}+#vec{METnoMu});entries");
     shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);entries");
     shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);entries");
-    shape.push_back("dijet_dphi(30,0.,3.)");histTitle.push_back(";#Delta#phi_{jj};entries");
+    shape.push_back("dijet_dphi(15,0.,3.)");histTitle.push_back(";#Delta#phi_{jj};entries");
     shape.push_back("dijet_deta(18,3.4,7.)");histTitle.push_back(";#Delta#eta_{jj};entries");
     shape.push_back("lep_mt(20,0.,100.)");histTitle.push_back(";m_{T}(lepton+MET (GeV);entries");
     shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
@@ -265,18 +269,29 @@ int main(int argc, char* argv[]){
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;
   std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//zmumu
 
-  std::string munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut+contonlycontplotjetmetdphi;//&&lep_mt>10";
-  std::string munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wmu
+  std::string munucat,munuzcat;
+  if(!do_singlemu){
+    munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut+contonlycontplotjetmetdphi;//&&lep_mt>10";
+    munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wmu
+  }
+  else{
+    munucat="mu1_pt>25&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut+contonlycontplotjetmetdphi;//&&lep_mt>10";
+    munuzcat="&&mu1_pt>25&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wmu
+  }
 
   std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut+contonlycontplotjetmetdphi;
   std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wel
 
+  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
+  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
+
+
+  //std::string taunucat="nvetomuons==0&&nvetoelectrons==0";//"+jetmetdphicut;
+  //std::string taunuzcat="&&nvetoelectrons==0";//"+jetmetdphicut;//wtau
   //  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&alljetsmetnomu_mindphi>1.0";
   //  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&alljetsmetnomu_mindphi>1.0";//wtau
   //std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;
   //std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;//wtau
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
-  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
   //std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;
   //std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20";//"+jetmetdphicut;//wtau
   //std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;

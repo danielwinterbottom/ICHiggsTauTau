@@ -80,9 +80,11 @@ namespace ic{
       TH1F  contmcshape = filemanager->GetSetShape(contmcset_,varinput,basesel_,(contcat_+contmcextrasel_),contmcweight_,false);
       std::cout<<"  Getting control MC Backgrounds shape"<<std::endl;
       TH1F contbkgshape;
+      TH1F sigbkgshape;
       bool firstbkg=true;
       //IF NO DIRS TO GET DATA DRIVEN WEIGHTS, GET SETS SHAPE
       double extrancbkgerr=0;
+      double extransbkgerr=0;
       if(contbkgextrafactordir_.size()==0){
 	contbkgshape= filemanager->GetSetsShape(contbkgset_,varinput,basesel_,(contcat_+contbkgextrasel_),contmcweight_,false);
       }
@@ -122,26 +124,38 @@ namespace ic{
 	      }
 	    }
 	    TH1F nextbkg;
+	    TH1F nextsigbkg;
 	    //SPECIAL CASE FOR Z BKG
 	    if(contbkgisz_.size()==contbkgset_.size()){
 	      if(contbkgisz_[iBkg]!=0){
 		//GET Z SHAPE AND WEIGHT IT
 		nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],varinput,basesel_,(zcontcat_+contbkgextrasel_),contmczweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+		nextsigbkg=filemanager->GetSetShape(contbkgset_[iBkg],varinput,basesel_,sigcat_+sigmcextrasel_,sigmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
 	      }
-	    else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],varinput,basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	      else{
+		nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],varinput,basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+		nextsigbkg=filemanager->GetSetShape(contbkgset_[iBkg],varinput,basesel_,sigcat_+sigmcextrasel_,sigmcweight_,false);
+	      }
 	    }
-	    else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],varinput,basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	    else{
+	      nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],varinput,basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	      nextsigbkg=filemanager->GetSetShape(contbkgset_[iBkg],varinput,basesel_,(sigcat_+sigmcextrasel_),sigmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	    }
 	    //std::cout<<contbkgset_[iBkg]<<" "<<Integral(&nextbkg)<<" "<<extrafactorfracerr<<std::endl;
 	    double thisbkgextrancbkgerr=Integral(&nextbkg)*extrafactorfracerr;
+	    double thisbkgextransbkgerr=Integral(&nextsigbkg)*extrafactorfracerr;
 	    extrancbkgerr=sqrt(pow(extrancbkgerr,2)+pow(thisbkgextrancbkgerr,2));
+	    extransbkgerr=sqrt(pow(extransbkgerr,2)+pow(thisbkgextransbkgerr,2));
 	    
 	    //ADD HISTOGRAMS TOGETHER
 	    if(firstbkg){
 	      contbkgshape=nextbkg;
+	      sigbkgshape=nextsigbkg;
 	      firstbkg=false;
 	    }
 	    else{
 	      contbkgshape.Add(&nextbkg);
+	      sigbkgshape.Add(&nextsigbkg);
 	    }
 	  }
 	}
@@ -158,9 +172,11 @@ namespace ic{
 
       double nsdata= Integral(&sigdatashape,1,1);
       double nsdataerr= Error(&sigdatashape,1,1);
+      double nsbkg= Integral(&sigbkgshape,1,1);
+      double nsbkgerr= Error(&sigbkgshape,1,1);
 
-      closureData->SetBinContent(iBin+1,nsdata);
-      closureData->SetBinError(iBin+1,nsdataerr);
+      closureData->SetBinContent(iBin+1,nsdata-nsbkg);
+      closureData->SetBinError(iBin+1,sqrt(pow(nsdataerr,2)+pow(nsbkgerr,2)));
 
       //Integrate over shape to get number in each region
       double ncmc = Integral(&contmcshape,1,1);
@@ -313,7 +329,7 @@ namespace ic{
     leg->SetLineColor(10);
     leg->AddEntry(closureRawMC,"Raw MC","lp");
     leg->AddEntry(closureDDMC,"Data Driven","lp");
-    leg->AddEntry(closureData,"Data","lp");
+    leg->AddEntry(closureData,"Data-Bkg","lp");
 
     closureRawMC->GetXaxis()->SetLabelOffset(999);
     closureRawMC->GetXaxis()->SetLabelSize(0);

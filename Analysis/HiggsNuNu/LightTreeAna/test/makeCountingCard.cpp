@@ -34,6 +34,7 @@ int main(int argc, char* argv[]){
   bool do_individualsystsummary;
   bool do_latex;
   double qcdrate;
+  double zvvstat;
   std::string mass;
   std::string indir;
   std::string outname;
@@ -45,6 +46,7 @@ int main(int argc, char* argv[]){
     //Input output and config options                                                                                                                   
     ("input_folder,i",           po::value<std::string>(&indir)->default_value("output_contplots_alljets15metsig4cjvmjj1100"))
     ("outname,o",                po::value<std::string>(&outname)->default_value("vbfhinv.txt"))
+    ("blind",                    po::value<bool>(&blind)->default_value(true))
     ("do_qcdfromshape,s",        po::value<bool>(&do_qcdfromshape)->default_value(false))
     ("do_qcdfromnumber,q",       po::value<bool>(&do_qcdfromnumber)->default_value(true))
     ("do_ggh,g",                 po::value<bool>(&do_ggh)->default_value(true))
@@ -53,6 +55,7 @@ int main(int argc, char* argv[]){
     ("do_individualsystsummary", po::value<bool>(&do_individualsystsummary)->default_value(false))
     ("do_latex,l",               po::value<bool>(&do_latex)->default_value(false))
     ("qcdrate",                  po::value<double>(&qcdrate)->default_value(17))
+    ("zvvstat",                  po::value<double>(&zvvstat)->default_value(18))
     ("mass,m",                   po::value<std::string>(&mass)->default_value("125"))
     ("do_datatop,t",             po::value<bool>(&do_datatop)->default_value(true));
 
@@ -104,6 +107,7 @@ int main(int argc, char* argv[]){
   bkgprocesslatex.push_back("VV");
   
   //CENTRAL ROOT FILE
+  std::cout<<"IMPORTANT NOTE: GMN UNCERTAINTY MUST BE PUT IN MANUALLY!!"<<std::endl;
   std::cout<<"Processing indir: "<<indir<<std::endl;
   TFile* nunu=new TFile((indir+"/nunu.root").c_str());
 
@@ -195,6 +199,14 @@ int main(int argc, char* argv[]){
     .set_latexname("$Z\\rightarrow\\nu\\nu$ data stat.")
     .set_is_datastat(true)
     .set_type("datadrivendatastatlnN")
+    .set_procsaffected({"zvv"});
+
+  Syst zvvdatastatgmn;
+  zvvdatastatgmn.set_name("CMS_VBFHinv_zvv_stat")
+    .set_latexname("$Z\\rightarrow\\nu\\nu$ data stat.")
+    .set_is_datastat(true)
+    .set_type("datadrivendatastatgmN")
+    .set_constvalue(zvvstat)
     .set_procsaffected({"zvv"});
 
   Syst welmcstat;
@@ -375,7 +387,8 @@ int main(int argc, char* argv[]){
   if(do_ues)systematics.push_back(ues);
   systematics.push_back(pu);
   systematics.push_back(zvvmcstat);
-  systematics.push_back(zvvdatastat);
+  //  systematics.push_back(zvvdatastat);
+  systematics.push_back(zvvdatastatgmn);
   systematics.push_back(wmumcstat);
   systematics.push_back(wmudatastat);
   systematics.push_back(welmcstat);
@@ -385,7 +398,7 @@ int main(int argc, char* argv[]){
   systematics.push_back(wtaumcstat);
   systematics.push_back(wtaudatastat);
   systematics.push_back(mcfmzvv);
-  if(do_datatop){
+    if(do_datatop){
     systematics.push_back(topmcstat);
     systematics.push_back(topdatastat);
   }
@@ -536,7 +549,9 @@ int main(int argc, char* argv[]){
     if(systematics[iSyst].type().find("lnN")!=std::string::npos){
       datacard<<systematics[iSyst].name()<<"\tlnN";
     }
-
+    if(systematics[iSyst].type().find("gmN")!=std::string::npos){
+      datacard<<systematics[iSyst].name()<<"\tgmN"<<"\t"<<systematics[iSyst].constvalue();
+    }
     double thissystbkgstat=0;
     double thissystbkgsyst=0;
     double thissystsigstat=0;
@@ -687,6 +702,29 @@ int main(int argc, char* argv[]){
 	    abserror=error*bkgcentralrates[iProc-sigprocesses.size()];
 	    thissystbkgstat+=abserror;
 	  }
+
+	  if(procstattotal.find(dirname)==procstattotal.end()) procstattotal[dirname]=error;
+	  else procstattotal[dirname]=sqrt(pow(procstattotal[dirname],2)+pow(error,2));
+	  if(verbose)std::cout<<"    "<<dirname<<" "<<procsysttotal[dirname]<<" "<<procstattotal[dirname]<<std::endl;
+	}
+	else if(systematics[iSyst].type()=="datadrivendatastatgmN"){
+	  TDirectory* dir=nunu->GetDirectory(dirname.c_str());
+	  double gmnfac=0;
+	  double nevents=systematics[iSyst].constvalue();
+	  double error=1/sqrt(systematics[iSyst].constvalue());
+	  double abserror=0;
+	  if(iProc<sigprocesses.size()){
+	    gmnfac=sigcentralrates[iProc]/nevents;
+	    abserror=error*sigcentralrates[iProc];
+	    thissystsigstat+=abserror;
+	  }
+	  else{
+	    gmnfac=bkgcentralrates[iProc-sigprocesses.size()]/nevents;
+	    abserror=error*bkgcentralrates[iProc-sigprocesses.size()];
+	    thissystbkgstat+=abserror;
+	  }
+
+	  datacard<<"\t"<<gmnfac;
 
 	  if(procstattotal.find(dirname)==procstattotal.end()) procstattotal[dirname]=error;
 	  else procstattotal[dirname]=sqrt(pow(procstattotal[dirname],2)+pow(error,2));
