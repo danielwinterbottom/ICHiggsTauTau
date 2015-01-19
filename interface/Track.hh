@@ -55,6 +55,32 @@ class Track {
   /// The z-coordinate of the PCA
   inline double vz() const { return ref_point_.z(); }
 
+  /// The normalised chi2 of the track fit
+  inline double normalized_chi2() const { return normalized_chi2_; }
+
+  /// Number of tracker hits
+  inline int hits() const { return hits_; }
+
+  /// Number of pixel hits
+  inline int pixel_hits() const { return pixel_hits_; }
+
+  /// Approximate dxy
+  /// Copied from DataFormats/TrackReco/interface/TrackBase.h
+  inline double dxy(Point const& point) {
+    return (-(vx() - point.x()) * momentum().y() +
+            (vy() - point.y()) * momentum().z()) /
+           pt();
+  }
+
+  /// Approximate dz
+  /// Copied from DataFormats/TrackReco/interface/TrackBase.h
+  inline double dz(Point const& point) {
+    return (vz() - point.z()) -
+           ((vx() - point.x()) * momentum().x() +
+            (vy() - point.y()) * momentum().y()) /
+               pt() * momentum().z() / pt();
+  }
+
   /// The track charge
   inline int charge() const { return charge_; }
   /**@}*/
@@ -90,6 +116,21 @@ class Track {
   /// @copybrief vz()
   inline void set_vz(double const& z) { ref_point_.SetZ(z); }
 
+  /// @copybrief normalized_chi2()
+  inline void set_normalized_chi2(double const& normalized_chi2) {
+    normalized_chi2_ = normalized_chi2;
+  }
+
+  /// @copybrief hits()
+  inline void set_hits(int const& hits) {
+    hits_ = hits;
+  }
+
+  /// @copybrief pixel_hits()
+  inline void set_pixel_hits(int const& pixel_hits) {
+    pixel_hits_ = pixel_hits;
+  }
+
   /// @copybrief charge()
   inline void set_charge(int const& charge) { charge_ = charge; }
   /**@}*/
@@ -100,9 +141,14 @@ class Track {
   std::size_t id_;
   int charge_;
 
+  double normalized_chi2_;
+  int hits_;
+  int pixel_hits_;
+
+
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Track, 2);
+  ClassDef(Track, 3);
  #endif
 };
 

@@ -35,6 +35,16 @@ Candidate {#objs-candidate}
 **Example usage**
 @snippet python/default_producers_cfi.py Candidate
 
+PFCandidate {#objs-pf-candidate}
+===========================
+ - **Definition**: ic::PFCandidate
+ - **CMSSW Producers**: ICPFProducer, ICPFFromPackedProducer
+ - **Producer Input**: Either a collection compatible with an `edm::View<reco::PFCandidate>` or an `edm::View<pat::PackedCandidate>` (the latter only available in CMSSW_7_X_Y series releases)
+ - **Producer Output**: `std::vector<ic::PFCandidate>`
+
+**Example usage**
+@snippet python/default_producers_cfi.py PFCandidate
+
 CompositeCandidate {#objs-composite}
 =========
  - **Definition**: ic::CompositeCandidate

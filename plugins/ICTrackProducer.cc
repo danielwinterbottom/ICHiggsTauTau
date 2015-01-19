@@ -43,6 +43,9 @@ void ICTrackProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     dest.set_vx(src.vx());
     dest.set_vy(src.vy());
     dest.set_vz(src.vz());
+    dest.set_normalized_chi2(src.normalizedChi2());
+    dest.set_hits(src.hitPattern().numberOfValidHits());
+    dest.set_pixel_hits(src.hitPattern().numberOfValidPixelHits());
   }
 }
 

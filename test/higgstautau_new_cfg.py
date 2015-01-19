@@ -65,7 +65,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(500)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -147,6 +147,11 @@ process.selectedVertices = cms.EDFilter("VertexRefSelector",
   cut = cms.string("ndof >= 4 & abs(z) <= 24 & abs(position.Rho) <= 2")
 )
 
+process.selectedPFCandidates = cms.EDFilter("PFCandidateRefSelector",
+  src = cms.InputTag("particleFlow"),
+  cut = cms.string("pt > 5.0")
+)
+
 process.selectedElectrons = cms.EDFilter("GsfElectronRefSelector",
   src = cms.InputTag("gsfElectrons"),
   cut = cms.string("pt > 9.5 & abs(eta) < 2.6")
@@ -195,6 +200,7 @@ if release in ['70XMINIAOD', '72XMINIAOD']:
 
 process.icSelectionSequence = cms.Sequence(
   process.selectedVertices+
+  process.selectedPFCandidates+
   process.selectedElectrons+
   process.selectedPFMuons
 )
@@ -279,6 +285,56 @@ process.icVertexProducer = producers.icVertexProducer.clone(
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer
 )
+
+################################################################
+# PFCandidates
+################################################################
+process.icPFProducer = cms.EDProducer('ICPFProducer',
+  branch  = cms.string("pfCandidates"),
+  input   = cms.InputTag("selectedPFCandidates"),
+  requestTracks       = cms.bool(True),
+  requestGsfTracks    = cms.bool(True)
+)
+
+process.icPFSequence = cms.Sequence()
+
+if isPhys14:
+  process.icPFSequence += process.icPFProducer
+
+
+################################################################
+# Tracks
+################################################################
+process.selectedTracks = cms.EDFilter("TrackRefSelector",
+  src = cms.InputTag("generalTracks"),
+  cut = cms.string("pt > 5")
+)
+
+process.icMergedTracks = cms.EDProducer('ICTrackMerger',
+  merge = cms.VInputTag(
+    cms.InputTag("selectedTracks"),
+    cms.InputTag("icPFProducer", "requestedTracks")
+  )
+)
+
+process.icTrackProducer = producers.icTrackProducer.clone(
+  branch = cms.string("tracks"),
+  input  = cms.InputTag("icMergedTracks")
+)
+
+process.icGsfTrackProducer = producers.icTrackProducer.clone(
+  branch = cms.string("gsfTracks"),
+  input  = cms.InputTag("icPFProducer", "requestedGsfTracks")
+)
+
+process.icTrackSequence = cms.Sequence()
+if isPhys14:
+  process.icTrackSequence += cms.Sequence(
+    process.selectedTracks+
+    process.icMergedTracks+
+    process.icTrackProducer+
+    process.icGsfTrackProducer
+  )
 
 ################################################################
 # Electrons
@@ -1334,6 +1390,8 @@ process.p = cms.Path(
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
   process.icVertexSequence+
+  process.icPFSequence+
+  process.icTrackSequence+
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauProducer+

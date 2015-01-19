@@ -7,6 +7,13 @@ icCandidateProducer = cms.EDProducer('ICCandidateProducer',
 )
 ## [Candidate]
 
+## [PFCandidate]
+icPFProducer = cms.EDProducer('ICPFProducer',
+  branch  = cms.string("pfCandidates"),
+  input   = cms.InputTag("particleFlow", "", "RECO")
+)
+## [PFCandidate]
+
 ## [Electron]
 icElectronProducer = cms.EDProducer('ICElectronProducer',
     branch                    = cms.string("electrons"),
