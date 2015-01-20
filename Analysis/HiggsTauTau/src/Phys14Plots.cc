@@ -2,6 +2,7 @@
 #include "Utilities/interface/FnPredicates.h"
 #include "Utilities/interface/FnPairs.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
+#include "UserCode/ICHiggsTauTau/interface/Track.hh"
 
 namespace ic {
 
@@ -101,7 +102,14 @@ int Phys14Plots::PreAnalysis() {
   h_th1_pt_resp = dir_->make<TH1F>("th1_pt_resp", "", 50, -2, 2);
   h_th10_pt_resp = dir_->make<TH1F>("th10_pt_resp", "", 50, -2, 2);
 
-
+  th_pf_match_pt = PFMatchPlot(dir_, "th_pf_match_pt", 24, 6, 102);
+  th_pf_match_eta = PFMatchPlot(dir_, "th_pf_match_eta", 30, -2.5, 2.5);
+  th0_pf_match_pt = PFMatchPlot(dir_, "th0_pf_match_pt", 24, 6, 102);
+  th0_pf_match_eta = PFMatchPlot(dir_, "th0_pf_match_eta", 30, -2.5, 2.5);
+  th1_pf_match_pt = PFMatchPlot(dir_, "th1_pf_match_pt", 24, 6, 102);
+  th1_pf_match_eta = PFMatchPlot(dir_, "th1_pf_match_eta", 30, -2.5, 2.5);
+  th10_pf_match_pt = PFMatchPlot(dir_, "th10_pf_match_pt", 24, 6, 102);
+  th10_pf_match_eta = PFMatchPlot(dir_, "th10_pf_match_eta", 30, -2.5, 2.5);
   // Want to plot:
   // Probability to pass decay mode reco vs: gen vis pT, gen vis eta, nvtx
   return 0;
@@ -311,8 +319,54 @@ int Phys14Plots::Execute(TreeEvent* event) {
       }
     }
   }
+
+  auto tracks = event->GetPtrVec<Track>("tracks");
+  auto vertices = event->GetPtrVec<Vertex>("vertices");
+  auto pfcands = event->GetPtrVec<PFCandidate>("pfCandidates");
+  std::map<std::size_t, PFCandidate const*> trk_pf_map;
+  for (PFCandidate const* pf : pfcands) {
+    if (pf->constituent_tracks().size() > 0)
+      trk_pf_map[pf->constituent_tracks()[0]] = pf;
+  }
+  if (vertices.size() >= 1) {
+    ic::erase_if(tracks, [&](ic::Track const* trk) {
+      return !(QualityTrack(trk, vertices[0]) && trk->pt() > 6.);
+    });
+    for (auto gen_th : gen_th_vec) {
+      // Make a copy of the gen pions ptr vec
+      auto gen_pions = gen_th->pi_charged;
+      // Match filtered tracks to charged pions
+      auto trk_pion_matches = MatchByDR(tracks, gen_pions, 0.01, true, true);
+      auto matched_trks = ExtractFirst(trk_pion_matches);
+      for (Track const* trk : matched_trks) {
+        PFType type = trk_pf_map.count(trk->id())
+                          ? trk_pf_map.at(trk->id())->type()
+                          : PFType::X;
+        th_pf_match_pt.Fill(trk->pt(), type);
+        th_pf_match_eta.Fill(trk->eta(), type);
+        if (gen_th->hadronic_mode == 0) {
+          th0_pf_match_pt.Fill(trk->pt(), type);
+          th0_pf_match_eta.Fill(trk->eta(), type);
+        } else if (gen_th->hadronic_mode >= 1 && gen_th->hadronic_mode <= 4) {
+          th1_pf_match_pt.Fill(trk->pt(), type);
+          th1_pf_match_eta.Fill(trk->eta(), type);
+        } else if (gen_th->hadronic_mode == 10) {
+          th10_pf_match_pt.Fill(trk->pt(), type);
+          th10_pf_match_eta.Fill(trk->eta(), type);
+        }
+      }
+    };
+  }
   return 0;
 }
+
+bool Phys14Plots::QualityTrack(Track const* trk, Vertex const* vtx) {
+  return trk->pt() > 0.5 && trk->normalized_chi2() < 100. &&
+         std::abs(trk->dxy(vtx->point())) < 0.1 &&
+         std::abs(trk->dz(vtx->point())) < 0.4 && trk->hits() >= 3 &&
+         trk->pixel_hits() >= 0;
+}
+
 
 int Phys14Plots::PostAnalysis() { return 0; }
 
