@@ -13,6 +13,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/Plotter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/HistPlotter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/SummaryTable.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/EventList.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/program_options.hpp"
 #include "TColor.h"
@@ -53,6 +54,7 @@ int main(int argc, char* argv[]){
   bool do_prepreselranges;
   bool do_plotmcqcd;
   bool dataonly;
+  bool datalist;
   bool do_latex;
   bool do_closure;
   std::string closurebase;
@@ -72,6 +74,7 @@ int main(int argc, char* argv[]){
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     ("dataset,d",                po::value<std::string>(&dataset)->default_value("SPLITPARKEDPLUSA"))
     ("dataonly",                 po::value<bool>(&dataonly)->default_value(false))
+    ("datalist",                 po::value<bool>(&datalist)->default_value(false))
     ("basesel",                  po::value<std::string>(&basesel)->default_value("jet1_eta*jet2_eta<0 && jet1_eta<4.7 && jet2_eta<4.7 && dijet_M>=600&&jet1_pt>50&&dijet_deta>3.6&& jet2_pt>60&&metnomuons>60&&metnomu_significance>3&&jetmetnomu_mindphi>1.5"))
     ("jetmetdphicut",            po::value<std::string>(&jetmetdphicut)->default_value("alljetsmetnomu_mindphi>1.0"))
     ("contonlycontplotjetmetdphi",po::value<std::string>(&contonlycontplotjetmetdphi)->default_value(""))
@@ -1053,6 +1056,10 @@ int main(int argc, char* argv[]){
   summary.set_shape(shapevec)
     .set_dirs(dirvec);
   
+  EventList eventlist("eventlist");
+  eventlist.set_set(dataset)
+    .set_basesel(analysis->baseselection()+dataextrasel)
+    .set_cat(sigcat);
 
   /*##########################################
   #                                          #
@@ -1085,6 +1092,7 @@ int main(int argc, char* argv[]){
     //analysis->AddModule(&wgamma);
   }
   if(!(channel=="nunu"&&runblind))analysis->AddModule(&data);
+  if(datalist) analysis->AddModule(&eventlist);
   if(!dataonly){
     analysis->AddModule(&signal110);
     analysis->AddModule(&signal125);
