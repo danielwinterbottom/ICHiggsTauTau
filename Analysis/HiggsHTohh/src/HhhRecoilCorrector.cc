@@ -20,6 +20,7 @@ namespace ic {
     disable = true;
     is_wjets_ = false;
     is_ttbar_ = false;
+    met_scale_mode_ = 0;
     w_hack_ = false;
   }
 
@@ -102,7 +103,8 @@ namespace ic {
     }
     */
 
-    if (sample_.find("HToTauTau") != sample_.npos) {
+    if (sample_.find("HToTauTau") != sample_.npos
+        || sample_.find("HToBB") != sample_.npos) {
       disable = false;
       if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
       if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
@@ -261,8 +263,14 @@ namespace ic {
     double U2 = 0;
     double iFluc = 0;
     double iScale = 0;
-    //iFluc 1, iScale 1
-    //iFluc -1, iScale -1
+    if(met_scale_mode_ == 1) { 
+        iFluc=-1; 
+        iScale=-1;
+    }
+    if(met_scale_mode_ == 2) { 
+        iFluc=1; 
+        iScale=1;
+    }
     
     if (mc_ == mc::summer12_53X) {
 

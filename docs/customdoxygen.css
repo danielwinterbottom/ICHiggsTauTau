@@ -1,7 +1,7 @@
 /* The standard CSS for doxygen 1.8.6 */
 
 body, table, div, p, dl {
-	font: 400 14px/20px "Open Sans",sans-serif;
+	font: 400 15px/22px "Open Sans",sans-serif;
   /*-webkit-font-smoothing: antialiased;*/
 }
 
@@ -802,7 +802,7 @@ address {
 table.doxtable {
 	border-collapse:collapse;
   margin: 20px;
-  width: 400px;
+  width: 85%;
   font-size: 14px;
 }
 
@@ -1041,25 +1041,28 @@ dl.warning, dl.attention
 
 dl.pre, dl.post, dl.invariant
 {
-        margin-left:-7px;
-        padding-left: 3px;
-        border-left:4px solid;
+        margin-left:4px;
+        margin-right: 24px;
+        padding: 4px 20px;
+        border-left:10px solid;
         border-color: #00D000;
 }
 
 dl.deprecated
 {
-        margin-left:-7px;
-        padding-left: 3px;
-        border-left:4px solid;
+        margin-left:4px;
+        margin-right: 24px;
+        padding: 4px 20px;
+        border-left:10px solid;
         border-color: #505050;
 }
 
 dl.todo
 {
-        margin-left:-7px;
-        padding-left: 3px;
-        border-left:4px solid;
+        margin-left:4px;
+        margin-right: 24px;
+        padding: 4px 20px;
+        border-left:10px solid;
         border-color: #00C0E0;
 }
 
@@ -1187,7 +1190,7 @@ div.toc {
 
 div.toc li {
         background: url("bdwn.png") no-repeat scroll 0 5px transparent;
-        font: 10px/1.2 "Open Sans",DejaVu Sans,Geneva,sans-serif;
+        font: 12px/1.2 "Open Sans",DejaVu Sans,Geneva,sans-serif;
         margin-top: 5px;
         padding-left: 10px;
         padding-top: 2px;

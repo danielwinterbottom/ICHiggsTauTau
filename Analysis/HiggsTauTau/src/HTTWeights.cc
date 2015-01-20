@@ -40,6 +40,7 @@ namespace ic {
     ggh_hist_down_            = nullptr;
     do_tau_mode_scale_        = false;
     do_topquark_weights_      = false;
+    do_top_jeteta_weights_    = false;
     do_tau_fake_weights_      = false;
     do_tt_muon_weights_       = false;
     gen_tau_collection_       = "genParticlesTaus";
@@ -72,6 +73,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "btag_mode"           % btag_mode_;
     std::cout << boost::format(param_fmt()) % "bfake_mode"          % bfake_mode_;
     std::cout << boost::format(param_fmt()) % "do_topquark_weights" % do_topquark_weights_;
+    std::cout << boost::format(param_fmt()) % "do_top_jeteta_weights" % do_top_jeteta_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_fake_weights" % do_tau_fake_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_id_weights"   % do_tau_id_weights_;
 
@@ -251,7 +253,40 @@ namespace ic {
         event->Add("wt_tau_id_down", weight_down);
       }
     }
-
+    //A derived correction based on a data/MC discrepancy in the subleading b-jet eta in the emu ttbar control region. Used for a cross-check in H->hh analysis.
+    if (do_top_jeteta_weights_) {
+      std::vector<PFJet*> prebjets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
+      ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
+      std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
+      std::vector<PFJet*> prebjets_SF = prebjets;
+      // Instead of changing b-tag value in the promote/demote method we look for a map of bools
+      // that say whether a jet should pass the WP or not
+      if (event->Exists("retag_result")) {
+        auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
+        ic::erase_if(prebjets_SF, !boost::bind(IsReBTagged, _1, retag_result));
+      } else {
+        ic::erase_if(prebjets_SF, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
+      }
+      int n_prebjets_SF=prebjets_SF.size();
+      double wt=1.00;
+      if(n_prebjets_SF>=1) {
+        double eta = prebjets[1]->eta();
+        if (eta <= -2.0)                           { wt = 1.1897861575; }
+        if (eta >= -2.0 && eta < -1.6)             { wt = 1.0639250201; }
+        if (eta >= -1.6 && eta < -1.2)             { wt = 1.06317801149; }
+        if (eta >= -1.2 && eta < -0.8)             { wt = 0.985871842192; }
+        if (eta >= -0.8 && eta < -0.4)             { wt = 0.976539619511; }
+        if (eta >= -0.4 && eta < 0.0)              { wt = 0.922588119141; }
+        if (eta >= 0.0 && eta < 0.4)               { wt = 1.02200809147; }
+        if (eta >= 0.4 && eta < 0.8)               { wt = 0.935068388647; }
+        if (eta >= 0.8 && eta < 1.2)               { wt = 0.973272817984; }
+        if (eta >= 1.2 && eta < 1.6)               { wt = 1.03197671439; }
+        if (eta >= 1.6 && eta < 2.0)               { wt = 1.07689347695; }
+        if (eta >= 2.0)                            { wt = 1.13656881923; }
+      }
+      eventInfo->set_weight("jeteta_weight", wt);
+    }
+    
     if (do_top_factors_) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
@@ -262,6 +297,7 @@ namespace ic {
       //   eventInfo->set_weight("top_factor", top_factor);
       // }
     }
+    
     
     if (do_btag_weight_) {
       std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection

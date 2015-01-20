@@ -19,6 +19,7 @@
 #include "TEfficiency.h"
 #include "TEntryList.h"
 #include "TMath.h"
+#include "TH1.h"
 #include "TLegend.h"
 #include "RooDataHist.h"
 #include "RooHistPdf.h"
@@ -59,8 +60,8 @@ namespace ic {
         "Special_3_Data",
         "Special_4_Data",
         "Special_5_WJetsToLNuSoup",
-        "WJetsToLNuSoup",
-        "WbbJetsToLNu"
+        "WJetsToLNuSoup"
+        //"WbbJetsToLNu"
       });
       if (year_ == "2012") push_back(sample_names_, std::vector<std::string>{
           "DYJetsToLLSoup",
@@ -97,7 +98,9 @@ namespace ic {
 
     if (ch_ != channel::em) {
       // SM Categories
-      alias_map_["inclusive"]         = "pt_2>30.";
+      //alias_map_["inclusive"]         = "pt_2>30";
+      alias_map_["inclusive"]         = "1";
+      alias_map_["inclusiveMassCuts"] = "prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150";
 
       // Categories for background estimates and control plots
       alias_map_["vbf_loose"]         = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
@@ -123,8 +126,14 @@ namespace ic {
     alias_map_["nobtag"]                    = "n_bjets==0";
     // Categories for background estimates and control plots
     alias_map_["btag_loose"]                = "(n_jets<=1 && n_loose_bjets>=1)";
-    // New categories for optimisation of H->hh->tautaubb
-    alias_map_["sasha"]                      = "(n_prebjets>=2 && n_bjets>=1)";
+    alias_map_["1jet1tag_loose"]            = "(n_prebjets==1 && prebjetbcsv_1>0.244)";
+    alias_map_["2jet1tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244)";
+    alias_map_["2jet1tagMassCuts_loose"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tag_loose"]            = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244)";
+    alias_map_["2jet2tagMassCuts_loose"]    = "(n_prebjets>=2 && prebjetbcsv_1>0.244 && prebjetbcsv_2>0.244 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    // Useful category for control plots
+    alias_map_["2jetGT1tag"]                      = "(n_prebjets>=2 && prebjetbcsv_1>=0.679)";
+    alias_map_["2jetGT1tagSF"]                      = "(n_prebjets>=2 && n_prebjets_SF>=1)";
     
    
     // Attempt at exclusive categories
@@ -134,11 +143,61 @@ namespace ic {
     alias_map_["1jet1tag"]     = "(n_prebjets==1 && prebjetbcsv_1>0.898)";
     alias_map_["2jet2tag"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
     
+    // Categories including the effect of the b-tag SF
+    alias_map_["2jet0tagSF"]     = "(n_prebjets>=2 && n_prebjets_SF==0)";
+    //alias_map_["1jet0tagSF"]     = "(n_prebjets==1 && n_prebjets_SF==0)";
+    alias_map_["2jet1tagSF"]     = "(n_prebjets>=2 && n_prebjets_SF==1)";
+    //alias_map_["1jet1tagSF"]     = "(n_prebjets==1 && n_prebjets_SF==1)";
+    alias_map_["2jet2tagSF"]     = "(n_prebjets>=2 && n_prebjets_SF>=2)";
+    
+    // Attempt at exclusive categories including mass cuts
+    alias_map_["2jet0tagMassCuts"]     = "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["1jet0tagMassCuts"]     = "(n_prebjets==1 && prebjetbcsv_1<0.898 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tagMassCuts"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["1jet1tagMassCuts"]     = "(n_prebjets==1 && prebjetbcsv_1>0.898 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tagMassCuts"]     = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    
+    // Categories including the effect of the b-tag SF and mass cuts
+    alias_map_["2jet0tagSFMassCuts"]     = "(n_prebjets>=2 && n_prebjets_SF==0 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    //alias_map_["1jet0tagSFMassCuts"]     = "(n_prebjets==1 && n_prebjets_SF==0 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tagSFMassCuts"]     = "(n_prebjets>=2 && n_prebjets_SF==1 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    //alias_map_["1jet1tagSFMassCuts"]     = "(n_prebjets==1 && n_prebjets_SF==1 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tagSFMassCuts"]     = "(n_prebjets>=2 && n_prebjets_SF>=2 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
+    
+    // Categories including the effect of the b-tag SF and one mass cut (for control plots)
+    alias_map_["2jet0tagSFMassCutMbb"]     = "(n_prebjets>=2 && n_prebjets_SF==0 && prebjet_mjj>70 && prebjet_mjj<150)";
+    alias_map_["2jet1tagSFMassCutMbb"]     = "(n_prebjets>=2 && n_prebjets_SF==1 && prebjet_mjj>70 && prebjet_mjj<150)";
+    alias_map_["2jet2tagSFMassCutMbb"]     = "(n_prebjets>=2 && n_prebjets_SF>=2 && prebjet_mjj>70 && prebjet_mjj<150)";
+    alias_map_["2jet0tagSFMassCutMtt"]     = "(n_prebjets>=2 && n_prebjets_SF==0 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tagSFMassCutMtt"]     = "(n_prebjets>=2 && n_prebjets_SF==1 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tagSFMassCutMtt"]     = "(n_prebjets>=2 && n_prebjets_SF>=2 && m_sv>90 && m_sv<150)";
+		
+    //categories related to unfolded 2D distribution of mtt and mbb
+    alias_map_["2jet0tag_slice0"]= "(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>0 && prebjet_mjj<60)";
+    alias_map_["2jet0tag_slice1"]="(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=60 && prebjet_mjj<100)";
+    alias_map_["2jet0tag_slice2"]="(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=100 && prebjet_mjj<140)";
+    alias_map_["2jet0tag_slice3"]="(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=140 && prebjet_mjj<200)";
+    alias_map_["2jet0tag_slice4"]="(n_prebjets>=2 && prebjetbcsv_1<0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=200 && prebjet_mjj<600)";
+    alias_map_["2jet1tag_slice0"]= "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>0 && prebjet_mjj<60)";
+    alias_map_["2jet1tag_slice1"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=60 && prebjet_mjj<100)";
+    alias_map_["2jet1tag_slice2"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=100 && prebjet_mjj<140)";
+    alias_map_["2jet1tag_slice3"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=140 && prebjet_mjj<200)";
+    alias_map_["2jet1tag_slice4"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2<0.679 && prebjet_mjj>=200 && prebjet_mjj<600)";
+    alias_map_["2jet2tag_slice0"]= "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>0 && prebjet_mjj<60)";
+    alias_map_["2jet2tag_slice1"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>=60 && prebjet_mjj<100)";
+    alias_map_["2jet2tag_slice2"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>=100 && prebjet_mjj<140)";
+    alias_map_["2jet2tag_slice3"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>=140 && prebjet_mjj<200)";
+    alias_map_["2jet2tag_slice4"]="(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>=200 && prebjet_mjj<600)";
+
+    
     //Extra categories for making control plots
     alias_map_["1jetinclusive"] = "(n_prebjets>=1)";
     alias_map_["2jetinclusive"] = "(n_prebjets>=2)";
+    alias_map_["2jetinclusiveMassCuts"] = "(n_prebjets>=2 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     alias_map_["2jetMoreThan1tag"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 )";
+    alias_map_["2jetMoreThan1tagMassCuts"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150 )";
     alias_map_["2jetMoreThan2tag"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679)";
+    alias_map_["2jetMoreThan2tagMassCuts"] = "(n_prebjets>=2 && prebjetbcsv_1>0.679 && prebjetbcsv_2>0.679 && prebjet_mjj>70 && prebjet_mjj<150 && m_sv>90 && m_sv<150)";
     
     // Selection control regions
     // Sideband region for OS W+jets extrapolation
@@ -260,6 +319,12 @@ namespace ic {
       //sample_names_.push_back("ZH_HToTauTau_M-"+m);
     }
   }
+  void HhhAnalysis::AddSMHbbSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("WH_WToLNu_HToBB_M-"+m);
+      sample_names_.push_back("ZH_ZToLL_HToBB_M-"+m);
+    }
+  }
   void HhhAnalysis::AddHWWSignalSamples(std::vector<std::string> masses) {
     if (year_ == "2012") {
       for (auto m : masses) {
@@ -290,13 +355,23 @@ namespace ic {
       sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m);
       sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
       sample_names_.push_back("GluGluToAToZhToLLTauTau_mA-"+m);
+     // sample_names_.push_back("GluGluToAToZhToBBTauTau_mA-"+m);
     }
   }
   void HhhAnalysis::AddMSSMbbHSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
       sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
+      //sample_names_.push_back("SUSYBBHTohhTo2Tau2B_mH-"+m);
     }
   }
+  
+  void HhhAnalysis::AddHighMassSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("RadionToHH_2Tau_2b_M-"+m);
+      sample_names_.push_back("GravitonToHH_2Tau_2b_M-"+m);
+    }
+  }
+
 
   void HhhAnalysis::ReadTrees(std::string const& folder, std::string const& fallback_folder) {
     std::cout << "[HhhAnalysis::ReadTrees] Reading input files..." << std::endl;
@@ -404,10 +479,23 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      if (method == 24) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
+      if (method == 27) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
+      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
       zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, cat, wt);
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
         % ("DYJetsToLL-L"+dy_soup_) % sel % zll_shape_cat % wt;
+      if(verbosity_ && !(method==8)) {
+          std::string bin_delim="";
+        if(var.find("[")!=std::string::npos) bin_delim = "[";     
+        if(var.find("(")!=std::string::npos) bin_delim = "(";
+        this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),"DYJetsToLL-L"+dy_soup_,sel,cat,
+        "DYJetsToLL-L"+dy_soup_, sel ,zll_shape_cat,wt);
+        TH1F default_zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, cat, wt);
+        std::cout << "Kolmogorov test from root: " << default_zl_hist.KolmogorovTest(&zl_hist) << std::endl; 
+      }
     }
     SetNorm(&zl_hist, zl_norm.first);
     return std::make_pair(zl_hist, zl_norm);
@@ -437,10 +525,23 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
+      if (method == 24) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
+      if (method == 27) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
       zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt);
       zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
         % "zj_samples" % sel % zll_shape_cat % wt;
+      if(verbosity_ && !(method==8)) {
+      /*    std::string bin_delim="";
+        if(var.find("[")!=std::string::npos) bin_delim = "[";     
+        if(var.find("(")!=std::string::npos) bin_delim = "(";
+        this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),"DYJetsToLL-J"+dy_soup_,sel,cat,
+        "DYJetsToLL-J"+dy_soup_, sel ,zll_shape_cat,wt);*/
+        TH1F default_zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, cat, wt);
+        std::cout << "Kolmogorov test from root: " << default_zj_hist.KolmogorovTest(&zj_hist) << std::endl; 
+      }
     }
     SetNorm(&zj_hist, zj_norm.first);
     return std::make_pair(zj_hist, zj_norm);
@@ -504,7 +605,7 @@ namespace ic {
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
     std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
-    if (method == 5) {
+    if (method == 5 || method == 16) {
       w_extrap_cat    = this->ResolveAlias("w_vbf_extrap_cat");
       w_extrp_sdb_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("w_vbf_sdb");
       w_extrp_sig_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("sel");
@@ -513,6 +614,8 @@ namespace ic {
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
+    if (method == 28 || method == 29 || method==27) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 16) w_extrap_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     
     Value w_norm;
     if(method == 20){
@@ -559,9 +662,24 @@ namespace ic {
     if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
+    if (method == 23) w_shape_cat = this->ResolveAlias("1jet1tag_loose");
+    if (method == 24) w_shape_cat = this->ResolveAlias("2jet1tag_loose");
+    if (method == 15) w_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+    if (method == 27) w_shape_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 16) w_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     TH1F w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, w_shape_cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("W_Shape_Sample") % w_shape_sel % w_shape_cat % wt;
+    //Print Kolmogorov result of shape comparison if chosen method isnt method 8 and verbosity is on
+    if(verbosity_ && !(method==8)) {
+        std::string bin_delim="";
+      if(var.find("[")!=std::string::npos) bin_delim = "[";     
+      if(var.find("(")!=std::string::npos) bin_delim = "(";
+      this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),this->ResolveAlias("W_Shape_Sample"),w_shape_sel,cat,
+      this->ResolveAlias("W_Shape_Sample"),  w_shape_sel,w_shape_cat,wt);
+      TH1F default_w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, cat, wt);
+      std::cout << "Kolmogorov test from root: " << default_w_hist.KolmogorovTest(&w_hist) << std::endl; 
+    }
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
   }
@@ -578,7 +696,9 @@ namespace ic {
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
-      if (method == 5 || method == 4) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 5 || method == 4 || method == 25 || method == 26 ) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 16) qcd_cat = this->ResolveAlias("2jetinclusive");
+      //if (method == 5 || method == 4 || method == 25 || method == 26) qcd_cat = this->ResolveAlias("2jetinclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
       qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
@@ -586,7 +706,7 @@ namespace ic {
           return w_ss_norm;}
         }
       });
-      if (method == 5 || method == 4) {
+      if (method == 5 || method == 4 || method == 25 || method == 26 || method == 16) {
         Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         if (verbosity_) {
           std::cout << "CategoryEff:   " << boost::format("%s,'%s','%s'/'%s','%s'\n") % this->ResolveAlias("QCD_Eff_Sample")  % qcd_sdb_sel 
@@ -606,18 +726,44 @@ namespace ic {
           {"WJetsToLNuSoup", [&]()->HhhAnalysis::Value {
             return w_ss_norm;} 
           }
+        });}
+      else if (method == 25) {
+        qcd_cat=cat;
+        qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+          {"WJetsToLNuSoup", [&]()->HhhAnalysis::Value {
+            return w_ss_norm;} 
+          }
         });
       } else {
         if (method == 4)  qcd_cat = cat;
         if (method == 21)  qcd_cat = cat;
+        if (method == 26 || method == 14)  qcd_cat = cat;
         if (method == 5)  qcd_cat = this->ResolveAlias("vbf_loose_jets20");
         if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
         if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
+        if (method == 23) qcd_cat = this->ResolveAlias("1jet1tag_loose");        
+        //if (method == 24 || method == 25 ) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
+        if (method == 24) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
+        if (method == 15) qcd_cat = this->ResolveAlias("2jet1tagMassCuts_loose");        
+        if (method == 27) qcd_cat = this->ResolveAlias("2jet2tag_loose");        
+        if (method == 16) qcd_cat = this->ResolveAlias("2jet2tagMassCuts_loose");        
         qcd_hist = this->GetShape(var, this->ResolveAlias("QCD_Shape_Sample"), qcd_sdb_sel, qcd_cat, wt);
         if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
           % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
-
+        if(verbosity_ && method!=8) {
+          std::string bin_delim="";
+          if(var.find("[")!=std::string::npos) bin_delim = "[";     
+          if(var.find("(")!=std::string::npos) bin_delim = "(";
+          this->KolmogorovTest(var.substr(0, var.find(bin_delim, 0)),this->ResolveAlias("QCD_Shape_Sample"),qcd_sdb_sel,cat,
+          this->ResolveAlias("QCD_Shape_Sample"),  qcd_sdb_sel,qcd_cat,wt);
+          TH1F default_qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+            {"WJetsToLNuSoup", [&]()->HhhAnalysis::Value {
+              return w_ss_norm;} 
+            }
+          });
+          std::cout << "Kolmogorov Test from root, comparing to default: " << default_qcd_hist.KolmogorovTest(&qcd_hist) << std::endl; 
+        }
       }
     } else {
       Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
@@ -698,6 +844,22 @@ namespace ic {
       //hmap["ZH"+infix+m+postfix]  = this->GenerateSignal("ZH_HToTauTau_M-"+m,  var, sel, cat, wt, fixed_xs);
     }
   }
+  
+  void HhhAnalysis::FillSMHbbSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+      hmap["WHToBB"+infix+m+postfix]  = this->GenerateSignal("WH_WToLNu_HToBB_M-"+m,  var, sel, cat, wt, fixed_xs);
+      hmap["ZHToBB"+infix+m+postfix]  = this->GenerateSignal("ZH_ZToLL_HToBB_M-"+m,  var, sel, cat, wt, fixed_xs);
+    }
+  }
+  
   
   void HhhAnalysis::FillHWWSignal(HistValueMap & hmap, 
                     std::vector<std::string> const& masses,
@@ -828,10 +990,12 @@ namespace ic {
       //Add H->hh and A->Zh for the requested masses
       auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
       auto signal_pair_AZhttbb = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m, var, sel, cat, wt, fixed_xs);
-      auto signal_pair_AZhbbtt = this->GenerateSignal("GluGluToAToZhToLLTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+      auto signal_pair_AZhLLtt = this->GenerateSignal("GluGluToAToZhToLLTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+      //auto signal_pair_AZhbbtt = this->GenerateSignal("GluGluToAToZhToBBTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
       hmap["ggHTohhTo2Tau2B"+infix+m+postfix] = signal_pair;
-      hmap["ggAToZhToLLTauTau"+infix+m+postfix] = signal_pair_AZhbbtt;
+      hmap["ggAToZhToLLTauTau"+infix+m+postfix] = signal_pair_AZhLLtt;
       hmap["ggAToZhToLLBB"+infix+m+postfix] = signal_pair_AZhttbb;
+      //hmap["ggAToZhToBBTauTau"+infix+m+postfix] = signal_pair_AZhbbtt;
       //PrintValue("ggHTohh"+postfix, signal_pair.second);
     }
   }
@@ -849,8 +1013,27 @@ namespace ic {
     //Add bbH for a selected set of interesting masses
     for (auto const& m : masses) {
       hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+      //hmap["bbHTohhTo2Tau2B"+infix+m+postfix] = this->GenerateSignal("SUSYBBHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
+      //hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
     }
   }
+  
+  void HhhAnalysis::FillHighMassSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+
+    for (auto const& m : masses) {
+      hmap["RadionToHH"+infix+m+postfix] = this->GenerateSignal("RadionToHH_2Tau_2b_M-"+m, var, sel, cat, wt, fixed_xs);
+      hmap["GravitonToHH"+infix+m+postfix] = this->GenerateSignal("GravitonToHH_2Tau_2b_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
 
   void HhhAnalysis::FillHistoMap(HistValueMap & hmap, unsigned method,
                         std::string var,
@@ -1164,7 +1347,7 @@ namespace ic {
       total_bkg.second = new_err;
     }
     if (verbosity_) PrintValue("TotalBkg", total_bkg);
-   // TH1F w_control_hist = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
+    //TH1F w_control_hist = GetShape("mt_1(40,0,160)", "WJetsToLNuSoup", control_sel, cat, wt);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control.second * data_control.second));
     //TH1F top_control = GenerateTOP(8, "mt_1(40,0,160)", control_sel, cat, wt).first;
     Value w_control(data_control.first - total_bkg.first, w_control_err);
@@ -1229,7 +1412,7 @@ namespace ic {
     //TH1F w_control = GetShape(fit_var, "WJetsToLNuSoup", control_sel, this->ResolveAlias("2jetinclusive"), wt);
     if (verbosity_) PrintValue("TotalBkgExclTT", total_bkg);
     double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control_norm.second * data_control_norm.second));
-    double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
+    //double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
     //Template fit returns the W norm and the uncertainty on it:
     Value w_control_postfit = WTTTemplateFit(&data_control, &w_control, &top_control, 0, 1);
     //Combine uncertainty from fit in quadrature with already existing uncertainty:

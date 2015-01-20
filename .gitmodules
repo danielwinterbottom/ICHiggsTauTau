@@ -1,0 +1,4 @@
+[submodule "Analysis/HiggsHTohh/HHKinFit"]
+	path = Analysis/HiggsHTohh/HHKinFit
+  url = https://github.com/bvormwald/HHKinFit
+  ignore = dirty

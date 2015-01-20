@@ -257,7 +257,7 @@ namespace ic {
     std::vector<TriggerObject *> objs;
     if(data_) objs = event->GetPtrVec<TriggerObject>(tap_obj_label);
     std::vector<TriggerObject *> mutau_objs = event->GetPtrVec<TriggerObject>(mutau_obj_label);
-    TriggerPathPtrVec triggerPathPtrVec;
+    std::vector<TriggerPath *> triggerPathPtrVec;
     if(data_) triggerPathPtrVec = event->GetPtrVec<TriggerPath>("triggerPathPtrVec" , "triggerPaths");
     double vtx = eventInfo->good_vertices();
    

@@ -75,6 +75,9 @@ parser.add_option("--bkg", dest="proc_bkg", action='store_true', default=False,
 parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False,
                   help="Process signal MSSM mc samples")
 
+parser.add_option("--highmass", dest="proc_highmass", action='store_true', default=False,
+                  help="Process model independent high mass signal samples")
+
 parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
                   help="Process SM 125 samples")
 
@@ -119,8 +122,8 @@ if options.do_2011:
 
 ### Do some validation of the input
 helpMsg = "Run 'higgsHTohh.py -h' for help."
-if not (options.proc_data or options.proc_bkg  or options.proc_mssm or options.proc_all or options.proc_sm):
-  print 'Error, must run script with a least one of --data, --bkg, --mssm, --sm, --all. ' + helpMsg
+if not (options.proc_data or options.proc_bkg  or options.proc_mssm or options.proc_all or options.proc_sm or options.proc_highmass):
+  print 'Error, must run script with a least one of --data, --bkg, --mssm, --highmass, --sm, --all. ' + helpMsg
   sys.exit(1)
 if not channels:
   print 'Error, no channels specified. ' + helpMsg
@@ -266,18 +269,22 @@ if options.proc_mssm or options.proc_all:
   #if options.do_2011 and ERA=='Paper' : masses += ['90','95','100','105','150','155','160']
   if options.short_signal: Hmasses = ['300']
   if options.short_signal: Amasses = ['300']
- # for Hmass in Hmasses : 
- #   signal_mc += [
- #     'GluGluToHTohhTo2Tau2B_mH-'+Hmass
- #   ]
- # for Amass in Amasses :
- #   signal_mc += [
- #     'GluGluToAToZhToLLBB_mA-'+Amass
- #   ]
- # for Amass in ATauTaumasses :
- #   signal_mc += [
- #     'GluGluToAToZhToLLTauTau_mA-'+Amass
- #   ]
+  if options.short_signal: ATauTaumasses = ['300']
+  if options.short_signal: bbHmasses = ['120','300']
+  for Hmass in Hmasses : 
+    signal_mc += [
+      'GluGluToHTohhTo2Tau2B_mH-'+Hmass
+      #'SUSYBBHTohhTo2Tau2B_mH-'+Hmass
+    ]
+  for Amass in Amasses :
+    signal_mc += [
+      'GluGluToAToZhToLLBB_mA-'+Amass
+    ]
+  for Amass in ATauTaumasses :
+    signal_mc += [
+      'GluGluToAToZhToLLTauTau_mA-'+Amass
+      #'GluGluToAToZhToBBTauTau_mA-'+Amass
+    ]
   for Hmass in bbHmasses : 
     signal_mc += [
       'SUSYBBHToTauTau_M-'+Hmass
@@ -288,9 +295,17 @@ if options.proc_sm :
     signal_mc += [
       'GluGluToHToTauTau_M-'+hmass,
       'VBF_HToTauTau_M-'+hmass, 
-      'WH_ZH_TTH_HToTauTau_M-'+hmass
+      'WH_ZH_TTH_HToTauTau_M-'+hmass,
+      'WH_WToLNu_HToBB_M-'+hmass,
+      'ZH_ZToLL_HToBB_M-'+hmass
     ]
-
+if options.proc_highmass :
+  HmassesHigh = ['500','700','1000']
+  for mass in HmassesHigh :
+    signal_mc += [
+      'RadionToHH_2Tau_2b_M-'+mass,
+      'GravitonToHH_2Tau_2b_M-'+mass
+    ]
   #if  not options.do_2011:
   #  ww_masses = ['110','115','120','125','130','135','140','145','150','155','160']
   #  if options.short_signal: ww_masses = ['125']
@@ -438,7 +453,7 @@ if options.proc_bkg or options.proc_all:
             os.system('%(JOBSUBMIT)s jobs/Special_5_%(JOB)s.sh' % vars())
 
 
-if options.proc_mssm or options.proc_all or options.proc_sm:
+if options.proc_mssm or options.proc_all or options.proc_sm or options.proc_highmass:
     for ch in channels:
       for sc in scales:
         for sa in signal_mc:

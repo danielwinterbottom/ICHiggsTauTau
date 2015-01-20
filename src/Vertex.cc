@@ -1,14 +1,10 @@
-#include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
+#include "../interface/Vertex.hh"
 
 namespace ic {
-  //Constructors/Destructors
-  Vertex::Vertex() : point_(Point()), id_(0) {
-  }
+// Constructors/Destructors
+Vertex::Vertex() : chi2_(0.), ndof_(0.), id_(0) {}
 
-  Vertex::~Vertex() {
-  }
+Vertex::~Vertex() {}
 
-  void Vertex::Print() const {
-    std::cout << point_ << std::endl;
-  }
+void Vertex::Print() const { std::cout << point_ << std::endl; }
 }

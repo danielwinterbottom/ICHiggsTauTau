@@ -1,238 +1,423 @@
 #ifndef ICHiggsTauTau_Electron_hh
 #define ICHiggsTauTau_Electron_hh
+#include <map>
+#include <string>
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
-#include <map>
-#include <string>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
-
+#include "Rtypes.h"
 
 namespace ic {
 
+/**
+ * @brief This class stores a subset of the reco::GsfElectron
+ * properties which are most commonly used in analysis.
+ *
+ * Useful links:
+ *  - https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGsfElectronObject
+ *  - https://twiki.cern.ch/twiki/bin/view/CMSbackupJan10/HEEPElectronID
+ *  - https://twiki.cern.ch/twiki/bin/viewauth/CMS/ConversionBackgroundRejection
+ *  - https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideEgammaShowerShape
+ *  - https://twiki.cern.ch/twiki/bin/view/CMS/VbtfEleID2011
+ *  - https://twiki.cern.ch/twiki/bin/viewauth/CMS/SimpleCutBasedEleID2011
+ */
+class Electron : public Candidate {
+ private:
+  typedef ROOT::Math::XYZPoint Point;
+  typedef std::map<std::size_t, float> UFmap;
 
-  class Electron : public Candidate {
+ public:
+  Electron();
+  virtual ~Electron();
+  virtual void Print() const;
 
-    private:
-      typedef ROOT::Math::XYZPoint Point;
-      typedef std::map<std::size_t, float> UFmap;
+  /// @name Properties
+  /**@{*/
+  /// A vector to refer to ic::GenParticle::id() values
+  /**
+   * @deprecated This property is no longer filled in the ICElectronProducer. It
+   * is advised to save generator-level electrons that may be needed for
+   * matching using the ICGenParticleProducer and to identify matches in the
+   * analysis code.
+   */
+  inline std::vector<std::size_t> const& gen_particles() const {
+    return gen_particles_;
+  }
 
+  /// Point-of-closest-approach (PCA) of the electron track to the beamspot
+  inline Point const& ref_point() const { return ref_point_; }
 
-    public:
-      Electron();
-      virtual ~Electron();
+  /// Tracker isolation in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_tk_sum_pt() const { return dr03_tk_sum_pt_; }
 
-      inline std::vector<std::size_t> const& gen_particles() const { return gen_particles_; }
-      inline void set_gen_particles(std::vector<std::size_t> const& gen_particles) { gen_particles_ = gen_particles; }
-      
-      inline Point const& ref_point() const { return ref_point_; }
-      inline void set_ref_point(Point const& ref_point) { ref_point_ = ref_point; }
-      
+  /// ECAL isolation in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_ecal_rechit_sum_et() const {
+    return dr03_ecal_rechit_sum_et_;
+  }
 
-      //! Tracker isolation, equivalent to dr03TkSumPt()
-      inline float dr03_tk_sum_pt() const { return dr03_tk_sum_pt_; }
-      inline void set_dr03_tk_sum_pt(float const& dr03_tk_sum_pt) { dr03_tk_sum_pt_ = dr03_tk_sum_pt; }
+  /// HCAL isolation in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_hcal_tower_sum_et() const {
+    return dr03_hcal_tower_sum_et_;
+  }
 
-      //! ECAL isolation, equivalent to dr03EcalRecHitSumEt()
-      inline float dr03_ecal_rechit_sum_et() const { return dr03_ecal_rechit_sum_et_; }
-      inline void set_dr03_ecal_rechit_sum_et(float const& dr03_ecal_rechit_sum_et) { dr03_ecal_rechit_sum_et_ = dr03_ecal_rechit_sum_et; }
+  /// PF isolation, using all charged particles in a cone with
+  /// \f$ \Delta R = 0.3 \f$
+  inline float dr03_pfiso_charged_all() const {
+    return dr03_pfiso_charged_all_;
+  }
 
-      //! ECAL isolation, equivalent to dr03HcalTowerSumEt()
-      inline float dr03_hcal_tower_sum_et() const { return dr03_hcal_tower_sum_et_; }
-      inline void set_dr03_hcal_tower_sum_et(float const& dr03_hcal_tower_sum_et) { dr03_hcal_tower_sum_et_ = dr03_hcal_tower_sum_et; }
+  /// PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_pfiso_charged() const { return dr03_pfiso_charged_; }
 
-      //! PF isolation, using all charged particles in a cone with \f$ \Delta R = 0.3 \f$
-      inline float dr03_pfiso_charged_all() const { return dr03_pfiso_charged_all_; }
-      inline void set_dr03_pfiso_charged_all(float const& dr03_pfiso_charged_all) { dr03_pfiso_charged_all_ = dr03_pfiso_charged_all; }
+  /// PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_pfiso_neutral() const { return dr03_pfiso_neutral_; }
 
-      //! PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.3 \f$
-      inline float dr03_pfiso_charged() const { return dr03_pfiso_charged_; }
-      inline void set_dr03_pfiso_charged(float const& dr03_pfiso_charged) { dr03_pfiso_charged_ = dr03_pfiso_charged; }
+  /// PF isolation, using photons in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_pfiso_gamma() const { return dr03_pfiso_gamma_; }
 
-      //! PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.3 \f$
-      inline float dr03_pfiso_neutral() const { return dr03_pfiso_neutral_; }
-      inline void set_dr03_pfiso_neutral(float const& dr03_pfiso_neutral) { dr03_pfiso_neutral_ = dr03_pfiso_neutral; }
+  /// PF isolation, using charged pileup in a cone with \f$ \Delta R = 0.3 \f$
+  inline float dr03_pfiso_pu() const { return dr03_pfiso_pu_; }
 
-      //! PF isolation, using photons in a cone with \f$ \Delta R = 0.3 \f$
-      inline float dr03_pfiso_gamma() const { return dr03_pfiso_gamma_; }
-      inline void set_dr03_pfiso_gamma(float const& dr03_pfiso_gamma) { dr03_pfiso_gamma_ = dr03_pfiso_gamma; }
+  /// PF isolation, using all charged particles in a cone with
+  /// \f$ \Delta R = 0.4 \f$
+  inline float dr04_pfiso_charged_all() const {
+    return dr04_pfiso_charged_all_;
+  }
 
-      //! PF isolation, using charged pileup in a cone with \f$ \Delta R = 0.3 \f$
-      inline float dr03_pfiso_pu() const { return dr03_pfiso_pu_; }
-      inline void set_dr03_pfiso_pu(float const& dr03_pfiso_pu) { dr03_pfiso_pu_ = dr03_pfiso_pu; }
+  /// PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.4 \f$
+  inline float dr04_pfiso_charged() const { return dr04_pfiso_charged_; }
 
-      //! PF isolation, using all charged particles in a cone with \f$ \Delta R = 0.4 \f$
-      inline float dr04_pfiso_charged_all() const { return dr04_pfiso_charged_all_; }
-      inline void set_dr04_pfiso_charged_all(float const& dr04_pfiso_charged_all) { dr04_pfiso_charged_all_ = dr04_pfiso_charged_all; }
+  /// PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.4 \f$
+  inline float dr04_pfiso_neutral() const { return dr04_pfiso_neutral_; }
 
-      //! PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.4 \f$
-      inline float dr04_pfiso_charged() const { return dr04_pfiso_charged_; }
-      inline void set_dr04_pfiso_charged(float const& dr04_pfiso_charged) { dr04_pfiso_charged_ = dr04_pfiso_charged; }
+  /// PF isolation, using photons in a cone with \f$ \Delta R = 0.4 \f$
+  inline float dr04_pfiso_gamma() const { return dr04_pfiso_gamma_; }
 
-      //! PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.4 \f$
-      inline float dr04_pfiso_neutral() const { return dr04_pfiso_neutral_; }
-      inline void set_dr04_pfiso_neutral(float const& dr04_pfiso_neutral) { dr04_pfiso_neutral_ = dr04_pfiso_neutral; }
+  /// PF isolation, using charged pileup in a cone with \f$ \Delta R = 0.4 \f$
+  inline float dr04_pfiso_pu() const { return dr04_pfiso_pu_; }
 
-      //! PF isolation, using photons in a cone with \f$ \Delta R = 0.4 \f$
-      inline float dr04_pfiso_gamma() const { return dr04_pfiso_gamma_; }
-      inline void set_dr04_pfiso_gamma(float const& dr04_pfiso_gamma) { dr04_pfiso_gamma_ = dr04_pfiso_gamma; }
+  /// Ratio of HCAL to supercluster energy in the region of the electron hit
+  inline float hadronic_over_em() const { return hadronic_over_em_; }
 
-      //! PF isolation, using charged pileup in a cone with \f$ \Delta R = 0.4 \f$
-      inline float dr04_pfiso_pu() const { return dr04_pfiso_pu_; }
-      inline void set_dr04_pfiso_pu(float const& dr04_pfiso_pu) { dr04_pfiso_pu_ = dr04_pfiso_pu; }
+  /// Weighted cluster RMS in the \f$\eta\f$-direction, measured in units
+  /// of crystals in a 5x5 block centred on the seed crystal
+  inline float sigma_IetaIeta() const { return sigma_IetaIeta_; }
 
-      inline float hadronic_over_em() const { return hadronic_over_em_; }
-      inline void set_hadronic_over_em(float const& hadronic_over_em) { hadronic_over_em_ = hadronic_over_em; }
+  /// \f$\Delta\phi\f$ between the supercluster and track, where the latter
+  /// is evaluated from the vertex position
+  inline float dphi_sc_tk_at_vtx() const { return dphi_sc_tk_at_vtx_; }
 
-      inline float sigma_IetaIeta() const { return sigma_IetaIeta_; }
-      inline void set_sigma_IetaIeta(float const& sigma_IetaIeta) { sigma_IetaIeta_ = sigma_IetaIeta; }
+  /// \f$\Delta\eta\f$ between the supercluster and track, where the latter
+  /// is evaluated from the vertex position
+  inline float deta_sc_tk_at_vtx() const { return deta_sc_tk_at_vtx_; }
 
-      inline float dphi_sc_tk_at_vtx() const { return dphi_sc_tk_at_vtx_; }
-      inline void set_dphi_sc_tk_at_vtx(float const& dphi_sc_tk_at_vtx) { dphi_sc_tk_at_vtx_ = dphi_sc_tk_at_vtx; }
+  /// Number of tracker layers between the vertex and the first detected
+  /// hit the electron should have traversed
+  inline int gsf_tk_nhits() const { return gsf_tk_nhits_; }
 
-      inline float deta_sc_tk_at_vtx() const { return deta_sc_tk_at_vtx_; }
-      inline void set_deta_sc_tk_at_vtx(float const& deta_sc_tk_at_vtx) { deta_sc_tk_at_vtx_ = deta_sc_tk_at_vtx; }
+  /// Minimum distance between conversion tracks (if found)
+  inline float conv_dist() const { return conv_dist_; }
 
-      inline int gsf_tk_nhits() const { return gsf_tk_nhits_; }
-      inline void set_gsf_tk_nhits(int const& gsf_tk_nhits) { gsf_tk_nhits_ = gsf_tk_nhits; }
+  /// \f$\Delta\cot\theta\f$ between conversion tracks at the conversion
+  /// vertex
+  inline float conv_dcot() const { return conv_dcot_; }
 
-      inline float conv_dist() const { return conv_dist_; }
-      inline void set_conv_dist(float const& conv_dist) { conv_dist_ = conv_dist; }
+  /// Fraction of momentum lost as bremsstrahlung, as measured in the GSF fit
+  inline float f_brem() const { return f_brem_; }
 
-      inline float conv_dcot() const { return conv_dcot_; }
-      inline void set_conv_dcot(float const& conv_dcot) { conv_dcot_ = conv_dcot; }
+  /// Supercluster \f$\eta\f$
+  inline float sc_eta() const { return sc_eta_; }
 
-      // inline float mva() const { return mva_; }
-      // inline void set_mva(float const& mva) { mva_ = mva; }
- 
-      inline float f_brem() const { return f_brem_; }
-      inline void set_f_brem(float const& f_brem) { f_brem_ = f_brem; }
+  /// Supercluster \f$\theta\f$
+  inline float sc_theta() const { return sc_theta_; }
 
-      inline float sc_eta() const { return sc_eta_; }
-      inline void set_sc_eta(float const& sc_eta) { sc_eta_ = sc_eta; }
+  /// Supercluster energy
+  inline float sc_energy() const { return sc_energy_; }
 
-      inline float sc_theta() const { return sc_theta_; }
-      inline void set_sc_theta(float const& sc_theta) { sc_theta_ = sc_theta; }
+  /// Ratio of supercluster energy to track momentum, where the latter is
+  /// evaluated at the PCA to the beamspot
+  inline float sc_e_over_p() const { return sc_e_over_p_; }
 
-      inline float sc_energy() const { return sc_energy_; }
-      inline void set_sc_energy(float const& sc_energy) { sc_energy_ = sc_energy; }
+  /// The ratio of the energy in the 3x3 crystal array centred on the seed
+  /// over the energy of the complete supercluster
+  inline float r9() const { return r9_; }
 
-      inline float sc_e_over_p() const { return sc_e_over_p_; }
-      inline void set_sc_e_over_p(float const& sc_e_over_p) { sc_e_over_p_ = sc_e_over_p; }
+  /// Calorimeter tower isolation sum
+  inline float hcal_sum() const { return hcal_sum_; }
 
-      inline float r9() const { return r9_; }
-      inline void set_r9(float const& r9) { r9_ = r9; }
+  /// The corrected supercluster energy
+  inline float ecal_energy() const { return ecal_energy_; }
 
-      inline float hcal_sum() const { return hcal_sum_; }
-      inline void set_hcal_sum(float const& hcal_sum) { hcal_sum_ = hcal_sum; }
+  /// True if electron is matched to a conversion vertex
+  inline bool has_matched_conversion() const { return has_matched_conversion_; }
 
-      inline float ecal_energy() const { return ecal_energy_; }
-      inline void set_ecal_energy(float const& ecal_energy) { ecal_energy_ = ecal_energy; }
+  /// The x-coordinate of the ref_point()
+  inline double vx() const { return ref_point_.x(); }
 
-      inline bool has_matched_conversion() const { return has_matched_conversion_; }
-      inline void set_has_matched_conversion(bool const& has_matched_conversion) { has_matched_conversion_ = has_matched_conversion; }
+  /// The y-coordinate of the ref_point()
+  inline double vy() const { return ref_point_.y(); }
 
-      // inline double rho() const { return rho_; }
-      // inline void set_rho(double const& rho) { rho_ = rho; }
+  /// The z-coordinate of the ref_point()
+  inline double vz() const { return ref_point_.z(); }
 
-      // inline double pfnopu_rho() const { return pfnopu_rho_; }
-      // inline void set_pfnopu_rho(double const& pfnopu_rho) { pfnopu_rho_ = pfnopu_rho; }
+  /// Transverse impact parameter of the GSF track with the primary vertex
+  inline double dxy_vertex() const { return dxy_vertex_; }
 
-      inline double vx() const { return ref_point_.x(); }
-      inline void set_vx(double const& x) { ref_point_.SetX(x); }
+  /// Longitudinal impact parameter of the GSF track with the primary vertex
+  inline double dz_vertex() const { return dz_vertex_; }
 
-      inline double vy() const { return ref_point_.y(); }
-      inline void set_vy(double const& y) { ref_point_.SetY(y); }
+  /// Transverse impact parameter of the GSF track with the beamspot
+  inline double dxy_beamspot() const { return dxy_beamspot_; }
+  /**@}*/
 
-      inline double vz() const { return ref_point_.z(); }
-      inline void set_vz(double const& z) { ref_point_.SetZ(z); }
+  /// @name Setters
+  /**@{*/
+  /// @copybrief gen_particles()
+  inline void set_gen_particles(std::vector<std::size_t> const& gen_particles) {
+    gen_particles_ = gen_particles;
+  }
 
-      inline double dxy_vertex() const { return dxy_vertex_; }
-      inline void set_dxy_vertex(double const& dxy_vertex) { dxy_vertex_ = dxy_vertex; }
+  /// @copybrief ref_point()
+  inline void set_ref_point(Point const& ref_point) { ref_point_ = ref_point; }
 
-      inline double dz_vertex() const { return dz_vertex_; }
-      inline void set_dz_vertex(double const& dz_vertex) { dz_vertex_ = dz_vertex; }
+  /// @copybrief dr03_tk_sum_pt()
+  inline void set_dr03_tk_sum_pt(float const& dr03_tk_sum_pt) {
+    dr03_tk_sum_pt_ = dr03_tk_sum_pt;
+  }
 
-      inline double dxy_beamspot() const { return dxy_beamspot_; }
-      inline void set_dxy_beamspot(double const& dxy_beamspot) { dxy_beamspot_ = dxy_beamspot; }
-      
-      // inline std::vector<std::size_t>  const& hlt_match_paths() const { return hlt_match_paths_; }
-      // inline void set_hlt_match_paths(std::vector<std::size_t>  const& hlt_match_paths) { hlt_match_paths_ = hlt_match_paths; }
+  /// @copybrief dr03_ecal_rechit_sum_et()
+  inline void set_dr03_ecal_rechit_sum_et(
+      float const& dr03_ecal_rechit_sum_et) {
+    dr03_ecal_rechit_sum_et_ = dr03_ecal_rechit_sum_et;
+  }
 
-      // inline std::vector<std::size_t>  const& hlt_match_filters() const { return hlt_match_filters_; }
-      // inline void set_hlt_match_filters(std::vector<std::size_t>  const& hlt_match_filters) { hlt_match_filters_ = hlt_match_filters; }
+  /// @copybrief dr03_hcal_tower_sum_et()
+  inline void set_dr03_hcal_tower_sum_et(float const& dr03_hcal_tower_sum_et) {
+    dr03_hcal_tower_sum_et_ = dr03_hcal_tower_sum_et;
+  }
 
-      void SetIdIso(std::string const& name, float const& value);
-      bool HasIdIso(std::string const& name) const;
-      float GetIdIso(std::string const& name) const;
+  /// @copybrief dr03_pfiso_charged_all()
+  inline void set_dr03_pfiso_charged_all(float const& dr03_pfiso_charged_all) {
+    dr03_pfiso_charged_all_ = dr03_pfiso_charged_all;
+  }
 
-      virtual void Print() const;
+  /// @copybrief dr03_pfiso_charged()
+  inline void set_dr03_pfiso_charged(float const& dr03_pfiso_charged) {
+    dr03_pfiso_charged_ = dr03_pfiso_charged;
+  }
 
-    private:
-      // SimpleCutBasedEleID Variable:
-      // https://twiki.cern.ch/twiki/bin/view/CMS/SimpleCutBasedEleID
-      float dr03_tk_sum_pt_;
-      float dr03_ecal_rechit_sum_et_;
-      float dr03_hcal_tower_sum_et_;
+  /// @copybrief dr03_pfiso_neutral()
+  inline void set_dr03_pfiso_neutral(float const& dr03_pfiso_neutral) {
+    dr03_pfiso_neutral_ = dr03_pfiso_neutral;
+  }
 
-      // PF-based isolation variables
-      float dr03_pfiso_charged_all_;      
-      float dr03_pfiso_charged_;
-      float dr03_pfiso_neutral_;
-      float dr03_pfiso_gamma_;
-      float dr03_pfiso_pu_;
-      float dr04_pfiso_charged_all_;
-      float dr04_pfiso_charged_;
-      float dr04_pfiso_neutral_;
-      float dr04_pfiso_gamma_;
-      float dr04_pfiso_pu_;
+  /// @copybrief dr03_pfiso_gamma()
+  inline void set_dr03_pfiso_gamma(float const& dr03_pfiso_gamma) {
+    dr03_pfiso_gamma_ = dr03_pfiso_gamma;
+  }
 
-      float hadronic_over_em_;
-      float sigma_IetaIeta_;
-      float dphi_sc_tk_at_vtx_;
-      float deta_sc_tk_at_vtx_;
-      int gsf_tk_nhits_;
-      float conv_dist_;
-      float conv_dcot_;
+  /// @copybrief dr03_pfiso_pu()
+  inline void set_dr03_pfiso_pu(float const& dr03_pfiso_pu) {
+    dr03_pfiso_pu_ = dr03_pfiso_pu;
+  }
 
-      //float mva_;
-      
-      // The following added in:
-      // https://twiki.cern.ch/twiki/bin/view/CMS/VbtfEleID2011
-      // https://twiki.cern.ch/twiki/bin/viewauth/CMS/SimpleCutBasedEleID2011
-      float f_brem_;
-      float sc_eta_;
-      float sc_theta_;
-      float sc_e_over_p_;
-      float sc_energy_;
-      float r9_;
-      float hcal_sum_;
+  /// @copybrief dr04_pfiso_charged_all()
+  inline void set_dr04_pfiso_charged_all(float const& dr04_pfiso_charged_all) {
+    dr04_pfiso_charged_all_ = dr04_pfiso_charged_all;
+  }
 
-      float ecal_energy_;
-      bool  has_matched_conversion_;
+  /// @copybrief dr04_pfiso_charged()
+  inline void set_dr04_pfiso_charged(float const& dr04_pfiso_charged) {
+    dr04_pfiso_charged_ = dr04_pfiso_charged;
+  }
 
-      // CANDIDATE FOR REMOVAL - store in eventInfo
-      // double rho_;
-      // CANDIDATE FOR REMOVAL - store in eventInfo
-      // double pfnopu_rho_;
+  /// @copybrief dr04_pfiso_neutral()
+  inline void set_dr04_pfiso_neutral(float const& dr04_pfiso_neutral) {
+    dr04_pfiso_neutral_ = dr04_pfiso_neutral;
+  }
 
+  /// @copybrief dr04_pfiso_gamma()
+  inline void set_dr04_pfiso_gamma(float const& dr04_pfiso_gamma) {
+    dr04_pfiso_gamma_ = dr04_pfiso_gamma;
+  }
 
-      Point ref_point_;
+  /// @copybrief dr04_pfiso_pu()
+  inline void set_dr04_pfiso_pu(float const& dr04_pfiso_pu) {
+    dr04_pfiso_pu_ = dr04_pfiso_pu;
+  }
 
-      double dxy_vertex_;
-      double dz_vertex_;
-      double dxy_beamspot_;
+  /// @copybrief hadronic_over_em()
+  inline void set_hadronic_over_em(float const& hadronic_over_em) {
+    hadronic_over_em_ = hadronic_over_em;
+  }
 
-      // std::vector<std::size_t> hlt_match_paths_;
-      // std::vector<std::size_t> hlt_match_filters_;
-      std::vector<std::size_t> gen_particles_;
+  /// @copybrief sigma_IetaIeta()
+  inline void set_sigma_IetaIeta(float const& sigma_IetaIeta) {
+    sigma_IetaIeta_ = sigma_IetaIeta;
+  }
 
-      UFmap elec_idiso_;
+  /// @copybrief dphi_sc_tk_at_vtx()
+  inline void set_dphi_sc_tk_at_vtx(float const& dphi_sc_tk_at_vtx) {
+    dphi_sc_tk_at_vtx_ = dphi_sc_tk_at_vtx;
+  }
 
-  };
+  /// @copybrief deta_sc_tk_at_vtx()
+  inline void set_deta_sc_tk_at_vtx(float const& deta_sc_tk_at_vtx) {
+    deta_sc_tk_at_vtx_ = deta_sc_tk_at_vtx;
+  }
 
-  typedef std::vector<ic::Electron> ElectronCollection;
+  /// @copybrief gsf_tk_nhits()
+  inline void set_gsf_tk_nhits(int const& gsf_tk_nhits) {
+    gsf_tk_nhits_ = gsf_tk_nhits;
+  }
 
+  /// @copybrief conv_dist()
+  inline void set_conv_dist(float const& conv_dist) { conv_dist_ = conv_dist; }
+
+  /// @copybrief conv_dcot()
+  inline void set_conv_dcot(float const& conv_dcot) { conv_dcot_ = conv_dcot; }
+
+  /// @copybrief f_brem()
+  inline void set_f_brem(float const& f_brem) { f_brem_ = f_brem; }
+
+  /// @copybrief sc_eta()
+  inline void set_sc_eta(float const& sc_eta) { sc_eta_ = sc_eta; }
+
+  /// @copybrief sc_theta()
+  inline void set_sc_theta(float const& sc_theta) { sc_theta_ = sc_theta; }
+
+  /// @copybrief sc_energy()
+  inline void set_sc_energy(float const& sc_energy) { sc_energy_ = sc_energy; }
+
+  /// @copybrief sc_e_over_p()
+  inline void set_sc_e_over_p(float const& sc_e_over_p) {
+    sc_e_over_p_ = sc_e_over_p;
+  }
+
+  /// @copybrief r9()
+  inline void set_r9(float const& r9) { r9_ = r9; }
+
+  /// @copybrief hcal_sum()
+  inline void set_hcal_sum(float const& hcal_sum) { hcal_sum_ = hcal_sum; }
+
+  /// @copybrief ecal_energy()
+  inline void set_ecal_energy(float const& ecal_energy) {
+    ecal_energy_ = ecal_energy;
+  }
+
+  /// @copybrief has_matched_conversion()
+  inline void set_has_matched_conversion(bool const& has_matched_conversion) {
+    has_matched_conversion_ = has_matched_conversion;
+  }
+
+  /// @copybrief vx()
+  inline void set_vx(double const& x) { ref_point_.SetX(x); }
+
+  /// @copybrief vy()
+  inline void set_vy(double const& y) { ref_point_.SetY(y); }
+
+  /// @copybrief vz()
+  inline void set_vz(double const& z) { ref_point_.SetZ(z); }
+
+  /// @copybrief dxy_vertex()
+  inline void set_dxy_vertex(double const& dxy_vertex) {
+    dxy_vertex_ = dxy_vertex;
+  }
+
+  /// @copybrief dz_vertex()
+  inline void set_dz_vertex(double const& dz_vertex) { dz_vertex_ = dz_vertex; }
+
+  /// @copybrief dxy_beamspot()
+  inline void set_dxy_beamspot(double const& dxy_beamspot) {
+    dxy_beamspot_ = dxy_beamspot;
+  }
+  /**@}*/
+
+  /**
+   * @name Extra ID and isolation properties
+   * @details The Electron class contains a map for storing arbitrary pairs
+   * of hashed strings and floats. The most common usage for this
+   * is to add additional ID and isolation values, for example the
+   * output of an MVA selection. */
+  /**@{*/
+  /**
+   * @brief Add a new entry, overwriting any existing one with the same \a name
+   * @param name A label to identify the value, will be stored as a hash
+   * @param value The value to associate to the label \a name
+   */
+  void SetIdIso(std::string const& name, float const& value);
+  /**
+   * @brief Check if a value with label \a name has already been defined
+   * @param name The label to check
+   * @return True if the label exists in the map, false otherwise
+   */
+  bool HasIdIso(std::string const& name) const;
+  /**
+   * @brief Get the value associated to a label
+   * @param name The label to retrieve
+   * @return The value associated to the label if found, otherwise zero.
+   */
+  float GetIdIso(std::string const& name) const;
+  /**@}*/
+
+ private:
+  // SimpleCutBasedEleID Variable:
+  // https://twiki.cern.ch/twiki/bin/view/CMS/SimpleCutBasedEleID
+  float dr03_tk_sum_pt_;
+  float dr03_ecal_rechit_sum_et_;
+  float dr03_hcal_tower_sum_et_;
+
+  // PF-based isolation variables
+  float dr03_pfiso_charged_all_;
+  float dr03_pfiso_charged_;
+  float dr03_pfiso_neutral_;
+  float dr03_pfiso_gamma_;
+  float dr03_pfiso_pu_;
+  float dr04_pfiso_charged_all_;
+  float dr04_pfiso_charged_;
+  float dr04_pfiso_neutral_;
+  float dr04_pfiso_gamma_;
+  float dr04_pfiso_pu_;
+
+  float hadronic_over_em_;
+  float sigma_IetaIeta_;
+  float dphi_sc_tk_at_vtx_;
+  float deta_sc_tk_at_vtx_;
+  int gsf_tk_nhits_;
+  float conv_dist_;
+  float conv_dcot_;
+
+  float f_brem_;
+  float sc_eta_;
+  float sc_theta_;
+  float sc_e_over_p_;
+  float sc_energy_;
+  float r9_;
+  float hcal_sum_;
+
+  float ecal_energy_;
+  bool has_matched_conversion_;
+
+  Point ref_point_;
+
+  double dxy_vertex_;
+  double dz_vertex_;
+  double dxy_beamspot_;
+
+  std::vector<std::size_t> gen_particles_;
+
+  UFmap elec_idiso_;
+
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(Electron, 2);
+ #endif
+};
+
+typedef std::vector<ic::Electron> ElectronCollection;
 }
+
+/** \example plugins/ICElectronProducer.cc */
 #endif

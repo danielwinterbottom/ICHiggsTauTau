@@ -128,7 +128,7 @@ int main(int argc, char* argv[]){
   TH1F *btag_nom_bkg = &(hmap["Bkg"].first);
   TH1F *btag_d_bkg = &(hmap["Bkg_btagDown"].first);
   TH1F *btag_u_bkg = &(hmap["Bkg_btagUp"].first);
-  for (unsigned i = 1; i <= btag_nom_bkg->GetNbinsX(); ++i) {
+  for (int i = 1; i <= btag_nom_bkg->GetNbinsX(); ++i) {
     double old_err = btag_nom_bkg->GetBinError(i);
     double err = std::fabs(btag_u_bkg->GetBinContent(i) - btag_d_bkg->GetBinContent(i)) / 2.0;
     double new_err = std::sqrt(old_err*old_err + err*err);
@@ -154,7 +154,7 @@ int main(int argc, char* argv[]){
     TH1F *nom_bkg = &(hmap["Bkg"].first);
     TH1F *d_bkg = &(hmap["Bkg_"+syst+"Down"].first);
     TH1F *u_bkg = &(hmap["Bkg_"+syst+"Up"].first);
-    for (unsigned i = 1; i <= nom_bkg->GetNbinsX(); ++i) {
+    for (int i = 1; i <= nom_bkg->GetNbinsX(); ++i) {
       double old_err = nom_bkg->GetBinError(i);
       double err = std::fabs(u_bkg->GetBinContent(i) - d_bkg->GetBinContent(i)) / 2.0;
       std::cout << err << std::endl;

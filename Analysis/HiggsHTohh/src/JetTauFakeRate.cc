@@ -20,6 +20,7 @@ namespace ic {
 		write_tree_ = false;
 		by_decay_mode_ = false; //make plots for fake rate by decay mode
 		by_jet_type_ = false; //make plots for fake rate by jet type
+		wjets_mode_ = false;
 		fs_ = NULL;
 	}
 
@@ -48,10 +49,12 @@ namespace ic {
 				//Instead could initiate plots here which can be saved to the same file_
 				Float_t binrange[19]={0,20,30,40,50,60,70,80,90,100,120,140,160,180,200,250,300,400,500};
 
+
 				jets_dz_ = fs_->make<TH1F>("jets_dz",";#Delta Z;",100,0,1);
 				jets_pu_ = fs_->make<TH1F>("jets_pu",";Pileup jet ID;",100,-1,2);
 				jets_overlap_=fs_->make<TH1F>("jets_overlap","",1,0,2);
 				jetpt_dz_rej_ = fs_->make<TH1F>("jetpt_dz_rej_","",18,binrange);
+				leading_trackpt_ = fs_->make<TH1F>("leading_trackpt","",18,binrange);
 				jetpt_puid_rej_ = fs_->make<TH1F>("jetpt_puid_rej_","",18,binrange);
 				jetpt_dz_and_puid_rej_=fs_->make<TH1F>("jetpt_dz_and_puid_rej_","",18,binrange);
 				genjetpt_taupt_200_300_ = fs_->make<TH1F>("genjetpt_taupt_200_300_","",18,binrange);
@@ -60,6 +63,7 @@ namespace ic {
 				genjetpt_jetpt_200_300_ = fs_->make<TH1F>("genjetpt_jetpt_200_300_","",18,binrange);
 				genjetpt_jetpt_300_400_ = fs_->make<TH1F>("genjetpt_jetpt_300_400_","",18,binrange);
 				genjetpt_jetpt_400_ = fs_->make<TH1F>("genjetpt_jetpt_400_","",18,binrange);
+				taupt_test_hist_ = fs_->make<TH1F>("taupt_test_hist","",50,0,100);
 
 
 				taupt_dm_iso_nomatch_ = fs_->make<TH1F>("taupt_dm_iso_nomatch",";p_{T};",18,binrange);
@@ -74,7 +78,6 @@ namespace ic {
 				std::vector<std::string> iso;
 				std::vector<std::string> dm;
 				std::vector<std::string> jettype;
-				std::cout<<"type vectors created"<<std::endl;
 
 				iso.push_back("dm");
 				iso.push_back("loose");
@@ -101,13 +104,11 @@ namespace ic {
 				jettype.push_back("b");
 				jettype.push_back("undef");
 
-				std::cout<<"type vectors filled"<<std::endl;
 
 				jetpt_ = fs_->make<TH1F>("jetpt",";p_{T};",18,binrange);
 				jeteta_ = fs_->make<TH1F>("jeteta",";#eta;",50,-2.5,2.5);
 				jetphi_ = fs_->make<TH1F>("jetphi",";#phi;",100,-3.15,3.15);
 				jetnvtx_ = fs_->make<TH1F>("jetnvtx",";N_{vtx};",50,-0.5,49.5);
-				std::cout<<"created stuff"<<std::endl;
 				//std::map<std::string,TH1F*> standard_tau_histos_;
 				for(UInt_t isoit=0;isoit<iso.size();isoit++){
 					standard_tau_histos_[(iso.at(isoit)+"_taupt_match").c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taupt_match").c_str(),";p_{T} [GeV];",18,binrange);
@@ -115,7 +116,6 @@ namespace ic {
 					standard_tau_histos_[(iso.at(isoit)+"_tauphi_match").c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_tauphi_match").c_str(),";#phi;",100,-3.15,3.15);
 					standard_tau_histos_[(iso.at(isoit)+"_taunvtx_match").c_str()]=fs_->make<TH1F>((iso.at(isoit)+"_taunvtx_match").c_str(),";N_{vtx};",50,-0.5,49.5);
 				}
-				std::cout<<"standard_tau_histos_ initialised"<<std::endl;
 
 
 
@@ -182,87 +182,104 @@ namespace ic {
 		EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 		std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
 		std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
+		std::vector<GenParticle*> genparticles;
+		if(wjets_mode_){
+		 genparticles = event->GetPtrVec<GenParticle>("genParticles");
+		}
 		std::vector<GenJet*> genjets = event->GetPtrVec<GenJet>("genJets");
 		std::vector<Track*> tracks = event->GetPtrVec<Track>("tracks");
 		std::vector<Vertex*> vertex = event->GetPtrVec<Vertex>("vertices");
 
+
+
 		if(write_plots_){
 			nvtx_ = eventInfo->good_vertices();
-			njets_ = jets.size();
-			ntaus_ = taus.size();
 			ntaus_dm_ = 0;
 			ntaus_loose_=0;
 			ntaus_medium_=0;
 			ntaus_tight_=0;
 
-			std::map<int,std::string> dmlist;
-			dmlist[0]="OneProng0PiZero";
-			dmlist[1]="OneProng1PiZero";
-			dmlist[2]="OneProng2PiZero";
-			dmlist[3]="OneProng3PiZero";
-			dmlist[4]="OneProngNPiZero";
-			dmlist[5]="TwoProng0PiZero";
-			dmlist[6]="TwoProng1PiZero";
-			dmlist[7]="TwoProng2PiZero";
-			dmlist[8]="TwoProng3PiZero";
-			dmlist[9]="TwoProngNPiZero";
-			dmlist[10]="ThreeProng0PiZero";
-			dmlist[11]="ThreeProng1PiZero";
-			dmlist[12]="ThreeProng2PiZero";
-			dmlist[13]="ThreeProng3PiZero";
-			dmlist[14]="ThreeProngNPiZero";
-			for(UInt_t tauit=0;tauit<taus.size();tauit++){
-				if(taus.at(tauit)->GetTauID("decayModeFindingOldDMs")>0.5){
-					ntaus_dm_+=1;
-					if(taus.at(tauit)->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")>0.5){
-						ntaus_loose_+=1;
-						taupt_dm_iso_nomatch_->Fill(taus.at(tauit)->pt());
-						taueta_dm_iso_nomatch_->Fill(taus.at(tauit)->eta());
-						tauphi_dm_iso_nomatch_->Fill(taus.at(tauit)->phi());
+
+
+
+
+
+
+
+
+
+				std::map<int,std::string> dmlist;
+				dmlist[0]="OneProng0PiZero";
+				dmlist[1]="OneProng1PiZero";
+				dmlist[2]="OneProng2PiZero";
+				dmlist[3]="OneProng3PiZero";
+				dmlist[4]="OneProngNPiZero";
+				dmlist[5]="TwoProng0PiZero";
+				dmlist[6]="TwoProng1PiZero";
+				dmlist[7]="TwoProng2PiZero";
+				dmlist[8]="TwoProng3PiZero";
+				dmlist[9]="TwoProngNPiZero";
+				dmlist[10]="ThreeProng0PiZero";
+				dmlist[11]="ThreeProng1PiZero";
+				dmlist[12]="ThreeProng2PiZero";
+				dmlist[13]="ThreeProng3PiZero";
+				dmlist[14]="ThreeProngNPiZero";
+				for(UInt_t tauit=0;tauit<taus.size();tauit++){
+					if(taus.at(tauit)->GetTauID("decayModeFindingOldDMs")>0.5){
+						ntaus_dm_+=1;
+						if(taus.at(tauit)->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")>0.5){
+							ntaus_loose_+=1;
+							taupt_dm_iso_nomatch_->Fill(taus.at(tauit)->pt());
+							taueta_dm_iso_nomatch_->Fill(taus.at(tauit)->eta());
+							tauphi_dm_iso_nomatch_->Fill(taus.at(tauit)->phi());
+						}
+						if(taus.at(tauit)->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_medium_+=1;
+						if(taus.at(tauit)->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_tight_+=1;
+
+
+
 					}
-					if(taus.at(tauit)->GetTauID("byMediumCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_medium_+=1;
-					if(taus.at(tauit)->GetTauID("byTightCombinedIsolationDeltaBetaCorr3Hits")>0.5) ntaus_tight_+=1;
-
-
-
 				}
-			}
 
-			for(UInt_t jetit=0;jetit<jets.size();jetit++){
-				//std::cout<<jets.at(jetit)->pu_id_mva_loose()<<std::endl;
+				for(UInt_t jetit=0;jetit<jets.size();jetit++){
 
-				thetrackid=-1;
-				for(UInt_t trackit=0;trackit<tracks.size();trackit++){
-					if(tracks.at(trackit)->id()==jets.at(jetit)->constituent_tracks().at(0)){
-						thetrackid=trackit;
+					//std::cout<<jets.at(jetit)->pu_id_mva_loose()<<std::endl;
+
+					thetrackid=-1;
+					for(UInt_t trackit=0;trackit<tracks.size();trackit++){
+						if(tracks.at(trackit)->id()==jets.at(jetit)->constituent_tracks().at(0)){
+							thetrackid=trackit;
+						}
 					}
-				}
-				if(thetrackid==-1){
-					std::cout<<"ERROR!"<<std::endl;
-					continue;
-				}
+					if(thetrackid==-1){
+						std::cout<<"ERROR!"<<std::endl;
+						continue;
+					}
 
 
-				if(vertex.size()==0){
-					std::cout<<"Vertex error!"<<std::endl;
-					continue;
-				}
-				jets_dz_->Fill(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz()));
-				if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2){
-					jetpt_dz_rej_->Fill(jets.at(jetit)->pt());
-				}
-				if(!PileupJetID(jets.at(jetit),2)){
-					jetpt_puid_rej_->Fill(jets.at(jetit)->pt());
-				}
+					if(vertex.size()==0){
+						std::cout<<"Vertex error!"<<std::endl;
+						continue;
+					}
+					jets_dz_->Fill(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz()));
+					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
+					  leading_trackpt_->Fill(tracks.at(thetrackid)->pt());
+					}
+					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2){
+						jetpt_dz_rej_->Fill(jets.at(jetit)->pt());
+					}
+					if(!PileupJetID(jets.at(jetit),2)){
+						jetpt_puid_rej_->Fill(jets.at(jetit)->pt());
+					}
 
-				jets_pu_->Fill(PileupJetID(jets.at(jetit),2));
+					jets_pu_->Fill(PileupJetID(jets.at(jetit),2));
 
-				if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2&&!PileupJetID(jets.at(jetit),2)){
-					jets_overlap_->Fill(1);
-					jetpt_dz_and_puid_rej_->Fill(jets.at(jetit)->pt());
-				}
+					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())>0.2&&!PileupJetID(jets.at(jetit),2)){
+						jets_overlap_->Fill(1);
+						jetpt_dz_and_puid_rej_->Fill(jets.at(jetit)->pt());
+					}
 
-				if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
+					if(TMath::Abs(tracks.at(thetrackid)->vz()-vertex.at(0)->vz())<0.2){
 
 					theDRgj=100;
 					thegenjetn=100;
@@ -330,14 +347,27 @@ namespace ic {
 
 
 					if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5&&taus.at(thetaun)->GetTauID("decayModeFindingOldDMs")>0.5){
-						standard_tau_histos_["dm_taupt_match"]->Fill(jets.at(jetit)->pt());
+				//	if(jets.at(jetit)->pt()>20.&&TMath::Abs(jets.at(jetit)->eta())<2.3&&theDR<0.5){
+				//	std::cout<<"CAUTION:NOT REQUIRING DM finding here!"<<std::endl;
+/*						standard_tau_histos_["dm_taupt_match"]->Fill(jets.at(jetit)->pt());
 						standard_tau_histos_["dm_taueta_match"]->Fill(jets.at(jetit)->eta());
 						standard_tau_histos_["dm_tauphi_match"]->Fill(jets.at(jetit)->phi());
+
+							if(by_jet_type_){
+								tau_jettype_histos_[("dm_taupt_match_"+jettypelist[jets.at(jetit)->parton_flavour()]).c_str()]->Fill(jets.at(jetit)->pt());
+								tau_jettype_histos_[("dm_taueta_match_"+jettypelist[jets.at(jetit)->parton_flavour()]).c_str()]->Fill(jets.at(jetit)->eta());
+								tau_jettype_histos_[("dm_tauphi_match_"+jettypelist[jets.at(jetit)->parton_flavour()]).c_str()]->Fill(jets.at(jetit)->phi());
+							}
+							*/
+
 
 						if(taus.at(thetaun)->GetTauID("byLooseCombinedIsolationDeltaBetaCorr3Hits")>0.5){
 							standard_tau_histos_["loose_taupt_match"]->Fill(jets.at(jetit)->pt());
 							standard_tau_histos_["loose_taueta_match"]->Fill(jets.at(jetit)->eta());
 							standard_tau_histos_["loose_tauphi_match"]->Fill(jets.at(jetit)->phi());
+							if(jets.at(jetit)->pt()<50.){
+								taupt_test_hist_->Fill(taus.at(thetaun)->pt());
+							}
 
 							if(theDRgj<0.5){
 								if(jets.at(jetit)->pt()>400){
@@ -418,11 +448,12 @@ namespace ic {
 
 
 					}
+					}
 				}
-			}
-		}
-		//Here goes the actual code to do the study. 
 
+				//Here goes the actual code to do the study. 
+			
+		}
 		return 0;
 	}
 

@@ -1,68 +1,112 @@
 #ifndef ICHiggsTauTau_Track_hh
 #define ICHiggsTauTau_Track_hh
+#include <vector>
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
 #include "Math/Vector3D.h"
 #include "Math/Vector3Dfwd.h"
-#include <vector>
+#include "Rtypes.h"
 
 namespace ic {
 
+/**
+ * @brief Stores limited information about the track kinematics and trajectory
+ */
+class Track {
+ private:
+  typedef ROOT::Math::RhoEtaPhiVector ThreeVector;
+  typedef ROOT::Math::XYZPoint Point;
 
-  class Track {
+ public:
+  Track();
+  virtual ~Track();
+  virtual void Print() const;
 
-    private:
-      typedef ROOT::Math::RhoEtaPhiVector ThreeVector;
-      typedef ROOT::Math::XYZPoint Point;
+  /// @name Properties
+  /**@{*/
+  /// The track momentum
+  inline ThreeVector const& momentum() const { return momentum_; }
 
+  /// The point-of-closest-approach (PCA) of the track to the beamspot
+  inline Point const& ref_point() const { return ref_point_; }
 
-    public:
-      Track();
-      virtual ~Track();
+  /// The unique identifier
+  inline std::size_t id() const { return id_; }
 
-      inline ThreeVector const& momentum() const { return momentum_; }
-      inline void set_momentum(ThreeVector const& momentum) { momentum_ = momentum; }
-            
-      inline Point const& ref_point() const { return ref_point_; }
-      inline void set_ref_point(Point const& ref_point) { ref_point_ = ref_point; }
-            
-      inline std::size_t id() const { return id_; }
-      inline void set_id(std::size_t const& id) { id_ = id; }
+  /// The track transverse momentum
+  inline double pt() const { return momentum_.Rho(); }
 
-      inline double pt() const { return momentum_.Rho(); }
-      inline void set_pt(double const& pt) { momentum_.SetRho(pt); }
+  /// Energy under the assumption of a massless particle, e.g.
+  /// \f$E =|\vec{p}|\f$
+  inline double energy() const { return momentum_.r(); }
 
-      inline double energy() const { return momentum_.r(); }
-      
-      inline double eta() const { return momentum_.Eta(); }
-      inline void set_eta(double const& eta) { momentum_.SetEta(eta); }
+  /// Track pseudorapidity
+  inline double eta() const { return momentum_.Eta(); }
 
-      inline double phi() const { return momentum_.Phi(); }
-      inline void set_phi(double const& phi) { momentum_.SetPhi(phi); }
+  /// Track azimuthal angle
+  inline double phi() const { return momentum_.Phi(); }
 
-      inline double vx() const { return ref_point_.x(); }
-      inline void set_vx(double const& x) { ref_point_.SetX(x); }
+  /// The z-coordinate of the PCA
+  inline double vx() const { return ref_point_.x(); }
 
-      inline double vy() const { return ref_point_.y(); }
-      inline void set_vy(double const& y) { ref_point_.SetY(y); }
+  /// The y-coordinate of the PCA
+  inline double vy() const { return ref_point_.y(); }
 
-      inline double vz() const { return ref_point_.z(); }
-      inline void set_vz(double const& z) { ref_point_.SetZ(z); }
+  /// The z-coordinate of the PCA
+  inline double vz() const { return ref_point_.z(); }
 
-      inline int charge() const { return charge_; }
-      inline void set_charge(int const& charge) { charge_ = charge; }
+  /// The track charge
+  inline int charge() const { return charge_; }
+  /**@}*/
 
-      virtual void Print() const;
+  /// @name Setters
+  /**@{*/
+  /// @copybrief momentum()
+  inline void set_momentum(ThreeVector const& momentum) {
+    momentum_ = momentum;
+  }
 
+  /// @copybrief ref_point()
+  inline void set_ref_point(Point const& ref_point) { ref_point_ = ref_point; }
 
-    private:
-      ThreeVector momentum_;
-      Point ref_point_;
-      std::size_t id_;
-      int charge_;
-  };
+  /// @copybrief id()
+  inline void set_id(std::size_t const& id) { id_ = id; }
 
-  typedef std::vector<ic::Track> TrackCollection;
+  /// @copybrief pt()
+  inline void set_pt(double const& pt) { momentum_.SetRho(pt); }
 
+  /// @copybrief eta()
+  inline void set_eta(double const& eta) { momentum_.SetEta(eta); }
+
+  /// @copybrief phi()
+  inline void set_phi(double const& phi) { momentum_.SetPhi(phi); }
+
+  /// @copybrief vx()
+  inline void set_vx(double const& x) { ref_point_.SetX(x); }
+
+  /// @copybrief vy()
+  inline void set_vy(double const& y) { ref_point_.SetY(y); }
+
+  /// @copybrief vz()
+  inline void set_vz(double const& z) { ref_point_.SetZ(z); }
+
+  /// @copybrief charge()
+  inline void set_charge(int const& charge) { charge_ = charge; }
+  /**@}*/
+
+ private:
+  ThreeVector momentum_;
+  Point ref_point_;
+  std::size_t id_;
+  int charge_;
+
+ #ifndef SKIP_CINT_DICT
+ public:
+  ClassDef(Track, 2);
+ #endif
+};
+
+typedef std::vector<ic::Track> TrackCollection;
 }
+/** \example plugins/ICTrackProducer.cc */
 #endif

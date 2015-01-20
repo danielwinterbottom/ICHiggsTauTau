@@ -87,6 +87,7 @@ class SVFitTest : public ModuleBase {
   CLASS_MEMBER(SVFitTest, std::string, fullpath)
   CLASS_MEMBER(SVFitTest, std::string, met_label)
   CLASS_MEMBER(SVFitTest, std::string, dilepton_label)
+  CLASS_MEMBER(SVFitTest, bool, MC)
 
   unsigned file_counter_;
   unsigned event_counter_;

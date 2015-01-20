@@ -5,6 +5,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
 #include "TMVA/Reader.h"
 #include "TVector3.h"
+#include "TLorentzVector.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/HHKinFit/include/HHKinFitMaster.h"
 
 
 namespace ic {
@@ -309,6 +311,10 @@ lOTree->Branch("nbtag"      ,&lNBTag         ,"lNBTag/I");
 lOTree->Branch("m_bb"        ,&lMbb        ,"lMbb/F"   );
 //Invariant mass of two leading jets and the two taus (reconstructing mH)
 lOTree->Branch("m_ttbb"        ,&lMttbb        ,"lMttbb/F"   );
+//Kinematic fit mass
+lOTree->Branch("m_H"        ,&lMH        ,"lMH/F"   );
+//Kinematic fit chi2
+lOTree->Branch("mH_chi2"        ,&lMHChi2        ,"lMHChi2/F"   );
 
     return 0;
   }
@@ -602,6 +608,33 @@ lOTree->Branch("m_ttbb"        ,&lMttbb        ,"lMttbb/F"   );
       lBTagCSV2 = prebjets[1]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
       lMbb = (prebjets[0]->vector() + prebjets[1]->vector()).M();
       lMttbb= (prebjets[0]->vector() + prebjets[1]->vector() + dilepton.at(0)->vector() + selectedMet->vector()).M();
+        
+        //kinematic fit mass
+        std::vector<Int_t> hypo_mh1;
+        hypo_mh1.push_back(125);
+        std::vector<Int_t> hypo_mh2;
+        hypo_mh2.push_back(125);
+        
+        TLorentzVector b1      = TLorentzVector(prebjets[0]->vector().px(),prebjets[0]->vector().py(),prebjets[0]->vector().pz(), prebjets[0]->vector().E());
+        TLorentzVector b2      = TLorentzVector(prebjets[1]->vector().px(),prebjets[1]->vector().py(),prebjets[1]->vector().pz(), prebjets[1]->vector().E());
+        TLorentzVector tau1vis      = TLorentzVector(lepton->vector().px(),lepton->vector().py(),lepton->vector().pz(), lepton->vector().E());
+        TLorentzVector tau2vis      = TLorentzVector(tau->vector().px(),tau->vector().py(),tau->vector().pz(), tau->vector().E());
+        TLorentzVector ptmiss  = TLorentzVector(pfMetMVA->vector().px(),pfMetMVA->vector().py(),0,pfMetMVA->vector().pt());
+        TMatrixD metcov(2,2);
+        metcov(0,0)=pfMetMVA->xx_sig();
+        metcov(1,0)=pfMetMVA->yx_sig();
+        metcov(0,1)=pfMetMVA->xy_sig();
+        metcov(1,1)=pfMetMVA->yy_sig();
+
+        HHKinFitMaster kinFits = HHKinFitMaster(&b1,&b2,&tau1vis,&tau2vis);
+        kinFits.setAdvancedBalance(&ptmiss,metcov);
+        kinFits.addMh1Hypothesis(hypo_mh1);
+        kinFits.addMh2Hypothesis(hypo_mh2);
+        kinFits.doFullFit();
+        
+        lMH = kinFits.getBestMHFullFit();
+        lMHChi2 = kinFits.getBestChi2FullFit();
+
     } else {
       lBTagPt2 = -9999;
       lBTagEta2 = -9999;
@@ -609,6 +642,8 @@ lOTree->Branch("m_ttbb"        ,&lMttbb        ,"lMttbb/F"   );
       lBTagCSV2 = -9999;
       lMbb = -9999;
       lMttbb = -9999;
+      lMH = -9999;
+      lMHChi2 = -9999;
     }
     
     if (prebjets.size() >= 3) {

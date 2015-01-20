@@ -147,6 +147,7 @@ namespace ic {
           to the internal list. It should therefore be called before #ReadTrees.
       */
       void AddSMSignalSamples(std::vector<std::string> masses);
+      void AddSMHbbSignalSamples(std::vector<std::string> masses);
       
       void AddHWWSignalSamples(std::vector<std::string> masses);
       
@@ -155,6 +156,7 @@ namespace ic {
       */
       void AddMSSMSignalSamples(std::vector<std::string> masses);
       void AddMSSMbbHSignalSamples(std::vector<std::string> masses);
+      void AddHighMassSignalSamples(std::vector<std::string> masses);
 
       //! Read a parameter file for cross section and luminosity information
       /*! Argument \p file is the full path to the parameter file. 
@@ -180,6 +182,15 @@ namespace ic {
       HistValuePair GenerateSignal(std::string sample, std::string var, std::string sel, std::string cat, std::string wt, double xs = -1.0);
       
       void FillSMSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+      void FillSMHbbSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,
                         std::string const& sel,
@@ -218,6 +229,15 @@ namespace ic {
                         std::string const& postfix,
                         double fixed_xs = -1.0);
       void FillMSSMbbHSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+      void FillHighMassSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,
                         std::string const& sel,

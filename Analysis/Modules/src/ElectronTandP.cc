@@ -82,7 +82,7 @@ namespace ic {
     bool path_found_Ele17Ele8 = false;
     bool path_found_Ele17SC8 = false;
 
-    TriggerPathPtrVec const& triggerPathPtrVec = 
+    auto const& triggerPathPtrVec = 
         event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
     for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
       std::string name = triggerPathPtrVec[i]->name();

@@ -1,38 +1,39 @@
+#ifndef UserCode_ICHiggsTauTau_ICSecondaryVertexProducer_h
+#define UserCode_ICHiggsTauTau_ICSecondaryVertexProducer_h
+
 #include <memory>
-
-#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include <vector>
+#include <string>
+#include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/TrackReco/interface/Track.h"
 #include "UserCode/ICHiggsTauTau/interface/SecondaryVertex.hh"
 
-
+/**
+ * @brief See documentation [here](\ref objs-sec-vertex)
+ */
 class ICSecondaryVertexProducer : public edm::EDProducer {
-   public:
-      explicit ICSecondaryVertexProducer(const edm::ParameterSet&);
-      ~ICSecondaryVertexProducer();
+ public:
+  explicit ICSecondaryVertexProducer(const edm::ParameterSet &);
+  ~ICSecondaryVertexProducer();
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+ private:
+  virtual void beginJob();
+  virtual void produce(edm::Event &, const edm::EventSetup &);
+  virtual void endJob();
 
-   private:
-      virtual void beginJob() ;
-      virtual void produce(edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
-      
-      virtual void beginRun(edm::Run&, edm::EventSetup const&);
-      virtual void endRun(edm::Run&, edm::EventSetup const&);
-      virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-      virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
-
-      // ----------member data ---------------------------
-      edm::InputTag input_label_;
-      std::string branch_name_;
-      double track_pt_threshold_;
-      bool store_ids_;
-      std::vector<std::string> merge_labels_;      
-      std::vector<ic::SecondaryVertex> *cand_vec;      
+  std::vector<ic::SecondaryVertex> *vertices_;
+  edm::InputTag input_;
+  std::string branch_;
+  double track_pt_threshold_;
+  bool request_trks_;
+  boost::hash<reco::Vertex const*> vertex_hasher_;
+  boost::hash<reco::Track const*> track_hasher_;
 };
+
+#endif

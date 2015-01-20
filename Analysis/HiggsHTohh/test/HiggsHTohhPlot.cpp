@@ -31,7 +31,10 @@ int main(int argc, char* argv[]){
 	string hww_masses_str;
 	string mssm_masses_str;												
 	string bbH_masses_str;												
+	string high_masses_str;												
+	bool do_highmass;
 	string syst_tau_scale;
+	string syst_met_scale;
 	string syst_eff_b;
 	string syst_fake_b;
 	string syst_scale_j;
@@ -46,6 +49,7 @@ int main(int argc, char* argv[]){
   string syst_fakes_os_ss_shape;
 	string add_sm_background;
 	double sub_ztt_top_frac;
+	bool sub_ztt_top_shape;
 	double shift_tscale;
 	string fix_empty_bins;
 	string fix_negative_bins;
@@ -88,7 +92,10 @@ int main(int argc, char* argv[]){
 	  ("hww_masses",              po::value<string>(&hww_masses_str)->default_value(""))
 	  ("mssm_masses",             po::value<string>(&mssm_masses_str)->default_value(""))
 	  ("bbH_masses",             po::value<string>(&bbH_masses_str)->default_value(""))
+	  ("high_masses",             po::value<string>(&high_masses_str)->default_value(""))
+	  ("do_highmass", 	          po::value<bool>(&do_highmass)->default_value(false))
 	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
+	  ("syst_met_scale",          po::value<string>(&syst_met_scale)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_eff_t",      		    po::value<string>(&syst_eff_t)->default_value(""))
 	  ("syst_fake_b",      		    po::value<string>(&syst_fake_b)->default_value(""))
@@ -103,6 +110,7 @@ int main(int argc, char* argv[]){
 	  ("syst_zl_shift",    		    po::value<string>(&syst_zl_shift)->default_value(""))
 	  ("add_sm_background",       po::value<string>(&add_sm_background)->default_value(""))
 	  ("sub_ztt_top_frac",        po::value<double>(&sub_ztt_top_frac)->default_value(-1.0))
+	  ("sub_ztt_top_shape",        po::value<bool>(&sub_ztt_top_shape)->default_value(false))
 	  ("shift_tscale",    		    po::value<double>(&shift_tscale)->default_value(0.0))
 	  ("fix_empty_bins",   		    po::value<string>(&fix_empty_bins)->default_value(""))
 	  ("fix_empty_hists",   	    po::value<string>(&fix_empty_hists)->default_value(""))
@@ -142,6 +150,7 @@ int main(int argc, char* argv[]){
 	std::cout << boost::format(param_fmt()) % "hww_masses" 	% hww_masses_str;
 	std::cout << boost::format(param_fmt()) % "mssm_masses" % mssm_masses_str;
 	std::cout << boost::format(param_fmt()) % "bbH_masses"  % bbH_masses_str;
+	if(do_highmass) std::cout << boost::format(param_fmt()) % "high_masses"  % high_masses_str;
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
 	// ************************************************************************
@@ -178,7 +187,9 @@ int main(int argc, char* argv[]){
 	std::vector<std::string> mssm_masses;
 	if (mssm_masses_str != "") boost::split(mssm_masses, mssm_masses_str, boost::is_any_of(","));
 	std::vector<std::string> bbH_masses;
-	if (mssm_masses_str != "") boost::split(bbH_masses, bbH_masses_str, boost::is_any_of(","));
+	if (bbH_masses_str != "") boost::split(bbH_masses, bbH_masses_str, boost::is_any_of(","));
+	std::vector<std::string> high_masses;
+	if (high_masses_str != "") boost::split(high_masses, high_masses_str, boost::is_any_of(","));
 
 	// ************************************************************************
 	// Setup HhhAnalysis 
@@ -188,14 +199,18 @@ int main(int argc, char* argv[]){
   if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
 	ana.AddSMSignalSamples(sm_masses);
-	ana.AddHWWSignalSamples(hww_masses);
+	ana.AddSMHbbSignalSamples(sm_masses);
+	//ana.AddHWWSignalSamples(hww_masses);
 	if (add_sm_background != "") {
 		ana.AddSMSignalSamples({add_sm_background});
-		ana.AddHWWSignalSamples({add_sm_background});
+		ana.AddSMHbbSignalSamples({add_sm_background});
+		//ana.AddHWWSignalSamples({add_sm_background});
 	}
 	ana.AddMSSMSignalSamples(mssm_masses);
 	ana.AddMSSMbbHSignalSamples(bbH_masses);
-	if (is_2012 && check_ztt_top_frac) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
+	if(do_highmass) ana.AddHighMassSignalSamples(high_masses);
+    //if (is_2012 && (check_ztt_top_frac || sub_ztt_top_shape)) ana.AddSample("RecHit-TTJets_FullLeptMGDecays");
+    if (is_2012 && (check_ztt_top_frac || sub_ztt_top_shape)) ana.AddSample("Embedded-TTJets_FullLeptMGDecays");
 	ana.ReadTrees(folder);
 	ana.ParseParamFile(paramfile);
 
@@ -218,14 +233,17 @@ int main(int argc, char* argv[]){
 
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
 	ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
+	ana.FillSMHbbSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (interpolate) ana.InterpolateSMSignal(hmap, sm_masses, morph_var, var, sel, cat, "wt", "", "", 1.0, signal_xs);
 	ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt", "_hww", "", signal_xs);
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
-		ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "");
+		ana.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
+		//ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "");
 	}
 	ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "", 1.0);
 	ana.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", "", 1.0);
+	if(do_highmass) ana.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt", "", "", 1.0);
 
 
 	// ************************************************************************
@@ -334,17 +352,21 @@ int main(int argc, char* argv[]){
     ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt*wt_tau_id_up", "_hww", "_"+syst_eff_t+"Up", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     ana.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
+    if(do_highmass) ana.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt*wt_tau_id_up", "", "_"+syst_eff_t+"Up", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up");
-			ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_hww_SM", "_"+syst_eff_t+"Up");
+			ana.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_SM", "_"+syst_eff_t+"Up");
+			//ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_up", "_hww_SM", "_"+syst_eff_t+"Up");
     }
     ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     ana.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt*wt_tau_id_down", "_hww", "_"+syst_eff_t+"Down", 1.0);
     ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     ana.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
+    if(do_highmass) ana.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt*wt_tau_id_down", "", "_"+syst_eff_t+"Down", 1.0);
     if (add_sm_background != "") {
 			ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
-			ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_hww_SM", "_"+syst_eff_t+"Down");
+			ana.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_SM", "_"+syst_eff_t+"Down");
+			//ana.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt*wt_tau_id_down", "_hww_SM", "_"+syst_eff_t+"Down");
     }
  		hmap["ZTT_"+syst_eff_t+"Up"] = ana.GenerateZTT(method, var, sel, cat, "wt*wt_tau_id_up");
  		hmap["ZTT_"+syst_eff_t+"Down"] = ana.GenerateZTT(method, var, sel, cat, "wt*wt_tau_id_down");
@@ -388,6 +410,10 @@ int main(int argc, char* argv[]){
 		systematics.push_back(make_pair("/L1MET_DOWN", syst_l1met+"Down"));
 		systematics.push_back(make_pair("/L1MET_UP", syst_l1met+"Up"));
 	}
+	if (syst_met_scale != "") {
+		systematics.push_back(make_pair("/MET_DOWN", syst_met_scale+"Down"));
+		systematics.push_back(make_pair("/MET_UP", syst_met_scale+"Up"));
+	}
 
 	for (auto const& syst : systematics) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
@@ -396,13 +422,16 @@ int main(int argc, char* argv[]){
     ana_syst.SetQCDRatio(qcd_os_ss_factor);
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
-		ana_syst.AddHWWSignalSamples(hww_masses);
+		ana_syst.AddSMHbbSignalSamples(sm_masses);
+		//ana_syst.AddHWWSignalSamples(hww_masses);
 		if (add_sm_background != "") {
 			ana_syst.AddSMSignalSamples({add_sm_background});
-			ana_syst.AddHWWSignalSamples({add_sm_background});
+			ana_syst.AddSMHbbSignalSamples({add_sm_background});
+		//	ana_syst.AddHWWSignalSamples({add_sm_background});
 		}
 		ana_syst.AddMSSMSignalSamples(mssm_masses);
 		ana_syst.AddMSSMbbHSignalSamples(bbH_masses);
+		if(do_highmass) ana_syst.AddHighMassSignalSamples(high_masses);
 		ana_syst.ReadTrees(folder+syst.first, folder);
 		ana_syst.ParseParamFile(paramfile);
 		ana_syst.FillHistoMap(hmap, method, var, sel, cat, "wt", "_"+syst.second);
@@ -411,22 +440,26 @@ int main(int argc, char* argv[]){
 		//ana_syst.FillHWWSignal(hmap, hww_masses, sig_var, sel, cat, "wt", "_hww", "_"+syst.second, 1.0);
 		if (add_sm_background != "") {
 			ana_syst.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
-			ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
+			ana_syst.FillSMHbbSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "_"+syst.second);
+			//ana_syst.FillHWWSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_hww_SM", "_"+syst.second);
 		}
 		ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		ana_syst.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
+		if(do_highmass) ana_syst.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt", "", "_"+syst.second, 1.0);
 		if (extra_binning.size() == 2) {
 			ana_syst.FillHistoMap(hmap, method, reduced_var+extra_binning[0], sel, cat, "wt", "_"+syst.second+extra_binning[1]);
 			ana_syst.FillSMSignal(hmap, sm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 	    ana_syst.FillHWWSignal(hmap, hww_masses, reduced_var+extra_binning[0], sel, cat, "wt", "_hww", "_"+syst.second+extra_binning[1], 1.0);
 			ana_syst.FillMSSMSignal(hmap, mssm_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 			ana_syst.FillMSSMbbHSignal(hmap, bbH_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
+			if(do_highmass) ana_syst.FillHighMassSignal(hmap, high_masses, reduced_var+extra_binning[0], sel, cat, "wt", "", "_"+syst.second+extra_binning[1], 1.0);
 		}
 
       //Rescale the signal systematics for datacards if option is set
       if(scale_signal_datacard) {
         ana_syst.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", "_"+syst.second); 
         ana_syst.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", "_"+syst.second); 
+        if(do_highmass) ana_syst.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt", "", "_"+syst.second); 
 	    ana_syst.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "_"+syst.second);
 	    ana_syst.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "_"+syst.second);
       }
@@ -485,8 +518,8 @@ int main(int argc, char* argv[]){
   if (is_2012 && check_ztt_top_frac) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 		std::cout << "[HiggsHTohhPlot] Checking TOP contamination in ZTT embedded..." << std::endl;
-    HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
-    HhhAnalysis::Value embedded_ttbar_inc = ana.GetLumiScaledRate("RecHit-TTJets_FullLeptMGDecays", "os", "", "wt");
+    HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    HhhAnalysis::Value embedded_ttbar_inc = ana.GetLumiScaledRate("Embedded-TTJets_FullLeptMGDecays", "os", "", "wt");
     HhhAnalysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
     HhhAnalysis::Value embedded_data_inc = ana.GetRate("Embedded", "os", "", "wt");
     HhhAnalysis::PrintValue("EmbeddedTop", embedded_ttbar);
@@ -501,9 +534,98 @@ int main(int argc, char* argv[]){
     HhhAnalysis::Value scaled_embedded = hmap[ztt_label].second;
     double norm_sf = scaled_embedded.first / embedded_data.first;
     double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
-    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"RecHit-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
     SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
     hmap[top_label+"Embedded"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, 0.));
+  }
+  
+  // ************************************************************************
+	// Subtract ttbar MC embedded from ZTT
+	// ************************************************************************
+  if (is_2012 && sub_ztt_top_shape) {
+	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+	std::cout << "[HiggsHTohhPlot] Subtracting TOP contamination from ZTT embedded using TT embedded shape..." << std::endl;	
+    std::string top_label = (channel_str == "em") ? "ttbar" : "TT";
+	std::string ztt_label = (channel_str == "em") ? "Ztt" : "ZTT";
+    
+    HhhAnalysis::Value embedded_ttbar = ana.GetLumiScaledRate("Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    TH1F embedded_ttbar_shape = ana.GetLumiScaledShape(var,"Embedded-TTJets_FullLeptMGDecays", sel, cat, "wt");
+    TH1F ztt_hist = hmap[ztt_label].first;
+    HhhAnalysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
+    HhhAnalysis::Value embedded_data = ana.GetRate("Embedded", sel, cat, "wt");
+    HhhAnalysis::Value scaled_embedded = hmap[ztt_label].second;
+    double norm_sf = scaled_embedded.first / embedded_data.first;
+    double embedded_ttbar_norm = embedded_ttbar.first * norm_sf;
+    double embedded_ttbar_uncert = embedded_ttbar.second * norm_sf;
+    SetNorm(&embedded_ttbar_shape, embedded_ttbar_norm);
+    hmap[top_label+"_emb"] = make_pair(embedded_ttbar_shape, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+    ztt_hist.Add(&hmap[top_label+"_emb"].first, -1);
+    HhhAnalysis::Value ztt_norm = HhhAnalysis::ValueSubtract(hmap[ztt_label].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+    hmap[ztt_label].first = ztt_hist;
+    hmap[ztt_label] = make_pair(ztt_hist, ztt_norm);
+    HhhAnalysis::PrintValue("ztt_label.second", hmap[ztt_label].second);
+    
+    //If systematics are included, make the same subtraction from the ZTT ones
+    if(syst_tau_scale!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_tau_scale+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_tau_scale+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_tau_scale+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_tau_scale+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_tau_scale+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_tau_scale+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_tau_scale+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_tau_scale+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }
+    if(syst_scale_j!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_scale_j+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_scale_j+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_scale_j+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_scale_j+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_scale_j+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_scale_j+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_scale_j+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_scale_j+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }
+    if(syst_met_scale!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_met_scale+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_met_scale+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_met_scale+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_met_scale+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_met_scale+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_met_scale+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_met_scale+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_met_scale+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }
+    if(syst_eff_b!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_eff_b+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_eff_b+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_eff_b+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_eff_b+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_eff_b+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_eff_b+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_eff_b+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_eff_b+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }
+    if(syst_fake_b!="") {
+        TH1F ztt_hist_Up = hmap[ztt_label+"_"+syst_fake_b+"Up"].first;
+        ztt_hist_Up.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Up = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_fake_b+"Up"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_fake_b+"Up"].first = ztt_hist_Up;
+        hmap[ztt_label+"_"+syst_fake_b+"Up"] = make_pair(ztt_hist_Up, ztt_norm_Up);
+        TH1F ztt_hist_Down = hmap[ztt_label+"_"+syst_fake_b+"Down"].first;
+        ztt_hist_Down.Add(&hmap[top_label+"_emb"].first, -1);
+        HhhAnalysis::Value ztt_norm_Down = HhhAnalysis::ValueSubtract(hmap[ztt_label+"_"+syst_fake_b+"Down"].second, make_pair(embedded_ttbar_norm, embedded_ttbar_uncert));
+        hmap[ztt_label+"_"+syst_fake_b+"Down"].first = ztt_hist_Down;
+        hmap[ztt_label+"_"+syst_fake_b+"Down"] = make_pair(ztt_hist_Down, ztt_norm_Down);
+    }   
   }
 
 	// ************************************************************************
@@ -858,6 +980,7 @@ int main(int argc, char* argv[]){
 	if(scale_signal_datacard) {
         ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", ""); 
         ana.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", ""); 
+        if(do_highmass) ana.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt", "", ""); 
 	    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
 	    ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
     }
@@ -890,20 +1013,35 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	if(!scale_signal_datacard) {
         ana.FillSMSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
+        ana.FillSMHbbSignal(hmap, sm_masses, var, sel, cat, "wt", "", "");
 	    ana.FillHWWSignal(hmap, hww_masses, var, sel, cat, "wt", "_hww", "");
 	    ana.FillMSSMSignal(hmap, mssm_masses, var, sel, cat, "wt", "", ""); 
 	    ana.FillMSSMbbHSignal(hmap, bbH_masses, var, sel, cat, "wt", "", ""); 
+	    if(do_highmass) ana.FillHighMassSignal(hmap, high_masses, var, sel, cat, "wt", "", ""); 
     }
     for (auto m : sm_masses) {
             HhhAnalysis::PrintValue("ggH"+m, hmap["ggH"+m].second);
             HhhAnalysis::PrintValue("qqH"+m, hmap["qqH"+m].second);
             HhhAnalysis::PrintValue("VH"+m, hmap["VH"+m].second);
+            HhhAnalysis::PrintValue("WHToBB"+m, hmap["WHToBB"+m].second);
+            HhhAnalysis::PrintValue("ZHToBB"+m, hmap["ZHToBB"+m].second);
     }
 
     for (auto m : mssm_masses) {
             HhhAnalysis::PrintValue("ggHTohhTo2Tau2B"+m, hmap["ggHTohhTo2Tau2B"+m].second);
             HhhAnalysis::PrintValue("ggAToZhToLLBB"+m, hmap["ggAToZhToLLBB"+m].second);
             HhhAnalysis::PrintValue("ggAToZhToLLTauTau"+m, hmap["ggAToZhToLLTauTau"+m].second);
+            //HhhAnalysis::PrintValue("ggAToZhToBBTauTau"+m, hmap["ggAToZhToBBTauTau"+m].second);
+            HhhAnalysis::PrintValue("bbH"+m, hmap["bbH"+m].second);
+            HhhAnalysis::PrintValue("bbH100", hmap["bbH100"].second);
+            HhhAnalysis::PrintValue("bbH120", hmap["bbH120"].second);
+            //HhhAnalysis::PrintValue("bbHTohhTo2Tau2B300", hmap["bbHTohhTo2Tau2B300"].second);
+            //HhhAnalysis::PrintValue("Radion500", hmap["RadionToHH500"].second);
+            //HhhAnalysis::PrintValue("Radion700", hmap["RadionToHH700"].second);
+            //HhhAnalysis::PrintValue("Radion1000", hmap["RadionToHH1000"].second);
+            //HhhAnalysis::PrintValue("Graviton500", hmap["GravitonToHH500"].second);
+            //HhhAnalysis::PrintValue("Graviton700", hmap["GravitonToHH700"].second);
+            //HhhAnalysis::PrintValue("Graviton1000", hmap["GravitonToHH1000"].second);
             HhhAnalysis::Value total_bkr;
             if(channel_str == "et" || channel_str == "mt") {
                 total_bkr = HhhAnalysis::ValueAdd(total_bkr, hmap["TT"].second);

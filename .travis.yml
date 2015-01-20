@@ -1,0 +1,26 @@
+language: cpp
+before_install:
+  #  - sudo apt-get update -qq
+  - cd .. && mkdir -p src/UserCode && mv $OLDPWD src/UserCode/ICHiggsTauTau
+  - export CMSSW_BASE=$PWD
+  - cd src/UserCode/ICHiggsTauTau
+install:
+  #  - sudo apt-get install -qq doxygen
+  - export DOX=doxygen-1.8.8
+  - wget -O - http://ftp.stack.nl/pub/users/dimitri/${DOX}.linux.bin.tar.gz |  tar xz -C ${TMPDIR-/tmp} ${DOX}/bin/doxygen
+  - sudo install -m 755 ${TMPDIR-/tmp}/${DOX}/bin/doxygen /usr/local/bin/doxygen
+script:
+  - ./docs/publish-doxygen.sh 
+#after_success:
+git:
+    submodules: false
+env:
+  global:
+    - secure: "Z2fJnto1HUMOHY6r2iKlXKLiWCueVQ5SV6wMu08rUwW4skYCG6cC8xx1nMVCUrjcjp4R35qk5ARZOf8Y/8HR96HNXeUhvOPiPw250ly/GS4Y9b8M2LJsadwJF08axZFOh8hCUuMbMwSBgbk86Lp3XuLyoad3V+UlwwxaoSbJsD4="
+# whitelist
+branches:
+  only:
+    - master
+notifications:
+  email:
+    - andrew.gilbert@cern.ch
