@@ -5,6 +5,8 @@
 #include "Math/Point3Dfwd.h"
 #include "Math/Vector3D.h"
 #include "Math/Vector3Dfwd.h"
+#include "Math/Vector4D.h"
+#include "Math/Vector4Dfwd.h"
 #include "Rtypes.h"
 
 namespace ic {
@@ -15,6 +17,7 @@ namespace ic {
 class Track {
  private:
   typedef ROOT::Math::RhoEtaPhiVector ThreeVector;
+  typedef ROOT::Math::PtEtaPhiEVector Vector;
   typedef ROOT::Math::XYZPoint Point;
 
  public:
@@ -26,6 +29,11 @@ class Track {
   /**@{*/
   /// The track momentum
   inline ThreeVector const& momentum() const { return momentum_; }
+
+  /// Create a four-vector using the pion mass hypothesis
+  inline Vector vector() const {
+    return Vector(ROOT::Math::PtEtaPhiMVector(pt(), eta(), phi(), 0.13957018));
+  }
 
   /// The point-of-closest-approach (PCA) of the track to the beamspot
   inline Point const& ref_point() const { return ref_point_; }
@@ -66,7 +74,7 @@ class Track {
 
   /// Approximate dxy
   /// Copied from DataFormats/TrackReco/interface/TrackBase.h
-  inline double dxy(Point const& point) {
+  inline double dxy(Point const& point) const {
     return (-(vx() - point.x()) * momentum().y() +
             (vy() - point.y()) * momentum().z()) /
            pt();
@@ -74,7 +82,7 @@ class Track {
 
   /// Approximate dz
   /// Copied from DataFormats/TrackReco/interface/TrackBase.h
-  inline double dz(Point const& point) {
+  inline double dz(Point const& point) const {
     return (vz() - point.z()) -
            ((vx() - point.x()) * momentum().x() +
             (vy() - point.y()) * momentum().y()) /

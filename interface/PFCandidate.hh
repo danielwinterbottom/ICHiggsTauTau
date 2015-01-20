@@ -8,6 +8,8 @@
 
 namespace ic {
 
+enum class PFType { X, h, e, mu, gamma, h0, h_HF, egamma_HF };
+
 /**
  * @brief Stores the basic properties of PFCandidates (and PackedCandidates for
  * CMSSW 7_X_Y)
@@ -35,6 +37,32 @@ class PFCandidate : public Candidate {
   /// A vector to refer to the constituent gsf track ic::Track::id() values
   inline std::vector<std::size_t> const& constituent_gsf_tracks() const {
     return constituent_gsf_tracks_;
+  }
+
+  /// Converts the pdgid into the enumerated PFType
+  /// Follows the convention of:
+  /// DataFormats/ParticleFlowCandidate/src/PFCandidate.cc
+  inline PFType type() const {
+    switch (std::abs(pdgid())) {
+      case 211:
+        return PFType::h;
+      case 11:
+        return PFType::e;
+      case 13:
+        return PFType::mu;
+      case 22:
+        return PFType::gamma;
+      case 130:
+        return PFType::h0;
+      case 1:
+        return PFType::h_HF;
+      case 2:
+        return PFType::egamma_HF;
+      case 0:
+        return PFType::X;
+      default:
+        return PFType::X;
+    }
   }
   /**@}*/
 
