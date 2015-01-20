@@ -8,8 +8,9 @@
 
 namespace ic {
 
-enum class PFType { X, h, e, mu, gamma, h0, h_HF, egamma_HF };
-
+#if !defined(__GCCXML__) && !defined(__CINT__)
+enum PFType { X, h, e, mu, gamma, h0, h_HF, egamma_HF };
+#endif
 /**
  * @brief Stores the basic properties of PFCandidates (and PackedCandidates for
  * CMSSW 7_X_Y)
@@ -39,6 +40,7 @@ class PFCandidate : public Candidate {
     return constituent_gsf_tracks_;
   }
 
+#if !defined(__GCCXML__) && !defined(__CINT__)
   /// Converts the pdgid into the enumerated PFType
   /// Follows the convention of:
   /// DataFormats/ParticleFlowCandidate/src/PFCandidate.cc
@@ -64,6 +66,7 @@ class PFCandidate : public Candidate {
         return PFType::X;
     }
   }
+#endif
   /**@}*/
 
   /// @name Setters
