@@ -198,18 +198,18 @@ int AnalysisBase::RunAnalysis() {
     unsigned tree_events = tree_ptr->GetEntries();
     event_.SetTree(tree_ptr);
     DoEventSetup();
-    bool exception_check=false;
+    //bool exception_check=false;
     for (unsigned evt = 0; evt < tree_events; ++evt) {
-      if(exception_check){
-	try{
+      // if(exception_check){
+      // 	try{
 	  if (ttree_caching_) tree_ptr->LoadTree(evt);
-	}
-	catch(const std::bad_alloc&){
-	  std::cout<<"An exception occured when loading tree "<<std::endl;
-	  return -1;
-	}
-      }
-      else if (ttree_caching_) tree_ptr->LoadTree(evt);
+	// }
+	// catch(const std::bad_alloc&){
+	//   std::cout<<"An exception occured when loading tree "<<std::endl;
+	//   return -1;
+	// }
+      // }
+      // else if (ttree_caching_) tree_ptr->LoadTree(evt);
       bool skim_event = false;
       for (auto & seq : seqs_) {
         event_.SetEvent(evt);
@@ -217,18 +217,20 @@ int AnalysisBase::RunAnalysis() {
         for (unsigned m = 0; m < seq.modules.size(); ++m) {
           if (timings_) start = std::chrono::system_clock::now();
           ++(seq.proc_counters[m]);
-	  bool exception_check=true;
-	  int status;
-	  if(exception_check){
-	    try{
-	      status = (seq.modules)[m]->Execute(&event_);
-	    }
-	    catch(const std::bad_alloc&){
-	      std::cout<<"An exception occured in module "<<(seq.modules)[m]->ModuleName()<<" of type std::bad_alloc"<<std::endl;
-	      return -1;
-	    }
-	  }
-	  else status = (seq.modules)[m]->Execute(&event_);
+	  int status = (seq.modules)[m]->Execute(&event_);
+
+	  // bool exception_check=true;
+	  // int status;
+	  // if(exception_check){
+	  //   try{
+	  //     status = (seq.modules)[m]->Execute(&event_);
+	  //   }
+	  //   catch(const std::bad_alloc&){
+	  //     std::cout<<"An exception occured in module "<<(seq.modules)[m]->ModuleName()<<" of type std::bad_alloc"<<std::endl;
+	  //     return -1;
+	  //   }
+	  // }
+	  // else status = (seq.modules)[m]->Execute(&event_);
           if (timings_) {
             end = std::chrono::system_clock::now();
             std::chrono::duration<double> elapsed = end-start;
