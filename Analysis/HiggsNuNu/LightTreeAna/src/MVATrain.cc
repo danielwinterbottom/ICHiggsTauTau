@@ -6,7 +6,7 @@
 #include <map>
 #include "TMVA/Factory.h"
 #include "TMVA/Tools.h"
-
+#include "TVectorT.h"
 
 namespace ic{
 
@@ -121,7 +121,8 @@ namespace ic{
 	  }
 	  else{
 	    weightdir=ddweightsfile->GetDirectory(bkgweightdir_[iBkg].c_str());
-	    TVectorD* weightvec = (TVectorD*)weightdir->Get("ddweight");
+	    //	    TVectorD* weightvec = (TVectorD*)weightdir->Get("ddweight");
+	    TVectorT<double>* weightvec = (TVectorT<double>*)weightdir->Get("ddweight");
 	    if(bkgisz_[iBkg]==0){
 	      ddweight=(*weightvec)[0];
 	    }
