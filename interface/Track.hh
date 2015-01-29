@@ -91,6 +91,13 @@ class Track {
 
   /// The track charge
   inline int charge() const { return charge_; }
+
+  /// The tracking algorithm used to produce this track
+  /// See: DataFormats/TrackReco/interface/TrackBase.h
+  inline int16_t algorithm() const { return algorithm_; }
+
+  /// The track \f$p_{T}\f$ error
+  inline double pt_err() const { return pt_err_; }
   /**@}*/
 
   /// @name Setters
@@ -141,6 +148,14 @@ class Track {
 
   /// @copybrief charge()
   inline void set_charge(int const& charge) { charge_ = charge; }
+
+  /// @copybrief algorithm()
+  inline void set_algorithm(int16_t const& algorithm) {
+    algorithm_ = algorithm;
+  }
+
+  /// @copybrief pt_err()
+  inline void set_pt_err(double const& pt_err) { pt_err_ = pt_err; }
   /**@}*/
 
  private:
@@ -153,10 +168,12 @@ class Track {
   int hits_;
   int pixel_hits_;
 
+  int16_t algorithm_;
+  double pt_err_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Track, 3);
+  ClassDef(Track, 4);
  #endif
 };
 
