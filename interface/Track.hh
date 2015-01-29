@@ -1,5 +1,6 @@
 #ifndef ICHiggsTauTau_Track_hh
 #define ICHiggsTauTau_Track_hh
+#include <stdint.h>
 #include <vector>
 #include "Math/Point3D.h"
 #include "Math/Point3Dfwd.h"
