@@ -770,6 +770,18 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
       requestTracks         = cms.bool(False)
     )
 )
+
+
+process.selectedPFJetsAK4 = cms.EDFilter("PFJetRefSelector",
+    src = cms.InputTag("ak4PFJets"),
+    cut = cms.string("pt > 15")
+    )
+
+process.icPFJetProducerAK4 = producers.icPFJetProducer.clone(
+    branch                    = cms.string("ak4PFJets"),
+    input                     = cms.InputTag("selectedPFJetsAK4")
+)
+
 if release in ['70XMINIAOD', '72XMINIAOD']:
   process.icPFJetProducer.destConfig.includePileupID = cms.bool(False)
   process.icPFJetProducer.destConfig.includeTrackBasedVars = cms.bool(False)
@@ -799,6 +811,11 @@ if release in ['72X', '72XMINIAOD']:
       process.icPFJetFlavourCalculator+
       process.icPFJetProducer
       )
+  if isPhys14:
+    process.icPFJetSequence += cms.Sequence(
+        process.selectedPFJetsAK4+
+        process.icPFJetProducerAK4
+        )
 else:
   process.icPFJetSequence += cms.Sequence(
       process.jetPartons+
@@ -990,7 +1007,7 @@ process.ak5GenJetsNoNuBSM  =  process.ak5GenJets.clone()
 
 process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
   src = cms.InputTag("ak5GenJetsNoNuBSM"),
-  cut = cms.string("pt > 15.0")
+  cut = cms.string("pt > 10.0")
 )
 
 process.icGenJetProducer = producers.icGenJetProducer.clone(
@@ -1015,6 +1032,25 @@ if not isData:
       process.selectedGenJets+
       process.icGenJetProducer
     )
+
+if release in ['72X'] and isPhys14:
+  process.load("RecoJets.JetProducers.ak4GenJets_cfi")
+  process.ak4GenJetsNoNuBSM  =  process.ak4GenJets.clone()
+  process.selectedGenJetsAK4 = cms.EDFilter("GenJetRefSelector",
+    src = cms.InputTag("ak4GenJetsNoNuBSM"),
+    cut = cms.string("pt > 10.0")
+  )
+  process.icGenJetProducerAK4 = producers.icGenJetProducer.clone(
+    branch  = cms.string("ak4GenJets"),
+    input   = cms.InputTag("selectedGenJetsAK4"),
+    inputGenParticles = cms.InputTag("genParticles"),
+    requestGenParticles = cms.bool(False)
+  )
+  process.icGenSequence += (
+      process.ak4GenJetsNoNuBSM+
+      process.selectedGenJetsAK4+
+      process.icGenJetProducerAK4
+  )
 
 ################################################################
 # Embedding
