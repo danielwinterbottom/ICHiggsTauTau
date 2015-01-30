@@ -284,6 +284,8 @@ namespace ic{
 	  stack->Draw("hist");
 	  c1->Update();
 	  first=false;
+	  stack->GetYaxis()->SetLabelSize(0.052);
+	  stack->GetYaxis()->SetTitleSize(0.052);
 	  if(do_ratio_){
 	    stack->GetXaxis()->SetLabelOffset(999);
 	    stack->GetXaxis()->SetLabelSize(0);
@@ -306,6 +308,8 @@ namespace ic{
 	    elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
 	    c1->Update();
 	    first=false;
+	    elements_[iElement].hist_ptr()->GetYaxis()->SetLabelSize(0.052);
+	    elements_[iElement].hist_ptr()->GetYaxis()->SetTitleSize(0.052);
 	    if(do_ratio_){
 	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelOffset(999);
 	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0);
@@ -352,8 +356,8 @@ namespace ic{
       //DRAW RATIO PLOT
       if(do_ratio_){
 	c1->cd();
-	lower->SetTopMargin(0.03);
-	lower->SetBottomMargin(0.2);
+	lower->SetTopMargin(0.08);
+	lower->SetBottomMargin(0.35);
 	lower->Draw();
 	lower->cd();
 	lower->SetGridy();
@@ -421,20 +425,39 @@ namespace ic{
 	  //DIVIDE NUM BY DEN and put in ratio
 	  TH1F* ratio;
 	  ratio=(TH1F*)(num->Clone("ratio"));
-	  ratio->GetXaxis()->SetLabelSize(0.1);
-	  ratio->GetYaxis()->SetLabelSize(0.1);
+	  ratio->GetYaxis()->SetNdivisions(505);
+	  ratio->GetXaxis()->SetLabelSize(0.15);
+	  ratio->GetXaxis()->SetTitleFont(62);
+	  ratio->GetYaxis()->SetNdivisions(505);
+	  ratio->GetYaxis()->SetTitleFont(62);
+	  ratio->GetXaxis()->SetTitleSize(0.16);
+	  ratio->GetYaxis()->SetTitleSize(0.16);
+	  ratio->GetYaxis()->SetTitleOffset(0.460);
+	  ratio->GetXaxis()->SetTitleOffset(0.900);
+          ratio->GetYaxis()->SetLabelSize(0.15);
+
+	  errorband->GetYaxis()->SetNdivisions(505);
+	  errorband->GetXaxis()->SetLabelSize(0.15);
+	  errorband->GetXaxis()->SetTitleFont(62);
+	  errorband->GetYaxis()->SetTitleFont(62);
+	  errorband->GetXaxis()->SetTitleSize(0.16);
+	  errorband->GetYaxis()->SetTitleSize(0.16);
+	  errorband->GetYaxis()->SetTitleOffset(0.460);
+	  errorband->GetXaxis()->SetTitleOffset(0.900);
+          errorband->GetYaxis()->SetLabelSize(0.15);
+	  
 
 	  std::string xtitle;
 	  xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	  xtitle=xtitle.substr(0,xtitle.find(";"));
 	  ratio->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
-	  ratio->GetXaxis()->SetTitleSize(0.1);
-	  ratio->GetXaxis()->SetTitleOffset(0.8);
+	  //	  ratio->GetXaxis()->SetTitleSize(0.1);
+	  //ratio->GetXaxis()->SetTitleOffset(0.8);
 	  ratio->GetYaxis()->SetRangeUser(0,2.0);
 	  ratio->SetTitle("");
 	  ratio->GetYaxis()->SetTitle("data/MC");
-	  ratio->GetYaxis()->SetTitleSize(0.1);
-	  ratio->GetYaxis()->SetTitleOffset(0.3);
+	  //	  ratio->GetYaxis()->SetTitleSize(0.1);
+	  //ratio->GetYaxis()->SetTitleOffset(0.3);
 	  ratio->Divide(den);
 	  gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
@@ -444,15 +467,15 @@ namespace ic{
 	  errorband->SetFillStyle(1000);//3013);
 	  errorband->SetLineWidth(1);
 	  errorband->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
-	  errorband->GetXaxis()->SetTitleSize(0.1);
-	  errorband->GetXaxis()->SetTitleOffset(0.8);
+	  //	  errorband->GetXaxis()->SetTitleSize(0.1);
+	  //errorband->GetXaxis()->SetTitleOffset(0.8);
 	  errorband->GetYaxis()->SetRangeUser(0,2.0);
 	  errorband->SetTitle("");
 	  errorband->GetYaxis()->SetTitle("data/MC");
-	  errorband->GetYaxis()->SetTitleSize(0.1);
-	  errorband->GetYaxis()->SetTitleOffset(0.3);
-	  errorband->GetXaxis()->SetLabelSize(0.1);
-	  errorband->GetYaxis()->SetLabelSize(0.1);
+	  //errorband->GetYaxis()->SetTitleSize(0.1);
+	  //errorband->GetYaxis()->SetTitleOffset(0.3);
+	  //errorband->GetXaxis()->SetLabelSize(0.1);
+	  //errorband->GetYaxis()->SetLabelSize(0.1);
 	  errorband->SetStats(0);
 
 	  TF1* fiterrup;
