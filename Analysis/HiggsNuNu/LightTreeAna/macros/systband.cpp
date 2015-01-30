@@ -1,7 +1,7 @@
 {
 
-  std::string infolder="output_unblinded_band";
-  TString outfolder="output_withbands";
+  std::string infolder="output_plotcosmeticcheck";
+  TString outfolder="output_withbands_newcosmetics";
   double nonshapeuncperc=0.1568;
   double rationonshapeuncperc=0.09188;
 

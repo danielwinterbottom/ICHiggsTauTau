@@ -4,15 +4,15 @@ PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}.dat
 #PARAMS=./filelists/$PRODUCTION/Params${PRODUCTION}_noSignal.dat
 DOLUMIXSWEIGHT=false #should be true if controlplots is to take care of lumi*xs/events weight
 
-for CHANNEL in nunu taunu enu munu #mumu nunuiglep
+for CHANNEL in nunulowmet #nunuiglep mumu #nunu taunu enu munu #mumu nunuiglep
   do
   for MET in 130 #0 #70
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #PUUP PUDOWN
       do
-	FOLDER=output/$CHANNEL/MET$MET/ # ./oldanalysisruns/090813_nopuidorjer/output/$CHANNEL/MET$MET/
-	PLOTDIR=TABLES/$CHANNEL/MET$MET/
-	PLOTDIRQCD=TABLES/$CHANNEL/MET$MET/QCD/
+	FOLDER=output_rereco/$CHANNEL/MET$MET/ # ./oldanalysisruns/090813_nopuidorjer/output/$CHANNEL/MET$MET/
+	PLOTDIR=TABLES_rereco/$CHANNEL/MET$MET/
+	PLOTDIRQCD=TABLES_rereco/$CHANNEL/MET$MET/QCD/
 
 	if [ "$SYST" != "central" ] #if not doing central
             then
@@ -66,7 +66,8 @@ for CHANNEL in nunu taunu enu munu #mumu nunuiglep
     --plot_qcd=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS \
+    --use_rereco_data=true
 
  
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -80,7 +81,8 @@ for CHANNEL in nunu taunu enu munu #mumu nunuiglep
     --plot_qcd=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS\
+    --use_rereco_data=true
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR \
@@ -93,7 +95,8 @@ for CHANNEL in nunu taunu enu munu #mumu nunuiglep
     --plot_qcd=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS\
+    --use_rereco_data=true
 
 ###### dphijj
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
@@ -108,7 +111,8 @@ for CHANNEL in nunu taunu enu munu #mumu nunuiglep
     --plot_qcd=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS\
+    --use_rereco_data=true
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIRQCD  \
@@ -122,7 +126,8 @@ for CHANNEL in nunu taunu enu munu #mumu nunuiglep
     --plot_qcd=true \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS\
+    --use_rereco_data=true
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR  \
@@ -136,7 +141,8 @@ for CHANNEL in nunu taunu enu munu #mumu nunuiglep
     --plot_qcd=false \
     --log_y=false \
     --dolumixsweight=$DOLUMIXSWEIGHT \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS\
+    --use_rereco_data=true
 
 ./bin/ControlPlots --cfg=scripts/controlPlot.cfg  \
     --folder=$FOLDER --plot_dir=$PLOTDIR"/wjetsComp/"  \
@@ -150,7 +156,8 @@ for CHANNEL in nunu taunu enu munu #mumu nunuiglep
     --plot_qcd=false \
     --log_y=true \
     --dolumixsweight=$DOLUMIXSWEIGHT \
-    --paramfile=$PARAMS
+    --paramfile=$PARAMS\
+    --use_rereco_data=true
 
     done
   done

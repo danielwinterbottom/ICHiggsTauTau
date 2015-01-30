@@ -46,12 +46,14 @@ namespace ic {
     double jet1_eta_;
     double jet2_eta_;
     double jet3_eta_;
+    double forward_tag_eta_;
+    double central_tag_eta_;
     double jet1_phi_;
     double jet2_phi_;
     double jet3_phi_;
-    double jet1_csv_;
-    double jet2_csv_;
-    double jet3_csv_;
+    double jet_csv1_;
+    double jet_csv2_;
+    double jet_csv3_;
     double dijet_M_;
     double dijet_deta_;
     double dijet_sumeta_;
@@ -93,6 +95,8 @@ namespace ic {
     double cjvjetpt_;
     unsigned n_jets_cjv_30_;
     unsigned n_jets_cjv_20EB_30EE_;
+    unsigned n_jets_15_;
+    unsigned n_jets_30_;
     double passtrigger_;
     double passparkedtrigger1_;
     double passparkedtrigger2_;
@@ -105,7 +109,9 @@ namespace ic {
     int nselelectrons_;
     int ntaus_;
     double m_mumu_;
+    double m_ee_;
     double m_mumu_gen_;
+    double m_ee_gen_;
     double mu1_pt_;
     double mu1_eta_;
     double mu1_phi_;

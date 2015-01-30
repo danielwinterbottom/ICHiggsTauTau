@@ -59,6 +59,7 @@ int main(int argc, char* argv[]){
   bool datalist;
   bool do_latex;
   bool do_closure;
+  bool do_expandtopcat;
   std::string closurebase;
 
   po::options_description preconfig("Configuration"); 
@@ -89,6 +90,7 @@ int main(int argc, char* argv[]){
     ("do_latex",                 po::value<bool>(&do_latex)->default_value(false))
     ("do_closure",               po::value<bool>(&do_closure)->default_value(false))
     ("closurebase",               po::value<std::string>(&closurebase)->default_value("munu"))
+    ("do_expandtopcat",               po::value<bool>(&do_expandtopcat)->default_value(false))
     ("do_preselranges",          po::value<bool>(&do_preselranges)->default_value(false))
     ("do_prepreselranges",       po::value<bool>(&do_prepreselranges)->default_value(false))
     ("do_promptsel",             po::value<bool>(&do_promptsel)->default_value(false))
@@ -119,6 +121,8 @@ int main(int argc, char* argv[]){
     analysis->SetInFolder(inputfolder);
   }
   analysis->SetInputParams(inputparams);
+
+  std::cout<<"Base selection: "<<basesel<<std::endl;
 
   //Set selection step common to all categories
   //analysis->set_baseselection("passtrigger==1&&jet1_eta<4.7&&jet2_eta<4.7&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<"+boost::lexical_cast<std::string>(etaprodcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
@@ -179,15 +183,17 @@ int main(int argc, char* argv[]){
     shape.push_back("l1met(20,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
     shape.push_back("dijet_M(22,800.,3000.)");histTitle.push_back(";M_{jj} (GeV);entries");
     //shape.push_back("dijet_M(17,300.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
-    shape.push_back("jetmetnomu_mindphi(20,0.0,3.1416)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
+    shape.push_back("jetmetnomu_mindphi(12,2.0,3.142)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
+    shape.push_back("alljetsmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
     if(!do_preselranges&&!do_prepreselranges){
       shape.push_back("alljetsmetnomu_mindphi(12,2.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
       //shape.push_back("alljetsmetnomu_mindphi(22,1.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
       shape.push_back("metnomu_significance(30,3.,15.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
     }
     else if(do_prepreselranges){
-      shape.push_back("alljetsmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-      shape.push_back("metnomu_significance(50,0.,20.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
+      shape.push_back("alljetsmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
+      shape.push_back("metnomu_significance(50,0.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
+      shape.push_back("met_significance(50,0.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
     }
     else{
       shape.push_back("alljetsmetnomu_mindphi(22,0.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
@@ -293,8 +299,12 @@ int main(int argc, char* argv[]){
   std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut+contonlycontplotjetmetdphi;
   std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wel
 
-  std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
-  std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
+  std::string taunucat;
+  if(!do_prepreselranges)taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
+  else taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
+  std::string taunuzcat;
+  if(!do_prepreselranges)taunuzcat="&&ntaus==1&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
+  else taunuzcat="&&ntaus==1&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
 
 
   //std::string taunucat="nvetomuons==0&&nvetoelectrons==0";//"+jetmetdphicut;
@@ -308,8 +318,18 @@ int main(int argc, char* argv[]){
   //std::string taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
   //std::string taunuzcat="&&ntaus==1&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau
 
-  std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";//&&jetmetnomu_mindphi>1.0";
-  std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";//&&jetmetnomu_mindphi>1.0";//top
+  std::string topcat,topzcat;
+  if(do_expandtopcat){
+    //    topcat="((nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1)||((m_ee<60||m_ee>120)&&nvetoelectrons==2&&nselelectrons==2&&nvetomuons==0)||((m_mumu<60||m_mumu>120)&&nvetoelectrons==0&&nselmuons==2&&nvetomuons==2))";//&&jetmetnomu_mindphi>1.0";
+    //topzcat="&&((nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1)||((m_ee<60||m_ee>120)&&nvetoelectrons==2&&nselelectrons==2&&nvetomuons==0)||((m_mumu<60||m_mumu>120)&&nvetoelectrons==0&&nselmuons==2&&nvetomuons==2))";//&&jetmetnomu_mindphi>1.0";//top
+    topcat="((nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1)||((m_mumu<60||m_mumu>120)&&nvetoelectrons==0&&nselmuons==2&&nvetomuons==2))";//&&jetmetnomu_mindphi>1.0";
+    topzcat="&&((nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1)||((m_mumu<60||m_mumu>120)&&nvetoelectrons==0&&nselmuons==2&&nvetomuons==2))";//&&jetmetnomu_mindphi>1.0";//top
+  }
+  else{
+    topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";//&&jetmetnomu_mindphi>1.0";
+    topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1";//&&jetmetnomu_mindphi>1.0";//top
+  }
+
   //std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1&&jetmetnomu_mindphi>1.0";
   //std::string topzcat="&&nvetomuons==1&&nvetoelectrons==1&&nselmuons==1&&nselelectrons==1&&jetmetnomu_mindphi>1.0";//top
 //   std::string topcat="nvetomuons==1&&nvetoelectrons==1&&nselmuons==1";
