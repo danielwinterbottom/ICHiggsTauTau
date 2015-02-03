@@ -175,7 +175,7 @@ int main(int argc, char* argv[]){
   //shape.push_back("BDT(12,-1.,0.2)");
 
   //shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";n_{jets} (p_{T}>30 GeV);entries");
-  if(!(channel=="taunu"||channel=="top")){
+  if(!(channel=="taunu"||channel=="top"||channel=="mumu")){
     shape.push_back("jet2_pt(26,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
     shape.push_back("jet1_pt(30,50.,350.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
     shape.push_back("metnomuons(18,90.,450.)");histTitle.push_back(";METnoMu (GeV);entries");
@@ -184,10 +184,9 @@ int main(int argc, char* argv[]){
     shape.push_back("dijet_M(22,800.,3000.)");histTitle.push_back(";M_{jj} (GeV);entries");
     //shape.push_back("dijet_M(17,300.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
     shape.push_back("jetmetnomu_mindphi(12,2.0,3.142)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
-    shape.push_back("alljetsmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
     if(!do_preselranges&&!do_prepreselranges){
-      shape.push_back("alljetsmetnomu_mindphi(12,2.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-      //shape.push_back("alljetsmetnomu_mindphi(22,1.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
+      //shape.push_back("alljetsmetnomu_mindphi(12,0.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
+      shape.push_back("alljetsmetnomu_mindphi(22,1.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
       shape.push_back("metnomu_significance(30,3.,15.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
     }
     else if(do_prepreselranges){
@@ -218,6 +217,10 @@ int main(int argc, char* argv[]){
     shape.push_back("jet_csv1(21,0.6,1.5)");histTitle.push_back(";Jet 1 CSV;entries");
     shape.push_back("jet_csv2(21,0.6,1.5)");histTitle.push_back(";Jet 2 CSV;entries");
     shape.push_back("jet_csv3(21,0.,1.)");histTitle.push_back(";Jet 3 CSV;entries");
+    shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;entries");
+    shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;entries");
+    shape.push_back("central_tag_eta(50,-5.,5.)");histTitle.push_back(";Central tag jet #eta;entries");
+    shape.push_back("forward_tag_eta(50,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;entries");
     if(channel=="mumu"){
       shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};entries");
     }
@@ -234,7 +237,7 @@ int main(int argc, char* argv[]){
     shape.push_back("jet_csv2(21,0.,1.05)");histTitle.push_back(";Jet 2 CSV;entries");
     shape.push_back("jet_csv3(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;entries");
     shape.push_back("jetmetnomu_mindphi(16,0.,3.1416)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
-    shape.push_back("alljetsmetnomu_mindphi(14,0.,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
+    shape.push_back("alljetsmetnomu_mindphi(14,1.0.,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
     if(!do_preselranges&&!do_prepreselranges){ shape.push_back("metnomu_significance(17,3.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");}
     else if(do_prepreselranges){shape.push_back("metnomu_significance(25,0.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");}
     else{ shape.push_back("metnomu_significance(22,1.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");}
@@ -252,10 +255,15 @@ int main(int argc, char* argv[]){
     shape.push_back("lep_mt(20,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);entries");
     shape.push_back("tau1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(tau) (GeV);entries");
     shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
-
+    shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;entries");
+    shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;entries");
+    shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;entries");
+    shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;entries");
     //mindR(tau,tagjets)
     shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);entries");
-
+    if(channel=="mumu"){
+      shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};entries");
+    }
   }
   
   std::string dataextrasel;
@@ -283,21 +291,21 @@ int main(int argc, char* argv[]){
     //nunuzcat="&&"+jetmetdphicut+"&&ntaus==0";
   }
   
-  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;
-  std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//zmumu
+  std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
+  std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;//zmumu
 
   std::string munucat,munuzcat;
   if(!do_singlemu){
-    munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut+contonlycontplotjetmetdphi;//&&lep_mt>10";
-    munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wmu
+    munucat="nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut;//&&lep_mt>10";
+    munuzcat="&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;//wmu
   }
   else{
-    munucat="mu1_pt>25&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut+contonlycontplotjetmetdphi;//&&lep_mt>10";
-    munuzcat="&&mu1_pt>25&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wmu
+    munucat="mu1_pt>25&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+jetmetdphicut;//&&lep_mt>10";
+    munuzcat="&&mu1_pt>25&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;//wmu
   }
 
-  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut+contonlycontplotjetmetdphi;
-  std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+jetmetdphicut+contonlycontplotjetmetdphi;//wel
+  std::string enucat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+jetmetdphicut;
+  std::string enuzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+jetmetdphicut;//wel
 
   std::string taunucat;
   if(!do_prepreselranges)taunucat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&lep_mt>20&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
@@ -382,6 +390,14 @@ int main(int argc, char* argv[]){
     return 1;
   }
 
+  mumucat=mumucat+contonlycontplotjetmetdphi;
+  mumuzcat=mumuzcat+contonlycontplotjetmetdphi;
+
+  munucat=munucat+contonlycontplotjetmetdphi;
+  munuzcat=munuzcat+contonlycontplotjetmetdphi;
+
+  enucat=enucat+contonlycontplotjetmetdphi;
+  enuzcat=enuzcat+contonlycontplotjetmetdphi;
 
   std::string sigmcweight;
   std::string mcweightpufactor="";
