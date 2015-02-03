@@ -89,7 +89,7 @@ YEAR = ('2012' if COM=='8' else '2011')
 ########## Set up schemes and options
 
 #### Always apply these options:
-extra_global = ' --fix_empty_hists="ggHTohh.*,ggAToZh.*"'
+extra_global = ' --fix_empty_hists="ggHTohh.*,ggAToZh.*,ggH.*,qqH.*,VH.*,WH.*,ZH.*"'
 
 #### Apply these options for specific channels
 extra_channel = {
