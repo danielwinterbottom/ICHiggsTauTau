@@ -40,9 +40,9 @@ class RequestByDeltaR : public edm::EDProducer {
 // =============================
 template <class T>
 RequestByDeltaR<T>::RequestByDeltaR(const edm::ParameterSet& config)
-    : input_(config.getParameter<edm::InputTag>("input")),
+    : input_(config.getParameter<edm::InputTag>("src")),
       reference_(config.getParameter<edm::InputTag>("reference")),
-      dr_(config.getParameter<bool>("deltaR")) {
+      dr_(config.getParameter<double>("deltaR")) {
   produces<RefVectorVec>();
   PrintHeaderWithProduces(config, input_, "");
   std::cout << boost::format("%-15s : %-60s\n") % "Reference" %
@@ -68,7 +68,7 @@ void RequestByDeltaR<T>::produce(edm::Event& event,
   std::auto_ptr<RefVectorVec> product(new RefVectorVec());
 
   for (unsigned i = 0; i < in_handle->size(); ++i) {
-    for (unsigned j = 0; i < ref_handle->size(); ++j) {
+    for (unsigned j = 0; j < ref_handle->size(); ++j) {
       double dr = reco::deltaR(in_handle->at(i), ref_handle->at(j));
       if (dr <= dr_) {
         product->push_back(in_handle->refAt(i).template castTo<RefVec>());

@@ -310,10 +310,23 @@ process.selectedTracks = cms.EDFilter("TrackRefSelector",
   cut = cms.string("pt > 5")
 )
 
+process.requestTracksByDeltaRToTaus = cms.EDProducer("RequestTracksByDeltaR",
+  src = cms.InputTag("generalTracks"),
+  reference = cms.InputTag("selectedPFTaus"),
+  deltaR = cms.double(0.5)
+  )
+
+# We write (for phys 14 studies):
+# - all tracks with pT > 5 GeV
+# - tracks referenced by the PF candidates we store
+# - tracks referenced by the taus we store
+# - all tracks with DR < 0.5 pf the selected PF taus
 process.icMergedTracks = cms.EDProducer('ICTrackMerger',
   merge = cms.VInputTag(
     cms.InputTag("selectedTracks"),
-    cms.InputTag("icPFProducer", "requestedTracks")
+    cms.InputTag("icPFProducer", "requestedTracks"),
+    cms.InputTag("icTauProducer", "requestedTracks"),
+    cms.InputTag("requestTracksByDeltaRToTaus")
   )
 )
 
@@ -331,6 +344,7 @@ process.icTrackSequence = cms.Sequence()
 if isPhys14:
   process.icTrackSequence += cms.Sequence(
     process.selectedTracks+
+    process.requestTracksByDeltaRToTaus+
     process.icMergedTracks+
     process.icTrackProducer+
     process.icGsfTrackProducer
@@ -546,6 +560,12 @@ process.icTauProducer = producers.icTauProducer.clone(
   requestTracks           = cms.bool(False),
   tauIDs = tauIDs.minimalHttIds
 )
+
+## In the Phys14 studies we want to keep a record of the "signal"
+## tracks used to build the tau, so that we can approximate the
+## charged isolation ourselves
+if isPhys14: process.icTauProducer.requestTracks = cms.bool(True)
+
 
 if release in ['53X']: process.icTauProducer.tauIDs = tauIDs.fullNewIds
 if release in ['70X', '72X']: process.icTauProducer.tauIDs = tauIDs.fullNewIds
@@ -771,16 +791,25 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
     )
 )
 
+if isPhys14:
+  process.selectedPFJets = cms.EDFilter("PFJetRefSelector",
+      src = cms.InputTag("ak5PFJets"),
+      cut = cms.string("pt > 15")
+      )
+  process.icPFJetProducer.input = cms.InputTag("selectedPFJets")
+  process.icPFJetProducer.srcConfig.applyJECs = cms.bool(False)
+  process.icPFJetProducer.srcConfig.applyCutAfterJECs = cms.bool(False)
 
-process.selectedPFJetsAK4 = cms.EDFilter("PFJetRefSelector",
-    src = cms.InputTag("ak4PFJets"),
-    cut = cms.string("pt > 15")
-    )
+  process.selectedPFJetsAK4 = cms.EDFilter("PFJetRefSelector",
+      src = cms.InputTag("ak4PFJets"),
+      cut = cms.string("pt > 15")
+      )
+  process.icPFJetProducerAK4 = producers.icPFJetProducer.clone(
+      branch                    = cms.string("ak4PFJets"),
+      input                     = cms.InputTag("selectedPFJetsAK4")
+  )
 
-process.icPFJetProducerAK4 = producers.icPFJetProducer.clone(
-    branch                    = cms.string("ak4PFJets"),
-    input                     = cms.InputTag("selectedPFJetsAK4")
-)
+
 
 if release in ['70XMINIAOD', '72XMINIAOD']:
   process.icPFJetProducer.destConfig.includePileupID = cms.bool(False)
@@ -804,6 +833,12 @@ if release in ['42X', '53X', '70X']:
 
 if release in ['72X', '72XMINIAOD']:
   process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet()
+  if isPhys14:
+    process.icPFJetSequence += cms.Sequence(
+        process.selectedPFJets+
+        process.selectedPFJetsAK4+
+        process.icPFJetProducerAK4
+        )
   process.icPFJetSequence += cms.Sequence(
       process.jetPartons+
       process.pfJetPartonMatches+
@@ -811,12 +846,11 @@ if release in ['72X', '72XMINIAOD']:
       process.icPFJetFlavourCalculator+
       process.icPFJetProducer
       )
+else:
   if isPhys14:
     process.icPFJetSequence += cms.Sequence(
-        process.selectedPFJetsAK4+
-        process.icPFJetProducerAK4
+        process.selectedPFJets
         )
-else:
   process.icPFJetSequence += cms.Sequence(
       process.jetPartons+
       process.pfJetPartonMatches+
@@ -1427,10 +1461,10 @@ process.p = cms.Path(
   process.pfParticleSelectionSequence+
   process.icVertexSequence+
   process.icPFSequence+
-  process.icTrackSequence+
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauProducer+
+  process.icTrackSequence+
   process.icMvaMetSequence+
   process.icPFJetSequence+
   process.icGenSequence+
