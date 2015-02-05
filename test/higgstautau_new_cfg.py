@@ -310,8 +310,13 @@ process.selectedTracks = cms.EDFilter("TrackRefSelector",
   cut = cms.string("pt > 5")
 )
 
-process.requestTracksByDeltaRToTaus = cms.EDProducer("RequestTracksByDeltaR",
+process.selectedTauTracks = cms.EDFilter("TrackRefSelector",
   src = cms.InputTag("generalTracks"),
+  cut = cms.string("pt > 0.5")
+)
+
+process.requestTracksByDeltaRToTaus = cms.EDProducer("RequestTracksByDeltaR",
+  src = cms.InputTag("selectedTauTracks"),
   reference = cms.InputTag("selectedPFTaus"),
   deltaR = cms.double(0.5)
   )
@@ -320,7 +325,7 @@ process.requestTracksByDeltaRToTaus = cms.EDProducer("RequestTracksByDeltaR",
 # - all tracks with pT > 5 GeV
 # - tracks referenced by the PF candidates we store
 # - tracks referenced by the taus we store
-# - all tracks with DR < 0.5 pf the selected PF taus
+# - all tracks with DR < 0.5 pf the selected PF taus with pT > 0.5 GeV
 process.icMergedTracks = cms.EDProducer('ICTrackMerger',
   merge = cms.VInputTag(
     cms.InputTag("selectedTracks"),
@@ -344,6 +349,7 @@ process.icTrackSequence = cms.Sequence()
 if isPhys14:
   process.icTrackSequence += cms.Sequence(
     process.selectedTracks+
+    process.selectedTauTracks+
     process.requestTracksByDeltaRToTaus+
     process.icMergedTracks+
     process.icTrackProducer+
