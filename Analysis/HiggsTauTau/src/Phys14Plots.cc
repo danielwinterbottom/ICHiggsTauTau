@@ -110,8 +110,11 @@ int Phys14Plots::PreAnalysis() {
   th1_pf_match_eta = PFMatchPlot(dir_, "th1_pf_match_eta", 30, -2.5, 2.5);
   th10_pf_match_pt = PFMatchPlot(dir_, "th10_pf_match_pt", 24, 6, 102);
   th10_pf_match_eta = PFMatchPlot(dir_, "th10_pf_match_eta", 30, -2.5, 2.5);
-  // Want to plot:
-  // Probability to pass decay mode reco vs: gen vis pT, gen vis eta, nvtx
+
+  h_trk_pt_frac_ch = dir_->make<TH1F>("trk_pt_frac_ch", "", 100, 0, 10);
+  h_trk_pt_frac_em = dir_->make<TH1F>("trk_pt_frac_em", "", 100, 0, 10);
+  h_th_pt_frac_ch = dir_->make<TH1F>("th_pt_frac_ch", "", 20, 0, 2);
+  h_th_pt_frac_em = dir_->make<TH1F>("th_pt_frac_em", "", 20, 0, 2);
   return 0;
 }
 
@@ -342,6 +345,8 @@ int Phys14Plots::Execute(TreeEvent* event) {
         PFType type = trk_pf_map.count(trk->id())
                           ? trk_pf_map.at(trk->id())->type()
                           : PFType::X;
+        PFCandidate const* pf =
+            trk_pf_map.count(trk->id()) ? trk_pf_map.at(trk->id()) : nullptr;
         th_pf_match_pt.Fill(trk->pt(), type);
         th_pf_match_eta.Fill(trk->eta(), type);
         if (gen_th->hadronic_mode == 0) {
@@ -350,6 +355,23 @@ int Phys14Plots::Execute(TreeEvent* event) {
         } else if (gen_th->hadronic_mode >= 1 && gen_th->hadronic_mode <= 4) {
           th1_pf_match_pt.Fill(trk->pt(), type);
           th1_pf_match_eta.Fill(trk->eta(), type);
+          // Make some extra plots to see what's happening here
+          if (type == PFType::h) {
+            h_trk_pt_frac_ch->Fill(gen_pions[0]->pt() > 0.
+                                       ? (pf->pt() / gen_pions[0]->pt())
+                                       : -0.5);
+            h_th_pt_frac_ch->Fill(gen_pions[0]->pt() > 0.
+                                      ? (pf->pt() / gen_th->vis_jet->pt())
+                                      : -0.5);
+          }
+          if (type == PFType::gamma) {
+            h_trk_pt_frac_em->Fill(gen_pions[0]->pt() > 0.
+                                       ? (pf->pt() / gen_pions[0]->pt())
+                                       : -0.5);
+            h_th_pt_frac_em->Fill(gen_pions[0]->pt() > 0.
+                                      ? (pf->pt() / gen_th->vis_jet->pt())
+                                      : -0.5);
+          }
         } else if (gen_th->hadronic_mode == 10) {
           th10_pf_match_pt.Fill(trk->pt(), type);
           th10_pf_match_eta.Fill(trk->eta(), type);

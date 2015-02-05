@@ -80,7 +80,6 @@ struct PFMatchPlot {
 
 class Phys14Plots : public ModuleBase {
  private:
-
   double th_pt_acc;
   double th_eta_acc;
 
@@ -171,6 +170,11 @@ class Phys14Plots : public ModuleBase {
   PFMatchPlot th1_pf_match_eta;
   PFMatchPlot th10_pf_match_pt;
   PFMatchPlot th10_pf_match_eta;
+
+  TH1F *h_trk_pt_frac_ch;
+  TH1F *h_trk_pt_frac_em;
+  TH1F *h_th_pt_frac_ch;
+  TH1F *h_th_pt_frac_em;
 
   CLASS_MEMBER(Phys14Plots, fwlite::TFileService*, fs)
 
