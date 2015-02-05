@@ -15,6 +15,9 @@
 #pragma link C++ class ic::Candidate+;
 #pragma link C++ class std::vector<ic::Candidate>+;
 
+#pragma link C++ class ic::PFCandidate+;
+#pragma link C++ class std::vector<ic::PFCandidate>+;
+
 #pragma link C++ class ic::Electron+;
 #pragma link C++ class std::vector<ic::Electron>+;
 

@@ -3,6 +3,7 @@
 #include <utility>
 #include <string>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
+#include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/GenParticle.hh"
 #include "UserCode/ICHiggsTauTau/interface/Jet.hh"
 #include "UserCode/ICHiggsTauTau/interface/CaloJet.hh"
@@ -27,6 +28,10 @@
 #include "DataFormats/Common/interface/Wrapper.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
+#include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
 
 namespace { struct dictionary {
   ic::Candidate dummy1;
@@ -80,6 +85,10 @@ namespace { struct dictionary {
   std::vector<ic::SecondaryVertex> dummy50;
   edm::Wrapper<reco::SecondaryVertexTagInfoRefVector> dummy51;
   edm::Wrapper<reco::VertexRefVector> dummy52;
+  ic::PFCandidate dummy53;
+  std::vector<ic::PFCandidate> dummy54;
+  edm::Wrapper<reco::GsfTrackRefVector> dummy55;
+  edm::Wrapper<reco::PFCandidateRefVector> dummy56;
 };
 }
 

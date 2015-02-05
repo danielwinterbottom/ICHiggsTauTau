@@ -84,11 +84,11 @@ FRAGMENTS=(
   # '{"output":"th1_dm_eff_vs_ot_pu", "x_axis_title":"Pileup (BX#pm1)", "y_axis_title":"DM Efficiency", "default":{"rebin":"0.5-100.5:4"}}'
   # '{"output":"th10_dm_eff_vs_ot_pu", "x_axis_title":"Pileup (BX#pm1)", "y_axis_title":"DM Efficiency", "default":{"rebin":"0.5-100.5:4"}}'
   # Special plots
-  '{"output":"th1_mt_eff_vs_pt_pi", "x_axis_title":"Gen. #pi^{#pm} p_{T} (GeV)", "y_axis_title":"Match Eff.", "default":{"rebin":"0-200:10"}}'
-  '{"output":"th1_jet_eff_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Jet (p_{T} > 15) Match Eff.", "default":{"rebin":"0-200:10"}}'
-  '{"output":"th1_mt_eff_after_jet_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match", "default":{"rebin":"0-200:10"}}'
-  '{"output":"th1_mt_eff_after_jet_pi15_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match & p_{T}^{#pi}>15", "default":{"rebin":"0-200:10"}}'
-  '{"output":"th1_mt_eff_after_jet_pi20_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match & p_{T}^{#pi}>20", "default":{"rebin":"0-200:10"}}'
+  # '{"output":"th1_mt_eff_vs_pt_pi", "x_axis_title":"Gen. #pi^{#pm} p_{T} (GeV)", "y_axis_title":"Match Eff.", "default":{"rebin":"0-200:10"}}'
+  # '{"output":"th1_jet_eff_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Jet (p_{T} > 15) Match Eff.", "default":{"rebin":"0-200:10"}}'
+  # '{"output":"th1_mt_eff_after_jet_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match", "default":{"rebin":"0-200:10"}}'
+  # '{"output":"th1_mt_eff_after_jet_pi15_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match & p_{T}^{#pi}>15", "default":{"rebin":"0-200:10"}}'
+  # '{"output":"th1_mt_eff_after_jet_pi20_vs_pt", "x_axis_title":"Gen. #tau_{h} p_{T} (GeV)", "y_axis_title":"Match Eff. | Jet Match & p_{T}^{#pi}>20", "default":{"rebin":"0-200:10"}}'
   )
 
 for i in "${FRAGMENTS[@]}"
@@ -167,3 +167,24 @@ done
 #  --log_y=false --rebin=1 --norm_bins=false \
 #  --title_left="CMS Simulation" \
 #  --outname="compare_th10_pt_resp.pdf"
+
+# root -l -b -q 'macros/plotDMTable.C("output/phys14/Dec7/MC_53X_VBF_HToTauTau_M-125.root", "phys14/th_mode_table",                 "53X_th_mode_table", "VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}")'
+FILE72X="output/phys14/Jan19/MC_72X_VBF_HToTauTau_M-125_PU40bx25.root"
+FILE53X="output/phys14/Jan19/MC_53X_VBF_HToTauTau_M-125.root"
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th_pf_match_pt", "th_pf_match_pt_72X", "72X: all modes", "Track p_{T} (GeV)")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th_pf_match_eta", "th_pf_match_eta_72X", "72X: all modes", "Track #eta")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th0_pf_match_pt", "th0_pf_match_pt_72X", "72X: #pi", "Track p_{T} (GeV)")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th0_pf_match_eta", "th0_pf_match_eta_72X", "72X: #pi", "Track #eta")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th1_pf_match_pt", "th1_pf_match_pt_72X", "72X: #pi#pi^{0}s", "Track p_{T} (GeV)")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th1_pf_match_eta", "th1_pf_match_eta_72X", "72X: #pi#pi^{0}s", "Track #eta")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th10_pf_match_pt", "th10_pf_match_pt_72X", "72X: #pi#pi#pi", "Track p_{T} (GeV)")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th10_pf_match_eta", "th10_pf_match_eta_72X", "72X: #pi#pi#pi", "Track #eta")'
+
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th_pf_match_pt", "th_pf_match_pt_53X", "53X: all modes", "Track p_{T} (GeV)")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th_pf_match_eta", "th_pf_match_eta_53X", "53X: all modes", "Track #eta")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th0_pf_match_pt", "th0_pf_match_pt_53X", "53X: #pi", "Track p_{T} (GeV)")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th0_pf_match_eta", "th0_pf_match_eta_53X", "53X: #pi", "Track #eta")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th1_pf_match_pt", "th1_pf_match_pt_53X", "53X: #pi#pi^{0}s", "Track p_{T} (GeV)")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th1_pf_match_eta", "th1_pf_match_eta_53X", "53X: #pi#pi^{0}s", "Track #eta")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th10_pf_match_pt", "th10_pf_match_pt_53X", "53X: #pi#pi#pi", "Track p_{T} (GeV)")'
+root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th10_pf_match_eta", "th10_pf_match_eta_53X", "53X: #pi#pi#pi", "Track #eta")'

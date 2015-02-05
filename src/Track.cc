@@ -2,7 +2,8 @@
 
 namespace ic {
 // Constructors/Destructors
-Track::Track() : id_(0), charge_(0) {}
+Track::Track()
+    : id_(0), charge_(0), normalized_chi2_(0.), hits_(0), pixel_hits_(0) {}
 
 Track::~Track() {}
 

@@ -3,7 +3,10 @@
 
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
+#include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
+#include "UserCode/ICHiggsTauTau/interface/Track.hh"
+#include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
 #include "TH1F.h"
 #include "TH2F.h"
 
@@ -29,6 +32,49 @@ struct EfficiencyPlot1D {
                    double lo, double hi) {
     all = dir->make<TH1F>((name + "_all").c_str(), "", nbins, lo, hi);
     pass = dir->make<TH1F>((name + "_pass").c_str(), "", nbins, lo, hi);
+  }
+};
+
+struct PFMatchPlot {
+  TH1F* all;
+  TH1F* hadron;
+  TH1F* electron;
+  TH1F* muon;
+  TH1F* photon;
+  TH1F* none;
+
+  PFMatchPlot() {
+    all = nullptr;
+    hadron = nullptr;
+    electron = nullptr;
+    muon = nullptr;
+    photon = nullptr;
+    none = nullptr;
+  }
+
+  void Fill(double val, PFType type) {
+    all->Fill(val);
+    if (type == PFType::h) {
+      hadron->Fill(val);
+    } else if (type == PFType::e) {
+      electron->Fill(val);
+    } else if (type == PFType::mu) {
+      muon->Fill(val);
+    } else if (type == PFType::gamma) {
+      photon->Fill(val);
+    } else {
+      none->Fill(val);
+    }
+  }
+
+  PFMatchPlot(TFileDirectory *dir, std::string const &name, unsigned nbins,
+                   double lo, double hi) {
+    all = dir->make<TH1F>((name + "_all").c_str(), "", nbins, lo, hi);
+    hadron = dir->make<TH1F>((name + "_hadron").c_str(), "", nbins, lo, hi);
+    electron = dir->make<TH1F>((name + "_electron").c_str(), "", nbins, lo, hi);
+    muon = dir->make<TH1F>((name + "_muon").c_str(), "", nbins, lo, hi);
+    photon = dir->make<TH1F>((name + "_photon").c_str(), "", nbins, lo, hi);
+    none = dir->make<TH1F>((name + "_none").c_str(), "", nbins, lo, hi);
   }
 };
 
@@ -117,6 +163,15 @@ class Phys14Plots : public ModuleBase {
   TH1F *h_th1_pt_resp;
   TH1F *h_th10_pt_resp;
 
+  PFMatchPlot th_pf_match_pt;
+  PFMatchPlot th_pf_match_eta;
+  PFMatchPlot th0_pf_match_pt;
+  PFMatchPlot th0_pf_match_eta;
+  PFMatchPlot th1_pf_match_pt;
+  PFMatchPlot th1_pf_match_eta;
+  PFMatchPlot th10_pf_match_pt;
+  PFMatchPlot th10_pf_match_eta;
+
   CLASS_MEMBER(Phys14Plots, fwlite::TFileService*, fs)
 
  public:
@@ -127,6 +182,7 @@ class Phys14Plots : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+  bool QualityTrack(Track const* trk, Vertex const* vtx);
 };
 
 }
