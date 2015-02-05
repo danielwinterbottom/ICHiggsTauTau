@@ -13,6 +13,7 @@ var hierarchy =
       ] ],
       [ "ic::Met", "classic_1_1_met.html", null ],
       [ "ic::Muon", "classic_1_1_muon.html", null ],
+      [ "ic::PFCandidate", "classic_1_1_p_f_candidate.html", null ],
       [ "ic::Photon", "classic_1_1_photon.html", null ],
       [ "ic::Tau", "classic_1_1_tau.html", null ],
       [ "ic::TriggerObject", "classic_1_1_trigger_object.html", null ]
@@ -36,6 +37,7 @@ var hierarchy =
       [ "ICLightTrackProducer", "class_i_c_light_track_producer.html", null ],
       [ "ICMetProducer", "class_i_c_met_producer.html", null ],
       [ "ICMuonProducer", "class_i_c_muon_producer.html", null ],
+      [ "ICPFCandidateProducer< T >", "class_i_c_p_f_candidate_producer.html", null ],
       [ "ICPhotonElectronVetoCalculator", "class_i_c_photon_electron_veto_calculator.html", null ],
       [ "ICPhotonProducer", "class_i_c_photon_producer.html", null ],
       [ "ICPileupInfoProducer", "class_i_c_pileup_info_producer.html", null ],
@@ -46,7 +48,8 @@ var hierarchy =
       [ "ICTrackProducer", "class_i_c_track_producer.html", null ],
       [ "ICTriggerObjectProducer", "class_i_c_trigger_object_producer.html", null ],
       [ "ICTriggerPathProducer", "class_i_c_trigger_path_producer.html", null ],
-      [ "ICVertexProducer", "class_i_c_vertex_producer.html", null ]
+      [ "ICVertexProducer", "class_i_c_vertex_producer.html", null ],
+      [ "RequestByDeltaR< T >", "class_request_by_delta_r.html", null ]
     ] ],
     [ "ic::EventInfo", "classic_1_1_event_info.html", null ],
     [ "JetDestHelper< U >", "struct_jet_dest_helper.html", null ],

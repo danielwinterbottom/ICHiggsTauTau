@@ -19,6 +19,7 @@ var dir_b31d54d5631803016a26f28213a41162 =
     [ "Met.hh", "_met_8hh.html", "_met_8hh" ],
     [ "Muon.hh", "_muon_8hh.html", "_muon_8hh" ],
     [ "Objects.hh", "_objects_8hh.html", null ],
+    [ "PFCandidate.hh", "_p_f_candidate_8hh.html", "_p_f_candidate_8hh" ],
     [ "PFJet.hh", "_p_f_jet_8hh.html", "_p_f_jet_8hh" ],
     [ "Photon.hh", "_photon_8hh.html", "_photon_8hh" ],
     [ "PileupInfo.hh", "_pileup_info_8hh.html", "_pileup_info_8hh" ],

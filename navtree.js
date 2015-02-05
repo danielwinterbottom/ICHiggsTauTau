@@ -12,6 +12,7 @@ var NAVTREE =
     ] ],
     [ "Physics Objects", "physics-objects.html", [
       [ "Candidate ", "physics-objects.html#objs-candidate", null ],
+      [ "PFCandidate ", "physics-objects.html#objs-pf-candidate", null ],
       [ "CompositeCandidate ", "physics-objects.html#objs-composite", null ],
       [ "Electron ", "physics-objects.html#objs-electron", null ],
       [ "Muon ", "physics-objects.html#objs-muon", null ],
@@ -58,7 +59,9 @@ var NAVTREE =
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", null ],
         [ "Functions", "namespacemembers_func.html", null ],
-        [ "Typedefs", "namespacemembers_type.html", null ]
+        [ "Typedefs", "namespacemembers_type.html", null ],
+        [ "Enumerations", "namespacemembers_enum.html", null ],
+        [ "Enumerator", "namespacemembers_eval.html", null ]
       ] ]
     ] ],
     [ "Data Structures", null, [
@@ -87,11 +90,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_calo_jet_8cc.html",
-"_objects_8hh.html",
-"classic_1_1_calo_jet.html#ae6a0970b81830ed25271511bdc6474de",
-"classic_1_1_jet.html#aa18304c43da6a1c5dfabd21f9e12539e",
-"classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2",
-"struct_jet_dest_helper_3_01ic_1_1_p_f_jet_01_4.html#a5f018dc4b73e3fb8e2ca399c422dd061"
+"_met_8hh.html",
+"classic_1_1_calo_jet.html",
+"classic_1_1_j_p_t_jet.html#a9609a5ba69ff2645c583fcf843094b09",
+"classic_1_1_secondary_vertex.html#a02dd169414380e6ffd973dfb7c014155",
+"physics-objects.html#objs-tau"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

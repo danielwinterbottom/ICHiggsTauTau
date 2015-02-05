@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_path_producer_8c
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -159,24 +159,24 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_trigger_path_producer_8c
 <div class="line">          name = pre_v;</div>
 <div class="line">          dest.<a name="a7"></a><a class="code" href="classic_1_1_trigger_path.html#a885a9e5956b652b055ebe9b0ad436a02">set_version</a>(v);</div>
 <div class="line">        }</div>
-<div class="line">        <span class="keywordflow">catch</span>(boost::bad_lexical_cast <span class="keyword">const</span>&amp; e) {</div>
+<div class="line">        <span class="keywordflow">catch</span>(boost::bad_lexical_cast <span class="keyword">const</span>&amp; <a name="a8"></a><a class="code" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460a1ebdc9625ec5a4b1bc9e2fd38c46c747">e</a>) {</div>
 <div class="line">        }</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
-<div class="line">    <span class="keywordflow">if</span> (save_strings_) dest.<a name="a8"></a><a class="code" href="classic_1_1_trigger_path.html#a6a478173e132d8d18cc842033bb51bb0">set_name</a>(name);</div>
-<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_trigger_path.html#a4b028ecda9d27aee914911b377fd0ad1">set_id</a>(<a name="a10"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name));</div>
+<div class="line">    <span class="keywordflow">if</span> (save_strings_) dest.<a name="a9"></a><a class="code" href="classic_1_1_trigger_path.html#a6a478173e132d8d18cc842033bb51bb0">set_name</a>(name);</div>
+<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_trigger_path.html#a4b028ecda9d27aee914911b377fd0ad1">set_id</a>(<a name="a11"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name));</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICTriggerPathProducer::beginJob() {</div>
-<div class="line">  <a name="a11"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;paths_);</div>
+<div class="line">  <a name="a12"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;paths_);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICTriggerPathProducer::endJob() {</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="a12"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a13"></a><a class="code" href="class_i_c_trigger_path_producer.html">ICTriggerPathProducer</a>);</div>
+<div class="line"><a name="a13"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a14"></a><a class="code" href="class_i_c_trigger_path_producer.html">ICTriggerPathProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

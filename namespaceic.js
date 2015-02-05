@@ -14,6 +14,7 @@ var namespaceic =
     [ "Merge", "classic_1_1_merge.html", "classic_1_1_merge" ],
     [ "Met", "classic_1_1_met.html", "classic_1_1_met" ],
     [ "Muon", "classic_1_1_muon.html", "classic_1_1_muon" ],
+    [ "PFCandidate", "classic_1_1_p_f_candidate.html", "classic_1_1_p_f_candidate" ],
     [ "PFJet", "classic_1_1_p_f_jet.html", "classic_1_1_p_f_jet" ],
     [ "Photon", "classic_1_1_photon.html", "classic_1_1_photon" ],
     [ "PileupInfo", "classic_1_1_pileup_info.html", "classic_1_1_pileup_info" ],

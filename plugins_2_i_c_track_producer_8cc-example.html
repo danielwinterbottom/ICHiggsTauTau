@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_track_producer_8cc-examp
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -144,16 +144,21 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_track_producer_8cc-examp
 <div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_track.html#a058b424a67c024f58e0a3043ec93460e">set_vx</a>(src.vx());</div>
 <div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_track.html#a40c2271cc3966266606d9cce327c1339">set_vy</a>(src.vy());</div>
 <div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_track.html#a15da5d84ceef95a0d2ea57c2f7aa46e5">set_vz</a>(src.vz());</div>
+<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_track.html#a2c544cfd7283010fab1e6e644a8208b1">set_normalized_chi2</a>(src.normalizedChi2());</div>
+<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_track.html#aedd25140e6e9a6ccc4183d0ec33a1c64">set_hits</a>(src.hitPattern().numberOfValidHits());</div>
+<div class="line">    dest.<a name="a14"></a><a class="code" href="classic_1_1_track.html#ad23494bde9939003eb256288bc5a2e33">set_pixel_hits</a>(src.hitPattern().numberOfValidPixelHits());</div>
+<div class="line">    dest.<a name="a15"></a><a class="code" href="classic_1_1_track.html#a2c31b120f1e6ee4245fa452874722813">set_algorithm</a>(src.algo());</div>
+<div class="line">    dest.<a name="a16"></a><a class="code" href="classic_1_1_track.html#a7789dfa38236ee76b8dc406cadbd32ae">set_pt_err</a>(src.ptError());</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICTrackProducer::beginJob() {</div>
-<div class="line">  <a name="a12"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;tracks_);</div>
+<div class="line">  <a name="a17"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;tracks_);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICTrackProducer::endJob() {}</div>
 <div class="line"></div>
-<div class="line"><a name="a13"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a14"></a><a class="code" href="class_i_c_track_producer.html">ICTrackProducer</a>);</div>
+<div class="line"><a name="a18"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a19"></a><a class="code" href="class_i_c_track_producer.html">ICTrackProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

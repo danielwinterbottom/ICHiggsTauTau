@@ -17,6 +17,7 @@ var annotated =
     [ "ICLightTrackProducer", "class_i_c_light_track_producer.html", "class_i_c_light_track_producer" ],
     [ "ICMetProducer", "class_i_c_met_producer.html", "class_i_c_met_producer" ],
     [ "ICMuonProducer", "class_i_c_muon_producer.html", "class_i_c_muon_producer" ],
+    [ "ICPFCandidateProducer", "class_i_c_p_f_candidate_producer.html", "class_i_c_p_f_candidate_producer" ],
     [ "ICPhotonElectronVetoCalculator", "class_i_c_photon_electron_veto_calculator.html", "class_i_c_photon_electron_veto_calculator" ],
     [ "ICPhotonProducer", "class_i_c_photon_producer.html", "class_i_c_photon_producer" ],
     [ "ICPileupInfoProducer", "class_i_c_pileup_info_producer.html", "class_i_c_pileup_info_producer" ],
@@ -33,5 +34,6 @@ var annotated =
     [ "JetDestHelper< ic::JPTJet >", "struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4.html", "struct_jet_dest_helper_3_01ic_1_1_j_p_t_jet_01_4" ],
     [ "JetDestHelper< ic::PFJet >", "struct_jet_dest_helper_3_01ic_1_1_p_f_jet_01_4.html", "struct_jet_dest_helper_3_01ic_1_1_p_f_jet_01_4" ],
     [ "JetSrcHelper", "struct_jet_src_helper.html", "struct_jet_src_helper" ],
-    [ "JetSrcHelper< pat::Jet >", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html", "struct_jet_src_helper_3_01pat_1_1_jet_01_4" ]
+    [ "JetSrcHelper< pat::Jet >", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html", "struct_jet_src_helper_3_01pat_1_1_jet_01_4" ],
+    [ "RequestByDeltaR", "class_request_by_delta_r.html", "class_request_by_delta_r" ]
 ];

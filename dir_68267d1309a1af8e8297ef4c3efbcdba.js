@@ -14,6 +14,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "LightTrack.cc", "_light_track_8cc.html", null ],
     [ "Met.cc", "_met_8cc.html", null ],
     [ "Muon.cc", "_muon_8cc.html", null ],
+    [ "PFCandidate.cc", "_p_f_candidate_8cc.html", null ],
     [ "PFJet.cc", "_p_f_jet_8cc.html", null ],
     [ "Photon.cc", "_photon_8cc.html", null ],
     [ "PileupInfo.cc", "_pileup_info_8cc.html", null ],

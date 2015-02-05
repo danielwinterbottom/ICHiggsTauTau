@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_electron_producer_8cc-ex
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -124,10 +124,10 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_electron_producer_8cc-ex
 <div class="line">    : charged_all(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;chargedAll&quot;</span>)),</div>
 <div class="line">      charged(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;charged&quot;</span>)),</div>
 <div class="line">      neutral(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;neutral&quot;</span>)),</div>
-<div class="line">      gamma(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;gamma&quot;</span>)),</div>
+<div class="line">      <a name="a0"></a><a class="code" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">gamma</a>(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;gamma&quot;</span>)),</div>
 <div class="line">      pu(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;pu&quot;</span>)) {}</div>
 <div class="line"></div>
-<div class="line"><a name="a0"></a><a class="code" href="class_i_c_electron_producer.html#a05669e445d792f302b66e1620963273c">ICElectronProducer::ICElectronProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="a1"></a><a class="code" href="class_i_c_electron_producer.html#a05669e445d792f302b66e1620963273c">ICElectronProducer::ICElectronProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
 <div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
 <div class="line">      input_r9_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputR9&quot;</span>)),</div>
@@ -156,8 +156,8 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_electron_producer_8cc-ex
 <div class="line">    input_vmaps_.push_back(std::make_pair(</div>
 <div class="line">        vec[i], pset_floats.getParameter&lt;edm::InputTag&gt;(vec[i])));</div>
 <div class="line">  }</div>
-<div class="line">  <a name="a1"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
-<div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_r9_, <span class="stringliteral">&quot;includeR9&quot;</span>);</div>
+<div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
+<div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_r9_, <span class="stringliteral">&quot;includeR9&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_hcal_sum_, <span class="stringliteral">&quot;includeHcalSum&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_ip_, <span class="stringliteral">&quot;includeVertexIP&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_beamspot_ip_, <span class="stringliteral">&quot;includeBeamspotIP&quot;</span>);</div>
@@ -166,7 +166,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_electron_producer_8cc-ex
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_pf_iso_04_, <span class="stringliteral">&quot;includePFIso04&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"></div>
-<div class="line"><a name="a3"></a><a class="code" href="class_i_c_electron_producer.html#a587d29ed5d0de77a8e35f50dc7ee07c7">ICElectronProducer::~ICElectronProducer</a>() { <span class="keyword">delete</span> electrons_; }</div>
+<div class="line"><a name="a4"></a><a class="code" href="class_i_c_electron_producer.html#a587d29ed5d0de77a8e35f50dc7ee07c7">ICElectronProducer::~ICElectronProducer</a>() { <span class="keyword">delete</span> electrons_; }</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICElectronProducer::produce(edm::Event&amp; event,</div>
 <div class="line">                                 <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
@@ -223,29 +223,29 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_electron_producer_8cc-ex
 <div class="line"></div>
 <div class="line">  <span class="comment">// Prepare output collection</span></div>
 <div class="line">  electrons_-&gt;clear();</div>
-<div class="line">  electrons_-&gt;resize(elecs_handle-&gt;size(), <a name="_a4"></a><a class="code" href="classic_1_1_electron.html">ic::Electron</a>());</div>
+<div class="line">  electrons_-&gt;resize(elecs_handle-&gt;size(), <a name="_a5"></a><a class="code" href="classic_1_1_electron.html">ic::Electron</a>());</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; elecs_handle-&gt;size(); ++i) {</div>
 <div class="line">    reco::GsfElectron <span class="keyword">const</span>&amp; src = elecs_handle-&gt;at(i);</div>
 <div class="line">    edm::RefToBase&lt;reco::GsfElectron&gt; ref = elecs_handle-&gt;refAt(i);</div>
 <div class="line">    <a class="code" href="classic_1_1_electron.html">ic::Electron</a> &amp; dest = electrons_-&gt;at(i);</div>
-<div class="line">    dest.<a name="a5"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(gsf_electron_hasher_(&amp;src));</div>
-<div class="line">    dest.<a name="a6"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
-<div class="line">    dest.<a name="a7"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
-<div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
-<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
-<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
-<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_electron.html#a8c843dd303460c31e4e76f3e80b22173">set_dr03_tk_sum_pt</a>(src.dr03TkSumPt());</div>
-<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_electron.html#a8de946d305b1d4482d1cdc6894ce330b">set_dr03_ecal_rechit_sum_et</a>(src.dr03EcalRecHitSumEt());</div>
-<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_electron.html#a381a45a01d500da27e6745efb84cdc4d">set_dr03_hcal_tower_sum_et</a>(src.dr03HcalTowerSumEt());</div>
+<div class="line">    dest.<a name="a6"></a><a class="code" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">set_id</a>(gsf_electron_hasher_(&amp;src));</div>
+<div class="line">    dest.<a name="a7"></a><a class="code" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">set_pt</a>(src.pt());</div>
+<div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#ab4d1ddc5f822b899ad13e0baafa3f4d7">set_eta</a>(src.eta());</div>
+<div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
+<div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
+<div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
+<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_electron.html#a8c843dd303460c31e4e76f3e80b22173">set_dr03_tk_sum_pt</a>(src.dr03TkSumPt());</div>
+<div class="line">    dest.<a name="a13"></a><a class="code" href="classic_1_1_electron.html#a8de946d305b1d4482d1cdc6894ce330b">set_dr03_ecal_rechit_sum_et</a>(src.dr03EcalRecHitSumEt());</div>
+<div class="line">    dest.<a name="a14"></a><a class="code" href="classic_1_1_electron.html#a381a45a01d500da27e6745efb84cdc4d">set_dr03_hcal_tower_sum_et</a>(src.dr03HcalTowerSumEt());</div>
 <div class="line"></div>
-<div class="line">    dest.<a name="a14"></a><a class="code" href="classic_1_1_electron.html#a46f8b59700ef4915f564d5e76607766b">set_hadronic_over_em</a>(src.hadronicOverEm());</div>
-<div class="line">    dest.<a name="a15"></a><a class="code" href="classic_1_1_electron.html#aab4e53187af67404224fbcf01bf76e35">set_sigma_IetaIeta</a>(src.sigmaIetaIeta());</div>
-<div class="line">    dest.<a name="a16"></a><a class="code" href="classic_1_1_electron.html#ad664e482890a81e2e277c29403cb94f6">set_dphi_sc_tk_at_vtx</a>(src.deltaPhiSuperClusterTrackAtVtx());</div>
-<div class="line">    dest.<a name="a17"></a><a class="code" href="classic_1_1_electron.html#a8dccbd4fb63229e483abdb629ef782c7">set_deta_sc_tk_at_vtx</a>(src.deltaEtaSuperClusterTrackAtVtx());</div>
+<div class="line">    dest.<a name="a15"></a><a class="code" href="classic_1_1_electron.html#a46f8b59700ef4915f564d5e76607766b">set_hadronic_over_em</a>(src.hadronicOverEm());</div>
+<div class="line">    dest.<a name="a16"></a><a class="code" href="classic_1_1_electron.html#aab4e53187af67404224fbcf01bf76e35">set_sigma_IetaIeta</a>(src.sigmaIetaIeta());</div>
+<div class="line">    dest.<a name="a17"></a><a class="code" href="classic_1_1_electron.html#ad664e482890a81e2e277c29403cb94f6">set_dphi_sc_tk_at_vtx</a>(src.deltaPhiSuperClusterTrackAtVtx());</div>
+<div class="line">    dest.<a name="a18"></a><a class="code" href="classic_1_1_electron.html#a8dccbd4fb63229e483abdb629ef782c7">set_deta_sc_tk_at_vtx</a>(src.deltaEtaSuperClusterTrackAtVtx());</div>
 <div class="line">    <span class="keywordflow">if</span> (src.gsfTrack().isNonnull()) {</div>
 <div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 2</span></div>
-<div class="line">      dest.<a name="a18"></a><a class="code" href="classic_1_1_electron.html#ab38251f7abe9902ed16c49ad7d5daabf">set_gsf_tk_nhits</a>(</div>
+<div class="line">      dest.<a name="a19"></a><a class="code" href="classic_1_1_electron.html#ab38251f7abe9902ed16c49ad7d5daabf">set_gsf_tk_nhits</a>(</div>
 <div class="line">          src.gsfTrack()-&gt;hitPattern().numberOfHits(</div>
 <div class="line">              reco::HitPattern::MISSING_INNER_HITS));</div>
 <div class="line"><span class="preprocessor">#else</span></div>
@@ -253,72 +253,72 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_electron_producer_8cc-ex
 <div class="line">          src.gsfTrack()-&gt;trackerExpectedHitsInner().numberOfHits());</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">    }</div>
-<div class="line">    dest.<a name="a19"></a><a class="code" href="classic_1_1_electron.html#a64f7f3ed85bf2caff62d082ff15fb0b2">set_conv_dist</a>(src.convDist());</div>
-<div class="line">    dest.<a name="a20"></a><a class="code" href="classic_1_1_electron.html#a2a54619419d7716b4ff44bec4f94938d">set_conv_dcot</a>(src.convDcot());</div>
-<div class="line">    dest.<a name="a21"></a><a class="code" href="classic_1_1_electron.html#a6c43f82036d0d08c524fe3eb0af57df7">set_f_brem</a>(src.fbrem());</div>
+<div class="line">    dest.<a name="a20"></a><a class="code" href="classic_1_1_electron.html#a64f7f3ed85bf2caff62d082ff15fb0b2">set_conv_dist</a>(src.convDist());</div>
+<div class="line">    dest.<a name="a21"></a><a class="code" href="classic_1_1_electron.html#a2a54619419d7716b4ff44bec4f94938d">set_conv_dcot</a>(src.convDcot());</div>
+<div class="line">    dest.<a name="a22"></a><a class="code" href="classic_1_1_electron.html#a6c43f82036d0d08c524fe3eb0af57df7">set_f_brem</a>(src.fbrem());</div>
 <div class="line">    <span class="keywordflow">if</span> (src.superCluster().isNonnull()) {</div>
-<div class="line">      dest.<a name="a22"></a><a class="code" href="classic_1_1_electron.html#a5cd916503364ef84963f4d50d48201a8">set_sc_eta</a>(src.superCluster()-&gt;eta());</div>
-<div class="line">      dest.<a name="a23"></a><a class="code" href="classic_1_1_electron.html#a9990ae1d52732a70d41f2efd838762bb">set_sc_theta</a>(src.superCluster()-&gt;position().theta());</div>
-<div class="line">      dest.<a name="a24"></a><a class="code" href="classic_1_1_electron.html#adff9d7f28d96e41c5d6a72700588ac18">set_sc_energy</a>(src.superCluster()-&gt;energy());</div>
-<div class="line">      dest.<a name="a25"></a><a class="code" href="classic_1_1_electron.html#a71c92b9d12f8709b9c6b0a529a6b0641">set_sc_e_over_p</a>(src.eSuperClusterOverP());</div>
+<div class="line">      dest.<a name="a23"></a><a class="code" href="classic_1_1_electron.html#a5cd916503364ef84963f4d50d48201a8">set_sc_eta</a>(src.superCluster()-&gt;eta());</div>
+<div class="line">      dest.<a name="a24"></a><a class="code" href="classic_1_1_electron.html#a9990ae1d52732a70d41f2efd838762bb">set_sc_theta</a>(src.superCluster()-&gt;position().theta());</div>
+<div class="line">      dest.<a name="a25"></a><a class="code" href="classic_1_1_electron.html#adff9d7f28d96e41c5d6a72700588ac18">set_sc_energy</a>(src.superCluster()-&gt;energy());</div>
+<div class="line">      dest.<a name="a26"></a><a class="code" href="classic_1_1_electron.html#a71c92b9d12f8709b9c6b0a529a6b0641">set_sc_e_over_p</a>(src.eSuperClusterOverP());</div>
 <div class="line">    }</div>
-<div class="line">    dest.<a name="a26"></a><a class="code" href="classic_1_1_electron.html#a31f73276661449991c52b987c2868cac">set_ecal_energy</a>(src.ecalEnergy());</div>
-<div class="line">    dest.<a name="a27"></a><a class="code" href="classic_1_1_electron.html#a2a7746084f9e23d5cbac5159a079e724">set_vx</a>(src.vx());</div>
-<div class="line">    dest.<a name="a28"></a><a class="code" href="classic_1_1_electron.html#abdecd74f7a4a8d6eba1300a87fb42f39">set_vy</a>(src.vy());</div>
-<div class="line">    dest.<a name="a29"></a><a class="code" href="classic_1_1_electron.html#a55616ba1cfc2eaed0b83c9c7f9ccf453">set_vz</a>(src.vz());</div>
+<div class="line">    dest.<a name="a27"></a><a class="code" href="classic_1_1_electron.html#a31f73276661449991c52b987c2868cac">set_ecal_energy</a>(src.ecalEnergy());</div>
+<div class="line">    dest.<a name="a28"></a><a class="code" href="classic_1_1_electron.html#a2a7746084f9e23d5cbac5159a079e724">set_vx</a>(src.vx());</div>
+<div class="line">    dest.<a name="a29"></a><a class="code" href="classic_1_1_electron.html#abdecd74f7a4a8d6eba1300a87fb42f39">set_vy</a>(src.vy());</div>
+<div class="line">    dest.<a name="a30"></a><a class="code" href="classic_1_1_electron.html#a55616ba1cfc2eaed0b83c9c7f9ccf453">set_vz</a>(src.vz());</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (do_r9_) {</div>
-<div class="line">      dest.<a name="a30"></a><a class="code" href="classic_1_1_electron.html#ac94cbb604483ac16436c07b304692a74">set_r9</a>((*r9_handle)[ref]);</div>
+<div class="line">      dest.<a name="a31"></a><a class="code" href="classic_1_1_electron.html#ac94cbb604483ac16436c07b304692a74">set_r9</a>((*r9_handle)[ref]);</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">if</span> (do_hcal_sum_) {</div>
-<div class="line">      dest.<a name="a31"></a><a class="code" href="classic_1_1_electron.html#a7a823182b0ab16c432c30e9c27b845d6">set_hcal_sum</a>((*hcal_sum_handle)[ref]);</div>
+<div class="line">      dest.<a name="a32"></a><a class="code" href="classic_1_1_electron.html#a7a823182b0ab16c432c30e9c27b845d6">set_hcal_sum</a>((*hcal_sum_handle)[ref]);</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">if</span> (do_conversion_matches_) {</div>
-<div class="line">      dest.<a name="a32"></a><a class="code" href="classic_1_1_electron.html#a3e1f3f0b49e1d02a74c582cca725f816">set_has_matched_conversion</a>((*conversion_matches_handle)[ref]);</div>
+<div class="line">      dest.<a name="a33"></a><a class="code" href="classic_1_1_electron.html#a3e1f3f0b49e1d02a74c582cca725f816">set_has_matched_conversion</a>((*conversion_matches_handle)[ref]);</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> v = 0; v &lt; float_handles.size(); ++v) {</div>
-<div class="line">      dest.<a name="a33"></a><a class="code" href="classic_1_1_electron.html#a85f0953b8b9116800d14506ff60ed230">SetIdIso</a>(input_vmaps_[v].first,</div>
+<div class="line">      dest.<a name="a34"></a><a class="code" href="classic_1_1_electron.html#a85f0953b8b9116800d14506ff60ed230">SetIdIso</a>(input_vmaps_[v].first,</div>
 <div class="line">                    (*(float_handles[v]))[ref]);</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">if</span> (do_pf_iso_03_) {</div>
-<div class="line">      dest.<a name="a34"></a><a class="code" href="classic_1_1_electron.html#a138beccae3fadce9c43be845db896685">set_dr03_pfiso_charged_all</a>((*charged_all_03)[ref]);</div>
-<div class="line">      dest.<a name="a35"></a><a class="code" href="classic_1_1_electron.html#a8326ab6e2ca5fd82bc77e53bf440d6be">set_dr03_pfiso_charged</a>((*charged_03)[ref]);</div>
-<div class="line">      dest.<a name="a36"></a><a class="code" href="classic_1_1_electron.html#ad4aff24abc6d8c43058f30e06d4c679b">set_dr03_pfiso_neutral</a>((*neutral_03)[ref]);</div>
-<div class="line">      dest.<a name="a37"></a><a class="code" href="classic_1_1_electron.html#a0eec2c69b50d4e62b1a535791864ebb0">set_dr03_pfiso_gamma</a>((*gamma_03)[ref]);</div>
-<div class="line">      dest.<a name="a38"></a><a class="code" href="classic_1_1_electron.html#a6913135885fbba2f0293d70a57520f87">set_dr03_pfiso_pu</a>((*pu_03)[ref]);</div>
+<div class="line">      dest.<a name="a35"></a><a class="code" href="classic_1_1_electron.html#a138beccae3fadce9c43be845db896685">set_dr03_pfiso_charged_all</a>((*charged_all_03)[ref]);</div>
+<div class="line">      dest.<a name="a36"></a><a class="code" href="classic_1_1_electron.html#a8326ab6e2ca5fd82bc77e53bf440d6be">set_dr03_pfiso_charged</a>((*charged_03)[ref]);</div>
+<div class="line">      dest.<a name="a37"></a><a class="code" href="classic_1_1_electron.html#ad4aff24abc6d8c43058f30e06d4c679b">set_dr03_pfiso_neutral</a>((*neutral_03)[ref]);</div>
+<div class="line">      dest.<a name="a38"></a><a class="code" href="classic_1_1_electron.html#a0eec2c69b50d4e62b1a535791864ebb0">set_dr03_pfiso_gamma</a>((*gamma_03)[ref]);</div>
+<div class="line">      dest.<a name="a39"></a><a class="code" href="classic_1_1_electron.html#a6913135885fbba2f0293d70a57520f87">set_dr03_pfiso_pu</a>((*pu_03)[ref]);</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (do_pf_iso_04_) {</div>
-<div class="line">      dest.<a name="a39"></a><a class="code" href="classic_1_1_electron.html#ab454295013ae2b869046a75231320122">set_dr04_pfiso_charged_all</a>((*charged_all_04)[ref]);</div>
-<div class="line">      dest.<a name="a40"></a><a class="code" href="classic_1_1_electron.html#a418e187634a6597d0c4d2bcbfdc994bc">set_dr04_pfiso_charged</a>((*charged_04)[ref]);</div>
-<div class="line">      dest.<a name="a41"></a><a class="code" href="classic_1_1_electron.html#aeb00304f94dbf767296be37c67a9ea9d">set_dr04_pfiso_neutral</a>((*neutral_04)[ref]);</div>
-<div class="line">      dest.<a name="a42"></a><a class="code" href="classic_1_1_electron.html#a3c551d8aabae1269168927cebe3859cb">set_dr04_pfiso_gamma</a>((*gamma_04)[ref]);</div>
-<div class="line">      dest.<a name="a43"></a><a class="code" href="classic_1_1_electron.html#a09b5fda4ab37d1a88aed6f896389cf5e">set_dr04_pfiso_pu</a>((*pu_04)[ref]);</div>
+<div class="line">      dest.<a name="a40"></a><a class="code" href="classic_1_1_electron.html#ab454295013ae2b869046a75231320122">set_dr04_pfiso_charged_all</a>((*charged_all_04)[ref]);</div>
+<div class="line">      dest.<a name="a41"></a><a class="code" href="classic_1_1_electron.html#a418e187634a6597d0c4d2bcbfdc994bc">set_dr04_pfiso_charged</a>((*charged_04)[ref]);</div>
+<div class="line">      dest.<a name="a42"></a><a class="code" href="classic_1_1_electron.html#aeb00304f94dbf767296be37c67a9ea9d">set_dr04_pfiso_neutral</a>((*neutral_04)[ref]);</div>
+<div class="line">      dest.<a name="a43"></a><a class="code" href="classic_1_1_electron.html#a3c551d8aabae1269168927cebe3859cb">set_dr04_pfiso_gamma</a>((*gamma_04)[ref]);</div>
+<div class="line">      dest.<a name="a44"></a><a class="code" href="classic_1_1_electron.html#a09b5fda4ab37d1a88aed6f896389cf5e">set_dr04_pfiso_pu</a>((*pu_04)[ref]);</div>
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (do_vertex_ip_) {</div>
 <div class="line">      <span class="keywordflow">if</span> (vertices_handle-&gt;size() &gt; 0) {</div>
 <div class="line">        reco::Vertex <span class="keyword">const</span>&amp; vtx = vertices_handle-&gt;at(0);</div>
-<div class="line">        dest.<a name="a44"></a><a class="code" href="classic_1_1_electron.html#a19599655a63ccc05170a50aaa9d43ac1">set_dz_vertex</a>(src.gsfTrack()-&gt;dz(vtx.position()));</div>
-<div class="line">        dest.<a name="a45"></a><a class="code" href="classic_1_1_electron.html#ac84282f00d2f7a236bef1e13160d3d98">set_dxy_vertex</a>(src.gsfTrack()-&gt;dxy(vtx.position()));</div>
+<div class="line">        dest.<a name="a45"></a><a class="code" href="classic_1_1_electron.html#a19599655a63ccc05170a50aaa9d43ac1">set_dz_vertex</a>(src.gsfTrack()-&gt;dz(vtx.position()));</div>
+<div class="line">        dest.<a name="a46"></a><a class="code" href="classic_1_1_electron.html#ac84282f00d2f7a236bef1e13160d3d98">set_dxy_vertex</a>(src.gsfTrack()-&gt;dxy(vtx.position()));</div>
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">if</span> (do_beamspot_ip_) {</div>
-<div class="line">      dest.<a name="a46"></a><a class="code" href="classic_1_1_electron.html#a99f4dc0e11b30da23cd9cbac62c13c03">set_dxy_beamspot</a>(src.gsfTrack()-&gt;dxy(*beamspot_handle));</div>
+<div class="line">      dest.<a name="a47"></a><a class="code" href="classic_1_1_electron.html#a99f4dc0e11b30da23cd9cbac62c13c03">set_dxy_beamspot</a>(src.gsfTrack()-&gt;dxy(*beamspot_handle));</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICElectronProducer::beginJob() {</div>
-<div class="line">  <a name="a47"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;electrons_);</div>
+<div class="line">  <a name="a48"></a><a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;electrons_);</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICElectronProducer::endJob() {</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="a48"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a49"></a><a class="code" href="class_i_c_electron_producer.html">ICElectronProducer</a>);</div>
+<div class="line"><a name="a49"></a><a class="code" href="_concatenate_8cc.html#a4a3e10fb8ac81973f4442ef137914307">DEFINE_FWK_MODULE</a>(<a name="_a50"></a><a class="code" href="class_i_c_electron_producer.html">ICElectronProducer</a>);</div>
 </div><!-- fragment --> </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

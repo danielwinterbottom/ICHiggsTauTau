@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['vector',['vector',['../classic_1_1_candidate.html#a416c4cf0462ad4cbe8f2e053c72e1ed0',1,'ic::Candidate::vector()'],['../classic_1_1_super_cluster.html#a6deb478e4f694ad1195106dba5620813',1,'ic::SuperCluster::vector()']]],
+  ['vector',['vector',['../classic_1_1_candidate.html#a416c4cf0462ad4cbe8f2e053c72e1ed0',1,'ic::Candidate::vector()'],['../classic_1_1_super_cluster.html#a6deb478e4f694ad1195106dba5620813',1,'ic::SuperCluster::vector()'],['../classic_1_1_track.html#aed13234e479c6b28dc90c37c6c083f3a',1,'ic::Track::vector()']]],
   ['version',['version',['../classic_1_1_trigger_path.html#a33d4ff9f41d5b12095c7fa5f7267d73a',1,'ic::TriggerPath']]],
   ['vertex',['Vertex',['../classic_1_1_vertex.html',1,'ic']]],
   ['vertex',['Vertex',['../classic_1_1_vertex.html#a125094978a1e107b2897516729446496',1,'ic::Vertex']]],

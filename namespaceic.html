@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('namespaceic.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -98,6 +98,7 @@ $(document).ready(function(){initNavTree('namespaceic.html','');});
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">ic Namespace Reference</div>  </div>
@@ -146,6 +147,9 @@ Data Structures</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_muon.html">Muon</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class stores a subset of the reco::Muon properties which are most commonly used in analysis.  <a href="classic_1_1_muon.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_p_f_candidate.html">PFCandidate</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the basic properties of PFCandidates (and PackedCandidates for CMSSW 7_X_Y)  <a href="classic_1_1_p_f_candidate.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_p_f_jet.html">PFJet</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class deriving from <a class="el" href="classic_1_1_jet.html" title="A basic jet class to store properties common to all jet types. ">ic::Jet</a> that provides specific information for particle-flow jets.  <a href="classic_1_1_p_f_jet.html#details">More...</a><br /></td></tr>
@@ -206,6 +210,9 @@ Typedefs</h2></td></tr>
 <tr class="separator:af29f822a6cab6d10230828506b02d64f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae01a40e8b5bd227867f167295dc79018"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classic_1_1_muon.html">ic::Muon</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#ae01a40e8b5bd227867f167295dc79018">MuonCollection</a></td></tr>
 <tr class="separator:ae01a40e8b5bd227867f167295dc79018"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a452eaa6fd5c6395c935f029b30cabce5"><td class="memItemLeft" align="right" valign="top">typedef std::vector<br class="typebreak" />
+&lt; <a class="el" href="classic_1_1_p_f_candidate.html">ic::PFCandidate</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a452eaa6fd5c6395c935f029b30cabce5">PFCandidateCollection</a></td></tr>
+<tr class="separator:a452eaa6fd5c6395c935f029b30cabce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e5dce3b0e16827770db23bdc9a5d6c3"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classic_1_1_p_f_jet.html">ic::PFJet</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a3e5dce3b0e16827770db23bdc9a5d6c3">PFJetCollection</a></td></tr>
 <tr class="separator:a3e5dce3b0e16827770db23bdc9a5d6c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b480b2428f2232fcfe71bf29817f54a"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classic_1_1_photon.html">ic::Photon</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a6b480b2428f2232fcfe71bf29817f54a">PhotonCollection</a></td></tr>
@@ -231,6 +238,22 @@ Typedefs</h2></td></tr>
 <tr class="separator:afc8cd0b97940a66434bdef1f85d7c973"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae2366d73e5b573ab6931ee0d237fdf6"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classic_1_1_vertex.html">ic::Vertex</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#aae2366d73e5b573ab6931ee0d237fdf6">VertexCollection</a></td></tr>
 <tr class="separator:aae2366d73e5b573ab6931ee0d237fdf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a271a9a651d13961ab8c6e039f5552460"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460">PFType</a> { <br />
+&#160;&#160;<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ab8c1c699ede56da9d6f8966a10d8f109">X</a>, 
+<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460a0a448ee42ac858c13f448cf0370dffaa">h</a>, 
+<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460a1ebdc9625ec5a4b1bc9e2fd38c46c747">e</a>, 
+<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460a12747eb27b7660ae5e80230c0eab8f8f">mu</a>, 
+<br />
+&#160;&#160;<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc">gamma</a>, 
+<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460abe146a27a15f585a34a368ff297eeb34">h0</a>, 
+<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460ae8eb55db61e55e990d06824bdf547674">h_HF</a>, 
+<a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460a1cdabb5fe4daa6e25b2f028d0773fd59">egamma_HF</a>
+<br />
+ }</td></tr>
+<tr class="separator:a271a9a651d13961ab8c6e039f5552460"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -391,6 +414,21 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a452eaa6fd5c6395c935f029b30cabce5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;<a class="el" href="classic_1_1_p_f_candidate.html">ic::PFCandidate</a>&gt; <a class="el" href="namespaceic.html#a452eaa6fd5c6395c935f029b30cabce5">ic::PFCandidateCollection</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_p_f_candidate_producer_8cc-example.html#a0">plugins/ICPFCandidateProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_p_f_candidate_8hh_source.html#l00101">101</a> of file <a class="el" href="_p_f_candidate_8hh_source.html">PFCandidate.hh</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a3e5dce3b0e16827770db23bdc9a5d6c3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -485,7 +523,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_track_8hh_source.html#l00109">109</a> of file <a class="el" href="_track_8hh_source.html">Track.hh</a>.</p>
+<p>Definition at line <a class="el" href="_track_8hh_source.html#l00181">181</a> of file <a class="el" href="_track_8hh_source.html">Track.hh</a>.</p>
 
 </div>
 </div>
@@ -528,6 +566,39 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="_vertex_8hh_source.html#l00104">104</a> of file <a class="el" href="_vertex_8hh_source.html">Vertex.hh</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a class="anchor" id="a271a9a651d13961ab8c6e039f5552460"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespaceic.html#a271a9a651d13961ab8c6e039f5552460">ic::PFType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="a271a9a651d13961ab8c6e039f5552460ab8c1c699ede56da9d6f8966a10d8f109"></a>X&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a271a9a651d13961ab8c6e039f5552460a0a448ee42ac858c13f448cf0370dffaa"></a>h&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a271a9a651d13961ab8c6e039f5552460a1ebdc9625ec5a4b1bc9e2fd38c46c747"></a>e&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a271a9a651d13961ab8c6e039f5552460a12747eb27b7660ae5e80230c0eab8f8f"></a>mu&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a271a9a651d13961ab8c6e039f5552460ad7b119bd2dd6579646228fa3985eb2fc"></a>gamma&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a271a9a651d13961ab8c6e039f5552460abe146a27a15f585a34a368ff297eeb34"></a>h0&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a271a9a651d13961ab8c6e039f5552460ae8eb55db61e55e990d06824bdf547674"></a>h_HF&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a271a9a651d13961ab8c6e039f5552460a1cdabb5fe4daa6e25b2f028d0773fd59"></a>egamma_HF&#160;</td><td class="fielddoc">
+</td></tr>
+</table>
+
+<p>Definition at line <a class="el" href="_p_f_candidate_8hh_source.html#l00012">12</a> of file <a class="el" href="_p_f_candidate_8hh_source.html">PFCandidate.hh</a>.</p>
 
 </div>
 </div>

@@ -85,7 +85,7 @@ $(document).ready(function(){initNavTree('functions_s.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -121,6 +121,9 @@ $(document).ready(function(){initNavTree('functions_s.html','');});
 </li>
 <li>set_accept()
 : <a class="el" href="classic_1_1_trigger_path.html#ace64c7e48f9e4ea3c29d3a05e6d286d1">ic::TriggerPath</a>
+</li>
+<li>set_algorithm()
+: <a class="el" href="classic_1_1_track.html#a2c31b120f1e6ee4245fa452874722813">ic::Track</a>
 </li>
 <li>set_b_discriminators()
 : <a class="el" href="classic_1_1_jet.html#aa55b07a966b0b061951dfc47618e310f">ic::Jet</a>
@@ -165,8 +168,12 @@ $(document).ready(function(){initNavTree('functions_s.html','');});
 <li>set_chi2()
 : <a class="el" href="classic_1_1_vertex.html#abddc009af00c4928aabb180758c863d0">ic::Vertex</a>
 </li>
+<li>set_constituent_gsf_tracks()
+: <a class="el" href="classic_1_1_p_f_candidate.html#a4458d3099083302f5db061ed2028798b">ic::PFCandidate</a>
+</li>
 <li>set_constituent_tracks()
-: <a class="el" href="classic_1_1_p_f_jet.html#aed86a96cae5e558a20a73ee9ebe3585f">ic::PFJet</a>
+: <a class="el" href="classic_1_1_p_f_candidate.html#acb9ffee3e424bd345dbf936926d9b86d">ic::PFCandidate</a>
+, <a class="el" href="classic_1_1_p_f_jet.html#aed86a96cae5e558a20a73ee9ebe3585f">ic::PFJet</a>
 , <a class="el" href="classic_1_1_tau.html#a34f1ea3d62b8fca3bf1438f4aa0a4653">ic::Tau</a>
 </li>
 <li>set_constituents()
@@ -382,6 +389,9 @@ $(document).ready(function(){initNavTree('functions_s.html','');});
 <li>set_HF_had_multiplicity()
 : <a class="el" href="classic_1_1_p_f_jet.html#a743d42d0d80f185c604ee7a477fccd02">ic::PFJet</a>
 </li>
+<li>set_hits()
+: <a class="el" href="classic_1_1_track.html#aedd25140e6e9a6ccc4183d0ec33a1c64">ic::Track</a>
+</li>
 <li>set_id()
 : <a class="el" href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">ic::Candidate</a>
 , <a class="el" href="classic_1_1_light_track.html#a19add132dadf1775668cb73425ee22b3">ic::LightTrack</a>
@@ -519,6 +529,9 @@ $(document).ready(function(){initNavTree('functions_s.html','');});
 <li>set_neutral_multiplicity()
 : <a class="el" href="classic_1_1_p_f_jet.html#a68ab5c9248b3b1f1bc20b15520b79e17">ic::PFJet</a>
 </li>
+<li>set_normalized_chi2()
+: <a class="el" href="classic_1_1_track.html#a2c544cfd7283010fab1e6e644a8208b1">ic::Track</a>
+</li>
 <li>set_num_interactions()
 : <a class="el" href="classic_1_1_pileup_info.html#a08df6d41da07eb4cfcc4af98e679790e">ic::PileupInfo</a>
 </li>
@@ -530,6 +543,7 @@ $(document).ready(function(){initNavTree('functions_s.html','');});
 </li>
 <li>set_pdgid()
 : <a class="el" href="classic_1_1_gen_particle.html#a63bf6644a9f55e0e862cb89b115d898e">ic::GenParticle</a>
+, <a class="el" href="classic_1_1_p_f_candidate.html#ab1886f60ea4cb2c91dd74f4c82020735">ic::PFCandidate</a>
 </li>
 <li>set_phi()
 : <a class="el" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">ic::Candidate</a>
@@ -550,6 +564,9 @@ $(document).ready(function(){initNavTree('functions_s.html','');});
 <li>set_pions_out_vtx_in_calo()
 : <a class="el" href="classic_1_1_j_p_t_jet.html#a5a4783e352cb985835f4089ca20a34e4">ic::JPTJet</a>
 </li>
+<li>set_pixel_hits()
+: <a class="el" href="classic_1_1_track.html#ad23494bde9939003eb256288bc5a2e33">ic::Track</a>
+</li>
 <li>set_point()
 : <a class="el" href="classic_1_1_super_cluster.html#a99a3ac860a97c0f7bf280d459de5d1fe">ic::SuperCluster</a>
 , <a class="el" href="classic_1_1_vertex.html#a9f5981bab3fa9ea0861302a674250ddd">ic::Vertex</a>
@@ -561,6 +578,9 @@ $(document).ready(function(){initNavTree('functions_s.html','');});
 : <a class="el" href="classic_1_1_candidate.html#af1bc24131efe085c3448c9f144de51a0">ic::Candidate</a>
 , <a class="el" href="classic_1_1_light_track.html#a6e2badd4ac75b7bd259781897471da46">ic::LightTrack</a>
 , <a class="el" href="classic_1_1_track.html#a6aace7af172aeb464f95960fc2a79bfc">ic::Track</a>
+</li>
+<li>set_pt_err()
+: <a class="el" href="classic_1_1_track.html#a7789dfa38236ee76b8dc406cadbd32ae">ic::Track</a>
 </li>
 <li>set_pu_id_mva_value()
 : <a class="el" href="classic_1_1_p_f_jet.html#a0794785f5e3d4decbd74152eac944615">ic::PFJet</a>

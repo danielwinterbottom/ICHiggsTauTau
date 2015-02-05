@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['pfcandidate_2ecc',['PFCandidate.cc',['../_p_f_candidate_8cc.html',1,'']]],
+  ['pfcandidate_2ehh',['PFCandidate.hh',['../_p_f_candidate_8hh.html',1,'']]],
   ['pfjet_2ecc',['PFJet.cc',['../_p_f_jet_8cc.html',1,'']]],
   ['pfjet_2ehh',['PFJet.hh',['../_p_f_jet_8hh.html',1,'']]],
   ['photon_2ecc',['Photon.cc',['../_photon_8cc.html',1,'']]],

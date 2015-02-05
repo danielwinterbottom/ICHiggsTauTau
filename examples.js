@@ -10,6 +10,7 @@ var examples =
     [ "plugins/ICLightTrackProducer.cc", "plugins_2_i_c_light_track_producer_8cc-example.html", null ],
     [ "plugins/ICMetProducer.cc", "plugins_2_i_c_met_producer_8cc-example.html", null ],
     [ "plugins/ICMuonProducer.cc", "plugins_2_i_c_muon_producer_8cc-example.html", null ],
+    [ "plugins/ICPFCandidateProducer.cc", "plugins_2_i_c_p_f_candidate_producer_8cc-example.html", null ],
     [ "plugins/ICPhotonProducer.cc", "plugins_2_i_c_photon_producer_8cc-example.html", null ],
     [ "plugins/ICPileupInfoProducer.cc", "plugins_2_i_c_pileup_info_producer_8cc-example.html", null ],
     [ "plugins/ICSecondaryVertexProducer.cc", "plugins_2_i_c_secondary_vertex_producer_8cc-example.html", null ],

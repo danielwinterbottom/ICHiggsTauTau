@@ -73,6 +73,10 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
     [ "ICMuonProducer.hh", "_i_c_muon_producer_8hh.html", [
       [ "ICMuonProducer", "class_i_c_muon_producer.html", "class_i_c_muon_producer" ]
     ] ],
+    [ "ICPFCandidateProducer.cc", "_i_c_p_f_candidate_producer_8cc.html", "_i_c_p_f_candidate_producer_8cc" ],
+    [ "ICPFCandidateProducer.hh", "_i_c_p_f_candidate_producer_8hh.html", [
+      [ "ICPFCandidateProducer", "class_i_c_p_f_candidate_producer.html", "class_i_c_p_f_candidate_producer" ]
+    ] ],
     [ "ICPhotonElectronVetoCalculator.cc", "_i_c_photon_electron_veto_calculator_8cc.html", "_i_c_photon_electron_veto_calculator_8cc" ],
     [ "ICPhotonElectronVetoCalculator.h", "_i_c_photon_electron_veto_calculator_8h.html", [
       [ "ICPhotonElectronVetoCalculator", "class_i_c_photon_electron_veto_calculator.html", "class_i_c_photon_electron_veto_calculator" ]
@@ -122,5 +126,9 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
       [ "Merge", "classic_1_1_merge.html", "classic_1_1_merge" ]
     ] ],
     [ "PrintConfigTools.cc", "_print_config_tools_8cc.html", "_print_config_tools_8cc" ],
-    [ "PrintConfigTools.h", "_print_config_tools_8h.html", "_print_config_tools_8h" ]
+    [ "PrintConfigTools.h", "_print_config_tools_8h.html", "_print_config_tools_8h" ],
+    [ "RequestByDeltaR.cc", "_request_by_delta_r_8cc.html", "_request_by_delta_r_8cc" ],
+    [ "RequestByDeltaR.hh", "_request_by_delta_r_8hh.html", [
+      [ "RequestByDeltaR", "class_request_by_delta_r.html", "class_request_by_delta_r" ]
+    ] ]
 ];
