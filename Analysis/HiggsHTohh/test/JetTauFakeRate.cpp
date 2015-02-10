@@ -17,8 +17,6 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRate.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRateNew.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRateExtras.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -109,7 +107,7 @@ int main(int argc, char* argv[]){
     files,                // Input files
     "icEventProducer/EventTree", // TTree name
     max_events);          // Max. events to process (-1 = all)
-	if(wjets_mode && do_skim && skim_path != "") analysis.DoSkimming(skim_path);
+	if(do_skim && skim_path != "") analysis.DoSkimming(skim_path);
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);
@@ -136,7 +134,8 @@ int main(int argc, char* argv[]){
   SimpleFilter<PFJet> JetFilter = SimpleFilter<PFJet>("JetFilter")
   .set_input_label("pfJetsPFlow")
   //.set_predicate(bind(MinPtMaxEta, _1, jet_pt, jet_eta)&&(bind(&PFJet::pu_id_mva_loose,_1)));
-	.set_predicate(bind(MinPtMaxEta,_1,jet_pt,jet_eta)&&(bind(&PFJet::charged_had_energy_frac,_1)>0)&&(bind(&PFJet::neutral_had_energy_frac,_1)<0.99)&&(bind(&PFJet::charged_em_energy_frac,_1)<0.99)&&(bind(&PFJet::neutral_em_energy_frac,_1)<0.99)&&((bind(&PFJet::charged_multiplicity,_1)>1)||((bind(&PFJet::charged_multiplicity,_1)>0)&&(bind(&PFJet::neutral_multiplicity,_1)>0))));
+	.set_predicate(bind(MinPtMaxEta,_1,jet_pt,jet_eta)&&(bind(&PFJet::charged_had_energy_frac,_1)>0)&&(bind(&PFJet::neutral_had_energy_frac,_1)<0.99)&&(bind(&PFJet::charged_em_energy_frac,_1)<0.99)&&(bind(&PFJet::neutral_em_energy_frac,_1)<0.99)&&((bind(&PFJet::charged_multiplicity,_1)>1)||((bind(&PFJet::charged_multiplicity,_1)>0)&&(bind(&PFJet::neutral_multiplicity,_1)>0))))
+	.set_min(1);
 
 	OverlapFilter<PFJet,GenParticle> GenMuonJetOverlapFilter = OverlapFilter<PFJet,GenParticle>("GenMuonJetOverlapFilter");
 	if(wjets_mode){
@@ -148,8 +147,8 @@ int main(int argc, char* argv[]){
 
 
  JetTauFakeRate jetTauFakeRate = JetTauFakeRate("jetTauFakeRate")
-  .set_write_plots(true)
-  .set_write_tree(false)
+  .set_write_plots(false)
+  .set_write_tree(true)
 	.set_by_decay_mode(by_decay_mode)
 	.set_by_jet_type(by_jet_type)
 	.set_wjets_mode(wjets_mode)

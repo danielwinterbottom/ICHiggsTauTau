@@ -31,7 +31,7 @@ namespace ic {
 				std::map<std::string,TH1F*> dm_tau_histos_;
 
 				TTree *outtree_;
-			TH1F* jetpt_;
+/*			TH1F* jetpt_;
 			TH1F* jeteta_;
 			TH1F* jetflavour_;
 			TH1F* jetphi_;
@@ -57,14 +57,33 @@ namespace ic {
 			TH1F* leading_trackpt_;
 			TH1F* jetpt_puid_rej_;
 			TH1F* jetpt_dz_and_puid_rej_;
+			*/
 
 			
 
-			double jpt_;     
-			double jeta_;     
+			double jetpt_;     
+			double jeteta_;     
+			double jetphi_;
+			double jetlinradmom_;
+			double genjetpt_;
+			double genjetphi_;
+			double genjeteta_;
+			double taupt_;
+			double taueta_;
+			double tauphi_;
+			int jettype_;
 			double deltaR_;
 			double deltaR_calc_;
+			double taudmpass_;
+			double tauloose_;
+			double taumedium_;
+			double tautight_;
+			double jetdz_;
+			int taudm_;
+			int ntracks_;
 			int nvtx_;
+			double sumpt_;
+			double sumet_;
 			int ntaus_;
 			int nmuons_;
 			int njets_;
