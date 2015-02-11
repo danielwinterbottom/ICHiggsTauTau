@@ -73,6 +73,12 @@ class Track {
   /// Number of pixel hits
   inline int pixel_hits() const { return pixel_hits_; }
 
+  /// Number of barrel pixel hits
+  inline int pixel_hits_barrel() const { return pixel_hits_barrel_; }
+
+  /// Number of endcap pixel hits
+  inline int pixel_hits_endcap() const { return pixel_hits_endcap_; }
+
   /// Approximate dxy
   /// Copied from DataFormats/TrackReco/interface/TrackBase.h
   inline double dxy(Point const& point) const {
@@ -147,6 +153,16 @@ class Track {
     pixel_hits_ = pixel_hits;
   }
 
+  /// @copybrief pixel_hits_barrel()
+  inline void set_pixel_hits_barrel(int const& pixel_hits_barrel) {
+    pixel_hits_barrel_ = pixel_hits_barrel;
+  }
+
+  /// @copybrief pixel_hits_endcap()
+  inline void set_pixel_hits_endcap(int const& pixel_hits_endcap) {
+    pixel_hits_endcap_ = pixel_hits_endcap;
+  }
+
   /// @copybrief charge()
   inline void set_charge(int const& charge) { charge_ = charge; }
 
@@ -172,9 +188,12 @@ class Track {
   int16_t algorithm_;
   double pt_err_;
 
+  int pixel_hits_barrel_;
+  int pixel_hits_endcap_;
+
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Track, 4);
+  ClassDef(Track, 5);
  #endif
 };
 
