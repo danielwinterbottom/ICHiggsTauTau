@@ -80,6 +80,14 @@ struct PFMatchPlot {
 
 class Phys14Plots : public ModuleBase {
  private:
+  CLASS_MEMBER(Phys14Plots, bool, do_real_th_studies)
+  CLASS_MEMBER(Phys14Plots, bool, do_fake_th_studies)
+
+ private:
+
+  void DoRealThStudies(TreeEvent *event);
+  void DoFakeThStudies(TreeEvent *event);
+
   double th_pt_acc;
   double th_eta_acc;
 
@@ -175,6 +183,14 @@ class Phys14Plots : public ModuleBase {
   TH1F *h_trk_pt_frac_em;
   TH1F *h_th_pt_frac_ch;
   TH1F *h_th_pt_frac_em;
+
+  //////////////////////////////
+  // Plots for jet->tau fake rate
+  //////////////////////////////
+
+  EfficiencyPlot1D jet_th_fake_dm_vs_pt;
+  EfficiencyPlot1D jet_th_fake_dm_vs_eta;
+
 
   CLASS_MEMBER(Phys14Plots, fwlite::TFileService*, fs)
 

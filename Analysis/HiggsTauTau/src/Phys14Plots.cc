@@ -9,6 +9,8 @@ namespace ic {
 Phys14Plots::Phys14Plots(std::string const& name) : ModuleBase(name) {
   th_pt_acc   = 20.;
   th_eta_acc  = 2.3;
+  do_real_th_studies_ = true;
+  do_fake_th_studies_ = false;
 }
 
 Phys14Plots::~Phys14Plots() { ; }
@@ -18,107 +20,113 @@ int Phys14Plots::PreAnalysis() {
   using ROOT::Math::Pi;
   if (!fs_) return 0;
   dir_ = new TFileDirectory(fs_->mkdir("phys14"));
-  h_n_vtx = dir_->make<TH1F>("n_vtx", "",71, -0.5, 70.5);
-  h_n_it_pu = dir_->make<TH1F>("n_it_pu", "",50, -0.5, 99.5);
-  h_n_ot_pu = dir_->make<TH1F>("n_ot_pu", "",75, -0.5, 149.5);
+  if (do_real_th_studies_) {
+    h_n_vtx = dir_->make<TH1F>("n_vtx", "",71, -0.5, 70.5);
+    h_n_it_pu = dir_->make<TH1F>("n_it_pu", "",50, -0.5, 99.5);
+    h_n_ot_pu = dir_->make<TH1F>("n_ot_pu", "",75, -0.5, 149.5);
 
-  h_gen_h_pt = dir_->make<TH1F>("gen_h_pt", "",     250, 0, 500);
-  h_gen_h_eta = dir_->make<TH1F>("gen_h_eta", "",   50, -5, 5);
-  h_gen_h_phi = dir_->make<TH1F>("gen_h_phi", "",   50, -Pi(), Pi());
-  h_gen_h_mass = dir_->make<TH1F>("gen_h_mass", "", 100, 0, 200);
-  // = dir_->make<TH1F>("", "", , , );
-  h_gen_th_pt = dir_->make<TH1F>("gen_th_pt", "", 100, 0, 200);
-  h_gen_th_eta = dir_->make<TH1F>("gen_th_eta", "", 50, -5, 5);
-  h_gen_th_mode = dir_->make<TH1F>("gen_th_mode", "", 20, -0.5, 19.5);
+    h_gen_h_pt = dir_->make<TH1F>("gen_h_pt", "",     250, 0, 500);
+    h_gen_h_eta = dir_->make<TH1F>("gen_h_eta", "",   50, -5, 5);
+    h_gen_h_phi = dir_->make<TH1F>("gen_h_phi", "",   50, -Pi(), Pi());
+    h_gen_h_mass = dir_->make<TH1F>("gen_h_mass", "", 100, 0, 200);
+    // = dir_->make<TH1F>("", "", , , );
+    h_gen_th_pt = dir_->make<TH1F>("gen_th_pt", "", 100, 0, 200);
+    h_gen_th_eta = dir_->make<TH1F>("gen_th_eta", "", 50, -5, 5);
+    h_gen_th_mode = dir_->make<TH1F>("gen_th_mode", "", 20, -0.5, 19.5);
 
-  th_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th_mt_eff_vs_pt", 100, 0, 200);
-  th_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th_rf_mt_eff_vs_pt", 100, 0, 200);
-  th_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th_dm_rf_eff_vs_pt", 100, 0, 200);
+    th_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th_mt_eff_vs_pt", 100, 0, 200);
+    th_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th_rf_mt_eff_vs_pt", 100, 0, 200);
+    th_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th_dm_rf_eff_vs_pt", 100, 0, 200);
 
-  th_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th_dm_eff_vs_pt", 100, 0, 200);
-  th_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th_dm_eff_vs_eta", 50, -5, 5);
-  th_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th_dm_eff_vs_nvtx", 51, -0.5, 50.5);
-  th_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th_dm_eff_vs_it_pu", 50, -0.5, 99.5);
-  th_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
+    th_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th_dm_eff_vs_pt", 100, 0, 200);
+    th_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th_dm_eff_vs_eta", 50, -5, 5);
+    th_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th_dm_eff_vs_nvtx", 51, -0.5, 50.5);
+    th_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th_dm_eff_vs_it_pu", 50, -0.5, 99.5);
+    th_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
 
-  th0_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_mt_eff_vs_pt", 100, 0, 200);
-  th0_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_rf_mt_eff_vs_pt", 100, 0, 200);
-  th0_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_dm_rf_eff_vs_pt", 100, 0, 200);
+    th0_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_mt_eff_vs_pt", 100, 0, 200);
+    th0_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_rf_mt_eff_vs_pt", 100, 0, 200);
+    th0_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_dm_rf_eff_vs_pt", 100, 0, 200);
 
-  th0_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_pt", 100, 0, 200);
-  th0_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_eta", 50, -5, 5);
-  th0_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_nvtx", 51, -0.5, 50.5);
-  th0_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_it_pu", 50, -0.5, 99.5);
-  th0_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
+    th0_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_pt", 100, 0, 200);
+    th0_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_eta", 50, -5, 5);
+    th0_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_nvtx", 51, -0.5, 50.5);
+    th0_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_it_pu", 50, -0.5, 99.5);
+    th0_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th0_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
 
-  th1_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_vs_pt", 100, 0, 200);
-  th1_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_rf_mt_eff_vs_pt", 100, 0, 200);
-  th1_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_dm_rf_eff_vs_pt", 100, 0, 200);
+    th1_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_vs_pt", 100, 0, 200);
+    th1_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_rf_mt_eff_vs_pt", 100, 0, 200);
+    th1_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_dm_rf_eff_vs_pt", 100, 0, 200);
 
-  // Special plot of th1 matching efficiency vs pt of the charged pion instead
-  // of the entire visible part
-  th1_mt_eff_vs_pt_pi = EfficiencyPlot1D(dir_, "th1_mt_eff_vs_pt_pi", 100, 0, 200);
-  th1_jet_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_jet_eff_vs_pt", 100, 0, 200);
-  th1_mt_eff_after_jet_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_vs_pt", 100, 0, 200);
-  th1_mt_eff_after_jet_pi15_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_pi15_vs_pt", 100, 0, 200);
-  th1_mt_eff_after_jet_pi20_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_pi20_vs_pt", 100, 0, 200);
+    // Special plot of th1 matching efficiency vs pt of the charged pion instead
+    // of the entire visible part
+    th1_mt_eff_vs_pt_pi = EfficiencyPlot1D(dir_, "th1_mt_eff_vs_pt_pi", 100, 0, 200);
+    th1_jet_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_jet_eff_vs_pt", 100, 0, 200);
+    th1_mt_eff_after_jet_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_vs_pt", 100, 0, 200);
+    th1_mt_eff_after_jet_pi15_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_pi15_vs_pt", 100, 0, 200);
+    th1_mt_eff_after_jet_pi20_vs_pt = EfficiencyPlot1D(dir_, "th1_mt_eff_after_jet_pi20_vs_pt", 100, 0, 200);
 
-  th1_jet_ch_had_frac = dir_->make<TH1F>("th1_jet_ch_had_frac", "", 21, 0, 1.05);
-  th1_jet_nt_had_frac = dir_->make<TH1F>("th1_jet_nt_had_frac", "", 21, 0, 1.05);
-  th1_jet_photon_frac = dir_->make<TH1F>("th1_jet_photon_frac", "", 21, 0, 1.05);
-  th1_jet_elec_frac = dir_->make<TH1F>("th1_jet_elec_frac", "", 21, 0, 1.05);
-  th1_jet_muon_frac = dir_->make<TH1F>("th1_jet_muon_frac", "", 21, 0, 1.05);
-  th1_jet_tot_frac = dir_->make<TH1F>("th1_jet_tot_frac", "", 21, 0, 1.05);
+    th1_jet_ch_had_frac = dir_->make<TH1F>("th1_jet_ch_had_frac", "", 21, 0, 1.05);
+    th1_jet_nt_had_frac = dir_->make<TH1F>("th1_jet_nt_had_frac", "", 21, 0, 1.05);
+    th1_jet_photon_frac = dir_->make<TH1F>("th1_jet_photon_frac", "", 21, 0, 1.05);
+    th1_jet_elec_frac = dir_->make<TH1F>("th1_jet_elec_frac", "", 21, 0, 1.05);
+    th1_jet_muon_frac = dir_->make<TH1F>("th1_jet_muon_frac", "", 21, 0, 1.05);
+    th1_jet_tot_frac = dir_->make<TH1F>("th1_jet_tot_frac", "", 21, 0, 1.05);
 
-  th1_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_pt", 100, 0, 200);
-  th1_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_eta", 50, -5, 5);
-  th1_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_nvtx", 51, -0.5, 50.5);
-  th1_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_it_pu", 50, -0.5, 99.5);
-  th1_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
+    th1_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_pt", 100, 0, 200);
+    th1_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_eta", 50, -5, 5);
+    th1_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_nvtx", 51, -0.5, 50.5);
+    th1_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_it_pu", 50, -0.5, 99.5);
+    th1_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th1_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
 
-  th10_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_mt_eff_vs_pt", 100, 0, 200);
-  th10_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_rf_mt_eff_vs_pt", 100, 0, 200);
-  th10_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_dm_rf_eff_vs_pt", 100, 0, 200);
+    th10_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_mt_eff_vs_pt", 100, 0, 200);
+    th10_rf_mt_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_rf_mt_eff_vs_pt", 100, 0, 200);
+    th10_dm_rf_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_dm_rf_eff_vs_pt", 100, 0, 200);
 
-  th10_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_pt", 100, 0, 200);
-  th10_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_eta", 50, -5, 5);
-  th10_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_nvtx", 51, -0.5, 50.5);
-  th10_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_it_pu", 50, -0.5, 99.5);
-  th10_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
+    th10_dm_eff_vs_pt = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_pt", 100, 0, 200);
+    th10_dm_eff_vs_eta = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_eta", 50, -5, 5);
+    th10_dm_eff_vs_nvtx = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_nvtx", 51, -0.5, 50.5);
+    th10_dm_eff_vs_it_pu = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_it_pu", 50, -0.5, 99.5);
+    th10_dm_eff_vs_ot_pu = EfficiencyPlot1D(dir_, "th10_dm_eff_vs_ot_pu", 75, -0.5, 149.5);
 
-  h_th_mode_table =
-      dir_->make<TH2F>("th_mode_table", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
+    h_th_mode_table =
+        dir_->make<TH2F>("th_mode_table", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
 
-  h_th_mode_table_gen_den =
-      dir_->make<TH2F>("th_mode_table_gen_den", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
+    h_th_mode_table_gen_den =
+        dir_->make<TH2F>("th_mode_table_gen_den", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
 
-  h_th_mode_table_gen_den_rec_fid =
-      dir_->make<TH2F>("th_mode_table_gen_den_rec_fid", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
+    h_th_mode_table_gen_den_rec_fid =
+        dir_->make<TH2F>("th_mode_table_gen_den_rec_fid", "", 17, -1.5, 15.5, 17, -1.5, 15.5);
 
 
 
-  h_th_pt_resp = dir_->make<TH1F>("th_pt_resp", "", 50, -2, 2);
-  h_th0_pt_resp = dir_->make<TH1F>("th0_pt_resp", "", 50, -2, 2);
-  h_th1_pt_resp = dir_->make<TH1F>("th1_pt_resp", "", 50, -2, 2);
-  h_th10_pt_resp = dir_->make<TH1F>("th10_pt_resp", "", 50, -2, 2);
+    h_th_pt_resp = dir_->make<TH1F>("th_pt_resp", "", 50, -2, 2);
+    h_th0_pt_resp = dir_->make<TH1F>("th0_pt_resp", "", 50, -2, 2);
+    h_th1_pt_resp = dir_->make<TH1F>("th1_pt_resp", "", 50, -2, 2);
+    h_th10_pt_resp = dir_->make<TH1F>("th10_pt_resp", "", 50, -2, 2);
 
-  th_pf_match_pt = PFMatchPlot(dir_, "th_pf_match_pt", 24, 6, 102);
-  th_pf_match_eta = PFMatchPlot(dir_, "th_pf_match_eta", 30, -2.5, 2.5);
-  th0_pf_match_pt = PFMatchPlot(dir_, "th0_pf_match_pt", 24, 6, 102);
-  th0_pf_match_eta = PFMatchPlot(dir_, "th0_pf_match_eta", 30, -2.5, 2.5);
-  th1_pf_match_pt = PFMatchPlot(dir_, "th1_pf_match_pt", 24, 6, 102);
-  th1_pf_match_eta = PFMatchPlot(dir_, "th1_pf_match_eta", 30, -2.5, 2.5);
-  th10_pf_match_pt = PFMatchPlot(dir_, "th10_pf_match_pt", 24, 6, 102);
-  th10_pf_match_eta = PFMatchPlot(dir_, "th10_pf_match_eta", 30, -2.5, 2.5);
+    th_pf_match_pt = PFMatchPlot(dir_, "th_pf_match_pt", 24, 6, 102);
+    th_pf_match_eta = PFMatchPlot(dir_, "th_pf_match_eta", 30, -2.5, 2.5);
+    th0_pf_match_pt = PFMatchPlot(dir_, "th0_pf_match_pt", 24, 6, 102);
+    th0_pf_match_eta = PFMatchPlot(dir_, "th0_pf_match_eta", 30, -2.5, 2.5);
+    th1_pf_match_pt = PFMatchPlot(dir_, "th1_pf_match_pt", 24, 6, 102);
+    th1_pf_match_eta = PFMatchPlot(dir_, "th1_pf_match_eta", 30, -2.5, 2.5);
+    th10_pf_match_pt = PFMatchPlot(dir_, "th10_pf_match_pt", 24, 6, 102);
+    th10_pf_match_eta = PFMatchPlot(dir_, "th10_pf_match_eta", 30, -2.5, 2.5);
 
-  h_trk_pt_frac_ch = dir_->make<TH1F>("trk_pt_frac_ch", "", 100, 0, 10);
-  h_trk_pt_frac_em = dir_->make<TH1F>("trk_pt_frac_em", "", 100, 0, 10);
-  h_th_pt_frac_ch = dir_->make<TH1F>("th_pt_frac_ch", "", 20, 0, 2);
-  h_th_pt_frac_em = dir_->make<TH1F>("th_pt_frac_em", "", 20, 0, 2);
+    h_trk_pt_frac_ch = dir_->make<TH1F>("trk_pt_frac_ch", "", 100, 0, 10);
+    h_trk_pt_frac_em = dir_->make<TH1F>("trk_pt_frac_em", "", 100, 0, 10);
+    h_th_pt_frac_ch = dir_->make<TH1F>("th_pt_frac_ch", "", 20, 0, 2);
+    h_th_pt_frac_em = dir_->make<TH1F>("th_pt_frac_em", "", 20, 0, 2);
+  }
+  if (do_fake_th_studies_) {
+    jet_th_fake_dm_vs_pt = EfficiencyPlot1D(dir_, "jet_th_fake_dm_vs_pt", 100, 0, 1000);
+    jet_th_fake_dm_vs_eta = EfficiencyPlot1D(dir_, "jet_th_fake_dm_vs_eta", 50, -5, 5);
+  }
   return 0;
 }
 
-int Phys14Plots::Execute(TreeEvent* event) {
+void Phys14Plots::DoRealThStudies(TreeEvent *event) {
   auto const* event_info = event->GetPtr<EventInfo>("eventInfo");
   unsigned n_vtx = event_info->good_vertices();
   h_n_vtx->Fill(n_vtx);
@@ -379,6 +387,38 @@ int Phys14Plots::Execute(TreeEvent* event) {
       }
     };
   }
+}
+
+void Phys14Plots::DoFakeThStudies(TreeEvent *event) {
+  auto reco_th_vec = event->GetPtrVec<Tau>("taus");
+  auto reco_jet_vec = event->GetPtrVec<PFJet>("pfJetsPFlow");
+
+  // Only look at jets with pT > 20.0 and eta < 2.3
+  ic::erase_if(reco_jet_vec, [](ic::PFJet *jet) {
+    return !(MinPtMaxEta(jet, 20.0, 2.3));
+  });
+
+  ic::erase_if(reco_th_vec, [](ic::Tau *tau) {
+    return !(
+      MinPtMaxEta(tau, 20.0, 2.3) &&
+      tau->GetTauID("decayModeFindingOldDMs") > 0.5 &&
+      tau->GetTauID("chargedIsoPtSum") < 2.0);
+      // i.e. loose WP (3.0 for VLoose, 1.0 for Medium, 0.8 for tight)
+  });
+
+  auto jet_tau_matches = MatchByDR(reco_jet_vec, reco_th_vec, 0.5, true, true);
+  std::map<Jet const*, Tau const*> jet_th_map;
+  for (auto x : jet_tau_matches) jet_th_map[x.first] = x.second;
+
+  for (auto jet : reco_jet_vec) {
+    jet_th_fake_dm_vs_pt.Fill(jet->pt(), jet_th_map.count(jet));
+    jet_th_fake_dm_vs_eta.Fill(jet->eta(), jet_th_map.count(jet));
+  }
+}
+
+int Phys14Plots::Execute(TreeEvent* event) {
+  if (do_real_th_studies_) DoRealThStudies(event);
+  if (do_fake_th_studies_) DoFakeThStudies(event);
   return 0;
 }
 
