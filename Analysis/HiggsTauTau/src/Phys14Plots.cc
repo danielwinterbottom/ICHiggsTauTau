@@ -118,6 +118,9 @@ int Phys14Plots::PreAnalysis() {
     h_trk_pt_frac_em = dir_->make<TH1F>("trk_pt_frac_em", "", 100, 0, 10);
     h_th_pt_frac_ch = dir_->make<TH1F>("th_pt_frac_ch", "", 20, 0, 2);
     h_th_pt_frac_em = dir_->make<TH1F>("th_pt_frac_em", "", 20, 0, 2);
+
+    trk_plots_matched = TrackPlots(dir_, "trk_plots_matched");
+    trk_plots_unmatched = TrackPlots(dir_, "trk_plots_unmatched");
   }
   if (do_fake_th_studies_) {
     jet_th_fake_dm_vs_pt = EfficiencyPlot1D(dir_, "jet_th_fake_dm_vs_pt", 100, 0, 1000);
@@ -357,6 +360,11 @@ void Phys14Plots::DoRealThStudies(TreeEvent *event) {
             trk_pf_map.count(trk->id()) ? trk_pf_map.at(trk->id()) : nullptr;
         th_pf_match_pt.Fill(trk->pt(), type);
         th_pf_match_eta.Fill(trk->eta(), type);
+        if (pf) {
+          trk_plots_matched.Fill(trk, 1.);
+        } else {
+          trk_plots_unmatched.Fill(trk, 1);
+        }
         if (gen_th->hadronic_mode == 0) {
           th0_pf_match_pt.Fill(trk->pt(), type);
           th0_pf_match_eta.Fill(trk->eta(), type);

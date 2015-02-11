@@ -78,6 +78,38 @@ struct PFMatchPlot {
   }
 };
 
+struct TrackPlots {
+  TH1F *algo;
+  TH1F *pixel_hits;
+  TH1F *pt;
+  TH1F *eta;
+  TH1F *pt_err_over_pt;
+  TH2F *pixel_hits_vs_algo;
+
+  TrackPlots(TFileDirectory *dir, std::string const& folder) {
+    TFileDirectory sub = dir->mkdir(folder);
+    algo = sub.make<TH1F>("algo", "", 30, -0.5, 29.5);
+    pixel_hits = sub.make<TH1F>("pixel_hits", "", 10, -0.5, 9.5);
+    pt = sub.make<TH1F>("pt", "", 50, 0, 100);
+    eta = sub.make<TH1F>("eta", "", 50, -2.5, 2.5);
+    pt_err_over_pt = sub.make<TH1F>("pt_err_over_pt", "", 50, 0, 2);
+
+    pixel_hits_vs_algo =
+        sub.make<TH2F>("pixel_hits_vs_algo", "", 10, -0.5, 9.5, 30, -0.5, 29.5);
+  }
+
+  TrackPlots() {}
+
+  void Fill (ic::Track const* trk, double wt) {
+    algo->Fill(trk->algorithm(), wt);
+    pixel_hits->Fill(trk->pixel_hits(), wt);
+    pt->Fill(trk->pt(), wt);
+    eta->Fill(trk->eta(), wt);
+    pt_err_over_pt->Fill(trk->pt_err() / trk->pt());
+    pixel_hits_vs_algo->Fill(trk->pixel_hits(), trk->algorithm(), wt);
+  }
+};
+
 class Phys14Plots : public ModuleBase {
  private:
   CLASS_MEMBER(Phys14Plots, bool, do_real_th_studies)
@@ -183,6 +215,9 @@ class Phys14Plots : public ModuleBase {
   TH1F *h_trk_pt_frac_em;
   TH1F *h_th_pt_frac_ch;
   TH1F *h_th_pt_frac_em;
+
+  TrackPlots trk_plots_matched;
+  TrackPlots trk_plots_unmatched;
 
   //////////////////////////////
   // Plots for jet->tau fake rate
