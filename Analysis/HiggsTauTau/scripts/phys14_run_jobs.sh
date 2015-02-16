@@ -1,7 +1,7 @@
 #!/bin/sh
 set -x
 
-PROD=Feb5
+PROD=Feb11
 
 SAMPLES=(
   'MC_53X_VBF_HToTauTau_M-125'

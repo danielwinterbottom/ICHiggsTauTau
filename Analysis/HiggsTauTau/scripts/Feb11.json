@@ -1,0 +1,10 @@
+{
+  "job": {
+    "file_prefix": "/Volumes/HDD/Feb11/",
+    "output_folder": "output/phys14/Feb11/",
+    // "output_folder": "./",
+    "max_events": -1,
+    "timings": false,
+    "apply_JEC": false
+  }
+}

@@ -170,8 +170,8 @@ done
 #  --outname="compare_th10_pt_resp.pdf"
 
 # root -l -b -q 'macros/plotDMTable.C("output/phys14/Dec7/MC_53X_VBF_HToTauTau_M-125.root", "phys14/th_mode_table",                 "53X_th_mode_table", "VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}")'
-FILE72X="output/phys14/Jan19/MC_72X_VBF_HToTauTau_M-125_PU40bx25.root"
-FILE53X="output/phys14/Jan19/MC_53X_VBF_HToTauTau_M-125.root"
+FILE72X="output/phys14/Feb11/MC_72X_PU40bx25_VBF_HToTauTau_M-125.root"
+FILE53X="output/phys14/Feb11/MC_53X_VBF_HToTauTau_M-125.root"
 root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th_pf_match_pt", "th_pf_match_pt_72X", "72X: all modes", "Track p_{T} (GeV)")'
 root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th_pf_match_eta", "th_pf_match_eta_72X", "72X: all modes", "Track #eta")'
 root -l -b -q 'macros/plotPFMatch.C+("'${FILE72X}'", "phys14/th0_pf_match_pt", "th0_pf_match_pt_72X", "72X: #pi", "Track p_{T} (GeV)")'
@@ -189,3 +189,160 @@ root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th1_pf_match_pt", "
 root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th1_pf_match_eta", "th1_pf_match_eta_53X", "53X: #pi#pi^{0}s", "Track #eta")'
 root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th10_pf_match_pt", "th10_pf_match_pt_53X", "53X: #pi#pi#pi", "Track p_{T} (GeV)")'
 root -l -b -q 'macros/plotPFMatch.C+("'${FILE53X}'", "phys14/th10_pf_match_eta", "th10_pf_match_eta_53X", "53X: #pi#pi#pi", "Track #eta")'
+
+
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_unmatched/pixel_hits_vs_algo", "53X_unmatched_track_table", "53X, Non-matched #tau_{h} tracks", "Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_matched/pixel_hits_vs_algo", "53X_matched_track_table", "53X, PF-matched #tau_{h} tracks", "Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_ph_matched/pixel_hits_vs_algo", "53X_ph_matched_track_table", "53X, PFGamma-matched #tau_{h} tracks", "Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_unmatched/pixel_hits_vs_algo", "72X_unmatched_track_table", "72X, Non-matched #tau_{h} tracks", "Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_matched/pixel_hits_vs_algo", "72X_matched_track_table", "72X, PF-matched #tau_{h} tracks", "Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_matched/pixel_hits_vs_algo", "72X_ph_matched_track_table", "72X, PFGamma-matched #tau_{h} tracks", "Pixel Hits")'
+
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_unmatched/pixel_barrel_vs_algo", "53X_unmatched_track_table_barrel", "53X, Non-matched #tau_{h} tracks", "Barrel Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_matched/pixel_barrel_vs_algo", "53X_matched_track_table_barrel", "53X, PF-matched #tau_{h} tracks", "Barrel Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_ph_matched/pixel_barrel_vs_algo", "53X_ph_matched_track_table_barrel", "53X, PFGamma-matched #tau_{h} tracks", "Barrel Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_unmatched/pixel_barrel_vs_algo", "72X_unmatched_track_table_barrel", "72X, Non-matched #tau_{h} tracks", "Barrel Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_matched/pixel_barrel_vs_algo", "72X_matched_track_table_barrel", "72X, PF-matched #tau_{h} tracks", "Barrel Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_matched/pixel_barrel_vs_algo", "72X_ph_matched_track_table_barrel", "72X, PFGamma-matched #tau_{h} tracks", "Barrel Pixel Hits")'
+
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_unmatched/pixel_endcap_vs_algo", "53X_unmatched_track_table_endcap", "53X, Non-matched #tau_{h} tracks", "Endcap Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_matched/pixel_endcap_vs_algo", "53X_matched_track_table_endcap", "53X, PF-matched #tau_{h} tracks", "Endcap Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE53X}'", "phys14/trk_plots_ph_matched/pixel_endcap_vs_algo", "53X_ph_matched_track_table_endcap", "53X, PFGamma-matched #tau_{h} tracks", "Endcap Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_unmatched/pixel_endcap_vs_algo", "72X_unmatched_track_table_endcap", "72X, Non-matched #tau_{h} tracks", "Endcap Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_matched/pixel_endcap_vs_algo", "72X_matched_track_table_endcap", "72X, PF-matched #tau_{h} tracks", "Endcap Pixel Hits")'
+root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_matched/pixel_endcap_vs_algo", "72X_ph_matched_track_table_endcap", "72X, PFGamma-matched #tau_{h} tracks", "Endcap Pixel Hits")'
+
+
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:algo:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:algo:-1:2:46" \
+ -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:algo:-1:2:40" \
+ --x_axis_title="Track Algorithm" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}" \
+ --outname="compare_53X_pfmatch_algo.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:pt:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:pt:-1:2:46" \
+ -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:pt:-1:2:40" \
+ --x_axis_title="Track p_{T} (GeV)" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}" \
+ --outname="compare_53X_pfmatch_pt.pdf"
+
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:eta:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:eta:-1:2:46" \
+ -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:eta:-1:2:40" \
+ --x_axis_title="Track #eta" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false --extra_pad=1.4 \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}" \
+ --outname="compare_53X_pfmatch_eta.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:pixel_hits:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:pixel_hits:-1:2:46" \
+ -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:pixel_hits:-1:2:40" \
+ --x_axis_title="Pixel Hits" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false --extra_pad=1.4 \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}" \
+ --outname="compare_53X_pfmatch_pixel_hits.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:barrel_hits:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:barrel_hits:-1:2:46" \
+ -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:barrel_hits:-1:2:40" \
+ --x_axis_title="Pixel Barrel Hits" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false --extra_pad=1.4 \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}" \
+ --outname="compare_53X_pfmatch_pixel_barrel.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:endcap_hits:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:endcap_hits:-1:2:46" \
+ -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:endcap_hits:-1:2:40" \
+ --x_axis_title="Pixel Endcap Hits" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}" \
+ --outname="compare_53X_pfmatch_pixel_endcap.pdf"
+
+ ./bin/PlotCompare  \
+-p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:pt_err_over_pt:-1:2:12" \
+-p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:pt_err_over_pt:-1:2:46" \
+-p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:pt_err_over_pt:-1:2:40" \
+--x_axis_title="#delta p_{T} / p_{T}" --norm_mode=3  --big_label=" " \
+--log_y=true --rebin=1 --norm_bins=false \
+--title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{53X}" \
+--outname="compare_53X_pfmatch_pt_err_over_pt.pdf"
+
+
+
+
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:algo:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:algo:-1:2:46" \
+ -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:algo:-1:2:40" \
+ --x_axis_title="Track Algorithm" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{72X}" \
+ --outname="compare_72X_pfmatch_algo.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:pt:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:pt:-1:2:46" \
+ -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:pt:-1:2:40" \
+ --x_axis_title="Track p_{T} (GeV)" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{72X}" \
+ --outname="compare_72X_pfmatch_pt.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:eta:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:eta:-1:2:46" \
+ -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:eta:-1:2:40" \
+ --x_axis_title="Track #eta" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false --extra_pad=1.4 \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{72X}" \
+ --outname="compare_72X_pfmatch_eta.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:pixel_hits:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:pixel_hits:-1:2:46" \
+ -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:pixel_hits:-1:2:40" \
+ --x_axis_title="Pixel Hits" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false  --extra_pad=1.4 \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{72X}" \
+ --outname="compare_72X_pfmatch_pixel_hits.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:barrel_hits:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:barrel_hits:-1:2:46" \
+ -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:barrel_hits:-1:2:40" \
+ --x_axis_title="Pixel Barrel Hits" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false  --extra_pad=1.4 \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{72X}" \
+ --outname="compare_72X_pfmatch_pixel_barrel.pdf"
+
+./bin/PlotCompare  \
+ -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:endcap_hits:-1:2:12" \
+ -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:endcap_hits:-1:2:46" \
+ -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:endcap_hits:-1:2:40" \
+ --x_axis_title="Pixel Endcap Hits" --norm_mode=3  --big_label=" " \
+ --log_y=false --rebin=1 --norm_bins=false \
+ --title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{72X}" \
+ --outname="compare_72X_pfmatch_pixel_endcap.pdf"
+
+ ./bin/PlotCompare  \
+-p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:pt_err_over_pt:-1:2:12" \
+-p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:pt_err_over_pt:-1:2:46" \
+-p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:pt_err_over_pt:-1:2:40" \
+--x_axis_title="#delta p_{T} / p_{T}" --norm_mode=3  --big_label=" " \
+--log_y=true --rebin=1 --norm_bins=false \
+--title_left="CMS Simulation" --title_right="VBF H(125 GeV)#rightarrow#tau#tau  #color[2]{72X}" \
+--outname="compare_72X_pfmatch_pt_err_over_pt.pdf"
+
+
