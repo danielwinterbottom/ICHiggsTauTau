@@ -37,6 +37,8 @@ namespace ic {
     total_weight_leptight_ = 1;
     puweight_up_scale_=1;
     puweight_down_scale_=1;
+    topweight_up_scale_=1;
+    topweight_down_scale_=1;
     jet1_pt_ = 0;
     jet2_pt_ = 0;
     jet3_pt_=-1;
@@ -110,6 +112,14 @@ namespace ic {
     m_mumu_=-1;
     m_ee_=-1;
     m_mumu_gen_=-1;
+    genlep1_pt_=-1;
+    genlep1_eta_=-10000;
+    genlep1_phi_=-1;
+    genlep1_id_=-1;
+    genlep2_pt_=-1;
+    genlep2_eta_=-10000;
+    genlep2_phi_=-1;
+    genlep2_id_=-1;
     mu1_pt_=-1;
     mu1_eta_=-10000;
     mu1_phi_=-1;
@@ -153,6 +163,8 @@ namespace ic {
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("puweight_up_scale",&puweight_up_scale_);
     outputTree_->Branch("puweight_down_scale",&puweight_down_scale_);
+    outputTree_->Branch("topweight_up_scale",&topweight_up_scale_);
+    outputTree_->Branch("topweight_down_scale",&topweight_down_scale_);
     outputTree_->Branch("jet1_pt",&jet1_pt_);
     outputTree_->Branch("jet2_pt",&jet2_pt_);
     outputTree_->Branch("jet3_pt",&jet3_pt_);
@@ -226,6 +238,14 @@ namespace ic {
     outputTree_->Branch("m_mumu",&m_mumu_);
     outputTree_->Branch("m_ee",&m_ee_);
     outputTree_->Branch("m_mumu_gen",&m_mumu_gen_);
+    outputTree_->Branch("genlep1_pt",&genlep1_pt_);
+    outputTree_->Branch("genlep1_eta",&genlep1_eta_);
+    outputTree_->Branch("genlep1_phi",&genlep1_phi_);
+    outputTree_->Branch("genlep1_id",&genlep1_id_);
+    outputTree_->Branch("genlep2_pt",&genlep2_pt_);
+    outputTree_->Branch("genlep2_eta",&genlep2_eta_);
+    outputTree_->Branch("genlep2_phi",&genlep2_phi_);
+    outputTree_->Branch("genlep2_id",&genlep2_id_);
     outputTree_->Branch("mu1_pt",&mu1_pt_);
     outputTree_->Branch("mu1_eta",&mu1_eta_);
     outputTree_->Branch("mu1_phi",&mu1_phi_);
@@ -289,15 +309,23 @@ namespace ic {
     double pileupwt=1;
     double pileupwtup=1;
     double pileupwtdown=1;
+    double topwt=1;
+    double topwtup=1;
+    double topwtdown=1;
     if(!is_data_){
       vetowt= eventInfo->weight("idisoVeto");
       tightwt = eventInfo->weight("idisoTight");
       pileupwt=eventInfo->weight("pileup");
       pileupwtup=eventInfo->weight("pileup_up");
       pileupwtdown=eventInfo->weight("pileup_down");
+      topwt=eventInfo->weight("tquark_weight");
+      topwtup=eventInfo->weight("tquark_weight_up");
+      topwtdown=eventInfo->weight("tquark_weight_up");
     }
     puweight_up_scale_=pileupwtup/pileupwt;
     puweight_down_scale_=pileupwtdown/pileupwt;
+    topweight_up_scale_=topwtup/topwt;
+    topweight_down_scale_=topwtdown/topwt;
 
     //get collections
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
@@ -401,6 +429,15 @@ namespace ic {
       std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
       GenParticle* lepplus = 0;
       GenParticle* lepminus = 0;
+
+      genlep1_pt_=-1;
+      genlep1_eta_=-10000;
+      genlep1_phi_=-1;
+      genlep1_id_=-1;
+      genlep2_pt_=-1;
+      genlep2_eta_=-10000;
+      genlep2_phi_=-1;
+      genlep2_id_=-1;
       
       for (unsigned i = 0; i < parts.size(); ++i) {
 	if (parts[i]->status() != 3) continue;
@@ -412,9 +449,28 @@ namespace ic {
 	  ngenmuminus++;
 	}
 	if (id == static_cast<int>(-13)) {
-	lepplus = parts[i];
-	ngenmuplus++;
-	}  
+	  lepplus = parts[i];
+	  ngenmuplus++;
+	}
+	if((abs(id)==11)||(abs(id)==13)||(abs(id)==15)){
+	  if(parts[i]->pt()>genlep1_pt_){
+	    genlep2_pt_=genlep1_pt_;
+	    genlep2_eta_=genlep1_eta_;
+	    genlep2_phi_=genlep1_phi_;
+	    genlep2_id_=genlep1_id_;
+	    genlep1_pt_=parts[i]->pt();
+	    genlep1_eta_=parts[i]->eta();
+	    genlep1_phi_=parts[i]->phi();
+	    genlep1_id_=id;
+
+	  }
+	  else if(parts[i]->pt()>genlep2_pt_){
+	    genlep2_pt_=parts[i]->pt();
+	    genlep2_eta_=parts[i]->eta();
+	    genlep2_phi_=parts[i]->phi();
+	    genlep2_id_=id;
+	  }
+	}
       }//loop on genparticles                                                                                                                                  
       
       if (ngenmuminus==1&&ngenmuplus==1) {

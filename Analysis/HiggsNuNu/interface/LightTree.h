@@ -37,6 +37,8 @@ namespace ic {
     double total_weight_leptight_;
     double puweight_up_scale_;
     double puweight_down_scale_;
+    double topweight_up_scale_;
+    double topweight_down_scale_;
     double jet1_pt_;
     double jet2_pt_;
     double jet3_pt_;
@@ -112,6 +114,14 @@ namespace ic {
     double m_ee_;
     double m_mumu_gen_;
     double m_ee_gen_;
+    double genlep1_pt_;
+    double genlep1_eta_;
+    double genlep1_phi_;
+    double genlep1_id_;
+    double genlep2_pt_;
+    double genlep2_eta_;
+    double genlep2_phi_;
+    double genlep2_id_;
     double mu1_pt_;
     double mu1_eta_;
     double mu1_phi_;

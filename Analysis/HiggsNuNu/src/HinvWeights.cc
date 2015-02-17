@@ -710,6 +710,22 @@ namespace ic {//namespace
       eventInfo->set_weight("!tquark_weight_up", top_wt_up);
       eventInfo->set_weight("!tquark_weight_down", top_wt_down);
       eventInfo->set_weight("tquark_weight", top_wt);
+
+      //madgraph ttbar reweighting
+      std::size_t foundttbar = sample_name_.find("TTJets");
+      if(foundttbar!=std::string::npos){
+	int ngenLeptonsStatus3=0;
+	double genWeight=1;
+	for (unsigned i = 0; i < parts.size(); ++i) {
+	  if (parts[i]->status() == 3 && ((abs(parts[i]->pdgid()) == 11||(abs(parts[i]->pdgid()) == 13)||(abs(parts[i]->pdgid()) == 15)))) {
+	    ngenLeptonsStatus3++;
+	  }
+	}	
+	if(ngenLeptonsStatus3==2) { genWeight=pow(0.1086/(1./9.),2); }
+	else if(ngenLeptonsStatus3==1) { genWeight=(0.1086/(1./9.))*(0.6741/(2./3.)); }
+	else { genWeight=pow(0.6741/(2./3.),2); }
+	eventInfo->set_weight("madgraph_ttbarbr_weight",genWeight);
+      }
     }
 
     //ID+iso tight leptons

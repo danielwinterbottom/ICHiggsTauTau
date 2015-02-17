@@ -298,15 +298,15 @@ int main(int argc, char* argv[]){
 
 
 
-  string data_json;
-  if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
-  if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
-  if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
-  if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
-  if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
-  LumiMask lumiMask = LumiMask("LumiMask")
-    .set_produce_output_jsons("")
-    .set_input_file(data_json);
+//   string data_json;
+//   if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
+//   if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
+//   if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
+//   if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
+//   if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
+//   LumiMask lumiMask = LumiMask("LumiMask")
+//     .set_produce_output_jsons("")
+//     .set_input_file(data_json);
 
   MakeRunStats runStats = MakeRunStats("RunStats")
     .set_output_name(output_folder+output_name+".runstats");
@@ -318,6 +318,7 @@ int main(int argc, char* argv[]){
   if (mc == mc::summer12_52X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S7-600bins.root";
 
   string data_pu_file;
+  if (era == era::data_2012_rereco) data_pu_file   =  "data/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
   if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
   if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
   if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
@@ -327,8 +328,17 @@ int main(int argc, char* argv[]){
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
 
-  TH1D data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
-  TH1D data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
+  TH1D data_pu_up;
+  TH1D data_pu_down;
+  
+  if(era==era::data_2012_moriond){
+    data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
+  }
+  else if(era==era::data_2012_rereco){
+    data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Up.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Down.root", "/", "pileup");
+  }
 
   if (!is_data) {
     std::cout << "** Pileup Files **" << std::endl;
