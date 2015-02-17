@@ -215,7 +215,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
 
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:algo:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE53X}:/phys14/trk_plots_matched:algo:-1:2:12" \
  -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:algo:-1:2:46" \
  -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:algo:-1:2:40" \
  --x_axis_title="Track Algorithm" --norm_mode=3  --big_label=" " \
@@ -224,7 +224,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_53X_pfmatch_algo.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:pt:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE53X}:/phys14/trk_plots_matched:pt:-1:2:12" \
  -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:pt:-1:2:46" \
  -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:pt:-1:2:40" \
  --x_axis_title="Track p_{T} (GeV)" --norm_mode=3  --big_label=" " \
@@ -234,7 +234,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
 
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:eta:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE53X}:/phys14/trk_plots_matched:eta:-1:2:12" \
  -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:eta:-1:2:46" \
  -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:eta:-1:2:40" \
  --x_axis_title="Track #eta" --norm_mode=3  --big_label=" " \
@@ -243,7 +243,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_53X_pfmatch_eta.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:pixel_hits:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE53X}:/phys14/trk_plots_matched:pixel_hits:-1:2:12" \
  -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:pixel_hits:-1:2:46" \
  -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:pixel_hits:-1:2:40" \
  --x_axis_title="Pixel Hits" --norm_mode=3  --big_label=" " \
@@ -252,7 +252,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_53X_pfmatch_pixel_hits.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:barrel_hits:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE53X}:/phys14/trk_plots_matched:barrel_hits:-1:2:12" \
  -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:barrel_hits:-1:2:46" \
  -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:barrel_hits:-1:2:40" \
  --x_axis_title="Pixel Barrel Hits" --norm_mode=3  --big_label=" " \
@@ -261,7 +261,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_53X_pfmatch_pixel_barrel.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:endcap_hits:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE53X}:/phys14/trk_plots_matched:endcap_hits:-1:2:12" \
  -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:endcap_hits:-1:2:46" \
  -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:endcap_hits:-1:2:40" \
  --x_axis_title="Pixel Endcap Hits" --norm_mode=3  --big_label=" " \
@@ -270,7 +270,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_53X_pfmatch_pixel_endcap.pdf"
 
  ./bin/PlotCompare  \
--p "pfmatch:PF Match:${FILE53X}:/phys14/trk_plots_matched:pt_err_over_pt:-1:2:12" \
+-p "pfmatch:PFCharged:${FILE53X}:/phys14/trk_plots_matched:pt_err_over_pt:-1:2:12" \
 -p "phmatch:PFGamma:${FILE53X}:/phys14/trk_plots_ph_matched:pt_err_over_pt:-1:2:46" \
 -p "nomatch:No Match:${FILE53X}:/phys14/trk_plots_unmatched:pt_err_over_pt:-1:2:40" \
 --x_axis_title="#delta p_{T} / p_{T}" --norm_mode=3  --big_label=" " \
@@ -283,7 +283,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
 
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:algo:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE72X}:/phys14/trk_plots_matched:algo:-1:2:12" \
  -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:algo:-1:2:46" \
  -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:algo:-1:2:40" \
  --x_axis_title="Track Algorithm" --norm_mode=3  --big_label=" " \
@@ -292,7 +292,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_72X_pfmatch_algo.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:pt:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE72X}:/phys14/trk_plots_matched:pt:-1:2:12" \
  -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:pt:-1:2:46" \
  -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:pt:-1:2:40" \
  --x_axis_title="Track p_{T} (GeV)" --norm_mode=3  --big_label=" " \
@@ -301,7 +301,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_72X_pfmatch_pt.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:eta:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE72X}:/phys14/trk_plots_matched:eta:-1:2:12" \
  -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:eta:-1:2:46" \
  -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:eta:-1:2:40" \
  --x_axis_title="Track #eta" --norm_mode=3  --big_label=" " \
@@ -310,7 +310,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_72X_pfmatch_eta.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:pixel_hits:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE72X}:/phys14/trk_plots_matched:pixel_hits:-1:2:12" \
  -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:pixel_hits:-1:2:46" \
  -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:pixel_hits:-1:2:40" \
  --x_axis_title="Pixel Hits" --norm_mode=3  --big_label=" " \
@@ -319,7 +319,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_72X_pfmatch_pixel_hits.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:barrel_hits:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE72X}:/phys14/trk_plots_matched:barrel_hits:-1:2:12" \
  -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:barrel_hits:-1:2:46" \
  -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:barrel_hits:-1:2:40" \
  --x_axis_title="Pixel Barrel Hits" --norm_mode=3  --big_label=" " \
@@ -328,7 +328,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_72X_pfmatch_pixel_barrel.pdf"
 
 ./bin/PlotCompare  \
- -p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:endcap_hits:-1:2:12" \
+ -p "pfmatch:PFCharged:${FILE72X}:/phys14/trk_plots_matched:endcap_hits:-1:2:12" \
  -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:endcap_hits:-1:2:46" \
  -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:endcap_hits:-1:2:40" \
  --x_axis_title="Pixel Endcap Hits" --norm_mode=3  --big_label=" " \
@@ -337,7 +337,7 @@ root -l -b -q 'macros/plotTrackTable.C+("'${FILE72X}'", "phys14/trk_plots_ph_mat
  --outname="compare_72X_pfmatch_pixel_endcap.pdf"
 
  ./bin/PlotCompare  \
--p "pfmatch:PF Match:${FILE72X}:/phys14/trk_plots_matched:pt_err_over_pt:-1:2:12" \
+-p "pfmatch:PFCharged:${FILE72X}:/phys14/trk_plots_matched:pt_err_over_pt:-1:2:12" \
 -p "phmatch:PFGamma:${FILE72X}:/phys14/trk_plots_ph_matched:pt_err_over_pt:-1:2:46" \
 -p "nomatch:No Match:${FILE72X}:/phys14/trk_plots_unmatched:pt_err_over_pt:-1:2:40" \
 --x_axis_title="#delta p_{T} / p_{T}" --norm_mode=3  --big_label=" " \
