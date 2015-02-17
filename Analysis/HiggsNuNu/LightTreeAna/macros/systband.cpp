@@ -1,7 +1,7 @@
 {
 
-  std::string infolder="output_plotcosmeticcheck";
-  TString outfolder="output_withbands_newcosmetics";
+  std::string infolder="output_arcplots1";
+  TString outfolder="output_withbands_ewkwfix";
   double nonshapeuncperc=0.1568;
   double rationonshapeuncperc=0.09188;
 
@@ -65,9 +65,14 @@
   shape.push_back("dijetmetnomu_ptfraction");
   shape.push_back("ele1_pt");
   shape.push_back("mu1_pt");
-  shape.push_back("jet1_csv");
-  shape.push_back("jet2_csv");
-  shape.push_back("jet3_csv");
+  shape.push_back("jet_csv1");
+  shape.push_back("jet_csv2");
+  shape.push_back("jet_csv3");
+  shape.push_back("central_tag_eta");
+  shape.push_back("forward_tag_eta");
+  shape.push_back("n_jets_30");
+  shape.push_back("n_jets_15");
+
 
 
   //Loop over shapes

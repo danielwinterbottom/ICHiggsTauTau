@@ -17,6 +17,9 @@
 #include "TLine.h"
 #include "TBox.h"
 #include "TASImage.h"
+#include "Math/QuantFuncMathCore.h"
+#include "TMath.h"
+#include "TGraphAsymmErrors.h"
 
 namespace ic{
   LTPlotElement::LTPlotElement(){
@@ -302,25 +305,62 @@ namespace ic{
       std::cout<<"    Drawing Unstacked.."<<std::endl;
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(!(elements_[iElement].in_stack())){
-	  if(first){
-	    elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
-	    elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0.,ymax+10);
-	    elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
-	    c1->Update();
-	    first=false;
-	    elements_[iElement].hist_ptr()->GetYaxis()->SetLabelSize(0.052);
-	    elements_[iElement].hist_ptr()->GetYaxis()->SetTitleSize(0.052);
-	    if(do_ratio_){
-	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelOffset(999);
-	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0);
-	      std::string ytitle;
-	      ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
-	      ytitle=ytitle.substr(ytitle.find(";")+1);
-	      ytitle=ytitle.substr(0,ytitle.find(";"));
-	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitle(ytitle.c_str());
+	  if(!elements_[iElement].is_data()){
+	    if(first){
+	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0.,ymax+10);
+	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
+	      c1->Update();
+	      first=false;
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetLabelSize(0.052);
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitleSize(0.052);
+	      if(do_ratio_){
+		elements_[iElement].hist_ptr()->GetXaxis()->SetLabelOffset(999);
+		elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0);
+		std::string ytitle;
+		ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+		ytitle=ytitle.substr(ytitle.find(";")+1);
+		ytitle=ytitle.substr(0,ytitle.find(";"));
+		elements_[iElement].hist_ptr()->GetYaxis()->SetTitle(ytitle.c_str());
+	      }
 	    }
+	    else elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
 	  }
-	  else elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
+	  else{
+	    const double alpha = 1 - 0.6827;
+	    TGraphAsymmErrors * g = new TGraphAsymmErrors(elements_[iElement].hist_ptr());
+	    g->SetMarkerSize(1.1);
+	    g->SetMarkerStyle (20);
+
+	    for (int i = 0; i < g->GetN(); ++i) {
+	      int N = g->GetY()[i];
+	      double L =  (N==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,N,1.));
+	      double U =  ROOT::Math::gamma_quantile_c(alpha/2,N+1,1) ;
+	      g->SetPointEYlow(i, N-L);
+	      g->SetPointEYhigh(i, U-N);
+	    }
+	    if(first){
+	      g->Draw("AP");
+	      g->Draw(elements_[iElement].drawopts().c_str());
+	      g->GetYaxis()->SetRangeUser(0.,ymax+10);
+	      g->Draw(elements_[iElement].drawopts().c_str());
+	      c1->Update();
+	      first=false;
+	      g->GetYaxis()->SetLabelSize(0.052);
+	      g->GetYaxis()->SetTitleSize(0.052);
+	      if(do_ratio_){
+		g->GetXaxis()->SetLabelOffset(999);
+		g->GetXaxis()->SetLabelSize(0);
+		std::string ytitle;
+		ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+		ytitle=ytitle.substr(ytitle.find(";")+1);
+		ytitle=ytitle.substr(0,ytitle.find(";"));
+		g->SetTitle(ytitle.c_str());
+	      }
+	    }
+	    else g->Draw("sameP");
+
+	  }
 	}
       }
 
