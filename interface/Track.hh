@@ -105,6 +105,9 @@ class Track {
 
   /// The track \f$p_{T}\f$ error
   inline double pt_err() const { return pt_err_; }
+
+  /// The track quality flags
+  inline int quality() const { return quality_; }
   /**@}*/
 
   /// @name Setters
@@ -173,6 +176,9 @@ class Track {
 
   /// @copybrief pt_err()
   inline void set_pt_err(double const& pt_err) { pt_err_ = pt_err; }
+
+  /// @copybrief quality()
+  inline void set_quality(int const& quality) { quality_ = quality; }
   /**@}*/
 
  private:
@@ -191,9 +197,11 @@ class Track {
   int pixel_hits_barrel_;
   int pixel_hits_endcap_;
 
+  int quality_;
+
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Track, 5);
+  ClassDef(Track, 6);
  #endif
 };
 

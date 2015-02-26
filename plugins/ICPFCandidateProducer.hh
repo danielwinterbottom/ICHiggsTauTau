@@ -17,6 +17,8 @@
 #include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
@@ -136,25 +138,54 @@ void ICPFCandidateProducer<reco::PFCandidate>::constructSpecific(
   for (unsigned i = 0; i < cands_handle->size(); ++i) {
     reco::PFCandidate const& src = cands_handle->at(i);
     ic::PFCandidate& dest = cands_->at(i);
+    unsigned flag_val = 0;
+    for (int i = ic::PFFlag::NORMAL; i <= ic::PFFlag::GAMMA_TO_GAMMACONV; ++i) {
+      if (src.flag(reco::PFCandidate::Flags(i))) flag_val = flag_val | (1 << i);
+    }
+    dest.set_flags(flag_val);
+    std::vector<std::size_t> trk_ids;
     if (request_trks_) {
-      std::vector<std::size_t> trk_ids;
       if (src.trackRef().isNonnull()) {
         reco::TrackRef const& trk = src.trackRef();
         trk_requests->push_back(trk);
         trk_ids.push_back(track_hasher_(&(*trk)));
       }
+
+      reco::VertexCompositeCandidateRef v0Ref = src.v0Ref();
+      if (v0Ref.isNonnull()) {
+        for (unsigned ndx = 0; ndx < v0Ref->numberOfDaughters(); ndx++) {
+          reco::TrackRef trk = (dynamic_cast<const reco::RecoChargedCandidate*>(
+                                 v0Ref->daughter(ndx)))->track();
+          // std::cout << "Found V0 track!\n";
+          trk_requests->push_back(trk);
+          trk_ids.push_back(track_hasher_(&(*trk)));
+        }
+      }
+      reco::ConversionRef convRef = src.conversionRef();
+      if (convRef.isNonnull()) {
+        std::vector<edm::RefToBase<reco::Track> > const & trks = convRef->tracks();
+        for (unsigned ndx = 0; ndx < trks.size(); ++ndx) {
+          reco::TrackRef trk(trks[ndx].castTo<reco::TrackRef>());
+          // std::cout << "Found conversion track!\n";
+          trk_requests->push_back(trk);
+          trk_ids.push_back(track_hasher_(&(*trk)));
+        }
+      }
+
       dest.set_constituent_tracks(trk_ids);
     }
 
     if (request_gsf_trks_) {
-      std::vector<std::size_t> trk_ids;
+      std::vector<std::size_t> gsf_trk_ids;
       if (src.gsfTrackRef().isNonnull()) {
         reco::GsfTrackRef const& trk = src.gsfTrackRef();
         gsf_trk_requests->push_back(trk);
-        trk_ids.push_back(track_hasher_(&(*trk)));
+        gsf_trk_ids.push_back(track_hasher_(&(*trk)));
       }
-      dest.set_constituent_gsf_tracks(trk_ids);
+      dest.set_constituent_gsf_tracks(gsf_trk_ids);
     }
+
+
   }
 }
 
