@@ -108,6 +108,14 @@ class Track {
 
   /// The track quality flags
   inline int quality() const { return quality_; }
+
+  /// hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)
+  inline int hits_miss_inner() const { return hits_miss_inner_; }
+
+  /// hitPattern().numberOfLostTrackerHits(HitPattern::MISSING_INNER_HITS)
+  inline int lost_tracker_hits_miss_inner() const {
+    return lost_tracker_hits_miss_inner_;
+  }
   /**@}*/
 
   /// @name Setters
@@ -179,6 +187,17 @@ class Track {
 
   /// @copybrief quality()
   inline void set_quality(int const& quality) { quality_ = quality; }
+
+  /// @copybrief hits_miss_inner()
+  inline void set_hits_miss_inner(int const& hits_miss_inner) {
+    hits_miss_inner_ = hits_miss_inner;
+  }
+
+  /// @copybrief lost_tracker_hits_miss_inner()
+  inline void set_lost_tracker_hits_miss_inner(
+      int const& lost_tracker_hits_miss_inner) {
+    lost_tracker_hits_miss_inner_ = lost_tracker_hits_miss_inner;
+  }
   /**@}*/
 
  private:
@@ -199,9 +218,12 @@ class Track {
 
   int quality_;
 
+  int hits_miss_inner_;
+  int lost_tracker_hits_miss_inner_;
+
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Track, 6);
+  ClassDef(Track, 7);
  #endif
 };
 

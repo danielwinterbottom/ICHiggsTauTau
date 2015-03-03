@@ -3,10 +3,12 @@
 
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
+#include "Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/interface/Track.hh"
 #include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
+#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "TH1F.h"
 #include "TH2F.h"
 
@@ -86,6 +88,10 @@ struct TrackPlots {
   TH1F *pt;
   TH1F *eta;
   TH1F *pt_err_over_pt;
+  TH1F *is_high_purity;
+  TH1F *dr_to_pf;
+  TH1F *pf_pt_over_trk;
+  TH1F *pf_type;
   TH2F *pixel_hits_vs_algo;
   TH2F *pixel_barrel_vs_algo;
   TH2F *pixel_endcap_vs_algo;
@@ -99,6 +105,10 @@ struct TrackPlots {
     pt = sub.make<TH1F>("pt", "", 50, 0, 100);
     eta = sub.make<TH1F>("eta", "", 50, -2.5, 2.5);
     pt_err_over_pt = sub.make<TH1F>("pt_err_over_pt", "", 50, 0, 2);
+    is_high_purity = sub.make<TH1F>("is_high_purity", "", 2, -0.5, 1.5);
+    dr_to_pf = sub.make<TH1F>("dr_to_pf", "", 100, 0, 0.5);
+    pf_pt_over_trk = sub.make<TH1F>("pf_pt_over_trk", "", 100, 0, 5);
+    pf_type = sub.make<TH1F>("pf_type", "", 8, -0.5, 7.5);
     pixel_hits_vs_algo =
         sub.make<TH2F>("pixel_hits_vs_algo", "", 6, -0.5, 5.5, 30, -0.5, 29.5);
     pixel_barrel_vs_algo =
@@ -109,7 +119,7 @@ struct TrackPlots {
 
   TrackPlots() {}
 
-  void Fill (ic::Track const* trk, double wt) {
+  void Fill (ic::Track const* trk, double wt, ic::EventInfo const* evt = nullptr) {
     algo->Fill(trk->algorithm(), wt);
     pixel_hits->Fill(trk->pixel_hits(), wt);
     barrel_hits->Fill(trk->pixel_hits_barrel(), wt);
@@ -120,6 +130,23 @@ struct TrackPlots {
     pixel_hits_vs_algo->Fill(trk->pixel_hits(), trk->algorithm(), wt);
     pixel_barrel_vs_algo->Fill(trk->pixel_hits_barrel(), trk->algorithm(), wt);
     pixel_endcap_vs_algo->Fill(trk->pixel_hits_endcap(), trk->algorithm(), wt);
+    bool is_hp = (trk->quality() & (1 << 2)) >> 2;
+    is_high_purity->Fill(float(is_hp), wt);
+    if (evt) {
+      if (is_hp && trk->pt() > 10. && std::abs(trk->eta()) < 1.5) {
+        std::cout << evt->run() << ":" << evt->lumi_block() << ":" << evt->event() << "\n";
+        std::cout << "pt: " << trk->pt() << " eta: " << trk->eta() << " phi: " << trk->phi() << "\n";
+      }
+    }
+  }
+
+  void FillWithPF(ic::Track const* trk, ic::PFCandidate const* pf, double wt) {
+    double dr = pf ? ic::DR(trk, pf) : 0.4999999;
+    double pt_ratio = pf ? pf->pt()/trk->pt() : 999.;
+    int pft = pf ? pf->type() : 0;
+    dr_to_pf->Fill(dr, wt);
+    pf_pt_over_trk->Fill(pt_ratio, wt);
+    pf_type->Fill(pft, wt);
   }
 };
 

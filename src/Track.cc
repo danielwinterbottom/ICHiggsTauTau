@@ -11,7 +11,10 @@ Track::Track()
       algorithm_(0),
       pt_err_(0.),
       pixel_hits_barrel_(0),
-      pixel_hits_endcap_(0) {}
+      pixel_hits_endcap_(0),
+      quality_(0),
+      hits_miss_inner_(0),
+      lost_tracker_hits_miss_inner_(0) {}
 
 Track::~Track() {}
 

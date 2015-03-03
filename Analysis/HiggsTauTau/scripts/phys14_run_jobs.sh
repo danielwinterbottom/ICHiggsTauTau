@@ -1,10 +1,10 @@
 #!/bin/sh
 set -x
 
-PROD=Feb11
+PROD=Feb26
 
 SAMPLES=(
-  'MC_53X_VBF_HToTauTau_M-125'
+  # 'MC_53X_VBF_HToTauTau_M-125'
   # 'MC_70X_VBF_HToTauTau_M-125_PU20bx25'
   # 'MC_70X_VBF_HToTauTau_M-125_PU40bx50'
   'MC_72X_PU40bx25_VBF_HToTauTau_M-125'

@@ -353,22 +353,34 @@ void Phys14Plots::DoRealThStudies(TreeEvent *event) {
       // Match filtered tracks to charged pions
       auto trk_pion_matches = MatchByDR(tracks, gen_pions, 0.01, true, true);
       auto matched_trks = ExtractFirst(trk_pion_matches);
+      auto matched_pfs = MatchByDR(matched_trks, pfcands, 0.5, true, true);
+      std::map<std::size_t, PFCandidate const*> trk_pf_dr_map;
+      for (auto x : matched_pfs) {
+        trk_pf_dr_map[x.first->id()] = x.second;
+      }
       for (Track const* trk : matched_trks) {
         PFType type = trk_pf_map.count(trk->id())
                           ? trk_pf_map.at(trk->id())->type()
                           : PFType::X;
         PFCandidate const* pf =
             trk_pf_map.count(trk->id()) ? trk_pf_map.at(trk->id()) : nullptr;
+        PFCandidate const* pf_dr = trk_pf_dr_map.count(trk->id())
+                                       ? trk_pf_dr_map.at(trk->id())
+                                       : nullptr;
         th_pf_match_pt.Fill(trk->pt(), type);
         th_pf_match_eta.Fill(trk->eta(), type);
         if (pf) {
           if (type == PFType::gamma) {
             trk_plots_ph_matched.Fill(trk, 1.);
+            trk_plots_ph_matched.FillWithPF(trk, pf_dr, 1.);
           } else {
             trk_plots_matched.Fill(trk, 1.);
+            trk_plots_matched.FillWithPF(trk, pf_dr, 1.);
           }
         } else {
-          trk_plots_unmatched.Fill(trk, 1);
+          trk_plots_unmatched.Fill(trk, 1, event_info);
+          trk_plots_unmatched.FillWithPF(trk, pf_dr, 1.);
+
         }
         if (gen_th->hadronic_mode == 0) {
           th0_pf_match_pt.Fill(trk->pt(), type);
