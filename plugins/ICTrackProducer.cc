@@ -46,20 +46,14 @@ void ICTrackProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     dest.set_normalized_chi2(src.normalizedChi2());
     dest.set_hits(src.hitPattern().numberOfValidHits());
     dest.set_pixel_hits(src.hitPattern().numberOfValidPixelHits());
-    dest.set_pixel_hits_barrel(src.hitPattern().numberOfValidPixelBarrelHits());
-    dest.set_pixel_hits_endcap(src.hitPattern().numberOfValidPixelEndcapHits());
     dest.set_algorithm(src.algo());
     dest.set_pt_err(src.ptError());
     dest.set_quality(src.qualityMask());
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 2
     dest.set_hits_miss_inner(
         src.hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
-    dest.set_lost_tracker_hits_miss_inner(
-        hitPattern().numberOfLostTrackerHits(HitPattern::MISSING_INNER_HITS));
 #else
       dest.set_hits_miss_inner(src.trackerExpectedHitsInner().numberOfHits());
-      dest.set_lost_tracker_hits_miss_inner(
-          src.trackerExpectedHitsInner().numberOfLostHits());
 #endif
   }
 }

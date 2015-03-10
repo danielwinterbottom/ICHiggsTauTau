@@ -73,12 +73,6 @@ class Track {
   /// Number of pixel hits
   inline int pixel_hits() const { return pixel_hits_; }
 
-  /// Number of barrel pixel hits
-  inline int pixel_hits_barrel() const { return pixel_hits_barrel_; }
-
-  /// Number of endcap pixel hits
-  inline int pixel_hits_endcap() const { return pixel_hits_endcap_; }
-
   /// Approximate dxy
   /// Copied from DataFormats/TrackReco/interface/TrackBase.h
   inline double dxy(Point const& point) const {
@@ -111,11 +105,6 @@ class Track {
 
   /// hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)
   inline int hits_miss_inner() const { return hits_miss_inner_; }
-
-  /// hitPattern().numberOfLostTrackerHits(HitPattern::MISSING_INNER_HITS)
-  inline int lost_tracker_hits_miss_inner() const {
-    return lost_tracker_hits_miss_inner_;
-  }
   /**@}*/
 
   /// @name Setters
@@ -164,16 +153,6 @@ class Track {
     pixel_hits_ = pixel_hits;
   }
 
-  /// @copybrief pixel_hits_barrel()
-  inline void set_pixel_hits_barrel(int const& pixel_hits_barrel) {
-    pixel_hits_barrel_ = pixel_hits_barrel;
-  }
-
-  /// @copybrief pixel_hits_endcap()
-  inline void set_pixel_hits_endcap(int const& pixel_hits_endcap) {
-    pixel_hits_endcap_ = pixel_hits_endcap;
-  }
-
   /// @copybrief charge()
   inline void set_charge(int const& charge) { charge_ = charge; }
 
@@ -192,12 +171,6 @@ class Track {
   inline void set_hits_miss_inner(int const& hits_miss_inner) {
     hits_miss_inner_ = hits_miss_inner;
   }
-
-  /// @copybrief lost_tracker_hits_miss_inner()
-  inline void set_lost_tracker_hits_miss_inner(
-      int const& lost_tracker_hits_miss_inner) {
-    lost_tracker_hits_miss_inner_ = lost_tracker_hits_miss_inner;
-  }
   /**@}*/
 
  private:
@@ -213,17 +186,13 @@ class Track {
   int16_t algorithm_;
   double pt_err_;
 
-  int pixel_hits_barrel_;
-  int pixel_hits_endcap_;
-
   int quality_;
 
   int hits_miss_inner_;
-  int lost_tracker_hits_miss_inner_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Track, 7);
+  ClassDef(Track, 8);
  #endif
 };
 
