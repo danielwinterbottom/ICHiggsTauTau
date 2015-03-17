@@ -151,6 +151,12 @@ void ICPFCandidateProducer<reco::PFCandidate>::constructSpecific(
         trk_ids.push_back(track_hasher_(&(*trk)));
       }
 
+      // This was used in the Phys14 studies to try and understand how
+      // the PF algorithm can lock tracks such that they are no longer
+      // available for tau reconstruction. The idea was to look at the
+      // associated displaced vertices and conversions and see if the 
+      // tracks appear here.
+      /*
       reco::VertexCompositeCandidateRef v0Ref = src.v0Ref();
       if (v0Ref.isNonnull()) {
         for (unsigned ndx = 0; ndx < v0Ref->numberOfDaughters(); ndx++) {
@@ -171,6 +177,7 @@ void ICPFCandidateProducer<reco::PFCandidate>::constructSpecific(
           trk_ids.push_back(track_hasher_(&(*trk)));
         }
       }
+      */
 
       dest.set_constituent_tracks(trk_ids);
     }
