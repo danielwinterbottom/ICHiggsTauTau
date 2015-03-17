@@ -22,6 +22,8 @@ var classic_1_1_track =
     [ "charge", "classic_1_1_track.html#ac1d1fd2c50b2b39adfe1bf6204447dd3", null ],
     [ "algorithm", "classic_1_1_track.html#a68fcca4ca02bfa9b8d7d5c2d71b82fe6", null ],
     [ "pt_err", "classic_1_1_track.html#aee51e7f2d5f84b6b1ec9f5714ea855a7", null ],
+    [ "quality", "classic_1_1_track.html#a17f08180f34bff9c98a4862957ad0edb", null ],
+    [ "hits_miss_inner", "classic_1_1_track.html#a6543cbf7ea95e91423dc962120ce7b02", null ],
     [ "set_momentum", "classic_1_1_track.html#a967296e34540de376eab63360c7ca050", null ],
     [ "set_ref_point", "classic_1_1_track.html#a7e4d0209bc0a621ebf1eac3b1dc4a49a", null ],
     [ "set_id", "classic_1_1_track.html#a115ce930d67af821f94af9644857d861", null ],
@@ -37,5 +39,7 @@ var classic_1_1_track =
     [ "set_charge", "classic_1_1_track.html#a2fbef5a8291fe9c484fbbb2411e17eab", null ],
     [ "set_algorithm", "classic_1_1_track.html#a2c31b120f1e6ee4245fa452874722813", null ],
     [ "set_pt_err", "classic_1_1_track.html#a7789dfa38236ee76b8dc406cadbd32ae", null ],
-    [ "ClassDef", "classic_1_1_track.html#a59371bdfdb9a146d34f4b4aa4d30df4b", null ]
+    [ "set_quality", "classic_1_1_track.html#a134cdd15c61c45540711d6634bd57cf8", null ],
+    [ "set_hits_miss_inner", "classic_1_1_track.html#aa92a2b7324266b29e93ae584a6acc22e", null ],
+    [ "ClassDef", "classic_1_1_track.html#addd1da30146f43f2fbcbb4b095a7a4e0", null ]
 ];

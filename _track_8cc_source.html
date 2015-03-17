@@ -104,19 +104,27 @@ $(document).ready(function(){initNavTree('_track_8cc_source.html','');});
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceic.html">ic</a> {</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// Constructors/Destructors</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno"><a class="line" href="classic_1_1_track.html#ac071903b7a78c980bc328fceeb9dde1f">    5</a></span>&#160;<a class="code" href="classic_1_1_track.html#ac071903b7a78c980bc328fceeb9dde1f">Track::Track</a>()</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    : id_(0), charge_(0), normalized_chi2_(0.), hits_(0), pixel_hits_(0) {}</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
-<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="classic_1_1_track.html#a576eba959afc1ec8400781335b68cf40">    8</a></span>&#160;<a class="code" href="classic_1_1_track.html#a576eba959afc1ec8400781335b68cf40">Track::~Track</a>() {}</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="classic_1_1_track.html#ae968b41a25ba3fa12b15101d171fccc8">   10</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classic_1_1_track.html#ae968b41a25ba3fa12b15101d171fccc8">Track::Print</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;  std::cout &lt;&lt; momentum_ &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;  std::cout &lt;&lt; ref_point_ &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;}</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;}</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    : id_(0),</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;      charge_(0),</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;      normalized_chi2_(0.),</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;      hits_(0),</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;      pixel_hits_(0),</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;      algorithm_(0),</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;      pt_err_(0.),</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;      quality_(0),</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;      hits_miss_inner_(0) {}</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classic_1_1_track.html#a576eba959afc1ec8400781335b68cf40">   16</a></span>&#160;<a class="code" href="classic_1_1_track.html#a576eba959afc1ec8400781335b68cf40">Track::~Track</a>() {}</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classic_1_1_track.html#ae968b41a25ba3fa12b15101d171fccc8">   18</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classic_1_1_track.html#ae968b41a25ba3fa12b15101d171fccc8">Track::Print</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  std::cout &lt;&lt; momentum_ &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  std::cout &lt;&lt; ref_point_ &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;}</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
 <div class="ttc" id="classic_1_1_track_html_ac071903b7a78c980bc328fceeb9dde1f"><div class="ttname"><a href="classic_1_1_track.html#ac071903b7a78c980bc328fceeb9dde1f">ic::Track::Track</a></div><div class="ttdeci">Track()</div><div class="ttdef"><b>Definition:</b> <a href="_track_8cc_source.html#l00005">Track.cc:5</a></div></div>
-<div class="ttc" id="classic_1_1_track_html_a576eba959afc1ec8400781335b68cf40"><div class="ttname"><a href="classic_1_1_track.html#a576eba959afc1ec8400781335b68cf40">ic::Track::~Track</a></div><div class="ttdeci">virtual ~Track()</div><div class="ttdef"><b>Definition:</b> <a href="_track_8cc_source.html#l00008">Track.cc:8</a></div></div>
+<div class="ttc" id="classic_1_1_track_html_a576eba959afc1ec8400781335b68cf40"><div class="ttname"><a href="classic_1_1_track.html#a576eba959afc1ec8400781335b68cf40">ic::Track::~Track</a></div><div class="ttdeci">virtual ~Track()</div><div class="ttdef"><b>Definition:</b> <a href="_track_8cc_source.html#l00016">Track.cc:16</a></div></div>
 <div class="ttc" id="namespaceic_html"><div class="ttname"><a href="namespaceic.html">ic</a></div><div class="ttdef"><b>Definition:</b> <a href="_calo_jet_8hh_source.html#l00009">CaloJet.hh:9</a></div></div>
-<div class="ttc" id="classic_1_1_track_html_ae968b41a25ba3fa12b15101d171fccc8"><div class="ttname"><a href="classic_1_1_track.html#ae968b41a25ba3fa12b15101d171fccc8">ic::Track::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_track_8cc_source.html#l00010">Track.cc:10</a></div></div>
+<div class="ttc" id="classic_1_1_track_html_ae968b41a25ba3fa12b15101d171fccc8"><div class="ttname"><a href="classic_1_1_track.html#ae968b41a25ba3fa12b15101d171fccc8">ic::Track::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_track_8cc_source.html#l00018">Track.cc:18</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

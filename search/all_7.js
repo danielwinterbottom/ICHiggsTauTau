@@ -2,13 +2,18 @@ var searchData=
 [
   ['h',['h',['../namespaceic.html#a271a9a651d13961ab8c6e039f5552460a0a448ee42ac858c13f448cf0370dffaa',1,'ic']]],
   ['h0',['h0',['../namespaceic.html#a271a9a651d13961ab8c6e039f5552460abe146a27a15f585a34a368ff297eeb34',1,'ic']]],
+  ['h_5fbarrel_5fendcap',['H_BARREL_ENDCAP',['../namespaceic.html#a5d84c3c4907f6cb7f0a8f37d56f8a31eaecc32f0fde8d5f2a149217c2a95550da',1,'ic']]],
+  ['h_5fendcap_5fvfcal',['H_ENDCAP_VFCAL',['../namespaceic.html#a5d84c3c4907f6cb7f0a8f37d56f8a31eadb2887f65d77ae974d72e204644f60e4',1,'ic']]],
+  ['h_5feta_5f0',['H_ETA_0',['../namespaceic.html#a5d84c3c4907f6cb7f0a8f37d56f8a31ea5438bb6273f032d881b419513c8d3081',1,'ic']]],
   ['h_5fhf',['h_HF',['../namespaceic.html#a271a9a651d13961ab8c6e039f5552460ae8eb55db61e55e990d06824bdf547674',1,'ic']]],
+  ['h_5fvfcal_5fedge',['H_VFCAL_EDGE',['../namespaceic.html#a5d84c3c4907f6cb7f0a8f37d56f8a31ea5b6b3cd6a18947441827c0b2d05a4e80',1,'ic']]],
   ['had_5fenergy_5fhb',['had_energy_HB',['../classic_1_1_calo_jet.html#ad488b91e1efd1139d6af61b89e99dd38',1,'ic::CaloJet']]],
   ['had_5fenergy_5fhe',['had_energy_HE',['../classic_1_1_calo_jet.html#ac6cb40c768bc73ea9d4c25a566869a27',1,'ic::CaloJet']]],
   ['had_5fenergy_5fhf',['had_energy_HF',['../classic_1_1_calo_jet.html#afafec39c67fd30a69cbf1322c42f82ba',1,'ic::CaloJet']]],
   ['had_5fenergy_5fho',['had_energy_HO',['../classic_1_1_calo_jet.html#a294c7df8fa4205e8574a3b1750eaa346',1,'ic::CaloJet']]],
   ['had_5ftower_5fover_5fem',['had_tower_over_em',['../classic_1_1_photon.html#ad35cd81e23437c3abcc86435f199d8b9',1,'ic::Photon']]],
   ['hadronic_5fover_5fem',['hadronic_over_em',['../classic_1_1_electron.html#aaf2efbea962b3972bca6c9afbe3973f6',1,'ic::Electron']]],
+  ['has_5fflag',['has_flag',['../classic_1_1_p_f_candidate.html#ae98e3e5c305931c8b8cbdfad1ce7bc7b',1,'ic::PFCandidate']]],
   ['has_5fmatched_5fconversion',['has_matched_conversion',['../classic_1_1_electron.html#a76f0fe7f6703af5e27fa32c6b3f033ca',1,'ic::Electron']]],
   ['hash128to64',['Hash128to64',['../city_8h.html#a277d7697b63b8321e906beccd0ce3339',1,'city.h']]],
   ['hasidiso',['HasIdIso',['../classic_1_1_electron.html#a0ebe6ecff16252c2ff47572879569dd1',1,'ic::Electron::HasIdIso()'],['../classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8',1,'ic::Muon::HasIdIso()']]],
@@ -22,5 +27,6 @@ var searchData=
   ['hf_5fhad_5fmultiplicity',['HF_had_multiplicity',['../classic_1_1_p_f_jet.html#a44bf96f061d8a5ad529c9e0ce5c46a90',1,'ic::PFJet']]],
   ['higgstotautau',['HiggsToTauTau',['../higgs-to-tau-tau.html',1,'']]],
   ['higgstotautau_2emd',['HiggsToTauTau.md',['../_higgs_to_tau_tau_8md.html',1,'']]],
-  ['hits',['hits',['../classic_1_1_track.html#ad83d971f50201df353005f47c1cc0e99',1,'ic::Track']]]
+  ['hits',['hits',['../classic_1_1_track.html#ad83d971f50201df353005f47c1cc0e99',1,'ic::Track']]],
+  ['hits_5fmiss_5finner',['hits_miss_inner',['../classic_1_1_track.html#a6543cbf7ea95e91423dc962120ce7b02',1,'ic::Track']]]
 ];

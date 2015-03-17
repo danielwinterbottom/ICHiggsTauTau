@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>Imperial Analysis: src/PFCandidate.cc Source File</title>
+<title>Imperial Analysis: Data Fields</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -77,7 +77,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('_p_f_candidate_8cc_source.html','');});
+$(document).ready(function(){initNavTree('functions_q.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -94,31 +94,15 @@ $(document).ready(function(){initNavTree('_p_f_candidate_8cc_source.html','');})
 </iframe>
 </div>
 
-<div class="header">
-  <div class="headertitle">
-<div class="title">PFCandidate.cc</div>  </div>
-</div><!--header-->
 <div class="contents">
-<a href="_p_f_candidate_8cc.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;../interface/PFCandidate.hh&quot;</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;boost/format.hpp&quot;</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceic.html">ic</a> {</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">// Constructors/Destructors</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno"><a class="line" href="classic_1_1_p_f_candidate.html#a3524ee4de92cd1f8a99aea827efa01cd">    5</a></span>&#160;<a class="code" href="classic_1_1_p_f_candidate.html#a3524ee4de92cd1f8a99aea827efa01cd">PFCandidate::PFCandidate</a>() : pdgid_(0) {}</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
-<div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="classic_1_1_p_f_candidate.html#a8f64257510f8f47acafb85468ccfb868">    7</a></span>&#160;<a class="code" href="classic_1_1_p_f_candidate.html#a8f64257510f8f47acafb85468ccfb868">PFCandidate::~PFCandidate</a>() {}</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classic_1_1_p_f_candidate.html#adb8d4a520f4e04edc0fcb2fbc5794b0b">    9</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classic_1_1_p_f_candidate.html#adb8d4a520f4e04edc0fcb2fbc5794b0b">PFCandidate::Print</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;  <a class="code" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">Candidate::Print</a>();</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;  std::cout &lt;&lt; <span class="stringliteral">&quot;[pdgid] = &quot;</span> &lt;&lt; this-&gt;<a class="code" href="classic_1_1_p_f_candidate.html#ac57851ed78884c2e1e515b29346d62eb">pdgid</a>() &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;}</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;}</div>
-<div class="ttc" id="classic_1_1_p_f_candidate_html_adb8d4a520f4e04edc0fcb2fbc5794b0b"><div class="ttname"><a href="classic_1_1_p_f_candidate.html#adb8d4a520f4e04edc0fcb2fbc5794b0b">ic::PFCandidate::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8cc_source.html#l00009">PFCandidate.cc:9</a></div></div>
-<div class="ttc" id="classic_1_1_p_f_candidate_html_a3524ee4de92cd1f8a99aea827efa01cd"><div class="ttname"><a href="classic_1_1_p_f_candidate.html#a3524ee4de92cd1f8a99aea827efa01cd">ic::PFCandidate::PFCandidate</a></div><div class="ttdeci">PFCandidate()</div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8cc_source.html#l00005">PFCandidate.cc:5</a></div></div>
-<div class="ttc" id="classic_1_1_p_f_candidate_html_ac57851ed78884c2e1e515b29346d62eb"><div class="ttname"><a href="classic_1_1_p_f_candidate.html#ac57851ed78884c2e1e515b29346d62eb">ic::PFCandidate::pdgid</a></div><div class="ttdeci">int pdgid() const </div><div class="ttdoc">PDG number to identify the PF candidate type. </div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8hh_source.html#l00050">PFCandidate.hh:50</a></div></div>
-<div class="ttc" id="namespaceic_html"><div class="ttname"><a href="namespaceic.html">ic</a></div><div class="ttdef"><b>Definition:</b> <a href="_calo_jet_8hh_source.html#l00009">CaloJet.hh:9</a></div></div>
-<div class="ttc" id="classic_1_1_p_f_candidate_html_a8f64257510f8f47acafb85468ccfb868"><div class="ttname"><a href="classic_1_1_p_f_candidate.html#a8f64257510f8f47acafb85468ccfb868">ic::PFCandidate::~PFCandidate</a></div><div class="ttdeci">virtual ~PFCandidate()</div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8cc_source.html#l00007">PFCandidate.cc:7</a></div></div>
-<div class="ttc" id="classic_1_1_candidate_html_ad96b680fd5080c7ae34e977541784dc6"><div class="ttname"><a href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">ic::Candidate::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8cc_source.html#l00009">Candidate.cc:9</a></div></div>
-</div><!-- fragment --></div><!-- contents -->
+<div class="textblock">Here is a list of all struct and union fields with links to the structures/unions they belong to:</div>
+
+<h3><a class="anchor" id="index_q"></a>- q -</h3><ul>
+<li>quality()
+: <a class="el" href="classic_1_1_track.html#a17f08180f34bff9c98a4862957ad0edb">ic::Track</a>
+</li>
+</ul>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->
 <!-- start footer part -->

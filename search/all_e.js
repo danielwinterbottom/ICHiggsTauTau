@@ -9,6 +9,7 @@ var searchData=
   ['pfcandidate_2ehh',['PFCandidate.hh',['../_p_f_candidate_8hh.html',1,'']]],
   ['pfcandidatecollection',['PFCandidateCollection',['../namespaceic.html#a452eaa6fd5c6395c935f029b30cabce5',1,'ic']]],
   ['pfcandidaterefselector',['PFCandidateRefSelector',['../_i_c_p_f_candidate_producer_8cc.html#a0852d812786dae6b5bcd82e2bb2d9e33',1,'ICPFCandidateProducer.cc']]],
+  ['pfflag',['PFFlag',['../namespaceic.html#a5d84c3c4907f6cb7f0a8f37d56f8a31e',1,'ic']]],
   ['pfjet',['PFJet',['../classic_1_1_p_f_jet.html',1,'ic']]],
   ['pfjet',['PFJet',['../classic_1_1_p_f_jet.html#ab6b241a85f3037126e6e14a1433f39d7',1,'ic::PFJet']]],
   ['pfjet_2ecc',['PFJet.cc',['../_p_f_jet_8cc.html',1,'']]],

@@ -91,10 +91,10 @@ var NAVTREEINDEX =
 [
 "_calo_jet_8cc.html",
 "_met_8hh.html",
-"classic_1_1_calo_jet.html",
-"classic_1_1_j_p_t_jet.html#a9609a5ba69ff2645c583fcf843094b09",
-"classic_1_1_secondary_vertex.html#a02dd169414380e6ffd973dfb7c014155",
-"physics-objects.html#objs-tau"
+"class_i_c_tau_producer.html#a0a53adf9e24a707ddef44d6f3a79c989",
+"classic_1_1_j_p_t_jet.html#a2d03f4725251d1aece3ce97f06fc4118",
+"classic_1_1_photon.html#a3b62e8c8a96580f7d1bf173cd9925d18",
+"index.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -9,6 +9,7 @@ var _plotting_8h =
     [ "GetAxisHist", "_plotting_8h.html#aafd63f976dd4c5ae271062e0f91c2681", null ],
     [ "MakeRatioHist", "_plotting_8h.html#a526842799b4de3a542d8114989dba48d", null ],
     [ "TGraphFromTree", "_plotting_8h.html#a9359e5d70c59b3cd3ec03c4c7b449d1f", null ],
+    [ "TGraph2DFromTree", "_plotting_8h.html#afd3d99fcf4abb2cc459734f0d7ce44e6", null ],
     [ "ReZeroTGraph", "_plotting_8h.html#af2524f9f02ac66a16164c87bfc149628", null ],
     [ "CreateTransparentColor", "_plotting_8h.html#addb5de4f8e6a8a5fa83d7d824d3d9934", null ],
     [ "SetupTwoPadSplitAsRatio", "_plotting_8h.html#ac22871e6dbf88fd29fa06f8a2cfb5f8d", null ],

@@ -6,6 +6,7 @@ var searchData=
   ['had_5fenergy_5fho',['had_energy_HO',['../classic_1_1_calo_jet.html#a294c7df8fa4205e8574a3b1750eaa346',1,'ic::CaloJet']]],
   ['had_5ftower_5fover_5fem',['had_tower_over_em',['../classic_1_1_photon.html#ad35cd81e23437c3abcc86435f199d8b9',1,'ic::Photon']]],
   ['hadronic_5fover_5fem',['hadronic_over_em',['../classic_1_1_electron.html#aaf2efbea962b3972bca6c9afbe3973f6',1,'ic::Electron']]],
+  ['has_5fflag',['has_flag',['../classic_1_1_p_f_candidate.html#ae98e3e5c305931c8b8cbdfad1ce7bc7b',1,'ic::PFCandidate']]],
   ['has_5fmatched_5fconversion',['has_matched_conversion',['../classic_1_1_electron.html#a76f0fe7f6703af5e27fa32c6b3f033ca',1,'ic::Electron']]],
   ['hash128to64',['Hash128to64',['../city_8h.html#a277d7697b63b8321e906beccd0ce3339',1,'city.h']]],
   ['hasidiso',['HasIdIso',['../classic_1_1_electron.html#a0ebe6ecff16252c2ff47572879569dd1',1,'ic::Electron::HasIdIso()'],['../classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8',1,'ic::Muon::HasIdIso()']]],
@@ -17,5 +18,6 @@ var searchData=
   ['hf_5fhad_5fenergy',['HF_had_energy',['../classic_1_1_p_f_jet.html#a81e892fdab259444871ea789ff40e1f9',1,'ic::PFJet']]],
   ['hf_5fhad_5fenergy_5ffrac',['HF_had_energy_frac',['../classic_1_1_p_f_jet.html#a3867dce5a5769bcfe487428a0c9ecce7',1,'ic::PFJet']]],
   ['hf_5fhad_5fmultiplicity',['HF_had_multiplicity',['../classic_1_1_p_f_jet.html#a44bf96f061d8a5ad529c9e0ce5c46a90',1,'ic::PFJet']]],
-  ['hits',['hits',['../classic_1_1_track.html#ad83d971f50201df353005f47c1cc0e99',1,'ic::Track']]]
+  ['hits',['hits',['../classic_1_1_track.html#ad83d971f50201df353005f47c1cc0e99',1,'ic::Track']]],
+  ['hits_5fmiss_5finner',['hits_miss_inner',['../classic_1_1_track.html#a6543cbf7ea95e91423dc962120ce7b02',1,'ic::Track']]]
 ];

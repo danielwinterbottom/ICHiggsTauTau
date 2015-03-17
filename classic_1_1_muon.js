@@ -9,6 +9,7 @@ var classic_1_1_muon =
     [ "is_global", "classic_1_1_muon.html#a7666075ccebb0dc4165289cc7bf1f49c", null ],
     [ "is_tracker", "classic_1_1_muon.html#a879f3a9726c098ec0596f67b778cda79", null ],
     [ "is_calo", "classic_1_1_muon.html#a6d867c73bbd223b9de153ba36bd1c941", null ],
+    [ "is_pf", "classic_1_1_muon.html#a377aed5eacda17d85296da6809230563", null ],
     [ "gt_normalized_chi2", "classic_1_1_muon.html#adcafdaf948b97d64e796f1ce45dfac5f", null ],
     [ "gt_valid_muon_hits", "classic_1_1_muon.html#a21c763cb85277d2b82f86bc6aaa027e8", null ],
     [ "matched_stations", "classic_1_1_muon.html#ad0e21edf1ef2087e8bf73c379d5e4007", null ],
@@ -40,6 +41,7 @@ var classic_1_1_muon =
     [ "set_is_global", "classic_1_1_muon.html#a5d724c9b73299ac32fa3387b6c3807bc", null ],
     [ "set_is_tracker", "classic_1_1_muon.html#a0c3ffa87576892924a1dccf894f90781", null ],
     [ "set_is_calo", "classic_1_1_muon.html#a47956b0df87f9dce24e0f53b228d6010", null ],
+    [ "set_is_pf", "classic_1_1_muon.html#ab037f17ae4e1af4733cf5d0baf5e08b8", null ],
     [ "set_gt_normalized_chi2", "classic_1_1_muon.html#a21064b74cde465830256693f70fcb605", null ],
     [ "set_gt_valid_muon_hits", "classic_1_1_muon.html#a104a93abc4315eaa6240c9debbca0606", null ],
     [ "set_matched_stations", "classic_1_1_muon.html#a0dc5271438f210bfb1311d92803df5a2", null ],
@@ -68,5 +70,5 @@ var classic_1_1_muon =
     [ "SetIdIso", "classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15", null ],
     [ "HasIdIso", "classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8", null ],
     [ "GetIdIso", "classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36", null ],
-    [ "ClassDef", "classic_1_1_muon.html#a51587e2be8d52c0b1f5a4524c92d7e64", null ]
+    [ "ClassDef", "classic_1_1_muon.html#a49deb4770ed462634172193850feffb3", null ]
 ];
