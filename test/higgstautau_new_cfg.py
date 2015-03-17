@@ -149,7 +149,7 @@ process.selectedVertices = cms.EDFilter("VertexRefSelector",
 
 process.selectedPFCandidates = cms.EDFilter("PFCandidateRefSelector",
   src = cms.InputTag("particleFlow"),
-  cut = cms.string("pt > 5.0")
+  cut = cms.string("pt > 0.0")
 )
 
 process.selectedElectrons = cms.EDFilter("GsfElectronRefSelector",
@@ -307,7 +307,7 @@ if isPhys14:
 ################################################################
 process.selectedTracks = cms.EDFilter("TrackRefSelector",
   src = cms.InputTag("generalTracks"),
-  cut = cms.string("pt > 5")
+  cut = cms.string("pt > 0.5")
 )
 
 process.selectedTauTracks = cms.EDFilter("TrackRefSelector",

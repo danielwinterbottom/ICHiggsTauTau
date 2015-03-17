@@ -124,6 +124,7 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
       dest.set_phi(pf_src.phi());
       dest.set_energy(pf_src.energy());
       dest.set_charge(pf_src.charge());
+      dest.set_is_pf(true);
       muon_ref = pf_src.muonRef();
       pf_base_ref = pfs_handle->refAt(i);
     } else {
@@ -134,6 +135,7 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
       dest.set_phi(reco_src.phi());
       dest.set_energy(reco_src.energy());
       dest.set_charge(reco_src.charge());
+      dest.set_is_pf(reco_src.isPFMuon());
       muon_base_ref = muons_handle->refAt(i);
     }
 

@@ -15,8 +15,8 @@
 #include "Modules/interface/SimpleFilter.h"
 #include "Modules/interface/CompositeProducer.h"
 #include "HiggsTauTau/interface/HTTConfig.h"
-#include "HiggsTauTau/interface/Phys14Plots.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
+#include "HiggsTauTau/interface/HTTGenEventPlots.h"
 #include "Modules/interface/JetEnergyCorrections.h"
 
 namespace po = boost::program_options;
@@ -74,44 +74,20 @@ int main(int argc, char* argv[]) {
     This should really be shortened into one inline function in the AnalysisBase
     declaration. GetPrefixedFilelist(prefix, filelist)
   */
-  vector<string> files = ic::ParseFileLines(js["job"]["filelist"].asString());
-  for (auto & f : files) f = js["job"]["file_prefix"].asString() + f;
+  vector<string> files = {js["job"]["file"].asString()};
 
-  AnalysisBase analysis("HiggsTauTau", files, "icEventProducer/EventTree",
-                        js["job"]["max_events"].asInt64());
+  AnalysisBase analysis("HiggsTauTau", files, "icEventProducer/EventTree", -1);
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);
-  // analysis.DoSkimming("./skim/");
-  analysis.CalculateTimings(js["job"]["timings"].asBool());
-
-  bool do_XToTauTau = js["do_XToTauTau"].asBool();
-  bool do_QCDFakes = js["do_QCDFakes"].asBool();
-  bool apply_JEC = js["apply_JEC"].asBool();
-
-  string jec_payload = js["jec_payload"].asString();
-  auto jetEnergyCorr =
-      ic::JetEnergyCorrections<ic::PFJet>("JetEnergyCorrections")
-          .set_input_label("pfJetsPFlow")
-          .set_is_data(false)
-          .set_use_new_mode(true)
-          .set_l1_file("data/jec/" + jec_payload + "_L1FastJet_AK5PF.txt")
-          .set_l2_file("data/jec/" + jec_payload + "_L2Relative_AK5PF.txt")
-          .set_l3_file("data/jec/" + jec_payload + "_L3Absolute_AK5PF.txt")
-          .set_res_file("data/jec/" + jec_payload + "_L2L3Residual_AK5PF.txt");
 
   auto httGenEvent = ic::HTTGenEvent("HttGenEvent")
-      .set_genparticle_label("genParticles");
+      .set_genparticle_label("genParticles")
+      .set_is_pythia8(true);
 
-  auto phys14Plots = ic::Phys14Plots("Phys14Plots")
-                         .set_fs(fs)
-                         .set_do_real_th_studies(do_XToTauTau)
-                         .set_do_fake_th_studies(do_QCDFakes);
-
-
-  if (apply_JEC) analysis.AddModule(&jetEnergyCorr);
-  if (do_XToTauTau) analysis.AddModule(&httGenEvent);
-  analysis.AddModule(&phys14Plots);
+  auto httGenEventPlots = ic::HTTGenEventPlots("HttGenEventPlots").set_fs(fs);
+  analysis.AddModule(&httGenEvent);
+  analysis.AddModule(&httGenEventPlots);
 
   analysis.RunAnalysis();
 

@@ -102,6 +102,7 @@ int main(int argc, char* argv[]) {
   axis->Draw();
   axis->SetMinimum(js["y_axis_min"].asDouble());
   axis->SetMaximum(js["y_axis_max"].asDouble());
+  pads[0]->SetLogy(js["log_y"].asBool());
   axis->GetXaxis()->SetTitle(js["x_axis_title"].asCString());
   axis->GetYaxis()->SetTitle(js["y_axis_title"].asCString());
 

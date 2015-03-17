@@ -12,7 +12,9 @@
 
 namespace ic {
 
-HTTGenEvent::HTTGenEvent(std::string const &name) : ModuleBase(name) {}
+HTTGenEvent::HTTGenEvent(std::string const &name) : ModuleBase(name) {
+  is_pythia8_ = false;
+}
 
 HTTGenEvent::~HTTGenEvent() { ; }
 
@@ -37,7 +39,8 @@ int HTTGenEvent::Execute(TreeEvent *event) {
   auto higgs_list = parts;
   ic::erase_if(higgs_list, [&](GenParticle * p) {
     return !(
-      p->status() == 3 &&
+      // Can't use status == 3 anymore - pythia 8 will have different status codes
+      // p->status() == 3 &&
       higgs_pdg.count(std::abs(p->pdgid())));
   });
 
@@ -45,29 +48,40 @@ int HTTGenEvent::Execute(TreeEvent *event) {
 
   // If we found exactly one Higgs boson we will look for tau daughters and fill
   // the full set of tau properties from these.
-  if (higgs_list.size() == 1) {
-    gen_event.boson = higgs_list[0];
+  // ==> Also can't expect just one here, so loop through and look for any H->tautau decay
+  unsigned htt_decays = 0;
+  for (unsigned i = 0; i < higgs_list.size(); ++i) {
+    gen_event.boson = higgs_list[i];
     auto daughters = ic::ExtractDaughters(gen_event.boson, parts);
     // Sanity test - should only find two daughter particles
     if (daughters.size() == 2) {
       // Both daughters should be taus
       if (std::abs(daughters[0]->pdgid()) == 15 &&
           std::abs(daughters[1]->pdgid()) == 15) {
-        gen_event.tau_0 = BuildTauInfo(daughters[0], parts);
-        gen_event.tau_1 = BuildTauInfo(daughters[1], parts);
+        ++htt_decays;
+        gen_event.tau_0 = BuildTauInfo(daughters[0], parts, is_pythia8_);
+        gen_event.tau_1 = BuildTauInfo(daughters[1], parts, is_pythia8_);
       }
     }
-  } else {  // If we didn't find a single Higgs boson, we will just check if
-            // there are exactly two status 3 taus in the event, and use these
-            // instead
+  }
+
+  if (htt_decays > 1) {
+    std::cout << "Found more than one htt decay!\n";
+    return 1;
+  }
+
+  if (htt_decays == 0) {
+    // If we didn't find a single Higgs boson, we will just check if
+    // there are exactly two status 3 taus in the event, and use these
+    // instead
     auto list = parts;
     ic::erase_if(list, [&](GenParticle * p) {
       return !(
         p->status() == 3 && std::abs(p->pdgid()) == 15);
     });
     if (list.size() == 2) {
-      gen_event.tau_0 = BuildTauInfo(list[0], parts);
-      gen_event.tau_1 = BuildTauInfo(list[1], parts);
+      gen_event.tau_0 = BuildTauInfo(list[0], parts, is_pythia8_);
+      gen_event.tau_1 = BuildTauInfo(list[1], parts, is_pythia8_);
     }
   }
 
@@ -103,7 +117,7 @@ int HTTGenEvent::Execute(TreeEvent *event) {
 }
 
 GenEvent_Tau HTTGenEvent::BuildTauInfo(
-    GenParticle *tau, std::vector<GenParticle *> const &parts) {
+    GenParticle *tau, std::vector<GenParticle *> const &parts, bool is_pythia8) {
   GenEvent_Tau info;
   // We could have been given a status 3 or status 2 tau
   if (tau->status() == 3) {
@@ -127,7 +141,7 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
           "[HTTGenEvent::BuildTauInfo] Daughter of status 3 tau is not a "
           "status 2 tau");
     }
-  } else if (tau->status() == 2) {
+  } else {
     // We were given a status 2 instead - we'll just assume this is pre_fsr
     info.tau_st2_pre_fsr = tau;
   }
@@ -142,24 +156,50 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
   GenParticle *tau_st2_post_fsr = info.tau_st2_pre_fsr;
   // But flag that we haven't actually extracted any fsr photons yet
   bool extracted_fsr = false;
+  // Skip the FSR extraction if we're in pythia8 - we seem to decay
+  // directly to pions
+  // if (is_pythia8) extracted_fsr = true;
   // Start by getting a list of daughters
   auto fsr_scan = ExtractDaughters(info.tau_st2_pre_fsr, parts);
-  while (!extracted_fsr) {
-    bool has_fsr = false;
-    // does this list of daughters have another tau in?
-    for (auto const& t : fsr_scan) {
-      if (std::abs(t->pdgid()) == 15) {
-        has_fsr = true;
-        tau_st2_post_fsr = t;
+  if (!is_pythia8) {
+    while (!extracted_fsr) {
+      bool has_fsr = false;
+      // does this list of daughters have another tau in?
+      for (auto const& t : fsr_scan) {
+        if (std::abs(t->pdgid()) == 15) {
+          has_fsr = true;
+          tau_st2_post_fsr = t;
+        }
+        if (t->pdgid() == 22) {
+          info.fsr.push_back(t);
+        }
       }
-      if (t->pdgid() == 22) {
-        info.fsr.push_back(t);
+      if (has_fsr) {
+        fsr_scan = ExtractDaughters(tau_st2_post_fsr, parts);
+      } else {
+        extracted_fsr = true;
       }
     }
-    if (has_fsr) {
-      fsr_scan = ExtractDaughters(tau_st2_post_fsr, parts);
-    } else {
-      extracted_fsr = true;
+  } else {
+    while (!extracted_fsr) {
+      bool has_fsr = false;
+      // does this list of daughters have another tau in?
+      for (auto const& t : fsr_scan) {
+        if (std::abs(t->pdgid()) == 15) {
+          has_fsr = true;
+          tau_st2_post_fsr = t;
+        }
+      }
+      if (has_fsr) {
+        for (auto const& t : fsr_scan) {
+          if (t->pdgid() == 22) {
+            info.fsr.push_back(t);
+          }
+        }
+        fsr_scan = ExtractDaughters(tau_st2_post_fsr, parts);
+      } else {
+        extracted_fsr = true;
+      }
     }
   }
   info.tau_st2_post_fsr = tau_st2_post_fsr;
@@ -189,8 +229,13 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
     // 321 = K+
     // 323 = K*(892)+
     if (post_fsr_dts.size() == 0 || post_fsr_dts.size() > 1) {
-      std::cout << "Hadronic tau - odd number of particles:\n";
-      for (auto const& t : post_fsr_dts) t->Print();
+      if (!is_pythia8_) {
+        std::cout << "Hadronic tau - odd number of particles:\n";
+        for (auto const& t : post_fsr_dts) t->Print();
+      } else {
+        // No hadron to add, just put the tau back in
+        info.had = tau_st2_post_fsr;
+      }
     } else {
       info.had = post_fsr_dts[0];
       int pdg = std::abs(info.had->pdgid());
@@ -200,10 +245,13 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
       if (!(pdg == 211 || pdg == 321 || pdg == 213 || pdg == 20213 ||
             pdg == 323 || pdg == 24)) {
         std::cout << "Hadronic tau - odd decay:\n";
-        for (auto const& t : post_fsr_dts) t->Print();
+        for (auto const& t : post_fsr_dts) {
+          t->Print();
+        }
       }
     }
   }
+
 
   // KL0 130 (stable)
   // KS0 310 (stable)
@@ -211,6 +259,11 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
   // photon 22 (stable)
   if (info.had) {
     auto had_decay = ExtractDaughters(info.had, parts);
+    if (is_pythia8) {
+      ic::erase_if(had_decay, [](GenParticle *p) {
+        return std::abs(p->pdgid()) == 16;
+      });
+    }
     for (auto const& t : had_decay) {
       if (std::abs(t->pdgid()) == 211 || std::abs(t->pdgid()) == 321) {
         // Charged pion or kaon
@@ -234,9 +287,35 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
         } else {
           info.other_neutral.push_back(t);
         }
-      } else {
+      } else if (std::abs(t->pdgid()) == 311) {  // K0
+        auto t_daughters = ExtractDaughters(t, parts);
+        for (auto const& t_d : t_daughters) {
+          if (t_d->pdgid() == 130 || t_d->pdgid() == 310) {
+            info.other_neutral.push_back(t_d);
+          } else {
+            std::cout << "Odd K0 decay:\n";
+            t_d->Print();
+          }
+        }
+      } else if (t->pdgid() == 223) {
+        auto t_daughters = ExtractDaughters(t, parts);
+        for (auto const& t_d : t_daughters) {
+          if (std::abs(t_d->pdgid()) == 211) {
+            info.pi_charged.push_back(t_d);
+          } else if (t_d->pdgid() == 111) {
+            info.pi_neutral.push_back(t_d);
+          } else {
+            std::cout << "Odd omega decay:\n";
+            t_d->Print();
+          }
+        }
+      }else {
         std::cout << "Odd had decay:\n";
         t->Print();
+        auto t_daughters = ExtractDaughters(t, parts);
+        for (auto const& t_d : t_daughters) {
+            t_d->Print();
+        }
       }
     }
     if (info.pi_charged.size() == 1) {
@@ -261,7 +340,6 @@ GenEvent_Tau HTTGenEvent::BuildTauInfo(
       info.hadronic_mode = 15;
     }
   }
-
   return info;
 }
 }

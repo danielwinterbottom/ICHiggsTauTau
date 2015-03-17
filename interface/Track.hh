@@ -99,6 +99,12 @@ class Track {
 
   /// The track \f$p_{T}\f$ error
   inline double pt_err() const { return pt_err_; }
+
+  /// The track quality flags
+  inline int quality() const { return quality_; }
+
+  /// hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)
+  inline int hits_miss_inner() const { return hits_miss_inner_; }
   /**@}*/
 
   /// @name Setters
@@ -157,6 +163,14 @@ class Track {
 
   /// @copybrief pt_err()
   inline void set_pt_err(double const& pt_err) { pt_err_ = pt_err; }
+
+  /// @copybrief quality()
+  inline void set_quality(int const& quality) { quality_ = quality; }
+
+  /// @copybrief hits_miss_inner()
+  inline void set_hits_miss_inner(int const& hits_miss_inner) {
+    hits_miss_inner_ = hits_miss_inner;
+  }
   /**@}*/
 
  private:
@@ -172,9 +186,13 @@ class Track {
   int16_t algorithm_;
   double pt_err_;
 
+  int quality_;
+
+  int hits_miss_inner_;
+
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Track, 4);
+  ClassDef(Track, 8);
  #endif
 };
 

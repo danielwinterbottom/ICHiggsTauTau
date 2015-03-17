@@ -1,0 +1,9 @@
+{
+  "job": {
+    "file_prefix": "",
+    "output_folder": "./",
+    "max_events": 50000,
+    "timings": false,
+    "apply_JEC": false
+  }
+}

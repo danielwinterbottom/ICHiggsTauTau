@@ -58,6 +58,9 @@ class Muon : public Candidate {
   /// Muon was reconstructed by the calo-muon algorithm
   inline bool is_calo() const { return is_calo_; }
 
+  /// Muon was reconstructed by the PF algorithm
+  inline bool is_pf() const { return is_pf_; }
+
   /// Normalised \f$\chi^2\f$ of the global track fit
   inline double gt_normalized_chi2() const { return gt_normalized_chi2_; }
 
@@ -171,6 +174,9 @@ class Muon : public Candidate {
 
   /// @copybrief is_calo()
   inline void set_is_calo(bool const& is_calo) { is_calo_ = is_calo; }
+
+  /// @copybrief is_pf()
+  inline void set_is_pf(bool const& is_pf) { is_pf_ = is_pf; }
 
   /// @copybrief gt_normalized_chi2()
   inline void set_gt_normalized_chi2(double const& gt_normalized_chi2) {
@@ -339,6 +345,7 @@ class Muon : public Candidate {
   bool is_global_;
   bool is_tracker_;
   bool is_calo_;
+  bool is_pf_;
   double gt_normalized_chi2_;
   int gt_valid_muon_hits_;
   int matched_stations_;
@@ -358,7 +365,7 @@ class Muon : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Muon, 2);
+  ClassDef(Muon, 3);
  #endif
 };
 

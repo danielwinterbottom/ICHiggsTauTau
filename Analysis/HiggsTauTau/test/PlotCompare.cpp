@@ -30,7 +30,7 @@ void SetStyle(ic::TH1PlotElement & ele, unsigned color, unsigned marker) {
   ele.set_marker_color(color);
   ele.set_line_color(color);
   ele.set_draw_line(false);
-  ele.set_line_width(1);
+  ele.set_line_width(2);
   ele.set_draw_fill(false);
   ele.set_draw_stat_error_y(true);
   ele.set_marker_style(marker);
@@ -103,8 +103,10 @@ int main(int argc, char* argv[]){
   bool log_y;
   bool norm_bins;
   string title_left;
+  string title_right;
   bool custom_y_axis_min;
   double y_axis_min;
+  double extra_pad;
 
   po::options_description config("Configuration");
   po::variables_map vm;
@@ -124,11 +126,13 @@ int main(int argc, char* argv[]){
     ("rebin",               po::value<unsigned>(&rebin)->default_value(1))
     ("ratio_axis_label",    po::value<string>(&ratio_axis_label)->default_value("Ratio"))
     ("title_left",          po::value<string>(&title_left)->default_value(""))
+    ("title_right",         po::value<string>(&title_right)->default_value(""))
     ("ratio_y_min",         po::value<double>(&ratio_y_min)->default_value(0.8))
     ("ratio_y_max",         po::value<double>(&ratio_y_max)->default_value(1.2))
     ("norm_bins",           po::value<bool>(&norm_bins)->default_value(false))
     ("custom_y_axis_min",   po::value<bool>(&custom_y_axis_min)->default_value(false))
     ("y_axis_min",          po::value<double>(&y_axis_min)->default_value(0.0))
+    ("extra_pad",           po::value<double>(&extra_pad)->default_value(1.15))
     ;
     po::store(po::command_line_parser(argc, argv).
               options(config).allow_unregistered().run(), vm);
@@ -201,7 +205,6 @@ int main(int argc, char* argv[]){
       elements.back().set_draw_line(true);
       elements.back().set_line_color(col);
       elements.back().set_draw_fill(true);
-
     }
   
   }
@@ -222,12 +225,14 @@ int main(int argc, char* argv[]){
 
   ic::Plot compare;
   compare.title_left = title_left;
+  compare.title_right = title_right;
   compare.output_filename = outname;
   compare.custom_x_axis_range = custom_x_axis_range;
   if (custom_x_axis_range){
     compare.x_axis_min = x_axis_min;
     compare.x_axis_max = x_axis_max;
   }
+  compare.extra_pad = extra_pad;
 
   std::for_each(elements.begin(),elements.end(), [&] (TH1PlotElement & x) {compare.AddTH1PlotElement(x);});
   std::for_each(relements.begin(),relements.end(), [&] (RatioPlotElement & x) {compare.AddRatioPlotElement(x);});
@@ -247,7 +252,6 @@ int main(int argc, char* argv[]){
   compare.ratio_y_axis_title = ratio_axis_label;
   compare.ratio_y_axis_min = ratio_y_min;
   compare.ratio_y_axis_max = ratio_y_max;
-  compare.extra_pad = 1.15;
 
   compare.y_axis_log = log_y;
 
