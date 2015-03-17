@@ -1,0 +1,7 @@
+{
+  "job": {
+    "file": "/Volumes/HDD/tuples/EventTree_test.root",
+    "output_folder": "output/genval/",
+    "output_name": "EventTree_test.root"
+  }
+}

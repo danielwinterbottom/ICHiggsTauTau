@@ -63,6 +63,7 @@ class HTTGenEvent : public ModuleBase {
  private:
   CLASS_MEMBER(HTTGenEvent, std::string, genparticle_label)
   CLASS_MEMBER(HTTGenEvent, std::string, genjet_label)
+  CLASS_MEMBER(HTTGenEvent, bool, is_pythia8)
 
  public:
   explicit HTTGenEvent(std::string const& name);
@@ -72,7 +73,8 @@ class HTTGenEvent : public ModuleBase {
   virtual int Execute(TreeEvent *event);
 
   GenEvent_Tau BuildTauInfo(GenParticle *tau,
-                            std::vector<GenParticle *> const &parts);
+                            std::vector<GenParticle *> const &parts,
+                            bool is_pythia8);
   virtual int PostAnalysis();
   // virtual void PrintInfo();
 };
