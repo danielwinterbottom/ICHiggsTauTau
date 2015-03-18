@@ -14,6 +14,47 @@
 
 namespace ic {
 
+bool ETLooseEle(Electron const* e);
+bool ETLooseTau(Tau const* t);
+bool ETTightEle(Electron const* e);
+bool ETTightTau(Tau const* t);
+
+bool MTLooseMuo(Muon const* m);
+bool MTLooseTau(Tau const* t);
+bool MTTightMuo(Muon const* m);
+bool MTTightTau(Tau const* t);
+
+bool SortByIsoThenPtE(Electron const* e1, Electron const* e2);
+bool SortByIsoThenPtM(Muon const* m1, Muon const* m2);
+bool SortByIsoThenPtT(Tau const* t1, Tau const* t2);
+bool SortByOSThenSumPt(CompositeCandidate const* c1,
+                       CompositeCandidate const* c2);
+bool SuperSortET(CompositeCandidate const* c1, CompositeCandidate const* c2);
+bool SuperSortMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
+
+template <class T, class U>
+std::vector<CompositeCandidate*> CompositeProducer(
+    TreeEvent* event, std::vector<T*> const& vec_first,
+    std::vector<U*> const& vec_second, std::string output) {
+  std::vector<std::pair<T*, U*> > pairs = MakePairs(vec_first, vec_second);
+  std::vector<CompositeCandidate> vec_out;
+  std::vector<CompositeCandidate*> ptr_vec_out;
+  for (unsigned i = 0; i < pairs.size(); ++i) {
+    vec_out.push_back(CompositeCandidate());
+    CompositeCandidate& cand_ref = vec_out.back();
+    cand_ref.AddCandidate("leg0", pairs[i].first);
+    cand_ref.AddCandidate("leg1", pairs[i].second);
+  }
+  event->Add(output + "Product", vec_out);
+  std::vector<CompositeCandidate>& vec_in =
+      event->Get<std::vector<CompositeCandidate> >(output + "Product");
+  ptr_vec_out.resize(vec_in.size());
+  for (unsigned i = 0; i < vec_in.size(); ++i) {
+    ptr_vec_out[i] = &(vec_in[i]);
+  }
+  return ptr_vec_out;
+}
+
 template <class Container, class Pred>
 Container copy_keep_if(Container& target, Pred pred) {
   Container res = target;
@@ -28,13 +69,28 @@ Container& keep_if(Container& target, Pred pred) {
   });
 }
 
+template <class T>
+std::vector<T> copy_n(std::vector<T> vec, unsigned n) {
+  std::vector<T> res;
+  for (unsigned i = 0; i < n && i < vec.size(); ++i) {
+    res.push_back(vec[0]);
+  }
+  return res;
+}
+
 
 class HTTPairStudy : public ModuleBase {
  private:
-  unsigned et_loose_pairs = 0;
-  unsigned et_loose_pairs_could = 0;
-  unsigned et_loose_matched = 0;
-  unsigned et_loose_passed = 0;
+  CLASS_MEMBER(HTTPairStudy, ic::channel, channel)
+  CLASS_MEMBER(HTTPairStudy, bool, do_loose)
+
+ private:
+  unsigned loose_pairs;
+  unsigned selected_pairs;
+  unsigned selected_matched_pairs;
+  unsigned selected_anymatched_pairs;
+
+
 
  public:
   HTTPairStudy(std::string const& name);
