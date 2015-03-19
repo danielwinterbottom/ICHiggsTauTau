@@ -6,6 +6,7 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Utilities/interface/HistoSet.h"
 #include "HiggsTauTau/interface/HTTConfig.h"
+#include "HiggsTauTau/interface/HTTTriggerFilter.h"
 #include "boost/range/algorithm_ext/erase.hpp"
 
 #include <string>
@@ -24,16 +25,24 @@ bool MTLooseTau(Tau const* t);
 bool MTTightMuo(Muon const* m);
 bool MTTightTau(Tau const* t);
 
-bool SortByIsoThenPtE(Electron const* e1, Electron const* e2);
-bool SortByIsoThenPtM(Muon const* m1, Muon const* m2);
-bool SortByIsoThenPtT(Tau const* t1, Tau const* t2);
+bool EMLooseEle(Electron const* e);
+bool EMLooseMuo(Muon const* m);
+bool EMTightEle(Electron const* e);
+bool EMTightMuo(Muon const* m);
+
+bool TTLooseTau(Tau const* t);
+bool TTTightTau(Tau const* t);
+
+
 bool SortByOSThenSumPt(CompositeCandidate const* c1,
                        CompositeCandidate const* c2);
 bool SuperSortET(CompositeCandidate const* c1, CompositeCandidate const* c2);
 bool SuperSortMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
+bool SuperSortEM(CompositeCandidate const* c1, CompositeCandidate const* c2);
+bool SuperSortTT(CompositeCandidate const* c1, CompositeCandidate const* c2);
 
 template <class T, class U>
-std::vector<CompositeCandidate*> CompositeProducer(
+std::vector<CompositeCandidate*> & CompositeProducer(
     TreeEvent* event, std::vector<T*> const& vec_first,
     std::vector<U*> const& vec_second, std::string output) {
   std::vector<std::pair<T*, U*> > pairs = MakePairs(vec_first, vec_second);
@@ -52,7 +61,8 @@ std::vector<CompositeCandidate*> CompositeProducer(
   for (unsigned i = 0; i < vec_in.size(); ++i) {
     ptr_vec_out[i] = &(vec_in[i]);
   }
-  return ptr_vec_out;
+  event->Add(output, ptr_vec_out);
+  return event->GetPtrVec<CompositeCandidate>(output);
 }
 
 template <class Container, class Pred>
@@ -69,26 +79,22 @@ Container& keep_if(Container& target, Pred pred) {
   });
 }
 
-template <class T>
-std::vector<T> copy_n(std::vector<T> vec, unsigned n) {
-  std::vector<T> res;
-  for (unsigned i = 0; i < n && i < vec.size(); ++i) {
-    res.push_back(vec[0]);
-  }
-  return res;
-}
-
-
 class HTTPairStudy : public ModuleBase {
  private:
   CLASS_MEMBER(HTTPairStudy, ic::channel, channel)
   CLASS_MEMBER(HTTPairStudy, bool, do_loose)
+  CLASS_MEMBER(HTTPairStudy, bool, do_gen_evt)
+  CLASS_MEMBER(HTTPairStudy, fwlite::TFileService*, fs)
 
  private:
   unsigned loose_pairs;
   unsigned selected_pairs;
   unsigned selected_matched_pairs;
   unsigned selected_anymatched_pairs;
+
+  HTTTriggerFilter trig_filter_;
+
+  TH1F *h_mtt_vis;
 
 
 
