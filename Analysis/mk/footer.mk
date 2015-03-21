@@ -16,7 +16,7 @@ endif
 # "wildcard" gets the files in src, "notdir" removes the directory part, "basename"
 # removes the extension, "addprefix" adds the full path to the obj directory and finally
 # "addsuffix" adds the .o extension
-OBJS_$(d) := $(addsuffix .o, $(addprefix $(d)/obj/,$(basename $(notdir $(wildcard $(d)/src/*.cc)))))
+OBJS_$(d) := $(addsuffix .o, $(addprefix $(d)/obj/,$(basename $(notdir $(wildcard $(d)/$(SRC_DIR)/*.$(SRC_EXT))))))
 ifdef DEBUG
 $(info Target object files:)
 $(foreach x,$(OBJS_$(d)),$(info -- Target file: $(x)))
@@ -86,7 +86,7 @@ endif
 
 # Setup the other libraries in the framework that this one depends on,
 # using the user-supplied list in the Rules.mk file.
-LIB_DEPS_$(d) := $(foreach x,$(LIB_DEPS),$(TOP)/$(x)/lib/libIC$(x).so)
+LIB_DEPS_$(d) := $(foreach x,$(LIB_DEPS),$(TOP)/$(x)/lib/libIC$(subst /,_,$(x)).so)
 
 # Add LIB_EXTRA, defined in Rules.mk for other external libraries to link
 # against in this directory
@@ -127,7 +127,7 @@ endif
 -include $(EXE_OBJS_$(d):.o=.d)
 
 # Rule for generating object files from source files
-$(d)/obj/%.o: $(d)/src/%.cc
+$(d)/obj/%.o: $(d)/$(SRC_DIR)/%.$(SRC_EXT)
 	@echo -e "$(COLOR_BL)Compiling object file $(subst $(TOP)/,,$@)$(NOCOLOR)"
 	$(DOECHO)$(CXX) $(CXXFLAGS) -fPIC -c $< -o $@
 	@echo -e "$(COLOR_CY)Generating dependency file $(subst $(TOP)/,,$(@:.o=.d))$(NOCOLOR)"
@@ -140,7 +140,7 @@ $(d)/obj/rootcint_dict.o: $(d)/obj/rootcint_dict.cc
 	@echo -e "$(COLOR_CY)Generating dependency file $(subst $(TOP)/,,$(@:.o=.d))$(NOCOLOR)"
 	@$(CXX) $(CXXFLAGS) -MM -MP -MT "$@" $< -o $(@:.o=.d)
 
-$(d)/obj/rootcint_dict.cc: $(DHEADERS_$(d)) $(d)/interface/LinkDef.h
+$(d)/obj/rootcint_dict.cc: $(DHEADERS_$(d)) $(d)/$(INC_DIR)/LinkDef.h
 	@echo -e "$(COLOR_YE)Generating dictionary $(subst $(TOP)/,,$@)$(NOCOLOR)"
 	$(DOECHO)$(ROOTSYS)/bin/rootcint -v3 -f $@ -c -p -I$(TOP) -I$(TOP)/../../.. -I$(ROOFITSYS)/include $^
 
@@ -198,7 +198,7 @@ clean_all :: clean_$(d)
 ########################################################################
 
 clean_$(d) :
-	rm -f $(subst clean_,,$@)/bin/* $(subst clean_,,$@)/obj/* $(subst clean_,,$@)/lib/*
+	rm -f $(subst clean_,,$@)/bin/* $(subst clean_,,$@)/obj/*.o $(subst clean_,,$@)/obj/*.d $(subst clean_,,$@)/lib/*.so
 
 clean_tree_$(d) : clean_$(d) $(foreach sd,$(SUBDIRS_$(d)),clean_tree_$(sd))
 

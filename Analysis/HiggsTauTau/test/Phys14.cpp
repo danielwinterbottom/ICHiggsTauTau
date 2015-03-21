@@ -6,7 +6,7 @@
 #include "boost/program_options.hpp"
 #include "TSystem.h"
 #include "Utilities/interface/json.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+// #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Utilities/interface/JsonTools.h"
 #include "Utilities/interface/FnRootTools.h"
@@ -30,9 +30,9 @@ using ic::Electron;
 
 int main(int argc, char* argv[]) {
   // Shorten: write a function that does this, or move the classes into Analysis
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
 
   vector<string> cfgs;
   vector<string> jsons;

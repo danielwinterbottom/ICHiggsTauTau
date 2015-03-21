@@ -1,3 +1,3 @@
 SUBDIRS   :=
-LIB_DEPS 	:=
+LIB_DEPS 	:= Objects
 LIB_EXTRA :=

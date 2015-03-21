@@ -23,7 +23,7 @@
 #include "boost/format.hpp"
 #include "boost/algorithm/string.hpp"
 #include "TSystem.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+// #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/program_options.hpp"
@@ -265,9 +265,9 @@ int main(int argc, char* argv[]){//main
   po::notify(vm);
 
   //Load necessary root libraries for custom class I/O
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
   
   //Define object which keeps track of variable names and files
   TrigEffAnalysis* trigeffana=new TrigEffAnalysis();

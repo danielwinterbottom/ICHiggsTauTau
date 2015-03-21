@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include "TSystem.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+// #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Core/interface/AnalysisBase.h"
 #include "Utilities/interface/JsonTools.h"
@@ -24,9 +24,9 @@ using std::string;
 
 int main(int argc, char* argv[]) {
   // Shorten: write a function that does this, or move the classes into Analysis
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
 
   Json::Value const js = ic::MergedJson(argc, argv);
 
