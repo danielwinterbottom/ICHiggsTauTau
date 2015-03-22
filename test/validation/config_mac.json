@@ -1,0 +1,18 @@
+{
+  "osx108_amd64_gcc481-CMSSW_7_0_7" : {
+    "build_root"        : "/Users/Andrew/Code/build/",
+    "cmssw_env_script"  : "/Users/Andrew/Code/scripts/cmssw_env_108_481.sh",
+    "cmssw_version"     : "CMSSW_7_0_7",
+    "cmssw_user"        : "ajgilbert",
+    "cmssw_branch"      : "htt-from-CMSSW_7_0_7",
+    "test_script"       : "test/validation/full_compile.sh"
+  },
+  "osx108_amd64_gcc481-CMSSW_7_3_2" : {
+    "build_root"        : "/Users/Andrew/Code/build/",
+    "cmssw_env_script"  : "/Users/Andrew/Code/scripts/cmssw_env_108_481.sh",
+    "cmssw_version"     : "CMSSW_7_3_2",
+    "cmssw_user"        : "ajgilbert",
+    "cmssw_branch"      : "CMSSW_7_3_2",
+    "test_script"       : "test/validation/just_scram.sh"
+  }
+}
