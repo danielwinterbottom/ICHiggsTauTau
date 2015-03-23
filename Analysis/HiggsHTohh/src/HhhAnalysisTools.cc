@@ -619,7 +619,7 @@ namespace ic {
     
     Value w_norm;
     if(method == 20){
-      fit_var="mt_1(40,0,160)";  
+      //fit_var="mt_1(40,0,160)";  
       //fit_var="met(20,0,100)";  
       //fit_var="pt_1(25,0,100)";  
       //fit_var="E_1(25,0,100)";  
@@ -628,7 +628,7 @@ namespace ic {
       //fit_var="pt_2(25,0,100)";  
       //fit_var="eta_2(30,-3,3)";  
       //fit_var="n_prebjets(9,-0.5,8.5)";  
-      //fit_var="prebjetpt_1(40,0,200)";   // Best so far
+      fit_var="prebjetpt_1(40,0,200)";   // Best so far
       //fit_var="prebjetbcsv_1(50,0,1)";  //also very good 
       //fit_var="prebjetEt_1(40,0,200)";   
       //fit_var="prebjetpt_2(40,0,200)";
@@ -1209,6 +1209,7 @@ namespace ic {
     double sf = GetLumiScale(sample);
     result.first *= sf;
     result.second *= sf;
+    //std::cout << sample << " " << result.first <<std::endl;
     return result;
   }
   std::pair<double, double> HhhAnalysis::GetLumiScaledRate(std::vector<std::string> const& samples, 
@@ -1748,9 +1749,10 @@ namespace ic {
 
     RooPlot* frame1 = mt_1.frame();
     frame1->SetTitle("");
-    frame1->GetXaxis()->SetTitle("m_{T} (GeV)");
+    frame1->GetXaxis()->SetTitle("Leading Jet p_{T} (GeV)");
     frame1->GetYaxis()->SetTitle("Events");
     frame1->GetYaxis()->SetTitleOffset(1.4);
+    frame1->SetMinimum(0.01);
     obsData->plotOn(frame1,RooFit::Name("data"));
     if(mode==0){
         bkgModel.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed),RooFit::Name("W"));
@@ -1762,14 +1764,15 @@ namespace ic {
         bkgModel2.plotOn(frame1,RooFit::LineColor(kRed),RooFit::Name("W+TT"));
     }
     TCanvas* c1 = new TCanvas("c1","c1",600,600);
+    frame1->SetMinimum(0.01);
     frame1->Draw("e0");
-    TLegend *leg1 = new TLegend(0.65,0.73,0.86,0.87);
+    TLegend *leg1 = new TLegend(0.60,0.70,0.86,0.87);
     leg1->SetFillColor(kWhite);
     leg1->SetLineColor(kWhite);
     leg1->AddEntry("data","Data","LP");
     leg1->AddEntry("W","W","LP");
-    leg1->AddEntry("TT","TT","LP");
-    leg1->AddEntry("W+TT","W+TT","LP");
+    leg1->AddEntry("TT","t#bar{t}","LP");
+    leg1->AddEntry("W+TT","W+t#bar{t}","LP");
     leg1->Draw();
     
     /*TH1* postfit_model = bkgModel.createHistogram("postfit_model", mt_1, RooFit::Binning(2000) );
