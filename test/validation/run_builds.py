@@ -11,6 +11,7 @@ from flask import Flask, request, abort
 import datetime
 import time
 import calendar
+requests.packages.urllib3.disable_warnings()
 
 parser = OptionParser()
 parser.add_option('-m', '--mode',
@@ -274,18 +275,18 @@ if __name__ == "__main__":
         t_start   = time.time()
         t_end     = t_start + interval
         while True:
-            print 'Next interval to run is: '
-            print time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(t_start)) + " -> " + time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(t_end))
+            # print 'Next interval to run is: '
+            # print time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(t_start)) + " -> " + time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(t_end))
             # is t_end still in the future?
             # If so we'll sleep until ready then check again
             time_now = time.time()
             if t_end > time_now:
                 sleep_time = t_end - time_now
-                print 'Need to wait for ' + str(sleep_time) + ' seconds...'
+                # print 'Need to wait for ' + str(sleep_time) + ' seconds...'
                 time.sleep(sleep_time + 0.5)
             else:
                 # We've passed the end of our time frame, so poll github
-                print 'OK - polling now...'
+                # print 'OK - polling now...'
                 pr_set = pollGitHub(opts.gh_user, opts.gh_token, t_start, t_end)
                 # See if we have any builds to do
                 for pr in pr_set:

@@ -36,7 +36,7 @@ if [ ! -d ${CMSSW_VERSION} ]; then
   set +x
   eval `scramv1 runtime -sh`
   set -x
-  git cms-addpkg FWCore/Version
+  git cms-addpkg -q FWCore/Version
   cd ${BUILD_DIR}
 fi
 
@@ -45,7 +45,7 @@ set +x
 eval `scramv1 runtime -sh`
 set -x
 
-git fetch https://github.com/${CMSSW_REPO}/cmssw.git ${CMSSW_CHECKOUT} && git checkout -f -q FETCH_HEAD
+git fetch -q https://github.com/${CMSSW_REPO}/cmssw.git ${CMSSW_CHECKOUT} && git checkout -f -q FETCH_HEAD
 git cms-sparse-checkout ${CMSSW_VERSION} HEAD
 git read-tree -mu HEAD
 
