@@ -3,7 +3,7 @@
     "file_prefix": "/Volumes/HDD/tuples/June6/MC_53X/",
      "output_folder": "./",
     "max_events": -1,
-    "timings": false,
-    "apply_JEC": false
-  }
+    "timings": true
+  },
+  "do_gen_evt" : true
 }
