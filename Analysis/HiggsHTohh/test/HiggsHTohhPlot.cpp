@@ -1124,6 +1124,7 @@ int main(int argc, char* argv[]){
 		double fb_lumi = ana.GetLumi() / 1000.;
 		string com = is_2012 ? "8" : "7";
 		plot.set_title_left((boost::format("CMS, %.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
+		//plot.set_title_left((boost::format("%.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
     std::string channel_fmt = ""; 
 		//if (channel_str == "et") 		plot.set_title_right("e#tau_{h}");
 		//if (channel_str == "mt") 		plot.set_title_right("#mu#tau_{h}");
