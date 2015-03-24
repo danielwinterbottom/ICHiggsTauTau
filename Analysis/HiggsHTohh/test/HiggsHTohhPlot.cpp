@@ -224,6 +224,7 @@ int main(int argc, char* argv[]){
 		ana.SetAlias("w_vbf_os", "!os");
 		ana.SetAlias("w_shape_os", "!os");
 	}
+    string cat_str = cat;
 	cat = ana.ResolveAlias(cat);
 
   double signal_xs = interpolate ? -1.0 : 1.0;
@@ -1126,6 +1127,7 @@ int main(int argc, char* argv[]){
 		plot.set_title_left((boost::format("CMS, %.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
 		//plot.set_title_left((boost::format("%.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
     std::string channel_fmt = ""; 
+    std::string category_fmt = ""; 
 		//if (channel_str == "et") 		plot.set_title_right("e#tau_{h}");
 		//if (channel_str == "mt") 		plot.set_title_right("#mu#tau_{h}");
 		//if (channel_str == "mtmet") plot.set_title_right("#mu_{soft}#tau_{h}");
@@ -1136,6 +1138,11 @@ int main(int argc, char* argv[]){
 		if (channel_str == "em") 		channel_fmt = "e#mu";
     ic::TextElement text(channel_fmt,0.08,0.21,0.82);
     plot.AddTextElement(text);
+    if(!(cat_str.find("2jet0tag") == string::npos) ) category_fmt = "2jet-0tag";
+    if(!(cat_str.find("2jet1tag") == string::npos) ) category_fmt = "2jet-1tag";
+    if(!(cat_str.find("2jet2tag") == string::npos) ) category_fmt = "2jet-2tag";
+    //Optional - add category label too
+   plot.set_title_right(category_fmt);
 	}
 	plot.GeneratePlot(hmap);
 
