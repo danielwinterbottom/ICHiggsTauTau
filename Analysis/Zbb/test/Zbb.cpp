@@ -10,7 +10,6 @@
 #include "TSystem.h"
 #include "TH1.h"
 // CMSSW
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 // CMSSW ICHiggsTauTau
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
@@ -90,9 +89,9 @@ int main(int argc, char* argv[]) {
   cout << format(param_fmt) % "is_data" % is_data;
 
   // Load necessary libraries for ROOT I/O of custom classes
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
 
   // Build a vector of input files
   vector<string> files = ic::ParseFileLines(filelist);

@@ -1,3 +1,3 @@
-SUBDIRS 	:= 
-LIB_DEPS 	:= Core Utilities Modules HiggsTauTau 
-LIB_EXTRA := -lCondFormatsJetMETObjects -L$(TOP)/HiggsHTohh/HHKinFit -lHHKinFit 
+SUBDIRS 	:= HHKinFit
+LIB_DEPS 	:= Objects Core Utilities Modules HiggsTauTau HiggsHTohh/HHKinFit
+LIB_EXTRA := -lCondFormatsJetMETObjects

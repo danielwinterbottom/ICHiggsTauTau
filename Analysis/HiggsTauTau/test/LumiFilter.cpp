@@ -5,7 +5,7 @@
 #include "boost/program_options.hpp"
 #include "boost/bind.hpp"
 #include "TSystem.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+// #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/AnalysisBase.h"
@@ -43,9 +43,9 @@ int main(int argc, char* argv[]){
   std::cout << "Placing output json in: " << output_json << std::endl;
 
 
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
   // Build a vector of input files
   std::vector<std::string> files = ParseFileLines(filelist);
   for (unsigned i = 0; i < files.size(); ++i) {

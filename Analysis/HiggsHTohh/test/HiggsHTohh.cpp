@@ -7,7 +7,7 @@
 #include "boost/function.hpp"
 #include "boost/format.hpp"
 #include "TSystem.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+// #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/AnalysisBase.h"
@@ -245,9 +245,9 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "bjet_regr_correction" % bjet_regr_correction;
 
   // Load necessary libraries for ROOT I/O of custom classes
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
 
   // Build a vector of input files
   vector<string> files = ParseFileLines(filelist);
