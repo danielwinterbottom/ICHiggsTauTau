@@ -78,6 +78,9 @@ parser.add_option("--sm", dest="proc_sm", action='store_true', default=False,
 parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False,
                   help="Process signal MSSM mc samples")
 
+parser.add_option("--Hhh", dest="proc_Hhh", action='store_true', default=False,
+                  help="Process signal H->hh mc samples")
+
 parser.add_option("--all", dest="proc_all", action='store_true', default=False,
                   help="Process all samples")
 
@@ -119,8 +122,8 @@ if options.do_2011:
 
 ### Do some validation of the input
 helpMsg = "Run 'higgsTauTau.py -h' for help."
-if not (options.proc_data or options.proc_bkg or options.proc_sm or options.proc_mssm or options.proc_all):
-  print 'Error, must run script with a least one of --data, --bkg, --sm, --mssm, --all. ' + helpMsg
+if not (options.proc_data or options.proc_bkg or options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all):
+  print 'Error, must run script with a least one of --data, --bkg, --sm, --mssm, --Hhh, --all. ' + helpMsg
   sys.exit(1)
 if not channels:
   print 'Error, no channels specified. ' + helpMsg
@@ -310,7 +313,14 @@ if options.proc_mssm or options.proc_all:
       'SUSYBBHToTauTau_M-'+mass
     ]
 
-
+if options.proc_Hhh or options.proc_all:
+  PREFIXOVERRIDE  = 'root://eoscms//eos/cms/store/user/rlane/httskims/'
+  Hmasses = ['260','270','280','290','300','310','320','330','340','350']
+  if options.short_signal: Hmasses = ['300']
+  for Hmass in Hmasses : 
+    signal_mc += [
+      'GluGluToHTohhTo2Tau2B_mH-'+Hmass
+    ]
 
 if options.proc_bkg or options.proc_all:
     for ch in channels:
@@ -431,7 +441,7 @@ if options.proc_bkg or options.proc_all:
 
 
 
-if options.proc_sm or options.proc_mssm or options.proc_all:
+if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
     for ch in channels:
       for sc in scales:
         for sa in signal_mc:

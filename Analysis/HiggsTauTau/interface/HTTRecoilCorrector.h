@@ -25,6 +25,7 @@ class HTTRecoilCorrector : public ModuleBase {
   CLASS_MEMBER(HTTRecoilCorrector, ic::mc, mc)
   CLASS_MEMBER(HTTRecoilCorrector, ic::era, era)
   CLASS_MEMBER(HTTRecoilCorrector, bool, w_hack)
+  CLASS_MEMBER(HTTRecoilCorrector, int, met_scale_mode)
 
 
 
