@@ -9,7 +9,6 @@ scram build -k
 cd ${CMSSW_BASE}/src/UserCode/ICHiggsTauTau/Analysis
 
 PACKAGES=(
- 'cd HiggsHTohh/HHKinFit; ./compile.sh; cd -'
  'make -k all'
 )
 
