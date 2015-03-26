@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <functional>
 #include "TH1F.h"
 #include "TGraphAsymmErrors.h"
 #include "boost/assign/list_of.hpp"
