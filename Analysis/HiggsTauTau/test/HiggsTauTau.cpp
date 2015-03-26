@@ -20,6 +20,7 @@
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/HTTWeights.h"
 #include "Modules/interface/QuarkGluonDiscriminatorStudy.h"
+#include "HiggsTauTau/interface/GenLevelStudy.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
@@ -1015,8 +1016,8 @@ int main(int argc, char* argv[]){
     .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label)
-    //.set_kinfit_mode(kinfit_mode)
-    //.set_bjet_regression(bjet_regr_correction)
+    .set_kinfit_mode(kinfit_mode)
+    .set_bjet_regression(bjet_regr_correction)
     .set_write_tree(true);
   if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
@@ -1203,8 +1204,8 @@ int main(int argc, char* argv[]){
 								  analysis.AddModule(&HhhemuMVABoth);
    }
    if (strategy == strategy::paper2013 &&channel ==channel::mt){
-                                  analysis.AddModule(&mtMVABoth);
-                                  analysis.AddModule(&mtMVACategory);
+                                  analysis.AddModule(&HhhmtMVABoth);
+                                  analysis.AddModule(&HhhmtMVACategory);
    }
    if(bjet_regr_correction) {
                                   analysis.AddModule(&hhhBJetRegression);
