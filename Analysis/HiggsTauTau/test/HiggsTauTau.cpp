@@ -21,6 +21,7 @@
 #include "HiggsTauTau/interface/HTTWeights.h"
 #include "Modules/interface/QuarkGluonDiscriminatorStudy.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
+#include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
 #include "HiggsTauTau/interface/HTTPrint.h"
 #include "Modules/interface/MakeRunStats.h"
@@ -37,11 +38,16 @@
 #include "HiggsTauTau/interface/TauDzFixer.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
 #include "HiggsTauTau/interface/HTTEMuMVA.h"
+#include "HiggsTauTau/interface/HhhEMuMVA.h"
+#include "HiggsTauTau/interface/HhhEMuMVABoth.h"
+#include "HiggsTauTau/interface/HhhMTMVABoth.h"
+#include "HiggsTauTau/interface/HhhMTMVACategory.h"
 #include "HiggsTauTau/interface/HTTL1MetCorrector.h"
 #include "HiggsTauTau/interface/HTTL1MetCut.h"
 #include "HiggsTauTau/interface/TauEfficiency.h"
 #include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "HiggsTauTau/interface/BTagCheck.h"
+#include "HiggsTauTau/interface/HhhMetScale.h"
 
 using boost::lexical_cast;
 using boost::bind;
@@ -75,17 +81,21 @@ int main(int argc, char* argv[]){
   unsigned bfake_mode;            // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned jes_mode;              // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned l1met_mode;              // 0 = no shift, 1 = shift down, 2 = shift up
+  unsigned metscale_mode;          // 0 = no shift, 1 = shift down, 2 = shift up
   unsigned mass_scale_mode;       // 0 = no shift, 1 = nominal, but in TSCALE_DOWN, 2 = shift up, 3 = shift up again, in TSCALE_UP
   unsigned svfit_mode;            // 0 = not run, 1 = generate jobs, 2 = read-in job output
   unsigned new_svfit_mode;        // 0 = not run, 1 = generate jobs, 2 = read-in job output
   string svfit_folder;            // Folder containing svfit jobs & output
   string svfit_override;          // Override the svfit results to use
+  unsigned kinfit_mode;           // 0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
   unsigned ztautau_mode;          // 0 = not run, 1 = select Z->tautau, 2 = select Z->ee and Z->mumu
   unsigned faked_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
   unsigned hadronic_tau_selector;    // 0 = not run, 1 = tau matched to gen. lepton, 2 = tau not matched to lepton
   unsigned mva_met_mode;          // 0 = standard mva met, 1 = mva met from vector (only when mva met is being used)
   bool make_sync_ntuple;          // Generate a sync ntuple
   bool quark_gluon_study;         // Run study on quark-gluon jet discriminators
+  bool make_gen_plots;            // Make generator level plots at start of chain
+  bool bjet_regr_correction;      // Apply b jet regression corrections
   string allowed_tau_modes;       // "" means all, otherwise "1,10"=allow 1prong1pizero,3prong
   bool moriond_tau_scale;         // Use new central tau scale shifts
   bool large_tscale_shift;        // Shift tau energy scale by +/- 6% instead of 3%
@@ -133,16 +143,20 @@ int main(int argc, char* argv[]){
       ("bfake_mode",          po::value<unsigned>(&bfake_mode)->default_value(0))
       ("jes_mode",            po::value<unsigned>(&jes_mode)->default_value(0))
       ("l1met_mode",          po::value<unsigned>(&l1met_mode)->default_value(0))
+      ("metscale_mode",       po::value<unsigned>(&metscale_mode)->default_value(0))
       ("mass_scale_mode",     po::value<unsigned>(&mass_scale_mode)->default_value(0))
       ("svfit_mode",          po::value<unsigned>(&svfit_mode)->default_value(0))
       ("new_svfit_mode",      po::value<unsigned>(&new_svfit_mode)->default_value(0))
       ("svfit_folder",        po::value<string>(&svfit_folder)->default_value(""))
       ("svfit_override",      po::value<string>(&svfit_override)->default_value(""))
+      ("kinfit_mode",         po::value<unsigned>(&kinfit_mode)->default_value(0))
       ("ztautau_mode",        po::value<unsigned>(&ztautau_mode)->default_value(0))
       ("faked_tau_selector",  po::value<unsigned>(&faked_tau_selector)->default_value(0))
       ("hadronic_tau_selector",  po::value<unsigned>(&hadronic_tau_selector)->default_value(0))
       ("mva_met_mode",        po::value<unsigned>(&mva_met_mode)->default_value(1))
       ("quark_gluon_study",   po::value<bool>(&quark_gluon_study)->default_value(false))
+      ("bjet_regr_correction",po::value<bool>(&bjet_regr_correction)->default_value(false))
+      ("make_gen_plots",      po::value<bool>(&make_gen_plots)->default_value(false))
       ("make_sync_ntuple",    po::value<bool>(&make_sync_ntuple)->default_value(false))
       ("moriond_tau_scale",   po::value<bool>(&moriond_tau_scale)->default_value(false))
       ("large_tscale_shift",  po::value<bool>(&large_tscale_shift)->default_value(false))
@@ -178,6 +192,15 @@ int main(int argc, char* argv[]){
   if (jes_mode == 2) output_folder += "JES_UP/";
   if (l1met_mode == 1) output_folder += "L1MET_DOWN/";
   if (l1met_mode == 2) output_folder += "L1MET_UP/";
+  if (metscale_mode == 1) { 
+    output_folder += "MET_DOWN/";
+    svfit_folder += "MET_DOWN/";
+  }
+  if (metscale_mode == 2) {
+    output_folder += "MET_UP/";
+    svfit_folder += "MET_UP/";
+  }
+  
   
 
 //  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
@@ -208,6 +231,7 @@ int main(int argc, char* argv[]){
     std::cout << boost::format(param_fmt) % "svfit_folder" % svfit_folder;
     std::cout << boost::format(param_fmt) % "svfit_override" % svfit_override;
   }
+  std::cout << boost::format(param_fmt) % "kinfit_mode" % kinfit_mode;
   std::cout << boost::format(param_fmt) % "ztautau_mode" % ztautau_mode;
   std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector;
   std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector;
@@ -217,6 +241,8 @@ int main(int argc, char* argv[]){
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
   std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
   std::cout << boost::format(param_fmt) % "pu_id_training" % pu_id_training;
+  std::cout << boost::format(param_fmt) % "make_gen_plots" % make_gen_plots;
+  std::cout << boost::format(param_fmt) % "bjet_regr_correction" % bjet_regr_correction;
 
   // Load necessary libraries for ROOT I/O of custom classes
   // gSystem->Load("libFWCoreFWLite.dylib");
@@ -517,7 +543,13 @@ int main(int argc, char* argv[]){
 
   HTTEMuExtras emuExtras("EMuExtras");
   HTTEMuMVA emuMVA = HTTEMuMVA("EMuMVA");
+  //Some attempts at MVA for the H->hh analysis, could possibly be used in the future
+  HhhEMuMVA HhhemuMVA = HhhEMuMVA("HhhEMuMVA");
+  HhhEMuMVABoth HhhemuMVABoth = HhhEMuMVABoth("HhhEMuMVABoth");
 
+  HhhMTMVABoth HhhmtMVABoth = HhhMTMVABoth("HhhMTMVABoth"); 
+  HhhMTMVACategory HhhmtMVACategory = HhhMTMVACategory("HhhMTMVACategory");
+  
   CopyCollection<Electron>  
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
 
@@ -663,6 +695,8 @@ int main(int argc, char* argv[]){
   // Tau Modules
   // ------------------------------------------------------------------------------------
   bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
+                        || (output_name.find("HTohh")                 != output_name.npos)
+                        || (output_name.find("AToZh")                 != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
                         || (output_name.find("Embedded")              != output_name.npos)
                         || (output_name.find("RecHit")                != output_name.npos) );
@@ -848,6 +882,10 @@ int main(int argc, char* argv[]){
 
   CopyCollection<PFJet>
     filteredJetCopyCollection("CopyFilteredJets","pfJetsPFlow","pfJetsPFlowFiltered");
+  
+  HhhBJetRegression hhhBJetRegression = HhhBJetRegression
+  ("hhhBJetRegression")
+  .set_jets_label("pfJetsPFlow");
    
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
@@ -871,8 +909,16 @@ int main(int argc, char* argv[]){
     .set_mc(mc)
     .set_met_label(met_label)
     .set_strategy(strategy)
+    //option to take met scale uncertainty from recoil corrector files - off for now as files have over-inflated uncertainties
+    //.set_met_scale_mode(metscale_mode)
     .set_w_hack(true);
 
+  //Met scale by hand for now
+  HhhMetScale hhhMetScale = HhhMetScale("HhhMetScale")
+    .set_met_scale_mode(metscale_mode)
+    .set_met_label(met_label)
+    .set_scale_shift(0.04);
+   
   HTTWeights httWeights = HTTWeights("HTTWeights")
     .set_channel(channel)
     .set_era(era)
@@ -949,6 +995,16 @@ int main(int argc, char* argv[]){
     ("QuarkGluonDiscriminatorStudy")
   .set_fs(fs);  
   
+  GenLevelStudy genLevelStudy = GenLevelStudy
+    ("GenLevelStudy")
+  .set_fs(fs) 
+  .set_make_plots(true);
+  
+  GenLevelStudy genLevelStudyPostAna = GenLevelStudy
+    ("GenLevelStudyPostAna")
+  .set_fs(fs) 
+  .set_check_match(true);
+  
   // ------------------------------------------------------------------------------------
   // Category Modules
   // ------------------------------------------------------------------------------------  
@@ -959,6 +1015,8 @@ int main(int argc, char* argv[]){
     .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label)
+    //.set_kinfit_mode(kinfit_mode)
+    //.set_bjet_regression(bjet_regr_correction)
     .set_write_tree(true);
   if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
@@ -1015,6 +1073,7 @@ int main(int argc, char* argv[]){
   httPrint.set_skip_events(false);
   if (to_check.size() > 0)        analysis.AddModule(&eventChecker);
 
+  if(make_gen_plots) analysis.AddModule(&genLevelStudy);
   if ( (channel == channel::etmet || 
         channel == channel::mtmet)
         && !is_data )             analysis.AddModule(&httL1MetCorrector); 
@@ -1119,6 +1178,8 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
                                   analysis.AddModule(&httRecoilCorrector);
+    if(metscale_mode > 0 
+      && !is_data )               analysis.AddModule(&hhhMetScale);  
 
     if (svfit_mode > 0 && !(svfit_override != "" && svfit_mode == 1)) {
                                   analysis.AddModule(&svfit);
@@ -1136,9 +1197,18 @@ int main(int argc, char* argv[]){
    if (is_embedded && era == era::data_2012_rereco) {
                                   analysis.AddModule(&rechitWeights);
    }
-    if (strategy == strategy::paper2013 && channel == channel::em) {
+   if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
-    }
+                                  analysis.AddModule(&HhhemuMVA);
+								  analysis.AddModule(&HhhemuMVABoth);
+   }
+   if (strategy == strategy::paper2013 &&channel ==channel::mt){
+                                  analysis.AddModule(&mtMVABoth);
+                                  analysis.AddModule(&mtMVACategory);
+   }
+   if(bjet_regr_correction) {
+                                  analysis.AddModule(&hhhBJetRegression);
+   }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
     if (make_sync_ntuple)         analysis.AddModule(&httSync);
     if (!quark_gluon_study)       analysis.AddModule(&httCategories);
@@ -1149,6 +1219,7 @@ int main(int argc, char* argv[]){
   if (do_skim) {
     if (faked_tau_selector > 0)   analysis.AddModule(&httPairSelector);
   }
+  if(make_gen_plots) analysis.AddModule(&genLevelStudyPostAna);
 
 
   analysis.RunAnalysis();
