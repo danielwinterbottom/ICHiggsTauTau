@@ -3,10 +3,14 @@
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPredicates.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnPairs.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/HHKinFit/include/HHKinFitMaster.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/HHKinFit/include/HHDiJetKinFitMaster.h"
 
 #include "TMVA/Reader.h"
 #include "TVector3.h"
 #include "boost/format.hpp"
+#include "TMath.h"
+#include "TLorentzVector.h"
 
 namespace ic {
 
@@ -21,6 +25,8 @@ namespace ic {
       write_tree_ = true;
       write_plots_ = false;
       experimental_ = false;
+      bjet_regression_ = false;
+      kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
   }
 
   HTTCategories::~HTTCategories() {
@@ -50,6 +56,8 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
       std::cout << boost::format(param_fmt()) % "write_plots"     % write_plots_;
       std::cout << boost::format(param_fmt()) % "experimental"    % experimental_;
+      std::cout << boost::format(param_fmt()) % "kinfit_mode"     % kinfit_mode_;
+      std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
       if (write_tree_) {
         outtree_ = fs_->make<TTree>("ntuple","ntuple");
@@ -84,6 +92,8 @@ namespace ic {
         outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
         outtree_->Branch("n_bjets",           &n_bjets_);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
+        outtree_->Branch("n_jets_csv",        &n_jets_csv_);
+        outtree_->Branch("n_bjets_csv",       &n_bjets_csv_);
         outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
         outtree_->Branch("n_jetsingap",       &n_jetsingap_);
         outtree_->Branch("jpt_1",             &jpt_1_);
@@ -94,8 +104,45 @@ namespace ic {
         outtree_->Branch("bpt_1",             &bpt_1_);
         outtree_->Branch("beta_1",            &beta_1_);
         outtree_->Branch("bcsv_1",            &bcsv_1_);
+        outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
+        outtree_->Branch("jet_csvEt_1",       &jet_csvEt_1_);
+        outtree_->Branch("jet_csveta_1",      &jet_csveta_1_);
+        outtree_->Branch("jet_csvbcsv_1",     &jet_csvbcsv_1_);
+        outtree_->Branch("jet_csvpt_2",       &jet_csvpt_2_);
+        outtree_->Branch("jet_csvpt_bb",	  &jet_csvpt_bb_);
+        outtree_->Branch("jet_csv_dR",		  &jet_csv_dR_);
+        outtree_->Branch("jet_csveta_2",      &jet_csveta_2_);
+        outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
         outtree_->Branch("mjj",               &mjj_);
+        outtree_->Branch("mjj_h",             &mjj_h_);
+        outtree_->Branch("mbb_h",             &mbb_h_);
+        outtree_->Branch("mjj_tt",            &mjj_tt_);
+        outtree_->Branch("m_H_best",               &m_H_best_);
+        outtree_->Branch("m_H_chi2_best",               &m_H_chi2_best_);
+        outtree_->Branch("pull_balance_H_best", &pull_balance_H_best_);
+        outtree_->Branch("convergence_H_best", &convergence_H_best_); 
+        outtree_->Branch("m_H_hZ",          &m_H_hZ_);
+        outtree_->Branch("m_H_hZ_chi2",     &m_H_hZ_chi2_);
+        outtree_->Branch("pull_balance_hZ", &pull_balance_hZ_);
+        outtree_->Branch("convergence_hZ", &convergence_hZ_);
+        outtree_->Branch("m_H_Zh",          &m_H_Zh_);
+        outtree_->Branch("m_H_Zh_chi2",     &m_H_Zh_chi2_);
+        outtree_->Branch("pull_balance_Zh",  &pull_balance_Zh_);
+        outtree_->Branch("convergence_Zh",  &convergence_Zh_);
+        outtree_->Branch("m_H_hh",     &m_H_hh_);
+        outtree_->Branch("m_H_hh_all",     &m_H_hh_all_);
+        outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
+        outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
+        outtree_->Branch("convergence_hh", &convergence_hh_);
+        outtree_->Branch("m_bb",     &m_bb_);
+        outtree_->Branch("m_bb_chi2",     &m_bb_chi2_);
+        outtree_->Branch("pull_balance_bb", &pull_balance_bb_);
+        outtree_->Branch("convergence_bb", &convergence_bb_);
         outtree_->Branch("jdeta",             &jdeta_);
+        outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
+        outtree_->Branch("jet_csv_dphi",               &jet_csv_dphi_);
+        outtree_->Branch("jet_csv_deta",             &jet_csv_deta_);
+        outtree_->Branch("jet_csv_dtheta",             &jet_csv_dtheta_);
         outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
         outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
         outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
@@ -243,6 +290,8 @@ namespace ic {
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
     Met const* met = event->GetPtr<Met>(met_label_);
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+    std::vector<PFJet*> corrected_jets;
+    if(bjet_regression_) corrected_jets = event->GetPtrVec<PFJet>("pfJetsPFlowCorrected");
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> lowpt_jets = jets;
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
@@ -252,14 +301,22 @@ namespace ic {
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.244);
+    //Extra set of jets which are CSV ordered is required for the H->hh analysis
+    std::vector<PFJet*> jets_csv = prebjets;
+    std::vector<PFJet*> bjets_csv = prebjets;
+    std::sort(jets_csv.begin(), jets_csv.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
+    std::vector<std::pair<PFJet*,PFJet*> > jet_csv_pairs;
+    if(bjet_regression_) jet_csv_pairs = MatchByDR(jets_csv, corrected_jets, 0.5, true, true);
 
     // Instead of changing b-tag value in the promote/demote method we look for a map of bools
     // that say whether a jet should pass the WP or not
     if (event->Exists("retag_result")) {
       auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
+      ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
     } else {
       ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
+      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
     } 
     
     // Define event properties
@@ -377,7 +434,7 @@ namespace ic {
     n_jets_ = jets.size();
     n_lowpt_jets_ = lowpt_jets.size();
     n_bjets_ = bjets.size();
-    n_prebjets_ = prebjets.size();
+    n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
 
     if (n_jets_ >= 1) {
@@ -442,12 +499,218 @@ namespace ic {
       beta_1_ = -9999;
     }
 
-    if (prebjets.size() >= 1) {
-      bcsv_1_ = prebjets[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+    if (jets_csv.size() >= 1) {
+      bcsv_1_ = jets_csv[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
     } else {
       bcsv_1_ = -9999;
     }
     emu_csv_ = (bcsv_1_ > 0.244) ? bcsv_1_ : -1.0;
+
+
+    n_jets_csv_ = jets_csv.size();
+    n_bjets_csv_ = bjets_csv.size();
+
+    if (n_jets_csv_ >= 1) {
+      jet_csvpt_1_ = jets_csv[0]->pt();
+      if(bjet_regression_) jet_csvpt_1_ = jet_csv_pairs[0].second->pt();
+      jet_csvEt_1_ = std::sqrt(jets_csv[0]->pt()*jets_csv[0]->pt() + jets_csv[0]->M()*jets_csv[0]->M());
+      if(bjet_regression_) jet_csvEt_1_ = std::sqrt(jet_csvpt_1_*jet_csvpt_1_ + jet_csv_pairs[0].second->M()*jet_csv_pairs[0].second->M());
+      jet_csveta_1_ = jets_csv[0]->eta();
+      jet_csvbcsv_1_ = jets_csv[0]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+      std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
+      std::vector<ic::Jet *> leadjet = { jets_csv[0] };
+      std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
+    } else {
+      jet_csvpt_1_ = -9999;
+      jet_csvEt_1_ = -9999;
+      jet_csveta_1_ = -9999;
+      jet_csvbcsv_1_ = -9999;
+    }
+    
+    if (n_jets_csv_ >= 2) {
+      jet_csvpt_2_ = jets_csv[1]->pt();
+      if(bjet_regression_) jet_csvpt_2_ = jet_csv_pairs[1].second->pt();
+      jet_csvpt_bb_ = (jets_csv[0]->vector()+jets_csv[1]->vector()).pt();
+      jet_csv_dR_ = std::fabs(ROOT::Math::VectorUtil::DeltaR(jets_csv[0]->vector(),jets_csv[1]->vector()));
+      jet_csveta_2_ = jets_csv[1]->eta();
+      jet_csvbcsv_2_ = jets_csv[1]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+      jet_csv_mjj_ = (jets_csv[0]->vector() + jets_csv[1]->vector()).M();
+      if(bjet_regression_) jet_csv_mjj_ = (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector()).M();
+      jet_csv_deta_ = fabs(jets_csv[0]->eta() - jets_csv[1]->eta());
+      jet_csv_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(jets_csv[0]->vector(), jets_csv[1]->vector()));
+      jet_csv_dtheta_ = std::fabs((jets_csv[0]->vector().theta() -  jets_csv[1]->vector().theta()));
+      mjj_tt_= (jets_csv[0]->vector() + jets_csv[1]->vector() + ditau->vector() + met->vector()).M();
+      if(bjet_regression_) mjj_tt_= (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector() + ditau->vector() + met->vector()).M();
+      if (event->Exists("svfitHiggs")) {
+        mjj_h_= (jets_csv[0]->vector() + jets_csv[1]->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
+        if(bjet_regression_) mjj_h_= (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
+      } else {
+        mjj_h_ = -9999;
+      }
+      if(kinfit_mode_>0) {
+        std::vector<Int_t> hypo_mh1;
+        hypo_mh1.push_back(125);
+        //Option to additionally run results from Zh and hZ hypotheses
+        if(kinfit_mode_ == 2) hypo_mh1.push_back(90);
+        std::vector<Int_t> hypo_mh2;
+        hypo_mh2.push_back(125);
+        if(kinfit_mode_ == 2) hypo_mh2.push_back(90);
+
+        TLorentzVector b1      = TLorentzVector(jets_csv[0]->vector().px(),jets_csv[0]->vector().py(),jets_csv[0]->vector().pz(), jets_csv[0]->vector().E());
+        if(bjet_regression_) b1 = TLorentzVector(jet_csv_pairs[0].second->vector().px(),jet_csv_pairs[0].second->vector().py(),jet_csv_pairs[0].second->vector().pz(),jet_csv_pairs[0].second->vector().E());
+        TLorentzVector b2      = TLorentzVector(jets_csv[1]->vector().px(),jets_csv[1]->vector().py(),jets_csv[1]->vector().pz(), jets_csv[1]->vector().E());
+        if(bjet_regression_) b2 = TLorentzVector(jet_csv_pairs[1].second->vector().px(),jet_csv_pairs[1].second->vector().py(),jet_csv_pairs[1].second->vector().pz(),jet_csv_pairs[1].second->vector().E());
+        TLorentzVector tau1vis      = TLorentzVector(lep1->vector().px(),lep1->vector().py(),lep1->vector().pz(), lep1->vector().E());
+        TLorentzVector tau2vis      = TLorentzVector(lep2->vector().px(),lep2->vector().py(),lep2->vector().pz(), lep2->vector().E());
+        TLorentzVector ptmiss  = TLorentzVector(met->vector().px(),met->vector().py(),0,met->vector().pt());
+        TLorentzVector higgs;
+        if (event->Exists("svfitHiggs")) {
+          higgs = TLorentzVector(event->Get<Candidate>("svfitHiggs").vector().px(),event->Get<Candidate>("svfitHiggs").vector().py(),event->Get<Candidate>("svfitHiggs").vector().pz(),event->Get<Candidate>("svfitHiggs").vector().E());
+        }
+        TMatrixD metcov(2,2);
+        metcov(0,0)=met->xx_sig();
+        metcov(1,0)=met->yx_sig();
+        metcov(0,1)=met->xy_sig();
+        metcov(1,1)=met->yy_sig();
+            
+        //Default version of fitting using visible products plus met
+        HHKinFitMaster kinFits = HHKinFitMaster(&b1,&b2,&tau1vis,&tau2vis);
+        kinFits.setAdvancedBalance(&ptmiss,metcov);
+        kinFits.addMh1Hypothesis(hypo_mh1);
+        kinFits.addMh2Hypothesis(hypo_mh2);
+        kinFits.doFullFit();
+        //Best hypothesis saved. For kinfit_mode_==1 this is identical to m_H_hh (provided the cuts pull_balance_hh > 0 && convergence_hh>0 are applied)
+        //since only that hypothesis is run
+        m_H_best_ = kinFits.getBestMHFullFit();
+        m_H_chi2_best_ = kinFits.getBestChi2FullFit();
+        std::pair<Int_t,Int_t> bestHypo = kinFits.getBestHypoFullFit();
+        std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_chi2 = kinFits.getChi2FullFit();
+        std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_mH = kinFits.getMHFullFit();
+        std::map<std::pair<Int_t,Int_t>,Double_t> fit_results_pull_balance = kinFits.getPullBalanceFullFit();
+        std::map<std::pair<Int_t,Int_t>,Int_t> fit_convergence = kinFits.getConvergenceFullFit();
+        std::pair<Int_t,Int_t> hypoZh(90,125);
+        std::pair<Int_t,Int_t> hypohZ(125,90);
+        std::pair<Int_t,Int_t> hypohh(125,125);
+        //Save results for 125,125 hypothesis
+        m_H_hh_ = fit_results_mH.at(hypohh);
+        m_H_hh_chi2_ = fit_results_chi2.at(hypohh);
+        pull_balance_hh_ = fit_results_pull_balance.at(hypohh);
+        convergence_hh_ = fit_convergence.at(hypohh);
+        
+        //This variable is filled with mttbb if the event fails convergence
+        m_H_hh_all_ = m_H_hh_;
+        if(convergence_hh_ == -2) m_H_hh_all_ = mjj_tt_;
+        
+        if(bestHypo.first>0){
+          pull_balance_H_best_ = fit_results_pull_balance.at(bestHypo);
+          convergence_H_best_ = fit_convergence.at(bestHypo);
+        } else {
+          pull_balance_H_best_ = -9999;
+          convergence_H_best_ = -9999;
+        }
+
+        if(kinfit_mode_==3) {
+          HHDiJetKinFitMaster DiJetKinFits = HHDiJetKinFitMaster(&b1,&b2);
+          DiJetKinFits.addMhHypothesis(125.0);
+          DiJetKinFits.doFullFit();
+          m_bb_ = (DiJetKinFits.getFitJet1() + DiJetKinFits.getFitJet2()).M();
+          //m_bb_chi2_ = DiJetKinFits.GetChi2();
+          //pull_balance_bb_ = fit_results_pull_balance.at(125.0);
+          //convergence_bb_ = DiJetKinFits.GetConvergence();
+          if (event->Exists("svfitHiggs")) {
+            mbb_h_= (DiJetKinFits.getFitJet1() + DiJetKinFits.getFitJet2() + higgs ).M();
+          } else {
+            mbb_h_ = -9999;  
+          }
+        } else { 
+          m_bb_ = -9999;  
+          m_bb_chi2_ = -9999;  
+          pull_balance_bb_ = -9999;  
+          convergence_bb_ = -9999; 
+          mbb_h_ = -9999;
+        }
+        
+        //Option to additionally save results from Zh and hZ hypotheses if they have been run
+        if(kinfit_mode_ == 2) {
+          m_H_Zh_ = fit_results_mH.at(hypoZh);
+          m_H_Zh_chi2_ = fit_results_chi2.at(hypoZh);
+          pull_balance_Zh_ = fit_results_pull_balance.at(hypoZh);
+          convergence_Zh_ = fit_convergence.at(hypoZh);
+          m_H_hZ_ = fit_results_mH.at(hypohZ);
+          m_H_hZ_chi2_ = fit_results_chi2.at(hypohZ);
+          pull_balance_hZ_ = fit_results_pull_balance.at(hypohZ);
+          convergence_hZ_ = fit_convergence.at(hypohZ);
+        } else {
+          m_H_Zh_ = -9999;
+          m_H_Zh_chi2_ = -9999;
+          pull_balance_Zh_ = -9999;
+          convergence_Zh_ = -9999;
+          m_H_hZ_ = -9999;
+          m_H_hZ_chi2_ = -9999;
+          pull_balance_hZ_ = -9999;
+          convergence_hZ_ = -9999;
+        }
+      } else {
+        pull_balance_H_best_=-9999;
+        convergence_H_best_=-9999;
+        m_H_best_ = -9999;
+        m_H_chi2_best_=-9999;
+        pull_balance_Zh_=-9999;
+        convergence_Zh_=-9999;
+        m_H_Zh_ = -9999;
+        m_H_Zh_chi2_=-9999;
+        pull_balance_hZ_=-9999;
+        convergence_hZ_=-9999;
+        m_H_hZ_ = -9999;
+        m_H_hZ_chi2_ = -9999;
+        pull_balance_hh_=-9999;
+        convergence_hh_=-9999;
+        m_H_hh_ = -9999;
+        m_H_hh_all_ = -9999;
+        m_H_hh_chi2_ = -9999;
+        m_bb_ = -9999;  
+        m_bb_chi2_ = -9999;  
+        pull_balance_bb_ = -9999;  
+        convergence_bb_ = -9999; 
+        mbb_h_ = -9999;
+      }      
+    } else {
+      jet_csvpt_2_ = -9999;
+      jet_csvpt_bb_ = -9999;
+      jet_csv_dR_ = -9999;
+      jet_csveta_2_ = -9999;
+      jet_csvbcsv_2_ = -9999;
+      jet_csv_mjj_ = -9999;
+      jet_csv_deta_ = -9999;
+      jet_csv_dphi_ = -9999;
+      jet_csv_dtheta_ = -9999;
+      mjj_h_ = -9999;
+      mjj_tt_ = -9999;
+      m_H_best_ = -9999;
+      m_H_chi2_best_=-9999;
+      pull_balance_H_best_ = -9999;
+      convergence_H_best_ = -9999;
+      m_H_Zh_=-9999;
+      m_H_Zh_chi2_=-9999;
+      pull_balance_Zh_=-9999;
+      convergence_Zh_=-9999;
+      m_H_hZ_ = -9999;
+      m_H_hZ_chi2_ = -9999;
+      pull_balance_hZ_=-9999;
+      convergence_hZ_=-9999;
+      m_H_hh_ = -9999;
+      m_H_hh_all_ = -9999;
+      m_H_hh_chi2_ = -9999;
+      pull_balance_hh_=-9999;
+      convergence_hh_=-9999;
+      m_bb_ = -9999;  
+      m_bb_chi2_ = -9999;  
+      pull_balance_bb_ = -9999;  
+      convergence_bb_ = -9999; 
+      mbb_h_ = -9999;
+    }
+    
+
 
     if ((event->Exists("genParticlesEmbedded") || event->Exists("genParticles")) && os_ && mt_1_ <30.) {
       // recalculate met
