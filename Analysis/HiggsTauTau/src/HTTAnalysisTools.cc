@@ -14,10 +14,18 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/th1fmorph.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
 #include "TPad.h"
+#include "TCanvas.h"
 #include "TROOT.h"
 #include "TEfficiency.h"
 #include "TEntryList.h"
 #include "TMath.h"
+#include "TH1.h"
+#include "TLegend.h"
+#include "RooDataHist.h"
+#include "RooHistPdf.h"
+#include "RooRealVar.h"
+#include "RooAddPdf.h"
+#include "RooPlot.h"
 
 namespace ic {
 
@@ -310,6 +318,12 @@ namespace ic {
       sample_names_.push_back("ZH_HToTauTau_M-"+m);
     }
   }
+  void HTTAnalysis::AddSMHbbSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("WH_WToLNu_HToBB_M-"+m);
+      sample_names_.push_back("ZH_ZToLL_HToBB_M-"+m);
+    }
+  }
   void HTTAnalysis::AddHWWSignalSamples(std::vector<std::string> masses) {
     if (year_ == "2012") {
       for (auto m : masses) {
@@ -332,6 +346,27 @@ namespace ic {
           sample_names_.push_back("VBF_HToWWToLNuTauNu_M-"+m);          
         }
       }      
+    }
+  }
+  void HTTAnalysis::AddHhhSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m);
+      sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
+      sample_names_.push_back("GluGluToAToZhToLLTauTau_mA-"+m);
+     // sample_names_.push_back("GluGluToAToZhToBBTauTau_mA-"+m);
+    }
+  }
+  void HTTAnalysis::AddMSSMbbHSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
+      //sample_names_.push_back("SUSYBBHTohhTo2Tau2B_mH-"+m);
+    }
+  }
+  
+  void HTTAnalysis::AddHighMassSignalSamples(std::vector<std::string> masses) {
+    for (auto m : masses) {
+      sample_names_.push_back("RadionToHH_2Tau_2b_M-"+m);
+      sample_names_.push_back("GravitonToHH_2Tau_2b_M-"+m);
     }
   }
 
@@ -448,6 +483,10 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      if (method == 24) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
+      if (method == 27) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
+      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
       zl_norm = this->GetLumiScaledRate("DYJetsToLL-L"+dy_soup_, sel, cat, wt);
       zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L"+dy_soup_, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
@@ -481,6 +520,10 @@ namespace ic {
       if (method == 6)  zll_shape_cat = this->ResolveAlias("btag_low_loose");
       if (method == 7)  zll_shape_cat = this->ResolveAlias("btag_high_loose");
       if (method == 12) zll_shape_cat = this->ResolveAlias("btag_loose");
+      if (method == 15) zll_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+      if (method == 16) zll_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
+      if (method == 24) zll_shape_cat = this->ResolveAlias("2jet1tag_loose");
+      if (method == 27) zll_shape_cat = this->ResolveAlias("2jet2tag_loose");
       zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt);
       zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, zll_shape_cat, wt);
       if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
@@ -543,11 +586,12 @@ namespace ic {
   HTTAnalysis::HistValuePair HTTAnalysis::GenerateW(unsigned method, std::string var, std::string /*sel*/, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateW] ----------------------------------------------------------\n";
     std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+    std::string fit_var;
     std::string w_extrap_cat = cat;
     std::string w_extrp_sdb_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("w_sdb");
     std::string w_extrp_sig_sel = this->ResolveAlias("w_os")+" && "+this->ResolveAlias("sel");
     std::string w_sdb_sel = this->ResolveAlias("w_sdb_os")+" && "+this->ResolveAlias("w_sdb");
-    if (method == 5) {
+    if (method == 5 || method == 16) {
       w_extrap_cat    = this->ResolveAlias("w_vbf_extrap_cat");
       w_extrp_sdb_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("w_vbf_sdb");
       w_extrp_sig_sel = this->ResolveAlias("w_vbf_os")+" && "+this->ResolveAlias("sel");
@@ -556,9 +600,47 @@ namespace ic {
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
+    if (method == 28 || method == 29 || method==27) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 16) w_extrap_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     
-    auto w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+    Value w_norm;
+    if(method == 20){
+      //fit_var="mt_1(40,0,160)";  
+      //fit_var="met(20,0,100)";  
+      //fit_var="pt_1(25,0,100)";  
+      //fit_var="E_1(25,0,100)";  
+      //fit_var="pt_tt(30,0,300)";  
+      //fit_var="eta_1(30,-3,3)";  
+      //fit_var="pt_2(25,0,100)";  
+      //fit_var="eta_2(30,-3,3)";  
+      //fit_var="n_prebjets(9,-0.5,8.5)";  
+      fit_var="prebjetpt_1(40,0,200)";   // Best so far
+      //fit_var="prebjetbcsv_1(50,0,1)";  //also very good 
+      //fit_var="prebjetEt_1(40,0,200)";   
+      //fit_var="prebjetpt_2(40,0,200)";
+      //fit_var="prebjetbcsv_2(50,0,1)";
+      //fit_var="bpt_1(20,0,200)";  
+      //fit_var="jpt_1(20,0,200)";  
+      //fit_var="prebjetpt_2(20,0,200)";  
+      //fit_var="prebjeteta_1(15,-3,3)";  
+      //fit_var="prebjeteta_2(15,-3,3)";  
+      //fit_var="prebjet_deta(20,0,10)";  
+      //fit_var="prebjet_dphi(40,0,4)";  
+      //fit_var="prebjet_dtheta(40,0,4)";  
+      //fit_var="prebjet_mjj(30,0,600)";  
+      //fit_var="prebjet_1_met_dphi(40,0,4)";  
+      //fit_var="prebjet_1_met_dtheta(40,0,4)";  
+      //fit_var="prebjet_1_lep1_dphi(40,0,4)";  
+      //fit_var="prebjet_1_lep1_dtheta(40,0,4)";  
+      //fit_var="prebjet_1_lep1_m(30,0,600)";  
+      //fit_var="jet_1_met_dphi(40,0,4)";  
+      //fit_var="jet_1_met_dtheta(40,0,4)";  
+      w_norm = this->GetRateViaWFitMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+        "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap(), fit_var);
+    } else {
+      w_norm = this->GetRateViaWMethod("WJetsToLNuSoup", w_extrap_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
         "Data", cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+    }
     std::string w_shape_cat = cat;
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
     if (method == 5)  w_shape_cat = cat;
@@ -566,6 +648,11 @@ namespace ic {
     if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
+    if (method == 23) w_shape_cat = this->ResolveAlias("1jet1tag_loose");
+    if (method == 24) w_shape_cat = this->ResolveAlias("2jet1tag_loose");
+    if (method == 15) w_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
+    if (method == 27) w_shape_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 16) w_shape_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     TH1F w_hist = this->GetShape(var, this->ResolveAlias("W_Shape_Sample"), w_shape_sel, w_shape_cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("W_Shape_Sample") % w_shape_sel % w_shape_cat % wt;
@@ -585,7 +672,8 @@ namespace ic {
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
-      if (method == 5 || method == 4) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 5 || method == 4 || method == 25 || method == 26) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 16) qcd_cat = this->ResolveAlias("2jetinclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
       qcd_norm = this->GetRateViaQCDMethod(std::make_pair(qcd_os_ss_factor_,0.), "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
@@ -593,7 +681,7 @@ namespace ic {
           return w_ss_norm;}
         }
       });
-      if (method == 5 || method == 4) {
+      if (method == 5 || method == 4 || method == 25 || method == 26 || method == 16) {
         Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         if (verbosity_) {
           std::cout << "CategoryEff:   " << boost::format("%s,'%s','%s'/'%s','%s'\n") % this->ResolveAlias("QCD_Eff_Sample")  % qcd_sdb_sel 
@@ -608,7 +696,14 @@ namespace ic {
           << qcd_norm.first << "), setting to " << default_rate << " and maintaining error" << std::endl;
         qcd_norm.first = default_rate;
       }
-      if (method == 0 || method == 8 || method == 11) {
+      if (method == 0 || method == 8 || method == 11 || method == 20) {
+        qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+          {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
+            return w_ss_norm;} 
+          }
+        });}
+      else if (method == 25) {
+        qcd_cat=cat;
         qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
           {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
             return w_ss_norm;} 
@@ -620,6 +715,12 @@ namespace ic {
         if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
         if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
+        if (method == 23) qcd_cat = this->ResolveAlias("1jet1tag_loose");        
+        //if (method == 24 || method == 25 ) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
+        if (method == 24) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
+        if (method == 15) qcd_cat = this->ResolveAlias("2jet1tagMassCuts_loose");        
+        if (method == 27) qcd_cat = this->ResolveAlias("2jet2tag_loose");        
+        if (method == 16) qcd_cat = this->ResolveAlias("2jet2tagMassCuts_loose");        
         qcd_hist = this->GetShape(var, this->ResolveAlias("QCD_Shape_Sample"), qcd_sdb_sel, qcd_cat, wt);
         if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
           % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
@@ -772,6 +873,20 @@ namespace ic {
       }
     }
   }
+  void HTTAnalysis::FillSMHbbSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+      hmap["WHToBB"+infix+m+postfix]  = this->GenerateSignal("WH_WToLNu_HToBB_M-"+m,  var, sel, cat, wt, fixed_xs);
+      hmap["ZHToBB"+infix+m+postfix]  = this->GenerateSignal("ZH_ZToLL_HToBB_M-"+m,  var, sel, cat, wt, fixed_xs);
+    }
+  }
   void HTTAnalysis::InterpolateSMSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,
@@ -835,6 +950,64 @@ namespace ic {
       hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
     }
   }
+
+  void HTTAnalysis::FillHhhSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+    for (auto const& m : masses) {
+      //Add H->hh and A->Zh for the requested masses
+      auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
+      auto signal_pair_AZhttbb = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m, var, sel, cat, wt, fixed_xs);
+      auto signal_pair_AZhLLtt = this->GenerateSignal("GluGluToAToZhToLLTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+      //auto signal_pair_AZhbbtt = this->GenerateSignal("GluGluToAToZhToBBTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+      hmap["ggHTohhTo2Tau2B"+infix+m+postfix] = signal_pair;
+      hmap["ggAToZhToLLTauTau"+infix+m+postfix] = signal_pair_AZhLLtt;
+      hmap["ggAToZhToLLBB"+infix+m+postfix] = signal_pair_AZhttbb;
+      //hmap["ggAToZhToBBTauTau"+infix+m+postfix] = signal_pair_AZhbbtt;
+      //PrintValue("ggHTohh"+postfix, signal_pair.second);
+    }
+  }
+  
+  void HTTAnalysis::FillMSSMbbHSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+
+    //Add bbH for a selected set of interesting masses
+    for (auto const& m : masses) {
+      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+      //hmap["bbHTohhTo2Tau2B"+infix+m+postfix] = this->GenerateSignal("SUSYBBHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
+      //hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+  
+  void HTTAnalysis::FillHighMassSignal(HistValueMap & hmap, 
+                    std::vector<std::string> const& masses,
+                    std::string const& var,
+                    std::string const& sel,
+                    std::string const& cat,
+                    std::string const& wt,
+                    std::string const& infix,
+                    std::string const& postfix,
+                    double fixed_xs) {
+
+    for (auto const& m : masses) {
+      hmap["RadionToHH"+infix+m+postfix] = this->GenerateSignal("RadionToHH_2Tau_2b_M-"+m, var, sel, cat, wt, fixed_xs);
+      hmap["GravitonToHH"+infix+m+postfix] = this->GenerateSignal("GravitonToHH_2Tau_2b_M-"+m, var, sel, cat, wt, fixed_xs);
+    }
+  }
+
 
   void HTTAnalysis::FillHistoMap(HistValueMap & hmap, unsigned method,
                         std::string var,
@@ -1156,6 +1329,73 @@ namespace ic {
     return w_signal;
   }
 
+  HTTAnalysis::Value HTTAnalysis::GetRateViaWFitMethod(std::string const& w_sample,
+                          std::string const& ratio_cat,
+                          std::string const& ratio_control_sel,
+                          std::string const& ratio_signal_sel,
+                          std::string const& data_sample,
+                          std::string const& cat,
+                          std::string const& control_sel,
+                          std::vector<std::string> const& sub_samples,
+                          std::string const& wt,
+                          std::map<std::string, std::function<Value()>> dict,
+                          std::string const& fit_var
+                          ) {
+    if (verbosity_) {
+      std::cout << "[HTTAnalysis::GetRateViaWFitMethod]\n";
+      std::cout << "ExtrapFactor:   " << boost::format("%s,'%s'/'%s','%s','%s'\n") % w_sample % ratio_signal_sel 
+                % ratio_control_sel % ratio_cat % wt;
+      std::cout << "Sideband:       " << boost::format("%s,'%s','%s','%s'\n") % data_sample % control_sel % cat % wt;
+    }
+    
+    TH1F data_control = GetLumiScaledShape(fit_var, data_sample, control_sel, cat, wt); 
+    Value ratio = SampleRatio(w_sample, ratio_control_sel, ratio_cat, ratio_signal_sel, ratio_cat, wt);
+    Value data_control_norm = GetRate(data_sample, control_sel, cat, wt);
+    if (verbosity_) PrintValue(data_sample, data_control_norm);
+    Value total_bkg;
+    //Subtract all backgrounds except ttbar
+    for (unsigned i = 0; i < sub_samples.size(); ++i) {
+      Value bkr;
+      if(sub_samples[i].find("TTJets") != sub_samples[i].npos) {
+        continue;   
+      }
+      if (dict.count(sub_samples[i])) {
+        bkr = ((*dict.find(sub_samples[i])).second)(); // find and evaluate function
+        TH1F tmp = GetShape(fit_var, sub_samples.at(i), control_sel, cat, wt);
+        SetNorm(&tmp, bkr.first);
+        data_control.Add(&tmp, -1.);
+      } else {
+        bkr = GetLumiScaledRate(sub_samples[i], control_sel, cat, wt);
+        TH1F tmp = GetLumiScaledShape(fit_var, sub_samples[i], control_sel, cat, wt);
+        data_control.Add(&tmp, -1.);
+      }
+
+      if (verbosity_) PrintValue("-"+sub_samples[i], bkr);
+      double new_err = std::sqrt((total_bkg.second * total_bkg.second) + (bkr.second * bkr.second));
+      total_bkg.first += bkr.first;
+      total_bkg.second = new_err;
+
+    }
+    TH1F top_control = GenerateTOP(8, fit_var, control_sel, cat, wt).first;
+    //TH1F top_control = GenerateTOP(8, fit_var, control_sel, this->ResolveAlias("2jetinclusive"), wt).first;
+    TH1F w_control = GetShape(fit_var, "WJetsToLNuSoup", control_sel, cat, wt);
+    //TH1F w_control = GetShape(fit_var, "WJetsToLNuSoup", control_sel, this->ResolveAlias("2jetinclusive"), wt);
+    if (verbosity_) PrintValue("TotalBkgExclTT", total_bkg);
+    double w_control_err = std::sqrt((total_bkg.second * total_bkg.second) + (data_control_norm.second * data_control_norm.second));
+    //double mt_min= boost::lexical_cast<double>(control_sel.std::string::substr(control_sel.find(">")+1, std::string::npos));
+    //Template fit returns the W norm and the uncertainty on it:
+    Value w_control_postfit = WTTTemplateFit(&data_control, &w_control, &top_control, 0, 1);
+    //Combine uncertainty from fit in quadrature with already existing uncertainty:
+    w_control_err = std::sqrt(w_control_err*w_control_err + w_control_postfit.second*w_control_postfit.second); 
+    Value w_control_norm(w_control_postfit.first, w_control_err);
+    if (verbosity_) PrintValue("WSideband", w_control_norm);
+    if (verbosity_) PrintValue("ExtrapFactor", ratio);
+    //Scale by extrapolation factor:
+    Value w_signal = ValueProduct(w_control_norm, ratio);
+    return w_signal;
+  }
+
+
   HTTAnalysis::Value HTTAnalysis::GetRateViaQCDMethod(HTTAnalysis::Value const& ratio,
                           std::string const& data_sample,
                           std::string const& control_selection,
@@ -1409,6 +1649,116 @@ namespace ic {
     return prob;
   }
 
+  HTTAnalysis::Value HTTAnalysis::WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min, int mode) {
+    if(!verbosity_) RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+
+    if(verbosity_) std::cout << "Running WTTTemplate fit with mode: " << mode << std::endl;
+    
+    //Generate a prefit plot of the templates and the data, can be useful
+    TCanvas* c3 = new TCanvas("c3","c3",600,600);
+    data->SetTitle(0);
+    data->SetStats(0);
+    data->SetLineColor(1);
+    data->SetMarkerColor(1);
+    data->SetMarkerStyle(20);
+    data->GetXaxis()->SetTitle("m_{T} (GeV)");
+    data->GetYaxis()->SetTitle("Events");
+    data->GetYaxis()->SetTitleOffset(1.4);
+    data->Draw("P");
+    W->SetLineColor(kRed);
+    W->Draw("same");
+    TT->SetLineColor(kBlue);
+    TT->Draw("same");
+    TLegend *leg2 = new TLegend(0.65,0.73,0.86,0.87);
+    leg2->SetFillColor(kWhite);
+    leg2->SetLineColor(kWhite);
+    leg2->AddEntry(data,"Data","L");
+    leg2->AddEntry(W,"W","L");
+    leg2->AddEntry(TT,"TT","L");
+    leg2->Draw("same");
+    if(verbosity_) c3->SaveAs("PreFit.pdf");
+    
+    //Converting TH1Fs to the relevent RooFit objects for the fit
+    RooRealVar* mt_1_ = new RooRealVar("mt_1","mt_1",data->GetXaxis()->GetXmin(), data->GetXaxis()->GetXmax(), "GeV");
+    RooRealVar mt_1 = *mt_1_;
+    double data_norm = data->Integral();
+    RooDataHist* obsData = new RooDataHist("data", "data", RooArgList(mt_1), data);
+    RooDataHist* Wbkg = new RooDataHist("W", "W", RooArgList(mt_1), W);
+    RooDataHist* TTbkg = new RooDataHist("TT", "TT", RooArgList(mt_1), TT);
+    RooHistPdf* WPdf = new RooHistPdf("W", "W", RooArgSet(mt_1), *Wbkg);
+    RooHistPdf* TTPdf = new RooHistPdf("TT", "TT", RooArgSet(mt_1), *TTbkg);
+
+    double coeff_min, coeff_max;
+    if(mode==0) { coeff_min = -0.5; coeff_max=1.5;}
+    if(mode==1) { coeff_min = -100000; coeff_max=100000;}
+    RooRealVar coeff("coeff","coeff",0.50,coeff_min,coeff_max) ;
+    RooAddPdf bkgModel("bkgModel","coeff*WPdf + (1-coeff)*TTPdf", *WPdf, *TTPdf, coeff) ; 
+    RooRealVar coeff2("coeff2","coeff2",0.50,-100000,100000) ;
+    RooAddPdf bkgModel2("bkgModel","coeff*WPdf + coeff2*TTPdf", RooArgList(*WPdf, *TTPdf), RooArgList(coeff, coeff2)) ; 
+    int print_level=-1;
+    if(verbosity_) print_level=1;
+    //In mode 0, allow relative normalisation to float 
+    if(mode==0) { 
+        bkgModel.fitTo(*obsData, RooFit::Save(true), RooFit::PrintLevel(print_level), RooFit::SumW2Error(kFALSE) );
+        if(verbosity_) std::cout << "Relative fraction of W from fit: " << coeff.getVal() << " +/- " << coeff.getError() << std::endl;
+        if(verbosity_) std::cout << "Ratio of post-fit W norm to pre-fit: " << (data_norm*(coeff.getVal()))/W->Integral() << std::endl;
+        if(verbosity_) std::cout << "Ratio of post-fit TT norm to pre-fit: " << (data_norm*(1-coeff.getVal()))/TT->Integral() << std::endl;
+    }
+    //In mode 1, allow two separate normalisations to float 
+    else if(mode==1) { 
+        bkgModel2.fitTo(*obsData, RooFit::Save(true), RooFit::PrintLevel(print_level), RooFit::SumW2Error(kFALSE) );
+        if(verbosity_) std::cout << "Scaling of W " << coeff.getVal()/W->Integral() << " +/- " << coeff.getError()/W->Integral() << std::endl;
+        if(verbosity_) std::cout << "Scaling of TT " << coeff2.getVal()/TT->Integral() << " +/- " << coeff2.getError()/TT->Integral() << std::endl;
+        if(verbosity_) std::cout << "Relative fraction of W from fit: " << coeff.getVal()/(coeff.getVal() + coeff2.getVal()) << " +/- " << 
+            (coeff.getVal()/(coeff.getVal()+coeff2.getVal()))*std::sqrt((coeff.getError()*coeff.getError()/(coeff.getVal()*coeff.getVal())) 
+            + (((coeff.getError()*coeff.getError() + coeff2.getError()*coeff2.getError()))/((coeff.getVal()+coeff2.getVal())*(coeff.getVal()+coeff2.getVal())))) << std::endl;
+        if(verbosity_) std::cout << "Total data/MC: " << data_norm /(coeff.getVal() + coeff2.getVal())  << std::endl;
+    }
+    else std::cerr << "ERROR: Invalid choice of fit mode" << std::endl;
+
+    RooPlot* frame1 = mt_1.frame();
+    frame1->SetTitle("");
+    frame1->GetXaxis()->SetTitle("Leading Jet p_{T} (GeV)");
+    frame1->GetYaxis()->SetTitle("Events");
+    frame1->GetYaxis()->SetTitleOffset(1.4);
+    frame1->SetMinimum(0.01);
+    obsData->plotOn(frame1,RooFit::Name("data"));
+    if(mode==0){
+        bkgModel.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed),RooFit::Name("W"));
+        bkgModel.plotOn(frame1,RooFit::Components(*TTPdf),RooFit::LineColor(kBlue),RooFit::Name("TT"));
+        bkgModel.plotOn(frame1,RooFit::LineColor(kRed),RooFit::Name("W+TT"));
+    } else if(mode==1) { 
+        bkgModel2.plotOn(frame1,RooFit::Components(*WPdf),RooFit::LineColor(kRed),RooFit::LineStyle(kDashed),RooFit::Name("W"));
+        bkgModel2.plotOn(frame1,RooFit::Components(*TTPdf),RooFit::LineColor(kBlue),RooFit::Name("TT"));
+        bkgModel2.plotOn(frame1,RooFit::LineColor(kRed),RooFit::Name("W+TT"));
+    }
+    TCanvas* c1 = new TCanvas("c1","c1",600,600);
+    frame1->SetMinimum(0.01);
+    frame1->Draw("e0");
+    TLegend *leg1 = new TLegend(0.60,0.70,0.86,0.87);
+    leg1->SetFillColor(kWhite);
+    leg1->SetLineColor(kWhite);
+    leg1->AddEntry("data","Data","LP");
+    leg1->AddEntry("W","W","LP");
+    leg1->AddEntry("TT","t#bar{t}","LP");
+    leg1->AddEntry("W+TT","W+t#bar{t}","LP");
+    leg1->Draw();
+    
+    /*TH1* postfit_model = bkgModel.createHistogram("postfit_model", mt_1, RooFit::Binning(2000) );
+    TH1* postfit_data = obsData->createHistogram("postfit_data", mt_1, RooFit::Binning(2000) );
+    std::cout << postfit_data->Chi2Test(postfit_model,"") << std::endl;
+*/
+    if(verbosity_) std::cout << "Chi2 of fit: " << frame1->chiSquare() << std::endl;
+    //std::cout << TMath::Prob(frame1->chiSquare()) << std::endl;
+    if(verbosity_) c1->SaveAs("PostFit.pdf");
+    delete frame1;
+
+    if(mode==0) return std::make_pair(coeff.getVal()*data_norm, coeff.getError()*data_norm);
+    if(mode==1) return std::make_pair(coeff.getVal(), coeff.getError());
+    else return std::make_pair(0,0);
+
+
+  }
 
 
 

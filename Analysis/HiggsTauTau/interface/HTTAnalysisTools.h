@@ -12,6 +12,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "RooWorkspace.h"
 
 //! HTTAnalysisTools
 /*!
@@ -146,6 +147,7 @@ namespace ic {
           to the internal list. It should therefore be called before #ReadTrees.
       */
       void AddSMSignalSamples(std::vector<std::string> masses);
+      void AddSMHbbSignalSamples(std::vector<std::string> masses);
       
       void AddHWWSignalSamples(std::vector<std::string> masses);
       
@@ -153,6 +155,9 @@ namespace ic {
       /*! \sa AddSMSignalSamples
       */
       void AddMSSMSignalSamples(std::vector<std::string> masses);
+      void AddHhhSignalSamples(std::vector<std::string> masses);
+      void AddMSSMbbHSignalSamples(std::vector<std::string> masses);
+      void AddHighMassSignalSamples(std::vector<std::string> masses);
 
       //! Read a parameter file for cross section and luminosity information
       /*! Argument \p file is the full path to the parameter file. 
@@ -186,6 +191,15 @@ namespace ic {
                         std::string const& infix,
                         std::string const& postfix,
                         double fixed_xs = -1.0);
+      void FillSMHbbSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
       void InterpolateSMSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,
@@ -207,6 +221,33 @@ namespace ic {
                         std::string const& postfix,
                         double fixed_xs = -1.0);
       void FillMSSMSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+      void FillHhhSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+      void FillMSSMbbHSignal(HistValueMap & hmap, 
+                        std::vector<std::string> const& masses,
+                        std::string const& var,
+                        std::string const& sel,
+                        std::string const& cat,
+                        std::string const& wt,
+                        std::string const& infix,
+                        std::string const& postfix,
+                        double fixed_xs = -1.0);
+      void FillHighMassSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,
                         std::string const& sel,
@@ -320,6 +361,18 @@ namespace ic {
                               std::string const& wt,
                               std::map<std::string, std::function<Value()>> dict
                               );
+      Value GetRateViaWFitMethod(std::string const& w_sample,
+                              std::string const& ratio_cat,
+                              std::string const& ratio_control_sel,
+                              std::string const& ratio_signal_sel,
+                              std::string const& data_sample,
+                              std::string const& cat,
+                              std::string const& control_sel,
+                              std::vector<std::string> const& sub_samples,
+                              std::string const& wt,
+                              std::map<std::string, std::function<Value()>> dict,
+                              std::string const& fit_var
+                              );
       Value GetRateViaQCDMethod(Value const& ratio,
                               std::string const& data_sample,
                               std::string const& control_selection,
@@ -337,6 +390,7 @@ namespace ic {
                               std::string const& sample1, std::string const& selection1, std::string const& category1,
                               std::string const& sample2, std::string const& selection2, std::string const& category2,
                               std::string const& weight);
+      Value WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min, int mode);
 
       void SetQCDRatio(double const& ratio);
       inline void SetVerbosity(unsigned const& verbosity) { verbosity_ = verbosity; }
