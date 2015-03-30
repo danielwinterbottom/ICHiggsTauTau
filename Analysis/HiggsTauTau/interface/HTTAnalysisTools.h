@@ -155,7 +155,7 @@ namespace ic {
       /*! \sa AddSMSignalSamples
       */
       void AddMSSMSignalSamples(std::vector<std::string> masses);
-      void AddHhhSignalSamples(std::vector<std::string> masses);
+      void AddHhhSignalSamples(std::vector<std::string> masses, bool extra_signal_profile=false);
       void AddMSSMbbHSignalSamples(std::vector<std::string> masses);
       void AddHighMassSignalSamples(std::vector<std::string> masses);
 
@@ -237,7 +237,8 @@ namespace ic {
                         std::string const& wt,
                         std::string const& infix,
                         std::string const& postfix,
-                        double fixed_xs = -1.0);
+                        double fixed_xs = -1.0,
+                        bool extra_signal_profile = false);
       void FillMSSMbbHSignal(HistValueMap & hmap, 
                         std::vector<std::string> const& masses,
                         std::string const& var,

@@ -348,12 +348,14 @@ namespace ic {
       }      
     }
   }
-  void HTTAnalysis::AddHhhSignalSamples(std::vector<std::string> masses) {
+  void HTTAnalysis::AddHhhSignalSamples(std::vector<std::string> masses, bool extra_signal_profile) {
     for (auto m : masses) {
       sample_names_.push_back("GluGluToHTohhTo2Tau2B_mH-"+m);
-      sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
-      sample_names_.push_back("GluGluToAToZhToLLTauTau_mA-"+m);
-     // sample_names_.push_back("GluGluToAToZhToBBTauTau_mA-"+m);
+      if(extra_signal_profile) { 
+        sample_names_.push_back("GluGluToAToZhToLLBB_mA-"+m);
+        sample_names_.push_back("GluGluToAToZhToLLTauTau_mA-"+m);
+       // sample_names_.push_back("GluGluToAToZhToBBTauTau_mA-"+m);
+       }
     }
   }
   void HTTAnalysis::AddMSSMbbHSignalSamples(std::vector<std::string> masses) {
@@ -959,18 +961,20 @@ namespace ic {
                     std::string const& wt,
                     std::string const& infix,
                     std::string const& postfix,
-                    double fixed_xs) {
+                    double fixed_xs,
+                    bool extra_signal_profile) {
     for (auto const& m : masses) {
       //Add H->hh and A->Zh for the requested masses
       auto signal_pair = this->GenerateSignal("GluGluToHTohhTo2Tau2B_mH-"+m, var, sel, cat, wt, fixed_xs);
-      auto signal_pair_AZhttbb = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m, var, sel, cat, wt, fixed_xs);
-      auto signal_pair_AZhLLtt = this->GenerateSignal("GluGluToAToZhToLLTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
-      //auto signal_pair_AZhbbtt = this->GenerateSignal("GluGluToAToZhToBBTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
       hmap["ggHTohhTo2Tau2B"+infix+m+postfix] = signal_pair;
-      hmap["ggAToZhToLLTauTau"+infix+m+postfix] = signal_pair_AZhLLtt;
-      hmap["ggAToZhToLLBB"+infix+m+postfix] = signal_pair_AZhttbb;
-      //hmap["ggAToZhToBBTauTau"+infix+m+postfix] = signal_pair_AZhbbtt;
-      //PrintValue("ggHTohh"+postfix, signal_pair.second);
+      if(extra_signal_profile) {
+        auto signal_pair_AZhttbb = this->GenerateSignal("GluGluToAToZhToLLBB_mA-"+m, var, sel, cat, wt, fixed_xs);
+        auto signal_pair_AZhLLtt = this->GenerateSignal("GluGluToAToZhToLLTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+        //auto signal_pair_AZhbbtt = this->GenerateSignal("GluGluToAToZhToBBTauTau_mA-"+m, var, sel, cat, wt, fixed_xs);
+        hmap["ggAToZhToLLTauTau"+infix+m+postfix] = signal_pair_AZhLLtt;
+        hmap["ggAToZhToLLBB"+infix+m+postfix] = signal_pair_AZhttbb;
+        //hmap["ggAToZhToBBTauTau"+infix+m+postfix] = signal_pair_AZhbbtt;
+      }
     }
   }
   

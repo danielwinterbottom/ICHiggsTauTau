@@ -81,6 +81,9 @@ parser.add_option("--mssm", dest="proc_mssm", action='store_true', default=False
 parser.add_option("--Hhh", dest="proc_Hhh", action='store_true', default=False,
                   help="Process signal H->hh mc samples")
 
+parser.add_option("--extra_signal_profile", dest="extra_signal_profile", action='store_true', default=False,
+                  help="Process extra signal H->hh mc samples for profiling")
+
 parser.add_option("--all", dest="proc_all", action='store_true', default=False,
                   help="Process all samples")
 
@@ -314,13 +317,47 @@ if options.proc_mssm or options.proc_all:
     ]
 
 if options.proc_Hhh or options.proc_all:
-  PREFIXOVERRIDE  = 'root://eoscms//eos/cms/store/user/rlane/httskims/'
   Hmasses = ['260','270','280','290','300','310','320','330','340','350']
   if options.short_signal: Hmasses = ['300']
   for Hmass in Hmasses : 
     signal_mc += [
       'GluGluToHTohhTo2Tau2B_mH-'+Hmass
     ]
+  #Add SM 125 signal H->tautau/bb for H->hh analysis
+  signal_mc += [
+    'GluGluToHToTauTau_M-125',
+    'VBF_HToTauTau_M-125', 
+    'WH_ZH_TTH_HToTauTau_M-125',
+    'WH_WToLNu_HToBB_M-125',
+    'ZH_ZToLL_HToBB_M-125'
+  ]
+  signal_vh += [
+    'WH_ZH_TTH_HToTauTau_M-125'
+  ]
+  if options.extra_signal_profile:
+    Amasses = ['250','260','270','280','290','300','310','320','330','340','350']
+    ATauTaumasses = ['260','270','280','290','300','310','320','330','340','350']
+    bbHmasses = ['90','100','110','120','130','140','160','180','200','250','300','350','400']
+    if options.short_signal: Amasses = ['300']
+    if options.short_signal: ATauTaumasses = ['300']
+    if options.short_signal: bbHmasses = ['120','300']
+    for Hmass in Hmasses : 
+      signal_mc += [
+        'SUSYBBHTohhTo2Tau2B_mH-'+Hmass
+      ]
+    for Amass in Amasses :
+      signal_mc += [
+        'GluGluToAToZhToLLBB_mA-'+Amass
+      ]
+    for Amass in ATauTaumasses :
+      signal_mc += [
+        'GluGluToAToZhToLLTauTau_mA-'+Amass
+        #'GluGluToAToZhToBBTauTau_mA-'+Amass
+      ]
+    for Hmass in bbHmasses : 
+      signal_mc += [
+        'SUSYBBHToTauTau_M-'+Hmass
+      ]
 
 if options.proc_bkg or options.proc_all:
     for ch in channels:
