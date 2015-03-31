@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('_higgs_to_tau_tau_8md.html','');});
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;[TOC]</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;This page gives instructions for running the Higgs to tau tau analysis, with the goal of generating the datacard inputs used to produce the public results in the SM search [HIG-13-004](http://arxiv.org/abs/1401.5041) and MSSM search [HIG-13-021](http://cds.cern.ch/record/1623367?ln=en). It is possible to produce these inputs for the mu-tau, e-tau and e-mu channels and for both 7 and 8 TeV analyses.</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;This page gives instructions for running the Higgs to tau tau analysis, with the goal of generating the datacard inputs used to produce the public results in the SM search [HIG-13-004](http://arxiv.org/abs/1401.5041) and MSSM search [HIG-13-021](http://cds.cern.ch/record/1623367?ln=en) and the not yet public MSSM H-&gt;hh search [HIG-14-034](http://cms.cern.ch/iCMS/analysisadmin/cadi?ancode=HIG-14-034). It is possible to produce these inputs for the mu-tau, e-tau and e-mu channels and for both 7 and 8 TeV analyses. For the H-&gt;hh analysis only e-tau and mu-tau channels are used with the 8 TeV data.</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;The full analysis chain involves several steps, each outlined in a section below.</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
@@ -120,10 +120,40 @@ $(document).ready(function(){initNavTree('_higgs_to_tau_tau_8md.html','');});
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;Skimming {#htt-skimming}</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;========================</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;Skimming </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;To reduce the size of the ntuples a skim is applied which only retains events containing a good candidate pair, either electron + tau, muon + tau or electron + muon. Skimming is performed from within the HiggsTauTau directory using the /test/HiggsTauTau.cpp code with skim_mode turned on. Example scripts which perform skims of all data and MC samples can be found [here](https://github.com/ajgilbert/ICHiggsTauTau/blob/master/Analysis/HiggsTauTau/scripts/June6_et_mt_skim.sh) for the mu-tau and e-tau channels and [here](https://github.com/ajgilbert/ICHiggsTauTau/blob/master/Analysis/HiggsTauTau/scripts/June6_em_skim.sh) for the e-mu channel. A good workflow for skimming is to skim directly from dCache at Imperial onto the SSD at Imperial, before copying the skims back onto dCache as a backup. For running at CERN, the skimmed ntuples will comfortably fit in an eos area or on local disk on a PC. </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;Selection of events {#htt-event-selection}</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;==========================================</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;Event selection is performed using HiggsTauTau.cpp. This should be run once for each of the data and MC samples, and then again for the generation of templates for systematics such as tau or jet energy scale. To simplify this, a python script higgsTauTau.py is available which generates all the jobs for backgrounds, data and signal for the central tau energy scale and the tau energy scale shifted up and down. First an appropriate output directory should be made with the correct directory structure:</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    ./scripts/make_output_folder.sh output/Paper_2012/</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    ./scripts/prepare_output_folder.sh output/Paper_2012/</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;Next, the following produces all of the necessary output files for the SM and MSSM analyses:</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    ./scripts/higgsTauTau.py -p June6 -i root://eoscms//eos/cms/store/user/rlane/httskims/ --data --bkg --mssm --sm -s &#39;0,1,2&#39; -c &#39;et,mt,em&#39; -e Paper --submit=&#39;./scripts/submit_lxbatch_job.sh 1nh&#39;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;The jobs can be submitted to lxbatch (as in this example), the IC batch, or run locally. Similarly for the H-&gt;hh signal jobs: </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    ./scripts/higgsTauTau.py -p June6 -i root://eoscms//eos/cms/store/user/rlane/httskims/ --Hhh -s &#39;0,1,2&#39; -c &#39;et,mt&#39; -e Paper --submit=&#39;./scripts/submit_lxbatch_job.sh 1nh&#39;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;The -s &#39;0,1,2&#39; option produces the tau energy scale systematics. To produce jet energy scale systematics (in particular important in the H-&gt;hh analysis), the jobs should be rerun setting jes_mode to 1 and 2 in the cfg file (e.g. Paper_2012.cfg).</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;Producing plots and datacards {#htt-datacards}</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;=============================================</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;The output of HiggsTauTau.cpp is a set of flat trees containing all variables of importance to the SM, MSSM and H-&gt;hh analyses. Plots and datacards can then be produced with the help of test/HiggsTauTauPlot4.cpp. Datacard inputs can be produced using another helper python script as follows:</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;     ./scripts/makeDatacards2.py -i output/Paper_2012/  -c &#39;et,mt,em&#39; --svfit --cfg=scripts/new_plot_sm_2012.cfg -p scripts/Paper_params_2012.dat --scheme=&quot;new_sm&quot;,</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;for the SM legacy analysis, </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;     </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;     ./scripts/makeDatacards2.py -i output/Paper_2012/  -c &#39;et,mt,em&#39; --svfit --cfg=scripts/new_plot_mssm_2012.cfg -p scripts/Paper_params_2012.dat --scheme=&quot;new_mssm&quot;,</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;for the MSSM legacy analysis, and</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;     ./scripts/makeDatacards2.py -i output/Paper_2012/  -c &#39;et,mt&#39; --mH --masscuts --cfg=scripts/new_plot_Hhh_2012.cfg -p scripts/Paper_params_2012.dat --scheme=&quot;HTohh&quot;,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;for the H-&gt;hh analysis.</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

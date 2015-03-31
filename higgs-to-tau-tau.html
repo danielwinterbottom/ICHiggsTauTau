@@ -102,9 +102,11 @@ $(document).ready(function(){initNavTree('higgs-to-tau-tau.html','');});
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#htt-ntuple-production">Ntuple Production </a></li>
 <li class="level1"><a href="#htt-skimming">Skimming </a></li>
+<li class="level1"><a href="#htt-event-selection">Selection of events </a></li>
+<li class="level1"><a href="#htt-datacards">Producing plots and datacards </a></li>
 </ul>
 </div>
-<div class="textblock"><p>This page gives instructions for running the Higgs to tau tau analysis, with the goal of generating the datacard inputs used to produce the public results in the SM search <a href="http://arxiv.org/abs/1401.5041">HIG-13-004</a> and MSSM search <a href="http://cds.cern.ch/record/1623367?ln=en">HIG-13-021</a>. It is possible to produce these inputs for the mu-tau, e-tau and e-mu channels and for both 7 and 8 TeV analyses.</p>
+<div class="textblock"><p>This page gives instructions for running the Higgs to tau tau analysis, with the goal of generating the datacard inputs used to produce the public results in the SM search <a href="http://arxiv.org/abs/1401.5041">HIG-13-004</a> and MSSM search <a href="http://cds.cern.ch/record/1623367?ln=en">HIG-13-021</a> and the not yet public MSSM H-&gt;hh search <a href="http://cms.cern.ch/iCMS/analysisadmin/cadi?ancode=HIG-14-034">HIG-14-034</a>. It is possible to produce these inputs for the mu-tau, e-tau and e-mu channels and for both 7 and 8 TeV analyses. For the H-&gt;hh analysis only e-tau and mu-tau channels are used with the 8 TeV data.</p>
 <p>The full analysis chain involves several steps, each outlined in a section below.</p>
 <h1><a class="anchor" id="htt-ntuple-production"></a>
 Ntuple Production </h1>
@@ -113,7 +115,20 @@ Ntuple Production </h1>
 <p>srm://gfe02.grid.hep.ph.ic.ac.uk:8443/srm/managerv2?SFN=/pnfs/hep.ph.ic.ac.uk/data/cms/store/user/agilbert/Apr11/MC_42X/WJetsToLNu</p>
 <h1><a class="anchor" id="htt-skimming"></a>
 Skimming </h1>
-<p>Skimming </p>
+<p>To reduce the size of the ntuples a skim is applied which only retains events containing a good candidate pair, either electron + tau, muon + tau or electron + muon. Skimming is performed from within the HiggsTauTau directory using the /test/HiggsTauTau.cpp code with skim_mode turned on. Example scripts which perform skims of all data and MC samples can be found <a href="https://github.com/ajgilbert/ICHiggsTauTau/blob/master/Analysis/HiggsTauTau/scripts/June6_et_mt_skim.sh">here</a> for the mu-tau and e-tau channels and <a href="https://github.com/ajgilbert/ICHiggsTauTau/blob/master/Analysis/HiggsTauTau/scripts/June6_em_skim.sh">here</a> for the e-mu channel. A good workflow for skimming is to skim directly from dCache at Imperial onto the SSD at Imperial, before copying the skims back onto dCache as a backup. For running at CERN, the skimmed ntuples will comfortably fit in an eos area or on local disk on a PC.</p>
+<h1><a class="anchor" id="htt-event-selection"></a>
+Selection of events </h1>
+<p>Event selection is performed using HiggsTauTau.cpp. This should be run once for each of the data and MC samples, and then again for the generation of templates for systematics such as tau or jet energy scale. To simplify this, a python script higgsTauTau.py is available which generates all the jobs for backgrounds, data and signal for the central tau energy scale and the tau energy scale shifted up and down. First an appropriate output directory should be made with the correct directory structure: </p><pre class="fragment">./scripts/make_output_folder.sh output/Paper_2012/
+./scripts/prepare_output_folder.sh output/Paper_2012/
+</pre><p>Next, the following produces all of the necessary output files for the SM and MSSM analyses: </p><pre class="fragment">./scripts/higgsTauTau.py -p June6 -i root://eoscms//eos/cms/store/user/rlane/httskims/ --data --bkg --mssm --sm -s '0,1,2' -c 'et,mt,em' -e Paper --submit='./scripts/submit_lxbatch_job.sh 1nh'
+</pre><p>The jobs can be submitted to lxbatch (as in this example), the IC batch, or run locally. Similarly for the H-&gt;hh signal jobs: </p><pre class="fragment">./scripts/higgsTauTau.py -p June6 -i root://eoscms//eos/cms/store/user/rlane/httskims/ --Hhh -s '0,1,2' -c 'et,mt' -e Paper --submit='./scripts/submit_lxbatch_job.sh 1nh'
+</pre><p>The -s '0,1,2' option produces the tau energy scale systematics. To produce jet energy scale systematics (in particular important in the H-&gt;hh analysis), the jobs should be rerun setting jes_mode to 1 and 2 in the cfg file (e.g. Paper_2012.cfg).</p>
+<h1><a class="anchor" id="htt-datacards"></a>
+Producing plots and datacards </h1>
+<p>The output of HiggsTauTau.cpp is a set of flat trees containing all variables of importance to the SM, MSSM and H-&gt;hh analyses. Plots and datacards can then be produced with the help of test/HiggsTauTauPlot4.cpp. Datacard inputs can be produced using another helper python script as follows: </p><pre class="fragment"> ./scripts/makeDatacards2.py -i output/Paper_2012/  -c 'et,mt,em' --svfit --cfg=scripts/new_plot_sm_2012.cfg -p scripts/Paper_params_2012.dat --scheme="new_sm",
+</pre><p>for the SM legacy analysis, </p><pre class="fragment"> ./scripts/makeDatacards2.py -i output/Paper_2012/  -c 'et,mt,em' --svfit --cfg=scripts/new_plot_mssm_2012.cfg -p scripts/Paper_params_2012.dat --scheme="new_mssm",
+</pre><p>for the MSSM legacy analysis, and </p><pre class="fragment"> ./scripts/makeDatacards2.py -i output/Paper_2012/  -c 'et,mt' --mH --masscuts --cfg=scripts/new_plot_Hhh_2012.cfg -p scripts/Paper_params_2012.dat --scheme="HTohh",
+</pre><p>for the H-&gt;hh analysis. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

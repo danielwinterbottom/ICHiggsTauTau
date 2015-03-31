@@ -50,7 +50,9 @@ var NAVTREE =
     ] ],
     [ "HiggsToTauTau", "higgs-to-tau-tau.html", [
       [ "Ntuple Production ", "higgs-to-tau-tau.html#htt-ntuple-production", null ],
-      [ "Skimming ", "higgs-to-tau-tau.html#htt-skimming", null ]
+      [ "Skimming ", "higgs-to-tau-tau.html#htt-skimming", null ],
+      [ "Selection of events ", "higgs-to-tau-tau.html#htt-event-selection", null ],
+      [ "Producing plots and datacards ", "higgs-to-tau-tau.html#htt-datacards", null ]
     ] ],
     [ "Todo List", "todo.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
@@ -94,7 +96,7 @@ var NAVTREEINDEX =
 "class_i_c_tau_producer.html#a0a53adf9e24a707ddef44d6f3a79c989",
 "classic_1_1_j_p_t_jet.html#a2d03f4725251d1aece3ce97f06fc4118",
 "classic_1_1_photon.html#a3b62e8c8a96580f7d1bf173cd9925d18",
-"index.html"
+"higgs-to-tau-tau.html#htt-skimming"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

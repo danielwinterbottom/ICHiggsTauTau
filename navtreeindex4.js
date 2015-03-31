@@ -196,8 +196,8 @@ var NAVTREEINDEX4 =
 "functions_d.html":[9,2,0,3],
 "functions_e.html":[9,2,0,4],
 "functions_f.html":[9,2,0,5],
-"functions_func.html":[9,2,1],
 "functions_func.html":[9,2,1,0],
+"functions_func.html":[9,2,1],
 "functions_func_b.html":[9,2,1,1],
 "functions_func_c.html":[9,2,1,2],
 "functions_func_d.html":[9,2,1,3],
@@ -247,7 +247,7 @@ var NAVTREEINDEX4 =
 "globals_type.html":[10,1,2],
 "hierarchy.html":[9,1],
 "higgs-to-tau-tau.html":[5],
-"higgs-to-tau-tau.html#htt-ntuple-production":[5,0],
-"higgs-to-tau-tau.html#htt-skimming":[5,1],
-"index.html":[0]
+"higgs-to-tau-tau.html#htt-datacards":[5,3],
+"higgs-to-tau-tau.html#htt-event-selection":[5,2],
+"higgs-to-tau-tau.html#htt-ntuple-production":[5,0]
 };
