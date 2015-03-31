@@ -597,7 +597,7 @@ namespace ic {
     if (method == 6)  w_extrap_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_extrap_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_extrap_cat = this->ResolveAlias("btag_loose");
-    if (method == 28 || method == 29 || method==27) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
+    if (method == 27) w_extrap_cat = this->ResolveAlias("2jet2tag_loose");
     if (method == 16) w_extrap_cat = this->ResolveAlias("2jet2tagMassCuts_loose");
     
     Value w_norm;
@@ -645,7 +645,6 @@ namespace ic {
     if (method == 6)  w_shape_cat = this->ResolveAlias("btag_low_loose");
     if (method == 7)  w_shape_cat = this->ResolveAlias("btag_high_loose");
     if (method == 12) w_shape_cat = this->ResolveAlias("btag_loose");
-    if (method == 23) w_shape_cat = this->ResolveAlias("1jet1tag_loose");
     if (method == 24) w_shape_cat = this->ResolveAlias("2jet1tag_loose");
     if (method == 15) w_shape_cat = this->ResolveAlias("2jet1tagMassCuts_loose");
     if (method == 27) w_shape_cat = this->ResolveAlias("2jet2tag_loose");
@@ -669,7 +668,7 @@ namespace ic {
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
-      if (method == 5 || method == 4 || method == 25 || method == 26) qcd_cat = this->ResolveAlias("inclusive");
+      if (method == 5 || method == 4) qcd_cat = this->ResolveAlias("inclusive");
       if (method == 16) qcd_cat = this->ResolveAlias("2jetinclusive");
       Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNuSoup", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             "Data", qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
@@ -678,7 +677,7 @@ namespace ic {
           return w_ss_norm;}
         }
       });
-      if (method == 5 || method == 4 || method == 25 || method == 26 || method == 16) {
+      if (method == 5 || method == 4 || method == 16) {
         Value qcd_eff = this->SampleEfficiency(this->ResolveAlias("QCD_Eff_Sample"), qcd_sdb_sel, qcd_cat, qcd_sdb_sel, cat, wt);
         if (verbosity_) {
           std::cout << "CategoryEff:   " << boost::format("%s,'%s','%s'/'%s','%s'\n") % this->ResolveAlias("QCD_Eff_Sample")  % qcd_sdb_sel 
@@ -699,21 +698,13 @@ namespace ic {
             return w_ss_norm;} 
           }
         });}
-      else if (method == 25) {
-        qcd_cat=cat;
-        qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
-          {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
-            return w_ss_norm;} 
-          }
-        });
-      } else {
-        if (method == 4)  qcd_cat = cat;
-        if (method == 5)  qcd_cat = this->ResolveAlias("vbf_loose_jets20");
+      else {
+        if (method == 4) qcd_cat = cat;
+        if (method == 21 || method == 14)  qcd_cat = cat;
+        if (method == 5) qcd_cat = this->ResolveAlias("vbf_loose_jets20");
         if (method == 6)  qcd_cat = this->ResolveAlias("btag_low_loose");
         if (method == 7)  qcd_cat = this->ResolveAlias("btag_high_loose");
         if (method == 12) qcd_cat = this->ResolveAlias("btag_loose");        
-        if (method == 23) qcd_cat = this->ResolveAlias("1jet1tag_loose");        
-        //if (method == 24 || method == 25 ) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
         if (method == 24) qcd_cat = this->ResolveAlias("2jet1tag_loose");        
         if (method == 15) qcd_cat = this->ResolveAlias("2jet1tagMassCuts_loose");        
         if (method == 27) qcd_cat = this->ResolveAlias("2jet2tag_loose");        
