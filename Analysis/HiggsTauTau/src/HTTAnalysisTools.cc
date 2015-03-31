@@ -165,30 +165,25 @@ namespace ic {
     alias_map_["2jet2tag_loose"]            = "(n_jets_csv>=2 && jet_csvbcsv_1>0.244 && jet_csvbcsv_2>0.244)";
     alias_map_["2jet2tagMassCuts_loose"]    = "(n_jets_csv>=2 && jet_csvbcsv_1>0.244 && jet_csvbcsv_2>0.244 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
     // Useful category for control plots
-    alias_map_["2jetGT1tag"]                      = "(n_jets_csv>=2 && jet_csvbcsv_1>=0.679)";
-    alias_map_["2jetGT1tagSF"]                      = "(n_jets_csv>=2 && n_bjets_csv>=1)";
+    alias_map_["2jetGT1tag"]                      = "(n_jets_csv>=2 && n_bjets_csv>=1)";
      
     // Categories including the effect of the b-tag SF
-    alias_map_["2jet0tagSF"]     = "(n_jets_csv>=2 && n_bjets_csv==0)";
-    //alias_map_["1jet0tagSF"]     = "(n_jets_csv==1 && n_bjets_csv==0)";
-    alias_map_["2jet1tagSF"]     = "(n_jets_csv>=2 && n_bjets_csv==1)";
-    //alias_map_["1jet1tagSF"]     = "(n_jets_csv==1 && n_bjets_csv==1)";
-    alias_map_["2jet2tagSF"]     = "(n_jets_csv>=2 && n_bjets_csv>=2)";
+    alias_map_["2jet0tag"]     = "(n_jets_csv>=2 && n_bjets_csv==0)";
+    alias_map_["2jet1tag"]     = "(n_jets_csv>=2 && n_bjets_csv==1)";
+    alias_map_["2jet2tag"]     = "(n_jets_csv>=2 && n_bjets_csv>=2)";
        
     // Categories including the effect of the b-tag SF and mass cuts
-    alias_map_["2jet0tagSFMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv==0 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    //alias_map_["1jet0tagSFMassCuts"]     = "(n_jets_csv==1 && n_bjets_csv==0 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet1tagSFMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv==1 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    //alias_map_["1jet1tagSFMassCuts"]     = "(n_jets_csv==1 && n_bjets_csv==1 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet2tagSFMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv>=2 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet0tagMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv==0 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tagMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv==1 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tagMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv>=2 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
     
     // Categories including the effect of the b-tag SF and one mass cut (for control plots)
-    alias_map_["2jet0tagSFMassCutMbb"]     = "(n_jets_csv>=2 && n_bjets_csv==0 && jet_csv_mjj>70 && jet_csv_mjj<150)";
-    alias_map_["2jet1tagSFMassCutMbb"]     = "(n_jets_csv>=2 && n_bjets_csv==1 && jet_csv_mjj>70 && jet_csv_mjj<150)";
-    alias_map_["2jet2tagSFMassCutMbb"]     = "(n_jets_csv>=2 && n_bjets_csv>=2 && jet_csv_mjj>70 && jet_csv_mjj<150)";
-    alias_map_["2jet0tagSFMassCutMtt"]     = "(n_jets_csv>=2 && n_bjets_csv==0 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet1tagSFMassCutMtt"]     = "(n_jets_csv>=2 && n_bjets_csv==1 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet2tagSFMassCutMtt"]     = "(n_jets_csv>=2 && n_bjets_csv>=2 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet0tagMassCutMbb"]     = "(n_jets_csv>=2 && n_bjets_csv==0 && jet_csv_mjj>70 && jet_csv_mjj<150)";
+    alias_map_["2jet1tagMassCutMbb"]     = "(n_jets_csv>=2 && n_bjets_csv==1 && jet_csv_mjj>70 && jet_csv_mjj<150)";
+    alias_map_["2jet2tagMassCutMbb"]     = "(n_jets_csv>=2 && n_bjets_csv>=2 && jet_csv_mjj>70 && jet_csv_mjj<150)";
+    alias_map_["2jet0tagMassCutMtt"]     = "(n_jets_csv>=2 && n_bjets_csv==0 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet1tagMassCutMtt"]     = "(n_jets_csv>=2 && n_bjets_csv==1 && m_sv>90 && m_sv<150)";
+    alias_map_["2jet2tagMassCutMtt"]     = "(n_jets_csv>=2 && n_bjets_csv>=2 && m_sv>90 && m_sv<150)";
     
     //Extra categories for making control plots
     alias_map_["1jetinclusive"] = "(n_jets_csv>=1)";
