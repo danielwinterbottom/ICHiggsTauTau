@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <functional>
 #include "Math/QuantFuncMathCore.h"
 #include "TMath.h"
 #include "boost/lexical_cast.hpp"
