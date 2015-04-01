@@ -545,6 +545,13 @@ if options.scheme == 'HTohh':
   scheme_em=scheme_mt
   sig_scheme = 'Hhh_nostack'
   ANA = 'Hhh'
+  
+  if options.svfit or options.dijet or options.mttbb or options.mvis: 
+    extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+    extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  elif options.mH :
+    extra_channel["et"] += ' --set_alias="sel:mt_1<30. && m_H_hh>0"'
+    extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && m_H_hh>0"'
 
 cat_schemes = {
   'et' : scheme_et,
