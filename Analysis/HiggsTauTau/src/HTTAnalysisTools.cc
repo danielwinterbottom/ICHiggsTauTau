@@ -98,6 +98,8 @@ namespace ic {
     if (ch_ != channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "pt_2>30.";
+      //for now define a second alias used for the H->hh analyses which includes taus down to 20 GeVi. In future would be better to keep all 3 in line
+      alias_map_["inclusivelowpt"]         = "1";
       alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
       alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>40. && n_bjets==0)";
       alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=40. && n_bjets==0)";
@@ -435,9 +437,15 @@ namespace ic {
     return std::make_pair(data_hist, data_norm);
   }
 
-  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTAnalysis::HistValuePair HTTAnalysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT] --------------------------------------------------------\n";
-    auto ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", this->ResolveAlias("inclusive"), sel, cat, wt);
+    //For H->hh analysis, the inclusive ZTT yield should be taken from events with tau pt down to 30 GeV, for consistency for the run 1 analysis, while the SM and MSSM analyses define inclusive as pt_2>30.
+    Value ztt_norm;
+    if(method == 14 || method == 15 || method == 16 || method == 20 || method == 21 || method == 24 || method == 27) {
+        ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", this->ResolveAlias("inclusivelowpt"), sel, cat, wt);
+    } else {    
+        ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", this->ResolveAlias("inclusive"), sel, cat, wt);
+    }
     if (this->AliasDefined("ztt_shape_cat")) cat = this->ResolveAlias("ztt_shape_cat");
     TH1F ztt_hist = this->GetShape(var, this->ResolveAlias("ZTT_Shape_Sample"), sel, cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
