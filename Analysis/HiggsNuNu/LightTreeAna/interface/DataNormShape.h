@@ -17,7 +17,7 @@ namespace ic {
     CLASS_MEMBER(DataNormShape,std::vector<int>,contbkgisz)
     CLASS_MEMBER(DataNormShape,std::string,contdataset)
     CLASS_MEMBER(DataNormShape,std::string,sigcat)
-    CLASS_MEMBER(DataNormShape,std::string,zcontcat)
+    CLASS_MEMBER(DataNormShape,std::string,zextracontcat)
     CLASS_MEMBER(DataNormShape,std::string,contcat)
     CLASS_MEMBER(DataNormShape,std::string,contdataextrasel)
     CLASS_MEMBER(DataNormShape,std::string,contmcextrasel)

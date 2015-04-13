@@ -519,6 +519,7 @@ namespace ic {
 
       weight_nolep_ = wt;
       total_weight_lepveto_ =wt*vetowt;
+      if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<vetowt<<" "<<mu1_pt_<<" "<<mu1_eta_<<std::endl;//!!
       total_weight_leptight_=wt*tightwt;
       
       jet1_pt_ = jet1->pt();

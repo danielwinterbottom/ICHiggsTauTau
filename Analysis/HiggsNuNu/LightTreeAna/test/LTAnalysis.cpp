@@ -15,6 +15,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/SummaryTable.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/EventList.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/BkgSubDataNormShape.h"
 #include "boost/lexical_cast.hpp"
 #include "boost/program_options.hpp"
 #include "TColor.h"
@@ -52,11 +53,16 @@ int main(int argc, char* argv[]){
   bool do_separatez;
   bool runblind;
   bool runblindreg;
+  bool blindcutreg;
   bool do_bdt;
   std::string bdtcut;
+  bool do_pasfig;
+  bool do_pasqcdfigleft;
   bool do_preselranges;
   bool do_prepreselranges;
+  bool do_relaxedqcdranges;
   bool do_plotmcqcd;
+  bool do_plotqcd;
   bool dataonly;
   bool datalist;
   bool do_list;
@@ -64,6 +70,7 @@ int main(int argc, char* argv[]){
   bool do_latex;
   bool do_closure;
   bool do_expandtopcat;
+  bool do_logy;
   std::string closurebase;
 
   po::options_description preconfig("Configuration"); 
@@ -90,21 +97,27 @@ int main(int argc, char* argv[]){
     ("cjvcut",                   po::value<std::string>(&cjvcut)->default_value("n_jets_cjv_30<1"))
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
     ("do_datatop",               po::value<bool>(&do_datatop)->default_value(true))
-    ("do_singletop",             po::value<bool>(&do_singletop)->default_value(true))
+    ("do_singletop",             po::value<bool>(&do_singletop)->default_value(false))
     ("do_separatez",             po::value<bool>(&do_separatez)->default_value(false))
     ("runblind",                 po::value<bool>(&runblind)->default_value(true))
     ("do_bdt",                   po::value<bool>(&do_bdt)->default_value(false))
     ("bdtcut",                   po::value<std::string>(&bdtcut)->default_value("BDT>-0.26"))
+    ("do_pasfig",                po::value<bool>(&do_pasfig)->default_value(false))
+    ("do_pasqcdfigleft",         po::value<bool>(&do_pasqcdfigleft)->default_value(false))
     ("do_latex",                 po::value<bool>(&do_latex)->default_value(false))
     ("do_closure",               po::value<bool>(&do_closure)->default_value(false))
     ("closurebase",              po::value<std::string>(&closurebase)->default_value("munu"))
     ("do_expandtopcat",          po::value<bool>(&do_expandtopcat)->default_value(false))
     ("do_preselranges",          po::value<bool>(&do_preselranges)->default_value(false))
     ("do_prepreselranges",       po::value<bool>(&do_prepreselranges)->default_value(false))
+    ("do_relaxedqcdranges",      po::value<bool>(&do_relaxedqcdranges)->default_value(false))
     ("do_promptsel",             po::value<bool>(&do_promptsel)->default_value(false))
     ("do_singlemu",              po::value<bool>(&do_singlemu)->default_value(false))
     ("use_promptdata",           po::value<bool>(&use_promptdata)->default_value(false))
     ("do_plotmcqcd",             po::value<bool>(&do_plotmcqcd)->default_value(false))
+    ("do_plotqcd",               po::value<bool>(&do_plotqcd)->default_value(false))
+    ("do_logy",                  po::value<bool>(&do_logy)->default_value(false))
+    ("blindcutreg",              po::value<bool>(&blindcutreg)->default_value(true))
     ("runblindreg",              po::value<bool>(&runblindreg)->default_value(true));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -131,6 +144,11 @@ int main(int argc, char* argv[]){
   analysis->SetInputParams(inputparams);
 
   std::cout<<"Base selection: "<<basesel<<std::endl;
+
+  if(do_plotqcd&&channel!="nunu"){
+    std::cout<<"QCD plotting only valid for nunu region, turning it off in this region"<<std::endl;
+    do_plotqcd=false;
+  }
 
   //Set selection step common to all categories
   //analysis->set_baseselection("passtrigger==1&&jet1_eta<4.7&&jet2_eta<4.7&& jet1_pt>"+boost::lexical_cast<std::string>(jet1ptcut)+"&& jet2_pt>"+boost::lexical_cast<std::string>(jet2ptcut)+" && dijet_M >"+boost::lexical_cast<std::string>(mjjcut)+"&& jet1_eta*jet2_eta<"+boost::lexical_cast<std::string>(etaprodcut)+"&& dijet_dphi<"+boost::lexical_cast<std::string>(dphicut)+"&& dijet_deta >"+boost::lexical_cast<std::string>(detacut));
@@ -182,96 +200,108 @@ int main(int argc, char* argv[]){
   std::vector<std::string> shape;
   //shape.push_back("BDT(12,-1.,0.2)");
 
-  //shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";n_{jets} (p_{T}>30 GeV);entries");
+  //shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";n_{jets} (p_{T}>30 GeV);Events");
   if(!(channel=="taunu"||channel=="top"||channel=="mumu")){
-    shape.push_back("jet2_pt(26,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
-    shape.push_back("jet1_pt(30,50.,350.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
-    shape.push_back("cjvjetpt(27,15.,150.)");histTitle.push_back(";p_{T}^{CJV jet} (GeV);entries");
-    shape.push_back("metnomuons(18,90.,450.)");histTitle.push_back(";METnoMu (GeV);entries");
-    shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
-    shape.push_back("l1met(20,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
-    shape.push_back("dijet_M(22,800.,3000.)");histTitle.push_back(";M_{jj} (GeV);entries");
-    //shape.push_back("dijet_M(17,300.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
-    shape.push_back("jetmetnomu_mindphi(12,2.0,3.142)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
-    if(!do_preselranges&&!do_prepreselranges){
-      //shape.push_back("alljetsmetnomu_mindphi(12,0.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-      shape.push_back("alljetsmetnomu_mindphi(22,1.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-      shape.push_back("metnomu_significance(30,3.,15.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
+    shape.push_back("jet2_pt(26,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
+    shape.push_back("jet1_pt(30,50.,350.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
+    shape.push_back("cjvjetpt(27,15.,150.)");histTitle.push_back(";p_{T}^{CJV jet} (GeV);Events");
+    shape.push_back("metnomuons(20,90.,550.)");histTitle.push_back(";Missing transverse energy (GeV);Events");
+    shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);Events");
+    shape.push_back("l1met(20,00.,200.)");histTitle.push_back(";L1MET (GeV);Events");
+    //shape.push_back("dijet_M(17,300.,2000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+    if(!do_preselranges&&!do_prepreselranges&&!do_relaxedqcdranges){
+      shape.push_back("dijet_M(18,1200.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+      //shape.push_back("alljetsmetnomu_mindphi(12,0.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);Events");
+      shape.push_back("jetmetnomu_mindphi(10,2.3,3.142)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
+      shape.push_back("alljetsmetnomu_mindphi(10,2.3,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
+      if(do_pasqcdfigleft){shape.push_back("metnomu_significance(30,4.,15.)");histTitle.push_back(";S;Events");}
+      else shape.push_back("metnomu_significance(15,4.,15.)");histTitle.push_back(";S;Events");
     }
     else if(do_prepreselranges){
-      shape.push_back("alljetsmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-      shape.push_back("metnomu_significance(50,0.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
-      shape.push_back("met_significance(50,0.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
+      shape.push_back("dijet_M(22,800.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+      shape.push_back("jetmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
+      shape.push_back("alljetsmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
+      shape.push_back("metnomu_significance(50,0.,10.)");histTitle.push_back(";S;Events");
+      shape.push_back("met_significance(50,0.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);Events");
+    }
+    else if(do_relaxedqcdranges){
+      shape.push_back("dijet_M(18,1200.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+      shape.push_back("jetmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
+      shape.push_back("alljetsmetnomu_mindphi(32,0.,3.142)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
+      shape.push_back("metnomu_significance(33,3.,15.)");histTitle.push_back(";S;Events");
     }
     else{
-      shape.push_back("alljetsmetnomu_mindphi(22,0.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-      //shape.push_back("alljetsmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-      shape.push_back("metnomu_significance(45,1.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");
+      shape.push_back("dijet_M(18,1200.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+      shape.push_back("alljetsmetnomu_mindphi(22,0.0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
+      //shape.push_back("alljetsmetnomu_mindphi(32,0.,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);Events");
+      shape.push_back("metnomu_significance(45,1.,10.)");histTitle.push_back(";S;Events");
     }
-    shape.push_back("dijet_sumeta(50,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};entries");
-    shape.push_back("ht(50,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
-    //shape.push_back("ht30(50,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
-    shape.push_back("jetunclet_mindphi(32,0,3.1416)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});entries");
-    shape.push_back("metnomuunclet_dphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl};entries");
-    shape.push_back("dijetmetnomu_scalarSum_pt(35,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;entries");
-    shape.push_back("dijetmetnomu_vectorialSum_pt(20,0,400)");histTitle.push_back(";p_{T}(#vec{ja}+#vec{jb}+#vec{METnoMu});entries");
-    shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);entries");
-    shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);entries");
-    shape.push_back("dijet_dphi(15,0.,3.1416)");histTitle.push_back(";#Delta#phi_{jj};entries");
-    shape.push_back("dijet_deta(18,3.4,7.)");histTitle.push_back(";#Delta#eta_{jj};entries");
-    shape.push_back("lep_mt(20,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);entries");
-    shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
-    shape.push_back("ele1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(electron) (GeV);entries");
-    shape.push_back("mu1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(muon) (GeV);entries");
-    shape.push_back("jet_csv1(21,0.6,1.5)");histTitle.push_back(";Jet 1 CSV;entries");
-    shape.push_back("jet_csv2(21,0.6,1.5)");histTitle.push_back(";Jet 2 CSV;entries");
-    shape.push_back("jet_csv3(21,0.,1.)");histTitle.push_back(";Jet 3 CSV;entries");
-    shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;entries");
-    shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;entries");
-    shape.push_back("central_tag_eta(50,-5.,5.)");histTitle.push_back(";Central tag jet #eta;entries");
-    shape.push_back("forward_tag_eta(50,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;entries");
+    shape.push_back("dijet_sumeta(50,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};Events");
+    shape.push_back("ht(50,0,1000)");histTitle.push_back(";H_{T} (GeV);Events");
+    //shape.push_back("ht30(50,0,1000)");histTitle.push_back(";H_{T} (GeV);Events");
+    shape.push_back("jetunclet_mindphi(32,0,3.1416)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});Events");
+    shape.push_back("metnomuunclet_dphi(32,0,3.1416)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl};Events");
+    shape.push_back("dijetmetnomu_scalarSum_pt(35,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;Events");
+    shape.push_back("dijetmetnomu_vectorialSum_pt(20,0,400)");histTitle.push_back(";p_{T}(#vec{ja}+#vec{jb}+#vec{METnoMu});Events");
+    shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);Events");
+    shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);Events");
+    shape.push_back("dijet_dphi(15,0.,3.1416)");histTitle.push_back(";#Delta#phi_{jj};Events");
+    shape.push_back("dijet_deta(18,3.6,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
+    shape.push_back("lep_mt(20,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
+    shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events");
+    shape.push_back("ele1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(electron) (GeV);Events");
+    shape.push_back("mu1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(muon) (GeV);Events");
+    shape.push_back("jet_csv1(21,0.6,1.5)");histTitle.push_back(";Jet 1 CSV;Events");
+    shape.push_back("jet_csv2(21,0.6,1.5)");histTitle.push_back(";Jet 2 CSV;Events");
+    shape.push_back("jet_csv3(21,0.,1.)");histTitle.push_back(";Jet 3 CSV;Events");
+    shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;Events");
+    shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
+    shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
+    shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
     if(channel=="mumu"){
-      shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};entries");
+      shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};Events");
     }
   }
   else{
-    shape.push_back("jet2_pt(13,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);entries");
-    shape.push_back("jet1_pt(12,50.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);entries");
-    shape.push_back("metnomuons(11,90.,300.)");histTitle.push_back(";METnoMu (GeV);entries");
-    shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);entries");
-    shape.push_back("l1met(10,00.,200.)");histTitle.push_back(";L1MET (GeV);entries");
-    shape.push_back("dijet_M(5,1000.,2000.)");histTitle.push_back(";M_{jj} (GeV);entries");
-    shape.push_back("sqrt(2*ele1_pt*mu1_pt*(cosh(ele1_eta-mu1_eta)-cos(ele1_phi-mu1_phi)))(40,0.,1000.)");histTitle.push_back(";M_{e#mu} (GeV);entries");
-    shape.push_back("jet_csv1(21,0.,1.05)");histTitle.push_back(";Jet 1 CSV;entries");
-    shape.push_back("jet_csv2(21,0.,1.05)");histTitle.push_back(";Jet 2 CSV;entries");
-    shape.push_back("jet_csv3(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;entries");
-    shape.push_back("jetmetnomu_mindphi(16,0.,3.1416)");histTitle.push_back(";min #Delta#phi(j1/j2,METnoMu);entries");
-    shape.push_back("alljetsmetnomu_mindphi(14,1.0,3.1416)");histTitle.push_back(";min #Delta#phi(all jets,METnoMu);entries");
-    if(!do_preselranges&&!do_prepreselranges){ shape.push_back("metnomu_significance(17,3.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");}
-    else if(do_prepreselranges){shape.push_back("metnomu_significance(25,0.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");}
-    else{ shape.push_back("metnomu_significance(22,1.,10.)");histTitle.push_back(";METnoMu/#sigma(METnoMu);entries");}
-    shape.push_back("dijet_sumeta(25,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};entries");
-    shape.push_back("ht(25,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
-    //shape.push_back("ht30(25,0,1000)");histTitle.push_back(";H_{T} (GeV);entries");
-    shape.push_back("jetunclet_mindphi(16,0,3.1416)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});entries");
-    shape.push_back("metnomuunclet_dphi(16,0,3.1416)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl};entries");
-    shape.push_back("dijetmetnomu_scalarSum_pt(35,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;entries");
-    shape.push_back("dijetmetnomu_vectorialSum_pt(10,0,400)");histTitle.push_back(";p_{T}(#vec{ja}+#vec{jb}+#vec{METnoMu});entries");
-    shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);entries");
-    shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);entries");
-    shape.push_back("dijet_dphi(15,0.,3.)");histTitle.push_back(";#Delta#phi_{jj};entries");
-    shape.push_back("dijet_deta(9,3.4,7.)");histTitle.push_back(";#Delta#eta_{jj};entries");
-    shape.push_back("lep_mt(20,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);entries");
-    shape.push_back("tau1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(tau) (GeV);entries");
-    shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);entries");
-    shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;entries");
-    shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;entries");
-    shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;entries");
-    shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;entries");
+    shape.push_back("jet2_pt(13,40.,300.)");histTitle.push_back(";p_{T}^{j2} (GeV);Events");
+    shape.push_back("jet1_pt(12,50.,300.)");histTitle.push_back(";p_{T}^{j1} (GeV);Events");
+    shape.push_back("metnomuons(15,90.,550.)");histTitle.push_back(";Missing transverse energy (GeV);Events");
+    shape.push_back("met(30,0.,300.)");histTitle.push_back(";MET (GeV);Events");
+    shape.push_back("l1met(10,00.,200.)");histTitle.push_back(";L1MET (GeV);Events");
+    shape.push_back("dijet_M(5,1200.,2000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+    shape.push_back("sqrt(2*ele1_pt*mu1_pt*(cosh(ele1_eta-mu1_eta)-cos(ele1_phi-mu1_phi)))(40,0.,1000.)");histTitle.push_back(";M_{e#mu} (GeV);Events");
+    shape.push_back("jet_csv1(21,0.,1.05)");histTitle.push_back(";Jet 1 CSV;Events");
+    shape.push_back("jet_csv2(21,0.,1.05)");histTitle.push_back(";Jet 2 CSV;Events");
+    shape.push_back("jet_csv3(21,0.,1.05)");histTitle.push_back(";Jet 3 CSV;Events");
+    shape.push_back("jetmetnomu_mindphi(16,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
+    if(channel=="taunu"){ shape.push_back("alljetsmetnomu_mindphi(22,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
+    else if(channel=="top"){ shape.push_back("alljetsmetnomu_mindphi(11,0.,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
+    else{ shape.push_back("alljetsmetnomu_mindphi(7,2.3,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");}
+    if(!do_preselranges&&!do_prepreselranges){ shape.push_back("metnomu_significance(6,4.,10.)");histTitle.push_back(";S;Events");}
+    else if(do_prepreselranges){shape.push_back("metnomu_significance(25,0.,10.)");histTitle.push_back(";S;Events");}
+    else{ shape.push_back("metnomu_significance(22,1.,10.)");histTitle.push_back(";S;Events");}
+    shape.push_back("dijet_sumeta(25,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};Events");
+    shape.push_back("ht(25,0,1000)");histTitle.push_back(";H_{T} (GeV);Events");
+    //shape.push_back("ht30(25,0,1000)");histTitle.push_back(";H_{T} (GeV);Events");
+    shape.push_back("jetunclet_mindphi(16,0,3.1416)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});Events");
+    shape.push_back("metnomuunclet_dphi(16,0,3.1416)");histTitle.push_back(";#Delta#phi(METnoMu,E_{T}^{uncl};Events");
+    shape.push_back("dijetmetnomu_scalarSum_pt(35,0,1400)");histTitle.push_back(";p_{T}^{jeta}+p_{T}^{jetb}+METnoMu;Events");
+    shape.push_back("dijetmetnomu_vectorialSum_pt(10,0,400)");histTitle.push_back(";p_{T}(#vec{ja}+#vec{jb}+#vec{METnoMu});Events");
+    shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);Events");
+    shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);Events");
+    shape.push_back("dijet_dphi(15,0.,3.)");histTitle.push_back(";#Delta#phi_{jj};Events");
+    shape.push_back("dijet_deta(9,3.6,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
+    shape.push_back("lep_mt(20,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
+    shape.push_back("tau1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(tau) (GeV);Events");
+    shape.push_back("dijetmetnomu_ptfraction(10,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events");
+    shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";N jets pt>30 GeV;Events");
+    shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
+    shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
+    shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
     //mindR(tau,tagjets)
-    shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);entries");
+    shape.push_back("mymath::deltaRmin(jet1_eta,jet1_phi,jet2_eta,jet2_phi,tau1_eta,tau1_phi)(20,0.,4.)");histTitle.push_back(";min#DeltaR(#tau,tag jets);Events");
     if(channel=="mumu"){
-      shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};entries");
+      shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};Events");
     }
   }
   
@@ -300,6 +330,26 @@ int main(int argc, char* argv[]){
     //nunuzcat="&&"+jetmetdphicut+"&&ntaus==0";
   }
   
+  std::string qcdbasecat;
+    std::string qcdshapecat,zextraqcdshapecat;
+  if(do_pasfig){
+    qcdbasecat="alljetsmetnomu_mindphi<1.0&&jetmetnomu_mindphi>1.0";
+  }
+  else{
+    qcdbasecat="alljetsmetnomu_mindphi<1.0&&jetmetnomu_mindphi>2.3";
+  }
+  qcdshapecat=("nvetomuons==0&&nvetoelectrons==0&&"+qcdbasecat);
+  zextraqcdshapecat=("&&"+qcdbasecat);
+
+  std::string mumuqcdcat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+qcdbasecat;
+  std::string mumuqcdzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120&&"+qcdbasecat;//zmumu
+  std::string munuqcdcat="mu1_pt>25&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&"+qcdbasecat;//&&lep_mt>10";
+  std::string munuqcdzcat="&&mu1_pt>25&&nselmuons==1&&nvetomuons==1&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+qcdbasecat;//wmu
+  std::string enuqcdcat="nselelectrons==1&&nvetomuons==0&&nvetoelectrons==1&&"+qcdbasecat;
+  std::string enuqcdzcat="&&nselelectrons==1&&nvetoelectrons==1&&"+qcdbasecat;//wel
+  std::string taunuqcdcat="ntaus==1&&nvetomuons==0&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;
+  std::string taunuqcdzcat="&&ntaus==1&&nvetoelectrons==0&&jetmetnomu_mindphi>1.0";//"+jetmetdphicut;//wtau  
+
   std::string mumucat="nselmuons==2&&nvetomuons==2&&nvetoelectrons==0&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;
   std::string mumuzcat="&&nselmuons==2&&nvetomuons==2&&m_mumu>60&&m_mumu<120&&"+jetmetdphicut;//zmumu
 
@@ -667,6 +717,41 @@ int main(int argc, char* argv[]){
     .set_ngenmassfilteredewk(4226.53)
     .set_ngenmassfilteredqcd(20334900);
 
+  std::vector<std::string> qcdZcontbkgsets;
+  qcdZcontbkgsets.push_back("VV");
+  qcdZcontbkgsets.push_back("Top");
+  qcdZcontbkgsets.push_back("WJets_enu");
+  qcdZcontbkgsets.push_back("WJets_munu");
+  qcdZcontbkgsets.push_back("WJets_taunu");
+
+  DataZNormShape zmumuqcd("zmumuqcd");
+  zmumuqcd.set_sigmcewkset("ZJets_ll_vbf")
+    .set_do_latex(do_latex)
+    .set_shape(shape)
+    .set_dirname("zvvqcd")
+    .set_ewkdirname("zvv_ewkqcd")
+    .set_qcddirname("zvv_qcdqcd")
+    .set_sigmcqcdset("ZJets_ll")
+    .set_contmcewkset("ZJets_ll_vbf")
+    .set_contmcqcdset("ZJets_ll")
+    .set_contbkgset(qcdZcontbkgsets)
+    .set_contdataset(dataset)
+    .set_basesel(analysis->baseselection())
+    .set_contdataextrasel(dataextrasel)
+    .set_sigcat("m_mumu_gen>80&&m_mumu_gen<100"+zextraqcdshapecat)
+    .set_contcat(mumuqcdcat)//"nvetoelectrons==0 && nvetomuons==2 && nselmuons==2&&m_mumu>60&&m_mumu<120")
+    .set_sigmcweight("weight_nolep"+mcweightpufactor)
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor)
+    .set_contdataweight("weight_nolep")
+    .set_sigmainccontewk(303)
+    .set_sigmainccontqcd(3503700./3)
+    .set_sigmaincsigewk(460*3)
+    .set_sigmaincsigqcd(3503700./3*5.651)
+    .set_ngenincewk(5781.91)
+    .set_ngenincqcd(22789300)
+    .set_ngenmassfilteredewk(4226.53)
+    .set_ngenmassfilteredqcd(20334900);
+
   std::vector<std::string> zcontsubsets;
   zcontsubsets.push_back("ZJets_ll_vbf");
   zcontsubsets.push_back("ZJets_ll");
@@ -787,6 +872,76 @@ int main(int argc, char* argv[]){
     .set_contmcweight(closuremcweight);
   }   
 
+  std::vector<std::string> qcdWcontbkgsets; //List of sets for ncbkg
+  qcdWcontbkgsets.push_back("VV");
+  qcdWcontbkgsets.push_back("Top");
+
+  DataNormShape wmunuqcd("wmunuqcd");
+  wmunuqcd.set_sigmcset("WJets_munu")
+    .set_do_latex(do_latex)
+    .set_shape(shape)
+    .set_dirname("wmuqcd")
+    .set_contdataset(dataset)
+    .set_contbkgset(qcdWcontbkgsets)
+    .set_sigmcweight(sigmcweight)
+    .set_basesel(analysis->baseselection())
+    .set_contdataextrasel(dataextrasel)
+    .set_sigcat(qcdshapecat);
+  if(!do_closure){
+    wmunuqcd.set_contmcset("WJets_munu")
+    .set_contcat(munuqcdcat)//"nvetoelectrons==0 && nvetomuons==1 && nselmuons==1");
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor);
+  }
+  else{
+    wmunuqcd.set_contmcset(closurecontmcset)
+    .set_contcat(closurecat)
+    .set_contmcweight(closuremcweight);
+  }   
+  
+  DataNormShape wenuqcd("wenuqcd");
+  wenuqcd.set_sigmcset("WJets_enu")
+    .set_do_latex(do_latex)
+    .set_shape(shape)
+    .set_dirname("welqcd")
+    .set_contdataset(dataset)
+    .set_contbkgset(qcdWcontbkgsets)
+    .set_basesel(analysis->baseselection())
+    .set_contdataextrasel(dataextrasel)
+    .set_sigcat(qcdshapecat)
+    .set_sigmcweight(sigmcweight);
+  if(!do_closure){
+    wenuqcd.set_contmcset("WJets_enu")
+    .set_contcat(enuqcdcat)//"nselelectrons==1 && nvetoelectrons ==1 && nvetomuons==0");
+    .set_contmcweight("total_weight_leptight"+mcweightpufactor);
+  }
+  else{
+    wenuqcd.set_contmcset(closurecontmcset)
+    .set_contcat(closurecat)
+    .set_contmcweight(closuremcweight);
+  }   
+  
+  DataNormShape wtaunuqcd("wtaunuqcd");
+  wtaunuqcd.set_sigmcset("WJets_taunu")
+    .set_do_latex(do_latex)
+    .set_shape(shape)
+    .set_dirname("wtauqcd")
+    .set_contdataset(dataset)
+    .set_contbkgset(qcdWcontbkgsets)
+    .set_basesel(analysis->baseselection())
+    .set_contdataextrasel(dataextrasel)
+    .set_sigcat(qcdshapecat)
+    .set_sigmcweight(sigmcweight);
+  if(!do_closure){
+    wtaunuqcd.set_contmcset("WJets_taunu")
+    .set_contcat(taunuqcdcat)//"ntaus>=1&&nvetoelectrons ==0 && nvetomuons==0&&lep_mt>20")
+    .set_contmcweight("total_weight_lepveto"+mcweightpufactor);
+  }
+  else{
+    wtaunuqcd.set_contmcset(closurecontmcset)
+    .set_contcat(closurecat)
+    .set_contmcweight(closuremcweight);
+  }   
+
   
   //TOP
   std::vector<std::string> Topcontbkgsets;
@@ -831,66 +986,66 @@ int main(int argc, char* argv[]){
     .set_contmcweight("total_weight_leptight"+mcweightpufactor);
   if(do_singletop){
     top.set_contbkgextrafactordir(Topcontbkgextrafactordir)
-      .set_zcontcat(topzcat)
+      .set_zextracontcat(topzcat)
       .set_contbkgisz(Topcontbkgisz);
 				     
   }
 
 
-  //QCDBKG
-  std::vector<std::string> QCDcontbkgsets; //list of sets for ncbkg
-  QCDcontbkgsets.push_back("VV");
-  QCDcontbkgsets.push_back("Top");
-  //QCDcontbkgsets.push_back("WGamma");
-   QCDcontbkgsets.push_back("ZJets_ll");
-   QCDcontbkgsets.push_back("ZJets_ll_vbf");
-  QCDcontbkgsets.push_back("WJets_enu");
-  QCDcontbkgsets.push_back("WJets_munu");
-  QCDcontbkgsets.push_back("WJets_taunu");
+//   //QCDBKG
+//   std::vector<std::string> QCDcontbkgsets; //list of sets for ncbkg
+//   QCDcontbkgsets.push_back("VV");
+//   QCDcontbkgsets.push_back("Top");
+//   //QCDcontbkgsets.push_back("WGamma");
+//    QCDcontbkgsets.push_back("ZJets_ll");
+//    QCDcontbkgsets.push_back("ZJets_ll_vbf");
+//   QCDcontbkgsets.push_back("WJets_enu");
+//   QCDcontbkgsets.push_back("WJets_munu");
+//   QCDcontbkgsets.push_back("WJets_taunu");
 
-  std::vector<std::string> QCDcontbkgextrafactordir;//list of dirs with data driven weights for above backgrounds
-    QCDcontbkgextrafactordir.push_back("");
-    QCDcontbkgextrafactordir.push_back("top");
-    //QCDcontbkgextrafactordir.push_back("");
-   QCDcontbkgextrafactordir.push_back("zvv");
-   QCDcontbkgextrafactordir.push_back("zvv");
-    QCDcontbkgextrafactordir.push_back("wel");
-    QCDcontbkgextrafactordir.push_back("wmu");
-    QCDcontbkgextrafactordir.push_back("wtau");
+//   std::vector<std::string> QCDcontbkgextrafactordir;//list of dirs with data driven weights for above backgrounds
+//     QCDcontbkgextrafactordir.push_back("");
+//     QCDcontbkgextrafactordir.push_back("top");
+//     //QCDcontbkgextrafactordir.push_back("");
+//    QCDcontbkgextrafactordir.push_back("zvv");
+//    QCDcontbkgextrafactordir.push_back("zvv");
+//     QCDcontbkgextrafactordir.push_back("wel");
+//     QCDcontbkgextrafactordir.push_back("wmu");
+//     QCDcontbkgextrafactordir.push_back("wtau");
   
-  std::vector<int> QCDcontbkgisz;
-  QCDcontbkgisz.push_back(0);
-  QCDcontbkgisz.push_back(0);
-   QCDcontbkgisz.push_back(0);
-  if(channel!="mumu"){
-    QCDcontbkgisz.push_back(2);
-    QCDcontbkgisz.push_back(1);
-  }
-  else{
-    QCDcontbkgisz.push_back(0);
-    QCDcontbkgisz.push_back(0);
-  }
-    QCDcontbkgisz.push_back(0);
-    QCDcontbkgisz.push_back(0);
-    QCDcontbkgisz.push_back(0);
+//   std::vector<int> QCDcontbkgisz;
+//   QCDcontbkgisz.push_back(0);
+//   QCDcontbkgisz.push_back(0);
+//    QCDcontbkgisz.push_back(0);
+//   if(channel!="mumu"){
+//     QCDcontbkgisz.push_back(2);
+//     QCDcontbkgisz.push_back(1);
+//   }
+//   else{
+//     QCDcontbkgisz.push_back(0);
+//     QCDcontbkgisz.push_back(0);
+//   }
+//     QCDcontbkgisz.push_back(0);
+//     QCDcontbkgisz.push_back(0);
+//     QCDcontbkgisz.push_back(0);
 
 
-  DataNormShape QCD("QCD");
-  QCD.set_sigmcset("VBF-QCD")//VBF-QCD")
-    .set_shape(shape)
-    .set_dirname("qcd")
-    .set_contmcset("VBF-QCD")//VBF-QCD")
-    .set_contdataset(dataset)
-    .set_contbkgset(QCDcontbkgsets)
-    .set_contbkgextrafactordir(QCDcontbkgextrafactordir)
-    .set_contbkgisz(QCDcontbkgisz)
-    .set_sigmcweight(sigmcweight)
-    .set_contmcweight("total_weight_lepveto"+mcweightpufactor)
-    .set_basesel(analysis->baseselection())
-    .set_contdataextrasel(dataextrasel)
-    .set_sigcat(sigcat)
-    .set_zcontcat("m_mumu_gen>80&&m_mumu_gen<100"+qcdzcat)
-    .set_contcat(qcdcat);
+//   DataNormShape QCD("QCD");
+//   QCD.set_sigmcset("VBF-QCD")//VBF-QCD")
+//     .set_shape(shape)
+//     .set_dirname("qcd")
+//     .set_contmcset("VBF-QCD")//VBF-QCD")
+//     .set_contdataset(dataset)
+//     .set_contbkgset(QCDcontbkgsets)
+//     .set_contbkgextrafactordir(QCDcontbkgextrafactordir)
+//     .set_contbkgisz(QCDcontbkgisz)
+//     .set_sigmcweight(sigmcweight)
+//     .set_contmcweight("total_weight_lepveto"+mcweightpufactor)
+//     .set_basesel(analysis->baseselection())
+//     .set_contdataextrasel(dataextrasel)
+//     .set_sigcat(sigcat)
+//     .set_zcontcat("m_mumu_gen>80&&m_mumu_gen<100"+qcdzcat)
+//     .set_contcat(qcdcat);
 
 
   //NORMALISED PLOTS FOR REFEREE
@@ -922,6 +1077,73 @@ int main(int argc, char* argv[]){
 //     .set_basesel("jet1_eta<4.7&&jet2_eta<4.7&&jet1_pt>50&&jet2_pt>50&&nvetoelectrons==0 && nvetomuons==0&&dijet_M>150&&met>130")
 //     .set_shapes(shapes);
 
+//   //QCDBKG
+  std::vector<std::string> QCDcontbkgsets; //list of sets for ncbkg
+  QCDcontbkgsets.push_back("VV");
+  QCDcontbkgsets.push_back("Top");
+  QCDcontbkgsets.push_back("ZJets_ll");
+  QCDcontbkgsets.push_back("ZJets_ll_vbf");
+  QCDcontbkgsets.push_back("WJets_enu");
+  QCDcontbkgsets.push_back("WJets_munu");
+  QCDcontbkgsets.push_back("WJets_taunu");
+
+  std::vector<std::string> QCDshapebkgextrafactordir;//list of dirs with data driven weights for above backgrounds
+  QCDshapebkgextrafactordir.push_back("");
+  QCDshapebkgextrafactordir.push_back("");
+  QCDshapebkgextrafactordir.push_back("zvvqcd");
+  QCDshapebkgextrafactordir.push_back("zvvqcd");
+  QCDshapebkgextrafactordir.push_back("welqcd");
+  QCDshapebkgextrafactordir.push_back("wmuqcd");
+  QCDshapebkgextrafactordir.push_back("wtauqcd");
+
+  std::vector<std::string> QCDcontbkgextrafactordir;//list of dirs with data driven weights for above backgrounds
+  QCDcontbkgextrafactordir.push_back("");
+  QCDcontbkgextrafactordir.push_back("");
+  QCDcontbkgextrafactordir.push_back("zvv");
+  QCDcontbkgextrafactordir.push_back("zvv");
+  QCDcontbkgextrafactordir.push_back("wel");
+  QCDcontbkgextrafactordir.push_back("wmu");
+  QCDcontbkgextrafactordir.push_back("wtau");
+  
+  std::vector<int> QCDcontbkgisz;
+  QCDcontbkgisz.push_back(0);
+  QCDcontbkgisz.push_back(0);
+  if(channel!="mumu"){
+    QCDcontbkgisz.push_back(2);
+    QCDcontbkgisz.push_back(1);
+  }
+  else{
+    QCDcontbkgisz.push_back(0);
+    QCDcontbkgisz.push_back(0);
+  }
+  QCDcontbkgisz.push_back(0);
+  QCDcontbkgisz.push_back(0);
+  QCDcontbkgisz.push_back(0);
+
+  BkgSubDataNormShape QCDshape("QCDshape");
+  QCDshape.set_shape(shape)
+    .set_contbkgset(QCDcontbkgsets)
+    .set_shapebkgset(QCDcontbkgsets)
+    .set_contbkgextrafactordir(QCDcontbkgextrafactordir)
+    .set_shapebkgextrafactordir(QCDshapebkgextrafactordir)
+    .set_contbkgisz(QCDcontbkgisz)
+    .set_shapebkgisz(QCDcontbkgisz)
+    .set_contdataset(dataset)
+    .set_shapecat(qcdshapecat)
+    .set_contcat(sigcat)
+    .set_zextrashapecat("m_mumu_gen>80&&m_mumu_gen<100"+zextraqcdshapecat)
+    .set_zextracontcat("m_mumu_gen>80&&m_mumu_gen<100"+zextrasigcat)
+    .set_contdataextrasel(dataextrasel)
+    .set_shapebaseextrasel(dataextrasel)
+    .set_basesel(analysis->baseselection())
+    .set_shapebaseweight("weight_nolep")
+    .set_contmcweight(sigmcweight)
+    .set_shapemcweight(sigmcweight)
+    .set_contdataweight("weight_nolep")
+    .set_do_ddnorm(false)
+    .set_shapecontextrafactor(0.05)
+    .set_dirname("qcd")
+    .set_shapebaseset(dataset);
 
   //MVA TRAIN
   std::vector<std::string> sigsets;
@@ -983,6 +1205,21 @@ int main(int argc, char* argv[]){
     thisshape.set_name(strs[0]);
     thisshape.set_histtitle(histTitle[ishape]);
     //    shapevec.push_back(strs[0]);
+    if(do_logy) thisshape.set_dology(true);
+    if(channel=="mumu"&&(strs[0]=="dijet_M"||strs[0]=="metnomu_significance")) thisshape.set_axisrangemultiplier(1.3);
+    else if(channel=="mumu"&&(strs[0]=="metnomuons")) thisshape.set_axisrangemultiplier(1.1);
+    else if(channel=="nunu"&&(strs[0]=="metnomuons")) thisshape.set_axisrangemultiplier(1.3);
+    else if(channel=="nunu"&&(strs[0]=="dijet_deta")) thisshape.set_axisrangemultiplier(1.3);
+    else if(channel=="nunu"&&(strs[0]=="metnomu_significance"))thisshape.set_axisrangemultiplier(1.25);
+    else if(strs[0]=="metnomuons")thisshape.set_axisrangemultiplier(1.25);
+    else if(strs[0]=="dijet_M")thisshape.set_axisrangemultiplier(1.3);
+    else if(channel=="enu"&&strs[0]=="alljetsmetnomu_mindphi")thisshape.set_axisrangemultiplier(1.3);
+    else if(strs[0]=="alljetsmetnomu_mindphi")thisshape.set_axisrangemultiplier(1.2);
+
+    if(channel=="nunu"&&(strs[0]=="central_tag_eta"||strs[0]=="forward_tag_eta")){
+      thisshape.set_legleft(0.39);
+      thisshape.set_legright(0.61);
+    }
     shapevec.push_back(thisshape);
   }
 
@@ -1003,6 +1240,16 @@ int main(int argc, char* argv[]){
     std::pair<double,double>metsigrange(4.,20.);
     blindrange.push_back(mindphirange);
     blindrange.push_back(metsigrange);
+    dataele.set_blindvar(blindvars)
+      .set_blindrange(blindrange);
+  }
+
+  if(blindcutreg&&!runblindreg){
+    std::vector<std::string> blindvars;
+    std::vector<std::pair<double,double> > blindrange;
+    blindvars.push_back("forward_tag_eta");
+    std::pair<double,double>forwardetarange(-1.8,1.8);
+    blindrange.push_back(forwardetarange);
     dataele.set_blindvar(blindvars)
       .set_blindrange(blindrange);
   }
@@ -1085,8 +1332,11 @@ int main(int argc, char* argv[]){
     .set_color(kMagenta-10)
     .set_in_stack(true)
     .set_is_inratioden(true)
-    .set_legname("MC QCD")
     .set_sample("qcd");
+  if(do_plotmcqcd) qcdele.set_legname("MC QCD");
+  else qcdele.set_legname("QCD");
+    
+
 
   LTPlotElement vvele;
   vvele.set_is_data(false)
@@ -1122,7 +1372,7 @@ int main(int argc, char* argv[]){
     .set_scale(1)
     .set_color(kRed)
     .set_in_stack(false)
-    .set_legname("Signalx1")
+    .set_legname("Signal (x1)")
     .set_sample("qqH125");
 
   LTPlotElement ggHele;
@@ -1130,29 +1380,35 @@ int main(int argc, char* argv[]){
     .set_scale(1)
     .set_color(kBlue)
     .set_in_stack(false)
-    .set_legname("ggHx1")
+    .set_legname("gg#rightarrow H (x1)")
     .set_sample("ggH125");
 
   if(!(channel=="nunu"&&runblind))elementvec.push_back(dataele);
-  elementvec.push_back(wmunuele);
-  elementvec.push_back(wenuele);
-  elementvec.push_back(wtaunuele);
+  if(channel!="mumu"){
+    if(channel!="enu")elementvec.push_back(wmunuele);
+    if(channel!="munu")elementvec.push_back(wenuele);
+    if(channel!="munu")elementvec.push_back(wtaunuele);
+  }
   //  elementvec.push_back(zmumuele);
-  if(do_separatez){
+  if(do_separatez&&channel=="mumu"){
     elementvec.push_back(znunuewkele);
     elementvec.push_back(znunuqcdele);
   }
-  else elementvec.push_back(znunuele);
-  if(do_plotmcqcd)elementvec.push_back(qcdele);
-  elementvec.push_back(vvele);
+  else{
+    if(channel!="enu"&&channel!="munu"&&channel!="taunu")elementvec.push_back(znunuele);
+  }
+  if(do_plotmcqcd||do_plotqcd)elementvec.push_back(qcdele);
+  if(channel!="munu")elementvec.push_back(vvele);
   //   elementvec.push_back(wgele);
-  elementvec.push_back(topele);
-  elementvec.push_back(sigele);
-  elementvec.push_back(ggHele);
+  if(channel!="mumu")elementvec.push_back(topele);
+  if(channel!="mumu"&&channel!="enu"&&channel!="munu"){
+    elementvec.push_back(sigele);
+    elementvec.push_back(ggHele);
+  }
 
   HistPlotter plotter("plotter");
   plotter.set_dirname("ControlPlots")
-    .set_add_underflows(true)
+    .set_add_underflows(false)
     .set_add_overflows(true)
     .set_elements(elementvec)
     .set_do_ratio(true)
@@ -1214,6 +1470,15 @@ int main(int argc, char* argv[]){
     //analysis->AddModule(&wenuraw);
     //analysis->AddModule(&wtaunuraw);  
     if(do_plotmcqcd)analysis->AddModule(&QCDraw);
+    if(do_plotqcd){
+      analysis->AddModule(&wmunuqcd);
+      analysis->AddModule(&wenuqcd);
+      analysis->AddModule(&wtaunuqcd);
+      if(channel!="mumu"){
+	analysis->AddModule(&zmumuqcd);
+      }
+      analysis->AddModule(&QCDshape);
+    }
     //analysis->AddModule(&zmumuraw);
     //analysis->AddModule(&znunuraw);
     analysis->AddModule(&vv);
