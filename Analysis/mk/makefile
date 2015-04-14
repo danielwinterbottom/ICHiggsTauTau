@@ -10,6 +10,15 @@ TOP := $(shell \
 endif
 
 # Define some useful colours
+ifeq ($(NOCOL),1)
+COLOR_RE :
+COLOR_GR :
+COLOR_YE :
+COLOR_BL :
+COLOR_PU :
+COLOR_CY :
+NOCOLOR :=
+else
 COLOR_RE := \033[31m
 COLOR_GR := \033[32m
 COLOR_YE := \033[33m
@@ -17,6 +26,7 @@ COLOR_BL := \033[34m
 COLOR_PU := \033[35m
 COLOR_CY := \033[36m
 NOCOLOR := \033[0m
+endif
 
 # Folder containing ancillary makefile inputs
 MK := $(TOP)/mk
@@ -35,10 +45,12 @@ $(info ==> Standalone mode enabled - CMSSW will not be linked)
 $(info ==> Directories that do not define REQUIRES_CMSSW=0 will be skipped!)
 endif
 
-# BOOST - currently fixed to version 1.47.0, we will need to do some magic
-# in the near futures to figure out the right version for the CMSSW release
 ifndef BOOSTSYS
 	BOOSTSYS := $(shell scram tool tag boost BOOST_BASE)
+endif
+
+ifndef PYSYS
+	PYSYS := $(shell scram tool tag python INCLUDE)
 endif
 
 USERINCLUDES += -I$(TOP)
@@ -62,6 +74,8 @@ ifneq ($(CMSSW), 0)
 endif
 # Analysis area
 
+USERINCLUDES += -isystem $(PYSYS)
+
 # Special includes for running the include-what-you-use tool on OS X
 # USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/gcc/4.6.2/include/c++/4.6.2
 # USERINCLUDES += -isystem $(CMS_PATH)/$(SCRAM_ARCH)/external/gcc/4.6.2/include/c++/4.6.2/x86_64-apple-darwin11.2.0
@@ -70,6 +84,7 @@ CXX=g++
 LD=g++
 CXXFLAGS= -Wall -Wextra -O2 -std=c++0x
 LDFLAGS= -shared -Wall -Wextra
+CXXFLAGS += $(EXTRAFLAGS)
 
 # Extra gcc flags that will generate A LOT of warnings
 # -pedantic -Weffc++
@@ -77,7 +92,7 @@ LDFLAGS= -shared -Wall -Wextra
 CXXFLAGS += $(USERINCLUDES)
 LIBS += $(USERLIBS)
 
-.PHONY: dir tree all clean clean_all clean_tree dist_clean
+.PHONY: dir tree all clean clean_all clean_tree dist_clean env
 
 # Default target when nothing is given on the command line.  Reasonable
 # options are:
@@ -99,6 +114,9 @@ all : all_proxy
 clean : clean_$(RUNDIR)
 
 clean_tree : clean_tree_$(RUNDIR)
+
+env :
+	@echo -e 'export ANAPATH='$(TOP)';\nexport PYTHONPATH='$(ALL_LIB_DIRS)':$$PYTHONPATH;'
 
 # $(d) keeps the path of "current" directory during tree traversal and
 # $(dir_stack) is used for backtracking during traversal

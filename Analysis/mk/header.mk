@@ -8,4 +8,5 @@ REQUIRES_CMSSW := 1
 SRC_DIR := src
 SRC_EXT := cc
 INC_DIR := interface
+PKG_FLAGS :=
 endef

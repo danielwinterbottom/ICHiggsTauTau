@@ -4,6 +4,16 @@ define FOOTER
 # First define all the directory-specific variables we need #
 #############################################################
 
+# Build list of all lib directories so we can add it to $PYTHONPATH
+TESTDIR := $(wildcard $(d)/lib)
+ifneq ($(TESTDIR),)
+ifeq ($(ALL_LIB_DIRS),)
+ALL_LIB_DIRS := $(d)/lib
+else
+ALL_LIB_DIRS := $(ALL_LIB_DIRS):$(d)/lib
+endif
+endif
+
 # Get list of sub-directories defined in Rules.mk, and add the full path
 # as a prefix
 SUBDIRS_$(d) := $(patsubst %/,%,$(addprefix $(d)/,$(SUBDIRS)))
@@ -92,7 +102,7 @@ LIB_DEPS_$(d) := $(foreach x,$(LIB_DEPS),$(TOP)/$(x)/lib/libIC$(subst /,_,$(x)).
 # against in this directory
 $(foreach x,$(EXES_$(d)),$(eval EXE_DEP_$(x) := $(LIB_EXTRA)))
 $(foreach x,$(LIB_$(d)),$(eval LIB_DEP_$(x) := $(LIB_EXTRA)))
-
+$(foreach x,$(OBJS_$(d)),$(eval FLAGS_$(x) := $(PKG_FLAGS)))
 
 SKIP := 0
 ifeq ($(CMSSW), 0)
@@ -129,7 +139,7 @@ endif
 # Rule for generating object files from source files
 $(d)/obj/%.o: $(d)/$(SRC_DIR)/%.$(SRC_EXT)
 	@echo -e "$(COLOR_BL)Compiling object file $(subst $(TOP)/,,$@)$(NOCOLOR)"
-	$(DOECHO)$(CXX) $(CXXFLAGS) -fPIC -c $< -o $@
+	$(DOECHO)$(CXX) $(CXXFLAGS) $(FLAGS_$(@)) -fPIC -c $< -o $@
 	@echo -e "$(COLOR_CY)Generating dependency file $(subst $(TOP)/,,$(@:.o=.d))$(NOCOLOR)"
 	@$(CXX) $(CXXFLAGS) -MM -MP -MT "$@" $< -o $(@:.o=.d)
 

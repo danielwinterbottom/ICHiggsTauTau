@@ -9,7 +9,7 @@ scram build -k
 cd ${CMSSW_BASE}/src/UserCode/ICHiggsTauTau/Analysis
 
 PACKAGES=(
- 'make -k all'
+ 'make -k all NOCOL=1'
 )
 
 for i in "${PACKAGES[@]}"
