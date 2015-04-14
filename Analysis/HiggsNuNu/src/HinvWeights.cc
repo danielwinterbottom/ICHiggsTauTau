@@ -327,21 +327,22 @@ namespace ic {//namespace
       
       for (unsigned iBin(0); iBin<muTight_idSF_.size();++iBin){
 	muTight_idisoSF_.push_back(muTight_idSF_[iBin]*muTight_isoSF_[iBin]);
-	if(muVeto_idDataEff_[iBin]>1)muVeto_idDataEff_[iBin]=1;
-	if(muVeto_isoDataEff_[iBin]>1)muVeto_isoDataEff_[iBin]=1;
-	if(muVeto_idMCEff_[iBin]>1)muVeto_idMCEff_[iBin]=1;
-	if(muVeto_isoMCEff_[iBin]>1)muVeto_isoMCEff_[iBin]=1;
+	if(muVeto_idDataEff_[iBin]>=1)muVeto_idDataEff_[iBin]=0.999;
+	if(muVeto_isoDataEff_[iBin]>=1)muVeto_isoDataEff_[iBin]=0.999;
+	if(muVeto_idMCEff_[iBin]>=1)muVeto_idMCEff_[iBin]=0.999;
+	if(muVeto_isoMCEff_[iBin]>=1)muVeto_isoMCEff_[iBin]=0.999;
 	if(muVeto_idDataEff_[iBin]<0)muVeto_idDataEff_[iBin]=0;
 	if(muVeto_isoDataEff_[iBin]<0)muVeto_isoDataEff_[iBin]=0;
 	if(muVeto_idMCEff_[iBin]<0)muVeto_idMCEff_[iBin]=0;
 	if(muVeto_isoMCEff_[iBin]<0)muVeto_isoMCEff_[iBin]=0;
 	muVeto_idisoDataEff_.push_back(muVeto_idDataEff_[iBin]*muVeto_isoDataEff_[iBin]);
 	muVeto_idisoMCEff_.push_back(muVeto_idMCEff_[iBin]*muVeto_isoMCEff_[iBin]);
+	//std::cout<<muVeto_idisoMCEff_.back()<<" "<<muVeto_idisoDataEff_.back()<<" "<<muTight_idisoSF_.back()<<std::endl;//!!
       }
       
       for (unsigned iBin(0); iBin<eVeto_idisoDataEff_.size();++iBin){
-	if(eVeto_idisoDataEff_[iBin]>1)eVeto_idisoDataEff_[iBin]=1;
-	if(eVeto_idisoMCEff_[iBin]>1)eVeto_idisoMCEff_[iBin]=1;
+	if(eVeto_idisoDataEff_[iBin]>=1)eVeto_idisoDataEff_[iBin]=0.999;
+	if(eVeto_idisoMCEff_[iBin]>=1)eVeto_idisoMCEff_[iBin]=0.999;
 	if(eVeto_idisoDataEff_[iBin]<0)eVeto_idisoDataEff_[iBin]=0;
 	if(eVeto_idisoMCEff_[iBin]<0)eVeto_idisoMCEff_[iBin]=0;
       }
@@ -710,6 +711,22 @@ namespace ic {//namespace
       eventInfo->set_weight("!tquark_weight_up", top_wt_up);
       eventInfo->set_weight("!tquark_weight_down", top_wt_down);
       eventInfo->set_weight("tquark_weight", top_wt);
+
+      //madgraph ttbar reweighting
+      std::size_t foundttbar = sample_name_.find("TTJets");
+      if(foundttbar!=std::string::npos){
+	int ngenLeptonsStatus3=0;
+	double genWeight=1;
+	for (unsigned i = 0; i < parts.size(); ++i) {
+	  if (parts[i]->status() == 3 && ((abs(parts[i]->pdgid()) == 11||(abs(parts[i]->pdgid()) == 13)||(abs(parts[i]->pdgid()) == 15)))) {
+	    ngenLeptonsStatus3++;
+	  }
+	}	
+	if(ngenLeptonsStatus3==2) { genWeight=pow(0.1086/(1./9.),2); }
+	else if(ngenLeptonsStatus3==1) { genWeight=(0.1086/(1./9.))*(0.6741/(2./3.)); }
+	else { genWeight=pow(0.6741/(2./3.),2); }
+	eventInfo->set_weight("madgraph_ttbarbr_weight",genWeight);
+      }
     }
 
     //ID+iso tight leptons
@@ -763,6 +780,8 @@ namespace ic {//namespace
 	if (genParts[iEle]->pt() > 10 && fabs(genParts[iEle]->eta()) < 2.1) {
 	  unsigned lBin = findMuonPtEtaBin(genParts[iEle]->pt(),genParts[iEle]->eta());
 	  mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
+	  //if(mu_veto_weight<0)std::cout<<"Below zero weight:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<std::endl;//!!
+	  //if(mu_veto_weight>10000)std::cout<<"Very high weight:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<" "<<genParts[iEle]->pt()<<" "<<genParts[iEle]->eta()<<std::endl;//!!
 	  eventsWithGenMuonInAcc_++;
 	}
       }
@@ -787,6 +806,8 @@ namespace ic {//namespace
 	    if (taus[j]->pt() > 10 && fabs(taus[j]->eta()) < 2.1){
 	      unsigned lBin = findMuonPtEtaBin(taus[j]->pt(),taus[j]->eta());
 	      mu_veto_weight *= (1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin]);
+	      //if(mu_veto_weight<0)std::cout<<"Below zero weight from tau:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<std::endl;//!!
+	      //if(mu_veto_weight>10000)std::cout<<"Very high weight from tau:"<<(1-muVeto_idisoDataEff_[lBin])/(1-muVeto_idisoMCEff_[lBin])<<" "<<muVeto_idisoDataEff_[lBin]<<" "<<muVeto_idisoMCEff_[lBin]<<" "<<genParts[iEle]->pt()<<" "<<genParts[iEle]->eta()<<std::endl;//!!
 	      eventsWithGenMuonFromTauInAcc_++;
 	    }
 	  }
@@ -1010,13 +1031,16 @@ namespace ic {//namespace
     else if (pt<60) ptBin=6;
     else if (pt<90) ptBin=7;
     else if (pt<140) ptBin=8;
-    else if (pt<300) ptBin=9;
-    else ptBin=10;
+    else ptBin=9;
+    return 10*etaBin+ptBin;
+    //    else if (pt<300) ptBin=9;
+    //else ptBin=10;
+    //return 11*etaBin+ptBin;
 
-    return 11*etaBin+ptBin;
   }
 
   void HinvWeights::fillVector(const std::string & aFileName, std::vector<double> & aVector){
+    //std::cout<<aFileName<<":"<<std::endl;//!!
     std::ifstream lInput;
     lInput.open(aFileName);
     if(!lInput.is_open()) {
@@ -1034,6 +1058,8 @@ namespace ic {//namespace
       double SFerrPlus = 0;
       double SFerrMinus = 0;
       lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
+      //!!std::cout<<"  "<<pTmin<<" "<<pTmax<<" "<<etaMin<<" "<<etaMax<<" "<<SF<<std::endl;//!!
+
       //protect against blank line at the end of the file
       if (pTmin > 1) aVector.push_back(SF);
       if(lInput.eof()){
@@ -1048,7 +1074,7 @@ namespace ic {//namespace
 
 
   void HinvWeights::fillVectorError(const std::string & aFileName, std::vector<double> & aVector, bool upordown){
-
+    //std::cout<<aFileName<<":"<<std::endl;//!!
     std::ifstream lInput;
     lInput.open(aFileName);
     if(!lInput.is_open()){
@@ -1068,9 +1094,11 @@ namespace ic {//namespace
       lInput>>pTmin>>pTmax>>etaMin>>etaMax>>SF>>SFerrMinus>>SFerrPlus;
       //protect against blank line at the end of the file
       if(upordown){
+	//std::cout<<"  "<<pTmin<<" "<<pTmax<<" "<<etaMin<<" "<<etaMax<<" "<<SF+SFerrPlus<<std::endl;//!!
 	if (pTmin > 1) aVector.push_back(SF+SFerrPlus);
       }
       else{
+	//std::cout<<"  "<<pTmin<<" "<<pTmax<<" "<<etaMin<<" "<<etaMax<<" "<<SF-SFerrMinus<<std::endl;//!!
 	if (pTmin > 1) aVector.push_back(SF-SFerrMinus);
       }
 

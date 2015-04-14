@@ -37,6 +37,8 @@ namespace ic {
     total_weight_leptight_ = 1;
     puweight_up_scale_=1;
     puweight_down_scale_=1;
+    topweight_up_scale_=1;
+    topweight_down_scale_=1;
     jet1_pt_ = 0;
     jet2_pt_ = 0;
     jet3_pt_=-1;
@@ -46,12 +48,14 @@ namespace ic {
     jet1_eta_ = 0;
     jet2_eta_ = 0;
     jet3_eta_ = 0;
+    forward_tag_eta_=0;
+    central_tag_eta_=0;
     jet1_phi_ = 0;
     jet2_phi_ = 0;
     jet3_phi_ = 0;
-    jet1_csv_ = 0;
-    jet2_csv_ = 0;
-    jet3_csv_ = 0;
+    jet_csv1_ = 0;
+    jet_csv2_ = 0;
+    jet_csv3_ = 0;
     dijet_M_ = 0;
     dijet_deta_ = 0;
     dijet_sumeta_ = 0;
@@ -92,6 +96,8 @@ namespace ic {
     jet2metnomu_scalarprod_ = 0;
     n_jets_cjv_30_ = 0;
     n_jets_cjv_20EB_30EE_ = 0;
+    n_jets_15_ = 0;
+    n_jets_30_ = 0;
     cjvjetpt_=-1;
     passtrigger_ = -1;
     passparkedtrigger1_ = -1;
@@ -104,7 +110,16 @@ namespace ic {
     nselelectrons_=0;
     ntaus_=0;
     m_mumu_=-1;
+    m_ee_=-1;
     m_mumu_gen_=-1;
+    genlep1_pt_=-1;
+    genlep1_eta_=-10000;
+    genlep1_phi_=-1;
+    genlep1_id_=-1;
+    genlep2_pt_=-1;
+    genlep2_eta_=-10000;
+    genlep2_phi_=-1;
+    genlep2_id_=-1;
     mu1_pt_=-1;
     mu1_eta_=-10000;
     mu1_phi_=-1;
@@ -148,6 +163,8 @@ namespace ic {
     outputTree_->Branch("total_weight_leptight",&total_weight_leptight_);
     outputTree_->Branch("puweight_up_scale",&puweight_up_scale_);
     outputTree_->Branch("puweight_down_scale",&puweight_down_scale_);
+    outputTree_->Branch("topweight_up_scale",&topweight_up_scale_);
+    outputTree_->Branch("topweight_down_scale",&topweight_down_scale_);
     outputTree_->Branch("jet1_pt",&jet1_pt_);
     outputTree_->Branch("jet2_pt",&jet2_pt_);
     outputTree_->Branch("jet3_pt",&jet3_pt_);
@@ -157,12 +174,14 @@ namespace ic {
     outputTree_->Branch("jet1_eta",&jet1_eta_);
     outputTree_->Branch("jet2_eta",&jet2_eta_);
     outputTree_->Branch("jet3_eta",&jet3_eta_);
+    outputTree_->Branch("forward_tag_eta",&forward_tag_eta_);
+    outputTree_->Branch("central_tag_eta",&central_tag_eta_);
     outputTree_->Branch("jet1_phi",&jet1_phi_);
     outputTree_->Branch("jet2_phi",&jet2_phi_);
     outputTree_->Branch("jet3_phi",&jet3_phi_);
-    outputTree_->Branch("jet1_csv",&jet1_csv_);
-    outputTree_->Branch("jet2_csv",&jet2_csv_);
-    outputTree_->Branch("jet3_csv",&jet3_csv_);
+    outputTree_->Branch("jet_csv1",&jet_csv1_);
+    outputTree_->Branch("jet_csv2",&jet_csv2_);
+    outputTree_->Branch("jet_csv3",&jet_csv3_);
     outputTree_->Branch("dijet_M",&dijet_M_);
     outputTree_->Branch("dijet_deta",&dijet_deta_);
     outputTree_->Branch("dijet_sumeta",&dijet_sumeta_);
@@ -203,6 +222,8 @@ namespace ic {
     outputTree_->Branch("jet2metnomu_scalarprod",&jet2metnomu_scalarprod_);
     outputTree_->Branch("n_jets_cjv_30",&n_jets_cjv_30_);
     outputTree_->Branch("n_jets_cjv_20EB_30EE",&n_jets_cjv_20EB_30EE_);
+    outputTree_->Branch("n_jets_15",&n_jets_15_);
+    outputTree_->Branch("n_jets_30",&n_jets_30_);
     outputTree_->Branch("cjvjetpt",&cjvjetpt_);
     outputTree_->Branch("passtrigger",&passtrigger_);
     outputTree_->Branch("passparkedtrigger1",&passparkedtrigger1_);
@@ -215,7 +236,16 @@ namespace ic {
     outputTree_->Branch("nselelectrons",&nselelectrons_);
     outputTree_->Branch("ntaus",&ntaus_);
     outputTree_->Branch("m_mumu",&m_mumu_);
+    outputTree_->Branch("m_ee",&m_ee_);
     outputTree_->Branch("m_mumu_gen",&m_mumu_gen_);
+    outputTree_->Branch("genlep1_pt",&genlep1_pt_);
+    outputTree_->Branch("genlep1_eta",&genlep1_eta_);
+    outputTree_->Branch("genlep1_phi",&genlep1_phi_);
+    outputTree_->Branch("genlep1_id",&genlep1_id_);
+    outputTree_->Branch("genlep2_pt",&genlep2_pt_);
+    outputTree_->Branch("genlep2_eta",&genlep2_eta_);
+    outputTree_->Branch("genlep2_phi",&genlep2_phi_);
+    outputTree_->Branch("genlep2_id",&genlep2_id_);
     outputTree_->Branch("mu1_pt",&mu1_pt_);
     outputTree_->Branch("mu1_eta",&mu1_eta_);
     outputTree_->Branch("mu1_phi",&mu1_phi_);
@@ -279,15 +309,23 @@ namespace ic {
     double pileupwt=1;
     double pileupwtup=1;
     double pileupwtdown=1;
+    double topwt=1;
+    double topwtup=1;
+    double topwtdown=1;
     if(!is_data_){
       vetowt= eventInfo->weight("idisoVeto");
       tightwt = eventInfo->weight("idisoTight");
       pileupwt=eventInfo->weight("pileup");
       pileupwtup=eventInfo->weight("pileup_up");
       pileupwtdown=eventInfo->weight("pileup_down");
+      topwt=eventInfo->weight("tquark_weight");
+      topwtup=eventInfo->weight("tquark_weight_up");
+      topwtdown=eventInfo->weight("tquark_weight_up");
     }
     puweight_up_scale_=pileupwtup/pileupwt;
     puweight_down_scale_=pileupwtdown/pileupwt;
+    topweight_up_scale_=topwtup/topwt;
+    topweight_down_scale_=topwtdown/topwt;
 
     //get collections
     std::vector<CompositeCandidate *> const& dijet_vec = event->GetPtrVec<CompositeCandidate>(dijet_label_);
@@ -378,6 +416,11 @@ namespace ic {
     }
     else m_mumu_=-1;
 
+    if(nselelectrons_==2){
+      m_ee_=((selelectrons.at(0)->vector())+(selelectrons.at(1)->vector())).M();
+    }
+    else m_ee_=-1;
+
     //Get gen z mass
     int ngenmuplus=0;
     int ngenmuminus=0;
@@ -386,6 +429,15 @@ namespace ic {
       std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
       GenParticle* lepplus = 0;
       GenParticle* lepminus = 0;
+
+      genlep1_pt_=-1;
+      genlep1_eta_=-10000;
+      genlep1_phi_=-1;
+      genlep1_id_=-1;
+      genlep2_pt_=-1;
+      genlep2_eta_=-10000;
+      genlep2_phi_=-1;
+      genlep2_id_=-1;
       
       for (unsigned i = 0; i < parts.size(); ++i) {
 	if (parts[i]->status() != 3) continue;
@@ -397,13 +449,60 @@ namespace ic {
 	  ngenmuminus++;
 	}
 	if (id == static_cast<int>(-13)) {
-	lepplus = parts[i];
-	ngenmuplus++;
-	}  
+	  lepplus = parts[i];
+	  ngenmuplus++;
+	}
+	if((abs(id)==11)||(abs(id)==13)||(abs(id)==15)){
+	  if(parts[i]->pt()>genlep1_pt_){
+	    genlep2_pt_=genlep1_pt_;
+	    genlep2_eta_=genlep1_eta_;
+	    genlep2_phi_=genlep1_phi_;
+	    genlep2_id_=genlep1_id_;
+	    genlep1_pt_=parts[i]->pt();
+	    genlep1_eta_=parts[i]->eta();
+	    genlep1_phi_=parts[i]->phi();
+	    genlep1_id_=id;
+
+	  }
+	  else if(parts[i]->pt()>genlep2_pt_){
+	    genlep2_pt_=parts[i]->pt();
+	    genlep2_eta_=parts[i]->eta();
+	    genlep2_phi_=parts[i]->phi();
+	    genlep2_id_=id;
+	  }
+	}
       }//loop on genparticles                                                                                                                                  
       
       if (ngenmuminus==1&&ngenmuplus==1) {
 	m_mumu_gen_ = (lepplus->vector()+lepminus->vector()).M();
+      }
+    }
+
+    int ngeneplus=0;
+    int ngeneminus=0;
+    m_ee_gen_=-1;
+    if(!is_data_){
+      std::vector<GenParticle*> const& parts = event->GetPtrVec<GenParticle>("genParticles");
+      GenParticle* lepplus = 0;
+      GenParticle* lepminus = 0;
+      
+      for (unsigned i = 0; i < parts.size(); ++i) {
+	if (parts[i]->status() != 3) continue;
+	
+	int id = parts[i]->pdgid();
+
+	if (id == static_cast<int>(11)) {
+	  lepminus = parts[i];
+	  ngeneminus++;
+	}
+	if (id == static_cast<int>(-11)) {
+	lepplus = parts[i];
+	ngeneplus++;
+	}  
+      }//loop on genparticles                                                                                                                                  
+      
+      if (ngeneminus==1&&ngeneplus==1) {
+	m_ee_gen_ = (lepplus->vector()+lepminus->vector()).M();
       }
     }
 
@@ -420,6 +519,7 @@ namespace ic {
 
       weight_nolep_ = wt;
       total_weight_lepveto_ =wt*vetowt;
+      if(total_weight_lepveto_!=total_weight_lepveto_)std::cout<<"NAN lepveto weight: "<<total_weight_lepveto_<<" "<<wt<<" "<<vetowt<<" "<<mu1_pt_<<" "<<mu1_eta_<<std::endl;//!!
       total_weight_leptight_=wt*tightwt;
       
       jet1_pt_ = jet1->pt();
@@ -428,6 +528,16 @@ namespace ic {
       jet2_E_ = jet2vec.E();
       jet1_eta_ = jet1->eta();
       jet2_eta_ = jet2->eta();
+
+      if(fabs(jet1_eta_)>fabs(jet2_eta_)){
+	forward_tag_eta_=jet1_eta_;
+	central_tag_eta_=jet2_eta_;
+      }
+      else{
+	forward_tag_eta_=jet2_eta_;
+	central_tag_eta_=jet1_eta_;
+      }
+
       jet1_phi_ = jet1->phi();
       jet2_phi_ = jet2->phi();
       dijet_M_ = dijet->M();
@@ -497,28 +607,48 @@ namespace ic {
       double eta_low = (jet1->eta() > jet2->eta()) ? jet2->eta() : jet1->eta();
       n_jets_cjv_30_ = 0;
       n_jets_cjv_20EB_30EE_ = 0;
+      n_jets_30_=0;
+      n_jets_15_=0;
       jet3_pt_=-1;
       jet3_eta_=-10000;
       jet3_phi_=-10000;
       cjvjetpt_=-1;
       alljetsmetnomu_mindphi_=jetmetnomu_mindphi_;
       alljetsmet_mindphi_=jetmet_mindphi_;
+      jet_csv1_=-1;
+      jet_csv2_=-1;
+      jet_csv3_=-1;
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
-	  if(jets[i]->id()==jet1->id()){
-	    jet1_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	  if(jets[i]->pt()>15)n_jets_15_++;
+	  if(jets[i]->pt()>30)n_jets_30_++;
+	  if((jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags")>jet_csv3_)&&(jets[i]->pt()>=30)){//check if csv>csv3
+	    jet_csv3_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	    if(jet_csv3_>jet_csv2_){//if new csv>csv2 make new csv csv2 and put csv2 in csv3
+	      double tmpcsv=jet_csv3_;
+	      jet_csv3_=jet_csv2_;
+	      jet_csv2_=tmpcsv;
+	      if(jet_csv2_>jet_csv1_){//if new csv>csv1 make new csv csv1 and put csv1 in csv2
+		tmpcsv=jet_csv2_;
+		jet_csv2_=jet_csv1_;
+		jet_csv1_=tmpcsv;
+	      }
+	    }
 	  }
-	  if(jets[i]->id()==jet2->id()){
-	    jet2_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
-	  }
-
+	  // 	  if(jets[i]->id()==jet1->id()){
+	  // 	    jet_csv1_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	  // 	  }
+	  // 	  if(jets[i]->id()==jet2->id()){
+	  // 	    jet_csv2_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
+	  // 	  }
+	  
 	  bool isInCentralGap = fabs(jets[i]->eta())<4.7 && jets[i]->eta() > eta_low && jets[i]->eta() < eta_high;
 	  double tmppt=jets[i]->pt();
 	  if(isInCentralGap&&(tmppt>cjvjetpt_)){
 	    cjvjetpt_=tmppt;
 	  }
 	  if(tmppt>jet3_pt_&&(jets[i]->id()!=jet1->id())&&(jets[i]->id()!=jet2->id())){
-	    jet3_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	    //jet_csv3_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
 	    jet3_pt_=tmppt;
 	    jet3_eta_=jets[i]->eta();
 	    jet3_phi_=jets[i]->phi();
@@ -540,15 +670,32 @@ namespace ic {
 	}
       }
       else{
-	for (unsigned i = 0; i < jets.size(); ++i) {
-	  if(jets[i]->id()==jet1->id()){
-	    jet1_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+ 	for (unsigned i = 0; i < jets.size(); ++i) {
+	  if(jets[i]->pt()>15)n_jets_15_++;
+	  if(jets[i]->pt()>30)n_jets_30_++;
+	  if((jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags")>jet_csv3_)&&(jets[i]->pt()>=30)){//check if csv>csv3
+	    jet_csv3_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+	    if(jet_csv3_>jet_csv2_){//if new csv>csv2 make new csv csv2 and put csv2 in csv3
+	      double tmpcsv=jet_csv3_;
+	      jet_csv3_=jet_csv2_;
+	      jet_csv2_=tmpcsv;
+	      if(jet_csv2_>jet_csv1_){//if new csv>csv1 make new csv csv1 and put csv1 in csv2
+		tmpcsv=jet_csv2_;
+		jet_csv2_=jet_csv1_;
+		jet_csv1_=tmpcsv;
+	      }
+	    }
 	  }
-	  if(jets[i]->id()==jet2->id()){
-	    jet2_csv_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
-	  }
+	  // 	  if(jets[i]->id()==jet1->id()){
+	  // 	    jet_csv1_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
+// 	  }
+// 	  if(jets[i]->id()==jet2->id()){
+// 	    jet_csv2_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");	  
+// 	  }
+// 	}
 	}
       }
+
       static unsigned processed = 0;
       //IF PASSES CUTS FILL TREE
       if(!ignoreLeptons_){

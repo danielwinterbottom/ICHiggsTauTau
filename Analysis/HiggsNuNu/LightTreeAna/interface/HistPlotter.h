@@ -63,6 +63,9 @@ namespace ic {
     CLASS_MEMBER(LTShapeElement,std::string,name)
     CLASS_MEMBER(LTShapeElement,std::string,histtitle)
     CLASS_MEMBER(LTShapeElement,bool,dology)
+    CLASS_MEMBER(LTShapeElement,double,axisrangemultiplier)
+    CLASS_MEMBER(LTShapeElement,double,legleft)
+    CLASS_MEMBER(LTShapeElement,double,legright)
   };
 
   class HistPlotter : public LTModule{ 

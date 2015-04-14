@@ -1,9 +1,9 @@
 {
 
-  std::string infolder="output_unblinded_band";
-  TString outfolder="output_withbands";
-  double nonshapeuncperc=0.1568;
-  double rationonshapeuncperc=0.09188;
+  std::string infolder="output_290315_sig";
+  TString outfolder="output_withbands_290315";
+  double nonshapeuncperc=0.1194;//0.1568; //0.1194
+  double rationonshapeuncperc=0.1194; //0.09188;
 
   //Get in files
   TFile* centralfile=new TFile((infolder+"/nunu.root").c_str());
@@ -65,9 +65,14 @@
   shape.push_back("dijetmetnomu_ptfraction");
   shape.push_back("ele1_pt");
   shape.push_back("mu1_pt");
-  shape.push_back("jet1_csv");
-  shape.push_back("jet2_csv");
-  shape.push_back("jet3_csv");
+  shape.push_back("jet_csv1");
+  shape.push_back("jet_csv2");
+  shape.push_back("jet_csv3");
+  shape.push_back("central_tag_eta");
+  shape.push_back("forward_tag_eta");
+  shape.push_back("n_jets_30");
+  shape.push_back("n_jets_15");
+
 
 
   //Loop over shapes
@@ -120,7 +125,7 @@
     TPad* lower=c2->GetPrimitive("lower");
     upper->cd();
     errorband->SetMarkerSize(0);
-    errorband->SetFillColor(16);
+    errorband->SetFillColor(14);
     errorband->SetFillStyle(3013);                                                                                                             
     errorband->SetLineWidth(1);
 
@@ -128,7 +133,7 @@
 
     lower->cd();
     ratioerrorband->SetMarkerSize(0);
-    ratioerrorband->SetFillColor(16);
+    ratioerrorband->SetFillColor(14);
     ratioerrorband->SetFillStyle(3013);                                                                                                             
     ratioerrorband->SetLineWidth(1);
     ratioerrorband->Draw("sameE2");
@@ -140,5 +145,6 @@
 
     TCanvas* c3=outfile->Get(shape[iShape]);
     c3->Print((outfolder+"/nunu_"+shape[iShape]+".pdf"));
+    c3->Print((outfolder+"/nunu_"+shape[iShape]+".png"));
   }
 }

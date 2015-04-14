@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
     ("qcdrate",                  po::value<double>(&qcdrate)->default_value(17))
     ("zvvstat",                  po::value<double>(&zvvstat)->default_value(18))
     ("mass,m",                   po::value<std::string>(&mass)->default_value("125"))
-    ("do_datatop,t",             po::value<bool>(&do_datatop)->default_value(true));
+    ("do_datatop,t",             po::value<bool>(&do_datatop)->default_value(false));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
   po::notify(vm);
@@ -268,6 +268,13 @@ int main(int argc, char* argv[]){
     .set_type("datadrivenMCstatlnN")
     .set_procsaffected({"top"});
 
+  Syst topmcsfunc;
+  topmcsfunc.set_name("CMS_VBFHinv_top_norm")
+    .set_latexname("Top MC scale factor unc.")
+    .set_type("constlnN")
+    .set_constvalue(1.2)
+    .set_procsaffected({"top"});
+
   Syst topdatastat;
   topdatastat.set_name("CMS_VBFHinv_top_stat")
     .set_latexname("Top data stat.")
@@ -397,13 +404,14 @@ int main(int argc, char* argv[]){
   systematics.push_back(wtaujetmetextrap);
   systematics.push_back(wtaumcstat);
   systematics.push_back(wtaudatastat);
-  systematics.push_back(mcfmzvv);
+  //systematics.push_back(mcfmzvv);
     if(do_datatop){
     systematics.push_back(topmcstat);
     systematics.push_back(topdatastat);
   }
   else{
     systematics.push_back(mctopmcstat);
+    systematics.push_back(topmcsfunc);
   }
   if(do_qcdfromshape)systematics.push_back(qcdmcstat);
   if(do_qcdfromnumber)systematics.push_back(qcdfromnumerr);

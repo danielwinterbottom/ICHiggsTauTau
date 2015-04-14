@@ -142,7 +142,7 @@ std::istream & operator>>(std::istream & is, evtsArray & evtVec){
 int extractZJetsBkg(){//main
 
   //OPTIONS
-  std::string TOPDIR = "../TABLESzbkgptcutcorrected/";//"../TABLESzbkgptcutcorrected/";
+  std::string TOPDIR = "../TABLES_rerecogen/";//"../TABLESzbkgptcutcorrected/";
   bool dojes = false;
   bool dojer = false;
   bool doeleerr = false;

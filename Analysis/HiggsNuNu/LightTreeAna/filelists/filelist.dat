@@ -78,6 +78,14 @@ ZJetsToNuNu100-200 ZJets_nunu MC_ZJetsToNuNu_100_HT_200.root
 ZJetsToNuNu200-400 ZJets_nunu MC_ZJetsToNuNu_200_HT_400.root
 ZJetsToNuNu400-inf ZJets_nunu MC_ZJetsToNuNu_400_HT_inf.root
 
+ZJetsToNuNu50-1002 ZJets_nunu50 MC_ZJetsToNuNu_50_HT_100.root
+
+ZJetsToNuNu100-2002 ZJets_nunu100 MC_ZJetsToNuNu_100_HT_200.root
+
+ZJetsToNuNu200-4002 ZJets_nunu200 MC_ZJetsToNuNu_200_HT_400.root
+
+ZJetsToNuNu400-inf2 ZJets_nunu400 MC_ZJetsToNuNu_400_HT_inf.root
+
 META MET MET_MET-2012A-22Jan2013-v1.root
 METB MET MET_MET-2012B-22Jan2013-v1.root
 METC MET MET_MET-2012C-22Jan2013-v1.root

@@ -18,6 +18,8 @@ namespace ic{
     shapes.push_back("jet2_pt(200,0.,1000.)");
     shape_=shapes;
     dirname_="";
+    ewkdirname_="";
+    qcddirname_="";
     do_latex_=false;
   };
 
@@ -60,6 +62,33 @@ namespace ic{
       dir=fs_->GetDirectory(dirname_.c_str());
     }
     dir->cd();
+
+    TDirectory* ewkdir;
+    if(ewkdirname_==""){
+      ewkdir=file->mkdir("zmumu_ewk");
+    }
+    else if(!fs_->GetDirectory(ewkdirname_.c_str())){
+      ewkdir=file->mkdir(ewkdirname_.c_str());
+    }
+    else{
+      ewkdir=fs_->GetDirectory(ewkdirname_.c_str());
+    }
+    ewkdir->cd();
+
+    TDirectory* qcddir;
+    if(qcddirname_==""){
+      qcddir=file->mkdir("zmumu_qcd");
+    }
+    else if(!fs_->GetDirectory(qcddirname_.c_str())){
+      qcddir=file->mkdir(qcddirname_.c_str());
+    }
+    else{
+      qcddir=fs_->GetDirectory(qcddirname_.c_str());
+    }
+    qcddir->cd();
+
+    dir->cd();
+
     //Get Shapes for NSMC, NCMC, NCData and NCBkg
     std::cout<<"  Getting control MC shape"<<std::endl;
     TH1F  contmcewkshape = filemanager->GetSetShape(contmcewkset_,"jet2_pt(200,0.,1000.)",basesel_,contcat_,contmcweight_,false);
@@ -148,6 +177,11 @@ double baseweightdenmcfracerr=(sigmainccontewk_*effcvbfewk*(ncmcewkerr/ncmcewk)+
       sigmcshape->Add(&sigmcewkshape,&sigmcqcdshape);
       sigmcshape->SetName(histname.c_str());
       sigmcshape->Write();
+      ewkdir->cd();
+      sigmcewkshape.Write();
+      qcddir->cd();
+      sigmcqcdshape.Write();
+      dir->cd();
       if(iShape==0){
 	double ns=Integral(sigmcshape);
 	double nserr=Integral(sigmcshape);

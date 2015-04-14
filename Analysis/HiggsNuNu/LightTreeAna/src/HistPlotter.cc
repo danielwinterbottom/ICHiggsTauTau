@@ -17,8 +17,121 @@
 #include "TLine.h"
 #include "TBox.h"
 #include "TASImage.h"
+#include "Math/QuantFuncMathCore.h"
+#include "TMath.h"
+#include "TGraphAsymmErrors.h"
 
 namespace ic{
+
+  void DrawCMSLogo(TPad* pad, TString cmsText, TString extraText, int iPosX,
+		   float relPosX, float relPosY, float relExtraDY) {
+    TVirtualPad *pad_backup = gPad;
+    pad->cd();
+    float cmsTextFont = 61;  // default is helvetic-bold
+
+    bool writeExtraText = extraText.Length() > 0;
+    float extraTextFont = 52;  // default is helvetica-italics
+
+    // text sizes and text offsets with respect to the top frame
+    // in unit of the top margin size
+    TString lumiText;
+    float lumiTextOffset = 0.2;
+    float cmsTextSize = 0.8;
+    float lumiTextSize = 0.6;
+    // float cmsTextOffset    = 0.1;  // only used in outOfFrame version
+
+    // ratio of "CMS" and extra text size
+    float extraOverCmsTextSize = 0.76;
+
+    //!!MAKE CHOICE CONFIGURABLE
+    TString lumi_13TeV = "20.1 fb^{-1}";
+    TString lumi_8TeV = "19.2 fb^{-1}";
+    TString lumi_7TeV = "5.1 fb^{-1}";
+
+    lumiText +=lumi_8TeV;
+    lumiText +=" (8 TeV)";
+
+
+    bool outOfFrame = false;
+    if (iPosX / 10 == 0) {
+      outOfFrame = true;
+    }
+    int alignY_ = 3;
+    int alignX_ = 2;
+    if (iPosX / 10 == 0) alignX_ = 1;
+    if (iPosX == 0) alignX_ = 1;
+    if (iPosX == 0) alignY_ = 1;
+    if (iPosX / 10 == 1) alignX_ = 1;
+    if (iPosX / 10 == 2) alignX_ = 2;
+    if (iPosX / 10 == 3) alignX_ = 3;
+    if (iPosX == 0) relPosX = 0.14;
+    int align_ = 10 * alignX_ + alignY_;
+
+    float l = pad->GetLeftMargin();
+    float t = pad->GetTopMargin();
+    float r = pad->GetRightMargin();
+    float b = pad->GetBottomMargin();
+
+    TLatex latex;
+    latex.SetNDC();
+    latex.SetTextAngle(0);
+    latex.SetTextColor(kBlack);
+
+    float extraTextSize = extraOverCmsTextSize * cmsTextSize;
+    float pad_ratio = (static_cast<float>(pad->GetWh()) * pad->GetAbsHNDC()) /
+      (static_cast<float>(pad->GetWw()) * pad->GetAbsWNDC());
+    if (pad_ratio < 1.) pad_ratio = 1.;
+
+    latex.SetTextFont(42);
+    latex.SetTextAlign(31); 
+    latex.SetTextSize(lumiTextSize*t*pad_ratio);    
+    latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
+
+    if (outOfFrame) {
+      latex.SetTextFont(cmsTextFont);
+      latex.SetTextAlign(11);
+      latex.SetTextSize(cmsTextSize * t * pad_ratio);
+      latex.DrawLatex(l, 1 - t + lumiTextOffset * t, cmsText);
+    }
+
+
+    float posX_ = 0;
+    if (iPosX % 10 <= 1) {
+      posX_ = l + relPosX * (1 - l - r);
+    } else if (iPosX % 10 == 2) {
+      posX_ = l + 0.5 * (1 - l - r);
+    } else if (iPosX % 10 == 3) {
+      posX_ = 1 - r - relPosX * (1 - l - r);
+    }
+    float posY_ = 1 - t - relPosY * (1 - t - b);
+    if (!outOfFrame) {
+      latex.SetTextFont(cmsTextFont);
+      latex.SetTextSize(cmsTextSize * t * pad_ratio);
+      latex.SetTextAlign(align_);
+      latex.DrawLatex(posX_, posY_, cmsText);
+      if (writeExtraText) {
+	latex.SetTextFont(extraTextFont);
+	latex.SetTextAlign(align_);
+	latex.SetTextSize(extraTextSize * t * pad_ratio);
+	latex.DrawLatex(posX_, posY_ - relExtraDY * cmsTextSize * t, extraText);
+      }
+    } else if (writeExtraText) {
+      if (iPosX == 0) {
+	posX_ = l + relPosX * (1 - l - r);
+	posY_ = 1 - t + lumiTextOffset * t;
+      }
+      latex.SetTextFont(extraTextFont);
+      latex.SetTextSize(extraTextSize * t * pad_ratio);
+      latex.SetTextAlign(align_);
+      latex.DrawLatex(posX_, posY_, extraText);
+    }
+    pad_backup->cd();
+  }
+
+  void DrawCMSLogo(TPad* pad, TString cmsText, TString extraText, int iPosX) {
+    DrawCMSLogo(pad, cmsText, extraText, iPosX, 0.045, 0.035, 1.2);
+  }
+
   LTPlotElement::LTPlotElement(){
     unit_="GeV";
     in_stack_=false;
@@ -31,6 +144,9 @@ namespace ic{
 
   LTShapeElement::LTShapeElement(){
     dology_=false;
+    axisrangemultiplier_=1.2;
+    legleft_=0.67;
+    legright_=0.89;
   };
 
   LTShapeElement::~LTShapeElement(){ ;};
@@ -82,10 +198,10 @@ namespace ic{
     ele->set_draw_line(true);
     ele->set_draw_stat_error_y(false);
     ele->set_draw_fill_in_legend(false);
-    ele->set_line_style(11);
+    ele->set_line_style(1);
     ele->set_fill_color(0);
     ele->set_line_color(ele->color());
-    ele->set_line_width(2);
+    ele->set_line_width(3);
     return;
   }
   void HistPlotter::SetDataStyle(ic::LTPlotElement* ele) {
@@ -123,7 +239,7 @@ namespace ic{
   int HistPlotter::Run(LTFiles* ){
     std::cout<<module_name_<<":"<<std::endl;
     TFile* file=fs_;
-
+    gStyle->SetOptStat(0);
     //GET DIRECTORY TO WRITE TO
     TDirectory* stacksdir=file->mkdir("stacksdir");
     TDirectory* numsdir=file->mkdir("numsdir");
@@ -201,7 +317,7 @@ namespace ic{
 	    tmpbins+=1;
 	    tmpmin = tmpmin-tmpsize;
 	  }
-	  if (add_overflows_){
+	  if (add_overflows_&&shapes_[iShape].name()!="alljetsmetnomu_mindphi"){
 	    tmpbins+=1;
 	    tmpmax = tmpmax+tmpsize;
 	  }
@@ -223,7 +339,7 @@ namespace ic{
 	      histTmp->SetBinError(ibin,histo->GetBinError(ibin));
 	    }
 	  }
-	  if (add_overflows_) {
+	  if (add_overflows_&&shapes_[iShape].name()!="alljetsmetnomu_mindphi") {
 	    histTmp->SetBinContent(tmpbins,histo->GetBinContent(histo->GetNbinsX()+1));
 	    histTmp->SetBinError(tmpbins,histo->GetBinError(histo->GetNbinsX()+1));
 	  }
@@ -260,14 +376,19 @@ namespace ic{
 	TPad* upper = nullptr;
 	TPad* lower = nullptr;
       if(do_ratio_){
-	  upper = new TPad("upper","pad",0, 0.26 ,1 ,1);
-	  lower = new TPad("lower","pad",0, 0   ,1 ,0.26);
-	  upper->SetBottomMargin(0.02);
+	  upper = new TPad("upper","pad",0, 0.3 ,1 ,1);
+	  lower = new TPad("lower","pad",0, 0   ,1 ,0.3);
+	  upper->SetBottomMargin(0.03);
 	  upper->Draw();
 	  upper->cd();
 	  upper->SetLogy(shapes_[iShape].dology());
       }
-      else c1->SetLogy(shapes_[iShape].dology());
+      else{
+	upper = new TPad("upper","pad",0, 0. ,1 ,1);
+	upper->cd();
+	upper->SetLogy(shapes_[iShape].dology());
+	upper->SetBottomMargin(0.15);
+      }
       bool first=true;
       double ymax=0;
       if(!stackempty) ymax=stack->GetMaximum();
@@ -279,50 +400,136 @@ namespace ic{
       if(!stackempty){ 
 	std::cout<<"    Drawing Stack.."<<std::endl;
 	if(first){
-	  stack->SetMaximum(ymax);
+	  stack->SetMaximum(shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
 	  //stack->GetXaxis()->SetTitle("");
 	  stack->Draw("hist");
 	  c1->Update();
 	  first=false;
+	  stack->GetYaxis()->SetLabelSize(0.06);
+	  stack->GetYaxis()->SetTitleFont(62);
+	  stack->GetYaxis()->SetTitleSize(0.095);
+	  stack->GetYaxis()->SetTitleOffset(0.450);
 	  if(do_ratio_){
 	    stack->GetXaxis()->SetLabelOffset(999);
 	    stack->GetXaxis()->SetLabelSize(0);
-	    std::string ytitle;
-	    //	    ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
-	    ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
-	    ytitle=ytitle.substr(ytitle.find(";")+1);
-	    ytitle=ytitle.substr(0,ytitle.find(";"));
-	    stack->SetTitle((";;"+ytitle).c_str());
 	  }
+	  else{
+	    stack->GetXaxis()->SetLabelSize(0.06);
+	    stack->GetXaxis()->SetTitleFont(62);
+	    stack->GetXaxis()->SetTitleSize(0.08);
+
+	    std::string xtitle;
+	    xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+	    xtitle=xtitle.substr(0,xtitle.find(";"));
+	    stack->GetXaxis()->SetTitle(xtitle.c_str());
+	  }
+	  
+	  std::string ytitle;
+	  //	    ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
+	  ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+	  ytitle=ytitle.substr(ytitle.find(";")+1);
+	  ytitle=ytitle.substr(0,ytitle.find(";"));
+	  stack->SetTitle((";;"+ytitle).c_str());
+	
 	}
 	else stack->Draw("histsame");
       }
       std::cout<<"    Drawing Unstacked.."<<std::endl;
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(!(elements_[iElement].in_stack())){
-	  if(first){
-	    elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
-	    elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0.,ymax+10);
-	    elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
-	    c1->Update();
-	    first=false;
-	    if(do_ratio_){
-	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelOffset(999);
-	      elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0);
+	  if(!elements_[iElement].is_data()){
+	    if(first){
+	      if(!do_ratio_) elements_[iElement].hist_ptr()->SetTitle(shapes_[iShape].histtitle().c_str());
+	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
+	      std::cout<<"scaling by: "<<shapes_[iShape].axisrangemultiplier()<<std::endl;//!!
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0.,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
+	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
+	      c1->Update();
+	      first=false;
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetLabelSize(0.06);
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitleSize(0.095);
+	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitleFont(62);
+	      if(do_ratio_){
+		elements_[iElement].hist_ptr()->GetXaxis()->SetLabelOffset(999);
+		elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0);
+	      }
+	      else{
+		elements_[iElement].hist_ptr()->GetXaxis()->SetLabelSize(0.06);
+		elements_[iElement].hist_ptr()->GetXaxis()->SetTitleFont(62);
+		elements_[iElement].hist_ptr()->GetXaxis()->SetTitleSize(0.08);
+		elements_[iElement].hist_ptr()->GetXaxis()->SetTitleOffset(0.600);
+		std::string xtitle;
+		xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+		xtitle=xtitle.substr(0,xtitle.find(";"));
+		elements_[iElement].hist_ptr()->GetXaxis()->SetTitle(xtitle.c_str());
+	      }
 	      std::string ytitle;
 	      ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	      ytitle=ytitle.substr(ytitle.find(";")+1);
 	      ytitle=ytitle.substr(0,ytitle.find(";"));
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitle(ytitle.c_str());
 	    }
+	    else elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
 	  }
-	  else elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
+	  else{
+	    const double alpha = 1 - 0.6827;
+	    TGraphAsymmErrors * g = new TGraphAsymmErrors(elements_[iElement].hist_ptr());
+	    g->SetMarkerSize(1.1);
+	    g->SetMarkerStyle (20);
+
+	    for (int i = 0; i < g->GetN(); ++i) {
+	      int N = g->GetY()[i];
+	      double L =  (N==0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,N,1.));
+	      double U =  ROOT::Math::gamma_quantile_c(alpha/2,N+1,1) ;
+	      g->SetPointEYlow(i, N-L);
+	      g->SetPointEYhigh(i, U-N);
+	    }
+	    if(first){
+	      if(!do_ratio_) g->SetTitle(shapes_[iShape].histtitle().c_str());
+	      g->Draw("AP");
+	      g->Draw(elements_[iElement].drawopts().c_str());
+	      std::cout<<"scaling by: "<<shapes_[iShape].axisrangemultiplier()<<std::endl;//!!
+	      g->GetYaxis()->SetRangeUser(0.,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
+	      g->Draw(elements_[iElement].drawopts().c_str());
+	      c1->Update();
+	      first=false;
+	      g->GetYaxis()->SetLabelSize(0.06);
+	      g->GetYaxis()->SetTitleSize(0.095);
+	      g->GetYaxis()->SetTitleFont(62);
+	      if(do_ratio_){
+		g->GetXaxis()->SetLabelOffset(999);
+		g->GetXaxis()->SetLabelSize(0);
+	      }
+	      else{
+		g->GetXaxis()->SetLabelSize(0.06);
+                g->GetXaxis()->SetTitleFont(62);
+                g->GetXaxis()->SetTitleSize(0.09);
+                g->GetXaxis()->SetTitleOffset(0.600);
+		std::string xtitle;
+		xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+		xtitle=xtitle.substr(0,xtitle.find(";"));
+		g->GetXaxis()->SetTitle(xtitle.c_str());
+	      }
+	      std::string ytitle;
+	      ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+	      ytitle=ytitle.substr(ytitle.find(";")+1);
+	      ytitle=ytitle.substr(0,ytitle.find(";"));
+	      g->SetTitle(ytitle.c_str());
+	    }
+	    else g->Draw("sameP");
+
+	  }
 	}
       }
 
       //SETUP AND DRAW THE LEGEND
-      TLegend* leg =new TLegend(0.75,0.3,0.89,0.89);
+      double legleft=shapes_[iShape].legleft();
+      double legright=shapes_[iShape].legright();
+      double legbottom=0.3+((10-elements_.size())*(0.89-0.3)/10);
+      if(legbottom<0.3||legbottom>0.89)legbottom=0.3;
+      TLegend* leg =new TLegend(legleft,legbottom,legright,0.89);
       leg->SetName("thelegend");
+      leg->SetTextSize(0.06);
       leg->SetFillStyle(0);
       leg->SetLineColor(10);
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
@@ -331,29 +538,31 @@ namespace ic{
       leg->Draw("same");
       c1->Update();
 
-      TLatex* lat=new TLatex();
-      lat->SetNDC();
-	//lat->SetTextSize(0.06);
-      lat->SetTextFont(42);
+      DrawCMSLogo(upper,"CMS","preliminary",10);
 
-      TLatex* lat2 = new TLatex();
-      lat2->SetNDC();
-      lat2->SetTextSize(0.04);
-      lat2->SetTextFont(42);
+//       TLatex* lat=new TLatex();
+//       lat->SetNDC();
+// 	//lat->SetTextSize(0.06);
+//       lat->SetTextFont(42);
 
-      lat->DrawLatex(0.14,0.85,"CMS Preliminary");
-      lat->DrawLatex(0.14,0.78,"VBF H #rightarrow invisible");
+//       TLatex* lat2 = new TLatex();
+//       lat2->SetNDC();
+//       lat2->SetTextSize(0.04);
+//       lat2->SetTextFont(42);
+
+//       lat->DrawLatex(0.14,0.85,"CMS Preliminary");
+//       lat->DrawLatex(0.14,0.78,"VBF H #rightarrow invisible");
 
 
-      lat2->DrawLatex(0.14,0.665,"#sqrt{s} = 8 TeV, L = 19.2 fb^{-1}");
+//       lat2->DrawLatex(0.14,0.665,"#sqrt{s} = 8 TeV, L = 19.2 fb^{-1}");
 
       c1->Update();
 
       //DRAW RATIO PLOT
       if(do_ratio_){
 	c1->cd();
-	lower->SetTopMargin(0.03);
-	lower->SetBottomMargin(0.2);
+	lower->SetTopMargin(0.08);
+	lower->SetBottomMargin(0.38);
 	lower->Draw();
 	lower->cd();
 	lower->SetGridy();
@@ -402,7 +611,7 @@ namespace ic{
 	densdir->cd();
 	den->Write();
 	lower->cd();
-
+      
 	if(firstnum||firstden)std::cout<<"To draw ratio plot you must specify elements to be numerator and denominator! Ratio plot will be missing."<<std::endl;
 	else{
 	  //Set den error to zero will take den error into account in error band!!
@@ -421,20 +630,38 @@ namespace ic{
 	  //DIVIDE NUM BY DEN and put in ratio
 	  TH1F* ratio;
 	  ratio=(TH1F*)(num->Clone("ratio"));
-	  ratio->GetXaxis()->SetLabelSize(0.1);
-	  ratio->GetYaxis()->SetLabelSize(0.1);
+	  ratio->GetYaxis()->SetNdivisions(505);
+		  ratio->GetYaxis()->SetNdivisions(505);
+	  ratio->GetYaxis()->SetTitleFont(62);
+	  ratio->GetXaxis()->SetLabelSize(0.14);
+	  ratio->GetXaxis()->SetTitleFont(62);
+	  ratio->GetXaxis()->SetTitleSize(0.19);
+	  ratio->GetXaxis()->SetTitleOffset(0.750);
+	  ratio->GetYaxis()->SetTitleSize(0.19);
+	  ratio->GetYaxis()->SetTitleOffset(0.2);
+	  ratio->GetYaxis()->SetLabelSize(0.14);
+
+	  errorband->GetYaxis()->SetNdivisions(505);
+	  errorband->GetXaxis()->SetLabelSize(0.14);
+	  errorband->GetXaxis()->SetTitleFont(62);
+	  errorband->GetYaxis()->SetTitleFont(62);
+	  errorband->GetXaxis()->SetTitleSize(0.19);
+	  errorband->GetYaxis()->SetTitleSize(0.19);
+	  errorband->GetYaxis()->SetTitleOffset(0.460);
+	  errorband->GetXaxis()->SetTitleOffset(0.750);
+          errorband->GetYaxis()->SetLabelSize(0.14);
+	  
 
 	  std::string xtitle;
 	  xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	  xtitle=xtitle.substr(0,xtitle.find(";"));
 	  ratio->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
-	  ratio->GetXaxis()->SetTitleSize(0.1);
-	  ratio->GetXaxis()->SetTitleOffset(0.8);
+	  //	  ratio->GetXaxis()->SetTitleSize(0.1);
+	  //ratio->GetXaxis()->SetTitleOffset(0.8);
 	  ratio->GetYaxis()->SetRangeUser(0,2.0);
 	  ratio->SetTitle("");
-	  ratio->GetYaxis()->SetTitle("data/MC");
-	  ratio->GetYaxis()->SetTitleSize(0.1);
-	  ratio->GetYaxis()->SetTitleOffset(0.3);
+	  ratio->GetYaxis()->SetTitle("Data/Bkg");
+	  ratio->GetYaxis()->SetTitleSize(0.19);
 	  ratio->Divide(den);
 	  gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
@@ -444,15 +671,15 @@ namespace ic{
 	  errorband->SetFillStyle(1000);//3013);
 	  errorband->SetLineWidth(1);
 	  errorband->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
-	  errorband->GetXaxis()->SetTitleSize(0.1);
-	  errorband->GetXaxis()->SetTitleOffset(0.8);
+	  //	  errorband->GetXaxis()->SetTitleSize(0.1);
+	  //errorband->GetXaxis()->SetTitleOffset(0.8);
 	  errorband->GetYaxis()->SetRangeUser(0,2.0);
 	  errorband->SetTitle("");
 	  errorband->GetYaxis()->SetTitle("data/MC");
-	  errorband->GetYaxis()->SetTitleSize(0.1);
-	  errorband->GetYaxis()->SetTitleOffset(0.3);
-	  errorband->GetXaxis()->SetLabelSize(0.1);
-	  errorband->GetYaxis()->SetLabelSize(0.1);
+	  //errorband->GetYaxis()->SetTitleSize(0.1);
+	  //errorband->GetYaxis()->SetTitleOffset(0.3);
+	  //errorband->GetXaxis()->SetLabelSize(0.1);
+	  //errorband->GetYaxis()->SetLabelSize(0.1);
 	  errorband->SetStats(0);
 
 	  TF1* fiterrup;
@@ -512,6 +739,7 @@ namespace ic{
       //save as PDF
       c1->Update();
       std::ostringstream lsave;
+      std::ostringstream lsavepng;
       std::string tmpstr = file->GetName();
       tmpstr.erase(std::string(file->GetName()).find(".root"),5);
       lsave << tmpstr ;
@@ -532,6 +760,9 @@ namespace ic{
       lsave.str("");
       lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
       c1->Print((lsave.str()).c_str());
+      lsavepng.str("");
+      lsavepng << tmpstr << "_" << c1->GetName() << ".png" ;
+      c1->Print((lsavepng.str()).c_str());
 
       //WRITE TO FILE
       writedir->cd();

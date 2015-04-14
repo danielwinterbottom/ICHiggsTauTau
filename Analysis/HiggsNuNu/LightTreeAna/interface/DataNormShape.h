@@ -17,7 +17,7 @@ namespace ic {
     CLASS_MEMBER(DataNormShape,std::vector<int>,contbkgisz)
     CLASS_MEMBER(DataNormShape,std::string,contdataset)
     CLASS_MEMBER(DataNormShape,std::string,sigcat)
-    CLASS_MEMBER(DataNormShape,std::string,zcontcat)
+    CLASS_MEMBER(DataNormShape,std::string,zextracontcat)
     CLASS_MEMBER(DataNormShape,std::string,contcat)
     CLASS_MEMBER(DataNormShape,std::string,contdataextrasel)
     CLASS_MEMBER(DataNormShape,std::string,contmcextrasel)
@@ -29,6 +29,9 @@ namespace ic {
     CLASS_MEMBER(DataNormShape,std::string,contdataweight)
     CLASS_MEMBER(DataNormShape,double,sigcontextrafactor)
     CLASS_MEMBER(DataNormShape,bool,do_latex)
+    CLASS_MEMBER(DataNormShape,bool,do_subsets)
+    CLASS_MEMBER(DataNormShape,std::vector<std::string>,subsets)
+    CLASS_MEMBER(DataNormShape,std::vector<std::string>,subsetdirs)
     CLASS_MEMBER(DataNormShape,std::string,dirname)
   public:
     virtual DataNormShape & set_shape(std::string const& shape) {

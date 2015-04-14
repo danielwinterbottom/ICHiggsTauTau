@@ -24,6 +24,7 @@ namespace ic{
     shape_=shapes;
     dirname_="";
     do_latex_=false;
+    do_subsets_=false;
   };
 
   DataNormShape::~DataNormShape(){ ;};
@@ -50,6 +51,25 @@ namespace ic{
     std::cout<<module_name_<<":"<<std::endl;
     //sort out puweighting
     TFile *file=fs_;
+    
+    std::vector<TDirectory*> subsetdirvec;
+    if(do_subsets_){
+      for(unsigned isubset=0;isubset<subsetdirs_.size();isubset++){
+	TDirectory* subdir;
+	if(subsetdirs_[isubset]==""){
+	  std::cout<<"ERROR: MUST SPECIFY SUBDIR NAME!"<<std::endl;
+	  return 1;
+	}
+	else if(!fs_->GetDirectory(subsetdirs_[isubset].c_str())){
+	  subdir=file->mkdir(subsetdirs_[isubset].c_str());
+	}
+	else{
+	  subdir=fs_->GetDirectory(subsetdirs_[isubset].c_str());
+	}
+	subsetdirvec.push_back(subdir);
+      }
+    }
+
     TDirectory* dir;
     if(dirname_==""){
       dir=file->mkdir(sigmcset_.c_str());
@@ -99,10 +119,12 @@ namespace ic{
 	      }
 	      if(contbkgisz_[iBkg]==1){
 		extrafactor=(*ddweight)[0];//EWK WEIGHT
+		std::cout<<extrafactor<<std::endl;
 		extrafactorfracerr=sqrt(pow((*normerrs)[0],2)+pow((*normerrs)[2],2));
 	      }
 	      if(contbkgisz_[iBkg]==2){
 		extrafactor=(*ddweight)[1];//QCD WEIGHT
+		std::cout<<extrafactor<<std::endl;
 		extrafactorfracerr=sqrt(pow((*normerrs)[0],2)+pow((*normerrs)[3],2));
 	      }
 	    }
@@ -112,7 +134,7 @@ namespace ic{
 	  if(contbkgisz_.size()==contbkgset_.size()){
 	    if(contbkgisz_[iBkg]!=0){
 	      //GET Z SHAPE AND WEIGHT IT
-	      nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,(zcontcat_+contbkgextrasel_),contmczweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
+	      nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,(zextracontcat_+contbkgextrasel_),contmczweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
 	    }
 	    else nextbkg=filemanager->GetSetShape(contbkgset_[iBkg],"jet2_pt(200,0.,1000.)",basesel_,(contcat_+contbkgextrasel_),contmcweight_+"*"+boost::lexical_cast<std::string>(extrafactor),false);
 	  }
@@ -120,7 +142,7 @@ namespace ic{
 	  //std::cout<<contbkgset_[iBkg]<<" "<<Integral(&nextbkg)<<" "<<extrafactorfracerr<<std::endl;
 	  double thisbkgextrancbkgerr=Integral(&nextbkg)*extrafactorfracerr;
 	  extrancbkgerr=sqrt(pow(extrancbkgerr,2)+pow(thisbkgextrancbkgerr,2));
-
+	  if(contbkgisz_[iBkg]!=0)std::cout<<Integral(&nextbkg);//!!
 	  //ADD HISTOGRAMS TOGETHER
 	  if(firstbkg){
 	    contbkgshape=nextbkg;
@@ -194,6 +216,20 @@ namespace ic{
 	errvec[1]=weightednsmcstatfrac;
       }
       sigmcshape.Write();
+      if(do_subsets_){
+	for(unsigned isubset=0;isubset<subsetdirs_.size();isubset++){
+	  TH1F  subsetshape = filemanager->GetSetShape(subsets_[isubset],shape_[iShape],basesel_,sigcat_,sigmcweight_,false);
+	  subsetshape.Scale(weight*sigcontextrafactor_);
+	  subsetshape.SetName(histname.c_str());
+	  subsetdirvec[isubset]->cd();
+	  subsetshape.Write();
+	  TVectorD errvec(2);
+	  errvec[0]=weighterrdatastatfrac;
+	  errvec[1]=sqrt(((Error(&subsetshape)/Integral(&subsetshape))*(Error(&subsetshape)/Integral(&subsetshape)))+(weighterrmcstatfrac*weighterrmcstatfrac));
+	  weightvec.Write("ddweight");
+	  errvec.Write("normerrs");
+	}
+      }
     }
     dir->cd();
     errvec.Write("normerrs");

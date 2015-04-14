@@ -23,9 +23,9 @@ echo "Using job-submission: " $JOBSUBMIT
 CONFIG=scripts/DefaultConfig.cfg
 QUEUEDIR=short #medium #medium long
 
-JOBDIRPREFIX=jobs
+JOBDIRPREFIX=jobs_expandtopcatmumuonly
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output
+OUTPUTPREFIX=output_expandtopcatmumuonly
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"

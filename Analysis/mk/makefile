@@ -54,9 +54,9 @@ USERLIBS += -L$(BOOSTSYS)/lib -lboost_regex -lboost_program_options -lboost_file
 
 # Can set CMSSW=0 to disable include/linking to CMSSW
 ifneq ($(CMSSW), 0)
-	# USERINCLUDES += -I$(CMSSW_BASE)/src
+# USERINCLUDES += -I$(CMSSW_BASE)/src
 	USERINCLUDES += -isystem $(CMSSW_RELEASE_BASE)/src
-	# CMSSW user area
+# CMSSW user area
 	USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH) -lUserCodeICHiggsTauTau
 	USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lFWCoreFWLite -lPhysicsToolsFWLite -lCommonToolsUtils
 endif
@@ -99,6 +99,13 @@ all : all_proxy
 clean : clean_$(RUNDIR)
 
 clean_tree : clean_tree_$(RUNDIR)
+
+dictionary:
+	rootcint -v -f src/deltaphi_dict.cc -c interface/deltaphi.h interface/LinkDef.h
+	sed "s!interface/!UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/!" src/deltaphi_dict.h > interface/deltaphi_dict.h
+	rm src/deltaphi_dict.h
+	sed "s!deltaphi_dict.h!UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi_dict.h!" src/deltaphi_dict.cc > tmp
+	mv tmp src/deltaphi_dict.cc
 
 # $(d) keeps the path of "current" directory during tree traversal and
 # $(dir_stack) is used for backtracking during traversal
