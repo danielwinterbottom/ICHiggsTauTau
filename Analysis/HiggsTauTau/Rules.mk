@@ -1,3 +1,4 @@
-SUBDIRS 	:=
-LIB_DEPS 	:= Core Utilities Modules
-LIB_EXTRA := -lCondFormatsJetMETObjects -lTauAnalysisCandidateTools
+SUBDIRS 	:= LegacySVFit HHKinFit
+LIB_DEPS 	:= Core Utilities Modules Objects HiggsTauTau/LegacySVFit HiggsTauTau/HHKinFit
+LIB_EXTRA := -lCondFormatsJetMETObjects
+

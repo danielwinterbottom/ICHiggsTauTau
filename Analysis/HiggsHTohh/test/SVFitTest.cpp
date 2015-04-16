@@ -10,7 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 
 #include "TSystem.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+// #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 
 
@@ -23,9 +23,9 @@ int main(int argc, char* argv[]){
   }
 
   // Load necessary libraries for ROOT I/O of custom classes
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
 
   std::string input_file = argv[1];
   std::string output_file = input_file;

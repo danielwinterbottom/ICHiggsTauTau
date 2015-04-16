@@ -10,7 +10,6 @@
 // #include "boost/format.hpp"
 #include "TSystem.h"
 #include "Utilities/interface/json.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
@@ -41,9 +40,9 @@ using ic::Electron;
 
 int main(int argc, char* argv[]) {
   // Shorten: write a function that does this, or move the classes into Analysis
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
 
   vector<string> cfgs;
   vector<string> jsons;

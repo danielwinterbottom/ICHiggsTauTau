@@ -52,13 +52,13 @@ int main(int argc, char* argv[]){
     TH1F* base1 = new TH1F("base1", "base1" , 100, 0 ,160);
     if(elec)
     {    
-        base1->GetXaxis()->SetTitle("Electron p_{T} (GeV)");
+        base1->GetXaxis()->SetTitle("#bf{Electron p_{T} [GeV]}");
     }
-    else base1->GetXaxis()->SetTitle("Muon p_{T} (GeV)");
+    else base1->GetXaxis()->SetTitle("#bf{Muon p_{T} [GeV]}");
     base1->GetXaxis()->SetLabelSize(0.045);
     base1->GetXaxis()->SetTitleSize(0.045);
     base1->GetXaxis()->SetTitleOffset(1.1);
-    base1->GetYaxis()->SetTitle("Efficiency");
+    base1->GetYaxis()->SetTitle("#bf{Efficiency}");
     base1->GetYaxis()->SetLabelSize(0.045);
     base1->GetYaxis()->SetTitleSize(0.045);
     base1->GetYaxis()->SetTitleOffset(1.0);
@@ -83,22 +83,24 @@ int main(int argc, char* argv[]){
     TLatex *title_latex = new TLatex();
     title_latex->SetNDC();
     title_latex->SetTextSize(0.045);
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
+    title_latex->DrawLatex(0.10, 0.935, "19.7 fb^{-1} at #sqrt{s}=8 TeV");        
     canvas1->Update();
 
     canvas1->Write();    
+    std::string str = elec==true ? "Electron" : "Muon";
+    canvas1->SaveAs((str+"IdIsoPT2012DatavsMC.pdf").c_str());    
 
     TCanvas* canvas2 = new TCanvas("canvas2", "canvas2", 200,10, 700, 500);
     TH1F* base2 = new TH1F("base2", "base2" , 100, -2.2 ,2.2);
     if(elec)
     {
-        base2->GetXaxis()->SetTitle("Electron #eta");
+        base2->GetXaxis()->SetTitle("#bf{Electron #eta}");
     }
-    else base2->GetXaxis()->SetTitle("Muon #eta");
+    else base2->GetXaxis()->SetTitle("#bf{Muon #eta}");
     base2->GetXaxis()->SetLabelSize(0.045);
     base2->GetXaxis()->SetTitleSize(0.045);
     base2->GetXaxis()->SetTitleOffset(1.1);
-    base2->GetYaxis()->SetTitle("Efficiency");
+    base2->GetYaxis()->SetTitle("#bf{Efficiency}");
     base2->GetYaxis()->SetLabelSize(0.045);
     base2->GetYaxis()->SetTitleSize(0.045);
     base2->GetYaxis()->SetTitleOffset(1.0);
@@ -119,20 +121,21 @@ int main(int argc, char* argv[]){
     legend2->SetBorderSize(0);
     legend2->Draw();
     canvas2->Update();
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
+    title_latex->DrawLatex(0.10, 0.935, "19.7 fb^{-1} at #sqrt{s}=8 TeV");        
     canvas2->Update();
      
    
     canvas2->Write();
+    canvas2->SaveAs((str+"IdIsoEta2012DatavsMC.pdf").c_str());    
  
     TCanvas* canvas3 = new TCanvas("canvas3", "canvas3", 200,10, 700, 500);
     TH1F* base3 = new TH1F("base3", "base3" , 100,  0 ,30);
     if(elec)
     {
-        base3->GetXaxis()->SetTitle("Nvtx");
+        base3->GetXaxis()->SetTitle("#bf{Nvtx}");
     }
-    else base3->GetXaxis()->SetTitle("Nvtx");
-    base3->GetYaxis()->SetTitle("Efficiency");
+    else base3->GetXaxis()->SetTitle("#bf{Nvtx}");
+    base3->GetYaxis()->SetTitle("#bf{Efficiency}");
     base3->GetXaxis()->SetLabelSize(0.045);
     base3->GetXaxis()->SetTitleSize(0.045);
     base3->GetXaxis()->SetTitleOffset(1.1);
@@ -156,11 +159,12 @@ int main(int argc, char* argv[]){
     legend3->SetBorderSize(0);
     legend3->Draw();
     canvas3->Update();
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
+    title_latex->DrawLatex(0.10, 0.935, "19.7 fb^{-1} at #sqrt{s}=8 TeV");        
     canvas3->Update();
      
    
     canvas3->Write();
+    canvas3->SaveAs((str+"IdIsoNvtx2012DatavsMC.pdf").c_str());    
     
     TCanvas* canvas4 = new TCanvas("canvas4", "canvas4", 200,10, 700, 500);
     TH1F* base4 = new TH1F("base4", "base4" , 100,  0 ,30);
@@ -170,8 +174,8 @@ int main(int argc, char* argv[]){
     base4->GetYaxis()->SetLabelSize(0.045);
     base4->GetYaxis()->SetTitleSize(0.045);
     base4->GetYaxis()->SetTitleOffset(1.0);
-    base4->GetXaxis()->SetTitle("Nvtx");
-    base4->GetYaxis()->SetTitle("Data/MC Scale Factor");
+    base4->GetXaxis()->SetTitle("#bf{Nvtx}");
+    base4->GetYaxis()->SetTitle("#bf{Data/MC Scale Factor}");
     base4->SetTitle(0);
     base4->SetStats(0);
   
@@ -205,7 +209,7 @@ int main(int argc, char* argv[]){
     base4->Draw();
     grsf->Draw("Psame");
     canvas4->Update();
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
+    title_latex->DrawLatex(0.10, 0.935, "19.7 fb^{-1} at #sqrt{s}=8 TeV");        
     canvas4->Update();
     canvas4->Write();
 

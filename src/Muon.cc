@@ -22,6 +22,7 @@ Muon::Muon()
       is_global_(false),
       is_tracker_(false),
       is_calo_(false),
+      is_pf_(false),
       gt_normalized_chi2_(0.),
       gt_valid_muon_hits_(0),
       matched_stations_(0),

@@ -65,7 +65,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(500)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -147,6 +147,11 @@ process.selectedVertices = cms.EDFilter("VertexRefSelector",
   cut = cms.string("ndof >= 4 & abs(z) <= 24 & abs(position.Rho) <= 2")
 )
 
+process.selectedPFCandidates = cms.EDFilter("PFCandidateRefSelector",
+  src = cms.InputTag("particleFlow"),
+  cut = cms.string("pt > 0.0")
+)
+
 process.selectedElectrons = cms.EDFilter("GsfElectronRefSelector",
   src = cms.InputTag("gsfElectrons"),
   cut = cms.string("pt > 9.5 & abs(eta) < 2.6")
@@ -195,6 +200,7 @@ if release in ['70XMINIAOD', '72XMINIAOD']:
 
 process.icSelectionSequence = cms.Sequence(
   process.selectedVertices+
+  process.selectedPFCandidates+
   process.selectedElectrons+
   process.selectedPFMuons
 )
@@ -279,6 +285,76 @@ process.icVertexProducer = producers.icVertexProducer.clone(
 process.icVertexSequence = cms.Sequence(
   process.icVertexProducer
 )
+
+################################################################
+# PFCandidates
+################################################################
+process.icPFProducer = cms.EDProducer('ICPFProducer',
+  branch  = cms.string("pfCandidates"),
+  input   = cms.InputTag("selectedPFCandidates"),
+  requestTracks       = cms.bool(True),
+  requestGsfTracks    = cms.bool(True)
+)
+
+process.icPFSequence = cms.Sequence()
+
+if isPhys14:
+  process.icPFSequence += process.icPFProducer
+
+
+################################################################
+# Tracks
+################################################################
+process.selectedTracks = cms.EDFilter("TrackRefSelector",
+  src = cms.InputTag("generalTracks"),
+  cut = cms.string("pt > 0.5")
+)
+
+process.selectedTauTracks = cms.EDFilter("TrackRefSelector",
+  src = cms.InputTag("generalTracks"),
+  cut = cms.string("pt > 0.5")
+)
+
+process.requestTracksByDeltaRToTaus = cms.EDProducer("RequestTracksByDeltaR",
+  src = cms.InputTag("selectedTauTracks"),
+  reference = cms.InputTag("selectedPFTaus"),
+  deltaR = cms.double(0.5)
+  )
+
+# We write (for phys 14 studies):
+# - all tracks with pT > 5 GeV
+# - tracks referenced by the PF candidates we store
+# - tracks referenced by the taus we store
+# - all tracks with DR < 0.5 pf the selected PF taus with pT > 0.5 GeV
+process.icMergedTracks = cms.EDProducer('ICTrackMerger',
+  merge = cms.VInputTag(
+    cms.InputTag("selectedTracks"),
+    cms.InputTag("icPFProducer", "requestedTracks"),
+    cms.InputTag("icTauProducer", "requestedTracks"),
+    cms.InputTag("requestTracksByDeltaRToTaus")
+  )
+)
+
+process.icTrackProducer = producers.icTrackProducer.clone(
+  branch = cms.string("tracks"),
+  input  = cms.InputTag("icMergedTracks")
+)
+
+process.icGsfTrackProducer = producers.icTrackProducer.clone(
+  branch = cms.string("gsfTracks"),
+  input  = cms.InputTag("icPFProducer", "requestedGsfTracks")
+)
+
+process.icTrackSequence = cms.Sequence()
+if isPhys14:
+  process.icTrackSequence += cms.Sequence(
+    process.selectedTracks+
+    process.selectedTauTracks+
+    process.requestTracksByDeltaRToTaus+
+    process.icMergedTracks+
+    process.icTrackProducer+
+    process.icGsfTrackProducer
+  )
 
 ################################################################
 # Electrons
@@ -490,6 +566,12 @@ process.icTauProducer = producers.icTauProducer.clone(
   requestTracks           = cms.bool(False),
   tauIDs = tauIDs.minimalHttIds
 )
+
+## In the Phys14 studies we want to keep a record of the "signal"
+## tracks used to build the tau, so that we can approximate the
+## charged isolation ourselves
+if isPhys14: process.icTauProducer.requestTracks = cms.bool(True)
+
 
 if release in ['53X']: process.icTauProducer.tauIDs = tauIDs.fullNewIds
 if release in ['70X', '72X']: process.icTauProducer.tauIDs = tauIDs.fullNewIds
@@ -714,6 +796,27 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
       requestTracks         = cms.bool(False)
     )
 )
+
+if isPhys14:
+  process.selectedPFJets = cms.EDFilter("PFJetRefSelector",
+      src = cms.InputTag("ak5PFJets"),
+      cut = cms.string("pt > 15")
+      )
+  process.icPFJetProducer.input = cms.InputTag("selectedPFJets")
+  process.icPFJetProducer.srcConfig.applyJECs = cms.bool(False)
+  process.icPFJetProducer.srcConfig.applyCutAfterJECs = cms.bool(False)
+
+  process.selectedPFJetsAK4 = cms.EDFilter("PFJetRefSelector",
+      src = cms.InputTag("ak4PFJets"),
+      cut = cms.string("pt > 15")
+      )
+  process.icPFJetProducerAK4 = producers.icPFJetProducer.clone(
+      branch                    = cms.string("ak4PFJets"),
+      input                     = cms.InputTag("selectedPFJetsAK4")
+  )
+
+
+
 if release in ['70XMINIAOD', '72XMINIAOD']:
   process.icPFJetProducer.destConfig.includePileupID = cms.bool(False)
   process.icPFJetProducer.destConfig.includeTrackBasedVars = cms.bool(False)
@@ -736,6 +839,12 @@ if release in ['42X', '53X', '70X']:
 
 if release in ['72X', '72XMINIAOD']:
   process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet()
+  if isPhys14:
+    process.icPFJetSequence += cms.Sequence(
+        process.selectedPFJets+
+        process.selectedPFJetsAK4+
+        process.icPFJetProducerAK4
+        )
   process.icPFJetSequence += cms.Sequence(
       process.jetPartons+
       process.pfJetPartonMatches+
@@ -744,6 +853,10 @@ if release in ['72X', '72XMINIAOD']:
       process.icPFJetProducer
       )
 else:
+  if isPhys14:
+    process.icPFJetSequence += cms.Sequence(
+        process.selectedPFJets
+        )
   process.icPFJetSequence += cms.Sequence(
       process.jetPartons+
       process.pfJetPartonMatches+
@@ -934,7 +1047,7 @@ process.ak5GenJetsNoNuBSM  =  process.ak5GenJets.clone()
 
 process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
   src = cms.InputTag("ak5GenJetsNoNuBSM"),
-  cut = cms.string("pt > 15.0")
+  cut = cms.string("pt > 10.0")
 )
 
 process.icGenJetProducer = producers.icGenJetProducer.clone(
@@ -959,6 +1072,25 @@ if not isData:
       process.selectedGenJets+
       process.icGenJetProducer
     )
+
+if release in ['72X'] and isPhys14:
+  process.load("RecoJets.JetProducers.ak4GenJets_cfi")
+  process.ak4GenJetsNoNuBSM  =  process.ak4GenJets.clone()
+  process.selectedGenJetsAK4 = cms.EDFilter("GenJetRefSelector",
+    src = cms.InputTag("ak4GenJetsNoNuBSM"),
+    cut = cms.string("pt > 10.0")
+  )
+  process.icGenJetProducerAK4 = producers.icGenJetProducer.clone(
+    branch  = cms.string("ak4GenJets"),
+    input   = cms.InputTag("selectedGenJetsAK4"),
+    inputGenParticles = cms.InputTag("genParticles"),
+    requestGenParticles = cms.bool(False)
+  )
+  process.icGenSequence += (
+      process.ak4GenJetsNoNuBSM+
+      process.selectedGenJetsAK4+
+      process.icGenJetProducerAK4
+  )
 
 ################################################################
 # Embedding
@@ -1334,9 +1466,11 @@ process.p = cms.Path(
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
   process.icVertexSequence+
+  process.icPFSequence+
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauProducer+
+  process.icTrackSequence+
   process.icMvaMetSequence+
   process.icPFJetSequence+
   process.icGenSequence+

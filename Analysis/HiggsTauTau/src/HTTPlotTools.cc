@@ -333,6 +333,35 @@ namespace ic {
         ("MSSM h,H,A#rightarrow#tau#tau"),
         {"ggH","bbH"}, TColor::GetColor(0,18,255), false)
     };
+    sig_schemes_["Hhh_nostack_AZh"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times H#rightarrowhh(m_{H}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
+        {"ggHTohhTo2Tau2B"}, kBlue+3, false),
+      PlotSigComponent("sig_AZh",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times A#rightarrowZh(m_{A}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
+        {"ggAToZhToLLBB","ggAToZhToTauTauBB","ggAToZhToBBTauTau"}, kGreen+3, false)
+    };
+    sig_schemes_["Hhh_nostack"] = {
+      PlotSigComponent("sig",
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times H#rightarrowhh(m_{H}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
+        {"ggHTohhTo2Tau2B"}, kBlue+3, false),
+    };
+    sig_schemes_["Hhh_1pb"] = {
+      PlotSigComponent("sig",
+        ("1pb H#rightarrowhh(m_{H}="+draw_signal_mass_+")"),
+        {"ggHTohhTo2Tau2B"}, kBlue+3, false),
+      PlotSigComponent("sig_AZh",
+        ("1pb A#rightarrowZh(m_{A}="+draw_signal_mass_+")"),
+        {"ggAToZhToLLBB","ggAToZhToTauTauBB","ggAToZhToBBTauTau"}, kGreen+3, false)
+    };
+    sig_schemes_["Hhh_highmass"] = {
+      PlotSigComponent("sig_Radion",
+        ("1pb Radion H#rightarrowhh(m_{H}="+draw_signal_mass_+")"),
+        {"RadionToHH"}, kBlue+3, false),
+      PlotSigComponent("sig_Graviton",
+        ("1pb Graviton H#rightarrowhh(m_{H}="+draw_signal_mass_+")"),
+        {"GravitonToHH"}, kGreen+3, false)
+    };
     sig_schemes_["sm_split_vbf"] = {
       PlotSigComponent("sig",
         ("SM H("+draw_signal_mass_+")#rightarrow#tau#tau (ggH)"),

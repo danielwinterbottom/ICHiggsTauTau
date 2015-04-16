@@ -24,6 +24,8 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, write_tree)
   CLASS_MEMBER(HTTCategories, bool, write_plots)
   CLASS_MEMBER(HTTCategories, bool, experimental)
+  CLASS_MEMBER(HTTCategories, bool, bjet_regression)
+  CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
 
   std::map<std::string, bool> categories_;
@@ -86,17 +88,56 @@ class HTTCategories : public ModuleBase {
   double bpt_1_;     // Defined if n_bjets >= 1
   double beta_1_;    // Defined if n_bjets >= 1
   double bcsv_1_; 
+  double jet_csvpt_1_;     // Defined if n_jets >= 1
+  double jet_csvEt_1_;     // Defined if n_jets >= 1
+  double jet_csvpt_2_;     // Defined if n_jets >= 2
+	double jet_csvpt_bb_;
+	double jet_csv_dR_;
+  double jet_csveta_1_;    // Defined if n_jets >= 1
+  double jet_csveta_2_;    // Defined if n_jets >= 2
+  double jet_csvbcsv_1_; 
+  double jet_csvbcsv_2_; 
 
   int j1_dm_;
 
   double mjj_;       // Defined if n_jets >= 2
+  double mjj_h_;       // Defined if n_jets >= 2
+  double mbb_h_;       // Defined if n_jets >= 2
+  double mjj_tt_;       // Defined if n_jets >= 2
+  double m_H_best_;       // Defined if n_jets >= 2
+  double m_H_chi2_best_;       // Defined if n_jets >= 2
+  double pull_balance_H_best_; //Defined if n_jets >= 2
+  int convergence_H_best_; //Defined if n_jets >= 2
+  double m_H_hZ_;     //Defined if n_jets >= 2
+  double m_H_hZ_chi2_;  //Defined if n_jets >= 2
+  double pull_balance_hZ_; //Defined if n_jets >= 2
+  int convergence_hZ_; //Defined if n_jets >= 2
+  double m_H_Zh_;      //Defined if n_jets >= 2
+  double m_H_Zh_chi2_;   //Defined if n_jets >= 2 
+  double pull_balance_Zh_; //Defined if n_jets >= 2
+  int convergence_Zh_; //Defined if n_jets >= 2
+  double m_H_hh_;	     //Defined if n_jets >= 2
+  double m_H_hh_all_;	     //Defined if n_jets >= 2
+  double m_H_hh_chi2_;   //Defined if n_jets >= 2
+  double pull_balance_hh_; //Defined if n_jets >= 2
+  int convergence_hh_; //Defined if n_jets >= 2
+  double m_bb_;	     //Defined if n_jets >= 2
+  double m_bb_chi2_;   //Defined if n_jets >= 2
+  double pull_balance_bb_; //Defined if n_jets >= 2
+  int convergence_bb_; //Defined if n_jets >= 2
   double jdeta_;     // Defined if n_jets >= 2
 
+  double jet_csv_mjj_;       // Defined if n_jets >= 2
+  double jet_csv_deta_;     // Defined if n_jets >= 2
+  double jet_csv_dphi_;     // Defined if n_jets >= 2
+  double jet_csv_dtheta_;     // Defined if n_jets >= 2
   double mjj_lowpt_;       // Defined if n_lowpt_jets >= 2
   double jdeta_lowpt_;     // Defined if n_lowpt_jets >= 2
   unsigned n_jetsingap_lowpt_; // Defined if n_lowpt_jets >= 2
 
   unsigned n_prebjets_;
+  unsigned n_jets_csv_;
+  unsigned n_bjets_csv_;
 
   double l1_met_;
   double calo_nohf_met_;

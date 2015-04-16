@@ -1,6 +1,8 @@
 <lcgdict>
   <class name="ic::Candidate"/>
   <class name="std::vector<ic::Candidate>"/>
+  <class name="ic::PFCandidate"/>
+  <class name="std::vector<ic::PFCandidate>"/>
   <class name="ic::GenParticle"/>
   <class name="std::vector<ic::GenParticle>"/> 
   <class name="ic::Jet"/>
@@ -50,4 +52,6 @@
   <class name="mithep::TH2DAsymErr"/>
   <class name="edm::Wrapper<reco::SecondaryVertexTagInfoRefVector>"/>
   <class name="edm::Wrapper<reco::VertexRefVector>"/>
+  <class name="edm::Wrapper<reco::GsfTrackRefVector>"/>
+  <class name="edm::Wrapper<reco::PFCandidateRefVector>"/>
 </lcgdict>

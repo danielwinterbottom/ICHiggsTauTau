@@ -1,9 +1,5 @@
-* {
-  -webkit-font-smoothing: antialiased;
-}
-
 body, table, div, p, dl {
- font: 400 16px/25px "Open Sans",sans-serif;
+ font: 400 14px/21px "Open Sans",sans-serif;
 }
 
 div#top {

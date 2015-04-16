@@ -3,30 +3,22 @@
 #include <string>
 #include <fstream>
 #include <map>
-// #include "boost/lexical_cast.hpp"
 #include "boost/program_options.hpp"
-// #include "boost/bind.hpp"
-// #include "boost/function.hpp"
-// #include "boost/format.hpp"
 #include "TSystem.h"
 #include "Utilities/interface/json.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+// #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Utilities/interface/JsonTools.h"
 #include "Utilities/interface/FnRootTools.h"
 #include "Utilities/interface/FnPredicates.h"
 #include "Core/interface/AnalysisBase.h"
-// #include "Modules/interface/CopyCollection.h"
 #include "Modules/interface/SimpleFilter.h"
-// #include "Modules/interface/OverlapFilter.h"
-// #include "Modules/interface/CheckEvents.h"
 #include "Modules/interface/CompositeProducer.h"
 #include "HiggsTauTau/interface/HTTConfig.h"
 #include "HiggsTauTau/interface/Phys14Plots.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
+#include "Modules/interface/JetEnergyCorrections.h"
 
-// using boost::lexical_cast;
-// using boost::bind;
 namespace po = boost::program_options;
 using std::string;
 using std::vector;
@@ -36,12 +28,11 @@ using std::vector;
 using std::string;
 using ic::Electron;
 
-
 int main(int argc, char* argv[]) {
   // Shorten: write a function that does this, or move the classes into Analysis
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
 
   vector<string> cfgs;
   vector<string> jsons;
@@ -94,13 +85,32 @@ int main(int argc, char* argv[]) {
   // analysis.DoSkimming("./skim/");
   analysis.CalculateTimings(js["job"]["timings"].asBool());
 
+  bool do_XToTauTau = js["do_XToTauTau"].asBool();
+  bool do_QCDFakes = js["do_QCDFakes"].asBool();
+  bool apply_JEC = js["apply_JEC"].asBool();
+
+  string jec_payload = js["jec_payload"].asString();
+  auto jetEnergyCorr =
+      ic::JetEnergyCorrections<ic::PFJet>("JetEnergyCorrections")
+          .set_input_label("pfJetsPFlow")
+          .set_is_data(false)
+          .set_use_new_mode(true)
+          .set_l1_file("data/jec/" + jec_payload + "_L1FastJet_AK5PF.txt")
+          .set_l2_file("data/jec/" + jec_payload + "_L2Relative_AK5PF.txt")
+          .set_l3_file("data/jec/" + jec_payload + "_L3Absolute_AK5PF.txt")
+          .set_res_file("data/jec/" + jec_payload + "_L2L3Residual_AK5PF.txt");
+
   auto httGenEvent = ic::HTTGenEvent("HttGenEvent")
       .set_genparticle_label("genParticles");
 
   auto phys14Plots = ic::Phys14Plots("Phys14Plots")
-      .set_fs(fs);
+                         .set_fs(fs)
+                         .set_do_real_th_studies(do_XToTauTau)
+                         .set_do_fake_th_studies(do_QCDFakes);
 
-  analysis.AddModule(&httGenEvent);
+
+  if (apply_JEC) analysis.AddModule(&jetEnergyCorr);
+  if (do_XToTauTau) analysis.AddModule(&httGenEvent);
   analysis.AddModule(&phys14Plots);
 
   analysis.RunAnalysis();

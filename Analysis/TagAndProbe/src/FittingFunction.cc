@@ -6,6 +6,8 @@
 #include "TCanvas.h"
 #include "TH1F.h"
 #include "TLatex.h"
+#include "TLegend.h"
+#include "TGaxis.h"
 
 #include "RooRealVar.h"
 #include "RooCategory.h"
@@ -277,7 +279,7 @@ using std::endl;
         std::cout << TMath::Prob(frame1->chiSquare(), 6) << std::endl;
 
         // Add some text with the results
-        TLatex *title_latex = new TLatex();
+      /*  TLatex *title_latex = new TLatex();
         title_latex->SetNDC();
         title_latex->SetTextSize(0.03);
         boost::format f_nSigPass("SigPass: %.1f #pm %.1f");
@@ -288,7 +290,7 @@ using std::endl;
         f_eff % eff->getVal() %eff->getPropagatedError(*fitResult);
         title_latex->DrawLatex(0.62,0.89,f_nSigPass.str().c_str());
         title_latex->DrawLatex(0.62,0.85,f_nBkgPass.str().c_str());
-        title_latex->DrawLatex(0.62,0.81,f_eff.str().c_str());
+        title_latex->DrawLatex(0.62,0.81,f_eff.str().c_str());*/
 
         c1->Update();
     //    c1->SaveAs("ee_TP_fit.pdf");
@@ -305,14 +307,14 @@ using std::endl;
         std::cout << TMath::Prob(frame2->chiSquare(), 6) << std::endl;
 
 
-        boost::format f_nSigFail("SigFail: %.1f #pm %.1f");
+       /* boost::format f_nSigFail("SigFail: %.1f #pm %.1f");
         f_nSigFail % nSigFail->getVal() % nSigFail->getError();
         boost::format f_nBkgFail("BkgFail: %.1f #pm %.1f");
         f_nBkgFail % nBkgFail->getVal() % nBkgFail->getError();
         title_latex->DrawLatex(0.62,0.89,f_nSigFail.str().c_str());
         title_latex->DrawLatex(0.62,0.85,f_nBkgFail.str().c_str());
         title_latex->DrawLatex(0.62,0.81,f_eff.str().c_str());
-
+*/
         c2->Update();
     //    c2->SaveAs("ee_TF_fit.pdf");
         double results[2];
@@ -583,19 +585,34 @@ using std::endl;
 
         RooPlot* frame1 = Mass.frame();
         frame1->SetMinimum(0);
-        data_pass->plotOn(frame1,RooFit::DataError(errorType),SumW2Error(kTRUE));
+        data_pass->plotOn(frame1,RooFit::DataError(errorType),SumW2Error(kTRUE),RooFit::Name("data"));
         pdfPass.plotOn(frame1,RooFit::ProjWData(*data_pass), 
-        RooFit::Components(*bkgShapePassPdf),RooFit::LineColor(kRed), SumW2Error(kTRUE));
-        pdfPass.plotOn(frame1,RooFit::ProjWData(*data_pass), SumW2Error(kTRUE));
+        RooFit::Components(*bkgShapePassPdf),RooFit::LineColor(kRed), SumW2Error(kTRUE),RooFit::Name("B"));
+        pdfPass.plotOn(frame1,RooFit::ProjWData(*data_pass), SumW2Error(kTRUE), RooFit::Name("S+B"));
+        frame1->GetXaxis()->SetTitle("#bf{m_{ee} [GeV]}");
+        frame1->GetYaxis()->SetTitle("#bf{Events}");
+        frame1->GetYaxis()->SetTitleOffset(1.4);
+        frame1->GetXaxis()->SetTitleOffset(1.2);
+        frame1->GetXaxis()->SetTitleSize(0.035);
+        frame1->GetYaxis()->SetTitleSize(0.035);
+        frame1->SetTitle(0); 
+        TGaxis::SetMaxDigits(3);
         TCanvas* c1 = new TCanvas("c1","c1",600,600);
         frame1->Draw("e0");
+        TLegend *leg1 = new TLegend(0.55,0.63,0.87,0.84);
+        leg1->SetFillColor(kWhite);
+        leg1->SetLineColor(kWhite);
+        leg1->AddEntry("data","Data","LP");
+        leg1->AddEntry("S+B","Signal+background Fit","LP");
+        leg1->AddEntry("B","Background fit","LP");
+        leg1->Draw();
 
         std::cout << frame1->chiSquare() << std::endl;
         std::cout << frame1->chiSquare(6) << std::endl;
         std::cout << TMath::Prob(frame1->chiSquare(), 6) << std::endl;
 
         // Add some text with the results
-        TLatex *title_latex = new TLatex();
+       /* TLatex *title_latex = new TLatex();
         title_latex->SetNDC();
         title_latex->SetTextSize(0.03);
         boost::format f_nSigPass("SigPass: %.1f #pm %.1f");
@@ -606,33 +623,48 @@ using std::endl;
         f_eff % eff->getVal() %eff->getPropagatedError(*fitResult);
         title_latex->DrawLatex(0.62,0.89,f_nSigPass.str().c_str());
         title_latex->DrawLatex(0.62,0.85,f_nBkgPass.str().c_str());
-        title_latex->DrawLatex(0.62,0.81,f_eff.str().c_str());
+        title_latex->DrawLatex(0.62,0.81,f_eff.str().c_str());*/
 
         c1->Update();
-    //    c1->SaveAs("ee_TP_fit.pdf");
+        c1->SaveAs("ee_TP_fit.pdf");
 
         TCanvas* c2 = new TCanvas("c2","c2",600,600);
         RooPlot* frame2 = Mass.frame();
         frame2->SetMinimum(0);
-        data_fail->plotOn(frame2,RooFit::DataError(errorType));
+        data_fail->plotOn(frame2,RooFit::DataError(errorType),RooFit::Name("dataFail"));
         pdfFail.plotOn(frame2,RooFit::ProjWData(*data_fail), 
-        RooFit::Components(*bkgShapeFailPdf),RooFit::LineColor(kRed));
-        pdfFail.plotOn(frame2,RooFit::ProjWData(*data_fail));
+        RooFit::Components(*bkgShapeFailPdf),RooFit::LineColor(kRed),RooFit::Name("BFail"));
+        pdfFail.plotOn(frame2,RooFit::ProjWData(*data_fail), RooFit::Name("S+BFail"));
+        frame2->SetTitle(0);
+        frame2->GetXaxis()->SetTitle("#bf{m_{ee} [GeV]}");
+        frame2->GetXaxis()->SetTitleSize(0.035);
+        frame2->GetYaxis()->SetTitleSize(0.035);
+        frame2->GetYaxis()->SetTitle("#bf{Events}");
+        frame2->GetYaxis()->SetTitleOffset(1.4);
+        frame2->GetXaxis()->SetTitleOffset(1.2);
+        TGaxis::SetMaxDigits(3);
         frame2->Draw("e0");
+        TLegend *leg2 = new TLegend(0.55,0.63,0.87,0.84);
+        leg2->SetFillColor(kWhite);
+        leg2->SetLineColor(kWhite);
+        leg2->AddEntry("dataFail","Data","LP");
+        leg2->AddEntry("S+BFail","Signal+background Fit","LP");
+        leg2->AddEntry("BFail","Background fit","LP");
+        leg2->Draw();
         std::cout << frame2->chiSquare() << std::endl;
         std::cout << frame2->chiSquare(6) << std::endl;
         std::cout << TMath::Prob(frame2->chiSquare(), 6) << std::endl;
 
-        boost::format f_nSigFail("SigFail: %.1f #pm %.1f");
+      /*  boost::format f_nSigFail("SigFail: %.1f #pm %.1f");
         f_nSigFail % nSigFail->getVal() % nSigFail->getError();
         boost::format f_nBkgFail("BkgFail: %.1f #pm %.1f");
         f_nBkgFail % nBkgFail->getVal() % nBkgFail->getError();
         title_latex->DrawLatex(0.62,0.89,f_nSigFail.str().c_str());
         title_latex->DrawLatex(0.62,0.85,f_nBkgFail.str().c_str());
-        title_latex->DrawLatex(0.62,0.81,f_eff.str().c_str());
+        title_latex->DrawLatex(0.62,0.81,f_eff.str().c_str());*/
 
         c2->Update();
-    //    c2->SaveAs("ee_TF_fit.pdf");
+        c2->SaveAs("ee_TF_fit.pdf");
         double results[2];
         results[0]=eff->getVal();
         results[1]=eff->getPropagatedError(*fitResult);

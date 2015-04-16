@@ -34,6 +34,14 @@ parser.add_option("--mvis", dest="mvis", action='store_true', default=False,
                   help="Only make inputs for visible mass, no svfit.")
 parser.add_option("--svfit", dest="svfit", action='store_true', default=False,
                   help="Only make inputs for svfit mass.")
+parser.add_option("--dijet", dest="dijet", action='store_true', default=False,
+                  help="Make inputs for dijet mass.")
+parser.add_option("--mttbb", dest="mttbb", action='store_true', default=False,
+                  help="Make inputs for mttbb.")
+parser.add_option("--mH", dest="mH", action='store_true', default=False,
+                  help="Make inputs for mH using kinematic fitting.")
+parser.add_option("--masscuts", dest="masscuts", action='store_true', default=False,
+                  help="Apply mass cuts on m_bb and m_tautau to 4 body mass for H->hh analysis.")
 parser.add_option("-e", dest="energy", type='string', default='8',
                   help="The C.O.M. energy is written into the datacard name, default is 8")
 
@@ -71,7 +79,7 @@ YEAR = ('2012' if COM=='8' else '2011')
 ########## Set up schemes and options
 
 #### Always apply these options:
-extra_global = ' --fix_empty_hists="ggH.*,qqH.*,VH.*,WH.*,ZH.*,ttH.*,bbH.*"'
+extra_global = ' --fix_empty_hists="ggH.*,ggA*,qqH.*,VH.*,WH.*,ZH.*,ttH.*,bbH.*"'
 
 #### Apply these options for specific channels
 extra_channel = {
@@ -86,8 +94,8 @@ extra_channel = {
 #################################################################
 if options.scheme == 'old_sm':
   extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
-  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
-  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350]"
   scheme_et = [
     ("8",   "inclusive",    "inclusive",  BINS_FINE, ""),
     ("5",   "vbf",          "vbf",        BINS,      ' --set_alias="W_Shape_Sample:Special_5_WJetsToLNuSoup"'),
@@ -136,8 +144,8 @@ if options.scheme == 'old_sm':
 #### New SM scheme
 #################################################################
 if options.scheme == 'new_sm':
-  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
-  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350]"
   extra_global += ' --syst_ggh_pt="QCDscale_ggH1in" --scan_bins=2'
   extra_global += ' --add_extra_binning="(70,0,350):_fine_binning"'
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.5"'
@@ -301,8 +309,8 @@ if options.scheme == 'new_sm':
 #### Control Plots
 #################################################################
 if options.scheme == 'control_plots':
-  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350"
-  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350]"
   extra_global += ' --syst_ggh_pt="QCDscale_ggH1in"'
   extra_channel["em"] += '  --set_alias="sel:em_gf_mva>-0.5"'
   extra_global += ' --hww_masses=110,115,120,125,130,135,140,145,150,155,160'
@@ -371,8 +379,8 @@ if options.scheme == 'control_plots':
 #### Old MSSM scheme
 #################################################################
 if options.scheme == 'old_mssm':
-  BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500"
-  BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500"
+  BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500]"
+  BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500]"
   scheme_et = [
     ("8",    "inclusive",   "inclusive",  BINS_FINE,  ''),
     ("11",   "nobtag",      "nobtag",     BINS_FINE,  ''),
@@ -402,11 +410,11 @@ if options.scheme == 'old_mssm':
 #################################################################
 if options.scheme == 'new_mssm' or options.scheme == 'new_mssm_fb':
   if options.scheme == 'new_mssm_fb':
-    BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1100,1200,1300,1400,1500,1600,1800,2000"
-    BINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1100,1200,1300,1400,1500,1600,1800,2000"
+    BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1100,1200,1300,1400,1500,1600,1800,2000]"
+    BINS="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1100,1200,1300,1400,1500,1600,1800,2000]"
   if options.scheme == 'new_mssm':
-    BINS_FINE="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500"
-    BINS="0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500"
+    BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350,400,500,700,1000,1500]"
+    BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350,400,500,700,1000,1500]"
   extra_global += ' --add_extra_binning="(400,0,2000):_fine_binning"'
   extra_global += ' --add_sm_background="125"'
   extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
@@ -463,6 +471,88 @@ if options.scheme == 'new_mssm' or options.scheme == 'new_mssm_fb':
   sig_scheme = 'mssm_default'
   ANA = 'mssm'
 
+#################################################################
+#### HTohh scheme
+#################################################################
+
+if options.scheme == 'HTohh':
+  masscut_str=""
+  if options.masscuts:
+    masscut_str="MassCuts"
+    method2j0t="14"
+    method2j1t="15"
+    method2j2t="16"
+  else :  
+    method2j0t="21"
+    method2j1t="24"
+    method2j2t="27"
+  #JES also needs to be included for H->hh analysis
+  extra_channel = {
+  "et" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_etau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
+  "mt" : ' --fix_empty_bins="QCD,ZL,ZJ,ZLL,W"  --fix_negative_bins="QCD,QCD.*Up,QCD.*Down" --syst_tau_scale="CMS_scale_t_mutau_'+COM+'TeV" --syst_scale_j="CMS_scale_j_'+COM+'TeV"',
+  "em" : ' --fix_empty_bins="Fakes" --fix_negative_bins="Fakes,Fakes.*Up,Fakes.*Down"'
+  }
+  if options.mvis or options.svfit:  
+    BINS_FINE="[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,225,250,275,300,325,350]"
+    BINS="[0,20,40,60,80,100,120,140,160,180,200,250,300,350]"
+  elif options.dijet :
+    BINS_FINE="(30,0,600)"
+    BINS="(15,0,600)"
+  elif options.mttbb:
+    BINS_FINE="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600,650,700]"
+    BINS="[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,380,400,420,440,460,480,500,550,600,650,700]"
+  elif options.mH :  
+    BINS_FINE="[200,250,270,290,310,330,350,370,390,410,430,450,500,550,600,650,700]"
+    BINS="[200,250,270,290,310,330,350,370,390,410,430,450,500,550,600,650,700]"
+
+  scheme_et = [
+    ("8",    "2jetinclusive"+masscut_str,   "inclusive",  BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_inclusive_'+COM+'TeV"')),
+    (method2j0t,   "2jet0tag"+masscut_str,      "2jet0tag",     BINS_FINE, ( 
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet0tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet0tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_shape=true')),
+    (method2j1t,   "2jet1tag"+masscut_str,      "2jet1tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet1tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_shape=true')),
+    (method2j2t,   "2jet2tag"+masscut_str,        "2jet2tag",       BINS,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_etau_2jet2tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_etau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_shape=true')),
+  ]
+  scheme_mt = [
+    ("8",    "2jetinclusive"+masscut_str,   "inclusive",  BINS_FINE, (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_inclusive_'+COM+'TeV"')),
+    (method2j0t,   "2jet0tag"+masscut_str,      "2jet0tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet0tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet0tag_'+COM+'TeV:50:1.1:0.10"'
+      ' --sub_ztt_top_shape=true')),
+    (method2j1t,   "2jet1tag"+masscut_str,      "2jet1tag",     BINS_FINE,  (
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet1tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet1tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_shape=true')),
+    (method2j2t,   "2jet2tag"+masscut_str,        "2jet2tag",       BINS,  ( 
+      ' --syst_w_fake_rate="CMS_htt_WShape_mutau_2jet2tag_'+COM+'TeV"'
+      ' --syst_qcd_shape="CMS_htt_QCDShape_mutau_2jet2tag_'+COM+'TeV:50:1.0:0.10"'
+      ' --sub_ztt_top_shape=true')),
+  ]
+  bkg_schemes = {
+    'et' : 'et_default',
+    'mt' : 'mt_with_zmm',
+  }
+  scheme_mtmet=scheme_mt
+  scheme_em=scheme_mt
+  sig_scheme = 'Hhh_nostack'
+  ANA = 'Hhh'
+  
+  if options.svfit or options.dijet or options.mttbb or options.mvis: 
+    extra_channel["et"] += ' --set_alias="sel:mt_1<30."'
+    extra_channel["mt"] += ' --set_alias="sel:mt_1<30."'
+  elif options.mH :
+    extra_channel["et"] += ' --set_alias="sel:mt_1<30. && m_H_hh>0"'
+    extra_channel["mt"] += ' --set_alias="sel:mt_1<30. && m_H_hh>0"'
+
 cat_schemes = {
   'et' : scheme_et,
   'mt' : scheme_mt,
@@ -470,12 +560,33 @@ cat_schemes = {
   'mtmet' : scheme_mtmet
 }
 
-plots = [ 
-  ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' ,   "60"    ,"2500" if ANA=='mssm' else "120"),
-  ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"2500" if ANA=='mssm' else "160")
- ]
-if options.mvis: del plots[1]
-if options.svfit: del plots[0]
+#### Set which distribution to include in datacards for H->hh (note that because of different binnings it is only possible to run one at a time)
+if ANA=='Hhh':
+  plots = [ 
+    ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' ,   "100"    ,"150"),
+    ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"150"),
+    ('jet_csv_mjj'   , 'M_{jj} [GeV]'        , ''      ,   "80"   ,"160"),
+    ('mjj_tt'   , 'M_{#tau#tau+jj} [GeV]'        , ''      ,   "200"   ,"400"),
+    ('m_H_hh'   , 'M_{H}^{kinfit} [GeV]'        , ''      ,   "200"   ,"400"),
+   ]
+  if options.mvis: 
+    plots = [plots[0]]
+  if options.svfit:
+    plots = [plots[1]]
+  if options.dijet: 
+    plots = [plots[2]]
+  if options.mttbb: 
+    plots = [plots[3]]
+  if options.mH: 
+    plots = [plots[4]]
+#Retain ability to run svfit and m_vis at the same time for SM and MSSM analyses
+else:
+  plots = [ 
+    ('m_vis'  , 'M_{#tau#tau}^{vis} [GeV]'  , '-mvis' ,   "60"    ,"2500" if ANA=='mssm' else "120"),
+    ('m_sv'   , 'M_{#tau#tau} [GeV]'        , ''      ,   "100"   ,"2500" if ANA=='mssm' else "160")
+   ]
+  if options.mvis: del plots[1]
+  if options.svfit: del plots[0]
 
 for pl in plots:
   var     = pl[0]
@@ -496,7 +607,7 @@ for pl in plots:
 
       os.system('$CMSSW_BASE/src/UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/bin/HiggsTauTauPlot4 --cfg=%(CFG)s --channel=%(ch)s'
         ' --method=%(cat_num)s --cat=%(cat_str)s --datacard=%(dc)s'
-        ' --var="%(var)s[%(bin)s]" --norm_bins=true '
+        ' --var="%(var)s%(bin)s" --norm_bins=true '
         ' --background_scheme=%(bkg_scheme)s --signal_scheme=%(sig_scheme)s'
         ' --x_axis_label="%(xlab)s" --y_axis_label="dN/dm_{#tau#tau} [1/GeV]"'
         ' --blind=%(BLIND)s --x_blind_min=%(blind_min)s --x_blind_max=%(blind_max)s --verbose=false'

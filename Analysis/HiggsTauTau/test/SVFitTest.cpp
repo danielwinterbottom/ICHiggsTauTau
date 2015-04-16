@@ -10,7 +10,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 
 #include "TSystem.h"
-#include "FWCore/FWLite/interface/AutoLibraryLoader.h"
+// #include "FWCore/FWLite/interface/AutoLibraryLoader.h"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 
 
@@ -18,17 +18,18 @@ int main(int argc, char* argv[]){
   // typedef ROOT::Math::PtEtaPhiEVector Vector;
 
   if (argc != 2){
-    std::cerr << "Need 1 arg: <input>" << std::endl;
+    std::cerr << "Need 1 args: <input>" << std::endl;
     exit(1);
   }
 
   // Load necessary libraries for ROOT I/O of custom classes
-  gSystem->Load("libFWCoreFWLite.dylib");
-  gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  AutoLibraryLoader::enable();
+  // gSystem->Load("libFWCoreFWLite.dylib");
+  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
+  // AutoLibraryLoader::enable();
 
   std::string input_file = argv[1];
   std::string output_file = input_file;
+  bool MC=true; // Set to true to use Markov-Chain integration
   if (output_file.find("input.root") != input_file.npos) {
     std::size_t pos = output_file.find("input.root");
     output_file.replace(pos, std::string("input.root").length(), "output.root");
@@ -84,9 +85,9 @@ int main(int argc, char* argv[]){
     itree->GetEntry(i);
     std::pair<ic::Candidate, double> result;
     if (mode == 0) {
-      result = svfit_service.SVFitCandidateLepHad(c1, c2, met);
+      result = svfit_service.SVFitCandidateLepHad(c1, c2, met, MC);
     } else {
-      result = svfit_service.SVFitCandidateLepLep(c1, c2, met);
+      result = svfit_service.SVFitCandidateLepLep(c1, c2, met, MC);
     }
     svfit_mass = result.second;
     svfit_vector = &(result.first);

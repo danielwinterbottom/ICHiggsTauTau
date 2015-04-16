@@ -1,7 +1,7 @@
 SUBDIRS 	:=
 LIB_DEPS 	:=
 LIB_EXTRA :=
-DICTIONARY := interface/Candidate.hh
+DICTIONARY := interface/Candidate.hh interface/PFCandidate.hh
 DICTIONARY += interface/Electron.hh interface/Muon.hh interface/Tau.hh
 DICTIONARY += interface/Photon.hh interface/Jet.hh interface/CaloJet.hh
 DICTIONARY += interface/JPTJet.hh interface/PFJet.hh interface/Met.hh

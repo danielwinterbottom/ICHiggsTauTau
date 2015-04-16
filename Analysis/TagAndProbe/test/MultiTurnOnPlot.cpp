@@ -114,19 +114,19 @@ int main(int argc, char* argv[]){
     }
     
     TCanvas* canvas1 = new TCanvas("canvas1", "canvas1", 200,10, 700, 500);
-    TH1F* base1 = new TH1F("base1", "base1" , 100, 0 ,50);
+    TH1F* base1 = new TH1F("base1", "base1" , 100, 10 ,60);
     if(elec)
     {    
-        base1->GetXaxis()->SetTitle("Electron p_{T} (GeV)");
+        base1->GetXaxis()->SetTitle("#bf{Electron p_{T} [GeV]}");
     }
-    else base1->GetXaxis()->SetTitle("Muon p_{T} (GeV)");
+    else base1->GetXaxis()->SetTitle("#bf{Muon p_{T} [GeV]}");
     
     
     base1->GetXaxis()->SetLabelSize(0.045);
     base1->GetXaxis()->SetTitleSize(0.045);
     base1->GetXaxis()->SetTitleOffset(1.1);
     
-    base1->GetYaxis()->SetTitle("Efficiency");
+    base1->GetYaxis()->SetTitle("#bf{Efficiency}");
     base1->GetYaxis()->SetLabelSize(0.045);
     base1->GetYaxis()->SetTitleSize(0.045);
     base1->GetYaxis()->SetTitleOffset(1.0);
@@ -144,9 +144,9 @@ int main(int argc, char* argv[]){
     fit2012A->Draw("same");
     if(Plot2or3!=1)
     {
-        gr2012B->SetMarkerColor(kBlue);
+        gr2012B->SetMarkerColor(kRed);
         gr2012B->SetMarkerStyle(33);
-        fit2012B->SetLineColor(4);
+        fit2012B->SetLineColor(kRed);
         //fit2012B->SetLineWidth(1);
         gr2012B->Draw("Psame");
         fit2012B->Draw("same");
@@ -175,7 +175,7 @@ int main(int argc, char* argv[]){
     TLatex *title_latex = new TLatex();
     title_latex->SetNDC();
     title_latex->SetTextSize(0.045);
-    title_latex->DrawLatex(0.14, 0.935, "CMS Preliminary 2012, #sqrt{s}=8 TeV, 19.4 fb^{-1}");        
+    title_latex->DrawLatex(0.10, 0.935, "19.7 fb^{-1} at #sqrt{s} = 8 TeV");        
     TLatex *label_latex = new TLatex();
     label_latex->SetNDC();
     label_latex->SetTextSize(0.045);
@@ -209,7 +209,9 @@ int main(int argc, char* argv[]){
     
     canvas1->Update();
 
-    canvas1->Write();    
+    canvas1->Write();
+    std::string str = elec==true ? "Electron" : "Muon";
+    canvas1->SaveAs((str+barrel+".pdf").c_str());
     
     output->Close();
 

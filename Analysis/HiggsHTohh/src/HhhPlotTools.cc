@@ -310,7 +310,7 @@ namespace ic {
     };
     sig_schemes_["mssm_nostack"] = {
       PlotSigComponent("sig",
-        (boost::lexical_cast<std::string>(signal_scale_)+"#times hh#rightarrow#tau#taubb(m_{H}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
+        (boost::lexical_cast<std::string>(signal_scale_)+"#times H#rightarrowhh(m_{H}="+draw_signal_mass_+",tan#beta="+draw_signal_tanb_+")"),
         {"ggHTohhTo2Tau2B"}, kBlue+3, false),
     };
     sig_schemes_["mssm_1pb"] = {

@@ -101,7 +101,9 @@ XS_GluGluToHTohhTo2Tau2B_mH-290:1.0
 #for tanb=2 Sasha
 #XS_GluGluToHTohhTo2Tau2B_mH-300:0.1288
 #for tanb=2 mhmodp
-XS_GluGluToHTohhTo2Tau2B_mH-300:0.0813466760144955503
+#XS_GluGluToHTohhTo2Tau2B_mH-300:0.0813466760144955503
+#for tanb=2 low-tanb-high
+XS_GluGluToHTohhTo2Tau2B_mH-300:0.123192854225551679
 #for tanb=2.5 Sasha
 #XS_GluGluToHTohhTo2Tau2B_mH-300:0.08511
 #XS_GluGluToHTohhTo2Tau2B_mH-300:1.0

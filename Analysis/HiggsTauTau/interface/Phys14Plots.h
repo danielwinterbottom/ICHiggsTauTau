@@ -3,7 +3,12 @@
 
 #include "Core/interface/TreeEvent.h"
 #include "Core/interface/ModuleBase.h"
+#include "Utilities/interface/FnPredicates.h"
+#include "UserCode/ICHiggsTauTau/interface/PFCandidate.hh"
 #include "PhysicsTools/FWLite/interface/TFileService.h"
+#include "UserCode/ICHiggsTauTau/interface/Track.hh"
+#include "UserCode/ICHiggsTauTau/interface/Vertex.hh"
+#include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "TH1F.h"
 #include "TH2F.h"
 
@@ -32,8 +37,136 @@ struct EfficiencyPlot1D {
   }
 };
 
+struct PFMatchPlot {
+  TH1F* all;
+  TH1F* hadron;
+  TH1F* electron;
+  TH1F* muon;
+  TH1F* photon;
+  TH1F* none;
+
+  PFMatchPlot() {
+    all = nullptr;
+    hadron = nullptr;
+    electron = nullptr;
+    muon = nullptr;
+    photon = nullptr;
+    none = nullptr;
+  }
+
+  void Fill(double val, PFType type) {
+    all->Fill(val);
+    if (type == PFType::h) {
+      hadron->Fill(val);
+    } else if (type == PFType::e) {
+      electron->Fill(val);
+    } else if (type == PFType::mu) {
+      muon->Fill(val);
+    } else if (type == PFType::gamma) {
+      photon->Fill(val);
+    } else {
+      none->Fill(val);
+    }
+  }
+
+  PFMatchPlot(TFileDirectory *dir, std::string const &name, unsigned nbins,
+                   double lo, double hi) {
+    all = dir->make<TH1F>((name + "_all").c_str(), "", nbins, lo, hi);
+    hadron = dir->make<TH1F>((name + "_hadron").c_str(), "", nbins, lo, hi);
+    electron = dir->make<TH1F>((name + "_electron").c_str(), "", nbins, lo, hi);
+    muon = dir->make<TH1F>((name + "_muon").c_str(), "", nbins, lo, hi);
+    photon = dir->make<TH1F>((name + "_photon").c_str(), "", nbins, lo, hi);
+    none = dir->make<TH1F>((name + "_none").c_str(), "", nbins, lo, hi);
+  }
+};
+
+struct TrackPlots {
+  TH1F *algo;
+  TH1F *pixel_hits;
+  // TH1F *barrel_hits;
+  // TH1F *endcap_hits;
+  TH1F *pt;
+  TH1F *eta;
+  TH1F *pt_err_over_pt;
+  TH1F *is_high_purity;
+  TH1F *dr_to_pf;
+  TH1F *pf_pt_over_trk;
+  TH1F *pf_type;
+  TH2F *pixel_hits_vs_algo;
+  TH2F *nmiss_vs_algo;
+  // TH2F *nmisslost_vs_algo;
+  // TH2F *pixel_barrel_vs_algo;
+  // TH2F *pixel_endcap_vs_algo;
+
+  TrackPlots(TFileDirectory *dir, std::string const& folder) {
+    TFileDirectory sub = dir->mkdir(folder);
+    algo = sub.make<TH1F>("algo", "", 30, -0.5, 29.5);
+    pixel_hits = sub.make<TH1F>("pixel_hits", "", 6, -0.5, 5.5);
+    // barrel_hits = sub.make<TH1F>("barrel_hits", "", 6, -0.5, 5.5);
+    // endcap_hits = sub.make<TH1F>("endcap_hits", "", 6, -0.5, 5.5);
+    pt = sub.make<TH1F>("pt", "", 50, 0, 100);
+    eta = sub.make<TH1F>("eta", "", 50, -2.5, 2.5);
+    pt_err_over_pt = sub.make<TH1F>("pt_err_over_pt", "", 50, 0, 2);
+    is_high_purity = sub.make<TH1F>("is_high_purity", "", 2, -0.5, 1.5);
+    dr_to_pf = sub.make<TH1F>("dr_to_pf", "", 100, 0, 0.5);
+    pf_pt_over_trk = sub.make<TH1F>("pf_pt_over_trk", "", 100, 0, 5);
+    pf_type = sub.make<TH1F>("pf_type", "", 8, -0.5, 7.5);
+    pixel_hits_vs_algo =
+        sub.make<TH2F>("pixel_hits_vs_algo", "", 6, -0.5, 5.5, 30, -0.5, 29.5);
+    nmiss_vs_algo =
+        sub.make<TH2F>("nmiss_vs_algo", "", 6, -0.5, 5.5, 30, -0.5, 29.5);
+    // nmisslost_vs_algo =
+    //     sub.make<TH2F>("nmisslost_vs_algo", "", 6, -0.5, 5.5, 30, -0.5, 29.5);
+    // pixel_barrel_vs_algo =
+    //     sub.make<TH2F>("pixel_barrel_vs_algo", "", 6, -0.5, 5.5, 30, -0.5, 29.5);
+    // pixel_endcap_vs_algo =
+    //     sub.make<TH2F>("pixel_endcap_vs_algo", "", 6, -0.5, 5.5, 30, -0.5, 29.5);
+  }
+
+  TrackPlots() {}
+
+  void Fill (ic::Track const* trk, double wt, ic::EventInfo const* evt = nullptr) {
+    algo->Fill(trk->algorithm(), wt);
+    pixel_hits->Fill(trk->pixel_hits(), wt);
+    // barrel_hits->Fill(trk->pixel_hits_barrel(), wt);
+    // endcap_hits->Fill(trk->pixel_hits_endcap(), wt);
+    pt->Fill(trk->pt(), wt);
+    eta->Fill(trk->eta(), wt);
+    pt_err_over_pt->Fill(trk->pt_err() / trk->pt());
+    pixel_hits_vs_algo->Fill(trk->pixel_hits(), trk->algorithm(), wt);
+    nmiss_vs_algo->Fill(trk->hits_miss_inner(), trk->algorithm(), wt);
+    // nmisslost_vs_algo->Fill(trk->lost_tracker_hits_miss_inner(), trk->algorithm(), wt);
+    // pixel_barrel_vs_algo->Fill(trk->pixel_hits_barrel(), trk->algorithm(), wt);
+    // pixel_endcap_vs_algo->Fill(trk->pixel_hits_endcap(), trk->algorithm(), wt);
+    bool is_hp = (trk->quality() & (1 << 2)) >> 2;
+    is_high_purity->Fill(float(is_hp), wt);
+    if (evt) {
+      if (is_hp && trk->pt() > 10. && std::abs(trk->eta()) < 1.5) {
+        std::cout << evt->run() << ":" << evt->lumi_block() << ":" << evt->event() << "\n";
+        std::cout << "pt: " << trk->pt() << " eta: " << trk->eta() << " phi: " << trk->phi() << "\n";
+      }
+    }
+  }
+
+  void FillWithPF(ic::Track const* trk, ic::PFCandidate const* pf, double wt) {
+    double dr = pf ? ic::DR(trk, pf) : 0.4999999;
+    double pt_ratio = pf ? pf->pt()/trk->pt() : 999.;
+    int pft = pf ? pf->type() : 0;
+    dr_to_pf->Fill(dr, wt);
+    pf_pt_over_trk->Fill(pt_ratio, wt);
+    pf_type->Fill(pft, wt);
+  }
+};
+
 class Phys14Plots : public ModuleBase {
  private:
+  CLASS_MEMBER(Phys14Plots, bool, do_real_th_studies)
+  CLASS_MEMBER(Phys14Plots, bool, do_fake_th_studies)
+
+ private:
+
+  void DoRealThStudies(TreeEvent *event);
+  void DoFakeThStudies(TreeEvent *event);
 
   double th_pt_acc;
   double th_eta_acc;
@@ -117,6 +250,32 @@ class Phys14Plots : public ModuleBase {
   TH1F *h_th1_pt_resp;
   TH1F *h_th10_pt_resp;
 
+  PFMatchPlot th_pf_match_pt;
+  PFMatchPlot th_pf_match_eta;
+  PFMatchPlot th0_pf_match_pt;
+  PFMatchPlot th0_pf_match_eta;
+  PFMatchPlot th1_pf_match_pt;
+  PFMatchPlot th1_pf_match_eta;
+  PFMatchPlot th10_pf_match_pt;
+  PFMatchPlot th10_pf_match_eta;
+
+  TH1F *h_trk_pt_frac_ch;
+  TH1F *h_trk_pt_frac_em;
+  TH1F *h_th_pt_frac_ch;
+  TH1F *h_th_pt_frac_em;
+
+  TrackPlots trk_plots_matched;
+  TrackPlots trk_plots_ph_matched;
+  TrackPlots trk_plots_unmatched;
+
+  //////////////////////////////
+  // Plots for jet->tau fake rate
+  //////////////////////////////
+
+  EfficiencyPlot1D jet_th_fake_dm_vs_pt;
+  EfficiencyPlot1D jet_th_fake_dm_vs_eta;
+
+
   CLASS_MEMBER(Phys14Plots, fwlite::TFileService*, fs)
 
  public:
@@ -127,6 +286,7 @@ class Phys14Plots : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+  bool QualityTrack(Track const* trk, Vertex const* vtx);
 };
 
 }
