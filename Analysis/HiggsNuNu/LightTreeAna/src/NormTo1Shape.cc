@@ -53,6 +53,7 @@ namespace ic{
 
     for(unsigned iShape=0;iShape<shape_.size();iShape++){
       TH1F  datashape = filemanager->GetSetsShape(dataset_,shape_[iShape],basesel_,cat_,dataweight_,false);
+      datashape.Sumw2();
       dir->cd();
       std::string histname;
       if(shapename_.size()==0){
@@ -66,7 +67,7 @@ namespace ic{
       if(iShape==0){
 	std::cout<<"  nevents: "<<Integral(&datashape)<<"+-"<<Error(&datashape)<<std::endl;
       }
-      double total=Integral(datashape);
+      double total=Integral(&datashape);
       datashape.Scale(1/total);
       datashape.SetName(histname.c_str());
       datashape.Write();
