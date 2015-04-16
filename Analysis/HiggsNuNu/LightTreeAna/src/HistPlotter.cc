@@ -241,9 +241,23 @@ namespace ic{
     TFile* file=fs_;
     gStyle->SetOptStat(0);
     //GET DIRECTORY TO WRITE TO
-    TDirectory* stacksdir=file->mkdir("stacksdir");
-    TDirectory* numsdir=file->mkdir("numsdir");
-    TDirectory* densdir=file->mkdir("densdir");
+    TDirectory* stacksdir;
+    TDirectory* numsdir;
+    TDirectory* densdir;
+    if(!fs_->GetDirectory("stacksdir")){
+      stacksdir=file->mkdir("stacksdir");
+      numsdir=file->mkdir("numsdir");
+      densdir=file->mkdir("densdir");
+    }
+    else{
+      int idir=2;
+      while(fs_->GetDirectory(("stacksdir"+idir))){
+	idir++;
+      }
+      stacksdir=file->mkdir(("stacksdir"+idir));
+      numsdir=file->mkdir(("numsdir"+idir));
+      densdir=file->mkdir(("densdir"+idir));
+    }
 
     TDirectory* writedir;
     if(dirname_==""){
@@ -385,9 +399,10 @@ namespace ic{
       }
       else{
 	upper = new TPad("upper","pad",0, 0. ,1 ,1);
+	upper->SetBottomMargin(0.15);
+	upper->Draw();
 	upper->cd();
 	upper->SetLogy(shapes_[iShape].dology());
-	upper->SetBottomMargin(0.15);
       }
       bool first=true;
       double ymax=0;
@@ -400,37 +415,52 @@ namespace ic{
       if(!stackempty){ 
 	std::cout<<"    Drawing Stack.."<<std::endl;
 	if(first){
-	  stack->SetMaximum(shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
+	  std::cout<<"ymax: "<<ymax<<std::endl;//!!
+	  if(ymax>=1){
+	    stack->SetMaximum(shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)));
+	  }
+	  else{
+	    stack->SetMaximum(shapes_[iShape].axisrangemultiplier()*(ymax));
+	  }
 	  //stack->GetXaxis()->SetTitle("");
+	  upper->cd();
 	  stack->Draw("hist");
+	  upper->Update();
 	  c1->Update();
 	  first=false;
 	  stack->GetYaxis()->SetLabelSize(0.06);
-	  stack->GetYaxis()->SetTitleFont(62);
-	  stack->GetYaxis()->SetTitleSize(0.095);
-	  stack->GetYaxis()->SetTitleOffset(0.450);
+ 	  stack->GetYaxis()->SetTitleFont(62);
+ 	  stack->GetYaxis()->SetTitleSize(0.095);
+ 	  stack->GetYaxis()->SetTitleOffset(0.450);
 	  if(do_ratio_){
 	    stack->GetXaxis()->SetLabelOffset(999);
 	    stack->GetXaxis()->SetLabelSize(0);
 	  }
 	  else{
-	    stack->GetXaxis()->SetLabelSize(0.06);
-	    stack->GetXaxis()->SetTitleFont(62);
-	    stack->GetXaxis()->SetTitleSize(0.08);
-
+ 	    stack->GetXaxis()->SetLabelSize(0.06);
+ 	    stack->GetXaxis()->SetTitleFont(62);
+ 	    stack->GetXaxis()->SetTitleSize(0.095);
+ 	    stack->GetXaxis()->SetTitleOffset(0.7);
+	    
 	    std::string xtitle;
 	    xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	    xtitle=xtitle.substr(0,xtitle.find(";"));
 	    stack->GetXaxis()->SetTitle(xtitle.c_str());
 	  }
-	  
 	  std::string ytitle;
 	  //	    ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
 	  ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	  ytitle=ytitle.substr(ytitle.find(";")+1);
 	  ytitle=ytitle.substr(0,ytitle.find(";"));
-	  stack->SetTitle((";;"+ytitle).c_str());
-	
+	  if(do_ratio_) stack->SetTitle((";;"+ytitle).c_str());
+	  else{
+	    std::string xtitle;
+            xtitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
+            xtitle=xtitle.substr(0,xtitle.find(";"));
+            stack->GetXaxis()->SetTitle(xtitle.c_str());
+	    stack->SetTitle((";"+xtitle+";"+ytitle).c_str());
+	  }
+	  c1->Update();
 	}
 	else stack->Draw("histsame");
       }
@@ -442,7 +472,13 @@ namespace ic{
 	      if(!do_ratio_) elements_[iElement].hist_ptr()->SetTitle(shapes_[iShape].histtitle().c_str());
 	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
 	      std::cout<<"scaling by: "<<shapes_[iShape].axisrangemultiplier()<<std::endl;//!!
-	      elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0.,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
+
+	      if(ymax>=1){
+		elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)));
+	      }
+	      else{
+		elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0,shapes_[iShape].axisrangemultiplier()*(ymax));
+	      }
 	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
 	      c1->Update();
 	      first=false;
