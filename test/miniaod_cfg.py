@@ -20,7 +20,7 @@ infile      = opts.file
 tag         = opts.globalTag
 isData      = opts.isData
 release     = opts.release
-if not release in ["70X"]:
+if not release in ["72X", "72XMINIAOD"]:
     print 'Release not recognised, exiting!'
     sys.exit(1)
 print 'release     : '+release
@@ -447,11 +447,11 @@ if not isData:
 
 ##############################################################################
 # TriggerPath Modules
-##############################################################################
-#from PhysicsTools.PatAlgos.tools.trigTools import *
-#if release in ['70X']:
-#  process.patTriggerPath = cms.Path()
-#  switchOnTrigger(process, path = 'patTriggerPath', outputModule = '')
+#####################e#########################################################
+from PhysicsTools.PatAlgos.tools.trigTools import *
+process.patTriggerPath = cms.Path()
+if release in ['72X']:
+ switchOnTrigger(process, path = 'patTriggerPath', outputModule = '')
 #
 #process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
 #  branch = cms.string("triggerPaths"),
@@ -461,11 +461,25 @@ if not isData:
 ##############################################################################
 # TriggerObject Module
 ##############################################################################
-#process.icIsoMu24ObjectProducer = producers.icTriggerObjectProducer.clone(
-#  branch = cms.string("triggerObjectsIsoMu24"),
-#  input   = cms.InputTag("patTriggerEvent"),
-#  hltPath = cms.string("HLT_IsoMu24_eta2p1_v")
-#)
+
+process.icIsoMu17LooseTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
+ branch = cms.string("triggerObjectsIsoMu17LooseTau20"),
+ input   = cms.InputTag("patTriggerEvent"),
+ hltPath = cms.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
+ inputIsStandAlone = cms.bool(False),
+ storeOnlyIfFired = cms.bool(True)
+)
+
+process.icTriggerObjectSequence = cms.Sequence(
+  process.icIsoMu17LooseTau20ObjectProducer
+)
+
+if release in ['72XMINIAOD']:
+  for name in process.icTriggerObjectSequence.moduleNames():
+    mod = getattr(process, name)
+    mod.inputIsStandAlone = cms.bool(True)
+    mod.input = cms.InputTag("selectedPatTrigger")
+
 
 ##############################################################################
 # EventInfo Module
@@ -480,38 +494,12 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventProducer = cms.EDProducer('ICEventProducer')
 
 process.p = cms.Path(
-  process.ic70XExtraSequence+
-  #process.selectedPFCandidates+
-  #process.icCandidateProducer+
-  process.selectedVertices+
-  process.icVertexProducer+
-  process.pfIsoMiniAODSequence+
-  process.electronPFIsolationDepositsSequence+
-  process.electronPFIsolationValuesSequence+
-  process.selectedElectrons+
-  process.icElectronProducer+
-  process.muonPFIsolationDepositsSequence+
-  process.muonPFIsolationValuesSequence+
-  process.selectedMuons+
-  process.icMuonProducer+
-  #process.selectedPFTaus+
-  process.icTauProducer+
-  #process.selectedPhotons+
-  #process.icPhotonProducer+
-  #process.selectedPFJets+
-  process.icPFJetSequence+
-  #process.icPFJetProducer+
-  process.icPfMetProducer+
-  #process.selectedTracks+
-  #process.icTrackProducer+
-  process.icMCSequence+
-  #process.icTriggerPathProducer+
-  #process.icIsoMu24ObjectProducer+
-  process.icEventInfoProducer+
+  # process.icTriggerPathProducer+
+  process.icTriggerObjectSequence+
   process.icEventProducer
   )
 
-#process.schedule = cms.Schedule(process.patTriggerPath, process.p)
-process.schedule = cms.Schedule(process.p)
+process.schedule = cms.Schedule(process.patTriggerPath, process.p)
+#process.schedule = cms.Schedule(process.p)
 
 #print process.dumpPython()

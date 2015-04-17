@@ -369,7 +369,9 @@ icTriggerObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
   branch = cms.string("triggerObjects"),
   input   = cms.InputTag("patTriggerEvent"),
   hltPath = cms.string(""),
-  storeOnlyIfFired = cms.bool(False)
+  storeOnlyIfFired = cms.bool(False),
+  inputIsStandAlone = cms.bool(False),
+  inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT")
 )
 ## [TriggerObject]
 
