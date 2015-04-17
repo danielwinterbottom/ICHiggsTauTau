@@ -11,7 +11,9 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/View.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/TriggerEvent.h"
+#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
@@ -23,48 +25,77 @@ ICTriggerPathProducer::ICTriggerPathProducer(const edm::ParameterSet& config)
       branch_(config.getParameter<std::string>("branch")),
       include_if_fired_(config.getParameter<bool>("includeAcceptedOnly")),
       save_strings_(config.getParameter<bool>("saveStrings")),
-      split_version_(config.getParameter<bool>("splitVersion")) {
+      split_version_(config.getParameter<bool>("splitVersion")),
+      input_is_standalone_(config.getParameter<bool>("inputIsStandAlone")),
+      input_prescales_(config.getParameter<edm::InputTag>("inputPrescales")) {
   paths_ = new std::vector<ic::TriggerPath>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, include_if_fired_, "includeAcceptedOnly");
   PrintOptional(1, save_strings_, "saveStrings");
   PrintOptional(1, split_version_, "splitVersion");
+  PrintOptional(1, input_is_standalone_, "inputIsStandAlone");
 }
 
 ICTriggerPathProducer::~ICTriggerPathProducer() { delete paths_; }
 
 void ICTriggerPathProducer::produce(edm::Event& event,
                                     const edm::EventSetup& setup) {
-  edm::Handle<pat::TriggerEvent> trig_handle;
-  event.getByLabel(input_, trig_handle);
-  std::vector<pat::TriggerPath> const* paths = trig_handle->paths();
   paths_->clear();
-  paths_->reserve(paths->size());
-  for (unsigned i = 0; i < paths->size(); ++i) {
-    pat::TriggerPath const& src = paths->at(i);
-    if (!src.wasAccept() && include_if_fired_) continue;
-    paths_->push_back(ic::TriggerPath());
-    ic::TriggerPath & dest = paths_->back();
-    dest.set_accept(src.wasAccept());
-    dest.set_prescale(src.prescale());
-    std::string name = src.name();
-    if (split_version_) {
-      std::size_t v_pos = name.find_last_of('v');
-      if (v_pos != std::string::npos) {
-        std::string post_v = name.substr(v_pos+1);
-        std::string pre_v = name.substr(0, v_pos+1);
-        try {
-          unsigned v = boost::lexical_cast<unsigned>(post_v);
-          name = pre_v;
-          dest.set_version(v);
-        }
-        catch(boost::bad_lexical_cast const& e) {
-        }
+
+  if (!input_is_standalone_) {
+    edm::Handle<pat::TriggerEvent> trig_handle;
+    event.getByLabel(input_, trig_handle);
+    std::vector<pat::TriggerPath> const* paths = trig_handle->paths();
+    paths_->reserve(paths->size());
+    for (unsigned i = 0; i < paths->size(); ++i) {
+      pat::TriggerPath const& src = paths->at(i);
+      if (!src.wasAccept() && include_if_fired_) continue;
+      paths_->push_back(ic::TriggerPath());
+      ic::TriggerPath & dest = paths_->back();
+      dest.set_accept(src.wasAccept());
+      dest.set_prescale(src.prescale());
+      std::string name = src.name();
+      SetNameInfo(name, &dest);
+    }
+  } else {  // i.e. MiniAOD
+    edm::Handle<edm::TriggerResults> trigres_handle;
+    event.getByLabel(input_, trigres_handle);
+
+    edm::Handle<pat::PackedTriggerPrescales> prescales_handle;
+    event.getByLabel(input_prescales_, prescales_handle);
+
+    edm::TriggerNames const& names = event.triggerNames(*trigres_handle);
+    paths_->reserve(trigres_handle->size());
+    for (unsigned int i = 0, n = trigres_handle->size(); i < n; ++i) {
+      if (!trigres_handle->accept(i) && include_if_fired_) continue;
+      paths_->push_back(ic::TriggerPath());
+      ic::TriggerPath & dest = paths_->back();
+      dest.set_accept(trigres_handle->accept(i));
+      dest.set_prescale(prescales_handle->getPrescaleForIndex(i));
+      std::string name = names.triggerName(i);
+      SetNameInfo(name, &dest);
+    }
+  }
+}
+
+void ICTriggerPathProducer::SetNameInfo(std::string name,
+                                        ic::TriggerPath* path) {
+  if (split_version_) {
+    std::size_t v_pos = name.find_last_of('v');
+    if (v_pos != std::string::npos) {
+      std::string post_v = name.substr(v_pos+1);
+      std::string pre_v = name.substr(0, v_pos+1);
+      try {
+        unsigned v = boost::lexical_cast<unsigned>(post_v);
+        name = pre_v;
+        path->set_version(v);
+      }
+      catch(boost::bad_lexical_cast const& e) {
       }
     }
-    if (save_strings_) dest.set_name(name);
-    dest.set_id(CityHash64(name));
   }
+  if (save_strings_) path->set_name(name);
+  path->set_id(CityHash64(name));
 }
 
 void ICTriggerPathProducer::beginJob() {

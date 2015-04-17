@@ -37,7 +37,7 @@ if release in ['70X']:
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
-process.MessageLogger.cerr.FwkReport.reportEvery = 50
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(infile))
 # 53X: START53_V22::All (MC)
 # 70X: PLS170_V7AN1::All (MC)
@@ -453,10 +453,10 @@ process.patTriggerPath = cms.Path()
 if release in ['72X']:
  switchOnTrigger(process, path = 'patTriggerPath', outputModule = '')
 #
-#process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
-#  branch = cms.string("triggerPaths"),
-#  input  = cms.InputTag("patTriggerEvent")
-#)
+process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
+ branch = cms.string("triggerPaths"),
+ input  = cms.InputTag("patTriggerEvent")
+)
 
 ##############################################################################
 # TriggerObject Module
@@ -475,10 +475,12 @@ process.icTriggerObjectSequence = cms.Sequence(
 )
 
 if release in ['72XMINIAOD']:
-  for name in process.icTriggerObjectSequence.moduleNames():
-    mod = getattr(process, name)
-    mod.inputIsStandAlone = cms.bool(True)
-    mod.input = cms.InputTag("selectedPatTrigger")
+    process.icTriggerPathProducer.inputIsStandAlone = cms.bool(True)
+    process.icTriggerPathProducer.input = cms.InputTag("TriggerResults", "", "HLT")
+    for name in process.icTriggerObjectSequence.moduleNames():
+        mod = getattr(process, name)
+        mod.inputIsStandAlone = cms.bool(True)
+        mod.input = cms.InputTag("selectedPatTrigger", "", "PAT")
 
 
 ##############################################################################
@@ -494,7 +496,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventProducer = cms.EDProducer('ICEventProducer')
 
 process.p = cms.Path(
-  # process.icTriggerPathProducer+
+  process.icTriggerPathProducer+
   process.icTriggerObjectSequence+
   process.icEventProducer
   )

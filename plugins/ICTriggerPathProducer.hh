@@ -22,12 +22,17 @@ class ICTriggerPathProducer : public edm::EDProducer {
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
+  void SetNameInfo(std::string name, ic::TriggerPath *path);
+
   std::vector<ic::TriggerPath> *paths_;
   edm::InputTag input_;
   std::string branch_;
   bool include_if_fired_;
   bool save_strings_;
   bool split_version_;
+  bool input_is_standalone_;
+  edm::InputTag input_prescales_;
+
 };
 
 #endif
