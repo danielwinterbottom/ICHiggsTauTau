@@ -101,11 +101,170 @@ process.selectedPFTaus = cms.EDFilter("PATTauRefSelector",
 
 process.icSelectionSequence = cms.Sequence(
   process.selectedVertices+
-  process.selectedPFCandidates+
   process.selectedElectrons+
   process.selectedPFMuons+
   process.selectedPFTaus
 )
 
+
+################################################################                                                                                            
+# PF sequence for lepton isolation                                             
+#!!andrew custom code to redo iso, look into taking default miniaod values by  
+################################################################                                                                                          
+
+process.load("CommonTools.ParticleFlow.pfParticleSelection_cff")
+
+process.pfPileUp = cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("packedPFCandidates"),
+  cut = cms.string("fromPV <= 1")
+)
+process.pfNoPileUp = cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("packedPFCandidates"),
+  cut = cms.string("fromPV > 1")
+)
+process.pfAllNeutralHadrons = cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("pfNoPileUp"),
+  cut = cms.string("abs(pdgId) = 111 | abs(pdgId) = 130 | " \
+  "abs(pdgId) = 310 | abs(pdgId) = 2112")
+)
+process.pfAllChargedHadrons= cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("pfNoPileUp"),
+  cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
+  "abs(pdgId) = 999211 | abs(pdgId) = 2212")
+)
+process.pfAllPhotons= cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("pfNoPileUp"),
+  cut = cms.string("abs(pdgId) = 22")
+)
+
+process.pfAllChargedParticles= cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("pfNoPileUp"),
+  cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
+  "abs(pdgId) = 999211 | abs(pdgId) = 2212 | " \
+  "abs(pdgId) = 11 | abs(pdgId) = 13")
+)
+process.pfPileUpAllChargedParticles= cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("pfPileUp"),
+  cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
+  "abs(pdgId) = 999211 | abs(pdgId) = 2212 | " \
+  "abs(pdgId) = 11 | abs(pdgId) = 13")
+)
+process.pfAllNeutralHadronsAndPhotons = cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("pfNoPileUp"),
+  cut = cms.string("abs(pdgId) = 111 | abs(pdgId) = 130 | " \
+  "abs(pdgId) = 310 | abs(pdgId) = 2112 | abs(pdgId) = 22")
+)
+process.pfParticleSelectionSequence = cms.Sequence(
+  process.pfPileUp+
+  process.pfNoPileUp+
+  process.pfAllNeutralHadrons+
+  process.pfAllChargedHadrons+
+  process.pfAllPhotons+
+  process.pfAllChargedParticles+
+  process.pfPileUpAllChargedParticles+
+  process.pfAllNeutralHadronsAndPhotons
+  )
+
+################################################################                                                                                          
+# Vertices                                                                                                                                                 
+################################################################                                                                                           
+process.icVertexProducer = producers.icVertexProducer.clone(
+  branch  = cms.string("vertices"),
+  input = cms.InputTag("selectedVertices"),
+  firstVertexOnly = cms.bool(True)
+)
+
+process.icVertexSequence = cms.Sequence(
+  process.icVertexProducer
+)
+
+################################################################                                                                                           
+# PFCandidates                                                                                                                                             
+#!!IF WE WANT THESE WE SHOULD MAKE SOMETHING OURSELVES FROM PACKED PFCANDIDATES 
+#!!ANDREW JUST FINISHED MAKING AN ICPRODUCER THAT DOES THIS 17/04/2015
+################################################################                                                                                            
+
+################################################################                                                                                            
+# Tracks                                                                                                                                                   
+#!!THERE IS AN EXAMPLE CFI ON THE MINIAOD TWIKI WITH HOW TO GET AN APPROXIMATION OF THE TRACKS IN MINIAOD 
+################################################################                                                                                            
+
 #!!CHECKED UP TO HERE
 
+################################################################                                                                                           
+# Electrons                                                                                                                                                 
+################################################################                                                                                            
+electronLabel = cms.InputTag("gedGsfElectrons")
+if release in ['72XMINIAOD']: electronLabel = cms.InputTag("slimmedElectrons")
+
+process.icElectronSequence = cms.Sequence()
+
+process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
+    input       = electronLabel,
+    beamspot    = cms.InputTag("offlineBeamSpot"),
+    conversions = cms.InputTag("allConversions")
+)
+if release in ['70XMINIAOD', '72XMINIAOD']:
+  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
+      input       = electronLabel
+  )
+
+if release in ['72X', '72XMINIAOD']:
+  process.load("CommonTools.ParticleFlow.Isolation.pfElectronIsolation_cff")
+  process.elPFIsoValueCharged04PFIdPFIso    = process.elPFIsoValueCharged04PFId.clone()
+  process.elPFIsoValueChargedAll04PFIdPFIso = process.elPFIsoValueChargedAll04PFId.clone()
+  process.elPFIsoValueGamma04PFIdPFIso      = process.elPFIsoValueGamma04PFId.clone()
+  process.elPFIsoValueNeutral04PFIdPFIso    = process.elPFIsoValueNeutral04PFId.clone()
+  process.elPFIsoValuePU04PFIdPFIso         = process.elPFIsoValuePU04PFId.clone()
+  process.electronPFIsolationValuesSequence = cms.Sequence(
+      process.elPFIsoValueCharged04PFIdPFIso+
+      process.elPFIsoValueChargedAll04PFIdPFIso+
+      process.elPFIsoValueGamma04PFIdPFIso+
+      process.elPFIsoValueNeutral04PFIdPFIso+
+      process.elPFIsoValuePU04PFIdPFIso
+      )
+  process.elPFIsoDepositCharged.src     = electronLabel
+  process.elPFIsoDepositChargedAll.src  = electronLabel
+  process.elPFIsoDepositNeutral.src     = electronLabel
+  process.elPFIsoDepositGamma.src       = electronLabel
+  process.elPFIsoDepositPU.src          = electronLabel
+  if release in ['70XMINIAOD', '72XMINIAOD']:
+    process.elPFIsoDepositGamma.ExtractorPSet.ComponentName = cms.string("CandViewExtractor")
+  process.icElectronSequence += cms.Sequence(
+      process.electronPFIsolationDepositsSequence+
+      process.electronPFIsolationValuesSequence
+      )
+
+process.elPFIsoValueGamma04PFIdPFIso.deposits[0].vetos = (
+    cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)'))
+process.elPFIsoValueNeutral04PFIdPFIso.deposits[0].vetos = (
+    cms.vstring())
+process.elPFIsoValuePU04PFIdPFIso.deposits[0].vetos = (
+    cms.vstring())
+process.elPFIsoValueCharged04PFIdPFIso.deposits[0].vetos = (
+    cms.vstring('EcalEndcaps:ConeVeto(0.015)'))
+process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = (
+    cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)'))
+
+process.icElectronProducer = producers.icElectronProducer.clone(
+  branch                    = cms.string("electrons"),
+  input                     = cms.InputTag("selectedElectrons"),
+  includeConversionMatches  = cms.bool(True),
+  inputConversionMatches    = cms.InputTag("icElectronConversionCalculator"),
+  includeVertexIP           = cms.bool(True),
+  inputVertices             = cms.InputTag("selectedVertices"),
+  includeBeamspotIP         = cms.bool(True),
+  inputBeamspot             = cms.InputTag("offlineBeamSpot"),
+  includeFloats = cms.PSet(
+    # mvaTrigV0       = cms.InputTag("mvaTrigV0"),                                                                                                          
+    # mvaNonTrigV0    = cms.InputTag("mvaNonTrigV0"),                                                                                                       
+    # trackInIsoSum   = cms.InputTag("icHttElecIsoCheck"),                                                                                                  
+    # matchedRecoMuon = cms.InputTag("icHttMuonOverlapCheck")                                                                                               
+  ),
+  includePFIso04           = cms.bool(True)
+)
+
+process.icElectronSequence += cms.Sequence(
+  process.icElectronConversionCalculator+
+  process.icElectronProducer
+)
