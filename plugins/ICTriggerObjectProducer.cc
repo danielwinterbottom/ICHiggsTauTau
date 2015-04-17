@@ -125,7 +125,11 @@ void ICTriggerObjectProducer::produce(edm::Event& event,
     event.getByLabel(input_, trigobj_handle);
     for (unsigned i = 0; i < trigobj_handle->size(); ++i) {
       pat::TriggerObjectStandAlone src = trigobj_handle->at(i);
+#if CMSSW_MAJOR_VERSION >= 7
+      // In MiniAOD the path names have to be unpacked, but this method
+      // was only introduced in CMSSW_7_0_5
       src.unpackPathNames(names);
+#endif
       std::vector<std::string> const& pathnames = src.pathNames();
       bool obj_in_path = false;
       for (unsigned j = 0; j < pathnames.size(); ++j) {

@@ -7,18 +7,25 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/View.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/TriggerEvent.h"
-#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
 #include "UserCode/ICHiggsTauTau/interface/TriggerPath.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+
+#if CMSSW_MAJOR_VERSION >= 7
+// In MiniAOD the prescales must be extracted from a new
+// "pat::PackedTriggerPrescales" object, but this class was only introduced in
+// CMSSW_7_0_5
+#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
+#endif
 
 ICTriggerPathProducer::ICTriggerPathProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -61,8 +68,10 @@ void ICTriggerPathProducer::produce(edm::Event& event,
     edm::Handle<edm::TriggerResults> trigres_handle;
     event.getByLabel(input_, trigres_handle);
 
+#if CMSSW_MAJOR_VERSION >= 7
     edm::Handle<pat::PackedTriggerPrescales> prescales_handle;
     event.getByLabel(input_prescales_, prescales_handle);
+#endif
 
     edm::TriggerNames const& names = event.triggerNames(*trigres_handle);
     paths_->reserve(trigres_handle->size());
@@ -71,7 +80,11 @@ void ICTriggerPathProducer::produce(edm::Event& event,
       paths_->push_back(ic::TriggerPath());
       ic::TriggerPath & dest = paths_->back();
       dest.set_accept(trigres_handle->accept(i));
+#if CMSSW_MAJOR_VERSION >= 7
       dest.set_prescale(prescales_handle->getPrescaleForIndex(i));
+#else
+      dest.set_prescale(0);
+#endif
       std::string name = names.triggerName(i);
       SetNameInfo(name, &dest);
     }
