@@ -111,31 +111,36 @@ $(document).ready(function(){initNavTree('_i_c_trigger_object_producer_8hh_sourc
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;FWCore/Framework/interface/Event.h&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;FWCore/Framework/interface/EventSetup.h&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;FWCore/Utilities/interface/InputTag.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_trigger_object_8hh.html">UserCode/ICHiggsTauTau/interface/TriggerObject.hh</a>&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="class_i_c_trigger_object_producer.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_i_c_trigger_object_producer.html">ICTriggerObjectProducer</a> : <span class="keyword">public</span> edm::EDProducer {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp;);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <a class="code" href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">~ICTriggerObjectProducer</a>();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> beginJob();</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> produce(edm::Event&amp;, <span class="keyword">const</span> edm::EventSetup&amp;);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> endJob();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  std::vector&lt;ic::TriggerObject&gt;* objects_;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  edm::InputTag input_;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  std::string branch_;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  std::string hlt_path_;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordtype">bool</span> store_only_if_fired_;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  std::map&lt;std::string, std::size_t&gt; observed_filters_;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;};</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_i_c_trigger_object_producer_html_a0bd76cc1d60127382e6ab6ab03510d80"><div class="ttname"><a href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">ICTriggerObjectProducer::~ICTriggerObjectProducer</a></div><div class="ttdeci">~ICTriggerObjectProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8cc_source.html#l00031">ICTriggerObjectProducer.cc:31</a></div></div>
-<div class="ttc" id="class_i_c_trigger_object_producer_html_a81fd360891b054635b35dc0d3bb44cdc"><div class="ttname"><a href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer::ICTriggerObjectProducer</a></div><div class="ttdeci">ICTriggerObjectProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8cc_source.html#l00019">ICTriggerObjectProducer.cc:19</a></div></div>
-<div class="ttc" id="class_i_c_trigger_object_producer_html"><div class="ttname"><a href="class_i_c_trigger_object_producer.html">ICTriggerObjectProducer</a></div><div class="ttdoc">See documentation here. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8hh_source.html#l00019">ICTriggerObjectProducer.hh:19</a></div></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;HLTrigger/HLTcore/interface/HLTConfigProvider.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_trigger_object_8hh.html">UserCode/ICHiggsTauTau/interface/TriggerObject.hh</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="class_i_c_trigger_object_producer.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_i_c_trigger_object_producer.html">ICTriggerObjectProducer</a> : <span class="keyword">public</span> edm::EDProducer {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp;);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <a class="code" href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">~ICTriggerObjectProducer</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> beginJob();</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> produce(edm::Event&amp;, <span class="keyword">const</span> edm::EventSetup&amp;);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> beginRun(edm::Run <span class="keyword">const</span>&amp; run, edm::EventSetup <span class="keyword">const</span>&amp; es);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> endJob();</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  std::vector&lt;ic::TriggerObject&gt;* objects_;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  edm::InputTag input_;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  edm::InputTag input_trigres_;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  std::string branch_;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  std::string hlt_path_;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keywordtype">bool</span> store_only_if_fired_;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keywordtype">bool</span> input_is_standalone_;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  std::map&lt;std::string, std::size_t&gt; observed_filters_;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  HLTConfigProvider hlt_config_;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;};</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="class_i_c_trigger_object_producer_html_a0bd76cc1d60127382e6ab6ab03510d80"><div class="ttname"><a href="class_i_c_trigger_object_producer.html#a0bd76cc1d60127382e6ab6ab03510d80">ICTriggerObjectProducer::~ICTriggerObjectProducer</a></div><div class="ttdeci">~ICTriggerObjectProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8cc_source.html#l00038">ICTriggerObjectProducer.cc:38</a></div></div>
+<div class="ttc" id="class_i_c_trigger_object_producer_html_a81fd360891b054635b35dc0d3bb44cdc"><div class="ttname"><a href="class_i_c_trigger_object_producer.html#a81fd360891b054635b35dc0d3bb44cdc">ICTriggerObjectProducer::ICTriggerObjectProducer</a></div><div class="ttdeci">ICTriggerObjectProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8cc_source.html#l00023">ICTriggerObjectProducer.cc:23</a></div></div>
+<div class="ttc" id="class_i_c_trigger_object_producer_html"><div class="ttname"><a href="class_i_c_trigger_object_producer.html">ICTriggerObjectProducer</a></div><div class="ttdoc">See documentation here. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_trigger_object_producer_8hh_source.html#l00020">ICTriggerObjectProducer.hh:20</a></div></div>
 <div class="ttc" id="_trigger_object_8hh_html"><div class="ttname"><a href="_trigger_object_8hh.html">TriggerObject.hh</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
