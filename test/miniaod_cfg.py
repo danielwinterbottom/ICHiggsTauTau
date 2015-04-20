@@ -482,7 +482,6 @@ if release in ['72XMINIAOD']:
         mod.inputIsStandAlone = cms.bool(True)
         mod.input = cms.InputTag("selectedPatTrigger", "", "PAT")
 
-
 ##############################################################################
 # PackedCandidate Module
 ##############################################################################
@@ -526,12 +525,12 @@ process.p = cms.Path(
   process.icMiniAODSequence+
   process.icPFProducer+
   process.icTrackProducer+
-  # process.icTriggerPathProducer+
-  # process.icTriggerObjectSequence+
+  process.icTriggerPathProducer+
+  process.icTriggerObjectSequence+
   process.icEventProducer
   )
 
-# process.schedule = cms.Schedule(process.patTriggerPath, process.p)
-process.schedule = cms.Schedule(process.p)
+process.schedule = cms.Schedule(process.patTriggerPath, process.p)
+#process.schedule = cms.Schedule(process.p)
 
 #print process.dumpPython()
