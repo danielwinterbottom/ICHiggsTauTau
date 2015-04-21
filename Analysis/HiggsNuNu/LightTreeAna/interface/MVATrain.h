@@ -10,8 +10,11 @@ namespace ic {
   class MVATrain : public LTModule{
     CLASS_MEMBER(MVATrain,std::vector<std::string>,sigsets)
     CLASS_MEMBER(MVATrain,std::vector<std::string>,bkgsets)
+    CLASS_MEMBER(MVATrain,std::vector<std::string>,bkgweightdir)
+    CLASS_MEMBER(MVATrain,std::vector<int>,bkgisz)
     CLASS_MEMBER(MVATrain,std::vector<std::string>,variables)
     CLASS_MEMBER(MVATrain,std::vector<std::string>,specvariables)
+    CLASS_MEMBER(MVATrain,std::string,datadrivenweightsfile)
     CLASS_MEMBER(MVATrain,std::string,basesel)
     CLASS_MEMBER(MVATrain,std::string,sigcat)
     CLASS_MEMBER(MVATrain,std::string,bkgcat)

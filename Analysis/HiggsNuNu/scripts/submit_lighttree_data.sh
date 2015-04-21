@@ -25,12 +25,12 @@ INPUTPARAMS="filelists/Dec18/ParamsDec18.dat"
 CONFIG=scripts/DefaultLightTreeConfig_data.cfg
 
 
-for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
+for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-  JOBDIRPREFIX=jobs_lighttree
+  JOBDIRPREFIX=jobs_lighttree_postARCcomments1
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree
+  OUTPUTPREFIX=output_lighttree_postARCcomments1
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -74,6 +74,35 @@ for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN #NOTE SYSTEM
 	JOBDIR=$JOBDIRPREFIX/UESDOWN/
 	OUTPUTDIR=$OUTPUTPREFIX/UESDOWN/
   fi
+
+if [ "$SYST" = "ELEEFFUP" ]
+        then
+        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=true"
+        JOBDIR=$JOBDIRPREFIX/ELEEFFUP/
+        OUTPUTDIR=$OUTPUTPREFIX/ELEEFFUP/
+  fi
+
+  if [ "$SYST" = "ELEEFFDOWN" ]
+        then
+        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=false --doidisoerrupordown=false"
+        JOBDIR=$JOBDIRPREFIX/ELEEFFDOWN/
+        OUTPUTDIR=$OUTPUTPREFIX/ELEEFFDOWN/
+  fi
+
+  if [ "$SYST" = "MUEFFUP" ]
+        then
+        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=true"
+        JOBDIR=$JOBDIRPREFIX/MUEFFUP/
+        OUTPUTDIR=$OUTPUTPREFIX/MUEFFUP/
+  fi
+
+  if [ "$SYST" = "MUEFFDOWN" ]
+        then
+        SYSTOPTIONS="--doidisoerr=true --doidisoerrmuore=true --doidisoerrupordown=false"
+        JOBDIR=$JOBDIRPREFIX/MUEFFDOWN/
+        OUTPUTDIR=$OUTPUTPREFIX/MUEFFDOWN/
+  fi
+
   
   echo "Config file: $CONFIG"
   mkdir -p $JOBDIR

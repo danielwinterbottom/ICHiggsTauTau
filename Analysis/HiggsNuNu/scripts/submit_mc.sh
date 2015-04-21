@@ -14,18 +14,19 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfigMC.cfg
-PRODUCTION=Apr04
+PRODUCTION=Dec18
+DOSHARED=false
 
 for METCUT in 130 #0 130
   do
-  for CHANNEL in nunu enu munu #taunu mumu nunuiglep
+  for CHANNEL in nunulowmet nunu nunuiglep nunulowmetiglep #mumu nunuiglep #nunu enu munu #taunu mumu nunuiglep
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-      JOBDIRPREFIX=jobs/
+      JOBDIRPREFIX=jobs_rerecogenqcd/
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
-      OUTPUTPREFIX=output/ 
+      OUTPUTPREFIX=output_rerecogenqcd/ 
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]
@@ -100,9 +101,25 @@ for METCUT in 130 #0 130
 		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
                 $JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
 	      done
-	  else  
-	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	      $JOBSUBMIT $JOBDIR/$JOB.sh
+	  else
+	      grep  "JetsToLNu" tmp.txt
+	      if (( "$?" == 0 ))
+		  then
+		  if [ "$DOSHARED" = "false" ]
+		      then
+		      for FLAVOUR in enu munu taunu
+			do
+			
+			WJOB=$JOB"_"$FLAVOUR
+			
+			$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+			$JOBSUBMIT $JOBDIR/$WJOB.sh
+		      done
+		  fi
+	      else  
+		  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+		  $JOBSUBMIT $JOBDIR/$JOB.sh
+	      fi
 	  fi
 	  rm tmp.txt tmp2.txt
 
@@ -121,43 +138,45 @@ for METCUT in 130 #0 130
 		FILELISTPREFIX=Apr04_MCtaushared_
 	    fi
 	fi
-	
-	for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*`
-	  do
-	  echo "Processing files in "$FILELIST
-	  
-	  echo $FILELIST > tmp.txt
-	  
-	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${FILELISTPREFIX}//" tmp.txt > tmp2.txt
-	  JOB=MC_`sed "s/\.dat//" tmp2.txt`
-	  
-	  echo "JOB name = $JOB"
-	  
-	  
-	  grep  "JetsToLNu" tmp.txt
-	  if (( "$?" == 0 )); then
-	      for FLAVOUR in enu munu taunu
-		do
+	if [ "$DOSHARED" = "true" ]
+	    then
+	    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${FILELISTPREFIX}*`
+	      do
+	      echo "Processing files in "$FILELIST
+	      
+	      echo $FILELIST > tmp.txt
+	      
+	      sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${FILELISTPREFIX}//" tmp.txt > tmp2.txt
+	      JOB=MC_`sed "s/\.dat//" tmp2.txt`
+	      
+	      echo "JOB name = $JOB"
+	      
+	      
+	      grep  "JetsToLNu" tmp.txt
+	      if (( "$?" == 0 )); then
+		  for FLAVOUR in enu munu taunu
+		    do
 		#if [ "$PRODUCTION" = "Mar20" ]
 		#    then
 		#    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/Feb20/MC_53X/
 		#else
 		#    PREFIX=/vols/ssd00/cms/invskims/$FLAVOUR/$PRODUCTION/
 		#fi
-		
-		WJOB=$JOB"_"$FLAVOUR
-		
-		$JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
-		$JOBSUBMIT $JOBDIR/$WJOB.sh
-	      done
-	  else  
-	      $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
-	      $JOBSUBMIT $JOBDIR/$JOB.sh
-	  fi
+		    
+		    WJOB=$JOB"_"$FLAVOUR
+		    
+		    $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+		    $JOBSUBMIT $JOBDIR/$WJOB.sh
+		  done
+	      else  
+		  $JOBWRAPPER "./bin/HiggsNuNu --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR --met_cut=$METCUT $SYSTOPTIONS --channel=$CHANNEL &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+		  $JOBSUBMIT $JOBDIR/$JOB.sh
+	      fi
+	      
+	      rm tmp.txt tmp2.txt
 	  
-	  rm tmp.txt tmp2.txt
-	  
-	done
+	    done
+	fi
 	
       done
       

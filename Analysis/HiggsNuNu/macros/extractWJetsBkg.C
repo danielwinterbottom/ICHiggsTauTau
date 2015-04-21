@@ -140,7 +140,7 @@ std::istream & operator>>(std::istream & is, evtsArray & evtVec){
 int extractWJetsBkg(){//main
 
   //OPTIONS
-  std::string TOPDIR = "../TABLES/";
+  std::string TOPDIR = "../TABLES_rereco/";//"../TABLES"; //
   bool doTaus = true;
   bool docrosschecktau=false;
   bool dojes = false;
@@ -437,6 +437,7 @@ int extractWJetsBkg(){//main
 	  nBkg_cjv += lSel[3][DPhiSIGNAL_CJVpass][VV];
 	  efficiency eps_tau;
 	  eps_tau.num = lSel[3][DPhiSIGNAL_noCJV][QCD_WJets_taunu];
+	  std::cout<<"ncewkWtau: "<<lSel[3][DPhiSIGNAL_noCJV][EWK_WJets_taunu]<<std::endl;
 	  eps_tau.num += lSel[3][DPhiSIGNAL_noCJV][EWK_WJets_taunu];
 	  eps_tau.den = lSel[0][DPhiSIGNAL_noCJV][QCD_WJets_taunu];
 	  eps_tau.den += lSel[0][DPhiSIGNAL_noCJV][EWK_WJets_taunu];
@@ -464,6 +465,7 @@ int extractWJetsBkg(){//main
 	  
 	  //GET NDATA
 	  events nDataW = nData;
+	  std::cout<<"ncdata: "<<nData<<", ncbkg: "<<nBkg<<std::endl;
 	  nDataW -= nBkg;
 	  if(docrosschecktau){//remove enu contamination if doing cross-check
 	    nDataW -= lSel[3][DPhiSIGNAL_noCJV][QCD_WJets_enu];
@@ -481,6 +483,7 @@ int extractWJetsBkg(){//main
 	  effProduct.stat = effProduct.number*sqrt(pow(eps_cjv.num.stat/eps_cjv.num.number,2)+pow(eps_tau.num.stat/eps_tau.num.number,2));
 	  result[iSyst] = nDataW;
 	  result[iSyst].number = nDataW.number*effProduct.number;
+	  std::cout<<"nsmc: "<<eps_cjv.num.number<<", ncmc: "<<eps_tau.num.number<<", nDataW: "<<nDataW<<", result: "<<result[iSyst].number<<std::endl;
 	  	  
 	  result[iSyst].stat = result[iSyst].number*sqrt(pow(nDataW.stat/nDataW.number,2));
 	  

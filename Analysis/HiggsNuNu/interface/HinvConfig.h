@@ -75,6 +75,7 @@ struct era_def {
 		data_2012_ichep,	// ICHEP dataset for 2012: A+B re-reco
 		data_2012_hcp,		// HCP dataset for 2012: A+B re-reco C prompt
 		data_2012_moriond,// Moriond dataset for 2012: A+B re-reco, C+D prompt
+		data_2012_rereco,// Rereco dataset for 2012
 		data_2012_donly 	// 2012D prompt only
 
 	};
@@ -87,6 +88,7 @@ inline std::string Era2String(era const& in) {
 		(era::data_2012_ichep, 		"data_2012_ichep")
 		(era::data_2012_hcp, 			"data_2012_hcp")
 		(era::data_2012_moriond, 	"data_2012_moriond")
+		(era::data_2012_rereco, 	"data_2012_rereco")
 		(era::data_2012_donly, 		"data_2012_donly");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -102,6 +104,7 @@ inline era String2Era(std::string const& in) {
 	("data_2012_ichep", 	era::data_2012_ichep)
 	("data_2012_hcp", 		era::data_2012_hcp)
 	("data_2012_moriond", era::data_2012_moriond)
+	("data_2012_rereco", era::data_2012_rereco)
 	("data_2012_donly", 	era::data_2012_donly);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

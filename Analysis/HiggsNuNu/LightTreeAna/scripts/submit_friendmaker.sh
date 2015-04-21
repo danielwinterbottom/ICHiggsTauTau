@@ -20,14 +20,14 @@ export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
 echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
-INPUTPARAMS="../filelists/Dec18/ParamsDec18test.dat"
-CONFIG=scripts/DefaultConfig.cfg
+INPUTPARAMS="../filelists/Dec18/ParamsDec18.dat"
+CONFIG=scripts/MVATrainConfig.cfg
 QUEUEDIR=short #medium long
 FILELIST="filelists/filelist.dat"
 
-JOBDIRPREFIX=jobs
+JOBDIRPREFIX=jobs_postruncbdt
 JOBDIR=$JOBDIRPREFIX/
-OUTPUTPREFIX=output
+OUTPUTPREFIX=output_postruncbdt
 OUTPUTDIR=$OUTPUTPREFIX/
 
 OUTPUTNAME="output.root"

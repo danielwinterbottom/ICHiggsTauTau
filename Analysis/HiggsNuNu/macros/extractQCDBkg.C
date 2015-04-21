@@ -73,6 +73,7 @@ struct events {
     this->number = this->number*rhs;
     this->stat = this->stat*rhs;
     this->syst = this->syst*rhs;
+    return *this;
   }
 
 };
@@ -143,7 +144,7 @@ std::istream & operator>>(std::istream & is, evtsArray & evtVec){
 int extractQCDBkg(){//main
 
   //OPTIONS
-  std::string TOPDIR = "../TABLESqcd/";//"../TABLES/";//
+  std::string TOPDIR = "../TABLES_rereco/";//"../TABLESqcd/";//"../TABLES/";//
   bool dojes = false;
   bool dojer = false;
   bool doeleerr = false;
@@ -158,7 +159,7 @@ int extractQCDBkg(){//main
   double sigmaincnunuQCD = sigmaincmumuQCD*RQCD;
   double sigmaincmumuEWK = 303; //888/3;                                                                                                                   
   double sigmaincnunuEWK = 460*3;
-  double lumi=19.5003
+  double lumi=19.5003;
 
   //SETUP
   std::vector<std::string> lSelVecSignal;
@@ -314,6 +315,7 @@ int extractQCDBkg(){//main
 	events nZnnEWK[3];
 	events nZnnQCD[3];
 	events nZ[3];
+	events nBkg[3];
 
 	events nData[3];
 	
@@ -343,18 +345,18 @@ int extractQCDBkg(){//main
 	  nZllEWK[iReg] = lSel[chan+2][cjvpass][ZJets_vbf];
 	  nZEWKGEN[iReg] = lSel[chan+2][GenZMassFiltered][ZJets_vbf];
 	  nZllQCD[iReg] = lSel[chan+2][cjvpass][ZJets_ll];
-	  nZQCDGEN[iReg] = lSel[chan+2][GenZMassFiltered][ZJets_qcd];
+	  nZQCDGEN[iReg] = lSel[chan+2][GenZMassFiltered][ZJets_ll];
 	  nZnnEWK[iReg].number=nZllEWK[iReg].number/nZEWKGEN[iReg].number*sigmaincnunuEWK*lumi;
-	  nZnnEWK[iReg].stat=sqrt(pow(nZllEWK[iReg].stat/nZEWK[iReg].number,2)+pow(nZEWKGEN[iReg].stat/nZEWKGEN[iReg].number,2))*nZEWK[iReg].number/nZEWKGEN[iReg].number*sigmaincnunuEWK*lumi;
+	  nZnnEWK[iReg].stat=sqrt(pow(nZllEWK[iReg].stat/nZllEWK[iReg].number,2)+pow(nZEWKGEN[iReg].stat/nZEWKGEN[iReg].number,2))*nZllEWK[iReg].number/nZEWKGEN[iReg].number*sigmaincnunuEWK*lumi;
 	  nZnnQCD[iReg].number=nZllQCD[iReg].number/nZQCDGEN[iReg].number*sigmaincnunuQCD*lumi;
-	  nZnnQCD[iReg].stat=sqrt(pow(nZllQCD[iReg].stat/nZQCD[iReg].number,2)+pow(nZQCDGEN[iReg].stat/nZQCDGEN[iReg].number,2))*nZQCD[iReg].number/nZQCDGEN[iReg].number*sigmaincnunuQCD*lumi;
-	  events nZ[iReg]=nZnnEWK[iReg];
+	  nZnnQCD[iReg].stat=sqrt(pow(nZllQCD[iReg].stat/nZllQCD[iReg].number,2)+pow(nZQCDGEN[iReg].stat/nZQCDGEN[iReg].number,2))*nZllQCD[iReg].number/nZQCDGEN[iReg].number*sigmaincnunuQCD*lumi;
+	  nZ[iReg]=nZnnEWK[iReg];
 	  nZ[iReg]+=nZnnQCD[iReg];
 	  nZ[iReg]+=nZllEWK[iReg];
 	  nZ[iReg]+=nZllQCD[iReg];
 										   
 	  nData[iReg]=lSel[chan][cjvpass][Data];
-	  std::cout<<"n"<<RegName<<"Data & "<<nData[iReg]<std::endl;
+	  std::cout<<"n"<<RegName<<"Data & "<<nData[iReg]<<std::endl;
 	  nBkg[iReg]=lSel[chan][cjvpass][Top];
 	  nBkg[iReg] += lSel[chan][cjvpass][VV];
 	  nBkg[iReg] += lSel[chan][cjvpass][WJets];

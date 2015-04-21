@@ -66,11 +66,11 @@ USERLIBS += -L$(BOOSTSYS)/lib -lboost_regex -lboost_program_options -lboost_file
 
 # Can set CMSSW=0 to disable include/linking to CMSSW
 ifneq ($(CMSSW), 0)
-	# USERINCLUDES += -I$(CMSSW_BASE)/src
+# USERINCLUDES += -I$(CMSSW_BASE)/src
 	USERINCLUDES += -isystem $(CMSSW_RELEASE_BASE)/src
-	# CMSSW user area
-	USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH)
-	USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lCommonToolsUtils -lPhysicsToolsFWLite
+# CMSSW user area
+USERLIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH)
+USERLIBS += -L$(CMSSW_RELEASE_BASE)/lib/$(SCRAM_ARCH) -lCommonToolsUtils -lPhysicsToolsFWLite
 endif
 # Analysis area
 
@@ -115,6 +115,12 @@ clean : clean_$(RUNDIR)
 
 clean_tree : clean_tree_$(RUNDIR)
 
+#dictionary:
+#	rootcint -v -f src/deltaphi_dict.cc -c interface/deltaphi.h interface/LinkDef.h
+#	sed "s!interface/!UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/!" src/deltaphi_dict.h > interface/deltaphi_dict.h
+#	rm src/deltaphi_dict.h
+#	sed "s!deltaphi_dict.h!UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/deltaphi_dict.h!" src/deltaphi_dict.cc > tmp
+#	mv tmp src/deltaphi_dict.cc
 env :
 	@echo -e 'export ANAPATH='$(TOP)';\nexport PYTHONPATH='$(ALL_LIB_DIRS)':$$PYTHONPATH;'
 

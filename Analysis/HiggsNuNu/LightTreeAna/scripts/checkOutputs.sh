@@ -1,6 +1,5 @@
 #!/bin/sh
 
-JOBDIR=jobs
 INJOBDIR=0
 
 while [ $# -gt 0 ] ; do
@@ -27,7 +26,7 @@ done ;
 if (( "$INJOBDIR" == "0" )); then
     JOBDIR=jobs
 fi
-
+for JOBDIR in jobs_presel/; do
 echo "Processing directory: "$JOBDIR
 
 RESULT=0
@@ -48,6 +47,8 @@ for LOGFILE in `ls $JOBDIR/*.log`
 	  echo "--> Error: Please fix and resubmit with command:"
 	  echo "./scripts/submit_ic_batch_job.sh hepmedium.q $SHFILE"
       fi
+  else
+      echo "File $LOGFILE succeeded"
   fi
   grep -qi "nan" $LOGFILE | grep -v ".root"
   if (( "$?" == 0 )); then
@@ -66,3 +67,4 @@ fi
 if (( "$INJOBDIR" == "1" )); then
     exit;
 fi
+done

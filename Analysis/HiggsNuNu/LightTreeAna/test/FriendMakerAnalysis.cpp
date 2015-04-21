@@ -28,6 +28,8 @@ int main(int argc, char* argv[]){
   std::string inputparams;
   std::string filelist;
   std::string settorun;
+  std::string basesel;
+  std::string jetmetdphicut;
   
   po::options_description preconfig("Configuration"); 
   preconfig.add_options()("cfg",po::value<std::string>(&cfg)->required());
@@ -40,6 +42,8 @@ int main(int argc, char* argv[]){
     ("output_name,o",            po::value<std::string>(&outputname)->default_value("tmp.root"))
     ("output_folder",            po::value<std::string>(&outputfolder)->default_value("friends"))
     ("input_folder,i",           po::value<std::string>(&inputfolder)->default_value("root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/lighttree"))//"../output_lighttree"))
+    ("basesel,b",           po::value<std::string>(&basesel)->default_value(""))
+    ("jetmetdphicut,j",           po::value<std::string>(&jetmetdphicut)->default_value(""))
     ("input_params,p",           po::value<std::string>(&inputparams)->default_value("../filelists/Dec18/ParamsDec18test.dat"))
     ("filelist,f",               po::value<std::string>(&filelist)->default_value("filelists/filelist.dat"))
     ("settorun,r",              po::value<std::string>(&settorun)->default_value(""));
@@ -76,19 +80,39 @@ int main(int argc, char* argv[]){
     
 
   std::vector<std::string> variables;
-  variables.push_back("jetmet_mindphi");
-  variables.push_back("dijetmet_ptfraction");
-  variables.push_back("dijetmet_vectorialSum_pt");
-  variables.push_back("jet1met_scalarprod_frac := jet1met_scalarprod/met");
-  variables.push_back("jet2met_scalarprod_frac := jet2met_scalarprod/met");
+//   variables.push_back("jetmet_mindphi");
+//   variables.push_back("dijetmet_ptfraction");
+//   variables.push_back("dijetmet_vectorialSum_pt");
+//   variables.push_back("jet1met_scalarprod_frac := jet1met_scalarprod/met");
+//   variables.push_back("jet2met_scalarprod_frac := jet2met_scalarprod/met");
+//   variables.push_back("n_jets_cjv_30");
+//   variables.push_back("jet2_pt");
+//   variables.push_back("dijet_M");
+//   variables.push_back("dijet_deta");
+//   variables.push_back("dijet_dphi");
+//   variables.push_back("met");
+//   variables.push_back("met_significance");
+//   variables.push_back("sqrt(ht)");
+
+//   variables.push_back("alljetsmetnomu_mindphi");                                                                                                  
+  variables.push_back("dijetmetnomu_ptfraction");
+  variables.push_back("dijetmetnomu_vectorialSum_pt");
+  //   variables.push_back("dijetmetnomu_scalarSum_pt");                                                                                                   
+  //   //variables.push_back("jet1metnomu_scalarprod_frac := jet1metnomu_scalarprod/met");                                                                 
+  //   //variables.push_back("jet2metnomu_scalarprod_frac := jet2metnomu_scalarprod/met");                                                                 
   variables.push_back("n_jets_cjv_30");
-  variables.push_back("jet2_pt");
+  //   variables.push_back("jet1_pt");                                                                                                                      
+  //   variables.push_back("jet2_pt");                                                                                                                      
   variables.push_back("dijet_M");
-  variables.push_back("dijet_deta");
-  variables.push_back("dijet_dphi");
-  variables.push_back("met");
-  variables.push_back("met_significance");
+  //   variables.push_back("dijet_deta");                                                                                                                   
+  //   variables.push_back("dijet_sumeta");                                                                                                                
+  //   variables.push_back("dijet_dphi");                                                                                                                  
+  variables.push_back("metnomuons");
+  variables.push_back("metnomu_significance");
   variables.push_back("sqrt(ht)");
+  //   variables.push_back("ht");                                                                                                                          
+  variables.push_back("jetunclet_mindphi");
+  //   variables.push_back("metnomuunclet_dphi");
   
   std::vector<std::string> sets;
   sets.push_back(settorun);

@@ -122,7 +122,7 @@ int extractWJetsBkg(){//main
   bool doWeights = false;
 
   //std::string TOPDIR = "../TABLES_mjj1200/";
-  std::string TOPDIR = "../TABLES/";
+  std::string TOPDIR = "../TABLES_rereco/";
 
   const unsigned nSteps = lSelVecSignal.size();
 
