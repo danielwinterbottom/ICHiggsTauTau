@@ -16,6 +16,7 @@
 #include "Modules/interface/CompositeProducer.h"
 #include "HiggsTauTau/interface/HTTConfig.h"
 #include "HiggsTauTau/interface/Phys14Plots.h"
+#include "HiggsTauTau/interface/ToyTauStudy.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
 #include "Modules/interface/JetEnergyCorrections.h"
 
@@ -29,41 +30,36 @@ using std::string;
 using ic::Electron;
 
 int main(int argc, char* argv[]) {
-  // Shorten: write a function that does this, or move the classes into Analysis
-  // gSystem->Load("libFWCoreFWLite.dylib");
-  // gSystem->Load("libUserCodeICHiggsTauTau.dylib");
-  // AutoLibraryLoader::enable();
+  // vector<string> cfgs;
+  // vector<string> jsons;
 
-  vector<string> cfgs;
-  vector<string> jsons;
+//   po::options_description config("config");
+//   config.add_options()(
+//       "cfg", po::value<vector<string>>(&cfgs)->multitoken()->required(),
+//       "json config files")(
+//       "json", po::value<vector<string>>(&jsons)->multitoken(),
+//       "json fragments");
+//   po::variables_map vm;
+//   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
+//   po::notify(vm);
 
-  po::options_description config("config");
-  config.add_options()(
-      "cfg", po::value<vector<string>>(&cfgs)->multitoken()->required(),
-      "json config files")(
-      "json", po::value<vector<string>>(&jsons)->multitoken(),
-      "json fragments");
-  po::variables_map vm;
-  po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
-  po::notify(vm);
+//   Json::Value js_init = ic::ExtractJsonFromFile(cfgs[0]);
+//   for (unsigned i = 1; i < cfgs.size(); ++i) {
+//     std::cout << ">> Updating config with file " << cfgs[i] << ":\n";
+//     Json::Value extra = ic::ExtractJsonFromFile(cfgs[i]);
+//     std::cout << extra;
+//     ic::UpdateJson(js_init, extra);
+//   }
+//   for (unsigned i = 0; i < jsons.size(); ++i) {
+//     Json::Value extra;
+//     Json::Reader reader(Json::Features::all());
+//     reader.parse(jsons[i], extra);
+//     std::cout << ">> Updating config with fragment:\n";
+//     std::cout << extra;
+//     ic::UpdateJson(js_init, extra);
+// }
 
-  Json::Value js_init = ic::ExtractJsonFromFile(cfgs[0]);
-  for (unsigned i = 1; i < cfgs.size(); ++i) {
-    std::cout << ">> Updating config with file " << cfgs[i] << ":\n";
-    Json::Value extra = ic::ExtractJsonFromFile(cfgs[i]);
-    std::cout << extra;
-    ic::UpdateJson(js_init, extra);
-  }
-  for (unsigned i = 0; i < jsons.size(); ++i) {
-    Json::Value extra;
-    Json::Reader reader(Json::Features::all());
-    reader.parse(jsons[i], extra);
-    std::cout << ">> Updating config with fragment:\n";
-    std::cout << extra;
-    ic::UpdateJson(js_init, extra);
-}
-
-  Json::Value const js = js_init;
+  Json::Value const js = ic::MergedJson(argc, argv);
 
   // Create ROOT output fileservice
   fwlite::TFileService* fs =
@@ -88,6 +84,7 @@ int main(int argc, char* argv[]) {
   bool do_XToTauTau = js["do_XToTauTau"].asBool();
   bool do_QCDFakes = js["do_QCDFakes"].asBool();
   bool apply_JEC = js["apply_JEC"].asBool();
+  bool do_ToyTaus = js["do_ToyTaus"].asBool();
 
   string jec_payload = js["jec_payload"].asString();
   auto jetEnergyCorr =
@@ -101,17 +98,34 @@ int main(int argc, char* argv[]) {
           .set_res_file("data/jec/" + jec_payload + "_L2L3Residual_AK5PF.txt");
 
   auto httGenEvent = ic::HTTGenEvent("HttGenEvent")
-      .set_genparticle_label("genParticles");
+      .set_genparticle_label("genParticles")
+      .set_is_pythia8(js.get("is_pythia8", false).asBool());
 
   auto phys14Plots = ic::Phys14Plots("Phys14Plots")
                          .set_fs(fs)
                          .set_do_real_th_studies(do_XToTauTau)
                          .set_do_fake_th_studies(do_QCDFakes);
 
+  auto recTauStudy = ic::ToyTauStudy("RecTauStudy")
+                         .set_fs(fs)
+                         .set_do_real_th_studies(do_XToTauTau)
+                         .set_do_fake_th_studies(do_QCDFakes)
+                         .set_taus_label("taus");
+
+  auto toyTauStudy = ic::ToyTauStudy("ToyTauStudy")
+                         .set_fs(fs)
+                         .set_do_real_th_studies(do_XToTauTau)
+                         .set_do_fake_th_studies(do_QCDFakes)
+                         .set_taus_label("toyTaus");
 
   if (apply_JEC) analysis.AddModule(&jetEnergyCorr);
   if (do_XToTauTau) analysis.AddModule(&httGenEvent);
-  analysis.AddModule(&phys14Plots);
+  if (do_ToyTaus) {
+    analysis.AddModule(&recTauStudy);
+    analysis.AddModule(&toyTauStudy);
+  } else {
+    analysis.AddModule(&phys14Plots);    
+  }
 
   analysis.RunAnalysis();
 

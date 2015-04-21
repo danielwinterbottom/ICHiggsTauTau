@@ -67,6 +67,7 @@ int main(int argc, char* argv[]) {
   TH1::AddDirectory(0);
   ModTDRStyle();
   gStyle->SetEndErrorSize(0);
+  gStyle->SetGridColor(1);
 
 
   Json::Value const js = ic::MergedJson(argc, argv);
@@ -106,7 +107,7 @@ int main(int argc, char* argv[]) {
   axis->GetXaxis()->SetTitle(js["x_axis_title"].asCString());
   axis->GetYaxis()->SetTitle(js["y_axis_title"].asCString());
 
-  TLegend *legend = PositionedLegend(0.45, 0.18, 6, 0.03);
+  TLegend *legend = PositionedLegend(js["legend_width"].asDouble(), js["legend_height"].asDouble(), 6, 0.03);
   for (unsigned g = 0; g < graphs.size(); ++g) {
     graphs[g].Draw("PSAME");
     legend->AddEntry(&(graphs[g]), js["elements"][g]["legend"].asCString());

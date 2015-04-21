@@ -32,7 +32,7 @@ int HTTGenEvent::Execute(TreeEvent *event) {
 
 
   // Consider either an SM (pdgid = 25) or MSSM (25, 35, 36) Higgs boson
-  std::set<int> higgs_pdg = {25 /*h*/, 35 /*H*/, 36 /*A*/};
+  std::set<int> higgs_pdg = {23 /*Z*/, 32 /*Z'*/, 25 /*h*/, 35 /*H*/, 36 /*A*/};
 
   // Copy the list of particles, then filter it, keeping only status 3 particles
   // with a Higgs pdgid
