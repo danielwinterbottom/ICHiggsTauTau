@@ -203,6 +203,9 @@ process.icVertexSequence = cms.Sequence(
 
 process.icElectronSequence = cms.Sequence()
 
+#!!CHECK IF WE SHOULD USE MVA ID
+
+
 #this module kept in src/ICAnalysis/ElectronConversionCalculator/ and is implementation of run 1 egamma conversion check !!make sure up to date
 #produces value map of whether electron passes conversion veto
 process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator', 
@@ -274,6 +277,8 @@ process.icElectronSequence += cms.Sequence(
 # Muons                                                                                                                                                     
 ################################################################                                                                                            
 process.icMuonSequence = cms.Sequence()
+
+#!!CHECK IF WE NEED MUON ID PRODUCER
 
 #redo isolation calculation
 process.load("CommonTools.ParticleFlow.Isolation.pfMuonIsolation_cff")
