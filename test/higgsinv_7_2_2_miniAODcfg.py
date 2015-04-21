@@ -265,7 +265,7 @@ process.icElectronProducer = producers.icElectronProducer.clone(
     # trackInIsoSum   = cms.InputTag("icHttElecIsoCheck"),                                                                                                  
     # matchedRecoMuon = cms.InputTag("icHttMuonOverlapCheck")                                                                                               
   ),
-  includePFIso04           = cms.bool(True)
+  includePFIso03           = cms.bool(True)
 )
 
 process.icElectronSequence += cms.Sequence(
@@ -315,7 +315,7 @@ process.icMuonProducer = producers.icMuonProducer.clone(
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
   includeFloats = cms.PSet(
   ),
-  includePFIso04           = cms.bool(True)
+  includePFIso03           = cms.bool(True)
 )
 
 if release in ['72XMINIAOD']: process.icMuonProducer.isPF = cms.bool(False) #!!CHECK THIS
