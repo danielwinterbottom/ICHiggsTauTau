@@ -147,18 +147,18 @@ $(document).ready(function(){initNavTree('_i_c_p_f_candidate_producer_8hh_source
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  boost::hash&lt;T const*&gt; cand_hasher_;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  boost::hash&lt;reco::Track const*&gt; track_hasher_;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  edm::InputTag track_input_;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  edm::InputTag gsf_track_input_;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">// =============================</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">// Template class implementation</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">// =============================</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="class_i_c_p_f_candidate_producer.html#ad690d924c833387f89e39bc14eac7c47">   59</a></span>&#160;<a class="code" href="class_i_c_p_f_candidate_producer.html#ad690d924c833387f89e39bc14eac7c47">ICPFCandidateProducer&lt;T&gt;::ICPFCandidateProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      request_trks_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestTracks&quot;</span>)),</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;      request_gsf_trks_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestGsfTracks&quot;</span>)) {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">// =============================</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">// Template class implementation</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">// =============================</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="class_i_c_p_f_candidate_producer.html#ad690d924c833387f89e39bc14eac7c47">   58</a></span>&#160;<a class="code" href="class_i_c_p_f_candidate_producer.html#ad690d924c833387f89e39bc14eac7c47">ICPFCandidateProducer&lt;T&gt;::ICPFCandidateProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      request_trks_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestTracks&quot;</span>)),</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      request_gsf_trks_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestGsfTracks&quot;</span>)),</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;      track_input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputUnpackedTracks&quot;</span>)) {</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  cands_ = <span class="keyword">new</span> std::vector&lt;ic::PFCandidate&gt;();</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordflow">if</span> (request_trks_) {</div>
@@ -241,82 +241,100 @@ $(document).ready(function(){initNavTree('_i_c_p_f_candidate_producer_8hh_source
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;      <span class="keywordflow">if</span> (src.flag(reco::PFCandidate::Flags(i))) flag_val = flag_val | (1 &lt;&lt; i);</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    }</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    dest.<a class="code" href="classic_1_1_p_f_candidate.html#a5658c1b5fdf34bfff975ec16d8f974a2">set_flags</a>(flag_val);</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    std::vector&lt;std::size_t&gt; trk_ids;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordflow">if</span> (request_trks_) {</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;      <span class="keywordflow">if</span> (src.trackRef().isNonnull()) {</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        reco::TrackRef <span class="keyword">const</span>&amp; trk = src.trackRef();</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        trk_requests-&gt;push_back(trk);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        trk_ids.push_back(track_hasher_(&amp;(*trk)));</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      }</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      <span class="comment">// This was used in the Phys14 studies to try and understand how</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      <span class="comment">// the PF algorithm can lock tracks such that they are no longer</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      <span class="comment">// available for tau reconstruction. The idea was to look at the</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;      <span class="comment">// associated displaced vertices and conversions and see if the </span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;      <span class="comment">// tracks appear here.</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      <span class="comment">/*</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment">      reco::VertexCompositeCandidateRef v0Ref = src.v0Ref();</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="comment">      if (v0Ref.isNonnull()) {</span></div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="comment">        for (unsigned ndx = 0; ndx &lt; v0Ref-&gt;numberOfDaughters(); ndx++) {</span></div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="comment">          reco::TrackRef trk = (dynamic_cast&lt;const reco::RecoChargedCandidate*&gt;(</span></div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="comment">                                 v0Ref-&gt;daughter(ndx)))-&gt;track();</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="comment">          // std::cout &lt;&lt; &quot;Found V0 track!\n&quot;;</span></div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="comment">          trk_requests-&gt;push_back(trk);</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="comment">          trk_ids.push_back(track_hasher_(&amp;(*trk)));</span></div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment">        }</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">      }</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment">      reco::ConversionRef convRef = src.conversionRef();</span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">      if (convRef.isNonnull()) {</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="comment">        std::vector&lt;edm::RefToBase&lt;reco::Track&gt; &gt; const &amp; trks = convRef-&gt;tracks();</span></div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="comment">        for (unsigned ndx = 0; ndx &lt; trks.size(); ++ndx) {</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment">          reco::TrackRef trk(trks[ndx].castTo&lt;reco::TrackRef&gt;());</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="comment">          // std::cout &lt;&lt; &quot;Found conversion track!\n&quot;;</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="comment">          trk_requests-&gt;push_back(trk);</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="comment">          trk_ids.push_back(track_hasher_(&amp;(*trk)));</span></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="comment">        }</span></div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;<span class="comment">      }</span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="comment">      */</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;      dest.<a class="code" href="classic_1_1_p_f_candidate.html#acb9ffee3e424bd345dbf936926d9b86d">set_constituent_tracks</a>(trk_ids);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    }</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordflow">if</span> (request_gsf_trks_) {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;      std::vector&lt;std::size_t&gt; gsf_trk_ids;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;      <span class="keywordflow">if</span> (src.gsfTrackRef().isNonnull()) {</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        reco::GsfTrackRef <span class="keyword">const</span>&amp; trk = src.gsfTrackRef();</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        gsf_trk_requests-&gt;push_back(trk);</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        gsf_trk_ids.push_back(track_hasher_(&amp;(*trk)));</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;      }</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;      dest.<a class="code" href="classic_1_1_p_f_candidate.html#a4458d3099083302f5db061ed2028798b">set_constituent_gsf_tracks</a>(gsf_trk_ids);</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    }</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  }</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;}</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_p_f_candidate_producer.html">ICPFCandidateProducer&lt;pat::PackedCandidate&gt;::constructSpecific</a>(</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    edm::Handle&lt;edm::View&lt;pat::PackedCandidate&gt; &gt; <span class="keyword">const</span>&amp; cands_handle,</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    reco::TrackRefVector* trk_requests,</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    reco::GsfTrackRefVector* gsf_trk_requests, edm::Event&amp; event,</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;  <span class="comment">// To get tracks here we&#39;d actually have to produce a new track collection</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;  <span class="comment">// first using pseudoTrack(), get it into the event, then produce the refs.</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;  <span class="comment">// Not trivial I think.</span></div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;}</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_p_f_candidate_producer.html">ICPFCandidateProducer&lt;T&gt;::beginJob</a>() {</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;cands_);</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;}</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_p_f_candidate_producer.html">ICPFCandidateProducer&lt;T&gt;::endJob</a>() {</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;}</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    std::vector&lt;std::size_t&gt; trk_ids;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordflow">if</span> (request_trks_) {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;      <span class="keywordflow">if</span> (src.trackRef().isNonnull()) {</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        reco::TrackRef <span class="keyword">const</span>&amp; trk = src.trackRef();</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        trk_requests-&gt;push_back(trk);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        trk_ids.push_back(track_hasher_(&amp;(*trk)));</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      }</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      dest.<a class="code" href="classic_1_1_p_f_candidate.html#acb9ffee3e424bd345dbf936926d9b86d">set_constituent_tracks</a>(trk_ids);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    }</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keywordflow">if</span> (request_gsf_trks_) {</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;      std::vector&lt;std::size_t&gt; gsf_trk_ids;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      <span class="keywordflow">if</span> (src.gsfTrackRef().isNonnull()) {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        reco::GsfTrackRef <span class="keyword">const</span>&amp; trk = src.gsfTrackRef();</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        gsf_trk_requests-&gt;push_back(trk);</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        gsf_trk_ids.push_back(track_hasher_(&amp;(*trk)));</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;      dest.<a class="code" href="classic_1_1_p_f_candidate.html#a4458d3099083302f5db061ed2028798b">set_constituent_gsf_tracks</a>(gsf_trk_ids);</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    }</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;}</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="keyword">template</span> &lt;&gt;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_p_f_candidate_producer.html">ICPFCandidateProducer&lt;pat::PackedCandidate&gt;::constructSpecific</a>(</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    edm::Handle&lt;edm::View&lt;pat::PackedCandidate&gt; &gt; <span class="keyword">const</span>&amp; cands_handle,</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    reco::TrackRefVector* trk_requests,</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    reco::GsfTrackRefVector* <span class="comment">/*gsf_trk_requests*/</span>, edm::Event&amp; event,</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  <span class="comment">// To get tracks here we&#39;d actually have to produce a new track collection</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  <span class="comment">// first using pseudoTrack(), get it into the event, then produce the refs.</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="comment">// Not trivial I think.</span></div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  edm::Handle&lt;edm::View&lt;reco::Track&gt; &gt; tracks_handle;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  <span class="keyword">event</span>.getByLabel(track_input_, tracks_handle);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  <span class="keyword">typedef</span> std::set&lt;reco::Track const*&gt; TrackSet;</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;  <span class="keyword">typedef</span> std::map&lt;reco::Track const*, unsigned&gt; TrackMap;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  TrackSet trk_set;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  TrackMap trk_map;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; tracks_handle-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    trk_set.insert(&amp;(tracks_handle-&gt;at(i)));</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    trk_map[&amp;(tracks_handle-&gt;at(i))] = i;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; cands_handle-&gt;size(); ++i) {</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    pat::PackedCandidate <span class="keyword">const</span>&amp; src = cands_handle-&gt;at(i);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <a class="code" href="classic_1_1_p_f_candidate.html">ic::PFCandidate</a>&amp; dest = cands_-&gt;at(i);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <span class="comment">// PackedCandidates don&#39;t store the same set of flags as PFCandidates, but</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <span class="comment">// they do store their own set of flags that we can get via the status()</span></div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="comment">// method, so let&#39;s just save this here. For details see:</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    <span class="comment">// twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD</span></div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    dest.<a class="code" href="classic_1_1_p_f_candidate.html#a5658c1b5fdf34bfff975ec16d8f974a2">set_flags</a>(src.status());</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    std::vector&lt;std::size_t&gt; trk_ids;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="keywordflow">if</span> (request_trks_ &amp;&amp; src.charge() != 0) {</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;      reco::Track pseudo = src.pseudoTrack();</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;      <span class="keywordflow">for</span> (TrackSet::iterator it = trk_set.begin(); it != trk_set.end(); ++it) {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="comment">// Ok, comparing floats normally not a good idea, but here they really</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        <span class="comment">// should be identical</span></div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keywordflow">if</span> (pseudo.momentum().x() != (*it)-&gt;momentum().x() ||</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;            pseudo.momentum().y() != (*it)-&gt;momentum().y() ||</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;            pseudo.momentum().z() != (*it)-&gt;momentum().z()) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        trk_set.erase(it);</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        trk_requests-&gt;push_back(tracks_handle-&gt;refAt(trk_map.at(*it))</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                                    .<span class="keyword">template</span> castTo&lt;reco::TrackRef&gt;());</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        trk_ids.push_back(track_hasher_(*it));</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;      }</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;      <span class="comment">// PhysicsTools/PatAlgos/plugins/TrackAndVertexUnpacker.cc doesn&#39;t create</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;      <span class="comment">// a Track for every charged PackedCandidate, just those that meet the</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;      <span class="comment">// conditions below.</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;      <span class="comment">// UNCOMMENT TO CHECK IF WE&#39;RE MISSING ANY TRACKS THAT SHOULD BE THERE</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;      <span class="comment">// if (src.charge() != 0 &amp;&amp; src.numberOfHits() &gt; 0 &amp;&amp; trk_ids.size() == 0) {</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;      <span class="comment">//   std::cout &lt;&lt; &quot;Have an unmatched track!\n&quot;;</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;      <span class="comment">// }</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;      dest.<a class="code" href="classic_1_1_p_f_candidate.html#acb9ffee3e424bd345dbf936926d9b86d">set_constituent_tracks</a>(trk_ids);</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    }</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="comment">// NB: can&#39;t do anything for gsf_trk_requests!</span></div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;  }</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;}</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_p_f_candidate_producer.html">ICPFCandidateProducer&lt;T&gt;::beginJob</a>() {</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;cands_);</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_i_c_p_f_candidate_producer.html">ICPFCandidateProducer&lt;T&gt;::endJob</a>() {</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;}</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="namespaceic_html_a5d84c3c4907f6cb7f0a8f37d56f8a31ea663ec6aedc084eba5082b1563754ce9c"><div class="ttname"><a href="namespaceic.html#a5d84c3c4907f6cb7f0a8f37d56f8a31ea663ec6aedc084eba5082b1563754ce9c">ic::NORMAL</a></div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8hh_source.html#l00014">PFCandidate.hh:14</a></div></div>
 <div class="ttc" id="namespaceic_html_a5d84c3c4907f6cb7f0a8f37d56f8a31ea962fc5d7093476e01522839dddae304b"><div class="ttname"><a href="namespaceic.html#a5d84c3c4907f6cb7f0a8f37d56f8a31ea962fc5d7093476e01522839dddae304b">ic::GAMMA_TO_GAMMACONV</a></div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8hh_source.html#l00030">PFCandidate.hh:30</a></div></div>
 <div class="ttc" id="_static_tree_8hh_html"><div class="ttname"><a href="_static_tree_8hh.html">StaticTree.hh</a></div></div>
@@ -328,7 +346,7 @@ $(document).ready(function(){initNavTree('_i_c_p_f_candidate_producer_8hh_source
 <div class="ttc" id="_print_config_tools_8h_html"><div class="ttname"><a href="_print_config_tools_8h.html">PrintConfigTools.h</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html_a48be819e85aff103998cdaaa488b8aa9"><div class="ttname"><a href="classic_1_1_candidate.html#a48be819e85aff103998cdaaa488b8aa9">ic::Candidate::set_id</a></div><div class="ttdeci">void set_id(std::size_t const &amp;id)</div><div class="ttdoc">Unique identifier. </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8hh_source.html#l00066">Candidate.hh:66</a></div></div>
 <div class="ttc" id="classic_1_1_p_f_candidate_html"><div class="ttname"><a href="classic_1_1_p_f_candidate.html">ic::PFCandidate</a></div><div class="ttdoc">Stores the basic properties of PFCandidates (and PackedCandidates for CMSSW 7_X_Y) ...</div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8hh_source.html#l00037">PFCandidate.hh:37</a></div></div>
-<div class="ttc" id="class_i_c_p_f_candidate_producer_html_ad690d924c833387f89e39bc14eac7c47"><div class="ttname"><a href="class_i_c_p_f_candidate_producer.html#ad690d924c833387f89e39bc14eac7c47">ICPFCandidateProducer::ICPFCandidateProducer</a></div><div class="ttdeci">ICPFCandidateProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_p_f_candidate_producer_8hh_source.html#l00059">ICPFCandidateProducer.hh:59</a></div></div>
+<div class="ttc" id="class_i_c_p_f_candidate_producer_html_ad690d924c833387f89e39bc14eac7c47"><div class="ttname"><a href="class_i_c_p_f_candidate_producer.html#ad690d924c833387f89e39bc14eac7c47">ICPFCandidateProducer::ICPFCandidateProducer</a></div><div class="ttdeci">ICPFCandidateProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_p_f_candidate_producer_8hh_source.html#l00058">ICPFCandidateProducer.hh:58</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html_a1ad59abd60b24bed580b2537e5628b4c"><div class="ttname"><a href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">ic::Candidate::set_charge</a></div><div class="ttdeci">void set_charge(int const &amp;charge)</div><div class="ttdoc">Electric charge. </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8hh_source.html#l00081">Candidate.hh:81</a></div></div>
 <div class="ttc" id="structic_1_1_static_tree_html_a4de6c928f155f091cca244c5931427fe"><div class="ttname"><a href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a></div><div class="ttdeci">static TTree * tree_</div><div class="ttdef"><b>Definition:</b> <a href="_static_tree_8hh_source.html#l00013">StaticTree.hh:13</a></div></div>
 <div class="ttc" id="classic_1_1_p_f_candidate_html_acb9ffee3e424bd345dbf936926d9b86d"><div class="ttname"><a href="classic_1_1_p_f_candidate.html#acb9ffee3e424bd345dbf936926d9b86d">ic::PFCandidate::set_constituent_tracks</a></div><div class="ttdeci">void set_constituent_tracks(std::vector&lt; std::size_t &gt; const &amp;constituent_tracks)</div><div class="ttdoc">A vector to refer to the constituent track ic::Track::id() values. </div><div class="ttdef"><b>Definition:</b> <a href="_p_f_candidate_8hh_source.html#l00105">PFCandidate.hh:105</a></div></div>
