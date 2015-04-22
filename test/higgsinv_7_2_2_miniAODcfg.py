@@ -3,6 +3,14 @@ process = cms.Process("MAIN")
 import sys
 
 ################################################################                                                                                         
+# Required additional modules !!CHECK ALL UP TO DATE
+# Electron conversion veto calculator:
+#   in CMSSW src: git clone https://github.com/ajgilbert/ICAnalysis-ElectronConversionCalculator.git ICAnalysis/ElectronConversionCalculator
+# Electron cut based ID:
+#   in CMSSW src: git cms-merge-topic ikrav:egm_id_phys14
+################################################################                                                                                           
+
+################################################################                                                                                         
 # Define some strings                                                                                                                          
 ################################################################                                                                                           
 electronLabel = cms.InputTag("slimmedElectrons")
@@ -199,12 +207,42 @@ process.icVertexSequence = cms.Sequence(
 
 ################################################################                                                                                           
 # Electrons                                                                                                                                                 
+#!!CHECK AGAINST https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_for_min
+#!!CHECK IF WE SHOULD USE MVA ID
 ################################################################                                                                                            
 
+# START POG ELECTRON ID SECTION
+
+# Set up everything that is needed to compute electron IDs and
+# add the ValueMaps with ID decisions into the event data stream
+
+# Load tools and function definitions
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+
+process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cfi")
+# overwrite a default parameter: for miniAOD, the collection name is a slimmed one
+process.egmGsfElectronIDs.physicsObjectSrc = cms.InputTag('slimmedElectrons')
+
+from PhysicsTools.SelectorUtils.centralIDRegistry import central_id_registry
+process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
+
+# Define which IDs we want to produce
+# Each of these two example IDs contains all four standard 
+# cut-based ID working points (only two WP of the PU20bx25 are actually used here).
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V1_miniAOD_cff']
+#Add them to the VID producer
+for idmod in my_id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+
+# Do not forget to add the egmGsfElectronIDSequence to the path,
+# as in the example below!
+
+#
+# END POG ELECTRON ID SECTION
+
+
+
 process.icElectronSequence = cms.Sequence()
-
-#!!CHECK IF WE SHOULD USE MVA ID
-
 
 #this module kept in src/ICAnalysis/ElectronConversionCalculator/ and is implementation of run 1 egamma conversion check !!make sure up to date
 #produces value map of whether electron passes conversion veto
@@ -233,6 +271,7 @@ process.elPFIsoDepositGamma.src       = electronLabel
 process.elPFIsoDepositPU.src          = electronLabel
 process.elPFIsoDepositGamma.ExtractorPSet.ComponentName = cms.string("CandViewExtractor")
 process.icElectronSequence += cms.Sequence(
+  process.egmGsfElectronIDSequence+
   process.electronPFIsolationDepositsSequence+
   process.electronPFIsolationValuesSequence
   )
@@ -331,7 +370,6 @@ process.icMuonSequence += cms.Sequence(
 ################################################################                                                                                            
 import UserCode.ICHiggsTauTau.tau_discriminators_cfi as tauIDs
 
-#!!CHECK THIS MAY HAVE BEEN REPLACED BY ICPFTAUPRODUCER
 process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
   branch                  = cms.string("taus"),
   input                   = cms.InputTag("selectedPFTaus"),
