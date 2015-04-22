@@ -240,16 +240,16 @@ electronLabel = cms.InputTag("selectedElectrons")
 
 process.icElectronSequence = cms.Sequence()
 
-#ICElectronConversionCalculator needs to come back in, but modifications needed
-#process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
-#    input       = electronLabel,
-#    beamspot    = cms.InputTag("offlineBeamSpot"),
-#    conversions = cms.InputTag("allConversions")
-#)
-#if release in ['70XMINIAOD', '72XMINIAOD']:
-#  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
-#      input       = electronLabel
-#  )
+#ICElectronConversionCalculator NOT final, but at least have a running version for now
+process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
+    input       = electronLabel,
+    beamspot    = cms.InputTag("offlineBeamSpot"),
+    conversions = cms.InputTag("allConversions")
+)
+if release in ['70XMINIAOD', '72XMINIAOD']:
+  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
+      input       = electronLabel
+  )
 if release in ['72X']:
   process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_CSA14_cfi")
   process.mvaNonTrigV025nsPHYS14.electronTag = cms.InputTag("selectedElectrons")
@@ -334,7 +334,7 @@ if release in ['72X', '72XMINIAOD']:
 process.icElectronProducer = producers.icElectronProducer.clone(
   branch                    = cms.string("electrons"),
   input                     = cms.InputTag("selectedElectrons"),
-  includeConversionMatches  = cms.bool(False),
+  includeConversionMatches  = cms.bool(True),
   inputConversionMatches    = cms.InputTag("icElectronConversionCalculator"),
   includeVertexIP           = cms.bool(True),
   inputVertices             = cms.InputTag("selectedVertices"),
@@ -360,7 +360,7 @@ if release in ['72XMINIAOD']:
   )
 
 process.icElectronSequence += cms.Sequence(
-#  process.icElectronConversionCalculator+
+  process.icElectronConversionCalculator+
   process.icElectronProducer
 )
 

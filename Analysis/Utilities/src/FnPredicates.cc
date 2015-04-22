@@ -528,6 +528,41 @@ namespace ic {
       )
        );
   }
+  bool VetoElectronIDPhys14(Electron const* elec){
+    bool in_barrel = true;
+    if (fabs(elec->sc_eta()) > 1.479) in_barrel = false;
+    
+    double ooemoop = fabs((1.0/elec->ecal_energy() - elec->sc_e_over_p()/elec->ecal_energy()));
+    double dbiso = elec->dr03_pfiso_charged() + std::max(0., elec->dr03_pfiso_neutral()+elec->dr03_pfiso_gamma() - 0.5*elec->dr03_pfiso_pu());
+    
+    return(
+       !elec->has_matched_conversion()
+        && ( (in_barrel       
+        && elec->full5x5_sigma_IetaIeta()   <0.0111
+        && fabs(elec->deta_sc_tk_at_vtx())  <0.016315
+        && fabs(elec->dphi_sc_tk_at_vtx())  <0.252044
+        && elec->hadronic_over_em()         <0.345843
+        && ooemoop                          <0.248070
+        && elec->gsf_tk_nhits()             <=2
+        && fabs(elec->dxy_vertex())         <0.060279
+        && fabs(elec->dz_vertex())          <0.800538
+        && dbiso/elec->pt()                 <0.164369
+        ) ||
+        (!in_barrel       
+        && elec->full5x5_sigma_IetaIeta()   <0.033987
+        && fabs(elec->deta_sc_tk_at_vtx())  <0.010671
+        && fabs(elec->dphi_sc_tk_at_vtx())  <0.245263
+        && elec->hadronic_over_em()         <0.134691
+        && ooemoop                          <0.157160
+        && elec->gsf_tk_nhits()             <=3
+        && fabs(elec->dxy_vertex())         <0.273097
+        && fabs(elec->dz_vertex())          <0.885860
+        && dbiso/elec->pt()                 <0.212604
+        ) )
+        );
+
+   } 
+
 
   bool VetoElectronID(Electron const* elec) {
     bool in_barrel = true;

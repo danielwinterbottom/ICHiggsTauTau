@@ -140,6 +140,7 @@ void ICElectronProducer::produce(edm::Event& event,
 
     dest.set_hadronic_over_em(src.hadronicOverEm());
     dest.set_sigma_IetaIeta(src.sigmaIetaIeta());
+    dest.set_full5x5_sigma_IetaIeta(src.full5x5_sigmaIetaIeta());
     dest.set_dphi_sc_tk_at_vtx(src.deltaPhiSuperClusterTrackAtVtx());
     dest.set_deta_sc_tk_at_vtx(src.deltaEtaSuperClusterTrackAtVtx());
     if (src.gsfTrack().isNonnull()) {
