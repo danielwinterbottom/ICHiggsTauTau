@@ -748,20 +748,7 @@ int main(int argc, char* argv[]){
     .set_min(1);
 
   std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
-  if (strategy == strategy::hcp2012 || strategy == strategy::moriond2013) {
-    if (channel == channel::et || channel == channel::etmet) {
-      tau_iso_discr         = "byLooseIsolationMVA";
-      tau_anti_elec_discr_1 = "againstElectronMVA";
-      tau_anti_elec_discr_2 = "againstElectronTightMVA2";
-      tau_anti_muon_discr   = "againstMuonLoose";
-    }
-    if (channel == channel::mt || channel == channel::mtmet) {
-      tau_iso_discr         = "byLooseIsolationMVA";
-      tau_anti_elec_discr_1 = "againstElectronLoose";
-      tau_anti_elec_discr_2 = "againstElectronLoose";
-      tau_anti_muon_discr   = "againstMuonTight";
-    }
-  } else if (strategy == strategy::paper2013) {
+  if (strategy == strategy::paper2013) {
     if (channel == channel::et || channel == channel::etmet) {
       tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
       //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";

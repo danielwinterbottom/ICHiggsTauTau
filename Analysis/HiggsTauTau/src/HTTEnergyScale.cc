@@ -5,7 +5,7 @@
 
 namespace ic {
 
-  HTTEnergyScale::HTTEnergyScale(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::moriond2013) {
+  HTTEnergyScale::HTTEnergyScale(std::string const& name) : ModuleBase(name), channel_(channel::et), strategy_(strategy::paper2013) {
     moriond_corrections_ = false;
   }
 

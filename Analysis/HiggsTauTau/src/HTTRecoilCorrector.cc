@@ -44,27 +44,7 @@ namespace ic {
     std::string process_file;
     std::string data_file;
     std::string mc_file;
-    if (strategy_ == strategy::hcp2012) {
-      if (mc_ == mc::summer12_53X) {
-        data_file = "data/recoilfits/recoilfit_datamm53X_20pv_njet.root";
-        mc_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
-      } else if (mc_ == mc::fall11_42X) {
-        data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
-        mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
-      } else {
-        return 0;
-      }
-    } else if (strategy_ == strategy::moriond2013) {
-      if (mc_ == mc::summer12_53X) { 
-        data_file = "data/recoilfits/recoilfit_datamm53X_2012_njet.root";
-        mc_file = "data/recoilfits/recoilfit_zmm53X_2012_njet.root";
-      } else if (mc_ == mc::fall11_42X) {
-        data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
-        mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
-      } else {
-        return 0;
-      }
-    } else if (strategy_ == strategy::paper2013) {
+    if (strategy_ == strategy::paper2013) {
       if (mc_ == mc::summer12_53X) { 
         data_file = "data/recoilfits/recoilfit_datamm53XRR_2012_njet.root";
         mc_file = "data/recoilfits/recoilfit_zmm53XRR_2012_njet.root";
@@ -145,8 +125,6 @@ namespace ic {
       || sample_.find("DYJetsToTauTau") != sample_.npos ) {
       disable = false;
       if (mc_ == mc::summer12_53X) {
-        if (strategy_ == strategy::hcp2012) process_file = "data/recoilfits/recoilfit_zmm53X_20pv_njet.root";
-        if (strategy_ == strategy::moriond2013) process_file = "data/recoilfits/recoilfit_zmm53X_2012_njet.root";
         if (strategy_ == strategy::paper2013)   process_file = "data/recoilfits/recoilfit_zmm53XRR_2012_njet.root";
       }
       if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
@@ -271,8 +249,6 @@ namespace ic {
         iScale=1;
     }
     if (mc_ == mc::summer12_53X) {
-      if (strategy_ == strategy::hcp2012) corrector_->CorrectType2(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
-      if (strategy_ == strategy::moriond2013) corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
       if (strategy_ == strategy::paper2013)   corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
     } else if (mc_ == mc::fall11_42X) {
       corrector_->CorrectType1(pfmet, pfmetphi, genpt, genphi, lep_pt, lep_phi, U1, U2, iFluc, iScale, njets);
