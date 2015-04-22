@@ -905,8 +905,7 @@ namespace ic {
       Electron const* elec = dynamic_cast<Electron const*>(dilepton[0]->GetCandidate("lepton1"));
       double elefopt = (elec->pt() < 35) ? elec->pt() : 34.99;
       double eleEta = elec->eta();
-      if (era_ == era::data_2012_donly || era_ == era::data_2012_moriond
-        || era_ == era::data_2012_rereco) eleEta = fabs(eleEta);
+      if (era_ == era::data_2012_rereco) eleEta = fabs(eleEta);
       int eleptbin = ElectronFakeRateHist_PtEta->GetXaxis()->FindFixBin(elefopt);
       int eleetabin = ElectronFakeRateHist_PtEta->GetYaxis()->FindFixBin(eleEta);    
       double eleprob = ElectronFakeRateHist_PtEta->GetBinContent(eleptbin,eleetabin);

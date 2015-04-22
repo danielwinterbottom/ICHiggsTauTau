@@ -10,9 +10,9 @@ namespace ic {
 
   HTTRecoilCorrector::HTTRecoilCorrector(std::string const& name) : ModuleBase(name), 
     channel_(channel::et),
-    strategy_(strategy::moriond2013),
+    strategy_(strategy::paper2013),
     mc_(mc::summer12_53X),
-    era_(era::data_2012_moriond) {
+    era_(era::data_2012_rereco) {
     dilepton_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
     jets_label_ = "pfJetsPFlow";
