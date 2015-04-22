@@ -396,11 +396,13 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     event.getByLabel(dest_.input_vtxs, vtx_handle);
     trk_vtx_map = BuildTrkVtxMap(trk_handle, vtx_handle);
   }
+  
 
   for (unsigned i = 0; i < passed_.size(); ++i) {
     pat::Jet const& src = jets_handle->at(passed_[i]);
     ic::PFJet & dest = jets_->at(i);
     FillCommonPFJet(&dest, src);
+    dest.set_pu_jet_id(src.userFloat("pileupJetId:fullDiscriminant"));
     dest.set_uncorrected_energy(
         (src.jecSetsAvailable() ? src.jecFactor(0) : 1.) * src.energy());
     if (dest_.do_pu_id) {

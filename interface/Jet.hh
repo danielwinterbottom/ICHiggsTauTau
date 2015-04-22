@@ -122,6 +122,11 @@ class Jet : public Candidate {
     parton_flavour_ = parton_flavour;
   }
 
+  inline void set_pu_jet_id(double const& pu_jet_id){
+    pu_jet_id_ = pu_jet_id;
+  }
+
+
   /// Store a jet energy correction factor, overwriting any existing value with
   /// label `name`
   void SetJecFactor(std::string const& name, float const& value);
@@ -138,14 +143,16 @@ class Jet : public Candidate {
   std::vector<std::size_t> secondary_vertices_;
   double uncorrected_energy_;
   float jet_area_;
+  double pu_jet_id_;
   int parton_flavour_;
+  
 
   std::string UnHashJecFactor(std::size_t jec) const;
   std::string UnHashDiscr(std::size_t dis) const;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Jet, 2);
+  ClassDef(Jet, 3);
  #endif
 };
 

@@ -12,6 +12,7 @@ Jet::Jet()
     : Candidate::Candidate(),
       uncorrected_energy_(0.),
       jet_area_(0.),
+      pu_jet_id_(0.),
       parton_flavour_(0) {}
 
 Jet::~Jet() {}
