@@ -9,8 +9,19 @@ icCandidateProducer = cms.EDProducer('ICCandidateProducer',
 
 ## [PFCandidate]
 icPFProducer = cms.EDProducer('ICPFProducer',
-  branch  = cms.string("pfCandidates"),
-  input   = cms.InputTag("particleFlow", "", "RECO")
+  branch              = cms.string("pfCandidates"),
+  input               = cms.InputTag("particleFlow", "", "RECO"),
+  requestTracks       = cms.bool(False),
+  requestGsfTracks    = cms.bool(False),
+  inputUnpackedTracks = cms.InputTag("")
+)
+
+icPFFromPackedProducer = cms.EDProducer('ICPFFromPackedProducer',
+  branch              = cms.string("pfCandidates"),
+  input               = cms.InputTag("packedPFCandidates", "", "PAT"),
+  requestTracks       = cms.bool(False),
+  requestGsfTracks    = cms.bool(False),
+  inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
 )
 ## [PFCandidate]
 

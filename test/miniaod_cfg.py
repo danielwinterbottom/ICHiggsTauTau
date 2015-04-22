@@ -482,6 +482,32 @@ if release in ['72XMINIAOD']:
         mod.inputIsStandAlone = cms.bool(True)
         mod.input = cms.InputTag("selectedPatTrigger", "", "PAT")
 
+##############################################################################
+# PackedCandidate Module
+##############################################################################
+process.icMiniAODSequence = cms.Sequence()
+
+if release in ['72XMINIAOD']:
+    process.icMiniAODSequence = cms.Sequence(
+      process.unpackedTracksAndVertices
+    )
+    process.icPFProducer = producers.icPFFromPackedProducer.clone(
+      branch          = cms.string("pfCandidates"),
+      input           = cms.InputTag("packedPFCandidates", "", "PAT"),
+      requestTracks   = cms.bool(True),
+      inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
+    )
+if release in ['72X']:
+    process.icPFProducer = producers.icPFProducer.clone(
+      branch          = cms.string("pfCandidates"),
+      input           = cms.InputTag("particleFlow", "", "RECO"),
+      requestTracks   = cms.bool(True)
+    )
+
+process.icTrackProducer = producers.icTrackProducer.clone(
+  branch = cms.string("tracks"),
+  input  = cms.InputTag("icPFProducer", "requestedTracks")
+)
 
 ##############################################################################
 # EventInfo Module
@@ -496,6 +522,9 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
 process.icEventProducer = cms.EDProducer('ICEventProducer')
 
 process.p = cms.Path(
+  process.icMiniAODSequence+
+  process.icPFProducer+
+  process.icTrackProducer+
   process.icTriggerPathProducer+
   process.icTriggerObjectSequence+
   process.icEventProducer
