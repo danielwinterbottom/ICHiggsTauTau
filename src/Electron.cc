@@ -24,7 +24,7 @@ Electron::Electron()
       sigma_IetaIeta_(0.),
       dphi_sc_tk_at_vtx_(0.),
       deta_sc_tk_at_vtx_(0.),
-      gsf_tk_nhits_(0.),
+      gsf_tk_nhits_(0),
       conv_dist_(0.),
       conv_dcot_(0.),
       f_brem_(0.),
