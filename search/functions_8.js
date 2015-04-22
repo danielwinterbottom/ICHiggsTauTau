@@ -41,5 +41,6 @@ var searchData=
   ['is_5ftracker',['is_tracker',['../classic_1_1_muon.html#a879f3a9726c098ec0596f67b778cda79',1,'ic::Muon']]],
   ['it_5flayers_5fwith_5fmeasurement',['it_layers_with_measurement',['../classic_1_1_muon.html#a64790683ab5d942d869e04270ca193d3',1,'ic::Muon']]],
   ['it_5fpixel_5fhits',['it_pixel_hits',['../classic_1_1_muon.html#aabf271825ce73aeb2210c93d65d995ad',1,'ic::Muon']]],
-  ['it_5ftracker_5fhits',['it_tracker_hits',['../classic_1_1_muon.html#a8d42a64cd4c47950640c37e0f8774c34',1,'ic::Muon']]]
+  ['it_5ftracker_5fhits',['it_tracker_hits',['../classic_1_1_muon.html#a8d42a64cd4c47950640c37e0f8774c34',1,'ic::Muon']]],
+  ['it_5fvalid_5ffraction',['it_valid_fraction',['../classic_1_1_muon.html#af03b81fd5d009997c13eb24aff1366b6',1,'ic::Muon']]]
 ];

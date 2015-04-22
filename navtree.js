@@ -95,8 +95,8 @@ var NAVTREEINDEX =
 "_met_8hh.html",
 "class_i_c_tau_producer.html#a0a53adf9e24a707ddef44d6f3a79c989",
 "classic_1_1_j_p_t_jet.html#a2d03f4725251d1aece3ce97f06fc4118",
-"classic_1_1_photon.html#a3b62e8c8a96580f7d1bf173cd9925d18",
-"higgs-to-tau-tau.html#htt-skimming"
+"classic_1_1_p_f_jet.html#af1fa4ac55a90dec005062667601a243e",
+"globals_defs.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

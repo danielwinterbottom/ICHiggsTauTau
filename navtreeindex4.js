@@ -1,5 +1,13 @@
 var NAVTREEINDEX4 =
 {
+"classic_1_1_p_f_jet.html#af1fa4ac55a90dec005062667601a243e":[9,0,0,15,55],
+"classic_1_1_p_f_jet.html#af815aafb80985744deb8ecadf65a9045":[9,0,0,15,12],
+"classic_1_1_p_f_jet.html#afc5148c5bcad67981e8b96c4ce10e2da":[9,0,0,15,48],
+"classic_1_1_photon.html":[9,0,0,16],
+"classic_1_1_photon.html#a0c134e24ce8c9f081e883f56d6134e56":[9,0,0,16,15],
+"classic_1_1_photon.html#a22611eac9f3389c005e45cf8afe2b8c2":[9,0,0,16,3],
+"classic_1_1_photon.html#a30eb93d12e66581b6521d8f6a82f3b04":[9,0,0,16,12],
+"classic_1_1_photon.html#a3778c4c832882e84a4e6f6884f4e163d":[9,0,0,16,1],
 "classic_1_1_photon.html#a3b62e8c8a96580f7d1bf173cd9925d18":[9,0,0,16,14],
 "classic_1_1_photon.html#a42f261c695f0a6e2df12ae008cb0912b":[9,0,0,16,10],
 "classic_1_1_photon.html#a694eef18a9163cf5c19261fb601e116f":[9,0,0,16,13],
@@ -241,13 +249,5 @@ var NAVTREEINDEX4 =
 "functions_x.html":[9,2,0,21],
 "functions_y.html":[9,2,0,22],
 "functions_~.html":[9,2,0,23],
-"globals.html":[10,1,0],
-"globals_defs.html":[10,1,3],
-"globals_func.html":[10,1,1],
-"globals_type.html":[10,1,2],
-"hierarchy.html":[9,1],
-"higgs-to-tau-tau.html":[5],
-"higgs-to-tau-tau.html#htt-datacards":[5,3],
-"higgs-to-tau-tau.html#htt-event-selection":[5,2],
-"higgs-to-tau-tau.html#htt-ntuple-production":[5,0]
+"globals.html":[10,1,0]
 };

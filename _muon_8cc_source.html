@@ -125,48 +125,52 @@ $(document).ready(function(){initNavTree('_muon_8cc_source.html','');});
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;      is_calo_(false),</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;      is_pf_(false),</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      gt_normalized_chi2_(0.),</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      gt_valid_muon_hits_(0),</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      matched_stations_(0),</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;      it_pixel_hits_(0),</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      it_tracker_hits_(0),</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      it_layers_with_measurement_(0),</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      dxy_vertex_(0.),</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      dz_vertex_(0.),</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;      dxy_beamspot_(0.) {}</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#afb8ea82e42add946922bb4ef27f7211d">   36</a></span>&#160;  <a class="code" href="classic_1_1_muon.html#afb8ea82e42add946922bb4ef27f7211d">Muon::~Muon</a>() {}</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">   38</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">Muon::SetIdIso</a>(std::string <span class="keyword">const</span>&amp; name, <span class="keywordtype">float</span> <span class="keyword">const</span>&amp; value) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    muon_idiso_[<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name)] = value;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  }</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      cq_chi2_localposition_(0.),</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      cq_trk_kink_(0.),</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;      gt_valid_muon_hits_(0),</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      matched_stations_(0),</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      it_pixel_hits_(0),</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      it_tracker_hits_(0),</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      it_layers_with_measurement_(0),</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;      it_valid_fraction_(0),</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      segment_compatibility_(0),</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;      dxy_vertex_(0.),</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      dz_vertex_(0.),</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      dxy_beamspot_(0.) {}</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#afb8ea82e42add946922bb4ef27f7211d">   40</a></span>&#160;  <a class="code" href="classic_1_1_muon.html#afb8ea82e42add946922bb4ef27f7211d">Muon::~Muon</a>() {}</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8">   42</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8">Muon::HasIdIso</a>(std::string <span class="keyword">const</span>&amp; name)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">return</span> muon_idiso_.count(<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name)) &gt; 0;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">   42</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">Muon::SetIdIso</a>(std::string <span class="keyword">const</span>&amp; name, <span class="keywordtype">float</span> <span class="keyword">const</span>&amp; value) {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    muon_idiso_[<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name)] = value;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  }</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36">   46</a></span>&#160;  <span class="keywordtype">float</span> <a class="code" href="classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36">Muon::GetIdIso</a>(std::string <span class="keyword">const</span>&amp; name)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    UFmap::const_iterator iter = muon_idiso_.find(<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name));</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordflow">if</span> (iter != muon_idiso_.end()) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;      <span class="keywordflow">return</span> iter-&gt;second;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      std::cerr &lt;&lt; <span class="stringliteral">&quot;Warning in &lt;Muon::GetIdIso&gt;: Label \&quot;&quot;</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;          &lt;&lt; name &lt;&lt; <span class="stringliteral">&quot;\&quot; not found&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      <span class="keywordflow">return</span> 0.0;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#a6d1a65bd1d0ada3b7cd3fd916807529c">   57</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classic_1_1_muon.html#a6d1a65bd1d0ada3b7cd3fd916807529c">Muon::Print</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <a class="code" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">Candidate::Print</a>();</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8">   46</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8">Muon::HasIdIso</a>(std::string <span class="keyword">const</span>&amp; name)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">return</span> muon_idiso_.count(<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name)) &gt; 0;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  }</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36">   50</a></span>&#160;  <span class="keywordtype">float</span> <a class="code" href="classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36">Muon::GetIdIso</a>(std::string <span class="keyword">const</span>&amp; name)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    UFmap::const_iterator iter = muon_idiso_.find(<a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(name));</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordflow">if</span> (iter != muon_idiso_.end()) {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      <span class="keywordflow">return</span> iter-&gt;second;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      std::cerr &lt;&lt; <span class="stringliteral">&quot;Warning in &lt;Muon::GetIdIso&gt;: Label \&quot;&quot;</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;          &lt;&lt; name &lt;&lt; <span class="stringliteral">&quot;\&quot; not found&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      <span class="keywordflow">return</span> 0.0;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
-<div class="ttc" id="classic_1_1_muon_html_a6d1a65bd1d0ada3b7cd3fd916807529c"><div class="ttname"><a href="classic_1_1_muon.html#a6d1a65bd1d0ada3b7cd3fd916807529c">ic::Muon::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00057">Muon.cc:57</a></div></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classic_1_1_muon.html#a6d1a65bd1d0ada3b7cd3fd916807529c">   61</a></span>&#160;  <span class="keywordtype">void</span> <a class="code" href="classic_1_1_muon.html#a6d1a65bd1d0ada3b7cd3fd916807529c">Muon::Print</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">Candidate::Print</a>();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  }</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="ttc" id="classic_1_1_muon_html_a6d1a65bd1d0ada3b7cd3fd916807529c"><div class="ttname"><a href="classic_1_1_muon.html#a6d1a65bd1d0ada3b7cd3fd916807529c">ic::Muon::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00061">Muon.cc:61</a></div></div>
 <div class="ttc" id="city_8h_html_ad1bd1546443b3e43413429c5b81d7c5e"><div class="ttname"><a href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a></div><div class="ttdeci">uint64 CityHash64(const char *buf, size_t len)</div><div class="ttdef"><b>Definition:</b> <a href="city_8cc_source.html#l00200">city.cc:200</a></div></div>
-<div class="ttc" id="classic_1_1_muon_html_acd0cb85de4e7ba87db53da02e1d2cb36"><div class="ttname"><a href="classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36">ic::Muon::GetIdIso</a></div><div class="ttdeci">float GetIdIso(std::string const &amp;name) const </div><div class="ttdoc">Get the value associated to a label. </div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00046">Muon.cc:46</a></div></div>
+<div class="ttc" id="classic_1_1_muon_html_acd0cb85de4e7ba87db53da02e1d2cb36"><div class="ttname"><a href="classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36">ic::Muon::GetIdIso</a></div><div class="ttdeci">float GetIdIso(std::string const &amp;name) const </div><div class="ttdoc">Get the value associated to a label. </div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00050">Muon.cc:50</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html"><div class="ttname"><a href="classic_1_1_candidate.html">ic::Candidate</a></div><div class="ttdoc">Stores a four-momentum, charge and identifier, and is the base class for most other physics objects...</div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8hh_source.html#l00013">Candidate.hh:13</a></div></div>
 <div class="ttc" id="namespaceic_html"><div class="ttname"><a href="namespaceic.html">ic</a></div><div class="ttdef"><b>Definition:</b> <a href="_calo_jet_8hh_source.html#l00009">CaloJet.hh:9</a></div></div>
-<div class="ttc" id="classic_1_1_muon_html_a3732a53fd348d189ee05bc80658d40b8"><div class="ttname"><a href="classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8">ic::Muon::HasIdIso</a></div><div class="ttdeci">bool HasIdIso(std::string const &amp;name) const </div><div class="ttdoc">Check if a value with label name has already been defined. </div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00042">Muon.cc:42</a></div></div>
-<div class="ttc" id="classic_1_1_muon_html_afb8ea82e42add946922bb4ef27f7211d"><div class="ttname"><a href="classic_1_1_muon.html#afb8ea82e42add946922bb4ef27f7211d">ic::Muon::~Muon</a></div><div class="ttdeci">virtual ~Muon()</div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00036">Muon.cc:36</a></div></div>
-<div class="ttc" id="classic_1_1_muon_html_afc51367ac7710fc0b195dc48b5fe0d15"><div class="ttname"><a href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">ic::Muon::SetIdIso</a></div><div class="ttdeci">void SetIdIso(std::string const &amp;name, float const &amp;value)</div><div class="ttdoc">Add a new entry, overwriting any existing one with the same name. </div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00038">Muon.cc:38</a></div></div>
+<div class="ttc" id="classic_1_1_muon_html_a3732a53fd348d189ee05bc80658d40b8"><div class="ttname"><a href="classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8">ic::Muon::HasIdIso</a></div><div class="ttdeci">bool HasIdIso(std::string const &amp;name) const </div><div class="ttdoc">Check if a value with label name has already been defined. </div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00046">Muon.cc:46</a></div></div>
+<div class="ttc" id="classic_1_1_muon_html_afb8ea82e42add946922bb4ef27f7211d"><div class="ttname"><a href="classic_1_1_muon.html#afb8ea82e42add946922bb4ef27f7211d">ic::Muon::~Muon</a></div><div class="ttdeci">virtual ~Muon()</div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00040">Muon.cc:40</a></div></div>
+<div class="ttc" id="classic_1_1_muon_html_afc51367ac7710fc0b195dc48b5fe0d15"><div class="ttname"><a href="classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15">ic::Muon::SetIdIso</a></div><div class="ttdeci">void SetIdIso(std::string const &amp;name, float const &amp;value)</div><div class="ttdoc">Add a new entry, overwriting any existing one with the same name. </div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00042">Muon.cc:42</a></div></div>
 <div class="ttc" id="classic_1_1_muon_html_a484600fe9da00b0c0bae7cd86de9356a"><div class="ttname"><a href="classic_1_1_muon.html#a484600fe9da00b0c0bae7cd86de9356a">ic::Muon::Muon</a></div><div class="ttdeci">Muon()</div><div class="ttdef"><b>Definition:</b> <a href="_muon_8cc_source.html#l00006">Muon.cc:6</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html_ad96b680fd5080c7ae34e977541784dc6"><div class="ttname"><a href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">ic::Candidate::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8cc_source.html#l00009">Candidate.cc:9</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
