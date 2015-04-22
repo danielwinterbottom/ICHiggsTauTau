@@ -858,6 +858,7 @@ namespace ic {
     return tightCut;
   }
 
+  //Defined in https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonId2015
   bool MuonMedium(Muon const* muon) {
     bool goodGlob = muon->is_global() && 
       muon->gt_normalized_chi2() < 3 &&
