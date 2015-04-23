@@ -122,7 +122,6 @@ class Jet : public Candidate {
     parton_flavour_ = parton_flavour;
   }
 
-
   /// Store a jet energy correction factor, overwriting any existing value with
   /// label `name`
   void SetJecFactor(std::string const& name, float const& value);
@@ -140,7 +139,6 @@ class Jet : public Candidate {
   double uncorrected_energy_;
   float jet_area_;
   int parton_flavour_;
-  
 
   std::string UnHashJecFactor(std::size_t jec) const;
   std::string UnHashDiscr(std::size_t dis) const;
