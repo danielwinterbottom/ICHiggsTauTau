@@ -285,41 +285,13 @@ icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
     branch                    = cms.string("pfJetsFromPat"),
     input                     = cms.InputTag("ak4PFJets"),
     #### The srcConfig PSet when the input is a reco::Jet collection
-    srcConfig = cms.PSet(
-      includeJetFlavour         = cms.bool(False),
-      inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
-      ### If True corrects the input jets using the list of correctors
-      ### given by JECs below
-      applyJECs                 = cms.bool(False),
-      ### If True saves the value of each correction factor along witht he
-      ### hash of the label given in the option JECs below
-      includeJECs               = cms.bool(False),
-      JECs                      = cms.PSet(
-        ### E.g.
-        #  L1FastJet  = cms.string("ak5PFL1Fastjet"),
-        #  L2Relative = cms.string("ak5PFL2Relative"),
-        #  L3Absolute = cms.string("ak5PFL3Absolute")
-      ),
-      ### If true will apply the cut specfied by 'cutAfterJECS' to the corrected
-      ### input jets
-      applyCutAfterJECs         = cms.bool(False),
-      cutAfterJECs              = cms.string(""),
-      inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAK5PF"),
-      requestSVInfo             = cms.bool(False),
-      BTagDiscriminators        = cms.PSet(
-        ### E.g.
-        #  simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK5PF"),
-        #  simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK5PF"),
-        #  combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK5PF")
-      ),
-    ),
     #### The srcConfig PSet when the input is a pat::Jet collection
-     #srcConfig = cms.PSet(
-     #  includeJetFlavour         = cms.bool(False),
-     #  includeJECs               = cms.bool(False),
-     #  inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAOD"),
-     #  requestSVInfo             = cms.bool(False)
-     #),
+     srcConfig = cms.PSet(
+       includeJetFlavour         = cms.bool(False),
+       includeJECs               = cms.bool(False),
+       inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAOD"),
+       requestSVInfo             = cms.bool(False)
+     ),
     #### The destConfig PSet when the output is an ic::PFJet collection
     destConfig = cms.PSet(
       includePileupID       = cms.bool(False),
