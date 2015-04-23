@@ -53,8 +53,6 @@ typedef safe_enum<strategy_def> strategy;
 
 inline std::string Strategy2String(strategy const& in) {
 	static std::map<strategy, std::string> conv = boost::assign::map_list_of
-		(strategy::hcp2012, 		"hcp2012")
-		(strategy::moriond2013, "moriond2013")
 		(strategy::paper2013, 	"paper2013");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -66,8 +64,6 @@ inline std::string Strategy2String(strategy const& in) {
 
 inline strategy String2Strategy(std::string const& in) {
 	static std::map<std::string, strategy> conv = boost::assign::map_list_of
-	("hcp2012", 		strategy::hcp2012)
-	("moriond2013", strategy::moriond2013)
 	("paper2013", 	strategy::paper2013);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
@@ -80,9 +76,6 @@ inline strategy String2Strategy(std::string const& in) {
 struct era_def {
 	enum type {
 		data_2011,				// Entire 2011 dataset, mixture of prompt and re-reco
-		data_2012_hcp,		// HCP dataset for 2012: A+B re-reco C prompt
-		data_2012_moriond,// Moriond dataset for 2012: A+B re-reco, C+D prompt
-		data_2012_donly, 	// 2012D prompt only
 		data_2012_rereco,
 		data_2015
 	};
@@ -92,9 +85,6 @@ typedef safe_enum<era_def> era;
 inline std::string Era2String(era const& in) {
 	static std::map<era, std::string> conv = boost::assign::map_list_of
 		(era::data_2011, 					"data_2011")
-		(era::data_2012_hcp, 			"data_2012_hcp")
-		(era::data_2012_moriond, 	"data_2012_moriond")
-		(era::data_2012_donly, 		"data_2012_donly")
 		(era::data_2012_rereco, 	"data_2012_rereco")
 		(era::data_2015, 	        "data_2015");
 	if (conv.find(in) != conv.end()) {
@@ -108,9 +98,6 @@ inline std::string Era2String(era const& in) {
 inline era String2Era(std::string const& in) {
 	static std::map<std::string, era> conv = boost::assign::map_list_of
 	("data_2011",					era::data_2011)
-	("data_2012_hcp", 		era::data_2012_hcp)
-	("data_2012_moriond", era::data_2012_moriond)
-	("data_2012_donly", 	era::data_2012_donly)
 	("data_2012_rereco", 	era::data_2012_rereco)
 	("data_2015", 	era::data_2015);
 	if (conv.find(in) != conv.end()) {
@@ -124,8 +111,7 @@ inline era String2Era(std::string const& in) {
 struct mc_def {
 	enum type {
 		fall11_42X,				// 42X MC
-		summer12_53X,			// 53X MC
-		summer12_52X			// 52X MC
+		summer12_53X			// 53X MC
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -133,8 +119,7 @@ typedef safe_enum <mc_def> mc;
 inline std::string MC2String(mc const& in) {
 	static std::map<mc, std::string> conv = boost::assign::map_list_of
 		(mc::fall11_42X, "fall11_42X")
-		(mc::summer12_53X, "summer12_53X")
-		(mc::summer12_52X, "summer12_52X");
+		(mc::summer12_53X, "summer12_53X");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -146,8 +131,7 @@ inline std::string MC2String(mc const& in) {
 inline mc String2MC(std::string const& in) {
 	static std::map<std::string, mc> conv = boost::assign::map_list_of
 	("fall11_42X",		mc::fall11_42X)
-	("summer12_53X",	mc::summer12_53X)
-	("summer12_52X",	mc::summer12_52X);
+	("summer12_53X",	mc::summer12_53X);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
