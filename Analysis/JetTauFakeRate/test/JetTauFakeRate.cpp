@@ -16,7 +16,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/CopyCollection.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/SimpleFilter.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Modules/interface/OverlapFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/JetTauFakeRate.h"
+#include "UserCode/ICHiggsTauTau/Analysis/JetTauFakeRate/interface/JetTauFakeRate.h"
 
 using boost::lexical_cast;
 using boost::bind;
