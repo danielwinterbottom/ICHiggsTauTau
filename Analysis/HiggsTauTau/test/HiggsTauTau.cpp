@@ -204,9 +204,6 @@ int main(int argc, char* argv[]){
   
   
 
-//  if (era == era::data_2012_moriond && (channel == channel::etmet || channel == channel::mtmet)) {
-//    era = era::data_2012_donly;
-//  }
 
 
   std::cout << "-------------------------------------" << std::endl;
@@ -278,10 +275,15 @@ int main(int argc, char* argv[]){
       elec_eta = 2.1;
       muon_pt = 17.0;
       muon_eta = 2.1;
-    } else {
+    } else if (era == era::data_2012_rereco) {
       elec_pt = 24.0;
       elec_eta = 2.1;
       muon_pt = 20.0;
+      muon_eta = 2.1;
+    } else {
+      elec_pt = 23.0;
+      elec_eta = 2.5;
+      muon_pt = 18.0;
       muon_eta = 2.1;
     }
     tau_pt = 20.0;
@@ -300,10 +302,15 @@ int main(int argc, char* argv[]){
       elec_eta = 2.1;
       muon_pt = 17.0;
       muon_eta = 2.1;
-    } else {
+    } else if (era == era::data_2012_rereco) {
       elec_pt = 24.0;
       elec_eta = 2.1;
       muon_pt = 20.0;
+      muon_eta = 2.1;
+    } else {
+      elec_pt = 23.0;
+      elec_eta = 2.5;
+      muon_pt = 18.0;
       muon_eta = 2.1;
     }
     tau_pt = 20.0;
@@ -323,6 +330,17 @@ int main(int argc, char* argv[]){
     muon_eta = 2.1;
     tau_pt = 20.0;
     tau_eta = 2.3;
+    if(era == era::data_2015) {
+      //I think this is probably wrong and just duplicated from the other channels, but keep for now to be consistent with twiki
+      elec_dz = 0.2;
+      elec_dxy = 0.045;
+      muon_dz = 0.2;
+      muon_dxy = 0.045;
+      elec_pt = 13.0;
+      elec_eta = 2.5;
+      muon_pt = 9.0;
+      muon_eta = 2.4;
+    }
     if (special_mode == 22 || special_mode == 25) {
       elec_dxy = 999.;  
       muon_dxy = 999.;  
@@ -382,16 +400,8 @@ int main(int argc, char* argv[]){
       data_json = "data/json/json_data_2011_et_mt.txt";
     }
   }             
-  if (era == era::data_2012_hcp)          data_json = "data/json/data_2012_hcp.txt";
-  if (era == era::data_2012_moriond) {
-    if (strategy == strategy::hcp2012 || strategy == strategy::moriond2013) {
-                                          data_json = "data/json/data_2012_moriond_no_recovery.txt";
-      if (channel == channel::em)         data_json = "data/json/data_2012_moriond_valentina.txt";
-    }
-    if (strategy == strategy::paper2013)  data_json = "data/json/data_2012_moriond_final.txt";
-  }
-  if (era == era::data_2012_donly)        data_json = "data/json/data_2012_donly.txt";
   if (era == era::data_2012_rereco)       data_json = "data/json/data_2012_rereco.txt";
+  //if (era == era::data_2015)       data_json = "data/json/data_2015.txt";
 
   LumiMask lumiMask = LumiMask("LumiMask")
     .set_produce_output_jsons("")
@@ -405,12 +415,12 @@ int main(int argc, char* argv[]){
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";
   if (mc == mc::summer12_53X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
+  //if (mc == mc::phys14_72X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
+  //if (mc == mc::summer15_74X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
   string data_pu_file;
   if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
-  if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
-  if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
-  if (era == era::data_2012_donly) data_pu_file     =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
   if (era == era::data_2012_rereco) data_pu_file    =  "data/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
+  //if (era == era::data_2015) data_pu_file    =  "data/pileup/Data_Pileup_2015-600bins.root";
   if (channel == channel::mtmet) data_pu_file       =  "data/pileup/Data_Pileup_2012_ReRecoD_All-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
@@ -490,7 +500,6 @@ int main(int argc, char* argv[]){
     .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
     .set_min(1);
-  if (era == era::data_2011 && strategy == strategy::hcp2012) embeddedMassFilter.set_input_label("genParticles");
 
 
   EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
@@ -513,14 +522,14 @@ int main(int argc, char* argv[]){
 
   string jes_input_file = "data/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
   string jes_input_set  = "SubTotalDataMC";
-  if (era == era::data_2012_moriond || era == era::data_2012_donly || era == era::data_2012_hcp) {
-    jes_input_file = "data/jec/Fall12_V7_DATA_UncertaintySources_AK5PF.txt";
-    jes_input_set  = "SubTotalMC";
-  }
   if (era == era::data_2012_rereco) {
     jes_input_file = "data/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
     jes_input_set  = "SubTotalMC";
   }
+  //if (era == era::data_2015) {
+  //  jes_input_file = "data/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+  //  jes_input_set  = "SubTotalMC";
+  //}
   auto jetEnergyUncertainty = JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
   .set_input_label("pfJetsPFlow")
   .set_jes_shift_mode(jes_mode)
@@ -704,12 +713,7 @@ int main(int argc, char* argv[]){
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
 
-  // At Moriond we correct the tau ES in  all "real tau" samples
-  // For the paper, we only correct the embedded samples.
   bool correct_es_sample = real_tau_sample;
-  if (era == era::data_2012_rereco) {
-    correct_es_sample  = real_tau_sample;
-  }
 
   TauDzFixer tauDzFixer("TauDzFixer");
 
@@ -744,20 +748,7 @@ int main(int argc, char* argv[]){
     .set_min(1);
 
   std::string tau_iso_discr, tau_anti_elec_discr_1, tau_anti_elec_discr_2, tau_anti_muon_discr;
-  if (strategy == strategy::hcp2012 || strategy == strategy::moriond2013) {
-    if (channel == channel::et || channel == channel::etmet) {
-      tau_iso_discr         = "byLooseIsolationMVA";
-      tau_anti_elec_discr_1 = "againstElectronMVA";
-      tau_anti_elec_discr_2 = "againstElectronTightMVA2";
-      tau_anti_muon_discr   = "againstMuonLoose";
-    }
-    if (channel == channel::mt || channel == channel::mtmet) {
-      tau_iso_discr         = "byLooseIsolationMVA";
-      tau_anti_elec_discr_1 = "againstElectronLoose";
-      tau_anti_elec_discr_2 = "againstElectronLoose";
-      tau_anti_muon_discr   = "againstMuonTight";
-    }
-  } else if (strategy == strategy::paper2013) {
+  if (strategy == strategy::paper2013) {
     if (channel == channel::et || channel == channel::etmet) {
       tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
       //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
@@ -955,10 +946,6 @@ int main(int argc, char* argv[]){
     if (mc == mc::fall11_42X) {
       httWeights.SetWTargetFractions(0.752332, 0.171539, 0.0538005, 0.0159036, 0.00642444);
       httWeights.SetWInputYields(81295381.0, 70712575.0, 25320546.0, 7541595.0, 12973738.0);
-    }
-    if (mc == mc::summer12_53X) {
-      httWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);
-      httWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
     }
     if (mc == mc::summer12_53X && strategy == strategy::paper2013) {
       httWeights.SetWTargetFractions(0.743925, 0.175999, 0.0562617, 0.0168926, 0.00692218);

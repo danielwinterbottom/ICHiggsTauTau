@@ -10,7 +10,7 @@ namespace ic {
 
   TauIDCategories::TauIDCategories(std::string const& name) : ModuleBase(name), 
   channel_(channel::et), 
-  era_(era::data_2012_moriond),
+  era_(era::data_2012_rereco),
   strategy_(strategy::paper2013) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
