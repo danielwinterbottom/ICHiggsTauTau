@@ -12,7 +12,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-#include "UserCode/ICHiggsTauTau/interface/EGammaMvaEleEstimatorCSA14.h"
+#include "UserCode/ICHiggsTauTau/plugins/EGammaMvaEleEstimatorCSA14.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
@@ -32,7 +32,8 @@ private:
     virtual void produce(edm::Event&, const edm::EventSetup&);
     // ----------member data ---------------------------
     bool verbose_;
-    edm::EDGetTokenT<pat::ElectronCollection> electronToken_;
+//    edm::EDGetTokenT<pat::ElectronCollection> electronToken_;
+    edm::InputTag electronToken_;
     
     //used tokens
     //double _Rho;

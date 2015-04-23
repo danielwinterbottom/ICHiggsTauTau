@@ -1,6 +1,6 @@
 ////This file was copied over from EGammaAnalysis/ElectronTools/src/EGammaMvaEleEstimatorCSA14.cc in HuguesBrun:trigElecIdInCommonIsoSelection720
 //#include <TFile.h>
-#include "UserCode/ICHiggsTauTau/interface/EGammaMvaEleEstimatorCSA14.h"
+#include "UserCode/ICHiggsTauTau/plugins/EGammaMvaEleEstimatorCSA14.h"
 //#include <cmath>
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"

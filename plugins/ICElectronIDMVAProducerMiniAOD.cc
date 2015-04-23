@@ -16,7 +16,8 @@
 
 ICElectronIDMVAProducerMiniAOD::ICElectronIDMVAProducerMiniAOD(const edm::ParameterSet& config) {
     verbose_ = config.getUntrackedParameter<bool>("verbose", false);
-	electronToken_ = consumes<pat::ElectronCollection>(config.getParameter<edm::InputTag>("electronTag"));
+//	electronToken_ = consumes<pat::ElectronCollection>(config.getParameter<edm::InputTag>("electronTag"));
+        electronToken_ = config.getParameter<edm::InputTag>("electronTag");
 	method_ = config.getParameter<string>("method");
 	std::vector<string> fpMvaWeightFiles = config.getParameter<std::vector<std::string> >("mvaWeightFile");
 	trig_ = config.getParameter<bool>("trig");
@@ -66,7 +67,7 @@ void ICElectronIDMVAProducerMiniAOD::produce(edm::Event& event, const edm::Event
     
     
     edm::Handle<pat::ElectronCollection> egCollection;
-    event.getByToken(electronToken_,egCollection);
+    event.getByLabel(electronToken_,egCollection);
     const pat::ElectronCollection egCandidates = (*egCollection.product());
     
     
