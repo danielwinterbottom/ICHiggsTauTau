@@ -1,5 +1,0 @@
-SUBDIRS 	:=
-LIB_DEPS 	:=
-LIB_EXTRA :=
-SRC_EXT := cpp
-PKG_OPTS := -w
