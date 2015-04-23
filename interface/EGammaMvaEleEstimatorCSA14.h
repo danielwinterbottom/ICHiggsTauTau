@@ -12,14 +12,15 @@
 
 
 
-#ifndef EGammaMvaEleEstimatorCSA14_H
-#define EGammaMvaEleEstimatorCSA14_H
+//#ifndef EGammaMvaEleEstimatorCSA14_H
+//#define EGammaMvaEleEstimatorCSA14_H
 
-#include <vector>
 #include <TROOT.h>
 #include "TMVA/Factory.h"
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
+#include "Math/Vector4D.h"
+#include "Math/Vector4Dfwd.h"
 
 using namespace std;
 
@@ -148,4 +149,4 @@ class EGammaMvaEleEstimatorCSA14{
  
 };
 
-#endif
+//#endif
