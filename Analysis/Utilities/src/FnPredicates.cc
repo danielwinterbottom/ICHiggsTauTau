@@ -858,6 +858,19 @@ namespace ic {
     return tightCut;
   }
 
+  //Defined in https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonId2015
+  bool MuonMedium(Muon const* muon) {
+    bool goodGlob = muon->is_global() && 
+      muon->gt_normalized_chi2() < 3 &&
+      muon->cq_chi2_localposition()<12 &&
+      muon->cq_trk_kink()<20;
+
+    bool isMedium = (muon->is_global()||muon->is_tracker()) && //Require loose muon except pf isolation should be done in individual analyses
+      muon->it_valid_fraction() > 0.8 && 
+      muon->segment_compatibility() > (goodGlob ? 0.303 : 0.451); 
+    return isMedium;
+  }
+
   bool HttEMuFakeMuon(Muon const* muon) {
     bool pass_iso = false;
     if ( muon->pt() > 20. &&
