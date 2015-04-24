@@ -16,20 +16,17 @@ The second part is an offline analysis framework, organised into a series of pac
   - The same physics object classes from above are provided in the `Objects` package, with ROOT dictionaries built using the standard `rootcint` method and steered by the `Objects/interface/LinkDef.h` file.
 
 
-Documentation can be produced by running `doxygen` from within the **ICHiggsTauTau** directory. A recent copy of the html output can be found here (this updates automatically several times a day):
+Documentation can be produced by running `docs/make_docs.sh` from within the **ICHiggsTauTau** directory. An up-to-date copy can always be found here:
 <http://ajgilbert.github.io/ICHiggsTauTau/index.html>
 
 The instructions for setting a CMSSW area with the **ICHiggsTauTau** package are reproduced below.
 
 Setting up CMSSW
 ================
-The following steps set up a new area, but note that only certain CMSSW releases are supported. This replaces the CVS recipe of creating a new area and running the `setup_X_Y_Z.sh` script, and unfortunately this new procedure is more complicated.
+The following steps set up a new area, but note that only certain CMSSW releases are supported. All object classes and CMSSW modules compile should successfully with `scram` in each of the supported CMSSW release series:
 
-All object classes and CMSSW modules compile should successfully with `scram` in each of the supported CMSSW release series:
-
-		CMSSW_4_2_8_patch7
 		CMSSW_5_3_X
-		CMSSW_7_0_X
+		CMSSW_7_0_X, CMSSW_7_1_X, CMSSW_7_2_X, CMSSW_7_3_X
 
 The official CMSSW repository is hosted here: <https://github.com/cms-sw/cmssw>.
 If you do not already have a GitHub account, please read through the instructions at <http://cms-sw.github.io/cmssw/faq.html>, in particular ensure you have configured git with your personal information:
@@ -44,8 +41,8 @@ Before working with CMSSW in git, you will need to create a copy (or fork) of th
 
 Create a new CMSSW area:
 
-		export SCRAM_ARCH=slc5_amd64_gcc462
-		# Or newer, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481
+		export SCRAM_ARCH=slc6_amd64_gcc491
+		# Or older, e.g. slc5_amd64_gcc472, slc6_amd64_gcc481
 		scramv1 project CMSSW CMSSW_X_Y_Z
 		cd CMSSW_X_Y_Z/src/
 		cmsenv
