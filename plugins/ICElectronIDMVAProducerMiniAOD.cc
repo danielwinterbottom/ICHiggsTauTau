@@ -13,6 +13,7 @@
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 #include "UserCode/ICHiggsTauTau/plugins/ICElectronIDMVAProducerMiniAOD.hh"
+//Based on https://github.com/HuguesBrun/ExampleElectronMVAid/blob/addMVAfromMiniAOD/plugins/ExampleElectronMVAid.cc
 
 ICElectronIDMVAProducerMiniAOD::ICElectronIDMVAProducerMiniAOD(const edm::ParameterSet& config) {
     verbose_ = config.getUntrackedParameter<bool>("verbose", false);
