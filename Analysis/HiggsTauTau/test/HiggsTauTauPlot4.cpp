@@ -694,7 +694,7 @@ int main(int argc, char* argv[]){
 	if (syst_fakes_os_ss_shape != "") {
 		  std::string qcd_label = (channel_str == "em") ? "Fakes" : "QCD";
       for (unsigned j = 0; j < vars.size(); ++j) {
-        TH1F weights = ic::GetFromTFile<TH1F>("data/scale_factors/OS_SS_weights.root","/","OSoverSS_msv_nobtag_ratio");
+        TH1F weights = ic::GetFromTFile<TH1F>("input/scale_factors/OS_SS_weights.root","/","OSoverSS_msv_nobtag_ratio");
         TH1F h1 = hmap[qcd_label+vars_postfix[j]].first;
         TH1F h2 = hmap[qcd_label+vars_postfix[j]].first;
         TH1F h3 = hmap[qcd_label+vars_postfix[j]].first;

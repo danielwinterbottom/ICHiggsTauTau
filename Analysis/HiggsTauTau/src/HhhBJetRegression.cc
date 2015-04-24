@@ -16,7 +16,7 @@ namespace ic {
 
   HhhBJetRegression::HhhBJetRegression(std::string const& name) : ModuleBase(name) {
     jets_label_ = "pfJetsPFlow";
-    regression_mva_file_ = "data/Hhh_regression_mva/factoryJetRegNewGenJetsAll_BDT.weights.xml";
+    regression_mva_file_ = "input/Hhh_regression_mva/factoryJetRegNewGenJetsAll_BDT.weights.xml";
     regression_reader_ = nullptr;
   }
 

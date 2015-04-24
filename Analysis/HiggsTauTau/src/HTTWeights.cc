@@ -85,8 +85,8 @@ namespace ic {
       // if (ggh_mass_ == "90" || ggh_mass_ == "95" ||
       //     ggh_mass_ == "100" || ggh_mass_ == "105") ggh_mass_ = "110";
       // if (ggh_mass_ == "150" || ggh_mass_ == "155" || ggh_mass_ == "160") ggh_mass_ = "145";
-      // std::string file = "data/ggh_weights/weight_ptH_"+ggh_mass_+".root";
-      std::string file = "data/ggh_weights/HRes_weight_pTH_mH125_7TeV.root";
+      // std::string file = "input/ggh_weights/weight_ptH_"+ggh_mass_+".root";
+      std::string file = "input/ggh_weights/HRes_weight_pTH_mH125_7TeV.root";
       std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
       ggh_weights_ = new TFile(file.c_str());
       ggh_weights_->cd();
@@ -103,7 +103,7 @@ namespace ic {
          || ggh_mass_ == "130"  || ggh_mass_ == "135" ) ggh_mass_ = "125";
       if (  ggh_mass_ == "140"  || ggh_mass_ == "145" || ggh_mass_ == "150"
          || ggh_mass_ == "155"  || ggh_mass_ == "160" ) ggh_mass_ = "150";
-      std::string file = "data/ggh_weights/HRes_weight_pTH_mH"+ggh_mass_+"_8TeV.root";
+      std::string file = "input/ggh_weights/HRes_weight_pTH_mH"+ggh_mass_+"_8TeV.root";
       std::cout << boost::format(param_fmt()) % "higgs_pt_weights" % file;
       ggh_weights_ = new TFile(file.c_str());
       ggh_weights_->cd();
@@ -115,11 +115,11 @@ namespace ic {
     if (do_emu_e_fakerates_ || do_emu_m_fakerates_) {
       std::string electron_fr_file, muon_fr_file;
       if (era_ == era::data_2012_rereco) {
-        electron_fr_file  = "data/emu_fakerate/ElectronFakeRate_2012_19ifb_rereco.root";
-        muon_fr_file      = "data/emu_fakerate/MuonFakeRate_2012_19ifb_rereco.root";
+        electron_fr_file  = "input/emu_fakerate/ElectronFakeRate_2012_19ifb_rereco.root";
+        muon_fr_file      = "input/emu_fakerate/MuonFakeRate_2012_19ifb_rereco.root";
       } else {
-        electron_fr_file  = "data/emu_fakerate/ElectronFakeRate_2011.root";
-        muon_fr_file      = "data/emu_fakerate/MuonFakeRate_2011.root";
+        electron_fr_file  = "input/emu_fakerate/ElectronFakeRate_2011.root";
+        muon_fr_file      = "input/emu_fakerate/MuonFakeRate_2011.root";
       }    
       std::cout << boost::format(param_fmt()) % "electron_fr_file"  % electron_fr_file;
       std::cout << boost::format(param_fmt()) % "muon_fr_file"      % muon_fr_file;
@@ -247,7 +247,7 @@ namespace ic {
         event->Add("wt_tau_id_down", weight_down);
       }
     }
-    //A derived correction based on a data/MC discrepancy in the subleading b-jet eta in the emu ttbar control region. Used for a cross-check in H->hh analysis.
+    //A derived correction based on a input/MC discrepancy in the subleading b-jet eta in the emu ttbar control region. Used for a cross-check in H->hh analysis.
     if (do_top_jeteta_weights_) {
       std::vector<PFJet*> prebjets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
       ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
