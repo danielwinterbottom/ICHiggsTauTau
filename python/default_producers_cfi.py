@@ -377,7 +377,8 @@ icGenJetProducer = cms.EDProducer('ICGenJetProducer',
   branch  = cms.string("genJets"),
   input   = cms.InputTag("ak5GenJets"),
   inputGenParticles = cms.InputTag("genParticles"),
-  requestGenParticles = cms.bool(False)
+  requestGenParticles = cms.bool(False),
+  isSlimmed = cms.bool(False)
 )
 ## [GenJet]
 
