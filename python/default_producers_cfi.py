@@ -9,8 +9,19 @@ icCandidateProducer = cms.EDProducer('ICCandidateProducer',
 
 ## [PFCandidate]
 icPFProducer = cms.EDProducer('ICPFProducer',
-  branch  = cms.string("pfCandidates"),
-  input   = cms.InputTag("particleFlow", "", "RECO")
+  branch              = cms.string("pfCandidates"),
+  input               = cms.InputTag("particleFlow", "", "RECO"),
+  requestTracks       = cms.bool(False),
+  requestGsfTracks    = cms.bool(False),
+  inputUnpackedTracks = cms.InputTag("")
+)
+
+icPFFromPackedProducer = cms.EDProducer('ICPFFromPackedProducer',
+  branch              = cms.string("pfCandidates"),
+  input               = cms.InputTag("packedPFCandidates", "", "PAT"),
+  requestTracks       = cms.bool(False),
+  requestGsfTracks    = cms.bool(False),
+  inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
 )
 ## [PFCandidate]
 
@@ -280,6 +291,7 @@ icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     # destConfig = cms.PSet()
 )
 
+
 icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
     branch                    = cms.string("pfJetsFromPat"),
     input                     = cms.InputTag("ak4PFJets"),
@@ -319,6 +331,7 @@ icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
     #### The destConfig PSet when the output is an ic::Jet collection (empty!)
     # destConfig = cms.PSet()
 )
+
 ## [Jet]
 
 ## [Vertex]

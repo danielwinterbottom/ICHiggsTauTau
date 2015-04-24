@@ -834,7 +834,7 @@ if release in ['72XMINIAOD']:
   process.icGenJetProducer.isSlimmed  = cms.bool(True)
   process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
     branch = cms.string("slimmedGenJets"),
-    input = cms.string("slimmedGenJets"),
+    input = cms.InputTag("slimmedGenJets"),
     inputGenParticles=cms.InputTag("genParticles"),
     requestGenParticles = cms.bool(False),
     isSlimmed = cms.bool(True)
