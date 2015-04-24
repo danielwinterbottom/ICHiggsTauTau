@@ -396,7 +396,6 @@ void ICJetProducer<ic::PFJet, pat::Jet>::constructSpecific(
     event.getByLabel(dest_.input_vtxs, vtx_handle);
     trk_vtx_map = BuildTrkVtxMap(trk_handle, vtx_handle);
   }
-  
 
   for (unsigned i = 0; i < passed_.size(); ++i) {
     pat::Jet const& src = jets_handle->at(passed_[i]);
