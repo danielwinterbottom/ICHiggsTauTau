@@ -253,7 +253,7 @@ namespace ic {//namespace
 		    << hist_trigSF_METHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
 		    <<  hist_trigSF_METHLT->GetBinContent(i);
       
-	  //change first bins to "1": no input/MC scale factor applied...
+	  //change first bins to "1": no data/MC scale factor applied...
 	  if (i>0 && hist_trigSF_METHLT->GetBinContent(i) == 0) {
 	    hist_trigSF_METHLT->SetBinContent(i,1);
 	    std::cout << " -> changed to " <<  hist_trigSF_METHLT->GetBinContent(i);
@@ -278,7 +278,7 @@ namespace ic {//namespace
 		    << hist_trigSF_JetHLT->GetXaxis()->GetBinUpEdge(i) << "] : "
 		    <<  hist_trigSF_JetHLT->GetBinContent(i);
       
-	  //change first bins to "1": no input/MC scale factor applied...
+	  //change first bins to "1": no data/MC scale factor applied...
 	  if (i>0 && hist_trigSF_JetHLT->GetBinContent(i) == 0) {
 	    hist_trigSF_JetHLT->SetBinContent(i,1);
 	    std::cout << " -> changed to " <<  hist_trigSF_JetHLT->GetBinContent(i);
