@@ -250,6 +250,15 @@ if release in ['70XMINIAOD', '72XMINIAOD']:
   process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
       input       = electronLabel
   )
+
+#Recalculation of electron conversion veto (alternative to using the value stored in the 
+#slimmedElectrons collection, commented for now)
+#  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromMiniAODCalculator',
+#      input       = electronLabel,
+#      beamspot    = cms.InputTag("offlineBeamSpot"),
+#      conversions = cms.InputTag("reducedEgamma:reducedConversions")
+#  )
+
 if release in ['72X']:
   process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_CSA14_cfi")
   process.mvaNonTrigV025nsPHYS14.electronTag = cms.InputTag("selectedElectrons")
