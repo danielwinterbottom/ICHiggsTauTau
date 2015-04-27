@@ -222,9 +222,9 @@ int main(int argc, char* argv[]){
       mssm_xs_tools xs_tool;
       string file;
       if (v_eras[i] == "7TeV") {
-        file = "data/scale_factors/out.mhmax_mu200_7_nnlo.tanBeta_gte1.root";
+        file = "input/scale_factors/out.mhmax_mu200_7_nnlo.tanBeta_gte1.root";
       } else if (v_eras[i] == "8TeV") {
-        file = "data/scale_factors/out.mhmax_mu200_8_nnlo.tanBeta_gte1_FHv274.root";
+        file = "input/scale_factors/out.mhmax_mu200_8_nnlo.tanBeta_gte1_FHv274.root";
       } else {
         continue;
       }

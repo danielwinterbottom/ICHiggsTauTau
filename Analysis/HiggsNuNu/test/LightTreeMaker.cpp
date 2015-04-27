@@ -164,7 +164,7 @@ int main(int argc, char* argv[]){
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
     ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Dec18/ParamsDec18.dat"))
-    ("trg_weight_file",     po::value<string>(&trg_weight_file)->default_value("data/scale_factors/DataMCWeight_53X_v1.root"))
+    ("trg_weight_file",     po::value<string>(&trg_weight_file)->default_value("input/scale_factors/DataMCWeight_53X_v1.root"))
     ("trg_to_use",          po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
@@ -173,7 +173,7 @@ int main(int argc, char* argv[]){
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("dospring10gaus",      po::value<bool>(&dospring10gaus)->default_value(false))
-    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
+    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
@@ -299,11 +299,11 @@ int main(int argc, char* argv[]){
 
 
 //   string data_json;
-//   if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
-//   if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
-//   if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
-//   if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
-//   if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
+//   if (era == era::data_2011) data_json           =  "input/json/json_data_2011_et_mt.txt";
+//   if (era == era::data_2012_ichep) data_json     =  "input/json/data_2012_ichep.txt";
+//   if (era == era::data_2012_hcp) data_json       =  "input/json/data_2012_hcp.txt";
+//   if (era == era::data_2012_moriond) data_json   =  "input/json/data_2012_moriond.txt";
+//   if (era == era::data_2012_donly) data_json     =  "input/json/data_2012_donly.txt";
 //   LumiMask lumiMask = LumiMask("LumiMask")
 //     .set_produce_output_jsons("")
 //     .set_input_file(data_json);
@@ -313,17 +313,17 @@ int main(int argc, char* argv[]){
   
   
   string mc_pu_file;
-  if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";
-  if (mc == mc::summer12_53X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
-  if (mc == mc::summer12_52X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S7-600bins.root";
+  if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
+  if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
+  if (mc == mc::summer12_52X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S7-600bins.root";
 
   string data_pu_file;
-  if (era == era::data_2012_rereco) data_pu_file   =  "data/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
-  if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
-  if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
-  if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
-  if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
-  if (era == era::data_2012_donly) data_pu_file     =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
+  if (era == era::data_2012_rereco) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
+  if (era == era::data_2011) data_pu_file     =  "input/pileup/Data_Pileup_2011_HCP-500bins.root";
+  if (era == era::data_2012_ichep) data_pu_file     =  "input/pileup/Data_Pileup_2012.root";
+  if (era == era::data_2012_hcp) data_pu_file       =  "input/pileup/Data_Pileup_2012_HCP-600bins.root";
+  if (era == era::data_2012_moriond) data_pu_file   =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
+  if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -332,12 +332,12 @@ int main(int argc, char* argv[]){
   TH1D data_pu_down;
   
   if(era==era::data_2012_moriond){
-    data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
-    data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
   }
   else if(era==era::data_2012_rereco){
-    data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Up.root", "/", "pileup");
-    data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Down.root", "/", "pileup");
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Up.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Down.root", "/", "pileup");
   }
 
   if (!is_data) {
@@ -369,14 +369,14 @@ int main(int argc, char* argv[]){
 //   ("JetEnergyCorrections")
 //   .set_input_label("pfJetsPFlow")
 //   .set_is_data(is_data)
-//   .set_l1_file("data/jec/START53_V10_L1FastJet_AK5PF.txt")
-//   .set_l2_file("data/jec/START53_V10_L2Relative_AK5PF.txt")
-//   .set_l3_file("data/jec/START53_V10_L3Absolute_AK5PF.txt");
+//   .set_l1_file("input/jec/START53_V10_L1FastJet_AK5PF.txt")
+//   .set_l2_file("input/jec/START53_V10_L2Relative_AK5PF.txt")
+//   .set_l3_file("input/jec/START53_V10_L3Absolute_AK5PF.txt");
   
 
   MetLaserFilters metLaserFilters = MetLaserFilters("MetLaserFilters",
-						    "data/met_laser_filters/AllBadHCALLaser.txt",
-						    "data/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
+						    "input/met_laser_filters/AllBadHCALLaser.txt",
+						    "input/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
 						    doMetFilters);
 
 

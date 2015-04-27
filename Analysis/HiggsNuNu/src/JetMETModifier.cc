@@ -158,7 +158,7 @@ namespace ic {
 	recogenjetptratio[i][j] = dir4.make<TH1F>(("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),("recogenjetptratio_"+etas[i]+"_"+pts[j]).c_str(),300,0.,3.);
       }
     }
-    TFile *resin=new TFile("data/MCres/MCresolutions.root","read");
+    TFile *resin=new TFile("input/MCres/MCresolutions.root","read");
     for(int i=0;i<netas;i++){
       resin->GetObject(("resforeta"+etas[i]).c_str(),res[i]);
       resin->GetObject(("resfuncforeta"+etas[i]).c_str(),resfunc[i]);

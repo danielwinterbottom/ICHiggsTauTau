@@ -113,9 +113,9 @@ int main(int argc, char* argv[]) {
 
   // Define modules
   TH1D data_pu  = ic::GetFromTFile<TH1D>
-    ("data/Pileup_2011_to_173692_CD111018.root", "/", "pileup");
+    ("input/Pileup_2011_to_173692_CD111018.root", "/", "pileup");
   TH1D mc_pu    = ic::GetFromTFile<TH1D>
-    ("data/Summer11_PU_S4_spikesmear.root", "/", "pileup");
+    ("input/Summer11_PU_S4_spikesmear.root", "/", "pileup");
   auto pileup_weight = ic::PileupWeight("PileupWeight")
     .set_data(&data_pu)
     .set_mc(&mc_pu)
@@ -124,12 +124,12 @@ int main(int argc, char* argv[]) {
 
   auto lumi_mask = ic::LumiMask("LumiMask")
     .set_produce_output_jsons("")
-    .set_input_file("data/json.txt");
+    .set_input_file("input/json.txt");
 
   auto jes_uncert = ic::JetEnergyUncertainty<ic::PFJet>("JetEnergyUncertainty")
     .set_input_label("pfJetsPFlow")
     .set_jes_shift_mode(jes_mode)
-    .set_uncert_file("data/JEC11_V12_AK5PF_UncertaintySources.txt")
+    .set_uncert_file("input/JEC11_V12_AK5PF_UncertaintySources.txt")
     .set_uncert_set("SubTotalDataMC");
 
   auto copy_elecs = ic::CopyCollection<ic::Electron>("CopyElectrons",

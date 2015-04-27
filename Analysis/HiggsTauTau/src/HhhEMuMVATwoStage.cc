@@ -17,8 +17,8 @@ namespace ic {
   HhhEMuMVATwoStage::HhhEMuMVATwoStage(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    gf_mva_file_ = "data/Hhh_mva/StageOne_BDTG.weights.xml";
-    gf_mva_file_2_ = "data/Hhh_mva/StageTwo_90pc_BDTG.weights.xml";
+    gf_mva_file_ = "input/Hhh_mva/StageOne_BDTG.weights.xml";
+    gf_mva_file_2_ = "input/Hhh_mva/StageTwo_90pc_BDTG.weights.xml";
     gf_reader_ = nullptr;
     gf_reader_2_ = nullptr;
   }
