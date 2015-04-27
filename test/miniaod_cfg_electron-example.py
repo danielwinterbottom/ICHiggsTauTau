@@ -252,8 +252,8 @@ if release in ['70XMINIAOD', '72XMINIAOD']:
   )
 
 #Recalculation of electron conversion veto (alternative to using the value stored in the 
-#slimmedElectrons collection, commented for now)
-#  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromMiniAODCalculator',
+#slimmedElectrons collection, commented out for now)
+#  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
 #      input       = electronLabel,
 #      beamspot    = cms.InputTag("offlineBeamSpot"),
 #      conversions = cms.InputTag("reducedEgamma:reducedConversions")
@@ -283,22 +283,23 @@ if release in ['72XMINIAOD']:
      )
 
 #Include electron cut-based IDs
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cfi")
-process.egmGsfElectronIDs.physicsObjectSrc = cms.InputTag('selectedElectrons')
+#Commented out as it's not stricly necessary 
+#from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+#process.load("RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cfi")
+#process.egmGsfElectronIDs.physicsObjectSrc = cms.InputTag('selectedElectrons')
 
-from PhysicsTools.SelectorUtils.centralIDRegistry import central_id_registry
-process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
+#from PhysicsTools.SelectorUtils.centralIDRegistry import central_id_registry
+#process.egmGsfElectronIDSequence = cms.Sequence(process.egmGsfElectronIDs)
 
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V1_cff']
-if release in ['72XMINIAOD']:
-  my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V1_miniAOD_cff']
+#my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V1_cff']
+#if release in ['72XMINIAOD']:
+#  my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V1_miniAOD_cff']
 
-for idmod in my_id_modules:
-  setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+#for idmod in my_id_modules:
+#  setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
 process.icElectronSequence+=cms.Sequence(
-   process.egmGsfElectronIDSequence+
+#   process.egmGsfElectronIDSequence+
    process.mvaNonTrigV025nsPHYS14
    )
 
@@ -350,10 +351,10 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   includeBeamspotIP         = cms.bool(True),
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
   includeFloats = cms.PSet(
-     cutBasedVeto        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-standalone-veto"),
-     cutBasedLoose        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-standalone-loose"),
-     cutBasedMedium        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-standalone-medium"),
-     cutBasedTight        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-standalone-tight"),
+#     cutBasedVeto        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-standalone-veto"),
+#     cutBasedLoose        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-standalone-loose"),
+#     cutBasedMedium        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-standalone-medium"),
+#     cutBasedTight        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-standalone-tight"),
      mvaNonTrigV025nsPHYS14    = cms.InputTag("mvaNonTrigV025nsPHYS14")
   ),
   includePFIso03           = cms.bool(True)
@@ -361,10 +362,10 @@ process.icElectronProducer = producers.icElectronProducer.clone(
 
 if release in ['72XMINIAOD']:
   process.icElectronProducer.includeFloats = cms.PSet(
-     cutBasedVeto        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-veto"),
-     cutBasedLoose        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-loose"),
-     cutBasedMedium        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-medium"),
-     cutBasedTight        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-tight"),
+#     cutBasedVeto        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-veto"),
+#     cutBasedLoose        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-loose"),
+#     cutBasedMedium        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-medium"),
+#     cutBasedTight        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-tight"),
      mvaNonTrigV025nsPHYS14    = cms.InputTag("mvaNonTrigV025nsPHYS14")
   )
 
