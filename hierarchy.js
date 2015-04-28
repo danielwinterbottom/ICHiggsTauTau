@@ -22,6 +22,8 @@ var hierarchy =
       [ "ic::Concatenate< T >", "classic_1_1_concatenate.html", null ],
       [ "ic::Merge< T >", "classic_1_1_merge.html", null ],
       [ "ICCandidateProducer", "class_i_c_candidate_producer.html", null ],
+      [ "ICElectronConversionCalculator", "class_i_c_electron_conversion_calculator.html", null ],
+      [ "ICElectronConversionFromPatCalculator", "class_i_c_electron_conversion_from_pat_calculator.html", null ],
       [ "ICElectronHcalDepthCalculator", "class_i_c_electron_hcal_depth_calculator.html", null ],
       [ "ICElectronProducer", "class_i_c_electron_producer.html", null ],
       [ "ICEventInfoProducer", "class_i_c_event_info_producer.html", null ],

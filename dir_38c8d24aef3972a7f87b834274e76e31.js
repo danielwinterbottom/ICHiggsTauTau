@@ -8,6 +8,14 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
     [ "ICCandidateProducer.hh", "_i_c_candidate_producer_8hh.html", [
       [ "ICCandidateProducer", "class_i_c_candidate_producer.html", "class_i_c_candidate_producer" ]
     ] ],
+    [ "ICElectronConversionCalculator.cc", "_i_c_electron_conversion_calculator_8cc.html", "_i_c_electron_conversion_calculator_8cc" ],
+    [ "ICElectronConversionCalculator.h", "_i_c_electron_conversion_calculator_8h.html", [
+      [ "ICElectronConversionCalculator", "class_i_c_electron_conversion_calculator.html", "class_i_c_electron_conversion_calculator" ]
+    ] ],
+    [ "ICElectronConversionFromPatCalculator.cc", "_i_c_electron_conversion_from_pat_calculator_8cc.html", "_i_c_electron_conversion_from_pat_calculator_8cc" ],
+    [ "ICElectronConversionFromPatCalculator.h", "_i_c_electron_conversion_from_pat_calculator_8h.html", [
+      [ "ICElectronConversionFromPatCalculator", "class_i_c_electron_conversion_from_pat_calculator.html", "class_i_c_electron_conversion_from_pat_calculator" ]
+    ] ],
     [ "ICElectronHcalDepthCalculator.cc", "_i_c_electron_hcal_depth_calculator_8cc.html", "_i_c_electron_hcal_depth_calculator_8cc" ],
     [ "ICElectronHcalDepthCalculator.h", "_i_c_electron_hcal_depth_calculator_8h.html", [
       [ "ICElectronHcalDepthCalculator", "class_i_c_electron_hcal_depth_calculator.html", "class_i_c_electron_hcal_depth_calculator" ]

@@ -1,6 +1,8 @@
 var searchData=
 [
   ['iccandidateproducer',['ICCandidateProducer',['../class_i_c_candidate_producer.html#a83b24e0cdc5b76db6a552b70e89b499b',1,'ICCandidateProducer']]],
+  ['icelectronconversioncalculator',['ICElectronConversionCalculator',['../class_i_c_electron_conversion_calculator.html#a0e73a7aa1daeb5774de6c1945f61758f',1,'ICElectronConversionCalculator']]],
+  ['icelectronconversionfrompatcalculator',['ICElectronConversionFromPatCalculator',['../class_i_c_electron_conversion_from_pat_calculator.html#af8b6794c2f51c124ba4b876990a4ccef',1,'ICElectronConversionFromPatCalculator']]],
   ['icelectronhcaldepthcalculator',['ICElectronHcalDepthCalculator',['../class_i_c_electron_hcal_depth_calculator.html#a270060e0da46b15f4b28f7a8a5050bb9',1,'ICElectronHcalDepthCalculator']]],
   ['icelectronproducer',['ICElectronProducer',['../class_i_c_electron_producer.html#a05669e445d792f302b66e1620963273c',1,'ICElectronProducer']]],
   ['iceventinfoproducer',['ICEventInfoProducer',['../class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900',1,'ICEventInfoProducer']]],

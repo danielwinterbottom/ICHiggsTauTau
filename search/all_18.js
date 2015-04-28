@@ -9,6 +9,8 @@ var searchData=
   ['_7egenjet',['~GenJet',['../classic_1_1_gen_jet.html#a572a6adfa5dc09976500b91d264d8d25',1,'ic::GenJet']]],
   ['_7egenparticle',['~GenParticle',['../classic_1_1_gen_particle.html#a7a7d988cbdaa049a335d3460d829c363',1,'ic::GenParticle']]],
   ['_7eiccandidateproducer',['~ICCandidateProducer',['../class_i_c_candidate_producer.html#a5a1b30319551d16c477efae5117c1320',1,'ICCandidateProducer']]],
+  ['_7eicelectronconversioncalculator',['~ICElectronConversionCalculator',['../class_i_c_electron_conversion_calculator.html#ab167a7d6de47adf26a5df7da7ae874cd',1,'ICElectronConversionCalculator']]],
+  ['_7eicelectronconversionfrompatcalculator',['~ICElectronConversionFromPatCalculator',['../class_i_c_electron_conversion_from_pat_calculator.html#a68b0ed00529162ba572e2e0c63843907',1,'ICElectronConversionFromPatCalculator']]],
   ['_7eicelectronhcaldepthcalculator',['~ICElectronHcalDepthCalculator',['../class_i_c_electron_hcal_depth_calculator.html#af246d9e6d192fbbe67e49e5061813d9e',1,'ICElectronHcalDepthCalculator']]],
   ['_7eicelectronproducer',['~ICElectronProducer',['../class_i_c_electron_producer.html#a587d29ed5d0de77a8e35f50dc7ee07c7',1,'ICElectronProducer']]],
   ['_7eiceventinfoproducer',['~ICEventInfoProducer',['../class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1',1,'ICEventInfoProducer']]],

@@ -1,6 +1,8 @@
 var searchData=
 [
   ['iccandidateproducer',['ICCandidateProducer',['../class_i_c_candidate_producer.html',1,'']]],
+  ['icelectronconversioncalculator',['ICElectronConversionCalculator',['../class_i_c_electron_conversion_calculator.html',1,'']]],
+  ['icelectronconversionfrompatcalculator',['ICElectronConversionFromPatCalculator',['../class_i_c_electron_conversion_from_pat_calculator.html',1,'']]],
   ['icelectronhcaldepthcalculator',['ICElectronHcalDepthCalculator',['../class_i_c_electron_hcal_depth_calculator.html',1,'']]],
   ['icelectronproducer',['ICElectronProducer',['../class_i_c_electron_producer.html',1,'']]],
   ['iceventinfoproducer',['ICEventInfoProducer',['../class_i_c_event_info_producer.html',1,'']]],
