@@ -37,7 +37,6 @@ class ICPhotonProducer : public edm::EDProducer {
 
   edm::InputTag input_electron_veto_;
   bool do_electron_veto_;
-  edm::InputTag input_had_tow_over_em_;
   bool do_had_tow_over_em_;
 
   struct IsoTags {

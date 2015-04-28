@@ -26,8 +26,6 @@ ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
       input_electron_veto_(
           config.getParameter<edm::InputTag>("inputElectronVeto")),
       do_electron_veto_(config.getParameter<bool>("includeElectronVeto")),
-      input_had_tow_over_em_(
-          config.getParameter<edm::InputTag>("inputHadTowOverEm")),
       do_had_tow_over_em_(config.getParameter<bool>("includeHadTowOverEm")),
       pf_iso_(config.getParameterSet("pfIso")),
       do_pf_iso_(config.getParameter<bool>("includePFIso")) {
@@ -55,10 +53,6 @@ void ICPhotonProducer::produce(edm::Event& event,
   edm::Handle<edm::ValueMap<bool> > electron_veto_handle;
   if (do_electron_veto_)
     event.getByLabel(input_electron_veto_, electron_veto_handle);
-
-  edm::Handle<edm::ValueMap<float> > had_tow_over_em_handle;
-  if (do_had_tow_over_em_)
-    event.getByLabel(input_had_tow_over_em_, had_tow_over_em_handle);
 
   edm::Handle<edm::ValueMap<double> > charged_03;
   edm::Handle<edm::ValueMap<double> > neutral_03;
@@ -104,7 +98,7 @@ void ICPhotonProducer::produce(edm::Event& event,
     }
 
     if (do_had_tow_over_em_) {
-      dest.set_had_tower_over_em((*had_tow_over_em_handle)[ref]);
+      dest.set_had_tower_over_em(src.hadTowOverEm());
     }
 
     if (do_pf_iso_) {
