@@ -19,6 +19,7 @@ var classic_1_1_electron =
     [ "dr04_pfiso_gamma", "classic_1_1_electron.html#a3b20b90d20ea3c62fe17cd6f17d3cfac", null ],
     [ "dr04_pfiso_pu", "classic_1_1_electron.html#a61cd1905357d1fec3473c8a346f990ae", null ],
     [ "hadronic_over_em", "classic_1_1_electron.html#aaf2efbea962b3972bca6c9afbe3973f6", null ],
+    [ "full5x5_sigma_IetaIeta", "classic_1_1_electron.html#a60f534de70672baebbfe573b4505e980", null ],
     [ "sigma_IetaIeta", "classic_1_1_electron.html#a1c90bb31ae4cea0fb89da5bcbab0559b", null ],
     [ "dphi_sc_tk_at_vtx", "classic_1_1_electron.html#ae412f5a662797968cd0466eab5b7a7a0", null ],
     [ "deta_sc_tk_at_vtx", "classic_1_1_electron.html#ac6809327c6376e9a2325374ea10967ab", null ],
@@ -56,6 +57,7 @@ var classic_1_1_electron =
     [ "set_dr04_pfiso_gamma", "classic_1_1_electron.html#a3c551d8aabae1269168927cebe3859cb", null ],
     [ "set_dr04_pfiso_pu", "classic_1_1_electron.html#a09b5fda4ab37d1a88aed6f896389cf5e", null ],
     [ "set_hadronic_over_em", "classic_1_1_electron.html#a46f8b59700ef4915f564d5e76607766b", null ],
+    [ "set_full5x5_sigma_IetaIeta", "classic_1_1_electron.html#a08bc6f7d914d88a25c360df56c6723ac", null ],
     [ "set_sigma_IetaIeta", "classic_1_1_electron.html#aab4e53187af67404224fbcf01bf76e35", null ],
     [ "set_dphi_sc_tk_at_vtx", "classic_1_1_electron.html#ad664e482890a81e2e277c29403cb94f6", null ],
     [ "set_deta_sc_tk_at_vtx", "classic_1_1_electron.html#a8dccbd4fb63229e483abdb629ef782c7", null ],
@@ -80,5 +82,5 @@ var classic_1_1_electron =
     [ "SetIdIso", "classic_1_1_electron.html#a85f0953b8b9116800d14506ff60ed230", null ],
     [ "HasIdIso", "classic_1_1_electron.html#a0ebe6ecff16252c2ff47572879569dd1", null ],
     [ "GetIdIso", "classic_1_1_electron.html#a88d7ed9fef58f89cdabd2854167dc537", null ],
-    [ "ClassDef", "classic_1_1_electron.html#a60eabcc5585b8175ddba86c4355f73d8", null ]
+    [ "ClassDef", "classic_1_1_electron.html#aaef04f538f0bdcf578fc36ea3c5a8c18", null ]
 ];

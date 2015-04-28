@@ -17,5 +17,6 @@ var searchData=
   ['muon_5fmultiplicity',['muon_multiplicity',['../classic_1_1_j_p_t_jet.html#a87862e1a5cde9ca249eb638f570f8e57',1,'ic::JPTJet::muon_multiplicity()'],['../classic_1_1_p_f_jet.html#a31e7b81c19eef1d0964c3c4b5a53f918',1,'ic::PFJet::muon_multiplicity()']]],
   ['muons_5fin_5fvtx_5fin_5fcalo',['muons_in_vtx_in_calo',['../classic_1_1_j_p_t_jet.html#ac718c0b58d2ef86d3cd29883092aae59',1,'ic::JPTJet']]],
   ['muons_5fin_5fvtx_5fout_5fcalo',['muons_in_vtx_out_calo',['../classic_1_1_j_p_t_jet.html#aca823aaf1da51f243235775d8c53babe',1,'ic::JPTJet']]],
-  ['muons_5fout_5fvtx_5fin_5fcalo',['muons_out_vtx_in_calo',['../classic_1_1_j_p_t_jet.html#a81932025e89cd631b1819b8d8c3d81d7',1,'ic::JPTJet']]]
+  ['muons_5fout_5fvtx_5fin_5fcalo',['muons_out_vtx_in_calo',['../classic_1_1_j_p_t_jet.html#a81932025e89cd631b1819b8d8c3d81d7',1,'ic::JPTJet']]],
+  ['mvavalue',['mvaValue',['../class_e_gamma_mva_ele_estimator_c_s_a14.html#acfa2ce84691e826da31a0beeb4abba6f',1,'EGammaMvaEleEstimatorCSA14']]]
 ];

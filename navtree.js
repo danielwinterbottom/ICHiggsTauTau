@@ -73,7 +73,9 @@ var NAVTREE =
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", null ],
-        [ "Typedefs", "functions_type.html", null ]
+        [ "Typedefs", "functions_type.html", null ],
+        [ "Enumerations", "functions_enum.html", null ],
+        [ "Enumerator", "functions_eval.html", null ]
       ] ]
     ] ],
     [ "Files", null, [
@@ -92,11 +94,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_calo_jet_8cc.html",
-"_link_def_8h_source.html",
-"class_i_c_photon_producer.html",
-"classic_1_1_gen_particle.html#a63bf6644a9f55e0e862cb89b115d898e",
-"classic_1_1_p_f_jet.html#ab6b241a85f3037126e6e14a1433f39d7",
-"functions_m.html"
+"_json_tools_8h.html#a74e462022652b4c16644058a0ecaf6f5",
+"class_i_c_htt_muon_overlap_check.html#acd142df30f8c2b27decab55f93b6830b",
+"classic_1_1_event_info.html#aa82c0f7eb37ffb8ff934d2b5ae4b53b0",
+"classic_1_1_p_f_jet.html#a55899c70b5b02c76cc826234ba931451",
+"functions_func.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

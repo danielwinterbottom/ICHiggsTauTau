@@ -25,6 +25,7 @@ var hierarchy =
       [ "ICElectronConversionCalculator", "class_i_c_electron_conversion_calculator.html", null ],
       [ "ICElectronConversionFromPatCalculator", "class_i_c_electron_conversion_from_pat_calculator.html", null ],
       [ "ICElectronHcalDepthCalculator", "class_i_c_electron_hcal_depth_calculator.html", null ],
+      [ "ICElectronIDMVAProducerMiniAOD", "class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html", null ],
       [ "ICElectronProducer", "class_i_c_electron_producer.html", null ],
       [ "ICEventInfoProducer", "class_i_c_event_info_producer.html", null ],
       [ "ICEventProducer", "class_i_c_event_producer.html", null ],
@@ -53,6 +54,7 @@ var hierarchy =
       [ "ICVertexProducer", "class_i_c_vertex_producer.html", null ],
       [ "RequestByDeltaR< T >", "class_request_by_delta_r.html", null ]
     ] ],
+    [ "EGammaMvaEleEstimatorCSA14", "class_e_gamma_mva_ele_estimator_c_s_a14.html", null ],
     [ "ic::EventInfo", "classic_1_1_event_info.html", null ],
     [ "JetDestHelper< U >", "struct_jet_dest_helper.html", null ],
     [ "JetDestHelper< ic::CaloJet >", "struct_jet_dest_helper_3_01ic_1_1_calo_jet_01_4.html", null ],

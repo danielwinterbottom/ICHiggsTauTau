@@ -126,8 +126,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a558a284c76045e3681a480d3e06b237a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b5f857a7c906b12496347d690ba4d24"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#a1b5f857a7c906b12496347d690ba4d24">Print</a> () const </td></tr>
 <tr class="separator:a1b5f857a7c906b12496347d690ba4d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60eabcc5585b8175ddba86c4355f73d8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#a60eabcc5585b8175ddba86c4355f73d8">ClassDef</a> (<a class="el" href="classic_1_1_electron.html">Electron</a>, 2)</td></tr>
-<tr class="separator:a60eabcc5585b8175ddba86c4355f73d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaef04f538f0bdcf578fc36ea3c5a8c18"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#aaef04f538f0bdcf578fc36ea3c5a8c18">ClassDef</a> (<a class="el" href="classic_1_1_electron.html">Electron</a>, 3)</td></tr>
+<tr class="separator:aaef04f538f0bdcf578fc36ea3c5a8c18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Properties</div></td></tr>
 <tr class="memitem:ab95a72e2e57e2686c7b57a6540033e98"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::size_t &gt; const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#ab95a72e2e57e2686c7b57a6540033e98">gen_particles</a> () const </td></tr>
 <tr class="memdesc:ab95a72e2e57e2686c7b57a6540033e98"><td class="mdescLeft">&#160;</td><td class="mdescRight">A vector to refer to <a class="el" href="classic_1_1_candidate.html#a3dce7c97c6230f7048878807c180446f" title="Unique identifier. ">ic::GenParticle::id()</a> values.  <a href="#ab95a72e2e57e2686c7b57a6540033e98">More...</a><br /></td></tr>
@@ -177,8 +177,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aaf2efbea962b3972bca6c9afbe3973f6"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#aaf2efbea962b3972bca6c9afbe3973f6">hadronic_over_em</a> () const </td></tr>
 <tr class="memdesc:aaf2efbea962b3972bca6c9afbe3973f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ratio of HCAL to supercluster energy in the region of the electron hit.  <a href="#aaf2efbea962b3972bca6c9afbe3973f6">More...</a><br /></td></tr>
 <tr class="separator:aaf2efbea962b3972bca6c9afbe3973f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60f534de70672baebbfe573b4505e980"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#a60f534de70672baebbfe573b4505e980">full5x5_sigma_IetaIeta</a> () const </td></tr>
+<tr class="memdesc:a60f534de70672baebbfe573b4505e980"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal.  <a href="#a60f534de70672baebbfe573b4505e980">More...</a><br /></td></tr>
+<tr class="separator:a60f534de70672baebbfe573b4505e980"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c90bb31ae4cea0fb89da5bcbab0559b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#a1c90bb31ae4cea0fb89da5bcbab0559b">sigma_IetaIeta</a> () const </td></tr>
-<tr class="memdesc:a1c90bb31ae4cea0fb89da5bcbab0559b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal.  <a href="#a1c90bb31ae4cea0fb89da5bcbab0559b">More...</a><br /></td></tr>
+<tr class="memdesc:a1c90bb31ae4cea0fb89da5bcbab0559b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal [this method needs updated description as it does differ from full5x5_sigma_IetaIeta].  <a href="#a1c90bb31ae4cea0fb89da5bcbab0559b">More...</a><br /></td></tr>
 <tr class="separator:a1c90bb31ae4cea0fb89da5bcbab0559b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae412f5a662797968cd0466eab5b7a7a0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#ae412f5a662797968cd0466eab5b7a7a0">dphi_sc_tk_at_vtx</a> () const </td></tr>
 <tr class="memdesc:ae412f5a662797968cd0466eab5b7a7a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Delta\phi\) between the supercluster and track, where the latter is evaluated from the vertex position  <a href="#ae412f5a662797968cd0466eab5b7a7a0">More...</a><br /></td></tr>
@@ -289,8 +292,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a46f8b59700ef4915f564d5e76607766b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#a46f8b59700ef4915f564d5e76607766b">set_hadronic_over_em</a> (float const &amp;<a class="el" href="classic_1_1_electron.html#aaf2efbea962b3972bca6c9afbe3973f6">hadronic_over_em</a>)</td></tr>
 <tr class="memdesc:a46f8b59700ef4915f564d5e76607766b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ratio of HCAL to supercluster energy in the region of the electron hit.  <a href="#a46f8b59700ef4915f564d5e76607766b">More...</a><br /></td></tr>
 <tr class="separator:a46f8b59700ef4915f564d5e76607766b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08bc6f7d914d88a25c360df56c6723ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#a08bc6f7d914d88a25c360df56c6723ac">set_full5x5_sigma_IetaIeta</a> (float const &amp;<a class="el" href="classic_1_1_electron.html#a60f534de70672baebbfe573b4505e980">full5x5_sigma_IetaIeta</a>)</td></tr>
+<tr class="memdesc:a08bc6f7d914d88a25c360df56c6723ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal.  <a href="#a08bc6f7d914d88a25c360df56c6723ac">More...</a><br /></td></tr>
+<tr class="separator:a08bc6f7d914d88a25c360df56c6723ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab4e53187af67404224fbcf01bf76e35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#aab4e53187af67404224fbcf01bf76e35">set_sigma_IetaIeta</a> (float const &amp;<a class="el" href="classic_1_1_electron.html#a1c90bb31ae4cea0fb89da5bcbab0559b">sigma_IetaIeta</a>)</td></tr>
-<tr class="memdesc:aab4e53187af67404224fbcf01bf76e35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal.  <a href="#aab4e53187af67404224fbcf01bf76e35">More...</a><br /></td></tr>
+<tr class="memdesc:aab4e53187af67404224fbcf01bf76e35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal [this method needs updated description as it does differ from full5x5_sigma_IetaIeta].  <a href="#aab4e53187af67404224fbcf01bf76e35">More...</a><br /></td></tr>
 <tr class="separator:aab4e53187af67404224fbcf01bf76e35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad664e482890a81e2e277c29403cb94f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classic_1_1_electron.html#ad664e482890a81e2e277c29403cb94f6">set_dphi_sc_tk_at_vtx</a> (float const &amp;<a class="el" href="classic_1_1_electron.html#ae412f5a662797968cd0466eab5b7a7a0">dphi_sc_tk_at_vtx</a>)</td></tr>
 <tr class="memdesc:ad664e482890a81e2e277c29403cb94f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Delta\phi\) between the supercluster and track, where the latter is evaluated from the vertex position  <a href="#ad664e482890a81e2e277c29403cb94f6">More...</a><br /></td></tr>
@@ -469,7 +475,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00042">42</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00043">43</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
 
 </div>
 </div>
@@ -497,7 +503,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">ic::Candidate</a>.</p>
 
-<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00063">63</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00064">64</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
 
 </div>
 </div>
@@ -934,6 +940,33 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a60f534de70672baebbfe573b4505e980"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ic::Electron::full5x5_sigma_IetaIeta </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal. </p>
+
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00106">106</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a1c90bb31ae4cea0fb89da5bcbab0559b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -955,9 +988,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal. </p>
+<p>Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal [this method needs updated description as it does differ from full5x5_sigma_IetaIeta]. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00106">106</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00111">111</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -984,7 +1017,7 @@ Public Member Functions</h2></td></tr>
 
 <p>\(\Delta\phi\) between the supercluster and track, where the latter is evaluated from the vertex position </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00110">110</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00115">115</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1011,7 +1044,7 @@ Public Member Functions</h2></td></tr>
 
 <p>\(\Delta\eta\) between the supercluster and track, where the latter is evaluated from the vertex position </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00114">114</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00119">119</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1038,7 +1071,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Number of tracker layers between the vertex and the first detected hit the electron should have traversed. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00118">118</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00123">123</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1065,7 +1098,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Minimum distance between conversion tracks (if found) </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00121">121</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00126">126</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1092,7 +1125,7 @@ Public Member Functions</h2></td></tr>
 
 <p>\(\Delta\cot\theta\) between conversion tracks at the conversion vertex </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00125">125</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00130">130</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1119,7 +1152,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Fraction of momentum lost as bremsstrahlung, as measured in the GSF fit. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00128">128</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00133">133</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1146,7 +1179,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Supercluster \(\eta\). </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00131">131</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00136">136</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1173,7 +1206,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Supercluster \(\theta\). </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00134">134</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00139">139</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1200,7 +1233,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Supercluster energy. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00137">137</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00142">142</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1227,7 +1260,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Ratio of supercluster energy to track momentum, where the latter is evaluated at the PCA to the beamspot. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00141">141</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00146">146</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1254,7 +1287,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The ratio of the energy in the 3x3 crystal array centred on the seed over the energy of the complete supercluster. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00145">145</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00150">150</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1281,7 +1314,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Calorimeter tower isolation sum. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00148">148</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00153">153</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1308,7 +1341,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The corrected supercluster energy. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00151">151</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00156">156</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1335,7 +1368,7 @@ Public Member Functions</h2></td></tr>
 
 <p>True if electron is matched to a conversion vertex. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00154">154</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00159">159</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1362,7 +1395,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The x-coordinate of the <a class="el" href="classic_1_1_electron.html#af7272a8d6450d11002ec284833bd6f41" title="Point-of-closest-approach (PCA) of the electron track to the beamspot. ">ref_point()</a> </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00157">157</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00162">162</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1389,7 +1422,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The y-coordinate of the <a class="el" href="classic_1_1_electron.html#af7272a8d6450d11002ec284833bd6f41" title="Point-of-closest-approach (PCA) of the electron track to the beamspot. ">ref_point()</a> </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00160">160</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00165">165</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1416,7 +1449,7 @@ Public Member Functions</h2></td></tr>
 
 <p>The z-coordinate of the <a class="el" href="classic_1_1_electron.html#af7272a8d6450d11002ec284833bd6f41" title="Point-of-closest-approach (PCA) of the electron track to the beamspot. ">ref_point()</a> </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00163">163</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00168">168</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1443,7 +1476,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Transverse impact parameter of the GSF track with the primary vertex. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00166">166</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00171">171</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1470,7 +1503,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Longitudinal impact parameter of the GSF track with the primary vertex. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00169">169</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00174">174</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1497,7 +1530,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Transverse impact parameter of the GSF track with the beamspot. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00172">172</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00177">177</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1525,7 +1558,7 @@ Public Member Functions</h2></td></tr>
 
 <p>A vector to refer to <a class="el" href="classic_1_1_candidate.html#a3dce7c97c6230f7048878807c180446f" title="Unique identifier. ">ic::GenParticle::id()</a> values. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00178">178</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00183">183</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1553,7 +1586,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Point-of-closest-approach (PCA) of the electron track to the beamspot. </p>
 
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00183">183</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00188">188</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1582,7 +1615,7 @@ Public Member Functions</h2></td></tr>
 <p>Tracker isolation in a cone with \( \Delta R = 0.3 \). </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a12">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00186">186</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00191">191</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1611,7 +1644,7 @@ Public Member Functions</h2></td></tr>
 <p>ECAL isolation in a cone with \( \Delta R = 0.3 \). </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a13">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00191">191</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00196">196</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1640,7 +1673,7 @@ Public Member Functions</h2></td></tr>
 <p>HCAL isolation in a cone with \( \Delta R = 0.3 \). </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a14">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00197">197</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00202">202</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1667,9 +1700,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using all charged particles in a cone with \( \Delta R = 0.3 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a35">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a36">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00202">202</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00207">207</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1696,9 +1729,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using charged hadrons in a cone with \( \Delta R = 0.3 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a36">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a37">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00207">207</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00212">212</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1725,9 +1758,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using neutral hadrons in a cone with \( \Delta R = 0.3 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a37">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a38">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00212">212</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00217">217</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1754,9 +1787,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using photons in a cone with \( \Delta R = 0.3 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a38">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a39">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00217">217</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00222">222</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1783,9 +1816,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using charged pileup in a cone with \( \Delta R = 0.3 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a39">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a40">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00222">222</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00227">227</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1812,9 +1845,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using all charged particles in a cone with \( \Delta R = 0.4 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a40">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a41">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00227">227</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00232">232</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1841,9 +1874,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using charged hadrons in a cone with \( \Delta R = 0.4 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a41">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a42">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00232">232</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00237">237</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1870,9 +1903,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using neutral hadrons in a cone with \( \Delta R = 0.4 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a42">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a43">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00237">237</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00242">242</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1899,9 +1932,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using photons in a cone with \( \Delta R = 0.4 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a43">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a44">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00242">242</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00247">247</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1928,9 +1961,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>PF isolation, using charged pileup in a cone with \( \Delta R = 0.4 \). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a44">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a45">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00247">247</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00252">252</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1959,7 +1992,36 @@ Public Member Functions</h2></td></tr>
 <p>Ratio of HCAL to supercluster energy in the region of the electron hit. </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a15">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00252">252</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00257">257</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a08bc6f7d914d88a25c360df56c6723ac"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ic::Electron::set_full5x5_sigma_IetaIeta </td>
+          <td>(</td>
+          <td class="paramtype">float const &amp;&#160;</td>
+          <td class="paramname"><em>full5x5_sigma_IetaIeta</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal. </p>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a17">plugins/ICElectronProducer.cc</a>.</dd>
+</dl>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00262">262</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -1985,10 +2047,10 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal. </p>
+<p>Weighted cluster RMS in the \(\eta\)-direction, measured in units of crystals in a 5x5 block centred on the seed crystal [this method needs updated description as it does differ from full5x5_sigma_IetaIeta]. </p>
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a16">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00257">257</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00268">268</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2015,9 +2077,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>\(\Delta\phi\) between the supercluster and track, where the latter is evaluated from the vertex position </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a17">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a18">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00262">262</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00273">273</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2044,9 +2106,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>\(\Delta\eta\) between the supercluster and track, where the latter is evaluated from the vertex position </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a18">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a19">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00267">267</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00278">278</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2073,9 +2135,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Number of tracker layers between the vertex and the first detected hit the electron should have traversed. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a19">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a20">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00272">272</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00283">283</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2102,9 +2164,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Minimum distance between conversion tracks (if found) </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a20">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a21">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00277">277</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00289">289</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2131,9 +2193,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>\(\Delta\cot\theta\) between conversion tracks at the conversion vertex </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a21">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a22">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00280">280</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00292">292</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2160,9 +2222,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Fraction of momentum lost as bremsstrahlung, as measured in the GSF fit. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a22">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a23">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00283">283</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00295">295</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2189,9 +2251,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Supercluster \(\eta\). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a23">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a24">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00286">286</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00298">298</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2218,9 +2280,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Supercluster \(\theta\). </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a24">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a25">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00289">289</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00301">301</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2247,9 +2309,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Supercluster energy. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a25">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a26">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00292">292</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00304">304</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2276,9 +2338,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Ratio of supercluster energy to track momentum, where the latter is evaluated at the PCA to the beamspot. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a26">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a27">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00295">295</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00307">307</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2305,9 +2367,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The ratio of the energy in the 3x3 crystal array centred on the seed over the energy of the complete supercluster. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a31">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a32">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00300">300</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00312">312</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2334,9 +2396,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Calorimeter tower isolation sum. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a32">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a33">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00303">303</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00315">315</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2363,9 +2425,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The corrected supercluster energy. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a27">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a28">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00306">306</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00318">318</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2392,9 +2454,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>True if electron is matched to a conversion vertex. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a33">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a34">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00311">311</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00323">323</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2421,9 +2483,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The x-coordinate of the <a class="el" href="classic_1_1_electron.html#af7272a8d6450d11002ec284833bd6f41" title="Point-of-closest-approach (PCA) of the electron track to the beamspot. ">ref_point()</a> </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a28">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a29">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00316">316</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00328">328</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2450,9 +2512,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The y-coordinate of the <a class="el" href="classic_1_1_electron.html#af7272a8d6450d11002ec284833bd6f41" title="Point-of-closest-approach (PCA) of the electron track to the beamspot. ">ref_point()</a> </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a29">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a30">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00319">319</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00331">331</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2479,9 +2541,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>The z-coordinate of the <a class="el" href="classic_1_1_electron.html#af7272a8d6450d11002ec284833bd6f41" title="Point-of-closest-approach (PCA) of the electron track to the beamspot. ">ref_point()</a> </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a30">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a31">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00322">322</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00334">334</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2508,9 +2570,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Transverse impact parameter of the GSF track with the primary vertex. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a46">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a47">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00325">325</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00337">337</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2537,9 +2599,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Longitudinal impact parameter of the GSF track with the primary vertex. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a45">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a46">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00330">330</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00342">342</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2566,9 +2628,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Transverse impact parameter of the GSF track with the beamspot. </p>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a47">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a48">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00333">333</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8hh_source.html#l00345">345</a> of file <a class="el" href="_electron_8hh_source.html">Electron.hh</a>.</p>
 
 </div>
 </div>
@@ -2604,9 +2666,9 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a34">plugins/ICElectronProducer.cc</a>.</dd>
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_electron_producer_8cc-example.html#a35">plugins/ICElectronProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00044">44</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00045">45</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
 
 </div>
 </div>
@@ -2633,7 +2695,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the label exists in the map, false otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00048">48</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00049">49</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
 
 </div>
 </div>
@@ -2660,11 +2722,11 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value associated to the label if found, otherwise zero. </dd></dl>
 
-<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00052">52</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
+<p>Definition at line <a class="el" href="_electron_8cc_source.html#l00053">53</a> of file <a class="el" href="_electron_8cc_source.html">Electron.cc</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a60eabcc5585b8175ddba86c4355f73d8"></a>
+<a class="anchor" id="aaef04f538f0bdcf578fc36ea3c5a8c18"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -2677,7 +2739,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">2&#160;</td>
+          <td class="paramtype">3&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>

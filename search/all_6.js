@@ -18,6 +18,7 @@ var searchData=
   ['getcandidate',['GetCandidate',['../classic_1_1_composite_candidate.html#aef6c218d28d4aa39a906eabb2a96d51b',1,'ic::CompositeCandidate']]],
   ['getidiso',['GetIdIso',['../classic_1_1_electron.html#a88d7ed9fef58f89cdabd2854167dc537',1,'ic::Electron::GetIdIso()'],['../classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36',1,'ic::Muon::GetIdIso()']]],
   ['getjecfactor',['GetJecFactor',['../classic_1_1_jet.html#a2139e94d705ed49cc31f52830c6daf10',1,'ic::Jet']]],
+  ['getmvabin',['GetMVABin',['../class_e_gamma_mva_ele_estimator_c_s_a14.html#a696a89cf1eb5f0d49a5206b593478537',1,'EGammaMvaEleEstimatorCSA14']]],
   ['getpadymax',['GetPadYMax',['../_plotting_8h.html#a94fa210a8324e72a82327860972746eb',1,'GetPadYMax(TPad *pad, double x_min, double x_max):&#160;Plotting.h'],['../_plotting_8h.html#afa343295bd66905121be203cb7c7cc03',1,'GetPadYMax(TPad *pad):&#160;Plotting.h']]],
   ['gettauid',['GetTauID',['../classic_1_1_tau.html#a48b2b3b2b7d2951941c92d3e8f5a4f0d',1,'ic::Tau']]],
   ['gitandcmssw_2emd',['GitAndCMSSW.md',['../_git_and_c_m_s_s_w_8md.html',1,'']]],

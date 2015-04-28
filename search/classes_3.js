@@ -4,6 +4,7 @@ var searchData=
   ['icelectronconversioncalculator',['ICElectronConversionCalculator',['../class_i_c_electron_conversion_calculator.html',1,'']]],
   ['icelectronconversionfrompatcalculator',['ICElectronConversionFromPatCalculator',['../class_i_c_electron_conversion_from_pat_calculator.html',1,'']]],
   ['icelectronhcaldepthcalculator',['ICElectronHcalDepthCalculator',['../class_i_c_electron_hcal_depth_calculator.html',1,'']]],
+  ['icelectronidmvaproducerminiaod',['ICElectronIDMVAProducerMiniAOD',['../class_i_c_electron_i_d_m_v_a_producer_mini_a_o_d.html',1,'']]],
   ['icelectronproducer',['ICElectronProducer',['../class_i_c_electron_producer.html',1,'']]],
   ['iceventinfoproducer',['ICEventInfoProducer',['../class_i_c_event_info_producer.html',1,'']]],
   ['iceventproducer',['ICEventProducer',['../class_i_c_event_producer.html',1,'']]],
