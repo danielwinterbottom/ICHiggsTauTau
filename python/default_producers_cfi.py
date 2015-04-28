@@ -290,6 +290,49 @@ icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     #### The destConfig PSet when the output is an ic::Jet collection (empty!)
     # destConfig = cms.PSet()
 )
+
+
+icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
+    branch                    = cms.string("pfJetsFromPat"),
+    input                     = cms.InputTag("ak4PFJets"),
+    #### The srcConfig PSet when the input is a reco::Jet collection
+    #### The srcConfig PSet when the input is a pat::Jet collection
+     srcConfig = cms.PSet(
+       isSlimmed                 = cms.bool(False),
+       includeJetFlavour         = cms.bool(False),
+       includeJECs               = cms.bool(False),
+       inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAOD"),
+       requestSVInfo             = cms.bool(False)
+     ),
+    #### The destConfig PSet when the output is an ic::PFJet collection
+    destConfig = cms.PSet(
+      includePileupID       = cms.bool(False),
+      inputPileupID         = cms.InputTag("puJetMva", "fullDiscriminant"),
+      includeTrackBasedVars = cms.bool(False),
+      inputTracks           = cms.InputTag("generalTracks"),
+      inputVertices         = cms.InputTag("offlinePrimaryVertices"),
+      requestTracks         = cms.bool(False)
+    )
+    #### The destConfig PSet when the output is an ic::CaloJet collection
+    # destConfig = cms.PSet(
+    #   includeJetID        = cms.bool(False),
+    #   inputJetID          = cms.InputTag("ak5JetID"),
+    #   includeTowerCounts  = cms.bool(False)
+    # )
+    #### The destConfig PSet when the output is an ic::JPTJet collection
+    # destConfig = cms.PSet(
+    #   includeTrackBasedVars = cms.bool(False),
+    #   inputTracks           = cms.InputTag("generalTracks"),
+    #   inputVertices         = cms.InputTag("offlinePrimaryVertices"),
+    #   requestTracks         = cms.bool(False),
+    #   includeJetID          = cms.bool(False),
+    #   inputJetID            = cms.InputTag("ak5JetID"),
+    #   includeTowerCounts    = cms.bool(False)
+    # )
+    #### The destConfig PSet when the output is an ic::Jet collection (empty!)
+    # destConfig = cms.PSet()
+)
+
 ## [Jet]
 
 ## [Vertex]
@@ -346,7 +389,8 @@ icGenJetProducer = cms.EDProducer('ICGenJetProducer',
   branch  = cms.string("genJets"),
   input   = cms.InputTag("ak5GenJets"),
   inputGenParticles = cms.InputTag("genParticles"),
-  requestGenParticles = cms.bool(False)
+  requestGenParticles = cms.bool(False),
+  isSlimmed = cms.bool(False)
 )
 ## [GenJet]
 
