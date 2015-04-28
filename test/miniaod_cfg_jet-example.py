@@ -664,6 +664,10 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
     residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
 )
 
+if release in ['72XMINIAOD']:
+  process.puJetMva.vertexes = cms.InputTag("unpackedTracksAndVertices")
+  process.puJetMva.rho = cms.InputTag("fixedGridRhoFastjetAll")
+
 if release in ['70X', '70XMINIAOD', '72X', '72XMINIAOD']:
   process.puJetMva.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
 
