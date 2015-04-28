@@ -103,6 +103,11 @@ class Electron : public Candidate {
 
   /// Weighted cluster RMS in the \f$\eta\f$-direction, measured in units
   /// of crystals in a 5x5 block centred on the seed crystal
+  inline float full5x5_sigma_IetaIeta() const { return full5x5_sigma_IetaIeta_; }
+
+  /// Weighted cluster RMS in the \f$\eta\f$-direction, measured in units
+  /// of crystals in a 5x5 block centred on the seed crystal [this method 
+  /// needs updated description as it does differ from full5x5_sigma_IetaIeta] 
   inline float sigma_IetaIeta() const { return sigma_IetaIeta_; }
 
   /// \f$\Delta\phi\f$ between the supercluster and track, where the latter
@@ -253,6 +258,12 @@ class Electron : public Candidate {
     hadronic_over_em_ = hadronic_over_em;
   }
 
+  /// @copybrief full5x5_sigma_IetaIeta()
+  inline void set_full5x5_sigma_IetaIeta(float const& full5x5_sigma_IetaIeta) {
+    full5x5_sigma_IetaIeta_ = full5x5_sigma_IetaIeta;
+  }
+
+
   /// @copybrief sigma_IetaIeta()
   inline void set_sigma_IetaIeta(float const& sigma_IetaIeta) {
     sigma_IetaIeta_ = sigma_IetaIeta;
@@ -272,6 +283,7 @@ class Electron : public Candidate {
   inline void set_gsf_tk_nhits(int const& gsf_tk_nhits) {
     gsf_tk_nhits_ = gsf_tk_nhits;
   }
+
 
   /// @copybrief conv_dist()
   inline void set_conv_dist(float const& conv_dist) { conv_dist_ = conv_dist; }
@@ -382,6 +394,7 @@ class Electron : public Candidate {
   float dr04_pfiso_pu_;
 
   float hadronic_over_em_;
+  float full5x5_sigma_IetaIeta_;
   float sigma_IetaIeta_;
   float dphi_sc_tk_at_vtx_;
   float deta_sc_tk_at_vtx_;
@@ -412,7 +425,7 @@ class Electron : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Electron, 2);
+  ClassDef(Electron, 3);
  #endif
 };
 
