@@ -120,7 +120,8 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_gen_jet_producer_8cc-exa
 <div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
 <div class="line">      branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
 <div class="line">      input_particles_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputGenParticles&quot;</span>)),</div>
-<div class="line">      request_gen_particles_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestGenParticles&quot;</span>)) {</div>
+<div class="line">      request_gen_particles_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;requestGenParticles&quot;</span>)),</div>
+<div class="line">      is_slimmed_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;isSlimmed&quot;</span>)) {</div>
 <div class="line">  gen_jets_ = <span class="keyword">new</span> std::vector&lt;ic::GenJet&gt;();</div>
 <div class="line">  <span class="keywordflow">if</span> (request_gen_particles_) {</div>
 <div class="line">    produces&lt;reco::GenParticleRefVector&gt;(<span class="stringliteral">&quot;requestedGenParticles&quot;</span>);</div>
@@ -162,7 +163,8 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_gen_jet_producer_8cc-exa
 <div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
 <div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_candidate.html#a1ad59abd60b24bed580b2537e5628b4c">set_charge</a>(src.charge());</div>
 <div class="line">    dest.<a name="a11"></a><a class="code" href="classic_1_1_gen_jet.html#a5c8df3fc736685efdaf6365e420054d4">set_flavour</a>(0);</div>
-<div class="line">    dest.<a name="a12"></a><a class="code" href="classic_1_1_gen_jet.html#ac914b5577c6a58b857aa57735895b4b6">set_n_constituents</a>(src.getGenConstituents().size());</div>
+<div class="line">    <span class="keywordflow">if</span>(is_slimmed_) dest.<a name="a12"></a><a class="code" href="classic_1_1_gen_jet.html#ac914b5577c6a58b857aa57735895b4b6">set_n_constituents</a>(src.numberOfDaughters());</div>
+<div class="line">    <span class="keywordflow">else</span> dest.<a class="code" href="classic_1_1_gen_jet.html#ac914b5577c6a58b857aa57735895b4b6">set_n_constituents</a>(src.getGenConstituents().size());</div>
 <div class="line">    <span class="keywordflow">if</span> (request_gen_particles_) {</div>
 <div class="line">      std::vector&lt;std::size_t&gt; constituents;</div>
 <div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; src.getGenConstituents().size(); ++i) {</div>

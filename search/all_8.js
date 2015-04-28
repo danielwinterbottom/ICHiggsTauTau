@@ -131,6 +131,7 @@ var searchData=
   ['is_5fdata',['is_data',['../classic_1_1_event_info.html#ab4dc7e93951ca5cc886f5d15f611af92',1,'ic::EventInfo']]],
   ['is_5fglobal',['is_global',['../classic_1_1_muon.html#a7666075ccebb0dc4165289cc7bf1f49c',1,'ic::Muon']]],
   ['is_5fpf',['is_pf',['../classic_1_1_muon.html#a377aed5eacda17d85296da6809230563',1,'ic::Muon']]],
+  ['is_5fslimmed',['is_slimmed',['../struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#ab7a5957f24228a1463787c1f62a4d844',1,'JetSrcHelper&lt; pat::Jet &gt;']]],
   ['is_5fstandalone',['is_standalone',['../classic_1_1_muon.html#ad9aff35daecb837e2eb93946a843c116',1,'ic::Muon']]],
   ['is_5ftracker',['is_tracker',['../classic_1_1_muon.html#a879f3a9726c098ec0596f67b778cda79',1,'ic::Muon']]],
   ['isinitialized',['isInitialized',['../class_e_gamma_mva_ele_estimator_c_s_a14.html#aa75a00cc298e2d6329a47831aef735c9',1,'EGammaMvaEleEstimatorCSA14']]],

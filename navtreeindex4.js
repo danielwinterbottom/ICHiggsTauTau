@@ -240,8 +240,8 @@ var NAVTREEINDEX4 =
 "dir_ced57927e25818266a2bcd819cbb464b.html":[10,0,0,1,0],
 "examples.html":[11],
 "files.html":[10,0],
-"functions.html":[9,2,0],
 "functions.html":[9,2,0,0],
+"functions.html":[9,2,0],
 "functions_b.html":[9,2,0,1],
 "functions_c.html":[9,2,0,2],
 "functions_d.html":[9,2,0,3],
@@ -249,5 +249,5 @@ var NAVTREEINDEX4 =
 "functions_enum.html":[9,2,4],
 "functions_eval.html":[9,2,5],
 "functions_f.html":[9,2,0,5],
-"functions_func.html":[9,2,1,0]
+"functions_func.html":[9,2,1]
 };

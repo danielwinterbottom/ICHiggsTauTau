@@ -9,5 +9,6 @@ var struct_jet_src_helper_3_01pat_1_1_jet_01_4 =
     [ "include_jet_flavour", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a0f0661eb5dc20330bae7d998aa4199ed", null ],
     [ "include_jec_factors", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a9d756decc0ae844ef2f19a2621991fc4", null ],
     [ "input_sv_info", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a0b95d5b3e9142ba3e01a40f1b9039680", null ],
-    [ "include_sv_info_ids", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a437dee537dca828b8ba19c6a0c38b2c1", null ]
+    [ "include_sv_info_ids", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#a437dee537dca828b8ba19c6a0c38b2c1", null ],
+    [ "is_slimmed", "struct_jet_src_helper_3_01pat_1_1_jet_01_4.html#ab7a5957f24228a1463787c1f62a4d844", null ]
 ];
