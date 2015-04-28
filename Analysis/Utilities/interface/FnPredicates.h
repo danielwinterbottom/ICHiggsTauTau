@@ -56,6 +56,7 @@ namespace ic {
   bool ElectronHTTIdIso(Electron const* elec, unsigned const& mode);
   bool ElectronHTTVHID(Electron const* elec);
   bool ElectronHTTId(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIdPhys14(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
 
   bool HttEMuFakeElectron(Electron const* elec);

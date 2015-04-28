@@ -566,24 +566,47 @@ int main(int argc, char* argv[]){
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
 
   boost::function<bool (Electron const*)> elec_idiso_func;
-  if (special_mode == 20 || special_mode == 22) {
-    elec_idiso_func = bind(HttEMuFakeElectron, _1);
-  } else if (special_mode == 2) {
-    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
-  } else if (special_mode == 3 || special_mode == 4) {
-    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
-  } else if (special_mode == 23) {
-    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
-  } else if (special_mode == 24) {
-    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && !bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
-  } else if (special_mode == 25) {
-    elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
-  } else {
-    if (channel == channel::em) {
-      elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+  if(strategy == strategy::paper2013) {
+    if (special_mode == 20 || special_mode == 22) {
+      elec_idiso_func = bind(HttEMuFakeElectron, _1);
+    } else if (special_mode == 2) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+    } else if (special_mode == 3 || special_mode == 4) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+    } else if (special_mode == 23) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
+    } else if (special_mode == 24) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && !bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+    } else if (special_mode == 25) {
+      elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
     } else {
-      elec_idiso_func = bind(ElectronHTTId, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
+      if (channel == channel::em) {
+        elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+      } else {
+        elec_idiso_func = bind(ElectronHTTId, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
+      }
     }
+  } else if (strategy == strategy::phys14) {
+    //Special modes and emu channel need more thought, just placeholders for now
+    if (special_mode == 20 || special_mode == 22) {
+      elec_idiso_func = bind(HttEMuFakeElectron, _1);
+    } else if (special_mode == 2) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+    } else if (special_mode == 3 || special_mode == 4) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+    } else if (special_mode == 23) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
+    } else if (special_mode == 24) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && !bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+    } else if (special_mode == 25) {
+      elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
+    } else {
+      if (channel == channel::em) {
+        elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+      } else {
+        elec_idiso_func = bind(ElectronHTTIdPhys14, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
+      }
+    } 
   }
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>("SelElectronFilter")
     .set_input_label("selElectrons")
@@ -605,6 +628,14 @@ int main(int argc, char* argv[]){
       bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
       bind(Electron2011WP95ID, _1) &&
       bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3);
+  if(strategy == strategy::phys14) {
+      vetoElectronFilter.set_predicate(
+      bind(MinPtMaxEta, _1, 10.0, 2.5) &&
+      bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
+      bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
+      bind(VetoElectronIDPhys14, _1) &&
+      bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3);
+  }
 
   OneCollCompositeProducer<Electron> vetoElectronPairProducer = OneCollCompositeProducer<Electron>("VetoPairProducer")
     .set_input_label("vetoElectrons")
@@ -626,6 +657,14 @@ int main(int argc, char* argv[]){
                 && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
                 && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2)
     .set_min(0).set_max((channel == channel::et || channel == channel::etmet || channel == channel::em) ? 1 : 0);
+    if(strategy == strategy::phys14) {
+      extraElectronVeto.set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.5)
+                && bind(ElectronHTTId, _1, true)
+                && bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3
+                && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
+                && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2
+                && bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3);
+    }
 
   // ------------------------------------------------------------------------------------
   // Muon Modules
