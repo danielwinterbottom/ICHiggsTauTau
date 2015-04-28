@@ -182,6 +182,7 @@ namespace ic {
   double PairMassDiff(CompositeCandidate const* cand, double const &mass);
 
   bool MuonTight(Muon const* muon);
+  bool MuonMedium(Muon const* muon);
   bool MuonIso(Muon const* muon);
 
 

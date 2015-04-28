@@ -697,7 +697,6 @@ namespace ic {
     if (elec->has_matched_conversion()) return false;
     if (elec->gsf_tk_nhits() > 0) return false;
     bool pass_mva = false;
-    double pt = elec->pt();
     double eta = fabs(elec->sc_eta());
     double idmva = elec->GetIdIso("POG_MVA_ID_Run2_NonTrig_Tight");
     if (!loose_wp) {
