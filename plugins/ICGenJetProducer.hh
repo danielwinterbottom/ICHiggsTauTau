@@ -36,6 +36,7 @@ class ICGenJetProducer : public edm::EDProducer {
 
 
   bool request_gen_particles_;
+  bool is_slimmed_;
 };
 
 #endif
