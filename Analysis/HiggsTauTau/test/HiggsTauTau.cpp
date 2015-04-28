@@ -415,12 +415,14 @@ int main(int argc, char* argv[]){
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
   if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
-  //if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
+  //for now set phys14 to read the 2012 PU files, even though they are not used
+  if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
   //if (mc == mc::summer15_74X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
   string data_pu_file;
   if (era == era::data_2011) data_pu_file     =  "input/pileup/Data_Pileup_2011_HCP-500bins.root";
   if (era == era::data_2012_rereco) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
-  //if (era == era::data_2015) data_pu_file    =  "input/pileup/Data_Pileup_2015-600bins.root";
+  //for now set phys14 to read the 2012 PU files, even though they are not used
+  if (era == era::data_2015) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
   if (channel == channel::mtmet) data_pu_file       =  "input/pileup/Data_Pileup_2012_ReRecoD_All-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
@@ -769,6 +771,24 @@ int main(int argc, char* argv[]){
   //  if (do_skim) { // For 3hits make wp a bit looser when skimming
   //    tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
   //  }
+  } else if (strategy == strategy::phys14) {
+    if (channel == channel::et || channel == channel::etmet) {
+      tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
+      //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      tau_anti_elec_discr_1 = "againstElectronTightMVA5";
+      tau_anti_elec_discr_2 = "againstElectronTightMVA5";
+      tau_anti_muon_discr   = "againstMuonLoose3";
+      // At the moment revert the relaxed Z->ee to the HCP/Moriond approach of
+      // just using againstElectronMVA (but need to make a separate special 18 skim)
+      if (special_mode == 18) tau_anti_elec_discr_1 = "againstElectronMVA"; 
+    }
+    if (channel == channel::mt || channel == channel::mtmet) {
+      tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
+      //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      tau_anti_elec_discr_1 = "againstElectronVLooseMVA5";
+      tau_anti_elec_discr_2 = "againstElectronVLooseMVA5";
+      tau_anti_muon_discr   = "againstMuonTight3";
+    }
   }
 
   std::cout << "** Tau Discriminators **" << std::endl;
@@ -800,6 +820,12 @@ int main(int argc, char* argv[]){
     if (special_mode == 4 || special_mode == 5) tau_3hit_cut = 10.;
     tauIsoFilter.set_predicate(    (bind(&Tau::GetTauID, _1, tau_iso_discr)       < tau_3hit_cut)
                                 && (bind(&Tau::GetTauID, _1, "decayModeFinding")  > 0.5));
+  }
+  if(strategy == strategy::phys14) {
+    double tau_3hit_cut = 1.5;
+    if (special_mode == 4 || special_mode == 5) tau_3hit_cut = 10.;
+    tauIsoFilter.set_predicate(    (bind(&Tau::GetTauID, _1, tau_iso_discr) < tau_3hit_cut) 
+                    && (  (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5) || (bind(&Tau::GetTauID, _1, "decayModeFindingNewDMs") > 0.5)  )   );
   }
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
@@ -1066,8 +1092,8 @@ int main(int argc, char* argv[]){
   if ( (channel == channel::etmet || 
         channel == channel::mtmet)
         && !is_data )             analysis.AddModule(&httL1MetCorrector); 
-  if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
-  if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
+  if (is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&lumiMask);
+  if (!is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&pileupWeight);
   if (vh_filter_mode > 0)         analysis.AddModule(&vhFilter);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
@@ -1153,7 +1179,7 @@ int main(int argc, char* argv[]){
   }
 
   if (!do_skim) {
-    if (!is_embedded)  { // Don't usually want trigger for embedded
+    if (!is_embedded && strategy != strategy::phys14)  { // Don't usually want trigger for embedded
                                   analysis.AddModule(&httTriggerFilter);
     }
     if (is_embedded && strategy == strategy::paper2013 && era == era::data_2012_rereco) {
@@ -1161,12 +1187,12 @@ int main(int argc, char* argv[]){
     }
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
-    if (jes_mode > 0 && !is_data) analysis.AddModule(&jetEnergyUncertainty);
+    if (jes_mode > 0 && !is_data && strategy != strategy::phys14) analysis.AddModule(&jetEnergyUncertainty);
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
-                                  analysis.AddModule(&httRecoilCorrector);
+    if(strategy != strategy::phys14) analysis.AddModule(&httRecoilCorrector);
     if(metscale_mode > 0 
       && !is_data )               analysis.AddModule(&hhhMetScale);  
 
@@ -1191,7 +1217,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&HhhemuMVA);
 								  analysis.AddModule(&HhhemuMVABoth);
    }
-   if (strategy == strategy::paper2013 &&channel ==channel::mt){
+   if (strategy == strategy::paper2013 && channel ==channel::mt){
                                   analysis.AddModule(&HhhmtMVABoth);
                                   analysis.AddModule(&HhhmtMVACategory);
    }
