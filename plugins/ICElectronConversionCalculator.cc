@@ -55,7 +55,7 @@ void ICElectronConversionCalculator::produce(edm::Event& event,
           : edm::RefToBaseProd<reco::GsfElectron>();
 
   unsigned n = reftobase.isNonnull() ? reftobase->size() : 0;
-  std::vector<bool> values(n, 0.);
+  std::vector<bool> values(n, false);
 
   for (unsigned i = 0; i < n; ++i) {
     reco::GsfElectron const& src = reftobase->at(i);
