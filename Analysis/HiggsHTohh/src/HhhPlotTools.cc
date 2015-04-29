@@ -239,6 +239,9 @@ namespace ic {
       ((prefix+"draw_signal_tanb").c_str(),     po::value<std::string>(&draw_signal_tanb_)->default_value(""))
       ((prefix+"title_left").c_str(),           po::value<std::string>(&title_left_)->default_value(""))
       ((prefix+"title_right").c_str(),          po::value<std::string>(&title_right_)->default_value(""))
+      ((prefix+"cms_label").c_str(),            po::value<std::string>(&cms_label_)->default_value("CMS"))
+      ((prefix+"cms_extra").c_str(),            po::value<std::string>(&cms_extra_)->default_value("Preliminary"))
+      ((prefix+"cms_pos").c_str(),              po::value<int>(&cms_pos_)->default_value(11))
       ((prefix+"signal_scale").c_str(),         po::value<unsigned>(&signal_scale_)->default_value(1))
       ((prefix+"log_y").c_str(),                po::value<bool>(&log_y_)->default_value(false))
       ((prefix+"draw_ratio").c_str(),           po::value<bool>(&draw_ratio_)->default_value(false))
@@ -391,6 +394,9 @@ namespace ic {
 
     plot.title_left = title_left_;
     plot.title_right = title_right_;
+    plot.cms_label = cms_label_;
+    plot.cms_extra = cms_extra_;
+    plot.cms_pos = cms_pos_;
 
     // should check if data actually exists: we might want to make a plot
     // where it doesn't
@@ -547,7 +553,6 @@ namespace ic {
     HhhPlot::SetDataStyle(data_plot);
     plot.AddTH1PlotElement(data_plot);
     plot.legend_height = 0.05;
-
     for (auto & ele : text_) plot.AddTextElement(ele);
 
     plot.GeneratePlot();
