@@ -104,21 +104,28 @@ $(document).ready(function(){initNavTree('_photon_8cc_source.html','');});
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceic.html">ic</a> {</div>
 <div class="line"><a name="l00004"></a><span class="lineno"><a class="line" href="classic_1_1_photon.html#aabd254915281c820d2335a60e5b2f458">    4</a></span>&#160;<a class="code" href="classic_1_1_photon.html#aabd254915281c820d2335a60e5b2f458">Photon::Photon</a>()</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    : <a class="code" href="namespaceic.html">ic</a>::<a class="code" href="classic_1_1_candidate.html">Candidate</a>(),</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;      dr03_pfiso_charged_(0.),</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;      dr03_pfiso_neutral_(0.),</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;      dr03_pfiso_gamma_(0.),</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;      had_tower_over_em_(0.),</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;      sigma_IetaIeta_(0.),</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;      pass_electron_veto_(false) {}</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classic_1_1_photon.html#a3778c4c832882e84a4e6f6884f4e163d">   13</a></span>&#160;<a class="code" href="classic_1_1_photon.html#a3778c4c832882e84a4e6f6884f4e163d">Photon::~Photon</a>() {}</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classic_1_1_photon.html#ab3d5b8faae3b62012110bfa026518d96">   15</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classic_1_1_photon.html#ab3d5b8faae3b62012110bfa026518d96">Photon::Print</a>()<span class="keyword"> const </span>{ <a class="code" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">Candidate::Print</a>(); }</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;}</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;      dr03_pfiso_charged_all_(0.),</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;      dr03_pfiso_charged_(0.),</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;      dr03_pfiso_neutral_(0.),</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;      dr03_pfiso_gamma_(0.),</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;      dr03_pfiso_pu_(0.),</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;      dr04_pfiso_charged_all_(0.),</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;      dr04_pfiso_charged_(0.),</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;      dr04_pfiso_neutral_(0.),</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;      dr04_pfiso_gamma_(0.),</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;      dr04_pfiso_pu_(0.),</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;      had_tower_over_em_(0.),</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;      sigma_IetaIeta_(0.),</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;      pass_electron_veto_(false) {}</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classic_1_1_photon.html#a3778c4c832882e84a4e6f6884f4e163d">   20</a></span>&#160;<a class="code" href="classic_1_1_photon.html#a3778c4c832882e84a4e6f6884f4e163d">Photon::~Photon</a>() {}</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classic_1_1_photon.html#ab3d5b8faae3b62012110bfa026518d96">   22</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classic_1_1_photon.html#ab3d5b8faae3b62012110bfa026518d96">Photon::Print</a>()<span class="keyword"> const </span>{ <a class="code" href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">Candidate::Print</a>(); }</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;}</div>
 <div class="ttc" id="classic_1_1_photon_html_aabd254915281c820d2335a60e5b2f458"><div class="ttname"><a href="classic_1_1_photon.html#aabd254915281c820d2335a60e5b2f458">ic::Photon::Photon</a></div><div class="ttdeci">Photon()</div><div class="ttdef"><b>Definition:</b> <a href="_photon_8cc_source.html#l00004">Photon.cc:4</a></div></div>
-<div class="ttc" id="classic_1_1_photon_html_a3778c4c832882e84a4e6f6884f4e163d"><div class="ttname"><a href="classic_1_1_photon.html#a3778c4c832882e84a4e6f6884f4e163d">ic::Photon::~Photon</a></div><div class="ttdeci">virtual ~Photon()</div><div class="ttdef"><b>Definition:</b> <a href="_photon_8cc_source.html#l00013">Photon.cc:13</a></div></div>
+<div class="ttc" id="classic_1_1_photon_html_a3778c4c832882e84a4e6f6884f4e163d"><div class="ttname"><a href="classic_1_1_photon.html#a3778c4c832882e84a4e6f6884f4e163d">ic::Photon::~Photon</a></div><div class="ttdeci">virtual ~Photon()</div><div class="ttdef"><b>Definition:</b> <a href="_photon_8cc_source.html#l00020">Photon.cc:20</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html"><div class="ttname"><a href="classic_1_1_candidate.html">ic::Candidate</a></div><div class="ttdoc">Stores a four-momentum, charge and identifier, and is the base class for most other physics objects...</div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8hh_source.html#l00013">Candidate.hh:13</a></div></div>
-<div class="ttc" id="classic_1_1_photon_html_ab3d5b8faae3b62012110bfa026518d96"><div class="ttname"><a href="classic_1_1_photon.html#ab3d5b8faae3b62012110bfa026518d96">ic::Photon::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_photon_8cc_source.html#l00015">Photon.cc:15</a></div></div>
+<div class="ttc" id="classic_1_1_photon_html_ab3d5b8faae3b62012110bfa026518d96"><div class="ttname"><a href="classic_1_1_photon.html#ab3d5b8faae3b62012110bfa026518d96">ic::Photon::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_photon_8cc_source.html#l00022">Photon.cc:22</a></div></div>
 <div class="ttc" id="namespaceic_html"><div class="ttname"><a href="namespaceic.html">ic</a></div><div class="ttdef"><b>Definition:</b> <a href="_calo_jet_8hh_source.html#l00009">CaloJet.hh:9</a></div></div>
 <div class="ttc" id="classic_1_1_candidate_html_ad96b680fd5080c7ae34e977541784dc6"><div class="ttname"><a href="classic_1_1_candidate.html#ad96b680fd5080c7ae34e977541784dc6">ic::Candidate::Print</a></div><div class="ttdeci">virtual void Print() const </div><div class="ttdef"><b>Definition:</b> <a href="_candidate_8cc_source.html#l00009">Candidate.cc:9</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

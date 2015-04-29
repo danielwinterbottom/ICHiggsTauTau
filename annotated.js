@@ -22,6 +22,7 @@ var annotated =
     [ "ICMetProducer", "class_i_c_met_producer.html", "class_i_c_met_producer" ],
     [ "ICMuonProducer", "class_i_c_muon_producer.html", "class_i_c_muon_producer" ],
     [ "ICPFCandidateProducer", "class_i_c_p_f_candidate_producer.html", "class_i_c_p_f_candidate_producer" ],
+    [ "ICPhotonElectronConversionVetoFromPatCalculator", "class_i_c_photon_electron_conversion_veto_from_pat_calculator.html", "class_i_c_photon_electron_conversion_veto_from_pat_calculator" ],
     [ "ICPhotonElectronVetoCalculator", "class_i_c_photon_electron_veto_calculator.html", "class_i_c_photon_electron_veto_calculator" ],
     [ "ICPhotonProducer", "class_i_c_photon_producer.html", "class_i_c_photon_producer" ],
     [ "ICPileupInfoProducer", "class_i_c_pileup_info_producer.html", "class_i_c_pileup_info_producer" ],

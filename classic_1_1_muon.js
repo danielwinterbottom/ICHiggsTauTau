@@ -78,5 +78,5 @@ var classic_1_1_muon =
     [ "SetIdIso", "classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15", null ],
     [ "HasIdIso", "classic_1_1_muon.html#a3732a53fd348d189ee05bc80658d40b8", null ],
     [ "GetIdIso", "classic_1_1_muon.html#acd0cb85de4e7ba87db53da02e1d2cb36", null ],
-    [ "ClassDef", "classic_1_1_muon.html#afbd3258dd5be1ad6c5c5922cd933b072", null ]
+    [ "ClassDef", "classic_1_1_muon.html#a34a1f463f8f7521fc3234e61831f3a1a", null ]
 ];

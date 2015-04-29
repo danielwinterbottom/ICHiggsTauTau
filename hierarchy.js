@@ -41,6 +41,7 @@ var hierarchy =
       [ "ICMetProducer", "class_i_c_met_producer.html", null ],
       [ "ICMuonProducer", "class_i_c_muon_producer.html", null ],
       [ "ICPFCandidateProducer< T >", "class_i_c_p_f_candidate_producer.html", null ],
+      [ "ICPhotonElectronConversionVetoFromPatCalculator", "class_i_c_photon_electron_conversion_veto_from_pat_calculator.html", null ],
       [ "ICPhotonElectronVetoCalculator", "class_i_c_photon_electron_veto_calculator.html", null ],
       [ "ICPhotonProducer", "class_i_c_photon_producer.html", null ],
       [ "ICPileupInfoProducer", "class_i_c_pileup_info_producer.html", null ],
