@@ -672,19 +672,38 @@ int main(int argc, char* argv[]){
   CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");
 
   boost::function<bool (Muon const*)> muon_idiso_func;
-  if (special_mode == 21 || special_mode == 22) {
-    muon_idiso_func = bind(HttEMuFakeMuon, _1);
-  } else if (special_mode == 2) {
-    muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
-  } else if (special_mode == 3 || special_mode == 4) {
-    muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
-  } else if (special_mode == 25) {
-    muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
-  } else {
-    if (channel == channel::em) {
-      muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
+  if(strategy == strategy::paper2013) {
+    if (special_mode == 21 || special_mode == 22) {
+      muon_idiso_func = bind(HttEMuFakeMuon, _1);
+    } else if (special_mode == 2) {
+      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+    } else if (special_mode == 3 || special_mode == 4) {
+      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+    } else if (special_mode == 25) {
+      muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
     } else {
-      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1);
+      if (channel == channel::em) {
+        muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
+      } else {
+        muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1);
+      }
+    }
+    //Special modes and emu channel need more thought, just placeholders for now
+  } else if (strategy == strategy::phys14) {
+    if (special_mode == 21 || special_mode == 22) {
+      muon_idiso_func = bind(HttEMuFakeMuon, _1);
+    } else if (special_mode == 2) {
+      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+    } else if (special_mode == 3 || special_mode == 4) {
+      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+    } else if (special_mode == 25) {
+      muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
+    } else {
+      if (channel == channel::em) {
+        muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
+      } else {
+        muon_idiso_func = bind(MuonMedium, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1);
+      }
     }
   }
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>("SelMuonFilter")
@@ -707,7 +726,7 @@ int main(int argc, char* argv[]){
       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(&Muon::is_global, _1) &&
       bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.3);
-  if (strategy == strategy::paper2013) {
+  if (strategy == strategy::paper2013 || strategy == strategy::phys14) {
     vetoMuonFilter.set_predicate(
       bind(MinPtMaxEta, _1, 15.0, 2.4) &&
       bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
@@ -740,7 +759,14 @@ int main(int argc, char* argv[]){
               && bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
               && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
               && (bind(fabs, bind(&Muon::dz_vertex, _1)) < 0.2))
-  .set_min(0).set_max((channel == channel::mt || channel == channel::mtmet || channel == channel::em) ? 1 : 0);                   
+  .set_min(0).set_max((channel == channel::mt || channel == channel::mtmet || channel == channel::em) ? 1 : 0); 
+  if(strategy == strategy::phys14) { 
+    extraMuonVeto.set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.4)
+              && bind(MuonMedium, _1) 
+              && bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
+              && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
+              && (bind(fabs, bind(&Muon::dz_vertex, _1)) < 0.2));
+  }
 
   // ------------------------------------------------------------------------------------
   // Tau Modules
