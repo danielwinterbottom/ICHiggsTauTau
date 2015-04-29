@@ -20,6 +20,7 @@ Electron::Electron()
       dr04_pfiso_gamma_(0.),
       dr04_pfiso_pu_(0.),
       hadronic_over_em_(0.),
+      full5x5_sigma_IetaIeta_(0.),
       sigma_IetaIeta_(0.),
       dphi_sc_tk_at_vtx_(0.),
       deta_sc_tk_at_vtx_(0.),

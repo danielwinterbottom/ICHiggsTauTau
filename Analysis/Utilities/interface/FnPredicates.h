@@ -49,6 +49,7 @@ namespace ic {
   bool Electron2011WP70ID(Electron const* elec);
   bool Electron2011WP85ID(Electron const* elec);
   bool Electron2011WP95ID(Electron const* elec);
+  bool VetoElectronIDPhys14(Electron const* elec);
   bool VetoElectronID(Electron const* elec);
   bool ElectronSimpleWP85Iso(Electron const* elec);
   bool ElectronSimpleWP85ID(Electron const* elec);
@@ -132,6 +133,23 @@ namespace ic {
     iso = iso / cand->pt();
     return (iso < cut);
   }
+
+  template<class T>
+  bool PF03HadIsolation(T const* cand, double const& dbeta, double const& cut) {
+    double iso =  cand->dr03_pfiso_charged() 
+                  + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - dbeta * cand->dr03_pfiso_pu(), 0.0);
+    iso = iso / cand->pt();
+    return (iso < cut);
+  }
+
+  template<class T>
+  bool PF03HadIsolationVal(T const* cand, double const& dbeta) {
+    double iso =  cand->dr03_pfiso_charged() 
+                  + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - dbeta * cand->dr03_pfiso_pu(), 0.0);
+    iso = iso / cand->pt();
+    return iso ;
+  }
+
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut);
 

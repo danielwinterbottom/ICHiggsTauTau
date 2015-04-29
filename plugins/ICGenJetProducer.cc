@@ -19,7 +19,8 @@ ICGenJetProducer::ICGenJetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
       input_particles_(config.getParameter<edm::InputTag>("inputGenParticles")),
-      request_gen_particles_(config.getParameter<bool>("requestGenParticles")) {
+      request_gen_particles_(config.getParameter<bool>("requestGenParticles")),
+      is_slimmed_(config.getParameter<bool>("isSlimmed")) {
   gen_jets_ = new std::vector<ic::GenJet>();
   if (request_gen_particles_) {
     produces<reco::GenParticleRefVector>("requestedGenParticles");
@@ -61,7 +62,8 @@ void ICGenJetProducer::produce(edm::Event& event,
     dest.set_energy(src.energy());
     dest.set_charge(src.charge());
     dest.set_flavour(0);
-    dest.set_n_constituents(src.getGenConstituents().size());
+    if(is_slimmed_) dest.set_n_constituents(src.numberOfDaughters());
+    else dest.set_n_constituents(src.getGenConstituents().size());
     if (request_gen_particles_) {
       std::vector<std::size_t> constituents;
       for (unsigned i = 0; i < src.getGenConstituents().size(); ++i) {
