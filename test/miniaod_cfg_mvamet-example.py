@@ -422,7 +422,7 @@ process.icElectronProducer = producers.icElectronProducer.clone(
 process.load('JetMETCorrections.Configuration.JetCorrectionProducers_cff')
 process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
-from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X_Dec2012 import mvaMetPairs
+from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_72X import mvaMetPairs
 
 if release in ['72XMINIAOD']:
   process.ak4PFJets.src = cms.InputTag("packedPFCandidates")
@@ -542,12 +542,12 @@ process.icMvaMetSequence = cms.Sequence(
    process.calibratedAK4PFJetsForPFMVAMEt+
    process.puJetIdForPFMVAMEt+
    process.mvaMetPairsTT+
-#   process.mvaMetPairsMT+
-#   process.mvaMetPairsET+
-#   process.mvaMetPairsEM+
-#   process.icMvaMetConcatenate+
-#   process.icMvaMetIDConcatenate+
-#   process.icMvaMetPairsProducer+ 
+   process.mvaMetPairsMT+
+   process.mvaMetPairsET+
+   process.mvaMetPairsEM+
+   process.icMvaMetConcatenate+
+   process.icMvaMetIDConcatenate+
+   process.icMvaMetPairsProducer+ 
    process.pfMVAMEt
    )
 
