@@ -15,7 +15,7 @@ import sys
 ################################################################                                                                                           
 electronLabel = cms.InputTag("slimmedElectrons")
 muonLabel = cms.InputTag("slimmedMuons")
-
+photonLabel = cms.InputTag("slimmedPhotons")
 
 ################################################################                                                                                         
 # Setup and Read Options                                                                                                                          
@@ -63,7 +63,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -389,22 +389,46 @@ process.icTauSequence = cms.Sequence(
 ##################################################################                                                                                          
 #  Photons
 #################################################################
+process.icPhotonSequence = cms.Sequence()
+process.load("CommonTools.ParticleFlow.Isolation.pfPhotonIsolation_cff")
+process.phPFIsoValueCharged03PFIso    = process.phPFIsoValueCharged03PFId.clone()
+process.phPFIsoValueChargedAll03PFIso = process.phPFIsoValueChargedAll03PFId.clone()
+process.phPFIsoValueGamma03PFIso      = process.phPFIsoValueGamma03PFId.clone()
+process.phPFIsoValueNeutral03PFIso    = process.phPFIsoValueNeutral03PFId.clone()
+process.phPFIsoValuePU03PFIso         = process.phPFIsoValuePU03PFId.clone()
+process.photonPFIsolationValuesSequence = cms.Sequence(
+    process.phPFIsoValueCharged03PFIso+
+    process.phPFIsoValueChargedAll03PFIso+
+    process.phPFIsoValueGamma03PFIso+
+    process.phPFIsoValueNeutral03PFIso+
+    process.phPFIsoValuePU03PFIso
+    )
+process.phPFIsoDepositCharged.src     = photonLabel
+process.phPFIsoDepositChargedAll.src  = photonLabel
+process.phPFIsoDepositNeutral.src     = photonLabel
+process.phPFIsoDepositGamma.src       = photonLabel
+process.phPFIsoDepositPU.src          = photonLabel
 
-#!!NEED ELECTRON VETO
-process.icPhotonElectronVetoCalculator = cms.EDProducer("ICPhotonElectronVetoCalculator",
-                                                        input = cms.InputTag("slimmedPhotons"),
-                                                        input_electrons = electronLabel,
-                                                        input_beamspot = cms.InputTag("offlineBeamSpot"),
-                                                        input_conversions = cms.InputTag("reducedEgamma:reducedConversions")
+process.icPhotonSequence += cms.Sequence(
+  process.photonPFIsolationDepositsSequence+
+  process.photonPFIsolationValuesSequence
 )
 
-process.icPhotonProducer = cms.EDProducer("ICPhotonProducer",
-    input = cms.InputTag("slimmedPhotons"),
-    branch = cms.string("photons"),
+process.icPhotonElectronConversionVetoCalculator = cms.EDProducer("ICPhotonElectronConversionVetoFromPatCalculator",
+                                                        input = photonLabel
 )
 
-process.icPhotonSequence = cms.Sequence(
-  process.icPhotonElectronVetoCalculator+
+process.icPhotonProducer = producers.icPhotonProducer.clone(
+                                          input = photonLabel,
+                                          branch = cms.string("photons"),
+                                          includeElectronVeto=cms.bool(True),
+                                          inputElectronVeto=cms.InputTag("icPhotonElectronConversionVetoCalculator"),
+                                          includeHadTowOverEm=cms.bool(True),
+                                          includePFIso03=cms.bool(True) 
+)
+
+process.icPhotonSequence += cms.Sequence(
+  process.icPhotonElectronConversionVetoCalculator+
   process.icPhotonProducer
 )
 
@@ -577,6 +601,7 @@ process.icGenSequence += (
 ################################################################                                                                                            
 # EventInfo                                                                                                                                                 
 #!!needs kt6 jets to be working so not included in path for the moment
+#!!make sure we keep from RecoJets.JetProducers.fixedGridRhoProducer_cfi import fixedGridRhoAll for photons
 ################################################################                                                                                            
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
@@ -608,7 +633,7 @@ process.p = cms.Path(
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauProducer+
-  #process.icPhotonSequence+
+  process.icPhotonSequence+
   #process.icTrackSequence+
   process.icPFJetSequence+                                                                                                                                
   #process.icGenSequence+
@@ -619,8 +644,19 @@ process.p = cms.Path(
   process.icEventProducer
 )
 
+
+# process.out = cms.OutputModule("PoolOutputModule",
+#                 fileName = cms.untracked.string("edmdump.root")
+#         )
+
+# process.outpath = cms.EndPath(process.out)
+
+
 # process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
-process.schedule = cms.Schedule(process.p)
+process.schedule = cms.Schedule(process.p,process.outpath)
+
+
+
 
 #Uncomment below for a dump of the config
 #print process.dumpPython()

@@ -16,9 +16,12 @@
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
 ICPhotonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
-    : charged(pset.getParameter<edm::InputTag>("charged")),
-      neutral(pset.getParameter<edm::InputTag>("neutral")),
-      gamma(pset.getParameter<edm::InputTag>("gamma")) {}
+  : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
+    charged(pset.getParameter<edm::InputTag>("charged")),
+    neutral(pset.getParameter<edm::InputTag>("neutral")),
+    gamma(pset.getParameter<edm::InputTag>("gamma")),
+    pu(pset.getParameter<edm::InputTag>("pu")) {}
+
 
 ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
@@ -27,8 +30,10 @@ ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
           config.getParameter<edm::InputTag>("inputElectronVeto")),
       do_electron_veto_(config.getParameter<bool>("includeElectronVeto")),
       do_had_tow_over_em_(config.getParameter<bool>("includeHadTowOverEm")),
-      pf_iso_(config.getParameterSet("pfIso")),
-      do_pf_iso_(config.getParameter<bool>("includePFIso")) {
+      pf_iso_03_(config.getParameterSet("pfIso03")),
+      pf_iso_04_(config.getParameterSet("pfIso04")),
+      do_pf_iso_03_(config.getParameter<bool>("includePFIso03")),
+      do_pf_iso_04_(config.getParameter<bool>("includePFIso04")) {
   // isolator_ = new PFIsolationEstimator();
   // isolator_->initializePhotonIsolation(true);
   // isolator_->setConeSize(0.3);
@@ -37,7 +42,8 @@ ICPhotonProducer::ICPhotonProducer(const edm::ParameterSet& config)
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_electron_veto_, "includeElectronVeto");
   PrintOptional(1, do_had_tow_over_em_, "includeHadTowOverEm");
-  PrintOptional(1, do_pf_iso_, "includePFIso");
+  PrintOptional(1, do_pf_iso_03_, "includePFIso03");
+  PrintOptional(1, do_pf_iso_04_, "includePFIso04");
 }
 
 ICPhotonProducer::~ICPhotonProducer() {
@@ -54,13 +60,34 @@ void ICPhotonProducer::produce(edm::Event& event,
   if (do_electron_veto_)
     event.getByLabel(input_electron_veto_, electron_veto_handle);
 
+  edm::Handle<edm::ValueMap<double> > charged_all_03;
   edm::Handle<edm::ValueMap<double> > charged_03;
   edm::Handle<edm::ValueMap<double> > neutral_03;
   edm::Handle<edm::ValueMap<double> > gamma_03;
-  if (do_pf_iso_) {
-    event.getByLabel(pf_iso_.charged, charged_03);
-    event.getByLabel(pf_iso_.neutral, neutral_03);
-    event.getByLabel(pf_iso_.gamma, gamma_03);
+  edm::Handle<edm::ValueMap<double> > pu_03;
+
+  //!!print stuff
+  //std::cout<<"n photons: "<<photons_handle->size()<<std::endl;
+  //std::cout<<"pho"<<pf_iso_03_.charged_all<<std::endl;
+  if (do_pf_iso_03_) {
+    event.getByLabel(pf_iso_03_.charged_all, charged_all_03);
+    event.getByLabel(pf_iso_03_.charged, charged_03);
+    event.getByLabel(pf_iso_03_.neutral, neutral_03);
+    event.getByLabel(pf_iso_03_.gamma, gamma_03);
+    event.getByLabel(pf_iso_03_.pu, pu_03);
+  }
+
+  edm::Handle<edm::ValueMap<double> > charged_all_04;
+  edm::Handle<edm::ValueMap<double> > charged_04;
+  edm::Handle<edm::ValueMap<double> > neutral_04;
+  edm::Handle<edm::ValueMap<double> > gamma_04;
+  edm::Handle<edm::ValueMap<double> > pu_04;
+  if (do_pf_iso_04_) {
+    event.getByLabel(pf_iso_04_.charged_all, charged_all_04);
+    event.getByLabel(pf_iso_04_.charged, charged_04);
+    event.getByLabel(pf_iso_04_.neutral, neutral_04);
+    event.getByLabel(pf_iso_04_.gamma, gamma_04);
+    event.getByLabel(pf_iso_04_.pu, pu_04);
   }
 
   // Get other inputs
@@ -101,11 +128,22 @@ void ICPhotonProducer::produce(edm::Event& event,
       dest.set_had_tower_over_em(src.hadTowOverEm());
     }
 
-    if (do_pf_iso_) {
+    if (do_pf_iso_03_) {
+      dest.set_dr03_pfiso_charged_all((*charged_all_03)[ref]);
       dest.set_dr03_pfiso_charged((*charged_03)[ref]);
       dest.set_dr03_pfiso_neutral((*neutral_03)[ref]);
       dest.set_dr03_pfiso_gamma((*gamma_03)[ref]);
+      dest.set_dr03_pfiso_pu((*pu_03)[ref]);
     }
+
+    if (do_pf_iso_04_) {
+      dest.set_dr04_pfiso_charged_all((*charged_all_04)[ref]);
+      dest.set_dr04_pfiso_charged((*charged_04)[ref]);
+      dest.set_dr04_pfiso_neutral((*neutral_04)[ref]);
+      dest.set_dr04_pfiso_gamma((*gamma_04)[ref]);
+      dest.set_dr04_pfiso_pu((*pu_04)[ref]);
+    }
+
   // #ifndef CMSSW_4_2_8_patch7
   //     pho.set_had_tower_over_em(iter->hadTowOverEm());
   // #else

@@ -18,14 +18,41 @@ class Photon : public Candidate {
 
   /// @name Properties
   /**@{*/
-  /// PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.3 \f$
+  /// PF isolation, using all charged particles in a cone with                                                                                               
+  /// \f$ \Delta R = 0.3 \f$                                                                                                                                 
+  inline float dr03_pfiso_charged_all() const {
+    return dr03_pfiso_charged_all_;
+  }
+
+  /// PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.3 \f$                                                                              
   inline float dr03_pfiso_charged() const { return dr03_pfiso_charged_; }
 
-  /// PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.3 \f$
+  /// PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.3 \f$                                                                              
   inline float dr03_pfiso_neutral() const { return dr03_pfiso_neutral_; }
 
-  /// PF isolation, using photons in a cone with \f$ \Delta R = 0.3 \f$
+  /// PF isolation, using photons in a cone with \f$ \Delta R = 0.3 \f$                                                                                      
   inline float dr03_pfiso_gamma() const { return dr03_pfiso_gamma_; }
+
+  /// PF isolation, using charged pileup in a cone with \f$ \Delta R = 0.3 \f$                                                                               
+  inline float dr03_pfiso_pu() const { return dr03_pfiso_pu_; }
+
+  /// PF isolation, using all charged particles in a cone with                                                                                               
+  /// \f$ \Delta R = 0.4 \f$                                                                                                                                 
+  inline float dr04_pfiso_charged_all() const {
+    return dr04_pfiso_charged_all_;
+  }
+
+  /// PF isolation, using charged hadrons in a cone with \f$ \Delta R = 0.4 \f$                                                                              
+  inline float dr04_pfiso_charged() const { return dr04_pfiso_charged_; }
+
+  /// PF isolation, using neutral hadrons in a cone with \f$ \Delta R = 0.4 \f$                                                                              
+  inline float dr04_pfiso_neutral() const { return dr04_pfiso_neutral_; }
+
+  /// PF isolation, using photons in a cone with \f$ \Delta R = 0.4 \f$                                                                                      
+  inline float dr04_pfiso_gamma() const { return dr04_pfiso_gamma_; }
+
+  /// PF isolation, using charged pileup in a cone with \f$ \Delta R = 0.4 \f$                                                                               
+  inline float dr04_pfiso_pu() const { return dr04_pfiso_pu_; }
 
   /// Hadronic over electromagnetic energy fraction
   inline float had_tower_over_em() const { return had_tower_over_em_; }
@@ -40,19 +67,54 @@ class Photon : public Candidate {
 
   /// @name Setters
   /**@{*/
-  /// @copybrief dr03_pfiso_charged()
+  /// @copybrief dr03_pfiso_charged_all()                                                                                                                    
+  inline void set_dr03_pfiso_charged_all(float const& dr03_pfiso_charged_all) {
+    dr03_pfiso_charged_all_ = dr03_pfiso_charged_all;
+  }
+
+  /// @copybrief dr03_pfiso_charged()                                                                                                                        
   inline void set_dr03_pfiso_charged(float const& dr03_pfiso_charged) {
     dr03_pfiso_charged_ = dr03_pfiso_charged;
   }
 
-  /// @copybrief dr03_pfiso_neutral()
+  /// @copybrief dr03_pfiso_neutral()                                                                                                                        
   inline void set_dr03_pfiso_neutral(float const& dr03_pfiso_neutral) {
     dr03_pfiso_neutral_ = dr03_pfiso_neutral;
   }
 
-  /// @copybrief dr03_pfiso_gamma()
+  /// @copybrief dr03_pfiso_gamma()                                                                                                                          
   inline void set_dr03_pfiso_gamma(float const& dr03_pfiso_gamma) {
     dr03_pfiso_gamma_ = dr03_pfiso_gamma;
+  }
+
+  /// @copybrief dr03_pfiso_pu()                                                                                                                             
+  inline void set_dr03_pfiso_pu(float const& dr03_pfiso_pu) {
+    dr03_pfiso_pu_ = dr03_pfiso_pu;
+  }
+
+  /// @copybrief dr04_pfiso_charged_all()                                                                                                                    
+  inline void set_dr04_pfiso_charged_all(float const& dr04_pfiso_charged_all) {
+    dr04_pfiso_charged_all_ = dr04_pfiso_charged_all;
+  }
+  
+  /// @copybrief dr04_pfiso_charged()                                                                                                                        
+  inline void set_dr04_pfiso_charged(float const& dr04_pfiso_charged) {
+    dr04_pfiso_charged_ = dr04_pfiso_charged;
+  }
+  
+  /// @copybrief dr04_pfiso_neutral()                                                                                                                        
+  inline void set_dr04_pfiso_neutral(float const& dr04_pfiso_neutral) {
+    dr04_pfiso_neutral_ = dr04_pfiso_neutral;
+  }
+  
+  /// @copybrief dr04_pfiso_gamma()                                                                                                                          
+  inline void set_dr04_pfiso_gamma(float const& dr04_pfiso_gamma) {
+    dr04_pfiso_gamma_ = dr04_pfiso_gamma;
+  }
+  
+  /// @copybrief dr04_pfiso_pu()                                                                                                                             
+  inline void set_dr04_pfiso_pu(float const& dr04_pfiso_pu) {
+    dr04_pfiso_pu_ = dr04_pfiso_pu;
   }
 
   /// @copybrief had_tower_over_em()
@@ -72,9 +134,16 @@ class Photon : public Candidate {
   /**@}*/
 
  private:
+  float dr03_pfiso_charged_all_;
   float dr03_pfiso_charged_;
   float dr03_pfiso_neutral_;
   float dr03_pfiso_gamma_;
+  float dr03_pfiso_pu_;
+  float dr04_pfiso_charged_all_;
+  float dr04_pfiso_charged_;
+  float dr04_pfiso_neutral_;
+  float dr04_pfiso_gamma_;
+  float dr04_pfiso_pu_;
 
   float had_tower_over_em_;
   float sigma_IetaIeta_;

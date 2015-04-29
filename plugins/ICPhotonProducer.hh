@@ -40,14 +40,18 @@ class ICPhotonProducer : public edm::EDProducer {
   bool do_had_tow_over_em_;
 
   struct IsoTags {
+    edm::InputTag charged_all;
     edm::InputTag charged;
     edm::InputTag neutral;
     edm::InputTag gamma;
+    edm::InputTag pu;
     explicit IsoTags(edm::ParameterSet const& pset);
   };
 
-  IsoTags pf_iso_;
-  bool do_pf_iso_;
+  IsoTags pf_iso_03_;
+  IsoTags pf_iso_04_;
+  bool do_pf_iso_03_;
+  bool do_pf_iso_04_;
 };
 
 #endif
