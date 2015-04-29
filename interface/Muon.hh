@@ -401,7 +401,7 @@ class Muon : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Muon, 4);
+  ClassDef(Muon, 5);
  #endif
 };
 
