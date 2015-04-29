@@ -63,7 +63,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -154,6 +154,11 @@ process.pfAllChargedHadrons= cms.EDFilter("CandPtrSelector",
   "abs(pdgId) = 999211 | abs(pdgId) = 2212")
 )
 process.pfAllPhotons= cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("pfNoPileUp"),
+  cut = cms.string("abs(pdgId) = 22")
+)
+
+cms.EDFilter("CandPtrSelector",
   src = cms.InputTag("pfNoPileUp"),
   cut = cms.string("abs(pdgId) = 22")
 )
@@ -390,41 +395,21 @@ process.icTauSequence = cms.Sequence(
 #  Photons
 #################################################################
 process.icPhotonSequence = cms.Sequence()
-process.load("CommonTools.ParticleFlow.Isolation.pfPhotonIsolation_cff")
-process.phPFIsoValueCharged03PFIso    = process.phPFIsoValueCharged03PFId.clone()
-process.phPFIsoValueChargedAll03PFIso = process.phPFIsoValueChargedAll03PFId.clone()
-process.phPFIsoValueGamma03PFIso      = process.phPFIsoValueGamma03PFId.clone()
-process.phPFIsoValueNeutral03PFIso    = process.phPFIsoValueNeutral03PFId.clone()
-process.phPFIsoValuePU03PFIso         = process.phPFIsoValuePU03PFId.clone()
-process.photonPFIsolationValuesSequence = cms.Sequence(
-    process.phPFIsoValueCharged03PFIso+
-    process.phPFIsoValueChargedAll03PFIso+
-    process.phPFIsoValueGamma03PFIso+
-    process.phPFIsoValueNeutral03PFIso+
-    process.phPFIsoValuePU03PFIso
-    )
-process.phPFIsoDepositCharged.src     = photonLabel
-process.phPFIsoDepositChargedAll.src  = photonLabel
-process.phPFIsoDepositNeutral.src     = photonLabel
-process.phPFIsoDepositGamma.src       = photonLabel
-process.phPFIsoDepositPU.src          = photonLabel
 
-process.icPhotonSequence += cms.Sequence(
-  process.photonPFIsolationDepositsSequence+
-  process.photonPFIsolationValuesSequence
-)
-
+#Calculate photon conversion veto
 process.icPhotonElectronConversionVetoCalculator = cms.EDProducer("ICPhotonElectronConversionVetoFromPatCalculator",
                                                         input = photonLabel
 )
 
+#produce photons using 0.3 radius isolation taken straight from slimmedPhotons
 process.icPhotonProducer = producers.icPhotonProducer.clone(
                                           input = photonLabel,
                                           branch = cms.string("photons"),
                                           includeElectronVeto=cms.bool(True),
                                           inputElectronVeto=cms.InputTag("icPhotonElectronConversionVetoCalculator"),
                                           includeHadTowOverEm=cms.bool(True),
-                                          includePFIso03=cms.bool(True) 
+                                          includePFIso03=cms.bool(True),
+                                          includeIsoFromPat=cms.bool(True) 
 )
 
 process.icPhotonSequence += cms.Sequence(
@@ -652,9 +637,11 @@ process.p = cms.Path(
 # process.outpath = cms.EndPath(process.out)
 
 
-# process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
-process.schedule = cms.Schedule(process.p,process.outpath)
+#process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
+process.schedule = cms.Schedule(process.p)
 
+#make an edm output ntuple with everything in it
+#process.schedule = cms.Schedule(process.p,process.outpath)
 
 
 

@@ -119,13 +119,23 @@ icPhotonProducer = cms.EDProducer('ICPhotonProducer',
     includeElectronVeto     = cms.bool(False),
     inputElectronVeto       = cms.InputTag("icPhotonElectronVetoCalculator"),
     includeHadTowOverEm     = cms.bool(False),
-    inputHadTowOverEm       = cms.InputTag("icPhotonHadTowerOverEmCalculator"),
-    includePFIso            = cms.bool(False),
-    pfIso = cms.PSet(
-      charged     = cms.InputTag(""),
-      neutral     = cms.InputTag(""),
-      gamma       = cms.InputTag("")
-    )
+    includePFIso03           = cms.bool(False),
+    pfIso03 = cms.PSet(
+      chargedAll  = cms.InputTag("phPFIsoValueChargedAll03PFIso"),
+      charged     = cms.InputTag("phPFIsoValueCharged03PFIso"),
+      neutral     = cms.InputTag("phPFIsoValueNeutral03PFIso"),
+      gamma       = cms.InputTag("phPFIsoValueGamma03PFIso"),
+      pu          = cms.InputTag("phPFIsoValuePU03PFIso")
+    ),
+    includePFIso04           = cms.bool(False),
+    pfIso04 = cms.PSet(
+      chargedAll  = cms.InputTag("phPFIsoValueChargedAll04PFIso"),
+      charged     = cms.InputTag("phPFIsoValueCharged04PFIso"),
+      neutral     = cms.InputTag("phPFIsoValueNeutral04PFIso"),
+      gamma       = cms.InputTag("phPFIsoValueGamma04PFIso"),
+      pu          = cms.InputTag("phPFIsoValuePU04PFIso")
+    ),
+    includeIsoFromPat = cms.bool(False)
 )
 ## [Photon]
 

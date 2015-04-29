@@ -52,6 +52,7 @@ class ICPhotonProducer : public edm::EDProducer {
   IsoTags pf_iso_04_;
   bool do_pf_iso_03_;
   bool do_pf_iso_04_;
+  bool do_iso_from_pat_;
 };
 
 #endif
