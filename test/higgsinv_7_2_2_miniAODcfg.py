@@ -15,7 +15,7 @@ import sys
 ################################################################                                                                                           
 electronLabel = cms.InputTag("slimmedElectrons")
 muonLabel = cms.InputTag("slimmedMuons")
-
+photonLabel = cms.InputTag("slimmedPhotons")
 
 ################################################################                                                                                         
 # Setup and Read Options                                                                                                                          
@@ -63,10 +63,10 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(1000)
 )
 
-process.MessageLogger.cerr.FwkReport.reportEvery = 50
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 process.options   = cms.untracked.PSet(
   wantSummary = cms.untracked.bool(True)
@@ -75,11 +75,16 @@ process.options   = cms.untracked.PSet(
 ################################################################                                                                                       
 # Input files and global tags                                                                                                                            
 ################################################################                                                                                         
-process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(infile))
+process.source = cms.Source("PoolSource", fileNames =
+                            cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
+)
 process.GlobalTag.globaltag = cms.string(tag)
 
+#'root://xrootd-cms.infn.it///store/mc/Phys14DR/VBF_HToInv_M-125_13TeV_powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/58D548B0-AB6F-E411-B468-3417EBE34D1A.root')
 # 72X MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/AODSIM/PU40bx25_PHYS14_25_V1-v1/00000/00E63918-3A70-E411-A246-7845C4FC35F3.root globalTag=START72_V1::All                                                                                                               
-# 72XMINIAOD MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root globalTag=START72_V1::All                                                                                                    
+# 72XMINIAOD MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root globalTag=START72_V1::All                                                                                                   
+
+ 
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 
@@ -153,6 +158,11 @@ process.pfAllPhotons= cms.EDFilter("CandPtrSelector",
   cut = cms.string("abs(pdgId) = 22")
 )
 
+cms.EDFilter("CandPtrSelector",
+  src = cms.InputTag("pfNoPileUp"),
+  cut = cms.string("abs(pdgId) = 22")
+)
+
 process.pfAllChargedParticles= cms.EDFilter("CandPtrSelector",
   src = cms.InputTag("pfNoPileUp"),
   cut = cms.string("abs(pdgId) = 211 | abs(pdgId) = 321 | " \
@@ -208,9 +218,9 @@ process.icVertexSequence = cms.Sequence(
 ################################################################                                                                                           
 # Electrons                                                                                                                                                 
 #!!CHECK AGAINST https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_for_min
-#!!CHECK IF WE SHOULD USE MVA ID
 ################################################################                                                                                            
 
+'''
 # START POG ELECTRON ID SECTION
 
 # Set up everything that is needed to compute electron IDs and
@@ -239,7 +249,7 @@ for idmod in my_id_modules:
 
 #
 # END POG ELECTRON ID SECTION
-
+'''
 
 
 process.icElectronSequence = cms.Sequence()
@@ -252,17 +262,17 @@ process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFro
 
 #load standard pf electron isolation calculation and make some modifications i.e. add cone veto
 process.load("CommonTools.ParticleFlow.Isolation.pfElectronIsolation_cff")
-process.elPFIsoValueCharged04PFIdPFIso    = process.elPFIsoValueCharged04PFId.clone()
-process.elPFIsoValueChargedAll04PFIdPFIso = process.elPFIsoValueChargedAll04PFId.clone()
-process.elPFIsoValueGamma04PFIdPFIso      = process.elPFIsoValueGamma04PFId.clone()
-process.elPFIsoValueNeutral04PFIdPFIso    = process.elPFIsoValueNeutral04PFId.clone()
-process.elPFIsoValuePU04PFIdPFIso         = process.elPFIsoValuePU04PFId.clone()
+process.elPFIsoValueCharged03PFIdPFIso    = process.elPFIsoValueCharged03PFId.clone()
+process.elPFIsoValueChargedAll03PFIdPFIso = process.elPFIsoValueChargedAll03PFId.clone()
+process.elPFIsoValueGamma03PFIdPFIso      = process.elPFIsoValueGamma03PFId.clone()
+process.elPFIsoValueNeutral03PFIdPFIso    = process.elPFIsoValueNeutral03PFId.clone()
+process.elPFIsoValuePU03PFIdPFIso         = process.elPFIsoValuePU03PFId.clone()
 process.electronPFIsolationValuesSequence = cms.Sequence(
-  process.elPFIsoValueCharged04PFIdPFIso+
-  process.elPFIsoValueChargedAll04PFIdPFIso+
-  process.elPFIsoValueGamma04PFIdPFIso+
-  process.elPFIsoValueNeutral04PFIdPFIso+
-  process.elPFIsoValuePU04PFIdPFIso
+  process.elPFIsoValueCharged03PFIdPFIso+
+  process.elPFIsoValueChargedAll03PFIdPFIso+
+  process.elPFIsoValueGamma03PFIdPFIso+
+  process.elPFIsoValueNeutral03PFIdPFIso+
+  process.elPFIsoValuePU03PFIdPFIso
   )
 process.elPFIsoDepositCharged.src     = electronLabel
 process.elPFIsoDepositChargedAll.src  = electronLabel
@@ -271,20 +281,20 @@ process.elPFIsoDepositGamma.src       = electronLabel
 process.elPFIsoDepositPU.src          = electronLabel
 process.elPFIsoDepositGamma.ExtractorPSet.ComponentName = cms.string("CandViewExtractor")
 process.icElectronSequence += cms.Sequence(
-  process.egmGsfElectronIDSequence+
+#  process.egmGsfElectronIDSequence+
   process.electronPFIsolationDepositsSequence+
   process.electronPFIsolationValuesSequence
   )
 
-process.elPFIsoValueGamma04PFIdPFIso.deposits[0].vetos = (
+process.elPFIsoValueGamma03PFIdPFIso.deposits[0].vetos = (
     cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)'))
-process.elPFIsoValueNeutral04PFIdPFIso.deposits[0].vetos = (
+process.elPFIsoValueNeutral03PFIdPFIso.deposits[0].vetos = (
     cms.vstring())
-process.elPFIsoValuePU04PFIdPFIso.deposits[0].vetos = (
+process.elPFIsoValuePU03PFIdPFIso.deposits[0].vetos = (
     cms.vstring())
-process.elPFIsoValueCharged04PFIdPFIso.deposits[0].vetos = (
+process.elPFIsoValueCharged03PFIdPFIso.deposits[0].vetos = (
     cms.vstring('EcalEndcaps:ConeVeto(0.015)'))
-process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = (
+process.elPFIsoValueChargedAll03PFIdPFIso.deposits[0].vetos = (
     cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)'))
 
 
@@ -317,21 +327,19 @@ process.icElectronSequence += cms.Sequence(
 ################################################################                                                                                            
 process.icMuonSequence = cms.Sequence()
 
-#!!CHECK IF WE NEED MUON ID PRODUCER
-
 #redo isolation calculation
 process.load("CommonTools.ParticleFlow.Isolation.pfMuonIsolation_cff")
-process.muPFIsoValueCharged04PFIso    = process.muPFIsoValueCharged04.clone()
-process.muPFIsoValueChargedAll04PFIso = process.muPFIsoValueChargedAll04.clone()
-process.muPFIsoValueGamma04PFIso      = process.muPFIsoValueGamma04.clone()
-process.muPFIsoValueNeutral04PFIso    = process.muPFIsoValueNeutral04.clone()
-process.muPFIsoValuePU04PFIso         = process.muPFIsoValuePU04.clone()
+process.muPFIsoValueCharged03PFIso    = process.muPFIsoValueCharged03.clone()
+process.muPFIsoValueChargedAll03PFIso = process.muPFIsoValueChargedAll03.clone()
+process.muPFIsoValueGamma03PFIso      = process.muPFIsoValueGamma03.clone()
+process.muPFIsoValueNeutral03PFIso    = process.muPFIsoValueNeutral03.clone()
+process.muPFIsoValuePU03PFIso         = process.muPFIsoValuePU03.clone()
 process.muonPFIsolationValuesSequence = cms.Sequence(
-    process.muPFIsoValueCharged04PFIso+
-    process.muPFIsoValueChargedAll04PFIso+
-    process.muPFIsoValueGamma04PFIso+
-    process.muPFIsoValueNeutral04PFIso+
-    process.muPFIsoValuePU04PFIso
+    process.muPFIsoValueCharged03PFIso+
+    process.muPFIsoValueChargedAll03PFIso+
+    process.muPFIsoValueGamma03PFIso+
+    process.muPFIsoValueNeutral03PFIso+
+    process.muPFIsoValuePU03PFIso
     )
 process.muPFIsoDepositCharged.src     = muonLabel
 process.muPFIsoDepositChargedAll.src  = muonLabel
@@ -346,7 +354,7 @@ process.icMuonSequence += cms.Sequence(
 #make and store ic muon object
 process.icMuonProducer = producers.icMuonProducer.clone(
   branch                    = cms.string("muons"),
-  input                     = cms.InputTag("selectedMuons"),
+  input                     = cms.InputTag("selectedPFMuons"),
   isPF                      = cms.bool(False),
   includeVertexIP           = cms.bool(True),
   inputVertices             = cms.InputTag("selectedVertices"),
@@ -384,16 +392,102 @@ process.icTauSequence = cms.Sequence(
 )
 
 ##################################################################                                                                                          
-#  Jets                                                                                                                                                    
+#  Photons
 #################################################################
+process.icPhotonSequence = cms.Sequence()
+
+#Calculate photon conversion veto
+process.icPhotonElectronConversionVetoCalculator = cms.EDProducer("ICPhotonElectronConversionVetoFromPatCalculator",
+                                                        input = photonLabel
+)
+
+#produce photons using 0.3 radius isolation taken straight from slimmedPhotons
+process.icPhotonProducer = producers.icPhotonProducer.clone(
+                                          input = photonLabel,
+                                          branch = cms.string("photons"),
+                                          includeElectronVeto=cms.bool(True),
+                                          inputElectronVeto=cms.InputTag("icPhotonElectronConversionVetoCalculator"),
+                                          includeHadTowOverEm=cms.bool(True),
+                                          includePFIso03=cms.bool(True),
+                                          includeIsoFromPat=cms.bool(True) 
+)
+
+process.icPhotonSequence += cms.Sequence(
+  process.icPhotonElectronConversionVetoCalculator+
+  process.icPhotonProducer
+)
+
+##################################################################                                                                                          
+#  Jets                                                                                                                                                    
+# !!Currently cannot rerun PU jet ID MVA on user reclustered jets, will be fixed in 7_4_X
+# !!Need to implement PF jet ID
+#################################################################
+
+from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
+process.ak4PFJets = ak4PFJets.clone(src = 'packedPFCandidates')
+
+process.icPFJetSequence = cms.Sequence(
+  process.ak4PFJets
+)
 
 ##################################################################                                                                                          
 #  MET                                                                                                                                                    
 #################################################################
 
+#Make uncorrected pfMet from packedPF
+from RecoMET.METProducers.PFMET_cfi import pfMet
+
+process.pfMet = pfMet.clone(src = "packedPFCandidates")
+process.pfMet.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
+
+process.icuncorrectedPfMetProducer = cms.EDProducer('ICMetProducer',
+                                                    input = cms.InputTag("pfMet"),
+                                                    branch = cms.string("uncorrectedpfMet"),
+                                                    includeCustomID = cms.bool(False),
+                                                    inputCustomID = cms.InputTag(""),
+                                                    )
+
+#Apply met corrections
+process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff")
+process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType0PFCandidate_cff")
+if not isData:
+  process.corrPfMetType1.jetCorrLabel = cms.string("ak5PFL1FastL2L3")
+else:
+  process.corrPfMetType1.jetCorrLabel = cms.string("ak5PFL1FastL2L3Residual")
+process.selectedVerticesForPFMEtCorrType0.src = cms.InputTag("offlineSlimmedPrimaryVertices")
+
+process.pfMetT0pcT1 = cms.EDProducer(
+    "AddCorrectionsToPFMET",
+    src = cms.InputTag('pfMet'),
+    srcCorrections = cms.VInputTag(
+        cms.InputTag('corrPfMetType0PfCand'),
+        cms.InputTag('corrPfMetType1', 'type1')
+    ),
+)
+
+process.icPfMetT0pcT1Producer = cms.EDProducer('ICMetProducer',
+                                                    input = cms.InputTag("pfMetT0pcT1"),
+                                                    branch = cms.string("pfMetType1"),
+                                                    includeCustomID = cms.bool(False),
+                                                    inputCustomID = cms.InputTag(""),
+                                                    )
+
+process.icMetSequence = cms.Sequence(
+  process.pfMet+
+  process.icuncorrectedPfMetProducer
+  #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
+  #process.correctionTermsPfMetType0PFCandidate + #!!currently causing errors
+  #process.pfMetT0pcT1+
+  #process.icPfMetT0pcT1Producer
+)
+
+#!!MET UNCERTAINTIES
+#!!MET FILTERS
+
 ################################################################                                                                                            
 # Simulation only: GenParticles, GenJets, PileupInfo                                                                                                        
 ################################################################                                                                                            
+'''
 process.icGenSequence = cms.Sequence()
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
@@ -484,13 +578,15 @@ process.icGenSequence += (
     process.selectedGenJetsAK4+
     process.icGenJetProducerAK4
 )
-
+'''
 ##################################################################                                                                                          
 # Trigger                                                                                                                                                 
 ################################################################## 
 
 ################################################################                                                                                            
 # EventInfo                                                                                                                                                 
+#!!needs kt6 jets to be working so not included in path for the moment
+#!!make sure we keep from RecoJets.JetProducers.fixedGridRhoProducer_cfi import fixedGridRhoAll for photons
 ################################################################                                                                                            
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
@@ -522,17 +618,32 @@ process.p = cms.Path(
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauProducer+
+  process.icPhotonSequence+
   #process.icTrackSequence+
-  # process.icPFJetSequence+                                                                                                                                
-  process.icGenSequence+
+  process.icPFJetSequence+                                                                                                                                
+  #process.icGenSequence+
+  #process.icMetSequence+
   # process.icTriggerSequence+                                                                                                                              
   #need met sequence
-  process.icEventInfoSequence+
+#  process.icEventInfoSequence+
   process.icEventProducer
 )
 
-# process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
+
+# process.out = cms.OutputModule("PoolOutputModule",
+#                 fileName = cms.untracked.string("edmdump.root")
+#         )
+
+# process.outpath = cms.EndPath(process.out)
+
+
+#process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
 process.schedule = cms.Schedule(process.p)
 
+#make an edm output ntuple with everything in it
+#process.schedule = cms.Schedule(process.p,process.outpath)
+
+
+
 #Uncomment below for a dump of the config
-print process.dumpPython()
+#print process.dumpPython()
