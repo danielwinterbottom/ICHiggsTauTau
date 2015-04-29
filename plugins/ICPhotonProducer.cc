@@ -151,20 +151,24 @@ void ICPhotonProducer::produce(edm::Event& event,
 
     if(do_pf_iso_03_&&do_iso_from_pat_) {
       pat::Photon const& patsrc = pat_photons_handle->at(i);
-      dest.set_dr03_pfiso_charged_all(patsrc.particleIso());
       dest.set_dr03_pfiso_charged(patsrc.chargedHadronIso());
       dest.set_dr03_pfiso_neutral(patsrc.neutralHadronIso());
       dest.set_dr03_pfiso_gamma(patsrc.photonIso());
+#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
+      dest.set_dr03_pfiso_charged_all(patsrc.particleIso());
       dest.set_dr03_pfiso_pu(patsrc.puChargedHadronIso());
+#endif
     }
 
     if(do_pf_iso_04_&&do_iso_from_pat_) {
       pat::Photon const& patsrc = pat_photons_handle->at(i);
-      dest.set_dr04_pfiso_charged_all(patsrc.particleIso());
       dest.set_dr04_pfiso_charged(patsrc.chargedHadronIso());
       dest.set_dr04_pfiso_neutral(patsrc.neutralHadronIso());
       dest.set_dr04_pfiso_gamma(patsrc.photonIso());
+#if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
+      dest.set_dr04_pfiso_charged_all(patsrc.particleIso());
       dest.set_dr04_pfiso_pu(patsrc.puChargedHadronIso());
+#endif
     }
 
     
