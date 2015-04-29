@@ -26,8 +26,8 @@ void ICPhotonElectronConversionVetoFromPatCalculator::produce(edm::Event& event,
   
   std::vector<bool> values(photons_handle->size(), 0.);
   for (unsigned i = 0; i < photons_handle->size(); ++i) {
-    pat::Photon const& src = photons_handle->at(i);
 #if CMSSW_MAJOR_VERSION >= 7 && CMSSW_MINOR_VERSION >= 0
+    pat::Photon const& src = photons_handle->at(i);
     values[i] = src.passElectronVeto();
 #else
     throw cms::Exception("IncompatibleCMSSWVersion") << "This module should not be used before CMSSW_7_0_X!!";
