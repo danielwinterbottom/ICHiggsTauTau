@@ -263,47 +263,47 @@ electronLabel = cms.InputTag("selectedElectrons")
 process.icElectronSequence = cms.Sequence()
 
 #ICElectronConversionCalculator NOT final, but at least have a running version for now
-process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
-    input       = electronLabel,
-    beamspot    = cms.InputTag("offlineBeamSpot"),
-    conversions = cms.InputTag("allConversions")
-)
-if release in ['70XMINIAOD', '72XMINIAOD']:
-  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
-      input       = electronLabel
-  )
-
-#Recalculation of electron conversion veto (alternative to using the value stored in the 
-#slimmedElectrons collection, commented out for now)
-#  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
-#      input       = electronLabel,
-#      beamspot    = cms.InputTag("offlineBeamSpot"),
-#      conversions = cms.InputTag("reducedEgamma:reducedConversions")
+#process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
+#    input       = electronLabel,
+#    beamspot    = cms.InputTag("offlineBeamSpot"),
+#    conversions = cms.InputTag("allConversions")
+#)
+#if release in ['70XMINIAOD', '72XMINIAOD']:
+#  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
+#      input       = electronLabel
 #  )
-
-if release in ['72X']:
-  process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_CSA14_cfi")
-  process.mvaNonTrigV025nsPHYS14.electronTag = cms.InputTag("selectedElectrons")
-if release in ['72XMINIAOD']:
-#New electron ID MVA producer to run without tracks
-  process.mvaNonTrigV025nsPHYS14 = cms.EDProducer("ICElectronIDMVAProducerMiniAOD",
-      verbose=cms.untracked.bool(False),
-      vertexTag=cms.InputTag('offlineSlimmedPrimaryVertices'),
-      electronTag=cms.InputTag('selectedElectrons'),
-      reducedEBRecHitCollection=cms.InputTag('reducedEgamma','reducedEBRecHits',"PAT"),
-      reducedEERecHitCollection=cms.InputTag('reducedEgamma','reducedEERecHits',"PAT"),
-      method=cms.string("BDTSimpleCat"),
-      mvaWeightFile=cms.vstring(
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_5_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_5_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_5_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_10_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_10_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_10_oldscenario2phys14_BDT.weights.xml",
-                                 ),
-     trig=cms.bool(False),
-     )
-
+#
+##Recalculation of electron conversion veto (alternative to using the value stored in the 
+##slimmedElectrons collection, commented out for now)
+##  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
+##      input       = electronLabel,
+##      beamspot    = cms.InputTag("offlineBeamSpot"),
+##      conversions = cms.InputTag("reducedEgamma:reducedConversions")
+##  )
+#
+#if release in ['72X']:
+#  process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_CSA14_cfi")
+#  process.mvaNonTrigV025nsPHYS14.electronTag = cms.InputTag("selectedElectrons")
+#if release in ['72XMINIAOD']:
+##New electron ID MVA producer to run without tracks
+#  process.mvaNonTrigV025nsPHYS14 = cms.EDProducer("ICElectronIDMVAProducerMiniAOD",
+#      verbose=cms.untracked.bool(False),
+#      vertexTag=cms.InputTag('offlineSlimmedPrimaryVertices'),
+#      electronTag=cms.InputTag('selectedElectrons'),
+#      reducedEBRecHitCollection=cms.InputTag('reducedEgamma','reducedEBRecHits',"PAT"),
+#      reducedEERecHitCollection=cms.InputTag('reducedEgamma','reducedEERecHits',"PAT"),
+#      method=cms.string("BDTSimpleCat"),
+#      mvaWeightFile=cms.vstring(
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_5_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_5_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_5_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_10_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_10_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_10_oldscenario2phys14_BDT.weights.xml",
+#                                 ),
+#     trig=cms.bool(False),
+#     )
+#
 #Include electron cut-based IDs
 #Commented out as it's not stricly necessary 
 #from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -320,10 +320,10 @@ if release in ['72XMINIAOD']:
 #for idmod in my_id_modules:
 #  setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
-process.icElectronSequence+=cms.Sequence(
+#process.icElectronSequence+=cms.Sequence(
 #   process.egmGsfElectronIDSequence+
-   process.mvaNonTrigV025nsPHYS14
-   )
+#   process.mvaNonTrigV025nsPHYS14
+#   )
 
 #Electron PF iso sequence:
 if release in ['72X', '72XMINIAOD']:
@@ -382,19 +382,19 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   includePFIso03           = cms.bool(True)
 )
 
-if release in ['72XMINIAOD']:
-  process.icElectronProducer.includeFloats = cms.PSet(
+#if release in ['72XMINIAOD']:
+#  process.icElectronProducer.includeFloats = cms.PSet(
 #     cutBasedVeto        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-veto"),
 #     cutBasedLoose        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-loose"),
 #     cutBasedMedium        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-medium"),
 #     cutBasedTight        = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V1-miniAOD-standalone-tight"),
-     mvaNonTrigV025nsPHYS14    = cms.InputTag("mvaNonTrigV025nsPHYS14")
-  )
+#     mvaNonTrigV025nsPHYS14    = cms.InputTag("mvaNonTrigV025nsPHYS14")
+#  )
 
-process.icElectronSequence += cms.Sequence(
-  process.icElectronConversionCalculator+
-  process.icElectronProducer
-)
+#process.icElectronSequence += cms.Sequence(
+#  process.icElectronConversionCalculator+
+#  process.icElectronProducer
+#)
 
 ################################################################
 # Muons
@@ -422,12 +422,62 @@ process.icElectronSequence += cms.Sequence(
 process.load('JetMETCorrections.Configuration.JetCorrectionProducers_cff')
 process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
+from UserCode.ICHiggsTauTau.mvaPFMET_cff_leptons_53X_Dec2012 import mvaMetPairs
+
 if release in ['72XMINIAOD']:
   process.ak4PFJets.src = cms.InputTag("packedPFCandidates")
 
 process.ak4PFJets.doAreaFastjet = cms.bool(True)
 
 from JetMETCorrections.Configuration.DefaultJEC_cff import ak4PFJetsL1FastL2L3
+
+process.mvaMetPairsTT = mvaMetPairs.clone(
+ srcLeg1 = cms.InputTag('slimmedTaus'),
+ srcLeg2 = cms.InputTag('slimmedTaus'),
+ leg1Pt = cms.double(40.0),
+ leg1Eta = cms.double(2.3),
+ leg2Pt = cms.double(40.0),
+ leg2Eta = cms.double(2.3),
+ minDeltaR = cms.double(0.49)
+# srcPFCandidates = cms.InputTag('packedPFCandidates'),
+# srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices") 
+)
+
+
+process.mvaMetPairsMT = mvaMetPairs.clone(
+ srcLeg1 = cms.InputTag('slimmedMuons'),
+ srcLeg2 = cms.InputTag('slimmedTaus'),
+ leg1Pt = cms.double(7.0),
+ leg1Eta = cms.double(2.6),
+ leg2Pt = cms.double(18.0),
+ leg2Eta = cms.double(2.6),
+ minDeltaR = cms.double(0.49)
+# srcPFCandidates = cms.InputTag('packedPFCandidates'),
+# srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices") 
+)
+process.mvaMetPairsET = mvaMetPairs.clone(
+  srcLeg1 = cms.InputTag('slimmedElectrons'),
+  srcLeg2 = cms.InputTag('slimmedTaus'),
+  leg1Pt = cms.double(10.0),
+  leg1Eta = cms.double(2.6),
+  leg2Pt = cms.double(18.0),
+  leg2Eta = cms.double(2.6),
+  minDeltaR = cms.double(0.49)
+#  srcPFCandidates = cms.InputTag('packedPFCandidates'),
+#  srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  )
+process.mvaMetPairsEM = mvaMetPairs.clone(
+  srcLeg1 = cms.InputTag('slimmedElectrons'),
+  srcLeg2 = cms.InputTag('slimmedMuons'),
+  leg1Pt = cms.double(9.5),
+  leg1Eta = cms.double(2.6),
+  leg2Pt = cms.double(9.5),
+  leg2Eta = cms.double(2.6),
+  minDeltaR = cms.double(0.29)
+#  srcPFCandidates = cms.InputTag('packedPFCandidates'),
+#  srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  )
+
 
 if release in ['72XMINIAOD']:
   process.pfMVAMEt.srcPFCandidates = cms.InputTag("packedPFCandidates")
@@ -437,15 +487,67 @@ if release in ['72XMINIAOD']:
   process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
   process.puJetIdForPFMVAMEt.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
   process.puJetIdForPFMVAMEt.rho = cms.InputTag("fixedGridRhoFastjetAll")
+  process.mvaMetPairsEM.srcPFCandidates = cms.InputTag('packedPFCandidates')
+  process.mvaMetPairsEM.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  process.mvaMetPairsET.srcPFCandidates = cms.InputTag('packedPFCandidates')
+  process.mvaMetPairsET.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  process.mvaMetPairsMT.srcPFCandidates = cms.InputTag('packedPFCandidates')
+  process.mvaMetPairsMT.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  process.mvaMetPairsTT.srcPFCandidates = cms.InputTag('packedPFCandidates')
+  process.mvaMetPairsTT.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+
+
 
 if release in ['72X']:
   process.pfMVAMEt.srcLeptons = cms.VInputTag("selectedElectrons","selectedMuons","selectedTaus")
   process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
+  process.mvaMetPairsEM.srcLeg1 = cms.InputTag("gedGsfElectrons")
+  process.mvaMetPairsEM.srcLeg2 = cms.InputTag("muons")
+  process.mvaMetPairsET.srcLeg1 = cms.InputTag("gedGsfElectrons")
+  process.mvaMetPairsET.srcLeg2 = cms.InputTag("hpsPFTauProducer")
+  process.mvaMetPairsMT.srcLeg1 = cms.InputTag("muons")
+  process.mvaMetPairsMT.srcLeg2 = cms.InputTag("hpsPFTauProducer")
+  process.mvaMetPairsTT.srcLeg1 = cms.InputTag("hpsPFTauProducer")
+  process.mvaMetPairsTT.srcLeg2 = cms.InputTag("hpsPFTauProducer")
+
+process.icMvaMetConcatenate = cms.EDProducer("ICPFMETConcatenate",
+   concatenate = cms.VInputTag(
+     cms.InputTag("mvaMetPairsTT"),
+     cms.InputTag("mvaMetPairsMT"),
+     cms.InputTag("mvaMetPairsET"),
+     cms.InputTag("mvaMetPairsEM")
+   )
+)
+process.icMvaMetIDConcatenate = cms.EDProducer("ICIDConcatenate",
+   concatenate = cms.VInputTag(
+     cms.InputTag("mvaMetPairsTT", "MVAMetId"),
+     cms.InputTag("mvaMetPairsMT", "MVAMetId"),
+     cms.InputTag("mvaMetPairsET", "MVAMetId"),
+     cms.InputTag("mvaMetPairsEM", "MVAMetId")
+   )
+)
+process.icMvaMetPairsProducer = producers.icMetProducer.clone(
+   branch  = cms.string("pfMVAMetVector"),
+   input   = cms.InputTag("icMvaMetConcatenate"),
+   includeCustomID = cms.bool(True),
+   inputCustomID = cms.InputTag("icMvaMetIDConcatenate")
+)
+
+
+
+
 
 process.icMvaMetSequence = cms.Sequence(
    process.ak4PFJets+
    process.calibratedAK4PFJetsForPFMVAMEt+
    process.puJetIdForPFMVAMEt+
+   process.mvaMetPairsTT+
+#   process.mvaMetPairsMT+
+#   process.mvaMetPairsET+
+#   process.mvaMetPairsEM+
+#   process.icMvaMetConcatenate+
+#   process.icMvaMetIDConcatenate+
+#   process.icMvaMetPairsProducer+ 
    process.pfMVAMEt
    )
 

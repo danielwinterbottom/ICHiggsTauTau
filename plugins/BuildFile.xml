@@ -11,7 +11,7 @@
   <use name="EgammaAnalysis/ElectronTools"/>
   <use name="RecoMET/METAlgorithms"/>
   <use name="DataFormats/METReco"/>
-  <use name="JetMETCorrections/METPUSubtraction"/>
+  <use name="RecoMET/METPUSubtraction"/>
   <use name="JetMETCorrections/Objects"/>
   <use name="PhysicsTools/HepMCCandAlgos"/>
   <use name="HLTrigger/HLTcore"/>
