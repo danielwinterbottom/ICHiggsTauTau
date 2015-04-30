@@ -356,22 +356,22 @@ namespace ic {
 
     TLatex *title_latex = new TLatex();
     title_latex->SetNDC();
-    /*if (use_htt_style) {
+    if (use_htt_style) {
       title_latex->SetTextSize(0.04);
       if (draw_ratio_hist) title_latex->SetTextSize(0.05);
       title_latex->SetTextFont(62);
       title_latex->SetTextAlign(31);
       double height = draw_ratio_hist ? 0.93 : 0.94;
-      title_latex->DrawLatex(0.95,height+0.01,title_right.c_str());
+      //title_latex->DrawLatex(0.95,height+0.01,title_right.c_str());
       title_latex->SetTextAlign(11);
       title_latex->DrawLatex(0.17,height,title_left.c_str());
     } else {
       title_latex->SetTextSize(0.03);
       title_latex->SetTextAlign(31);
-      title_latex->DrawLatex(0.95,0.965,title_right.c_str());
+      //title_latex->DrawLatex(0.95,0.965,title_right.c_str());
       title_latex->SetTextAlign(11);
       title_latex->DrawLatex(0.16,0.965,title_left.c_str());
-    }*/
+    }
 
     for (unsigned te = 0; te < texts_.size(); ++te) {
       title_latex->SetTextSize(texts_[te].size());

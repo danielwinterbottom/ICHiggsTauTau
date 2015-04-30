@@ -1124,28 +1124,23 @@ int main(int argc, char* argv[]){
 	if (auto_titles) {
 		double fb_lumi = ana.GetLumi() / 1000.;
 		string com = is_2012 ? "8" : "7";
-		//plot.set_title_left((boost::format("CMS, %.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
-		//plot.set_title_left((boost::format("%.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
-	plot.set_title_right((boost::format("%.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
-    std::string channel_fmt = ""; 
-    std::string category_fmt = "";
-    plot.set_cms_label("CMS");
-    plot.set_cms_extra("");
-		//if (channel_str == "et") 		plot.set_title_right("e#tau_{h}");
-		//if (channel_str == "mt") 		plot.set_title_right("#mu#tau_{h}");
-		//if (channel_str == "mtmet") plot.set_title_right("#mu_{soft}#tau_{h}");
-		//if (channel_str == "em") 		plot.set_title_right("e#mu");
+        plot.set_title_right((boost::format("%.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
+        std::string channel_fmt = ""; 
+        std::string category_fmt = "";
+        plot.set_cms_label("CMS");
+        plot.set_cms_extra("Unpublished");
 		if (channel_str == "et") 		channel_fmt = "e#tau_{h}";
 		if (channel_str == "mt") 		channel_fmt = "#mu#tau_{h}";
 		if (channel_str == "mtmet") channel_fmt = "#mu_{soft}#tau_{h}";
 		if (channel_str == "em") 		channel_fmt = "e#mu";
-    ic::TextElement text(channel_fmt,0.08,0.21,0.82);
-    //plot.AddTextElement(text);
-    if(!(cat_str.find("2jet0tag") == string::npos) ) category_fmt = "2jet-0tag";
-    if(!(cat_str.find("2jet1tag") == string::npos) ) category_fmt = "2jet-1tag";
-    if(!(cat_str.find("2jet2tag") == string::npos) ) category_fmt = "2jet-2tag";
-    //Optional - add category label too
-   //plot.set_title_right(category_fmt);
+       // ic::TextElement text(channel_fmt,0.08,0.21,0.72);
+        //plot.AddTextElement(text);
+        if(!(cat_str.find("2jet0tag") == string::npos) ) category_fmt = "2jet-0tag";
+        if(!(cat_str.find("2jet1tag") == string::npos) ) category_fmt = "2jet-1tag";
+        if(!(cat_str.find("2jet2tag") == string::npos) ) category_fmt = "2jet-2tag";
+        if(!(cat_str.find("2jetinclusive") == string::npos) ) category_fmt = "2jet inclusive";
+        //Optional - add category label too
+        plot.set_title_left(channel_fmt+", "+category_fmt);
 	}
 	plot.GeneratePlot(hmap);
 
