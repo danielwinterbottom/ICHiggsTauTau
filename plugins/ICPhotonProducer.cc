@@ -149,6 +149,10 @@ void ICPhotonProducer::produce(edm::Event& event,
       dest.set_dr04_pfiso_pu((*pu_04)[ref]);
     }
 
+    if(do_pf_iso_03_&&do_iso_from_pat_&&do_pf_iso_04_){
+      throw cms::Exception("FillingTwoIsosFromOnePatIso") << "You are trying to fill both the 03 and 04 photon isolation from the single pat isolation values!!";
+    }
+
     if(do_pf_iso_03_&&do_iso_from_pat_) {
       pat::Photon const& patsrc = pat_photons_handle->at(i);
       dest.set_dr03_pfiso_charged(patsrc.chargedHadronIso());
