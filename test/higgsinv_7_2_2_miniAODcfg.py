@@ -447,14 +447,7 @@ process.icuncorrectedPfMetProducer = cms.EDProducer('ICMetProducer',
                                                     inputCustomID = cms.InputTag(""),
                                                     )
 
-process.ictype1PfMetProducer = cms.EDProducer('ICMetProducer',
-                                                    input = cms.InputTag("slimmedMETs"),
-                                                    branch = cms.string("pfMetType1"),
-                                                    includeCustomID = cms.bool(False),
-                                                    inputCustomID = cms.InputTag(""),
-                                                    )
-
-#Apply met corrections
+#Apply met corrections !!currently doesn't work!
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff")
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType0PFCandidate_cff")
 if not isData:
@@ -478,6 +471,18 @@ process.icPfMetT0pcT1Producer = cms.EDProducer('ICMetProducer',
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
                                                     )
+
+#!!run met significance calculator
+
+#get type 1 met straight from miniAOD !!update to take in output of met significance calculator
+process.ictype1PfMetProducer = cms.EDProducer('ICMetProducer',
+                                                    input = cms.InputTag("slimmedMETs"),
+                                                    branch = cms.string("pfMetType1"),
+                                                    includeCustomID = cms.bool(False),
+                                                    inputCustomID = cms.InputTag(""),
+                                                    )
+
+
 
 process.icMetSequence = cms.Sequence(
   process.pfMet+
@@ -646,10 +651,10 @@ process.p = cms.Path(
 
 
 #process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
-process.schedule = cms.Schedule(process.p)
+#process.schedule = cms.Schedule(process.p)
 
 #make an edm output ntuple with everything in it
-#process.schedule = cms.Schedule(process.p,process.outpath)
+process.schedule = cms.Schedule(process.p,process.outpath)
 
 
 
