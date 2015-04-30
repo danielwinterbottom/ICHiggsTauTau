@@ -447,6 +447,13 @@ process.icuncorrectedPfMetProducer = cms.EDProducer('ICMetProducer',
                                                     inputCustomID = cms.InputTag(""),
                                                     )
 
+process.ictype1PfMetProducer = cms.EDProducer('ICMetProducer',
+                                                    input = cms.InputTag("slimmedMETs"),
+                                                    branch = cms.string("pfMetType1"),
+                                                    includeCustomID = cms.bool(False),
+                                                    inputCustomID = cms.InputTag(""),
+                                                    )
+
 #Apply met corrections
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff")
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType0PFCandidate_cff")
@@ -474,7 +481,8 @@ process.icPfMetT0pcT1Producer = cms.EDProducer('ICMetProducer',
 
 process.icMetSequence = cms.Sequence(
   process.pfMet+
-  process.icuncorrectedPfMetProducer
+  process.icuncorrectedPfMetProducer+
+  process.ictype1PfMetProducer
   #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
   #process.correctionTermsPfMetType0PFCandidate + #!!currently causing errors
   #process.pfMetT0pcT1+
@@ -622,7 +630,7 @@ process.p = cms.Path(
   #process.icTrackSequence+
   process.icPFJetSequence+                                                                                                                                
   #process.icGenSequence+
-  #process.icMetSequence+
+  process.icMetSequence+
   # process.icTriggerSequence+                                                                                                                              
   #need met sequence
 #  process.icEventInfoSequence+
