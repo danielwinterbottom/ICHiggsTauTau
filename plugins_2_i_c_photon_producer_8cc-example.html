@@ -249,6 +249,10 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_photon_producer_8cc-exam
 <div class="line">      dest.<a name="a24"></a><a class="code" href="classic_1_1_photon.html#a91962fcda8edb00e8e337c639f4a2219">set_dr04_pfiso_pu</a>((*pu_04)[ref]);</div>
 <div class="line">    }</div>
 <div class="line"></div>
+<div class="line">    <span class="keywordflow">if</span>(do_pf_iso_03_&amp;&amp;do_iso_from_pat_&amp;&amp;do_pf_iso_04_){</div>
+<div class="line">      <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;FillingTwoIsosFromOnePatIso&quot;</span>) &lt;&lt; <span class="stringliteral">&quot;You are trying to fill both the 03 and 04 photon isolation from the single pat isolation values!!&quot;</span>;</div>
+<div class="line">    }</div>
+<div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span>(do_pf_iso_03_&amp;&amp;do_iso_from_pat_) {</div>
 <div class="line">      pat::Photon <span class="keyword">const</span>&amp; patsrc = pat_photons_handle-&gt;at(i);</div>
 <div class="line">      dest.<a class="code" href="classic_1_1_photon.html#a7350b29f43b507a5b35b981858d64031">set_dr03_pfiso_charged</a>(patsrc.chargedHadronIso());</div>

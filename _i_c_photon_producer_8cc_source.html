@@ -249,46 +249,50 @@ $(document).ready(function(){initNavTree('_i_c_photon_producer_8cc_source.html',
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a91962fcda8edb00e8e337c639f4a2219">set_dr04_pfiso_pu</a>((*pu_04)[ref]);</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    }</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordflow">if</span>(do_pf_iso_03_&amp;&amp;do_iso_from_pat_) {</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      pat::Photon <span class="keyword">const</span>&amp; patsrc = pat_photons_handle-&gt;at(i);</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a7350b29f43b507a5b35b981858d64031">set_dr03_pfiso_charged</a>(patsrc.chargedHadronIso());</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a42f261c695f0a6e2df12ae008cb0912b">set_dr03_pfiso_neutral</a>(patsrc.neutralHadronIso());</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#afc059106d5403c389477f1081f57c20e">set_dr03_pfiso_gamma</a>(patsrc.photonIso());</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a164ac1ba8bef0260ac7e47956a6177d0">set_dr03_pfiso_charged_all</a>(patsrc.particleIso());</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#ae7fe94afa1fc3c39af6c854f59ba295e">set_dr03_pfiso_pu</a>(patsrc.puChargedHadronIso());</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    }</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keywordflow">if</span>(do_pf_iso_04_&amp;&amp;do_iso_from_pat_) {</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;      pat::Photon <span class="keyword">const</span>&amp; patsrc = pat_photons_handle-&gt;at(i);</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a602a7d6d36fb1dbef01be0acede2652e">set_dr04_pfiso_charged</a>(patsrc.chargedHadronIso());</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#ab2f72e8d86684d302abaedeaa88b9f9b">set_dr04_pfiso_neutral</a>(patsrc.neutralHadronIso());</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#aeeb005c071a9ce38de0ee2e4bb65b830">set_dr04_pfiso_gamma</a>(patsrc.photonIso());</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a281430867c15a92ffb73b38c4a6f51a6">set_dr04_pfiso_charged_all</a>(patsrc.particleIso());</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a91962fcda8edb00e8e337c639f4a2219">set_dr04_pfiso_pu</a>(patsrc.puChargedHadronIso());</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    }</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  <span class="comment">// #ifndef CMSSW_4_2_8_patch7</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  <span class="comment">//     pho.set_had_tower_over_em(iter-&gt;hadTowOverEm());</span></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="comment">// #else</span></div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  <span class="comment">//     pho.set_had_tower_over_em(0.0);</span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  <span class="comment">// #endif</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  }</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;}</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;<span class="keywordtype">void</span> ICPhotonProducer::beginJob() {</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;photons_);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordflow">if</span>(do_pf_iso_03_&amp;&amp;do_iso_from_pat_&amp;&amp;do_pf_iso_04_){</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;FillingTwoIsosFromOnePatIso&quot;</span>) &lt;&lt; <span class="stringliteral">&quot;You are trying to fill both the 03 and 04 photon isolation from the single pat isolation values!!&quot;</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    }</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordflow">if</span>(do_pf_iso_03_&amp;&amp;do_iso_from_pat_) {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;      pat::Photon <span class="keyword">const</span>&amp; patsrc = pat_photons_handle-&gt;at(i);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a7350b29f43b507a5b35b981858d64031">set_dr03_pfiso_charged</a>(patsrc.chargedHadronIso());</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a42f261c695f0a6e2df12ae008cb0912b">set_dr03_pfiso_neutral</a>(patsrc.neutralHadronIso());</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#afc059106d5403c389477f1081f57c20e">set_dr03_pfiso_gamma</a>(patsrc.photonIso());</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a164ac1ba8bef0260ac7e47956a6177d0">set_dr03_pfiso_charged_all</a>(patsrc.particleIso());</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#ae7fe94afa1fc3c39af6c854f59ba295e">set_dr03_pfiso_pu</a>(patsrc.puChargedHadronIso());</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    }</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">if</span>(do_pf_iso_04_&amp;&amp;do_iso_from_pat_) {</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;      pat::Photon <span class="keyword">const</span>&amp; patsrc = pat_photons_handle-&gt;at(i);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a602a7d6d36fb1dbef01be0acede2652e">set_dr04_pfiso_charged</a>(patsrc.chargedHadronIso());</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#ab2f72e8d86684d302abaedeaa88b9f9b">set_dr04_pfiso_neutral</a>(patsrc.neutralHadronIso());</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#aeeb005c071a9ce38de0ee2e4bb65b830">set_dr04_pfiso_gamma</a>(patsrc.photonIso());</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 0</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a281430867c15a92ffb73b38c4a6f51a6">set_dr04_pfiso_charged_all</a>(patsrc.particleIso());</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;      dest.<a class="code" href="classic_1_1_photon.html#a91962fcda8edb00e8e337c639f4a2219">set_dr04_pfiso_pu</a>(patsrc.puChargedHadronIso());</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  <span class="comment">// #ifndef CMSSW_4_2_8_patch7</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  <span class="comment">//     pho.set_had_tower_over_em(iter-&gt;hadTowOverEm());</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  <span class="comment">// #else</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;  <span class="comment">//     pho.set_had_tower_over_em(0.0);</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  <span class="comment">// #endif</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  }</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;}</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="keywordtype">void</span> ICPhotonProducer::endJob() {}</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<a class="code" href="_i_c_photon_producer_8cc.html#abfa70592f0a3ba15b1621b7b64b1923d">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_photon_producer.html">ICPhotonProducer</a>);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="keywordtype">void</span> ICPhotonProducer::beginJob() {</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;photons_);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;}</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="keywordtype">void</span> ICPhotonProducer::endJob() {}</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="comment">// define this as a plug-in</span></div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<a class="code" href="_i_c_photon_producer_8cc.html#abfa70592f0a3ba15b1621b7b64b1923d">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_photon_producer.html">ICPhotonProducer</a>);</div>
 <div class="ttc" id="classic_1_1_photon_html_afc059106d5403c389477f1081f57c20e"><div class="ttname"><a href="classic_1_1_photon.html#afc059106d5403c389477f1081f57c20e">ic::Photon::set_dr03_pfiso_gamma</a></div><div class="ttdeci">void set_dr03_pfiso_gamma(float const &amp;dr03_pfiso_gamma)</div><div class="ttdoc">PF isolation, using photons in a cone with . </div><div class="ttdef"><b>Definition:</b> <a href="_photon_8hh_source.html#l00086">Photon.hh:86</a></div></div>
 <div class="ttc" id="_static_tree_8hh_html"><div class="ttname"><a href="_static_tree_8hh.html">StaticTree.hh</a></div></div>
 <div class="ttc" id="classic_1_1_photon_html_a42f261c695f0a6e2df12ae008cb0912b"><div class="ttname"><a href="classic_1_1_photon.html#a42f261c695f0a6e2df12ae008cb0912b">ic::Photon::set_dr03_pfiso_neutral</a></div><div class="ttdeci">void set_dr03_pfiso_neutral(float const &amp;dr03_pfiso_neutral)</div><div class="ttdoc">PF isolation, using neutral hadrons in a cone with . </div><div class="ttdef"><b>Definition:</b> <a href="_photon_8hh_source.html#l00081">Photon.hh:81</a></div></div>
