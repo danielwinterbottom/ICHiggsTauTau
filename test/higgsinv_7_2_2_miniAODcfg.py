@@ -440,7 +440,7 @@ from RecoMET.METProducers.PFMET_cfi import pfMet
 process.pfMet = pfMet.clone(src = "packedPFCandidates")
 process.pfMet.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
 
-process.icuncorrectedPfMetProducer = cms.EDProducer('ICMetProducer',
+process.icuncorrectedPfMetProducer = producers.icMetProducer.clone(
                                                     input = cms.InputTag("pfMet"),
                                                     branch = cms.string("uncorrectedpfMet"),
                                                     includeCustomID = cms.bool(False),
@@ -448,6 +448,7 @@ process.icuncorrectedPfMetProducer = cms.EDProducer('ICMetProducer',
                                                     )
 
 #Apply met corrections !!currently doesn't work!
+'''
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff")
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType0PFCandidate_cff")
 if not isData:
@@ -465,29 +466,47 @@ process.pfMetT0pcT1 = cms.EDProducer(
     ),
 )
 
+
 process.icPfMetT0pcT1Producer = cms.EDProducer('ICMetProducer',
                                                     input = cms.InputTag("pfMetT0pcT1"),
                                                     branch = cms.string("pfMetType1"),
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
                                                     )
+'''
 
-#!!run met significance calculator
+#setup met significance calculator for
+process.load("RecoMET/METProducers.METSignificance_cfi")
+process.load("RecoMET/METProducers.METSignificanceParams_cfi")
+
+#!!clone met sig producer with different name and input for met uncertainties
+
 
 #get type 1 met straight from miniAOD !!update to take in output of met significance calculator
-process.ictype1PfMetProducer = cms.EDProducer('ICMetProducer',
+process.ictype1PfMetProducer = producers.icMetProducer.clone(
                                                     input = cms.InputTag("slimmedMETs"),
                                                     branch = cms.string("pfMetType1"),
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
+                                                    includeExternalMetsig = cms.bool(True)
                                                     )
+
+# process.ictype1PfMetProducermetsigoutofbox = producers.icMetProducer.clone(
+#                                                     input = cms.InputTag("slimmedMETs"),
+#                                                     branch = cms.string("pfMetType1metsigoutofbox"),
+#                                                     includeCustomID = cms.bool(False),
+#                                                     inputCustomID = cms.InputTag(""),
+#                                                     includeExternalMetsig = cms.bool(False)
+#                                                     )
 
 
 
 process.icMetSequence = cms.Sequence(
+  process.METSignificance+
   process.pfMet+
   process.icuncorrectedPfMetProducer+
-  process.ictype1PfMetProducer
+  process.ictype1PfMetProducer+
+  #process.ictype1PfMetProducermetsigoutofbox
   #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
   #process.correctionTermsPfMetType0PFCandidate + #!!currently causing errors
   #process.pfMetT0pcT1+
@@ -651,10 +670,10 @@ process.p = cms.Path(
 
 
 #process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
-#process.schedule = cms.Schedule(process.p)
+process.schedule = cms.Schedule(process.p)
 
 #make an edm output ntuple with everything in it
-process.schedule = cms.Schedule(process.p,process.outpath)
+#process.schedule = cms.Schedule(process.p,process.outpath)
 
 
 
