@@ -17,8 +17,8 @@ namespace ic {
   HhhEMuMVA::HhhEMuMVA(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    gf_mva_file_ = "data/Hhh_mva/SingleBDT_BDTG.weights.xml";
-    // vbf_mva_file_ = "data/vbf_mva/HttEmu_vbf_v1.weights.xml";
+    gf_mva_file_ = "input/Hhh_mva/SingleBDT_BDTG.weights.xml";
+    // vbf_mva_file_ = "input/vbf_mva/HttEmu_vbf_v1.weights.xml";
     gf_reader_ = nullptr;
     // vbf_reader_ = nullptr;
   }

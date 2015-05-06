@@ -151,12 +151,12 @@ int main(int argc, char* argv[]){
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
-    ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("data/runDChayanitUniq.dat"))
+    ("eventsToSkim",        po::value<string>(&eventsToSkim)->default_value("input/runDChayanitUniq.dat"))
     ("dosmear",             po::value<bool>(&dosmear)->default_value(false))
     ("doaltmatch",          po::value<bool>(&doaltmatch)->default_value(false))
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
-    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
+    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("doMCFMstudy",         po::value<bool>(&doMCFMstudy)->default_value(false))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false));
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);

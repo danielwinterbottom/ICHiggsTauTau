@@ -222,7 +222,8 @@ struct JetSrcHelper<pat::Jet> {
       : include_jet_flavour(config.getParameter<bool>("includeJetFlavour")),
         include_jec_factors(config.getParameter<bool>("includeJECs")),
         input_sv_info(config.getParameter<edm::InputTag>("inputSVInfo")),
-        include_sv_info_ids(config.getParameter<bool>("requestSVInfo")) {}
+        include_sv_info_ids(config.getParameter<bool>("requestSVInfo")),
+        is_slimmed(config.getParameter<bool>("isSlimmed")) {}
   void DoSetup(edm::EDProducer * prod) {
     if (include_sv_info_ids) {
       prod->produces<reco::SecondaryVertexTagInfoRefVector>("requestedSVInfo");
@@ -306,6 +307,7 @@ struct JetSrcHelper<pat::Jet> {
   bool include_jec_factors;
   edm::InputTag input_sv_info;
   bool include_sv_info_ids;
+  bool is_slimmed;
 };
 
 #endif

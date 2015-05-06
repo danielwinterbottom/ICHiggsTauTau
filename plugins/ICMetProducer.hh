@@ -32,6 +32,18 @@ class ICMetProducer : public edm::EDProducer {
   boost::hash<reco::MET const*> met_hasher_;
   bool do_custom_id_;
   edm::InputTag inputID_;
+
+  struct SigTags {
+    edm::InputTag metsig;
+    edm::InputTag metsigcov00;
+    edm::InputTag metsigcov01;
+    edm::InputTag metsigcov10;
+    edm::InputTag metsigcov11;
+    explicit SigTags(edm::ParameterSet const& pset);
+  };
+
+  bool do_external_metsig_;
+  SigTags metsig_;
 };
 
 #endif

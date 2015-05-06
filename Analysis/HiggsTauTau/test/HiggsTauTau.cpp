@@ -395,13 +395,13 @@ int main(int argc, char* argv[]){
   string data_json = "";
   if (era == era::data_2011) {
     if (channel == channel::em) {
-      data_json = "data/json/json_data_2011.txt";
+      data_json = "input/json/json_data_2011.txt";
     } else{
-      data_json = "data/json/json_data_2011_et_mt.txt";
+      data_json = "input/json/json_data_2011_et_mt.txt";
     }
   }             
-  if (era == era::data_2012_rereco)       data_json = "data/json/data_2012_rereco.txt";
-  //if (era == era::data_2015)       data_json = "data/json/data_2015.txt";
+  if (era == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
+  //if (era == era::data_2015)       data_json = "input/json/data_2015.txt";
 
   LumiMask lumiMask = LumiMask("LumiMask")
     .set_produce_output_jsons("")
@@ -413,15 +413,15 @@ int main(int argc, char* argv[]){
   HTTPrint httPrint("HTTPrint");
 
   string mc_pu_file;
-  if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";
-  if (mc == mc::summer12_53X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
-  //if (mc == mc::phys14_72X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
-  //if (mc == mc::summer15_74X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
+  if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
+  if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
+  //if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
+  //if (mc == mc::summer15_74X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
   string data_pu_file;
-  if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
-  if (era == era::data_2012_rereco) data_pu_file    =  "data/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
-  //if (era == era::data_2015) data_pu_file    =  "data/pileup/Data_Pileup_2015-600bins.root";
-  if (channel == channel::mtmet) data_pu_file       =  "data/pileup/Data_Pileup_2012_ReRecoD_All-600bins.root";
+  if (era == era::data_2011) data_pu_file     =  "input/pileup/Data_Pileup_2011_HCP-500bins.root";
+  if (era == era::data_2012_rereco) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
+  //if (era == era::data_2015) data_pu_file    =  "input/pileup/Data_Pileup_2015-600bins.root";
+  if (channel == channel::mtmet) data_pu_file       =  "input/pileup/Data_Pileup_2012_ReRecoD_All-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
@@ -505,29 +505,29 @@ int main(int argc, char* argv[]){
   EmbeddingKineReweightProducer rechitWeights = EmbeddingKineReweightProducer("RecHitWeights")
     .set_genparticle_label("genParticlesEmbedded")
     .set_channel(channel);
-  if (channel == channel::et) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_ePtGt20tauPtGt18_recEmbedded.root");
-  if (channel == channel::mt) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_muPtGt16tauPtGt18_recEmbedded.root");
-  if (channel == channel::em) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_recEmbedding_emu.root");
-  if (channel == channel::mtmet) rechitWeights.set_file("data/rechit_weights/embeddingKineReweight_muPt7to25tauPtGt18_recEmbedded.root");
+  if (channel == channel::et) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_ePtGt20tauPtGt18_recEmbedded.root");
+  if (channel == channel::mt) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_muPtGt16tauPtGt18_recEmbedded.root");
+  if (channel == channel::em) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_recEmbedding_emu.root");
+  if (channel == channel::mtmet) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_muPt7to25tauPtGt18_recEmbedded.root");
 
   string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
   ("JetEnergyCorrections")
   .set_input_label("pfJetsPFlow")
   .set_is_data(is_data)
-  .set_l1_file("data/jec/"+jec_payload+"_L1FastJet_AK5PF.txt")
-  .set_l2_file("data/jec/"+jec_payload+"_L2Relative_AK5PF.txt")
-  .set_l3_file("data/jec/"+jec_payload+"_L3Absolute_AK5PF.txt")
-  .set_res_file("data/jec/"+jec_payload+"_L2L3Residual_AK5PF.txt");
+  .set_l1_file("input/jec/"+jec_payload+"_L1FastJet_AK5PF.txt")
+  .set_l2_file("input/jec/"+jec_payload+"_L2Relative_AK5PF.txt")
+  .set_l3_file("input/jec/"+jec_payload+"_L3Absolute_AK5PF.txt")
+  .set_res_file("input/jec/"+jec_payload+"_L2L3Residual_AK5PF.txt");
 
-  string jes_input_file = "data/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
+  string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
   string jes_input_set  = "SubTotalDataMC";
   if (era == era::data_2012_rereco) {
-    jes_input_file = "data/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+    jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
     jes_input_set  = "SubTotalMC";
   }
   //if (era == era::data_2015) {
-  //  jes_input_file = "data/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+  //  jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
   //  jes_input_set  = "SubTotalMC";
   //}
   auto jetEnergyUncertainty = JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")

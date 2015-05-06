@@ -46,11 +46,11 @@ namespace ic {
     std::string mc_file;
     if (strategy_ == strategy::paper2013) {
       if (mc_ == mc::summer12_53X) { 
-        data_file = "data/recoilfits/recoilfit_datamm53XRR_2012_njet.root";
-        mc_file = "data/recoilfits/recoilfit_zmm53XRR_2012_njet.root";
+        data_file = "input/recoilfits/recoilfit_datamm53XRR_2012_njet.root";
+        mc_file = "input/recoilfits/recoilfit_zmm53XRR_2012_njet.root";
       } else if (mc_ == mc::fall11_42X) {
-        data_file = "data/recoilfits/recoilfit_datamm42X_20pv_njet.root";
-        mc_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
+        data_file = "input/recoilfits/recoilfit_datamm42X_20pv_njet.root";
+        mc_file = "input/recoilfits/recoilfit_zmm42X_20pv_njet.root";
       } else {
         return 0;
       }
@@ -62,8 +62,8 @@ namespace ic {
     if ( (sample_.find("WJetsToLNu") != sample_.npos) ) {
       disable = false;
       is_wjets_ = true;
-      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_wjets53X_20pv_njet.root";
-      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_wjets42X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X) process_file = "input/recoilfits/recoilfit_wjets53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "input/recoilfits/recoilfit_wjets42X_20pv_njet.root";
       std::cout << boost::format(param_fmt()) % "enabled"       % true;
       std::cout << boost::format(param_fmt()) % "type"          % "W+Jets";
       std::cout << boost::format(param_fmt()) % "process_file"  % process_file;
@@ -74,8 +74,8 @@ namespace ic {
     if ( (sample_.find("TTJets") != sample_.npos) ) {
       disable = false;
       is_ttbar_ = true;
-      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_wjets53X_20pv_njet.root";
-      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_wjets42X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X) process_file = "input/recoilfits/recoilfit_wjets53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "input/recoilfits/recoilfit_wjets42X_20pv_njet.root";
       std::cout << boost::format(param_fmt()) % "enabled"       % true;
       std::cout << boost::format(param_fmt()) % "type"          % "TTJets";
       std::cout << boost::format(param_fmt()) % "process_file"  % process_file;
@@ -85,10 +85,10 @@ namespace ic {
 
     if (sample_.find("HToTauTau") != sample_.npos) {
       disable = false;
-      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
-      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
-      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
-      if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X) process_file = "input/recoilfits/recoilfit_higgs53X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "input/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "input/recoilfits/recoilfit_higgs42X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "input/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
       std::cout << boost::format(param_fmt()) % "enabled"       % true;
       std::cout << boost::format(param_fmt()) % "type"          % "signal";
       std::cout << boost::format(param_fmt()) % "process_file"  % process_file;      
@@ -99,10 +99,10 @@ namespace ic {
     //Some special treatment is needed for the H->hh signal. The gen object should be the h->tautau.
     if (sample_.find("HTohh") != sample_.npos) {
       disable = false;
-      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
-      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
-      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
-      if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X) process_file = "input/recoilfits/recoilfit_higgs53X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "input/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "input/recoilfits/recoilfit_higgs42X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "input/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
       std::cout << boost::format(param_fmt()) % "enabled"       % true;
       std::cout << boost::format(param_fmt()) % "type"          % "signal";
       std::cout << boost::format(param_fmt()) % "process_file"  % process_file; 
@@ -111,10 +111,10 @@ namespace ic {
     //For A->Zh, we should pick up the h instead of the A.
     if (sample_.find("AToZh") != sample_.npos) {
       disable = false;
-      if (mc_ == mc::summer12_53X) process_file = "data/recoilfits/recoilfit_higgs53X_20pv_njet.root";
-      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
-      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_higgs42X_20pv_njet.root";
-      if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "data/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X) process_file = "input/recoilfits/recoilfit_higgs53X_20pv_njet.root";
+      if (mc_ == mc::summer12_53X && channel_ == channel::em) process_file = "input/recoilfits/recoilfit_higgsem53X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "input/recoilfits/recoilfit_higgs42X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X && channel_ == channel::em) process_file = "input/recoilfits/recoilfit_higgsem42X_20pv_njet.root";
       std::cout << boost::format(param_fmt()) % "enabled"       % true;
       std::cout << boost::format(param_fmt()) % "type"          % "signal";
       std::cout << boost::format(param_fmt()) % "process_file"  % process_file;      
@@ -125,9 +125,9 @@ namespace ic {
       || sample_.find("DYJetsToTauTau") != sample_.npos ) {
       disable = false;
       if (mc_ == mc::summer12_53X) {
-        if (strategy_ == strategy::paper2013)   process_file = "data/recoilfits/recoilfit_zmm53XRR_2012_njet.root";
+        if (strategy_ == strategy::paper2013)   process_file = "input/recoilfits/recoilfit_zmm53XRR_2012_njet.root";
       }
-      if (mc_ == mc::fall11_42X) process_file = "data/recoilfits/recoilfit_zmm42X_20pv_njet.root";
+      if (mc_ == mc::fall11_42X) process_file = "input/recoilfits/recoilfit_zmm42X_20pv_njet.root";
       std::cout << boost::format(param_fmt()) % "enabled"       % true;
       std::cout << boost::format(param_fmt()) % "type"          % "Z+jets";
       std::cout << boost::format(param_fmt()) % "process_file"  % process_file;        
