@@ -392,7 +392,6 @@ process.icTauSequence = cms.Sequence(
 
 ##################################################################                                                                                          
 #  Photons
-#!!Need to include rho as described in event info section
 #################################################################
 process.icPhotonSequence = cms.Sequence()
 
@@ -418,7 +417,7 @@ process.icPhotonSequence += cms.Sequence(
 )
 
 ##################################################################                                                                                          
-#  Jets                                                                                                                                                    
+#  Jets and rho                                                                                                                                            
 # !!Currently cannot rerun PU jet ID MVA on user reclustered jets, will be fixed in 7_4_X
 # !!Need to implement PF jet ID
 # !!All copied from Adinda's config needs checking
@@ -439,21 +438,18 @@ process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
                                               src = cms.InputTag("slimmedJets"),
                                               cut = cms.string("pt > 15")
                                               )
+# from RecoJets.JetProducers.fixedGridRhoProducerFastjet_cfi import fixedGridRhoFastjetAll
+# process.fixedGridRhoFastjetAll = fixedGridRhoFastjetAll.clone(
+#   src = cms.InputTag('packedPFCandidates')
+#   )
 
-process.kt6PFJets = kt4PFJets.clone(
-  src = 'packedPFCandidates',
-  rParam = cms.double(0.6),
-  doAreaFastjet = cms.bool(True),
-  doRhoFastjet = cms.bool(True)
-  )
 
 # Parton flavour
 # --------------
 process.jetPartons = cms.EDProducer("PartonSelector",
-                                    src = cms.InputTag("genParticles"),
+                                    src = cms.InputTag("prunedGenParticles"),
                                     withLeptons = cms.bool(False)
                                     )
-process.jetPartons.src = cms.InputTag("prunedGenParticles")
 
 process.pfJetPartonMatches = cms.EDProducer("JetPartonMatcher",
                                             jets = cms.InputTag("ak4PFJetsCHS"),
@@ -473,9 +469,9 @@ process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
 
 
 # Jet energy corrections
-# ----------------------
+# ----------------------!!CHECK CORRECT RHO IS BEING USED
 process.ak4PFL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
-                                        srcRho = cms.InputTag("kt6PFJets", "rho"),
+                                        srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
                                         algorithm = cms.string('AK4PFchs'),
                                         level = cms.string('L1FastJet')
                                         )
@@ -509,19 +505,18 @@ from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAt
 process.load("RecoBTag.Configuration.RecoBTag_cff")
 import RecoBTag.Configuration.RecoBTag_cff as btag
 process.jetTracksAssociatorAtVertexAK4PF = ak4JetTracksAssociatorAtVertex.clone(
-  jets = cms.InputTag("ak4PFJetsCHS")
+  jets = cms.InputTag("ak4PFJetsCHS"),
+  tracks = cms.InputTag("unpackedTracksAndVertices"),
+  pvSrc = cms.InputTag("unpackedTracksAndVertices")
   )
-
-process.jetTracksAssociatorAtVertexAK4PF.tracks = cms.InputTag("unpackedTracksAndVertices")
-process.jetTracksAssociatorAtVertexAK4PF.pvSrc = cms.InputTag("unpackedTracksAndVertices")
 
 #if isEmbedded:
 #  process.jetTracksAssociatorAtVertexAK5PF.tracks = cms.InputTag("tmfTracks")
 
 process.impactParameterTagInfosAK4PF = btag.impactParameterTagInfos.clone(
-  jetTracks = cms.InputTag('jetTracksAssociatorAtVertexAK4PF')
+  jetTracks = cms.InputTag('jetTracksAssociatorAtVertexAK4PF'),
+  primaryVertex = cms.InputTag("unpackedTracksAndVertices")
   )
-process.impactParameterTagInfosAK4PF.primaryVertex = cms.InputTag("unpackedTracksAndVertices")
 
 process.secondaryVertexTagInfosAK4PF = btag.secondaryVertexTagInfos.clone(
   trackIPTagInfos = cms.InputTag('impactParameterTagInfosAK4PF')
@@ -560,8 +555,8 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
                                   vertexes = cms.InputTag("offlinePrimaryVertices"),
                                   #    vertexes = cms.InputTag("unpackedTracksAndVertices"),
                                   algos = cms.VPSet(stdalgos),
-                                  rho     = cms.InputTag("kt6PFJets", "rho"),
-                                  #    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
+                                  #rho     = cms.InputTag("kt6PFJets", "rho"),
+                                  rho     = cms.InputTag("fixedGridRhoFastjetAll"),
                                   jec     = cms.string("AK4PFchs"),
                                   applyJec = cms.bool(True),
                                   inputIsCorrected = cms.bool(False),
@@ -570,7 +565,6 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
                                   )
 
 process.puJetMva.vertexes = cms.InputTag("unpackedTracksAndVertices")
-process.puJetMva.rho = cms.InputTag("fixedGridRhoFastjetAll")
 process.puJetMva.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
 
 # Producer
@@ -817,14 +811,12 @@ process.icGenSequence += (
 
 ################################################################                                                                                            
 #!! EventInfo                                                                                                                                              
-#!!needs kt6 jets to be working so not included in path for the moment
-#!!make sure we keep from RecoJets.JetProducers.fixedGridRhoProducer_cfi import fixedGridRhoAll for photons
 ################################################################                                                                                            
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
-  inputJetRho         = cms.InputTag("kt6PFJets", "rho"),
+  inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),
-  inputLeptonRho      = cms.InputTag("kt6PFJets", "rho"),
+  inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
   includeVertexCount  = cms.bool(True),
   inputVertices       = cms.InputTag("selectedVertices"),
   includeCSCFilter    = cms.bool(False),
@@ -857,7 +849,7 @@ process.p = cms.Path(
   #process.icMetSequence+
   # process.icTriggerSequence+                                                                                                                              
   #need met sequence
-#  process.icEventInfoSequence+
+  #process.icEventInfoSequence+
   process.icEventProducer
 )
 
