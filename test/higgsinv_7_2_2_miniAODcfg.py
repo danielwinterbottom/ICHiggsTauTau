@@ -440,14 +440,15 @@ from RecoMET.METProducers.PFMET_cfi import pfMet
 process.pfMet = pfMet.clone(src = "packedPFCandidates")
 process.pfMet.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
 
-process.icuncorrectedPfMetProducer = cms.EDProducer('ICMetProducer',
+process.icuncorrectedPfMetProducer = producers.icMetProducer.clone(
                                                     input = cms.InputTag("pfMet"),
                                                     branch = cms.string("uncorrectedpfMet"),
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
                                                     )
 
-#Apply met corrections
+#Apply met corrections !!currently doesn't work!
+'''
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff")
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType0PFCandidate_cff")
 if not isData:
@@ -465,16 +466,47 @@ process.pfMetT0pcT1 = cms.EDProducer(
     ),
 )
 
+
 process.icPfMetT0pcT1Producer = cms.EDProducer('ICMetProducer',
                                                     input = cms.InputTag("pfMetT0pcT1"),
                                                     branch = cms.string("pfMetType1"),
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
                                                     )
+'''
+
+#setup met significance calculator for
+process.load("RecoMET/METProducers.METSignificance_cfi")
+process.load("RecoMET/METProducers.METSignificanceParams_cfi")
+
+#!!clone met sig producer with different name and input for met uncertainties
+
+
+#get type 1 met straight from miniAOD !!update to take in output of met significance calculator
+process.ictype1PfMetProducer = producers.icMetProducer.clone(
+                                                    input = cms.InputTag("slimmedMETs"),
+                                                    branch = cms.string("pfMetType1"),
+                                                    includeCustomID = cms.bool(False),
+                                                    inputCustomID = cms.InputTag(""),
+                                                    includeExternalMetsig = cms.bool(True)
+                                                    )
+
+# process.ictype1PfMetProducermetsigoutofbox = producers.icMetProducer.clone(
+#                                                     input = cms.InputTag("slimmedMETs"),
+#                                                     branch = cms.string("pfMetType1metsigoutofbox"),
+#                                                     includeCustomID = cms.bool(False),
+#                                                     inputCustomID = cms.InputTag(""),
+#                                                     includeExternalMetsig = cms.bool(False)
+#                                                     )
+
+
 
 process.icMetSequence = cms.Sequence(
+  process.METSignificance+
   process.pfMet+
-  process.icuncorrectedPfMetProducer
+  process.icuncorrectedPfMetProducer+
+  process.ictype1PfMetProducer+
+  #process.ictype1PfMetProducermetsigoutofbox
   #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
   #process.correctionTermsPfMetType0PFCandidate + #!!currently causing errors
   #process.pfMetT0pcT1+
@@ -622,7 +654,7 @@ process.p = cms.Path(
   #process.icTrackSequence+
   process.icPFJetSequence+                                                                                                                                
   #process.icGenSequence+
-  #process.icMetSequence+
+  process.icMetSequence+
   # process.icTriggerSequence+                                                                                                                              
   #need met sequence
 #  process.icEventInfoSequence+
