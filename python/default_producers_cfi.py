@@ -165,7 +165,16 @@ icMetProducer = cms.EDProducer('ICMetProducer',
   branch  = cms.string("pfMet"),
   input   = cms.InputTag("pfMet"),
   includeCustomID = cms.bool(False),
-  inputCustomID = cms.InputTag("")
+  inputCustomID = cms.InputTag(""),
+  includeExternalMetsig = cms.bool(False),
+  metsig = cms.PSet(
+    metsig      = cms.InputTag("METSignificance","METSignificance"),
+    metsigcov00 = cms.InputTag("METSignificance","CovarianceMatrix00"),
+    metsigcov01 = cms.InputTag("METSignificance","CovarianceMatrix01"),
+    metsigcov10 = cms.InputTag("METSignificance","CovarianceMatrix10"),
+    metsigcov11 = cms.InputTag("METSignificance","CovarianceMatrix11")
+    )
+  
 )
 ## [Met]
 
