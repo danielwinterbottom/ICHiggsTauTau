@@ -788,12 +788,11 @@ process.icGenSequence += (
 '''
 ##################################################################                                                                                          
 #!! Trigger                                                                                                                                                 
+#!! Need to get L1 extra
 ################################################################## 
 
 from PhysicsTools.PatAlgos.tools.trigTools import *
-process.patTriggerPath = cms.Path()
-if release in ['72X']:
-  switchOnTrigger(process, path = 'patTriggerPath', outputModule = '')
+#process.patTriggerPath = cms.Path()
 
 process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
   branch = cms.string("triggerPaths"),
@@ -802,17 +801,36 @@ process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
   )
 
 
-#!!THIS IS A TRIAL OBJECT PUT IN TO TEST THE MODULE UPDATE TO REAL HINV TRIGGERS
-process.icIsoMu17LooseTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
-  branch = cms.string("triggerObjectsIsoMu17LooseTau20"),
+
+process.icPFMET170NoiseCleanedObjectProducer = producers.icTriggerObjectProducer.clone(
+  branch = cms.string("triggerObjectsPFMET170NoiseCleaned"),
   input   = cms.InputTag("patTriggerEvent"),
-  hltPath = cms.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
+  hltPath = cms.string("HLT_PFMET170_NoiseCleaned_v"),
+  inputIsStandAlone = cms.bool(False),
+  storeOnlyIfFired = cms.bool(True)
+  )
+
+#!!THESE ARE IN IN LATER CMSSW RELEASES NOT INCLUDED IN SEQUENCE FOR THE MOMENT
+process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer = producers.icTriggerObjectProducer.clone(
+  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu140"),
+  input   = cms.InputTag("patTriggerEvent"),
+  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v"),
+  inputIsStandAlone = cms.bool(False),
+  storeOnlyIfFired = cms.bool(True)
+  )
+
+process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer = producers.icTriggerObjectProducer.clone(
+  branch = cms.string("triggerObjectsDiPFJet40DEta3p5MJJ600PFMETNoMu80"),
+  input   = cms.InputTag("patTriggerEvent"),
+  hltPath = cms.string("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v"),
   inputIsStandAlone = cms.bool(False),
   storeOnlyIfFired = cms.bool(True)
   )
 
 process.icTriggerObjectSequence = cms.Sequence(
-  process.icIsoMu17LooseTau20ObjectProducer
+  process.icPFMET170NoiseCleanedObjectProducer#+ !!LATER PATHS WILL BE PRESENT IN 73 and 74
+  #process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer+
+  #process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer
 )
 
 for name in process.icTriggerObjectSequence.moduleNames():
@@ -858,7 +876,7 @@ process.p = cms.Path(
   #process.icTrackSequence+
   process.icPFJetSequence+                                                                                                                                
   #process.icGenSequence+
-  #process.icMetSequence+
+  process.icMetSequence+
   #process.icEventInfoSequence+
   process.icTriggerPathProducer+
   process.icTriggerObjectSequence+
@@ -873,8 +891,8 @@ process.p = cms.Path(
 # process.outpath = cms.EndPath(process.out)
 
 
-process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
-#process.schedule = cms.Schedule(process.p)
+#process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
+process.schedule = cms.Schedule(process.p)
 
 #make an edm output ntuple with everything in it
 #process.schedule = cms.Schedule(process.p,process.outpath)
