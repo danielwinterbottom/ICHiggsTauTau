@@ -489,26 +489,30 @@ if release in ['72XMINIAOD']:
   process.puJetIdForPFMVAMEt.rho = cms.InputTag("fixedGridRhoFastjetAll")
   process.mvaMetPairsEM.srcPFCandidates = cms.InputTag('packedPFCandidates')
   process.mvaMetPairsEM.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  process.mvaMetPairsEM.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
   process.mvaMetPairsET.srcPFCandidates = cms.InputTag('packedPFCandidates')
   process.mvaMetPairsET.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  process.mvaMetPairsET.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
   process.mvaMetPairsMT.srcPFCandidates = cms.InputTag('packedPFCandidates')
   process.mvaMetPairsMT.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  process.mvaMetPairsMT.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
   process.mvaMetPairsTT.srcPFCandidates = cms.InputTag('packedPFCandidates')
   process.mvaMetPairsTT.srcVertices = cms.InputTag('offlineSlimmedPrimaryVertices')
+  process.mvaMetPairsTT.srcRho = cms.InputTag('fixedGridRhoFastjetAll')
 
 
 
 if release in ['72X']:
   process.pfMVAMEt.srcLeptons = cms.VInputTag("selectedElectrons","selectedMuons","selectedTaus")
   process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
-  process.mvaMetPairsEM.srcLeg1 = cms.InputTag("gedGsfElectrons")
-  process.mvaMetPairsEM.srcLeg2 = cms.InputTag("muons")
-  process.mvaMetPairsET.srcLeg1 = cms.InputTag("gedGsfElectrons")
-  process.mvaMetPairsET.srcLeg2 = cms.InputTag("hpsPFTauProducer")
-  process.mvaMetPairsMT.srcLeg1 = cms.InputTag("muons")
-  process.mvaMetPairsMT.srcLeg2 = cms.InputTag("hpsPFTauProducer")
-  process.mvaMetPairsTT.srcLeg1 = cms.InputTag("hpsPFTauProducer")
-  process.mvaMetPairsTT.srcLeg2 = cms.InputTag("hpsPFTauProducer")
+  process.mvaMetPairsEM.srcLeg1 = cms.InputTag("selectedElectrons")
+  process.mvaMetPairsEM.srcLeg2 = cms.InputTag("selectedMuons")
+  process.mvaMetPairsET.srcLeg1 = cms.InputTag("selectedElectrons")
+  process.mvaMetPairsET.srcLeg2 = cms.InputTag("selectedTaus")
+  process.mvaMetPairsMT.srcLeg1 = cms.InputTag("selectedMuons")
+  process.mvaMetPairsMT.srcLeg2 = cms.InputTag("selectedTaus")
+  process.mvaMetPairsTT.srcLeg1 = cms.InputTag("selectedTaus")
+  process.mvaMetPairsTT.srcLeg2 = cms.InputTag("selectedTaus")
 
 process.icMvaMetConcatenate = cms.EDProducer("ICPFMETConcatenate",
    concatenate = cms.VInputTag(

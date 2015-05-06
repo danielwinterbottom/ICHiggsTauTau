@@ -75,7 +75,7 @@ namespace
 }
 
 MVAMETPairProducer::MVAMETPairProducer(const edm::ParameterSet& cfg) 
-   : mvaMEtAlgo_(cfg), mvaMEtAlgo_isInitialized_(false)
+   : mvaMEtAlgo_(cfg), mvaMEtAlgo_isInitialized_(false), mvaJetIdAlgo_(cfg)
 {
   srcCorrJets_     = cfg.getParameter<edm::InputTag>("srcCorrJets");
   srcUncorrJets_   = cfg.getParameter<edm::InputTag>("srcUncorrJets");
@@ -138,6 +138,7 @@ void MVAMETPairProducer::produce(edm::Event& evt, const edm::EventSetup& es)
   if(useType1_) corrector = JetCorrector::getJetCorrector (correctorLabel_, es);
 
   // get PFCandidates
+  typedef edm::View<reco::Candidate> CandidateView;
   edm::Handle<reco::CandidateView> pfCandidates_view;
   evt.getByLabel(srcPFCandidates_, pfCandidates_view);
 
