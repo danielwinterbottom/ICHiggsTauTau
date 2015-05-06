@@ -372,8 +372,7 @@ process.icMuonSequence += cms.Sequence(
 )
 
 ################################################################                                                                                            
-#!! Taus                                                                                                                                                   
-#!! need to be checked
+# Taus                                                                                                                                                   
 ################################################################                                                                                            
 import UserCode.ICHiggsTauTau.tau_discriminators_cfi as tauIDs
 
@@ -420,7 +419,6 @@ process.icPhotonSequence += cms.Sequence(
 #  Jets and rho                                                                                                                                            
 # !!Currently cannot rerun PU jet ID MVA on user reclustered jets, will be fixed in 7_4_X
 # !!Need to implement PF jet ID
-# !!All copied from Adinda's config needs checking
 #################################################################
 
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
@@ -469,7 +467,7 @@ process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
 
 
 # Jet energy corrections
-# ----------------------!!CHECK CORRECT RHO IS BEING USED
+# ----------------------
 process.ak4PFL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
                                         srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
                                         algorithm = cms.string('AK4PFchs'),
@@ -552,20 +550,15 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
                                   runMvas = cms.bool(True),
                                   #jets = cms.InputTag("slimmedJets"),
                                   jets = cms.InputTag("ak4PFJetsCHS"),
-                                  vertexes = cms.InputTag("offlinePrimaryVertices"),
-                                  #    vertexes = cms.InputTag("unpackedTracksAndVertices"),
+                                  vertexes = cms.InputTag("unpackedTracksAndVertices"),
                                   algos = cms.VPSet(stdalgos),
-                                  #rho     = cms.InputTag("kt6PFJets", "rho"),
                                   rho     = cms.InputTag("fixedGridRhoFastjetAll"),
                                   jec     = cms.string("AK4PFchs"),
                                   applyJec = cms.bool(True),
                                   inputIsCorrected = cms.bool(False),
                                   residualsFromTxt = cms.bool(False),
-                                  residualsTxt     = cms.FileInPath("RecoJets/JetProducers/data/dummy.txt"),
+                                  residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
                                   )
-
-process.puJetMva.vertexes = cms.InputTag("unpackedTracksAndVertices")
-process.puJetMva.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
 
 # Producer
 # --------
@@ -589,18 +582,15 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
       )
     ),
   destConfig = cms.PSet(
-    includePileupID       = cms.bool(True), #rerunning the pu MVA on the jet collection created in miniAOD is possible in newer CMSSW versions but not yet in 72
+    includePileupID       = cms.bool(False), #!!rerunning the pu MVA on the jet collection created in miniAOD is possible in newer CMSSW versions but not yet in 72 will be fixed in 74
     inputPileupID         = cms.InputTag("puJetMva", "fullDiscriminant"),
     includeTrackBasedVars = cms.bool(False),
     inputTracks           = cms.InputTag("generalTracks"),
-    inputVertices         = cms.InputTag("selectedVertices"),
+    inputVertices=cms.InputTag("unpackedTracksAndVertices"),#!!check why this is needed
     requestTracks         = cms.bool(False)
     )
   )
 
-
-process.icPFJetProducer.destConfig.includePileupID=cms.bool(False)#!!cannot rerun run pu ID mva in 72 will be fixed for 74
-process.icPFJetProducer.destConfig.inputVertices=cms.InputTag("unpackedTracksAndVertices")#!!check why this is needed
 
 process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
   branch                    = cms.string("ak4SlimmedJets"),
@@ -634,26 +624,16 @@ process.icPFJetSequence += cms.Sequence(
 # process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet()
 process.icPFJetSequence += cms.Sequence(
   process.ak4PFJetsCHS+
-  process.puJetMva+ 
+  #process.puJetMva+ !!This works for jets built from PackedCandidates in CMSSW74X but not yet in 72
   process.jetPartons+
   process.pfJetPartonMatches+
   process.pfJetFlavourAssociation+
   process.icPFJetFlavourCalculator+
   process.btaggingSequenceAK4PF+
-  process.icPFJetProducer #Not from slimmed jets!
+  process.icPFJetProducer+ #Not from slimmed jets!
+  process.icPFJetProducerFromPat
   )
 
-
-process.icPFJetSequence.remove(process.puJetMva) #!!This works for jets built from PackedCandidates in CMSSW74X but not yet in 72
-
-
-
-
-# process.ak4PFJets = ak4PFJets.clone(src = 'packedPFCandidates')
-
-# process.icPFJetSequence = cms.Sequence(
-#   process.ak4PFJets
-# )
 
 ##################################################################                                                                                          
 #  MET                                                                                                                                                    
@@ -673,7 +653,7 @@ process.icuncorrectedPfMetProducer = cms.EDProducer('ICMetProducer',
                                                     inputCustomID = cms.InputTag(""),
                                                     )
 
-#Apply met corrections
+#Apply met corrections !!doesn't work at the moment as modules only take AOD input
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType1Type2_cff")
 process.load("JetMETCorrections.Type1MET.correctionTermsPfMetType0PFCandidate_cff")
 if not isData:
@@ -697,6 +677,7 @@ process.icPfMetT0pcT1Producer = cms.EDProducer('ICMetProducer',
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
                                                     )
+
 
 process.icMetSequence = cms.Sequence(
   process.pfMet+
@@ -809,6 +790,37 @@ process.icGenSequence += (
 #!! Trigger                                                                                                                                                 
 ################################################################## 
 
+from PhysicsTools.PatAlgos.tools.trigTools import *
+process.patTriggerPath = cms.Path()
+if release in ['72X']:
+  switchOnTrigger(process, path = 'patTriggerPath', outputModule = '')
+
+process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
+  branch = cms.string("triggerPaths"),
+  inputIsStandAlone = cms.bool(True),
+  input = cms.InputTag("TriggerResults", "", "HLT")
+  )
+
+
+#!!THIS IS A TRIAL OBJECT PUT IN TO TEST THE MODULE UPDATE TO REAL HINV TRIGGERS
+process.icIsoMu17LooseTau20ObjectProducer = producers.icTriggerObjectProducer.clone(
+  branch = cms.string("triggerObjectsIsoMu17LooseTau20"),
+  input   = cms.InputTag("patTriggerEvent"),
+  hltPath = cms.string("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v"),
+  inputIsStandAlone = cms.bool(False),
+  storeOnlyIfFired = cms.bool(True)
+  )
+
+process.icTriggerObjectSequence = cms.Sequence(
+  process.icIsoMu17LooseTau20ObjectProducer
+)
+
+for name in process.icTriggerObjectSequence.moduleNames():
+  mod = getattr(process, name)
+  mod.inputIsStandAlone = cms.bool(True)
+  mod.input = cms.InputTag("selectedPatTrigger", "", "PAT")
+
+
 ################################################################                                                                                            
 #!! EventInfo                                                                                                                                              
 ################################################################                                                                                            
@@ -841,15 +853,15 @@ process.p = cms.Path(
   #process.icPFSequence+
   process.icElectronSequence+
   process.icMuonSequence+
-  process.icTauProducer+
+  process.icTauSequence+
   process.icPhotonSequence+
   #process.icTrackSequence+
   process.icPFJetSequence+                                                                                                                                
   #process.icGenSequence+
   #process.icMetSequence+
-  # process.icTriggerSequence+                                                                                                                              
-  #need met sequence
   #process.icEventInfoSequence+
+  process.icTriggerPathProducer+
+  process.icTriggerObjectSequence+
   process.icEventProducer
 )
 
@@ -861,8 +873,8 @@ process.p = cms.Path(
 # process.outpath = cms.EndPath(process.out)
 
 
-#process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
-process.schedule = cms.Schedule(process.p)
+process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
+#process.schedule = cms.Schedule(process.p)
 
 #make an edm output ntuple with everything in it
 #process.schedule = cms.Schedule(process.p,process.outpath)
