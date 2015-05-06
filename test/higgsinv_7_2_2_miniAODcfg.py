@@ -712,7 +712,7 @@ process.icMetSequence = cms.Sequence(
   process.METSignificance+
   process.pfMet+
   process.icuncorrectedPfMetProducer+
-  process.ictype1PfMetProducer+
+  process.ictype1PfMetProducer
   #process.ictype1PfMetProducermetsigoutofbox
   #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
   #process.correctionTermsPfMetType0PFCandidate + #!!currently causing errors
