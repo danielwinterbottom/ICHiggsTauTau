@@ -557,33 +557,33 @@ process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
 
  # Jet energy corrections
  # ----------------------
-process.ak4PFL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
+process.ak4PFL1FastjetCHS = cms.ESProducer("L1FastjetCorrectionESProducer",
 #    srcRho = cms.InputTag("kt6PFJets", "rho"),
     srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
     algorithm = cms.string('AK4PFchs'),
     level = cms.string('L1FastJet')
 )
-process.ak4PFL2Relative = cms.ESProducer("LXXXCorrectionESProducer",
+process.ak4PFL2RelativeCHS = cms.ESProducer("LXXXCorrectionESProducer",
     algorithm = cms.string('AK4PFchs'),
     level = cms.string('L2Relative')
 )
-process.ak4PFL3Absolute = cms.ESProducer("LXXXCorrectionESProducer",
+process.ak4PFL3AbsoluteCHS = cms.ESProducer("LXXXCorrectionESProducer",
     algorithm = cms.string('AK4PFchs'),
     level = cms.string('L3Absolute')
 )
-process.ak4PFResidual = cms.ESProducer("LXXXCorrectionESProducer",
+process.ak4PFResidualCHS = cms.ESProducer("LXXXCorrectionESProducer",
     algorithm = cms.string('AK4PFchs'),
     level = cms.string('L2L3Residual')
 )
 
 #Corrections applied to miniaod slimmedJets
 pfJECS = cms.PSet(
-  L1FastJet  = cms.string("ak4PFL1Fastjet"),
-  L2Relative = cms.string("ak4PFL2Relative"),
-  L3Absolute = cms.string("ak4PFL3Absolute")
+  L1FastJet  = cms.string("ak4PFL1FastjetCHS"),
+  L2Relative = cms.string("ak4PFL2RelativeCHS"),
+  L3Absolute = cms.string("ak4PFL3AbsoluteCHS")
 )
 if isData: pfJECS.append(
-  L2L3Residual = cms.string("ak4PFResidual")
+  L2L3Residual = cms.string("ak4PFResidualCHS")
 )
 
  # b-tagging
