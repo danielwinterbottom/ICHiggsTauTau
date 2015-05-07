@@ -698,7 +698,7 @@ namespace ic {
     if (elec->gsf_tk_nhits() > 0) return false;
     bool pass_mva = false;
     double eta = fabs(elec->sc_eta());
-    double idmva = elec->GetIdIso("POG_MVA_ID_Run2_NonTrig_Tight");
+    double idmva = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
     if (!loose_wp) {
       if (eta <= 0.8                  && idmva > 0.73) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479  && idmva > 0.57) pass_mva = true;

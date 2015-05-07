@@ -659,8 +659,7 @@ int main(int argc, char* argv[]){
     .set_min(0).set_max((channel == channel::et || channel == channel::etmet || channel == channel::em) ? 1 : 0);
     if(strategy == strategy::phys14) {
       extraElectronVeto.set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.5)
-                && bind(ElectronHTTId, _1, true)
-                && bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3
+                && bind(VetoElectronIDPhys14, _1)
                 && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
                 && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2
                 && bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3);
