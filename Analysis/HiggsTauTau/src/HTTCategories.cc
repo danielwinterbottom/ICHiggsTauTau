@@ -303,7 +303,9 @@ namespace ic {
     std::vector<PFJet*> bjets = prebjets;
     std::vector<PFJet*> loose_bjets = prebjets;
     std::string btag_label="combinedSecondaryVertexBJetTags";
+    double btag_wp =  0.679;
     if(strategy_ == strategy::phys14) btag_label = "combinedInclusiveSecondaryVertexV2BJetTags";
+    if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -319,8 +321,8 @@ namespace ic {
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
       ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
     } else {
-      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.679);
-      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.679);
+      ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
+      ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
     } 
     
     // Define event properties
