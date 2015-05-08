@@ -397,7 +397,7 @@ namespace ic {
     emu_dxy_1_ = 0.0;
     emu_dxy_2_ = 0.0;
 
-    if (strategy_ == strategy::paper2013) {
+    if (strategy_ == strategy::paper2013 || strategy_ == strategy::phys14) {
       if (channel_ == channel::et) {
         Electron const* elec = dynamic_cast<Electron const*>(lep1);
         iso_1_ = PF04IsolationVal(elec, 0.5);
