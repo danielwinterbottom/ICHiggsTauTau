@@ -77,7 +77,7 @@ process.GlobalTag.globaltag = cms.string(tag)
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
 import UserCode.ICHiggsTauTau.default_selectors_cfi as selectors
 
-#process.load("PhysicsTools.PatAlgos.patSequences_cff")
+process.load("PhysicsTools.PatAlgos.patSequences_cff")
 ################################################################
 # Re-do PFTau reconstruction
 ################################################################
@@ -661,13 +661,13 @@ if release in ['70X', '70XMINIAOD', '72X', '72XMINIAOD']:
  # Producer
  # --------
 process.icPFJetProducer = producers.icPFJetProducer.clone(
-    branch                    = cms.string("pfJetsPFlow"),
+    branch                    = cms.string("ak4PFJetsCHS"),
     input                     = cms.InputTag("ak4PFJetsCHS"),
     srcConfig = cms.PSet(
       includeJetFlavour         = cms.bool(True),
       inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
       applyJECs                 = cms.bool(True),
-      includeJECs               = cms.bool(False),
+      includeJECs               = cms.bool(True),
       JECs                      = pfJECS,
       applyCutAfterJECs         = cms.bool(True),
       cutAfterJECs              = cms.string("pt > 15.0"),
@@ -691,6 +691,7 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
 
 
 if release in ['72XMINIAOD']:
+  process.icPFJetProducer.branch=cms.string("ak4PFJetsCHSReclustered")
   process.icPFJetProducer.destConfig.includePileupID=cms.bool(False)
   process.icPFJetProducer.destConfig.inputVertices=cms.InputTag("unpackedTracksAndVertices")
 
@@ -703,12 +704,12 @@ if release in ['72XMINIAOD']:
 
 
   process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
-      branch                    = cms.string("ak4SlimmedJets"),
+      branch                    = cms.string("ak4PFJetsCHS"),
       input                     = cms.InputTag("selectedSlimmedJetsAK4"),
       srcConfig = cms.PSet(
         isSlimmed               = cms.bool(True),
         includeJetFlavour       = cms.bool(True),
-        includeJECs             = cms.bool(False),
+        includeJECs             = cms.bool(True),
         inputSVInfo             = cms.InputTag(""),
         requestSVInfo           = cms.bool(False)
       ),
@@ -760,6 +761,29 @@ if release in ['72XMINIAOD']:
 process.load('JetMETCorrections.Configuration.JetCorrectionProducers_cff')
 process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
 process.load("RecoJets.JetProducers.ak4PFJets_cfi")
+
+from RecoMET.METProducers.PFMET_cfi import pfMet
+
+process.pfMetRe = pfMet.clone(src = "particleFlow")
+
+if release in ['72XMINIAOD']:
+  process.pfMetRe = pfMet.clone(src = "packedPFCandidates")
+  process.pfMetRe.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
+
+
+process.icPfMetProducer = producers.icMetProducer.clone(
+                            input = cms.string("pfMetRe"),
+                            branch = cms.string("pfMet"),
+                            includeCustomID = cms.bool(False),
+                            inputCustomID = cms.InputTag("")
+                            )
+
+
+process.icPfMetSequence = cms.Sequence(
+  process.pfMetRe+
+  process.icPfMetProducer
+)
+
 from ICAnalysis.MVAMETPairProducer.mvaPFMET_cff_leptons_72X import mvaMetPairs
 
 if release in ['72XMINIAOD']:
@@ -919,7 +943,7 @@ process.icGenSequence = cms.Sequence()
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
-  src = cms.InputTag("genParticles", "", "SIM"),
+  src = cms.InputTag("genParticles", "", "HLT"),
   select = cms.vstring(
     "drop  *",
     "keep status == 3 || status == 22 || status == 23",  # all status 3
@@ -932,16 +956,33 @@ process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
     "keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543" # additional b hadrons for jet fragmentation studies
   )
 )
-if release in ['72X']:
-  process.prunedGenParticles.src = cms.InputTag("genParticles","","HLT")
+
+process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
+  src = cms.InputTag("genParticles", "", "HLT"),
+  select = cms.vstring(
+    "drop  *",
+    "keep++ abs(pdgId) == 15",  # keep full tau decay chain
+  )
+)
+
 if release in ['72XMINIAOD']:
+  process.prunedGenParticlesTaus.src = cms.InputTag("prunedGenParticles","","PAT")
   process.prunedGenParticles.src = cms.InputTag("prunedGenParticles", "", "PAT")
+
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   input   = cms.InputTag("prunedGenParticles"),
   includeMothers = cms.bool(True),
   includeDaughters = cms.bool(True)
 )
+
+process.icGenParticleTauProducer = producers.icGenParticleProducer.clone(
+  input   = cms.InputTag("prunedGenParticlesTaus"),
+  branch = cms.string("genParticlesTaus"),
+  includeMothers = cms.bool(True),
+  includeDaughters = cms.bool(True)
+)
+
 
 process.load("RecoJets.Configuration.GenJetParticles_cff")
 process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
@@ -976,10 +1017,11 @@ process.icGenJetProducer = producers.icGenJetProducer.clone(
 )
 
 if release in ['72XMINIAOD']:
+  process.icGenJetProducer.branch = cms.string("genJetsReclustered")
   process.icGenJetProducer.inputGenParticles = cms.InputTag("prunedGenParticles")
   process.icGenJetProducer.isSlimmed  = cms.bool(True)
   process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
-    branch = cms.string("slimmedGenJets"),
+    branch = cms.string("genJets"),
     input = cms.InputTag("slimmedGenJets"),
     inputGenParticles=cms.InputTag("genParticles"),
     requestGenParticles = cms.bool(False),
@@ -991,6 +1033,8 @@ process.icPileupInfoProducer = producers.icPileupInfoProducer.clone()
 if not isData:
   process.icGenSequence += (
     process.prunedGenParticles+
+    process.prunedGenParticlesTaus+
+    process.icGenParticleTauProducer+
     process.icGenParticleProducer
   )
   if release in ['72XMINIAOD']:
@@ -1185,13 +1229,16 @@ process.p = cms.Path(
   process.icMuonSequence+
   process.icTauSequence+
   process.icTauProducer+
+  #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
+  process.icPfMetSequence+
   process.icMvaMetSequence+
   process.icGenSequence+
   process.icPFJetSequence+
   process.icTriggerSequence+
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
+  #process.patDefaultSequence+
   process.icEventProducer
 )
 
