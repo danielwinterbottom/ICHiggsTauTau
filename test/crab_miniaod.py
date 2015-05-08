@@ -1,7 +1,7 @@
 from CRABClient.UserUtilities import config
 config = config()
 
-config.General.requestName= 'May6_MINIAOD'
+config.General.requestName= 'May8_MINIAOD'
 config.General.workArea = 'crab_projects'
 
 config.JobType.pluginName = 'Analysis'
@@ -12,7 +12,7 @@ config.Data.inputDataset='/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/Phys14DR
 config.Data.splitting='FileBased'
 config.Data.unitsPerJob =10
 
-config.Data.outLFN='/store/user/adewit/May6_MINIAOD/'
+config.Data.outLFNDirBase='/store/user/adewit/May8_MINIAOD/'
 config.Data.publication=False
 config.Data.publishDataName='Crab3_test'
 config.Site.storageSite='T2_UK_London_IC'
