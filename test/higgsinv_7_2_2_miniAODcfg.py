@@ -24,11 +24,11 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 opts.register('file', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', 0, parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', 'PHYS14_25_V1::All', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
-opts.register('release', '', parser.VarParsing.multiplicity.singleton,
+opts.register('release', '72XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 
 opts.parseArguments()
@@ -63,7 +63,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -643,11 +643,11 @@ process.icPFJetSequence += cms.Sequence(
 #Make uncorrected pfMet from packedPF
 from RecoMET.METProducers.PFMET_cfi import pfMet
 
-process.pfMet = pfMet.clone(src = "packedPFCandidates")
-process.pfMet.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
+process.icPfMet = pfMet.clone(src = "packedPFCandidates")
+process.icPfMet.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
 
 process.icuncorrectedPfMetProducer = producers.icMetProducer.clone(
-                                                    input = cms.InputTag("pfMet"),
+                                                    input = cms.InputTag("icPfMet"),
                                                     branch = cms.string("uncorrectedpfMet"),
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
@@ -665,7 +665,7 @@ process.selectedVerticesForPFMEtCorrType0.src = cms.InputTag("offlineSlimmedPrim
 
 process.pfMetT0pcT1 = cms.EDProducer(
     "AddCorrectionsToPFMET",
-    src = cms.InputTag('pfMet'),
+    src = cms.InputTag('icPfMet'),
     srcCorrections = cms.VInputTag(
         cms.InputTag('corrPfMetType0PfCand'),
         cms.InputTag('corrPfMetType1', 'type1')
@@ -710,7 +710,7 @@ process.ictype1PfMetProducer = producers.icMetProducer.clone(
 
 process.icMetSequence = cms.Sequence(
   process.METSignificance+
-  process.pfMet+
+  process.icPfMet+
   process.icuncorrectedPfMetProducer+
   process.ictype1PfMetProducer
   #process.ictype1PfMetProducermetsigoutofbox
@@ -726,98 +726,96 @@ process.icMetSequence = cms.Sequence(
 ################################################################                                                                                            
 #!! Simulation only: GenParticles, GenJets, PileupInfo                                                                                                        
 ################################################################                                                                                            
-'''
 process.icGenSequence = cms.Sequence()
 
+#!!CHECK KEEPS ALL TOPS!!
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
-  src = cms.InputTag("genParticles", "", "SIM"),
+process.icPrunedGenParticles = cms.EDProducer("ICGenParticlePruner",
+  src = cms.InputTag("prunedGenParticles","","PAT"),
   select = cms.vstring(
     "drop  *",
-    "keep status == 3 || status == 22 || status == 23",  # all status 3                                                                                     
-    "keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15",  # all charged leptons                                                                 
-    "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",  # all neutrinos                                                                       
-    "keep++ abs(pdgId) == 15",  # keep full tau decay chain                                                                                                 
-    "keep (4 <= abs(pdgId) <= 5)", # keep heavy flavour quarks                                                                                              
-    "keep (400 <= abs(pdgId) < 600) || (4000 <= abs(pdgId) < 6000)", # keep b and c hadrons                                                                 
-    "keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", # additional c hadrons for jet fragmentation studies                                                     
-    "keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543" # additional b hadrons for jet fragmentation studies                                                                                                                                                 
+    "keep status == 3 || status == 22 || status == 23",  # all status 3
+    "keep abs(pdgId) == 11 || abs(pdgId) == 13 || abs(pdgId) == 15",  # all charged leptons
+    "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",  # all neutrinos
+    "keep++ abs(pdgId) == 15",  # keep full tau decay chain
+    "keep (4 <= abs(pdgId) <= 6)", # keep heavy flavour quarks !!note extended to top quarks as well
+    "keep (400 <= abs(pdgId) < 600) || (4000 <= abs(pdgId) < 6000)", # keep b and c hadrons
+    "keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", # additional c hadrons for jet fragmentation studies
+    "keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543" # additional b hadrons for jet fragmentation studies
   )
 )
-if release in ['72X']:
-  process.prunedGenParticles.src = cms.InputTag("genParticles","","HLT")
-if release in ['72XMINIAOD']:
-  process.prunedGenParticles.src = cms.InputTag("prunedGenParticles", "", "PAT")
+
+process.prunedGenParticlesTaus = cms.EDProducer("ICGenParticlePruner",
+  src = cms.InputTag("prunedGenParticles","","PAT"),
+  select = cms.vstring(
+    "drop  *",
+    "keep++ abs(pdgId) == 15",  # keep full tau decay chain
+  )
+)
 
 process.icGenParticleProducer = producers.icGenParticleProducer.clone(
-  input   = cms.InputTag("prunedGenParticles"),
+  input   = cms.InputTag("icPrunedGenParticles"),
   includeMothers = cms.bool(True),
   includeDaughters = cms.bool(True)
 )
 
-process.load("RecoJets.Configuration.GenJetParticles_cff")
-process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
-  1000022, 2000012, 2000014,
-  2000016, 1000039, 5000039,
-  4000012, 9900012, 9900014,
-  9900016, 39, 12, 14, 16
+process.icGenParticleTauProducer = producers.icGenParticleProducer.clone(
+  input   = cms.InputTag("prunedGenParticlesTaus"),
+  branch = cms.string("genParticlesTaus"),
+  includeMothers = cms.bool(True),
+  includeDaughters = cms.bool(True)
 )
-if release in ['72XMINIAOD']:
-  # But of course this won't work because genParticlesForJets(InputGenJetsParticleSelector)                                                                 
-  # requires a vector<GenParticle> input. There's no alternative filter for the PackedGenParticle                                                           
-  # type at the moment. Probably we could make our own generic cut-string selector, but                                                                     
-  # not in this package                                                                                                                                     
-  process.genParticlesForJets.src = cms.InputTag("packedGenParticles")
 
-process.load("RecoJets.JetProducers.ak5GenJets_cfi")
-process.ak5GenJetsNoNuBSM  =  process.ak5GenJets.clone()
+
+process.load("RecoJets.JetProducers.ak4GenJets_cfi")
+process.ak4GenJetsNoNuBSM  =  process.ak4GenJets.clone()
+process.ak4GenJetsNoNuBSM.src=cms.InputTag("packedGenParticles") #This still contains nus in 72, should be fixed in 74
 
 process.selectedGenJets = cms.EDFilter("GenJetRefSelector",
-  src = cms.InputTag("ak5GenJetsNoNuBSM"),
+  src = cms.InputTag("ak4GenJetsNoNuBSM"),
   cut = cms.string("pt > 10.0")
 )
 
 process.icGenJetProducer = producers.icGenJetProducer.clone(
-  branch  = cms.string("genJets"),
+  branch = cms.string("genJetsReclustered"),
   input   = cms.InputTag("selectedGenJets"),
-  inputGenParticles = cms.InputTag("genParticles"),
-  requestGenParticles = cms.bool(False)
+  inputGenParticles = cms.InputTag("icPrunedGenParticles"),
+  requestGenParticles = cms.bool(False),
+  isSlimmed  = cms.bool(True)#set true because based on gen jets made from packedcandidates
 )
+
+process.icGenJetProducerFromSlimmed = producers.icGenJetProducer.clone(
+  branch = cms.string("genJets"),
+  input = cms.InputTag("slimmedGenJets"),
+  inputGenParticles=cms.InputTag("genParticles"),
+  requestGenParticles = cms.bool(False),
+  isSlimmed = cms.bool(True)
+  ) 
 
 process.icPileupInfoProducer = producers.icPileupInfoProducer.clone()
 
 if not isData:
   process.icGenSequence += (
-    process.prunedGenParticles+
-    process.icGenParticleProducer+
-    process.icPileupInfoProducer
+    process.icPrunedGenParticles+
+    process.prunedGenParticlesTaus+
+    process.icGenParticleTauProducer+
+    process.icGenParticleProducer
   )
-  if release in [ '72X']:
-    process.icGenSequence += (
-      process.genParticlesForJets+
-      process.ak5GenJetsNoNuBSM+
+  process.icGenSequence += (
+      process.ak4GenJetsNoNuBSM+
       process.selectedGenJets+
-      process.icGenJetProducer
+      process.icGenJetProducer+
+      process.icGenJetProducerFromSlimmed+
+      process.icPileupInfoProducer
     )
+#  if release in [ '72X']:
+#    process.icGenSequence += (
+#      process.ak4GenJetsNoNuBSM+
+#      process.selectedGenJets+
+#      process.icGenJetProducer
+#      process.icPileupInfoProducer
+#    )
 
-process.load("RecoJets.JetProducers.ak4GenJets_cfi")
-process.ak4GenJetsNoNuBSM  =  process.ak4GenJets.clone()
-process.selectedGenJetsAK4 = cms.EDFilter("GenJetRefSelector",
-  src = cms.InputTag("ak4GenJetsNoNuBSM"),
-  cut = cms.string("pt > 10.0")
-)
-process.icGenJetProducerAK4 = producers.icGenJetProducer.clone(
-  branch  = cms.string("ak4GenJets"),
-  input   = cms.InputTag("selectedGenJetsAK4"),
-  inputGenParticles = cms.InputTag("genParticles"),
-  requestGenParticles = cms.bool(False)
-)
-process.icGenSequence += (
-    process.ak4GenJetsNoNuBSM+
-    process.selectedGenJetsAK4+
-    process.icGenJetProducerAK4
-)
-'''
 ##################################################################                                                                                          
 #!! Trigger                                                                                                                                                 
 #!! Need to get L1 extra
@@ -872,7 +870,7 @@ for name in process.icTriggerObjectSequence.moduleNames():
 
 
 ################################################################                                                                                            
-#!! EventInfo                                                                                                                                              
+# EventInfo                                                                                                                                              
 ################################################################                                                                                            
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
@@ -907,9 +905,9 @@ process.p = cms.Path(
   process.icPhotonSequence+
   #process.icTrackSequence+
   process.icPFJetSequence+                                                                                                                                
-  #process.icGenSequence+
+  process.icGenSequence+#!!CHECK OUTPUT
   process.icMetSequence+
-  #process.icEventInfoSequence+
+  process.icEventInfoSequence+
   process.icTriggerPathProducer+
   process.icTriggerObjectSequence+
   process.icEventProducer
