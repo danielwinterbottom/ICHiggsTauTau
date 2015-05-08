@@ -129,9 +129,9 @@ Public Member Functions</h2></td></tr>
 <p><b>Example usage</b> </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;icEventInfoProducer = cms.EDProducer(<span class="stringliteral">&#39;ICEventInfoProducer&#39;</span>,</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;  branch              = cms.string(<span class="stringliteral">&quot;eventInfo&quot;</span>),</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  includeJetRho       = cms.bool(<span class="keyword">False</span>),</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;  inputJetRho         = cms.InputTag(<span class="stringliteral">&quot;kt6PFJets&quot;</span>, <span class="stringliteral">&quot;rho&quot;</span>),</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;  inputJetRho         = cms.InputTag(<span class="stringliteral">&quot;fixedGridRhoFastjetAll&quot;</span>),</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;  includeLeptonRho    = cms.bool(<span class="keyword">False</span>),</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  inputLeptonRho      = cms.InputTag(<span class="stringliteral">&quot;kt6PFJets&quot;</span>, <span class="stringliteral">&quot;rho&quot;</span>),</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;  inputLeptonRho      = cms.InputTag(<span class="stringliteral">&quot;fixedGridRhoFastjetAll&quot;</span>),</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;  includeVertexCount  = cms.bool(<span class="keyword">False</span>),</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  inputVertices       = cms.InputTag(<span class="stringliteral">&quot;offlinePrimaryVertices&quot;</span>),</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  includeCSCFilter    = cms.bool(<span class="keyword">False</span>),</div>
