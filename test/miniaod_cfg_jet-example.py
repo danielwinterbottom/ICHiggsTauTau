@@ -568,7 +568,7 @@ process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
  # Jet energy corrections
  # ----------------------
 process.ak4PFL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
-    srcRho = cms.InputTag("kt6PFJets", "rho"),
+    srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
     algorithm = cms.string('AK4PFchs'),
     level = cms.string('L1FastJet')
 )
@@ -655,8 +655,8 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
     vertexes = cms.InputTag("offlinePrimaryVertices"),
 #    vertexes = cms.InputTag("unpackedTracksAndVertices"),
     algos = cms.VPSet(stdalgos),
-    rho     = cms.InputTag("kt6PFJets", "rho"),
-#    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
+#    rho     = cms.InputTag("kt6PFJets", "rho"),
+    rho     = cms.InputTag("fixedGridRhoFastjetAll"),
     jec     = cms.string("AK4PFchs"),
     applyJec = cms.bool(True),
     inputIsCorrected = cms.bool(False),
