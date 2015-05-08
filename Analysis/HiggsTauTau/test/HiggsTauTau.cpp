@@ -1272,7 +1272,7 @@ int main(int argc, char* argv[]){
       && new_svfit_mode != 1) {
                                   analysis.AddModule(&httL1MetCut);
     }  
-                                  analysis.AddModule(&httWeights);
+   if(strategy != strategy::phys14) analysis.AddModule(&httWeights);
    if (is_embedded && era == era::data_2012_rereco) {
                                   analysis.AddModule(&rechitWeights);
    }
