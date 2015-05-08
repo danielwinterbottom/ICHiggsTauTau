@@ -17,6 +17,7 @@ namespace ic {
   HhhEMuMVATwoStage::HhhEMuMVATwoStage(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
+    jets_label_ = "pfJetsPFlow";
     gf_mva_file_ = "input/Hhh_mva/StageOne_BDTG.weights.xml";
     gf_mva_file_2_ = "input/Hhh_mva/StageTwo_90pc_BDTG.weights.xml";
     gf_reader_ = nullptr;
@@ -59,7 +60,7 @@ namespace ic {
 		Candidate const* lep1 = ditau->GetCandidate("lepton1");
 		Candidate const* lep2 = ditau->GetCandidate("lepton2");
     Met const* met = event->GetPtr<Met>(met_label_);
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Take a copy of the jets
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Take a copy of the jets
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
     std::sort(jets.begin(), jets.end(), boost::bind(&Candidate::pt, _1) > boost::bind(&Candidate::pt, _2));
 

@@ -512,10 +512,13 @@ int main(int argc, char* argv[]){
   if (channel == channel::em) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_recEmbedding_emu.root");
   if (channel == channel::mtmet) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_muPt7to25tauPtGt18_recEmbedded.root");
 
+  std::string jets_label="pfJetsPFlow";
+  if(era==era::data_2015) jets_label="ak4PFJetsCHS";
+
   string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
   ("JetEnergyCorrections")
-  .set_input_label("pfJetsPFlow")
+  .set_input_label(jets_label)
   .set_is_data(is_data)
   .set_l1_file("input/jec/"+jec_payload+"_L1FastJet_AK5PF.txt")
   .set_l2_file("input/jec/"+jec_payload+"_L2Relative_AK5PF.txt")
@@ -533,7 +536,7 @@ int main(int argc, char* argv[]){
   //  jes_input_set  = "SubTotalMC";
   //}
   auto jetEnergyUncertainty = JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-  .set_input_label("pfJetsPFlow")
+  .set_input_label(jets_label)
   .set_jes_shift_mode(jes_mode)
   .set_uncert_file(jes_input_file)
   .set_uncert_set(jes_input_set);
@@ -668,7 +671,9 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Muon Modules
   // ------------------------------------------------------------------------------------
-  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");
+  std::string muon_label="muonsPFlow";
+  if(era == era::data_2015) muon_label="muons";
+  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons",muon_label,"selMuons");
 
   boost::function<bool (Muon const*)> muon_idiso_func;
   if(strategy == strategy::paper2013) {
@@ -715,7 +720,7 @@ int main(int argc, char* argv[]){
     .set_min(1);
 
    // Muon Veto
-  CopyCollection<Muon> vetoMuonCopyCollection("CopyToVetoMuons","muonsPFlow","vetoMuons");
+  CopyCollection<Muon> vetoMuonCopyCollection("CopyToVetoMuons",muon_label,"vetoMuons");
 
   SimpleFilter<Muon> vetoMuonFilter = SimpleFilter<Muon>("VetoMuonFilter")
     .set_input_label("vetoMuons")
@@ -748,11 +753,11 @@ int main(int argc, char* argv[]){
 
   OverlapFilter<Electron, Muon> elecMuonOverlapFilter = OverlapFilter<Electron, Muon>("ElecMuonOverlapFilter")
     .set_input_label("selElectrons")
-    .set_reference_label("muonsPFlow")
+    .set_reference_label(muon_label)
     .set_min_dr(0.3); 
 
   SimpleCounter<Muon> extraMuonVeto = SimpleCounter<Muon>("ExtraMuonVeto")
-  .set_input_label("muonsPFlow")
+  .set_input_label(muon_label)
   .set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.4) 
               && bind(MuonTight, _1) 
               && bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
@@ -952,22 +957,22 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------  
   OverlapFilter<PFJet, CompositeCandidate> jetLeptonOverlapFilter = OverlapFilter<PFJet, CompositeCandidate>
     ("JetLeptonOverlapFilter")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jets_label)
     .set_reference_label("emtauCandidates")
     .set_min_dr(0.5);
 
 
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jets_label)
     .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
 
   CopyCollection<PFJet>
-    filteredJetCopyCollection("CopyFilteredJets","pfJetsPFlow","pfJetsPFlowFiltered");
+    filteredJetCopyCollection("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered");
   
   HhhBJetRegression hhhBJetRegression = HhhBJetRegression
   ("hhhBJetRegression")
-  .set_jets_label("pfJetsPFlow");
+  .set_jets_label(jets_label);
    
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
@@ -1016,6 +1021,7 @@ int main(int argc, char* argv[]){
     .set_do_top_factors(false)
     .set_do_tau_id_weights(real_tau_sample)
     .set_gen_tau_collection(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
+    .set_jets_label(jets_label)
     .set_do_btag_weight(false);
   if (!is_data) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
@@ -1093,6 +1099,7 @@ int main(int argc, char* argv[]){
     .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label)
+    .set_jets_label(jets_label)
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
     .set_write_tree(true);

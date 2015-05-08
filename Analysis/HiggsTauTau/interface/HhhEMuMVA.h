@@ -18,6 +18,7 @@ class HhhEMuMVA : public ModuleBase {
  
  	CLASS_MEMBER(HhhEMuMVA, std::string, ditau_label)
  	CLASS_MEMBER(HhhEMuMVA, std::string, met_label)
+ 	CLASS_MEMBER(HhhEMuMVA, std::string, jets_label)
  	CLASS_MEMBER(HhhEMuMVA, std::string, gf_mva_file)
   // CLASS_MEMBER(HTTEMuMVA, std::string, vbf_mva_file)
 
