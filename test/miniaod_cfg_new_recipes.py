@@ -175,6 +175,7 @@ if release in ['72X']:
   process.pfNoPileUp.bottomCollection = cms.InputTag("particleFlowPtrs")
   process.pfNoPileUpIso.bottomCollection = cms.InputTag("particleFlowPtrs")
 
+
 if release in ['72XMINIAOD']:
   process.pfPileUp = cms.EDFilter("CandPtrSelector",
       src = cms.InputTag("packedPFCandidates"),
@@ -308,10 +309,17 @@ process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCal
     beamspot    = cms.InputTag("offlineBeamSpot"),
     conversions = cms.InputTag("allConversions")
 )
+
 if release in ['70XMINIAOD', '72XMINIAOD']:
-  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
-      input       = electronLabel
+  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionCalculator',
+      input       = electronLabel,
+      beamspot    = cms.InputTag("offlineBeamSpot"),
+      conversions = cms.InputTag("reducedEgamma:reducedConversions")
   )
+
+#  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
+#      input       = electronLabel
+#  )
 if release in ['72X']:
   process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_CSA14_cfi")
   process.mvaNonTrigV025nsPHYS14.electronTag = electronLabel
@@ -516,7 +524,8 @@ if release in ['72XMINIAOD']:
       )
 
 if release in ['72X']:
-  process.ak4PFJetsCHS = ak4PFJets.clone(src = cms.InputTag("pfNoPileUp"),doAreaFastjet=True)
+  process.load("CommonTools.ParticleFlow.pfNoPileUpJME_cff")
+  process.ak4PFJetsCHS = ak4PFJets.clone(src = cms.InputTag("pfNoPileUpJME"),doAreaFastjet=True)
   process.ak4PFJets = ak4PFJets.clone(doAreaFastjet=True)
 
 
@@ -534,8 +543,6 @@ process.jetPartons = cms.EDProducer("PartonSelector",
      src = cms.InputTag("genParticles"),
      withLeptons = cms.bool(False)
 )
-if release in ['72XMINIAOD']:
-   process.jetPartons.src = cms.InputTag("prunedGenParticles")
 
 process.pfJetPartonMatches = cms.EDProducer("JetPartonMatcher",
      jets = cms.InputTag("ak4PFJetsCHS"),
@@ -552,6 +559,10 @@ process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
      input       = cms.InputTag("ak4PFJetsCHS"),
      flavourMap  = cms.InputTag("pfJetFlavourAssociation")
 )
+
+
+if release in ['72XMINIAOD']:
+   process.jetPartons.src = cms.InputTag("prunedGenParticles")
 
 
 
@@ -658,6 +669,8 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
 if release in ['70X', '70XMINIAOD', '72X', '72XMINIAOD']:
   process.puJetMva.residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
 
+
+
  # Producer
  # --------
 process.icPFJetProducer = producers.icPFJetProducer.clone(
@@ -738,6 +751,10 @@ if release in ['72XMINIAOD']:
      process.unpackedTracksAndVertices+
      process.icPFJetProducerFromPat
      )
+if release in ['72X']:
+  process.icPFJetSequence += cms.Sequence(
+    process.pfNoPileUpJMESequence
+    )
 if release in ['72X', '72XMINIAOD']:
  # process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet()
   process.icPFJetSequence += cms.Sequence(
