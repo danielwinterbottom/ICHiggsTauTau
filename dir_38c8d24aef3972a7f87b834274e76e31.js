@@ -93,6 +93,8 @@ var dir_38c8d24aef3972a7f87b834274e76e31 =
     [ "ICMuonProducer.hh", "_i_c_muon_producer_8hh.html", [
       [ "ICMuonProducer", "class_i_c_muon_producer.html", "class_i_c_muon_producer" ]
     ] ],
+    [ "ICPackedCandidateSelector.cc", "_i_c_packed_candidate_selector_8cc.html", null ],
+    [ "ICPackedCandidateSelector.hh", "_i_c_packed_candidate_selector_8hh.html", null ],
     [ "ICPFCandidateProducer.cc", "_i_c_p_f_candidate_producer_8cc.html", "_i_c_p_f_candidate_producer_8cc" ],
     [ "ICPFCandidateProducer.hh", "_i_c_p_f_candidate_producer_8hh.html", [
       [ "ICPFCandidateProducer", "class_i_c_p_f_candidate_producer.html", "class_i_c_p_f_candidate_producer" ]
