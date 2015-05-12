@@ -254,7 +254,6 @@ for idmod in my_id_modules:
 
 process.icElectronSequence = cms.Sequence()
 
-#this module kept in src/ICAnalysis/ElectronConversionCalculator/ and is implementation of run 1 egamma conversion check !!make sure up to date
 #produces value map of whether electron passes conversion veto
 process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator', 
     input       = electronLabel
@@ -281,7 +280,6 @@ process.elPFIsoDepositGamma.src       = electronLabel
 process.elPFIsoDepositPU.src          = electronLabel
 process.elPFIsoDepositGamma.ExtractorPSet.ComponentName = cms.string("CandViewExtractor")
 process.icElectronSequence += cms.Sequence(
-#  process.egmGsfElectronIDSequence+
   process.electronPFIsolationDepositsSequence+
   process.electronPFIsolationValuesSequence
   )
@@ -365,8 +363,6 @@ process.icMuonProducer = producers.icMuonProducer.clone(
   includePFIso03           = cms.bool(True)
 )
 
-if release in ['72XMINIAOD']: process.icMuonProducer.isPF = cms.bool(False) #!!CHECK THIS
-
 process.icMuonSequence += cms.Sequence(
   process.icMuonProducer
 )
@@ -376,6 +372,7 @@ process.icMuonSequence += cms.Sequence(
 ################################################################                                                                                            
 import UserCode.ICHiggsTauTau.tau_discriminators_cfi as tauIDs
 
+#make and store taus
 process.icTauProducer = cms.EDProducer("ICPFTauFromPatProducer",
   branch                  = cms.string("taus"),
   input                   = cms.InputTag("selectedPFTaus"),
@@ -436,14 +433,8 @@ process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
                                               src = cms.InputTag("slimmedJets"),
                                               cut = cms.string("pt > 15")
                                               )
-# from RecoJets.JetProducers.fixedGridRhoProducerFastjet_cfi import fixedGridRhoFastjetAll
-# process.fixedGridRhoFastjetAll = fixedGridRhoFastjetAll.clone(
-#   src = cms.InputTag('packedPFCandidates')
-#   )
 
-
-# Parton flavour
-# --------------
+# get parton flavour by matching to genjets
 process.jetPartons = cms.EDProducer("PartonSelector",
                                     src = cms.InputTag("prunedGenParticles"),
                                     withLeptons = cms.bool(False)
@@ -467,7 +458,6 @@ process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
 
 
 # Jet energy corrections
-# ----------------------
 process.ak4PFCHSL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
                                         srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
                                         algorithm = cms.string('AK4PFchs'),
@@ -497,7 +487,6 @@ if isData: pfJECS.append(
   )
 
 # b-tagging
-# ---------
 process.load("RecoJets.JetAssociationProducers.ak4JTA_cff")
 from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAtVertex
 process.load("RecoBTag.Configuration.RecoBTag_cff")
@@ -507,9 +496,6 @@ process.jetTracksAssociatorAtVertexAK4PF = ak4JetTracksAssociatorAtVertex.clone(
   tracks = cms.InputTag("unpackedTracksAndVertices"),
   pvSrc = cms.InputTag("unpackedTracksAndVertices")
   )
-
-#if isEmbedded:
-#  process.jetTracksAssociatorAtVertexAK5PF.tracks = cms.InputTag("tmfTracks")
 
 process.impactParameterTagInfosAK4PF = btag.impactParameterTagInfos.clone(
   jetTracks = cms.InputTag('jetTracksAssociatorAtVertexAK4PF'),
@@ -538,8 +524,7 @@ process.btaggingSequenceAK4PF = cms.Sequence(
   +process.combinedSecondaryVertexBJetTagsAK4PF
  )
 
-# Pileup ID
-# ---------
+# Pileup ID !!DOESN'T WORK IN AK4PF AT THE MOMENT LOOK INTO IF WE USE THAT
 stdalgos = cms.VPSet()
 from RecoJets.JetProducers.PileupJetIDParams_cfi import *
 stdalgos = cms.VPSet(full_5x_chs,cutbased)
@@ -560,8 +545,7 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
                                   residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
                                   )
 
-# Producer
-# --------
+# Produce and store reclustered
 process.icPFJetProducer = producers.icPFJetProducer.clone(
   branch                    = cms.string("pfJetsPFlow"),
   input                     = cms.InputTag("ak4PFJetsCHS"),
@@ -591,7 +575,7 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
     )
   )
 
-
+#Produce and store jets taken straight from miniAOD
 process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
   branch                    = cms.string("ak4SlimmedJets"),
   input                     = cms.InputTag("selectedSlimmedJetsAK4"),
@@ -621,7 +605,6 @@ process.icPFJetSequence += cms.Sequence(
   process.unpackedTracksAndVertices+
   process.icPFJetProducerFromPat
   )
-# process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet()
 process.icPFJetSequence += cms.Sequence(
   process.ak4PFJetsCHS+
   #process.puJetMva+ !!This works for jets built from PackedCandidates in CMSSW74X but not yet in 72
@@ -869,6 +852,53 @@ for name in process.icTriggerObjectSequence.moduleNames():
   mod.input = cms.InputTag("selectedPatTrigger", "", "PAT")
 
 
+#L1 Extra information
+process.icL1ExtraMETProducer = cms.EDProducer('ICL1EtMissProducer',
+  branch = cms.string("l1extraMET"),
+  input = cms.InputTag("l1extraParticles","MET","RECO"),
+  )
+
+process.icL1ExtraMuonsProducer = cms.EDProducer('ICCandidateFromL1MuonProducer',
+  branch = cms.string("l1extraMuons"),
+  input = cms.InputTag("l1extraParticles","","RECO"),
+  )
+
+process.icL1ExtraEmIsolatedProducer = cms.EDProducer('ICCandidateProducer',
+  branch = cms.string("l1extraEmIsolated"),
+  input = cms.InputTag("l1extraParticles","Isolated","RECO"),
+  )
+
+process.icL1ExtraEmNonIsolatedProducer = cms.EDProducer('ICCandidateProducer',
+  branch = cms.string("l1extraEmNonIsolated"),
+  input = cms.InputTag("l1extraParticles","NonIsolated","RECO"),
+  )
+
+process.icL1ExtraCentralJetProducer = cms.EDProducer('ICCandidateProducer',
+  branch = cms.string("l1extraCentralJets"),
+  input = cms.InputTag("l1extraParticles","Central","RECO"),
+)
+
+process.icL1ExtraForwardJetProducer = cms.EDProducer('ICCandidateProducer',
+  branch = cms.string("l1extraForwardJets"),
+  input = cms.InputTag("l1extraParticles","Forward","RECO"),
+)
+
+process.icL1ExtraHTTProducer = cms.EDProducer('ICCandidateProducer',
+  branch = cms.string("l1extraHTT"),
+  input = cms.InputTag("l1extraParticles","MHT","RECO"),
+)
+
+process.icL1ExtraSequence = cms.Sequence(
+    process.icL1ExtraMETProducer
+    +process.icL1ExtraMuonsProducer
+    +process.icL1ExtraEmIsolatedProducer
+    +process.icL1ExtraEmNonIsolatedProducer
+    +process.icL1ExtraHTTProducer
+    +process.icL1ExtraCentralJetProducer
+    +process.icL1ExtraForwardJetProducer
+    )
+
+
 ################################################################                                                                                            
 # EventInfo                                                                                                                                              
 ################################################################                                                                                            
@@ -905,11 +935,12 @@ process.p = cms.Path(
   process.icPhotonSequence+
   #process.icTrackSequence+
   process.icPFJetSequence+                                                                                                                                
-  process.icGenSequence+#!!CHECK OUTPUT
+  process.icGenSequence+
   process.icMetSequence+
   process.icEventInfoSequence+
   process.icTriggerPathProducer+
   process.icTriggerObjectSequence+
+  process.icL1ExtraSequence+
   process.icEventProducer
 )
 
