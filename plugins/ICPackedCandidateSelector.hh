@@ -1,6 +1,8 @@
 #ifndef ICHiggsTauTau_ICPackedCandidateSelector_hh
 #define ICHiggsTauTau_ICPackedCandidateSelector_hh
 
+#if CMSSW_MAJOR_VERSION >= 7
+
 #include "DataFormats/Common/interface/RefVector.h"
 
 #include "CommonTools/UtilAlgos/interface/StringCutObjectSelector.h"
@@ -31,5 +33,7 @@ typedef SingleObjectSelector<
   > PATPackedCandidateSelector;
 
 }
+
+#endif
 
 #endif
