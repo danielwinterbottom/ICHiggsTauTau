@@ -7,8 +7,8 @@ import sys
 ################################################################
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
-#opts.register('file', 'file:InputAOD_gg.root', parser.VarParsing.multiplicity.singleton,
-opts.register('file', 'file:miniaod_gg.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file', 'file:InputAOD_gg.root', parser.VarParsing.multiplicity.singleton,
+#opts.register('file', 'file:miniaod_gg.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
@@ -16,8 +16,8 @@ opts.register('globalTag', 'PHYS14_25_V1::All', parser.VarParsing.multiplicity.s
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
-opts.register('release', '72XMINIAOD', parser.VarParsing.multiplicity.singleton,
-#opts.register('release', '72X', parser.VarParsing.multiplicity.singleton,
+#opts.register('release', '72XMINIAOD', parser.VarParsing.multiplicity.singleton,
+opts.register('release', '72X', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 
 opts.parseArguments()
@@ -1002,12 +1002,12 @@ process.icGenParticleTauProducer = producers.icGenParticleProducer.clone(
 
 
 process.load("RecoJets.Configuration.GenJetParticles_cff")
-process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
-  1000022, 2000012, 2000014,
-  2000016, 1000039, 5000039,
-  4000012, 9900012, 9900014,
-  9900016, 39, 12, 14, 16
-)
+#process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
+#  1000022, 2000012, 2000014,
+#  2000016, 1000039, 5000039,
+#  4000012, 9900012, 9900014,
+#  9900016, 39, 12, 14, 16
+#)
 if release in ['72XMINIAOD']:
   # But of course this won't work because genParticlesForJets(InputGenJetsParticleSelector)
   # requires a vector<GenParticle> input. There's no alternative filter for the PackedGenParticle
