@@ -119,7 +119,14 @@ process.selectedPFTaus = cms.EDFilter("PATTauRefSelector",
   cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFinding") > 0.5')
 )
 
+
+process.selectedPF = cms.EDFilter("PATPackedCandidateSelector",#
+  src = cms.InputTag("packedPFCandidates"),
+  cut = cms.string("fromPV > 1&&charge!=0&&pt>0.9")
+)
+
 process.icSelectionSequence = cms.Sequence(
+  process.selectedPF+
   process.selectedVertices+
   process.selectedElectrons+
   process.selectedPFMuons+
@@ -180,6 +187,7 @@ process.pfAllNeutralHadronsAndPhotons = cms.EDFilter("CandPtrSelector",
   cut = cms.string("abs(pdgId) = 111 | abs(pdgId) = 130 | " \
   "abs(pdgId) = 310 | abs(pdgId) = 2112 | abs(pdgId) = 22")
 )
+
 process.pfParticleSelectionSequence = cms.Sequence(
   process.pfPileUp+
   process.pfNoPileUp+
@@ -209,6 +217,17 @@ process.icVertexSequence = cms.Sequence(
 #!!IF WE WANT THESE WE SHOULD MAKE SOMETHING OURSELVES FROM PACKED PFCANDIDATES 
 #!!ANDREW JUST FINISHED MAKING AN ICPRODUCER THAT DOES THIS 17/04/2015
 ################################################################                                                                                            
+
+process.icPFProducer = cms.EDProducer('ICPFFromPackedProducer',                                                                                                     
+  branch  = cms.string("pfCandidates"),                                                                                                                   
+  input   = cms.InputTag("selectedPF"),                                                                                                         
+  requestTracks       = cms.bool(False),                                                                                                                    
+  requestGsfTracks    = cms.bool(False),
+  inputUnpackedTracks = cms.InputTag("")
+)                                                                                                                                                          
+
+process.icPFSequence = cms.Sequence()                                                                                                                     
+process.icPFSequence += process.icPFProducer
 
 ################################################################                                                                                            
 # Tracks                                                                                                                                                   
@@ -898,14 +917,13 @@ process.p = cms.Path(
   process.icSelectionSequence+
   process.pfParticleSelectionSequence+
   process.icVertexSequence+
-  #process.icPFSequence+
+  process.icPFSequence+
   process.icElectronSequence+
   process.icMuonSequence+
   process.icTauSequence+
   process.icPhotonSequence+
-  #process.icTrackSequence+
   process.icPFJetSequence+                                                                                                                                
-  process.icGenSequence+#!!CHECK OUTPUT
+  process.icGenSequence+
   process.icMetSequence+
   process.icEventInfoSequence+
   process.icTriggerPathProducer+
@@ -914,11 +932,11 @@ process.p = cms.Path(
 )
 
 
-# process.out = cms.OutputModule("PoolOutputModule",
-#                 fileName = cms.untracked.string("edmdump.root")
-#         )
+#process.out = cms.OutputModule("PoolOutputModule",
+#                               fileName = cms.untracked.string("edmdump.root")
+#                               )
 
-# process.outpath = cms.EndPath(process.out)
+#process.outpath = cms.EndPath(process.out)
 
 
 #process.schedule = cms.Schedule(process.patTriggerPath, process.p)                                                                                        
