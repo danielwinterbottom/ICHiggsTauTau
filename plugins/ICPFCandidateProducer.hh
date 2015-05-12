@@ -178,14 +178,17 @@ void ICPFCandidateProducer<pat::PackedCandidate>::constructSpecific(
   // Not trivial I think.
 
   edm::Handle<edm::View<reco::Track> > tracks_handle;
-  event.getByLabel(track_input_, tracks_handle);
   typedef std::set<reco::Track const*> TrackSet;
   typedef std::map<reco::Track const*, unsigned> TrackMap;
   TrackSet trk_set;
   TrackMap trk_map;
-  for (unsigned i = 0; i < tracks_handle->size(); ++i) {
-    trk_set.insert(&(tracks_handle->at(i)));
-    trk_map[&(tracks_handle->at(i))] = i;
+
+  if(request_trks_){
+    event.getByLabel(track_input_, tracks_handle);
+    for (unsigned i = 0; i < tracks_handle->size(); ++i) {
+      trk_set.insert(&(tracks_handle->at(i)));
+      trk_map[&(tracks_handle->at(i))] = i;
+    }
   }
 
   for (unsigned i = 0; i < cands_handle->size(); ++i) {
