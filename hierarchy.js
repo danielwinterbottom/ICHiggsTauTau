@@ -21,6 +21,7 @@ var hierarchy =
     [ "EDProducer", null, [
       [ "ic::Concatenate< T >", "classic_1_1_concatenate.html", null ],
       [ "ic::Merge< T >", "classic_1_1_merge.html", null ],
+      [ "ICCandidateFromL1MuonProducer", "class_i_c_candidate_from_l1_muon_producer.html", null ],
       [ "ICCandidateProducer", "class_i_c_candidate_producer.html", null ],
       [ "ICElectronConversionCalculator", "class_i_c_electron_conversion_calculator.html", null ],
       [ "ICElectronConversionFromPatCalculator", "class_i_c_electron_conversion_from_pat_calculator.html", null ],

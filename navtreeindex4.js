@@ -1,5 +1,13 @@
 var NAVTREEINDEX4 =
 {
+"classic_1_1_p_f_jet.html#a14c4bae734cf143ec033af4423ad0092":[9,0,0,15,59],
+"classic_1_1_p_f_jet.html#a17132f732ca1ee85cced5ee9a559a9da":[9,0,0,15,54],
+"classic_1_1_p_f_jet.html#a1a64f8a956f755d486fba0396f8bd9b5":[9,0,0,15,10],
+"classic_1_1_p_f_jet.html#a1d0a007796731d8eba16124df2148d53":[9,0,0,15,37],
+"classic_1_1_p_f_jet.html#a26e20d2754e72a9820ac37d9bcc0fd23":[9,0,0,15,2],
+"classic_1_1_p_f_jet.html#a299dbb1fb4eb510f16d0502d645b1a0a":[9,0,0,15,24],
+"classic_1_1_p_f_jet.html#a31e7b81c19eef1d0964c3c4b5a53f918":[9,0,0,15,3],
+"classic_1_1_p_f_jet.html#a329114e422a0f3328035682f07426747":[9,0,0,15,42],
 "classic_1_1_p_f_jet.html#a32ea9ffaf84f40c75fd36a5f3f16d7ad":[9,0,0,15,49],
 "classic_1_1_p_f_jet.html#a3867dce5a5769bcfe487428a0c9ecce7":[9,0,0,15,27],
 "classic_1_1_p_f_jet.html#a393d359548c26c6ce9fa44f0911a9d5d":[9,0,0,15,23],
@@ -241,13 +249,5 @@ var NAVTREEINDEX4 =
 "classic_1_1_vertex.html#a9cf3b39bd237ad6cb21dc3adf81b27e4":[9,0,0,25,14],
 "classic_1_1_vertex.html#a9ddd6ae30c5d9bfcf299db5f88200eb8":[9,0,0,25,18],
 "classic_1_1_vertex.html#a9f5981bab3fa9ea0861302a674250ddd":[9,0,0,25,11],
-"classic_1_1_vertex.html#aa800d56750c2d0e5e9e96c924cf74d12":[9,0,0,25,5],
-"classic_1_1_vertex.html#ab3dfde38b6ed5ed319bf5215612ab374":[9,0,0,25,4],
-"classic_1_1_vertex.html#ab5e0e4279854d34fa07c58285d76e0d8":[9,0,0,25,7],
-"classic_1_1_vertex.html#abddc009af00c4928aabb180758c863d0":[9,0,0,25,16],
-"classic_1_1_vertex.html#ad057eb6d0cdc3323c410dcade9013618":[9,0,0,25,15],
-"classic_1_1_vertex.html#ae494752e9cd768da1396089bc9b93fa1":[9,0,0,25,10],
-"cmssw-and-git.html":[1],
-"cmssw-and-git.html#cmssw-and-git-from-branch":[1,0,0],
-"cmssw-and-git.html#cmssw-and-git-setup":[1,0]
+"classic_1_1_vertex.html#aa800d56750c2d0e5e9e96c924cf74d12":[9,0,0,25,5]
 };

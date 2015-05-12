@@ -2,6 +2,7 @@ var annotated =
 [
     [ "ic", "namespaceic.html", "namespaceic" ],
     [ "EGammaMvaEleEstimatorCSA14", "class_e_gamma_mva_ele_estimator_c_s_a14.html", "class_e_gamma_mva_ele_estimator_c_s_a14" ],
+    [ "ICCandidateFromL1MuonProducer", "class_i_c_candidate_from_l1_muon_producer.html", "class_i_c_candidate_from_l1_muon_producer" ],
     [ "ICCandidateProducer", "class_i_c_candidate_producer.html", "class_i_c_candidate_producer" ],
     [ "ICElectronConversionCalculator", "class_i_c_electron_conversion_calculator.html", "class_i_c_electron_conversion_calculator" ],
     [ "ICElectronConversionFromPatCalculator", "class_i_c_electron_conversion_from_pat_calculator.html", "class_i_c_electron_conversion_from_pat_calculator" ],
