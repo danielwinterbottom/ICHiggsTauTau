@@ -128,28 +128,19 @@ namespace ic {
 
   
   template<class T>
-  bool PF03Isolation(T const* cand, double const& dbeta, double const& cut) {
-    double iso =  cand->dr03_pfiso_charged_all() 
+  bool PF03IsolationVal(T const* cand, double const& dbeta, bool allcharged=false) {
+    double charged_iso = allcharged ? cand->dr03_pfiso_charged_all() : cand->dr03_pfiso_charged();
+    double iso =  charged_iso 
                   + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - dbeta * cand->dr03_pfiso_pu(), 0.0);
     iso = iso / cand->pt();
+    return iso;
+  }
+  template<class T>
+  bool PF03Isolation(T const* cand, double const& dbeta, double const& cut, bool allcharged=false) {
+    double iso =  PF03IsolationVal(cand, dbeta, allcharged);
     return (iso < cut);
   }
 
-  template<class T>
-  bool PF03HadIsolation(T const* cand, double const& dbeta, double const& cut) {
-    double iso =  cand->dr03_pfiso_charged() 
-                  + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - dbeta * cand->dr03_pfiso_pu(), 0.0);
-    iso = iso / cand->pt();
-    return (iso < cut);
-  }
-
-  template<class T>
-  bool PF03HadIsolationVal(T const* cand, double const& dbeta) {
-    double iso =  cand->dr03_pfiso_charged() 
-                  + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - dbeta * cand->dr03_pfiso_pu(), 0.0);
-    iso = iso / cand->pt();
-    return iso ;
-  }
 
 
   bool ElectronZbbIso(Electron const* elec, bool is_data, double const& rho, double const& cut);

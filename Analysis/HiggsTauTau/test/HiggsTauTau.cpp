@@ -607,7 +607,7 @@ int main(int argc, char* argv[]){
       if (channel == channel::em) {
         elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
       } else {
-        elec_idiso_func = bind(ElectronHTTIdPhys14, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
+        elec_idiso_func = bind(ElectronHTTIdPhys14, _1, false) && (bind(PF03IsolationVal<Electron>, _1, 0.5, 0) < 0.1);
       }
     } 
   }
@@ -637,7 +637,7 @@ int main(int argc, char* argv[]){
       bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
       bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
       bind(VetoElectronIDPhys14, _1) &&
-      bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3);
+      bind(PF03IsolationVal<Electron>, _1, 0.5, 0) < 0.3);
   }
 
   OneCollCompositeProducer<Electron> vetoElectronPairProducer = OneCollCompositeProducer<Electron>("VetoPairProducer")
@@ -665,7 +665,7 @@ int main(int argc, char* argv[]){
                 && bind(VetoElectronIDPhys14, _1)
                 && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
                 && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2
-                && bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3);
+                && bind(PF03IsolationVal<Electron>, _1, 0.5, 0) < 0.3);
     }
 
   // ------------------------------------------------------------------------------------
@@ -706,7 +706,7 @@ int main(int argc, char* argv[]){
       if (channel == channel::em) {
         muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
       } else {
-        muon_idiso_func = bind(MuonMedium, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1);
+        muon_idiso_func = bind(MuonMedium, _1) && (bind(PF03IsolationVal<Muon>, _1, 0.5, 0) < 0.1);
       }
     }
   }
@@ -736,7 +736,7 @@ int main(int argc, char* argv[]){
       bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(&Muon::is_global, _1) && bind(&Muon::is_tracker, _1) &&
-      bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.3);
+      bind(PF03IsolationVal<Muon>, _1, 0.5, 0) < 0.3);
   }
 
   OneCollCompositeProducer<Muon> vetoMuonPairProducer = OneCollCompositeProducer<Muon>("VetoPairProducer")
@@ -767,7 +767,7 @@ int main(int argc, char* argv[]){
   if(strategy == strategy::phys14) { 
     extraMuonVeto.set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.4)
               && bind(MuonMedium, _1) 
-              && bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
+              && bind(PF03Isolation<Muon>, _1, 0.5, 0.3, 0)
               && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
               && (bind(fabs, bind(&Muon::dz_vertex, _1)) < 0.2));
   }
