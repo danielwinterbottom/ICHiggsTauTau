@@ -17,6 +17,7 @@ namespace ic {
 	HhhEMuMVABoth::HhhEMuMVABoth(std::string const& name) : ModuleBase(name) {
 		ditau_label_ = "emtauCandidates";
 		met_label_ = "pfMVAMet";
+		jets_label_ = "pfJetsPFlow";
 		gf_mva_file_bdt_ = "input/Hhh_mva/HhhEmuMVAInit_BDT.weights.xml";
 		gf_mva_file_bdtg_ = "input/Hhh_mva/HhhEmuMVAInit_BDTG.weights.xml";
 		mva_input_data_ = "scripts/TMVAinputs.dat";
@@ -97,7 +98,7 @@ namespace ic {
 		Candidate const* lep1 = ditau->GetCandidate("lepton1");
 		Candidate const* lep2 = ditau->GetCandidate("lepton2");
 		Met const* met = event->GetPtr<Met>(met_label_);
-		std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Take a copy of the jets
+		std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Take a copy of the jets
 		ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
 		std::sort(jets.begin(), jets.end(), boost::bind(&Candidate::pt, _1) > boost::bind(&Candidate::pt, _2));
 		std::vector<PFJet*> lowpt_jets = jets;

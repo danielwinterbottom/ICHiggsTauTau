@@ -415,12 +415,14 @@ int main(int argc, char* argv[]){
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
   if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
-  //if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
+  //for now set phys14 to read the 2012 PU files, even though they are not used
+  if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
   //if (mc == mc::summer15_74X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
   string data_pu_file;
   if (era == era::data_2011) data_pu_file     =  "input/pileup/Data_Pileup_2011_HCP-500bins.root";
   if (era == era::data_2012_rereco) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
-  //if (era == era::data_2015) data_pu_file    =  "input/pileup/Data_Pileup_2015-600bins.root";
+  //for now set phys14 to read the 2012 PU files, even though they are not used
+  if (era == era::data_2015) data_pu_file    =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
   if (channel == channel::mtmet) data_pu_file       =  "input/pileup/Data_Pileup_2012_ReRecoD_All-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
@@ -510,10 +512,13 @@ int main(int argc, char* argv[]){
   if (channel == channel::em) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_recEmbedding_emu.root");
   if (channel == channel::mtmet) rechitWeights.set_file("input/rechit_weights/embeddingKineReweight_muPt7to25tauPtGt18_recEmbedded.root");
 
+  std::string jets_label="pfJetsPFlow";
+  if(era==era::data_2015) jets_label="ak4PFJetsCHS";
+
   string jec_payload = is_data ? "GR_P_V42_AN3" : "START53_V15";
   JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
   ("JetEnergyCorrections")
-  .set_input_label("pfJetsPFlow")
+  .set_input_label(jets_label)
   .set_is_data(is_data)
   .set_l1_file("input/jec/"+jec_payload+"_L1FastJet_AK5PF.txt")
   .set_l2_file("input/jec/"+jec_payload+"_L2Relative_AK5PF.txt")
@@ -531,7 +536,7 @@ int main(int argc, char* argv[]){
   //  jes_input_set  = "SubTotalMC";
   //}
   auto jetEnergyUncertainty = JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
-  .set_input_label("pfJetsPFlow")
+  .set_input_label(jets_label)
   .set_jes_shift_mode(jes_mode)
   .set_uncert_file(jes_input_file)
   .set_uncert_set(jes_input_set);
@@ -564,24 +569,47 @@ int main(int argc, char* argv[]){
     selElectronCopyCollection("CopyToSelElectrons","electrons","selElectrons");
 
   boost::function<bool (Electron const*)> elec_idiso_func;
-  if (special_mode == 20 || special_mode == 22) {
-    elec_idiso_func = bind(HttEMuFakeElectron, _1);
-  } else if (special_mode == 2) {
-    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
-  } else if (special_mode == 3 || special_mode == 4) {
-    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
-  } else if (special_mode == 23) {
-    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
-  } else if (special_mode == 24) {
-    elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && !bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
-  } else if (special_mode == 25) {
-    elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
-  } else {
-    if (channel == channel::em) {
-      elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+  if(strategy == strategy::paper2013) {
+    if (special_mode == 20 || special_mode == 22) {
+      elec_idiso_func = bind(HttEMuFakeElectron, _1);
+    } else if (special_mode == 2) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+    } else if (special_mode == 3 || special_mode == 4) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+    } else if (special_mode == 23) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
+    } else if (special_mode == 24) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && !bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+    } else if (special_mode == 25) {
+      elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
     } else {
-      elec_idiso_func = bind(ElectronHTTId, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
+      if (channel == channel::em) {
+        elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+      } else {
+        elec_idiso_func = bind(ElectronHTTId, _1, false) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.1);
+      }
     }
+  } else if (strategy == strategy::phys14) {
+    //Special modes and emu channel need more thought, just placeholders for now
+    if (special_mode == 20 || special_mode == 22) {
+      elec_idiso_func = bind(HttEMuFakeElectron, _1);
+    } else if (special_mode == 2) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+    } else if (special_mode == 3 || special_mode == 4) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && (bind(PF04IsolationVal<Electron>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.5);
+    } else if (special_mode == 23) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em));
+    } else if (special_mode == 24) {
+      elec_idiso_func = bind(ElectronHTTId, _1, (channel == channel::em)) && !bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+    } else if (special_mode == 25) {
+      elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
+    } else {
+      if (channel == channel::em) {
+        elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+      } else {
+        elec_idiso_func = bind(ElectronHTTIdPhys14, _1, false) && (bind(PF03IsolationVal<Electron>, _1, 0.5, 0) < 0.1);
+      }
+    } 
   }
   SimpleFilter<Electron> selElectronFilter = SimpleFilter<Electron>("SelElectronFilter")
     .set_input_label("selElectrons")
@@ -603,6 +631,14 @@ int main(int argc, char* argv[]){
       bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
       bind(Electron2011WP95ID, _1) &&
       bind(PF04IsolationVal<Electron>, _1, 0.5) < 0.3);
+  if(strategy == strategy::phys14) {
+      vetoElectronFilter.set_predicate(
+      bind(MinPtMaxEta, _1, 10.0, 2.5) &&
+      bind(fabs, bind(&Electron::dxy_vertex, _1)) < elec_dxy &&
+      bind(fabs, bind(&Electron::dz_vertex, _1)) < elec_dz &&
+      bind(VetoElectronIDPhys14, _1) &&
+      bind(PF03IsolationVal<Electron>, _1, 0.5, 0) < 0.3);
+  }
 
   OneCollCompositeProducer<Electron> vetoElectronPairProducer = OneCollCompositeProducer<Electron>("VetoPairProducer")
     .set_input_label("vetoElectrons")
@@ -624,26 +660,54 @@ int main(int argc, char* argv[]){
                 && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
                 && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2)
     .set_min(0).set_max((channel == channel::et || channel == channel::etmet || channel == channel::em) ? 1 : 0);
+    if(strategy == strategy::phys14) {
+      extraElectronVeto.set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.5)
+                && bind(VetoElectronIDPhys14, _1)
+                && bind(fabs, bind(&Electron::dxy_vertex, _1)) < 0.045
+                && bind(fabs, bind(&Electron::dz_vertex, _1)) < 0.2
+                && bind(PF03IsolationVal<Electron>, _1, 0.5, 0) < 0.3);
+    }
 
   // ------------------------------------------------------------------------------------
   // Muon Modules
   // ------------------------------------------------------------------------------------
-  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons","muonsPFlow","selMuons");
+  std::string muon_label="muonsPFlow";
+  if(era == era::data_2015) muon_label="muons";
+  CopyCollection<Muon> selMuonCopyCollection("CopyToSelMuons",muon_label,"selMuons");
 
   boost::function<bool (Muon const*)> muon_idiso_func;
-  if (special_mode == 21 || special_mode == 22) {
-    muon_idiso_func = bind(HttEMuFakeMuon, _1);
-  } else if (special_mode == 2) {
-    muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
-  } else if (special_mode == 3 || special_mode == 4) {
-    muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
-  } else if (special_mode == 25) {
-    muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
-  } else {
-    if (channel == channel::em) {
-      muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
+  if(strategy == strategy::paper2013) {
+    if (special_mode == 21 || special_mode == 22) {
+      muon_idiso_func = bind(HttEMuFakeMuon, _1);
+    } else if (special_mode == 2) {
+      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+    } else if (special_mode == 3 || special_mode == 4) {
+      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+    } else if (special_mode == 25) {
+      muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
     } else {
-      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1);
+      if (channel == channel::em) {
+        muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
+      } else {
+        muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.1);
+      }
+    }
+    //Special modes and emu channel need more thought, just placeholders for now
+  } else if (strategy == strategy::phys14) {
+    if (special_mode == 21 || special_mode == 22) {
+      muon_idiso_func = bind(HttEMuFakeMuon, _1);
+    } else if (special_mode == 2) {
+      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+    } else if (special_mode == 3 || special_mode == 4) {
+      muon_idiso_func = bind(MuonTight, _1) && (bind(PF04IsolationVal<Muon>, _1, 0.5) > 0.2) && (bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.5);
+    } else if (special_mode == 25) {
+      muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
+    } else {
+      if (channel == channel::em) {
+        muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
+      } else {
+        muon_idiso_func = bind(MuonMedium, _1) && (bind(PF03IsolationVal<Muon>, _1, 0.5, 0) < 0.1);
+      }
     }
   }
   SimpleFilter<Muon> selMuonFilter = SimpleFilter<Muon>("SelMuonFilter")
@@ -656,7 +720,7 @@ int main(int argc, char* argv[]){
     .set_min(1);
 
    // Muon Veto
-  CopyCollection<Muon> vetoMuonCopyCollection("CopyToVetoMuons","muonsPFlow","vetoMuons");
+  CopyCollection<Muon> vetoMuonCopyCollection("CopyToVetoMuons",muon_label,"vetoMuons");
 
   SimpleFilter<Muon> vetoMuonFilter = SimpleFilter<Muon>("VetoMuonFilter")
     .set_input_label("vetoMuons")
@@ -666,13 +730,13 @@ int main(int argc, char* argv[]){
       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(&Muon::is_global, _1) &&
       bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.3);
-  if (strategy == strategy::paper2013) {
+  if (strategy == strategy::paper2013 || strategy == strategy::phys14) {
     vetoMuonFilter.set_predicate(
       bind(MinPtMaxEta, _1, 15.0, 2.4) &&
       bind(fabs, bind(&Muon::dxy_vertex, _1)) < muon_dxy && 
       bind(fabs, bind(&Muon::dz_vertex, _1)) < muon_dz &&
       bind(&Muon::is_global, _1) && bind(&Muon::is_tracker, _1) &&
-      bind(PF04IsolationVal<Muon>, _1, 0.5) < 0.3);
+      bind(PF03IsolationVal<Muon>, _1, 0.5, 0) < 0.3);
   }
 
   OneCollCompositeProducer<Muon> vetoMuonPairProducer = OneCollCompositeProducer<Muon>("VetoPairProducer")
@@ -689,17 +753,24 @@ int main(int argc, char* argv[]){
 
   OverlapFilter<Electron, Muon> elecMuonOverlapFilter = OverlapFilter<Electron, Muon>("ElecMuonOverlapFilter")
     .set_input_label("selElectrons")
-    .set_reference_label("muonsPFlow")
+    .set_reference_label(muon_label)
     .set_min_dr(0.3); 
 
   SimpleCounter<Muon> extraMuonVeto = SimpleCounter<Muon>("ExtraMuonVeto")
-  .set_input_label("muonsPFlow")
+  .set_input_label(muon_label)
   .set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.4) 
               && bind(MuonTight, _1) 
               && bind(PF04Isolation<Muon>, _1, 0.5, 0.3)
               && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
               && (bind(fabs, bind(&Muon::dz_vertex, _1)) < 0.2))
-  .set_min(0).set_max((channel == channel::mt || channel == channel::mtmet || channel == channel::em) ? 1 : 0);                   
+  .set_min(0).set_max((channel == channel::mt || channel == channel::mtmet || channel == channel::em) ? 1 : 0); 
+  if(strategy == strategy::phys14) { 
+    extraMuonVeto.set_predicate(bind(MinPtMaxEta, _1, 10.0, 2.4)
+              && bind(MuonMedium, _1) 
+              && bind(PF03Isolation<Muon>, _1, 0.5, 0.3, 0)
+              && (bind(fabs, bind(&Muon::dxy_vertex, _1)) < 0.045)
+              && (bind(fabs, bind(&Muon::dz_vertex, _1)) < 0.2));
+  }
 
   // ------------------------------------------------------------------------------------
   // Tau Modules
@@ -769,6 +840,24 @@ int main(int argc, char* argv[]){
   //  if (do_skim) { // For 3hits make wp a bit looser when skimming
   //    tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
   //  }
+  } else if (strategy == strategy::phys14) {
+    if (channel == channel::et || channel == channel::etmet) {
+      tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
+      //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      tau_anti_elec_discr_1 = "againstElectronTightMVA5";
+      tau_anti_elec_discr_2 = "againstElectronTightMVA5";
+      tau_anti_muon_discr   = "againstMuonLoose3";
+      // At the moment revert the relaxed Z->ee to the HCP/Moriond approach of
+      // just using againstElectronMVA (but need to make a separate special 18 skim)
+      if (special_mode == 18) tau_anti_elec_discr_1 = "againstElectronMVA"; 
+    }
+    if (channel == channel::mt || channel == channel::mtmet) {
+      tau_iso_discr         = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
+      //tau_iso_discr         = "byLooseCombinedIsolationDeltaBetaCorr3Hits";
+      tau_anti_elec_discr_1 = "againstElectronVLooseMVA5";
+      tau_anti_elec_discr_2 = "againstElectronVLooseMVA5";
+      tau_anti_muon_discr   = "againstMuonTight3";
+    }
   }
 
   std::cout << "** Tau Discriminators **" << std::endl;
@@ -800,6 +889,12 @@ int main(int argc, char* argv[]){
     if (special_mode == 4 || special_mode == 5) tau_3hit_cut = 10.;
     tauIsoFilter.set_predicate(    (bind(&Tau::GetTauID, _1, tau_iso_discr)       < tau_3hit_cut)
                                 && (bind(&Tau::GetTauID, _1, "decayModeFinding")  > 0.5));
+  }
+  if(strategy == strategy::phys14) {
+    double tau_3hit_cut = 1.5;
+    if (special_mode == 4 || special_mode == 5) tau_3hit_cut = 10.;
+    tauIsoFilter.set_predicate(    (bind(&Tau::GetTauID, _1, tau_iso_discr) < tau_3hit_cut) 
+                    && (  (bind(&Tau::GetTauID, _1, "decayModeFinding") > 0.5) || (bind(&Tau::GetTauID, _1, "decayModeFindingNewDMs") > 0.5)  )   );
   }
 
   SimpleFilter<Tau> tauElRejectFilter = SimpleFilter<Tau>("TauElRejectFilter")
@@ -862,22 +957,22 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------  
   OverlapFilter<PFJet, CompositeCandidate> jetLeptonOverlapFilter = OverlapFilter<PFJet, CompositeCandidate>
     ("JetLeptonOverlapFilter")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jets_label)
     .set_reference_label("emtauCandidates")
     .set_min_dr(0.5);
 
 
   SimpleFilter<PFJet> jetIDFilter = SimpleFilter<PFJet>
     ("JetIDFilter")
-    .set_input_label("pfJetsPFlow")
+    .set_input_label(jets_label)
     .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training));
 
   CopyCollection<PFJet>
-    filteredJetCopyCollection("CopyFilteredJets","pfJetsPFlow","pfJetsPFlowFiltered");
+    filteredJetCopyCollection("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered");
   
   HhhBJetRegression hhhBJetRegression = HhhBJetRegression
   ("hhhBJetRegression")
-  .set_jets_label("pfJetsPFlow");
+  .set_jets_label(jets_label);
    
   // ------------------------------------------------------------------------------------
   // Pair & Selection Modules
@@ -926,6 +1021,7 @@ int main(int argc, char* argv[]){
     .set_do_top_factors(false)
     .set_do_tau_id_weights(real_tau_sample)
     .set_gen_tau_collection(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
+    .set_jets_label(jets_label)
     .set_do_btag_weight(false);
   if (!is_data) {
     httWeights.set_do_trg_weights(true).set_trg_applied_in_mc(true).set_do_idiso_weights(true);
@@ -1003,6 +1099,7 @@ int main(int argc, char* argv[]){
     .set_strategy(strategy)
     .set_ditau_label("emtauCandidates")
     .set_met_label(met_label)
+    .set_jets_label(jets_label)
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
     .set_write_tree(true);
@@ -1066,8 +1163,8 @@ int main(int argc, char* argv[]){
   if ( (channel == channel::etmet || 
         channel == channel::mtmet)
         && !is_data )             analysis.AddModule(&httL1MetCorrector); 
-  if (is_data && !do_skim)        analysis.AddModule(&lumiMask);
-  if (!is_data && !do_skim)       analysis.AddModule(&pileupWeight);
+  if (is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&lumiMask);
+  if (!is_data && !do_skim && strategy != strategy::phys14) analysis.AddModule(&pileupWeight);
   if (vh_filter_mode > 0)         analysis.AddModule(&vhFilter);
   if (ztautau_mode > 0)           analysis.AddModule(&zTauTauFilter);
   if (!is_data && do_mass_filter) analysis.AddModule(&mssmMassFilter);
@@ -1153,7 +1250,7 @@ int main(int argc, char* argv[]){
   }
 
   if (!do_skim) {
-    if (!is_embedded)  { // Don't usually want trigger for embedded
+    if (!is_embedded && strategy != strategy::phys14)  { // Don't usually want trigger for embedded
                                   analysis.AddModule(&httTriggerFilter);
     }
     if (is_embedded && strategy == strategy::paper2013 && era == era::data_2012_rereco) {
@@ -1161,12 +1258,12 @@ int main(int argc, char* argv[]){
     }
     //                            analysis.AddModule(&runStats);
                                   analysis.AddModule(&httPairSelector);
-    if (jes_mode > 0 && !is_data) analysis.AddModule(&jetEnergyUncertainty);
+    if (jes_mode > 0 && !is_data && strategy != strategy::phys14) analysis.AddModule(&jetEnergyUncertainty);
     //                            analysis.AddModule(&jetEnergyCorrections);
                                   analysis.AddModule(&jetIDFilter);
                                   analysis.AddModule(&filteredJetCopyCollection);
                                   analysis.AddModule(&jetLeptonOverlapFilter);
-                                  analysis.AddModule(&httRecoilCorrector);
+    if(strategy != strategy::phys14) analysis.AddModule(&httRecoilCorrector);
     if(metscale_mode > 0 
       && !is_data )               analysis.AddModule(&hhhMetScale);  
 
@@ -1182,7 +1279,7 @@ int main(int argc, char* argv[]){
       && new_svfit_mode != 1) {
                                   analysis.AddModule(&httL1MetCut);
     }  
-                                  analysis.AddModule(&httWeights);
+   if(strategy != strategy::phys14) analysis.AddModule(&httWeights);
    if (is_embedded && era == era::data_2012_rereco) {
                                   analysis.AddModule(&rechitWeights);
    }
@@ -1191,7 +1288,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&HhhemuMVA);
 								  analysis.AddModule(&HhhemuMVABoth);
    }
-   if (strategy == strategy::paper2013 &&channel ==channel::mt){
+   if (strategy == strategy::paper2013 && channel ==channel::mt){
                                   analysis.AddModule(&HhhmtMVABoth);
                                   analysis.AddModule(&HhhmtMVACategory);
    }

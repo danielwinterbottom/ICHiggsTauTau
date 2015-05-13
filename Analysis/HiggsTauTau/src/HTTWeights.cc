@@ -44,6 +44,7 @@ namespace ic {
     do_tau_fake_weights_      = false;
     do_tt_muon_weights_       = false;
     gen_tau_collection_       = "genParticlesTaus";
+    jets_label_               = "pfJetsPFlow";
   }
 
   HTTWeights::~HTTWeights() {
@@ -249,7 +250,7 @@ namespace ic {
     }
     //A derived correction based on a input/MC discrepancy in the subleading b-jet eta in the emu ttbar control region. Used for a cross-check in H->hh analysis.
     if (do_top_jeteta_weights_) {
-      std::vector<PFJet*> prebjets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
+      std::vector<PFJet*> prebjets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
       ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
       std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
       std::vector<PFJet*> prebjets_SF = prebjets;
@@ -282,13 +283,13 @@ namespace ic {
     }
     
     if (do_top_factors_) {
-      std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
+      std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));
     }
     
     
     if (do_btag_weight_) {
-      std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow"); // Make a copy of the jet collection
+      std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
       ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
       //double no_btag_weight = btag_weight.GetWeight(jets, "CSVM", 0, 0, is_2012_);
       //double inclusive_btag_weight = btag_weight.GetWeight(jets, "CSVM", 1, 99, is_2012_);
