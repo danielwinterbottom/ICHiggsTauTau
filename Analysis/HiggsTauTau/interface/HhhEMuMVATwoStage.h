@@ -18,6 +18,7 @@ class HhhEMuMVATwoStage : public ModuleBase {
  
  	CLASS_MEMBER(HhhEMuMVATwoStage, std::string, ditau_label)
  	CLASS_MEMBER(HhhEMuMVATwoStage, std::string, met_label)
+ 	CLASS_MEMBER(HhhEMuMVATwoStage, std::string, jets_label)
  	CLASS_MEMBER(HhhEMuMVATwoStage, std::string, gf_mva_file)
   CLASS_MEMBER(HhhEMuMVATwoStage, std::string, gf_mva_file_2)
 

@@ -18,6 +18,7 @@ class HhhMTMVACategory : public ModuleBase {
  
  	CLASS_MEMBER(HhhMTMVACategory, std::string, ditau_label)
  	CLASS_MEMBER(HhhMTMVACategory, std::string, met_label)
+ 	CLASS_MEMBER(HhhMTMVACategory, std::string, jets_label)
  	CLASS_MEMBER(HhhMTMVACategory, std::string, gf_mva_file)
   CLASS_MEMBER(HhhMTMVACategory, std::string, gf_mva_file_2)
 

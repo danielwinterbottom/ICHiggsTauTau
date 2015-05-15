@@ -44,16 +44,16 @@ public:
 
 struct strategy_def {
 	enum type {
-		hcp2012,				// HCP 2012 strategy, MVA MET, cut-based VBF
-		moriond2013,		// Moriond 2013 strategy, currently same as HCP
-		paper2013				// Strategy for the final paper in 2013
+		paper2013,				// Strategy for the final paper in 2013
+		phys14				// Strategy for running on phys14 samples
 	};
 };
 typedef safe_enum<strategy_def> strategy;
 
 inline std::string Strategy2String(strategy const& in) {
 	static std::map<strategy, std::string> conv = boost::assign::map_list_of
-		(strategy::paper2013, 	"paper2013");
+		(strategy::paper2013, 	"paper2013")
+		(strategy::phys14, 	"phys14");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -64,7 +64,8 @@ inline std::string Strategy2String(strategy const& in) {
 
 inline strategy String2Strategy(std::string const& in) {
 	static std::map<std::string, strategy> conv = boost::assign::map_list_of
-	("paper2013", 	strategy::paper2013);
+	("paper2013", 	strategy::paper2013)
+	("phys14", 	strategy::phys14);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -111,7 +112,8 @@ inline era String2Era(std::string const& in) {
 struct mc_def {
 	enum type {
 		fall11_42X,				// 42X MC
-		summer12_53X			// 53X MC
+		summer12_53X,			// 53X MC
+		phys14_72X			// 72X MC
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -119,7 +121,8 @@ typedef safe_enum <mc_def> mc;
 inline std::string MC2String(mc const& in) {
 	static std::map<mc, std::string> conv = boost::assign::map_list_of
 		(mc::fall11_42X, "fall11_42X")
-		(mc::summer12_53X, "summer12_53X");
+		(mc::summer12_53X, "summer12_53X")
+		(mc::phys14_72X, "phys14_72X");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -131,7 +134,8 @@ inline std::string MC2String(mc const& in) {
 inline mc String2MC(std::string const& in) {
 	static std::map<std::string, mc> conv = boost::assign::map_list_of
 	("fall11_42X",		mc::fall11_42X)
-	("summer12_53X",	mc::summer12_53X);
+	("summer12_53X",	mc::summer12_53X)
+	("phys14_72X",	mc::phys14_72X);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

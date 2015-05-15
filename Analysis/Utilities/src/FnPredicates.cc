@@ -691,6 +691,25 @@ namespace ic {
     }
     return pass_mva;
   }
+  
+  bool ElectronHTTIdPhys14(Electron const* elec, bool loose_wp) {
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;
+    if (elec->gsf_tk_nhits() > 0) return false;
+    bool pass_mva = false;
+    double eta = fabs(elec->sc_eta());
+    double idmva = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
+    if (!loose_wp) {
+      if (eta <= 0.8                  && idmva > 0.73) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479  && idmva > 0.57) pass_mva = true;
+      if (eta >  1.479                && idmva > 0.05) pass_mva = true;
+    } else {
+      if (eta <= 0.8                  && idmva > 0.35) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479  && idmva > 0.20) pass_mva = true;
+      if (eta >  1.479                && idmva > -0.52) pass_mva = true;
+    }
+    return pass_mva;
+  }
 
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
