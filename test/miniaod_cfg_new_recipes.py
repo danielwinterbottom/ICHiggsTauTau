@@ -789,7 +789,7 @@ if release in ['72XMINIAOD']:
 
 
 process.icPfMetProducer = producers.icMetProducer.clone(
-                            input = cms.string("pfMetRe"),
+                            input = cms.InputTag("pfMetRe"),
                             branch = cms.string("pfMet"),
                             includeCustomID = cms.bool(False),
                             inputCustomID = cms.InputTag("")
