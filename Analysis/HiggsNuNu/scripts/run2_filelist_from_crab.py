@@ -7,20 +7,24 @@ if (len(sys.argv)!=2):
 
 
 
-print "Getting output for that task"
 getoutputcommand="crab getoutput --dump --xrootd "+sys.argv[1]
 import subprocess 
+
+
+print "Getting output for task: "+sys.argv[1]
 
 #run command and get output split into lines
 p=subprocess.Popen(getoutputcommand,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)
 out,err = p.communicate()
 lines=out.splitlines()
 
-
 #open filelist with name of crabtask
 linebits=lines[0].split("/")
-filelist=open(linebits[9][5:]+".dat",'w')
-    
+prodname=linebits[7]
+filelistname=prodname+"_"+linebits[9][5:]+".dat"
+filelist=open(filelistname,'w')
+
+
 #parse each line to get material to go into filelist
 nfilesprocessed=0
 for line in lines:
@@ -34,8 +38,9 @@ for line in lines:
         filelist.write(filelistcontent+"\n")
         nfilesprocessed+=1
 filelist.close()
-        
-print "Filelist written to "+linebits[9][5:]+".dat"
+
+#output diagnostic information
+print "Filelist written to "+filelistname
 print str(nfilesprocessed)+" files processed"
 
 #get prefix
