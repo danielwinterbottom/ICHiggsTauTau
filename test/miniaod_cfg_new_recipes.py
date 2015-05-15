@@ -1002,12 +1002,12 @@ process.icGenParticleTauProducer = producers.icGenParticleProducer.clone(
 
 
 process.load("RecoJets.Configuration.GenJetParticles_cff")
-#process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
-#  1000022, 2000012, 2000014,
-#  2000016, 1000039, 5000039,
-#  4000012, 9900012, 9900014,
-#  9900016, 39, 12, 14, 16
-#)
+process.genParticlesForJets.ignoreParticleIDs = cms.vuint32(
+  1000022, 2000012, 2000014,
+  2000016, 1000039, 5000039,
+  4000012, 9900012, 9900014,
+  9900016, 39, 12, 14, 16
+)
 if release in ['72XMINIAOD']:
   # But of course this won't work because genParticlesForJets(InputGenJetsParticleSelector)
   # requires a vector<GenParticle> input. There's no alternative filter for the PackedGenParticle
