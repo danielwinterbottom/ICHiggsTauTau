@@ -8,11 +8,23 @@ if (len(sys.argv)!=2):
 
 
 getoutputcommand="crab getoutput --dump --xrootd "+sys.argv[1]
+reportcommand="crab report "+sys.argv[1]
 import subprocess 
 
+print sys.argv[1]
 
-print "Getting output for task: "+sys.argv[1]
+print "   Getting report for task"
+#run report command and get number of events
+rep=subprocess.Popen(reportcommand,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)
+repout,reperr = rep.communicate()
+replines=repout.splitlines()
+for repline in replines:
+    if repline[-21:]=="events have been read":
+        replinebits=repline.split(" ")
+        evoutstring="   "+replinebits[0]+" events have been processed"
+        print evoutstring
 
+print "   Getting output list for task"
 #run command and get output split into lines
 p=subprocess.Popen(getoutputcommand,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,shell=True)
 out,err = p.communicate()
@@ -40,8 +52,8 @@ for line in lines:
 filelist.close()
 
 #output diagnostic information
-print "Filelist written to "+filelistname
-print str(nfilesprocessed)+" files processed"
+print "   Filelist written to "+filelistname
+print "   "+str(nfilesprocessed)+" files processed"
 
 #get prefix
 xrootdstart=lines[0].find("/")
@@ -49,7 +61,7 @@ n=3
 while xrootdstart>=0 and n>1:
     xrootdstart=lines[0].find("/",xrootdstart+1)
     n-=1
-print "Prefix should be: root://xrootd.grid.hep.ph.ic.ac.uk"+lines[0][xrootdstart:start]
+print "   Prefix should be: root://xrootd.grid.hep.ph.ic.ac.uk"+lines[0][xrootdstart:start]
 
 #PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
 #root://cms-xrd-global.cern.ch//store/user/pdunne/May13_MC/VBF_HToInv_M-125_13TeV_powheg-pythia6/crab_Powheg-Htoinv-mH125PU20bx25/150513_140650/0000/EventTree_1.root
