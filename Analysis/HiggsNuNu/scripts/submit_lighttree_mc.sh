@@ -17,16 +17,16 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultLightTreeConfig_mc.cfg
-PRODUCTION=Dec18
-INPUTPARAMS="filelists/Dec18/ParamsDec18.dat"
+PRODUCTION=May13
+INPUTPARAMS="filelists/May13/ParamsMay13.dat"
 
 
-for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
+for SYST in central #JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN #NOTE TO RUN JER DOSMEAR MUST BE SET TO TRUE IN THE CONFIG
   do
   SYSTOPTIONS="--dojessyst=false --dojersyst=false"
-  JOBDIRPREFIX=jobs_lighttree_postARCcomments1
+  JOBDIRPREFIX=jobs_lighttree_run2trial190515
   JOBDIR=$JOBDIRPREFIX/
-  OUTPUTPREFIX=output_lighttree_postARCcomments1
+  OUTPUTPREFIX=output_lighttree_run2trial190515
   OUTPUTDIR=$OUTPUTPREFIX/
   
   if [ "$SYST" = "JESUP" ]
@@ -134,8 +134,10 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEE
     
 #Process HiggsNuNu specific backgrounds
 #Signal files and DYtoNuNu
-    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
-    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
+#    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/$PRODUCTION/MC/
+    PREFIX=root://xrootd.grid.hep.ph.ic.ac.uk//store/user/pdunne/${PRODUCTION}_MC
+#    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_*`
+    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Po*`
 #    for FILELIST in `ls filelists/$PRODUCTION/$QUEUEDIR/${PRODUCTION}_MC_Powheg*`
 	  do
       echo "Processing files in "$FILELIST
@@ -167,12 +169,12 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEE
 	    do
 	    WJOB=$JOB"_"$FLAVOUR
 	    
-	    $JOBWRAPPER "./bin/LightTreeMaker --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --input_params=$INPUTPARAMS --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+	    $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
 	    $JOBSUBMIT $JOBDIR/$WJOB.sh                                                                                      
 	  done
 	  
       else  
-	  $JOBWRAPPER "./bin/LightTreeMaker --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --input_params=$INPUTPARAMS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	  $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$PREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	  $JOBSUBMIT $JOBDIR/$JOB.sh
       fi
       rm tmp.txt tmp2.txt
@@ -227,11 +229,11 @@ for SYST in central JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEE
 		
 		WJOB=$JOB"_"$FLAVOUR
 		
-		$JOBWRAPPER "./bin/LightTreeMaker --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --input_params=$INPUTPARAMS --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
+		$JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$WJOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS --wstream=$FLAVOUR &> $JOBDIR/$WJOB.log" $JOBDIR/$WJOB.sh
 		$JOBSUBMIT $JOBDIR/$WJOB.sh
 	      done
 	  else  
-	      $JOBWRAPPER "./bin/LightTreeMaker --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --input_params=$INPUTPARAMS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
+	      $JOBWRAPPER "./bin/LightTreeMakerFromMiniAOD --cfg=$CONFIG --filelist="$FILELIST" --input_prefix=$SHAREDPREFIX --output_name=$JOB.root --output_folder=$OUTPUTDIR $SYSTOPTIONS --inputparams=$INPUTPARAMS &> $JOBDIR/$JOB.log" $JOBDIR/$JOB.sh
 	      $JOBSUBMIT $JOBDIR/$JOB.sh
 	  fi
 	  
