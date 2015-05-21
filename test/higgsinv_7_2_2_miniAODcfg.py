@@ -693,7 +693,7 @@ process.load("RecoMET/METProducers.METSignificanceParams_cfi")
 #get type 1 met straight from miniAOD !!update to take in output of met significance calculator
 process.ictype1PfMetProducer = producers.icMetProducer.clone(
                                                     input = cms.InputTag("slimmedMETs"),
-                                                    branch = cms.string("pfMetType1"),
+                                                    branch = cms.string("pfMetType1Collection"),
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
                                                     includeExternalMetsig = cms.bool(True)

@@ -220,6 +220,7 @@ namespace ic{
   }
 
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
+    do_norm_=false;
     do_ratio_=false;
     do_ratio_line_=false;
     do_ratio_fitline_=false;
@@ -321,6 +322,7 @@ namespace ic{
 	    }
 	  }
 	}
+	if(do_norm_)histo->Scale(1/(Integral(histo)));
 
 	if (add_underflows_ || add_overflows_){
 	  int tmpbins = histo->GetNbinsX();
@@ -504,6 +506,7 @@ namespace ic{
 	      ytitle=ytitle.substr(ytitle.find(";")+1);
 	      ytitle=ytitle.substr(0,ytitle.find(";"));
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitle(ytitle.c_str());
+	      elements_[iElement].hist_ptr()->SetTitle("");
 	    }
 	    else elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
 	  }

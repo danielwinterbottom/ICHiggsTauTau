@@ -1,0 +1,16 @@
+## Cross Sections #-1.0 for data
+XS_MC_Powheg-Htoinv-mH125PU20bx25:3.727
+## Processed Events
+EVT_MC_Powheg-Htoinv-mH125PU20bx25:115863
+## Lumi
+LUMI_DATA:10000.0
+LUMI_DATA_LABEL:10.0 fb^{-1}
+YEAR_LABEL:2015
+## Signal options
+DRAW_SIGNAL:1
+DRAW_SIGNAL_FACTOR:1
+DRAW_SIGNAL_MASS:125
+## TOP Options
+## VV Options
+## QCD Options
+
