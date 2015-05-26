@@ -36,6 +36,7 @@ class HTTWeights : public ModuleBase {
   CLASS_MEMBER(HTTWeights, std::string, ggh_mass)
   CLASS_MEMBER(HTTWeights, std::string, gen_tau_collection)
   CLASS_MEMBER(HTTWeights, std::string, jets_label)
+  CLASS_MEMBER(HTTWeights, std::string, btag_label)
   CLASS_MEMBER(HTTWeights, bool, do_w_soup)
   CLASS_MEMBER(HTTWeights, bool, do_dy_soup)
   CLASS_MEMBER(HTTWeights, bool, do_tt_muon_weights)

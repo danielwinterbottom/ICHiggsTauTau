@@ -995,6 +995,7 @@ int main(int argc, char* argv[]){
     .set_channel(channel)
     .set_mc(mc)
     .set_met_label(met_label)
+    .set_jets_label(jets_label)
     .set_strategy(strategy)
     //option to take met scale uncertainty from recoil corrector files - off for now as files have over-inflated uncertainties
     //.set_met_scale_mode(metscale_mode)
