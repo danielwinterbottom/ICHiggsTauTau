@@ -19,6 +19,9 @@
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
+#include "HiggsTauTau/interface/HTTCategories.h"
+#include "HiggsTauTau/interface/HTTPairSelector.h"
+#include "HiggsTauTau/interface/SVFitTest.h"
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
 #include "Modules/interface/CompositeProducer.h"
@@ -30,14 +33,14 @@
 
 namespace ic {
 
-void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,
+void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,fwlite::TFileService *fs,
                                 Json::Value const& js) {
   using ROOT::Math::VectorUtil::DeltaR;
 
   // Set global parameters that get used in multiple places
   ic::mc mc_type              = String2MC(js["mc"].asString());
-  // ic::era era_type            = String2Era(js["era"].asString());
-  // ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+  ic::era era_type            = String2Era(js["era"].asString());
+   ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
   // Other flags
   bool is_data        = js["is_data"].asBool();
   bool is_embedded    = js["is_embedded"].asBool();
@@ -85,6 +88,103 @@ void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,
     BuildModule(seq, PileupWeight("PileupWeight")
         .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
   }
+
+
+  std::string met_label;
+  met_label = "pfMVAMet";
+
+  std::string jets_label="ak4PFJetsCHS";
+//  if(era==era::data_2015) jets_label="ak4PFJetsCHS";
+  unsigned new_svfit_mode = 0;
+  std::string svfit_folder = "";
+  std::string svfit_override = ""; 
+  unsigned kinfit_mode = 0;
+  bool bjet_regr_correction = false;
+  unsigned mva_met_mode = 1;
+  unsigned faked_tau_selector = 0;
+  unsigned hadronic_tau_selector = 0; 
+  unsigned tau_scale_mode = 0;
+  bool moriond_tau_scale = 0;
+  double tau_shift = 1.0;
+  std::string allowed_tau_modes = "";
+  
+  
+  
+ 
+
+
+  BuildModule(seq, HTTPairSelector("HTTPairSelector")
+    .set_channel(channel)
+    .set_fs(fs)
+    .set_pair_label("ditau")
+    .set_met_label(met_label)
+    .set_mva_met_from_vector(mva_met_mode == 1)
+    .set_faked_tau_selector(faked_tau_selector)
+    .set_hadronic_tau_selector(hadronic_tau_selector)
+    .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
+    .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
+    .set_tau_scale(tau_shift)
+    .set_allowed_tau_modes(allowed_tau_modes));
+
+
+  
+  unsigned pu_id_training = 1;
+  
+    
+  //if (channel == channel::em) httPairSelector.set_tau_scale(elec_shift);
+  BuildModule(seq, SimpleFilter<PFJet>("JetIDFilter")
+    .set_input_label(jets_label)
+    .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training)));
+
+  BuildModule(seq, CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
+
+  BuildModule(seq, OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+    .set_input_label(jets_label)
+    .set_reference_label("ditau")
+    .set_min_dr(0.5));
+
+std::string output_name="";
+
+
+  BuildModule(seq, SVFitTest("SVFitTest")
+    .set_channel(channel)
+    .set_outname(svfit_override == "" ? output_name : svfit_override)
+    .set_run_mode(new_svfit_mode)
+    .set_fail_mode(1)
+    .set_require_inputs_match(false)
+    .set_split(7000)
+    .set_dilepton_label("ditau")
+    .set_met_label(met_label)
+    .set_fullpath(svfit_folder)
+    .set_MC(true));
+
+ double massshf=1.00;
+
+
+  BuildModule(seq, HTTCategories("HTTCategories")
+    .set_fs(fs)
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_strategy(strategy_type)
+    .set_ditau_label("ditau")
+    .set_met_label(met_label)
+    .set_jets_label(jets_label)
+    .set_kinfit_mode(kinfit_mode)
+    .set_bjet_regression(bjet_regr_correction)
+    .set_mass_shift(massshf)
+    .set_write_tree(true));
+
+/*  if (mass_scale_mode == 1) HTTCategories.set_mass_shift(1.00);
+  if (mass_scale_mode == 2) HTTCategories.set_mass_shift(1.01);
+  if (mass_scale_mode == 3) HTTCategories.set_mass_shift(1.02);
+  if (era == era::data_2012_rereco && strategy == strategy::paper2013) {
+    if (mass_scale_mode == 1) HTTCategories.set_mass_shift(1.00);
+    if (mass_scale_mode == 2) HTTCategories.set_mass_shift(1.01);
+    if (mass_scale_mode == 3) HTTCategories.set_mass_shift(1.02);
+  }
+*/
+
+
 }
 
 // --------------------------------------------------------------------------

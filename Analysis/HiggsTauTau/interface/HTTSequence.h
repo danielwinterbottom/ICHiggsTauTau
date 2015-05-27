@@ -9,13 +9,14 @@
 #include "Core/interface/ModuleBase.h"
 #include "Utilities/interface/json.h"
 #include "HiggsTauTau/interface/HTTConfig.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 
 namespace ic {
 
 class HTTSequence {
  public:
   typedef std::vector<std::shared_ptr<ic::ModuleBase>> ModuleSequence;
-  void BuildSequence(ModuleSequence* seq, ic::channel channel,
+  void BuildSequence(ModuleSequence* seq, ic::channel channel, fwlite::TFileService *fs,
                      Json::Value const& js);
   void BuildETPairs(ModuleSequence* seq, Json::Value const& js);
   void BuildMTPairs(ModuleSequence* seq, Json::Value const& js);
