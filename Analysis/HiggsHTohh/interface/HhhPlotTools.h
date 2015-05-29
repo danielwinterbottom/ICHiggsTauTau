@@ -64,6 +64,9 @@ namespace ic {
     CLASS_MEMBER(HhhPlot,   bool,           norm_bins)
     CLASS_MEMBER(HhhPlot,   std::string,    title_left)
     CLASS_MEMBER(HhhPlot,   std::string,    title_right)
+    CLASS_MEMBER(HhhPlot,   std::string,    cms_label)
+    CLASS_MEMBER(HhhPlot,   std::string,    cms_extra)
+    CLASS_MEMBER(HhhPlot,   int,            cms_pos)
     CLASS_MEMBER(HhhPlot,   std::string,    background_scheme)
     CLASS_MEMBER(HhhPlot,   std::string,    signal_scheme)
     CLASS_MEMBER(HhhPlot,   std::string,    draw_signal_mass) // if "" then don't draw

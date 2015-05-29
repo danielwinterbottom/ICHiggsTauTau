@@ -7,6 +7,7 @@
 #include "Core/interface/TH1PlotElement.h"
 #include "Core/interface/RatioPlotElement.h"
 #include "Core/interface/TextElement.h"
+#include "TPad.h"
 
 namespace ic {
 
@@ -51,6 +52,9 @@ namespace ic {
       //Customise plot titles
       std::string title_left;
       std::string title_right;
+      std::string cms_label;
+      std::string cms_extra;
+      int cms_pos;
       
       //Customise ratio plot
       bool draw_ratio_hist;

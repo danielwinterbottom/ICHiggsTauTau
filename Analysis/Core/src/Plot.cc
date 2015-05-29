@@ -3,6 +3,8 @@
 #include "Core/interface/TH1PlotElement.h"
 #include "Core/interface/RatioPlotElement.h"
 #include "Core/interface/TextElement.h"
+#include "Core/interface/Plotting.h"
+#include "Core/interface/Plotting_Style.h"
 #include <vector>
 #include <iostream>
 #include <cmath>
@@ -76,7 +78,8 @@ namespace ic {
     if (use_htt_style) {
       SetHTTStyle();
     } else {
-      SetTdrStyle();      
+      ModTDRStyle();      
+      //SetTdrStyle();      
     }
     if (draw_ratio_hist) {
       //gStyle->SetCanvasDefH(900); //Height of canvas
@@ -149,6 +152,10 @@ namespace ic {
       lower = new TPad("lower","pad",0, 0   ,1 ,0.26);
       upper->SetBottomMargin(0.02);
       if (use_htt_style) upper->SetTopMargin(0.09);
+      upper->Draw();
+      upper->cd();
+    } else {
+      upper = new TPad("upper","pad",0, 0 ,1 ,1);
       upper->Draw();
       upper->cd();
     }
@@ -355,13 +362,13 @@ namespace ic {
       title_latex->SetTextFont(62);
       title_latex->SetTextAlign(31);
       double height = draw_ratio_hist ? 0.93 : 0.94;
-      title_latex->DrawLatex(0.95,height+0.01,title_right.c_str());
+      //title_latex->DrawLatex(0.95,height+0.01,title_right.c_str());
       title_latex->SetTextAlign(11);
       title_latex->DrawLatex(0.17,height,title_left.c_str());
     } else {
       title_latex->SetTextSize(0.03);
       title_latex->SetTextAlign(31);
-      title_latex->DrawLatex(0.95,0.965,title_right.c_str());
+      //title_latex->DrawLatex(0.95,0.965,title_right.c_str());
       title_latex->SetTextAlign(11);
       title_latex->DrawLatex(0.16,0.965,title_left.c_str());
     }
@@ -611,6 +618,10 @@ namespace ic {
       }
     }
     canv->Update();
+
+    DrawCMSLogo(upper,cms_label,cms_extra,cms_pos);
+    DrawTitle(upper,title_right,3);
+
     std::size_t pos = output_filename.find(".pdf");
     if (pos != output_filename.npos) {
       output_filename = output_filename.substr(0, pos);
@@ -879,8 +890,6 @@ namespace ic {
     return;
 
   }
-
-
 
 
 }
