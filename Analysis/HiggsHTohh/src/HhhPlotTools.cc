@@ -489,7 +489,8 @@ namespace ic {
       bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
 
       err_element.set_marker_size(0);
-      err_element.set_fill_color(13);
+      int new_idx = CreateTransparentColor(12,0.7);
+      err_element.set_fill_color(new_idx);
       err_element.set_fill_style(3013);
       err_element.set_line_width(1);
       err_element.set_draw_stat_error_y(true);

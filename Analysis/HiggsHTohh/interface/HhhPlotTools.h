@@ -8,6 +8,7 @@
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plotting.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsHTohh/interface/HhhAnalysisTools.h"
