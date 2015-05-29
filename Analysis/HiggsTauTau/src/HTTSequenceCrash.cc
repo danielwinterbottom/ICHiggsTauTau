@@ -33,19 +33,15 @@
 
 namespace ic {
 
-HTTSequenceCrash::HTTSequenceCrash(std::string& chan, std::string& var, Json::Value const& json){
- //TH1::AddDirectory(kFALSE);
- fs = new fwlite::TFileService((chan+"_"+var+".root").c_str()); 
- seq = new std::vector<std::shared_ptr<ic::ModuleBase>>;
- js = json;
- channel_str = chan;
- }
+HTTSequenceCrash::HTTSequenceCrash(std::string& chan, std::string& var,
+                                   Json::Value const& json) {
+  fs = std::make_shared<fwlite::TFileService>(
+      (chan + "_" + var + ".root").c_str());
+  js = json;
+  channel_str = chan;
+}
 
-HTTSequenceCrash::~HTTSequenceCrash(){
- delete fs;
- //delete seq;
- }
- 
+ HTTSequenceCrash::~HTTSequenceCrash() {}
 
 void HTTSequenceCrash::BuildSequence(){
   using ROOT::Math::VectorUtil::DeltaR;
@@ -88,7 +84,7 @@ void HTTSequenceCrash::BuildSequence(){
   
 BuildModule(HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
-    .set_fs(fs)
+    .set_fs(fs.get())
     .set_pair_label("ditau")
     .set_met_label(met_label)
     .set_mva_met_from_vector(mva_met_mode == 1)
