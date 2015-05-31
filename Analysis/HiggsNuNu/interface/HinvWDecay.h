@@ -13,12 +13,11 @@ class HinvWDecay : public ModuleBase {
 
     unsigned flavour_;
     bool isEmbedded_;
-
     unsigned countStatus3_;
     unsigned countDecay_e_;
     unsigned countDecay_mu_;
     unsigned countRest_;
-
+    CLASS_MEMBER(HinvWDecay, bool, do_wgammafilter)
 
  public:
     HinvWDecay(std::string const& name, unsigned flavour, bool isEmbedded=false);

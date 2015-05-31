@@ -26,7 +26,7 @@ namespace ic {
       hists_->Create("njets", 5, -0.5, 4.5);
     }
     //std::string file = "minlo_hres_weights_125.root";
-    std::string file = "data/ggh_weights/HRes_weight_pTH_mH125_8TeV.root";
+    std::string file = "input/ggh_weights/HRes_weight_pTH_mH125_8TeV.root";
     ggh_weights_ = new TFile(file.c_str());
     ggh_weights_->cd();
     ggh_hist_ = (TH1F*)gDirectory->Get("Nominal");

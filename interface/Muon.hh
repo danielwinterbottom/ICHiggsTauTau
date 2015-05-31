@@ -64,6 +64,12 @@ class Muon : public Candidate {
   /// Normalised \f$\chi^2\f$ of the global track fit
   inline double gt_normalized_chi2() const { return gt_normalized_chi2_; }
 
+  /// \f$\chi^2\f$ for the sta-tk matching of local position
+  inline float cq_chi2_localposition() const { return cq_chi2_localposition_; }
+
+  /// Kink position for the tracker stub and global track
+  inline float cq_trk_kink() const { return cq_trk_kink_; }
+
   /// Number of muon station hits used in the global track fit
   inline int gt_valid_muon_hits() const { return gt_valid_muon_hits_; }
 
@@ -80,6 +86,12 @@ class Muon : public Candidate {
   inline int it_layers_with_measurement() const {
     return it_layers_with_measurement_;
   }
+
+  /// Fraction of valid inner tracker hits
+  inline double it_valid_fraction() const { return it_valid_fraction_; }
+
+  /// Compatibility of segment with global fit
+  inline float segment_compatibility() const { return segment_compatibility_; }
 
   /// Tracker isolation in a cone with \f$ \Delta R = 0.3 \f$
   inline float dr03_tk_sum_pt() const { return dr03_tk_sum_pt_; }
@@ -183,6 +195,16 @@ class Muon : public Candidate {
     gt_normalized_chi2_ = gt_normalized_chi2;
   }
 
+  /// @copybrief cq_chi2_localposition()
+  inline void set_cq_chi2_localposition(float const& cq_chi2_localposition) {
+    cq_chi2_localposition_ = cq_chi2_localposition;
+  }
+
+  /// @copybrief cq_trk_kink()
+  inline void set_cq_trk_kink(float const& cq_trk_kink) {
+    cq_trk_kink_ = cq_trk_kink;
+  }
+
   /// @copybrief gt_valid_muon_hits()
   inline void set_gt_valid_muon_hits(int const& gt_valid_muon_hits) {
     gt_valid_muon_hits_ = gt_valid_muon_hits;
@@ -207,6 +229,16 @@ class Muon : public Candidate {
   inline void set_it_layers_with_measurement(
       int const& it_layers_with_measurement) {
     it_layers_with_measurement_ = it_layers_with_measurement;
+  }
+
+  /// @copybrief it_valid_fraction()
+  inline void set_it_valid_fraction(double const& it_valid_fraction) {
+    it_valid_fraction_ = it_valid_fraction;
+  }
+
+  /// @copybrief segment_compatibility()
+  inline void set_segment_compatibility(float const& segment_compatibility) {
+    segment_compatibility_ = segment_compatibility;
   }
 
   /// @copybrief dr03_tk_sum_pt()
@@ -347,11 +379,15 @@ class Muon : public Candidate {
   bool is_calo_;
   bool is_pf_;
   double gt_normalized_chi2_;
+  float cq_chi2_localposition_;
+  float cq_trk_kink_;
   int gt_valid_muon_hits_;
   int matched_stations_;
   int it_pixel_hits_;
   int it_tracker_hits_;
   int it_layers_with_measurement_;
+  double it_valid_fraction_;
+  float segment_compatibility_;
 
   Point ref_point_;
 
@@ -365,7 +401,7 @@ class Muon : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Muon, 3);
+  ClassDef(Muon, 5);
  #endif
 };
 

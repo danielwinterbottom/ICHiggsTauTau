@@ -17,10 +17,11 @@ namespace ic {
   HhhMTMVACategory::HhhMTMVACategory(std::string const& name) : ModuleBase(name) {
     ditau_label_ = "emtauCandidates";
     met_label_ = "pfMVAMet";
-    //gf_mva_file_ = "data/Hhh_mva/2jet1tag_leppt_BDT.weights.xml";
-    //gf_mva_file_2_ = "data/Hhh_mva/2jet2tag_leppt_BDT.weights.xml";
-		gf_mva_file_ = "data/Hhh_mva/2jet1tag_leppt_BDT.weights.xml";
-		gf_mva_file_2_ = "data/Hhh_mva/2jet2tag_leppt_BDT.weights.xml";
+    jets_label_ = "pfJetsPFlow";
+    //gf_mva_file_ = "input/Hhh_mva/2jet1tag_leppt_BDT.weights.xml";
+    //gf_mva_file_2_ = "input/Hhh_mva/2jet2tag_leppt_BDT.weights.xml";
+		gf_mva_file_ = "input/Hhh_mva/2jet1tag_leppt_BDT.weights.xml";
+		gf_mva_file_2_ = "input/Hhh_mva/2jet2tag_leppt_BDT.weights.xml";
     gf_reader_ = nullptr;
     gf_reader_2_ = nullptr;
   }
@@ -81,7 +82,7 @@ namespace ic {
 		Candidate const* lep2 = ditau->GetCandidate("lepton2");
     Met const* met = event->GetPtr<Met>(met_label_);
 
-    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+    std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
     std::vector<PFJet*> lowpt_jets = jets;
     ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 30.0, 4.7));

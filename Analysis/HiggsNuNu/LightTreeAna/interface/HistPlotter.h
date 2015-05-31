@@ -5,6 +5,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HiggsNuNuAnalysisTools.h"
 #include <string>
 #include <vector>
+#include <utility>
 #include "TH1F.h"
 #include "TPad.h"
 #include "TLatex.h"
@@ -42,17 +43,44 @@ namespace ic {
     CLASS_MEMBER(LTPlotElement,bool,is_data)
     CLASS_MEMBER(LTPlotElement,bool,is_inrationum)
     CLASS_MEMBER(LTPlotElement,bool,is_inratioden)
+    CLASS_MEMBER(LTPlotElement,int,has_dderrors)
     CLASS_MEMBER(LTPlotElement,std::string,drawopts)
     CLASS_MEMBER(LTPlotElement,std::string,legopts)
     CLASS_MEMBER(LTPlotElement,std::string,sample)
     CLASS_MEMBER(LTPlotElement,TH1F*,hist_ptr)
+    CLASS_MEMBER(LTPlotElement,std::vector<std::string>,blindvar)
+    std::vector<std::pair<double,double> > blindrange_;
+    LTPlotElement set_blindrange(std::vector<std::pair<double,double> > const& blindrange) {blindrange_ = blindrange; return *this; }
+    std::vector<std::pair<double,double> > blindrange() {return blindrange_; }
+    
+  };
+
+  class LTShapeElement{
+  public:
+    LTShapeElement();
+    ~LTShapeElement();
+  private:
+    CLASS_MEMBER(LTShapeElement,std::string,name)
+    CLASS_MEMBER(LTShapeElement,std::string,histtitle)
+    CLASS_MEMBER(LTShapeElement,bool,dology)
+    CLASS_MEMBER(LTShapeElement,double,axisrangemultiplier)
+    CLASS_MEMBER(LTShapeElement,double,legleft)
+    CLASS_MEMBER(LTShapeElement,double,legright)
   };
 
   class HistPlotter : public LTModule{ 
     CLASS_MEMBER(HistPlotter,std::string,dirname)
     CLASS_MEMBER(HistPlotter,std::vector<LTPlotElement>,elements)   
-    CLASS_MEMBER(HistPlotter,std::vector<std::string>,shapes)   
+    CLASS_MEMBER(HistPlotter,std::vector<LTShapeElement>,shapes)
+      //CLASS_MEMBER(HistPlotter,std::vector<std::string>,shapes)   
+      //CLASS_MEMBER(HistPlotter,std::vector<std::string>,histTitles)   
+    CLASS_MEMBER(HistPlotter,bool,do_norm)
     CLASS_MEMBER(HistPlotter,bool,do_ratio)
+    CLASS_MEMBER(HistPlotter,bool,do_ratio_line)
+    CLASS_MEMBER(HistPlotter,bool,do_ratio_fitline)
+    CLASS_MEMBER(HistPlotter,bool,add_underflows)
+    CLASS_MEMBER(HistPlotter,bool,add_overflows)
+
   public:	
     HistPlotter(std::string);
     virtual ~HistPlotter();

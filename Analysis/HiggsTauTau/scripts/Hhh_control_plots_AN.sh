@@ -24,6 +24,8 @@ MSSMBINS2JET2TAG="0,20,40,60,80,100,120,140,160,180,200,250,300,350"
 
 ET_INC_SHIFT=""
 MT_INC_SHIFT="" 
+ET_BAND_ONLY=""
+MT_BAND_ONLY="" 
 
 if [ "$POSTFIT" -gt "0" ]
 then
@@ -35,6 +37,8 @@ then
       echo "Applying 8TeV scale factors from fit with mass cuts..."
       ET_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.99199,QCD:1.19585,W:0.99341,ZL:1.04225,ZJ:1.02756,VV:0.99489,TT:0.92087 --auto_error_band=0.06920"
       MT_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.95022,QCD:1.09791,W:0.99701,ZL:1.01870,ZJ:1.01983,VV:1.00438,TT:1.02265 --auto_error_band=0.06687"
+      ET_BAND_ONLY="  --draw_error_band=true --auto_error_band=0.06920"
+      MT_BAND_ONLY="  --draw_error_band=true --auto_error_band=0.06687"
       ET_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.98507,QCD:0.99923,W:1.31871,ZL:1.00243,ZJ:0.99628,VV:0.97383,TT:0.92691 --auto_error_band=0.07302"
       MT_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.99239,QCD:0.91871,W:1.07840,ZL:0.96021,ZJ:1.04372,VV:1.01142,TT:1.03975 --auto_error_band=0.06745"
       ET_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:0.96640,QCD:1.04639,W:0.77391,ZL:1.14871,ZJ:1.18167,VV:0.89296,TT:0.92313 --auto_error_band=0.11130"
@@ -44,6 +48,8 @@ then
       echo "Applying 8TeV scale factors from fit without mass cuts..."
       ET_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.00011,QCD:1.01007,W:1.00149,ZL:0.95309,ZJ:0.98716,VV:1.00010,TT:0.95635 --auto_error_band=0.05516"
       MT_INC_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.02294,QCD:1.07348,W:0.99610,ZL:1.00829,ZJ:1.00799,VV:1.01983,TT:1.01981 --auto_error_band=0.05172"
+      ET_BAND_ONLY="  --draw_error_band=true --auto_error_band=0.05516"
+      MT_BAND_ONLY="  --draw_error_band=true --auto_error_band=0.05172"
       ET_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.00647,QCD:0.96742,W:1.11335,ZL:0.93699,ZJ:0.97598,VV:0.99457,TT:0.95218 --auto_error_band=0.06618"
       MT_2JET1TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.03653,QCD:0.95798,W:1.03105,ZL:1.00776,ZJ:1.00615,VV:1.04573,TT:1.04186  --auto_error_band=0.05957"
       ET_2JET2TAG_SHIFT="  --draw_error_band=true --shift_backgrounds=ZTT:1.02728,QCD:1.06637,W:0.86061,ZL:0.89258,ZJ:1.00026,VV:0.99326,TT:0.94251 --auto_error_band=0.09835"
@@ -210,13 +216,13 @@ then
 fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et  \
   --method=8 --cat="2jetinclusive"$MASSCUTS"" --set_alias="sel:1" --var=$MT_BINS \
-  --x_axis_label="m_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.5 $ET_BAND_ONLY \
-  --background_scheme="et_default" $ET_INC_SHIFT
+  --x_axis_label="m_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.8 $ET_BAND_ONLY \
+  --background_scheme="et_default" 
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt \
   --method=8 --cat="2jetinclusive"$MASSCUTS"" --set_alias="sel:1" --var=$MT_BINS \
-  --x_axis_label="m_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.5 $MT_BAND_ONLY \
-  --background_scheme="mt_with_zmm" $MT_INC_SHIFT 
+  --x_axis_label="m_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.8 $MT_BAND_ONLY \
+  --background_scheme="mt_with_zmm"
 
 
 #### n_vtx

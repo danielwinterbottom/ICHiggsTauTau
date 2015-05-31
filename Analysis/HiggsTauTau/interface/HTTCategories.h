@@ -14,9 +14,9 @@ namespace ic {
 class HTTCategories : public ModuleBase {
 
  private:
-  std::string jets_label_;
   CLASS_MEMBER(HTTCategories, std::string, ditau_label)
   CLASS_MEMBER(HTTCategories, std::string, met_label)
+  CLASS_MEMBER(HTTCategories, std::string, jets_label)
   CLASS_MEMBER(HTTCategories, double, mass_shift)
   CLASS_MEMBER(HTTCategories, ic::channel, channel)
   CLASS_MEMBER(HTTCategories, ic::era, era)

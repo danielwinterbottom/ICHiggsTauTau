@@ -49,7 +49,6 @@ class ICPFCandidateProducer : public edm::EDProducer {
   boost::hash<T const*> cand_hasher_;
   boost::hash<reco::Track const*> track_hasher_;
   edm::InputTag track_input_;
-  edm::InputTag gsf_track_input_;
 };
 
 // =============================
@@ -60,7 +59,8 @@ ICPFCandidateProducer<T>::ICPFCandidateProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
       request_trks_(config.getParameter<bool>("requestTracks")),
-      request_gsf_trks_(config.getParameter<bool>("requestGsfTracks")) {
+      request_gsf_trks_(config.getParameter<bool>("requestGsfTracks")),
+      track_input_(config.getParameter<edm::InputTag>("inputUnpackedTracks")) {
   cands_ = new std::vector<ic::PFCandidate>();
 
   if (request_trks_) {
@@ -143,6 +143,7 @@ void ICPFCandidateProducer<reco::PFCandidate>::constructSpecific(
       if (src.flag(reco::PFCandidate::Flags(i))) flag_val = flag_val | (1 << i);
     }
     dest.set_flags(flag_val);
+
     std::vector<std::size_t> trk_ids;
     if (request_trks_) {
       if (src.trackRef().isNonnull()) {
@@ -150,35 +151,6 @@ void ICPFCandidateProducer<reco::PFCandidate>::constructSpecific(
         trk_requests->push_back(trk);
         trk_ids.push_back(track_hasher_(&(*trk)));
       }
-
-      // This was used in the Phys14 studies to try and understand how
-      // the PF algorithm can lock tracks such that they are no longer
-      // available for tau reconstruction. The idea was to look at the
-      // associated displaced vertices and conversions and see if the 
-      // tracks appear here.
-      /*
-      reco::VertexCompositeCandidateRef v0Ref = src.v0Ref();
-      if (v0Ref.isNonnull()) {
-        for (unsigned ndx = 0; ndx < v0Ref->numberOfDaughters(); ndx++) {
-          reco::TrackRef trk = (dynamic_cast<const reco::RecoChargedCandidate*>(
-                                 v0Ref->daughter(ndx)))->track();
-          // std::cout << "Found V0 track!\n";
-          trk_requests->push_back(trk);
-          trk_ids.push_back(track_hasher_(&(*trk)));
-        }
-      }
-      reco::ConversionRef convRef = src.conversionRef();
-      if (convRef.isNonnull()) {
-        std::vector<edm::RefToBase<reco::Track> > const & trks = convRef->tracks();
-        for (unsigned ndx = 0; ndx < trks.size(); ++ndx) {
-          reco::TrackRef trk(trks[ndx].castTo<reco::TrackRef>());
-          // std::cout << "Found conversion track!\n";
-          trk_requests->push_back(trk);
-          trk_ids.push_back(track_hasher_(&(*trk)));
-        }
-      }
-      */
-
       dest.set_constituent_tracks(trk_ids);
     }
 
@@ -191,8 +163,6 @@ void ICPFCandidateProducer<reco::PFCandidate>::constructSpecific(
       }
       dest.set_constituent_gsf_tracks(gsf_trk_ids);
     }
-
-
   }
 }
 
@@ -201,11 +171,62 @@ template <>
 void ICPFCandidateProducer<pat::PackedCandidate>::constructSpecific(
     edm::Handle<edm::View<pat::PackedCandidate> > const& cands_handle,
     reco::TrackRefVector* trk_requests,
-    reco::GsfTrackRefVector* gsf_trk_requests, edm::Event& event,
+    reco::GsfTrackRefVector* /*gsf_trk_requests*/, edm::Event& event,
     const edm::EventSetup& setup) {
   // To get tracks here we'd actually have to produce a new track collection
   // first using pseudoTrack(), get it into the event, then produce the refs.
   // Not trivial I think.
+
+  edm::Handle<edm::View<reco::Track> > tracks_handle;
+  typedef std::set<reco::Track const*> TrackSet;
+  typedef std::map<reco::Track const*, unsigned> TrackMap;
+  TrackSet trk_set;
+  TrackMap trk_map;
+
+  if(request_trks_){
+    event.getByLabel(track_input_, tracks_handle);
+    for (unsigned i = 0; i < tracks_handle->size(); ++i) {
+      trk_set.insert(&(tracks_handle->at(i)));
+      trk_map[&(tracks_handle->at(i))] = i;
+    }
+  }
+
+  for (unsigned i = 0; i < cands_handle->size(); ++i) {
+    pat::PackedCandidate const& src = cands_handle->at(i);
+    ic::PFCandidate& dest = cands_->at(i);
+    // PackedCandidates don't store the same set of flags as PFCandidates, but
+    // they do store their own set of flags that we can get via the status()
+    // method, so let's just save this here. For details see:
+    // twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD
+    dest.set_flags(src.status());
+    std::vector<std::size_t> trk_ids;
+    if (request_trks_ && src.charge() != 0) {
+      reco::Track pseudo = src.pseudoTrack();
+      for (TrackSet::iterator it = trk_set.begin(); it != trk_set.end(); ++it) {
+        // Ok, comparing floats normally not a good idea, but here they really
+        // should be identical
+        if (pseudo.momentum().x() != (*it)->momentum().x() ||
+            pseudo.momentum().y() != (*it)->momentum().y() ||
+            pseudo.momentum().z() != (*it)->momentum().z()) continue;
+        trk_set.erase(it);
+        trk_requests->push_back(tracks_handle->refAt(trk_map.at(*it))
+                                    .template castTo<reco::TrackRef>());
+        trk_ids.push_back(track_hasher_(*it));
+        break;
+      }
+      // PhysicsTools/PatAlgos/plugins/TrackAndVertexUnpacker.cc doesn't create
+      // a Track for every charged PackedCandidate, just those that meet the
+      // conditions below.
+
+      // UNCOMMENT TO CHECK IF WE'RE MISSING ANY TRACKS THAT SHOULD BE THERE
+      // if (src.charge() != 0 && src.numberOfHits() > 0 && trk_ids.size() == 0) {
+      //   std::cout << "Have an unmatched track!\n";
+      // }
+      dest.set_constituent_tracks(trk_ids);
+    }
+
+    // NB: can't do anything for gsf_trk_requests!
+  }
 }
 #endif
 

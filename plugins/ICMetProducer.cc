@@ -15,11 +15,21 @@
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
 
+ICMetProducer::SigTags::SigTags(edm::ParameterSet const& pset)
+  : metsig(pset.getParameter<edm::InputTag>("metsig")),
+    metsigcov00(pset.getParameter<edm::InputTag>("metsigcov00")),
+    metsigcov01(pset.getParameter<edm::InputTag>("metsigcov01")),
+    metsigcov10(pset.getParameter<edm::InputTag>("metsigcov10")),
+    metsigcov11(pset.getParameter<edm::InputTag>("metsigcov11")) {}
+
+
 ICMetProducer::ICMetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
       do_custom_id_(config.getParameter<bool>("includeCustomID")),
-      inputID_(config.getParameter<edm::InputTag>("inputCustomID")) {
+      inputID_(config.getParameter<edm::InputTag>("inputCustomID")),
+      do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
+      metsig_(config.getParameterSet("metsig")) {
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -54,11 +64,30 @@ void ICMetProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     dest.set_phi(src.phi());
     dest.set_energy(src.energy());
     dest.set_sum_et(src.sumEt());
-    dest.set_et_sig(src.mEtSig());
-    dest.set_xx_sig(src.getSignificanceMatrix()(0, 0));
-    dest.set_xy_sig(src.getSignificanceMatrix()(0, 1));
-    dest.set_yx_sig(src.getSignificanceMatrix()(1, 0));
-    dest.set_yy_sig(src.getSignificanceMatrix()(1, 1));
+    if(!do_external_metsig_){
+      dest.set_et_sig(src.mEtSig());
+      dest.set_xx_sig(src.getSignificanceMatrix()(0, 0));
+      dest.set_xy_sig(src.getSignificanceMatrix()(0, 1));
+      dest.set_yx_sig(src.getSignificanceMatrix()(1, 0));
+      dest.set_yy_sig(src.getSignificanceMatrix()(1, 1));
+    }
+    else{
+      edm::Handle<double> metsig;
+      edm::Handle<double> metsigcov00;
+      edm::Handle<double> metsigcov01;
+      edm::Handle<double> metsigcov10;
+      edm::Handle<double> metsigcov11;
+      event.getByLabel(metsig_.metsig, metsig);
+      event.getByLabel(metsig_.metsigcov00, metsigcov00);
+      event.getByLabel(metsig_.metsigcov01, metsigcov01);
+      event.getByLabel(metsig_.metsigcov10, metsigcov10);
+      event.getByLabel(metsig_.metsigcov11, metsigcov11);
+      dest.set_et_sig(*metsig);
+      dest.set_xx_sig(*metsigcov00);
+      dest.set_xy_sig(*metsigcov01);
+      dest.set_yx_sig(*metsigcov10);
+      dest.set_yy_sig(*metsigcov11);
+    }
   }
 }
 

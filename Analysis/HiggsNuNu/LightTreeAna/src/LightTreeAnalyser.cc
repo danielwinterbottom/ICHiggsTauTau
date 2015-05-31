@@ -69,7 +69,7 @@ namespace ic{
   }
 
   int LTAnalyser::RunAnalysis(){
-
+    TH1::SetDefaultSumw2(true);
     if (print_module_list_) {
       std::cout << "-------------------------------------" << std::endl;
       std::cout << "Module List" << std::endl;

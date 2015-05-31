@@ -9,8 +9,19 @@ icCandidateProducer = cms.EDProducer('ICCandidateProducer',
 
 ## [PFCandidate]
 icPFProducer = cms.EDProducer('ICPFProducer',
-  branch  = cms.string("pfCandidates"),
-  input   = cms.InputTag("particleFlow", "", "RECO")
+  branch              = cms.string("pfCandidates"),
+  input               = cms.InputTag("particleFlow", "", "RECO"),
+  requestTracks       = cms.bool(False),
+  requestGsfTracks    = cms.bool(False),
+  inputUnpackedTracks = cms.InputTag("")
+)
+
+icPFFromPackedProducer = cms.EDProducer('ICPFFromPackedProducer',
+  branch              = cms.string("pfCandidates"),
+  input               = cms.InputTag("packedPFCandidates", "", "PAT"),
+  requestTracks       = cms.bool(False),
+  requestGsfTracks    = cms.bool(False),
+  inputUnpackedTracks = cms.InputTag("unpackedTracksAndVertices")
 )
 ## [PFCandidate]
 
@@ -108,13 +119,23 @@ icPhotonProducer = cms.EDProducer('ICPhotonProducer',
     includeElectronVeto     = cms.bool(False),
     inputElectronVeto       = cms.InputTag("icPhotonElectronVetoCalculator"),
     includeHadTowOverEm     = cms.bool(False),
-    inputHadTowOverEm       = cms.InputTag("icPhotonHadTowerOverEmCalculator"),
-    includePFIso            = cms.bool(False),
-    pfIso = cms.PSet(
-      charged     = cms.InputTag(""),
-      neutral     = cms.InputTag(""),
-      gamma       = cms.InputTag("")
-    )
+    includePFIso03           = cms.bool(False),
+    pfIso03 = cms.PSet(
+      chargedAll  = cms.InputTag("phPFIsoValueChargedAll03PFIso"),
+      charged     = cms.InputTag("phPFIsoValueCharged03PFIso"),
+      neutral     = cms.InputTag("phPFIsoValueNeutral03PFIso"),
+      gamma       = cms.InputTag("phPFIsoValueGamma03PFIso"),
+      pu          = cms.InputTag("phPFIsoValuePU03PFIso")
+    ),
+    includePFIso04           = cms.bool(False),
+    pfIso04 = cms.PSet(
+      chargedAll  = cms.InputTag("phPFIsoValueChargedAll04PFIso"),
+      charged     = cms.InputTag("phPFIsoValueCharged04PFIso"),
+      neutral     = cms.InputTag("phPFIsoValueNeutral04PFIso"),
+      gamma       = cms.InputTag("phPFIsoValueGamma04PFIso"),
+      pu          = cms.InputTag("phPFIsoValuePU04PFIso")
+    ),
+    includeIsoFromPat = cms.bool(False)
 )
 ## [Photon]
 
@@ -144,7 +165,16 @@ icMetProducer = cms.EDProducer('ICMetProducer',
   branch  = cms.string("pfMet"),
   input   = cms.InputTag("pfMet"),
   includeCustomID = cms.bool(False),
-  inputCustomID = cms.InputTag("")
+  inputCustomID = cms.InputTag(""),
+  includeExternalMetsig = cms.bool(False),
+  metsig = cms.PSet(
+    metsig      = cms.InputTag("METSignificance","METSignificance"),
+    metsigcov00 = cms.InputTag("METSignificance","CovarianceMatrix00"),
+    metsigcov01 = cms.InputTag("METSignificance","CovarianceMatrix01"),
+    metsigcov10 = cms.InputTag("METSignificance","CovarianceMatrix10"),
+    metsigcov11 = cms.InputTag("METSignificance","CovarianceMatrix11")
+    )
+  
 )
 ## [Met]
 
@@ -279,6 +309,49 @@ icPFJetProducer = cms.EDProducer('ICPFJetProducer',
     #### The destConfig PSet when the output is an ic::Jet collection (empty!)
     # destConfig = cms.PSet()
 )
+
+
+icPFJetFromPatProducer = cms.EDProducer('ICPFJetFromPatProducer',
+    branch                    = cms.string("pfJetsFromPat"),
+    input                     = cms.InputTag("ak4PFJets"),
+    #### The srcConfig PSet when the input is a reco::Jet collection
+    #### The srcConfig PSet when the input is a pat::Jet collection
+     srcConfig = cms.PSet(
+       isSlimmed                 = cms.bool(False),
+       includeJetFlavour         = cms.bool(False),
+       includeJECs               = cms.bool(False),
+       inputSVInfo               = cms.InputTag("secondaryVertexTagInfosAOD"),
+       requestSVInfo             = cms.bool(False)
+     ),
+    #### The destConfig PSet when the output is an ic::PFJet collection
+    destConfig = cms.PSet(
+      includePileupID       = cms.bool(False),
+      inputPileupID         = cms.InputTag("puJetMva", "fullDiscriminant"),
+      includeTrackBasedVars = cms.bool(False),
+      inputTracks           = cms.InputTag("generalTracks"),
+      inputVertices         = cms.InputTag("offlinePrimaryVertices"),
+      requestTracks         = cms.bool(False)
+    )
+    #### The destConfig PSet when the output is an ic::CaloJet collection
+    # destConfig = cms.PSet(
+    #   includeJetID        = cms.bool(False),
+    #   inputJetID          = cms.InputTag("ak5JetID"),
+    #   includeTowerCounts  = cms.bool(False)
+    # )
+    #### The destConfig PSet when the output is an ic::JPTJet collection
+    # destConfig = cms.PSet(
+    #   includeTrackBasedVars = cms.bool(False),
+    #   inputTracks           = cms.InputTag("generalTracks"),
+    #   inputVertices         = cms.InputTag("offlinePrimaryVertices"),
+    #   requestTracks         = cms.bool(False),
+    #   includeJetID          = cms.bool(False),
+    #   inputJetID            = cms.InputTag("ak5JetID"),
+    #   includeTowerCounts    = cms.bool(False)
+    # )
+    #### The destConfig PSet when the output is an ic::Jet collection (empty!)
+    # destConfig = cms.PSet()
+)
+
 ## [Jet]
 
 ## [Vertex]
@@ -335,7 +408,8 @@ icGenJetProducer = cms.EDProducer('ICGenJetProducer',
   branch  = cms.string("genJets"),
   input   = cms.InputTag("ak5GenJets"),
   inputGenParticles = cms.InputTag("genParticles"),
-  requestGenParticles = cms.bool(False)
+  requestGenParticles = cms.bool(False),
+  isSlimmed = cms.bool(False)
 )
 ## [GenJet]
 
@@ -360,7 +434,9 @@ icTriggerPathProducer = cms.EDProducer('ICTriggerPathProducer',
   input   = cms.InputTag("patTriggerEvent"),
   includeAcceptedOnly = cms.bool(True),
   saveStrings = cms.bool(True),
-  splitVersion = cms.bool(False)
+  splitVersion = cms.bool(False),
+  inputIsStandAlone = cms.bool(False),
+  inputPrescales = cms.InputTag("patTrigger", "", "PAT") # only used when inputIsStandAlone is true
 )
 ## [TriggerPath]
 
@@ -369,7 +445,9 @@ icTriggerObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
   branch = cms.string("triggerObjects"),
   input   = cms.InputTag("patTriggerEvent"),
   hltPath = cms.string(""),
-  storeOnlyIfFired = cms.bool(False)
+  storeOnlyIfFired = cms.bool(False),
+  inputIsStandAlone = cms.bool(False),
+  inputTriggerResults = cms.InputTag("TriggerResults", "", "HLT")
 )
 ## [TriggerObject]
 
@@ -377,9 +455,9 @@ icTriggerObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
 icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   branch              = cms.string("eventInfo"),
   includeJetRho       = cms.bool(False),
-  inputJetRho         = cms.InputTag("kt6PFJets", "rho"),
+  inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),
-  inputLeptonRho      = cms.InputTag("kt6PFJets", "rho"),
+  inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),
   includeVertexCount  = cms.bool(False),
   inputVertices       = cms.InputTag("offlinePrimaryVertices"),
   includeCSCFilter    = cms.bool(False),

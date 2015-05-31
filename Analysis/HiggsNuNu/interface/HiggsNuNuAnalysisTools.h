@@ -21,6 +21,8 @@ namespace ic {
   double Integral(TH1F const* hist, int binmin, int binmax);
   double Integral(TH3F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax);
   double IntegralWithError(TH1F const* hist, int binmin, int binmax, double err);
+  double IntegralWithError(TH1F const* hist, double err);
+  double Error(TH1F const* hist);
   double Error(TH1F const* hist,int binmin,int binmax);
   double Error(TH3F const* hist, int xbinmin, int xbinmax, int ybinmin, int ybinmax, int zbinmin, int zbinmax);
   std::string BuildCutString(std::string const& selection,

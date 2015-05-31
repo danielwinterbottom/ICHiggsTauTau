@@ -8,6 +8,7 @@
 #include "TFile.h"
 #include "TH1F.h"
 #include "TH3F.h"
+#include "TEntryList.h"
 
 namespace ic{
 
@@ -27,6 +28,8 @@ namespace ic{
     int Close();
     int AddFriend(TTree*);
     int AddFriend(std::string,std::string);
+    TEntryList GetEntryList(std::string const&, std::string const&, std::string const&);
+    TTree* GetSubTree(TEntryList);
     TH1F GetShape(std::string const&, std::string const&, std::string const&, std::string const&);
     TH3F GetShape3D(std::string const&, std::string const&, std::string const&, std::string const&);
     TTree* GetTree();

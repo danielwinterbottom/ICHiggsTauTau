@@ -27,6 +27,7 @@ namespace ic {
     JetCorrectionUncertainty *total2;
     CLASS_MEMBER(JetMETModifier,fwlite::TFileService*, fs);
     CLASS_MEMBER(JetMETModifier, bool, is_data)
+    CLASS_MEMBER(JetMETModifier, bool, dojetresmeasurement)
     CLASS_MEMBER(JetMETModifier, bool, dojessyst)
     CLASS_MEMBER(JetMETModifier, bool, dodatajessyst)
     CLASS_MEMBER(JetMETModifier, bool, jesupordown)

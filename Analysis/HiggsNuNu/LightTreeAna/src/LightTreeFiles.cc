@@ -58,6 +58,20 @@ namespace ic{
     return 0;
   };
 
+  TEntryList LTFile::GetEntryList(std::string const& selection, std::string const& category, std::string const& weight){
+    std::string full_selection = BuildCutString(selection,category,weight);
+    tree_->Draw(">>evtlist",full_selection.c_str(),"entrylist");
+    TEntryList *list=(TEntryList*)gDirectory->Get("evtlist");
+    return *list;
+  }
+
+  TTree* LTFile::GetSubTree(TEntryList list){
+    tree_->SetEntryList(&list);
+    TTree *small = tree_->CopyTree("");
+    tree_->SetEventList(0);
+    return small;
+
+  }
 
   TH1F LTFile::GetShape(std::string const& variable, std::string const& selection, std::string const& category, std::string const& weight){
     TH1F temp;

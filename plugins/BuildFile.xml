@@ -11,9 +11,10 @@
   <use name="EgammaAnalysis/ElectronTools"/>
   <use name="RecoMET/METAlgorithms"/>
   <use name="DataFormats/METReco"/>
-  <use name="JetMETCorrections/METPUSubtraction"/>
+  <use name="RecoMET/METPUSubtraction"/>
   <use name="JetMETCorrections/Objects"/>
   <use name="PhysicsTools/HepMCCandAlgos"/>
+  <use name="HLTrigger/HLTcore"/>
   <use name="clhep"/>
   <flags EDM_PLUGIN="1"/>
   <flags CXXFLAGS="`printenv CMSSW_VERSION | sed 's/CMSSW_\([0-9]*\)_\([0-9]*\)_[0-9]*.*/-DCMSSW_MAJOR_VERSION=\1 -DCMSSW_MINOR_VERSION=\2/'`"/>

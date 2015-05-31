@@ -16,6 +16,10 @@
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "DataFormats/MuonReco/interface/Muon.h"
+#include "DataFormats/MuonReco/interface/MuonFwd.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
 
 ICMuonProducer::IsoTags::IsoTags(edm::ParameterSet const& pset)
     : charged_all(pset.getParameter<edm::InputTag>("chargedAll")),
@@ -155,6 +159,8 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
     if (src.isGlobalMuon() && src.globalTrack().isNonnull()) {
       dest.set_gt_normalized_chi2(src.globalTrack()->normalizedChi2());
+      dest.set_cq_chi2_localposition(src.combinedQuality().chi2LocalPosition);
+      dest.set_cq_trk_kink(src.combinedQuality().trkKink);
       dest.set_gt_valid_muon_hits(
           src.globalTrack()->hitPattern().numberOfValidMuonHits());
     }
@@ -166,8 +172,12 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
           src.innerTrack()->hitPattern().numberOfValidTrackerHits());
       dest.set_it_layers_with_measurement(
           src.innerTrack()->hitPattern().trackerLayersWithMeasurement());
+      dest.set_it_valid_fraction(
+ 	  src.innerTrack()->validFraction());
     }
 
+    dest.set_segment_compatibility(muon::segmentCompatibility(src));
+    
     dest.set_vx(src.vx());
     dest.set_vy(src.vy());
     dest.set_vz(src.vz());

@@ -92,10 +92,10 @@ int main(int argc, char* argv[]) {
           .set_input_label("pfJetsPFlow")
           .set_is_data(false)
           .set_use_new_mode(true)
-          .set_l1_file("data/jec/" + jec_payload + "_L1FastJet_AK5PF.txt")
-          .set_l2_file("data/jec/" + jec_payload + "_L2Relative_AK5PF.txt")
-          .set_l3_file("data/jec/" + jec_payload + "_L3Absolute_AK5PF.txt")
-          .set_res_file("data/jec/" + jec_payload + "_L2L3Residual_AK5PF.txt");
+          .set_l1_file("input/jec/" + jec_payload + "_L1FastJet_AK5PF.txt")
+          .set_l2_file("input/jec/" + jec_payload + "_L2Relative_AK5PF.txt")
+          .set_l3_file("input/jec/" + jec_payload + "_L3Absolute_AK5PF.txt")
+          .set_res_file("input/jec/" + jec_payload + "_L2L3Residual_AK5PF.txt");
 
   auto httGenEvent = ic::HTTGenEvent("HttGenEvent")
       .set_genparticle_label("genParticles")

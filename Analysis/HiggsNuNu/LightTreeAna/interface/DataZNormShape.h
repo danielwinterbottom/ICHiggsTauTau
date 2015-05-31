@@ -33,6 +33,9 @@ namespace ic {
     CLASS_MEMBER(DataZNormShape,std::string,contdataweight)
     CLASS_MEMBER(DataZNormShape,double,sigcontextrafactor)
     CLASS_MEMBER(DataZNormShape,std::string,dirname)
+    CLASS_MEMBER(DataZNormShape,std::string,ewkdirname)
+    CLASS_MEMBER(DataZNormShape,std::string,qcddirname)
+    CLASS_MEMBER(DataZNormShape,bool,do_latex)
   public:
     virtual DataZNormShape & set_shape(std::string const& shape) {
       std::vector<std::string> shapes;

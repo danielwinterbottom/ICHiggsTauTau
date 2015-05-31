@@ -1,6 +1,6 @@
 #!/bin/sh
 
-JOBDIR=
+JOBDIR=jobs_lighttree_postARCcomments1/
 INJOBDIR=0
 
 while [ $# -gt 0 ] ; do
@@ -22,16 +22,18 @@ while [ $# -gt 0 ] ; do
             ;;
     esac ;
 done ;
+rm resub.sh
 
-
-for CHANNEL in nunu #taunu enu munu mumu nunuiglep
+for CHANNEL in nunulowmet #mumu nunuiglep #nunu #taunu enu munu mumu nunuiglep
   do
   for MET in 130 #0
     do
-    for SYST in "" # Skim JESUP JESDOWN
+    for SYST in "" JESUP JESDOWN JERBETTER JERWORSE UESUP UESDOWN ELEEFFUP ELEEFFDOWN MUEFFUP MUEFFDOWN
       do
       if (( "$INJOBDIR" == "0" )); then
-	  JOBDIR=jobs/$CHANNEL/MET$MET/$SYST
+	  #JOBDIR=jobs_lighttree_qcdpresel/$CHANNEL/MET$MET/$SYST
+	  JOBDIR=jobs_lighttree_postARCcomments1/$SYST #jobs_lighttree_nojetmetdphicut/ #$CHANNEL/MET$MET/$SYST
+	  #JOBDIR=jobs_rereco/$CHANNEL/MET$MET/$SYST
       fi
       
       echo "Processing directory: "$JOBDIR
@@ -49,11 +51,15 @@ for CHANNEL in nunu #taunu enu munu mumu nunuiglep
 	    if (( "$?" == 0 )); then
 		echo "--> Error opening a file, need to resubmit job $SHFILE!"
 		echo "./scripts/submit_ic_batch_job.sh hepshort.q $SHFILE"
+		echo "./scripts/submit_ic_batch_job.sh hepmedium.q $SHFILE" >>resub.sh
 	    else
 		tail -5 $LOGFILE
 		echo "--> Error: Please fix and resubmit with command:"
 		echo "./scripts/submit_ic_batch_job.sh hepmedium.q $SHFILE"
+		echo "./scripts/submit_ic_batch_job.sh hepmedium.q $SHFILE">>resub.sh
 	    fi
+	#else
+	#    echo "File $LOGFILE succeeded !"
 	fi
 	grep -qi "nan" $LOGFILE | grep -v ".root"
 	if (( "$?" == 0 )); then

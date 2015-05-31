@@ -82,6 +82,8 @@ int main(int argc, char* argv[]){
   bool docrosschecktau;           // If doing cross check tau use alternate tau id discriminant
   bool taulepdiscrtight;          // Use tight electron and muon discriminants
   bool dojerdebug;                // Access runmetunc collections for debugging
+  bool dotopreweighting;          // Do Top reweighting
+  bool dopromptskim;              // Use prompt compatible light tree skimming
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -90,8 +92,9 @@ int main(int argc, char* argv[]){
   //unsigned signal_region;       // DeltaPhi cut > 2.7
   bool dotrgeff;                  // Do trigger efficiency corrections
   bool do3dtrgeff;                // Do 3d trigger efficiency corrections
-  bool do1dparkedtrgeff;          // Do 3d trigger efficiency corrections
-  bool dofitted1dparkedtrgeff;          // Do 3d trigger efficiency corrections
+  bool do1dparkedtrgeff;          // Do 1d parked trigger efficiency corrections
+  bool dofitted1dparkedtrgeff;    // Do 1d fitted parked trigger efficiency corrections
+  bool dobinnedin2d1dtrgeff;      // Do 2d binned fitted 1d parked trigger efficiency corrections
   bool doidisoeff;                // Do lepton ID-iso efficiency corrections
   bool doidisoerr;                // Do lepton ID-iso efficiency correction error
   bool doidisoerrupordown;        // Do lepton ID-iso efficiency correction error up or down
@@ -152,13 +155,16 @@ int main(int argc, char* argv[]){
     ("do3dtrgeff",          po::value<bool>(&do3dtrgeff)->default_value(false))
     ("do1dparkedtrgeff",    po::value<bool>(&do1dparkedtrgeff)->default_value(false))
     ("dofitted1dparkedtrgeff",po::value<bool>(&dofitted1dparkedtrgeff)->default_value(false))
+    ("dobinnedin2d1dtrgeff",po::value<bool>(&dobinnedin2d1dtrgeff)->default_value(false))
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
+    ("dotopreweighting",    po::value<bool>(&dotopreweighting)->default_value(false))
+    ("dopromptskim",    po::value<bool>(&dopromptskim)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
     ("dolumixsweight",      po::value<bool>(&dolumixsweight)->default_value(false))
     ("inputparams",         po::value<string>(&inputparams)->default_value("filelists/Dec18/ParamsDec18.dat"))
-    ("trg_weight_file",     po::value<string>(&trg_weight_file)->default_value("data/scale_factors/DataMCWeight_53X_v1.root"))
+    ("trg_weight_file",     po::value<string>(&trg_weight_file)->default_value("input/scale_factors/DataMCWeight_53X_v1.root"))
     ("trg_to_use",          po::value<string>(&trg_to_use)->default_value("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v"))
     ("printEventList",      po::value<bool>(&printEventList)->default_value(false))
     ("printEventContent",   po::value<bool>(&printEventContent)->default_value(false))
@@ -167,7 +173,7 @@ int main(int argc, char* argv[]){
     ("doetsmear",           po::value<bool>(&doetsmear)->default_value(false))
     ("dogaus",              po::value<bool>(&dogaus)->default_value(false))
     ("dospring10gaus",      po::value<bool>(&dospring10gaus)->default_value(false))
-    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("data/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
+    ("jesuncfile",          po::value<string>(&jesuncfile)->default_value("input/jec/Fall12_V7_MC_Uncertainty_AK5PF.txt"))
     ("turnoffpuid",         po::value<bool>(&turnoffpuid)->default_value(false))
     ("randomseed",          po::value<int>(&randomseed)->default_value(4357));
 
@@ -219,6 +225,11 @@ int main(int argc, char* argv[]){
   }
   checkfile.close();
   fwlite::TFileService *fs = new fwlite::TFileService((output_folder+output_name).c_str());
+  
+  bool ignoreLeptons=false;
+  if (output_name.find("iglep") != output_name.npos) {
+    ignoreLeptons = true;
+  }
    
   double elec_dz, elec_dxy;
   double muon_dz, muon_dxy;
@@ -287,37 +298,47 @@ int main(int argc, char* argv[]){
 
 
 
-  string data_json;
-  if (era == era::data_2011) data_json           =  "data/json/json_data_2011_et_mt.txt";
-  if (era == era::data_2012_ichep) data_json     =  "data/json/data_2012_ichep.txt";
-  if (era == era::data_2012_hcp) data_json       =  "data/json/data_2012_hcp.txt";
-  if (era == era::data_2012_moriond) data_json   =  "data/json/data_2012_moriond.txt";
-  if (era == era::data_2012_donly) data_json     =  "data/json/data_2012_donly.txt";
-  LumiMask lumiMask = LumiMask("LumiMask")
-    .set_produce_output_jsons("")
-    .set_input_file(data_json);
+//   string data_json;
+//   if (era == era::data_2011) data_json           =  "input/json/json_data_2011_et_mt.txt";
+//   if (era == era::data_2012_ichep) data_json     =  "input/json/data_2012_ichep.txt";
+//   if (era == era::data_2012_hcp) data_json       =  "input/json/data_2012_hcp.txt";
+//   if (era == era::data_2012_moriond) data_json   =  "input/json/data_2012_moriond.txt";
+//   if (era == era::data_2012_donly) data_json     =  "input/json/data_2012_donly.txt";
+//   LumiMask lumiMask = LumiMask("LumiMask")
+//     .set_produce_output_jsons("")
+//     .set_input_file(data_json);
 
   MakeRunStats runStats = MakeRunStats("RunStats")
     .set_output_name(output_folder+output_name+".runstats");
   
   
   string mc_pu_file;
-  if (mc == mc::fall11_42X) mc_pu_file    = "data/pileup/MC_Fall11_PU_S6-500bins.root";
-  if (mc == mc::summer12_53X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S10-600bins.root";
-  if (mc == mc::summer12_52X) mc_pu_file  = "data/pileup/MC_Summer12_PU_S7-600bins.root";
+  if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
+  if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
+  if (mc == mc::summer12_52X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S7-600bins.root";
 
   string data_pu_file;
-  if (era == era::data_2011) data_pu_file     =  "data/pileup/Data_Pileup_2011_HCP-500bins.root";
-  if (era == era::data_2012_ichep) data_pu_file     =  "data/pileup/Data_Pileup_2012.root";
-  if (era == era::data_2012_hcp) data_pu_file       =  "data/pileup/Data_Pileup_2012_HCP-600bins.root";
-  if (era == era::data_2012_moriond) data_pu_file   =  "data/pileup/Data_Pileup_2012_Moriond-600bins.root";
-  if (era == era::data_2012_donly) data_pu_file     =  "data/pileup/Data_Pileup_2012_DOnly-600bins.root";
+  if (era == era::data_2012_rereco) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
+  if (era == era::data_2011) data_pu_file     =  "input/pileup/Data_Pileup_2011_HCP-500bins.root";
+  if (era == era::data_2012_ichep) data_pu_file     =  "input/pileup/Data_Pileup_2012.root";
+  if (era == era::data_2012_hcp) data_pu_file       =  "input/pileup/Data_Pileup_2012_HCP-600bins.root";
+  if (era == era::data_2012_moriond) data_pu_file   =  "input/pileup/Data_Pileup_2012_Moriond-600bins.root";
+  if (era == era::data_2012_donly) data_pu_file     =  "input/pileup/Data_Pileup_2012_DOnly-600bins.root";
 
   TH1D data_pu  = GetFromTFile<TH1D>(data_pu_file, "/", "pileup");
   TH1D mc_pu    = GetFromTFile<TH1D>(mc_pu_file, "/", "pileup");
 
-  TH1D data_pu_up  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
-  TH1D data_pu_down  = GetFromTFile<TH1D>("data/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
+  TH1D data_pu_up;
+  TH1D data_pu_down;
+  
+  if(era==era::data_2012_moriond){
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_Moriond-600bins-Up.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_Moriond-600bins-Down.root", "/", "pileup");
+  }
+  else if(era==era::data_2012_rereco){
+    data_pu_up  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Up.root", "/", "pileup");
+    data_pu_down  = GetFromTFile<TH1D>("input/pileup/Data_Pileup_2012_ReRecoPixel-600bins-Down.root", "/", "pileup");
+  }
 
   if (!is_data) {
     std::cout << "** Pileup Files **" << std::endl;
@@ -337,26 +358,33 @@ int main(int argc, char* argv[]){
     .set_mc(&mc_pu)
     .set_print_weights(false);
 
-//   HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
-//   dataMCTriggerPathFilter.set_is_data(is_data);
-//   dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
-//   dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
+  //MAKE ele and mu eff weights like this
+
+//    HinvDataTriggerFilter dataMCTriggerPathFilter("TriggerPathFilter");
+//    dataMCTriggerPathFilter.set_is_data(is_data);
+//    dataMCTriggerPathFilter.set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v");
+//    dataMCTriggerPathFilter.set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
   // JetEnergyCorrections<PFJet> jetEnergyCorrections = JetEnergyCorrections<PFJet>
 //   ("JetEnergyCorrections")
 //   .set_input_label("pfJetsPFlow")
 //   .set_is_data(is_data)
-//   .set_l1_file("data/jec/START53_V10_L1FastJet_AK5PF.txt")
-//   .set_l2_file("data/jec/START53_V10_L2Relative_AK5PF.txt")
-//   .set_l3_file("data/jec/START53_V10_L3Absolute_AK5PF.txt");
+//   .set_l1_file("input/jec/START53_V10_L1FastJet_AK5PF.txt")
+//   .set_l2_file("input/jec/START53_V10_L2Relative_AK5PF.txt")
+//   .set_l3_file("input/jec/START53_V10_L3Absolute_AK5PF.txt");
   
 
   MetLaserFilters metLaserFilters = MetLaserFilters("MetLaserFilters",
-						    "data/met_laser_filters/AllBadHCALLaser.txt",
-						    "data/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
+						    "input/met_laser_filters/AllBadHCALLaser.txt",
+						    "input/met_laser_filters/ecalLaserFilter_MET_Run2012AandB.txt",
 						    doMetFilters);
 
 
+  SimpleFilter<Vertex> goodVertexFilter = SimpleFilter<Vertex>("goodVertexFilter")
+    .set_input_label("vertices")
+    .set_predicate(bind(DummyFunction<Vertex>, _1))
+    .set_min(1)
+    .set_max(999);
 
   // ------------------------------------------------------------------------------------
   // Electron Modules
@@ -625,8 +653,9 @@ int main(int argc, char* argv[]){
     .set_era(era)
     .set_mc(mc)
     .set_save_weights(true)
+    .set_do_top_reweighting(dotopreweighting)
     .set_do_trg_weights(false)
-    .set_trg_applied_in_mc(true)
+    .set_trg_applied_in_mc(false)
     .set_do_idiso_tight_weights(false)
     .set_do_idiso_veto_weights(false)
     .set_do_idiso_err(doidisoerr)
@@ -639,11 +668,12 @@ int main(int argc, char* argv[]){
       .set_do_3dtrg_weights(do3dtrgeff)
       .set_do_1dparkedtrg_weights(do1dparkedtrgeff)
       .set_do_fitted1dparkedtrg_weights(dofitted1dparkedtrgeff)
+      .set_do_binnedin2d1dfittedtrg_weights(dobinnedin2d1dtrgeff)
       .set_trg_weight_file(trg_weight_file)
       .set_trg_applied_in_mc(true);
     if(do3dtrgeff){
       hinvWeights.set_Alumi(0.889)
-	.set_BClumi(11.581)
+	.set_BClumi(11.023)
 	.set_Dlumi(7.315);
     }
     hinvWeights.set_do_idiso_veto_weights(false);
@@ -702,6 +732,7 @@ int main(int argc, char* argv[]){
 
 
   HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
+  WtoLeptonFilter.set_do_wgammafilter(true);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
@@ -714,6 +745,8 @@ int main(int argc, char* argv[]){
     .set_sel_label("JetPair")
     .set_is_data(is_data)
     .set_dotrigskim(true)
+    .set_do_promptskim(dopromptskim)
+    .set_ignoreLeptons(ignoreLeptons)
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
     .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
@@ -740,13 +773,13 @@ int main(int argc, char* argv[]){
   }
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);
-  
   if (is_data) {
     //FIXME: do MetFilters also on MC, but not saved right now in MC...
     analysis.AddModule(&metFilters);
     analysis.AddModule(&metLaserFilters);
   }
-  
+
+  analysis.AddModule(&goodVertexFilter);
   //jet modules
   analysis.AddModule(&jetIDFilter);
   //don't want pile-up jets to calculate HT,MHT...

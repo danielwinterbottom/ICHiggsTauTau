@@ -16,18 +16,18 @@ echo "Using job-wrapper: " $JOBWRAPPER
 echo "Using job-submission: " $JOBSUBMIT
 
 CONFIG=scripts/DefaultConfig.cfg
-PRODUCTION=Apr04
+PRODUCTION=Dec18
 
 for METCUT in 130
   do
-  for CHANNEL in nunu enu munu taunu #mumu nunuiglep
+  for CHANNEL in nunu nunulowmet nunuiglep nunulowmetiglep #nunuiglep  mumu #nunu enu munu taunu #mumu nunuiglep
     do
     for SYST in central #JESUP JESDOWN JERBETTER JERWORSE #NOTE SYSTEMATIC RUNS WILL BE SAME AS CENTRAL BUT OUTPUT WILL GO TO SYSTEMATIC SUBDIRECTORIES
       do
       SYSTOPTIONS="--dojessyst=false --dojersyst=false" 
-      JOBDIRPREFIX=jobs
+      JOBDIRPREFIX=jobs_rerecogenqcd
       JOBDIR=$JOBDIRPREFIX/$CHANNEL/MET$METCUT/
-      OUTPUTPREFIX=output
+      OUTPUTPREFIX=output_rerecogenqcd
       OUTPUTDIR=$OUTPUTPREFIX/$CHANNEL/MET$METCUT/
       
       if [ "$SYST" = "JESUP" ]
@@ -65,10 +65,15 @@ for METCUT in 130
       mkdir -p $JOBDIR
       mkdir -p $OUTPUTDIR
       
-      for QUEUEDIR in short medium
+      for QUEUEDIR in short medium long
 	do
 	
-	if [ "$QUEUEDIR" = "medium" ]
+	if [ "$QUEUEDIR" = "long" ]
+	    then
+	    JOBQUEUE="heplong.q"
+	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
+	    echo "Using job-submission: " $JOBSUBMIT
+	elif [ "$QUEUEDIR" = "medium" ]
 	    then
 	    JOBQUEUE="hepmedium.q"
 	    export JOBSUBMIT=$JOBSCRIPT" "$JOBQUEUE
@@ -88,7 +93,7 @@ for METCUT in 130
 	  echo $FILELIST > tmp.txt
 	  sed "s/filelists\/${PRODUCTION}\/$QUEUEDIR\/${PRODUCTION}_MET_//" tmp.txt > tmp2.txt
 	  
-	  JOB=Data_`sed "s/\.dat//" tmp2.txt`
+	  JOB=MET_`sed "s/\.dat//" tmp2.txt`
 	  
 	  rm tmp.txt tmp2.txt
 	  
