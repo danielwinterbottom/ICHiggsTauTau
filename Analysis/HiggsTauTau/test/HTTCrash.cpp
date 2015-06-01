@@ -92,6 +92,9 @@ int main(int argc, char* argv[]) {
   // analysis.DoSkimming("./skim/");
   analysis.CalculateTimings(js["job"]["timings"].asBool());
 
+  // HTTSequence owns all the modules it creates (and the output files), so we
+  // have to persist it at least until after RunAnalysis
+  std::map<std::string, ic::HTTSequenceCrash> seqs;
 
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
     std::string channel_str = js["job"]["channels"][i].asString();
@@ -110,10 +113,10 @@ int main(int argc, char* argv[]) {
       Json::Value js_merged = js["sequence"];
       ic::UpdateJson(js_merged, js["channels"][channel_str]);
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
-      ic::HTTSequenceCrash seq_b(channel_str,vars[j],js_merged);
+      seqs[seq_str] = ic::HTTSequenceCrash(channel_str,vars[j],js_merged);
       // std::cout << js_merged;
-      seq_b.BuildSequence();
-      ic::HTTSequenceCrash::ModuleSequence seq_e = *(seq_b.getSequence());
+      seqs[seq_str].BuildSequence();
+      ic::HTTSequenceCrash::ModuleSequence seq_e = *(seqs[seq_str].getSequence());
       for (auto m : seq_e) analysis.AddModule(seq_str, m.get());
     }
   }
