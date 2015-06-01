@@ -22,6 +22,7 @@
 #include "HiggsTauTau/interface/HTTCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
+#include "HiggsTauTau/interface/TauCompositeProducer.h"
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
 #include "Modules/interface/CompositeProducer.h"
@@ -32,6 +33,19 @@
 #include "Modules/interface/PileupWeight.h"
 
 namespace ic {
+
+double elec_pt,elec_eta,elec_dz,elec_dxy;
+double muon_pt,muon_eta,muon_dz,muon_dxy;
+double emu_elec_pt,emu_elec_eta,emu_elec_dz,emu_elec_dxy;
+double emu_muon_pt,emu_muon_eta,emu_muon_dz,emu_muon_dxy;
+double tau_pt, tau_eta, tau_dz, tau_iso;
+double ditau_tau_pt, ditau_tau_eta, ditau_tau_dz, ditau_tau_iso;
+double veto_elec_pt, veto_elec_eta, veto_elec_dxy, veto_elec_dz;
+double veto_muon_pt, veto_muon_eta, veto_muon_dxy, veto_muon_dz;
+double veto_dielec_pt, veto_dielec_eta, veto_dielec_dxy, veto_dielec_dz;
+double veto_dimuon_pt, veto_dimuon_eta, veto_dimuon_dxy, veto_dimuon_dz;
+std::string tau_anti_elec, tau_anti_muon;
+
 
 void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,fwlite::TFileService *fs,
                                 Json::Value const& js) {
@@ -45,6 +59,52 @@ void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,fwlite:
   bool is_data        = js["is_data"].asBool();
   bool is_embedded    = js["is_embedded"].asBool();
 
+  elec_pt=23.0;
+  elec_eta=2.5;
+  elec_dz=0.2;
+  elec_dxy=0.045;
+  tau_pt=20;
+  tau_eta=2.3;
+  tau_dz=0.2;
+  tau_iso=1.5;
+  ditau_tau_pt=45;
+  ditau_tau_eta=2.1;
+  ditau_tau_dz=0.2;
+  ditau_tau_iso=1.0;
+  tau_anti_elec="againstElectronTightMVA5";
+  tau_anti_muon="againstMuonLoose3";
+  muon_pt=18.0;
+  muon_eta=2.1;
+  muon_dxy=0.045;
+  muon_dz=0.02;
+  emu_elec_pt=13;
+  emu_elec_eta=2.5;
+  emu_elec_dxy=0.045;
+  emu_elec_dz=0.2;
+  emu_muon_pt=9.5;//Otherwise MVAMet won't work because I have a cut at 9.5 there in the ntuples->need to fix for next iteration
+  emu_muon_eta=2.4;
+  emu_muon_dxy=0.045;
+  emu_muon_dz=0.2;
+  veto_elec_pt=10;
+  veto_elec_eta=2.5;
+  veto_elec_dxy=0.045;
+  veto_elec_dz=0.2;
+  veto_muon_pt=10;
+  veto_muon_eta=2.4;
+  veto_muon_dxy=0.045;
+  veto_muon_dz=0.2;
+  veto_dielec_pt=15;
+  veto_dielec_eta=2.5;
+  veto_dielec_dxy=0.045;
+  veto_dielec_dz=0.02;
+  veto_dimuon_pt=15;
+  veto_dimuon_eta=2.4;
+  veto_dimuon_dxy=0.045;
+  veto_dimuon_dz=0.2;
+  
+  
+
+
   // If desired, run the HTTGenEventModule which will add some handily-
   // formatted generator-level info into the Event
   if (js["run_gen_info"].asBool()) {
@@ -56,14 +116,17 @@ void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,fwlite:
   if (channel == channel::et) BuildETPairs(seq, js);
   if (channel == channel::mt) BuildMTPairs(seq, js);
   if (channel == channel::em) BuildEMPairs(seq, js);
+  if (channel == channel::tt) BuildTTPairs(seq, js);
 
   // Pair DeltaR filtering
   BuildModule(seq, SimpleFilter<CompositeCandidate>("PairFilter")
       .set_input_label("ditau").set_min(1)
+//      .set_predicate( (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.5)));
       .set_predicate([=](CompositeCandidate const* c) {
         return DeltaR(c->at(0)->vector(), c->at(1)->vector())
             > js["baseline"]["pair_dr"].asDouble();
       }));
+
 
   // Trigger filtering
   if (js["run_trg_filter"].asBool()) {
@@ -80,6 +143,7 @@ void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,fwlite:
   if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto(seq, js);
   if (js["baseline"]["extra_elec_veto"].asBool()) BuildExtraElecVeto(seq, js);
   if (js["baseline"]["extra_muon_veto"].asBool()) BuildExtraMuonVeto(seq, js);
+
 
   // Pileup Weighting
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
@@ -119,6 +183,7 @@ void HTTSequence::BuildSequence(ModuleSequence* seq, ic::channel channel,fwlite:
     .set_pair_label("ditau")
     .set_met_label(met_label)
     .set_mva_met_from_vector(mva_met_mode == 1)
+    .set_use_most_isolated(channel==channel::tt ? true : false)
     .set_faked_tau_selector(faked_tau_selector)
     .set_hadronic_tau_selector(hadronic_tau_selector)
     .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
@@ -188,6 +253,71 @@ std::string output_name="";
 }
 
 // --------------------------------------------------------------------------
+// TT Pair Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildTTPairs(ModuleSequence* seq, Json::Value const& js){
+
+
+  Json::Value base = js["baseline"];
+
+//BuildModule(seq, CopyCollection<Tau>("CopyToSelectedTaus",
+ //     js["taus"].asString(), "taus"));
+
+
+BuildModule(seq, HTTEnergyScale("TauEnergyScaleCorrection")
+    .set_input_label(js["taus"].asString())
+    .set_shift(base["tau_es_shift"].asDouble())
+    .set_strategy(strategy::paper2013)
+    .set_moriond_corrections(base["tau_es_corr"].asBool()));
+
+BuildModule(seq, SimpleFilter<Tau>("TauFilter")
+    .set_input_label(js["taus"].asString()).set_min(2)
+    .set_predicate([=](Tau const* t) {
+      return  t->pt()                     >  ditau_tau_pt         &&
+	      fabs(t->eta())              <  ditau_tau_eta        &&
+	      fabs(t->lead_dz_vertex())   <  ditau_tau_dz        &&
+	      t->GetTauID("decayModeFinding") > 0.5;
+    }));
+
+if (base["lep_iso"].asBool()) {
+  BuildModule(seq, SimpleFilter<Tau>("TauIsoFilter")
+      .set_input_label(js["taus"].asString()).set_min(2)
+      .set_predicate([=](Tau const* t) {
+	return t->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < ditau_tau_iso;
+      }));
+}
+
+if (base["do_tau_anti_elec"].asBool()) {
+  BuildModule(seq, SimpleFilter<Tau>("TauAntiElecFilter")
+      .set_input_label(js["taus"].asString()).set_min(2)
+      .set_predicate([=](Tau const* t) {
+	return t->GetTauID(tau_anti_elec) > 0.5;
+	//return t->GetTauID(base["tau_anti_elec"].asString()) > 0.5;
+      }));
+}
+
+if (base["do_tau_anti_muon"].asBool()) {
+  BuildModule(seq, SimpleFilter<Tau>("TauAntiMuonFilter")
+      .set_input_label(js["taus"].asString()).set_min(2)
+      .set_predicate([=](Tau const* t) {
+	return t->GetTauID(tau_anti_muon) > 0.5;
+	//return t->GetTauID(base["tau_anti_muon"].asString()) > 0.5;
+	// TauEoverP(t, 0.2) needed in legacy
+      }));
+}
+
+
+
+  BuildModule(seq, OneCollCompositeProducer<Tau>("TTPairProducer")
+      .set_input_label(js["taus"].asString()).set_output_label("ditau")
+      .set_candidate_name_first("lepton1").set_candidate_name_second("lepton2"));
+ }
+
+  
+
+
+
+// --------------------------------------------------------------------------
 // ET Pair Sequence
 // --------------------------------------------------------------------------
 void HTTSequence::BuildETPairs(ModuleSequence* seq, Json::Value const& js) {
@@ -207,10 +337,10 @@ void HTTSequence::BuildETPairs(ModuleSequence* seq, Json::Value const& js) {
   BuildModule(seq, SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
-        return  e->pt()                 > 24.0    &&
-                fabs(e->eta())          < 2.1     &&
-                fabs(e->dxy_vertex())   < 0.045   &&
-                fabs(e->dz_vertex())    < 0.2     &&
+        return  e->pt()                 > elec_pt    &&
+                fabs(e->eta())          < elec_eta   &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz    &&
                 ElecID(e);
       }));
 
@@ -218,9 +348,10 @@ void HTTSequence::BuildETPairs(ModuleSequence* seq, Json::Value const& js) {
     BuildModule(seq, SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
         .set_predicate([=](Electron const* e) {
-          return PF04IsolationVal(e, 0.5) < 0.1;
+          return PF03IsolationVal(e, 0.5) < 0.1;
         }));
   }
+
 
   BuildTauSelection(seq, js);
 
@@ -242,18 +373,18 @@ void HTTSequence::BuildMTPairs(ModuleSequence* seq, Json::Value const& js) {
   BuildModule(seq, SimpleFilter<Muon>("MuonFilter")
       .set_input_label("sel_muons").set_min(1)
       .set_predicate([=](Muon const* m) {
-        return  m->pt()                 > 20.0    &&
-                fabs(m->eta())          < 2.1     &&
-                fabs(m->dxy_vertex())   < 0.045   &&
-                fabs(m->dz_vertex())    < 0.2     &&
-                MuonTight(m);
+        return  m->pt()                 > muon_pt    &&
+                fabs(m->eta())          < muon_eta   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz    &&
+                MuonMedium(m);
       }));
 
   if (js["baseline"]["lep_iso"].asBool()) {
     BuildModule(seq, SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
         .set_predicate([=](Muon const* m) {
-          return PF04IsolationVal(m, 0.5) < 0.1;
+          return PF03IsolationVal(m, 0.5) < 0.1;
         }));
   }
 
@@ -300,10 +431,10 @@ void HTTSequence::BuildEMPairs(ModuleSequence* seq, Json::Value const& js) {
   BuildModule(seq, SimpleFilter<Electron>("ElectronFilter")
       .set_input_label("sel_electrons").set_min(1)
       .set_predicate([=](Electron const* e) {
-        return  e->pt()                 > 10.0    &&
-                fabs(e->eta())          < 2.3     &&
-                fabs(e->dxy_vertex())   < 0.02    &&
-                fabs(e->dz_vertex())    < 0.1     &&
+        return  e->pt()                 > emu_elec_pt    &&
+                fabs(e->eta())          < emu_elec_eta   &&
+                fabs(e->dxy_vertex())   < emu_elec_dxy   &&
+                fabs(e->dz_vertex())    < emu_elec_dz    &&
                 ElecID(e);
       }));
 
@@ -311,7 +442,8 @@ void HTTSequence::BuildEMPairs(ModuleSequence* seq, Json::Value const& js) {
     BuildModule(seq, SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
         .set_predicate([=](Electron const* e) {
-          return PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
+          return PF03IsolationVal(e, 0.5)<0.15;
+          //return PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
         }));
   }
 
@@ -323,18 +455,19 @@ void HTTSequence::BuildEMPairs(ModuleSequence* seq, Json::Value const& js) {
   BuildModule(seq, SimpleFilter<Muon>("MuonFilter")
       .set_input_label("sel_muons").set_min(1)
       .set_predicate([=](Muon const* m) {
-        return  m->pt()                 > 10.0    &&
-                fabs(m->eta())          < 2.1     &&
-                fabs(m->dxy_vertex())   < 0.02    &&
-                fabs(m->dz_vertex())    < 0.1     &&
-                MuonTight(m);
+        return  m->pt()                 > emu_muon_pt    &&
+                fabs(m->eta())          < emu_muon_eta   &&
+                fabs(m->dxy_vertex())   < emu_muon_dxy   &&
+                fabs(m->dz_vertex())    < emu_muon_dz    &&
+                MuonMedium(m);
       }));
 
   if (js["baseline"]["lep_iso"].asBool()) {
     BuildModule(seq, SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
         .set_predicate([=](Muon const* m) {
-          return PF04IsolationEB(m, 0.5, 0.15, 0.1);
+          return PF03IsolationVal(m, 0.5)<0.15;
+          //return PF04IsolationEB(m, 0.5, 0.15, 0.1);
         }));
   }
 
@@ -368,9 +501,9 @@ void HTTSequence::BuildTauSelection(ModuleSequence* seq,
   BuildModule(seq, SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(1)
       .set_predicate([=](Tau const* t) {
-        return  t->pt()                     > 20.0      &&
-                fabs(t->eta())              <  2.3      &&
-                fabs(t->lead_dz_vertex())   <  0.2      &&
+        return  t->pt()                     >  tau_pt     &&
+                fabs(t->eta())              <  tau_eta    &&
+                fabs(t->lead_dz_vertex())   <  tau_dz     &&
                 t->GetTauID("decayModeFinding") > 0.5;
       }));
 
@@ -378,7 +511,7 @@ void HTTSequence::BuildTauSelection(ModuleSequence* seq,
     BuildModule(seq, SimpleFilter<Tau>("TauIsoFilter")
         .set_input_label(js["taus"].asString()).set_min(1)
         .set_predicate([=](Tau const* t) {
-          return t->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < 1.5;
+          return t->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < tau_iso;
         }));
   }
 
@@ -386,7 +519,8 @@ void HTTSequence::BuildTauSelection(ModuleSequence* seq,
     BuildModule(seq, SimpleFilter<Tau>("TauAntiElecFilter")
         .set_input_label(js["taus"].asString()).set_min(1)
         .set_predicate([=](Tau const* t) {
-          return t->GetTauID(base["tau_anti_elec"].asString()) > 0.5;
+          return t->GetTauID(tau_anti_elec) > 0.5;
+          //return t->GetTauID(base["tau_anti_elec"].asString()) > 0.5;
         }));
   }
 
@@ -394,7 +528,8 @@ void HTTSequence::BuildTauSelection(ModuleSequence* seq,
     BuildModule(seq, SimpleFilter<Tau>("TauAntiMuonFilter")
         .set_input_label(js["taus"].asString()).set_min(1)
         .set_predicate([=](Tau const* t) {
-          return t->GetTauID(base["tau_anti_muon"].asString()) > 0.5;
+          return t->GetTauID(tau_anti_muon) > 0.5;
+          //return t->GetTauID(base["tau_anti_muon"].asString()) > 0.5;
           // TauEoverP(t, 0.2) needed in legacy
         }));
   }
@@ -407,12 +542,13 @@ void HTTSequence::BuildDiElecVeto(ModuleSequence* seq, Json::Value const& js) {
   BuildModule(seq, SimpleFilter<Electron>("VetoElecFilter")
       .set_input_label("veto_elecs")
       .set_predicate([=](Electron const* e) {
-        return  e->pt()                 > 15.0    &&
-                fabs(e->eta())          < 2.5     &&
-                fabs(e->dxy_vertex())   < 0.045   &&
-                fabs(e->dz_vertex())    < 0.2     &&
-                Electron2011WP95ID(e)             &&
-                PF04IsolationVal(e, 0.5) < 0.3;
+        return  e->pt()                 > veto_dielec_pt    &&
+                fabs(e->eta())          < veto_dielec_eta   &&
+                fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
+                fabs(e->dz_vertex())    < veto_dielec_dz    &&
+    //Probably need to use different filter, but just for now until something is defined:
+                VetoElectronIDPhys14(e)           &&
+                PF03IsolationVal(e, 0.5) < 0.3;
       }));
 
   BuildModule(seq, OneCollCompositeProducer<Electron>("VetoElecPairProducer")
@@ -434,13 +570,13 @@ void HTTSequence::BuildDiMuonVeto(ModuleSequence* seq, Json::Value const& js) {
   BuildModule(seq, SimpleFilter<Muon>("VetoMuonFilter")
       .set_input_label("veto_muons")
       .set_predicate([=](Muon const* m) {
-        return  m->pt()                 > 15.0    &&
-                fabs(m->eta())          < 2.4     &&
-                fabs(m->dxy_vertex())   < 0.045   &&
-                fabs(m->dz_vertex())    < 0.2     &&
+        return  m->pt()                 > veto_dimuon_pt    &&
+                fabs(m->eta())          < veto_dimuon_eta   &&
+                fabs(m->dxy_vertex())   < veto_dimuon_dxy   &&
+                fabs(m->dz_vertex())    < veto_dimuon_dz    &&
                 m->is_global()                    &&
                 m->is_tracker()                   &&
-                PF04IsolationVal(m, 0.5) < 0.3;
+                PF03IsolationVal(m, 0.5) < 0.3;
       }));
 
   BuildModule(seq, OneCollCompositeProducer<Muon>("VetoMuonPairProducer")
@@ -462,14 +598,15 @@ void HTTSequence::BuildExtraElecVeto(ModuleSequence* seq,
 
   BuildModule(seq, SimpleFilter<Electron>("ExtraElecFilter")
       .set_input_label("extra_elecs")
-      .set_min(0).set_max(js["max_extra_elecs"].asUInt())
+      .set_min(0).set_max(js["baseline"]["max_extra_elecs"].asUInt())
       .set_predicate([=](Electron const* e) {
-        return  e->pt()                 > 10.0    &&
-                fabs(e->eta())          < 2.5     &&
-                fabs(e->dxy_vertex())   < 0.045   &&
-                fabs(e->dz_vertex())    < 0.2     &&
+        return  e->pt()                 > veto_elec_pt    &&
+                fabs(e->eta())          < veto_elec_eta   &&
+                fabs(e->dxy_vertex())   < veto_elec_dxy   &&
+                fabs(e->dz_vertex())    < veto_elec_dz    &&
+                ElectronHTTIdPhys14(e,true)             &&
                 /*ElectronHTTId(e, true)            &&*/
-                PF04IsolationVal(e, 0.5) < 0.3;
+                PF03IsolationVal(e, 0.5) < 0.3;
       }));
 }
 
@@ -480,14 +617,14 @@ void HTTSequence::BuildExtraMuonVeto(ModuleSequence* seq,
 
   BuildModule(seq, SimpleFilter<Muon>("ExtraMuonFilter")
       .set_input_label("extra_muons")
-      .set_min(0).set_max(js["max_extra_muons"].asUInt())
+      .set_min(0).set_max(js["baseline"]["max_extra_muons"].asUInt())
       .set_predicate([=](Muon const* m) {
-        return  m->pt()                 > 10.0    &&
-                fabs(m->eta())          < 2.4     &&
-                fabs(m->dxy_vertex())   < 0.045   &&
-                fabs(m->dz_vertex())    < 0.2     &&
-                MuonTight(m)                      &&
-                PF04IsolationVal(m, 0.5) < 0.3;
+        return  m->pt()                 > veto_muon_pt    &&
+                fabs(m->eta())          < veto_muon_eta   &&
+                fabs(m->dxy_vertex())   < veto_muon_dxy   &&
+                fabs(m->dz_vertex())    < veto_muon_dz    &&
+                MuonMedium(m)                     &&
+                PF03IsolationVal(m, 0.5) < 0.3;
       }));
 }
 

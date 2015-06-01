@@ -21,6 +21,7 @@ class HTTSequence {
   void BuildETPairs(ModuleSequence* seq, Json::Value const& js);
   void BuildMTPairs(ModuleSequence* seq, Json::Value const& js);
   void BuildEMPairs(ModuleSequence* seq, Json::Value const& js);
+  void BuildTTPairs(ModuleSequence* seq, Json::Value const& js);
 
   void BuildTauSelection(ModuleSequence* seq, Json::Value const& js);
 
