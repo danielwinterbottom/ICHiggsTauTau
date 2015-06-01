@@ -91,76 +91,10 @@ int main(int argc, char* argv[]) {
   analysis.RetryFileAfterFailure(7, 3);
   // analysis.DoSkimming("./skim/");
   analysis.CalculateTimings(js["job"]["timings"].asBool());
-
-  ic::HTTSequence sequence_builder;
-  std::map<std::string, ic::HTTSequence::ModuleSequence> seqs;
-  std::vector<fwlite::TFileService *> tfileservices;
-  fwlite::TFileService *fs1;
-  fwlite::TFileService *fs2;
-  fwlite::TFileService *fs3;
-  fwlite::TFileService *fs4;
-  fwlite::TFileService *fs5;
-  fwlite::TFileService *fs6;
-  fwlite::TFileService *fs7;
-  fwlite::TFileService *fs8;
-  fwlite::TFileService *fs9;
-  fwlite::TFileService *fs10;
-  fwlite::TFileService *fs11;
-  fwlite::TFileService *fs12;
-  fwlite::TFileService *fs13;
-  fwlite::TFileService *fs14;
-  fwlite::TFileService *fs15;
-  fwlite::TFileService *fs16;
-  fwlite::TFileService *fs17;
-  fwlite::TFileService *fs18;
-  fwlite::TFileService *fs19;
-  fwlite::TFileService *fs20;
-  fwlite::TFileService *fs21;
-  fwlite::TFileService *fs22;
-  fwlite::TFileService *fs23;
-  tfileservices.push_back(fs1);
-  tfileservices.push_back(fs2);
-  tfileservices.push_back(fs3);
-  tfileservices.push_back(fs4);
-  tfileservices.push_back(fs5);
-  tfileservices.push_back(fs6);
-  tfileservices.push_back(fs7);
-  tfileservices.push_back(fs8);
-  tfileservices.push_back(fs9);
-  tfileservices.push_back(fs10);
-  tfileservices.push_back(fs11);
-  tfileservices.push_back(fs12);
-  tfileservices.push_back(fs13);
-  tfileservices.push_back(fs14);
-  tfileservices.push_back(fs15);
-  tfileservices.push_back(fs16);
-  tfileservices.push_back(fs17);
-  tfileservices.push_back(fs18);
-  tfileservices.push_back(fs19);
-  tfileservices.push_back(fs20);
-  tfileservices.push_back(fs21);
-  tfileservices.push_back(fs22);
-  tfileservices.push_back(fs23);
-  unsigned fileservicesize=0;
-
- for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
-    std::string channel_str = js["job"]["channels"][i].asString();
-    std::vector<std::string> fsvars;
-    for (unsigned j = 0; j < js["job"]["sequences"]["all"].size(); ++j) {
-      fsvars.push_back(js["job"]["sequences"]["all"][j].asString());
-    }
-    for (unsigned j = 0; j < js["job"]["sequences"][channel_str].size(); ++j) {
-      fsvars.push_back(js["job"]["sequences"][channel_str][j].asString());
-    }
   
-    for(unsigned j=0; j < fsvars.size(); ++j){
-     tfileservices.at(fileservicesize) = new fwlite::TFileService((output_folder+channel_str+"_"+fsvars[j]+".root").c_str());
-     fileservicesize++;
-    }
- }
-    
+  std::map<std::string, ic::HTTSequence> seqs;
 
-  unsigned  fsit=0;
+
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
     std::string channel_str = js["job"]["channels"][i].asString();
     std::vector<std::string> vars;
@@ -174,22 +108,18 @@ int main(int argc, char* argv[]) {
 
     for (unsigned j = 0; j < vars.size(); ++j) {
       std::string seq_str = channel_str+"_"+vars[j];
-      ic::HTTSequence::ModuleSequence& seq = seqs[seq_str];
-      ic::channel channel = ic::String2Channel(channel_str);
       Json::Value js_merged = js["sequence"];
       ic::UpdateJson(js_merged, js["channels"][channel_str]);
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
       // std::cout << js_merged;
-      sequence_builder.BuildSequence(&seq, channel, tfileservices.at(fsit) ,js_merged);
-      fsit++;
-      for (auto m : seq) analysis.AddModule(seq_str, m.get());
+      seqs[seq_str] = ic::HTTSequence(channel_str,vars[j],js_merged);
+      seqs[seq_str].BuildSequence();
+      ic::HTTSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());
+      for (auto m : seq_run) analysis.AddModule(seq_str, m.get());
     }
   }
 
   analysis.RunAnalysis();
-  for(unsigned j = 0; j<fileservicesize; ++j){
-    delete tfileservices.at(j);
-  }
 
   return 0;
 }
