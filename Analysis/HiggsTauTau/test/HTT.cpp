@@ -46,9 +46,13 @@ int main(int argc, char* argv[]) {
 
   vector<string> cfgs;
   vector<string> jsons;
+  unsigned offset;
+  unsigned nlines;
 
   po::options_description config("config");
-  config.add_options()(
+  config.add_options()
+      ("offset", po::value<unsigned>(&offset)->default_value(0))
+      ("nlines", po::value<unsigned>(&nlines)->default_value(0))(
       "cfg", po::value<vector<string>>(&cfgs)->multitoken()->required(),
       "json config files")(
       "json", po::value<vector<string>>(&jsons)->multitoken(),
@@ -81,11 +85,17 @@ int main(int argc, char* argv[]) {
     This should really be shortened into one inline function in the AnalysisBase
     declaration. GetPrefixedFilelist(prefix, filelist)
   */
-  vector<string> files = ic::ParseFileLines(js["job"]["filelist"].asString());
+  vector<string> files;
+  if(nlines != 0){
+    vector<string> files_all = ic::ParseFileLines(js["job"]["filelist"].asString());
+    for(unsigned k=0; k<nlines; k++){
+      if(offset+k < files_all.size()){
+        files.push_back(files_all.at(offset+k));
+      }
+    }
+  } else files = ic::ParseFileLines(js["job"]["filelist"].asString());
+      
   for (auto & f : files) f = js["job"]["file_prefix"].asString() + f;
-  std::cout<<"POSTFIX"<<std::endl;
-  std::string postfix_out = js["job"]["output_postfix"].asString();
-  std::cout<<js["job"]["output_postfix"].asString()<<std::endl;
 
   AnalysisBase analysis("HiggsTauTau", files, "icEventProducer/EventTree",
                         js["job"]["max_events"].asInt64());
@@ -115,7 +125,7 @@ int main(int argc, char* argv[]) {
       ic::UpdateJson(js_merged, js["channels"][channel_str]);
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
       // std::cout << js_merged;
-      seqs[seq_str] = ic::HTTSequence(channel_str,vars[j],postfix_out,js_merged);
+      seqs[seq_str] = ic::HTTSequence(channel_str,vars[j],std::to_string(offset),js_merged);
       seqs[seq_str].BuildSequence();
       ic::HTTSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());
       for (auto m : seq_run) analysis.AddModule(seq_str, m.get());

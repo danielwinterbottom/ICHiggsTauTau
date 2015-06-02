@@ -33,7 +33,7 @@
 
 namespace ic {
 
-HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string& postf,
+HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
                          Json::Value const& json) {
   //j_postfix = json["job"]["output_postfix"].asString();
   fs = std::make_shared<fwlite::TFileService>(

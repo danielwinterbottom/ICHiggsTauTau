@@ -3,29 +3,14 @@
 import sys
 from optparse import OptionParser
 import os
+import math
 
 FILELIST = './filelists/May9_validation.dat'
-SAMPLEDIR = './splitfilelist_gg'
-PATCHDIR = './splitfilelist_patches'
 
+nfiles = sum(1 for line in open('./filelists/May9_validation.dat'))
 
-os.system('rm -r %(SAMPLEDIR)s' %vars())
-os.system('rm -r %(PATCHDIR)s' %vars())
-os.system('mkdir %(SAMPLEDIR)s' %vars())
-os.system('mkdir %(PATCHDIR)s' %vars())
+nperjob = 1
 
-os.system('split --lines=1 --numeric-suffixes --suffix-length=3 %(FILELIST)s %(SAMPLEDIR)s/' %vars()) 
-
-
-FILEIT=0
-for filename in os.listdir('%(SAMPLEDIR)s' %vars()) :
-  json_patch = open('%(PATCHDIR)s//patch.json' %vars(),"w")
-  json_patch.write('{"job":{"filelist":"%(SAMPLEDIR)s//%(filename)s", "output_postfix":"%(FILEIT)s"}}'%vars())
-  json_patch.close()
-#  os.system(''' '{"job":{"filelist":"%(SAMPLEDIR)s//%(filename)s", "output_postfix":"%(FILEIT)s"}}' > %(PATCHDIR)s//patch.json''' %vars())
-  os.system('''./bin/HTT --cfg=scripts/config.json '%(PATCHDIR)s//patch.json' ''' %vars())
-  #os.system('''./bin/HTT --cfg=scripts/config.json '{"job":{"filelist":"%(SAMPLEDIR)s//%(filename)s"}}' '{"job":{"output_postfix":"%(FILEIT)s"}}' ''' %vars())
-  FILEIT=FILEIT+1
-
-
+for i in range (0,int(math.ceil(nfiles/nperjob))) :
+  os.system("./bin/HTT --cfg=scripts/config.json --offset=%(i)d --nlines=%(nperjob)d" %vars())
 
