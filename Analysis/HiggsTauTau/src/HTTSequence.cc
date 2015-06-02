@@ -33,10 +33,11 @@
 
 namespace ic {
 
-HTTSequence::HTTSequence(std::string& chan, std::string& var, 
+HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string& postf,
                          Json::Value const& json) {
+  //j_postfix = json["job"]["output_postfix"].asString();
   fs = std::make_shared<fwlite::TFileService>(
-       (chan + "_" + var + ".root").c_str());
+       (chan + "_" + var + "_" + postf + ".root").c_str());
   js = json;
   channel_str = chan;
   elec_pt = json["baseline"]["elec_pt"].asDouble();
@@ -71,6 +72,17 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var,
   tau_anti_muon = json["baseline"]["tau_anti_muon"].asString();
   min_taus     = json["baseline"]["min_taus"].asUInt();
   pair_dr      = json["baseline"]["pair_dr"].asDouble();
+  jets_label   = json["jets"].asString();
+  met_label    = json["met"].asString();
+  svfit_folder = "";
+  svfit_override = "";
+  new_svfit_mode = json["new_svfit_mode"].asUInt();
+  kinfit_mode = json["kinfit_mode"].asUInt(); 
+  mva_met_mode = json["mva_met_mode"].asUInt();
+  faked_tau_selector = json["faked_tau_selector"].asUInt();
+  hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
+  tau_scale_mode = json["tau_scale_mode"].asUInt();
+  tau_shift = json["tau_shift"].asDouble();
 
 
 
@@ -140,27 +152,10 @@ void HTTSequence::BuildSequence(){
   }
 
 
-  std::string met_label;
-  met_label = "pfMVAMet";
 
-  std::string jets_label="ak4PFJetsCHS";
-//  if(era==era::data_2015) jets_label="ak4PFJetsCHS";
-  unsigned new_svfit_mode = 0;
-  std::string svfit_folder = "";
-  std::string svfit_override = ""; 
-  unsigned kinfit_mode = 0;
   bool bjet_regr_correction = false;
-  unsigned mva_met_mode = 1;
-  unsigned faked_tau_selector = 0;
-  unsigned hadronic_tau_selector = 0; 
-  unsigned tau_scale_mode = 0;
   bool moriond_tau_scale = 0;
-  double tau_shift = 1.0;
-  std::string allowed_tau_modes = "";
   
-  
-  
- 
 
 
   BuildModule(HTTPairSelector("HTTPairSelector")

@@ -12,6 +12,7 @@
   //    "em":   ["scale_e_lo", "scale_e_hi"]
     },
     "output_folder": "",
+    "output_postfix":"",
     "sample": "VBF_HToTauTau_M-125"
   },
   "sequence": {
@@ -23,8 +24,17 @@
     "electrons"     : "electrons",
     "muons"         : "muons",
     "taus"          : "taus",
+    "jets"          : "ak4PFJetsCHS",
+    "met"           : "pfMVAMet",
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
+    "new_svfit_mode" : 0,
+    "kinfit_mode"   : 0,
+    "mva_met_mode"  : 1,
+    "faked_tau_selector" : 0,
+    "hadronic_tau_selector" : 0,
+    "tau_scale_mode" :0,
+    "tau_shift"      :1.0,     
     "run_gen_info"  : false,
     "do_pu_wt"      : false,
     "data_pu_file"  : "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root",

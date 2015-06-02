@@ -27,12 +27,14 @@ class HTTSequence {
   double veto_muon_pt, veto_muon_eta, veto_muon_dxy, veto_muon_dz;
   double veto_dielec_pt, veto_dielec_eta, veto_dielec_dxy, veto_dielec_dz;
   double veto_dimuon_pt, veto_dimuon_eta, veto_dimuon_dxy, veto_dimuon_dz;
-  unsigned min_taus;
-  double pair_dr;
+  unsigned min_taus, new_svfit_mode, kinfit_mode, mva_met_mode, faked_tau_selector, hadronic_tau_selector;
+  unsigned tau_scale_mode;
+  std::string met_label, jets_label, svfit_folder, svfit_override, allowed_tau_modes;
+  double pair_dr, tau_shift;
 
  public:
   typedef std::vector<std::shared_ptr<ic::ModuleBase>> ModuleSequence;
-  HTTSequence(std::string & chan, std::string& var, Json::Value const& js);
+  HTTSequence(std::string & chan, std::string& var, std::string& postf, Json::Value const& js);
   HTTSequence() = default;
   ~HTTSequence();
   ModuleSequence* getSequence(){return &seq;}

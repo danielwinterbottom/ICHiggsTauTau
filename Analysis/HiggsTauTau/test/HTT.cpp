@@ -83,13 +83,16 @@ int main(int argc, char* argv[]) {
   */
   vector<string> files = ic::ParseFileLines(js["job"]["filelist"].asString());
   for (auto & f : files) f = js["job"]["file_prefix"].asString() + f;
+  std::cout<<"POSTFIX"<<std::endl;
+  std::string postfix_out = js["job"]["output_postfix"].asString();
+  std::cout<<js["job"]["output_postfix"].asString()<<std::endl;
 
   AnalysisBase analysis("HiggsTauTau", files, "icEventProducer/EventTree",
                         js["job"]["max_events"].asInt64());
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);
-  // analysis.DoSkimming("./skim/");
+//  analysis.DoSkimming("./skim/");
   analysis.CalculateTimings(js["job"]["timings"].asBool());
   
   std::map<std::string, ic::HTTSequence> seqs;
@@ -112,7 +115,7 @@ int main(int argc, char* argv[]) {
       ic::UpdateJson(js_merged, js["channels"][channel_str]);
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
       // std::cout << js_merged;
-      seqs[seq_str] = ic::HTTSequence(channel_str,vars[j],js_merged);
+      seqs[seq_str] = ic::HTTSequence(channel_str,vars[j],postfix_out,js_merged);
       seqs[seq_str].BuildSequence();
       ic::HTTSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());
       for (auto m : seq_run) analysis.AddModule(seq_str, m.get());
