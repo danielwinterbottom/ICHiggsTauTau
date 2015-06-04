@@ -17,20 +17,22 @@ class HTTSequence {
  private:
   std::shared_ptr<fwlite::TFileService> fs;
   std::vector<std::shared_ptr<ic::ModuleBase>> seq;
-  std::string channel_str;
+  std::string channel_str, var_str;
   Json::Value js;
   double tau_pt, tau_eta, tau_iso, tau_dz;
   double elec_pt, elec_eta, elec_dxy, elec_dz;
   double muon_pt, muon_eta, muon_dxy, muon_dz;
   std::string tau_anti_elec, tau_anti_muon;
+  std::string output_folder, output_name, addit_output_folder;
   double veto_elec_pt, veto_elec_eta, veto_elec_dxy, veto_elec_dz;
   double veto_muon_pt, veto_muon_eta, veto_muon_dxy, veto_muon_dz;
   double veto_dielec_pt, veto_dielec_eta, veto_dielec_dxy, veto_dielec_dz;
   double veto_dimuon_pt, veto_dimuon_eta, veto_dimuon_dxy, veto_dimuon_dz;
   unsigned min_taus, new_svfit_mode, kinfit_mode, mva_met_mode, faked_tau_selector, hadronic_tau_selector;
-  unsigned tau_scale_mode;
+  unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode;
   std::string met_label, jets_label, svfit_folder, svfit_override, allowed_tau_modes;
-  double pair_dr, tau_shift;
+  bool bjet_regr_correction, tau_scale_mode, make_sync_ntuple, moriond_tau_scale;
+  double pair_dr, tau_shift, mass_shift;
 
  public:
   typedef std::vector<std::shared_ptr<ic::ModuleBase>> ModuleSequence;
@@ -51,6 +53,7 @@ class HTTSequence {
 
   void BuildExtraMuonVeto();
   void BuildExtraElecVeto();
+
 
   template<class T>
   void BuildModule(T const& mod) {
