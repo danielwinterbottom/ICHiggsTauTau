@@ -34,6 +34,8 @@
 #include "HiggsTauTau/interface/HhhMetScale.h"
 #include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "HiggsTauTau/interface/JetEnergyUncertainty.h"
+#include "HiggsTauTau/interface/HTTPrint.h"
+#include "Modules/interface/LumiMask.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -43,6 +45,7 @@
 #include "Modules/interface/OverlapFilter.h"
 #include "Modules/interface/EnergyShifter.h"
 #include "Modules/interface/PileupWeight.h"
+#include "Modules/interface/CheckEvents.h"
 
 namespace ic {
 
@@ -58,7 +61,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   
 
   fs = std::make_shared<fwlite::TFileService>(
-       (output_folder+"/"+chan + "_" + var + "_" + postf + ".root").c_str());
+       (output_folder+"/"+chan + "_" + output_name + "_" + postf + ".root").c_str());
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
@@ -106,7 +109,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   faked_tau_selector = json["faked_tau_selector"].asUInt();
   hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
   tau_scale_mode = json["tau_scale_mode"].asUInt();
-  tau_shift = json["tau_shift"].asDouble();
+  if(channel_str!="em"){
+  tau_shift = json["baseline"]["tau_es_shift"].asDouble();
+  } else tau_shift = json["baseline"]["elec_es_shift"].asDouble();
 
 
 
@@ -127,6 +132,33 @@ void HTTSequence::BuildSequence(){
   bool is_data        = js["is_data"].asBool();
   bool is_embedded    = js["is_embedded"].asBool();
 
+  bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
+                        || (output_name.find("HTohh")                 != output_name.npos)
+                        || (output_name.find("AToZh")                 != output_name.npos)
+                        || (output_name.find("DYJetsToTauTau")        != output_name.npos)
+                        || (output_name.find("Embedded")              != output_name.npos)
+                        || (output_name.find("RecHit")                != output_name.npos) );
+  if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
+  if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
+
+
+  auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
+  std::vector<int> to_check =
+  {
+  };
+
+  HTTPrint httPrint("HTTPrint");
+  for (auto ch : to_check) {
+   eventChecker.CheckEvent(ch);
+   httPrint.PrintEvent(ch);
+  }
+  httPrint.set_skip_events(false);
+  if (to_check.size() > 0){
+  BuildModule(eventChecker);
+  BuildModule(httPrint);  
+}
+
+
   // If desired, run the HTTGenEventModule which will add some handily-
   // formatted generator-level info into the Event
   if (js["run_gen_info"].asBool()) {
@@ -134,6 +166,25 @@ void HTTSequence::BuildSequence(){
         .set_genparticle_label(js["genTaus"].asString())
         .set_genjet_label(js["genJets"].asString()));
   }
+
+
+  if(is_data && strategy_type!=strategy::phys14){
+  std::string data_json = "";
+  if (era_type == era::data_2011) {
+    if (channel == channel::em) {
+      data_json = "input/json/json_data_2011.txt";
+    } else{
+      data_json = "input/json/json_data_2011_et_mt.txt";
+    }
+  }             
+  if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
+  if (era_type == era::data_2015)  data_json= "input/json/data_2012_rereco.txt";
+
+  BuildModule(LumiMask("LumiMask")
+    .set_produce_output_jsons("")
+    .set_input_file(data_json));
+  }
+
 
   if (channel == channel::et) BuildETPairs();
   if (channel == channel::mt) BuildMTPairs();
@@ -197,17 +248,17 @@ void HTTSequence::BuildSequence(){
     .set_allowed_tau_modes(allowed_tau_modes));
 
 
- if (jes_mode > 0 && !is_data && strategy_type != strategy::phys14){
+ if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
   std::string jes_input_set  = "SubTotalDataMC";
   if (era_type == era::data_2012_rereco) {
     jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
     jes_input_set  = "SubTotalMC";
   }
-  //if (era == era::data_2015) {
-  //  jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
-  //  jes_input_set  = "SubTotalMC";
-  //}
+  if (era_type == era::data_2015) {
+    jes_input_file = "input/jec/Summer13_V1_DATA_UncertaintySources_AK5PF.txt";
+    jes_input_set  = "SubTotalMC";
+  }
  BuildModule(JetEnergyUncertainty<PFJet>("JetEnergyUncertainty")
   .set_input_label(jets_label)
   .set_jes_shift_mode(jes_mode)
@@ -270,14 +321,6 @@ void HTTSequence::BuildSequence(){
 
 
    if(strategy_type != strategy::phys14){
-  bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
-                        || (output_name.find("HTohh")                 != output_name.npos)
-                        || (output_name.find("AToZh")                 != output_name.npos)
-                        || (output_name.find("DYJetsToTauTau")        != output_name.npos)
-                        || (output_name.find("Embedded")              != output_name.npos)
-                        || (output_name.find("RecHit")                != output_name.npos) );
-  if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
-  if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
 
   HTTWeights httWeights = HTTWeights("HTTWeights")
     .set_channel(channel)
