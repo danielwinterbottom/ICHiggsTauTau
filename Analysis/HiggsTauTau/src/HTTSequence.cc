@@ -423,8 +423,10 @@ if(bjet_regr_correction){
   .set_jets_label(jets_label));
 }
 
+if(js["make_sync_ntuple"].asBool()){
  BuildModule(HTTSyncTemp("HTTSync","SYNCFILE_" + output_name, channel)
  .set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label));
+}
 
 
   BuildModule(HTTCategories("HTTCategories")
