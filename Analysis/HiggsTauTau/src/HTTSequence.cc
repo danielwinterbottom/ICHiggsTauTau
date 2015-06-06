@@ -35,6 +35,7 @@
 #include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "HiggsTauTau/interface/JetEnergyUncertainty.h"
 #include "HiggsTauTau/interface/HTTPrint.h"
+#include "HiggsTauTau/interface/TauCompositeProducer.h"
 #include "Modules/interface/LumiMask.h"
 
 // Generic modules
@@ -620,6 +621,7 @@ void HTTSequence::BuildTTPairs(){
 
  BuildModule(OneCollCompositeProducer<Tau>("TTPairProducer")
       .set_input_label(js["taus"].asString()).set_output_label("ditau")
+      .set_sort_by_iso(true)
       .set_candidate_name_first("lepton1").set_candidate_name_second("lepton2"));
  }
 

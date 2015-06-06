@@ -16,6 +16,7 @@ class OneCollCompositeProducer : public ModuleBase {
   std::string candidate_name_first_;
   std::string candidate_name_second_;
   bool select_leading_pair_;
+  bool sort_by_iso_;
   std::string output_label_;
 
  public:
@@ -48,6 +49,12 @@ class OneCollCompositeProducer : public ModuleBase {
     return *this;
   }
 
+  OneCollCompositeProducer<T> & set_sort_by_iso(bool const& sort_by_iso) {
+    sort_by_iso_ = sort_by_iso;
+    return *this;
+  }
+
+
   OneCollCompositeProducer<T> & set_output_label(std::string const& output_label) {
     output_label_ = output_label;
     return *this;
@@ -58,17 +65,54 @@ class OneCollCompositeProducer : public ModuleBase {
 template <class T>
 OneCollCompositeProducer<T>::OneCollCompositeProducer(std::string const& name) : ModuleBase(name) {
   select_leading_pair_=false;
+  sort_by_iso_=false;
 }
+
+
 
 template <class T>
 OneCollCompositeProducer<T>::~OneCollCompositeProducer() {
   ;
 }
 
+
 template <class T>
 int OneCollCompositeProducer<T>::PreAnalysis() {
   return 0;
 }
+
+template<>
+inline int OneCollCompositeProducer<Tau>::Execute(TreeEvent *event) {
+  std::vector<Tau *> & vec_first = event->GetPtrVec<Tau>(input_label_);
+  if (select_leading_pair_) std::sort(vec_first.begin(), vec_first.end(), bind(&Tau::pt, _1) > bind(&Tau::pt, _2));
+  if (sort_by_iso_)   std::sort(vec_first.begin(), vec_first.end(), bind(&Tau::GetTauID,_1, "byCombinedIsolationDeltaBetaCorrRaw3Hits")< bind(&Tau::GetTauID,_2,"byCombinedIsolationDeltaBetaCorrRaw3Hits"));
+  std::vector< std::pair<Tau*,Tau*> > pairs = MakePairs(vec_first);
+  std::vector<CompositeCandidate> vec_out;
+  std::vector<CompositeCandidate *> ptr_vec_out;
+  if (select_leading_pair_ && pairs.size()>0){
+    vec_out.push_back(CompositeCandidate());
+    CompositeCandidate & cand_ref = vec_out.back();
+    cand_ref.AddCandidate(candidate_name_first_, pairs[0].first);
+    cand_ref.AddCandidate(candidate_name_second_, pairs[0].second);
+  }
+  else {
+    for (unsigned i = 0; i < pairs.size(); ++i) {
+      vec_out.push_back(CompositeCandidate());
+      CompositeCandidate & cand_ref = vec_out.back();
+      cand_ref.AddCandidate(candidate_name_first_, pairs[i].first);
+      cand_ref.AddCandidate(candidate_name_second_, pairs[i].second);
+    }
+  }
+  event->Add(output_label_+"Product", vec_out);
+  std::vector<CompositeCandidate> & vec_in = event->Get<std::vector<CompositeCandidate> >(output_label_+"Product");
+  ptr_vec_out.resize(vec_in.size());
+  for (unsigned i = 0; i < vec_in.size(); ++i) {
+    ptr_vec_out[i] = &(vec_in[i]);
+  }
+  event->Add(output_label_, ptr_vec_out);
+  return 0;
+ }
+
 
 template <class T>
 int OneCollCompositeProducer<T>::Execute(TreeEvent *event) {
@@ -100,6 +144,8 @@ int OneCollCompositeProducer<T>::Execute(TreeEvent *event) {
   event->Add(output_label_, ptr_vec_out);
   return 0;
  }
+
+
 
 template <class T>
 int OneCollCompositeProducer<T>::PostAnalysis() {
