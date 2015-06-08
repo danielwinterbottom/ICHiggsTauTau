@@ -24,6 +24,7 @@ class HTTSyncTemp : public ModuleBase {
   CLASS_MEMBER(HTTSyncTemp, double, jet_eta)
   CLASS_MEMBER(HTTSyncTemp, std::string, jet_label)
   CLASS_MEMBER(HTTSyncTemp, std::string, tau_label)
+  CLASS_MEMBER(HTTSyncTemp, std::string, ditau_label)
 
   TFile *lOFile;
   TTree *lOTree;

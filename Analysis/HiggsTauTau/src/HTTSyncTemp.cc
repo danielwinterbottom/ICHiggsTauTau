@@ -17,6 +17,7 @@ HTTSyncTemp::HTTSyncTemp(std::string const& name, std::string const& output_name
   select_category_ = "";
   jet_label_ = "pfJetsPFlow";
   tau_label_ = "taus";
+  ditau_label_ = "emtauCandidates";
 }
 
 HTTSyncTemp::~HTTSyncTemp() { ; }
@@ -351,7 +352,7 @@ int HTTSyncTemp::Execute(TreeEvent *event) {
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 0.0, jet_eta_));
   std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
-  std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("ditau");
+  std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
   //std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
 
   Met const* pfMet = event->GetPtr<Met>("pfMet");

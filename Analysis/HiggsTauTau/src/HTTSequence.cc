@@ -314,6 +314,10 @@ void HTTSequence::BuildSequence(){
   };
 
   HTTPrint httPrint("HTTPrint");
+  if(era_type==era::data_2015){
+    httPrint.set_muon_label("muons");
+    httPrint.set_jet_label("ak4PFJetsCHS");
+  }
   for (auto ch : to_check) {
    eventChecker.CheckEvent(ch);
    httPrint.PrintEvent(ch);
@@ -605,6 +609,13 @@ if(js["make_sync_ntuple"].asBool() && strategy_type!=strategy::phys14){
  .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau"));
  //.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label));
 }
+
+if(js["make_sync_ntuple"].asBool() && strategy_type==strategy::phys14){
+ BuildModule(HTTSyncTemp("HTTSyncTemp","SYNCFILE_" + output_name, channel)
+ .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
+ //.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label));
+}
+
 
 
   BuildModule(HTTCategories("HTTCategories")
@@ -1104,7 +1115,6 @@ SimpleFilter<Electron> vetoElecFilter = SimpleFilter<Electron>("VetoElecFilter")
                 fabs(e->eta())          < veto_dielec_eta   &&
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
                 fabs(e->dz_vertex())    < veto_dielec_dz   &&
-    //Probably need to use different filter, but just for now until something is defined:
                 VetoElectronIDPhys14(e)           &&
                 PF03IsolationVal(e, 0.5) < 0.3;
       });
@@ -1194,8 +1204,9 @@ void HTTSequence::BuildExtraElecVeto(){
                 fabs(e->eta())          < veto_elec_eta   &&
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
-                ElectronHTTIdPhys14(e,true)             &&
-                PF03IsolationVal(e, 0.5) < 0.3;
+//Wrong electron ID? Keep for now:
+                VetoElectronIDPhys14(e)             &&
+                PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
 
