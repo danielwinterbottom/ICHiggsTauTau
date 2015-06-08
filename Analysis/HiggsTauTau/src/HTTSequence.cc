@@ -36,7 +36,6 @@
 #include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "HiggsTauTau/interface/JetEnergyUncertainty.h"
 #include "HiggsTauTau/interface/HTTPrint.h"
-#include "HiggsTauTau/interface/TauCompositeProducer.h"
 #include "Modules/interface/LumiMask.h"
 
 // Generic modules
