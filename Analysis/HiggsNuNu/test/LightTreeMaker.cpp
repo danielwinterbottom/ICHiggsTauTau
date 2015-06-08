@@ -732,7 +732,6 @@ int main(int argc, char* argv[]){
 
 
   HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
-  WtoLeptonFilter.set_do_wgammafilter(true);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules

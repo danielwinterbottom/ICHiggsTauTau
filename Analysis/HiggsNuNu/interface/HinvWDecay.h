@@ -18,6 +18,7 @@ class HinvWDecay : public ModuleBase {
     unsigned countDecay_mu_;
     unsigned countRest_;
     CLASS_MEMBER(HinvWDecay, bool, do_wgammafilter)
+    CLASS_MEMBER(HinvWDecay, bool, do_newstatuscodes)
 
  public:
     HinvWDecay(std::string const& name, unsigned flavour, bool isEmbedded=false);

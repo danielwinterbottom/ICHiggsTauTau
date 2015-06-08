@@ -50,7 +50,7 @@ namespace ic {
     GenParticle* lepminus = 0;
 
     for (unsigned i = 0; i < parts.size(); ++i) {
-      if (parts[i]->status() != 3) continue;
+      if ((parts[i]->status() != 3)&&!(parts[i]->status() >= 21&&parts[i]->status() <= 29)) continue;
 
       int id = parts[i]->pdgid();
 

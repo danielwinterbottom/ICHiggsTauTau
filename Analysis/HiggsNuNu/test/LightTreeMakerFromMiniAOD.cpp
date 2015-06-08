@@ -282,7 +282,7 @@ int main(int argc, char* argv[]){
     files,                // Input files
     "icEventProducer/EventTree", // TTree name
     max_events);          // Max. events to process (-1 = all)
-
+  
   // ------------------------------------------------------------------------------------
   // Misc Modules
   // ------------------------------------------------------------------------------------
@@ -317,6 +317,7 @@ int main(int argc, char* argv[]){
   if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
   if (mc == mc::summer12_53X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";
   if (mc == mc::summer12_52X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S7-600bins.root";
+  if (mc == mc::phys14_72X) mc_pu_file  = "input/pileup/MC_Summer12_PU_S10-600bins.root";//!!FIX WITH NEW PU
 
   string data_pu_file;
   if (era == era::data_2012_rereco) data_pu_file   =  "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root";
@@ -652,6 +653,9 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------
   // Weight Modules
   // ------------------------------------------------------------------------------------  
+
+
+
   
   HinvWeights hinvWeights = HinvWeights("HinvWeights")
     .set_era(era)
@@ -699,10 +703,10 @@ int main(int argc, char* argv[]){
   
 
   if (output_name.find("JetsToLNu") != output_name.npos) {
-    xsWeights.set_do_w_soup(true);
-    xsWeights.set_do_w_reweighting(false);
 
     if (mc == mc::summer12_53X) {
+      xsWeights.set_do_w_soup(true);
+      xsWeights.set_do_w_reweighting(false);
       xsWeights.SetWTargetFractions(0.74069073, 0.1776316, 0.0575658, 0.0170724, 0.00703947);
       xsWeights.SetWInputYields(76102995.0, 23141598.0, 34044921.0, 15539503.0, 13382803.0);
       //xsWeights.SetWInputYields(76102995.0, 23141598.0, 33901569.0, 15539503.0, 13382803.0);
@@ -736,7 +740,7 @@ int main(int argc, char* argv[]){
 
 
   HinvWDecay WtoLeptonFilter = HinvWDecay("WtoLeptonSelector",lFlavour);
-  WtoLeptonFilter.set_do_wgammafilter(true);
+  WtoLeptonFilter.set_do_newstatuscodes(true);
 
   // ------------------------------------------------------------------------------------
   // Plot Modules
@@ -758,6 +762,7 @@ int main(int argc, char* argv[]){
   // Build Analysis Sequence
   // ------------------------------------------------------------------------------------  
 
+
   analysis.AddModule(&singleMet);
   if (!is_data) {
     //do W streaming to e,mu,tau
@@ -772,9 +777,9 @@ int main(int argc, char* argv[]){
     //just apply W and Z weights
     analysis.AddModule(&xsWeights);
     //Z pt <100 GeV cut for inclusive DY samples
-    if(doincludehighptz && output_name.find("JetsToLL") != output_name.npos && output_name.find("PtZ-100-madgraph") == output_name.npos && output_name.find("DYJJ01") == output_name.npos){
-      analysis.AddModule(&ZlowmassFilter);
-    }    
+    // if(doincludehighptz && output_name.find("JetsToLL") != output_name.npos && output_name.find("PtZ-100-madgraph") == output_name.npos && output_name.find("DYJJ01") == output_name.npos){
+    //   analysis.AddModule(&ZlowmassFilter);
+    // }    
   }
    
   //if (printEventList) analysis.AddModule(&hinvPrintList);

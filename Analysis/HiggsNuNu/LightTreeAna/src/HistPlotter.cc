@@ -226,6 +226,7 @@ namespace ic{
     do_ratio_fitline_=false;
     add_underflows_=false;
     add_overflows_=false;
+    outsuffix_="";
   };
 
   HistPlotter::~HistPlotter(){ ;};
@@ -322,7 +323,9 @@ namespace ic{
 	    }
 	  }
 	}
-	if(do_norm_)histo->Scale(1/(Integral(histo)));
+	if(do_norm_){
+	  if(Integral(histo)!=0)histo->Scale(1/(Integral(histo)));
+	}
 
 	if (add_underflows_ || add_overflows_){
 	  int tmpbins = histo->GetNbinsX();
@@ -417,7 +420,7 @@ namespace ic{
       if(!stackempty){ 
 	std::cout<<"    Drawing Stack.."<<std::endl;
 	if(first){
-	  std::cout<<"ymax: "<<ymax<<std::endl;//!!
+	  //std::cout<<"ymax: "<<ymax<<std::endl;//!!
 	  if(ymax>=1){
 	    stack->SetMaximum(shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)));
 	  }
@@ -481,6 +484,7 @@ namespace ic{
 	      else{
 		elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0,shapes_[iShape].axisrangemultiplier()*(ymax));
 	      }
+
 	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
 	      c1->Update();
 	      first=false;
@@ -508,9 +512,12 @@ namespace ic{
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitle(ytitle.c_str());
 	      elements_[iElement].hist_ptr()->SetTitle("");
 	    }
-	    else elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
+	    else{
+	      elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
+	    }
 	  }
 	  else{
+	    //Do asymmetric data errors
 	    const double alpha = 1 - 0.6827;
 	    TGraphAsymmErrors * g = new TGraphAsymmErrors(elements_[iElement].hist_ptr());
 	    g->SetMarkerSize(1.1);
@@ -576,7 +583,7 @@ namespace ic{
       }
       leg->Draw("same");
       c1->Update();
-
+      
       DrawCMSLogo(upper,"CMS","preliminary",10);
 
 //       TLatex* lat=new TLatex();
@@ -599,6 +606,7 @@ namespace ic{
 
       //DRAW RATIO PLOT
       if(do_ratio_){
+
 	c1->cd();
 	lower->SetTopMargin(0.08);
 	lower->SetBottomMargin(0.38);
@@ -612,7 +620,12 @@ namespace ic{
 	TH1F* num = 0;
 	TH1F* den = 0;
 	double dentoterr=0;
+
+	
 	for(unsigned iElement=0;iElement<elements_.size();iElement++){
+	std::cout<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
+
+
 	  if(elements_[iElement].is_inrationum()){
 	    //ADD TO num HIST
 	    if(firstnum){
@@ -620,6 +633,7 @@ namespace ic{
 	      firstnum=false;
 	    }
 	    else num->Add(elements_[iElement].hist_ptr());
+
 	  }
 	  if(elements_[iElement].is_inratioden()){
 	    //ADD TO den HIST
@@ -628,7 +642,6 @@ namespace ic{
 	      firstden=false;
 	    }
 	    else den->Add(elements_[iElement].hist_ptr());
-
 	    //get error on this contribution
 	    double thiselementfracerr;
 	    double thiselementintegral=Integral(elements_[iElement].hist_ptr());
@@ -637,12 +650,16 @@ namespace ic{
 	      thiselementfracerr=sqrt(pow((*dennormerr)[0],2)+pow((*dennormerr)[1],2));
 	    }
 	    else{
+
 	      thiselementfracerr=Error(elements_[iElement].hist_ptr())/thiselementintegral;
 	    }
 	    if(thiselementintegral!=0){
+
 	      dentoterr=sqrt(pow(dentoterr,2)+pow(thiselementfracerr*thiselementintegral,2));
 	    }
-	    //std::cout<<dentoterr<<std::endl;
+	    //std::cout<<dentoterr<<std::endl
+
+
 	  }
 	}
 	numsdir->cd();
@@ -650,7 +667,7 @@ namespace ic{
 	densdir->cd();
 	den->Write();
 	lower->cd();
-      
+
 	if(firstnum||firstden)std::cout<<"To draw ratio plot you must specify elements to be numerator and denominator! Ratio plot will be missing."<<std::endl;
 	else{
 	  //Set den error to zero will take den error into account in error band!!
@@ -665,14 +682,16 @@ namespace ic{
 	    errorband->SetBinError(bin,sqrt(pow(denfracerr,2)+pow(numfracerr,2)));
 	  }
 
+
 	  
 	  //DIVIDE NUM BY DEN and put in ratio
 	  TH1F* ratio;
 	  ratio=(TH1F*)(num->Clone("ratio"));
 	  ratio->GetYaxis()->SetNdivisions(505);
-		  ratio->GetYaxis()->SetNdivisions(505);
+	  ratio->GetYaxis()->SetNdivisions(505);
 	  ratio->GetYaxis()->SetTitleFont(62);
 	  ratio->GetXaxis()->SetLabelSize(0.14);
+	  ratio->GetXaxis()->SetLabelOffset(0.005);
 	  ratio->GetXaxis()->SetTitleFont(62);
 	  ratio->GetXaxis()->SetTitleSize(0.19);
 	  ratio->GetXaxis()->SetTitleOffset(0.750);
@@ -689,6 +708,7 @@ namespace ic{
 	  errorband->GetYaxis()->SetTitleOffset(0.460);
 	  errorband->GetXaxis()->SetTitleOffset(0.750);
           errorband->GetYaxis()->SetLabelSize(0.14);
+
 	  
 
 	  std::string xtitle;
@@ -697,13 +717,18 @@ namespace ic{
 	  ratio->GetXaxis()->SetTitle(xtitle.c_str());//!!GET TITLE FOR X AXIS
 	  //	  ratio->GetXaxis()->SetTitleSize(0.1);
 	  //ratio->GetXaxis()->SetTitleOffset(0.8);
-	  ratio->GetYaxis()->SetRangeUser(0,2.0);
+	  //std::cout<<ratio->GetMaximum();
+	  double ratiomax=ratio->GetMaximum()+0.1;
+	  if(ratiomax<2)ratiomax=2;
+	  ratio->GetYaxis()->SetRangeUser(0,ratiomax);
 	  ratio->SetTitle("");
 	  ratio->GetYaxis()->SetTitle("Data/Bkg");
 	  ratio->GetYaxis()->SetTitleSize(0.19);
 	  ratio->Divide(den);
 	  gStyle->SetOptStat(0);
 	  ratio->SetStats(0);
+
+
 
 	  errorband->SetMarkerSize(0);
 	  errorband->SetFillColor(16);
@@ -720,6 +745,8 @@ namespace ic{
 	  //errorband->GetXaxis()->SetLabelSize(0.1);
 	  //errorband->GetYaxis()->SetLabelSize(0.1);
 	  errorband->SetStats(0);
+
+
 
 	  TF1* fiterrup;
 	  TF1* fiterrdown;
@@ -781,6 +808,7 @@ namespace ic{
       std::ostringstream lsavepng;
       std::string tmpstr = file->GetName();
       tmpstr.erase(std::string(file->GetName()).find(".root"),5);
+      tmpstr=tmpstr+outsuffix_;
       lsave << tmpstr ;
       lsave << ".pdf" ;
       if (iShape==0) {

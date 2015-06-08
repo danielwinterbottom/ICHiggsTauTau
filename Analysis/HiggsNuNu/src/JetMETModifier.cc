@@ -175,15 +175,14 @@ namespace ic {
     else{
       EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
       double wt_ = eventInfo->total_weight();
-
       //GET MET AND JET COLLECTIONS
       std::vector<PFJet *> & vec = event->GetPtrVec<PFJet>(input_label_);//Main jet collection
       std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");//GenJet collection, note: could make this a parameter but we only have one collection at the moment in the ntuples
       //std::vector<GenParticle*> const& taus = event->GetPtrVec<GenParticle>("genParticlesTaus");//Tau Collection could be used in future but commented out to remove compiler warning
-      Met *met = event->GetPtr<Met>(met_label_);//MET collection
+      Met *met;
+      met = event->GetPtr<Met>(met_label_);//MET collection
       ROOT::Math::PxPyPzEVector  oldmet = ROOT::Math::PxPyPzEVector(met->vector());
       ROOT::Math::PxPyPzEVector  newmet = oldmet;
-
       //GET RUNMETUNCS COLLECTIONS FOR COMPARISON
       std::vector<ic::Candidate *> runmetuncvec;
       std::vector< std::pair<PFJet*, ic::Candidate*> > jet_runmetjet_pairs;

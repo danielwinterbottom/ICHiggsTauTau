@@ -80,6 +80,7 @@ namespace ic {
     CLASS_MEMBER(HistPlotter,bool,do_ratio_fitline)
     CLASS_MEMBER(HistPlotter,bool,add_underflows)
     CLASS_MEMBER(HistPlotter,bool,add_overflows)
+    CLASS_MEMBER(HistPlotter,std::string,outsuffix)
 
   public:	
     HistPlotter(std::string);
