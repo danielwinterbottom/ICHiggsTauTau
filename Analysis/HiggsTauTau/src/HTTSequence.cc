@@ -165,7 +165,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
    tau_dz = 0.2;
   if(strategy_type == strategy::phys14){
   tau_anti_elec_discr = "againstElectronTightMVA5";
-  tau_anti_muon_discr = "againstMuonLoose";
+  tau_anti_muon_discr = "againstMuonLoose3";
   tau_iso_discr = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
   tau_iso = 1.5;
   } else if (strategy_type == strategy::paper2013){
@@ -212,7 +212,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   elec_dz = 0.2;
   tau_dz = 0.2;
   if(strategy_type == strategy::phys14){
-  tau_anti_elec_discr = "againstElectronLoose";
+  tau_anti_elec_discr = "againstElectronVLooseMVA5";
   tau_anti_muon_discr = "againstMuonTight3";
   tau_iso_discr = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
   tau_iso = 1.5;
@@ -266,7 +266,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   jets_label   = json["jets"].asString();
   met_label    = json["met"].asString();
   moriond_tau_scale = json["moriond_tau_scale"].asBool();
-  pu_id_training = json["pu_id_trainig"].asUInt();
+  pu_id_training = json["pu_id_training"].asUInt();
   bjet_regr_correction = json["bjet_regr_correction"].asBool();
   mass_shift = json["baseline"]["mass_shift"].asDouble();
   new_svfit_mode = json["new_svfit_mode"].asUInt();
@@ -368,13 +368,15 @@ void HTTSequence::BuildSequence(){
 
 
   // Trigger filtering
-  if (js["run_trg_filter"].asBool()) {
-    BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-        .set_channel(channel)
-        .set_mc(mc_type)
-        .set_is_data(is_data)
-        .set_is_embedded(is_embedded)
-        .set_pair_label("ditau"));
+if(strategy_type != strategy::phys14){
+    if (js["run_trg_filter"].asBool()) {
+        BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+            .set_channel(channel)
+            .set_mc(mc_type)
+            .set_is_data(is_data)
+            .set_is_embedded(is_embedded)
+            .set_pair_label("ditau"));
+      }
   }
 
   // Lepton Vetoes
@@ -385,13 +387,14 @@ void HTTSequence::BuildSequence(){
 
 
   // Pileup Weighting
+if(strategy_type != strategy::phys14){
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
   TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
   if (js["do_pu_wt"].asBool()) {
     BuildModule( PileupWeight("PileupWeight")
         .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
   }
-
+}
 
 
  // bool bjet_regr_correction = false;
@@ -597,7 +600,7 @@ if(bjet_regr_correction){
   .set_jets_label(jets_label));
 }
 
-if(js["make_sync_ntuple"].asBool()){
+if(js["make_sync_ntuple"].asBool() && strategy_type!=strategy::phys14){
  BuildModule(HTTSync("HTTSync","SYNCFILE_" + output_name, channel)
  .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau"));
  //.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label));
