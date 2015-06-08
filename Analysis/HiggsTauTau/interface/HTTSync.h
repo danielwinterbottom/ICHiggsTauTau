@@ -22,6 +22,7 @@ class HTTSync : public ModuleBase {
   CLASS_MEMBER(HTTSync, std::string, met_label)
   CLASS_MEMBER(HTTSync, int, select_sel_mode)
   CLASS_MEMBER(HTTSync, double, jet_eta)
+  CLASS_MEMBER(HTTSync, std::string, ditau_label)
 
   TFile *lOFile;
   TTree *lOTree;

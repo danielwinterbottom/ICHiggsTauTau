@@ -1,0 +1,172 @@
+{
+  "job": {
+    "filelist":     "filelists/June6_MC_53X_GluGluToHToTauTau_M-125_mt_skim.dat",
+    "file_prefix":  "root://eoscms.cern.ch//eos/cms/store/user/rlane/httskims/June6/MC_53X/",
+    "max_events":   -1,
+    "timings":      true,
+    "channels":     ["mt"],//"mt","tt","em"],
+    "sequences": {
+      "all":  ["default"]//,// "scale_j_lo", "scale_j_hi"],
+//      "et":   ["scale_t_lo", "scale_t_hi"],
+ //     "mt":   ["scale_t_lo", "scale_t_hi"],
+ //     "tt":   ["scale_t_lo", "scale_t_hi"],
+ //     "em":   ["scale_e_lo", "scale_e_hi"]
+    },
+    "output_folder": "",
+    "output_postfix":"",
+    "sample": "VBF_HToTauTau_M-125"
+  },
+  "sequence": {
+    "mc"            : "summer12_53X",
+    "era"           : "data_2012_rereco",
+    "strategy"      : "paper2013",
+    "is_data"       : false,
+    "is_embedded"   : false,
+    "make_sync_ntuple" : true,
+    "moriond_tau_scale" : true,
+    "electrons"     : "electrons",
+    "muons"         : "muonsPFlow",
+    "taus"          : "taus",
+    "jets"          : "pfJetsPFlow",
+    "met"           : "pfMVAMet",
+    "genTaus"       : "genParticles",
+    "genJets"       : "genJets",
+    "output_folder" : "./output/",
+    "output_name"   : "GluGluToHToTauTau-M125",
+    "svfit_folder"  : "svfit",
+    "svfit_override" : "",
+    "pu_id_training": 2,
+    "bjet_regr_correction" : false,
+    "svfit_mode"     :0,
+    "new_svfit_mode" : 0,
+    "kinfit_mode"   : 0,
+    "metscale_mode" : 0,
+    "mva_met_mode"  : 1,
+    "faked_tau_selector" : 0,
+    "hadronic_tau_selector" : 0,
+    "run_gen_info"  : false,
+    "do_pu_wt"      : true,
+    "data_pu_file"  : "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root",
+    "mc_pu_file"    : "input/pileup/MC_Summer12_PU_S10-600bins.root",
+    "run_trg_filter": true,
+    "baseline": {
+      "tau_scale_mode"    : false,
+      "jes_mode"          : 0,
+      "tau_es_shift"      : 1.0,
+      "elec_es_shift"     : 1.0,
+      "mass_shift"        : 1.0,
+      "do_em_extras"      : true,
+      "di_elec_veto"      : false,
+      "extra_elec_veto"   : false,
+      "max_extra_elecs"   : 1,
+      "di_muon_veto"      : false,
+      "extra_muon_veto"   : false,
+      "max_extra_muons"   : 1,
+      "tau_es_corr"       : false,
+      "lep_iso"           : true,
+      "do_tau_anti_elec"  : false,
+      "tau_anti_elec"     : "",
+      "do_tau_anti_muon"  : false,
+      "tau_anti_muon"     : "",
+      "elec_id"           : "MVA:Tight" // "MVA:Loose", "MVA:Tight", "CutBased"
+      //"pair_dr"           : 0.5
+    }
+  },
+  "channels": {
+    "et": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "di_elec_veto"   :true,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 0,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_electron":true,
+        "min_taus"       : 1
+      }
+    },
+ "tt": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "max_extra_elecs": 0,
+        "max_extra_muons": 0,
+        "extra_elec_veto" : true,
+        "extra_muon_veto" : true,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_electron":true,
+        "min_taus"       : 2
+      }
+    },
+
+    "mt": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "di_muon_veto"   :true,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 0,
+        "max_extra_muons": 1,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_electron":true,
+        "min_taus"       : 1
+      }
+    },
+    "em": {
+      "baseline": {
+        "pair_dr": 0.3,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 1
+      }
+    }
+  },
+  "sequences": {
+    "scale_t_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN",
+        "tau_scale_mode": true,
+        "tau_es_shift": 0.97
+      }
+    },
+    "scale_t_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP",
+        "tau_scale_mode": true,
+        "tau_es_shift": 1.03
+      }
+    },
+    "scale_e_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN",
+        "tau_scale_mode" : true,
+        "elec_es_shift": 0.99
+      }
+    },
+    "scale_e_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP",
+        "tau_scale_mode": true,
+        "elec_es_shift": 1.01
+      }
+    },
+//    "scale_j_lo": {
+//      "baseline": {
+//        "addit_output_folder" : "JES_DOWN",
+//        "jes_mode" : 1
+//      }
+//    },
+//    "scale_j_hi": {
+//      "baseline": {
+//        "addit_output_folder" : "JES_UP",
+//        "jes_mode" : 2
+//      }
+//    },
+
+    "default": {}
+  },
+  "samples": {
+
+  }
+}

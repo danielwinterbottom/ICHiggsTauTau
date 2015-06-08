@@ -15,6 +15,7 @@ HTTSync::HTTSync(std::string const& name, std::string const& output_name,
   is_embedded_ = false;
   select_sel_mode_ = -1;
   select_category_ = "";
+  ditau_label_="emtauCandidates";
 }
 
 HTTSync::~HTTSync() { ; }
@@ -348,7 +349,8 @@ int HTTSync::Execute(TreeEvent *event) {
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 0.0, jet_eta_));
   std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
-  std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
+  std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
+  //std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("ditau");
 
   Met const* pfMet = event->GetPtr<Met>("pfMet");
   Met const* pfMetMVA = event->GetPtr<Met>("pfMVAMet");

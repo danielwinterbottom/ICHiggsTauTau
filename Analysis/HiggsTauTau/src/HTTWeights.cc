@@ -46,6 +46,7 @@ namespace ic {
     gen_tau_collection_       = "genParticlesTaus";
     jets_label_               = "pfJetsPFlow";
     btag_label_ 	      = "combinedSecondaryVertexBJetTags";
+    ditau_label_              = "emtauCandidates";
   }
 
   HTTWeights::~HTTWeights() {
@@ -80,6 +81,7 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_tau_id_weights"   % do_tau_id_weights_;
     std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
     std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
+    std::cout << boost::format(param_fmt()) % "ditau_label"          % ditau_label_;
 
     if (do_tau_fake_weights_) {
      tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
@@ -168,7 +170,7 @@ namespace ic {
 
   int HTTWeights::Execute(TreeEvent *event) {
 
-    std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
+    std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
 
     double weight = 1.0;
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
