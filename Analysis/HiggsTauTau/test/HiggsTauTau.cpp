@@ -339,7 +339,7 @@ int main(int argc, char* argv[]){
       muon_dxy = 0.045;
       elec_pt = 13.0;
       elec_eta = 2.5;
-      muon_pt = 9.0;
+      muon_pt = 9.5; //THIS IS NOT WHAT'S ON THE TWIKI! Only have MVAMET pairs with pt>9.5 
       muon_eta = 2.4;
     }
     if (special_mode == 22 || special_mode == 25) {
@@ -610,7 +610,7 @@ int main(int argc, char* argv[]){
       elec_idiso_func = (bind(PF04IsolationVal<Electron>, _1, 0.5) >= 0.0); // Dummy function, will always pass
     } else {
       if (channel == channel::em) {
-        elec_idiso_func = bind(ElectronHTTId, _1, true) && bind(PF04IsolationEBElec, _1, 0.5, 0.15, 0.1);
+        elec_idiso_func = bind(ElectronHTTIdPhys14, _1, false) && (bind(PF03IsolationVal<Electron>, _1, 0.5, 0)<0.15);
       } else {
         elec_idiso_func = bind(ElectronHTTIdPhys14, _1, false) && (bind(PF03IsolationVal<Electron>, _1, 0.5, 0) < 0.1);
       }
@@ -709,7 +709,7 @@ int main(int argc, char* argv[]){
       muon_idiso_func = (bind(PF04IsolationVal<Muon>, _1, 0.5) >= 0.0);
     } else {
       if (channel == channel::em) {
-        muon_idiso_func = bind(MuonTight, _1) && bind(PF04IsolationEB<Muon>, _1, 0.5, 0.15, 0.1);
+        muon_idiso_func = bind(MuonMedium, _1) && (bind(PF03IsolationVal<Muon>, _1, 0.5, 0) < 0.15);
       } else {
         muon_idiso_func = bind(MuonMedium, _1) && (bind(PF03IsolationVal<Muon>, _1, 0.5, 0) < 0.1);
       }
@@ -1128,8 +1128,8 @@ int main(int argc, char* argv[]){
   }
 
 
-  //HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
-  //httSync.set_is_embedded(is_embedded).set_met_label(met_label);
+  HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
+  httSync.set_is_embedded(is_embedded).set_met_label(met_label);
 
   HTTSyncTemp httSyncTemp("HTTSyncTemp","SYNCFILE_" + output_name, channel);
   httSyncTemp.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label);
@@ -1304,8 +1304,8 @@ int main(int argc, char* argv[]){
    }
    if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
-                                  analysis.AddModule(&HhhemuMVA);
-								  analysis.AddModule(&HhhemuMVABoth);
+//                                  analysis.AddModule(&HhhemuMVA);
+//								  analysis.AddModule(&HhhemuMVABoth);
    }
    if (strategy == strategy::paper2013 && channel ==channel::mt){
                                   analysis.AddModule(&HhhmtMVABoth);
@@ -1315,7 +1315,13 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&hhhBJetRegression);
    }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
-    if (make_sync_ntuple)         analysis.AddModule(&httSyncTemp);
+    if (make_sync_ntuple&&strategy==strategy::phys14){
+         analysis.AddModule(&httSyncTemp);
+    }
+     if (make_sync_ntuple&&strategy==strategy::paper2013){
+         analysis.AddModule(&httSync);
+    }
+   
     if (!quark_gluon_study)       analysis.AddModule(&httCategories);
                                   //analysis.AddModule(&btagCheck);
 

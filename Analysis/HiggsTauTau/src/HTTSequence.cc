@@ -89,16 +89,20 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
    veto_dimuon_dxy = 0.045;
    veto_dimuon_dz = 0.2;
    if(channel_str == "em"){
+   elec_dxy = 0.02;
+   elec_dz = 0.1;
+   muon_dxy = 0.02;
+   muon_dz = 0.1;
+   pair_dr = 0.3;
+  if(era_type == era::data_2015){
    elec_dxy = 0.045;
    elec_dz = 0.2;
    muon_dxy = 0.045;
    muon_dz = 0.2;
-   pair_dr = 0.3;
-  if(era_type == era::data_2015){
    elec_pt = 13.;
    elec_eta = 2.5;
    muon_pt = 9.5;
-   muon_eta = 2.1;
+   muon_eta = 2.4;
   } else {
    elec_pt = 10.0;
    elec_eta = 2.3;
@@ -626,7 +630,7 @@ if(strategy_type != strategy::phys14){
 
    }
 
-   if (strategy_type == strategy::paper2013 && channel == channel::em) {
+/*   if (strategy_type == strategy::paper2013 && channel == channel::em) {
   BuildModule(HTTEMuMVA("EMuMVA")
     .set_ditau_label("ditau"));
   //Some attempts at MVA for the H->hh analysis, could possibly be used in the future
@@ -634,7 +638,7 @@ if(strategy_type != strategy::phys14){
     .set_ditau_label("ditau"));
  BuildModule(HhhEMuMVABoth("HhhEMuMVABoth")
     .set_ditau_label("ditau"));
-}
+}*/
 if (strategy_type == strategy::paper2013 && channel ==channel::mt){
   BuildModule(HhhMTMVABoth("HhhMTMVABoth")
     .set_ditau_label("ditau")); 
@@ -713,13 +717,13 @@ void HTTSequence::BuildETPairs() {
      ElecID = [](Electron const* e) { return HttEMuFakeElectron(e); };
     } else if (special_mode == 25){
      ElecID = [](Electron const* e) { return true;};
-    } else if (id_fn == "MVA:Loose") {
-      ElecID = [](Electron const* e) { return ElectronHTTId(e, true); };
-    } else if (id_fn == "MVA:Tight") {
+    //} //else if (channel_str=="em") {
+      //ElecID = [](Electron const* e) { return ElectronHTTId(e, true); };
+    } else {
       ElecID = [](Electron const* e) { return ElectronHTTId(e, false); };
-    } else if (id_fn == "CutBased") {
-      ElecID = [](Electron const* e) { return ElectronZbbID(e); };
-    }
+    }// else if (id_fn == "CutBased") {
+      //ElecID = [](Electron const* e) { return ElectronZbbID(e); };
+   // }
   }  else {
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
     }
@@ -900,12 +904,12 @@ void HTTSequence::BuildEMPairs() {
      ElecID = [](Electron const* e) { return HttEMuFakeElectron(e); };
     } else if(special_mode ==25){
      ElecID = [](Electron const* e) {return true; } ;
-    } else if (id_fn == "MVA:Loose") {
+    } else {
       ElecID = [](Electron const* e) { return ElectronHTTId(e, true); };
-    } else if (id_fn == "MVA:Tight") {
-      ElecID = [](Electron const* e) { return ElectronHTTId(e, false); };
-    } else if (id_fn == "CutBased") {
-      ElecID = [](Electron const* e) { return ElectronZbbID(e); };
+  //  } else if (id_fn == "MVA:Tight") {
+    //  ElecID = [](Electron const* e) { return ElectronHTTId(e, false); };
+    //} else if (id_fn == "CutBased") {
+     // ElecID = [](Electron const* e) { return ElectronZbbID(e); };
     }
   } else {
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };

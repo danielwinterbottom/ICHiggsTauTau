@@ -1,10 +1,10 @@
 {
   "job": {
-    "filelist":     "filelists/June6_MC_53X_GluGluToHToTauTau_M-125_mt_skim.dat",
+    "filelist":     "filelists/June6_MC_53X_GluGluToHToTauTau_M-125_et_skim.dat",
     "file_prefix":  "root://eoscms.cern.ch//eos/cms/store/user/rlane/httskims/June6/MC_53X/",
     "max_events":   -1,
     "timings":      true,
-    "channels":     ["mt"],//"mt","tt","em"],
+    "channels":     ["et"],//"mt","tt","em"],
     "sequences": {
       "all":  ["default"]//,// "scale_j_lo", "scale_j_hi"],
 //      "et":   ["scale_t_lo", "scale_t_hi"],
@@ -81,7 +81,7 @@
         "max_extra_elecs": 1,
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
-        "do_tau_anti_electron":true,
+        "do_tau_anti_elec":true,
         "min_taus"       : 1
       }
     },
@@ -93,7 +93,7 @@
         "extra_elec_veto" : true,
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
-        "do_tau_anti_electron":true,
+        "do_tau_anti_elec":true,
         "min_taus"       : 2
       }
     },
@@ -107,7 +107,7 @@
         "max_extra_elecs": 0,
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
-        "do_tau_anti_electron":true,
+        "do_tau_anti_elec":true,
         "min_taus"       : 1
       }
     },
