@@ -11,6 +11,8 @@
 #include "UserCode/ICHiggsTauTau/interface/Muon.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
+//boost
+#include <boost/format.hpp>
 // Utilities
 #include "Utilities/interface/FnRootTools.h"
 // HTT-specific modules
@@ -52,52 +54,21 @@ namespace ic {
 
 HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf, Json::Value const& json) {
   //j_postfix = json["job"]["output_postfix"].asString();
-  svfit_folder = json["svfit_folder"].asString();
+  if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else{std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
   svfit_override = json["svfit_override"].asString();
-  output_name=json["output_name"].asString();
-  output_folder=json["output_folder"].asString();
+  if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
+  if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   output_folder=output_folder+"/"+addit_output_folder;
+  output_name=chan + "_" +output_name + "_" + "_" + var + "_" + postf + ".root";
   
 
   fs = std::make_shared<fwlite::TFileService>(
-       (output_folder+"/"+chan + "_" + output_name + "_" + postf + ".root").c_str());
+       (output_folder+output_name).c_str());
+       //(output_folder+"/"+chan + "_" + output_name + "_" + postf + ".root").c_str());
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
-/*  elec_pt = json["baseline"]["elec_pt"].asDouble();
-  elec_eta = json["baseline"]["elec_eta"].asDouble();
-  elec_dxy = json["baseline"]["elec_dxy"].asDouble();
-  elec_dz = json["baseline"]["elec_dz"].asDouble();
-  muon_pt = json["baseline"]["muon_pt"].asDouble();
-  muon_eta = json["baseline"]["muon_eta"].asDouble(); 
-  muon_dxy = json["baseline"]["muon_dxy"].asDouble();
-  muon_dz = json["baseline"]["muon_dz"].asDouble();
-  tau_pt = json["baseline"]["tau_pt"].asDouble();
-  tau_eta = json["baseline"]["tau_eta"].asDouble();
-  tau_dz = json["baseline"]["tau_dz"].asDouble();
-  tau_iso = json["baseline"]["tau_iso"].asDouble();
-  veto_elec_pt = json["baseline"]["veto_elec_pt"].asDouble(); 
-  veto_elec_eta = json["baseline"]["veto_elec_eta"].asDouble();
-  veto_elec_dxy = json["baseline"]["veto_elec_dxy"].asDouble();
-  veto_elec_dz = json["baseline"]["veto_elec_dz"].asDouble();
-  veto_dielec_pt = json["baseline"]["veto_dielec_pt"].asDouble(); 
-  veto_dielec_eta = json["baseline"]["veto_dielec_eta"].asDouble();
-  veto_dielec_dxy = json["baseline"]["veto_dielec_dxy"].asDouble();
-  veto_dielec_dz = json["baseline"]["veto_dielec_dz"].asDouble();
-  veto_muon_pt = json["baseline"]["veto_muon_pt"].asDouble(); 
-  veto_muon_eta = json["baseline"]["veto_muon_eta"].asDouble();
-  veto_muon_dxy = json["baseline"]["veto_muon_dxy"].asDouble();
-  veto_muon_dz = json["baseline"]["veto_muon_dz"].asDouble();
-  veto_dimuon_pt = json["baseline"]["veto_dimuon_pt"].asDouble(); 
-  veto_dimuon_eta = json["baseline"]["veto_dimuon_eta"].asDouble();
-  veto_dimuon_dxy = json["baseline"]["veto_dimuon_dxy"].asDouble();
-  veto_dimuon_dz = json["baseline"]["veto_dimuon_dz"].asDouble();
-  tau_anti_elec = json["baseline"]["tau_anti_elec"].asString();
-  tau_anti_muon = json["baseline"]["tau_anti_muon"].asString();
-  min_taus     = json["baseline"]["min_taus"].asUInt();
-  pair_dr      = json["baseline"]["pair_dr"].asDouble();
-*/
   ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
   ic::era  era_type  = String2Era(js["era"].asString());
   //if(strategy_type == strategy::phys14){
@@ -288,12 +259,18 @@ HTTSequence::~HTTSequence() {}
 
 void HTTSequence::BuildSequence(){
   using ROOT::Math::VectorUtil::DeltaR;
+  
+
 
   // Set global parameters that get used in multiple places
   ic::channel channel         = String2Channel(channel_str);
-  ic::mc mc_type              = String2MC(js["mc"].asString());
-  ic::era era_type            = String2Era(js["era"].asString());
-  ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+  //ic::mc mc_type;
+  if(js["mc"].asString()==""){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
+  ic::mc mc_type = String2MC(js["mc"].asString());
+  if(js["era"].asString()=="") {std::cout<<"ERROR: era not set"<<std::endl; exit(1);}
+  ic::era era_type = String2Era(js["era"].asString());
+  if(js["strategy"].asString()==""){std::cout<<"ERROR: strategy not set"<<std::endl; exit(1);}
+  ic::strategy strategy_type = String2Strategy(js["strategy"].asString());
   // Other flags
   bool is_data        = js["is_data"].asBool();
   bool is_embedded    = js["is_embedded"].asBool();
@@ -306,6 +283,72 @@ void HTTSequence::BuildSequence(){
                         || (output_name.find("RecHit")                != output_name.npos) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
+
+  std::cout << "-------------------------------------" << std::endl;
+  std::cout << "HiggsToTauTau Analysis" << std::endl;
+  std::cout << "-------------------------------------" << std::endl;      std::string param_fmt = "%-25s %-40s\n";
+//  std::cout << boost::format(param_fmt) % "max_events" % max_events;
+  std::cout << boost::format(param_fmt) % "output" % (output_folder+output_name);
+  std::cout << boost::format(param_fmt) % "strategy" % Strategy2String(strategy_type);
+  std::cout << boost::format(param_fmt) % "era" % Era2String(era_type);
+  std::cout << boost::format(param_fmt) % "mc" % MC2String(mc_type);
+  std::cout << boost::format(param_fmt) % "channel" % channel_str;
+  std::cout << boost::format(param_fmt) % "is_data" % is_data;
+  std::cout << boost::format(param_fmt) % "is_embedded" % is_embedded;
+  std::cout << boost::format(param_fmt) % "special_mode" % special_mode;
+  std::cout << boost::format(param_fmt) % "tau_scale_mode" % tau_scale_mode;
+//  std::cout << boost::format(param_fmt) % "mass_scale_mode" % mass_scale_mode;
+  std::cout << boost::format(param_fmt) % "new_svfit_mode" % new_svfit_mode;
+//  std::cout << boost::format(param_fmt) % "vh_filter_mode" % vh_filter_mode;
+  if (new_svfit_mode > 0) {
+    std::cout << boost::format(param_fmt) % "svfit_folder" % svfit_folder;
+    std::cout << boost::format(param_fmt) % "svfit_override" % svfit_override;
+  }
+  std::cout << boost::format(param_fmt) % "kinfit_mode" % kinfit_mode;
+//  std::cout << boost::format(param_fmt) % "ztautau_mode" % ztautau_mode;
+  std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector;
+  std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector;
+  std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
+  std::cout << boost::format(param_fmt) % "make_sync_ntuple" % js["make_sync_ntuple"].asBool();
+  std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
+  std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
+//  std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
+  std::cout << boost::format(param_fmt) % "pu_id_training" % pu_id_training;
+//  std::cout << boost::format(param_fmt) % "make_gen_plots" % make_gen_plots;
+  std::cout << boost::format(param_fmt) % "bjet_regr_correction" % bjet_regr_correction;
+  std::cout << "** Kinematics **" << std::endl;
+  std::cout << boost::format(param_fmt) % "elec_pt" % elec_pt;
+  std::cout << boost::format(param_fmt) % "elec_eta" % elec_eta;
+  std::cout << boost::format(param_fmt) % "elec_dxy" % elec_dxy;
+  std::cout << boost::format(param_fmt) % "elec_dz" % elec_dz;
+  std::cout << boost::format(param_fmt) % "muon_pt" % muon_pt;
+  std::cout << boost::format(param_fmt) % "muon_eta" % muon_eta;
+  std::cout << boost::format(param_fmt) % "muon_dxy" % muon_dxy;
+  std::cout << boost::format(param_fmt) % "muon_dz" % muon_dz;
+  std::cout << boost::format(param_fmt) % "tau_pt" % tau_pt;
+  std::cout << boost::format(param_fmt) % "tau_eta" % tau_eta;
+  std::cout << boost::format(param_fmt) % "tau_dz" % tau_dz;
+  std::cout << boost::format(param_fmt) % "veto_elec_pt" % veto_elec_pt;
+  std::cout << boost::format(param_fmt) % "veto_elec_eta" % veto_elec_eta;
+  std::cout << boost::format(param_fmt) % "veto_elec_dxy" % veto_elec_dxy;
+  std::cout << boost::format(param_fmt) % "veto_elec_dz" % veto_elec_dz;
+  std::cout << boost::format(param_fmt) % "veto_dielec_pt" % veto_dielec_pt;
+  std::cout << boost::format(param_fmt) % "veto_dielec_eta" % veto_dielec_eta;
+  std::cout << boost::format(param_fmt) % "veto_dielec_dxy" % veto_dielec_dxy;
+  std::cout << boost::format(param_fmt) % "veto_dielec_dz" % veto_dielec_dz;
+  std::cout << boost::format(param_fmt) % "veto_muon_pt" % veto_muon_pt;
+  std::cout << boost::format(param_fmt) % "veto_muon_eta" % veto_muon_eta;
+  std::cout << boost::format(param_fmt) % "veto_muon_dxy" % veto_muon_dxy;
+  std::cout << boost::format(param_fmt) % "veto_muon_dz" % veto_muon_dz;
+  std::cout << boost::format(param_fmt) % "veto_dimuon_pt" % veto_dimuon_pt;
+  std::cout << boost::format(param_fmt) % "veto_dimuon_eta" % veto_dimuon_eta;
+  std::cout << boost::format(param_fmt) % "veto_dimuon_dxy" % veto_dimuon_dxy;
+  std::cout << boost::format(param_fmt) % "veto_dimuon_dz" % veto_dimuon_dz;
+  std::cout << "** Tau Discriminators **" << std::endl;
+  std::cout << boost::format(param_fmt) % "isolation" %  tau_iso_discr;
+  std::cout << boost::format(param_fmt) % "isolation cut" %  tau_iso;
+  std::cout << boost::format(param_fmt) % "anti-electron" % tau_anti_elec_discr;
+  std::cout << boost::format(param_fmt) % "anti-muon" % tau_anti_muon_discr;
 
 
   auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
@@ -629,6 +672,7 @@ if(js["make_sync_ntuple"].asBool() && strategy_type==strategy::phys14){
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
     .set_mass_shift(mass_shift)
+    .set_write_plots(true)
     .set_write_tree(true));
 
 

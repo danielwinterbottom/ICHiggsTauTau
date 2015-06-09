@@ -24,6 +24,7 @@
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
 #include "HiggsTauTau/interface/HhhBJetRegression.h"
 #include "HiggsTauTau/interface/HTTSync.h"
+#include "HiggsTauTau/interface/HTTSyncTemp.h"
 #include "HiggsTauTau/interface/HTTPrint.h"
 #include "Modules/interface/MakeRunStats.h"
 #include "Modules/interface/EnergyShifter.h"
@@ -411,6 +412,10 @@ int main(int argc, char* argv[]){
     .set_output_name(output_folder+output_name+".runstats");
 
   HTTPrint httPrint("HTTPrint");
+  if(era == era::data_2015){
+   httPrint.set_muon_label("muons");
+   httPrint.set_jet_label("ak4PFJetsCHS");
+  }
 
   string mc_pu_file;
   if (mc == mc::fall11_42X) mc_pu_file    = "input/pileup/MC_Fall11_PU_S6-500bins.root";
@@ -1111,6 +1116,7 @@ int main(int argc, char* argv[]){
     .set_jets_label(jets_label)
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
+    .set_write_plots(true)
     .set_write_tree(true);
   if (mass_scale_mode == 1) httCategories.set_mass_shift(1.00);
   if (mass_scale_mode == 2) httCategories.set_mass_shift(1.01);
@@ -1122,8 +1128,12 @@ int main(int argc, char* argv[]){
   }
 
 
-  HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
-  httSync.set_is_embedded(is_embedded).set_met_label(met_label);
+  //HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
+  //httSync.set_is_embedded(is_embedded).set_met_label(met_label);
+
+  HTTSyncTemp httSyncTemp("HTTSyncTemp","SYNCFILE_" + output_name, channel);
+  httSyncTemp.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label);
+
 
   SVFit svfit("SVFit");
   svfit
@@ -1159,7 +1169,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------ 
   auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
   std::vector<int> to_check =
-  {
+  { 
   };
   for (auto ch : to_check) {
    eventChecker.CheckEvent(ch);
@@ -1305,7 +1315,7 @@ int main(int argc, char* argv[]){
                                   analysis.AddModule(&hhhBJetRegression);
    }
     if (quark_gluon_study)        analysis.AddModule(&quarkGluonDiscriminatorStudy);                                 
-    if (make_sync_ntuple)         analysis.AddModule(&httSync);
+    if (make_sync_ntuple)         analysis.AddModule(&httSyncTemp);
     if (!quark_gluon_study)       analysis.AddModule(&httCategories);
                                   //analysis.AddModule(&btagCheck);
 
