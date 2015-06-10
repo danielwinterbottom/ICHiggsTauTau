@@ -21,6 +21,48 @@ Json::Value ExtractJsonFromString(std::string const& str) {
   return js;
 }
 
+Json::Value ExtractJsonFromFlatString(std::string const&str){
+ //THIS NEEDS TO BE TURNED INTO SOMETHING THAT WORKS FOR ANY DEPTH OF KEYS/VALUES
+ //AND FOR ANY VALUE TYPE (this only works for strings)
+  std::vector<std::string> split_str;
+  std::vector<std::string> split_lastarg;
+  boost::split(split_str,str,boost::is_any_of(":"));
+  std::cout<<split_str.size()<<std::endl;
+  boost::split(split_lastarg,split_str.at(split_str.size()-1),boost::is_any_of("."));
+  std::cout<<split_lastarg.size()<<std::endl;
+  std::string jsonstr;
+  if(split_str.size()==3){
+  if(split_lastarg.size()>1){
+  jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":[\"";//+split_str.at(2)+"\"]}}";
+    for(unsigned k=0;k<split_lastarg.size()-1;k++){
+      jsonstr=jsonstr+split_lastarg.at(k)+"\",\"";
+    }
+  jsonstr=jsonstr+split_lastarg.at(split_lastarg.size()-1)+"\"]}}";
+  }
+  else{
+   jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":\""+split_str.at(2)+"\"}}";//+split_str.at(2)+"\"]}}";
+  }
+  } else if(split_str.size()==4){
+  if(split_lastarg.size()>1){
+   jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":{\""+split_str.at(2)+"\"[\"";//+split_str.at(2)+"\"]}}";
+    for(unsigned k=0;k<split_lastarg.size()-1;k++){
+      jsonstr=jsonstr+split_lastarg.at(k)+"\",\"";
+    }
+  jsonstr=jsonstr+split_lastarg.at(split_lastarg.size()-1)+"\"]}}}";
+  }
+  else{
+   jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":{\""+split_str.at(2)+"\":\""+split_str.at(3)+"\"}}}";//+split_str.at(2)+"\"]}}";
+  }
+ } else{ std::cout<<"Filter not supported for this number of arguments! use ExtractJsonFromString"<<std::endl; exit(1);}
+
+
+  Json::Value js;
+  Json::Reader reader(Json::Features::all());
+  reader.parse(jsonstr, js);
+  return js;
+}
+  
+
 void UpdateJson(Json::Value& a, Json::Value const& b) {
   if (!a.isObject() || !b.isObject()) return;
   for (auto const& key : b.getMemberNames()) {

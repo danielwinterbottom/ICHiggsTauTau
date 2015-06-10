@@ -13,6 +13,7 @@
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 //boost
 #include <boost/format.hpp>
+#include "boost/lexical_cast.hpp"
 // Utilities
 #include "Utilities/interface/FnRootTools.h"
 // HTT-specific modules
@@ -61,6 +62,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   output_folder=output_folder+"/"+addit_output_folder;
   output_name=chan + "_" +output_name + "_" + "_" + var + "_" + postf + ".root";
+  special_mode=json["special_mode"].asUInt();
+  if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
   
 
   fs = std::make_shared<fwlite::TFileService>(
@@ -131,13 +134,14 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
  //  extra_muon_veto = true;
  //  max_extra_elecs = 1;
  //  max_extra_muons = 1;
-   pair_dr = 0.3;
+//   pair_dr = 0.3;
  if (channel_str == "et"){
    elec_dz = 0.2;
    elec_dxy = 0.045;
    muon_dxy = 0.045;
    muon_dz = 0.2;
    tau_dz = 0.2;
+   pair_dr = 0.5;
   if(strategy_type == strategy::phys14){
   tau_anti_elec_discr = "againstElectronTightMVA5";
   tau_anti_muon_discr = "againstMuonLoose3";
@@ -186,6 +190,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   elec_dxy = 0.045;
   elec_dz = 0.2;
   tau_dz = 0.2;
+  pair_dr = 0.5;
   if(strategy_type == strategy::phys14){
   tau_anti_elec_discr = "againstElectronVLooseMVA5";
   tau_anti_muon_discr = "againstMuonTight3";
@@ -441,7 +446,7 @@ if(strategy_type != strategy::phys14){
 if(strategy_type != strategy::phys14){
   TH1D d_pu = GetFromTFile<TH1D>(js["data_pu_file"].asString(), "/", "pileup");
   TH1D m_pu = GetFromTFile<TH1D>(js["mc_pu_file"].asString(), "/", "pileup");
-  if (js["do_pu_wt"].asBool()) {
+  if (js["do_pu_wt"].asBool()&&!is_data) {
     BuildModule( PileupWeight("PileupWeight")
         .set_data(new TH1D(d_pu)).set_mc(new TH1D(m_pu)));
   }
@@ -459,7 +464,6 @@ if(strategy_type != strategy::phys14){
     .set_pair_label("ditau")
     .set_met_label(met_label)
     .set_mva_met_from_vector(mva_met_mode == 1)
-    .set_use_most_isolated(channel==channel::tt ? true : false)
     .set_faked_tau_selector(faked_tau_selector)
     .set_hadronic_tau_selector(hadronic_tau_selector)
     .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
@@ -495,6 +499,7 @@ if(strategy_type != strategy::phys14){
   BuildModule(SimpleFilter<PFJet>("JetIDFilter")
     .set_input_label(jets_label)
     .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training)));
+
 
   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
 
@@ -630,15 +635,15 @@ if(strategy_type != strategy::phys14){
 
    }
 
-/*   if (strategy_type == strategy::paper2013 && channel == channel::em) {
+   if (strategy_type == strategy::paper2013 && channel == channel::em) {
   BuildModule(HTTEMuMVA("EMuMVA")
     .set_ditau_label("ditau"));
   //Some attempts at MVA for the H->hh analysis, could possibly be used in the future
-  BuildModule(HhhEMuMVA("HhhEMuMVA")
-    .set_ditau_label("ditau"));
- BuildModule(HhhEMuMVABoth("HhhEMuMVABoth")
-    .set_ditau_label("ditau"));
-}*/
+//  BuildModule(HhhEMuMVA("HhhEMuMVA")
+ //   .set_ditau_label("ditau"));
+// BuildModule(HhhEMuMVABoth("HhhEMuMVABoth")
+ //   .set_ditau_label("ditau"));
+}
 if (strategy_type == strategy::paper2013 && channel ==channel::mt){
   BuildModule(HhhMTMVABoth("HhhMTMVABoth")
     .set_ditau_label("ditau")); 
@@ -885,7 +890,7 @@ void HTTSequence::BuildEMPairs() {
       .set_input_label(js["electrons"].asString())
       .set_shift(js["baseline"]["elec_es_shift"].asDouble()));
 
-  if (js["baseline"]["do_em_extras"].asBool()) {
+  if (js["baseline"]["do_em_extras"].asBool()&&strategy_type==strategy::paper2013) {
     BuildModule(HTTEMuExtras("EMExtras"));
   }
 
@@ -1069,11 +1074,14 @@ bool moriond_tau_scale =false;
 
 if(real_tau_sample) moriond_tau_scale = true; 
 
+  bool is_data        = js["is_data"].asBool();
+if(!is_data){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")
       .set_input_label("taus")
       .set_shift(base["tau_es_shift"].asDouble())
       .set_strategy(strategy_type)
       .set_moriond_corrections(moriond_tau_scale));
+}
     //  .set_moriond_corrections(base["tau_es_corr"].asBool()));
 //    if (correct_es_sample) httEnergyScale.set_moriond_corrections(moriond_tau_scale);
 

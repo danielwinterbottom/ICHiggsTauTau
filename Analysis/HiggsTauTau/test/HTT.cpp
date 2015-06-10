@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 // #include "boost/lexical_cast.hpp"
+#include "boost/algorithm/string.hpp"
 #include "boost/program_options.hpp"
 // #include "boost/bind.hpp"
 // #include "boost/function.hpp"
@@ -46,6 +47,7 @@ int main(int argc, char* argv[]) {
 
   vector<string> cfgs;
   vector<string> jsons;
+  vector<string> flatjsons;
   unsigned offset;
   unsigned nlines;
 
@@ -56,7 +58,9 @@ int main(int argc, char* argv[]) {
       "cfg", po::value<vector<string>>(&cfgs)->multitoken()->required(),
       "json config files")(
       "json", po::value<vector<string>>(&jsons)->multitoken(),
-      "json fragments");
+      "json fragments")(
+      "flatjson", po::value<vector<string>>(&flatjsons)->multitoken(),
+      "json flat fragments");
   po::variables_map vm;
   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
   po::notify(vm);
@@ -69,13 +73,24 @@ int main(int argc, char* argv[]) {
     ic::UpdateJson(js_init, extra);
   }
   for (unsigned i = 0; i < jsons.size(); ++i) {
-    Json::Value extra;
+    std::vector<std::string> json_strs;
+    Json::Value extra ;
     Json::Reader reader(Json::Features::all());
     reader.parse(jsons[i], extra);
     std::cout << ">> Updating config with fragment:\n";
     std::cout << extra;
     ic::UpdateJson(js_init, extra);
   }
+  for (unsigned i = 0; i < flatjsons.size(); ++i) {
+  //  std::vector<std::string> json_strs;
+//    boost::split(json_strs,jsons[i],boost::is_any_of(":"));
+ //   std::string const json_patch ="{\""+json_strs.at(0)+"\":{\""+json_strs.at(1)+"\":[\""+json_strs.at(2)+"\"]}}";
+    Json::Value extra = ic::ExtractJsonFromFlatString(flatjsons[i]);
+    std::cout << ">> Updating config with fragment:\n";
+    std::cout << extra;
+    ic::UpdateJson(js_init, extra);
+  }
+
 
   Json::Value const js = js_init;
   std::string output_folder = "";
