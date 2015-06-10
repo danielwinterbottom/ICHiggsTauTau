@@ -83,9 +83,9 @@ namespace ic {
       HTTPlot();
       boost::program_options::options_description const& GenerateOptions(std::string const& prefix);
       void GeneratePlot(HTTAnalysis::HistValueMap hmap);
-      static void SetMCStackStyle(ic::TH1PlotElement & ele, unsigned color);
-      static void SetSignalStyle(ic::TH1PlotElement & ele, unsigned color);
-      static void SetDataStyle(ic::TH1PlotElement & ele);
+      static void SetMCStackStyle(TH1* hist_ptr, unsigned color);
+      static void SetSignalStyle(TH1* hist_ptr, unsigned color);
+      static void SetDataStyle(TH1* hist_ptr);
       static void SetRatioStyle(ic::RatioPlotElement & ele, unsigned color);
       inline std::string plot_name() const { return plot_name_; }
       inline std::string draw_signal_mass() const { return draw_signal_mass_; }

@@ -11,6 +11,8 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/FnRootTools.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTConfig.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plotting.h"
+#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plotting_Style.h"
 #include "TPad.h"
 #include "TROOT.h"
 #include "TColor.h"
@@ -107,119 +109,35 @@ namespace ic {
       PlotBkgComponent("ztt2","Z#rightarrow#tau#tau   1 #pi^{#pm} + photons"    ,{"ZTT-1P1PZ"}  ,kOrange - 0),
       PlotBkgComponent("ztt3","Z#rightarrow#tau#tau   3 #pi^{#pm}"             ,{"ZTT-3P"}     ,17)
     };
-    /*
-    bkg_schemes_["all"] = {
-      PlotBkgComponent("qcd","QCD"                  ,{"QCD","Fakes"}      , kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}"             ,{"TT","ttbar"}       , kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak"          ,{"W","VV","EWK"}     , kRed    + 2),
-      PlotBkgComponent("zll","Z#rightarrowll"       ,{"ZL","ZJ","ZLL"}    , kAzure  + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT","Ztt"}        , kOrange - 4)
-    };
-    bkg_schemes_["et_default"] = {
-      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}      , kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       , kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak"          ,{"W","VV"}   , kRed    + 2),
-      PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZL","ZJ"}  , kAzure  + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange - 4)
-    };
-    bkg_schemes_["et_zll"] = {
-      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}      , kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       , kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak"          ,{"W","VV"}   , kRed    + 2),
-      PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZLL"}      , kAzure  + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange - 4)
-    };
-    bkg_schemes_["et_with_zj"] = {
-      PlotBkgComponent("qcd","QCD"                      ,{"QCD"}      , kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}"                 ,{"TT"}       , kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak"              ,{"W","VV"}   , kRed    + 2),
-      PlotBkgComponent("zl","Z#rightarrowee (lepton)"   ,{"ZL"}       , kAzure  + 2),
-      PlotBkgComponent("zj","Z#rightarrowee (jet)"      ,{"ZJ"}       , kGreen  + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau"     ,{"ZTT"}      , kOrange - 4)
-    };
-    bkg_schemes_["mt_default"] = {
-      PlotBkgComponent("qcd","QCD"                  ,{"QCD"}              ,kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}               ,kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak"          ,{"W","VV","ZL","ZJ"} ,kRed    + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}              ,kOrange - 4)
-    };
-    bkg_schemes_["em_default"] = {
-      PlotBkgComponent("qcd","fakes"                ,{"Fakes"}            ,kMagenta-10),
-      PlotBkgComponent("ewk","electroweak"          ,{"EWK"}              ,kRed    + 2),
-      PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,kBlue   - 8),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,kOrange - 4)
-    };
-    bkg_schemes_["mt_with_zmm"] = {
-      PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
-      PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
-      PlotBkgComponent("ewk","electroweak",           {"W","VV"},   TColor::GetColor(222,90,106)),
-      PlotBkgComponent("zll","Z#rightarrow#mu#mu",    {"ZL","ZJ"},  TColor::GetColor(100,182,232)),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
-    };
-    bkg_schemes_["mt_with_zj"] = {
-      PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak",{"W","VV"},kRed    + 2),
-      PlotBkgComponent("zl","Z#rightarrow#mu#mu (lepton)",{"ZL"},kAzure  + 2),
-      PlotBkgComponent("zj","Z#rightarrow#mu#mu (jet)",{"ZJ"},kGreen  + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
-    };
-    bkg_schemes_["mt_with_zmm_zll"] = {
-      PlotBkgComponent("qcd","QCD",{"QCD"},kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}",{"TT"},kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak",{"W","VV"},kRed    + 2),
-      PlotBkgComponent("zll","Z#rightarrow#mu#mu",{"ZLL"},kAzure  + 2),
-      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",{"ZTT"},kOrange - 4)
-    };
-    bkg_schemes_["tau_modes"] = {
-      PlotBkgComponent("qcd","QCD"            ,{"QCD"}                ,kMagenta-10),
-      PlotBkgComponent("top","t#bar{t}"       ,{"TT"}                 ,kBlue   - 8),
-      PlotBkgComponent("ewk","electroweak"    ,{"W","VV"}             ,kRed    + 2),
-      PlotBkgComponent("zll","Z#rightarrow#mu#mu", {"ZL","ZJ"}        , kAzure  + 2),
-      PlotBkgComponent("ztt1","Z#rightarrow#tau#tau (1 #pi^{#pm} no photons)"   ,{"ZTT-1P0PZ"}  ,kOrange + 2),
-      PlotBkgComponent("ztt2","Z#rightarrow#tau#tau (1 #pi^{#pm} + photons)"    ,{"ZTT-1P1PZ"}  ,kOrange - 0),
-      PlotBkgComponent("ztt3","Z#rightarrow#tau#tau (3 #pi^{#pm}) "             ,{"ZTT-3P"}     ,17)
-    };
-*/
   }
-
-  void HTTPlot::SetMCStackStyle(ic::TH1PlotElement & ele, unsigned color) {
-    ele.set_fill_color(color);
-    ele.set_fill_style(1001);
-    ele.set_draw_fill(true);
-    ele.set_draw_marker(false);
-    ele.set_draw_line(false);
-    ele.set_line_width(2);
-    ele.set_draw_stat_error_y(false);
-    ele.set_in_stack(true);
+  void HTTPlot::SetMCStackStyle(TH1* hist_ptr, unsigned color) {
+    hist_ptr->SetFillColor(color);
+    hist_ptr->SetFillStyle(1001);
+    hist_ptr->SetLineColor(1);
+    hist_ptr->SetLineStyle(1);
+    hist_ptr->SetLineWidth(2);
+    hist_ptr->SetMarkerColor(1);
+    hist_ptr->SetMarkerStyle(21);
+    hist_ptr->SetMarkerSize(0.8);
+    hist_ptr->SetStats(false);
     return;
   }
-  void HTTPlot::SetSignalStyle(ic::TH1PlotElement & ele, unsigned color) {
-    ele.set_fill_style(1001);
-    ele.set_draw_fill(true);
-    ele.set_draw_marker(false);
-    ele.set_draw_line(true);
-    ele.set_draw_stat_error_y(false);
-    ele.set_in_stack(true);
-    ele.set_draw_fill_in_legend(false);
-    ele.set_line_style(11);
-    ele.set_fill_color(0);
-    ele.set_line_color(color);
-    ele.set_line_width(2);
+  void HTTPlot::SetSignalStyle(TH1* hist_ptr, unsigned color) {
+    hist_ptr->SetFillStyle(1001);
+    hist_ptr->SetLineStyle(9);
+    hist_ptr->SetFillColor(0);
+    hist_ptr->SetLineColor(color);
+    hist_ptr->SetLineWidth(3);
     return;
   }
-  void HTTPlot::SetDataStyle(ic::TH1PlotElement & ele) {
-    ele.set_marker_color(1);
-    ele.set_line_color(1);
-    ele.set_fill_color(1);
-    ele.set_fill_style(0);
-    ele.set_draw_fill(false);
-    ele.set_line_width(2);
-    ele.set_draw_marker(true);
-    ele.set_draw_line(true);
-    ele.set_marker_style(20);
-    ele.set_draw_stat_error_y(true);
-    ele.set_marker_size(1.1);
+  void HTTPlot::SetDataStyle(TH1* hist_ptr) {
+    hist_ptr->SetMarkerColor(1);
+    hist_ptr->SetLineColor(1);
+    hist_ptr->SetFillColor(1);
+    hist_ptr->SetFillStyle(0);
+    hist_ptr->SetLineWidth(2);
+    hist_ptr->SetMarkerStyle(20);
+    hist_ptr->SetMarkerSize(1.1);
     return;
   }
 
@@ -387,40 +305,13 @@ namespace ic {
         {"ggH_hww","qqH_hww"}, TColor::GetColor(0,18,255), false)
     };
 
-    ic::Plot plot;
-    if (use_htt_style_) plot.use_htt_style = true;
-
-    plot.output_filename = plot_name_+".pdf";
-    if (log_y_) {
-      plot.output_filename = plot_name_+"_log.pdf";
-      plot.y_axis_log = true;
-    }
-    plot.x_bin_labels_ = x_axis_bin_labels_;
-
-    plot.extra_pad = extra_pad_;
-    plot.custom_x_axis_range = custom_x_axis_range_;
-    if (custom_x_axis_range_){
-      plot.x_axis_min = x_axis_min_;
-      plot.x_axis_max = x_axis_max_;
-    }
-    if (custom_y_axis_min_) {
-      plot.y_axis_min = y_axis_min_;
-    }
-    // if (mssm_mode == 1) plot.legend_height = 0.045;
-    plot.x_axis_title = x_axis_label_;
-    plot.y_axis_title = y_axis_label_;
-
-    plot.draw_ratio_hist = draw_ratio_;
-
-    plot.title_left = title_left_;
-    plot.title_right = title_right_;
-
-    // should check if data actually exists: we might want to make a plot
-    // where it doesn't
-    TH1PlotElement data_plot("data", &hmap["data_obs"].first, "Observed");
-    if (norm_bins_) data_plot.hist_ptr()->Scale(1.0, "width");
+    ModTDRStyle();
+    THStack thstack("stack","stack");
+    
+    // First collect the data histogram and blind it if necessary
+    TH1F *data_hist = &hmap["data_obs"].first;
+    if (norm_bins_) data_hist->Scale(1.0, "width");
     if (blind_) {
-      TH1F *data_hist = &hmap["data_obs"].first;
       for (int j = 0; j < data_hist->GetNbinsX(); ++j) {
         double low_edge = data_hist->GetBinLowEdge(j+1);
         double high_edge = data_hist->GetBinWidth(j+1)+data_hist->GetBinLowEdge(j+1);
@@ -430,14 +321,44 @@ namespace ic {
         }
       }
     }
-
-    // should checkt the bakground scheme actually exists
+    
+    // Setup canvas and 1/2 TPads as necessary
+    TCanvas* canv = new TCanvas("c1", "c1");
+    canv->cd();
+  
+    std::vector<TPad*> pads =
+        draw_ratio_ ? TwoPadSplit(0.29, 0.00, 0.00) : OnePad();
+   
+    // Create axes based on data hist and possible user specified axis range
+    std::vector<TH1*> h = CreateAxisHists(2, data_hist, custom_x_axis_range_ ? x_axis_min_ : data_hist->GetXaxis()->GetXmin(), custom_x_axis_range_ ? x_axis_max_ : data_hist->GetXaxis()->GetXmax());
+    h[0]->Draw("axis");
+    
+    // Set second axis when necessary
+    if (draw_ratio_) {
+      pads[0]->cd();
+      pads[1]->cd();
+      h[1]->Draw("axis");
+      h[1]->GetXaxis()->SetTitleOffset(1.0);
+      SetupTwoPadSplitAsRatio(pads, "Obs/Exp", true, 0.60, 1.40);
+      StandardAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+      h[1]->GetYaxis()->SetNdivisions(4);
+    } else {
+      StandardAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+    }
+    pads[0]->cd();    
+    
+    
+    // Setup legend
+    TLegend *legend = PositionedLegend(0.40, 0.30, 3, 0.03);
+    legend->SetTextFont(42);
+    FixBoxPadding(pads[0], legend, 0.05);
+    legend->AddEntry(data_hist, "Observed", "pe");
+    
+    
+    std::string bkr_list_for_ratio = "";
+    // Produce stack from background components
     std::vector<PlotBkgComponent> bkg_scheme = bkg_schemes_[background_scheme_];
     std::vector<TH1PlotElement> bkg_elements;
-
-    std::string bkr_list_for_ratio = "";
-
-
     for (unsigned i = 0; i < bkg_scheme.size(); ++i) {
       if (i == 0) bkr_list_for_ratio += bkg_scheme[i].name;
       if (i != 0) bkr_list_for_ratio += ("+"+bkg_scheme[i].name);
@@ -453,12 +374,32 @@ namespace ic {
         }
       }
       if (valid_element) {
-        HTTPlot::SetMCStackStyle(bkg_elements.back(), bkg_scheme[i].color);
-        if (norm_bins_) bkg_elements.back().hist_ptr()->Scale(1.0, "width");
-        plot.AddTH1PlotElement(bkg_elements.back());
+        TH1PlotElement ele = bkg_elements.back();
+        HTTPlot::SetMCStackStyle(ele.hist_ptr(), bkg_scheme[i].color);
+        if (norm_bins_) ele.hist_ptr()->Scale(1.0, "width");
+        //Special settings for the first histogram in the stack
+        /*if(i==1) {
+          if (use_htt_style_) {
+            ele.hist_ptr()->SetTitleSize  (0.055,"Y");
+            ele.hist_ptr()->SetTitleOffset(1.400,"Y");
+            if (!draw_ratio_) ele.hist_ptr()->SetTitleOffset(1.500,"Y");
+            ele.hist_ptr()->SetLabelOffset(0.010,"X");
+            ele.hist_ptr()->SetLabelSize  (0.040,"X");
+            ele.hist_ptr()->SetLabelFont  (42   ,"X");
+          }
+
+        } */       
+        thstack.Add(ele.hist_ptr(),"HIST");
+        legend->AddEntry(ele.hist_ptr(), ele.legend_text().c_str(), "f");
       }
     }
-
+    
+    //Draw backgrounds and data
+    HTTPlot::SetDataStyle(data_hist);    
+    thstack.Draw();
+    data_hist->Draw("PE1same");
+    canv->Update();
+    
     std::vector<PlotSigComponent> sig_scheme = sig_schemes_[signal_scheme_];
     std::vector<TH1PlotElement> sig_elements;
     for (unsigned i = 0; i < sig_scheme.size(); ++i) {
@@ -467,14 +408,21 @@ namespace ic {
         sig_elements.back().hist_ptr()->Add(&hmap[sig_scheme[i].plots[j]+draw_signal_mass_].first);
       }
       sig_elements.back().hist_ptr()->Scale(signal_scale_);
-      HTTPlot::SetSignalStyle(sig_elements.back(), sig_scheme[i].color);
-      if (!sig_scheme[i].in_stack) {
-        sig_elements.back().set_in_stack(false);
-        sig_elements.back().set_line_width(3);
-      }
+      HTTPlot::SetSignalStyle(sig_elements.back().hist_ptr(), sig_scheme[i].color);
       if (norm_bins_) sig_elements.back().hist_ptr()->Scale(1.0, "width");
-      plot.AddTH1PlotElement(sig_elements.back());
+      legend->AddEntry(sig_elements.back().hist_ptr(), sig_elements.back().legend_text().c_str(), "f");
+      //Draw signal
+      if(sig_scheme[i].in_stack) {
+        thstack.Add(sig_elements.back().hist_ptr(), "HIST");
+        canv->Update();
+      } else {
+        sig_elements.back().hist_ptr()->Draw("HISTsame");
+      }
     }
+    if (thstack.GetHistogram()) thstack.SetMaximum(thstack.GetMaximum()*1.1*extra_pad_);
+    canv->Update();
+   
+    //Uncertainty band - not sure if all of this is needed, check later
     TH1F error_band;
     TH1F bkg_total;
     TH1PlotElement err_element;
@@ -505,77 +453,57 @@ namespace ic {
       err_element = TH1PlotElement("error_shape", &error_band,"Bkg. uncertainty");
       bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
 
-      err_element.set_marker_size(0);
-      err_element.set_fill_color(13);
-      err_element.set_fill_style(3013);
-      err_element.set_line_width(1);
-      err_element.set_draw_stat_error_y(true);
-      err_element.set_draw_fill(true);
-      err_element.set_draw_line(false);
-      err_element.set_draw_marker(false);
-      err_element.set_draw_options("e2");
-      bkg_element.set_marker_size(0);
-      bkg_element.set_fill_color(1);
-      bkg_element.set_fill_style(0);
-      bkg_element.set_line_width(1);
-      bkg_element.set_draw_stat_error_y(true);
-      bkg_element.set_draw_fill(true);
-      bkg_element.set_draw_line(false);
-      bkg_element.set_draw_marker(false);
-      bkg_element.set_draw_options("e2");
-      plot.AddTH1PlotElement(err_element);
-      plot.AddTH1PlotElement(bkg_element);
+      err_element.hist_ptr()->SetMarkerSize(0);
+      int new_idx = CreateTransparentColor(13, 0.5);
+      err_element.hist_ptr()->SetFillColor(new_idx);
+      err_element.hist_ptr()->SetFillStyle(3001);
+      err_element.hist_ptr()->SetLineWidth(1);
+      bkg_element.hist_ptr()->SetMarkerSize(0);
+      bkg_element.hist_ptr()->SetFillColor(1);
+      bkg_element.hist_ptr()->SetFillStyle(0);
+      bkg_element.hist_ptr()->SetLineWidth(1);
+      err_element.hist_ptr()->Draw("e2same");
+      legend->AddEntry(err_element.hist_ptr(), "bkg. uncertainty" , "F" );
+      canv->Update();
     } else {
-        bkg_total = *((TH1F*)bkg_elements[0].hist_ptr()->Clone());
-        for (unsigned i = 1; i < bkg_elements.size(); ++i) {
-          bkg_total.Add(bkg_elements[i].hist_ptr());
-        }
-        for (unsigned i = 1; i <= unsigned(bkg_total.GetNbinsX()); ++i) {
-          bkg_total.SetBinError(i, 0.0);
-        }
-        bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
-        bkg_element.set_marker_size(0);
-        bkg_element.set_fill_color(1);
-        bkg_element.set_fill_style(0);
-        bkg_element.set_line_width(1);
-        bkg_element.set_draw_stat_error_y(true);
-        bkg_element.set_draw_fill(true);
-        bkg_element.set_draw_line(false);
-        bkg_element.set_draw_marker(false);
-        bkg_element.set_draw_options("e2");
-        plot.AddTH1PlotElement(bkg_element);
+      bkg_total = *((TH1F*)bkg_elements[0].hist_ptr()->Clone());
+      for (unsigned i = 1; i < bkg_elements.size(); ++i) {
+        bkg_total.Add(bkg_elements[i].hist_ptr());
+      }
+      for (unsigned i = 1; i <= unsigned(bkg_total.GetNbinsX()); ++i) {
+        bkg_total.SetBinError(i, 0.0);
+      }
+      bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
+      bkg_element.hist_ptr()->SetMarkerSize(0);
+      bkg_element.hist_ptr()->SetFillColor(1);
+      bkg_element.hist_ptr()->SetFillStyle(0);
+      bkg_element.hist_ptr()->SetLineWidth(1);
     }
 
-    ic::RatioPlotElement ratio("ratio","data","bkg_shape");
-    ic::RatioPlotElement err_ratio("err_ratio","error_shape","bkg_shape");
-    if (draw_error_band_) {
-      err_ratio.set_marker_size(0);
-      err_ratio.set_fill_color(13);
-      err_ratio.set_fill_style(3013);
-      err_ratio.set_line_width(1);
-      err_ratio.set_draw_stat_error_y(true);
-      err_ratio.set_draw_fill(false);
-      err_ratio.set_draw_line(false);
-      err_ratio.set_draw_marker(false);
-      err_ratio.set_draw_options("e2");
-      plot.AddRatioPlotElement(err_ratio);
+    //Setup ratio plots
+    TH1F *ratio = reinterpret_cast<TH1F*>(MakeRatioHist(data_hist, bkg_element.hist_ptr(), true, false));
+    TH1F *err_ratio = reinterpret_cast<TH1F*>(MakeRatioHist(err_element.hist_ptr(), err_element.hist_ptr(), true, false));
+
+    if (draw_ratio_) {
+      pads[1]->cd();
+      h[1]->Draw("axis");
+      if(draw_error_band_) err_ratio->Draw("e2same");
+      ratio->Draw("esamex0");
     }
-    HTTPlot::SetRatioStyle(ratio,1);
-    ratio.set_multi_mode(true);
-    plot.ratio_y_axis_title = "Obs/Bkg";
-    plot.AddRatioPlotElement(ratio);
-    plot.custom_ratio_y_axis_range = true;
-    plot.ratio_y_axis_min = ratio_min_;
-    plot.ratio_y_axis_max = ratio_max_;
-    HTTPlot::SetDataStyle(data_plot);
-    plot.AddTH1PlotElement(data_plot);
-    plot.legend_height = 0.045;
-    if (draw_ratio_) plot.legend_height = 0.05;
-    if (draw_ratio_ && signal_scheme_ == "sm_split_vbf") plot.legend_height = 0.045;
+    pads[0]->cd();
 
-    for (auto & ele : text_) plot.AddTextElement(ele);
-
-    plot.GeneratePlot();
+    FixTopRange(pads[0], GetPadYMax(pads[0]), 0.15);
+    DrawCMSLogo(pads[0], "CMS", "Preliminary", 11, 0.045, 0.035, 1.2);
+    DrawTitle(pads[0], "19.7 fb^{-1} (8 TeV) + 4.9 fb^{-1} (7 TeV)", 3);
+    //DrawTitle(pads[0], title_left_, 0);
+    //DrawTitle(pads[0], title_right_, 1);
+    //for (auto & ele : text_) plot.AddTextElement(ele);
+    legend->Draw();
+    FixOverlay();
+    canv->Update();
+    pads[0]->GetFrame()->Draw();
+    canv->Print((plot_name_+".pdf").c_str());
+    canv->Print((plot_name_+".png").c_str());
   }
 
   void HTTPlot::AddTextElement(ic::TextElement & ele) {
