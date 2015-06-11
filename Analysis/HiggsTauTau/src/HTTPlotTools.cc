@@ -141,18 +141,6 @@ namespace ic {
     return;
   }
 
-  void HTTPlot::SetRatioStyle(ic::RatioPlotElement & ele, unsigned color) {
-    ele.set_marker_color(color);
-    ele.set_line_color(color);
-    ele.set_draw_stat_error_y(true);
-    ele.set_draw_line(false);
-    ele.set_draw_marker(true);
-    ele.set_marker_size(1.1);
-    ele.set_marker_style(20);
-    return;
-  }
-
-
   boost::program_options::options_description const& HTTPlot::GenerateOptions(std::string const& prefix) {
     namespace po = boost::program_options;
     config_.add_options()
@@ -331,19 +319,32 @@ namespace ic {
    
     // Create axes based on data hist and possible user specified axis range
     std::vector<TH1*> h = CreateAxisHists(2, data_hist, custom_x_axis_range_ ? x_axis_min_ : data_hist->GetXaxis()->GetXmin(), custom_x_axis_range_ ? x_axis_max_ : data_hist->GetXaxis()->GetXmax());
-    h[0]->Draw("axis");
+    h[0]->Draw();
     
     // Set second axis when necessary
     if (draw_ratio_) {
       pads[0]->cd();
       pads[1]->cd();
-      h[1]->Draw("axis");
+      h[1]->Draw();
       h[1]->GetXaxis()->SetTitleOffset(1.0);
-      SetupTwoPadSplitAsRatio(pads, "Obs/Exp", true, 0.60, 1.40);
-      StandardAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+      SetupTwoPadSplitAsRatio(pads, "Obs/Exp", true, 0.65, 1.35);
+      if(norm_bins_) {
+        UnitAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+      } else {      
+        StandardAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+      }
       h[1]->GetYaxis()->SetNdivisions(4);
+      h[1]->GetXaxis()->SetTitleOffset(1.1);
+      h[1]->GetYaxis()->SetTitleOffset(1.3);
+      h[0]->GetYaxis()->SetTitleOffset(1.3);
     } else {
-      StandardAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+      if(norm_bins_) {
+        UnitAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+      } else {      
+        StandardAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+      }
+      h[0]->GetXaxis()->SetTitleOffset(1.1);
+      h[0]->GetYaxis()->SetTitleOffset(1.3);
     }
     pads[0]->cd();    
     
@@ -352,7 +353,8 @@ namespace ic {
     TLegend *legend = PositionedLegend(0.40, 0.30, 3, 0.03);
     legend->SetTextFont(42);
     FixBoxPadding(pads[0], legend, 0.05);
-    legend->AddEntry(data_hist, "Observed", "pe");
+    HTTPlot::SetDataStyle(data_hist);    
+    legend->AddEntry(data_hist, "Observed", "ple");
     
     
     std::string bkr_list_for_ratio = "";
@@ -377,27 +379,14 @@ namespace ic {
         TH1PlotElement ele = bkg_elements.back();
         HTTPlot::SetMCStackStyle(ele.hist_ptr(), bkg_scheme[i].color);
         if (norm_bins_) ele.hist_ptr()->Scale(1.0, "width");
-        //Special settings for the first histogram in the stack
-        /*if(i==1) {
-          if (use_htt_style_) {
-            ele.hist_ptr()->SetTitleSize  (0.055,"Y");
-            ele.hist_ptr()->SetTitleOffset(1.400,"Y");
-            if (!draw_ratio_) ele.hist_ptr()->SetTitleOffset(1.500,"Y");
-            ele.hist_ptr()->SetLabelOffset(0.010,"X");
-            ele.hist_ptr()->SetLabelSize  (0.040,"X");
-            ele.hist_ptr()->SetLabelFont  (42   ,"X");
-          }
-
-        } */       
         thstack.Add(ele.hist_ptr(),"HIST");
         legend->AddEntry(ele.hist_ptr(), ele.legend_text().c_str(), "f");
       }
     }
     
     //Draw backgrounds and data
-    HTTPlot::SetDataStyle(data_hist);    
-    thstack.Draw();
-    data_hist->Draw("PE1same");
+    thstack.Draw("HISTSAME");
+    data_hist->Draw("PE0same");
     canv->Update();
     
     std::vector<PlotSigComponent> sig_scheme = sig_schemes_[signal_scheme_];
@@ -419,7 +408,8 @@ namespace ic {
         sig_elements.back().hist_ptr()->Draw("HISTsame");
       }
     }
-    if (thstack.GetHistogram()) thstack.SetMaximum(thstack.GetMaximum()*1.1*extra_pad_);
+    //Now everything is added to Stack, apply any requested extra_pad_ 
+    if (thstack.GetHistogram() && extra_pad_ > 1.0) thstack.SetMaximum(thstack.GetMaximum()*1.1*extra_pad_);
     canv->Update();
    
     //Uncertainty band - not sure if all of this is needed, check later
@@ -454,6 +444,7 @@ namespace ic {
       bkg_element = TH1PlotElement("bkg_shape", &bkg_total,"");
 
       err_element.hist_ptr()->SetMarkerSize(0);
+      //New transparent grey uncertainty bands
       int new_idx = CreateTransparentColor(13, 0.5);
       err_element.hist_ptr()->SetFillColor(new_idx);
       err_element.hist_ptr()->SetFillStyle(3001);
@@ -486,9 +477,9 @@ namespace ic {
 
     if (draw_ratio_) {
       pads[1]->cd();
-      h[1]->Draw("axis");
       if(draw_error_band_) err_ratio->Draw("e2same");
-      ratio->Draw("esamex0");
+      //ratio->Draw("e1samex0");
+      ratio->Draw("pe0same");
     }
     pads[0]->cd();
 
