@@ -324,6 +324,13 @@ namespace ic {
     std::vector<TH1*> h = CreateAxisHists(2, data_hist, custom_x_axis_range_ ? x_axis_min_ : data_hist->GetXaxis()->GetXmin(), custom_x_axis_range_ ? x_axis_max_ : data_hist->GetXaxis()->GetXmax());
     h[0]->Draw();
     
+    //Deal with units in axis label
+    std::string units="";
+    size_t pos = x_axis_label_.find("[");
+    if(pos!=std::string::npos) {
+      units = x_axis_label_.substr(pos+1, x_axis_label_.find("]") - pos -1 );
+      x_axis_label_ = x_axis_label_.substr(0, pos);
+    }
     // Set second axis when necessary
     if (draw_ratio_) {
       pads[1]->cd();
@@ -331,28 +338,46 @@ namespace ic {
       h[1]->GetXaxis()->SetTitleOffset(1.0);
       SetupTwoPadSplitAsRatio(pads, "Obs/Exp", true, 0.65, 1.35);
       if(norm_bins_) {
-        UnitAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+        UnitAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, units);
       } else {      
-        StandardAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+        StandardAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, units);
       }
       h[1]->GetYaxis()->SetNdivisions(4);
       h[1]->GetXaxis()->SetTitleOffset(1.1);
-      h[1]->GetYaxis()->SetTitleOffset(1.3);
+      h[1]->GetYaxis()->SetTitleOffset(1.8);
       pads[0]->cd();
-      h[0]->GetYaxis()->SetTitleOffset(1.3);
+      h[0]->GetYaxis()->SetTitleOffset(1.8);
       //it complains if the minimum is set to 0 and you try to set log y scale
       if(log_y_) h[0]->SetMinimum(0.1);
       if(custom_y_axis_min_) h[0]->SetMinimum(y_axis_min_);
+      if (x_axis_bin_labels_ != "") {
+        std::vector<std::string> bin_labels;
+        boost::split(bin_labels, x_axis_bin_labels_, boost::is_any_of(":"));
+        if (long(bin_labels.size()) <= long(h[1]->GetNbinsX())) {
+          for (unsigned binl = 0; binl < bin_labels.size(); ++binl) {
+            h[1]->GetXaxis()->SetBinLabel(binl+1, bin_labels[binl].c_str());
+          }
+        } 
+      }
     } else {
       if(norm_bins_) {
-        UnitAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+        UnitAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, units);
       } else {      
-        StandardAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
+        StandardAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, units);
       }
       h[0]->GetXaxis()->SetTitleOffset(1.1);
-      h[0]->GetYaxis()->SetTitleOffset(1.3);
+      h[0]->GetYaxis()->SetTitleOffset(1.8);
       if(log_y_) h[0]->SetMinimum(0.1);
       if(custom_y_axis_min_) h[0]->SetMinimum(y_axis_min_);
+      if (x_axis_bin_labels_ != "") {
+        std::vector<std::string> bin_labels;
+        boost::split(bin_labels, x_axis_bin_labels_, boost::is_any_of(":"));
+        if (long(bin_labels.size()) <= long(h[0]->GetNbinsX())) {
+          for (unsigned binl = 0; binl < bin_labels.size(); ++binl) {
+            h[0]->GetXaxis()->SetBinLabel(binl+1, bin_labels[binl].c_str());
+          }
+        } 
+      }
     }
     pads[0]->cd();
    
@@ -388,13 +413,17 @@ namespace ic {
         HTTPlot::SetMCStackStyle(ele.hist_ptr(), bkg_scheme[i].color);
         if (norm_bins_) ele.hist_ptr()->Scale(1.0, "width");
         thstack.Add(ele.hist_ptr(),"HIST");
-        legend->AddEntry(ele.hist_ptr(), ele.legend_text().c_str(), "f");
       }
+    }
+    //Loop again in opposite direction to fill the legend (looks better that way)
+    for (unsigned i = bkg_scheme.size()-1; i > 0; --i) {
+        TH1PlotElement ele2 = bkg_elements[i];
+        legend->AddEntry(ele2.hist_ptr(), ele2.legend_text().c_str(), "f");
     }
     
     //Draw backgrounds and data
     thstack.Draw("HISTSAME");
-    data_hist->Draw("PE0same");
+    data_hist->Draw("pesame");
     canv->Update();
     
     std::vector<PlotSigComponent> sig_scheme = sig_schemes_[signal_scheme_];
@@ -461,7 +490,7 @@ namespace ic {
       bkg_element.hist_ptr()->SetFillStyle(0);
       bkg_element.hist_ptr()->SetLineWidth(1);
       err_element.hist_ptr()->Draw("e2same");
-      legend->AddEntry(err_element.hist_ptr(), "bkg. uncertainty" , "F" );
+      legend->AddEntry(err_element.hist_ptr(), "Bkg. uncertainty" , "F" );
       canv->Update();
     } else {
       bkg_total = *((TH1F*)bkg_elements[0].hist_ptr()->Clone());
@@ -498,6 +527,7 @@ namespace ic {
       title_latex->DrawLatex(text_[te].x_pos(), text_[te].y_pos(), text_[te].text().c_str());
     } 
 
+    //Set fraction of white space at the top of plot
     FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad_>0 ? extra_pad_ : 0.15);
     DrawCMSLogo(pads[0], cms_label_, cms_extra_, 11, 0.045, 0.035, 1.2);
     DrawTitle(pads[0], lumi_label_, 3);
@@ -505,8 +535,9 @@ namespace ic {
     FixOverlay();
     canv->Update();
     pads[0]->GetFrame()->Draw();
-    canv->Print((plot_name_+".pdf").c_str());
-    canv->Print((plot_name_+".png").c_str());
+    std::string log = log_y_ ? "_log" : "";  
+    canv->Print((plot_name_+log+".pdf").c_str());
+    canv->Print((plot_name_+log+".png").c_str());
   }
 
   void HTTPlot::AddTextElement(ic::TextElement & ele) {

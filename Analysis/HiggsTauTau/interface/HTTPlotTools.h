@@ -7,7 +7,6 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTAnalysisTools.h"
@@ -87,7 +86,6 @@ namespace ic {
       static void SetMCStackStyle(TH1* hist_ptr, unsigned color);
       static void SetSignalStyle(TH1* hist_ptr, unsigned color);
       static void SetDataStyle(TH1* hist_ptr);
-      static void SetRatioStyle(ic::RatioPlotElement & ele, unsigned color);
       inline std::string plot_name() const { return plot_name_; }
       inline std::string draw_signal_mass() const { return draw_signal_mass_; }
       inline std::string draw_signal_tanb() const { return draw_signal_tanb_; }
