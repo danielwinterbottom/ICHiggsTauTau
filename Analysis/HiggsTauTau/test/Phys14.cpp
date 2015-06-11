@@ -110,13 +110,15 @@ int main(int argc, char* argv[]) {
                          .set_fs(fs)
                          .set_do_real_th_studies(do_XToTauTau)
                          .set_do_fake_th_studies(do_QCDFakes)
-                         .set_taus_label("taus");
+                         .set_taus_label("taus")
+                         .set_pfcands_label("pfCandidates");
 
   auto toyTauStudy = ic::ToyTauStudy("ToyTauStudy")
                          .set_fs(fs)
                          .set_do_real_th_studies(do_XToTauTau)
                          .set_do_fake_th_studies(do_QCDFakes)
-                         .set_taus_label("toyTaus");
+                         .set_taus_label("toyTaus")
+                         .set_pfcands_label("genPFCandidates");
 
   if (apply_JEC) analysis.AddModule(&jetEnergyCorr);
   if (do_XToTauTau) analysis.AddModule(&httGenEvent);

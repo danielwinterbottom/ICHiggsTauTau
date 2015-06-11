@@ -78,8 +78,9 @@ int main(int argc, char* argv[]) {
 
   for (unsigned g = 0; g < js["elements"].size(); ++g) {
     Json::Value const ele = js["elements"][g];
-    TH1F h_num = ic::OpenFromTFile<TH1F>(ele["h_num"].asString() + js["output"].asString() + "_pass");
-    TH1F h_den = ic::OpenFromTFile<TH1F>(ele["h_den"].asString() + js["output"].asString() + "_all");
+    std::string name = ele.get("fixname", std::string("")) == "" ? js["output"].asString() : ele["fixname"].asString();
+    TH1F h_num = ic::OpenFromTFile<TH1F>(ele["h_num"].asString() + name + "_pass");
+    TH1F h_den = ic::OpenFromTFile<TH1F>(ele["h_den"].asString() + name + "_all");
     std::string rebin = ele.get("rebin", def["rebin"]).asString();
     std::cout << rebin << "\n";
     if (rebin != "") {
@@ -107,7 +108,7 @@ int main(int argc, char* argv[]) {
   axis->GetXaxis()->SetTitle(js["x_axis_title"].asCString());
   axis->GetYaxis()->SetTitle(js["y_axis_title"].asCString());
 
-  TLegend *legend = PositionedLegend(js["legend_width"].asDouble(), js["legend_height"].asDouble(), 6, 0.03);
+  TLegend *legend = PositionedLegend(js["legend_width"].asDouble(), js["legend_height"].asDouble(), js["legend_pos"].asInt(), 0.03);
   for (unsigned g = 0; g < graphs.size(); ++g) {
     graphs[g].Draw("PSAME");
     legend->AddEntry(&(graphs[g]), js["elements"][g]["legend"].asCString());
