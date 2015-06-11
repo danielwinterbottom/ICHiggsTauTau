@@ -350,7 +350,6 @@ int HTTSync::Execute(TreeEvent *event) {
   std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
   std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
-  //std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("ditau");
 
   Met const* pfMet = event->GetPtr<Met>("pfMet");
   Met const* pfMetMVA = event->GetPtr<Met>("pfMVAMet");

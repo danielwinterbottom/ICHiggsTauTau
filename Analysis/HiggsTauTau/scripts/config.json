@@ -69,24 +69,7 @@
       "tau_anti_elec"     : "",
       "do_tau_anti_muon"  : false,
       "tau_anti_muon"     : "",
-      "elec_id"           : "CutBased", // "MVA:Loose", "MVA:Tight", "CutBased"
-      //"pair_dr"           : 0.5
-      "veto_elec_pt"      : 10,
-      "veto_elec_eta"     : 2.5,
-      "veto_elec_dxy"     : 0.045,
-      "veto_elec_dz"      : 0.2,
-      "veto_muon_pt"      : 10,
-      "veto_muon_eta"     : 2.4,
-      "veto_muon_dxy"     : 0.045,
-      "veto_muon_dz"      : 0.2,
-      "veto_dielec_pt"    : 15,
-      "veto_dielec_eta"   : 2.5,
-      "veto_dielec_dxy"   :0.045,
-      "veto_dielec_dz"    : 0.02,
-      "veto_dimuon_pt"    : 15,
-      "veto_dimuon_eta"   : 2.4,
-      "veto_dimuon_dxy"   : 0.045,
-      "veto_dimuon_dz"    : 0.2
+      "elec_id"           : "CutBased" // "MVA:Loose", "MVA:Tight", "CutBased"
     }
   },
   "channels": {
@@ -99,36 +82,17 @@
         "max_extra_elecs": 1,
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true,
-        "tau_anti_elec"  : "againstElectronTightMVA5",
-        "tau_anti_muon"  : "againstMuonLoose3",
-        "elec_pt"        : 23.0,
-        "elec_eta"       : 2.5,
-        "elec_dz"        : 0.2,
-        "elec_dxy"       : 0.045,
-        "tau_pt"         : 20,
-        "tau_eta"        : 2.3,
-        "tau_dz"         : 0.2,
-        "tau_iso"        : 1.5,
-        "min_taus"       : 1
-      }
+        "do_tau_anti_elec":true
+          }
     },
  "tt": {
       "baseline": {
-        "pair_dr": 0.5,
         "max_extra_elecs": 0,
         "max_extra_muons": 0,
         "extra_elec_veto" : true,
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true,
-        "tau_anti_elec"  : "againstElectronTightMVA5",
-        "tau_anti_muon"  : "againstMuonLoose3",
-        "tau_pt"         : 45,
-        "tau_eta"        : 2.1,
-        "tau_iso"        : 1.0,
-        "tau_dz"         : 0.2,
-        "min_taus"       : 2
+        "do_tau_anti_elec":true
       }
     },
 
@@ -141,18 +105,7 @@
         "max_extra_elecs": 0,
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true,
-        "tau_anti_elec"  : "againstElectronLoose",
-        "tau_anti_muon"  : "againstMuonTight3",
-        "tau_pt"         : 20,
-        "tau_eta"        : 2.3,
-        "tau_dz"         : 0.2,
-        "tau_iso"        : 1.5,
-        "muon_pt"        : 18.0,
-        "muon_eta"       : 2.1,
-        "muon_dxy"       : 0.045,
-        "muon_dz"        : 0.2,
-        "min_taus"       : 1
+        "do_tau_anti_elec":true
       }
     },
     "em": {
@@ -161,15 +114,7 @@
         "extra_elec_veto":true,
         "extra_muon_veto":true,
         "max_extra_elecs": 1,
-        "max_extra_muons": 1,
-        "elec_pt"        : 13,
-        "elec_eta"       : 2.5,
-        "elec_dxy"       : 0.045,
-        "elec_dz"        : 0.2,
-        "muon_pt"        : 9.5, 
-        "muon_eta"       : 2.1,
-        "muon_dxy"       : 0.045,
-        "muon_dz"        : 0.2
+        "max_extra_muons": 1
       }
     }
   },
