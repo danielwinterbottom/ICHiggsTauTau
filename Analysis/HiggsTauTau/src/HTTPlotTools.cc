@@ -124,7 +124,8 @@ namespace ic {
   }
   void HTTPlot::SetSignalStyle(TH1* hist_ptr, unsigned color) {
     hist_ptr->SetFillStyle(1001);
-    hist_ptr->SetLineStyle(9);
+    gStyle->SetLineStyleString(11,"20 10");
+    hist_ptr->SetLineStyle(11);
     hist_ptr->SetFillColor(0);
     hist_ptr->SetLineColor(color);
     hist_ptr->SetLineWidth(3);
@@ -154,7 +155,7 @@ namespace ic {
       ((prefix+"custom_x_axis_range").c_str(),  po::value<bool>(&custom_x_axis_range_)->default_value(false))
       ((prefix+"x_axis_min").c_str(),           po::value<double>(&x_axis_min_)->default_value(0.0))
       ((prefix+"x_axis_max").c_str(),           po::value<double>(&x_axis_max_)->default_value(1.0))
-      ((prefix+"extra_pad").c_str(),            po::value<double>(&extra_pad_)->default_value(1.0))
+      ((prefix+"extra_pad").c_str(),            po::value<double>(&extra_pad_)->default_value(0.0))
       ((prefix+"background_scheme").c_str(),    po::value<std::string>(&background_scheme_)->default_value(""))
       ((prefix+"signal_scheme").c_str(),        po::value<std::string>(&signal_scheme_)->default_value(""))
       ((prefix+"draw_signal_mass").c_str(),     po::value<std::string>(&draw_signal_mass_)->default_value(""))
@@ -317,13 +318,13 @@ namespace ic {
     std::vector<TPad*> pads =
         draw_ratio_ ? TwoPadSplit(0.29, 0.00, 0.00) : OnePad();
    
+    pads[0]->SetLogy(log_y_);
     // Create axes based on data hist and possible user specified axis range
     std::vector<TH1*> h = CreateAxisHists(2, data_hist, custom_x_axis_range_ ? x_axis_min_ : data_hist->GetXaxis()->GetXmin(), custom_x_axis_range_ ? x_axis_max_ : data_hist->GetXaxis()->GetXmax());
     h[0]->Draw();
     
     // Set second axis when necessary
     if (draw_ratio_) {
-      pads[0]->cd();
       pads[1]->cd();
       h[1]->Draw();
       h[1]->GetXaxis()->SetTitleOffset(1.0);
@@ -336,7 +337,11 @@ namespace ic {
       h[1]->GetYaxis()->SetNdivisions(4);
       h[1]->GetXaxis()->SetTitleOffset(1.1);
       h[1]->GetYaxis()->SetTitleOffset(1.3);
+      pads[0]->cd();
       h[0]->GetYaxis()->SetTitleOffset(1.3);
+      //it complains if the minimum is set to 0 and you try to set log y scale
+      if(log_y_) h[0]->SetMinimum(0.1);
+      if(custom_y_axis_min_) h[0]->SetMinimum(y_axis_min_);
     } else {
       if(norm_bins_) {
         UnitAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, "GeV");
@@ -345,9 +350,11 @@ namespace ic {
       }
       h[0]->GetXaxis()->SetTitleOffset(1.1);
       h[0]->GetYaxis()->SetTitleOffset(1.3);
+      if(log_y_) h[0]->SetMinimum(0.1);
+      if(custom_y_axis_min_) h[0]->SetMinimum(y_axis_min_);
     }
-    pads[0]->cd();    
-    
+    pads[0]->cd();
+   
     
     // Setup legend
     TLegend *legend = PositionedLegend(0.40, 0.30, 3, 0.03);
@@ -408,8 +415,7 @@ namespace ic {
         sig_elements.back().hist_ptr()->Draw("HISTsame");
       }
     }
-    //Now everything is added to Stack, apply any requested extra_pad_ 
-    if (thstack.GetHistogram() && extra_pad_ > 1.0) thstack.SetMaximum(thstack.GetMaximum()*1.1*extra_pad_);
+    
     canv->Update();
    
     //Uncertainty band - not sure if all of this is needed, check later
@@ -483,7 +489,7 @@ namespace ic {
     }
     pads[0]->cd();
 
-    FixTopRange(pads[0], GetPadYMax(pads[0]), 0.15);
+    FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad_>0 ? extra_pad_ : 0.15);
     DrawCMSLogo(pads[0], "CMS", "Preliminary", 11, 0.045, 0.035, 1.2);
     DrawTitle(pads[0], "19.7 fb^{-1} (8 TeV) + 4.9 fb^{-1} (7 TeV)", 3);
     //DrawTitle(pads[0], title_left_, 0);
