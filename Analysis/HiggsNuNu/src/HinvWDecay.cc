@@ -36,8 +36,10 @@ namespace ic {
     bool debug = false;
 
     if(do_newstatuscodes_){
-      //!!check all e and mu, if has status 22 W as mother event is W->e/mu, then check all taus, if there's a tau with a status 22 W as mother then check if any of the e or mu have that tau as a mother and if not W->tauh
       //!!EVENTUALLY UPDATE TO TAKE NEW STATUS FLAGS
+      bool iswenu=false;
+      bool iswmunu=false;
+      bool iswtaunu=false;
       std::vector<GenParticle*> & parts = event->GetPtrVec<GenParticle>("genParticles");
       if (isEmbedded_) parts = event->GetPtrVec<GenParticle>("genParticlesEmbedded");
 
@@ -50,58 +52,64 @@ namespace ic {
 	  
 	  std::vector<GenParticle*> daughters=ExtractDaughters(parts[iGenPart],parts);//Get list of daughters
 	  for(unsigned iDaughter=0;iDaughter<daughters.size();iDaughter++){//Loop over daughters
-	    if(daughters[iDaughter]->pdgid()==(int)flavour_*isnegative){
-	      if(flavour_!=15){
-		return 0;
-	      }
+	    if(daughters[iDaughter]->pdgid()==11*isnegative){
+	      iswenu=true;
+	      if(flavour_==11)return 0;
+	    }
+	    if(daughters[iDaughter]->pdgid()==13*isnegative){
+	      iswmunu=true;
+	      if(flavour_==13)return 0;
 	    }
 	    if(daughters[iDaughter]->pdgid()==15*isnegative){
 	      bool notauintaudecay=false;
 	      GenParticle* tauptr=daughters[iDaughter];//Make pointer to tau updated for each time tau decays in loop below
-	      bool ise=false;
-	      bool ismu=false;
-	      bool istauh=false;
 	      while(!notauintaudecay){//Loop through tau decays until now tau found
 		bool founde=false;
 		bool foundmu=false;
 		bool foundtau=false;
+		int noppleps=0;
+		int nssleps=0;
+		
 		std::vector<GenParticle*> taudaughters=ExtractDaughters(tauptr,parts);//Get tau daughters
 		for(unsigned iTauDaughter=0;iTauDaughter<taudaughters.size();iTauDaughter++){//Loop over tau daughters
+		  //std::cout<<iTauDaughter<<" "<<taudaughters[iTauDaughter]->status()<<" "<<taudaughters[iTauDaughter]->pdgid()<<std::endl;
 		  //Check if any leptons are found
 		  if(taudaughters[iTauDaughter]->pdgid()==11*isnegative){
 		    founde=true;
+		    nssleps++;
 		    }
 		  if(taudaughters[iTauDaughter]->pdgid()==13*isnegative){
 		    foundmu=true;
+		    nssleps++;
+
 		  }
 		  if(taudaughters[iTauDaughter]->pdgid()==15*isnegative){
 		    foundtau=true;
 		    tauptr=taudaughters[iTauDaughter];//If find a tau update tauptr for next loop through
+		    nssleps++;
 		  }
 		  if(taudaughters[iTauDaughter]->pdgid()==11*isnegative*-1){
-		    founde=true;
-		    std::cout<<"Warning! Tau decaying to wrong sign lepton"<<std::endl;
+		    noppleps++;
 		  }
 		  if(taudaughters[iTauDaughter]->pdgid()==13*isnegative*-1){
-		    foundmu=true;
-		    std::cout<<"Warning! Tau decaying to wrong sign lepton"<<std::endl;
+		    noppleps++;
 		  }
 		  if(taudaughters[iTauDaughter]->pdgid()==15*isnegative*-1){
-		    foundtau=true;
-		    std::cout<<"Warning! Tau decaying to wrong sign lepton"<<std::endl;
-		    } 
+		    noppleps++;
+		  } 
 		}
+		if(noppleps>nssleps)std::cout<<"Warning: more leptons of opposite sign than same sign as initial tau"<<std::endl;
 		//If the tau didn't decay to another tau (i.e. if decay wasn't just radiation) see what type of decay it was
 		if(!foundtau){
 		  notauintaudecay=true;
 		  if(founde&&!foundmu){
-		    ise=true;
+		    iswenu=true;
 		  }
 		  if(!founde&&foundmu){
-		    ismu=true;
+		    iswmunu=true;
 		  }
 		  if(!founde&&!foundmu){
-		    istauh=true;
+		    iswtaunu=true;
 		  }
 		  if(founde&&foundmu){
 		    std::cout<<"Warning: Found tau decaying to e and mu!!"<<std::endl;
@@ -109,24 +117,21 @@ namespace ic {
 		}
 	      }
 	      //After the final tau decay has been found check if it was the flavour we're looking for
-	      if(flavour_==11&&ise){
+	      if(flavour_==11&&iswenu){
 		return 0;
 	      }
-	      if(flavour_==13&&ismu){
+	      if(flavour_==13&&iswmunu){
 		return 0;
 	      }
-	      if(flavour_==15&&istauh){
+	      if(flavour_==15&&iswtaunu){
 		return 0;
 	      }
-	    }
-	    if((daughters[iDaughter]->pdgid()==-11*isnegative)||(daughters[iDaughter]->pdgid()==-13*isnegative)||(daughters[iDaughter]->pdgid()==-15*isnegative)){
-	      std::cout<<"Warning! W decaying to wrong sign lepton"<<std::endl;
 	    }
 	  }
 	}
       }
       //If we got through all the gen particles and there was no W->lnu reject the event
-      std::cout<<"No WToLNu decay found: Rejecting event"<<std::endl;
+      if(!iswenu&&!iswmunu&&!iswtaunu)std::cout<<"Warning: Found no WToLNu decay rejecting event"<<std::endl;
       return 1;
     }
     else{
