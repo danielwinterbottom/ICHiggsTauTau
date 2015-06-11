@@ -160,8 +160,9 @@ namespace ic {
       ((prefix+"signal_scheme").c_str(),        po::value<std::string>(&signal_scheme_)->default_value(""))
       ((prefix+"draw_signal_mass").c_str(),     po::value<std::string>(&draw_signal_mass_)->default_value(""))
       ((prefix+"draw_signal_tanb").c_str(),     po::value<std::string>(&draw_signal_tanb_)->default_value(""))
-      ((prefix+"title_left").c_str(),           po::value<std::string>(&title_left_)->default_value(""))
-      ((prefix+"title_right").c_str(),          po::value<std::string>(&title_right_)->default_value(""))
+      ((prefix+"cms_label").c_str(),            po::value<std::string>(&cms_label_)->default_value("CMS"))
+      ((prefix+"cms_extra").c_str(),            po::value<std::string>(&cms_extra_)->default_value("Preliminary"))
+      ((prefix+"lumi_label").c_str(),            po::value<std::string>(&lumi_label_)->default_value("19.7 fb^{-1} at 8 TeV"))
       ((prefix+"signal_scale").c_str(),         po::value<unsigned>(&signal_scale_)->default_value(1))
       ((prefix+"log_y").c_str(),                po::value<bool>(&log_y_)->default_value(false))
       ((prefix+"draw_ratio").c_str(),           po::value<bool>(&draw_ratio_)->default_value(false))
@@ -484,17 +485,22 @@ namespace ic {
     if (draw_ratio_) {
       pads[1]->cd();
       if(draw_error_band_) err_ratio->Draw("e2same");
-      //ratio->Draw("e1samex0");
       ratio->Draw("pe0same");
     }
     pads[0]->cd();
+    
+    //Add any text elements - for now using ic::TextElement - could definitely change this to use DrawTitle function or similar
+    TLatex *title_latex = new TLatex();
+    title_latex->SetNDC();
+    for (unsigned te = 0; te < text_.size(); ++te) {
+      title_latex->SetTextSize(text_[te].size());
+      title_latex->SetTextAlign(11);
+      title_latex->DrawLatex(text_[te].x_pos(), text_[te].y_pos(), text_[te].text().c_str());
+    } 
 
     FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad_>0 ? extra_pad_ : 0.15);
-    DrawCMSLogo(pads[0], "CMS", "Preliminary", 11, 0.045, 0.035, 1.2);
-    DrawTitle(pads[0], "19.7 fb^{-1} (8 TeV) + 4.9 fb^{-1} (7 TeV)", 3);
-    //DrawTitle(pads[0], title_left_, 0);
-    //DrawTitle(pads[0], title_right_, 1);
-    //for (auto & ele : text_) plot.AddTextElement(ele);
+    DrawCMSLogo(pads[0], cms_label_, cms_extra_, 11, 0.045, 0.035, 1.2);
+    DrawTitle(pads[0], lumi_label_, 3);
     legend->Draw();
     FixOverlay();
     canv->Update();
