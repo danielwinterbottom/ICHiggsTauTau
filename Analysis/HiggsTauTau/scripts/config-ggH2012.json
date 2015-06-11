@@ -44,6 +44,8 @@
     "mva_met_mode"  : 1,
     "faked_tau_selector" : 0,
     "hadronic_tau_selector" : 0,
+    "ztautau_mode"  : 0,
+    "vh_filter_mode" : 0,
     "run_gen_info"  : false,
     "do_pu_wt"      : true,
     "data_pu_file"  : "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root",
@@ -54,7 +56,8 @@
       "jes_mode"          : 0,
       "tau_es_shift"      : 1.0,
       "elec_es_shift"     : 1.0,
-      "mass_shift"        : 1.0,
+      "mass_shift"        : 1.01,
+      "mass_scale_mode"   : false,
       "do_em_extras"      : true,
       "di_elec_veto"      : false,
       "extra_elec_veto"   : false,
@@ -151,6 +154,21 @@
         "elec_es_shift": 1.01
       }
     },
+    "scale_m_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN",
+        "mass_scale_mode": true,
+        "mass_shift": 1.0
+      }
+    },
+    "scale_m_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP",
+        "mass_scale_mode" : true,
+        "mass_shift": 1.03
+      }
+    },
+
 //    "scale_j_lo": {
 //      "baseline": {
 //        "addit_output_folder" : "JES_DOWN",

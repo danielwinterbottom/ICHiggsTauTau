@@ -1128,10 +1128,10 @@ int main(int argc, char* argv[]){
   }
 
 
-  HTTSync httSync("HTTSync","SYNCFILE_" + output_name, channel);
+  HTTSync httSync("HTTSync","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
   httSync.set_is_embedded(is_embedded).set_met_label(met_label);
 
-  HTTSyncTemp httSyncTemp("HTTSyncTemp","SYNCFILE_" + output_name, channel);
+  HTTSyncTemp httSyncTemp("HTTSyncTemp","HiggsTauTauSyncfiles/SYNCFILE_" + output_name, channel);
   httSyncTemp.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label);
 
 
@@ -1169,7 +1169,7 @@ int main(int argc, char* argv[]){
   // ------------------------------------------------------------------------------------ 
   auto eventChecker = CheckEvents("EventChecker").set_skip_events(true);
   std::vector<int> to_check =
-  { 
+  {
   };
   for (auto ch : to_check) {
    eventChecker.CheckEvent(ch);
@@ -1305,7 +1305,7 @@ int main(int argc, char* argv[]){
    if (strategy == strategy::paper2013 && channel == channel::em) {
                                   analysis.AddModule(&emuMVA);
 //                                  analysis.AddModule(&HhhemuMVA);
-//								  analysis.AddModule(&HhhemuMVABoth);
+//	          		  analysis.AddModule(&HhhemuMVABoth);
    }
    if (strategy == strategy::paper2013 && channel ==channel::mt){
                                   analysis.AddModule(&HhhmtMVABoth);

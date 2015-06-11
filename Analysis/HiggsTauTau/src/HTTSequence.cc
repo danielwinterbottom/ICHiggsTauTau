@@ -60,8 +60,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
-  output_folder=output_folder+"/"+addit_output_folder;
-  output_name=chan + "_" +output_name + "_" + "_" + var + "_" + postf + ".root";
+  output_folder=output_folder+"/"+addit_output_folder+"/";
+  output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
   special_mode=json["special_mode"].asUInt();
   if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
   
@@ -72,8 +72,14 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
-  ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
-  ic::era  era_type  = String2Era(js["era"].asString());
+  if(js["mc"].asString()==""){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
+  mc_str = js["mc"].asString();
+  if(js["era"].asString()=="") {std::cout<<"ERROR: era not set"<<std::endl; exit(1);}
+  era_str = js["era"].asString();
+  if(js["strategy"].asString()==""){std::cout<<"ERROR: strategy not set"<<std::endl; exit(1);}
+  strategy_str = js["strategy"].asString();
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
+  ic::era  era_type  = String2Era(era_str);
   //if(strategy_type == strategy::phys14){
    veto_elec_pt = 10;
    veto_elec_eta = 2.5;
@@ -242,19 +248,26 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   tau_anti_muon_discr = "againstMuonLoose3";
   pair_dr = 0.5;
   }
-  
+  is_data      = json["is_data"].asBool();
+  is_embedded  = json["is_embedded"].asBool();
+  real_tau_sample = false; //This gets set properly later
   jets_label   = json["jets"].asString();
   met_label    = json["met"].asString();
   moriond_tau_scale = json["moriond_tau_scale"].asBool();
   pu_id_training = json["pu_id_training"].asUInt();
   bjet_regr_correction = json["bjet_regr_correction"].asBool();
-  mass_shift = json["baseline"]["mass_shift"].asDouble();
+  if(json["baseline"]["mass_scale_mode"].asBool()==true){
+    mass_shift = json["baseline"]["mass_shift"].asDouble();
+  } else mass_shift=1.00;
   new_svfit_mode = json["new_svfit_mode"].asUInt();
   kinfit_mode = json["kinfit_mode"].asUInt(); 
   mva_met_mode = json["mva_met_mode"].asUInt();
   faked_tau_selector = json["faked_tau_selector"].asUInt();
+  ztautau_mode = json["ztautau_mode"].asUInt();
+  vh_filter_mode = json["vh_filter_mode"].asUInt();
   hadronic_tau_selector = json["hadronic_tau_selector"].asUInt(); 
   tau_scale_mode = json["tau_scale_mode"].asUInt();
+  //Need this to correctly set tau /elec ES
   if(channel_str!="em"){
   tau_shift = json["baseline"]["tau_es_shift"].asDouble();
   } else tau_shift = json["baseline"]["elec_es_shift"].asDouble();
@@ -273,16 +286,12 @@ void HTTSequence::BuildSequence(){
 
   // Set global parameters that get used in multiple places
   ic::channel channel         = String2Channel(channel_str);
-  //ic::mc mc_type;
-  if(js["mc"].asString()==""){std::cout<<"ERROR: MC type not set"<<std::endl; exit(1);}
-  ic::mc mc_type = String2MC(js["mc"].asString());
-  if(js["era"].asString()=="") {std::cout<<"ERROR: era not set"<<std::endl; exit(1);}
-  ic::era era_type = String2Era(js["era"].asString());
-  if(js["strategy"].asString()==""){std::cout<<"ERROR: strategy not set"<<std::endl; exit(1);}
-  ic::strategy strategy_type = String2Strategy(js["strategy"].asString());
+  ic::mc mc_type              = String2MC(mc_str);
+  ic::era era_type            = String2Era(era_str);
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
   // Other flags
-  bool is_data        = js["is_data"].asBool();
-  bool is_embedded    = js["is_embedded"].asBool();
+//  bool is_data        = js["is_data"].asBool();
+//  bool is_embedded    = js["is_embedded"].asBool();
 
   bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
                         || (output_name.find("HTohh")                 != output_name.npos)
@@ -308,13 +317,13 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "tau_scale_mode" % tau_scale_mode;
 //  std::cout << boost::format(param_fmt) % "mass_scale_mode" % mass_scale_mode;
   std::cout << boost::format(param_fmt) % "new_svfit_mode" % new_svfit_mode;
-//  std::cout << boost::format(param_fmt) % "vh_filter_mode" % vh_filter_mode;
+  std::cout << boost::format(param_fmt) % "vh_filter_mode" % vh_filter_mode;
   if (new_svfit_mode > 0) {
     std::cout << boost::format(param_fmt) % "svfit_folder" % svfit_folder;
     std::cout << boost::format(param_fmt) % "svfit_override" % svfit_override;
   }
   std::cout << boost::format(param_fmt) % "kinfit_mode" % kinfit_mode;
-//  std::cout << boost::format(param_fmt) % "ztautau_mode" % ztautau_mode;
+  std::cout << boost::format(param_fmt) % "ztautau_mode" % ztautau_mode;
   std::cout << boost::format(param_fmt) % "faked_tau_selector" % faked_tau_selector;
   std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
@@ -367,8 +376,8 @@ void HTTSequence::BuildSequence(){
 
   HTTPrint httPrint("HTTPrint");
   if(era_type==era::data_2015){
-    httPrint.set_muon_label("muons");
-    httPrint.set_jet_label("ak4PFJetsCHS");
+    httPrint.set_muon_label(js["muons"].asString());
+    httPrint.set_jet_label(jets_label);
   }
   for (auto ch : to_check) {
    eventChecker.CheckEvent(ch);
@@ -416,7 +425,6 @@ void HTTSequence::BuildSequence(){
   // Pair DeltaR filtering
   BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
       .set_input_label("ditau").set_min(1)
-//      .set_predicate( (bind(&CompositeCandidate::DeltaR, _1, "lepton1","lepton2") > 0.5)));
       .set_predicate([=](CompositeCandidate const* c) {
         return DeltaR(c->at(0)->vector(), c->at(1)->vector())
             > pair_dr;
@@ -425,7 +433,8 @@ void HTTSequence::BuildSequence(){
 
   // Trigger filtering
 if(strategy_type != strategy::phys14){
-    if (js["run_trg_filter"].asBool()) {
+//    if (js["run_trg_filter"].asBool()) {
+    if(!is_embedded || (is_embedded&&strategy_type==strategy::paper2013&&era_type==era::data_2012_rereco)){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
             .set_channel(channel)
             .set_mc(mc_type)
@@ -434,6 +443,75 @@ if(strategy_type != strategy::phys14){
             .set_pair_label("ditau"));
       }
   }
+
+if(ztautau_mode > 0 && strategy_type==strategy::paper2013){
+  SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
+    .set_input_label("genParticles")
+    .set_predicate(
+      (bind(&GenParticle::status, _1) == 3) && 
+      (bind(abs,(bind(&GenParticle::pdgid, _1))) == 15))
+    .set_min(2);
+  if (ztautau_mode == 2) zTauTauFilter.set_min(0).set_max(0);
+ 
+  BuildModule(zTauTauFilter);
+}
+
+if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
+
+  auto wh_selector = [](GenParticle const* p) -> bool {
+    if (p->status() == 3 && std::abs(p->pdgid()) == 24) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  SimpleCounter<GenParticle> vhFilter = SimpleCounter<GenParticle>("VHFilter")
+    .set_input_label("genParticles")
+    .set_predicate(wh_selector)
+    .set_min(0).set_max(0);
+  if (vh_filter_mode == 1) vhFilter.set_predicate(wh_selector).set_min(1).set_max(1); // Exactly one W boson => WH
+  if (vh_filter_mode == 2) vhFilter.set_predicate(wh_selector).set_min(2).set_max(999); // Two W bosons => ttH
+  if (vh_filter_mode == 3) vhFilter.set_predicate(wh_selector).set_min(0).set_max(0); // At least one Z boson => ZH
+
+ BuildModule(vhFilter);
+
+}
+
+  double mssm_mass = 0.0;
+  bool do_mass_filter = false;
+  if ((output_name.find("SUSYGluGluToHToTauTau") != output_name.npos) || 
+      (output_name.find("SUSYBBHToTauTau") != output_name.npos)) {
+    std::size_t pos = output_name.find("_M-");
+    if (pos != output_name.npos) {
+      std::string mass_string;
+      for (unsigned i = (pos+3); i < output_name.size(); ++i) {
+        if (output_name.at(i) != '_') mass_string += output_name.at(i);
+        if (output_name.at(i) == '_') break;
+      }
+      mssm_mass = boost::lexical_cast<double>(mass_string);
+      do_mass_filter = true;
+      std::cout << "** MSSM Signal Sample **" << std::endl;
+      std::cout << boost::format(param_fmt) % "mssm_mass" % mssm_mass;
+    }
+  }
+ 
+ if(do_mass_filter==true && strategy_type==strategy::paper2013){
+ BuildModule(SimpleCounter<GenParticle>("MSSMMassFilter")
+    .set_input_label("genParticles")
+    .set_predicate(bind(GenParticleInMassBand, _1, 36, 0.7*mssm_mass, 1.3*mssm_mass))
+    .set_min(1));
+  }
+ 
+ if(is_embedded){
+  BuildModule(SimpleCounter<GenParticle>("EmbeddedMassFilter")
+    .set_input_label("genParticlesEmbedded")
+    .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
+    .set_min(1));
+ }
+
+
+
 
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
@@ -657,15 +735,13 @@ if(bjet_regr_correction){
 }
 
 if(js["make_sync_ntuple"].asBool() && strategy_type!=strategy::phys14){
- BuildModule(HTTSync("HTTSync","SYNCFILE_" + output_name, channel)
+ BuildModule(HTTSync("HTTSync","HTTSequenceSyncfiles/SYNCFILE_" + output_name, channel)
  .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau"));
- //.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label));
 }
 
 if(js["make_sync_ntuple"].asBool() && strategy_type==strategy::phys14){
- BuildModule(HTTSyncTemp("HTTSyncTemp","SYNCFILE_" + output_name, channel)
+ BuildModule(HTTSyncTemp("HTTSyncTemp","HTTSequenceSyncfiles/SYNCFILE_" + output_name, channel)
  .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
- //.set_is_embedded(is_embedded).set_met_label(met_label).set_jet_label(jets_label));
 }
 
 
@@ -709,14 +785,14 @@ void HTTSequence::BuildTTPairs(){
 // ET Pair Sequence
 // --------------------------------------------------------------------------
 void HTTSequence::BuildETPairs() {
-  ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
       js["electrons"].asString(), "sel_electrons"));
 
   std::function<bool(Electron const*)> ElecID;
-  std::string id_fn = js["baseline"]["elec_id"].asString();
-  unsigned special_mode = js["baseline"]["special_mode"].asUInt();
+  //std::string id_fn = js["baseline"]["elec_id"].asString();
+ // unsigned special_mode = js["baseline"]["special_mode"].asUInt();
   if(strategy_type!=strategy::phys14){
     if(special_mode == 20 || special_mode == 22){
      ElecID = [](Electron const* e) { return HttEMuFakeElectron(e); };
@@ -801,7 +877,7 @@ void HTTSequence::BuildETPairs() {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildMTPairs() {
 
- ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+ ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
       js["muons"].asString(), "sel_muons"));
@@ -884,11 +960,12 @@ void HTTSequence::BuildMTPairs() {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildEMPairs() {
 
- ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+ ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(EnergyShifter<Electron>("ElectronEnergyScaleCorrection")
       .set_input_label(js["electrons"].asString())
-      .set_shift(js["baseline"]["elec_es_shift"].asDouble()));
+      .set_shift(tau_shift));
+//      .set_shift(js["baseline"]["elec_es_shift"].asDouble()));
 
   if (js["baseline"]["do_em_extras"].asBool()&&strategy_type==strategy::paper2013) {
     BuildModule(HTTEMuExtras("EMExtras"));
@@ -902,8 +979,8 @@ void HTTSequence::BuildEMPairs() {
 
 
   std::function<bool(Electron const*)> ElecID;
-  std::string id_fn = js["baseline"]["elec_id"].asString();
-  unsigned special_mode = js["baseline"]["special_mode"].asUInt();
+//  std::string id_fn = js["baseline"]["elec_id"].asString();
+//  unsigned special_mode = js["baseline"]["special_mode"].asUInt();
   if(strategy_type!=strategy::phys14){
     if(special_mode == 20 || special_mode == 22){
      ElecID = [](Electron const* e) { return HttEMuFakeElectron(e); };
@@ -911,11 +988,12 @@ void HTTSequence::BuildEMPairs() {
      ElecID = [](Electron const* e) {return true; } ;
     } else {
       ElecID = [](Electron const* e) { return ElectronHTTId(e, true); };
+    }
   //  } else if (id_fn == "MVA:Tight") {
     //  ElecID = [](Electron const* e) { return ElectronHTTId(e, false); };
     //} else if (id_fn == "CutBased") {
      // ElecID = [](Electron const* e) { return ElectronZbbID(e); };
-    }
+    //}
   } else {
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
     }
@@ -1059,11 +1137,11 @@ void HTTSequence::BuildEMPairs() {
 // --------------------------------------------------------------------------
 void HTTSequence::BuildTauSelection(){
   Json::Value base = js["baseline"];
-  ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
   ic::channel channel_type         = String2Channel(channel_str);
 
 bool moriond_tau_scale =false;
-  bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
+ /* bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
                         || (output_name.find("HTohh")                 != output_name.npos)
                         || (output_name.find("AToZh")                 != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
@@ -1071,10 +1149,10 @@ bool moriond_tau_scale =false;
                         || (output_name.find("RecHit")                != output_name.npos) );
   if (output_name.find("DYJetsToTauTau-L") != output_name.npos) real_tau_sample = false;
   if (output_name.find("DYJetsToTauTau-JJ") != output_name.npos) real_tau_sample = false;
-
+*/
 if(real_tau_sample) moriond_tau_scale = true; 
 
-  bool is_data        = js["is_data"].asBool();
+//  bool is_data        = js["is_data"].asBool();
 if(!is_data){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")
       .set_input_label("taus")
@@ -1149,7 +1227,7 @@ BuildModule(tauAntiElecFilter);
 }
 
 void HTTSequence::BuildDiElecVeto() {
-  ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Electron>("CopyToVetoElecs",
       js["electrons"].asString(), "veto_elecs"));
@@ -1192,7 +1270,7 @@ SimpleFilter<Electron> vetoElecFilter = SimpleFilter<Electron>("VetoElecFilter")
 }
 
 void HTTSequence::BuildDiMuonVeto() {
-  ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Muon>("CopyToVetoMuons",
       js["muons"].asString(), "veto_muons"));
@@ -1236,7 +1314,7 @@ void HTTSequence::BuildDiMuonVeto() {
 }
 
 void HTTSequence::BuildExtraElecVeto(){
-  ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Electron>("CopyToExtraElecs",
       js["electrons"].asString(), "extra_elecs"));
@@ -1271,7 +1349,7 @@ BuildModule(extraElecFilter);
 
 
 void HTTSequence::BuildExtraMuonVeto(){
-  ic::strategy strategy_type  = String2Strategy(js["strategy"].asString());
+  ic::strategy strategy_type  = String2Strategy(strategy_str);
 
   BuildModule(CopyCollection<Muon>("CopyToExtraMuons",
       js["muons"].asString(), "extra_muons"));

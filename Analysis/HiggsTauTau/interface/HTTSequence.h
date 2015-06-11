@@ -17,7 +17,7 @@ class HTTSequence {
  private:
   std::shared_ptr<fwlite::TFileService> fs;
   std::vector<std::shared_ptr<ic::ModuleBase>> seq;
-  std::string channel_str, var_str;
+  std::string channel_str, var_str, strategy_str, era_str, mc_str;
   Json::Value js;
   double tau_pt, tau_eta, tau_iso, tau_dz;
   double elec_pt, elec_eta, elec_dxy, elec_dz;
@@ -29,9 +29,10 @@ class HTTSequence {
   double veto_dielec_pt, veto_dielec_eta, veto_dielec_dxy, veto_dielec_dz;
   double veto_dimuon_pt, veto_dimuon_eta, veto_dimuon_dxy, veto_dimuon_dz;
   unsigned min_taus, new_svfit_mode, kinfit_mode, mva_met_mode, faked_tau_selector, hadronic_tau_selector;
-  unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode;
+  unsigned pu_id_training, special_mode, btag_mode, bfake_mode, jes_mode, ztautau_mode, vh_filter_mode;
   std::string met_label, jets_label, svfit_folder, svfit_override, allowed_tau_modes;
   bool bjet_regr_correction, tau_scale_mode, make_sync_ntuple, moriond_tau_scale;
+  bool is_data, is_embedded, real_tau_sample;
   double pair_dr, tau_shift, mass_shift;
 
  public:
