@@ -141,6 +141,7 @@ int main(int argc, char* argv[]){
     shape.push_back("jetmetnomu_mindphi(31,0,3.142)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j_{1,2});Events");
     shape.push_back("alljetsmetnomu_mindphi(31,0,3.1416)");histTitle.push_back(";#Delta#phi(E_{T}^{miss},j);Events");
     shape.push_back("metnomu_significance(100,0.,100.)");histTitle.push_back(";S;Events");
+    shape.push_back("met*pow(sqrt(sumet),-1)(100,0.,100.)");histTitle.push_back(";Run 1 S;Events");
     shape.push_back("dijet_sumeta(50,-10,10)");histTitle.push_back(";#eta_{j1}+#eta_{j2};Events");
     shape.push_back("ht(50,0,1000)");histTitle.push_back(";H_{T} (GeV);Events");
     shape.push_back("jetunclet_mindphi(32,0,3.1416)");histTitle.push_back(";min #Delta#phi(j,E_{T}^{uncl});Events");
@@ -162,9 +163,9 @@ int main(int argc, char* argv[]){
     shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
     shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
     shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
-    if(channel=="mumu"){
-      shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};Events");
-    }
+    // if(channel=="mumu"){
+    //   shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};Events");
+    // }
   }
   
   std::string dataextrasel;
@@ -1199,22 +1200,32 @@ int main(int argc, char* argv[]){
   //   elementvec.push_back(ggHele);
   // }
 
-  // elementvec.push_back(sigele);
-  // elementvec.push_back(pu40sigele);
-  // elementvec.push_back(ns50sigele);
-  // elementvec.push_back(run1sigele);
-  // elementvec.push_back(qcdincele);
-  // elementvec.push_back(run1qcdincele);
+  if(channel=="nunu"){
+    elementvec.push_back(sigele);
+    elementvec.push_back(pu40sigele);
+    elementvec.push_back(ns50sigele);
+    elementvec.push_back(run1sigele);
+    elementvec.push_back(qcdincele);
+    elementvec.push_back(run1qcdincele);
+  }
 
-  //  elementvec.push_back(dyele);
-  //  elementvec.push_back(run1dyele);
+  if(channel=="mumu"){
+    elementvec.push_back(dyele);
+    elementvec.push_back(run1dyele);
+  }
 
-  //  elementvec.push_back(wmunuele);
-  //  elementvec.push_back(run1wmunuele);
-  //elementvec.push_back(wenuele);
-  //elementvec.push_back(run1wenuele);
-  elementvec.push_back(wtaunuele);
-  elementvec.push_back(run1wtaunuele);
+  if(channel=="munu"){
+    elementvec.push_back(wmunuele);
+    elementvec.push_back(run1wmunuele);
+  }
+  else if(channel=="enu"){
+    elementvec.push_back(wenuele);
+    elementvec.push_back(run1wenuele);
+  }
+  else if(channel=="taunu"){
+    elementvec.push_back(wtaunuele);
+    elementvec.push_back(run1wtaunuele);
+  }
 
   HistPlotter plotter("plotter");
   plotter.set_dirname("ControlPlots")
