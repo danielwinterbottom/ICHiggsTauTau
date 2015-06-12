@@ -343,10 +343,10 @@ namespace ic {
         StandardAxes(h[1]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, units);
       }
       h[1]->GetYaxis()->SetNdivisions(4);
-      h[1]->GetXaxis()->SetTitleOffset(1.1);
-      h[1]->GetYaxis()->SetTitleOffset(1.8);
+      h[1]->GetXaxis()->SetTitleOffset(1.2);
+      h[1]->GetYaxis()->SetTitleOffset(2.0);
       pads[0]->cd();
-      h[0]->GetYaxis()->SetTitleOffset(1.8);
+      h[0]->GetYaxis()->SetTitleOffset(2.0);
       //it complains if the minimum is set to 0 and you try to set log y scale
       if(log_y_) h[0]->SetMinimum(0.1);
       if(custom_y_axis_min_) h[0]->SetMinimum(y_axis_min_);
@@ -365,8 +365,8 @@ namespace ic {
       } else {      
         StandardAxes(h[0]->GetXaxis(), h[0]->GetYaxis(), x_axis_label_, units);
       }
-      h[0]->GetXaxis()->SetTitleOffset(1.1);
-      h[0]->GetYaxis()->SetTitleOffset(1.8);
+      h[0]->GetXaxis()->SetTitleOffset(1.2);
+      h[0]->GetYaxis()->SetTitleOffset(2.0);
       if(log_y_) h[0]->SetMinimum(0.1);
       if(custom_y_axis_min_) h[0]->SetMinimum(y_axis_min_);
       if (x_axis_bin_labels_ != "") {
@@ -509,7 +509,8 @@ namespace ic {
 
     //Setup ratio plots
     TH1F *ratio = reinterpret_cast<TH1F*>(MakeRatioHist(data_hist, bkg_element.hist_ptr(), true, false));
-    TH1F *err_ratio = reinterpret_cast<TH1F*>(MakeRatioHist(err_element.hist_ptr(), err_element.hist_ptr(), true, false));
+    TH1F *err_ratio;
+    if(draw_error_band_) err_ratio = reinterpret_cast<TH1F*>(MakeRatioHist(err_element.hist_ptr(), err_element.hist_ptr(), true, false));
 
     if (draw_ratio_) {
       pads[1]->cd();
