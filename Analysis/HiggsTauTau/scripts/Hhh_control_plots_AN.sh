@@ -67,12 +67,12 @@ then
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="met(20,0,100)" --x_axis_label="E_{T}^{miss} [GeV]" \
-  --norm_bins=true --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.1 \
+  --norm_bins=true --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=0.2 \
   --background_scheme="et_default" $ET_INC_SHIFT 
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="met(20,0,100)" --x_axis_label="E_{T}^{miss} [GeV]" \
-  --norm_bins=true --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.1 \
+  --norm_bins=true --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=0.2 \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 #### pt_1
@@ -126,36 +126,36 @@ then
 #### eta_1
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="eta_1(30,-3,3)" --extra_pad=1.9 \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="eta_1(30,-3,3)" --extra_pad=0.4 \
   --x_axis_label="Electron #eta" --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="eta_1(30,-3,3)" --extra_pad=1.9 \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="eta_1(30,-3,3)" --extra_pad=0.4 \
   --x_axis_label="Muon #eta" --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 #### eta_2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="eta_2(30,-3,3)" --extra_pad=2.0 \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="eta_2(30,-3,3)" --extra_pad=0.4 \
   --x_axis_label="Tau #eta" --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="eta_2(30,-3,3)" --extra_pad=1.8 \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="eta_2(30,-3,3)" --extra_pad=0.4 \
   --x_axis_label="Tau #eta" --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
 #### m_2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="m_2(20,0,2)" --extra_pad=1.1 \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="m_2(20,0,2)" --extra_pad=0.2 \
   --x_axis_label="Tau Mass [GeV]" --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="et_default" $ET_INC_SHIFT
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="m_2(20,0,2)" --extra_pad=1.1\
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="m_2(20,0,2)" --extra_pad=0.2\
   --x_axis_label="Tau Mass [GeV]" --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT
 
@@ -183,13 +183,13 @@ then
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="n_jets_csv(10,-0.5,9.5)"  --x_axis_label="Number of Jets" \
-  --draw_ratio=true --log_y=true --extra_pad=5 --datacard="2jetinclusive"$MASSCUTS"" \
+  --draw_ratio=true --log_y=true --extra_pad=0.4 --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="et_default" $ET_INC_SHIFT \
   --custom_y_axis_min=true --y_axis_min=0.99
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="n_jets_csv(10,-0.5,9.5)"  --x_axis_label="Number of Jets" \
-  --draw_ratio=true --log_y=true --extra_pad=5 --datacard="2jetinclusive"$MASSCUTS"" \
+  --draw_ratio=true --log_y=true --extra_pad=0.4 --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT \
   --custom_y_axis_min=true --y_axis_min=0.99
 
@@ -197,13 +197,13 @@ then
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="n_bjets_csv(9,-0.5,8.5)"  --x_axis_label="Number of b-tagged Jets" \
-  --draw_ratio=true --log_y=true --extra_pad=500 --datacard="2jetinclusive"$MASSCUTS"" \
+  --draw_ratio=true --log_y=true --extra_pad=0.4 --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="et_default" $ET_INC_SHIFT \
   --custom_y_axis_min=true --y_axis_min=0.99
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="n_bjets_csv(9,-0.5,8.5)"  --x_axis_label="Number of b-tagged Jets" \
-  --draw_ratio=true --log_y=true --extra_pad=500 --datacard="2jetinclusive"$MASSCUTS"" \
+  --draw_ratio=true --log_y=true --extra_pad=0.4 --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="mt_with_zmm" $MT_INC_SHIFT \
   --custom_y_axis_min=true --y_axis_min=0.99
 
@@ -216,12 +216,12 @@ then
 fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et  \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --set_alias="sel:1" --var=$MT_BINS \
-  --x_axis_label="m_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.8 $ET_BAND_ONLY \
+  --x_axis_label="m_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=0.4 $ET_BAND_ONLY \
   --background_scheme="et_default" 
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --set_alias="sel:1" --var=$MT_BINS \
-  --x_axis_label="m_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.8 $MT_BAND_ONLY \
+  --x_axis_label="m_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=0.4 $MT_BAND_ONLY \
   --background_scheme="mt_with_zmm"
 
 
@@ -229,12 +229,12 @@ fi
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="n_vtx(30,0,30)" $ET_INC_SHIFT \
-  --x_axis_label="Number of Vertices" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.8 \
+  --x_axis_label="Number of Vertices" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=0.4 \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="n_vtx(30,0,30)" $MT_INC_SHIFT \
-  --x_axis_label="Number of Vertices" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=1.8 \
+  --x_axis_label="Number of Vertices" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=0.4 \
   --background_scheme="mt_with_zmm"
 
 
@@ -242,13 +242,13 @@ fi
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="tau_decay_mode(3,-4,11)" $ET_INC_SHIFT \
-  --x_axis_label="Tau Decay Mode" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=2.0 \
+  --x_axis_label="Tau Decay Mode" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=0.4 \
   --background_scheme="et_default"\
   --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong" 
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="tau_decay_mode(3,-4,11)" $MT_INC_SHIFT \
-  --x_axis_label="Tau Decay Mode" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=2.0 \
+  --x_axis_label="Tau Decay Mode" --datacard="2jetinclusive"$MASSCUTS"" --extra_pad=0.4 \
   --background_scheme="mt_with_zmm"\
   --x_axis_bin_labels="1 Prong 0 #pi^{0}:1 Prong 1 #pi^{0}:3 Prong" 
 
@@ -263,12 +263,12 @@ fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csvpt_1(20,0,200)" $ET_INC_SHIFT \
   --x_axis_label="Leading selected jet p_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" \
-  --background_scheme="et_default" --extra_pad=1.3
+  --background_scheme="et_default" --extra_pad=0.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csvpt_1(20,0,200)" \
   --x_axis_label="Leading selected jet p_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" $MT_INC_SHIFT \
-  --background_scheme="mt_with_zmm" --extra_pad=1.3
+  --background_scheme="mt_with_zmm" --extra_pad=0.2
 
 #### jet_csveta_1
 BETA_BINS="jet_csveta_1(10,-3,3)"
@@ -277,12 +277,12 @@ then
   BETA_BINS="jet_csveta_1(15,-3,3)"
 fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var=$BETA_BINS --extra_pad=2.0 $ET_INC_SHIFT \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var=$BETA_BINS --extra_pad=0.4 $ET_INC_SHIFT \
   --x_axis_label="Leading selected jet #eta" --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var=$BETA_BINS --extra_pad=2.0 \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var=$BETA_BINS --extra_pad=0.4 \
   --x_axis_label="Leading selected jet #eta" --datacard="2jetinclusive"$MASSCUTS"" $MT_INC_SHIFT \
   --background_scheme="mt_with_zmm"
 
@@ -291,12 +291,12 @@ fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csvpt_2(20,0,200)" $ET_INC_SHIFT \
   --x_axis_label="Subleading selected jet p_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" \
-  --background_scheme="et_default" --extra_pad=1.3
+  --background_scheme="et_default" --extra_pad=0.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csvpt_2(20,0,200)" \
   --x_axis_label="Subleading selected jet p_{T} [GeV]" --datacard="2jetinclusive"$MASSCUTS"" $MT_INC_SHIFT \
-  --background_scheme="mt_with_zmm" --extra_pad=1.3
+  --background_scheme="mt_with_zmm" --extra_pad=0.2
 
 #### jet_csveta_2
 BETA_BINS="jet_csveta_2(10,-3,3)"
@@ -305,12 +305,12 @@ then
   BETA_BINS="jet_csveta_2(15,-3,3)"
 fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var=$BETA_BINS --extra_pad=2.0 $ET_INC_SHIFT \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var=$BETA_BINS --extra_pad=0.4 $ET_INC_SHIFT \
   --x_axis_label="Subleading selected jet #eta" --datacard="2jetinclusive"$MASSCUTS"" \
   --background_scheme="et_default"
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
-  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var=$BETA_BINS --extra_pad=2.0 \
+  --method=28 --cat="2jetinclusive"$MASSCUTS"" --var=$BETA_BINS --extra_pad=0.4 \
   --x_axis_label="Subleading selected jet #eta" --datacard="2jetinclusive"$MASSCUTS"" $MT_INC_SHIFT \
   --background_scheme="mt_with_zmm"
 
@@ -319,24 +319,24 @@ fi
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csvbcsv_1(25,0,1)" \
   --x_axis_label="Leading selected jet CSV" --datacard="2jetinclusive"$MASSCUTS""  $ET_INC_SHIFT \
-  --background_scheme="et_default" --extra_pad=1.2
+  --background_scheme="et_default" --extra_pad=0.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csvbcsv_1(25,0,1)" \
   --x_axis_label="Leading selected jet CSV" --datacard="2jetinclusive"$MASSCUTS""  $MT_INC_SHIFT \
-  --background_scheme="mt_with_zmm" --extra_pad=1.2
+  --background_scheme="mt_with_zmm" --extra_pad=0.2
 
 #### jet_csvcsv_2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csvbcsv_2(25,0,1)" \
   --x_axis_label="Subleading selected jet CSV" --datacard="2jetinclusive"$MASSCUTS""  $ET_INC_SHIFT \
-  --background_scheme="et_default" --extra_pad=1.2
+  --background_scheme="et_default" --extra_pad=0.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csvbcsv_2(25,0,1)" \
   --x_axis_label="Subleading selected jet CSV" --datacard="2jetinclusive"$MASSCUTS""  $MT_INC_SHIFT \
-  --background_scheme="mt_with_zmm" --extra_pad=1.2
+  --background_scheme="mt_with_zmm" --extra_pad=0.2
 
 
 #### jet_csvjdeta
@@ -345,12 +345,12 @@ fi
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csv_deta(20,0,10)" $ET_INC_SHIFT \
   --x_axis_label="#Delta#eta_{jj}" \
   --datacard="2jetinclusive"$MASSCUTS"" \
-  --background_scheme="et_default" --extra_pad=1.2
+  --background_scheme="et_default" --extra_pad=0.2
 
 ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
   --method=28 --cat="2jetinclusive"$MASSCUTS"" --var="jet_csv_deta(20,0,10)" $MT_INC_SHIFT \
   --x_axis_label="#Delta#eta_{jj}" \
   --datacard="2jetinclusive"$MASSCUTS"" \
-  --background_scheme="mt_with_zmm" --extra_pad=1.2
+  --background_scheme="mt_with_zmm" --extra_pad=0.2
 
 

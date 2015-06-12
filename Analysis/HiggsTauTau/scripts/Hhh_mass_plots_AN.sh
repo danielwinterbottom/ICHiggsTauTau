@@ -173,37 +173,37 @@ then
     --method=28 --cat="2jet0tagSFMassCutMtt" --var="jet_csv_mjj(30,0,600)" $ET_INC_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet0tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="et_default" --extra_pad=1.2
+    --background_scheme="et_default" --extra_pad=0.2
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
     --method=28 --cat="2jet0tagSFMassCutMtt" --var="jet_csv_mjj(30,0,600)" $MT_INC_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet0tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="mt_with_zmm" --extra_pad=1.2
+    --background_scheme="mt_with_zmm" --extra_pad=0.2
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
     --method=24 --cat="2jet1tagSFMassCutMtt" --var="jet_csv_mjj(30,0,600)" $ET_2JET1TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet1tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="et_default" --extra_pad=1.2
+    --background_scheme="et_default" --extra_pad=0.2
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
     --method=24 --cat="2jet1tagSFMassCutMtt" --var="jet_csv_mjj(30,0,600)" $MT_2JET1TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet1tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="mt_with_zmm" --extra_pad=1.2
+    --background_scheme="mt_with_zmm" --extra_pad=0.2
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
     --method=27 --cat="2jet2tagSFMassCutMtt" --var="jet_csv_mjj(15,0,600)" $ET_2JET2TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet2tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="et_default" --extra_pad=1.2 --fix_negative_bins="QCD"
+    --background_scheme="et_default" --extra_pad=0.2 --fix_negative_bins="QCD"
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
     --method=27 --cat="2jet2tagSFMassCutMtt" --var="jet_csv_mjj(15,0,600)" $MT_2JET2TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet2tagSFMassCutMtt" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="mt_with_zmm" --extra_pad=1.2 --fix_negative_bins="QCD"
+    --background_scheme="mt_with_zmm" --extra_pad=0.2 --fix_negative_bins="QCD"
 else
 #### m_bb
 
@@ -211,37 +211,37 @@ else
     --method=28 --cat="2jet0tagSF" --var="jet_csv_mjj(30,0,600)" $ET_INC_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet0tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="et_default" --extra_pad=1.2
+    --background_scheme="et_default" --extra_pad=0.2
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
     --method=28 --cat="2jet0tagSF" --var="jet_csv_mjj(30,0,600)" $MT_INC_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet0tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="mt_with_zmm" --extra_pad=1.2
+    --background_scheme="mt_with_zmm" --extra_pad=0.2
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
     --method=24 --cat="2jet1tagSF" --var="jet_csv_mjj(30,0,600)" $ET_2JET1TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet1tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="et_default" --extra_pad=1.2
+    --background_scheme="et_default" --extra_pad=0.2
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
     --method=24 --cat="2jet1tagSF" --var="jet_csv_mjj(30,0,600)" $MT_2JET1TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet1tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="mt_with_zmm" --extra_pad=1.2
+    --background_scheme="mt_with_zmm" --extra_pad=0.2
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=et --set_alias="sel:mt_1<30." \
     --method=27 --cat="2jet2tagSF" --var="jet_csv_mjj(15,0,600)" $ET_2JET2TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet2tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="et_default" --extra_pad=1.2 --fix_negative_bins="QCD"
+    --background_scheme="et_default" --extra_pad=0.2 --fix_negative_bins="QCD"
 
   ./bin/HiggsTauTauPlot4 --cfg=scripts/new_plot_"$ANA"_"$YEAR".cfg --channel=mt --set_alias="sel:mt_1<30." \
     --method=27 --cat="2jet2tagSF" --var="jet_csv_mjj(15,0,600)" $MT_2JET2TAG_SHIFT \
     --x_axis_label="M_{jj} [GeV]" --norm_bins=true --datacard="2jet2tagSF" --y_axis_label="dN/dm_{jj} [1/GeV]"\
     --blind=false --x_blind_min=80 --x_blind_max=160 \
-    --background_scheme="mt_with_zmm" --extra_pad=1.2 --fix_negative_bins="QCD"
+    --background_scheme="mt_with_zmm" --extra_pad=0.2 --fix_negative_bins="QCD"
 
 fi
 

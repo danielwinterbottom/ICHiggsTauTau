@@ -421,7 +421,6 @@ namespace ic {
     
     //Draw backgrounds and data
     thstack.Draw("HISTSAME");
-    data_hist->Draw("pesame");
     canv->Update();
     
     std::vector<PlotSigComponent> sig_scheme = sig_schemes_[signal_scheme_];
@@ -516,6 +515,8 @@ namespace ic {
       ratio->Draw("pe0same");
     }
     pads[0]->cd();
+    //Finally draw the data
+    data_hist->Draw("pesame");
     
     //Add any text elements - for now using ic::TextElement - could definitely change this to use DrawTitle function or similar
     TLatex *title_latex = new TLatex();
