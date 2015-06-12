@@ -347,6 +347,7 @@ namespace ic {
       h[1]->GetYaxis()->SetTitleOffset(2.0);
       pads[0]->cd();
       h[0]->GetYaxis()->SetTitleOffset(2.0);
+      pads[1]->SetGrid(0,1);
       //it complains if the minimum is set to 0 and you try to set log y scale
       if(log_y_) h[0]->SetMinimum(0.1);
       if(custom_y_axis_min_) h[0]->SetMinimum(y_axis_min_);
@@ -381,14 +382,11 @@ namespace ic {
     }
     pads[0]->cd();
    
-    
     // Setup legend
     TLegend *legend = PositionedLegend(0.40, 0.30, 3, 0.03);
     legend->SetTextFont(42);
-    FixBoxPadding(pads[0], legend, 0.05);
     HTTPlot::SetDataStyle(data_hist);    
     legend->AddEntry(data_hist, "Observed", "ple");
-    
     
     std::string bkr_list_for_ratio = "";
     // Produce stack from background components
@@ -416,7 +414,7 @@ namespace ic {
       }
     }
     //Loop again in opposite direction to fill the legend (looks better that way)
-    for (unsigned i = bkg_scheme.size()-1; i > 0; --i) {
+    for (int i = bkg_scheme.size()-1; i>=0; --i) {
         TH1PlotElement ele2 = bkg_elements[i];
         legend->AddEntry(ele2.hist_ptr(), ele2.legend_text().c_str(), "f");
     }
@@ -448,7 +446,7 @@ namespace ic {
     
     canv->Update();
    
-    //Uncertainty band - not sure if all of this is needed, check later
+    //Uncertainty band
     TH1F error_band;
     TH1F bkg_total;
     TH1PlotElement err_element;
@@ -509,7 +507,7 @@ namespace ic {
 
     //Setup ratio plots
     TH1F *ratio = reinterpret_cast<TH1F*>(MakeRatioHist(data_hist, bkg_element.hist_ptr(), true, false));
-    TH1F *err_ratio;
+    TH1F *err_ratio = NULL;
     if(draw_error_band_) err_ratio = reinterpret_cast<TH1F*>(MakeRatioHist(err_element.hist_ptr(), err_element.hist_ptr(), true, false));
 
     if (draw_ratio_) {
@@ -532,6 +530,7 @@ namespace ic {
     FixTopRange(pads[0], GetPadYMax(pads[0]), extra_pad_>0 ? extra_pad_ : 0.15);
     DrawCMSLogo(pads[0], cms_label_, cms_extra_, 11, 0.045, 0.035, 1.2);
     DrawTitle(pads[0], lumi_label_, 3);
+    FixBoxPadding(pads[0], legend, 0.05);
     legend->Draw();
     FixOverlay();
     canv->Update();
