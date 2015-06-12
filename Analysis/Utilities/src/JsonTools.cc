@@ -1,5 +1,5 @@
 #include "Utilities/interface/JsonTools.h"
-
+#include <iostream>
 #include <fstream>
 #include <string>
 #include "boost/algorithm/string.hpp"
@@ -27,9 +27,7 @@ Json::Value ExtractJsonFromFlatString(std::string const&str){
   std::vector<std::string> split_str;
   std::vector<std::string> split_lastarg;
   boost::split(split_str,str,boost::is_any_of(":"));
-  std::cout<<split_str.size()<<std::endl;
   boost::split(split_lastarg,split_str.at(split_str.size()-1),boost::is_any_of("."));
-  std::cout<<split_lastarg.size()<<std::endl;
   std::string jsonstr;
   if(split_str.size()==3){
   if(split_lastarg.size()>1){
@@ -53,7 +51,7 @@ Json::Value ExtractJsonFromFlatString(std::string const&str){
   else{
    jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":{\""+split_str.at(2)+"\":\""+split_str.at(3)+"\"}}}";//+split_str.at(2)+"\"]}}";
   }
- } else{ std::cout<<"Filter not supported for this number of arguments! use ExtractJsonFromString"<<std::endl; exit(1);}
+ } else{ std::cout<<"This method doesn't work for this number of arguments! use ExtractJsonFromString"<<std::endl; exit(1);}
 
 
   Json::Value js;
