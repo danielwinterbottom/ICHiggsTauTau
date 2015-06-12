@@ -280,7 +280,7 @@ void HTTSequence::BuildSequence(){
   ic::strategy strategy_type  = String2Strategy(strategy_str);
   // Other flags
 
-  bool real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
+  real_tau_sample = ( (output_name.find("HToTauTau")             != output_name.npos)
                         || (output_name.find("HTohh")                 != output_name.npos)
                         || (output_name.find("AToZh")                 != output_name.npos)
                         || (output_name.find("DYJetsToTauTau")        != output_name.npos)
@@ -403,34 +403,6 @@ void HTTSequence::BuildSequence(){
     .set_input_file(data_json));
   }
 
-
-  if (channel == channel::et) BuildETPairs();
-  if (channel == channel::mt) BuildMTPairs();
-  if (channel == channel::em) BuildEMPairs();
-  if (channel == channel::tt) BuildTTPairs();
-
-  // Pair DeltaR filtering
-  BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
-      .set_input_label("ditau").set_min(1)
-      .set_predicate([=](CompositeCandidate const* c) {
-        return DeltaR(c->at(0)->vector(), c->at(1)->vector())
-            > pair_dr;
-      }));
-
-
-  // Trigger filtering
-if(strategy_type != strategy::phys14){
-//    if (js["run_trg_filter"].asBool()) {
-    if(!is_embedded || (is_embedded&&strategy_type==strategy::paper2013&&era_type==era::data_2012_rereco)){
-        BuildModule(HTTTriggerFilter("HTTTriggerFilter")
-            .set_channel(channel)
-            .set_mc(mc_type)
-            .set_is_data(is_data)
-            .set_is_embedded(is_embedded)
-            .set_pair_label("ditau"));
-      }
-  }
-
 if(ztautau_mode > 0 && strategy_type==strategy::paper2013){
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
     .set_input_label("genParticles")
@@ -489,13 +461,46 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
     .set_predicate(bind(GenParticleInMassBand, _1, 36, 0.7*mssm_mass, 1.3*mssm_mass))
     .set_min(1));
   }
- 
+
+
+
  if(is_embedded){
   BuildModule(SimpleCounter<GenParticle>("EmbeddedMassFilter")
     .set_input_label("genParticlesEmbedded")
     .set_predicate(bind(GenParticleInMassBand, _1, 23, 50., 9999999.))
     .set_min(1));
  }
+
+
+  if (channel == channel::et) BuildETPairs();
+  if (channel == channel::mt) BuildMTPairs();
+  if (channel == channel::em) BuildEMPairs();
+  if (channel == channel::tt) BuildTTPairs();
+
+
+  // Pair DeltaR filtering
+  BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
+      .set_input_label("ditau").set_min(1)
+      .set_predicate([=](CompositeCandidate const* c) {
+        return DeltaR(c->at(0)->vector(), c->at(1)->vector())
+            > pair_dr;
+      }));
+
+
+  // Trigger filtering
+if(strategy_type != strategy::phys14){
+//    if (js["run_trg_filter"].asBool()) {
+    if(!is_embedded || (is_embedded&&strategy_type==strategy::paper2013&&era_type==era::data_2012_rereco)){
+        BuildModule(HTTTriggerFilter("HTTTriggerFilter")
+            .set_channel(channel)
+            .set_mc(mc_type)
+            .set_is_data(is_data)
+            .set_is_embedded(is_embedded)
+            .set_pair_label("ditau"));
+      }
+  }
+
+ 
 
 
 
@@ -982,7 +987,7 @@ void HTTSequence::BuildEMPairs() {
  }
    
 
- if (js["baseline"]["lep_iso"].asBool()&&special_mode !=25 &&special_mode != 23 &&strategy_type!=strategy::phys14) {
+ if (js["baseline"]["lep_iso"].asBool()&&special_mode!=22&&special_mode!=20&&special_mode !=25 &&special_mode != 23 &&strategy_type==strategy::paper2013) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
         .set_predicate([=](Electron const* e) {
@@ -1097,8 +1102,13 @@ void HTTSequence::BuildTauSelection(){
 
  bool moriond_tau_scale =false;
  if(real_tau_sample) moriond_tau_scale = true; 
+ 
+ if (tau_scale_mode > 0 && !moriond_tau_scale)
+    BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
+    .set_input_label("taus")
+    .set_shift(tau_shift));
 
- if(!is_data){
+ if(moriond_tau_scale&&(!is_data||is_embedded)){
   BuildModule(HTTEnergyScale("TauEnergyScaleCorrection")
       .set_input_label("taus")
       .set_shift(base["tau_es_shift"].asDouble())
@@ -1156,7 +1166,7 @@ BuildModule(tauAntiElecFilter);
         .set_predicate([=](Tau const* t) {
           return t->GetTauID(tau_anti_muon_discr) > 0.5;
         });
-      if(channel_type == channel::mt && strategy::paper2013){
+      if(channel_type == channel::mt && strategy_type==strategy::paper2013){
        tauAntiMuonFilter.set_predicate([=](Tau const* t){
          return t->GetTauID(tau_anti_muon_discr)> 0.5 &&
                 TauEoverP(t, 0.2);
