@@ -19,6 +19,7 @@
 // HTT-specific modules
 #include "HiggsTauTau/interface/HTTSequence.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
+#include "HiggsTauTau/interface/HTTTriggerFilterPhys14.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
@@ -233,7 +234,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   tau_dz = 0.2;
   min_taus = 2;
   tau_iso_discr = "byCombinedIsolationDeltaBetaCorrRaw3Hits";
-  tau_anti_elec_discr = "againstElectronTightMVA5";
+  tau_anti_elec_discr = "againstElectronVLooseMVA5";
   tau_anti_muon_discr = "againstMuonLoose3";
   pair_dr = 0.5;
   }
@@ -489,7 +490,6 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 
 
   // Trigger filtering
-if(strategy_type != strategy::phys14){
 //    if (js["run_trg_filter"].asBool()) {
     if(!is_embedded || (is_embedded&&strategy_type==strategy::paper2013&&era_type==era::data_2012_rereco)){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
@@ -499,9 +499,8 @@ if(strategy_type != strategy::phys14){
             .set_is_embedded(is_embedded)
             .set_pair_label("ditau"));
       }
-  }
+ // }
 
- 
 
 
 
