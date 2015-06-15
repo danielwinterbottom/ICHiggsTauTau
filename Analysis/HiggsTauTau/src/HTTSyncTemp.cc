@@ -1,4 +1,4 @@
-#include "HiggsTauTau/interface/HTTSync.h"
+#include "HiggsTauTau/interface/HTTSyncTemp.h"
 #include "TVector3.h"
 #include "UserCode/ICHiggsTauTau/interface/PFJet.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
@@ -7,7 +7,7 @@
 
 namespace ic {
 
-HTTSync::HTTSync(std::string const& name, std::string const& output_name,
+HTTSyncTemp::HTTSyncTemp(std::string const& name, std::string const& output_name,
                  ic::channel channel)
     : ModuleBase(name), channel_(channel) {
   output_name_ = output_name;
@@ -15,12 +15,14 @@ HTTSync::HTTSync(std::string const& name, std::string const& output_name,
   is_embedded_ = false;
   select_sel_mode_ = -1;
   select_category_ = "";
-  ditau_label_="emtauCandidates";
+  jet_label_ = "pfJetsPFlow";
+  tau_label_ = "taus";
+  ditau_label_ = "emtauCandidates";
 }
 
-HTTSync::~HTTSync() { ; }
+HTTSyncTemp::~HTTSyncTemp() { ; }
 
-int HTTSync::PreAnalysis() {
+int HTTSyncTemp::PreAnalysis() {
   lOFile = new TFile(output_name_.c_str(), "RECREATE");
   lOFile->cd();
   // Tree should be named "TauCheck" to aid scripts which
@@ -325,7 +327,7 @@ int HTTSync::PreAnalysis() {
   return 0;
 }
 
-int HTTSync::Execute(TreeEvent *event) {
+int HTTSyncTemp::Execute(TreeEvent *event) {
   if (select_category_ != "") {
     if (event->Exists("cat_status")) {
       std::map<std::string, bool> cat_status =
@@ -344,14 +346,17 @@ int HTTSync::Execute(TreeEvent *event) {
   }
 
   EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
-  std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
-  std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
+  //std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+  std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jet_label_);
+  std::vector<Tau*> taus = event->GetPtrVec<Tau>(tau_label_);
   ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 0.0, jet_eta_));
   std::sort(jets.begin(), jets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
 
   std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
+  //std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
 
-  Met const* pfMet = event->GetPtr<Met>("pfMet");
+  std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
+  Met const* pfMet = pfMet_vec.at(0);
   Met const* pfMetMVA = event->GetPtr<Met>("pfMVAMet");
   Met const* selectedMet = event->GetPtr<Met>(met_label_);
 
@@ -446,7 +451,7 @@ int HTTSync::Execute(TreeEvent *event) {
                   + std::max(elec->dr04_pfiso_neutral() + elec->dr04_pfiso_gamma() - 0.5 * elec->dr04_pfiso_pu(), 0.0);
     iso = iso / elec->pt();
     lIso1 = iso;
-    lMVA1 = elec->GetIdIso("mvaNonTrigV0");
+    lMVA1 = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
     lD01 = elec->dxy_vertex();
     lDZ1 = elec->dz_vertex();
     lPassId1 = true;
@@ -454,8 +459,8 @@ int HTTSync::Execute(TreeEvent *event) {
     lMt1 = MT(elec, selectedMet);
 
     Tau* htau = dynamic_cast<Tau*>(tau);
-    lIso2 = htau->GetTauID("byIsolationMVAraw");
-    lMVA2 = htau->GetTauID("againstElectronMVA");
+    lIso2 = htau->GetTauID("byIsolationMVA3oldDMwoLTraw");
+    lMVA2 = htau->GetTauID("againstElectronMVA5raw");
     l3Hits_2 = htau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? htau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
     lagainstElectronMVA3raw_2 = htau->HasTauID("againstElectronMVA3raw") ? htau->GetTauID("againstElectronMVA3raw") : 0. ;
     lbyIsolationMVA2raw_2 = htau->HasTauID("byIsolationMVA2raw") ? htau->GetTauID("byIsolationMVA2raw") : 0. ;
@@ -479,8 +484,8 @@ int HTTSync::Execute(TreeEvent *event) {
     lPassIso1 = true;
     lMt1 = MT(muon, selectedMet);
     Tau* htau = dynamic_cast<Tau*>(tau);
-    lIso2 = htau->GetTauID("byIsolationMVAraw");
-    lMVA2 = htau->GetTauID("againstElectronMVA");
+    lIso2 = htau->GetTauID("byIsolationMVA3oldDMwoLTraw");
+    lMVA2 = htau->GetTauID("againstElectronMVA5raw");
     l3Hits_2 = htau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? htau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
     lagainstElectronMVA3raw_2 = htau->HasTauID("againstElectronMVA3raw") ? htau->GetTauID("againstElectronMVA3raw") : 0. ;
     lbyIsolationMVA2raw_2 = htau->HasTauID("byIsolationMVA2raw") ? htau->GetTauID("byIsolationMVA2raw") : 0. ;
@@ -497,7 +502,7 @@ int HTTSync::Execute(TreeEvent *event) {
                   + std::max(elec->dr04_pfiso_neutral() + elec->dr04_pfiso_gamma() - 0.5 * elec->dr04_pfiso_pu(), 0.0);
     iso = iso / elec->pt();
     lIso1 = iso;
-    lMVA1 = elec->GetIdIso("mvaNonTrigV0");
+    lMVA1 = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
     lD01 = elec->dxy_vertex();
     lDZ1 = elec->dz_vertex();
     lPassId1 = true;
@@ -610,7 +615,8 @@ int HTTSync::Execute(TreeEvent *event) {
     auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
     ic::erase_if(btag_jets, !boost::bind(IsReBTagged, _1, retag_result));
   } else {
-    ic::erase_if(btag_jets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
+    ic::erase_if(btag_jets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedInclusiveSecondaryVertexV2BJetTags") < 0.679);
+    //ic::erase_if(btag_jets, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
   }
 
   if (btag_jets.size() >= 1) {
@@ -706,12 +712,12 @@ int HTTSync::Execute(TreeEvent *event) {
   return 0;
 }
 
-int HTTSync::PostAnalysis() {
+int HTTSyncTemp::PostAnalysis() {
   lOFile->cd();
   lOTree->Write();
   lOFile->Close();
   return 0;
 }
 
-void HTTSync::PrintInfo() { ; }
+void HTTSyncTemp::PrintInfo() { ; }
 }

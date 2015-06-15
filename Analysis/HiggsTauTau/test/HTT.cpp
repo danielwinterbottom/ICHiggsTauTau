@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 // #include "boost/lexical_cast.hpp"
+#include "boost/algorithm/string.hpp"
 #include "boost/program_options.hpp"
 // #include "boost/bind.hpp"
 // #include "boost/function.hpp"
@@ -13,7 +14,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Electron.hh"
 #include "UserCode/ICHiggsTauTau/interface/CompositeCandidate.hh"
 #include "UserCode/ICHiggsTauTau/interface/Tau.hh"
-// #include "PhysicsTools/FWLite/interface/TFileService.h"
+#include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "Utilities/interface/JsonTools.h"
 #include "Utilities/interface/FnRootTools.h"
 #include "Utilities/interface/FnPredicates.h"
@@ -46,13 +47,20 @@ int main(int argc, char* argv[]) {
 
   vector<string> cfgs;
   vector<string> jsons;
+  vector<string> flatjsons;
+  unsigned offset;
+  unsigned nlines;
 
   po::options_description config("config");
-  config.add_options()(
+  config.add_options()
+      ("offset", po::value<unsigned>(&offset)->default_value(0))
+      ("nlines", po::value<unsigned>(&nlines)->default_value(0))(
       "cfg", po::value<vector<string>>(&cfgs)->multitoken()->required(),
       "json config files")(
       "json", po::value<vector<string>>(&jsons)->multitoken(),
-      "json fragments");
+      "json fragments")(
+      "flatjson", po::value<vector<string>>(&flatjsons)->multitoken(),
+      "json flat fragments");
   po::variables_map vm;
   po::store(po::command_line_parser(argc, argv).options(config).run(), vm);
   po::notify(vm);
@@ -65,21 +73,43 @@ int main(int argc, char* argv[]) {
     ic::UpdateJson(js_init, extra);
   }
   for (unsigned i = 0; i < jsons.size(); ++i) {
-    Json::Value extra;
+    std::vector<std::string> json_strs;
+    Json::Value extra ;
     Json::Reader reader(Json::Features::all());
     reader.parse(jsons[i], extra);
     std::cout << ">> Updating config with fragment:\n";
     std::cout << extra;
     ic::UpdateJson(js_init, extra);
   }
+  for (unsigned i = 0; i < flatjsons.size(); ++i) {
+  //  std::vector<std::string> json_strs;
+//    boost::split(json_strs,jsons[i],boost::is_any_of(":"));
+ //   std::string const json_patch ="{\""+json_strs.at(0)+"\":{\""+json_strs.at(1)+"\":[\""+json_strs.at(2)+"\"]}}";
+    Json::Value extra = ic::ExtractJsonFromFlatString(flatjsons[i]);
+    std::cout << ">> Updating config with fragment:\n";
+    std::cout << extra;
+    ic::UpdateJson(js_init, extra);
+  }
+
 
   Json::Value const js = js_init;
+  std::string output_folder = "";
+  
 
   /*
     This should really be shortened into one inline function in the AnalysisBase
     declaration. GetPrefixedFilelist(prefix, filelist)
   */
-  vector<string> files = ic::ParseFileLines(js["job"]["filelist"].asString());
+  vector<string> files;
+  if(nlines != 0){
+    vector<string> files_all = ic::ParseFileLines(js["job"]["filelist"].asString());
+    for(unsigned k=0; k<nlines; k++){
+      if(offset+k < files_all.size()){
+        files.push_back(files_all.at(offset+k));
+      }
+    }
+  } else files = ic::ParseFileLines(js["job"]["filelist"].asString());
+      
   for (auto & f : files) f = js["job"]["file_prefix"].asString() + f;
 
   AnalysisBase analysis("HiggsTauTau", files, "icEventProducer/EventTree",
@@ -87,11 +117,11 @@ int main(int argc, char* argv[]) {
   analysis.SetTTreeCaching(true);
   analysis.StopOnFileFailure(true);
   analysis.RetryFileAfterFailure(7, 3);
-  // analysis.DoSkimming("./skim/");
+//  analysis.DoSkimming("./skim/");
   analysis.CalculateTimings(js["job"]["timings"].asBool());
+  
+  std::map<std::string, ic::HTTSequence> seqs;
 
-  ic::HTTSequence sequence_builder;
-  std::map<std::string, ic::HTTSequence::ModuleSequence> seqs;
 
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
     std::string channel_str = js["job"]["channels"][i].asString();
@@ -103,16 +133,17 @@ int main(int argc, char* argv[]) {
       vars.push_back(js["job"]["sequences"][channel_str][j].asString());
     }
 
+
     for (unsigned j = 0; j < vars.size(); ++j) {
       std::string seq_str = channel_str+"_"+vars[j];
-      ic::HTTSequence::ModuleSequence& seq = seqs[seq_str];
-      ic::channel channel = ic::String2Channel(channel_str);
       Json::Value js_merged = js["sequence"];
       ic::UpdateJson(js_merged, js["channels"][channel_str]);
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
       // std::cout << js_merged;
-      sequence_builder.BuildSequence(&seq, channel, js_merged);
-      for (auto m : seq) analysis.AddModule(seq_str, m.get());
+      seqs[seq_str] = ic::HTTSequence(channel_str,vars[j],std::to_string(offset),js_merged);
+      seqs[seq_str].BuildSequence();
+      ic::HTTSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());
+      for (auto m : seq_run) analysis.AddModule(seq_str, m.get());
     }
   }
 
