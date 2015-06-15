@@ -22,20 +22,10 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, ic::era, era)
   CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
-  CLASS_MEMBER(HTTCategories, bool, write_plots)
-  CLASS_MEMBER(HTTCategories, bool, experimental)
   CLASS_MEMBER(HTTCategories, bool, bjet_regression)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
-
-  std::map<std::string, bool> categories_;
-  std::map<std::string, bool> selections_;
-  std::map<std::string, MassPlots*> massplots_;
-  std::map<std::string, double> yields_;
-  std::map<std::string, CoreControlPlots*> controlplots_;
-  DynamicHistoSet * misc_plots_;
-  Dynamic2DHistoSet * misc_2dplots_;
-  
+ 
   TTree *outtree_;
 
   // Event Properties
@@ -156,20 +146,9 @@ class HTTCategories : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
 
-  bool PassesCategory(std::string const& category) const;
 
-  void InitSelection(std::string const& selection);
-  void InitCategory(std::string const& category);
-  void InitMassPlots(std::string const& category);
-  void FillMassPlots(std::string const& category);
-  void FillYields(std::string const& category);
-  void InitCoreControlPlots(std::string const& category);
-  void FillCoreControlPlots(std::string const& category);
 
-  void SetPassCategory(std::string const& category);
-  void SetPassSelection(std::string const& selection);
 
-  void Reset();
 
 
 };

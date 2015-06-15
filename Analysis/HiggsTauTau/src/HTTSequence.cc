@@ -737,7 +737,6 @@ if(strategy_type != strategy::phys14){
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
     .set_mass_shift(mass_shift)
-    .set_write_plots(true)
     .set_write_tree(true));
 
 }
