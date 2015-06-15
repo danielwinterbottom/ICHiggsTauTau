@@ -53,7 +53,7 @@ namespace ic {
 
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
-      outtree_->Branch("wt",                &wt_);
+      outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
       outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
       outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
@@ -64,21 +64,21 @@ namespace ic {
       outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("n_vtx",             &n_vtx_);
-      outtree_->Branch("m_sv",              &m_sv_);
-      outtree_->Branch("m_vis",             &m_vis_);
-      outtree_->Branch("pt_h",              &pt_h_);
-      outtree_->Branch("pt_tt",             &pt_tt_);
-      outtree_->Branch("mt_1",              &mt_1_);
-      outtree_->Branch("pzeta",             &pzeta_);
-      outtree_->Branch("pt_1",              &pt_1_);
-      outtree_->Branch("pt_2",              &pt_2_);
-      outtree_->Branch("eta_1",             &eta_1_);
-      outtree_->Branch("eta_2",             &eta_2_);
+      outtree_->Branch("m_sv",              &m_sv_.var_double);
+      outtree_->Branch("m_vis",             &m_vis_.var_double);
+      outtree_->Branch("pt_h",              &pt_h_.var_double);
+      outtree_->Branch("pt_tt",             &pt_tt_.var_double);
+      outtree_->Branch("mt_1",              &mt_1_.var_double);
+      outtree_->Branch("pzeta",             &pzeta_.var_double);
+      outtree_->Branch("pt_1",              &pt_1_.var_double);
+      outtree_->Branch("pt_2",              &pt_2_.var_double);
+      outtree_->Branch("eta_1",             &eta_1_.var_double);
+      outtree_->Branch("eta_2",             &eta_2_.var_double);
       outtree_->Branch("iso_2",             &iso_2_);
       outtree_->Branch("z_2",               &z_2_);
-      outtree_->Branch("m_2",               &m_2_);
-      outtree_->Branch("met",               &met_);
-      outtree_->Branch("met_phi",           &met_phi_);
+      outtree_->Branch("m_2",               &m_2_.var_double);
+      outtree_->Branch("met",               &met_.var_double);
+      outtree_->Branch("met_phi",           &met_phi_.var_double);
       outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
@@ -88,13 +88,13 @@ namespace ic {
       outtree_->Branch("n_bjets_csv",       &n_bjets_csv_);
       outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
       outtree_->Branch("n_jetsingap",       &n_jetsingap_);
-      outtree_->Branch("jpt_1",             &jpt_1_);
+      outtree_->Branch("jpt_1",             &jpt_1_.var_double);
       outtree_->Branch("j1_dm",             &j1_dm_);
-      outtree_->Branch("jpt_2",             &jpt_2_);
-      outtree_->Branch("jeta_1",            &jeta_1_);
-      outtree_->Branch("jeta_2",            &jeta_2_);
-      outtree_->Branch("bpt_1",             &bpt_1_);
-      outtree_->Branch("beta_1",            &beta_1_);
+      outtree_->Branch("jpt_2",             &jpt_2_.var_double);
+      outtree_->Branch("jeta_1",            &jeta_1_.var_double);
+      outtree_->Branch("jeta_2",            &jeta_2_.var_double);
+      outtree_->Branch("bpt_1",             &bpt_1_.var_double);
+      outtree_->Branch("beta_1",            &beta_1_.var_double);
       outtree_->Branch("bcsv_1",            &bcsv_1_);
       outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
       outtree_->Branch("jet_csvEt_1",       &jet_csvEt_1_);
@@ -105,7 +105,7 @@ namespace ic {
       outtree_->Branch("jet_csv_dR",		  &jet_csv_dR_);
       outtree_->Branch("jet_csveta_2",      &jet_csveta_2_);
       outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
-      outtree_->Branch("mjj",               &mjj_);
+      outtree_->Branch("mjj",               &mjj_.var_double);
       outtree_->Branch("mjj_h",             &mjj_h_);
       outtree_->Branch("mbb_h",             &mbb_h_);
       outtree_->Branch("mjj_tt",            &mjj_tt_);
@@ -130,7 +130,7 @@ namespace ic {
       outtree_->Branch("m_bb_chi2",     &m_bb_chi2_);
       outtree_->Branch("pull_balance_bb", &pull_balance_bb_);
       outtree_->Branch("convergence_bb", &convergence_bb_);
-      outtree_->Branch("jdeta",             &jdeta_);
+      outtree_->Branch("jdeta",             &jdeta_.var_double);
       outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
       outtree_->Branch("jet_csv_dphi",               &jet_csv_dphi_);
       outtree_->Branch("jet_csv_deta",             &jet_csv_deta_);
@@ -138,13 +138,11 @@ namespace ic {
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
       outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
-      outtree_->Branch("l1_met",            &l1_met_);
-      outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
         // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
-        outtree_->Branch("pzetavis",          &pzetavis_);
-        outtree_->Branch("pzetamiss",         &pzetamiss_);
+        outtree_->Branch("pzetavis",          &pzetavis_.var_double);
+        outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
         outtree_->Branch("mt_ll",             &mt_ll_);
         outtree_->Branch("emu_dphi",          &emu_dphi_);
         outtree_->Branch("emu_csv",           &emu_csv_);
@@ -153,7 +151,7 @@ namespace ic {
       }
     }
     if(make_sync_ntuple_) {
-      //Due to the possibility of other groups requesting different branch names/branch contents
+      //Fue to the possibility of other groups requesting different branch names/branch contents
       //we have to make an alternative (albeit very similar) TTree for the sync ntuple. 
       lOFile = new TFile(sync_output_name_.c_str(), "RECREATE");
       lOFile->cd();
@@ -220,14 +218,14 @@ namespace ic {
       synctree_->Branch("signalWeight", &signalweight_, "signalweight/F");
       // Total combined event weight (excluding lumi weighting)
       // NB: may contain weights not included in the above
-      synctree_->Branch("weight", &wt_, "wt/F");
+      synctree_->Branch("weight", &wt_.var_float, "wt/F");
 
       // Visible di-tau mass
-      synctree_->Branch("m_vis", &m_vis_, "m_vis/F");
+      synctree_->Branch("m_vis", &m_vis_.var_float, "m_vis/F");
       // SVFit di-tau mass
-      synctree_->Branch("m_sv", &m_sv_, "m_sv/F");
+      synctree_->Branch("m_sv", &m_sv_.var_float, "m_sv/F");
       // SVFit di-tau pt (only for Markov-Chain SVFit)
-      synctree_->Branch("pt_sv", &pt_h_, "pt_h/F");
+      synctree_->Branch("pt_sv", &pt_h_.var_float, "pt_h/F");
       // SVFit di-tau eta (only for Markov-Chain SVFit)
       synctree_->Branch("eta_sv", &eta_h_, "eta_h/F");
       // SVFit di-tau phi (only for Markov-Chain SVFit)
@@ -235,11 +233,11 @@ namespace ic {
 
       // Lepton 1 properties
       // pt (including effect of any energy scale corrections)
-      synctree_->Branch("pt_1", &pt_1_, "pt_1/F");
+      synctree_->Branch("pt_1", &pt_1_.var_float, "pt_1/F");
       // phi
       synctree_->Branch("phi_1", &phi_1_, "phi_1/F");
       // eta
-      synctree_->Branch("eta_1", &eta_1_, "eta_1/F");
+      synctree_->Branch("eta_1", &eta_1_.var_float, "eta_1/F");
       // mass
       synctree_->Branch("m_1", &m_1_, "m_1/F");
       // charge
@@ -260,17 +258,17 @@ namespace ic {
       // Whether lepton passes iso selection (always true in IC ntuples)
 //      synctree_->Branch("passiso_1", &lPassIso1, "lPassIso1/B");
       // Transverse mass of lepton 1 and MVA MET
-      synctree_->Branch("mt_1", &mt_1_, "mt_1/F");
+      synctree_->Branch("mt_1", &mt_1_.var_float, "mt_1/F");
 
       // Lepton 2 properties
       // pt (including effect of any energy scale corrections)
-      synctree_->Branch("pt_2", &pt_2_, "pt_2/F");
+      synctree_->Branch("pt_2", &pt_2_.var_float, "pt_2/F");
       // phi
-      synctree_->Branch("phi_2", &phi_2_, "lPhi2/F");
+      synctree_->Branch("phi_2", &phi_2_, "phi_2/F");
       // eta
-      synctree_->Branch("eta_2", &eta_2_, "lEta2/F");
+      synctree_->Branch("eta_2", &eta_2_.var_float, "eta_2/F");
       // mass
-      synctree_->Branch("m_2", &m_2_, "lM2/F");
+      synctree_->Branch("m_2", &m_2_.var_float, "lM2/F");
       // charge
       synctree_->Branch("q_2", &q_2_, "lq2/I");
       // delta-beta corrected isolation (relative or absolute as appropriate)
@@ -323,9 +321,9 @@ namespace ic {
       synctree_->Branch("metcov11", &pfmetCov11_, "pfmetCov11/F");
 
       // MVA MET
-      synctree_->Branch("mvamet", &met_, "met/F");
+      synctree_->Branch("mvamet", &met_.var_float, "met/F");
       // MVA MET phi
-      synctree_->Branch("mvametphi", &met_phi_, "met_phi/F");
+      synctree_->Branch("mvametphi", &met_phi_.var_float, "met_phi/F");
       // Elements of the MVA MET covariance matrix
       synctree_->Branch("mvacov00", &metCov00_, "metCov00/F");
       synctree_->Branch("mvacov01", &metCov01_, "metCov01/F");
@@ -333,12 +331,12 @@ namespace ic {
       synctree_->Branch("mvacov11", &metCov11_, "metCov11/F");
 
       // pt of the di-tau + MET system
-      synctree_->Branch("pt_tt", &pt_tt_, "pt_tt/F");
+      synctree_->Branch("pt_tt", &pt_tt_.var_float, "pt_tt/F");
 
       // Visible pzeta
-      synctree_->Branch("pzetavis", &pzetavis_, "pzetavis/F");
+      synctree_->Branch("pzetavis", &pzetavis_.var_float, "pzetavis/F");
       // MET pzeta
-      synctree_->Branch("pzetamiss", &pzetamiss_, "pzetamiss/F");
+      synctree_->Branch("pzetamiss", &pzetamiss_.var_float, "pzetamiss/F");
       // ttbar-rejection MVA output (emu channel only)
       synctree_->Branch("mva_gf", &em_gf_mva_, "em_gf_mva/F");
 
@@ -352,13 +350,13 @@ namespace ic {
       synctree_->Branch("njets", &n_jets_, "n_jets_/I");
       // Number of jets passing above selection but with
       // pt > 20 instead of pt > 30
-//      synctree_->Branch("njetspt20", &lNJetsPt20, "lNJetsPt20/I");
+      synctree_->Branch("njetspt20", &n_lowpt_jets_, "n_lowpt_jets/I");
 
       // Leading Jet
       // pt
-      synctree_->Branch("jpt_1", &jpt_1_, "jpt_1/F");
+      synctree_->Branch("jpt_1", &jpt_1_.var_float, "jpt_1/F");
       // eta
-      synctree_->Branch("jeta_1", &jeta_1_, "jeta_1/F");
+      synctree_->Branch("jeta_1", &jeta_1_.var_float, "jeta_1/F");
       // phi
       synctree_->Branch("jphi_1", &jphi_1_, "jphi_1/F");
       // raw pt (before JEC)
@@ -374,9 +372,9 @@ namespace ic {
 
       // Sub-leading Jet
       // pt
-      synctree_->Branch("jpt_2", &jpt_2_, "jpt_2/F");
+      synctree_->Branch("jpt_2", &jpt_2_.var_float, "jpt_2/F");
       // eta
-      synctree_->Branch("jeta_2", &jeta_2_, "jeta_2/F");
+      synctree_->Branch("jeta_2", &jeta_2_.var_float, "jeta_2/F");
       // phi
       synctree_->Branch("jphi_2", &jphi_2_, "jphi_2/F");
       // raw pt (before JEC)
@@ -393,9 +391,9 @@ namespace ic {
       // Di-jet properties
       // Calculated with leading and sub-leading jets when njets >= 2
       // di-jet mass
-      synctree_->Branch("mjj", &mjj_, "mjj/F");
+      synctree_->Branch("mjj", &mjj_.var_float, "mjj/F");
       // absolute difference in eta
-      synctree_->Branch("jdeta", &jdeta_, "jdeta/F");
+      synctree_->Branch("jdeta", &jdeta_.var_float, "jdeta/F");
       // number of jets, passing above selections, in pseudorapidity gap
       // between jets
 //      synctree_->Branch("njetingap", &lNJetInGap, "lNJetInGap/I");
@@ -409,9 +407,9 @@ namespace ic {
       // Number of b-tagging jets passing above selections
       synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
       // pt
-      synctree_->Branch("bpt", &bpt_1_, "bpt_1/F");
+      synctree_->Branch("bpt", &bpt_1_.var_float, "bpt_1/F");
       // eta
-      synctree_->Branch("beta", &beta_1_, "beta_1/F");
+      synctree_->Branch("beta", &beta_1_.var_float, "beta_1/F");
       // phi
       synctree_->Branch("bphi", &bphi_1_, "bphi_1/F");
     }
@@ -423,7 +421,7 @@ namespace ic {
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
-    wt_ = eventInfo->total_weight();
+    wt_ = {eventInfo->total_weight(), static_cast<float>(eventInfo->total_weight())};
     run_ = eventInfo->run();
     event_ = eventInfo->event();
     lumi_ = eventInfo->lumi_block();
@@ -537,60 +535,60 @@ namespace ic {
     n_vtx_ = eventInfo->good_vertices();
 
     if (event->Exists("svfitMass")) {
-      m_sv_ = event->Get<double>("svfitMass");
+      m_sv_ = {event->Get<double>("svfitMass"),event->Get<float>("svfitMass") };
     } else {
-      m_sv_ = -9999;
+      m_sv_ = {-9999, -9999};
     }
 
     if (event->Exists("svfitHiggs")) {
       Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
-      pt_h_ = higgs.pt();
+      pt_h_ = {higgs.pt(), static_cast<float>(higgs.pt())};
       eta_h_ = higgs.eta();
       phi_h_ = higgs.phi();
     } else {
-      pt_h_ = -9999;
+      pt_h_ = {-9999, -9999};
       eta_h_ = -9999;
       phi_h_ = -9999;
     }
 
-    pt_tt_ = (ditau->vector() + met->vector()).pt();
-    m_vis_ = ditau->M();
+    pt_tt_ = {(ditau->vector() + met->vector()).pt(), static_cast<float>((ditau->vector() + met->vector()).pt())};
+    m_vis_ = {ditau->M(), static_cast<float>(ditau->M())};
    
 
     // This is the HCP hack for the em channel
     // to better align the data with the embedded
     // mass.  
     if (channel_ == channel::em) {
-      m_sv_ = m_sv_ * mass_shift_;
-      m_vis_ = m_vis_ * mass_shift_;
+      m_sv_ = {m_sv_.var_double * mass_shift_, static_cast<float>(m_sv_.var_double * mass_shift_)};
+      m_vis_ = {m_vis_.var_double * mass_shift_, static_cast<float>(m_vis_.var_double * mass_shift_)};
       em_gf_mva_ = event->Exists("em_gf_mva") ? event->Get<double>("em_gf_mva") : 0.;
       // em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
     if (event->Exists("mass_scale")) {
-      m_sv_ = m_sv_ * event->Get<double>("mass_scale");
-      m_vis_ = m_vis_ * event->Get<double>("mass_scale");
+      m_sv_ = {m_sv_.var_double * event->Get<double>("mass_scale"),static_cast<float>(m_sv_.var_double * event->Get<double>("mass_scale")) };
+      m_vis_ = {m_vis_.var_double * event->Get<double>("mass_scale"),static_cast<float>(m_vis_.var_double * event->Get<double>("mass_scale")) };
     }
 
-    mt_1_ = MT(lep1, met);
+    mt_1_ = {MT(lep1, met), static_cast<float>(MT(lep1, met))};
     mt_2_ = MT(lep2, met);
     mt_ll_ = MT(ditau, met);
-    pzeta_ = PZeta(ditau, met, 0.85);
-    pzetavis_ = PZetaVis(ditau);
-    pzetamiss_ = PZeta(ditau, met, 0.0);
+    pzeta_ = {PZeta(ditau, met, 0.85), static_cast<float>(PZeta(ditau, met, 0.85))};
+    pzetavis_ = {PZetaVis(ditau), static_cast<float>(PZetaVis(ditau))};
+    pzetamiss_ = {PZeta(ditau, met, 0.0), static_cast<float>(PZeta(ditau, met, 0.0))};
     emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
 
-    pt_1_ = lep1->pt();
-    pt_2_ = lep2->pt();
-    eta_1_ = lep1->eta();
-    eta_2_ = lep2->eta();
+    pt_1_= {lep1->pt(), static_cast<float>(lep1->pt())};
+    pt_2_ = {lep2->pt(), static_cast<float>(lep2->pt())};
+    eta_1_ = {lep1->eta(), static_cast<float>(lep1->eta())};
+    eta_2_ = {lep2->eta(), static_cast<float>(lep2->eta())};
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
     m_1_ = lep1->M();
-    m_2_ = lep2->M();
+    m_2_ = {lep2->M(), static_cast<float>(lep2->M())};
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
-    met_ = met->pt();
-    met_phi_ = met->phi();
+    met_ = {met->pt(), static_cast<float>(met->pt())};
+    met_phi_ = {met->phi(), static_cast<float>(met->phi())};
 
     metCov00_ = met->xx_sig();
     metCov10_ = met->yx_sig();
@@ -677,13 +675,11 @@ namespace ic {
       }
       mva_2_ = 0.0;
       emu_dxy_1_ = -1. * elec->dxy_vertex();
-      d0_1_ = emu_dxy_1_;
+      d0_1_ = static_cast<float>(emu_dxy_1_);
       emu_dxy_2_ = -1. * muon->dxy_vertex();
-      d0_2_ = emu_dxy_2_;
+      d0_2_ = static_cast<float>(emu_dxy_2_);
     }
 
-    l1_met_ = 0.0;
-    calo_nohf_met_ = 0.0;
 
     Tau const* tau = dynamic_cast<Tau const*>(lep2);
     if (tau) {
@@ -702,8 +698,8 @@ namespace ic {
     n_loose_bjets_ = loose_bjets.size();
 
     if (n_jets_ >= 1) {
-      jpt_1_ = jets[0]->pt();
-      jeta_1_ = jets[0]->eta();
+      jpt_1_ = {jets[0]->pt(), static_cast<float>(jets[0]->pt())};
+      jeta_1_ = {jets[0]->eta(), static_cast<float>(jets[0]->eta())};
       jphi_1_ = jets[0]->phi();
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets[0] };
@@ -714,17 +710,17 @@ namespace ic {
         j1_dm_ = -1;
       }
     } else {
-      jpt_1_ = -9999;
-      jeta_1_ = -9999;
+      jpt_1_ = {-9999,-9999};
+      jeta_1_ = {-9999,-9999};
       jphi_1_ = -9999;
     }
 
     if (n_jets_ >= 2) {
-      jpt_2_ = jets[1]->pt();
-      jeta_2_ = jets[1]->eta();
+      jpt_2_ = {jets[1]->pt(),static_cast<float>(jets[1]->pt())};
+      jeta_2_ = {jets[1]->eta(),static_cast<float>(jets[1]->eta())};
       jphi_2_ = jets[1]->phi();
-      mjj_ = (jets[0]->vector() + jets[1]->vector()).M();
-      jdeta_ = fabs(jets[0]->eta() - jets[1]->eta());
+      mjj_ = {(jets[0]->vector() + jets[1]->vector()).M(), static_cast<float>((jets[0]->vector() + jets[1]->vector()).M())};
+      jdeta_ = {fabs(jets[0]->eta() - jets[1]->eta()), static_cast<float>(fabs(jets[0]->eta() - jets[1]->eta()))};
       double eta_high = (jets[0]->eta() > jets[1]->eta()) ? jets[0]->eta() : jets[1]->eta();
       double eta_low = (jets[0]->eta() > jets[1]->eta()) ? jets[1]->eta() : jets[0]->eta();
       n_jetsingap_ = 0;
@@ -734,11 +730,11 @@ namespace ic {
         }
       }
     } else {
-      jpt_2_ = -9999;
-      jeta_2_ = -9999;
+      jpt_2_ = {-9999,-9999};
+      jeta_2_ = {-9999,-9999};
       jphi_2_ = -9999;
-      mjj_ = -9999;
-      jdeta_ = -9999;
+      mjj_ = {-9999,-9999};
+      jdeta_ = {-9999, -9999};
       n_jetsingap_ = 9999;
     }
 
@@ -760,17 +756,17 @@ namespace ic {
     }
 
     if (n_bjets_ >= 1) {
-      bpt_1_ = bjets[0]->pt();
-      beta_1_ = bjets[0]->eta();
+      bpt_1_ = {bjets[0]->pt(), static_cast<float>(bjets[0]->pt())};
+      beta_1_ = {bjets[0]->eta(), static_cast<float>(bjets[0]->eta())};
       bphi_1_ = bjets[0]->phi();
     } else {
-      bpt_1_ = -9999;
-      beta_1_ = -9999;
+      bpt_1_ = {-9999,-9999};
+      beta_1_ = {-9999,-9999};
       bphi_1_ = -9999;
     }
 
-    if (jets_csv.size() >= 1) {
-      bcsv_1_ = jets_csv[0]->GetBDiscriminator(btag_label);
+    if (prebjets.size() >= 1) {
+      bcsv_1_ = prebjets[0]->GetBDiscriminator(btag_label);
     } else {
       bcsv_1_ = -9999;
     }
