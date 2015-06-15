@@ -40,5 +40,6 @@ var searchData=
   ['eventinfo_2ecc',['EventInfo.cc',['../_event_info_8cc.html',1,'']]],
   ['eventinfo_2ehh',['EventInfo.hh',['../_event_info_8hh.html',1,'']]],
   ['extractjsonfromfile',['ExtractJsonFromFile',['../namespaceic.html#a5d428d1ad2fb32f49e946023b458290c',1,'ic']]],
+  ['extractjsonfromflatstring',['ExtractJsonFromFlatString',['../namespaceic.html#a0cc606eb82ce2ed1263c43f3d911b9e0',1,'ic']]],
   ['extractjsonfromstring',['ExtractJsonFromString',['../namespaceic.html#a6f235a75dc69f9bcdca29bce82813364',1,'ic']]]
 ];

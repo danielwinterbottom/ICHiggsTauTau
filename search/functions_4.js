@@ -22,5 +22,6 @@ var searchData=
   ['event',['event',['../classic_1_1_event_info.html#a66b656f574e0f6c24dc6ddc1d72ae81a',1,'ic::EventInfo']]],
   ['eventinfo',['EventInfo',['../classic_1_1_event_info.html#a25bc3b8e93f5736f9c09514b358b4baf',1,'ic::EventInfo']]],
   ['extractjsonfromfile',['ExtractJsonFromFile',['../namespaceic.html#a5d428d1ad2fb32f49e946023b458290c',1,'ic']]],
+  ['extractjsonfromflatstring',['ExtractJsonFromFlatString',['../namespaceic.html#a0cc606eb82ce2ed1263c43f3d911b9e0',1,'ic']]],
   ['extractjsonfromstring',['ExtractJsonFromString',['../namespaceic.html#a6f235a75dc69f9bcdca29bce82813364',1,'ic']]]
 ];

@@ -95,10 +95,10 @@ var NAVTREEINDEX =
 [
 "_calo_jet_8cc.html",
 "_jet_8hh.html",
-"class_i_c_event_producer.html",
-"classic_1_1_event_info.html#a165bf72675293fbc0c19ae9147eec577",
-"classic_1_1_p_f_jet.html",
-"classic_1_1_vertex.html#a9cf3b39bd237ad6cb21dc3adf81b27e4"
+"class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900",
+"classic_1_1_event_info.html#a0dc1c842c318b6af9dc698478d22487d",
+"classic_1_1_p_f_candidate.html#adb8d4a520f4e04edc0fcb2fbc5794b0b",
+"classic_1_1_vertex.html#a8dbaffe452137613f84cca7682a257ae"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

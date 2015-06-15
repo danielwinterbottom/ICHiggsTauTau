@@ -288,6 +288,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6f235a75dc69f9bcdca29bce82813364"><td class="memItemLeft" align="right" valign="top">Json::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a6f235a75dc69f9bcdca29bce82813364">ExtractJsonFromString</a> (std::string const &amp;str)</td></tr>
 <tr class="memdesc:a6f235a75dc69f9bcdca29bce82813364"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts a Json::Value from the given input string.  <a href="#a6f235a75dc69f9bcdca29bce82813364">More...</a><br /></td></tr>
 <tr class="separator:a6f235a75dc69f9bcdca29bce82813364"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cc606eb82ce2ed1263c43f3d911b9e0"><td class="memItemLeft" align="right" valign="top">Json::Value&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a0cc606eb82ce2ed1263c43f3d911b9e0">ExtractJsonFromFlatString</a> (std::string const &amp;str)</td></tr>
+<tr class="memdesc:a0cc606eb82ce2ed1263c43f3d911b9e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extracts a Json::Value from the given input string Only works for a depth of 3/4 values for the moment.  <a href="#a0cc606eb82ce2ed1263c43f3d911b9e0">More...</a><br /></td></tr>
+<tr class="separator:a0cc606eb82ce2ed1263c43f3d911b9e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74e462022652b4c16644058a0ecaf6f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceic.html#a74e462022652b4c16644058a0ecaf6f5">UpdateJson</a> (Json::Value &amp;a, Json::Value const &amp;b)</td></tr>
 <tr class="memdesc:a74e462022652b4c16644058a0ecaf6f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the values in one json from the values in another.  <a href="#a74e462022652b4c16644058a0ecaf6f5">More...</a><br /></td></tr>
 <tr class="separator:a74e462022652b4c16644058a0ecaf6f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -730,6 +733,32 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a0cc606eb82ce2ed1263c43f3d911b9e0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Json::Value ic::ExtractJsonFromFlatString </td>
+          <td>(</td>
+          <td class="paramtype">std::string const &amp;&#160;</td>
+          <td class="paramname"><em>str</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Extracts a Json::Value from the given input string Only works for a depth of 3/4 values for the moment. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>should separate keys and required values by : and any lists of values by . e.g: key:value1.value2 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00024">24</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a74e462022652b4c16644058a0ecaf6f5"></a>
 <div class="memitem">
 <div class="memproto">
@@ -764,7 +793,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00024">24</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00064">64</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
 
 </div>
 </div>
@@ -803,7 +832,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00035">35</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00075">75</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
 
 </div>
 </div>
@@ -830,7 +859,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00051">51</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
+<p>Definition at line <a class="el" href="_json_tools_8cc_source.html#l00091">91</a> of file <a class="el" href="_json_tools_8cc_source.html">JsonTools.cc</a>.</p>
 
 </div>
 </div>
