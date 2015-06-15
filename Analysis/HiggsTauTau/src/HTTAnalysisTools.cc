@@ -441,7 +441,7 @@ namespace ic {
     if (verbosity_) std::cout << "[HTTAnalysis::GenerateZTT] --------------------------------------------------------\n";
     //For H->hh analysis, the inclusive ZTT yield should be taken from events with tau pt down to 30 GeV, for consistency for the run 1 analysis, while the SM and MSSM analyses define inclusive as pt_2>30.
     Value ztt_norm;
-    if(method == 14 || method == 15 || method == 16 || method == 20 || method == 21 || method == 24 || method == 27) {
+    if(method == 14 || method == 15 || method == 16 || method == 20 || method == 21 || method == 24 || method == 27 || method == 28) {
         ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", this->ResolveAlias("inclusivelowpt"), sel, cat, wt);
     } else {    
         ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToTauTau"+dy_soup_, "os", this->ResolveAlias("inclusive"), sel, cat, wt);
@@ -700,7 +700,7 @@ namespace ic {
           << qcd_norm.first << "), setting to " << default_rate << " and maintaining error" << std::endl;
         qcd_norm.first = default_rate;
       }
-      if (method == 0 || method == 8 || method == 11 || method == 20) {
+      if (method == 0 || method == 8 || method == 28 || method == 11 || method == 20) {
         qcd_hist = this->GetShapeViaQCDMethod(var, "Data", qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
           {"WJetsToLNuSoup", [&]()->HTTAnalysis::Value {
             return w_ss_norm;} 
