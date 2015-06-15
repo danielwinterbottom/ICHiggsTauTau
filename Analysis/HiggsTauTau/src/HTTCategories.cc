@@ -25,6 +25,9 @@ namespace ic {
       fs_ = NULL;
       write_tree_ = true;
       bjet_regression_ = false;
+      make_sync_ntuple_ = false;
+      sync_output_name_ = "SYNC.root";
+      is_embedded_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
   }
 
@@ -36,7 +39,6 @@ namespace ic {
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "HTTCategories" << std::endl;
     std::cout << "-------------------------------------" << std::endl;    
-    if (fs_) {
       std::cout << boost::format(param_fmt()) % "channel"         % Channel2String(channel_);
       std::cout << boost::format(param_fmt()) % "strategy"        % Strategy2String(strategy_);
       std::cout << boost::format(param_fmt()) % "era"             % Era2String(era_);
@@ -46,121 +48,398 @@ namespace ic {
       std::cout << boost::format(param_fmt()) % "mass_shift"      % mass_shift_;
       std::cout << boost::format(param_fmt()) % "write_tree"      % write_tree_;
       std::cout << boost::format(param_fmt()) % "kinfit_mode"     % kinfit_mode_;
+      std::cout << boost::format(param_fmt()) % "make_sync_ntuple" % make_sync_ntuple_;
       std::cout << boost::format(param_fmt()) % "bjet_regression" % bjet_regression_;
 
-      if (write_tree_) {
-        outtree_ = fs_->make<TTree>("ntuple","ntuple");
-        outtree_->Branch("wt",                &wt_);
-        outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
-        outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
-        outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
-        outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
-        outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
-        outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
-        outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
-        outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
-        outtree_->Branch("os",                &os_);
-        outtree_->Branch("n_vtx",             &n_vtx_);
-        outtree_->Branch("m_sv",              &m_sv_);
-        outtree_->Branch("m_vis",             &m_vis_);
-        outtree_->Branch("pt_h",              &pt_h_);
-        outtree_->Branch("pt_tt",             &pt_tt_);
-        outtree_->Branch("mt_1",              &mt_1_);
-        outtree_->Branch("pzeta",             &pzeta_);
-        outtree_->Branch("pt_1",              &pt_1_);
-        outtree_->Branch("pt_2",              &pt_2_);
-        outtree_->Branch("eta_1",             &eta_1_);
-        outtree_->Branch("eta_2",             &eta_2_);
-        outtree_->Branch("iso_2",             &iso_2_);
-        outtree_->Branch("z_2",               &z_2_);
-        outtree_->Branch("m_2",               &m_2_);
-        outtree_->Branch("met",               &met_);
-        outtree_->Branch("met_phi",           &met_phi_);
-        outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
-        outtree_->Branch("n_jets",            &n_jets_);
-        outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
-        outtree_->Branch("n_bjets",           &n_bjets_);
-        outtree_->Branch("n_prebjets",        &n_prebjets_);
-        outtree_->Branch("n_jets_csv",        &n_jets_csv_);
-        outtree_->Branch("n_bjets_csv",       &n_bjets_csv_);
-        outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
-        outtree_->Branch("n_jetsingap",       &n_jetsingap_);
-        outtree_->Branch("jpt_1",             &jpt_1_);
-        outtree_->Branch("j1_dm",             &j1_dm_);
-        outtree_->Branch("jpt_2",             &jpt_2_);
-        outtree_->Branch("jeta_1",            &jeta_1_);
-        outtree_->Branch("jeta_2",            &jeta_2_);
-        outtree_->Branch("bpt_1",             &bpt_1_);
-        outtree_->Branch("beta_1",            &beta_1_);
-        outtree_->Branch("bcsv_1",            &bcsv_1_);
-        outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
-        outtree_->Branch("jet_csvEt_1",       &jet_csvEt_1_);
-        outtree_->Branch("jet_csveta_1",      &jet_csveta_1_);
-        outtree_->Branch("jet_csvbcsv_1",     &jet_csvbcsv_1_);
-        outtree_->Branch("jet_csvpt_2",       &jet_csvpt_2_);
-        outtree_->Branch("jet_csvpt_bb",	  &jet_csvpt_bb_);
-        outtree_->Branch("jet_csv_dR",		  &jet_csv_dR_);
-        outtree_->Branch("jet_csveta_2",      &jet_csveta_2_);
-        outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
-        outtree_->Branch("mjj",               &mjj_);
-        outtree_->Branch("mjj_h",             &mjj_h_);
-        outtree_->Branch("mbb_h",             &mbb_h_);
-        outtree_->Branch("mjj_tt",            &mjj_tt_);
-        outtree_->Branch("m_H_best",               &m_H_best_);
-        outtree_->Branch("m_H_chi2_best",               &m_H_chi2_best_);
-        outtree_->Branch("pull_balance_H_best", &pull_balance_H_best_);
-        outtree_->Branch("convergence_H_best", &convergence_H_best_); 
-        outtree_->Branch("m_H_hZ",          &m_H_hZ_);
-        outtree_->Branch("m_H_hZ_chi2",     &m_H_hZ_chi2_);
-        outtree_->Branch("pull_balance_hZ", &pull_balance_hZ_);
-        outtree_->Branch("convergence_hZ", &convergence_hZ_);
-        outtree_->Branch("m_H_Zh",          &m_H_Zh_);
-        outtree_->Branch("m_H_Zh_chi2",     &m_H_Zh_chi2_);
-        outtree_->Branch("pull_balance_Zh",  &pull_balance_Zh_);
-        outtree_->Branch("convergence_Zh",  &convergence_Zh_);
-        outtree_->Branch("m_H_hh",     &m_H_hh_);
-        outtree_->Branch("m_H_hh_all",     &m_H_hh_all_);
-        outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
-        outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
-        outtree_->Branch("convergence_hh", &convergence_hh_);
-        outtree_->Branch("m_bb",     &m_bb_);
-        outtree_->Branch("m_bb_chi2",     &m_bb_chi2_);
-        outtree_->Branch("pull_balance_bb", &pull_balance_bb_);
-        outtree_->Branch("convergence_bb", &convergence_bb_);
-        outtree_->Branch("jdeta",             &jdeta_);
-        outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
-        outtree_->Branch("jet_csv_dphi",               &jet_csv_dphi_);
-        outtree_->Branch("jet_csv_deta",             &jet_csv_deta_);
-        outtree_->Branch("jet_csv_dtheta",             &jet_csv_dtheta_);
-        outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
-        outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
-        outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
-        outtree_->Branch("l1_met",            &l1_met_);
-        outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
-        if (channel_ == channel::em) {
-          outtree_->Branch("em_gf_mva",         &em_gf_mva_);
-          // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
-          outtree_->Branch("pzetavis",          &pzetavis_);
-          outtree_->Branch("pzetamiss",         &pzetamiss_);
-          outtree_->Branch("mt_ll",             &mt_ll_);
-          outtree_->Branch("emu_dphi",          &emu_dphi_);
-          outtree_->Branch("emu_csv",           &emu_csv_);
-          outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
-          outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
-        }
+    if (fs_ && write_tree_) {
+      outtree_ = fs_->make<TTree>("ntuple","ntuple");
+      outtree_->Branch("wt",                &wt_);
+      outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
+      outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
+      outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
+      outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
+      outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
+      outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
+      outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
+      outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
+      outtree_->Branch("os",                &os_);
+      outtree_->Branch("n_vtx",             &n_vtx_);
+      outtree_->Branch("m_sv",              &m_sv_);
+      outtree_->Branch("m_vis",             &m_vis_);
+      outtree_->Branch("pt_h",              &pt_h_);
+      outtree_->Branch("pt_tt",             &pt_tt_);
+      outtree_->Branch("mt_1",              &mt_1_);
+      outtree_->Branch("pzeta",             &pzeta_);
+      outtree_->Branch("pt_1",              &pt_1_);
+      outtree_->Branch("pt_2",              &pt_2_);
+      outtree_->Branch("eta_1",             &eta_1_);
+      outtree_->Branch("eta_2",             &eta_2_);
+      outtree_->Branch("iso_2",             &iso_2_);
+      outtree_->Branch("z_2",               &z_2_);
+      outtree_->Branch("m_2",               &m_2_);
+      outtree_->Branch("met",               &met_);
+      outtree_->Branch("met_phi",           &met_phi_);
+      outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
+      outtree_->Branch("n_jets",            &n_jets_);
+      outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
+      outtree_->Branch("n_bjets",           &n_bjets_);
+      outtree_->Branch("n_prebjets",        &n_prebjets_);
+      outtree_->Branch("n_jets_csv",        &n_jets_csv_);
+      outtree_->Branch("n_bjets_csv",       &n_bjets_csv_);
+      outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
+      outtree_->Branch("n_jetsingap",       &n_jetsingap_);
+      outtree_->Branch("jpt_1",             &jpt_1_);
+      outtree_->Branch("j1_dm",             &j1_dm_);
+      outtree_->Branch("jpt_2",             &jpt_2_);
+      outtree_->Branch("jeta_1",            &jeta_1_);
+      outtree_->Branch("jeta_2",            &jeta_2_);
+      outtree_->Branch("bpt_1",             &bpt_1_);
+      outtree_->Branch("beta_1",            &beta_1_);
+      outtree_->Branch("bcsv_1",            &bcsv_1_);
+      outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
+      outtree_->Branch("jet_csvEt_1",       &jet_csvEt_1_);
+      outtree_->Branch("jet_csveta_1",      &jet_csveta_1_);
+      outtree_->Branch("jet_csvbcsv_1",     &jet_csvbcsv_1_);
+      outtree_->Branch("jet_csvpt_2",       &jet_csvpt_2_);
+      outtree_->Branch("jet_csvpt_bb",	  &jet_csvpt_bb_);
+      outtree_->Branch("jet_csv_dR",		  &jet_csv_dR_);
+      outtree_->Branch("jet_csveta_2",      &jet_csveta_2_);
+      outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
+      outtree_->Branch("mjj",               &mjj_);
+      outtree_->Branch("mjj_h",             &mjj_h_);
+      outtree_->Branch("mbb_h",             &mbb_h_);
+      outtree_->Branch("mjj_tt",            &mjj_tt_);
+      outtree_->Branch("m_H_best",               &m_H_best_);
+      outtree_->Branch("m_H_chi2_best",               &m_H_chi2_best_);
+      outtree_->Branch("pull_balance_H_best", &pull_balance_H_best_);
+      outtree_->Branch("convergence_H_best", &convergence_H_best_); 
+      outtree_->Branch("m_H_hZ",          &m_H_hZ_);
+      outtree_->Branch("m_H_hZ_chi2",     &m_H_hZ_chi2_);
+      outtree_->Branch("pull_balance_hZ", &pull_balance_hZ_);
+      outtree_->Branch("convergence_hZ", &convergence_hZ_);
+      outtree_->Branch("m_H_Zh",          &m_H_Zh_);
+      outtree_->Branch("m_H_Zh_chi2",     &m_H_Zh_chi2_);
+      outtree_->Branch("pull_balance_Zh",  &pull_balance_Zh_);
+      outtree_->Branch("convergence_Zh",  &convergence_Zh_);
+      outtree_->Branch("m_H_hh",     &m_H_hh_);
+      outtree_->Branch("m_H_hh_all",     &m_H_hh_all_);
+      outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
+      outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
+      outtree_->Branch("convergence_hh", &convergence_hh_);
+      outtree_->Branch("m_bb",     &m_bb_);
+      outtree_->Branch("m_bb_chi2",     &m_bb_chi2_);
+      outtree_->Branch("pull_balance_bb", &pull_balance_bb_);
+      outtree_->Branch("convergence_bb", &convergence_bb_);
+      outtree_->Branch("jdeta",             &jdeta_);
+      outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
+      outtree_->Branch("jet_csv_dphi",               &jet_csv_dphi_);
+      outtree_->Branch("jet_csv_deta",             &jet_csv_deta_);
+      outtree_->Branch("jet_csv_dtheta",             &jet_csv_dtheta_);
+      outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
+      outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
+      outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
+      outtree_->Branch("l1_met",            &l1_met_);
+      outtree_->Branch("calo_nohf_met",     &calo_nohf_met_);
+      if (channel_ == channel::em) {
+        outtree_->Branch("em_gf_mva",         &em_gf_mva_);
+        // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
+        outtree_->Branch("pzetavis",          &pzetavis_);
+        outtree_->Branch("pzetamiss",         &pzetamiss_);
+        outtree_->Branch("mt_ll",             &mt_ll_);
+        outtree_->Branch("emu_dphi",          &emu_dphi_);
+        outtree_->Branch("emu_csv",           &emu_csv_);
+        outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
+        outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
       }
     }
+    if(make_sync_ntuple_) {
+      //Due to the possibility of other groups requesting different branch names/branch contents
+      //we have to make an alternative (albeit very similar) TTree for the sync ntuple. 
+      lOFile = new TFile(sync_output_name_.c_str(), "RECREATE");
+      lOFile->cd();
+      // Tree should be named "TauCheck" to aid scripts which
+      // make comparisons between sync trees
+      synctree_ = new TTree("TauCheck", "TauCheck");
 
+      // The sync tree is filled for all events passing the di-lepton
+      // selections in each channel. This includes vertex selection,
+      // trigger, ID, isolation, di-lepton and extra lepton vetoes.
+      // Topological (e.g. mT) and opposite-charge requirements are
+      // not applied.
+
+      // Note: not all of the following variables were in the original
+      // list of sync tree variables, and not all are necessary/used in
+      // the legacy htt anaylsis
+
+      // Lepton properties are numbered as follows for each channel:
+      // electron     (1)  + tau        (2)
+      // muon         (1)  + tau        (2)
+      // electron     (1)  + muon       (2)
+      // high pT tau  (1)  + low pT tau (2)
+
+      // Run
+      synctree_->Branch("run", &run_, "run/I");
+      // Lumi
+      synctree_->Branch("lumi", &lumi_, "lumi/I");
+      // Event
+      synctree_->Branch("evt", &event_, "event/I");
+
+      // Number of primary vertices passing good vertex selection
+      synctree_->Branch("npv", &n_vtx_, "n_vtx/I");
+      // Number of in-time pileup interactions (used for pileup reweighting)
+      synctree_->Branch("npu", &n_pu_, "n_pu/I");
+      // The rho used for jet energy corrections
+      synctree_->Branch("rho", &rho_, "rho/F");
+
+      // The lumi scaling factor for mc * additional weights
+      // (not filled in IC trees!)
+      synctree_->Branch("mcweight", &mc_weight_, "mc_weight/F");
+      // Pileup weight
+      synctree_->Branch("puweight", &pu_weight_, "pu_weight/F");
+
+      // Tag-and-probe weights for leptons
+      // Total trigger weight for lepton 1
+      synctree_->Branch("trigweight_1", &trigweight_1_, "trigweight_1/F");
+      // Total trigger weight for lepton 2
+      synctree_->Branch("trigweight_2", &trigweight_2_, "trigweight_2/F");
+      // Total ID weight for lepton 1
+      synctree_->Branch("idweight_1", &idweight_1_, "idweight_1/F");
+      // Total ID weight for lepton 2
+      synctree_->Branch("idweight_2", &idweight_2_, "idweight_2/F");
+      // Total iso weight for lepton 1
+      synctree_->Branch("isoweight_1", &isoweight_1_, "isoweight_1/F");
+      // Total iso weight for lepton 2
+      synctree_->Branch("isoweight_2", &isoweight_2_, "isoweight_2/F");
+     // Product of all trigger, ID and iso weights
+      synctree_->Branch("effweight", &effweight_, "effweight/F");
+      // Jet->tau fake rate weight (pT-dependent)
+      synctree_->Branch("fakeweight", &fakeweight_, "fakeweight/F");
+      // Product of all embedded weights, but only for rechit samples
+      synctree_->Branch("embeddedWeight", &embeddedweight_, "embeddedweight/F");
+      // Higgs pt weights (for ggh samples)
+      synctree_->Branch("signalWeight", &signalweight_, "signalweight/F");
+      // Total combined event weight (excluding lumi weighting)
+      // NB: may contain weights not included in the above
+      synctree_->Branch("weight", &wt_, "wt/F");
+
+      // Visible di-tau mass
+      synctree_->Branch("m_vis", &m_vis_, "m_vis/F");
+      // SVFit di-tau mass
+      synctree_->Branch("m_sv", &m_sv_, "m_sv/F");
+      // SVFit di-tau pt (only for Markov-Chain SVFit)
+      synctree_->Branch("pt_sv", &pt_h_, "pt_h/F");
+      // SVFit di-tau eta (only for Markov-Chain SVFit)
+      synctree_->Branch("eta_sv", &eta_h_, "eta_h/F");
+      // SVFit di-tau phi (only for Markov-Chain SVFit)
+      synctree_->Branch("phi_sv", &phi_h_, "phi_h/F");
+
+      // Lepton 1 properties
+      // pt (including effect of any energy scale corrections)
+      synctree_->Branch("pt_1", &pt_1_, "pt_1/F");
+      // phi
+      synctree_->Branch("phi_1", &phi_1_, "phi_1/F");
+      // eta
+      synctree_->Branch("eta_1", &eta_1_, "eta_1/F");
+      // mass
+      synctree_->Branch("m_1", &m_1_, "m_1/F");
+      // charge
+      synctree_->Branch("q_1", &q_1_, "q_1/I");
+      // delta-beta corrected isolation (relative or absolute as appropriate)
+      // If lepton 1 is a tau, this is the value of byIsolationMVAraw,
+      // which is no longer used in the analysis, but retained for legacy
+      // reasons
+      synctree_->Branch("iso_1", &iso_1_, "iso_1/F");
+      // If an electron, the output of the ID MVA, zero otherwise
+      synctree_->Branch("mva_1", &mva_1_, "mva_1/F");
+      // Transverse (x-y) impact parameter w.r.t to the primary vertex
+      synctree_->Branch("d0_1", &d0_1_, "d0_1/F");
+      // Longitudinal (z) impact parameter w.r.t to the primary vertex
+      synctree_->Branch("dZ_1", &dz_1_, "dz_1/F");
+      // Whether lepton passes ID selection (always true in IC ntuples)
+//      synctree_->Branch("passid_1", &lPassId1, "lPassId1/B");
+      // Whether lepton passes iso selection (always true in IC ntuples)
+//      synctree_->Branch("passiso_1", &lPassIso1, "lPassIso1/B");
+      // Transverse mass of lepton 1 and MVA MET
+      synctree_->Branch("mt_1", &mt_1_, "mt_1/F");
+
+      // Lepton 2 properties
+      // pt (including effect of any energy scale corrections)
+      synctree_->Branch("pt_2", &pt_2_, "pt_2/F");
+      // phi
+      synctree_->Branch("phi_2", &phi_2_, "lPhi2/F");
+      // eta
+      synctree_->Branch("eta_2", &eta_2_, "lEta2/F");
+      // mass
+      synctree_->Branch("m_2", &m_2_, "lM2/F");
+      // charge
+      synctree_->Branch("q_2", &q_2_, "lq2/I");
+      // delta-beta corrected isolation (relative or absolute as appropriate)
+      // If lepton 2 is a tau, this is the value of byIsolationMVAraw,
+      // which is no longer used in the analysis, but retained for legacy
+      // reasons
+      synctree_->Branch("iso_2", &iso_2_, "iso_2/F");
+      // Transverse (x-y) impact parameter w.r.t to the primary vertex
+      synctree_->Branch("d0_2", &d0_2_, "d0_2/F");
+      // Longitudinal (z) impact parameter w.r.t to the primary vertex
+      synctree_->Branch("dZ_2", &dz_2_, "dz_2/F");
+      // If an electron, the output of the ID MVA, zero otherwise
+      synctree_->Branch("mva_2", &mva_2_, "mva_2/F");
+      // Whether lepton passes ID selection (always true in IC ntuples)
+//      synctree_->Branch("passid_2", &lPassId2, "lPassId2/B");
+      // Whether lepton passes iso selection (always true in IC ntuples)
+//      synctree_->Branch("passiso_2", &lPassIso2, "lPassIso2/B");
+      // Transverse mass of lepton 2 and MVA MET
+      synctree_->Branch("mt_2", &mt_2_, "mt_2/F");
+
+      // Variables defined when lepton 2 is a tau
+      // raw value of the 3hits delta-beta isolation
+
+      /*synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_2", &l3Hits_2,
+                     "byCombinedIsolationDeltaBetaCorrRaw3Hits_2/F");
+      // raw value of the anti-electron MVA3 output
+      synctree_->Branch("againstElectronMVA3raw_2", &lagainstElectronMVA3raw_2,
+                     "againstElectronMVA3raw_2/F");
+      // raw value of the MVA2 isolation
+      synctree_->Branch("byIsolationMVA2raw_2", &lbyIsolationMVA2raw_2,
+                     "byIsolationMVA2raw_2/F");
+      // output of againstMuonLoose2
+      synctree_->Branch("againstMuonLoose2_2", &lagainstMuonLoose2_2,
+                     "againstMuonLoose2_2/F");
+      // output of againstMuonMedium2
+      synctree_->Branch("againstMuonMedium2_2", &lagainstMuonMedium2_2,
+                     "againstMuonMedium2_2/F");
+      // output of againstMuonTight2
+      synctree_->Branch("againstMuonTight2_2", &lagainstMuonTight2_2,
+                     "againstMuonTight2_2/F");
+*/
+      // Uncorrected PF MET (not used in analysis)
+      synctree_->Branch("met", &pfmet_, "pfmet_/F");
+      // Uncorrected PF MET phi (not used in analysis)
+      synctree_->Branch("metphi", &pfmet_phi_, "pfmet_phi_/F");
+      // Elements of the PF MET covariance matrix (not used in analysis)
+      synctree_->Branch("metcov00", &pfmetCov00_, "pfmetCov00/F");
+      synctree_->Branch("metcov01", &pfmetCov01_, "pfmetCov01/F");
+      synctree_->Branch("metcov10", &pfmetCov10_, "pfmetCov10/F");
+      synctree_->Branch("metcov11", &pfmetCov11_, "pfmetCov11/F");
+
+      // MVA MET
+      synctree_->Branch("mvamet", &met_, "met/F");
+      // MVA MET phi
+      synctree_->Branch("mvametphi", &met_phi_, "met_phi/F");
+      // Elements of the MVA MET covariance matrix
+      synctree_->Branch("mvacov00", &metCov00_, "metCov00/F");
+      synctree_->Branch("mvacov01", &metCov01_, "metCov01/F");
+      synctree_->Branch("mvacov10", &metCov10_, "metCov10/F");
+      synctree_->Branch("mvacov11", &metCov11_, "metCov11/F");
+
+      // pt of the di-tau + MET system
+      synctree_->Branch("pt_tt", &pt_tt_, "pt_tt/F");
+
+      // Visible pzeta
+      synctree_->Branch("pzetavis", &pzetavis_, "pzetavis/F");
+      // MET pzeta
+      synctree_->Branch("pzetamiss", &pzetamiss_, "pzetamiss/F");
+      // ttbar-rejection MVA output (emu channel only)
+      synctree_->Branch("mva_gf", &em_gf_mva_, "em_gf_mva/F");
+
+      // Jet properties
+      // The following properties are for the leading (1) and sub-leading (2) jets
+      // with pt > 30, |eta| < 4.7 after jet energy corrections, PF jet ID and
+      // pileup jet ID are applied. Jets overlapping with either selected lepton
+      // are not counted
+
+      // Number of jets passing above selection
+      synctree_->Branch("njets", &n_jets_, "n_jets_/I");
+      // Number of jets passing above selection but with
+      // pt > 20 instead of pt > 30
+//      synctree_->Branch("njetspt20", &lNJetsPt20, "lNJetsPt20/I");
+
+      // Leading Jet
+      // pt
+      synctree_->Branch("jpt_1", &jpt_1_, "jpt_1/F");
+      // eta
+      synctree_->Branch("jeta_1", &jeta_1_, "jeta_1/F");
+      // phi
+      synctree_->Branch("jphi_1", &jphi_1_, "jphi_1/F");
+      // raw pt (before JEC)
+//      synctree_->Branch("jptraw_1", &lJPtRaw1, "lJPtRaw1/F");
+      // pt uncertainty relative to corrected pt (not in IC ntuples)
+//      synctree_->Branch("jptunc_1", &lJPtUnc1, "lJPtUnc1/F");
+      // Pileup ID MVA output
+//      synctree_->Branch("jmva_1", &lJMVA1, "lJMVA1/F");
+      // Linear radial moment (not used in htt analysis)
+//      synctree_->Branch("jlrm_1", &lLRM1, "lLRM1/F");
+      // Charged track multiplicity (not used in htt analysis)
+//      synctree_->Branch("jctm_1", &lCTM1, "lCTM1/I");
+
+      // Sub-leading Jet
+      // pt
+      synctree_->Branch("jpt_2", &jpt_2_, "jpt_2/F");
+      // eta
+      synctree_->Branch("jeta_2", &jeta_2_, "jeta_2/F");
+      // phi
+      synctree_->Branch("jphi_2", &jphi_2_, "jphi_2/F");
+      // raw pt (before JEC)
+//      synctree_->Branch("jptraw_2", &lJPtRaw2, "lJPtRaw2/F");
+      // pt uncertainty relative to corrected pt (not in IC ntuples)
+//      synctree_->Branch("jptunc_2", &lJPtUnc2, "lJPtUnc2/F");
+      // Pileup ID MVA output
+//      synctree_->Branch("jmva_2", &lJMVA2, "lJMVA2/F");
+      // Linear radial moment (not used in htt analysis)
+//      synctree_->Branch("jlrm_2", &lLRM2, "lLRM2/F");
+      // Charged track multiplicity (not used in htt analysis)
+//      synctree_->Branch("jctm_2", &lCTM2, "lCTM2/I");
+
+      // Di-jet properties
+      // Calculated with leading and sub-leading jets when njets >= 2
+      // di-jet mass
+      synctree_->Branch("mjj", &mjj_, "mjj/F");
+      // absolute difference in eta
+      synctree_->Branch("jdeta", &jdeta_, "jdeta/F");
+      // number of jets, passing above selections, in pseudorapidity gap
+      // between jets
+//      synctree_->Branch("njetingap", &lNJetInGap, "lNJetInGap/I");
+
+      // B-Tagged Jet properties
+      // The following properties are for the leading (in pt) CSV medium b-tagged
+      // jet with pt > 20, |eta| < 2.4 after jet energy corrections, PF jet ID and
+      // pileup jet ID are applied. Jets overlapping with either selected lepton
+      // are not counted
+
+      // Number of b-tagging jets passing above selections
+      synctree_->Branch("nbtag", &n_bjets_, "n_bjets/I");
+      // pt
+      synctree_->Branch("bpt", &bpt_1_, "bpt_1/F");
+      // eta
+      synctree_->Branch("beta", &beta_1_, "beta_1/F");
+      // phi
+      synctree_->Branch("bphi", &bphi_1_, "bphi_1/F");
+    }
     return 0;
   }
 
   int HTTCategories::Execute(TreeEvent *event) {
 
-
     // Get the objects we need from the event
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
 
     wt_ = eventInfo->total_weight();
+    run_ = eventInfo->run();
+    event_ = eventInfo->event();
+    lumi_ = eventInfo->lumi_block();
+    std::vector<PileupInfo *> puInfo;
+    float true_int = -1;
+
+    if (event->Exists("pileupInfo")) {
+     puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
+      for (unsigned i = 0; i < puInfo.size(); ++i) {
+        if (puInfo[i]->bunch_crossing() == 0)
+          true_int = puInfo[i]->true_num_interactions();
+      }
+    }
+    n_pu_ = true_int;
+    rho_ = eventInfo->jet_rho();
+    
     wt_ggh_pt_up_ = 1.0;
     wt_ggh_pt_down_ = 1.0;
     wt_tau_fake_up_ = 1.0;
@@ -177,7 +456,36 @@ namespace ic {
     if (event->Exists("wt_tquark_down"))    wt_tquark_down_ = event->Get<double>("wt_tquark_down");
     if (event->Exists("wt_tau_id_up"))      wt_tau_id_up_   = event->Get<double>("wt_tau_id_up");
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
-    
+  
+  mc_weight_ = 0.0;
+  if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup");
+  if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1");
+  if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2");
+  if (event->Exists("idweight_1")) idweight_1_ = event->Get<double>("idweight_1");
+  if (event->Exists("idweight_2")) idweight_2_ = event->Get<double>("idweight_2");
+  if (event->Exists("isoweight_1")) isoweight_1_ = event->Get<double>("isoweight_1");
+  if (event->Exists("isoweight_2")) isoweight_2_ = event->Get<double>("isoweight_2");
+  if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton");
+  if (eventInfo->weight_defined("tau_fake_weight")) fakeweight_ = eventInfo->weight("tau_fake_weight");
+  if (eventInfo->weight_defined("tau_mode_scale")) effweight_ *= eventInfo->weight("tau_mode_scale");
+   
+  if (eventInfo->weight_defined("tauspinner")) {
+    embeddedweight_ = eventInfo->weight("tauspinner") *
+      eventInfo->weight("zmm_eff") *
+      //eventInfo->weight("muon_rad") *
+      eventInfo->weight("kin_weight1") *
+      eventInfo->weight("kin_weight2") *
+      eventInfo->weight("kin_weight3") *
+      eventInfo->weight("embed_weight");
+   } else {
+    embeddedweight_ = 0.;
+   }
+  if (eventInfo->weight_defined("ggh")) {
+    signalweight_ = eventInfo->weight("ggh");
+   } else {
+    signalweight_ = 0.;
+   }
+
     std::vector<CompositeCandidate *> const& ditau_vec = event->GetPtrVec<CompositeCandidate>(ditau_label_);
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
@@ -235,9 +543,14 @@ namespace ic {
     }
 
     if (event->Exists("svfitHiggs")) {
-      pt_h_ = event->Get<Candidate>("svfitHiggs").pt();
+      Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
+      pt_h_ = higgs.pt();
+      eta_h_ = higgs.eta();
+      phi_h_ = higgs.phi();
     } else {
       pt_h_ = -9999;
+      eta_h_ = -9999;
+      phi_h_ = -9999;
     }
 
     pt_tt_ = (ditau->vector() + met->vector()).pt();
@@ -258,9 +571,8 @@ namespace ic {
       m_vis_ = m_vis_ * event->Get<double>("mass_scale");
     }
 
-
-
     mt_1_ = MT(lep1, met);
+    mt_2_ = MT(lep2, met);
     mt_ll_ = MT(ditau, met);
     pzeta_ = PZeta(ditau, met, 0.85);
     pzetavis_ = PZetaVis(ditau);
@@ -271,37 +583,103 @@ namespace ic {
     pt_2_ = lep2->pt();
     eta_1_ = lep1->eta();
     eta_2_ = lep2->eta();
-
+    phi_1_ = lep1->phi();
+    phi_2_ = lep2->phi();
+    m_1_ = lep1->M();
     m_2_ = lep2->M();
+    q_1_ = lep1->charge();
+    q_2_ = lep2->charge();
     met_ = met->pt();
     met_phi_ = met->phi();
 
+    metCov00_ = met->xx_sig();
+    metCov10_ = met->yx_sig();
+    metCov01_ = met->xy_sig();
+    metCov11_ = met->yy_sig();
+    
+    Met const* pfmet = NULL;
+    //slightly different pfMET format for new ntuples
+    if(strategy_ == strategy::paper2013) pfmet = event->GetPtr<Met>("pfMet");
+    if(strategy_ == strategy::phys14) {
+      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
+      pfmet = pfMet_vec.at(0);  
+    }
+    pfmet_ = pfmet->pt();
+    pfmet_phi_ = pfmet->phi();
+  
+    pfmetCov00_ = pfmet->xx_sig();
+    pfmetCov01_ = pfmet->xy_sig();
+    pfmetCov10_ = pfmet->yx_sig();
+    pfmetCov11_ = pfmet->yy_sig();
+    
     emu_dxy_1_ = 0.0;
     emu_dxy_2_ = 0.0;
 
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
-      iso_1_ = PF04IsolationVal(elec, 0.5);
-      if(strategy_ == strategy::phys14) iso_1_ = PF03IsolationVal(elec, 0.5, 0);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
-      iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+      d0_1_ = elec->dxy_vertex();
+      dz_1_ = elec->dz_vertex();
+      if(strategy_ == strategy::paper2013) {
+        iso_1_ = PF04IsolationVal(elec, 0.5);
+        mva_1_ = elec->GetIdIso("mvaNonTrigV0");
+        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        mva_2_ = tau->GetTauID("againstElectronMVA");
+//        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+//        lagainstElectronMVA3raw_2 = tau->HasTauID("againstElectronMVA3raw") ? tau->GetTauID("againstElectronMVA3raw") : 0. ;
+//        lbyIsolationMVA2raw_2 = tau->HasTauID("byIsolationMVA2raw") ? tau->GetTauID("byIsolationMVA2raw") : 0. ;
+//        lagainstMuonLoose2_2 = tau->HasTauID("againstMuonLoose2") ? tau->GetTauID("againstMuonLoose2") : 0. ;
+//        lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
+ //       lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
+      }
+      if(strategy_ == strategy::phys14) {
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
+        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        mva_2_ = tau->GetTauID("againstElectronMVA5raw");
+      }
     }
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
-      iso_1_ = PF04IsolationVal(muon, 0.5);
-      if(strategy_ == strategy::phys14) iso_1_ = PF03IsolationVal(muon, 0.5, 0);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
-      iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+      d0_1_ = muon->dxy_vertex();
+      dz_1_ = muon->dz_vertex();
+      if(strategy_ == strategy::paper2013) {
+        iso_1_ = PF04IsolationVal(muon, 0.5);
+        mva_1_ = 0.0;
+        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        mva_2_ = tau->GetTauID("againstElectronMVA");
+//        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+//        lagainstElectronMVA3raw_2 = tau->HasTauID("againstElectronMVA3raw") ? tau->GetTauID("againstElectronMVA3raw") : 0. ;
+//        lbyIsolationMVA2raw_2 = tau->HasTauID("byIsolationMVA2raw") ? tau->GetTauID("byIsolationMVA2raw") : 0. ;
+//        lagainstMuonLoose2_2 = tau->HasTauID("againstMuonLoose2") ? tau->GetTauID("againstMuonLoose2") : 0. ;
+//        lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
+ //       lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
+      }
+      if(strategy_ == strategy::phys14) {
+        iso_1_ = PF03IsolationVal(muon, 0.5, 0);
+        mva_1_ = 0.0;
+        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        mva_2_ = tau->GetTauID("againstElectronMVA5raw");
+      }
     }
     if (channel_ == channel::em) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
-      iso_1_ = PF04IsolationVal(elec, 0.5);
-      if(strategy_ == strategy::phys14) iso_1_ = PF03IsolationVal(elec, 0.5, 0);
       Muon const* muon = dynamic_cast<Muon const*>(lep2);
-      iso_2_ = PF04IsolationVal(muon, 0.5);
-      if(strategy_ == strategy::phys14) iso_2_ = PF03IsolationVal(muon, 0.5, 0);
+      if(strategy_ == strategy::paper2013) {
+        iso_1_ = PF04IsolationVal(elec, 0.5);
+        iso_2_ = PF04IsolationVal(muon, 0.5);
+      }
+      if(strategy_ == strategy::phys14) {
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        iso_2_ = PF03IsolationVal(muon, 0.5, 0);
+        mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
+      }
+      mva_2_ = 0.0;
       emu_dxy_1_ = -1. * elec->dxy_vertex();
+      d0_1_ = emu_dxy_1_;
       emu_dxy_2_ = -1. * muon->dxy_vertex();
+      d0_2_ = emu_dxy_2_;
     }
 
     l1_met_ = 0.0;
@@ -326,6 +704,7 @@ namespace ic {
     if (n_jets_ >= 1) {
       jpt_1_ = jets[0]->pt();
       jeta_1_ = jets[0]->eta();
+      jphi_1_ = jets[0]->phi();
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets[0] };
       std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
@@ -337,11 +716,13 @@ namespace ic {
     } else {
       jpt_1_ = -9999;
       jeta_1_ = -9999;
+      jphi_1_ = -9999;
     }
 
     if (n_jets_ >= 2) {
       jpt_2_ = jets[1]->pt();
       jeta_2_ = jets[1]->eta();
+      jphi_2_ = jets[1]->phi();
       mjj_ = (jets[0]->vector() + jets[1]->vector()).M();
       jdeta_ = fabs(jets[0]->eta() - jets[1]->eta());
       double eta_high = (jets[0]->eta() > jets[1]->eta()) ? jets[0]->eta() : jets[1]->eta();
@@ -355,6 +736,7 @@ namespace ic {
     } else {
       jpt_2_ = -9999;
       jeta_2_ = -9999;
+      jphi_2_ = -9999;
       mjj_ = -9999;
       jdeta_ = -9999;
       n_jetsingap_ = 9999;
@@ -380,9 +762,11 @@ namespace ic {
     if (n_bjets_ >= 1) {
       bpt_1_ = bjets[0]->pt();
       beta_1_ = bjets[0]->eta();
+      bphi_1_ = bjets[0]->phi();
     } else {
       bpt_1_ = -9999;
       beta_1_ = -9999;
+      bphi_1_ = -9999;
     }
 
     if (jets_csv.size() >= 1) {
@@ -597,12 +981,18 @@ namespace ic {
     }
     
     if (write_tree_) outtree_->Fill();
+    if (make_sync_ntuple_) synctree_->Fill();
 
 
     return 0;
   }
 
   int HTTCategories::PostAnalysis() {
+    if(make_sync_ntuple_) {   
+      lOFile->cd();
+      synctree_->Write();
+      lOFile->Close();
+    }
     return 0;
   }
 

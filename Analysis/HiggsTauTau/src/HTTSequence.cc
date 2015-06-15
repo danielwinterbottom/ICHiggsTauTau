@@ -736,8 +736,11 @@ if(strategy_type != strategy::phys14){
     .set_jets_label(jets_label)
     .set_kinfit_mode(kinfit_mode)
     .set_bjet_regression(bjet_regr_correction)
+    .set_make_sync_ntuple(js["make_sync_ntuple"].asBool())
+    .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE"+output_name)
     .set_mass_shift(mass_shift)
-    .set_write_tree(true));
+    .set_is_embedded(is_embedded)
+    .set_write_tree(!js["make_sync_ntuple"].asBool()));
 
 }
 
