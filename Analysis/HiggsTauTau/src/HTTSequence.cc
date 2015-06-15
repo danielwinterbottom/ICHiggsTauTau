@@ -60,7 +60,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   output_folder=output_folder+"/"+addit_output_folder+"/";
-  output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
+  //output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
+  output_name=output_name + "_" + chan + "_" + postf + ".root";
   special_mode=json["special_mode"].asUInt();
   if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
   

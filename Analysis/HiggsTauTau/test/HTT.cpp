@@ -121,10 +121,22 @@ int main(int argc, char* argv[]) {
   analysis.CalculateTimings(js["job"]["timings"].asBool());
   
   std::map<std::string, ic::HTTSequence> seqs;
+  std::vector<std::string> ignore_chans;
 
+  for(unsigned i = 0; i<js["job"]["ignore_channels"].size();++i){
+   ignore_chans.push_back(js["job"]["ignore_channels"][i].asString());
+  }
 
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
+    bool ignore_channel =false;
     std::string channel_str = js["job"]["channels"][i].asString();
+    for(unsigned k = 0; k<ignore_chans.size();k++){
+      if(ignore_chans.at(k)==channel_str){ignore_channel=true;}
+    }
+    if(ignore_channel){
+      std::cout<<"SKIPPING CHANNEL "<<channel_str<<std::endl;
+      continue;
+    } 
     std::vector<std::string> vars;
     for (unsigned j = 0; j < js["job"]["sequences"]["all"].size(); ++j) {
       vars.push_back(js["job"]["sequences"]["all"][j].asString());
