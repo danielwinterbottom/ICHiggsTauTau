@@ -535,7 +535,7 @@ if(strategy_type != strategy::phys14){
     .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
     .set_tau_scale(tau_shift)
     .set_use_most_isolated(strategy_type == strategy::phys14)
-    .set_use_os_preference(strategy_type == strategy::phys14)
+    .set_use_os_preference(!(strategy_type == strategy::phys14))
     .set_allowed_tau_modes(allowed_tau_modes));
 
 
