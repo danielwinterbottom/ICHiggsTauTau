@@ -36,6 +36,16 @@ class HTTCategories : public ModuleBase {
   struct branch_var {
       double var_double;  
       float var_float;
+      branch_var& operator=(double doub){
+          var_double = doub;
+          var_float = static_cast<float>(doub);
+          return *this;
+      }
+      branch_var& operator*(double sf){
+          var_double*=sf;
+          var_float*=sf;
+          return *this;
+      }
   };
 
   // Event Properties

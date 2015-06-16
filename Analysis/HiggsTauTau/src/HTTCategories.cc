@@ -535,60 +535,60 @@ namespace ic {
     n_vtx_ = eventInfo->good_vertices();
 
     if (event->Exists("svfitMass")) {
-      m_sv_ = {event->Get<double>("svfitMass"),event->Get<float>("svfitMass") };
+      m_sv_ = event->Get<double>("svfitMass");
     } else {
-      m_sv_ = {-9999, -9999};
+      m_sv_ = -9999;
     }
 
     if (event->Exists("svfitHiggs")) {
       Candidate const& higgs = event->Get<Candidate>("svfitHiggs");
-      pt_h_ = {higgs.pt(), static_cast<float>(higgs.pt())};
+      pt_h_ = higgs.pt();
       eta_h_ = higgs.eta();
       phi_h_ = higgs.phi();
     } else {
-      pt_h_ = {-9999, -9999};
+      pt_h_ = -9999;
       eta_h_ = -9999;
       phi_h_ = -9999;
     }
 
-    pt_tt_ = {(ditau->vector() + met->vector()).pt(), static_cast<float>((ditau->vector() + met->vector()).pt())};
-    m_vis_ = {ditau->M(), static_cast<float>(ditau->M())};
+    pt_tt_ = (ditau->vector() + met->vector()).pt();
+    m_vis_ = ditau->M();
    
 
     // This is the HCP hack for the em channel
     // to better align the data with the embedded
     // mass.  
     if (channel_ == channel::em) {
-      m_sv_ = {m_sv_.var_double * mass_shift_, static_cast<float>(m_sv_.var_double * mass_shift_)};
-      m_vis_ = {m_vis_.var_double * mass_shift_, static_cast<float>(m_vis_.var_double * mass_shift_)};
+      m_sv_ = m_sv_ * mass_shift_;
+      m_vis_ = m_vis_* mass_shift_;
       em_gf_mva_ = event->Exists("em_gf_mva") ? event->Get<double>("em_gf_mva") : 0.;
       // em_vbf_mva_ = event->Exists("em_vbf_mva") ? event->Get<double>("em_vbf_mva") : 0.;
     }
     if (event->Exists("mass_scale")) {
-      m_sv_ = {m_sv_.var_double * event->Get<double>("mass_scale"),static_cast<float>(m_sv_.var_double * event->Get<double>("mass_scale")) };
-      m_vis_ = {m_vis_.var_double * event->Get<double>("mass_scale"),static_cast<float>(m_vis_.var_double * event->Get<double>("mass_scale")) };
+      m_sv_ = m_sv_ * event->Get<double>("mass_scale");
+      m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
 
-    mt_1_ = {MT(lep1, met), static_cast<float>(MT(lep1, met))};
+    mt_1_ = MT(lep1, met);
     mt_2_ = MT(lep2, met);
     mt_ll_ = MT(ditau, met);
-    pzeta_ = {PZeta(ditau, met, 0.85), static_cast<float>(PZeta(ditau, met, 0.85))};
-    pzetavis_ = {PZetaVis(ditau), static_cast<float>(PZetaVis(ditau))};
-    pzetamiss_ = {PZeta(ditau, met, 0.0), static_cast<float>(PZeta(ditau, met, 0.0))};
+    pzeta_ = PZeta(ditau, met, 0.85);
+    pzetavis_ = PZetaVis(ditau);
+    pzetamiss_ = PZeta(ditau, met, 0.0);
     emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
 
-    pt_1_= {lep1->pt(), static_cast<float>(lep1->pt())};
-    pt_2_ = {lep2->pt(), static_cast<float>(lep2->pt())};
-    eta_1_ = {lep1->eta(), static_cast<float>(lep1->eta())};
-    eta_2_ = {lep2->eta(), static_cast<float>(lep2->eta())};
+    pt_1_ = lep1->pt();
+    pt_2_ = lep2->pt();
+    eta_1_ = lep1->eta();
+    eta_2_ = lep2->eta();
     phi_1_ = lep1->phi();
     phi_2_ = lep2->phi();
     m_1_ = lep1->M();
-    m_2_ = {lep2->M(), static_cast<float>(lep2->M())};
+    m_2_ = lep2->M();
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
-    met_ = {met->pt(), static_cast<float>(met->pt())};
-    met_phi_ = {met->phi(), static_cast<float>(met->phi())};
+    met_ = met->pt();
+    met_phi_ = met->phi();
 
     metCov00_ = met->xx_sig();
     metCov10_ = met->yx_sig();
@@ -698,8 +698,8 @@ namespace ic {
     n_loose_bjets_ = loose_bjets.size();
 
     if (n_jets_ >= 1) {
-      jpt_1_ = {jets[0]->pt(), static_cast<float>(jets[0]->pt())};
-      jeta_1_ = {jets[0]->eta(), static_cast<float>(jets[0]->eta())};
+      jpt_1_ = jets[0]->pt();
+      jeta_1_ = jets[0]->eta();
       jphi_1_ = jets[0]->phi();
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets[0] };
@@ -710,17 +710,17 @@ namespace ic {
         j1_dm_ = -1;
       }
     } else {
-      jpt_1_ = {-9999,-9999};
-      jeta_1_ = {-9999,-9999};
+      jpt_1_ = -9999;
+      jeta_1_ = -9999;
       jphi_1_ = -9999;
     }
 
     if (n_jets_ >= 2) {
-      jpt_2_ = {jets[1]->pt(),static_cast<float>(jets[1]->pt())};
-      jeta_2_ = {jets[1]->eta(),static_cast<float>(jets[1]->eta())};
+      jpt_2_ = jets[1]->pt();
+      jeta_2_ = jets[1]->eta();
       jphi_2_ = jets[1]->phi();
-      mjj_ = {(jets[0]->vector() + jets[1]->vector()).M(), static_cast<float>((jets[0]->vector() + jets[1]->vector()).M())};
-      jdeta_ = {fabs(jets[0]->eta() - jets[1]->eta()), static_cast<float>(fabs(jets[0]->eta() - jets[1]->eta()))};
+      mjj_ = (jets[0]->vector() + jets[1]->vector()).M();
+      jdeta_ = fabs(jets[0]->eta() - jets[1]->eta());
       double eta_high = (jets[0]->eta() > jets[1]->eta()) ? jets[0]->eta() : jets[1]->eta();
       double eta_low = (jets[0]->eta() > jets[1]->eta()) ? jets[1]->eta() : jets[0]->eta();
       n_jetsingap_ = 0;
@@ -730,11 +730,11 @@ namespace ic {
         }
       }
     } else {
-      jpt_2_ = {-9999,-9999};
-      jeta_2_ = {-9999,-9999};
+      jpt_2_ = -9999;
+      jeta_2_ = -9999;
       jphi_2_ = -9999;
-      mjj_ = {-9999,-9999};
-      jdeta_ = {-9999, -9999};
+      mjj_ = -9999;
+      jdeta_ = -9999;
       n_jetsingap_ = 9999;
     }
 
@@ -756,12 +756,12 @@ namespace ic {
     }
 
     if (n_bjets_ >= 1) {
-      bpt_1_ = {bjets[0]->pt(), static_cast<float>(bjets[0]->pt())};
-      beta_1_ = {bjets[0]->eta(), static_cast<float>(bjets[0]->eta())};
+      bpt_1_ = bjets[0]->pt();
+      beta_1_ = bjets[0]->eta();
       bphi_1_ = bjets[0]->phi();
     } else {
-      bpt_1_ = {-9999,-9999};
-      beta_1_ = {-9999,-9999};
+      bpt_1_ = -9999;
+      beta_1_ = -9999;
       bphi_1_ = -9999;
     }
 
@@ -976,7 +976,7 @@ namespace ic {
       mbb_h_ = -9999;
     }
     
-    if (write_tree_) outtree_->Fill();
+    if (write_tree_ && fs_) outtree_->Fill();
     if (make_sync_ntuple_) synctree_->Fill();
 
 
