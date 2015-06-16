@@ -19,7 +19,6 @@
 // HTT-specific modules
 #include "HiggsTauTau/interface/HTTSequence.h"
 #include "HiggsTauTau/interface/HTTTriggerFilter.h"
-#include "HiggsTauTau/interface/HTTTriggerFilterPhys14.h"
 #include "HiggsTauTau/interface/HTTEnergyScale.h"
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
@@ -499,6 +498,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
             .set_is_embedded(is_embedded)
             .set_pair_label("ditau"));
       }
+			
  // }
 
 
