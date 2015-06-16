@@ -360,15 +360,15 @@ namespace ic {
       // phi
       synctree_->Branch("jphi_1", &jphi_1_, "jphi_1/F");
       // raw pt (before JEC)
-//      synctree_->Branch("jptraw_1", &lJPtRaw1, "lJPtRaw1/F");
+      synctree_->Branch("jptraw_1", &jptraw_1_, "jptraw_1/F");
       // pt uncertainty relative to corrected pt (not in IC ntuples)
-//      synctree_->Branch("jptunc_1", &lJPtUnc1, "lJPtUnc1/F");
+      synctree_->Branch("jptunc_1", &jptunc_1_, "jptunc_1/F");
       // Pileup ID MVA output
-//      synctree_->Branch("jmva_1", &lJMVA1, "lJMVA1/F");
+      synctree_->Branch("jmva_1", &jmva_1_, "jmva_1/F");
       // Linear radial moment (not used in htt analysis)
-//      synctree_->Branch("jlrm_1", &lLRM1, "lLRM1/F");
+      synctree_->Branch("jlrm_1", &jlrm_1_, "jlrm_1/F");
       // Charged track multiplicity (not used in htt analysis)
-//      synctree_->Branch("jctm_1", &lCTM1, "lCTM1/I");
+      synctree_->Branch("jctm_1", &jctm_1_, "jctm_1/I");
 
       // Sub-leading Jet
       // pt
@@ -378,15 +378,15 @@ namespace ic {
       // phi
       synctree_->Branch("jphi_2", &jphi_2_, "jphi_2/F");
       // raw pt (before JEC)
-//      synctree_->Branch("jptraw_2", &lJPtRaw2, "lJPtRaw2/F");
+      synctree_->Branch("jptraw_2", &jptraw_2_, "jptraw_2/F");
       // pt uncertainty relative to corrected pt (not in IC ntuples)
-//      synctree_->Branch("jptunc_2", &lJPtUnc2, "lJPtUnc2/F");
+      synctree_->Branch("jptunc_2", &jptunc_2_, "jptunc_2/F");
       // Pileup ID MVA output
-//      synctree_->Branch("jmva_2", &lJMVA2, "lJMVA2/F");
+      synctree_->Branch("jmva_2", &jmva_2_, "jmva_2/F");
       // Linear radial moment (not used in htt analysis)
-//      synctree_->Branch("jlrm_2", &lLRM2, "lLRM2/F");
+      synctree_->Branch("jlrm_2", &jlrm_2_, "jlrm_2/F");
       // Charged track multiplicity (not used in htt analysis)
-//      synctree_->Branch("jctm_2", &lCTM2, "lCTM2/I");
+      synctree_->Branch("jctm_2", &jctm_2_, "jctm_2/I");
 
       // Di-jet properties
       // Calculated with leading and sub-leading jets when njets >= 2
@@ -396,7 +396,7 @@ namespace ic {
       synctree_->Branch("jdeta", &jdeta_.var_float, "jdeta/F");
       // number of jets, passing above selections, in pseudorapidity gap
       // between jets
-//      synctree_->Branch("njetingap", &lNJetInGap, "lNJetInGap/I");
+      synctree_->Branch("njetingap", &n_jetsingap_, "n_jetsingap/I");
 
       // B-Tagged Jet properties
       // The following properties are for the leading (in pt) CSV medium b-tagged
@@ -701,6 +701,11 @@ namespace ic {
       jpt_1_ = jets[0]->pt();
       jeta_1_ = jets[0]->eta();
       jphi_1_ = jets[0]->phi();
+      jptraw_1_ = jets[0]->uncorrected_energy() * (jets[0]->pt() / jets[0]->energy());
+      jptunc_1_ = 0.0;
+      jmva_1_ = jets[0]->pu_id_mva_value();
+      jlrm_1_ = jets[0]->linear_radial_moment();
+      jctm_1_ = jets[0]->charged_multiplicity_nopu();
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets[0] };
       std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
@@ -713,12 +718,22 @@ namespace ic {
       jpt_1_ = -9999;
       jeta_1_ = -9999;
       jphi_1_ = -9999;
+      jptraw_1_ = -9999;
+      jptunc_1_ = -9999;
+      jmva_1_ = -9999;
+      jlrm_1_ = -9999;
+      jctm_1_ = -9999;
     }
 
     if (n_jets_ >= 2) {
       jpt_2_ = jets[1]->pt();
       jeta_2_ = jets[1]->eta();
       jphi_2_ = jets[1]->phi();
+      jptraw_2_ = jets[1]->uncorrected_energy() * (jets[1]->pt() / jets[1]->energy());
+      jptunc_2_ = 0.0;
+      jmva_2_ = jets[1]->pu_id_mva_value();
+      jlrm_2_ = jets[1]->linear_radial_moment();
+      jctm_2_ = jets[1]->charged_multiplicity_nopu();
       mjj_ = (jets[0]->vector() + jets[1]->vector()).M();
       jdeta_ = fabs(jets[0]->eta() - jets[1]->eta());
       double eta_high = (jets[0]->eta() > jets[1]->eta()) ? jets[0]->eta() : jets[1]->eta();
@@ -735,6 +750,11 @@ namespace ic {
       jphi_2_ = -9999;
       mjj_ = -9999;
       jdeta_ = -9999;
+      jptraw_2_ = -9999;
+      jptunc_2_ = -9999;
+      jmva_2_ = -9999;
+      jlrm_2_ = -9999;
+      jctm_2_ = -9999;
       n_jetsingap_ = 9999;
     }
 

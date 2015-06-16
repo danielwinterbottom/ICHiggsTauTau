@@ -138,6 +138,16 @@ class HTTCategories : public ModuleBase {
   branch_var jeta_2_;    // Defined if n_jets >= 2
   float jphi_1_;    // Defined if n_jets >= 1
   float jphi_2_;    // Defined if n_jets >= 2
+  float jptraw_1_; 
+  float jptraw_2_; 
+  float jptunc_1_; 
+  float jptunc_2_; 
+  float jmva_1_; 
+  float jmva_2_; 
+  float jlrm_1_; 
+  float jlrm_2_; 
+  float jctm_1_; 
+  float jctm_2_; 
   branch_var bpt_1_;     // Defined if n_bjets >= 1
   branch_var beta_1_;    // Defined if n_bjets >= 1
   float bphi_1_;    // Defined if n_bjets >= 1
