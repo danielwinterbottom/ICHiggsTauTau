@@ -581,7 +581,7 @@ namespace ic {
       //Find highest 3 pt gen jets
       genjet1_pt_=-1,genjet2_pt_=-1,genjet3_pt_=-1;
       int igenjet1=-1,igenjet2=-1,igenjet3=-1;
-      std::cout<<"Listing gen jet pts:"<<std::endl;
+      //std::cout<<"Listing gen jet pts:"<<std::endl;
       for(unsigned iGen=0;iGen<genvec.size();iGen++){
 	double genpt=genvec[iGen]->pt();
 	//std::cout<<"  "<<genpt<<std::endl;

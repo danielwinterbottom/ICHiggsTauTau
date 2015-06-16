@@ -43,6 +43,7 @@ int main(int argc, char* argv[]){
   std::string syst;
   std::string dataset;
 
+  bool do_debug;
   bool do_datatop;
   bool do_singletop;
   bool do_separatez;
@@ -86,6 +87,7 @@ int main(int argc, char* argv[]){
     ("channel",                  po::value<std::string>(&channel)->default_value("nunu"))
     ("runblind",                 po::value<bool>(&runblind)->default_value(true))
     ("do_logy",                  po::value<bool>(&do_logy)->default_value(false))
+    ("do_debug",                  po::value<bool>(&do_debug)->default_value(false))
     ("do_nosigmcweight",         po::value<bool>(&do_nosigmcweight)->default_value(false));
 
   po::store(po::command_line_parser(argc, argv).options(config).allow_unregistered().run(), vm);
@@ -123,6 +125,7 @@ int main(int argc, char* argv[]){
 
   std::vector<std::string> histTitle;
   std::vector<std::string> shape;
+  shape.reserve(100);
   //shape.push_back("BDT(12,-1.,0.2)");
 
   //shape.push_back("n_jets_30(10,0.,10.)");histTitle.push_back(";n_{jets} (p_{T}>30 GeV);Events");
@@ -163,6 +166,14 @@ int main(int argc, char* argv[]){
     shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
     shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
     shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
+    shape.push_back("genjet2_pt(26,30.,300.)");histTitle.push_back(";gen p_{T}^{j2} (GeV);Events");
+    shape.push_back("genjet1_pt(30,30.,350.)");histTitle.push_back(";gen p_{T}^{j1} (GeV);Events");
+    shape.push_back("genjet2_eta(50,-5.,5.)");histTitle.push_back(";gen #eta_{j2};Events");
+    shape.push_back("genjet1_eta(50,-5.,5.)");histTitle.push_back(";gen #eta_{j1};Events");
+    shape.push_back("genjet2_phi(16,-3.2,3.2)");histTitle.push_back(";gen #phi_{j2};Events");
+    shape.push_back("genjet1_phi(16,-3.2,3.2)");histTitle.push_back(";gen #phi_{j1};Events");
+
+
     // if(channel=="mumu"){
     //   shape.push_back("m_mumu(30,0.,150.)");histTitle.push_back(";m_{#mu#mu};Events");
     // }
@@ -1229,6 +1240,7 @@ int main(int argc, char* argv[]){
 
   HistPlotter plotter("plotter");
   plotter.set_dirname("ControlPlots")
+    .set_do_debug(do_debug)
     .set_add_underflows(false)
     .set_add_overflows(true)
     .set_elements(elementvec)
@@ -1239,6 +1251,7 @@ int main(int argc, char* argv[]){
 
   HistPlotter normplotter("normplotter");
   normplotter.set_dirname("NormControlPlots")
+    .set_do_debug(do_debug)
     .set_outsuffix("_norm")
     .set_add_underflows(false)
     .set_add_overflows(true)
@@ -1317,23 +1330,33 @@ int main(int argc, char* argv[]){
   //if(datalist) analysis->AddModule(&eventlist);
   //if(!dataonly){
     // analysis->AddModule(&signal110);
-  analysis->AddModule(&qcdinc);
-  analysis->AddModule(&run1qcdinc);
-  analysis->AddModule(&signal125);
-  analysis->AddModule(&pu40signal125);
-  analysis->AddModule(&ns50signal125);
-  analysis->AddModule(&run1signal125);
+  if(channel=="nunu"){
+    analysis->AddModule(&qcdinc);
+    analysis->AddModule(&run1qcdinc);
+  
+    analysis->AddModule(&signal125);
+    analysis->AddModule(&pu40signal125);
+    analysis->AddModule(&ns50signal125);
+    analysis->AddModule(&run1signal125);
+  }
 
-  analysis->AddModule(&zmumuraw);
-  analysis->AddModule(&run1zmumuraw);
+  if(channel=="mumu"){
+    analysis->AddModule(&zmumuraw);
+    analysis->AddModule(&run1zmumuraw);
+  }
 
-  analysis->AddModule(&wenuraw);
-  analysis->AddModule(&wmunuraw);
-  analysis->AddModule(&wtaunuraw);
-  analysis->AddModule(&run1wenuraw);
-  analysis->AddModule(&run1wmunuraw);
-  analysis->AddModule(&run1wtaunuraw);
-
+  if(channel=="enu"){
+    analysis->AddModule(&wenuraw);
+    analysis->AddModule(&run1wenuraw);
+  }
+  if(channel=="munu"){
+    analysis->AddModule(&wmunuraw);
+    analysis->AddModule(&wtaunuraw);
+  }
+  if(channel=="taunu"){
+    analysis->AddModule(&run1wmunuraw);
+    analysis->AddModule(&run1wtaunuraw);
+  }
   // analysis->AddModule(&signal150);
   // analysis->AddModule(&signal200);
   // analysis->AddModule(&signal300);
@@ -1344,7 +1367,7 @@ int main(int argc, char* argv[]){
   // analysis->AddModule(&ggHsignal200);
   // analysis->AddModule(&ggHsignal300);
   // analysis->AddModule(&ggHsignal400);
-  analysis->AddModule(&plotter);
+  //analysis->AddModule(&plotter);
   analysis->AddModule(&normplotter);
   //analysis->AddModule(&summary);
   //}
