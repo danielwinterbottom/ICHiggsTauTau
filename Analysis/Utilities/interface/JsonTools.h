@@ -22,6 +22,17 @@ Json::Value ExtractJsonFromFile(std::string const& file);
 Json::Value ExtractJsonFromString(std::string const& str);
 
 /**
+ * Extracts a Json::Value from the given input string
+ * Only works for a depth of 3/4 values for the moment
+ *
+ * @param str should separate keys and required values by : and any
+ * lists of values by . e.g: key:value1.value2
+ * 
+ */
+Json::Value ExtractJsonFromFlatString(std::string const& str);
+
+
+/**
  * Updates the values in one json from the values in another
  *
  * All the values in *b* are entered into *a*, overwritting any already

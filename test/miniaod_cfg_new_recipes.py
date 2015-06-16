@@ -389,17 +389,17 @@ if release in ['72X', '72XMINIAOD']:
       process.electronPFIsolationDepositsSequence+
       process.electronPFIsolationValuesSequence
       )
-#Leave these out for now:
-#process.elPFIsoValueGamma04PFIdPFIso.deposits[0].vetos = (
-#    cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)'))
-#process.elPFIsoValueNeutral04PFIdPFIso.deposits[0].vetos = (
-#    cms.vstring())
-#process.elPFIsoValuePU04PFIdPFIso.deposits[0].vetos = (
-#    cms.vstring())
-#process.elPFIsoValueCharged04PFIdPFIso.deposits[0].vetos = (
-#    cms.vstring('EcalEndcaps:ConeVeto(0.015)'))
-#process.elPFIsoValueChargedAll04PFIdPFIso.deposits[0].vetos = (
-#    cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)'))
+#Htt electron vetoes:
+process.elPFIsoValueGamma03PFIdPFIso.deposits[0].vetos = (
+    cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)'))
+process.elPFIsoValueNeutral03PFIdPFIso.deposits[0].vetos = (
+    cms.vstring())
+process.elPFIsoValuePU03PFIdPFIso.deposits[0].vetos = (
+    cms.vstring())
+process.elPFIsoValueCharged03PFIdPFIso.deposits[0].vetos = (
+    cms.vstring('EcalEndcaps:ConeVeto(0.015)'))
+process.elPFIsoValueChargedAll03PFIdPFIso.deposits[0].vetos = (
+    cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)'))
 
 process.icElectronProducer = producers.icElectronProducer.clone(
   branch                    = cms.string("electrons"),
@@ -689,7 +689,9 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
       BTagDiscriminators        = cms.PSet(
         simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK4PFCHS"),
         simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK4PFCHS"),
-        combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS")
+        combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS"),
+        #include this discriminator again under a different name to be compatible with miniAOD naming conventions
+        combinedInclusiveSecondaryVertexV2BJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS")
       )
     ),
     destConfig = cms.PSet(
@@ -1059,16 +1061,16 @@ if not isData:
       process.ak4GenJetsNoNuBSM+
       process.selectedGenJets+
       process.icGenJetProducer+
-      process.icGenJetProducerFromSlimmed
-  #    process.icPileupInfoProducer
+      process.icGenJetProducerFromSlimmed+
+      process.icPileupInfoProducer
     )
   if release in [ '72X']:
     process.icGenSequence += (
       process.genParticlesForJets+
       process.ak4GenJetsNoNuBSM+
       process.selectedGenJets+
-      process.icGenJetProducer
-   #   process.icPileupInfoProducer
+      process.icGenJetProducer+
+      process.icPileupInfoProducer
     )
 
 #process.load("RecoJets.JetProducers.ak4GenJets_cfi")

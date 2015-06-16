@@ -11,6 +11,8 @@ namespace ic {
 
   HTTPrint::HTTPrint(std::string const& name) : ModuleBase(name) {
     skip_events_ = false;
+    muon_label_ = "muonsPFlow";
+    jet_label_ = "pfJetsPFlow";
   }
 
   HTTPrint::~HTTPrint() {
@@ -44,7 +46,7 @@ namespace ic {
     // }
 
     if (events_.find(eventInfo->event()) != events_.end()) {
-      std::vector<Muon*> const& muons = event->GetPtrVec<Muon>("muonsPFlow");
+      std::vector<Muon*> const& muons = event->GetPtrVec<Muon>(muon_label_);
       std::cout << "-----------------------------------------" << std::endl;
     std::cout << "event: " <<  eventInfo->event() << " lumi: " << eventInfo->lumi_block() << " run: " << eventInfo->run() << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
@@ -143,7 +145,7 @@ namespace ic {
       std::cout << "MVA MET: " << met_pair.second->pt() << std::endl;
     }
 
-    std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
+    std::vector<PFJet*> const& jets = event->GetPtrVec<PFJet>(jet_label_);
     std::vector<PFJet*> matched_jets;
     std::vector< std::pair<PFJet*, GenJet*> > matches;
     if (!eventInfo->is_data()) {

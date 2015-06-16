@@ -45,6 +45,8 @@ namespace ic {
     do_tt_muon_weights_       = false;
     gen_tau_collection_       = "genParticlesTaus";
     jets_label_               = "pfJetsPFlow";
+    btag_label_ 	      = "combinedSecondaryVertexBJetTags";
+    ditau_label_              = "emtauCandidates";
   }
 
   HTTWeights::~HTTWeights() {
@@ -77,6 +79,9 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "do_top_jeteta_weights" % do_top_jeteta_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_fake_weights" % do_tau_fake_weights_;
     std::cout << boost::format(param_fmt()) % "do_tau_id_weights"   % do_tau_id_weights_;
+    std::cout << boost::format(param_fmt()) % "jets_label"          % jets_label_;
+    std::cout << boost::format(param_fmt()) % "btag_label"          % btag_label_;
+    std::cout << boost::format(param_fmt()) % "ditau_label"          % ditau_label_;
 
     if (do_tau_fake_weights_) {
      tau_fake_weights_ = new TF1("tau_fake_weights","(1.15743)-(0.00736136*x)+(4.3699e-05*x*x)-(1.188e-07*x*x*x)",0,200); 
@@ -165,7 +170,7 @@ namespace ic {
 
   int HTTWeights::Execute(TreeEvent *event) {
 
-    std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>("emtauCandidates");
+    std::vector<CompositeCandidate *> const& dilepton = event->GetPtrVec<CompositeCandidate>(ditau_label_);
 
     double weight = 1.0;
     EventInfo * eventInfo = event->GetPtr<EventInfo>("eventInfo");
@@ -252,7 +257,7 @@ namespace ic {
     if (do_top_jeteta_weights_) {
       std::vector<PFJet*> prebjets = event->GetPtrVec<PFJet>(jets_label_); // Make a copy of the jet collection
       ic::erase_if(prebjets,!boost::bind(MinPtMaxEta, _1, 20.0, 2.4));
-      std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") > bind(&PFJet::GetBDiscriminator, _2, "combinedSecondaryVertexBJetTags"));
+      std::sort(prebjets.begin(), prebjets.end(), bind(&PFJet::GetBDiscriminator, _1, btag_label_) > bind(&PFJet::GetBDiscriminator, _2, btag_label_));
       std::vector<PFJet*> prebjets_SF = prebjets;
       // Instead of changing b-tag value in the promote/demote method we look for a map of bools
       // that say whether a jet should pass the WP or not
@@ -260,7 +265,7 @@ namespace ic {
         auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result");
         ic::erase_if(prebjets_SF, !boost::bind(IsReBTagged, _1, retag_result));
       } else {
-        ic::erase_if(prebjets_SF, boost::bind(&PFJet::GetBDiscriminator, _1, "combinedSecondaryVertexBJetTags") < 0.679);
+        ic::erase_if(prebjets_SF, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label_) < 0.679);
       }
       int n_prebjets_SF=prebjets_SF.size();
       double wt=1.00;

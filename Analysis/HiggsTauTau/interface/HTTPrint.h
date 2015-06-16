@@ -16,6 +16,9 @@ class HTTPrint : public ModuleBase {
  private:
   std::set<unsigned> events_;
   CLASS_MEMBER(HTTPrint, bool, skip_events)
+  CLASS_MEMBER(HTTPrint, std::string, jet_label)
+  CLASS_MEMBER(HTTPrint, std::string, muon_label)
+
  public:
   HTTPrint(std::string const& name);
   virtual ~HTTPrint();

@@ -11,7 +11,7 @@ namespace ic {
 
 class HTTRecoilCorrector : public ModuleBase {
  private:
-  std::string jets_label_;
+ // std::string jets_label_;
   bool disable;
   RecoilCorrector * corrector_;
   bool is_wjets_;
@@ -19,6 +19,7 @@ class HTTRecoilCorrector : public ModuleBase {
   std::vector<unsigned> boson_id_;
   CLASS_MEMBER(HTTRecoilCorrector, std::string, dilepton_label)
   CLASS_MEMBER(HTTRecoilCorrector, std::string, met_label)
+  CLASS_MEMBER(HTTRecoilCorrector, std::string, jets_label)
   CLASS_MEMBER(HTTRecoilCorrector, std::string, sample)
   CLASS_MEMBER(HTTRecoilCorrector, ic::channel, channel)
   CLASS_MEMBER(HTTRecoilCorrector, ic::strategy, strategy)
