@@ -18,6 +18,7 @@ namespace ic {
     fs_ = NULL;
     hists_.resize(1);
     use_most_isolated_ = false;
+    use_os_preference_ = true;
     scale_met_for_tau_ = 0;
     tau_scale_ = 1.0;
     allowed_tau_modes_ = "";
@@ -73,6 +74,7 @@ namespace ic {
     // Do the actual pair selection, either by highest pT or most isolated tau
     // ************************************************************************
     std::vector<CompositeCandidate *> & dilepton = event->GetPtrVec<CompositeCandidate>(pair_label_);
+    std::vector<CompositeCandidate *> nosign_dilepton;
     std::vector<CompositeCandidate *> os_dilepton;
     std::vector<CompositeCandidate *> ss_dilepton;
     std::vector<CompositeCandidate *> result;
@@ -80,6 +82,7 @@ namespace ic {
     for (unsigned i = 0; i < dilepton.size(); ++i) {
       if (PairOppSign(dilepton[i])) os_dilepton.push_back(dilepton[i]);
       if (PairSameSign(dilepton[i])) ss_dilepton.push_back(dilepton[i]);
+      nosign_dilepton.push_back(dilepton[i]);
     }
 
     if (fs_) {
@@ -88,30 +91,60 @@ namespace ic {
       hists_[0]->Fill("n_pairs", os_dilepton.size(), ss_dilepton.size(), wt);
     }
 
-    // The first pair should have the highest "scalar sum pt" (0,1 = tau_h, 2 = muon) pT
-    std::sort(os_dilepton.begin(),os_dilepton.end(), boost::bind(&CompositeCandidate::ScalarPtSum, _1) > boost::bind(&CompositeCandidate::ScalarPtSum, _2));
-    std::sort(ss_dilepton.begin(),ss_dilepton.end(), boost::bind(&CompositeCandidate::ScalarPtSum, _1) > boost::bind(&CompositeCandidate::ScalarPtSum, _2));
-    
-    // Or alternatively sort by isolation
-    if (use_most_isolated_ && channel_ != channel::em) {
-      std::sort(os_dilepton.begin(), os_dilepton.end(), [](CompositeCandidate const* c1, CompositeCandidate const* c2) {
-        Tau const* tau1  = dynamic_cast<Tau const*>(c1->GetCandidate("lepton2"));
-        Tau const* tau2  = dynamic_cast<Tau const*>(c2->GetCandidate("lepton2"));
-        return (tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
-      });
-      std::sort(ss_dilepton.begin(), ss_dilepton.end(), [](CompositeCandidate const* c1, CompositeCandidate const* c2) {
-        Tau const* tau1  = dynamic_cast<Tau const*>(c1->GetCandidate("lepton2"));
-        Tau const* tau2  = dynamic_cast<Tau const*>(c2->GetCandidate("lepton2"));
-        return (tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") < tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
-      });
-    }
-
-    if (os_dilepton.size() > 0) { // Take OS in preference to SS
-      result.push_back(os_dilepton[0]);
-    } else if (ss_dilepton.size() > 0) {
-      result.push_back(ss_dilepton[0]);
+    if(use_os_preference_) {
+      // The first pair should have the highest "scalar sum pt" 
+      std::sort(os_dilepton.begin(),os_dilepton.end(), SortBySumPt);
+      std::sort(ss_dilepton.begin(),ss_dilepton.end(), SortBySumPt);
+      
+      // Or alternatively sort by isolation
+      if (use_most_isolated_) {
+        if(channel_ ==  channel::et) { 
+           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoET) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoET) ;
+        }
+        if(channel_ ==  channel::mt) { 
+           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoMT) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoMT) ;
+        }
+        if(channel_ ==  channel::em) { 
+           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoEM) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoEM) ;
+        }
+        if(channel_ ==  channel::tt) { 
+           std::sort(os_dilepton.begin(), os_dilepton.end(), SortByIsoTT) ;
+           std::sort(ss_dilepton.begin(), ss_dilepton.end(), SortByIsoTT) ;
+        }
+      }
+      if (os_dilepton.size() > 0) { // Take OS in preference to SS
+        result.push_back(os_dilepton[0]);
+      } else if (ss_dilepton.size() > 0) {
+        result.push_back(ss_dilepton[0]);
+      }
+    } else {
+      // The first pair should have the highest "scalar sum pt" 
+      std::sort(nosign_dilepton.begin(),nosign_dilepton.end(), SortBySumPt);
+      
+      // Or alternatively sort by isolation
+      if (use_most_isolated_ ) {
+        if(channel_ ==  channel::et) { 
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoET) ;
+        }
+        if(channel_ ==  channel::mt) { 
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoMT) ;
+        }
+        if(channel_ ==  channel::em) { 
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoEM) ;
+        }
+        if(channel_ ==  channel::tt) { 
+           std::sort(nosign_dilepton.begin(), nosign_dilepton.end(), SortByIsoTT) ;
+        }
+      }
+      if (nosign_dilepton.size() > 0) { // No preference for OS over SS
+        result.push_back(nosign_dilepton[0]);
+      }
     }
     if (result.size() == 0) return 1;  //Require at least one dilepton
+
 
     // ************************************************************************
     // If using pair-wise mva met select the appropriate met
@@ -243,4 +276,92 @@ namespace ic {
   void HTTPairSelector::PrintInfo() {
     ;
   }
+
+  // Sorting
+  // ----------------------------------------------------------------
+  bool SortBySumPt(CompositeCandidate const* c1,
+                                       CompositeCandidate const* c2) {
+  //  if (c1->charge() == 0 && c2->charge() != 0) return true;
+   // if (c1->charge() != 0 && c2->charge() == 0) return false;
+    return ScalarPtSum(c1->AsVector()) > ScalarPtSum(c2->AsVector());
+  }
+
+  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+    // First we sort the electrons
+    Electron const* e1 = static_cast<Electron const*>(c1->At(0));
+    Electron const* e2 = static_cast<Electron const*>(c2->At(0));
+    double e_iso1 = PF04IsolationVal(e1, 0.5);
+    double e_iso2 = PF04IsolationVal(e2, 0.5);
+    // If the iso is different we just use this
+    if (e_iso1 != e_iso2) return e_iso1 < e_iso2;
+    // If not try the pT
+    if (e1->pt() != e2->pt()) return e1->pt() > e2->pt();
+    // If both of these are the same then try the taus
+    Tau const* t1 = static_cast<Tau const*>(c1->At(1));
+    Tau const* t2 = static_cast<Tau const*>(c2->At(1));
+    double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
+    return (t1->pt() > t2->pt());
+  }
+
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+    // First we sort the electrons
+    Muon const* m1 = static_cast<Muon const*>(c1->At(0));
+    Muon const* m2 = static_cast<Muon const*>(c2->At(0));
+    double m_iso1 = PF04IsolationVal(m1, 0.5);
+    double m_iso2 = PF04IsolationVal(m2, 0.5);
+    // If the iso is different we just use this
+    if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
+    // If not try the pT
+    if (m1->pt() != m2->pt()) return m1->pt() > m2->pt();
+    // If both of these are the same then try the taus
+    Tau const* t1 = static_cast<Tau const*>(c1->At(1));
+    Tau const* t2 = static_cast<Tau const*>(c2->At(1));
+    double t_iso1 = t1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    double t_iso2 = t2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    if (t_iso1 != t_iso2) return t_iso1 < t_iso2;
+    return (t1->pt() > t2->pt());
+  }
+
+  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+    // First we sort the muons
+    Muon const* m1 = static_cast<Muon const*>(c1->At(1));
+    Muon const* m2 = static_cast<Muon const*>(c2->At(1));
+    double m_iso1 = PF04IsolationVal(m1, 0.5);
+    double m_iso2 = PF04IsolationVal(m2, 0.5);
+    // If the iso is different we just use this
+    if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
+    // If not try the pT
+    if (m1->pt() != m2->pt()) return m1->pt() > m2->pt();
+    // If both of these are the same then try the electrons
+    Electron const* e1 = static_cast<Electron const*>(c1->At(0));
+    Electron const* e2 = static_cast<Electron const*>(c2->At(0));
+    double e_iso1 = PF04IsolationVal(e1, 0.5);
+    double e_iso2 = PF04IsolationVal(e2, 0.5);
+    if (e_iso1 != e_iso2) return e_iso1 < e_iso2;
+    return e1->pt() > e2->pt();
+  }
+
+  bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2) {
+    // First we sort the electrons
+    Tau const* t1_1 = static_cast<Tau const*>(c1->At(0));
+    Tau const* t1_2 = static_cast<Tau const*>(c2->At(0));
+    double t1_iso1 = t1_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    double t1_iso2 = t1_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    // If the iso is different we just use this
+    if (t1_iso1 != t1_iso2) return t1_iso1 < t1_iso2;
+    // If not try the pT
+    if (t1_1->pt() != t1_2->pt()) return t1_1->pt() > t1_2->pt();
+    // If both of these are the same then try the taus
+    Tau const* t2_1 = static_cast<Tau const*>(c1->At(1));
+    Tau const* t2_2 = static_cast<Tau const*>(c2->At(1));
+    double t2_iso1 = t2_1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    double t2_iso2 = t2_2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+    // If the iso is different we just use this
+    if (t2_iso1 != t2_iso2) return t2_iso1 < t2_iso2;
+    // If not try the pT
+    return t2_1->pt() > t2_2->pt();
+  }
+
 }

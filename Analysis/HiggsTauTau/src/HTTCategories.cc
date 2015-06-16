@@ -289,6 +289,9 @@ namespace ic {
       // Transverse mass of lepton 2 and MVA MET
       synctree_->Branch("mt_2", &mt_2_, "mt_2/F");
 
+      // Whether event is os or ss
+      synctree_->Branch("os", &os_, "os/B");  
+
       // Variables defined when lepton 2 is a tau
       // raw value of the 3hits delta-beta isolation
 
@@ -311,9 +314,9 @@ namespace ic {
                      "againstMuonTight2_2/F");
 */
       // Uncorrected PF MET (not used in analysis)
-      synctree_->Branch("met", &pfmet_, "pfmet_/F");
+      synctree_->Branch("met", &pfmet_, "pfmet/F");
       // Uncorrected PF MET phi (not used in analysis)
-      synctree_->Branch("metphi", &pfmet_phi_, "pfmet_phi_/F");
+      synctree_->Branch("metphi", &pfmet_phi_, "pfmet_phi/F");
       // Elements of the PF MET covariance matrix (not used in analysis)
       synctree_->Branch("metcov00", &pfmetCov00_, "pfmetCov00/F");
       synctree_->Branch("metcov01", &pfmetCov01_, "pfmetCov01/F");
@@ -347,7 +350,7 @@ namespace ic {
       // are not counted
 
       // Number of jets passing above selection
-      synctree_->Branch("njets", &n_jets_, "n_jets_/I");
+      synctree_->Branch("njets", &n_jets_, "n_jets/I");
       // Number of jets passing above selection but with
       // pt > 20 instead of pt > 30
       synctree_->Branch("njetspt20", &n_lowpt_jets_, "n_lowpt_jets/I");
