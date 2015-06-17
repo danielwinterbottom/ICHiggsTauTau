@@ -53,7 +53,7 @@
 
 namespace ic {
 
-HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf, Json::Value const& json) {
+HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const& json) {
   if(json["svfit_folder"].asString()!="") {svfit_folder = json["svfit_folder"].asString();} else{std::cout<<"ERROR: svfit_folder not set"<<std::endl; exit(1);};
   svfit_override = json["svfit_override"].asString();
   if(json["output_name"].asString()!=""){output_name=json["output_name"].asString();} else{std::cout<<"ERROR: output_name not set"<<std::endl; exit(1);};
@@ -833,10 +833,14 @@ void HTTSequence::BuildTTPairs(){
  
  BuildTauSelection();
 
- BuildModule(OneCollCompositeProducer<Tau>("TTPairProducer")
-      .set_input_label(js["taus"].asString()).set_output_label("ditau")
-      .set_sort_by_iso(true)
-      .set_candidate_name_first("lepton1").set_candidate_name_second("lepton2"));
+ BuildModule(CompositeProducer<Tau, Tau>("TTPairProducer")
+      .set_input_label_first(js["taus"].asString())
+      .set_input_label_second(js["taus"].asString())
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_output_label("ditau"));
+
+
  }
 
   
@@ -855,7 +859,7 @@ void HTTSequence::BuildETPairs() {
     if(special_mode == 20 || special_mode == 22){
      ElecID = [](Electron const* e) { return HttEMuFakeElectron(e); };
     } else if (special_mode == 25){
-     ElecID = [](Electron const* e) { return e->pt()>=0;};
+     ElecID = [](Electron const* e) { return e->pt()>=0;}; //We want this to always return true for the purposes of the filter below
     } else {
       ElecID = [](Electron const* e) { return ElectronHTTId(e, false); };
     }

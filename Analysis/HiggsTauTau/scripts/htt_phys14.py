@@ -4,7 +4,6 @@ import sys
 from optparse import OptionParser
 import os
 import math
-import json
 
 JOBWRAPPER      = './scripts/generate_job.sh'
 JOBSUBMIT       = 'true'
