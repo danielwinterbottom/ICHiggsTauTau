@@ -39,6 +39,7 @@
 #include "HiggsTauTau/interface/EmbeddingKineReweightProducer.h"
 #include "HiggsTauTau/interface/JetEnergyUncertainty.h"
 #include "HiggsTauTau/interface/HTTPrint.h"
+#include "HiggsTauTau/interface/HTTFilter.h"
 #include "Modules/interface/LumiMask.h"
 
 // Generic modules
@@ -63,8 +64,10 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
   special_mode=json["special_mode"].asUInt();
   if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
-  
-
+	if(json["make_sync_ntuple"].asBool()){
+	  output_folder="HTTSequenceSyncfilesNEW/";
+		output_name="SYNCFILE"+output_name;
+	}
   fs = std::make_shared<fwlite::TFileService>(
        (output_folder+output_name).c_str());
   js = json;
@@ -1219,12 +1222,19 @@ void HTTSequence::BuildDiElecVeto() {
       .set_input_label("veto_elecs").set_output_label("elec_veto_pairs")
       .set_candidate_name_first("elec1").set_candidate_name_second("elec2"));
 
-  BuildModule(SimpleFilter<CompositeCandidate>("VetoElecPairFilter")
+  HTTFilter<CompositeCandidate> vetoElecPairFilter = HTTFilter<CompositeCandidate>("VetoElecPairFilter")
       .set_input_label("elec_veto_pairs").set_min(0).set_max(0)
       .set_predicate([=](CompositeCandidate const* c) {
         return  c->DeltaR("elec1", "elec2") > 0.15 &&
                 c->charge() == 0;
-      }));
+      });
+	
+    if(strategy_type==strategy::phys14){
+  	  vetoElecPairFilter.set_veto_name("dielec_veto");
+  		vetoElecPairFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
+  	}
+
+	BuildModule(vetoElecPairFilter);
  }
 
  void HTTSequence::BuildDiMuonVeto() {
@@ -1263,12 +1273,20 @@ void HTTSequence::BuildDiElecVeto() {
       .set_input_label("veto_muons").set_output_label("muon_veto_pairs")
       .set_candidate_name_first("muon1").set_candidate_name_second("muon2"));
 
-  BuildModule(SimpleFilter<CompositeCandidate>("VetoMuonPairFilter")
-      .set_input_label("muon_veto_pairs").set_min(0).set_max(0)
-      .set_predicate([=](CompositeCandidate const* c) {
-        return  c->DeltaR("muon1", "muon2") > 0.15 &&
-                c->charge() == 0;
-      }));
+  HTTFilter<CompositeCandidate> vetoMuonPairFilter = HTTFilter<CompositeCandidate>("VetoMuonPairFilter")
+	   .set_input_label("muon_veto_pairs").set_min(0).set_max(0)
+		 .set_predicate([=](CompositeCandidate const* c){
+		   return c->DeltaR("muon1", "muon2") > 0.15 &&
+			        c->charge() == 0;
+			});
+	
+	if(strategy_type==strategy::phys14){
+	  vetoMuonPairFilter.set_veto_name("dimuon_veto");
+		vetoMuonPairFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
+	}
+	
+	BuildModule(vetoMuonPairFilter);
+
 }
 
 void HTTSequence::BuildExtraElecVeto(){
@@ -1277,8 +1295,9 @@ void HTTSequence::BuildExtraElecVeto(){
   BuildModule(CopyCollection<Electron>("CopyToExtraElecs",
       js["electrons"].asString(), "extra_elecs"));
  
- SimpleFilter<Electron> extraElecFilter = SimpleFilter<Electron>("ExtraElecFilter")
+ HTTFilter<Electron> extraElecFilter = HTTFilter<Electron>("ExtraElecFilter")
       .set_input_label("extra_elecs")
+			.set_veto_name("extra_elec_veto")
       .set_min(0).set_max(js["baseline"]["max_extra_elecs"].asUInt());
   if(strategy_type == strategy::paper2013){
       extraElecFilter.set_predicate([=](Electron const* e) {
@@ -1291,6 +1310,7 @@ void HTTSequence::BuildExtraElecVeto(){
       });
   }
  if(strategy_type == strategy::phys14){
+      extraElecFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
       extraElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_elec_pt    &&
                 fabs(e->eta())          < veto_elec_eta   &&
@@ -1312,8 +1332,9 @@ void HTTSequence::BuildExtraMuonVeto(){
   BuildModule(CopyCollection<Muon>("CopyToExtraMuons",
       js["muons"].asString(), "extra_muons"));
 
-  SimpleFilter<Muon> extraMuonFilter = SimpleFilter<Muon>("ExtraMuonFilter")
+  HTTFilter<Muon> extraMuonFilter = HTTFilter<Muon>("ExtraMuonFilter")
       .set_input_label("extra_muons")
+			.set_veto_name("extra_muon_veto")
       .set_min(0).set_max(js["baseline"]["max_extra_muons"].asUInt());
   if(strategy_type == strategy::paper2013){
       extraMuonFilter.set_predicate([=](Muon const* m) {
@@ -1325,6 +1346,7 @@ void HTTSequence::BuildExtraMuonVeto(){
                 PF04IsolationVal(m, 0.5) < 0.3;
       });
    } else if (strategy_type == strategy::phys14){
+	    extraMuonFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
       extraMuonFilter.set_predicate([=](Muon const* m) {
         return  m->pt()                 > veto_muon_pt    &&
                 fabs(m->eta())          < veto_muon_eta   &&

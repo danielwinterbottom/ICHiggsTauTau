@@ -151,6 +151,10 @@ namespace ic {
       }
     }
     if(make_sync_ntuple_) {
+		  if(fs_){ 
+        synctree_ = fs_->make<TTree>("TauCheck","TauCheck");
+			} else{
+
       //Fue to the possibility of other groups requesting different branch names/branch contents
       //we have to make an alternative (albeit very similar) TTree for the sync ntuple. 
       lOFile = new TFile(sync_output_name_.c_str(), "RECREATE");
@@ -158,6 +162,7 @@ namespace ic {
       // Tree should be named "TauCheck" to aid scripts which
       // make comparisons between sync trees
       synctree_ = new TTree("TauCheck", "TauCheck");
+			}
 
       // The sync tree is filled for all events passing the di-lepton
       // selections in each channel. This includes vertex selection,
@@ -1007,7 +1012,7 @@ namespace ic {
   }
 
   int HTTCategories::PostAnalysis() {
-    if(make_sync_ntuple_) {   
+    if(make_sync_ntuple_&&!fs_) {   
       lOFile->cd();
       synctree_->Write();
       lOFile->Close();
