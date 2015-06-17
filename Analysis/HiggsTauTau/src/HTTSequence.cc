@@ -64,12 +64,17 @@ HTTSequence::HTTSequence(std::string& chan, std::string& var, std::string postf,
   output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
   special_mode=json["special_mode"].asUInt();
   if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
-	if(json["make_sync_ntuple"].asBool()){
-	  output_folder="HTTSequenceSyncfilesNEW/";
-		output_name="SYNCFILE"+output_name;
-	}
-  fs = std::make_shared<fwlite::TFileService>(
+  //if(json["make_sync_ntuple"].asBool()) {
+//	output_folder="HTTSequenceSyncfilesNEW/";
+ //   output_name="SYNCFILE"+output_name;
+ // }
+  if(!json["make_sync_ntuple"].asBool()) {
+      fs = std::make_shared<fwlite::TFileService>(
        (output_folder+output_name).c_str());
+  } else {
+      // do not create output file when making sync ntuples
+      fs = NULL;
+  }
   js = json;
   channel_str = chan;
   jes_mode=json["baseline"]["jes_mode"].asUInt();
