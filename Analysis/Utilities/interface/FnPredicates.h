@@ -128,7 +128,7 @@ namespace ic {
 
   
   template<class T>
-  bool PF03IsolationVal(T const* cand, double const& dbeta, bool allcharged=false) {
+  double PF03IsolationVal(T const* cand, double const& dbeta, bool allcharged=false) {
     double charged_iso = allcharged ? cand->dr03_pfiso_charged_all() : cand->dr03_pfiso_charged();
     double iso =  charged_iso 
                   + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - dbeta * cand->dr03_pfiso_pu(), 0.0);
