@@ -709,6 +709,22 @@ namespace ic {
       emu_dxy_2_ = -1. * muon->dxy_vertex();
       d0_2_ = static_cast<float>(emu_dxy_2_);
     }
+    if (channel_ == channel::tt) {
+      Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
+      Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
+//        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+//        lagainstElectronMVA3raw_2 = tau->HasTauID("againstElectronMVA3raw") ? tau->GetTauID("againstElectronMVA3raw") : 0. ;
+//        lbyIsolationMVA2raw_2 = tau->HasTauID("byIsolationMVA2raw") ? tau->GetTauID("byIsolationMVA2raw") : 0. ;
+//        lagainstMuonLoose2_2 = tau->HasTauID("againstMuonLoose2") ? tau->GetTauID("againstMuonLoose2") : 0. ;
+//        lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
+ //       lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
+      if(strategy_ == strategy::phys14) {
+        iso_1_ = tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        mva_1_ = tau1->GetTauID("againstElectronMVA5raw");
+        iso_2_ = tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        mva_2_ = tau2->GetTauID("againstElectronMVA5raw");
+      }
+    }
 
 
     Tau const* tau = dynamic_cast<Tau const*>(lep2);
