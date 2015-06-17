@@ -75,6 +75,9 @@ class HTTCategories : public ModuleBase {
   float embeddedweight_;
   float signalweight_;
   bool os_;
+  bool dilepton_veto_;
+  bool extraelec_veto_;
+  bool extramuon_veto_;
   unsigned n_vtx_;
   unsigned n_pu_;
   branch_var m_sv_;

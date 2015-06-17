@@ -290,7 +290,11 @@ namespace ic {
       synctree_->Branch("mt_2", &mt_2_, "mt_2/F");
 
       // Whether event is os or ss
-      synctree_->Branch("os", &os_, "os/B");  
+      synctree_->Branch("os", &os_, "os/B");
+      // Whether event passes lepton vetos. TRUE = event is vetoed.  
+      synctree_->Branch("dilepton_veto", &dilepton_veto_, "dilepton_veto/B");
+      synctree_->Branch("extraelec_veto", &extraelec_veto_, "extraelec_veto/B");
+      synctree_->Branch("extramuon_veto", &extramuon_veto_, "extramuon_veto/B");
 
       // Variables defined when lepton 2 is a tau
       // raw value of the 3hits delta-beta isolation
@@ -534,6 +538,29 @@ namespace ic {
     } else {
       os_ = false;
     }
+    //Fill extra lepton veto bools
+    dilepton_veto_ = false;
+    extraelec_veto_ = false;
+    extramuon_veto_ = false;
+    if(channel_ == channel::et) { 
+        if(event->Exists("dielec_veto")) dilepton_veto_ = event->Get<bool>("dielec_veto");
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+    }
+    if(channel_ == channel::mt) { 
+        if(event->Exists("dimuon_veto")) dilepton_veto_ = event->Get<bool>("dimuon_veto");
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+    }
+    if(channel_ == channel::em) { 
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+    }
+    if(channel_ == channel::tt) {
+        if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
+        if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
+    }
+
 
     n_vtx_ = eventInfo->good_vertices();
 
