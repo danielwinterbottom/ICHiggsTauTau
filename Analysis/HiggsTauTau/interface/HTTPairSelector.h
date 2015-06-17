@@ -11,6 +11,12 @@
 #include <string>
 
 namespace ic {
+  
+  bool SortBySumPt(CompositeCandidate const* c1, CompositeCandidate const* c2);
+  bool SortByIsoET(CompositeCandidate const* c1, CompositeCandidate const* c2);
+  bool SortByIsoMT(CompositeCandidate const* c1, CompositeCandidate const* c2);
+  bool SortByIsoEM(CompositeCandidate const* c1, CompositeCandidate const* c2);
+  bool SortByIsoTT(CompositeCandidate const* c1, CompositeCandidate const* c2);
 
 class HTTPairSelector : public ModuleBase {
  private:
@@ -19,6 +25,7 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, std::string, met_label)
   CLASS_MEMBER(HTTPairSelector, bool, mva_met_from_vector)
   CLASS_MEMBER(HTTPairSelector, bool, use_most_isolated)
+  CLASS_MEMBER(HTTPairSelector, bool, use_os_preference)
   CLASS_MEMBER(HTTPairSelector, unsigned, faked_tau_selector)
   CLASS_MEMBER(HTTPairSelector, unsigned, hadronic_tau_selector)
   CLASS_MEMBER(HTTPairSelector, bool, scale_met_for_tau)
@@ -37,6 +44,7 @@ class HTTPairSelector : public ModuleBase {
   virtual int Execute(TreeEvent *event);
   virtual int PostAnalysis();
   virtual void PrintInfo();
+  
 
 };
 

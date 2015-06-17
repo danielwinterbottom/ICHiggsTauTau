@@ -220,6 +220,7 @@ namespace ic{
   }
 
   HistPlotter::HistPlotter(std::string name) : LTModule(name){
+    do_debug_=false;
     do_norm_=false;
     do_ratio_=false;
     do_ratio_line_=false;
@@ -390,10 +391,10 @@ namespace ic{
       stack->Write();
     
       //SETUP THE CANVAS
-      TCanvas *c1=new TCanvas(shapes_[iShape].name().c_str(),shapes_[iShape].name().c_str());
-      c1->cd();
-	TPad* upper = nullptr;
-	TPad* lower = nullptr;
+      TCanvas c1(shapes_[iShape].name().c_str(),shapes_[iShape].name().c_str());
+      c1.cd();
+      TPad* upper = nullptr;
+      TPad* lower = nullptr;
       if(do_ratio_){
 	  upper = new TPad("upper","pad",0, 0.3 ,1 ,1);
 	  lower = new TPad("lower","pad",0, 0   ,1 ,0.3);
@@ -431,7 +432,7 @@ namespace ic{
 	  upper->cd();
 	  stack->Draw("hist");
 	  upper->Update();
-	  c1->Update();
+	  c1.Update();
 	  first=false;
 	  stack->GetYaxis()->SetLabelSize(0.06);
  	  stack->GetYaxis()->SetTitleFont(62);
@@ -465,28 +466,26 @@ namespace ic{
             stack->GetXaxis()->SetTitle(xtitle.c_str());
 	    stack->SetTitle((";"+xtitle+";"+ytitle).c_str());
 	  }
-	  c1->Update();
+	  c1.Update();
 	}
 	else stack->Draw("histsame");
       }
       std::cout<<"    Drawing Unstacked.."<<std::endl;
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
+	if(do_debug_)std::cout<<"  "<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
 	if(!(elements_[iElement].in_stack())){
 	  if(!elements_[iElement].is_data()){
 	    if(first){
 	      if(!do_ratio_) elements_[iElement].hist_ptr()->SetTitle(shapes_[iShape].histtitle().c_str());
 	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
-	      std::cout<<"scaling by: "<<shapes_[iShape].axisrangemultiplier()<<std::endl;//!!
-
 	      if(ymax>=1){
 		elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)));
 	      }
 	      else{
 		elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0,shapes_[iShape].axisrangemultiplier()*(ymax));
 	      }
-
 	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
-	      c1->Update();
+	      //c1.Update();
 	      first=false;
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetLabelSize(0.06);
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitleSize(0.095);
@@ -534,10 +533,9 @@ namespace ic{
 	      if(!do_ratio_) g->SetTitle(shapes_[iShape].histtitle().c_str());
 	      g->Draw("AP");
 	      g->Draw(elements_[iElement].drawopts().c_str());
-	      std::cout<<"scaling by: "<<shapes_[iShape].axisrangemultiplier()<<std::endl;//!!
 	      g->GetYaxis()->SetRangeUser(0.,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
 	      g->Draw(elements_[iElement].drawopts().c_str());
-	      c1->Update();
+	      c1.Update();
 	      first=false;
 	      g->GetYaxis()->SetLabelSize(0.06);
 	      g->GetYaxis()->SetTitleSize(0.095);
@@ -567,6 +565,7 @@ namespace ic{
 	  }
 	}
       }
+      if(do_debug_)std::cout<<"  Drawing legend"<<std::endl;
 
       //SETUP AND DRAW THE LEGEND
       double legleft=shapes_[iShape].legleft();
@@ -579,11 +578,14 @@ namespace ic{
       leg->SetFillStyle(0);
       leg->SetLineColor(10);
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
+	if(do_debug_)std::cout<<"  Adding legend entry for: "<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
 	leg->AddEntry(elements_[iElement].hist_ptr(),elements_[iElement].hist_ptr()->GetName(),elements_[iElement].legopts().c_str());
       }
+      if(do_debug_)std::cout<<"  All entries added"<<std::endl;
+
       leg->Draw("same");
-      c1->Update();
-      
+      c1.Update();
+      if(do_debug_)std::cout<<"  Drawing CMS Logo"<<std::endl;      
       DrawCMSLogo(upper,"CMS","preliminary",10);
 
 //       TLatex* lat=new TLatex();
@@ -602,12 +604,12 @@ namespace ic{
 
 //       lat2->DrawLatex(0.14,0.665,"#sqrt{s} = 8 TeV, L = 19.2 fb^{-1}");
 
-      c1->Update();
+      c1.Update();
 
       //DRAW RATIO PLOT
       if(do_ratio_){
-
-	c1->cd();
+	std::cout<<"  Drawing ratio plot"<<std::endl;
+	c1.cd();
 	lower->SetTopMargin(0.08);
 	lower->SetBottomMargin(0.38);
 	lower->Draw();
@@ -623,7 +625,7 @@ namespace ic{
 
 	
 	for(unsigned iElement=0;iElement<elements_.size();iElement++){
-	std::cout<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
+	  std::cout<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
 
 
 	  if(elements_[iElement].is_inrationum()){
@@ -803,7 +805,7 @@ namespace ic{
 	}
       }
       //save as PDF
-      c1->Update();
+      c1.Update();
       std::ostringstream lsave;
       std::ostringstream lsavepng;
       std::string tmpstr = file->GetName();
@@ -813,28 +815,28 @@ namespace ic{
       lsave << ".pdf" ;
       if (iShape==0) {
 	lsave << "[";
-	c1->Print(lsave.str().c_str());//open the file
+	c1.Print(lsave.str().c_str());//open the file
 	lsave.str("");//reset for adding the first plot
 	lsave << tmpstr ;
 	lsave << ".pdf" ;
       }
-      c1->Print(lsave.str().c_str());
+      c1.Print(lsave.str().c_str());
       if (iShape==shapes_.size()-1) {
 	lsave << "]";
-	c1->Print(lsave.str().c_str());//close the file
+	c1.Print(lsave.str().c_str());//close the file
       }
 
       lsave.str("");
-      lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
-      c1->Print((lsave.str()).c_str());
+      lsave << tmpstr << "_" << c1.GetName() << ".pdf" ;
+      c1.Print((lsave.str()).c_str());
       lsavepng.str("");
-      lsavepng << tmpstr << "_" << c1->GetName() << ".png" ;
-      c1->Print((lsavepng.str()).c_str());
+      lsavepng << tmpstr << "_" << c1.GetName() << ".png" ;
+      c1.Print((lsavepng.str()).c_str());
 
       //WRITE TO FILE
       writedir->cd();
-      c1->Write();
-      c1->Close();
+      c1.Write();
+      c1.Close();
     }
     writedir->Close();
 

@@ -7,7 +7,6 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
-#include "UserCode/ICHiggsTauTau/Analysis/Core/interface/Plot.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/TextElement.h"
 #include "UserCode/ICHiggsTauTau/Analysis/Core/interface/ModuleBase.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsTauTau/interface/HTTAnalysisTools.h"
@@ -62,8 +61,9 @@ namespace ic {
     CLASS_MEMBER(HTTPlot,   bool,           log_y)
     CLASS_MEMBER(HTTPlot,   bool,           draw_ratio)
     CLASS_MEMBER(HTTPlot,   bool,           norm_bins)
-    CLASS_MEMBER(HTTPlot,   std::string,    title_left)
-    CLASS_MEMBER(HTTPlot,   std::string,    title_right)
+    CLASS_MEMBER(HTTPlot,   std::string,    cms_label)
+    CLASS_MEMBER(HTTPlot,   std::string,    lumi_label)
+    CLASS_MEMBER(HTTPlot,   std::string,    cms_extra)
     CLASS_MEMBER(HTTPlot,   std::string,    background_scheme)
     CLASS_MEMBER(HTTPlot,   std::string,    signal_scheme)
     CLASS_MEMBER(HTTPlot,   std::string,    draw_signal_mass) // if "" then don't draw
@@ -83,10 +83,9 @@ namespace ic {
       HTTPlot();
       boost::program_options::options_description const& GenerateOptions(std::string const& prefix);
       void GeneratePlot(HTTAnalysis::HistValueMap hmap);
-      static void SetMCStackStyle(ic::TH1PlotElement & ele, unsigned color);
-      static void SetSignalStyle(ic::TH1PlotElement & ele, unsigned color);
-      static void SetDataStyle(ic::TH1PlotElement & ele);
-      static void SetRatioStyle(ic::RatioPlotElement & ele, unsigned color);
+      static void SetMCStackStyle(TH1* hist_ptr, unsigned color);
+      static void SetSignalStyle(TH1* hist_ptr, unsigned color);
+      static void SetDataStyle(TH1* hist_ptr);
       inline std::string plot_name() const { return plot_name_; }
       inline std::string draw_signal_mass() const { return draw_signal_mass_; }
       inline std::string draw_signal_tanb() const { return draw_signal_tanb_; }
@@ -97,8 +96,6 @@ namespace ic {
       inline double extra_pad() const { return extra_pad_; }
       inline std::string x_axis_label() const { return x_axis_label_; }
       inline std::string y_axis_label() const { return y_axis_label_; }
-      inline std::string title_left() const { return title_left_; }
-      inline std::string title_right() const { return title_right_; }
     private:
       boost::program_options::options_description config_;
       std::map<std::string, std::vector<PlotBkgComponent>> bkg_schemes_;
