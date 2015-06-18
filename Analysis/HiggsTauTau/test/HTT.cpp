@@ -82,9 +82,6 @@ int main(int argc, char* argv[]) {
     ic::UpdateJson(js_init, extra);
   }
   for (unsigned i = 0; i < flatjsons.size(); ++i) {
-  //  std::vector<std::string> json_strs;
-//    boost::split(json_strs,jsons[i],boost::is_any_of(":"));
- //   std::string const json_patch ="{\""+json_strs.at(0)+"\":{\""+json_strs.at(1)+"\":[\""+json_strs.at(2)+"\"]}}";
     Json::Value extra = ic::ExtractJsonFromFlatString(flatjsons[i]);
     std::cout << ">> Updating config with fragment:\n";
     std::cout << extra;
