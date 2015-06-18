@@ -10,6 +10,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/Utilities/interface/SimpleParamParser.h"
 #include "TH1.h"
 #include "TFile.h"
+#include "TTree.h"
 
 namespace po = boost::program_options;
 
@@ -148,15 +149,20 @@ int main(int argc, char* argv[]){
 
   std::vector<unsigned> markers = {20, 21, 22, 23, 24, 25, 26};
   auto marker_it = markers.begin();
+	int ntrees = 0;
+	int n_bins = 0;
+	double x_low = 0;
+	double x_up = 0;
   for (auto p : plots) {
     if (marker_it == markers.end()) marker_it = markers.begin();
     // title(0):label(1):file(2):folder(3):plot(4):lumi(5):style(6):colour(7)
     // e.g. embedded:PF Embedded:Embedded_mt_2012.root:inclusive_os_sel:-1.0:0:4
     vector<string> split;
     boost::split(split, p, boost::is_any_of(":"));
-    if (split.size() != 8) {
+    if (!(split.size() == 8 || split.size()==11)) {
       cout << "Plot descriptor << " << p << " not recognised..." << endl;
     }
+		if(split.size() == 8){
     std::cout << "----PLOT----" << std::endl;
     std::cout << boost::format(param_fmt) % "title" % split[0];
     std::cout << boost::format(param_fmt) % "legend" % split[1];
@@ -169,6 +175,34 @@ int main(int argc, char* argv[]){
 
     files.push_back(new TFile(split[2].c_str()));
     elements.emplace_back(split[0], files.back(), split[3], split[4], split[1]);
+		} else if (split.size() == 11){
+		if(ntrees==0){
+		n_bins = boost::lexical_cast<int>(split[8]);
+		x_low = boost::lexical_cast<double>(split[9]);
+		x_up = boost::lexical_cast<double>(split[10]);
+		}
+    std::cout << "----PLOT----" << std::endl;
+    std::cout << boost::format(param_fmt) % "title" % split[0];
+    std::cout << boost::format(param_fmt) % "legend" % split[1];
+    std::cout << boost::format(param_fmt) % "file" % split[2];
+    std::cout << boost::format(param_fmt) % "tree" % split[3];
+    std::cout << boost::format(param_fmt) % "distribution" % split[4];
+    std::cout << boost::format(param_fmt) % "n_bins" % n_bins;
+    std::cout << boost::format(param_fmt) % "xlow" % x_low;
+    std::cout << boost::format(param_fmt) % "xup" % x_up;
+    std::cout << boost::format(param_fmt) % "lumi" % split[5];
+    std::cout << boost::format(param_fmt) % "style" % split[6];
+    std::cout << boost::format(param_fmt) % "color" % split[7];
+
+		files.push_back(new TFile(split[2].c_str()));
+		files.back()->cd();
+		TTree *tree = dynamic_cast<TTree*>(gDirectory->Get(split[3].c_str()));
+		TH1F *hist1 = new TH1F(split[0].c_str(),split[0].c_str(),n_bins,x_low,x_up);
+		tree->Draw((split[4]+">>"+split[0]).c_str());
+		elements.emplace_back(split[0], hist1, split[1]);
+		}
+
+
     elements.back().hist_ptr()->Rebin(rebin);
     lumi.emplace_back(boost::lexical_cast<double>(split[5]));
     std::cout << boost::format(param_fmt) % "lumi" % lumi.back();
@@ -206,7 +240,7 @@ int main(int argc, char* argv[]){
       elements.back().set_line_color(col);
       elements.back().set_draw_fill(true);
     }
-  
+  ntrees++; 
   }
   
   marker_it = markers.begin();
@@ -265,7 +299,6 @@ int main(int argc, char* argv[]){
 
 
   compare.GeneratePlot();
-
 
   return 0;
 }
