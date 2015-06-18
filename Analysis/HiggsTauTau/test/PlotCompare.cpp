@@ -159,7 +159,8 @@ int main(int argc, char* argv[]){
     // e.g. embedded:PF Embedded:Embedded_mt_2012.root:inclusive_os_sel:-1.0:0:4
     vector<string> split;
     boost::split(split, p, boost::is_any_of(":"));
-    if (!(split.size() == 8 || split.size()==11)) {
+		std::string sel_string;
+    if (!(split.size() == 8 || split.size()==11) || split.size()==12) {
       cout << "Plot descriptor << " << p << " not recognised..." << endl;
     }
 		if(split.size() == 8){
@@ -175,7 +176,7 @@ int main(int argc, char* argv[]){
 
     files.push_back(new TFile(split[2].c_str()));
     elements.emplace_back(split[0], files.back(), split[3], split[4], split[1]);
-		} else if (split.size() == 11){
+		} else if (split.size() == 11 || split.size()==12){
 		if(ntrees==0){
 		n_bins = boost::lexical_cast<int>(split[8]);
 		x_low = boost::lexical_cast<double>(split[9]);
@@ -193,12 +194,18 @@ int main(int argc, char* argv[]){
     std::cout << boost::format(param_fmt) % "lumi" % split[5];
     std::cout << boost::format(param_fmt) % "style" % split[6];
     std::cout << boost::format(param_fmt) % "color" % split[7];
+		if(split.size()==12){
+      std::cout << boost::format(param_fmt) % "selection string" % split[11];
+  		sel_string = split[11].c_str();
+		} else sel_string = "";
+
+
 
 		files.push_back(new TFile(split[2].c_str()));
 		files.back()->cd();
 		TTree *tree = dynamic_cast<TTree*>(gDirectory->Get(split[3].c_str()));
 		TH1F *hist1 = new TH1F(split[0].c_str(),split[0].c_str(),n_bins,x_low,x_up);
-		tree->Draw((split[4]+">>"+split[0]).c_str());
+		tree->Draw((split[4]+">>"+split[0]).c_str(),sel_string.c_str());
 		elements.emplace_back(split[0], hist1, split[1]);
 		}
 
