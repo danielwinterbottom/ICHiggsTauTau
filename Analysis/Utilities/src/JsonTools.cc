@@ -49,7 +49,11 @@ Json::Value ExtractJsonFromFlatString(std::string const&str){
 		if(is_bool || is_num){
 		 jsonstr = jsonstr+split_str.at(split_str.size()-1)+std::string(split_str.size()-1,'}');
 		} else {
-		 jsonstr = jsonstr+"\""+split_str.at(split_str.size()-1)+"\""+std::string(split_str.size()-1,'}');
+		  if(strcmp(split_str.at(split_str.size()-1).c_str(),"")==0){
+		   jsonstr = jsonstr+"[]"+std::string(split_str.size()-1,'}');
+			} else {
+		   jsonstr = jsonstr+"\""+split_str.at(split_str.size()-1)+"\""+std::string(split_str.size()-1,'}');
+			 }
 		}
 
 		
