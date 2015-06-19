@@ -409,7 +409,7 @@ if release in ['72XMINIAOD']:
   )    
   process.elPFIsoValueGamma04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
     input        = electronLabel,
-    iso_type = cms.string("gamma_iso") 
+    iso_type = cms.string("photon_iso") 
   )    
   process.elPFIsoValueNeutral04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
     input        = electronLabel,
@@ -499,7 +499,7 @@ if release in ['72XMINIAOD']:
   )    
   process.muPFIsoValueGamma04PFIso = cms.EDProducer('ICMuonIsolation',
     input        = muons,
-    iso_type = cms.string("gamma_iso") 
+    iso_type = cms.string("photon_iso") 
   )    
   process.muPFIsoValueNeutral04PFIso = cms.EDProducer('ICMuonIsolation',
     input        = muons,
