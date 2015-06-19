@@ -160,7 +160,7 @@ int main(int argc, char* argv[]){
     vector<string> split;
     boost::split(split, p, boost::is_any_of(":"));
 		std::string sel_string;
-    if (!(split.size() == 8 || split.size()==11) || split.size()==12) {
+    if (!(split.size() == 8 || split.size()==11 || split.size()==12)) {
       cout << "Plot descriptor << " << p << " not recognised..." << endl;
     }
 		if(split.size() == 8){
