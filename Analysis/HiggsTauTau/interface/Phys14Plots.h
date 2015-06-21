@@ -142,8 +142,8 @@ struct TrackPlots {
     is_high_purity->Fill(float(is_hp), wt);
     if (evt) {
       if (is_hp && trk->pt() > 10. && std::abs(trk->eta()) < 1.5) {
-        std::cout << evt->run() << ":" << evt->lumi_block() << ":" << evt->event() << "\n";
-        std::cout << "pt: " << trk->pt() << " eta: " << trk->eta() << " phi: " << trk->phi() << "\n";
+        //std::cout << evt->run() << ":" << evt->lumi_block() << ":" << evt->event() << "\n";
+        //std::cout << "pt: " << trk->pt() << " eta: " << trk->eta() << " phi: " << trk->phi() << "\n";
       }
     }
   }
@@ -287,6 +287,7 @@ class Phys14Plots : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
   bool QualityTrack(Track const* trk, Vertex const* vtx);
+  std::pair<ic::Track*,ic::Vertex*> FindMatchingConversion(ic::Track const* trk, std::vector<Vertex *> vtxs, std::vector<Track *> trks);
 };
 
 }

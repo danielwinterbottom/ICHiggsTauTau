@@ -338,6 +338,12 @@ void Phys14Plots::DoRealThStudies(TreeEvent *event) {
   auto tracks = event->GetPtrVec<Track>("tracks");
   auto vertices = event->GetPtrVec<Vertex>("vertices");
   auto pfcands = event->GetPtrVec<PFCandidate>("pfCandidates");
+
+  auto convs = event->GetPtrVec<Vertex>("conversions");
+  auto conv_trks = event->GetPtrVec<Track>("conversionTracks");
+  auto pfconvs = event->GetPtrVec<Vertex>("pfConversions");
+  auto pfconv_trks = event->GetPtrVec<Track>("pfConversionTracks");
+
   std::map<std::size_t, PFCandidate const*> trk_pf_map;
   for (PFCandidate const* pf : pfcands) {
     if (pf->constituent_tracks().size() > 0)
@@ -345,7 +351,7 @@ void Phys14Plots::DoRealThStudies(TreeEvent *event) {
   }
   if (vertices.size() >= 1) {
     ic::erase_if(tracks, [&](ic::Track const* trk) {
-      return !(QualityTrack(trk, vertices[0]) && trk->pt() > 6.);
+      return !(QualityTrack(trk, vertices[0]));
     });
     for (auto gen_th : gen_th_vec) {
       // Make a copy of the gen pions ptr vec
@@ -373,6 +379,33 @@ void Phys14Plots::DoRealThStudies(TreeEvent *event) {
           if (type == PFType::gamma) {
             trk_plots_ph_matched.Fill(trk, 1.);
             trk_plots_ph_matched.FillWithPF(trk, pf_dr, 1.);
+             std::cout << "------------------------------\n";
+             std::cout << "Has track: " << trk->id() << "\t" << trk->momentum() << "\t" << trk->algorithm() << "\n";
+             //Track *gsf = nullptr;
+            if (pf->constituent_gsf_tracks().size() > 0) {
+              auto gsf_id = pf->constituent_gsf_tracks()[0];
+              std::cout << "Has gsf track with id: " << gsf_id << "\n";
+            } else {
+              std::cout << "No gsf track!\n";
+            }
+            auto conv_match = FindMatchingConversion(trk, convs, conv_trks);
+            auto pfconv_match = FindMatchingConversion(trk, pfconvs, pfconv_trks);
+            std::cout << "CONV found track:" << conv_match.first << " and vertex:" << conv_match.second << "\n";
+            if (conv_match.first) {
+              std::cout << "CONV input track: " << trk->id() << "\t" << trk->momentum() << "\t" << trk->algorithm() << "\n";
+              std::cout << "CONV match track: " << conv_match.first->id() << "\t" << conv_match.first->momentum() << "\t" << conv_match.first->algorithm() << "\n";
+            }
+            if (conv_match.second) {
+              std::cout << "CONV VTX ntracks: " << conv_match.second->tracks().size() << "\n";
+            }
+            std::cout << "PFCONV found track:" << pfconv_match.first << " and vertex:" << pfconv_match.second << "\n";
+            if (pfconv_match.first) {
+              std::cout << "PFCONV input track: " << trk->id() << "\t" << trk->momentum() << "\t" << trk->algorithm() << "\n";
+              std::cout << "PFCONV match track: " << pfconv_match.first->id() << "\t" << pfconv_match.first->momentum() << "\t" << pfconv_match.first->algorithm()  << "\n";
+            }
+            if (pfconv_match.second) {
+              std::cout << "PFCONV VTX ntracks: " << pfconv_match.second->tracks().size() << "\n";
+            }
           } else {
             trk_plots_matched.Fill(trk, 1.);
             trk_plots_matched.FillWithPF(trk, pf_dr, 1.);
@@ -454,6 +487,26 @@ bool Phys14Plots::QualityTrack(Track const* trk, Vertex const* vtx) {
          trk->pixel_hits() >= 0;
 }
 
+std::pair<ic::Track*,ic::Vertex*> Phys14Plots::FindMatchingConversion(ic::Track const* trk, std::vector<Vertex *> vtxs, std::vector<Track *> trks) {
+ std::vector<Track const*> my_trk = { trk };
+ auto trk_matches = ic::MatchByDR(my_trk, trks, 0.1, true, true);
+ if (trk_matches.size() == 0) {
+   for (unsigned iv = 0; iv < vtxs.size(); ++iv) {
+    if (ROOT::Math::VectorUtil::DeltaR(trk->vector(), (vtxs[iv]->point() - trk->ref_point())) < 0.5) {
+      return std::make_pair(nullptr, vtxs[iv]);
+    }
+   }
+   return std::make_pair(nullptr, nullptr);
+ }
+ for (unsigned iv = 0; iv < vtxs.size(); ++iv) {
+  auto vtx_trk_ids = ic::ExtractFirst(vtxs[iv]->tracks());
+  if (std::find(vtx_trk_ids.begin(), vtx_trk_ids.end(), trk_matches[0].second->id()) != vtx_trk_ids.end()) {
+    return std::make_pair(trk_matches[0].second, vtxs[iv]);
+  }
+ }
+ std::cout << "Hmm, I shouldn't have ended up here\n";
+ return std::make_pair(nullptr, nullptr);
+}
 
 int Phys14Plots::PostAnalysis() { return 0; }
 
