@@ -682,7 +682,7 @@ namespace ic {
         lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        iso_1_ = PF04IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -714,7 +714,7 @@ namespace ic {
         lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF03IsolationVal(muon, 0.5, 0);
+        iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -736,8 +736,8 @@ namespace ic {
         iso_2_ = PF04IsolationVal(muon, 0.5);
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
-        iso_2_ = PF03IsolationVal(muon, 0.5, 0);
+        iso_1_ = PF04IsolationVal(elec, 0.5, 0);
+        iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
       }
       mva_2_ = 0.0;

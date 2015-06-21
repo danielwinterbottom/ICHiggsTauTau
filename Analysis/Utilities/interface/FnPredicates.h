@@ -102,8 +102,9 @@ namespace ic {
 
 
   template<class T>
-  double PF04IsolationVal(T const* cand, double const& dbeta) {
-    double iso =  cand->dr04_pfiso_charged_all() 
+  double PF04IsolationVal(T const* cand, double const& dbeta, bool allcharged=true) {
+	  double charged_iso = allcharged ? cand->dr04_pfiso_charged_all() : cand->dr04_pfiso_charged();
+    double iso =  charged_iso
                   + std::max(cand->dr04_pfiso_neutral() + cand->dr04_pfiso_gamma() - dbeta * cand->dr04_pfiso_pu(), 0.0);
     iso = iso / cand->pt();
     return iso;
@@ -111,14 +112,14 @@ namespace ic {
   
   template<class T>
   bool PF04Isolation(T const* cand, double const& dbeta, double const& cut) {
-    double iso =  PF04IsolationVal(cand, dbeta);
+    double iso =  PF04IsolationVal(cand, dbeta,1);
     return (iso < cut);
   }
   bool PF04IsolationEBElec(Electron const* cand, double const& dbeta, double const& cut_barrel, double const& cut_endcap);
 
   template<class T>
   bool PF04IsolationEB(T const* cand, double const& dbeta, double const& cut_barrel, double const& cut_endcap) {
-    double iso =  PF04IsolationVal(cand, dbeta);
+    double iso =  PF04IsolationVal(cand, dbeta,1);
     if (fabs(cand->eta()) < 1.479) {
       return (iso < cut_barrel);
     } else {

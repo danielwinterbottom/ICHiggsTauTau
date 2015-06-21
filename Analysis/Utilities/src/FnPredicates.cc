@@ -767,7 +767,7 @@ namespace ic {
 
 
   bool PF04IsolationEBElec(Electron const* cand, double const& dbeta, double const& cut_barrel, double const& cut_endcap) {
-    double iso =  PF04IsolationVal(cand, dbeta);
+    double iso =  PF04IsolationVal(cand, dbeta,1);
     if (fabs(cand->sc_eta()) < 1.479) {
       return (iso < cut_barrel);
     } else {
