@@ -430,7 +430,6 @@ if release in ['72XMINIAOD']:
 
 
 
-
 process.icElectronProducer = producers.icElectronProducer.clone(
   branch                    = cms.string("electrons"),
   input                     = cms.InputTag("selectedElectrons"),

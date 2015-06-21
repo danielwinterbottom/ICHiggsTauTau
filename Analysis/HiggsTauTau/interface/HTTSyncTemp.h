@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_Module_HTTSync_h
-#define ICHiggsTauTau_Module_HTTSync_h
+#ifndef ICHiggsTauTau_Module_HTTSyncTemp_h
+#define ICHiggsTauTau_Module_HTTSyncTemp_h
 
 #include <string>
 #include "TTree.h"
@@ -12,23 +12,25 @@
 
 namespace ic {
 
-class HTTSync : public ModuleBase {
+class HTTSyncTemp : public ModuleBase {
  private:
   std::string output_name_;
 
   SVFitService sv_service_;
-  CLASS_MEMBER(HTTSync, bool, is_embedded)
-  CLASS_MEMBER(HTTSync, std::string, select_category)
-  CLASS_MEMBER(HTTSync, std::string, met_label)
-  CLASS_MEMBER(HTTSync, int, select_sel_mode)
-  CLASS_MEMBER(HTTSync, double, jet_eta)
-  CLASS_MEMBER(HTTSync, std::string, ditau_label)
+  CLASS_MEMBER(HTTSyncTemp, bool, is_embedded)
+  CLASS_MEMBER(HTTSyncTemp, std::string, select_category)
+  CLASS_MEMBER(HTTSyncTemp, std::string, met_label)
+  CLASS_MEMBER(HTTSyncTemp, int, select_sel_mode)
+  CLASS_MEMBER(HTTSyncTemp, double, jet_eta)
+  CLASS_MEMBER(HTTSyncTemp, std::string, jet_label)
+  CLASS_MEMBER(HTTSyncTemp, std::string, tau_label)
+  CLASS_MEMBER(HTTSyncTemp, std::string, ditau_label)
 
   TFile *lOFile;
   TTree *lOTree;
 
   // Sync Tree Variables
-  // Definitions in HTTSync.cc
+  // Definitions in HTTSyncTemp.cc
   int   lRun;
   int   lLumi;
   int   lEvt;
@@ -147,9 +149,9 @@ class HTTSync : public ModuleBase {
   ic::channel channel_;
 
  public:
-  HTTSync(std::string const &name, std::string const &output_name,
+  HTTSyncTemp(std::string const &name, std::string const &output_name,
           ic::channel channel);
-  virtual ~HTTSync();
+  virtual ~HTTSyncTemp();
 
   virtual int PreAnalysis();
   virtual int Execute(TreeEvent *event);

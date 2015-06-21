@@ -22,24 +22,40 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, ic::era, era)
   CLASS_MEMBER(HTTCategories, ic::strategy, strategy)
   CLASS_MEMBER(HTTCategories, bool, write_tree)
-  CLASS_MEMBER(HTTCategories, bool, write_plots)
-  CLASS_MEMBER(HTTCategories, bool, experimental)
   CLASS_MEMBER(HTTCategories, bool, bjet_regression)
+  CLASS_MEMBER(HTTCategories, bool, make_sync_ntuple)
+  CLASS_MEMBER(HTTCategories, bool, is_embedded)
+  CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
-
-  std::map<std::string, bool> categories_;
-  std::map<std::string, bool> selections_;
-  std::map<std::string, MassPlots*> massplots_;
-  std::map<std::string, double> yields_;
-  std::map<std::string, CoreControlPlots*> controlplots_;
-  DynamicHistoSet * misc_plots_;
-  Dynamic2DHistoSet * misc_2dplots_;
-  
+ 
   TTree *outtree_;
+  TTree *synctree_;
+  TFile *lOFile;
+
+  struct branch_var {
+      double var_double;  
+      float var_float;
+      branch_var& operator=(double doub){
+          var_double = doub;
+          var_float = static_cast<float>(doub);
+          return *this;
+      }
+      branch_var& operator*(double sf){
+          var_double*=sf;
+          var_float*=sf;
+          return *this;
+      }
+  };
 
   // Event Properties
-  double wt_;
+  branch_var wt_;
+  int run_;
+  int event_;
+  int lumi_;
+  float rho_;
+  float mc_weight_;
+  float pu_weight_;
   double wt_ggh_pt_up_;
   double wt_ggh_pt_down_;
   double wt_tau_fake_up_;
@@ -48,51 +64,102 @@ class HTTCategories : public ModuleBase {
   double wt_tquark_down_;
   double wt_tau_id_up_;
   double wt_tau_id_down_;
+  float trigweight_1_;
+  float trigweight_2_;
+  float idweight_1_;
+  float idweight_2_;
+  float isoweight_1_;
+  float isoweight_2_;
+  float effweight_;
+  float fakeweight_;
+  float embeddedweight_;
+  float signalweight_;
   bool os_;
+  bool dilepton_veto_;
+  bool extraelec_veto_;
+  bool extramuon_veto_;
   unsigned n_vtx_;
-  double m_sv_;
-  double m_vis_;
-  double pt_h_;
-  double pt_tt_;
-  double mt_1_;
+  unsigned n_pu_;
+  branch_var m_sv_;
+  branch_var m_vis_;
+  branch_var pt_h_;
+  float eta_h_;
+  float phi_h_;
+  branch_var pt_tt_;
+  branch_var mt_1_;
+  float mt_2_;
   double mt_ll_;
-  double pzeta_;
-  double pzetavis_;
-  double pzetamiss_;
+  branch_var pzeta_;
+  branch_var pzetavis_;
+  branch_var pzetamiss_;
   double emu_dphi_;
   double emu_csv_;
   double emu_dxy_1_;
   double emu_dxy_2_;
-  double pt_1_;
-  double pt_2_;
-  double eta_1_;
-  double eta_2_;
-  double iso_1_;
-  double iso_2_;
+  float d0_1_;
+  float d0_2_;
+  float dz_1_;
+  float dz_2_;
+  branch_var pt_1_;
+  branch_var pt_2_;
+  branch_var eta_1_;
+  branch_var eta_2_;
+  float phi_1_;
+  float phi_2_;
+  int q_1_;
+  int q_2_;
+  float iso_1_;
+  float iso_2_;
   double z_2_;
-  double m_2_;
-  double met_;
-  double met_phi_;
+  float m_1_;
+  branch_var m_2_;
+  float mva_1_;
+  float mva_2_;
+  branch_var met_;
+  branch_var met_phi_;
+  float pfmet_;
+  float pfmet_phi_;
+  float metCov00_;
+  float metCov01_;
+  float metCov10_;
+  float metCov11_;
+  float pfmetCov00_;
+  float pfmetCov01_;
+  float pfmetCov10_;
+  float pfmetCov11_;
 
-  int    tau_decay_mode_;
+  int tau_decay_mode_;
 
   unsigned n_jets_;
   unsigned n_lowpt_jets_;
   unsigned n_bjets_;
   unsigned n_loose_bjets_;
   unsigned n_jetsingap_; // Defined if n_jets >= 2
-  double jpt_1_;     // Defined if n_jets >= 1
-  double jpt_2_;     // Defined if n_jets >= 2
-  double jeta_1_;    // Defined if n_jets >= 1
-  double jeta_2_;    // Defined if n_jets >= 2
-  double bpt_1_;     // Defined if n_bjets >= 1
-  double beta_1_;    // Defined if n_bjets >= 1
+  branch_var jpt_1_;     // Defined if n_jets >= 1
+  branch_var jpt_2_;     // Defined if n_jets >= 2
+  branch_var jeta_1_;    // Defined if n_jets >= 1
+  branch_var jeta_2_;    // Defined if n_jets >= 2
+  float jphi_1_;    // Defined if n_jets >= 1
+  float jphi_2_;    // Defined if n_jets >= 2
+  float jptraw_1_; 
+  float jptraw_2_; 
+  float jptunc_1_; 
+  float jptunc_2_; 
+  float jmva_1_; 
+  float jmva_2_; 
+  float jlrm_1_; 
+  float jlrm_2_; 
+  float jctm_1_; 
+  float jctm_2_; 
+  branch_var bpt_1_;     // Defined if n_bjets >= 1
+  branch_var beta_1_;    // Defined if n_bjets >= 1
+  float bphi_1_;    // Defined if n_bjets >= 1
   double bcsv_1_; 
   double jet_csvpt_1_;     // Defined if n_jets >= 1
   double jet_csvEt_1_;     // Defined if n_jets >= 1
   double jet_csvpt_2_;     // Defined if n_jets >= 2
-	double jet_csvpt_bb_;
-	double jet_csv_dR_;
+  double jet_csvpt_bb_;
+  double jet_csv_dR_;
   double jet_csveta_1_;    // Defined if n_jets >= 1
   double jet_csveta_2_;    // Defined if n_jets >= 2
   double jet_csvbcsv_1_; 
@@ -100,7 +167,7 @@ class HTTCategories : public ModuleBase {
 
   int j1_dm_;
 
-  double mjj_;       // Defined if n_jets >= 2
+  branch_var mjj_;       // Defined if n_jets >= 2
   double mjj_h_;       // Defined if n_jets >= 2
   double mbb_h_;       // Defined if n_jets >= 2
   double mjj_tt_;       // Defined if n_jets >= 2
@@ -125,7 +192,7 @@ class HTTCategories : public ModuleBase {
   double m_bb_chi2_;   //Defined if n_jets >= 2
   double pull_balance_bb_; //Defined if n_jets >= 2
   int convergence_bb_; //Defined if n_jets >= 2
-  double jdeta_;     // Defined if n_jets >= 2
+  branch_var jdeta_;     // Defined if n_jets >= 2
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2
@@ -139,13 +206,9 @@ class HTTCategories : public ModuleBase {
   unsigned n_jets_csv_;
   unsigned n_bjets_csv_;
 
-  double l1_met_;
-  double calo_nohf_met_;
-
   double em_gf_mva_;
   double em_vbf_mva_;
 
-    // Other VBF MVA variables?
 
  public:
   HTTCategories(std::string const& name);
@@ -156,20 +219,9 @@ class HTTCategories : public ModuleBase {
   virtual int PostAnalysis();
   virtual void PrintInfo();
 
-  bool PassesCategory(std::string const& category) const;
 
-  void InitSelection(std::string const& selection);
-  void InitCategory(std::string const& category);
-  void InitMassPlots(std::string const& category);
-  void FillMassPlots(std::string const& category);
-  void FillYields(std::string const& category);
-  void InitCoreControlPlots(std::string const& category);
-  void FillCoreControlPlots(std::string const& category);
 
-  void SetPassCategory(std::string const& category);
-  void SetPassSelection(std::string const& selection);
 
-  void Reset();
 
 
 };

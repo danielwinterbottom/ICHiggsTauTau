@@ -105,6 +105,23 @@ namespace ic {
     double l1met_;
     double metnomuons_;
 
+    double genjet1_pt_;
+    double genjet1_eta_;
+    double genjet1_phi_;
+    double genjet1_E_;
+    double genjet2_pt_;
+    double genjet2_eta_;
+    double genjet2_phi_;
+    double genjet2_E_;
+    double genjet3_pt_;
+    double genjet3_eta_;
+    double genjet3_phi_;
+    double genjet3_E_;
+    double digenjet_M_;
+    double digenjet_deta_;
+    double digenjet_dphi_;
+
+
     int nvetomuons_;
     int nselmuons_;
     int nvetoelectrons_;

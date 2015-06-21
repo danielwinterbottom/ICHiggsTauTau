@@ -28,7 +28,7 @@ CHANNELS      = [ ] ## will be assigned from 2011 or 2012
 
 SCALES = ['0', '1', '2']
 
-PRODUCTION_2012 = 'Dec30'
+PRODUCTION_2012 = 'June6'
 PRODUCTION_2011 = 'Sept11'
 PRODUCTION = ''
 

@@ -1,7 +1,7 @@
 {
   "job": {
-    "filelist":     "filelists/May9_validation.dat",
-    "file_prefix":  "/afs/cern.ch/work/a/adewit/private/CMSSW_7_2_0/src/UserCode/ICHiggsTauTau/test/",
+    "filelist":     "filelists/June6_MC_53X_GluGluToHToTauTau_M-125_em_skim.dat",
+    "file_prefix":  "root://eoscms.cern.ch//eos/cms/store/user/rlane/httskims/June6/MC_53X/",
     "max_events":   -1,
     "timings":      true,
     "channels":     ["em"],//"mt","tt","em"],
@@ -13,26 +13,25 @@
  //     "em":   ["scale_e_lo", "scale_e_hi"]
     },
     "output_folder": "",
-    "output_postfix":"",
-    "sample": "VBF_HToTauTau_M-125"
+    "output_postfix":""
   },
   "sequence": {
     "mc"            : "summer12_53X",
-    "era"           : "data_2015",
-    "strategy"      : "phys14",
+    "era"           : "data_2012_rereco",
+    "strategy"      : "paper2013",
     "is_data"       : false,
     "is_embedded"   : false,
+    "special_mode"  : 0,
     "make_sync_ntuple" : true,
     "moriond_tau_scale" : true,
-    "recoil_corrector" : false,
     "electrons"     : "electrons",
-    "muons"         : "muons",
+    "muons"         : "muonsPFlow",
     "taus"          : "taus",
-    "jets"          : "ak4PFJetsCHS",
+    "jets"          : "pfJetsPFlow",
     "met"           : "pfMVAMet",
     "genTaus"       : "genParticles",
     "genJets"       : "genJets",
-    "output_folder" : "./output/",
+    "output_folder" : "./output/NewCode_paper2013",
     "output_name"   : "GluGluToHToTauTau_M-125",
     "svfit_folder"  : "svfit",
     "svfit_override" : "",
@@ -45,17 +44,20 @@
     "mva_met_mode"  : 1,
     "faked_tau_selector" : 0,
     "hadronic_tau_selector" : 0,
+    "ztautau_mode"  : 0,
+    "vh_filter_mode" : 0,
     "run_gen_info"  : false,
-    "do_pu_wt"      : false,
+    "do_pu_wt"      : true,
     "data_pu_file"  : "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root",
     "mc_pu_file"    : "input/pileup/MC_Summer12_PU_S10-600bins.root",
-    "run_trg_filter": false,
+    "run_trg_filter": true,
     "baseline": {
       "tau_scale_mode"    : false,
       "jes_mode"          : 0,
       "tau_es_shift"      : 1.0,
       "elec_es_shift"     : 1.0,
-      "mass_shift"        : 1.0,
+      "mass_shift"        : 1.01,
+      "mass_scale_mode"   : false,
       "do_em_extras"      : true,
       "di_elec_veto"      : false,
       "extra_elec_veto"   : false,
@@ -69,7 +71,8 @@
       "tau_anti_elec"     : "",
       "do_tau_anti_muon"  : false,
       "tau_anti_muon"     : "",
-      "elec_id"           : "CutBased" // "MVA:Loose", "MVA:Tight", "CutBased"
+      "elec_id"           : "MVA:Tight" // "MVA:Loose", "MVA:Tight", "CutBased"
+      //"pair_dr"           : 0.5
     }
   },
   "channels": {
@@ -82,17 +85,20 @@
         "max_extra_elecs": 1,
         "max_extra_muons": 0,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true
-          }
+        "do_tau_anti_elec":true,
+        "min_taus"       : 1
+      }
     },
  "tt": {
       "baseline": {
+        "pair_dr": 0.5,
         "max_extra_elecs": 0,
         "max_extra_muons": 0,
         "extra_elec_veto" : true,
         "extra_muon_veto" : true,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true
+        "do_tau_anti_elec":true,
+        "min_taus"       : 2
       }
     },
 
@@ -105,7 +111,8 @@
         "max_extra_elecs": 0,
         "max_extra_muons": 1,
         "do_tau_anti_muon": true,
-        "do_tau_anti_elec":true
+        "do_tau_anti_elec":true,
+        "min_taus"       : 1
       }
     },
     "em": {
@@ -147,6 +154,21 @@
         "elec_es_shift": 1.01
       }
     },
+    "scale_m_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN",
+        "mass_scale_mode": true,
+        "mass_shift": 1.0
+      }
+    },
+    "scale_m_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP",
+        "mass_scale_mode" : true,
+        "mass_shift": 1.03
+      }
+    },
+
 //    "scale_j_lo": {
 //      "baseline": {
 //        "addit_output_folder" : "JES_DOWN",

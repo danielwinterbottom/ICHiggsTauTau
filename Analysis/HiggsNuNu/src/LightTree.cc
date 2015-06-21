@@ -134,6 +134,21 @@ namespace ic {
     tau1_phi_=-1;
     lep_mt_=-1;
     n_vertices_=-1;
+    genjet1_pt_ = -1;
+    genjet1_eta_ = -10000;
+    genjet1_phi_ = -1;
+    genjet1_E_ = -1;
+    genjet2_pt_ = -1;
+    genjet2_eta_ = -10000;
+    genjet2_phi_ = -1;
+    genjet2_E_ = -1;
+    genjet3_pt_ = -1;
+    genjet3_eta_ = -10000;
+    genjet3_phi_ = -1;
+    genjet3_E_ = -1;
+    digenjet_M_=-1;
+    digenjet_deta_=-1;
+    digenjet_dphi_=-1;
   }
 
   LightTree::~LightTree(){
@@ -260,6 +275,23 @@ namespace ic {
     outputTree_->Branch("tau1_phi",&tau1_phi_);
     outputTree_->Branch("lep_mt",&lep_mt_);
     outputTree_->Branch("n_vertices",&n_vertices_);
+    outputTree_->Branch("genjet1_pt",&genjet1_pt_);
+    outputTree_->Branch("genjet1_eta",&genjet1_eta_);
+    outputTree_->Branch("genjet1_phi",&genjet1_phi_);
+    outputTree_->Branch("genjet1_E",&genjet1_E_);
+    outputTree_->Branch("genjet2_pt",&genjet2_pt_);
+    outputTree_->Branch("genjet2_eta",&genjet2_eta_);
+    outputTree_->Branch("genjet2_phi",&genjet2_phi_);
+    outputTree_->Branch("genjet2_E",&genjet2_E_);
+    outputTree_->Branch("genjet3_pt",&genjet3_pt_);
+    outputTree_->Branch("genjet3_eta",&genjet3_eta_);
+    outputTree_->Branch("genjet3_phi",&genjet3_phi_);
+    outputTree_->Branch("genjet3_E",&genjet3_E_);
+    outputTree_->Branch("digenjet_M",&digenjet_M_);
+    outputTree_->Branch("digenjet_deta",&digenjet_deta_);
+    outputTree_->Branch("digenjet_dphi",&digenjet_dphi_);
+
+
 
     return 0;
   }
@@ -342,6 +374,7 @@ namespace ic {
     std::vector<Electron*> vetoelectrons=event->GetPtrVec<Electron>("vetoElectrons");
     std::vector<Electron*> selelectrons=event->GetPtrVec<Electron>("selElectrons");
     std::vector<Tau*> taus=event->GetPtrVec<Tau>("taus");
+    std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");
     //std::vector<Vertex*> & vertices = event->GetPtrVec<Vertex>("vertices");
 
 
@@ -544,6 +577,78 @@ namespace ic {
       dijet_deta_ = fabs(jet1->eta() - jet2->eta());
       dijet_sumeta_ = jet1->eta() + jet2->eta();
       dijet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,jet2vec));
+
+      //Find highest 3 pt gen jets
+      genjet1_pt_=-1,genjet2_pt_=-1,genjet3_pt_=-1;
+      int igenjet1=-1,igenjet2=-1,igenjet3=-1;
+      //std::cout<<"Listing gen jet pts:"<<std::endl;
+      for(unsigned iGen=0;iGen<genvec.size();iGen++){
+	double genpt=genvec[iGen]->pt();
+	//std::cout<<"  "<<genpt<<std::endl;
+	if(genpt>genjet3_pt_){
+	  //std::cout<<"  which is higher then the existing genjet3_pt"<<genjet3_pt_<<std::endl;
+	  igenjet3=iGen;
+	  genjet3_pt_=genpt;
+	  if(genjet3_pt_>genjet2_pt_){
+	    //std::cout<<"  and the existing genjet2_pt"<<genjet2_pt_<<std::endl;
+	    double tmpgenpt=genjet2_pt_;
+	    int tmpigenjet=igenjet2;
+	    genjet2_pt_=genjet3_pt_;
+	    igenjet2=igenjet3;
+	    genjet3_pt_=tmpgenpt;
+	    igenjet3=tmpigenjet;
+	    if(genjet2_pt_>genjet1_pt_){
+	      //std::cout<<"  and the existing genjet1_pt"<<genjet1_pt_<<std::endl;
+	      tmpgenpt=genjet1_pt_;
+	      tmpigenjet=igenjet1;
+	      genjet1_pt_=genjet2_pt_;
+	      igenjet1=igenjet2;
+	      genjet2_pt_=tmpgenpt;
+	      igenjet2=tmpigenjet;
+	    }
+	  }
+	}
+      }
+      if(igenjet1!=-1){
+	genjet1_eta_=genvec[igenjet1]->eta();
+	genjet1_phi_=genvec[igenjet1]->phi();
+	genjet1_E_=genvec[igenjet1]->energy();
+      }
+      else{
+	genjet1_eta_=-10000;
+	genjet1_phi_=-1;
+	genjet1_E_=-1;
+      }
+      if(igenjet2!=-1){
+	genjet2_eta_=genvec[igenjet2]->eta();
+	genjet2_phi_=genvec[igenjet2]->phi();
+	genjet2_E_=genvec[igenjet2]->energy();
+	ROOT::Math::PtEtaPhiEVector genjet1vec = genvec[igenjet1]->vector();
+	ROOT::Math::PtEtaPhiEVector genjet2vec = genvec[igenjet2]->vector();
+	ROOT::Math::PtEtaPhiEVector digenjetvec = genjet1vec+genjet2vec;
+	digenjet_M_=digenjetvec.M();
+	digenjet_deta_ = fabs(genvec[igenjet1]->eta() - genvec[igenjet2]->eta());
+	digenjet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(genjet1vec,genjet2vec));
+      }
+      else{
+	genjet1_eta_=-10000;
+	genjet1_phi_=-1;
+	genjet1_E_=-1;
+	digenjet_M_=-1;
+	digenjet_deta_=-1;
+	digenjet_dphi_=-1;
+      }
+      if(igenjet3!=-1){
+	genjet3_eta_=genvec[igenjet3]->eta();
+	genjet3_phi_=genvec[igenjet3]->phi();
+	genjet3_E_=genvec[igenjet3]->energy();
+      }
+      else{
+	genjet1_eta_=-10000;
+	genjet1_phi_=-1;
+	genjet1_E_=-1;
+      }
+
       met_ = met->pt();
       met_x_ = metvec.Px();
       met_y_ = metvec.Py();
