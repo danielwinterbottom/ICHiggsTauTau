@@ -77,8 +77,8 @@ namespace ic {
       outtree_->Branch("iso_2",             &iso_2_);
       outtree_->Branch("z_2",               &z_2_);
       outtree_->Branch("m_2",               &m_2_.var_double);
-      outtree_->Branch("met",               &met_.var_double);
-      outtree_->Branch("met_phi",           &met_phi_.var_double);
+      outtree_->Branch("met",               &mvamet_.var_double);
+      outtree_->Branch("met_phi",           &mvamet_phi_.var_double);
       outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
@@ -349,14 +349,14 @@ namespace ic {
       synctree_->Branch("metcov11", &pfmetCov11_, "pfmetCov11/F");
 
       // MVA MET
-      synctree_->Branch("mvamet", &met_.var_float, "met/F");
+      synctree_->Branch("mvamet", &mvamet_.var_float, "mvamet/F");
       // MVA MET phi
-      synctree_->Branch("mvametphi", &met_phi_.var_float, "met_phi/F");
+      synctree_->Branch("mvametphi", &mvamet_phi_.var_float, "mvamet_phi/F");
       // Elements of the MVA MET covariance matrix
-      synctree_->Branch("mvacov00", &metCov00_, "metCov00/F");
-      synctree_->Branch("mvacov01", &metCov01_, "metCov01/F");
-      synctree_->Branch("mvacov10", &metCov10_, "metCov10/F");
-      synctree_->Branch("mvacov11", &metCov11_, "metCov11/F");
+      synctree_->Branch("mvacov00", &mvametCov00_, "mvametCov00/F");
+      synctree_->Branch("mvacov01", &mvametCov01_, "mvametCov01/F");
+      synctree_->Branch("mvacov10", &mvametCov10_, "mvametCov10/F");
+      synctree_->Branch("mvacov11", &mvametCov11_, "mvametCov11/F");
 
       // pt of the di-tau + MET system
       synctree_->Branch("pt_tt", &pt_tt_.var_float, "pt_tt/F");
@@ -516,7 +516,7 @@ namespace ic {
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
-    Met const* met = event->GetPtr<Met>(met_label_);
+    Met const* mets = event->GetPtr<Met>(met_label_);
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> corrected_jets;
     if(bjet_regression_) corrected_jets = event->GetPtrVec<PFJet>(jets_label_+"Corrected");
@@ -602,7 +602,7 @@ namespace ic {
       phi_h_ = -9999;
     }
 
-    pt_tt_ = (ditau->vector() + met->vector()).pt();
+    pt_tt_ = (ditau->vector() + mets->vector()).pt();
     m_vis_ = ditau->M();
    
 
@@ -620,12 +620,12 @@ namespace ic {
       m_vis_ = m_vis_* event->Get<double>("mass_scale");
     }
 
-    mt_1_ = MT(lep1, met);
-    mt_2_ = MT(lep2, met);
-    mt_ll_ = MT(ditau, met);
-    pzeta_ = PZeta(ditau, met, 0.85);
+    mt_1_ = MT(lep1, mets);
+    mt_2_ = MT(lep2, mets);
+    mt_ll_ = MT(ditau, mets);
+    pzeta_ = PZeta(ditau, mets, 0.85);
     pzetavis_ = PZetaVis(ditau);
-    pzetamiss_ = PZeta(ditau, met, 0.0);
+    pzetamiss_ = PZeta(ditau, mets, 0.0);
     emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
 
     pt_1_ = lep1->pt();
@@ -638,13 +638,13 @@ namespace ic {
     m_2_ = lep2->M();
     q_1_ = lep1->charge();
     q_2_ = lep2->charge();
-    met_ = met->pt();
-    met_phi_ = met->phi();
+    mvamet_ = mets->pt();
+    mvamet_phi_ = mets->phi();
 
-    metCov00_ = met->xx_sig();
-    metCov10_ = met->yx_sig();
-    metCov01_ = met->xy_sig();
-    metCov11_ = met->yy_sig();
+    mvametCov00_ = mets->xx_sig();
+    mvametCov10_ = mets->yx_sig();
+    mvametCov01_ = mets->xy_sig();
+    mvametCov11_ = mets->yy_sig();
     
     Met const* pfmet = NULL;
     //slightly different pfMET format for new ntuples
@@ -682,7 +682,7 @@ namespace ic {
         lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF04IsolationVal(elec, 0.5, 0);
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -714,7 +714,7 @@ namespace ic {
         lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF04IsolationVal(muon, 0.5, 0);
+        iso_1_ = PF03IsolationVal(muon, 0.5, 0);
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -736,15 +736,23 @@ namespace ic {
         iso_2_ = PF04IsolationVal(muon, 0.5);
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF04IsolationVal(elec, 0.5, 0);
-        iso_2_ = PF04IsolationVal(muon, 0.5, 0);
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        iso_2_ = PF03IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
       }
       mva_2_ = 0.0;
-      emu_dxy_1_ = -1. * elec->dxy_vertex();
+      if(strategy_ == strategy::paper2013){
+        emu_dxy_1_ = -1. * elec->dxy_vertex();
+        emu_dxy_2_ = -1. * muon->dxy_vertex();
+      } else {
+        emu_dxy_1_ = elec->dxy_vertex();
+        emu_dxy_2_ = muon->dxy_vertex();
+      }
       d0_1_ = static_cast<float>(emu_dxy_1_);
-      emu_dxy_2_ = -1. * muon->dxy_vertex();
+      dz_1_ = elec->dz_vertex();
+      emu_dxy_2_ = muon->dxy_vertex();
       d0_2_ = static_cast<float>(emu_dxy_2_);
+      dz_2_ = muon->dz_vertex();
     }
     if (channel_ == channel::tt) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
@@ -918,8 +926,8 @@ namespace ic {
       jet_csv_deta_ = fabs(jets_csv[0]->eta() - jets_csv[1]->eta());
       jet_csv_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(jets_csv[0]->vector(), jets_csv[1]->vector()));
       jet_csv_dtheta_ = std::fabs((jets_csv[0]->vector().theta() -  jets_csv[1]->vector().theta()));
-      mjj_tt_= (jets_csv[0]->vector() + jets_csv[1]->vector() + ditau->vector() + met->vector()).M();
-      if(bjet_regression_) mjj_tt_= (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector() + ditau->vector() + met->vector()).M();
+      mjj_tt_= (jets_csv[0]->vector() + jets_csv[1]->vector() + ditau->vector() + mets->vector()).M();
+      if(bjet_regression_) mjj_tt_= (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector() + ditau->vector() + mets->vector()).M();
       if (event->Exists("svfitHiggs")) {
         mjj_h_= (jets_csv[0]->vector() + jets_csv[1]->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
         if(bjet_regression_) mjj_h_= (jet_csv_pairs[0].second->vector() + jet_csv_pairs[1].second->vector() + event->Get<Candidate>("svfitHiggs").vector() ).M();
@@ -941,16 +949,16 @@ namespace ic {
         if(bjet_regression_) b2 = TLorentzVector(jet_csv_pairs[1].second->vector().px(),jet_csv_pairs[1].second->vector().py(),jet_csv_pairs[1].second->vector().pz(),jet_csv_pairs[1].second->vector().E());
         TLorentzVector tau1vis      = TLorentzVector(lep1->vector().px(),lep1->vector().py(),lep1->vector().pz(), lep1->vector().E());
         TLorentzVector tau2vis      = TLorentzVector(lep2->vector().px(),lep2->vector().py(),lep2->vector().pz(), lep2->vector().E());
-        TLorentzVector ptmiss  = TLorentzVector(met->vector().px(),met->vector().py(),0,met->vector().pt());
+        TLorentzVector ptmiss  = TLorentzVector(mets->vector().px(),mets->vector().py(),0,mets->vector().pt());
         TLorentzVector higgs;
         if (event->Exists("svfitHiggs")) {
           higgs = TLorentzVector(event->Get<Candidate>("svfitHiggs").vector().px(),event->Get<Candidate>("svfitHiggs").vector().py(),event->Get<Candidate>("svfitHiggs").vector().pz(),event->Get<Candidate>("svfitHiggs").vector().E());
         }
         TMatrixD metcov(2,2);
-        metcov(0,0)=met->xx_sig();
-        metcov(1,0)=met->yx_sig();
-        metcov(0,1)=met->xy_sig();
-        metcov(1,1)=met->yy_sig();
+        metcov(0,0)=mets->xx_sig();
+        metcov(1,0)=mets->yx_sig();
+        metcov(0,1)=mets->xy_sig();
+        metcov(1,1)=mets->yy_sig();
             
         //Default version of fitting using visible products plus met
         HHKinFitMaster kinFits = HHKinFitMaster(&b1,&b2,&tau1vis,&tau2vis);

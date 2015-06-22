@@ -110,6 +110,11 @@ namespace ic {
 
     for (unsigned i = 0; i < elecs.size(); ++i) {
       std::cout << "Elec " << i <<  std::endl;
+      std::cout << "pt"   << elecs[i]->pt()<<std::endl;
+      std::cout << "eta " <<elecs[i]->eta()<<std::endl;
+      std::cout << "phi "<< elecs[i]->phi()<<std::endl;
+      std::cout << "dxyVertex "<<elecs[i]->dxy_vertex()<<std::endl;
+      std::cout<< "dzVertex "<<elecs[i]->dz_vertex() <<std::endl;
       elecs[i]->Print();
       double iso =  (elecs[i]->dr04_pfiso_charged_all() 
       + std::max(elecs[i]->dr04_pfiso_neutral() + elecs[i]->dr04_pfiso_gamma() - 0.5 * elecs[i]->dr04_pfiso_pu(), 0.0)) / elecs[i]->pt();
