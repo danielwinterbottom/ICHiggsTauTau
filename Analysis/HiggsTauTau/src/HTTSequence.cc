@@ -845,8 +845,8 @@ void HTTSequence::BuildETPairs() {
   }
  }
   
-   
-
+//Isolation applied at plotting time for run 2 analysis   
+if( strategy_type != strategy::phys14) {
  if (js["baseline"]["lep_iso"].asBool()&&special_mode !=25 &&special_mode != 23 &&strategy_type!=strategy::phys14) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
@@ -860,7 +860,6 @@ void HTTSequence::BuildETPairs() {
   }
 
 
-if(!((js["make_sync_ntuple"]).asBool())) {
   if (js["baseline"]["lep_iso"].asBool() &&strategy_type==strategy::phys14) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
@@ -931,6 +930,8 @@ void HTTSequence::BuildMTPairs() {
    muon_iso_max = 0.1;
  }
 
+//Isolation applied at plotting time for run 2 analysis   
+if(strategy_type != strategy::phys14) {
   if (js["baseline"]["lep_iso"].asBool()&&special_mode !=25 &&special_mode != 22 &&special_mode != 21 &&strategy_type!=strategy::phys14) {
     BuildModule(SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
@@ -941,7 +942,6 @@ void HTTSequence::BuildMTPairs() {
 
 
 
-if(!((js["make_sync_ntuple"]).asBool())) {
   if (js["baseline"]["lep_iso"].asBool()&&strategy_type==strategy::phys14) {
     BuildModule(SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
@@ -1026,6 +1026,8 @@ void HTTSequence::BuildEMPairs() {
  }
    
 
+//Isolation applied at plotting time for run 2 analysis   
+if(strategy_type != strategy::phys14 ) {
  if (js["baseline"]["lep_iso"].asBool()&&special_mode!=22&&special_mode!=20&&special_mode !=25 &&special_mode != 23 &&strategy_type==strategy::paper2013) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
@@ -1040,7 +1042,6 @@ void HTTSequence::BuildEMPairs() {
         }));
   }
 
-if(!((js["make_sync_ntuple"]).asBool())) {
   if (js["baseline"]["lep_iso"].asBool() &&strategy_type==strategy::phys14) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
@@ -1094,6 +1095,8 @@ if(!((js["make_sync_ntuple"]).asBool())) {
  }
 
 
+//Isolation applied at plotting time for run 2 analysis   
+if(strategy_type != strategy::phys14) {
   if (js["baseline"]["lep_iso"].asBool()&&special_mode !=25 &&special_mode != 22 &&special_mode != 21 &&strategy_type!=strategy::phys14) {
     BuildModule(SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
@@ -1107,7 +1110,6 @@ if(!((js["make_sync_ntuple"]).asBool())) {
   }
 
 
-if(!((js["make_sync_ntuple"]).asBool())) {
   if (js["baseline"]["lep_iso"].asBool()&&strategy_type==strategy::phys14) {
     BuildModule(SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
@@ -1167,7 +1169,8 @@ void HTTSequence::BuildTauSelection(){
 
       }));
 
-if(!( (js["make_sync_ntuple"]).asBool() && strategy_type==strategy::phys14) ) {
+//Isolation and anti-muon/anti-electron discriminators applied at plotting time for run 2 analysis   
+if(strategy_type!=strategy::phys14) {
   if (base["lep_iso"].asBool()) {
   if(strategy_type!= strategy::phys14 && strategy_type!=strategy::paper2013){
     BuildModule(SimpleFilter<Tau>("TauIsoFilter")
@@ -1217,6 +1220,8 @@ BuildModule(tauAntiElecFilter);
   }
  }
 }
+
+
 void HTTSequence::BuildDiElecVeto() {
   ic::strategy strategy_type  = String2Strategy(strategy_str);
 
@@ -1258,10 +1263,10 @@ void HTTSequence::BuildDiElecVeto() {
         return  c->DeltaR("elec1", "elec2") > 0.15 &&
                 c->charge() == 0;
       });
-	
+// Use special mode of veto module which stores the veto value but doesnt actually apply the filter for run 2 analysis	
     if(strategy_type==strategy::phys14){
   	  vetoElecPairFilter.set_veto_name("dielec_veto");
-  		vetoElecPairFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
+  		vetoElecPairFilter.set_no_filter(true);
   	}
 
 	BuildModule(vetoElecPairFilter);
@@ -1310,9 +1315,10 @@ void HTTSequence::BuildDiElecVeto() {
 			        c->charge() == 0;
 			});
 	
-	if(strategy_type==strategy::phys14){
+// Use special mode of veto module which stores the veto value but doesnt actually apply the filter for run 2 analysis	
+	if(strategy_type==strategy::phys14) {
 	  vetoMuonPairFilter.set_veto_name("dimuon_veto");
-		vetoMuonPairFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
+		vetoMuonPairFilter.set_no_filter(true);
 	}
 	
 	BuildModule(vetoMuonPairFilter);
@@ -1339,8 +1345,9 @@ void HTTSequence::BuildExtraElecVeto(){
                 PF04IsolationVal(e, 0.5,1) <0.3;
       });
   }
+// Use special mode of veto module which stores the veto value but doesnt actually apply the filter for run 2 analysis	
  if(strategy_type == strategy::phys14){
-      extraElecFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
+      extraElecFilter.set_no_filter(true);
       extraElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_elec_pt    &&
                 fabs(e->eta())          < veto_elec_eta   &&
@@ -1376,7 +1383,8 @@ void HTTSequence::BuildExtraMuonVeto(){
                 PF04IsolationVal(m, 0.5,1) < 0.3;
       });
    } else if (strategy_type == strategy::phys14){
-	    extraMuonFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
+// Use special mode of veto module which stores the veto value but doesnt actually apply the filter for run 2 analysis	
+	    extraMuonFilter.set_no_filter(true);
       extraMuonFilter.set_predicate([=](Muon const* m) {
         return  m->pt()                 > veto_muon_pt    &&
                 fabs(m->eta())          < veto_muon_eta   &&
