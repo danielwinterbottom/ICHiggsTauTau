@@ -694,8 +694,8 @@ namespace ic {
   
   bool ElectronHTTIdPhys14(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
-//    if (elec->has_matched_conversion()) return false;
-//    if (elec->gsf_tk_nhits() > 0) return false;
+    if (elec->has_matched_conversion()) return false;
+    if (elec->gsf_tk_nhits() > 0) return false;
     bool pass_mva = false;
     double eta = fabs(elec->sc_eta());
     double idmva = elec->GetIdIso("mvaNonTrigV025nsPHYS14");

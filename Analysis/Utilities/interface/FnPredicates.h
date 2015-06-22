@@ -102,7 +102,7 @@ namespace ic {
 
 
   template<class T>
-  double PF04IsolationValSwitch(T const* cand, double const& dbeta, bool allcharged=true) {
+  double PF04IsolationVal(T const* cand, double const& dbeta, bool allcharged) {
 	  double charged_iso = allcharged ? cand->dr04_pfiso_charged_all() : cand->dr04_pfiso_charged();
     double iso =  charged_iso
                   + std::max(cand->dr04_pfiso_neutral() + cand->dr04_pfiso_gamma() - dbeta * cand->dr04_pfiso_pu(), 0.0);

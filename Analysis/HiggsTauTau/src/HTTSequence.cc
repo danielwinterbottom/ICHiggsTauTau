@@ -854,7 +854,7 @@ void HTTSequence::BuildETPairs() {
           if(special_mode == 24){
             return !PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
           } else {
-            return PF04IsolationValSwitch(e, 0.5, 1) > elec_iso_min_val && PF04IsolationValSwitch(e,0.5, 1) < elec_iso_max_val;
+            return PF04IsolationVal(e, 0.5, 1) > elec_iso_min_val && PF04IsolationVal(e,0.5, 1) < elec_iso_max_val;
           } 
         }));
   }
@@ -865,7 +865,7 @@ if(!((js["make_sync_ntuple"]).asBool())) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
         .set_predicate([=](Electron const* e) {
-            return PF04IsolationValSwitch(e, 0.5, 1)<0.15;
+            return PF04IsolationVal(e, 0.5, 1)<0.15;
           //return PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
         }));
   }
@@ -935,7 +935,7 @@ void HTTSequence::BuildMTPairs() {
     BuildModule(SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
         .set_predicate([=](Muon const* m) {
-          return PF04IsolationValSwitch(m, 0.5, 1)<muon_iso_max && PF04IsolationValSwitch(m,0.5,1)>muon_iso_min;
+          return PF04IsolationVal(m, 0.5, 1)<muon_iso_max && PF04IsolationVal(m,0.5,1)>muon_iso_min;
         }));
   }
 
@@ -946,7 +946,7 @@ if(!((js["make_sync_ntuple"]).asBool())) {
     BuildModule(SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
         .set_predicate([=](Muon const* m) {
-          return PF04IsolationValSwitch(m, 0.5,0)<0.1;
+          return PF04IsolationVal(m, 0.5,0)<0.1;
         }));
   }
 }
@@ -1033,7 +1033,7 @@ void HTTSequence::BuildEMPairs() {
           if(special_mode == 24){
             return !PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
           } else if (special_mode == 2 || special_mode ==3){
-            return PF04IsolationValSwitch(e, 0.5,1) > elec_iso_min_val && PF04IsolationValSwitch(e,0.5,1) < elec_iso_max_val;
+            return PF04IsolationVal(e, 0.5,1) > elec_iso_min_val && PF04IsolationVal(e,0.5,1) < elec_iso_max_val;
           } else {
             return PF04IsolationEBElec(e, 0.5, 0.15, 0.1);
           }
@@ -1045,7 +1045,7 @@ if(!((js["make_sync_ntuple"]).asBool())) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
         .set_predicate([=](Electron const* e) {
-            return PF04IsolationValSwitch(e, 0.5,1)<0.15;
+            return PF04IsolationVal(e, 0.5,1)<0.15;
         }));
   }
 }
@@ -1099,7 +1099,7 @@ if(!((js["make_sync_ntuple"]).asBool())) {
         .set_input_label("sel_muons").set_min(1)
         .set_predicate([=](Muon const* m) {
          if(special_mode == 2|| special_mode ==3 ||special_mode ==4){
-          return PF04IsolationValSwitch(m, 0.5,1)<muon_iso_max && PF04IsolationValSwitch(m,0.5,1)>muon_iso_min;
+          return PF04IsolationVal(m, 0.5,1)<muon_iso_max && PF04IsolationVal(m,0.5,1)>muon_iso_min;
          } else{
           return PF04IsolationEB(m, 0.5, 0.15, 0.1);
         }
@@ -1112,7 +1112,7 @@ if(!((js["make_sync_ntuple"]).asBool())) {
     BuildModule(SimpleFilter<Muon>("MuonIsoFilter")
         .set_input_label("sel_muons").set_min(1)
         .set_predicate([=](Muon const* m) {
-          return PF04IsolationValSwitch(m, 0.5,0)<0.15;
+          return PF04IsolationVal(m, 0.5,0)<0.15;
         }));
   }
 }
@@ -1232,7 +1232,7 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
                 fabs(e->dz_vertex())    < veto_dielec_dz   &&
                 Electron2011WP95ID(e)     &&                
-                PF04IsolationValSwitch(e, 0.5,1) < 0.3;
+                PF04IsolationVal(e, 0.5,1) < 0.3;
       });
     } else if(strategy_type==strategy::phys14){
        vetoElecFilter.set_predicate([=](Electron const* e) {
@@ -1241,7 +1241,7 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
                 fabs(e->dz_vertex())    < veto_dielec_dz   &&
                 VetoElectronIDPhys14(e)           &&
-                PF04IsolationValSwitch(e, 0.5,0) < 0.3;
+                PF04IsolationVal(e, 0.5,0) < 0.3;
       });
    } 
 
@@ -1283,7 +1283,7 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(m->dz_vertex())    < veto_dimuon_dz    &&
                 m->is_global()                    &&
                 m->is_tracker()                   &&
-                PF04IsolationValSwitch(m, 0.5,1) < 0.3;
+                PF04IsolationVal(m, 0.5,1) < 0.3;
       });
     } else if(strategy_type==strategy::phys14){
       vetoMuonFilter.set_predicate([=](Muon const* m) {
@@ -1293,7 +1293,7 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(m->dz_vertex())    < veto_dimuon_dz    &&
                 m->is_global()                    &&
                 m->is_tracker()                   &&
-                PF04IsolationValSwitch(m, 0.5,0) < 0.3;
+                PF04IsolationVal(m, 0.5,0) < 0.3;
       });
     }
 
@@ -1336,7 +1336,7 @@ void HTTSequence::BuildExtraElecVeto(){
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
                 ElectronHTTId(e, true)                    &&
-                PF04IsolationValSwitch(e, 0.5,1) <0.3;
+                PF04IsolationVal(e, 0.5,1) <0.3;
       });
   }
  if(strategy_type == strategy::phys14){
@@ -1348,7 +1348,7 @@ void HTTSequence::BuildExtraElecVeto(){
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
 //Wrong electron ID? Keep for now:
                 VetoElectronIDPhys14(e)             &&
-                PF04IsolationValSwitch(e, 0.5,0) < 0.3;
+                PF04IsolationVal(e, 0.5,0) < 0.3;
       });
   }
 
@@ -1373,7 +1373,7 @@ void HTTSequence::BuildExtraMuonVeto(){
                 fabs(m->dxy_vertex())   < veto_muon_dxy   &&
                 fabs(m->dz_vertex())    < veto_muon_dz    &&
                 MuonTight(m)                              &&
-                PF04IsolationValSwitch(m, 0.5,1) < 0.3;
+                PF04IsolationVal(m, 0.5,1) < 0.3;
       });
    } else if (strategy_type == strategy::phys14){
 	    extraMuonFilter.set_make_sync_ntuple(js["make_sync_ntuple"].asBool());
@@ -1383,7 +1383,7 @@ void HTTSequence::BuildExtraMuonVeto(){
                 fabs(m->dxy_vertex())   < veto_muon_dxy   &&
                 fabs(m->dz_vertex())    < veto_muon_dz    &&
                 MuonMedium(m)                     &&
-                PF04IsolationValSwitch(m, 0.5,0) < 0.3;
+                PF04IsolationVal(m, 0.5,0) < 0.3;
       });
    }
 

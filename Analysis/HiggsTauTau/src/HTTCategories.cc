@@ -670,7 +670,7 @@ namespace ic {
       d0_1_ = elec->dxy_vertex();
       dz_1_ = elec->dz_vertex();
       if(strategy_ == strategy::paper2013) {
-        iso_1_ = PF04IsolationValSwitch(elec, 0.5);
+        iso_1_ = PF04IsolationVal(elec, 0.5);
         mva_1_ = elec->GetIdIso("mvaNonTrigV0");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA");
@@ -682,7 +682,7 @@ namespace ic {
         lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF04IsolationValSwitch(elec, 0.5, 0);
+        iso_1_ = PF04IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -702,7 +702,7 @@ namespace ic {
       d0_1_ = muon->dxy_vertex();
       dz_1_ = muon->dz_vertex();
       if(strategy_ == strategy::paper2013) {
-        iso_1_ = PF04IsolationValSwitch(muon, 0.5);
+        iso_1_ = PF04IsolationVal(muon, 0.5);
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA");
@@ -714,7 +714,7 @@ namespace ic {
         lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF04IsolationValSwitch(muon, 0.5, 0);
+        iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
@@ -732,12 +732,12 @@ namespace ic {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Muon const* muon = dynamic_cast<Muon const*>(lep2);
       if(strategy_ == strategy::paper2013) {
-        iso_1_ = PF04IsolationValSwitch(elec, 0.5);
-        iso_2_ = PF04IsolationValSwitch(muon, 0.5);
+        iso_1_ = PF04IsolationVal(elec, 0.5);
+        iso_2_ = PF04IsolationVal(muon, 0.5);
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF04IsolationValSwitch(elec, 0.5, 0);
-        iso_2_ = PF04IsolationValSwitch(muon, 0.5, 0);
+        iso_1_ = PF04IsolationVal(elec, 0.5, 0);
+        iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
       }
       mva_2_ = 0.0;
