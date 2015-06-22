@@ -254,6 +254,8 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
  moriond_tau_scale = json["moriond_tau_scale"].asBool();
  pu_id_training = json["pu_id_training"].asUInt();
  bjet_regr_correction = json["bjet_regr_correction"].asBool();
+ btag_mode    = json["btag_mode"].asUInt();
+ bfake_mode   = json["bfake_mode"].asUInt();
  if(json["baseline"]["mass_scale_mode"].asBool()==true){
    mass_shift = json["baseline"]["mass_shift"].asDouble();
  } else mass_shift=1.00;

@@ -129,6 +129,7 @@ int main(int argc, char* argv[]) {
 
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
     bool ignore_channel =false;
+    bool duplicate_channel = false;
     std::string channel_str = js["job"]["channels"][i].asString();
     for(unsigned k = 0; k<ignore_chans.size();k++){
       if(ignore_chans.at(k)==channel_str){ignore_channel=true;}
@@ -137,6 +138,13 @@ int main(int argc, char* argv[]) {
       std::cout<<"SKIPPING CHANNEL "<<channel_str<<std::endl;
       continue;
     } 
+    for(unsigned k=0;k<js["job"]["channels"].size();++k){
+      if(k!=i&&js["job"]["channels"][k].asString()==js["job"]["channels"][i].asString()){duplicate_channel=true;}
+    }
+    if(duplicate_channel){
+      std::cout<<"Channel "<<js["job"]["channels"][i].asString()<<" sequences already created, skipping"<<std::endl; 
+      continue;
+    }
     std::vector<std::string> vars;
     for (unsigned j = 0; j < js["job"]["sequences"]["all"].size(); ++j) {
       vars.push_back(js["job"]["sequences"]["all"][j].asString());
