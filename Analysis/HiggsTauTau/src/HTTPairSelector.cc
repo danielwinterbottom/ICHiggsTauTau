@@ -290,8 +290,8 @@ namespace ic {
     // First we sort the electrons
     Electron const* e1 = static_cast<Electron const*>(c1->At(0));
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
-    double e_iso1 = PF04IsolationVal(e1, 0.5, 0);
-    double e_iso2 = PF04IsolationVal(e2, 0.5, 0);
+    double e_iso1 = PF04IsolationValSwitch(e1, 0.5, 0);
+    double e_iso2 = PF04IsolationValSwitch(e2, 0.5, 0);
     // If the iso is different we just use this
     if (e_iso1 != e_iso2) return e_iso1 < e_iso2;
     // If not try the pT
@@ -309,8 +309,8 @@ namespace ic {
     // First we sort the electrons
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));
     Muon const* m2 = static_cast<Muon const*>(c2->At(0));
-    double m_iso1 = PF04IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF04IsolationVal(m2, 0.5, 0);
+    double m_iso1 = PF04IsolationValSwitch(m1, 0.5, 0);
+    double m_iso2 = PF04IsolationValSwitch(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT
@@ -328,8 +328,8 @@ namespace ic {
     // First we sort the muons
     Muon const* m1 = static_cast<Muon const*>(c1->At(1));
     Muon const* m2 = static_cast<Muon const*>(c2->At(1));
-    double m_iso1 = PF04IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF04IsolationVal(m2, 0.5, 0);
+    double m_iso1 = PF04IsolationValSwitch(m1, 0.5, 0);
+    double m_iso2 = PF04IsolationValSwitch(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT
@@ -337,8 +337,8 @@ namespace ic {
     // If both of these are the same then try the electrons
     Electron const* e1 = static_cast<Electron const*>(c1->At(0));
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
-    double e_iso1 = PF04IsolationVal(e1, 0.5, 0);
-    double e_iso2 = PF04IsolationVal(e2, 0.5, 0);
+    double e_iso1 = PF04IsolationValSwitch(e1, 0.5, 0);
+    double e_iso2 = PF04IsolationValSwitch(e2, 0.5, 0);
     if (e_iso1 != e_iso2) return e_iso1 < e_iso2;
     return e1->pt() > e2->pt();
   }

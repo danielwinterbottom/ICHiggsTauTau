@@ -694,8 +694,8 @@ namespace ic {
   
   bool ElectronHTTIdPhys14(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
-    if (elec->has_matched_conversion()) return false;
-    if (elec->gsf_tk_nhits() > 0) return false;
+//    if (elec->has_matched_conversion()) return false;
+//    if (elec->gsf_tk_nhits() > 0) return false;
     bool pass_mva = false;
     double eta = fabs(elec->sc_eta());
     double idmva = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
@@ -767,7 +767,7 @@ namespace ic {
 
 
   bool PF04IsolationEBElec(Electron const* cand, double const& dbeta, double const& cut_barrel, double const& cut_endcap) {
-    double iso =  PF04IsolationVal(cand, dbeta,1);
+    double iso =  PF04IsolationVal(cand, dbeta);
     if (fabs(cand->sc_eta()) < 1.479) {
       return (iso < cut_barrel);
     } else {
