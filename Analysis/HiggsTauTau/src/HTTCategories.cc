@@ -298,25 +298,46 @@ namespace ic {
 
       // Variables defined when lepton 2 is a tau
       // raw value of the 3hits delta-beta isolation
-
-      /*synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_2", &l3Hits_2,
-                     "byCombinedIsolationDeltaBetaCorrRaw3Hits_2/F");
-      // raw value of the anti-electron MVA3 output
-      synctree_->Branch("againstElectronMVA3raw_2", &lagainstElectronMVA3raw_2,
-                     "againstElectronMVA3raw_2/F");
-      // raw value of the MVA2 isolation
-      synctree_->Branch("byIsolationMVA2raw_2", &lbyIsolationMVA2raw_2,
-                     "byIsolationMVA2raw_2/F");
-      // output of againstMuonLoose2
-      synctree_->Branch("againstMuonLoose2_2", &lagainstMuonLoose2_2,
-                     "againstMuonLoose2_2/F");
-      // output of againstMuonMedium2
-      synctree_->Branch("againstMuonMedium2_2", &lagainstMuonMedium2_2,
-                     "againstMuonMedium2_2/F");
-      // output of againstMuonTight2
-      synctree_->Branch("againstMuonTight2_2", &lagainstMuonTight2_2,
+      
+      if(strategy_ == strategy::paper2013) {
+          synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_2", &l3Hits_2,
+                         "byCombinedIsolationDeltaBetaCorrRaw3Hits_2/F");
+          // raw value of the anti-electron MVA3 output
+          synctree_->Branch("againstElectronMVA3raw_2", &lagainstElectronMVA3raw_2,
+                         "againstElectronMVA3raw_2/F");
+          // raw value of the MVA2 isolation
+          synctree_->Branch("byIsolationMVA2raw_2", &lbyIsolationMVA2raw_2,
+                         "byIsolationMVA2raw_2/F");
+          // output of againstMuonLoose2
+          synctree_->Branch("againstMuonLoose2_2", &lagainstMuonLoose2_2,
+                         "againstMuonLoose2_2/F");
+          // output of againstMuonMedium2
+          synctree_->Branch("againstMuonMedium2_2", &lagainstMuonMedium2_2,
+                         "againstMuonMedium2_2/F");
+          // output of againstMuonTight2
+          synctree_->Branch("againstMuonTight2_2", &lagainstMuonTight2_2,
                      "againstMuonTight2_2/F");
-*/
+      }
+      if(strategy_ == strategy::phys14) {
+          synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_1", &l3Hits_1,
+                         "byCombinedIsolationDeltaBetaCorrRaw3Hits_1/F");
+          synctree_->Branch("againstElectronLooseMVA5_1", &lagainstElectronLooseMVA5_1, "againstElectronLooseMVA5_1/F");
+          synctree_->Branch("againstElectronMediumMVA5_1", &lagainstElectronMediumMVA5_1, "againstElectronMediumMVA5_1/F");
+          synctree_->Branch("againstElectronTightMVA5_1", &lagainstElectronTightMVA5_1, "againstElectronTightMVA5_1/F");
+          synctree_->Branch("againstElectronVLooseMVA5_1", &lagainstElectronVLooseMVA5_1, "againstElectronVLooseMVA5_1/F");
+          synctree_->Branch("againstElectronVTightMVA5_1", &lagainstElectronVTightMVA5_1, "againstElectronVTightMVA5_1/F");
+          synctree_->Branch("againstMuonLoose3_1", &lagainstMuonLoose3_1, "againstMuonLoose3_1/F");
+          synctree_->Branch("againstMuonTight3_1", &lagainstMuonTight3_1, "againstMuonTight3_1/F");
+          synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_2", &l3Hits_2,
+                         "byCombinedIsolationDeltaBetaCorrRaw3Hits_2/F");
+          synctree_->Branch("againstElectronLooseMVA5_2", &lagainstElectronLooseMVA5_2, "againstElectronLooseMVA5_2/F");
+          synctree_->Branch("againstElectronMediumMVA5_2", &lagainstElectronMediumMVA5_2, "againstElectronMediumMVA5_2/F");
+          synctree_->Branch("againstElectronTightMVA5_2", &lagainstElectronTightMVA5_2, "againstElectronTightMVA5_2/F");
+          synctree_->Branch("againstElectronVLooseMVA5_2", &lagainstElectronVLooseMVA5_2, "againstElectronVLooseMVA5_2/F");
+          synctree_->Branch("againstElectronVTightMVA5_2", &lagainstElectronVTightMVA5_2, "againstElectronVTightMVA5_2/F");
+          synctree_->Branch("againstMuonLoose3_2", &lagainstMuonLoose3_2, "againstMuonLoose3_2/F");
+          synctree_->Branch("againstMuonTight3_2", &lagainstMuonTight3_2, "againstMuonTight3_2/F");
+      }
       // Uncorrected PF MET (not used in analysis)
       synctree_->Branch("met", &pfmet_, "pfmet/F");
       // Uncorrected PF MET phi (not used in analysis)
@@ -435,7 +456,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo")) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -463,16 +484,16 @@ namespace ic {
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
   
   mc_weight_ = 0.0;
-  if (!is_embedded_ && event->Exists("pileupInfo")) pu_weight_ = eventInfo->weight("pileup");
-  if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1");
-  if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2");
-  if (event->Exists("idweight_1")) idweight_1_ = event->Get<double>("idweight_1");
-  if (event->Exists("idweight_2")) idweight_2_ = event->Get<double>("idweight_2");
-  if (event->Exists("isoweight_1")) isoweight_1_ = event->Get<double>("isoweight_1");
-  if (event->Exists("isoweight_2")) isoweight_2_ = event->Get<double>("isoweight_2");
-  if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton");
-  if (eventInfo->weight_defined("tau_fake_weight")) fakeweight_ = eventInfo->weight("tau_fake_weight");
-  if (eventInfo->weight_defined("tau_mode_scale")) effweight_ *= eventInfo->weight("tau_mode_scale");
+  if (!is_embedded_ && event->Exists("pileupInfo") && strategy_!=strategy::phys14) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
+  if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 0.0;
+  if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 0.0;
+  if (event->Exists("idweight_1")) idweight_1_ = event->Get<double>("idweight_1"); else idweight_1_ = 0.0;
+  if (event->Exists("idweight_2")) idweight_2_ = event->Get<double>("idweight_2"); else idweight_2_ = 0.0;
+  if (event->Exists("isoweight_1")) isoweight_1_ = event->Get<double>("isoweight_1"); else isoweight_1_ = 0.0;
+  if (event->Exists("isoweight_2")) isoweight_2_ = event->Get<double>("isoweight_2"); else isoweight_2_ = 0.0;
+  if (eventInfo->weight_defined("lepton")) effweight_ = eventInfo->weight("lepton"); else effweight_ = 0.0;
+  if (eventInfo->weight_defined("tau_fake_weight")) fakeweight_ = eventInfo->weight("tau_fake_weight"); else fakeweight_ = 0.0;
+  if (eventInfo->weight_defined("tau_mode_scale")) effweight_ *= eventInfo->weight("tau_mode_scale") ;
    
   if (eventInfo->weight_defined("tauspinner")) {
     embeddedweight_ = eventInfo->weight("tauspinner") *
@@ -525,7 +546,7 @@ namespace ic {
       auto const& retag_result = event->Get<std::map<std::size_t,bool>>("retag_result"); 
       ic::erase_if(bjets, !boost::bind(IsReBTagged, _1, retag_result));
       ic::erase_if(bjets_csv, !boost::bind(IsReBTagged, _1, retag_result));
-    } else {
+    } else{ 
       ic::erase_if(bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
       ic::erase_if(bjets_csv, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < btag_wp);
     } 
@@ -653,18 +674,26 @@ namespace ic {
         mva_1_ = elec->GetIdIso("mvaNonTrigV0");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA");
-//        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
-//        lagainstElectronMVA3raw_2 = tau->HasTauID("againstElectronMVA3raw") ? tau->GetTauID("againstElectronMVA3raw") : 0. ;
-//        lbyIsolationMVA2raw_2 = tau->HasTauID("byIsolationMVA2raw") ? tau->GetTauID("byIsolationMVA2raw") : 0. ;
-//        lagainstMuonLoose2_2 = tau->HasTauID("againstMuonLoose2") ? tau->GetTauID("againstMuonLoose2") : 0. ;
-//        lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
- //       lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
+        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+        lagainstElectronMVA3raw_2 = tau->HasTauID("againstElectronMVA3raw") ? tau->GetTauID("againstElectronMVA3raw") : 0. ;
+        lbyIsolationMVA2raw_2 = tau->HasTauID("byIsolationMVA2raw") ? tau->GetTauID("byIsolationMVA2raw") : 0. ;
+        lagainstMuonLoose2_2 = tau->HasTauID("againstMuonLoose2") ? tau->GetTauID("againstMuonLoose2") : 0. ;
+        lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
+        lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        iso_1_ = PF04IsolationVal(elec, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
+        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
+        lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
+        lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
+        lagainstElectronVTightMVA5_2 = tau->HasTauID("againstElectronVTightMVA5") ? tau->GetTauID("againstElectronVTightMVA5") : 0.;
+        lagainstElectronVLooseMVA5_2 = tau->HasTauID("againstElectronVLooseMVA5") ? tau->GetTauID("againstElectronVLooseMVA5") :0. ;
+        lagainstMuonLoose3_2 = tau->HasTauID("againstMuonLoose3") ? tau->GetTauID("againstMuonLoose3") : 0.;
+        lagainstMuonTight3_2 = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
       }
     }
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
@@ -677,18 +706,26 @@ namespace ic {
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA");
-//        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
-//        lagainstElectronMVA3raw_2 = tau->HasTauID("againstElectronMVA3raw") ? tau->GetTauID("againstElectronMVA3raw") : 0. ;
-//        lbyIsolationMVA2raw_2 = tau->HasTauID("byIsolationMVA2raw") ? tau->GetTauID("byIsolationMVA2raw") : 0. ;
-//        lagainstMuonLoose2_2 = tau->HasTauID("againstMuonLoose2") ? tau->GetTauID("againstMuonLoose2") : 0. ;
-//        lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
- //       lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
+        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+        lagainstElectronMVA3raw_2 = tau->HasTauID("againstElectronMVA3raw") ? tau->GetTauID("againstElectronMVA3raw") : 0. ;
+        lbyIsolationMVA2raw_2 = tau->HasTauID("byIsolationMVA2raw") ? tau->GetTauID("byIsolationMVA2raw") : 0. ;
+        lagainstMuonLoose2_2 = tau->HasTauID("againstMuonLoose2") ? tau->GetTauID("againstMuonLoose2") : 0. ;
+        lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
+        lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF03IsolationVal(muon, 0.5, 0);
+        iso_1_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau->GetTauID("againstElectronMVA5raw");
+        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
+        lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
+        lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
+        lagainstElectronVTightMVA5_2 = tau->HasTauID("againstElectronVTightMVA5") ? tau->GetTauID("againstElectronVTightMVA5") : 0.;
+        lagainstElectronVLooseMVA5_2 = tau->HasTauID("againstElectronVLooseMVA5") ? tau->GetTauID("againstElectronVLooseMVA5") :0. ;
+        lagainstMuonLoose3_2 = tau->HasTauID("againstMuonLoose3") ? tau->GetTauID("againstMuonLoose3") : 0.;
+        lagainstMuonTight3_2 = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
       }
     }
     if (channel_ == channel::em) {
@@ -699,8 +736,8 @@ namespace ic {
         iso_2_ = PF04IsolationVal(muon, 0.5);
       }
       if(strategy_ == strategy::phys14) {
-        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
-        iso_2_ = PF03IsolationVal(muon, 0.5, 0);
+        iso_1_ = PF04IsolationVal(elec, 0.5, 0);
+        iso_2_ = PF04IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
       }
       mva_2_ = 0.0;
@@ -712,17 +749,27 @@ namespace ic {
     if (channel_ == channel::tt) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-//        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
-//        lagainstElectronMVA3raw_2 = tau->HasTauID("againstElectronMVA3raw") ? tau->GetTauID("againstElectronMVA3raw") : 0. ;
-//        lbyIsolationMVA2raw_2 = tau->HasTauID("byIsolationMVA2raw") ? tau->GetTauID("byIsolationMVA2raw") : 0. ;
-//        lagainstMuonLoose2_2 = tau->HasTauID("againstMuonLoose2") ? tau->GetTauID("againstMuonLoose2") : 0. ;
-//        lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
- //       lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       if(strategy_ == strategy::phys14) {
         iso_1_ = tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_1_ = tau1->GetTauID("againstElectronMVA5raw");
         iso_2_ = tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_2_ = tau2->GetTauID("againstElectronMVA5raw");
+        l3Hits_1 = tau1->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+        lagainstElectronLooseMVA5_1 = tau1->HasTauID("againstElectronLooseMVA5") ? tau1->GetTauID("againstElectronLooseMVA5") : 0.;
+        lagainstElectronMediumMVA5_1 = tau1->HasTauID("againstElectronMediumMVA5") ? tau1->GetTauID("againstElectronMediumMVA5") : 0.;
+        lagainstElectronTightMVA5_1 = tau1->HasTauID("againstElectronTightMVA5") ? tau1->GetTauID("againstElectronTightMVA5") : 0.;
+        lagainstElectronVTightMVA5_1= tau1->HasTauID("againstElectronVTightMVA5") ? tau1->GetTauID("againstElectronVTightMVA5") : 0.;
+        lagainstElectronVLooseMVA5_1 = tau1->HasTauID("againstElectronVLooseMVA5") ? tau1->GetTauID("againstElectronVLooseMVA5") :0. ;
+        lagainstMuonLoose3_1 = tau1->HasTauID("againstMuonLoose3") ? tau1->GetTauID("againstMuonLoose3") : 0.;
+        lagainstMuonTight3_1 = tau1->HasTauID("againstMuonTight3") ? tau1->GetTauID("againstMuonTight3") : 0.;
+        l3Hits_2 = tau2->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+        lagainstElectronLooseMVA5_2 = tau2->HasTauID("againstElectronLooseMVA5") ? tau2->GetTauID("againstElectronLooseMVA5") : 0.;
+        lagainstElectronMediumMVA5_2 = tau2->HasTauID("againstElectronMediumMVA5") ? tau2->GetTauID("againstElectronMediumMVA5") : 0.;
+        lagainstElectronTightMVA5_2 = tau2->HasTauID("againstElectronTightMVA5") ? tau2->GetTauID("againstElectronTightMVA5") : 0.;
+        lagainstElectronVTightMVA5_2 = tau2->HasTauID("againstElectronVTightMVA5") ? tau2->GetTauID("againstElectronVTightMVA5") : 0.;
+        lagainstElectronVLooseMVA5_2 = tau2->HasTauID("againstElectronVLooseMVA5") ? tau2->GetTauID("againstElectronVLooseMVA5") :0. ;
+        lagainstMuonLoose3_2 = tau2->HasTauID("againstMuonLoose3") ? tau2->GetTauID("againstMuonLoose3") : 0.;
+        lagainstMuonTight3_2 = tau2->HasTauID("againstMuonTight3") ? tau2->GetTauID("againstMuonTight3") : 0.;
       }
     }
 

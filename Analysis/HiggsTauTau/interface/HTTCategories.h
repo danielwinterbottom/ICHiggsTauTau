@@ -128,6 +128,31 @@ class HTTCategories : public ModuleBase {
   float pfmetCov10_;
   float pfmetCov11_;
 
+  // Tau ID variables
+  float l3Hits_2 = 0;
+  float lagainstElectronMVA3raw_2 = 0;
+  float lbyIsolationMVA2raw_2 = 0;
+  float lagainstMuonLoose2_2 = 0;
+  float lagainstMuonMedium2_2 = 0;
+  float lagainstMuonTight2_2 = 0;
+
+  float l3Hits_1 = 0;
+  float lagainstElectronLooseMVA5_1 = 0;
+  float lagainstElectronMediumMVA5_1 = 0;
+  float lagainstElectronTightMVA5_1 = 0;
+  float lagainstElectronVTightMVA5_1 = 0;
+  float lagainstElectronVLooseMVA5_1 = 0;
+  float lagainstMuonLoose3_1 = 0;
+  float lagainstMuonTight3_1 = 0;
+
+  float lagainstElectronLooseMVA5_2 = 0;
+  float lagainstElectronMediumMVA5_2 = 0;
+  float lagainstElectronTightMVA5_2 = 0;
+  float lagainstElectronVTightMVA5_2 = 0;
+  float lagainstElectronVLooseMVA5_2 = 0;
+  float lagainstMuonLoose3_2 = 0;
+  float lagainstMuonTight3_2 = 0;
+    
   int tau_decay_mode_;
 
   unsigned n_jets_;

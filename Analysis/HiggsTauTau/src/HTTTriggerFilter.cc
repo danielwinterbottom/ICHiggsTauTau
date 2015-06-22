@@ -36,8 +36,12 @@ namespace ic {
   int HTTTriggerFilter::Execute(TreeEvent *event) {
 
     std::string trig_obj_label;
+		std::string alt_trig_obj_label;
     std::string leg1_filter;
     std::string leg2_filter;
+		std::string extra_leg2_filter;
+		std::string alt_leg1_filter;
+		std::string alt_leg2_filter;
     std::string em_alt_trig_obj_label;
     std::string em_alt_leg1_filter;
     std::string em_alt_leg2_filter;
@@ -271,7 +275,16 @@ namespace ic {
           trig_obj_label   = "triggerObjectsEle22WP90RhoLooseTau20";
           leg1_filter      = "hltEle22WP90RhoTrackIsoFilter";
           leg2_filter       = "hltIsoElePFTau20TrackLooseIso";
-        }
+        }  else if (mc_ == mc::phys14_72X){
+          trig_obj_label   = "triggerObjectsEle22LooseTau20";
+          leg1_filter      = "hltOverlapFilterIsoEle22WP85GsfLooseIsoPFTau20";
+          leg2_filter      = "hltL1sL1IsoEG20erTauJet20er";
+          extra_leg2_filter = "hltOverlapFilterIsoEle22WP85GsfLooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsEle27Gsf";
+          alt_leg1_filter  = "hltEle27WP85GsfTrackIsoFilter";
+          alt_leg2_filter  = "";
+					}
+
       } else if (channel_ == channel::mt) {
         if (mc_ == mc::fall11_42X) {
           trig_obj_label   = "triggerObjectsIsoMu15LooseTau15";
@@ -281,6 +294,14 @@ namespace ic {
           trig_obj_label   = "triggerObjectsIsoMu17LooseTau20";
           leg1_filter      = "hltL3crIsoL1sMu14erORMu16erL1f0L2f14QL3f17QL3crIsoRhoFiltered0p15";
           leg2_filter       = "hltIsoMuPFTau20TrackLooseIso";
+        }  else if (mc_ == mc::phys14_72X) {
+          trig_obj_label  = "triggerObjectsIsoMu17LooseTau20";
+          leg1_filter     = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
+          leg2_filter     = "hltL1sMu16erTauJet20er";
+          extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsIsoMu24IterTrk";
+          alt_leg1_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f20QL3f24QL3crIsoRhoFiltered0p15IterTrk02";
+          alt_leg2_filter = "";
         }
       } else if (channel_ == channel::em) {
         if (mc_ == mc::fall11_42X) {
@@ -297,8 +318,23 @@ namespace ic {
           em_alt_trig_obj_label     = "triggerObjectsMu17Ele8";
           em_alt_leg1_filter        = "hltMu17Ele8CaloIdTCaloIsoVLTrkIdVLTrkIsoVLTrackIsoFilter";
           em_alt_leg2_filter        = "hltL1Mu12EG7L3MuFiltered17";
-        }
-      }
+        } else if (mc_ == mc::phys14_72X){
+          trig_obj_label            = "triggerObjectsEle12Mu23";
+          leg1_filter               = "hltMu23Ele12GsfTrackIsoLegEle12GsfCaloIdTrackIdIsoMediumWPFilter";
+          leg2_filter               = "hltL1Mu12EG7L3IsoMuFiltered23";
+          alt_trig_obj_label        = "triggerObjectsEle23Mu8";
+          alt_leg1_filter           = "hltMu8Ele23GsfTrackIsoLegEle23GsfCaloIdTrackIdIsoMediumWPFilter";
+          alt_leg2_filter           = "hltL1sL1Mu5EG20ORL1Mu5IsoEG18L3IsoFiltered8";
+				} 
+      } else if (channel_ == channel::tt){
+         if (mc_ == mc::phys14_72X){
+         trig_obj_label              = "triggerObjectsDoubleMediumTau40";
+         alt_trig_obj_label          = "triggerObjectsDoubleMediumTau40";
+         leg1_filter                 = "hltL1sDoubleTauJet36erORDoubleTauJet68er";
+         extra_leg2_filter           = "hltDoubleL2IsoTau35eta2p1";
+         leg2_filter                 = "hltDoublePFTau40TrackPt1MediumIsolationDz02Reg";
+       }
+     }
       /*
       [2] HLT triggers in MC to "emulate" lepton legs of new triggers in data:
       - HLT_Mu8_v16, mu filter to match: hltL3fL1sMu3L3Filtered8 apply cut
@@ -345,7 +381,7 @@ namespace ic {
 
     std::vector<CompositeCandidate *> dileptons_pass;
 
-    if (channel_ == channel::et || channel_ == channel::mt) {
+    if ((channel_ == channel::et || channel_ == channel::mt)&&mc_ != mc::phys14_72X) {
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
         bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
@@ -353,7 +389,23 @@ namespace ic {
       }
     }
 
-    if (channel_ == channel::em) {
+    if ((channel_ == channel::et || channel_ == channel::mt)&&mc_ == mc::phys14_72X) {
+      std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
+      for (unsigned i = 0; i < dileptons.size(); ++i) {
+        bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
+        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter,0.5);
+        if (leg1_match && leg2_match){
+          dileptons_pass.push_back(dileptons[i]);
+        } else {
+          leg1_match = IsFilterMatched(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5);
+//					leg2_match = IsFilterMatched(dileptons[i]->At(1),alt_objs, alt_leg2_filter, 0.5);
+         if (leg1_match) dileptons_pass.push_back(dileptons[i]);	
+        }
+      }
+    }
+
+
+    if (channel_ == channel::em && mc_ != mc::phys14_72X) {
       std::vector<TriggerObject *> const& em_alt_objs = event->GetPtrVec<TriggerObject>(em_alt_trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
@@ -369,6 +421,32 @@ namespace ic {
         }
       }
     }
+
+   if (channel_ == channel::em && mc_ == mc::phys14_72X){
+      std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
+      for(unsigned i = 0; i < dileptons.size(); ++i){
+        bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5);
+        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5);
+        if (leg1_match && leg2_match) {
+          dileptons_pass.push_back(dileptons[i]);
+        } else {
+          leg1_match = IsFilterMatched(dileptons[i]->at(0), alt_objs, alt_leg1_filter, 0.5);
+          leg2_match = IsFilterMatched(dileptons[i]->at(1), alt_objs, alt_leg2_filter, 0.5);
+           if (leg1_match && leg2_match) dileptons_pass.push_back(dileptons[i]);
+        }
+      }
+    }
+
+   if (channel_ == channel::tt){
+     for(unsigned i = 0; i < dileptons.size(); ++i){
+       bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5) && IsFilterMatched(dileptons[i]->At(0), objs, leg2_filter, 0.5) && IsFilterMatched(dileptons[i]->At(0), objs, extra_leg2_filter, 0.5);
+       bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg1_filter, 0.5) && IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5) && IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter, 0.5);
+       if (leg1_match && leg2_match) dileptons_pass.push_back(dileptons[i]);
+      }
+    }
+
+
+
 
     if ( channel_ == channel::mtmet && is_data_) {
       for (unsigned i = 0; i < dileptons.size(); ++i) {

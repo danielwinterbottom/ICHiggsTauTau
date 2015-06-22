@@ -37,7 +37,7 @@ class HTTSequence {
 
  public:
   typedef std::vector<std::shared_ptr<ic::ModuleBase>> ModuleSequence;
-  HTTSequence(std::string & chan, std::string& var, std::string postf, Json::Value const& js);
+  HTTSequence(std::string & chan, std::string postf, Json::Value const& js);
   HTTSequence() = default;
   ~HTTSequence();
   ModuleSequence* getSequence(){return &seq;}
