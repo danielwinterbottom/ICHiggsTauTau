@@ -1,4 +1,4 @@
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/HistPlotterTest.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/HistPlotter.h"
 #include <iostream>
 #include "TH1F.h"
 #include "TF1.h"
@@ -132,7 +132,7 @@ namespace ic{
     DrawCMSLogoTest(pad, cmsText, extraText, iPosX, 0.045, 0.035, 1.2);
   }
   
-  void HistPlotterTest::SetMCStackStyle(ic::LTPlotElement* ele) {
+  void HistPlotter::SetMCStackStyle(ic::LTPlotElement* ele) {
     ele->set_fill_color(ele->color());
     ele->set_fill_style(1001);
     ele->set_draw_fill(true);
@@ -143,7 +143,7 @@ namespace ic{
     ele->set_line_color(1);
     return;
   }
-  void HistPlotterTest::SetSignalStyle(ic::LTPlotElement* ele) {
+  void HistPlotter::SetSignalStyle(ic::LTPlotElement* ele) {
     ele->set_fill_style(1001);
     ele->set_draw_fill(false);
     ele->set_draw_marker(false);
@@ -156,7 +156,7 @@ namespace ic{
     ele->set_line_width(3);
     return;
   }
-  void HistPlotterTest::SetDataStyle(ic::LTPlotElement* ele) {
+  void HistPlotter::SetDataStyle(ic::LTPlotElement* ele) {
     ele->set_marker_color(1);
     ele->set_line_color(1);
     ele->set_fill_color(1);
@@ -171,7 +171,7 @@ namespace ic{
     return;
   }
 
-  HistPlotterTest::HistPlotterTest(std::string name) : LTModule(name){
+  HistPlotter::HistPlotter(std::string name) : LTModule(name){
     do_debug_=false;
     do_norm_=false;
     do_ratio_=false;
@@ -182,16 +182,16 @@ namespace ic{
     outsuffix_="";
   };
 
-  HistPlotterTest::~HistPlotterTest(){ ;};
+  HistPlotter::~HistPlotter(){ ;};
 
-  int HistPlotterTest::Init(TFile* fs){
+  int HistPlotter::Init(TFile* fs){
     fs_=fs;
     std::cout<<"Initialisation info for "<<module_name_<<":"<<std::endl;
 
     return 0;
   };
 
-  int HistPlotterTest::Run(LTFiles* ){
+  int HistPlotter::Run(LTFiles* ){
     std::cout<<module_name_<<":"<<std::endl;
     TFile* file=fs_;
     gStyle->SetOptStat(0);

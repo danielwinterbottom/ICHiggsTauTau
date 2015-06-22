@@ -1,5 +1,5 @@
-#ifndef ICHiggsTauTau_HiggsNuNu_HistPlotterTest_h                                                                       
-#define ICHiggsTauTau_HiggsNuNu_HistPlotterTest_h
+#ifndef ICHiggsTauTau_HiggsNuNu_HistPlotter_h                                                                       
+#define ICHiggsTauTau_HiggsNuNu_HistPlotter_h
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeModule.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LightTreeFiles.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/LightTreeAna/interface/LTPlotElement.h"
@@ -18,24 +18,24 @@
 
 namespace ic {
 
-  class HistPlotterTest : public LTModule{ 
-    CLASS_MEMBER(HistPlotterTest,std::string,dirname)
-    CLASS_MEMBER(HistPlotterTest,std::vector<LTPlotElement>,elements)   
-    CLASS_MEMBER(HistPlotterTest,std::vector<LTShapeElement>,shapes)
-      //CLASS_MEMBER(HistPlotterTest,std::vector<std::string>,shapes)   
-      //CLASS_MEMBER(HistPlotterTest,std::vector<std::string>,histTitles)   
-    CLASS_MEMBER(HistPlotterTest,bool,do_debug)
-    CLASS_MEMBER(HistPlotterTest,bool,do_norm)
-    CLASS_MEMBER(HistPlotterTest,bool,do_ratio)
-    CLASS_MEMBER(HistPlotterTest,bool,do_ratio_line)
-    CLASS_MEMBER(HistPlotterTest,bool,do_ratio_fitline)
-    CLASS_MEMBER(HistPlotterTest,bool,add_underflows)
-    CLASS_MEMBER(HistPlotterTest,bool,add_overflows)
-    CLASS_MEMBER(HistPlotterTest,std::string,outsuffix)
+  class HistPlotter : public LTModule{ 
+    CLASS_MEMBER(HistPlotter,std::string,dirname)
+    CLASS_MEMBER(HistPlotter,std::vector<LTPlotElement>,elements)   
+    CLASS_MEMBER(HistPlotter,std::vector<LTShapeElement>,shapes)
+      //CLASS_MEMBER(HistPlotter,std::vector<std::string>,shapes)   
+      //CLASS_MEMBER(HistPlotter,std::vector<std::string>,histTitles)   
+    CLASS_MEMBER(HistPlotter,bool,do_debug)
+    CLASS_MEMBER(HistPlotter,bool,do_norm)
+    CLASS_MEMBER(HistPlotter,bool,do_ratio)
+    CLASS_MEMBER(HistPlotter,bool,do_ratio_line)
+    CLASS_MEMBER(HistPlotter,bool,do_ratio_fitline)
+    CLASS_MEMBER(HistPlotter,bool,add_underflows)
+    CLASS_MEMBER(HistPlotter,bool,add_overflows)
+    CLASS_MEMBER(HistPlotter,std::string,outsuffix)
 
   public:	
-    HistPlotterTest(std::string);
-    virtual ~HistPlotterTest();
+    HistPlotter(std::string);
+    virtual ~HistPlotter();
     virtual int Init(TFile*);
     virtual int Run(LTFiles*);
     static void SetMCStackStyle(LTPlotElement*);
