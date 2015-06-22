@@ -158,13 +158,16 @@ int main(int argc, char* argv[]){
     if (marker_it == markers.end()) marker_it = markers.begin();
     // title(0):label(1):file(2):folder(3):plot(4):lumi(5):style(6):colour(7)
     // e.g. embedded:PF Embedded:Embedded_mt_2012.root:inclusive_os_sel:-1.0:0:4
+    // or
+    //  title(0):label(1):file(2):TTree(3):branch(4):lumi(5):style(6):colour(7):nbins(8):xlow(9):xup(10)(:sel_string(11))
+    //  e.g. embedded:PF Embedded:Embedded_mt_2012.root:ntuple:pt_1:-1.0:0:4:40:0:120(:os>0)
     vector<string> split;
     boost::split(split, p, boost::is_any_of(":"));
 		std::string sel_string;
     if (!(split.size() == 8 || split.size()==11 || split.size()==12)) {
       cout << "Plot descriptor << " << p << " not recognised..." << endl;
     }
-    if(split.size() == 8){
+    if(split.size() == 8){ //For a TH1 stored in a folder in a file
       std::cout << "----PLOT----" << std::endl;
       std::cout << boost::format(param_fmt) % "title" % split[0];
       std::cout << boost::format(param_fmt) % "legend" % split[1];
@@ -177,8 +180,11 @@ int main(int argc, char* argv[]){
 
       files.push_back(new TFile(split[2].c_str()));
       elements.emplace_back(split[0], files.back(), split[3], split[4], split[1]);
-    } else if (split.size() == 11 || split.size()==12){
+    } else if (split.size() == 11 || split.size()==12){//For a branch of a TTree (need to specify the number of bins and x-axis range)
      if(ntrees==0){
+       //Use the same binning for all trees (n_bins, x_low and x_up options taken from first input string calling for a plot from a TTree)
+       //The number of bins and the x-axis range are used to create a histogram from the tree, the x-axis range of the plot can
+       //still be controlled by --custom_x_axis_range
        n_bins = boost::lexical_cast<int>(split[8]);
        x_low = boost::lexical_cast<double>(split[9]);
        x_up = boost::lexical_cast<double>(split[10]);
@@ -188,7 +194,7 @@ int main(int argc, char* argv[]){
       std::cout << boost::format(param_fmt) % "legend" % split[1];
       std::cout << boost::format(param_fmt) % "file" % split[2];
       std::cout << boost::format(param_fmt) % "tree" % split[3];
-      std::cout << boost::format(param_fmt) % "distribution" % split[4];
+      std::cout << boost::format(param_fmt) % "branch" % split[4];
       std::cout << boost::format(param_fmt) % "n_bins" % n_bins;
       std::cout << boost::format(param_fmt) % "xlow" % x_low;
       std::cout << boost::format(param_fmt) % "xup" % x_up;
