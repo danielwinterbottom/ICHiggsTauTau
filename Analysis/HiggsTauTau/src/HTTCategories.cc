@@ -74,7 +74,13 @@ namespace ic {
       outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("eta_1",             &eta_1_.var_double);
       outtree_->Branch("eta_2",             &eta_2_.var_double);
-      outtree_->Branch("iso_2",             &iso_2_);
+      outtree_->Branch("iso_1",             &iso_1_.var_double);
+      outtree_->Branch("iso_2",             &iso_2_.var_double);
+      outtree_->Branch("antiele_1",         &antiele_1_);
+      outtree_->Branch("antimu_1",          &antimu_1_);
+      outtree_->Branch("antiele_2",         &antiele_2_);
+      outtree_->Branch("antimu_2",          &antimu_2_);
+      outtree_->Branch("leptonveto",        &lepton_veto_);
       outtree_->Branch("z_2",               &z_2_);
       outtree_->Branch("m_2",               &m_2_.var_double);
       outtree_->Branch("met",               &met_.var_double);
@@ -246,7 +252,7 @@ namespace ic {
       // If lepton 1 is a tau, this is the value of byIsolationMVAraw,
       // which is no longer used in the analysis, but retained for legacy
       // reasons
-      synctree_->Branch("iso_1", &iso_1_, "iso_1/F");
+      synctree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
       // If an electron, the output of the ID MVA, zero otherwise
       synctree_->Branch("mva_1", &mva_1_, "mva_1/F");
       // Transverse (x-y) impact parameter w.r.t to the primary vertex
@@ -275,7 +281,7 @@ namespace ic {
       // If lepton 2 is a tau, this is the value of byIsolationMVAraw,
       // which is no longer used in the analysis, but retained for legacy
       // reasons
-      synctree_->Branch("iso_2", &iso_2_, "iso_2/F");
+      synctree_->Branch("iso_2", &iso_2_.var_float, "iso_2/F");
       // Transverse (x-y) impact parameter w.r.t to the primary vertex
       synctree_->Branch("d0_2", &d0_2_, "d0_2/F");
       // Longitudinal (z) impact parameter w.r.t to the primary vertex
@@ -581,6 +587,7 @@ namespace ic {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
     }
+    lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
 
 
     n_vtx_ = eventInfo->good_vertices();
@@ -663,7 +670,11 @@ namespace ic {
     
     emu_dxy_1_ = 0.0;
     emu_dxy_2_ = 0.0;
-
+    
+    antiele_1_ = true;
+    antimu_1_ = true;
+    antiele_2_ = true;
+    antimu_2_ = true;
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
@@ -694,6 +705,8 @@ namespace ic {
         lagainstElectronVLooseMVA5_2 = tau->HasTauID("againstElectronVLooseMVA5") ? tau->GetTauID("againstElectronVLooseMVA5") :0. ;
         lagainstMuonLoose3_2 = tau->HasTauID("againstMuonLoose3") ? tau->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
+        antiele_2_ = lagainstElectronTightMVA5_2;
+        antimu_2_ = lagainstMuonLoose3_2;
       }
     }
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
@@ -726,6 +739,8 @@ namespace ic {
         lagainstElectronVLooseMVA5_2 = tau->HasTauID("againstElectronVLooseMVA5") ? tau->GetTauID("againstElectronVLooseMVA5") :0. ;
         lagainstMuonLoose3_2 = tau->HasTauID("againstMuonLoose3") ? tau->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
+        antiele_2_ = lagainstElectronVLooseMVA5_2;
+        antimu_2_ = lagainstMuonTight3_2;
       }
     }
     if (channel_ == channel::em) {
@@ -770,6 +785,10 @@ namespace ic {
         lagainstElectronVLooseMVA5_2 = tau2->HasTauID("againstElectronVLooseMVA5") ? tau2->GetTauID("againstElectronVLooseMVA5") :0. ;
         lagainstMuonLoose3_2 = tau2->HasTauID("againstMuonLoose3") ? tau2->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau2->HasTauID("againstMuonTight3") ? tau2->GetTauID("againstMuonTight3") : 0.;
+        antiele_1_ = lagainstElectronTightMVA5_1;
+        antimu_1_ = lagainstMuonLoose3_1;
+        antiele_2_ = lagainstElectronTightMVA5_2;
+        antimu_2_ = lagainstMuonLoose3_2;
       }
     }
 

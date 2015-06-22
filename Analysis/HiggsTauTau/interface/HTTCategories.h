@@ -78,6 +78,7 @@ class HTTCategories : public ModuleBase {
   bool dilepton_veto_;
   bool extraelec_veto_;
   bool extramuon_veto_;
+  bool lepton_veto_;
   unsigned n_vtx_;
   unsigned n_pu_;
   branch_var m_sv_;
@@ -108,8 +109,12 @@ class HTTCategories : public ModuleBase {
   float phi_2_;
   int q_1_;
   int q_2_;
-  float iso_1_;
-  float iso_2_;
+  branch_var iso_1_;
+  branch_var iso_2_;
+  bool antiele_1_;
+  bool antimu_1_;
+  bool antiele_2_;
+  bool antimu_2_;
   double z_2_;
   float m_1_;
   branch_var m_2_;
