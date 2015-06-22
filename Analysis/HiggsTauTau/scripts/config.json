@@ -23,7 +23,7 @@
     "strategy"      : "phys14",
     "is_data"       : false,
     "is_embedded"   : false,
-    "make_sync_ntuple" : true,
+    "make_sync_ntuple" : false,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
     "electrons"     : "electrons",
