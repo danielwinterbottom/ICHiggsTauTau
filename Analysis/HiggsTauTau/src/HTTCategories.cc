@@ -73,6 +73,13 @@ namespace ic {
       outtree_->Branch("n_jets",            &n_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
       outtree_->Branch("mjj",               &mjj_.var_double);
+      outtree_->Branch("n_jetsingap",       &n_jetsingap_);
+      outtree_->Branch("jdeta",             &jdeta_.var_double);
+      outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
+      outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
+      outtree_->Branch("pt_2",              &pt_2_.var_double);
+      outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
+      outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
         // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
@@ -100,17 +107,14 @@ namespace ic {
         //outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
         outtree_->Branch("n_vtx",             &n_vtx_);
         outtree_->Branch("pt_1",              &pt_1_.var_double);
-        outtree_->Branch("pt_2",              &pt_2_.var_double);
         outtree_->Branch("eta_1",             &eta_1_.var_double);
         outtree_->Branch("eta_2",             &eta_2_.var_double);
         outtree_->Branch("z_2",               &z_2_);
         outtree_->Branch("m_2",               &m_2_.var_double);
         outtree_->Branch("met_phi",           &met_phi_.var_double);
         outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
-        outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
         outtree_->Branch("n_prebjets",        &n_prebjets_);
         outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
-        outtree_->Branch("n_jetsingap",       &n_jetsingap_);
         outtree_->Branch("jpt_1",             &jpt_1_.var_double);
         outtree_->Branch("j1_dm",             &j1_dm_);
         outtree_->Branch("jpt_2",             &jpt_2_.var_double);
@@ -119,9 +123,6 @@ namespace ic {
         outtree_->Branch("bpt_1",             &bpt_1_.var_double);
         outtree_->Branch("beta_1",            &beta_1_.var_double);
         outtree_->Branch("bcsv_1",            &bcsv_1_);
-        outtree_->Branch("jdeta",             &jdeta_.var_double);
-        outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
-        outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
         if (channel_ == channel::em) {
           outtree_->Branch("pzetavis",          &pzetavis_.var_double);
           outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
