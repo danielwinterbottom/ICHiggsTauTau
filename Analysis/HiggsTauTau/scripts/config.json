@@ -24,6 +24,7 @@
     "is_data"       : false,
     "is_embedded"   : false,
     "make_sync_ntuple" : false,
+    "add_Hhh_variables" : false,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
     "electrons"     : "electrons",
