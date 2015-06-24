@@ -756,7 +756,7 @@ if(strategy_type != strategy::phys14){
 //    BuildModule(HTTSyncTemp("HTTSyncTemp","HTTSequenceSyncfiles/SYNCFILE_" + output_name, channel)
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
-
+  
  BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -771,7 +771,7 @@ if(strategy_type != strategy::phys14){
     .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
-    .set_systematic_shift(addit_output_folder!=" ")
+    .set_systematic_shift(addit_output_folder!="")
     .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
     //Good to avoid accidentally overwriting existing output files when syncing
     .set_write_tree(!js["make_sync_ntuple"].asBool()));

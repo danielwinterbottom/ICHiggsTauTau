@@ -55,6 +55,7 @@ namespace ic {
 
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
+      outtree_->Branch("wt",                &wt_.var_double);
       outtree_->Branch("os",                &os_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("m_vis",             &m_vis_.var_double);
@@ -96,7 +97,6 @@ namespace ic {
       }
       //Variables needed for control plots need only be generated for central systematics
       if(!systematic_shift_) {
-        outtree_->Branch("wt",                &wt_.var_double);
         //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
         //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
         //outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
