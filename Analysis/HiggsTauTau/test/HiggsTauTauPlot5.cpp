@@ -231,11 +231,11 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Split ZTT into decay modes
 	// ************************************************************************
-  /*if (add_ztt_modes) {
+  if (add_ztt_modes) {
 	  hmap["ZTT-1P0PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==0", "wt");
 	  hmap["ZTT-1P1PZ"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==1", "wt");
 	  hmap["ZTT-3P"] = ana.GenerateZTT(method, var, sel, cat+" && tau_decay_mode==10", "wt");
-  }*/
+  }
 
 
 	// ************************************************************************

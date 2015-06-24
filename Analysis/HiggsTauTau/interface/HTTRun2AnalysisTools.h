@@ -24,101 +24,6 @@
 
 namespace ic {
 
-/*  inline double Integral(TH1F const* hist) {
-    return hist->Integral(0, hist->GetNbinsX() + 1);
-  }
-
-  inline double IntegrateFloatRange(TH1F const* hist, double xmin, double xmax) {
-    TAxis *axis = hist->GetXaxis();
-    int bmin = axis->FindBin(xmin);
-    int bmax = axis->FindBin(xmax);
-    double integral = hist->Integral(bmin, bmax);
-    integral -= hist->GetBinContent(bmin)*(xmin-axis->GetBinLowEdge(bmin))/
-              axis->GetBinWidth(bmin);
-    integral -= hist->GetBinContent(bmax)*(axis->GetBinUpEdge(bmax)-xmax)/
-              axis->GetBinWidth(bmax);
-    return integral;
-  }
-
-
-  inline double Error(TH1F const* hist) {
-    double err = 0.0;
-    hist->IntegralAndError(0, hist->GetNbinsX() + 1, err);
-    return err;
-  }
-
-  inline void BlindHistogram(TH1F * hist, double x_min, double x_max) {
-    for (int j = 0; j < hist->GetNbinsX(); ++j) {
-      double low_edge = hist->GetBinLowEdge(j+1);
-      double high_edge = hist->GetBinWidth(j+1)+hist->GetBinLowEdge(j+1);
-      if ((low_edge > x_min && low_edge < x_max) || (high_edge > x_min && high_edge < x_max)) {
-        hist->SetBinContent(j+1,0);
-        hist->SetBinError(j+1,0);
-      }
-    }
-  }
-
-  inline void SetNorm(TH1F * hist, double norm, bool verbose = false) {
-    if (Integral(hist) == 0.0) {
-      if (verbose) std::cout << "Warning, attempt to scale histogram with integral of 0.0" << std::endl;
-      return;
-    } else {
-      hist->Scale(norm / Integral(hist));
-    }
-  }
-
-  inline void FixEmptyBins(TH1F * hist, bool verbose) {
-    unsigned bins = hist->GetNbinsX();
-    unsigned first_populated = 0;
-    unsigned last_populated = 0;
-    for (unsigned i = 1; i <= bins; ++i) {
-      if (hist->GetBinContent(i) > 0. && first_populated == 0) first_populated = i;
-      if (hist->GetBinContent(bins-(i-1)) > 0. && last_populated == 0) last_populated = bins-(i-1);
-    }
-    if (last_populated <= first_populated) {
-      if (verbose) std::cout << "Error: Cannot correct this distribution!" << std::endl;
-      return;
-    }
-    if (verbose) std::cout << "First populated bin: " << first_populated << std::endl;
-    if (verbose) std::cout << "Last populated bin: " << last_populated << std::endl;
-    double av_weight = ( hist->Integral() / double(hist->GetEntries()));
-    for (unsigned i = first_populated+1; i < last_populated; ++i) {
-      if (hist->GetBinContent(i) == 0.) {
-        if (verbose) std::cout << "Bin " << i << " is empty!" << std::endl;
-        if (verbose) std::cout << "Set weight to 1.0 * av_weight = " << (1.0 * av_weight) << std::endl;
-        hist->SetBinError(i, av_weight);    
-      }
-    }
-  }
-
-  inline void FixNegativeBins(TH1F * hist, bool verbose) {
-    for (int j = 0; j < hist->GetNbinsX(); ++j) {
-      if (hist->GetBinContent(j+1) < 0) {
-        if (verbose) std::cout << "[FixNegativeBins] Bin " << j << " is negative, setting to small positive value" << std::endl;
-        hist->SetBinContent(j+1,0.0000001);
-      }
-    }
-  }
-
-  inline void FixEmptyHist(TH1F * hist, bool verbose) {
-    unsigned centre_bin = hist->GetNbinsX() / 2;
-    if (hist->Integral() == 0.0) {
-      if (verbose) std::cout << "[FixEmptyHist] Histogram is empty, inserting small value in central bin" << std::endl;
-      hist->SetBinContent(centre_bin, 0.00001);
-    }
-  }
-
-  inline void InflateErrors(TH1F * hist, double factor) {
-    for (int j = 1; j <= hist->GetNbinsX(); ++j) {
-      if (hist->GetBinContent(j) > 0) {
-        double extra = factor * hist->GetBinContent(j);
-        double err = hist->GetBinError(j);
-        double new_err = std::sqrt(err*err + extra*extra);
-        hist->SetBinError(j, new_err);
-      }
-    }
-  }*/
-
   class HTTRun2Analysis {
     public:
       typedef std::pair<double, double> Value;
@@ -148,17 +53,11 @@ namespace ic {
           to the internal list. It should therefore be called before #ReadTrees.
       */
       void AddSMSignalSamples(std::vector<std::string> masses);
-      void AddSMHbbSignalSamples(std::vector<std::string> masses);
-      
-      void AddHWWSignalSamples(std::vector<std::string> masses);
       
       //! For each value in \p masses adds the two MSSM signal samples to the list of samples to load
       /*! \sa AddSMSignalSamples
       */
       void AddMSSMSignalSamples(std::vector<std::string> masses);
-      void AddHhhSignalSamples(std::vector<std::string> masses, bool extra_signal_profile=false);
-      void AddMSSMbbHSignalSamples(std::vector<std::string> masses);
-      void AddHighMassSignalSamples(std::vector<std::string> masses);
 
       //! Read a parameter file for cross section and luminosity information
       /*! Argument \p file is the full path to the parameter file. 
@@ -323,7 +222,6 @@ namespace ic {
                               std::string const& sample1, std::string const& selection1, std::string const& category1,
                               std::string const& sample2, std::string const& selection2, std::string const& category2,
                               std::string const& weight);
-      Value WTTTemplateFit(TH1F* data, TH1F* W, TH1F* TT, double mt_min, int mode);
 
       void SetQCDRatio(double const& ratio);
       inline void SetVerbosity(unsigned const& verbosity) { verbosity_ = verbosity; }
