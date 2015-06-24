@@ -53,99 +53,23 @@ namespace ic {
       });
     }
 
-    if (ch_ != channel::em) {
+    if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
-      alias_map_["inclusive"]         = "iso_1<0.1 && iso_2<1.5 && antiele && antimu && !leptonveto";
-      alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5)";
-      alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>40. && n_bjets==0)";
-      alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=40. && n_bjets==0)";
-      if (ch_ == channel::et) {
-        alias_map_["1jet_high"] += " && met>30.";
-        alias_map_["1jet_low"]  += " && met>30.";
-
-      }
-      alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>40. && n_bjets==0)";
-      alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=40. && n_bjets==0)";
-      // New SM categories
-      alias_map_["new_vbf_tight"]               = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
-      alias_map_["new_vbf_loose"]               = "(!"+alias_map_["new_vbf_tight"]+" && (pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
-      alias_map_["new_vbf"]                     = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
-      alias_map_["new_1jet_high_lowhiggs"]      = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt <= 100.)";
-      alias_map_["new_1jet_high"]               = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0)";
-      alias_map_["new_1jet_high_highhiggs"]     = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0 && pt_tt > 100.)";
-      alias_map_["new_1jet_high"]               = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>45. && n_bjets==0)";
-      alias_map_["new_1jet_medium"]             = "(!"+alias_map_["new_vbf"]+" && n_jets>=1 && pt_2>30. && pt_2<=45. && n_bjets==0)";
-      if (ch_ == channel::et) {
-        alias_map_["new_1jet_high"]              += " && met>30.";
-        alias_map_["new_1jet_high_lowhiggs"]     += " && met>30.";
-        alias_map_["new_1jet_high_highhiggs"]    += " && met>30.";
-        alias_map_["new_1jet_medium"]            += " && met>30.";
-      } 
-      alias_map_["new_0jet_high"]         = "(n_jets==0 && pt_2>45. && n_bjets==0)";
-      alias_map_["new_0jet_medium"]       = "(n_jets==0 && pt_2>30. && pt_2<=45. && n_bjets==0)";
-      alias_map_["new_0jet_low"]          = "(n_jets==0 && pt_2<=30. && n_bjets==0)";
-
-      // Categories for background estimates and control plots
-      alias_map_["vbf_loose"]         = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
-      alias_map_["w_vbf_extrap_cat"]  = "(pt_2>30. && n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0)";
-      alias_map_["vbf_loose_jets20"]  = "(pt_2>30. && n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0)";
-      alias_map_["twojet"]            = "(n_jets>=2 && pt_2>30.)";
-      alias_map_["zl_denominator"]    = "(n_jets>=2 && pt_2>30.)";
-      alias_map_["1jet"]              = "(n_jets>=1 && pt_2>30.)";
-
-    } else {
+      alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
+      //Categories can be added using inclusive alias as follows:
+      alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
+      alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
+      alias_map_["vbf"] += "&&" + alias_map_["inclusive"];
+      alias_map_["1jet"] += "&&" + alias_map_["inclusive"];
+    } else if (ch_ == channel::tt) {
       // SM Categories
-      alias_map_["inclusive"]         = "1";
-      alias_map_["vbf"]               = "(n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0)";
-      alias_map_["new_vbf_tight"]     = "(n_jets>=2 && n_jetsingap==0 && mjj>700. && jdeta>4.0 && pt_tt>100. && n_bjets==0)";
-      alias_map_["new_vbf_loose"]     = "(!"+alias_map_["new_vbf_tight"]+" && (n_jets>=2 && n_jetsingap==0 && mjj>500. && jdeta>3.5 && n_bjets==0))";
-      alias_map_["1jet_high"]         = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2>35. && n_bjets==0)";
-      alias_map_["1jet_low"]          = "(!"+alias_map_["vbf"]+" && n_jets>=1 && pt_2<=35. && n_bjets==0)";
-      alias_map_["0jet_high"]         = "(n_jets==0 && pt_2>35. && n_bjets==0)";
-      alias_map_["0jet_low"]          = "(n_jets==0 && pt_2<=35. && n_bjets==0)";
-      // Categories for background estimates and control plots
-      alias_map_["vbf_no_cjv"]        = "(n_jets>=2 && mjj>500. && jdeta>3.5 && n_bjets==0)";
-      alias_map_["vbf_loose"]         = "(n_jets>=2 && n_jetsingap==0 && mjj>200. && jdeta>2.0 && n_bjets==0)";
-      alias_map_["vbf_loose_jets20"]  = "(n_lowpt_jets>=2 && n_jetsingap_lowpt==0 && mjj_lowpt>200. && jdeta_lowpt>2.0 && n_bjets==0)";
-      alias_map_["twojet"]            = "(n_jets>=2 && n_bjets==0)";
-      alias_map_["1jet"]              = "(n_jets>=1 && n_bjets==0)";
+      alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+    } else if (ch_ == channel::em) {
+      // SM Categories
+      alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
     }
-    // Standard MSSM Categories
-    alias_map_["btag"]                      = "(n_jets<=1 && n_bjets>=1)";
-    alias_map_["nobtag"]                    = "n_bjets==0";
-    // Categories for background estimates and control plots
-    alias_map_["btag_loose"]                = "(n_jets<=1 && n_loose_bjets>=1)";
-    // Categories used in H->hh analysis
-    alias_map_["1jet1tag_loose"]            = "(n_jets_csv==1 && jet_csvbcsv_1>0.244)";
-    alias_map_["2jet1tag_loose"]            = "(n_jets_csv>=2 && jet_csvbcsv_1>0.244)";
-    alias_map_["2jet1tagMassCuts_loose"]    = "(n_jets_csv>=2 && jet_csvbcsv_1>0.244 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet2tag_loose"]            = "(n_jets_csv>=2 && jet_csvbcsv_1>0.244 && jet_csvbcsv_2>0.244)";
-    alias_map_["2jet2tagMassCuts_loose"]    = "(n_jets_csv>=2 && jet_csvbcsv_1>0.244 && jet_csvbcsv_2>0.244 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    // Useful category for control plots
-    alias_map_["2jetGT1tag"]                      = "(n_jets_csv>=2 && n_bjets_csv>=1)";
-     
-    // Categories including the effect of the b-tag SF
-    alias_map_["2jet0tag"]     = "(n_jets_csv>=2 && n_bjets_csv==0)";
-    alias_map_["2jet1tag"]     = "(n_jets_csv>=2 && n_bjets_csv==1)";
-    alias_map_["2jet2tag"]     = "(n_jets_csv>=2 && n_bjets_csv>=2)";
-       
-    // Categories including the effect of the b-tag SF and mass cuts
-    alias_map_["2jet0tagMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv==0 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet1tagMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv==1 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    alias_map_["2jet2tagMassCuts"]     = "(n_jets_csv>=2 && n_bjets_csv>=2 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    
-    //Extra categories for making control plots
-    alias_map_["2jetinclusive"] = "(n_jets_csv>=2)";
-    alias_map_["2jetinclusiveMassCuts"] = "(n_jets_csv>=2 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
-    alias_map_["2jetMoreThan1tag"] = "(n_jets_csv>=2 && jet_csvbcsv_1>0.679 )";
-    alias_map_["2jetMoreThan1tagMassCuts"] = "(n_jets_csv>=2 && jet_csvbcsv_1>0.679 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150 )";
-    alias_map_["2jetMoreThan2tag"] = "(n_jets_csv>=2 && jet_csvbcsv_1>0.679 && jet_csvbcsv_2>0.679)";
-    alias_map_["2jetMoreThan2tagMassCuts"] = "(n_jets_csv>=2 && jet_csvbcsv_1>0.679 && jet_csvbcsv_2>0.679 && jet_csv_mjj>70 && jet_csv_mjj<150 && m_sv>90 && m_sv<150)";
     
     // Selection control regions
-    // Sideband region for OS W+jets extrapolation
-    // options (mt_signal_region, w_os_extrap_require_os, w_ss_extrap_require_ss, vbf_w_os_extrap_requires_os)
-    // option w_extrap_diagnostics
     alias_map_["sel"]                    = "mt_1<30.";
     alias_map_["w_sdb"]                  = "mt_1>70.";
     alias_map_["w_sdb_os"]               = "os";
@@ -155,19 +79,14 @@ namespace ic {
     alias_map_["w_ss"]                   = "!os";
     alias_map_["w_shape_os"]             = "os"; 
 
-    // Sideband region for SS W+jets extrapolation
-    // Sideband region for SS W+jets estimation
-
     if (ch_ == channel::em) {
     // Inclusive region for e-mu fake rate normalisation
-      alias_map_["em_qcd_sel"]                = "os";
       // Sideband region for e-mu SS fake shape estimation
       alias_map_["ss"]                        = "!os";
       alias_map_["sel"]                       = "pzeta>-20.";
     }
 
     alias_map_["ZTT_Shape_Sample"]  = "DYJetsToLL";
-    alias_map_["QCD_Shape_Sample"]  = "Special_3_Data";
 
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
@@ -182,31 +101,6 @@ namespace ic {
     samples_alias_map_["zj_samples"] = {
      "DYJetsToTauTau-JJ", "DYJetsToLL-J"
     };
-
-    // Samples to subtract in sideband for W+jets estimate
-    samples_alias_map_["w_sub_samples"] = {
-     "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
-     "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
-     "T-tW", "Tbar-tW", "DYJetsToTauTau"+dy_soup_,
-     "DYJetsToTauTau-L"+dy_soup_,
-     "DYJetsToLL-L"+dy_soup_};
-
-    samples_alias_map_["qcd_sub_samples"] = {
-     "WWJetsTo2L2Nu", "WZJetsTo2L2Q", "WZJetsTo3LNu",
-     "ZZJetsTo2L2Nu", "ZZJetsTo2L2Q", "ZZJetsTo4L",
-     "T-tW", "Tbar-tW", "WJetsToLNuSoup",
-     "DYJetsToTauTau"+dy_soup_,
-     "DYJetsToTauTau-L"+dy_soup_,
-     "DYJetsToLL-L"+dy_soup_};
-
-    for (auto const& top_sample : samples_alias_map_["top_samples"]) {
-      samples_alias_map_["w_sub_samples"].push_back(top_sample);
-      samples_alias_map_["qcd_sub_samples"].push_back(top_sample);
-    }
-    for (auto const& zj_sample : samples_alias_map_["zj_samples"]) {
-      samples_alias_map_["w_sub_samples"].push_back(zj_sample);
-      samples_alias_map_["qcd_sub_samples"].push_back(zj_sample);
-    }
   }
 
   void HTTRun2Analysis::SetQCDRatio(double const& ratio){
@@ -317,7 +211,7 @@ namespace ic {
     return std::make_pair(data_hist, data_norm);
   }
 
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZTT(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZTT] --------------------------------------------------------\n";
     Value ztt_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
@@ -329,7 +223,7 @@ namespace ic {
     return std::make_pair(ztt_hist, ztt_norm);
   }
   
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZL --------------------------------------------------------\n";
     Value zl_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
@@ -341,7 +235,7 @@ namespace ic {
     return std::make_pair(zl_hist, zl_norm);
   }
   
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZJ(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZJ --------------------------------------------------------\n";
     Value zj_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
@@ -363,7 +257,7 @@ namespace ic {
   }
 
 
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateTOP(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateTOP] --------------------------------------------------------\n";
     std::vector<std::string> top_samples = this->ResolveSamplesAlias("top_samples");
     if (verbosity_) {
@@ -384,7 +278,7 @@ namespace ic {
     return std::make_pair(top_hist, top_norm);
   }
 
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateVV(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateVV] ---------------------------------------------------------\n";
     std::vector<std::string> vv_samples = this->ResolveSamplesAlias("vv_samples");
     auto vv_norm = this->GetLumiScaledRate(vv_samples, sel, cat, wt);
@@ -396,7 +290,7 @@ namespace ic {
     return std::make_pair(vv_hist, vv_norm);
   }
 
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateW(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateW] ----------------------------------------------------------\n";
     /*std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
     std::string w_extrap_cat = cat;

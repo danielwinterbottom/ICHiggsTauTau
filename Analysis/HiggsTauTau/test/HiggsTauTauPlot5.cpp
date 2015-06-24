@@ -26,13 +26,7 @@ int main(int argc, char* argv[]){
 	string datacard;             									// Channel, e.g. et
 	vector<string> set_alias;											// A string like alias1:value1,alias2:value2 etc
 	string sm_masses_str;													
-	string hww_masses_str;
 	string mssm_masses_str;												
-	string Hhh_masses_str;												
-	string bbH_masses_str;												
-	string high_masses_str;												
-	bool do_highmass;
-	bool extra_signal_profile;
 	string syst_tau_scale;
 	string syst_met_scale;
 	string syst_eff_b;
@@ -84,21 +78,13 @@ int main(int argc, char* argv[]){
 	  ("datacard",                po::value<string>(&datacard)->default_value(""))
 	  ("set_alias",               po::value<vector<string>>(&set_alias)->composing())
 	  ("sm_masses",               po::value<string>(&sm_masses_str)->default_value(""))
-	  ("hww_masses",              po::value<string>(&hww_masses_str)->default_value(""))
 	  ("mssm_masses",             po::value<string>(&mssm_masses_str)->default_value(""))
-	  ("Hhh_masses",             po::value<string>(&Hhh_masses_str)->default_value(""))
-	  ("bbH_masses",             po::value<string>(&bbH_masses_str)->default_value(""))
-	  ("high_masses",             po::value<string>(&high_masses_str)->default_value(""))
-	  ("do_highmass", 	          po::value<bool>(&do_highmass)->default_value(false))
-	  ("extra_signal_profile", 	  po::value<bool>(&extra_signal_profile)->default_value(false))
 	  ("syst_tau_scale",          po::value<string>(&syst_tau_scale)->default_value(""))
 	  ("syst_met_scale",          po::value<string>(&syst_met_scale)->default_value(""))
 	  ("syst_eff_b",      		    po::value<string>(&syst_eff_b)->default_value(""))
 	  ("syst_eff_t",      		    po::value<string>(&syst_eff_t)->default_value(""))
 	  ("syst_fake_b",      		    po::value<string>(&syst_fake_b)->default_value(""))
 	  ("syst_scale_j",            po::value<string>(&syst_scale_j)->default_value(""))
-	  ("syst_qcd_shape",          po::value<string>(&syst_qcd_shape)->default_value(""))
-	  ("syst_fakes_os_ss_shape",  po::value<string>(&syst_fakes_os_ss_shape)->default_value(""))
 	  ("syst_ggh_pt",    			    po::value<string>(&syst_ggh_pt)->default_value(""))
 	  ("syst_tquark",    			    po::value<string>(&syst_tquark)->default_value(""))
 	  ("syst_w_fake_rate",   	    po::value<string>(&syst_w_fake_rate)->default_value(""))
@@ -140,11 +126,7 @@ int main(int argc, char* argv[]){
 	std::cout << boost::format(param_fmt()) % "category"    % cat;
 	std::cout << boost::format(param_fmt()) % "datacard"    % datacard;
 	std::cout << boost::format(param_fmt()) % "sm_masses" 	% sm_masses_str;
-	std::cout << boost::format(param_fmt()) % "hww_masses" 	% hww_masses_str;
 	std::cout << boost::format(param_fmt()) % "mssm_masses" % mssm_masses_str;
-	std::cout << boost::format(param_fmt()) % "Hhh_masses" % Hhh_masses_str;
-	std::cout << boost::format(param_fmt()) % "bbH_masses"  % bbH_masses_str;
-	if(do_highmass) std::cout << boost::format(param_fmt()) % "high_masses"  % high_masses_str;
 	std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
 	// ************************************************************************
@@ -176,16 +158,8 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	std::vector<std::string> sm_masses;
 	if (sm_masses_str != "") boost::split(sm_masses, sm_masses_str, boost::is_any_of(","));
-	std::vector<std::string> hww_masses;
-	if (hww_masses_str != "") boost::split(hww_masses, hww_masses_str, boost::is_any_of(","));
 	std::vector<std::string> mssm_masses;
 	if (mssm_masses_str != "") boost::split(mssm_masses, mssm_masses_str, boost::is_any_of(","));
-	std::vector<std::string> Hhh_masses;
-	if (Hhh_masses_str != "") boost::split(Hhh_masses, Hhh_masses_str, boost::is_any_of(","));
-	std::vector<std::string> bbH_masses;
-	if (bbH_masses_str != "") boost::split(bbH_masses, bbH_masses_str, boost::is_any_of(","));
-	std::vector<std::string> high_masses;
-	if (high_masses_str != "") boost::split(high_masses, high_masses_str, boost::is_any_of(","));
 
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
@@ -627,9 +601,7 @@ int main(int argc, char* argv[]){
     vector<string> bkgs = {"ZTT","ZL","ZJ","W","QCD","TT","VV"};
     if (channel_str == "em") bkgs = {"Ztt","Fakes","EWK","ttbar"}; 
     vector<string> sm_procs = {"ggH","qqH","VH"};
-    vector<string> hww_procs = {"ggH_hww","qqH_hww"};
     vector<string> mssm_procs = {"ggH","bbH"};
-    vector<string> Hhh_procs = {"ggHTohhTo2Tau2B"};
     TH1F const& data = hmap["data_obs"].first;
     for (int i = 1; i <= data.GetNbinsX(); ++i) {
       double bkg_tot = 0.;
@@ -648,26 +620,10 @@ int main(int argc, char* argv[]){
             }
           }
         }
-        for (auto hww_mass : hww_masses) {
-          for (auto proc : sm_procs) {
-            if (hmap[proc+hww_mass].first.GetBinContent(i) > 0.) {
-              std::cout << "\e[31mWarning: Template " << proc+hww_mass << " is populated in this bin\e[m" << std::endl;
-              has_signal = true;
-            }
-          }
-        }
         for (auto mssm_mass : mssm_masses) {
           for (auto proc : sm_procs) {
             if (hmap[proc+mssm_mass].first.GetBinContent(i) > 0.) {
               std::cout << "\e[31mWarning: Template " << proc+mssm_mass << " is populated in this bin\e[m" << std::endl;
-              has_signal = true;
-            }
-          }
-        }
-        for (auto Hhh_mass : Hhh_masses) {
-          for (auto proc : sm_procs) {
-            if (hmap[proc+Hhh_mass].first.GetBinContent(i) > 0.) {
-              std::cout << "\e[31mWarning: Template " << proc+Hhh_mass << " is populated in this bin\e[m" << std::endl;
               has_signal = true;
             }
           }
