@@ -1050,10 +1050,10 @@ if(!((js["make_sync_ntuple"]).asBool())) {
   }
 }
 
-  BuildModule(OverlapFilter<Electron, Muon>("ElecMuonOverlapFilter")
-      .set_input_label("sel_electrons")
-      .set_reference_label(js["muons"].asString())
-      .set_min_dr(0.3));
+//  BuildModule(OverlapFilter<Electron, Muon>("ElecMuonOverlapFilter")
+//      .set_input_label("sel_electrons")
+//      .set_reference_label(js["muons"].asString())
+//      .set_min_dr(0.3));
 
 
 
