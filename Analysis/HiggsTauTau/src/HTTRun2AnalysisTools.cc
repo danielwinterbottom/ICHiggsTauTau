@@ -44,7 +44,12 @@ namespace ic {
     };
     if (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
-        "WJetsToLNu"
+        "WJetsToLNu",
+        "DYJetsToLL-L",
+        "DYJetsToLL-J",
+        "DYJetsToTauTau",
+        "DYJetsToTauTau-L",
+        "DYJetsToTauTau-JJ"
       });
     }
 
