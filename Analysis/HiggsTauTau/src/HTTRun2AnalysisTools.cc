@@ -175,7 +175,7 @@ namespace ic {
     };
 
     samples_alias_map_["zj_samples"] = {
-     "DYJetsToTauTau-JJ"+dy_soup_, "DYJetsToLL-J"+dy_soup_
+     "DYJetsToTauTau-JJ", "DYJetsToLL-J"
     };
 
     // Samples to subtract in sideband for W+jets estimate
@@ -312,17 +312,51 @@ namespace ic {
     return std::make_pair(data_hist, data_norm);
   }
 
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZLL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZLL] --------------------------------------------------------\n";
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZTT] --------------------------------------------------------\n";
     Value ztt_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
-    ztt_norm = this->GetRate("DYJetsToLL", sel, cat, wt) ;
+    ztt_norm = this->GetLumiScaledRate("DYJetsToTauTau", sel, cat, wt) ;
     TH1F ztt_hist = this->GetShape(var, this->ResolveAlias("ZTT_Shape_Sample"), sel, cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
     return std::make_pair(ztt_hist, ztt_norm);
   }
+  
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZL --------------------------------------------------------\n";
+    Value zl_norm;
+    //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
+    zl_norm = this->GetLumiScaledRate("DYJetsToLL-L", sel, cat, wt) ;
+    TH1F zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L", sel, cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % "DYJetsToLL-L" % sel % cat % wt;
+    SetNorm(&zl_hist, zl_norm.first);
+    return std::make_pair(zl_hist, zl_norm);
+  }
+  
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZJ --------------------------------------------------------\n";
+    Value zj_norm;
+    //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
+    std::vector<std::string> zj_samples = this->ResolveSamplesAlias("zj_samples");
+    if (verbosity_) {
+      std::cout << "zj_samples: ";
+      for (unsigned i = 0; i < zj_samples.size(); ++i) {
+        std::cout << zj_samples[i];
+        if (i != zj_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
+    zj_norm = this->GetLumiScaledRate(zj_samples, sel, cat, wt) ;
+    TH1F zj_hist = this->GetLumiScaledShape(var, zj_samples, sel, cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % "zj_samples" % sel % cat % wt;
+    SetNorm(&zj_hist, zj_norm.first);
+    return std::make_pair(zj_hist, zj_norm);
+  }
+
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateTOP] --------------------------------------------------------\n";
@@ -556,7 +590,7 @@ namespace ic {
     hmap[vv_map_label+postfix] = vv_pair;
     total_hist.Add(&hmap[vv_map_label+postfix].first,1.0);
     // Z->ll
-    /*if (ch_ != channel::em) {
+    if (ch_ != channel::em) {
       auto zl_pair = this->GenerateZL(method, var, sel, cat, wt);
       auto zj_pair = this->GenerateZJ(method, var, sel, cat, wt);
       Value zll_norm = ValueAdd(zl_pair.second, zj_pair.second);
@@ -569,9 +603,10 @@ namespace ic {
       hmap["ZLL"+postfix] = std::make_pair(zll_hist, zll_norm);
       hmap["ZL"+postfix]  = zl_pair;
       hmap["ZJ"+postfix]  = zj_pair;
-    }*/
+      total_hist.Add(&hmap["ZLL"+postfix].first,1.0);
+    }
     // Z->tautau
-    auto ztt_pair = this->GenerateZLL(method, var, sel, cat, wt);
+    auto ztt_pair = this->GenerateZTT(method, var, sel, cat, wt);
     std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
     PrintValue(ztt_map_label+postfix, ztt_pair.second);
     total_bkr = ValueAdd(total_bkr, ztt_pair.second);

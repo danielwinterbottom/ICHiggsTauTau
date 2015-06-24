@@ -174,10 +174,9 @@ namespace ic {
                         std::string wt,
                         std::string postfix);
       HistValuePair GenerateData(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
-     // HistValuePair GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
-      HistValuePair GenerateZLL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
-      //HistValuePair GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
-      //HistValuePair GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
