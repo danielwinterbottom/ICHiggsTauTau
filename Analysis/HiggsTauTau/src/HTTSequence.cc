@@ -527,6 +527,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
             .set_is_embedded(is_embedded)
             .set_pair_label("ditau"));
       }
+
 			
  // }
 
@@ -1143,7 +1144,7 @@ void HTTSequence::BuildTauSelection(){
   ic::channel channel_type         = String2Channel(channel_str);
 
  bool moriond_tau_scale =false;
- if(real_tau_sample) moriond_tau_scale = true; 
+ if(real_tau_sample&&strategy_type!=strategy::phys14) moriond_tau_scale = true; 
  
  if (tau_scale_mode > 0 && !moriond_tau_scale)
     BuildModule(EnergyShifter<Tau>("TauEnergyShifter")
@@ -1157,6 +1158,7 @@ void HTTSequence::BuildTauSelection(){
       .set_strategy(strategy_type)
       .set_moriond_corrections(moriond_tau_scale));
  }
+
 
 
   BuildModule(SimpleFilter<Tau>("TauFilter")
