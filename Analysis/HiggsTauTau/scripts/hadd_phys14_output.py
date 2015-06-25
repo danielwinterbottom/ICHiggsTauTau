@@ -57,7 +57,7 @@ for sa in sample_list:
         else :
           os.system('rm ./output/%(outputf)s/%(sa)s_2014_%(ch)s_*' %vars())
       else :
-        print "Incorrect number of files!"
+        print "Incorrect number of files for sample %(sa)s_2014_%(ch)s!"%vars()
     if os.path.isfile('./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2014_%(ch)s_0.root'%vars()):
       if len(fnmatch.filter(os.listdir('./output/%(outputf)s/TSCALE_DOWN'%vars()),'%(sa)s_2014_%(ch)s_*'%vars())) == nfiles["%(sa)s_2014"%vars()]:
         os.system('hadd ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_%(ch)s_2014.root ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2014_%(ch)s_* &> ./haddout.txt'% vars()) 
