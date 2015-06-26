@@ -14,4 +14,6 @@ typedef ICLeptonIsolation<reco::GsfElectron> ICRecoElectronIsolation;
 
 DEFINE_FWK_MODULE(ICElectronIsolation);
 DEFINE_FWK_MODULE(ICMuonIsolation);
+#if CMSSW_MAJOR_VERSION >= 7
 DEFINE_FWK_MODULE(ICRecoElectronIsolation);
+#endif
