@@ -81,9 +81,9 @@ void ICLeptonIsolation<pat::Electron>::constructSpecific(
 } else if(deltaR_==0.3){
 
   for (unsigned i = 0; i < lepton_handle->size(); ++i) {
-    pat::Electron const& src = lepton_handle->at(i);
     values[i]=0;
  #if CMSSW_MAJOR_VERSION >= 7
+    pat::Electron const& src = lepton_handle->at(i);
     if(input_isolation_type_=="charged_iso"){
       values[i] = src.pfIsolationVariables().sumChargedHadronPt;
     } else if(input_isolation_type_ == "photon_iso"){
