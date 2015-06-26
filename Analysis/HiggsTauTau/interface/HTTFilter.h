@@ -17,7 +17,9 @@ class HTTFilter : public ModuleBase {
   CLASS_MEMBER(HTTFilter<T>, std::string, input_label)
   CLASS_MEMBER(HTTFilter<T>, unsigned, min)
   CLASS_MEMBER(HTTFilter<T>, unsigned, max)
-	CLASS_MEMBER(HTTFilter<T>, bool, make_sync_ntuple)
+  //Option to store the result of the filter predicate without actually applying the filter
+	CLASS_MEMBER(HTTFilter<T>, bool, no_filter)
+  //Name under which the predicate result is stored
 	CLASS_MEMBER(HTTFilter<T>, std::string, veto_name)
 
  public:
@@ -34,7 +36,7 @@ template <class T>
 HTTFilter<T>::HTTFilter(std::string const& name) : ModuleBase(name) {
   min_ = 0;
   max_ = 9999;
-	make_sync_ntuple_ = false;
+	no_filter_ = false;
 	veto_name_ = "veto";
 }
 
@@ -52,7 +54,7 @@ template <class T>
 int HTTFilter<T>::Execute(TreeEvent *event) {
   std::vector<T *> & vec = event->GetPtrVec<T>(input_label_);
   ic::erase_if(vec,!boost::bind(predicate_,_1));
-	if(make_sync_ntuple_){
+	if(no_filter_){
 	  if(vec.size() >= min_ && vec.size() <= max_){
 		  event->Add(veto_name_,false);
 			return 0;
