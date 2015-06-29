@@ -7,7 +7,7 @@ import sys
 ################################################################
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
-opts.register('file', 'file:InputAOD_gg.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file', 'file:../testinput.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:miniaod_gg.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
@@ -17,7 +17,7 @@ opts.register('globalTag', 'PHYS14_25_V1::All', parser.VarParsing.multiplicity.s
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 #opts.register('release', '72XMINIAOD', parser.VarParsing.multiplicity.singleton,
-opts.register('release', '72X', parser.VarParsing.multiplicity.singleton,
+opts.register('release', '72XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
 
 opts.parseArguments()
@@ -363,43 +363,101 @@ process.icElectronSequence+=cms.Sequence(
    process.mvaNonTrigV025nsPHYS14
    )
 
-#Electron PF iso sequence:
-if release in ['72X', '72XMINIAOD']:
-  process.load("CommonTools.ParticleFlow.Isolation.pfElectronIsolation_cff")
-  process.elPFIsoValueCharged03PFIdPFIso    = process.elPFIsoValueCharged03PFId.clone()
-  process.elPFIsoValueChargedAll03PFIdPFIso = process.elPFIsoValueChargedAll03PFId.clone()
-  process.elPFIsoValueGamma03PFIdPFIso      = process.elPFIsoValueGamma03PFId.clone()
-  process.elPFIsoValueNeutral03PFIdPFIso    = process.elPFIsoValueNeutral03PFId.clone()
-  process.elPFIsoValuePU03PFIdPFIso         = process.elPFIsoValuePU03PFId.clone()
-  process.electronPFIsolationValuesSequence = cms.Sequence(
+#Electron PF iso sequence 03:
+#if release in ['72X', '72XMINIAOD']:
+process.load("CommonTools.ParticleFlow.Isolation.pfElectronIsolation_cff")
+#  process.elPFIsoValueCharged03PFIdPFIso    = process.icElectronCharged.clone()
+#process.elPFIsoValueCharged03PFIdPFIso    = process.elPFIsoValueCharged03PFId.clone()
+process.elPFIsoValueChargedAll03PFIdPFIso = process.elPFIsoValueChargedAll03PFId.clone()
+#process.elPFIsoValueGamma03PFIdPFIso      = process.elPFIsoValueGamma03PFId.clone()
+#process.elPFIsoValueNeutral03PFIdPFIso    = process.elPFIsoValueNeutral03PFId.clone()
+#process.elPFIsoValuePU03PFIdPFIso         = process.elPFIsoValuePU03PFId.clone()
+#  process.elPFIsoDepositCharged.src     = electronLabel
+process.elPFIsoDepositChargedAll.src  = electronLabel
+#  process.elPFIsoDepositNeutral.src     = electronLabel
+#  process.elPFIsoDepositGamma.src       = electronLabel
+#  process.elPFIsoDepositPU.src          = electronLabel
+process.elPFIsoValueCharged03PFIdPFIso = cms.EDProducer('ICRecoElectronIsolation',
+  input        = electronLabel,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("charged_iso") 
+)    
+process.elPFIsoValueGamma03PFIdPFIso = cms.EDProducer('ICRecoElectronIsolation',
+  input        = electronLabel,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("photon_iso") 
+)    
+process.elPFIsoValueNeutral03PFIdPFIso = cms.EDProducer('ICRecoElectronIsolation',
+  input        = electronLabel,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("neutral_iso") 
+)    
+process.elPFIsoValuePU03PFIdPFIso = cms.EDProducer('ICRecoElectronIsolation',
+  input        = electronLabel,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("pu_iso") 
+)    
+
+process.electronPFIsolationValuesSequence = cms.Sequence(
       process.elPFIsoValueCharged03PFIdPFIso+
       process.elPFIsoValueChargedAll03PFIdPFIso+
       process.elPFIsoValueGamma03PFIdPFIso+
       process.elPFIsoValueNeutral03PFIdPFIso+
       process.elPFIsoValuePU03PFIdPFIso
       )
-  process.elPFIsoDepositCharged.src     = electronLabel
-  process.elPFIsoDepositChargedAll.src  = electronLabel
-  process.elPFIsoDepositNeutral.src     = electronLabel
-  process.elPFIsoDepositGamma.src       = electronLabel
-  process.elPFIsoDepositPU.src          = electronLabel
-  if release in ['72XMINIAOD']:
-    process.elPFIsoDepositGamma.ExtractorPSet.ComponentName = cms.string("CandViewExtractor")
-  process.icElectronSequence += cms.Sequence(
-      process.electronPFIsolationDepositsSequence+
-      process.electronPFIsolationValuesSequence
-      )
+
+if release in ['72XMINIAOD']:
+  process.elPFIsoDepositGamma.ExtractorPSet.ComponentName = cms.string("CandViewExtractor")
+process.icElectronSequence += cms.Sequence(
+#      process.electronPFIsolationDepositsSequence+
+    process.elPFIsoDepositChargedAll+
+    process.electronPFIsolationValuesSequence
+    )
 #Htt electron vetoes:
-process.elPFIsoValueGamma03PFIdPFIso.deposits[0].vetos = (
-    cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)'))
-process.elPFIsoValueNeutral03PFIdPFIso.deposits[0].vetos = (
-    cms.vstring())
-process.elPFIsoValuePU03PFIdPFIso.deposits[0].vetos = (
-    cms.vstring())
-process.elPFIsoValueCharged03PFIdPFIso.deposits[0].vetos = (
-    cms.vstring('EcalEndcaps:ConeVeto(0.015)'))
+#process.elPFIsoValueGamma03PFIdPFIso.deposits[0].vetos = (
+#    cms.vstring('EcalEndcaps:ConeVeto(0.08)','EcalBarrel:ConeVeto(0.08)'))
+#process.elPFIsoValueNeutral03PFIdPFIso.deposits[0].vetos = (
+#    cms.vstring())
+#process.elPFIsoValuePU03PFIdPFIso.deposits[0].vetos = (
+#    cms.vstring())
+#process.elPFIsoValueCharged03PFIdPFIso.deposits[0].vetos = (
+#    cms.vstring('EcalEndcaps:ConeVeto(0.015)'))
 process.elPFIsoValueChargedAll03PFIdPFIso.deposits[0].vetos = (
     cms.vstring('EcalEndcaps:ConeVeto(0.015)','EcalBarrel:ConeVeto(0.01)'))
+
+if release in ['72XMINIAOD']:
+  process.elPFIsoValueCharged04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
+    input        = electronLabel,
+    deltaR       = cms.double(0.4),
+    iso_type = cms.string("charged_iso") 
+  )    
+  process.elPFIsoValueGamma04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
+    input        = electronLabel,
+    deltaR       = cms.double(0.4),
+    iso_type = cms.string("photon_iso") 
+  )    
+  process.elPFIsoValueNeutral04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
+    input        = electronLabel,
+    deltaR       = cms.double(0.4),
+    iso_type = cms.string("neutral_iso") 
+  )    
+  process.elPFIsoValuePU04PFIdPFIso = cms.EDProducer('ICElectronIsolation',
+    input        = electronLabel,
+    deltaR       = cms.double(0.4),
+    iso_type = cms.string("pu_iso") 
+  )    
+
+
+  process.elPFIsoValueChargedAll04PFIdPFIso = process.elPFIsoValueChargedAll04PFId.clone()
+  process.electronPFIsolationValuesSequence +=cms.Sequence(
+    process.elPFIsoValueCharged04PFIdPFIso+
+    process.elPFIsoValueGamma04PFIdPFIso+
+    process.elPFIsoValuePU04PFIdPFIso+
+    process.elPFIsoValueNeutral04PFIdPFIso+
+    process.elPFIsoValueChargedAll04PFIdPFIso
+  )
+
+
 
 process.icElectronProducer = producers.icElectronProducer.clone(
   branch                    = cms.string("electrons"),
@@ -413,8 +471,12 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   includeFloats = cms.PSet(
      mvaNonTrigV025nsPHYS14    = cms.InputTag("mvaNonTrigV025nsPHYS14")
   ),
-  includePFIso03           = cms.bool(True)
+  includePFIso03           = cms.bool(True),
+  includePFIso04           = cms.bool(True)
 )
+
+if release in ['72X']:
+  process.icElectronProducer.includePFIso04 = cms.bool(False)
 
 #if release in ['72XMINIAOD']:
 #  process.icElectronProducer.includeFloats = cms.PSet(
@@ -431,12 +493,46 @@ process.icElectronSequence += cms.Sequence(
 # Muons
 ################################################################
 process.icMuonSequence = cms.Sequence()
+if release in ['72X']: muons = cms.InputTag("muons")
+if release in ['72XMINIAOD']: muons = cms.InputTag("slimmedMuons")
+
 process.load("CommonTools.ParticleFlow.Isolation.pfMuonIsolation_cff")
-process.muPFIsoValueCharged03PFIso = process.muPFIsoValueCharged03.clone()
+#process.muPFIsoDepositCharged.src     = muons
+process.muPFIsoDepositChargedAll.src  = muons #All charged isolation is not stored in reco/pat
+#process.muPFIsoDepositNeutral.src     = muons
+#process.muPFIsoDepositGamma.src       = muons
+#process.muPFIsoDepositPU.src          = muons
+#process.icMuonSequence += cms.Sequence(
+#    process.muonPFIsolationDepositsSequence+
+#    process.muonPFIsolationValuesSequence
+#    )
+
+#process.muPFIsoValueCharged03PFIso = process.muPFIsoValueCharged03.clone()
 process.muPFIsoValueChargedAll03PFIso = process.muPFIsoValueChargedAll03.clone()
-process.muPFIsoValueGamma03PFIso = process.muPFIsoValueGamma03.clone()
-process.muPFIsoValueNeutral03PFIso = process.muPFIsoValueNeutral03.clone()
-process.muPFIsoValuePU03PFIso = process.muPFIsoValuePU03.clone()
+#process.muPFIsoValueGamma03PFIso = process.muPFIsoValueGamma03.clone()
+#process.muPFIsoValueNeutral03PFIso = process.muPFIsoValueNeutral03.clone()
+#process.muPFIsoValuePU03PFIso = process.muPFIsoValuePU03.clone()
+process.muPFIsoValueCharged03PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("charged_iso") 
+)    
+process.muPFIsoValueGamma03PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("photon_iso") 
+)    
+process.muPFIsoValueNeutral03PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("neutral_iso") 
+)    
+process.muPFIsoValuePU03PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.3),
+  iso_type = cms.string("pu_iso") 
+)    
+
 process.muonPFIsolationValuesSequence = cms.Sequence(
    process.muPFIsoValueCharged03PFIso+
    process.muPFIsoValueChargedAll03PFIso+
@@ -446,18 +542,42 @@ process.muonPFIsolationValuesSequence = cms.Sequence(
    )
 
 
-if release in ['72X']: muons = cms.InputTag("muons")
-if release in ['72XMINIAOD']: muons = cms.InputTag("slimmedMuons")
-process.muPFIsoDepositCharged.src     = muons
-process.muPFIsoDepositChargedAll.src  = muons
-process.muPFIsoDepositNeutral.src     = muons
-process.muPFIsoDepositGamma.src       = muons
-process.muPFIsoDepositPU.src          = muons
+
+
+
+process.muPFIsoValueCharged04PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.4),
+  iso_type = cms.string("charged_iso") 
+)    
+process.muPFIsoValueGamma04PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.4),
+  iso_type = cms.string("photon_iso") 
+)    
+process.muPFIsoValueNeutral04PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.4),
+  iso_type = cms.string("neutral_iso") 
+)    
+process.muPFIsoValuePU04PFIso = cms.EDProducer('ICMuonIsolation',
+  input        = muons,
+  deltaR       = cms.double(0.4),
+  iso_type = cms.string("pu_iso") 
+)    
+process.muPFIsoValueChargedAll04PFIso = process.muPFIsoValueChargedAll04.clone()
+process.muonPFIsolationValuesSequence +=cms.Sequence(
+  process.muPFIsoValueCharged04PFIso+
+  process.muPFIsoValueGamma04PFIso+
+  process.muPFIsoValuePU04PFIso+
+  process.muPFIsoValueNeutral04PFIso+
+  process.muPFIsoValueChargedAll04PFIso
+)
+
 process.icMuonSequence += cms.Sequence(
-    process.muonPFIsolationDepositsSequence+
+    process.muPFIsoDepositChargedAll+
     process.muonPFIsolationValuesSequence
     )
-
 
 process.icMuonProducer = producers.icMuonProducer.clone(
   branch                    = cms.string("muons"),
@@ -470,9 +590,11 @@ process.icMuonProducer = producers.icMuonProducer.clone(
   includeFloats = cms.PSet(
   ),
   requestTracks           = cms.bool(True),
-  includePFIso03           = cms.bool(True)
+  includePFIso03           = cms.bool(True),
+  includePFIso04          = cms.bool(True)
 )
-if release in ['72XMINIAOD']: process.icMuonProducer.isPF = cms.bool(False)
+if release in ['72XMINIAOD']: 
+  process.icMuonProducer.isPF = cms.bool(False)
 
 process.icMuonSequence += cms.Sequence(
   process.icMuonProducer
@@ -797,6 +919,9 @@ process.icPfMetProducer = producers.icMetProducer.clone(
                             inputCustomID = cms.InputTag("")
                             )
 
+if release in ['72XMINIAOD']:
+  process.icPfMetProducer.input = cms.InputTag("slimmedMETs")
+
 
 process.icPfMetSequence = cms.Sequence(
   process.pfMetRe+
@@ -852,7 +977,7 @@ process.mvaMetPairsEM = mvaMetPairs.clone(
   srcLeg2 = cms.InputTag('slimmedMuons'),
   leg1Pt = cms.double(9.5),
   leg1Eta = cms.double(2.6),
-  leg2Pt = cms.double(9.5),
+  leg2Pt = cms.double(8),
   leg2Eta = cms.double(2.6),
   minDeltaR = cms.double(0.29)
 #  srcPFCandidates = cms.InputTag('packedPFCandidates'),
