@@ -36,6 +36,13 @@ namespace ic {
       PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZL","ZJ"}  ,TColor::GetColor(100,182,232)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      ,TColor::GetColor(248,206,104))
     };
+    //For start of run 2 before data
+    bkg_schemes_["et_no_qcd"] = {
+      PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       ,TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","Electroweak"          ,{"W","VV"}   ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("zll","Z#rightarrowee"       ,{"ZL","ZJ"}  ,TColor::GetColor(100,182,232)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      ,TColor::GetColor(248,206,104))
+    };
     bkg_schemes_["et_zll"] = {
       PlotBkgComponent("qcd","QCD"                  ,{"QCD"}      , kMagenta-10),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       , kBlue   - 8),
@@ -63,6 +70,12 @@ namespace ic {
       PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,TColor::GetColor(155,152,204)),
       PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,TColor::GetColor(248,206,104))
     };
+    //For start of run 2 before data
+    bkg_schemes_["em_no_qcd"] = {
+      PlotBkgComponent("ewk","Electroweak"          ,{"EWK"}              ,TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("top","t#bar{t}"             ,{"ttbar"}            ,TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"Ztt"}              ,TColor::GetColor(248,206,104))
+    };
     bkg_schemes_["em_with_hww"] = {
       PlotBkgComponent("qcd","Misidentified e/#mu"  ,{"Fakes"}            ,TColor::GetColor(250,202,255)),
       PlotBkgComponent("ewk","Electroweak"          ,{"EWK"}              ,TColor::GetColor(222, 90,106)),
@@ -72,6 +85,13 @@ namespace ic {
     };
     bkg_schemes_["mt_with_zmm"] = {
       PlotBkgComponent("qcd","QCD",                   {"QCD"},      TColor::GetColor(250,202,255)),
+      PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
+      PlotBkgComponent("ewk","Electroweak",           {"W","VV"},   TColor::GetColor(222, 90,106)),
+      PlotBkgComponent("zll","Z#rightarrow#mu#mu",    {"ZL","ZJ"},  TColor::GetColor(100,182,232)),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau",  {"ZTT"} ,     TColor::GetColor(248,206,104))
+    };
+    //For start of run 2 before data
+    bkg_schemes_["mt_no_qcd"] = {
       PlotBkgComponent("top","t#bar{t}",              {"TT"},       TColor::GetColor(155,152,204)),
       PlotBkgComponent("ewk","Electroweak",           {"W","VV"},   TColor::GetColor(222, 90,106)),
       PlotBkgComponent("zll","Z#rightarrow#mu#mu",    {"ZL","ZJ"},  TColor::GetColor(100,182,232)),

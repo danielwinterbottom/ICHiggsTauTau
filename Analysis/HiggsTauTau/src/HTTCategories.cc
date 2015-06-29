@@ -29,6 +29,8 @@ namespace ic {
       sync_output_name_ = "SYNC.root";
       is_embedded_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
+      systematic_shift_ = false;
+      add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
   }
 
   HTTCategories::~HTTCategories() {
@@ -54,100 +56,111 @@ namespace ic {
     if (fs_ && write_tree_) {
       outtree_ = fs_->make<TTree>("ntuple","ntuple");
       outtree_->Branch("wt",                &wt_.var_double);
-      outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
-      outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
-      outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
-      outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
-      outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
-      outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
-      outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
-      outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
       outtree_->Branch("os",                &os_);
-      outtree_->Branch("n_vtx",             &n_vtx_);
       outtree_->Branch("m_sv",              &m_sv_.var_double);
       outtree_->Branch("m_vis",             &m_vis_.var_double);
       outtree_->Branch("pt_h",              &pt_h_.var_double);
       outtree_->Branch("pt_tt",             &pt_tt_.var_double);
       outtree_->Branch("mt_1",              &mt_1_.var_double);
       outtree_->Branch("pzeta",             &pzeta_.var_double);
-      outtree_->Branch("pt_1",              &pt_1_.var_double);
-      outtree_->Branch("pt_2",              &pt_2_.var_double);
-      outtree_->Branch("eta_1",             &eta_1_.var_double);
-      outtree_->Branch("eta_2",             &eta_2_.var_double);
-      outtree_->Branch("iso_2",             &iso_2_);
-      outtree_->Branch("z_2",               &z_2_);
-      outtree_->Branch("m_2",               &m_2_.var_double);
+      outtree_->Branch("iso_1",             &iso_1_.var_double);
+      outtree_->Branch("iso_2",             &iso_2_.var_double);
+      outtree_->Branch("antiele_1",         &antiele_1_);
+      outtree_->Branch("antimu_1",          &antimu_1_);
+      outtree_->Branch("antiele_2",         &antiele_2_);
+      outtree_->Branch("antimu_2",          &antimu_2_);
+      outtree_->Branch("leptonveto",        &lepton_veto_);
       outtree_->Branch("met",               &met_.var_double);
-      outtree_->Branch("met_phi",           &met_phi_.var_double);
-      outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
       outtree_->Branch("n_jets",            &n_jets_);
-      outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
       outtree_->Branch("n_bjets",           &n_bjets_);
-      outtree_->Branch("n_prebjets",        &n_prebjets_);
-      outtree_->Branch("n_jets_csv",        &n_jets_csv_);
-      outtree_->Branch("n_bjets_csv",       &n_bjets_csv_);
-      outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
-      outtree_->Branch("n_jetsingap",       &n_jetsingap_);
-      outtree_->Branch("jpt_1",             &jpt_1_.var_double);
-      outtree_->Branch("j1_dm",             &j1_dm_);
-      outtree_->Branch("jpt_2",             &jpt_2_.var_double);
-      outtree_->Branch("jeta_1",            &jeta_1_.var_double);
-      outtree_->Branch("jeta_2",            &jeta_2_.var_double);
-      outtree_->Branch("bpt_1",             &bpt_1_.var_double);
-      outtree_->Branch("beta_1",            &beta_1_.var_double);
-      outtree_->Branch("bcsv_1",            &bcsv_1_);
-      outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
-      outtree_->Branch("jet_csvEt_1",       &jet_csvEt_1_);
-      outtree_->Branch("jet_csveta_1",      &jet_csveta_1_);
-      outtree_->Branch("jet_csvbcsv_1",     &jet_csvbcsv_1_);
-      outtree_->Branch("jet_csvpt_2",       &jet_csvpt_2_);
-      outtree_->Branch("jet_csvpt_bb",	  &jet_csvpt_bb_);
-      outtree_->Branch("jet_csv_dR",		  &jet_csv_dR_);
-      outtree_->Branch("jet_csveta_2",      &jet_csveta_2_);
-      outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
       outtree_->Branch("mjj",               &mjj_.var_double);
-      outtree_->Branch("mjj_h",             &mjj_h_);
-      outtree_->Branch("mbb_h",             &mbb_h_);
-      outtree_->Branch("mjj_tt",            &mjj_tt_);
-      outtree_->Branch("m_H_best",               &m_H_best_);
-      outtree_->Branch("m_H_chi2_best",               &m_H_chi2_best_);
-      outtree_->Branch("pull_balance_H_best", &pull_balance_H_best_);
-      outtree_->Branch("convergence_H_best", &convergence_H_best_); 
-      outtree_->Branch("m_H_hZ",          &m_H_hZ_);
-      outtree_->Branch("m_H_hZ_chi2",     &m_H_hZ_chi2_);
-      outtree_->Branch("pull_balance_hZ", &pull_balance_hZ_);
-      outtree_->Branch("convergence_hZ", &convergence_hZ_);
-      outtree_->Branch("m_H_Zh",          &m_H_Zh_);
-      outtree_->Branch("m_H_Zh_chi2",     &m_H_Zh_chi2_);
-      outtree_->Branch("pull_balance_Zh",  &pull_balance_Zh_);
-      outtree_->Branch("convergence_Zh",  &convergence_Zh_);
-      outtree_->Branch("m_H_hh",     &m_H_hh_);
-      outtree_->Branch("m_H_hh_all",     &m_H_hh_all_);
-      outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
-      outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
-      outtree_->Branch("convergence_hh", &convergence_hh_);
-      outtree_->Branch("m_bb",     &m_bb_);
-      outtree_->Branch("m_bb_chi2",     &m_bb_chi2_);
-      outtree_->Branch("pull_balance_bb", &pull_balance_bb_);
-      outtree_->Branch("convergence_bb", &convergence_bb_);
+      outtree_->Branch("n_jetsingap",       &n_jetsingap_);
       outtree_->Branch("jdeta",             &jdeta_.var_double);
-      outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
-      outtree_->Branch("jet_csv_dphi",               &jet_csv_dphi_);
-      outtree_->Branch("jet_csv_deta",             &jet_csv_deta_);
-      outtree_->Branch("jet_csv_dtheta",             &jet_csv_dtheta_);
+      outtree_->Branch("n_lowpt_jets",      &n_lowpt_jets_);
+      outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
+      outtree_->Branch("pt_2",              &pt_2_.var_double);
       outtree_->Branch("mjj_lowpt",         &mjj_lowpt_);
       outtree_->Branch("jdeta_lowpt",       &jdeta_lowpt_);
-      outtree_->Branch("n_jetsingap_lowpt", &n_jetsingap_lowpt_);
       if (channel_ == channel::em) {
         outtree_->Branch("em_gf_mva",         &em_gf_mva_);
         // outtree_->Branch("em_vbf_mva",        &em_vbf_mva_);
-        outtree_->Branch("pzetavis",          &pzetavis_.var_double);
-        outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
-        outtree_->Branch("mt_ll",             &mt_ll_);
-        outtree_->Branch("emu_dphi",          &emu_dphi_);
-        outtree_->Branch("emu_csv",           &emu_csv_);
-        outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
-        outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
+      }
+      if(add_Hhh_variables_) { 
+        outtree_->Branch("jet_csv_mjj",               &jet_csv_mjj_);
+        outtree_->Branch("m_H_hh",     &m_H_hh_);
+        outtree_->Branch("convergence_hh", &convergence_hh_);
+        outtree_->Branch("mjj_tt",            &mjj_tt_);
+        outtree_->Branch("n_jets_csv",        &n_jets_csv_);
+        outtree_->Branch("n_bjets_csv",       &n_bjets_csv_);
+        outtree_->Branch("jet_csvbcsv_1",     &jet_csvbcsv_1_);
+        outtree_->Branch("jet_csvbcsv_2",     &jet_csvbcsv_2_);
+      }
+      //Variables needed for control plots need only be generated for central systematics
+      if(!systematic_shift_) {
+        //outtree_->Branch("wt_ggh_pt_up",      &wt_ggh_pt_up_);
+        //outtree_->Branch("wt_ggh_pt_down",    &wt_ggh_pt_down_);
+        //outtree_->Branch("wt_tau_fake_up",    &wt_tau_fake_up_);
+        //outtree_->Branch("wt_tau_fake_down",  &wt_tau_fake_down_);
+        //outtree_->Branch("wt_tquark_up",      &wt_tquark_up_);
+        //outtree_->Branch("wt_tquark_down",    &wt_tquark_down_);
+        //outtree_->Branch("wt_tau_id_up",      &wt_tau_id_up_);
+        //outtree_->Branch("wt_tau_id_down",    &wt_tau_id_down_);
+        outtree_->Branch("n_vtx",             &n_vtx_);
+        outtree_->Branch("pt_1",              &pt_1_.var_double);
+        outtree_->Branch("eta_1",             &eta_1_.var_double);
+        outtree_->Branch("eta_2",             &eta_2_.var_double);
+        outtree_->Branch("z_2",               &z_2_);
+        outtree_->Branch("m_2",               &m_2_.var_double);
+        outtree_->Branch("met_phi",           &met_phi_.var_double);
+        outtree_->Branch("tau_decay_mode",    &tau_decay_mode_);
+        outtree_->Branch("n_prebjets",        &n_prebjets_);
+        outtree_->Branch("n_loose_bjets",     &n_loose_bjets_);
+        outtree_->Branch("jpt_1",             &jpt_1_.var_double);
+        outtree_->Branch("j1_dm",             &j1_dm_);
+        outtree_->Branch("jpt_2",             &jpt_2_.var_double);
+        outtree_->Branch("jeta_1",            &jeta_1_.var_double);
+        outtree_->Branch("jeta_2",            &jeta_2_.var_double);
+        outtree_->Branch("bpt_1",             &bpt_1_.var_double);
+        outtree_->Branch("beta_1",            &beta_1_.var_double);
+        outtree_->Branch("bcsv_1",            &bcsv_1_);
+        if (channel_ == channel::em) {
+          outtree_->Branch("pzetavis",          &pzetavis_.var_double);
+          outtree_->Branch("pzetamiss",         &pzetamiss_.var_double);
+          outtree_->Branch("mt_ll",             &mt_ll_);
+          outtree_->Branch("emu_dphi",          &emu_dphi_);
+          outtree_->Branch("emu_csv",           &emu_csv_);
+          outtree_->Branch("emu_dxy_1",         &emu_dxy_1_);
+          outtree_->Branch("emu_dxy_2",         &emu_dxy_2_);
+        }
+        if(add_Hhh_variables_) {
+          outtree_->Branch("jet_csvpt_1",       &jet_csvpt_1_);
+          outtree_->Branch("jet_csveta_1",      &jet_csveta_1_);
+          outtree_->Branch("jet_csvpt_2",       &jet_csvpt_2_);
+          outtree_->Branch("jet_csveta_2",      &jet_csveta_2_);
+          outtree_->Branch("mjj_h",             &mjj_h_);
+          outtree_->Branch("mbb_h",             &mbb_h_);
+          if(kinfit_mode_ > 1) {
+            outtree_->Branch("m_H_best",               &m_H_best_);
+            outtree_->Branch("m_H_chi2_best",               &m_H_chi2_best_);
+            outtree_->Branch("pull_balance_H_best", &pull_balance_H_best_);
+            outtree_->Branch("convergence_H_best", &convergence_H_best_); 
+            outtree_->Branch("m_H_hZ",          &m_H_hZ_);
+            outtree_->Branch("m_H_hZ_chi2",     &m_H_hZ_chi2_);
+            outtree_->Branch("pull_balance_hZ", &pull_balance_hZ_);
+            outtree_->Branch("convergence_hZ", &convergence_hZ_);
+            outtree_->Branch("m_H_Zh",          &m_H_Zh_);
+            outtree_->Branch("m_H_Zh_chi2",     &m_H_Zh_chi2_);
+            outtree_->Branch("pull_balance_Zh",  &pull_balance_Zh_);
+            outtree_->Branch("convergence_Zh",  &convergence_Zh_);
+            outtree_->Branch("m_H_hh_all",     &m_H_hh_all_);
+            outtree_->Branch("m_H_hh_chi2",     &m_H_hh_chi2_);
+            outtree_->Branch("pull_balance_hh", &pull_balance_hh_);
+            outtree_->Branch("m_bb",     &m_bb_);
+            outtree_->Branch("m_bb_chi2",     &m_bb_chi2_);
+            outtree_->Branch("pull_balance_bb", &pull_balance_bb_);
+            outtree_->Branch("convergence_bb", &convergence_bb_);
+          }
+        }
       }
     }
     if(make_sync_ntuple_) {
@@ -246,7 +259,7 @@ namespace ic {
       // If lepton 1 is a tau, this is the value of byIsolationMVAraw,
       // which is no longer used in the analysis, but retained for legacy
       // reasons
-      synctree_->Branch("iso_1", &iso_1_, "iso_1/F");
+      synctree_->Branch("iso_1", &iso_1_.var_float, "iso_1/F");
       // If an electron, the output of the ID MVA, zero otherwise
       synctree_->Branch("mva_1", &mva_1_, "mva_1/F");
       // Transverse (x-y) impact parameter w.r.t to the primary vertex
@@ -275,7 +288,7 @@ namespace ic {
       // If lepton 2 is a tau, this is the value of byIsolationMVAraw,
       // which is no longer used in the analysis, but retained for legacy
       // reasons
-      synctree_->Branch("iso_2", &iso_2_, "iso_2/F");
+      synctree_->Branch("iso_2", &iso_2_.var_float, "iso_2/F");
       // Transverse (x-y) impact parameter w.r.t to the primary vertex
       synctree_->Branch("d0_2", &d0_2_, "d0_2/F");
       // Longitudinal (z) impact parameter w.r.t to the primary vertex
@@ -581,6 +594,7 @@ namespace ic {
         if(event->Exists("extra_elec_veto")) extraelec_veto_ = event->Get<bool>("extra_elec_veto");
         if(event->Exists("extra_muon_veto")) extramuon_veto_ = event->Get<bool>("extra_muon_veto");
     }
+    lepton_veto_ = dilepton_veto_ || extraelec_veto_ || extramuon_veto_;
 
 
     n_vtx_ = eventInfo->good_vertices();
@@ -663,7 +677,11 @@ namespace ic {
     
     emu_dxy_1_ = 0.0;
     emu_dxy_2_ = 0.0;
-
+    
+    antiele_1_ = true;
+    antimu_1_ = true;
+    antiele_2_ = true;
+    antimu_2_ = true;
     if (channel_ == channel::et) {
       Electron const* elec = dynamic_cast<Electron const*>(lep1);
       Tau const* tau = dynamic_cast<Tau const*>(lep2);
@@ -694,6 +712,8 @@ namespace ic {
         lagainstElectronVLooseMVA5_2 = tau->HasTauID("againstElectronVLooseMVA5") ? tau->GetTauID("againstElectronVLooseMVA5") :0. ;
         lagainstMuonLoose3_2 = tau->HasTauID("againstMuonLoose3") ? tau->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
+        antiele_2_ = lagainstElectronTightMVA5_2;
+        antimu_2_ = lagainstMuonLoose3_2;
       }
     }
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
@@ -726,6 +746,8 @@ namespace ic {
         lagainstElectronVLooseMVA5_2 = tau->HasTauID("againstElectronVLooseMVA5") ? tau->GetTauID("againstElectronVLooseMVA5") :0. ;
         lagainstMuonLoose3_2 = tau->HasTauID("againstMuonLoose3") ? tau->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
+        antiele_2_ = lagainstElectronVLooseMVA5_2;
+        antimu_2_ = lagainstMuonTight3_2;
       }
     }
     if (channel_ == channel::em) {
@@ -770,6 +792,10 @@ namespace ic {
         lagainstElectronVLooseMVA5_2 = tau2->HasTauID("againstElectronVLooseMVA5") ? tau2->GetTauID("againstElectronVLooseMVA5") :0. ;
         lagainstMuonLoose3_2 = tau2->HasTauID("againstMuonLoose3") ? tau2->GetTauID("againstMuonLoose3") : 0.;
         lagainstMuonTight3_2 = tau2->HasTauID("againstMuonTight3") ? tau2->GetTauID("againstMuonTight3") : 0.;
+        antiele_1_ = lagainstElectronTightMVA5_1;
+        antimu_1_ = lagainstMuonLoose3_1;
+        antiele_2_ = lagainstElectronTightMVA5_2;
+        antimu_2_ = lagainstMuonLoose3_2;
       }
     }
 
