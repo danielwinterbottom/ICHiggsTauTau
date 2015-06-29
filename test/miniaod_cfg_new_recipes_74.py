@@ -7,12 +7,12 @@ import sys
 ################################################################
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
-opts.register('file', 'file:testinput.root', parser.VarParsing.multiplicity.singleton,
+opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_4/src/UserCode/ICHiggsTauTau/test/testinput.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:miniaod_gg.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', 'MCRUN2_74_V9::All', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', 'MCRUN2_74_V2::All', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -320,28 +320,29 @@ if release in ['70XMINIAOD', '72XMINIAOD']:
 #  process.icElectronConversionCalculator = cms.EDProducer('ICElectronConversionFromPatCalculator',
 #      input       = electronLabel
 #  )
-if release in ['72X']:
-  process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_CSA14_cfi")
-  process.mvaNonTrigV025nsPHYS14.electronTag = electronLabel
-if release in ['72XMINIAOD']:
+#if release in ['72X']:
+process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
+process.electronMVAValueMapProducer.src = electronLabel
+process.electronMVAValueMapProducer.srcMiniAOD = electronLabel
+#if release in ['72XMINIAOD']:
 #New electron ID MVA producer to run without tracks
-  process.mvaNonTrigV025nsPHYS14 = cms.EDProducer("ICElectronIDMVAProducerMiniAOD",
-      verbose=cms.untracked.bool(False),
-      vertexTag=cms.InputTag('offlineSlimmedPrimaryVertices'),
-      electronTag=electronLabel,
-      reducedEBRecHitCollection=cms.InputTag('reducedEgamma','reducedEBRecHits',"PAT"),
-      reducedEERecHitCollection=cms.InputTag('reducedEgamma','reducedEERecHits',"PAT"),
-      method=cms.string("BDTSimpleCat"),
-      mvaWeightFile=cms.vstring(
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_5_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_5_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_5_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_10_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_10_oldscenario2phys14_BDT.weights.xml",
-                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_10_oldscenario2phys14_BDT.weights.xml",
-                                 ),
-     trig=cms.bool(False),
-     )
+#  process.mvaNonTrigV025nsPHYS14 = cms.EDProducer("ICElectronIDMVAProducerMiniAOD",
+#      verbose=cms.untracked.bool(False),
+#      vertexTag=cms.InputTag('offlineSlimmedPrimaryVertices'),
+#      electronTag=electronLabel,
+#      reducedEBRecHitCollection=cms.InputTag('reducedEgamma','reducedEBRecHits',"PAT"),
+#      reducedEERecHitCollection=cms.InputTag('reducedEgamma','reducedEERecHits',"PAT"),
+#      method=cms.string("BDTSimpleCat"),
+#      mvaWeightFile=cms.vstring(
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_5_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_5_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_5_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB1_10_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EB2_10_oldscenario2phys14_BDT.weights.xml",
+#                                "EgammaAnalysis/ElectronTools/data/PHYS14/EIDmva_EE_10_oldscenario2phys14_BDT.weights.xml",
+#                                 ),
+#     trig=cms.bool(False),
+#     )
 
 #Include electron cut-based IDs
 #from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -360,7 +361,7 @@ if release in ['72XMINIAOD']:
 #
 process.icElectronSequence+=cms.Sequence(
 #   process.egmGsfElectronIDSequence+
-   process.mvaNonTrigV025nsPHYS14
+   process.electronMVAValueMapProducer
    )
 
 #Electron PF iso sequence:
@@ -411,7 +412,7 @@ process.icElectronProducer = producers.icElectronProducer.clone(
   includeBeamspotIP         = cms.bool(True),
   inputBeamspot             = cms.InputTag("offlineBeamSpot"),
   includeFloats = cms.PSet(
-     mvaNonTrigV025nsPHYS14    = cms.InputTag("mvaNonTrigV025nsPHYS14")
+     mvaNonTrigSpring15    = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Phys14NonTrigValues")
   ),
   includePFIso03           = cms.bool(True)
 )
