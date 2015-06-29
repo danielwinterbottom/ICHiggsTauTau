@@ -1,5 +1,16 @@
 var NAVTREEINDEX4 =
 {
+"classic_1_1_p_f_candidate.html#a371a84f486a32988c02cd2ab63511b5e":[9,0,0,14,13],
+"classic_1_1_p_f_candidate.html#a37747861ae480c6db93b6b36bdc4bd0b":[9,0,0,14,6],
+"classic_1_1_p_f_candidate.html#a4458d3099083302f5db061ed2028798b":[9,0,0,14,12],
+"classic_1_1_p_f_candidate.html#a5658c1b5fdf34bfff975ec16d8f974a2":[9,0,0,14,10],
+"classic_1_1_p_f_candidate.html#a5ac1a41ad061b42154fd8a532428436f":[9,0,0,14,7],
+"classic_1_1_p_f_candidate.html#a8f64257510f8f47acafb85468ccfb868":[9,0,0,14,1],
+"classic_1_1_p_f_candidate.html#a938012d864dec6f3e83931683fed0bef":[9,0,0,14,4],
+"classic_1_1_p_f_candidate.html#ab1886f60ea4cb2c91dd74f4c82020735":[9,0,0,14,9],
+"classic_1_1_p_f_candidate.html#abce1b82df08ad28611ac29887f99fd2e":[9,0,0,14,5],
+"classic_1_1_p_f_candidate.html#ac57851ed78884c2e1e515b29346d62eb":[9,0,0,14,3],
+"classic_1_1_p_f_candidate.html#acb9ffee3e424bd345dbf936926d9b86d":[9,0,0,14,11],
 "classic_1_1_p_f_candidate.html#adb8d4a520f4e04edc0fcb2fbc5794b0b":[9,0,0,14,2],
 "classic_1_1_p_f_candidate.html#ae98e3e5c305931c8b8cbdfad1ce7bc7b":[9,0,0,14,8],
 "classic_1_1_p_f_jet.html":[9,0,0,15],
@@ -238,16 +249,5 @@ var NAVTREEINDEX4 =
 "classic_1_1_trigger_path.html#ac36cf35ef2f059d9e38d9e55524a3013":[9,0,0,24,6],
 "classic_1_1_trigger_path.html#ac54a32ab54525b85aa4fad1f4e393e9e":[9,0,0,24,10],
 "classic_1_1_trigger_path.html#ace64c7e48f9e4ea3c29d3a05e6d286d1":[9,0,0,24,9],
-"classic_1_1_trigger_path.html#ace972ccc8485b4c290bc248c79101905":[9,0,0,24,4],
-"classic_1_1_vertex.html":[9,0,0,25],
-"classic_1_1_vertex.html#a020e4681554f79d1ff7989818c25ba73":[9,0,0,25,9],
-"classic_1_1_vertex.html#a125094978a1e107b2897516729446496":[9,0,0,25,0],
-"classic_1_1_vertex.html#a13abf08edad7afb491375f3b83daf6c9":[9,0,0,25,19],
-"classic_1_1_vertex.html#a25003adfc07c9ee4492e3cd7d32d1be3":[9,0,0,25,20],
-"classic_1_1_vertex.html#a389dcd171359dbca3cd3db0512e13e51":[9,0,0,25,2],
-"classic_1_1_vertex.html#a5a738f25c3fc0947d2b09a4f9f2c179d":[9,0,0,25,8],
-"classic_1_1_vertex.html#a6f541cf722e28886a6362f6e69f7c5b2":[9,0,0,25,1],
-"classic_1_1_vertex.html#a77245285fe2180f84ec4de72e0539d27":[9,0,0,25,13],
-"classic_1_1_vertex.html#a8757b8270820fc85b4ca12daae267a72":[9,0,0,25,6],
-"classic_1_1_vertex.html#a8cd7ddf69925430db71a0871d024e301":[9,0,0,25,12]
+"classic_1_1_trigger_path.html#ace972ccc8485b4c290bc248c79101905":[9,0,0,24,4]
 };

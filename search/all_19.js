@@ -26,6 +26,7 @@ var searchData=
   ['_7eicjetflavourcalculator',['~ICJetFlavourCalculator',['../class_i_c_jet_flavour_calculator.html#a92c70fed1689a3b4a73b8251b2e5bbeb',1,'ICJetFlavourCalculator']]],
   ['_7eicjetproducer',['~ICJetProducer',['../class_i_c_jet_producer.html#ab1eb00adce6cd9424ae8a5e8677f1ffc',1,'ICJetProducer']]],
   ['_7eicl1etmissproducer',['~ICL1EtMissProducer',['../class_i_c_l1_et_miss_producer.html#a553fbb29e33174cdf94c4912a1e8710a',1,'ICL1EtMissProducer']]],
+  ['_7eicleptonisolation',['~ICLeptonIsolation',['../class_i_c_lepton_isolation.html#a5166beba75224e7f4fd9a57f5d07d4ef',1,'ICLeptonIsolation']]],
   ['_7eiclighttrackproducer',['~ICLightTrackProducer',['../class_i_c_light_track_producer.html#afebfb7eafb9f89aacbe2d58678647c3f',1,'ICLightTrackProducer']]],
   ['_7eicmetproducer',['~ICMetProducer',['../class_i_c_met_producer.html#ab2185ffd67d57300f2d161d8df4d2d2f',1,'ICMetProducer']]],
   ['_7eicmuonproducer',['~ICMuonProducer',['../class_i_c_muon_producer.html#a739aaa640a503935e2c563c22e803adc',1,'ICMuonProducer']]],

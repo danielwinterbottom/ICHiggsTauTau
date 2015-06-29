@@ -17,6 +17,7 @@ var searchData=
   ['icjetflavourcalculator',['ICJetFlavourCalculator',['../class_i_c_jet_flavour_calculator.html',1,'']]],
   ['icjetproducer',['ICJetProducer',['../class_i_c_jet_producer.html',1,'']]],
   ['icl1etmissproducer',['ICL1EtMissProducer',['../class_i_c_l1_et_miss_producer.html',1,'']]],
+  ['icleptonisolation',['ICLeptonIsolation',['../class_i_c_lepton_isolation.html',1,'']]],
   ['iclighttrackproducer',['ICLightTrackProducer',['../class_i_c_light_track_producer.html',1,'']]],
   ['icmetproducer',['ICMetProducer',['../class_i_c_met_producer.html',1,'']]],
   ['icmuonproducer',['ICMuonProducer',['../class_i_c_muon_producer.html',1,'']]],

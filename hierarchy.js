@@ -38,6 +38,7 @@ var hierarchy =
       [ "ICJetFlavourCalculator", "class_i_c_jet_flavour_calculator.html", null ],
       [ "ICJetProducer< T, U >", "class_i_c_jet_producer.html", null ],
       [ "ICL1EtMissProducer", "class_i_c_l1_et_miss_producer.html", null ],
+      [ "ICLeptonIsolation< T >", "class_i_c_lepton_isolation.html", null ],
       [ "ICLightTrackProducer", "class_i_c_light_track_producer.html", null ],
       [ "ICMetProducer", "class_i_c_met_producer.html", null ],
       [ "ICMuonProducer", "class_i_c_muon_producer.html", null ],

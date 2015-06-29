@@ -1,5 +1,16 @@
 var NAVTREEINDEX3 =
 {
+"classic_1_1_electron.html#ae412f5a662797968cd0466eab5b7a7a0":[9,0,0,4,21],
+"classic_1_1_electron.html#ae9d99f35a1e6c2600277036a70526077":[9,0,0,4,32],
+"classic_1_1_electron.html#aeb00304f94dbf767296be37c67a9ea9d":[9,0,0,4,53],
+"classic_1_1_electron.html#af4b89669fa42d58564eb3cec47a919ab":[9,0,0,4,12],
+"classic_1_1_electron.html#af7272a8d6450d11002ec284833bd6f41":[9,0,0,4,4],
+"classic_1_1_electron.html#af73f764e8e9c5dafb1e08deb21b1f0b7":[9,0,0,4,39],
+"classic_1_1_electron.html#afa276adbf84970e88330e951682f204e":[9,0,0,4,11],
+"classic_1_1_electron.html#afabe92f74a9963b71ca5f356a1f308f6":[9,0,0,4,6],
+"classic_1_1_event_info.html":[9,0,0,5],
+"classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a":[9,0,0,5,13],
+"classic_1_1_event_info.html#a09f0004aabaf1f44cb52b3f95833bff9":[9,0,0,5,31],
 "classic_1_1_event_info.html#a0dc1c842c318b6af9dc698478d22487d":[9,0,0,5,1],
 "classic_1_1_event_info.html#a128bb7c789654f798c2de966514cf738":[9,0,0,5,2],
 "classic_1_1_event_info.html#a165bf72675293fbc0c19ae9147eec577":[9,0,0,5,28],
@@ -238,16 +249,5 @@ var NAVTREEINDEX3 =
 "classic_1_1_muon.html#afb8ea82e42add946922bb4ef27f7211d":[9,0,0,13,1],
 "classic_1_1_muon.html#afc51367ac7710fc0b195dc48b5fe0d15":[9,0,0,13,75],
 "classic_1_1_p_f_candidate.html":[9,0,0,14],
-"classic_1_1_p_f_candidate.html#a3524ee4de92cd1f8a99aea827efa01cd":[9,0,0,14,0],
-"classic_1_1_p_f_candidate.html#a371a84f486a32988c02cd2ab63511b5e":[9,0,0,14,13],
-"classic_1_1_p_f_candidate.html#a37747861ae480c6db93b6b36bdc4bd0b":[9,0,0,14,6],
-"classic_1_1_p_f_candidate.html#a4458d3099083302f5db061ed2028798b":[9,0,0,14,12],
-"classic_1_1_p_f_candidate.html#a5658c1b5fdf34bfff975ec16d8f974a2":[9,0,0,14,10],
-"classic_1_1_p_f_candidate.html#a5ac1a41ad061b42154fd8a532428436f":[9,0,0,14,7],
-"classic_1_1_p_f_candidate.html#a8f64257510f8f47acafb85468ccfb868":[9,0,0,14,1],
-"classic_1_1_p_f_candidate.html#a938012d864dec6f3e83931683fed0bef":[9,0,0,14,4],
-"classic_1_1_p_f_candidate.html#ab1886f60ea4cb2c91dd74f4c82020735":[9,0,0,14,9],
-"classic_1_1_p_f_candidate.html#abce1b82df08ad28611ac29887f99fd2e":[9,0,0,14,5],
-"classic_1_1_p_f_candidate.html#ac57851ed78884c2e1e515b29346d62eb":[9,0,0,14,3],
-"classic_1_1_p_f_candidate.html#acb9ffee3e424bd345dbf936926d9b86d":[9,0,0,14,11]
+"classic_1_1_p_f_candidate.html#a3524ee4de92cd1f8a99aea827efa01cd":[9,0,0,14,0]
 };
