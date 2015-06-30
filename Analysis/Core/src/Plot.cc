@@ -327,7 +327,7 @@ namespace ic {
         std::string leg_options = "";
         if (ele.draw_fill() && ele.draw_fill_in_legend()) leg_options += "f";
         if (ele.draw_line()) leg_options += "l";
-        if (ele.draw_marker() || ele.draw_stat_error_y()) leg_options += "p";
+        if (ele.draw_marker() || ele.draw_stat_error_y()) leg_options += "pe";
         legend->AddEntry(ele.hist_ptr(),
             ele.legend_text().c_str(),leg_options.c_str());
       }
@@ -365,12 +365,14 @@ namespace ic {
       //title_latex->DrawLatex(0.95,height+0.01,title_right.c_str());
       title_latex->SetTextAlign(11);
       title_latex->DrawLatex(0.17,height,title_left.c_str());
+      //title_latex->DrawLatex(0.17,0.945,title_left.c_str());
     } else {
       title_latex->SetTextSize(0.03);
       title_latex->SetTextAlign(31);
       //title_latex->DrawLatex(0.95,0.965,title_right.c_str());
       title_latex->SetTextAlign(11);
-      title_latex->DrawLatex(0.16,0.965,title_left.c_str());
+      //title_latex->DrawLatex(0.16,0.965,title_left.c_str());
+      title_latex->DrawLatex(0.16,0.967,title_left.c_str());
     }
 
     for (unsigned te = 0; te < texts_.size(); ++te) {
