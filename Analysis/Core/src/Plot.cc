@@ -415,17 +415,17 @@ namespace ic {
       }
     }
 
-    /* 
-    // TLine *line = new TLine(30., 0., 30., elements_[0].hist_ptr()->GetMaximum()); // mT
-    TLine *line = new TLine(-20., 0., -20., 12000);   // Dzeta
+     
+     TLine *line = new TLine(30., 0., 30., 0.75*(elements_[0].hist_ptr()->GetMaximum())); // mT
+    //TLine *line = new TLine(-20., 0., -20., 12000);   // Dzeta
     // TLine *line = new TLine(-0.5, 0., -0.5, 5000000);   // BDT
     TLine *line2 = new TLine(70., 0., 70., elements_[0].hist_ptr()->GetMaximum());
     TLatex *ex_latex = new TLatex();
-    ex_latex->SetTextSize(0.035);
+    ex_latex->SetTextSize(0.032);
     ex_latex->SetTextFont(62);
     ex_latex->SetTextAlign(31);
-    //ex_latex->DrawLatex(27,15000,"#splitline{Baseline}{selection}"); // mT
-    ex_latex->DrawLatex(51,9500,"#splitline{MSSM Baseline}{selection}"); // Dzeta
+    ex_latex->DrawLatex(27,3000,"#splitline{Signal}{region}"); // mT
+    //ex_latex->DrawLatex(51,9500,"#splitline{MSSM Baseline}{selection}"); // Dzeta
     //ex_latex->DrawLatex(0.1,6000,"#splitline{SM Baseline}{selection}"); // BDT
     ex_latex->SetTextAlign(11);
     //ex_latex->DrawLatex(100,6000,"#splitline{High-m_{T}}{control region}");
@@ -438,7 +438,7 @@ namespace ic {
     canv->Update();
     line->Draw();
     //line2->Draw();
-    */
+    
     
     canv->RedrawAxis();
     canv->Update();
