@@ -32,7 +32,7 @@ namespace ic {
     EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo");
     std::vector<Tau*> taus = event->GetPtrVec<Tau>("taus");
     //ic::erase_if(jets,!boost::bind(MinPtMaxEta, _1, 0.0, 5.0));
-    //std::vector<Vertex*> const& vertices = event->GetPtrVec<Vertex>("vertices");
+    std::vector<Vertex*> const& vertices = event->GetPtrVec<Vertex>("vertices");
 
     // static double min_mass = 100.0;
     // std::vector<GenParticle*> parts = event->GetPtrVec<GenParticle>("genParticles");
@@ -51,12 +51,16 @@ namespace ic {
     std::cout << "event: " <<  eventInfo->event() << " lumi: " << eventInfo->lumi_block() << " run: " << eventInfo->run() << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
     std::cout << "nGoodVertices: " << eventInfo->good_vertices() << std::endl;
+    for (unsigned i=0; i < vertices.size(); ++i){
+      std::cout << "Vertex "<< i <<" "<<vertices[i]->vz()<<std::endl;
+    }
     std::cout << "Jet Rho: " << eventInfo->jet_rho() << std::endl;
     
 
     for (unsigned i = 0; i < taus.size(); ++i) {
       std::cout << "Tau " << i << std::endl;
       taus[i]->Print();
+      std::cout << "Ref point dZ: "<<taus[i]->vz() <<std::endl;
       std::cout << "-decay_mode: " << taus[i]->decay_mode() << std::endl;
       std::cout << "-lead_track_dz_with_vertex: " << taus[i]->lead_dz_vertex() << std::endl;
       std::cout << "-e_over_p: " << ((taus[i]->lead_ecal_energy() + taus[i]->lead_hcal_energy()) / taus[i]->lead_p()) << std::endl;
@@ -145,6 +149,13 @@ namespace ic {
           ROOT::Math::VectorUtil::DeltaR(elecs[i]->vector(), taus[j]->vector()) << std::endl;
       }
     }
+    for (unsigned i = 0; i < taus.size(); ++i) {
+      for (unsigned j = 0; j < taus.size(); ++j) {
+        std::cout << "Tau " << i << ", Tau " << j << " DR: " <<
+          ROOT::Math::VectorUtil::DeltaR(taus[i]->vector(), taus[j]->vector()) << std::endl;
+      }
+    }
+
     std::map<std::size_t, Met *> const& met_map = event->GetIDMap<Met>("pfMVAMetVector");
     for (auto met_pair : met_map) {
       std::cout << "MVA MET: " << met_pair.second->pt() << std::endl;

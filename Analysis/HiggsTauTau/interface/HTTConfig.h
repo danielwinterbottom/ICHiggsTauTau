@@ -45,7 +45,8 @@ public:
 struct strategy_def {
 	enum type {
 		paper2013,				// Strategy for the final paper in 2013
-		phys14				// Strategy for running on phys14 samples
+		phys14,				// Strategy for running on phys14 samples
+    spring15    //Strategy for running on spring15 samples
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -53,7 +54,8 @@ typedef safe_enum<strategy_def> strategy;
 inline std::string Strategy2String(strategy const& in) {
 	static std::map<strategy, std::string> conv = boost::assign::map_list_of
 		(strategy::paper2013, 	"paper2013")
-		(strategy::phys14, 	"phys14");
+		(strategy::phys14, 	"phys14")
+    (strategy::spring15, "spring15");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -65,7 +67,8 @@ inline std::string Strategy2String(strategy const& in) {
 inline strategy String2Strategy(std::string const& in) {
 	static std::map<std::string, strategy> conv = boost::assign::map_list_of
 	("paper2013", 	strategy::paper2013)
-	("phys14", 	strategy::phys14);
+	("phys14", 	strategy::phys14)
+  ("spring15", strategy::spring15);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {

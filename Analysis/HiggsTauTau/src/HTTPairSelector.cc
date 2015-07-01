@@ -9,7 +9,7 @@
 
 namespace ic {
 
-  HTTPairSelector::HTTPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et) {
+  HTTPairSelector::HTTPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et),strategy_(strategy::paper2013) {
     pair_label_ = "emtauCandidates";
     mva_met_from_vector_ = true;
     faked_tau_selector_ = 0;
@@ -168,7 +168,14 @@ namespace ic {
    // Scale met for the tau energy scale shift
    // ************************************************************************
     if (scale_met_for_tau_ && channel_ != channel::em) {
-      Met * met = event->GetPtr<Met>(met_label_);
+      Met * met;
+      if(strategy_ == strategy::paper2013){
+       met = event->GetPtr<Met>(met_label_);
+      } else{
+      std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+       met = met_vec.at(0);
+      }
+//      Met * met = event->GetPtr<Met>(met_label_);
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       double t_scale = tau_scale_;
       if (event->Exists("tau_scales")) {
@@ -196,7 +203,16 @@ namespace ic {
     // Scale met for the electron energy scale shift
     // ************************************************************************
     if (scale_met_for_tau_ && channel_ == channel::em) {
-      Met * met = event->GetPtr<Met>(met_label_);
+      Met * met;// = event->GetPtr<Met>(met_label_);
+      if(strategy_ == strategy::paper2013){
+        met = event->GetPtr<Met>(met_label_);
+      } else {
+        std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+         met = met_vec.at(0);
+      }
+//      Met * met = event->GetPtr<Met>(met_label_);
+
+//      Met * met = event->GetPtr<Met>(met_label_);
       Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
       double metx = met->vector().px();
       double mety = met->vector().py();

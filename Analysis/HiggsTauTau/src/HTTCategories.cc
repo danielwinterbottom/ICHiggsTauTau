@@ -20,7 +20,7 @@ namespace ic {
       strategy_(strategy::paper2013) {
       ditau_label_ = "emtauCandidates";
       jets_label_ = "pfJetsPFlow";
-      met_label_ = "pfMVAMet";
+      met_label_ = "pfMVAMetNoLeptons";
       mass_shift_ = 1.0;
       fs_ = NULL;
       write_tree_ = true;
@@ -516,7 +516,10 @@ namespace ic {
     CompositeCandidate const* ditau = ditau_vec.at(0);
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
-    Met const* mets = event->GetPtr<Met>(met_label_);
+//    std::vector <Met const* mets = event->GetPtrVec<Met>(met_label_);
+    std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+    Met const* mets = met_vec.at(0);  
+
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
     std::vector<PFJet*> corrected_jets;
     if(bjet_regression_) corrected_jets = event->GetPtrVec<PFJet>(jets_label_+"Corrected");
@@ -602,7 +605,7 @@ namespace ic {
       phi_h_ = -9999;
     }
 
-    pt_tt_ = (ditau->vector() + mets->vector()).pt();
+//    pt_tt_ = (ditau->vector() + mets->vector()).pt();
     m_vis_ = ditau->M();
    
 
@@ -626,6 +629,7 @@ namespace ic {
     pzeta_ = PZeta(ditau, mets, 0.85);
     pzetavis_ = PZetaVis(ditau);
     pzetamiss_ = PZeta(ditau, mets, 0.0);
+
     emu_dphi_ = std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lep1->vector(), lep2->vector()));
 
     pt_1_ = lep1->pt();
@@ -650,7 +654,7 @@ namespace ic {
     //slightly different pfMET format for new ntuples
     if(strategy_ == strategy::paper2013) pfmet = event->GetPtr<Met>("pfMet");
     if(strategy_ == strategy::phys14) {
-      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
+      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetType1");
       pfmet = pfMet_vec.at(0);  
     }
     pfmet_ = pfmet->pt();

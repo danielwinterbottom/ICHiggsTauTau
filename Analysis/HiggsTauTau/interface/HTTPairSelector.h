@@ -23,6 +23,7 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, ic::channel, channel)
   CLASS_MEMBER(HTTPairSelector, std::string, pair_label)
   CLASS_MEMBER(HTTPairSelector, std::string, met_label)
+  CLASS_MEMBER(HTTPairSelector, ic::strategy, strategy) 
   CLASS_MEMBER(HTTPairSelector, bool, mva_met_from_vector)
   CLASS_MEMBER(HTTPairSelector, bool, use_most_isolated)
   CLASS_MEMBER(HTTPairSelector, bool, use_os_preference)
