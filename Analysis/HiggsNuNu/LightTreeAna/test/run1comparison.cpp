@@ -154,7 +154,7 @@ int main(int argc, char* argv[]){
     shape.push_back("n_jets_cjv_30(5,0,5)");histTitle.push_back(";CJV jets (30 GeV);Events");
     shape.push_back("n_jets_cjv_20EB_30EE(5,0,5)");histTitle.push_back(";CJV jets (20 GeV EB, 30 GeV EE);Events");
     shape.push_back("dijet_dphi(15,0.,3.1416)");histTitle.push_back(";#Delta#phi_{jj};Events");
-    shape.push_back("dijet_deta(18,3.6,7.)");histTitle.push_back(";#Delta#eta_{jj};Events");
+    shape.push_back("dijet_deta(50,0.,10.)");histTitle.push_back(";#Delta#eta_{jj};Events");
     shape.push_back("lep_mt(20,0.,200.)");histTitle.push_back(";m_{T}(lepton+MET) (GeV);Events");
     shape.push_back("dijetmetnomu_ptfraction(20,0.,1.)");histTitle.push_back(";p_{T}^{dijet}/(p_{T}^{dijet}+METnoMu);Events");
     //    shape.push_back("ele1_pt(40,0.,200.)");histTitle.push_back(";p_{T}(electron) (GeV);Events");
@@ -172,6 +172,12 @@ int main(int argc, char* argv[]){
     shape.push_back("genjet1_eta(50,-5.,5.)");histTitle.push_back(";gen #eta_{j1};Events");
     shape.push_back("genjet2_phi(16,-3.2,3.2)");histTitle.push_back(";gen #phi_{j2};Events");
     shape.push_back("genjet1_phi(16,-3.2,3.2)");histTitle.push_back(";gen #phi_{j1};Events");
+    shape.push_back("digenjet_M(30,0.,3000.)");histTitle.push_back(";M_{jj} (GeV);Events");
+    shape.push_back("digenjet_dphi(15,0.,3.1416)");histTitle.push_back(";#Delta#phi_{jj};Events");
+    shape.push_back("digenjet_deta(50,0.,10.)");histTitle.push_back(";#Delta#eta_{jj};Events");
+    shape.push_back("genjet3_pt(35,0.,350.)");histTitle.push_back(";gen p_{T}^{j3} (GeV);Events");
+    shape.push_back("genjet3_eta(50,-5.,5.)");histTitle.push_back(";gen #eta_{j3};Events");
+    shape.push_back("genjet3_phi(16,-3.2,3.2)");histTitle.push_back(";gen #phi_{j3};Events");
 
 
     // if(channel=="mumu"){
@@ -1238,23 +1244,23 @@ int main(int argc, char* argv[]){
     elementvec.push_back(run1wtaunuele);
   }
 
-  HistPlotter plotter("plotter");
+  HistPlotter plotter("plotter");//!!
   plotter.set_dirname("ControlPlots")
     .set_do_debug(do_debug)
     .set_add_underflows(false)
-    .set_add_overflows(true)
+    .set_add_overflows(false)
     .set_elements(elementvec)
     .set_do_ratio(true)
     //.set_histTitles(histTitle)
     .set_shapes(shapevec);
   //  if(channel=="nunu"&&runblind)plotter.set_do_ratio(false);
 
-  HistPlotter normplotter("normplotter");
+  HistPlotter normplotter("normplotter");//!!
   normplotter.set_dirname("NormControlPlots")
     .set_do_debug(do_debug)
     .set_outsuffix("_norm")
     .set_add_underflows(false)
-    .set_add_overflows(true)
+    .set_add_overflows(false)
     .set_elements(elementvec)
     .set_do_norm(true)
     .set_do_ratio(true)
@@ -1351,10 +1357,10 @@ int main(int argc, char* argv[]){
   }
   if(channel=="munu"){
     analysis->AddModule(&wmunuraw);
-    analysis->AddModule(&wtaunuraw);
+    analysis->AddModule(&run1wmunuraw);
   }
   if(channel=="taunu"){
-    analysis->AddModule(&run1wmunuraw);
+    analysis->AddModule(&wtaunuraw);
     analysis->AddModule(&run1wtaunuraw);
   }
   // analysis->AddModule(&signal150);
@@ -1367,7 +1373,7 @@ int main(int argc, char* argv[]){
   // analysis->AddModule(&ggHsignal200);
   // analysis->AddModule(&ggHsignal300);
   // analysis->AddModule(&ggHsignal400);
-  //analysis->AddModule(&plotter);
+  analysis->AddModule(&plotter);
   analysis->AddModule(&normplotter);
   //analysis->AddModule(&summary);
   //}

@@ -23,7 +23,7 @@
 
 namespace ic{
 
-  void DrawCMSLogo(TPad* pad, TString cmsText, TString extraText, int iPosX,
+    void DrawCMSLogoTest(TPad* pad, TString cmsText, TString extraText, int iPosX,
 		   float relPosX, float relPosY, float relExtraDY) {
     TVirtualPad *pad_backup = gPad;
     pad->cd();
@@ -128,58 +128,10 @@ namespace ic{
     pad_backup->cd();
   }
 
-  void DrawCMSLogo(TPad* pad, TString cmsText, TString extraText, int iPosX) {
-    DrawCMSLogo(pad, cmsText, extraText, iPosX, 0.045, 0.035, 1.2);
+  void DrawCMSLogoTest(TPad* pad, TString cmsText, TString extraText, int iPosX) {
+    DrawCMSLogoTest(pad, cmsText, extraText, iPosX, 0.045, 0.035, 1.2);
   }
-
-  LTPlotElement::LTPlotElement(){
-    unit_="GeV";
-    in_stack_=false;
-    is_inrationum_=false;
-    is_inratioden_=false;
-    has_dderrors_=0;
-  };
-
-  LTPlotElement::~LTPlotElement(){ ;};
-
-  LTShapeElement::LTShapeElement(){
-    dology_=false;
-    axisrangemultiplier_=1.2;
-    legleft_=0.67;
-    legright_=0.89;
-  };
-
-  LTShapeElement::~LTShapeElement(){ ;};
-
-  void LTPlotElement::ApplyStyle(){
-    hist_ptr_->SetName(legname_.c_str());
-    hist_ptr_->Scale(scale_);
-    if(draw_marker_){
-      hist_ptr_->SetMarkerColor(marker_color_);
-      hist_ptr_->SetMarkerStyle(marker_style_);
-      hist_ptr_->SetMarkerSize(marker_size_);
-      drawopts_+="P";
-      legopts_+="p";
-    }
-    if(draw_fill_){
-      hist_ptr_->SetFillColor(fill_color_);
-      hist_ptr_->SetFillStyle(fill_style_);
-      hist_ptr_->SetLineColor(line_color_);
-      drawopts_+="hist";
-      legopts_+="f";
-    }
-    if(draw_line_){
-      hist_ptr_->SetLineColor(line_color_);
-      hist_ptr_->SetLineStyle(line_style_);
-      hist_ptr_->SetLineWidth(line_width_);
-      legopts_+="l";
-    }
-    if(draw_stat_error_y_==true){
-      drawopts_+="E1";
-      legopts_+="e";
-    }
-  };
-
+  
   void HistPlotter::SetMCStackStyle(ic::LTPlotElement* ele) {
     ele->set_fill_color(ele->color());
     ele->set_fill_style(1001);
@@ -193,7 +145,7 @@ namespace ic{
   }
   void HistPlotter::SetSignalStyle(ic::LTPlotElement* ele) {
     ele->set_fill_style(1001);
-    ele->set_draw_fill(true);
+    ele->set_draw_fill(false);
     ele->set_draw_marker(false);
     ele->set_draw_line(true);
     ele->set_draw_stat_error_y(false);
@@ -244,9 +196,9 @@ namespace ic{
     TFile* file=fs_;
     gStyle->SetOptStat(0);
     //GET DIRECTORY TO WRITE TO
-    TDirectory* stacksdir;
-    TDirectory* numsdir;
-    TDirectory* densdir;
+    TDirectory* stacksdir=0;
+    TDirectory* numsdir=0;
+    TDirectory* densdir=0;
     if(!fs_->GetDirectory("stacksdir")){
       stacksdir=file->mkdir("stacksdir");
       numsdir=file->mkdir("numsdir");
@@ -262,7 +214,7 @@ namespace ic{
       densdir=file->mkdir(("densdir"+idir));
     }
 
-    TDirectory* writedir;
+    TDirectory* writedir=0;
     if(dirname_==""){
       writedir=file->mkdir("controlplots");
     }
@@ -274,24 +226,41 @@ namespace ic{
     }
     writedir->cd();
 
-    //SETUP STYLE
-    for(unsigned iElement=0;iElement<elements_.size();iElement++){
+    TCanvas* c1= new TCanvas("canvas","canvas");
+    c1->cd();
+    
+    double uppermin=0;
+    if(do_ratio_) uppermin=0.3;
+    else uppermin=0.;
+    TPad* upper = new TPad("upper","pad",0, uppermin ,1 ,1);
+    TPad* lower = new TPad("lower","pad",0, 0   ,1 ,uppermin);
+    if(do_ratio_){
+      upper->SetBottomMargin(0.03);
+      lower->SetTopMargin(0.08);
+      lower->SetBottomMargin(0.38);
+      lower->Draw();
+      lower->SetGridy();
     }
-
-//     if(histTitles_.size()!=shapes_.size()){
-//       std::cout<<"histTitles must be of the same size as shapes. Exiting with status 1"<<std::endl;
-//       return 1;
-//     }
+    else{
+      upper->SetBottomMargin(0.15);
+    }
+    upper->Draw();
+    c1->cd();
 
     //LOOP OVER ALL THE VARIABLES TO PLOT
     for(unsigned iShape=0;iShape<shapes_.size();iShape++){
       std::cout<<"  Drawing plot for "<<shapes_[iShape].name()<<std::endl;
+      std::cout<<iShape<<std::endl;
+
+      c1->SetTitle(shapes_[iShape].name().c_str());
+      c1->SetName(shapes_[iShape].name().c_str());
+      upper->SetLogy(shapes_[iShape].dology());
+      //upper->Update();
+
       THStack *stack=new THStack(("stack"+shapes_[iShape].name()).c_str(),("stacked "+shapes_[iShape].name()+" plots").c_str());
       bool stackempty=true;
-
-      //      if(!do_ratio_) stack->SetTitle(histTitles_[iShape].name().c_str());
+      
       if(!do_ratio_) stack->SetTitle(shapes_[iShape].histtitle().c_str());
-      //stack->GetXaxis()->SetTitle(shapes_[iShape].c_str());
 
       //EXTRACT ALL THE HISTOS AND PUT THEM IN STACKED OR UNSTACKED GROUPS
       std::cout<<"    Getting histograms.."<<std::endl;
@@ -300,16 +269,23 @@ namespace ic{
 	  std::cout<<"ERROR: Element with empty name exiting with status 1"<<std::endl;
 	  return 1;
 	}
-	//std::cout<<"      "<<elements_[iElement].sample()<<std::endl;
 	if(!fs_->GetDirectory(elements_[iElement].sample().c_str())){
 	  std::cout<<"ERROR: No directory with name: "<<elements_[iElement].sample()<<std::endl;
 	  std::cout<<"Exiting with status 1"<<std::endl;
 	  return 1;
 	}
 	writedir->cd();
-	TH1F* histo =dynamic_cast<TH1F*>(file->Get((elements_[iElement].sample()+"/"+shapes_[iShape].name()).c_str()));
+	TH1F* histo=0;
+	if(file->Get((elements_[iElement].sample()+"/"+shapes_[iShape].name()).c_str())){
+	  histo =dynamic_cast<TH1F*>(file->Get((elements_[iElement].sample()+"/"+shapes_[iShape].name()).c_str()));
+	}
+	else{
+	  std::cout<<"histo didn't open properly"<<std::endl;
+	  return 1;
+	}
 	writedir->cd();
-
+	
+	//Do blinding of shapes
 	for(unsigned iblindshape=0;iblindshape<elements_[iElement].blindvar().size();iblindshape++){
 	  if(shapes_[iShape].name()==elements_[iElement].blindvar()[iblindshape]){
 	    for (int j = 0; j < histo->GetNbinsX(); ++j) {
@@ -324,10 +300,11 @@ namespace ic{
 	    }
 	  }
 	}
+	
 	if(do_norm_){
 	  if(Integral(histo)!=0)histo->Scale(1/(Integral(histo)));
 	}
-
+	
 	if (add_underflows_ || add_overflows_){
 	  int tmpbins = histo->GetNbinsX();
 	  double tmpmin = histo->GetXaxis()->GetBinLowEdge(1);
@@ -366,8 +343,8 @@ namespace ic{
 
 	  elements_[iElement].set_hist_ptr(histTmp);
 	}
-	else 
-	  elements_[iElement].set_hist_ptr(histo);
+	else elements_[iElement].set_hist_ptr(histo);
+
 	
 	//SETUP STYLE
 	if(elements_[iElement].is_data()){
@@ -380,59 +357,72 @@ namespace ic{
 	else{
 	  SetSignalStyle(&(elements_[iElement]));
 	}
+	
+	elements_[iElement].hist_ptr()->SetName(elements_[iElement].legname().c_str());
+	elements_[iElement].hist_ptr()->Scale(elements_[iElement].scale());
+	if(elements_[iElement].draw_marker()){
+	  elements_[iElement].hist_ptr()->SetMarkerColor(elements_[iElement].marker_color());
+	  elements_[iElement].hist_ptr()->SetMarkerStyle(elements_[iElement].marker_style());
+	  elements_[iElement].hist_ptr()->SetMarkerSize(elements_[iElement].marker_size());
+	  elements_[iElement].set_drawopts(elements_[iElement].drawopts()+"P");
+	  elements_[iElement].set_legopts(elements_[iElement].legopts()+"P");
+	}
+	//!!
+	
+	if(elements_[iElement].draw_fill()){
+	  elements_[iElement].hist_ptr()->SetFillColor(elements_[iElement].fill_color());
+	  elements_[iElement].hist_ptr()->SetFillStyle(elements_[iElement].fill_style());
+	  elements_[iElement].hist_ptr()->SetLineColor(elements_[iElement].line_color());
+	  elements_[iElement].set_drawopts(elements_[iElement].drawopts()+"hist");
+	  elements_[iElement].set_legopts(elements_[iElement].legopts()+"f");
+	}
+	
+	if(elements_[iElement].draw_line()){
+	  elements_[iElement].hist_ptr()->SetLineColor(elements_[iElement].line_color());
+	  elements_[iElement].hist_ptr()->SetLineStyle(elements_[iElement].line_style());
+	  elements_[iElement].hist_ptr()->SetLineWidth(elements_[iElement].line_width());
+	  elements_[iElement].set_legopts(elements_[iElement].legopts()+"l");
+	}
+	
+	if(elements_[iElement].draw_stat_error_y()==true){
+	  elements_[iElement].set_drawopts(elements_[iElement].drawopts()+"E1");
+	  elements_[iElement].set_legopts(elements_[iElement].legopts()+"e");
+	}
+	
+	/*
 	elements_[iElement].ApplyStyle();
-
+	*/
 	//ADD STACKED HISTOS TO STACK
 	if((!elements_[iElement].is_data())&&elements_[iElement].in_stack()){
 	  stack->Add(elements_[iElement].hist_ptr());
 	}
+	
       }
       stacksdir->cd();
       stack->Write();
-    
-      //SETUP THE CANVAS
-      TCanvas c1(shapes_[iShape].name().c_str(),shapes_[iShape].name().c_str());
-      c1.cd();
-      TPad* upper = nullptr;
-      TPad* lower = nullptr;
-      if(do_ratio_){
-	  upper = new TPad("upper","pad",0, 0.3 ,1 ,1);
-	  lower = new TPad("lower","pad",0, 0   ,1 ,0.3);
-	  upper->SetBottomMargin(0.03);
-	  upper->Draw();
-	  upper->cd();
-	  upper->SetLogy(shapes_[iShape].dology());
-      }
-      else{
-	upper = new TPad("upper","pad",0, 0. ,1 ,1);
-	upper->SetBottomMargin(0.15);
-	upper->Draw();
-	upper->cd();
-	upper->SetLogy(shapes_[iShape].dology());
-      }
+
+      //Get maximum
       bool first=true;
       double ymax=0;
       if(!stackempty) ymax=stack->GetMaximum();
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(elements_[iElement].hist_ptr()->GetMaximum()>ymax) ymax=elements_[iElement].hist_ptr()->GetMaximum();
       }
-      
+      upper->cd();
       //DRAW THE STACK AND ALL THE UNSTACKED HISTOS INCLUDING THE DATA
       if(!stackempty){ 
 	std::cout<<"    Drawing Stack.."<<std::endl;
 	if(first){
-	  //std::cout<<"ymax: "<<ymax<<std::endl;//!!
 	  if(ymax>=1){
 	    stack->SetMaximum(shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)));
 	  }
 	  else{
 	    stack->SetMaximum(shapes_[iShape].axisrangemultiplier()*(ymax));
 	  }
-	  //stack->GetXaxis()->SetTitle("");
 	  upper->cd();
 	  stack->Draw("hist");
-	  upper->Update();
-	  c1.Update();
+	  //upper->Update();
+	  //c1->Update();
 	  first=false;
 	  stack->GetYaxis()->SetLabelSize(0.06);
  	  stack->GetYaxis()->SetTitleFont(62);
@@ -454,7 +444,6 @@ namespace ic{
 	    stack->GetXaxis()->SetTitle(xtitle.c_str());
 	  }
 	  std::string ytitle;
-	  //	    ytitle=histTitles_[iShape].substr(histTitles_[iShape].find(";")+1);
 	  ytitle=shapes_[iShape].histtitle().substr(shapes_[iShape].histtitle().find(";")+1);
 	  ytitle=ytitle.substr(ytitle.find(";")+1);
 	  ytitle=ytitle.substr(0,ytitle.find(";"));
@@ -466,10 +455,12 @@ namespace ic{
             stack->GetXaxis()->SetTitle(xtitle.c_str());
 	    stack->SetTitle((";"+xtitle+";"+ytitle).c_str());
 	  }
-	  c1.Update();
+	  //c1->Update();
 	}
 	else stack->Draw("histsame");
-      }
+	//c1->Update();
+	}
+
       std::cout<<"    Drawing Unstacked.."<<std::endl;
       for(unsigned iElement=0;iElement<elements_.size();iElement++){
 	if(do_debug_)std::cout<<"  "<<elements_[iElement].hist_ptr()->GetName()<<std::endl;
@@ -484,8 +475,8 @@ namespace ic{
 	      else{
 		elements_[iElement].hist_ptr()->GetYaxis()->SetRangeUser(0,shapes_[iShape].axisrangemultiplier()*(ymax));
 	      }
-	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
-	      //c1.Update();
+	      //!!	      elements_[iElement].hist_ptr()->Draw(elements_[iElement].drawopts().c_str());
+	      //c1->Update();
 	      first=false;
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetLabelSize(0.06);
 	      elements_[iElement].hist_ptr()->GetYaxis()->SetTitleSize(0.095);
@@ -515,8 +506,8 @@ namespace ic{
 	      elements_[iElement].hist_ptr()->Draw(("same"+elements_[iElement].drawopts()).c_str());
 	    }
 	  }
-	  else{
-	    //Do asymmetric data errors
+	  //!!
+	  else{//For data do asymmetric data errors
 	    const double alpha = 1 - 0.6827;
 	    TGraphAsymmErrors * g = new TGraphAsymmErrors(elements_[iElement].hist_ptr());
 	    g->SetMarkerSize(1.1);
@@ -535,7 +526,7 @@ namespace ic{
 	      g->Draw(elements_[iElement].drawopts().c_str());
 	      g->GetYaxis()->SetRangeUser(0.,shapes_[iShape].axisrangemultiplier()*(ymax+sqrt(ymax)+1));
 	      g->Draw(elements_[iElement].drawopts().c_str());
-	      c1.Update();
+	      //c1->Update();
 	      first=false;
 	      g->GetYaxis()->SetLabelSize(0.06);
 	      g->GetYaxis()->SetTitleSize(0.095);
@@ -561,8 +552,8 @@ namespace ic{
 	      g->SetTitle(ytitle.c_str());
 	    }
 	    else g->Draw("sameP");
-
 	  }
+	  
 	}
       }
       if(do_debug_)std::cout<<"  Drawing legend"<<std::endl;
@@ -572,7 +563,7 @@ namespace ic{
       double legright=shapes_[iShape].legright();
       double legbottom=0.3+((10-elements_.size())*(0.89-0.3)/10);
       if(legbottom<0.3||legbottom>0.89)legbottom=0.3;
-      TLegend* leg =new TLegend(legleft,legbottom,legright,0.89);
+      TLegend* leg=new TLegend(legleft,legbottom,legright,0.89);
       leg->SetName("thelegend");
       leg->SetTextSize(0.06);
       leg->SetFillStyle(0);
@@ -584,38 +575,18 @@ namespace ic{
       if(do_debug_)std::cout<<"  All entries added"<<std::endl;
 
       leg->Draw("same");
-      c1.Update();
+      //c1->Update();
+      //leg->Delete();
       if(do_debug_)std::cout<<"  Drawing CMS Logo"<<std::endl;      
-      DrawCMSLogo(upper,"CMS","preliminary",10);
-
-//       TLatex* lat=new TLatex();
-//       lat->SetNDC();
-// 	//lat->SetTextSize(0.06);
-//       lat->SetTextFont(42);
-
-//       TLatex* lat2 = new TLatex();
-//       lat2->SetNDC();
-//       lat2->SetTextSize(0.04);
-//       lat2->SetTextFont(42);
-
-//       lat->DrawLatex(0.14,0.85,"CMS Preliminary");
-//       lat->DrawLatex(0.14,0.78,"VBF H #rightarrow invisible");
-
-
-//       lat2->DrawLatex(0.14,0.665,"#sqrt{s} = 8 TeV, L = 19.2 fb^{-1}");
-
-      c1.Update();
-
+      DrawCMSLogoTest(upper,"CMS","preliminary",10);
+      upper->cd();
+      //c1->Update();
       //DRAW RATIO PLOT
+      //!!
       if(do_ratio_){
 	std::cout<<"  Drawing ratio plot"<<std::endl;
-	c1.cd();
-	lower->SetTopMargin(0.08);
-	lower->SetBottomMargin(0.38);
-	lower->Draw();
+	c1->cd();
 	lower->cd();
-	lower->SetGridy();
-
 		
 	bool firstnum=true;
 	bool firstden=true;
@@ -687,7 +658,7 @@ namespace ic{
 
 	  
 	  //DIVIDE NUM BY DEN and put in ratio
-	  TH1F* ratio;
+	  TH1F* ratio=0;
 	  ratio=(TH1F*)(num->Clone("ratio"));
 	  ratio->GetYaxis()->SetNdivisions(505);
 	  ratio->GetYaxis()->SetNdivisions(505);
@@ -750,11 +721,11 @@ namespace ic{
 
 
 
-	  TF1* fiterrup;
-	  TF1* fiterrdown;
-	  TLine *averageLine;
-	  TLine *averageupLine;
-	  TLine *averagedownLine;
+	  TF1* fiterrup=0;
+	  TF1* fiterrdown=0;
+	  TLine *averageLine=0;
+	  TLine *averageupLine=0;
+	  TLine *averagedownLine=0;
 	  if(do_ratio_fitline_){
 	    //ratio->Fit("pol0","E");
 	    averageLine = new TLine(ratio->GetXaxis()->GetBinLowEdge(1),Integral(num)/Integral(den),ratio->GetXaxis()->GetBinLowEdge(ratio->GetNbinsX()+1),Integral(num)/Integral(den));
@@ -803,9 +774,9 @@ namespace ic{
 	    upperLine->Draw();
 	  }
 	}
-      }
+	}
       //save as PDF
-      c1.Update();
+      //c1->Update();
       std::ostringstream lsave;
       std::ostringstream lsavepng;
       std::string tmpstr = file->GetName();
@@ -814,29 +785,33 @@ namespace ic{
       lsave << tmpstr ;
       lsave << ".pdf" ;
       if (iShape==0) {
-	lsave << "[";
-	c1.Print(lsave.str().c_str());//open the file
-	lsave.str("");//reset for adding the first plot
-	lsave << tmpstr ;
-	lsave << ".pdf" ;
+      	lsave << "[";
+      	c1->Print(lsave.str().c_str());//open the file
+      	lsave.str("");//reset for adding the first plot
+      	lsave << tmpstr ;
+      	lsave << ".pdf" ;
       }
-      c1.Print(lsave.str().c_str());
+      c1->Print(lsave.str().c_str());
       if (iShape==shapes_.size()-1) {
-	lsave << "]";
-	c1.Print(lsave.str().c_str());//close the file
+      	lsave << "]";
+      	c1->Print(lsave.str().c_str());//close the file
       }
 
       lsave.str("");
-      lsave << tmpstr << "_" << c1.GetName() << ".pdf" ;
-      c1.Print((lsave.str()).c_str());
+      lsave << tmpstr << "_" << c1->GetName() << ".pdf" ;
+      c1->Print((lsave.str()).c_str());
       lsavepng.str("");
-      lsavepng << tmpstr << "_" << c1.GetName() << ".png" ;
-      c1.Print((lsavepng.str()).c_str());
+      lsavepng << tmpstr << "_" << c1->GetName() << ".png" ;
+      c1->Print((lsavepng.str()).c_str());
 
       //WRITE TO FILE
       writedir->cd();
-      c1.Write();
-      c1.Close();
+      c1->Write();
+      //upper->Close();
+      //lower->Close();
+      c1->Clear("D");
+      //      upper->Clear();
+      //      lower->Clear();
     }
     writedir->Close();
 
