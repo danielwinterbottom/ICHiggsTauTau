@@ -1041,7 +1041,7 @@ void HTTSequence::BuildEMPairs() {
    
 
 //Isolation applied at plotting time for run 2 analysis   
-if(strategy_type != strategy::phys14 ) {
+if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
  if (js["baseline"]["lep_iso"].asBool()&&special_mode!=22&&special_mode!=20&&special_mode !=25 &&special_mode != 23 &&strategy_type==strategy::paper2013) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
@@ -1056,13 +1056,13 @@ if(strategy_type != strategy::phys14 ) {
         }));
   }
 
-  if (js["baseline"]["lep_iso"].asBool() &&strategy_type==strategy::phys14) {
+/*  if (js["baseline"]["lep_iso"].asBool() &&strategy_type==strategy::phys14) {
     BuildModule(SimpleFilter<Electron>("ElectronIsoFilter")
         .set_input_label("sel_electrons").set_min(1)
         .set_predicate([=](Electron const* e) {
             return PF03IsolationVal(e, 0.5,1)<0.15;
         }));
-  }
+  }*/
 }
 
 //  BuildModule(OverlapFilter<Electron, Muon>("ElecMuonOverlapFilter")
@@ -1187,7 +1187,7 @@ void HTTSequence::BuildTauSelection(){
       }));
 
 //Isolation and anti-muon/anti-electron discriminators applied at plotting time for run 2 analysis   
-if(strategy_type!=strategy::phys14) {
+if(strategy_type!=strategy::phys14&&strategy_type!=strategy::spring15) {
   if (base["lep_iso"].asBool()) {
   if(strategy_type!= strategy::phys14 && strategy_type!=strategy::paper2013 && strategy_type!=strategy::spring15){
     BuildModule(SimpleFilter<Tau>("TauIsoFilter")

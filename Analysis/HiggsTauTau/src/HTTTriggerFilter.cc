@@ -302,7 +302,15 @@ namespace ic {
           alt_trig_obj_label = "triggerObjectsIsoMu24IterTrk";
           alt_leg1_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f20QL3f24QL3crIsoRhoFiltered0p15IterTrk02";
           alt_leg2_filter = "";
-        }
+        } else if (mc_ == mc::spring15_74X) {
+           trig_obj_label  = "triggerObjectsIsoMu17LooseTau20";
+          leg1_filter     = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
+          leg2_filter     = "hltL1sMu16erTauJet20er";
+          extra_leg2_filter = "hltOverlapFilterIsoMu17LooseIsoPFTau20";
+          alt_trig_obj_label = "triggerObjectsIsoMu24IterTrk";
+          alt_leg1_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09";
+          alt_leg2_filter = "";
+        } 
       } else if (channel_ == channel::em) {
         if (mc_ == mc::fall11_42X) {
           trig_obj_label            = "triggerObjectsMu8Ele17";

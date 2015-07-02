@@ -172,10 +172,9 @@ namespace ic {
       if(strategy_ == strategy::paper2013){
        met = event->GetPtr<Met>(met_label_);
       } else{
-      std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+       std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
        met = met_vec.at(0);
       }
-//      Met * met = event->GetPtr<Met>(met_label_);
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       double t_scale = tau_scale_;
       if (event->Exists("tau_scales")) {
@@ -208,11 +207,9 @@ namespace ic {
         met = event->GetPtr<Met>(met_label_);
       } else {
         std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
-         met = met_vec.at(0);
+        met = met_vec.at(0);
       }
-//      Met * met = event->GetPtr<Met>(met_label_);
 
-//      Met * met = event->GetPtr<Met>(met_label_);
       Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
       double metx = met->vector().px();
       double mety = met->vector().py();

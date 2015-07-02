@@ -469,7 +469,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 ) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || strategy_==strategy::spring15) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -497,7 +497,7 @@ namespace ic {
     if (event->Exists("wt_tau_id_down"))    wt_tau_id_down_ = event->Get<double>("wt_tau_id_down");
   
   mc_weight_ = 0.0;
-  if (!is_embedded_ && event->Exists("pileupInfo") && strategy_!=strategy::phys14) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
+  if (!is_embedded_ && event->Exists("pileupInfo") && strategy_!=strategy::phys14 && strategy_!=strategy::spring15) pu_weight_ = eventInfo->weight("pileup"); else pu_weight_ = 0.0;
   if (event->Exists("trigweight_1")) trigweight_1_ = event->Get<double>("trigweight_1"); else trigweight_1_ = 0.0;
   if (event->Exists("trigweight_2")) trigweight_2_ = event->Get<double>("trigweight_2"); else trigweight_2_ = 0.0;
   if (event->Exists("idweight_1")) idweight_1_ = event->Get<double>("idweight_1"); else idweight_1_ = 0.0;
@@ -548,6 +548,8 @@ namespace ic {
     double btag_wp =  0.679;
     if(strategy_ == strategy::phys14) btag_label = "combinedInclusiveSecondaryVertexV2BJetTags";
     if(strategy_ == strategy::phys14) btag_wp = 0.814 ;
+    if(strategy_ == strategy::spring15) btag_label = "pfCombinedInclusiveSecondaryVertexV2BJetTags";
+    if(strategy_ == strategy::spring15) btag_wp = 0.814 ;
     ic::erase_if(loose_bjets, boost::bind(&PFJet::GetBDiscriminator, _1, btag_label) < 0.244);
     //Extra set of jets which are CSV ordered is required for the H->hh analysis
     std::vector<PFJet*> jets_csv = prebjets;
@@ -667,8 +669,8 @@ namespace ic {
     Met const* pfmet = NULL;
     //slightly different pfMET format for new ntuples
     if(strategy_ == strategy::paper2013) pfmet = event->GetPtr<Met>("pfMet");
-    if(strategy_ == strategy::phys14) {
-      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMetType1");
+    if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
+      std::vector<Met*> pfMet_vec = event->GetPtrVec<Met>("pfMet");
       pfmet = pfMet_vec.at(0);  
     }
     pfmet_ = pfmet->pt();
@@ -719,6 +721,23 @@ namespace ic {
         antiele_2_ = lagainstElectronTightMVA5_2;
         antimu_2_ = lagainstMuonLoose3_2;
       }
+      if(strategy_ == strategy::spring15) {
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
+        iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
+        mva_2_ = tau->GetTauID("againstElectronMVA5raw");
+        l3Hits_2 = tau->HasTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") ? tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") : 0. ;
+        lagainstElectronLooseMVA5_2 = tau->HasTauID("againstElectronLooseMVA5") ? tau->GetTauID("againstElectronLooseMVA5") : 0.;
+        lagainstElectronMediumMVA5_2 = tau->HasTauID("againstElectronMediumMVA5") ? tau->GetTauID("againstElectronMediumMVA5") : 0.;
+        lagainstElectronTightMVA5_2 = tau->HasTauID("againstElectronTightMVA5") ? tau->GetTauID("againstElectronTightMVA5") : 0.;
+        lagainstElectronVTightMVA5_2 = tau->HasTauID("againstElectronVTightMVA5") ? tau->GetTauID("againstElectronVTightMVA5") : 0.;
+        lagainstElectronVLooseMVA5_2 = tau->HasTauID("againstElectronVLooseMVA5") ? tau->GetTauID("againstElectronVLooseMVA5") :0. ;
+        lagainstMuonLoose3_2 = tau->HasTauID("againstMuonLoose3") ? tau->GetTauID("againstMuonLoose3") : 0.;
+        lagainstMuonTight3_2 = tau->HasTauID("againstMuonTight3") ? tau->GetTauID("againstMuonTight3") : 0.;
+        antiele_2_ = lagainstElectronTightMVA5_2;
+        antimu_2_ = lagainstMuonLoose3_2;
+      }
+
     }
     if (channel_ == channel::mt || channel_ == channel::mtmet) {
       Muon const* muon = dynamic_cast<Muon const*>(lep1);
@@ -737,7 +756,7 @@ namespace ic {
         lagainstMuonMedium2_2 = tau->HasTauID("againstMuonMedium2") ? tau->GetTauID("againstMuonMedium2") : 0. ;
         lagainstMuonTight2_2 = tau->HasTauID("againstMuonTight2") ? tau->GetTauID("againstMuonTight2") : 0. ;
       }
-      if(strategy_ == strategy::phys14) {
+      if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(muon, 0.5, 0);
         mva_1_ = 0.0;
         iso_2_ = tau->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
@@ -766,6 +785,12 @@ namespace ic {
         iso_2_ = PF03IsolationVal(muon, 0.5, 0);
         mva_1_ = elec->GetIdIso("mvaNonTrigV025nsPHYS14");
       }
+      if(strategy_ == strategy::spring15) {
+        iso_1_ = PF03IsolationVal(elec, 0.5, 0);
+        iso_2_ = PF03IsolationVal(muon, 0.5, 0);
+        mva_1_ = elec->GetIdIso("mvaNonTrigSpring15");
+      }
+
       mva_2_ = 0.0;
       if(strategy_ == strategy::paper2013){
         emu_dxy_1_ = -1. * elec->dxy_vertex();
@@ -783,7 +808,7 @@ namespace ic {
     if (channel_ == channel::tt) {
       Tau const* tau1 = dynamic_cast<Tau const*>(lep1);
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
-      if(strategy_ == strategy::phys14) {
+      if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
         iso_1_ = tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_1_ = tau1->GetTauID("againstElectronMVA5raw");
         iso_2_ = tau2->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
