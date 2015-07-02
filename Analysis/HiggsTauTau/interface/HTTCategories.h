@@ -25,6 +25,8 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, bjet_regression)
   CLASS_MEMBER(HTTCategories, bool, make_sync_ntuple)
   CLASS_MEMBER(HTTCategories, bool, is_embedded)
+  CLASS_MEMBER(HTTCategories, bool, systematic_shift)
+  CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)
   CLASS_MEMBER(HTTCategories, int, kinfit_mode )
   CLASS_MEMBER(HTTCategories, fwlite::TFileService*, fs)
@@ -78,6 +80,7 @@ class HTTCategories : public ModuleBase {
   bool dilepton_veto_;
   bool extraelec_veto_;
   bool extramuon_veto_;
+  bool lepton_veto_;
   unsigned n_vtx_;
   unsigned n_pu_;
   branch_var m_sv_;
@@ -108,8 +111,12 @@ class HTTCategories : public ModuleBase {
   float phi_2_;
   int q_1_;
   int q_2_;
-  float iso_1_;
-  float iso_2_;
+  branch_var iso_1_;
+  branch_var iso_2_;
+  bool antiele_1_;
+  bool antimu_1_;
+  bool antiele_2_;
+  bool antimu_2_;
   double z_2_;
   float m_1_;
   branch_var m_2_;
