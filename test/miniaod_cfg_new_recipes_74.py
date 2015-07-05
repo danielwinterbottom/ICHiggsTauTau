@@ -1416,6 +1416,8 @@ if release in ['72XMINIAOD']:
 ################################################################
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeJetRho       = cms.bool(True),
+  isNlo               = cms.bool(True),
+  lheProducer         = cms.InputTag("externalLHEProducer"),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),
   inputLeptonRho      = cms.InputTag("fixedGridRhoFastjetAll"),

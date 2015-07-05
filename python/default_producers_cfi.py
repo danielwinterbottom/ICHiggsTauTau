@@ -472,6 +472,7 @@ icTriggerObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
 ## [EventInfo]
 icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   branch              = cms.string("eventInfo"),
+  isNlo               = cms.bool(False),
   includeJetRho       = cms.bool(False),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),

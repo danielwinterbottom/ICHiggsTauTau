@@ -51,6 +51,9 @@ class EventInfo {
 
   /// Energy density used for calculating lepton isolation in this event
   inline double lepton_rho() const { return lepton_rho_; }
+  
+  ///Sign of mc event weight
+  inline int mc_weight_sign() const {return mc_weight_sign_;}
 
   /// Number of reconstructed vertices passing some baseline quality
   /// requirements
@@ -84,6 +87,11 @@ class EventInfo {
   /// @copybrief lepton_rho()
   inline void set_lepton_rho(double const& lepton_rho) {
     lepton_rho_ = lepton_rho;
+  }
+
+  /// @copybrief mc_weight_sign()
+  inline void set_mc_weight_sign(double const& mc_weight_sign){
+    mc_weight_sign_ = mc_weight_sign;
   }
 
   /// @copybrief good_vertices()
@@ -247,6 +255,7 @@ class EventInfo {
   int bunch_crossing_;
   double jet_rho_;
   double lepton_rho_;
+  int mc_weight_sign_;
   SDMap weights_;
   SBMap weight_status_;
   unsigned good_vertices_;
@@ -254,7 +263,7 @@ class EventInfo {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 2);
+  ClassDef(EventInfo, 3);
  #endif
 };
 }

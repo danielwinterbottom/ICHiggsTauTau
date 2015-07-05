@@ -45,6 +45,15 @@ class Tau : public Candidate {
   /// Momentum of the leading charged PF constituent
   inline float const& lead_p() const { return lead_p_; }
 
+  inline float const& lead_px() const { return lead_px_; }
+
+  inline float const& lead_py() const { return lead_py_; }
+
+  inline float const& lead_pz() const { return lead_pz_; }
+
+  inline float const& lead_pt() const { return lead_pt_; }
+
+
   /// Transverse impact parameter of the leading charged constituent track with
   /// the primary vertex
   inline float const& lead_dxy_vertex() const { return lead_dxy_vertex_; }
@@ -92,6 +101,10 @@ class Tau : public Candidate {
 
   /// @copybrief lead_p()
   inline void set_lead_p(float const& lead_p) { lead_p_ = lead_p; }
+  inline void set_lead_px(float const& lead_px) { lead_px_ = lead_px; }
+  inline void set_lead_py(float const& lead_py) { lead_py_ = lead_py; }
+  inline void set_lead_pz(float const& lead_pz) { lead_pz_ = lead_pz; }
+  inline void set_lead_pt(float const& lead_pt) { lead_pt_ = lead_pt; }
 
   /// @copybrief lead_dxy_vertex()
   inline void set_lead_dxy_vertex(float const& lead_dxy_vertex) {
@@ -153,6 +166,10 @@ class Tau : public Candidate {
   float lead_ecal_energy_;
   float lead_hcal_energy_;
   float lead_p_;
+  float lead_px_;
+  float lead_py_;
+  float lead_pz_;
+  float lead_pt_;
   float lead_dxy_vertex_;
   float lead_dz_vertex_;
 

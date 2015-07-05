@@ -9,6 +9,7 @@ EventInfo::EventInfo()
       bunch_crossing_(0),
       jet_rho_(0.),
       lepton_rho_(0.),
+      mc_weight_sign_(1),
       good_vertices_(0) {}
 
 EventInfo::~EventInfo() {}

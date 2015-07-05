@@ -10,6 +10,10 @@ Tau::Tau()
       lead_ecal_energy_(0.),
       lead_hcal_energy_(0.),
       lead_p_(0.),
+      lead_px_(0),
+      lead_py_(0),
+      lead_pz_(0),
+      lead_pt_(0),
       lead_dxy_vertex_(0.),
       lead_dz_vertex_(0.) {}
 
