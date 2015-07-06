@@ -37,6 +37,8 @@
     "svfit_override" : "",
     "pu_id_training": 2,
     "bjet_regr_correction" : false,
+    "btag_mode"      : false,
+    "bfake_mode"     : false,
     "svfit_mode"     :0,
     "new_svfit_mode" : 0,
     "kinfit_mode"   : 0,

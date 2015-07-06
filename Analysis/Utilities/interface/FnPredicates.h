@@ -102,12 +102,22 @@ namespace ic {
 
 
   template<class T>
-  double PF04IsolationVal(T const* cand, double const& dbeta) {
-    double iso =  cand->dr04_pfiso_charged_all() 
+  double PF04IsolationVal(T const* cand, double const& dbeta, bool allcharged) {
+	  double charged_iso = allcharged ? cand->dr04_pfiso_charged_all() : cand->dr04_pfiso_charged();
+    double iso =  charged_iso
                   + std::max(cand->dr04_pfiso_neutral() + cand->dr04_pfiso_gamma() - dbeta * cand->dr04_pfiso_pu(), 0.0);
     iso = iso / cand->pt();
     return iso;
   }
+
+  template<class T>
+  double PF04IsolationVal(T const* cand, double const& dbeta) {
+    double iso =  cand->dr04_pfiso_charged_all()
+                  + std::max(cand->dr04_pfiso_neutral() + cand->dr04_pfiso_gamma() - dbeta * cand->dr04_pfiso_pu(), 0.0);
+    iso = iso / cand->pt();
+    return iso;
+  }
+
   
   template<class T>
   bool PF04Isolation(T const* cand, double const& dbeta, double const& cut) {
@@ -128,7 +138,7 @@ namespace ic {
 
   
   template<class T>
-  bool PF03IsolationVal(T const* cand, double const& dbeta, bool allcharged=false) {
+  double PF03IsolationVal(T const* cand, double const& dbeta, bool allcharged=false) {
     double charged_iso = allcharged ? cand->dr03_pfiso_charged_all() : cand->dr03_pfiso_charged();
     double iso =  charged_iso 
                   + std::max(cand->dr03_pfiso_neutral() + cand->dr03_pfiso_gamma() - dbeta * cand->dr03_pfiso_pu(), 0.0);

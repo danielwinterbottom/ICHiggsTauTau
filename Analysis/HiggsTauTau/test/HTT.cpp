@@ -121,10 +121,30 @@ int main(int argc, char* argv[]) {
   analysis.CalculateTimings(js["job"]["timings"].asBool());
   
   std::map<std::string, ic::HTTSequence> seqs;
+  std::vector<std::string> ignore_chans;
 
+  for(unsigned i = 0; i<js["job"]["ignore_channels"].size();++i){
+   ignore_chans.push_back(js["job"]["ignore_channels"][i].asString());
+  }
 
   for (unsigned i = 0; i < js["job"]["channels"].size(); ++i) {
+    bool ignore_channel =false;
+    bool duplicate_channel = false;
     std::string channel_str = js["job"]["channels"][i].asString();
+    for(unsigned k = 0; k<ignore_chans.size();k++){
+      if(ignore_chans.at(k)==channel_str){ignore_channel=true;}
+    }
+    if(ignore_channel){
+      std::cout<<"SKIPPING CHANNEL "<<channel_str<<std::endl;
+      continue;
+    } 
+    for(unsigned k=0;k<js["job"]["channels"].size();++k){
+      if(k!=i&&js["job"]["channels"][k].asString()==js["job"]["channels"][i].asString()){duplicate_channel=true;}
+    }
+    if(duplicate_channel){
+      std::cout<<"Channel "<<js["job"]["channels"][i].asString()<<" sequences already created, skipping"<<std::endl; 
+      continue;
+    }
     std::vector<std::string> vars;
     for (unsigned j = 0; j < js["job"]["sequences"]["all"].size(); ++j) {
       vars.push_back(js["job"]["sequences"]["all"][j].asString());
@@ -140,7 +160,7 @@ int main(int argc, char* argv[]) {
       ic::UpdateJson(js_merged, js["channels"][channel_str]);
       ic::UpdateJson(js_merged, js["sequences"][vars[j]]);
       // std::cout << js_merged;
-      seqs[seq_str] = ic::HTTSequence(channel_str,vars[j],std::to_string(offset),js_merged);
+      seqs[seq_str] = ic::HTTSequence(channel_str,std::to_string(offset),js_merged);
       seqs[seq_str].BuildSequence();
       ic::HTTSequence::ModuleSequence seq_run = *(seqs[seq_str].getSequence());
       for (auto m : seq_run) analysis.AddModule(seq_str, m.get());
