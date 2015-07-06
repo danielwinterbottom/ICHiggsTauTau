@@ -32,6 +32,7 @@ lines=out.splitlines()
 
 #open filelist with name of crabtask
 linebits=lines[0].split("/")
+#print lines[0]
 prodname=linebits[7]
 filelistname=prodname+"_"+linebits[9][5:]+".dat"
 filelist=open(filelistname,'w')

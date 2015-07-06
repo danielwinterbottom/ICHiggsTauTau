@@ -13,6 +13,8 @@
 
 namespace ic {
 
+  bool ptorderedgenjetsort(GenJet * i,GenJet * j){return (i->pt())>(j->pt());}
+  bool ptorderedjetsort(PFJet * i,PFJet * j){return (i->pt())>(j->pt());}
 
   LightTree::LightTree(std::string const& name): ModuleBase(name){
     fs_ = NULL;
@@ -22,6 +24,7 @@ namespace ic {
     is_data_ = false;
     dotrigskim_ = false;
     do_promptskim_ = false;
+    do_noskim_ = false;
     is_embedded_ = false;
     ignoreLeptons_=false;
     trig_obj_label_ = "triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets";
@@ -39,20 +42,24 @@ namespace ic {
     puweight_down_scale_=1;
     topweight_up_scale_=1;
     topweight_down_scale_=1;
-    jet1_pt_ = 0;
-    jet2_pt_ = 0;
+    jet1_pt_ = -1;
+    jet2_pt_ = -1;
     jet3_pt_=-1;
+    jet4_pt_ = -1;
     jet1_E_ = 0;
     jet2_E_ = 0;
     jet3_E_ = 0;
+    jet4_E_ = 0;
     jet1_eta_ = 0;
     jet2_eta_ = 0;
     jet3_eta_ = 0;
+    jet4_eta_ = 0;
     forward_tag_eta_=0;
     central_tag_eta_=0;
     jet1_phi_ = 0;
     jet2_phi_ = 0;
     jet3_phi_ = 0;
+    jet4_phi_ = 0;
     jet_csv1_ = 0;
     jet_csv2_ = 0;
     jet_csv3_ = 0;
@@ -146,6 +153,10 @@ namespace ic {
     genjet3_eta_ = -10000;
     genjet3_phi_ = -1;
     genjet3_E_ = -1;
+    genjet4_pt_ = -1;
+    genjet4_eta_ = -10000;
+    genjet4_phi_ = -1;
+    genjet4_E_ = -1;
     digenjet_M_=-1;
     digenjet_deta_=-1;
     digenjet_dphi_=-1;
@@ -183,17 +194,21 @@ namespace ic {
     outputTree_->Branch("jet1_pt",&jet1_pt_);
     outputTree_->Branch("jet2_pt",&jet2_pt_);
     outputTree_->Branch("jet3_pt",&jet3_pt_);
+    outputTree_->Branch("jet4_pt",&jet4_pt_);
     outputTree_->Branch("jet1_E",&jet1_E_);
     outputTree_->Branch("jet2_E",&jet2_E_);
     outputTree_->Branch("jet3_E",&jet3_E_);
+    outputTree_->Branch("jet4_E",&jet4_E_);
     outputTree_->Branch("jet1_eta",&jet1_eta_);
     outputTree_->Branch("jet2_eta",&jet2_eta_);
     outputTree_->Branch("jet3_eta",&jet3_eta_);
+    outputTree_->Branch("jet4_eta",&jet4_eta_);
     outputTree_->Branch("forward_tag_eta",&forward_tag_eta_);
     outputTree_->Branch("central_tag_eta",&central_tag_eta_);
     outputTree_->Branch("jet1_phi",&jet1_phi_);
     outputTree_->Branch("jet2_phi",&jet2_phi_);
     outputTree_->Branch("jet3_phi",&jet3_phi_);
+    outputTree_->Branch("jet4_phi",&jet4_phi_);
     outputTree_->Branch("jet_csv1",&jet_csv1_);
     outputTree_->Branch("jet_csv2",&jet_csv2_);
     outputTree_->Branch("jet_csv3",&jet_csv3_);
@@ -287,6 +302,10 @@ namespace ic {
     outputTree_->Branch("genjet3_eta",&genjet3_eta_);
     outputTree_->Branch("genjet3_phi",&genjet3_phi_);
     outputTree_->Branch("genjet3_E",&genjet3_E_);
+    outputTree_->Branch("genjet4_pt",&genjet4_pt_);
+    outputTree_->Branch("genjet4_eta",&genjet4_eta_);
+    outputTree_->Branch("genjet4_phi",&genjet4_phi_);
+    outputTree_->Branch("genjet4_E",&genjet4_E_);
     outputTree_->Branch("digenjet_M",&digenjet_M_);
     outputTree_->Branch("digenjet_deta",&digenjet_deta_);
     outputTree_->Branch("digenjet_dphi",&digenjet_dphi_);
@@ -532,7 +551,7 @@ namespace ic {
 	lepplus = parts[i];
 	ngeneplus++;
 	}  
-      }//loop on genparticles                                                                                                                                  
+      }//loop on genparticles
       
       if (ngeneminus==1&&ngeneplus==1) {
 	m_ee_gen_ = (lepplus->vector()+lepminus->vector()).M();
@@ -578,77 +597,75 @@ namespace ic {
       dijet_sumeta_ = jet1->eta() + jet2->eta();
       dijet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,jet2vec));
 
-      //Find highest 3 pt gen jets
-      genjet1_pt_=-1,genjet2_pt_=-1,genjet3_pt_=-1;
-      int igenjet1=-1,igenjet2=-1,igenjet3=-1;
-      //std::cout<<"Listing gen jet pts:"<<std::endl;
-      for(unsigned iGen=0;iGen<genvec.size();iGen++){
-	double genpt=genvec[iGen]->pt();
-	//std::cout<<"  "<<genpt<<std::endl;
-	if(genpt>genjet3_pt_){
-	  //std::cout<<"  which is higher then the existing genjet3_pt"<<genjet3_pt_<<std::endl;
-	  igenjet3=iGen;
-	  genjet3_pt_=genpt;
-	  if(genjet3_pt_>genjet2_pt_){
-	    //std::cout<<"  and the existing genjet2_pt"<<genjet2_pt_<<std::endl;
-	    double tmpgenpt=genjet2_pt_;
-	    int tmpigenjet=igenjet2;
-	    genjet2_pt_=genjet3_pt_;
-	    igenjet2=igenjet3;
-	    genjet3_pt_=tmpgenpt;
-	    igenjet3=tmpigenjet;
-	    if(genjet2_pt_>genjet1_pt_){
-	      //std::cout<<"  and the existing genjet1_pt"<<genjet1_pt_<<std::endl;
-	      tmpgenpt=genjet1_pt_;
-	      tmpigenjet=igenjet1;
-	      genjet1_pt_=genjet2_pt_;
-	      igenjet1=igenjet2;
-	      genjet2_pt_=tmpgenpt;
-	      igenjet2=tmpigenjet;
+      //Find highest 4 pt gen jets
+      std::vector<GenJet*> genveccopy;
+      genveccopy=genvec;
+      // std::cout<<"Gen Jets: "<<std::endl;
+      // for(unsigned igenjet=0;igenjet<genveccopy.size();igenjet++){
+      // 	std::cout<<genveccopy[igenjet]->pt()<<" ";
+      // }
+      // std::cout<<std::endl;//!!
+      // for(unsigned igenjet=0;igenjet<genveccopy.size();igenjet++){
+      // 	std::cout<<genveccopy[igenjet]->eta()<<" ";
+      // }
+      // std::cout<<std::endl;//!!
+      std::sort(genveccopy.begin(),genveccopy.end(),ptorderedgenjetsort);
+      if(genveccopy.size()>=1){
+	genjet1_pt_=genveccopy[0]->pt();
+	genjet1_eta_=genveccopy[0]->eta();
+	genjet1_phi_=genveccopy[0]->phi();
+	genjet1_E_=genveccopy[0]->energy();
+	if(genveccopy.size()>=2){
+	  genjet2_pt_=genveccopy[1]->pt();
+	  genjet2_eta_=genveccopy[1]->eta();
+	  genjet2_phi_=genveccopy[1]->phi();
+	  genjet2_E_=genveccopy[1]->energy();
+	  ROOT::Math::PtEtaPhiEVector genjet1vec = genveccopy[0]->vector();
+	  ROOT::Math::PtEtaPhiEVector genjet2vec = genveccopy[1]->vector();
+	  ROOT::Math::PtEtaPhiEVector digenjetvec = genjet1vec+genjet2vec;
+	  digenjet_M_=digenjetvec.M();
+	  digenjet_deta_ = fabs(genvec[0]->eta() - genvec[1]->eta());
+	  digenjet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(genjet1vec,genjet2vec));
+	  if(genveccopy.size()>=3){
+	    genjet3_pt_=genveccopy[2]->pt();
+	    genjet3_eta_=genveccopy[2]->eta();
+	    genjet3_phi_=genveccopy[2]->phi();
+	    genjet3_E_=genveccopy[2]->energy();
+	    if(genveccopy.size()>=4){
+	      genjet4_pt_=genveccopy[3]->pt();
+	      genjet4_eta_=genveccopy[3]->eta();
+	      genjet4_phi_=genveccopy[3]->phi();
+	      genjet4_E_=genveccopy[3]->energy();
+	    }
+	    else{
+	      genjet4_pt_=-1;
+	      genjet4_eta_=-10000;
+	      genjet4_phi_=-5;
+	      genjet4_E_=-1;
 	    }
 	  }
+	  else{
+	    genjet3_pt_=-1;
+	    genjet3_eta_=-10000;
+	    genjet3_phi_=-5;
+	    genjet3_E_=-1;
+	  }
+	}
+	else{
+	  genjet2_pt_=-1;
+	  genjet2_eta_=-10000;
+	  genjet2_phi_=-5;
+	  genjet2_E_=-1;
 	}
       }
-      if(igenjet1!=-1){
-	genjet1_eta_=genvec[igenjet1]->eta();
-	genjet1_phi_=genvec[igenjet1]->phi();
-	genjet1_E_=genvec[igenjet1]->energy();
-      }
       else{
+	genjet1_pt_=-1;
 	genjet1_eta_=-10000;
-	genjet1_phi_=-1;
+	genjet1_phi_=-5;
 	genjet1_E_=-1;
       }
-      if(igenjet2!=-1){
-	genjet2_eta_=genvec[igenjet2]->eta();
-	genjet2_phi_=genvec[igenjet2]->phi();
-	genjet2_E_=genvec[igenjet2]->energy();
-	ROOT::Math::PtEtaPhiEVector genjet1vec = genvec[igenjet1]->vector();
-	ROOT::Math::PtEtaPhiEVector genjet2vec = genvec[igenjet2]->vector();
-	ROOT::Math::PtEtaPhiEVector digenjetvec = genjet1vec+genjet2vec;
-	digenjet_M_=digenjetvec.M();
-	digenjet_deta_ = fabs(genvec[igenjet1]->eta() - genvec[igenjet2]->eta());
-	digenjet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(genjet1vec,genjet2vec));
-      }
-      else{
-	genjet1_eta_=-10000;
-	genjet1_phi_=-1;
-	genjet1_E_=-1;
-	digenjet_M_=-1;
-	digenjet_deta_=-1;
-	digenjet_dphi_=-1;
-      }
-      if(igenjet3!=-1){
-	genjet3_eta_=genvec[igenjet3]->eta();
-	genjet3_phi_=genvec[igenjet3]->phi();
-	genjet3_E_=genvec[igenjet3]->energy();
-      }
-      else{
-	genjet1_eta_=-10000;
-	genjet1_phi_=-1;
-	genjet1_E_=-1;
-      }
-
+      // std::cout<<genjet1_pt_<<" "<<genjet2_pt_<<" "<<genjet3_pt_<<" "<<genjet4_pt_<<std::endl;//!!
+      // std::cout<<genjet1_eta_<<" "<<genjet2_eta_<<" "<<genjet3_eta_<<" "<<genjet4_eta_<<std::endl;//!!
       met_ = met->pt();
       met_x_ = metvec.Px();
       met_y_ = metvec.Py();
@@ -715,18 +732,34 @@ namespace ic {
       n_jets_30_=0;
       n_jets_15_=0;
       jet3_pt_=-1;
+      jet3_E_=-1;
       jet3_eta_=-10000;
       jet3_phi_=-10000;
+      jet4_pt_=-1;
+      jet4_E_=-1;
+      jet4_eta_=-10000;
+      jet4_phi_=-10000;
       cjvjetpt_=-1;
       alljetsmetnomu_mindphi_=jetmetnomu_mindphi_;
       alljetsmet_mindphi_=jetmet_mindphi_;
       jet_csv1_=-1;
       jet_csv2_=-1;
       jet_csv3_=-1;
+      // std::cout<<"Reco jets: ";
+      // for (unsigned ijet = 0; ijet < jets.size(); ++ijet) {
+      // 	std::cout<<jets[ijet]->pt()<<" ";
+      // }
+      // std::cout<<std::endl;//!!
+      // for (unsigned ijet = 0; ijet < jets.size(); ++ijet) {
+      // 	std::cout<<jets[ijet]->eta()<<" ";
+      // }
+      // std::cout<<std::endl;//!!
+
       if (jets.size() > 2) {
 	for (unsigned i = 0; i < jets.size(); ++i) {
 	  if(jets[i]->pt()>15)n_jets_15_++;
 	  if(jets[i]->pt()>30)n_jets_30_++;
+
 	  if((jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags")>jet_csv3_)&&(jets[i]->pt()>=30)){//check if csv>csv3
 	    jet_csv3_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
 	    if(jet_csv3_>jet_csv2_){//if new csv>csv2 make new csv csv2 and put csv2 in csv3
@@ -752,11 +785,25 @@ namespace ic {
 	  if(isInCentralGap&&(tmppt>cjvjetpt_)){
 	    cjvjetpt_=tmppt;
 	  }
-	  if(tmppt>jet3_pt_&&(jets[i]->id()!=jet1->id())&&(jets[i]->id()!=jet2->id())){
-	    //jet_csv3_=jets[i]->GetBDiscriminator("combinedSecondaryVertexBJetTags");
-	    jet3_pt_=tmppt;
-	    jet3_eta_=jets[i]->eta();
-	    jet3_phi_=jets[i]->phi();
+	  if(tmppt>jet4_pt_&&(jets[i]->id()!=jet1->id())&&(jets[i]->id()!=jet2->id())){
+	    jet4_pt_=tmppt;
+	    jet4_E_=jets[i]->energy();
+	    jet4_eta_=jets[i]->eta();
+	    jet4_phi_=jets[i]->phi();
+	    if(jet4_pt_>jet3_pt_){
+	      double tmpjpt=jet3_pt_;
+	      double tmpjeta=jet3_eta_;
+	      double tmpjphi=jet3_phi_;
+	      double tmpjE=jet3_E_;
+	      jet3_pt_=jet4_pt_;
+	      jet3_E_=jet4_E_;
+	      jet3_eta_=jet4_eta_;
+	      jet3_phi_=jet4_phi_;
+	      jet4_pt_=tmpjpt;
+	      jet4_E_=tmpjE;
+	      jet4_eta_=tmpjeta;
+	      jet4_phi_=tmpjphi;
+	    }
 	  }
 	  if (jets[i]->pt() > 30.0 && isInCentralGap){
 	    ++n_jets_cjv_30_;
@@ -805,8 +852,14 @@ namespace ic {
       //IF PASSES CUTS FILL TREE
       if(!ignoreLeptons_){
 	if(!do_promptskim_){
-	  if (metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
-	    //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
+	  if(!do_noskim_){
+	    if (metnomu_significance_ > 3.0 &&  dijet_deta_>3.6){
+	      //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
+	      outputTree_->Fill();
+	      ++processed;
+	    }
+	  }
+	  else{
 	    outputTree_->Fill();
 	    ++processed;
 	  }
