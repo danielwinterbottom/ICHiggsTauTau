@@ -43,6 +43,10 @@ if __name__ == '__main__':
 #    tasks.append(('Powheg-Htoinv-mH125PU20bx25','/VBF_HToInv_M-125_13TeV_powheg-pythia6/Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/MINIAODSIM'))
 #    tasks.append(('Powheg-Htoinv-mH125PU40bx25','/VBF_HToInv_M-125_13TeV_powheg-pythia6/Phys14DR-PU40bx25_PHYS14_25_V1-v2/MINIAODSIM'))
 #    tasks.append(('Powheg-Htoinv-mH125PU30bx50','/VBF_HToInv_M-125_13TeV_powheg-pythia6/Phys14DR-AVE30BX50_tsg_PHYS14_ST_V1-v2/MINIAODSIM'))
+
+    tasks.append(('Powheg-Htoinv-mH125Startupbx50','/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring15DR74-StartupFlat10to50bx50Raw_MCRUN2_74_V8-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH110Asympt25ns','/VBF_HToInvisible_M110_13TeV_powheg_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH300Asympt25ns','/VBF_HToInvisible_M300_13TeV_powheg_pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'))
     
     #QCD
 #    tasks.append(('QCD-Pt-30to50-pythia8PU20bx25','/QCD_Pt-30to50_Tune4C_13TeV_pythia8/Phys14DR-AVE20BX25_tsg_castor_PHYS14_25_V3-v2/MINIAODSIM'))
@@ -62,13 +66,13 @@ if __name__ == '__main__':
 #    tasks.append(('QCD-Pt-3200-pythia8PU20bx25','/QCD_Pt-2400to3200_Tune4C_13TeV_pythia8/Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/MINIAODSIM'))
 
 
-    tasks.append(('DYJetsToLL','/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
-    tasks.append(('WJetsToLNu','/WJetsToLNu_13TeV-madgraph-pythia8-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
-    tasks.append(('TT-pythia','/TT_Tune4C_13TeV-pythia8-tauola/Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/MINIAODSIM'))
-    tasks.append(('TT-madgraph','/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
-    tasks.append(('T_tW','/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
-    tasks.append(('Tbar_tW','/Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
-    tasks.append(('WZJetsTo3LNu','/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
+    # tasks.append(('DYJetsToLL','/DYJetsToLL_M-50_13TeV-madgraph-pythia8/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
+    # tasks.append(('WJetsToLNu','/WJetsToLNu_13TeV-madgraph-pythia8-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
+    # tasks.append(('TT-pythia','/TT_Tune4C_13TeV-pythia8-tauola/Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/MINIAODSIM'))
+    # tasks.append(('TT-madgraph','/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
+    # tasks.append(('T_tW','/T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
+    # tasks.append(('Tbar_tW','/Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
+    # tasks.append(('WZJetsTo3LNu','/WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola/Phys14DR-PU20bx25_PHYS14_25_V1-v1/MINIAODSIM'))
 
 
 
