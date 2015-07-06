@@ -193,12 +193,21 @@ void ICTauProducer<pat::Tau>::constructSpecific(
     }
      //dest.set_lead_ecal_energy(src.leadChargedHadrCand()->ecalEnergy());
      //dest.set_lead_hcal_energy(src.leadChargedHadrCand()->hcalEnergy());
-     dest.set_lead_p(src.leadChargedHadrCand()->p());
-     dest.set_lead_px(src.leadChargedHadrCand()->px());
-     dest.set_lead_py(src.leadChargedHadrCand()->py());
-     dest.set_lead_pz(src.leadChargedHadrCand()->pz());
-     dest.set_lead_pt(src.leadChargedHadrCand()->pt());
-
+#if CMSSW_MAJOR_VERSION >= 7
+    if(src.leadChargedHadrCand().isNonnull()){
+      edm::Handle<edm::View<reco::Vertex> > vertices_handle;
+      if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
+      reco::Vertex const& vtx = vertices_handle->at(0);
+      pat::PackedCandidate const* packedCand = dynamic_cast<pat::PackedCandidate const*>(src.leadChargedHadrCand().get());
+      if(packedCand){
+        dest.set_lead_dz_vertex(packedCand->dz());
+        dest.set_lead_dxy_vertex(packedCand->dxy());
+        dest.set_lead_dz_gd_vertex(packedCand->dz(vtx.position()));
+        dest.set_lead_dxy_gd_vertex(packedCand->dxy(vtx.position())); 
+        dest.set_lead_p(packedCand->p());
+      }
+    }
+#endif
   }
 }
 
