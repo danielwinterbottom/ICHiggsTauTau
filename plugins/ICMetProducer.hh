@@ -42,8 +42,16 @@ class ICMetProducer : public edm::EDProducer {
     explicit SigTags(edm::ParameterSet const& pset);
   };
 
+  struct SigTagsMethod2 {
+    edm::InputTag metsig;
+    edm::InputTag metsigcov;
+    explicit SigTagsMethod2(edm::ParameterSet const& pset);
+  };
+
   bool do_external_metsig_;
+  bool do_external_metsig_method2_;
   SigTags metsig_;
+  SigTagsMethod2 metsig_method2_;
 };
 
 #endif
