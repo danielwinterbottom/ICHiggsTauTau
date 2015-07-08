@@ -140,15 +140,23 @@ $(document).ready(function(){initNavTree('_i_c_met_producer_8hh_source.html','')
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">explicit</span> SigTags(edm::ParameterSet <span class="keyword">const</span>&amp; pset);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  };</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keywordtype">bool</span> do_external_metsig_;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  SigTags metsig_;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keyword">struct </span>SigTagsMethod2 {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    edm::InputTag metsig;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    edm::InputTag metsigcov;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">explicit</span> SigTagsMethod2(edm::ParameterSet <span class="keyword">const</span>&amp; pset);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  };</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="keywordtype">bool</span> do_external_metsig_;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordtype">bool</span> do_external_metsig_method2_;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  SigTags metsig_;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  SigTagsMethod2 metsig_method2_;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="class_i_c_met_producer_html"><div class="ttname"><a href="class_i_c_met_producer.html">ICMetProducer</a></div><div class="ttdoc">See documentation here. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_met_producer_8hh_source.html#l00019">ICMetProducer.hh:19</a></div></div>
-<div class="ttc" id="class_i_c_met_producer_html_ab2185ffd67d57300f2d161d8df4d2d2f"><div class="ttname"><a href="class_i_c_met_producer.html#ab2185ffd67d57300f2d161d8df4d2d2f">ICMetProducer::~ICMetProducer</a></div><div class="ttdeci">~ICMetProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_met_producer_8cc_source.html#l00038">ICMetProducer.cc:38</a></div></div>
+<div class="ttc" id="class_i_c_met_producer_html_ab2185ffd67d57300f2d161d8df4d2d2f"><div class="ttname"><a href="class_i_c_met_producer.html#ab2185ffd67d57300f2d161d8df4d2d2f">ICMetProducer::~ICMetProducer</a></div><div class="ttdeci">~ICMetProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_met_producer_8cc_source.html#l00044">ICMetProducer.cc:44</a></div></div>
 <div class="ttc" id="_met_8hh_html"><div class="ttname"><a href="_met_8hh.html">Met.hh</a></div></div>
-<div class="ttc" id="class_i_c_met_producer_html_a67ea107ef80adaa9454ee7a317ff5689"><div class="ttname"><a href="class_i_c_met_producer.html#a67ea107ef80adaa9454ee7a317ff5689">ICMetProducer::ICMetProducer</a></div><div class="ttdeci">ICMetProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_met_producer_8cc_source.html#l00026">ICMetProducer.cc:26</a></div></div>
+<div class="ttc" id="class_i_c_met_producer_html_a67ea107ef80adaa9454ee7a317ff5689"><div class="ttname"><a href="class_i_c_met_producer.html#a67ea107ef80adaa9454ee7a317ff5689">ICMetProducer::ICMetProducer</a></div><div class="ttdeci">ICMetProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_met_producer_8cc_source.html#l00030">ICMetProducer.cc:30</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.6-->

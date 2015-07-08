@@ -123,6 +123,10 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_met_producer_8cc-example
 <div class="line">    metsigcov10(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;metsigcov10&quot;</span>)),</div>
 <div class="line">    metsigcov11(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;metsigcov11&quot;</span>)) {}</div>
 <div class="line"></div>
+<div class="line">ICMetProducer::SigTagsMethod2::SigTagsMethod2(edm::ParameterSet <span class="keyword">const</span>&amp; pset)</div>
+<div class="line">  : metsig(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;metsig&quot;</span>)),</div>
+<div class="line">    metsigcov(pset.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;metsigcov&quot;</span>)) {}</div>
+<div class="line"></div>
 <div class="line"></div>
 <div class="line"><a name="a0"></a><a class="code" href="class_i_c_met_producer.html#a67ea107ef80adaa9454ee7a317ff5689">ICMetProducer::ICMetProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
 <div class="line">    : input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;input&quot;</span>)),</div>
@@ -130,7 +134,9 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_met_producer_8cc-example
 <div class="line">      do_custom_id_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeCustomID&quot;</span>)),</div>
 <div class="line">      inputID_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputCustomID&quot;</span>)),</div>
 <div class="line">      do_external_metsig_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeExternalMetsig&quot;</span>)),</div>
-<div class="line">      metsig_(config.getParameterSet(<span class="stringliteral">&quot;metsig&quot;</span>)) {</div>
+<div class="line">      do_external_metsig_method2_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeExternalMetsigMethod2&quot;</span>)),</div>
+<div class="line">      metsig_(config.getParameterSet(<span class="stringliteral">&quot;metsig&quot;</span>)),</div>
+<div class="line">      metsig_method2_(config.getParameterSet(<span class="stringliteral">&quot;metsig_method2&quot;</span>)) {</div>
 <div class="line">  met_ = <span class="keyword">new</span> std::vector&lt;ic::Met&gt;();</div>
 <div class="line">  <a name="a1"></a><a class="code" href="_print_config_tools_8cc.html#a0332f7c54bd5110f2658ba8e11f17760">PrintHeaderWithProduces</a>(config, input_, branch_);</div>
 <div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_custom_id_, <span class="stringliteral">&quot;includeCustomID&quot;</span>);</div>
@@ -165,7 +171,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_met_producer_8cc-example
 <div class="line">    dest.<a name="a8"></a><a class="code" href="classic_1_1_candidate.html#a8b50cdbe58bb17bbdbcd17f68e5b00d2">set_phi</a>(src.phi());</div>
 <div class="line">    dest.<a name="a9"></a><a class="code" href="classic_1_1_candidate.html#a4582570cd453ab48e2d62c5e7250277d">set_energy</a>(src.energy());</div>
 <div class="line">    dest.<a name="a10"></a><a class="code" href="classic_1_1_met.html#a835dc84df57a5147b4480d67abb8520d">set_sum_et</a>(src.sumEt());</div>
-<div class="line">    <span class="keywordflow">if</span>(!do_external_metsig_){</div>
+<div class="line">    <span class="keywordflow">if</span>(!do_external_metsig_&amp;&amp;!do_external_metsig_method2_){</div>
 <div class="line">      dest.<a name="a11"></a><a class="code" href="classic_1_1_met.html#ad8715d8f1e73f70fbb2396a236792e51">set_et_sig</a>(src.mEtSig());</div>
 <div class="line">      dest.<a name="a12"></a><a class="code" href="classic_1_1_met.html#ac8d60a85418b39a077bcfe3c73791664">set_xx_sig</a>(src.getSignificanceMatrix()(0, 0));</div>
 <div class="line">      dest.<a name="a13"></a><a class="code" href="classic_1_1_met.html#adb270ac2d82799b2b905bbaa1fe72d24">set_xy_sig</a>(src.getSignificanceMatrix()(0, 1));</div>
@@ -173,21 +179,34 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_met_producer_8cc-example
 <div class="line">      dest.<a name="a15"></a><a class="code" href="classic_1_1_met.html#ac3c1219ee653f1d5654fbe23dc803939">set_yy_sig</a>(src.getSignificanceMatrix()(1, 1));</div>
 <div class="line">    }</div>
 <div class="line">    <span class="keywordflow">else</span>{</div>
-<div class="line">      edm::Handle&lt;double&gt; metsig;</div>
-<div class="line">      edm::Handle&lt;double&gt; metsigcov00;</div>
-<div class="line">      edm::Handle&lt;double&gt; metsigcov01;</div>
-<div class="line">      edm::Handle&lt;double&gt; metsigcov10;</div>
-<div class="line">      edm::Handle&lt;double&gt; metsigcov11;</div>
-<div class="line">      <span class="keyword">event</span>.getByLabel(metsig_.metsig, metsig);</div>
-<div class="line">      <span class="keyword">event</span>.getByLabel(metsig_.metsigcov00, metsigcov00);</div>
-<div class="line">      <span class="keyword">event</span>.getByLabel(metsig_.metsigcov01, metsigcov01);</div>
-<div class="line">      <span class="keyword">event</span>.getByLabel(metsig_.metsigcov10, metsigcov10);</div>
-<div class="line">      <span class="keyword">event</span>.getByLabel(metsig_.metsigcov11, metsigcov11);</div>
-<div class="line">      dest.<a class="code" href="classic_1_1_met.html#ad8715d8f1e73f70fbb2396a236792e51">set_et_sig</a>(*metsig);</div>
-<div class="line">      dest.<a class="code" href="classic_1_1_met.html#ac8d60a85418b39a077bcfe3c73791664">set_xx_sig</a>(*metsigcov00);</div>
-<div class="line">      dest.<a class="code" href="classic_1_1_met.html#adb270ac2d82799b2b905bbaa1fe72d24">set_xy_sig</a>(*metsigcov01);</div>
-<div class="line">      dest.<a class="code" href="classic_1_1_met.html#a67d253183767d237d4121f6bc18b5e36">set_yx_sig</a>(*metsigcov10);</div>
-<div class="line">      dest.<a class="code" href="classic_1_1_met.html#ac3c1219ee653f1d5654fbe23dc803939">set_yy_sig</a>(*metsigcov11);</div>
+<div class="line">      <span class="keywordflow">if</span>(!do_external_metsig_method2_){</div>
+<div class="line">  edm::Handle&lt;double&gt; metsig;</div>
+<div class="line">  edm::Handle&lt;double&gt; metsigcov00;</div>
+<div class="line">  edm::Handle&lt;double&gt; metsigcov01;</div>
+<div class="line">  edm::Handle&lt;double&gt; metsigcov10;</div>
+<div class="line">  edm::Handle&lt;double&gt; metsigcov11;</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(metsig_.metsig, metsig);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(metsig_.metsigcov00, metsigcov00);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(metsig_.metsigcov01, metsigcov01);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(metsig_.metsigcov10, metsigcov10);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(metsig_.metsigcov11, metsigcov11);</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#ad8715d8f1e73f70fbb2396a236792e51">set_et_sig</a>(*metsig);</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#ac8d60a85418b39a077bcfe3c73791664">set_xx_sig</a>(*metsigcov00);</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#adb270ac2d82799b2b905bbaa1fe72d24">set_xy_sig</a>(*metsigcov01);</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#a67d253183767d237d4121f6bc18b5e36">set_yx_sig</a>(*metsigcov10);</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#ac3c1219ee653f1d5654fbe23dc803939">set_yy_sig</a>(*metsigcov11);</div>
+<div class="line">      }</div>
+<div class="line">      <span class="keywordflow">else</span>{</div>
+<div class="line">  edm::Handle&lt;double&gt; metsig;</div>
+<div class="line">  edm::Handle&lt;math::Error&lt;2&gt;::type&gt; metsigcov;</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(metsig_method2_.metsig, metsig);</div>
+<div class="line">  <span class="keyword">event</span>.getByLabel(metsig_method2_.metsigcov, metsigcov);</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#ad8715d8f1e73f70fbb2396a236792e51">set_et_sig</a>(*metsig);</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#ac8d60a85418b39a077bcfe3c73791664">set_xx_sig</a>((*metsigcov)(0,0));</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#adb270ac2d82799b2b905bbaa1fe72d24">set_xy_sig</a>((*metsigcov)(0,1));</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#a67d253183767d237d4121f6bc18b5e36">set_yx_sig</a>((*metsigcov)(1,0));</div>
+<div class="line">  dest.<a class="code" href="classic_1_1_met.html#ac3c1219ee653f1d5654fbe23dc803939">set_yy_sig</a>((*metsigcov)(1,1));</div>
+<div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
