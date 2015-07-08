@@ -1,2 +1,81 @@
-powheg125 sig125 ../output_lighttree_run2trial190515/MC_Powheg-Htoinv-mH125PU20bx25.root
-run1powheg125 run1sig125 /vols/cms04/pjd12/invcmssws/CMSSW_5_3_7/src/UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/output_lighttree_postARCmeeting230215/MC_Powheg-Htoinv-mH125.root
+powheg125 sig125 ../output_lighttree_run2siginc300615/MC_Powheg-Htoinv-mH125PU20bx25.root
+pu40powheg125 pu40sig125 ../output_lighttree_run2siginc300615/MC_Powheg-Htoinv-mH125PU40bx25.root
+50nspowheg125 ns50sig125 ../output_lighttree_run2siginc300615/MC_Powheg-Htoinv-mH125PU30bx50.root
+
+qcd-30to50 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-30to50-pythia8PU20bx25.root
+qcd-50to80 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-50to80-pythia8PU20bx25.root
+qcd-80to120 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-80to120-pythia8PU20bx25.root
+qcd-120to170 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-120to170-pythia8PU20bx25.root
+qcd-170to300 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-170to300-pythia8PU20bx25.root
+qcd-300to470 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-300to470-pythia8PU20bx25.root
+qcd-470to600 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-470to600-pythia8PU20bx25.root
+qcd-600to800 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-600to800-pythia8PU20bx25.root
+qcd-800to1000 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-800to1000-pythia8PU20bx25.root
+qcd-1000to1400 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-1000to1400-pythia8PU20bx25.root
+qcd-1400to1800 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-1400to1800-pythia8PU20bx25.root
+qcd-1800to2400 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-1800to2400-pythia8PU20bx25.root
+qcd-2400to3200 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-2400to3200-pythia8PU20bx25.root
+qcd-3200 qcd ../output_lighttree_run2siginc300615/MC_QCD-Pt-3200-pythia8PU20bx25.root
+
+DYJetsToLL ZJets_ll ../output_lighttree_run2siginc300615/MC_DYJetsToLL.root
+
+DYJetsToLL ZJets_ll_all ../output_lighttree_run2siginc300615/MC_DYJetsToLL.root
+
+WJets_enu WJets_enu ../output_lighttree_run2siginc300615/MC_WJetsToLNu_enu.root
+
+WJets_munu WJets_munu ../output_lighttree_run2siginc300615/MC_WJetsToLNu_munu.root
+
+WJets_taunu WJets_taunu ../output_lighttree_run2siginc300615/MC_WJetsToLNu_taunu.root
+
+WZTo3LNu VV ../output_lighttree_run2siginc300615/MC_WZJetsTo3LNu.root
+
+
+run1powheg125 run1sig125 ../output_lighttree_run1siginc300615/MC_Powheg-Htoinv-mH125.root
+
+QCD-Pt-1000to1400 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-1000to1400-pythia6.root
+QCD-Pt-120to170 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-120to170-pythia6.root
+QCD-Pt-1400to1800 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-1400to1800-pythia6.root
+QCD-Pt-170to300 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-170to300-pythia6.root
+QCD-Pt-1800 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-1800-pythia6.root
+QCD-Pt-300to470 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-300to470-pythia6.root
+QCD-Pt-30to50 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-30to50-pythia6.root
+QCD-Pt-470to600 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-470to600-pythia6.root
+QCD-Pt-50to80 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-50to80-pythia6.root
+QCD-Pt-600to800 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-600to800-pythia6.root
+QCD-Pt-800to1000 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-800to1000-pythia6.root
+QCD-Pt-80to120 run1QCD ../output_lighttree_run1siginc300615/MC_QCD-Pt-80to120-pythia6.root
+
+
+WJetsv1_enu run1WJets_enu ../output_lighttree_run1siginc300615/MC_WJetsToLNu-v1_enu.root
+WJetsv2_enu run1WJets_enu ../output_lighttree_run1siginc300615/MC_WJetsToLNu-v2_enu.root
+W1Jets_enu run1WJets_enu ../output_lighttree_run1siginc300615/MC_W1JetsToLNu_enu.root
+W2Jets_enu run1WJets_enu ../output_lighttree_run1siginc300615/MC_W2JetsToLNu_enu.root
+W3Jets_enu run1WJets_enu ../output_lighttree_run1siginc300615/MC_W3JetsToLNu_enu.root
+W4Jets_enu run1WJets_enu ../output_lighttree_run1siginc300615/MC_W4JetsToLNu_enu.root
+EWK-Wminus_enu run1WJets_enu ../output_lighttree_run1siginc300615/MC_EWK-W2jminus_enu.root
+EWK-Wplus_enu run1WJets_enu ../output_lighttree_run1siginc300615/MC_EWK-W2jplus_enu.root
+
+WJetsv1_munu run1WJets_munu ../output_lighttree_run1siginc300615/MC_WJetsToLNu-v1_munu.root
+WJetsv2_munu run1WJets_munu ../output_lighttree_run1siginc300615/MC_WJetsToLNu-v2_munu.root
+W1Jets_munu run1WJets_munu ../output_lighttree_run1siginc300615/MC_W1JetsToLNu_munu.root
+W2Jets_munu run1WJets_munu ../output_lighttree_run1siginc300615/MC_W2JetsToLNu_munu.root
+W3Jets_munu run1WJets_munu ../output_lighttree_run1siginc300615/MC_W3JetsToLNu_munu.root
+W4Jets_munu run1WJets_munu ../output_lighttree_run1siginc300615/MC_W4JetsToLNu_munu.root
+EWK-Wminus_munu run1WJets_munu ../output_lighttree_run1siginc300615/MC_EWK-W2jminus_munu.root
+EWK-Wplus_munu run1WJets_munu ../output_lighttree_run1siginc300615/MC_EWK-W2jplus_munu.root
+
+WJetsv1_taunu run1WJets_taunu ../output_lighttree_run1siginc300615/MC_WJetsToLNu-v1_taunu.root
+WJetsv2_taunu run1WJets_taunu ../output_lighttree_run1siginc300615/MC_WJetsToLNu-v2_taunu.root
+W1Jets_taunu run1WJets_taunu ../output_lighttree_run1siginc300615/MC_W1JetsToLNu_taunu.root
+W2Jets_taunu run1WJets_taunu ../output_lighttree_run1siginc300615/MC_W2JetsToLNu_taunu.root
+W3Jets_taunu run1WJets_taunu ../output_lighttree_run1siginc300615/MC_W3JetsToLNu_taunu.root
+W4Jets_taunu run1WJets_taunu ../output_lighttree_run1siginc300615/MC_W4JetsToLNu_taunu.root
+EWK-Wminus_taunu run1WJets_taunu ../output_lighttree_run1siginc300615/MC_EWK-W2jminus_taunu.root
+EWK-Wplus_taunu run1WJets_taunu ../output_lighttree_run1siginc300615/MC_EWK-W2jplus_taunu.root
+
+DYJetsToLLHighPt run1ZJets_ll ../output_lighttree_run1siginc300615/MC_DYJetsToLL_PtZ-100-madgraph.root
+DYJetsToLL run1ZJets_ll ../output_lighttree_run1siginc300615/MC_DYJetsToLL.root
+DY1JetsToLL run1ZJets_ll ../output_lighttree_run1siginc300615/MC_DY1JetsToLL.root
+DY2JetsToLL run1ZJets_ll ../output_lighttree_run1siginc300615/MC_DY2JetsToLL.root
+DY3JetsToLL run1ZJets_ll ../output_lighttree_run1siginc300615/MC_DY3JetsToLL.root
+DY4JetsToLL run1ZJets_ll ../output_lighttree_run1siginc300615/MC_DY4JetsToLL.root

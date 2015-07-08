@@ -166,8 +166,8 @@ int main(int argc, char* argv[]){
     shape.push_back("n_jets_15(15,0.,15.)");histTitle.push_back(";N jets pt>15 GeV;Events");
     shape.push_back("central_tag_eta(25,-5.,5.)");histTitle.push_back(";Central tag jet #eta;Events");
     shape.push_back("forward_tag_eta(25,-5.,5.)");histTitle.push_back(";Forward tag jet #eta;Events");
-    shape.push_back("genjet2_pt(26,30.,300.)");histTitle.push_back(";gen p_{T}^{j2} (GeV);Events");
-    shape.push_back("genjet1_pt(30,30.,350.)");histTitle.push_back(";gen p_{T}^{j1} (GeV);Events");
+    shape.push_back("genjet2_pt(30,0.,300.)");histTitle.push_back(";gen p_{T}^{j2} (GeV);Events");
+    shape.push_back("genjet1_pt(30,0.,350.)");histTitle.push_back(";gen p_{T}^{j1} (GeV);Events");
     shape.push_back("genjet2_eta(50,-5.,5.)");histTitle.push_back(";gen #eta_{j2};Events");
     shape.push_back("genjet1_eta(50,-5.,5.)");histTitle.push_back(";gen #eta_{j1};Events");
     shape.push_back("genjet2_phi(16,-3.2,3.2)");histTitle.push_back(";gen #phi_{j2};Events");
@@ -1181,7 +1181,7 @@ int main(int argc, char* argv[]){
   run1sigele.set_is_data(false)
     .set_scale(1)
     .set_color(kBlue)
-    .set_is_inratioden(false)
+    .set_is_inratioden(true)
     .set_in_stack(false)
     .set_legname("Run 1 Signal")
     .set_sample("run1qqH125");
@@ -1222,9 +1222,10 @@ int main(int argc, char* argv[]){
     elementvec.push_back(pu40sigele);
     elementvec.push_back(ns50sigele);
     elementvec.push_back(run1sigele);
-    elementvec.push_back(qcdincele);
-    elementvec.push_back(run1qcdincele);
   }
+  //   elementvec.push_back(qcdincele);
+  //   elementvec.push_back(run1qcdincele);
+  // }
 
   if(channel=="mumu"){
     elementvec.push_back(dyele);
@@ -1337,8 +1338,8 @@ int main(int argc, char* argv[]){
   //if(!dataonly){
     // analysis->AddModule(&signal110);
   if(channel=="nunu"){
-    analysis->AddModule(&qcdinc);
-    analysis->AddModule(&run1qcdinc);
+    //analysis->AddModule(&qcdinc);
+    //analysis->AddModule(&run1qcdinc);
   
     analysis->AddModule(&signal125);
     analysis->AddModule(&pu40signal125);

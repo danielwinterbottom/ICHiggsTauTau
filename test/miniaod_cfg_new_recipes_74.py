@@ -1084,12 +1084,17 @@ process.icPfMVAMetProducer = cms.EDProducer('ICPFMetProducer',
   branch = cms.string("pfMVAMet"),
   includeCustomID = cms.bool(False),
   includeExternalMetsig = cms.bool(False),
+  includeExternalMetsigMethod2 = cms.bool(False),
   metsig = cms.PSet(
     metsig = cms.InputTag("METSignificance","METSignificance"),
     metsigcov00 = cms.InputTag("METSignificance", "CovarianceMatrix00"),
     metsigcov01 = cms.InputTag("METSignificance", "CovarianceMatrix01"),
     metsigcov10 = cms.InputTag("METSignificance", "CovarianceMatrix10"),
     metsigcov11 = cms.InputTag("METSignificance", "CovarianceMatrix11")
+    ),
+  metsig_method2 = cms.PSet(
+    metsig      = cms.InputTag("METSignificance","METSignificance"),
+    metsigcov = cms.InputTag("METSignificance","METCovariance")
     ),
   inputCustomID = cms.InputTag("MVAMetID")
   )

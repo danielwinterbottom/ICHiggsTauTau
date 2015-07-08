@@ -85,6 +85,7 @@ int main(int argc, char* argv[]){
   bool dojerdebug;                // Access runmetunc collections for debugging
   bool dotopreweighting;          // Do Top reweighting
   bool dopromptskim;              // Use prompt compatible light tree skimming
+  bool donoskim;                  // Do no skimming
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -160,6 +161,7 @@ int main(int argc, char* argv[]){
     ("doidisoeff",          po::value<bool>(&doidisoeff)->default_value(false))
     ("dotopreweighting",    po::value<bool>(&dotopreweighting)->default_value(false))
     ("dopromptskim",    po::value<bool>(&dopromptskim)->default_value(false))
+    ("donoskim",    po::value<bool>(&donoskim)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
@@ -625,11 +627,13 @@ int main(int argc, char* argv[]){
     .set_select_leading_pair(true)
     .set_output_label("jjLeadingCandidates");                                                        
 
+  int npairs=1;
+  if(donoskim)npairs=0;
   bool cutaboveorbelow=true;
   SimpleFilter<CompositeCandidate> jetPairFilter = SimpleFilter<CompositeCandidate>("JetPairFilter")
     .set_input_label("jjLeadingCandidates")
     .set_predicate( bind(OrderedPairPtSelection, _1,jet1ptcut, jet2ptcut, cutaboveorbelow) )
-    .set_min(1)
+    .set_min(npairs)
     .set_max(999);
 
   // ------------------------------------------------------------------------------------
@@ -754,6 +758,7 @@ int main(int argc, char* argv[]){
     .set_is_data(is_data)
     .set_dotrigskim(true)
     .set_do_promptskim(dopromptskim)
+    .set_do_noskim(donoskim)
     .set_ignoreLeptons(ignoreLeptons)
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
     .set_trig_obj_label("triggerObjectsPFMET170NoiseCleaned");
@@ -788,8 +793,8 @@ int main(int argc, char* argv[]){
     analysis.AddModule(&metFilters);
     analysis.AddModule(&metLaserFilters);
   }
-
-  analysis.AddModule(&goodVertexFilter);
+  
+  if(!donoskim)analysis.AddModule(&goodVertexFilter);
   //jet modules
   analysis.AddModule(&jetIDFilter);
   //don't want pile-up jets to calculate HT,MHT...

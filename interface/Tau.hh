@@ -53,15 +53,6 @@ class Tau : public Candidate {
   /// with the primary vertex
   inline float const& lead_dz_vertex() const { return lead_dz_vertex_; }
 
-  /// Transverse impact parameter of the leading charged constituent track with
-  /// the primary vertex (good PV for miniaod, just for testing)
-  inline float const& lead_dxy_gd_vertex() const { return lead_dxy_gd_vertex_; }
-
-  /// Longitudinal impact parameter of the leading charged constituent track
-  /// with the primary vertex (wrt good PV for miniaod, just for testing)
-  inline float const& lead_dz_gd_vertex() const { return lead_dz_gd_vertex_; }
-
-
   /// The x-coordinate of the leading track PCA
   inline double vx() const { return ref_point_.x(); }
 
@@ -110,16 +101,6 @@ class Tau : public Candidate {
   /// @copybrief lead_dz_vertex()
   inline void set_lead_dz_vertex(float const& lead_dz_vertex) {
     lead_dz_vertex_ = lead_dz_vertex;
-  }
-
-  /// @copybrief lead_dxy_gd_vertex()
-  inline void set_lead_dxy_gd_vertex(float const& lead_dxy_gd_vertex) {
-    lead_dxy_gd_vertex_ = lead_dxy_gd_vertex;
-  }
-
-  /// @copybrief lead_dz_gd_vertex()
-  inline void set_lead_dz_gd_vertex(float const& lead_dz_gd_vertex) {
-    lead_dz_gd_vertex_ = lead_dz_gd_vertex;
   }
 
   /// @copybrief vx()
@@ -174,8 +155,6 @@ class Tau : public Candidate {
   float lead_p_;
   float lead_dxy_vertex_;
   float lead_dz_vertex_;
-  float lead_dxy_gd_vertex_;
-  float lead_dz_gd_vertex_;
 
   Point ref_point_;
 

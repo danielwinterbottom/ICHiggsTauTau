@@ -48,8 +48,16 @@ class ICMetProducer : public edm::EDProducer {
     explicit SigTags(edm::ParameterSet const& pset);
   };
 
+  struct SigTagsMethod2 {
+    edm::InputTag metsig;
+    edm::InputTag metsigcov;
+    explicit SigTagsMethod2(edm::ParameterSet const& pset);
+  };
+
   bool do_external_metsig_;
+  bool do_external_metsig_method2_;
   SigTags metsig_;
+  SigTagsMethod2 metsig_method2_;
   bool get_raw_from_pat_;
 };
 
@@ -62,13 +70,20 @@ ICMetProducer<T>::SigTags::SigTags(edm::ParameterSet const& pset)
     metsigcov11(pset.getParameter<edm::InputTag>("metsigcov11")) {}
 
 template <class T>
+ICMetProducer<T>::SigTagsMethod2::SigTagsMethod2(edm::ParameterSet const& pset)
+  : metsig(pset.getParameter<edm::InputTag>("metsig")),
+    metsigcov(pset.getParameter<edm::InputTag>("metsigcov")) {}
+
+template <class T>
 ICMetProducer<T>::ICMetProducer(const edm::ParameterSet& config)
     : input_(config.getParameter<edm::InputTag>("input")),
       branch_(config.getParameter<std::string>("branch")),
       do_custom_id_(config.getParameter<bool>("includeCustomID")),
       inputID_(config.getParameter<edm::InputTag>("inputCustomID")),
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
-      metsig_(config.getParameterSet("metsig")){
+      do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
+      metsig_(config.getParameterSet("metsig")),
+      metsig_method2_(config.getParameterSet("metsig_method2")) {
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -81,7 +96,9 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
       do_custom_id_(config.getParameter<bool>("includeCustomID")),
       inputID_(config.getParameter<edm::InputTag>("inputCustomID")),
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
+      do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
       metsig_(config.getParameterSet("metsig")),
+      metsig_method2_(config.getParameterSet("metsig_method2")),
       get_raw_from_pat_(config.getParameter<bool>("getUncorrectedMet")){
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
@@ -121,7 +138,7 @@ void ICMetProducer<T>::produce(edm::Event& event, const edm::EventSetup& setup) 
     dest.set_energy(src.energy());
     dest.set_sum_et(src.sumEt());
 */
-    if(!do_external_metsig_){
+    if(!do_external_metsig_&&!do_external_metsig_method2_){
       dest.set_et_sig(src.mEtSig());
       dest.set_xx_sig(src.getSignificanceMatrix()(0, 0));
       dest.set_xy_sig(src.getSignificanceMatrix()(0, 1));
@@ -129,21 +146,33 @@ void ICMetProducer<T>::produce(edm::Event& event, const edm::EventSetup& setup) 
       dest.set_yy_sig(src.getSignificanceMatrix()(1, 1));
     }
     else{
-      edm::Handle<double> metsig;
-      edm::Handle<double> metsigcov00;
-      edm::Handle<double> metsigcov01;
-      edm::Handle<double> metsigcov10;
-      edm::Handle<double> metsigcov11;
-      event.getByLabel(metsig_.metsig, metsig);
-      event.getByLabel(metsig_.metsigcov00, metsigcov00);
-      event.getByLabel(metsig_.metsigcov01, metsigcov01);
-      event.getByLabel(metsig_.metsigcov10, metsigcov10);
-      event.getByLabel(metsig_.metsigcov11, metsigcov11);
-      dest.set_et_sig(*metsig);
-      dest.set_xx_sig(*metsigcov00);
-      dest.set_xy_sig(*metsigcov01);
-      dest.set_yx_sig(*metsigcov10);
-      dest.set_yy_sig(*metsigcov11);
+      if(!do_external_metsig_method2_){
+        edm::Handle<double> metsig;
+        edm::Handle<double> metsigcov00;
+        edm::Handle<double> metsigcov01;
+        edm::Handle<double> metsigcov10;
+        edm::Handle<double> metsigcov11;
+        event.getByLabel(metsig_.metsig, metsig);
+        event.getByLabel(metsig_.metsigcov00, metsigcov00);
+        event.getByLabel(metsig_.metsigcov01, metsigcov01);
+        event.getByLabel(metsig_.metsigcov10, metsigcov10);
+        event.getByLabel(metsig_.metsigcov11, metsigcov11);
+        dest.set_et_sig(*metsig);
+        dest.set_xx_sig(*metsigcov00);
+        dest.set_xy_sig(*metsigcov01);
+        dest.set_yx_sig(*metsigcov10);
+        dest.set_yy_sig(*metsigcov11);
+       } else{
+	edm::Handle<double> metsig;
+	edm::Handle<math::Error<2>::type> metsigcov;
+	event.getByLabel(metsig_method2_.metsig, metsig);
+	event.getByLabel(metsig_method2_.metsigcov, metsigcov);
+	dest.set_et_sig(*metsig);
+	dest.set_xx_sig((*metsigcov)(0,0));
+	dest.set_xy_sig((*metsigcov)(0,1));
+	dest.set_yx_sig((*metsigcov)(1,0));
+	dest.set_yy_sig((*metsigcov)(1,1));
+      }
     }
   }
   constructSpecific(mets_handle, event, setup);

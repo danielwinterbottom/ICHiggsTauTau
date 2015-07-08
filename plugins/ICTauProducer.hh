@@ -202,8 +202,6 @@ void ICTauProducer<pat::Tau>::constructSpecific(
       if(packedCand){
         dest.set_lead_dz_vertex(packedCand->dz());
         dest.set_lead_dxy_vertex(packedCand->dxy());
-        dest.set_lead_dz_gd_vertex(packedCand->dz(vtx.position()));
-        dest.set_lead_dxy_gd_vertex(packedCand->dxy(vtx.position())); 
         dest.set_lead_p(packedCand->p());
       }
     }

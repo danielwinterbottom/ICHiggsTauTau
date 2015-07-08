@@ -16,13 +16,14 @@ namespace ic {
   private:
 
     CLASS_MEMBER(LightTree,fwlite::TFileService*, fs);
-        CLASS_MEMBER(LightTree,std::string, met_label);
+    CLASS_MEMBER(LightTree,std::string, met_label);
     CLASS_MEMBER(LightTree,std::string, dijet_label);
     CLASS_MEMBER(LightTree,std::string, sel_label);
     CLASS_MEMBER(LightTree,bool, is_data);
     CLASS_MEMBER(LightTree,bool, ignoreLeptons);
     CLASS_MEMBER(LightTree,bool, dotrigskim);
     CLASS_MEMBER(LightTree,bool, do_promptskim);
+    CLASS_MEMBER(LightTree,bool, do_noskim);
     CLASS_MEMBER(LightTree,bool, is_embedded);
     CLASS_MEMBER(LightTree,std::string, trig_obj_label);
     CLASS_MEMBER(LightTree,std::string, trigger_path);
@@ -42,17 +43,21 @@ namespace ic {
     double jet1_pt_;
     double jet2_pt_;
     double jet3_pt_;
+    double jet4_pt_;
     double jet1_E_;
     double jet2_E_;
     double jet3_E_;
+    double jet4_E_;
     double jet1_eta_;
     double jet2_eta_;
     double jet3_eta_;
+    double jet4_eta_;
     double forward_tag_eta_;
     double central_tag_eta_;
     double jet1_phi_;
     double jet2_phi_;
     double jet3_phi_;
+    double jet4_phi_;
     double jet_csv1_;
     double jet_csv2_;
     double jet_csv3_;
@@ -117,6 +122,10 @@ namespace ic {
     double genjet3_eta_;
     double genjet3_phi_;
     double genjet3_E_;
+    double genjet4_pt_;
+    double genjet4_eta_;
+    double genjet4_phi_;
+    double genjet4_E_;
     double digenjet_M_;
     double digenjet_deta_;
     double digenjet_dphi_;
