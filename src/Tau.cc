@@ -11,7 +11,7 @@ Tau::Tau()
       lead_hcal_energy_(0.),
       lead_p_(0.),
       lead_dxy_vertex_(0.),
-      lead_dz_vertex_(0.){}
+      lead_dz_vertex_(0.) {}
 
 Tau::~Tau() {}
 
