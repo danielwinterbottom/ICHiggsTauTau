@@ -8,7 +8,7 @@ config.section_('JobType')
 config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/miniaod_cfg_new_recipes_NLO_74.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=72XMINIAOD','isData=0']
+config.JobType.pyCfgParams = ['release=74XMINIAOD','isData=0']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000 
