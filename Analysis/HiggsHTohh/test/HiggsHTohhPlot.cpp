@@ -1128,8 +1128,8 @@ int main(int argc, char* argv[]){
         std::string channel_fmt = ""; 
         std::string category_fmt = "";
         plot.set_cms_label("CMS");
-        //plot.set_cms_extra("Unpublished");
-        plot.set_cms_extra("");
+        plot.set_cms_extra("Preliminary");
+        //plot.set_cms_extra("");
 		if (channel_str == "et") 		channel_fmt = "e#tau_{h}";
 		if (channel_str == "mt") 		channel_fmt = "#mu#tau_{h}";
 		if (channel_str == "mtmet") channel_fmt = "#mu_{soft}#tau_{h}";
@@ -1142,7 +1142,8 @@ int main(int argc, char* argv[]){
         //plot.set_title_left(channel_fmt+", "+category_fmt);
         //plot.set_title_left(channel_fmt+category_fmt);
         plot.set_title_left("H#rightarrowhh#rightarrowbb#tau#tau");
-        ic::TextElement text(channel_fmt+", "+category_fmt,0.037,0.21,0.79);
+        //ic::TextElement text(channel_fmt+", "+category_fmt,0.035,0.57,0.49);
+        ic::TextElement text(channel_fmt+", "+category_fmt,0.035,0.21,0.71);
         plot.AddTextElement(text);
 	}
 	plot.GeneratePlot(hmap);

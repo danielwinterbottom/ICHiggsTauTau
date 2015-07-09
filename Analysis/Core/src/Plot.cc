@@ -205,6 +205,7 @@ namespace ic {
       if (ele.draw_fill()) draw_options += "HIST";
       if (ele.smooth_curve()) draw_options += "C";
       if (ele.draw_marker()) draw_options += "P";
+      //if (ele.draw_stat_error_y()) draw_options += "E0";
       if (ele.draw_stat_error_y()) draw_options += "E1";
       if (ele.draw_options() != "") draw_options = ele.draw_options();
       //ele.hist_ptr()->Smooth(10);
@@ -299,6 +300,8 @@ namespace ic {
           std::string same_opt = "";
           if (first_drawn) same_opt = "SAME";
           first_drawn = true;
+          //ele.hist_ptr()->SetBinErrorOption(TH1::kPoisson);
+          //ele.hist_ptr()->Sumw2(false);
           ele.hist_ptr()->Draw((same_opt+draw_options).c_str());
         } else {
           thstack.Add(ele.hist_ptr());
@@ -416,7 +419,7 @@ namespace ic {
     }
 
      
-     TLine *line = new TLine(30., 0., 30., 0.75*(elements_[0].hist_ptr()->GetMaximum())); // mT
+     TLine *line = new TLine(30., 0., 30., 0.70*(elements_[0].hist_ptr()->GetMaximum())); // mT
     //TLine *line = new TLine(-20., 0., -20., 12000);   // Dzeta
     // TLine *line = new TLine(-0.5, 0., -0.5, 5000000);   // BDT
     TLine *line2 = new TLine(70., 0., 70., elements_[0].hist_ptr()->GetMaximum());
