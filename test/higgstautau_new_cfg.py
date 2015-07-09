@@ -65,7 +65,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -282,8 +282,24 @@ process.icVertexProducer = producers.icVertexProducer.clone(
   firstVertexOnly = cms.bool(True)
 )
 
+process.icConversionProducer = cms.EDProducer('ICConversionProducer',
+  branch = cms.string("conversions"),
+  tracksBranch = cms.string("conversionTracks"),
+  input  = cms.InputTag("allConversions"),
+  saveTracks = cms.bool(True)
+)
+
+process.icPFConversionProducer = cms.EDProducer('ICConversionProducer',
+  branch = cms.string("pfConversions"),
+  tracksBranch = cms.string("pfConversionTracks"),
+  input  = cms.InputTag("particleFlowEGamma"),
+  saveTracks = cms.bool(True)
+)
+
 process.icVertexSequence = cms.Sequence(
-  process.icVertexProducer
+  process.icVertexProducer+
+  process.icConversionProducer+
+  process.icPFConversionProducer
 )
 
 ################################################################
@@ -293,7 +309,8 @@ process.icPFProducer = cms.EDProducer('ICPFProducer',
   branch  = cms.string("pfCandidates"),
   input   = cms.InputTag("selectedPFCandidates"),
   requestTracks       = cms.bool(True),
-  requestGsfTracks    = cms.bool(True)
+  requestGsfTracks    = cms.bool(True),
+  inputUnpackedTracks = cms.InputTag("")
 )
 
 process.icPFSequence = cms.Sequence()
