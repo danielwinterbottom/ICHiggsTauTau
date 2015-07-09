@@ -63,7 +63,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(100)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -446,9 +446,6 @@ process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 process.pfchs=cms.EDFilter("CandPtrSelector",src=cms.InputTag("packedPFCandidates"),cut=cms.string("fromPV"))
 process.ak4PFJetsCHS = ak4PFJets.clone(src='pfchs',doAreaFastjet=True)
 
-#make ak4 non-CHS jets:
-process.ak4PFJets = ak4PFJets.clone(src='packedPFCandidates',doAreaFastjet=True)
-
 #Get slimmedJets direct from miniAOD
 process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
                                               src = cms.InputTag("slimmedJets"),
@@ -656,7 +653,7 @@ process.icPFJetSequence += cms.Sequence(
   process.unpackedTracksAndVertices+
   process.ak4PFJetsCHS+
   process.puJetMvaCHS+ 
-  process.ak4PFJets+
+#  process.ak4PFJets+
   process.jetPartonsforCHS+
   process.pfchsJetPartonMatches+
   process.pfchsJetFlavourAssociation+
@@ -738,14 +735,43 @@ process.ictype1PfMetProducer = producers.icMetProducer.clone(
 #                                                     includeExternalMetsig = cms.bool(False)
 #                                                     )
 
+process.load('JetMETCorrections.Configuration.JetCorrectionProducers_cff')
+process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
+process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
+#make ak4 non-CHS jets:
+process.ak4PFJets=ak4PFJets.clone()
+process.ak4PFJets.src=cms.InputTag("packedPFCandidates")
+process.ak4PFJets.doAreaFastjet=cms.bool(True)
 
+from JetMETCorrections.Configuration.DefaultJEC_cff import ak4PFJetsL1FastL2L3
+
+process.puJetIdForPFMVAMEt.rho = cms.InputTag("fixedGridRhoFastjetAll")
+process.pfMVAMEt.srcPFCandidates = cms.InputTag("packedPFCandidates")
+process.pfMVAMEt.srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
+process.puJetIdForPFMVAMEt.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+
+process.icPfMVAMetProducer = producers.icMetProducer.clone(
+  input = cms.InputTag("pfMVAMEt"),
+  branch = cms.string("pfMVAMet"),
+  inputCustomID = cms.InputTag("MVAMetID")
+  )
+
+process.icMvaMetSequence = cms.Sequence(
+   process.ak4PFJets+
+   process.calibratedAK4PFJetsForPFMVAMEt+
+   process.puJetIdForPFMVAMEt+
+   process.pfMVAMEt+
+   process.icPfMVAMetProducer
+   )
 
 process.icMetSequence = cms.Sequence(
   process.METSignificance+
   process.icPfMet+
   process.icuncorrectedPfMetProducer+
-  process.ictype1PfMetProducer
+  process.ictype1PfMetProducer+
+  process.icMvaMetSequence
   #process.ictype1PfMetProducermetsigoutofbox
   #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
   #process.correctionTermsPfMetType0PFCandidate + #!!currently causing errors
