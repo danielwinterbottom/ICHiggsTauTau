@@ -41,6 +41,7 @@
 #include "HiggsTauTau/interface/HTTPrint.h"
 #include "HiggsTauTau/interface/HTTFilter.h"
 #include "Modules/interface/LumiMask.h"
+#include "HiggsTauTau/interface/VertexFilter.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -172,7 +173,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    min_taus = 1;
    pair_dr = 0.5;
    elec_pt = 23;
-   elec_eta = 2.5;
+   elec_eta = 2.1;
    tau_pt  = 20;
    tau_eta = 2.3;
    } else if (era_type == era::data_2011){
@@ -603,7 +604,8 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     
   BuildModule(SimpleFilter<PFJet>("JetIDFilter")
     .set_input_label(jets_label)
-    .set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training)));
+    //.set_predicate((bind(PFJetIDNoHFCut, _1)) && bind(PileupJetID, _1, pu_id_training)));
+    .set_predicate((bind(PFJetIDNoHFCut, _1)))); 
 
 
   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
@@ -827,8 +829,10 @@ void HTTSequence::BuildETPairs() {
     } else {
       ElecID = [](Electron const* e) { return ElectronHTTId(e, false); };
     }
-   } else {
+   } else if(strategy_type==strategy::phys14){
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
+    } else if(strategy_type==strategy::spring15){
+      ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
     }
 
 
@@ -1008,8 +1012,10 @@ void HTTSequence::BuildEMPairs() {
     } else {
       ElecID = [](Electron const* e) { return ElectronHTTId(e, true); };
     }
-   } else {
+   } else if(strategy_type==strategy::phys14){
       ElecID = [](Electron const* e) { return ElectronHTTIdPhys14(e, false); };
+   } else if(strategy_type==strategy::spring15){
+      ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
    }
 
 
@@ -1175,7 +1181,7 @@ void HTTSequence::BuildTauSelection(){
  }
 
 
-
+if(strategy_type == strategy::paper2013){
   BuildModule(SimpleFilter<Tau>("TauFilter")
       .set_input_label(js["taus"].asString()).set_min(min_taus)
       .set_predicate([=](Tau const* t) {
@@ -1185,6 +1191,23 @@ void HTTSequence::BuildTauSelection(){
                 t->GetTauID("decayModeFinding") > 0.5;
 
       }));
+  } else if(strategy_type == strategy::phys14 || strategy_type == strategy::spring15){
+  BuildModule(SimpleFilter<Tau>("TauFilter")
+      .set_input_label(js["taus"].asString()).set_min(min_taus)
+      .set_predicate([=](Tau const* t) {
+        return  t->pt()                     >  tau_pt     &&
+                fabs(t->eta())              <  tau_eta    &&
+                fabs(t->lead_dz_vertex())   <  tau_dz     &&
+                t->GetTauID("decayModeFindingNewDMs") > 0.5;
+
+      }));
+  }
+
+
+if(strategy_type == strategy::phys14){
+  BuildModule(VertexFilter<Tau>("TauVertexFilter")
+    .set_input_label(js["taus"].asString()).set_min(min_taus));
+ }
 
 //Isolation and anti-muon/anti-electron discriminators applied at plotting time for run 2 analysis   
 if(strategy_type!=strategy::phys14&&strategy_type!=strategy::spring15) {
@@ -1316,6 +1339,7 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(m->dz_vertex())    < veto_dimuon_dz    &&
                 m->is_global()                    &&
                 m->is_tracker()                   &&
+                m->is_pf()                        &&
                 PF03IsolationVal(m, 0.5,0) < 0.3;
       });
     }
@@ -1364,18 +1388,30 @@ void HTTSequence::BuildExtraElecVeto(){
       });
   }
 // Use special mode of veto module which stores the veto value but doesnt actually apply the filter for run 2 analysis	
- if(strategy_type == strategy::phys14 || strategy_type==strategy::spring15){
+ if(strategy_type == strategy::phys14){
       extraElecFilter.set_no_filter(true);
       extraElecFilter.set_predicate([=](Electron const* e) {
         return  e->pt()                 > veto_elec_pt    &&
                 fabs(e->eta())          < veto_elec_eta   &&
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
-//Wrong electron ID? Keep for now:
-                VetoElectronIDPhys14(e)             &&
+                ElectronHTTIdPhys14(e, true)             &&
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
+
+ if(strategy_type==strategy::spring15){
+      extraElecFilter.set_no_filter(true);
+      extraElecFilter.set_predicate([=](Electron const* e) {
+        return  e->pt()                 > veto_elec_pt    &&
+                fabs(e->eta())          < veto_elec_eta   &&
+                fabs(e->dxy_vertex())   < veto_elec_dxy   &&
+                fabs(e->dz_vertex())    < veto_elec_dz    &&
+                ElectronHTTIdSpring15(e, true)             &&
+                PF03IsolationVal(e, 0.5,0) < 0.3;
+      });
+  }
+
 
 BuildModule(extraElecFilter);
  }

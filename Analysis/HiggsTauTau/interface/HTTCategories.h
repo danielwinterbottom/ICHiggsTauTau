@@ -53,7 +53,7 @@ class HTTCategories : public ModuleBase {
   // Event Properties
   branch_var wt_;
   int run_;
-  int event_;
+  unsigned long long event_;
   int lumi_;
   float rho_;
   float mc_weight_;
@@ -90,6 +90,7 @@ class HTTCategories : public ModuleBase {
   float phi_h_;
   branch_var pt_tt_;
   branch_var mt_1_;
+  float id_e_mva_nt_loose_1_ = 0;
   float mt_2_;
   double mt_ll_;
   branch_var pzeta_;
@@ -142,6 +143,14 @@ class HTTCategories : public ModuleBase {
   float lagainstMuonLoose2_2 = 0;
   float lagainstMuonMedium2_2 = 0;
   float lagainstMuonTight2_2 = 0;
+  float lbyIsolationMVA3newDMwoLTraw_2 = 0;
+  float lbyIsolationMVA3oldDMwoLTraw_2 = 0;
+  float lbyIsolationMVA3newDMwLTraw_2 = 0;
+  float lbyIsolationMVA3oldDMwLTraw_2 = 0;
+  float lchargedIsoPtSum_2 = 0;
+  float lneutralIsoPtSum_2 = 0;
+  float lpuCorrPtSum_2 = 0;
+  bool ldecayModeFindingOldDMs_2 = 0;
 
   float l3Hits_1 = 0;
   float lagainstElectronLooseMVA5_1 = 0;
@@ -151,6 +160,14 @@ class HTTCategories : public ModuleBase {
   float lagainstElectronVLooseMVA5_1 = 0;
   float lagainstMuonLoose3_1 = 0;
   float lagainstMuonTight3_1 = 0;
+  float lbyIsolationMVA3newDMwoLTraw_1 = 0;
+  float lbyIsolationMVA3oldDMwoLTraw_1 = 0;
+  float lbyIsolationMVA3newDMwLTraw_1 = 0;
+  float lbyIsolationMVA3oldDMwLTraw_1 = 0;
+  float lchargedIsoPtSum_1 = 0;
+  float lneutralIsoPtSum_1 = 0;
+  float lpuCorrPtSum_1 = 0;
+  bool ldecayModeFindingOldDMs_1 = 0;
 
   float lagainstElectronLooseMVA5_2 = 0;
   float lagainstElectronMediumMVA5_2 = 0;
@@ -167,6 +184,7 @@ class HTTCategories : public ModuleBase {
   unsigned n_bjets_;
   unsigned n_loose_bjets_;
   unsigned n_jetsingap_; // Defined if n_jets >= 2
+  unsigned n_jetsingap20_; // Defined if n_jets >= 2
   branch_var jpt_1_;     // Defined if n_jets >= 1
   branch_var jpt_2_;     // Defined if n_jets >= 2
   branch_var jeta_1_;    // Defined if n_jets >= 1
@@ -174,7 +192,9 @@ class HTTCategories : public ModuleBase {
   float jphi_1_;    // Defined if n_jets >= 1
   float jphi_2_;    // Defined if n_jets >= 2
   float jptraw_1_; 
+  float jrawf_1_;
   float jptraw_2_; 
+  float jrawf_2_;
   float jptunc_1_; 
   float jptunc_2_; 
   float jmva_1_; 
@@ -186,7 +206,15 @@ class HTTCategories : public ModuleBase {
   branch_var bpt_1_;     // Defined if n_bjets >= 1
   branch_var beta_1_;    // Defined if n_bjets >= 1
   float bphi_1_;    // Defined if n_bjets >= 1
-  double bcsv_1_; 
+  float bmva_1_;
+  float brawf_1_;
+  branch_var bcsv_1_; 
+  branch_var bpt_2_;     // Defined if n_bjets >= 2
+  branch_var beta_2_;    // Defined if n_bjets >= 2
+  float bphi_2_;    // Defined if n_bjets >= 2
+  float bmva_2_;
+  float bcsv_2_; 
+  float brawf_2_;
   double jet_csvpt_1_;     // Defined if n_jets >= 1
   double jet_csvEt_1_;     // Defined if n_jets >= 1
   double jet_csvpt_2_;     // Defined if n_jets >= 2
@@ -225,6 +253,7 @@ class HTTCategories : public ModuleBase {
   double pull_balance_bb_; //Defined if n_jets >= 2
   int convergence_bb_; //Defined if n_jets >= 2
   branch_var jdeta_;     // Defined if n_jets >= 2
+  float jdphi_;
 
   double jet_csv_mjj_;       // Defined if n_jets >= 2
   double jet_csv_deta_;     // Defined if n_jets >= 2
