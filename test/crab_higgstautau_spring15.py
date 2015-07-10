@@ -2,19 +2,19 @@ from WMCore.Configuration import Configuration
 config = Configuration()
 config.section_('General')
 config.General.transferOutputs = True
-config.General.workArea='July7_MC_74X'
+config.General.workArea='July08_MC_74X'
 #config.General.requestName = 'May13_MC'
 config.section_('JobType')
 config.JobType.psetName = '/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/miniaod_cfg_new_recipes_74.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['release=74XMINIAOD','isData=0']
+config.JobType.pyCfgParams = ['release=74XMINIAOD','isData=0','isNLO=0']
 config.section_('Data')
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000 
 config.Data.splitting = 'EventAwareLumiBased'
 config.Data.publication = False
-config.Data.outLFNDirBase='/store/user/adewit/July7_MC_74X/'
+config.Data.outLFNDirBase='/store/user/adewit/July08_MC_74X/'
 config.section_('User')
 config.section_('Site')
 config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome', 'T2_RU_JINR']

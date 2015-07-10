@@ -23,7 +23,6 @@
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
       is_nlo_(config.getParameter<bool>("isNlo")),
-      do_weight_sign_(config.getParameter<bool>("storeWeightSign")),
       lhe_collection_(config.getParameter<edm::InputTag>("lheProducer")),
       do_jets_rho_(config.getParameter<bool>("includeJetRho")),
       input_jets_rho_(config.getParameter<edm::InputTag>("inputJetRho")),
@@ -128,20 +127,12 @@ void ICEventInfoProducer::produce(edm::Event& event,
   }
 
   edm::Handle<LHEEventProduct> lhe_handle;
-  if(do_weight_sign_){
-    try {
-      event.getByLabel(lhe_collection_, lhe_handle); 
-    } catch(...){
-     if(is_nlo_){
-       std::cout<<"lhe value doesn't exist";
-     }
-    }
-    if(lhe_handle.isValid()){
-      if(lhe_handle->hepeup().XWGTUP>=0){
-        info_->set_weight("wt_mc_sign",1);
-      } else {
-        info_->set_weight("wt_mc_sign",-1);
-      }
+  if(is_nlo_){
+    event.getByLabel(lhe_collection_, lhe_handle); 
+    if(lhe_handle->hepeup().XWGTUP>=0){
+      info_->set_weight("wt_mc_sign",1);
+    } else {
+      info_->set_weight("wt_mc_sign",-1);
     }
   }
 

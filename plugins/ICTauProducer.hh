@@ -169,7 +169,7 @@ void ICTauProducer<reco::PFTau>::constructSpecific(
   }
 
   for (unsigned i = 0; i < taus_handle->size(); ++i) {
-     reco::PFTau const& src = taus_handle->at(i);
+     //reco::PFTau const& src = taus_handle->at(i);
     ic::Tau& dest = taus_->at(i);
     reco::PFTauRef const& ref = taus_handle->refAt(i).castTo<reco::PFTauRef>();
     for (unsigned j = 0; j < tau_ids_.size(); ++j) {

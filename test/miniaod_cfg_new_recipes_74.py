@@ -19,6 +19,9 @@ opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
 opts.register('release', '74XMINIAOD', parser.VarParsing.multiplicity.singleton,
 #opts.register('release', '74X', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
+opts.register('isNLO', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Is this an NLO sample?")
+
 
 opts.parseArguments()
 infile      = opts.file
@@ -26,6 +29,7 @@ if not infile: infile = "file:/tmp/file.root"
 tag         = opts.globalTag
 isData      = opts.isData
 release     = opts.release
+isNLO       = opts.isNLO
 #isEmbedded  = opts.isEmbedded
 #isTandP     = opts.isTandP
 #isZStudy    = opts.isZStudy
@@ -1438,6 +1442,10 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
 )
+
+if isNLO:
+  process.icEventInfoProducer.isNlo = cms.bool(True)
+  
 
 process.icEventInfoSequence = cms.Sequence(
   process.icEventInfoProducer
