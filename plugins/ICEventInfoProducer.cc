@@ -23,6 +23,7 @@
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
       is_nlo_(config.getParameter<bool>("isNlo")),
+      do_weight_sign_(config.getParameter<bool>("storeWeightSign")),
       lhe_collection_(config.getParameter<edm::InputTag>("lheProducer")),
       do_jets_rho_(config.getParameter<bool>("includeJetRho")),
       input_jets_rho_(config.getParameter<edm::InputTag>("inputJetRho")),
@@ -87,7 +88,11 @@ void ICEventInfoProducer::produce(edm::Event& event,
   *info_ = ic::EventInfo();
   info_->set_is_data(event.isRealData());
   info_->set_run(event.run());
+#if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >= 3
   info_->set_event(event.id().event());
+#else
+  info_->set_event((unsigned long long)event.id().event());
+#endif
   info_->set_lumi_block(event.luminosityBlock());
   info_->set_bunch_crossing(event.bunchCrossing());
 
@@ -123,15 +128,19 @@ void ICEventInfoProducer::produce(edm::Event& event,
   }
 
   edm::Handle<LHEEventProduct> lhe_handle;
-  if(is_nlo_){
+  if(do_weight_sign_){
     try {
       event.getByLabel(lhe_collection_, lhe_handle); 
-    } catch(...){std::cout<<"lhe value doesnt exist";}
+    } catch(...){
+     if(is_nlo_){
+       std::cout<<"lhe value doesn't exist";
+     }
+    }
     if(lhe_handle.isValid()){
       if(lhe_handle->hepeup().XWGTUP>=0){
-        info_->set_mc_weight_sign(1);
+        info_->set_weight("wt_mc_sign",1);
       } else {
-        info_->set_mc_weight_sign(-1);
+        info_->set_weight("wt_mc_sign",-1);
       }
     }
   }

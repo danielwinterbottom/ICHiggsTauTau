@@ -153,7 +153,7 @@ if release in ['74XMINIAOD']:
       )
   process.selectedTaus = cms.EDFilter("PATTauRefSelector",
       src = cms.InputTag("slimmedTaus"),
-      cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFinding") > 0.5')
+      cut = cms.string('pt > 18.0 & abs(eta) < 2.6 & tauID("decayModeFindingNewDMs") > 0.5')
       )
 
 process.icSelectionSequence = cms.Sequence(
@@ -996,7 +996,7 @@ process.mvaMetPairsEM = mvaMetPairs.clone(
   srcLeg2 = cms.InputTag('slimmedMuons'),
   leg1Pt = cms.double(9.5),
   leg1Eta = cms.double(2.6),
-  leg2Pt = cms.double(9.5),
+  leg2Pt = cms.double(9),
   leg2Eta = cms.double(2.6),
   minDeltaR = cms.double(0.29)
 #  srcPFCandidates = cms.InputTag('packedPFCandidates'),

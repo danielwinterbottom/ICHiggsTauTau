@@ -35,7 +35,7 @@ class EventInfo {
   inline bool is_data() const { return is_data_; }
 
   /// Event number
-  inline unsigned event() const { return event_; }
+  inline unsigned long long event() const { return event_; }
 
   /// Run number
   inline int run() const { return run_; }
@@ -52,9 +52,6 @@ class EventInfo {
   /// Energy density used for calculating lepton isolation in this event
   inline double lepton_rho() const { return lepton_rho_; }
   
-  ///Sign of mc event weight
-  inline int mc_weight_sign() const {return mc_weight_sign_;}
-
   /// Number of reconstructed vertices passing some baseline quality
   /// requirements
   inline unsigned good_vertices() const { return good_vertices_; }
@@ -66,7 +63,7 @@ class EventInfo {
   inline void set_is_data(bool const& is_data) { is_data_ = is_data; }
 
   /// @copybrief event()
-  inline void set_event(unsigned const& event) { event_ = event; }
+  inline void set_event(unsigned long long const& event) { event_ = event; }
 
   /// @copybrief run()
   inline void set_run(int const& run) { run_ = run; }
@@ -87,11 +84,6 @@ class EventInfo {
   /// @copybrief lepton_rho()
   inline void set_lepton_rho(double const& lepton_rho) {
     lepton_rho_ = lepton_rho;
-  }
-
-  /// @copybrief mc_weight_sign()
-  inline void set_mc_weight_sign(double const& mc_weight_sign){
-    mc_weight_sign_ = mc_weight_sign;
   }
 
   /// @copybrief good_vertices()
@@ -249,13 +241,12 @@ class EventInfo {
 
  private:
   bool is_data_;
-  unsigned event_;
+  unsigned long long event_;
   int run_;
   int lumi_block_;
   int bunch_crossing_;
   double jet_rho_;
   double lepton_rho_;
-  int mc_weight_sign_;
   SDMap weights_;
   SBMap weight_status_;
   unsigned good_vertices_;
@@ -263,7 +254,7 @@ class EventInfo {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 3);
+  ClassDef(EventInfo, 4);
  #endif
 };
 }

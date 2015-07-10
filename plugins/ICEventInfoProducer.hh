@@ -31,6 +31,7 @@ class ICEventInfoProducer : public edm::EDProducer {
   ic::EventInfo *info_;
   std::string branch_;
   bool is_nlo_;
+  bool do_weight_sign_;
   edm::InputTag lhe_collection_;
   bool do_jets_rho_;
   edm::InputTag input_jets_rho_;
