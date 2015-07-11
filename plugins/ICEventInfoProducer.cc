@@ -14,6 +14,8 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/METReco/interface/BeamHaloSummary.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
@@ -79,6 +81,22 @@ ICEventInfoProducer::~ICEventInfoProducer() {
   delete info_;
 }
 
+void ICEventInfoProducer::endRun(edm::Run const& run, edm::EventSetup const& es) {
+  if (lhe_weight_labels_.size()) return;
+  edm::Handle<LHERunInfoProduct> lhe_info;
+  run.getByLabel("externalLHEProducer", lhe_info);
+  bool record = false;
+  for (auto it = lhe_info->headers_begin(); it != lhe_info->headers_end();
+       ++it) {
+    std::vector<std::string> lines = it->lines();
+    for (unsigned int iL = 0; iL < lines.size(); iL++) {
+      if (lines[iL].find("<weightgroup")  != std::string::npos) record = true;
+      if (lines[iL].find("</weightgroup") != std::string::npos) record = false;
+      if (record) lhe_weight_labels_.push_back(lines[iL]);
+    }
+  }
+}
+
 void ICEventInfoProducer::produce(edm::Event& event,
                                   const edm::EventSetup& setup) {
   *info_ = ic::EventInfo();
@@ -104,6 +122,16 @@ void ICEventInfoProducer::produce(edm::Event& event,
     event.getByLabel(weights_[i].second, weight);
     double weights_result = (*weight);
     info_->set_weight(weights_[i].first, weights_result);
+  }
+
+  edm::Handle<LHEEventProduct> lhe_handle;
+  event.getByLabel("externalLHEProducer", lhe_handle);
+  double nominal_wt = lhe_handle->hepeup().XWGTUP;
+  info_->set_weight("nlo_sign",
+                    (nominal_wt > 0) ? 1. : ((nominal_wt < 0) ? -1. : 0));
+  for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
+    info_->set_weight(lhe_handle->weights()[i].id,
+                      lhe_handle->weights()[i].wgt / nominal_wt, false);
   }
 
   for (unsigned i = 0; i < gen_weights_.size(); ++i) {
@@ -153,6 +181,13 @@ void ICEventInfoProducer::endJob() {
     for (iter = observed_filters_.begin(); iter != observed_filters_.end();
          ++iter) {
       std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
+    }
+  }
+  if (lhe_weight_labels_.size()) {
+    std::cout << std::string(78, '-') << "\n";
+    std::cout << "LHE event weights\n";
+    for (unsigned l = 0; l < lhe_weight_labels_.size(); ++l) {
+      std::cout << lhe_weight_labels_[l];
     }
   }
 }
