@@ -20,6 +20,14 @@ namespace ic {
     t.erase(std::remove_if(t.begin(), t.end(), pred), t.end());
   }
 
+  template <class T, class U>
+  void erase_if_not(T& t, U pred) {
+    t.erase(std::remove_if(
+                t.begin(), t.end(),
+                [&](typename T::value_type const& x) { return !pred(x); }),
+            t.end());
+  }
+
   //Dummy
   template <class T> bool DummyFunction(T const* cand ){
     (void)cand;
