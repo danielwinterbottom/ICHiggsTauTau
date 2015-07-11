@@ -195,9 +195,6 @@ void ICTauProducer<pat::Tau>::constructSpecific(
      //dest.set_lead_hcal_energy(src.leadChargedHadrCand()->hcalEnergy());
 #if CMSSW_MAJOR_VERSION >= 7
     if(src.leadChargedHadrCand().isNonnull()){
-      edm::Handle<edm::View<reco::Vertex> > vertices_handle;
-      if (do_vertex_ip_) event.getByLabel(input_vertices_, vertices_handle);
-      reco::Vertex const& vtx = vertices_handle->at(0);
       pat::PackedCandidate const* packedCand = dynamic_cast<pat::PackedCandidate const*>(src.leadChargedHadrCand().get());
       if(packedCand){
         dest.set_lead_dz_vertex(packedCand->dz());
