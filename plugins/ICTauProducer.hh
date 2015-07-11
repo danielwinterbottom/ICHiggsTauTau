@@ -11,7 +11,9 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "DataFormats/TauReco/interface/PFTauFwd.h"
 #include "DataFormats/TauReco/interface/PFTau.h"
+#if CMSSW_MAJOR_VERSION>=7
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#endif
 #include "DataFormats/TauReco/interface/PFTauDiscriminator.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
