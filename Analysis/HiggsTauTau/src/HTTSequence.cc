@@ -42,6 +42,7 @@
 #include "HiggsTauTau/interface/HTTFilter.h"
 #include "Modules/interface/LumiMask.h"
 #include "HiggsTauTau/interface/VertexFilter.h"
+#include "HiggsTauTau/interface/EffectiveEvents.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -400,7 +401,11 @@ void HTTSequence::BuildSequence(){
   //		to_check.push_back(addit_to_check.at(j));
 	 // }
    } 
-
+  
+ if(js["get_effective"].asBool()){
+  BuildModule(EffectiveEvents("EffectiveEvents")
+    .set_fs(fs.get()));
+  }else{
 
   HTTPrint httPrint("HTTPrint");
   if(era_type==era::data_2015){
@@ -427,7 +432,7 @@ void HTTSequence::BuildSequence(){
   }
 
 
-  if(is_data && strategy_type!=strategy::phys14 &&strategy_type!=strategy::spring15){
+  if(is_data && strategy_type!=strategy::phys14){
   std::string data_json = "";
   if (era_type == era::data_2011) {
     if (channel == channel::em) {
@@ -437,7 +442,7 @@ void HTTSequence::BuildSequence(){
     }
   }             
   if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
-  if (era_type == era::data_2015)  data_json= "input/json/data_2012_rereco.txt";
+  if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1307150943.txt";
 
   BuildModule(LumiMask("LumiMask")
     .set_produce_output_jsons("")
@@ -790,6 +795,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     //Good to avoid accidentally overwriting existing output files when syncing
     .set_write_tree(!js["make_sync_ntuple"].asBool()));
 
+ }
 }
 
 // --------------------------------------------------------------------------

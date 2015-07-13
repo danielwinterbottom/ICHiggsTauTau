@@ -35,12 +35,15 @@ namespace ic {
     using boost::range::push_back;
     // Define some sensible defaults
     sample_names_ = {
-      "WZJetsTo3LNu",
+//      "WZJetsTo3LNu",
+      "QCDMuEnr",
+      "QCDFlat",
       "T-tW",
       "Tbar-tW",
       "TTJets",
       "TT",
       "DYJetsToLL"
+      "DYJetsToLL10-50"
     };
     if (ch_ != channel::em) {
       push_back(sample_names_, std::vector<std::string>{
@@ -50,6 +53,12 @@ namespace ic {
         "DYJetsToTauTau",
         "DYJetsToTauTau-L",
         "DYJetsToTauTau-JJ"
+        "DYJetsToLL10-50-L",
+        "DYJetsToLL10-50-J",
+        "DYJetsToTauTau10-50",
+        "DYJetsToTauTau10-50-L",
+        "DYJetsToTauTau10-50-JJ"
+
       });
     }
 
@@ -90,16 +99,21 @@ namespace ic {
 
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
-     "WZJetsTo3LNu",
-     "T-tW", "Tbar-tW"
+//     "WZJetsTo3LNu",
+     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"
     };
 
     samples_alias_map_["top_samples"] = {
      "TTJets"
     };
+ 
+   samples_alias_map_["qcd_samples"] = {
+    "QCDMuEnr"
+    }
 
     samples_alias_map_["zj_samples"] = {
      "DYJetsToTauTau-JJ", "DYJetsToLL-J"
+     "DYJetsToTauTau10-50-JJ", "DYJetsToLL10-50-J"
     };
   }
 
@@ -146,7 +160,7 @@ namespace ic {
   void HTTRun2Analysis::AddMSSMSignalSamples(std::vector<std::string> masses) {
     for (auto m : masses) {
       sample_names_.push_back("SUSYGluGluToHToTauTau_M-"+m);
-      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
+//      sample_names_.push_back("SUSYBBHToTauTau_M-"+m);
     }
   }
 
@@ -311,7 +325,49 @@ namespace ic {
     SetNorm(&w_hist, w_norm.first);
     return std::make_pair(w_hist, w_norm);
   }
-  
+
+
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateTOP(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateTOP] --------------------------------------------------------\n";
+    std::vector<std::string> top_samples = this->ResolveSamplesAlias("top_samples");
+    if (verbosity_) {
+      std::cout << "top_samples: ";
+      for (unsigned i = 0; i < top_samples.size(); ++i) {
+        std::cout << top_samples[i];
+        if (i != top_samples.size()-1) std::cout << ", ";
+      }
+      std::cout << std::endl;
+    }
+    auto top_norm = this->GetLumiScaledRate(top_samples, sel, cat, wt);
+    std::string top_shape_cat = cat;
+    TH1F top_hist = this->GetLumiScaledShape(var, top_samples, sel, top_shape_cat, wt);
+    // TH1F top_hist = this->GetLumiScaledShape(var, top_shape_sample, sel, top_shape_cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % "top_samples" % sel % top_shape_cat % wt;
+    SetNorm(&top_hist, top_norm.first);
+    return std::make_pair(top_hist, top_norm);
+  }
+
+
+   HTTRun2Analysis::HistvaluePair HTTRun2Analysis::GenerateQCD(unsigned /*method*/,std::string var, std::string sel, std::string cat, std::string wt){
+    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
+    std::vector<std::string> qcd_samples = this->ResolveSamplesAlias("qcd_samples");
+    if(verbosity_){
+      std::cout << "qcd_samples: ";
+      for (unsigned i = 0; i < qcd_samples.size(); ++i) {
+        std::cout << qcd_samples[i];
+        if (i != qcd_samples.size()-1) std::cout << ", ";
+       }
+       std::cout << std::endl;
+     }
+     auto qcd_norm = this->GetLumiScaledRate(qcd_samples, sel, cat, wt);
+     std::string qcd_shape_cat = cat;
+     TH1F qcd_hist = this->GetLumiScaledShape(var, qcd_samples, sel, qcd_shape_cat, wt);
+     if (verbosity_) std::cout << "Shape: " << boost::format("%s, '%s', '%s', '%s' \n")
+       % "qcd_samples" % sel %qcd_shape_cat % wt;
+     SetNorm(&qcd_hist, qcd_norm.first);
+     return std::make_pair(qcd_hist, qcd_norm);
+    }
 /*  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned method, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
     Value qcd_norm;
