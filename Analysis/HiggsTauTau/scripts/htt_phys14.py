@@ -72,7 +72,7 @@ channels = options.channels
 
 
 FILELIST='filelists/May29_MC_72X'
-CONFIG='scripts/config.json'
+CONFIG='scripts/config-phys14.json'
 
 signal_mc = [ ]
 signal_vh = [ ] 
