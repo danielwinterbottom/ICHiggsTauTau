@@ -4,6 +4,7 @@ import sys
 import os
 from optparse import OptionParser
 import math
+import fnmatch
 
 parser = OptionParser()
 
@@ -36,15 +37,47 @@ sample_list = [
 	]
 
 channel = ['em','et','mt','tt']
+with open("jobs/files_per_sample.txt","r") as inf:
+  lines = inf.readlines()
+
+nfiles={}
+
+for ind in range(0,len(lines)):
+  nfiles[lines[ind].split()[0]]=int(lines[ind].split()[1])
 
 for sa in sample_list:
   for ch in channel:
     if os.path.isfile('./output/%(outputf)s/%(sa)s_2014_%(ch)s_0.root'%vars()):
-      os.system('hadd ./output/%(outputf)s/%(sa)s_%(ch)s_2014.root ./output/%(outputf)s/%(sa)s_2014_%(ch)s_*'% vars()) 
-      os.system('rm ./output/%(outputf)s/%(sa)s_2014_%(ch)s_*' %vars())
-    if os.path.isfile('./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2014_%(ch)s_0.root' %vars()):
-      os.system('hadd ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_%(ch)s_2014.root ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2014_%(ch)s_*'% vars())
-      os.system('rm ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2014_%(ch)s_*'% vars())
-    if os.path.isfile('./output/%(outputf)s/TSCALE_UP/%(sa)s_2014_%(ch)s_0.root' %vars()):
-      os.system('hadd ./output/%(outputf)s/TSCALE_UP/%(sa)s_%(ch)s_2014.root ./output/%(outputf)s/TSCALE_UP/%(sa)s_2014_%(ch)s_*'% vars())
-      os.system('rm ./output/%(outputf)s/TSCALE_UP/%(sa)s_2014_%(ch)s_*'% vars())
+      if len(fnmatch.filter(os.listdir('./output/%(outputf)s'%vars()),'%(sa)s_2014_%(ch)s_*'%vars())) == nfiles["%(sa)s_2014"%vars()]:
+        os.system('hadd ./output/%(outputf)s/%(sa)s_%(ch)s_2014.root ./output/%(outputf)s/%(sa)s_2014_%(ch)s_* &> ./haddout.txt'% vars()) 
+        filetext = open("./haddout.txt").read()
+        if 'Warning' in filetext or 'Error' in filetext:
+          print "Hadd had a problem:"
+          print filetext 
+        else :
+          os.system('rm ./output/%(outputf)s/%(sa)s_2014_%(ch)s_*' %vars())
+      else :
+        print "Incorrect number of files for sample %(sa)s_2014_%(ch)s!"%vars()
+    if os.path.isfile('./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2014_%(ch)s_0.root'%vars()):
+      if len(fnmatch.filter(os.listdir('./output/%(outputf)s/TSCALE_DOWN'%vars()),'%(sa)s_2014_%(ch)s_*'%vars())) == nfiles["%(sa)s_2014"%vars()]:
+        os.system('hadd ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_%(ch)s_2014.root ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2014_%(ch)s_* &> ./haddout.txt'% vars()) 
+        filetext = open("./haddout.txt").read()
+        if 'Warning' in filetext or 'Error' in filetext:
+          print "Hadd had a problem:"
+          print filetext 
+        else :
+          os.system('rm ./output/%(outputf)s/TSCALE_DOWN/%(sa)s_2014_%(ch)s_*' %vars())
+      else :
+        print "Incorrect number of files!"
+    if os.path.isfile('./output/%(outputf)s/TSCALE_UP/%(sa)s_2014_%(ch)s_0.root'%vars()):
+      if len(fnmatch.filter(os.listdir('./output/%(outputf)s/TSCALE_UP'%vars()),'%(sa)s_2014_%(ch)s_*'%vars())) == nfiles["%(sa)s_2014"%vars()]:
+        os.system('hadd ./output/%(outputf)s/TSCALE_UP/%(sa)s_%(ch)s_2014.root ./output/%(outputf)s/TSCALE_UP/%(sa)s_2014_%(ch)s_* &> ./haddout.txt'% vars()) 
+        filetext = open("./haddout.txt").read()
+        if 'Warning' in filetext or 'Error' in filetext:
+          print "Hadd had a problem:"
+          print filetext 
+        else :
+          os.system('rm ./output/%(outputf)s/TSCALE_UP/%(sa)s_2014_%(ch)s_*' %vars())
+      else :
+        print "Incorrect number of files!"
+

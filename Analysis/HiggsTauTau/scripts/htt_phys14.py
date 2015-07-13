@@ -72,11 +72,16 @@ channels = options.channels
 
 
 FILELIST='filelists/May29_MC_72X'
-CONFIG='scripts/config.json'
+CONFIG='scripts/config-phys14.json'
 
 signal_mc = [ ]
 signal_vh = [ ] 
 signal_mc_ww = [ ]
+
+if os.path.isfile("./jobs/files_per_sample.txt"):
+  os.system("rm ./jobs/files_per_sample.txt")
+
+file_persamp = open("./jobs/files_per_sample.txt", "w")
 
 if options.proc_sm or options.proc_all:
 #  masses = ['90','95','100','105','110','115','120','125','130','135','140','145','150','155','160']
@@ -178,6 +183,7 @@ if options.proc_bkg or options.proc_all:
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
       os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
     JOB='DYJetsToLL%s_2014' % (sp)
@@ -185,6 +191,7 @@ if options.proc_bkg or options.proc_all:
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
       os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 				#Don't run these for emu channel:
 
@@ -193,6 +200,7 @@ if options.proc_bkg or options.proc_all:
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
       os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
     JOB='DYJetsToLL-J%s_2014' % (sp)
@@ -200,6 +208,7 @@ if options.proc_bkg or options.proc_all:
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
       os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
     JOB='DYJetsToTauTau-L%s_2014' % (sp)
@@ -207,6 +216,7 @@ if options.proc_bkg or options.proc_all:
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
       os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
               
     JOB='DYJetsToTauTau-JJ%s_2014' % (sp)
@@ -214,6 +224,7 @@ if options.proc_bkg or options.proc_all:
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
       os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
         
 
     for sa in central_samples:
@@ -224,6 +235,7 @@ if options.proc_bkg or options.proc_all:
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+      file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 '''
 
@@ -246,6 +258,7 @@ if options.proc_sm or options.proc_mssm or options.proc_Hhh or options.proc_all:
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
       os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 '''
       for sa in signal_vh:
         name_wh = sa.replace('WH_ZH_TTH','WH')

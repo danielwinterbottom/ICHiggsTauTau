@@ -34,6 +34,10 @@ namespace ic {
     return false;
   }
 
+  bool VertexDz(Tau const* cand, double const& vertexZ) {
+    return ( fabs(cand->vz() - vertexZ)==0) ; 
+  }
+
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta) {
     return ( (cand->pt() > minPt) && (std::fabs(cand->eta()) < maxEta) ); 
   }
@@ -109,6 +113,29 @@ namespace ic {
       result = neutralFrac   < 0.99
             && jet->neutral_em_energy_frac()    < 0.99
             && n_pu                             > 0;
+    }
+    return result;
+  }
+
+  bool PFJetID2015(PFJet const* jet) {
+    double eta = fabs(jet->eta());
+    bool result = false;
+
+    double neutralFrac = jet->neutral_had_energy() / jet->uncorrected_energy();
+
+    if (eta < 2.4) {
+      result = neutralFrac   < 0.99
+      && jet->neutral_em_energy_frac()    < 0.99
+            && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
+            && jet->muon_energy_frac() < 0.8
+            && jet->charged_had_energy_frac()   > 0.0
+            && jet->charged_multiplicity()      > 0
+            && jet->charged_em_energy_frac()    < 0.99;
+    } else {
+      result = neutralFrac   < 0.99
+            && jet->neutral_em_energy_frac()    < 0.99
+            && jet->charged_multiplicity()+jet->neutral_multiplicity() > 1
+            && jet->muon_energy_frac() < 0.8;
     }
     return result;
   }
@@ -711,6 +738,34 @@ namespace ic {
     return pass_mva;
   }
 
+  bool ElectronHTTIdSpring15(Electron const* elec, bool loose_wp) {
+    //Do some cut-based pre-selection
+    if (elec->has_matched_conversion()) return false;
+    if (elec->gsf_tk_nhits() > 0) return false;
+    bool pass_mva = false;
+    double eta = fabs(elec->sc_eta());
+    double pt = fabs(elec->pt());
+    double idmva = elec->GetIdIso("mvaNonTrigSpring15");
+    if (!loose_wp) {
+      if (eta <= 0.8 && pt <= 10                  && idmva > -0.253) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479 && pt <=10   && idmva > 0.081) pass_mva = true;
+      if (eta >  1.479 && pt <= 10                && idmva > -0.081) pass_mva = true;
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.965) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479 && pt > 10   && idmva > 0.917) pass_mva = true;
+      if (eta >  1.479 && pt > 10                 && idmva > 0.683) pass_mva = true;
+
+    } else {
+      if (eta <= 0.8 && pt <= 10                  && idmva > -0.483) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479 && pt <=10   && idmva > -0.267) pass_mva = true;
+      if (eta >  1.479 && pt <= 10                && idmva > -0.081) pass_mva = true;
+      if (eta <= 0.8 && pt > 10                   && idmva > 0.933) pass_mva = true;
+      if (eta >  0.8 && eta <= 1.479 && pt > 10   && idmva > 0.825) pass_mva = true;
+      if (eta >  1.479 && pt > 10                 && idmva > 0.337) pass_mva = true;
+    }
+    return pass_mva;
+  }
+
+
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
     if (elec->has_matched_conversion()) return false;
@@ -919,7 +974,9 @@ namespace ic {
       muon->cq_chi2_localposition()<12 &&
       muon->cq_trk_kink()<20;
 
-    bool isMedium = (muon->is_global()||muon->is_tracker()) && //Require loose muon except pf isolation should be done in individual analyses
+    bool isMedium =
+      muon->is_pf() &&
+      (muon->is_global()||muon->is_tracker()) && //Require loose muon except pf isolation should be done in individual analyses
       muon->it_valid_fraction() > 0.8 && 
       muon->segment_compatibility() > (goodGlob ? 0.303 : 0.451); 
     return isMedium;
