@@ -169,6 +169,14 @@ process.icGenParticleProducer = producers.icGenParticleProducer.clone(
   includeDaughters  = cms.bool(True)
 )
 
+process.icMCSequence = cms.Sequence()
+
+if not isData:
+  process.icMCSequence += (
+    process.icGenParticleProducer
+    )
+
+
 ################################################################
 # EventInfo
 ################################################################
@@ -181,6 +189,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputVertices       = cms.InputTag("offlineSlimmedPrimaryVertices"),
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+  includeLHEWeights   = cms.bool(not isData)
 )
 
 process.icEventInfoSequence = cms.Sequence(
@@ -199,7 +208,7 @@ process.p = cms.Path(
   process.icVertexProducer+
   process.icMuonSequence+
   process.icJetSequence+
-  process.icGenParticleProducer+
+  process.icMCSequence+
   process.icEventInfoSequence+
   process.icEventProducer
 )

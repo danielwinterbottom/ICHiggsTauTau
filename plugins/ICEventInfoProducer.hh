@@ -39,6 +39,7 @@ class ICEventInfoProducer : public edm::EDProducer {
   edm::InputTag input_vertices_;
   bool do_csc_filter_;
   edm::InputTag input_csc_filter_;
+  bool do_lhe_weights_;
   std::vector<std::pair<std::string, edm::InputTag> > filters_;
   std::vector<std::pair<std::string, edm::InputTag> > weights_;
   std::vector<std::pair<std::string, edm::InputTag> > gen_weights_;

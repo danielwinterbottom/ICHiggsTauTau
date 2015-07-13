@@ -30,7 +30,8 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_vertex_count_(config.getParameter<bool>("includeVertexCount")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
-      input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")) {
+      input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
+      do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")) {
   edm::ParameterSet filter_params =
       config.getParameter<edm::ParameterSet>("filters");
   std::vector<std::string> filter_names =
@@ -82,6 +83,7 @@ ICEventInfoProducer::~ICEventInfoProducer() {
 }
 
 void ICEventInfoProducer::endRun(edm::Run const& run, edm::EventSetup const& es) {
+  if (!do_lhe_weights_) return;
   if (lhe_weight_labels_.size()) return;
   edm::Handle<LHERunInfoProduct> lhe_info;
   run.getByLabel("externalLHEProducer", lhe_info);
@@ -124,14 +126,16 @@ void ICEventInfoProducer::produce(edm::Event& event,
     info_->set_weight(weights_[i].first, weights_result);
   }
 
-  edm::Handle<LHEEventProduct> lhe_handle;
-  event.getByLabel("externalLHEProducer", lhe_handle);
-  double nominal_wt = lhe_handle->hepeup().XWGTUP;
-  info_->set_weight("nlo_sign",
-                    (nominal_wt > 0) ? 1. : ((nominal_wt < 0) ? -1. : 0));
-  for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
-    info_->set_weight(lhe_handle->weights()[i].id,
-                      lhe_handle->weights()[i].wgt / nominal_wt, false);
+  if (do_lhe_weights_) {
+    edm::Handle<LHEEventProduct> lhe_handle;
+    event.getByLabel("externalLHEProducer", lhe_handle);
+    double nominal_wt = lhe_handle->hepeup().XWGTUP;
+    info_->set_weight("nlo_sign",
+                      (nominal_wt > 0) ? 1. : ((nominal_wt < 0) ? -1. : 0));
+    for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
+      info_->set_weight(lhe_handle->weights()[i].id,
+                        lhe_handle->weights()[i].wgt / nominal_wt, false);
+    }
   }
 
   for (unsigned i = 0; i < gen_weights_.size(); ++i) {
