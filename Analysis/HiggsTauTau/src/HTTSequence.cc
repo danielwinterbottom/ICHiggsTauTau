@@ -449,11 +449,12 @@ void HTTSequence::BuildSequence(){
     .set_input_file(data_json));
   }
 
-if(ztautau_mode > 0 && strategy_type==strategy::paper2013){
+if(ztautau_mode > 0 ){
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
-    .set_input_label("genParticles")
+    .set_input_label("genParticlesTaus")
     .set_predicate(
-      (bind(&GenParticle::status, _1) == 3) && 
+      (bind(&GenParticle::status,_1) >1)&& //THIS IS JUST FOR TESTING - roll back to the line below?
+      //(bind(&GenParticle::status, _1) == 3 || bind(&GenParticle::status, _1) == 22 || bind(&GenParticle::status,_1)==23 || bind(&GenParticle::status,_)==24) && 
       (bind(abs,(bind(&GenParticle::pdgid, _1))) == 15))
     .set_min(2);
   if (ztautau_mode == 2) zTauTauFilter.set_min(0).set_max(0);

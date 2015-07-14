@@ -265,6 +265,8 @@ namespace ic {
     return std::make_pair(data_hist, data_norm);
   }
 
+
+
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZTT(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZTT] --------------------------------------------------------\n";
     Value ztt_norm;
@@ -276,6 +278,23 @@ namespace ic {
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
+    if (ch_ != channel::em) {
+      auto ztt_leptonic_norm = this->GetLumiScaledRate("DYJetsToTauTau-L", sel, cat, wt);
+      TH1F ztt_leptonic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-L", sel, cat, wt);
+      SetNorm(&ztt_leptonic_hist, ztt_leptonic_norm.first);
+      if (verbosity_) PrintValue("ZTT-Leptonic", ztt_leptonic_norm); 
+      ztt_norm = ValueAdd(ztt_norm, ztt_leptonic_norm);
+      ztt_hist.Add(&ztt_leptonic_hist);
+      /*
+      auto ztt_hadronic_norm = this->GetLumiScaledRate("DYJetsToTauTau-JJ"+dy_soup_, sel, cat, wt);
+      TH1F ztt_hadronic_hist = this->GetLumiScaledShape(var, "DYJetsToTauTau-JJ"+dy_soup_, sel, cat, wt);
+      SetNorm(&ztt_hadronic_hist, ztt_hadronic_norm.first);
+      if (verbosity_) PrintValue("ZTT-Hadronic", ztt_hadronic_norm);
+      ztt_norm = ValueAdd(ztt_norm, ztt_hadronic_norm);
+      ztt_hist.Add(&ztt_hadronic_hist);
+      */
+    }
+
     return std::make_pair(ztt_hist, ztt_norm);
   }
   

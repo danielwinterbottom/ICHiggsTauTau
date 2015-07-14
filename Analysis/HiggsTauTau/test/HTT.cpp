@@ -101,8 +101,8 @@ int main(int argc, char* argv[]) {
   if(nlines != 0){
     vector<string> files_all = ic::ParseFileLines(js["job"]["filelist"].asString());
     for(unsigned k=0; k<nlines; k++){
-      if(offset+k < files_all.size()){
-        files.push_back(files_all.at(offset+k));
+      if((offset*nlines)+k < files_all.size()){
+        files.push_back(files_all.at((offset*nlines)+k));
       }
     }
   } else files = ic::ParseFileLines(js["job"]["filelist"].asString());
