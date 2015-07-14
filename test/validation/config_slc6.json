@@ -5,7 +5,8 @@
     "cmssw_version"     : "CMSSW_7_0_7",
     "cmssw_user"        : "ajgilbert",
     "cmssw_branch"      : "htt-from-CMSSW_7_0_7",
-    "test_script"       : "test/validation/full_compile.sh"
+    "test_script"       : "test/validation/full_compile.sh",
+    "clean_script"      : "test/validation/full_clean.sh"
   },
   "slc6_amd64_gcc491-CMSSW_7_3_5" : {
     "build_root"        : "/home/build/",
@@ -13,7 +14,8 @@
     "cmssw_version"     : "CMSSW_7_3_5",
     "cmssw_user"        : "cms-sw",
     "cmssw_branch"      : "CMSSW_7_3_5",
-    "test_script"       : "test/validation/full_compile.sh"
+    "test_script"       : "test/validation/full_compile.sh",
+    "clean_script"      : "test/validation/full_clean.sh"
   },
   "slc6_amd64_gcc472-CMSSW_5_3_27" : {
     "build_root"        : "/home/build/",
@@ -21,6 +23,7 @@
     "cmssw_version"     : "CMSSW_5_3_27",
     "cmssw_user"        : "cms-sw",
     "cmssw_branch"      : "CMSSW_5_3_27",
-    "test_script"       : "test/validation/full_compile.sh"
+    "test_script"       : "test/validation/full_compile.sh",
+    "clean_script"      : "test/validation/full_clean.sh"
   }
 }

@@ -2,7 +2,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <ctype.h>
 #include "boost/algorithm/string.hpp"
+#include "boost/lexical_cast.hpp"
 
 namespace ic {
 Json::Value ExtractJsonFromFile(std::string const& file) {
@@ -22,42 +24,90 @@ Json::Value ExtractJsonFromString(std::string const& str) {
 }
 
 Json::Value ExtractJsonFromFlatString(std::string const&str){
- //THIS NEEDS TO BE TURNED INTO SOMETHING THAT WORKS FOR ANY DEPTH OF KEYS/VALUES
- //AND FOR ANY VALUE TYPE (this only works for strings)
   std::vector<std::string> split_str;
   std::vector<std::string> split_lastarg;
   boost::split(split_str,str,boost::is_any_of(":"));
-  boost::split(split_lastarg,split_str.at(split_str.size()-1),boost::is_any_of("."));
-  std::string jsonstr;
-  if(split_str.size()==3){
-  if(split_lastarg.size()>1){
-  jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":[\"";//+split_str.at(2)+"\"]}}";
-    for(unsigned k=0;k<split_lastarg.size()-1;k++){
-      jsonstr=jsonstr+split_lastarg.at(k)+"\",\"";
+  boost::split(split_lastarg,split_str.at(split_str.size()-1),boost::is_any_of("^"));
+  std::string jsonstr = "{\"";
+  if(split_lastarg.size()==1){
+    for(unsigned i = 0; i<split_str.size()-1;i++){
+      if(i==split_str.size()-2){
+        jsonstr = jsonstr+split_str.at(i)+"\":";
+      } else jsonstr = jsonstr+split_str.at(i)+"\":{\"";
     }
-  jsonstr=jsonstr+split_lastarg.at(split_lastarg.size()-1)+"\"]}}";
-  }
-  else{
-   jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":\""+split_str.at(2)+"\"}}";//+split_str.at(2)+"\"]}}";
-  }
-  } else if(split_str.size()==4){
-  if(split_lastarg.size()>1){
-   jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":{\""+split_str.at(2)+"\"[\"";//+split_str.at(2)+"\"]}}";
-    for(unsigned k=0;k<split_lastarg.size()-1;k++){
-      jsonstr=jsonstr+split_lastarg.at(k)+"\",\"";
+    bool is_num = true;
+    try{
+      boost::lexical_cast<double>(split_str.at(split_str.size()-1));
     }
-  jsonstr=jsonstr+split_lastarg.at(split_lastarg.size()-1)+"\"]}}}";
-  }
-  else{
-   jsonstr ="{\""+split_str.at(0)+"\":{\""+split_str.at(1)+"\":{\""+split_str.at(2)+"\":\""+split_str.at(3)+"\"}}}";//+split_str.at(2)+"\"]}}";
-  }
- } else{ std::cout<<"This method doesn't work for this number of arguments! use ExtractJsonFromString"<<std::endl; exit(1);}
+    catch(boost::bad_lexical_cast& e){
+      is_num = false;
+    }
+    bool is_bool=false;
+    if(strcmp((split_str.at(split_str.size()-1)).c_str(),"false")==0||strcmp((split_str.at(split_str.size()-1)).c_str(),"true")==0){
+     is_bool = true;
+    }
+    if(is_bool || is_num){
+      jsonstr = jsonstr+split_str.at(split_str.size()-1)+std::string(split_str.size()-1,'}');
+    } else {
+      if(strcmp(split_str.at(split_str.size()-1).c_str(),"")==0){
+        jsonstr = jsonstr+"[]"+std::string(split_str.size()-1,'}');
+      } else {
+       jsonstr = jsonstr+"\""+split_str.at(split_str.size()-1)+"\""+std::string(split_str.size()-1,'}');
+     }
+   }
 
+		
+	} else {
+   for(unsigned i = 0; i<split_str.size()-1;i++){
+    if(i==split_str.size()-2){
+      jsonstr = jsonstr+split_str.at(i)+"\":[";
+     } else jsonstr = jsonstr+split_str.at(i)+"\":{\"";
+   }
+    bool is_num = true;
+    bool are_all_num = true;
+    for(unsigned k = 0; k<split_lastarg.size(); k++){
+      if(strcmp((split_lastarg.at(k)).c_str(),"")!=0){
+        try{
+          boost::lexical_cast<double>(split_lastarg.at(k));
+        }
+        catch(boost::bad_lexical_cast& e){
+          is_num = false;
+        }
+       are_all_num = are_all_num&&is_num;
+     }
+    }
+    bool is_bool=false;
+    bool are_all_bool = true;
+    for( unsigned k = 0; k<split_lastarg.size();k++){
+      if(strcmp((split_lastarg.at(k)).c_str(),"")!=0){
+        if(strcmp((split_lastarg.at(k)).c_str(),"false")==0||strcmp((split_lastarg.at(k)).c_str(),"true")==0){
+          is_bool = true;
+        }
+        are_all_bool = are_all_bool&&is_bool;
+      }
+	  }
+    if(are_all_bool || are_all_num){
+      for(unsigned k = 0; k<split_lastarg.size()-1;k++){ 
+        if(strcmp("",split_lastarg.at(k).c_str())!=0){
+          jsonstr = jsonstr+split_lastarg.at(k)+",";
+        }
+      } 
+      jsonstr=jsonstr+split_lastarg.at(split_lastarg.size()-1)+"]"+std::string(split_str.size()-1,'}');
+     } else {
+     for(unsigned k = 0; k<split_lastarg.size()-1;k++){ 
+       if(strcmp("",split_lastarg.at(k).c_str())!=0){
+         jsonstr = jsonstr+"\""+split_lastarg.at(k)+"\",";
+       }
+      } 
+      jsonstr=jsonstr+"\""+split_lastarg.at(split_lastarg.size()-1)+"\"]"+std::string(split_str.size()-1,'}');
+    }
+  }
 
   Json::Value js;
   Json::Reader reader(Json::Features::all());
   reader.parse(jsonstr, js);
   return js;
+	
 }
   
 
