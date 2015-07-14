@@ -138,7 +138,7 @@ int main(int argc, char* argv[]){
 	begin_var = reduced_var.find("(");
 	if (begin_var != reduced_var.npos) reduced_var.erase(begin_var, reduced_var.npos);
 	if (plot.plot_name() == "") {
-		plot.set_plot_name(reduced_var+"_"+datacard+"_"+channel_str+("_2014"));
+		plot.set_plot_name(reduced_var+"_"+datacard+"_"+channel_str+("_2015"));
 	}
 	TH1::AddDirectory(false);
 
@@ -164,7 +164,7 @@ int main(int argc, char* argv[]){
 	// ************************************************************************
 	// Setup HTTRun2Analysis 
 	// ************************************************************************
-	HTTRun2Analysis ana(String2Channel(channel_str), "2014", verbosity);
+	HTTRun2Analysis ana(String2Channel(channel_str), "2015", verbosity);
     ana.SetQCDRatio(qcd_os_ss_factor);
     if (do_ss) ana.SetQCDRatio(1.0);
 	for (auto const& a : alias_vec) ana.SetAlias(a.first, a.second);
@@ -195,7 +195,7 @@ int main(int argc, char* argv[]){
   if (signal_bins != "") sig_var = reduced_var+signal_bins;
 
 	ana.FillHistoMap(hmap, method, var, sel, cat, "wt", "");
-	ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
+	//ana.FillSMSignal(hmap, sm_masses, sig_var, sel, cat, "wt", "", "", signal_xs);
 	if (add_sm_background != "") {
 		ana.FillSMSignal(hmap, {add_sm_background}, var, sel, cat, "wt", "_SM", "");
 	}
@@ -319,7 +319,7 @@ int main(int argc, char* argv[]){
 	for (auto const& syst : systematics) {
 		std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 		std::cout << "[HiggsTauTauPlot5] Doing systematic templates for \"" << syst.second << "\"..." << std::endl;
-		HTTRun2Analysis ana_syst(String2Channel(channel_str), "2014", verbosity);
+		HTTRun2Analysis ana_syst(String2Channel(channel_str), "2015", verbosity);
         ana_syst.SetQCDRatio(qcd_os_ss_factor);
 		for (auto const& a : alias_vec) ana_syst.SetAlias(a.first, a.second);
 		ana_syst.AddSMSignalSamples(sm_masses);
@@ -600,6 +600,7 @@ int main(int argc, char* argv[]){
   if (scan_bins) {
     vector<string> bkgs = {"ZTT","ZL","ZJ","W","QCD","TT","VV"};
     if (channel_str == "em") bkgs = {"Ztt","Fakes","EWK","ttbar"}; 
+    if (channel_str == "tt") bkgs = {"QCD","W","VV","TT"};
     vector<string> sm_procs = {"ggH","qqH","VH"};
     vector<string> mssm_procs = {"ggH","bbH"};
     TH1F const& data = hmap["data_obs"].first;
@@ -689,7 +690,7 @@ int main(int argc, char* argv[]){
 		if (channel_str == "mt") 			dc_mode_label = "muTau";
 		if (channel_str == "mtmet") 	dc_mode_label = "muTau_soft";
 		if (channel_str == "em") 			dc_mode_label = "emu";
-		std::string tfile_name = "datacard_"+reduced_var+"_"+datacard+"_"+channel_str+("_2014")+".root";
+		std::string tfile_name = "datacard_"+reduced_var+"_"+datacard+"_"+channel_str+("_2015")+".root";
 		TFile dc_file(tfile_name.c_str(),"RECREATE");
 		dc_file.cd();
 		gDirectory->mkdir((dc_mode_label+"_"+datacard).c_str());

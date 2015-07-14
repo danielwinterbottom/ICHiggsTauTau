@@ -36,13 +36,25 @@ namespace ic {
     // Define some sensible defaults
     sample_names_ = {
 //      "WZJetsTo3LNu",
+      "SingleElectron-2015B-prompt",
+      "SingleMuon-2015B-prompt",
+      "Tau-2015B-prompt",
+      "MuonEG-2015B-prompt",
       "QCDMuEnr",
       "QCDFlat",
       "T-tW",
       "Tbar-tW",
       "TTJets",
       "TT",
-      "DYJetsToLL"
+      "DYJetsToLL",
+      "WWTo2L2Nu",
+      "WWTo4Q",
+      "ZZTo4L",
+      "WWToLNuQQ",
+      "WZTo1L1Nu2Q",
+      "WWinclusive", 
+      "WZinclusive", 
+      "ZZinclusive",
       "DYJetsToLL10-50"
     };
     if (ch_ != channel::em) {
@@ -52,7 +64,7 @@ namespace ic {
         "DYJetsToLL-J",
         "DYJetsToTauTau",
         "DYJetsToTauTau-L",
-        "DYJetsToTauTau-JJ"
+        "DYJetsToTauTau-JJ",
         "DYJetsToLL10-50-L",
         "DYJetsToLL10-50-J",
         "DYJetsToTauTau10-50",
@@ -100,22 +112,50 @@ namespace ic {
     // Samples to combine for diboson contribution
     samples_alias_map_["vv_samples"] = {
 //     "WZJetsTo3LNu",
-     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive"
+     "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L"
     };
 
     samples_alias_map_["top_samples"] = {
-     "TTJets"
+     "TT"
     };
  
    samples_alias_map_["qcd_samples"] = {
-    "QCDMuEnr"
-    }
+    "QCDFlat"
+    };
+    
+   samples_alias_map_["ztt_shape_samples"]={
+    "DYJetsToLL"//, "DYJetsToLL10-50"
+   };
+   
+   alias_map_["data_samples"] = "SingleElectron-2015B-prompt";
+   if(ch_==channel::et){
+     alias_map_["data_samples"] = "SingleElectron-2015B-prompt";
+   }
+   if(ch_==channel::mt){
+     alias_map_["data_samples"] =  "SingleMuon-2015B-prompt";
+   }
+   if(ch_==channel::tt){
+     alias_map_["data_samples"] =  "Tau-2015B-prompt";
+   }
+   if(ch_==channel::em){
+    alias_map_["data_samples"] =  "MuonEG-2015B-prompt";
+   }
+
+
+
 
     samples_alias_map_["zj_samples"] = {
-     "DYJetsToTauTau-JJ", "DYJetsToLL-J"
-     "DYJetsToTauTau10-50-JJ", "DYJetsToLL10-50-J"
+     "DYJetsToTauTau-JJ", "DYJetsToLL-J",
+//     "DYJetsToTauTau10-50-JJ", "DYJetsToLL10-50-J"
     };
-  }
+   samples_alias_map_["ztt_samples"]={
+     "DYJetsToTauTau"//,"DYJetsToTauTau10-50"
+  };
+   samples_alias_map_["zl_samples"] = {
+     "DYJetsToLL-L"//,"DYJetsToLL10-50-L"
+   };
+
+ }
 
   void HTTRun2Analysis::SetQCDRatio(double const& ratio){
     qcd_os_ss_factor_ = ratio;
@@ -131,7 +171,7 @@ namespace ic {
     std::cout << "[HTTRun2Analysis::ParseParamFile] Extracting sample info from file " << file << std::endl;
     lumi_ = parser.GetParam<double>("LUMI_DATA_"+Channel2String(ch_));
     std::cout << "[HTTRun2Analysis::ParseParamFile] Integrated luminosity set to " << lumi_ << " /pb" << std::endl;
-    if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
+//    if (verbosity_ > 1) std::cout << boost::format("%-25s %152 %15.3f %15.3f %15.3f\n") % "Sample" % "Events" % "Cross Section" % "Sample Lumi" % "Rel. Lumi";
     if (verbosity_ > 1) std::cout << "-----------------------------------------------------------------------------------------\n";
     for (auto sample : sample_names_) {
       std::string lookup = sample;
@@ -145,7 +185,7 @@ namespace ic {
         double xs = parser.GetParam<double>("XS_"+sample);
         if (xs <= 0) continue;
         sample_info_[sample] = std::make_pair(evt, xs);
-        if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % sample % unsigned(evt+0.5) % xs % (evt/xs) % (evt/(xs*lumi_));
+      //  if (verbosity_ > 1) std::cout << boost::format("%-25s %15i %15.3f %15.3f %15.3f\n") % sample % unsigned(evt+0.5) % xs % (evt/xs) % (evt/(xs*lumi_));
       }
     }
   }
@@ -219,8 +259,8 @@ namespace ic {
 
 
   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateData(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
-    auto data_norm = this->GetRate("Data", sel, cat, wt);
-    TH1F data_hist = this->GetShape(var, "Data", sel, cat, wt);
+    auto data_norm = this->GetRate(this->ResolveAlias("data_samples"), sel, cat, wt);
+    TH1F data_hist = this->GetShape(var, this->ResolveAlias("data_samples"), sel, cat, wt);
     SetNorm(&data_hist, data_norm.first);
     return std::make_pair(data_hist, data_norm);
   }
@@ -229,8 +269,10 @@ namespace ic {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZTT] --------------------------------------------------------\n";
     Value ztt_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
-    ztt_norm = this->GetLumiScaledRate("DYJetsToTauTau", sel, cat, wt) ;
-    TH1F ztt_hist = this->GetShape(var, this->ResolveAlias("ZTT_Shape_Sample"), sel, cat, wt);
+    std::vector<std::string> ztt_samples = this->ResolveSamplesAlias("ztt_samples");
+    std::vector<std::string> ztt_shape_samples = this->ResolveSamplesAlias("ztt_shape_samples");
+    ztt_norm = this->GetLumiScaledRate(ztt_samples, sel, cat, wt) ;
+    TH1F ztt_hist = this->GetLumiScaledShape(var, ztt_shape_samples, sel, cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
@@ -241,8 +283,9 @@ namespace ic {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZL --------------------------------------------------------\n";
     Value zl_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
-    zl_norm = this->GetLumiScaledRate("DYJetsToLL-L", sel, cat, wt) ;
-    TH1F zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL-L", sel, cat, wt);
+    std::vector<std::string> zl_samples = this->ResolveSamplesAlias("zl_samples");
+    zl_norm = this->GetLumiScaledRate(zl_samples, sel, cat, wt) ;
+    TH1F zl_hist = this->GetLumiScaledShape(var, zl_samples, sel, cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % "DYJetsToLL-L" % sel % cat % wt;
     SetNorm(&zl_hist, zl_norm.first);
@@ -327,29 +370,8 @@ namespace ic {
   }
 
 
-  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateTOP(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
-    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateTOP] --------------------------------------------------------\n";
-    std::vector<std::string> top_samples = this->ResolveSamplesAlias("top_samples");
-    if (verbosity_) {
-      std::cout << "top_samples: ";
-      for (unsigned i = 0; i < top_samples.size(); ++i) {
-        std::cout << top_samples[i];
-        if (i != top_samples.size()-1) std::cout << ", ";
-      }
-      std::cout << std::endl;
-    }
-    auto top_norm = this->GetLumiScaledRate(top_samples, sel, cat, wt);
-    std::string top_shape_cat = cat;
-    TH1F top_hist = this->GetLumiScaledShape(var, top_samples, sel, top_shape_cat, wt);
-    // TH1F top_hist = this->GetLumiScaledShape(var, top_shape_sample, sel, top_shape_cat, wt);
-    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
-      % "top_samples" % sel % top_shape_cat % wt;
-    SetNorm(&top_hist, top_norm.first);
-    return std::make_pair(top_hist, top_norm);
-  }
 
-
-   HTTRun2Analysis::HistvaluePair HTTRun2Analysis::GenerateQCD(unsigned /*method*/,std::string var, std::string sel, std::string cat, std::string wt){
+   HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateQCD(unsigned /*method*/,std::string var, std::string sel, std::string cat, std::string wt){
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
     std::vector<std::string> qcd_samples = this->ResolveSamplesAlias("qcd_samples");
     if(verbosity_){
@@ -514,7 +536,7 @@ namespace ic {
                     double fixed_xs) {
     for (auto const& m : masses) {
       hmap["ggH"+infix+m+postfix] = this->GenerateSignal("SUSYGluGluToHToTauTau_M-"+m, var, sel, cat, wt, fixed_xs);
-      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
+//      hmap["bbH"+infix+m+postfix] = this->GenerateSignal("SUSYBBHToTauTau_M-"+m,       var, sel, cat, wt, fixed_xs);
     }
   }
 
@@ -527,9 +549,9 @@ namespace ic {
                         std::string postfix) {
     Value total_bkr;
     // Data
-   // auto data_pair = this->GenerateData(method, var, sel, cat, wt);
-   // PrintValue("data_obs"+postfix, data_pair.second);
-   // hmap["data_obs"+postfix] = data_pair;
+    auto data_pair = this->GenerateData(method, var, sel, cat, wt);
+    PrintValue("data_obs"+postfix, data_pair.second);
+    hmap["data_obs"+postfix] = data_pair;
     // Top
     auto top_pair = this->GenerateTOP(method, var, sel, cat, wt);
     std::string top_map_label = (ch_ == channel::em) ? "ttbar" : "TT";
@@ -576,15 +598,15 @@ namespace ic {
       total_hist.Add(&hmap["W"+postfix].first,1.0);
     }
     // QCD/Fakes
-   /* auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
+    auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
     std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
     PrintValue(qcd_map_label+postfix, qcd_pair.second);
     total_bkr = ValueAdd(total_bkr, qcd_pair.second);
-    hmap[qcd_map_label+postfix] = qcd_pair;*/
+    hmap[qcd_map_label+postfix] = qcd_pair;
     // Print the total background yield
     PrintValue("Total"+postfix, total_bkr);
     //Until there is data, fill the data with sum of the backgrounds
-    hmap["data_obs"+postfix] = std::make_pair(total_hist,total_bkr);
+//    hmap["data_obs"+postfix] = std::make_pair(total_hist,total_bkr);
     return;
   }
 
@@ -680,8 +702,8 @@ namespace ic {
                                       std::string const& selection, 
                                       std::string const& category, 
                                       std::string const& weight) {
-    if (verbosity_ > 1) std::cout << "--GetRate-- Sample:\"" << sample << "\" Selection:\"" << selection << "\" Category:\"" 
-      << category << "\" Weight:\"" << weight << "\"" << std::endl;
+    if(verbosity_>1){ std::cout << "--GetRate-- Sample:\"" << sample << "\" Selection:\"" << selection << "\" Category:\"" 
+      << category << "\" Weight:\"" << weight << "\"" << std::endl;}
     std::string full_selection = BuildCutString(selection, category, weight);
     TH1::AddDirectory(true);
     ttrees_[sample]->Draw("0.5>>htemp(1,0,1)", full_selection.c_str(), "goff");
