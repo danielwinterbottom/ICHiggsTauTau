@@ -29,6 +29,7 @@ class HTTPairSelector : public ModuleBase {
   CLASS_MEMBER(HTTPairSelector, bool, use_os_preference)
   CLASS_MEMBER(HTTPairSelector, unsigned, faked_tau_selector)
   CLASS_MEMBER(HTTPairSelector, unsigned, hadronic_tau_selector)
+  CLASS_MEMBER(HTTPairSelector, unsigned, ztt_mode)
   CLASS_MEMBER(HTTPairSelector, bool, scale_met_for_tau)
   CLASS_MEMBER(HTTPairSelector, double, tau_scale)
   CLASS_MEMBER(HTTPairSelector, std::string, allowed_tau_modes)

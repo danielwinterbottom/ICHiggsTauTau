@@ -449,7 +449,7 @@ void HTTSequence::BuildSequence(){
     .set_input_file(data_json));
   }
 
-if(ztautau_mode > 0 ){
+if(ztautau_mode > 0 && strategy_type != strategy::spring15){
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
     .set_input_label("genParticlesTaus")
     .set_predicate(
@@ -579,6 +579,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     .set_mva_met_from_vector(mva_met_mode==1)
     .set_faked_tau_selector(faked_tau_selector)
     .set_hadronic_tau_selector(hadronic_tau_selector)
+    .set_ztt_mode(ztautau_mode)
     .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
     .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
     .set_tau_scale(tau_shift)
