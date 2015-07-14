@@ -175,20 +175,20 @@ if options.proc_sm or options.proc_all:
 #
 if options.proc_bkg or options.proc_all:
   central_samples = [
-    #'TTJets',
-    #'TT',
-		#'WJetsToLNu',
-    #'WWinclusive',
-    #'ZZinclusive',
-    #'WZinclusive',
-    #'QCDFlat',
-    #'QCDMuEnr',
-    #'T-tW',
-    #'Tbar-tW',
-    #'WZTo1L1Nu2Q',
-    #'WWTo2L2Nu',
-    #'WWTo4Q',
-    #'WWToLNuQQ',
+    'TTJets',
+    'TT',
+		'WJetsToLNu',
+    'WWinclusive',
+    'ZZinclusive',
+    'WZinclusive',
+    'QCDFlat',
+    'QCDMuEnr',
+    'T-tW',
+    'Tbar-tW',
+    'WZTo1L1Nu2Q',
+    'WWTo2L2Nu',
+    'WWTo4Q',
+    'WWToLNuQQ',
     # 'ZZTo4L'
      ]
 
@@ -304,11 +304,11 @@ if options.proc_bkg or options.proc_all:
 #
   for sa in central_samples:
       JOB='%s_2015' % (sa)
-      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST2)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
-      nfiles = sum(1 for line in open('%(FILELIST2)s_%(sa)s.dat' % vars()))
+      JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+      nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 30 
       for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG2)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+        os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
