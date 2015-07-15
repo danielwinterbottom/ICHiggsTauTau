@@ -281,16 +281,18 @@ namespace ic {
     }
     if(strategy_ == strategy::spring15 && channel_ != channel::em) {
       bool is_ztt=false; 
+      bool has_z = false;
       // First find out if the gen level info points to Z->ll or Z->tautau
   //    if ((faked_tau_selector_ > 0 || ztt_mode_ > 0)) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>("genParticles");
         std::vector<GenParticle *> sel_particles;
         //Find Z and check if daughters are taus or electrons/muons 
         for (unsigned i = 0; i < particles.size(); ++i) {
-          if ( (abs(particles[i]->pdgid()) == 23) ) {
+          if ( (abs(particles[i]->pdgid())) == 23)  {
+            has_z = true;
             std::vector<GenParticle *> const& daughters = ExtractDaughters(particles[i], particles);
             for (unsigned j = 0; j < daughters.size(); ++j) {
-              if ((abs(daughters[j]->pdgid()) == 15 && daughters[j]->pt() > 8.)) {
+              if ((abs(daughters[j]->pdgid())) == 15 && daughters[j]->pt() > 8.) {
                 is_ztt = true;
               }
               else if ( (abs(daughters[j]->pdgid()) == 11 || abs(daughters[j]->pdgid()) == 13) && daughters[j]->pt() > 8.) {
@@ -300,8 +302,13 @@ namespace ic {
             break; //only consider first Z
           }
         } 
+
+        //Fail the event if no gen-level Z's found
+        if (!has_z) return 1;
         // If we want Z->tautau and we have found a Z->ll, fail the event
         if (ztt_mode_ == 1 && !is_ztt) return 1;
+        // If we want Z->ll and we have found a Z->tautau, fail the event
+        if (ztt_mode_ == 2 && is_ztt) return 1;
         if (sel_particles.size() > 0) {
           // Get the reco tau from the pair
           std::vector<Candidate *> tau;
@@ -315,7 +322,7 @@ namespace ic {
         }
   //    }
   //    Not figured out how the below should work yet
-      /*if (hadronic_tau_selector_ > 0) {
+      if (hadronic_tau_selector_ > 0) {
         std::vector<GenParticle *> const& particles = event->GetPtrVec<GenParticle>(gen_taus_label_);
         std::vector<GenJet> gen_taus = BuildTauJets(particles, false);
         std::vector<GenJet *> gen_taus_ptr;
@@ -332,7 +339,7 @@ namespace ic {
         }
         // If we want ZJ and there is a match, fail the event
         if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
-      }*/
+      }
     }
     
     // ************************************************************************
