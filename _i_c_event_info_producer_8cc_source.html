@@ -115,171 +115,188 @@ $(document).ready(function(){initNavTree('_i_c_event_info_producer_8cc_source.ht
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;DataFormats/VertexReco/interface/VertexFwd.h&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;DataFormats/METReco/interface/BeamHaloSummary.h&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_event_info_8hh.html">UserCode/ICHiggsTauTau/interface/EventInfo.hh</a>&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">   22</a></span>&#160;<a class="code" href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    : branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;      do_jets_rho_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeJetRho&quot;</span>)),</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;      input_jets_rho_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputJetRho&quot;</span>)),</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      do_leptons_rho_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLeptonRho&quot;</span>)),</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      input_leptons_rho_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputLeptonRho&quot;</span>)),</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      do_vertex_count_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeVertexCount&quot;</span>)),</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;      input_vertices_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      do_csc_filter_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeCSCFilter&quot;</span>)),</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      input_csc_filter_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputCSCFilter&quot;</span>)) {</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  edm::ParameterSet filter_params =</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;filters&quot;</span>);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  std::vector&lt;std::string&gt; filter_names =</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      filter_params.getParameterNamesForType&lt;edm::InputTag&gt;();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; filter_names.size(); ++i) {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    filters_.push_back(std::make_pair(</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        filter_names[i],</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        filter_params.getParameter&lt;edm::InputTag&gt;(filter_names[i])));</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">if</span> (filters_.back().second.label().at(0) == <span class="charliteral">&#39;!&#39;</span>) {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      std::cout &lt;&lt; <span class="stringliteral">&quot;Info in &lt;ICEventInfoProducer&gt;: Inverting logic for filter: &quot;</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                &lt;&lt; filters_.back().first &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;      std::string new_label = filters_.back().second.label();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;      new_label.erase(0, 1);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      filters_.back().second =</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;          edm::InputTag(new_label, filters_.back().second.instance(),</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                        filters_.back().second.process());</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      invert_filter_logic_.insert(filters_.back().first);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  edm::ParameterSet wt_pset = config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;weights&quot;</span>);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  std::vector&lt;std::string&gt; wt =</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      wt_pset.getParameterNamesForType&lt;edm::InputTag&gt;();</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; wt.size(); ++i) {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    weights_.push_back(</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        std::make_pair(wt[i], wt_pset.getParameter&lt;edm::InputTag&gt;(wt[i])));</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  }</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  edm::ParameterSet gwt_pset =</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;genFilterWeights&quot;</span>);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  std::vector&lt;std::string&gt; gwt =</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;      gwt_pset.getParameterNamesForType&lt;edm::InputTag&gt;();</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; gwt.size(); ++i) {</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    gen_weights_.push_back(</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        std::make_pair(gwt[i], gwt_pset.getParameter&lt;edm::InputTag&gt;(gwt[i])));</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  }</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  info_ = <span class="keyword">new</span> <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#ab43bfd51524152e54a91ba2194ce420a">PrintHeaderWithBranch</a>(config, branch_);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_jets_rho_, <span class="stringliteral">&quot;includeJetRho&quot;</span>);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_leptons_rho_, <span class="stringliteral">&quot;includeLeptonRho&quot;</span>);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_count_, <span class="stringliteral">&quot;includeVertexCount&quot;</span>);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_csc_filter_, <span class="stringliteral">&quot;includeCSCFilter&quot;</span>);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">   78</a></span>&#160;<a class="code" href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">ICEventInfoProducer::~ICEventInfoProducer</a>() {</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <span class="keyword">delete</span> info_;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keywordtype">void</span> ICEventInfoProducer::produce(edm::Event&amp; event,</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                                  <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  *info_ = <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8">set_is_data</a>(event.isRealData());</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a">set_run</a>(event.run());</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#aa82c0f7eb37ffb8ff934d2b5ae4b53b0">set_event</a>(event.id().event());</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a39efdfa3c2300219a9479ea36cb5ea40">set_lumi_block</a>(event.luminosityBlock());</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a929e87985219af3f7ac625c43dee3148">set_bunch_crossing</a>(event.bunchCrossing());</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  edm::Handle&lt;double&gt; jets_rho_handle;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="keywordflow">if</span> (do_jets_rho_) {</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keyword">event</span>.getByLabel(input_jets_rho_, jets_rho_handle);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a42e344f79e53c3487399d18e0937c8f8">set_jet_rho</a>(*jets_rho_handle);</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  }</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  edm::Handle&lt;double&gt; lepton_rho_handle;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keywordflow">if</span> (do_leptons_rho_) {</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">event</span>.getByLabel(input_leptons_rho_, lepton_rho_handle);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a76acf01d2a32cd6cec54807da1d5d582">set_lepton_rho</a>(*lepton_rho_handle);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; weights_.size(); ++i) {</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    edm::Handle&lt;double&gt; weight;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keyword">event</span>.getByLabel(weights_[i].second, weight);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">double</span> weights_result = (*weight);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(weights_[i].first, weights_result);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_event_info_8hh.html">UserCode/ICHiggsTauTau/interface/EventInfo.hh</a>&quot;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">   23</a></span>&#160;<a class="code" href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    : branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;      is_nlo_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;isNlo&quot;</span>)),</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;      lhe_collection_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;lheProducer&quot;</span>)),</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      do_jets_rho_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeJetRho&quot;</span>)),</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      input_jets_rho_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputJetRho&quot;</span>)),</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;      do_leptons_rho_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLeptonRho&quot;</span>)),</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;      input_leptons_rho_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputLeptonRho&quot;</span>)),</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      do_vertex_count_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeVertexCount&quot;</span>)),</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      input_vertices_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      do_csc_filter_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeCSCFilter&quot;</span>)),</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;      input_csc_filter_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputCSCFilter&quot;</span>)) {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  edm::ParameterSet filter_params =</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;      config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;filters&quot;</span>);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  std::vector&lt;std::string&gt; filter_names =</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      filter_params.getParameterNamesForType&lt;edm::InputTag&gt;();</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; filter_names.size(); ++i) {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    filters_.push_back(std::make_pair(</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        filter_names[i],</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        filter_params.getParameter&lt;edm::InputTag&gt;(filter_names[i])));</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordflow">if</span> (filters_.back().second.label().at(0) == <span class="charliteral">&#39;!&#39;</span>) {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;      std::cout &lt;&lt; <span class="stringliteral">&quot;Info in &lt;ICEventInfoProducer&gt;: Inverting logic for filter: &quot;</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                &lt;&lt; filters_.back().first &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;      std::string new_label = filters_.back().second.label();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      new_label.erase(0, 1);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      filters_.back().second =</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;          edm::InputTag(new_label, filters_.back().second.instance(),</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                        filters_.back().second.process());</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      invert_filter_logic_.insert(filters_.back().first);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    }</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  edm::ParameterSet wt_pset = config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;weights&quot;</span>);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  std::vector&lt;std::string&gt; wt =</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      wt_pset.getParameterNamesForType&lt;edm::InputTag&gt;();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; wt.size(); ++i) {</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    weights_.push_back(</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        std::make_pair(wt[i], wt_pset.getParameter&lt;edm::InputTag&gt;(wt[i])));</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  edm::ParameterSet gwt_pset =</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;genFilterWeights&quot;</span>);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  std::vector&lt;std::string&gt; gwt =</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;      gwt_pset.getParameterNamesForType&lt;edm::InputTag&gt;();</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; gwt.size(); ++i) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    gen_weights_.push_back(</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        std::make_pair(gwt[i], gwt_pset.getParameter&lt;edm::InputTag&gt;(gwt[i])));</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  info_ = <span class="keyword">new</span> <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#ab43bfd51524152e54a91ba2194ce420a">PrintHeaderWithBranch</a>(config, branch_);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_jets_rho_, <span class="stringliteral">&quot;includeJetRho&quot;</span>);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_leptons_rho_, <span class="stringliteral">&quot;includeLeptonRho&quot;</span>);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_count_, <span class="stringliteral">&quot;includeVertexCount&quot;</span>);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_csc_filter_, <span class="stringliteral">&quot;includeCSCFilter&quot;</span>);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">   81</a></span>&#160;<a class="code" href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">ICEventInfoProducer::~ICEventInfoProducer</a>() {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="keyword">delete</span> info_;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keywordtype">void</span> ICEventInfoProducer::produce(edm::Event&amp; event,</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                                  <span class="keyword">const</span> edm::EventSetup&amp; setup) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  *info_ = <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8">set_is_data</a>(event.isRealData());</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a">set_run</a>(event.run());</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;=7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 3</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c">set_event</a>(event.id().event());</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c">set_event</a>((<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span>)event.id().event());</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a39efdfa3c2300219a9479ea36cb5ea40">set_lumi_block</a>(event.luminosityBlock());</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  info_-&gt;<a class="code" href="classic_1_1_event_info.html#a929e87985219af3f7ac625c43dee3148">set_bunch_crossing</a>(event.bunchCrossing());</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  edm::Handle&lt;double&gt; jets_rho_handle;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="keywordflow">if</span> (do_jets_rho_) {</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keyword">event</span>.getByLabel(input_jets_rho_, jets_rho_handle);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a42e344f79e53c3487399d18e0937c8f8">set_jet_rho</a>(*jets_rho_handle);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  }</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  edm::Handle&lt;double&gt; lepton_rho_handle;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="keywordflow">if</span> (do_leptons_rho_) {</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">event</span>.getByLabel(input_leptons_rho_, lepton_rho_handle);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a76acf01d2a32cd6cec54807da1d5d582">set_lepton_rho</a>(*lepton_rho_handle);</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  }</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; gen_weights_.size(); ++i) {</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    edm::Handle&lt;GenFilterInfo&gt; weight;</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">event</span>.getByLabel(gen_weights_[i].second, weight);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">double</span> weights_result = weight-&gt;filterEfficiency();</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(gen_weights_[i].first, weights_result);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; weights_.size(); ++i) {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    edm::Handle&lt;double&gt; weight;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">event</span>.getByLabel(weights_[i].second, weight);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">double</span> weights_result = (*weight);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(weights_[i].first, weights_result);</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  }</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  edm::Handle&lt;edm::View&lt;reco::Vertex&gt; &gt; vtxs_handle;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="keywordflow">if</span> (do_vertex_count_) {</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keyword">event</span>.getByLabel(input_vertices_, vtxs_handle);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a2b6830f55112bd17730f34a6e2a2ab9b">set_good_vertices</a>(vtxs_handle-&gt;size());</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; filters_.size(); ++i) {</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    edm::Handle&lt;bool&gt; filter;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keyword">event</span>.getByLabel(filters_[i].second, filter);</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordtype">bool</span> filter_result = (*filter);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordflow">if</span> (invert_filter_logic_.find(filters_[i].first) !=</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        invert_filter_logic_.end())</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;      filter_result = !filter_result;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(filters_[i].first, filter_result);</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    observed_filters_[filters_[i].first] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters_[i].first);</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  }</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  edm::Handle&lt;reco::BeamHaloSummary&gt; beam_halo_handle;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <span class="keywordflow">if</span> (do_csc_filter_) {</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keyword">event</span>.getByLabel(input_csc_filter_, beam_halo_handle);</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>,</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;                             beam_halo_handle-&gt;CSCTightHaloId());</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    observed_filters_[<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>);</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  }</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;}</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="keywordtype">void</span> ICEventInfoProducer::beginJob() {</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;info_);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;}</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="keywordtype">void</span> ICEventInfoProducer::endJob() {</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <span class="keywordflow">if</span> (!observed_filters_.empty()) {</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    std::cout &lt;&lt; std::string(78, <span class="charliteral">&#39;-&#39;</span>) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s  %20s\n&quot;</span>) %</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                     std::string(<span class="stringliteral">&quot;EventInfo Filters&quot;</span>) %</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                     std::string(<span class="stringliteral">&quot;Hash Summmary&quot;</span>);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    std::map&lt;std::string, std::size_t&gt;::const_iterator iter;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keywordflow">for</span> (iter = observed_filters_.begin(); iter != observed_filters_.end();</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;         ++iter) {</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s| %020i\n&quot;</span>) % iter-&gt;first % iter-&gt;second;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    }</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  }</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;}</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="comment">// define this as a plug-in</span></div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<a class="code" href="_i_c_event_info_producer_8cc.html#ae318d1578da8661ccfe53c06944c5d6f">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_event_info_producer.html">ICEventInfoProducer</a>);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; gen_weights_.size(); ++i) {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    edm::Handle&lt;GenFilterInfo&gt; weight;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keyword">event</span>.getByLabel(gen_weights_[i].second, weight);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordtype">double</span> weights_result = weight-&gt;filterEfficiency();</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(gen_weights_[i].first, weights_result);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  edm::Handle&lt;edm::View&lt;reco::Vertex&gt; &gt; vtxs_handle;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="keywordflow">if</span> (do_vertex_count_) {</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keyword">event</span>.getByLabel(input_vertices_, vtxs_handle);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#a2b6830f55112bd17730f34a6e2a2ab9b">set_good_vertices</a>(vtxs_handle-&gt;size());</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  edm::Handle&lt;LHEEventProduct&gt; lhe_handle;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="keywordflow">if</span>(is_nlo_){</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keyword">event</span>.getByLabel(lhe_collection_, lhe_handle); </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordflow">if</span>(lhe_handle-&gt;hepeup().XWGTUP&gt;=0){</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;      info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,1);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,-1);</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    }</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  }</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; filters_.size(); ++i) {</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    edm::Handle&lt;bool&gt; filter;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keyword">event</span>.getByLabel(filters_[i].second, filter);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordtype">bool</span> filter_result = (*filter);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">if</span> (invert_filter_logic_.find(filters_[i].first) !=</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        invert_filter_logic_.end())</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;      filter_result = !filter_result;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(filters_[i].first, filter_result);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    observed_filters_[filters_[i].first] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters_[i].first);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  }</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  edm::Handle&lt;reco::BeamHaloSummary&gt; beam_halo_handle;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="keywordflow">if</span> (do_csc_filter_) {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keyword">event</span>.getByLabel(input_csc_filter_, beam_halo_handle);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>,</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                             beam_halo_handle-&gt;CSCTightHaloId());</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    observed_filters_[<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(<span class="stringliteral">&quot;CSCTightHaloFilter&quot;</span>);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  }</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;}</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keywordtype">void</span> ICEventInfoProducer::beginJob() {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;  <a class="code" href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a>-&gt;Branch(branch_.c_str(), &amp;info_);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;}</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keywordtype">void</span> ICEventInfoProducer::endJob() {</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keywordflow">if</span> (!observed_filters_.empty()) {</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    std::cout &lt;&lt; std::string(78, <span class="charliteral">&#39;-&#39;</span>) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s  %20s\n&quot;</span>) %</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                     std::string(<span class="stringliteral">&quot;EventInfo Filters&quot;</span>) %</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                     std::string(<span class="stringliteral">&quot;Hash Summmary&quot;</span>);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    std::map&lt;std::string, std::size_t&gt;::const_iterator iter;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keywordflow">for</span> (iter = observed_filters_.begin(); iter != observed_filters_.end();</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;         ++iter) {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;      std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s| %020i\n&quot;</span>) % iter-&gt;first % iter-&gt;second;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    }</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  }</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;}</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="comment">// define this as a plug-in</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<a class="code" href="_i_c_event_info_producer_8cc.html#ae318d1578da8661ccfe53c06944c5d6f">DEFINE_FWK_MODULE</a>(<a class="code" href="class_i_c_event_info_producer.html">ICEventInfoProducer</a>);</div>
 <div class="ttc" id="classic_1_1_event_info_html_a5293a89d4c6d67134add198cee448afc"><div class="ttname"><a href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">ic::EventInfo::set_weight</a></div><div class="ttdeci">void set_weight(std::string const &amp;label, double const &amp;weight, bool const &amp;enabled)</div><div class="ttdoc">Add a new weight, overriding any existing value with the same label. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00126">EventInfo.hh:126</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html_a8696834e1f169f822682c58ed7a7ffb8"><div class="ttname"><a href="classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8">ic::EventInfo::set_is_data</a></div><div class="ttdeci">void set_is_data(bool const &amp;is_data)</div><div class="ttdoc">If event is real data returns true, otherwise false </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00063">EventInfo.hh:63</a></div></div>
-<div class="ttc" id="classic_1_1_event_info_html_aa82c0f7eb37ffb8ff934d2b5ae4b53b0"><div class="ttname"><a href="classic_1_1_event_info.html#aa82c0f7eb37ffb8ff934d2b5ae4b53b0">ic::EventInfo::set_event</a></div><div class="ttdeci">void set_event(unsigned const &amp;event)</div><div class="ttdoc">Event number. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00066">EventInfo.hh:66</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html_aef030c9e42ee14910325a6038413fd40"><div class="ttname"><a href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">ic::EventInfo::set_filter_result</a></div><div class="ttdeci">void set_filter_result(std::string const &amp;label, bool const &amp;result)</div><div class="ttdoc">Set the filter result for label to result, overwriting any existing filter result with this label...</div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00216">EventInfo.hh:216</a></div></div>
 <div class="ttc" id="_static_tree_8hh_html"><div class="ttname"><a href="_static_tree_8hh.html">StaticTree.hh</a></div></div>
 <div class="ttc" id="city_8h_html_ad1bd1546443b3e43413429c5b81d7c5e"><div class="ttname"><a href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a></div><div class="ttdeci">uint64 CityHash64(const char *buf, size_t len)</div><div class="ttdef"><b>Definition:</b> <a href="city_8cc_source.html#l00200">city.cc:200</a></div></div>
 <div class="ttc" id="_print_config_tools_8cc_html_ab43bfd51524152e54a91ba2194ce420a"><div class="ttname"><a href="_print_config_tools_8cc.html#ab43bfd51524152e54a91ba2194ce420a">PrintHeaderWithBranch</a></div><div class="ttdeci">void PrintHeaderWithBranch(edm::ParameterSet const &amp;config, std::string branch)</div><div class="ttdef"><b>Definition:</b> <a href="_print_config_tools_8cc_source.html#l00009">PrintConfigTools.cc:9</a></div></div>
 <div class="ttc" id="city_8h_html"><div class="ttname"><a href="city_8h.html">city.h</a></div></div>
 <div class="ttc" id="namespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div></div>
-<div class="ttc" id="class_i_c_event_info_producer_html_a4c1d384e67bb996fb120664d300f91c1"><div class="ttname"><a href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">ICEventInfoProducer::~ICEventInfoProducer</a></div><div class="ttdeci">~ICEventInfoProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8cc_source.html#l00078">ICEventInfoProducer.cc:78</a></div></div>
+<div class="ttc" id="class_i_c_event_info_producer_html_a4c1d384e67bb996fb120664d300f91c1"><div class="ttname"><a href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">ICEventInfoProducer::~ICEventInfoProducer</a></div><div class="ttdeci">~ICEventInfoProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8cc_source.html#l00081">ICEventInfoProducer.cc:81</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html_a76acf01d2a32cd6cec54807da1d5d582"><div class="ttname"><a href="classic_1_1_event_info.html#a76acf01d2a32cd6cec54807da1d5d582">ic::EventInfo::set_lepton_rho</a></div><div class="ttdeci">void set_lepton_rho(double const &amp;lepton_rho)</div><div class="ttdoc">Energy density used for calculating lepton isolation in this event. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00085">EventInfo.hh:85</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html_a03b9f958e870902e1b03170261ad339a"><div class="ttname"><a href="classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a">ic::EventInfo::set_run</a></div><div class="ttdeci">void set_run(int const &amp;run)</div><div class="ttdoc">Run number. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00069">EventInfo.hh:69</a></div></div>
 <div class="ttc" id="_i_c_event_info_producer_8hh_html"><div class="ttname"><a href="_i_c_event_info_producer_8hh.html">ICEventInfoProducer.hh</a></div></div>
 <div class="ttc" id="_print_config_tools_8h_html"><div class="ttname"><a href="_print_config_tools_8h.html">PrintConfigTools.h</a></div></div>
 <div class="ttc" id="structic_1_1_static_tree_html_a4de6c928f155f091cca244c5931427fe"><div class="ttname"><a href="structic_1_1_static_tree.html#a4de6c928f155f091cca244c5931427fe">ic::StaticTree::tree_</a></div><div class="ttdeci">static TTree * tree_</div><div class="ttdef"><b>Definition:</b> <a href="_static_tree_8hh_source.html#l00013">StaticTree.hh:13</a></div></div>
-<div class="ttc" id="class_i_c_event_info_producer_html_a050085b4c5956de5432c03b488fc6900"><div class="ttname"><a href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a></div><div class="ttdeci">ICEventInfoProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8cc_source.html#l00022">ICEventInfoProducer.cc:22</a></div></div>
+<div class="ttc" id="class_i_c_event_info_producer_html_a050085b4c5956de5432c03b488fc6900"><div class="ttname"><a href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a></div><div class="ttdeci">ICEventInfoProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8cc_source.html#l00023">ICEventInfoProducer.cc:23</a></div></div>
 <div class="ttc" id="_event_info_8hh_html"><div class="ttname"><a href="_event_info_8hh.html">EventInfo.hh</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html"><div class="ttname"><a href="classic_1_1_event_info.html">ic::EventInfo</a></div><div class="ttdoc">Stores core event information such as run, lumi and event number, as well as event weights and filter...</div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00021">EventInfo.hh:21</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html_a39efdfa3c2300219a9479ea36cb5ea40"><div class="ttname"><a href="classic_1_1_event_info.html#a39efdfa3c2300219a9479ea36cb5ea40">ic::EventInfo::set_lumi_block</a></div><div class="ttdeci">void set_lumi_block(int const &amp;lumi_block)</div><div class="ttdoc">Lumisection number. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00072">EventInfo.hh:72</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html_a2b6830f55112bd17730f34a6e2a2ab9b"><div class="ttname"><a href="classic_1_1_event_info.html#a2b6830f55112bd17730f34a6e2a2ab9b">ic::EventInfo::set_good_vertices</a></div><div class="ttdeci">void set_good_vertices(unsigned const &amp;good_vertices)</div><div class="ttdoc">Number of reconstructed vertices passing some baseline quality requirements. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00090">EventInfo.hh:90</a></div></div>
+<div class="ttc" id="classic_1_1_event_info_html_acfe80f73efc762f4efcc3ba48da32f1c"><div class="ttname"><a href="classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c">ic::EventInfo::set_event</a></div><div class="ttdeci">void set_event(unsigned long long const &amp;event)</div><div class="ttdoc">Event number. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00066">EventInfo.hh:66</a></div></div>
 <div class="ttc" id="_print_config_tools_8cc_html_af3a7490bc1960e5f17ef84108eb73d79"><div class="ttname"><a href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a></div><div class="ttdeci">void PrintOptional(unsigned depth, bool value, std::string text)</div><div class="ttdef"><b>Definition:</b> <a href="_print_config_tools_8cc_source.html#l00033">PrintConfigTools.cc:33</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html_a929e87985219af3f7ac625c43dee3148"><div class="ttname"><a href="classic_1_1_event_info.html#a929e87985219af3f7ac625c43dee3148">ic::EventInfo::set_bunch_crossing</a></div><div class="ttdeci">void set_bunch_crossing(int const &amp;bunch_crossing)</div><div class="ttdoc">Bunch crossing number. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00077">EventInfo.hh:77</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html_a42e344f79e53c3487399d18e0937c8f8"><div class="ttname"><a href="classic_1_1_event_info.html#a42e344f79e53c3487399d18e0937c8f8">ic::EventInfo::set_jet_rho</a></div><div class="ttdeci">void set_jet_rho(double const &amp;jet_rho)</div><div class="ttdoc">Energy density used for the jet energy corrections in this event. </div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00082">EventInfo.hh:82</a></div></div>

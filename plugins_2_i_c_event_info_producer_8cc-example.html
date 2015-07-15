@@ -115,6 +115,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/VertexReco/interface/VertexFwd.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/METReco/interface/BeamHaloSummary.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_event_info_8hh.html">UserCode/ICHiggsTauTau/interface/EventInfo.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
@@ -122,6 +123,8 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"></div>
 <div class="line"><a name="a0"></a><a class="code" href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
 <div class="line">    : branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
+<div class="line">      is_nlo_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;isNlo&quot;</span>)),</div>
+<div class="line">      lhe_collection_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;lheProducer&quot;</span>)),</div>
 <div class="line">      do_jets_rho_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeJetRho&quot;</span>)),</div>
 <div class="line">      input_jets_rho_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputJetRho&quot;</span>)),</div>
 <div class="line">      do_leptons_rho_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLeptonRho&quot;</span>)),</div>
@@ -185,7 +188,11 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">  *info_ = <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
 <div class="line">  info_-&gt;<a name="a5"></a><a class="code" href="classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8">set_is_data</a>(event.isRealData());</div>
 <div class="line">  info_-&gt;<a name="a6"></a><a class="code" href="classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a">set_run</a>(event.run());</div>
-<div class="line">  info_-&gt;<a name="a7"></a><a class="code" href="classic_1_1_event_info.html#aa82c0f7eb37ffb8ff934d2b5ae4b53b0">set_event</a>(event.id().event());</div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;=7 &amp;&amp; CMSSW_MINOR_VERSION &gt;= 3</span></div>
+<div class="line">  info_-&gt;<a name="a7"></a><a class="code" href="classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c">set_event</a>(event.id().event());</div>
+<div class="line"><span class="preprocessor">#else</span></div>
+<div class="line">  info_-&gt;<a class="code" href="classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c">set_event</a>((<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span>)event.id().event());</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">  info_-&gt;<a name="a8"></a><a class="code" href="classic_1_1_event_info.html#a39efdfa3c2300219a9479ea36cb5ea40">set_lumi_block</a>(event.luminosityBlock());</div>
 <div class="line">  info_-&gt;<a name="a9"></a><a class="code" href="classic_1_1_event_info.html#a929e87985219af3f7ac625c43dee3148">set_bunch_crossing</a>(event.bunchCrossing());</div>
 <div class="line"></div>
@@ -218,6 +225,16 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">  <span class="keywordflow">if</span> (do_vertex_count_) {</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(input_vertices_, vtxs_handle);</div>
 <div class="line">    info_-&gt;<a name="a13"></a><a class="code" href="classic_1_1_event_info.html#a2b6830f55112bd17730f34a6e2a2ab9b">set_good_vertices</a>(vtxs_handle-&gt;size());</div>
+<div class="line">  }</div>
+<div class="line"></div>
+<div class="line">  edm::Handle&lt;LHEEventProduct&gt; lhe_handle;</div>
+<div class="line">  <span class="keywordflow">if</span>(is_nlo_){</div>
+<div class="line">    <span class="keyword">event</span>.getByLabel(lhe_collection_, lhe_handle); </div>
+<div class="line">    <span class="keywordflow">if</span>(lhe_handle-&gt;hepeup().XWGTUP&gt;=0){</div>
+<div class="line">      info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,1);</div>
+<div class="line">    } <span class="keywordflow">else</span> {</div>
+<div class="line">      info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,-1);</div>
+<div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; filters_.size(); ++i) {</div>

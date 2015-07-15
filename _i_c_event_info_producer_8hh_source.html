@@ -125,24 +125,26 @@ $(document).ready(function(){initNavTree('_i_c_event_info_producer_8hh_source.ht
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a> *info_;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  std::string branch_;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordtype">bool</span> do_jets_rho_;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  edm::InputTag input_jets_rho_;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="keywordtype">bool</span> do_leptons_rho_;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  edm::InputTag input_leptons_rho_;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keywordtype">bool</span> do_vertex_count_;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  edm::InputTag input_vertices_;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keywordtype">bool</span> do_csc_filter_;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  edm::InputTag input_csc_filter_;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; filters_;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; weights_;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; gen_weights_;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::set&lt;std::string&gt; invert_filter_logic_;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  std::map&lt;std::string, std::size_t&gt; observed_filters_;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;};</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="class_i_c_event_info_producer_html_a4c1d384e67bb996fb120664d300f91c1"><div class="ttname"><a href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">ICEventInfoProducer::~ICEventInfoProducer</a></div><div class="ttdeci">~ICEventInfoProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8cc_source.html#l00078">ICEventInfoProducer.cc:78</a></div></div>
-<div class="ttc" id="class_i_c_event_info_producer_html_a050085b4c5956de5432c03b488fc6900"><div class="ttname"><a href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a></div><div class="ttdeci">ICEventInfoProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8cc_source.html#l00022">ICEventInfoProducer.cc:22</a></div></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordtype">bool</span> is_nlo_;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  edm::InputTag lhe_collection_;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="keywordtype">bool</span> do_jets_rho_;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  edm::InputTag input_jets_rho_;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keywordtype">bool</span> do_leptons_rho_;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  edm::InputTag input_leptons_rho_;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keywordtype">bool</span> do_vertex_count_;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  edm::InputTag input_vertices_;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keywordtype">bool</span> do_csc_filter_;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  edm::InputTag input_csc_filter_;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; filters_;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; weights_;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  std::vector&lt;std::pair&lt;std::string, edm::InputTag&gt; &gt; gen_weights_;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  std::set&lt;std::string&gt; invert_filter_logic_;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  std::map&lt;std::string, std::size_t&gt; observed_filters_;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="class_i_c_event_info_producer_html_a4c1d384e67bb996fb120664d300f91c1"><div class="ttname"><a href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">ICEventInfoProducer::~ICEventInfoProducer</a></div><div class="ttdeci">~ICEventInfoProducer()</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8cc_source.html#l00081">ICEventInfoProducer.cc:81</a></div></div>
+<div class="ttc" id="class_i_c_event_info_producer_html_a050085b4c5956de5432c03b488fc6900"><div class="ttname"><a href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a></div><div class="ttdeci">ICEventInfoProducer(const edm::ParameterSet &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8cc_source.html#l00023">ICEventInfoProducer.cc:23</a></div></div>
 <div class="ttc" id="_event_info_8hh_html"><div class="ttname"><a href="_event_info_8hh.html">EventInfo.hh</a></div></div>
 <div class="ttc" id="classic_1_1_event_info_html"><div class="ttname"><a href="classic_1_1_event_info.html">ic::EventInfo</a></div><div class="ttdoc">Stores core event information such as run, lumi and event number, as well as event weights and filter...</div><div class="ttdef"><b>Definition:</b> <a href="_event_info_8hh_source.html#l00021">EventInfo.hh:21</a></div></div>
 <div class="ttc" id="class_i_c_event_info_producer_html"><div class="ttname"><a href="class_i_c_event_info_producer.html">ICEventInfoProducer</a></div><div class="ttdoc">Produces an ic::EventInfo object. </div><div class="ttdef"><b>Definition:</b> <a href="_i_c_event_info_producer_8hh_source.html#l00021">ICEventInfoProducer.hh:21</a></div></div>

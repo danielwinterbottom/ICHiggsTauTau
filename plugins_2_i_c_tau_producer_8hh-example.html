@@ -112,6 +112,9 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line"><span class="preprocessor">#include &quot;FWCore/Framework/interface/EventSetup.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/TauReco/interface/PFTauFwd.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/TauReco/interface/PFTau.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION&gt;=7</span></div>
+<div class="line"><span class="preprocessor">#include &quot;DataFormats/PatCandidates/interface/PackedCandidate.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/TauReco/interface/PFTauDiscriminator.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/PatCandidates/interface/Tau.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/VertexReco/interface/Vertex.h&quot;</span></div>
@@ -224,6 +227,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line"></div>
+<div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (request_trks_) {</div>
 <div class="line">      std::vector&lt;std::size_t&gt; trk_ids;</div>
 <div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; src.signalPFChargedHadrCands().size(); ++j) {</div>
@@ -265,7 +269,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">  }</div>
 <div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; taus_handle-&gt;size(); ++i) {</div>
-<div class="line">    <span class="comment">// reco::PFTau const&amp; src = taus_handle-&gt;at(i);</span></div>
+<div class="line">     <span class="comment">//reco::PFTau const&amp; src = taus_handle-&gt;at(i);</span></div>
 <div class="line">    <a class="code" href="classic_1_1_tau.html">ic::Tau</a>&amp; dest = taus_-&gt;at(i);</div>
 <div class="line">    reco::PFTauRef <span class="keyword">const</span>&amp; ref = taus_handle-&gt;refAt(i).castTo&lt;reco::PFTauRef&gt;();</div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; tau_ids_.size(); ++j) {</div>
@@ -287,6 +291,18 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_tau_producer_8hh-example
 <div class="line">      dest.<a class="code" href="classic_1_1_tau.html#a4c77e015031efe9712cb470c0378d2c2">SetTauID</a>(tau_ids[j].first, tau_ids[j].second);</div>
 <div class="line">      observed_id_[tau_ids[j].first] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(tau_ids[j].first);</div>
 <div class="line">    }</div>
+<div class="line">     <span class="comment">//dest.set_lead_ecal_energy(src.leadChargedHadrCand()-&gt;ecalEnergy());</span></div>
+<div class="line">     <span class="comment">//dest.set_lead_hcal_energy(src.leadChargedHadrCand()-&gt;hcalEnergy());</span></div>
+<div class="line"><span class="preprocessor">#if CMSSW_MAJOR_VERSION &gt;= 7</span></div>
+<div class="line">    <span class="keywordflow">if</span>(src.leadChargedHadrCand().isNonnull()){</div>
+<div class="line">      pat::PackedCandidate <span class="keyword">const</span>* packedCand = <span class="keyword">dynamic_cast&lt;</span>pat::PackedCandidate const*<span class="keyword">&gt;</span>(src.leadChargedHadrCand().get());</div>
+<div class="line">      <span class="keywordflow">if</span>(packedCand){</div>
+<div class="line">        dest.<a class="code" href="classic_1_1_tau.html#a643249296205bc8a24a1f033e001b5b2">set_lead_dz_vertex</a>(packedCand-&gt;dz());</div>
+<div class="line">        dest.<a class="code" href="classic_1_1_tau.html#a341fe7709cc7bb7cc4941b4a5ee19c68">set_lead_dxy_vertex</a>(packedCand-&gt;dxy());</div>
+<div class="line">        dest.<a class="code" href="classic_1_1_tau.html#a4807508a0de13dae887662dcb9e81067">set_lead_p</a>(packedCand-&gt;p());</div>
+<div class="line">      }</div>
+<div class="line">    }</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
 <div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>

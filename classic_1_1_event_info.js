@@ -4,7 +4,7 @@ var classic_1_1_event_info =
     [ "~EventInfo", "classic_1_1_event_info.html#a0dc1c842c318b6af9dc698478d22487d", null ],
     [ "Print", "classic_1_1_event_info.html#a128bb7c789654f798c2de966514cf738", null ],
     [ "is_data", "classic_1_1_event_info.html#ab4dc7e93951ca5cc886f5d15f611af92", null ],
-    [ "event", "classic_1_1_event_info.html#a66b656f574e0f6c24dc6ddc1d72ae81a", null ],
+    [ "event", "classic_1_1_event_info.html#a82e67b01c030c6d01362643bae3d9603", null ],
     [ "run", "classic_1_1_event_info.html#a5831995093d9c379276cf351e4da1c27", null ],
     [ "lumi_block", "classic_1_1_event_info.html#aec8c649be2b1070dfadf21a01ee7a8a0", null ],
     [ "bunch_crossing", "classic_1_1_event_info.html#a3c9e6f6f4e91e7035caf770062877477", null ],
@@ -12,7 +12,7 @@ var classic_1_1_event_info =
     [ "lepton_rho", "classic_1_1_event_info.html#ac3dd24dd1b1bda60f956c6f07d5930ad", null ],
     [ "good_vertices", "classic_1_1_event_info.html#aae5e0569348d30611291bf4c4eaf4c9c", null ],
     [ "set_is_data", "classic_1_1_event_info.html#a8696834e1f169f822682c58ed7a7ffb8", null ],
-    [ "set_event", "classic_1_1_event_info.html#aa82c0f7eb37ffb8ff934d2b5ae4b53b0", null ],
+    [ "set_event", "classic_1_1_event_info.html#acfe80f73efc762f4efcc3ba48da32f1c", null ],
     [ "set_run", "classic_1_1_event_info.html#a03b9f958e870902e1b03170261ad339a", null ],
     [ "set_lumi_block", "classic_1_1_event_info.html#a39efdfa3c2300219a9479ea36cb5ea40", null ],
     [ "set_bunch_crossing", "classic_1_1_event_info.html#a929e87985219af3f7ac625c43dee3148", null ],
@@ -32,5 +32,5 @@ var classic_1_1_event_info =
     [ "set_filter_result", "classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40", null ],
     [ "filter_result", "classic_1_1_event_info.html#ae3e73bf521c31067e064151818218d10", null ],
     [ "total_filter_result", "classic_1_1_event_info.html#a09f0004aabaf1f44cb52b3f95833bff9", null ],
-    [ "ClassDef", "classic_1_1_event_info.html#a593e084a1df48a4bde443484eb62d08c", null ]
+    [ "ClassDef", "classic_1_1_event_info.html#af1f5eda402ab6b5a1742dadf7bab86fa", null ]
 ];
