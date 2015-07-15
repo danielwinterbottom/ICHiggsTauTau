@@ -272,9 +272,9 @@ namespace ic {
     Value ztt_norm;
     //ztt_norm = this->GetRateViaRefEfficiency(this->ResolveAlias("ZTT_Eff_Sample"), "DYJetsToLL", "os", this->ResolveAlias("inclusive"), sel, cat, wt);
     std::vector<std::string> ztt_samples = this->ResolveSamplesAlias("ztt_samples");
-    std::vector<std::string> ztt_shape_samples = this->ResolveSamplesAlias("ztt_shape_samples");
+    std::vector<std::string> ztt_shape_samples = this->ResolveSamplesAlias("ztt_samples");
     ztt_norm = this->GetLumiScaledRate(ztt_samples, sel, cat, wt) ;
-    TH1F ztt_hist = this->GetLumiScaledShape(var, ztt_shape_samples, sel, cat, wt);
+    TH1F ztt_hist = this->GetLumiScaledShape(var, ztt_samples, sel, cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("ZTT_Shape_Sample") % sel % cat % wt;
     SetNorm(&ztt_hist, ztt_norm.first);
