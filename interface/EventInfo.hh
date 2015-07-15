@@ -35,7 +35,7 @@ class EventInfo {
   inline bool is_data() const { return is_data_; }
 
   /// Event number
-  inline unsigned event() const { return event_; }
+  inline unsigned long long event() const { return event_; }
 
   /// Run number
   inline int run() const { return run_; }
@@ -51,7 +51,7 @@ class EventInfo {
 
   /// Energy density used for calculating lepton isolation in this event
   inline double lepton_rho() const { return lepton_rho_; }
-
+  
   /// Number of reconstructed vertices passing some baseline quality
   /// requirements
   inline unsigned good_vertices() const { return good_vertices_; }
@@ -63,7 +63,7 @@ class EventInfo {
   inline void set_is_data(bool const& is_data) { is_data_ = is_data; }
 
   /// @copybrief event()
-  inline void set_event(unsigned const& event) { event_ = event; }
+  inline void set_event(unsigned long long const& event) { event_ = event; }
 
   /// @copybrief run()
   inline void set_run(int const& run) { run_ = run; }
@@ -241,7 +241,7 @@ class EventInfo {
 
  private:
   bool is_data_;
-  unsigned event_;
+  unsigned long long event_;
   int run_;
   int lumi_block_;
   int bunch_crossing_;
@@ -254,7 +254,7 @@ class EventInfo {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(EventInfo, 2);
+  ClassDef(EventInfo, 4);
  #endif
 };
 }
