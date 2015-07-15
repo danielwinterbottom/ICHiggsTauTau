@@ -513,7 +513,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || strategy_==strategy::spring15 ) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 ){//|| strategy_==strategy::spring15 ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
