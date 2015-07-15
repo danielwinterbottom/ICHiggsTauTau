@@ -279,7 +279,7 @@ namespace ic {
         if (hadronic_tau_selector_ == 2 && matches.size() > 0) return 1;
       }
     }
-    if(strategy_ == strategy::spring15 && channel_ != channel::em) {
+    if(strategy_ == strategy::spring15 && channel_ != channel::em && ztt_mode_>0) {
       bool is_ztt=false; 
       bool has_z = false;
       // First find out if the gen level info points to Z->ll or Z->tautau
@@ -294,32 +294,44 @@ namespace ic {
             for (unsigned j = 0; j < daughters.size(); ++j) {
               if ((abs(daughters[j]->pdgid())) == 15 && daughters[j]->pt() > 8.) {
                 is_ztt = true;
+               }
+             }
+             /*   std::vector<GenParticle *> const& tau_daughters = ExtractStableDaughters(daughters[j],particles);
+                for(unsigned k = 0; k < tau_daughters.size(); ++k){
+                  if( (abs(tau_daughters[k]->pdgid()) == 11 || abs(tau_daughters[k]->pdgid()) == 13) && tau_daughters[k]->pt() > 8.){
+                    sel_particles.push_back(tau_daughters[k]);
+                   }
+                }
               }
               else if ( (abs(daughters[j]->pdgid()) == 11 || abs(daughters[j]->pdgid()) == 13) && daughters[j]->pt() > 8.) {
                  sel_particles.push_back(daughters[j]);
               }
-            }
-            break; //only consider first Z
+            }*/
+            //break; //only consider first Z
+          }
+          if ( (abs(particles[i]->pdgid()) == 11 || abs(particles[i]->pdgid()) == 13) && particles[i]->pt() > 8.){
+            sel_particles.push_back(particles[i]);
           }
         } 
 
-        //Fail the event if no gen-level Z's found
-        if (!has_z) return 1;
+
+        //Fail the event if no gen-level Z's found for ZTT
+        if (!has_z&&ztt_mode_==1) return 1;
         // If we want Z->tautau and we have found a Z->ll, fail the event
         if (ztt_mode_ == 1 && !is_ztt) return 1;
         // If we want Z->ll and we have found a Z->tautau, fail the event
         if (ztt_mode_ == 2 && is_ztt) return 1;
-        if (sel_particles.size() > 0) {
+//        if (sel_particles.size() > 0) {
           // Get the reco tau from the pair
           std::vector<Candidate *> tau;
           tau.push_back(result[0]->GetCandidate("lepton2"));
           // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
           std::vector<std::pair<Candidate*, GenParticle*> > matches = MatchByDR(tau, sel_particles, 0.5, true, true);
           // If we want ZL and there's no match, fail the event
-          if (faked_tau_selector_ == 1 && matches.size() == 0 && ztt_mode_ == 2) return 1;
+          if (faked_tau_selector_ == 1 && matches.size() == 0) return 1;
           // If we want ZJ and there is a match, fail the event
-          if (faked_tau_selector_ == 2 && matches.size() > 0 && ztt_mode_ == 2) return 1;
-        }
+          if (faked_tau_selector_ == 2 && matches.size() > 0 ) return 1;
+//        }
   //    }
   //    Not figured out how the below should work yet
       if (hadronic_tau_selector_ > 0) {
