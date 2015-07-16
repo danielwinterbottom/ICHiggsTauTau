@@ -55,6 +55,7 @@ namespace ic {
       "WWinclusive", 
       "WZinclusive", 
       "ZZinclusive",
+      "DYJetsToTauTau",
       "DYJetsToLL10-50"
     };
     if (ch_ != channel::em) {
@@ -62,7 +63,6 @@ namespace ic {
         "WJetsToLNu",
         "DYJetsToLL-L",
         "DYJetsToLL-J",
-        "DYJetsToTauTau",
         "DYJetsToTauTau-L",
         "DYJetsToTauTau-JJ",
         "DYJetsToLL10-50-L",
@@ -229,7 +229,7 @@ namespace ic {
         std::cerr << "[HTTRun2Analysis::ReadTrees] Warning: Unable to extract TTree from file " << input_filename << std::endl;
         continue;        
       }
-      tmp_tree->SetEstimate(1000);
+      tmp_tree->SetEstimate(100000);
       tfiles_[label] = tmp_file;
       ttrees_[label] = tmp_tree;
     }
