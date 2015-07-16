@@ -755,9 +755,9 @@ int main(int argc, char* argv[]){
 	// Deduce titles
 	// ************************************************************************
 	if (auto_titles) {
-		double fb_lumi = ana.GetLumi() / 1000.;
+		double pb_lumi = ana.GetLumi();
 		string com = "13";
-        plot.set_lumi_label((boost::format("%.1f fb^{-1} at %s TeV") % fb_lumi % com).str());
+        plot.set_lumi_label((boost::format("%.1f pb^{-1} at %s TeV") % pb_lumi % com).str());
         plot.set_cms_label("CMS");
         plot.set_cms_extra("");
         std::string channel_fmt = ""; 
