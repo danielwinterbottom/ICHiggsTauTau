@@ -118,7 +118,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
        muon_dz = 0.2;
        elec_pt = 13.;
        elec_eta = 2.5;
-       muon_pt = 9;
+       muon_pt = 10;
        muon_eta = 2.4;
     } else {
       elec_pt = 10.0;
