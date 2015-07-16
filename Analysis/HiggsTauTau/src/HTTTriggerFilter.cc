@@ -157,12 +157,12 @@ namespace ic {
           leg2_filter = "hltIsoElePFTau20TrackLooseIso";
 */
           trig_obj_label = "triggerObjectsEle22LooseTau20";
-          leg1_filter = "hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20";
+          leg1_filter = "hltSingleEle22WPLooseGsfTrackIsoFilter";
           //leg1_filter = "hltSingleEle22WPLooseGsfTrackIsoFilter";
           leg2_filter = "hltPFTau20TrackLooseIso";
           extra_leg2_filter = "hltOverlapFilterIsoEle22WPLooseGsfLooseIsoPFTau20";
           alt_trig_obj_label = "triggerObjectsEle32Gsf";
-          alt_leg1_filter = "hltEle32WPLooseGsfTrackIsoFilter";
+          alt_leg1_filter = "hltEle32WPTightGsfTrackIsoFilter";
         }
       }
       if (channel_ == channel::mt) {
@@ -375,7 +375,7 @@ namespace ic {
         } else if (mc_ == mc::spring15_74X){
           trig_obj_label            = "triggerObjectsEle12Mu23";
           leg1_filter               = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
-          leg2_filter               = "hltMu23TrkIsoVVLEle12CaloIdLIsoVLMuonlegL3IsoFiltered23";
+          leg2_filter               = "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23";
           alt_trig_obj_label        = "triggerObjectsEle23Mu8";
           alt_leg1_filter           = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
           alt_leg2_filter           = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
@@ -452,13 +452,15 @@ namespace ic {
 
     if ((channel_ == channel::et || channel_ == channel::mt)&&(mc_ == mc::phys14_72X||mc_ == mc::spring15_74X)) {
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
+      std::cout<<objs.size()<<std::endl;
+      std::cout<<alt_objs.size()<<std::endl;
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(0), objs, extra_leg2_filter,0.5);
-        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter,0.5);
+       bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter,0.5);
         if (leg1_match && leg2_match){
           dileptons_pass.push_back(dileptons[i]);
         } else {
-          leg1_match = IsFilterMatched(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5);
+         leg1_match = IsFilterMatched(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5);
 //					leg2_match = IsFilterMatched(dileptons[i]->At(1),alt_objs, alt_leg2_filter, 0.5);
          if (leg1_match) dileptons_pass.push_back(dileptons[i]);	
         }
