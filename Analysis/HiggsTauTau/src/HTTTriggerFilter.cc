@@ -452,8 +452,6 @@ namespace ic {
 
     if ((channel_ == channel::et || channel_ == channel::mt)&&(mc_ == mc::phys14_72X||mc_ == mc::spring15_74X)) {
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
-      std::cout<<objs.size()<<std::endl;
-      std::cout<<alt_objs.size()<<std::endl;
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(0), objs, extra_leg2_filter,0.5);
        bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter,0.5);
