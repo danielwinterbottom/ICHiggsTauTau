@@ -442,7 +442,8 @@ void HTTSequence::BuildSequence(){
     }
   }             
   if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
-  if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1307150943.txt";
+  //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1307150943.txt";
+  if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
 
   BuildModule(LumiMask("LumiMask")
     .set_produce_output_jsons("")

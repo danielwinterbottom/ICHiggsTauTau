@@ -73,6 +73,26 @@ namespace ic {
 
       });
     }
+    if (ch_ == channel::et) {
+      push_back(sample_names_, std::vector<std::string>{
+       "SingleElectron-2015B-prompt"
+      });
+    }
+    if (ch_ == channel::mt) {
+      push_back(sample_names_, std::vector<std::string>{
+        "SingleMuon-2015B-prompt"
+      });
+    }
+    if (ch_ == channel::em) {
+      push_back(sample_names_, std::vector<std::string>{
+        "MuonEG-2015B-prompt"
+      });
+    }
+    if (ch_ == channel::tt) {
+      push_back(sample_names_, std::vector<std::string>{
+        "Tau-2015B-prompt"
+      });
+    }   
 
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
