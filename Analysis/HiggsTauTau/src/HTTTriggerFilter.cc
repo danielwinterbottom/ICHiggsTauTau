@@ -460,9 +460,10 @@ namespace ic {
         if (leg1_match && leg2_match){
           dileptons_pass.push_back(dileptons[i]);
         } else {
+         bool highpt_leg = dileptons[i]->At(0)->pt()>33.0;
          leg1_match = IsFilterMatched(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5);
 //					leg2_match = IsFilterMatched(dileptons[i]->At(1),alt_objs, alt_leg2_filter, 0.5);
-         if (leg1_match) dileptons_pass.push_back(dileptons[i]);	
+         if (leg1_match&&highpt_leg) dileptons_pass.push_back(dileptons[i]);	
         }
       }
     }
