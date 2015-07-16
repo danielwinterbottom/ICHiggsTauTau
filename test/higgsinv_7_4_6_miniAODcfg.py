@@ -51,7 +51,8 @@ print 'globalTag   : '+tag
 ################################################################                                                                                          
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+#process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")#!!
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")#!!
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
@@ -74,12 +75,19 @@ process.options   = cms.untracked.PSet(
 
 ################################################################                                                                                       
 # Input files and global tags                                                                                                                            
-################################################################                                                                                         
-process.source = cms.Source("PoolSource", fileNames =
+################################################################                                                                
+if not isData:                         
+  process.source = cms.Source("PoolSource", fileNames =
        #                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
-                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/1E0D8712-D722-E511-B7CF-008CFA051614.root')
- 
-)
+                              cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/1E0D8712-D722-E511-B7CF-008CFA051614.root')
+                              
+                              )
+else:
+  process.source = cms.Source("PoolSource", fileNames =
+       #                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
+                              cms.untracked.vstring('root://xrootd.unl.edu//store/data/Run2015B/MET/MINIAOD/PromptReco-v1/000/251/161/00000/54D118C2-9C26-E511-A013-02163E01374D.root')
+                              
+                              )
 process.GlobalTag.globaltag = cms.string(tag)
 
 #'root://xrootd-cms.infn.it///store/mc/Phys14DR/VBF_HToInv_M-125_13TeV_powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/58D548B0-AB6F-E411-B468-3417EBE34D1A.root')
@@ -501,13 +509,19 @@ process.ak4PFCHSResidual = cms.ESProducer("LXXXCorrectionESProducer",
                                        level = cms.string('L2L3Residual')
                                        )
 
-pfchsJECS = cms.PSet(
-  L1FastJet  = cms.string("ak4PFCHSL1Fastjet"),
-  L2Relative = cms.string("ak4PFCHSL2Relative"),
-  L3Absolute = cms.string("ak4PFCHSL3Absolute")
+pfchsJECS = cms.PSet()
+if not isData:
+  pfchsJECS = cms.PSet(
+    L1FastJet  = cms.string("ak4PFCHSL1Fastjet"),
+    L2Relative = cms.string("ak4PFCHSL2Relative"),
+    L3Absolute = cms.string("ak4PFCHSL3Absolute")
   )
-if isData: pfchsJECS.append(
-  L2L3Residual = cms.string("ak4PFCHSResidual")
+else: 
+  pfchsJECS = cms.PSet(
+    L1FastJet  = cms.string("ak4PFCHSL1Fastjet"),
+    L2Relative = cms.string("ak4PFCHSL2Relative"),
+    L3Absolute = cms.string("ak4PFCHSL3Absolute"),
+    L2L3Residual = cms.string("ak4PFCHSResidual")
   )
 
 # b-tagging
@@ -573,10 +587,9 @@ process.puJetMvaCHS = cms.EDProducer('PileupJetIdProducer',
                                   )
 
 # Produce and store reclustered CHS
-process.icPFJetProducer = producers.icPFJetProducer.clone(
-  branch                    = cms.string("pfJetsPFlow"),
-  input                     = cms.InputTag("ak4PFJetsCHS"),
-  srcConfig = cms.PSet(
+
+if not isData:
+  jetsrcconfig=cms.PSet(
     includeJetFlavour         = cms.bool(True),
     inputJetFlavour           = cms.InputTag("icPFchsJetFlavourCalculator"),
     applyJECs                 = cms.bool(True),
@@ -591,7 +604,28 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
       simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK4PFCHS"),
       combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS")
       )
-    ),
+    )
+else:
+  jetsrcconfig=cms.PSet(
+    includeJetFlavour         = cms.bool(False),
+    inputJetFlavour           = cms.InputTag("icPFchsJetFlavourCalculator"),
+    applyJECs                 = cms.bool(True),
+    includeJECs               = cms.bool(False),
+    JECs                      = pfchsJECS,
+    applyCutAfterJECs         = cms.bool(True),
+    cutAfterJECs              = cms.string("pt > 15.0"),
+    inputSVInfo               = cms.InputTag(""),
+    requestSVInfo             = cms.bool(False),
+    BTagDiscriminators        = cms.PSet(
+      simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK4PFCHS"),
+      simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK4PFCHS"),
+      combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS")
+      )
+    )
+process.icPFJetProducer = producers.icPFJetProducer.clone(
+  branch                    = cms.string("pfJetsPFlow"),
+  input                     = cms.InputTag("ak4PFJetsCHS"),
+  srcConfig = jetsrcconfig,
   destConfig = cms.PSet(
     includePileupID       = cms.bool(True), 
     inputPileupID         = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
@@ -652,12 +686,17 @@ process.icPFJetSequence += cms.Sequence(
   process.selectedSlimmedJetsPuppiAK4+
   process.unpackedTracksAndVertices+
   process.ak4PFJetsCHS+
-  process.puJetMvaCHS+ 
+  process.puJetMvaCHS
+) 
 #  process.ak4PFJets+
-  process.jetPartonsforCHS+
-  process.pfchsJetPartonMatches+
-  process.pfchsJetFlavourAssociation+
-  process.icPFchsJetFlavourCalculator+
+if not isData:
+  process.icPFJetSequence += cms.Sequence(
+    process.jetPartonsforCHS+
+    process.pfchsJetPartonMatches+
+    process.pfchsJetFlavourAssociation+
+    process.icPFchsJetFlavourCalculator
+    )
+process.icPFJetSequence += cms.Sequence(
   process.btaggingSequenceAK4PFCHS+
   process.icPFJetProducer+ #Not from slimmed jets!
   process.icPFJetProducerFromPat+
@@ -882,11 +921,21 @@ if not isData:
 
 from PhysicsTools.PatAlgos.tools.trigTools import *
 #process.patTriggerPath = cms.Path()
+process.patTriggerPath = cms.Path(
+)
+#switchOnTrigger(process, path = 'patTriggerPath', outputModule = '')
+#switchOnTrigger(process, path = 'patTrigger', outputModule = '')
+
+process.patTriggerSequence = cms.Sequence(
+  #process.patTrigger+
+  #process.patTriggerEvent
+  )
 
 process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
   branch = cms.string("triggerPaths"),
   inputIsStandAlone = cms.bool(True),
-  input = cms.InputTag("TriggerResults", "", "HLT")
+  input = cms.InputTag("TriggerResults", "", "HLT"),
+  inputPrescales=cms.InputTag("patTrigger")
   )
 
 
@@ -1013,6 +1062,7 @@ process.p = cms.Path(
   process.icGenSequence+
   process.icMetSequence+
   process.icEventInfoSequence+
+  process.patTriggerSequence+
   process.icTriggerPathProducer+
   process.icTriggerObjectSequence+
   process.icL1ExtraSequence+
