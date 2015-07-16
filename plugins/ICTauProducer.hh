@@ -11,6 +11,9 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "DataFormats/TauReco/interface/PFTauFwd.h"
 #include "DataFormats/TauReco/interface/PFTau.h"
+#if CMSSW_MAJOR_VERSION>=7
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#endif
 #include "DataFormats/TauReco/interface/PFTauDiscriminator.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
@@ -126,6 +129,7 @@ void ICTauProducer<T>::produce(edm::Event& event,
       }
     }
 
+
     if (request_trks_) {
       std::vector<std::size_t> trk_ids;
       for (unsigned j = 0; j < src.signalPFChargedHadrCands().size(); ++j) {
@@ -167,7 +171,7 @@ void ICTauProducer<reco::PFTau>::constructSpecific(
   }
 
   for (unsigned i = 0; i < taus_handle->size(); ++i) {
-    // reco::PFTau const& src = taus_handle->at(i);
+     //reco::PFTau const& src = taus_handle->at(i);
     ic::Tau& dest = taus_->at(i);
     reco::PFTauRef const& ref = taus_handle->refAt(i).castTo<reco::PFTauRef>();
     for (unsigned j = 0; j < tau_ids_.size(); ++j) {
@@ -189,6 +193,18 @@ void ICTauProducer<pat::Tau>::constructSpecific(
       dest.SetTauID(tau_ids[j].first, tau_ids[j].second);
       observed_id_[tau_ids[j].first] = CityHash64(tau_ids[j].first);
     }
+     //dest.set_lead_ecal_energy(src.leadChargedHadrCand()->ecalEnergy());
+     //dest.set_lead_hcal_energy(src.leadChargedHadrCand()->hcalEnergy());
+#if CMSSW_MAJOR_VERSION >= 7
+    if(src.leadChargedHadrCand().isNonnull()){
+      pat::PackedCandidate const* packedCand = dynamic_cast<pat::PackedCandidate const*>(src.leadChargedHadrCand().get());
+      if(packedCand){
+        dest.set_lead_dz_vertex(packedCand->dz());
+        dest.set_lead_dxy_vertex(packedCand->dxy());
+        dest.set_lead_p(packedCand->p());
+      }
+    }
+#endif
   }
 }
 
