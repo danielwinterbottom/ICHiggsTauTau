@@ -17,6 +17,15 @@
     "test_script"       : "test/validation/full_compile.sh",
     "clean_script"      : "test/validation/full_clean.sh"
   },
+  "slc6_amd64_gcc491-CMSSW_7_4_6" : {
+    "build_root"        : "/home/build/",
+    "cmssw_env_script"  : "/home/build/env_slc6_491.sh",
+    "cmssw_version"     : "CMSSW_7_4_6",
+    "cmssw_user"        : "cms-sw",
+    "cmssw_branch"      : "CMSSW_7_4_6",
+    "test_script"       : "test/validation/full_compile.sh",
+    "clean_script"      : "test/validation/full_clean.sh"
+  },
   "slc6_amd64_gcc472-CMSSW_5_3_27" : {
     "build_root"        : "/home/build/",
     "cmssw_env_script"  : "/home/build/env_slc6_472.sh",
