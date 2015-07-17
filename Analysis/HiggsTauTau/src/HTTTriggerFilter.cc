@@ -30,6 +30,8 @@ namespace ic {
     std::cout << boost::format(param_fmt()) % "dilepton_label"  % pair_label_;
     std::cout << boost::format(param_fmt()) % "is_data"         % is_data_;
     std::cout << boost::format(param_fmt()) % "is_embedded"     % is_embedded_;
+    std::cout << boost::format(param_fmt()) % "do_leptonplustau" % do_leptonplustau_;
+    std::cout << boost::format(param_fmt()) % "do_singlelepton" % do_singlelepton_;
     return 0;
   }
 
@@ -493,11 +495,15 @@ namespace ic {
     if ((channel_ == channel::et || channel_ == channel::mt)&&(mc_ == mc::phys14_72X||mc_ == mc::spring15_74X)) {
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
-        bool leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(0), objs, extra_leg2_filter,0.5);
-       bool leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter,0.5);
-        if (leg1_match && leg2_match){
-          dileptons_pass.push_back(dileptons[i]);
-        } else {
+        bool leg1_match = false;
+        bool leg2_match = false;
+       if(do_leptonplustau_){
+         leg1_match = IsFilterMatched(dileptons[i]->At(0), objs, leg1_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(0), objs, extra_leg2_filter,0.5);
+         leg2_match = IsFilterMatched(dileptons[i]->At(1), objs, leg2_filter, 0.5)&&IsFilterMatched(dileptons[i]->At(1), objs, extra_leg2_filter,0.5);
+         }
+       if (leg1_match && leg2_match){
+         dileptons_pass.push_back(dileptons[i]);
+        } else if(do_singlelepton_) {
          bool highpt_leg = dileptons[i]->At(0)->pt()>high_leg_pt;
          leg1_match = IsFilterMatched(dileptons[i]->At(0),alt_objs, alt_leg1_filter, 0.5);
 //					leg2_match = IsFilterMatched(dileptons[i]->At(1),alt_objs, alt_leg2_filter, 0.5);
