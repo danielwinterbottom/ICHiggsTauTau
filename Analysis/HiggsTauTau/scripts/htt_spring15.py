@@ -89,7 +89,7 @@ CONFIG2 ='scripts/config-13.json'
  
 
 FILELIST='filelists/July08_MC_74X'
-FILELIST2='filelists/July13_MC_74X'
+FILELIST13='filelists/July13_MC_74X'
 
 signal_mc = [ ]
 signal_vh = [ ] 
@@ -194,7 +194,7 @@ if options.proc_data or options.proc_all:
 if options.proc_bkg or options.proc_all:
   central_samples = [
     'TTJets',
-    'TT',
+   'TT',
 		'WJetsToLNu',
     'WWinclusive',
     'ZZinclusive',
@@ -208,6 +208,7 @@ if options.proc_bkg or options.proc_all:
     'WWTo4Q',
     'WWToLNuQQ',
     # 'ZZTo4L'
+   #'DYJetsToLL'
      ]
 
         
@@ -238,8 +239,8 @@ if options.proc_bkg or options.proc_all:
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
     file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
-				#Don't run these for emu channel:
-#
+#				#Don't run these for emu channel:
+
     JOB='DYJetsToLL-L%s_2015' % (sp)
     JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":2,\"faked_tau_selector\":1}}' "%vars());
     for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
@@ -263,45 +264,45 @@ if options.proc_bkg or options.proc_all:
       os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
     file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
-    JOB='DYJetsToTauTau10-50%s_2015' % (sp)
-    JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
-    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+    #JOB='DYJetsToTauTau10-50%s_2015' % (sp)
+    #JSONPATCH= (r"'{\"job\":{ \"sequences\":{\"em\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\", \"hadronic_tau_selector\":1,\"faked_tau_selector\":2,\"ztautau_mode\":1}}' "%vars());
+    #for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+    #  os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+    #  os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+    #file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
-    JOB='DYJetsToLL10-50%s_2015' % (sp)
-    JSONPATCH= (r"'{\"job\":{\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":2}}' "%vars());
-    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+#    JOB='DYJetsToLL10-50%s_2015' % (sp)
+#    JSONPATCH= (r"'{\"job\":{\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":2}}' "%vars());
+#    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+#      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+#      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+#    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 				#Don't run these for emu channel:
 
-    JOB='DYJetsToLL10-50-L%s_2015' % (sp)
-    JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":2,\"faked_tau_selector\":1}}' "%vars());
-    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+#    JOB='DYJetsToLL10-50-L%s_2015' % (sp)
+#    JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":2,\"faked_tau_selector\":1}}' "%vars());
+#    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+#      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+#      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+#    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
-    JOB='DYJetsToLL10-50-J%s_2015' % (sp)
-    JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":2,\"faked_tau_selector\":2}}' "%vars());
-    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+#    JOB='DYJetsToLL10-50-J%s_2015' % (sp)
+#    JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":2,\"faked_tau_selector\":2}}' "%vars());
+#    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+#      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+#      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+#    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 
-    JOB='DYJetsToTauTau10-50-L%s_2015' % (sp)
-    JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":1,\"faked_tau_selector\":1}}' "%vars());
-    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+#    JOB='DYJetsToTauTau10-50-L%s_2015' % (sp)
+#    JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"ztautau_mode\":1,\"faked_tau_selector\":1}}' "%vars());
+#    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+#      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+#      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+#    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
               
     JOB='DYJetsToTauTau-JJ%s_2015' % (sp)
@@ -313,12 +314,12 @@ if options.proc_bkg or options.proc_all:
 #
 #
 #             
-    JOB='DYJetsToTauTau10-50-JJ%s_2015' % (sp)
-    JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"hadronic_tau_selector\":2,\"faked_tau_selector\":2, \"ztautau_mode\":1}}' "%vars());
-    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
-      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
-      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
-    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+#    JOB='DYJetsToTauTau10-50-JJ%s_2015' % (sp)
+#    JSONPATCH= (r"'{\"job\":{\"channels\":[\"et\",\"mt\",\"tt\"],\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]},\"filelist\":\"%(FILELIST)s_DYJetsToLL10-50%(sp)s.dat\"}, \"sequence\":{\"output_name\":\"%(JOB)s\",\"hadronic_tau_selector\":2,\"faked_tau_selector\":2, \"ztautau_mode\":1}}' "%vars());
+#    for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+#      os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+#      os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+#    file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
         
 #
   for sa in central_samples:
@@ -330,6 +331,15 @@ if options.proc_bkg or options.proc_all:
         os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
         os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
       file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
+
+  JOB='ZZTo4L_2015'
+  JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST13)s_ZZTo4L.dat\", \"file_prefix\":\"root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July13_MC_74X/\",\"sequences\":{\"em\":[],\"et\":[],\"mt\":[],\"tt\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
+  nfiles = sum(1 for line in open('%(FILELIST13)s_ZZTo4L.dat' % vars()))
+  nperjob = 30 
+  for i in range (0,int(math.ceil(float(nfiles)/float(nperjob)))) :
+    os.system('%(JOBWRAPPER)s "./bin/HTT --cfg=%(CONFIG)s --json=%(JSONPATCH)s --offset=%(i)d --nlines=%(nperjob)d &> jobs/%(JOB)s-%(i)d.log" jobs/%(JOB)s-%(i)s.sh' %vars())
+    os.system('%(JOBSUBMIT)s jobs/%(JOB)s-%(i)d.sh' % vars())
+  file_persamp.write("%s %d\n" %(JOB, int(math.ceil(float(nfiles)/float(nperjob)))))
 
 '''
 

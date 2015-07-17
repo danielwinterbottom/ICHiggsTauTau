@@ -25,6 +25,7 @@ class HTTCategories : public ModuleBase {
   CLASS_MEMBER(HTTCategories, bool, bjet_regression)
   CLASS_MEMBER(HTTCategories, bool, make_sync_ntuple)
   CLASS_MEMBER(HTTCategories, bool, is_embedded)
+  CLASS_MEMBER(HTTCategories, bool, is_data)
   CLASS_MEMBER(HTTCategories, bool, systematic_shift)
   CLASS_MEMBER(HTTCategories, bool, add_Hhh_variables)
   CLASS_MEMBER(HTTCategories, std::string, sync_output_name)

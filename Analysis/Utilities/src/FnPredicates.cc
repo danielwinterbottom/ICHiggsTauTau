@@ -741,7 +741,7 @@ namespace ic {
   bool ElectronHTTIdSpring15(Electron const* elec, bool loose_wp) {
     //Do some cut-based pre-selection
     if (elec->has_matched_conversion()) return false;
-    if (elec->gsf_tk_nhits() > 0) return false;
+    if (elec->gsf_tk_nhits() > 1) return false;
     bool pass_mva = false;
     double eta = fabs(elec->sc_eta());
     double pt = fabs(elec->pt());
@@ -757,7 +757,7 @@ namespace ic {
     } else {
       if (eta <= 0.8 && pt <= 10                  && idmva > -0.483) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479 && pt <=10   && idmva > -0.267) pass_mva = true;
-      if (eta >  1.479 && pt <= 10                && idmva > -0.081) pass_mva = true;
+      if (eta >  1.479 && pt <= 10                && idmva > -0.323) pass_mva = true;
       if (eta <= 0.8 && pt > 10                   && idmva > 0.933) pass_mva = true;
       if (eta >  0.8 && eta <= 1.479 && pt > 10   && idmva > 0.825) pass_mva = true;
       if (eta >  1.479 && pt > 10                 && idmva > 0.337) pass_mva = true;
