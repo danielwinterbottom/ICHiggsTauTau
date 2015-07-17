@@ -125,8 +125,9 @@ namespace ic {
                               std::string const& selection,
                               std::string const& category,
                               std::vector<std::string> const& sub_samples,
-                              std::string const& weight,
-                              std::map<std::string, std::function<Value()>> dict);
+                              std::string const& weight/*,
+                              std::map<std::string, std::function<Value()>> dict*/
+                              );
       TH1F GetShapeViaFakesMethod(std::string const& var,
                                   std::string const& sel,
                                   std::string const& cat,
@@ -210,8 +211,8 @@ namespace ic {
                               std::string const& control_selection,
                               std::string const& category,
                               std::vector<std::string> const& sub_samples,
-                              std::string const& weight,
-                              std::map<std::string, std::function<Value()>> dict
+                              std::string const& weight/*,
+                              std::map<std::string, std::function<Value()>> dict*/
                               );
       std::string ResolveAlias(std::string const& al);
       std::vector<std::string> ResolveSamplesAlias(std::string const& al);
