@@ -34,7 +34,7 @@ namespace ic {
     std::vector<PFJet *> & jetvec = event->GetPtrVec<PFJet>(jetsinput_label_);//CJV jet collection
     std::vector<CompositeCandidate *> & pairvec = event->GetPtrVec<CompositeCandidate>(pairinput_label_);//Jet Pair collection
     if(pairvec.size()<1){
-      std::cout<<"Error: no leading pair, doing nothing ... "<<std::endl;
+      //      std::cout<<"Error: no leading pair, doing nothing ... "<<std::endl;
       return 0;
     }
     if(pairvec.size()>1){

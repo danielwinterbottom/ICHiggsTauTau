@@ -189,6 +189,8 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputVertices       = cms.InputTag("offlineSlimmedPrimaryVertices"),
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+  isNlo               = cms.bool(True),
+  lheProducer         = cms.InputTag("externalLHEProducer"),
   includeLHEWeights   = cms.bool(not isData)
 )
 

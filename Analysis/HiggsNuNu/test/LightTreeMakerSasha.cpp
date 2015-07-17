@@ -38,7 +38,7 @@
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/MetLaserFilters.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvPrint.h"
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/CJVFilter.h"
-#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/LightTree.h"
+#include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/SashaLightTree.h"
 
 #include "UserCode/ICHiggsTauTau/Analysis/HiggsNuNu/interface/HinvConfig.h"
 
@@ -85,6 +85,7 @@ int main(int argc, char* argv[]){
   bool dotopreweighting;          // Do Top reweighting
   bool dopromptskim;              // Use prompt compatible light tree skimming
   bool donoskim;                  // Use prompt compatible light tree skimming
+  bool dosashaskim;                  // Use prompt compatible light tree skimming
 
   string mettype;                 // MET input collection to be used
   string jesuncfile;              // File to get JES uncertainties from
@@ -161,6 +162,7 @@ int main(int argc, char* argv[]){
     ("dotopreweighting",    po::value<bool>(&dotopreweighting)->default_value(false))
     ("dopromptskim",        po::value<bool>(&dopromptskim)->default_value(false))
     ("donoskim",            po::value<bool>(&donoskim)->default_value(false))
+    ("dosashaskim",            po::value<bool>(&dosashaskim)->default_value(false))
     ("doidisoerr",          po::value<bool>(&doidisoerr)->default_value(false))
     ("doidisoerrupordown",  po::value<bool>(&doidisoerrupordown)->default_value(true))
     ("doidisoerrmuore",     po::value<bool>(&doidisoerrmuore)->default_value(true))
@@ -741,16 +743,12 @@ int main(int argc, char* argv[]){
   // Plot Modules
   // ------------------------------------------------------------------------------------  
   
-  LightTree lightTree = LightTree("LightTree")
+  SashaLightTree sashaLightTree = SashaLightTree("SashaLightTree")
     .set_fs(fs)
     .set_met_label(mettype)
-    .set_dijet_label("jjLeadingCandidates")
-    .set_sel_label("JetPair")
     .set_is_data(is_data)
-    .set_dotrigskim(false)
-    .set_do_promptskim(dopromptskim)
     .set_do_noskim(donoskim)
-    .set_ignoreLeptons(ignoreLeptons)
+    .set_do_sashaskim(dosashaskim)
     .set_trigger_path("HLT_DiPFJet40_PFMETnoMu65_MJJ800VBF_AllJets_v")
     .set_trig_obj_label("triggerObjectsDiPFJet40PFMETnoMu65MJJ800VBFAllJets");
 
@@ -853,7 +851,7 @@ int main(int argc, char* argv[]){
   //if (printEventList) analysis.AddModule(&hinvPrintList);
   
   //write tree with TMVA input variables
-  analysis.AddModule(&lightTree);  
+  analysis.AddModule(&sashaLightTree);  
   
   // Run analysis
   analysis.RetryFileAfterFailure(5,5);// int <pause between attempts in seconds>, int <number of retry attempts to make> );

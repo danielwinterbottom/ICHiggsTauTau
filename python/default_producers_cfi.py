@@ -161,7 +161,7 @@ icTauProducer = cms.EDProducer("ICPFTauProducer", # or "ICPFTauFromPatProducer"
 ## [Tau]
 
 ## [Met]
-icMetProducer = cms.EDProducer('ICMetProducer',
+icMetProducer = cms.EDProducer('ICPFMetProducer',
   branch  = cms.string("pfMet"),
   input   = cms.InputTag("pfMet"),
   includeCustomID = cms.bool(False),
@@ -181,6 +181,30 @@ icMetProducer = cms.EDProducer('ICMetProducer',
     )
   
 )
+
+icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
+  branch  = cms.string("pfMet"),
+  input   = cms.InputTag("slimmedMETs"),
+  includeCustomID = cms.bool(False),
+  inputCustomID = cms.InputTag(""),
+  includeExternalMetsig = cms.bool(False),
+  includeExternalMetsigMethod2 = cms.bool(False),
+  getUncorrectedMet = cms.bool(False),
+  metsig = cms.PSet(
+    metsig      = cms.InputTag("METSignificance","METSignificance"),
+    metsigcov00 = cms.InputTag("METSignificance","CovarianceMatrix00"),
+    metsigcov01 = cms.InputTag("METSignificance","CovarianceMatrix01"),
+    metsigcov10 = cms.InputTag("METSignificance","CovarianceMatrix10"),
+    metsigcov11 = cms.InputTag("METSignificance","CovarianceMatrix11")
+    ),
+  metsig_method2 = cms.PSet(
+    metsig      = cms.InputTag("METSignificance","METSignificance"),
+    metsigcov = cms.InputTag("METSignificance","METCovariance")
+    )
+
+  
+)
+
 ## [Met]
 
 ## [SingleMet]
@@ -459,6 +483,9 @@ icTriggerObjectProducer = cms.EDProducer('ICTriggerObjectProducer',
 ## [EventInfo]
 icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   branch              = cms.string("eventInfo"),
+  isNlo               = cms.bool(False),
+  lheProducer         = cms.InputTag("externalLHEProducer"),
+  includeLHEWeights   = cms.bool(False),
   includeJetRho       = cms.bool(False),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),

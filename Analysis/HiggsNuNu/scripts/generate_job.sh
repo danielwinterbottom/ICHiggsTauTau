@@ -23,7 +23,7 @@ if (( "$GRIDSETUP" != "0" )); then
 else 
     echo "Grid setup is disabled."
 fi
-echo "export SCRAM_ARCH=slc5_amd64_gcc462" >> $OUTPUT
+echo "export SCRAM_ARCH=$SCRAM_ARCH" >> $OUTPUT
 echo "eval \`scramv1 runtime -sh\`" >> $OUTPUT
 echo "source $PWD/scripts/setup_libs.sh" >> $OUTPUT
 echo "eval $INPUT" >> $OUTPUT

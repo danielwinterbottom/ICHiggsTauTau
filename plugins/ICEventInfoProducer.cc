@@ -23,6 +23,8 @@
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
+      is_nlo_(config.getParameter<bool>("isNlo")),
+      lhe_collection_(config.getParameter<edm::InputTag>("lheProducer")),
       do_jets_rho_(config.getParameter<bool>("includeJetRho")),
       input_jets_rho_(config.getParameter<edm::InputTag>("inputJetRho")),
       do_leptons_rho_(config.getParameter<bool>("includeLeptonRho")),
@@ -72,6 +74,8 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
   info_ = new ic::EventInfo();
 
   PrintHeaderWithBranch(config, branch_);
+  PrintOptional(1, is_nlo_, "isNlo");
+  PrintOptional(1, do_lhe_weights_, "includeLHEWeights");
   PrintOptional(1, do_jets_rho_, "includeJetRho");
   PrintOptional(1, do_leptons_rho_, "includeLeptonRho");
   PrintOptional(1, do_vertex_count_, "includeVertexCount");
@@ -104,7 +108,11 @@ void ICEventInfoProducer::produce(edm::Event& event,
   *info_ = ic::EventInfo();
   info_->set_is_data(event.isRealData());
   info_->set_run(event.run());
+#if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >= 3
   info_->set_event(event.id().event());
+#else
+  info_->set_event((unsigned long long)event.id().event());
+#endif
   info_->set_lumi_block(event.luminosityBlock());
   info_->set_bunch_crossing(event.bunchCrossing());
 
@@ -126,17 +134,6 @@ void ICEventInfoProducer::produce(edm::Event& event,
     info_->set_weight(weights_[i].first, weights_result);
   }
 
-  if (do_lhe_weights_) {
-    edm::Handle<LHEEventProduct> lhe_handle;
-    event.getByLabel("externalLHEProducer", lhe_handle);
-    double nominal_wt = lhe_handle->hepeup().XWGTUP;
-    info_->set_weight("nlo_sign",
-                      (nominal_wt > 0) ? 1. : ((nominal_wt < 0) ? -1. : 0));
-    for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
-      info_->set_weight(lhe_handle->weights()[i].id,
-                        lhe_handle->weights()[i].wgt / nominal_wt, false);
-    }
-  }
 
   for (unsigned i = 0; i < gen_weights_.size(); ++i) {
     edm::Handle<GenFilterInfo> weight;
@@ -149,6 +146,23 @@ void ICEventInfoProducer::produce(edm::Event& event,
   if (do_vertex_count_) {
     event.getByLabel(input_vertices_, vtxs_handle);
     info_->set_good_vertices(vtxs_handle->size());
+  }
+
+  edm::Handle<LHEEventProduct> lhe_handle;
+  if(is_nlo_){
+    event.getByLabel(lhe_collection_, lhe_handle); 
+    if(lhe_handle->hepeup().XWGTUP>=0){
+      info_->set_weight("wt_mc_sign",1);
+    } else {
+      info_->set_weight("wt_mc_sign",-1);
+    }
+    if (do_lhe_weights_) {
+      double nominal_wt = lhe_handle->hepeup().XWGTUP;
+      for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
+        info_->set_weight(lhe_handle->weights()[i].id,
+                          lhe_handle->weights()[i].wgt / nominal_wt, false);
+      }
+    }
   }
 
   for (unsigned i = 0; i < filters_.size(); ++i) {

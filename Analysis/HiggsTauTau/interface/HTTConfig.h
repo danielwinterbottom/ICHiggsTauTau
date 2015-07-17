@@ -45,7 +45,8 @@ public:
 struct strategy_def {
 	enum type {
 		paper2013,				// Strategy for the final paper in 2013
-		phys14				// Strategy for running on phys14 samples
+		phys14,				// Strategy for running on phys14 samples
+    spring15    //Strategy for running on spring15 samples
 	};
 };
 typedef safe_enum<strategy_def> strategy;
@@ -53,7 +54,8 @@ typedef safe_enum<strategy_def> strategy;
 inline std::string Strategy2String(strategy const& in) {
 	static std::map<strategy, std::string> conv = boost::assign::map_list_of
 		(strategy::paper2013, 	"paper2013")
-		(strategy::phys14, 	"phys14");
+		(strategy::phys14, 	"phys14")
+    (strategy::spring15, "spring15");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -65,7 +67,8 @@ inline std::string Strategy2String(strategy const& in) {
 inline strategy String2Strategy(std::string const& in) {
 	static std::map<std::string, strategy> conv = boost::assign::map_list_of
 	("paper2013", 	strategy::paper2013)
-	("phys14", 	strategy::phys14);
+	("phys14", 	strategy::phys14)
+  ("spring15", strategy::spring15);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -113,7 +116,8 @@ struct mc_def {
 	enum type {
 		fall11_42X,				// 42X MC
 		summer12_53X,			// 53X MC
-		phys14_72X			// 72X MC
+		phys14_72X,			// 72X MC
+    spring15_74X      //74X MC 
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -122,7 +126,8 @@ inline std::string MC2String(mc const& in) {
 	static std::map<mc, std::string> conv = boost::assign::map_list_of
 		(mc::fall11_42X, "fall11_42X")
 		(mc::summer12_53X, "summer12_53X")
-		(mc::phys14_72X, "phys14_72X");
+		(mc::phys14_72X, "phys14_72X")
+    (mc::spring15_74X, "spring15_74X");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -135,7 +140,8 @@ inline mc String2MC(std::string const& in) {
 	static std::map<std::string, mc> conv = boost::assign::map_list_of
 	("fall11_42X",		mc::fall11_42X)
 	("summer12_53X",	mc::summer12_53X)
-	("phys14_72X",	mc::phys14_72X);
+	("phys14_72X",	mc::phys14_72X)
+  ("spring15_74X", mc::spring15_74X);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);

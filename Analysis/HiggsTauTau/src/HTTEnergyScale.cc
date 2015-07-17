@@ -36,13 +36,13 @@ namespace ic {
         } else if (dm == 1 || dm == 2) {
           if (strategy_ == strategy::paper2013) {
             central_shift = 1.012;
-          } else {
+          } else if (strategy_ != strategy::phys14) {
             central_shift = 1.015 + 0.001 * TMath::Min(TMath::Max(pt-45. ,0.),10.0);
           }
         } else if (dm == 10) {
           if (strategy_ == strategy::paper2013) {
             central_shift = 1.012;
-          } else {
+          } else if (strategy_!=strategy::phys14){
             central_shift = 1.012 + 0.001 * TMath::Min(TMath::Max(pt-32. ,0.),18.0);
           }
         }
