@@ -143,7 +143,7 @@ std::string get_yield(systematic& syst){
     return std::to_string(down/central) + "/" + std::to_string(up/central);
 }
 
-void process(fstream& output, TFile* outfile, systematic& syst){
+void process(std::fstream& output, TFile* outfile, systematic& syst){
     output << syst.datacard_name;
     if (syst.datacard_name != "rate") output << "\t" << syst.syst_effect;
     if (syst.gmN_value != 0) output << " " << syst.gmN_value;
@@ -209,8 +209,8 @@ int main(int argc, char* argv[]){
     TFile *shapes_out = TFile::Open(shape_output_name.c_str(), "RECREATE");     //Create File to hold the shape and data plots
     //Check for syst list
     //Open Syst List and Datacard output
-    fstream systematic_list(syst_list_name.c_str(), std::ios::in);
-    fstream datacard(dc_output_name.c_str(), std::ios::out);
+    std::fstream systematic_list(syst_list_name.c_str(), std::ios::in);
+    std::fstream datacard(dc_output_name.c_str(), std::ios::out);
     std::vector<systematic> systematics;
     std::string line;
     std::string seperator (50, '-');
