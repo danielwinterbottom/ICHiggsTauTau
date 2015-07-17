@@ -540,6 +540,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
             .set_channel(channel)
             .set_mc(mc_type)
+            .set_era(era_type)
             .set_is_data(is_data)
             .set_is_embedded(is_embedded)
             .set_pair_label("ditau"));
@@ -792,6 +793,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
+    .set_is_data(is_data)
     .set_systematic_shift(addit_output_folder!="")
     .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
     //Good to avoid accidentally overwriting existing output files when syncing
