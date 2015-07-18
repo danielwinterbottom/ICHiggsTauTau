@@ -105,6 +105,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;boost/format.hpp&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;FWCore/Framework/interface/Event.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;FWCore/Framework/interface/Run.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;FWCore/Framework/interface/EventSetup.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;FWCore/Framework/interface/MakerMacros.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;FWCore/ParameterSet/interface/ParameterSet.h&quot;</span></div>
@@ -116,6 +117,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/METReco/interface/BeamHaloSummary.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_static_tree_8hh.html">UserCode/ICHiggsTauTau/interface/StaticTree.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_event_info_8hh.html">UserCode/ICHiggsTauTau/interface/EventInfo.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
@@ -132,7 +134,8 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">      do_vertex_count_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeVertexCount&quot;</span>)),</div>
 <div class="line">      input_vertices_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
 <div class="line">      do_csc_filter_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeCSCFilter&quot;</span>)),</div>
-<div class="line">      input_csc_filter_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputCSCFilter&quot;</span>)) {</div>
+<div class="line">      input_csc_filter_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputCSCFilter&quot;</span>)),</div>
+<div class="line">      do_lhe_weights_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLHEWeights&quot;</span>)) {</div>
 <div class="line">  edm::ParameterSet filter_params =</div>
 <div class="line">      config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;filters&quot;</span>);</div>
 <div class="line">  std::vector&lt;std::string&gt; filter_names =</div>
@@ -173,7 +176,9 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">  info_ = <span class="keyword">new</span> <a name="_a1"></a><a class="code" href="classic_1_1_event_info.html">ic::EventInfo</a>();</div>
 <div class="line"></div>
 <div class="line">  <a name="a2"></a><a class="code" href="_print_config_tools_8cc.html#ab43bfd51524152e54a91ba2194ce420a">PrintHeaderWithBranch</a>(config, branch_);</div>
-<div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_jets_rho_, <span class="stringliteral">&quot;includeJetRho&quot;</span>);</div>
+<div class="line">  <a name="a3"></a><a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, is_nlo_, <span class="stringliteral">&quot;isNlo&quot;</span>);</div>
+<div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_lhe_weights_, <span class="stringliteral">&quot;includeLHEWeights&quot;</span>);</div>
+<div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_jets_rho_, <span class="stringliteral">&quot;includeJetRho&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_leptons_rho_, <span class="stringliteral">&quot;includeLeptonRho&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_vertex_count_, <span class="stringliteral">&quot;includeVertexCount&quot;</span>);</div>
 <div class="line">  <a class="code" href="_print_config_tools_8cc.html#af3a7490bc1960e5f17ef84108eb73d79">PrintOptional</a>(1, do_csc_filter_, <span class="stringliteral">&quot;includeCSCFilter&quot;</span>);</div>
@@ -181,6 +186,24 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"></div>
 <div class="line"><a name="a4"></a><a class="code" href="class_i_c_event_info_producer.html#a4c1d384e67bb996fb120664d300f91c1">ICEventInfoProducer::~ICEventInfoProducer</a>() {</div>
 <div class="line">  <span class="keyword">delete</span> info_;</div>
+<div class="line">}</div>
+<div class="line"></div>
+<div class="line"><span class="keywordtype">void</span> ICEventInfoProducer::endRun(edm::Run <span class="keyword">const</span>&amp; run, edm::EventSetup <span class="keyword">const</span>&amp; es) {</div>
+<div class="line">  <span class="keywordflow">if</span> (!do_lhe_weights_) <span class="keywordflow">return</span>;</div>
+<div class="line">  <span class="keywordflow">if</span> (lhe_weight_labels_.size()) <span class="keywordflow">return</span>;</div>
+<div class="line">  edm::Handle&lt;LHERunInfoProduct&gt; lhe_info;</div>
+<div class="line">  run.getByLabel(<span class="stringliteral">&quot;externalLHEProducer&quot;</span>, lhe_info);</div>
+<div class="line">  <span class="keywordtype">bool</span> record = <span class="keyword">false</span>;</div>
+<div class="line">  <span class="keywordflow">for</span> (<span class="keyword">auto</span> it = lhe_info-&gt;headers_begin(); it != lhe_info-&gt;headers_end();</div>
+<div class="line">       ++it) {</div>
+<div class="line">    std::vector&lt;std::string&gt;::const_iterator iLt = it-&gt;begin();</div>
+<div class="line">    <span class="keywordflow">for</span> (; iLt != it-&gt;end(); ++iLt) {</div>
+<div class="line">      std::string <span class="keyword">const</span>&amp; line = *iLt;</div>
+<div class="line">      <span class="keywordflow">if</span> (line.find(<span class="stringliteral">&quot;&lt;weightgroup&quot;</span>)  != std::string::npos) record = <span class="keyword">true</span>;</div>
+<div class="line">      <span class="keywordflow">if</span> (line.find(<span class="stringliteral">&quot;&lt;/weightgroup&quot;</span>) != std::string::npos) record = <span class="keyword">false</span>;</div>
+<div class="line">      <span class="keywordflow">if</span> (record) lhe_weight_labels_.push_back(line);</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">void</span> ICEventInfoProducer::produce(edm::Event&amp; event,</div>
@@ -214,6 +237,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">    info_-&gt;<a name="a12"></a><a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(weights_[i].first, weights_result);</div>
 <div class="line">  }</div>
 <div class="line"></div>
+<div class="line"></div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; gen_weights_.size(); ++i) {</div>
 <div class="line">    edm::Handle&lt;GenFilterInfo&gt; weight;</div>
 <div class="line">    <span class="keyword">event</span>.getByLabel(gen_weights_[i].second, weight);</div>
@@ -234,6 +258,13 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">      info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,1);</div>
 <div class="line">    } <span class="keywordflow">else</span> {</div>
 <div class="line">      info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(<span class="stringliteral">&quot;wt_mc_sign&quot;</span>,-1);</div>
+<div class="line">    }</div>
+<div class="line">    <span class="keywordflow">if</span> (do_lhe_weights_) {</div>
+<div class="line">      <span class="keywordtype">double</span> nominal_wt = lhe_handle-&gt;hepeup().XWGTUP;</div>
+<div class="line">      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; lhe_handle-&gt;weights().size(); ++i) {</div>
+<div class="line">        info_-&gt;<a class="code" href="classic_1_1_event_info.html#a5293a89d4c6d67134add198cee448afc">set_weight</a>(lhe_handle-&gt;weights()[i].id,</div>
+<div class="line">                          lhe_handle-&gt;weights()[i].wgt / nominal_wt, <span class="keyword">false</span>);</div>
+<div class="line">      }</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line"></div>
@@ -271,6 +302,13 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">    <span class="keywordflow">for</span> (iter = observed_filters_.begin(); iter != observed_filters_.end();</div>
 <div class="line">         ++iter) {</div>
 <div class="line">      std::cout &lt;&lt; boost::format(<span class="stringliteral">&quot;%-56s| %020i\n&quot;</span>) % iter-&gt;first % iter-&gt;second;</div>
+<div class="line">    }</div>
+<div class="line">  }</div>
+<div class="line">  <span class="keywordflow">if</span> (lhe_weight_labels_.size()) {</div>
+<div class="line">    std::cout &lt;&lt; std::string(78, <span class="charliteral">&#39;-&#39;</span>) &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;LHE event weights\n&quot;</span>;</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> l = 0; l &lt; lhe_weight_labels_.size(); ++l) {</div>
+<div class="line">      std::cout &lt;&lt; lhe_weight_labels_[l];</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
