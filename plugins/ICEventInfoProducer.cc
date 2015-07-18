@@ -4,6 +4,7 @@
 #include <vector>
 #include "boost/format.hpp"
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -94,11 +95,12 @@ void ICEventInfoProducer::endRun(edm::Run const& run, edm::EventSetup const& es)
   bool record = false;
   for (auto it = lhe_info->headers_begin(); it != lhe_info->headers_end();
        ++it) {
-    std::vector<std::string> lines = it->lines();
-    for (unsigned int iL = 0; iL < lines.size(); iL++) {
-      if (lines[iL].find("<weightgroup")  != std::string::npos) record = true;
-      if (lines[iL].find("</weightgroup") != std::string::npos) record = false;
-      if (record) lhe_weight_labels_.push_back(lines[iL]);
+    std::vector<std::string>::const_iterator iLt = it->begin();
+    for (; iLt != it->end(); ++iLt) {
+      std::string const& line = *iLt;
+      if (line.find("<weightgroup")  != std::string::npos) record = true;
+      if (line.find("</weightgroup") != std::string::npos) record = false;
+      if (record) lhe_weight_labels_.push_back(line);
     }
   }
 }
