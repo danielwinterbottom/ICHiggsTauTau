@@ -17,9 +17,9 @@ namespace ic {
   }
 
   double IntegrateFloatRange(TH1F const* hist, double xmin, double xmax) {
-    TAxis *axis = hist->GetXaxis();
-    int bmin = axis->FindBin(xmin);
-    int bmax = axis->FindBin(xmax);
+    TAxis const* axis = hist->GetXaxis();
+    int bmin = axis->FindFixBin(xmin);
+    int bmax = axis->FindFixBin(xmax);
     double integral = hist->Integral(bmin, bmax);
     integral -= hist->GetBinContent(bmin)*(xmin-axis->GetBinLowEdge(bmin))/
               axis->GetBinWidth(bmin);
