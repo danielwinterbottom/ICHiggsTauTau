@@ -43,7 +43,6 @@
 #include "Modules/interface/LumiMask.h"
 #include "HiggsTauTau/interface/VertexFilter.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
-#include "HiggsTauTau/interface/DYJets.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -537,7 +536,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
-// if(is_data){
+ if(is_data){
    if(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool()){
     if(!is_embedded || (is_embedded&&strategy_type==strategy::paper2013&&era_type==era::data_2012_rereco)){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
@@ -550,10 +549,8 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
             .set_do_singlelepton(js["do_singlelepton"].asBool())
             .set_pair_label("ditau"));
       }
-  }
-
-			
- // }
+   }
+ }
 
 
 
