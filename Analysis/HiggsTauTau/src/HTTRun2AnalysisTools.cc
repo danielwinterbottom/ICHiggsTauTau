@@ -97,7 +97,7 @@ namespace ic {
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
-      alias_map_["qcd_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2<1.5&&antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["qcd_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2<10&&antiele_2 && antimu_2 && !leptonveto)";
       //Categories can be added using inclusive alias as follows:
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
@@ -176,12 +176,22 @@ namespace ic {
      "DYJetsToLL-L"//,"DYJetsToLL10-50-L"
    };
 
+ if(ch_!=channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToTauTau-JJ", "DYJetsToLL-J", "DYJetsToTauTau","DYJetsToLL-L", "WJetsToLNu",
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "WJetsToLNu","TT"
    };
+  }
   
+ if(ch_==channel::em){
+  samples_alias_map_["qcd_sub_samples"] = {
+   "DYJetsToTauTau","DYJetsToLL", "WJetsToLNu",
+   "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
+   "WJetsToLNu","TT"
+   };
+  }
+
   }
 
   void HTTRun2Analysis::SetQCDRatio(double const& ratio){
@@ -441,6 +451,7 @@ namespace ic {
     Value qcd_norm;
     TH1F qcd_hist;
     if (ch_ != channel::em) {
+    //if (ch_ != channel::em) {
       std::vector<std::string> qcd_sub_samples = this->ResolveSamplesAlias("qcd_sub_samples");
       //std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
       std::string qcd_sdb_sel = "!os && " + this->ResolveAlias("sel");
@@ -496,7 +507,7 @@ namespace ic {
           % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
 
       }*/
-    } else {
+    }/* else {
       Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
       qcd_dilepton = ValueProduct(qcd_dilepton, std::make_pair(0.83,0.));
       std::string ss_sel = "!os && "+this->ResolveAlias("sel");
@@ -538,7 +549,7 @@ namespace ic {
       if (method == 12) {
         qcd_norm = ValueProduct(qcd_norm, std::make_pair(0.67,0.));
       }
-    }
+    }*/
     SetNorm(&qcd_hist, qcd_norm.first);
     return std::make_pair(qcd_hist, qcd_norm);
   }

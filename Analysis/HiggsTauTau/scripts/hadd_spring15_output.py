@@ -67,6 +67,7 @@ for sa in sample_list:
   for ch in channel:
     if os.path.isfile('./output/%(outputf)s/%(sa)s_2015_%(ch)s_0.root'%vars()):
       if len(fnmatch.filter(os.listdir('./output/%(outputf)s'%vars()),'%(sa)s_2015_%(ch)s_*'%vars())) == nfiles["%(sa)s_2015"%vars()]:
+        print "Hadding %(sa)s_%(ch)s"%vars()
         os.system('hadd -f ./output/%(outputf)s/%(sa)s_%(ch)s_2015.root ./output/%(outputf)s/%(sa)s_2015_%(ch)s_* &> ./haddout.txt'% vars()) 
         filetext = open("./haddout.txt").read()
         if 'Warning' in filetext or 'Error' in filetext:

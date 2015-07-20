@@ -441,11 +441,11 @@ void HTTSequence::BuildSequence(){
     }
   }             
   if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
-  //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1307150943.txt";
-  if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
+  //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
+  if (era_type == era::data_2015)  data_json= "input/json/json_DCSONLY_Run2015B_2007.txt";
 
   BuildModule(LumiMask("LumiMask")
-    .set_produce_output_jsons("")
+    .set_produce_output_jsons("test")
     .set_input_file(data_json));
   }
 
@@ -536,7 +536,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
- if(is_data){
+// if(is_data){
    if(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool()){
     if(!is_embedded || (is_embedded&&strategy_type==strategy::paper2013&&era_type==era::data_2012_rereco)){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
@@ -550,7 +550,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
             .set_pair_label("ditau"));
       }
    }
- }
+// }
 
 
 
