@@ -97,7 +97,7 @@ namespace ic {
     if (ch_ == channel::et || ch_ == channel::mt) {
       // SM Categories
       alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<1.5 && antiele_2 && antimu_2 && !leptonveto)";
-      alias_map_["qcd_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2<10&&antiele_2 && antimu_2 && !leptonveto)";
+      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2<10&&antiele_2 && antimu_2 && !leptonveto)";
       //Categories can be added using inclusive alias as follows:
       alias_map_["vbf"] = "(n_jets>=2 && n_jetsingap==0 && mjj>500 && jdeta>3.5)";
       alias_map_["1jet"] = "(!("+alias_map_["vbf"]+")"+"&& n_jets>=1 && n_bjets==0)";
@@ -178,7 +178,7 @@ namespace ic {
 
  if(ch_!=channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToTauTau-JJ", "DYJetsToLL-J", "DYJetsToTauTau","DYJetsToLL-L", "WJetsToLNu",
+   "DYJetsToTauTau-JJ", "DYJetsToLL-J", "DYJetsToTauTau","DYJetsToLL-L", 
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "WJetsToLNu","TT"
    };
@@ -186,7 +186,7 @@ namespace ic {
   
  if(ch_==channel::em){
   samples_alias_map_["qcd_sub_samples"] = {
-   "DYJetsToTauTau","DYJetsToLL", "WJetsToLNu",
+   "DYJetsToTauTau","DYJetsToLL",
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "WJetsToLNu","TT"
    };
@@ -418,7 +418,7 @@ namespace ic {
     
     std::string w_shape_cat = cat;
     std::string w_shape_sel = this->ResolveAlias("w_shape_os") + " && " + this->ResolveAlias("sel");
-    TH1F w_hist = this->GetShape(var, "WJetsToLNu", w_shape_sel, w_shape_cat, wt);
+    TH1F w_hist = this->GetShape(var, "WJetsToLNu", sel, w_shape_cat, wt);
     if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
       % this->ResolveAlias("WJetsToLNu") % w_shape_sel % w_shape_cat % wt;
     SetNorm(&w_hist, w_norm.first);
@@ -485,12 +485,15 @@ namespace ic {
         qcd_norm.first = default_rate;
       }
       if (method == 0 || method == 8 || method == 28 || method == 11 || method == 20) {
-        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, this->ResolveAlias("qcd_shape"), qcd_sub_samples, wt);/*, {
+        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt);/*, {
           {"WJetsToLNuSoup", [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;} 
           }
         });*/
        }
+      else if(method == 9){
+        qcd_hist = this->GetShapeViaQCDMethod(var,this->ResolveAlias("data_samples"),qcd_sdb_sel,this->ResolveAlias("qcd_loose_shape"),qcd_sub_samples,wt);
+      }
       /*else {
         if (method == 4) qcd_cat = cat;
         if (method == 21 || method == 14)  qcd_cat = cat;
