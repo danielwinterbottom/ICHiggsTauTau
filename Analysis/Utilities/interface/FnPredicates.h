@@ -56,7 +56,7 @@ namespace ic {
   bool ElectronHTTIdIso(Electron const* elec, unsigned const& mode);
   bool ElectronHTTVHID(Electron const* elec);
   bool ElectronHTTId(Electron const* elec, bool loose_wp);
-  bool ElectronHTTIdPhys14(Electron const* elec, bool loose_wp);
+	bool ElectronHTTIdPhys14(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
 
@@ -282,6 +282,8 @@ namespace ic {
   bool MassDiffCompare(Candidate const* p1, Candidate const* p2, double const& mass);
 
   std::vector<GenParticle *> ExtractStableDaughters(GenParticle * part, std::vector<GenParticle *> const& input);
+
+  std::vector<GenParticle *> ExtractMothers(GenParticle * part, std::vector<GenParticle *> const& input);
 
   std::vector<GenParticle *> ExtractDaughters(GenParticle * part, std::vector<GenParticle *> const& input);
 

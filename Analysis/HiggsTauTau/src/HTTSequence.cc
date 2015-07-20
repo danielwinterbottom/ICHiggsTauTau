@@ -43,6 +43,7 @@
 #include "Modules/interface/LumiMask.h"
 #include "HiggsTauTau/interface/VertexFilter.h"
 #include "HiggsTauTau/interface/EffectiveEvents.h"
+#include "HiggsTauTau/interface/DYJets.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -1203,6 +1204,7 @@ if(strategy_type == strategy::paper2013){
         return  t->pt()                     >  tau_pt     &&
                 fabs(t->eta())              <  tau_eta    &&
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
+                fabs(t->charge())           == 1 &&
                 t->GetTauID("decayModeFinding") > 0.5;
 
       }));
@@ -1301,6 +1303,7 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
                 fabs(e->dz_vertex())    < veto_dielec_dz   &&
                 VetoElectronIDPhys14(e)           &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
    } 
@@ -1355,6 +1358,7 @@ void HTTSequence::BuildDiElecVeto() {
                 m->is_global()                    &&
                 m->is_tracker()                   &&
                 m->is_pf()                        &&
+                //PF04IsolationVal(m, 0.5,0) < 0.3;
                 PF03IsolationVal(m, 0.5,0) < 0.3;
       });
     }
@@ -1423,6 +1427,7 @@ void HTTSequence::BuildExtraElecVeto(){
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
                 ElectronHTTIdSpring15(e, true)             &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
@@ -1460,6 +1465,7 @@ void HTTSequence::BuildExtraMuonVeto(){
                 fabs(m->dxy_vertex())   < veto_muon_dxy   &&
                 fabs(m->dz_vertex())    < veto_muon_dz    &&
                 MuonMedium(m)                     &&
+                //PF04IsolationVal(m, 0.5,0) < 0.3;
                 PF03IsolationVal(m, 0.5,0) < 0.3;
       });
    }

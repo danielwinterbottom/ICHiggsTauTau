@@ -565,26 +565,26 @@ namespace ic {
     return(
        !elec->has_matched_conversion()
         && ( (in_barrel       
-        && elec->full5x5_sigma_IetaIeta()   <0.0111
-        && fabs(elec->deta_sc_tk_at_vtx())  <0.016315
-        && fabs(elec->dphi_sc_tk_at_vtx())  <0.252044
-        && elec->hadronic_over_em()         <0.345843
-        && ooemoop                          <0.248070
+        && elec->full5x5_sigma_IetaIeta()   <0.011586
+        && fabs(elec->deta_sc_tk_at_vtx())  <0.013625
+        && fabs(elec->dphi_sc_tk_at_vtx())  <0.230374
+        && elec->hadronic_over_em()         <0.181130
+        && ooemoop                          <0.295751
         && elec->gsf_tk_nhits()             <=2
-        && fabs(elec->dxy_vertex())         <0.060279
-        && fabs(elec->dz_vertex())          <0.800538
-        && dbiso/elec->pt()                 <0.164369
+     //   && fabs(elec->dxy_vertex())         <0.060279
+      //  && fabs(elec->dz_vertex())          <0.800538
+  //      && dbiso/elec->pt()                 <0.164369
         ) ||
         (!in_barrel       
-        && elec->full5x5_sigma_IetaIeta()   <0.033987
-        && fabs(elec->deta_sc_tk_at_vtx())  <0.010671
-        && fabs(elec->dphi_sc_tk_at_vtx())  <0.245263
-        && elec->hadronic_over_em()         <0.134691
-        && ooemoop                          <0.157160
+        && elec->full5x5_sigma_IetaIeta()   <0.031849
+        && fabs(elec->deta_sc_tk_at_vtx())  <0.011932
+        && fabs(elec->dphi_sc_tk_at_vtx())  <0.255450
+        && elec->hadronic_over_em()         <0.223870
+        && ooemoop                          <0.155501
         && elec->gsf_tk_nhits()             <=3
-        && fabs(elec->dxy_vertex())         <0.273097
-        && fabs(elec->dz_vertex())          <0.885860
-        && dbiso/elec->pt()                 <0.212604
+    //    && fabs(elec->dxy_vertex())         <0.273097
+     //   && fabs(elec->dz_vertex())          <0.885860
+   //     && dbiso/elec->pt()                 <0.212604
         ) )
         );
 
@@ -1101,6 +1101,20 @@ namespace ic {
     }
     return result;
   }
+
+  std::vector<GenParticle*> ExtractMothers(
+      GenParticle* part, std::vector<GenParticle*> const& input) {
+    std::vector<GenParticle*> result;
+    std::vector<int> mothers = part->mothers();
+    for (unsigned i = 0; i < input.size(); ++i) {
+      if (std::find(mothers.begin(), mothers.end(), input[i]->index()) !=
+          mothers.end()) {
+        result.push_back(input[i]);
+      }
+    }
+    return result;
+  }
+
 
   std::vector<GenParticle*> ExtractDaughtersRecursive(
       GenParticle* part, std::vector<GenParticle*> const& input) {
