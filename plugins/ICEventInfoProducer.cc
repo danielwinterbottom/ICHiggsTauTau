@@ -195,22 +195,29 @@ void ICEventInfoProducer::produce(edm::Event& event,
      const edm::TriggerNames &triggerNames = event.triggerNames(*triggerResults);
      for (unsigned iFilter=0;iFilter<filtersfromtrig_.size();iFilter++){
        bool found=false;
+       bool opposite=false;
+       std::string filtername=filtersfromtrig_[iFilter];
+       if((filtersfromtrig_[iFilter]).at(0)=='!'){
+	 filtername.erase(0,1);
+	 opposite=true;
+       }
        for(unsigned iTrigger=0;iTrigger<triggerResults->size();iTrigger++){
 	 std::string trigName = triggerNames.triggerName(iTrigger);
-     	 if(trigName.find(filtersfromtrig_[iFilter])==std::string::npos) continue;
+     	 if(trigName.find(filtername)==std::string::npos) continue;
 	 else{
 	   found=true;
 	   if(!triggerResults->wasrun(iTrigger)){
-	     std::cout<<filtersfromtrig_[iFilter]<<" was not run"<<std::endl;
+	     std::cout<<filtername<<" was not run"<<std::endl;
 	     throw;
 	   }
 	   bool filter_result=triggerResults->accept(iTrigger);
-	   info_->set_filter_result(filtersfromtrig_[iFilter], filter_result);
-	   observed_filters_[filtersfromtrig_[iFilter]] = CityHash64(filtersfromtrig_[iFilter]);
+	   if(opposite)filter_result=!filter_result;
+	   info_->set_filter_result(filtername, filter_result);
+	   observed_filters_[filtername] = CityHash64(filtername);
 	 }
        }
        if(!found){
-	 std::cout<<filtersfromtrig_[iFilter]<<" was not found in trigger results"<<std::endl;
+	 std::cout<<filtername<<" was not found in trigger results"<<std::endl;
 	 throw;
        }
      }
