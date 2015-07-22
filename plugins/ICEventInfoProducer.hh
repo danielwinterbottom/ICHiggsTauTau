@@ -25,6 +25,7 @@ class ICEventInfoProducer : public edm::EDProducer {
 
  private:
   virtual void beginJob();
+  virtual void endRun(edm::Run const& run, edm::EventSetup const& es);
   virtual void produce(edm::Event &, const edm::EventSetup &);
   virtual void endJob();
 
@@ -40,11 +41,13 @@ class ICEventInfoProducer : public edm::EDProducer {
   edm::InputTag input_vertices_;
   bool do_csc_filter_;
   edm::InputTag input_csc_filter_;
+  bool do_lhe_weights_;
   std::vector<std::pair<std::string, edm::InputTag> > filters_;
   std::vector<std::pair<std::string, edm::InputTag> > weights_;
   std::vector<std::pair<std::string, edm::InputTag> > gen_weights_;
   std::set<std::string> invert_filter_logic_;
   std::map<std::string, std::size_t> observed_filters_;
+  std::vector<std::string> lhe_weight_labels_;
 };
 
 #endif

@@ -105,7 +105,7 @@ using std::endl;
         TFile* f2 = new TFile("FitHistos.root", "RECREATE");
         f2->cd();
 
-        ofstream myfile, myfile2;
+        std::ofstream myfile, myfile2;
         if(elec && isdata)
         {
             myfile2.open("electron_eff_data.txt", ios::out | ios::app);
@@ -413,7 +413,7 @@ using std::endl;
         TFile* f2 = new TFile("FitHistos.root", "RECREATE");
         f2->cd();
 
-        ofstream  myfile2;
+        std::ofstream  myfile2;
 
         if(elec && isdata)
         {

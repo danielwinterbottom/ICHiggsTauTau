@@ -52,6 +52,11 @@ grp_single.add_option('--pr',
                   type = 'int',
                   default = None,
                   help = 'Pull request number to test')
+grp_single.add_option('--clean',
+                  dest = 'clean',
+                  action = 'store_true',
+                  default = False,
+                  help = 'Call the clean script first')
 parser.add_option_group(grp_single)
 
 grp_listen = OptionGroup(parser, 'listen mode options')
@@ -152,10 +157,10 @@ def index():
     else:
         print '>> User not a collaborator on the repo - aborting'
         abort(403)
-    runBuild(opts.gh_user, opts.gh_token, pr, opts.config)
+    runBuild(opts.gh_user, opts.gh_token, pr, opts.config, user)
     return 'OK'
 
-def runBuild(gh_user, gh_token, pr, config):
+def runBuild(gh_user, gh_token, pr, config, req_user, do_clean=False):
   print '>> Build request running as user ' + gh_user
 
   # Query the github api for info on this PR
@@ -191,7 +196,7 @@ def runBuild(gh_user, gh_token, pr, config):
       payload = {
         'state'       : 'pending',
         'target_url'  : '',
-        'description' : 'Task started by %s on %s' % (gh_user, thedate),
+        'description' : 'Started by %s on %s' % (req_user, thedate),
         'context'     : task
       }
       status_resp = requests.post(statuses_url, auth=auth, data=json.dumps(payload))
@@ -201,6 +206,14 @@ def runBuild(gh_user, gh_token, pr, config):
     params = config[task]
     print ">>>> Running task: " + task
     outlogf = open('%s.log' % task, 'w')
+    if do_clean:
+      command = './run_builds.sh %s %s %s %s %s %s %s' % (
+        params["build_root"], params["cmssw_env_script"],
+        params["cmssw_version"], params["cmssw_user"],
+        params["cmssw_branch"], pr, params["clean_script"])
+      print '>>>> Command: ' + command
+      job = subprocess.Popen(command, shell=True, stdout=outlogf, stderr=subprocess.STDOUT)
+      job.communicate()
     command = './run_builds.sh %s %s %s %s %s %s %s' % (
       params["build_root"], params["cmssw_env_script"],
       params["cmssw_version"], params["cmssw_user"],
@@ -241,12 +254,19 @@ def pollGitHub(gh_user, gh_token, begin, end):
   auth = (gh_user, gh_token)
   comments_json = requests.get('%s/repos/%s/issues/comments?since=%s' % (opts.api, opts.repo, since_stamp), auth=auth).json()
   ret = set()
+  all_prs = set()
+  trg = opts.trigger.lower().strip()
+  trg_clean = trg + ' clean'
   for com in comments_json:
+      clean = False
       comment_time = calendar.timegm(time.strptime(com['created_at'], opts.time_fmt))
       # Comment must have occured in interval [begin, end)
       if comment_time < begin or comment_time >= end:
           continue
-      if com['body'].lower() != opts.trigger.lower():
+      comment = com['body'].lower().strip()
+      if comment == trg_clean:
+        clean = True
+      if comment not in [trg, trg_clean]:
           continue
       issue_json = requests.get(com['issue_url'], auth=auth).json()
       is_pr = 'pull_request' in issue_json
@@ -260,7 +280,8 @@ def pollGitHub(gh_user, gh_token, begin, end):
           print '>> This user is a collaborator on the repo so we are safe to proceed'
       else:
           continue
-      ret.add(pr)
+      if pr not in all_prs: ret.add((pr, user, clean))
+      all_prs.add(pr)
   return ret
 
 
@@ -268,7 +289,7 @@ if __name__ == "__main__":
     if opts.mode == 'listen':
         app.run(host='0.0.0.0', port=opts.port)
     if opts.mode == 'single':
-        runBuild(opts.gh_user, opts.gh_token, opts.pr, opts.config)
+        runBuild(opts.gh_user, opts.gh_token, opts.pr, opts.config, opts.gh_user, opts.clean)
     if opts.mode == 'poll':
         # Initial time frame will be [now, now+interval]
         interval  = opts.interval
@@ -290,7 +311,7 @@ if __name__ == "__main__":
                 pr_set = pollGitHub(opts.gh_user, opts.gh_token, t_start, t_end)
                 # See if we have any builds to do
                 for pr in pr_set:
-                  runBuild(opts.gh_user, opts.gh_token, pr, opts.config)
+                  runBuild(opts.gh_user, opts.gh_token, pr[0], opts.config, pr[1], pr[2])
                 # Create a new time frame starting from the end of the previous one
                 t_start = t_end
                 t_end   = t_start + interval

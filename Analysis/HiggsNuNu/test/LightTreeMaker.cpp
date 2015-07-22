@@ -747,7 +747,7 @@ int main(int argc, char* argv[]){
     .set_dijet_label("jjLeadingCandidates")
     .set_sel_label("JetPair")
     .set_is_data(is_data)
-    .set_dotrigskim(true)
+    .set_dotrigskim(false)
     .set_do_promptskim(dopromptskim)
     .set_do_noskim(donoskim)
     .set_ignoreLeptons(ignoreLeptons)

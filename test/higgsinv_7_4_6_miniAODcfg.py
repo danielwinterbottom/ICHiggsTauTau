@@ -51,7 +51,8 @@ print 'globalTag   : '+tag
 ################################################################                                                                                          
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+#process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")#!!
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")#!!
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
@@ -63,7 +64,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000)
+  input = cms.untracked.int32(10000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -74,17 +75,25 @@ process.options   = cms.untracked.PSet(
 
 ################################################################                                                                                       
 # Input files and global tags                                                                                                                            
-################################################################                                                                                         
-process.source = cms.Source("PoolSource", fileNames =
+################################################################                                                                
+if not isData:                         
+  process.source = cms.Source("PoolSource", fileNames =
        #                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
-                     cms.untracked.vstring('root://xrootd.unl.edu//store/mc/RunIISpring15DR74/VBF_HToInvisible_M110_13TeV_powheg_pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/80000/1E0D8712-D722-E511-B7CF-008CFA051614.root')
- 
-)
+                              cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/1E0D8712-D722-E511-B7CF-008CFA051614.root')
+                              
+                              )
+else:
+  process.source = cms.Source("PoolSource", fileNames =
+       #                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
+                              cms.untracked.vstring('root://xrootd.unl.edu//store/data/Run2015B/MET/MINIAOD/PromptReco-v1/000/251/251/00000/0EA22A54-9027-E511-A3D4-02163E0133E3.root')
+
+                              
+                              )
 process.GlobalTag.globaltag = cms.string(tag)
 
 #'root://xrootd-cms.infn.it///store/mc/Phys14DR/VBF_HToInv_M-125_13TeV_powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/58D548B0-AB6F-E411-B468-3417EBE34D1A.root')
-# 74X MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/AODSIM/PU40bx25_PHYS14_25_V1-v1/00000/00E63918-3A70-E411-A246-7845C4FC35F3.root globalTag=START72_V1::All                                                                                                               
-# 74XMINIAOD MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root globalTag=START72_V1::All                                                                                                   
+# 72X MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/AODSIM/PU40bx25_PHYS14_25_V1-v1/00000/00E63918-3A70-E411-A246-7845C4FC35F3.root globalTag=START72_V1::All                                                                                                               
+# 72XMINIAOD MC: file=root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root globalTag=START72_V1::All                                                                                                   
 
  
 import UserCode.ICHiggsTauTau.default_producers_cfi as producers
@@ -446,39 +455,43 @@ process.load('PhysicsTools.PatAlgos.slimming.unpackedTracksAndVertices_cfi')
 process.pfchs=cms.EDFilter("CandPtrSelector",src=cms.InputTag("packedPFCandidates"),cut=cms.string("fromPV"))
 process.ak4PFJetsCHS = ak4PFJets.clone(src='pfchs',doAreaFastjet=True)
 
-#make ak4 non-CHS jets:
-process.ak4PFJets = ak4PFJets.clone(src='packedPFCandidates',doAreaFastjet=True)
-
 #Get slimmedJets direct from miniAOD
 process.selectedSlimmedJetsAK4 = cms.EDFilter("PATJetRefSelector",
                                               src = cms.InputTag("slimmedJets"),
                                               cut = cms.string("pt > 15")
                                               )
 
+#Get slimmedJetsPuppi direct from miniAOD
+process.selectedSlimmedJetsPuppiAK4 = cms.EDFilter("PATJetRefSelector",
+                                              src = cms.InputTag("slimmedJetsPuppi"),
+                                              cut = cms.string("pt > 15")
+                                              )
+
 # get parton flavour by matching to genjets
-process.jetPartons = cms.EDProducer("PartonSelector",
+#CHS
+process.jetPartonsforCHS = cms.EDProducer("PartonSelector",
                                     src = cms.InputTag("prunedGenParticles"),
                                     withLeptons = cms.bool(False)
                                     )
 
-process.pfJetPartonMatches = cms.EDProducer("JetPartonMatcher",
+process.pfchsJetPartonMatches = cms.EDProducer("JetPartonMatcher",
                                             jets = cms.InputTag("ak4PFJetsCHS"),
                                             coneSizeToAssociate = cms.double(0.3),
-                                            partons = cms.InputTag("jetPartons")
+                                            partons = cms.InputTag("jetPartonsforCHS")
                                             )
 
-process.pfJetFlavourAssociation = cms.EDProducer("JetFlavourIdentifier",
-                                                 srcByReference = cms.InputTag("pfJetPartonMatches"),
+process.pfchsJetFlavourAssociation = cms.EDProducer("JetFlavourIdentifier",
+                                                 srcByReference = cms.InputTag("pfchsJetPartonMatches"),
                                                  physicsDefinition = cms.bool(False)
                                                  )
 
-process.icPFJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
+process.icPFchsJetFlavourCalculator = cms.EDProducer('ICJetFlavourCalculator',
                                                   input       = cms.InputTag("ak4PFJetsCHS"),
-                                                  flavourMap  = cms.InputTag("pfJetFlavourAssociation")
+                                                  flavourMap  = cms.InputTag("pfchsJetFlavourAssociation")
                                                   )
 
-
 # Jet energy corrections
+#CHS
 process.ak4PFCHSL1Fastjet = cms.ESProducer("L1FastjetCorrectionESProducer",
                                         srcRho = cms.InputTag("fixedGridRhoFastjetAll"),
                                         algorithm = cms.string('AK4PFchs'),
@@ -497,14 +510,19 @@ process.ak4PFCHSResidual = cms.ESProducer("LXXXCorrectionESProducer",
                                        level = cms.string('L2L3Residual')
                                        )
 
-#Corrections applied to miniaod slimmedJets
-pfJECS = cms.PSet(
-  L1FastJet  = cms.string("ak4PFCHSL1Fastjet"),
-  L2Relative = cms.string("ak4PFCHSL2Relative"),
-  L3Absolute = cms.string("ak4PFCHSL3Absolute")
+pfchsJECS = cms.PSet()
+if not isData:
+  pfchsJECS = cms.PSet(
+    L1FastJet  = cms.string("ak4PFCHSL1Fastjet"),
+    L2Relative = cms.string("ak4PFCHSL2Relative"),
+    L3Absolute = cms.string("ak4PFCHSL3Absolute")
   )
-if isData: pfJECS.append(
-  L2L3Residual = cms.string("ak4PFCHSResidual")
+else: 
+  pfchsJECS = cms.PSet(
+    L1FastJet  = cms.string("ak4PFCHSL1Fastjet"),
+    L2Relative = cms.string("ak4PFCHSL2Relative"),
+    L3Absolute = cms.string("ak4PFCHSL3Absolute"),
+    L2L3Residual = cms.string("ak4PFCHSResidual")
   )
 
 # b-tagging
@@ -512,6 +530,7 @@ process.load("RecoJets.JetAssociationProducers.ak4JTA_cff")
 from RecoJets.JetAssociationProducers.ak4JTA_cff import ak4JetTracksAssociatorAtVertex
 process.load("RecoBTag.Configuration.RecoBTag_cff")
 import RecoBTag.Configuration.RecoBTag_cff as btag
+#chs
 process.jetTracksAssociatorAtVertexAK4PFCHS = ak4JetTracksAssociatorAtVertex.clone(
   jets = cms.InputTag("ak4PFJetsCHS"),
   tracks = cms.InputTag("unpackedTracksAndVertices"),
@@ -538,7 +557,7 @@ process.combinedSecondaryVertexBJetTagsAK4PFCHS = btag.pfCombinedSecondaryVertex
   tagInfos = cms.VInputTag('impactParameterTagInfosAK4PFCHS', 'secondaryVertexTagInfosAK4PFCHS')
   )
 
-process.btaggingSequenceAK4PF = cms.Sequence(
+process.btaggingSequenceAK4PFCHS = cms.Sequence(
   process.jetTracksAssociatorAtVertexAK4PFCHS
   +process.impactParameterTagInfosAK4PFCHS
   +process.secondaryVertexTagInfosAK4PFCHS
@@ -548,18 +567,18 @@ process.btaggingSequenceAK4PF = cms.Sequence(
  )
 
 # Pileup ID !!DOESN'T WORK IN AK4PF AT THE MOMENT LOOK INTO IF WE USE THAT
-stdalgos = cms.VPSet()
+stdalgoschs = cms.VPSet()
 from RecoJets.JetProducers.PileupJetIDParams_cfi import *
-stdalgos = cms.VPSet(full_5x_chs,cutbased)
+stdalgoschs = cms.VPSet(full_5x_chs,cutbased)
 
-process.puJetMva = cms.EDProducer('PileupJetIdProducer',
+process.puJetMvaCHS = cms.EDProducer('PileupJetIdProducer',
                                   produceJetIds = cms.bool(True),
                                   jetids = cms.InputTag(""),
                                   runMvas = cms.bool(True),
                                   #jets = cms.InputTag("slimmedJets"),
                                   jets = cms.InputTag("ak4PFJetsCHS"),
                                   vertexes = cms.InputTag("unpackedTracksAndVertices"),
-                                  algos = cms.VPSet(stdalgos),
+                                  algos = cms.VPSet(stdalgoschs),
                                   rho     = cms.InputTag("fixedGridRhoFastjetAll"),
                                   jec     = cms.string("AK4PFchs"),
                                   applyJec = cms.bool(True),
@@ -568,16 +587,15 @@ process.puJetMva = cms.EDProducer('PileupJetIdProducer',
                                   residualsTxt = cms.FileInPath("RecoJets/JetProducers/BuildFile.xml")
                                   )
 
-# Produce and store reclustered
-process.icPFJetProducer = producers.icPFJetProducer.clone(
-  branch                    = cms.string("pfJetsPFlow"),
-  input                     = cms.InputTag("ak4PFJetsCHS"),
-  srcConfig = cms.PSet(
+# Produce and store reclustered CHS
+
+if not isData:
+  jetsrcconfig=cms.PSet(
     includeJetFlavour         = cms.bool(True),
-    inputJetFlavour           = cms.InputTag("icPFJetFlavourCalculator"),
+    inputJetFlavour           = cms.InputTag("icPFchsJetFlavourCalculator"),
     applyJECs                 = cms.bool(True),
     includeJECs               = cms.bool(False),
-    JECs                      = pfJECS,
+    JECs                      = pfchsJECS,
     applyCutAfterJECs         = cms.bool(True),
     cutAfterJECs              = cms.string("pt > 15.0"),
     inputSVInfo               = cms.InputTag(""),
@@ -587,10 +605,31 @@ process.icPFJetProducer = producers.icPFJetProducer.clone(
       simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK4PFCHS"),
       combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS")
       )
-    ),
+    )
+else:
+  jetsrcconfig=cms.PSet(
+    includeJetFlavour         = cms.bool(False),
+    inputJetFlavour           = cms.InputTag("icPFchsJetFlavourCalculator"),
+    applyJECs                 = cms.bool(True),
+    includeJECs               = cms.bool(False),
+    JECs                      = pfchsJECS,
+    applyCutAfterJECs         = cms.bool(True),
+    cutAfterJECs              = cms.string("pt > 15.0"),
+    inputSVInfo               = cms.InputTag(""),
+    requestSVInfo             = cms.bool(False),
+    BTagDiscriminators        = cms.PSet(
+      simpleSecondaryVertexHighEffBJetTags = cms.InputTag("simpleSecondaryVertexHighEffBJetTagsAK4PFCHS"),
+      simpleSecondaryVertexHighPurBJetTags = cms.InputTag("simpleSecondaryVertexHighPurBJetTagsAK4PFCHS"),
+      combinedSecondaryVertexBJetTags      = cms.InputTag("combinedSecondaryVertexBJetTagsAK4PFCHS")
+      )
+    )
+process.icPFJetProducer = producers.icPFJetProducer.clone(
+  branch                    = cms.string("pfJetsPFlow"),
+  input                     = cms.InputTag("ak4PFJetsCHS"),
+  srcConfig = jetsrcconfig,
   destConfig = cms.PSet(
-    includePileupID       = cms.bool(False), #!!rerunning the pu MVA on the jet collection created in miniAOD is possible in newer CMSSW versions but not yet in 72 will be fixed in 74
-    inputPileupID         = cms.InputTag("puJetMva", "fullDiscriminant"),
+    includePileupID       = cms.bool(True), 
+    inputPileupID         = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
     includeTrackBasedVars = cms.bool(False),
     inputTracks           = cms.InputTag("generalTracks"),
     inputVertices=cms.InputTag("unpackedTracksAndVertices"),#!!check why this is needed
@@ -604,14 +643,34 @@ process.icPFJetProducerFromPat = producers.icPFJetFromPatProducer.clone(
   input                     = cms.InputTag("selectedSlimmedJetsAK4"),
   srcConfig = cms.PSet(
     isSlimmed               = cms.bool(True),
-        includeJetFlavour       = cms.bool(True),
+    includeJetFlavour       = cms.bool(True),
     includeJECs             = cms.bool(False),
     inputSVInfo             = cms.InputTag(""),
     requestSVInfo           = cms.bool(False)
     ),
   destConfig = cms.PSet(
     includePileupID         = cms.bool(True),
-    inputPileupID           = cms.InputTag("puJetMva", "fullDiscriminant"),
+    inputPileupID           = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
+    includeTrackBasedVars   = cms.bool(False),
+    inputTracks             = cms.InputTag("unpackedTracksAndVertices"),#!!check this and line below
+    inputVertices           = cms.InputTag("unpackedTracksAndVertices"),#!!
+    requestTracks           = cms.bool(False)
+    )
+  )
+
+process.icPFJetProducerFromPatPuppi = producers.icPFJetFromPatProducer.clone(
+  branch                    = cms.string("ak4SlimmedJetsPuppi"),
+  input                     = cms.InputTag("selectedSlimmedJetsPuppiAK4"),
+  srcConfig = cms.PSet(
+    isSlimmed               = cms.bool(True),
+    includeJetFlavour       = cms.bool(True),
+    includeJECs             = cms.bool(False),
+    inputSVInfo             = cms.InputTag(""),
+    requestSVInfo           = cms.bool(False)
+    ),
+  destConfig = cms.PSet(
+    includePileupID         = cms.bool(False),
+    inputPileupID           = cms.InputTag("puJetMvaCHS", "fullDiscriminant"),
     includeTrackBasedVars   = cms.bool(False),
     inputTracks             = cms.InputTag("unpackedTracksAndVertices"),#!!check this and line below
     inputVertices           = cms.InputTag("unpackedTracksAndVertices"),#!!
@@ -625,19 +684,24 @@ process.icPFJetSequence = cms.Sequence()
 process.icPFJetSequence += cms.Sequence(
   process.pfchs+
   process.selectedSlimmedJetsAK4+
+  process.selectedSlimmedJetsPuppiAK4+
   process.unpackedTracksAndVertices+
-  process.icPFJetProducerFromPat
-  )
-process.icPFJetSequence += cms.Sequence(
   process.ak4PFJetsCHS+
-  #process.puJetMva+ !!This works for jets built from PackedCandidates in CMSSW74X but not yet in 72
-  process.jetPartons+
-  process.pfJetPartonMatches+
-  process.pfJetFlavourAssociation+
-  process.icPFJetFlavourCalculator+
-  process.btaggingSequenceAK4PF+
+  process.puJetMvaCHS
+) 
+#  process.ak4PFJets+
+if not isData:
+  process.icPFJetSequence += cms.Sequence(
+    process.jetPartonsforCHS+
+    process.pfchsJetPartonMatches+
+    process.pfchsJetFlavourAssociation+
+    process.icPFchsJetFlavourCalculator
+    )
+process.icPFJetSequence += cms.Sequence(
+  process.btaggingSequenceAK4PFCHS+
   process.icPFJetProducer+ #Not from slimmed jets!
-  process.icPFJetProducerFromPat
+  process.icPFJetProducerFromPat+
+  process.icPFJetProducerFromPatPuppi
   )
 
 
@@ -711,14 +775,43 @@ process.ictype1PfMetProducer = producers.icMetProducer.clone(
 #                                                     includeExternalMetsig = cms.bool(False)
 #                                                     )
 
+process.load('JetMETCorrections.Configuration.JetCorrectionProducers_cff')
+process.load('RecoMET.METPUSubtraction.mvaPFMET_cff')
+process.load("RecoJets.JetProducers.ak4PFJets_cfi")
 
+#make ak4 non-CHS jets:
+process.ak4PFJets=ak4PFJets.clone()
+process.ak4PFJets.src=cms.InputTag("packedPFCandidates")
+process.ak4PFJets.doAreaFastjet=cms.bool(True)
 
+from JetMETCorrections.Configuration.DefaultJEC_cff import ak4PFJetsL1FastL2L3
+
+process.puJetIdForPFMVAMEt.rho = cms.InputTag("fixedGridRhoFastjetAll")
+process.pfMVAMEt.srcPFCandidates = cms.InputTag("packedPFCandidates")
+process.pfMVAMEt.srcVertices = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.puJetIdForPFMVAMEt.jec = cms.string("AK4PF")
+process.puJetIdForPFMVAMEt.vertexes = cms.InputTag("offlineSlimmedPrimaryVertices")
+
+process.icPfMVAMetProducer = producers.icMetProducer.clone(
+  input = cms.InputTag("pfMVAMEt"),
+  branch = cms.string("pfMVAMet"),
+  inputCustomID = cms.InputTag("MVAMetID")
+  )
+
+process.icMvaMetSequence = cms.Sequence(
+   process.ak4PFJets+
+   process.calibratedAK4PFJetsForPFMVAMEt+
+   process.puJetIdForPFMVAMEt+
+   process.pfMVAMEt+
+   process.icPfMVAMetProducer
+   )
 
 process.icMetSequence = cms.Sequence(
   process.METSignificance+
   process.icPfMet+
   process.icuncorrectedPfMetProducer+
-  process.ictype1PfMetProducer
+  process.ictype1PfMetProducer+
+  process.icMvaMetSequence
   #process.ictype1PfMetProducermetsigoutofbox
   #process.correctionTermsPfMetType1Type2+ #!!needs particle flow, need to find appropriate bit and change to packed version
   #process.correctionTermsPfMetType0PFCandidate + #!!currently causing errors
@@ -829,11 +922,21 @@ if not isData:
 
 from PhysicsTools.PatAlgos.tools.trigTools import *
 #process.patTriggerPath = cms.Path()
+process.patTriggerPath = cms.Path(
+)
+#switchOnTrigger(process, path = 'patTriggerPath', outputModule = '')
+#switchOnTrigger(process, path = 'patTrigger', outputModule = '')
+
+process.patTriggerSequence = cms.Sequence(
+  #process.patTrigger+
+  #process.patTriggerEvent
+  )
 
 process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
   branch = cms.string("triggerPaths"),
   inputIsStandAlone = cms.bool(True),
-  input = cms.InputTag("TriggerResults", "", "HLT")
+  input = cms.InputTag("TriggerResults", "", "HLT"),
+  inputPrescales=cms.InputTag("patTrigger")
   )
 
 
@@ -872,7 +975,7 @@ process.icTriggerObjectSequence = cms.Sequence(
 for name in process.icTriggerObjectSequence.moduleNames():
   mod = getattr(process, name)
   mod.inputIsStandAlone = cms.bool(True)
-  mod.input = cms.InputTag("selectedPatTrigger", "", "PAT")
+  mod.input = cms.InputTag("selectedPatTrigger", "", "")
 
 
 #L1 Extra information
@@ -960,6 +1063,7 @@ process.p = cms.Path(
   process.icGenSequence+
   process.icMetSequence+
   process.icEventInfoSequence+
+  process.patTriggerSequence+
   process.icTriggerPathProducer+
   process.icTriggerObjectSequence+
   process.icL1ExtraSequence+

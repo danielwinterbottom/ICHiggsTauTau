@@ -20,6 +20,14 @@ namespace ic {
     t.erase(std::remove_if(t.begin(), t.end(), pred), t.end());
   }
 
+  template <class T, class U>
+  void erase_if_not(T& t, U pred) {
+    t.erase(std::remove_if(
+                t.begin(), t.end(),
+                [&](typename T::value_type const& x) { return !pred(x); }),
+            t.end());
+  }
+
   //Dummy
   template <class T> bool DummyFunction(T const* cand ){
     (void)cand;
@@ -31,7 +39,7 @@ namespace ic {
   // Candidate
   //----------------------------------------------------------
   bool MinPtMaxEta(Candidate const* cand, double const& minPt, double const& maxEta);
-
+  bool VertexDz(Tau const* cand, double const& vertexZ);
   //----------------------------------------------------------
   // Vertex
   //----------------------------------------------------------
@@ -57,6 +65,7 @@ namespace ic {
   bool ElectronHTTVHID(Electron const* elec);
   bool ElectronHTTId(Electron const* elec, bool loose_wp);
   bool ElectronHTTIdPhys14(Electron const* elec, bool loose_wp);
+  bool ElectronHTTIdSpring15(Electron const* elec, bool loose_wp);
   bool ElectronHTTTrigNoIPId(Electron const* elec, bool loose_wp);
 
   bool HttEMuFakeElectron(Electron const* elec);
@@ -83,6 +92,9 @@ namespace ic {
 
   // Standard particle-flow jet id
   bool PFJetID(PFJet const* jet);
+  // Standard particle-flow jet id for 2015
+  bool PFJetID2015(PFJet const* jet);
+
   // Particle-flow jet id without the HF energy in the neutral energy cut
   bool PFJetIDNoHFCut(PFJet const* jet);
   bool PUJetID(PFJet const* jet, bool is_2012);

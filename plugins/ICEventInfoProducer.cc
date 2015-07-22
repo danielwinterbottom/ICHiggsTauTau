@@ -4,6 +4,7 @@
 #include <vector>
 #include "boost/format.hpp"
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -15,6 +16,7 @@
 #include "DataFormats/METReco/interface/BeamHaloSummary.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
@@ -31,7 +33,8 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       do_vertex_count_(config.getParameter<bool>("includeVertexCount")),
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
-      input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")) {
+      input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
+      do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")) {
   edm::ParameterSet filter_params =
       config.getParameter<edm::ParameterSet>("filters");
   std::vector<std::string> filter_names =
@@ -72,6 +75,8 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
   info_ = new ic::EventInfo();
 
   PrintHeaderWithBranch(config, branch_);
+  PrintOptional(1, is_nlo_, "isNlo");
+  PrintOptional(1, do_lhe_weights_, "includeLHEWeights");
   PrintOptional(1, do_jets_rho_, "includeJetRho");
   PrintOptional(1, do_leptons_rho_, "includeLeptonRho");
   PrintOptional(1, do_vertex_count_, "includeVertexCount");
@@ -80,6 +85,24 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
 
 ICEventInfoProducer::~ICEventInfoProducer() {
   delete info_;
+}
+
+void ICEventInfoProducer::endRun(edm::Run const& run, edm::EventSetup const& es) {
+  if (!do_lhe_weights_) return;
+  if (lhe_weight_labels_.size()) return;
+  edm::Handle<LHERunInfoProduct> lhe_info;
+  run.getByLabel("externalLHEProducer", lhe_info);
+  bool record = false;
+  for (auto it = lhe_info->headers_begin(); it != lhe_info->headers_end();
+       ++it) {
+    std::vector<std::string>::const_iterator iLt = it->begin();
+    for (; iLt != it->end(); ++iLt) {
+      std::string const& line = *iLt;
+      if (line.find("<weightgroup")  != std::string::npos) record = true;
+      if (line.find("</weightgroup") != std::string::npos) record = false;
+      if (record) lhe_weight_labels_.push_back(line);
+    }
+  }
 }
 
 void ICEventInfoProducer::produce(edm::Event& event,
@@ -113,6 +136,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
     info_->set_weight(weights_[i].first, weights_result);
   }
 
+
   for (unsigned i = 0; i < gen_weights_.size(); ++i) {
     edm::Handle<GenFilterInfo> weight;
     event.getByLabel(gen_weights_[i].second, weight);
@@ -133,6 +157,13 @@ void ICEventInfoProducer::produce(edm::Event& event,
       info_->set_weight("wt_mc_sign",1);
     } else {
       info_->set_weight("wt_mc_sign",-1);
+    }
+    if (do_lhe_weights_) {
+      double nominal_wt = lhe_handle->hepeup().XWGTUP;
+      for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
+        info_->set_weight(lhe_handle->weights()[i].id,
+                          lhe_handle->weights()[i].wgt / nominal_wt, false);
+      }
     }
   }
 
@@ -170,6 +201,13 @@ void ICEventInfoProducer::endJob() {
     for (iter = observed_filters_.begin(); iter != observed_filters_.end();
          ++iter) {
       std::cout << boost::format("%-56s| %020i\n") % iter->first % iter->second;
+    }
+  }
+  if (lhe_weight_labels_.size()) {
+    std::cout << std::string(78, '-') << "\n";
+    std::cout << "LHE event weights\n";
+    for (unsigned l = 0; l < lhe_weight_labels_.size(); ++l) {
+      std::cout << lhe_weight_labels_[l];
     }
   }
 }

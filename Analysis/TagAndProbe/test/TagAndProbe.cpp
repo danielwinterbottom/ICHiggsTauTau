@@ -90,7 +90,7 @@ int main(int argc, char* argv[]){
     po::notify(vm);
     
     //note:the outfolder must exist otherwise the code will seg fault.
-    ofstream ptbins, etabins, ptbinsfine, etabinsfine, vtxbinsfine, ptbinstrg, ptbinstrgB;
+    std::ofstream ptbins, etabins, ptbinsfine, etabinsfine, vtxbinsfine, ptbinstrg, ptbinstrgB;
 
 
     //Open a file for all the id/iso histograms, a file for the trigger histograms, and files

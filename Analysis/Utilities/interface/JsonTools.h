@@ -23,10 +23,13 @@ Json::Value ExtractJsonFromString(std::string const& str);
 
 /**
  * Extracts a Json::Value from the given input string
- * Only works for a depth of 3/4 values for the moment
  *
  * @param str should separate keys and required values by : and any
- * lists of values by . e.g: key:value1.value2
+ * lists of values by ^ e.g: key:value1^value2.
+ *
+ * To pass a list consisting of only one value precede the value by ^
+ * e.g.: key:^value1, for an empty list leave off the value arguments:
+ * key:
  * 
  */
 Json::Value ExtractJsonFromFlatString(std::string const& str);

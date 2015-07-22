@@ -83,7 +83,7 @@ int main(int argc, char* argv[]){
 
 	TMVA::Reader *reader = new TMVA::Reader("!Color:!Silent");
 	std::vector<std::string> vars;
-	ifstream parafile(paramfile2.c_str());
+	std::ifstream parafile(paramfile2.c_str());
 	std::cout<<paramfile2.c_str()<<std::endl;
 	string line;
 	while(getline(parafile,line)){

@@ -152,7 +152,7 @@ $(d)/obj/rootcint_dict.o: $(d)/obj/rootcint_dict.cc
 
 $(d)/obj/rootcint_dict.cc: $(DHEADERS_$(d)) $(d)/$(INC_DIR)/LinkDef.h
 	@echo -e "$(COLOR_YE)Generating dictionary $(subst $(TOP)/,,$@)$(NOCOLOR)"
-	$(DOECHO)$(ROOTSYS)/bin/rootcint -v3 -f $@ -c -p -I$(TOP) -I$(TOP)/../../.. -I$(ROOFITSYS)/include $^
+	$(DOECHO)$(ROOTSYS)/bin/rootcint -v3 -f $@ -c -p -I$(TOP) -I$(TOP)/../../.. -I$(ROOFITSYS)/include $(subst $(TOP)/,,$^)
 
 # Rule for generating object files for executables from source files
 $(d)/bin/%.o: $(d)/test/%.cpp
@@ -208,7 +208,7 @@ clean_all :: clean_$(d)
 ########################################################################
 
 clean_$(d) :
-	rm -f $(subst clean_,,$@)/bin/* $(subst clean_,,$@)/obj/*.o $(subst clean_,,$@)/obj/*.d $(subst clean_,,$@)/lib/*.so
+	rm -f $(subst clean_,,$@)/bin/* $(subst clean_,,$@)/obj/*.* $(subst clean_,,$@)/obj/*.d $(subst clean_,,$@)/lib/*.so
 
 clean_tree_$(d) : clean_$(d) $(foreach sd,$(SUBDIRS_$(d)),clean_tree_$(sd))
 

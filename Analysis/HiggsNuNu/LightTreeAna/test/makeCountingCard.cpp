@@ -430,7 +430,7 @@ int main(int argc, char* argv[]){
   
 
   std::cout<<"Setting up datacard header.."<<std::endl;
-  ofstream datacard;
+  std::ofstream datacard;
   datacard.open (outname.c_str());
   //Header information
   datacard << "# Invisible Higgs analysis for mH="<<mass<<" GeV"<<std::endl;

@@ -9,7 +9,7 @@
 
 namespace ic {
 
-  HTTPairSelector::HTTPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et) {
+  HTTPairSelector::HTTPairSelector(std::string const& name) : ModuleBase(name), channel_(channel::et),strategy_(strategy::paper2013) {
     pair_label_ = "emtauCandidates";
     mva_met_from_vector_ = true;
     faked_tau_selector_ = 0;
@@ -168,7 +168,13 @@ namespace ic {
    // Scale met for the tau energy scale shift
    // ************************************************************************
     if (scale_met_for_tau_ && channel_ != channel::em) {
-      Met * met = event->GetPtr<Met>(met_label_);
+      Met * met;
+      if(strategy_ == strategy::paper2013){
+       met = event->GetPtr<Met>(met_label_);
+      } else{
+       std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+       met = met_vec.at(0);
+      }
       Tau const* tau = dynamic_cast<Tau const*>(result[0]->GetCandidate("lepton2"));
       double t_scale = tau_scale_;
       if (event->Exists("tau_scales")) {
@@ -196,7 +202,14 @@ namespace ic {
     // Scale met for the electron energy scale shift
     // ************************************************************************
     if (scale_met_for_tau_ && channel_ == channel::em) {
-      Met * met = event->GetPtr<Met>(met_label_);
+      Met * met;// = event->GetPtr<Met>(met_label_);
+      if(strategy_ == strategy::paper2013){
+        met = event->GetPtr<Met>(met_label_);
+      } else {
+        std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+        met = met_vec.at(0);
+      }
+
       Electron const* elec = dynamic_cast<Electron const*>(result[0]->GetCandidate("lepton1"));
       double metx = met->vector().px();
       double mety = met->vector().py();
@@ -290,8 +303,8 @@ namespace ic {
     // First we sort the electrons
     Electron const* e1 = static_cast<Electron const*>(c1->At(0));
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
-    double e_iso1 = PF04IsolationVal(e1, 0.5, 0);
-    double e_iso2 = PF04IsolationVal(e2, 0.5, 0);
+    double e_iso1 = PF03IsolationVal(e1, 0.5, 0);
+    double e_iso2 = PF03IsolationVal(e2, 0.5, 0);
     // If the iso is different we just use this
     if (e_iso1 != e_iso2) return e_iso1 < e_iso2;
     // If not try the pT
@@ -309,8 +322,8 @@ namespace ic {
     // First we sort the electrons
     Muon const* m1 = static_cast<Muon const*>(c1->At(0));
     Muon const* m2 = static_cast<Muon const*>(c2->At(0));
-    double m_iso1 = PF04IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF04IsolationVal(m2, 0.5, 0);
+    double m_iso1 = PF03IsolationVal(m1, 0.5, 0);
+    double m_iso2 = PF03IsolationVal(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT
@@ -328,8 +341,8 @@ namespace ic {
     // First we sort the muons
     Muon const* m1 = static_cast<Muon const*>(c1->At(1));
     Muon const* m2 = static_cast<Muon const*>(c2->At(1));
-    double m_iso1 = PF04IsolationVal(m1, 0.5, 0);
-    double m_iso2 = PF04IsolationVal(m2, 0.5, 0);
+    double m_iso1 = PF03IsolationVal(m1, 0.5, 0);
+    double m_iso2 = PF03IsolationVal(m2, 0.5, 0);
     // If the iso is different we just use this
     if (m_iso1 != m_iso2) return m_iso1 < m_iso2;
     // If not try the pT
@@ -337,8 +350,8 @@ namespace ic {
     // If both of these are the same then try the electrons
     Electron const* e1 = static_cast<Electron const*>(c1->At(0));
     Electron const* e2 = static_cast<Electron const*>(c2->At(0));
-    double e_iso1 = PF04IsolationVal(e1, 0.5, 0);
-    double e_iso2 = PF04IsolationVal(e2, 0.5, 0);
+    double e_iso1 = PF03IsolationVal(e1, 0.5, 0);
+    double e_iso2 = PF03IsolationVal(e2, 0.5, 0);
     if (e_iso1 != e_iso2) return e_iso1 < e_iso2;
     return e1->pt() > e2->pt();
   }
