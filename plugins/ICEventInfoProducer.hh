@@ -42,7 +42,10 @@ class ICEventInfoProducer : public edm::EDProducer {
   bool do_csc_filter_;
   edm::InputTag input_csc_filter_;
   bool do_lhe_weights_;
+  bool do_filtersfromtrig_;
   std::vector<std::pair<std::string, edm::InputTag> > filters_;
+  std::vector<std::string> filtersfromtrig_;
+  edm::InputTag filtersfromtrig_input_;
   std::vector<std::pair<std::string, edm::InputTag> > weights_;
   std::vector<std::pair<std::string, edm::InputTag> > gen_weights_;
   std::set<std::string> invert_filter_logic_;
