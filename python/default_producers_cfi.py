@@ -178,7 +178,11 @@ icMetProducer = cms.EDProducer('ICPFMetProducer',
   metsig_method2 = cms.PSet(
     metsig      = cms.InputTag("METSignificance","METSignificance"),
     metsigcov = cms.InputTag("METSignificance","METCovariance")
-    )
+    ),
+  includeMetUncertainties = cms.bool(False),
+  metuncertainties = cms.vstring(
+    'JetEnUp','JetEnDown','JetResUp','JetResDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown'
+  )
   
 )
 
@@ -200,9 +204,11 @@ icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
   metsig_method2 = cms.PSet(
     metsig      = cms.InputTag("METSignificance","METSignificance"),
     metsigcov = cms.InputTag("METSignificance","METCovariance")
-    )
-
-  
+    ),
+  includeMetUncertainties = cms.bool(False),
+  metuncertainties = cms.vstring(
+    'JetEnUp','JetEnDown','JetResUp','JetResDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown'
+  )
 )
 
 ## [Met]

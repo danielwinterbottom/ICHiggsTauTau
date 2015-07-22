@@ -64,7 +64,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10000)
+  input = cms.untracked.int32(10)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -759,12 +759,13 @@ process.load("RecoMET/METProducers.METSignificanceParams_cfi")
 
 
 #get type 1 met straight from miniAOD !!update to take in output of met significance calculator
-process.ictype1PfMetProducer = producers.icMetProducer.clone(
+process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
                                                     input = cms.InputTag("slimmedMETs"),
                                                     branch = cms.string("pfMetType1Collection"),
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
-                                                    includeExternalMetsigMethod2 = cms.bool(True)
+                                                    includeExternalMetsigMethod2 = cms.bool(True),
+                                                    includeMetUncertainties = cms.bool(True)
                                                     )
 
 # process.ictype1PfMetProducermetsigoutofbox = producers.icMetProducer.clone(
@@ -821,6 +822,7 @@ process.icMetSequence = cms.Sequence(
 
 #!!MET UNCERTAINTIES
 #!!MET FILTERS
+
 
 ################################################################                                                                                            
 #!! Simulation only: GenParticles, GenJets, PileupInfo                                                                                                        
