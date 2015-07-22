@@ -225,13 +225,13 @@ void ICMuonProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
     }
 
     if (do_vertex_ip_ && vertices_handle->size() > 0 &&
-        src.innerTrack().isNonnull()) {
+        src.muonBestTrack().isNonnull()) {
         reco::Vertex const& vtx = vertices_handle->at(0);
-        dest.set_dz_vertex(src.innerTrack()->dz(vtx.position()));
-        dest.set_dxy_vertex(src.innerTrack()->dxy(vtx.position()));
+        dest.set_dz_vertex(src.muonBestTrack()->dz(vtx.position()));
+        dest.set_dxy_vertex(src.muonBestTrack()->dxy(vtx.position()));
     }
-    if (do_beamspot_ip_&& src.innerTrack().isNonnull()) {
-      dest.set_dxy_beamspot(src.innerTrack()->dxy(*beamspot_handle));
+    if (do_beamspot_ip_&& src.muonBestTrack().isNonnull()) {
+      dest.set_dxy_beamspot(src.muonBestTrack()->dxy(*beamspot_handle));
     }
   }
 }
