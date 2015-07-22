@@ -8,16 +8,16 @@ import sys
 import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_4/src/UserCode/ICHiggsTauTau/test/testinput.root', parser.VarParsing.multiplicity.singleton,
-#opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/TauDataTest.root', parser.VarParsing.multiplicity.singleton,
-opts.register('file','root://xrootd.unl.edu//store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/009D49A5-7314-E511-84EF-0025905A605E.root',parser.VarParsing.multiplicity.singleton,
+opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/TauDataTest.root', parser.VarParsing.multiplicity.singleton,
+#opts.register('file','root://xrootd.unl.edu//store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/009D49A5-7314-E511-84EF-0025905A605E.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:miniaod_gg.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', 'MCRUN2_74_V9', parser.VarParsing.multiplicity.singleton,
-#opts.register('globalTag', '74X_dataRun2_Prompt_v0', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag', 'MCRUN2_74_V9', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '74X_dataRun2_Prompt_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
-opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
+opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('release', '74XMINIAOD', parser.VarParsing.multiplicity.singleton,
 #opts.register('release', '74X', parser.VarParsing.multiplicity.singleton,
@@ -66,7 +66,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events
 ################################################################
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(4000)
+  input = cms.untracked.int32(100)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 50
@@ -1283,19 +1283,16 @@ if release in ['70X', '74X']:
 
   process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
    branch = cms.string("triggerPaths"),
-   input  = cms.InputTag("patTriggerEvent"),
-   inputIsStandAlone = cms.bool(True),
-   inputPrescales = cms.InputTag("patTrigger")
-   
+   input  = cms.InputTag("patTriggerEvent")
   )
 
 
-  #if isData:
-  process.icTriggerSequence += cms.Sequence(
-    process.patTrigger+
-    process.patTriggerEvent+
-    process.icTriggerPathProducer
-  )
+  if isData:
+    process.icTriggerSequence += cms.Sequence(
+      process.patTrigger+
+      process.patTriggerEvent+
+     process.icTriggerPathProducer
+    )
 
 
 if release in ['70XMINIAOD', '74XMINIAOD']:
@@ -1307,12 +1304,14 @@ process.icTriggerObjectSequence = cms.Sequence()
 if isData:
   process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
    branch = cms.string("triggerPaths"),
-   input  = cms.InputTag("patTriggerEvent")
+   input  = cms.InputTag("TriggerResults","","HLT"),
+   inputIsStandAlone = cms.bool(True),
+   inputPrescales = cms.InputTag("patTrigger")
   )
 
   process.icTriggerSequence += cms.Sequence(
-   process.patTrigger+
-   process.patTriggerEvent+
+   #process.patTrigger+
+   #process.patTriggerEvent+
    process.icTriggerPathProducer
 )
 
@@ -1610,7 +1609,7 @@ process.p = cms.Path(
 #  process.icMvaMetSequence+
   process.icGenSequence+
   process.icPFJetSequence+
-#  process.icTriggerSequence+
+  process.icTriggerSequence+
   process.icTriggerObjectSequence+
   process.icEventInfoSequence+
   #process.patDefaultSequence+
