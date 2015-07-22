@@ -1,0 +1,68 @@
+## Cross Sections #-1.0 for data
+XS_MET_MET-2015B-PromptReco-v1:-1.0
+XS_MC_Powheg-Htoinv-mH125Startupbx50:3.748
+##!!DUMMY VALUES for Htoinv samples
+XS_MC_Powheg-Htoinv-mH300Asympt25ns:1
+XS_MC_Powheg-Htoinv-mH400Asympt25ns:1
+XS_MC_SingleT-t-powheg-lep:54.87
+XS_MC_SingleTBar-t-powheg-lep:29.74
+XS_MC_SingleT-s-amcatnlo-lep:5.55
+XS_MC_SingleT-tW-powheg-inc:35.6
+XS_MC_SingleTBar-tW-powheg-inc:35.6
+XS_MC_TTJets-mg:831.76
+XS_MC_TT-powheg:831.76
+XS_MC_WW-pythia8:63.21
+XS_MC_WZ-pythia8:22.82
+XS_MC_WW2L2Nu-powheg:10.481
+XS_MC_WW4Q-powheg:45.2
+XS_MC_WWLNuQQ-powheg:43.53
+XS_MC_WZLNuQQ-mg:10.96
+XS_MC_ZZ4L-powheg:1.256
+XS_MC_WJetsToLNu:20509
+XS_MC_WJetsToLNu_enu:20509
+XS_MC_WJetsToLNu_munu:20509
+XS_MC_WJetsToLNu_taunu:20509
+XS_MC_DYJetsToLL:6025
+XS_MC_DYJetsToLL-M_10to50:18610
+
+
+## Processed Events
+EVT_MET_MET-2015B-PromptReco-v1:1.0
+EVT_MC_Powheg-Htoinv-mH125Startupbx50:99200
+EVT_MC_Powheg-Htoinv-mH300Asympt25ns:50000
+EVT_MC_Powheg-Htoinv-mH400Asympt25ns:50000
+EVT_MC_SingleT-s-amcatnlo-lep:984400
+EVT_MC_SingleT-t-powheg-lep:3299800
+EVT_MC_SingleT-tW-powheg-inc:995600
+EVT_MC_SingleTBar-t-powheg-lep:1695400
+EVT_MC_SingleTBar-tW-powheg-inc:1000000
+EVT_MC_TTJets-mg:42730273
+EVT_MC_TT-powheg:19899500
+EVT_MC_WW-pythia8:994416
+EVT_MC_WZ-pythia8:991232
+EVT_MC_WW2L2Nu-powheg:193000
+EVT_MC_WW4Q-powheg:1995200
+EVT_MC_WWLNuQQ-powheg:1969600
+EVT_MC_WZLNuQQ-mg:24711046
+EVT_MC_ZZ4L-powheg:6652512
+EVT_MC_WJetsToLNu:24151270
+EVT_MC_WJetsToLNu_enu:24151270
+EVT_MC_WJetsToLNu_munu:24151270
+EVT_MC_WJetsToLNu_taunu:24151270
+EVT_MC_DYJetsToLL:28825132
+EVT_MC_DYJetsToLL-M_10to50:3053555
+
+
+
+## Lumi
+LUMI_DATA:10000.0
+LUMI_DATA_LABEL:10.0 fb^{-1}
+YEAR_LABEL:2015
+## Signal options
+DRAW_SIGNAL:1
+DRAW_SIGNAL_FACTOR:1
+DRAW_SIGNAL_MASS:125
+## TOP Options
+## VV Options
+## QCD Options
+

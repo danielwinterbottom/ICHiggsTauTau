@@ -106,9 +106,8 @@ namespace ic {
     n_jets_15_ = 0;
     n_jets_30_ = 0;
     cjvjetpt_=-1;
-    passtrigger_ = -1;
-    passparkedtrigger1_ = -1;
-    passparkedtrigger2_ = -1;
+    pass_sigtrigger_ = -1;
+    pass_controltrigger_ = -1;
     l1met_ = 0;
     metnomuons_ =0;
     nvetomuons_=0;
@@ -255,9 +254,8 @@ namespace ic {
     outputTree_->Branch("n_jets_15",&n_jets_15_);
     outputTree_->Branch("n_jets_30",&n_jets_30_);
     outputTree_->Branch("cjvjetpt",&cjvjetpt_);
-    outputTree_->Branch("passtrigger",&passtrigger_);
-    outputTree_->Branch("passparkedtrigger1",&passparkedtrigger1_);
-    outputTree_->Branch("passparkedtrigger2",&passparkedtrigger2_);
+    outputTree_->Branch("pass_sigtrigger",&pass_sigtrigger_);
+    outputTree_->Branch("pass_controltrigger",&pass_controltrigger_);
     outputTree_->Branch("l1met",&l1met_);
     outputTree_->Branch("metnomuons",&metnomuons_);
     outputTree_->Branch("nvetomuons",&nvetomuons_);
@@ -328,29 +326,28 @@ namespace ic {
 	  event->GetPtrVec<TriggerPath>("triggerPathPtrVec","triggerPaths");
 	//EventInfo const* eventInfo = event->GetPtr<EventInfo>("eventInfo"); //Can be used in future, but commented out to remove compiler warnings      
 	//unsigned run = eventInfo->run(); //Can be used in future, but commented out to remove compiler warnings                                         
-	passtrigger_=-1;
-	passparkedtrigger1_=-1;
-	passparkedtrigger2_=-1;
+	pass_sigtrigger_=-1;
+	pass_controltrigger_=-1;
 	for (unsigned i = 0; i < triggerPathPtrVec.size(); ++i) {
 	  std::string name = triggerPathPtrVec[i]->name();
 	  triggerPathPtrVec[i]->prescale();
-	  if (name.find(trigger_path_) != name.npos) passtrigger_ = 1;
-	  if (name.find("HLT_DiJet35_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger1_ = 1;
-	  if (name.find("HLT_DiJet30_MJJ700_AllJets_DEta3p5_VBF") != name.npos) passparkedtrigger2_ = 1;
+	  if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v2") != name.npos) pass_sigtrigger_ = 1;
+	  if (name.find("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v2") != name.npos) pass_controltrigger_ = 1;
 	}
 	if(dotrigskim_){
-	  if(!(passtrigger_==1||passparkedtrigger1_==1||passparkedtrigger2_==1)){
+	  if(!(pass_sigtrigger_==1||pass_controltrigger_==1)){
 	    return 1;
 	  }
 	}
       }
       //for MC                                                                                                                                       
       else {
-	passtrigger_=-1;
-	passparkedtrigger1_=-1;
-	passparkedtrigger2_=-1;
-	std::vector<TriggerObject *> const& objs = event->GetPtrVec<TriggerObject>(trig_obj_label_);
-	if (objs.size() > 0) passtrigger_=1;
+	pass_sigtrigger_=-1;
+	pass_controltrigger_=-1;
+	std::vector<TriggerObject *> const& sigobjs = event->GetPtrVec<TriggerObject>("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu140_v2");
+	std::vector<TriggerObject *> const& contobjs = event->GetPtrVec<TriggerObject>("HLT_DiPFJet40_DEta3p5_MJJ600_PFMETNoMu80_v2");
+	if (sigobjs.size() > 0) pass_sigtrigger_=1;
+	if (contobjs.size() > 0) pass_controltrigger_=1;
       } // do obj match                                                                            
 
 
@@ -383,7 +380,7 @@ namespace ic {
     Met const* met = event->GetPtr<Met>(met_label_);
     Met const* metnomuons = event->GetPtr<Met>("metNoMuons");
     std::vector<Candidate *> const& l1met = event->GetPtrVec<Candidate>("l1extraMET");
-    if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
+    //!!if(l1met.size()!=1)std::cout<<"There seem to be "<<l1met.size()<<" l1mets!!"<<std::endl;
     std::vector<PFJet*> alljets = event->GetPtrVec<PFJet>("AllpfJetsPFlow");
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>("pfJetsPFlow");
     std::sort(alljets.begin(), alljets.end(), bind(&Candidate::pt, _1) > bind(&Candidate::pt, _2));
@@ -393,7 +390,8 @@ namespace ic {
     std::vector<Electron*> vetoelectrons=event->GetPtrVec<Electron>("vetoElectrons");
     std::vector<Electron*> selelectrons=event->GetPtrVec<Electron>("selElectrons");
     std::vector<Tau*> taus=event->GetPtrVec<Tau>("taus");
-    std::vector<GenJet *> & genvec = event->GetPtrVec<GenJet>("genJets");
+    std::vector<GenJet *> genvec;
+    if(!is_data_)genvec= event->GetPtrVec<GenJet>("genJets");
     //std::vector<Vertex*> & vertices = event->GetPtrVec<Vertex>("vertices");
 
 
@@ -598,71 +596,73 @@ namespace ic {
       dijet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(jet1vec,jet2vec));
 
       //Find highest 4 pt gen jets
-      std::vector<GenJet*> genveccopy;
-      genveccopy=genvec;
-      // std::cout<<"Gen Jets: "<<std::endl;
-      // for(unsigned igenjet=0;igenjet<genveccopy.size();igenjet++){
-      // 	std::cout<<genveccopy[igenjet]->pt()<<" ";
-      // }
-      // std::cout<<std::endl;//!!
-      // for(unsigned igenjet=0;igenjet<genveccopy.size();igenjet++){
-      // 	std::cout<<genveccopy[igenjet]->eta()<<" ";
-      // }
-      // std::cout<<std::endl;//!!
-      std::sort(genveccopy.begin(),genveccopy.end(),ptorderedgenjetsort);
-      if(genveccopy.size()>=1){
-	genjet1_pt_=genveccopy[0]->pt();
-	genjet1_eta_=genveccopy[0]->eta();
-	genjet1_phi_=genveccopy[0]->phi();
-	genjet1_E_=genveccopy[0]->energy();
-	if(genveccopy.size()>=2){
-	  genjet2_pt_=genveccopy[1]->pt();
-	  genjet2_eta_=genveccopy[1]->eta();
-	  genjet2_phi_=genveccopy[1]->phi();
-	  genjet2_E_=genveccopy[1]->energy();
-	  ROOT::Math::PtEtaPhiEVector genjet1vec = genveccopy[0]->vector();
-	  ROOT::Math::PtEtaPhiEVector genjet2vec = genveccopy[1]->vector();
-	  ROOT::Math::PtEtaPhiEVector digenjetvec = genjet1vec+genjet2vec;
-	  digenjet_M_=digenjetvec.M();
-	  digenjet_deta_ = fabs(genvec[0]->eta() - genvec[1]->eta());
-	  digenjet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(genjet1vec,genjet2vec));
-	  if(genveccopy.size()>=3){
-	    genjet3_pt_=genveccopy[2]->pt();
-	    genjet3_eta_=genveccopy[2]->eta();
-	    genjet3_phi_=genveccopy[2]->phi();
-	    genjet3_E_=genveccopy[2]->energy();
-	    if(genveccopy.size()>=4){
-	      genjet4_pt_=genveccopy[3]->pt();
-	      genjet4_eta_=genveccopy[3]->eta();
-	      genjet4_phi_=genveccopy[3]->phi();
-	      genjet4_E_=genveccopy[3]->energy();
+      if(!is_data_){
+	std::vector<GenJet*> genveccopy;
+	genveccopy=genvec;
+	// std::cout<<"Gen Jets: "<<std::endl;
+	// for(unsigned igenjet=0;igenjet<genveccopy.size();igenjet++){
+	// 	std::cout<<genveccopy[igenjet]->pt()<<" ";
+	// }
+	// std::cout<<std::endl;//!!
+	// for(unsigned igenjet=0;igenjet<genveccopy.size();igenjet++){
+	// 	std::cout<<genveccopy[igenjet]->eta()<<" ";
+	// }
+	// std::cout<<std::endl;//!!
+	std::sort(genveccopy.begin(),genveccopy.end(),ptorderedgenjetsort);
+	if(genveccopy.size()>=1){
+	  genjet1_pt_=genveccopy[0]->pt();
+	  genjet1_eta_=genveccopy[0]->eta();
+	  genjet1_phi_=genveccopy[0]->phi();
+	  genjet1_E_=genveccopy[0]->energy();
+	  if(genveccopy.size()>=2){
+	    genjet2_pt_=genveccopy[1]->pt();
+	    genjet2_eta_=genveccopy[1]->eta();
+	    genjet2_phi_=genveccopy[1]->phi();
+	    genjet2_E_=genveccopy[1]->energy();
+	    ROOT::Math::PtEtaPhiEVector genjet1vec = genveccopy[0]->vector();
+	    ROOT::Math::PtEtaPhiEVector genjet2vec = genveccopy[1]->vector();
+	    ROOT::Math::PtEtaPhiEVector digenjetvec = genjet1vec+genjet2vec;
+	    digenjet_M_=digenjetvec.M();
+	    digenjet_deta_ = fabs(genvec[0]->eta() - genvec[1]->eta());
+	    digenjet_dphi_ = fabs(ROOT::Math::VectorUtil::DeltaPhi(genjet1vec,genjet2vec));
+	    if(genveccopy.size()>=3){
+	      genjet3_pt_=genveccopy[2]->pt();
+	      genjet3_eta_=genveccopy[2]->eta();
+	      genjet3_phi_=genveccopy[2]->phi();
+	      genjet3_E_=genveccopy[2]->energy();
+	      if(genveccopy.size()>=4){
+		genjet4_pt_=genveccopy[3]->pt();
+		genjet4_eta_=genveccopy[3]->eta();
+		genjet4_phi_=genveccopy[3]->phi();
+		genjet4_E_=genveccopy[3]->energy();
+	      }
+	      else{
+		genjet4_pt_=-1;
+		genjet4_eta_=-10000;
+		genjet4_phi_=-5;
+		genjet4_E_=-1;
+	      }
 	    }
 	    else{
-	      genjet4_pt_=-1;
-	      genjet4_eta_=-10000;
-	      genjet4_phi_=-5;
-	      genjet4_E_=-1;
+	      genjet3_pt_=-1;
+	      genjet3_eta_=-10000;
+	      genjet3_phi_=-5;
+	      genjet3_E_=-1;
 	    }
 	  }
 	  else{
-	    genjet3_pt_=-1;
-	    genjet3_eta_=-10000;
-	    genjet3_phi_=-5;
-	    genjet3_E_=-1;
+	    genjet2_pt_=-1;
+	    genjet2_eta_=-10000;
+	    genjet2_phi_=-5;
+	    genjet2_E_=-1;
 	  }
 	}
 	else{
-	  genjet2_pt_=-1;
-	  genjet2_eta_=-10000;
-	  genjet2_phi_=-5;
-	  genjet2_E_=-1;
+	  genjet1_pt_=-1;
+	  genjet1_eta_=-10000;
+	  genjet1_phi_=-5;
+	  genjet1_E_=-1;
 	}
-      }
-      else{
-	genjet1_pt_=-1;
-	genjet1_eta_=-10000;
-	genjet1_phi_=-5;
-	genjet1_E_=-1;
       }
       // std::cout<<genjet1_pt_<<" "<<genjet2_pt_<<" "<<genjet3_pt_<<" "<<genjet4_pt_<<std::endl;//!!
       // std::cout<<genjet1_eta_<<" "<<genjet2_eta_<<" "<<genjet3_eta_<<" "<<genjet4_eta_<<std::endl;//!!
@@ -671,9 +671,9 @@ namespace ic {
       met_y_ = metvec.Py();
       met_significance_ = met->et_sig();
       sumet_ = met->sum_et();
-      if(l1met.size()==1){
+      //      if(l1met.size()==1){//!!
 	l1met_ = l1met[0]->energy();
-      }
+	//}
       metnomuons_ = metnomuons->pt();
       metnomu_x_ = metnomuvec.Px();
       metnomu_y_ = metnomuvec.Py();
@@ -865,7 +865,7 @@ namespace ic {
 	  }
 	}
 	else{
-	  if (passtrigger_==1&&dijet_deta_>3.6&&metnomuons_>90&&jet1_pt_>50){
+	  if ((pass_sigtrigger_==1||pass_controltrigger_==1)&&dijet_deta_>3.6&&metnomuons_>90&&jet1_pt_>50){
 	    //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
 	    outputTree_->Fill();
 	    ++processed;
@@ -881,7 +881,7 @@ namespace ic {
 	  }
 	}
 	else{
-	  if (passtrigger_==1&&dijet_deta_>3.6&&metnomuons_>90&&jet1_pt_>50){
+	  if ((pass_sigtrigger_==1||pass_controltrigger_==1)&&dijet_deta_>3.6&&metnomuons_>90&&jet1_pt_>50){
 	    //if (dijet_M_>1000 &&  dijet_deta_>3.6 && metnomuons_>100 && jet1_pt_>50){//for prompt presel
 	    outputTree_->Fill();
 	    ++processed;

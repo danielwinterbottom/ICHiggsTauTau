@@ -76,7 +76,8 @@ struct era_def {
 		data_2012_hcp,		// HCP dataset for 2012: A+B re-reco C prompt
 		data_2012_moriond,// Moriond dataset for 2012: A+B re-reco, C+D prompt
 		data_2012_rereco,// Rereco dataset for 2012
-		data_2012_donly 	// 2012D prompt only
+		data_2012_donly, 	// 2012D prompt only
+		data_2015_50ns 	// 2015 50ns
 
 	};
 };
@@ -89,7 +90,8 @@ inline std::string Era2String(era const& in) {
 		(era::data_2012_hcp, 			"data_2012_hcp")
 		(era::data_2012_moriond, 	"data_2012_moriond")
 		(era::data_2012_rereco, 	"data_2012_rereco")
-		(era::data_2012_donly, 		"data_2012_donly");
+		(era::data_2012_donly, 		"data_2012_donly")
+		(era::data_2015_50ns, 		"data_2015_50ns");
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
 	} else {
@@ -105,7 +107,8 @@ inline era String2Era(std::string const& in) {
 	("data_2012_hcp", 		era::data_2012_hcp)
 	("data_2012_moriond", era::data_2012_moriond)
 	("data_2012_rereco", era::data_2012_rereco)
-	("data_2012_donly", 	era::data_2012_donly);
+	("data_2012_donly", 	era::data_2012_donly)
+	("data_2015_50ns", 	era::data_2015_50ns);
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
 	} else {
@@ -119,7 +122,8 @@ struct mc_def {
 		fall11_42X,				// 42X MC
 		summer12_53X,			// 53X MC
 		summer12_52X,			// 52X MC
-		phys14_72X			// 72X MC
+		phys14_72X,			// 72X MC
+		spring15_74X			// 74X MC
 	};
 };
 typedef safe_enum <mc_def> mc;
@@ -129,7 +133,8 @@ inline std::string MC2String(mc const& in) {
 		(mc::fall11_42X, "fall11_42X")
 		(mc::summer12_53X, "summer12_53X")
 		(mc::summer12_52X, "summer12_52X")
-		(mc::phys14_72X, "phys14_72X");
+		(mc::phys14_72X, "phys14_72X")
+		(mc::spring15_74X, "spring15_74X");
 
 	if (conv.find(in) != conv.end()) {
 		return (conv[in]);
@@ -143,7 +148,8 @@ inline mc String2MC(std::string const& in) {
 	("fall11_42X",		mc::fall11_42X)
 	("summer12_53X",	mc::summer12_53X)
 	("summer12_52X",	mc::summer12_52X)
-	("phys14_72X",	        mc::phys14_72X);
+	("phys14_72X",	        mc::phys14_72X)
+	("spring15_74X",	mc::spring15_74X);
 
 	if (conv.find(in) != conv.end()) {
 		return (conv.find(in)->second);
