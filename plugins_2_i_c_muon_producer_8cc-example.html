@@ -326,13 +326,13 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_muon_producer_8cc-exampl
 <div class="line">    }</div>
 <div class="line"></div>
 <div class="line">    <span class="keywordflow">if</span> (do_vertex_ip_ &amp;&amp; vertices_handle-&gt;size() &gt; 0 &amp;&amp;</div>
-<div class="line">        src.innerTrack().isNonnull()) {</div>
+<div class="line">        src.muonBestTrack().isNonnull()) {</div>
 <div class="line">        reco::Vertex <span class="keyword">const</span>&amp; vtx = vertices_handle-&gt;at(0);</div>
-<div class="line">        dest.<a name="a44"></a><a class="code" href="classic_1_1_muon.html#ae797dbda99198d80922ff798b2cb8bc1">set_dz_vertex</a>(src.innerTrack()-&gt;dz(vtx.position()));</div>
-<div class="line">        dest.<a name="a45"></a><a class="code" href="classic_1_1_muon.html#abf873e4655542b69f1ce9106c8f65335">set_dxy_vertex</a>(src.innerTrack()-&gt;dxy(vtx.position()));</div>
+<div class="line">        dest.<a name="a44"></a><a class="code" href="classic_1_1_muon.html#ae797dbda99198d80922ff798b2cb8bc1">set_dz_vertex</a>(src.muonBestTrack()-&gt;dz(vtx.position()));</div>
+<div class="line">        dest.<a name="a45"></a><a class="code" href="classic_1_1_muon.html#abf873e4655542b69f1ce9106c8f65335">set_dxy_vertex</a>(src.muonBestTrack()-&gt;dxy(vtx.position()));</div>
 <div class="line">    }</div>
-<div class="line">    <span class="keywordflow">if</span> (do_beamspot_ip_&amp;&amp; src.innerTrack().isNonnull()) {</div>
-<div class="line">      dest.<a name="a46"></a><a class="code" href="classic_1_1_muon.html#abef85ced2c8f011e09409459663e97e7">set_dxy_beamspot</a>(src.innerTrack()-&gt;dxy(*beamspot_handle));</div>
+<div class="line">    <span class="keywordflow">if</span> (do_beamspot_ip_&amp;&amp; src.muonBestTrack().isNonnull()) {</div>
+<div class="line">      dest.<a name="a46"></a><a class="code" href="classic_1_1_muon.html#abef85ced2c8f011e09409459663e97e7">set_dxy_beamspot</a>(src.muonBestTrack()-&gt;dxy(*beamspot_handle));</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">}</div>
