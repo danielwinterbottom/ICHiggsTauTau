@@ -64,7 +64,7 @@ class Met : public Candidate {
   /**@}*/
 
   /// @copybrief shiftedmets()
-  inline void set_shiftedmets(std::vector<std::pair<std::string,Candidate> > const& shiftedmets) { shiftedmets_ = shiftedmets; }
+  inline void set_shiftedmets(std::vector<std::pair<std::string,ic::Candidate> > const& shiftedmets) { shiftedmets_ = shiftedmets; }
   /**@}*/
 
  private:
@@ -74,11 +74,11 @@ class Met : public Candidate {
   double xy_sig_;
   double yx_sig_;
   double yy_sig_;
-  std::vector<std::pair<std::string,Candidate> > shiftedmets_;
+  std::vector<std::pair<std::string,ic::Candidate> > shiftedmets_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Met, 3);
+  ClassDef(Met, 4);
  #endif
 };
 
