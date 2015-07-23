@@ -1,5 +1,7 @@
 var NAVTREEINDEX4 =
 {
+"classic_1_1_muon.html#ada181c803a819200d47964f5e30f5e0a":[9,0,0,13,30],
+"classic_1_1_muon.html#ada1f2ef26e17da60da7de4e0bdc7676c":[9,0,0,13,65],
 "classic_1_1_muon.html#adcafdaf948b97d64e796f1ce45dfac5f":[9,0,0,13,10],
 "classic_1_1_muon.html#adfd5f399dd49976b41d0915e2dbf05a5":[9,0,0,13,66],
 "classic_1_1_muon.html#ae1ea92fefec73fcd4077890927aadd86":[9,0,0,13,34],
@@ -247,7 +249,5 @@ var NAVTREEINDEX4 =
 "classic_1_1_trigger_object.html#ab0d0a4572ca3c32fcdf11fd45477644e":[9,0,0,23,4],
 "classic_1_1_trigger_object.html#aeef259419b35fdea03d56a79a5d1290d":[9,0,0,23,1],
 "classic_1_1_trigger_path.html":[9,0,0,24],
-"classic_1_1_trigger_path.html#a33d4ff9f41d5b12095c7fa5f7267d73a":[9,0,0,24,7],
-"classic_1_1_trigger_path.html#a48f6cc3d7ed24958bceb0a0c21055fb4":[9,0,0,24,0],
-"classic_1_1_trigger_path.html#a4b028ecda9d27aee914911b377fd0ad1":[9,0,0,24,11]
+"classic_1_1_trigger_path.html#a33d4ff9f41d5b12095c7fa5f7267d73a":[9,0,0,24,7]
 };

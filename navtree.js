@@ -97,8 +97,8 @@ var NAVTREEINDEX =
 "_i_c_trigger_path_producer_8cc_source.html",
 "class_i_c_conversion_producer.html#a1c5b7628df6f98ed72c86ff85087e4bc",
 "classic_1_1_electron.html#ab454295013ae2b869046a75231320122",
-"classic_1_1_muon.html#adcafdaf948b97d64e796f1ce45dfac5f",
-"classic_1_1_trigger_path.html#a5ae1009d38ac6ae0b8e7940afa74d422"
+"classic_1_1_muon.html#ada181c803a819200d47964f5e30f5e0a",
+"classic_1_1_trigger_path.html#a48f6cc3d7ed24958bceb0a0c21055fb4"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
