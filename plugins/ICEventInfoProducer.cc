@@ -24,6 +24,7 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
@@ -188,8 +189,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
      edm::Handle<edm::TriggerResults> triggerResults;
      event.getByLabel(filtersfromtrig_input_,triggerResults);
      if( !triggerResults.isValid() ){
-       std::cout<<"Trigger Results is not valid";
-       throw;
+       throw cms::Exception("TriggerNotValid")<<"Trigger Results is not valid\n";
      }
      
      const edm::TriggerNames &triggerNames = event.triggerNames(*triggerResults);
@@ -207,8 +207,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
 	 else{
 	   found=true;
 	   if(!triggerResults->wasrun(iTrigger)){
-	     std::cout<<filtername<<" was not run"<<std::endl;
-	     throw;
+	     throw cms::Exception("TriggerNotRun")<<filtername<<" was not run\n";
 	   }
 	   bool filter_result=triggerResults->accept(iTrigger);
 	   if(opposite)filter_result=!filter_result;
@@ -217,8 +216,7 @@ void ICEventInfoProducer::produce(edm::Event& event,
 	 }
        }
        if(!found){
-	 std::cout<<filtername<<" was not found in trigger results"<<std::endl;
-	 throw;
+	 throw cms::Exception("TriggerNotFound")<<filtername<<" was not found in trigger results\n";
        }
      }
    }
