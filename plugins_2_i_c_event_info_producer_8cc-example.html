@@ -115,6 +115,9 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/VertexReco/interface/Vertex.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/VertexReco/interface/VertexFwd.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;DataFormats/METReco/interface/BeamHaloSummary.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;DataFormats/HLTReco/interface/TriggerEvent.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;DataFormats/Common/interface/TriggerResults.h&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;FWCore/Common/interface/TriggerNames.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h&quot;</span></div>
@@ -122,6 +125,7 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_event_info_8hh.html">UserCode/ICHiggsTauTau/interface/EventInfo.hh</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="city_8h.html">UserCode/ICHiggsTauTau/interface/city.h</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_print_config_tools_8h.html">UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;FWCore/Utilities/interface/Exception.h&quot;</span></div>
 <div class="line"></div>
 <div class="line"><a name="a0"></a><a class="code" href="class_i_c_event_info_producer.html#a050085b4c5956de5432c03b488fc6900">ICEventInfoProducer::ICEventInfoProducer</a>(<span class="keyword">const</span> edm::ParameterSet&amp; config)</div>
 <div class="line">    : branch_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::string&gt;(<span class="stringliteral">&quot;branch&quot;</span>)),</div>
@@ -135,7 +139,10 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">      input_vertices_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputVertices&quot;</span>)),</div>
 <div class="line">      do_csc_filter_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeCSCFilter&quot;</span>)),</div>
 <div class="line">      input_csc_filter_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputCSCFilter&quot;</span>)),</div>
-<div class="line">      do_lhe_weights_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLHEWeights&quot;</span>)) {</div>
+<div class="line">      do_lhe_weights_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeLHEWeights&quot;</span>)),</div>
+<div class="line">      do_filtersfromtrig_(config.getParameter&lt;bool&gt;(<span class="stringliteral">&quot;includeFiltersFromTrig&quot;</span>)),</div>
+<div class="line">      filtersfromtrig_(config.getParameter&lt;<a class="code" href="namespacestd.html">std</a>::vector&lt;<a class="code" href="namespacestd.html">std</a>::string&gt; &gt;(<span class="stringliteral">&quot;filtersfromtrig&quot;</span>)),</div>
+<div class="line">      filtersfromtrig_input_(config.getParameter&lt;edm::InputTag&gt;(<span class="stringliteral">&quot;inputfiltersfromtrig&quot;</span>)){</div>
 <div class="line">  edm::ParameterSet filter_params =</div>
 <div class="line">      config.getParameter&lt;edm::ParameterSet&gt;(<span class="stringliteral">&quot;filters&quot;</span>);</div>
 <div class="line">  std::vector&lt;std::string&gt; filter_names =</div>
@@ -278,6 +285,42 @@ $(document).ready(function(){initNavTree('plugins_2_i_c_event_info_producer_8cc-
 <div class="line">    info_-&gt;<a name="a14"></a><a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(filters_[i].first, filter_result);</div>
 <div class="line">    observed_filters_[filters_[i].first] = <a name="a15"></a><a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filters_[i].first);</div>
 <div class="line">  }</div>
+<div class="line"></div>
+<div class="line">   <span class="keywordflow">if</span>(do_filtersfromtrig_){</div>
+<div class="line">     edm::Handle&lt;edm::TriggerResults&gt; triggerResults;</div>
+<div class="line">     <span class="keyword">event</span>.getByLabel(filtersfromtrig_input_,triggerResults);</div>
+<div class="line">     <span class="keywordflow">if</span>( !triggerResults.isValid() ){</div>
+<div class="line">       <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;TriggerNotValid&quot;</span>)&lt;&lt;<span class="stringliteral">&quot;Trigger Results is not valid\n&quot;</span>;</div>
+<div class="line">     }</div>
+<div class="line">     </div>
+<div class="line">     <span class="keyword">const</span> edm::TriggerNames &amp;triggerNames = <span class="keyword">event</span>.triggerNames(*triggerResults);</div>
+<div class="line">     <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> iFilter=0;iFilter&lt;filtersfromtrig_.size();iFilter++){</div>
+<div class="line">       <span class="keywordtype">bool</span> found=<span class="keyword">false</span>;</div>
+<div class="line">       <span class="keywordtype">bool</span> opposite=<span class="keyword">false</span>;</div>
+<div class="line">       std::string filtername=filtersfromtrig_[iFilter];</div>
+<div class="line">       <span class="keywordflow">if</span>((filtersfromtrig_[iFilter]).at(0)==<span class="charliteral">&#39;!&#39;</span>){</div>
+<div class="line">   filtername.erase(0,1);</div>
+<div class="line">   opposite=<span class="keyword">true</span>;</div>
+<div class="line">       }</div>
+<div class="line">       <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> iTrigger=0;iTrigger&lt;triggerResults-&gt;size();iTrigger++){</div>
+<div class="line">   std::string trigName = triggerNames.triggerName(iTrigger);</div>
+<div class="line">       <span class="keywordflow">if</span>(trigName.find(filtername)==std::string::npos) <span class="keywordflow">continue</span>;</div>
+<div class="line">   <span class="keywordflow">else</span>{</div>
+<div class="line">     found=<span class="keyword">true</span>;</div>
+<div class="line">     <span class="keywordflow">if</span>(!triggerResults-&gt;wasrun(iTrigger)){</div>
+<div class="line">       <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;TriggerNotRun&quot;</span>)&lt;&lt;filtername&lt;&lt;<span class="stringliteral">&quot; was not run\n&quot;</span>;</div>
+<div class="line">     }</div>
+<div class="line">     <span class="keywordtype">bool</span> filter_result=triggerResults-&gt;accept(iTrigger);</div>
+<div class="line">     <span class="keywordflow">if</span>(opposite)filter_result=!filter_result;</div>
+<div class="line">     info_-&gt;<a class="code" href="classic_1_1_event_info.html#aef030c9e42ee14910325a6038413fd40">set_filter_result</a>(filtername, filter_result);</div>
+<div class="line">     observed_filters_[filtername] = <a class="code" href="city_8h.html#ad1bd1546443b3e43413429c5b81d7c5e">CityHash64</a>(filtername);</div>
+<div class="line">   }</div>
+<div class="line">       }</div>
+<div class="line">       <span class="keywordflow">if</span>(!found){</div>
+<div class="line">   <span class="keywordflow">throw</span> cms::Exception(<span class="stringliteral">&quot;TriggerNotFound&quot;</span>)&lt;&lt;filtername&lt;&lt;<span class="stringliteral">&quot; was not found in trigger results\n&quot;</span>;</div>
+<div class="line">       }</div>
+<div class="line">     }</div>
+<div class="line">   }</div>
 <div class="line"></div>
 <div class="line">  edm::Handle&lt;reco::BeamHaloSummary&gt; beam_halo_handle;</div>
 <div class="line">  <span class="keywordflow">if</span> (do_csc_filter_) {</div>

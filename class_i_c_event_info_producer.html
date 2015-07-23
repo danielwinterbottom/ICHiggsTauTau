@@ -143,8 +143,11 @@ Public Member Functions</h2></td></tr>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  weights             = cms.PSet(</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  ),</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  genFilterWeights    = cms.PSet(</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  )</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;)</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  ),</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  includeFiltersFromTrig = cms.bool(<span class="keyword">False</span>),</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  filtersfromtrig     = cms.vstring(<span class="stringliteral">&quot;Flag_HBHENoiseFilter&quot;</span>,<span class="stringliteral">&quot;Flag_CSCTightHaloFilter&quot;</span>,<span class="stringliteral">&quot;Flag_hcalLaserEventFilter&quot;</span>,<span class="stringliteral">&quot;Flag_EcalDeadCellTriggerPrimitiveFilter&quot;</span>,<span class="stringliteral">&quot;Flag_goodVertices&quot;</span>,<span class="stringliteral">&quot;Flag_trackingFailureFilter&quot;</span>,<span class="stringliteral">&quot;Flag_eeBadScFilter&quot;</span>,<span class="stringliteral">&quot;Flag_ecalLaserCorrFilter&quot;</span>,<span class="stringliteral">&quot;Flag_trkPOGFilters&quot;</span>,<span class="stringliteral">&quot;Flag_trkPOG_manystripclus53X&quot;</span>,<span class="stringliteral">&quot;Flag_trkPOG_toomanystripclus53X&quot;</span>,<span class="stringliteral">&quot;Flag_trkPOG_logErrorTooManyClusters&quot;</span>,<span class="stringliteral">&quot;Flag_METFilters&quot;</span>),</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  inputfiltersfromtrig = cms.InputTag(<span class="stringliteral">&quot;TriggerResults&quot;</span>)</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;)</div>
 </div><!-- fragment --><dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#_a18">plugins/ICEventInfoProducer.cc</a>.</dd>
 </dl>
 <p>Definition at line <a class="el" href="_i_c_event_info_producer_8hh_source.html#l00021">21</a> of file <a class="el" href="_i_c_event_info_producer_8hh_source.html">ICEventInfoProducer.hh</a>.</p>
@@ -172,7 +175,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a0">plugins/ICEventInfoProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_i_c_event_info_producer_8cc_source.html#l00025">25</a> of file <a class="el" href="_i_c_event_info_producer_8cc_source.html">ICEventInfoProducer.cc</a>.</p>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8cc_source.html#l00029">29</a> of file <a class="el" href="_i_c_event_info_producer_8cc_source.html">ICEventInfoProducer.cc</a>.</p>
 
 </div>
 </div>
@@ -190,7 +193,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl><dt><b>Examples: </b></dt><dd><a class="el" href="plugins_2_i_c_event_info_producer_8cc-example.html#a4">plugins/ICEventInfoProducer.cc</a>.</dd>
 </dl>
-<p>Definition at line <a class="el" href="_i_c_event_info_producer_8cc_source.html#l00086">86</a> of file <a class="el" href="_i_c_event_info_producer_8cc_source.html">ICEventInfoProducer.cc</a>.</p>
+<p>Definition at line <a class="el" href="_i_c_event_info_producer_8cc_source.html#l00093">93</a> of file <a class="el" href="_i_c_event_info_producer_8cc_source.html">ICEventInfoProducer.cc</a>.</p>
 
 </div>
 </div>
