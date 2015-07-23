@@ -62,9 +62,12 @@ namespace ic {
       taus[i]->Print();
       std::cout << "Ref point dZ: "<<taus[i]->vz() <<std::endl;
       std::cout << "-decay_mode: " << taus[i]->decay_mode() << std::endl;
+      std::cout << "-charge: " <<taus[i]->charge() <<std::endl;
+      std::cout << "-charge: " <<taus[i]->charge() <<std::endl;
       std::cout << "-lead_track_dz_with_vertex: " << taus[i]->lead_dz_vertex() << std::endl;
       std::cout << "-e_over_p: " << ((taus[i]->lead_ecal_energy() + taus[i]->lead_hcal_energy()) / taus[i]->lead_p()) << std::endl;
       std::cout << "-decayModeFinding: " << taus[i]->GetTauID("decayModeFinding") << std::endl;
+      std::cout << "-decayModeFindingNewDMs: " << taus[i]->GetTauID("decayModeFindingNewDMs") << std::endl;
       std::cout << "-byCombinedIsolationDeltaBetaCorrRaw3Hits: " << taus[i]->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits") << std::endl;
       std::cout << "-byIsolationMVAraw: " << taus[i]->GetTauID("byIsolationMVAraw") << std::endl;
       std::cout << "-byLooseIsolationMVA: " << taus[i]->GetTauID("byLooseIsolationMVA") << std::endl;
@@ -87,22 +90,27 @@ namespace ic {
       std::cout << "-dzVertex: " << muons[i]->dz_vertex() << std::endl;
       std::cout << "-isGlobalMuon: " << muons[i]->is_global() << std::endl;
       std::cout << "-isTrackerMuon: " << muons[i]->is_tracker() << std::endl;
+      std::cout << "-isPF: "<< muons[i]->is_pf() <<std::endl;
       std::cout << "-numberOfValidPixelHits: " << muons[i]->it_pixel_hits() << std::endl;
       std::cout << "-numberOfValidMuonHits: " << muons[i]->gt_valid_muon_hits() << std::endl;
+      std::cout<< "-it valid fraciton: " <<muons[i]->it_valid_fraction()<<std::endl;
+      std::cout << "-segment compatibility: "<<muons[i]->segment_compatibility()<<std::endl;
+      std::cout << "-tack kink: " <<muons[i]->cq_trk_kink()<<std::endl;
+      std::cout<< "-cq_chi2_localposition:"   <<muons[i]->cq_chi2_localposition() <<std::endl;
       std::cout << "-trackerLayersWithMeasurement: " << muons[i]->it_layers_with_measurement() << std::endl;
       std::cout << "-normalizedChi2: " << muons[i]->gt_normalized_chi2() << std::endl;
       std::cout << "-numberOfMatchedStations: " << muons[i]->matched_stations() << std::endl;
       std::cout << "-dr03_tk_sum_pt: " << muons[i]->dr03_tk_sum_pt() << std::endl;
       std::cout << "-dr03_ecal_rechit_sum_et: " << muons[i]->dr03_ecal_rechit_sum_et() << std::endl;
       std::cout << "-dr03_hcal_tower_sum_et: " << muons[i]->dr03_hcal_tower_sum_et() << std::endl;
-      std::cout << "-dr04_pfiso_charged_all " << muons[i]->dr04_pfiso_charged_all() << std::endl;
-      std::cout << "-dr04_pfiso_charged " << muons[i]->dr04_pfiso_charged() << std::endl;
-      std::cout << "-dr04_pfiso_neutral " << muons[i]->dr04_pfiso_neutral() << std::endl;
-      std::cout << "-dr04_pfiso_gamma " << muons[i]->dr04_pfiso_gamma() << std::endl;
-      std::cout << "-dr04_pfiso_pu " << muons[i]->dr04_pfiso_pu() << std::endl;
+      std::cout << "-dr03_pfiso_charged_all " << muons[i]->dr04_pfiso_charged_all() << std::endl;
+      std::cout << "-dr03_pfiso_charged " << muons[i]->dr03_pfiso_charged() << std::endl;
+      std::cout << "-dr03_pfiso_neutral " << muons[i]->dr03_pfiso_neutral() << std::endl;
+      std::cout << "-dr03_pfiso_gamma " << muons[i]->dr03_pfiso_gamma() << std::endl;
+      std::cout << "-dr03_pfiso_pu " << muons[i]->dr03_pfiso_pu() << std::endl;
 
-      double iso =  muons[i]->dr04_pfiso_charged_all() 
-      + std::max(muons[i]->dr04_pfiso_neutral() + muons[i]->dr04_pfiso_gamma() - 0.5 * muons[i]->dr04_pfiso_pu(), 0.0);
+      double iso =  muons[i]->dr03_pfiso_charged() 
+      + std::max(muons[i]->dr03_pfiso_neutral() + muons[i]->dr03_pfiso_gamma() - 0.5 * muons[i]->dr03_pfiso_pu(), 0.0);
       std::cout << "-dr04_pfiso_dbeta_sum: " << iso << std::endl;
       iso = iso / muons[i]->pt();
       std::cout << "-dr04_pfiso_dbeta_rel: " << iso << std::endl;
@@ -120,10 +128,10 @@ namespace ic {
       std::cout << "dxyVertex "<<elecs[i]->dxy_vertex()<<std::endl;
       std::cout<< "dzVertex "<<elecs[i]->dz_vertex() <<std::endl;
       elecs[i]->Print();
-      double iso =  (elecs[i]->dr04_pfiso_charged_all() 
-      + std::max(elecs[i]->dr04_pfiso_neutral() + elecs[i]->dr04_pfiso_gamma() - 0.5 * elecs[i]->dr04_pfiso_pu(), 0.0)) / elecs[i]->pt();
-      std::cout << "-rel_iso_04_dbeta: " << iso << std::endl;
-      std::cout << "-id_mvaNonTrigV0: " << elecs[i]->GetIdIso("mvaNonTrigV0") << std::endl;
+      double iso =  (elecs[i]->dr03_pfiso_charged() 
+      + std::max(elecs[i]->dr03_pfiso_neutral() + elecs[i]->dr03_pfiso_gamma() - 0.5 * elecs[i]->dr03_pfiso_pu(), 0.0)) / elecs[i]->pt();
+      std::cout << "-rel_iso_03_dbeta: " << iso << std::endl;
+      std::cout << "-id_mvaNonTrigSpring15: " << elecs[i]->GetIdIso("mvaNonTrigSpring15") << std::endl;
       std::cout << "-id_mvaTrigV0: " << elecs[i]->GetIdIso("mvaTrigV0") << std::endl;
       std::cout << "-dr03_tk_sum_pt: " << elecs[i]->dr03_tk_sum_pt() << std::endl;
       std::cout << "-dr03_ecal_rechit_sum_et: " << elecs[i]->dr03_ecal_rechit_sum_et() << std::endl;
@@ -206,10 +214,12 @@ namespace ic {
         std::cout << "Trigger path: " << triggerPathPtrVec[i]->name() << "  Prescale: " << triggerPathPtrVec[i]->prescale() << std::endl;
       }
     }
-   /*
-    std::cout << "---Triggers" << std::endl;
-    std::vector<std::string> paths = { "triggerObjectsIsoMu15LooseTau15" };
-    std::vector<std::string> labels = { "hltSingleMuIsoL3IsoFiltered15", "hltPFTau15TrackLooseIso" };
+   
+    /*std::cout << "---Triggers" << std::endl;
+    std::vector<std::string> paths = { "triggerObjectsEle12Mu23"};
+    std::vector<std::string> labels = {"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter",
+"hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23"};
+
     for (auto label : labels) {
       std::cout << label << " hash is: " << CityHash64(label) << std::endl; 
     }
@@ -225,7 +235,8 @@ namespace ic {
         }
       }
     }
-    */
+  */
+    
 
 
   } else if (skip_events_) {

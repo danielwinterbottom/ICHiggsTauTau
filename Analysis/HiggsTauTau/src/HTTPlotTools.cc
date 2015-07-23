@@ -54,6 +54,7 @@ namespace ic {
       PlotBkgComponent("qcd","QCD"                  ,{"QCD"}      , kMagenta-10),
       PlotBkgComponent("top","t#bar{t}"             ,{"TT"}       , kBlue   - 8),
       PlotBkgComponent("ewk","Electroweak"          ,{"W","VV"}   , kRed    + 2),
+      PlotBkgComponent("ztt","Z#rightarrow#tau#tau" ,{"ZTT"}      , kOrange -4),
     };
 
     bkg_schemes_["et_with_zj"] = {

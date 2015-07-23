@@ -23,7 +23,7 @@ class HTTSequence {
   double elec_pt, elec_eta, elec_dxy, elec_dz;
   double muon_pt, muon_eta, muon_dxy, muon_dz;
   std::string tau_anti_elec_discr, tau_anti_muon_discr, tau_iso_discr;
-  std::string output_folder, output_name, addit_output_folder;
+  std::string output_folder, output_name, addit_output_folder, lumimask_output_name;
   double veto_elec_pt, veto_elec_eta, veto_elec_dxy, veto_elec_dz;
   double veto_muon_pt, veto_muon_eta, veto_muon_dxy, veto_muon_dz;
   double veto_dielec_pt, veto_dielec_eta, veto_dielec_dxy, veto_dielec_dz;

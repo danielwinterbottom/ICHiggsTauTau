@@ -65,6 +65,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   output_folder=output_folder+"/"+addit_output_folder+"/";
   //output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
   output_name=output_name + "_" + chan + "_" + postf + ".root";
+  lumimask_output_name=output_name + "_" +chan + "_" + postf; 
   special_mode=json["special_mode"].asUInt();
   if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
   //if(json["make_sync_ntuple"].asBool()) {
@@ -338,6 +339,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % js["make_sync_ntuple"].asBool();
+  std::cout << boost::format(param_fmt) % "save_output_jsons" % js["save_output_jsons"].asBool();
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
 //  std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
@@ -444,10 +446,17 @@ void HTTSequence::BuildSequence(){
   //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
   if (era_type == era::data_2015)  data_json= "input/json/json_DCSONLY_Run2015B_2007.txt";
 
-  BuildModule(LumiMask("LumiMask")
-    .set_produce_output_jsons("test")
-    .set_input_file(data_json));
-  }
+ LumiMask lumiMask = LumiMask("LumiMask")
+   .set_produce_output_jsons("")
+   .set_input_file(data_json);
+ 
+ if(js["save_output_jsons"].asBool()){
+  lumiMask.set_produce_output_jsons(lumimask_output_name.c_str());
+ }
+ 
+ BuildModule(lumiMask);
+ }
+
 
 if(ztautau_mode > 0 && strategy_type != strategy::spring15){
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
@@ -1201,7 +1210,6 @@ if(strategy_type == strategy::paper2013){
         return  t->pt()                     >  tau_pt     &&
                 fabs(t->eta())              <  tau_eta    &&
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
-                fabs(t->charge())           == 1 &&
                 t->GetTauID("decayModeFinding") > 0.5;
 
       }));
@@ -1212,6 +1220,7 @@ if(strategy_type == strategy::paper2013){
         return  t->pt()                     >  tau_pt     &&
                 fabs(t->eta())              <  tau_eta    &&
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
+                fabs(t->charge())           == 1          &&
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
