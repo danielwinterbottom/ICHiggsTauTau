@@ -39,7 +39,7 @@ class Met : public Candidate {
   /**@}*/
 
 /// The vector of shifted mets
-  inline std::vector<std::pair<std::string,Candidate> > shiftedmets() const { return shiftedmets_; }
+  inline std::vector<std::pair<std::string,ic::Candidate> > shiftedmets() const { return shiftedmets_; }
   /**@}*/
 
   /// @name Setters
