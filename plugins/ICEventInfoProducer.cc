@@ -14,6 +14,9 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/METReco/interface/BeamHaloSummary.h"
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
@@ -21,6 +24,7 @@
 #include "UserCode/ICHiggsTauTau/interface/EventInfo.hh"
 #include "UserCode/ICHiggsTauTau/interface/city.h"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
 ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
     : branch_(config.getParameter<std::string>("branch")),
@@ -34,7 +38,10 @@ ICEventInfoProducer::ICEventInfoProducer(const edm::ParameterSet& config)
       input_vertices_(config.getParameter<edm::InputTag>("inputVertices")),
       do_csc_filter_(config.getParameter<bool>("includeCSCFilter")),
       input_csc_filter_(config.getParameter<edm::InputTag>("inputCSCFilter")),
-      do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")) {
+      do_lhe_weights_(config.getParameter<bool>("includeLHEWeights")),
+      do_filtersfromtrig_(config.getParameter<bool>("includeFiltersFromTrig")),
+      filtersfromtrig_(config.getParameter<std::vector<std::string> >("filtersfromtrig")),
+      filtersfromtrig_input_(config.getParameter<edm::InputTag>("inputfiltersfromtrig")){
   edm::ParameterSet filter_params =
       config.getParameter<edm::ParameterSet>("filters");
   std::vector<std::string> filter_names =
@@ -177,6 +184,42 @@ void ICEventInfoProducer::produce(edm::Event& event,
     info_->set_filter_result(filters_[i].first, filter_result);
     observed_filters_[filters_[i].first] = CityHash64(filters_[i].first);
   }
+
+   if(do_filtersfromtrig_){
+     edm::Handle<edm::TriggerResults> triggerResults;
+     event.getByLabel(filtersfromtrig_input_,triggerResults);
+     if( !triggerResults.isValid() ){
+       throw cms::Exception("TriggerNotValid")<<"Trigger Results is not valid\n";
+     }
+     
+     const edm::TriggerNames &triggerNames = event.triggerNames(*triggerResults);
+     for (unsigned iFilter=0;iFilter<filtersfromtrig_.size();iFilter++){
+       bool found=false;
+       bool opposite=false;
+       std::string filtername=filtersfromtrig_[iFilter];
+       if((filtersfromtrig_[iFilter]).at(0)=='!'){
+	 filtername.erase(0,1);
+	 opposite=true;
+       }
+       for(unsigned iTrigger=0;iTrigger<triggerResults->size();iTrigger++){
+	 std::string trigName = triggerNames.triggerName(iTrigger);
+     	 if(trigName.find(filtername)==std::string::npos) continue;
+	 else{
+	   found=true;
+	   if(!triggerResults->wasrun(iTrigger)){
+	     throw cms::Exception("TriggerNotRun")<<filtername<<" was not run\n";
+	   }
+	   bool filter_result=triggerResults->accept(iTrigger);
+	   if(opposite)filter_result=!filter_result;
+	   info_->set_filter_result(filtername, filter_result);
+	   observed_filters_[filtername] = CityHash64(filtername);
+	 }
+       }
+       if(!found){
+	 throw cms::Exception("TriggerNotFound")<<filtername<<" was not found in trigger results\n";
+       }
+     }
+   }
 
   edm::Handle<reco::BeamHaloSummary> beam_halo_handle;
   if (do_csc_filter_) {
