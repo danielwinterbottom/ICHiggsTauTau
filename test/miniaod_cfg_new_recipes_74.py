@@ -9,12 +9,13 @@ import FWCore.ParameterSet.VarParsing as parser
 opts = parser.VarParsing ('analysis')
 #opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_4/src/UserCode/ICHiggsTauTau/test/testinput.root', parser.VarParsing.multiplicity.singleton,
 opts.register('file', 'file:/afs/cern.ch/work/a/adewit/private/CMSSW_7_4_5/src/UserCode/ICHiggsTauTau/test/TauDataTest.root', parser.VarParsing.multiplicity.singleton,
+#opts.register('file','root://xrootd.unl.edu//store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v3/10000/009D49A5-7314-E511-84EF-0025905A605E.root',parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'file:miniaod_gg.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/GluGluToHToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/2405749F-8B6F-E411-88EE-848F69FD2910.root', parser.VarParsing.multiplicity.singleton,
 #opts.register('file', 'root://xrootd.unl.edu//store/mc/Phys14DR/VBF_HToTauTau_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU40bx25_PHYS14_25_V1-v1/00000/36224FE2-0571-E411-9664-00266CFAE30C.root', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "input file")
-opts.register('globalTag', 'MCRUN2_74_V9::All', parser.VarParsing.multiplicity.singleton,
-#opts.register('globalTag', 'GR_P_V56::All', parser.VarParsing.multiplicity.singleton,
+#opts.register('globalTag', 'MCRUN2_74_V9', parser.VarParsing.multiplicity.singleton,
+opts.register('globalTag', '74X_dataRun2_Prompt_v0', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "global tag")
 opts.register('isData', 1, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
@@ -53,7 +54,7 @@ print 'isNLO       : '+str(isNLO)
 ################################################################
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.TFileService = cms.Service("TFileService",
@@ -906,24 +907,24 @@ if release in ['74X']:
   process.icPFJetSequence += cms.Sequence(
     process.pfNoPileUpJMESequence
     )
-if release in ['74X', '74XMINIAOD']:
+#if release in ['74X', '74XMINIAOD']:
  # process.icPFJetProducer.srcConfig.BTagDiscriminators = cms.PSet()
-  process.icPFJetSequence += cms.Sequence(
-      process.ak4PFJetsCHS+
-      process.puJetMva+ 
-      process.jetPartons+
-      process.pfJetPartonMatches+
-      process.pfJetFlavourAssociation+
-      process.icPFJetFlavourCalculator+
-      process.btaggingSequenceAK4PF+
-      process.icPFJetProducer #Not from slimmed jets!
-      )
+#  process.icPFJetSequence += cms.Sequence(
+#      process.ak4PFJetsCHS+
+#      process.puJetMva+ 
+#      process.jetPartons+
+#      process.pfJetPartonMatches+
+#      process.pfJetFlavourAssociation+
+#      process.icPFJetFlavourCalculator+
+#      process.btaggingSequenceAK4PF+
+#      process.icPFJetProducer #Not from slimmed jets!
+#      )
 
-if isData:
-  process.icPFJetSequence.remove(process.jetPartons) 
-  process.icPFJetSequence.remove(process.pfJetPartonMatches)
-  process.icPFJetSequence.remove(process.pfJetFlavourAssociation) 
-  process.icPFJetSequence.remove(process.icPFJetFlavourCalculator)
+#jif isData:
+#  process.icPFJetSequence.remove(process.jetPartons) 
+#  process.icPFJetSequence.remove(process.pfJetPartonMatches)
+#  process.icPFJetSequence.remove(process.pfJetFlavourAssociation) 
+#  process.icPFJetSequence.remove(process.icPFJetFlavourCalculator)
 #if release in ['74XMINIAOD']:
 #  process.icPFJetSequence.remove(process.puJetMva) #This works for jets built from PackedCandidates in CMSSW74X but not yet in 72
 
@@ -943,7 +944,7 @@ if release in ['74XMINIAOD']:
   process.pfMetRe = pfMet.clone(src = "packedPFCandidates")
   process.pfMetRe.calculateSignificance = False # this can't be easily implemented on packed PF candidates at the moment
 
-if release in ['74X','74XMINIAOD']:
+if release in ['74X']:
   process.icPfMetProducer = producers.icMetProducer.clone(
                             input = cms.InputTag("pfMetRe"),
                             branch = cms.string("pfMet"),
@@ -954,12 +955,18 @@ if release in ['74X','74XMINIAOD']:
 if release in ['74XMINIAOD']:
   process.icPfMetProducer = producers.icMetFromPatProducer.clone(
                            branch = cms.string("pfMet"),
+                           getUncorrectedMet=cms.bool(False)
+                           )
+  process.icPfMetUncorrProducer = producers.icMetFromPatProducer.clone(
+                           branch = cms.string("pfMetUncorr"),
                            getUncorrectedMet=cms.bool(True)
                            )
 
+
 process.icPfMetSequence = cms.Sequence(
   process.pfMetRe+
-  process.icPfMetProducer
+  process.icPfMetProducer+
+  process.icPfMetUncorrProducer
 )
 
 if release in ['74XMINIAOD']:
@@ -1137,6 +1144,7 @@ process.prunedGenParticles = cms.EDProducer("ICGenParticlePruner",
     "keep abs(pdgId) == 12 || abs(pdgId) == 14 || abs(pdgId) == 16",  # all neutrinos
     "keep++ abs(pdgId) == 15",  # keep full tau decay chain
     "keep (4 <= abs(pdgId) <= 5)", # keep heavy flavour quarks
+    "keep (21 <= abs(pdgId) <= 37)",
     "keep (400 <= abs(pdgId) < 600) || (4000 <= abs(pdgId) < 6000)", # keep b and c hadrons
     "keep abs(pdgId) = 10411 || abs(pdgId) = 10421 || abs(pdgId) = 10413 || abs(pdgId) = 10423 || abs(pdgId) = 20413 || abs(pdgId) = 20423 || abs(pdgId) = 10431 || abs(pdgId) = 10433 || abs(pdgId) = 20433", # additional c hadrons for jet fragmentation studies
     "keep abs(pdgId) = 10511 || abs(pdgId) = 10521 || abs(pdgId) = 10513 || abs(pdgId) = 10523 || abs(pdgId) = 20513 || abs(pdgId) = 20523 || abs(pdgId) = 10531 || abs(pdgId) = 10533 || abs(pdgId) = 20533 || abs(pdgId) = 10541 || abs(pdgId) = 10543 || abs(pdgId) = 20543" # additional b hadrons for jet fragmentation studies
@@ -1279,25 +1287,35 @@ if release in ['70X', '74X']:
   )
 
 
-  #if isData:
-  process.icTriggerSequence += cms.Sequence(
-    process.patTrigger+
-    process.patTriggerEvent+
-    process.icTriggerPathProducer
-  )
+  if isData:
+    process.icTriggerSequence += cms.Sequence(
+      process.patTrigger+
+      process.patTriggerEvent+
+     process.icTriggerPathProducer
+    )
 
 
 if release in ['70XMINIAOD', '74XMINIAOD']:
   process.patTriggerPath = cms.Path()
- # switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
+  switchOnTrigger(process, path = 'patTriggerPath',  outputModule = '')
 
 
 process.icTriggerObjectSequence = cms.Sequence()
-#if isData:
-#process.icTriggerSequence += cms.Sequence(
-#  process.patTrigger+
-#  process.patTriggerEvent
-#)
+if isData:
+  process.icTriggerPathProducer = producers.icTriggerPathProducer.clone(
+   branch = cms.string("triggerPaths"),
+   input  = cms.InputTag("TriggerResults","","HLT"),
+   inputIsStandAlone = cms.bool(True),
+   inputPrescales = cms.InputTag("patTrigger")
+  )
+
+  process.icTriggerSequence += cms.Sequence(
+   #process.patTrigger+
+   #process.patTriggerEvent+
+   process.icTriggerPathProducer
+)
+
+
 if not isData :
   process.icEle12Mu23ObjectProducer = producers.icTriggerObjectProducer.clone(
       input   = cms.InputTag("patTriggerEvent"),
@@ -1339,6 +1357,15 @@ if not isData :
       inputIsStandAlone = cms.bool(False),
       storeOnlyIfFired = cms.bool(False)
       )
+
+  process.icEle32LooseGsfObjectProducer = producers.icTriggerObjectProducer.clone(
+      input   = cms.InputTag("patTriggerEvent"),
+      branch = cms.string("triggerObjectsEle32GsfLoose"),
+      hltPath = cms.string("HLT_Ele32_eta2p1_WPLoose_Gsf_v"),
+      inputIsStandAlone = cms.bool(False),
+      storeOnlyIfFired = cms.bool(False)
+      )
+
   
   
   process.icEle22GsfObjectProducer = producers.icTriggerObjectProducer.clone(
@@ -1427,6 +1454,7 @@ if not isData :
       process.icEle22GsfObjectProducer +
       process.icEle27GsfObjectProducer + 
       process.icEle32GsfObjectProducer +
+#      process.icEle32GsfLooseObjectProducer +
       process.icIsoMu16CaloMetObjectProducer + 
       process.icIsoMu17LooseTau20ObjectProducer +
       process.icIsoMu24IterTrkObjectProducer +
@@ -1578,7 +1606,7 @@ process.p = cms.Path(
   #process.icL1ExtraMETProducer+
  # process.icTrackSequence+
   process.icPfMetSequence+
-  process.icMvaMetSequence+
+#  process.icMvaMetSequence+
   process.icGenSequence+
   process.icPFJetSequence+
   process.icTriggerSequence+
