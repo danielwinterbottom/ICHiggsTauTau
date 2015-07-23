@@ -12,6 +12,9 @@
 #pragma link C++ class std::pair<std::string, bool>+;
 #pragma link C++ class std::pair<unsigned long, float>+;
 
+#pragma link C++ class std::pair<std::string,ic::Candidate>+;
+#pragma link C++ class std::vector<std::pair<std::string,ic::Candidate> >+;
+
 #pragma link C++ class ic::Candidate+;
 #pragma link C++ class std::vector<ic::Candidate>+;
 

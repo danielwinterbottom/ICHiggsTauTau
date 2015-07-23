@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include "Math/Vector4D.h"
+#include "Math/Vector4Dfwd.h"
 #include "boost/functional/hash.hpp"
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -15,7 +17,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
-
+#include "FWCore/Utilities/interface/Exception.h"
 
 /**
  * @brief See documentation [here](\ref objs-met)
@@ -59,6 +61,9 @@ class ICMetProducer : public edm::EDProducer {
   SigTags metsig_;
   SigTagsMethod2 metsig_method2_;
   bool get_raw_from_pat_;
+
+  bool do_metuncertainties_;
+  std::vector<std::string> metuncertainties_;
 };
 
 template <class T>
@@ -83,7 +88,9 @@ ICMetProducer<T>::ICMetProducer(const edm::ParameterSet& config)
       do_external_metsig_(config.getParameter<bool>("includeExternalMetsig")),
       do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
       metsig_(config.getParameterSet("metsig")),
-      metsig_method2_(config.getParameterSet("metsig_method2")) {
+      metsig_method2_(config.getParameterSet("metsig_method2")),
+      do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
+      metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -99,7 +106,9 @@ ICMetProducer<pat::MET>::ICMetProducer(const edm::ParameterSet& config)
       do_external_metsig_method2_(config.getParameter<bool>("includeExternalMetsigMethod2")),
       metsig_(config.getParameterSet("metsig")),
       metsig_method2_(config.getParameterSet("metsig_method2")),
-      get_raw_from_pat_(config.getParameter<bool>("getUncorrectedMet")){
+      get_raw_from_pat_(config.getParameter<bool>("getUncorrectedMet")),
+      do_metuncertainties_(config.getParameter<bool>("includeMetUncertainties")),
+      metuncertainties_(config.getParameter<std::vector<std::string> >("metuncertainties")) {
   met_ = new std::vector<ic::Met>();
   PrintHeaderWithProduces(config, input_, branch_);
   PrintOptional(1, do_custom_id_, "includeCustomID");
@@ -196,8 +205,11 @@ void ICMetProducer<reco::MET>::constructSpecific(
       dest.set_phi(src.phi());
       dest.set_energy(src.energy());
       dest.set_sum_et(src.sumEt());
-     }
-   }
+    }
+    if(do_metuncertainties_){
+      throw cms::Exception("OptionNotSupported")<<"metuncertainties not supported for reco::met\n";
+	}
+  }
 
 template <>
 void ICMetProducer<pat::MET>::constructSpecific(
@@ -212,6 +224,37 @@ void ICMetProducer<pat::MET>::constructSpecific(
         dest.set_phi(src.phi());
         dest.set_energy(src.energy());
         dest.set_sum_et(src.sumEt());
+#if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >=4
+	if(do_metuncertainties_){
+	  std::vector<std::pair<std::string,ic::Candidate> > metuncs;
+	  for(unsigned iunc=0;iunc<metuncertainties_.size();iunc++){
+	    ROOT::Math::PtEtaPhiEVector shiftedvector;
+	    if(metuncertainties_[iunc]=="JetEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::JetEnUp);
+	    else if(metuncertainties_[iunc]=="JetEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::JetEnDown);
+	    else if(metuncertainties_[iunc]=="JetResUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::JetResUp);
+	    else if(metuncertainties_[iunc]=="JetResDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::JetResDown);
+	    else if(metuncertainties_[iunc]=="MuonEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::MuonEnUp);
+	    else if(metuncertainties_[iunc]=="MuonEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::MuonEnDown);
+	    else if(metuncertainties_[iunc]=="ElectronEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::ElectronEnUp);
+	    else if(metuncertainties_[iunc]=="ElectronEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::ElectronEnDown);
+	    else if(metuncertainties_[iunc]=="TauEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::TauEnUp);
+	    else if(metuncertainties_[iunc]=="TauEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::TauEnDown);
+	    else if(metuncertainties_[iunc]=="UnclusteredEnUp")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::UnclusteredEnUp);
+	    else if(metuncertainties_[iunc]=="UnclusteredEnDown")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::UnclusteredEnDown);
+	    else if(metuncertainties_[iunc]=="NoShift")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::NoShift);
+	    else if(metuncertainties_[iunc]=="METUncertaintySize")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::METUncertaintySize);
+	    else{
+	      throw cms::Exception("UncertaintyNotRecognised")<<metuncertainties_[iunc]<<" is not a recognised uncertainty!\n";
+	    }
+	    ic::Candidate thismet;
+	    thismet.set_vector(shiftedvector);
+	    std::pair<std::string,ic::Candidate> thispair(metuncertainties_[iunc],thismet);
+	    metuncs.push_back(thispair);
+	  }
+	  dest.set_shiftedmets(metuncs);
+
+	}
+#endif
       } else {
 #if CMSSW_MAJOR_VERSION >=7 && CMSSW_MINOR_VERSION >=4
         dest.set_pt(src.uncorrectedPt());

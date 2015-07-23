@@ -1,6 +1,7 @@
 #ifndef ICHiggsTauTau_Met_hh
 #define ICHiggsTauTau_Met_hh
 #include <vector>
+#include <utility>
 #include "UserCode/ICHiggsTauTau/interface/Candidate.hh"
 #include "Rtypes.h"
 
@@ -37,6 +38,10 @@ class Met : public Candidate {
   inline double yy_sig() const { return yy_sig_; }
   /**@}*/
 
+/// The vector of shifted mets
+  inline std::vector<std::pair<std::string,ic::Candidate> > shiftedmets() const { return shiftedmets_; }
+  /**@}*/
+
   /// @name Setters
   /**@{*/
   /// @copybrief sum_et()
@@ -58,6 +63,10 @@ class Met : public Candidate {
   inline void set_yy_sig(double const& yy_sig) { yy_sig_ = yy_sig; }
   /**@}*/
 
+  /// @copybrief shiftedmets()
+  inline void set_shiftedmets(std::vector<std::pair<std::string,ic::Candidate> > const& shiftedmets) { shiftedmets_ = shiftedmets; }
+  /**@}*/
+
  private:
   double sum_et_;
   double et_sig_;
@@ -65,10 +74,11 @@ class Met : public Candidate {
   double xy_sig_;
   double yx_sig_;
   double yy_sig_;
+  std::vector<std::pair<std::string,ic::Candidate> > shiftedmets_;
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Met, 2);
+  ClassDef(Met, 4);
  #endif
 };
 
