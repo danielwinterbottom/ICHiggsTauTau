@@ -17,7 +17,7 @@
 #include "UserCode/ICHiggsTauTau/interface/Met.hh"
 #include "UserCode/ICHiggsTauTau/interface/StaticTree.hh"
 #include "UserCode/ICHiggsTauTau/plugins/PrintConfigTools.h"
-
+#include "FWCore/Utilities/interface/Exception.h"
 
 /**
  * @brief See documentation [here](\ref objs-met)
@@ -207,8 +207,7 @@ void ICMetProducer<reco::MET>::constructSpecific(
       dest.set_sum_et(src.sumEt());
     }
     if(do_metuncertainties_){
-      std::cout<<"metuncertainties not supported for reco::met"<<std::endl;
-      throw;
+      throw cms::Exception("OptionNotSupported")<<"metuncertainties not supported for reco::met\n";
 	}
   }
 
@@ -245,8 +244,7 @@ void ICMetProducer<pat::MET>::constructSpecific(
 	    else if(metuncertainties_[iunc]=="NoShift")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::NoShift);
 	    else if(metuncertainties_[iunc]=="METUncertaintySize")shiftedvector=src.shiftedP4(pat::MET::METUncertainty::METUncertaintySize);
 	    else{
-	      std::cout<<metuncertainties_[iunc]<<" is not a recognised uncertainty!"<<std::endl;
-	      throw;
+	      throw cms::Exception("UncertaintyNotRecognised")<<metuncertainties_[iunc]<<" is not a recognised uncertainty!\n";
 	    }
 	    ic::Candidate thismet;
 	    thismet.set_vector(shiftedvector);
