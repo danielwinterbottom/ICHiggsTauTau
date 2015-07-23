@@ -78,7 +78,7 @@ class Met : public Candidate {
 
  #ifndef SKIP_CINT_DICT
  public:
-  ClassDef(Met, 3);
+  ClassDef(Met, 4);
  #endif
 };
 
