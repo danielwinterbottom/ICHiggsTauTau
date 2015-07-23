@@ -1071,11 +1071,12 @@ namespace ic {
       std::vector<GenParticle *> tmp_other;
       unsigned n_st1 = 0;
       for (unsigned i = 0; i < tmp.size(); ++i) {
-        if(tmp[i]->status() == 1){
+        if (tmp[i]->status() == 1) {
           ++n_st1;
           result_set.insert(tmp[i]);
         } else {
           std::vector<GenParticle *> tmp_daughters = ExtractDaughters(tmp[i], input);
+          for(unsigned j = 0; j < tmp_daughters.size(); ++j) tmp_other.push_back(tmp_daughters[j]);
         }
       }
       tmp = tmp_other;
