@@ -14,7 +14,7 @@ config.Data.outLFNDirBase='/store/user/pdunne/'+prod+'_MET/'
 config.JobType.psetName = '/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinv_7_4_6_miniAODcfg.py'
 config.JobType.pluginName = 'Analysis'
 config.JobType.outputFiles = ['EventTree.root']
-config.JobType.pyCfgParams = ['isData=1', 'release=74XMINIAOD', 'globalTag=74X_dataRun2_Prompt_v0']
+config.JobType.pyCfgParams = ['isData=1', 'release=74XMINIAOD', 'globalTag=74X_dataRun2_Prompt_v1']
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000
 config.Data.splitting = 'EventAwareLumiBased'
