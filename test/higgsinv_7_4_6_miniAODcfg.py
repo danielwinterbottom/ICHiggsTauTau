@@ -64,7 +64,7 @@ process.TFileService = cms.Service("TFileService",
 # Message Logging, summary, and number of events                                                                                                          
 ################################################################                                                                                          
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10000)
+  input = cms.untracked.int32(1000)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
@@ -85,7 +85,7 @@ if not isData:
 else:
   process.source = cms.Source("PoolSource", fileNames =
        #                     cms.untracked.vstring('file:/vols/cms04/pjd12/testminiaodfiles/58D548B0-AB6F-E411-B468-3417EBE34D1A.root') 
-                              cms.untracked.vstring('root://xrootd.unl.edu//store/data/Run2015B/MET/MINIAOD/PromptReco-v1/000/251/251/00000/0EA22A54-9027-E511-A3D4-02163E0133E3.root')
+                              cms.untracked.vstring('root://xrootd.unl.edu//store/data/Run2015B/MET/MINIAOD/17Jul2015-v1/30000/64C3BF26-C32E-E511-8430-002618943982.root')
 
                               
                               )
@@ -759,12 +759,13 @@ process.load("RecoMET/METProducers.METSignificanceParams_cfi")
 
 
 #get type 1 met straight from miniAOD !!update to take in output of met significance calculator
-process.ictype1PfMetProducer = producers.icMetProducer.clone(
+process.ictype1PfMetProducer = producers.icMetFromPatProducer.clone(
                                                     input = cms.InputTag("slimmedMETs"),
                                                     branch = cms.string("pfMetType1Collection"),
                                                     includeCustomID = cms.bool(False),
                                                     inputCustomID = cms.InputTag(""),
-                                                    includeExternalMetsigMethod2 = cms.bool(True)
+                                                    includeExternalMetsigMethod2 = cms.bool(True),
+                                                    includeMetUncertainties = cms.bool(True)
                                                     )
 
 # process.ictype1PfMetProducermetsigoutofbox = producers.icMetProducer.clone(
@@ -821,6 +822,7 @@ process.icMetSequence = cms.Sequence(
 
 #!!MET UNCERTAINTIES
 #!!MET FILTERS
+
 
 ################################################################                                                                                            
 #!! Simulation only: GenParticles, GenJets, PileupInfo                                                                                                        
@@ -1038,6 +1040,7 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputVertices       = cms.InputTag("selectedVertices"),
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
+  includeFiltersFromTrig = cms.bool(True)
 )
 
 process.icEventInfoSequence = cms.Sequence(

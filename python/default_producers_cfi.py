@@ -178,7 +178,11 @@ icMetProducer = cms.EDProducer('ICPFMetProducer',
   metsig_method2 = cms.PSet(
     metsig      = cms.InputTag("METSignificance","METSignificance"),
     metsigcov = cms.InputTag("METSignificance","METCovariance")
-    )
+    ),
+  includeMetUncertainties = cms.bool(False),
+  metuncertainties = cms.vstring(
+    'JetEnUp','JetEnDown','JetResUp','JetResDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown'
+  )
   
 )
 
@@ -200,9 +204,11 @@ icMetFromPatProducer = cms.EDProducer('ICPFMetFromPatProducer',
   metsig_method2 = cms.PSet(
     metsig      = cms.InputTag("METSignificance","METSignificance"),
     metsigcov = cms.InputTag("METSignificance","METCovariance")
-    )
-
-  
+    ),
+  includeMetUncertainties = cms.bool(False),
+  metuncertainties = cms.vstring(
+    'JetEnUp','JetEnDown','JetResUp','JetResDown','MuonEnUp','MuonEnDown','ElectronEnUp','ElectronEnDown','TauEnUp','TauEnDown','UnclusteredEnUp','UnclusteredEnDown'
+  )
 )
 
 ## [Met]
@@ -498,7 +504,10 @@ icEventInfoProducer = cms.EDProducer('ICEventInfoProducer',
   weights             = cms.PSet(
   ),
   genFilterWeights    = cms.PSet(
-  )
+  ),
+  includeFiltersFromTrig = cms.bool(False),
+  filtersfromtrig     = cms.vstring("Flag_HBHENoiseFilter","Flag_CSCTightHaloFilter","Flag_hcalLaserEventFilter","Flag_EcalDeadCellTriggerPrimitiveFilter","Flag_goodVertices","Flag_trackingFailureFilter","Flag_eeBadScFilter","Flag_ecalLaserCorrFilter","Flag_trkPOGFilters","Flag_trkPOG_manystripclus53X","Flag_trkPOG_toomanystripclus53X","Flag_trkPOG_logErrorTooManyClusters","Flag_METFilters"),
+  inputfiltersfromtrig = cms.InputTag("TriggerResults")
 )
 ## [EventInfo]
 
