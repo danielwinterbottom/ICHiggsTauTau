@@ -30,6 +30,8 @@ opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('release', '74XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
+opts.register('isNLO', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Store sign of weight?")
 
 opts.parseArguments()
 infile      = opts.file
@@ -37,6 +39,7 @@ if not infile: infile = "file:/tmp/file.root"
 tag         = opts.globalTag
 isData      = opts.isData
 release     = opts.release
+isNLO       = opts.isNLO
 
 if not release in ["74XMINIAOD"]:
   print 'Release not recognised, exiting!'
@@ -1037,6 +1040,7 @@ process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
 
 
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+  isNlo               =isNLO,
   includeJetRho       = cms.bool(True),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),

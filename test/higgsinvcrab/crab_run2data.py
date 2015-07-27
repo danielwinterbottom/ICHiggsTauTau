@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod ='Jul24'
+prod ='Jul27'
 config = Configuration()
 config.section_('General')
 config.section_('Data')
@@ -53,11 +53,11 @@ if __name__ == '__main__':
 
     tasks.append(('MET-2015B-PromptReco-v1','/MET/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
 
-    tasks.append(('SingleMu-2015B-PromptReco-v1','/SingleMu/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
+    tasks.append(('SingleMuon-2015B-PromptReco-v1','/SingleMuon/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
 
     tasks.append(('MET-2015B-17Jul2015-v1','/MET/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
 
-    tasks.append(('SingleMu-2015B-17Jul2015-v1','/SingleMu/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
+    tasks.append(('SingleMuon-2015B-17Jul2015-v1','/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
     
     for task in tasks:
         print task[0]
