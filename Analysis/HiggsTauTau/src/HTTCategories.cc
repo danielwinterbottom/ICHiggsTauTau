@@ -28,6 +28,7 @@ namespace ic {
       make_sync_ntuple_ = false;
       sync_output_name_ = "SYNC.root";
       is_embedded_=false;
+      is_data_=false;
       kinfit_mode_ = 0; //0 = don't run, 1 = run simple 125,125 default fit, 2 = run extra masses default fit, 3 = run m_bb only fit
       systematic_shift_ = false;
       add_Hhh_variables_ = false; //set to include custom variables for the H->hh analysis
@@ -338,9 +339,9 @@ namespace ic {
           synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_1", &l3Hits_1,
                          "byCombinedIsolationDeltaBetaCorrRaw3Hits_1/F");
           synctree_->Branch("byIsolationMVA3newDMwoLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
-          synctree_->Branch("byIsolationMVA3oldDMwoLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
-          synctree_->Branch("byIsolationMVA3newDMwLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
-          synctree_->Branch("byIsolationMVA3oldDMwLTraw_1", &lbyIsolationMVA3newDMwoLTraw_1,"byIsolationMVA3newDMwoLTraw_1/F");
+          synctree_->Branch("byIsolationMVA3oldDMwoLTraw_1", &lbyIsolationMVA3oldDMwoLTraw_1,"byIsolationMVA3oldDMwoLTraw_1/F");
+          synctree_->Branch("byIsolationMVA3newDMwLTraw_1", &lbyIsolationMVA3newDMwLTraw_1,"byIsolationMVA3newDMwLTraw_1/F");
+          synctree_->Branch("byIsolationMVA3oldDMwLTraw_1", &lbyIsolationMVA3oldDMwLTraw_1,"byIsolationMVA3oldDMwLTraw_1/F");
           synctree_->Branch("againstElectronLooseMVA5_1", &lagainstElectronLooseMVA5_1, "againstElectronLooseMVA5_1/F");
           synctree_->Branch("againstElectronMediumMVA5_1", &lagainstElectronMediumMVA5_1, "againstElectronMediumMVA5_1/F");
           synctree_->Branch("againstElectronTightMVA5_1", &lagainstElectronTightMVA5_1, "againstElectronTightMVA5_1/F");
@@ -355,9 +356,9 @@ namespace ic {
           synctree_->Branch("byCombinedIsolationDeltaBetaCorrRaw3Hits_2", &l3Hits_2,
                          "byCombinedIsolationDeltaBetaCorrRaw3Hits_2/F");
           synctree_->Branch("byIsolationMVA3newDMwoLTraw_2", &lbyIsolationMVA3newDMwoLTraw_2,"byIsolationMVA3newDMwoLTraw_2/F");
-          synctree_->Branch("byIsolationMVA3oldDMwoLTraw_2", &lbyIsolationMVA3newDMwoLTraw_2,"byIsolationMVA3newDMwoLTraw_2/F");
-          synctree_->Branch("byIsolationMVA3newDMwLTraw_2", &lbyIsolationMVA3newDMwoLTraw_2,"byIsolationMVA3newDMwoLTraw_2/F");
-          synctree_->Branch("byIsolationMVA3oldDMwLTraw_2", &lbyIsolationMVA3newDMwoLTraw_2,"byIsolationMVA3newDMwoLTraw_2/F");
+          synctree_->Branch("byIsolationMVA3oldDMwoLTraw_2", &lbyIsolationMVA3oldDMwoLTraw_2,"byIsolationMVA3oldDMwoLTraw_2/F");
+          synctree_->Branch("byIsolationMVA3newDMwLTraw_2", &lbyIsolationMVA3newDMwLTraw_2,"byIsolationMVA3newDMwLTraw_2/F");
+          synctree_->Branch("byIsolationMVA3oldDMwLTraw_2", &lbyIsolationMVA3oldDMwLTraw_2,"byIsolationMVA3oldDMwLTraw_2/F");
           synctree_->Branch("againstElectronLooseMVA5_1", &lagainstElectronLooseMVA5_1, "againstElectronLooseMVA5_1/F");
           synctree_->Branch("againstElectronLooseMVA5_2", &lagainstElectronLooseMVA5_2, "againstElectronLooseMVA5_2/F");
           synctree_->Branch("againstElectronMediumMVA5_2", &lagainstElectronMediumMVA5_2, "againstElectronMediumMVA5_2/F");
@@ -513,7 +514,7 @@ namespace ic {
     std::vector<PileupInfo *> puInfo;
     float true_int = -1;
 
-    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || strategy_==strategy::spring15) {
+    if (event->Exists("pileupInfo") || strategy_ == strategy::phys14 || (strategy_==strategy::spring15&&!is_data_) ) {
      puInfo = event->GetPtrVec<PileupInfo>("pileupInfo");
       for (unsigned i = 0; i < puInfo.size(); ++i) {
         if (puInfo[i]->bunch_crossing() == 0)
@@ -575,7 +576,8 @@ namespace ic {
     Candidate const* lep1 = ditau->GetCandidate("lepton1");
     Candidate const* lep2 = ditau->GetCandidate("lepton2");
 //    std::vector <Met const* mets = event->GetPtrVec<Met>(met_label_);
-    std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+   // std::vector<Met*> met_vec = event->GetPtrVec<Met>(met_label_);
+    std::vector<Met*> met_vec = event->GetPtrVec<Met>("pfMet");
     Met const* mets = met_vec.at(0);  
 
     std::vector<PFJet*> jets = event->GetPtrVec<PFJet>(jets_label_);
@@ -801,7 +803,7 @@ namespace ic {
         lchargedIsoPtSum_2 = tau->HasTauID("chargedIsoPtSum") ? tau->GetTauID("chargedIsoPtSum") : 0.;
         lneutralIsoPtSum_2 = tau->HasTauID("neutralIsoPtSum") ? tau->GetTauID("neutralIsoPtSum") : 0.;
         lpuCorrPtSum_2 = tau->HasTauID("puCorrPtSum") ? tau->GetTauID("puCorrPtSum") : 0.;
-        ldecayModeFindingOldDMs_2 = tau->HasTauID("decayModeFindingOldDMs") ? tau->GetTauID("decayModeFindingOldDMs") : 0;
+        ldecayModeFindingOldDMs_2 = tau->HasTauID("decayModeFinding") ? tau->GetTauID("decayModeFinding") : 0;
         lbyIsolationMVA3newDMwoLTraw_2 = tau->HasTauID("byIsolationMVA3newDMwoLTraw") ? tau->GetTauID("byIsolationMVA3newDMwoLTraw") : 0.;
         lbyIsolationMVA3oldDMwoLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwoLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwoLTraw") : 0.;
         lbyIsolationMVA3newDMwLTraw_2 = tau->HasTauID("byIsolationMVA3newDMwLTraw") ? tau->GetTauID("byIsolationMVA3newDMwLTraw") : 0.;
@@ -846,7 +848,7 @@ namespace ic {
         lchargedIsoPtSum_2 = tau->HasTauID("chargedIsoPtSum") ? tau->GetTauID("chargedIsoPtSum") : 0.;
         lneutralIsoPtSum_2 = tau->HasTauID("neutralIsoPtSum") ? tau->GetTauID("neutralIsoPtSum") : 0.;
         lpuCorrPtSum_2 = tau->HasTauID("puCorrPtSum") ? tau->GetTauID("puCorrPtSum") : 0.;
-        ldecayModeFindingOldDMs_2 = tau->HasTauID("decayModeFindingOldDMs") ? tau->GetTauID("decayModeFindingOldDMs") : 0;
+        ldecayModeFindingOldDMs_2 = tau->HasTauID("decayModeFinding") ? tau->GetTauID("decayModeFinding") : 0;
         lbyIsolationMVA3newDMwoLTraw_2 = tau->HasTauID("byIsolationMVA3newDMwoLTraw") ? tau->GetTauID("byIsolationMVA3newDMwoLTraw") : 0.;
         lbyIsolationMVA3oldDMwoLTraw_2 = tau->HasTauID("byIsolationMVA3oldDMwoLTraw") ? tau->GetTauID("byIsolationMVA3oldDMwoLTraw") : 0.;
         lbyIsolationMVA3newDMwLTraw_2 = tau->HasTauID("byIsolationMVA3newDMwLTraw") ? tau->GetTauID("byIsolationMVA3newDMwLTraw") : 0.;
@@ -893,8 +895,8 @@ namespace ic {
       Tau const* tau2 = dynamic_cast<Tau const*>(lep2);
       d0_1_ = tau1->lead_dxy_vertex();
       dz_1_ = tau1->lead_dz_vertex();
-      d0_2_ = tau1->lead_dxy_vertex();
-      dz_2_ = tau1->lead_dz_vertex();
+      d0_2_ = tau2->lead_dxy_vertex();
+      dz_2_ = tau2->lead_dz_vertex();
       if(strategy_ == strategy::phys14 || strategy_ == strategy::spring15) {
         iso_1_ = tau1->GetTauID("byCombinedIsolationDeltaBetaCorrRaw3Hits");
         mva_1_ = tau1->GetTauID("againstElectronMVA5raw");
@@ -923,7 +925,7 @@ namespace ic {
         lchargedIsoPtSum_1 = tau1->HasTauID("chargedIsoPtSum") ? tau1->GetTauID("chargedIsoPtSum") : 0.;
         lneutralIsoPtSum_1 = tau1->HasTauID("neutralIsoPtSum") ? tau1->GetTauID("neutralIsoPtSum") : 0.;
         lpuCorrPtSum_1 = tau1->HasTauID("puCorrPtSum") ? tau1->GetTauID("puCorrPtSum") : 0.;
-        ldecayModeFindingOldDMs_1 = tau1->HasTauID("decayModeFindingOldDMs") ? tau1->GetTauID("decayModeFindingOldDMs") : 0;
+        ldecayModeFindingOldDMs_1 = tau1->HasTauID("decayModeFinding") ? tau1->GetTauID("decayModeFinding") : 0;
         lbyIsolationMVA3newDMwoLTraw_1 = tau1->HasTauID("byIsolationMVA3newDMwoLTraw") ? tau1->GetTauID("byIsolationMVA3newDMwoLTraw") : 0.;
         lbyIsolationMVA3oldDMwoLTraw_1 = tau1->HasTauID("byIsolationMVA3oldDMwoLTraw") ? tau1->GetTauID("byIsolationMVA3oldDMwoLTraw") : 0.;
         lbyIsolationMVA3newDMwLTraw_1 = tau1->HasTauID("byIsolationMVA3newDMwLTraw") ? tau1->GetTauID("byIsolationMVA3newDMwLTraw") : 0.;
@@ -932,7 +934,7 @@ namespace ic {
         lchargedIsoPtSum_2 = tau2->HasTauID("chargedIsoPtSum") ? tau2->GetTauID("chargedIsoPtSum") : 0.;
         lneutralIsoPtSum_2 = tau2->HasTauID("neutralIsoPtSum") ? tau2->GetTauID("neutralIsoPtSum") : 0.;
         lpuCorrPtSum_2 = tau2->HasTauID("puCorrPtSum") ? tau2->GetTauID("puCorrPtSum") : 0.;
-        ldecayModeFindingOldDMs_2 = tau2->HasTauID("decayModeFindingOldDMs") ? tau2->GetTauID("decayModeFindingOldDMs") : 0;
+        ldecayModeFindingOldDMs_2 = tau2->HasTauID("decayModeFinding") ? tau2->GetTauID("decayModeFinding") : 0;
         lbyIsolationMVA3newDMwoLTraw_2 = tau2->HasTauID("byIsolationMVA3newDMwoLTraw") ? tau2->GetTauID("byIsolationMVA3newDMwoLTraw") : 0.;
         lbyIsolationMVA3oldDMwoLTraw_2 = tau2->HasTauID("byIsolationMVA3oldDMwoLTraw") ? tau2->GetTauID("byIsolationMVA3oldDMwoLTraw") : 0.;
         lbyIsolationMVA3newDMwLTraw_2 = tau2->HasTauID("byIsolationMVA3newDMwLTraw") ? tau2->GetTauID("byIsolationMVA3newDMwLTraw") : 0.;
@@ -958,15 +960,15 @@ namespace ic {
     n_jets_csv_ = jets_csv.size();
     n_loose_bjets_ = loose_bjets.size();
 
-    if (n_jets_ >= 1) {
-      jpt_1_ = jets[0]->pt();
-      jeta_1_ = jets[0]->eta();
-      jphi_1_ = jets[0]->phi();
-      jrawf_1_ = jets[0]->uncorrected_energy()/jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
+    if (n_lowpt_jets_ >= 1) {
+      jpt_1_ = lowpt_jets[0]->pt();
+      jeta_1_ = lowpt_jets[0]->eta();
+      jphi_1_ = lowpt_jets[0]->phi();
+      jrawf_1_ = lowpt_jets[0]->uncorrected_energy()/jets[0]->energy();//* (jets[0]->pt() / jets[0]->energy());
       jptunc_1_ = 0.0;
-      jmva_1_ = jets[0]->pu_id_mva_value();
-      jlrm_1_ = jets[0]->linear_radial_moment();
-      jctm_1_ = jets[0]->charged_multiplicity_nopu();
+      jmva_1_ = lowpt_jets[0]->pu_id_mva_value();
+      jlrm_1_ = lowpt_jets[0]->linear_radial_moment();
+      jctm_1_ = lowpt_jets[0]->charged_multiplicity_nopu();
       std::vector<ic::Tau *> taus = event->GetPtrVec<Tau>("taus");
       std::vector<ic::Jet *> leadjet = { jets[0] };
       std::vector<std::pair<ic::Jet *, ic::Tau *>> matches = MatchByDR(leadjet, taus, 0.5, true, true);
@@ -987,25 +989,25 @@ namespace ic {
     }
 
     if (n_lowpt_jets_ >= 2) {
-      jpt_2_ = jets[1]->pt();
-      jeta_2_ = jets[1]->eta();
-      jphi_2_ = jets[1]->phi();
-      jrawf_2_ = jets[1]->uncorrected_energy()/jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
+      jpt_2_ = lowpt_jets[1]->pt();
+      jeta_2_ = lowpt_jets[1]->eta();
+      jphi_2_ = lowpt_jets[1]->phi();
+      jrawf_2_ = lowpt_jets[1]->uncorrected_energy()/jets[1]->energy();// * (jets[1]->pt() / jets[1]->energy());
       jptunc_2_ = 0.0;
-      jmva_2_ = jets[1]->pu_id_mva_value();
-      jlrm_2_ = jets[1]->linear_radial_moment();
-      jctm_2_ = jets[1]->charged_multiplicity_nopu();
-      mjj_ = (jets[0]->vector() + jets[1]->vector()).M();
-      jdeta_ = fabs(jets[0]->eta() - jets[1]->eta());
-      jdphi_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(jets[0]->vector(), jets[1]->vector()));
-      double eta_high = (jets[0]->eta() > jets[1]->eta()) ? jets[0]->eta() : jets[1]->eta();
-      double eta_low = (jets[0]->eta() > jets[1]->eta()) ? jets[1]->eta() : jets[0]->eta();
+      jmva_2_ = lowpt_jets[1]->pu_id_mva_value();
+      jlrm_2_ = lowpt_jets[1]->linear_radial_moment();
+      jctm_2_ = lowpt_jets[1]->charged_multiplicity_nopu();
+      mjj_ = (lowpt_jets[0]->vector() + lowpt_jets[1]->vector()).M();
+      jdeta_ = fabs(lowpt_jets[0]->eta() - lowpt_jets[1]->eta());
+      jdphi_ =  std::fabs(ROOT::Math::VectorUtil::DeltaPhi(lowpt_jets[0]->vector(), lowpt_jets[1]->vector()));
+      double eta_high = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[0]->eta() : lowpt_jets[1]->eta();
+      double eta_low = (lowpt_jets[0]->eta() > lowpt_jets[1]->eta()) ? lowpt_jets[1]->eta() : lowpt_jets[0]->eta();
       n_jetsingap_ = 0;
       n_jetsingap20_ = 0;
       if (n_lowpt_jets_ > 2) {
-        for (unsigned i = 2; i < jets.size(); ++i) {
-         if (jets[i]->pt() > 30.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
-         if (jets[i]->pt() > 20.0 &&  jets[i]->eta() > eta_low && jets[i]->eta() < eta_high) ++n_jetsingap_;
+        for (unsigned i = 2; i < lowpt_jets.size(); ++i) {
+         if (lowpt_jets[i]->pt() > 30.0 &&  lowpt_jets[i]->eta() > eta_low && lowpt_jets[i]->eta() < eta_high) ++n_jetsingap_;
+         if (lowpt_jets[i]->pt() > 20.0 &&  lowpt_jets[i]->eta() > eta_low && lowpt_jets[i]->eta() < eta_high) ++n_jetsingap20_;
         }
       }
     } else {
@@ -1072,13 +1074,13 @@ namespace ic {
     }
 
 
-    if (prebjets.size() >= 1) {
-      bcsv_1_ = prebjets[0]->GetBDiscriminator(btag_label);
+    if (n_bjets_ >= 1) {
+      bcsv_1_ = bjets[0]->GetBDiscriminator(btag_label);
     } else {
       bcsv_1_ = -9999;
     }
-    if (prebjets.size() >= 2) {
-      bcsv_2_ = prebjets[1]->GetBDiscriminator(btag_label);
+    if (n_bjets_ >= 2) {
+      bcsv_2_ = bjets[1]->GetBDiscriminator(btag_label);
     } else {
       bcsv_2_ = -9999;
     }

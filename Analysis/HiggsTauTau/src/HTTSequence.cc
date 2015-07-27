@@ -42,6 +42,7 @@
 #include "HiggsTauTau/interface/HTTFilter.h"
 #include "Modules/interface/LumiMask.h"
 #include "HiggsTauTau/interface/VertexFilter.h"
+#include "HiggsTauTau/interface/EffectiveEvents.h"
 
 // Generic modules
 #include "Modules/interface/SimpleFilter.h"
@@ -64,6 +65,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   output_folder=output_folder+"/"+addit_output_folder+"/";
   //output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
   output_name=output_name + "_" + chan + "_" + postf + ".root";
+  lumimask_output_name=output_name + "_" +chan + "_" + postf; 
   special_mode=json["special_mode"].asUInt();
   if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
   //if(json["make_sync_ntuple"].asBool()) {
@@ -117,7 +119,7 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
        muon_dz = 0.2;
        elec_pt = 13.;
        elec_eta = 2.5;
-       muon_pt = 9;
+       muon_pt = 10;
        muon_eta = 2.4;
     } else {
       elec_pt = 10.0;
@@ -337,6 +339,7 @@ void HTTSequence::BuildSequence(){
   std::cout << boost::format(param_fmt) % "hadronic_tau_selector" % hadronic_tau_selector;
   std::cout << boost::format(param_fmt) % "mva_met_mode" % mva_met_mode;
   std::cout << boost::format(param_fmt) % "make_sync_ntuple" % js["make_sync_ntuple"].asBool();
+  std::cout << boost::format(param_fmt) % "save_output_jsons" % js["save_output_jsons"].asBool();
   std::cout << boost::format(param_fmt) % "allowed_tau_modes" % allowed_tau_modes;
   std::cout << boost::format(param_fmt) % "moriond_tau_scale" % moriond_tau_scale;
 //  std::cout << boost::format(param_fmt) % "large_tscale_shift" % large_tscale_shift;
@@ -400,7 +403,10 @@ void HTTSequence::BuildSequence(){
   //		to_check.push_back(addit_to_check.at(j));
 	 // }
    } 
-
+ if(js["get_effective"].asBool()){
+  BuildModule(EffectiveEvents("EffectiveEvents")
+    .set_fs(fs.get()));
+  }else{
 
   HTTPrint httPrint("HTTPrint");
   if(era_type==era::data_2015){
@@ -427,7 +433,7 @@ void HTTSequence::BuildSequence(){
   }
 
 
-  if(is_data && strategy_type!=strategy::phys14 &&strategy_type!=strategy::spring15){
+  if(is_data && strategy_type!=strategy::phys14){
   std::string data_json = "";
   if (era_type == era::data_2011) {
     if (channel == channel::em) {
@@ -437,18 +443,26 @@ void HTTSequence::BuildSequence(){
     }
   }             
   if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
-  if (era_type == era::data_2015)  data_json= "input/json/data_2012_rereco.txt";
+  //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
+  if (era_type == era::data_2015)  data_json= "input/json/json_DCSONLY_Run2015B_2007.txt";
 
-  BuildModule(LumiMask("LumiMask")
-    .set_produce_output_jsons("")
-    .set_input_file(data_json));
-  }
+ LumiMask lumiMask = LumiMask("LumiMask")
+   .set_produce_output_jsons("")
+   .set_input_file(data_json);
+ 
+ if(js["save_output_jsons"].asBool()){
+  lumiMask.set_produce_output_jsons(lumimask_output_name.c_str());
+ }
+ 
+ BuildModule(lumiMask);
+ }
 
-if(ztautau_mode > 0 && strategy_type==strategy::paper2013){
+
+if(ztautau_mode > 0 && strategy_type != strategy::spring15){
   SimpleCounter<GenParticle> zTauTauFilter = SimpleCounter<GenParticle>("ZToTauTauSelector")
     .set_input_label("genParticles")
     .set_predicate(
-      (bind(&GenParticle::status, _1) == 3) && 
+      (bind(&GenParticle::status,_1) == 3) &&
       (bind(abs,(bind(&GenParticle::pdgid, _1))) == 15))
     .set_min(2);
   if (ztautau_mode == 2) zTauTauFilter.set_min(0).set_max(0);
@@ -530,17 +544,21 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 
   // Trigger filtering
 //    if (js["run_trg_filter"].asBool()) {
+// if(is_data){
+   if(channel==channel::em || channel==channel::tt || js["do_leptonplustau"].asBool()||js["do_singlelepton"].asBool()){
     if(!is_embedded || (is_embedded&&strategy_type==strategy::paper2013&&era_type==era::data_2012_rereco)){
         BuildModule(HTTTriggerFilter("HTTTriggerFilter")
             .set_channel(channel)
             .set_mc(mc_type)
+            .set_era(era_type)
             .set_is_data(is_data)
             .set_is_embedded(is_embedded)
+            .set_do_leptonplustau(js["do_leptonplustau"].asBool())
+            .set_do_singlelepton(js["do_singlelepton"].asBool())
             .set_pair_label("ditau"));
       }
-
-			
- // }
+   }
+// }
 
 
 
@@ -573,6 +591,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     .set_mva_met_from_vector(mva_met_mode==1)
     .set_faked_tau_selector(faked_tau_selector)
     .set_hadronic_tau_selector(hadronic_tau_selector)
+    .set_ztt_mode(ztautau_mode)
     .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
     .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
     .set_tau_scale(tau_shift)
@@ -785,11 +804,13 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     .set_sync_output_name("HTTSequenceSyncfilesNEW/SYNCFILE_"+output_name)
     .set_mass_shift(mass_shift)
     .set_is_embedded(is_embedded)
+    .set_is_data(is_data)
     .set_systematic_shift(addit_output_folder!="")
     .set_add_Hhh_variables(js["add_Hhh_variables"].asBool())
     //Good to avoid accidentally overwriting existing output files when syncing
     .set_write_tree(!js["make_sync_ntuple"].asBool()));
 
+ }
 }
 
 // --------------------------------------------------------------------------
@@ -1198,6 +1219,7 @@ if(strategy_type == strategy::paper2013){
         return  t->pt()                     >  tau_pt     &&
                 fabs(t->eta())              <  tau_eta    &&
                 fabs(t->lead_dz_vertex())   <  tau_dz     &&
+                fabs(t->charge())           == 1          &&
                 t->GetTauID("decayModeFindingNewDMs") > 0.5;
 
       }));
@@ -1286,6 +1308,7 @@ void HTTSequence::BuildDiElecVeto() {
                 fabs(e->dxy_vertex())   < veto_dielec_dxy   &&
                 fabs(e->dz_vertex())    < veto_dielec_dz   &&
                 VetoElectronIDPhys14(e)           &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
    } 
@@ -1340,6 +1363,7 @@ void HTTSequence::BuildDiElecVeto() {
                 m->is_global()                    &&
                 m->is_tracker()                   &&
                 m->is_pf()                        &&
+                //PF04IsolationVal(m, 0.5,0) < 0.3;
                 PF03IsolationVal(m, 0.5,0) < 0.3;
       });
     }
@@ -1408,6 +1432,7 @@ void HTTSequence::BuildExtraElecVeto(){
                 fabs(e->dxy_vertex())   < veto_elec_dxy   &&
                 fabs(e->dz_vertex())    < veto_elec_dz    &&
                 ElectronHTTIdSpring15(e, true)             &&
+                //PF04IsolationVal(e, 0.5,0) < 0.3;
                 PF03IsolationVal(e, 0.5,0) < 0.3;
       });
   }
@@ -1445,6 +1470,7 @@ void HTTSequence::BuildExtraMuonVeto(){
                 fabs(m->dxy_vertex())   < veto_muon_dxy   &&
                 fabs(m->dz_vertex())    < veto_muon_dz    &&
                 MuonMedium(m)                     &&
+                //PF04IsolationVal(m, 0.5,0) < 0.3;
                 PF03IsolationVal(m, 0.5,0) < 0.3;
       });
    }

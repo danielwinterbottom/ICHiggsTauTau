@@ -291,6 +291,8 @@ namespace ic {
 
   std::vector<GenParticle *> ExtractStableDaughters(GenParticle * part, std::vector<GenParticle *> const& input);
 
+  std::vector<GenParticle *> ExtractMothers(GenParticle * part, std::vector<GenParticle *> const& input);
+
   std::vector<GenParticle *> ExtractDaughters(GenParticle * part, std::vector<GenParticle *> const& input);
 
   std::vector<GenParticle *> ExtractDaughtersRecursive(GenParticle * part, std::vector<GenParticle *> const& input);
