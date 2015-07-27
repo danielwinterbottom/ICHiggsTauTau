@@ -63,9 +63,9 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   if(json["output_folder"].asString()!=""){output_folder=json["output_folder"].asString();} else{std::cout<<"ERROR: output_folder not set"<<std::endl; exit(1);};
   addit_output_folder=json["baseline"]["addit_output_folder"].asString();
   output_folder=output_folder+"/"+addit_output_folder+"/";
+  lumimask_output_name=output_name + "_" +chan + "_" + postf; 
   //output_name=chan + "_" +output_name +  "_" + var + "_" + postf + ".root";
   output_name=output_name + "_" + chan + "_" + postf + ".root";
-  lumimask_output_name=output_name + "_" +chan + "_" + postf; 
   special_mode=json["special_mode"].asUInt();
   if (special_mode > 0) output_name = "Special_"+boost::lexical_cast<std::string>(special_mode)+"_" + output_name;
   //if(json["make_sync_ntuple"].asBool()) {
@@ -444,7 +444,7 @@ void HTTSequence::BuildSequence(){
   }             
   if (era_type == era::data_2012_rereco)       data_json = "input/json/data_2012_rereco.txt";
   //if (era_type == era::data_2015)  data_json= "input/json/data_2015_prompt_1507151716.txt";
-  if (era_type == era::data_2015)  data_json= "input/json/json_DCSONLY_Run2015B_2007.txt";
+  if (era_type == era::data_2015)  data_json= "input/json/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt";
 
  LumiMask lumiMask = LumiMask("LumiMask")
    .set_produce_output_jsons("")
@@ -582,7 +582,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
 }
 
 
-  BuildModule(HTTPairSelector("HTTPairSelector")
+ HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
     .set_fs(fs.get())
     .set_pair_label("ditau")
@@ -597,7 +597,13 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     .set_tau_scale(tau_shift)
     .set_use_most_isolated(strategy_type == strategy::phys14 || strategy_type == strategy::spring15)
     .set_use_os_preference(!(strategy_type == strategy::phys14 || strategy_type==strategy::spring15))
-    .set_allowed_tau_modes(allowed_tau_modes));
+    .set_allowed_tau_modes(allowed_tau_modes);
+
+ if(strategy_type == strategy::spring15){
+   httPairSelector.set_gen_taus_label("genParticles");
+  }
+  
+  BuildModule(httPairSelector);
 
 
  if (jes_mode > 0 && !is_data ){

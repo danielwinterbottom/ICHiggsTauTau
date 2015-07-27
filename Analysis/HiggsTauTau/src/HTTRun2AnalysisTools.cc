@@ -188,7 +188,7 @@ namespace ic {
   samples_alias_map_["qcd_sub_samples"] = {
    "DYJetsToTauTau","DYJetsToLL",
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
-   "WJetsToLNu","TT"
+   "TT"
    };
   }
 
@@ -450,8 +450,7 @@ namespace ic {
     if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateQCD] --------------------------------------------------------\n";
     Value qcd_norm;
     TH1F qcd_hist;
-    if (ch_ != channel::em) {
-    //if (ch_ != channel::em) {
+//    if (ch_ != channel::em) {
       std::vector<std::string> qcd_sub_samples = this->ResolveSamplesAlias("qcd_sub_samples");
       //std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
       std::string qcd_sdb_sel = "!os && " + this->ResolveAlias("sel");
@@ -510,7 +509,8 @@ namespace ic {
           % this->ResolveAlias("QCD_Shape_Sample") % qcd_sdb_sel % qcd_cat % wt;
 
       }*/
-    }/* else {
+//    }
+/* else {
       Value qcd_dilepton = this->GetRateViaFakesMethod(this->ResolveAlias("em_qcd_sel"), "", wt);
       qcd_dilepton = ValueProduct(qcd_dilepton, std::make_pair(0.83,0.));
       std::string ss_sel = "!os && "+this->ResolveAlias("sel");

@@ -179,6 +179,7 @@ int main(int argc, char* argv[]){
 
 	HTTRun2Analysis::HistValueMap hmap;
 
+//	std::string sel = " "+ana.ResolveAlias("sel");
 	std::string sel = "os && "+ana.ResolveAlias("sel");
 	if (do_ss) {
 		sel = "!os && "+ana.ResolveAlias("sel");
