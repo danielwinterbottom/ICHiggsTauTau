@@ -127,7 +127,7 @@ if __name__ == '__main__':
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
         if "amcatnlo" in task[1]:
-            config.JobType.pyCfgParams = ['isData=0', 'release=74XMINIAOD','globalTag=MCRUN2_74_V9','isNLO=1']
+            config.JobType.pyCfgParams = ['isData=0', 'release=74XMINIAOD','globalTag=MCRUN2_74_V9','isNLO=True']
         submit(config)
 
 
