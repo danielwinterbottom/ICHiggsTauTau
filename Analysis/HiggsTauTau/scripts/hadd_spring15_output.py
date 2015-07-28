@@ -54,7 +54,7 @@ sample_list = [
 	'SUSYGluGluToHToTauTau_M-130',
 	]
 
-channel = ['em','et','mt','tt']
+channel = ['em','et','mt','tt','zee','zmm']
 with open("jobs/files_per_sample.txt","r") as inf:
   lines = inf.readlines()
 

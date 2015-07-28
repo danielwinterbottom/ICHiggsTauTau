@@ -258,6 +258,20 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
   tau_anti_muon_discr = "againstMuonLoose3";
   pair_dr = 0.5;
   }
+ if(channel_str == "zee"){
+   elec_dz = 0.2;
+   elec_dxy = 0.045;
+   pair_dr = 0.5;
+   elec_pt = 33;
+   elec_eta = 2.1;
+ }
+ if(channel_str == "zmm"){
+   muon_dz = 0.2;
+   muon_dxy = 0.045;
+   pair_dr = 0.5;
+   muon_pt = 25;
+   muon_eta = 2.1;
+ }
  
  is_data      = json["is_data"].asBool();
  is_embedded  = json["is_embedded"].asBool();
@@ -531,6 +545,8 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
   if (channel == channel::mt) BuildMTPairs();
   if (channel == channel::em) BuildEMPairs();
   if (channel == channel::tt) BuildTTPairs();
+  if (channel == channel::zee) BuildZEEPairs();
+  if (channel == channel::zmm) BuildZMMPairs();
 
 
   // Pair DeltaR filtering
@@ -561,9 +577,6 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
 // }
 
 
-
-
-
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
   if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
@@ -582,6 +595,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
 }
 
 
+if(channel != channel::zee && channel !=channel::zmm) {
  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
     .set_fs(fs.get())
@@ -604,7 +618,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
   }
   
   BuildModule(httPairSelector);
-
+}
 
  if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
@@ -635,11 +649,11 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
 
   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
 
-  BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+ /* BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
     .set_input_label(jets_label)
     .set_reference_label("ditau")
     .set_min_dr(0.5));
-
+*/
   if(strategy_type != strategy::phys14&& strategy_type!= strategy::spring15){
     BuildModule(HTTRecoilCorrector("HTTRecoilCorrector")
      .set_sample(output_name)
@@ -663,7 +677,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
 
 
 
-  BuildModule(SVFitTest("SVFitTest")
+/*  BuildModule(SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
@@ -674,7 +688,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     .set_met_label(met_label)
     .set_fullpath(svfit_folder)
     .set_MC(true));
-
+*/
 
 
  if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
@@ -795,7 +809,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
 //    BuildModule(HTTSyncTemp("HTTSyncTemp","HTTSequenceSyncfiles/SYNCFILE_" + output_name, channel)
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
-  
+ 
  BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
@@ -1177,6 +1191,88 @@ if(strategy_type != strategy::phys14 && strategy_type!=strategy::spring15) {
       .set_output_label("ditau"));
 
   BuildModule(SimpleFilter<CompositeCandidate>("EMPairFilter")
+      .set_input_label("ditau").set_min(1)
+      .set_predicate([=](CompositeCandidate const* c) {
+        return PairOneWithPt(c, 20.0);
+      }));
+}
+
+// --------------------------------------------------------------------------
+// ZEE Pair Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildZEEPairs() {
+
+ ic::strategy strategy_type  = String2Strategy(strategy_str);
+
+
+  BuildModule(CopyCollection<Electron>("CopyToSelectedElectrons",
+      js["electrons"].asString(), "sel_electrons"));
+
+  std::function<bool(Electron const*)> ElecID;
+   if(strategy_type==strategy::spring15){
+      ElecID = [](Electron const* e) { return ElectronHTTIdSpring15(e, false); };
+   }
+
+  BuildModule(SimpleFilter<Electron>("ElectronFilter")
+      .set_input_label("sel_electrons").set_min(1)
+      .set_predicate([=](Electron const* e) {
+        return  e->pt()                 > elec_pt    &&
+                fabs(e->eta())          < elec_eta   &&
+                fabs(e->dxy_vertex())   < elec_dxy   &&
+                fabs(e->dz_vertex())    < elec_dz    &&
+                ElecID(e) ;
+
+      }));
+
+     
+  BuildModule(CompositeProducer<Electron, Electron>("ZEEPairProducer")
+      .set_input_label_first("sel_electrons")
+      .set_input_label_second("sel_electrons")
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_output_label("ditau"));
+
+  BuildModule(SimpleFilter<CompositeCandidate>("ZEEPairFilter")
+      .set_input_label("ditau").set_min(1)
+      .set_predicate([=](CompositeCandidate const* c) {
+        return PairOneWithPt(c, 20.0); //Not sure if we need this
+      }));
+}
+
+// --------------------------------------------------------------------------
+// ZMM Pair Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildZMMPairs() {
+
+ ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+      js["muons"].asString(), "sel_muons"));
+
+  std::function<bool(Muon const*)> MuonID;
+  if(strategy_type==strategy::spring15){
+    MuonID = [](Muon const* m) { return MuonMedium(m); };
+  }
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+      .set_input_label("sel_muons").set_min(1)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > muon_pt    &&
+                fabs(m->eta())          < muon_eta   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
+      }));
+  
+  BuildModule(CompositeProducer<Muon, Muon>("ZMMPairProducer")
+      .set_input_label_first("sel_muons")
+      .set_input_label_second("sel_muons")
+      .set_candidate_name_first("lepton1")
+      .set_candidate_name_second("lepton2")
+      .set_output_label("ditau"));
+
+  BuildModule(SimpleFilter<CompositeCandidate>("ZMMPairFilter")
       .set_input_label("ditau").set_min(1)
       .set_predicate([=](CompositeCandidate const* c) {
         return PairOneWithPt(c, 20.0);

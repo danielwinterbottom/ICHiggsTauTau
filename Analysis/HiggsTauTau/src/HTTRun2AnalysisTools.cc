@@ -109,6 +109,8 @@ namespace ic {
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+    } else if (ch_ == channel::zmm || ch_ == channel::zee) {
+      alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<0.1)";
     }
     
     // Selection control regions
@@ -149,10 +151,10 @@ namespace ic {
    };
    
    alias_map_["data_samples"] = "SingleElectron-2015B-prompt";
-   if(ch_==channel::et){
+   if(ch_==channel::et || ch_==channel::zee){
      alias_map_["data_samples"] = "SingleElectron-2015B-prompt";
    }
-   if(ch_==channel::mt){
+   if(ch_==channel::mt || ch_==channel::zmm){
      alias_map_["data_samples"] =  "SingleMuon-2015B-prompt";
    }
    if(ch_==channel::tt){
@@ -379,6 +381,17 @@ namespace ic {
       % "zj_samples" % sel % cat % wt;
     SetNorm(&zj_hist, zj_norm.first);
     return std::make_pair(zj_hist, zj_norm);
+  }
+  
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZLL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZLL --------------------------------------------------------\n";
+    Value zl_norm;
+    zl_norm = this->GetLumiScaledRate("DYJetsToLL", sel, cat, wt) ;
+    TH1F zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL", sel, cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % "DYJetsToLL" % sel % cat % wt;
+    SetNorm(&zl_hist, zl_norm.first);
+    return std::make_pair(zl_hist, zl_norm);
   }
 
 
@@ -671,7 +684,7 @@ namespace ic {
     hmap[vv_map_label+postfix] = vv_pair;
     total_hist.Add(&hmap[vv_map_label+postfix].first,1.0);
     // Z->ll
-    if (ch_ != channel::em) {
+    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm) {
       auto zl_pair = this->GenerateZL(method, var, sel, cat, wt);
       auto zj_pair = this->GenerateZJ(method, var, sel, cat, wt);
       Value zll_norm = ValueAdd(zl_pair.second, zj_pair.second);
@@ -687,12 +700,21 @@ namespace ic {
       total_hist.Add(&hmap["ZLL"+postfix].first,1.0);
     }
     // Z->tautau
-    auto ztt_pair = this->GenerateZTT(method, var, sel, cat, wt);
-    std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
-    PrintValue(ztt_map_label+postfix, ztt_pair.second);
-    total_bkr = ValueAdd(total_bkr, ztt_pair.second);
-    hmap[ztt_map_label+postfix] = ztt_pair;
-    total_hist.Add(&hmap[ztt_map_label+postfix].first,1.0);
+    if(ch_!= channel::zee && ch_!= channel::zmm) {
+      auto ztt_pair = this->GenerateZTT(method, var, sel, cat, wt);
+      std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
+      PrintValue(ztt_map_label+postfix, ztt_pair.second);
+      total_bkr = ValueAdd(total_bkr, ztt_pair.second);
+      hmap[ztt_map_label+postfix] = ztt_pair;
+      total_hist.Add(&hmap[ztt_map_label+postfix].first,1.0);
+    } else {
+      auto zll_pair = this->GenerateZLL(method, var, sel, cat, wt);
+      std::string zll_map_label = "ZLL";
+      PrintValue(zll_map_label+postfix, zll_pair.second);
+      total_bkr = ValueAdd(total_bkr, zll_pair.second);
+      hmap[zll_map_label+postfix] = zll_pair;
+      total_hist.Add(&hmap[zll_map_label+postfix].first,1.0);
+    }
     // W+jets
     if (ch_ != channel::em) {
       auto w_pair = this->GenerateW(method, var, sel, cat, wt);
@@ -702,11 +724,13 @@ namespace ic {
       total_hist.Add(&hmap["W"+postfix].first,1.0);
     }
     // QCD/Fakes
-    auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
-    std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
-    PrintValue(qcd_map_label+postfix, qcd_pair.second);
-    total_bkr = ValueAdd(total_bkr, qcd_pair.second);
-    hmap[qcd_map_label+postfix] = qcd_pair;
+    if(ch_!= channel::zee && ch_!= channel::zmm) {
+      auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
+      std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
+      PrintValue(qcd_map_label+postfix, qcd_pair.second);
+      total_bkr = ValueAdd(total_bkr, qcd_pair.second);
+      hmap[qcd_map_label+postfix] = qcd_pair;
+    }
     // Print the total background yield
     PrintValue("Total"+postfix, total_bkr);
     //Until there is data, fill the data with sum of the backgrounds

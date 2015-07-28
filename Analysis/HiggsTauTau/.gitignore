@@ -2,3 +2,4 @@ collected
 output
 filelists
 docs
+*.json
