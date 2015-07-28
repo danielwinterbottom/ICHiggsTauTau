@@ -106,9 +106,11 @@ namespace ic {
     } else if (ch_ == channel::tt) {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<1.0 && iso_2<1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
+      alias_map_["qcd_loose_shape"]   = "iso_1>1.0 && iso_2>1.0 && antiele_1 && antimu_1 && antiele_2 && antimu_2 && !leptonveto";
     } else if (ch_ == channel::em) {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
+      alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5 && !leptonveto)";
     }
     
     // Selection control regions
@@ -475,17 +477,29 @@ namespace ic {
       } else if (method==10||method==11){
         qcd_sub_samples = this->ResolveSamplesAlias("qcd_sub_samples_wdd");
       }
-      std::vector<std::string> w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+      std::vector<std::string> w_sub_samples;
+       if(ch_ != channel::em){
+          qcd_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+       }
       std::string qcd_sdb_sel = "!os && " + this->ResolveAlias("sel");
-      //std::string qcd_shape_sdb_sel = "!os &&" + this->ResolveAlias("qcd_shape");
+      //std::string qcd_shape_sdb_sel = "!os &&" + this->ResolveAlias("qcd_loose_shape");
       std::string w_extrp_sdb_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("w_sdb");
       std::string w_extrp_sig_sel = this->ResolveAlias("w_ss")+" && "+this->ResolveAlias("sel");
       std::string w_sdb_sel = "!os && "+this->ResolveAlias("w_sdb");
       std::string qcd_cat = cat;
+      std::string qcd_shape_cat;
+      if(method ==8 || method ==10){
+        qcd_shape_cat  = cat;
+      } else if(method == 9 || method == 11){
+        qcd_shape_cat = this->ResolveAlias("qcd_loose_shape");
+      }
 //      if (method == 5 || method == 4) qcd_cat = this->ResolveAlias("inclusive");
  //     if (method == 16) qcd_cat = this->ResolveAlias("2jetinclusive");
-      Value w_ss_norm = this->GetRateViaWMethod("WJetsToLNu", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
+      Value w_ss_norm;
+      if(ch_ != channel::em){
+        w_ss_norm=  this->GetRateViaWMethod("WJetsToLNu", qcd_cat, w_extrp_sdb_sel, w_extrp_sig_sel, 
             this->ResolveAlias("data_samples"), qcd_cat, w_sdb_sel, w_sub_samples, wt, ValueFnMap());
+      }
      if(method == 8 || method == 9){
       qcd_norm = this->GetRateViaQCDMethodWMC(std::make_pair(qcd_os_ss_factor_,0.), this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt);
      } else if (method == 10 || method == 11){
@@ -511,23 +525,23 @@ namespace ic {
         qcd_norm.first = default_rate;
       }
       if (method == 0 || method == 8 || method == 28 || method == 20) {
-        qcd_hist = this->GetShapeViaQCDMethodWMC(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt);/*, {
+        qcd_hist = this->GetShapeViaQCDMethodWMC(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt);/*, {
           {"WJetsToLNuSoup", [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;} 
           }
         });*/
        }
       else if(method == 9 ){
-        qcd_hist = this->GetShapeViaQCDMethodWMC(var,this->ResolveAlias("data_samples"),qcd_sdb_sel,this->ResolveAlias("qcd_loose_shape"),qcd_sub_samples,wt);
+        qcd_hist = this->GetShapeViaQCDMethodWMC(var,this->ResolveAlias("data_samples"),qcd_sdb_sel,qcd_shape_cat,qcd_sub_samples,wt);
       } 
       else if(method == 10){
-        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_cat, qcd_sub_samples, wt, {
+        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
           {"WJetsToLNu", [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;} 
           }
         });
       } else if (method == 11){
-        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, this->ResolveAlias("qcd_loose_shape"), qcd_sub_samples, wt, {
+        qcd_hist = this->GetShapeViaQCDMethod(var, this->ResolveAlias("data_samples"), qcd_sdb_sel, qcd_shape_cat, qcd_sub_samples, wt, {
           {"WJetsToLNu", [&]()->HTTRun2Analysis::Value {
             return w_ss_norm;} 
           }
