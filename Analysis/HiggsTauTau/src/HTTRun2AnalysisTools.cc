@@ -194,7 +194,7 @@ namespace ic {
   
  if(ch_==channel::em){
   samples_alias_map_["qcd_sub_samples_wmc"] = {
-   "DYJetsToTauTau","DYJetsToLL",
+   "DYJetsToTauTau",
    "T-tW", "Tbar-tW", "WWinclusive","WZinclusive", "ZZinclusive","WWTo2L2Nu","WWTo4Q","WZTo1L1Nu2Q","ZZTo4L",
    "TT"
    };
@@ -479,7 +479,7 @@ namespace ic {
       }
       std::vector<std::string> w_sub_samples;
        if(ch_ != channel::em){
-          qcd_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
+          w_sub_samples = this->ResolveSamplesAlias("w_sub_samples");
        }
       std::string qcd_sdb_sel = "!os && " + this->ResolveAlias("sel");
       //std::string qcd_shape_sdb_sel = "!os &&" + this->ResolveAlias("qcd_loose_shape");
