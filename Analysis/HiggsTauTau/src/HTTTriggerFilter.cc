@@ -316,7 +316,7 @@ namespace ic {
          alt_leg1_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter";
          alt_leg2_filter = "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8";
       }
-     if(channel_ == channel::mt){
+     if(channel_ == channel::mt || channel_ == channel::zmm){
         trig_obj_label = "triggerObjectsIsoMu17LooseTau20";
         leg1_filter = "hltL3crIsoL1sMu16erTauJet20erL1f0L2f10QL3f17QL3trkIsoFiltered0p09";
         leg2_filter = "hltPFTau20TrackLooseIsoAgainstMuon";
@@ -325,7 +325,7 @@ namespace ic {
         alt_leg1_filter = "hltL3crIsoL1sMu20Eta2p1L1f0L2f10QL3f24QL3trkIsoFiltered0p09";
         high_leg_pt = 25.;
       }
-    if(channel_ == channel::et){
+    if(channel_ == channel::et || channel_ == channel::zee){
         trig_obj_label = "triggerObjectsEle22LooseTau20";
         leg1_filter = "hltSingleEle22WPLooseGsfTrackIsoFilter";
         //leg1_filter = "hltSingleEle22WPLooseGsfTrackIsoFilter";
@@ -336,7 +336,7 @@ namespace ic {
         high_leg_pt = 33.;
      }
     } else {
-      if (channel_ == channel::et) {
+      if (channel_ == channel::et || channel_ == channel::zee) {
         if (mc_ == mc::fall11_42X) {
           trig_obj_label   = "triggerObjectsEle18MediumTau20";
           leg1_filter      = "hltEle18CaloIdVTCaloIsoTTrkIdTTrkIsoTTrackIsoFilter";
@@ -365,7 +365,7 @@ namespace ic {
 
 					}
 
-      } else if (channel_ == channel::mt) {
+      } else if (channel_ == channel::mt || channel_ == channel::zmm) {
         if (mc_ == mc::fall11_42X) {
           trig_obj_label   = "triggerObjectsIsoMu15LooseTau15";
           leg1_filter      = "hltSingleMuIsoL3IsoFiltered15";
@@ -492,7 +492,8 @@ namespace ic {
       }
     }
 
-    if ((channel_ == channel::et || channel_ == channel::mt)&&(mc_ == mc::phys14_72X||mc_ == mc::spring15_74X)) {
+    if ((channel_ == channel::et || channel_ == channel::mt || channel_ == channel::zmm || channel_ == channel::zee) 
+        &&(mc_ == mc::phys14_72X || mc_ == mc::spring15_74X)) {
       std::vector<TriggerObject *> const& alt_objs = event->GetPtrVec<TriggerObject>(alt_trig_obj_label);
       for (unsigned i = 0; i < dileptons.size(); ++i) {
         bool leg1_match = false;

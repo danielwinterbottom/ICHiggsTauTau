@@ -29,7 +29,7 @@
     "add_Hhh_variables" : false,
     "get_effective" : false,
     "do_leptonplustau" :false,
-    "do_singlelepton" :false,
+    "do_singlelepton" :true,
     "moriond_tau_scale" : true,
     "recoil_corrector" : false,
     "electrons"     : "electrons",

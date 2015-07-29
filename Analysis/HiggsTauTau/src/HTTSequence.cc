@@ -262,14 +262,14 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    elec_dz = 0.2;
    elec_dxy = 0.045;
    pair_dr = 0.5;
-   elec_pt = 33;
+   elec_pt = 20;
    elec_eta = 2.1;
  }
  if(channel_str == "zmm"){
    muon_dz = 0.2;
    muon_dxy = 0.045;
    pair_dr = 0.5;
-   muon_pt = 25;
+   muon_pt = 20;
    muon_eta = 2.1;
  }
  
@@ -576,7 +576,6 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
    }
 // }
 
-
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
   if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
@@ -595,7 +594,6 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
 }
 
 
-if(channel != channel::zee && channel !=channel::zmm) {
  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
     .set_fs(fs.get())
@@ -609,8 +607,8 @@ if(channel != channel::zee && channel !=channel::zmm) {
     .set_gen_taus_label(is_embedded ? "genParticlesEmbedded" : "genParticlesTaus")
     .set_scale_met_for_tau((tau_scale_mode > 0 || (moriond_tau_scale && (is_embedded || !is_data) )   ))
     .set_tau_scale(tau_shift)
-    .set_use_most_isolated(strategy_type == strategy::phys14 || strategy_type == strategy::spring15)
-    .set_use_os_preference(!(strategy_type == strategy::phys14 || strategy_type==strategy::spring15))
+    .set_use_most_isolated((strategy_type == strategy::phys14 || strategy_type == strategy::spring15) && (!(channel == channel::zee || channel == channel::zmm)))
+    .set_use_os_preference(!(strategy_type == strategy::phys14 || strategy_type==strategy::spring15) || (channel == channel::zee || channel == channel::zmm))
     .set_allowed_tau_modes(allowed_tau_modes);
 
  if(strategy_type == strategy::spring15){
@@ -618,7 +616,6 @@ if(channel != channel::zee && channel !=channel::zmm) {
   }
   
   BuildModule(httPairSelector);
-}
 
  if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
@@ -649,11 +646,11 @@ if(channel != channel::zee && channel !=channel::zmm) {
 
   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
 
- /* BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
+  BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
     .set_input_label(jets_label)
     .set_reference_label("ditau")
     .set_min_dr(0.5));
-*/
+
   if(strategy_type != strategy::phys14&& strategy_type!= strategy::spring15){
     BuildModule(HTTRecoilCorrector("HTTRecoilCorrector")
      .set_sample(output_name)
@@ -677,7 +674,7 @@ if(channel != channel::zee && channel !=channel::zmm) {
 
 
 
-/*  BuildModule(SVFitTest("SVFitTest")
+  BuildModule(SVFitTest("SVFitTest")
     .set_channel(channel)
     .set_outname(svfit_override == "" ? output_name : svfit_override)
     .set_run_mode(new_svfit_mode)
@@ -688,7 +685,7 @@ if(channel != channel::zee && channel !=channel::zmm) {
     .set_met_label(met_label)
     .set_fullpath(svfit_folder)
     .set_MC(true));
-*/
+
 
 
  if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
@@ -1214,7 +1211,7 @@ void HTTSequence::BuildZEEPairs() {
    }
 
   BuildModule(SimpleFilter<Electron>("ElectronFilter")
-      .set_input_label("sel_electrons").set_min(1)
+      .set_input_label("sel_electrons").set_min(2)
       .set_predicate([=](Electron const* e) {
         return  e->pt()                 > elec_pt    &&
                 fabs(e->eta())          < elec_eta   &&
@@ -1232,11 +1229,6 @@ void HTTSequence::BuildZEEPairs() {
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
 
-  BuildModule(SimpleFilter<CompositeCandidate>("ZEEPairFilter")
-      .set_input_label("ditau").set_min(1)
-      .set_predicate([=](CompositeCandidate const* c) {
-        return PairOneWithPt(c, 20.0); //Not sure if we need this
-      }));
 }
 
 // --------------------------------------------------------------------------
@@ -1255,7 +1247,7 @@ void HTTSequence::BuildZMMPairs() {
   }
 
   BuildModule(SimpleFilter<Muon>("MuonFilter")
-      .set_input_label("sel_muons").set_min(1)
+      .set_input_label("sel_muons").set_min(2)
       .set_predicate([=](Muon const* m) {
         return  m->pt()                 > muon_pt    &&
                 fabs(m->eta())          < muon_eta   &&
@@ -1272,11 +1264,6 @@ void HTTSequence::BuildZMMPairs() {
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
 
-  BuildModule(SimpleFilter<CompositeCandidate>("ZMMPairFilter")
-      .set_input_label("ditau").set_min(1)
-      .set_predicate([=](CompositeCandidate const* c) {
-        return PairOneWithPt(c, 20.0);
-      }));
 }
 
 // --------------------------------------------------------------------------

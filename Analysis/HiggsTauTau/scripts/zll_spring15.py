@@ -116,7 +116,6 @@ if options.proc_bkg or options.proc_all:
 
   for sa in central_samples:
       JOB='%s_2015' % (sa)
-      print JOB
       JSONPATCH= (r"'{\"job\":{\"filelist\":\"%(FILELIST)s_%(sa)s.dat\",\"sequences\":{\"zee\":[],\"zmm\":[]}}, \"sequence\":{\"output_name\":\"%(JOB)s\"}}' "%vars());
       nfiles = sum(1 for line in open('%(FILELIST)s_%(sa)s.dat' % vars()))
       nperjob = 30 
