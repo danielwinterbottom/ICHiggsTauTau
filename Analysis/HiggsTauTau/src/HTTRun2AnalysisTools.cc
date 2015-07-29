@@ -789,6 +789,21 @@ namespace ic {
     // std::cout << full_selection << std::endl;
     // std::cout << full_variable << std::endl;
     TH1::AddDirectory(true);
+    //In the case of an empty sample, can return htemp. This is only created above if the []
+    //binning is used, so we have to create an empty version in the case of () binning.
+    if(ttrees_[sample]->GetEntries() == 0) {
+      std::size_t begin_var = full_variable.find_last_of("(");
+      std::size_t end_var   = full_variable.find_last_of(")");
+      if (begin_var != full_variable.npos && end_var != full_variable.npos) {
+        std::string binning = full_variable.substr(begin_var+1, end_var-begin_var-1);
+        std::vector<std::string> string_vec;
+        boost::split(string_vec, binning, boost::is_any_of(","));
+        std::vector<double> bin_vec;
+        for (auto str : string_vec) bin_vec.push_back(boost::lexical_cast<double>(str));
+        htemp = new TH1F("htemp","htemp", bin_vec[0],bin_vec[1],bin_vec[bin_vec.size()-1]);
+      }
+      return (*htemp);
+    }
     ttrees_[sample]->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
     htemp = (TH1F*)gDirectory->Get("htemp");
@@ -834,6 +849,8 @@ namespace ic {
       << category << "\" Weight:\"" << weight << "\"" << std::endl;}
     std::string full_selection = BuildCutString(selection, category, weight);
     TH1::AddDirectory(true);
+    //If the tree is empty, return 0
+    if(ttrees_[sample]->GetEntries() == 0) return std::make_pair(0,0);
     ttrees_[sample]->Draw("0.5>>htemp(1,0,1)", full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
     TH1F *htemp = (TH1F*)gDirectory->Get("htemp");
