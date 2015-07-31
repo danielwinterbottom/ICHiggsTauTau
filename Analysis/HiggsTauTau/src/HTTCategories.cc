@@ -942,6 +942,34 @@ namespace ic {
 
       }
     }
+    if (channel_ == channel::zee) {
+      Electron const* elec1 = dynamic_cast<Electron const*>(lep1);
+      Electron const* elec2 = dynamic_cast<Electron const*>(lep2);
+      if(strategy_ == strategy::spring15) {
+        iso_1_ = PF03IsolationVal(elec1, 0.5, 0);
+        iso_2_ = PF03IsolationVal(elec2, 0.5, 0);
+        mva_1_ = elec1->GetIdIso("mvaNonTrigSpring15");
+        mva_2_ = elec2->GetIdIso("mvaNonTrigSpring15");
+      }
+      d0_1_ = elec1->dxy_vertex();
+      dz_1_ = elec1->dz_vertex();
+      d0_2_ = elec1->dxy_vertex();
+      dz_2_ = elec1->dz_vertex();
+    }
+    if (channel_ == channel::zmm) {
+      Muon const* muon1 = dynamic_cast<Muon const*>(lep1);
+      Muon const* muon2 = dynamic_cast<Muon const*>(lep2);
+      if(strategy_ == strategy::spring15) {
+        iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
+        iso_2_ = PF03IsolationVal(muon2, 0.5, 0);
+        mva_1_ = muon1->GetIdIso("mvaNonTrigSpring15");
+        mva_2_ = muon2->GetIdIso("mvaNonTrigSpring15");
+      }
+      d0_1_ = muon1->dxy_vertex();
+      dz_1_ = muon1->dz_vertex();
+      d0_2_ = muon1->dxy_vertex();
+      dz_2_ = muon1->dz_vertex();
+    }
 
 
     Tau const* tau = dynamic_cast<Tau const*>(lep2);
