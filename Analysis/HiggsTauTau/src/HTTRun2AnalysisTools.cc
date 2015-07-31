@@ -113,6 +113,8 @@ namespace ic {
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5 && !leptonveto)";
     } else if (ch_ == channel::zmm || ch_ == channel::zee) {
       alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<0.1)";
+    } else if (ch_ == channel::wmnu) {
+      alias_map_["inclusive"]         = "(iso_1<0.1)";
     }
     
     // Selection control regions
@@ -156,7 +158,7 @@ namespace ic {
    if(ch_==channel::et || ch_==channel::zee){
      alias_map_["data_samples"] = "SingleElectron-2015B-prompt";
    }
-   if(ch_==channel::mt || ch_==channel::zmm){
+   if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::wmnu){
      alias_map_["data_samples"] =  "SingleMuon-2015B-prompt";
    }
    if(ch_==channel::tt){
@@ -698,7 +700,7 @@ namespace ic {
     hmap[vv_map_label+postfix] = vv_pair;
     total_hist.Add(&hmap[vv_map_label+postfix].first,1.0);
     // Z->ll
-    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm) {
+    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       auto zl_pair = this->GenerateZL(method, var, sel, cat, wt);
       auto zj_pair = this->GenerateZJ(method, var, sel, cat, wt);
       Value zll_norm = ValueAdd(zl_pair.second, zj_pair.second);
@@ -714,7 +716,7 @@ namespace ic {
       total_hist.Add(&hmap["ZLL"+postfix].first,1.0);
     }
     // Z->tautau
-    if(ch_!= channel::zee && ch_!= channel::zmm) {
+    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       auto ztt_pair = this->GenerateZTT(method, var, sel, cat, wt);
       std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
       PrintValue(ztt_map_label+postfix, ztt_pair.second);
@@ -738,7 +740,7 @@ namespace ic {
       total_hist.Add(&hmap["W"+postfix].first,1.0);
     }
     // QCD/Fakes
-    if(ch_!= channel::zee && ch_!= channel::zmm) {
+    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
       std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
       PrintValue(qcd_map_label+postfix, qcd_pair.second);

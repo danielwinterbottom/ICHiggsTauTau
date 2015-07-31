@@ -13,7 +13,7 @@ print "Using job-wrapper:    " + JOBWRAPPER
 print "Using job-submission: " + JOBSUBMIT
 
 
-CHANNELS_2015 = ['zee', 'zmm']
+CHANNELS_2015 = ['zee', 'zmm','wmnu']
 #CHANNELS_2011 = ['et', 'mt', 'em']
 CHANNELS      = [ ] ## will be assigned from 2011 or 2012
 
@@ -61,6 +61,7 @@ channels = options.channels
 
 
 CONFIG='scripts/Zll_config.json'
+#CONFIG='scripts/WMuNu_config.json'
 
 FILELIST='filelists/July23_MC_74X'
 

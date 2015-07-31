@@ -109,7 +109,9 @@ int main(int argc, char* argv[]){
 	HTTRun2Analysis::HistValueMap hmap;
 
 //	std::string sel = " "+ana.ResolveAlias("sel");
-	std::string sel = "os && "+ana.ResolveAlias("sel");
+	std::string sel;
+    if (channel_str != "wmnu") sel = "os && "+ana.ResolveAlias("sel");
+    else sel = ana.ResolveAlias("sel");
 	if (do_ss) {
 		sel = "!os && "+ana.ResolveAlias("sel");
 		ana.SetAlias("w_os", "!os");
@@ -183,8 +185,9 @@ int main(int argc, char* argv[]){
         plot.set_cms_label("CMS");
         plot.set_cms_extra("Preliminary");
         std::string channel_fmt = ""; 
-		if (channel_str == "zee") 		channel_fmt = "Z#rightarrow ee";
-		if (channel_str == "zmm") 		channel_fmt = "Z#rightarrow #mu#mu";
+		if (channel_str == "zee") 		channel_fmt = "Z#rightarrowee";
+		if (channel_str == "zmm") 		channel_fmt = "Z#rightarrow#mu#mu";
+		if (channel_str == "wmnu") 		channel_fmt = "W#rightarrow#mu#nu";
     ic::TextElement text(channel_fmt,0.05,0.16,0.96);
 
     //ic::TextElement text2("#splitline{Same-sign}{region}",0.05,0.65,0.5);

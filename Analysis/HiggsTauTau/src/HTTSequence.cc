@@ -23,6 +23,7 @@
 #include "HiggsTauTau/interface/HTTEMuExtras.h"
 #include "HiggsTauTau/interface/HTTGenEvent.h"
 #include "HiggsTauTau/interface/HTTCategories.h"
+#include "HiggsTauTau/interface/WMuNuCategories.h"
 #include "HiggsTauTau/interface/HTTPairSelector.h"
 #include "HiggsTauTau/interface/SVFitTest.h"
 #include "HiggsTauTau/interface/HTTRecoilCorrector.h"
@@ -266,6 +267,13 @@ HTTSequence::HTTSequence(std::string& chan, std::string postf, Json::Value const
    elec_eta = 2.1;
  }
  if(channel_str == "zmm"){
+   muon_dz = 0.2;
+   muon_dxy = 0.045;
+   pair_dr = 0.5;
+   muon_pt = 20;
+   muon_eta = 2.1;
+ }
+ if(channel_str == "wmnu"){
    muon_dz = 0.2;
    muon_dxy = 0.045;
    pair_dr = 0.5;
@@ -547,10 +555,12 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
   if (channel == channel::tt) BuildTTPairs();
   if (channel == channel::zee) BuildZEEPairs();
   if (channel == channel::zmm) BuildZMMPairs();
+  if (channel == channel::wmnu) BuildWMuNu();
 
 
   // Pair DeltaR filtering
-  BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
+if( channel !=channel::wmnu) {
+BuildModule(SimpleFilter<CompositeCandidate>("PairFilter")
       .set_input_label("ditau").set_min(1)
       .set_predicate([=](CompositeCandidate const* c) {
         return DeltaR(c->at(0)->vector(), c->at(1)->vector())
@@ -575,7 +585,7 @@ if(vh_filter_mode > 0 && strategy_type==strategy::paper2013){
       }
    }
 // }
-
+}
   // Lepton Vetoes
   if (js["baseline"]["di_elec_veto"].asBool()) BuildDiElecVeto();
   if (js["baseline"]["di_muon_veto"].asBool()) BuildDiMuonVeto();
@@ -593,7 +603,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
   }
 }
 
-
+if(channel != channel::wmnu) {
  HTTPairSelector httPairSelector = HTTPairSelector("HTTPairSelector")
     .set_channel(channel)
     .set_fs(fs.get())
@@ -616,6 +626,7 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
   }
   
   BuildModule(httPairSelector);
+}
 
  if (jes_mode > 0 && !is_data ){
   std::string jes_input_file = "input/jec/JEC11_V12_AK5PF_UncertaintySources.txt";
@@ -645,12 +656,12 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
 
 
   BuildModule(CopyCollection<PFJet>("CopyFilteredJets",jets_label,"pfJetsPFlowFiltered"));
-
+if(channel != channel::wmnu) {
   BuildModule(OverlapFilter<PFJet, CompositeCandidate>("JetLeptonOverlapFilter")
     .set_input_label(jets_label)
     .set_reference_label("ditau")
     .set_min_dr(0.5));
-
+}
   if(strategy_type != strategy::phys14&& strategy_type!= strategy::spring15){
     BuildModule(HTTRecoilCorrector("HTTRecoilCorrector")
      .set_sample(output_name)
@@ -807,7 +818,8 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
 //      .set_is_embedded(is_embedded).set_met_label(met_label).set_ditau_label("ditau").set_jet_label(jets_label));
 // }
  
- BuildModule(HTTCategories("HTTCategories")
+if(channel != channel::wmnu) {
+BuildModule(HTTCategories("HTTCategories")
     .set_fs(fs.get())
     .set_channel(channel)
     .set_era(era_type)
@@ -827,9 +839,22 @@ if(strategy_type != strategy::phys14 && strategy_type != strategy::spring15){
     //Good to avoid accidentally overwriting existing output files when syncing
     .set_write_tree(!js["make_sync_ntuple"].asBool()));
 
+ } else {
+BuildModule(WMuNuCategories("WMuNuCategories")
+    .set_fs(fs.get())
+    .set_channel(channel)
+    .set_era(era_type)
+    .set_strategy(strategy_type)
+    .set_muon_label("sel_muons")
+    .set_met_label(met_label)
+    .set_jets_label(jets_label)
+    .set_is_data(is_data)
+    //Good to avoid accidentally overwriting existing output files when syncing
+    .set_write_tree(true));
+
  }
 }
-
+}
 // --------------------------------------------------------------------------
 // TT Pair Sequence
 // --------------------------------------------------------------------------
@@ -1263,6 +1288,34 @@ void HTTSequence::BuildZMMPairs() {
       .set_candidate_name_first("lepton1")
       .set_candidate_name_second("lepton2")
       .set_output_label("ditau"));
+
+}
+
+// --------------------------------------------------------------------------
+// W->MuNu Sequence
+// --------------------------------------------------------------------------
+void HTTSequence::BuildWMuNu() {
+
+ ic::strategy strategy_type  = String2Strategy(strategy_str);
+ 
+ BuildModule(CopyCollection<Muon>("CopyToSelectedMuons",
+      js["muons"].asString(), "sel_muons"));
+
+  std::function<bool(Muon const*)> MuonID;
+  if(strategy_type==strategy::spring15){
+    MuonID = [](Muon const* m) { return MuonMedium(m); };
+  }
+
+  BuildModule(SimpleFilter<Muon>("MuonFilter")
+      .set_input_label("sel_muons").set_min(1)
+      .set_predicate([=](Muon const* m) {
+        return  m->pt()                 > muon_pt    &&
+                fabs(m->eta())          < muon_eta   &&
+                fabs(m->dxy_vertex())   < muon_dxy   &&
+                fabs(m->dz_vertex())    < muon_dz   &&
+                MuonID(m);
+
+      }));
 
 }
 
