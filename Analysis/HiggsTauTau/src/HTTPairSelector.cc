@@ -146,7 +146,11 @@ namespace ic {
       }
     }
     if (result.size() == 0) return 1;  //Require at least one dilepton
-
+    //Rest of code is not needed for Z->ee and Z->mumu channels    
+    if(channel_ == channel::zee || channel_ == channel::zmm) {
+      dilepton = result;
+      return 0;
+    }
 
     // ************************************************************************
     // If using pair-wise mva met select the appropriate met
@@ -252,6 +256,9 @@ namespace ic {
         }
         // Get the reco tau from the pair
         std::vector<Candidate *> tau;
+        if(channel::tt){
+          tau.push_back(result[0]->GetCandidate("lepton1"));
+        }
         tau.push_back(result[0]->GetCandidate("lepton2"));
         // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
         std::vector<std::pair<Candidate*, GenParticle*> > matches = MatchByDR(tau, sel_particles, 0.5, true, true);
@@ -267,6 +274,9 @@ namespace ic {
         for (auto & x : gen_taus) gen_taus_ptr.push_back(&x);
         ic::erase_if(gen_taus_ptr, !boost::bind(MinPtMaxEta, _1, 18.0, 999.));
         std::vector<Candidate *> tau;
+        if(channel::tt){
+          tau.push_back(result[0]->GetCandidate("lepton1"));
+        }
         tau.push_back(result[0]->GetCandidate("lepton2"));
         // Get the matches vector - require match within DR = 0.5, and pick the closest gen particle to the tau
         std::vector<std::pair<Candidate*, GenJet*> > matches = MatchByDR(tau, gen_taus_ptr, 0.5, true, true);
@@ -302,35 +312,35 @@ namespace ic {
           }
         } 
       if(!has_z){
-        bool has_tau_orphan = false;
+       // bool has_tau_orphan = false;
         bool has_tau_from_incoming = false;
-        bool has_emu_from_incoming = false;
+//        bool has_emu_from_incoming = false;
         for (unsigned i = 0; i< particles.size(); ++i){
           if ( abs(particles[i]->pdgid()) == 15 && particles[i]->pt() > 8.){
             std::vector<GenParticle *> const& mothers = ExtractMothers(particles[i],particles);
-            if(mothers.size() ==0) has_tau_orphan = true;
+        //    if(mothers.size() ==0) has_tau_orphan = true;
             for(unsigned j = 0; j<mothers.size(); ++j){
               if(mothers[j]->status()==21){
                 has_tau_from_incoming=true;
               }
             }
-          } else if ((abs(particles[i]->pdgid()) == 13 || abs(particles[i]->pdgid()) == 11) && particles[i]->pt()>8.){
+          /*} else if ((abs(particles[i]->pdgid()) == 13 || abs(particles[i]->pdgid()) == 11) && particles[i]->pt()>8.){
             std::vector<GenParticle *> const& mothers = ExtractMothers(particles[i], particles);
             for( unsigned j =0; j < mothers.size(); ++j){
              if(mothers[j]->status()==21){
                has_emu_from_incoming = true;
              }
-           }
+           }*/
          }
        }
        if(has_tau_from_incoming){
        //If we have a tau that comes from one of the incoming partons we have a Z->tautau event with virtual Z:
           is_ztt = true;
-       } else if (has_tau_orphan&&!has_emu_from_incoming){
+       } //else if (has_tau_orphan&&!has_emu_from_incoming){
        //Otherwise if we have a tau that the mothers haven't been stored for and we have no electrons/muons
        //with an incoming parton mother, also classify the event as Z->tautau
-          is_ztt = true;
-       }
+          /*is_ztt = true;
+       }*/
      }
 
 
@@ -396,35 +406,35 @@ namespace ic {
           }*/
         } 
       if(!has_z){
-        bool has_tau_orphan = false;
+//        bool has_tau_orphan = false;
         bool has_tau_from_incoming = false;
-        bool has_emu_from_incoming = false;
+//        bool has_emu_from_incoming = false;
         for (unsigned i = 0; i< particles.size(); ++i){
           if ( abs(particles[i]->pdgid()) == 15 && particles[i]->pt() > 8.){
             std::vector<GenParticle *> const& mothers = ExtractMothers(particles[i],particles);
-            if(mothers.size() ==0) has_tau_orphan = true;
+ //           if(mothers.size() ==0) has_tau_orphan = true;
             for(unsigned j = 0; j<mothers.size(); ++j){
               if(mothers[j]->status()==21){
                 has_tau_from_incoming=true;
               }
             }
-          } else if ((abs(particles[i]->pdgid()) == 13 || abs(particles[i]->pdgid()) == 11) && particles[i]->pt()>8.){
+          /*} else if ((abs(particles[i]->pdgid()) == 13 || abs(particles[i]->pdgid()) == 11) && particles[i]->pt()>8.){
             std::vector<GenParticle *> const& mothers = ExtractMothers(particles[i], particles);
             for( unsigned j =0; j < mothers.size(); ++j){
              if(mothers[j]->status()==21){
                has_emu_from_incoming = true;
              }
-           }
+           }*/
          }
        }
        if(has_tau_from_incoming){
        //If we have a tau that comes from one of the incoming partons we have a Z->tautau event with virtual Z:
           is_ztt = true;
-       } else if (has_tau_orphan&&!has_emu_from_incoming){
+       } //else if (has_tau_orphan&&!has_emu_from_incoming){
        //Otherwise if we have a tau that the mothers haven't been stored for and we have no electrons/muons
        //with an incoming parton mother, also classify the event as Z->tautau
-          is_ztt = true;
-       }
+          //is_ztt = true;
+       //}
      }
      // If we want Z->tautau and we have found a Z->ll, fail the event
      if (ztt_mode_ == 1 && !is_ztt) return 1;

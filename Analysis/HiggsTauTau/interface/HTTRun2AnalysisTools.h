@@ -76,6 +76,7 @@ namespace ic {
       HistValuePair GenerateZTT(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateZL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateZJ(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
+      HistValuePair GenerateZLL(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateTOP(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateVV(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
       HistValuePair GenerateW(unsigned method, std::string var, std::string sel, std::string cat, std::string wt);
@@ -120,7 +121,7 @@ namespace ic {
                               std::string const& category, 
                               std::string const& weight);
 
-      TH1F GetShapeViaQCDMethod(std::string const& variable,
+      TH1F GetShapeViaQCDMethodWMC(std::string const& variable,
                               std::string const& data_sample,
                               std::string const& selection,
                               std::string const& category,
@@ -128,6 +129,15 @@ namespace ic {
                               std::string const& weight/*,
                               std::map<std::string, std::function<Value()>> dict*/
                               );
+      TH1F GetShapeViaQCDMethod(std::string const& variable,
+                              std::string const& data_sample,
+                              std::string const& selection,
+                              std::string const& category,
+                              std::vector<std::string> const& sub_samples,
+                              std::string const& weight,
+                              std::map<std::string, std::function<Value()>> dict
+                              );
+
       TH1F GetShapeViaFakesMethod(std::string const& var,
                                   std::string const& sel,
                                   std::string const& cat,
@@ -211,9 +221,17 @@ namespace ic {
                               std::string const& control_selection,
                               std::string const& category,
                               std::vector<std::string> const& sub_samples,
-                              std::string const& weight/*,
-                              std::map<std::string, std::function<Value()>> dict*/
+                              std::string const& weight,
+                              std::map<std::string, std::function<Value()>> dict
                               );
+      Value GetRateViaQCDMethodWMC(Value const& ratio,
+                              std::string const& data_sample,
+                              std::string const& control_selection,
+                              std::string const& category,
+                              std::vector<std::string> const& sub_samples,
+                              std::string const& weight
+                              );
+
       std::string ResolveAlias(std::string const& al);
       std::vector<std::string> ResolveSamplesAlias(std::string const& al);
       void SetAlias(std::string const& al, std::string const& val);
