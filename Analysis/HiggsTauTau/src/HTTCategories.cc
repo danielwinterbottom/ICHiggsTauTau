@@ -962,8 +962,8 @@ namespace ic {
       if(strategy_ == strategy::spring15) {
         iso_1_ = PF03IsolationVal(muon1, 0.5, 0);
         iso_2_ = PF03IsolationVal(muon2, 0.5, 0);
-        mva_1_ = muon1->GetIdIso("mvaNonTrigSpring15");
-        mva_2_ = muon2->GetIdIso("mvaNonTrigSpring15");
+        mva_1_ = 0.0;
+        mva_2_ = 0.0;
       }
       d0_1_ = muon1->dxy_vertex();
       dz_1_ = muon1->dz_vertex();
