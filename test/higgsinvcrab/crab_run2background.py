@@ -1,5 +1,5 @@
 from WMCore.Configuration import Configuration
-prod='Jul24'
+prod='Jul27'
 config = Configuration()
 config.section_('General')
 config.section_('Data')
@@ -45,6 +45,7 @@ if __name__ == '__main__':
 
     tasks=list()
     
+    #25ns
     #Startup running conditions signal
     tasks.append(('Powheg-Htoinv-mH125Startupbx50','/VBF_HToInvisible_M125_13TeV_powheg_pythia8/RunIISpring15DR74-StartupFlat10to50bx50Raw_MCRUN2_74_V8-v1/MINIAODSIM'))
     
@@ -59,7 +60,7 @@ if __name__ == '__main__':
     #VV
     tasks.append(('WW-pythia8','/WW_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'))
     tasks.append(('WZ-pythia8','/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'))
-    #tasks.append(('ZZ-pythia8','/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM')) #!!NOT YET COMPLETE
+    tasks.append(('ZZ-pythia8','/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM')) 
     tasks.append(('WW2L2Nu-powheg','/WWTo2L2Nu_13TeV-powheg/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'))
     tasks.append(('WW4Q-powheg','/WWTo4Q_13TeV-powheg/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3/MINIAODSIM'))
     tasks.append(('WWLNuQQ-powheg','/WWToLNuQQ_13TeV-powheg/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'))
@@ -82,12 +83,42 @@ if __name__ == '__main__':
     tasks.append(('DYJetsToLL','/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3/MINIAODSIM'))
     tasks.append(('DYJetsToLL-M_10to50','/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/MINIAODSIM'))
 
-        
-        
-        
 
-
+    #50ns
     
+    #Signal nominal 25ns running conditions
+    #!!NOT AVAILABLE AT T2 YET
+    #tasks.append(('Powheg-Htoinv-mH110Asympt50ns','/VBF_HToInvisible_M110_13TeV_powheg_pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    #!!NOT AVAILABLE AT T2 YET
+
+    tasks.append(('Powheg-Htoinv-mH300Asympt50ns','/VBF_HToInvisible_M300_13TeV_powheg_pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('Powheg-Htoinv-mH400Asympt50ns','/VBF_HToInvisible_M300_13TeV_powheg_pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+
+    #VV
+    tasks.append(('WW-pythia8-50ns','/WW_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('WZ-pythia8-50ns','/WZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('ZZ-pythia8-50ns','/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM')) 
+    tasks.append(('WW2L2Nu-powheg-50ns','/WWTo2L2Nu_13TeV-powheg/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('WW4Q-powheg-50ns','/WWTo4Q_13TeV-powheg/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3/MINIAODSIM'))
+#    tasks.append(('WWLNuQQ-powheg-50ns','/WWToLNuQQ_13TeV-powheg/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+#    tasks.append(('WZLNuQQ-mg-50ns','/WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('ZZ4L-powheg-50ns','/ZZTo4L_13TeV_powheg_pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+
+    #QCD
+
+    #Top
+    tasks.append(('SingleTBar-tW-powheg-inc-50ns','/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('SingleT-tW-powheg-inc-50ns','/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('SingleT-t-powheg-lep-50ns','/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('SingleTBar-t-powheg-lep-50ns','/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+#    tasks.append(('SingleT-s-amcatnlo-lep-50ns','/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('TTJets-mg-50ns','/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('TT-powheg-50ns','/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM'))
+    
+    #V+jets
+    tasks.append(('WJetsToLNu-50ns','/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
+    tasks.append(('DYJetsToLL-50ns','/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3/MINIAODSIM'))
+#    tasks.append(('DYJetsToLL-M_10to50-50ns','/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/MINIAODSIM'))
 
 
 
@@ -95,6 +126,8 @@ if __name__ == '__main__':
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
+        if "amcatnlo" in task[1]:
+            config.JobType.pyCfgParams = ['isData=0', 'release=74XMINIAOD','globalTag=MCRUN2_74_V9','isNLO=True']
         submit(config)
 
 

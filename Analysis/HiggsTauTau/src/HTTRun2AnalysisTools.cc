@@ -111,6 +111,10 @@ namespace ic {
       // SM Categories
       alias_map_["inclusive"]         = "iso_1<0.15 && iso_2<0.15 && !leptonveto";
       alias_map_["qcd_loose_shape"]         = "(iso_1>0.2&&iso_1<0.5  && iso_2>0.2&&iso_2<0.5 && !leptonveto)";
+    } else if (ch_ == channel::zmm || ch_ == channel::zee) {
+      alias_map_["inclusive"]         = "(iso_1<0.1 && iso_2<0.1)";
+    } else if (ch_ == channel::wmnu) {
+      alias_map_["inclusive"]         = "(iso_1<0.1)";
     }
     
     // Selection control regions
@@ -151,10 +155,10 @@ namespace ic {
    };
    
    alias_map_["data_samples"] = "SingleElectron-2015B-prompt";
-   if(ch_==channel::et){
+   if(ch_==channel::et || ch_==channel::zee){
      alias_map_["data_samples"] = "SingleElectron-2015B-prompt";
    }
-   if(ch_==channel::mt){
+   if(ch_==channel::mt || ch_==channel::zmm || ch_==channel::wmnu){
      alias_map_["data_samples"] =  "SingleMuon-2015B-prompt";
    }
    if(ch_==channel::tt){
@@ -381,6 +385,17 @@ namespace ic {
       % "zj_samples" % sel % cat % wt;
     SetNorm(&zj_hist, zj_norm.first);
     return std::make_pair(zj_hist, zj_norm);
+  }
+  
+  HTTRun2Analysis::HistValuePair HTTRun2Analysis::GenerateZLL(unsigned /*method*/, std::string var, std::string sel, std::string cat, std::string wt) {
+    if (verbosity_) std::cout << "[HTTRun2Analysis::GenerateZLL --------------------------------------------------------\n";
+    Value zl_norm;
+    zl_norm = this->GetLumiScaledRate("DYJetsToLL", sel, cat, wt) ;
+    TH1F zl_hist = this->GetLumiScaledShape(var, "DYJetsToLL", sel, cat, wt);
+    if (verbosity_) std::cout << "Shape: " << boost::format("%s,'%s','%s','%s'\n")
+      % "DYJetsToLL" % sel % cat % wt;
+    SetNorm(&zl_hist, zl_norm.first);
+    return std::make_pair(zl_hist, zl_norm);
   }
 
 
@@ -685,7 +700,7 @@ namespace ic {
     hmap[vv_map_label+postfix] = vv_pair;
     total_hist.Add(&hmap[vv_map_label+postfix].first,1.0);
     // Z->ll
-    if (ch_ != channel::em) {
+    if (ch_ != channel::em && ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
       auto zl_pair = this->GenerateZL(method, var, sel, cat, wt);
       auto zj_pair = this->GenerateZJ(method, var, sel, cat, wt);
       Value zll_norm = ValueAdd(zl_pair.second, zj_pair.second);
@@ -701,12 +716,21 @@ namespace ic {
       total_hist.Add(&hmap["ZLL"+postfix].first,1.0);
     }
     // Z->tautau
-    auto ztt_pair = this->GenerateZTT(method, var, sel, cat, wt);
-    std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
-    PrintValue(ztt_map_label+postfix, ztt_pair.second);
-    total_bkr = ValueAdd(total_bkr, ztt_pair.second);
-    hmap[ztt_map_label+postfix] = ztt_pair;
-    total_hist.Add(&hmap[ztt_map_label+postfix].first,1.0);
+    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
+      auto ztt_pair = this->GenerateZTT(method, var, sel, cat, wt);
+      std::string ztt_map_label = (ch_ == channel::em) ? "Ztt" : "ZTT";
+      PrintValue(ztt_map_label+postfix, ztt_pair.second);
+      total_bkr = ValueAdd(total_bkr, ztt_pair.second);
+      hmap[ztt_map_label+postfix] = ztt_pair;
+      total_hist.Add(&hmap[ztt_map_label+postfix].first,1.0);
+    } else {
+      auto zll_pair = this->GenerateZLL(method, var, sel, cat, wt);
+      std::string zll_map_label = "ZLL";
+      PrintValue(zll_map_label+postfix, zll_pair.second);
+      total_bkr = ValueAdd(total_bkr, zll_pair.second);
+      hmap[zll_map_label+postfix] = zll_pair;
+      total_hist.Add(&hmap[zll_map_label+postfix].first,1.0);
+    }
     // W+jets
     if (ch_ != channel::em) {
       auto w_pair = this->GenerateW(method, var, sel, cat, wt);
@@ -716,11 +740,13 @@ namespace ic {
       total_hist.Add(&hmap["W"+postfix].first,1.0);
     }
     // QCD/Fakes
-    auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
-    std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
-    PrintValue(qcd_map_label+postfix, qcd_pair.second);
-    total_bkr = ValueAdd(total_bkr, qcd_pair.second);
-    hmap[qcd_map_label+postfix] = qcd_pair;
+    if(ch_!= channel::zee && ch_!= channel::zmm && ch_!=channel::wmnu) {
+      auto qcd_pair = this->GenerateQCD(method, var, sel, cat, wt);
+      std::string qcd_map_label = (ch_ == channel::em) ? "Fakes" : "QCD";
+      PrintValue(qcd_map_label+postfix, qcd_pair.second);
+      total_bkr = ValueAdd(total_bkr, qcd_pair.second);
+      hmap[qcd_map_label+postfix] = qcd_pair;
+    }
     // Print the total background yield
     PrintValue("Total"+postfix, total_bkr);
     //Until there is data, fill the data with sum of the backgrounds
@@ -779,6 +805,21 @@ namespace ic {
     // std::cout << full_selection << std::endl;
     // std::cout << full_variable << std::endl;
     TH1::AddDirectory(true);
+    //In the case of an empty sample, can return htemp. This is only created above if the []
+    //binning is used, so we have to create an empty version in the case of () binning.
+    if(ttrees_[sample]->GetEntries() == 0) {
+      std::size_t begin_var = full_variable.find_last_of("(");
+      std::size_t end_var   = full_variable.find_last_of(")");
+      if (begin_var != full_variable.npos && end_var != full_variable.npos) {
+        std::string binning = full_variable.substr(begin_var+1, end_var-begin_var-1);
+        std::vector<std::string> string_vec;
+        boost::split(string_vec, binning, boost::is_any_of(","));
+        std::vector<double> bin_vec;
+        for (auto str : string_vec) bin_vec.push_back(boost::lexical_cast<double>(str));
+        htemp = new TH1F("htemp","htemp", bin_vec[0],bin_vec[1],bin_vec[bin_vec.size()-1]);
+      }
+      return (*htemp);
+    }
     ttrees_[sample]->Draw(full_variable.c_str(), full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
     htemp = (TH1F*)gDirectory->Get("htemp");
@@ -824,6 +865,8 @@ namespace ic {
       << category << "\" Weight:\"" << weight << "\"" << std::endl;}
     std::string full_selection = BuildCutString(selection, category, weight);
     TH1::AddDirectory(true);
+    //If the tree is empty, return 0
+    if(ttrees_[sample]->GetEntries() == 0) return std::make_pair(0,0);
     ttrees_[sample]->Draw("0.5>>htemp(1,0,1)", full_selection.c_str(), "goff");
     TH1::AddDirectory(false);
     TH1F *htemp = (TH1F*)gDirectory->Get("htemp");

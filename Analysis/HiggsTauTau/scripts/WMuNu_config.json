@@ -1,0 +1,206 @@
+{
+  "job": {
+//    "filelist" :     "filelists/May9_validation.dat",
+//    "filelist" : "filelists/July08_MC_74X_WZTo1L1Nu2Q.dat",
+    "filelist" : "filelists/July08_Data_74X_SingleElectron-2015B-prompt.dat",
+//    "file_prefix":  "/afs/cern.ch/work/a/adewit/private/CMSSW_7_2_0/src/UserCode/ICHiggsTauTau/test/",
+    "file_prefix" : "root://xrootd.grid.hep.ph.ic.ac.uk//store/user/adewit/July23_MC_74X/",
+    "max_events":   -1,
+    "timings":      true,
+    "channels":     ["wmnu"],
+    "sequences": {
+      "all":  ["default"]//,//,// "scale_j_lo", "scale_j_hi"],
+//      "et":   ["scale_t_lo", "scale_t_hi"],
+//      "mt":   ["scale_t_lo", "scale_t_hi"],
+ //     "tt":   ["scale_t_lo", "scale_t_hi"],
+  //    "em":   ["scale_e_lo", "scale_e_hi"]
+    },
+    "output_postfix":"",
+    "sample": "VBF_HToTauTau_M-125"
+  },
+  "sequence": {
+    "mc"            : "spring15_74X",
+    "era"           : "data_2015",
+    "strategy"      : "spring15",
+    "is_data"       : false,
+    "is_embedded"   : false,
+    "save_output_jsons": true,
+    "make_sync_ntuple" : false,
+    "add_Hhh_variables" : false,
+    "get_effective" : false,
+    "do_leptonplustau" :false,
+    "do_singlelepton" :false,
+    "moriond_tau_scale" : true,
+    "recoil_corrector" : false,
+    "electrons"     : "electrons",
+    "muons"         : "muons",
+    "taus"          : "taus",
+    "jets"          : "ak4PFJetsCHS",
+    "met"           : "pfMVAMet",
+    "genTaus"       : "genParticles",
+    "genJets"       : "genJets",
+    //"output_folder" : "./output/July27_OldGolden/",
+    "output_folder" : "./output/July27_NewGolden_WMuNu/",
+    "output_name"   : "SUSYGluGluToHToTauTau_M-160",
+//    "output_name"   : "VBF_HToTauTau_M-125",
+    "svfit_folder"  : "svfit",
+    "svfit_override" : "",
+//    "event_check_file":"test.dat",
+    "pu_id_training": 2,
+    "bjet_regr_correction" : false,
+    "svfit_mode"     :0,
+    "new_svfit_mode" : 0,
+    "kinfit_mode"   : 0,
+    "metscale_mode" : 0,
+    "mva_met_mode"  : 0,
+    "faked_tau_selector" : 0,
+    "hadronic_tau_selector" : 0,
+    "run_gen_info"  : false,
+    "do_pu_wt"      : false,
+    "data_pu_file"  : "input/pileup/Data_Pileup_2012_ReRecoPixel-600bins.root",
+    "mc_pu_file"    : "input/pileup/MC_Summer12_PU_S10-600bins.root",
+    "run_trg_filter": false,
+    "baseline": {
+      "tau_scale_mode"    : false,
+      "jes_mode"          : 0,
+      "tau_es_shift"      : 1.0,
+      "elec_es_shift"     : 1.0,
+      "mass_shift"        : 1.0,
+      "do_em_extras"      : true,
+      "di_elec_veto"      : false,
+      "extra_elec_veto"   : false,
+      "max_extra_elecs"   : 1,
+      "di_muon_veto"      : false,
+      "extra_muon_veto"   : false,
+      "max_extra_muons"   : 1,
+      "tau_es_corr"       : false,
+      "lep_iso"           : true,
+      "do_tau_anti_elec"  : false,
+      "tau_anti_elec"     : "",
+      "do_tau_anti_muon"  : false,
+      "tau_anti_muon"     : "",
+      "elec_id"           : "CutBased" // "MVA:Loose", "MVA:Tight", "CutBased"
+    }
+  },
+  "channels": {
+    "et": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "di_elec_veto"   :true,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 0,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_elec":true
+          }
+    },
+ "tt": {
+      "baseline": {
+        "max_extra_elecs": 0,
+        "max_extra_muons": 0,
+        "extra_elec_veto" : true,
+        "extra_muon_veto" : true,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_elec":true
+      }
+    },
+
+    "mt": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "di_muon_veto"   :true,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 0,
+        "max_extra_muons": 1,
+        "do_tau_anti_muon": true,
+        "do_tau_anti_elec":true
+      }
+    },
+    "em": {
+      "baseline": {
+        "pair_dr": 0.3,
+        "extra_elec_veto":true,
+        "extra_muon_veto":true,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 1
+      }
+    },
+    "zee": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "extra_elec_veto":false,
+        "extra_muon_veto":false,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 1
+      }
+    },
+    "zmm": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "extra_elec_veto":false,
+        "extra_muon_veto":false,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 1
+      }
+    },
+    "wmnu": {
+      "baseline": {
+        "pair_dr": 0.5,
+        "extra_elec_veto":false,
+        "extra_muon_veto":false,
+        "max_extra_elecs": 1,
+        "max_extra_muons": 1
+      }
+    }
+  },
+  },
+  "sequences": {
+    "scale_t_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN",
+        "tau_scale_mode": true,
+        "tau_es_shift": 0.97
+      }
+    },
+    "scale_t_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP",
+        "tau_scale_mode": true,
+        "tau_es_shift": 1.03
+      }
+    },
+    "scale_e_lo": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_DOWN",
+        "tau_scale_mode" : true,
+        "elec_es_shift": 0.99
+      }
+    },
+    "scale_e_hi": {
+      "baseline": {
+        "addit_output_folder" : "TSCALE_UP",
+        "tau_scale_mode": true,
+        "elec_es_shift": 1.01
+      }
+    },
+//    "scale_j_lo": {
+//      "baseline": {
+//        "addit_output_folder" : "JES_DOWN",
+//        "jes_mode" : 1
+//      }
+//    },
+//    "scale_j_hi": {
+//      "baseline": {
+//        "addit_output_folder" : "JES_UP",
+//        "jes_mode" : 2
+//      }
+//    },
+
+    "default": {}
+  },
+  "samples": {
+
+  }
+}

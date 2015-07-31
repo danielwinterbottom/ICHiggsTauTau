@@ -550,3 +550,25 @@ MSSMBINS="0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,2
 #  --x_axis_label="#Delta#eta_{jj}" \
 #  --datacard="twojet" \
 #  --background_scheme="em_no_qcd" --extra_pad=0.2
+
+#### Z->ee / Z->mumu and W->munu plots
+
+#./bin/ZllPlot --cfg=scripts/new_plot_zll_2015.cfg --channel=zmm --set_alias="sel:1"   --method=8 \
+#   --cat="inclusive" --var="m_vis(40,60,140)"  --x_axis_label="m_{#mu#mu} [GeV]" --datacard="inclusive" \
+#   --background_scheme="zmm_default" --extra_pad=0.2 --verbosity=0 
+
+#./bin/ZllPlot --cfg=scripts/new_plot_zll_2015.cfg --channel=zmm --set_alias="sel:1"   --method=8 \
+#   --cat="inclusive" --var="m_vis(40,60,140)"  --x_axis_label="m_{#mu#mu} [GeV]" --datacard="inclusive" \
+#   --background_scheme="zmm_default" --extra_pad=0.2 --verbosity=0 --log_y=true
+
+#./bin/ZllPlot --cfg=scripts/new_plot_zll_2015.cfg --channel=zee --set_alias="sel:1"   --method=8 \
+#   --cat="inclusive" --var="m_vis(40,60,140)"  --x_axis_label="m_{#mu#mu} [GeV]" --datacard="inclusive" \
+#   --background_scheme="zee_default" --extra_pad=0.2 --verbosity=0 
+
+#./bin/ZllPlot --cfg=scripts/new_plot_zll_2015.cfg --channel=zee --set_alias="sel:1"   --method=8 \
+#   --cat="inclusive" --var="m_vis(40,60,140)"  --x_axis_label="m_{#mu#mu} [GeV]" --datacard="inclusive" \
+#   --background_scheme="zee_default" --extra_pad=0.2 --verbosity=0 --log_y=true
+
+#./bin/ZllPlot --cfg=scripts/new_plot_zll_2015.cfg --channel=wmnu --set_alias="sel:met>40" \
+#--method=8 --cat="inclusive" --var="mt_1(40,0,160)"  --x_axis_label="m_{T} [GeV]" --datacard="inclusive" \
+#--background_scheme="zmm_default" --extra_pad=0.2 --verbosity=0 --folder=output/July27_NewGolden_WMuNu/

@@ -30,6 +30,8 @@ opts.register('isData', 0, parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.int, "Process as data?")
 opts.register('release', '74XMINIAOD', parser.VarParsing.multiplicity.singleton,
     parser.VarParsing.varType.string, "Release label")
+opts.register('isNLO', 0, parser.VarParsing.multiplicity.singleton,
+    parser.VarParsing.varType.int, "Store sign of weight?")
 
 opts.parseArguments()
 infile      = opts.file
@@ -37,6 +39,7 @@ if not infile: infile = "file:/tmp/file.root"
 tag         = opts.globalTag
 isData      = opts.isData
 release     = opts.release
+isNLO       = opts.isNLO
 
 if not release in ["74XMINIAOD"]:
   print 'Release not recognised, exiting!'
@@ -970,9 +973,9 @@ process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer = producers.icTriggerO
   )
 
 process.icTriggerObjectSequence = cms.Sequence(
-  process.icPFMET170NoiseCleanedObjectProducer#+ !!LATER PATHS WILL BE PRESENT IN 73 and 74
-  #process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer+
-  #process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer
+  process.icPFMET170NoiseCleanedObjectProducer+
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu140ObjectProducer+
+  process.icDiPFJet40DEta3p5MJJ600PFMETNoMu80ObjectProducer
 )
 
 for name in process.icTriggerObjectSequence.moduleNames():
@@ -1031,7 +1034,13 @@ process.icL1ExtraSequence = cms.Sequence(
 ################################################################                                                                                            
 # EventInfo                                                                                                                                              
 ################################################################                                                                                            
+process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
+process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+
+
+
 process.icEventInfoProducer = producers.icEventInfoProducer.clone(
+  isNlo               =isNLO,
   includeJetRho       = cms.bool(True),
   inputJetRho         = cms.InputTag("fixedGridRhoFastjetAll"),
   includeLeptonRho    = cms.bool(False),
@@ -1040,10 +1049,14 @@ process.icEventInfoProducer = producers.icEventInfoProducer.clone(
   inputVertices       = cms.InputTag("selectedVertices"),
   includeCSCFilter    = cms.bool(False),
   inputCSCFilter      = cms.InputTag("BeamHaloSummary"),
-  includeFiltersFromTrig = cms.bool(True)
+  includeFiltersFromTrig = cms.bool(True),
+  filters             = cms.PSet(
+    Flag_HBHENoiseFilter = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult')
+    )
 )
 
 process.icEventInfoSequence = cms.Sequence(
+  process.HBHENoiseFilterResultProducer+
   process.icEventInfoProducer
 )
 ################################################################                                                                                            

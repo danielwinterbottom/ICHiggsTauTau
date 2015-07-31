@@ -1,6 +1,5 @@
 from WMCore.Configuration import Configuration
-
-prod ='Jul24'
+prod ='Jul27'
 config = Configuration()
 config.section_('General')
 config.section_('Data')
@@ -18,6 +17,8 @@ config.JobType.pyCfgParams = ['isData=1', 'release=74XMINIAOD', 'globalTag=74X_d
 #config.Data.inputDataset = 'DUMMY'
 config.Data.unitsPerJob = 30000
 config.Data.splitting = 'EventAwareLumiBased'
+#config.Data.unitsPerJob = 80
+#config.Data.splitting = 'LumiBased'
 config.Data.publication = False
 config.Site.whitelist = ['T2_UK_London_IC', 'T2_CH_CERN', 'T2_FR_GRIF_LLR', 'T2_UK_SGrid_Bristol', 'T3_US_FNALLPC', 'T2_DE_DESY', 'T2_IT_Bari', 'T2_BE_IIHE', 'T2_US_UCSD', 'T2_US_MIT', 'T2_IT_Pisa', 'T2_US_Wisconsin', 'T2_US_Florida', 'T2_IT_Rome','T2_FR_IPHC','T2_US_Purdue','T2_IT_Legnaro','T2_FR_GRIF_IRFU']
 config.Site.storageSite = 'T2_UK_London_IC'
@@ -45,14 +46,23 @@ if __name__ == '__main__':
     #############################################################################################
 
     tasks=list()
-    
-    tasks.append(('MET-2015B-PromptReco-v1','/MET/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON.txt'))
 
-    tasks.append(('SingleMu-2015B-PromptReco-v1','/SingleMu/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON.txt'))
+    firstrun='246908'
+    maxrun='251883'#!!remember to update max run
+    firstnonrerecorun='251563'
+
+    tasks.append(('MET-2015B-PromptReco-v1','/MET/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
+
+    tasks.append(('SingleMuon-2015B-PromptReco-v1','/SingleMuon/Run2015B-PromptReco-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstnonrerecorun+'-'+maxrun))
+
+    tasks.append(('MET-2015B-17Jul2015-v1','/MET/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
+
+    tasks.append(('SingleMuon-2015B-17Jul2015-v1','/SingleMuon/Run2015B-17Jul2015-v1/MINIAOD','/vols/cms04/pjd12/invcmssws/run2ntuple/CMSSW_7_4_6/src/UserCode/ICHiggsTauTau/test/higgsinvcrab/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt',firstrun+'-'+maxrun))
     
     for task in tasks:
         print task[0]
         config.General.requestName = task[0]
         config.Data.inputDataset = task[1]
         config.Data.lumiMask = task[2]
+        config.Data.runRange= task[3]
         submit(config)

@@ -146,7 +146,11 @@ namespace ic {
       }
     }
     if (result.size() == 0) return 1;  //Require at least one dilepton
-
+    //Rest of code is not needed for Z->ee and Z->mumu channels    
+    if(channel_ == channel::zee || channel_ == channel::zmm) {
+      dilepton = result;
+      return 0;
+    }
 
     // ************************************************************************
     // If using pair-wise mva met select the appropriate met
